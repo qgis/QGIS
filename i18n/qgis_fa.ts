@@ -6,7 +6,7 @@
     <message>
         <location filename="../python/console/console_compile_apis.ui" line="32"/>
         <source>Generating prepared API file (please wait)...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">فایل دستورالعمل ها در حال ساخت است .(لططفا صبر کنید )... </translation>
     </message>
 </context>
 <context>
@@ -18,30 +18,31 @@
     <message>
         <location filename="../src/gui/symbology-ng/characterwidget.cpp" line="124"/>
         <source>&lt;p&gt;Character: &lt;span style=&quot;font-size: 24pt; font-family: %1&quot;&gt;%2&lt;/span&gt;&lt;p&gt;Value: 0x%3</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;p&gt;نوع کاراکتر: &lt;span style=\&quot;font-size: 24pt; font-family: %1\&quot;&gt;%2&lt;/span&gt;&lt;p&gt;مقدار: 0x%3</translation>
     </message>
 </context>
 <context>
     <name>ConfigDialog</name>
     <message>
         <source>Search...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">جستجو ...</translation>
     </message>
     <message>
         <source>Wrong value</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">مقدار اشتباه</translation>
     </message>
     <message>
         <source>Wrong parameter value:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">مقدار پارامتر اشتباه :
+%1</translation>
     </message>
 </context>
 <context>
     <name>ConnectionItem</name>
     <message>
         <source>Unable to connect</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">عدم اتصال</translation>
     </message>
 </context>
 <context>
@@ -123,7 +124,7 @@
     </message>
     <message>
         <source>DB Manager</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">مدیریت بانک اطلاعاتی</translation>
     </message>
     <message>
         <source>Info</source>
@@ -186,7 +187,7 @@
     </message>
     <message>
         <source>DB Manager</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">مدیریت بانک اطلاعاتی</translation>
     </message>
     <message>
         <source>Server version: </source>
@@ -223,7 +224,7 @@ This table is essential for many GIS applications for enumeration of tables.</so
     </message>
     <message>
         <source>Connection details</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">جزئیات اتصال</translation>
     </message>
     <message>
         <source>General info</source>
@@ -718,17 +719,17 @@ Query:
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateIndex.ui" line="14"/>
         <source>Create index</source>
-        <translation type="unfinished">ایجاد شاخص</translation>
+        <translation>ایجاد شاخص</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateIndex.ui" line="20"/>
         <source>Column</source>
-        <translation type="unfinished">ستون</translation>
+        <translation>ستون</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateIndex.ui" line="30"/>
         <source>Name</source>
-        <translation type="unfinished">نام</translation>
+        <translation>نام</translation>
     </message>
 </context>
 <context>
@@ -823,7 +824,7 @@ Query:
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgExportVector.ui" line="14"/>
         <source>Export to vector file</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">خروجی به فایل بردار</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgExportVector.ui" line="26"/>
@@ -838,12 +839,12 @@ Query:
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgExportVector.ui" line="47"/>
         <source>Action</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">اقدام</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgExportVector.ui" line="53"/>
         <source>Create new file</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ایجاد فایل جدید</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgExportVector.ui" line="81"/>
@@ -853,7 +854,7 @@ Query:
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgExportVector.ui" line="93"/>
         <source>Append data to file</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">افزودن اطلاعات به فایل</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgExportVector.ui" line="103"/>
@@ -1256,17 +1257,17 @@ columns</source>
     <message>
         <location filename="../python/plugins/fTools/tools/frmEliminate.ui" line="14"/>
         <source>Eliminate sliver polygons</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">بریدن چند ضلعی</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmEliminate.ui" line="20"/>
         <source>common boundary</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">مرز مشترک</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmEliminate.ui" line="27"/>
         <source>Merge selection with the neighbouring polygon with the largest</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ادغام انتخاب با چند ضلعی همسایه با بزرگترین</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmEliminate.ui" line="43"/>
@@ -1293,12 +1294,12 @@ columns</source>
     <message>
         <location filename="../python/plugins/fTools/tools/frmEliminate.ui" line="100"/>
         <source>Selected features:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ویژگی های انتخاب شده:</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmEliminate.ui" line="107"/>
         <source>area</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">منطقه</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="20"/>
@@ -1945,7 +1946,7 @@ columns</source>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVisual.ui" line="120"/>
         <source>Save errors location</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ذخیره خطا در محل</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVisual.ui" line="127"/>
@@ -2061,7 +2062,8 @@ This may cause unexpected results.</source>
     <message>
         <source>Created output shapefile:
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ایجاد خروجی فایل ترسیمی :
+%s</translation>
     </message>
     <message>
         <source>Please specify input line layer</source>
@@ -2140,19 +2142,19 @@ Would you like to add the new layer to the TOC?</source>
     </message>
     <message>
         <source>No selection in input layer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">در لایه ورودی انتخاب نشده است</translation>
     </message>
     <message>
         <source>Error creating output file</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">خطا در ایجاد فایل خروجی</translation>
     </message>
     <message>
         <source>Could not delete features</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Could not delete features</translation>
     </message>
     <message>
         <source>Could not add features</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">می تواند ویژگی های را اضافه کنید</translation>
     </message>
     <message>
         <source>Simplify results</source>
@@ -2261,9 +2263,19 @@ Would you like to add the new layer to the TOC?</source>
         <translation>فایل ورودی انتخاب نشده است</translation>
     </message>
     <message>
+        <source>No output will be created.
+Following field names are longer than 10 characters:
+%s</source>
+        <translation type="obsolete">هیچ خروجی ساخته نشد.
+نامهای فیلدها از ۱۰ حرف بیشتر می‌باشد:
+
+%s</translation>
+    </message>
+    <message>
         <source>Can&apos;t delete existing shapefile
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">می توان فایل ترسیمی موجود را حذف نمود
+%s</translation>
     </message>
     <message>
         <source>Split vector layer</source>
@@ -2298,7 +2310,7 @@ were reduced to %d vertices after simplification</source>
     </message>
     <message>
         <source>Processing of the following layers/files ended with error:&lt;br&gt;&lt;br&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">پردازش لایه های زیر / فایل ها با خطا به پایان رسید:&lt;br&gt;&lt;br&gt;</translation>
     </message>
     <message>
         <source>Please specify at least one summary statistic</source>
@@ -2323,7 +2335,8 @@ were reduced to %d vertices after simplification</source>
     <message>
         <source>Defined Projection For:
 %s.shp</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">تعریف طرح ریزی برای :
+%s.shp</translation>
     </message>
     <message>
         <source>Mean coordinates</source>
@@ -2406,7 +2419,10 @@ were reduced to %d vertices after simplification</source>
 %s
 
 Would you like to add the new layer to the TOC?</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">فایل ترسیمی نقطه ساخته شد:
+%s
+
+آیا مایلید لایه ساخته شده جدید را به لیست لایه‌ها اضافه کنید ؟</translation>
     </message>
     <message>
         <source>removing from current selection</source>
@@ -2438,23 +2454,26 @@ Would you like to add the new layer to the TOC?</source>
     </message>
     <message>
         <source>There are no shapefiles with the given geometry type. Please select an available geometry type.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">هیچ فایل ترسیمی با خصوصیات هندسی انتخاب شده وجود ندارد.لطفا نوع هندسه صحیح را انتخاب کنید .</translation>
     </message>
     <message>
         <source>Can&apos;t delete file %s</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">نمی توان فایل %s را حذف نمود</translation>
     </message>
     <message>
         <source>Error loading output shapefile:
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">خطای در بارگذاری فایل ترسیمی خروجی: 
+%s</translation>
     </message>
     <message>
         <source>Created output shapefile:
 %s
 
 Would you like to add the new layer to the TOC?</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ایجاد خروجی فایل ترسیمی در مسیر:
+%s
+می خواهید لایه را اضافه کنید ؟</translation>
     </message>
     <message>
         <source>Distance matrix</source>
@@ -2488,7 +2507,8 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <source>Created output shapefiles in folder:
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation>ایجاد خروجی فایل ترسیمی در مسیر:
+%s</translation>
     </message>
     <message>
         <source>Sum line lengths</source>
@@ -2619,7 +2639,7 @@ Are you sure you want to proceed?</source>
     </message>
     <message>
         <source>field name must not be empty</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">نام فیلد نباید خالی باشد</translation>
     </message>
 </context>
 <context>
@@ -2841,7 +2861,7 @@ Are you sure you want to proceed?</source>
     </message>
     <message>
         <source>Export to file</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">خروجی به فایل</translation>
     </message>
     <message>
         <source>Output table name is required</source>
@@ -2897,11 +2917,11 @@ Are you sure you want to proceed?</source>
     </message>
     <message>
         <source>field name must not be empty</source>
-        <translation type="unfinished"></translation>
+        <translation>نام فیلد نباید خالی باشد</translation>
     </message>
     <message>
         <source>field type must not be empty</source>
-        <translation type="unfinished"></translation>
+        <translation>نوع فیلد نباید خالی باشد</translation>
     </message>
 </context>
 <context>
@@ -2932,7 +2952,7 @@ Are you sure you want to proceed?</source>
     <message>
         <location filename="../python/plugins/processing/ui/DlgHistory.ui" line="14"/>
         <source>History and log</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">تاریخچه و صورت عملیات</translation>
     </message>
 </context>
 <context>
@@ -3065,7 +3085,7 @@ Are you sure you want to proceed?</source>
     <message>
         <location filename="../python/plugins/processing/ui/DlgResults.ui" line="14"/>
         <source>Results</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">نتیجه ها</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgResults.ui" line="53"/>
@@ -3326,7 +3346,7 @@ geometry column - column with unique integer values</source>
     <message>
         <location filename="../python/plugins/db_manager/db_plugins/postgis/plugins/versioning/DlgVersioning.ui" line="22"/>
         <source>Table is expected to be empty, with a primary key.</source>
-        <translation>جدول انتظار می رود که خالی باشد، با کلید اولیه.</translation>
+        <translation>انتظار می رود که جدول خالی باشد، از کلید اصلی.</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/db_plugins/postgis/plugins/versioning/DlgVersioning.ui" line="31"/>
@@ -3341,7 +3361,7 @@ geometry column - column with unique integer values</source>
     <message>
         <location filename="../python/plugins/db_manager/db_plugins/postgis/plugins/versioning/DlgVersioning.ui" line="75"/>
         <source>create a view with current content (&lt;TABLE&gt;_current)</source>
-        <translation>ایجاد یک نمایش با محتوای فعلی )&lt;TABLE&gt; پیش فرض(</translation>
+        <translation>ایجاد شود&lt;TABLE&gt;بصورت پیش فرض یک نمای کلی باطرح فعلی از جدول  </translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/db_plugins/postgis/plugins/versioning/DlgVersioning.ui" line="85"/>
@@ -3381,31 +3401,33 @@ geometry column - column with unique integer values</source>
     <message>
         <location filename="../python/plugins/db_manager/db_plugins/postgis/plugins/versioning/DlgVersioning.ui" line="160"/>
         <source>SQL to be executed:</source>
-        <translation>SQL اجرا شود:</translation>
+        <translation>پرسش و پاسخ انجام شود :</translation>
     </message>
 </context>
 <context>
     <name>EditRScriptDialog</name>
     <message>
         <source>I/O error</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">خطای ورودی</translation>
     </message>
     <message>
         <source>Unable to save edits. Reason:
  %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">نمی توان ویرایش را ذخیره نمود . دلیلش :
+%1</translation>
     </message>
 </context>
 <context>
     <name>EditScriptDialog</name>
     <message>
         <source>I/O error</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">خطای ورودی</translation>
     </message>
     <message>
         <source>Unable to save edits. Reason:
  %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">نمی توان ویرایش را ذخیره نمود . دلیلش :
+%1</translation>
     </message>
 </context>
 <context>
@@ -3471,7 +3493,7 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <source>Merge</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ادغام کردن</translation>
     </message>
     <message>
         <source>Build a quick mosaic from a set of images</source>
@@ -3750,7 +3772,7 @@ Do you want terminate it anyway?</source>
     </message>
     <message>
         <source>%s not created.</source>
-        <translation type="unfinished"></translation>
+        <translation>%s ایجاد نشد.</translation>
     </message>
     <message>
         <source>%1 not created.</source>
@@ -4498,12 +4520,12 @@ when pressing on the tool dialog&apos;s Help button.</source>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="587"/>
         <source>Minimum</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">به حداقل رساندن</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="592"/>
         <source>Maximum</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">حداکثر مقدار</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="597"/>
@@ -4533,7 +4555,7 @@ when pressing on the tool dialog&apos;s Help button.</source>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="20"/>
         <source>Merge</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ادغام کردن</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="87"/>
@@ -5421,7 +5443,8 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <source>Error loading output shapefile:
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">خطای در بارگذاری فایل ترسیمی خروجی: 
+%s</translation>
     </message>
     <message>
         <source>
@@ -5740,7 +5763,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <name>HelpEditionDialog</name>
     <message>
         <source>Outputs</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">خروجی ها</translation>
     </message>
 </context>
 <context>
@@ -5751,11 +5774,11 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <source>Clear history and log</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">پاک نمودن تاریخچه و  صورت عملیات</translation>
     </message>
     <message>
         <source>Create test</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ایجاد نمونه</translation>
     </message>
 </context>
 <context>
@@ -5768,14 +5791,14 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../python/console/console_history_dlg.ui" line="45"/>
         <source>Reload</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">بارگزاری مجدد</translation>
     </message>
 </context>
 <context>
     <name>InfoViewer</name>
     <message>
         <source>DB Manager</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">مدیریت بانک اطلاعاتی</translation>
     </message>
 </context>
 <context>
@@ -5819,7 +5842,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="68"/>
         <source>New From Template</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">جدید از الگو</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="88"/>
@@ -5859,12 +5882,12 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="54"/>
         <source>P&amp;roject</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;پروژه</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="58"/>
         <source>&amp;Open Recent</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;باز شده های اخیر</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="112"/>
@@ -6074,7 +6097,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1225"/>
         <source>Add Oracle Spatial Layer...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">اضافه کردن لایه اوراکل فضایی ...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1261"/>
@@ -6103,7 +6126,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1384"/>
         <source>Manage and Install Plugins...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">مدیریت و نصب پلاگین ....</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1541"/>
@@ -6231,126 +6254,126 @@ Acts on currently active editable layer</source>
         <location filename="../src/ui/qgisapp.ui" line="1877"/>
         <location filename="../src/ui/qgisapp.ui" line="1880"/>
         <source>Duplicate Layer(s)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">لایه را کپی کرده</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1892"/>
         <source>SVG annotation</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">حاشیه نویسی SVG</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1901"/>
         <location filename="../src/ui/qgisapp.ui" line="1904"/>
         <source>Save for All Layers</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ذخیره برای همه لایه ها</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1916"/>
         <location filename="../src/ui/qgisapp.ui" line="1919"/>
         <source>Rollback for All Layers</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">بازگشت به حالت قبلی برای تمام لایه ها</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1931"/>
         <location filename="../src/ui/qgisapp.ui" line="1934"/>
         <source>Cancel for All Layers</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">لغو برای همه لایه ها</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1946"/>
         <location filename="../src/ui/qgisapp.ui" line="1949"/>
         <source>Rollback for Selected Layer(s)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">بازگشت به حالت قبلی برای لایه انتخاب شده</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1961"/>
         <location filename="../src/ui/qgisapp.ui" line="1964"/>
         <source>Current Edits</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">تغییرات کنونی</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1976"/>
         <location filename="../src/ui/qgisapp.ui" line="1979"/>
         <source>Cancel for Selected Layer(s)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">لایه انتخاب شده را لغو کنید</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1991"/>
         <location filename="../src/ui/qgisapp.ui" line="1994"/>
         <source>Save Layer Edits</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ذخیره سازی لایه ویرایش شده</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2006"/>
         <location filename="../src/ui/qgisapp.ui" line="2009"/>
         <source>Rotate Feature(s)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">چرخش ویژگی ها </translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2014"/>
         <source>&amp;Download data</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;دانلود داده ها</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2019"/>
         <source>&amp;Import topology from XML</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;واردات توپولوژی از XML</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2024"/>
         <source>&amp;Export topology to SpatiaLite</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;خروجی توپولوژی به SpatiaLit</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2033"/>
         <source>Increase brightness</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">افزایش روشنایی</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2042"/>
         <source>Decrease brightness</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">کاهش روشنایی</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2051"/>
         <source>Increase contrast</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">افزایش کنتراست</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2060"/>
         <source>Decrease contrast</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">کاهش کنتراست</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2069"/>
         <source>Select By Expression</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">انتخاب توسط عبارت</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2072"/>
         <source>Select features using an expression</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">انتخاب کنید ویژگی های را با استفاده از یک عبارت </translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2077"/>
         <source>Need Support?</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">نیاز به حمایت؟</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2086"/>
         <location filename="../src/ui/qgisapp.ui" line="2089"/>
         <source>Open Field Calculator</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">بازکردن فیلد محاسبه</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2098"/>
         <source>Add Delimited Text Layer...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">اضافه کردن لایه متن حائل ...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2101"/>
         <source>Add Delimited Text Layer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">اضافه کردن لایه متن حائل</translation>
     </message>
     <message>
         <source>Exit</source>
@@ -6824,7 +6847,7 @@ Acts on currently active editable layer</source>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1580"/>
         <source>Stretch Histogram to Full Dataset</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">استرچ هیستوگرام به مجموعه داده کامل</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1603"/>
@@ -6935,7 +6958,7 @@ Acts on currently active editable layer</source>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="237"/>
         <source>&amp;OpenStreetMap</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">بارکردن &amp;نقشه های خیابان</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="482"/>
@@ -6945,22 +6968,22 @@ Acts on currently active editable layer</source>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="494"/>
         <source>&amp;Open...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;بازکردن ...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="506"/>
         <source>&amp;Save</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;ذخیره</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="518"/>
         <source>Save &amp;As...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;ذخیره در ...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1273"/>
         <source>Save for Selected Layer(s)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ذخیره در لایه انتخاب شده</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1342"/>
@@ -7033,7 +7056,7 @@ Acts on currently active editable layer</source>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1446"/>
         <source>Local Histogram Stretch</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">استرچ هیستوگرام محلی</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1449"/>
@@ -7156,7 +7179,7 @@ Acts on currently active editable layer</source>
     </message>
     <message>
         <source>Search...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">جستجو ...</translation>
     </message>
     <message>
         <source>Empty model</source>
@@ -7184,7 +7207,7 @@ Acts on currently active editable layer</source>
     </message>
     <message>
         <source>I/O error</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">خطای ورودی</translation>
     </message>
     <message>
         <source>Unable to save edits. Reason:
@@ -7231,7 +7254,7 @@ Wrong line: %1</source>
     <name>NotSupportedDbType</name>
     <message>
         <source>%s is not supported yet</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">%S نوع بانک اطلاعاتی شناسایی نشد</translation>
     </message>
 </context>
 <context>
@@ -7393,7 +7416,7 @@ Wrong line: %1</source>
     <name>PGTable</name>
     <message>
         <source>Table rule</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">جدول قوانین</translation>
     </message>
 </context>
 <context>
@@ -7407,7 +7430,15 @@ Wrong line: %1</source>
     <name>PostGisDBPlugin</name>
     <message>
         <source>There is no defined database connection &quot;%s&quot;.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">اتصال به پایگاه داده مشخص نیست &quot;%s&quot;.</translation>
+    </message>
+    <message>
+        <source>Enter password</source>
+        <translation type="obsolete">ورود پسورد</translation>
+    </message>
+    <message>
+        <source>Enter password for connection &quot;%s&quot;:</source>
+        <translation type="obsolete">ورود پسورد برای اتصال به &quot;%s&quot; :</translation>
     </message>
 </context>
 <context>
@@ -7437,7 +7468,7 @@ Wrong line: %1</source>
     </message>
     <message>
         <source>History and log</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">تاریخچه و صورت عملیات</translation>
     </message>
     <message>
         <source>Options and configuration</source>
@@ -7466,7 +7497,7 @@ Wrong line: %1</source>
     </message>
     <message>
         <source>Search...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">جستجو ...</translation>
     </message>
     <message>
         <source>Execute</source>
@@ -7612,11 +7643,15 @@ Wrong line: %1</source>
     </message>
     <message>
         <source>Select All</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">انتخاب همه</translation>
     </message>
     <message>
         <source>Settings</source>
         <translation type="unfinished">تنظیمات</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;&quot;{0}&quot;&lt;/b&gt; was not found.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>URL copied to clipboard.</source>
@@ -7627,11 +7662,32 @@ Wrong line: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source> [Temporary file saved in {0}]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>## Script error: {0}</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>## Script executed successfully: {0}</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot execute file {0}. Error: {1}
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Hey, type something to run!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>You have to save the file before running it.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import Processing class</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -7684,27 +7740,6 @@ Wrong line: %1</source>
     </message>
     <message>
         <source>Error preparing file...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;&quot;{0}&quot;&lt;/b&gt; was not found.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source> [Temporary file saved in {0}]</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>## Script error: {0}</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>## Script executed successfully: {0}</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cannot execute file {0}. Error: {1}
-</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -7787,10 +7822,6 @@ Wrong line: %1</source>
     <message>
         <source>Import Class</source>
         <translation type="unfinished">وارد نمودن کلاس</translation>
-    </message>
-    <message>
-        <source>Import Processing class</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Import PyQt.QtCore class</source>
@@ -10601,7 +10632,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <location filename="../src/core/composer/qgscomposerlegendstyle.cpp" line="121"/>
         <source>Symbol</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">نماد</translation>
     </message>
     <message>
         <location filename="../src/core/composer/qgscomposerlegendstyle.cpp" line="123"/>
@@ -11977,14 +12008,14 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3406"/>
         <source>File not found: %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">فایل %1 پیدانشد</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3503"/>
         <location filename="../src/app/qgisapp.cpp" line="3668"/>
         <location filename="../src/app/qgisapp.cpp" line="3727"/>
         <source>QGIS files</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">فایل کیو جی ای اس</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3538"/>
@@ -12009,7 +12040,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3634"/>
         <source>Project loaded</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">بارگزاری پروژه</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4221"/>
@@ -12024,7 +12055,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4232"/>
         <source>Open labeling dialog</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">بارکردن محاوره برچسب</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2346"/>
@@ -12062,7 +12093,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4312"/>
         <source>Labeling Options</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">گزینه‌های برچسب</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4313"/>
@@ -12107,12 +12138,12 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4876"/>
         <source> copy</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">کپی</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5368"/>
         <source>No active vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">لایه فعاب وکتور نیست</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5369"/>
@@ -12135,24 +12166,24 @@ Errors: %3
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5770"/>
         <source>cancel</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">لغو</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5806"/>
         <source>Save</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ذخیره</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5806"/>
         <location filename="../src/app/qgisapp.cpp" line="5838"/>
         <location filename="../src/app/qgisapp.cpp" line="5870"/>
         <source>all</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">همه</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5838"/>
         <source>Rollback</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">برگشت</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5870"/>
@@ -12162,7 +12193,7 @@ Errors: %3
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5886"/>
         <source>Current edits</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ویرایش کنونی</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5887"/>
@@ -12172,23 +12203,23 @@ Errors: %3
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6159"/>
         <source>copy</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">کپی</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6163"/>
         <source>Plugin layer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">لایه پلاگین</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6175"/>
         <source>Memory layer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">لایه حافظه</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6195"/>
         <location filename="../src/app/qgisapp.cpp" line="6206"/>
         <source>Duplicate layer: </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">لایه تکراری :</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6196"/>
@@ -12236,7 +12267,7 @@ Errors: %3
         <location filename="../src/app/qgisapp.cpp" line="8428"/>
         <location filename="../src/app/qgisapp.cpp" line="8575"/>
         <source>Raster layer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">لایه رستر</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="8941"/>
@@ -12664,7 +12695,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1066"/>
         <source>Current Edits</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">تغییرات کنونی</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6207"/>
@@ -13003,7 +13034,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="8572"/>
         <source>%1 is not a supported raster data source</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">اطلاعات رستر %1 پشتیبانی نمی شود</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="8577"/>
@@ -13289,7 +13320,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsaddtaborgroup.cpp" line="53"/>
         <source>Add tab or group for %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">اضافه نمودن قسمت یا گروه برای لایه %1</translation>
     </message>
 </context>
 <context>
@@ -13470,12 +13501,12 @@ User DB Path:	%9
     <message>
         <location filename="../src/app/composer/qgsatlascompositionwidget.cpp" line="259"/>
         <source>Expression based filename</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">نمایش براساس نام فایل </translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgsatlascompositionwidget.cpp" line="393"/>
         <source>Expression based filter</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">نمایش براساس فیلتر</translation>
     </message>
 </context>
 <context>
@@ -14165,7 +14196,7 @@ User DB Path:	%9
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="145"/>
         <source>Select features using an expression</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">انتخاب ویژگی با عبارت</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="345"/>
@@ -14196,27 +14227,27 @@ User DB Path:	%9
         <location filename="../src/ui/qgsattributetabledialog.ui" line="475"/>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="600"/>
         <source>Apply</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">بکار بردن</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="500"/>
         <source>Attribute View</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">نمایش خصوصیات</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="517"/>
         <source>Table View</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">نمایش چدول</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="545"/>
         <source>Advanced Filter (Expression)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">فیلترکردن پیش رفته(عبارت)أ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="548"/>
         <source>Use the Expression Builder to define the filter</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">استفاده از عبارت ساز در ساخت عبارت</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="551"/>
@@ -14226,27 +14257,27 @@ User DB Path:	%9
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="560"/>
         <source>Show All Features</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">نمایش همه ویژگی ها</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="569"/>
         <source>Show Selected Features</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">نمایش ویژگی انتخاب شده</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="578"/>
         <source>Show Features Visible On Map</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">نمایش ویژگی ها در نقشه</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="583"/>
         <source>Column Filter</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">فیلتر ستون</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="592"/>
         <source>Show Edited and New Features</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">نمایش و ویرایش و اضافه کردن ویژگی ها</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="595"/>
@@ -14347,7 +14378,7 @@ User DB Path:	%9
     <message>
         <location filename="../src/app/qgsattributetabledialog.cpp" line="272"/>
         <source>Expression based filter</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">فیلتر کردن براساس عبارت</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributetabledialog.cpp" line="474"/>
@@ -14377,12 +14408,12 @@ User DB Path:	%9
     <message>
         <location filename="../src/app/qgsattributetabledialog.cpp" line="515"/>
         <source>Attribute error</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">خطای ویژگی</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributetabledialog.cpp" line="635"/>
         <source>Error filtering</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">خطای فیلتر کردن</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributetabledialog.cpp" line="380"/>
@@ -14431,7 +14462,7 @@ User DB Path:	%9
     <message>
         <location filename="../src/gui/attributetable/qgsattributetableview.cpp" line="225"/>
         <source>Select All</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">انتخاب همه</translation>
     </message>
 </context>
 <context>
@@ -14545,12 +14576,12 @@ User DB Path:	%9
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="210"/>
         <source>Minimum</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">به حداقل رساندن</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="217"/>
         <source>Maximum</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">حداکثر مقدار</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="224"/>
@@ -15082,7 +15113,7 @@ Database:%2</source>
     <message>
         <location filename="../src/ui/qgsbrowserdirectorypropertiesbase.ui" line="25"/>
         <source>Path</source>
-        <translation type="unfinished">مسیر</translation>
+        <translation>مسیر</translation>
     </message>
 </context>
 <context>
@@ -15200,7 +15231,7 @@ Database:%2</source>
     <message>
         <location filename="../src/ui/qgsbrowserdockwidgetbase.ui" line="117"/>
         <source>Collapse All</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">بستن همه</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsbrowserdockwidgetbase.ui" line="191"/>
@@ -15246,7 +15277,7 @@ Database:%2</source>
     <message>
         <location filename="../src/core/qgsbrowsermodel.cpp" line="62"/>
         <source>Project home</source>
-        <translation type="unfinished"></translation>
+        <translation>مسیر اولیه پروژه</translation>
     </message>
     <message>
         <location filename="../src/core/qgsbrowsermodel.cpp" line="84"/>
@@ -15342,7 +15373,7 @@ Database:%2</source>
     <message>
         <location filename="../src/gui/qgsbusyindicatordialog.cpp" line="28"/>
         <source>QGIS</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">کیو جی ای اس</translation>
     </message>
 </context>
 <context>
@@ -15350,17 +15381,17 @@ Database:%2</source>
     <message>
         <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="163"/>
         <source>Symbol</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">نماد</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="163"/>
         <source>Value</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">مقدار</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="163"/>
         <source>Label</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">برچسب</translation>
     </message>
 </context>
 <context>
@@ -15373,7 +15404,7 @@ Database:%2</source>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="59"/>
         <source>Symbol</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">نماد</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="72"/>
@@ -15383,7 +15414,7 @@ Database:%2</source>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="79"/>
         <source>Color ramp</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">رمپ رنگ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="134"/>
@@ -15463,25 +15494,29 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgscharacterselectdialogbase.ui" line="20"/>
         <source>Character Selector</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">انتخاب کاراکتر</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscharacterselectdialogbase.ui" line="34"/>
         <source>Font:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">قلم :</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscharacterselectdialogbase.ui" line="41"/>
         <source>Current font family and style</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">مشابه پوسته و قلم پیش رو</translation>
     </message>
 </context>
 <context>
     <name>QgsCollapsibleGroupBoxBasic</name>
     <message>
+        <source>Ctrl(or Alt)-click to toggle all</source>
+        <translation type="obsolete">کنترل یا الت کلیک برای چسباندن همه</translation>
+    </message>
+    <message>
         <location filename="../src/gui/qgscollapsiblegroupbox.cpp" line="194"/>
         <source>Shift-click to expand, then collapse others</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">شیفت و کلیک جهت بازکردن و بستن بقیه</translation>
     </message>
     <message>
         <location filename="../src/gui/qgscollapsiblegroupbox.cpp" line="194"/>
@@ -15494,7 +15529,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/gui/qgscolorbutton.cpp" line="43"/>
         <source>Select Color</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">انتخاب رنگ</translation>
     </message>
 </context>
 <context>
@@ -15502,7 +15537,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/gui/qgscolordialog.cpp" line="35"/>
         <source>Select Color</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">انتخاب رنگ</translation>
     </message>
 </context>
 <context>
@@ -15552,7 +15587,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="174"/>
         <source>QGIS</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">کیو جی ای اس</translation>
     </message>
     <message>
         <source>File</source>
@@ -15759,7 +15794,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="1448"/>
         <source> copy</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">کپی</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="1455"/>
@@ -15830,7 +15865,7 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/app/composer/qgscomposer.cpp" line="179"/>
         <location filename="../src/app/composer/qgscomposer.cpp" line="1851"/>
         <source>Composer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">سازنده</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="979"/>
@@ -16053,22 +16088,22 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="51"/>
         <source>Composer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">سازنده</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="76"/>
         <source>Paper Navigation</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">کاغذ ناوبری</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="91"/>
         <source>Composer Item Actions</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">سازنده عملیات مورد</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="106"/>
         <source>Composer Items</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">اقلام سازنده</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="135"/>
@@ -16078,7 +16113,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="147"/>
         <source>Zoom full</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">نمایش همه</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="159"/>
@@ -16118,7 +16153,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="231"/>
         <source>Export as image</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">خروجی عکس</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="240"/>
@@ -16158,7 +16193,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="285"/>
         <source>Add image</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">اضافه نمودن تصویر</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="290"/>
@@ -16233,57 +16268,57 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="346"/>
         <source>Load from Template</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">بارگزاری از قالب</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="349"/>
         <source>Load from template</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">بارگزاری از قالب</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="354"/>
         <source>Save as Template</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ذخیره به عنوان الگو</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="362"/>
         <source>Align Left</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">تراز چپ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="370"/>
         <source>Align Center</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">مرکز تراز</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="378"/>
         <source>Align Right</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">تراز راست</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="386"/>
         <source>Align Top</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">تراز بالا</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="402"/>
         <source>Align Bottom</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ترازپایین</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="513"/>
         <source>Add ellipse</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">اضافه کردن بیضی</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="521"/>
         <source>Add HTML</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">اضافه کردن HTML</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="529"/>
         <source>Composer Manager</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">مدیریت سازنده</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="532"/>
@@ -16293,12 +16328,12 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="537"/>
         <source>&amp;New Composer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;سازنده جدید</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="540"/>
         <source>New composer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">سازنده جدید</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="543"/>
@@ -16313,7 +16348,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="551"/>
         <source>Save project</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ذخیره پروژه</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="554"/>
@@ -16323,22 +16358,22 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="559"/>
         <source>&amp;Duplicate Composer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;تکرار سازنده</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="562"/>
         <source>Duplicate composer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">تکرار سازنده</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="567"/>
         <source>New from Template</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">قالب فرم جدید</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="570"/>
         <source>New from template</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">قالب فرم جدید</translation>
     </message>
     <message>
         <source>Load From template</source>
@@ -16388,7 +16423,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="394"/>
         <source>Align Center Vertical</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">تراز مرکز عمودی</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="397"/>
@@ -16422,22 +16457,22 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="424"/>
         <source>Add Arrow</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">اضافه کردن فلش</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="435"/>
         <source>Add Table</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">اضافه کردن جدول</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="438"/>
         <source>Add attribute table</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">جدول ویژگی را می افزاید</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="446"/>
         <source>Page setup</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">راه اندازی صفحه</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="449"/>
@@ -16452,7 +16487,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="491"/>
         <source>Add rectangle</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">اضافه کردن مستطیل</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="499"/>
@@ -16462,7 +16497,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="502"/>
         <source>Add triangle</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">اضافه کردن مثلث</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="510"/>
@@ -16754,7 +16789,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="270"/>
         <source>Background</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">پیش زمینه</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="298"/>
@@ -16769,7 +16804,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="333"/>
         <source>Id</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">شناسه</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="343"/>
@@ -17010,12 +17045,12 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="126"/>
         <source>Item</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">بخش</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="126"/>
         <source>Title style</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">عنوان سبک</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="201"/>
@@ -17030,17 +17065,17 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="225"/>
         <source>Legend column count</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">تعداد ستون لجاند</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="239"/>
         <source>Legend split layers</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">لجاند تقسیم لایه ها</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="251"/>
         <source>Legend equal column width</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">عرض ستون لجاند برابر</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="263"/>
@@ -17055,7 +17090,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="287"/>
         <source>Legend title space bottom</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">فضای پایین عنوان لجاند</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="299"/>
@@ -17100,7 +17135,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="448"/>
         <source>Legend font color changed</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">تغییر رنگ فونت لجاند</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="458"/>
@@ -17234,7 +17269,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="445"/>
         <source>Count</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">تعداد</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="465"/>
@@ -17254,7 +17289,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="485"/>
         <source>Symbol</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">نماد</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="503"/>
@@ -17269,7 +17304,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="546"/>
         <source>Spacing</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">فضای خالی</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="564"/>
@@ -17426,7 +17461,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/app/composer/qgscomposermanager.cpp" line="50"/>
         <source>&amp;Duplicate</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;تکراری</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermanager.cpp" line="54"/>
@@ -17446,7 +17481,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/app/composer/qgscomposermanager.cpp" line="85"/>
         <source>Specific</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">مکان مشخص</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermanager.cpp" line="152"/>
@@ -17518,7 +17553,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/app/composer/qgscomposermanager.cpp" line="386"/>
         <source> copy</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">کپی</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermanager.cpp" line="393"/>
@@ -17554,7 +17589,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposermanagerbase.ui" line="35"/>
         <source>New from template</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">قالب فرم جدید</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermanagerbase.ui" line="50"/>
@@ -17621,7 +17656,7 @@ Please try a lower resolution or a smaller papersize</source>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="121"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="262"/>
         <source>Rectangle</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">مستطیل</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="57"/>
@@ -17828,7 +17863,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="111"/>
         <source>Scale</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">مقیاس</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="128"/>
@@ -17900,7 +17935,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="444"/>
         <source>Blend mode</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">روش مخلوط کردن</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="469"/>
@@ -18020,7 +18055,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="592"/>
         <source>Font...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">قلم...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="599"/>
@@ -18463,7 +18498,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="399"/>
         <source>Font...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">قلم...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="368"/>
@@ -18489,7 +18524,7 @@ Please try a lower resolution or a smaller papersize</source>
         <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="75"/>
         <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="108"/>
         <source>Rectangle</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">مستطیل</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="36"/>
@@ -18815,7 +18850,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/gui/qgscomposerview.cpp" line="153"/>
         <source>QGIS</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">کیو جی ای اس</translation>
     </message>
     <message>
         <location filename="../src/gui/qgscomposerview.cpp" line="188"/>
@@ -19186,7 +19221,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="289"/>
         <source>Spacing</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">فضای خالی</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="302"/>
@@ -19419,7 +19454,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/core/qgscontexthelp.cpp" line="91"/>
         <source>&lt;h3&gt;Oops! QGIS can&apos;t find help for this form.&lt;/h3&gt;The help file for %1 was not found for your language&lt;br&gt;If you would like to create it, contact the QGIS development team</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;h3&gt;کیو جی ای اس برای این فرم رهنماای پیدا نکرد&lt;/h3&gt;فایل راهنمای برای این زبان %1 یافت نشد.&lt;br&gt;اگر شما می خواهید آن را بسازید با تیم توسعه هماهنگ کنید</translation>
     </message>
 </context>
 <context>
@@ -19627,7 +19662,7 @@ and current file is [%3]</source>
     <message>
         <location filename="../src/ui/qgscptcitycolorrampv2dialogbase.ui" line="493"/>
         <source>Save as standard gradient</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ذخیره به عنوان شیب استاندارد</translation>
     </message>
 </context>
 <context>
@@ -19775,7 +19810,7 @@ and current file is [%3]</source>
     <message>
         <location filename="../src/ui/qgscustomprojectiondialogbase.ui" line="106"/>
         <source>Parameters:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ورودی‌ها:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscustomprojectiondialogbase.ui" line="113"/>
@@ -19838,12 +19873,12 @@ and current file is [%3]</source>
     <message>
         <location filename="../src/ui/qgscustomizationdialogbase.ui" line="14"/>
         <source>Customization</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">سفارشی</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscustomizationdialogbase.ui" line="21"/>
         <source>Enable customization</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">فعال کردن سفارشی</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscustomizationdialogbase.ui" line="67"/>
@@ -19863,37 +19898,37 @@ and current file is [%3]</source>
     <message>
         <location filename="../src/ui/qgscustomizationdialogbase.ui" line="106"/>
         <source>Save</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ذخیره </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscustomizationdialogbase.ui" line="109"/>
         <source>Save to file</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ذخیره در فایل</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscustomizationdialogbase.ui" line="118"/>
         <source>Load</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">بارگذاری</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscustomizationdialogbase.ui" line="121"/>
         <source>Load from file</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">بارگذاری از فایل</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscustomizationdialogbase.ui" line="126"/>
         <source>Expand All</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">باز کردن همه</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscustomizationdialogbase.ui" line="131"/>
         <source>Collapse All</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">بستن همه</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscustomizationdialogbase.ui" line="136"/>
         <source>Select All</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">انتخاب همه</translation>
     </message>
 </context>
 <context>
@@ -19901,7 +19936,7 @@ and current file is [%3]</source>
     <message>
         <location filename="../src/ui/symbollayer/qgsdashspacedialogbase.ui" line="14"/>
         <source>Dash space pattern</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">الگوی فضای خالی ونقطه چین </translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/qgsdashspacedialogbase.ui" line="51"/>
@@ -20152,7 +20187,7 @@ and current file is [%3]</source>
     <message>
         <location filename="../src/ui/qgsdatadefinedsymboldialogbase.ui" line="14"/>
         <source>Data defined properties</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">خواص تعریف داده ها</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdatadefinedsymboldialogbase.ui" line="67"/>
@@ -20205,12 +20240,12 @@ and current file is [%3]</source>
     <message>
         <location filename="../src/ui/qgsdbsourceselectbase.ui" line="31"/>
         <source>Connections</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">متصل شده </translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdbsourceselectbase.ui" line="42"/>
         <source>Connect</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">اتصال</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdbsourceselectbase.ui" line="49"/>
@@ -20231,7 +20266,7 @@ and current file is [%3]</source>
         <location filename="../src/ui/qgsdbsourceselectbase.ui" line="83"/>
         <source>Load</source>
         <comment>Load connections from file</comment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">بارگذاری</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdbsourceselectbase.ui" line="90"/>
@@ -20246,12 +20281,12 @@ and current file is [%3]</source>
     <message>
         <location filename="../src/ui/qgsdbsourceselectbase.ui" line="112"/>
         <source>Also list tables with no geometry</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">لیست جداول بدون هندسه </translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdbsourceselectbase.ui" line="119"/>
         <source>Search options</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">جستجو تنظیمات</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdbsourceselectbase.ui" line="143"/>
@@ -20261,12 +20296,12 @@ and current file is [%3]</source>
     <message>
         <location filename="../src/ui/qgsdbsourceselectbase.ui" line="156"/>
         <source>Search mode</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">نوع جستجو</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdbsourceselectbase.ui" line="176"/>
         <source>Search in columns</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">جستجو در ستون</translation>
     </message>
 </context>
 <context>
@@ -20440,7 +20475,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsdecorationgriddialog.ui" line="182"/>
         <source>Font...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">قلم...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdecorationgriddialog.ui" line="189"/>
@@ -20492,7 +20527,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/qgsdecorationgriddialog.cpp" line="47"/>
         <location filename="../src/app/qgsdecorationgriddialog.cpp" line="118"/>
         <source>Marker</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">نشانگر</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdecorationgriddialog.cpp" line="53"/>
@@ -21765,7 +21800,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui" line="75"/>
         <source>Priority:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">اولویت :</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui" line="82"/>
@@ -21780,12 +21815,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui" line="127"/>
         <source>Appearance</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">مشاهده</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui" line="142"/>
         <source>Background color</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">رنگ پس زمینه</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui" line="149"/>
@@ -21800,22 +21835,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui" line="169"/>
         <source>Font...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">قلم...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui" line="176"/>
         <source>Bar width</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">عرض میله</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui" line="189"/>
         <source>Transparency 0%</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">شفافیت 0%</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui" line="239"/>
         <source>Start Angle</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">شروع زاویه</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui" line="251"/>
@@ -21830,17 +21865,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui" line="257"/>
         <source>Scale dependent visibility</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">مقیاس وابسته به میدان دید</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui" line="275"/>
         <source>Minimum</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">به حداقل رساندن</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui" line="282"/>
         <source>Maximum</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">حداکثر مقدار</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui" line="315"/>
@@ -21851,12 +21886,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui" line="321"/>
         <source>Fixed size</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">اندازه ثابت</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui" line="341"/>
         <source>Size units</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">واحد اندازه</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui" line="389"/>
@@ -21867,7 +21902,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui" line="407"/>
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui" line="929"/>
         <source>Attribute</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">خصوصیات</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui" line="424"/>
@@ -21883,7 +21918,7 @@ Leave empty to automatically apply the maximum value.</source>
     <message>
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui" line="459"/>
         <source>Scale</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">مقیاس</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui" line="471"/>
@@ -21898,7 +21933,7 @@ Leave empty to automatically apply the maximum value.</source>
     <message>
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui" line="483"/>
         <source>Minimum size</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">حداقل اندازه</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui" line="513"/>
@@ -21913,7 +21948,7 @@ Leave empty to automatically apply the maximum value.</source>
     <message>
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui" line="531"/>
         <source>Line Options</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">تنظیمات خطوط</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui" line="541"/>
@@ -21923,7 +21958,7 @@ Leave empty to automatically apply the maximum value.</source>
     <message>
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui" line="572"/>
         <source>Data defined position</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">محل نمایش اطلاعات</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui" line="590"/>
@@ -21948,12 +21983,12 @@ Leave empty to automatically apply the maximum value.</source>
     <message>
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui" line="679"/>
         <source>Label placement</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">محل برچسب</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui" line="714"/>
         <source>Bar Orientation</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">گرایش به سمت</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui" line="721"/>
@@ -22158,7 +22193,7 @@ Parser error:
     <message>
         <location filename="../src/ui/qgsdualviewbase.ui" line="118"/>
         <source>Column Preview</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">نمایش ستون</translation>
     </message>
 </context>
 <context>
@@ -22653,7 +22688,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsexpressionselectiondialogbase.ui" line="14"/>
         <source>Select By Expression</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">انتخاب توسط عبارت</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsexpressionselectiondialogbase.ui" line="33"/>
@@ -22804,7 +22839,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsfieldsproperties.cpp" line="294"/>
         <source>Id</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">شناسه</translation>
     </message>
     <message>
         <location filename="../src/app/qgsfieldsproperties.cpp" line="295"/>
@@ -23116,7 +23151,7 @@ MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.<
     <message>
         <location filename="../src/ui/qgsformannotationdialogbase.ui" line="14"/>
         <source>Form annotation</source>
-        <translation type="unfinished">حاشیه نویسی به صورت فرم</translation>
+        <translation type="unfinished">حاشیه نویسی فرم</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsformannotationdialogbase.ui" line="25"/>
@@ -23175,12 +23210,12 @@ MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.<
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsdevicedialog.cpp" line="53"/>
         <source>Are you sure?</source>
-        <translation>آیا شما مطمئن هستید ؟</translation>
+        <translation type="unfinished">آیا شما مطمئن هستید ؟</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsdevicedialog.cpp" line="54"/>
         <source>Are you sure that you want to delete this device?</source>
-        <translation>آیا شما مطمئن هستید که می خواهید دستگاه را پاک کنید ؟</translation>
+        <translation type="unfinished">آیا شما مطمئن هستید که می خواهید دستگاه را پاک کنید ؟</translation>
     </message>
 </context>
 <context>
@@ -23375,7 +23410,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="667"/>
         <source>Automatic</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">اتوماتیک</translation>
     </message>
     <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="667"/>
@@ -23563,7 +23598,7 @@ Errors: %2
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="1055"/>
         <source>always</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">همیشه</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="855"/>
@@ -24586,7 +24621,11 @@ Please reselect a valid file.</source>
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Droid Sans&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Droid Sans&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -24619,7 +24658,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="227"/>
         <source>%1 is not a supported raster data source</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">اطلاعات رستر %1 پشتیبانی نمی شود</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="232"/>
@@ -24929,7 +24968,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="2003"/>
         <source>Not set</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">انچام نشد</translation>
     </message>
 </context>
 <context>
@@ -25389,17 +25428,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/symbology-ng/qgsgraduatedsymbolrendererv2widget.cpp" line="149"/>
         <source>Symbol</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">نماد</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsgraduatedsymbolrendererv2widget.cpp" line="149"/>
         <source>Value</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">مقدار</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsgraduatedsymbolrendererv2widget.cpp" line="149"/>
         <source>Label</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">بر چسب</translation>
     </message>
 </context>
 <context>
@@ -25412,7 +25451,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="35"/>
         <source>Symbol</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">نماد</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="58"/>
@@ -25422,7 +25461,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="90"/>
         <source>Color ramp</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">رمپ رنگ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="103"/>
@@ -25801,7 +25840,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="404"/>
         <source>Background</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">پیش زمینه</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="405"/>
@@ -26843,7 +26882,7 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="3892"/>
         <source>%1:&amp;nbsp;missing value</source>
-        <translation type="unfinished">%1 :&amp;nbsp ; ارزش از دست رفته</translation>
+        <translation type="unfinished">%1 :&amp;nbsp; ارزش از دست رفته</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="3899"/>
@@ -27792,7 +27831,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/providers/grass/qgsgrassprovider.cpp" line="785"/>
         <source>GRASS vector map %1 does not have topology. Build topology?</source>
-        <translation>نقشه بردار GRASS %1 توپولوژی را ندارد. ساخت توپولوژی ؟</translation>
+        <translation type="unfinished">نقشه جدولی گرس %1 دارای توپولوژ نمی باشد. آن را می سازید؟</translation>
     </message>
 </context>
 <context>
@@ -27909,7 +27948,7 @@ or change the following values</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassregionbase.ui" line="165"/>
         <source>Border</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">مرز</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassregionbase.ui" line="171"/>
@@ -28314,7 +28353,7 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/helpviewer/qgshelpviewer.cpp" line="76"/>
         <source>QGIS Help</source>
-        <translation type="unfinished">کمک نرم افزار</translation>
+        <translation type="unfinished">راهنمای نرم افزار</translation>
     </message>
 </context>
 <context>
@@ -28322,7 +28361,7 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/helpviewer/qgshelpviewerbase.ui" line="14"/>
         <source>QGIS Help</source>
-        <translation>کمک نرم افزار</translation>
+        <translation type="unfinished">راهنمای نرم افزار</translation>
     </message>
     <message>
         <location filename="../src/helpviewer/qgshelpviewerbase.ui" line="32"/>
@@ -28446,7 +28485,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/plugins/interpolation/qgsidwinterpolatordialogbase.ui" line="28"/>
         <source>Distance coefficient P</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ضریب طول عدد پی</translation>
     </message>
 </context>
 <context>
@@ -28698,7 +28737,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="82"/>
         <source>Print</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">چاپ</translation>
     </message>
 </context>
 <context>
@@ -28706,7 +28745,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="214"/>
         <source>Loading...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">بارگذاری ...</translation>
     </message>
 </context>
 <context>
@@ -28819,7 +28858,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="105"/>
         <source>Attribute</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">خصوصیات</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="110"/>
@@ -28983,7 +29022,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="30"/>
         <source>Label Properties</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">خواص برچسب</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="54"/>
@@ -29039,22 +29078,22 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="132"/>
         <source>Use scale dependent rendering</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">استفاده از مقیاس وابسته به رندر</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="144"/>
         <source>Maximum</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">حداکثر مقدار</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="154"/>
         <source>Minimum</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">به حداقل رساندن</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="176"/>
         <source>Buffer labels</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">بافر برچسب</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="188"/>
@@ -29066,7 +29105,7 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="289"/>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="413"/>
         <source>In points</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">در نقطه</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="207"/>
@@ -29089,7 +29128,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="240"/>
         <source>Transparency </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">شفافیت</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="256"/>
@@ -29099,38 +29138,38 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="262"/>
         <source>X offset </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">افست X</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="275"/>
         <source>Y offset </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">افست Y</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="305"/>
         <source>Basic label options</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">پایه گزینه های برچسب</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="311"/>
         <source>Field containing label</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">محتوی برچسب</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="331"/>
         <source>Default label</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">برچسب پیش فرض</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="351"/>
         <source>Font size</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">اندازه فونت</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="364"/>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="532"/>
         <source>Angle (deg)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">زاویه (دگری)</translation>
     </message>
     <message utf8="true">
         <location filename="../src/ui/qgslabeldialogbase.ui" line="399"/>
@@ -29145,12 +29184,12 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="452"/>
         <source>Multiline labels?</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">برچسب چند خط؟</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="462"/>
         <source>Label only selected features</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">فقط برچسب زدن انتخاب شده ها</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="477"/>
@@ -29160,47 +29199,47 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="501"/>
         <source>Data defined placement</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">مکان تعریف داده ها</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="548"/>
         <source>Data defined properties</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">خواص تعریف داده ها</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="560"/>
         <source>&amp;Font family</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;خانواده فونت</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="579"/>
         <source>&amp;Bold</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;پررنگ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="598"/>
         <source>&amp;Italic</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;حروف کج</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="617"/>
         <source>&amp;Underline</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;خط زیرین</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="636"/>
         <source>&amp;Size</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;اندازه</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="655"/>
         <source>Size units</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">واحد اندازه</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="674"/>
         <source>&amp;Color</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;رنگ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="690"/>
@@ -29210,22 +29249,22 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="703"/>
         <source>Data defined buffer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">بافر نمایش اطلاعات</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="724"/>
         <source>Transparency:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">شفافیت:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="747"/>
         <source>Size:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">اندازه:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="763"/>
         <source>Data defined position</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">محل نمایش اطلاعات</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="775"/>
@@ -29250,7 +29289,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="868"/>
         <source>Preview:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">پیش دید :</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="877"/>
@@ -29341,7 +29380,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="130"/>
         <source>Underlined text</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">خط زیر متن</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="133"/>
@@ -29362,7 +29401,9 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="210"/>
         <source>Bold text
 (data defined only, overrides Style)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">متن درشت
+(تنها داده های تعریف شده، لغو سبک)أ
+</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="214"/>
@@ -29373,7 +29414,8 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="245"/>
         <source>Italic text
 (data defined only, overrides Style)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">متن زاویه دار است
+(تنها داده های تعریف شده، لغو سبک)أ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="249"/>
@@ -29388,7 +29430,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="332"/>
         <source>Always show (exceptions above)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">همیشه نشان داده شود (استثنا به بالا)أ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="342"/>
@@ -29726,7 +29768,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="3956"/>
         <source>Centroid</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">مراکز جرم</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="4039"/>
@@ -29753,12 +29795,12 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="4568"/>
         <source>inside</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">درون</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="4601"/>
         <source>outside</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">بیرون</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="4627"/>
@@ -29769,7 +29811,7 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/ui/qgslabelingguibase.ui" line="4650"/>
         <location filename="../src/ui/qgslabelingguibase.ui" line="5332"/>
         <source>Data defined</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">تعریف داده ها</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="4676"/>
@@ -29784,7 +29826,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="4732"/>
         <source>Coordinate</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">مختصات</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="4761"/>
@@ -29794,27 +29836,27 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="4785"/>
         <source>horizontal</source>
-        <translation type="unfinished"></translation>
+        <translation>افقی</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="4805"/>
         <source>vertical</source>
-        <translation type="unfinished"></translation>
+        <translation>عمودی</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="4950"/>
         <source>Label options</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">گزینه‌های برچسب</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="5101"/>
         <source>Pixel size-based visibility (labels in map units)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">اندازه پیکسل قابل دید(واحد اندازه برچسب در نقشه)أ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="5155"/>
         <source>Labels will not show if smaller than this on screen</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">اگر برچسب ها کوچک بود در چهارچوب نمایش نده</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="5158"/>
@@ -29835,12 +29877,12 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="5286"/>
         <source>Always show</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">همیشه نمایش بده</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="5351"/>
         <source>always</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">همیشه</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="5364"/>
@@ -29860,7 +29902,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="5416"/>
         <source>Feature options</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">تنظیمات ویژگی ها</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="5473"/>
@@ -29916,7 +29958,7 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/ui/qgslabelingguibase.ui" line="498"/>
         <location filename="../src/ui/qgslabelingguibase.ui" line="501"/>
         <source>Formatting</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">قالب کردن</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="522"/>
@@ -29924,7 +29966,7 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/ui/qgslabelingguibase.ui" line="2325"/>
         <location filename="../src/ui/qgslabelingguibase.ui" line="3438"/>
         <source>Background</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">پیش زمینه</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="534"/>
@@ -29942,12 +29984,12 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="677"/>
         <source>letter</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">متن</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="983"/>
         <source>Spacing</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">فضای خالی</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1012"/>
@@ -29955,23 +29997,25 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/ui/qgslabelingguibase.ui" line="2830"/>
         <location filename="../src/ui/qgslabelingguibase.ui" line="3466"/>
         <source>Blend mode</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">روش مخلوط کردن</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1027"/>
         <source>word</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">کلمه</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1088"/>
         <source>Underlined text</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">متن زیر خط دار</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1182"/>
         <source>Bold text
 (data defined only, overrides Style)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">متن درشت
+(تنها داده های تعریف شده، لغو سبک)أ
+</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1186"/>
@@ -29982,7 +30026,8 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1224"/>
         <source>Italic text
 (data defined only, overrides Style)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">متن زاویه دار است
+(تنها داده های تعریف شده، لغو سبک)أ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1228"/>
@@ -29992,7 +30037,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1336"/>
         <source>Text formatting</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">فرمت متن</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1375"/>
@@ -30367,7 +30412,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="77"/>
         <source>Edit expression</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ویرایش عبارت</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="110"/>
@@ -30377,7 +30422,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="167"/>
         <source>Text/Buffer Sample</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">متن/نمونه بافر</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1286"/>
@@ -30402,17 +30447,17 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1741"/>
         <source>left/right</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">چپ/ راست</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1757"/>
         <source>above</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">در بالا</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1764"/>
         <source>below</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">مورب</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1781"/>
@@ -30422,12 +30467,12 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1947"/>
         <source>Text buffer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">بافر متن</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1999"/>
         <source>Draw text buffer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">کشیدن بافر متن</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="2074"/>
@@ -30443,7 +30488,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="2370"/>
         <source>Draw background</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">کشیدن پیش زمینه</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="2415"/>
@@ -30453,12 +30498,12 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="2561"/>
         <source>Size X</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">اندازه X</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="2568"/>
         <source>Size type</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">نوع اندازه</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="2575"/>
@@ -30468,7 +30513,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="2582"/>
         <source>Size Y</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">اندازهY</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="2716"/>
@@ -30509,7 +30554,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="2862"/>
         <source>Offset of label</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">فاصله متن ها</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="2963"/>
@@ -30519,7 +30564,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="2995"/>
         <source>Rectangle</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">مستطیل</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="3000"/>
@@ -30534,7 +30579,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="3010"/>
         <source>Circle</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">دایره</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="3015"/>
@@ -30560,7 +30605,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="3275"/>
         <source>Scale</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">مقیاس</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="3282"/>
@@ -30886,7 +30931,7 @@ not displayed</source>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="365"/>
         <source>&amp;Duplicate</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;تکراری</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="368"/>
@@ -30917,7 +30962,7 @@ not displayed</source>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="420"/>
         <source>&amp;Filter...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;فیلتر...</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="423"/>
@@ -31363,7 +31408,7 @@ not displayed</source>
         <location filename="../src/core/qgsmaprenderer.cpp" line="842"/>
         <location filename="../src/core/qgsmaprenderer.cpp" line="864"/>
         <source>Transform error caught: %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">تبدیل خطای شبکه توری نمایش :%1</translation>
     </message>
     <message>
         <location filename="../src/core/qgsmaprenderer.cpp" line="842"/>
@@ -31628,7 +31673,7 @@ not displayed</source>
     <message>
         <location filename="../src/app/qgsmaptoolchangelabelproperties.cpp" line="70"/>
         <source>Changed properties for label</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">تغییر تنظیمات برچسب</translation>
     </message>
 </context>
 <context>
@@ -31831,7 +31876,7 @@ not displayed</source>
     <message>
         <location filename="../src/app/qgsmaptoolidentifyaction.cpp" line="123"/>
         <source>No features at this position found.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">موجودیتی در این منطقه پیدانشد.</translation>
     </message>
 </context>
 <context>
@@ -31855,7 +31900,7 @@ not displayed</source>
     <message>
         <location filename="../src/app/qgsmaptoolmovelabel.cpp" line="152"/>
         <source>Moved label</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">جابجایی برچسب</translation>
     </message>
 </context>
 <context>
@@ -31909,12 +31954,12 @@ not displayed</source>
     <message>
         <location filename="../src/app/qgsmaptoolpinlabels.cpp" line="420"/>
         <source>Pinned label</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">سنجاق نمودن برچسب</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolpinlabels.cpp" line="431"/>
         <source>Unpinned label</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">سنجاق نکردن برچسب</translation>
     </message>
 </context>
 <context>
@@ -31956,7 +32001,7 @@ not displayed</source>
     <message>
         <location filename="../src/app/qgsmaptoolrotatefeature.cpp" line="202"/>
         <source>Features Rotated</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">چرخش موجودیت</translation>
     </message>
 </context>
 <context>
@@ -31968,7 +32013,7 @@ not displayed</source>
     <message>
         <location filename="../src/app/qgsmaptoolrotatelabel.cpp" line="174"/>
         <source>Rotated label</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">چرخش بر چسب</translation>
     </message>
 </context>
 <context>
@@ -32013,12 +32058,12 @@ not displayed</source>
     <message>
         <location filename="../src/app/qgsmaptoolshowhidelabels.cpp" line="165"/>
         <source>Hid labels</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">پنهان کردن برچسب</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolshowhidelabels.cpp" line="165"/>
         <source>Showed labels</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">نمایش برچسب</translation>
     </message>
 </context>
 <context>
@@ -32101,7 +32146,7 @@ not displayed</source>
     <message>
         <location filename="../src/app/qgsmaptoolvertexedit.cpp" line="47"/>
         <source>Could not snap segment. Have you set the tolerance in Settings &gt; Snapping Options?</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">نمی توان چسبید به گره انتخاب شده . برای چسبیدن به گره میزان دقت را از منوی تنظیمات &gt; خصوصیات چسبیدن انتخاب کنید؟</translation>
     </message>
     <message>
         <source>Don&apos;t show this message again</source>
@@ -32151,12 +32196,28 @@ not displayed</source>
         <translation type="obsolete">واحد</translation>
     </message>
     <message>
+        <source>Paths</source>
+        <translation type="obsolete">مسیر</translation>
+    </message>
+    <message>
         <source>meters</source>
         <translation type="obsolete">متر</translation>
     </message>
     <message>
         <source>feet</source>
         <translation type="obsolete">پا</translation>
+    </message>
+    <message>
+        <source>miles</source>
+        <translation type="obsolete">مایل</translation>
+    </message>
+    <message>
+        <source>inches</source>
+        <translation type="obsolete">اینچ</translation>
+    </message>
+    <message>
+        <source>kilometers</source>
+        <translation type="obsolete">کیلومتر</translation>
     </message>
 </context>
 <context>
@@ -32268,7 +32329,7 @@ not displayed</source>
     <message>
         <location filename="../src/app/qgsmeasuretool.cpp" line="82"/>
         <source>&lt;p&gt;This map is defined with a geographic coordinate system (latitude/longitude) but the map extents suggests that it is actually a projected coordinate system (e.g., Mercator). If so, the results from line or area measurements will be incorrect.&lt;/p&gt;&lt;p&gt;To fix this, explicitly set an appropriate map coordinate system using the &lt;tt&gt;Settings:Project Properties&lt;/tt&gt; menu.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;p&gt;سیستم مختصات جغرافیایی نقشه ) عرض / طول ( انتخاب شده است  اما نقشه اضافه شده به پروژه اشاره می کند به سیستم مختصات ,..) مرکاتور ( که اگر این پاسخ گوی نیاز شماست اشتباه است.&lt;/p&gt;&lt;p&gt;برای حذف خطای . بوجود آمده انتخاب کنید سیستم مختصات مناسب از &lt;tt&gt;منوی تنظیمات : تنظیمات پروژه&lt;/tt&gt; .</translation>
     </message>
 </context>
 <context>
@@ -32294,35 +32355,35 @@ not displayed</source>
     <message>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="112"/>
         <source>Id</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">شناسه</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="132"/>
         <source>Merge</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ادغام کردن</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="549"/>
         <source>feature %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ویژگی %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="154"/>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="247"/>
         <source>Minimum</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">به حداقل رساندن</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="149"/>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="496"/>
         <source>Feature %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ویژگی %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="155"/>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="251"/>
         <source>Maximum</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">حداکثر مقدار</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="156"/>
@@ -32340,7 +32401,7 @@ not displayed</source>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="161"/>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="267"/>
         <source>Concatenation</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">الحاق</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="165"/>
@@ -32354,12 +32415,12 @@ not displayed</source>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="271"/>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="592"/>
         <source>Skip attribute</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">پرش ویژگی</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="273"/>
         <source>Skipped</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">قلم</translation>
     </message>
 </context>
 <context>
@@ -32385,12 +32446,12 @@ not displayed</source>
     <message>
         <location filename="../src/gui/qgsmessagebar.cpp" line="64"/>
         <source>Remaining messages</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">پیام های باقی مانده</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsmessagebar.cpp" line="70"/>
         <source>Close all</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">بستن همه</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsmessagebar.cpp" line="76"/>
@@ -32404,6 +32465,10 @@ not displayed</source>
         <translation type="unfinished">
             <numerusform></numerusform>
         </translation>
+    </message>
+    <message>
+        <source>more</source>
+        <translation type="obsolete">بیشتر</translation>
     </message>
 </context>
 <context>
@@ -32455,7 +32520,7 @@ not displayed</source>
     <message>
         <location filename="../src/ui/qgsmessageviewer.ui" line="49"/>
         <source>Don&apos;t show this message again</source>
-        <translation>آیا این پیام را دوباره نشان داده نشود</translation>
+        <translation type="unfinished">آیا این پیام دوباره نشان داده نشود</translation>
     </message>
 </context>
 <context>
@@ -32560,12 +32625,12 @@ not displayed</source>
     <message>
         <location filename="../src/ui/qgsmssqlnewconnectionbase.ui" line="20"/>
         <source>Create a New MSSQL connection</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ایجاد یک اتصال جدید MSSQL</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsmssqlnewconnectionbase.ui" line="38"/>
         <source>Connection Information</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ارتباط اطلاعات</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsmssqlnewconnectionbase.ui" line="66"/>
@@ -32575,7 +32640,7 @@ not displayed</source>
     <message>
         <location filename="../src/ui/qgsmssqlnewconnectionbase.ui" line="76"/>
         <source>Provider/DSN</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ارائه دهنده /DSN</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsmssqlnewconnectionbase.ui" line="86"/>
@@ -32605,17 +32670,17 @@ not displayed</source>
     <message>
         <location filename="../src/ui/qgsmssqlnewconnectionbase.ui" line="159"/>
         <source>Trusted Connection</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">اتصال مورد اعتماد</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsmssqlnewconnectionbase.ui" line="188"/>
         <source>Save Username</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ذخیره نام کاربری</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsmssqlnewconnectionbase.ui" line="195"/>
         <source>&amp;Test Connect</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;آزمون اتصال</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsmssqlnewconnectionbase.ui" line="202"/>
@@ -32625,17 +32690,17 @@ not displayed</source>
     <message>
         <location filename="../src/ui/qgsmssqlnewconnectionbase.ui" line="211"/>
         <source>Only look in the geometry_columns metadata table</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">geometry_columns فقط جداول تعریف شده در  </translation>
     </message>
     <message>
         <location filename="../src/ui/qgsmssqlnewconnectionbase.ui" line="221"/>
         <source>Also list tables with no geometry</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">لیست جداول بدون هندسه </translation>
     </message>
     <message>
         <location filename="../src/ui/qgsmssqlnewconnectionbase.ui" line="228"/>
         <source>Use estimated table parameters</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">استفاده از پارامترهای جدول برآورد</translation>
     </message>
 </context>
 <context>
@@ -32800,7 +32865,7 @@ not displayed</source>
         <location filename="../src/providers/mssql/qgsmssqlsourceselect.cpp" line="161"/>
         <location filename="../src/providers/mssql/qgsmssqlsourceselect.cpp" line="355"/>
         <source>Primary key column</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ستون کلید اولیهستون کلید اولیه</translation>
     </message>
     <message>
         <location filename="../src/providers/mssql/qgsmssqlsourceselect.cpp" line="162"/>
@@ -32860,7 +32925,7 @@ not displayed</source>
     <message>
         <location filename="../src/providers/mssql/qgsmssqlsourceselect.cpp" line="621"/>
         <source>Connect</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">اتصال</translation>
     </message>
 </context>
 <context>
@@ -32891,7 +32956,7 @@ not displayed</source>
     <message>
         <location filename="../src/providers/mssql/qgsmssqltablemodel.cpp" line="31"/>
         <source>Geometry column</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ستون هندسه</translation>
     </message>
     <message>
         <location filename="../src/providers/mssql/qgsmssqltablemodel.cpp" line="32"/>
@@ -32901,12 +32966,12 @@ not displayed</source>
     <message>
         <location filename="../src/providers/mssql/qgsmssqltablemodel.cpp" line="33"/>
         <source>Primary key column</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ستون کلید اولیهستون کلید اولیه</translation>
     </message>
     <message>
         <location filename="../src/providers/mssql/qgsmssqltablemodel.cpp" line="34"/>
         <source>Select at id</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">انتخاب مشخصه</translation>
     </message>
     <message>
         <location filename="../src/providers/mssql/qgsmssqltablemodel.cpp" line="35"/>
@@ -32916,7 +32981,7 @@ not displayed</source>
     <message>
         <location filename="../src/providers/mssql/qgsmssqltablemodel.cpp" line="86"/>
         <source>Detecting...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">تشخیص ...</translation>
     </message>
     <message>
         <location filename="../src/providers/mssql/qgsmssqltablemodel.cpp" line="101"/>
@@ -32929,12 +32994,12 @@ not displayed</source>
     <message>
         <location filename="../src/providers/mssql/qgsmssqltablemodel.cpp" line="114"/>
         <source>Disable &apos;Fast Access to Features at ID&apos; capability to force keeping the attribute table in memory (e.g. in case of expensive views).</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">غیر فعال کردن دسترسی سریع به ویژگی های مشخصه و توانایی تا آن را مجبور کند به نگهداشتن ویژگی در جدول حافضه(به عنوان مثال در مورد نمایش های با هزینه زیاد)أ.</translation>
     </message>
     <message>
         <location filename="../src/providers/mssql/qgsmssqltablemodel.cpp" line="251"/>
         <source>Enter...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">وارد کنید ...</translation>
     </message>
     <message>
         <location filename="../src/providers/mssql/qgsmssqltablemodel.cpp" line="464"/>
@@ -32969,12 +33034,12 @@ not displayed</source>
     <message>
         <location filename="../src/providers/mssql/qgsmssqltablemodel.cpp" line="487"/>
         <source>No Geometry</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">هیچ هندسه</translation>
     </message>
     <message>
         <location filename="../src/providers/mssql/qgsmssqltablemodel.cpp" line="490"/>
         <source>Unknown Geometry</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">هندسه ناشناخته</translation>
     </message>
 </context>
 <context>
@@ -32984,7 +33049,7 @@ not displayed</source>
         <location filename="../src/gui/raster/qgsmultibandcolorrendererwidget.cpp" line="50"/>
         <location filename="../src/gui/raster/qgsmultibandcolorrendererwidget.cpp" line="51"/>
         <source>Not set</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">انچام نشد</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsmultibandcolorrendererwidget.cpp" line="54"/>
@@ -33009,17 +33074,17 @@ not displayed</source>
     <message>
         <location filename="../src/gui/raster/qgsmultibandcolorrendererwidget.cpp" line="279"/>
         <source>Red</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">قرمز</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsmultibandcolorrendererwidget.cpp" line="280"/>
         <source>Green</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">سبز</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsmultibandcolorrendererwidget.cpp" line="281"/>
         <source>Blue</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">آبی</translation>
     </message>
 </context>
 <context>
@@ -33033,14 +33098,15 @@ not displayed</source>
         <location filename="../src/ui/qgsmultibandcolorrendererwidgetbase.ui" line="134"/>
         <source>Contrast
 enhancement</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">کنتراست
+افزایش</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsmultibandcolorrendererwidgetbase.ui" line="212"/>
         <location filename="../src/ui/qgsmultibandcolorrendererwidgetbase.ui" line="242"/>
         <location filename="../src/ui/qgsmultibandcolorrendererwidgetbase.ui" line="249"/>
         <source>Min/max</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">حداقل / حداکثر</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsmultibandcolorrendererwidgetbase.ui" line="235"/>
@@ -33088,7 +33154,7 @@ enhancement</source>
     <message>
         <location filename="../src/core/qgsnetworkreplyparser.cpp" line="58"/>
         <source>Cannot find boundary in multipart content type</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">محدوده ای یافت نشد در بخشهای معرفی شده</translation>
     </message>
 </context>
 <context>
@@ -33140,7 +33206,7 @@ Note: giving the password is optional. It will be requested interactivly, when n
     <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="33"/>
         <source>Connection details</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">جزئیات اتصال</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="91"/>
@@ -33180,7 +33246,7 @@ Note: giving the password is optional. It will be requested interactivly, when n
     <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="178"/>
         <source>Referer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">مراجعه</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="39"/>
@@ -33200,7 +33266,7 @@ Note: giving the password is optional. It will be requested interactivly, when n
     <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="81"/>
         <source>&amp;User name</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;کاربری</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="71"/>
@@ -33248,12 +33314,12 @@ Extended error information:
     <message>
         <location filename="../src/ui/qgsnewogrconnectionbase.ui" line="20"/>
         <source>Create a New OGR Database connection</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ایجاد یک اتصال جدید به OGR</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewogrconnectionbase.ui" line="38"/>
         <source>Connection Information</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ارتباط اطلاعات</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewogrconnectionbase.ui" line="44"/>
@@ -33268,7 +33334,7 @@ Extended error information:
     <message>
         <location filename="../src/ui/qgsnewogrconnectionbase.ui" line="154"/>
         <source>&amp;Test Connect</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;آزمون اتصال</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewogrconnectionbase.ui" line="57"/>
@@ -33354,7 +33420,7 @@ Extended error information:
     <message>
         <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="229"/>
         <source>Failed to load SRIDS: %1</source>
-        <translation>نمی توان بارگزاری نمود : %1</translation>
+        <translation type="unfinished">نمی توان بارگذاری نمود : %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="322"/>
@@ -33423,7 +33489,7 @@ Extended error information:
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="32"/>
         <source>New Spatialite Layer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">لایه جدیدSpatialite </translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="61"/>
@@ -33433,7 +33499,7 @@ Extended error information:
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="84"/>
         <source>Create a new Spatialite database</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ایجاد یک پایگاه داده جدید Spatialite</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="87"/>
@@ -33449,17 +33515,17 @@ Extended error information:
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="114"/>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="141"/>
         <source>Name for the new layer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">نام لایه جدید</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="125"/>
         <source>Geometry column</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ستون هندسه</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="144"/>
         <source>geometry</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">هندسی</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="159"/>
@@ -33486,7 +33552,7 @@ Extended error information:
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="186"/>
         <source>MultiPoint</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">چند نقطه ای</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="193"/>
@@ -33501,38 +33567,38 @@ Extended error information:
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="234"/>
         <source>Specify CRS</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">CRS مشخص کردن  </translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="400"/>
         <source>Remove attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>حذف صفت</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="212"/>
         <source>Spatial Reference Id</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">شناسه مرجع فضایی</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="228"/>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="231"/>
         <source>Specify the coordinate reference system of the layer&apos;s geometry.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">سیستم مختصات مرجع لایه ها را مشخص کنید.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="243"/>
         <source>Add an integer id field as the primary key for the new layer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">اضافه کردن یک فیلد ID صحیح به عنوان کلید اصلی برای لایه جدید</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="246"/>
         <source>Create an autoincrementing primary key</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ایجاد یک کلید اصلی خود افزایشی</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="253"/>
         <source>New attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>ویژگی جدید</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="265"/>
@@ -33543,27 +33609,27 @@ Extended error information:
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="281"/>
         <source>An attribute name</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">نام صفت</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="343"/>
         <source>Attributes list</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">لیست صفات</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="320"/>
         <source>Add attribute to list</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">اضافه کردن به لیست صفات</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="326"/>
         <source>Add to attributes list</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">اضافه کردن به لیست صفات</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="397"/>
         <source>Delete selected attribute</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">حذف ویژگی انتخاب شده</translation>
     </message>
 </context>
 <context>
@@ -33619,12 +33685,12 @@ Extended error information:
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="14"/>
         <source>New Vector Layer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">لایه بردار جدید</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="26"/>
         <source>File format</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">فرمت فایل</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="43"/>
@@ -33651,7 +33717,7 @@ Extended error information:
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="73"/>
         <source>New attribute</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ویژگی جدید</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="79"/>
@@ -33674,38 +33740,38 @@ Extended error information:
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="160"/>
         <source>Attributes list</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">لیست ویژگی ها</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="224"/>
         <source>Delete selected attribute</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">حذف ویژگی انتخاب شده</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="227"/>
         <source>Remove attribute</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">حذف صفت</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="137"/>
         <source>Add attribute to list</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">اضافه کردن ویژگی به لیست</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="143"/>
         <source>Add to attributes list</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">اضافه کردن ویژگی به لیست</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="254"/>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="257"/>
         <source>Specify the coordinate reference system of the layer&apos;s geometry.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">سیستم مختصات مرجع لایه ها را مشخص کنید.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="260"/>
         <source>Specify CRS</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">CRS مشخص کردن </translation>
     </message>
 </context>
 <context>
@@ -33895,7 +33961,7 @@ Extended error information:
     <message>
         <location filename="../src/app/openstreetmap/qgsosmexportdialog.cpp" line="45"/>
         <source>Count</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">تعداد</translation>
     </message>
     <message>
         <location filename="../src/app/openstreetmap/qgsosmexportdialog.cpp" line="60"/>
@@ -34140,7 +34206,7 @@ Extended error information:
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="74"/>
         <source>C&amp;onnect</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;اتصال</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="81"/>
@@ -34165,7 +34231,7 @@ Extended error information:
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="124"/>
         <source>Load</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">بارگذاری</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="131"/>
@@ -34829,7 +34895,7 @@ Always network: always load from network and do not check if the cache has a val
         <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="358"/>
         <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="370"/>
         <source>Add vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">اضافه کردن یک لایه برداری</translation>
     </message>
     <message>
         <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="304"/>
@@ -34867,12 +34933,12 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsopenvectorlayerdialogbase.ui" line="29"/>
         <source>Add vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">اضافه کردن یک لایه برداری</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsopenvectorlayerdialogbase.ui" line="46"/>
         <source>Source type</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">نوع منبع</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsopenvectorlayerdialogbase.ui" line="52"/>
@@ -34894,7 +34960,7 @@ Always network: always load from network and do not check if the cache has a val
         <location filename="../src/ui/qgsopenvectorlayerdialogbase.ui" line="73"/>
         <location filename="../src/ui/qgsopenvectorlayerdialogbase.ui" line="106"/>
         <source>Protocol</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">پروتکل</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsopenvectorlayerdialogbase.ui" line="80"/>
@@ -34921,7 +34987,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsopenvectorlayerdialogbase.ui" line="166"/>
         <source>Dataset</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">مجموعه داده</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsopenvectorlayerdialogbase.ui" line="186"/>
@@ -34931,7 +34997,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsopenvectorlayerdialogbase.ui" line="244"/>
         <source>Connections</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">متصل شده </translation>
     </message>
     <message>
         <location filename="../src/ui/qgsopenvectorlayerdialogbase.ui" line="250"/>
@@ -34946,7 +35012,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsopenvectorlayerdialogbase.ui" line="264"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">حذف</translation>
     </message>
 </context>
 <context>
@@ -34954,7 +35020,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/templates/qgsoptionsdialog_template.ui" line="20"/>
         <source>Options Dialog Template</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">گزینه های قالب گفت و گو</translation>
     </message>
     <message>
         <location filename="../src/ui/templates/qgsoptionsdialog_template.ui" line="126"/>
@@ -35218,7 +35284,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="682"/>
         <source>QGIS</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">کیو جی ای اس</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="685"/>
@@ -35275,7 +35341,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="808"/>
         <source>QGIS files</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">فایل کیو جی ای اس</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="1296"/>
@@ -35334,38 +35400,38 @@ Always network: always load from network and do not check if the cache has a val
         <location filename="../src/ui/qgsoptionsbase.ui" line="100"/>
         <location filename="../src/ui/qgsoptionsbase.ui" line="898"/>
         <source>System</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">سیستم</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="109"/>
         <source>Data Sources</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">منبع داده</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="112"/>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1234"/>
         <source>Data sources</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">منبع داده</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="133"/>
         <source>Canvas &amp; Legend</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">لجاند چهارچوب</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="136"/>
         <source>Canvas and legend</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">لجاند چهارچوب</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="145"/>
         <source>Map Tools</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ابزار نقشه</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="488"/>
         <source>Timeout for timed messages or dialogs</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">زمان برای نمایش پیغام مناسب به پایان رسید</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="508"/>
@@ -35375,17 +35441,17 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="571"/>
         <source>Bold group box titles</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">برجسته شدن برچسب گروه جعبه</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="591"/>
         <source>QGIS-styled group boxes</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">پوسته نمایش جعبه گروه ها</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="602"/>
         <source>Use live-updating color chooser dialogs</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">استفاه از جعبه رنگ برای تغییر همزمان</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="629"/>
@@ -35395,17 +35461,17 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="634"/>
         <source>Most recent</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">جدید ترین</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="639"/>
         <source>Specific</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">مکان مشخص</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="705"/>
         <source>Open project on launch</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">بازکردن پروژه در هنگام راه اندازی</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="739"/>
@@ -35430,12 +35496,12 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="791"/>
         <source>Reset</source>
-        <translation>بارگزاری مجدد</translation>
+        <translation type="unfinished">بارگذاری مجدد</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="800"/>
         <source>Prompt to save project and data source changes when required</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">اعلام جهت ذخیره پروژه در هنگام تغییرات</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="816"/>
@@ -35530,7 +35596,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1271"/>
         <source>Open attribute table in a dock window (QGIS restart required)</source>
-        <translation>بازکردن ویژگی های جدوال در پنجره کناره ( راه اندازی مجدد QGIS )</translation>
+        <translation>بازکردن ویژگی های جدوال در پنجره کناره (راه اندازی مجدد کیو جی ای اس)إ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1519"/>
@@ -35559,7 +35625,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3394"/>
         <source>ext</source>
-        <translation type="unfinished"></translation>
+        <translation>پسوند</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3399"/>
@@ -35661,7 +35727,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1173"/>
         <source>Path(s) to search for Scalable Vector Graphic (SVG) symbols</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">مسیر جستجو برای عکس های مقیاس پذیر</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1006"/>
@@ -35976,174 +36042,178 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="929"/>
         <source>Environment</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">محیط</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="969"/>
         <source>Apply</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">بکار بستن</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="974"/>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1068"/>
         <source>Variable</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">متغیر</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="979"/>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1073"/>
         <source>Value</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">مقدار</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1019"/>
         <source>Current environment variables (read-only - bold indicates modified at startup)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">متغیرهای محیط فعلی (فقط خواندنی - با حروف درشت نشان داده میشوند)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1081"/>
         <source>Show only QGIS-specific variables</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">نمایش تنها متغیرهای کیو جی ای اس خاص</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1091"/>
         <source>Use custom variables (restart required - include separators)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">استفاده از متغیرهای سفارشی (راه اندازی مجدد)أ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1265"/>
         <source>Feature attributes and table</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">صفات های از ویژگی های و جدول</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1406"/>
         <source>Data source handling</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">دست زدن به منبع داده</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1478"/>
         <source>Prompt for raster sublayers when opening</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">اعلان برای زیر لایه های رستر در هنگام بازشدن</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1512"/>
         <source>Ignore shapefile encoding declaration</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">نادیده گرفتن اعلان رمزگذاری shapefile</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1509"/>
         <source>Disable OGR on-the-fly conversion from declared encoding to UTF-8</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">غیر فعال کردن OGR بر روی پرواز تبدیل از نمایش کدگذاری UTF-8</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1526"/>
         <source>Add Oracle layers with double click and select in extended mode</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">اضافه کردن لایه اوراکل با دوبارکلیک کردن و بازشدن پنجره</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1594"/>
         <source>Better graphics performance at the cost of loosing the possibility to cancel rendering and incremental feature drawing</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">عملکرد بهتر گرافیکی و راندمان بهتر با صرفه نظر کردن از رندر و نمایش و ویژگی ها اقزایشی</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1597"/>
         <source>Enable back buffer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">فعال کردن بافر</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1648"/>
         <source>&lt;b&gt;Note:&lt;/b&gt; Set below 1000 to prevent display updates until all features have been rendered</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;b&gt;توجه:&lt;/b&gt;نمایش صفحه کمتر از ۱۰۰۰ مشخص شده است تا ویژگی ها به نمایش درآید</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2008"/>
         <source>Debugging</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">رفع اشکال</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2014"/>
         <source>Show these events in the Log Message panel (under Rendering tab)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">نمایش این وقایع در پانل سیستم پیام (در زیر زبانه رندرینگ)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2039"/>
         <source>Map canvas refresh</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">بازیابی چهارچوب نقشه</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2078"/>
         <source>Map canvas &amp; legend</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">لجاند&amp; چهارچوب نقشه</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2103"/>
         <source>Default map appearance (overridden by project properties)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">نقشه پیش فرض ظاهری (بازنویسی با خواص پروژه)أ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2207"/>
         <source>Layer legend</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">لایه لجاند</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2288"/>
         <source>Capitalise layer names</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">بزرگ نمایی نام لایه</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2301"/>
         <source>Bold layer names</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">بزرگ نمایی نام لایه</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2308"/>
         <source>Display classification attribute names</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">طبقه بندی نام ویژگی های صفحه نمایش</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2315"/>
         <source>Bold group names</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">بزرگ نمایی نام گروه</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2322"/>
         <source>Create raster icons (may be slow)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ایجاد آیکون های شطرنجی (ممکن است آهسته باشد)أ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2335"/>
         <source>Legend item styles</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">پوسته های لجاند </translation>
+    </message>
+    <message>
+        <source>Overlay position</source>
+        <translation type="obsolete">موقعیت روکش</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2673"/>
         <source>Add predefined scale</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">اضافه کردن مقیاس از پیش تعریف شده</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2687"/>
         <source>Remove selected</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">حذف انتخاب</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2701"/>
         <source>Insert default scales</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">اضافه نمودن مقیاس پیش فرض</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2728"/>
         <source>Import from file</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">وارد کردن از فایل</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2742"/>
         <source>Export to file</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">خروجی به فایل</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2816"/>
         <source>Feature creation</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ایجاد ویژگی</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2887"/>
@@ -36185,7 +36255,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3088"/>
         <source>Open snapping options in a dock window (QGIS restart required)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">بازکردن پنجره تنظیمات چسبیدن به گره (راه اندازری مجدد کیو جی ای اس )أ </translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3098"/>
@@ -36250,7 +36320,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3481"/>
         <source>Prompt for &amp;CRS</source>
-        <translation type="unfinished">بی درنگ از &amp; CRS</translation>
+        <translation type="unfinished">بی درنگ از &amp;CRS</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3474"/>
@@ -36260,7 +36330,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3488"/>
         <source>Use default CRS displa&amp;yed below</source>
-        <translation>از CRS پیش فرض نمایش&amp; داده شده در زیر استفاده کنید</translation>
+        <translation type="unfinished">از CRS پیش فرض نمایش&amp;داده شده در زیر استفاده کنید</translation>
     </message>
     <message>
         <source>When a new layer is created, or when a layer is loaded that has no Coordinate Reference System (CRS)</source>
@@ -36386,12 +36456,12 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3177"/>
         <source>Curve offset tool</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">افست منحنی ابزار</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3186"/>
         <source>Miter limit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">حد تاج</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3193"/>
@@ -36401,42 +36471,42 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3210"/>
         <source>Quadrant segments</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">بخش ربع دایره</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3314"/>
         <source>GDAL driver options</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">تنظیمات کتاب خانه تصویر مکان مرجع</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3366"/>
         <source>GDAL drivers</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">راه انداز کتابخانه تصویری مکان مرجع</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3429"/>
         <source>Coordinate Reference System (CRS)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">سیستم های مرجع مختصات</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3454"/>
         <source>CRS for new layers</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">سیستم مختصات برای لایه جدید</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3517"/>
         <source>When a new layer is created, or when a layer is loaded that has no CRS</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">هنگامی که یک لایه جدید ایجاد می شود، و یا هنگامی که یک لایه لود می شود در سیستم مختصات</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3543"/>
         <source>Default CRS for new projects</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">سیستم مختصات بپیش فرض در پروژه ها جدید</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3562"/>
         <source>Automatically enable &apos;on the fly&apos; reprojection if layers have different CRS</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">به صورت خودکار قادر به فعال سازی پرواز در لایه ها متفاوت</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3837"/>
@@ -36527,7 +36597,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/gui/qgsoptionsdialogbase.cpp" line="195"/>
         <source>Missing objects</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">بدون موضوع</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsoptionsdialogbase.cpp" line="196"/>
@@ -36644,12 +36714,12 @@ error:%2
     <message>
         <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="531"/>
         <source>No Geometry</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">هیچ هندسه</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="534"/>
         <source>Unknown Geometry</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">هندسه ناشناخته</translation>
     </message>
 </context>
 <context>
@@ -36781,7 +36851,7 @@ error:%2
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="45"/>
         <source>Connection Information</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ارتباط اطلاعات</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="51"/>
@@ -36807,7 +36877,7 @@ error:%2
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="84"/>
         <source>Save Username</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ذخیره نام کاربری</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="91"/>
@@ -36862,7 +36932,7 @@ error:%2
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="154"/>
         <source>Also list tables with no geometry</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">لیست جداول بدون هندسه </translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="164"/>
@@ -36877,7 +36947,7 @@ error:%2
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="184"/>
         <source>&amp;Test Connect</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;آزمون اتصال</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="191"/>
@@ -37516,7 +37586,7 @@ Error: %2</source>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="211"/>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="388"/>
         <source>Primary key column</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ستون کلید اولیهستون کلید اولیه</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="212"/>
@@ -37568,7 +37638,7 @@ Error: %2</source>
     <message>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="538"/>
         <source>Connect</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">اتصال</translation>
     </message>
 </context>
 <context>
@@ -37582,7 +37652,7 @@ Error: %2</source>
     <message>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="160"/>
         <source>Enter...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">انتخاب ...</translation>
     </message>
 </context>
 <context>
@@ -37615,12 +37685,12 @@ Error: %2</source>
     <message>
         <location filename="../src/providers/oracle/qgsoracletablemodel.cpp" line="32"/>
         <source>Primary key column</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ستون کلید اولیهستون کلید اولیه</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracletablemodel.cpp" line="33"/>
         <source>Select at id</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">انتخاب مشخصه</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracletablemodel.cpp" line="34"/>
@@ -37631,7 +37701,7 @@ Error: %2</source>
         <location filename="../src/providers/oracle/qgsoracletablemodel.cpp" line="64"/>
         <location filename="../src/providers/oracle/qgsoracletablemodel.cpp" line="266"/>
         <source>Specify a geometry type</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">تعیین نوع هندسه</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracletablemodel.cpp" line="68"/>
@@ -37643,7 +37713,7 @@ Error: %2</source>
         <location filename="../src/providers/oracle/qgsoracletablemodel.cpp" line="73"/>
         <location filename="../src/providers/oracle/qgsoracletablemodel.cpp" line="280"/>
         <source>Select a primary key</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">انتخاب یک کلید اولیه</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracletablemodel.cpp" line="77"/>
@@ -37659,7 +37729,7 @@ Error: %2</source>
     <message>
         <location filename="../src/providers/oracle/qgsoracletablemodel.cpp" line="108"/>
         <source>Disable &apos;Fast Access to Features at ID&apos; capability to force keeping the attribute table in memory (e.g. in case of expensive views).</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">غیر فعال کردن دسترسی سریع به ویژگی های مشخصه و توانایی تا آن را مجبور کند به نگهداشتن ویژگی در جدول حافضه(به عنوان مثال در مورد نمایش های با هزینه زیاد)أ.</translation>
     </message>
 </context>
 <context>
@@ -37963,7 +38033,7 @@ Error: %2</source>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="38"/>
         <source>Connection Information</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ارتباط اطلاعات</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="72"/>
@@ -38050,12 +38120,12 @@ Error: %2</source>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="233"/>
         <source>Save Username</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ذخیره نام کاربری</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="240"/>
         <source>&amp;Test Connect</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;آزمون اتصال</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="247"/>
@@ -38088,7 +38158,7 @@ Error: %2</source>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="277"/>
         <source>Also list tables with no geometry</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">لیست جداول بدون هندسه </translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="293"/>
@@ -38169,7 +38239,7 @@ Error: %2</source>
         <location filename="../src/providers/postgres/qgspgsourceselect.cpp" line="198"/>
         <location filename="../src/providers/postgres/qgspgsourceselect.cpp" line="372"/>
         <source>Primary key column</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ستون کلید اولیهستون کلید اولیه</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspgsourceselect.cpp" line="199"/>
@@ -38216,7 +38286,7 @@ Error: %2</source>
     <message>
         <location filename="../src/providers/postgres/qgspgsourceselect.cpp" line="517"/>
         <source>Connect</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">اتصال</translation>
     </message>
 </context>
 <context>
@@ -38237,7 +38307,7 @@ Error: %2</source>
     <message>
         <location filename="../src/providers/postgres/qgspgsourceselect.cpp" line="148"/>
         <source>Enter...</source>
-        <translation type="unfinished"></translation>
+        <translation>انتخاب ...</translation>
     </message>
 </context>
 <context>
@@ -38260,17 +38330,17 @@ Error: %2</source>
     <message>
         <location filename="../src/providers/postgres/qgspgtablemodel.cpp" line="32"/>
         <source>Data Type</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">نوع داده ها</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspgtablemodel.cpp" line="33"/>
         <source>Spatial Type</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">نوع فضایی</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspgtablemodel.cpp" line="35"/>
         <source>Primary Key</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">کلید اولیه</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspgtablemodel.cpp" line="34"/>
@@ -38280,7 +38350,7 @@ Error: %2</source>
     <message>
         <location filename="../src/providers/postgres/qgspgtablemodel.cpp" line="36"/>
         <source>Select at id</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">انتخاب مشخصه</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspgtablemodel.cpp" line="37"/>
@@ -38291,7 +38361,7 @@ Error: %2</source>
         <location filename="../src/providers/postgres/qgspgtablemodel.cpp" line="65"/>
         <location filename="../src/providers/postgres/qgspgtablemodel.cpp" line="269"/>
         <source>Specify a geometry type</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">تعیین نوع هندسه</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspgtablemodel.cpp" line="69"/>
@@ -38307,17 +38377,17 @@ Error: %2</source>
     <message>
         <location filename="../src/providers/postgres/qgspgtablemodel.cpp" line="109"/>
         <source>Disable &apos;Fast Access to Features at ID&apos; capability to force keeping the attribute table in memory (e.g. in case of expensive views).</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">غیر فعال کردن دسترسی سریع به ویژگی های مشخصه و توانایی تا آن را مجبور کند به نگهداشتن ویژگی در جدول حافضه(به عنوان مثال در مورد نمایش های با هزینه زیاد)أ.</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspgtablemodel.cpp" line="284"/>
         <source>Select a primary key</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">انتخاب یک کلید اولیه</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspgtablemodel.cpp" line="87"/>
         <source>Enter...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">وارد کنید ...</translation>
     </message>
 </context>
 <context>
@@ -38587,7 +38657,7 @@ You need to restart QGIS in order to reload it.</source>
     <name>QgsPluginInstallerInstallingDialog</name>
     <message>
         <source>Installing...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">نصب ...</translation>
     </message>
     <message>
         <source>Resolving host name...</source>
@@ -38623,7 +38693,7 @@ You need to restart QGIS in order to reload it.</source>
     </message>
     <message>
         <source>Aborted by user</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">نافرجام توسط کاربر</translation>
     </message>
 </context>
 <context>
@@ -38833,7 +38903,7 @@ You need to restart QGIS in order to reload it.</source>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="712"/>
         <source>Tags</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">برچسب ها</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="735"/>
@@ -38954,27 +39024,27 @@ You need to restart QGIS in order to reload it.</source>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="887"/>
         <source>The repository is connected</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">مخزن متصل است</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="891"/>
         <source>unavailable</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">در دسترس نیست</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="893"/>
         <source>The repository is enabled, but unavailable</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">مخزن را فعال کرده است، اما در دسترس نیست</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="898"/>
         <source>disabled</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">غیر فعال</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="902"/>
         <source>The repository is disabled</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">مخزن غیر فعال استمخزن غیر فعال است</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="906"/>
@@ -39582,7 +39652,7 @@ Result: %3 (%4)</source>
     <message>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1347"/>
         <source>No Geometry</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">هیچ هندسه</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1362"/>
@@ -39633,7 +39703,7 @@ Result: %3 (%4)</source>
     <message>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1350"/>
         <source>Unknown Geometry</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">هندسه ناشناخته</translation>
     </message>
 </context>
 <context>
@@ -39921,7 +39991,7 @@ SQL: %2</source>
     <message>
         <location filename="../src/core/qgsproject.cpp" line="690"/>
         <source>Loading layer %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">بارگذاری لایه %1</translation>
     </message>
     <message>
         <location filename="../src/core/qgsproject.cpp" line="802"/>
@@ -39993,7 +40063,7 @@ Choose ignore to continue loading without the missing layers. Choose cancel to r
     <message>
         <location filename="../src/app/qgsprojectlayergroupdialog.cpp" line="112"/>
         <source>QGIS files</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">فایل کیو جی ای اس</translation>
     </message>
     <message>
         <location filename="../src/app/qgsprojectlayergroupdialog.cpp" line="143"/>
@@ -40086,13 +40156,13 @@ Choose ignore to continue loading without the missing layers. Choose cancel to r
         <location filename="../src/app/qgsprojectproperties.cpp" line="823"/>
         <location filename="../src/app/qgsprojectproperties.cpp" line="824"/>
         <source>OFF</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">خاموش</translation>
     </message>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="834"/>
         <location filename="../src/app/qgsprojectproperties.cpp" line="835"/>
         <source>ON</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">روشن</translation>
     </message>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="964"/>
@@ -40114,17 +40184,17 @@ Proceed?</source>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="1018"/>
         <source>Select print composer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">انتخاب سازنده چاپ</translation>
     </message>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="1018"/>
         <source>Composer Title</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">عنوان چاپ</translation>
     </message>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="1040"/>
         <source>Select restricted layers and groups</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Select restricted layers and groups</translation>
     </message>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="1096"/>
@@ -40153,11 +40223,15 @@ Proceed?</source>
         <translation>ذخیره مقیاس</translation>
     </message>
     <message>
+        <source>Parameters :</source>
+        <translation type="obsolete">ورودی‌ها:</translation>
+    </message>
+    <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="1348"/>
         <location filename="../src/app/qgsprojectproperties.cpp" line="1452"/>
         <location filename="../src/app/qgsprojectproperties.cpp" line="1453"/>
         <source>Parameters:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ورودی‌ها:</translation>
     </message>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="1452"/>
@@ -40168,7 +40242,7 @@ Proceed?</source>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="1465"/>
         <source>Can only use ellipsoidal calculations when CRS transformation is enabled</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">وقتی سیستم مختصات فعال است فقط می توانید استفاده کنید محاسبات بیضی </translation>
     </message>
     <message>
         <source>Transparency %1%</source>
@@ -40190,191 +40264,192 @@ Proceed?</source>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="20"/>
         <source>Project Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>خواص پروژه</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="85"/>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="88"/>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="204"/>
         <source>General</source>
-        <translation type="unfinished">عمومی</translation>
+        <translation>عمومی</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="235"/>
         <source>General settings</source>
-        <translation type="unfinished"></translation>
+        <translation>تنظیمات عمومی</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="390"/>
         <source>Project title</source>
-        <translation type="unfinished"></translation>
+        <translation>عنوان پروژه</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="374"/>
         <source>Descriptive project name</source>
-        <translation type="unfinished"></translation>
+        <translation>نام پروژه توصیفی</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="377"/>
         <source>Default project title</source>
-        <translation type="unfinished"></translation>
+        <translation>عنوان پروژه پیش فرض</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="279"/>
         <source>Selection color</source>
-        <translation type="unfinished">انتخاب رنگ</translation>
+        <translation>انتخاب رنگ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="314"/>
         <source>Background color</source>
-        <translation type="unfinished"></translation>
+        <translation>رنگ پس زمینه</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="258"/>
         <source>absolute</source>
-        <translation type="unfinished"></translation>
+        <translation>مطلق</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="263"/>
         <source>relative</source>
-        <translation type="unfinished"></translation>
+        <translation>نسبی</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="364"/>
         <source>Save paths</source>
-        <translation type="unfinished"></translation>
+        <translation>ذخیره مسیرهای</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="511"/>
         <source>Meters</source>
-        <translation type="unfinished">متر</translation>
+        <translation>متر</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="498"/>
         <source>Feet</source>
-        <translation type="unfinished">پا</translation>
+        <translation>پا</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="97"/>
         <source>CRS</source>
-        <translation type="unfinished">CRS</translation>
+        <translation>CRS</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="100"/>
         <source>Coordinate Reference System</source>
-        <translation type="unfinished">سیستم های مرجع مختصات</translation>
+        <translation>سیستم های مرجع مختصات</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="109"/>
         <source>Identify layers</source>
-        <translation type="unfinished"></translation>
+        <translation>شناسایی لایه های</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="121"/>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="124"/>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="904"/>
         <source>Default styles</source>
-        <translation type="unfinished"></translation>
+        <translation>سبک های پیش فرض</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="133"/>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="136"/>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1282"/>
         <source>OWS server</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">OWSسرویس </translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="403"/>
         <source>Measure tool</source>
-        <translation type="unfinished">ابزار اندازه گیری</translation>
+        <translation>ابزار اندازه گیری</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="412"/>
         <source>Ellipsoid
 (for distance calculations)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">بیضی
+(برای محاسبات از راه دور)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="420"/>
         <source>Semi-major</source>
-        <translation type="unfinished">نیمه بزرگ</translation>
+        <translation>نیمه بزرگ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="433"/>
         <source>Semi-minor</source>
-        <translation type="unfinished">نیمه جزئی</translation>
+        <translation>نیمه جزئی</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="485"/>
         <source>Degree</source>
-        <translation type="unfinished"></translation>
+        <translation>درجه</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="524"/>
         <source>Degree display</source>
-        <translation type="unfinished"></translation>
+        <translation>نمایش درجه</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="530"/>
         <source>Decimal degrees</source>
-        <translation type="unfinished"></translation>
+        <translation>درجه دهدهی</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="537"/>
         <source>Degrees, Minutes</source>
-        <translation type="unfinished"></translation>
+        <translation>درجه، دقیقه</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="544"/>
         <source>Degrees, Minutes, Seconds</source>
-        <translation type="unfinished"></translation>
+        <translation>درجه، دقیقه، ثانیه</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="559"/>
         <source>Precision</source>
-        <translation type="unfinished">دقت</translation>
+        <translation>دقت</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="622"/>
         <source>Automatically sets the number of decimal places in the mouse position display</source>
-        <translation type="unfinished"></translation>
+        <translation>به صورت خودکار مجموعه تعداد رقم اعشار در نمایش موقعیت ماوس</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="625"/>
         <source>The number of decimal places that are used when displaying the mouse position is automatically set to be enough so that moving the mouse by one pixel gives a change in the position display</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">تعداد رقم اعشار هستند که در هنگام نمایش موقعیت ماوس استفاده می شود به طور خودکار و با تغییر مکان تنظیم می شوندو نمایش داده می شوند</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="628"/>
         <source>Automatic</source>
-        <translation type="unfinished"></translation>
+        <translation>اتوماتیک</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="609"/>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="612"/>
         <source>Sets the number of decimal places to use for the mouse position display</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">تعداد رقم اعشار از صفحه نمایش برای استفاده موقعیت ماوس را تنظیم میکند</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="615"/>
         <source>Manual</source>
-        <translation type="unfinished">دستی</translation>
+        <translation>دستی</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="580"/>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="583"/>
         <source>The number of decimal places for the manual option</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">تعداد رقم اعشار برای تنظیمات دستی</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="596"/>
         <source>decimal places</source>
-        <translation type="unfinished"></translation>
+        <translation>رقم اعشار</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="647"/>
         <source>Project scales</source>
-        <translation type="unfinished"></translation>
+        <translation>مقیاس پروژه</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="667"/>
@@ -40386,91 +40461,91 @@ Proceed?</source>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1089"/>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1136"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="762"/>
         <source>Coordinate Reference System (CRS)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">مختصات سیستم مرجع </translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="793"/>
         <source>Enable &apos;on the fly&apos; CRS transformation</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">فعال کردن تیدیل سیستم مختصات</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="112"/>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="822"/>
         <source>Identifiable layers</source>
-        <translation type="unfinished"></translation>
+        <translation>شناسایی لایه ها</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="859"/>
         <source>Project layers</source>
-        <translation type="unfinished"></translation>
+        <translation>لایه های پروژه</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="869"/>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1828"/>
         <source>Layer</source>
-        <translation type="unfinished">لایه</translation>
+        <translation>لایه</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="874"/>
         <source>Type</source>
-        <translation type="unfinished">نوع</translation>
+        <translation>نوع</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="879"/>
         <source>Identifiable</source>
-        <translation type="unfinished">قابل شناسایی</translation>
+        <translation>قابل شناسایی</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1079"/>
         <source>Marker</source>
-        <translation type="unfinished"></translation>
+        <translation>نشانگر</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="958"/>
         <source>Line</source>
-        <translation type="unfinished">خطی</translation>
+        <translation>خطی</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1100"/>
         <source>Fill</source>
-        <translation type="unfinished"></translation>
+        <translation>پر کردن</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1040"/>
         <source>Color Ramp</source>
-        <translation type="unfinished"></translation>
+        <translation>رمپ رنگ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1233"/>
         <source>Style Manager</source>
-        <translation type="unfinished"></translation>
+        <translation>مدیریت سبک نگارش </translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1150"/>
         <source>Options</source>
-        <translation type="unfinished">مشخصات</translation>
+        <translation>مشخصات</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1221"/>
         <source>Assign random colors to symbols</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">اختصاص رنگ به طور تصادفی به نمادهای</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1833"/>
         <source>Published</source>
-        <translation type="unfinished"></translation>
+        <translation>منتشر کردن</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="145"/>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="148"/>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1914"/>
         <source>Macros</source>
-        <translation type="unfinished"></translation>
+        <translation>ماکرو</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1422"/>
@@ -40480,193 +40555,193 @@ Proceed?</source>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1432"/>
         <source>Access constraints</source>
-        <translation type="unfinished"></translation>
+        <translation>محدودیت های دسترسی</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1442"/>
         <source>Keyword list</source>
-        <translation type="unfinished"></translation>
+        <translation>لیست کلمات کلیدی</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1452"/>
         <source>WMS capabilitities</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">قابلیت سرویس وب نقشه</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1468"/>
         <source>Exclude layers</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">حذف لایه</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1529"/>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1872"/>
         <source>Advertised URL</source>
-        <translation type="unfinished"></translation>
+        <translation>اعلان مسیر</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1543"/>
         <source>Width</source>
-        <translation type="unfinished">عرض</translation>
+        <translation>عرض</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1572"/>
         <source>Height</source>
-        <translation type="unfinished">ارتفاع</translation>
+        <translation>ارتفاع</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1579"/>
         <source>Maximums for GetMap request</source>
-        <translation type="unfinished"></translation>
+        <translation>حد اکثر دریافت برای گرفتن نقشه</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1588"/>
         <source>Advertised extent</source>
-        <translation type="unfinished"></translation>
+        <translation>وسعت آگهی</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1697"/>
         <source>CRS restrictions</source>
-        <translation type="unfinished"></translation>
+        <translation>محدودیت سیستم مختصات</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1744"/>
         <source>Exclude composers</source>
-        <translation type="unfinished"></translation>
+        <translation>حذف سازنده</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1812"/>
         <source>WFS capabilitities</source>
-        <translation type="unfinished"></translation>
+        <translation>قابلیت سرویس وب ویژگی ها </translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1838"/>
         <source>Update</source>
-        <translation type="unfinished">بروزرسانی</translation>
+        <translation>بروزرسانی</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1843"/>
         <source>Insert</source>
-        <translation type="unfinished"></translation>
+        <translation>قرار دادن</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1848"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>حذف</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1856"/>
         <source>Unselect all</source>
-        <translation type="unfinished"></translation>
+        <translation>عدم انتخاب همه</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1863"/>
         <source>Select all</source>
-        <translation type="unfinished">انتخاب همه</translation>
+        <translation>انتخاب همه</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1945"/>
         <source>Python macros</source>
-        <translation type="unfinished"></translation>
+        <translation>ماکروها پایتون</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="452"/>
         <source>Used when CRS transformation is turned off</source>
-        <translation type="unfinished"></translation>
+        <translation>وقتی تبدیل سیستم مختصات خاموش است</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="455"/>
         <source>Canvas units</source>
-        <translation type="unfinished"></translation>
+        <translation>واحدهای چهارچوب</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="935"/>
         <source>Default symbols</source>
-        <translation type="unfinished"></translation>
+        <translation>نمادهای پیش فرض</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1161"/>
         <source>Transparency</source>
-        <translation type="unfinished">شفافیت</translation>
+        <translation>شفافیت</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1196"/>
         <source> %</source>
-        <translation type="unfinished">%</translation>
+        <translation>%</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1313"/>
         <source>Service capabilitities</source>
-        <translation type="unfinished"></translation>
+        <translation>قابلیت های سرویس</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1344"/>
         <source>Title</source>
-        <translation type="unfinished">عنوان</translation>
+        <translation>عنوان</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1334"/>
         <source>Person</source>
-        <translation type="unfinished"></translation>
+        <translation>شخص</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1393"/>
         <source>Phone</source>
-        <translation type="unfinished"></translation>
+        <translation>تلفن</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1406"/>
         <source>Abstract</source>
-        <translation type="unfinished">چکیده</translation>
+        <translation>چکیده</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1383"/>
         <source>E-Mail</source>
-        <translation type="unfinished"></translation>
+        <translation>ایمیل</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1357"/>
         <source>Organization</source>
-        <translation type="unfinished"></translation>
+        <translation>سازمان</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1370"/>
         <source>Online resource</source>
-        <translation type="unfinished"></translation>
+        <translation>منابع آنلاین</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1606"/>
         <source>Min. X</source>
-        <translation type="unfinished"></translation>
+        <translation>X حداقل</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1623"/>
         <source>Min. Y</source>
-        <translation type="unfinished"></translation>
+        <translation>Y حداقل</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1640"/>
         <source>Max. X</source>
-        <translation type="unfinished"></translation>
+        <translation>X حداکثر</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1657"/>
         <source>Max. Y</source>
-        <translation type="unfinished"></translation>
+        <translation>Y حداکثر</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1674"/>
         <source>Use Current Canvas Extent</source>
-        <translation type="unfinished"></translation>
+        <translation>استفاده از بوم وسعت کنونی</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1726"/>
         <source>Used</source>
-        <translation type="unfinished"></translation>
+        <translation>مورد استفاده</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1461"/>
         <source>Add WKT geometry to feature info response</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">به قابلیت پاسخ اطلاعات WKT اضافه کردن هندسه </translation>
     </message>
 </context>
 <context>
@@ -40731,7 +40806,7 @@ Because of this the projection selector will not work...</source>
     <message>
         <location filename="../src/ui/qgsprojectionselectorbase.ui" line="39"/>
         <source>Selected CRS:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">انتخاب CRS :</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectionselectorbase.ui" line="98"/>
@@ -41377,7 +41452,7 @@ Click on help button to get valid creation options for this format.</source>
     <message>
         <location filename="../src/ui/qgsrasterformatsaveoptionswidgetbase.ui" line="71"/>
         <source>Profile</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">نمایه</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterformatsaveoptionswidgetbase.ui" line="103"/>
@@ -41387,7 +41462,7 @@ Click on help button to get valid creation options for this format.</source>
     <message>
         <location filename="../src/ui/qgsrasterformatsaveoptionswidgetbase.ui" line="108"/>
         <source>Value</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">مقدار</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterformatsaveoptionswidgetbase.ui" line="124"/>
@@ -41397,7 +41472,7 @@ Click on help button to get valid creation options for this format.</source>
     <message>
         <location filename="../src/ui/qgsrasterformatsaveoptionswidgetbase.ui" line="137"/>
         <source>Validate</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">معتبر ساختن</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterformatsaveoptionswidgetbase.ui" line="144"/>
@@ -41412,7 +41487,7 @@ Click on help button to get valid creation options for this format.</source>
     <message>
         <location filename="../src/ui/qgsrasterformatsaveoptionswidgetbase.ui" line="189"/>
         <source>Insert KEY=VALUE pairs separated by spaces</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">اضافه کردن یک مقدار کلیدی برای جداسازی فضاها</translation>
     </message>
 </context>
 <context>
@@ -41564,17 +41639,17 @@ Click on help button to get valid creation options for this format.</source>
     <message>
         <location filename="../src/ui/qgsrasterhistogramwidgetbase.ui" line="352"/>
         <source>Save plot</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ذخیره طرح</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterhistogramwidgetbase.ui" line="355"/>
         <source>Save as image...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ذخیره به عنوان تصویر...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterhistogramwidgetbase.ui" line="406"/>
         <source>Compute Histogram</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">محاسبه هیستوگرام</translation>
     </message>
 </context>
 <context>
@@ -41659,7 +41734,7 @@ Click on help button to get valid creation options for this format.</source>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="491"/>
         <source>Data Type</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">نوع داده ها</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="498"/>
@@ -41887,19 +41962,19 @@ Click on help button to get valid creation options for this format.</source>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="428"/>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1242"/>
         <source>Red</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">قرمز</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="429"/>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1242"/>
         <source>Green</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">سبز</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="430"/>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1242"/>
         <source>Blue</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">آبی</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="431"/>
@@ -42325,12 +42400,12 @@ Click on help button to get valid creation options for this format.</source>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1521"/>
         <source>Import from file</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">وارد کردن از فایل</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1535"/>
         <source>Export to file</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">خروجی به فایل</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1301"/>
@@ -42367,7 +42442,7 @@ Click on help button to get valid creation options for this format.</source>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="370"/>
         <source>Scale dependent visibility</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">مقیاس وابسته به میدان دید</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="335"/>
@@ -42385,7 +42460,7 @@ Click on help button to get valid creation options for this format.</source>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="347"/>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="350"/>
         <source>Specify the coordinate reference system of the layer&apos;s geometry.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">سیستم مختصات مرجع لایه ها را مشخص کنید.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="353"/>
@@ -42522,7 +42597,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1905"/>
         <source>Keyword list</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">لیست کلمات کلیدی</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1951"/>
@@ -42978,7 +43053,7 @@ standard deviation ×</source>
     <message>
         <location filename="../src/ui/qgsrasterminmaxwidgetbase.ui" line="224"/>
         <source>Load</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">بارگذاری</translation>
     </message>
 </context>
 <context>
@@ -43403,12 +43478,12 @@ standard deviation ×</source>
     <message>
         <location filename="../src/ui/qgsrendererrulepropsdialogbase.ui" line="122"/>
         <source>Max. scale</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">حداکثر.مقیاس</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrendererrulepropsdialogbase.ui" line="160"/>
         <source>Symbol</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">نماد</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="543"/>
@@ -43488,22 +43563,22 @@ standard deviation ×</source>
     <message>
         <location filename="../src/ui/qgsrendererv2propsdialogbase.ui" line="20"/>
         <source>Layer rendering</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">لایه رندر</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrendererv2propsdialogbase.ui" line="53"/>
         <source>Layer transparency</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">شفافیت لایه</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrendererv2propsdialogbase.ui" line="63"/>
         <source>Feature blending mode</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">قابلیت حالت ترکیب</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrendererv2propsdialogbase.ui" line="70"/>
         <source>Layer blending mode</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">حالت ترکیب لایه</translation>
     </message>
     <message>
         <source>Old symbology</source>
@@ -43520,27 +43595,27 @@ standard deviation ×</source>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrendererv2widget.cpp" line="30"/>
         <source>Change color</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">تغییر رنگ</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrendererv2widget.cpp" line="31"/>
         <source>Change transparency</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">تغییر شفافیت</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrendererv2widget.cpp" line="32"/>
         <source>Change output unit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">تغییر واحد خروجی</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrendererv2widget.cpp" line="36"/>
         <source>Change width</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">تغییر عرض</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrendererv2widget.cpp" line="40"/>
         <source>Change size</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">تغییر اندازه</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrendererv2widget.cpp" line="79"/>
@@ -43550,17 +43625,17 @@ standard deviation ×</source>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrendererv2widget.cpp" line="79"/>
         <source>Change symbol transparency [%]</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">تغییر شفافیت نماد [%]</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrendererv2widget.cpp" line="101"/>
         <source>Symbol unit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">واحد نماد</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrendererv2widget.cpp" line="101"/>
         <source>Select symbol unit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">انتخاب واحد نماد</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrendererv2widget.cpp" line="101"/>
@@ -43571,7 +43646,7 @@ standard deviation ×</source>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrendererv2widget.cpp" line="101"/>
         <source>Map unit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">واحد نقشه</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrendererv2widget.cpp" line="124"/>
@@ -43581,7 +43656,7 @@ standard deviation ×</source>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrendererv2widget.cpp" line="124"/>
         <source>Change symbol width</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">تغییر عرض نماد</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrendererv2widget.cpp" line="145"/>
@@ -43591,7 +43666,7 @@ standard deviation ×</source>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrendererv2widget.cpp" line="145"/>
         <source>Change symbol size</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">تغییر اندازه نماد</translation>
     </message>
 </context>
 <context>
@@ -43604,7 +43679,7 @@ standard deviation ×</source>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="663"/>
         <source>&lt;li&gt;&lt;nobr&gt;%1 features also in rule %2&lt;/nobr&gt;&lt;/li&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;li&gt;&lt;nobr&gt;%1 ویژگی در قانون %2&lt;/nobr&gt;&lt;/li&gt;</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="705"/>
@@ -43628,27 +43703,27 @@ standard deviation ×</source>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="705"/>
         <source>Count</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">تعداد</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="705"/>
         <source>Duplicate count</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">تعداد تکراری</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="705"/>
         <source>Max. scale</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">حداکثر.مقیاس</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="712"/>
         <source>Number of features in this rule.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">تعداد از ویژگی های این قانون.</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="716"/>
         <source>Number of features in this rule which are also present in other rule(s).</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">تعداد از ویژگی های این قانون که در ماده های دیگر نیز وجود داشته باشد.</translation>
     </message>
 </context>
 <context>
@@ -43656,32 +43731,32 @@ standard deviation ×</source>
     <message>
         <location filename="../src/ui/qgsrulebasedrendererv2widget.ui" line="53"/>
         <source>Add rule</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">اضافه کردن قانون</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrulebasedrendererv2widget.ui" line="67"/>
         <source>Edit rule</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ویرایش قانون</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrulebasedrendererv2widget.ui" line="81"/>
         <source>Remove rule</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">حذف قانون</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrulebasedrendererv2widget.ui" line="117"/>
         <source>Count features</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">شمارش ویژگی های</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrulebasedrendererv2widget.ui" line="137"/>
         <source>Rendering order...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">رندر کردن سفارش ...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrulebasedrendererv2widget.ui" line="98"/>
         <source>Refine current rules</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">قوانین فعلی محدود</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="69"/>
@@ -43691,33 +43766,33 @@ standard deviation ×</source>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="70"/>
         <source>Add scales to rule</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">اضافه کردن مقیاس به قانون</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="71"/>
         <source>Add categories to rule</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">افزودن دسته به قانون</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="72"/>
         <source>Add ranges to rule</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">افزودن دامنه به قانون</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="241"/>
         <source>Refine a rule to categories</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">محدودیت قانون به دسته بندی</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="271"/>
         <source>Refine a rule to ranges</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">محدود کردن یک قانون به محدوده</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="304"/>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="310"/>
         <source>Scale refinement</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">پالایش مقیاس</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="304"/>
@@ -43742,12 +43817,12 @@ standard deviation ×</source>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="429"/>
         <source>Calculating feature count.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">محاسبه تعداد ویژگی های.</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="429"/>
         <source>Abort</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">بی نتیجه ماندن</translation>
     </message>
 </context>
 <context>
@@ -43927,7 +44002,7 @@ standard deviation ×</source>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1403"/>
         <source>SVG file</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">فایل SVG</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1405"/>
@@ -44348,12 +44423,12 @@ The error was:
     <message>
         <location filename="../src/gui/raster/qgssinglebandgrayrendererwidget.cpp" line="26"/>
         <source>Black to white</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">سیاه به سفید</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgssinglebandgrayrendererwidget.cpp" line="27"/>
         <source>White to black</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">سفید به سیاه</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgssinglebandgrayrendererwidget.cpp" line="59"/>
@@ -44391,7 +44466,8 @@ The error was:
         <location filename="../src/ui/qgssinglebandgrayrendererwidgetbase.ui" line="22"/>
         <source>Contrast
 enhancement</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">افزایش 
+کنتراست</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssinglebandgrayrendererwidgetbase.ui" line="36"/>
@@ -44411,7 +44487,7 @@ enhancement</source>
     <message>
         <location filename="../src/ui/qgssinglebandgrayrendererwidgetbase.ui" line="63"/>
         <source>Color gradient</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">گرادیان رنگ</translation>
     </message>
 </context>
 <context>
@@ -44856,7 +44932,7 @@ enhancement</source>
     <message>
         <location filename="../src/ui/qgssnappingdialogbase.ui" line="85"/>
         <source>Enable snapping on intersection</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">فعال کردن چسبیدن در تقاطع</translation>
     </message>
 </context>
 <context>
@@ -45986,29 +46062,29 @@ Do you want to overwrite the [%2] relation?</source>
     <message>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="20"/>
         <source>SPIT - Shapefile to PostGIS Import Tool</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ابزار ورود فایل تصویری و تبدیل</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="45"/>
         <source>PostgreSQL connections</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">PostgreSQL اتصال به </translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="63"/>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="66"/>
         <source>Connect to PostGIS</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">اتصال به پایگاه داده</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="69"/>
         <source>Connect</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">اتصال</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="76"/>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="79"/>
         <source>Create a new PostGIS connection</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ایجاد اتصال جدید به postgis</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="82"/>
@@ -46019,7 +46095,7 @@ Do you want to overwrite the [%2] relation?</source>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="89"/>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="92"/>
         <source>Edit the current PostGIS connection</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ویرایش اتصال به پایگاه داده فعال</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="95"/>
@@ -46030,7 +46106,7 @@ Do you want to overwrite the [%2] relation?</source>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="102"/>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="105"/>
         <source>Remove the current PostGIS connection</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">حذف اتصال به پایگاه داده فعال</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="108"/>
@@ -46041,23 +46117,23 @@ Do you want to overwrite the [%2] relation?</source>
     <message>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="120"/>
         <source>Import options and shapefile list</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">وارد نمودن فایل تصویری و تنظیمات</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="128"/>
         <source>Geometry column name</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">نام ستون هندسی</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="141"/>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="144"/>
         <source>Set the geometry column name to the default value</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">استفاده از فیلد هندسه انتخاب شده</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="147"/>
         <source>Use default geometry column name</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">استفاده از فیلد هندسه به صورت پیش فرض</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="154"/>
@@ -46068,28 +46144,28 @@ Do you want to overwrite the [%2] relation?</source>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="177"/>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="180"/>
         <source>Set the SRID to the default value</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ٍSRID استفاده از پیش فرض </translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="183"/>
         <source>Use default SRID</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">SRID استفاده کردن از </translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="190"/>
         <source>Primary key column name</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">نام ستون کلید اصلی</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="203"/>
         <source>Global schema</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">طرح جهانی</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="256"/>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="259"/>
         <source>Add a shapefile to the list of files to be imported</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">اضافه نمودن فایل تصویری به لیست</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="262"/>
@@ -46100,18 +46176,18 @@ Do you want to overwrite the [%2] relation?</source>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="269"/>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="272"/>
         <source>Remove the selected shapefile from the import list</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">حذف همه فایلهایی که انتخاب شده اند</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="282"/>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="285"/>
         <source>Remove all the shapefiles from the import list</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">حذف همه فایلهایی که به لیست اضافه شده است</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="288"/>
         <source>Remove All</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">حذف همه</translation>
     </message>
 </context>
 <context>
@@ -46119,12 +46195,12 @@ Do you want to overwrite the [%2] relation?</source>
     <message>
         <location filename="../src/plugins/spit/qgsspitplugin.cpp" line="66"/>
         <source>&amp;Import Shapefiles to PostgreSQL</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;وارد کردن فایل تصویری به پایگاه داده </translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspitplugin.cpp" line="68"/>
         <source>Import shapefiles into a PostGIS-enabled PostgreSQL database. The schema and field names can be customized on import</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"> وارد کردن فایل تصویری به پایگاه داده مکانی می توان طرح فایل را سفارشی نمود</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspitplugin.cpp" line="74"/>
@@ -46406,17 +46482,17 @@ Updates to geometry values will be disabled, and query performance may be poor b
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2exportimportdialog.cpp" line="234"/>
         <source>New Group</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">گروه جدید</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2exportimportdialog.cpp" line="235"/>
         <source>New group cannot be created without a name. Kindly enter a name.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">گروه جدید را نمی تواند بدون نام ایجاد کنید. لطفا یک نام را وارد کنید.</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2exportimportdialog.cpp" line="241"/>
         <source>New group</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">گروه جدید</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2exportimportdialog.cpp" line="242"/>
@@ -46427,7 +46503,7 @@ Updates to geometry values will be disabled, and query performance may be poor b
         <location filename="../src/gui/symbology-ng/qgsstylev2exportimportdialog.cpp" line="277"/>
         <location filename="../src/gui/symbology-ng/qgsstylev2exportimportdialog.cpp" line="324"/>
         <source>Duplicate names</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">نام تکراری </translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2exportimportdialog.cpp" line="278"/>
@@ -46444,7 +46520,7 @@ Overwrite?</source>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2exportimportdialog.cpp" line="414"/>
         <source>Load styles</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">بارگذاری پوسته</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2exportimportdialog.cpp" line="415"/>
@@ -46709,7 +46785,7 @@ Select the &apos;Smart Group&apos; to create a new group.</source>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="925"/>
         <source>New Group</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">گروه جدید</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="951"/>
@@ -46799,12 +46875,12 @@ There was a problem with your symbol database.</source>
     <message>
         <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="14"/>
         <source>Style Manager</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">سبک مدیریت</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="186"/>
         <source>Marker</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">نشانگر</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="201"/>
@@ -46814,32 +46890,32 @@ There was a problem with your symbol database.</source>
     <message>
         <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="216"/>
         <source>Fill</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">پر کردن</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="231"/>
         <source>Color ramp</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">رمپ رنگ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="287"/>
         <source>Tags</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">برچسب ها</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="328"/>
         <source>Add item</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">اضافه کردن آیتم</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="370"/>
         <source>Share</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">بخش</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="341"/>
         <source>Edit item</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ویرایش آیتم</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="344"/>
@@ -46849,7 +46925,7 @@ There was a problem with your symbol database.</source>
     <message>
         <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="354"/>
         <source>Remove item</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">حذف آیتم</translation>
     </message>
 </context>
 <context>
@@ -46876,7 +46952,7 @@ There was a problem with your symbol database.</source>
     <message>
         <location filename="../src/gui/qgssublayersdialog.cpp" line="35"/>
         <source>Number of features</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">تعداد موجودیت ها</translation>
     </message>
     <message>
         <location filename="../src/gui/qgssublayersdialog.cpp" line="35"/>
@@ -46891,7 +46967,7 @@ There was a problem with your symbol database.</source>
     <message>
         <location filename="../src/gui/qgssublayersdialog.cpp" line="44"/>
         <source>Select layers to add...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">لایه ها را انتخاب کنید برای اضافه کردن ...</translation>
     </message>
     <message>
         <location filename="../src/gui/qgssublayersdialog.cpp" line="46"/>
@@ -46901,7 +46977,7 @@ There was a problem with your symbol database.</source>
     <message>
         <location filename="../src/gui/qgssublayersdialog.cpp" line="50"/>
         <source>Select All</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">انتخاب همه</translation>
     </message>
 </context>
 <context>
@@ -46922,7 +46998,7 @@ There was a problem with your symbol database.</source>
     <message>
         <location filename="../src/app/qgssvgannotationdialog.cpp" line="29"/>
         <source>SVG annotation</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">حاشیه نویسی SVG</translation>
     </message>
     <message>
         <location filename="../src/app/qgssvgannotationdialog.cpp" line="41"/>
@@ -46999,7 +47075,7 @@ There was a problem with your symbol database.</source>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1147"/>
         <source>SVG file</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">فایل SVG</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1149"/>
@@ -47017,12 +47093,12 @@ There was a problem with your symbol database.</source>
     <message>
         <location filename="../src/gui/symbology-ng/qgssvgselectorwidget.cpp" line="104"/>
         <source>App Symbols</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">نمادهای برنامه</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssvgselectorwidget.cpp" line="108"/>
         <source>User Symbols</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">نمادهای کاربر</translation>
     </message>
 </context>
 <context>
@@ -47079,7 +47155,7 @@ There was a problem with your symbol database.</source>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbolv2selectordialog.cpp" line="404"/>
         <source>Kindly select a symbol to add layer.</source>
-        <translation>لطفا یک نماد برای اضافه کردن لایه انتخاب کنید .</translation>
+        <translation type="unfinished">لطفا یک نماد برای اضافه کردن به لایه انتخاب کنید .</translation>
     </message>
 </context>
 <context>
@@ -47444,7 +47520,7 @@ There was a problem with your symbol database.</source>
     <message>
         <location filename="../src/app/qgstipgui.cpp" line="52"/>
         <source>&amp;Previous</source>
-        <translation type="unfinished">&amp;فبلی</translation>
+        <translation type="unfinished">&amp;قبلی</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipgui.cpp" line="56"/>
@@ -48317,7 +48393,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="149"/>
         <source>Load from file</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">بارگذاری از فایل</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="150"/>
@@ -48425,7 +48501,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1372"/>
         <source>Keyword list</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">لیست کلمات کلیدی</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1382"/>
@@ -48518,7 +48594,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="400"/>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="403"/>
         <source>Specify the coordinate reference system of the layer&apos;s geometry.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">سیستم مختصات مرجع لایه ها را مشخص کنید.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="652"/>
@@ -48656,7 +48732,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="456"/>
         <source>Scale dependent visibility</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">مقیاس وابسته به میدان دید</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="477"/>
@@ -48836,7 +48912,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsvectorlayersaveasdialogbase.ui" line="188"/>
         <source>Scale</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">مقیاس</translation>
     </message>
 </context>
 <context>
@@ -48925,7 +49001,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/providers/wfs/qgswfscapabilities.cpp" line="213"/>
         <source>Either the WFS server does not support WFS version 1.0.0 or the WFS url is wrong</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">از سرویس وب موجودیت نسخه 1.0.0 پشتیبانی نمی شود یا مسیر وارد شده اشتباه است</translation>
     </message>
 </context>
 <context>
@@ -49118,7 +49194,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgswfssourceselectbase.ui" line="122"/>
         <source>C&amp;onnect</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;اتصال</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswfssourceselectbase.ui" line="172"/>
@@ -49128,7 +49204,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgswfssourceselectbase.ui" line="175"/>
         <source>Load</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">بارگذاری</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswfssourceselectbase.ui" line="182"/>
@@ -49371,7 +49447,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="72"/>
         <source>C&amp;onnect</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;اتصال</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="79"/>
@@ -49458,7 +49534,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="200"/>
         <source>Load</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">بارگذاری</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="249"/>
@@ -51160,7 +51236,7 @@ Description: %2</source>
     <message>
         <location filename="../src/plugins/sqlanywhere/sanewconnectionbase.ui" line="38"/>
         <source>Connection Information</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ارتباط اطلاعات</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sanewconnectionbase.ui" line="66"/>
@@ -51245,7 +51321,7 @@ Description: %2</source>
     <message>
         <location filename="../src/plugins/sqlanywhere/sanewconnectionbase.ui" line="227"/>
         <source>Save Username</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ذخیره نام کاربری</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sanewconnectionbase.ui" line="224"/>
@@ -51255,7 +51331,7 @@ Description: %2</source>
     <message>
         <location filename="../src/plugins/sqlanywhere/sanewconnectionbase.ui" line="234"/>
         <source>&amp;Test Connect</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;آزمون اتصال</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sanewconnectionbase.ui" line="244"/>
@@ -51444,54 +51520,55 @@ Description: %3</source>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselectbase.ui" line="42"/>
         <source>Delete</source>
-        <translation type="unfinished">حذف</translation>
+        <translation>حذف</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselectbase.ui" line="49"/>
         <source>Edit</source>
-        <translation type="unfinished">ویرایش</translation>
+        <translation>ویرایش</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselectbase.ui" line="56"/>
         <source>New</source>
-        <translation type="unfinished">جدید</translation>
+        <translation>جدید</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselectbase.ui" line="63"/>
         <source>Connect</source>
-        <translation type="unfinished"></translation>
+        <translation>اتصال</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselectbase.ui" line="83"/>
         <source>Search options</source>
-        <translation type="unfinished"></translation>
+        <translation>جستجو تنظیمات</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselectbase.ui" line="107"/>
         <source>Search</source>
-        <translation type="unfinished">جستجو</translation>
+        <translation>جستجو</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselectbase.ui" line="120"/>
         <source>Search mode</source>
-        <translation type="unfinished"></translation>
+        <translation>نوع جستجو</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselectbase.ui" line="140"/>
         <source>Search in columns</source>
-        <translation type="unfinished"></translation>
+        <translation>جستجو در ستون</translation>
     </message>
 </context>
 <context>
     <name>SaveAsPythonScriptAction</name>
     <message>
         <source>I/O error</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">خطای ورودی</translation>
     </message>
     <message>
         <source>Unable to save edits. Reason:
  %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">نمی توان ویرایشها را ذخیره نمود. دلیلش :
+%1</translation>
     </message>
 </context>
 <context>
@@ -51499,12 +51576,12 @@ Description: %3</source>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsselectgeorasterbase.ui" line="14"/>
         <source>Select Oracle Spatial GeoRaster</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">انتخاب داده ویژه رستری</translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsselectgeorasterbase.ui" line="36"/>
         <source>Server Connections</source>
-        <translation type="unfinished"></translation>
+        <translation>اتصال به سرور</translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsselectgeorasterbase.ui" line="54"/>
@@ -51524,12 +51601,12 @@ Description: %3</source>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsselectgeorasterbase.ui" line="81"/>
         <source>C&amp;onnect</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;اتصال</translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsselectgeorasterbase.ui" line="119"/>
         <source>Subdatasets</source>
-        <translation type="unfinished"></translation>
+        <translation>مجموعه داده های زیر</translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsselectgeorasterbase.ui" line="148"/>
@@ -51714,6 +51791,13 @@ additional algorithm providers</source>
     </message>
 </context>
 <context>
+    <name>SpatiaLiteDBConnector</name>
+    <message>
+        <source>&quot;%s&quot; not found</source>
+        <translation type="obsolete">&quot;%s&quot; پیدا نشد</translation>
+    </message>
+</context>
+<context>
     <name>SqlAnywhere</name>
     <message>
         <location filename="../src/plugins/sqlanywhere/sqlanywhere.cpp" line="82"/>
@@ -51771,7 +51855,7 @@ additional algorithm providers</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_symbolslist.ui" line="312"/>
         <source>Symbol</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">نماد</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_symbolslist.ui" line="124"/>
@@ -51894,7 +51978,8 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <source>Error loading output shapefile:
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">خطای در بارگذاری فایل ترسیمی خروجی: 
+%s</translation>
     </message>
     <message>
         <source>Created output shapefile:
@@ -52000,12 +52085,12 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="49"/>
         <source>Fill</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">پر کردن</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="81"/>
         <source>Border</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">مرز</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="122"/>
@@ -52090,7 +52175,7 @@ Would you like to add the new layer to the TOC?</source>
         <location filename="../src/ui/symbollayer/widget_fontmarker.ui" line="113"/>
         <location filename="../src/ui/symbollayer/widget_fontmarker.ui" line="196"/>
         <source>Map unit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">واحد نقشه</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_fontmarker.ui" line="123"/>
@@ -52160,7 +52245,7 @@ Would you like to add the new layer to the TOC?</source>
         <location filename="../src/ui/symbollayer/widget_linepatternfill.ui" line="115"/>
         <location filename="../src/ui/symbollayer/widget_linepatternfill.ui" line="159"/>
         <source>Map unit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">واحد نقشه</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_linepatternfill.ui" line="84"/>
@@ -52175,7 +52260,7 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_linepatternfill.ui" line="201"/>
         <source>Data defined properties...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">داده ها تعریف خواص ...</translation>
     </message>
     <message>
         <source>Change</source>
@@ -52218,7 +52303,7 @@ Would you like to add the new layer to the TOC?</source>
         <location filename="../src/ui/symbollayer/widget_markerline.ui" line="78"/>
         <location filename="../src/ui/symbollayer/widget_markerline.ui" line="177"/>
         <source>Map unit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">واحد ترسیم نقشه</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_markerline.ui" line="88"/>
@@ -52248,7 +52333,7 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_markerline.ui" line="141"/>
         <source>Data defined properties</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">خواص تعریف داده ها</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_markerline.ui" line="109"/>
@@ -52342,12 +52427,12 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="168"/>
         <source>Fill</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">پر کردن</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="200"/>
         <source>Border</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">مرز</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="285"/>
@@ -52424,7 +52509,7 @@ Would you like to add the new layer to the TOC?</source>
         <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="90"/>
         <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="153"/>
         <source>Map unit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">واحد نقشه</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="100"/>
@@ -52434,17 +52519,17 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="169"/>
         <source>Data defined properties...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">داده ها تعریف خواص ...</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="184"/>
         <source>Fill</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">پر کردن</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="216"/>
         <source>Border</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">مرز</translation>
     </message>
 </context>
 <context>
@@ -52481,7 +52566,7 @@ Would you like to add the new layer to the TOC?</source>
         <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="160"/>
         <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="234"/>
         <source>Map unit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">واحد نقشه</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="117"/>
@@ -52501,12 +52586,12 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="221"/>
         <source>Dash pattern unit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">واحد الگوی خط تیره</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="248"/>
         <source>Data defined properties...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">خواص تعریف داده ها ...</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="180"/>
@@ -52541,12 +52626,12 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="36"/>
         <source>Fill</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">پر کردن</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="68"/>
         <source>Border</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">مرز</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="109"/>
@@ -52637,12 +52722,12 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="203"/>
         <source>Fill</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">پر کردن</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="235"/>
         <source>Border</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">مرز</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="314"/>
@@ -52728,7 +52813,7 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_vectorfield.ui" line="119"/>
         <source>Scale</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">مقیاس</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_vectorfield.ui" line="140"/>
@@ -53004,64 +53089,6 @@ Identifiable layers can be set in the Project Properties dialog &lt;label&gt;Set
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1121"/>
-        <source>&lt;h1&gt;Heatmap Plugin Help&lt;/h1&gt;
-&lt;p&gt;The Heatmap plugin uses Kernel Density Estimation to create a density (heatmap)
-raster of an input point vector layer.  The density is calculated based on the
-number of points in a location, with larger numbers of clustered points resulting
-in larger values. Heatmaps allow easy identification of &quot;hotspots&quot; and
-clustering of points.&lt;/p&gt;
-
-&lt;h2&gt;Dialog Parameters&lt;/h2&gt;
-
-&lt;h3&gt;Input point layer&lt;/h3&gt;
-&lt;p&gt;The input is always a vector layer of point type. All the point vector layers that are currently loaded in the canvas are shown in the drop-down list. Click the dropdown button and select the desired layer.&lt;/p&gt;
-
-&lt;h3&gt;Output raster&lt;/h3&gt;
-&lt;p&gt;The output raster location and filename can be set by clicking the &lt;label&gt;...&lt;/label&gt; button next to the output raster textbox.&lt;br/&gt;
-&lt;b&gt;Note:&lt;/b&gt; The file format is automatically added depending upon the output format selected, if not explicitly given.&lt;/p&gt;
-
-&lt;h3&gt;Output format&lt;/h3&gt;
-&lt;p&gt;All the file creation supporting GDAL formats are available in the drop down list. Click and select the required output format for your file.&lt;br/&gt;
-&lt;b&gt;Note:&lt;/b&gt; GeoTiff and ERDAS Imagine .img formats are recommended. Some formats make the application crash. Kindly stick to the recommended formats until the crash issue is resolved or use other formats if you know GDAL supports it completely.&lt;/p&gt;
-
-&lt;h3&gt;Radius (bandwidth)&lt;/h3&gt;
-&lt;p&gt;Used to specify the heatmap search radius (or kernel bandwidth) in meters or map units. The radius specifies the distance around a point at which the influence
-  of the point will be felt. Larger values result in greater smoothing, but smaller values may show finer details and variation in point density.&lt;/p&gt;
-
-&lt;h3&gt;Advanced Options&lt;/h3&gt;
-
-&lt;h4&gt;Rows and Columns&lt;/h4&gt;
-&lt;p&gt;Used to change the dimensions of the output raster file. These values are also linked to the &lt;b&gt;Cell size X&lt;/b&gt; and &lt;b&gt;Cell size Y&lt;/b&gt; values. 
-Increasing the number of rows or colums will decrease the cell size and increase the file size of the output file. The values in Rows and Columns
-are also linked, so doubling the number of rows will automatically double the number of columns and the cell sizes will also be halved. The geographical area of the output raster will remain the same!&lt;/p&gt;
-
-&lt;h4&gt;Cell size X and Y&lt;/h4&gt;
-&lt;p&gt;Control the geographic size of each pixel in the output raster. Changing these values will also change the number of Rows and Columns in the output
-  raster.&lt;/p&gt;
-  
-&lt;h4&gt;Kernel shape&lt;/h4&gt;
-&lt;p&gt;The kernel shape controls the rate at which the influence of a point decreases as the distance from the point increases. Different kernels decay at
-different rates, so a triweight kernel gives features greater weight for distances closer to the point than the Epanechnikov kernel does. Consequently,
-triweight results in &quot;sharper&quot; hotspots, and Epanechnikov results in &quot;smoother&quot; hotspots. A number of standard kernel functions are available in QGIS,
-which are described and illustrated on &lt;a href=&quot;http://en.wikipedia.org/wiki/Kernel_(statistics)#Kernel_functions_in_common_use&quot;&gt;Wikipedia&lt;/a&gt;.&lt;/p&gt;
-
-&lt;h4&gt;Decay ratio&lt;/h4&gt;
-&lt;p&gt;For triangular kernels, the decay ratio defines amount of influence that applies to the outermost pixels in the buffer radius. A value of 0 reflects a standard triangular kernel, where the influences drops to zero as the distance from the pixel to the point approaches the specified radius. In contrast, a value of 1 indicates that no falloff occurs as the distance from the point increases.&lt;/p&gt;
-
-&lt;h4&gt;Use radius from field&lt;/h4&gt;
-&lt;p&gt;Optionally, the value in a specified field can be used to control the kernel radius for each point in the input layer.&lt;/p&gt;
-
-&lt;h4&gt;Use weight from field&lt;/h4&gt;
-&lt;p&gt;Optionally, a attribute containing weights for points can be used to weight some points in the input layer more than others.&lt;/p&gt;
-
-&lt;h2&gt;Further Details&lt;/h2&gt;
-&lt;p&gt;Contact the author through aruntheguy at gmail dot com&lt;/p&gt;
-
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../src/core/qgscontexthelp_texts.cpp" line="1492"/>
         <source>&lt;h3&gt;Create a New SpatiaLite Layer&lt;/h3&gt;
 You can use this dialog to create a new SpatiaLite database and/or an empty SpatiaLite layer for editing. See below for an explanation of the dialog inputs.
@@ -53106,178 +53133,6 @@ Note that the Parameters must begin with a +proj=-block, to represent the new co
 system.
 &lt;p&gt;
 Defining a custom CRS in QGIS requires a good understanding of the Proj.4 projection library. To begin, refer to the &lt;a href=&quot;ftp://ftp.remotesensing.org/proj/OF90-284.pdf&quot;&gt;Cartographic Projection Procedures for the UNIX Environment&lt;/a&gt; - A User&apos;s Manual by Gerald I. Evenden, U.S. Geological Survey Open-File Report 90-284, 1990. This manual describes the use of the &lt;i&gt;proj.4&lt;/i&gt; and related command line utilities. The cartographic parameters used with &lt;i&gt;proj.4&lt;/i&gt; are described in the user manual, and are the same as those used by QGIS.
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1247"/>
-        <source>&lt;style&gt;
-	#toolbarConsole td{
-		background: #f6f6f6;
-	}
-&lt;/style&gt;
-&lt;h3&gt;Python Console for QGIS&lt;/h3&gt;
-&lt;a href=&quot;#console&quot;&gt;Console&lt;/a&gt;&lt;br&gt;
-&lt;a href=&quot;#editor&quot;&gt;Editor&lt;/a&gt;&lt;br&gt;
-&lt;a href=&quot;#settings&quot;&gt;Settings&lt;/a&gt;&lt;br&gt;&lt;br&gt;
-&lt;table&gt;
-	&lt;tr&gt;
-		&lt;td&gt;
-			&lt;p align=&apos;justify&apos;&gt;
-				The QGIS Python Console is an interactive shell for the python command executions. 
-				It also has a python file editor that allows you to edit and save your python scripts. 
-				Both console and editor are based on PyQScintilla2 package.&lt;br&gt;
-				The console is split in two main panes, top and bottom one 
-				resizable by using the horizontal splitter. Output area pane is a widget read-only which 
-				shows the commands output. You can drag and drop or copy and paste text into input area and 
-				execute code snippets from the output pane by selecting some text and clicking on the 
-				&lt;label&gt;Enter selected&lt;/label&gt; command from the context menu. 
-				No matter if selected text contains the interpreter prompt (&gt;&gt;&gt;, ...). Input area pane is the interactive 
-				python shell for input commands.&lt;br&gt;To access to the python file editor use the 
-				&lt;label&gt;Show editor&lt;/label&gt; button 
-				from the toolbar. The editor allows to edit and save python file and it offers basic functionality 
-				for managing your code (comment and 
-				uncomment code, check syntax, share the code via codepad.org and much more).
-			&lt;/p&gt;
-		&lt;/td&gt;
-	&lt;/tr&gt;
-&lt;/table&gt;
-&lt;a name=&quot;console&quot;&gt;
-&lt;h4&gt;Console&lt;/h4&gt;
-&lt;/a&gt;
-&lt;b&gt;&lt;i&gt;Main features:&lt;/i&gt;&lt;/b&gt;
-&lt;table&gt;
-	&lt;tr&gt;
-		&lt;td&gt;
-			&lt;ul&gt;
-			&lt;li&gt;Code completion, highlighting syntax and calltips for the following APIs:
-				&lt;ol&gt;
-				&lt;li&gt;Python&lt;/li&gt;
-				&lt;li&gt;PyQGIS&lt;/li&gt;
-				&lt;li&gt;PyQt4&lt;/li&gt;
-				&lt;li&gt;QScintilla2&lt;/li&gt;
-				&lt;li&gt;osgeo-gdal-ogr&lt;/li&gt;
-				&lt;/ol&gt;
-			&lt;/li&gt;
-			&lt;br&gt;
-			&lt;li&gt;&lt;label&gt;Ctrl+Alt+Space&lt;/label&gt; to view the auto-completion list.&lt;/li&gt;
-			&lt;br&gt;
-			&lt;li&gt;&lt;label&gt;Ctrl+Shift+Space&lt;/label&gt; to view the command history list.&lt;/li&gt;
-			&lt;br&gt;
-                        &lt;li&gt;Execute code snippets with the &lt;label&gt;Enter selected&lt;/label&gt; command from output pane.&lt;/li&gt;
-			&lt;br&gt;
-			&lt;li&gt;Open QGIS API documentation by typing &lt;label&gt;_api&lt;/label&gt;.&lt;/li&gt;
-			&lt;br&gt;
-			&lt;li&gt;Open PyQGIS Cookbook by typing &lt;label&gt;_pyqgis&lt;/label&gt;.&lt;/li&gt;
-			&lt;br&gt;
-			&lt;li&gt;Save and clear the command history accessing from context menu of input pane. 
-			The history will be saved into the file ~/.qgis2/console_history.txt&lt;/li&gt;
-			&lt;br&gt;
-			&lt;/ul&gt;
-		&lt;/td&gt;
-		&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/consoleHelp.png&quot; /&gt;&lt;/td&gt;
-	&lt;/tr&gt;
-&lt;/table&gt;
-&lt;b&gt;&lt;i&gt;Toolbar:&lt;/i&gt;&lt;/b&gt;
-	&lt;table width=&quot;100%&quot; id=&apos;toolbarConsole&apos;&gt;
-		&lt;tr&gt;
-			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconClearConsole.png&quot; /&gt;&lt;/td&gt;
-			&lt;td colspan=&quot;2&quot;&gt;Clear python console&lt;/td&gt;
-		&lt;/tr&gt;
-		&lt;tr&gt;
-			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconClassConsole.png&quot; /&gt;&lt;/td&gt;
-			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconProcessingConsole.png&quot; /&gt;&lt;/td&gt;
-			&lt;td&gt;Import Processing class&lt;/td&gt;
-		&lt;/tr&gt;
-		&lt;tr&gt;
-			&lt;td&gt;&lt;/td&gt;
-			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconQtCoreConsole.png&quot; /&gt;&lt;/td&gt;
-			&lt;td&gt;Import PyQt4.QtCore class&lt;/td&gt;
-		&lt;/tr&gt;
-		&lt;tr&gt;
-			&lt;td&gt;&lt;/td&gt;
-			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconQtGuiConsole.png&quot; /&gt;&lt;/td&gt;
-			&lt;td&gt;Tool to import PyQt4.QtGui class&lt;/td&gt;
-		&lt;/tr&gt;
-                &lt;tr&gt;
-			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconRunConsole.png&quot; /&gt;&lt;/td&gt;
-			&lt;td colspan=&quot;2&quot;&gt;Run command (like Enter key pressed)&lt;/td&gt;
-		&lt;/tr&gt;
-		&lt;tr&gt;
-			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconSettingsConsole.png&quot; /&gt;&lt;/td&gt;
-			&lt;td colspan=&quot;2&quot;&gt;Settings&lt;/td&gt;
-		&lt;/tr&gt;
-		&lt;tr&gt;
-			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconHelpConsole.png&quot; /&gt;&lt;/td&gt;
-			&lt;td colspan=&quot;2&quot;&gt;Help&lt;/td&gt;
-		&lt;/tr&gt;
-&lt;/table&gt;
-&lt;a name=&quot;editor&quot;&gt;
-&lt;h4&gt;Editor&lt;/h4&gt;
-&lt;/a&gt;
-&lt;b&gt;&lt;i&gt;Main features:&lt;/i&gt;&lt;/b&gt;
-&lt;table&gt;
-	&lt;tr&gt;
-		&lt;td&gt;
-			&lt;img src=&quot;qrc:/images/themes/default/console/editorHelp.png&quot; /&gt;
-			&lt;img src=&quot;qrc:/images/themes/default/console/classBrowserHelp.png&quot; /&gt;
-		&lt;/td&gt;
-		&lt;td&gt;
-			&lt;ul&gt;
-			&lt;li&gt;Code completion, highlighting syntax and calltips for the following APIs:
-				&lt;ol&gt;
-				&lt;li&gt;Python&lt;/li&gt;
-				&lt;li&gt;PyQGIS&lt;/li&gt;
-				&lt;li&gt;PyQt4&lt;/li&gt;
-				&lt;li&gt;QScintilla2&lt;/li&gt;
-				&lt;li&gt;osgeo-gdal-ogr&lt;/li&gt;
-				&lt;/ol&gt;
-			&lt;/li&gt;
-			&lt;br&gt;
-			&lt;li&gt;&lt;label&gt;Ctrl+Space&lt;/label&gt; to view the auto-completion list.&lt;/li&gt;
-			&lt;br&gt;
-			&lt;li&gt;Sharing code snippets via codepad.org.&lt;/li&gt;
-			&lt;br&gt;
-			&lt;li&gt;&lt;label&gt;Ctrl+4&lt;/label&gt; Syntax check.&lt;/li&gt; 
-			&lt;br&gt;
-			&lt;li&gt;Object inspector: a class and function browser.&lt;/li&gt;
-			&lt;br&gt;
-			&lt;li&gt;Go to an object definition with a mouse click. (from Object inspector)&lt;/li&gt;
-			&lt;br&gt;
-			&lt;li&gt;Execute code snippets with the &lt;label&gt;Enter selected&lt;/label&gt; command.&lt;/li&gt;
-			&lt;br&gt;
-			&lt;li&gt;Execute the whole script with the &lt;label&gt;Run script&lt;/label&gt; command 
-			(this creates a byte-compiled file with the extension .pyc)&lt;/li&gt;
-			&lt;br&gt;
-			&lt;/ul&gt;
-		&lt;/td&gt;
-	&lt;/tr&gt;
-&lt;/table&gt;
-&lt;a name=&quot;settings&quot;&gt;
-&lt;h4&gt;Settings&lt;/h4&gt;
-&lt;/a&gt;
-&lt;b&gt;&lt;i&gt;Further settings for python console:&lt;/i&gt;&lt;/b&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;label&gt;Autocompletion:&lt;/label&gt; If checked the code completion is enabled. You can get autocompletion
-from current document, from installed APIs and both from APIs and current document&lt;/li&gt;
-&lt;br&gt;
-&lt;li&gt;&lt;label&gt;Autocompletion threshold:&lt;/label&gt; Sets the threshold to display the autocompletion list (in chars typed)&lt;/li&gt;
-&lt;br&gt;
-&lt;li&gt;&lt;label&gt;Automatic parentheses insertion:&lt;/label&gt; If checked enables the autoclosing for bracket&lt;/li&gt;
-&lt;br&gt;
-&lt;li&gt;&lt;label&gt;Auto-save script before running:&lt;/label&gt; Allows you to save automatically the
-script to be executed in order to avoid to save it after any modification.
-This action will store a temporary file into the temporary system directory 
-that will be automatically deleted after running.&lt;/li&gt;
-&lt;br&gt;
-&lt;li&gt;&lt;label&gt;Using preloaded APIs file:&lt;/label&gt; You can choose whether use the preload APIs file or load some APIs files saved on your system.&lt;/li&gt;
-&lt;br&gt;
-&lt;li&gt;&lt;label&gt;Using prepared APIs file:&lt;/label&gt; If checked the *.pap file will be used for code completion. To generate a prepared APIs file you have to load least an *.api file and then compile it by clicking on &lt;label&gt;Compile Apis...&lt;/label&gt; button.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p style=&apos;border: 1px solid; background:#f6f6f6;&apos; align=&apos;justify&apos;&gt;
-	&lt;b&gt;Note:&lt;/b&gt; To save the state of console&apos;s widgets you have to close the Python Console 
-	from the close button. This allows you to save the geometry to be restored to the next start.
-&lt;/p&gt;
 </source>
         <translation type="unfinished"></translation>
     </message>
@@ -54102,6 +53957,236 @@ Note: Experimental plugins are generally unsuitable for production use. These pl
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1121"/>
+        <source>&lt;h1&gt;Heatmap Plugin Help&lt;/h1&gt;
+&lt;p&gt;The Heatmap plugin uses Kernel Density Estimation to create a density (heatmap)
+raster of an input point vector layer.  The density is calculated based on the
+number of points in a location, with larger numbers of clustered points resulting
+in larger values. Heatmaps allow easy identification of &quot;hotspots&quot; and
+clustering of points.&lt;/p&gt;
+
+&lt;h2&gt;Dialog Parameters&lt;/h2&gt;
+
+&lt;h3&gt;Input point layer&lt;/h3&gt;
+&lt;p&gt;The input is always a vector layer of point type. All the point vector layers that are currently loaded in the canvas are shown in the drop-down list. Click the dropdown button and select the desired layer.&lt;/p&gt;
+
+&lt;h3&gt;Output raster&lt;/h3&gt;
+&lt;p&gt;The output raster location and filename can be set by clicking the &lt;label&gt;...&lt;/label&gt; button next to the output raster textbox.&lt;br/&gt;
+&lt;b&gt;Note:&lt;/b&gt; The file format is automatically added depending upon the output format selected, if not explicitly given.&lt;/p&gt;
+
+&lt;h3&gt;Output format&lt;/h3&gt;
+&lt;p&gt;All the file creation supporting GDAL formats are available in the drop down list. Click and select the required output format for your file.&lt;br/&gt;
+&lt;b&gt;Note:&lt;/b&gt; GeoTiff and ERDAS Imagine .img formats are recommended. Some formats make the application crash. Kindly stick to the recommended formats until the crash issue is resolved or use other formats if you know GDAL supports it completely.&lt;/p&gt;
+
+&lt;h3&gt;Radius (bandwidth)&lt;/h3&gt;
+&lt;p&gt;Used to specify the heatmap search radius (or kernel bandwidth) in meters or map units. The radius specifies the distance around a point at which the influence
+  of the point will be felt. Larger values result in greater smoothing, but smaller values may show finer details and variation in point density.&lt;/p&gt;
+
+&lt;h3&gt;Advanced Options&lt;/h3&gt;
+
+&lt;h4&gt;Rows and Columns&lt;/h4&gt;
+&lt;p&gt;Used to change the dimensions of the output raster file. These values are also linked to the &lt;b&gt;Cell size X&lt;/b&gt; and &lt;b&gt;Cell size Y&lt;/b&gt; values. 
+Increasing the number of rows or colums will decrease the cell size and increase the file size of the output file. The values in Rows and Columns
+are also linked, so doubling the number of rows will automatically double the number of columns and the cell sizes will also be halved. The geographical area of the output raster will remain the same!&lt;/p&gt;
+
+&lt;h4&gt;Cell size X and Y&lt;/h4&gt;
+&lt;p&gt;Control the geographic size of each pixel in the output raster. Changing these values will also change the number of Rows and Columns in the output
+  raster.&lt;/p&gt;
+  
+&lt;h4&gt;Kernel shape&lt;/h4&gt;
+&lt;p&gt;The kernel shape controls the rate at which the influence of a point decreases as the distance from the point increases. Different kernels decay at
+different rates, so a triweight kernel gives features greater weight for distances closer to the point than the Epanechnikov kernel does. Consequently,
+triweight results in &quot;sharper&quot; hotspots, and Epanechnikov results in &quot;smoother&quot; hotspots. A number of standard kernel functions are available in QGIS,
+which are described and illustrated on &lt;a href=&quot;http://en.wikipedia.org/wiki/Kernel_(statistics)#Kernel_functions_in_common_use&quot;&gt;Wikipedia&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h4&gt;Decay ratio&lt;/h4&gt;
+&lt;p&gt;For triangular kernels, the decay ratio defines amount of influence that applies to the outermost pixels in the buffer radius. A value of 0 reflects a standard triangular kernel, where the influences drops to zero as the distance from the pixel to the point approaches the specified radius. In contrast, a value of 1 indicates that no falloff occurs as the distance from the point increases.&lt;/p&gt;
+
+&lt;h4&gt;Use radius from field&lt;/h4&gt;
+&lt;p&gt;Optionally, the value in a specified field can be used to control the kernel radius for each point in the input layer.&lt;/p&gt;
+
+&lt;h4&gt;Use weight from field&lt;/h4&gt;
+&lt;p&gt;Optionally, a attribute containing weights for points can be used to weight some points in the input layer more than others.&lt;/p&gt;
+
+&lt;h2&gt;Further Details&lt;/h2&gt;
+&lt;p&gt;Contact the author through aruntheguy at gmail dot com&lt;/p&gt;
+
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1247"/>
+        <source>&lt;style&gt;
+	#toolbarConsole td{
+		background: #f6f6f6;
+	}
+&lt;/style&gt;
+&lt;h3&gt;Python Console for QGIS&lt;/h3&gt;
+&lt;a href=&quot;#console&quot;&gt;Console&lt;/a&gt;&lt;br&gt;
+&lt;a href=&quot;#editor&quot;&gt;Editor&lt;/a&gt;&lt;br&gt;
+&lt;a href=&quot;#settings&quot;&gt;Settings&lt;/a&gt;&lt;br&gt;&lt;br&gt;
+&lt;table&gt;
+	&lt;tr&gt;
+		&lt;td&gt;
+			&lt;p align=&apos;justify&apos;&gt;
+				The QGIS Python Console is an interactive shell for the python command executions. 
+				It also has a python file editor that allows you to edit and save your python scripts. 
+				Both console and editor are based on PyQScintilla2 package.&lt;br&gt;
+				The console is split in two main panes, top and bottom one 
+				resizable by using the horizontal splitter. Output area pane is a widget read-only which 
+				shows the commands output. You can drag and drop or copy and paste text into input area and 
+				execute code snippets from the output pane by selecting some text and clicking on the 
+				&lt;label&gt;Enter selected&lt;/label&gt; command from the context menu. 
+				No matter if selected text contains the interpreter prompt (&gt;&gt;&gt;, ...). Input area pane is the interactive 
+				python shell for input commands.&lt;br&gt;To access to the python file editor use the 
+				&lt;label&gt;Show editor&lt;/label&gt; button 
+				from the toolbar. The editor allows to edit and save python file and it offers basic functionality 
+				for managing your code (comment and 
+				uncomment code, check syntax, share the code via codepad.org and much more).
+			&lt;/p&gt;
+		&lt;/td&gt;
+	&lt;/tr&gt;
+&lt;/table&gt;
+&lt;a name=&quot;console&quot;&gt;
+&lt;h4&gt;Console&lt;/h4&gt;
+&lt;/a&gt;
+&lt;b&gt;&lt;i&gt;Main features:&lt;/i&gt;&lt;/b&gt;
+&lt;table&gt;
+	&lt;tr&gt;
+		&lt;td&gt;
+			&lt;ul&gt;
+			&lt;li&gt;Code completion, highlighting syntax and calltips for the following APIs:
+				&lt;ol&gt;
+				&lt;li&gt;Python&lt;/li&gt;
+				&lt;li&gt;PyQGIS&lt;/li&gt;
+				&lt;li&gt;PyQt4&lt;/li&gt;
+				&lt;li&gt;QScintilla2&lt;/li&gt;
+				&lt;li&gt;osgeo-gdal-ogr&lt;/li&gt;
+				&lt;/ol&gt;
+			&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;&lt;label&gt;Ctrl+Alt+Space&lt;/label&gt; to view the auto-completion list.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;&lt;label&gt;Ctrl+Shift+Space&lt;/label&gt; to view the command history list.&lt;/li&gt;
+			&lt;br&gt;
+                        &lt;li&gt;Execute code snippets with the &lt;label&gt;Enter selected&lt;/label&gt; command from output pane.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Open QGIS API documentation by typing &lt;label&gt;_api&lt;/label&gt;.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Open PyQGIS Cookbook by typing &lt;label&gt;_pyqgis&lt;/label&gt;.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Save and clear the command history accessing from context menu of input pane. 
+			The history will be saved into the file ~/.qgis2/console_history.txt&lt;/li&gt;
+			&lt;br&gt;
+			&lt;/ul&gt;
+		&lt;/td&gt;
+		&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/consoleHelp.png&quot; /&gt;&lt;/td&gt;
+	&lt;/tr&gt;
+&lt;/table&gt;
+&lt;b&gt;&lt;i&gt;Toolbar:&lt;/i&gt;&lt;/b&gt;
+	&lt;table width=&quot;100%&quot; id=&apos;toolbarConsole&apos;&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconClearConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Clear python console&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconClassConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconProcessingConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;Import Processing class&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconQtCoreConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;Import PyQt4.QtCore class&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconQtGuiConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;Tool to import PyQt4.QtGui class&lt;/td&gt;
+		&lt;/tr&gt;
+                &lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconRunConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Run command (like Enter key pressed)&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconSettingsConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Settings&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconHelpConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Help&lt;/td&gt;
+		&lt;/tr&gt;
+&lt;/table&gt;
+&lt;a name=&quot;editor&quot;&gt;
+&lt;h4&gt;Editor&lt;/h4&gt;
+&lt;/a&gt;
+&lt;b&gt;&lt;i&gt;Main features:&lt;/i&gt;&lt;/b&gt;
+&lt;table&gt;
+	&lt;tr&gt;
+		&lt;td&gt;
+			&lt;img src=&quot;qrc:/images/themes/default/console/editorHelp.png&quot; /&gt;
+			&lt;img src=&quot;qrc:/images/themes/default/console/classBrowserHelp.png&quot; /&gt;
+		&lt;/td&gt;
+		&lt;td&gt;
+			&lt;ul&gt;
+			&lt;li&gt;Code completion, highlighting syntax and calltips for the following APIs:
+				&lt;ol&gt;
+				&lt;li&gt;Python&lt;/li&gt;
+				&lt;li&gt;PyQGIS&lt;/li&gt;
+				&lt;li&gt;PyQt4&lt;/li&gt;
+				&lt;li&gt;QScintilla2&lt;/li&gt;
+				&lt;li&gt;osgeo-gdal-ogr&lt;/li&gt;
+				&lt;/ol&gt;
+			&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;&lt;label&gt;Ctrl+Space&lt;/label&gt; to view the auto-completion list.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Sharing code snippets via codepad.org.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;&lt;label&gt;Ctrl+4&lt;/label&gt; Syntax check.&lt;/li&gt; 
+			&lt;br&gt;
+			&lt;li&gt;Object inspector: a class and function browser.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Go to an object definition with a mouse click. (from Object inspector)&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Execute code snippets with the &lt;label&gt;Enter selected&lt;/label&gt; command.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Execute the whole script with the &lt;label&gt;Run script&lt;/label&gt; command 
+			(this creates a byte-compiled file with the extension .pyc)&lt;/li&gt;
+			&lt;br&gt;
+			&lt;/ul&gt;
+		&lt;/td&gt;
+	&lt;/tr&gt;
+&lt;/table&gt;
+&lt;a name=&quot;settings&quot;&gt;
+&lt;h4&gt;Settings&lt;/h4&gt;
+&lt;/a&gt;
+&lt;b&gt;&lt;i&gt;Further settings for python console:&lt;/i&gt;&lt;/b&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;label&gt;Autocompletion:&lt;/label&gt; If checked the code completion is enabled. You can get autocompletion
+from current document, from installed APIs and both from APIs and current document&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Autocompletion threshold:&lt;/label&gt; Sets the threshold to display the autocompletion list (in chars typed)&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Automatic parentheses insertion:&lt;/label&gt; If checked enables the autoclosing for bracket&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Auto-save script before running:&lt;/label&gt; Allows you to save automatically the
+script to be executed in order to avoid to save it after any modification.
+This action will store a temporary file into the temporary system directory 
+that will be automatically deleted after running.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Using preloaded APIs file:&lt;/label&gt; You can choose whether use the preload APIs file or load some APIs files saved on your system.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Using prepared APIs file:&lt;/label&gt; If checked the *.pap file will be used for code completion. To generate a prepared APIs file you have to load least an *.api file and then compile it by clicking on &lt;label&gt;Compile Apis...&lt;/label&gt; button.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p style=&apos;border: 1px solid; background:#f6f6f6;&apos; align=&apos;justify&apos;&gt;
+	&lt;b&gt;Note:&lt;/b&gt; To save the state of console&apos;s widgets you have to close the Python Console 
+	from the close button. This allows you to save the geometry to be restored to the next start.
+&lt;/p&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/core/qgscontexthelp_texts.cpp" line="1418"/>
         <source>&lt;h3&gt;Options&lt;/h3&gt;
 This dialog allows you to select some basic options for QGIS. There are eight tabs:
@@ -54914,7 +54999,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="252"/>
         <source>Connect</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">اتصال</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="262"/>
@@ -55557,7 +55642,7 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <source>Eliminate sliver polygons</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">بریدن چند ضلعی</translation>
     </message>
     <message>
         <source>G&amp;eometry Tools</source>
@@ -55822,59 +55907,6 @@ Returns a string representation of a color based on its red, green, and blue com
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="818"/>
-        <source>&lt;h3&gt;ceil() function&lt;/h3&gt;
-Rounds a number upwards.
-
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;code&gt;ceil(value)&lt;/code&gt;&lt;br&gt;
-
-&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;code&gt;value&lt;/code&gt; - a number.
-&lt;br&gt;
-
-&lt;h4&gt;Example&lt;/h4&gt;
-&lt;!-- Show example of function.--&gt;
-&lt;code&gt;ceil(4.9) &amp;rarr; 5&lt;/code&gt;&lt;br&gt;
-&lt;code&gt;ceil(-4.9) &amp;rarr; -4&lt;/code&gt;&lt;br&gt;
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1466"/>
-        <source>&lt;h3&gt;toreal() function&lt;/h3&gt;
-Converts a string to real number. Nothing changed if a value cannot be converted to real (e.g &apos;123.56asd&apos; is invalid). Numbers are rounded after saving changes if the precision is smaller than the result of the conversion.
-
-&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
-     toreal(&lt;i&gt;string&lt;/i&gt;)&lt;/p&gt;
-
-&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;!-- List args for functions here--&gt;
-&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The String to convert to real number.&lt;/p&gt;
-
-&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
-&lt;!-- Show example of function.--&gt;
-     toreal(&apos;123.45&apos;) &amp;rarr; 123.45&lt;/p&gt;
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1117"/>
-        <source>&lt;h3&gt;xat() function&lt;/h3&gt;
-Retrieves a x coordinate of the current feature
-
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;code&gt;xat(i)&lt;/code&gt;
-
-&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;code&gt;i&lt;code&gt; - is int. index of point of a line (indices start at 0; negative values apply to the last index).
-
-&lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt;xat(1) &amp;rarr; 5&lt;/pre&gt;
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="996"/>
         <source>&lt;h3&gt;$numpages function&lt;/h3&gt;
 Returns the total number of pages in the composition.
@@ -55909,77 +55941,6 @@ This function takes two arguments.
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;rand(1, 10) &amp;rarr; 8&lt;/code&gt;&lt;br&gt;
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="260"/>
-        <source>&lt;h3&gt;floor() function&lt;/h3&gt;
-Rounds a number downwards.
-
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;code&gt;floor(value)&lt;/code&gt;&lt;br&gt;
-
-&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;code&gt;value&lt;/code&gt; - a number.
-&lt;br&gt;
-
-&lt;h4&gt;Example&lt;/h4&gt;
-&lt;!-- Show example of function.--&gt;
-&lt;code&gt;floor(4.9) &amp;rarr; 4&lt;/code&gt;&lt;br&gt;
-&lt;code&gt;floor(-4.9) &amp;rarr; -5&lt;/code&gt;&lt;br&gt;
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1155"/>
-        <source>&lt;h3&gt;toint() function&lt;/h3&gt;
-Converts a string to integer number. Nothing changed if a value cannot be converted to integer (e.g &apos;123asd&apos; is invalid).
-
-&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
-     toint(&lt;i&gt;string&lt;/i&gt;)&lt;/p&gt;
-
-&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;!-- List args for functions here--&gt;
-&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The String to convert to integer number.&lt;/p&gt;
-
-&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
-&lt;!-- Show example of function.--&gt;
-     toint(&apos;123&apos;) &amp;rarr; 123&lt;/p&gt;
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="738"/>
-        <source>&lt;h3&gt;yat() function&lt;/h3&gt;
-Retrieves a y coordinate of the current feature
-
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;code&gt;yat(i)&lt;/code&gt;
-
-&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;code&gt;i&lt;code&gt; - is int. index of point of a line (indices start at 0; negative values apply to the last index).
-
-&lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt;yat(1) &amp;rarr; 5&lt;/pre&gt;
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="379"/>
-        <source>&lt;h3&gt;tostring() function&lt;/h3&gt;
-Converts a number to string.
-
-&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
-     tostring(&lt;i&gt;number&lt;/i&gt;)&lt;/p&gt;
-
-&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;!-- List args for functions here--&gt;
-&lt;i&gt;number&lt;/i&gt; &amp;rarr; is integer or real.  The number to convert to string.&lt;/p&gt;
-
-&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
-&lt;!-- Show example of function.--&gt;
-     tostring(123) &amp;rarr; &apos;123&apos;&lt;/p&gt;
 </source>
         <translation type="unfinished"></translation>
     </message>
@@ -56058,6 +56019,24 @@ Restricts an input value to a specified range.
      clamp(1,11,10) &amp;rarr; 10 (&lt;i&gt;input&lt;/i&gt; is greater than maximum value of 10, so function returns 11)&lt;br&gt;
      
      
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1155"/>
+        <source>&lt;h3&gt;toint() function&lt;/h3&gt;
+Converts a string to integer number. Nothing changed if a value cannot be converted to integer (e.g &apos;123asd&apos; is invalid).
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     toint(&lt;i&gt;string&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The String to convert to integer number.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     toint(&apos;123&apos;) &amp;rarr; 123&lt;/p&gt;
 </source>
         <translation type="unfinished"></translation>
     </message>
@@ -56738,6 +56717,24 @@ from a &lt;code&gt;Interval&lt;/code&gt;
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1466"/>
+        <source>&lt;h3&gt;toreal() function&lt;/h3&gt;
+Converts a string to real number. Nothing changed if a value cannot be converted to real (e.g &apos;123.56asd&apos; is invalid). Numbers are rounded after saving changes if the precision is smaller than the result of the conversion.
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     toreal(&lt;i&gt;string&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The String to convert to real number.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     toreal(&apos;123.45&apos;) &amp;rarr; 123.45&lt;/p&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1562"/>
         <source>&lt;h3&gt;CASE expression&lt;/h3&gt;
 A conditional expression that can be used to evaluate multiple expressions and
@@ -57062,6 +57059,63 @@ Return a part of a string
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="260"/>
+        <source>&lt;h3&gt;floor() function&lt;/h3&gt;
+Rounds a number downwards.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;floor(value)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;code&gt;value&lt;/code&gt; - a number.
+&lt;br&gt;
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;floor(4.9) &amp;rarr; 4&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;floor(-4.9) &amp;rarr; -5&lt;/code&gt;&lt;br&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="379"/>
+        <source>&lt;h3&gt;tostring() function&lt;/h3&gt;
+Converts a number to string.
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     tostring(&lt;i&gt;number&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;number&lt;/i&gt; &amp;rarr; is integer or real.  The number to convert to string.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     tostring(123) &amp;rarr; &apos;123&apos;&lt;/p&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="409"/>
+        <source>&lt;h3&gt;ln() function&lt;/h3&gt;
+Returns the value of the natural logarithm of the passed expression.
+&lt;br&gt;
+This function takes one argument.
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;ln(value)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;code&gt;value&lt;/code&gt; - any positive number.
+&lt;br&gt;
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;ln(1) &amp;rarr; 0&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;ln(2.7182818284590452354) &amp;rarr; 1&lt;/code&gt;&lt;br&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="438"/>
         <source>&lt;h3&gt;format() function&lt;/h3&gt;
 Format a string using supplied arguments. 
@@ -57100,6 +57154,41 @@ Returns a string with the supplied regular expression replaced.
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="738"/>
+        <source>&lt;h3&gt;yat() function&lt;/h3&gt;
+Retrieves a y coordinate of the current feature
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;yat(i)&lt;/code&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;code&gt;i&lt;code&gt; - is int. index of point of a line (indices start at 0; negative values apply to the last index).
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt;yat(1) &amp;rarr; 5&lt;/pre&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="818"/>
+        <source>&lt;h3&gt;ceil() function&lt;/h3&gt;
+Rounds a number upwards.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;ceil(value)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;code&gt;value&lt;/code&gt; - a number.
+&lt;br&gt;
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;ceil(4.9) &amp;rarr; 5&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;ceil(-4.9) &amp;rarr; -4&lt;/code&gt;&lt;br&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="833"/>
         <source>&lt;h3&gt;regexp_substr() function&lt;/h3&gt;
 Returns the portion of a string which matches a supplied regular expression.
@@ -57115,6 +57204,22 @@ Returns the portion of a string which matches a supplied regular expression.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
      regexp_substr(&apos;abc123&apos;,&apos;(&amp;#92;&amp;#92;d+)&apos;) &amp;rarr; &apos;123&apos;&lt;/p&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1117"/>
+        <source>&lt;h3&gt;xat() function&lt;/h3&gt;
+Retrieves a x coordinate of the current feature
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;xat(i)&lt;/code&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;code&gt;i&lt;code&gt; - is int. index of point of a line (indices start at 0; negative values apply to the last index).
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt;xat(1) &amp;rarr; 5&lt;/pre&gt;
 </source>
         <translation type="unfinished"></translation>
     </message>
@@ -57569,26 +57674,6 @@ None
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="409"/>
-        <source>&lt;h3&gt;ln() function&lt;/h3&gt;
-Returns the value of the natural logarithm of the passed expression.
-&lt;br&gt;
-This function takes one argument.
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;code&gt;ln(value)&lt;/code&gt;&lt;br&gt;
-
-&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;code&gt;value&lt;/code&gt; - any positive number.
-&lt;br&gt;
-
-&lt;h4&gt;Example&lt;/h4&gt;
-&lt;!-- Show example of function.--&gt;
-&lt;code&gt;ln(1) &amp;rarr; 0&lt;/code&gt;&lt;br&gt;
-&lt;code&gt;ln(2.7182818284590452354) &amp;rarr; 1&lt;/code&gt;&lt;br&gt;
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1412"/>
         <source>&lt;h3&gt;color_hsva() function&lt;/h3&gt;
 Returns a string representation of a color based on its hue, saturation, value and alpha (transparency) attributes
@@ -57643,6 +57728,15 @@ Returns a string representation of a color based on its hue, saturation, value a
     <message>
         <source>Point y coordinate</source>
         <translation type="obsolete">نقطه Y مختصات</translation>
+    </message>
+</context>
+<context>
+    <name>geoprocessingThread</name>
+    <message>
+        <source>Following field names are longer than 10 characters:
+%s</source>
+        <translation type="obsolete">تعداد کاراکتر های نام فیلد بیشتر از ۱۰ کاراکتر است:
+%S</translation>
     </message>
 </context>
 <context>
