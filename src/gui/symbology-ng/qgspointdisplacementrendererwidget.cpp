@@ -180,7 +180,12 @@ void QgsPointDisplacementRendererWidget::on_mRendererSettingsButton_clicked()
   if ( mEmbeddedRendererWidget )
   {
     //create a dialog with the embedded widget
+#ifdef Q_WS_MAC
+    QDialog* d = new QDialog( this->window() );
+    d->setWindowModality( Qt::WindowModal );
+#else
     QDialog* d = new QDialog();
+#endif
     QGridLayout* layout = new QGridLayout( d );
     mEmbeddedRendererWidget->setParent( d );
     QDialogButtonBox* buttonBox = new QDialogButtonBox( d );
