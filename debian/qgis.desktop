@@ -49,7 +49,7 @@ GenericName[uk]=Геоінформаційна система
 GenericName[uz]=Geografik axborot tizimi
 Icon=qgis-icon
 TryExec=/usr/bin/qgis
-Exec=/usr/bin/qgis %F
+Exec=env QT_GRAPHICSSYSTEM=X11 /usr/bin/qgis %F
 Terminal=false
 StartupNotify=false
 Categories=Qt;Education;Science;Geography;
