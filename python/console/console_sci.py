@@ -192,17 +192,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         chekBoxAPI = self.settings.value("pythonConsole/preloadAPI", True, type=bool)
         chekBoxPreparedAPI = self.settings.value("pythonConsole/usePreparedAPIFile", False, type=bool)
         if chekBoxAPI:
-            apisdir = os.path.join(QgsApplication.pkgDataPath(), "python", "qsci_apis")
-            pap = os.path.join(apisdir, "pyqgis.pap")
-            mpap = os.path.join(apisdir, "pyqgis-master.pap")
-            if os.path.exists(mpap):  # override installed with master .pap build
-                pap = mpap
-            if QgsApplication.isRunningFromBuildDir():
-                bdir = os.path.dirname(QgsApplication.buildOutputPath())
-                bpap = os.path.join(bdir, "python", "qsci_apis", "pyqgis-master.pap")
-                if os.path.exists(bpap):
-                    # if not generated .pap exists, else fall back to preprepared one
-                    pap = bpap
+            pap = os.path.join(QgsApplication.pkgDataPath(), "python", "qsci_apis", "pyqgis.pap")
             self.api.loadPrepared(pap)
         elif chekBoxPreparedAPI:
             self.api.loadPrepared(self.settings.value("pythonConsole/preparedAPIFile"))
