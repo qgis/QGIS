@@ -39300,7 +39300,7 @@ Doorgaan?</translation>
     </message>
     <message>
         <source>Identifiable layers</source>
-        <translation>Identficeerbare lagen</translation>
+        <translation>Identificeerbare lagen</translation>
     </message>
     <message>
         <source>Layer</source>
@@ -42406,19 +42406,19 @@ standaarddeviatie x</translation>
     </message>
     <message>
         <source>cumulative cut</source>
-        <translation type="unfinished"></translation>
+        <translation>cumulatieve uitsnede</translation>
     </message>
     <message>
         <source>standard deviation</source>
-        <translation type="unfinished"></translation>
+        <translation>standaard deviatie</translation>
     </message>
     <message>
         <source>full extent</source>
-        <translation type="unfinished"></translation>
+        <translation>volledige gebied</translation>
     </message>
     <message>
         <source>sub extent</source>
-        <translation type="unfinished"></translation>
+        <translation>deel gebied</translation>
     </message>
     <message>
         <source>%1 %2 of %3.</source>
@@ -44179,6 +44179,33 @@ verbetering</translation>
     </message>
 </context>
 <context>
+    <name>QgsSmartGroupCondition</name>
+    <message>
+        <source>has the tag</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>is a member of group</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>has a part of name matching</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>does NOT have the tag</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>is NOT a member of group</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>has NO part of name matching</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsSmartGroupConditionWidget</name>
     <message>
         <source>Form</source>
@@ -44198,6 +44225,14 @@ verbetering</translation>
     <message>
         <source>The smart group name field is empty. Kindly provide a name</source>
         <translation>Het naamveld van de &quot;smart group&quot; is leeg. Voer een naam in</translation>
+    </message>
+    <message>
+        <source>ALL the constraints</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>any ONE of the constraints</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -46563,6 +46598,14 @@ Er was een probleem met uw symbolen database.</translation>
     <message>
         <source>Transparency %1%</source>
         <translation>Transparantie %1%</translation>
+    </message>
+    <message>
+        <source>Style Manager</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save in symbol library...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -53306,7 +53349,8 @@ Met veld Berekening kunt u attributen invullen met behulp van expressies.
 Displays a north arrow overlayed onto the map.
 &lt;p&gt;
 At present there is only one style available. You can adjust the angle of the arrow or let QGIS set the direction automatically. If you choose to let QGIS determine the direction, it makes its best guess as to how the arrow should be oriented. For placement of the arrow you have four options, corresponding to the four corners of the map canvas.</source>
-        <translation>&lt;h3&gt; Noordpijl Plugin&lt;/h3&gt;
+        <translatorcomment>Geen plugin meer maar sinds 1.8 standaard onderdeel van QGIS</translatorcomment>
+        <translation>&lt;h3&gt; Noordpijl&lt;/h3&gt;
 Toont een noordpijl op de kaart.
 &lt;p&gt;
 Momenteel is er slechts één stijl beschikbaar. Men kan de richting van de pijl aanpassen of die automatisch door QGIS laten bepalen. Indien er voor gekozen wordt om QGIS de richting te laten bepalen, zal deze de beste inschatting doen hoe de noordpijl moet worden georiënteerd. Voor het plaatsen van de noordpijl heb je vier opties, overeenkomend met de vier hoeken van het kaartbeeld.</translation>
@@ -53533,7 +53577,38 @@ This plugin supports basic HTML markup tags for formatting text. For example:
 &lt;/li&gt;
 &lt;/ul&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>Het is geen plugin meer, dus plugin uit de tekst gehaald!</translatorcomment>
+        <translation>&lt;h3&gt;Copyright Label Plugin&lt;/h3&gt;
+Tekent een copyright label met informatie.&lt;br/&gt;
+Je kunt naast het copyright label de gewenste tekst toevoegen op de kaart.
+&lt;p&gt;
+&lt;a href=&quot;#howto&quot;&gt;Werking&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#text&quot;&gt;Tekst opmaak&lt;/a&gt;&lt;br/&gt;
+
+&lt;a name=&quot;howto&quot;&gt;
+&lt;h4&gt;Werking&lt;/h4&gt;
+&lt;/a&gt;
+&lt;ol&gt;
+&lt;li&gt;Selecteer&lt;label&gt;Beeld &gt; Decoraties &gt; Copyright Label&lt;/label&gt; of gebruik de knop &lt;label&gt;Copyright Label&lt;/label&gt; van de werkbalk.
+&lt;li&gt;Geef de tekst die op de kaart geplaatst moet worden. Je kunt daarbij voor de opmaak HTML gebruiken.
+&lt;li&gt;Kies de plaatsing van het label via de keuzelijst&lt;label&gt;Plaats RechtsOnder&lt;/label&gt;
+&lt;li&gt;Zorg ervoor dat het aanvinkvak &lt;label&gt;Copyright Label tonen&lt;/label&gt; is aangevinkt.
+&lt;li&gt;Selecteer &lt;label&gt;OK&lt;/label&gt;.
+&lt;/ol&gt;
+&lt;a name=&quot;text&quot;&gt;
+&lt;h4&gt; Tekst opmaak &lt;/h4&gt;
+&lt;/a&gt;
+Met HTML tags kan de tekst van het Copyright Label van opmaak worden voorzien. Bijvoorbeeld:
+
+&lt;ul&gt;
+&lt;li&gt;&amp;lt;B&amp;gt;&lt;b&gt; Vet &lt;/b&gt;&amp;lt;/B&amp;gt;
+&lt;/li&gt;
+&lt;li&gt;&amp;lt;I&amp;gt;&lt;i&gt; Cursief &lt;/i&gt;&amp;lt;/I&amp;gt;
+&lt;/li&gt;
+&lt;li&gt;&amp;lt;U&amp;gt;&lt;u&gt; Onderstreept &lt;/u&gt;&amp;lt;/U&amp;gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Attribute table&lt;/h3&gt;
@@ -53588,7 +53663,58 @@ The &lt;label&gt;Field Calculator&lt;/label&gt; button in the attribute table al
 The results can be written to a new attribute column or it can be used to update values in an already existing column.&lt;br&gt;
 The vector layer needs to be in editing mode, before you can click on the &lt;label&gt;Field calculator&lt;/label&gt; icon to open the dialog.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Attributentabel&lt;/h3&gt;
+De attributentabel toont de object attribuutwaarden van de geselecteerde laag. Elke rij in de tabel komt overeen met 1 object van de kaart waarvan de attribuutwaarden te zien zijn in verschillende kolommen. Men kan objecten zoeken, selecteren verplaatsen en zelfs bewerken.  Standaard is de attributentabel een vrijstaand venster. Wanneer deze geopend is en niet zichtbaar is, dan is het venster waarschijnlijk verborgen achter het hoofdvenster van QGIS. Je kunt het venster echter ook vastzetten als onderdeel van het hoofdvenster van QGIS door het aanvinkvak &lt;label&gt;Open attributen tabel in een dock window&lt;/label&gt; in &lt;label&gt;Extra &gt; Opties &gt; Algemeen&lt;/label&gt;.&lt;p&gt;
+
+Bovenin het venster wordt informatie gegeven over aantallen objecten, eruit gefilterde, geselecteerde en totale aantal objecten.&lt;p&gt;
+&lt;p&gt;
+&lt;a href=&quot;#Selecting&quot;&gt;Selecteren&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#Sorting&quot;&gt;Sorteren&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#Filtering&quot;&gt;Filteren&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#Editing&quot;&gt;Bewerken&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#FieldCalc&quot;&gt;Veldberekening&lt;/a&gt;&lt;br/&gt;
+
+&lt;a name=&quot;Selecting&quot;&gt;
+&lt;h4&gt;Selecteren&lt;/h4&gt;
+&lt;/a&gt;
+Regels kunnen worden geselecteerd door te klikken op het regelnummer aan de linkerzijde van de rij. Opeenvolgende rijen kunnen worden geselecteerd met ingehouden linkermuisknop. Meerdere niet opeenvolgende rijen kunnen worden geselecteerd met ingehouden &lt;label&gt;Ctrl&lt;/label&gt; toets.&lt;br&gt;
+Een opeenvolgende selectie kan ook gemaakt worden door eerst een rij te selecteren en vervolgens de andere zijde van de selectie te selecteren door een regelnummer aan de linkerzijde te selecteren met de &lt;label&gt;Shift&lt;/label&gt; toets. Alle regels tussen de huidige cursur positie en de geselecteerde rij worden geselecteerd.
+
+&lt;a name=&quot;Sorting&quot;&gt;
+&lt;h4&gt;Sorteren&lt;/h4&gt;
+&lt;/a&gt;
+Elke kolom kan gesorteerd worden door te klikken op het kolomhoofd. Een kleine pijl geeft de sorteervolgorde aan ( naar beneden wijzend zijn de waarden van boven naar beneden aflopende gesorteerd, naar boven wijzend zijn de waarden van boven naar onder oplopend gesorteerd.).&lt;br&gt;
+Gebruik de knop &lt;label&gt;Verplaats selectie naar boven&lt;/label&gt; om de geselecteerde rijen altijd bovenin te plaatsen onafhankelijk van gebruikte sorteervolgorde. 
+
+&lt;a name=&quot;Filtering&quot;&gt;
+&lt;h4&gt;Filteren&lt;/h4&gt;
+&lt;/a&gt;
+Om alleen een deel van de data te doorzoeken kun je de filterknop gebruiken die je linksonderin kunt vinden. De volgende opties zijn beschikbaar.
+&lt;h5&gt;Toon Alle Objecten&lt;/h5&gt;
+Toont alle objecten van de laag.
+&lt;h5&gt;Toon geselecteerde objecten&lt;/h5&gt;
+Toont alle geselecteerde objecten.
+&lt;h5&gt;Toon objecten zichtbaar op de kaart&lt;/h5&gt;
+Toont alle objecten die momenteel getoond worden op de kaart, waarbij rekening wordt gehouden met het volledige kaartgebied en schaalgebaseerde zichtbaarheden.
+&lt;h5&gt;Toon gewijzigde en nieuwe objecten&lt;/h5&gt;
+Toont alleen gewijzigde en nieuwe objecten. In deze modus, worden objecten getoond die nog niet definitief zijn opgeslagen en is daarom een goed filter om de wijzigingen te beoordelen voor deze definitief op te slaan. Merk op dat verwijderde objecten niet worden getoond in deze modus.
+&lt;h5&gt;Kolomfilter&lt;/h5&gt;
+Een eenvoudig filter waarmee je op attribuutwaarde kunt filteren. Wanneer het attribuutveld tekst bevat, zal deze zoeken naar attribuutwaarden die (een deel van) de tekst bevat. Wanneer je zoekt op &lt;b&gt;Amsterdam&lt;/b&gt; zal deze ook het record tonen met &lt;b&gt;Nieuw Amsterdam&lt;/b&gt;. Druk op &lt;label&gt; Enter &lt;/label&gt; na het wijzigen van de filtertekst, of selecteer &lt;label&gt;Apply&lt;/label&gt;. Je kunt het aanvinkvak &lt;label&gt;Hoofdlettergevoelig&lt;/label&gt; uitvinken, zodat je &lt;b&gt;Amsterdam&lt;/b&gt; ook vindt wanneer de zoektekst &lt;b&gt;amsterd&lt;/b&gt;.is gegeven   
+&lt;h5&gt;Uitgebreid Filter&lt;/h5&gt;
+Voor meer complexe zoekopdrachten, bestaat er een krachtige expressie bouwer, die overeenkomt met de SQL WHERE opdracht. Graag verwijs ik naar de ingebouwde helptekst van de expressiebouwer voor de details over syntax.
+
+&lt;a name=&quot;Editing&quot;&gt;
+&lt;h4&gt;Bewerken&lt;/h4&gt;
+&lt;/a&gt;
+Om waarden te bewerken, dient de laag eerst te worden omgeschakeld naar de modus bewerken. Om naar de modus bewerken te switchen selecteer &lt;label&gt;Bewerken aan/uitzetten&lt;/label&gt; (de knop met het potloodje) of gebruik de toetsencombinatie &lt;label&gt;Ctrl + E&lt;/label&gt;. Dubbelklik vervolgens op de cel met de waarde die je wilt bewerken of selecteer een cel en gebruik de &lt;label&gt;Spatiebalk&lt;/label&gt; om een nieuwe waarde in te vullen. Je kunt met de pijltjestoetsen door de cellen navigeren en zo een andere cel selecteren. Je kunt voor elke kolom instellen welk wijzig-hulpmiddel je wilt gebruiken om waarden in te voeren in &lt;label&gt;Kaartlagen &gt; eigenschappen &gt; Velden&lt;/label&gt;  
+
+&lt;a name=&quot;FieldCalc&quot;&gt;
+&lt;h4&gt;Veld berekening&lt;/h4&gt;
+&lt;/a&gt;
+De knop &lt;label&gt;Veldberekening&lt;/label&gt; (de rekenmachine) in de attributentabel geeft de mogelijkheid om berekeningen uit te voeren met bestaande attribuutwaarden, bijvoorbeeld de lengte of oppervlakte van een lijn of polygoon object.&lt;br&gt;
+Het resultaat kan naar een nieuw attribuutveld worden geschreven of men kan de waarden van een bestaande attribuutveld overschrijven.&lt;br&gt;
+De vectorlaag moet in de bewerken modus staan, zodat de knop &lt;label&gt;Veld berekening&lt;/label&gt; geactiveerd is en kan worden gebruikt om het menu te openen.
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Project Properties&lt;/h3&gt;
@@ -53626,7 +53752,41 @@ The Coordinate Reference System (CRS) tab allows you to set the projection for t
 &lt;/a&gt;
 On this tab you can choose on which layers the identify tool will work.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Project Eigenschappen&lt;/h3&gt;
+Dit menu geeft de mogelijkheid om een aantal eigenschappen te wijzigen van het &lt;label&gt;Project&lt;/label&gt;. Een Project is een opgeslagen geheel van kaartlagen en hun instellingen en andere informatie die nodig is om het project weer te openen zoals deze was op het moment van opslaan.&lt;p&gt;
+
+&lt;a href=&quot;#general&quot;&gt;Tabblad Algemeen&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#crs&quot;&gt;Tabblad Coördinaten Referentie Systeem (CRS)&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#layers&quot;&gt;Tabblad Identificeerbare lagen&lt;/a&gt;&lt;br/&gt;
+
+&lt;a name=&quot;general&quot;&gt;
+&lt;h4&gt;Tabblad Algemeen&lt;/h4&gt;
+&lt;/a&gt;
+&lt;table border=1&gt;
+&lt;tr&gt;&lt;td&gt;&lt;label&gt;Project titel&lt;/label&gt;&lt;/td&gt;&lt;td&gt;Een beschrijvende naam voor het project die als titel wordt weergegeven in de bovenste balk van het QGIS applicatievenster.&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;label&gt;Selectie-kleur&lt;/label&gt;&lt;/td&gt;&lt;td&gt;De kleur waarmee geselecteerde objecten worden getoond op de kaart.&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;label&gt;Achtergrondkleur&lt;/label&gt;&lt;/td&gt;&lt;td&gt;De achtergrond kleur van de kaart.&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;label&gt;Paden opslaan&lt;/label&gt;&lt;/td&gt;&lt;td&gt;Geeft de mogelijkheid om gebruikte paden absoluut of relatief op te slaan t.o.v. het project bestand.&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;label&gt;Laageenheden&lt;/label&gt;&lt;/td&gt;&lt;td&gt;Kies de meest geschikte kaarteenheid die je wilt gebruiken voor de kaartlagen van het project.&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;label&gt;Precisie&lt;/label&gt;&lt;/td&gt;&lt;td&gt;Wanneer gekozen is voor handmatige instelling kun je zelf de precisie instellen van de coördinaten die worden getoond in de statusbalk. Wanneer de muis over de kaart beweegt zullen de coördinaten worden bijgewerkt met de precisie die jij hier hebt ingesteld. Automatisch is de standaard instelling zal de precisie aanpassen aan de gekozen kaarteenheid.&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;label&gt;Digitaliseren&lt;/label&gt;&lt;/td&gt;&lt;td&gt;De optie &lt;label&gt; Topologisch bewerken aanzetten &lt;/label&gt; is verplaatst naar het menu &lt;label&gt; Extras &gt; Snapping opties &gt; &lt;/label&gt; via dat menu kun je ervoor zorgen dat er gebruik wordt gemaakt van gezamenlijk grenzen tijden het bewerken en onderhouden van polygonen. Daarbij wordt bij het bewerken van een grens de geometrie van allebei de polygonen waar deze grens deel van uitmaakt bijgewerkt.&lt;p&gt;
+Om te voorkomen dat je alle puntjes van een grens weer exact moet digitaliseren kun je de optie &lt;label&gt;Voorkom kruisingen met nieuwe polygonen&lt;/label&gt; aanzetten. Geef daarbij de kaartlagen aan waarvoor dat moet gelden. Tijdens het digitaliseren kun je nu een deel van het polygoon ruim in het andere polygoon heenleggen. Het overlappende deel wordt langs de grens van de bestaande polygoon vervolgens netjes afgeknipt. &lt;p&gt;
+&lt;label&gt;Snapping opties&lt;/label&gt; ook dit onderdeel is verplaatst naar het menu &lt;label&gt; Extras &gt; Snapping opties &gt; &lt;/label&gt;Snapping waarmee je, voor elke kaartlaag,.ook de snapping tolerantie in pixels of kaarteenheden kunt instellen en deze snapping moet plaatsvinden (modus): &lt;label&gt;Naar hoekpunt&lt;/label&gt;, &lt;label&gt;naar lijnsegment&lt;/label&gt; of &lt;label&gt;Naar vertex en lijnsegment&lt;/label&gt; &lt;/td&gt;&lt;/tr&gt;
+
+&lt;/table&gt;
+&lt;a name=&quot;crs&quot;&gt;
+&lt;h4&gt;Tabblad Coordinaten Referentie Systeem (CRS)&lt;/h4&gt;
+&lt;/a&gt;
+Het tabblad Coördinaten Referentie Systeem (CRS) geeft de mogelijkheid om een kaartprojectie in te stellen voor het huidige project en om gelijktijdige CRS transformatie te gebruiken.
+&lt;p&gt;Activeer het aanvinkvakje &lt;label&gt;Gelijktijdige CRS Transformatie gebruiken&lt;/label&gt; wanneer je kaarten over elkaar heen wilt tekenen waarbij de CRS van de geladen kaartlagen niet allemaal dezelfde zijn. Kies vervolgens het CRS systeem waarmee de projectkaart getekend moet worden van de lijst van geografische en geprojecteerde coordinaten systemen.
+&lt;p&gt;Je kunt een coördinatensysteem vinden door een deel van de naam te geven of via de EPSG code (die van het nederlandse Rijksdriehoek systeem is overigens 28992).of de QGIS ID en vervolgens de knop &lt;label&gt;Vind&lt;/label&gt; te selecteren.
+&lt;p&gt;Een lijst van onlangs gebruikte coördinatensystemen zal onderin worden getoond, zodat je daaruit snel kunt selecteren.
+
+&lt;a name=&quot;layers&quot;&gt;
+&lt;h4&gt;Tabblad Identificeerbare lagen&lt;/h4&gt;
+&lt;/a&gt;
+Met dit tabblad kun je instellen voor welke kaartlagen de tool &apos;Objecten identificeren&apos; moet reageren.
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Add SpatiaLite Tables&lt;/h3&gt;
@@ -55691,7 +55851,26 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;week(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 104.285...&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;week() function&lt;/h3&gt;
+Extraheer het weeknummer uit een datum, of het aantal weken
+uit een &lt;code&gt;Interval&lt;/code&gt;
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;week(date)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;week(Interval)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumenten&lt;/h4&gt;
+&lt;code&gt;date&lt;/code&gt; - is date of datetime. De datum waaruit de week wordt verkregen.
+&lt;br&gt;
+&lt;code&gt;Interval&lt;/code&gt; - is Interval. De Interval waarmee het aantal weken wordt verkregen.
+
+&lt;h4&gt;Voorbeeld&lt;/h4&gt;
+&lt;!-- Laat voorbeeld van functie zien.--&gt;
+&lt;code&gt;week(&apos;2012-05-12&apos;) &amp;rarr; 19&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;week(tointerval(&apos;3 weeks&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;week(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 104.285...&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;CASE expression&lt;/h3&gt;
@@ -55723,7 +55902,35 @@ return a result.
     END
 &lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;CASE expression&lt;/h3&gt;
+Een conditionele expressie die gebruikt kan worden om meerdere expressies te evalueren en
+die een resultaat geeft.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;
+     CASE
+        WHEN &lt;i&gt;condition&lt;/i&gt; THEN &lt;i&gt;result&lt;/i&gt;
+        [ ...n ]
+        [ ELSE &lt;i&gt;result&lt;/i&gt; ]
+     END
+&lt;/pre&gt;
+[ ] markeert optionele componenten
+
+&lt;h4&gt;Argumenten&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  WHEN condition&lt;/i&gt; - De te evalueren conditionele expressie. &lt;br&gt;
+&lt;i&gt;  THEN result&lt;/i&gt; - Als &lt;i&gt;condition&lt;/i&gt; waar is dan wordt &lt;i&gt;result&lt;/i&gt; geevaluaeerd en gegeven. &lt;br&gt;
+&lt;i&gt;  ELSE result&lt;/i&gt; - Als geen van bovenstaande condities waar is dan wordt &lt;i&gt;result&lt;/i&gt; geevalueerd en gegeven. &lt;br&gt;
+
+&lt;h4&gt;Voorbeeld&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;pre&gt;
+    CASE
+        WHEN &lt;i&gt;&quot;column&quot; IS NULL&lt;/i&gt; THEN &lt;i&gt;&apos;None&apos;&lt;/i&gt;
+        ELSE &lt;i&gt;&quot;column&quot;&lt;/i&gt;
+    END
+&lt;/pre&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;right() function&lt;/h3&gt;
@@ -55742,14 +55949,32 @@ Returns a substring that contains the &lt;i&gt;n&lt;/i&gt; rightmost characters 
 &lt;code&gt;right(&apos;Hello World&apos;,5) &amp;rarr; &apos;World&apos;&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;right() functie&lt;/h3&gt;
+Geeft een substring die het &lt;i&gt;n&lt;/i&gt; meest rechtse teken van de tekenreeks geeft.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;right(string, pos)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumenten&lt;/h4&gt;
+&lt;code&gt;string&lt;/code&gt; - is tekenreeks. De tekenreeks.
+&lt;br&gt;
+&lt;code&gt;length&lt;/code&gt; - is int. Het aantal karakters vanaf rechts dat wordt verkregen.
+
+&lt;h4&gt;Voorbeeld&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;right(&apos;Hello World&apos;,5) &amp;rarr; &apos;World&apos;&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
         <source>
 &lt;h3&gt;Color Group&lt;/h3&gt;
 This group contains functions for manipulating colors
 </source>
-        <translation type="unfinished"></translation>
+        <translation>
+&lt;h3&gt;Kleur Groep&lt;/h3&gt;
+Deze groep bevat functies om kleuren te manipuleren
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;length() function&lt;/h3&gt;
@@ -55766,7 +55991,20 @@ Returns the length of a string.
 &lt;!-- Show example of function.--&gt;
      length(&apos;HELLO&apos;) &amp;rarr; 5&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;length() functie&lt;/h3&gt;
+Geeft de lengte van een string.
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     length(&lt;i&gt;string&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumenten&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is tekenreeks.  De tekenreeks waarvan de lengte wordt berekend.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     length(&apos;HELLO&apos;) &amp;rarr; 5&lt;/p&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;upper() function&lt;/h3&gt;
@@ -55783,7 +56021,20 @@ Converts a string to upper case letters.
 &lt;!-- Show example of function.--&gt;
      upper(&apos;hello WOrld&apos;) &amp;rarr; &apos;HELLO WORLD&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;upper() functie&lt;/h3&gt;
+Converteert een tekenreeks naar hoofdletters.
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     upper(&lt;i&gt;string&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumenten&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is tekenreeks.  De tekenreeks die wordt geconverteerd naar hoofdletters.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Voorbeeld&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     upper(&apos;hello WOrld&apos;) &amp;rarr; &apos;HELLO WORLD&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;left() function&lt;/h3&gt;
@@ -55802,7 +56053,22 @@ Returns a substring that contains the &lt;i&gt;n&lt;/i&gt; leftmost characters o
 &lt;code&gt;left(&apos;Hello World&apos;,5) &amp;rarr; &apos;Hello&apos;&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;left() functie&lt;/h3&gt;
+Geeft een subtekenreeks die de &lt;i&gt;n&lt;/i&gt; meest linkse tekens van de tekenreeks bevat.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;left(string, length)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumenten&lt;/h4&gt;
+&lt;code&gt;string&lt;/code&gt; - is tekenreeks. De tekenreeks.
+&lt;br&gt;
+&lt;code&gt;length&lt;/code&gt; - is int. Het aantal karakters vanaf links dat wordt gegeven.
+
+&lt;h4&gt;Voorbeeld&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;left(&apos;Hello World&apos;,5) &amp;rarr; &apos;Hello&apos;&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;$scale function&lt;/h3&gt;
@@ -55818,7 +56084,19 @@ Note: This function is only available in some contexts and will be 0 otherwise.
 
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;$scale functie&lt;/h3&gt;
+Geeft de huidige schaal van de map canvas.
+&lt;br&gt;
+NB: Deze functie is alleen beschikbaar in sommige contexten en zal anders 0 zijn. 
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;$scale&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Voorbeeld&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;$scale &amp;rarr; 10000&lt;/code&gt;&lt;br&gt;
+
+
+</translation>
     </message>
     <message>
         <source>
@@ -55838,7 +56116,23 @@ Returns a string representation of a color based on its red, green, and blue com
 &lt;!-- Show example of function.--&gt;
      color_rgb(255,127,0) &amp;rarr; &apos;#ff7f00&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>
+&lt;h3&gt;color_rgb() functie&lt;/h3&gt;
+Geeft een tekenreeksaanduiding van een kleur gebaseerd op zijn red, green en blue componenten
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     color_rgb(&lt;i&gt;red, green, blue&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumenten&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  red&lt;/i&gt; &amp;rarr; de red component als een integer waarde van 0 tot 255.&lt;br&gt;
+&lt;i&gt;  green&lt;/i&gt; &amp;rarr; de green component als een integer waarde van 0 tot 255.&lt;br&gt;
+&lt;i&gt;  blue&lt;/i&gt; &amp;rarr; de blue component als een integer waarde van 0 tot 255.&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Voorbeeld&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     color_rgb(255,127,0) &amp;rarr; &apos;#ff7f00&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;$numpages function&lt;/h3&gt;
@@ -55854,7 +56148,19 @@ None
 &lt;pre&gt;$numpages &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;$numpages functie&lt;/h3&gt;
+Geeft het totaal aantal pagina&apos;s in de compositie.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$numpages&lt;/pre&gt;
+
+&lt;h4&gt;Argumenten&lt;/h4&gt;
+Geen
+
+&lt;h4&gt;Voorbeeld&lt;/h4&gt;
+&lt;pre&gt;$numpages &amp;rarr; 42&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;rand() function&lt;/h3&gt;
@@ -55874,7 +56180,23 @@ This function takes two arguments.
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;rand(1, 10) &amp;rarr; 8&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>rand() functie&lt;/h3&gt;
+Geeft een random integer binnen de range weergegeven door het minimum en 
+maximum argument (inclusive).
+&lt;br&gt;
+Deze functie heeft twee argumenten.
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;rand(min, max)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumenten&lt;/h4&gt;
+&lt;code&gt;min&lt;/code&gt; - een integer die het kleinst mogelijke gewenste random getal representeert.&lt;br&gt;
+&lt;code&gt;max&lt;/code&gt; - een integer die het grootst mogelijke gewenste random getal representeert.
+&lt;br&gt;
+
+&lt;h4&gt;Voorbeeld&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;rand(1, 10) &amp;rarr; 8&lt;/code&gt;&lt;br&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;$rownum function&lt;/h3&gt;
@@ -55890,7 +56212,19 @@ None
 &lt;pre&gt;$rownum &amp;rarr; 4711&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;$rownum functie&lt;/h3&gt;
+Geeft het nummer van de huidige rij.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$rownum&lt;/pre&gt;
+
+&lt;h4&gt;Argumenten&lt;/h4&gt;
+Geen
+
+&lt;h4&gt;Voorbeeld&lt;/h4&gt;
+&lt;pre&gt;$rownum &amp;rarr; 4711&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;atan2() function&lt;/h3&gt;
@@ -55909,7 +56243,22 @@ arguments to determine the quadrant of the result
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      atan2(1.0, 1.732) &amp;rarr; 0.523611477769969&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;atan2() functie&lt;/h3&gt;
+Geeft de arcustangens van y/x waarbij de tekens van de twee 
+argumenten worden gebruikt om het quadrant van het resultaat te bepalen
+
+
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     atan2(&lt;i&gt;real&lt;/i&gt;, &lt;i&gt;real&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; y coordinate difference&lt;br&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; x coordinate difference&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+     atan2(1.0, 1.732) &amp;rarr; 0.523611477769969&lt;/p&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;sin() function&lt;/h3&gt;
@@ -55925,7 +56274,19 @@ Returns sinus of an angle.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      sin(1.571) &amp;rarr; 0.999999682931835&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;sin() functie&lt;/h3&gt;
+Geeft de sinus van een hoek.
+
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     sin(&lt;i&gt;real&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumenten&lt;/h4&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; hoek in radialen.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Voorbeeld&lt;/h4&gt;
+     sin(1.571) &amp;rarr; 0.999999682931835&lt;/p&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;clamp() function&lt;/h3&gt;
@@ -55948,7 +56309,26 @@ Restricts an input value to a specified range.
      
      
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;clamp() functie&lt;/h3&gt;
+Beperkt een inputwaarde tot een specifieke range.
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     clamp(&lt;i&gt;minimum&lt;/i&gt;,&lt;i&gt;input&lt;/i&gt;,&lt;i&gt;maximum&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumenten&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  minimum&lt;/i&gt; &amp;rarr; De kleinste waarde &lt;i&gt;input&lt;/i&gt; kan gebruikt worden.&lt;br&gt;
+&lt;i&gt;  input&lt;/i&gt; &amp;rarr; een waarde welke beperkt wordt tot de range gespecificeert door &lt;i&gt;minimum&lt;/i&gt; en &lt;i&gt;maximum&lt;/i&gt;.&lt;br&gt;
+&lt;i&gt;  maximum&lt;/i&gt; &amp;rarr; De hoogste waarde &lt;i&gt;input&lt;/i&gt; kan gebruikt worden.&lt;br&gt;
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     clamp(1,5,10) &amp;rarr; 5 (&lt;i&gt;input&lt;/i&gt; ligt tussen 1 and 10 en is dus onveranderd)&lt;br&gt;
+     clamp(1,0,10) &amp;rarr; 1 (&lt;i&gt;input&lt;/i&gt; is minder dan de minimumwaarde van 1, dus geeft de functie 1)&lt;br&gt;
+     clamp(1,11,10) &amp;rarr; 10 (&lt;i&gt;input&lt;/i&gt; is groter dan de maximumwaarde van 10, dus geeft de function 11)&lt;br&gt;
+     
+     
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;month() function&lt;/h3&gt;
@@ -55971,7 +56351,26 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;month(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 4.033...&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;month() functie&lt;/h3&gt;
+Extraheert het maand-deel uit een datum, of het aantal maanden
+uit een &lt;code&gt;Interval&lt;/code&gt;
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;month(date)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;month(Interval)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumenten&lt;/h4&gt;
+&lt;code&gt;date&lt;/code&gt; - is date of datetime. De datum waaruit de maand wordt geextraheerd.
+&lt;br&gt;
+&lt;code&gt;Interval&lt;/code&gt; - is Interval. De Interval waaruit het aantal maanden wordt gegeven.
+
+&lt;h4&gt;Voorbeeld&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;month(&apos;2012-05-12&apos;) &amp;rarr; 05&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;month(tointerval(&apos;3 months&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;month(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 4.033...&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;$area function&lt;/h3&gt;
@@ -55987,7 +56386,19 @@ None
 &lt;pre&gt;$area &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;$area functie&lt;/h3&gt;
+Geeft het oppervlak van het huidige object.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$area&lt;/pre&gt;
+
+&lt;h4&gt;Argumenten&lt;/h4&gt;
+Geen
+
+&lt;h4&gt;Voorbeeld&lt;/h4&gt;
+&lt;pre&gt;$area &amp;rarr; 42&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;day() function&lt;/h3&gt;
@@ -56010,7 +56421,26 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;day(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 730&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;day() functie&lt;/h3&gt;
+Extraheert de dag uit een datum,of het aantal dagen
+uit een &lt;code&gt;Interval&lt;/code&gt;
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;day(date)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;day(Interval)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumenten&lt;/h4&gt;
+&lt;code&gt;date&lt;/code&gt; - is date of datetime. De datum waaruit de dag wordt geextraheerd.
+&lt;br&gt;
+&lt;code&gt;Interval&lt;/code&gt; - is Interval. De interval waaruit het aantal dagen wordt geextraheerd.
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;day(&apos;2012-05-12&apos;) &amp;rarr; 12&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;day(tointerval(&apos;3 days&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;day(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 730&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;todate() function&lt;/h3&gt;
@@ -56026,7 +56456,20 @@ Convert a string into Qt data type.
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;todate(&apos;2012-05-04&apos;) &amp;rarr; 2012-05-04&lt;/code&gt;&lt;br&gt;</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>Is dit een fout? Qt data type ipvQt date type?</translatorcomment>
+        <translation>&lt;h3&gt;todate() functie&lt;/h3&gt;
+Converteert een tekenreeks naar een Qt datatype.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;todate(&apos;string&apos;)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumenten&lt;/h4&gt;
+&lt;code&gt;string&lt;/code&gt; - is tekenreeks in het &apos;Qt datum&apos; formaat.
+&lt;br&gt;
+
+&lt;h4&gt;Voorbeeld&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;todate(&apos;2012-05-04&apos;) &amp;rarr; 2012-05-04&lt;/code&gt;&lt;br&gt;</translation>
     </message>
     <message>
         <source>&lt;h3&gt;lpad() function&lt;/h3&gt;
@@ -56063,7 +56506,19 @@ Returns arcuscosinus of a value in radians.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      acos(0.5) &amp;rarr; 1.0471975511966&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;acos() functie&lt;/h3&gt;
+Geeft de arcuscosinus van een waarde in radialen.
+
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     acos(&lt;i&gt;real&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumenten&lt;/h4&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; cos van een hoek.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Voorbeeld&lt;/h4&gt;
+     acos(0.5) &amp;rarr; 1.0471975511966&lt;/p&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;log() function&lt;/h3&gt;
@@ -56089,7 +56544,9 @@ This function takes two arguments.
         <source>&lt;h3&gt;Geometry Group&lt;/h3&gt;
 This group contains functions that operate on geometry objects e.g length, area.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Geometrie Groep&lt;/h3&gt;
+Deze groep bevat functies voor geometrie-objecten zoals lengten, oppervlakken.
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;$page function&lt;/h3&gt;
@@ -56105,7 +56562,19 @@ None
 &lt;pre&gt;$page &amp;rarr; 2&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;$page functie&lt;/h3&gt;
+Geeft het huidige paginanummer binnen een compositie.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$page&lt;/pre&gt;
+
+&lt;h4&gt;Argumenten&lt;/h4&gt;
+Geen
+
+&lt;h4&gt;Voorbeeld&lt;/h4&gt;
+&lt;pre&gt;$page &amp;rarr; 2&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;strpos() function&lt;/h3&gt;
@@ -56126,7 +56595,24 @@ Returns -1 if the expression isn&apos;t found.
      strpos(&apos;HELLO WORLD&apos;,&apos;WORLD&apos;) &amp;rarr; 6&lt;br&gt;
      strpos(&apos;HELLO WORLD&apos;,&apos;GOODBYE&apos;) &amp;rarr; -1&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;strpos() functie&lt;/h3&gt;
+Geeft de index van een reguliere expressie in een tekenreeks.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+     strpos(&lt;i&gt;haystack&lt;/i&gt;, &lt;i&gt;needle&lt;/i&gt;)
+&lt;br&gt;&lt;br&gt;
+Geeft -1 als de expressie niet wordt gevonden.
+
+&lt;p&gt;&lt;h4&gt;Argumenten&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  haystack&lt;/i&gt; &amp;rarr; is tekenreeks.  De tekenreeks die wordt gezocht.&lt;br&gt;
+&lt;i&gt;  needle&lt;/i&gt; &amp;rarr; is nummer.  De reguliere expresie die wordt gezocht.&lt;br&gt;
+
+&lt;h4&gt;Voorbeeld&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     strpos(&apos;HELLO WORLD&apos;,&apos;WORLD&apos;) &amp;rarr; 6&lt;br&gt;
+     strpos(&apos;HELLO WORLD&apos;,&apos;GOODBYE&apos;) &amp;rarr; -1&lt;br&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;exp() function&lt;/h3&gt;
@@ -56142,7 +56628,18 @@ Returns exponential of an value.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      exp(1.0) &amp;rarr; 2.71828182845905&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;exp() functie&lt;/h3&gt;
+Geeft de exponent van een waarde
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     exp(&lt;i&gt;real&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumenten&lt;/h4&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; nummer.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Voorbeeld&lt;/h4&gt;
+     exp(1.0) &amp;rarr; 2.71828182845905&lt;/p&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;rpad() function&lt;/h3&gt;
@@ -56188,7 +56685,27 @@ use &lt;code&gt;round(decimal)&lt;/code&gt; to round to the nearest integer&lt;b
 
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;round() functie&lt;/h3&gt;
+Rond een decimaal nummer af op een x aantal plaatsen.
+&lt;br&gt;
+Deze functie kent twee argumenten, afhankelijk van wat is benodigd.
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;round(decimal,places)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;round(decimal)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumenten&lt;/h4&gt;
+&lt;code&gt;decimal&lt;/code&gt; - is decimaal. Het decimale nummer dat wordt afgerond.
+&lt;br&gt;
+&lt;code&gt;places&lt;/code&gt; - is int. Het aantal plaatsen waarop de decimaal wordt afgerond. Kan negatief zijn.
+
+&lt;h4&gt;Voorbeeld&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;round(1234.567, 2 ) &amp;rarr; 1234.57&lt;/code&gt;&lt;br&gt;
+gebruik &lt;code&gt;round(decimal)&lt;/code&gt; om af te ronden tot de dichts nabij gelegen integer&lt;br&gt;
+&lt;code&gt;round(1234.567) &amp;rarr; 1235&lt;/code&gt;&lt;br&gt;
+
+
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;$now function&lt;/h3&gt;
@@ -56204,7 +56721,19 @@ None
 &lt;pre&gt;$now &amp;rarr; 2012-07-22T13:24:57&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;$now functie&lt;/h3&gt;
+Geeft de actuele datum en tijd
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$now&lt;/pre&gt;
+
+&lt;h4&gt;Argumenten&lt;/h4&gt;
+Geen
+
+&lt;h4&gt;Voorbeeld&lt;/h4&gt;
+&lt;pre&gt;$now &amp;rarr; 2012-07-22T13:24:57&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;scale_exp() function&lt;/h3&gt;
@@ -56242,7 +56771,9 @@ accelerating as the input values approach the domain maximum. Smaller exponents 
         <source>&lt;h3&gt;Date and Time Group&lt;/h3&gt;
 This group contains functions for handling date and time data.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Datum en tijdgroup&lt;/h3&gt;
+Deze groep bevat functies voor gebruik van datum en tijddata.
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;$id function&lt;/h3&gt;
@@ -56258,7 +56789,19 @@ None
 &lt;pre&gt;$id &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;$id functie&lt;/h3&gt;
+Geeft het object-id van de actuele rij.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$id&lt;/pre&gt;
+
+&lt;h4&gt;Argumenten&lt;/h4&gt;
+Geen
+
+&lt;h4&gt;Voorbeeld&lt;/h4&gt;
+&lt;pre&gt;$id &amp;rarr; 42&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;$perimeter function&lt;/h3&gt;

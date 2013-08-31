@@ -39,6 +39,7 @@ class MissingDependencyDialog(QtGui.QDialog):
         self.setWindowTitle("Missing dependency")
         layout = QVBoxLayout()
         browser = QtGui.QTextBrowser()
+        browser.setOpenLinks(False)
         browser.anchorClicked.connect(self.linkClicked)
         browser.setHtml(self.msg)
         button = QPushButton()
@@ -53,7 +54,7 @@ class MissingDependencyDialog(QtGui.QDialog):
         QtCore.QMetaObject.connectSlotsByName(self)
 
     def linkClicked(self, url):
-        webbrowser.open(str(url))
+        webbrowser.open(url.toString())
 
     def closeButtonPressed(self):
         self.close()

@@ -127,17 +127,51 @@ SET(QGIS_PYTHON_DIR ${PYTHON_SITE_PACKAGES_DIR}/qgis)
 IF(WITH_QSCIAPI)
   # wait until after python module builds for api files to be available
   SET(QGIS_PYTHON_API_FILE "${CMAKE_BINARY_DIR}/python/qsci_apis/PyQGIS.api")
-  # create empty destination api file
-  FILE(WRITE "${QGIS_PYTHON_API_FILE}" "")
 
-  # run update/concatenate command after last python module is built (currently python_module_qgis_gui)
-  ADD_CUSTOM_COMMAND(TARGET python_module_qgis_gui
+  ADD_CUSTOM_TARGET(qsci-api ALL
+    DEPENDS python_module_qgis_gui python_module_qgis_core python_module_qgis_analysis python_module_qgis_networkanalysis)
+
+  # run update/concatenate command
+  ADD_CUSTOM_COMMAND(TARGET qsci-api
     POST_BUILD
     COMMAND "${CMAKE_COMMAND}" -P "${CMAKE_SOURCE_DIR}/cmake/QsciAPI.cmake"
     WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
     COMMENT "Generating pyqgis api file" VERBATIM)
 
   INSTALL(FILES ${QGIS_PYTHON_API_FILE} DESTINATION "${QGIS_DATA_DIR}/python/qsci_apis")
+
+  # create targets for generating console auto-completion *.pap binary file
+  # these take too long to build (> 1 minute) for targets to have ALL property
+  SET(APIS_SRC_DIR "${CMAKE_SOURCE_DIR}/python/qsci_apis")
+  SET(APIS_BIN_DIR "${CMAKE_BINARY_DIR}/python/qsci_apis")
+
+  # generate a local-only .pap file based upon current master branch,
+  #   which will override (but not replace) the default .pap from source
+  # run before 'make install' to have the local-only .pap file included in the install;
+  #   console will use it when running from build directory, regardless of whether it is installed
+  ADD_CUSTOM_TARGET(qsci-pap-master
+    DEPENDS qsci-api ${QGIS_PYTHON_API_FILE})
+
+  SET(PAP_NAME "pyqgis-master.pap")
+  ADD_CUSTOM_COMMAND(TARGET qsci-pap-master
+    POST_BUILD
+    COMMAND ${PYTHON_EXECUTABLE} "${APIS_SRC_DIR}/generate_console_pap.py" "${PAP_NAME}" "${APIS_SRC_DIR}" "${APIS_BIN_DIR}"
+    WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
+    COMMENT "Generating local-only ${PAP_NAME} for console auto-completion (MAY TAKE > 1 MINUTE!)" VERBATIM)
+
+  INSTALL(FILES "${APIS_BIN_DIR}/pyqgis-master.pap" DESTINATION "${QGIS_DATA_DIR}/python/qsci_apis")
+
+  # generate a .pap file to be immediately installed in QGIS source tree (the default .pap)
+  ADD_CUSTOM_TARGET(qsci-pap-src
+    DEPENDS qsci-api ${QGIS_PYTHON_API_FILE})
+
+  SET(PAP_NAME "pyqgis.pap")
+  ADD_CUSTOM_COMMAND(TARGET qsci-pap-src
+    POST_BUILD
+    COMMAND ${PYTHON_EXECUTABLE} "${APIS_SRC_DIR}/generate_console_pap.py" "${PAP_NAME}" "${APIS_SRC_DIR}" "${APIS_SRC_DIR}"
+    WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
+    COMMENT "Generating ${PAP_NAME} for console auto-completion (MAY TAKE > 1 MINUTE!)" VERBATIM)
+
 ENDIF(WITH_QSCIAPI)
 
 # Plugin utilities files to copy to staging or install

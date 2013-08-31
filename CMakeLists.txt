@@ -86,7 +86,7 @@ IF (WITH_BINDINGS)
   SET (WITH_STAGED_PLUGINS TRUE CACHE BOOL "Stage-install core Python plugins to run from build directory? (utilities and console are always staged)")
   SET (WITH_PY_COMPILE FALSE CACHE BOOL "Determines whether Python modules in staged or installed locations are byte-compiled")
   # concatenate QScintilla2 API files
-  SET (WITH_QSCIAPI TRUE CACHE BOOL "Determines whether the QScintilla2 API files will be updated and concatenated")
+  SET (WITH_QSCIAPI TRUE CACHE BOOL "Whether to generate PyQGIS QScintilla2 API file. Run 'make qsci-pap-master or qsci-pap-src' in between QGIS build and install, to generate .pap file for console auto-completion.")
   # path to custom Python framework on Mac
   IF (APPLE)
     SET (PYTHON_CUSTOM_FRAMEWORK "" CACHE PATH "Path to custom Python.framework on Mac. (should not have to specify other Python options)")
