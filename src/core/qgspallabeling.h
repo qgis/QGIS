@@ -415,12 +415,7 @@ class CORE_EXPORT QgsPalLayerSettings
     /** Get a data defined property pointer
      * @note added in 1.9, helpful for Python access
      */
-    QgsDataDefined* dataDefinedProperty( DataDefinedProperties p );
-
-    /** Get current data defined properties
-     * @note added in 1.9, helpful for Python access
-     */
-    QList<QgsPalLayerSettings::DataDefinedProperties> dataDefinedPropertyList();
+    QgsDataDefined* dataDefinedProperty( QgsPalLayerSettings::DataDefinedProperties p );
 
     /** Set a property as data defined
      * @note added in 1.9, helpful for Python access
@@ -461,8 +456,8 @@ class CORE_EXPORT QgsPalLayerSettings
      */
     bool dataDefinedUseExpression( QgsPalLayerSettings::DataDefinedProperties p ) const;
 
-    /**Stores field names for data defined layer properties*/
-    //! @note not available in python bindings
+    /** Map of current data defined properties
+     */
     QMap< QgsPalLayerSettings::DataDefinedProperties, QgsDataDefined* > dataDefinedProperties;
 
 
