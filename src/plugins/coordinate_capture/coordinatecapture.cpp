@@ -260,7 +260,7 @@ void CoordinateCapture::showOrHide()
 void CoordinateCapture::unload()
 {
   // remove the GUI
-  mQGisIface->removePluginVectorMenu( "&Coordinate Capture", mQActionPointer );
+  mQGisIface->removePluginVectorMenu( tr( "&Coordinate Capture" ), mQActionPointer );
   mQGisIface->removeVectorToolBarIcon( mQActionPointer );
   mpMapTool->deactivate();
   delete mpMapTool;

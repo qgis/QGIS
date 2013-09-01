@@ -115,7 +115,7 @@ void Topol::run()
 void Topol::unload()
 {
   // remove the GUI
-  mQGisIface->removePluginVectorMenu( "&Topology Checker", mQActionPointer );
+  mQGisIface->removePluginVectorMenu( tr( "&Topology Checker" ), mQActionPointer );
   mQGisIface->removeVectorToolBarIcon( mQActionPointer );
   delete mQActionPointer;
 }
