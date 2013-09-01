@@ -18,4 +18,3 @@ ParemeterString|-mode.vector.fieldname|Geometry index field name|DN
 ParameterNumber|-mode.vector.tilesize|Tile size|0|None|1024
 ParameterNumber|-mode.vector.startlabel|Starting geometry index|1|None|1
 ParameterSelection|-mode.vector.outmode|Writing mode (update file/overwrite file/overwrite layer/update layer)|ulco;ovw;ulovw;ulu|0
-ParameterString|-mode.vector.ogroptions|OGR options for layer creation|
