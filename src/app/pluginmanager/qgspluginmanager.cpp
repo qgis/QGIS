@@ -85,6 +85,7 @@ QgsPluginManager::QgsPluginManager( QWidget * parent, bool pluginsAreEnabled, Qt
   mModelProxy->setSortCaseSensitivity( Qt::CaseInsensitive );
   mModelProxy->setSortRole( Qt::DisplayRole );
   mModelProxy->setDynamicSortFilter( true );
+  mModelProxy->sort( 0, Qt::AscendingOrder );
   vwPlugins->setModel( mModelProxy );
   vwPlugins->setFocus();
 
