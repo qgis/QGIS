@@ -14432,11 +14432,11 @@ Por favor, contacte con los desarrolladores.</translation>
     </message>
     <message>
         <source>Compiled against GEOS</source>
-        <translation type="unfinished"></translation>
+        <translation>Compilado contra GEOS</translation>
     </message>
     <message>
         <source>Running against GEOS</source>
-        <translation type="unfinished"></translation>
+        <translation>Ejecutándose contra GEOS</translation>
     </message>
 </context>
 <context>
@@ -35172,7 +35172,7 @@ Siempre red: siempre cargar desde la red y no chequear si el caché tiene una en
     </message>
     <message>
         <source>Panning and zooming</source>
-        <translation>Desplazar y zum</translation>
+        <translation>Desplazamiento y zum</translation>
     </message>
     <message>
         <source>Zoom</source>
@@ -40277,7 +40277,7 @@ Proceed?</source>
     </message>
     <message>
         <source>Select %1 from pull-down menu to adjust radii</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleccionar %1 del menú desplegable para ajustar radios</translation>
     </message>
 </context>
 <context>
@@ -55736,7 +55736,80 @@ Informs you about active system locale. To change it tick &lt;label&gt;Override 
 &lt;/a&gt;
 Tick &lt;label&gt;Use proxy for web access&lt;/label&gt; to define host, port, user, and password.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Opciones&lt;/h3&gt;
+Este diálogo le permite seleccionar algunas opciones básicas de QGIS. Hay ocho pestañas:
+&lt;p&gt;
+
+&lt;a href=&quot;#general&quot;&gt;General&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#ren&quot;&gt;Renderizado &amp; SVG&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#map&quot;&gt;Herramientas del mapa&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#over&quot;&gt;Superposición&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#digit&quot;&gt;Digitalización&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#crs&quot;&gt;SRC&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#loc&quot;&gt;Local&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#net&quot;&gt;Red &amp; Proxy&lt;/a&gt;&lt;br/&gt;
+
+&lt;a name=&quot;general&quot;&gt;
+&lt;h4&gt;General&lt;/h4&gt;
+&lt;/a&gt;
+En esta pestapa puede establecer opciones generales sobre el comportamiento del proyecto al abrirlo y guardarlo, aspecto predeterminado del mapa, su tema de iconos favorito y muchas otras.
+&lt;a name=&quot;ren&quot;&gt;
+&lt;h4&gt;Renderizado &amp; SVG&lt;/h4&gt;
+&lt;/a&gt;
+Dentro de esta pestaña puede establecer opciones generales de renderizado de las capas del mapa.&lt;br&gt;
+Por omisión, QGIS renderiza todas las capas visibles cada vez que se debe refrescar la vista del mapa. Los eventos que desencadenan el refresco del mapa incluyen:
+&lt;ul&gt;
+&lt;li&gt;Añadir una capa
+&lt;li&gt;Desplazar o hacer zum
+&lt;li&gt;Redimensionar la ventana de QGIS
+&lt;li&gt;Cambiar la visibilidad de una o más capas
+&lt;/ul&gt;
+QGIS le permite controlar el proceso de renderizado de diversas maneras:&lt;p&gt;
+Puede establecer una opción para cargar siempre las nuevas capas sin representarlas.&lt;br&gt;
+Esto significa que la capa se añadirá al mapa, pero la casilla de verificación de visibilidad en el panel Capas estará sin marcar de forma predeterminada. Para establecer esta opción, desmarque la casilla &lt;label&gt;Por omisión, las nuevas capas añadidas al mapa se deben visualizar&lt;/label&gt;.&lt;p&gt;
+Puede establecer una opción para actualizar la vista del mapa a medida que se dibujan los objetos espaciales.&lt;br&gt;
+Por omisión, QGIS no muestra cada objeto espacial de una capa hasta que se ha renderizado toda la capa. Para actualizar la visualización a medida que se leen los objetos espaciales de la capa, establezca el &lt;label&gt;Número de objetos espaciales a dibujar antes de actualizar la visualización&lt;/label&gt;a un valor apropieado. Un valor de 0 deshabilita la actualización mientras se dibuja (es lo predeterminado). Establecer un valor demasiado bajo dará lugar a un rendimiendo pobre, ya que la vista del mapa se actualizará continuamente mientras se leen los objetos espaciales.Se sugiere 500 como un valor por el que comenzar.
+&lt;a name=&quot;map&quot;&gt;
+&lt;h4&gt;Herramientas del mapa&lt;/h4&gt;
+&lt;/a&gt;
+&lt;h5&gt;Identificar&lt;/h5&gt;
+La configuración del &lt;label&gt;Modo&lt;/label&gt; determina qué capas serán mostradas por la herramienta &lt;label&gt;Identificar&lt;/label&gt;. Cambiando a &lt;label&gt;De arriba abajo&lt;/label&gt; en vez de &lt;label&gt;Capa actual&lt;/label&gt; se mostrarán los atributos de todas las capas identificables.
+&lt;h5&gt;Herramienta de medida&lt;/h5&gt;
+Aquí puede establecer un elipsoide para los cálculos de distancia, las unidades de medida y el color preferido para la banda de medida.
+&lt;h5&gt;Desplazamiento y zum&lt;/h5&gt;
+Permite definir la acción de la rueda del ratón y el factor de zum.
+&lt;a name=&quot;over&quot;&gt;
+&lt;h4&gt;Superposición&lt;/h4&gt;
+&lt;/a&gt;
+Define el algoritmo de ubicación para las etiquetas. Elija entre &lt;label&gt;punto central (más rápido)&lt;/label&gt;, &lt;label&gt;cadena (rápido)&lt;/label&gt;, &lt;label&gt;popmusic tabu chain (lento)&lt;/label&gt;, &lt;label&gt;popmusic tabu (lento)&lt;/label&gt; y &lt;label&gt;popmusic chain (muy lento)&lt;/label&gt;.
+
+&lt;a name=&quot;digit&quot;&gt;
+&lt;h4&gt;Digitalización&lt;/h4&gt;
+&lt;/a&gt;
+&lt;h5&gt;Banda elastica&lt;/h5&gt;
+En la pestaña &lt;label&gt;Digitalización&lt;/label&gt;puede definir la anchura y color de la línea de digitalización.
+&lt;h5&gt;Autoensamblado&lt;/h5&gt;
+Aquí puede definir una tolerancia general de autoensamblado para todo el proyecto.&lt;p&gt;
+Puede seleccionar entre &lt;label&gt;A vértice&lt;/label&gt;, &lt;label&gt;A segmento&lt;/label&gt; o &lt;label&gt;A vértice y segmento&lt;/label&gt; como modo predeterminado de ensamblado. También puede definir una tolerancia predeterminada de autoensamblado y un radio de búsqueda para la edición de vértices. The tolerance can be set either in map units or in pixels. The advantage of choosing pixels, is that the snapping tolerance doesn&apos;t have to be changed after zoom operations.&lt;p&gt;
+A layer based snapping tolerance can be defined by choosing &lt;label&gt;Settings&lt;/label&gt; (or &lt;label&gt;File&lt;/label&gt;) &gt; &lt;label&gt;Project Properties...&lt;/label&gt;. In the &lt;label&gt;General&lt;/label&gt; tab, section &lt;label&gt;Digitize&lt;/label&gt; you can click on &lt;label&gt;Snapping options...&lt;/label&gt; to enable and adjust snapping mode and tolerance on a layer basis.
+&lt;h5&gt;Vertex markers&lt;/h5&gt;
+You can define marker style as &lt;label&gt;Semi transparent circle&lt;/label&gt;, &lt;label&gt;Cross&lt;/label&gt; or &lt;label&gt;None&lt;/label&gt; and size; you can also set showing markers only for selected features.
+&lt;h5&gt;Enter attribute values&lt;/h5&gt;
+By default, after digitizing a new feature, QGIS asks you to enter attribute values for that feature. Ticking &lt;label&gt;Suppress attributes pop-up windows after each created feature&lt;/label&gt; allows you to enter the attributes later.
+&lt;a name=&quot;crs&quot;&gt;
+&lt;h4&gt;CRS&lt;/h4&gt;
+&lt;/a&gt;
+QGIS no longer sets the map CRS to the coordinate reference system of the first layer loaded. When you start a QGIS session with layers that do not have a CRS, you need to check and define the CRS definition for these layers. This can be done globally on this tab.&lt;p&gt;
+The global default CRS &lt;i&gt;proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs&lt;/i&gt; comes predefined in QGIS but can of course be changed, and the new definition will be saved for subsequent QGIS sessions.
+&lt;a name=&quot;lov&quot;&gt;
+&lt;h4&gt;Locale&lt;/h4&gt;
+&lt;/a&gt;
+Informs you about active system locale. To change it tick &lt;label&gt;Override system locale&lt;/label&gt; and restart QGIS.
+&lt;a name=&quot;net&quot;&gt;
+&lt;h4&gt;Network &amp; Proxy&lt;/h4&gt;
+&lt;/a&gt;
+Tick &lt;label&gt;Use proxy for web access&lt;/label&gt; to define host, port, user, and password.
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Create a New SQL Anywhere Connection&lt;/h3&gt;

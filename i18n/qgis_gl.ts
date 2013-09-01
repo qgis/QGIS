@@ -2755,7 +2755,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/processing/ui/DlgConfig.ui" line="14"/>
         <source>Processing options</source>
-        <translation type="unfinished"></translation>
+        <translation>Opcións de Procesamento</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgConfig.ui" line="26"/>
@@ -3182,7 +3182,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/processing/ui/DlgModeler.ui" line="14"/>
         <source>Processing modeler</source>
-        <translation type="unfinished"></translation>
+        <translation>Modelizador de Procesamento</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgModeler.ui" line="40"/>
@@ -7711,7 +7711,7 @@ Prema na tecla ALT para alterna-las etiquetas seleccionadas entre o estado engan
     </message>
     <message>
         <source>Processing models (*.model)</source>
-        <translation type="unfinished"></translation>
+        <translation>Modelos de Procesamento (*.model)</translation>
     </message>
     <message>
         <source>SEXTANTE models (*.model)</source>
@@ -8675,31 +8675,31 @@ Remedie esta situación primeiro, porque o Plugin OSM non sabe que capa será o 
     <name>Processing</name>
     <message>
         <source>Processing</source>
-        <translation type="unfinished"></translation>
+        <translation>Procesamento</translation>
     </message>
     <message>
         <source>Toolbox</source>
-        <translation type="unfinished"></translation>
+        <translation>Ferramentas</translation>
     </message>
     <message>
         <source>Graphical modeler</source>
-        <translation type="unfinished"></translation>
+        <translation>Modelizador Gráfico</translation>
     </message>
     <message>
         <source>History and log</source>
-        <translation type="unfinished">Historial e incidencias</translation>
+        <translation>Historial e incidencias</translation>
     </message>
     <message>
         <source>Options and configuration</source>
-        <translation type="unfinished"></translation>
+        <translation>Opcións e configuración</translation>
     </message>
     <message>
         <source>&amp;Results viewer</source>
-        <translation type="unfinished"></translation>
+        <translation>Visor de resultados</translation>
     </message>
     <message>
         <source>&amp;Commander</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Comandos</translation>
     </message>
 </context>
 <context>
@@ -8707,32 +8707,32 @@ Remedie esta situación primeiro, porque o Plugin OSM non sabe que capa será o 
     <message>
         <location filename="../python/plugins/processing/ui/ProcessingToolbox.ui" line="14"/>
         <source>Processing Toolbox</source>
-        <translation type="unfinished"></translation>
+        <translation>Ferramentas de Procesamento</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/ProcessingToolbox.ui" line="27"/>
         <source>Enter algorithm name to filter list</source>
-        <translation type="unfinished">Introduza nome de algoritmo para filtrar da lista</translation>
+        <translation>Introduza nome de algoritmo para filtrar da lista</translation>
     </message>
     <message>
         <source>Search...</source>
-        <translation type="unfinished">Buscar...</translation>
+        <translation>Buscar...</translation>
     </message>
     <message>
         <source>Execute</source>
-        <translation type="unfinished">Excutar</translation>
+        <translation>Executar</translation>
     </message>
     <message>
         <source>Execute as batch process</source>
-        <translation type="unfinished">Executar como proceso de lotes</translation>
+        <translation>Executar como proceso de lotes</translation>
     </message>
     <message>
         <source>Edit rendering styles for outputs</source>
-        <translation type="unfinished">Editar estilos de renderizado para saídas</translation>
+        <translation>Editar estilos de renderizado para saídas</translation>
     </message>
     <message>
         <source>Recently used algorithms</source>
-        <translation type="unfinished">Algoritmos utilizados recentemente</translation>
+        <translation>Algoritmos utilizados recentemente</translation>
     </message>
 </context>
 <context>
@@ -9071,7 +9071,7 @@ Remedie esta situación primeiro, porque o Plugin OSM non sabe que capa será o 
     </message>
     <message>
         <source>Import Processing class</source>
-        <translation type="unfinished"></translation>
+        <translation>Importar Clase de Procesamento</translation>
     </message>
     <message>
         <source>Enter text to find...</source>
@@ -13556,12 +13556,12 @@ Póñase en contacto cos desarrolladores.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2346"/>
         <source>Compiled against GEOS</source>
-        <translation type="unfinished"></translation>
+        <translation>Compilado con GEOS</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2347"/>
         <source>Running against GEOS</source>
-        <translation type="unfinished"></translation>
+        <translation>Funcionando con GEOS</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4252"/>
@@ -32147,62 +32147,62 @@ Isto pode ser un problema de conexión da súa rede ou do servidor WMS.</numerus
         <translation>enteiro [1-10000]</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslabelinggui.cpp" line="1092"/>
+        <location filename="../src/app/qgslabelinggui.cpp" line="1093"/>
         <source>Text/Buffer sample</source>
         <translation>Mostra do Texto/Buffer</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslabelinggui.cpp" line="1099"/>
+        <location filename="../src/app/qgslabelinggui.cpp" line="1100"/>
         <source> @ %1 pts (using map units)</source>
         <translation> @ %1 puntos (usando unidades do mapa)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslabelinggui.cpp" line="1112"/>
+        <location filename="../src/app/qgslabelinggui.cpp" line="1113"/>
         <source> @ %1 pts (using map units, BUFFER IN MILLIMETERS)</source>
         <translation> @ %1 puntos (usando unidades do mapa, BUFFER EN MILÍMETROS)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslabelinggui.cpp" line="1132"/>
+        <location filename="../src/app/qgslabelinggui.cpp" line="1133"/>
         <source> (BUFFER NOT SHOWN, in map units)</source>
         <translation> (BUFFER NON AMOSADO, en unidades do mapa)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslabelinggui.cpp" line="1180"/>
+        <location filename="../src/app/qgslabelinggui.cpp" line="1181"/>
         <source>Expression based label</source>
         <translation>Etiqueta baseada nunha expresión</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslabelinggui.cpp" line="1289"/>
+        <location filename="../src/app/qgslabelinggui.cpp" line="1290"/>
         <source>No change</source>
         <translation>Sen cambios</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslabelinggui.cpp" line="1290"/>
+        <location filename="../src/app/qgslabelinggui.cpp" line="1291"/>
         <source>All uppercase</source>
         <translation>Todo maiúsculas</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslabelinggui.cpp" line="1291"/>
+        <location filename="../src/app/qgslabelinggui.cpp" line="1292"/>
         <source>All lowercase</source>
         <translation>Todo minúsculas</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslabelinggui.cpp" line="1295"/>
+        <location filename="../src/app/qgslabelinggui.cpp" line="1296"/>
         <source>Capitalize first letter</source>
         <translation>Capitalizar a primeira letra</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslabelinggui.cpp" line="1451"/>
+        <location filename="../src/app/qgslabelinggui.cpp" line="1452"/>
         <source>Size%1</source>
         <translation>Tamaño %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslabelinggui.cpp" line="1451"/>
+        <location filename="../src/app/qgslabelinggui.cpp" line="1452"/>
         <source> X</source>
         <translation> X</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslabelinggui.cpp" line="1501"/>
+        <location filename="../src/app/qgslabelinggui.cpp" line="1502"/>
         <source>File not found</source>
         <translation>Ficheiro non atopado</translation>
     </message>
@@ -43009,7 +43009,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager_texts.cpp" line="11"/>
         <source>&lt;h3&gt;Installed Plugins&lt;/h3&gt;&lt;p&gt;On the left you see the list of &lt;b&gt;installed plugins&lt;/b&gt; on your system. Both python and cpp plugins are listed. Some plugins come with your QGIS installation while most of them are made available via the plugin repositories.&lt;/p&gt;&lt;p&gt;You can temporarily enable or disable a plugin.To &lt;i&gt;enable&lt;/i&gt; or &lt;i&gt;disable&lt;/i&gt; a plugin, click its checkbox or doubleclick its name...&lt;/p&gt;&lt;p&gt;Plugins showing in &lt;span style=&apos;color:red&apos;&gt;red&lt;/span&gt; are not loaded because there is a problem. Consult the &apos;Invalid&apos; tab to see more details, or to reinstall or uninstall this plugin.&lt;/p&gt;</source>
-        <translation>&lt;h3&gt;Plugins instalados&lt;/h3&gt;&lt;p&gt;Na esquerda pode ver unha lista de &lt;b&gt;plugins instalados&lt;/b&gt; no seu sistema. Ámbolos python e plugins cpp son listados. Algúns plugins veñen coa súa instalación de QGIS mentras que a maioría están dispoñibles vía repositorios de plugins.&lt;/p&gt;&lt;p&gt;Pode activar ou desactivar temporalmente un plugin. Para &lt;i&gt;activar&lt;/i&gt; ou &lt;i&gt;desactivar&lt;/i&gt; un plugin, clique na súa cela ou doble clic no seu nome...&lt;/p&gt;&lt;p&gt;Os plugins amosados en &lt;span style=&apos;color:red&apos;&gt;vermello&lt;/span&gt; non están cargados porque hai un problema. Consulte a pestana &apos;Inválidos&apos; para ver máis detalles, ou reinstale ou desinstale o plugin.&lt;/p&gt;</translation>
+        <translation>&lt;h3&gt;Plugins instalados&lt;/h3&gt;&lt;p&gt;Na esquerda pode ver unha lista de &lt;b&gt;plugins instalados&lt;/b&gt; no seu sistema. Ámbolos python e plugins cpp son listados. Algúns plugins veñen coa súa instalación de QGIS mentras que a maioría están dispoñibles vía repositorios de plugins.&lt;/p&gt;&lt;p&gt;Pode activar ou desactivar temporalmente un plugin. Para &lt;i&gt;activar&lt;/i&gt; ou &lt;i&gt;desactivar&lt;/i&gt; un plugin, clique na súa cela ou doble clic no seu nome...&lt;/p&gt;&lt;p&gt;Os plugins amosados en &lt;span style=&apos;color:red&apos;&gt;vermello&lt;/span&gt; non están cargados porque hai un problema. Consulte a pestana &apos;Inválidos&apos; para ver máis detalles, reinstale ou ben desinstale o plugin.&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager_texts.cpp" line="32"/>
@@ -43336,8 +43336,8 @@ p, li { white-space: pre-wrap; }
         <translation>Ningún</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology-ng/qgspointdisplacementrendererwidget.cpp" line="207"/>
-        <location filename="../src/gui/symbology-ng/qgspointdisplacementrendererwidget.cpp" line="209"/>
+        <location filename="../src/gui/symbology-ng/qgspointdisplacementrendererwidget.cpp" line="212"/>
+        <location filename="../src/gui/symbology-ng/qgspointdisplacementrendererwidget.cpp" line="214"/>
         <source>Label Font</source>
         <translation>Fonte de etiqueta</translation>
     </message>
@@ -43350,7 +43350,7 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Cor da etiqueta</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology-ng/qgspointdisplacementrendererwidget.cpp" line="337"/>
+        <location filename="../src/gui/symbology-ng/qgspointdisplacementrendererwidget.cpp" line="342"/>
         <source>The point displacement renderer only applies to (single) point layers. 
 &apos;%1&apos; is not a point layer and cannot be displayed by the point displacement renderer</source>
         <translation>O renderizador de desprazamento de punto só se aplica a capas de puntos (individuais). 
@@ -44311,7 +44311,7 @@ Proceed?</source>
         <location filename="../src/app/qgsprojectproperties.cpp" line="1452"/>
         <location filename="../src/app/qgsprojectproperties.cpp" line="1453"/>
         <source>Select %1 from pull-down menu to adjust radii</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleccione %1 do menú desplegable para axusta-lo radio</translation>
     </message>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="1465"/>
@@ -48234,28 +48234,29 @@ desviación estándar ×</translation>
     <message>
         <location filename="../src/core/raster/qgsrasterrenderer.cpp" line="214"/>
         <source>cumulative cut</source>
-        <translation type="unfinished"></translation>
+        <translation>Corte acumulativo</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterrenderer.cpp" line="218"/>
         <source>standard deviation</source>
-        <translation type="unfinished"></translation>
+        <translation>Desviación estándar</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterrenderer.cpp" line="223"/>
         <source>full extent</source>
-        <translation type="unfinished"></translation>
+        <translation>Extensión completa</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterrenderer.cpp" line="227"/>
         <source>sub extent</source>
-        <translation type="unfinished"></translation>
+        <translation>Subextensión</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterrenderer.cpp" line="230"/>
         <source>%1 %2 of %3.</source>
         <comment>min/max origin label in raster properties, where %1 - estimated/exact, %2 - values (min/max, stddev, etc.), %3 - extent</comment>
-        <translation type="unfinished">%1 de %3. {1 %2 ?}</translation>
+        <translatorcomment>Orixes mín/máx da etiqueta nas propiedades do ráster, onde %1 - estimada/exacta, %2 - valores (mín/máx, desviación estándar, etc.), %3 - extensión</translatorcomment>
+        <translation>%1 %2 de %3.</translation>
     </message>
     <message>
         <source> of </source>
@@ -60194,7 +60195,59 @@ which are described and illustrated on &lt;a href=&quot;http://en.wikipedia.org/
 &lt;p&gt;Contact the author through aruntheguy at gmail dot com&lt;/p&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h1&gt;Axuda do Plugin Mapa de Calor&lt;/h1&gt;
+&lt;p&gt;O plugin Mapa de Calor utiliza a Estimación de Densidade do Núcleo para crear unha densidade ráster (mapa de calor)
+dunha capa vectorial de puntos de entrada.  A densidade é calculada baseada no número de puntos 
+nunha posición, con números elevados de puntos agrupados resultando
+valores altos. O mapa de calor permite unha fácil identificación de &quot;puntos quentes&quot; e a agrupación de puntos.&lt;/p&gt;
+
+&lt;h2&gt;Parámetros do Diálogo&lt;/h2&gt;
+
+&lt;h3&gt;Capa de puntos de entrada&lt;/h3&gt;
+&lt;p&gt;A entrada é sempre unha capa vectorial de tipo punto. Tódalas capas vectoriais de puntos que estean actualmente cargadas na vista do mapa son amosadas na lista despregable. Clique no botón despregable e seleccione as capas desexadas.&lt;/p&gt;
+
+&lt;h3&gt;Ráster de saída&lt;/h3&gt;
+&lt;p&gt;A localización e o nome de ficheiro do ráster de saída poden establecerse clicando o botón &lt;label&gt;...&lt;/label&gt; próximo ó cadro de texto ráster de saída.&lt;br/&gt;
+&lt;b&gt;Nota:&lt;/b&gt; O nome de ficheiro engádese automaticamente dependendo do formato de saída seleccionado, se non se explicita
+ningún.&lt;/p&gt;
+
+&lt;h3&gt;Formato de saída&lt;/h3&gt;
+&lt;p&gt;Toda creación de ficheiro que soporte os formatos GDAL está dispoñible la lista despregable. Clique e seleccione o formato de saída requerido para o seu ficheiro.&lt;br/&gt;
+&lt;b&gt;Nota:&lt;/b&gt; Os formatos GeoTiff e ERDAS Imagine .img son os recomendados. Algúns formatos producen un bloqueo da aplicación. Cíngase amablemente ós formatos recomendados ata que o elemento de bloqueo sexa resolto ou utilice outros formatos se sabe que GDAL os soporta completamente.&lt;/p&gt;
+
+&lt;h3&gt;Radio (ancho de banda)&lt;/h3&gt;
+&lt;p&gt;Usado para especifica-lo radio de busca do mapa de calor (ou ancho de banda do núcleo) en metros ou unidades do mapa. O radio especifica a distancia arredor dun punto no cal a influencia dese punto se deixa notar. Valores grandes resultan nun gran suavizado, mentras que valores baixos poden amosar detalles finos e variación na densidade de puntos.&lt;/p&gt;
+
+&lt;h3&gt;Opcións Avanzadas&lt;/h3&gt;
+
+&lt;h4&gt;Ringleiras e Columnas&lt;/h4&gt;
+&lt;p&gt;Utilizado para cambia-las dimensións do ficheiro ráster de saída. Estes valores están ligados ós valores de &lt;b&gt;Tamaño da cela X&lt;/b&gt; e &lt;b&gt;Tamaño da cela Y&lt;/b&gt;. 
+Inrementando o número de ringleiras ou columnas decrecerá o tamaño de cela e incrementará o tamaño do ficheiro de saída. Os valores en Ringleiras e Columnas
+tamén están ligados, así dobrando o número de ringleiras automaticamente dobrará o número de columnas e o tamaño das celas tamén será reducido á metade. ¡A área xeográfica do ráster de saída permanecerá a mesma!&lt;/p&gt;
+
+&lt;h4&gt;Tamaño de cela X e Y&lt;/h4&gt;
+&lt;p&gt;Controla o tamaño xeográfico de cada píxel no ráster de saída. Cambiando estes valores tamén cambiará o número de Ringleiras e Columnas no ráster de saída.&lt;/p&gt;
+  
+&lt;h4&gt;Forma do Núcleo&lt;/h4&gt;
+&lt;p&gt;A forma do núcleo controla a taxa á cal a influencia dun punto diminúe así como a distancia ó punto incrementa. Núcleos diferentes decaen a taxas diferentes,
+así un núcleo triponderado dá entidades con maior peso para distancias próximas ó punto que o núcleo de Epanechnikov.
+Consecuentemente,
+a triponderación resulta en puntos quentes &quot;nítidos&quot;, mentras que Epanechnikov resulta en puntos quentes &quot;máis suaves&quot;. Hai un certo número de funcións de núcleo estándar
+dispoñibles en QGIS, que se describen e ilustran na &lt;a href=&quot;http://en.wikipedia.org/wiki/Kernel_(statistics)#Kernel_functions_in_common_use&quot;&gt;Wikipedia&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h4&gt;Radio de decaemento&lt;/h4&gt;
+&lt;p&gt;Para núcleos triangulares, o radio de decaemento define a cantidade de influencia que se aplica ós píxeles máis externos no radio do búfer. Un valor 0 reflicte un núcleo triangular estándar, onde a influencia cae a 0 segundo a distancia dende o píxel ó punto se aproxima ó radio especificado. En contraste, un valor de 1 indica que non hai caída segundo a distancia ó punto incrementa.&lt;/p&gt;
+
+&lt;h4&gt;Utilice radio dende campo&lt;/h4&gt;
+&lt;p&gt;Opcionalmente, o valor nun campo especificado pode utilizarse para controlar o radio do núcleo para cada punto na capa de entrada.&lt;/p&gt;
+
+&lt;h4&gt;Utilice peso dende campo&lt;/h4&gt;
+&lt;p&gt;Opcionalmente, un atributo que conteña pesos para puntos pode utilizarse para ponderar algúns puntos na capa de entrada máis que outros.&lt;/p&gt;
+
+&lt;h2&gt;Para máis detalles&lt;/h2&gt;
+&lt;p&gt;Contacte co autor a través de aruntheguy en gmail punto com&lt;/p&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgscontexthelp_texts.cpp" line="1492"/>
@@ -60626,7 +60679,178 @@ that will be automatically deleted after running.&lt;/li&gt;
 	from the close button. This allows you to save the geometry to be restored to the next start.
 &lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;style&gt;
+	#toolbarConsole td{
+		background: #f6f6f6;
+	}
+&lt;/style&gt;
+&lt;h3&gt;Consola Python de QGIS&lt;/h3&gt;
+&lt;a href=&quot;#console&quot;&gt;Consola&lt;/a&gt;&lt;br&gt;
+&lt;a href=&quot;#editor&quot;&gt;Editor&lt;/a&gt;&lt;br&gt;
+&lt;a href=&quot;#settings&quot;&gt;Configuración&lt;/a&gt;&lt;br&gt;&lt;br&gt;
+&lt;table&gt;
+	&lt;tr&gt;
+		&lt;td&gt;
+			&lt;p align=&apos;justify&apos;&gt;
+				A consola Python de QGIS é un terminal interactivo para a execución de comandos
+				python. 
+				Tamén ten un editor de ficheiros python que lle permite editar e garda-los seus
+				scripts python.  
+				Tanto a consola coma o editor están baseados no paquete PyQScintilla2.&lt;br&gt;
+				A consola está dividida en dous paneis principais, o superior e o inferior
+				redimensionable usando o separador horizontal. A área do panel de saída é un
+				widget de só lectura que amosa os comandos de saída.
+				Pode arrastrar e soltar ou copiar e pegar texto na área de entrada e 
+				executar fragmentos de código dende o panel de saída seleccionando algún texto e
+				clicando no comando &lt;label&gt;Introducir seleccionado&lt;/label&gt; no menú contextual.
+				Non pasa nada se o texto seleccionado contén o apuntador do intérprete (&gt;&gt;&gt;, ...).
+				A área do panel de entrada é o terminal python interactivo para 
+				introducir comandos.
+				&lt;br&gt;Para acceder ó editor de ficheiros python utilice o botón 
+				&lt;label&gt;Amosar editor&lt;/label&gt; na barra de ferramentas.
+				O editor permite editar e gardar ficheiros python e ofrece funcionalidades básicas 
+				para a xestión do seu código (comentar e descomentar código, comprobar sintaxe,
+				compartir código vía codepad.org e moito máis).
+			&lt;/p&gt;
+		&lt;/td&gt;
+	&lt;/tr&gt;
+&lt;/table&gt;
+&lt;a name=&quot;console&quot;&gt;
+&lt;h4&gt;Console&lt;/h4&gt;
+&lt;/a&gt;
+&lt;b&gt;&lt;i&gt;Características principais:&lt;/i&gt;&lt;/b&gt;
+&lt;table&gt;
+	&lt;tr&gt;
+		&lt;td&gt;
+			&lt;ul&gt;
+			&lt;li&gt;Autocompletado de código, resalte de sintaxe e calltips para as seguintes APIs:
+				&lt;ol&gt;
+				&lt;li&gt;Python&lt;/li&gt;
+				&lt;li&gt;PyQGIS&lt;/li&gt;
+				&lt;li&gt;PyQt4&lt;/li&gt;
+				&lt;li&gt;QScintilla2&lt;/li&gt;
+				&lt;li&gt;osgeo-gdal-ogr&lt;/li&gt;
+				&lt;/ol&gt;
+			&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;&lt;label&gt;Ctrl+Alt+Space&lt;/label&gt; para ve-la lista de autocompletado.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;&lt;label&gt;Ctrl+Shift+Space&lt;/label&gt; para ve-la lista do historial de comandos.&lt;/li&gt;
+			&lt;br&gt;
+                        &lt;li&gt;Executa fragmentos de código co comando &lt;label&gt;Introducir seleccionado&lt;/label&gt; do panel de saída.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Abre a documentacion API de QGIS API tecleando&lt;label&gt;_api&lt;/label&gt;.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Abre o Libro de Receitas PyQGIS tecleando &lt;label&gt;_pyqgis&lt;/label&gt;.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Gardar e limpa-lo historial de comandos accedidos dende o menú contextual do panel de 					entrada. O historial será gardado no ficheiro ~/.qgis2/console_history.txt&lt;/li&gt;
+			&lt;br&gt;
+			&lt;/ul&gt;
+		&lt;/td&gt;
+		&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/consoleHelp.png&quot; /&gt;&lt;/td&gt;
+	&lt;/tr&gt;
+&lt;/table&gt;
+&lt;b&gt;&lt;i&gt;Toolbar:&lt;/i&gt;&lt;/b&gt;
+	&lt;table width=&quot;100%&quot; id=&apos;toolbarConsole&apos;&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconClearConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Limpar consola python&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconClassConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconSextanteConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;Importar clase Sextante&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconQtCoreConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;Importar clase PyQt4.QtCore&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconQtGuiConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;Ferramenta para importar clase PyQt4.QtGui&lt;/td&gt;
+		&lt;/tr&gt;
+                &lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconRunConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Executar comando (coma tecla Intro pulsada)&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconSettingsConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Configuración&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconHelpConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Axuda&lt;/td&gt;
+		&lt;/tr&gt;
+&lt;/table&gt;
+&lt;a name=&quot;editor&quot;&gt;
+&lt;h4&gt;Editor&lt;/h4&gt;
+&lt;/a&gt;
+&lt;b&gt;&lt;i&gt;Características principais:&lt;/i&gt;&lt;/b&gt;
+&lt;table&gt;
+	&lt;tr&gt;
+		&lt;td&gt;
+			&lt;img src=&quot;qrc:/images/themes/default/console/editorHelp.png&quot; /&gt;
+			&lt;img src=&quot;qrc:/images/themes/default/console/classBrowserHelp.png&quot; /&gt;
+		&lt;/td&gt;
+		&lt;td&gt;
+			&lt;ul&gt;
+			&lt;li&gt;Autocompletado de código, realce de sintaxe e calltips para as seguintes APIs:
+				&lt;ol&gt;
+				&lt;li&gt;Python&lt;/li&gt;
+				&lt;li&gt;PyQGIS&lt;/li&gt;
+				&lt;li&gt;PyQt4&lt;/li&gt;
+				&lt;li&gt;QScintilla2&lt;/li&gt;
+				&lt;li&gt;osgeo-gdal-ogr&lt;/li&gt;
+				&lt;/ol&gt;
+			&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;&lt;label&gt;Ctrl+Space&lt;/label&gt; para ve-la lista de autocompletado.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Compartir fragmentos de código vía codepad.org.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;&lt;label&gt;Ctrl+4&lt;/label&gt; Comprobación de sintaxe.&lt;/li&gt; 
+			&lt;br&gt;
+			&lt;li&gt;Inspector de Obxectos: un buscador de clases e funcións.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Ir a unha definición de obxecto cun clic de rato. (dende o inspector de Obxectos)&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Executa fragmentos de código co comando &lt;label&gt;Introducir seleccionado&lt;/label&gt;.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Exucuta-lo script completo co comando &lt;label&gt;Executar script&lt;/label&gt;
+			(isto crea un ficheiro compilado byte coa extensión .pyc)&lt;/li&gt;
+			&lt;br&gt;
+			&lt;/ul&gt;
+		&lt;/td&gt;
+	&lt;/tr&gt;
+&lt;/table&gt;
+&lt;a name=&quot;settings&quot;&gt;
+&lt;h4&gt;Configuración&lt;/h4&gt;
+&lt;/a&gt;
+&lt;b&gt;&lt;i&gt;Máis axustes para a consola python:&lt;/i&gt;&lt;/b&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;label&gt;Autocompletado:&lt;/label&gt; o completado de código está activado de estar marcada. Pode ter autocompletado
+do documento actual, de APIs instaladas ou ámbalas das APIs e do actual documento&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Marxe de Autocompletado:&lt;/label&gt; Establece a marxe para amosa-la lista de autocompleatado (en caracteres tecleados)&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Insercion automática de parénteses:&lt;/label&gt; Activa o autopechado de parénteses de estar marcado&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Gardar automaticamente script antes de executar:&lt;/label&gt; Permítelle gardar automaticamente 
+o script a executar para evitar gardalo despois de calquera modificación.
+Esta acción almacenará un ficheiro temporal no directorio temporal do sistema que
+será eliminado automaticamente logo de executarse.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Usar ficheiro de APIs precargado:&lt;/label&gt; Pode escoller se usa-lo ficheiro de APIs precargado ou cargar algúns ficheiros de APIs gardados no seu sistema.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Usar ficheiro de APIs preparado:&lt;/label&gt; De ser marcado o ficheiro *.pap será utilizado para o completado de código. Para xenerar un ficheiro de APIs preparado ten que cargar polo menos un ficheiro *.api e logo compilalo clicando no botón &lt;label&gt;Compilar Apis...&lt;/label&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p style=&apos;border: 1px solid; background:#f6f6f6;&apos; align=&apos;justify&apos;&gt;
+	&lt;b&gt;Nota:&lt;/b&gt; Para garda-lo estado dos widgets de consola ten que pecha-la Consola Python
+	no botón pechar. Isto permítelle garda-la xeometría a ser restaurada no próximo inicio.
+&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgscontexthelp_texts.cpp" line="753"/>
@@ -65127,7 +65351,21 @@ Rounds a number upwards.
 &lt;code&gt;ceil(4.9) &amp;rarr; 5&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;ceil(-4.9) &amp;rarr; -4&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función ceil()&lt;/h3&gt;
+Redondea un número cara arriba.
+
+&lt;h4&gt;Sintaxe&lt;/h4&gt;
+&lt;code&gt;ceil(valor)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;code&gt;valor&lt;/code&gt; - un número.
+&lt;br&gt;
+
+&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;!-- Amosa un exemplo da función.--&gt;
+&lt;code&gt;ceil(4.9) &amp;rarr; 5&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;ceil(-4.9) &amp;rarr; -4&lt;/code&gt;&lt;br&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1466"/>
@@ -65145,7 +65383,20 @@ Converts a string to real number. Nothing changed if a value cannot be converted
 &lt;!-- Show example of function.--&gt;
      toreal(&apos;123.45&apos;) &amp;rarr; 123.45&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función toreal()&lt;/h3&gt;
+Convirte unha cadea a número real. Non cambiará nada se o valor non pode ser convertido a número real (por exemplo &apos;123.56asd&apos; non é válido). Os números son redondeados logo de garda-los cambios se a precisión é menor que o resultado da conversión.
+
+&lt;p&gt;&lt;h4&gt;Sintaxe&lt;/h4&gt;
+     toreal(&lt;i&gt;cadea&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;!-- Lista os argumentos da función aquí--&gt;
+&lt;i&gt;  cadea&lt;/i&gt; &amp;rarr; tipo cadea.  A cadea a converter a número real.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;!-- Amosa un exemplo da función.--&gt;
+     toreal(&apos;123.45&apos;) &amp;rarr; 123.45&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="996"/>
@@ -67823,7 +68074,18 @@ Retrieves a x coordinate of the current feature
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;xat(1) &amp;rarr; 5&lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función xat()&lt;/h3&gt;
+Recupera a coordenada x da entidade actual
+
+&lt;h4&gt;Sintaxe&lt;/h4&gt;
+&lt;code&gt;xat(i)&lt;/code&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;code&gt;i&lt;code&gt; - tipo enteiro. Índice do punto da liña (os índices comezan en 0; os valores negativos aplícanse ó último índice).
+
+&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;pre&gt;xat(1) &amp;rarr; 5&lt;/pre&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="260"/>
@@ -67842,7 +68104,21 @@ Rounds a number downwards.
 &lt;code&gt;floor(4.9) &amp;rarr; 4&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;floor(-4.9) &amp;rarr; -5&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función floor()&lt;/h3&gt;
+Redondea un número cara abaixo.
+
+&lt;h4&gt;Sintaxe&lt;/h4&gt;
+&lt;code&gt;floor(valor)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;code&gt;valor&lt;/code&gt; - un número.
+&lt;br&gt;
+
+&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;!-- Amosa un exemplo da función.--&gt;
+&lt;code&gt;floor(4.9) &amp;rarr; 4&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;floor(-4.9) &amp;rarr; -5&lt;/code&gt;&lt;br&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="157"/>
@@ -67893,7 +68169,20 @@ Converts a string to integer number. Nothing changed if a value cannot be conver
 &lt;!-- Show example of function.--&gt;
      toint(&apos;123&apos;) &amp;rarr; 123&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función toint()&lt;/h3&gt;
+Convirte unha cadea a número enteiro. Non cambiará nada se o valor non pode ser convertido a enteiro (por exemplo &apos;123asd&apos; non é válido).
+
+&lt;p&gt;&lt;h4&gt;Sintaxe&lt;/h4&gt;
+     toint(&lt;i&gt;cadea&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;!-- Lista os argumentos da función aquí--&gt;
+&lt;i&gt;  cadea&lt;/i&gt; &amp;rarr; tipo cadea.  A Cadea a convertir a número enteiro.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;!-- Amosa un exemplo da función.--&gt;
+     toint(&apos;123&apos;) &amp;rarr; 123&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="485"/>
@@ -68262,7 +68551,18 @@ Retrieves a y coordinate of the current feature
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;yat(1) &amp;rarr; 5&lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función yat()&lt;/h3&gt;
+Retorna a coordenada y da entidade actual
+
+&lt;h4&gt;Sintaxe&lt;/h4&gt;
+&lt;code&gt;yat(i)&lt;/code&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;code&gt;i&lt;code&gt; - tipo enteiro. Índice do punto da liña (o índice comeza en 0; os valores negativos aplicaránse ó último índice).
+
+&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;pre&gt;yat(1) &amp;rarr; 5&lt;/pre&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="379"/>
@@ -68280,7 +68580,20 @@ Converts a number to string.
 &lt;!-- Show example of function.--&gt;
      tostring(123) &amp;rarr; &apos;123&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función tostring()&lt;/h3&gt;
+Convirte un número a cadea.
+
+&lt;p&gt;&lt;h4&gt;Sintaxe&lt;/h4&gt;
+     tostring(&lt;i&gt;número&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;!-- Lista os argumentos da función aquí--&gt;
+&lt;i&gt;número&lt;/i&gt; &amp;rarr; tipo enteiro ou número real.  O número a convertir a cadea.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;!-- Amosa un exemplo da función.--&gt;
+     tostring(123) &amp;rarr; &apos;123&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="676"/>
@@ -68393,7 +68706,22 @@ This function takes one argument.
 &lt;code&gt;ln(1) &amp;rarr; 0&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;ln(2.7182818284590452354) &amp;rarr; 1&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función ln()&lt;/h3&gt;
+Devolve o valor do logaritmo natural da expresión tomada.
+&lt;br&gt;
+Esta función toma un argumento.
+&lt;h4&gt;Sintaxe&lt;/h4&gt;
+&lt;code&gt;ln(valor)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;code&gt;valor&lt;/code&gt; - calquera número positivo.
+&lt;br&gt;
+
+&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;!-- Amosa un exemplo da función.--&gt;
+&lt;code&gt;ln(1) &amp;rarr; 0&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;ln(2.7182818284590452354) &amp;rarr; 1&lt;/code&gt;&lt;br&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1412"/>
