@@ -63341,7 +63341,16 @@ Loading field values from WFS layers isn&apos;t supported, before the layer is
 actually inserted, ie. when building queries.
 &lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>rivedere (m)</translatorcomment>
+        <translation type="unfinished">&lt;h3&gt;Campi e Valori&lt;/h3&gt;
+Contiene un elenco di tutti i campi del vettore.Si può ottenere un campione dei valori con click del tasto destro del mouse.
+&lt;br&gt;&lt;br&gt;
+Seleziona il nome del campo dall&apos;elenco e fai click con il tasto destro per aprire il menù con le opzioni per caricare un campione di valori dal campo selezionato.
+
+&lt;p&gt;&lt;h4&gt;Nota:&lt;/h4&gt;
+Il caricamento di valori da un vettore WFS non è supporato prirma il vettore sia effetivamente inserito, es: mentre sono in escuzione delle interrogazioni.
+&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1453"/>
@@ -63385,7 +63394,15 @@ Loading field values from WFS layers isn&apos;t supported, before the layer is
 actually inserted, ie. when building queries.
 &lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;h3&gt;Campo&lt;/h3&gt;
+Doppio click per aggiungere il nome del campo alla stringa con l&apos;espressione.
+&lt;br&gt;&lt;br&gt;
+Click con tasto destro sul nome del campo per aprire il menù con le opzioni per il caricamento dei valori campionati
+
+&lt;p&gt;&lt;h4&gt;Nota:&lt;/h4&gt;
+Il caricamento di valori da un vettore WFS non è supporato prirma il vettore sia effetivamente inserito, es: mentre sono in escuzione delle interrogazioni.
+&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="996"/>
@@ -63402,7 +63419,19 @@ None
 &lt;pre&gt;$numpages &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;h3&gt;funzione $numpages&lt;/h3&gt;
+Restituisce il numero totale di pagine in composizione.
+
+&lt;h4&gt;Sintassi&lt;/h4&gt;
+&lt;pre&gt;$numpages&lt;/pre&gt;
+
+&lt;h4&gt;Argomenti&lt;/h4&gt;
+Nessuno
+
+&lt;h4&gt;Esempio&lt;/h4&gt;
+&lt;pre&gt;$numpages &amp;rarr; 42&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1142"/>
@@ -63419,14 +63448,28 @@ None
 &lt;pre&gt;$perimeter &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;h3&gt;funzione $perimeter&lt;/h3&gt;
+Restituisce la lunghezza del perimetro dell&apos;elemento corrente.
+
+&lt;h4&gt;Sintassi&lt;/h4&gt;
+&lt;pre&gt;$perimeter&lt;/pre&gt;
+
+&lt;h4&gt;Argomenti&lt;/h4&gt;
+Nessuno
+
+&lt;h4&gt;Esempio&lt;/h4&gt;
+&lt;pre&gt;$perimeter &amp;rarr; 42&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="718"/>
         <source>&lt;h3&gt;Geometry Group&lt;/h3&gt;
 This group contains functions that operate on geometry objects e.g length, area.
 </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;h3&gt;Gruppo Geometria&lt;/h3&gt;
+Questo gruppo contiene funzioni che agiscono su proprietà geometriche degli oggetti, es: lunghezza, area.
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1234"/>
@@ -63444,7 +63487,19 @@ Concatenates several strings to one.
 &lt;!-- Show example of function.--&gt;
      concat(&apos;a&apos;,&apos;b&apos;,&apos;c&apos;,&apos;d&apos;,&apos;e&apos;) &amp;rarr; &apos;abcde&apos;
 </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;h3&gt;funzione concat()&lt;/h3&gt;
+Concatena più stringhe in un unica.
+
+&lt;h4&gt;Sintassi&lt;/h4&gt;
+     concat(&lt;i&gt;string&lt;i&gt;[,&lt;i&gt;string&lt;/i&gt;...])
+
+&lt;h4&gt;Argomenti&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  a string.&lt;br&gt;
+
+&lt;h4&gt;Esempio&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     concat(&apos;a&apos;,&apos;b&apos;,&apos;c&apos;,&apos;d&apos;,&apos;e&apos;) &amp;rarr; &apos;abcde&apos;</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="205"/>
@@ -63461,7 +63516,19 @@ Note: This function is only available in some contexts and will be 0 otherwise.
 
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;h3&gt;funzione $scale&lt;/h3&gt;
+Restituisce la scala della vista mappa corrente.
+&lt;br&gt;
+Nota:Questa funzione è disponibile solo in alcuni contesti e sarà 0 altirmenti.
+&lt;h4&gt;Sintassi&lt;/h4&gt;
+&lt;code&gt;$scale&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Esempio&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;$scale &amp;rarr; 10000&lt;/code&gt;&lt;br&gt;
+
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="157"/>
@@ -63480,7 +63547,22 @@ Returns true if any part of a string matches the supplied regular expression.
 &lt;!-- Show example of function.--&gt;
      regexp_match(&apos;QGIS ROCKS&apos;,&apos;&amp;#92;&amp;#92;sROCKS&apos;) &amp;rarr; 1&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>non-greedy come tradurlo? lo lasciamo così? (m)</translatorcomment>
+        <translation type="unfinished">&lt;h3&gt;funzione regexp_match()&lt;/h3&gt;
+Restituisce true se una qualisiasi parte della stinga corrisponde all&apos;espressione regolare fornita.
+
+&lt;h4&gt;Sintassi&lt;/h4&gt;
+     regexp_match(&lt;i&gt;string,regex&lt;/i&gt;)&lt;/p&gt;
+
+&lt;h4&gt;Argomenti&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  La stringa da confrontare con l&apos;espressione regolare.&lt;br&gt;
+&lt;i&gt;  regex&lt;/i&gt; &amp;rarr; is string.  La stringa da confrontare. I caratteri backslash devono essere usati con un doppio escape (ad esempio &quot;&amp;#92;&amp;#92;s&quot; corrisponde al carattere di spazio vuoto). Le espressioni regolari non avide non sono supportate. &lt;br&gt;
+
+&lt;h4&gt;Esempio&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     regexp_match(&apos;QGIS ROCKS&apos;,&apos;&amp;#92;&amp;#92;sROCKS&apos;) &amp;rarr; 1&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="676"/>
@@ -63556,7 +63638,39 @@ use &lt;code&gt;day&lt;/code&gt; to extract number of days&lt;br&gt;
 &lt;code&gt;day(age(&apos;2012-05-12&apos;,&apos;2012-05-2&apos;)) &amp;rarr; 10&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;h3&gt;funzione age()&lt;/h3&gt;
+Restituisce la differenza tra due date.
+&lt;br&gt;&lt;br&gt;
+La differenza è restituita come &lt;code&gt;Interval&lt;/code&gt; 
+e deve essere usata con una delle seguenti funzioni
+in modo da poter estrarre l&apos;informazione utile:
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;year&lt;/code&gt;
+&lt;li&gt;&lt;code&gt;month&lt;/code&gt;
+&lt;li&gt;&lt;code&gt;week&lt;/code&gt;
+&lt;li&gt;&lt;code&gt;day&lt;/code&gt;
+&lt;li&gt;&lt;code&gt;hour&lt;/code&gt;
+&lt;li&gt;&lt;code&gt;minute&lt;/code&gt;
+&lt;li&gt;&lt;code&gt;second&lt;/code&gt;
+&lt;/ul&gt;
+&lt;h4&gt;Sintassi&lt;/h4&gt;
+&lt;code&gt;age(string,string)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;age(datetime,datetime)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;age(string,datetime)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;age(datetime,string)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argomenti&lt;/h4&gt;
+&lt;code&gt;string&lt;/code&gt; - è una stringa. Una stringa nel formato data.
+&lt;br&gt;
+&lt;code&gt;datetime&lt;/code&gt; - è una data o un datetime. Un tipo data or datetime.
+
+&lt;h4&gt;Esempio&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;age(&apos;2012-05-12&apos;,&apos;2012-05-2&apos;) &amp;rarr; Interval&lt;/code&gt;&lt;br&gt;
+use &lt;code&gt;day&lt;/code&gt; to extract number of days&lt;br&gt;
+&lt;code&gt;day(age(&apos;2012-05-12&apos;,&apos;2012-05-2&apos;)) &amp;rarr; 10&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1248"/>
@@ -63597,7 +63711,18 @@ Returns arcustanget of a value in radians.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      atan(0.5) &amp;rarr; 0.463647609000806&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;h3&gt;funzione atan()&lt;/h3&gt;
+Restituisce l&apos;arcotangente di un valore in radianti.
+
+
+&lt;p&gt;&lt;h4&gt;Sintassi&lt;/h4&gt;
+     atan(&lt;i&gt;real&lt;/i&gt;)&lt;/i&gt;
+
+&lt;p&gt;&lt;h4&gt;Argomenti&lt;/h4&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; tan of an angle.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Esempio&lt;/h4&gt;
+     atan(0.5) &amp;rarr; 0.463647609000806&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="123"/>
@@ -63638,7 +63763,19 @@ None
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;$length &amp;rarr; 42.4711&lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;h3&gt;funzione $length &lt;/h3&gt;
+Restituisce la lunghezza dell&apos;oggetto selezionato.
+
+&lt;h4&gt;Sintassi&lt;/h4&gt;
+&lt;pre&gt;$length &lt;/pre&gt;
+
+&lt;h4&gt;Argomenti&lt;/h4&gt;
+Nessuno
+
+&lt;h4&gt;Esempio&lt;/h4&gt;
+&lt;pre&gt;$length &amp;rarr; 42.4711&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1429"/>
@@ -63738,7 +63875,21 @@ Rounds a number upwards.
 &lt;code&gt;ceil(4.9) &amp;rarr; 5&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;ceil(-4.9) &amp;rarr; -4&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;h3&gt;funzione ceil()&lt;/h3&gt;
+Arrotonda un numero per eccesso.
+
+&lt;h4&gt;Sintassi&lt;/h4&gt;
+&lt;code&gt;ceil(valore)&lt;/code&gt;&lt;br&gt;
+
+
+&lt;h4&gt;Argomento&lt;/h4&gt;
+&lt;code&gt;valore&lt;/code&gt; - un numero.
+&lt;br&gt;
+
+&lt;h4&gt;Esempio&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;ceil(4.9) &amp;rarr; 5&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;ceil(-4.9) &amp;rarr; -4&lt;/code&gt;&lt;br&gt;</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1466"/>
@@ -63870,7 +64021,19 @@ abs(&lt;i&gt;value&lt;/i&gt;)&lt;br&gt;
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;code&gt;abs(-2) &amp;rarr; 2&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;h3&gt;funzione abs()&lt;/h3&gt;
+Restituisce il valore assoluto di un numero.
+
+
+&lt;h4&gt;Sintassi&lt;/h4&gt;
+abs(&lt;i&gt;value&lt;/i&gt;)&lt;br&gt;
+
+&lt;h4&gt;Argomenti&lt;/h4&gt;
+&lt;code&gt;value&lt;/code&gt; - a number.&lt;br&gt;
+
+&lt;h4&gt;Esempio&lt;/h4&gt;
+&lt;code&gt;abs(-2) &amp;rarr; 2&lt;/code&gt;&lt;br&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="379"/>
@@ -64058,7 +64221,19 @@ None
 &lt;pre&gt;$area &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;h3&gt;funzione $area&lt;/h3&gt;
+Restituisce l&apos;area dell&apos;oggetto corrente.
+
+&lt;h4&gt;Sintassi&lt;/h4&gt;
+&lt;pre&gt;$area&lt;/pre&gt;
+
+&lt;h4&gt;Argomenti&lt;/h4&gt;
+Nessuno
+
+&lt;h4&gt;Esempio&lt;/h4&gt;
+&lt;pre&gt;$area &amp;rarr; 42&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1548"/>
@@ -64170,7 +64345,35 @@ return a result.
     END
 &lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>da rivedere</translatorcomment>
+        <translation type="unfinished">&lt;h3&gt;espressione CASE&lt;/h3&gt;
+Un&apos;espressione condizionale che può essere usata per valutare espressioni multiple e restituire un risultato.
+
+&lt;h4&gt;Sintassi&lt;/h4&gt;
+&lt;pre&gt;
+     CASE
+        WHEN &lt;i&gt;condizione&lt;/i&gt; THEN &lt;i&gt;risultato&lt;/i&gt;
+        [ ...n ]
+        [ ELSE &lt;i&gt;risultato&lt;/i&gt; ]
+     END
+&lt;/pre&gt;
+[ ] segna le componenti opzionali
+
+&lt;h4&gt;Argomenti&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  WHEN condizione &lt;/i&gt; - L&apos;espressione condizionale da valutare. &lt;br&gt;
+&lt;i&gt;  THEN risultato&lt;/i&gt; - Se la &lt;i&gt;condizione&lt;/i&gt; risulta True allora il &lt;i&gt;risultato&lt;/i&gt; viene valutato e restituito. &lt;br&gt;
+&lt;i&gt;  ELSE risultato&lt;/i&gt; - Se nessuna delle precedenti condizioni viene valutata come True allora il &lt;i&gt;risultato&lt;/i&gt; viene valutato e restituito. &lt;br&gt;
+
+&lt;h4&gt;Esempio&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;pre&gt;
+    CASE
+        WHEN &lt;i&gt;&quot;column&quot; IS NULL&lt;/i&gt; THEN &lt;i&gt;&apos;None&apos;&lt;/i&gt;
+        ELSE &lt;i&gt;&quot;column&quot;&lt;/i&gt;
+    END
+&lt;/pre&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="81"/>
@@ -64187,7 +64390,19 @@ None
 &lt;pre&gt;$id &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;h3&gt;funzione $id&lt;/h3&gt;
+Restituisce l&apos;id dell&apos;oggetto della riga selezionata.
+
+&lt;h4&gt;Sintassi&lt;/h4&gt;
+&lt;pre&gt;$id&lt;/pre&gt;
+
+&lt;h4&gt;Argomenti&lt;/h4&gt;
+Nessuno
+
+&lt;h4&gt;Esempio&lt;/h4&gt;
+&lt;pre&gt;$id &amp;rarr; 42&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="409"/>
@@ -64231,7 +64446,19 @@ None
 &lt;pre&gt;$numfeatures &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;h3&gt;funzione $numfeatures&lt;/h3&gt;
+Durante la generazione di un atlante, restituisce il numero di geometrie contenute nel vettore di copertura.
+
+&lt;h4&gt;Sintassi&lt;/h4&gt;
+&lt;pre&gt;$numfeatures&lt;/pre&gt;
+
+&lt;h4&gt;Argomento&lt;/h4&gt;
+Nessuno
+
+&lt;h4&gt;Esempio&lt;/h4&gt;
+&lt;pre&gt;$numfeatures &amp;rarr; 42&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1047"/>
@@ -64417,7 +64644,18 @@ Returns arcussinus of a value in radians.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      asin(1.0) &amp;rarr; 1.5707963267949&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;h3&gt;funzione asin()&lt;/h3&gt;
+Restituisce l&apos;arcoseno di un valore in radianti.
+
+
+&lt;p&gt;&lt;h4&gt;Sintassi&lt;/h4&gt;
+     asin(&lt;i&gt;real&lt;/i&gt;)&lt;/i&gt;
+
+&lt;p&gt;&lt;h4&gt;Argomenti&lt;/h4&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; sin of an angle.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Esempio&lt;/h4&gt;
+     asin(1.0) &amp;rarr; 1.5707963267949&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="465"/>
@@ -64475,7 +64713,19 @@ None
 &lt;pre&gt;$x &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;h3&gt;funzione $x&lt;/h3&gt;
+Restituisce la coordinata x dell&apos;oggetto corrente.
+
+&lt;h4&gt;Sintassi&lt;/h4&gt;
+&lt;pre&gt;$x&lt;/pre&gt;
+
+&lt;h4&gt;Argomenti&lt;/h4&gt;
+Nessuno
+
+&lt;h4&gt;Esempio&lt;/h4&gt;
+&lt;pre&gt;$x &amp;rarr; 42&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1296"/>
@@ -64696,7 +64946,19 @@ None
 &lt;pre&gt;$now &amp;rarr; 2012-07-22T13:24:57&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;h3&gt;funzione $now&lt;/h3&gt;
+Restituisce ora e giorno corrente.
+
+&lt;h4&gt;Sintassi&lt;/h4&gt;
+&lt;pre&gt;$now&lt;/pre&gt;
+
+&lt;h4&gt;Argomenti&lt;/h4&gt;
+Nessuno
+
+&lt;h4&gt;Esempio&lt;/h4&gt;
+&lt;pre&gt;$now &amp;rarr; 2012-07-22T13:24:57&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1562"/>
@@ -64728,7 +64990,33 @@ return a result.
     END
 &lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;h3&gt;espressione CASE&lt;/h3&gt;
+Un&apos;espressione condizionale che può essere usata per valutare espressioni multiple e restituire un risultato.
+
+&lt;h4&gt;Sintassi&lt;/h4&gt;
+&lt;pre&gt;
+     CASE
+        WHEN &lt;i&gt;condizione&lt;/i&gt; THEN &lt;i&gt;risultato&lt;/i&gt;
+        [ ...n ]
+        [ ELSE &lt;i&gt;risultato&lt;/i&gt; ]
+     END
+&lt;/pre&gt;
+[ ] segna le componenti opzionali
+
+&lt;h4&gt;Argomenti&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  WHEN condizione &lt;/i&gt; - L&apos;espressione condizionale da valutare. &lt;br&gt;
+&lt;i&gt;  THEN risultato&lt;/i&gt; - Se la &lt;i&gt;condizione&lt;/i&gt; risulta True allora il &lt;i&gt;risultato&lt;/i&gt; viene valutato e restituito. &lt;br&gt;
+&lt;i&gt;  ELSE risultato&lt;/i&gt; - Se nessuna delle precedenti condizioni viene valutata come True allora il &lt;i&gt;risultato&lt;/i&gt; viene valutato e restituito. &lt;br&gt;
+
+&lt;h4&gt;Esempio&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;pre&gt;
+    CASE
+        WHEN &lt;i&gt;&quot;column&quot; IS NULL&lt;/i&gt; THEN &lt;i&gt;&apos;None&apos;&lt;/i&gt;
+    END
+&lt;/pre&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="980"/>
@@ -64888,7 +65176,19 @@ Returns arcuscosinus of a value in radians.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      acos(0.5) &amp;rarr; 1.0471975511966&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;h3&gt;funzione acos()&lt;/h3&gt;
+Restituisce l&apos;arcocoseno di un valore in radianti.
+
+
+&lt;p&gt;&lt;h4&gt;Sintassi&lt;/h4&gt;
+     acos(&lt;i&gt;real&lt;/i&gt;)&lt;/i&gt;
+
+&lt;p&gt;&lt;h4&gt;Argomenti&lt;/h4&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; cos of an angle.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Esempio&lt;/h4&gt;
+     acos(0.5) &amp;rarr; 1.0471975511966&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="11"/>
@@ -64927,7 +65227,20 @@ arguments to determine the quadrant of the result
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      atan2(1.0, 1.732) &amp;rarr; 0.523611477769969&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;h3&gt;funzione atan2()&lt;/h3&gt;
+Restituisce l&apos;arcotangente di x/y usando il segno dei due argomenti per determinare il quadrante del risultato.
+
+
+
+&lt;p&gt;&lt;h4&gt;Sintassi&lt;/h4&gt;
+     atan2(&lt;i&gt;real&lt;/i&gt;, &lt;i&gt;real&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argomenti&lt;/h4&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; y coordinate difference&lt;br&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; x coordinate difference&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Esempio&lt;/h4&gt;
+     atan2(1.0, 1.732) &amp;rarr; 0.523611477769969&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="172"/>
@@ -65004,7 +65317,19 @@ None
 &lt;pre&gt;$page &amp;rarr; 2&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;h3&gt;funzione $page&lt;/h3&gt;
+Restituisce il numero della pagina corrente.
+
+&lt;h4&gt;Sintassi&lt;/h4&gt;
+&lt;pre&gt;$page&lt;/pre&gt;
+
+&lt;h4&gt;Argomenti&lt;/h4&gt;
+Nessuno
+
+&lt;h4&gt;Esempio&lt;/h4&gt;
+&lt;pre&gt;$page &amp;rarr; 2&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1185"/>
@@ -65046,7 +65371,19 @@ None
 &lt;pre&gt;$y &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;h3&gt;funzione $y&lt;/h3&gt;
+Restituisce la coordinata y dell&apos;oggetto corrente.
+
+&lt;h4&gt;Sintassi&lt;/h4&gt;
+&lt;pre&gt;$y&lt;/pre&gt;
+
+&lt;h4&gt;Argomenti&lt;/h4&gt;
+Nessuno
+
+&lt;h4&gt;Esempio&lt;/h4&gt;
+&lt;pre&gt;$y &amp;rarr; 42&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="763"/>
@@ -65244,7 +65581,19 @@ None
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;$pi &amp;rarr; 3.14159265358979&lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;h3&gt;funzione $pi&lt;/h3&gt;
+Restituisce pi come valore per i calcoli.
+
+&lt;h4&gt;Sintassi&lt;/h4&gt;
+&lt;pre&gt;$pi&lt;/pre&gt;
+
+&lt;h4&gt;Argomenti&lt;/h4&gt;
+Nessuno
+
+&lt;h4&gt;Esempio&lt;/h4&gt;
+&lt;pre&gt;$pi &amp;rarr; 3.14159265358979&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="805"/>
