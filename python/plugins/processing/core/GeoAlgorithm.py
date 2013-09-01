@@ -322,7 +322,7 @@ class GeoAlgorithm:
     def setOutputValue(self, outputName, value):
         for out in self.outputs:
             if out.name == outputName:
-                out.value = value
+                out.setValue(value)
 
     def getVisibleOutputsCount(self):
         '''returns the number of non-hidden outputs'''

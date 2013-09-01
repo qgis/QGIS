@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from processing.outputs.OutputExtent import OutputExtent
 __author__ = 'Victor Olaya'
 __date__ = 'January 2013'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -34,6 +35,7 @@ class VectorLayerBoundsAlgorithm(GeoAlgorithm):
     XMAX = "XMAX"
     YMIN = "YMIN"
     YMAX = "YMAX"
+    EXTENT = "EXTENT"
 
     def defineCharacteristics(self):
         self.showInModeler = True
@@ -45,6 +47,7 @@ class VectorLayerBoundsAlgorithm(GeoAlgorithm):
         self.addOutput(OutputNumber(self.XMAX, "max X"))
         self.addOutput(OutputNumber(self.YMIN, "min Y"))
         self.addOutput(OutputNumber(self.YMAX, "max Y"))
+        self.addOutput(OutputExtent(self.EXTENT, "Extent"))
 
     def processAlgorithm(self, progress):
         uri = self.getParameterValue(self.LAYER)
@@ -53,4 +56,6 @@ class VectorLayerBoundsAlgorithm(GeoAlgorithm):
         self.setOutputValue(self.XMAX, layer.extent().xMaximum())
         self.setOutputValue(self.YMIN, layer.extent().yMinimum())
         self.setOutputValue(self.YMAX, layer.extent().yMaximum())
+        self.setOutputValue(self.EXTENT, 
+                            (layer.extent().xMinimum(), layer.extent().xMaximum(), layer.extent().yMinimum(), layer.extent().yMaximum()))
 
