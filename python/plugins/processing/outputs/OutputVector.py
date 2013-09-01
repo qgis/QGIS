@@ -55,7 +55,7 @@ class OutputVector(Output):
             return self.value
         else:
             if self.compatible is None:
-                self.compatible = ProcessingUtils.getTempFilename(self.getDefaultFileExtension(alg))
+                self.compatible = ProcessingUtils.getTempFilenameInTempFolder(self.name + "." + self.getDefaultFileExtension(alg))                
             return self.compatible;
 
 

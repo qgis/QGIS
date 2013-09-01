@@ -206,7 +206,7 @@ class SagaAlgorithm(GeoAlgorithm):
                     filename = LayerExporter.exportVectorLayer(layer)
                     self.exportedLayers[param.value]=filename
                 elif not param.value.endswith("shp"):
-                        raise GeoAlgorithmExecutionException("Unsupported file format")
+                    raise GeoAlgorithmExecutionException("Unsupported file format")
             if isinstance(param, ParameterTable):
                 if param.value == None:
                     continue
@@ -378,14 +378,25 @@ class SagaAlgorithm(GeoAlgorithm):
         return s
 
 
-    def exportRasterLayer(self, layer):
-        destFilename = ProcessingUtils.getTempFilenameInTempFolder(os.path.basename(layer)[0:5] + ".sgrd")
-        self.exportedLayers[layer]= destFilename
+    def exportRasterLayer(self, source):  
+        layer = QGisLayers.getObjectFromUri(source, False)
+        if layer:
+            filename = str(layer.name())
+        else:
+            filename = source.rstrip(".sgrd")        
+        validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:"
+        filename = ''.join(c for c in filename if c in validChars)
+        if len(filename) == 0:
+            filename = "layer"
+        destFilename = ProcessingUtils.getTempFilenameInTempFolder(filename + ".sgrd")
+        self.exportedLayers[source]= destFilename
         saga208 = ProcessingConfig.getSetting(SagaUtils.SAGA_208)
         if ProcessingUtils.isWindows() or ProcessingUtils.isMac() or not saga208:
-            return "io_gdal 0 -GRIDS \"" + destFilename + "\" -FILES \"" + layer+"\""
+            return "io_gdal 0 -GRIDS \"" + destFilename + "\" -FILES \"" + source+"\""
         else:
-            return "libio_gdal 0 -GRIDS \"" + destFilename + "\" -FILES \"" + layer + "\""
+            return "libio_gdal 0 -GRIDS \"" + destFilename + "\" -FILES \"" + source + "\""
+              
+        
 
 
     def checkBeforeOpeningParametersDialog(self):

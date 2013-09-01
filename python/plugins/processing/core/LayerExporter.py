@@ -29,7 +29,6 @@ from processing.core.ProcessingUtils import ProcessingUtils
 from qgis.core import *
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-from processing.gdal.GdalUtils import GdalUtils
 
 class LayerExporter():
 
