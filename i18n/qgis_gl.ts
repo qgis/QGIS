@@ -3435,7 +3435,7 @@ columna de xeometría - columna con valores enteiros únicos</translation>
     </message>
     <message>
         <source>Are you sure</source>
-        <translation>¿Está seguro?</translation>
+        <translation>Está seguro</translation>
     </message>
     <message>
         <source>really delete column &apos;%s&apos;?</source>
@@ -8695,7 +8695,7 @@ Remedie esta situación primeiro, porque o Plugin OSM non sabe que capa será o 
     </message>
     <message>
         <source>&amp;Results viewer</source>
-        <translation>Visor de resultados</translation>
+        <translation>&amp;Visor de resultados</translation>
     </message>
     <message>
         <source>&amp;Commander</source>
@@ -50016,32 +50016,32 @@ contraste</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgssmartgroupeditordialog.cpp" line="33"/>
         <source>has the tag</source>
-        <translation type="unfinished"></translation>
+        <translation>contén a etiqueta</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssmartgroupeditordialog.cpp" line="34"/>
         <source>is a member of group</source>
-        <translation type="unfinished"></translation>
+        <translation>é un membro do grupo</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssmartgroupeditordialog.cpp" line="35"/>
         <source>has a part of name matching</source>
-        <translation type="unfinished"></translation>
+        <translation>ten unha parte do nome coincidente</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssmartgroupeditordialog.cpp" line="36"/>
         <source>does NOT have the tag</source>
-        <translation type="unfinished"></translation>
+        <translation>NON ten a etiqueta</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssmartgroupeditordialog.cpp" line="37"/>
         <source>is NOT a member of group</source>
-        <translation type="unfinished"></translation>
+        <translation>NON é un membro do grupo</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssmartgroupeditordialog.cpp" line="38"/>
         <source>has NO part of name matching</source>
-        <translation type="unfinished"></translation>
+        <translation>NON ten parte do nome coincidente</translation>
     </message>
 </context>
 <context>
@@ -50062,12 +50062,12 @@ contraste</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgssmartgroupeditordialog.cpp" line="86"/>
         <source>ALL the constraints</source>
-        <translation type="unfinished"></translation>
+        <translation>TÓDALAS restricións</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssmartgroupeditordialog.cpp" line="87"/>
         <source>any ONE of the constraints</source>
-        <translation type="unfinished"></translation>
+        <translation>CALQUERA das restricións</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssmartgroupeditordialog.cpp" line="204"/>
@@ -52773,12 +52773,12 @@ Houbo un problema coa base de datos de símbolos.</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbolslistwidget.cpp" line="74"/>
         <source>Style Manager</source>
-        <translation type="unfinished">Administrador de Estilo</translation>
+        <translation>Administrador de Estilo</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbolslistwidget.cpp" line="76"/>
         <source>Save in symbol library...</source>
-        <translation type="unfinished"></translation>
+        <translation>Gardar na biblioteca de símbolos...</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbolslistwidget.cpp" line="223"/>
@@ -61057,7 +61057,8 @@ Marcando &lt;label&gt;Opcións de Busca&lt;/label&gt; activa opcións adicionais
         <location filename="../src/core/qgscontexthelp_texts.cpp" line="154"/>
         <source>&lt;h3&gt;Identify&lt;/h3&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Identificar&lt;/h3&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgscontexthelp_texts.cpp" line="191"/>
