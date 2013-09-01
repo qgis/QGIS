@@ -579,7 +579,7 @@ Interrogazione:
     <message>
         <source>Really delete table/view %s?</source>
         <translatorcomment>perchè le parentesi &quot;%(s)&quot;? (gc)</translatorcomment>
-        <translation>Eliminare veramente la tabella/vista %(s)?</translation>
+        <translation>Eliminare veramente la tabella/vista %s?</translation>
     </message>
     <message>
         <source>Select a TABLE to empty it.</source>
@@ -614,7 +614,7 @@ Interrogazione:
     <message>
         <source>Do you want to %s spatial index for field %s?</source>
         <translatorcomment>non capisco (skampus), ho forzato un pò la traduzione sulla base delle considerazioni precedenti (gc)</translatorcomment>
-        <translation>Vuoi %s l&apos;indice spaziale sul campo%s?</translation>
+        <translation>Vuoi %s l&apos;indice spaziale sul campo %s?</translation>
     </message>
     <message>
         <source>Spatial Index</source>
