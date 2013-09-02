@@ -34,6 +34,10 @@ class QgsRubberBand: QgsMapCanvasItem
      *   Added in 1.9 */
     void setIconSize ( int iconSize );
 
+    void setLineStyle( Qt::PenStyle penStyle );
+
+    void setBrushStyle( Qt::BrushStyle brushStyle );
+
     void reset( QGis::GeometryType geometryType = QGis::Line );
     void reset( bool isPolygon );
 
