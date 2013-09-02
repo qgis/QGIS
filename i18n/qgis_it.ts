@@ -46786,12 +46786,12 @@ deviazione standard ×</translation>
     <message>
         <location filename="../src/core/raster/qgsrasterrenderer.cpp" line="218"/>
         <source>standard deviation</source>
-        <translation type="unfinished"></translation>
+        <translation>deviazione standard</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterrenderer.cpp" line="223"/>
         <source>full extent</source>
-        <translation type="unfinished"></translation>
+        <translation>estensione totale</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterrenderer.cpp" line="227"/>
@@ -46802,7 +46802,7 @@ deviazione standard ×</translation>
         <location filename="../src/core/raster/qgsrasterrenderer.cpp" line="230"/>
         <source>%1 %2 of %3.</source>
         <comment>min/max origin label in raster properties, where %1 - estimated/exact, %2 - values (min/max, stddev, etc.), %3 - extent</comment>
-        <translation type="unfinished">%1 di %3. {1 %2 ?}</translation>
+        <translation>%1 %2 di %3.</translation>
     </message>
     <message>
         <source> of </source>
@@ -48541,32 +48541,32 @@ concordo (ght)
     <message>
         <location filename="../src/gui/symbology-ng/qgssmartgroupeditordialog.cpp" line="33"/>
         <source>has the tag</source>
-        <translation type="unfinished"></translation>
+        <translation>ha l&apos;etichetta</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssmartgroupeditordialog.cpp" line="34"/>
         <source>is a member of group</source>
-        <translation type="unfinished"></translation>
+        <translation>è un membro del gruppo</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssmartgroupeditordialog.cpp" line="35"/>
         <source>has a part of name matching</source>
-        <translation type="unfinished"></translation>
+        <translation>ha una parte del nome corrispondente</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssmartgroupeditordialog.cpp" line="36"/>
         <source>does NOT have the tag</source>
-        <translation type="unfinished"></translation>
+        <translation>non ha l&apos;etichetta</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssmartgroupeditordialog.cpp" line="37"/>
         <source>is NOT a member of group</source>
-        <translation type="unfinished"></translation>
+        <translation>non è membro del gruppo</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssmartgroupeditordialog.cpp" line="38"/>
         <source>has NO part of name matching</source>
-        <translation type="unfinished"></translation>
+        <translation>non ha parti del nome corrispondenti</translation>
     </message>
 </context>
 <context>
@@ -48587,12 +48587,12 @@ concordo (ght)
     <message>
         <location filename="../src/gui/symbology-ng/qgssmartgroupeditordialog.cpp" line="86"/>
         <source>ALL the constraints</source>
-        <translation type="unfinished"></translation>
+        <translation>Tutti i vincoli</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssmartgroupeditordialog.cpp" line="87"/>
         <source>any ONE of the constraints</source>
-        <translation type="unfinished"></translation>
+        <translation>qualunque vincolo</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssmartgroupeditordialog.cpp" line="204"/>
@@ -51285,12 +51285,12 @@ C&apos;è stato un problema con il tuo database dei simboli.</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbolslistwidget.cpp" line="74"/>
         <source>Style Manager</source>
-        <translation type="unfinished">Gestore stile</translation>
+        <translation>Gestore di stile</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbolslistwidget.cpp" line="76"/>
         <source>Save in symbol library...</source>
-        <translation type="unfinished"></translation>
+        <translation>Salva nella libreria dei simboli...</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbolslistwidget.cpp" line="223"/>
@@ -58757,53 +58757,51 @@ which are described and illustrated on &lt;a href=&quot;http://en.wikipedia.org/
 &lt;p&gt;Contact the author through aruntheguy at gmail dot com&lt;/p&gt;
 
 </source>
-        <translatorcomment>assolutamente da ricontrollare (ght)</translatorcomment>
+        <translatorcomment>assolutamente da ricontrollare (ght) #dubbio# il nome del plugin &quot;HEATMAP&quot; è un nome proprio, da lasciare quindi non tradotto (g) #dubbio# è stato tralasciato il &quot;Kernel Density Estimation&quot; (g) #dubbio# la traduzione mi sembra molto libera, v. prima frase dopo il titolo (g)</translatorcomment>
         <translation type="unfinished">&lt;h1&gt;Guida plugin mappa di concentrazione&lt;/h1&gt;
-&lt;p&gt;Il plugin mappa di concentrazion permette di creare una mappa di concentrazione partendo da un layer di punti. Una
+&lt;p&gt;Il plugin mappa di concentrazione permette di creare una mappa di concentrazione partendo da un layer vettoriale di punti. Una
 mappa di concentrazione è una mappa raster di densità o di magnitudo dell’informazione selezionata. Il risultato
 permette di identificare facilmente degli “hotspots”.&lt;/p&gt;
 
 &lt;h2&gt;Parametri della finestra di dialogo&lt;/h2&gt;
 
-&lt;h3&gt;vettore punti inInput&lt;/h3&gt;
-&lt;p&gt;L&apos;input è sempre un vettore di punti. Tutti i vettori di punti attualmente caricati, sono presenti nel manu a tendina della finestra. Cliccare sul pulsante a tendina per scegliere il vettore.&lt;/p&gt;
+&lt;h3&gt;Vettore punti in input&lt;/h3&gt;
+&lt;p&gt;L&apos;input è sempre un vettore di punti. Tutti i vettori di punti attualmente caricati, sono presenti nel menu a tendina della finestra. Cliccare sul pulsante a tendina per scegliere il vettore desiderato.&lt;/p&gt;
 
 &lt;h3&gt;Raster in output&lt;/h3&gt;
-&lt;p&gt;si può scegliere la cartella e il nome della mappa raster di concentrazione usando il pulsante &lt;label&gt;...&lt;/label&gt; vicino alla casella di testo del raster di output.&lt;br/&gt;
-&lt;b&gt;Nota:&lt;/b&gt; Il formato del file è aggiunto automaticamente al file di output se non esplicitamente scelto.&lt;/p&gt;
+&lt;p&gt;Si può scegliere la cartella e il nome della mappa raster di concentrazione usando il pulsante &lt;label&gt;...&lt;/label&gt; vicino alla casella di testo del raster di output.&lt;br/&gt;
+&lt;b&gt;Nota:&lt;/b&gt; Il formato del file, se non esplicitamente scelto, è aggiunto automaticamente al file in funzione del formato di output selezionato.&lt;/p&gt;
 
 &lt;h3&gt;Formato in output&lt;/h3&gt;
 &lt;p&gt;Nel menu a tendina sono disponibili tutti i formati supportati da GDAL. Cliccare e selezionare il formato desiderato per il file di output.&lt;br/&gt;
-&lt;b&gt;Nota:&lt;/b&gt; Sono raccomandati i formati GeoTiff e ERDAS Imagine .img. Alcuni formati causano un&apos;improvvisa interruzione dell&apos;applicazione. Usare i formati consigliati finché i problemi non sono stati risolti, oppure usare altri formati completamente supportati da GDAL.&lt;/p&gt;
+&lt;b&gt;Nota:&lt;/b&gt; Sono raccomandati i formati GeoTiff e ERDAS Imagine .img. Alcuni formati causano un&apos;improvvisa interruzione dell&apos;applicazione. Fino alla soluzione dei problemi, si consiglia l&apos;uso dei formati raccomandati oppure di altri formati completamente supportati da GDAL.&lt;/p&gt;
 
-&lt;h3&gt;Raggio&lt;/h3&gt;
-&lt;p&gt;Usato per specificare il raggio di ricerca della mappa di concentrazione in metri o unità di mappa. Il raggio specifica la distanza intorno al punto a cui l&apos;influenza
-  verrà percepita. Valori grandi permettono una visuale ampia sul territorio, tuttavia valori piccolo sono utili per notare variazioni di densità direttamente intorno al punto.&lt;/p&gt;
+&lt;h3&gt;Raggio (larghezza di banda)&lt;/h3&gt;
+&lt;p&gt;Usato per specificare il raggio di ricerca della mappa di concentrazione in metri o unità di mappa. Il raggio specifica la distanza intorno al punto la cui influenza
+ verrà percepita. Valori grandi forniscono un risultato molto sfumato, mentre valori piccoli forniscono risultati  più dettagliati e variazioni di densità intorno al punto.&lt;/p&gt;
 
 &lt;h3&gt;Opzioni avanzate&lt;/h3&gt;
 
 &lt;h4&gt;Righe e colonne&lt;/h4&gt;
 &lt;p&gt;Utilizzati per cambiare la dimensione del file di output. Questi valori sono collegati alle dimensioni della &lt;b&gt;cella X&lt;/b&gt; e della &lt;b&gt;cella Y&lt;/b&gt;. 
-Impostando un numero maggiore di righe e colonne la dimensione dei pixel diminuisce e di coseguenza aumenta la dimensione della mappa. Raddoppiando il numero delle righe verrà automaticamente raddoppiato il numero delle colonne e quindi la dimensione delle celle risulterà
-essere dimezzata. Infatti l’area di output del raster rimane la stessa!&lt;/p&gt;
+Aumentando il numero di righe e colonne, diminuirà la dimensione della cella e di conseguenza aumenterà la dimensione del file. Il numero di righe e colonne sono collegati, così raddoppiando il numero delle righe verrà automaticamente raddoppiato il numero delle colonne e la dimensione delle celle risulterà dimezzata. L’area geografica di output del raster rimane la stessa!&lt;/p&gt;
 
 &lt;h4&gt;Dimensioni cella X e Y&lt;/h4&gt;
-&lt;p&gt;Controllano la dimensione geografica di ogni pixel nel raster in output. Cambiando questi valori cambierà anche il numero delle righe e delle colonne nel raster in output.&lt;/p&gt;
+&lt;p&gt;Controllano la dimensione geografica di ogni pixel nel raster in output. Cambiando questi valori cambieranno anche il numero delle righe e delle colonne nel raster in output.&lt;/p&gt;
 
 &lt;h4&gt;Forma del kernel&lt;/h4&gt;
-&lt;p&gt;La forma del kernel controlla il tasso con il quale l&apos;infuenza del punto diminuisce all&apos;aumentare della distanza. A differenti diminuzioni dei kernel seguono tassi diversi, questo significa che il kernel &quot;a peso triplo&quot; dà maggiore importanza alla distanza vicono al punto di quanto non lo faccio il kernel Epanechnikov. Di conseguenza  
-
-il &quot;peso triplo&quot; creerà mappe di concentrazione più &quot;aspre&quot;, mentre Epanechnikov creerà mappe di concentrazione più &quot;morbide&quot;. Sono disponibili un gran numero di funzioni kernel in QGIS,
+&lt;p&gt;La forma del kernel controlla il tasso con il quale l&apos;infuenza del punto diminuisce all&apos;aumentare della distanza. Differenti kernel diminuiscono a tassi diversi, questo significa che il kernel &quot;a peso triplo&quot; dà maggiore importanza vicino al punto di quanto non faccia il kernel Epanechnikov. Di conseguenza  
+il kernel &quot;peso triplo&quot; creerà mappe di concentrazione più &quot;aspre&quot;, mentre Epanechnikov creerà mappe di concentrazione più &quot;morbide&quot;. In QGIS sono disponibili un gran numero di funzioni kernel,
 tutte ben descritte in &lt;a href=&quot;http://en.wikipedia.org/wiki/Kernel_(statistics)#Kernel_functions_in_common_use&quot;&gt;Wikipedia&lt;/a&gt;.&lt;/p&gt;
 
 &lt;h4&gt;Tasso di decadimento&lt;/h4&gt;
-&lt;p&gt;Per kernel trinagolari, il tasso di decadimento definisce l&apos;influenza applicata ai pixel presenti nel raggio del buffer del punto. Un valore 0 riflette il kernel triangolare standard, dove l&apos;influenza scende a zero dal momento in cui la distanza dal pixel al punto raggiunge il raggio specificato. Al contrario il valore 1 indica che non si verificherà alcuna diminuzione quando la distanza dal punto aumenta.&lt;/p&gt;
+&lt;p&gt;Per kernel triangolari, il tasso di decadimento definisce l&apos;influenza applicata ai pixel presenti nel raggio del buffer del punto. Un valore 0 riflette il kernel triangolare standard, dove l&apos;influenza scende a zero a distanza dal punto pari al raggio specificato. Al contrario il valore 1 indica che non si verificherà alcuna diminuzione all&apos;aumento della distanza dal punto.&lt;/p&gt;
 
 &lt;h4&gt;Usa il raggio di un campo&lt;/h4&gt;
-&lt;p&gt;È possibile scegliere un valore specifico per controllare il raggio del kernel per ogni punto nel vettore di input.&lt;/p&gt;
+&lt;p&gt;È possibile scegliere il valore di un attributo per controllare il raggio del kernel per ogni punto nel vettore di input.&lt;/p&gt;
 
-&lt;h4&gt;Usa il peso da un campo&lt;/h4&gt;
-&lt;p&gt;È possibile usare il valore di un un punto del vettore di input come peso.&lt;/p&gt;
+&lt;h4&gt;Usa il peso di un campo&lt;/h4&gt;
+&lt;p&gt;È possibile usare il valore di un attributo di un punto del vettore di input come peso.&lt;/p&gt;
 
 &lt;h2&gt;Ulteriori dettagli&lt;/h2&gt;
 &lt;p&gt;Contattare gli autori all&apos;indirizzo aruntheguy at gmail dot com&lt;/p&gt;
@@ -58849,38 +58847,43 @@ To filter a layer before adding it to the map, double click on its name or use &
 &lt;/a&gt;
 Ticking &lt;label&gt;Search options&lt;/label&gt; enables additional options for searching in different column types and using 2 search modes: &lt;label&gt;Wildcard&lt;/label&gt; or &lt;label&gt;RegExp&lt;/label&gt;.
 </source>
+        <translatorcomment>&quot;Wildcard&quot;? mi viene in mente &quot;jolly&quot; ma sempre inglese è! e &quot;RegExp&quot; in &quot;Espressioni regolari&quot; ?(g)</translatorcomment>
         <translation type="unfinished">&lt;h3&gt;Aggiungi tabelle PostGIS&lt;/h3&gt;
 Questa finestra di dialogo consente di aggiungere layer PostGIS (tabelle con colonna geometrica) all&apos;area mappa di QGIS.
 &lt;p&gt;
 &lt;a href=&quot;#connect&quot;&gt;Connessioni&lt;/a&gt;&lt;br/&gt;
 &lt;a href=&quot;#add&quot;&gt;Aggiungere layer&lt;/a&gt;&lt;br/&gt;
 &lt;a href=&quot;#filter&quot;&gt;Filtrare un layer&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#search&quot;&gt;Search options&lt;/a&gt;&lt;br/&gt;
 
 &lt;a name=&quot;connect&quot;&gt;
 &lt;h4&gt;Connessioni&lt;/h4&gt;
 &lt;/a&gt;
 &lt;ul&gt;
-&lt;li&gt;Scegliere la connessione da usare dal drop-down box e poi clic su &lt;label&gt;Connetti&lt;/label&gt;.
+&lt;li&gt;Scegliere la connessione dal menu a tendina e poi clicca su &lt;label&gt;Connetti&lt;/label&gt;.
 &lt;li&gt;Se non ci sono connessioni, usare il pulsante &lt;label&gt;Nuovo&lt;/label&gt; per creare una connessione.
-&lt;li&gt;Per modificare una connessione, clic sul puslante &lt;label&gt;Modifica&lt;/label&gt;.
+&lt;li&gt;Per modificare una connessione, clic sul pulsante &lt;label&gt;Modifica&lt;/label&gt;.
 &lt;/ul&gt;
 &lt;a name=&quot;add&quot;&gt;
 &lt;h4&gt;Aggiungere layer&lt;/h4&gt;
 &lt;/a&gt;
 Per aggiungere un layer:
 &lt;ol&gt;
-&lt;li&gt;Scegliere la connessione desiderata dal drop-down box.
+&lt;li&gt;Scegliere la connessione desiderata dal menu a tendina.
 &lt;li&gt;Clic su &lt;label&gt;Connetti&lt;/label&gt;.
-&lt;li&gt;Trovare il layer che si vuole aggiungere nella lista e poi clic su di esso per selezionarlo.
-&lt;li&gt;È possibile selezionare layer aggiuntivi tenendo premuto il tasto Ctrl e facendo clic sui layer desiderati.
+&lt;li&gt;Trovare il layer che si vuole aggiungere nella lista e poi cliccate su di esso per selezionarlo.
+&lt;li&gt;È possibile selezionare layer aggiuntivi tenendo premuto il tasto Ctrl e cliccando sui layer desiderati.
 &lt;li&gt;Clic su &lt;label&gt;Aggiungi&lt;/label&gt; per aggiungere il/i layer alla mappa.
 &lt;/ol&gt;
 &lt;a name=&quot;filter&quot;&gt;
 &lt;h4&gt;Filtrare un layer&lt;/h4&gt;
 &lt;/a&gt;
-Per filtrare un layer prima di aggiungerlo alla mappa, doppio clic sul suo nome. Questo aprirà il Query builder, consentendo di creare una istruzione SQL da usare per il filtraggio dei record.
+Per filtrare un layer prima di aggiungerlo alla mappa, doppio clic sul suo nome o usate il pulsante &lt;label&gt;Build query&lt;/label&gt;. Questo aprirà il Query builder, consentendo di creare una istruzione SQL da usare per il filtraggio dei record.
 
-</translation>
+&lt;a name=&quot;search&quot;&gt;
+&lt;h4&gt;Opzioni di ricerca&lt;/h4&gt;
+&lt;/a&gt;
+Selezionando &lt;label&gt;Optioni di ricerca&lt;/label&gt; consentirà di definire ulteriori opzioni di ricerca indifferenti tipi di colonne e usare 2 metodi di ricerca: &lt;label&gt;Wildcard&lt;/label&gt; or &lt;label&gt;RegExp&lt;/label&gt;.</translation>
     </message>
     <message>
         <location filename="../src/core/qgscontexthelp_texts.cpp" line="566"/>
@@ -58917,26 +58920,38 @@ This dialog allows you to define the settings for a connection to a PostgreSQL d
 
 &lt;/ul&gt;
 </source>
-        <translatorcomment>Qui la traduzione sembra molto diversa (versione precedente? errore?)</translatorcomment>
+        <translatorcomment>traduzione rifatta, manca ultima frase che non capisco interamente (g)</translatorcomment>
         <translation type="unfinished">&lt;h3&gt;Crea una nuova connessione PostGIS&lt;/h3&gt;
-Per creare una nuova connessione PostGIS è necessario conoscere il nome del server (host), la porta, e nome utente/password per il server del database.
-&lt;h4&gt;Parametri richiesti&lt;/h4&gt;
+Questa finestra di dialogo consente di definire i parametri di una nuova connessione ad un database PostgreSQL.
 &lt;ul&gt;
-&lt;li&gt;&lt;label&gt;Nome&lt;/label&gt; - un nome descrittivo per la connessione
-&lt;li&gt;&lt;label&gt;Host&lt;/label&gt; - nome del server contenente il database (es. madison.qgis.org)
-&lt;li&gt;&lt;label&gt;Database&lt;/label&gt; - nome del database a cui connettersi
-&lt;li&gt;&lt;label&gt;Porta&lt;/label&gt; - porta di connessione per PostgreSQL. Per default si tratta della porta 5432. In caso di dubbio, contattare il proprio amministratore di database.
-&lt;li&gt;&lt;label&gt;Utente&lt;/label&gt; - utente del database
-&lt;li&gt;&lt;label&gt;Password&lt;/label&gt; - password dell&apos;utente per accedere al database
-&lt;/ul&gt;
-&lt;h4&gt;Opzioni&lt;/h4&gt;
-&lt;ol&gt;
-&lt;li&gt;&lt;label&gt;Salva password&lt;/label&gt; - salva la password in modo da non doverla inserire ogni volta. La password viene memorizzata come testo in chiaro nelle proprie preferenze QGIS.
-&lt;li&gt;&lt;label&gt;Cerca soltanto nella tabella geometry_columns&lt;/label&gt; - normalmente QGIS esamina ogni tabella del database per vedere se contiene colonne geometriche; in tal caso aggiunge la tabella alla lista dei layer. Spuntare questa casella per fare in modo che QGIS elenchi solo i layer che sono stati &quot;registrati&quot; e sono inseriti nella tabella geometry_columns.
-&lt;li&gt;&lt;label&gt;Cerca soltanto nello schema &apos;public&apos;&lt;/label&gt; - questo limita la ricerca dei layer nello schema public
-&lt;/ol&gt;
-&lt;h4&gt;Test della connessione&lt;/h4&gt;
-Facendo clic sul pulsante &lt;label&gt;Test Connessione&lt;/label&gt; inizia un tentativo di connessione al database usando i parametri specificati. Questo è un ottimo modo per controllare i parametri di connessione prima di salvare la connessione.
+&lt;li&gt; &lt;label&gt;Nome&lt;/label&gt; nome descrittivo per la connessione.
+
+&lt;li&gt; &lt;label&gt;Service&lt;/label&gt; nome di un servizio elencato nel &lt;a href=&quot;http://www.postgresql.org/docs/current/static/libpq-pgservice.html&quot;&gt;Connection Service File&lt;/a&gt;.
+
+&lt;li&gt; &lt;label&gt;Host&lt;/label&gt; nome oindirizzo IP del server contenente il database (lasciare vuoto per connessioni e servizi locali).
+
+&lt;li&gt; &lt;label&gt;Port&lt;/label&gt; porta IP usata dal server (lasciare vuoto per connessioni locali 
+o usare la porta standard 5432).
+
+&lt;li&gt; &lt;label&gt;Database&lt;/label&gt; nome del database a cui connettersi (lasciare vuoto per il database standard).
+
+&lt;li&gt; &lt;label&gt;SSL mode&lt;/label&gt; &lt;a href=&quot;http://www.postgresql.org/docs/9.0/static/libpq-ssl.html#LIBPQ-SSL-SSLMODE-STATEMENTS&quot;&gt;SSL mode&lt;/a&gt; della connessione.
+
+&lt;li&gt;&lt;label&gt;Utente&lt;/label&gt; utente del database.
+
+&lt;li&gt;&lt;label&gt;Password&lt;/label&gt; password dell&apos;utente per accedere al database.
+
+&lt;li&gt; &lt;label&gt;Salva nome utente&lt;/label&gt; Indica se salvare il nome utente nella configurazione della connessione.
+
+&lt;li&gt;&lt;label&gt;Salva password&lt;/label&gt; Indica se salvare la password nella configurazione della connessione &lt;font color=&quot;red&quot;&gt;Le password sono salvate in &lt;strong&gt;testo semplice&lt;/strong&gt; nella configurazione del sistema e nei file di progetto!&lt;/font&gt;
+
+&lt;li&gt;&lt;label&gt;Cerca solo nella tabella geometry_columns&lt;/label&gt; Indica che saranno usate le sole colonne geometriche registrate, piuttosto di passare tutte le tabelle per cercare le colonne geometriche.
+
+&lt;li&gt;&lt;label&gt;Cerca soltanto nello schema &apos;public&apos;&lt;/label&gt; Indica che saranno considerate le sole tabelle dello schema &apos;public&apos;, piuttosto che non tutte le tabelle accessibili.
+
+&lt;li&gt; &lt;label&gt;Elenca anche le tabelle senza geometria&lt;/label&gt; Indica che l&apos;elenco deve includere anche le tabelle senza geometria.
+
+&lt;li&gt; &lt;label&gt;Use estimated table metadata&lt;/label&gt; When initializing layers, various queries may be needed to establish the characteristics of the geometries stored in the database table.  When this option is checked, these queries examine only a sample of the rows and use the table statistics, rather than the entire table.  This can drastically speed up operations on large datasets, but may result in incorrect characterization of layers (eg. the &lt;font color=&quot;red&quot;&gt;feature count&lt;/font&gt; of filtered layers will not be accurately determined).
 
 &lt;/ul&gt;</translation>
     </message>
@@ -58968,9 +58983,9 @@ Per creare un nuovo layer, scegliere &lt;label&gt;Nuovo vettoriale&lt;/label&gt;
 Con questa finestra di dialogo è possibile creare uno Shapefile.
 &lt;h4&gt;Tipo&lt;/h4&gt;
 Scegliere il tipo di layer &lt;label&gt;Punto&lt;/label&gt;, &lt;label&gt;Linea&lt;/label&gt; o &lt;label&gt;Poligono&lt;/label&gt;.&lt;br/&gt;
-Clic sul pulsante &lt;label&gt;Specifica CRS&lt;/label&gt; per cambiare le coordinate di riferimento spaziale del layer se necessario.
+Cliccare sul pulsante &lt;label&gt;Specifica CRS&lt;/label&gt; per cambiare le coordinate di riferimento spaziale del layer se necessario.
 &lt;h4&gt;Nuovo attributo&lt;/h4&gt;
-Aggiungere gli attributi desiderati con un clic sul pulsante &lt;label&gt;Aggiungi alla lista degli attributi&lt;/label&gt; dopo aver specificato un nome ed un tipo per l&apos;attributo. Gli attributi possono essere numeri reali, interi o stringhe.&lt;br/&gt;
+Aggiungere gli attributi desiderati con un clic sul pulsante &lt;label&gt;Aggiungi alla lista degli attributi&lt;/label&gt; dopo aver specificato un nome ed un tipo per l&apos;attributo. Gli attributi possono essere solo numeri reali, interi o stringhe.&lt;br/&gt;
 È possibile definire l&apos;ampiezza e la precisione della nuova colonna attributo.
 &lt;h4&gt;Lista attributi&lt;/h4&gt;
 In questa sezione e&apos; possibile visualizzare la lista degli attributi. Per cancellarne uno, selezionarlo e poi clic sul pulsante &lt;label&gt;Rimuovi attributo selezionato&lt;/label&gt;.
@@ -59263,11 +59278,11 @@ In this section you can see the list of attributes. To delete one of them, click
 &lt;p&gt;
 Click on &lt;label&gt;OK&lt;/label&gt; to create the layer and close the dialog.  Clicking &lt;label&gt;Apply&lt;/label&gt; also creates the layer, but keeps the dialog open, thereby allowing you to create more similar layers. &lt;label&gt;Cancel&lt;/label&gt; will close the layer without further changes.
 </source>
-        <translatorcomment>manca da tradurre &apos;partial matches&apos; in &apos;SRID EPSG&apos;, è da controllare anche la traduzione di &apos;Add to attributes list&apos; in &apos;Nuovi attributi&apos;, idem per &apos;Remove selected attribute&apos; (gc)</translatorcomment>
+        <translatorcomment>ho tradotto &apos;partial matches&apos; in &apos;SRID EPSG&apos; con &quot;combinazioni parziali&quot; (gc)</translatorcomment>
         <translation type="unfinished">&lt;h3&gt;Crea un nuovo layer SpatiaLite&lt;/h3&gt;
 Con questa finestra di dialogo potete creare un nuovo database e/o un layer vuoto SpatiaLite. Vedi sotto per una spiegazione dei dati in ingresso.
 &lt;h4&gt;Database&lt;/h4&gt;
-Scegliete il database dalla lista. Questa lista è creata per le vostre connessioni SpatiaLite registrate. Se non avete registrato connessioni o volete creare un nuovo database, cliccate sul pulsante (&lt;label&gt;...&lt;/label&gt;) alla destra della lista.
+Scegliete il database dalla lista del menu a tendina. Questa lista elenca le vostre connessioni SpatiaLite registrate. Se non avete registrato connessioni o volete creare un nuovo database, cliccate sul pulsante (&lt;label&gt;...&lt;/label&gt;) alla destra della lista.
 &lt;h4&gt;Nome del layer&lt;/h4&gt;
 Fornite un nome per il layer che volete creare. Il nome deve essere una parola. Potete usare trattini bassi (underscore) nel nome se volete.
 &lt;h4&gt;Colonna della geometria&lt;/h4&gt;
@@ -59275,14 +59290,14 @@ Fornite un nome per la colonna della geometria o accettate quello predefinito.
 &lt;h4&gt;Tipo&lt;/h4&gt;
 Scegliete il tipo di layer che volete creare.
 &lt;h4&gt;SRID EPSG&lt;/h4&gt;
-Fornite il numero EPSG come identificativo per il sistema spaziale (SRID). Il valore SRID è preimpostato su WGS 84. Cliccate sul pulsante &lt;label&gt;Cerca SRID&lt;/label&gt; per cambiare il sistema di riferimento delle coordinate del layer se necessario. Il valore SRID deve esistere nella tabella &apos;spatial_ref_sys&apos; del vostro database SpatiaLite. Potete cercare lo SRID usando partial matches sia sul nome che sullo SRID.
+Fornite il numero EPSG come identificativo per il sistema spaziale (SRID). Il valore SRID è preimpostato su WGS 84. Cliccate sul pulsante &lt;label&gt;Cerca SRID&lt;/label&gt; per cambiare il sistema di riferimento delle coordinate del layer se necessario. Il valore SRID deve esistere nella tabella &apos;spatial_ref_sys&apos; del vostro database SpatiaLite. Potete cercare lo SRID usando combinazioni parziali sia sul nome che sullo SRID.
 &lt;h4&gt;Creare una Chiave Primaria auto-incrementante&lt;/h4&gt;
-Spuntate questa casella di spunta per aggiungere una chiave primaria al nuovo layer. Questo campo chiave sarà auto-incrementante, cioè non dovrete fornire un valore quando aggiungete delle geometrie alla tabella degli attributi del layer.
+Spuntate questa casella per aggiungere una chiave primaria al nuovo layer. Questo campo chiave sarà auto-incrementante, cioè non dovrete fornire un valore quando aggiungete delle geometrie alla tabella degli attributi del layer.
 &lt;h4&gt;Nuovi attributi&lt;/h4&gt;
-Aggiungete gli attributi desiderati cliccando sul pulsante &lt;label&gt;Add to attributes list&lt;/label&gt; dopo averspecificatonome e tipo dell&apos;attributo. Sono ammessi solo attributi di tipo reale, intero, e stringa.&lt;br/&gt;
-Larghezza e precisione sono irrilevanti in un database SpatiaLite quindi non preoccuparvene.
+Aggiungete gli attributi desiderati cliccando sul pulsante &lt;label&gt;Aggiungi alla lista degli attributi&lt;/label&gt; dopo aver specificato nome e tipo dell&apos;attributo. Sono ammessi solo attributi di tipo reale, intero, e stringa.&lt;br/&gt;
+Larghezza e precisione sono irrilevanti in un database SpatiaLite quindi non preoccupatevene.
 &lt;h4&gt;Lista degli attributi&lt;/h4&gt;
-In questa sezionepotete vedere la lista degli attributi. Per cancellarne uno cliccate sopra e scegliete il pulsante &lt;label&gt;Remove selected attribute&lt;/label&gt;.
+In questa sezione potete vedere la lista degli attributi. Per cancellarne uno cliccate sopra e scegliete il pulsante &lt;label&gt;Rimuovi attributi selezionati&lt;/label&gt;.
 
 &lt;p&gt;
 Cliccate su &lt;label&gt;OK&lt;/label&gt; per creare il layer e chiudere il dialogo. Anche cliccando &lt;label&gt;Applica&lt;/label&gt; create il layer, ma mantenete il dialogo aperto, consentendovi quindi di creare altri layer simili. &lt;label&gt;Cancella&lt;/label&gt; chiuderà il layer senza ulteriori cambiamenti.</translation>
@@ -59719,10 +59734,56 @@ The &lt;label&gt;Field Calculator&lt;/label&gt; button in the attribute table al
 The results can be written to a new attribute column or it can be used to update values in an already existing column.&lt;br&gt;
 The vector layer needs to be in editing mode, before you can click on the &lt;label&gt;Field calculator&lt;/label&gt; icon to open the dialog.
 </source>
+        <translatorcomment>
+tradurre &quot;docked&quot; e poco dopo&quot;dock&quot; please, ho lasciato il giochino &quot;man&quot; -&gt; &quot;woman&quot; perchè non mi viene l&apos;equivalente italiano, tradurre anche &quot;widgets&quot; alla fine (g)</translatorcomment>
         <translation type="unfinished">&lt;h3&gt;Tabella attributi&lt;/h3&gt;
 La tabella attributi visualizza righe e colonne del layer selezionato.
-Da qui puoi visualizzare, modificare e effettuare ricerche tra i dati relativi al layer in uso.
-</translation>
+Ogni riga rappresenta un elemento della mappa con i suoi attributi nelle varie colonne.
+Gli elementi della tabella possono essere cercate, selezionate, spostate ed anche modificate. Di norma la tabella degli attributi è in una finestra separata. Se l&apos;aprite e non riuscite più a vederla, probabilmente è nascosta sotto la finestra principale di QGIS. Potete anche trasformarla in una finestra docked spuntando &lt;label&gt;Apri la tabella attributi in una finestra dock&lt;/label&gt; in &lt;label&gt;Configurazione &gt; Opzioni &gt; Generale&lt;/label&gt;.&lt;p&gt; 
+Il numero di elementi totali, filtrati e selezionati è stampato sul fronte della finestra.&lt;p&gt;
+&lt;p&gt;
+&lt;a href=&quot;#Selecting&quot;&gt;Selezione&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#Sorting&quot;&gt;Ordinamento&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#Filtering&quot;&gt;Filtraggio&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#Editing&quot;&gt;Modifica&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#FieldCalc&quot;&gt;Calcolatore dei campi&lt;/a&gt;&lt;br/&gt;
+
+&lt;a name=&quot;Selecting&quot;&gt;
+&lt;h4&gt;Selezione&lt;/h4&gt;
+&lt;/a&gt;
+Le righe possono essere selezionate premendo sul numero di riga alla sinistra. Si possono selezionare molteplici righe premendo il pulsante del mouse e trascinandolo alla fine della selezione. Righe non contigue possono essere selezionate tenendo premuto il tasto &lt;label&gt;Ctrl&lt;/label&gt;.&lt;br&gt; Una selezione continua può essere eseguita premendo il tasto &lt;label&gt;Shift&lt;/label&gt; e cliccando su diverse intestazioni alla sinistra delle righe. Tutte le righe fra la posizione corrente del cursoree la riga selezionata verranno aggunte.
+
+&lt;a name=&quot;Sorting&quot;&gt;
+&lt;h4&gt;Ordinamento&lt;/h4&gt;
+&lt;/a&gt;
+Si può ordinare secondo ogni colonna premendo sulla sua intestazione. Una piccola freccia indica il verso (verso il basso significa valori decrescenti dall&apos;alto verso il basso, verso l&apos;alto valori crescenti verso il basso). Attivate il pulsante &lt;label&gt;Selezionati in alto&lt;/label&gt; per vedere le righe selezionate nella prima parte, indipendentemente dall&apos;ordinamento in atto.
+
+&lt;a name=&quot;Filtering&quot;&gt;
+&lt;h4&gt;Filtraggio&lt;/h4&gt;
+&lt;/a&gt;
+Per visualizzare solo una parte dei vostri dati, potete usare il pulsante di filtro in basso a sinistra. Sono disponibili le seguenti possibilità.
+&lt;h5&gt;Mostra tutti gli elementi&lt;/h5&gt;
+Mostra tutti gli elementi del layer.
+&lt;h5&gt;Mostra gli elementi selezionati&lt;/h5&gt;
+Mostra tutti gli elementi attualmente selezionati.
+&lt;h5&gt;Mostra gli elementi visibili sulla mappa&lt;/h5&gt;
+Mostra tutti gli elementi attualmente visibili sulla vista della mappa, tenuto conto della estensione della vista e della scala di rappresentazione.
+&lt;h5&gt;Mostra gli elementi nuovi e modificati&lt;/h5&gt;
+Mostra i soli elementi nuovi o modificati. In questo modo sono visualizzati gli elementi con modifiche non confermate e questo è quindi un buon modo per controllare i cambiamenti prima di confermarli. Sappiate che però gli elementi cancellati non sono visibili in questo modo.
+&lt;h5&gt;Colonna di filtro&lt;/h5&gt;
+Un semplice filtro che consente di selezionare mediante un attributo. Se l&apos;attributo contiene del testo, è possibile operare con sotto-stringhe. Cercando &lt;b&gt;man&lt;/b&gt; mostrerà anche le righe contenenti &lt;b&gt;woman&lt;/b&gt;.Dopo aver cambiato il testo del filtro premete il tasto &lt;label&gt;Invio&lt;/label&gt; o cliccate su &lt;label&gt;Applica&lt;/label&gt;.Potete anche disattivare la casella di spunta &lt;label&gt;Rispetta il caso&lt;/label&gt; in modo che il filtro riscontrerà anche &lt;b&gt;Notte&lt;/b&gt; quando il vostro testo è &lt;b&gt;notte&lt;/b&gt;.
+&lt;h5&gt;Filtro avanzato&lt;/h5&gt;
+Per ricerche più complesse, questa modalità offre un potente costruttore di espressioni, simile alla clausola WHERE del SQL. Consultate l&apos;help interno al costruttore di espressioni per maggiori dettagli sulla sintassi.
+
+&lt;a name=&quot;Editing&quot;&gt;
+&lt;h4&gt;Modifica&lt;/h4&gt;
+&lt;/a&gt;
+Per modificare i valori dovete prima attivare il layer in modalità Modifica. Per farlo premete il pulsante (penna) &lt;label&gt;Cambia modalità di modifica&lt;/label&gt; o premete itasti &lt;label&gt;Ctrl + E&lt;/label&gt;. Quindi premete due volte sul valore che volete cambiare o mettetevi il cursore sopra e usate il tasto &lt;label&gt;Spazio&lt;/label&gt;. Potete personalizzare i widgets usati per la modifica dei campi in &lt;label&gt;Proprietà del layer vettoriale &gt; Campi&lt;/label&gt;.
+
+&lt;a name=&quot;FieldCalc&quot;&gt;
+&lt;h4&gt;Calcolatore dei campi&lt;/h4&gt;
+&lt;/a&gt;
+Il pulsante &lt;label&gt;Calcolatore dei campi&lt;/label&gt; nella tabella degli attributi consente elaborazioni sulla base dei valori di attributi esistenti o di funzioni predefinite, ad es. per calcolare la lunghezza o l&apos;area di elementi geometrici.&lt;br&gt; I risultati possono essere registrati in una nuova colonna di attributi o usati per modificare i valori di una colonna esistente.&lt;br&gt; Il layer vettoriale deve essere in modalità di Modifica prima di premere sull&apos;icona &lt;label&gt;Calcolatore dei campi&lt;/label&gt; per aprire la finestra di dialogo.</translation>
     </message>
     <message>
         <location filename="../src/core/qgscontexthelp_texts.cpp" line="703"/>
@@ -59764,7 +59825,7 @@ On this tab you can search for WMS servers. It is possible to enter a search-str
 To visualize the results, select an table entry, press the &lt;label&gt;Add selected row to WMS list&lt;/label&gt; button and change back to the &lt;label&gt;Servers&lt;/label&gt; tab.&lt;p&gt;
 You only need to request the list of layers by clicking the &lt;label&gt;Connect&lt;/label&gt; button.
 </source>
-        <translatorcomment>Qui la tradizione sembra molto errata, controllare la sintassi HTML</translatorcomment>
+        <translatorcomment>#dubbio#Qui la tradizione sembra molto errata, controllare la sintassi HTML. anonimo? io l&apos;ho controllata e sistemata, spero; non ho controllato la sintassiHTML però (g)</translatorcomment>
         <translation type="unfinished">&lt;h3&gt;Crea una nuova connessione WMS&lt;/h3&gt;
 I layers WMS possono essere aggiunti in maniera molto semplice, è necessario conoscere l&apos;URL di accesso al server WMS, avere un servizio di accesso a questo server e il server deve supportare il protocollo di trasporto dei dati via HTTP.&lt;p&gt;
 QGIS attualmente può essere utilizzare come client WMS per le implementazione WMS 1.1, 1.1.1 e 1.3.
@@ -59779,18 +59840,17 @@ QGIS attualmente può essere utilizzare come client WMS per le implementazione W
 &lt;/a&gt;
 Per definire un nuovo server WMS nella sezione 
 To define a new WMS server in the &lt;label&gt;Connessioni server&lt;/label&gt;, selezionare &lt;label&gt;Nuovo&lt;/label&gt; ed inserire i parametri necessari per collegarsi al server WMS desiderato.&lt;p&gt;
-È possibile aggiungere diversi server pre-impostati con cui giocare con un clic sul bottone &lt;label&gt;Aggiungere server predefiniti&lt;/label&gt;. Questo aggiungerà almeno tre server WMS da utilizzare, compreso il server WMS NASA (JPL).&lt;p&gt;
-Una volta che una nuova connessione ad un nuovo server WMS è stata creata, questa sarà preservata anche nella future sessione di QGIS.
+È possibile aggiungere diversi server pre-impostati con cui cimentarsi con un clic sul bottone &lt;label&gt;Aggiungere server predefiniti&lt;/label&gt;. Questo aggiungerà almeno tre server WMS da utilizzare, compreso il server WMS NASA (JPL).&lt;p&gt;
+Una volta che una nuova connessione ad un server WMS è stata creata, questa sarà preservata anche nella future sessione di QGIS.
 
 &lt;a name=&quot;load&quot;&gt;
 &lt;h5&gt;Caricamento layer WMS&lt;/h5&gt;
 &lt;/a&gt;
-Selezionare il bottone &lt;
-Select the &lt;label&gt;Connetti&lt;/label&gt; per recuperare le capabilities del server selezionato. Questo include le codifica del tipo di immagine, i layer disponibili, gli stili dei layer, e le proiezioni.&lt;br/&gt;
-Durante il trasferimento dei dati dai da un server WMS, il progresso di downlonad viene visualizzato in basso a sinistra nella finestra di dialogo del plugin WMS.&lt;p&gt;
+Selezionare il pulsante &lt;label&gt;Connetti&lt;/label&gt; per recuperare le prerogative del server selezionato. Questo include la codifica del tipo di immagine, i layer disponibili, gli stili dei layer e le proiezioni.&lt;br/&gt;
+Durante il trasferimento dei dati da un server WMS, il progresso di downlonad viene visualizzato in basso a sinistra nella finestra di dialogo del plugin WMS.&lt;p&gt;
 La sezione &lt;label&gt;Codifica immagine&lt;/label&gt; visualizza la lista dei formati supportati sia dal server che dal client.&lt;br/&gt;
-Questo va scelto in relazione al tipo di accuratezza dell&apos;immagine che si vuole ottenere&lt;p&gt;
-È possibile selezionare più layer contemporaneamente, questi verranno combinati dal server WMS e trasmessi a QGIS in una sola chiamata.&lt;p&gt;
+Ne va scelto uno in relazione al tipo di accuratezza dell&apos;immagine che si vuole ottenere&lt;p&gt;
+È possibile selezionare più layer contemporaneamente, questi verranno combinati dal server WMS e trasmessi a QGIS in una sola volta.&lt;p&gt;
 
 Ogni layer WMS può essere disponibile in CRS multiple, a seconda delle capacità del server WMS. Per scegliere un CRS, selezionare &lt;label&gt;Cambia ...&lt;/ label&gt;
 
@@ -59811,7 +59871,7 @@ A questo punto serve solo richiedere la lista dei layer attraverso il clic sul b
         <location filename="../src/core/qgscontexthelp_texts.cpp" line="564"/>
         <source>&lt;h3&gt;Database connection&lt;/h3&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;Connessione al database&lt;/h3&gt;
+        <translation>&lt;h3&gt;Connessione al database&lt;/h3&gt;
 </translation>
     </message>
     <message>
@@ -59854,7 +59914,7 @@ To filter a layer before adding it to the map, either double click on its name o
 &lt;/a&gt;
 Ticking &lt;label&gt;Search options&lt;/label&gt; enables additional options for searching in different column types and using 2 search modes: &lt;label&gt;Wildcard&lt;/label&gt; or &lt;label&gt;RegExp&lt;/label&gt;.
 </source>
-        <translatorcomment>da controllare assolutamente (ght)</translatorcomment>
+        <translatorcomment>da controllare assolutamente (ght)  a me sembra a posto, tranne &quot;wildcard&quot; e &quot;RegExp&quot; già visti (g)</translatorcomment>
         <translation type="unfinished">&lt;h3&gt;Aggiungi tabelle SQL Anywhere&lt;/h3&gt;
 Questa finestra permette di aggiungere layer SQL Anywhere (tabelle con una colonna geometria) alla vista mappa di QGIS.
 &lt;p&gt;
@@ -59868,25 +59928,24 @@ Questa finestra permette di aggiungere layer SQL Anywhere (tabelle con una colon
 &lt;/a&gt;
 &lt;ul&gt;
 &lt;li&gt;Scegli la connessione da usare dal menu a tendina e cliccare su &lt;label&gt;Connetti&lt;/label&gt;.
-&lt;li&gt;Se non ci sono connessioni disponibili usa il pulsante &lt;label&gt;Nuova&lt;/label&gt; per creare una connessione.
-&lt;li&gt;Per modificare o elimiare la connessione selezionata, cliccare rispettivamente sui pulsanti &lt;label&gt;Modifica&lt;/label&gt; o &lt;label&gt;Elimina&lt;/label&gt;.
+&lt;li&gt;Se non ci sono connessioni disponibili usare il pulsante &lt;label&gt;Nuova&lt;/label&gt; per creare una connessione.
+&lt;li&gt;Per modificare o eliminare la connessione selezionata, cliccare rispettivamente sui pulsanti &lt;label&gt;Modifica&lt;/label&gt; o &lt;label&gt;Elimina&lt;/label&gt;.
 &lt;/ul&gt;
 &lt;a name=&quot;add&quot;&gt;
 &lt;h4&gt;Aggiungi layer&lt;/h4&gt;
 &lt;/a&gt;
 Per aggiungere un layer:
 &lt;ol&gt;
-&lt;li&gt;Scegli una connession dal menu a tendina.
-&lt;li&gt;Clicca &lt;label&gt;Connetti&lt;/label&gt;, verrà riempita una lista di tutti i layer disponibili nel database. Le opzioni che riguardano il riempimento della lista sono descritte nell&apos;aiuto della finestra di dialogo della nuova connessione.
-    
-&lt;li&gt;Trova il layer che vuoi aggiungere nella lista e clicca per selezionarlo.
-&lt;li&gt;Puoi scegliere più layer cliccando e tenendo premuto il pulsante Ctrl.
-&lt;li&gt;Clicca &lt;label&gt;Aggiungi&lt;/label&gt; per aggiunger il/i layer alla mappa.
+&lt;li&gt;Scegli una connessione dal menu a tendina.
+&lt;li&gt;Cliccando &lt;label&gt;Connetti&lt;/label&gt;, verrà riempita la lista di tutti i layer disponibili nel database. Le opzioni che riguardano la compilazione della lista sono descritte nell&apos;aiuto della finestra di dialogo della nuova connessione.
+&lt;li&gt;Trovare il layer da aggiungere nella lista e cliccare per selezionarlo.
+&lt;li&gt;Si possono scegliere più layer cliccando e tenendo premuto il pulsante Ctrl.
+&lt;li&gt;Cliccare &lt;label&gt;Aggiungi&lt;/label&gt; per aggiunger il/i layer alla mappa.
 &lt;/ol&gt;
 &lt;a name=&quot;filter&quot;&gt;
 &lt;h4&gt;Filtrare un layer&lt;/h4&gt;
 &lt;/a&gt;
-Per filtrare un layer prima di aggiungerlo alla mappa, fare doppio click sul suo nome oppure selezionarlo e cliccare il pulsante &lt;label&gt;Costruisci interrogazione&lt;/label&gt;. Si aprirà il costruttore di interrogazioni che permette di costruire unìistitutione SQL da usare per filtrare i record.
+Per filtrare un layer prima di aggiungerlo alla mappa, fare doppio click sul suo nome oppure selezionarlo e cliccare il pulsante &lt;label&gt;Costruisci interrogazione&lt;/label&gt;. Si aprirà il costruttore di interrogazioni che permette di costruire una istruzione SQL da usare per filtrare i record.
 
 &lt;a name=&quot;search&quot;&gt;
 &lt;h4&gt;Opzioni di ricerca&lt;/h4&gt;
@@ -60035,7 +60094,153 @@ The Diagram tab allows you to add a graphic overlay to a vector layer. To activa
 The current implementation of diagrams provides support for pie- and bar charts and for linear scaling
 of the diagram size according to a classification attribute.
 </source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>tradurre per favore &quot;Diagram Overlay&quot;, non so bene come tradurre &quot;Legend type&quot;, &quot;symbology renderers&quot; l&apos;ho tradotto &quot;simbologie&quot;, omettendo cioè &quot;renderers&quot;, manca verso metà &quot;buffering&quot;; ho lasciato la metà non tradotta in modo che l&apos;utente trova comunque l&apos;help completo ed èfacile per il traduttore vedere la parte da fare (g)</translatorcomment>
+        <translation type="unfinished">&lt;h3&gt;Proprietà dei layer vettoriali&lt;/h3&gt;
+Questa finestra di dialogo consente di operare con laconfigurazione e le proprietà dei layer vettoriali. Ci sono sette schede:
+&lt;p&gt;
+&lt;a href=&quot;#symbology&quot;&gt;Simbologia&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#labels&quot;&gt;Etichette&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#attributes&quot;&gt;Attributi&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#general&quot;&gt;Generale&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#metadata&quot;&gt;Metadata&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#actions&quot;&gt;Azioni&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#diagram&quot;&gt;Diagram Overlay&lt;/a&gt;&lt;br/&gt;
+
+&lt;a name=&quot;symbology&quot;&gt;
+&lt;h4&gt;Simbologia&lt;/h4&gt;
+&lt;/a&gt;
+Per cambiare la simbologia di un layer, cliccare due volte sulla sua voce in legenda ed apparirà la finestra
+di dialogo &lt;label&gt;Proprietà Layer&lt;/label&gt;. In questa finestra è possibile definire lo stile del vostro layer. A seconda dello stile di visualizzazione selezionato si ha anche la possibilità di classificare gli elementi della mappa.
+
+&lt;h5&gt;Legend type&lt;/h5&gt;
+QGIS dispone di una serie di simbologie per controllare la visualizzazione delle geometrie.
+Attualmente sono disponibili queste modalità:
+&lt;ul&gt;
+&lt;li&gt;&lt;label&gt;Simbolo singolo&lt;/label&gt; - un unico stile è applicato a tutti gli oggetti del layer.
+&lt;li&gt;&lt;label&gt;Simbolo categorizzato&lt;/label&gt; - gli elementi sono visualizzati con differente simbologia seconda del valore di un certo campo.
+
+&lt;h5&gt;Nuova simbologia&lt;/h5&gt;
+Cliccare sul pulsante &lt;label&gt;Nuova simbologia&lt;/label&gt; per usare lanuovasimbologiaper la visualizzazione del layer.
+
+&lt;h5&gt;Transparenza dei vettori&lt;/h5&gt;
+QGIS consente di definire la trasparenza per ogni singolo layer. Questo può essere fatto con la slitta &lt;label&gt;Transparenza&lt;/label&gt;. Questo è molto utile per sovrapporre diversi layer vettoriali.
+
+&lt;h5&gt;Salvataggio degli styles&lt;/h5&gt;
+Una volta definito lo stile del layer è possibile anche salvarlo in un file separato (con
+ estensione *.qml). Per farlo usare il pulsante &lt;label&gt;Salva Stile...&lt;/label&gt;. Inutile dire che il
+ pulsante &lt;label&gt;Carica Stile...&lt;/label&gt; leggerà i file di stile salvati..&lt;br/&gt;
+Per usare uno stile specifico ogni volta che un layer è caricato, usare il pulsante &lt;label&gt;Salva Come
+ Predefinito&lt;/label&gt;. Inoltre, se si fanno cambiamenti che non soddisfano, usare il pulsante 
+&lt;label&gt;Ripristina Stile Predefinito&lt;/label&gt; per tornare allo stile precedente.
+
+&lt;a name=&quot;labels&quot;&gt;
+&lt;h4&gt;Etichette&lt;/h4&gt;
+&lt;/a&gt;
+La scheda Etichette consente di etichettare e controlla un numero di opzioni relative a font,
+ posizionamento, stile, allineamento e buffering.&lt;br/&gt;
+Spuntare la casella &lt;label&gt;Mostra etichette&lt;/label&gt; per attivare l&apos;etichettatura.
+
+&lt;h5&gt;Opzioni basilari&lt;/h5&gt;
+Scegliere il campo da usare nell&apos;etichetta.&lt;p&gt;
+Selezionare i pulsanti &lt;label&gt;Font&lt;/label&gt; e &lt;label&gt;Colore&lt;/label&gt; per definire le rispettive qualità.
+É possibile anche cambiare l&apos;angolo ed il posizionamento dell&apos;etichetta.&lt;p&gt;
+Per distribuire l&apos;etichetta su più linee, selezionare &lt;label&gt;Etichette Multilinea?&lt;/label&gt;. QGIS cercherà 
+un carattere di fine riga nell&apos;etichetta ed inserirà opportunamente l&apos;a-capo. Il fine riga è un
+singolo carattere &amp;#92;n, (non due caratteri separati come un backslash &amp;#92; seguito dal carattere
+n).
+
+&lt;h5&gt;Posizionamento&lt;/h5&gt;
+Cambiare la posizione dell&apos;etichetta selezionando uno dei pulsanti ad esclusione nel gruppo 
+&lt;label&gt;Posizionamento&lt;/label&gt;.
+
+&lt;h5&gt;Unità di dimensione Font&lt;/h5&gt;
+La casella &lt;label&gt;Unità di dimensione Font&lt;/label&gt;consente la selezione fra &lt;label&gt;Punti&lt;/label&gt; o &lt;label&gt;Unità di Mappa&lt;/label&gt;.
+
+&lt;h5&gt;Contorno etichette&lt;/h5&gt;
+Consente l&apos;applicazione di un&apos;area di contorno all&apos;etichetta per farla risaltare meglio. Per creare 
+il contorno alle etichette:
+&lt;ol&gt;
+&lt;li&gt;Cliccare la casella di spunta &lt;label&gt;Contorno etichette&lt;/label&gt; per abilitarlo.
+&lt;li&gt;Selezionare una dimensione del contorno mediante lo spin box.
+&lt;li&gt;Scegliere un colore cliccando su &lt;label&gt;Colore&lt;/label&gt; e scegliere il colore favorito
+dall&apos;apposito selettore. É possibile anche definire una certa trasparenza dell&apos;area di contorno.
+&lt;li&gt;Cliccare sul pulsante &lt;label&gt;Applica&lt;/label&gt; per valutare i cambiamenti apportati.
+&lt;/ol&gt;
+Avvertenza: è possibile anche specificare una dimensione in unità di mappa se si preferisce.
+
+&lt;h5&gt;Data defined placement, properties, buffer, position&lt;/h5&gt;
+The remaining entries inside the &lt;label&gt;Label&lt;/label&gt; tab allow you control the appearance of the labels using attributes stored in the layer. The entries beginning with &lt;label&gt;Data defined&lt;/label&gt; allow you to set all the parameters for the labels using fields in the layer.
+
+
+&lt;a name=&quot;attributes&quot;&gt;
+&lt;h4&gt;Attributes&lt;/h4&gt;
+&lt;/a&gt;
+Within the &lt;label&gt;Attributes&lt;/label&gt; tab the attributes of the selected data set can be manipulated. The buttons &lt;label&gt;New Column&lt;/label&gt; and &lt;label&gt;Delete Column&lt;/label&gt; can be used, when the data set is in editing mode. The OGR library supports to add new columns, but not to remove them, if you have a GDAL version &gt;= 1.6 installed. Otherwise only columns from PostGIS layers can be edited.&lt;p&gt;
+The &lt;label&gt;Toggle editing mode&lt;/label&gt; button toggles this mode.&lt;p&gt;
+Within the Attributes tab you also find an edit widget column. This column can be used to define values or a range of values that are allowed to be added to the specific attribute table column. If you click on the &lt;label&gt;edit widget&lt;/label&gt; button, a dialog opens, where you can define different widgets. These widgets are:&lt;br/&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;label&gt;Line edit&lt;/label&gt; an edit field which allows to enter simple text (or restrict to numbers for numeric attributes).
+&lt;li&gt;&lt;label&gt;Classification&lt;/label&gt; Displays a combo box with the values used for classification, if you have chosen &lt;label&gt;unique value&lt;/label&gt; as legend type in the symbology tab of the properties dialog.
+&lt;li&gt;&lt;label&gt;Range&lt;/label&gt; Allows to set numeric values from a specific range. The edit widget can be either a slider or a spin box.
+&lt;li&gt;&lt;label&gt;Unique value&lt;/label&gt; The user can select one of the values already used in the attribute table. If &lt;label&gt;editable&lt;/label&gt; is activated, a line edit is shown with auto completion support, but additional values are possible, otherwise a combo box is used.
+&lt;li&gt;&lt;label&gt;File name&lt;/label&gt; Simplifies the selection by adding a file chooser dialog.
+&lt;li&gt;&lt;label&gt;Value map&lt;/label&gt; a combo box with predefined items. The value is stored in the attribute, the description is shown in the combo box. You can define values manually or load them from a layer or a csv file.
+&lt;li&gt;&lt;label&gt;Enumeration&lt;/label&gt; Opens a combo box with values that can be used within the columns type. This is currently only supported by the Postgres provider.
+&lt;li&gt;&lt;label&gt;Immutable&lt;/label&gt; The immutable attribute column is read-only. The user is not able to modify the content.
+&lt;li&gt;&lt;label&gt;Hidden&lt;/label&gt; A hidden attribute column is invisible to the user.
+&lt;li&gt;&lt;label&gt;Checkbox&lt;/label&gt; A check box is shown.  The value representing the state of the check box in the attribute has to be entered.
+&lt;li&gt;&lt;label&gt;Text edit&lt;/label&gt; A text edit field is shown, that allows entering multiline text.
+&lt;/ul&gt;
+
+&lt;a name=&quot;general&quot;&gt;
+&lt;h4&gt;General&lt;/h4&gt;
+&lt;/a&gt;
+The General tab allows you to change the display name, set scale dependent rendering options, create a spatial index of the vector file (only for OGR supported formats and PostGIS) and view or change the projection of the specific vector layer.&lt;p&gt;
+You can also set a provider specific filter expressions using the &lt;label&gt;Query Builder&lt;/label&gt;.
+
+&lt;h5&gt;Subset&lt;/h5&gt;
+The &lt;label&gt;Query Builder&lt;/label&gt; button allows you to limit the features of a layer to a subset matching an provider specific filter expression.
+
+&lt;a name=&quot;metadata&quot;&gt;
+&lt;h4&gt;Metadata&lt;/h4&gt;
+&lt;/a&gt;
+The &lt;label&gt;Metadata&lt;/label&gt; tab contains information about the layer, including specifics about the type and location, number of features, feature type, and the editing capabilities. The Layer Spatial Reference System section, providing projection information, is displayed on this tab. This is a quick way to get information about the layer.
+
+&lt;a name=&quot;actions&quot;&gt;
+&lt;h4&gt;Actions&lt;/h4&gt;
+&lt;/a&gt;
+QGIS provides the ability to perform an action based on the attributes of a feature. This can be used to perform any number of actions, for example, running a program with arguments built from the attributes of a feature or passing parameters to a web reporting tool. &lt;br/&gt;
+Actions are useful when you frequently want to run an external application or view a web page based on one or more values in your vector layer.&lt;p&gt;
+
+The new implementation of actions uses the QGIS expression engine to do evaluations. Each expression is evaluated and replaced by its result at runtime.&lt;p&gt;
+An expression must be enclosed between &lt;code&gt;[%&lt;/code&gt; and &lt;code&gt;%]&lt;/code&gt; - the GUI has some buttons which do that for you automatically. 
+The &lt;label&gt;Insert expression...&lt;/label&gt; button launches the &lt;label&gt;Expression builder&lt;/label&gt; which allows to write an expression easily, the &lt;label&gt;Insert field&lt;/label&gt; button inserts into the action a placeholder like &lt;code&gt;[% &quot;fieldname&quot; %]&lt;/code&gt; where fieldname is the name of the field selected in the field dropdown list.&lt;p&gt;
+
+See the User Guide for further information.
+
+&lt;h5&gt;Using Actions&lt;/h5&gt;
+Actions can be invoked from the &lt;label&gt;Identify Results&lt;/label&gt; dialog or using the &lt;label&gt;Run feature action&lt;/label&gt; tool on the toolbar.&lt;p&gt;
+
+Each action adds a little set of custom expressions to the default set available in the &lt;label&gt;Expression builder&lt;/label&gt;.&lt;br/&gt;
+While running actions from the &lt;label&gt;Identify Results&lt;/label&gt; dialog the custom expression &lt;code&gt;$currfield&lt;/code&gt; will be replaced with the value of the selected field in the dialog, using the &lt;label&gt;Run feature action&lt;/label&gt; tool the following custom expressions are available (instead of $currfield):
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;$clickx&lt;/code&gt; returns the x coordinate of the click position on the canvas&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;$clicky&lt;/code&gt; returns the y coordinate of the click position on the canvas&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;$layerid&lt;/code&gt; returns the ID of the selected layer in the legend&lt;/li&gt;
+&lt;/ul&gt;
+
+Note: the &lt;label&gt;Run feature action&lt;/label&gt; tool executes the actions on all the matching features, where as &lt;label&gt;Identify Results&lt;/label&gt; allows you to select which specific feature to run action on.&lt;p&gt;
+
+
+&lt;h5&gt;Action Examples&lt;/h5&gt;
+You can add some example actions by clicking on the &lt;label&gt;Add default actions&lt;/label&gt; button.
+
+
+&lt;a name=&quot;diagram&quot;&gt;
+&lt;h4&gt;Diagram Overlay&lt;/h4&gt;
+&lt;/a&gt;
+The Diagram tab allows you to add a graphic overlay to a vector layer. To activate this feature, open the &lt;label&gt;Plugin Manager&lt;/label&gt; and select the &lt;label&gt;Diagram Overlay&lt;/label&gt; plugin. After this, there is a new tab in the vector &lt;label&gt;Layer Properties&lt;/label&gt; dialog where the settings for diagrams may be entered.&lt;p&gt;
+The current implementation of diagrams provides support for pie- and bar charts and for linear scaling.</translation>
     </message>
     <message>
         <location filename="../src/core/qgscontexthelp_texts.cpp" line="1243"/>
