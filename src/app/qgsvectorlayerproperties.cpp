@@ -267,7 +267,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
 
 QgsVectorLayerProperties::~QgsVectorLayerProperties()
 {
-  if ( mOptsPage_LabelsOld && layer->hasGeometryType() )
+  if ( mOptsPage_LabelsOld && labelDialog && layer->hasGeometryType() )
   {
     disconnect( labelDialog, SIGNAL( labelSourceSet() ), this, SLOT( setLabelCheckBox() ) );
   }
@@ -395,23 +395,28 @@ void QgsVectorLayerProperties::syncToLayer( void )
   // load appropriate symbology page (V1 or V2)
   updateSymbologyPage();
 
+  actionDialog->init();
+
   // reset fields in label dialog
   layer->label()->setFields( layer->pendingFields() );
-
-  actionDialog->init();
 
   if ( layer->hasGeometryType() )
   {
     labelingDialog->init();
-    labelDialog->init();
   }
 
-  labelCheckBox->setChecked( layer->hasLabelsEnabled() );
-  labelOptionsFrame->setEnabled( layer->hasLabelsEnabled() );
+  if ( mOptsPage_LabelsOld )
+  {
+    if ( labelDialog && layer->hasGeometryType() )
+    {
+      labelDialog->init();
+    }
+    labelCheckBox->setChecked( layer->hasLabelsEnabled() );
+    labelOptionsFrame->setEnabled( layer->hasLabelsEnabled() );
+    QObject::connect( labelCheckBox, SIGNAL( clicked( bool ) ), this, SLOT( enableLabelOptions( bool ) ) );
+  }
 
   mFieldsPropertiesDialog->init();
-
-  QObject::connect( labelCheckBox, SIGNAL( clicked( bool ) ), this, SLOT( enableLabelOptions( bool ) ) );
 
   // delete deprecated labels tab if not already used by project
   // NOTE: this is not ideal, but a quick fix for QGIS 2.0 release
@@ -421,7 +426,10 @@ void QgsVectorLayerProperties::syncToLayer( void )
   {
     if ( mOptsPage_LabelsOld )
     {
-      disconnect( labelDialog, SIGNAL( labelSourceSet() ), this, SLOT( setLabelCheckBox() ) );
+      if ( labelDialog )
+      {
+        disconnect( labelDialog, SIGNAL( labelSourceSet() ), this, SLOT( setLabelCheckBox() ) );
+      }
       delete mOptsPage_LabelsOld;
       mOptsPage_LabelsOld = 0;
     }
@@ -479,10 +487,13 @@ void QgsVectorLayerProperties::apply()
   if ( mOptsPage_LabelsOld )
   {
     if ( labelDialog )
+    {
       labelDialog->apply();
+    }
     layer->enableLabels( labelCheckBox->isChecked() );
-    layer->setLayerName( mLayerOrigNameLineEdit->text() );
   }
+
+  layer->setLayerName( mLayerOrigNameLineEdit->text() );
 
   // Apply fields settings
   mFieldsPropertiesDialog->apply();
@@ -728,6 +739,8 @@ void QgsVectorLayerProperties::on_pbnLoadStyle_clicked()
   QFileInfo myFI( myFileName );
   QString myPath = myFI.path();
   myQSettings.setValue( "style/lastStyleDir", myPath );
+
+  activateWindow(); // set focus back to properties dialog
 }
 
 
