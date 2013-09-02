@@ -418,6 +418,14 @@ void QgsVectorLayerProperties::syncToLayer( void )
 
   mFieldsPropertiesDialog->init();
 
+  if ( layer->hasLabelsEnabled() )
+  {
+    // though checked on projectRead, can reoccur after applying a style with enabled deprecated labels
+    // otherwise, the deprecated labels will render, but the tab to disable them will not show up
+    QgsProject::instance()->writeEntry( "DeprecatedLabels", "/Enabled", true );
+    // (this also overrides any '/Enabled, false' project property the user may have manually set)
+  }
+
   // delete deprecated labels tab if not already used by project
   // NOTE: this is not ideal, but a quick fix for QGIS 2.0 release
   bool ok;
@@ -434,7 +442,8 @@ void QgsVectorLayerProperties::syncToLayer( void )
       mOptsPage_LabelsOld = 0;
     }
   }
-} // reset()
+
+} // syncToLayer()
 
 
 
