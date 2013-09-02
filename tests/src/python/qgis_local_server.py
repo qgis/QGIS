@@ -439,6 +439,9 @@ class TestQgisLocalServerConfig(TestCase):
 
 
 if __name__ == '__main__':
-    TESTSPAWN = True
-    TESTPROJ = '/test-projects/tests/pal_test.qgs'
+    TESTSPAWN = False  # whether to test a preconfigured, spawned process
+    # to test connection:
+    #   '/test-projects/tests' should == your config 'projdir'
+    #   copy the contents of <src>/tests/testdata/labeling/ to projdir
+    TESTPROJ = '/test-projects/tests/test-connection.qgs'
     unittest.main(verbosity=2)
