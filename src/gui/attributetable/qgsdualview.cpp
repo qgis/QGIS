@@ -229,7 +229,6 @@ void QgsDualView::initLayerCache( QgsVectorLayer* layer )
   connect( layer, SIGNAL( editingStopped() ), this, SLOT( editingToggled() ) );
   connect( layer, SIGNAL( attributeAdded( int ) ), this, SLOT( attributeAdded( int ) ) );
   connect( layer, SIGNAL( attributeDeleted( int ) ), this, SLOT( attributeDeleted( int ) ) );
-  connect( mLayerCache, SIGNAL( attributeValueChanged( QgsFeatureId, int, QVariant ) ), this, SLOT( onAttributeValueChanged( QgsFeatureId, int, QVariant ) ) );
 }
 
 void QgsDualView::initModels( QgsMapCanvas* mapCanvas )
