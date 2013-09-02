@@ -30198,7 +30198,7 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
     </message>
     <message>
         <source>Type case</source>
-        <translation type="unfinished"></translation>
+        <translation>Mayúsculas/minúsculas</translation>
     </message>
     <message>
         <source>Capitalization style of text</source>
@@ -30402,7 +30402,7 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
     </message>
     <message>
         <source>Drop shadow</source>
-        <translation>Quitar sombra</translation>
+        <translation>Sombreado</translation>
     </message>
     <message>
         <source>Offset</source>
@@ -30534,7 +30534,7 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
     </message>
     <message>
         <source>Draw under</source>
-        <translation>Dibujar debajo</translation>
+        <translation>Dibujar bajo</translation>
     </message>
     <message>
         <source>Lowest label component</source>
@@ -30670,7 +30670,7 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
     </message>
     <message>
         <source>Draw drop shadow</source>
-        <translation type="unfinished"></translation>
+        <translation>Dibujar sombra</translation>
     </message>
     <message>
         <source>Label&apos;s rotation is ignored</source>
@@ -31220,7 +31220,7 @@ mo se muestran</translation>
     </message>
     <message>
         <source>, sender &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>, remitente &apos;%1&apos;</translation>
     </message>
     <message>
         <source>Rendering</source>
@@ -36468,7 +36468,7 @@ error: %2</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;When the layer is setup various metadata is required for the Oracle table. This includes information such as the table row count, geometry type and spatial extents of the data in the geometry column. If the table contains a large number of rows determining this metadata is time consuming.&lt;/p&gt;&lt;p&gt;By activating this option the following fast table metadata operations are done:&lt;/p&gt;&lt;p&gt;1) Row count is determined from all_tables.num_rows.&lt;/p&gt;&lt;p&gt;2) Table extents are always determined with the SDO_TUNE.EXTENTS_OF function even if a layer filter is applied.&lt;/p&gt;&lt;p&gt;3) The table geometry is determined from the first 100 non-null geometry rows in the table.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Cuando se configura la capa se necesitan varios metadatos para la tabla de Oracle. Esto incluye información tal como el número de filas de la tabla, tipo de geometría y extensión espacial de los datos en la columna de geometría. Si la tabla contiene un gran número de filas determinar estos metadatos lleva tiempo.&lt;/p&gt;&lt;p&gt;Al activar esta opción se realizan las siguientes operaciones rápidas de metadatos de tabla:&lt;/p&gt;&lt;p&gt;1) El número de filas se determina a partir de all_tables.num_rows.&lt;/p&gt;&lt;p&gt;2) La extensión de la tabla siempre se determina con la función SDO_TUNE.EXTENTS_OF incluso si se aplica un filtro de.&lt;/p&gt;&lt;p&gt;3) La geometría de la tabla se determina a partir de las primeras 100 filas con geometría no nula de la tabla.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Cuando se configura la capa se necesitan varios metadatos para la tabla de Oracle. Esto incluye información tal como el número de filas de la tabla, tipo de geometría y extensión espacial de los datos en la columna de geometría. Si la tabla contiene un gran número de filas determinar estos metadatos lleva tiempo.&lt;/p&gt;&lt;p&gt;Al activar esta opción se realizan las siguientes operaciones rápidas de metadatos de tabla:&lt;/p&gt;&lt;p&gt;1) El número de filas se determina a partir de all_tables.num_rows.&lt;/p&gt;&lt;p&gt;2) La extensión de la tabla siempre se determina con la función SDO_TUNE.EXTENTS_OF incluso si se aplica un filtro de capa.&lt;/p&gt;&lt;p&gt;3) La geometría de la tabla se determina a partir de las primeras 100 filas con geometría no nula de la tabla.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Use estimated table metadata</source>
@@ -38938,7 +38938,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>tracker</source>
-        <translation type="unfinished"></translation>
+        <translation>seguimiento</translation>
     </message>
     <message>
         <source>code_ repository</source>
@@ -43523,15 +43523,15 @@ desviación estándar ×</translation>
     </message>
     <message>
         <source>cumulative cut</source>
-        <translation type="unfinished"></translation>
+        <translation>corte acumulativo</translation>
     </message>
     <message>
         <source>standard deviation</source>
-        <translation type="unfinished"></translation>
+        <translation>desviación estándar</translation>
     </message>
     <message>
         <source>full extent</source>
-        <translation type="unfinished"></translation>
+        <translation>extensión total</translation>
     </message>
     <message>
         <source>sub extent</source>
@@ -43540,7 +43540,7 @@ desviación estándar ×</translation>
     <message>
         <source>%1 %2 of %3.</source>
         <comment>min/max origin label in raster properties, where %1 - estimated/exact, %2 - values (min/max, stddev, etc.), %3 - extent</comment>
-        <translation type="unfinished">%1 de %3. {1 %2 ?}</translation>
+        <translation>%1 %2.de %3.</translation>
     </message>
 </context>
 <context>
@@ -45285,27 +45285,27 @@ contraste</translation>
     <name>QgsSmartGroupCondition</name>
     <message>
         <source>has the tag</source>
-        <translation type="unfinished"></translation>
+        <translation>tiene la etiqueta</translation>
     </message>
     <message>
         <source>is a member of group</source>
-        <translation type="unfinished"></translation>
+        <translation>es miembro del grupo</translation>
     </message>
     <message>
         <source>has a part of name matching</source>
-        <translation type="unfinished"></translation>
+        <translation>coincide una parte del nombre</translation>
     </message>
     <message>
         <source>does NOT have the tag</source>
-        <translation type="unfinished"></translation>
+        <translation>NO tiene la etiqueta</translation>
     </message>
     <message>
         <source>is NOT a member of group</source>
-        <translation type="unfinished"></translation>
+        <translation>NO es miembro del grupo</translation>
     </message>
     <message>
         <source>has NO part of name matching</source>
-        <translation type="unfinished"></translation>
+        <translation>NO coincide parte del nombre</translation>
     </message>
 </context>
 <context>
@@ -45331,11 +45331,11 @@ contraste</translation>
     </message>
     <message>
         <source>ALL the constraints</source>
-        <translation type="unfinished"></translation>
+        <translation>TODAS las restricciones</translation>
     </message>
     <message>
         <source>any ONE of the constraints</source>
-        <translation type="unfinished"></translation>
+        <translation>CUALQUIERA de las restricciones</translation>
     </message>
 </context>
 <context>
@@ -47657,11 +47657,11 @@ Hubo un problema con su base de datos de símbolos.</translation>
     </message>
     <message>
         <source>Style Manager</source>
-        <translation type="unfinished">Administrador de estilos</translation>
+        <translation>Administrador de estilos</translation>
     </message>
     <message>
         <source>Save in symbol library...</source>
-        <translation type="unfinished"></translation>
+        <translation>Guardar en biblioteca de símbolos...</translation>
     </message>
 </context>
 <context>
@@ -47900,7 +47900,7 @@ La otra herramienta para mover (icono de la Tierra combinado con el de la mano) 
     </message>
     <message>
         <source>QGIS is open source software. This means that the software source code can be freely viewed and modified. The GPL places a restriction that any modifications you make must be made available in source form to whoever you give modified versions to, and that you can not create a new version of QGIS under a &apos;closed source&apos; license. Visit &lt;a href=&quot;http://qgis.org&quot;&gt; the QGIS home page (http://qgis.org)&lt;/a&gt; for more information.</source>
-        <translation>QGIS es un software de código abierto. Esto significa que el código fuente del software se puede ver y modificar libremente. La GPL establece la restricción de que cualquier modificación que se haga se debe poner a disposición en forma de fuente a quienquiera que se de la versión modificada y que no se puede crear una nueva versión de QGIS con una licencia de código cerrado. Visite &lt;a href=&quot;http://qgis.org&quot;&gt; la página web de QGIS (http://qgis.org)&lt;/a&gt; para más información.</translation>
+        <translation>QGIS es un software de código abierto. Esto significa que el código fuente del software se puede ver y modificar libremente. La GPL establece la restricción de que cualquier modificación que se haga se debe poner a disposición en forma de fuente a quienquiera que se dé la versión modificada y que no se puede crear una nueva versión de QGIS con una licencia de código cerrado. Visite &lt;a href=&quot;http://qgis.org&quot;&gt; la página web de QGIS (http://qgis.org)&lt;/a&gt; para más información.</translation>
     </message>
     <message>
         <source>Both used to be correct, but we recently decided to just use &apos;QGIS&apos;.  For articles we suggest you write &apos;QGIS is ....&apos;</source>
@@ -47924,7 +47924,7 @@ La otra herramienta para mover (icono de la Tierra combinado con el de la mano) 
     </message>
     <message>
         <source>If you need help using QGIS we have a &apos;users&apos;  mailing list where users help each other with issues related to using our sofware. We also have a &apos;developers&apos; mailing list. for those wanting help and to discuss things relating to the QGIS code base. Details on how to subscribe are in the &lt;a href=&quot;http://www.qgis.org/en/community/mailing-lists.html&quot;&gt;community section&lt;/a&gt; of the QGIS home page.</source>
-        <translation>Si necesita ayuda al usar QGIS tenemos una lista de correo de &quot;usuarios&quot; en la que los usuarios se ayudan con asuntos relacionados con el uso de nuestro software. También tenemos una lista de correo de &quot;desarrolladores&quot; para aquellos que quieran ayudar y pare debatir cosas relacionadas con el código base de QGIS. Los detalles para suscribirse se encuentran en la &lt;a href=&quot;http://www.qgis.org/en/community/mailing-lists.html&quot;&gt;sección de la comunidad&lt;/a&gt; de la página web de QGIS.</translation>
+        <translation>Si necesita ayuda al usar QGIS tenemos una lista de correo de &quot;usuarios&quot; en la que los usuarios se ayudan con asuntos relacionados con el uso de nuestro software. También tenemos una lista de correo de &quot;desarrolladores&quot; para aquellos que quieran ayudar y para debatir cosas relacionadas con el código base de QGIS. Los detalles para suscribirse se encuentran en la &lt;a href=&quot;http://www.qgis.org/en/community/mailing-lists.html&quot;&gt;sección de la comunidad&lt;/a&gt; de la página web de QGIS.</translation>
     </message>
     <message>
         <source>You can add a current date variable to your map layout. Create a regular text label and add the string $CURRENT_DATE(yyyy-MM-dd) to the text box. See the &lt;a href=&quot;http://qt-project.org/doc/qt-5.0/qtcore/qdate.html#toString&quot;&gt;QDate::toString format documentation&lt;/a&gt; for the possible date formats.</source>
@@ -47932,11 +47932,11 @@ La otra herramienta para mover (icono de la Tierra combinado con el de la mano) 
     </message>
     <message>
         <source>If QGIS is saving you money or you like our work and have the financial ability to help, please consider sponsoring the development of QGIS. We use money from sponsors to pay for travel and costs related to our regular hackfest meetings, and to generally support the goals of our project. Please see the &lt;a href=&quot;http://qgis.org/en/sponsorship.html&quot;&gt;QGIS Sponsorship Web Page&lt;/a&gt; for more details.</source>
-        <translation>Si QGIS le está ahorrando dinero o le gusta nuestro trabajo y tiene la posibilidad económica de ayudar, por favor considere patrocinar el desarrollo de QGIS. Usamos el dinero de los patrocinadores para pagar viajes y costes relacionados con nuestros encuentros de desarrolladores periódicos y para apoyar en general los objetivos de nuestro proyecto. Por favor vea la &lt;a href=&quot;http://qgis.org/en/sponsorship.html&quot;&gt;Página web de patrocinio de QGIS&lt;/a&gt; para mas detalles.</translation>
+        <translation>Si QGIS le está ahorrando dinero o le gusta nuestro trabajo y tiene la posibilidad económica de ayudar, por favor considere patrocinar el desarrollo de QGIS. Usamos el dinero de los patrocinadores para pagar viajes y costes relacionados con nuestros encuentros periódicos de desarrolladores y para apoyar en general los objetivos de nuestro proyecto. Por favor vea la &lt;a href=&quot;http://qgis.org/en/sponsorship.html&quot;&gt;Página web de patrocinio de QGIS&lt;/a&gt; para mas detalles.</translation>
     </message>
     <message>
         <source>QGIS has plugins that extend its functionality. QGIS ships with some core plugins you can explore from the Plugins-&gt;Manage and Install Plugins menu. In addition there are a lot of &lt;a href=&quot;http://plugins.qgis.org/&quot;&gt;Python plugins &lt;/a&gt; contributed by the user community that can be installed via this same menu. Don&apos;t miss out on all QGIS has to offer! Check out the plugins and see what they can do for you.</source>
-        <translation>QGIS tiene complementos que extienden su funcionalidad. QGIS se distribuye con algunos complementos del núcleo incluidos, que puede explorar desde el menú Complementos-&gt;Administrador de complementos. Además hay muchos &lt;a href=&quot;http://plugins.qgis.org/&quot;&gt;complementos en Python aportados por la comunidad de usuarios que se pueden instalar desde este mismo menú. No deje escapar todo lo que  QGIS le puede ofrecer---compruebe los complementos y vea lo que pueden hacer por usted.</translation>
+        <translation>QGIS tiene complementos que extienden su funcionalidad. QGIS se distribuye con algunos complementos del núcleo incluidos, que puede explorar desde el menú Complementos-&gt;Administrador de complementos. Además hay muchos &lt;a href=&quot;http://plugins.qgis.org/&quot;&gt;complementos en Python &lt;/a&gt; aportados por la comunidad de usuarios que se pueden instalar desde este mismo menú. No deje escapar todo lo que  QGIS le puede ofrecer---compruebe los complementos y vea lo que pueden hacer por usted.</translation>
     </message>
     <message>
         <source>In the print composer tool bar you can find two buttons for moving elements. The left one (right arrow icon) selects and moves elements in the layout. After selecting the element with this tool you can also move them around with the arrow keys. For accurate positioning use the &lt;strong&gt;Position and Size&lt;/strong&gt; section, which can be found in the tab &lt;strong&gt;Item Properties -&gt; Position and Size&lt;/strong&gt;. The other move tool (map canvas icon with right arrow) allows one to move the map content within a map frame.</source>
@@ -55746,7 +55746,7 @@ Este diálogo le permite seleccionar algunas opciones básicas de QGIS. Hay ocho
 &lt;a href=&quot;#over&quot;&gt;Superposición&lt;/a&gt;&lt;br/&gt;
 &lt;a href=&quot;#digit&quot;&gt;Digitalización&lt;/a&gt;&lt;br/&gt;
 &lt;a href=&quot;#crs&quot;&gt;SRC&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#loc&quot;&gt;Local&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#loc&quot;&gt;Idioma&lt;/a&gt;&lt;br/&gt;
 &lt;a href=&quot;#net&quot;&gt;Red &amp; Proxy&lt;/a&gt;&lt;br/&gt;
 
 &lt;a name=&quot;general&quot;&gt;
@@ -55790,25 +55790,25 @@ Define el algoritmo de ubicación para las etiquetas. Elija entre &lt;label&gt;p
 En la pestaña &lt;label&gt;Digitalización&lt;/label&gt;puede definir la anchura y color de la línea de digitalización.
 &lt;h5&gt;Autoensamblado&lt;/h5&gt;
 Aquí puede definir una tolerancia general de autoensamblado para todo el proyecto.&lt;p&gt;
-Puede seleccionar entre &lt;label&gt;A vértice&lt;/label&gt;, &lt;label&gt;A segmento&lt;/label&gt; o &lt;label&gt;A vértice y segmento&lt;/label&gt; como modo predeterminado de ensamblado. También puede definir una tolerancia predeterminada de autoensamblado y un radio de búsqueda para la edición de vértices. The tolerance can be set either in map units or in pixels. The advantage of choosing pixels, is that the snapping tolerance doesn&apos;t have to be changed after zoom operations.&lt;p&gt;
-A layer based snapping tolerance can be defined by choosing &lt;label&gt;Settings&lt;/label&gt; (or &lt;label&gt;File&lt;/label&gt;) &gt; &lt;label&gt;Project Properties...&lt;/label&gt;. In the &lt;label&gt;General&lt;/label&gt; tab, section &lt;label&gt;Digitize&lt;/label&gt; you can click on &lt;label&gt;Snapping options...&lt;/label&gt; to enable and adjust snapping mode and tolerance on a layer basis.
-&lt;h5&gt;Vertex markers&lt;/h5&gt;
-You can define marker style as &lt;label&gt;Semi transparent circle&lt;/label&gt;, &lt;label&gt;Cross&lt;/label&gt; or &lt;label&gt;None&lt;/label&gt; and size; you can also set showing markers only for selected features.
-&lt;h5&gt;Enter attribute values&lt;/h5&gt;
-By default, after digitizing a new feature, QGIS asks you to enter attribute values for that feature. Ticking &lt;label&gt;Suppress attributes pop-up windows after each created feature&lt;/label&gt; allows you to enter the attributes later.
+Puede seleccionar entre &lt;label&gt;A vértice&lt;/label&gt;, &lt;label&gt;A segmento&lt;/label&gt; o &lt;label&gt;A vértice y segmento&lt;/label&gt; como modo predeterminado de ensamblado. También puede definir una tolerancia predeterminada de autoensamblado y un radio de búsqueda para la edición de vértices. La tolerancia se puede establecer en unidades del mapa o en píxeles. La ventaja de elegir píxeles es que ho nay que cambiar la tolerancia de autoensamblado después de hacer operaciones de zum.&lt;p&gt;
+Se puede definir una tolerancia de autoensamblando basada en capas eligiendo &lt;label&gt;Configuración&lt;/label&gt; (o &lt;label&gt;Archivo&lt;/label&gt;) &gt; &lt;label&gt;Propiedades del proyecto...&lt;/label&gt;. En la pestaña &lt;label&gt;General&lt;/label&gt; , sección &lt;label&gt;Digitalización&lt;/label&gt; puede pinchar en &lt;label&gt;Opciones de autoensamblado...&lt;/label&gt; para habilitar y ajustar el modo de autoensamblado y la tolerancia basándose en capas.
+&lt;h5&gt;Marcadores de vértices&lt;/h5&gt;
+Puede definir el estilo de los marcadores como &lt;label&gt;Círculo semitransparente&lt;/label&gt;, &lt;label&gt;Cruz&lt;/label&gt; o &lt;label&gt;Ninguno&lt;/label&gt; y el tamaño; también puede seleccionar mostrar los marcadores solo para los objetos espaciales selecionados.
+&lt;h5&gt;Introducir valores de atributos&lt;/h5&gt;
+Por omisión, después de digitalizar un objeto espacial nuevo, QGIS le pide que introduzca los valores de los atributos para ese objeto. Marcar &lt;label&gt;Suprimir ventanas emergentes de atributos después de crear cada objeto espacial&lt;/label&gt; le permite introducir los atributos más tarde.
 &lt;a name=&quot;crs&quot;&gt;
 &lt;h4&gt;CRS&lt;/h4&gt;
 &lt;/a&gt;
-QGIS no longer sets the map CRS to the coordinate reference system of the first layer loaded. When you start a QGIS session with layers that do not have a CRS, you need to check and define the CRS definition for these layers. This can be done globally on this tab.&lt;p&gt;
-The global default CRS &lt;i&gt;proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs&lt;/i&gt; comes predefined in QGIS but can of course be changed, and the new definition will be saved for subsequent QGIS sessions.
+QGIS ya no establece el SRC del mapa al sistema de referencia de coordenadas de la primera capa cargada. Cuando inicia una sesión de QGIS con capas que no tienen SRC, necesita comprobar y definir el SRC para esas capas. Esto se puede hacer de forma global en esta pestaña.&lt;p&gt;
+El SRC global predeterminado &lt;i&gt;proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs&lt;/i&gt; viene predefinido en QGIS, pero por supuesto se puede cambiar y la definición se guardará para sesiones posteriores de QGIS.
 &lt;a name=&quot;lov&quot;&gt;
-&lt;h4&gt;Locale&lt;/h4&gt;
+&lt;h4&gt;Idioma&lt;/h4&gt;
 &lt;/a&gt;
-Informs you about active system locale. To change it tick &lt;label&gt;Override system locale&lt;/label&gt; and restart QGIS.
+Le informa sobre la localización activa del sistema. Para cambiarla, marque &lt;label&gt;Ignorar el idioma del sistema&lt;/label&gt; y reinicie QGIS.
 &lt;a name=&quot;net&quot;&gt;
-&lt;h4&gt;Network &amp; Proxy&lt;/h4&gt;
+&lt;h4&gt;Red &amp; Proxy&lt;/h4&gt;
 &lt;/a&gt;
-Tick &lt;label&gt;Use proxy for web access&lt;/label&gt; to define host, port, user, and password.
+Marque &lt;label&gt;Usar proxy para acceso web&lt;/label&gt; para definir servidor, puerto, usuario y contraseña.
 </translation>
     </message>
     <message>
@@ -55844,7 +55844,38 @@ SQL Anywhere database.
 
 &lt;/ul&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Crear una conexión SQL Anywhere nueva&lt;/h3&gt;
+Este diálogo permite definir la configuración para la conexión a una base de datos
+SQL Anywhere.
+&lt;p&gt;
+&lt;ul&gt;
+&lt;li&gt; &lt;label&gt;Nombre&lt;/label&gt; Un nombre para identificar la configuración de la conexión.
+
+&lt;li&gt; &lt;label&gt;Servidor&lt;/label&gt; Nombre o dirección IP del ordenador que aloja el servidor de la base de datos (dejar en blanco para conexiones locales).
+
+&lt;li&gt; &lt;label&gt;Puerto&lt;/label&gt; Puerto IP port usado por el servidor de la base de datos (dejar en blanco para conexiones locales o para usar el puerto preceterminado 2638).
+
+&lt;li&gt; &lt;label&gt;Servidor&lt;/label&gt; Nombre del servidor de la base de datos (dejar en blanco para el servidor predeterminado).
+
+&lt;li&gt; &lt;label&gt;Base de datos&lt;/label&gt; Nombre de la base de datos (dejar en blanco para la base de datos predeterminada en el servidor).
+
+&lt;li&gt; &lt;label&gt;Parámetros de conexión&lt;/label&gt; Parámetros adicionales a añadir a la cadena de conexión (lista delimitada por punto y coma). Consulte la documentación de SQL Anywhere para una lista y la descripción de los parámetros de conexión disponibles.
+
+&lt;li&gt; &lt;label&gt;Nombre de usuario&lt;/label&gt; Nombre de usuario de la base de datos.
+&lt;li&gt; &lt;label&gt;Contraseña&lt;/label&gt; Contraseña de la base de datos.
+
+&lt;li&gt; &lt;label&gt;Guardar nombre de usuario&lt;/label&gt; Indica si guardar el nombre de usuario de la base de datos en la configuración de la conexión.
+
+&lt;li&gt; &lt;label&gt;Guardar contraseña&lt;/label&gt; Indica si guardar la contraseña de la base de datos en la confitguración de la conexión.  &lt;em&gt;¡Las contraseñas de guardan en &lt;strong&gt;texto plano&lt;/strong&gt; en la configuración del sistema!&lt;/em&gt;
+
+&lt;li&gt; &lt;label&gt;Encriptado sencillo&lt;/label&gt; Asegurar la conexión a la base de datos usando encriptado sencillo.
+
+&lt;li&gt; &lt;label&gt;Estimar metadatos de tabla&lt;/label&gt; Cuando se inicializan capas, pueden ser necesarias varias consultas para establecer las características de las geometrías almacenadas en la tabla de la base de datos. Cuando se marca esta opción, estas consultas examinan sólo una muestra de las filas, en vez de toda la tabla.  Esto puede acelerar considerablemente la inicialización de la capa, pero puede dar como resultado una caracterización incorrecta de capas que contengan tipos heterogéneos.
+
+&lt;li&gt; &lt;label&gt;Buscar tablas de otros usuarios&lt;/label&gt; Indica que la lista de tablas de rellene con todas las tablas almacenadas en la base de datos. Cuando no está marcado (lo predeterminado), sólo se muestran las capas almacenadas en tablas propiedad del usuario conectado.
+
+&lt;/ul&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Create a New Oracle Connection&lt;/h3&gt;
@@ -55887,7 +55918,38 @@ geometry types and don&apos;t offer to add others.
 
 &lt;/ul&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Crear una conexión Oracle nueva&lt;/h3&gt;
+Este diálogo permite definir la configuración para la conexión a una base de datos
+Oracle.
+&lt;p&gt;
+&lt;ul&gt;
+&lt;li&gt; &lt;label&gt;Nombre&lt;/label&gt; Un nombre para identificar la configuración de la conexión.
+
+&lt;li&gt; &lt;label&gt;Base de datos&lt;/label&gt; SID o SERVICE_NAME de la instancia de Oracle.
+
+&lt;li&gt; &lt;label&gt;Servidor&lt;/label&gt; Nombre o dirección IP del ordenador que aloja el servidor de la base de datos.
+
+&lt;li&gt; &lt;label&gt;Puerto&lt;/label&gt; Puerto IP port usado por el servidor de la base de datos.
+
+&lt;li&gt; &lt;label&gt;Nombre de usuario&lt;/label&gt; Nombre de usuario de la base de datos.
+&lt;li&gt; &lt;label&gt;Contraseña&lt;/label&gt; Contraseña de la base de datos.
+
+&lt;li&gt; &lt;label&gt;Guardar nombre de usuario&lt;/label&gt; Indica si guardar el nombre de usuario de la base de datos en la configuración de la conexión.
+
+&lt;li&gt; &lt;label&gt;Guardar contraseña&lt;/label&gt; Indica si guardar la contraseña de la base de datos en la confitguración de la conexión.  &lt;font color=&quot;red&quot;&gt;¡Las contraseñas de guardan en &lt;strong&gt;texto plano&lt;/strong&gt; en la configuración del sistema!&lt;/font&gt;
+
+&lt;li&gt; &lt;label&gt;Mirar solo en la tabla de metadatos&lt;/label&gt; Restringe las tablas mostradas a aquellas que están en la vista all_sdo_geom_metadata. Esto puede acelerar la visualización inicial de tablas espaciales.
+
+&lt;li&gt; &lt;label&gt;Buscar solo tablas del usuario&lt;/label&gt; Cuando se buscan tablas espaciales, restringir la búsqueda a las tablas que son propieada del usuario.
+
+&lt;li&gt; &lt;label&gt;Listar también tablas sin geometría&lt;/label&gt; Indica que se listen también tablas sin geometría de forma predeterminada.
+
+&lt;li&gt; &lt;label&gt;Use estimated table statistics for the layer metadata&lt;/label&gt; Cuando se configura la capa se necesitan varios metadatos para la tabla de Oracle. Esto incluye información tal como el número de filas de la tabla, tipo de geometría y extensión espacial de los datos en la columna de geometría. Si la tabla contiene un gran número de filas determinar estos metadatos lleva tiempo. Al activar esta opción se realizan las siguientes operaciones rápidas de metadatos de tabla: El número de filas se determina a partir de all_tables.num_rows. La extensión de la tabla siempre se determina con la función SDO_TUNE.EXTENTS_OF incluso si se aplica un filtro de capa. La geometría de la tabla se determina a partir de las primeras 100 filas con geometría no nula de la tabla.
+
+&lt;li&gt; &lt;label&gt;Solo tipos de geometría existentes&lt;/label&gt; Listar solo los tipos de geometría existentes
+y no ofrecer la adición de otros.
+
+&lt;/ul&gt;</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Attribute table&lt;/h3&gt;
@@ -56348,7 +56410,21 @@ Pressing the &lt;label&gt;Calculate&lt;/label&gt; button will run the shortest p
 &lt;h5&gt;Note&lt;/h5&gt;
 &lt;p&gt;In order to bind the start and stop points of the route to the road network Road graph selects the nearest point or arc of the graph. In fact it can bind to any part of the road network. Nevertheless, their route and its characteristics do not take into account the distance from the starting point to the road network and of the road network to the stopping point.&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Encontrar ruta más corta&lt;/h3&gt;
+&lt;p&gt;Grafo de ruta es un complemento en C++ para QGIS, que calcula la ruta más corta entre dos puntos de cualquier capa de líneas y dibuja esta ruta sobre la red de carreteras. Antes de usar el complemento configúrelo. Ésto se puede hacer en el munú &lt;label&gt;Complementos &amp;rarr; Grafo de ruta &amp;rarr; Configuración&lt;/label&gt;&lt;/p&gt;
+&lt;p&gt;
+&lt;a href=&quot;#howto&quot;&gt;Cómo&lt;/a&gt;&lt;br/&gt;
+&lt;/p&gt;
+
+&lt;a name=&quot;howto&quot;&gt;
+&lt;h4&gt;Cómo&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p&gt;Puede seleccionar los puntos de inicio y fin con los botones de selección próximos a los campos.
+Pulsando el botón &lt;label&gt;Calcular&lt;/label&gt; se ejecutará el cálculo de la ruta más corta usando los criterios de optimización seleccionados en el cuadro combinado &lt;label&gt;Criterios&lt;/label&gt;. El botón &lt;label&gt;Exportar&lt;/label&gt; permite exportar una ruta calculada a una nueva capa vectorial y el botón &lt;label&gt;Limpiar&lt;/label&gt; borrará todos los campos y eliminará los puntos y la ruta calculada de la vista del mapa.&lt;/p&gt;
+
+&lt;h5&gt;Nota&lt;/h5&gt;
+&lt;p&gt;Para enlazar los puntos de inicio y fin de la ruta a la red de carreteras, Grafo de ruta selecciona el punto o arco más próximo del grafo. De hecho puede enlazar con cualquier parte de la red de carreteras. Sin embargo, su ruta y sus características no tienen en cuenta la distancia desde el punto de inicio a la red de carreteras y de la red de carreteras al punto final.&lt;/p&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Delimited Text File Layer&lt;/h3&gt;
@@ -56807,7 +56883,146 @@ The Diagram tab allows you to add a graphic overlay to a vector layer. To activa
 The current implementation of diagrams provides support for pie- and bar charts and for linear scaling
 of the diagram size according to a classification attribute.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Propiedades de las capas vectoriales&lt;/h3&gt;
+Este diálogo le permite trabajar con la configuración
+y las propiedades de las capas vectoriales. Hay siete pestañas:
+&lt;p&gt;
+&lt;a href=&quot;#symbology&quot;&gt;Simbología&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#labels&quot;&gt;Etiquetas&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#attributes&quot;&gt;Atributos&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#general&quot;&gt;General&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#metadata&quot;&gt;Metadatos&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#actions&quot;&gt;Acciones&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#diagram&quot;&gt;Superposición de diagramas&lt;/a&gt;&lt;br/&gt;
+
+&lt;a name=&quot;symbology&quot;&gt;
+&lt;h4&gt;Simbología&lt;/h4&gt;
+&lt;/a&gt;
+Para cambiar la simbología de una capa, simplemente haga doble clic en su entrada en el panel Capas y se mostrará el diálogo &lt;label&gt;Propiedades de la capa&lt;/label&gt; vectorial.&lt;p&gt;
+Dentro de este diálogo puede aplicar el estilo de su capa vectorial. Dependiendo de la opción de renderizado seleccionada, tiene la posibilidad de clasificar también los objetos espaciales de su mapa.
+
+&lt;h5&gt;Tipo de leyenda&lt;/h5&gt;
+QGIS admite varios renderizadores de simbología para controlar cómo se muestran los objetos espaciales vectoriales. Actualmente están disponibles los siguientes renderizadores:
+&lt;ul&gt;
+&lt;li&gt;&lt;label&gt;Símbolo único&lt;/label&gt; - se aplica un único estilo a todos los objetos de la capa.
+&lt;li&gt;&lt;label&gt;Símbolo graduado&lt;/label&gt; - los objetos de la capa se muestran con diferentes símbolos, clasificados por el valor de un determinado campo.
+&lt;li&gt;&lt;label&gt;Color continuo&lt;/label&gt; - los objetos de la capa se muestran con un abanico de colores, clasificados por el valor numérico dentro de un campo espeficado.
+&lt;li&gt;&lt;label&gt;Valor único&lt;/label&gt; - los objetos se clasifican por los valores únicos dentro de un campo especificado, teniendo cada valor un símbolo diferente.
+&lt;/ul&gt;
+
+&lt;h5&gt;Nueva simbología&lt;/h5&gt;
+Pulse el botón &lt;label&gt;Nueva simbología&lt;/label&gt; para usar la implementación de la nueva simbología para la capa.
+
+&lt;h5&gt;Transparencia&lt;/h5&gt;
+QGIS permite establecer una transparencia para cada capa vectorial. Esto se puede hacer con el deslizador &lt;label&gt;Transparencia&lt;/label&gt;. Esto es muy útil para superponer varias capas vectoriales.
+
+&lt;h5&gt;Guardar estilos&lt;/h5&gt;
+Una vez que ha aplicado un estilo a su capa, también puede guardar el estilo de la capa en un archivo separado (con extensión *.qml). Para hacer esto, use el botón &lt;label&gt;Guardar estilo...&lt;/label&gt;. No hace falta decir que el botón &lt;label&gt;Cargar estilo...&lt;/label&gt; carga sus archivos de estilo de capas guardados.&lt;br/&gt;
+Si quiere que siempre se use un estilo particular cada vez que se cargue una capa, use el botón &lt;label&gt;Guardar como predeterminado&lt;/label&gt; para hacer que su estilo sea el predeterminado. También, si hace cambios en el estilo con los que no está satisfecho, use el botón &lt;label&gt;Restaurar estilo predeterminado&lt;/label&gt; para volver a su estilo predeterminado.
+
+&lt;a name=&quot;labels&quot;&gt;
+&lt;h4&gt;Etiquetas&lt;/h4&gt;
+&lt;/a&gt;
+La pestaña Etiquetas permite habilitar el etiquetado de objetos espaciales y controlar diversas opciones relacionadas con el tipo de letra, ubicación, estilo, alineación y buffering.&lt;br/&gt;
+Check the &lt;label&gt;Display labels&lt;/label&gt; check box to enable labeling.
+
+&lt;h5&gt;Basic Label options&lt;/h5&gt;
+Choose the field to label with.&lt;p&gt;
+Select the use the &lt;label&gt;Font&lt;/label&gt; and  &lt;label&gt;Color&lt;/label&gt; buttons to set the font and color. You can also change the angle and the placement of the text-label.&lt;p&gt;
+If have labels extending over several lines, check &lt;label&gt;Multiline labels?&lt;/label&gt;. QGIS will check for a true line return in your label field and insert the line breaks accordingly. A true line return is a single character &amp;#92;n, (not two separate characters, like a backslash &amp;#92; followed by the character n).
+
+&lt;h5&gt;Placement&lt;/h5&gt;
+Change the label placement by selecting one of the radio buttons in the &lt;label&gt;Placement&lt;/label&gt; group.
+
+&lt;h5&gt;Font size units&lt;/h5&gt;
+The &lt;label&gt;Font size units&lt;/label&gt; allows you to select between &lt;label&gt;Points&lt;/label&gt; or &lt;label&gt;Map units&lt;/label&gt;.
+
+&lt;h5&gt;Buffer labels&lt;/h5&gt;
+To buffer the labels means putting a backdrop around them to make them stand out better. To buffer the lakes labels:
+&lt;ol&gt;
+&lt;li&gt;Click the &lt;label&gt;Buffer Labels&lt;/label&gt; check box to enable buffering.
+&lt;li&gt;Choose a size for the buffer using the spin box.
+&lt;li&gt;Choose a color by clicking on &lt;label&gt;Color&lt;/label&gt; and choosing your favorite from the color selector. You can also set some transparency for the buffer if you prefer.
+&lt;li&gt;Click &lt;label&gt;Apply&lt;/label&gt; to see if you like the changes.
+&lt;/ol&gt;
+Notice you can also specify the buffer size in map 
+units if that works out better for you.
+
+&lt;h5&gt;Data defined placement, properties, buffer, position&lt;/h5&gt;
+The remaining entries inside the &lt;label&gt;Label&lt;/label&gt; tab allow you control the appearance of the labels using attributes stored in the layer. The entries beginning with &lt;label&gt;Data defined&lt;/label&gt; allow you to set all the parameters for the labels using fields in the layer.
+
+
+&lt;a name=&quot;attributes&quot;&gt;
+&lt;h4&gt;Atributos&lt;/h4&gt;
+&lt;/a&gt;
+Within the &lt;label&gt;Attributes&lt;/label&gt; tab the attributes of the selected data set can be manipulated. The buttons &lt;label&gt;New Column&lt;/label&gt; and &lt;label&gt;Delete Column&lt;/label&gt; can be used, when the data set is in editing mode. The OGR library supports to add new columns, but not to remove them, if you have a GDAL version &gt;= 1.6 installed. Otherwise only columns from PostGIS layers can be edited.&lt;p&gt;
+The &lt;label&gt;Toggle editing mode&lt;/label&gt; button toggles this mode.&lt;p&gt;
+Within the Attributes tab you also find an edit widget column. This column can be used to define values or a range of values that are allowed to be added to the specific attribute table column. If you click on the &lt;label&gt;edit widget&lt;/label&gt; button, a dialog opens, where you can define different widgets. These widgets are:&lt;br/&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;label&gt;Line edit&lt;/label&gt; an edit field which allows to enter simple text (or restrict to numbers for numeric attributes).
+&lt;li&gt;&lt;label&gt;Classification&lt;/label&gt; Displays a combo box with the values used for classification, if you have chosen &lt;label&gt;unique value&lt;/label&gt; as legend type in the symbology tab of the properties dialog.
+&lt;li&gt;&lt;label&gt;Range&lt;/label&gt; Allows to set numeric values from a specific range. The edit widget can be either a slider or a spin box.
+&lt;li&gt;&lt;label&gt;Unique value&lt;/label&gt; The user can select one of the values already used in the attribute table. If &lt;label&gt;editable&lt;/label&gt; is activated, a line edit is shown with auto completion support, but additional values are possible, otherwise a combo box is used.
+&lt;li&gt;&lt;label&gt;File name&lt;/label&gt; Simplifies the selection by adding a file chooser dialog.
+&lt;li&gt;&lt;label&gt;Value map&lt;/label&gt; a combo box with predefined items. The value is stored in the attribute, the description is shown in the combo box. You can define values manually or load them from a layer or a csv file.
+&lt;li&gt;&lt;label&gt;Enumeration&lt;/label&gt; Opens a combo box with values that can be used within the columns type. This is currently only supported by the Postgres provider.
+&lt;li&gt;&lt;label&gt;Immutable&lt;/label&gt; The immutable attribute column is read-only. The user is not able to modify the content.
+&lt;li&gt;&lt;label&gt;Hidden&lt;/label&gt; A hidden attribute column is invisible to the user.
+&lt;li&gt;&lt;label&gt;Checkbox&lt;/label&gt; A check box is shown.  The value representing the state of the check box in the attribute has to be entered.
+&lt;li&gt;&lt;label&gt;Text edit&lt;/label&gt; A text edit field is shown, that allows entering multiline text.
+&lt;/ul&gt;
+
+&lt;a name=&quot;general&quot;&gt;
+&lt;h4&gt;General&lt;/h4&gt;
+&lt;/a&gt;
+The General tab allows you to change the display name, set scale dependent rendering options, create a spatial index of the vector file (only for OGR supported formats and PostGIS) and view or change the projection of the specific vector layer.&lt;p&gt;
+You can also set a provider specific filter expressions using the &lt;label&gt;Query Builder&lt;/label&gt;.
+
+&lt;h5&gt;Subset&lt;/h5&gt;
+The &lt;label&gt;Query Builder&lt;/label&gt; button allows you to limit the features of a layer to a subset matching an provider specific filter expression.
+
+&lt;a name=&quot;metadata&quot;&gt;
+&lt;h4&gt;Metadatos&lt;/h4&gt;
+&lt;/a&gt;
+The &lt;label&gt;Metadata&lt;/label&gt; tab contains information about the layer, including specifics about the type and location, number of features, feature type, and the editing capabilities. The Layer Spatial Reference System section, providing projection information, is displayed on this tab. This is a quick way to get information about the layer.
+
+&lt;a name=&quot;actions&quot;&gt;
+&lt;h4&gt;Acciones&lt;/h4&gt;
+&lt;/a&gt;
+QGIS provides the ability to perform an action based on the attributes of a feature. This can be used to perform any number of actions, for example, running a program with arguments built from the attributes of a feature or passing parameters to a web reporting tool. &lt;br/&gt;
+Actions are useful when you frequently want to run an external application or view a web page based on one or more values in your vector layer.&lt;p&gt;
+
+The new implementation of actions uses the QGIS expression engine to do evaluations. Each expression is evaluated and replaced by its result at runtime.&lt;p&gt;
+An expression must be enclosed between &lt;code&gt;[%&lt;/code&gt; and &lt;code&gt;%]&lt;/code&gt; - the GUI has some buttons which do that for you automatically. 
+The &lt;label&gt;Insert expression...&lt;/label&gt; button launches the &lt;label&gt;Expression builder&lt;/label&gt; which allows to write an expression easily, the &lt;label&gt;Insert field&lt;/label&gt; button inserts into the action a placeholder like &lt;code&gt;[% &quot;fieldname&quot; %]&lt;/code&gt; where fieldname is the name of the field selected in the field dropdown list.&lt;p&gt;
+
+See the User Guide for further information.
+
+&lt;h5&gt;Using Actions&lt;/h5&gt;
+Actions can be invoked from the &lt;label&gt;Identify Results&lt;/label&gt; dialog or using the &lt;label&gt;Run feature action&lt;/label&gt; tool on the toolbar.&lt;p&gt;
+
+Each action adds a little set of custom expressions to the default set available in the &lt;label&gt;Expression builder&lt;/label&gt;.&lt;br/&gt;
+While running actions from the &lt;label&gt;Identify Results&lt;/label&gt; dialog the custom expression &lt;code&gt;$currfield&lt;/code&gt; will be replaced with the value of the selected field in the dialog, using the &lt;label&gt;Run feature action&lt;/label&gt; tool the following custom expressions are available (instead of $currfield):
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;$clickx&lt;/code&gt; returns the x coordinate of the click position on the canvas&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;$clicky&lt;/code&gt; returns the y coordinate of the click position on the canvas&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;$layerid&lt;/code&gt; returns the ID of the selected layer in the legend&lt;/li&gt;
+&lt;/ul&gt;
+
+Note: the &lt;label&gt;Run feature action&lt;/label&gt; tool executes the actions on all the matching features, where as &lt;label&gt;Identify Results&lt;/label&gt; allows you to select which specific feature to run action on.&lt;p&gt;
+
+
+&lt;h5&gt;Action Examples&lt;/h5&gt;
+You can add some example actions by clicking on the &lt;label&gt;Add default actions&lt;/label&gt; button.
+
+
+&lt;a name=&quot;diagram&quot;&gt;
+&lt;h4&gt;Superposición de diagramas&lt;/h4&gt;
+&lt;/a&gt;
+The Diagram tab allows you to add a graphic overlay to a vector layer. To activate this feature, open the &lt;label&gt;Plugin Manager&lt;/label&gt; and select the &lt;label&gt;Diagram Overlay&lt;/label&gt; plugin. After this, there is a new tab in the vector &lt;label&gt;Layer Properties&lt;/label&gt; dialog where the settings for diagrams may be entered.&lt;p&gt;
+The current implementation of diagrams provides support for pie- and bar charts and for linear scaling
+of the diagram size according to a classification attribute.
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Query Builder&lt;/h3&gt;
@@ -56856,7 +57071,52 @@ are sometimes limited (e.g. for shape files) or behave diffently.
 &lt;/tr&gt;
 &lt;/table&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Constructor de consultas&lt;/h3&gt;
+El constructor de consultas permite crear expresiones de filtrado específicas para cada proveedor.
+
+Estas son normalmente evaluadas mucho más rápido que las expresiones genéricas de QGIS, pero
+a veces están limitadas (ej. para archivos shape) o se comportan de un modo distinto.
+
+&lt;h4&gt;Proveedores&lt;/h4&gt;
+
+&lt;table border=1&gt;
+&lt;tr&gt;
+  &lt;th&gt;Proveedor&lt;/th&gt;
+  &lt;th&gt;Documentación&lt;/th&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+  &lt;td&gt;OGR&lt;/td&gt;
+  &lt;td&gt;Cláusulas where dependiendo del
+    &lt;a href=&quot;http://www.gdal.org/ogr/ogr_formats.html&quot;&gt;formato&lt;/a&gt; (ej.
+    &lt;a href=&quot;http://www.gdal.org/ogr/ogr_sql.html&quot;&gt;OGR SQL&lt;/a&gt;
+    para archivos shape)
+  &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+  &lt;td&gt;PostgreSQL/PostGIS&lt;/td&gt;
+  &lt;td&gt;Cláusulas where usando
+    &lt;a href=&quot;http://www.postgresql.org/docs/&quot;&gt;PostgreSQL&lt;/a&gt; y
+    &lt;a href=&quot;http://postgis.net/documentation&quot;&gt;PostGIS&lt;/a&gt; 
+  &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+  &lt;td&gt;SpatiaLite&lt;/td&gt;
+  &lt;td&gt;Cláusulas where usando
+    &lt;a href=&quot;http://www.sqlite.org/lang_select.html&quot;&gt;SQLite&lt;/a&gt; y
+    &lt;a href=&quot;http://www.gaia-gis.it/gaia-sins/spatialite-sql-4.1.0.html&quot;&gt;SpatiaLite&lt;/a&gt;
+  &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+  &lt;td&gt;Oracle Spatial/Locator&lt;/td&gt;
+  &lt;td&gt;Cláusulas where clauses usando
+    &lt;a href=&quot;http://docs.oracle.com/cd/B28359_01/appdev.111/b28400/sdo_index_query.htm#autoId9&quot;&gt;Oracle Spatial/Locator&lt;/a&gt;
+  &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+  &lt;td colspan=2&gt;...&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Manage and install Plugins&lt;/h3&gt;
@@ -56945,12 +57205,95 @@ Note: Experimental plugins are generally unsuitable for production use. These pl
 
 &lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Administrar e instalar complementos&lt;/h3&gt;
+
+&lt;p&gt;
+Administrar e instalar complementos.
+&lt;/p&gt;
+
+
+&lt;a href=&quot;#installedtab&quot;&gt;Pestaña Instalados&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#getmoretab&quot;&gt;Pestaña Obtener más&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#newtab&quot;&gt;Pestaña Nuevo&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#upgradabletab&quot;&gt;Pestaña Actualizable&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#invalidtab&quot;&gt;Pestaña No válido&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#settingstab&quot;&gt;Pestaña Configuración&lt;/a&gt;&lt;br/&gt;
+
+&lt;a name=&quot;installedtab&quot;&gt;
+&lt;h4&gt;Pestaña Instalados&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p&gt;
+Esta pestaña muestra una lista de los complementos actualmente instalados en su sistema. Se
+muestran tanto los complementos de Python como los de C++.
+&lt;/p&gt;
+&lt;p&gt;
+Puede habilitarlos o deshabilitarlos haciendo clic en la casilla delante del nombre.&lt;br/&gt;
+Seleccionar un elemento muestra información del complemento en el panel de detalle.
+&lt;/p&gt;
+&lt;p&gt;
+Hay disponible un menú contextual (clic derecho), para cambiar el orden según:
+nombre, número de descargas, votos y estado.
+&lt;/p&gt;
+
+
+&lt;a name=&quot;getmoretab&quot;&gt;
+&lt;h4&gt;Pestaña Obtener más&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p&gt;
+Esta pestaña muestra la lista de complementos disponibles en los repositorios remotos.
+Se descarga una vez al arrancar, pero puede cambiar ésto en la Configuración.
+&lt;/p&gt;
+&lt;p&gt;
+Seleccionar un elemento muestra información del complemento en el panel de detalle.
+&lt;/p&gt;
+
+&lt;a name=&quot;newtab&quot;&gt;
+&lt;h4&gt;Pestaña Nuevo&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p&gt;
+Esta pestaña se mostrará cuándo haya disponible un complemento nuevo. Sólo se mostrará una vez.
+&lt;/p&gt;
+
+&lt;a name=&quot;upgradabletab&quot;&gt;
+&lt;h4&gt;Pestaña Actualizable&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p&gt;
+Esta pestaña sólo está disponible si uno de los complementos instalados puede ser actualizado desde los repositorios remotos.
+&lt;/p&gt;
+
+&lt;a name=&quot;Invalid tab&quot;&gt;
+&lt;h4&gt;Pestaña No válido&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p&gt;
+Esta pestaña sólo está disponible si hay algún complemento no válido. Mayormente causado por un error 
+durante la carga del complemento.
+&lt;/p&gt;
+
+&lt;a name=&quot;settingstab&quot;&gt;
+&lt;h4&gt;Pestaña Configuración&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p&gt;
+En esta pestaña puede cambiar la Configuración del administrados de complementos.
+&lt;/p&gt;
+&lt;p&gt;
+Es posible comprobar con qué frecuencia descargará QGIS la lista y actualizará la información 
+de los repositorios disponibles.
+&lt;/p&gt;
+&lt;p&gt;
+Marcando la casilla &apos;Mostrar complementos experimentales&apos;, se mostrarán todos los complementos
+en las listas, incluso aquellos considerados &apos;experimentales&apos; por el autor.
+
+&lt;table border=1 width=&apos;95%&apos; align=&apos;center&apos;&gt;&lt;tr&gt;&lt;td&gt;
+Nota: los complementos experimentales generalmente no son adecuados para un uso en producción. Estos complementos están en un estado inicial de desarrollo y se deben considerar herramientas &quot;incompletas&quot; o &quot;prueba de concepto&quot;. El equipo de desarrollo de QGIS no recomienda instalar estos complementos a no ser que quiera usarlos con un propósito de prueba.
+&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+
+&lt;/p&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Identify&lt;/h3&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;Identificar&lt;/h3&gt;
+        <translation>&lt;h3&gt;Identificar&lt;/h3&gt;
 </translation>
     </message>
     <message>
@@ -59946,7 +60289,19 @@ None
 &lt;pre&gt;$now &amp;rarr; 2012-07-22T13:24:57&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función $now&lt;/h3&gt;
+Devuelve la fecha y hora actuales
+
+&lt;h4&gt;Sintaxis&lt;/h4&gt;
+&lt;pre&gt;$now&lt;/pre&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+Ninguno
+
+&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;pre&gt;$now &amp;rarr; 2012-07-22T13:24:57&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;CASE expression&lt;/h3&gt;
@@ -59977,13 +60332,42 @@ return a result.
     END
 &lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Expresión CASE&lt;/h3&gt;
+Una expresión condicional que se puede usar para evaluar múltiples expresiones y
+devolver un resultado.
+
+&lt;h4&gt;Sintaxis&lt;/h4&gt;
+&lt;pre&gt;
+     CASE
+        WHEN &lt;i&gt;condición&lt;/i&gt; THEN &lt;i&gt;resultado&lt;/i&gt;
+        [ ...n ]
+        [ ELSE &lt;i&gt;resultado&lt;/i&gt; ]
+     END
+&lt;/pre&gt;
+[ ] marca componentes opcionales
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  condición WHEN&lt;/i&gt; - La expresión de condición a evaluar. &lt;br&gt;
+&lt;i&gt;  THEN resultado&lt;/i&gt; - Si la &lt;i&gt;condición&lt;/i&gt; se evalúa como verdadera, entonces se evalúa y devuelve &lt;i&gt;resultado&lt;/i&gt;. &lt;br&gt;
+&lt;i&gt;  ELSE resultado&lt;/i&gt; - Si ninguna de las condiciones anteriores se evalúa como verdadera, entonces se evalúa y devuelve &lt;i&gt;resultado&lt;/i&gt;. &lt;br&gt;
+
+&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;pre&gt;
+    CASE
+        WHEN &lt;i&gt;&quot;columna&quot; IS NULL&lt;/i&gt; THEN &lt;i&gt;&apos;Ninguna&apos;&lt;/i&gt;
+    END
+&lt;/pre&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Conditions Group&lt;/h3&gt;
 This group contains functions that operate on condition.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Grupo Condiciones&lt;/h3&gt;
+Este grupo contiene funciones que operan sobre condiciones.
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;day() function&lt;/h3&gt;
@@ -60006,7 +60390,26 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;day(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 730&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función day()&lt;/h3&gt;
+Extrae el día de una fecha o el número de días
+de un &lt;code&gt;Intervalo&lt;/code&gt;
+
+&lt;h4&gt;Sintaxis&lt;/h4&gt;
+&lt;code&gt;day(fecha)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;day(Intervalo)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;code&gt;fecha&lt;/code&gt; - es una fecha o fecha y hora. La fecha de la que extraer el día.
+&lt;br&gt;
+&lt;code&gt;Intervalo&lt;/code&gt; - es un intervalo. El intervalo del que devolver el número de días.
+
+&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;day(&apos;2012-05-12&apos;) &amp;rarr; 12&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;day(tointerval(&apos;3 days&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;day(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 730&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;exp() function&lt;/h3&gt;
@@ -60022,7 +60425,19 @@ Returns exponential of an value.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      exp(1.0) &amp;rarr; 2.71828182845905&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función exp()&lt;/h3&gt;
+Devuelve el exponencial de un valor.
+
+
+&lt;p&gt;&lt;h4&gt;Sintaxis&lt;/h4&gt;
+     exp(&lt;i&gt;real&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; number.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Ejemplo&lt;/h4&gt;
+     exp(1.0) &amp;rarr; 2.71828182845905&lt;/p&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;tointerval() function&lt;/h3&gt;
@@ -60038,7 +60453,19 @@ Converts a string to a interval type.  Can be used to take days, hours, month, e
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;todatetime(&apos;2012-05-05 12:00:00&apos;) - tointerval(&apos;1 day 2 hours&apos;) &amp;rarr; 2012-05-04T10:00:00&lt;/code&gt;&lt;br&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función tointerval()&lt;/h3&gt;
+Convierte una cadena a un tipo intervalo. Se puede usar para tomar días, horas, meses, etc. de una fecha.
+
+&lt;h4&gt;Sintaxis&lt;/h4&gt;
+&lt;code&gt;tointerval(&apos;cadena&apos;)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;code&gt;cadena&lt;/code&gt; - es una cadena. Formato {n} días {n} horas {n} meses
+&lt;br&gt;
+
+&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;todatetime(&apos;2012-05-05 12:00:00&apos;) - tointerval(&apos;1 day 2 hours&apos;) &amp;rarr; 2012-05-04T10:00:00&lt;/code&gt;&lt;br&gt;</translation>
     </message>
     <message>
         <source>&lt;h3&gt;color_hsva() function&lt;/h3&gt;
@@ -60058,7 +60485,23 @@ Returns a string representation of a color based on its hue, saturation, value a
 &lt;!-- Show example of function.--&gt;
      color_hsva(40,100,100,200) &amp;rarr; &apos;255,170,0,200&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función color_hsva()&lt;/h3&gt;
+Devuelve una representación en forma de cadena de un color basada en sus atributos de intensidad, saturación, valor y alfa (transparencia)
+
+&lt;p&gt;&lt;h4&gt;Sintaxis&lt;/h4&gt;
+     color_hsva(&lt;i&gt;intensidad, saturación, valor, alfa&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  intensidad&lt;/i&gt; &amp;rarr; la intensidad del color, como un valor entero de 0 a 360.&lt;br&gt;
+&lt;i&gt;  saturación&lt;/i&gt; &amp;rarr; el porcentaje de saturación del color, como un valore entero de 0 a 100.&lt;br&gt;
+&lt;i&gt;  valor&lt;/i&gt; &amp;rarr; el porcentaje de valor del color, como un entero de 0 a 100.&lt;br&gt;
+&lt;i&gt;  alfa&lt;/i&gt; &amp;rarr; el componente alfa, como un valor entero de 0 (completamente transparente) a 255 (opaco).&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     color_hsva(40,100,100,200) &amp;rarr; &apos;255,170,0,200&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;strpos() function&lt;/h3&gt;
@@ -60079,7 +60522,24 @@ Returns -1 if the expression isn&apos;t found.
      strpos(&apos;HELLO WORLD&apos;,&apos;WORLD&apos;) &amp;rarr; 6&lt;br&gt;
      strpos(&apos;HELLO WORLD&apos;,&apos;GOODBYE&apos;) &amp;rarr; -1&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función strpos()&lt;/h3&gt;
+Devuielve el índice de una expresión regular en una cadena.
+
+&lt;h4&gt;Sintaxis&lt;/h4&gt;
+     strpos(&lt;i&gt;haystack&lt;/i&gt;, &lt;i&gt;needle&lt;/i&gt;)
+&lt;br&gt;&lt;br&gt;
+Devuelve -1 si no se encuentra la expresión.
+
+&lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  haystack&lt;/i&gt; &amp;rarr; es una cadena. La cadena en la que se debe buscar.&lt;br&gt;
+&lt;i&gt;  needle&lt;/i&gt; &amp;rarr; es un número. La expresión regular a buscar.&lt;br&gt;
+
+&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     strpos(&apos;HELLO WORLD&apos;,&apos;WORLD&apos;) &amp;rarr; 6&lt;br&gt;
+     strpos(&apos;HELLO WORLD&apos;,&apos;GOODBYE&apos;) &amp;rarr; -1&lt;br&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;totime() function&lt;/h3&gt;
@@ -60095,7 +60555,19 @@ Convert a string into Qt time type.
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;totime(&apos;12:30:01&apos;) &amp;rarr; 12:30:01&lt;/code&gt;&lt;br&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función totime()&lt;/h3&gt;
+Convierte una cadena en el tipo hora de Qt.
+
+&lt;h4&gt;Sintaxis&lt;/h4&gt;
+&lt;code&gt;totime(&apos;cadena&apos;)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;code&gt;cadena&lt;/code&gt; - es una cadena en el formato hora de Qt.
+&lt;br&gt;
+
+&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;totime(&apos;12:30:01&apos;) &amp;rarr; 12:30:01&lt;/code&gt;&lt;br&gt;</translation>
     </message>
     <message>
         <source>&lt;h3&gt;max() function&lt;/h3&gt;
@@ -60112,7 +60584,20 @@ Returns the largest value in a set of values.
 &lt;!-- Show example of function.--&gt;
      max(2,10.2,5.5) &amp;rarr; 10.2
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función max()&lt;/h3&gt;
+Devuelve el valor mayor de un conjunto de valores.
+
+&lt;h4&gt;Sintaxis&lt;/h4&gt;
+     max(&lt;i&gt;valor&lt;i&gt;[,&lt;i&gt;valor&lt;/i&gt;...])
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  valor&lt;/i&gt; &amp;rarr; un número.&lt;br&gt;
+
+&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     max(2,10.2,5.5) &amp;rarr; 10.2
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;acos() function&lt;/h3&gt;
@@ -60128,7 +60613,18 @@ Returns arcuscosinus of a value in radians.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      acos(0.5) &amp;rarr; 1.0471975511966&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función acos()&lt;/h3&gt;
+Devuelve el arcocoseno de un valor en radianes.
+
+
+&lt;p&gt;&lt;h4&gt;Sintaxis&lt;/h4&gt;
+     acos(&lt;i&gt;real&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; seno de un ángulo.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Ejemplo&lt;/h4&gt;
+     acos(0.5) &amp;rarr; 1.0471975511966&lt;/p&gt;</translation>
     </message>
     <message>
         <source>&lt;h3&gt;title() function&lt;/h3&gt;
@@ -60146,7 +60642,20 @@ capital letter).
 &lt;!-- Show example of function.--&gt;
      upper(&apos;hello WOrld&apos;) &amp;rarr; &apos;Hello World&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función title()&lt;/h3&gt;
+Convierte todas las palabras de una cadena a estilo título (todas las palabras en minúsculas con la inicial en mayúsculas).
+
+&lt;p&gt;&lt;h4&gt;Sintaxis&lt;/h4&gt;
+     title(&lt;i&gt;string&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  cadena&lt;/i&gt; &amp;rarr; es una cadena. La cadena a convertir a estilo título.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     upper(&apos;hola MUndo&apos;) &amp;rarr; &apos;Hola Mundo&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;atan2() function&lt;/h3&gt;
@@ -60165,7 +60674,22 @@ arguments to determine the quadrant of the result
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      atan2(1.0, 1.732) &amp;rarr; 0.523611477769969&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función atan2()&lt;/h3&gt;
+Devuelve la arcotangente de y/x usando los signos de los dos 
+argumentos para determinar el cuadrante del resultadp
+
+
+
+&lt;p&gt;&lt;h4&gt;Sintaxis&lt;/h4&gt;
+     atan2(&lt;i&gt;real&lt;/i&gt;, &lt;i&gt;real&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; diferencia de la coordenada Y&lt;br&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; diferencia de la coordenada X&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Ejemplo&lt;/h4&gt;
+     atan2(1.0, 1.732) &amp;rarr; 0.523611477769969&lt;/p&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;rand() function&lt;/h3&gt;
@@ -60185,7 +60709,22 @@ This function takes two arguments.
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;rand(1, 10) &amp;rarr; 8&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;rand() function&lt;/h3&gt;
+Devuelve una entero aleatorio dentro del rango especificado por los argumentos mínimo y máximo (incluidos).
+&lt;br&gt;
+Esta función toma dos argumentos.
+&lt;h4&gt;Sintaxis&lt;/h4&gt;
+&lt;code&gt;rand(min, max)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;code&gt;min&lt;/code&gt; - un entero que representa el menor número aleatorio posible deseado.&lt;br&gt;
+&lt;code&gt;max&lt;/code&gt; - un entero que representa el mayor número aleatorio posible deseado.
+&lt;br&gt;
+
+&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;rand(1, 10) &amp;rarr; 8&lt;/code&gt;&lt;br&gt;
+</translation>
     </message>
     <message>
         <source>
@@ -60215,13 +60754,17 @@ may not give the expected results if you move your Quantum project.
         <source>&lt;h3&gt;Conversions Group&lt;/h3&gt;
 This group contains functions to convert on data type to another e.g string to integer, integer to string.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Grupo Conversiones&lt;/h3&gt;
+Este grupo contiene funciones para convertir un tipo de datos en otro, por ejemplo cadena a entero, entero a cadena.
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Operators Group&lt;/h3&gt;
 This group contains operators e.g + - * 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Grupo Operadores&lt;/h3&gt;
+Este grupo contiene operadores, ej. + - * 
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;$page function&lt;/h3&gt;
@@ -60237,7 +60780,19 @@ None
 &lt;pre&gt;$page &amp;rarr; 2&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función $page&lt;/h3&gt;
+Devuelve el número de página actual dentro de una composición.
+
+&lt;h4&gt;Sintaxis&lt;/h4&gt;
+&lt;pre&gt;$page&lt;/pre&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+Ninguno
+
+&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;pre&gt;$page &amp;rarr; 2&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;second() function&lt;/h3&gt;
@@ -60277,7 +60832,19 @@ None
 &lt;pre&gt;$y &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función $y&lt;/h3&gt;
+Devuelve la coordenada  the Y del objeto espacial actual.
+
+&lt;h4&gt;Sintaxis&lt;/h4&gt;
+&lt;pre&gt;$y&lt;/pre&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+Ninguno
+
+&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;pre&gt;$y &amp;rarr; 42&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;cos() function&lt;/h3&gt;
@@ -60293,7 +60860,18 @@ Returns cosinus of an angle.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      cos(1.571) &amp;rarr; 0.000796326710733263&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función cos()&lt;/h3&gt;
+Devuelve el coseno de un ángulo.
+
+
+&lt;p&gt;&lt;h4&gt;Sintaxis&lt;/h4&gt;
+     cos(&lt;i&gt;real&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; ángulo en radianes.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Ejemplo&lt;/h4&gt;
+     cos(1.571) &amp;rarr; 0.000796326710733263&lt;/p&gt;</translation>
     </message>
     <message>
         <source>&lt;h3&gt;log() function&lt;/h3&gt;
@@ -60329,7 +60907,18 @@ Returns sinus of an angle.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      sin(1.571) &amp;rarr; 0.999999682931835&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función sin()&lt;/h3&gt;
+Devuelve el seno de un ángulo.
+
+
+&lt;p&gt;&lt;h4&gt;Sintaxis&lt;/h4&gt;
+     sin(&lt;i&gt;real&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; ángulo en radianes.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Ejemplo&lt;/h4&gt;
+     cos(1.571) &amp;rarr; 0.999999682931835&lt;/p&gt;</translation>
     </message>
     <message>
         <source>&lt;h3&gt;substr() function&lt;/h3&gt;
@@ -60465,7 +61054,18 @@ None
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;$pi &amp;rarr; 3.14159265358979&lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Constante $p&lt;/h3&gt;
+Devuelve pi como valor para cálculos
+
+&lt;h4&gt;Sintaxis&lt;/h4&gt;
+&lt;pre&gt;$pi&lt;/pre&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+Ninguno
+
+&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;pre&gt;$pi &amp;rarr; 3.14159265358979&lt;/pre&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;todate() function&lt;/h3&gt;
@@ -60481,7 +61081,19 @@ Convert a string into Qt data type.
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;todate(&apos;2012-05-04&apos;) &amp;rarr; 2012-05-04&lt;/code&gt;&lt;br&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función todate()&lt;/h3&gt;
+Convierte una cadena al tipo fecha de Qt.
+
+&lt;h4&gt;Sintaxis&lt;/h4&gt;
+&lt;code&gt;todate(&apos;cadena&apos;)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;code&gt;cadena&lt;/code&gt; - es una cadena en el formato fecha de Qt.
+&lt;br&gt;
+
+&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;todate(&apos;2012-05-04&apos;) &amp;rarr; 2012-05-04&lt;/code&gt;&lt;br&gt;</translation>
     </message>
     <message>
         <source>&lt;h3&gt;scale_exp() function&lt;/h3&gt;
@@ -60549,7 +61161,16 @@ Loading field values from WFS layers isn&apos;t supported, before the layer is
 actually inserted, ie. when building queries.
 &lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Campos y valores&lt;/h3&gt;
+Contiene una lista de campoor de una capa. También se puede acceder a datos de muestra vía clic derecho.
+&lt;br&gt;&lt;br&gt;
+Seleccione el nombre del campo de la lista, luego haga clic derecho para acceder al menú contextual con opciones para cargar valores de muestra del campo seleccionado.
+
+&lt;p&gt;&lt;h4&gt;Nota:&lt;/h4&gt;
+No está soportada la carga de valores de campo de capas WFS antes de que la capa esté
+realmente insertada, esto es cuando se construyen consultas.
+&lt;/p&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Field&lt;/h3&gt;
@@ -60562,7 +61183,16 @@ Loading field values from WFS layers isn&apos;t supported, before the layer is
 actually inserted, ie. when building queries.
 &lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Campo&lt;/h3&gt;
+Doble clic para añadir el nombre del campo a la cadena de la expresión.
+&lt;br&gt;&lt;br&gt;
+Clic derecho en el nombre del campo para abrir el menú contextual con las opciones de carga de datos de muestra.
+
+&lt;p&gt;&lt;h4&gt;Nota:&lt;/h4&gt;
+No está soportada la carga de valores de campo de capas WFS antes de que la capa esté
+realmente insertada, esto es cuando se construyen consultas.
+&lt;/p&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;regexp_match() function&lt;/h3&gt;
@@ -60635,7 +61265,21 @@ Rounds a number upwards.
 &lt;code&gt;ceil(4.9) &amp;rarr; 5&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;ceil(-4.9) &amp;rarr; -4&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función ceil()&lt;/h3&gt;
+Redondea un número hacia arriba.
+
+&lt;h4&gt;Sintaxis&lt;/h4&gt;
+&lt;code&gt;ceil(valor)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;code&gt;valor&lt;/code&gt; - un número.
+&lt;br&gt;
+
+&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;ceil(4.9) &amp;rarr; 5&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;ceil(-4.9) &amp;rarr; -4&lt;/code&gt;&lt;br&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;toreal() function&lt;/h3&gt;
@@ -60652,7 +61296,20 @@ Converts a string to real number. Nothing changed if a value cannot be converted
 &lt;!-- Show example of function.--&gt;
      toreal(&apos;123.45&apos;) &amp;rarr; 123.45&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función toreal()&lt;/h3&gt;
+Convierte una cadena en un número real. No cambia nada si el valor no se puede convertir en real (ej. &apos;123.56asd&apos; no es válido). Los números se redondean después de guardar los cambios si la precisión es menor que el resultado de la conversión.
+
+&lt;p&gt;&lt;h4&gt;Sintaxis&lt;/h4&gt;
+     toreal(&lt;i&gt;cadena&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  cadena&lt;/i&gt; &amp;rarr; es una cadena. La cadena a convertir a número real.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     toreal(&apos;123.45&apos;) &amp;rarr; 123.45&lt;/p&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;xat() function&lt;/h3&gt;
@@ -60667,7 +61324,18 @@ Retrieves a x coordinate of the current feature
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;xat(1) &amp;rarr; 5&lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función xat()&lt;/h3&gt;
+Obtiene la coordenada X del objeto espacial actual
+
+&lt;h4&gt;Sintaxis&lt;/h4&gt;
+&lt;code&gt;xat(i)&lt;/code&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;code&gt;i&lt;code&gt; - es el índice entero del punto de una línea (los indices comienzan en 0; los valores negativos se aplican al último índice).
+
+&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;pre&gt;xat(1) &amp;rarr; 5&lt;/pre&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;floor() function&lt;/h3&gt;
@@ -60685,7 +61353,21 @@ Rounds a number downwards.
 &lt;code&gt;floor(4.9) &amp;rarr; 4&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;floor(-4.9) &amp;rarr; -5&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función floor()&lt;/h3&gt;
+Redondea un número hacia abajo.
+
+&lt;h4&gt;Sintaxis&lt;/h4&gt;
+&lt;code&gt;floor(valor)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;code&gt;valor&lt;/code&gt; - un número.
+&lt;br&gt;
+
+&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;floor(4.9) &amp;rarr; 4&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;floor(-4.9) &amp;rarr; -5&lt;/code&gt;&lt;br&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;toint() function&lt;/h3&gt;
@@ -60702,7 +61384,20 @@ Converts a string to integer number. Nothing changed if a value cannot be conver
 &lt;!-- Show example of function.--&gt;
      toint(&apos;123&apos;) &amp;rarr; 123&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función toint()&lt;/h3&gt;
+Convierte una cadena a número entero. No cambia nada si un valor no se puede convertir a entero (ej. &apos;123asd&apos; no es válido).
+
+&lt;p&gt;&lt;h4&gt;Sintaxis&lt;/h4&gt;
+     toint(&lt;i&gt;cadena&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  cadena&lt;/i&gt; &amp;rarr; es una cadena. La cadena a convertir en número entero.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     toint(&apos;123&apos;) &amp;rarr; 123&lt;/p&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;yat() function&lt;/h3&gt;
@@ -60717,7 +61412,18 @@ Retrieves a y coordinate of the current feature
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;yat(1) &amp;rarr; 5&lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función yat()&lt;/h3&gt;
+Obtiene la coordenada Y del objeto espacial actual
+
+&lt;h4&gt;Sintaxis&lt;/h4&gt;
+&lt;code&gt;yat(i)&lt;/code&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;code&gt;i&lt;code&gt; - es el índice entero del punto de una línea (los indices comienzan en 0; los valores negativos se aplican al último índice).
+
+&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;pre&gt;yat(1) &amp;rarr; 5&lt;/pre&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;tostring() function&lt;/h3&gt;
@@ -60734,7 +61440,20 @@ Converts a number to string.
 &lt;!-- Show example of function.--&gt;
      tostring(123) &amp;rarr; &apos;123&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función tostring()&lt;/h3&gt;
+Convierte un número en cadena.
+
+&lt;p&gt;&lt;h4&gt;Sintaxis&lt;/h4&gt;
+     tostring(&lt;i&gt;número&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;número&lt;/i&gt; &amp;rarr; es un entero o real. El número a convertir en cadena.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     tostring(123) &amp;rarr; &apos;123&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;ln() function&lt;/h3&gt;
@@ -60753,7 +61472,22 @@ This function takes one argument.
 &lt;code&gt;ln(1) &amp;rarr; 0&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;ln(2.7182818284590452354) &amp;rarr; 1&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función ln()&lt;/h3&gt;
+Devuelve el valor del logaritmo natural de la expresión pasada.
+&lt;br&gt;
+Esta función toma un argumento.
+&lt;h4&gt;Sintaxis&lt;/h4&gt;
+&lt;code&gt;ln(valor)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;code&gt;valor&lt;/code&gt; - cualquier número positivo.
+&lt;br&gt;
+
+&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;ln(1) &amp;rarr; 0&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;ln(2.7182818284590452354) &amp;rarr; 1&lt;/code&gt;&lt;br&gt;
+</translation>
     </message>
 </context>
 <context>
