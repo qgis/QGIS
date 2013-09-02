@@ -65,6 +65,8 @@ void QgsDualView::init( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, QgsDista
   connect( layer, SIGNAL( editingStarted() ), this, SLOT( editingToggled() ) );
   connect( layer, SIGNAL( beforeCommitChanges() ), this, SLOT( editingToggled() ) );
   connect( layer, SIGNAL( editingStopped() ), this, SLOT( editingToggled() ) );
+  connect( layer, SIGNAL( attributeAdded( int ) ), this, SLOT( editingToggled() ) );
+  connect( layer, SIGNAL( attributeDeleted( int ) ), this, SLOT( editingToggled() ) );
 
   initLayerCache( layer );
   initModels( mapCanvas );
@@ -235,7 +237,7 @@ void QgsDualView::initModels( QgsMapCanvas* mapCanvas )
   mFeatureListModel = new QgsFeatureListModel( mFilterModel, mFilterModel );
 }
 
-void QgsDualView::on_mFeatureList_currentEditSelectionChanged( const QgsFeature &feat )
+void QgsDualView::on_mFeatureList_currentEditSelectionChanged( QgsFeature &feat )
 {
   if ( !feat.isValid() )
     return;
@@ -248,6 +250,9 @@ void QgsDualView::on_mFeatureList_currentEditSelectionChanged( const QgsFeature 
     saveEditChanges();
     mAttributeEditorLayout->removeWidget( mAttributeDialog->dialog() );
   }
+
+  if ( feat.attributes().count() != mLayerCache->layer()->pendingFields().count() )
+    mLayerCache->featureAtId( feat.id(), feat );
 
   mAttributeDialog = new QgsAttributeDialog( mLayerCache->layer(), new QgsFeature( feat ), true, mDistanceArea, this, false );
   mAttributeEditorLayout->addWidget( mAttributeDialog->dialog() );

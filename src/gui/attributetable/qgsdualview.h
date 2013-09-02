@@ -171,7 +171,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      *
      * @param feat  The newly visible feature
      */
-    void on_mFeatureList_currentEditSelectionChanged( const QgsFeature &feat );
+    void on_mFeatureList_currentEditSelectionChanged( QgsFeature& feat );
 
     void previewExpressionBuilder();
 
