@@ -44772,11 +44772,11 @@ Veuillez vérifier si vous avez le droit d&apos;effectuer une commande SELECT su
     </message>
     <message>
         <source>If you haven&apos;t cancelled the download manually, it was most likely caused by a timeout. In this case consider increasing the connection timeout value in QGIS options window.</source>
-        <translation type="unfinished"></translation>
+        <translation>Si vous n&apos;avez pas arrété le téléchargement manuellement, l&apos;échec est certainement lié à un délai d&apos;abandon (time-out). Dans ce cas, essayez d&apos;augmenter la valeur de ce délai d&apos;abandon dans les options de QGIS.</translation>
     </message>
     <message>
         <source>Server response is 200 OK, but doesn&apos;t contain plugin metatada. This is most likely caused by a proxy or a wrong repository URL. You can configure proxy settings in QGIS options.</source>
-        <translation type="unfinished"></translation>
+        <translation>La réponse du serveur est bonne, mais ne contient aucune métadonnée de l&apos;extension. Cela est probablement lié à un problème de proxy ou de mauvaise URL du dépôt. Vous pouvez configurer le proxy dans les options générales de QGIS.</translation>
     </message>
     <message>
         <source>Status code:</source>
@@ -44784,7 +44784,7 @@ Veuillez vérifier si vous avez le droit d&apos;effectuer une commande SELECT su
     </message>
     <message>
         <source>The plugin exited with error status: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>L&apos;extension s&apos;est arrétée avec l&apos;erreur: {0}</translation>
     </message>
     <message>
         <source>Unknown error</source>
@@ -44804,7 +44804,7 @@ Veuillez vérifier si vous avez le droit d&apos;effectuer une commande SELECT su
     </message>
     <message>
         <source>QGIS has detected an obsolete plugin that masks its more recent version shipped with this copy of QGIS. This is likely due to files associated with a previous installation of QGIS. Do you want to remove the old plugin right now and unmask the more recent version?</source>
-        <translation type="unfinished"></translation>
+        <translation>L&apos;installateur d&apos;extension a détecté une extension obsolète qui cache la version plus récente embarquée par QGIS. Il s&apos;agit probablement du reste d&apos;une installation antérieure de QGIS. Veuillez utiliser l&apos;interface de récupération des extensions pour pouvoir effacer l&apos;extension la plus ancienne afin de permettre l&apos;affichage de la version plus récente.</translation>
     </message>
     <message>
         <source>Error reading repository:</source>
@@ -44880,7 +44880,7 @@ Vous devez relancer Quantum GIS pour la charger de nouveau.</translation>
     </message>
     <message>
         <source>You can&apos;t remove the official QGIS Plugin Repository. You can disable it if needed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Vous ne pouvez pas supprimer le dépôt QGIS officiel. Vous pouvez le désactiver si besoin.</translation>
     </message>
     <message>
         <source>Are you sure you want to remove the following repository?</source>
@@ -44888,7 +44888,7 @@ Vous devez relancer Quantum GIS pour la charger de nouveau.</translation>
     </message>
     <message>
         <source>If you haven&apos;t cancelled the download manually, it might be caused by a timeout. In this case consider increasing the connection timeout value in QGIS options.</source>
-        <translation type="unfinished"></translation>
+        <translation>Si vous n&apos;avez pas arrêté le téléchargement manuellement, l&apos;échec est certainement lié à un délai d&apos;abandon (time-out). Dans ce cas, essayez d&apos;augmenter la valeur de ce délai d&apos;abandon dans les options de QGIS.</translation>
     </message>
     <message>
         <source>Nothing to remove! Plugin directory doesn&apos;t exist:</source>
@@ -45711,13 +45711,13 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="621"/>
         <source>This plugin is incompatible with this version of QGIS</source>
-        <translation type="unfinished"></translation>
+        <translation>Cette extension est incompatible avec cette version de QGIS</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="621"/>
         <source>Plugin designed for QGIS %1</source>
         <comment>compatible QGIS version(s)</comment>
-        <translation type="unfinished"></translation>
+        <translation>Extension conçue pour la version %1 de QGIS</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="625"/>
@@ -45742,7 +45742,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="651"/>
         <source>Installed version of this plugin is higher than any version found in repository</source>
-        <translation type="unfinished"></translation>
+        <translation>La version de cette extension est supérieure aux versions disponibles dans le dépôt en ligne</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="659"/>
@@ -45752,7 +45752,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="693"/>
         <source>&lt;br/&gt;%1 rating vote(s)&lt;br/&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 vote(s) positif(s)</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="708"/>
@@ -45838,7 +45838,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="865"/>
         <source>Only show plugins from selected repository</source>
-        <translation type="unfinished"></translation>
+        <translation>Afficher seulement les extensions du dépôt sélectionné</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="869"/>
@@ -45853,7 +45853,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="887"/>
         <source>The repository is connected</source>
-        <translation type="unfinished"></translation>
+        <translation>Le dépôt est connecté</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="891"/>
@@ -45863,7 +45863,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="893"/>
         <source>The repository is enabled, but unavailable</source>
-        <translation type="unfinished"></translation>
+        <translation>Ce dépôt est activé mais n&apos;est pas disponible</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="898"/>
@@ -45873,12 +45873,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="902"/>
         <source>The repository is disabled</source>
-        <translation type="unfinished"></translation>
+        <translation>Ce dépôt est désactivé</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="906"/>
         <source>The repository is blocked due to incompatibility with your QGIS version</source>
-        <translation type="unfinished"></translation>
+        <translation>Ce dépôt est bloqué du fait d&apos;une incompatibilité avec votre version de Quantum GIS</translation>
     </message>
     <message>
         <source>&amp;Select All</source>
@@ -45914,27 +45914,28 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager_texts.cpp" line="11"/>
         <source>&lt;h3&gt;Installed Plugins&lt;/h3&gt;&lt;p&gt;On the left you see the list of &lt;b&gt;installed plugins&lt;/b&gt; on your system. Both python and cpp plugins are listed. Some plugins come with your QGIS installation while most of them are made available via the plugin repositories.&lt;/p&gt;&lt;p&gt;You can temporarily enable or disable a plugin.To &lt;i&gt;enable&lt;/i&gt; or &lt;i&gt;disable&lt;/i&gt; a plugin, click its checkbox or doubleclick its name...&lt;/p&gt;&lt;p&gt;Plugins showing in &lt;span style=&apos;color:red&apos;&gt;red&lt;/span&gt; are not loaded because there is a problem. Consult the &apos;Invalid&apos; tab to see more details, or to reinstall or uninstall this plugin.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Extensions installées&lt;/h3&gt;&lt;p&gt;A gauche, la liste des &lt;b&gt;extensions installées&lt;/b&gt; sur votre système.
+&lt;/br&gt;Sont listées à la fois les extensions Python et les plugins C++. Certaines sont livrés avec votre installation de QGIS, et les autres sont disponibles sur les dépôts de plugins.&lt;/p&gt;&lt;p&gt;Vous pouvez temporairement désactiver une extension, sans la désinstaller. Pour &lt;i&gt;activer&lt;/i&gt; or &lt;i&gt;désactiver&lt;/i&gt; une extension, cocher la case ou double cliquer sur son nom...&lt;/p&gt;&lt;p&gt;Les extensions affichées en &lt;b&gt;&lt;span style=&apos;color:red&apos;&gt;rouge&lt;/span&gt;&lt;/b&gt; ne sont pas chargées à cause d&apos;un problème technique. Consulter la rubrique &apos;Invalides&apos; pour plus de détails, ou pour réinstaller ou supprimer cette extension.&lt;/p&gt;&lt;p&gt;Les extensions Python sont dynamiquement chargées au démarrage de QGIS et peuvent en ralentir l&apos;ouverture.&lt;/p&gt;&lt;/translation&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager_texts.cpp" line="32"/>
         <source>&lt;h3&gt;Upgradable plugins&lt;/h3&gt;&lt;p&gt;Here are &lt;b&gt;upgradeable plugins&lt;/b&gt;. It means more recent versions of installed plugins are available in the repositories.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Mise à jour disponible&lt;/h3&gt;&lt;p&gt;&lt;b&gt;Sont listés les extensions  pour lesquelles une mise à jour est disponible&lt;/b&gt;. Cela signifie que des versions plus récentes sont disponibles dans les dépôts. &lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager_texts.cpp" line="43"/>
         <source>&lt;h3&gt;Get more plugins&lt;/h3&gt;&lt;p&gt;Here you see the list of all plugins available in the repositories, but which are &lt;b&gt;not yet installed&lt;/b&gt;.&lt;/p&gt;&lt;p&gt;Click on the name to see details.&lt;/p&gt;&lt;p&gt;You can change the sorting via the context menu (right click).&lt;/p&gt;&lt;p&gt;A plugin can be downloaded and installed by clicking on it&apos;s name, and then click the &apos;Install plugin&apos; button.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;En obtenir plus&lt;/h3&gt;&lt;p&gt;Cette rubrique liste les extensions disponibles &lt;b&gt;mais pas encore installées&lt;/b&gt;.&lt;/p&gt;&lt;p&gt;Cliquer sur le nom pour voir les détails.&lt;/p&gt;&lt;p&gt;Vous pouvez en changer l&apos;ordre par le menu contextuel (clic droit).&lt;/p&gt;&lt;p&gt;Une extension peut être téléchargée et installée juste en cliquant sur son nom, puis sur le bouton &apos;Installer l&apos;extension&apos;.</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager_texts.cpp" line="64"/>
         <source>&lt;h3&gt;New plugins&lt;/h3&gt;&lt;p&gt;Here you see brand &lt;b&gt;new&lt;/b&gt; plugins which can be installed.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Nouvelles extensions&lt;/h3&gt;&lt;p&gt;Voici la liste des toutes &lt;b&gt;nouvelles&lt;/b&gt; extensions que vous pouvez installer.&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager_texts.cpp" line="75"/>
         <source>&lt;h3&gt;Invalid plugins&lt;/h3&gt;&lt;p&gt;Plugins in this list here are &lt;b&gt;broken or incompatible&lt;/b&gt; with your version of QGIS.&lt;/p&gt;&lt;p&gt;Click on an individual plugin; if possible QGIS shows you more information.&lt;/p&gt;&lt;p&gt;The main reasons to have invalid plugins is that this plugin is not build for this version of QGIS. Maybe you can download an other version from &lt;a href=&quot;http://plugins.qgis.org&quot;&gt;plugins.qgis.org&lt;/a&gt;.&lt;/p&gt;&lt;p&gt;Another common reason is that a python plugin needs some external python libraries (dependencies). You can install them yourself, depending on your operating system. After a correct install the plugin should work.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Extensions invalides&lt;/h3&gt;&lt;p&gt;Les extensions de cette liste sont &lt;b&gt;incompatibles ou cassées&lt;/b&gt; par rapport à votre version de QGIS.&lt;/p&gt;&lt;p&gt;Cliquez sur une extension pour que QGIS vous fournisse plus d&apos;informations.&lt;/p&gt;&lt;p&gt;Les extension sont invalides essentiellement parce qu&apos;elles n&apos;ont pas été conçues pour cette version de QGIS. Vous pouvez probablement en télécharger une autre version sur &lt;a href=&quot;http://plugins.qgis.org&quot;&gt;plugins.qgis.org&lt;/a&gt;.&lt;/p&gt;&lt;p&gt;Une autre cause fréquente est que votre extension nécessite des bibliothèques externes Python (dépendances). Vous pouvez les installer par vous même selon votre OS et les droits dont vous disposez. Une extension devrait fonctionner après une installation correcte.&lt;/p&gt;</translation>
     </message>
 </context>
 <context>
@@ -45986,7 +45987,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="127"/>
         <source>Not installed plugins available for download</source>
-        <translation type="unfinished"></translation>
+        <translation>Extensions no-installées et disponibles</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="139"/>
@@ -45996,7 +45997,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="142"/>
         <source>Installed plugins with more recent version available for download</source>
-        <translation type="unfinished"></translation>
+        <translation>Extensions installées avec une version plus récente disponible en téléchargement</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="154"/>
@@ -46006,7 +46007,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="157"/>
         <source>Not installed plugins seen for the first time</source>
-        <translation type="unfinished"></translation>
+        <translation>Extensions non installées vues pour la première fois</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="169"/>
@@ -46016,7 +46017,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="172"/>
         <source>Broken and incompatible installed plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>Liste des extensions incompatibles ou cassées étant installées</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="184"/>
@@ -46043,7 +46044,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="315"/>
         <source>names</source>
-        <translation type="unfinished"></translation>
+        <translation>noms</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="322"/>
@@ -46053,7 +46054,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="329"/>
         <source>tags</source>
-        <translation type="unfinished"></translation>
+        <translation>étiquettes</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="336"/>
@@ -46093,7 +46094,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="543"/>
         <source>The settings on this tab are only applicable for Python Plugins. No Python support detected, thus no settings available.</source>
-        <translation type="unfinished"></translation>
+        <translation>Les paramètres de cet onglet sont uniquement valables pour les extensions Python. Si le support Python est désactivé, aucun paramètre n&apos;est disponible.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="589"/>
@@ -46137,7 +46138,11 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Note:&lt;/span&gt; If this function is enabled, QGIS will inform you whenever a new plugin or plugin update is available. Otherwise, fetching repositories will be performed during opening of the Plugin Manager window.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Note:&lt;/span&gt; Si cette fonction est activée, QGIS vous informera de la disponibilité d&apos;une nouvelle extension ou d&apos;une mise à jour potentielle. Sinon, la récupération de ces informations depuis les dépôts ne sera faite qu&apos;à l&apos;ouverture du gestionnaire d&apos;extensions.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="689"/>
@@ -46186,17 +46191,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="821"/>
         <source>Reload repository</source>
-        <translation type="unfinished"></translation>
+        <translation>Recharger les dépôts</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="841"/>
         <source>Configure an additional plugin repository</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajouter un nouveau dépôts d&apos;extension</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="844"/>
         <source>Add a new plugin repository</source>
-        <translation>Ajouter un nouveau dépôts dextension</translation>
+        <translation>Ajouter un nouveau dépôts d&apos;extension</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="847"/>
@@ -46497,7 +46502,7 @@ Le message d&apos;erreur de la base de donnée est :
     <message>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1368"/>
         <source>TopoGeometry</source>
-        <translation type="unfinished"></translation>
+        <translation>TopoGeometry</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1524"/>
@@ -47100,7 +47105,7 @@ Erreur dans la base de données : %2</translation>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3108"/>
         <source>unknown</source>
-        <translation type="unfinished"></translation>
+        <translation>Inconnu</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3128"/>
