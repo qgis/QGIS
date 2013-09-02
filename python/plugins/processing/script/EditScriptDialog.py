@@ -48,10 +48,11 @@ class EditScriptDialog(QtGui.QDialog):
 
     def setupUi(self):
         self.resize(600,400)
+        self.setWindowFlags(self.windowFlags() | Qt.WindowSystemMenuHint |
+                            Qt.WindowMinMaxButtonsHint)
         self.setWindowTitle("Edit script")
         layout = QVBoxLayout()
         self.text = ScriptEditorWidget(self.alg.script if self.alg is not None else "")        
-        #self.text.setEnabled(True)
         self.buttonBox = QtGui.QDialogButtonBox()
         self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
         self.editHelpButton = QtGui.QPushButton()
@@ -74,7 +75,7 @@ class EditScriptDialog(QtGui.QDialog):
 
     def editHelp(self):
         if self.alg is None:
-            alg = ScriptAlgorithm(None, unicode(self.text.toPlainText()))
+            alg = ScriptAlgorithm(None, unicode(self.text.text()))
         else:
             alg = self.alg
         dlg = HelpEditionDialog(alg)
