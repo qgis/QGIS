@@ -27,7 +27,7 @@ import os
 import pickle
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-
+from qgis.core import *
 from processing.ui.ui_DlgHelpEdition import Ui_DlgHelpEdition
 
 class HelpEditionDialog(QDialog, Ui_DlgHelpEdition):
@@ -38,8 +38,9 @@ class HelpEditionDialog(QDialog, Ui_DlgHelpEdition):
 
     def __init__(self, alg):
         QDialog.__init__(self)
-        self.setupUi(self)
-
+        
+        self.setupUi(self)                
+        
         self.alg = alg
         self.descriptions =  {}
         if self.alg.descriptionFile is not None:
@@ -62,9 +63,16 @@ class HelpEditionDialog(QDialog, Ui_DlgHelpEdition):
     def accept(self):
         self.descriptions[self.currentName] = unicode(self.text.toPlainText())
         if self.alg.descriptionFile is not None:
-            f = open(self.alg.descriptionFile + ".help", "wb")
-            pickle.dump(self.descriptions, f)
-            f.close()
+            try:
+                f = open(self.alg.descriptionFile + ".help", "wb")
+                pickle.dump(self.descriptions, f)
+                f.close()
+            except Exception, e:
+                QMessageBox.warning(self, "Error saving help file", 
+                                    "Help file could not be saved."
+                                    "\nCheck that you have permission to modify the help file.\n"
+                                    "You might not have permission if you are editing an example\n"
+                                    "model or script, since they are stored on the installation folder") 
         QDialog.accept(self)
 
     def getHtml(self):

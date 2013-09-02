@@ -36,7 +36,6 @@ from processing.gui.ParametersDialog import ParametersDialog
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.gui.AlgorithmClassification import AlgorithmDecorator
-#from processing.gui.ProcessingToolbox import ProcessingToolbox
 from processing.modeler.ModelerParameterDefinitionDialog import ModelerParameterDefinitionDialog
 from processing.modeler.ModelerAlgorithm import ModelerAlgorithm
 from processing.modeler.ModelerParametersDialog import ModelerParametersDialog
