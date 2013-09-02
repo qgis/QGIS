@@ -62,12 +62,6 @@ void QgsDualView::init( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, QgsDista
 
   connect( mTableView, SIGNAL( willShowContextMenu( QMenu*, QModelIndex ) ), this, SLOT( viewWillShowContextMenu( QMenu*, QModelIndex ) ) );
 
-  connect( layer, SIGNAL( editingStarted() ), this, SLOT( editingToggled() ) );
-  connect( layer, SIGNAL( beforeCommitChanges() ), this, SLOT( editingToggled() ) );
-  connect( layer, SIGNAL( editingStopped() ), this, SLOT( editingToggled() ) );
-  connect( layer, SIGNAL( attributeAdded( int ) ), this, SLOT( editingToggled() ) );
-  connect( layer, SIGNAL( attributeDeleted( int ) ), this, SLOT( editingToggled() ) );
-
   initLayerCache( layer );
   initModels( mapCanvas );
 
@@ -218,7 +212,12 @@ void QgsDualView::initLayerCache( QgsVectorLayer* layer )
     mLayerCache->setFullCache( true );
   }
 
+  connect( layer, SIGNAL( editingStarted() ), this, SLOT( editingToggled() ) );
+  connect( layer, SIGNAL( beforeCommitChanges() ), this, SLOT( editingToggled() ) );
+  connect( layer, SIGNAL( editingStopped() ), this, SLOT( editingToggled() ) );
+  connect( layer, SIGNAL( attributeAdded( int ) ), this, SLOT( attributeAdded( int ) ) );
   connect( layer, SIGNAL( attributeDeleted( int ) ), this, SLOT( attributeDeleted( int ) ) );
+  connect( mLayerCache, SIGNAL( attributeValueChanged( QgsFeatureId, int, QVariant ) ), this, SLOT( onAttributeValueChanged( QgsFeatureId, int, QVariant ) ) );
 }
 
 void QgsDualView::initModels( QgsMapCanvas* mapCanvas )
@@ -237,7 +236,7 @@ void QgsDualView::initModels( QgsMapCanvas* mapCanvas )
   mFeatureListModel = new QgsFeatureListModel( mFilterModel, mFilterModel );
 }
 
-void QgsDualView::on_mFeatureList_currentEditSelectionChanged( QgsFeature &feat )
+void QgsDualView::on_mFeatureList_currentEditSelectionChanged( const QgsFeature &feat )
 {
   if ( !feat.isValid() )
     return;
@@ -250,9 +249,6 @@ void QgsDualView::on_mFeatureList_currentEditSelectionChanged( QgsFeature &feat 
     saveEditChanges();
     mAttributeEditorLayout->removeWidget( mAttributeDialog->dialog() );
   }
-
-  if ( feat.attributes().count() != mLayerCache->layer()->pendingFields().count() )
-    mLayerCache->featureAtId( feat.id(), feat );
 
   mAttributeDialog = new QgsAttributeDialog( mLayerCache->layer(), new QgsFeature( feat ), true, mDistanceArea, this, false );
   mAttributeEditorLayout->addWidget( mAttributeDialog->dialog() );
@@ -397,6 +393,74 @@ void QgsDualView::attributeDeleted( int attribute )
     // Get the edited feature
     QgsFeature* feat = mAttributeDialog->feature();
     feat->deleteAttribute( attribute );
+
+    // Backup old dialog and delete only after creating the new dialog, so we can "hot-swap" the contained QgsFeature
+    QgsAttributeDialog* oldDialog = mAttributeDialog;
+
+    mAttributeEditorLayout->removeWidget( mAttributeDialog->dialog() );
+
+    mAttributeDialog = new QgsAttributeDialog( mLayerCache->layer(), new QgsFeature( *feat ), true, mDistanceArea, this, false );
+    mAttributeEditorLayout->addWidget( mAttributeDialog->dialog() );
+
+    delete oldDialog;
+  }
+}
+
+void QgsDualView::attributeAdded( int attribute )
+{
+  if ( mAttributeDialog && mAttributeDialog->dialog() )
+  {
+    // Let the dialog write the edited widget values to it's feature
+    mAttributeDialog->accept();
+    // Get the edited feature
+    QgsFeature* feat = mAttributeDialog->feature();
+
+    // Get the feature including the newly added attribute
+    QgsFeature newFeat;
+    mLayerCache->featureAtId( feat->id(), newFeat );
+
+    int offset = 0;
+    for ( int idx = 0; idx < newFeat.attributes().count(); ++idx )
+    {
+      if ( idx == attribute )
+      {
+        offset = 1;
+      }
+      else
+      {
+        newFeat.setAttribute( idx, feat->attribute( idx - offset ) );
+      }
+    }
+
+    *feat = newFeat;
+
+    // Backup old dialog and delete only after creating the new dialog, so we can "hot-swap" the contained QgsFeature
+    QgsAttributeDialog* oldDialog = mAttributeDialog;
+
+    mAttributeEditorLayout->removeWidget( mAttributeDialog->dialog() );
+
+    mAttributeDialog = new QgsAttributeDialog( mLayerCache->layer(), new QgsFeature( *feat ), true, mDistanceArea, this, false );
+    mAttributeEditorLayout->addWidget( mAttributeDialog->dialog() );
+
+    delete oldDialog;
+  }
+}
+
+void QgsDualView::reloadAttribute( const int& idx )
+{
+  if ( mAttributeDialog && mAttributeDialog->dialog() )
+  {
+    // Let the dialog write the edited widget values to it's feature
+    mAttributeDialog->accept();
+    // Get the edited feature
+    QgsFeature* feat = mAttributeDialog->feature();
+
+    // Get the feature including the changed attribute
+    QgsFeature newFeat;
+    mLayerCache->featureAtId( feat->id(), newFeat );
+
+    // Update the attribute
+    feat->setAttribute( idx, newFeat.attribute( idx ) );
 
     // Backup old dialog and delete only after creating the new dialog, so we can "hot-swap" the contained QgsFeature
     QgsAttributeDialog* oldDialog = mAttributeDialog;

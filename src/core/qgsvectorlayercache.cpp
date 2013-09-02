@@ -35,7 +35,7 @@ QgsVectorLayerCache::QgsVectorLayerCache( QgsVectorLayer* layer, int cacheSize, 
 
   connect( mLayer, SIGNAL( attributeDeleted( int ) ), SLOT( attributeDeleted( int ) ) );
   connect( mLayer, SIGNAL( updatedFields() ), SLOT( updatedFields() ) );
-  connect( mLayer, SIGNAL( attributeValueChanged( QgsFeatureId, int, const QVariant& ) ), SLOT( attributeValueChanged( QgsFeatureId, int, const QVariant& ) ) );
+  connect( mLayer, SIGNAL( attributeValueChanged( QgsFeatureId, int, const QVariant& ) ), SLOT( onAttributeValueChanged( QgsFeatureId, int, const QVariant& ) ) );
 }
 
 void QgsVectorLayerCache::setCacheSize( int cacheSize )
@@ -183,7 +183,7 @@ void QgsVectorLayerCache::featureRemoved( QgsFeatureId fid )
   }
 }
 
-void QgsVectorLayerCache::attributeValueChanged( QgsFeatureId fid, int field, const QVariant& value )
+void QgsVectorLayerCache::onAttributeValueChanged( QgsFeatureId fid, int field, const QVariant& value )
 {
   QgsCachedFeature* cachedFeat = mCache[ fid ];
 
@@ -191,6 +191,8 @@ void QgsVectorLayerCache::attributeValueChanged( QgsFeatureId fid, int field, co
   {
     cachedFeat->mFeature->setAttribute( field, value );
   }
+
+  emit attributeValueChanged( fid, field, value );
 }
 
 void QgsVectorLayerCache::featureDeleted( QgsFeatureId fid )

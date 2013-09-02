@@ -150,8 +150,13 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     /**
      * @brief saveEditChanges
      */
-
     void saveEditChanges();
+
+    /**
+     * Update the shown feature if an attribute changed
+     */
+    void reloadAttribute( const int& attribute );
+
 
   signals:
     /**
@@ -171,7 +176,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      *
      * @param feat  The newly visible feature
      */
-    void on_mFeatureList_currentEditSelectionChanged( QgsFeature& feat );
+    void on_mFeatureList_currentEditSelectionChanged( const QgsFeature& feat );
 
     void previewExpressionBuilder();
 
@@ -191,6 +196,15 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      * @param attribute The attribute being deleted
      */
     void attributeDeleted( int attribute );
+
+    /**
+     * If an attribute on this layer is added, add the field also for open
+     * attribute dialogs.
+     * (as long as the attribute dialog is not able to handle this problem)
+     *
+     * @param attribute The attribute being added
+     */
+    void attributeAdded( int attribute );
 
     /**
      * Will be called periodically, when loading layers from slow data providers.
