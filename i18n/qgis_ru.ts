@@ -45936,12 +45936,12 @@ standard deviation ×</source>
     <message>
         <location filename="../src/core/raster/qgsrasterrenderer.cpp" line="201"/>
         <source>Estimated</source>
-        <translation>Расчётные значения</translation>
+        <translation>расчётные</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterrenderer.cpp" line="205"/>
         <source>Exact</source>
-        <translation>Точные значения</translation>
+        <translation>точные</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterrenderer.cpp" line="210"/>
@@ -45951,28 +45951,28 @@ standard deviation ×</source>
     <message>
         <location filename="../src/core/raster/qgsrasterrenderer.cpp" line="214"/>
         <source>cumulative cut</source>
-        <translation type="unfinished"></translation>
+        <translation>срез с накоплением</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterrenderer.cpp" line="218"/>
         <source>standard deviation</source>
-        <translation type="unfinished"></translation>
+        <translation>стандартное отклонение</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterrenderer.cpp" line="223"/>
         <source>full extent</source>
-        <translation type="unfinished"></translation>
+        <translation>полный</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterrenderer.cpp" line="227"/>
         <source>sub extent</source>
-        <translation type="unfinished"></translation>
+        <translation>частичный</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterrenderer.cpp" line="230"/>
         <source>%1 %2 of %3.</source>
         <comment>min/max origin label in raster properties, where %1 - estimated/exact, %2 - values (min/max, stddev, etc.), %3 - extent</comment>
-        <translation type="unfinished">%1 из %3. {1 %2 ?}</translation>
+        <translation>Источник: %2; значения: %1; охват: %3.</translation>
     </message>
     <message>
         <source> of </source>
@@ -47675,32 +47675,32 @@ enhancement</source>
     <message>
         <location filename="../src/gui/symbology-ng/qgssmartgroupeditordialog.cpp" line="33"/>
         <source>has the tag</source>
-        <translation type="unfinished"></translation>
+        <translation>отмечен тегом</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssmartgroupeditordialog.cpp" line="34"/>
         <source>is a member of group</source>
-        <translation type="unfinished"></translation>
+        <translation>входит в группу</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssmartgroupeditordialog.cpp" line="35"/>
         <source>has a part of name matching</source>
-        <translation type="unfinished"></translation>
+        <translation>содержит в названии строку</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssmartgroupeditordialog.cpp" line="36"/>
         <source>does NOT have the tag</source>
-        <translation type="unfinished"></translation>
+        <translation>не отмечен тегом</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssmartgroupeditordialog.cpp" line="37"/>
         <source>is NOT a member of group</source>
-        <translation type="unfinished"></translation>
+        <translation>не входит в группу</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssmartgroupeditordialog.cpp" line="38"/>
         <source>has NO part of name matching</source>
-        <translation type="unfinished"></translation>
+        <translation>не содержит в названии строку</translation>
     </message>
 </context>
 <context>
@@ -47721,12 +47721,12 @@ enhancement</source>
     <message>
         <location filename="../src/gui/symbology-ng/qgssmartgroupeditordialog.cpp" line="86"/>
         <source>ALL the constraints</source>
-        <translation type="unfinished"></translation>
+        <translation>Все условия</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssmartgroupeditordialog.cpp" line="87"/>
         <source>any ONE of the constraints</source>
-        <translation type="unfinished"></translation>
+        <translation>Одно из условий</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssmartgroupeditordialog.cpp" line="204"/>
@@ -50369,12 +50369,12 @@ There was a problem with your symbol database.</source>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbolslistwidget.cpp" line="74"/>
         <source>Style Manager</source>
-        <translation type="unfinished">Управление стилями</translation>
+        <translation>Управление стилями</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbolslistwidget.cpp" line="76"/>
         <source>Save in symbol library...</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранить в библиотеке знаков...</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbolslistwidget.cpp" line="223"/>
@@ -57080,7 +57080,7 @@ Would you like to add the new layer to the TOC?</source>
         <location filename="../src/plugins/topology/checkDock.ui" line="84"/>
         <location filename="../src/plugins/topology/checkDock.cpp" line="215"/>
         <source>Select automatic fix</source>
-        <translation type="unfinished">Автоматическое исправление</translation>
+        <translation>Автоматическое исправление</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/checkDock.ui" line="92"/>
@@ -61496,7 +61496,7 @@ None
 
 </source>
         <translation>&lt;h3&gt;$rownum&lt;/h3&gt;
-Возвращает номер текущей строки.
+Номер текущей строки.
 
 &lt;h4&gt;Синтаксис&lt;/h4&gt;
 &lt;pre&gt;$rownum&lt;/pre&gt;
@@ -61531,7 +61531,7 @@ Returns a string representation of a color based on its red, green, blue, and al
 </source>
         <translation>
 &lt;h3&gt;color_rgba()&lt;/h3&gt;
-Возвращает строковое представление цвета.
+Возвращает строковое представление цвета, заданного в виде значений RGBA.
 
 &lt;p&gt;&lt;h4&gt;Синтаксис&lt;/h4&gt;
      color_rgba(&lt;i&gt;red, green, blue, alpha&lt;/i&gt;)&lt;/p&gt;
@@ -61596,7 +61596,7 @@ None
 
 </source>
         <translation>&lt;h3&gt;$feature&lt;/h3&gt;
-Возвращает номер текущего объекта в слое покрытия в режиме создания атласа.
+Номер текущего объекта в слое покрытия в режиме создания атласа.
 
 &lt;h4&gt;Синтаксис&lt;/h4&gt;
 &lt;pre&gt;$feature&lt;/pre&gt;
@@ -61677,7 +61677,7 @@ None
 
 </source>
         <translation>&lt;h3&gt;$perimeter&lt;/h3&gt;
-Возвращает длину периметра текущего объекта.
+Длина периметра текущего объекта.
 
 &lt;h4&gt;Синтаксис&lt;/h4&gt;
 &lt;pre&gt;$perimeter&lt;/pre&gt;
@@ -61934,7 +61934,7 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 
 </source>
         <translation>&lt;h3&gt;minute()&lt;/h3&gt;
-Возвращает число минут для указанной даты и времени или интервала.
+Функция получения значения минут для даты или числа минут для интервала.
 
 &lt;h4&gt;Синтаксис&lt;/h4&gt;
 &lt;code&gt;minute(datetime)&lt;/code&gt;&lt;br&gt;
@@ -62109,7 +62109,7 @@ Returns tangent of an angle.
      tan(1.0) &amp;rarr; 1.5574077246549&lt;/p&gt;
 </source>
         <translation>&lt;h3&gt;tan()&lt;/h3&gt;
-Возвращает тангенс угла.
+Тангенс угла.
 
 
 &lt;p&gt;&lt;h4&gt;Синтаксис&lt;/h4&gt;
@@ -62238,7 +62238,21 @@ Rounds a number upwards.
 &lt;code&gt;ceil(4.9) &amp;rarr; 5&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;ceil(-4.9) &amp;rarr; -4&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;ceil()&lt;/h3&gt;
+Округляет число в большую сторону.
+
+&lt;h4&gt;Синтаксис&lt;/h4&gt;
+&lt;code&gt;ceil(value)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Аргументы&lt;/h4&gt;
+&lt;code&gt;value&lt;/code&gt; - число.
+&lt;br&gt;
+
+&lt;h4&gt;Пример&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;ceil(4.9) &amp;rarr; 5&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;ceil(-4.9) &amp;rarr; -4&lt;/code&gt;&lt;br&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1466"/>
@@ -62256,7 +62270,20 @@ Converts a string to real number. Nothing changed if a value cannot be converted
 &lt;!-- Show example of function.--&gt;
      toreal(&apos;123.45&apos;) &amp;rarr; 123.45&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;toreal()&lt;/h3&gt;
+Преобразует строку в действительное число. Возвращает исходную строку, если преобразование невозможно (например, при вызове функции с параметром &apos;123asd&apos;). Число округляется до максимально возможной машинной точности.
+
+&lt;p&gt;&lt;h4&gt;Синтаксис&lt;/h4&gt;
+     toreal(&lt;i&gt;string&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Аргументы&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; строка.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Пример&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     toreal(&apos;123.45&apos;) &amp;rarr; 123.45&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1117"/>
@@ -62347,7 +62374,21 @@ Rounds a number downwards.
 &lt;code&gt;floor(4.9) &amp;rarr; 4&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;floor(-4.9) &amp;rarr; -5&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;floor()&lt;/h3&gt;
+Округляет число в меньшую сторону.
+
+&lt;h4&gt;Синтаксис&lt;/h4&gt;
+&lt;code&gt;floor(value)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Аргументы&lt;/h4&gt;
+&lt;code&gt;value&lt;/code&gt; - число.
+&lt;br&gt;
+
+&lt;h4&gt;Пример&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;floor(4.9) &amp;rarr; 4&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;floor(-4.9) &amp;rarr; -5&lt;/code&gt;&lt;br&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1155"/>
@@ -62365,7 +62406,20 @@ Converts a string to integer number. Nothing changed if a value cannot be conver
 &lt;!-- Show example of function.--&gt;
      toint(&apos;123&apos;) &amp;rarr; 123&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;toint()&lt;/h3&gt;
+Преобразует строку в целое число. Возвращает исходную строку, если преобразование невозможно (например, при вызове функции с параметром &apos;123asd&apos;).
+
+&lt;p&gt;&lt;h4&gt;Синтаксис&lt;/h4&gt;
+     toint(&lt;i&gt;string&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Аргументы&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; строка.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Пример&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     toint(&apos;123&apos;) &amp;rarr; 123&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="738"/>
@@ -62409,7 +62463,7 @@ abs(&lt;i&gt;value&lt;/i&gt;)&lt;br&gt;
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;code&gt;abs(-2) &amp;rarr; 2&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation>&lt;h3&gt;abs() function&lt;/h3&gt;
+        <translation>&lt;h3&gt;abs()&lt;/h3&gt;
 Абсолютное значение числа.&lt;br&gt;
 
 
@@ -62470,7 +62524,7 @@ Format a string using supplied arguments.
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;format(&apos;This %1 a %2&apos;,&apos;is&apos;, &apos;test&apos;) &amp;rarr; This is a test&lt;/code&gt;&lt;br&gt;</source>
-        <translation type="unfinished">&lt;h3&gt;format() function&lt;/h3&gt;
+        <translation type="unfinished">&lt;h3&gt;format()&lt;/h3&gt;
 Format a string using supplied arguments. 
 
 &lt;h4&gt;Синтаксис&lt;/h4&gt;
@@ -62506,19 +62560,19 @@ Returns a string representation of a color based on its cyan, magenta, yellow, b
 &lt;!-- Show example of function.--&gt;
      color_cmyka(100,50,0,10,200) &amp;rarr; &apos;0,115,230,200&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;color_cmyka()&lt;/h3&gt;
-Returns a string representation of a color based on its cyan, magenta, yellow, black and alpha (transparency) components
+        <translation>&lt;h3&gt;color_cmyka()&lt;/h3&gt;
+Возвращает строковое представление цвета, заданного в виде значений CMYKA.
 
 &lt;p&gt;&lt;h4&gt;Синтаксис&lt;/h4&gt;
      color_cmyka(&lt;i&gt;cyan, magenta, yellow, black, alpha&lt;/i&gt;)&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;Аргументы&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
-&lt;i&gt;  cyan&lt;/i&gt; &amp;rarr; the cyan component of the color, as a percentage integer value from 0 to 100.&lt;br&gt;
-&lt;i&gt;  magenta&lt;/i&gt; &amp;rarr; the magenta component of the color, as a percentage integer value from 0 to 100.&lt;br&gt;
-&lt;i&gt;  yellow&lt;/i&gt; &amp;rarr; the yellow component of the color, as a percentage integer value from 0 to 100.&lt;br&gt;
-&lt;i&gt;  black&lt;/i&gt; &amp;rarr; the black component of the color, as a percentage integer value from 0 to 100.&lt;br&gt;
-&lt;i&gt;  alpha&lt;/i&gt; &amp;rarr; the alpha component as an integer value from 0 (completely transparent) to 255 (opaque).&lt;br&gt;
+&lt;i&gt;  cyan&lt;/i&gt; &amp;rarr; голубой канал в процентах (0..100).&lt;br&gt;
+&lt;i&gt;  magenta&lt;/i&gt; &amp;rarr; пурпурный канал в процентах (0..100)..&lt;br&gt;
+&lt;i&gt;  yellow&lt;/i&gt; &amp;rarr; жёлтый канал в процентах (0..100).&lt;br&gt;
+&lt;i&gt;  black&lt;/i&gt; &amp;rarr; чёрный канал в процентах (0..100).&lt;br&gt;
+&lt;i&gt;  alpha&lt;/i&gt; &amp;rarr; альфа-канал (0..255).&lt;br&gt;
 
 &lt;p&gt;&lt;h4&gt;Пример&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -62577,19 +62631,17 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;month(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 4.033...&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;month()&lt;/h3&gt;
-Extract the month part from a date, or the number of months
-from a &lt;code&gt;Interval&lt;/code&gt;
+        <translation>&lt;h3&gt;month()&lt;/h3&gt;
+Функция получения значения месяца для даты или числа месяцев для интервала.
 
 &lt;h4&gt;Синтаксис&lt;/h4&gt;
 &lt;code&gt;month(date)&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;month(Interval)&lt;/code&gt;&lt;br&gt;
 
 &lt;h4&gt;Аргументы&lt;/h4&gt;
-&lt;code&gt;date&lt;/code&gt; - is date or datetime. The date to extract the month from.
+&lt;code&gt;date&lt;/code&gt; - дата или дата и время.
 &lt;br&gt;
-&lt;code&gt;Interval&lt;/code&gt; - is Interval. The Interval to return the number of months from.
-
+&lt;code&gt;Interval&lt;/code&gt; - интервал.
 &lt;h4&gt;Пример&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;month(&apos;2012-05-12&apos;) &amp;rarr; 05&lt;/code&gt;&lt;br&gt;
@@ -62690,15 +62742,15 @@ This function can take any number of arguments.
  else the value of &quot;fallbackField&quot; or the string &apos;ERROR&apos; if both are NULL&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;coalesce() function&lt;/h3&gt;
-Returns the first non-NULL value from the expression list.
+        <translation>&lt;h3&gt;coalesce()&lt;/h3&gt;
+Возвращает первое значение из списка, не равное NULL.
 &lt;br&gt;
-This function can take any number of arguments.
+При вызове функции допускается любое число аргументов.
 &lt;h4&gt;Синтаксис&lt;/h4&gt;
 &lt;code&gt;coalesce(expression1, expression2 ...)&lt;/code&gt;&lt;br&gt;
 
 &lt;h4&gt;Аргументы&lt;/h4&gt;
-&lt;code&gt;expression&lt;/code&gt; - any valid expression or value, irregardless of type.
+&lt;code&gt;expression&lt;/code&gt; - любое действительное выражение или значение любого типа.
 &lt;br&gt;
 
 &lt;h4&gt;Пример&lt;/h4&gt;
@@ -62706,8 +62758,7 @@ This function can take any number of arguments.
 &lt;code&gt;coalesce(NULL, 2) &amp;rarr; 2&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;coalesce(NULL, 2, 3) &amp;rarr; 2&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;coalesce(7, NULL, 3*2) &amp;rarr; 7&lt;/code&gt;&lt;br&gt;&lt;br&gt;
-&lt;code&gt;coalesce(&quot;fieldA&quot;, &quot;fallbackField&quot;, &apos;ERROR&apos;) &amp;rarr; value of fieldA if it is non-NULL
- else the value of &quot;fallbackField&quot; or the string &apos;ERROR&apos; if both are NULL&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;coalesce(&quot;fieldA&quot;, &quot;fallbackField&quot;, &apos;ERROR&apos;) &amp;rarr; значение fieldA, если не равно NULL, иначе значение fallbackField или &apos;ERROR&apos; если оба поля содержат NULL.&lt;/code&gt;&lt;br&gt;
 
 </translation>
     </message>
@@ -62832,17 +62883,17 @@ Returns a string representation of a color based on its hue, saturation, and val
 &lt;!-- Show example of function.--&gt;
      color_hsv(40,100,100) &amp;rarr; &apos;#ffaa00&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;color_hsv()&lt;/h3&gt;
-Returns a string representation of a color based on its hue, saturation, and value attributes
+        <translation>&lt;h3&gt;color_hsv()&lt;/h3&gt;
+Возвращает строковое представление цвета, заданного в виде значений HSV.
 
 &lt;p&gt;&lt;h4&gt;Синтаксис&lt;/h4&gt;
      color_hsv(&lt;i&gt;hue, saturation, value&lt;/i&gt;)&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;Аргументы&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
-&lt;i&gt;  hue&lt;/i&gt; &amp;rarr; the hue of the color, as an integer value from 0 to 360.&lt;br&gt;
-&lt;i&gt;  saturation&lt;/i&gt; &amp;rarr; the saturation percentage of the color as an integer value from 0 to 100.&lt;br&gt;
-&lt;i&gt;  value&lt;/i&gt; &amp;rarr; the value percentage of the color as an integer from 0 to 100.&lt;br&gt;
+&lt;i&gt;  hue&lt;/i&gt; &amp;rarr; тон (0..360).&lt;br&gt;
+&lt;i&gt;  saturation&lt;/i&gt; &amp;rarr; насыщенность (0..100).&lt;br&gt;
+&lt;i&gt;  value&lt;/i&gt; &amp;rarr; значение (0..100).&lt;br&gt;
 
 &lt;p&gt;&lt;h4&gt;Пример&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -62864,14 +62915,14 @@ Convert a string into Qt data time type.
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;todatetime(&apos;2012-05-04 12:50:00&apos;) &amp;rarr; 2012-05-04T12:50:00&lt;/code&gt;&lt;br&gt;</source>
-        <translation type="unfinished">&lt;h3&gt;todatetime() function&lt;/h3&gt;
-Convert a string into Qt data time type.
+        <translation>&lt;h3&gt;todatetime()&lt;/h3&gt;
+Преобразует строку в дату и время Qt.
 
 &lt;h4&gt;Синтаксис&lt;/h4&gt;
 &lt;code&gt;todatetime(&apos;string&apos;)&lt;/code&gt;&lt;br&gt;
 
 &lt;h4&gt;Аргументы&lt;/h4&gt;
-&lt;code&gt;string&lt;/code&gt; - is string in Qt date time format.
+&lt;code&gt;string&lt;/code&gt; - строка в формате даты и времени Qt.
 &lt;br&gt;
 
 &lt;h4&gt;Пример&lt;/h4&gt;
@@ -62900,18 +62951,17 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;week(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 104.285...&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;week()&lt;/h3&gt;
-Extract the week number from a date, or the number of weeks
-from a &lt;code&gt;Interval&lt;/code&gt;
+        <translation>&lt;h3&gt;week()&lt;/h3&gt;
+Функция получения значения недели для даты или числа недель для интервала.
 
 &lt;h4&gt;Синтаксис&lt;/h4&gt;
 &lt;code&gt;week(date)&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;week(Interval)&lt;/code&gt;&lt;br&gt;
 
 &lt;h4&gt;Аргументы&lt;/h4&gt;
-&lt;code&gt;date&lt;/code&gt; - is date or datetime. The date to extract the week from.
+&lt;code&gt;date&lt;/code&gt; - дата или дата и время.
 &lt;br&gt;
-&lt;code&gt;Interval&lt;/code&gt; - is Interval. The Interval to return the number of weeks from.
+&lt;code&gt;Interval&lt;/code&gt; - интервал.
 
 &lt;h4&gt;Пример&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -63089,18 +63139,18 @@ Returns a string representation of a color based on its cyan, magenta, yellow an
 &lt;!-- Show example of function.--&gt;
      color_cmyk(100,50,0,10) &amp;rarr; &apos;#0073e6&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;color_cmyk()&lt;/h3&gt;
-Returns a string representation of a color based on its cyan, magenta, yellow and black components
+        <translation>&lt;h3&gt;color_cmyk()&lt;/h3&gt;
+Возвращает строковое представление цвета, заданного в виде значений CMYK.
 
 &lt;p&gt;&lt;h4&gt;Синтаксис&lt;/h4&gt;
      color_cmyk(&lt;i&gt;cyan, magenta, yellow, black&lt;/i&gt;)&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;Аргументы&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
-&lt;i&gt;  cyan&lt;/i&gt; &amp;rarr; the cyan component of the color, as a percentage integer value from 0 to 100.&lt;br&gt;
-&lt;i&gt;  magenta&lt;/i&gt; &amp;rarr; the magenta component of the color, as a percentage integer value from 0 to 100.&lt;br&gt;
-&lt;i&gt;  yellow&lt;/i&gt; &amp;rarr; the yellow component of the color, as a percentage integer value from 0 to 100.&lt;br&gt;
-&lt;i&gt;  black&lt;/i&gt; &amp;rarr; the black component of the color, as a percentage integer value from 0 to 100.&lt;br&gt;
+&lt;i&gt;  cyan&lt;/i&gt; &amp;rarr; голубой канал в процентах (0..100).&lt;br&gt;
+&lt;i&gt;  magenta&lt;/i&gt; &amp;rarr; пурпурный канал в процентах (0..100)..&lt;br&gt;
+&lt;i&gt;  yellow&lt;/i&gt; &amp;rarr; жёлтый канал в процентах (0..100).&lt;br&gt;
+&lt;i&gt;  black&lt;/i&gt; &amp;rarr; чёрный канал в процентах (0..100).&lt;br&gt;
 
 &lt;p&gt;&lt;h4&gt;Пример&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -63375,15 +63425,15 @@ Returns the smallest value in a set of values.
 &lt;!-- Show example of function.--&gt;
      min(20.5,10,6.2) &amp;rarr; 6.2
 </source>
-        <translation type="unfinished">&lt;h3&gt;min() function&lt;/h3&gt;
-Returns the smallest value in a set of values.
+        <translation>&lt;h3&gt;min()&lt;/h3&gt;
+Возвращает наименьшее значение среди аргументов.
 
 &lt;h4&gt;Синтаксис&lt;/h4&gt;
      min(&lt;i&gt;value&lt;i&gt;[,&lt;i&gt;value&lt;/i&gt;...])
 
 &lt;h4&gt;Аргументы&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
-&lt;i&gt;  value&lt;/i&gt; &amp;rarr; a number.&lt;br&gt;
+&lt;i&gt;  value&lt;/i&gt; &amp;rarr; число.&lt;br&gt;
 
 &lt;h4&gt;Пример&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -63443,18 +63493,18 @@ Returns a string representation of a color based on its hue, saturation, lightne
 &lt;!-- Show example of function.--&gt;
      color_hsla(100,50,70,200) &amp;rarr; &apos;166,217,140,200&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;color_hsla()&lt;/h3&gt;
-Returns a string representation of a color based on its hue, saturation, lightness and alpha (transparency) attributes
+        <translation>&lt;h3&gt;color_hsla()&lt;/h3&gt;
+Возвращает строковое представление цвета, заданного в виде значений HSLA.
 
 &lt;p&gt;&lt;h4&gt;Синтаксис&lt;/h4&gt;
      color_hsla(&lt;i&gt;hue, saturation, lightness, alpha&lt;/i&gt;)&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;Аргументы&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
-&lt;i&gt;  hue&lt;/i&gt; &amp;rarr; the hue of the color, as an integer value from 0 to 360.&lt;br&gt;
-&lt;i&gt;  saturation&lt;/i&gt; &amp;rarr; the saturation percentage of the color as an integer value from 0 to 100.&lt;br&gt;
-&lt;i&gt;  lightness&lt;/i&gt; &amp;rarr; the lightness percentage of the color as an integer value from 0 to 100.&lt;br&gt;
-&lt;i&gt;  alpha&lt;/i&gt; &amp;rarr; the alpha component as an integer value from 0 (completely transparent) to 255 (opaque).&lt;br&gt;
+&lt;i&gt;  hue&lt;/i&gt; &amp;rarr; тон (0..360).&lt;br&gt;
+&lt;i&gt;  saturation&lt;/i&gt; &amp;rarr; насыщенность (0..100).&lt;br&gt;
+&lt;i&gt;  lightness&lt;/i&gt; &amp;rarr; светлота (0..100).&lt;br&gt;
+&lt;i&gt;  alpha&lt;/i&gt; &amp;rarr; альфа-канал (0..255).&lt;br&gt;
 
 &lt;p&gt;&lt;h4&gt;Пример&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -63508,7 +63558,7 @@ Returns arcussinus of a value in radians.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      asin(1.0) &amp;rarr; 1.5707963267949&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;asin()&lt;/h3&gt;
+        <translation>&lt;h3&gt;asin()&lt;/h3&gt;
 Возвращает арксинус угла в радианах.
 
 
@@ -63544,17 +63594,17 @@ Restricts an input value to a specified range.
      
      
 </source>
-        <translation type="unfinished">&lt;h3&gt;clamp()&lt;/h3&gt;
-Restricts an input value to a specified range.
+        <translation>&lt;h3&gt;clamp()&lt;/h3&gt;
+Возвращает значение, вписанное в указанный диапазон.
 
 &lt;p&gt;&lt;h4&gt;Синтаксис&lt;/h4&gt;
      clamp(&lt;i&gt;minimum&lt;/i&gt;,&lt;i&gt;input&lt;/i&gt;,&lt;i&gt;maximum&lt;/i&gt;)&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;Аргументы&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
-&lt;i&gt;  minimum&lt;/i&gt; &amp;rarr; The smallest value &lt;i&gt;input&lt;/i&gt; is allowed to take.&lt;br&gt;
-&lt;i&gt;  input&lt;/i&gt; &amp;rarr; a value which will be restricted to the range specified by &lt;i&gt;minimum&lt;/i&gt; and &lt;i&gt;maximum&lt;/i&gt;.&lt;br&gt;
-&lt;i&gt;  maximum&lt;/i&gt; &amp;rarr; The largest value &lt;i&gt;input&lt;/i&gt; is allowed to take.&lt;br&gt;
+&lt;i&gt;  minimum&lt;/i&gt; &amp;rarr; Нижняя граница диапазона для &lt;i&gt;input&lt;/i&gt;.&lt;br&gt;
+&lt;i&gt;  input&lt;/i&gt; &amp;rarr; значение, которое будет вписано в диапазон, заданный параметрами &lt;i&gt;minimum&lt;/i&gt; и &lt;i&gt;maximum&lt;/i&gt;.&lt;br&gt;
+&lt;i&gt;  maximum&lt;/i&gt; &amp;rarr; Верхняя граница диапазона для &lt;i&gt;input&lt;/i&gt;.&lt;br&gt;
 
 &lt;h4&gt;Пример&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -63610,7 +63660,7 @@ None
 
 </source>
         <translation>&lt;h3&gt;$x&lt;/h3&gt;
-Возвращает X-координату текущего объекта.
+X-координата текущего объекта.
 
 &lt;h4&gt;Синтаксис&lt;/h4&gt;
 &lt;pre&gt;$x&lt;/pre&gt;
@@ -63875,7 +63925,7 @@ Format a date type or string into a custom string format. Uses Qt data time form
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;format_date(&apos;2012-05-15&apos;,&apos;dd.mm.yyyy&apos;) &amp;rarr; 15.05.2012&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;format_date() function&lt;/h3&gt;
+        <translation type="unfinished">&lt;h3&gt;format_date()&lt;/h3&gt;
 Format a date type or string into a custom string format. Uses Qt data time format strings.  See &lt;a href=&apos;http://qt-project.org/doc/qt-4.8/qdatetime.html#toString&apos;&gt;QDateTime::toString&lt;/a&gt;
 
 &lt;h4&gt;Синтаксис&lt;/h4&gt;
@@ -64067,7 +64117,7 @@ None
 
 </source>
         <translation>&lt;h3&gt;$now&lt;/h3&gt;
-Возвращает текущую дату и время
+Текущая дата и время
 
 &lt;h4&gt;Синтаксис&lt;/h4&gt;
 &lt;pre&gt;$now&lt;/pre&gt;
@@ -64169,18 +64219,17 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;day(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 730&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;day() function&lt;/h3&gt;
-Extract the day from a date, or the number of days
-from a &lt;code&gt;Interval&lt;/code&gt;
+        <translation>&lt;h3&gt;day()&lt;/h3&gt;
+Функция получения значения дня для даты или числа дней для интервала.
 
 &lt;h4&gt;Синтаксис&lt;/h4&gt;
 &lt;code&gt;day(date)&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;day(Interval)&lt;/code&gt;&lt;br&gt;
 
 &lt;h4&gt;Аргументы&lt;/h4&gt;
-&lt;code&gt;date&lt;/code&gt; - is date or datetime. The date to extract the day from.
+&lt;code&gt;date&lt;/code&gt; - дата или дата и время.
 &lt;br&gt;
-&lt;code&gt;Interval&lt;/code&gt; - is Interval. The Interval to return the number of days from.
+&lt;code&gt;Interval&lt;/code&gt; - интервал.
 
 &lt;h4&gt;Пример&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -64205,15 +64254,15 @@ Returns exponential of an value.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      exp(1.0) &amp;rarr; 2.71828182845905&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;exp() function&lt;/h3&gt;
-Returns exponential of an value.
+        <translation>&lt;h3&gt;exp()&lt;/h3&gt;
+Возвращает экспоненту аргумента.
 
 
 &lt;p&gt;&lt;h4&gt;Синтаксис&lt;/h4&gt;
      exp(&lt;i&gt;real&lt;/i&gt;)&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;Аргументы&lt;/h4&gt;
-&lt;i&gt;real&lt;/i&gt; &amp;rarr; number.&lt;/p&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; число.&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;Пример&lt;/h4&gt;
      exp(1.0) &amp;rarr; 2.71828182845905&lt;/p&gt;
@@ -64267,18 +64316,19 @@ Returns a string representation of a color based on its hue, saturation, value a
 &lt;!-- Show example of function.--&gt;
      color_hsva(40,100,100,200) &amp;rarr; &apos;255,170,0,200&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;color_hsva()&lt;/h3&gt;
-Returns a string representation of a color based on its hue, saturation, value and alpha (transparency) attributes
+        <translation>&lt;h3&gt;color_hsva()&lt;/h3&gt;
+Возвращает строковое представление цвета, заданного в виде значений HSVA.
+
 
 &lt;p&gt;&lt;h4&gt;Синтаксис&lt;/h4&gt;
      color_hsva(&lt;i&gt;hue, saturation, value, alpha&lt;/i&gt;)&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;Аргументы&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
-&lt;i&gt;  hue&lt;/i&gt; &amp;rarr; the hue of the color, as an integer value from 0 to 360.&lt;br&gt;
-&lt;i&gt;  saturation&lt;/i&gt; &amp;rarr; the saturation percentage of the color as an integer value from 0 to 100.&lt;br&gt;
-&lt;i&gt;  value&lt;/i&gt; &amp;rarr; the value percentage of the color as an integer from 0 to 100.&lt;br&gt;
-&lt;i&gt;  alpha&lt;/i&gt; &amp;rarr; the alpha component as an integer value from 0 (completely transparent) to 255 (opaque).&lt;br&gt;
+&lt;i&gt;  hue&lt;/i&gt; &amp;rarr; тон (0..360).&lt;br&gt;
+&lt;i&gt;  saturation&lt;/i&gt; &amp;rarr; насыщенность (0..100).&lt;br&gt;
+&lt;i&gt;  value&lt;/i&gt; &amp;rarr; значение (0..100).&lt;br&gt;
+&lt;i&gt;  alpha&lt;/i&gt; &amp;rarr;  альфа-канал (0..255).&lt;br&gt;
 
 &lt;p&gt;&lt;h4&gt;Пример&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -64371,14 +64421,14 @@ Convert a string into Qt time type.
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;totime(&apos;12:30:01&apos;) &amp;rarr; 12:30:01&lt;/code&gt;&lt;br&gt;</source>
-        <translation type="unfinished">&lt;h3&gt;totime()&lt;/h3&gt;
-Convert a string into Qt time type.
+        <translation>&lt;h3&gt;totime()&lt;/h3&gt;
+Преобразует строку во время Qt.
 
 &lt;h4&gt;Синтаксис&lt;/h4&gt;
 &lt;code&gt;totime(&apos;string&apos;)&lt;/code&gt;&lt;br&gt;
 
 &lt;h4&gt;Аргументы&lt;/h4&gt;
-&lt;code&gt;string&lt;/code&gt; - is string in Qt time format.
+&lt;code&gt;string&lt;/code&gt; - строка в формате времени Qt.
 &lt;br&gt;
 
 &lt;h4&gt;Пример&lt;/h4&gt;
@@ -64401,15 +64451,15 @@ Returns the largest value in a set of values.
 &lt;!-- Show example of function.--&gt;
      max(2,10.2,5.5) &amp;rarr; 10.2
 </source>
-        <translation type="unfinished">&lt;h3&gt;max() function&lt;/h3&gt;
-Returns the largest value in a set of values.
+        <translation>&lt;h3&gt;max()&lt;/h3&gt;
+Возвращает наибольшее значение среди аргументов.
 
 &lt;h4&gt;Синтаксис&lt;/h4&gt;
      max(&lt;i&gt;value&lt;i&gt;[,&lt;i&gt;value&lt;/i&gt;...])
 
 &lt;h4&gt;Аргументы&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
-&lt;i&gt;  value&lt;/i&gt; &amp;rarr; a number.&lt;br&gt;
+&lt;i&gt;  value&lt;/i&gt; &amp;rarr; число.&lt;br&gt;
 
 &lt;h4&gt;Пример&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -64431,7 +64481,7 @@ Returns arcuscosinus of a value in radians.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      acos(0.5) &amp;rarr; 1.0471975511966&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;acos()&lt;/h3&gt;
+        <translation>&lt;h3&gt;acos()&lt;/h3&gt;
 Возвращает арккосинус угла в радианах.
 
 
@@ -64496,16 +64546,15 @@ arguments to determine the quadrant of the result
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      atan2(1.0, 1.732) &amp;rarr; 0.523611477769969&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;atan2()&lt;/h3&gt;
-Returns arcustangens of y/x using the signs of the two 
-arguments to determine the quadrant of the result
+        <translation>&lt;h3&gt;atan2()&lt;/h3&gt;
+Возвращает арктангенс угла, тангенс которого равен y/x. Квадрант результата определяется знаками аргументов.
 
 &lt;p&gt;&lt;h4&gt;Синтаксис&lt;/h4&gt;
      atan2(&lt;i&gt;real&lt;/i&gt;, &lt;i&gt;real&lt;/i&gt;)&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;Аргументы&lt;/h4&gt;
-&lt;i&gt;real&lt;/i&gt; &amp;rarr; y coordinate difference&lt;br&gt;
-&lt;i&gt;real&lt;/i&gt; &amp;rarr; x coordinate difference&lt;/p&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; y-координата&lt;br&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; y-координата&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;Пример&lt;/h4&gt;
      atan2(1.0, 1.732) &amp;rarr; 0.523611477769969&lt;/p&gt;
@@ -64530,17 +64579,15 @@ This function takes two arguments.
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;rand(1, 10) &amp;rarr; 8&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;rand() function&lt;/h3&gt;
-Returns a random integer within the range specified by the minimum and 
-maximum argument (inclusive).
-&lt;br&gt;
-This function takes two arguments.
+        <translation>&lt;h3&gt;rand()&lt;/h3&gt;
+Возвращает случайное целое число в указанных пределах (включительно).
+
 &lt;h4&gt;Синтаксис&lt;/h4&gt;
 &lt;code&gt;rand(min, max)&lt;/code&gt;&lt;br&gt;
 
 &lt;h4&gt;Аргументы&lt;/h4&gt;
-&lt;code&gt;min&lt;/code&gt; - an integer representing the smallest possible random number desired.&lt;br&gt;
-&lt;code&gt;max&lt;/code&gt; - an integer representing the largest possible random number desired.
+&lt;code&gt;min&lt;/code&gt; - наименьшее возможное случайное число.&lt;br&gt;
+&lt;code&gt;max&lt;/code&gt; - наибольшее возможное случайное число.
 &lt;br&gt;
 
 &lt;h4&gt;Пример&lt;/h4&gt;
@@ -64626,7 +64673,7 @@ None
 
 </source>
         <translation>&lt;h3&gt;$page&lt;/h3&gt;
-Возвращает номер текущей страницы в макете.
+Номер текущей страницы в макете.
 
 &lt;h4&gt;Синтаксис&lt;/h4&gt;
 &lt;pre&gt;$page&lt;/pre&gt;
@@ -64662,18 +64709,17 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;second(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 63072000&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;second() function&lt;/h3&gt;
-Extract the seconds from a datetime or time, or the number of seconds
-from a &lt;code&gt;Interval&lt;/code&gt;
+        <translation>&lt;h3&gt;second()&lt;/h3&gt;
+Функция получения значения секунд для даты или числа секунд для интервала.
 
 &lt;h4&gt;Синтаксис&lt;/h4&gt;
 &lt;code&gt;second(datetime)&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;second(Interval)&lt;/code&gt;&lt;br&gt;
 
 &lt;h4&gt;Аргументы&lt;/h4&gt;
-&lt;code&gt;date&lt;/code&gt; - is datetime or time. The date to extract the second from.
+&lt;code&gt;date&lt;/code&gt; - дата или дата и время.
 &lt;br&gt;
-&lt;code&gt;Interval&lt;/code&gt; - is Interval. The Interval to return the number of seconds from.
+&lt;code&gt;Interval&lt;/code&gt; - интервал.
 
 &lt;h4&gt;Пример&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -64700,7 +64746,7 @@ None
 
 </source>
         <translation>&lt;h3&gt;$y&lt;/h3&gt;
-Возвращает Y-координату текущего объекта.
+Y-координата текущего объекта.
 
 &lt;h4&gt;Синтаксис&lt;/h4&gt;
 &lt;pre&gt;$y&lt;/pre&gt;
@@ -64728,15 +64774,15 @@ Returns cosinus of an angle.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      cos(1.571) &amp;rarr; 0.000796326710733263&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;cos() function&lt;/h3&gt;
-Returns cosinus of an angle.
+        <translation>&lt;h3&gt;cos()&lt;/h3&gt;
+Косинус угла.
 
 
 &lt;p&gt;&lt;h4&gt;Синтаксис&lt;/h4&gt;
      cos(&lt;i&gt;real&lt;/i&gt;)&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;Аргументы&lt;/h4&gt;
-&lt;i&gt;real&lt;/i&gt; &amp;rarr; angle in radians.&lt;/p&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; угол в радианах.&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;Пример&lt;/h4&gt;
      cos(1.571) &amp;rarr; 0.000796326710733263&lt;/p&gt;
@@ -64761,7 +64807,7 @@ This function takes two arguments.
 &lt;code&gt;log(2, 32) &amp;rarr; 5&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;log(0.5, 32) &amp;rarr; -5&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;log() function&lt;/h3&gt;
+        <translation type="unfinished">&lt;h3&gt;log()&lt;/h3&gt;
 Returns the value of the logarithm of the passed value and base.
 &lt;br&gt;
 This function takes two arguments.
@@ -64795,7 +64841,7 @@ Returns sinus of an angle.
      sin(1.571) &amp;rarr; 0.999999682931835&lt;/p&gt;
 </source>
         <translation>&lt;h3&gt;sin()&lt;/h3&gt;
-Возвращает синус угла.
+Синус угла.
 
 
 &lt;p&gt;&lt;h4&gt;Синтаксис&lt;/h4&gt;
@@ -64905,17 +64951,17 @@ Returns a string representation of a color based on its hue, saturation, and lig
 &lt;!-- Show example of function.--&gt;
      color_hsl(100,50,70) &amp;rarr; &apos;#a6d98c&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;color_hsl()&lt;/h3&gt;
-Returns a string representation of a color based on its hue, saturation, and lightness attributes
+        <translation>&lt;h3&gt;color_hsl()&lt;/h3&gt;
+Возвращает строковое представление цвета, заданного в виде значений HSL.
 
 &lt;p&gt;&lt;h4&gt;Синтаксис&lt;/h4&gt;
      color_hsl(&lt;i&gt;hue, saturation, lightness&lt;/i&gt;)&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;Аргументы&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
-&lt;i&gt;  hue&lt;/i&gt; &amp;rarr; the hue of the color, as an integer value from 0 to 360.&lt;br&gt;
-&lt;i&gt;  saturation&lt;/i&gt; &amp;rarr; the saturation percentage of the color as an integer value from 0 to 100.&lt;br&gt;
-&lt;i&gt;  lightness&lt;/i&gt; &amp;rarr; the lightness percentage of the color as an integer value from 0 to 100.&lt;br&gt;
+&lt;i&gt;  hue&lt;/i&gt; &amp;rarr; тон (0..360).&lt;br&gt;
+&lt;i&gt;  saturation&lt;/i&gt; &amp;rarr; насыщенность (0..100).&lt;br&gt;
+&lt;i&gt;  lightness&lt;/i&gt; &amp;rarr; светлота (0..100).&lt;br&gt;
 
 &lt;p&gt;&lt;h4&gt;Пример&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -64941,17 +64987,17 @@ Returns a string representation of a color based on its red, green, and blue com
 &lt;!-- Show example of function.--&gt;
      color_rgb(255,127,0) &amp;rarr; &apos;#ff7f00&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;color_rgb()&lt;/h3&gt;
-Returns a string representation of a color based on its red, green, and blue components
+        <translation>&lt;h3&gt;color_rgb()&lt;/h3&gt;
+Возвращает строковое представление цвета, заданного в виде значений RGB.
 
 &lt;p&gt;&lt;h4&gt;Синтаксис&lt;/h4&gt;
      color_rgb(&lt;i&gt;red, green, blue&lt;/i&gt;)&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;Аргументы&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
-&lt;i&gt;  red&lt;/i&gt; &amp;rarr; the red component as an integer value from 0 to 255.&lt;br&gt;
-&lt;i&gt;  green&lt;/i&gt; &amp;rarr; the green component as an integer value from 0 to 255.&lt;br&gt;
-&lt;i&gt;  blue&lt;/i&gt; &amp;rarr; the blue component as an integer value from 0 to 255.&lt;br&gt;
+&lt;i&gt;  red&lt;/i&gt; &amp;rarr; красный канал (0..255).&lt;br&gt;
+&lt;i&gt;  green&lt;/i&gt; &amp;rarr; зелёный канал (0..255).&lt;br&gt;
+&lt;i&gt;  blue&lt;/i&gt; &amp;rarr; синий канал (0..255).&lt;br&gt;
 
 &lt;p&gt;&lt;h4&gt;Пример&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -64978,7 +65024,7 @@ This function takes two arguments.
 &lt;code&gt;randf(1, 10) &amp;rarr; 4.59258286403147&lt;/code&gt;&lt;br&gt;
 </source>
         <translation>&lt;h3&gt;randf()&lt;/h3&gt;
-Возвращает случайное число в указанных пределах (включительно).
+Возвращает случайное число с плавающей точкой в указанных пределах (включительно).
 
 &lt;p&gt;&lt;h4&gt;Синтаксис&lt;/h4&gt;
 &lt;code&gt;randf(min, max)&lt;/code&gt;&lt;br&gt;
@@ -65078,7 +65124,7 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 
 </source>
         <translation>&lt;h3&gt;hour()&lt;/h3&gt;
-Возвращает число минут для указанной даты и времени или интервала.
+Функция получения значения часов для даты или числа часов для интервала.
 
 &lt;h4&gt;Синтаксис&lt;/h4&gt;
 &lt;code&gt;hour(datetime)&lt;/code&gt;&lt;br&gt;
