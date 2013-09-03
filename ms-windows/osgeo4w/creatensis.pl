@@ -155,7 +155,7 @@ chdir "..";
 if( -d $unpacked ) {
 	unless( $keep ) {
 		print "Removing $unpacked directory\n" if $verbose;
-		system "echo rm -rf $unpacked";
+		system "rm -rf $unpacked";
 	} else {
 		print "Keeping $unpacked directory\n" if $verbose;
 	}
