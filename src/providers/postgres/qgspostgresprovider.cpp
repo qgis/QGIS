@@ -1779,7 +1779,8 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
     mConnectionRW->PQexecNR( "DEALLOCATE addfeatures" );
     mConnectionRW->PQexecNR( "COMMIT" );
 
-    mFeaturesCounted += flist.size();
+    if ( mFeaturesCounted >= 0 )
+      mFeaturesCounted += flist.size();
   }
   catch ( PGException &e )
   {
@@ -1835,8 +1836,8 @@ bool QgsPostgresProvider::deleteFeatures( const QgsFeatureIds & id )
       dropOrphanedTopoGeoms();
     }
 
-
-    mFeaturesCounted -= id.size();
+    if ( mFeaturesCounted >= 0 )
+      mFeaturesCounted -= id.size();
   }
   catch ( PGException &e )
   {
