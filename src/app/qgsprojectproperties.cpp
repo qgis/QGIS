@@ -814,24 +814,37 @@ void QgsProjectProperties::on_cbxProjectionEnabled_toggled( bool onFlyEnabled )
   QString unitsOnFlyState = tr( "Canvas units (CRS transformation: %1)" );
   if ( !onFlyEnabled )
   {
-    QgsMapRenderer* myRenderer = mMapCanvas->mapRenderer();
-    mProjectSrsId = myRenderer->destinationCrs().srsid();
+    // reset projection to default
+    const QMap<QString, QgsMapLayer*> &mapLayers = QgsMapLayerRegistry::instance()->mapLayers();
+
+    if ( mMapCanvas->currentLayer() )
+    {
+      mLayerSrsId = mMapCanvas->currentLayer()->crs().srsid();
+    }
+    else if ( mapLayers.size() > 0 )
+    {
+      mLayerSrsId = mapLayers.begin().value()->crs().srsid();
+    }
+    else
+    {
+      mLayerSrsId = mProjectSrsId;
+    }
+    mProjectSrsId = mLayerSrsId;
     projectionSelector->setSelectedCrsId( mLayerSrsId );
+
+    QgsCoordinateReferenceSystem srs( mLayerSrsId, QgsCoordinateReferenceSystem::InternalCrsId );
+    //set radio button to crs map unit type
+    QGis::UnitType units = srs.mapUnits();
+
+    radMeters->setChecked( units == QGis::Meters );
+    radFeet->setChecked( units == QGis::Feet );
+    radDegrees->setChecked( units == QGis::Degrees );
+
+    // unset ellipsoid
+    mEllipsoidIndex = 0;
 
     btnGrpMeasureEllipsoid->setTitle( measureOnFlyState.arg( tr( "OFF" ) ) );
     btnGrpMapUnits->setTitle( unitsOnFlyState.arg( tr( "OFF" ) ) );
-
-    spinBoxDP->setValue( QgsProject::instance()->readNumEntry( "PositionPrecision", "/DecimalPlaces" ) );
-
-    QString format = QgsProject::instance()->readEntry( "PositionPrecision", "/DegreeFormat", "D" );
-    if ( format == "DM" )
-      radDM->setChecked( true );
-    else if ( format == "DMS" )
-      radDMS->setChecked( true );
-    else
-      radD->setChecked( true );
-
-    mEllipsoidIndex = 0;
   }
   else
   {
