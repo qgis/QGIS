@@ -65744,7 +65744,19 @@ None
 &lt;pre&gt;$rownum &amp;rarr; 4711&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja $rownum&lt;/h3&gt;
+Zwraca numer bieżącego wiersza.
+
+&lt;h4&gt;Składnia&lt;/h4&gt;
+&lt;pre&gt;$rownum&lt;/pre&gt;
+
+&lt;h4&gt;Argumenty&lt;/h4&gt;
+None
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;pre&gt;$rownum &amp;rarr; 4711&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="329"/>
@@ -65766,14 +65778,33 @@ Returns a string representation of a color based on its red, green, blue, and al
 &lt;!-- Show example of function.--&gt;
      color_rgba(255,127,0,200) &amp;rarr; &apos;255,127,0,200&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>
+&lt;h3&gt;funkcja color_rgba()&lt;/h3&gt;
+Zwraca reprezentację tekstową koloru w oparciu o jego składowe (czerwona, zielona, niebieska) oraz przezroczystość (kanał alfa).
+
+&lt;p&gt;&lt;h4&gt;Składnia&lt;/h4&gt;
+     color_rgba(&lt;i&gt;czerwony, zielony, niebieski, alfa&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumenty&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  czerwony&lt;/i&gt; &amp;rarr; czerwona składowa w postaci liczby całkowitej od 0 do 255.&lt;br&gt;
+&lt;i&gt;  zielony&lt;/i&gt; &amp;rarr; zielona składowa w postaci liczby całkowitej od 0 do 255.&lt;br&gt;
+&lt;i&gt;  niebieski&lt;/i&gt; &amp;rarr; niebieska składowa w postaci liczby całkowitej od 0 do 255.&lt;br&gt;
+&lt;i&gt;  alfa&lt;/i&gt; &amp;rarr; kanał alfa składowa w postaci liczby całkowitej od 0 (pełna przezroczystość) do 255 (brak przezroczystości)).&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     color_rgba(255,127,0,200) &amp;rarr; &apos;255,127,0,200&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="977"/>
         <source>&lt;h3&gt;Conditionals Group&lt;/h3&gt;
 This group contains functions to handle conditional checks in expressions.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Grupy warunkowe&lt;/h3&gt;
+Te grupy zawierają funkcje do sprawdzania warunków w wyrażeniach.
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="319"/>
@@ -65804,7 +65835,18 @@ None
 &lt;pre&gt;$feature &amp;rarr; 2&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja $feature&lt;/h3&gt;
+Prz generowaniu atlasu,zwraca numer aktuanego obiektu z iteracji.
+
+&lt;h4&gt;Składnia&lt;/h4&gt;
+&lt;pre&gt;$feature&lt;/pre&gt;
+
+&lt;h4&gt;Argumenty&lt;/h4&gt;
+Brak
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;pre&gt;$feature &amp;rarr; 2&lt;/pre&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="46"/>
@@ -65835,7 +65877,19 @@ None
 &lt;pre&gt;$numpages &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja $numpages&lt;/h3&gt;
+Zwraca liczbę stron kompozycji.
+
+&lt;h4&gt;Składnia&lt;/h4&gt;
+&lt;pre&gt;$numpages&lt;/pre&gt;
+
+&lt;h4&gt;Argumenty&lt;/h4&gt;
+Brak
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;pre&gt;$numpages &amp;rarr; 42&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1142"/>
@@ -65852,7 +65906,19 @@ None
 &lt;pre&gt;$perimeter &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funckaj $perimeter&lt;/h3&gt;
+Zwraca długość obwodu aktualnego obiektu.
+
+&lt;h4&gt;Składnia&lt;/h4&gt;
+&lt;pre&gt;$perimeter&lt;/pre&gt;
+
+&lt;h4&gt;Argumenty&lt;/h4&gt;
+None
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;pre&gt;$perimeter &amp;rarr; 42&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="718"/>
@@ -65877,7 +65943,20 @@ Concatenates several strings to one.
 &lt;!-- Show example of function.--&gt;
      concat(&apos;a&apos;,&apos;b&apos;,&apos;c&apos;,&apos;d&apos;,&apos;e&apos;) &amp;rarr; &apos;abcde&apos;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja concat()&lt;/h3&gt;
+Łączy wiele łańcuchów tekstowych w jeden.
+
+&lt;h4&gt;Składnia&lt;/h4&gt;
+     concat(&lt;i&gt;tekst&lt;i&gt;[,&lt;i&gt;tekst&lt;/i&gt;...])
+
+&lt;h4&gt;Argumenty&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  tekst&lt;/i&gt; &amp;rarr; is string.  a string.&lt;br&gt;
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     concat(&apos;a&apos;,&apos;b&apos;,&apos;c&apos;,&apos;d&apos;,&apos;e&apos;) &amp;rarr; &apos;abcde&apos;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="205"/>
@@ -65894,7 +65973,19 @@ Note: This function is only available in some contexts and will be 0 otherwise.
 
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja $scale&lt;/h3&gt;
+Zwraca aktualną skalę obszaru mapy.
+&lt;br&gt;
+Uwaga: Ta funkcja dostępna jest tylko w niektórych kontekstach. W pozostałych zwraca 0. 
+&lt;h4&gt;Składnia&lt;/h4&gt;
+&lt;code&gt;$scale&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;$scale &amp;rarr; 10000&lt;/code&gt;&lt;br&gt;
+
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="157"/>
@@ -66030,7 +66121,19 @@ Returns arcustanget of a value in radians.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      atan(0.5) &amp;rarr; 0.463647609000806&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja atan()&lt;/h3&gt;
+Zaraca arcus tangens wartości w radianach.
+
+
+&lt;p&gt;&lt;h4&gt;Składnia&lt;/h4&gt;
+     atan(&lt;i&gt;liczba rzeczywista&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumenty&lt;/h4&gt;
+&lt;i&gt;wartość rzeczywista&lt;/i&gt; &amp;rarr; tangus kąta.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Przykład&lt;/h4&gt;
+     atan(0.5) &amp;rarr; 0.463647609000806&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="123"/>
@@ -66071,7 +66174,18 @@ None
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;$length &amp;rarr; 42.4711&lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja $length&lt;/h3&gt;
+Zwraca długość aktualnego obiektu.
+
+&lt;h4&gt;Składnia&lt;/h4&gt;
+&lt;pre&gt;$length&lt;/pre&gt;
+
+&lt;h4&gt;Argumenty&lt;/h4&gt;
+Brak
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;pre&gt;$length &amp;rarr; 42.4711&lt;/pre&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1429"/>
@@ -66099,7 +66213,22 @@ This function takes one argument.
 &lt;code&gt;log10(1) &amp;rarr; 0&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;log10(100) &amp;rarr; 2&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja log10()&lt;/h3&gt;
+Zwraca wartość logarytmu o podstawie 10 dla zadanego wyrażenia.
+&lt;br&gt;
+Funkcja pobiera jeden argument.
+&lt;h4&gt;Składnia&lt;/h4&gt;
+&lt;code&gt;log10(wartość)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumenty&lt;/h4&gt;
+&lt;code&gt;wartość&lt;/code&gt; - dowolna liczba dodatnia.
+&lt;br&gt;
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;log10(1) &amp;rarr; 0&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;log10(100) &amp;rarr; 2&lt;/code&gt;&lt;br&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="347"/>
@@ -66119,7 +66248,22 @@ Returns a substring that contains the &lt;i&gt;n&lt;/i&gt; leftmost characters o
 &lt;code&gt;left(&apos;Hello World&apos;,5) &amp;rarr; &apos;Hello&apos;&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja left()&lt;/h3&gt;
+Zwraca fragment tekstu zawierający &lt;i&gt;n&lt;/i&gt; znaków od strony lewej.
+
+&lt;h4&gt;Składnia&lt;/h4&gt;
+&lt;code&gt;left(tekst, długość)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumenty&lt;/h4&gt;
+&lt;code&gt;tekst&lt;/code&gt; - ciąg znaków w postaci tekstu.
+&lt;br&gt;
+&lt;code&gt;długość&lt;/code&gt; - liczba całkowita. Liczba zwracanych liczona od lewej.
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;left(&apos;Hello World&apos;,5) &amp;rarr; &apos;Hello&apos;&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="144"/>
@@ -66136,7 +66280,19 @@ Returns tangent of an angle.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      tan(1.0) &amp;rarr; 1.5574077246549&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja tan()&lt;/h3&gt;
+Zwraca tangens kąta.
+
+
+&lt;p&gt;&lt;h4&gt;Składnia&lt;/h4&gt;
+     tan(&lt;i&gt;liczba rzeczywista&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumenty&lt;/h4&gt;
+&lt;i&gt;liczba rzeczywista&lt;/i&gt; &amp;rarr; kąt w radianach.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Przykład&lt;/h4&gt;
+     tan(1.0) &amp;rarr; 1.5574077246549&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="69"/>
@@ -66152,7 +66308,18 @@ Converts a string to lower case letters.
 &lt;p&gt;&lt;h4&gt;  Example&lt;/h4&gt;
      lower(&apos;HELLO World&apos;) &amp;rarr; &apos;hello world&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja lower()&lt;/h3&gt;
+Zamienia tekst na małe litery.
+
+&lt;p&gt;&lt;h4&gt;Składnia&lt;/h4&gt;
+     lower(&lt;i&gt;tekst&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumenty&lt;/h4&gt;
+&lt;i&gt;tekst&lt;/i&gt; &amp;rarr; ciąg znaków do zamiany na małe litery.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Przykład&lt;/h4&gt;
+     lower(&apos;HELLO World&apos;) &amp;rarr; &apos;hello world&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="818"/>
@@ -66171,7 +66338,21 @@ Rounds a number upwards.
 &lt;code&gt;ceil(4.9) &amp;rarr; 5&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;ceil(-4.9) &amp;rarr; -4&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja ceil()&lt;/h3&gt;
+Zwraca zaokrąglenie liczby w górę.
+
+&lt;h4&gt;Składnia&lt;/h4&gt;
+&lt;code&gt;ceil(wartość)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumenty&lt;/h4&gt;
+&lt;code&gt;wartość&lt;/code&gt; - liczba rzeczywista.
+&lt;br&gt;
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;ceil(4.9) &amp;rarr; 5&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;ceil(-4.9) &amp;rarr; -4&lt;/code&gt;&lt;br&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1466"/>
@@ -66205,7 +66386,18 @@ Retrieves a x coordinate of the current feature
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;xat(1) &amp;rarr; 5&lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja xat()&lt;/h3&gt;
+Zwraca współrzędną x aktualnego obiektu.
+
+&lt;h4&gt;Składnia&lt;/h4&gt;
+&lt;code&gt;xat(i)&lt;/code&gt;
+
+&lt;h4&gt;Argumenty&lt;/h4&gt;
+&lt;code&gt;i&lt;code&gt; - liczba całkowita; numer i-tego wierzchołka segmentu (liczone od 0; wartości ujemne odnoszą się do ostatniego wierzchołka).
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;pre&gt;xat(1) &amp;rarr; 5&lt;/pre&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1100"/>
@@ -66226,7 +66418,22 @@ to.
 &lt;code&gt;format_number(10000000.332,2) &amp;rarr; 10,000,000.33&lt;/code&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja format_number()&lt;/h3&gt;
+Zwraca sformatowaną liczbę wraz z separatorem tysięcznym (zgodnie z ustawieniami lokalnymi). 
+Ogranicza części dziesiętne do zadanej dokładności. 
+&lt;h4&gt;Składnia&lt;/h4&gt;
+&lt;code&gt;format_number(liczba,miejsc_d)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumenty&lt;/h4&gt;
+&lt;code&gt;liczba&lt;/code&gt; - liczba do sformatowania
+&lt;br&gt;
+&lt;code&gt;miejsc_d&lt;/code&gt; - liczba całkowita. Liczba zwracanych miejsc dziesiętnych.
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;format_number(10000000.332,2) &amp;rarr; 10,000,000.33&lt;/code&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1219"/>
@@ -66252,7 +66459,21 @@ Rounds a number downwards.
 &lt;code&gt;floor(4.9) &amp;rarr; 4&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;floor(-4.9) &amp;rarr; -5&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja floor()&lt;/h3&gt;
+Zwraca liczbę po zaokrągleniu w dół.
+
+&lt;h4&gt;Składnia&lt;/h4&gt;
+&lt;code&gt;floor(wartość)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumenty&lt;/h4&gt;
+&lt;code&gt;wartość&lt;/code&gt; - liczba.
+&lt;br&gt;
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;floor(4.9) &amp;rarr; 4&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;floor(-4.9) &amp;rarr; -5&lt;/code&gt;&lt;br&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1155"/>
@@ -66270,7 +66491,20 @@ Converts a string to integer number. Nothing changed if a value cannot be conver
 &lt;!-- Show example of function.--&gt;
      toint(&apos;123&apos;) &amp;rarr; 123&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja toint()&lt;/h3&gt;
+Zamienia tekst na liczbę całkowitą. Nie zamienia tekstu, który nie ma postaci liczby całkowitej (np. &apos;123asd&apos;).
+
+&lt;p&gt;&lt;h4&gt;Składnia&lt;/h4&gt;
+     toint(&lt;i&gt;tekst&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumenty&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  tekst&lt;/i&gt; &amp;rarr; ciąd znaków do zamiany na liczbę całkowitą&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     toint(&apos;123&apos;) &amp;rarr; 123&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="738"/>
@@ -66286,7 +66520,18 @@ Retrieves a y coordinate of the current feature
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;yat(1) &amp;rarr; 5&lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja yat()&lt;/h3&gt;
+Zwraca współrzędną y aktualnego obiektu.
+
+&lt;h4&gt;Składnia&lt;/h4&gt;
+&lt;code&gt;yat(i)&lt;/code&gt;
+
+&lt;h4&gt;Argumenty&lt;/h4&gt;
+&lt;code&gt;i&lt;code&gt; - liczba całkowita; numer i-tego wierzchołka segmentu (liczone od 0; wartości ujemne odnoszą się do ostatniego wierzchołka).
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;pre&gt;yat(1) &amp;rarr; 5&lt;/pre&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="951"/>
@@ -66303,7 +66548,19 @@ abs(&lt;i&gt;value&lt;/i&gt;)&lt;br&gt;
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;code&gt;abs(-2) &amp;rarr; 2&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja abs()&lt;/h3&gt;
+Zwraca wartość absolutną liczby.&lt;br&gt;
+
+
+&lt;h4&gt;Składnia&lt;/h4&gt;
+abs(&lt;i&gt;wartość&lt;/i&gt;)&lt;br&gt;
+
+&lt;h4&gt;Argumenty&lt;/h4&gt;
+&lt;code&gt;wartość&lt;/code&gt; - liczba&lt;br&gt;
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;code&gt;abs(-2) &amp;rarr; 2&lt;/code&gt;&lt;br&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="379"/>
@@ -66321,7 +66578,20 @@ Converts a number to string.
 &lt;!-- Show example of function.--&gt;
      tostring(123) &amp;rarr; &apos;123&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja tostring()&lt;/h3&gt;
+Zamienia liczbę na tekst.
+
+&lt;p&gt;&lt;h4&gt;Składnia&lt;/h4&gt;
+     tostring(&lt;i&gt;liczba&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumenty&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;liczba&lt;/i&gt; &amp;rarr; liczba całkowita lub rzeczywista, która podlega zamianie na tekst&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     tostring(123) &amp;rarr; &apos;123&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="438"/>
@@ -66339,7 +66609,20 @@ Format a string using supplied arguments.
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;format(&apos;This %1 a %2&apos;,&apos;is&apos;, &apos;test&apos;) &amp;rarr; This is a test&lt;/code&gt;&lt;br&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja format()&lt;/h3&gt;
+Formatuje tekst zgodnie z zadanymi argumentami. 
+
+&lt;h4&gt;Składnia&lt;/h4&gt;
+&lt;code&gt;format(&apos;tekst&apos;, arg, [arg...n])&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumenty&lt;/h4&gt;
+&lt;code&gt;tekst&lt;/code&gt; - ciąg znaków z symbolami zastępczymi Qt QString.  Użyj %1, %2, itd. dla każdego z symboli zastępczych. Symbole mogą być powtarzane. 
+&lt;br&gt;
+&lt;code&gt;arg [arg...n]&lt;/code&gt; - dowolny typ. Dowolna liczba argumentów. 
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;format(&apos;This %1 a %2&apos;,&apos;is&apos;, &apos;test&apos;) &amp;rarr; This is a test&lt;/code&gt;&lt;br&gt;</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1529"/>
@@ -66491,7 +66774,19 @@ None
 &lt;pre&gt;$area &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja $area&lt;/h3&gt;
+Zwraca powierzchnię aktualnego obiektu.
+
+&lt;h4&gt;Składnia&lt;/h4&gt;
+&lt;pre&gt;$area&lt;/pre&gt;
+
+&lt;h4&gt;Argumenty&lt;/h4&gt;
+Brak
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;pre&gt;$area &amp;rarr; 42&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1548"/>
@@ -66509,7 +66804,20 @@ Removes all leading and trailing whitespace (spaces, tabs, etc) from a string.
 &lt;!-- Show example of function.--&gt;
      trim(&apos;   hello world    &apos;) &amp;rarr; &apos;hello world&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja trim()&lt;/h3&gt;
+Usuwa wiodące białe znaki (spacje, tabulatory, itp.) z tekstu.
+
+&lt;p&gt;&lt;h4&gt;Składnia&lt;/h4&gt;
+     trim(&lt;i&gt;tekst&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumenty&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  tekst&lt;/i&gt; &amp;rarr; ciąg znaków do wyczyszczenia&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     trim(&apos;   hello world    &apos;) &amp;rarr; &apos;hello world&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="868"/>
@@ -66546,7 +66854,19 @@ Convert a string into Qt data time type.
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;todatetime(&apos;2012-05-04 12:50:00&apos;) &amp;rarr; 2012-05-04T12:50:00&lt;/code&gt;&lt;br&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja todatetime()&lt;/h3&gt;
+Zamienia tekst na typ danych Qt.
+
+&lt;h4&gt;Składnia&lt;/h4&gt;
+&lt;code&gt;todatetime(&apos;tekst&apos;)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumenty&lt;/h4&gt;
+&lt;code&gt;tekst&lt;/code&gt; - tekst w formacie daty/czasu Qt.
+&lt;br&gt;
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;todatetime(&apos;2012-05-04 12:50:00&apos;) &amp;rarr; 2012-05-04T12:50:00&lt;/code&gt;&lt;br&gt;</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="278"/>
@@ -66570,7 +66890,25 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;week(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 104.285...&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja week()&lt;/h3&gt;
+Pobiera numer tygodnia dla daty, lub liczbę tygodni z &lt;code&gt;interwału&lt;/code&gt;
+
+&lt;h4&gt;Składnia&lt;/h4&gt;
+&lt;code&gt;week(data)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;week(interwał)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumenty&lt;/h4&gt;
+&lt;code&gt;data&lt;/code&gt; - data, lub data i czas.
+&lt;br&gt;
+&lt;code&gt;interwał&lt;/code&gt; - interwał do określenia liczby tygodni.
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;week(&apos;2012-05-12&apos;) &amp;rarr; 19&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;week(tointerval(&apos;3 weeks&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;week(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 104.285...&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="94"/>
@@ -66620,7 +66958,19 @@ None
 &lt;pre&gt;$id &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja $id&lt;/h3&gt;
+Zwraca identyfikator obiektu z aktualnego wiersza.
+
+&lt;h4&gt;Składnia&lt;/h4&gt;
+&lt;pre&gt;$id&lt;/pre&gt;
+
+&lt;h4&gt;Argumenty&lt;/h4&gt;
+Brak
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;pre&gt;$id &amp;rarr; 42&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="409"/>
@@ -66640,7 +66990,22 @@ This function takes one argument.
 &lt;code&gt;ln(1) &amp;rarr; 0&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;ln(2.7182818284590452354) &amp;rarr; 1&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja ln()&lt;/h3&gt;
+Zwraca logarytm naturalny z wyrażenia.
+&lt;br&gt;
+Ta funkcja pobiera jeden argument.
+&lt;h4&gt;Składnia&lt;/h4&gt;
+&lt;code&gt;ln(wartość)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumenty&lt;/h4&gt;
+&lt;code&gt;wartość&lt;/code&gt; - dowolna liczba dodatnia.
+&lt;br&gt;
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;ln(1) &amp;rarr; 0&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;ln(2.7182818284590452354) &amp;rarr; 1&lt;/code&gt;&lt;br&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1268"/>
@@ -66664,7 +67029,19 @@ None
 &lt;pre&gt;$numfeatures &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja $numfeatures&lt;/h3&gt;
+Przy generowaniu atlasu zwraca liczbę obiektów w ramach warstwy.
+
+&lt;h4&gt;Składnia&lt;/h4&gt;
+&lt;pre&gt;$numfeatures&lt;/pre&gt;
+
+&lt;h4&gt;Argumenty&lt;/h4&gt;
+Brak
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;pre&gt;$numfeatures &amp;rarr; 42&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1047"/>
@@ -66709,7 +67086,24 @@ using the fill character.
 &lt;code&gt;rpad(&apos;Hello&apos;, 10, &apos;x&apos;) &amp;rarr; &apos;xxxxxHello&apos;&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja rpad()&lt;/h3&gt;
+Zwraca tekst uzupełniony znakami.
+
+&lt;h4&gt;Składnia&lt;/h4&gt;
+&lt;code&gt;rpad(tekst, szerokość, znak)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumenty&lt;/h4&gt;
+&lt;code&gt;tekst&lt;/code&gt; - ciąg znaków.
+&lt;br&gt;
+&lt;code&gt;szerokość&lt;/code&gt; - liczba całkowita odpowiadająca docelowej długości tekstu.
+&lt;br&gt;
+&lt;code&gt;znak&lt;/code&gt; - znak, który uzupełni pozostałą przestrzeń. 
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;rpad(&apos;Hello&apos;, 10, &apos;x&apos;) &amp;rarr; &apos;xxxxxHello&apos;&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1494"/>
@@ -66731,7 +67125,24 @@ using the fill character.
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;lpad(&apos;Hello&apos;, 10, &apos;x&apos;) &amp;rarr; &apos;Helloxxxxx&apos;&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja lpad()&lt;/h3&gt;
+Zwraca tekst uzupełniony znakami.
+
+&lt;h4&gt;Składnia&lt;/h4&gt;
+&lt;code&gt;lpad(tekst, szerokość, znak)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumenty&lt;/h4&gt;
+&lt;code&gt;tekst&lt;/code&gt; - ciąg znaków.
+&lt;br&gt;
+&lt;code&gt;szerokość&lt;/code&gt; - liczba całkowita odpowiadająca docelowej długości tekstu.
+&lt;br&gt;
+&lt;code&gt;znak&lt;/code&gt; - znak, który uzupełni pozostałą przestrzeń. 
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;lpad(&apos;Hello&apos;, 10, &apos;x&apos;) &amp;rarr; Hello&apos;xxxxx&apos;&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1480"/>
@@ -66749,7 +67160,20 @@ Converts a string to upper case letters.
 &lt;!-- Show example of function.--&gt;
      upper(&apos;hello WOrld&apos;) &amp;rarr; &apos;HELLO WORLD&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja upper()&lt;/h3&gt;
+Zamienia tekst na duże litery.
+
+&lt;p&gt;&lt;h4&gt;Składnia&lt;/h4&gt;
+     upper(&lt;i&gt;tekst&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumenty&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  tekst&lt;/i&gt; &amp;rarr; jest ciągiem znaków do zamiany.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;&apos;xxxxx&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     upper(&apos;hello WOrld&apos;) &amp;rarr; &apos;HELLO WORLD&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="406"/>
@@ -66776,7 +67200,22 @@ Returns a substring that contains the &lt;i&gt;n&lt;/i&gt; rightmost characters 
 &lt;code&gt;right(&apos;Hello World&apos;,5) &amp;rarr; &apos;World&apos;&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja right()&lt;/h3&gt;
+Zwraca fragment tekstu zawierający &lt;i&gt;n&lt;/i&gt; prawych znaków.
+
+&lt;h4&gt;Składnia&lt;/h4&gt;
+&lt;code&gt;right(tekst, długość)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumenty&lt;/h4&gt;
+&lt;code&gt;tekst&lt;/code&gt; - ciąg znaków.
+&lt;br&gt;
+&lt;code&gt;długość&lt;/code&gt; - liczb całkowita określająca liczbę znaków liczonych od strony prawej.
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;right(&apos;Hello World&apos;,5) &amp;rarr; &apos;World&apos;&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1086"/>
@@ -66794,7 +67233,20 @@ Returns the length of a string.
 &lt;!-- Show example of function.--&gt;
      length(&apos;HELLO&apos;) &amp;rarr; 5&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja length()&lt;/h3&gt;
+Zwraca długość ciągu znaków.
+
+&lt;p&gt;&lt;h4&gt;Składnia&lt;/h4&gt;
+     length(&lt;i&gt;tekst&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumenty&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  tekst&lt;/i&gt; &amp;rarr; ciąg znaków do określenia długości.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     length(&apos;HELLO&apos;) &amp;rarr; 5&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="901"/>
@@ -66812,7 +67264,20 @@ Returns the smallest value in a set of values.
 &lt;!-- Show example of function.--&gt;
      min(20.5,10,6.2) &amp;rarr; 6.2
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja min()&lt;/h3&gt;
+Zwraca namniejszą wartość z zadanego zbioru.
+
+&lt;h4&gt;Składnia&lt;/h4&gt;
+     min(&lt;i&gt;wartość&lt;i&gt;[,&lt;i&gt;wartość&lt;/i&gt;...])
+
+&lt;h4&gt;Argumenty&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  wartość&lt;/i&gt; &amp;rarr; liczba.&lt;br&gt;
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     min(20.5,10,6.2) &amp;rarr; 6.2
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="884"/>
@@ -66850,7 +67315,19 @@ Returns arcussinus of a value in radians.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      asin(1.0) &amp;rarr; 1.5707963267949&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja asin()&lt;/h3&gt;
+Zwraca arcus sinus wartości w radianach.
+
+
+&lt;p&gt;&lt;h4&gt;Składnia&lt;/h4&gt;
+     asin(&lt;i&gt;liczba&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumenty&lt;/h4&gt;
+&lt;i&gt;liczba&lt;/i&gt; &amp;rarr; sinus kąta.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Przykład&lt;/h4&gt;
+     asin(1.0) &amp;rarr; 1.5707963267949&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="465"/>
@@ -66891,7 +67368,19 @@ Returns square root of a value
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      sqrt(9) &amp;rarr; 3&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja sqrt()&lt;/h3&gt;
+Zwraca pierwiastek kwadratowy wartości.
+
+
+&lt;p&gt;&lt;h4&gt;Składnia&lt;/h4&gt;
+     sqrt(&lt;i&gt;wartość&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumenty&lt;/h4&gt;
+&lt;i&gt;wartość&lt;/i&gt; &amp;rarr; liczba.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Przykład&lt;/h4&gt;
+     sqrt(9) &amp;rarr; 3&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="692"/>
@@ -66908,7 +67397,19 @@ None
 &lt;pre&gt;$x &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja $x&lt;/h3&gt;
+Zwraca współrzędną x aktualnego obiektu.
+
+&lt;h4&gt;Składnia&lt;/h4&gt;
+&lt;pre&gt;$x&lt;/pre&gt;
+
+&lt;h4&gt;Argumenty&lt;/h4&gt;
+Brak
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;pre&gt;$x &amp;rarr; 42&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1296"/>
