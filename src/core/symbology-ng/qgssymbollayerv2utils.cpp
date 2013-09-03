@@ -1520,7 +1520,7 @@ void QgsSymbolLayerV2Utils::fillToSld( QDomDocument &doc, QDomElement &element, 
   QColor borderColor = !patternName.startsWith( "brush://" ) ? color : QColor();
 
   /* Use WellKnownName tag to handle QT brush styles. */
-  wellKnownMarkerToSld( doc, graphicFillElem, patternName, fillColor, borderColor );
+  wellKnownMarkerToSld( doc, graphicElem, patternName, fillColor, borderColor );
 }
 
 bool QgsSymbolLayerV2Utils::fillFromSld( QDomElement &element, Qt::BrushStyle &brushStyle, QColor &color )
