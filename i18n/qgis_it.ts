@@ -7322,7 +7322,7 @@ Agisce su tutti i vettori editabili attivi al momento
     <name>ModelerDialog</name>
     <message>
         <source>Edit model help</source>
-        <translation>Modifica modello aiuto</translation>
+        <translation>Modifica guida del modello</translation>
     </message>
     <message>
         <source>Run</source>
@@ -46781,7 +46781,8 @@ deviazione standard ×</translation>
     <message>
         <location filename="../src/core/raster/qgsrasterrenderer.cpp" line="214"/>
         <source>cumulative cut</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>#dubbio#</translatorcomment>
+        <translation>taglio cumulativo</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterrenderer.cpp" line="218"/>
@@ -46796,7 +46797,7 @@ deviazione standard ×</translation>
     <message>
         <location filename="../src/core/raster/qgsrasterrenderer.cpp" line="227"/>
         <source>sub extent</source>
-        <translation type="unfinished"></translation>
+        <translation>sotto estensione</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterrenderer.cpp" line="230"/>
@@ -58758,7 +58759,7 @@ which are described and illustrated on &lt;a href=&quot;http://en.wikipedia.org/
 
 </source>
         <translatorcomment>assolutamente da ricontrollare (ght) #dubbio# il nome del plugin &quot;HEATMAP&quot; è un nome proprio, da lasciare quindi non tradotto (g) #dubbio# è stato tralasciato il &quot;Kernel Density Estimation&quot; (g) #dubbio# la traduzione mi sembra molto libera, v. prima frase dopo il titolo (g)</translatorcomment>
-        <translation type="unfinished">&lt;h1&gt;Guida plugin mappa di concentrazione&lt;/h1&gt;
+        <translation>&lt;h1&gt;Guida plugin mappa di concentrazione&lt;/h1&gt;
 &lt;p&gt;Il plugin mappa di concentrazione permette di creare una mappa di concentrazione partendo da un layer vettoriale di punti. Una
 mappa di concentrazione è una mappa raster di densità o di magnitudo dell’informazione selezionata. Il risultato
 permette di identificare facilmente degli “hotspots”.&lt;/p&gt;
@@ -58848,7 +58849,7 @@ To filter a layer before adding it to the map, double click on its name or use &
 Ticking &lt;label&gt;Search options&lt;/label&gt; enables additional options for searching in different column types and using 2 search modes: &lt;label&gt;Wildcard&lt;/label&gt; or &lt;label&gt;RegExp&lt;/label&gt;.
 </source>
         <translatorcomment>&quot;Wildcard&quot;? mi viene in mente &quot;jolly&quot; ma sempre inglese è! e &quot;RegExp&quot; in &quot;Espressioni regolari&quot; ?(g)</translatorcomment>
-        <translation type="unfinished">&lt;h3&gt;Aggiungi tabelle PostGIS&lt;/h3&gt;
+        <translation>&lt;h3&gt;Aggiungi tabelle PostGIS&lt;/h3&gt;
 Questa finestra di dialogo consente di aggiungere layer PostGIS (tabelle con colonna geometrica) all&apos;area mappa di QGIS.
 &lt;p&gt;
 &lt;a href=&quot;#connect&quot;&gt;Connessioni&lt;/a&gt;&lt;br/&gt;
@@ -58920,8 +58921,7 @@ This dialog allows you to define the settings for a connection to a PostgreSQL d
 
 &lt;/ul&gt;
 </source>
-        <translatorcomment>traduzione rifatta, manca ultima frase che non capisco interamente (g)</translatorcomment>
-        <translation type="unfinished">&lt;h3&gt;Crea una nuova connessione PostGIS&lt;/h3&gt;
+        <translation>&lt;h3&gt;Crea una nuova connessione PostGIS&lt;/h3&gt;
 Questa finestra di dialogo consente di definire i parametri di una nuova connessione ad un database PostgreSQL.
 &lt;ul&gt;
 &lt;li&gt; &lt;label&gt;Nome&lt;/label&gt; nome descrittivo per la connessione.
@@ -58951,7 +58951,7 @@ o usare la porta standard 5432).
 
 &lt;li&gt; &lt;label&gt;Elenca anche le tabelle senza geometria&lt;/label&gt; Indica che l&apos;elenco deve includere anche le tabelle senza geometria.
 
-&lt;li&gt; &lt;label&gt;Use estimated table metadata&lt;/label&gt; When initializing layers, various queries may be needed to establish the characteristics of the geometries stored in the database table.  When this option is checked, these queries examine only a sample of the rows and use the table statistics, rather than the entire table.  This can drastically speed up operations on large datasets, but may result in incorrect characterization of layers (eg. the &lt;font color=&quot;red&quot;&gt;feature count&lt;/font&gt; of filtered layers will not be accurately determined).
+&lt;li&gt; &lt;label&gt;Usa la tabella di metadati stimati&lt;/label&gt; Quando si inizializza un vettore, sono necessarie varie query per stabilire le caratteristiche delle geometrie presenti nella tabella del database. Quando scegli questa opzione, le query esaminano solo un campione dei dati, invece dell&apos;intera tabella. Questo può rendere le azioni molto più veloci, ma può risultare in una valutazione scorretta (ad es. il &lt;font color=&quot;red&quot;&gt;conteggio degli elementi&lt;/font&gt; dei vettori filtrati può risultare errato).
 
 &lt;/ul&gt;</translation>
     </message>
@@ -58978,7 +58978,7 @@ You can also define the width and precision of the new attribute column.
 &lt;h4&gt;Attributes list&lt;/h4&gt;
 In this section you can see the list of attributes. To delete one of them, click on it and choose &lt;label&gt;Remove selected attribute&lt;/label&gt; button.
 </source>
-        <translation type="unfinished">&lt;h3&gt;Crea nuovo layer vettoriale&lt;/h3&gt;
+        <translation>&lt;h3&gt;Crea nuovo layer vettoriale&lt;/h3&gt;
 Per creare un nuovo layer, scegliere &lt;label&gt;Nuovo vettoriale&lt;/label&gt; dal menu &lt;label&gt;Layer&lt;/label&gt;. &lt;br/&gt;
 Con questa finestra di dialogo è possibile creare uno Shapefile.
 &lt;h4&gt;Tipo&lt;/h4&gt;
@@ -59279,7 +59279,7 @@ In this section you can see the list of attributes. To delete one of them, click
 Click on &lt;label&gt;OK&lt;/label&gt; to create the layer and close the dialog.  Clicking &lt;label&gt;Apply&lt;/label&gt; also creates the layer, but keeps the dialog open, thereby allowing you to create more similar layers. &lt;label&gt;Cancel&lt;/label&gt; will close the layer without further changes.
 </source>
         <translatorcomment>ho tradotto &apos;partial matches&apos; in &apos;SRID EPSG&apos; con &quot;combinazioni parziali&quot; (gc)</translatorcomment>
-        <translation type="unfinished">&lt;h3&gt;Crea un nuovo layer SpatiaLite&lt;/h3&gt;
+        <translation>&lt;h3&gt;Crea un nuovo layer SpatiaLite&lt;/h3&gt;
 Con questa finestra di dialogo potete creare un nuovo database e/o un layer vuoto SpatiaLite. Vedi sotto per una spiegazione dei dati in ingresso.
 &lt;h4&gt;Database&lt;/h4&gt;
 Scegliete il database dalla lista del menu a tendina. Questa lista elenca le vostre connessioni SpatiaLite registrate. Se non avete registrato connessioni o volete creare un nuovo database, cliccate sul pulsante (&lt;label&gt;...&lt;/label&gt;) alla destra della lista.
@@ -59734,12 +59734,11 @@ The &lt;label&gt;Field Calculator&lt;/label&gt; button in the attribute table al
 The results can be written to a new attribute column or it can be used to update values in an already existing column.&lt;br&gt;
 The vector layer needs to be in editing mode, before you can click on the &lt;label&gt;Field calculator&lt;/label&gt; icon to open the dialog.
 </source>
-        <translatorcomment>
-tradurre &quot;docked&quot; e poco dopo&quot;dock&quot; please, ho lasciato il giochino &quot;man&quot; -&gt; &quot;woman&quot; perchè non mi viene l&apos;equivalente italiano, tradurre anche &quot;widgets&quot; alla fine (g)</translatorcomment>
-        <translation type="unfinished">&lt;h3&gt;Tabella attributi&lt;/h3&gt;
+        <translatorcomment>ho lasciato il giochino &quot;man&quot; -&gt; &quot;woman&quot; perchè non mi viene l&apos;equivalente italiano, tradurre anche &quot;widgets&quot; alla fine (g)</translatorcomment>
+        <translation>&lt;h3&gt;Tabella attributi&lt;/h3&gt;
 La tabella attributi visualizza righe e colonne del layer selezionato.
 Ogni riga rappresenta un elemento della mappa con i suoi attributi nelle varie colonne.
-Gli elementi della tabella possono essere cercate, selezionate, spostate ed anche modificate. Di norma la tabella degli attributi è in una finestra separata. Se l&apos;aprite e non riuscite più a vederla, probabilmente è nascosta sotto la finestra principale di QGIS. Potete anche trasformarla in una finestra docked spuntando &lt;label&gt;Apri la tabella attributi in una finestra dock&lt;/label&gt; in &lt;label&gt;Configurazione &gt; Opzioni &gt; Generale&lt;/label&gt;.&lt;p&gt; 
+Gli elementi della tabella possono essere cercate, selezionate, spostate ed anche modificate. Di norma la tabella degli attributi è in una finestra separata. Se l&apos;aprite e non riuscite più a vederla, probabilmente è nascosta sotto la finestra principale di QGIS. Potete anche trasformarla in una finestra agganciata spuntando &lt;label&gt;Apri la tabella attributi in una finestra agganciata&lt;/label&gt; in &lt;label&gt;Configurazione &gt; Opzioni &gt; Generale&lt;/label&gt;.&lt;p&gt; 
 Il numero di elementi totali, filtrati e selezionati è stampato sul fronte della finestra.&lt;p&gt;
 &lt;p&gt;
 &lt;a href=&quot;#Selecting&quot;&gt;Selezione&lt;/a&gt;&lt;br/&gt;
@@ -59826,7 +59825,7 @@ To visualize the results, select an table entry, press the &lt;label&gt;Add sele
 You only need to request the list of layers by clicking the &lt;label&gt;Connect&lt;/label&gt; button.
 </source>
         <translatorcomment>#dubbio#Qui la tradizione sembra molto errata, controllare la sintassi HTML. anonimo? io l&apos;ho controllata e sistemata, spero; non ho controllato la sintassiHTML però (g)</translatorcomment>
-        <translation type="unfinished">&lt;h3&gt;Crea una nuova connessione WMS&lt;/h3&gt;
+        <translation>&lt;h3&gt;Crea una nuova connessione WMS&lt;/h3&gt;
 I layers WMS possono essere aggiunti in maniera molto semplice, è necessario conoscere l&apos;URL di accesso al server WMS, avere un servizio di accesso a questo server e il server deve supportare il protocollo di trasporto dei dati via HTTP.&lt;p&gt;
 QGIS attualmente può essere utilizzare come client WMS per le implementazione WMS 1.1, 1.1.1 e 1.3.
 &lt;p&gt;
@@ -59915,7 +59914,7 @@ To filter a layer before adding it to the map, either double click on its name o
 Ticking &lt;label&gt;Search options&lt;/label&gt; enables additional options for searching in different column types and using 2 search modes: &lt;label&gt;Wildcard&lt;/label&gt; or &lt;label&gt;RegExp&lt;/label&gt;.
 </source>
         <translatorcomment>da controllare assolutamente (ght)  a me sembra a posto, tranne &quot;wildcard&quot; e &quot;RegExp&quot; già visti (g)</translatorcomment>
-        <translation type="unfinished">&lt;h3&gt;Aggiungi tabelle SQL Anywhere&lt;/h3&gt;
+        <translation>&lt;h3&gt;Aggiungi tabelle SQL Anywhere&lt;/h3&gt;
 Questa finestra permette di aggiungere layer SQL Anywhere (tabelle con una colonna geometria) alla vista mappa di QGIS.
 &lt;p&gt;
 &lt;a href=&quot;#connect&quot;&gt;Connessioni&lt;/a&gt;&lt;br/&gt;
@@ -60104,7 +60103,7 @@ Questa finestra di dialogo consente di operare con laconfigurazione e le proprie
 &lt;a href=&quot;#general&quot;&gt;Generale&lt;/a&gt;&lt;br/&gt;
 &lt;a href=&quot;#metadata&quot;&gt;Metadata&lt;/a&gt;&lt;br/&gt;
 &lt;a href=&quot;#actions&quot;&gt;Azioni&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#diagram&quot;&gt;Diagram Overlay&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#diagram&quot;&gt;Diagrammi&lt;/a&gt;&lt;br/&gt;
 
 &lt;a name=&quot;symbology&quot;&gt;
 &lt;h4&gt;Simbologia&lt;/h4&gt;
@@ -60248,7 +60247,7 @@ The current implementation of diagrams provides support for pie- and bar charts 
 To define a new connection, click on &lt;label&gt;New&lt;/label&gt; button and use the file browser to point to your SpatiaLite database, which is a file with a &lt;i&gt;.sqlite&lt;/i&gt; extension.&lt;p&gt;
 The connections you define will be remembered for further use and available to choose from the drop down menu.
 </source>
-        <translation type="unfinished">&lt;h3&gt;Aggiungi tabelle SpatiaLite&lt;/h3&gt;
+        <translation>&lt;h3&gt;Aggiungi tabelle SpatiaLite&lt;/h3&gt;
 Per definire una nuova connessione, clic sul pulsante &lt;label&gt;Nuovo&lt;/label&gt; e usare il file browser per puntare al proprio database SpatiaLite, che corrisponde ad un file con estensione &lt;i&gt;.sqlite&lt;/i&gt;.&lt;p&gt;
 Le connessioni definite vengono memorizzate per utilizzi futuri e sono disponibili nel dropdown menu.
 </translation>
@@ -60295,7 +60294,7 @@ To delete a bookmark from the Bookmarks dialog, click on it then click the &lt;l
 To update the extent of a bookmark, click on it then click the &lt;label&gt;Update&lt;/label&gt; button. Confirm your choice by clicking &lt;label&gt;OK&lt;/label&gt; or cancel the update by clicking &lt;label&gt;Cancel&lt;/label&gt;.
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;Segnalibri spaziali&lt;/h3&gt;
+        <translation>&lt;h3&gt;Segnalibri spaziali&lt;/h3&gt;
 I segnalibri spaziali consentono di &quot;marcare&quot; una posizione geografica e di ritornarci in un secondo momento.
 &lt;p&gt;
 &lt;a href=&quot;#creating&quot;&gt;Creare un segnalibro&lt;/a&gt;&lt;br/&gt;
@@ -60365,7 +60364,7 @@ This plugin supports basic HTML markup tags for formatting text. For example:
 &lt;/li&gt;
 &lt;/ul&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;Plugin etichetta di copyright&lt;/h3&gt;
+        <translation>&lt;h3&gt;Plugin etichetta di copyright&lt;/h3&gt;
 Disegna una etichetta di copyrigth con informazioni associate.&lt;br/&gt;
 È possibile aggiungere qualsiasi testo alla mappa e non solo una etichetta di copyright.
 &lt;p&gt;
@@ -60447,7 +60446,7 @@ are sometimes limited (e.g. for shape files) or behave diffently.
 &lt;/table&gt;
 </source>
         <translatorcomment>da ricontrollare (ght)</translatorcomment>
-        <translation type="unfinished">&lt;h3&gt;Costruttore di interrogazioni&lt;/h3&gt;
+        <translation>&lt;h3&gt;Costruttore di interrogazioni&lt;/h3&gt;
 Il costruttore di interrogazioni permette di creare filtri e espressioni personalizzate.
 
 Queste interrogazioni sono più veloci rispetto a quelle generiche di QGIS, ma possono essere limitate (esempio per gli shapefile) o si possono comportare in maniera differente.
@@ -60556,7 +60555,7 @@ The field calculator allows you to update fields with expressions.
 &lt;/table&gt;
 </source>
         <translatorcomment>non credo che bisogna tradurre anche il resto... (ght)</translatorcomment>
-        <translation type="unfinished">&lt;h3&gt;Calcolatore di campi&lt;/h3&gt;
+        <translation>&lt;h3&gt;Calcolatore di campi&lt;/h3&gt;
 Il calcolatore di campi permette di aggiornare i campi in funzione di specifiche espressioni.
 
 &lt;h4&gt;Operazioni supportate&lt;/h4&gt;
@@ -60629,7 +60628,7 @@ You may also tick an &lt;label&gt;Open feature form, if a single feature is iden
 Identifiable layers can be set in the Project Properties dialog &lt;label&gt;Settings &gt; Project Properties &gt; Identifiable layers&lt;/label&gt; where all the layers names are listed, their type (vector, raster, etc.) and ability to be identified.
 &lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;Informazioni elementi&lt;/h3&gt;
+        <translation>&lt;h3&gt;Informazioni elementi&lt;/h3&gt;
 &lt;p&gt;
 La finestra di dialogo risultante visualizza tutti gli elementi identificati all&apos;interno della tolleranza di ricerca. 
 Per visualizzare i risultati, espandere le informazioni con un clic su simbolo &lt;label&gt;+&lt;/label&gt; alla sinistra di ogni elemento.
@@ -60660,7 +60659,7 @@ To add a scale bar:
 &lt;li&gt;Click &lt;label&gt;OK&lt;/label&gt;.&lt;/li&gt;
 &lt;/ol&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;Plugin barra di scala&lt;/h3&gt;
+        <translation>&lt;h3&gt;Plugin barra di scala&lt;/h3&gt;
 Disegna una barra di scala sulla mappa.
 &lt;p&gt;
 Si può impostare lo stile, la posizione e le etichette della barra.
@@ -60682,7 +60681,7 @@ Per aggiungere una barra di scala:
         <location filename="../src/core/qgscontexthelp_texts.cpp" line="1107"/>
         <source>&lt;h3&gt;New OGR Database Connection Dialog&lt;/h3&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;Finestra di dialogo Nuova Connessione Database OGR&lt;/h3&gt;
+        <translation>&lt;h3&gt;Finestra di dialogo Nuova connessione database OGR&lt;/h3&gt;
 </translation>
     </message>
     <message>
@@ -60694,7 +60693,7 @@ To measure lengths, select the tool and click along the path you want to measure
 &lt;h4&gt;Measuring Areas&lt;/h4&gt;
 To measure areas, select the tool and click to create the area. The total area is dynamically displayed as you click.
 </source>
-        <translation type="unfinished">&lt;h3&gt;Strumenti di misura&lt;/h3&gt;
+        <translation>&lt;h3&gt;Strumenti di misura&lt;/h3&gt;
 Ci sono due strumenti di misura: lunghezza e area. Con questi strumenti di possono misurare distanze e aree sull&apos;area mappa. Attualmente i risultati delle misuresono espressi in unità metriche. Un clic singolo con il tasto destro del mouse interrompe la misura, mentre un doppio clic con il tasto destro inizia una nuova misurazione.
 &lt;h4&gt;Misura di lunghezze&lt;/h4&gt;
 Per misurare lunghezze lineari, selezionare il tool e fare clic lungo il percorso da misurare. Viene visualizzata la lunghezza di igni segmento e, al contempo, la lunghezza totale del percorso.
@@ -60705,7 +60704,7 @@ Per misurare aree, selezionare il tool e fare clic per disegnare un&apos;area. L
         <location filename="../src/core/qgscontexthelp_texts.cpp" line="154"/>
         <source>&lt;h3&gt;Identify&lt;/h3&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Informazioni&lt;/h3&gt;</translation>
     </message>
     <message>
         <location filename="../src/core/qgscontexthelp_texts.cpp" line="414"/>
@@ -60741,7 +60740,7 @@ Per misurare aree, selezionare il tool e fare clic per disegnare un&apos;area. L
 &lt;p&gt;If the attribute table of your linear layer does not contain the required fields or fields contain unexpected values, the plugin will use default values. You can set them in the default tab &lt;label&gt;Default settings&lt;/label&gt;.&lt;/p&gt;
 </source>
         <translatorcomment>da controllare (ght)</translatorcomment>
-        <translation type="unfinished">&lt;h3&gt;Impostazioni plugin grafo strade&lt;/h3&gt;
+        <translation>&lt;h3&gt;Impostazioni plugin grafo strade&lt;/h3&gt;
 &lt;p&gt;Il plugin Road Graph è un plugin scritto in C++ che calcola il percorso minimo tra punti su una polilinea e traccia tale percorso sul grafo delle strade.
 &lt;/p&gt;
 &lt;p&gt;
@@ -60780,7 +60779,7 @@ Per misurare aree, selezionare il tool e fare clic per disegnare un&apos;area. L
 Displays a north arrow overlayed onto the map.
 &lt;p&gt;
 At present there is only one style available. You can adjust the angle of the arrow or let QGIS set the direction automatically. If you choose to let QGIS determine the direction, it makes its best guess as to how the arrow should be oriented. For placement of the arrow you have four options, corresponding to the four corners of the map canvas.</source>
-        <translation type="unfinished">&lt;h3&gt;Plugin freccia a Nord&lt;/h3&gt;
+        <translation>&lt;h3&gt;Plugin freccia a Nord&lt;/h3&gt;
 Visualizza sulla mappa una freccia orientata a Nord.
 &lt;p&gt;
 Attualmente è disponibile soltanto uno stile di rappresentazione della freccia. È possibile modificare l&apos;orientamento della freccia o lasciarlo fare automaticamente a QGIS. Se si sceglie di lasciare a QGIS l&apos;impostazione, verrà proposta una sua ipotesi di orientamento della freccia. Per il posizionamento della freccia ci sono quattro opzioni, corrispondenti ai quattro angoli dell&apos;area mappa.
@@ -60875,7 +60874,7 @@ Note: Experimental plugins are generally unsuitable for production use. These pl
 &lt;/p&gt;
 </source>
         <translatorcomment>da controllare (ght)</translatorcomment>
-        <translation type="unfinished">&lt;h3&gt;Gestisci e installa plugin&lt;/h3&gt;
+        <translation>&lt;h3&gt;Gestisci e installa plugin&lt;/h3&gt;
 
 &lt;p&gt;
 Gestisci e installa plugin.
@@ -60980,7 +60979,7 @@ Nota: i plugin sperimentali solitamente non sono adatti per uso lavorativo. Ques
 See &lt;a href=&quot;http://gdal.org/ogr/ogr_formats.html&quot;&gt;OGR Vector formats&lt;/a&gt; for a list of supported formats and the available options.
 </source>
         <translatorcomment>da controllare (ght)</translatorcomment>
-        <translation type="unfinished">&lt;h3&gt;Salva con come...&lt;/h3&gt;
+        <translation>&lt;h3&gt;Salva con come...&lt;/h3&gt;
 
 &lt;p&gt;Questa finestra di dialogo permette di salvare il vattore in vari formati GDAL/OGR.
 
@@ -61327,7 +61326,7 @@ Click on one of the icons along the top of the composer window to select what ty
 &lt;/p&gt;
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;Sistema di stampa&lt;/h3&gt;
+        <translation>&lt;h3&gt;Sistema di stampa&lt;/h3&gt;
 
 &lt;p&gt;
 Il sistema di stampa consente di impaginare vari oggetti su un foglio che verrà stampato. Tra gli oggetti sono compresi: l&apos;area mappa, la barra di scala, la legenda, e immagini di vario tipo.
@@ -61518,7 +61517,7 @@ invita a non installare questi plugin a meno che non si intenda usarli per attiv
         <location filename="../src/core/qgscontexthelp_texts.cpp" line="751"/>
         <source>&lt;h3&gt;Style Manager&lt;/h3&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;Gestore di stili&lt;/h3&gt;
+        <translation>&lt;h3&gt;Gestore di stili&lt;/h3&gt;
 </translation>
     </message>
     <message>
@@ -61540,7 +61539,7 @@ system.
 &lt;p&gt;
 Defining a custom CRS in QGIS requires a good understanding of the Proj.4 projection library. To begin, refer to the &lt;a href=&quot;ftp://ftp.remotesensing.org/proj/OF90-284.pdf&quot;&gt;Cartographic Projection Procedures for the UNIX Environment&lt;/a&gt; - A User&apos;s Manual by Gerald I. Evenden, U.S. Geological Survey Open-File Report 90-284, 1990. This manual describes the use of the &lt;i&gt;proj.4&lt;/i&gt; and related command line utilities. The cartographic parameters used with &lt;i&gt;proj.4&lt;/i&gt; are described in the user manual, and are the same as those used by QGIS.
 </source>
-        <translation type="unfinished">&lt;h3&gt;Definizione coordinate di riferimento spaziale&lt;/h3&gt;
+        <translation>&lt;h3&gt;Definizione coordinate di riferimento spaziale&lt;/h3&gt;
 Se QGIS non fornisce le coordinate di riferimento spaziale necessarie è possibile definire un CRS personalizzato.
 &lt;p&gt;
 Per definire un CRS, selezionare &lt;label&gt;CRS personalizzato&lt;/label&gt; dal menu &lt;label&gt;Modifica&lt;/label&gt; (Gnome, OSX) oppure &lt;label&gt;Impostazioni&lt;/label&gt; (KDE, Windows). I CRS personalizzati vengono memorizzati nel database QGIS dell&apos;utente. In aggiunta ai CRS personalizzati, questo database contiene i segnalibri spaziali e altri dati personalizzati.
@@ -61981,7 +61980,7 @@ Informs you about active system locale. To change it tick &lt;label&gt;Override 
 &lt;/a&gt;
 Tick &lt;label&gt;Use proxy for web access&lt;/label&gt; to define host, port, user, and password.
 </source>
-        <translation type="unfinished">&lt;h3&gt;Opzioni&lt;/h3&gt;
+        <translation>&lt;h3&gt;Opzioni&lt;/h3&gt;
 Questa finestra di dialogo consente di selezionare alcune opzioni di base per QGIS. Ci sono otto schede:
 &lt;p&gt;
 
@@ -62082,7 +62081,7 @@ SQL Anywhere database.
 &lt;/ul&gt;
 </source>
         <translatorcomment>da controllare (ght)</translatorcomment>
-        <translation type="unfinished">&lt;h3&gt;Crea una nuova connessione SQL Anywhere &lt;/h3&gt;
+        <translation>&lt;h3&gt;Crea una nuova connessione SQL Anywhere &lt;/h3&gt;
 Questa finestra di dialogo permette di definire le impostazioni per una connessione a un 
 database SQL Anywhere.
 &lt;p&gt;
@@ -62349,7 +62348,7 @@ geometry types and don&apos;t offer to add others.
 &lt;/ul&gt;
 </source>
         <translatorcomment>da controllare (e correggere) ght</translatorcomment>
-        <translation type="unfinished">&lt;h3&gt;Crea nuova connessione Oracle&lt;/h3&gt;
+        <translation>&lt;h3&gt;Crea nuova connessione Oracle&lt;/h3&gt;
 Questa finestra di dialogo permette di definire le impostazione per una connessione a un database Oracle.
 &lt;p&gt;
 &lt;ul&gt;
@@ -63473,7 +63472,7 @@ None
 &lt;pre&gt;$rownum &amp;rarr; 4711&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;funzione $rownum&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funzione $rownum&lt;/h3&gt;
 Restituisce il numero della riga corrente.
 
 &lt;h4&gt;Sintassi&lt;/h4&gt;
@@ -63508,13 +63507,13 @@ Returns a string representation of a color based on its red, green, blue, and al
      color_rgba(255,127,0,200) &amp;rarr; &apos;255,127,0,200&apos;&lt;/p&gt;
 </source>
         <translation>
-&lt;h3&gt;funzione color_rgba()&lt;/h3&gt;
+&lt;h3&gt;Funzione color_rgba()&lt;/h3&gt;
 Restituisce una stringa che rappresenta un colore basato sulle sue componenti rosso, verde, blu ed alfa (trasparenza)
 
 &lt;p&gt;&lt;h4&gt;Sintassi&lt;/h4&gt;
      color_rgba(&lt;i&gt;rosso, verde, blu, alfa&lt;/i&gt;)&lt;/p&gt;
 
-&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;p&gt;&lt;h4&gt;Argomenti&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
 &lt;i&gt;  rosso&lt;/i&gt; &amp;rarr; componente rossa espressa come valore intero da 0 a 255.&lt;br&gt;
 &lt;i&gt;  verde&lt;/i&gt; &amp;rarr; componente verde espressa come valore intero da 0 a 255.&lt;br&gt;
@@ -63547,7 +63546,7 @@ actually inserted, ie. when building queries.
 &lt;/p&gt;
 </source>
         <translatorcomment>rivedere (m)</translatorcomment>
-        <translation type="unfinished">&lt;h3&gt;Campi e Valori&lt;/h3&gt;
+        <translation>&lt;h3&gt;Campi e Valori&lt;/h3&gt;
 Contiene un elenco di tutti i campi del vettore.Si può ottenere un campione dei valori con click del tasto destro del mouse.
 &lt;br&gt;&lt;br&gt;
 Seleziona il nome del campo dall&apos;elenco e fai click con il tasto destro per aprire il menù con le opzioni per caricare un campione di valori dal campo selezionato.
@@ -63573,13 +63572,13 @@ None
 
 </source>
         <translatorcomment>#dubbio#</translatorcomment>
-        <translation>&lt;h3&gt;funzione $feature&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funzione $feature&lt;/h3&gt;
 Durante la generazione di un atlante, restituisce l&apos;attuale numero di geometrie ripetute sul layer superiore.
 
 &lt;h4&gt;Sintassi&lt;/h4&gt;
 &lt;pre&gt;$feature&lt;/pre&gt;
 
-&lt;h4&gt;Argomento&lt;/h4&gt;
+&lt;h4&gt;Argomenti&lt;/h4&gt;
 Nessuno
 
 &lt;h4&gt;Esempio&lt;/h4&gt;
@@ -63599,7 +63598,7 @@ Loading field values from WFS layers isn&apos;t supported, before the layer is
 actually inserted, ie. when building queries.
 &lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;Campo&lt;/h3&gt;
+        <translation>&lt;h3&gt;Campo&lt;/h3&gt;
 Doppio click per aggiungere il nome del campo alla stringa con l&apos;espressione.
 &lt;br&gt;&lt;br&gt;
 Click con tasto destro sul nome del campo per aprire il menù con le opzioni per il caricamento dei valori campionati
@@ -63624,7 +63623,7 @@ None
 &lt;pre&gt;$numpages &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;funzione $numpages&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funzione $numpages&lt;/h3&gt;
 Restituisce il numero totale di pagine in composizione.
 
 &lt;h4&gt;Sintassi&lt;/h4&gt;
@@ -63653,7 +63652,7 @@ None
 &lt;pre&gt;$perimeter &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;funzione $perimeter&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funzione $perimeter&lt;/h3&gt;
 Restituisce la lunghezza del perimetro dell&apos;elemento corrente.
 
 &lt;h4&gt;Sintassi&lt;/h4&gt;
@@ -63672,7 +63671,7 @@ Nessuno
         <source>&lt;h3&gt;Geometry Group&lt;/h3&gt;
 This group contains functions that operate on geometry objects e.g length, area.
 </source>
-        <translation type="unfinished">&lt;h3&gt;Gruppo Geometria&lt;/h3&gt;
+        <translation>&lt;h3&gt;Gruppo geometria&lt;/h3&gt;
 Questo gruppo contiene funzioni che agiscono su proprietà geometriche degli oggetti, es: lunghezza, area.
 </translation>
     </message>
@@ -63692,7 +63691,8 @@ Concatenates several strings to one.
 &lt;!-- Show example of function.--&gt;
      concat(&apos;a&apos;,&apos;b&apos;,&apos;c&apos;,&apos;d&apos;,&apos;e&apos;) &amp;rarr; &apos;abcde&apos;
 </source>
-        <translation type="unfinished">&lt;h3&gt;funzione concat()&lt;/h3&gt;
+        <translatorcomment>#dubbio# rivedere string</translatorcomment>
+        <translation>&lt;h3&gt;Funzione concat()&lt;/h3&gt;
 Concatena più stringhe in un unica.
 
 &lt;h4&gt;Sintassi&lt;/h4&gt;
@@ -63700,7 +63700,7 @@ Concatena più stringhe in un unica.
 
 &lt;h4&gt;Argomenti&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
-&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  a string.&lt;br&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; è di tipo string.  una stringa.&lt;br&gt;
 
 &lt;h4&gt;Esempio&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -63721,7 +63721,7 @@ Note: This function is only available in some contexts and will be 0 otherwise.
 
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;funzione $scale&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funzione $scale&lt;/h3&gt;
 Restituisce la scala della vista mappa corrente.
 &lt;br&gt;
 Nota:Questa funzione è disponibile solo in alcuni contesti e sarà 0 altirmenti.
@@ -63753,16 +63753,16 @@ Returns true if any part of a string matches the supplied regular expression.
      regexp_match(&apos;QGIS ROCKS&apos;,&apos;&amp;#92;&amp;#92;sROCKS&apos;) &amp;rarr; 1&lt;/p&gt;
 </source>
         <translatorcomment>non-greedy come tradurlo? lo lasciamo così? (m)</translatorcomment>
-        <translation type="unfinished">&lt;h3&gt;funzione regexp_match()&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funzione regexp_match()&lt;/h3&gt;
 Restituisce true se una qualisiasi parte della stinga corrisponde all&apos;espressione regolare fornita.
 
-&lt;h4&gt;Sintassi&lt;/h4&gt;
+&lt;p&gt;&lt;h4&gt;Sintassi&lt;/h4&gt;
      regexp_match(&lt;i&gt;string,regex&lt;/i&gt;)&lt;/p&gt;
 
 &lt;h4&gt;Argomenti&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
-&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  La stringa da confrontare con l&apos;espressione regolare.&lt;br&gt;
-&lt;i&gt;  regex&lt;/i&gt; &amp;rarr; is string.  La stringa da confrontare. I caratteri backslash devono essere usati con un doppio escape (ad esempio &quot;&amp;#92;&amp;#92;s&quot; corrisponde al carattere di spazio vuoto). Le espressioni regolari non avide non sono supportate. &lt;br&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; è di tipo string.  La stringa da confrontare con l&apos;espressione regolare.&lt;br&gt;
+&lt;i&gt;  regex&lt;/i&gt; &amp;rarr; è di tipo string.  La stringa da confrontare. I caratteri backslash devono essere usati con un doppio escape (ad esempio &quot;&amp;#92;&amp;#92;s&quot; corrisponde al carattere di spazio vuoto). Le espressioni regolari non avide non sono supportate. &lt;br&gt;
 
 &lt;h4&gt;Esempio&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -63787,7 +63787,23 @@ Returns a string with the supplied regular expression replaced.
 &lt;!-- Show example of function.--&gt;
      regexp_replace(&apos;QGIS SHOULD ROCK&apos;,&apos;&amp;#92;&amp;#92;sSHOULD&amp;#92;&amp;#92;s&apos;,&apos; DOES &apos;) &amp;rarr; &apos;QGIS DOES ROCK&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>controllare alcuni termoni informatici (es captured groups) (m)</translatorcomment>
+        <translation>&lt;h3&gt;Funzione regexp_replace()&lt;/h3&gt;
+Restituisce una stinga sostituendo l&apos;espressione regolare fornita.
+
+&lt;p&gt;&lt;h4&gt;Sintassi&lt;/h4&gt;
+     regexp_replace(&lt;i&gt;string,regex,after&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argomenti&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; è di tipo string.  La stringa in input.
+&lt;i&gt;  regex&lt;/i&gt; &amp;rarr; è di tipo string.  La stringa da confrontare. I caratteri backslash devono essere usati con un doppio escape (ad esempio &quot;&amp;#92;&amp;#92;s&quot; corrisponde al carattere di spazio vuoto). Le espressioni regolari non avide non sono supportate. &lt;br&gt;
+&lt;i&gt;  after&lt;/i&gt; &amp;rarr; is string.  La stringa che andrà a sostituire qualsiasi occorrenza dell&apos;espressione regolare fornita. I gruppi catturati possono essere inseriti nella stringa da rimpiazzare usando &amp;#92;&amp;#92;1, &amp;#92;&amp;#92;2, etc. &lt;br&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Esempio&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     regexp_replace(&apos;QGIS SHOULD ROCK&apos;,&apos;&amp;#92;&amp;#92;sSHOULD&amp;#92;&amp;#92;s&apos;,&apos; DOES &apos;) &amp;rarr; &apos;QGIS DOES ROCK&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="833"/>
@@ -63806,7 +63822,21 @@ Returns the portion of a string which matches a supplied regular expression.
 &lt;!-- Show example of function.--&gt;
      regexp_substr(&apos;abc123&apos;,&apos;(&amp;#92;&amp;#92;d+)&apos;) &amp;rarr; &apos;123&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funzione regexp_substr()&lt;/h3&gt;
+Restituisce la porzione di stinga corrispondente all&apos;espressione regolare fornita.
+
+&lt;p&gt;&lt;h4&gt;Sintassi&lt;/h4&gt;
+     regexp_substr(&lt;i&gt;string,regex&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argomenti&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; è di tipo string.  La stringa in input.&lt;br&gt;
+&lt;i&gt;  regex&lt;/i&gt; &amp;rarr; è di tipo string.  La stringa da confrontare. I caratteri backslash devono essere usati con un doppio escape (ad esempio &quot;&amp;#92;&amp;#92;s&quot; corrisponde al carattere di spazio vuoto). Le espressioni regolari non avide non sono supportate. &lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Esempio&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     regexp_substr(&apos;abc123&apos;,&apos;(&amp;#92;&amp;#92;d+)&apos;) &amp;rarr; &apos;123&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="918"/>
@@ -63843,7 +63873,7 @@ use &lt;code&gt;day&lt;/code&gt; to extract number of days&lt;br&gt;
 &lt;code&gt;day(age(&apos;2012-05-12&apos;,&apos;2012-05-2&apos;)) &amp;rarr; 10&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;funzione age()&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funzione age()&lt;/h3&gt;
 Restituisce la differenza tra due date.
 &lt;br&gt;&lt;br&gt;
 La differenza è restituita come &lt;code&gt;Interval&lt;/code&gt; 
@@ -63867,12 +63897,12 @@ in modo da poter estrarre l&apos;informazione utile:
 &lt;h4&gt;Argomenti&lt;/h4&gt;
 &lt;code&gt;string&lt;/code&gt; - è una stringa. Una stringa nel formato data.
 &lt;br&gt;
-&lt;code&gt;datetime&lt;/code&gt; - è una data o un datetime. Un tipo data or datetime.
+&lt;code&gt;datetime&lt;/code&gt; - è una data o un datetime. Un tipo data o datetime.
 
 &lt;h4&gt;Esempio&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;age(&apos;2012-05-12&apos;,&apos;2012-05-2&apos;) &amp;rarr; Interval&lt;/code&gt;&lt;br&gt;
-use &lt;code&gt;day&lt;/code&gt; to extract number of days&lt;br&gt;
+usa &lt;code&gt;day&lt;/code&gt; per estrarre il numero di giorni&lt;br&gt;
 &lt;code&gt;day(age(&apos;2012-05-12&apos;,&apos;2012-05-2&apos;)) &amp;rarr; 10&lt;/code&gt;&lt;br&gt;
 
 </translation>
@@ -63899,7 +63929,25 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;year(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 1.9986..&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funzione year()&lt;/h3&gt;
+Estrae l&apos;anno da una data, od il numero di anni da un &lt;code&gt;Interval&lt;/code&gt; 
+
+&lt;h4&gt;Sintassi&lt;/h4&gt;
+&lt;code&gt;year(date)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;year(Interval)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argomenti&lt;/h4&gt;
+&lt;code&gt;date&lt;/code&gt; - è di tipo data o un datetime. La data da cui estrarre l&apos;anno.
+&lt;br&gt;
+&lt;code&gt;Interval&lt;/code&gt; - è di tipo Interval. L&apos;intervallo di cui restituire il numero di anni.
+
+&lt;h4&gt;Esempio&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;year(&apos;2012-05-12&apos;) &amp;rarr; 2012&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;year(tointerval(&apos;3 Years&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;year(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 1.9986..&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1330"/>
@@ -63916,7 +63964,7 @@ Returns arcustanget of a value in radians.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      atan(0.5) &amp;rarr; 0.463647609000806&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;funzione atan()&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funzione atan()&lt;/h3&gt;
 Restituisce l&apos;arcotangente di un valore in radianti.
 
 
@@ -63924,7 +63972,7 @@ Restituisce l&apos;arcotangente di un valore in radianti.
      atan(&lt;i&gt;real&lt;/i&gt;)&lt;/i&gt;
 
 &lt;p&gt;&lt;h4&gt;Argomenti&lt;/h4&gt;
-&lt;i&gt;real&lt;/i&gt; &amp;rarr; tan of an angle.&lt;/p&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; tangente di un&apos;angolo.&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;Esempio&lt;/h4&gt;
      atan(0.5) &amp;rarr; 0.463647609000806&lt;/p&gt;</translation>
@@ -63952,7 +64000,26 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;minute(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 1051200&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funzione minute()&lt;/h3&gt;
+Estrae il minuto da un tipo datatime o time, od il numero di minuti da un &lt;code&gt;Interval&lt;/code&gt; 
+
+&lt;h4&gt;Sintassi&lt;/h4&gt;
+&lt;code&gt;minute(datetime)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;minute(Interval)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argomenti&lt;/h4&gt;
+&lt;code&gt;date&lt;/code&gt; - è di tipo datetime o time. La data da cui estrarre il minuto.
+&lt;br&gt;
+&lt;code&gt;Interval&lt;/code&gt; - è di tipo Interval. L&apos;intervallo di cui restituire il numero di minuti.
+
+&lt;h4&gt;Esempio&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;minute(&apos;2012-07-22T13:24:57&apos;) &amp;rarr; 24&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;minute(tointerval(&apos;3 minutes&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;minute(age(&apos;2012-07-22T00:20:00&apos;,&apos;2012-07-22T00:00:00&apos;)) &amp;rarr; 20&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;minute(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 1051200&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1271"/>
@@ -63968,7 +64035,7 @@ None
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;$length &amp;rarr; 42.4711&lt;/pre&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;funzione $length &lt;/h3&gt;
+        <translation>&lt;h3&gt;Funzione $length &lt;/h3&gt;
 Restituisce la lunghezza dell&apos;oggetto selezionato.
 
 &lt;h4&gt;Sintassi&lt;/h4&gt;
@@ -63988,7 +64055,10 @@ Nessuno
 &lt;h3&gt;Color Group&lt;/h3&gt;
 This group contains functions for manipulating colors
 </source>
-        <translation type="unfinished"></translation>
+        <translation>
+&lt;h3&gt;Gruppo colori &lt;/h3&gt;
+Questo gruppo contiene le funzioni per manipolare i colori
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1376"/>
@@ -64008,7 +64078,21 @@ This function takes one argument.
 &lt;code&gt;log10(1) &amp;rarr; 0&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;log10(100) &amp;rarr; 2&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funzione log10()&lt;/h3&gt;
+Restituisce il logaritmo in base 10 dell&apos;espressione fornita .
+&lt;br&gt;
+Questa funzione richiede un argomento
+&lt;h4&gt;Sintassi&lt;/h4&gt;
+&lt;code&gt;log10(value)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argomenti&lt;/h4&gt;
+&lt;code&gt;value&lt;/code&gt; - qualsiasi numero positivo.
+&lt;br&gt;
+
+&lt;h4&gt;Esempio&lt;/h4&gt;
+&lt;code&gt;log10(1) &amp;rarr; 0&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;log10(100) &amp;rarr; 2&lt;/code&gt;&lt;br&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="347"/>
@@ -64028,7 +64112,22 @@ Returns a substring that contains the &lt;i&gt;n&lt;/i&gt; leftmost characters o
 &lt;code&gt;left(&apos;Hello World&apos;,5) &amp;rarr; &apos;Hello&apos;&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funzione left()&lt;/h3&gt;
+Restituisce una porzione di stringa contenente gli &lt;i&gt;n&lt;/i&gt; caratteri più a sinistra della stringa.
+
+&lt;h4&gt;Sintassi&lt;/h4&gt;
+&lt;code&gt;left(string, length)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argomenti&lt;/h4&gt;
+&lt;code&gt;string&lt;/code&gt; - è di tipo string. La stringa.
+&lt;br&gt;
+&lt;code&gt;length&lt;/code&gt; - è di tipo int. Il numero di caratteri da restituire da sinistra a destra.
+
+&lt;h4&gt;Esempio&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;left(&apos;Hello World&apos;,5) &amp;rarr; &apos;Hello&apos;&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="144"/>
@@ -64045,7 +64144,19 @@ Returns tangent of an angle.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      tan(1.0) &amp;rarr; 1.5574077246549&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funzione tan()&lt;/h3&gt;
+Restituisce la tangente di un angolo
+
+
+&lt;p&gt;&lt;h4&gt;Sintassi&lt;/h4&gt;
+     tan(&lt;i&gt;real&lt;/i&gt;)&lt;/i&gt;
+
+&lt;p&gt;&lt;h4&gt;Argomenti&lt;/h4&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; angolo in radianti.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Esempio&lt;/h4&gt;
+     tan(1.0) &amp;rarr; 1.5574077246549&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="69"/>
@@ -64061,7 +64172,18 @@ Converts a string to lower case letters.
 &lt;p&gt;&lt;h4&gt;  Example&lt;/h4&gt;
      lower(&apos;HELLO World&apos;) &amp;rarr; &apos;hello world&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funzione lower()&lt;/h3&gt;
+Converte le lettere di una stringa in minuscolo.
+
+&lt;p&gt;&lt;h4&gt;Sintassi&lt;/h4&gt;
+     lower(&lt;i&gt;string&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argomenti&lt;/h4&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; è di tipo string. La stringa da convertire in minuscolo.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Esempio&lt;/h4&gt;
+     lower(&apos;HELLO World&apos;) &amp;rarr; &apos;hello world&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="818"/>
@@ -64080,7 +64202,7 @@ Rounds a number upwards.
 &lt;code&gt;ceil(4.9) &amp;rarr; 5&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;ceil(-4.9) &amp;rarr; -4&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;funzione ceil()&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funzione ceil()&lt;/h3&gt;
 Arrotonda un numero per eccesso.
 
 &lt;h4&gt;Sintassi&lt;/h4&gt;
@@ -64112,7 +64234,18 @@ Converts a string to real number. Nothing changed if a value cannot be converted
 &lt;!-- Show example of function.--&gt;
      toreal(&apos;123.45&apos;) &amp;rarr; 123.45&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funzione toreal()&lt;/h3&gt;
+Converte una stringa in un numero reale. Se un valore non può essere convertito in reale non viene alterato nulla (e.g &apos;123.56asd&apos; non è valido). I numeri sono arrotondati solo dopo aver salvato i cambiamenti, se la precisione è più piccola del risultato della conversione.
+
+&lt;p&gt;&lt;h4&gt;Sintassi&lt;/h4&gt;
+     toreal(&lt;i&gt;string&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argomenti&lt;/h4&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; è di tipo string. La stringa da convertire in numero reale.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Esempio&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     toreal(&apos;123.45&apos;) &amp;rarr; 123.45&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1117"/>
@@ -64128,7 +64261,18 @@ Retrieves a x coordinate of the current feature
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;xat(1) &amp;rarr; 5&lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funzione xat()&lt;/h3&gt;
+Trova la coordinata x dell&apos;elemento corrente
+
+&lt;h4&gt;Sintassi&lt;/h4&gt;
+&lt;code&gt;xat(i)&lt;/code&gt;
+
+&lt;h4&gt;Argomenti&lt;/h4&gt;
+&lt;code&gt;i&lt;code&gt; - è di tipo int. E&apos; l&apos;indice di un punto in una linea (gli indici incominciano da 0; i valori negativi valgono per l&apos;ultimo indice).
+
+&lt;h4&gt;Esempio&lt;/h4&gt;
+&lt;pre&gt;xat(1) &amp;rarr; 5&lt;/pre&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1100"/>
@@ -64149,14 +64293,32 @@ to.
 &lt;code&gt;format_number(10000000.332,2) &amp;rarr; 10,000,000.33&lt;/code&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funzione format_number()&lt;/h3&gt;
+Restituisce un numero formattato con il separatore delle migliaia in uso localmente. 
+Tronca anche il numero secondo il numero di cifre indicato. 
+&lt;h4&gt;Sintassi&lt;/h4&gt;
+&lt;code&gt;format_number(number,places)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argomenti&lt;/h4&gt;
+&lt;code&gt;number&lt;/code&gt; - è di tipo number. Il numero da formattare.
+&lt;br&gt;
+
+&lt;code&gt;places&lt;/code&gt; - è di tipo int. Il numero di cifre decimali in cui troncare la stringa
+
+&lt;h4&gt;Esempio&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;format_number(10000000.332,2) &amp;rarr; 10,000,000.33&lt;/code&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1219"/>
         <source>&lt;h3&gt;String Group&lt;/h3&gt;
 This group contains functions that operate on strings e.g replace, convert to upper case.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Gruppo String &lt;/h3&gt;
+Questo gruppo contiene le funzioni che operano sulle stringhe. es: sostituisci, converti in maiuscolo.
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="260"/>
@@ -64175,7 +64337,21 @@ Rounds a number downwards.
 &lt;code&gt;floor(4.9) &amp;rarr; 4&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;floor(-4.9) &amp;rarr; -5&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funzione floor()&lt;/h3&gt;
+Arrotonda un numero per difetto.
+
+&lt;h4&gt;Sintassi&lt;/h4&gt;
+&lt;code&gt;floor(value)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argomenti&lt;/h4&gt;
+&lt;code&gt;value&lt;/code&gt; - a number.
+&lt;br&gt;
+
+&lt;h4&gt;Esempio&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;floor(4.9) &amp;rarr; 4&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;floor(-4.9) &amp;rarr; -5&lt;/code&gt;&lt;br&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1155"/>
@@ -64193,7 +64369,20 @@ Converts a string to integer number. Nothing changed if a value cannot be conver
 &lt;!-- Show example of function.--&gt;
      toint(&apos;123&apos;) &amp;rarr; 123&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funzione toint()&lt;/h3&gt;
+Converte una stringa in un numero intero. Se un valore non può essere convertito in intero non viene alterato nulla (e.g &apos;123.56asd&apos; non è valido).
+
+&lt;p&gt;&lt;h4&gt;Sintassi&lt;/h4&gt;
+     toint(&lt;i&gt;string&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argomenti&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; è di tipo string.  La stinga da convertire in numero intero. &lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Esempio&lt;/h4&gt;
+!-- Show example of function.--&gt;
+     toint(&apos;123&apos;) &amp;rarr; 123&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="738"/>
@@ -64209,7 +64398,18 @@ Retrieves a y coordinate of the current feature
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;yat(1) &amp;rarr; 5&lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funzione yat()&lt;/h3&gt;
+Trova la coordinata y dell&apos;elemento corrente
+
+&lt;h4&gt;Sintassi&lt;/h4&gt;
+&lt;code&gt;yat(i)&lt;/code&gt;
+
+&lt;h4&gt;Argomenti&lt;/h4&gt;
+&lt;code&gt;i&lt;code&gt; - è di tipo int. E&apos; l&apos;indice di un punto in una linea (gli indici incominciano da 0; i valori negativi valgono per l&apos;ultimo indice).
+
+&lt;h4&gt;Esempio&lt;/h4&gt;
+&lt;pre&gt;yat(1) &amp;rarr; 5&lt;/pre&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="951"/>
@@ -64226,7 +64426,7 @@ abs(&lt;i&gt;value&lt;/i&gt;)&lt;br&gt;
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;code&gt;abs(-2) &amp;rarr; 2&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;funzione abs()&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funzione abs()&lt;/h3&gt;
 Restituisce il valore assoluto di un numero.
 
 
@@ -64256,7 +64456,20 @@ Converts a number to string.
 &lt;!-- Show example of function.--&gt;
      tostring(123) &amp;rarr; &apos;123&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funzione tostring() &lt;/h3&gt;
+Converte un numero in una stringa.
+
+&lt;p&gt;&lt;h4&gt;Sintassi&lt;/h4&gt;
+     tostring(&lt;i&gt;number&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argomenti&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;number&lt;/i&gt; &amp;rarr; è di tipo integer or real.  Il numero da convertire in stringa.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Esempio&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     tostring(123) &amp;rarr; &apos;123&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="438"/>
@@ -64274,7 +64487,19 @@ Format a string using supplied arguments.
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;format(&apos;This %1 a %2&apos;,&apos;is&apos;, &apos;test&apos;) &amp;rarr; This is a test&lt;/code&gt;&lt;br&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funzione format()&lt;/h3&gt;
+Formatta una stringa secondo gli argomenti forniti.
+
+&lt;h4&gt;Sintassi&lt;/h4&gt;
+&lt;code&gt;format(&apos;string&apos;, arg, [arg...n])&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argomenti&lt;/h4&gt;
+&lt;code&gt;string&lt;/code&gt; - è di tipo string.  La stringa con i segnaposto Qt QString.  Usa %1, %2, ecc come segnaposto. I segnaposto possono essere ripetuti. 
+&lt;br&gt;
+&lt;code&gt;arg [arg...n]&lt;/code&gt; - quasiasi tipo. Qualsiasi numero di argomenti. 
+
+&lt;h4&gt;Esempio&lt;/h4&gt;
+&lt;code&gt;format(&apos;This %1 a %2&apos;,&apos;is&apos;, &apos;test&apos;) &amp;rarr; This is a test&lt;/code&gt;&lt;br&gt;</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1529"/>
@@ -64297,7 +64522,23 @@ Returns a string representation of a color based on its cyan, magenta, yellow, b
 &lt;!-- Show example of function.--&gt;
      color_cmyka(100,50,0,10,200) &amp;rarr; &apos;0,115,230,200&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funzione color_cmyka() &lt;/h3&gt;
+Restituisce una stringa rappresentante un colore sulla base delle sue componenti ciano, magenta, giallo, nero ed alfa (trasparenza)
+
+&lt;p&gt;&lt;h4&gt;Sintassi&lt;/h4&gt;
+     color_cmyka(&lt;i&gt;cyan, magenta, yellow, black, alpha&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argomenti&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  ciano&lt;/i&gt; &amp;rarr; componente ciano espressa come valore intero da 0 a 255.&lt;br&gt;
+&lt;i&gt;  magenta&lt;/i&gt; &amp;rarr; componente magenta espressa come valore intero da 0 a 255.&lt;br&gt;
+&lt;i&gt;  giallo&lt;/i&gt; &amp;rarr; componente gialla espressa come valore intero da 0 a 255.&lt;br&gt;
+&lt;i&gt;  nero&lt;/i&gt; &amp;rarr; componente nera espressa come valore intero da 0 a 255.&lt;br&gt;
+&lt;i&gt;  alfa&lt;/i&gt; &amp;rarr; componente alfa espressa come valore intero da 0 (completamente trasparente) a 255 (opaco).&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Esempio&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     color_cmyka(100,50,0,10,200) &amp;rarr; &apos;0,115,230,200&apos;&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1433"/>
@@ -64321,14 +64562,34 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;month(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 4.033...&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funzione month()&lt;/h3&gt;
+Estrae il mese da una data, od il numero di mesi da un &lt;code&gt;Interval&lt;/code&gt; 
+
+&lt;h4&gt;Sintassi&lt;/h4&gt;
+&lt;code&gt;month(date)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;month(Interval)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argomenti&lt;/h4&gt;
+&lt;code&gt;date&lt;/code&gt; - è di tipo data o un datetime. La data da cui estrarre il mese.
+&lt;br&gt;
+&lt;code&gt;Interval&lt;/code&gt; - è di tipo Interval. L&apos;intervallo di cui restituire il numero di mesi.
+
+&lt;h4&gt;Esempio&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;month(&apos;2012-05-12&apos;) &amp;rarr; 05&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;month(tointerval(&apos;3 months&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;month(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 4.033...&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="43"/>
         <source>&lt;h3&gt;Math Group&lt;/h3&gt;
 This group contains math functions e.g square root, sin and cos
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Gruppo matematica&lt;/h3&gt;
+Questo gruppo contiene funzioni matematiche, es: radice quadrate, seno e coseno
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="231"/>
@@ -64361,7 +64622,35 @@ accelerating as the input values approach the domain maximum. Smaller exponents 
      
      
 </source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>#dubbio# da rivedere</translatorcomment>
+        <translation>&lt;h3&gt;Funzione scale_exp() &lt;/h3&gt;
+Trasforma un dato valore da un dominio in input ad un intervallo in output usando una curva esponenziale. Questa funzione può essere utilizzata per agevolare i valori dentro o fuori da un determinato intervallo.   
+
+&lt;p&gt;&lt;h4&gt;Sintassi&lt;/h4&gt;
+     scale_exp(&lt;i&gt;val&lt;/i&gt;,&lt;i&gt;domain_min&lt;/i&gt;,&lt;i&gt;domain_max&lt;/i&gt;,&lt;i&gt;range_min&lt;/i&gt;,&lt;i&gt;range_max&lt;/i&gt;,&lt;i&gt;exponent&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argomenti&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  val&lt;/i&gt; &amp;rarr; è un valore nel dominio in input. La funzione resituirà il valore corrispondente scalato nell&apos;intervallo di output.&lt;br&gt;
+&lt;i&gt;  domain_min, domain_max&lt;/i&gt; &amp;rarr; specifica il dominio in input, il più grande e il più piccolo dei valori che il &lt;i&gt;val&lt;/i&gt; in input deve assumere.&lt;br&gt;
+&lt;i&gt;  range_min, range_max&lt;/i&gt; &amp;rarr; specifica l&apos;intervallo di output, il più grande e il più piccolo dei valori che devono essere prodotti in output dalla funzione.&lt;br&gt;
+&lt;i&gt;  exponent&lt;/i&gt; &amp;rarr; un valore positivo (maggiore di 0), che determina il modo con cui i valori in input sono mappati nell&apos;intervallo in output. Grandi esponenti agevoleranno l&apos;entrata dei valori in output​​, partendo lentamente prima di accelerare allorquando i valori di ingresso si avvicinaneranno al punto di massimo del dominio.
+Esponenti più piccoli (minori di 1) ne agevoleranno l&apos;uscita, incominciando velocemente la mappatura per poi rallentare in prossimità del massimo del dominio.&lt;br&gt;
+
+&lt;h4&gt;Esempio&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;b&gt;Easing in, using an exponent of 2:&lt;/b&gt;&lt;br&gt;
+     scale_exp(5,0,10,0,100,2) &amp;rarr; 25&lt;br&gt;
+     scale_exp(7.5,0,10,0,100,2) &amp;rarr; 56.25&lt;br&gt;
+     scale_exp(9.5,0,10,0,100,2) &amp;rarr; 90.25&lt;br&gt;               
+     &lt;br&gt;
+&lt;b&gt;Easing out, using an exponent of 0.5:&lt;/b&gt;&lt;br&gt;          
+     scale_exp(3,0,10,0,100,0.5) &amp;rarr; 54.772&lt;br&gt;
+     scale_exp(6,0,10,0,100,0.5) &amp;rarr; 77.459&lt;br&gt;
+     scale_exp(9,0,10,0,100,0.5) &amp;rarr; 94.868&lt;br&gt;          
+     
+     
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="848"/>
@@ -64385,7 +64674,26 @@ This function can take any number of arguments.
  else the value of &quot;fallbackField&quot; or the string &apos;ERROR&apos; if both are NULL&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funzione coalesce()&lt;/h3&gt;
+Restituisce il primo valore non NULL dalla lista delle espressioni
+&lt;br&gt;
+Questa funzione può assumere qualsiasi numero di argomenti.
+&lt;h4&gt;Sintassi&lt;/h4&gt;
+&lt;code&gt;coalesce(expression1, expression2 ...)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argomenti&lt;/h4&gt;
+&lt;code&gt;expression&lt;/code&gt; - qualsiasi espressioni valida o valore, indipendentemente dal tipo.
+&lt;br&gt;
+
+&lt;h4&gt;Esempio&lt;/h4&gt;
+!-- Show example of function.--&gt;
+&lt;code&gt;coalesce(NULL, 2) &amp;rarr; 2&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;coalesce(NULL, 2, 3) &amp;rarr; 2&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;coalesce(7, NULL, 3*2) &amp;rarr; 7&lt;/code&gt;&lt;br&gt;&lt;br&gt;
+&lt;code&gt;coalesce(&quot;fieldA&quot;, &quot;fallbackField&quot;, &apos;ERROR&apos;) &amp;rarr; il valore di fieldA se è non NULL
+ altrimenti il valore di &quot;fallbackField&quot; oppure la stringa &apos;ERROR&apos; se entrambi sono NULL&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1009"/>
@@ -64409,7 +64717,26 @@ Transforms a given value from an input domain to an output range using linear in
      
      
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funzione scale_linear() &lt;/h3&gt;
+Trasforma un dato valore da un dominio in input ad un intervallo in output usando un interpolazione lineare. 
+
+&lt;p&gt;&lt;h4&gt;Sintassi&lt;/h4&gt;
+     scale_linear(&lt;i&gt;val&lt;/i&gt;,&lt;i&gt;domain_min&lt;/i&gt;,&lt;i&gt;domain_max&lt;/i&gt;,&lt;i&gt;range_min&lt;/i&gt;,&lt;i&gt;range_max&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argomenti&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  val&lt;/i&gt; &amp;rarr; è un valore nel dominio in input. La funzione resituirà il valore corrispondente scalato nell&apos;intervallo di output.&lt;br&gt;
+&lt;i&gt;  domain_min, domain_max&lt;/i&gt; &amp;rarr; specifica il dominio in input, il più grande e il più piccolo dei valori che il &lt;i&gt;val&lt;/i&gt; in input deve assumere.&lt;br&gt;
+&lt;i&gt;  range_min, range_max&lt;/i&gt; &amp;rarr; specifica l&apos;intervallo di output, il più grande e il più piccolo dei valori che devono essere prodotti in output dalla funzione.&lt;br&gt;
+
+&lt;h4&gt;Esempio&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     scale_linear(5,0,10,0,100) &amp;rarr; 50&lt;br&gt;
+     scale_linear(0.2,0,1,0,360) &amp;rarr; 72 &lt;i&gt;(es: riscala un valore compreso tra 0 ed 1 in un angolo compreso tra 0 e 360)&lt;/i&gt;&lt;br&gt;
+     scale_linear(1500,1000,10000,9,20) &amp;rarr; 10.22 &lt;i&gt;(es: riscala una popolazione di dimensione variabile tra 1000 e 10000 in un font di dimensione compresa tra 0 e 20)&lt;/i&gt;&lt;br&gt;
+     
+     
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="792"/>
@@ -64426,7 +64753,7 @@ None
 &lt;pre&gt;$area &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;funzione $area&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funzione $area&lt;/h3&gt;
 Restituisce l&apos;area dell&apos;oggetto corrente.
 
 &lt;h4&gt;Sintassi&lt;/h4&gt;
@@ -64456,7 +64783,20 @@ Removes all leading and trailing whitespace (spaces, tabs, etc) from a string.
 &lt;!-- Show example of function.--&gt;
      trim(&apos;   hello world    &apos;) &amp;rarr; &apos;hello world&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funzione trim() &lt;/h3&gt;
+Rimuove da una stringa ogni spazio bianco (spazi, tab, ecc..) iniziale e finale.
+
+&lt;p&gt;&lt;h4&gt;Sintassi&lt;/h4&gt;
+     trim(&lt;i&gt;string&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argomenti&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;string&lt;/i&gt; &amp;rarr; è di tipo string. La stringa da accorciare.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Esempio&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     trim(&apos;   hello world    &apos;) &amp;rarr; &apos;hello world&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="868"/>
@@ -64476,7 +64816,22 @@ Returns a string representation of a color based on its hue, saturation, and val
 &lt;!-- Show example of function.--&gt;
      color_hsv(40,100,100) &amp;rarr; &apos;#ffaa00&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funzione color_hsv() &lt;/h3&gt;
+Restituisce una stringa rappresentante un colore sulla base della sua tonalità, saturazione e valore
+
+&lt;p&gt;&lt;h4&gt;Sintassi&lt;/h4&gt;
+     color_hsv(&lt;i&gt;hue, saturation, value&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argomenti&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  tonalità&lt;/i&gt; &amp;rarr; la tonalità espressa come valore intero da 0 a 360.&lt;br&gt;
+&lt;i&gt;  saturazione&lt;/i&gt; &amp;rarr; la percentuale di saturazione espressa come valore intero da 0 a 100.&lt;br&gt;
+&lt;i&gt;  valore&lt;/i&gt; &amp;rarr; la percentuale di valore espressa come valore intero da 0 a 100.&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Esempio&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     color_hsv(40,100,100) &amp;rarr; &apos;#ffaa00&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="983"/>
@@ -64493,7 +64848,18 @@ Convert a string into Qt data time type.
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;todatetime(&apos;2012-05-04 12:50:00&apos;) &amp;rarr; 2012-05-04T12:50:00&lt;/code&gt;&lt;br&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funzione todatetime()&lt;/h3&gt;
+Converte una stringa in un tipo dati Qt data time.
+
+&lt;h4&gt;Sintassi&lt;/h4&gt;
+&lt;code&gt;todatetime(&apos;string&apos;)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argomenti&lt;/h4&gt;
+&lt;code&gt;string&lt;/code&gt; - è di tipo string nel formato Qt date time.
+
+&lt;h4&gt;Esempio&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;todatetime(&apos;2012-05-04 12:50:00&apos;) &amp;rarr; 2012-05-04T12:50:00&lt;/code&gt;&lt;br&gt;</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="278"/>
@@ -64517,7 +64883,25 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;week(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 104.285...&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funzione week()&lt;/h3&gt;
+Estrae il numero della settimana da un tipo date, od il numero di settimane da un &lt;code&gt;Interval&lt;/code&gt; 
+
+&lt;h4&gt;Sintassi&lt;/h4&gt;
+&lt;code&gt;week(datetime)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;week(Interval)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argomenti&lt;/h4&gt;
+&lt;code&gt;date&lt;/code&gt; - è di tipo date o datetime. La data da cui estrarre il numero della settimana.
+&lt;br&gt;
+&lt;code&gt;Interval&lt;/code&gt; - è di tipo Interval. L&apos;intervallo da cui restituire il numero di settimane.
+
+&lt;h4&gt;Esempio&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;week(&apos;2012-05-12&apos;) &amp;rarr; 19&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;week(tointerval(&apos;3 weeks&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;week(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 104.285...&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="94"/>
@@ -64551,7 +64935,7 @@ return a result.
 &lt;/pre&gt;
 </source>
         <translatorcomment>da rivedere</translatorcomment>
-        <translation type="unfinished">&lt;h3&gt;espressione CASE&lt;/h3&gt;
+        <translation>&lt;h3&gt;Espressione CASE&lt;/h3&gt;
 Un&apos;espressione condizionale che può essere usata per valutare espressioni multiple e restituire un risultato.
 
 &lt;h4&gt;Sintassi&lt;/h4&gt;
@@ -64595,7 +64979,7 @@ None
 &lt;pre&gt;$id &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;funzione $id&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funzione $id&lt;/h3&gt;
 Restituisce l&apos;id dell&apos;oggetto della riga selezionata.
 
 &lt;h4&gt;Sintassi&lt;/h4&gt;
@@ -64627,14 +65011,35 @@ This function takes one argument.
 &lt;code&gt;ln(1) &amp;rarr; 0&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;ln(2.7182818284590452354) &amp;rarr; 1&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funzione ln()&lt;/h3&gt;
+Restituisce 
+
+&lt;h4&gt;Sintassi&lt;/h4&gt;
+&lt;code&gt;week(datetime)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;week(Interval)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argomenti&lt;/h4&gt;
+&lt;code&gt;date&lt;/code&gt; - è di tipo date o datetime. La data da cui estrarre il numero della settimana.
+&lt;br&gt;
+&lt;code&gt;Interval&lt;/code&gt; - è di tipo Interval. L&apos;intervallo da cui restituire il numero di settimane.
+
+&lt;h4&gt;Esempio&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;week(&apos;2012-05-12&apos;) &amp;rarr; 19&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;week(tointerval(&apos;3 weeks&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;week(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 104.285...&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1268"/>
         <source>&lt;h3&gt;Date and Time Group&lt;/h3&gt;
 This group contains functions for handling date and time data.
 </source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>#dubbio#</translatorcomment>
+        <translation>&lt;h3&gt; Gruppo Date e Ora&lt;/h3&gt;
+Questo gruppo contiene funzioni per maneggiare dati con date e ore.
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="750"/>
@@ -64651,7 +65056,7 @@ None
 &lt;pre&gt;$numfeatures &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;funzione $numfeatures&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funzione $numfeatures&lt;/h3&gt;
 Durante la generazione di un atlante, restituisce il numero di geometrie contenute nel vettore di copertura.
 
 &lt;h4&gt;Sintassi&lt;/h4&gt;
@@ -64685,7 +65090,22 @@ Returns a string representation of a color based on its cyan, magenta, yellow an
 &lt;!-- Show example of function.--&gt;
      color_cmyk(100,50,0,10) &amp;rarr; &apos;#0073e6&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funzione color_cmyka() &lt;/h3&gt;
+Restituisce una stringa rappresentante un colore sulla base delle sue componenti ciano, magenta, giallo, e nero
+
+&lt;p&gt;&lt;h4&gt;Sintassi&lt;/h4&gt;
+     color_cmyk(&lt;i&gt;cyan, magenta, yellow, black&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argomenti&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  ciano&lt;/i&gt; &amp;rarr; componente ciano espressa come valore intero da 0 a 255.&lt;br&gt;
+&lt;i&gt;  magenta&lt;/i&gt; &amp;rarr; componente magenta espressa come valore intero da 0 a 255.&lt;br&gt;
+&lt;i&gt;  giallo&lt;/i&gt; &amp;rarr; componente gialla espressa come valore intero da 0 a 255.&lt;br&gt;
+&lt;i&gt;  nero&lt;/i&gt; &amp;rarr; componente nera espressa come valore intero da 0 a 255.&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Esempio&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     color_cmyk(100,50,0,10) &amp;rarr; &apos;#0073e6&apos;&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1357"/>
@@ -64708,7 +65128,24 @@ using the fill character.
 &lt;code&gt;rpad(&apos;Hello&apos;, 10, &apos;x&apos;) &amp;rarr; &apos;xxxxxHello&apos;&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funzione rpad() &lt;/h3&gt;
+Restituisce una stringa della lunghezza specificata, riempita usando il carattere di riempimento.
+
+&lt;p&gt;&lt;h4&gt;Sintassi&lt;/h4&gt;
+&lt;code&gt;rpad(string, width, fill)&lt;/code&gt;&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Argomenti&lt;/h4&gt;
+&lt;code&gt;string&lt;/code&gt; - è di tipo string. La stringa.
+&lt;br&gt;
+&lt;code&gt;width&lt;/code&gt; - p di tipio int. La lunghezza della nuova stringa.
+&lt;br&gt;
+&lt;code&gt;fill&lt;/code&gt; - è di tipo char. Il carattere con cui riempire lo spazio rimanente.
+
+&lt;p&gt;&lt;h4&gt;Esempio&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;rpad(&apos;Hello&apos;, 10, &apos;x&apos;) &amp;rarr; &apos;xxxxxHello&apos;&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1494"/>
@@ -64730,7 +65167,23 @@ using the fill character.
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;lpad(&apos;Hello&apos;, 10, &apos;x&apos;) &amp;rarr; &apos;Helloxxxxx&apos;&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funzione lpad() &lt;/h3&gt;
+Restituisce una stringa della lunghezza specificata, riempita usando il carattere di riempimento.
+
+&lt;p&gt;&lt;h4&gt;Sintassi&lt;/h4&gt;
+&lt;code&gt;lpad(string, length, fill)&lt;/code&gt;&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Argomenti&lt;/h4&gt;
+&lt;code&gt;string&lt;/code&gt; - è di tipo string. La stringa.
+&lt;br&gt;
+&lt;code&gt;length&lt;/code&gt; - p di tipio int. La lunghezza della nuova stringa.
+&lt;br&gt;
+&lt;code&gt;fill&lt;/code&gt; - è di tipo char. Il carattere con cui riempire lo spazio rimanente.
+
+&lt;p&gt;&lt;h4&gt;Esempio&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;lpad(&apos;Hello&apos;, 10, &apos;x&apos;) &amp;rarr; &apos;Helloxxxxx&apos;&lt;/code&gt;&lt;br&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1480"/>
@@ -64748,14 +65201,28 @@ Converts a string to upper case letters.
 &lt;!-- Show example of function.--&gt;
      upper(&apos;hello WOrld&apos;) &amp;rarr; &apos;HELLO WORLD&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funzione upper() &lt;/h3&gt;
+Converte una stringa in maiuscolo.
+
+&lt;p&gt;&lt;h4&gt;Sintassi&lt;/h4&gt;
+     upper(&lt;i&gt;string&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argomenti&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; è di tipo string. La stringa da convertire in maiuscolo.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Esempio&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     upper(&apos;hello WOrld&apos;) &amp;rarr; &apos;HELLO WORLD&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="406"/>
         <source>&lt;h3&gt;Record Group&lt;/h3&gt;
 This group contains functions that operate on record identifiers.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Gruppo record&lt;/h3&gt;
+Questo gruppo contiene funzioni che operano sugli identificativi dei record.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="363"/>
@@ -64775,7 +65242,22 @@ Returns a substring that contains the &lt;i&gt;n&lt;/i&gt; rightmost characters 
 &lt;code&gt;right(&apos;Hello World&apos;,5) &amp;rarr; &apos;World&apos;&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funzione right()&lt;/h3&gt;
+Restituisce una porzione di stringa contenente gli &lt;i&gt;n&lt;/i&gt; caratteri più a destra della stringa.
+
+&lt;h4&gt;Sintassi&lt;/h4&gt;
+&lt;code&gt;right(string, pos)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argomenti&lt;/h4&gt;
+&lt;code&gt;string&lt;/code&gt; - è di tipo string. La stringa.
+&lt;br&gt;
+&lt;code&gt;length&lt;/code&gt; - è di tipo int. Il numero di caratteri da restituire da destra a sinistra.
+
+&lt;h4&gt;Esempio&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;right(&apos;Hello World&apos;,5) &amp;rarr; &apos;World&apos;&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1086"/>
@@ -64793,7 +65275,20 @@ Returns the length of a string.
 &lt;!-- Show example of function.--&gt;
      length(&apos;HELLO&apos;) &amp;rarr; 5&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funzione upper() &lt;/h3&gt;
+Restituisce la lunghezza di una stringa.
+
+&lt;p&gt;&lt;h4&gt;Sintassi&lt;/h4&gt;
+     length(&lt;i&gt;string&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argomenti&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; è di tipo string. La stringa di cui contare la lunghezza.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Esempio&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     length(&apos;HELLO&apos;) &amp;rarr; 5&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="901"/>
@@ -64811,7 +65306,19 @@ Returns the smallest value in a set of values.
 &lt;!-- Show example of function.--&gt;
      min(20.5,10,6.2) &amp;rarr; 6.2
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funzione min()&lt;/h3&gt;
+Restituisce il valore più piccolo in un set di valori.
+
+&lt;h4&gt;Sintassi&lt;/h4&gt;
+     min(&lt;i&gt;value&lt;i&gt;[,&lt;i&gt;value&lt;/i&gt;...])
+
+&lt;h4&gt;Argomenti&lt;/h4&gt;
+&lt;i&gt;  value&lt;/i&gt; &amp;rarr; è un numero.&lt;br&gt;
+
+&lt;h4&gt;Esempio&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     min(20.5,10,6.2) &amp;rarr; 6.2
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="884"/>
@@ -64832,7 +65339,23 @@ Returns a string representation of a color based on its hue, saturation, lightne
 &lt;!-- Show example of function.--&gt;
      color_hsla(100,50,70,200) &amp;rarr; &apos;166,217,140,200&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funzione color_hsla() &lt;/h3&gt;
+Restituisce una stringa rappresentante un colore sulla base della sua tonalità, saturazione, luminosità e alfa (trasparenza)
+
+&lt;p&gt;&lt;h4&gt;Sintassi&lt;/h4&gt;
+     color_hsl(&lt;i&gt;hue, saturation, lightness&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argomenti&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  tonalità&lt;/i&gt; &amp;rarr; la tonalità espressa come valore intero da 0 a 360.&lt;br&gt;
+&lt;i&gt;  saturazione&lt;/i&gt; &amp;rarr; la percentuale di saturazione espressa come valore intero da 0 a 100.&lt;br&gt;
+&lt;i&gt;  luminosità&lt;/i&gt; &amp;rarr; la percentuale di luminosità espressa come valore intero da 0 a 100.&lt;br&gt;
+&lt;i&gt;  alfa&lt;/i&gt; &amp;rarr; componente alfa espressa come valore intero da 0 (completamente trasparente) a 255 (opaco).&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Esempio&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     color_hsla(100,50,70,200) &amp;rarr; &apos;166,217,140,200&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="964"/>
@@ -64849,7 +65372,7 @@ Returns arcussinus of a value in radians.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      asin(1.0) &amp;rarr; 1.5707963267949&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;funzione asin()&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funzione asin()&lt;/h3&gt;
 Restituisce l&apos;arcoseno di un valore in radianti.
 
 
@@ -64884,7 +65407,20 @@ Restricts an input value to a specified range.
      
      
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funzione clamp()&lt;/h3&gt;
+Restituisce l&apos;arcotangente di x/y usando il segno dei due argomenti per determinare il quadrante del risultato.
+
+
+
+&lt;p&gt;&lt;h4&gt;Sintassi&lt;/h4&gt;
+     atan2(&lt;i&gt;real&lt;/i&gt;, &lt;i&gt;real&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argomenti&lt;/h4&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; y coordinate difference&lt;br&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; x coordinate difference&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Esempio&lt;/h4&gt;
+     atan2(1.0, 1.732) &amp;rarr; 0.523611477769969&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="705"/>
@@ -64901,7 +65437,19 @@ Returns square root of a value
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      sqrt(9) &amp;rarr; 3&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funzione sqrt()&lt;/h3&gt;
+Restituisce la radice quadrata di un valore
+
+
+&lt;p&gt;&lt;h4&gt;Sintassi&lt;/h4&gt;
+     sqrt(&lt;i&gt;real&lt;/i&gt;)&lt;/i&gt;
+
+&lt;p&gt;&lt;h4&gt;Argomenti&lt;/h4&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; numero.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Esempio&lt;/h4&gt;
+     sqrt(9) &amp;rarr; 3&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="692"/>
@@ -64918,7 +65466,7 @@ None
 &lt;pre&gt;$x &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;funzione $x&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funzione $x&lt;/h3&gt;
 Restituisce la coordinata x dell&apos;oggetto corrente.
 
 &lt;h4&gt;Sintassi&lt;/h4&gt;
@@ -64955,7 +65503,26 @@ use &lt;code&gt;round(decimal)&lt;/code&gt; to round to the nearest integer&lt;b
 
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funzione round()&lt;/h3&gt;
+Arrotonda un numero nel numero di cifre decimali specificate.
+&lt;br&gt;
+Questa funzione può avere uno o due argomenti a seconda della necessità.
+&lt;h4&gt;Sintassi&lt;/h4&gt;
+&lt;code&gt;round(decimal,places)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;round(decimal)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argomenti&lt;/h4&gt;
+&lt;code&gt;decimal&lt;/code&gt; - è di tipo decimal. Il numero deimale da arrotondare.
+&lt;br&gt;
+&lt;code&gt;places&lt;/code&gt; - è di tipo int. Il numero di cifre decimali a cui arrotondare. Può essere negativo.
+
+&lt;h4&gt;Esempio&lt;/h4&gt;&lt;!-- Show example of function.--&gt;
+&lt;code&gt;round(1234.567, 2 ) &amp;rarr; 1234.57&lt;/code&gt;&lt;br&gt;
+use &lt;code&gt;round(decimal)&lt;/code&gt; per arrotondare all&apos;intero più vicino&lt;br&gt;
+&lt;code&gt;round(1234.567) &amp;rarr; 1235&lt;/code&gt;&lt;br&gt;
+
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="485"/>
@@ -65134,7 +65701,181 @@ Format a date type or string into a custom string format. Uses Qt data time form
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;format_date(&apos;2012-05-15&apos;,&apos;dd.mm.yyyy&apos;) &amp;rarr; 15.05.2012&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funzione format_date()&lt;/h3&gt;
+Formatta un tipo date od una stringa nel un formato specificato. Usa le stringhe nel formato Qt data time.  Vedi &lt;a href=&apos;http://qt-project.org/doc/qt-4.8/qdatetime.html#toString&apos;&gt;QDateTime::in stringhe&lt;/a&gt;
+
+&lt;h4&gt;Sintassi&lt;/h4&gt;
+&lt;code&gt;format_date(&apos;string&apos;, &apos;format_string&apos;)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argomenti&lt;/h4&gt;
+&lt;code&gt;string&lt;/code&gt; - è di tipo string. Stringhe Date/Time/DateTime.
+&lt;br&gt;
+&lt;code&gt;format_string&lt;/code&gt; - è di tipo string. Il modello di stringhe usato per formattare la stringa.
+
+  &lt;table&gt;
+    &lt;thead&gt;
+      &lt;tr&gt;
+        &lt;th&gt;Espressione&lt;/th&gt;
+
+        &lt;th&gt;Output&lt;/th&gt;
+      &lt;/tr&gt;
+    &lt;/thead&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;d&lt;/td&gt;
+
+      &lt;td&gt;Giorno in numero senza lo zero iniziale(1 to 31)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;dd&lt;/td&gt;
+
+      &lt;td&gt;Giorno in numero con lo zero iniziale (01 to 31)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;ddd&lt;/td&gt;
+
+      &lt;td&gt;Il nome locale del giorno abbreviato(e.g. &apos;Mon&apos; to &apos;Sun&apos;). Uses &lt;a href=
+      &quot;qdate.html#shortDayName&quot;&gt;QDate::shortDayName&lt;/a&gt;().&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;dddd&lt;/td&gt;
+
+      &lt;td&gt;Il nome locale del giorno per esteso(e.g. &apos;Monday&apos; to &apos;Sunday&apos;). Uses &lt;a href=
+      &quot;qdate.html#longDayName&quot;&gt;QDate::longDayName&lt;/a&gt;().&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;M&lt;/td&gt;
+
+      &lt;td&gt;Mese in numero senza lo zero iniziale (1-12)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;MM&lt;/td&gt;
+
+      &lt;td&gt;Mese in numero con lo zero iniziale (01-12)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;MMM&lt;/td&gt;
+
+      &lt;td&gt;il nome locale del mese abbreviato (e.g. &apos;Jan&apos; to &apos;Dec&apos;). Uses &lt;a href=
+      &quot;qdate.html#shortMonthName&quot;&gt;QDate::shortMonthName&lt;/a&gt;().&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;MMMM&lt;/td&gt;
+
+      &lt;td&gt;il nome locale del mese per esteso (e.g. &apos;January&apos; to &apos;December&apos;). Uses &lt;a href=
+      &quot;qdate.html#longMonthName&quot;&gt;QDate::longMonthName&lt;/a&gt;().&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;yy&lt;/td&gt;
+
+      &lt;td&gt;l&apos;anno come un numero a due cifre (00-99)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;yyyy&lt;/td&gt;
+
+      &lt;td&gt;l&apos;anno come un numero a quattro cifre&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/table&gt;
+
+  &lt;p&gt;Queste espressioni possono essere usate per la parte time della stringa da formattare:&lt;/p&gt;
+
+  &lt;table&gt;
+    &lt;thead&gt;
+      &lt;tr&gt;
+        &lt;th&gt;Espressione&lt;/th&gt;
+
+        &lt;th&gt;Output&lt;/th&gt;
+      &lt;/tr&gt;
+    &lt;/thead&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;h&lt;/td&gt;
+
+      &lt;td&gt;l&apos;ora senza lo zero iniziale (0 to 23 or 1 to 12 if AM/PM display)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;hh&lt;/td&gt;
+
+      &lt;td&gt;l&apos;ora con lo zero iniziale (00 to 23 or 01 to 12 if AM/PM display)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;H&lt;/td&gt;
+
+      &lt;td&gt;l&apos;ora senza lo zero iniziale (0 to 23, even with AM/PM display)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;HH&lt;/td&gt;
+
+      &lt;td&gt;l&apos;ora con lo zero iniziale (00 to 23, even with AM/PM display)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;m&lt;/td&gt;
+
+      &lt;td&gt;il minuto senza lo zero iniziale (0 to 59)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;mm&lt;/td&gt;
+
+      &lt;td&gt;il minuto con lo zero iniziale (00 to 59)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;s&lt;/td&gt;
+
+      &lt;td&gt;il secondo senza lo zero iniziale(0 to 59)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;ss&lt;/td&gt;
+
+      &lt;td&gt;il secondo con lo zero iniziale (00 to 59)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;z&lt;/td&gt;
+
+      &lt;td&gt;il millisecondo senza lo zero iniziale (0 to 999)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;zzz&lt;/td&gt;
+
+      &lt;td&gt;il millisecondo con lo zero iniziale(000 to 999)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;AP o A&lt;/td&gt;
+
+      &lt;td&gt;interpretato come un orario nel formato AM/PM. &lt;i&gt;AP&lt;/i&gt; deve essere &quot;AM&quot; oppure &quot;PM&quot;.&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;ap or a&lt;/td&gt;
+
+      &lt;td&gt;interpretato come un orario nel formato  AM/PM. &lt;i&gt;ap&lt;/i&gt; deve essere &quot;am&quot; oppure &quot;pm&quot;.&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/table&gt;
+
+&lt;br&gt;
+
+&lt;h4&gt;Esempio&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;format_date(&apos;2012-05-15&apos;,&apos;dd.mm.yyyy&apos;) &amp;rarr; 15.05.2012&lt;/code&gt;&lt;br&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="425"/>
@@ -65151,7 +65892,7 @@ None
 &lt;pre&gt;$now &amp;rarr; 2012-07-22T13:24:57&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;funzione $now&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funzione $now&lt;/h3&gt;
 Restituisce ora e giorno corrente.
 
 &lt;h4&gt;Sintassi&lt;/h4&gt;
@@ -65195,7 +65936,7 @@ return a result.
     END
 &lt;/pre&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;espressione CASE&lt;/h3&gt;
+        <translation>&lt;h3&gt;Espressione CASE&lt;/h3&gt;
 Un&apos;espressione condizionale che può essere usata per valutare espressioni multiple e restituire un risultato.
 
 &lt;h4&gt;Sintassi&lt;/h4&gt;
@@ -65228,7 +65969,9 @@ Un&apos;espressione condizionale che può essere usata per valutare espressioni 
         <source>&lt;h3&gt;Conditions Group&lt;/h3&gt;
 This group contains functions that operate on condition.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Gruppo condizioni&lt;/h3&gt;
+Questo gruppo contiene funzioni che operano sulla condizione.
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1392"/>
@@ -65252,7 +65995,25 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;day(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 730&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funzione day()&lt;/h3&gt;
+Estrae il giorno da un tipo date, od il numero di giorni da un &lt;code&gt;Interval&lt;/code&gt; 
+
+&lt;h4&gt;Sintassi&lt;/h4&gt;
+&lt;code&gt;day(date)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;day(Interval)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argomenti&lt;/h4&gt;
+&lt;code&gt;date&lt;/code&gt; - è di tipo date o datetime. La data da cui estrarre il giorno.
+&lt;br&gt;
+&lt;code&gt;Interval&lt;/code&gt; - è di tipo Interval. L&apos;intervallo da cui restituire il numero di giorni.
+
+&lt;h4&gt;Esempio&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;day(&apos;2012-05-12&apos;) &amp;rarr; 12&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;day(tointerval(&apos;3 days&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;day(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 730&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1206"/>
@@ -65269,7 +66030,19 @@ Returns exponential of an value.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      exp(1.0) &amp;rarr; 2.71828182845905&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funzione exp()&lt;/h3&gt;
+Restituisce l&apos;esponenziale di un valore
+
+
+&lt;p&gt;&lt;h4&gt;Sintassi&lt;/h4&gt;
+     exp(&lt;i&gt;real&lt;/i&gt;)&lt;/i&gt;
+
+&lt;p&gt;&lt;h4&gt;Argomenti&lt;/h4&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; numero.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Esempio&lt;/h4&gt;
+     exp(1.0) &amp;rarr; 2.71828182845905&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1283"/>
@@ -65286,7 +66059,18 @@ Converts a string to a interval type.  Can be used to take days, hours, month, e
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;todatetime(&apos;2012-05-05 12:00:00&apos;) - tointerval(&apos;1 day 2 hours&apos;) &amp;rarr; 2012-05-04T10:00:00&lt;/code&gt;&lt;br&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funzione tointerval()&lt;/h3&gt;
+Converte una stringa in un tipo interval.  Può essere usata per recuperare i giorni, ore, mesi, ecc, da una data.
+
+&lt;h4&gt;Sintassi&lt;/h4&gt;
+&lt;code&gt;tointerval(&apos;string&apos;)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argomenti&lt;/h4&gt;
+&lt;code&gt;string&lt;/code&gt; - è di tipo string. Il formato è {n} giorni {n} ore {n} mesi.
+&lt;br&gt;
+
+&lt;h4&gt;Esempio&lt;/h4&gt;&lt;!-- Show example of function.--&gt;
+&lt;code&gt;todatetime(&apos;2012-05-05 12:00:00&apos;) - tointerval(&apos;1 day 2 hours&apos;) &amp;rarr; 2012-05-04T10:00:00&lt;/code&gt;&lt;br&gt;</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1412"/>
@@ -65307,7 +66091,22 @@ Returns a string representation of a color based on its hue, saturation, value a
 &lt;!-- Show example of function.--&gt;
      color_hsva(40,100,100,200) &amp;rarr; &apos;255,170,0,200&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funzione color_hsva() &lt;/h3&gt;
+Restituisce una stringa rappresentante un colore sulla base della sua tonalità, saturazione, valore e alfa (trasparenza)
+
+&lt;p&gt;&lt;h4&gt;Sintassi&lt;/h4&gt;
+     color_hsv(&lt;i&gt;hue, saturation, value&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argomenti&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  tonalità&lt;/i&gt; &amp;rarr; la tonalità espressa come valore intero da 0 a 360.&lt;br&gt;
+&lt;i&gt;  saturazione&lt;/i&gt; &amp;rarr; la percentuale di saturazione espressa come valore intero da 0 a 100.&lt;br&gt;
+&lt;i&gt;  valore&lt;/i&gt; &amp;rarr; la percentuale di valore espressa come valore intero da 0 a 100.&lt;br&gt;
+&lt;i&gt;  alfa&lt;/i&gt; &amp;rarr; componente alfa espressa come valore intero da 0 (completamente trasparente) a 255 (opaco).&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Esempio&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     color_hsva(40,100,100,200) &amp;rarr; &apos;255,170,0,200&apos;&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1029"/>
@@ -65329,7 +66128,24 @@ Returns -1 if the expression isn&apos;t found.
      strpos(&apos;HELLO WORLD&apos;,&apos;WORLD&apos;) &amp;rarr; 6&lt;br&gt;
      strpos(&apos;HELLO WORLD&apos;,&apos;GOODBYE&apos;) &amp;rarr; -1&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funzione strpos() &lt;/h3&gt;
+Restituisce l&apos;indice di un espressione regolare in una striga.
+
+&lt;h4&gt;Sintassi&lt;/h4&gt;
+     strpos(&lt;i&gt;haystack&lt;/i&gt;, &lt;i&gt;needle&lt;/i&gt;)
+&lt;br&gt;&lt;br&gt;
+Restituisce -1 se l&apos;espressione non viene trovata.
+
+&lt;p&gt;&lt;h4&gt;Argomenti&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  haystack&lt;/i&gt; &amp;rarr; è di tipo string.  La stringa da cercare.&lt;br&gt;
+&lt;i&gt;  needle&lt;/i&gt; &amp;rarr; è di tipo number.  L&apos;espressione regolare da cercare.&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Esempio&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     strpos(&apos;HELLO WORLD&apos;,&apos;WORLD&apos;) &amp;rarr; 6&lt;br&gt;
+     strpos(&apos;HELLO WORLD&apos;,&apos;GOODBYE&apos;) &amp;rarr; -1&lt;br&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="452"/>
@@ -65346,7 +66162,18 @@ Convert a string into Qt time type.
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;totime(&apos;12:30:01&apos;) &amp;rarr; 12:30:01&lt;/code&gt;&lt;br&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funzione totime()&lt;/h3&gt;
+Converte una stringa in un tipo dati Qt time.
+
+&lt;h4&gt;Sintassi&lt;/h4&gt;
+&lt;code&gt;totime(&apos;string&apos;)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argomenti&lt;/h4&gt;
+&lt;code&gt;string&lt;/code&gt; - è di tipo string nel formato Qt time.
+
+&lt;h4&gt;Esempio&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;totime(&apos;12:30:01&apos;) &amp;rarr; 12:30:01&lt;/code&gt;&lt;br&gt;</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1343"/>
@@ -65364,7 +66191,19 @@ Returns the largest value in a set of values.
 &lt;!-- Show example of function.--&gt;
      max(2,10.2,5.5) &amp;rarr; 10.2
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funzione max()&lt;/h3&gt;
+Restituisce il valore più grande in un set di valori.
+
+&lt;h4&gt;Sintassi&lt;/h4&gt;
+     max(&lt;i&gt;value&lt;i&gt;[,&lt;i&gt;value&lt;/i&gt;...])
+
+&lt;h4&gt;Argomenti&lt;/h4&gt;
+&lt;i&gt;  value&lt;/i&gt; &amp;rarr; è un numero.&lt;br&gt;
+
+&lt;h4&gt;Esempio&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     max(2,10.2,5.5) &amp;rarr; 10.2
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="218"/>
@@ -65381,7 +66220,7 @@ Returns arcuscosinus of a value in radians.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      acos(0.5) &amp;rarr; 1.0471975511966&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;funzione acos()&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funzione acos()&lt;/h3&gt;
 Restituisce l&apos;arcocoseno di un valore in radianti.
 
 
@@ -65412,7 +66251,19 @@ capital letter).
 &lt;!-- Show example of function.--&gt;
      upper(&apos;hello WOrld&apos;) &amp;rarr; &apos;Hello World&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funzione title()&lt;/h3&gt;
+Converte tutte le parole di una stringa nel formato titolo inglese (tutte le parole in minuscolo con l&apos;iniziale
+ maiuscola).
+
+&lt;p&gt;&lt;h4&gt;Sintassi&lt;/h4&gt;
+     title(&lt;i&gt;string&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argomenti&lt;/h4&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; è di tipo string. La stringa da convertire nel formato titolo. &lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Esempio&lt;/h4&gt;
+     upper(&apos;hello WOrld&apos;) &amp;rarr; &apos;Hello World&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="660"/>
@@ -65432,7 +66283,7 @@ arguments to determine the quadrant of the result
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      atan2(1.0, 1.732) &amp;rarr; 0.523611477769969&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;funzione atan2()&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funzione atan2()&lt;/h3&gt;
 Restituisce l&apos;arcotangente di x/y usando il segno dei due argomenti per determinare il quadrante del risultato.
 
 
@@ -65466,7 +66317,22 @@ This function takes two arguments.
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;rand(1, 10) &amp;rarr; 8&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funzione rand()&lt;/h3&gt;
+Restituisce un intero casuale entro l&apos;intervallo specificato dal minimo e dal massimo (compresi).
+&lt;br&gt;
+Questa funzione prende due argomenti.
+&lt;h4&gt;Sintassi&lt;/h4&gt;
+&lt;code&gt;rand(min, max)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argomenti&lt;/h4&gt;
+&lt;code&gt;min&lt;/code&gt; - un intero rappresentante il più piccolo intero casuale desiderato.&lt;br&gt;
+&lt;code&gt;max&lt;/code&gt; - un intero rappresentante il più grande intero casuale desiderato.
+&lt;br&gt;
+
+&lt;h4&gt;Esempio&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;rand(1, 10) &amp;rarr; 8&lt;/code&gt;&lt;br&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1065"/>
@@ -65491,21 +66357,44 @@ The color ramps available vary between QGIS installations.  This function
 may not give the expected results if you move your Quantum project.
 &lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funzione ramp_color() &lt;/h3&gt;
+Restituisce una stringa rappresentante il colore da una scala di colori. 
+
+&lt;p&gt;&lt;h4&gt;Sintassi&lt;/h4&gt;
+     ramp_color(&lt;i&gt;ramp_name,value&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argomenti&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  ramp_name&lt;/i&gt; &amp;rarr; il nome della stringa rappresentante la scala di colori, ad esempio &apos;Spectral&apos;.&lt;br&gt;
+&lt;i&gt;  value&lt;/i&gt; &amp;rarr; la posizione nella scala per selezionare il colore da un numero reale compreso tra 0 ed 1.&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Esempio&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     ramp_color(&apos;Spectral&apos;,0.3) &amp;rarr; &apos;#fdbe73&apos;&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Nota:&lt;/h4&gt;
+La scala di colori varia tra le installazioni di QGIS.  Questa funzione
+potrebbe non dare i risultati attesi qualora muovessi il progetto QGIS.
+&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="275"/>
         <source>&lt;h3&gt;Conversions Group&lt;/h3&gt;
 This group contains functions to convert on data type to another e.g string to integer, integer to string.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Gruppo conversioni&lt;/h3&gt;
+Questo gruppo contiene funzioni per convertire un formato di dati in un&apos;altro, es: string ad integer, integer a string.
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="915"/>
         <source>&lt;h3&gt;Operators Group&lt;/h3&gt;
 This group contains operators e.g + - * 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Gruppo operatori&lt;/h3&gt;
+Questo gruppo contiene operatori, es: + - * 
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="56"/>
@@ -65522,7 +66411,7 @@ None
 &lt;pre&gt;$page &amp;rarr; 2&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;funzione $page&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funzione $page&lt;/h3&gt;
 Restituisce il numero della pagina corrente.
 
 &lt;h4&gt;Sintassi&lt;/h4&gt;
@@ -65559,7 +66448,26 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;second(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 63072000&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funzione second()&lt;/h3&gt;
+Estrae i secondi da un tipo datetime o time, od il numero di secondi da un &lt;code&gt;Interval&lt;/code&gt;
+
+&lt;h4&gt;Sintassi&lt;/h4&gt;
+&lt;code&gt;second(datetime)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;second(Interval)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argomenti&lt;/h4&gt;
+code&gt;date&lt;/code&gt; - è di tipo time o datetime. La data da cui estrarre il secondo.
+&lt;br&gt;
+&lt;code&gt;Interval&lt;/code&gt; - è di tipo Interval. L&apos;intervallo da cui restituire il numero di secondi.
+
+&lt;h4&gt;Esempio&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;second(&apos;2012-07-22T13:24:57&apos;) &amp;rarr; 57&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;second(tointerval(&apos;3 seconds&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;second(age(&apos;2012-07-22T00:20:00&apos;,&apos;2012-07-22T00:00:00&apos;)) &amp;rarr; 1200&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;second(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 63072000&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1129"/>
@@ -65576,7 +66484,7 @@ None
 &lt;pre&gt;$y &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;funzione $y&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funzione $y&lt;/h3&gt;
 Restituisce la coordinata y dell&apos;oggetto corrente.
 
 &lt;h4&gt;Sintassi&lt;/h4&gt;
@@ -65605,7 +66513,18 @@ Returns cosinus of an angle.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      cos(1.571) &amp;rarr; 0.000796326710733263&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funzione cos()&lt;/h3&gt;
+Restituisce il coseno di un angolo.
+
+
+&lt;p&gt;&lt;h4&gt;Sintassi&lt;/h4&gt;
+     cos(&lt;i&gt;real&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argomenti&lt;/h4&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; angolo in radianti.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Esempio&lt;/h4&gt;
+     cos(1.571) &amp;rarr; 0.000796326710733263&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="721"/>
@@ -65626,7 +66545,23 @@ This function takes two arguments.
 &lt;code&gt;log(2, 32) &amp;rarr; 5&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;log(0.5, 32) &amp;rarr; -5&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funzione log()&lt;/h3&gt;
+Restituisce il logaritmo della determinata base e valore.
+&lt;br&gt;
+Questa funzione richiede due argomenti.
+&lt;h4&gt;Sintassi&lt;/h4&gt;
+&lt;code&gt;log(base, value)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argomenti&lt;/h4&gt;
+&lt;code&gt;base&lt;/code&gt; - qualsiasi numero positivo.&lt;br&gt;
+&lt;code&gt;value&lt;/code&gt; - qualsiasi numero positivo.
+&lt;br&gt;
+
+&lt;h4&gt;Esempio&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;log(2, 32) &amp;rarr; 5&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;log(0.5, 32) &amp;rarr; -5&lt;/code&gt;&lt;br&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="393"/>
@@ -65643,7 +66578,18 @@ Returns sinus of an angle.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      sin(1.571) &amp;rarr; 0.999999682931835&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funzione sin()&lt;/h3&gt;
+Restituisce il seno di un angolo.
+
+
+&lt;p&gt;&lt;h4&gt;Sintassi&lt;/h4&gt;
+     sin(&lt;i&gt;real&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argomenti&lt;/h4&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; angolo in radianti.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Esempio&lt;/h4&gt;
+     sin(1.571) &amp;rarr; 0.999999682931835&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="189"/>
@@ -65663,7 +66609,22 @@ Return a part of a string
 &lt;!-- Show example of function.--&gt;
      substr(&apos;HELLO WORLD&apos;,3,5) &amp;rarr; &apos;LLO W&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funzione substr()&lt;/h3&gt;
+Restituisce una porzione di stinga.
+
+&lt;p&gt;&lt;h4&gt;Sintassi&lt;/h4&gt;
+     substr(&lt;i&gt;string,startpos,length&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argomenti&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; è di tipo string.  La stringa intera.&lt;br&gt;
+&lt;i&gt;  startpos&lt;/i&gt; &amp;rarr; è di tipo number.  La posizione iniziale da cui cominciare l&apos;estrazione.&lt;br&gt;
+&lt;i&gt;  length&lt;/i&gt; &amp;rarr; è di tipo number.  La lunghezza della stringa da estrarre.&lt;br&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Esempio&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     substr(&apos;HELLO WORLD&apos;,3,5) &amp;rarr; &apos;LLO W&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1169"/>
@@ -65683,7 +66644,22 @@ Returns a string representation of a color based on its hue, saturation, and lig
 &lt;!-- Show example of function.--&gt;
      color_hsl(100,50,70) &amp;rarr; &apos;#a6d98c&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funzione color_hsl() &lt;/h3&gt;
+Restituisce una stringa rappresentante un colore sulla base della sua tonalità, saturazione e luminosità
+
+&lt;p&gt;&lt;h4&gt;Sintassi&lt;/h4&gt;
+     color_hsl(&lt;i&gt;hue, saturation, lightness&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argomenti&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  tonalità&lt;/i&gt; &amp;rarr; la tonalità espressa come valore intero da 0 a 360.&lt;br&gt;
+&lt;i&gt;  saturazione&lt;/i&gt; &amp;rarr; la percentuale di saturazione espressa come valore intero da 0 a 100.&lt;br&gt;
+&lt;i&gt;  luminosità&lt;/i&gt; &amp;rarr; la percentuale di luminosità espressa come valore intero da 0 a 100.&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Esempio&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     color_hsl(100,50,70) &amp;rarr; &apos;#a6d98c&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1512"/>
@@ -65704,7 +66680,23 @@ Returns a string representation of a color based on its red, green, and blue com
 &lt;!-- Show example of function.--&gt;
      color_rgb(255,127,0) &amp;rarr; &apos;#ff7f00&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>
+&lt;h3&gt;Funzione color_rgb()&lt;/h3&gt;
+Restituisce una stringa rappresentante un colore sulla base delle sue componenti rosso, verde, e blu
+
+&lt;p&gt;&lt;h4&gt;Sintassi&lt;/h4&gt;
+     color_rgb(&lt;i&gt;rosso, verde, blu&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argomenti&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  rosso&lt;/i&gt; &amp;rarr; componente rossa espressa come valore intero da 0 a 255.&lt;br&gt;
+&lt;i&gt;  verde&lt;/i&gt; &amp;rarr; componente verde espressa come valore intero da 0 a 255.&lt;br&gt;
+&lt;i&gt;  blu&lt;/i&gt; &amp;rarr; componente blu espressa come valore intero da 0 a 255.&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Esempio&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     color_rgb(255,127,0) &amp;rarr; &apos;#ff7f00&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="26"/>
@@ -65725,7 +66717,22 @@ This function takes two arguments.
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;randf(1, 10) &amp;rarr; 4.59258286403147&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funzione randf()&lt;/h3&gt;
+Restituisce un numero decimale casuale entro l&apos;intervallo specificato dal minimo e dal massimo (compresi).
+&lt;br&gt;
+Questa funzione prende due argomenti.
+&lt;h4&gt;Sintassi&lt;/h4&gt;
+&lt;code&gt;randf(min, max)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argomenti&lt;/h4&gt;
+&lt;code&gt;min&lt;/code&gt; - un numero float rappresentante il più piccolo intero casuale desiderato.&lt;br&gt;
+&lt;code&gt;max&lt;/code&gt; - un numero float rappresentante il più grande intero casuale desiderato.
+&lt;br&gt;
+
+&lt;h4&gt;Esempio&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;randf(1, 10) &amp;rarr; 4.59258286403147&lt;/code&gt;&lt;br&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="776"/>
@@ -65745,7 +66752,22 @@ Returns a string with the the supplied string replaced.
 &lt;!-- Show example of function.--&gt;
      replace(&apos;QGIS SHOULD ROCK&apos;,&apos;SHOULD&apos;,&apos;DOES&apos;) &amp;rarr; &apos;QGIS DOES ROCK&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funzione replace()&lt;/h3&gt;
+Restituisce una stringa con la stringa specificata sostituita.
+
+&lt;p&gt;&lt;h4&gt;Sintassi&lt;/h4&gt;
+      replace(&lt;i&gt;string,before,after&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argomenti&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; è di tipo string.  La stringa iniziale.&lt;br&gt;
+&lt;i&gt;  before&lt;/i&gt; &amp;rarr; è di tipo string.  La stringa da rimpiazzare.&lt;br&gt;
+&lt;i&gt;  after&lt;/i&gt; &amp;rarr; è di tipo string.  La stringa che andrà a rimpiazzare &lt;i&gt;before&lt;/i&gt;&lt;br&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Esempio&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     replace(&apos;QGIS SHOULD ROCK&apos;,&apos;SHOULD&apos;,&apos;DOES&apos;) &amp;rarr; &apos;QGIS DOES ROCK&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="298"/>
@@ -65770,7 +66792,27 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;hour(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 17520&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funzione hour()&lt;/h3&gt;
+Estrae l&apos;ora da un tipo datetime o time, od il numero di ore 
+da un &lt;code&gt;Interval&lt;/code&gt; 
+
+&lt;h4&gt;Sintassi&lt;/h4&gt;
+&lt;code&gt;ora(datetime)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;ora(Interval)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argomenti&lt;/h4&gt;
+&lt;code&gt;date&lt;/code&gt; - è di tipo datetime o time. La data da cui estrarre l&apos;ora.
+&lt;br&gt;
+&lt;code&gt;Interval&lt;/code&gt; - è di tipo Interval. L&apos;intervallo da cui restituire il numero di ore.
+
+&lt;h4&gt;Esempio&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;hour(&apos;2012-07-22T13:24:57&apos;) &amp;rarr; 13&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;hour(tointerval(&apos;3 hours&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;hour(age(&apos;2012-07-22T13:00:00&apos;,&apos;2012-07-22T10:00:00&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;hour(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 17520&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1222"/>
@@ -65786,7 +66828,7 @@ None
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;$pi &amp;rarr; 3.14159265358979&lt;/pre&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;funzione $pi&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funzione $pi&lt;/h3&gt;
 Restituisce pi come valore per i calcoli.
 
 &lt;h4&gt;Sintassi&lt;/h4&gt;
@@ -65815,7 +66857,19 @@ Convert a string into Qt data type.
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;todate(&apos;2012-05-04&apos;) &amp;rarr; 2012-05-04&lt;/code&gt;&lt;br&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funzione todate()&lt;/h3&gt;
+Converte una stringa in un tipo dati Qt data.
+
+&lt;h4&gt;Sintassi&lt;/h4&gt;
+&lt;code&gt;todate(&apos;string&apos;)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argomenti&lt;/h4&gt;
+&lt;code&gt;string&lt;/code&gt; - è di tipo string nel formato Qt date.
+&lt;br&gt;
+
+&lt;h4&gt;Esempio&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;todate(&apos;2012-05-04&apos;) &amp;rarr; 2012-05-04&lt;/code&gt;&lt;br&gt;</translation>
     </message>
 </context>
 <context>
