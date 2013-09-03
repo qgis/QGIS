@@ -195,7 +195,7 @@ QString QgsRasterRenderer::minMaxOriginLabel( int theOrigin )
   QString est_exact;
   QString values;
   QString extent;
-  
+
   if ( theOrigin & MinMaxEstimated )
   {
     est_exact = tr( "Estimated" );
@@ -227,11 +227,11 @@ QString QgsRasterRenderer::minMaxOriginLabel( int theOrigin )
     extent = tr( "sub extent" );
   }
 
-  label = QCoreApplication::translate ( "QgsRasterRenderer", "%1 %2 of %3.",
-    "min/max origin label in raster properties, where %1 - estimated/exact, %2 - values (min/max, stddev, etc.), %3 - extent" )
-    .arg(est_exact)
-    .arg(values)
-    .arg(extent);
+  label = QCoreApplication::translate( "QgsRasterRenderer", "%1 %2 of %3.",
+                                       "min/max origin label in raster properties, where %1 - estimated/exact, %2 - values (min/max, stddev, etc.), %3 - extent" )
+          .arg( est_exact )
+          .arg( values )
+          .arg( extent );
   return label;
 }
 

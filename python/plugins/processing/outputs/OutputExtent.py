@@ -32,7 +32,7 @@ class OutputExtent(Output):
         self.description = description
         self.value = None
         self.hidden = True
-        
+
     def setValue(self, value):
         try:
             if value != None and isinstance(value, basestring):
@@ -41,4 +41,4 @@ class OutputExtent(Output):
                 self.value = ",".join([str(v) for v in value])
             return True
         except:
-            return False        
+            return False

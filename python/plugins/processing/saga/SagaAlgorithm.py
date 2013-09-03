@@ -306,8 +306,8 @@ class SagaAlgorithm(GeoAlgorithm):
             if isinstance(out, OutputRaster):
                 filename = out.getCompatibleFileName(self)
                 filename2 = ProcessingUtils.tempFolder() + os.sep + os.path.basename(filename) + ".sgrd"
-                formatIndex = 1 if saga208 else 4                    
-                if ProcessingUtils.isWindows() or ProcessingUtils.isMac() or not saga208:                    
+                formatIndex = 1 if saga208 else 4
+                if ProcessingUtils.isWindows() or ProcessingUtils.isMac() or not saga208:
                     commands.append("io_gdal 1 -GRIDS \"" + filename2 + "\" -FORMAT " + str(formatIndex) +" -TYPE 0 -FILE \"" + filename + "\"");
                 else:
                     commands.append("libio_gdal 1 -GRIDS \"" + filename2 + "\" -FORMAT 1 -TYPE 0 -FILE \"" + filename + "\"");
@@ -378,12 +378,12 @@ class SagaAlgorithm(GeoAlgorithm):
         return s
 
 
-    def exportRasterLayer(self, source):  
+    def exportRasterLayer(self, source):
         layer = QGisLayers.getObjectFromUri(source, False)
         if layer:
             filename = str(layer.name())
         else:
-            filename = source.rstrip(".sgrd")        
+            filename = source.rstrip(".sgrd")
         validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:"
         filename = ''.join(c for c in filename if c in validChars)
         if len(filename) == 0:
@@ -395,8 +395,8 @@ class SagaAlgorithm(GeoAlgorithm):
             return "io_gdal 0 -GRIDS \"" + destFilename + "\" -FILES \"" + source+"\""
         else:
             return "libio_gdal 0 -GRIDS \"" + destFilename + "\" -FILES \"" + source + "\""
-              
-        
+
+
 
 
     def checkBeforeOpeningParametersDialog(self):

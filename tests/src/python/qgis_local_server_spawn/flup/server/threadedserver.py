@@ -69,7 +69,7 @@ class ThreadedServer(object):
 
         # Set close-on-exec
         setCloseOnExec(sock)
-        
+
         # Main loop.
         while self._keepGoing:
             try:
@@ -88,7 +88,7 @@ class ThreadedServer(object):
                     raise
 
                 setCloseOnExec(clientSock)
-                
+
                 if not self._isClientAllowed(addr):
                     clientSock.close()
                     continue
@@ -110,7 +110,7 @@ class ThreadedServer(object):
 
         # Return bool based on whether or not SIGHUP was received.
         return self._hupReceived
-        
+
     def shutdown(self):
         """Wait for running threads to finish."""
         self._threadPool.shutdown()

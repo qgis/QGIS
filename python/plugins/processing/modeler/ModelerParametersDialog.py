@@ -283,9 +283,9 @@ class ModelerParametersDialog(QtGui.QDialog):
         params = self.model.parameters
         for param in params:
             if isinstance(param, ParameterExtent):
-                extents.append(AlgorithmAndParameter(AlgorithmAndParameter.PARENT_MODEL_ALGORITHM, param.name, "", param.description))        
-        
-        
+                extents.append(AlgorithmAndParameter(AlgorithmAndParameter.PARENT_MODEL_ALGORITHM, param.name, "", param.description))
+
+
         if self.algIndex is None:
             dependent = []
         else:
@@ -299,7 +299,7 @@ class ModelerParametersDialog(QtGui.QDialog):
                     if isinstance(out, OutputExtent):
                         extents.append(AlgorithmAndParameter(i, out.name, alg.name, out.description))
             i+=1
-        
+
         return extents
 
     def getNumbers(self):

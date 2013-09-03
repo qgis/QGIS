@@ -717,7 +717,7 @@ class Connection(object):
         if self._timeout:
             old_alarm = signal.signal(signal.SIGALRM, self.timeout_handler)
             signal.alarm(self._timeout)
-            
+
         # Run Request.
         req.run()
 

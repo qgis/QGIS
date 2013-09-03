@@ -138,7 +138,7 @@ class ShellOutputScintilla(QsciScintilla):
                                              "## Type help(iface) for more info and list of methods.\n").format(sys.version,
                                                                                                                 socket.gethostname())
         ## some translation string for the console header ends without '\n'
-        ## and the first command in console will be appended at the header text. 
+        ## and the first command in console will be appended at the header text.
         ## The following code add a '\n' at the end of the string if not present.
         if txtInit.endswith('\n'):
             initText = self.setText(txtInit)

@@ -53,14 +53,14 @@ class ThreadPool(object):
         # Start the minimum number of worker threads.
         for i in range(maxSpare):
             self._start_new_thread()
-            
+
     def _start_new_thread(self):
         t = threading.Thread(target=self._worker)
         self._threads.append(t)
         t.setDaemon(True)
         t.start()
         return t
-        
+
     def shutdown(self):
         """shutdown all workers."""
         self._lock.acquire()
@@ -116,7 +116,7 @@ class ThreadPool(object):
             while True:
                 while not self._workQueue and not self._stop:
                     self._lock.wait()
-                
+
                 if self._stop:
                     return
 

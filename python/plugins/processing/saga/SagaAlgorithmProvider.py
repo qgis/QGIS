@@ -45,8 +45,8 @@ class SagaAlgorithmProvider(AlgorithmProvider):
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)
         if ProcessingUtils.isWindows():
-            ProcessingConfig.addSetting(Setting(self.getDescription(), SagaUtils.SAGA_FOLDER, "SAGA folder", SagaUtils.sagaPath())) 
-        ProcessingConfig.addSetting(Setting(self.getDescription(), SagaUtils.SAGA_208, "Enable SAGA 2.0.8 compatibility", False))            
+            ProcessingConfig.addSetting(Setting(self.getDescription(), SagaUtils.SAGA_FOLDER, "SAGA folder", SagaUtils.sagaPath()))
+        ProcessingConfig.addSetting(Setting(self.getDescription(), SagaUtils.SAGA_208, "Enable SAGA 2.0.8 compatibility", False))
         ProcessingConfig.addSetting(Setting(self.getDescription(), SagaUtils.SAGA_AUTO_RESAMPLING, "Use min covering grid system for resampling", True))
         ProcessingConfig.addSetting(Setting(self.getDescription(), SagaUtils.SAGA_LOG_COMMANDS, "Log execution commands", True))
         ProcessingConfig.addSetting(Setting(self.getDescription(), SagaUtils.SAGA_LOG_CONSOLE, "Log console output", True))

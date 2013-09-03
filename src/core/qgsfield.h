@@ -163,7 +163,8 @@ class CORE_EXPORT QgsFields
 {
   public:
 
-    enum FieldOrigin {
+    enum FieldOrigin
+    {
       OriginUnknown,   //!< it has not been specified where the field comes from
       OriginProvider,  //!< field comes from the underlying data provider of the vector layer  (originIndex = index in provider's fields)
       OriginJoin,      //!< field comes from a joined layer   (originIndex / 1000 = index of the join, originIndex % 1000 = index within the join)

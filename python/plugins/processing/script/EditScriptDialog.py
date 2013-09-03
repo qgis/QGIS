@@ -52,7 +52,7 @@ class EditScriptDialog(QtGui.QDialog):
                             Qt.WindowMinMaxButtonsHint)
         self.setWindowTitle("Edit script")
         layout = QVBoxLayout()
-        self.text = ScriptEditorWidget(self.alg.script if self.alg is not None else "")        
+        self.text = ScriptEditorWidget(self.alg.script if self.alg is not None else "")
         self.buttonBox = QtGui.QDialogButtonBox()
         self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
         self.editHelpButton = QtGui.QPushButton()
@@ -120,9 +120,9 @@ class EditScriptDialog(QtGui.QDialog):
     def cancelPressed(self):
         #self.update = False
         self.close()
-        
+
 from PyQt4.Qsci import QsciScintilla, QsciLexerPython
-        
+
 class ScriptEditorWidget(QsciScintilla):
     ARROW_MARKER_NUM = 8
 
@@ -151,6 +151,6 @@ class ScriptEditorWidget(QsciScintilla):
         lexer.setDefaultFont(font)
         self.setLexer(lexer)
         self.SendScintilla(QsciScintilla.SCI_STYLESETFONT, 1, 'Courier')
-        
+
         self.setText(text)
-        
+
