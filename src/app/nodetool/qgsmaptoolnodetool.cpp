@@ -23,6 +23,8 @@
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
 #include "qgslogger.h"
+#include "qgisapp.h"
+#include "qgslegend.h"
 
 #include <QMouseEvent>
 #include <QRubberBand>
@@ -369,6 +371,7 @@ void QgsMapToolNodeTool::canvasPressEvent( QMouseEvent * e )
     }
 
     mSelectedFeature = new QgsSelectedFeature( snapResults[0].snappedAtGeometry, vlayer, mCanvas );
+    connect( QgisApp::instance()->legend(), SIGNAL( currentLayerChanged( QgsMapLayer* ) ), this, SLOT( currentLayerChanged( QgsMapLayer* ) ) );
     connect( mSelectedFeature, SIGNAL( destroyed() ), this, SLOT( selectedFeatureDestroyed() ) );
     mIsPoint = vlayer->geometryType() == QGis::Point;
   }
@@ -487,6 +490,17 @@ void QgsMapToolNodeTool::selectedFeatureDestroyed()
 {
   QgsDebugCall;
   mSelectedFeature = 0;
+}
+
+void QgsMapToolNodeTool::currentLayerChanged( QgsMapLayer *layer )
+{
+  if ( mSelectedFeature && layer != mSelectedFeature->vlayer() )
+  {
+    delete mSelectedFeature;
+    mSelectedFeature = 0;
+
+    removeRubberBands();
+  }
 }
 
 void QgsMapToolNodeTool::canvasReleaseEvent( QMouseEvent * e )
