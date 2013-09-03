@@ -814,11 +814,34 @@ void QgsProjectProperties::on_cbxProjectionEnabled_toggled( bool onFlyEnabled )
   QString unitsOnFlyState = tr( "Canvas units (CRS transformation: %1)" );
   if ( !onFlyEnabled )
   {
-    if ( !mProjectSrsId )
+    // reset projection to default
+    const QMap<QString, QgsMapLayer*> &mapLayers = QgsMapLayerRegistry::instance()->mapLayers();
+
+    if ( mMapCanvas->currentLayer() )
     {
-      mProjectSrsId = projectionSelector->selectedCrsId();
+      mLayerSrsId = mMapCanvas->currentLayer()->crs().srsid();
     }
+    else if ( mapLayers.size() > 0 )
+    {
+      mLayerSrsId = mapLayers.begin().value()->crs().srsid();
+    }
+    else
+    {
+      mLayerSrsId = mProjectSrsId;
+    }
+    mProjectSrsId = mLayerSrsId;
     projectionSelector->setSelectedCrsId( mLayerSrsId );
+
+    QgsCoordinateReferenceSystem srs( mLayerSrsId, QgsCoordinateReferenceSystem::InternalCrsId );
+    //set radio button to crs map unit type
+    QGis::UnitType units = srs.mapUnits();
+
+    radMeters->setChecked( units == QGis::Meters );
+    radFeet->setChecked( units == QGis::Feet );
+    radDegrees->setChecked( units == QGis::Degrees );
+
+    // unset ellipsoid
+    mEllipsoidIndex = 0;
 
     btnGrpMeasureEllipsoid->setTitle( measureOnFlyState.arg( tr( "OFF" ) ) );
     btnGrpMapUnits->setTitle( unitsOnFlyState.arg( tr( "OFF" ) ) );
@@ -1452,7 +1475,6 @@ void QgsProjectProperties::updateEllipsoidUI( int newIndex )
       leSemiMajor->setToolTip( tr( "Select %1 from pull-down menu to adjust radii" ).arg( tr( "Parameters:" ) ) );
       leSemiMinor->setToolTip( tr( "Select %1 from pull-down menu to adjust radii" ).arg( tr( "Parameters:" ) ) );
     }
-    cmbEllipsoid->setCurrentIndex( mEllipsoidIndex ); // Not always necessary
     if ( mEllipsoidList[ mEllipsoidIndex ].acronym != GEO_NONE )
     {
       leSemiMajor->setText( QLocale::system().toString( myMajor, 'f', 3 ) );
@@ -1464,4 +1486,5 @@ void QgsProjectProperties::updateEllipsoidUI( int newIndex )
     cmbEllipsoid->setEnabled( false );
     cmbEllipsoid->setToolTip( tr( "Can only use ellipsoidal calculations when CRS transformation is enabled" ) );
   }
+  cmbEllipsoid->setCurrentIndex( mEllipsoidIndex ); // Not always necessary
 }
