@@ -1561,7 +1561,7 @@ bool QgsSymbolLayerV2Utils::fillFromSld( QDomElement &element, Qt::BrushStyle &b
     QString patternName = "square";
     QColor fillColor, borderColor;
     double borderWidth, size;
-    if ( !wellKnownMarkerFromSld( graphicFillElem, patternName, fillColor, borderColor, borderWidth, size ) )
+    if ( !wellKnownMarkerFromSld( graphicElem, patternName, fillColor, borderColor, borderWidth, size ) )
       return false;
 
     brushStyle = decodeSldBrushStyle( patternName );
