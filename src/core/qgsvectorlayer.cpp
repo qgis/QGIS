@@ -147,10 +147,6 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
     // Always set crs
     setCoordinateSystem();
 
-    mJoinBuffer = new QgsVectorLayerJoinBuffer();
-
-    updateFields();
-
     // check if there is a default style / propertysheet defined
     // for this layer and if so apply it
     bool defaultLoadedFlag = false;
@@ -271,21 +267,21 @@ void QgsVectorLayer::setDisplayField( QString fldName )
       // We assume that the user has organized the data with the
       // more "interesting" field names first. As such, name should
       // be selected before oldname, othername, etc.
-      if ( fldName.indexOf( "name", false ) > -1 )
+      if ( fldName.indexOf( "name", 0, Qt::CaseInsensitive ) > -1 )
       {
         if ( idxName.isEmpty() )
         {
           idxName = fldName;
         }
       }
-      if ( fldName.indexOf( "descrip", false ) > -1 )
+      if ( fldName.indexOf( "descrip", 0, Qt::CaseInsensitive ) > -1 )
       {
         if ( idxName.isEmpty() )
         {
           idxName = fldName;
         }
       }
-      if ( fldName.indexOf( "id", false ) > -1 )
+      if ( fldName.indexOf( "id", 0, Qt::CaseInsensitive ) > -1 )
       {
         if ( idxId.isEmpty() )
         {
@@ -1632,6 +1628,10 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
 
       // get and store the feature type
       mWkbType = mDataProvider->geometryType();
+
+      mJoinBuffer = new QgsVectorLayerJoinBuffer();
+
+      updateFields();
 
       // look at the fields in the layer and set the primary
       // display field using some real fuzzy logic
