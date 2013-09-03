@@ -1644,7 +1644,7 @@ void QgsLegend::legendLayerShowInOverview()
   if ( !li )
     return;
 
-  if ( li->type() == QgsLegendItem::LEGEND_LAYER )
+  if ( li->type() != QgsLegendItem::LEGEND_LAYER )
     return;
 
   QgsLegendLayer* ll = qobject_cast<QgsLegendLayer *>( li );
