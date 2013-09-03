@@ -3803,7 +3803,7 @@ Cette extension ne sera pas activée.</translation>
     </message>
     <message>
         <source>Warp (Reproject)</source>
-        <translation>Projection</translation>
+        <translation>Reprojection</translation>
     </message>
     <message>
         <source>Grid (Interpolation)</source>
@@ -5855,7 +5855,7 @@ La valeur &quot;gris&apos; permet d&apos;étendre un raster avec une palette de 
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="147"/>
         <source>No data values</source>
-        <translation>Pas de données de valeurs</translation>
+        <translation>Données sans valeurs</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="161"/>
@@ -6435,7 +6435,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/plugins/heatmap/heatmap.cpp" line="225"/>
         <source>QGIS will now load the partially-computed raster.</source>
-        <translation>QGIS va charger la carte partiellement générée</translation>
+        <translation>QGIS va charger la carte partiellement générée.</translation>
     </message>
 </context>
 <context>
@@ -9509,11 +9509,11 @@ Veuillez rectifier cette situation si vous voulez que l&apos;extension OSM sache
     <message>
         <source>The file {0} could not be opened. Error: {1}
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Le fichier {0} n&apos;a pu être ouvert. Erreur : {1}</translation>
     </message>
     <message>
         <source>Untitled-{0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Sans titre {0}</translation>
     </message>
     <message>
         <source>Python Console: Save File</source>
@@ -9521,13 +9521,14 @@ Veuillez rectifier cette situation si vous voulez que l&apos;extension OSM sache
     </message>
     <message>
         <source>The file &lt;b&gt;&apos;{0}&apos;&lt;/b&gt; has been modified, save changes?</source>
-        <translation type="unfinished"></translation>
+        <translation>Le fichier &lt;b&gt;&apos;{0}&apos;&lt;/b&gt; a été modifié, faut-il enregistrer les changements ?</translation>
     </message>
     <message>
         <source>Unable to restore the file: 
 {0}
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de restaurer le fichier : 
+{0}</translation>
     </message>
     <message>
         <source>Python {0} on {1}
@@ -9605,7 +9606,7 @@ Veuillez rectifier cette situation si vous voulez que l&apos;extension OSM sache
     </message>
     <message>
         <source>The file &lt;b&gt;{0}&lt;/b&gt; could not be saved. Error: {1}</source>
-        <translation type="unfinished"></translation>
+        <translation>Le fichier &lt;b&gt;{0}&lt;/b&gt; ne peut être enregistré. Erreur: {1}</translation>
     </message>
     <message>
         <source>History saved successfully.</source>
@@ -12363,7 +12364,7 @@ Vous visualisez ce message car vous n&apos;avez aucun affichage (DISPLAY) param�
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3304"/>
         <source>Unable to save layer style. It&apos;s not possible to create the destination table on the database. Maybe this is due to table permissions (user=%1). Please contact your database admin</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de sauvegarder le style de la couche. Il n&apos;est pas possible de créer la table de destination dans la base. C&apos;est peut-être du à un manque de permission de l&apos;utilisateur (%1).</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3352"/>
@@ -12373,7 +12374,7 @@ Vous visualisez ce message car vous n&apos;avez aucun affichage (DISPLAY) param�
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3353"/>
         <source>A style named &quot;%1&quot; already exists in the database for this layer. Do you want to overwrite it?</source>
-        <translation type="unfinished"></translation>
+        <translation>Un style nommé &quot;%1&quot; existe déjà dans la base pour cette couche. Voulez-vous l&apos;écraser ?</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3357"/>
@@ -12383,13 +12384,13 @@ Vous visualisez ce message car vous n&apos;avez aucun affichage (DISPLAY) param�
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3403"/>
         <source>Unable to save layer style. It&apos;s not possible to insert a new record into the style table. Maybe this is due to table permissions (user=%1). Please contact your database administrator.</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de sauvegarder le style de la couche. Il n&apos;est pas possible d&apos;insérer un nouvel enregistrement dans la table de style. C&apos;est peut-être du à un manque de permission de l&apos;utilisateur (%1).</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3448"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3512"/>
         <source>Connection to database failed using username: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Echec de la connexion à la base en utilisant le nom d&apos;utilisateur suivant : %1</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3466"/>
@@ -25836,14 +25837,14 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="454"/>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="457"/>
         <source>The number of lines to discard from the beginning of the file</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre de lignes à ignroer depuis le début du fichier</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="473"/>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="476"/>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="479"/>
         <source>Field names are read from the first record.  If not selected then fields are numbered</source>
-        <translation type="unfinished"></translation>
+        <translation>Les noms de champ sont tirés du premier enregsitrement.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="482"/>
@@ -25860,19 +25861,19 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="708"/>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="711"/>
         <source>Trim leading and trailing spaces from fields</source>
-        <translation type="unfinished"></translation>
+        <translation>Réduire les champs en enlevant les espaces inutiles aux extrêmités</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="714"/>
         <source>Trim fields</source>
-        <translation type="unfinished"></translation>
+        <translation>Réduire les champs</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="721"/>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="724"/>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="727"/>
         <source>Discard empty fields in each record</source>
-        <translation type="unfinished"></translation>
+        <translation>Ignorer les champs vides de chaque enregistrement</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="730"/>
@@ -25884,7 +25885,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="743"/>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="746"/>
         <source>Number fields use comma for a decimal separator</source>
-        <translation type="unfinished"></translation>
+        <translation>Les champs numériques utilisent la virgule en tant que séparateur décimal</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="749"/>
@@ -32900,7 +32901,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/providers/grass/qgsgrassrasterprovider.cpp" line="59"/>
         <source>cellhd file %1 does not exist</source>
-        <translation type="unfinished"></translation>
+        <translation>Le fichier cellhd %1 n&apos;existe pas</translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrassrasterprovider.cpp" line="68"/>
@@ -33771,7 +33772,7 @@ Ceci est peut-être dûà votre connexion ou celle du serveru WMS.
     <message>
         <location filename="../src/ui/qgsidentifyresultsbase.ui" line="71"/>
         <source>New results will be expanded by default.</source>
-        <translation type="unfinished"></translation>
+        <translation>Les prochains résultats seront détaillés par défaut.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsidentifyresultsbase.ui" line="88"/>
@@ -33781,7 +33782,7 @@ Ceci est peut-être dûà votre connexion ou celle du serveru WMS.
     <message>
         <location filename="../src/ui/qgsidentifyresultsbase.ui" line="108"/>
         <source>Print selected HTML response.</source>
-        <translation type="unfinished"></translation>
+        <translation>Imprimer la réponse HTML sélectionnée.</translation>
     </message>
 </context>
 <context>
@@ -33854,7 +33855,7 @@ Ceci est peut-être dûà votre connexion ou celle du serveru WMS.
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="736"/>
         <source>Copy GetFeatureInfo request URL</source>
-        <translation type="unfinished"></translation>
+        <translation>Copier l&apos;URL de la requête GetFeatureInfo</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="744"/>
@@ -36288,7 +36289,8 @@ Ceci est peut-être dûà votre connexion ou celle du serveru WMS.
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="228"/>
         <source>following %1 items
 not displayed</source>
-        <translation type="unfinished"></translation>
+        <translation>Les objets suivants %1
+ne sont pas affichés</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="342"/>
@@ -36438,12 +36440,12 @@ not displayed</source>
     <message>
         <location filename="../src/ui/qgsloadstylefromdbdialog.ui" line="31"/>
         <source>Styles related to the layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Styles liés à la couche</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsloadstylefromdbdialog.ui" line="45"/>
         <source>Other styles on the database</source>
-        <translation type="unfinished"></translation>
+        <translation>Autres styles présents dans la base</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsloadstylefromdbdialog.ui" line="76"/>
@@ -36586,7 +36588,7 @@ not displayed</source>
     <message>
         <location filename="../src/gui/qgsmanageconnectionsdialog.cpp" line="282"/>
         <source>The file is not an WCS connections exchange file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ce fichier n&apos;est pas un fichier d&apos;échange connexions WCS.</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsmanageconnectionsdialog.cpp" line="291"/>
@@ -36604,12 +36606,12 @@ not displayed</source>
         <location filename="../src/gui/qgsmanageconnectionsdialog.cpp" line="308"/>
         <location filename="../src/gui/qgsmanageconnectionsdialog.cpp" line="866"/>
         <source>The file is not an Oracle connections exchange file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le fichier n&apos;est pas un fichier d&apos;échange de connexions Oracle.</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsmanageconnectionsdialog.cpp" line="518"/>
         <source>The file is not an %1 connections exchange file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le fichier n&apos;est pas un fichier d&apos;échange de connexions %1.</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsmanageconnectionsdialog.cpp" line="545"/>
@@ -36651,7 +36653,7 @@ not displayed</source>
     <message>
         <location filename="../src/gui/qgsmapcanvas.cpp" line="449"/>
         <source>Canvas refresh: %1 ms</source>
-        <translation type="unfinished"></translation>
+        <translation>Actualisation du canevas : %1 ms</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsmapcanvas.cpp" line="453"/>
@@ -38167,7 +38169,8 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
         <location filename="../src/gui/qgsmessagebar.cpp" line="321"/>
         <source>%n more</source>
         <comment>unread messages</comment>
-        <translation type="unfinished">
+        <translation>
+            <numerusform>%n de plus</numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -38853,7 +38856,7 @@ du contraste</translation>
     <message>
         <location filename="../src/core/qgsnetworkaccessmanager.cpp" line="156"/>
         <source>Network request %1 timed out</source>
-        <translation type="unfinished"></translation>
+        <translation>Requête réseau %1 abandonnée (time-out)</translation>
     </message>
     <message>
         <location filename="../src/core/qgsnetworkaccessmanager.cpp" line="156"/>
@@ -38866,7 +38869,7 @@ du contraste</translation>
     <message>
         <location filename="../src/core/qgsnetworkreplyparser.cpp" line="58"/>
         <source>Cannot find boundary in multipart content type</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de trouver les limites d&apos;un type de contenu en multiparties</translation>
     </message>
 </context>
 <context>
@@ -38874,17 +38877,17 @@ du contraste</translation>
     <message>
         <location filename="../src/gui/qgsnewhttpconnection.cpp" line="33"/>
         <source>Create a new %1 connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Création d&apos;une nouvelle connexion %1</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsnewhttpconnection.cpp" line="70"/>
         <source>Ignore GetCoverage URI reported in capabilities</source>
-        <translation type="unfinished"></translation>
+        <translation>Ignorer l&apos;URI GetCoverage indiquée dans les capacités</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsnewhttpconnection.cpp" line="71"/>
         <source>Ignore axis orientation</source>
-        <translation type="unfinished"></translation>
+        <translation>Ignorer l&apos;axe d&apos;orientation</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsnewhttpconnection.cpp" line="121"/>
@@ -38905,7 +38908,8 @@ du contraste</translation>
         <location filename="../src/gui/qgsnewhttpconnection.cpp" line="131"/>
         <source>WARNING: You have entered a password. It will be stored in plain text in your project files and in your home directory on Unix-like systems, or in your user profile on Windows. If you do not want this to happen, please press the Cancel button.
 Note: giving the password is optional. It will be requested interactivly, when needed.</source>
-        <translation type="unfinished"></translation>
+        <translation>ATTENTION : Vous venez de saisir un mot de pase qui sera stocké en clair dans le fichier du projet et dans votre répertoire personnel. Si vous ne voulez pas que cela arrive, cliquez sur le bouton annuler.
+Note : donner votre mot de passe est optionel, il vous sera demandé quand réellement nécessaire.</translation>
     </message>
 </context>
 <context>
@@ -38948,12 +38952,12 @@ Note: giving the password is optional. It will be requested interactivly, when n
     <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="154"/>
         <source>Ignore axis orientation (WMS 1.3/WMTS)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ignorer l&apos;axe d&apos;orientation (WMS 1.3/WMTS)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="161"/>
         <source>Invert axis orientation</source>
-        <translation type="unfinished"></translation>
+        <translation>Inverser l&apos;axe d&apos;orientation</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="168"/>
@@ -39688,17 +39692,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/analysis/openstreetmap/qgsosmdownload.cpp" line="46"/>
         <source>No query has been specified.</source>
-        <translation type="unfinished"></translation>
+        <translation>Aucune requête n&apos;a été spécifiée.</translation>
     </message>
     <message>
         <location filename="../src/analysis/openstreetmap/qgsosmdownload.cpp" line="52"/>
         <source>There is already a pending request for data.</source>
-        <translation type="unfinished"></translation>
+        <translation>Il y a déjà une requête en cours pour ces données.</translation>
     </message>
     <message>
         <location filename="../src/analysis/openstreetmap/qgsosmdownload.cpp" line="58"/>
         <source>Cannot open output file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible d&apos;ouvrir le fichier créé : %1</translation>
     </message>
 </context>
 <context>
@@ -39803,12 +39807,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsosmexportdialog.ui" line="55"/>
         <source>Polylines (open ways)</source>
-        <translation type="unfinished"></translation>
+        <translation>Polylignes (chemin ouvert)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsosmexportdialog.ui" line="62"/>
         <source>Polygons (closed ways)</source>
-        <translation type="unfinished"></translation>
+        <translation>Polygones (chemin fermé)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsosmexportdialog.ui" line="72"/>
@@ -39818,12 +39822,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsosmexportdialog.ui" line="84"/>
         <source>Exported tags</source>
-        <translation type="unfinished"></translation>
+        <translation>Etiquettes exportées</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsosmexportdialog.ui" line="92"/>
         <source>Load from DB</source>
-        <translation type="unfinished"></translation>
+        <translation>Charger depuis une base</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsosmexportdialog.ui" line="124"/>
@@ -39833,7 +39837,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/openstreetmap/qgsosmexportdialog.cpp" line="45"/>
         <source>Tag</source>
-        <translation type="unfinished"></translation>
+        <translation>Étiquette</translation>
     </message>
     <message>
         <location filename="../src/app/openstreetmap/qgsosmexportdialog.cpp" line="45"/>
@@ -39881,7 +39885,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsosmimportdialog.ui" line="20"/>
         <source>Input XML file (.osm)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichier-source XML (.osm)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsosmimportdialog.ui" line="29"/>
@@ -39892,17 +39896,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsosmimportdialog.ui" line="39"/>
         <source>Output SpatiaLite DB file</source>
-        <translation type="unfinished"></translation>
+        <translation>Base SpatiaLite créée</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsosmimportdialog.ui" line="58"/>
         <source>Create connection (SpatiaLite) after import</source>
-        <translation type="unfinished"></translation>
+        <translation>Créer la connexion spatialite après l&apos;import</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsosmimportdialog.ui" line="67"/>
         <source>Connection name</source>
-        <translation type="unfinished"></translation>
+        <translation>Nom de la connexion</translation>
     </message>
     <message>
         <location filename="../src/app/openstreetmap/qgsosmimportdialog.cpp" line="51"/>
@@ -39912,30 +39916,31 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/openstreetmap/qgsosmimportdialog.cpp" line="64"/>
         <source>SQLite databases (*.db)</source>
-        <translation type="unfinished"></translation>
+        <translation>Bases de données SQLite (*.db)</translation>
     </message>
     <message>
         <location filename="../src/app/openstreetmap/qgsosmimportdialog.cpp" line="88"/>
         <location filename="../src/app/openstreetmap/qgsosmimportdialog.cpp" line="108"/>
         <location filename="../src/app/openstreetmap/qgsosmimportdialog.cpp" line="119"/>
         <source>OpenStreetMap import</source>
-        <translation type="unfinished"></translation>
+        <translation>Import OpenStreetMap</translation>
     </message>
     <message>
         <location filename="../src/app/openstreetmap/qgsosmimportdialog.cpp" line="88"/>
         <source>Output database file exists already. Overwrite?</source>
-        <translation type="unfinished"></translation>
+        <translation>La base existe déjà, voulez-vous l&apos;écraser ?</translation>
     </message>
     <message>
         <location filename="../src/app/openstreetmap/qgsosmimportdialog.cpp" line="108"/>
         <source>Failed to import OSM data:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Échec de l&apos;export des données OSM :
+%1</translation>
     </message>
     <message>
         <location filename="../src/app/openstreetmap/qgsosmimportdialog.cpp" line="119"/>
         <source>Import has been successful.</source>
-        <translation type="unfinished"></translation>
+        <translation>Importation réussie.</translation>
     </message>
 </context>
 <context>
@@ -40017,7 +40022,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/qgsowssourceselect.cpp" line="304"/>
         <source>Load connections</source>
-        <translation type="unfinished"></translation>
+        <translation>Charger des connexions</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsowssourceselect.cpp" line="305"/>
@@ -40174,12 +40179,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="227"/>
         <source>Coordinate Reference System:</source>
-        <translation>Système de coordonnées de référence</translation>
+        <translation>Système de Coordonnées de Référence :</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="240"/>
         <source>Selected Coordinate Reference System</source>
-        <translation type="unfinished"></translation>
+        <translation>SCR sélectionné</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="253"/>
@@ -40269,7 +40274,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="436"/>
         <source>Tilesets</source>
-        <translation>Jeu de tuiles</translation>
+        <translation>Ensemble de tuiles</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="466"/>
@@ -40428,12 +40433,12 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin.cpp" line="104"/>
         <source>Converting to offline project</source>
-        <translation type="unfinished"></translation>
+        <translation>Convertion en projet hors-ligne</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin.cpp" line="116"/>
         <source>Synchronizing to remote layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Synchronisation des couches distantes</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin.cpp" line="165"/>
@@ -40685,7 +40690,7 @@ Always network: always load from network and do not check if the cache has a val
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1160"/>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2329"/>
         <source>OGR error syncing to disk: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur OGR lors la synchronisation vers le disque : %1</translation>
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1183"/>
@@ -40715,12 +40720,12 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1268"/>
         <source>Original layer could not be reopened.</source>
-        <translation type="unfinished"></translation>
+        <translation>La couche originelle n&apos;a pu être réouverte.</translation>
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1276"/>
         <source>Original datasource could not be reopened.</source>
-        <translation type="unfinished"></translation>
+        <translation>La source originelle  de données n&apos;a pu être réouverte.</translation>
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1357"/>
@@ -41184,7 +41189,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="1744"/>
         <source>Load scales</source>
-        <translation type="unfinished"></translation>
+        <translation>Charger les échelles</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="1745"/>
@@ -41195,7 +41200,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="1770"/>
         <source>Save scales</source>
-        <translation type="unfinished"></translation>
+        <translation>Enregistrer les échelles</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="1801"/>
@@ -41335,12 +41340,12 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="753"/>
         <source>Error saving current project as default</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur lors de l&apos;enregistrement du projet courant en tant que défaut</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="769"/>
         <source>Choose a directory to store project template files</source>
-        <translation type="unfinished"></translation>
+        <translation>Choisissez un dossier pour sauvegarder les fichiers modèles de projet</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="559"/>
@@ -42470,7 +42475,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3186"/>
         <source>Miter limit</source>
-        <translation type="unfinished"></translation>
+        <translation>Limite d&apos;angle droit</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3193"/>
@@ -43841,22 +43846,22 @@ Error: %2</source>
     <message>
         <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="164"/>
         <source>Refresh</source>
-        <translation type="unfinished"></translation>
+        <translation>Actualiser</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="204"/>
         <source>Copying features...</source>
-        <translation type="unfinished"></translation>
+        <translation>Copie des entités...</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="204"/>
         <source>Abort</source>
-        <translation type="unfinished"></translation>
+        <translation>Annuler</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="205"/>
         <source>Import layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Importer une couche</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="216"/>
@@ -44241,7 +44246,7 @@ Complément d&apos;information sur l&apos;erreur :
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="196"/>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="281"/>
         <source>Restrict the displayed tables to those that are in the layer registries.</source>
-        <translation type="unfinished"></translation>
+        <translation>Restreindre l&apos;affichage des tables géométriques à celles présentes dans le registre des couches.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="199"/>
@@ -49349,7 +49354,7 @@ Click on help button to get valid creation options for this format.</source>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="811"/>
         <source>Provider is not valid (provider: %1, URI: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Le prestataire n&apos;est pas valide (prestataire : %1, URI : %2)</translation>
     </message>
     <message>
         <source>Cannot instantiate the data provider</source>
@@ -49850,7 +49855,7 @@ Click on help button to get valid creation options for this format.</source>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="221"/>
         <source>Please note that building internal pyramids may alter the original data file and once created they cannot be removed!</source>
-        <translation>Veuillez noter que la construction interne de pyramides peut altérer l&apos;image d&apos;origine.</translation>
+        <translation>Veuillez noter que la construction interne de pyramides peut altérer l&apos;image d&apos;origine !</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="222"/>
@@ -50009,17 +50014,17 @@ Click on help button to get valid creation options for this format.</source>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1315"/>
         <source>Use original source no data value.</source>
-        <translation type="unfinished"></translation>
+        <translation>Utiliser la valeur nulle du fichier source.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1318"/>
         <source>No data value:</source>
-        <translation>Pas de valeurs de données :</translation>
+        <translation>Valeur nulle :</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1331"/>
         <source>Original data source no data value, if exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Utilise les données du fichier source pour identifier la valeur nulle.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1334"/>
@@ -50030,12 +50035,12 @@ Click on help button to get valid creation options for this format.</source>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1345"/>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1355"/>
         <source>Additional user defined no data value.</source>
-        <translation type="unfinished"></translation>
+        <translation>Valeur nulle supplémentaire définie par l&apos;utilisateur.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1348"/>
         <source>Additional no data value</source>
-        <translation type="unfinished"></translation>
+        <translation>Valeur nulle supplémentaire</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="145"/>
@@ -50142,7 +50147,11 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Lucida Grande&apos;; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Cantarell&apos;; font-size:11pt;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Lucida Grande&apos;; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Cantarell&apos;; font-size:11pt;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1735"/>
@@ -50480,7 +50489,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1479"/>
         <source>Add values from display</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajouter des valeurs depuis l&apos;affichage</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1863"/>
@@ -50602,7 +50611,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1073"/>
         <source>Reset all color rendering options to default</source>
-        <translation type="unfinished"></translation>
+        <translation>Restaure à défaut toutes les options de couleurs</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1076"/>
@@ -50622,7 +50631,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1131"/>
         <source>Oversampling</source>
-        <translation type="unfinished"></translation>
+        <translation>Suréchantillonnage</translation>
     </message>
     <message>
         <source>Add Values from display</source>
@@ -50860,7 +50869,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="45"/>
         <source>From</source>
-        <translation type="unfinished">De</translation>
+        <translation>Depuis</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="46"/>
@@ -50880,7 +50889,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="178"/>
         <source>The directory %1 contains files which will be overwritten: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Le dossier %1 contient des fichiers qui seront écrasés : %2</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="198"/>
@@ -50950,7 +50959,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="29"/>
         <source>Write out raw raster layer data. Optionally user defined no data values may be applied.</source>
-        <translation type="unfinished"></translation>
+        <translation>Création d&apos;une couche raster composée de données brutes.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="32"/>
@@ -50960,7 +50969,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="42"/>
         <source>Write out 3 bands RGB image rendered using current layer style.</source>
-        <translation type="unfinished"></translation>
+        <translation>Création d&apos;une image RGB utilisant le style d&apos;affichage actuel de la couche.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="45"/>
@@ -50976,7 +50985,8 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="92"/>
         <source>Create GDAL Virtual Format composed of multiple 
 datasets with maximum width and height specified below.</source>
-        <translation type="unfinished"></translation>
+        <translation>Création d&apos;un format virtuel GDAL composé de multiples
+jeux de données avec une largeur/longueur maximale spécifiée ci-dessous.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="107"/>
@@ -50986,7 +50996,7 @@ datasets with maximum width and height specified below.</source>
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="130"/>
         <source>Browse...</source>
-        <translation>Parcourir...</translation>
+        <translation>Parcourir</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="153"/>
@@ -51113,7 +51123,7 @@ datasets with maximum width and height specified below.</source>
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="642"/>
         <source>No data values</source>
-        <translation>Pas de données de valeurs</translation>
+        <translation>Données sans valeurs</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="672"/>
@@ -62376,7 +62386,11 @@ Description : %3</translation>
 %s
 
 Would you like to add the new layer to the TOC?</source>
-        <translation type="unfinished"></translation>
+        <translation>Shapefile créé :
+%s
+%s
+
+Voulez-vous le placer dans votre projet ?</translation>
     </message>
     <message>
         <source>Error loading output shapefile:
@@ -63293,7 +63307,7 @@ Voulez-vous ajouter cette nouvelle couche dans votre session actuelle ?</transla
     <message>
         <location filename="../src/ui/symbollayer/widget_svgselector.ui" line="117"/>
         <source>Generated path will be relative to current SVG search directories or to Project file</source>
-        <translation type="unfinished"></translation>
+        <translation>Le chemin généré sera relatif aux dossiers SV actuels ou au fichier du projet</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgselector.ui" line="120"/>
@@ -63496,7 +63510,9 @@ Voulez-vous ajouter cette nouvelle couche dans votre session actuelle ?</transla
         <source>Feature not found in the layer.
 The layer has probably changed.
 Run topology check again.</source>
-        <translation type="unfinished"></translation>
+        <translation>Entité non trouvée dans la couche.
+Cette couche a du changer.
+Relancer la vérification topologique.</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/checkDock.cpp" line="256"/>
@@ -69845,27 +69861,27 @@ L&apos;extension ne sera pas activée.</translation>
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="282"/>
         <source>Failed to import first geometry into GEOS in dangling line test.</source>
-        <translation type="unfinished"></translation>
+        <translation>Echec de l&apos;importation de la première géométrie dans GEOS au test de la ligne débordante.</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="408"/>
         <source>Invalid second geometry in duplicate geometry test.</source>
-        <translation type="unfinished"></translation>
+        <translation>Seconde géométrie invalide dans le test de géométrie dupliquée.</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="414"/>
         <source>Failed to import second geometry into GEOS in duplicate geometry test.</source>
-        <translation type="unfinished"></translation>
+        <translation>Echec de l&apos;importation de la seoncde géométrie dans GEOS au test de la géométrie dupliquée.</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="531"/>
         <source>Invalid second geometry in overlaps test.</source>
-        <translation type="unfinished"></translation>
+        <translation>Seconde géométrie invalide dans le test de chevauchements.</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="537"/>
         <source>Failed to import second geometry into GEOS in overlaps test.</source>
-        <translation type="unfinished"></translation>
+        <translation>Echec de l&apos;importation de la seoncde géométrie dans GEOS au test de chevauchements.</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="543"/>
@@ -69885,7 +69901,7 @@ L&apos;extension ne sera pas activée.</translation>
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="873"/>
         <source>Invalid geometry in validity test.</source>
-        <translation type="unfinished"></translation>
+        <translation>Géométrie invalide dans le test de validité.</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="944"/>
@@ -69895,7 +69911,7 @@ L&apos;extension ne sera pas activée.</translation>
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="1178"/>
         <source>Second geometry missing.</source>
-        <translation type="unfinished"></translation>
+        <translation>Seconde géométrie manquante.</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="1267"/>
@@ -69903,22 +69919,22 @@ L&apos;extension ne sera pas activée.</translation>
         <location filename="../src/plugins/topology/topolTest.cpp" line="1443"/>
         <location filename="../src/plugins/topology/topolTest.cpp" line="1517"/>
         <source>Second geometry missing or GEOS import failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>La seconde géométrie est manquante ou l&apos;import de GEOS a échoué.</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="1558"/>
         <source>Missing geometry in multipart check.</source>
-        <translation type="unfinished"></translation>
+        <translation>Géométrie manquante dnas la vérification de multiples parties.</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="1677"/>
         <source>First layer not found in registry.</source>
-        <translation type="unfinished"></translation>
+        <translation>La première couche n&apos;a pas été rouvée dans le registre.</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="1683"/>
         <source>Second layer not found in registry.</source>
-        <translation type="unfinished"></translation>
+        <translation>La seconde couche n&apos;a pas été rouvée dans le registre.</translation>
     </message>
 </context>
 <context>
