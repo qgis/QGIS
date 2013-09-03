@@ -67,7 +67,15 @@ QSizeF QgsPieDiagram::diagramSize( const QgsAttributes& attributes, const QgsRen
   // Scale, if extension is smaller than the specified minimum
   if ( size.width() <= s.minimumSize && size.height() <= s.minimumSize )
   {
+    bool p = false; // preserve height == width
+    if ( size.width() == size.height() )
+      p = true;
+
     size.scale( s.minimumSize, s.minimumSize, Qt::KeepAspectRatio );
+
+    // If height == width, recover here (overwrite floating point errors)
+    if ( p )
+      size.setWidth( size.height() );
   }
 
   return size;
