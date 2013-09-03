@@ -33,8 +33,6 @@ from processing.core.ProcessingLog import ProcessingLog
 from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.core.ProcessingUtils import ProcessingUtils
 
-from processing.core.SextanteUtils import SextanteUtils
-
 from processing.gui.EditScriptAction import EditScriptAction
 from processing.gui.DeleteScriptAction import DeleteScriptAction
 from processing.gui.CreateNewScriptAction import CreateNewScriptAction
@@ -71,7 +69,7 @@ class RAlgorithmProvider(AlgorithmProvider):
             ProcessingConfig.removeSetting(RUtils.R_USE64)
 
     def getIcon(self):
-        return QIcon(":/sextante/images/r.png")
+        return QIcon(":/processing/images/r.png")
 
     def getDescription(self):
         return "R scripts"

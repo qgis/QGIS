@@ -26,9 +26,10 @@ __revision__ = '$Format:%H$'
 import sys
 
 from PyQt4.QtCore import *
+from PyQt4.QtGui import *
 from PyQt4.Qsci import *
 
-class LexerR(QcsiLexerCustom):
+class LexerR(QsciLexerCustom):
 
     QUOTES = ["'", '"']
     SEPARATORS = ["(", "=", ".", "<"]

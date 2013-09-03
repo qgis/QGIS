@@ -37,7 +37,7 @@ from processing.gui.ParametersDialog import ParametersDialog
 from processing.gui.HelpEditionDialog import HelpEditionDialog
 from processing.gui.ScriptEdit import ScriptEdit
 
-from sextante.modeler.Providers import Providers
+from processing.modeler.Providers import Providers
 
 from processing.r.RAlgorithm import RAlgorithm
 from processing.r.RUtils import RUtils
@@ -58,8 +58,8 @@ class ScriptEditorDialog(QDialog, Ui_DlgScriptEditor):
         self.setupUi(self)
 
         # set icons
-        self.btnSave.setIcon(QgsApplication.getThemeIcon("/mActionFileSave.png"))
-        self.btnSaveAs.setIcon(QgsApplication.getThemeIcon("/mActionFileSaveAs.png"))
+        self.btnSave.setIcon(QgsApplication.getThemeIcon("/mActionFileSave.svg"))
+        self.btnSaveAs.setIcon(QgsApplication.getThemeIcon("/mActionFileSaveAs.svg"))
         self.btnEditHelp.setIcon(QIcon(":/processing/images/edithelp.png"))
         self.btnRun.setIcon(QIcon(":/processing/images/runalgorithm.png"))
         self.btnCut.setIcon(QgsApplication.getThemeIcon("/mActionEditCut.png"))

@@ -23,13 +23,15 @@ __copyright__ = '(C) 2013, Alexander Bruy'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
+import os
+
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PyQt4.Qsci import *
 
 from qgis.core import *
 
-from sextante.gui.LexerR import LexerR
+from processing.gui.LexerR import LexerR
 
 class ScriptEdit(QsciScintilla):
 
@@ -101,8 +103,8 @@ class ScriptEdit(QsciScintilla):
 
         # load font from Python console settings
         settings = QSettings()
-        fontName = settings.value("pythonConsole/fontfamilytext", "Monospace").toString()
-        fontSize = settings.value("pythonConsole/fontsize", 10).toInt()[0]
+        fontName = settings.value("pythonConsole/fontfamilytext", "Monospace")
+        fontSize = int(settings.value("pythonConsole/fontsize", 10))
 
         self.defaultFont = QFont(fontName)
         self.defaultFont.setFixedPitch(True)
@@ -178,13 +180,13 @@ class ScriptEdit(QsciScintilla):
             self.api = QsciAPIs(self.lexer)
 
             settings = QSettings()
-            useDefaultAPI = settings.value("pythonConsole/preloadAPI", True).toBool()
+            useDefaultAPI = bool(settings.value("pythonConsole/preloadAPI", True))
             if useDefaultAPI:
                 # load QGIS API shipped with Python console
-                self.api.loadPrepared(QgsApplication.pkgDataPath() + "/python/qsci_apis/pyqgis_master.pap")
+                self.api.loadPrepared(os.path.join(QgsApplication.pkgDataPath(), "python", "qsci_apis", "pyqgis.pap"))
             else:
                 # load user-defined API files
-                apiPaths = settings.value("pythonConsole/userAPI").toStringList()
+                apiPaths = settings.value("pythonConsole/userAPI", [])
                 for path in apiPaths:
                     self.api.load(path)
                 self.api.prepare()
