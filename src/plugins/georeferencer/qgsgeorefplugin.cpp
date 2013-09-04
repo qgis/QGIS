@@ -125,6 +125,7 @@ void QgsGeorefPlugin::unload()
   mQGisIface->removeRasterToolBarIcon( mActionRunGeoref );
 
   delete mActionRunGeoref;
+  mActionRunGeoref = 0;
 
   delete mPluginGui;
   mPluginGui = NULL;
@@ -133,7 +134,8 @@ void QgsGeorefPlugin::unload()
 //! Set icons to the current theme
 void QgsGeorefPlugin::setCurrentTheme( QString )
 {
-  mActionRunGeoref->setIcon( getThemeIcon( "/mGeorefRun.png" ) );
+  if ( mActionRunGeoref )
+    mActionRunGeoref->setIcon( getThemeIcon( "/mGeorefRun.png" ) );
 }
 
 QIcon QgsGeorefPlugin::getThemeIcon( const QString &theName )
