@@ -316,7 +316,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   grpWMSList->setChecked( mWMSList->count() > 0 );
 
   //composer restriction for WMS
-  values = QgsProject::instance()->readListEntry( "WMSComposerList", "/", QStringList(), &ok );
+  values = QgsProject::instance()->readListEntry( "WMSRestrictedComposers", "/", QStringList(), &ok );
   mWMSComposerGroupBox->setChecked( ok );
   if ( ok )
   {
@@ -699,11 +699,11 @@ void QgsProjectProperties::apply()
     {
       composerTitles << mComposerListWidget->item( i )->text();
     }
-    QgsProject::instance()->writeEntry( "WMSComposerList", "/", composerTitles );
+    QgsProject::instance()->writeEntry( "WMSRestrictedComposers", "/", composerTitles );
   }
   else
   {
-    QgsProject::instance()->removeEntry( "WMSComposerList", "/" );
+    QgsProject::instance()->removeEntry( "WMSRestrictedComposers", "/" );
   }
 
   //WMS layer restrictions
