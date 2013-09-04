@@ -67434,7 +67434,24 @@ use &lt;code&gt;round(decimal)&lt;/code&gt; to round to the nearest integer&lt;b
 
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja round()&lt;/h3&gt;
+Zaokrąglenie liczby do określonej liczby miejsc dziesiętnych.
+&lt;br&gt;
+Funkcję można wywołać z jednym lub dwoma argumentami, w zależności od potrzeb.
+&lt;h4&gt;Składnia&lt;/h4&gt;
+&lt;code&gt;round(liczba, miejsc_dz)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;round(liczba)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumenty&lt;/h4&gt;
+&lt;code&gt;liczba&lt;/code&gt; - wartość podlegająca zaokrągleniu.
+&lt;br&gt;
+&lt;code&gt;miejsc_dz&lt;/code&gt; - liczba całkowita odpowiadająca liczbie miejsc dziesiętnych (może być ujemna).
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;round(1234.567, 2 ) &amp;rarr; 1234.57&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;round(1234.567) &amp;rarr; 1235&lt;/code&gt;&lt;br&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="485"/>
@@ -67630,7 +67647,19 @@ None
 &lt;pre&gt;$now &amp;rarr; 2012-07-22T13:24:57&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja $now&lt;/h3&gt;
+Zwraca aktualną datę i czas.
+
+&lt;h4&gt;Składnia&lt;/h4&gt;
+&lt;pre&gt;$now&lt;/pre&gt;
+
+&lt;h4&gt;Argumenty&lt;/h4&gt;
+Brak
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;pre&gt;$now &amp;rarr; 2012-07-22T13:24:57&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1562"/>
@@ -67693,7 +67722,25 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;day(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 730&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja day()&lt;/h3&gt;
+Zwraca z daty dzień lub liczbę dni z &lt;code&gt;interwału&lt;/code&gt;
+
+&lt;h4&gt;Składnia&lt;/h4&gt;
+&lt;code&gt;day(data)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;day(interwał)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumenty&lt;/h4&gt;
+&lt;code&gt;data&lt;/code&gt; - data luba data/czas.
+&lt;br&gt;
+&lt;code&gt;interwał&lt;/code&gt; - różnica pomiędzy dwoma momentami w czasie.
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;day(&apos;2012-05-12&apos;) &amp;rarr; 12&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;day(tointerval(&apos;3 days&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;day(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 730&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1206"/>
@@ -67710,7 +67757,18 @@ Returns exponential of an value.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      exp(1.0) &amp;rarr; 2.71828182845905&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja exp()&lt;/h3&gt;
+Zwraca wartość funkcji wykładniczej.
+
+&lt;p&gt;&lt;h4&gt;Składnia&lt;/h4&gt;
+     exp(&lt;i&gt;wartość&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumenty&lt;/h4&gt;
+&lt;i&gt;wartość&lt;/i&gt; &amp;rarr; liczba&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Przykład&lt;/h4&gt;
+     exp(1.0) &amp;rarr; 2.71828182845905&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1283"/>
@@ -67727,7 +67785,19 @@ Converts a string to a interval type.  Can be used to take days, hours, month, e
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;todatetime(&apos;2012-05-05 12:00:00&apos;) - tointerval(&apos;1 day 2 hours&apos;) &amp;rarr; 2012-05-04T10:00:00&lt;/code&gt;&lt;br&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja tointerval()&lt;/h3&gt;
+Zamienia tekst na typ interwału.  Może być użyte do określenia różnicy dni, godzin, miesięcy itd. dla zadanych dat. 
+
+&lt;h4&gt;Składnia&lt;/h4&gt;
+&lt;code&gt;tointerval(&apos;tekst&apos;)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumenty&lt;/h4&gt;
+&lt;code&gt;tekst&lt;/code&gt; - ciąg znaków. Format {n} days {n} hours {n} months
+&lt;br&gt;
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;todatetime(&apos;2012-05-05 12:00:00&apos;) - tointerval(&apos;1 day 2 hours&apos;) &amp;rarr; 2012-05-04T10:00:00&lt;/code&gt;&lt;br&gt;</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1412"/>
@@ -67787,7 +67857,19 @@ Convert a string into Qt time type.
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;totime(&apos;12:30:01&apos;) &amp;rarr; 12:30:01&lt;/code&gt;&lt;br&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja totime()&lt;/h3&gt;
+Konwertuje tekst na typ czasu Qt.
+
+&lt;h4&gt;Składnia&lt;/h4&gt;
+&lt;code&gt;totime(&apos;tekst&apos;)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumenty&lt;/h4&gt;
+&lt;code&gt;tekst&lt;/code&gt; - ciąg znaków w formacie czasu Qt.
+&lt;br&gt;
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;totime(&apos;12:30:01&apos;) &amp;rarr; 12:30:01&lt;/code&gt;&lt;br&gt;</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1343"/>
@@ -67805,7 +67887,20 @@ Returns the largest value in a set of values.
 &lt;!-- Show example of function.--&gt;
      max(2,10.2,5.5) &amp;rarr; 10.2
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja max()&lt;/h3&gt;
+Zwraca największą wartość z zadanego zbioru.
+
+&lt;h4&gt;Składnia&lt;/h4&gt;
+     max(&lt;i&gt;wartość&lt;i&gt;[,&lt;i&gt;wartość&lt;/i&gt;...])
+
+&lt;h4&gt;Argumenty&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  wartość&lt;/i&gt; &amp;rarr; liczba&lt;br&gt;
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     max(2,10.2,5.5) &amp;rarr; 10.2
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="218"/>
@@ -67822,7 +67917,19 @@ Returns arcuscosinus of a value in radians.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      acos(0.5) &amp;rarr; 1.0471975511966&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja acos()&lt;/h3&gt;
+Zwraca arcuscosinus kąta w radianach.
+
+
+&lt;p&gt;&lt;h4&gt;Składnia&lt;/h4&gt;
+     acos(&lt;i&gt;wartość&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumenty&lt;/h4&gt;
+&lt;i&gt;wartość&lt;/i&gt; &amp;rarr; cosinus kąta&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Przykład&lt;/h4&gt;
+     acos(0.5) &amp;rarr; 1.0471975511966&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="11"/>
@@ -67841,7 +67948,20 @@ capital letter).
 &lt;!-- Show example of function.--&gt;
      upper(&apos;hello WOrld&apos;) &amp;rarr; &apos;Hello World&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja title()&lt;/h3&gt;
+Konwertuje wielkość listr w tekście, tak jak w tytule (wszystkie małe litery, za wyjątkiem pierwszych liter w słowach).
+
+&lt;p&gt;&lt;h4&gt;Składania&lt;/h4&gt;
+     title(&lt;i&gt;tekst&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumenty&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  tekst&lt;/i&gt; &amp;rarr; ciąg znaków podlegający konwersji.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     upper(&apos;hello WOrld&apos;) &amp;rarr; &apos;Hello World&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="660"/>
@@ -67861,7 +67981,21 @@ arguments to determine the quadrant of the result
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      atan2(1.0, 1.732) &amp;rarr; 0.523611477769969&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja atan2()&lt;/h3&gt;
+Zwraca arcus tangens y/x używając znaku obydwu 
+do określenia kwadrantu wyniku.
+
+
+&lt;p&gt;&lt;h4&gt;Składnia&lt;/h4&gt;
+     atan2(&lt;i&gt;wartość1&lt;/i&gt;, &lt;i&gt;wartość2&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumenty&lt;/h4&gt;
+&lt;i&gt;wartość1&lt;/i&gt; &amp;rarr; różnica współrzędnych y&lt;br&gt;
+&lt;i&gt;wartość2&lt;/i&gt; &amp;rarr; różnica współrzędnych x&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Przykład&lt;/h4&gt;
+     atan2(1.0, 1.732) &amp;rarr; 0.523611477769969&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="172"/>
@@ -67882,7 +68016,23 @@ This function takes two arguments.
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;rand(1, 10) &amp;rarr; 8&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja rand()&lt;/h3&gt;
+Zwraca losową liczbę całkowitą z zadanego zakresu podanego jako minimum
+i maksimum (włącznie).
+&lt;br&gt;
+
+&lt;h4&gt;Składania&lt;/h4&gt;
+&lt;code&gt;rand(min, max)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumenty&lt;/h4&gt;
+&lt;code&gt;min&lt;/code&gt; - najmniejsza liczba losowa.&lt;br&gt;
+&lt;code&gt;max&lt;/code&gt; - największa liczba losowa.
+&lt;br&gt;
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;rand(1, 10) &amp;rarr; 8&lt;/code&gt;&lt;br&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1065"/>
@@ -67938,7 +68088,19 @@ None
 &lt;pre&gt;$page &amp;rarr; 2&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;dunkcja $page&lt;/h3&gt;
+Zwraca aktualną stronę wydruku.
+
+&lt;h4&gt;Składnia&lt;/h4&gt;
+&lt;pre&gt;$page&lt;/pre&gt;
+
+&lt;h4&gt;Argumenty&lt;/h4&gt;
+Brak
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;pre&gt;$page &amp;rarr; 2&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1185"/>
@@ -67963,7 +68125,26 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;second(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 63072000&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja second()&lt;/h3&gt;
+Zwraca sekundy z czasu lub daty/czasu, lub liczbę sekund z &lt;code&gt;interwału&lt;/code&gt;
+
+&lt;h4&gt;Składnia&lt;/h4&gt;
+&lt;code&gt;second(czas)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;second(interwał)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumenty&lt;/h4&gt;
+&lt;code&gt;czas&lt;/code&gt; - czas lub data/czas
+&lt;br&gt;
+&lt;code&gt;interwał&lt;/code&gt; - różnica czasu
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;second(&apos;2012-07-22T13:24:57&apos;) &amp;rarr; 57&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;second(tointerval(&apos;3 seconds&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;second(age(&apos;2012-07-22T00:20:00&apos;,&apos;2012-07-22T00:00:00&apos;)) &amp;rarr; 1200&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;second(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 63072000&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1129"/>
@@ -67980,7 +68161,19 @@ None
 &lt;pre&gt;$y &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja $y&lt;/h3&gt;
+Zwraca współrzędną y aktualnego obiektu.
+
+&lt;h4&gt;Składnia&lt;/h4&gt;
+&lt;pre&gt;$y&lt;/pre&gt;
+
+&lt;h4&gt;Argumenty&lt;/h4&gt;
+Brak
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;pre&gt;$y &amp;rarr; 42&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="763"/>
@@ -67997,7 +68190,19 @@ Returns cosinus of an angle.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      cos(1.571) &amp;rarr; 0.000796326710733263&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja cos()&lt;/h3&gt;
+Zsraca cosinus kąta.
+
+
+&lt;p&gt;&lt;h4&gt;Składnia&lt;/h4&gt;
+     cos(&lt;i&gt;wartość&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumenty&lt;/h4&gt;
+&lt;i&gt;wartość&lt;/i&gt; &amp;rarr; kąt w radianach&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Przykład&lt;/h4&gt;
+     cos(1.571) &amp;rarr; 0.000796326710733263&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="721"/>
@@ -68018,7 +68223,23 @@ This function takes two arguments.
 &lt;code&gt;log(2, 32) &amp;rarr; 5&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;log(0.5, 32) &amp;rarr; -5&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja log()&lt;/h3&gt;
+Zwraca logarytm dla zadanej wartości przy podanej podstawie.
+&lt;br&gt;
+
+&lt;h4&gt;Składania&lt;/h4&gt;
+&lt;code&gt;log(podstawa, wartość)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumenty&lt;/h4&gt;
+&lt;code&gt;podstawa&lt;/code&gt; - podstawa logarytmu; liczba dodatnia&lt;br&gt;
+&lt;code&gt;wartość&lt;/code&gt; - liczba dodatnia
+&lt;br&gt;
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;log(2, 32) &amp;rarr; 5&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;log(0.5, 32) &amp;rarr; -5&lt;/code&gt;&lt;br&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="393"/>
@@ -68035,7 +68256,19 @@ Returns sinus of an angle.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      sin(1.571) &amp;rarr; 0.999999682931835&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja sin()&lt;/h3&gt;
+Zwraca sinus kąta.
+
+
+&lt;p&gt;&lt;h4&gt;Składnia&lt;/h4&gt;
+     sin(&lt;i&gt;wartość&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumenty&lt;/h4&gt;
+&lt;i&gt;wartość&lt;/i&gt; &amp;rarr; kąt w radianach&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Przykład&lt;/h4&gt;
+     sin(1.571) &amp;rarr; 0.999999682931835&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="189"/>
@@ -68055,7 +68288,22 @@ Return a part of a string
 &lt;!-- Show example of function.--&gt;
      substr(&apos;HELLO WORLD&apos;,3,5) &amp;rarr; &apos;LLO W&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja substr()&lt;/h3&gt;
+Zwraca fragment tekstu.
+
+&lt;p&gt;&lt;h4&gt;Składnia&lt;/h4&gt;
+     substr(&lt;i&gt;tekst, początek, długość&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumenty&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  tekst&lt;/i&gt; &amp;rarr; ciąg znaków&lt;br&gt;
+&lt;i&gt;  początek&lt;/i&gt; &amp;rarr; liczba wskazująca początek wycinka&lt;br&gt;
+&lt;i&gt;  długość&lt;/i&gt; &amp;rarr; liczba wskazująca długość fragmentu&lt;br&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     substr(&apos;HELLO WORLD&apos;,3,5) &amp;rarr; &apos;LLO W&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1169"/>
@@ -68162,7 +68410,26 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;hour(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 17520&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja hour()&lt;/h3&gt;
+Zwraca godzinę z czasu lub daty/czasu, lub liczbę godzin z &lt;code&gt;interwału&lt;/code&gt;
+
+&lt;h4&gt;Składania&lt;/h4&gt;
+&lt;code&gt;hour(czas)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;hour(interwał)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumenty&lt;/h4&gt;
+&lt;code&gt;czas&lt;/code&gt; - czas lub data/czas
+&lt;br&gt;
+&lt;code&gt;interwał&lt;/code&gt; - różnica czasu
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;hour(&apos;2012-07-22T13:24:57&apos;) &amp;rarr; 13&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;hour(tointerval(&apos;3 hours&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;hour(age(&apos;2012-07-22T13:00:00&apos;,&apos;2012-07-22T10:00:00&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;hour(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 17520&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1222"/>
@@ -68178,7 +68445,18 @@ None
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;$pi &amp;rarr; 3.14159265358979&lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;stałą $pi&lt;/h3&gt;
+Zwraca wartość PI do obliczeń.
+
+&lt;h4&gt;Składnia&lt;/h4&gt;
+&lt;pre&gt;$pi&lt;/pre&gt;
+
+&lt;h4&gt;Argumenty&lt;/h4&gt;
+Brak
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;pre&gt;$pi &amp;rarr; 3.14159265358979&lt;/pre&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="805"/>
@@ -68195,7 +68473,19 @@ Convert a string into Qt data type.
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;todate(&apos;2012-05-04&apos;) &amp;rarr; 2012-05-04&lt;/code&gt;&lt;br&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja todate()&lt;/h3&gt;
+Konwertuje tekst na typ daty Qt.
+
+&lt;h4&gt;Składnia&lt;/h4&gt;
+&lt;code&gt;todate(&apos;tekst&apos;)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumenty&lt;/h4&gt;
+&lt;code&gt;tekst&lt;/code&gt; - ciąg znaków formacie daty Qt
+&lt;br&gt;
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;todate(&apos;2012-05-04&apos;) &amp;rarr; 2012-05-04&lt;/code&gt;&lt;br&gt;</translation>
     </message>
 </context>
 <context>
