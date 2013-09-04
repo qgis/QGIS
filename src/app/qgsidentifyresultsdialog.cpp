@@ -30,6 +30,7 @@
 #include "qgsfeatureaction.h"
 #include "qgslogger.h"
 #include "qgsnetworkaccessmanager.h"
+#include "qgsproject.h"
 
 #include <QCloseEvent>
 #include <QLabel>
@@ -687,6 +688,7 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent* event )
   if ( !item )
     return;
 
+  QgsMapLayer *layer = vectorLayer( item );
   QgsVectorLayer *vlayer = vectorLayer( item );
   QgsRasterLayer *rlayer = rasterLayer( item );
   if ( vlayer == 0 && rlayer == 0 )
@@ -745,7 +747,8 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent* event )
   mActionPopup->addAction( tr( "Clear highlights" ), this, SLOT( clearHighlights() ) );
   mActionPopup->addAction( tr( "Highlight all" ), this, SLOT( highlightAll() ) );
   mActionPopup->addAction( tr( "Highlight layer" ), this, SLOT( highlightLayer() ) );
-  mActionPopup->addAction( tr( "Layer properties..." ), this, SLOT( layerProperties() ) );
+  if ( layer && QgsProject::instance()->layerIsEmbedded( layer->id() ).isEmpty() )
+    mActionPopup->addAction( tr( "Layer properties..." ), this, SLOT( layerProperties() ) );
   mActionPopup->addSeparator();
   mActionPopup->addAction( tr( "Expand all" ), this, SLOT( expandAll() ) );
   mActionPopup->addAction( tr( "Collapse all" ), this, SLOT( collapseAll() ) );

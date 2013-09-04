@@ -8073,7 +8073,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     return;
   }
 
-  mActionLayerProperties->setEnabled( true );
+  mActionLayerProperties->setEnabled( QgsProject::instance()->layerIsEmbedded( layer->id() ).isEmpty() );
   mActionAddToOverview->setEnabled( true );
   mActionZoomToLayer->setEnabled( true );
 
