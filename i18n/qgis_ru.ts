@@ -62175,7 +62175,7 @@ Returns true if any part of a string matches the supplied regular expression.
 &lt;p&gt;&lt;h4&gt;Аргументы&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
 &lt;i&gt;  string&lt;/i&gt; &amp;rarr; строка.&lt;br&gt;
-&lt;i&gt;  regex&lt;/i&gt; &amp;rarr; регулярное выражение.&lt;br&gt;
+&lt;i&gt;  regex&lt;/i&gt; &amp;rarr; регулярное выражение. Escape-последовательности следует экранировать дважды (например &quot;&amp;#92;&amp;#92;s&quot; для пробела). Ленивые выражения не поддерживаются.&lt;br&gt;
 
 &lt;p&gt;&lt;h4&gt;Пример&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -62200,7 +62200,22 @@ Returns a string with the supplied regular expression replaced.
 &lt;!-- Show example of function.--&gt;
      regexp_replace(&apos;QGIS SHOULD ROCK&apos;,&apos;&amp;#92;&amp;#92;sSHOULD&amp;#92;&amp;#92;s&apos;,&apos; DOES &apos;) &amp;rarr; &apos;QGIS DOES ROCK&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;regexp_replace()&lt;/h3&gt;
+Возвращает строку, в которой заменены подстроки, соответствующие шаблону заданному регулярным выражением.
+
+&lt;p&gt;&lt;h4&gt;Синтаксис&lt;/h4&gt;
+     regexp_replace(&lt;i&gt;string,regex,after&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Аргументы&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; исходная строка.&lt;br&gt;
+&lt;i&gt;  regex&lt;/i&gt; &amp;rarr; регулярное выражение. Escape-последовательности следует экранировать дважды (например &quot;&amp;#92;&amp;#92;s&quot; для пробела). Ленивые выражения не поддерживаются.&lt;br&gt;
+&lt;i&gt;  after&lt;/i&gt; &amp;rarr; строка для замены шаблона. Сохранённые группы можно вставить в строку, используя последовательности &amp;#92;&amp;#92;1, &amp;#92;&amp;#92;2 и т.д. &lt;br&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Пример&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     regexp_replace(&apos;QGIS SHOULD ROCK&apos;,&apos;&amp;#92;&amp;#92;sSHOULD&amp;#92;&amp;#92;s&apos;,&apos; DOES &apos;) &amp;rarr; &apos;QGIS DOES ROCK&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="833"/>
@@ -62219,7 +62234,21 @@ Returns the portion of a string which matches a supplied regular expression.
 &lt;!-- Show example of function.--&gt;
      regexp_substr(&apos;abc123&apos;,&apos;(&amp;#92;&amp;#92;d+)&apos;) &amp;rarr; &apos;123&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;regexp_substr()&lt;/h3&gt;
+Возвращает подстроку, которая соответствует заданному регулярному выражению.
+
+&lt;p&gt;&lt;h4&gt;Синтаксис&lt;/h4&gt;
+     regexp_substr(&lt;i&gt;string,regex&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Аргументы&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; строка.&lt;br&gt;
+&lt;i&gt;  regex&lt;/i&gt; &amp;rarr; регулярное выражение. Escape-последовательности следует экранировать дважды (например &quot;&amp;#92;&amp;#92;s&quot; для пробела). Ленивые выражения не поддерживаются.&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Пример&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     regexp_substr(&apos;abc123&apos;,&apos;(&amp;#92;&amp;#92;d+)&apos;) &amp;rarr; &apos;123&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="818"/>
@@ -62524,16 +62553,16 @@ Format a string using supplied arguments.
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;format(&apos;This %1 a %2&apos;,&apos;is&apos;, &apos;test&apos;) &amp;rarr; This is a test&lt;/code&gt;&lt;br&gt;</source>
-        <translation type="unfinished">&lt;h3&gt;format()&lt;/h3&gt;
-Format a string using supplied arguments. 
+        <translation>&lt;h3&gt;format()&lt;/h3&gt;
+Форматирует строку из строки string и списка аргументов.
 
 &lt;h4&gt;Синтаксис&lt;/h4&gt;
 &lt;code&gt;format(&apos;string&apos;, arg, [arg...n])&lt;/code&gt;&lt;br&gt;
 
 &lt;h4&gt;Аргументы&lt;/h4&gt;
-&lt;code&gt;string&lt;/code&gt; - is string.  String with Qt QString place holders.  Use %1, %2, etc for placeholders. Placeholders can be repeated. 
+&lt;code&gt;string&lt;/code&gt; - строка форматирования, в которой допускаются маркеры размещения Qt (%1, %2 и т.д.)
 &lt;br&gt;
-&lt;code&gt;arg [arg...n]&lt;/code&gt; - any type. Any number of args. 
+&lt;code&gt;arg [arg...n]&lt;/code&gt; - аргументы любого типа. 
 
 &lt;h4&gt;Пример&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -62690,20 +62719,19 @@ accelerating as the input values approach the domain maximum. Smaller exponents 
      
      
 </source>
-        <translation type="unfinished">&lt;h3&gt;scale_exp() function&lt;/h3&gt;
-Transforms a given value from an input domain to an output range using an exponential curve. This function can be used to ease values in or out 
-of the specified output range.   
+        <translation>&lt;h3&gt;scale_exp()&lt;/h3&gt;
+Преобразует значение из одного диапазона значений в другой по экспоненциальной кривой. 
+   
 
 &lt;p&gt;&lt;h4&gt;Синтаксис&lt;/h4&gt;
      scale_exp(&lt;i&gt;val&lt;/i&gt;,&lt;i&gt;domain_min&lt;/i&gt;,&lt;i&gt;domain_max&lt;/i&gt;,&lt;i&gt;range_min&lt;/i&gt;,&lt;i&gt;range_max&lt;/i&gt;,&lt;i&gt;exponent&lt;/i&gt;)&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;Аргументы&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
-&lt;i&gt;  val&lt;/i&gt; &amp;rarr; is a value in the input domain. The function will return a corresponding scaled value in the output range.&lt;br&gt;
-&lt;i&gt;  domain_min, domain_max&lt;/i&gt; &amp;rarr; specify the input domain, the smallest and largest values the input &lt;i&gt;val&lt;/i&gt; should take.&lt;br&gt;
-&lt;i&gt;  range_min, range_max&lt;/i&gt; &amp;rarr; specify the output range, the smallest and largest values which should be output by the function.&lt;br&gt;
-&lt;i&gt;  exponent&lt;/i&gt; &amp;rarr; a positive value (greater than 0), which dictates the way input values are mapped to the output range. Large exponents will cause the output values to &apos;ease in&apos;, starting slowly before
-accelerating as the input values approach the domain maximum. Smaller exponents (less than 1) will cause output values to &apos;ease out&apos;, where the mapping starts quickly but slows as it approaches the domain maximum.&lt;br&gt;
+&lt;i&gt;  val&lt;/i&gt; &amp;rarr; iзначение в исходном диапазоне.&lt;br&gt;
+&lt;i&gt;  domain_min, domain_max&lt;/i&gt; &amp;rarr; исходный диапазон, который определяет минимальное и максимальное значение для &lt;i&gt;val&lt;/i&gt;.&lt;br&gt;
+&lt;i&gt;  range_min, range_max&lt;/i&gt; &amp;rarr; целевой диапазон, который определяет минимальное и максимальное значение, возвращаемое функцией.&lt;br&gt;
+&lt;i&gt;  exponent&lt;/i&gt; &amp;rarr; положительное число, которое определяет зависимость значений в целевом диапазоне от исходных. Меньшие значения (меньше 1) замедляют рост по мере приближения к верхней границе исходного диапазона. Большие значения замедляют рост по мере приближения к началу исходного диапазона.&lt;br&gt;
 
 &lt;h4&gt;Пример&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -62784,26 +62812,23 @@ Transforms a given value from an input domain to an output range using linear in
      
      
 </source>
-        <translation type="unfinished">&lt;h3&gt;scale_linear() function&lt;/h3&gt;
-Transforms a given value from an input domain to an output range using linear interpolation. 
+        <translation>&lt;h3&gt;scale_linear()&lt;/h3&gt;
+Преобразует значение из одного диапазона значений в другой, используя линейную интерполяцию. 
 
 &lt;p&gt;&lt;h4&gt;Синтаксис&lt;/h4&gt;
      scale_linear(&lt;i&gt;val&lt;/i&gt;,&lt;i&gt;domain_min&lt;/i&gt;,&lt;i&gt;domain_max&lt;/i&gt;,&lt;i&gt;range_min&lt;/i&gt;,&lt;i&gt;range_max&lt;/i&gt;)&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;Аргументы&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
-&lt;i&gt;  val&lt;/i&gt; &amp;rarr; is a value in the input domain. The function will return a corresponding scaled value in the output range.&lt;br&gt;
-&lt;i&gt;  domain_min, domain_max&lt;/i&gt; &amp;rarr; specify the input domain, the smallest and largest values the input &lt;i&gt;val&lt;/i&gt; should take.&lt;br&gt;
-&lt;i&gt;  range_min, range_max&lt;/i&gt; &amp;rarr; specify the output range, the smallest and largest values which should be output by the function.&lt;br&gt;
+&lt;i&gt;  val&lt;/i&gt; &amp;rarr; значение в исходном диапазоне.&lt;br&gt;
+&lt;i&gt;  domain_min, domain_max&lt;/i&gt; &amp;rarr; исходный диапазон, который определяет минимальное и максимальное значение для &lt;i&gt;val&lt;/i&gt;.&lt;br&gt;
+&lt;i&gt;  range_min, range_max&lt;/i&gt; &amp;rarr; целевой диапазон, который определяет минимальное и максимальное значение, возвращаемое функцией.&lt;br&gt;
 
 &lt;h4&gt;Пример&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
      scale_linear(5,0,10,0,100) &amp;rarr; 50&lt;br&gt;
-     scale_linear(0.2,0,1,0,360) &amp;rarr; 72 &lt;i&gt;(eg, scaling a value between 0 and 1 to an angle between 0 and 360)&lt;/i&gt;&lt;br&gt;
-     scale_linear(1500,1000,10000,9,20) &amp;rarr; 10.22 &lt;i&gt;(eg, scaling a population which varies between 1000 and 10000 to a font size between 9 and 20)&lt;/i&gt;&lt;br&gt;
-     
-     
-</translation>
+     scale_linear(0.2,0,1,0,360) &amp;rarr; 72 &lt;i&gt;(преобразование значения 0..1 в угол 0..360)&lt;/i&gt;&lt;br&gt;
+     scale_linear(1500,1000,10000,9,20) &amp;rarr; 10.22 &lt;i&gt;(преобразование численности населения в диапазоне 1000..10000 в размер шрифта 9..20)&lt;/i&gt;&lt;br&gt;</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="792"/>
@@ -63079,7 +63104,21 @@ This function takes one argument.
 &lt;code&gt;ln(1) &amp;rarr; 0&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;ln(2.7182818284590452354) &amp;rarr; 1&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;ln()&lt;/h3&gt;
+Возвращает натуральный логарифм числа.
+.
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;ln(value)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Агрументы&lt;/h4&gt;
+&lt;code&gt;value&lt;/code&gt; - число.
+&lt;br&gt;
+
+&lt;h4&gt;Пример&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;ln(1) &amp;rarr; 0&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;ln(2.7182818284590452354) &amp;rarr; 1&lt;/code&gt;&lt;br&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1268"/>
@@ -63178,19 +63217,18 @@ using the fill character.
 &lt;code&gt;rpad(&apos;Hello&apos;, 10, &apos;x&apos;) &amp;rarr; &apos;xxxxxHello&apos;&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;rpad()&lt;/h3&gt;
-Returns a string with supplied width padded
-using the fill character.
+        <translation>&lt;h3&gt;rpad()&lt;/h3&gt;
+Возвращает строку, заполненную указанными символами для достижения нужной длины.
 
 &lt;h4&gt;Синтаксис&lt;/h4&gt;
 &lt;code&gt;rpad(string, width, fill)&lt;/code&gt;&lt;br&gt;
 
 &lt;h4&gt;Аргументы&lt;/h4&gt;
-&lt;code&gt;string&lt;/code&gt; - is string. The string.
+&lt;code&gt;string&lt;/code&gt; - строка.
 &lt;br&gt;
-&lt;code&gt;width&lt;/code&gt; - is int. The length of the new string.
+&lt;code&gt;width&lt;/code&gt; - необходимая длина строки.
 &lt;br&gt;
-&lt;code&gt;fill&lt;/code&gt; - is char. The character to padd the remaining space with. 
+&lt;code&gt;fill&lt;/code&gt; - символ заполнения. 
 
 &lt;h4&gt;Пример&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -63218,19 +63256,18 @@ using the fill character.
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;lpad(&apos;Hello&apos;, 10, &apos;x&apos;) &amp;rarr; &apos;Helloxxxxx&apos;&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;lpad()&lt;/h3&gt;
-Returns a string with supplied width padded
-using the fill character.
+        <translation>&lt;h3&gt;lpad()&lt;/h3&gt;
+Возвращает строку, заполненную указанными символами для достижения нужной длины.
 
 &lt;h4&gt;Синтаксис&lt;/h4&gt;
-&lt;code&gt;lpad(string, length, fill)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;lpad(string, width, fill)&lt;/code&gt;&lt;br&gt;
 
 &lt;h4&gt;Аргументы&lt;/h4&gt;
-&lt;code&gt;string&lt;/code&gt; - is string. The string.
+&lt;code&gt;string&lt;/code&gt; - строка.
 &lt;br&gt;
-&lt;code&gt;length&lt;/code&gt; - is int. The length of the new string.
+&lt;code&gt;width&lt;/code&gt; - необходимая длина строки.
 &lt;br&gt;
-&lt;code&gt;fill&lt;/code&gt; - is char. The character to padd the remaining space with. 
+&lt;code&gt;fill&lt;/code&gt; - символ заполнения. 
 
 &lt;h4&gt;Пример&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -63726,23 +63763,22 @@ use &lt;code&gt;round(decimal)&lt;/code&gt; to round to the nearest integer&lt;b
 
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;round() function&lt;/h3&gt;
-Rounds a number to number of decimal places.
-&lt;br&gt;
-This function can take one or two arguments depending on what is needed.
+        <translation>&lt;h3&gt;round()&lt;/h3&gt;
+Округляет число до заданного числа знаков после запятой.
+
 &lt;h4&gt;Синтаксис&lt;/h4&gt;
 &lt;code&gt;round(decimal,places)&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;round(decimal)&lt;/code&gt;&lt;br&gt;
 
 &lt;h4&gt;Аргументы&lt;/h4&gt;
-&lt;code&gt;decimal&lt;/code&gt; - is decimal. The decimal number to be rounded.
+&lt;code&gt;decimal&lt;/code&gt; - число для округления.
 &lt;br&gt;
-&lt;code&gt;places&lt;/code&gt; - is int. The number of places to round decimal too. Can be negative.
+&lt;code&gt;places&lt;/code&gt; - количество знаков после запятой. Допускаются отрицательные числа.
 
 &lt;h4&gt;Пример&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;round(1234.567, 2 ) &amp;rarr; 1234.57&lt;/code&gt;&lt;br&gt;
-use &lt;code&gt;round(decimal)&lt;/code&gt; to round to the nearest integer&lt;br&gt;
+Используйте &lt;code&gt;round(decimal)&lt;/code&gt; для округления до ближайшего целого.&lt;br&gt;
 &lt;code&gt;round(1234.567) &amp;rarr; 1235&lt;/code&gt;&lt;br&gt;
 
 
@@ -63925,172 +63961,172 @@ Format a date type or string into a custom string format. Uses Qt data time form
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;format_date(&apos;2012-05-15&apos;,&apos;dd.mm.yyyy&apos;) &amp;rarr; 15.05.2012&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;format_date()&lt;/h3&gt;
-Format a date type or string into a custom string format. Uses Qt data time format strings.  See &lt;a href=&apos;http://qt-project.org/doc/qt-4.8/qdatetime.html#toString&apos;&gt;QDateTime::toString&lt;/a&gt;
+        <translation>&lt;h3&gt;format_date()&lt;/h3&gt;
+Форматирует дату или строку, используя пользовательский формат. Описание формата доступно в документации Qt, см. &lt;a href=&apos;http://qt-project.org/doc/qt-4.8/qdatetime.html#toString&apos;&gt;QDateTime::toString&lt;/a&gt;
 
 &lt;h4&gt;Синтаксис&lt;/h4&gt;
 &lt;code&gt;format_date(&apos;string&apos;, &apos;format_string&apos;)&lt;/code&gt;&lt;br&gt;
 
 &lt;h4&gt;Аргументы&lt;/h4&gt;
-&lt;code&gt;string&lt;/code&gt; - is string. Date/Time/DateTime string.
+&lt;code&gt;string&lt;/code&gt; - строка или дата.
 &lt;br&gt;
-&lt;code&gt;format_string&lt;/code&gt; - is string. String template used to format the string.
+&lt;code&gt;format_string&lt;/code&gt; - шаблон форматирования.
 
   &lt;table&gt;
     &lt;thead&gt;
       &lt;tr&gt;
-        &lt;th&gt;Expression&lt;/th&gt;
+        &lt;th&gt;Спецификатор&lt;/th&gt;
 
-        &lt;th&gt;Output&lt;/th&gt;
+        &lt;th&gt;Описание&lt;/th&gt;
       &lt;/tr&gt;
     &lt;/thead&gt;
 
     &lt;tr valign=&quot;top&quot;&gt;
       &lt;td&gt;d&lt;/td&gt;
 
-      &lt;td&gt;the day as number without a leading zero (1 to 31)&lt;/td&gt;
+      &lt;td&gt;день месяца без начального нуля (1 to 31)&lt;/td&gt;
     &lt;/tr&gt;
 
     &lt;tr valign=&quot;top&quot;&gt;
       &lt;td&gt;dd&lt;/td&gt;
 
-      &lt;td&gt;the day as number with a leading zero (01 to 31)&lt;/td&gt;
+      &lt;td&gt;день месяца с начальным нулём (01 to 31)&lt;/td&gt;
     &lt;/tr&gt;
 
     &lt;tr valign=&quot;top&quot;&gt;
       &lt;td&gt;ddd&lt;/td&gt;
 
-      &lt;td&gt;the abbreviated localized day name (e.g. &apos;Mon&apos; to &apos;Sun&apos;). Uses &lt;a href=
+      &lt;td&gt;сокращённое название дня недели (например &apos;Ср.&apos; или &apos;Сб.&apos;), см. &lt;a href=
       &quot;qdate.html#shortDayName&quot;&gt;QDate::shortDayName&lt;/a&gt;().&lt;/td&gt;
     &lt;/tr&gt;
 
     &lt;tr valign=&quot;top&quot;&gt;
       &lt;td&gt;dddd&lt;/td&gt;
 
-      &lt;td&gt;the long localized day name (e.g. &apos;Monday&apos; to &apos;Sunday&apos;). Uses &lt;a href=
+      &lt;td&gt;полное название дня недели (например &apos;Среда&apos;), см. &lt;a href=
       &quot;qdate.html#longDayName&quot;&gt;QDate::longDayName&lt;/a&gt;().&lt;/td&gt;
     &lt;/tr&gt;
 
     &lt;tr valign=&quot;top&quot;&gt;
       &lt;td&gt;M&lt;/td&gt;
 
-      &lt;td&gt;the month as number without a leading zero (1-12)&lt;/td&gt;
+      &lt;td&gt;номер месяца без начального нуля (1-12)&lt;/td&gt;
     &lt;/tr&gt;
 
     &lt;tr valign=&quot;top&quot;&gt;
       &lt;td&gt;MM&lt;/td&gt;
 
-      &lt;td&gt;the month as number with a leading zero (01-12)&lt;/td&gt;
+      &lt;td&gt;номер месяца с начальным нулём (01-12)&lt;/td&gt;
     &lt;/tr&gt;
 
     &lt;tr valign=&quot;top&quot;&gt;
       &lt;td&gt;MMM&lt;/td&gt;
 
-      &lt;td&gt;the abbreviated localized month name (e.g. &apos;Jan&apos; to &apos;Dec&apos;). Uses &lt;a href=
+      &lt;td&gt;сокращённое название месяца (например &apos;сент.&apos;), см. &lt;a href=
       &quot;qdate.html#shortMonthName&quot;&gt;QDate::shortMonthName&lt;/a&gt;().&lt;/td&gt;
     &lt;/tr&gt;
 
     &lt;tr valign=&quot;top&quot;&gt;
       &lt;td&gt;MMMM&lt;/td&gt;
 
-      &lt;td&gt;the long localized month name (e.g. &apos;January&apos; to &apos;December&apos;). Uses &lt;a href=
+      &lt;td&gt;полное название месяца (например &apos;Сентябрь&apos;), см. &lt;a href=
       &quot;qdate.html#longMonthName&quot;&gt;QDate::longMonthName&lt;/a&gt;().&lt;/td&gt;
     &lt;/tr&gt;
 
     &lt;tr valign=&quot;top&quot;&gt;
       &lt;td&gt;yy&lt;/td&gt;
 
-      &lt;td&gt;the year as two digit number (00-99)&lt;/td&gt;
+      &lt;td&gt;год в виде двузначного числа (00-99)&lt;/td&gt;
     &lt;/tr&gt;
 
     &lt;tr valign=&quot;top&quot;&gt;
       &lt;td&gt;yyyy&lt;/td&gt;
 
-      &lt;td&gt;the year as four digit number&lt;/td&gt;
+      &lt;td&gt;год в виде четырёхзначного числа&lt;/td&gt;
     &lt;/tr&gt;
   &lt;/table&gt;
 
-  &lt;p&gt;These expressions may be used for the time part of the format string:&lt;/p&gt;
+  &lt;p&gt;Спецификаторы формата времени:&lt;/p&gt;
 
   &lt;table&gt;
     &lt;thead&gt;
       &lt;tr&gt;
-        &lt;th&gt;Expression&lt;/th&gt;
+        &lt;th&gt;Спецификатор&lt;/th&gt;
 
-        &lt;th&gt;Output&lt;/th&gt;
+        &lt;th&gt;Описание&lt;/th&gt;
       &lt;/tr&gt;
     &lt;/thead&gt;
 
     &lt;tr valign=&quot;top&quot;&gt;
       &lt;td&gt;h&lt;/td&gt;
 
-      &lt;td&gt;the hour without a leading zero (0 to 23 or 1 to 12 if AM/PM display)&lt;/td&gt;
+      &lt;td&gt;час без начального нуля (0-23 или 1-12 в 12-часовом формате)&lt;/td&gt;
     &lt;/tr&gt;
 
     &lt;tr valign=&quot;top&quot;&gt;
       &lt;td&gt;hh&lt;/td&gt;
 
-      &lt;td&gt;the hour with a leading zero (00 to 23 or 01 to 12 if AM/PM display)&lt;/td&gt;
+      &lt;td&gt;час с начальным нулём (00-23 или 01-12 в 12-часовом формате)&lt;/td&gt;
     &lt;/tr&gt;
 
     &lt;tr valign=&quot;top&quot;&gt;
       &lt;td&gt;H&lt;/td&gt;
 
-      &lt;td&gt;the hour without a leading zero (0 to 23, even with AM/PM display)&lt;/td&gt;
+      &lt;td&gt;час без начального нуля (0-23 даже в 12-часовом формате)&lt;/td&gt;
     &lt;/tr&gt;
 
     &lt;tr valign=&quot;top&quot;&gt;
       &lt;td&gt;HH&lt;/td&gt;
 
-      &lt;td&gt;the hour with a leading zero (00 to 23, even with AM/PM display)&lt;/td&gt;
+      &lt;td&gt;час с начальным нулём (00-23 даже в 12-часовом формате)&lt;/td&gt;
     &lt;/tr&gt;
 
     &lt;tr valign=&quot;top&quot;&gt;
       &lt;td&gt;m&lt;/td&gt;
 
-      &lt;td&gt;the minute without a leading zero (0 to 59)&lt;/td&gt;
+      &lt;td&gt;минута без начального нуля (0-59)&lt;/td&gt;
     &lt;/tr&gt;
 
     &lt;tr valign=&quot;top&quot;&gt;
       &lt;td&gt;mm&lt;/td&gt;
 
-      &lt;td&gt;the minute with a leading zero (00 to 59)&lt;/td&gt;
+      &lt;td&gt;минута с начальным нулём (00-59)&lt;/td&gt;
     &lt;/tr&gt;
 
     &lt;tr valign=&quot;top&quot;&gt;
       &lt;td&gt;s&lt;/td&gt;
 
-      &lt;td&gt;the second without a leading zero (0 to 59)&lt;/td&gt;
+      &lt;td&gt;секунда без начального нуля (0-59)&lt;/td&gt;
     &lt;/tr&gt;
 
     &lt;tr valign=&quot;top&quot;&gt;
       &lt;td&gt;ss&lt;/td&gt;
 
-      &lt;td&gt;the second with a leading zero (00 to 59)&lt;/td&gt;
+      &lt;td&gt;секунда с начальным нулём (00-59)&lt;/td&gt;
     &lt;/tr&gt;
 
     &lt;tr valign=&quot;top&quot;&gt;
       &lt;td&gt;z&lt;/td&gt;
 
-      &lt;td&gt;the milliseconds without leading zeroes (0 to 999)&lt;/td&gt;
+      &lt;td&gt;миллисекунды без начальных нулей (0 to 999)&lt;/td&gt;
     &lt;/tr&gt;
 
     &lt;tr valign=&quot;top&quot;&gt;
       &lt;td&gt;zzz&lt;/td&gt;
 
-      &lt;td&gt;the milliseconds with leading zeroes (000 to 999)&lt;/td&gt;
+      &lt;td&gt;миллисекунды с начальными нулями (000 to 999)&lt;/td&gt;
     &lt;/tr&gt;
 
     &lt;tr valign=&quot;top&quot;&gt;
-      &lt;td&gt;AP or A&lt;/td&gt;
+      &lt;td&gt;AP или A&lt;/td&gt;
 
-      &lt;td&gt;interpret as an AM/PM time. &lt;i&gt;AP&lt;/i&gt; must be either &quot;AM&quot; or &quot;PM&quot;.&lt;/td&gt;
+      &lt;td&gt;12- или 24-часовой формат. &lt;i&gt;AP&lt;/i&gt; должно иметь вид &quot;AM&quot; или &quot;PM&quot;.&lt;/td&gt;
     &lt;/tr&gt;
 
     &lt;tr valign=&quot;top&quot;&gt;
       &lt;td&gt;ap or a&lt;/td&gt;
 
-      &lt;td&gt;Interpret as an AM/PM time. &lt;i&gt;ap&lt;/i&gt; must be either &quot;am&quot; or &quot;pm&quot;.&lt;/td&gt;
+      &lt;td&gt;12- или 24-часовой формат. &lt;i&gt;ap&lt;/i&gt; должно иметь вид &quot;am&quot; или &quot;pm&quot;.&lt;/td&gt;
     &lt;/tr&gt;
   &lt;/table&gt;
 
@@ -64098,8 +64134,7 @@ Format a date type or string into a custom string format. Uses Qt data time form
 
 &lt;h4&gt;Пример&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
-&lt;code&gt;format_date(&apos;2012-05-15&apos;,&apos;dd.mm.yyyy&apos;) &amp;rarr; 15.05.2012&lt;/code&gt;&lt;br&gt;
-</translation>
+&lt;code&gt;format_date(&apos;2012-05-15&apos;,&apos;dd.mm.yyyy&apos;) &amp;rarr; 15.05.2012&lt;/code&gt;&lt;br&gt;</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="425"/>
@@ -64387,18 +64422,17 @@ Returns -1 if the expression isn&apos;t found.
      strpos(&apos;HELLO WORLD&apos;,&apos;WORLD&apos;) &amp;rarr; 6&lt;br&gt;
      strpos(&apos;HELLO WORLD&apos;,&apos;GOODBYE&apos;) &amp;rarr; -1&lt;br&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;strpos() function&lt;/h3&gt;
-Return the index of a regular expression in a string.
+        <translation>&lt;h3&gt;strpos() function&lt;/h3&gt;
+Возвращает индекс первого вхождения шаблона в строке и -1, если шаблон не найден.
 
 &lt;h4&gt;Синтаксис&lt;/h4&gt;
      strpos(&lt;i&gt;haystack&lt;/i&gt;, &lt;i&gt;needle&lt;/i&gt;)
 &lt;br&gt;&lt;br&gt;
-Returns -1 if the expression isn&apos;t found.
 
 &lt;p&gt;&lt;h4&gt;Аргументы&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
-&lt;i&gt;  haystack&lt;/i&gt; &amp;rarr; is string.  The string that is to be searched.&lt;br&gt;
-&lt;i&gt;  needle&lt;/i&gt; &amp;rarr; is number.  The regular expression to look for.&lt;br&gt;
+&lt;i&gt;  haystack&lt;/i&gt; &amp;rarr; строка.&lt;br&gt;
+&lt;i&gt;  needle&lt;/i&gt; &amp;rarr; шаблон.&lt;br&gt;
 
 &lt;h4&gt;Пример&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -64512,16 +64546,15 @@ capital letter).
 &lt;!-- Show example of function.--&gt;
      upper(&apos;hello WOrld&apos;) &amp;rarr; &apos;Hello World&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;title()&lt;/h3&gt;
-Converts all words of a string to title case (all words lower case with leading
-capital letter).
+        <translation>&lt;h3&gt;title()&lt;/h3&gt;
+Возвращает строку, каждое слово в которой начинается с прописной буквы.
 
 &lt;p&gt;&lt;h4&gt;Синтаксис&lt;/h4&gt;
      title(&lt;i&gt;string&lt;/i&gt;)&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;Аргументы&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
-&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The string to convert to title case.&lt;/p&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; строка.&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;Пример&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -64618,25 +64651,24 @@ The color ramps available vary between QGIS installations.  This function
 may not give the expected results if you move your Quantum project.
 &lt;/p&gt;
 </source>
-        <translation type="unfinished">
+        <translation>
 &lt;h3&gt;ramp_color() function&lt;/h3&gt;
-Returns a string representing a color from a color ramp. 
+Возращает строку, представляющую цвет из градиента. 
 
 &lt;p&gt;&lt;h4&gt;Синтаксис&lt;/h4&gt;
      ramp_color(&lt;i&gt;ramp_name,value&lt;/i&gt;)&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;Аргументы&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
-&lt;i&gt;  ramp_name&lt;/i&gt; &amp;rarr; the name of the color ramp as a string, for example &apos;Spectral&apos;.&lt;br&gt;
-&lt;i&gt;  value&lt;/i&gt; &amp;rarr; the position on the ramp to select the color from as a real number between 0 and 1.&lt;br&gt;
+&lt;i&gt;  ramp_name&lt;/i&gt; &amp;rarr; название градиента, например &apos;Spectral&apos;.&lt;br&gt;
+&lt;i&gt;  value&lt;/i&gt; &amp;rarr; позиция в градиенте в диапазоне 0..1.&lt;br&gt;
 
 &lt;p&gt;&lt;h4&gt;Пример&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
      ramp_color(&apos;Spectral&apos;,0.3) &amp;rarr; &apos;#fdbe73&apos;&lt;/p&gt;
 
-&lt;p&gt;&lt;h4&gt;Note:&lt;/h4&gt;
-The color ramps available vary between QGIS installations.  This function
-may not give the expected results if you move your Quantum project.
+&lt;p&gt;&lt;h4&gt;Примечание:&lt;/h4&gt;
+Результат функции может отличаться в зависимости от градиентов, установленных в системе.
 &lt;/p&gt;
 </translation>
     </message>
@@ -64807,16 +64839,15 @@ This function takes two arguments.
 &lt;code&gt;log(2, 32) &amp;rarr; 5&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;log(0.5, 32) &amp;rarr; -5&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;log()&lt;/h3&gt;
-Returns the value of the logarithm of the passed value and base.
-&lt;br&gt;
-This function takes two arguments.
+        <translation>&lt;h3&gt;log()&lt;/h3&gt;
+Возвращает логарифм числа по указанному основанию
+.
 &lt;h4&gt;Синтаксис&lt;/h4&gt;
 &lt;code&gt;log(base, value)&lt;/code&gt;&lt;br&gt;
 
 &lt;h4&gt;Аргументы&lt;/h4&gt;
-&lt;code&gt;base&lt;/code&gt; - any positive number.&lt;br&gt;
-&lt;code&gt;value&lt;/code&gt; - any positive number.
+&lt;code&gt;base&lt;/code&gt; - основание.&lt;br&gt;
+&lt;code&gt;value&lt;/code&gt; - число.
 &lt;br&gt;
 
 &lt;h4&gt;Пример&lt;/h4&gt;
@@ -65083,17 +65114,17 @@ Returns a string with the the supplied string replaced.
 &lt;!-- Show example of function.--&gt;
      replace(&apos;QGIS SHOULD ROCK&apos;,&apos;SHOULD&apos;,&apos;DOES&apos;) &amp;rarr; &apos;QGIS DOES ROCK&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;replace()&lt;/h3&gt;
-Returns a string with the the supplied string replaced.
+        <translation>&lt;h3&gt;replace()&lt;/h3&gt;
+Возвращает строку, в которой заменены подстроки, соответствующие шаблону.
 
 &lt;p&gt;&lt;h4&gt;Синтаксис&lt;/h4&gt;
      replace(&lt;i&gt;string,before,after&lt;/i&gt;)&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;Аргументы&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
-&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The start string.&lt;br&gt;
-&lt;i&gt;  before&lt;/i&gt; &amp;rarr; is string.  The string to replace.&lt;br&gt;
-&lt;i&gt;  after&lt;/i&gt; &amp;rarr; is string.  The string that will replace &lt;i&gt;before&lt;/i&gt;&lt;br&gt;&lt;/p&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; строка.&lt;br&gt;
+&lt;i&gt;  before&lt;/i&gt; &amp;rarr; шаблон для замены.&lt;br&gt;
+&lt;i&gt;  after&lt;/i&gt; &amp;rarr; строка, на которую будут заменены подстроки, соответствующие шаблноу &lt;i&gt;before&lt;/i&gt;&lt;br&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;Пример&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
