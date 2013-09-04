@@ -114,7 +114,6 @@ void CoordinateCapture::initGui()
   connect( mpMapTool, SIGNAL( mouseMoved( QgsPoint ) ), this, SLOT( mouseMoved( QgsPoint ) ) );
   connect( mpMapTool, SIGNAL( mouseClicked( QgsPoint ) ), this, SLOT( mouseClicked( QgsPoint ) ) );
 
-
   // create a little widget with x and y display to put into our dock widget
   QWidget * mypWidget = new QWidget();
   QGridLayout *mypLayout = new QGridLayout( mypWidget );
@@ -264,19 +263,26 @@ void CoordinateCapture::unload()
   mQGisIface->removeVectorToolBarIcon( mQActionPointer );
   mpMapTool->deactivate();
   delete mpMapTool;
+  mpMapTool = 0;
   delete mpDockWidget;
+  mpDockWidget = 0;
   delete mQActionPointer;
+  mQActionPointer = 0;
 }
 
 // Set icons to the current theme
 void CoordinateCapture::setCurrentTheme( QString theThemeName )
 {
   Q_UNUSED( theThemeName );
-  mQActionPointer->setIcon( QIcon( getIconPath( "coordinate_capture.png" ) ) );
-  mpTrackMouseButton->setIcon( QIcon( getIconPath( "tracking.png" ) ) );
-  mpCaptureButton->setIcon( QIcon( getIconPath( "coordinate_capture.png" ) ) );
-  mypUserCrsToolButton->setIcon( QIcon( getIconPath( "geographic.png" ) ) );
-  mypCRSLabel->setPixmap( QPixmap( getIconPath( "transformed.png" ) ) );
+  if ( mQActionPointer )
+    mQActionPointer->setIcon( QIcon( getIconPath( "coordinate_capture.png" ) ) );
+  if ( mpDockWidget )
+  {
+    mpTrackMouseButton->setIcon( QIcon( getIconPath( "tracking.png" ) ) );
+    mpCaptureButton->setIcon( QIcon( getIconPath( "coordinate_capture.png" ) ) );
+    mypUserCrsToolButton->setIcon( QIcon( getIconPath( "geographic.png" ) ) );
+    mypCRSLabel->setPixmap( QPixmap( getIconPath( "transformed.png" ) ) );
+  }
 }
 
 // Get path to the best available icon file
