@@ -99,7 +99,7 @@ void QgsSpatialQueryPlugin::unload()
   mIface->removePluginVectorMenu( tr( "&Spatial Query" ), mSpatialQueryAction );
 
   delete mSpatialQueryAction;
-
+  mSpatialQueryAction = 0;
   delete mDialog;
   mDialog = NULL;
 }
@@ -137,7 +137,8 @@ void QgsSpatialQueryPlugin::run()
 //! Set icons to the current theme
 void QgsSpatialQueryPlugin::setCurrentTheme( QString )
 {
-  mSpatialQueryAction->setIcon( getThemeIcon( "/spatialquery.png" ) );
+  if ( mSpatialQueryAction )
+    mSpatialQueryAction->setIcon( getThemeIcon( "/spatialquery.png" ) );
 }
 
 QIcon QgsSpatialQueryPlugin::getThemeIcon( const QString &theName )
