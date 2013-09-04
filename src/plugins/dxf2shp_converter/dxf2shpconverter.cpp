@@ -115,6 +115,7 @@ void dxf2shpConverter::unload()
   mQGisIface->removePluginVectorMenu( tr( "&Dxf2Shp" ), mQActionPointer );
   mQGisIface->removeVectorToolBarIcon( mQActionPointer );
   delete mQActionPointer;
+  mQActionPointer = 0;
 }
 
 void dxf2shpConverter::addMyLayer( QString myfname, QString mytitle )
@@ -129,21 +130,24 @@ void dxf2shpConverter::setCurrentTheme( QString theThemeName )
   QString myCurThemePath = QgsApplication::activeThemePath() + "/plugins/dxf2shp_converter.png";
   QString myDefThemePath = QgsApplication::defaultThemePath() + "/plugins/dxf2shp_converter.png";
   QString myQrcPath = ":/dxf2shp_converter.png";
-  if ( QFile::exists( myCurThemePath ) )
+  if ( mQActionPointer )
   {
-    mQActionPointer->setIcon( QIcon( myCurThemePath ) );
-  }
-  else if ( QFile::exists( myDefThemePath ) )
-  {
-    mQActionPointer->setIcon( QIcon( myDefThemePath ) );
-  }
-  else if ( QFile::exists( myQrcPath ) )
-  {
-    mQActionPointer->setIcon( QIcon( myQrcPath ) );
-  }
-  else
-  {
-    mQActionPointer->setIcon( QIcon() );
+    if ( QFile::exists( myCurThemePath ) )
+    {
+      mQActionPointer->setIcon( QIcon( myCurThemePath ) );
+    }
+    else if ( QFile::exists( myDefThemePath ) )
+    {
+      mQActionPointer->setIcon( QIcon( myDefThemePath ) );
+    }
+    else if ( QFile::exists( myQrcPath ) )
+    {
+      mQActionPointer->setIcon( QIcon( myQrcPath ) );
+    }
+    else
+    {
+      mQActionPointer->setIcon( QIcon() );
+    }
   }
 }
 
