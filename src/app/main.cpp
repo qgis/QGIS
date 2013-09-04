@@ -223,7 +223,11 @@ static void dumpBacktrace( unsigned int depth )
     if ( pipe( fd ) == 0 && fork() == 0 )
     {
       close( STDIN_FILENO ); // close stdin
-      ( void ) dup( fd[0] ); // stdin from pipe
+
+      // stdin from pipe
+      if ( dup( fd[0] ) != STDIN_FILENO )
+        QgsDebugMsg( "dup to stdin failed" );
+
       close( fd[1] );        // close writing end
       execl( "/usr/bin/c++filt", "c++filt", ( char * ) 0 );
       perror( "could not start c++filt" );
@@ -234,7 +238,11 @@ static void dumpBacktrace( unsigned int depth )
     stderr_fd = dup( STDERR_FILENO );
     close( fd[0] );          // close reading end
     close( STDERR_FILENO );  // close stderr
-    ( void ) dup( fd[1] );   // stderr to pipe
+
+    // stderr to pipe
+    if ( dup( fd[1] ) != STDERR_FILENO )
+      QgsDebugMsg( "dup to stderr failed" );
+
     close( fd[1] );          // close duped pipe
   }
 
@@ -246,7 +254,8 @@ static void dumpBacktrace( unsigned int depth )
   {
     int status;
     close( STDERR_FILENO );
-    ( void ) dup( stderr_fd );
+    if ( dup( stderr_fd ) != STDERR_FILENO )
+      QgsDebugMsg( "dup to stderr failed" );
     close( stderr_fd );
     wait( &status );
   }
