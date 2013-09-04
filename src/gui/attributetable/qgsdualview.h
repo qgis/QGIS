@@ -207,6 +207,14 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     void attributeAdded( int attribute );
 
     /**
+     * Gets called when a feature is deleted.
+     * So it can be removed from the feature form if required.
+     *
+     * @param fid The feature being deleted
+     */
+    void featureDeleted( QgsFeatureId fid );
+
+    /**
      * Will be called periodically, when loading layers from slow data providers.
      *
      * @param i       The number of features already loaded

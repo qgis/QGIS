@@ -23,6 +23,7 @@
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsattributeaction.h"
 #include "qgsvectordataprovider.h"
+#include "qgsmessagelog.h"
 
 #include <QDialog>
 #include <QMenu>
@@ -229,6 +230,7 @@ void QgsDualView::initLayerCache( QgsVectorLayer* layer )
   connect( layer, SIGNAL( editingStopped() ), this, SLOT( editingToggled() ) );
   connect( layer, SIGNAL( attributeAdded( int ) ), this, SLOT( attributeAdded( int ) ) );
   connect( layer, SIGNAL( attributeDeleted( int ) ), this, SLOT( attributeDeleted( int ) ) );
+  connect( layer, SIGNAL( featureDeleted( QgsFeatureId ) ), this, SLOT( featureDeleted( QgsFeatureId ) ) );
 }
 
 void QgsDualView::initModels( QgsMapCanvas* mapCanvas )
@@ -255,7 +257,7 @@ void QgsDualView::on_mFeatureList_currentEditSelectionChanged( const QgsFeature 
   // Backup old dialog and delete only after creating the new dialog, so we can "hot-swap" the contained QgsFeature
   QgsAttributeDialog* oldDialog = mAttributeDialog;
 
-  if ( mAttributeDialog->dialog() )
+  if ( mAttributeDialog && mAttributeDialog->dialog() )
   {
     saveEditChanges();
     mAttributeEditorLayout->removeWidget( mAttributeDialog->dialog() );
@@ -289,6 +291,12 @@ void QgsDualView::saveEditChanges()
       mAttributeDialog->accept();
       // Get the edited feature
       const QgsAttributes &dst = mAttributeDialog->feature()->attributes();
+
+      if ( src.count() != dst.count() )
+      {
+        // bail out
+        return;
+      }
 
       mLayerCache->layer()->beginEditCommand( tr( "Attributes changed" ) );
 
@@ -348,7 +356,7 @@ void QgsDualView::previewColumnChanged( QObject* action )
 void QgsDualView::editingToggled()
 {
   // Reload the attribute dialog widget and commit changes if any
-  if ( mAttributeDialog->dialog() && mAttributeDialog->feature() )
+  if ( mAttributeDialog && mAttributeDialog->dialog() && mAttributeDialog->feature() )
   {
     on_mFeatureList_currentEditSelectionChanged( *mAttributeDialog->feature() );
   }
@@ -454,6 +462,22 @@ void QgsDualView::attributeAdded( int attribute )
     mAttributeEditorLayout->addWidget( mAttributeDialog->dialog() );
 
     delete oldDialog;
+  }
+}
+
+void QgsDualView::featureDeleted( QgsFeatureId fid )
+{
+  if ( mAttributeDialog && mAttributeDialog->dialog() )
+  {
+    QgsFeature* feat = mAttributeDialog->feature();
+    if ( feat )
+    {
+      if ( fid == feat->id() )
+      {
+        delete( mAttributeDialog );
+        mAttributeDialog = NULL;
+      }
+    }
   }
 }
 
