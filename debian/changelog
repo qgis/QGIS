@@ -1,3 +1,9 @@
+qgis (2.1.0) UNRELEASED; urgency=low
+
+  * new development version 2.1 after branch of 2.0
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Sat, 27 Jul 2013 16:45:43 +0200
+
 qgis (1.9.0) UNRELEASED; urgency=low
 
   * new development version 1.9 after branch of 1.8
