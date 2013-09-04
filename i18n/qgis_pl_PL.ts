@@ -17846,7 +17846,7 @@ Baza: %2</translation>
     <message>
         <location filename="../src/core/qgsbrowsermodel.cpp" line="84"/>
         <source>Home</source>
-        <translation>Początek</translation>
+        <translation>Home</translation>
     </message>
     <message>
         <location filename="../src/core/qgsbrowsermodel.cpp" line="92"/>
