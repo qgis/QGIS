@@ -36,7 +36,6 @@ from processing.gui.ParametersDialog import ParametersDialog
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.gui.AlgorithmClassification import AlgorithmDecorator
-#from processing.gui.ProcessingToolbox import ProcessingToolbox
 from processing.modeler.ModelerParameterDefinitionDialog import ModelerParameterDefinitionDialog
 from processing.modeler.ModelerAlgorithm import ModelerAlgorithm
 from processing.modeler.ModelerParametersDialog import ModelerParametersDialog
@@ -219,7 +218,8 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
                 self.textGroup.setText(alg.group)
                 self.textName.setText(alg.name)
                 self.repaintModel()
-                self.view.ensureVisible(self.scene.getLastAlgorithmItem())
+                if self.scene.getLastAlgorithmItem():
+                    self.view.ensureVisible(self.scene.getLastAlgorithmItem())
                 self.view.centerOn(0,0)
             except WrongModelException, e:
                 QMessageBox.critical(self,

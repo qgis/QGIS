@@ -236,8 +236,14 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
      */
     void cachedLayerDeleted();
 
+    /**
+     * @brief Is emitted when an attribute is changed. Is re-emitted after the layer itself emits this signal.
+     *        You should connect to this signal, to be sure, to not get a cached value if querying the cache.
+     */
+    void attributeValueChanged( const QgsFeatureId& fid, const int& field, const QVariant &value );
+
   private slots:
-    void attributeValueChanged( QgsFeatureId fid, int field, const QVariant& value );
+    void onAttributeValueChanged( QgsFeatureId fid, int field, const QVariant& value );
     void featureDeleted( QgsFeatureId fid );
     void featureAdded( QgsFeatureId fid );
     void attributeAdded( int field );

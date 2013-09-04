@@ -124,3 +124,47 @@ QString QgsField::displayString( const QVariant& v ) const
       return v.toString();
   }
 }
+
+
+////////////////////////////////////////////////////////////////////////////
+
+void QgsFields::clear()
+{
+  mFields.clear();
+  mNameToIndex.clear();
+}
+
+bool QgsFields::append( const QgsField& field, FieldOrigin origin, int originIndex )
+{
+  if ( mNameToIndex.contains( field.name() ) )
+    return false;
+
+  if ( originIndex == -1 && origin == OriginProvider )
+    originIndex = mFields.count();
+  mFields.append( Field( field, origin, originIndex ) );
+
+  mNameToIndex.insert( field.name(), mFields.count() - 1 );
+  return true;
+}
+
+void QgsFields::remove( int fieldIdx )
+{
+  mNameToIndex.remove( mFields[fieldIdx].field.name() );
+  mFields.remove( fieldIdx );
+}
+
+void QgsFields::extend( const QgsFields& other )
+{
+  for ( int i = 0; i < other.count(); ++i )
+  {
+    append( other.at( i ), other.fieldOrigin( i ), other.fieldOriginIndex( i ) );
+  }
+}
+
+QList<QgsField> QgsFields::toList() const
+{
+  QList<QgsField> lst;
+  for ( int i = 0; i < mFields.count(); ++i )
+    lst.append( mFields[i].field );
+  return lst;
+}

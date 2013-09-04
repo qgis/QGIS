@@ -132,7 +132,11 @@ bool QgsPostgresFeatureIterator::nextFeature( QgsFeature& feature )
     QgsDebugMsg( QString( "Finished after %1 features" ).arg( mFetched ) );
     close();
 
-    if ( P->mFeaturesCounted < mFetched )
+    /* only updates the feature count if it was already once.
+     * Otherwise, this would lead to false feature count if
+     * an existing project is open at a restrictive extent.
+     */
+    if ( P->mFeaturesCounted > 0 && P->mFeaturesCounted < mFetched )
     {
       QgsDebugMsg( QString( "feature count adjusted from %1 to %2" ).arg( P->mFeaturesCounted ).arg( mFetched ) );
       P->mFeaturesCounted = mFetched;

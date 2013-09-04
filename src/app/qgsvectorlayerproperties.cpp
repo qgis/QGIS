@@ -267,7 +267,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
 
 QgsVectorLayerProperties::~QgsVectorLayerProperties()
 {
-  if ( layer->hasGeometryType() )
+  if ( mOptsPage_LabelsOld && labelDialog && layer->hasGeometryType() )
   {
     disconnect( labelDialog, SIGNAL( labelSourceSet() ), this, SLOT( setLabelCheckBox() ) );
   }
@@ -395,24 +395,55 @@ void QgsVectorLayerProperties::syncToLayer( void )
   // load appropriate symbology page (V1 or V2)
   updateSymbologyPage();
 
+  actionDialog->init();
+
   // reset fields in label dialog
   layer->label()->setFields( layer->pendingFields() );
-
-  actionDialog->init();
 
   if ( layer->hasGeometryType() )
   {
     labelingDialog->init();
-    labelDialog->init();
   }
 
-  labelCheckBox->setChecked( layer->hasLabelsEnabled() );
-  labelOptionsFrame->setEnabled( layer->hasLabelsEnabled() );
+  if ( mOptsPage_LabelsOld )
+  {
+    if ( labelDialog && layer->hasGeometryType() )
+    {
+      labelDialog->init();
+    }
+    labelCheckBox->setChecked( layer->hasLabelsEnabled() );
+    labelOptionsFrame->setEnabled( layer->hasLabelsEnabled() );
+    QObject::connect( labelCheckBox, SIGNAL( clicked( bool ) ), this, SLOT( enableLabelOptions( bool ) ) );
+  }
 
   mFieldsPropertiesDialog->init();
 
-  QObject::connect( labelCheckBox, SIGNAL( clicked( bool ) ), this, SLOT( enableLabelOptions( bool ) ) );
-} // reset()
+  if ( layer->hasLabelsEnabled() )
+  {
+    // though checked on projectRead, can reoccur after applying a style with enabled deprecated labels
+    // otherwise, the deprecated labels will render, but the tab to disable them will not show up
+    QgsProject::instance()->writeEntry( "DeprecatedLabels", "/Enabled", true );
+    // (this also overrides any '/Enabled, false' project property the user may have manually set)
+  }
+
+  // delete deprecated labels tab if not already used by project
+  // NOTE: this is not ideal, but a quick fix for QGIS 2.0 release
+  bool ok;
+  bool dl = QgsProject::instance()->readBoolEntry( "DeprecatedLabels", "/Enabled", false, &ok );
+  if ( !ok || ( ok && !dl ) ) // project not flagged or set to use deprecated labels
+  {
+    if ( mOptsPage_LabelsOld )
+    {
+      if ( labelDialog )
+      {
+        disconnect( labelDialog, SIGNAL( labelSourceSet() ), this, SLOT( setLabelCheckBox() ) );
+      }
+      delete mOptsPage_LabelsOld;
+      mOptsPage_LabelsOld = 0;
+    }
+  }
+
+} // syncToLayer()
 
 
 
@@ -462,9 +493,15 @@ void QgsVectorLayerProperties::apply()
 
   actionDialog->apply();
 
-  if ( labelDialog )
-    labelDialog->apply();
-  layer->enableLabels( labelCheckBox->isChecked() );
+  if ( mOptsPage_LabelsOld )
+  {
+    if ( labelDialog )
+    {
+      labelDialog->apply();
+    }
+    layer->enableLabels( labelCheckBox->isChecked() );
+  }
+
   layer->setLayerName( mLayerOrigNameLineEdit->text() );
 
   // Apply fields settings
@@ -711,6 +748,8 @@ void QgsVectorLayerProperties::on_pbnLoadStyle_clicked()
   QFileInfo myFI( myFileName );
   QString myPath = myFI.path();
   myQSettings.setValue( "style/lastStyleDir", myPath );
+
+  activateWindow(); // set focus back to properties dialog
 }
 
 

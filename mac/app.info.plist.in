@@ -181,6 +181,30 @@
 				<string>dem</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleTypeName</key>
+			<string>QGIS style document</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleTypeIconFile</key>
+			<string>qml.icns</string>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>qml</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeName</key>
+			<string>Memory layer document</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleTypeIconFile</key>
+			<string>mldata.icns</string>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>mldata</string>
+			</array>
+		</dict>
 	</array>
 	<key>CFBundleLocalizations</key>
 	<array>

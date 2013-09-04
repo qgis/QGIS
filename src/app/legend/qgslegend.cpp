@@ -830,7 +830,8 @@ void QgsLegend::handleRightClickEvent( QTreeWidgetItem* item, const QPoint& posi
 
       // properties goes on bottom of menu for consistency with normal ui standards
       // e.g. kde stuff
-      theMenu.addAction( tr( "&Properties" ), QgisApp::instance(), SLOT( layerProperties() ) );
+      if ( lyr->layer() && QgsProject::instance()->layerIsEmbedded( lyr->layer()->id() ).isEmpty() )
+        theMenu.addAction( tr( "&Properties" ), QgisApp::instance(), SLOT( layerProperties() ) );
 
       if ( li->parent() && !parentGroupEmbedded( li ) )
       {
@@ -1383,6 +1384,14 @@ QList<QgsMapLayer *> QgsLegend::layers()
   return ls;
 }
 
+static bool inReverseDrawingOrder( QgsLegendLayer *a, QgsLegendLayer *b )
+{
+  if ( !a || !b )
+    return false;
+
+  return a->drawingOrder() > b->drawingOrder();
+}
+
 QList<QgsMapCanvasLayer> QgsLegend::canvasLayers()
 {
   QMap<int, QgsMapCanvasLayer> layers;
@@ -1412,6 +1421,10 @@ QList<QgsMapCanvasLayer> QgsLegend::canvasLayers()
       {
         int groupDrawingOrder = lgroup->drawingOrder();
         QList<QgsLegendLayer*> groupLayers = lgroup->legendLayers();
+        if ( !mUpdateDrawingOrder )
+        {
+          qSort( groupLayers.begin(), groupLayers.end(), inReverseDrawingOrder );
+        }
         for ( int i = groupLayers.size() - 1; i >= 0; --i )
         {
           QgsLegendLayer* ll = groupLayers.at( i );
@@ -1471,6 +1484,10 @@ void QgsLegend::setDrawingOrder( const QList<DrawingOrderInfo> &order )
       {
         group->setDrawingOrder( i );
         QList<QgsLegendLayer*> groupLayers = group->legendLayers();
+        if ( !mUpdateDrawingOrder )
+        {
+          qSort( groupLayers.begin(), groupLayers.end(), inReverseDrawingOrder );
+        }
         QList<QgsLegendLayer*>::iterator groupIt = groupLayers.begin();
         for ( ; groupIt != groupLayers.end(); ++groupIt )
         {
@@ -1644,7 +1661,7 @@ void QgsLegend::legendLayerShowInOverview()
   if ( !li )
     return;
 
-  if ( li->type() == QgsLegendItem::LEGEND_LAYER )
+  if ( li->type() != QgsLegendItem::LEGEND_LAYER )
     return;
 
   QgsLegendLayer* ll = qobject_cast<QgsLegendLayer *>( li );

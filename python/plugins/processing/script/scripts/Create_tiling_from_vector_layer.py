@@ -9,4 +9,4 @@ centery = (input.extent().yMinimum() + input.extent().yMaximum()) / 2
 width = (input.extent().xMaximum() - input.extent().xMinimum())
 cellsize = width / numpolygons
 height = (input.extent().yMaximum() - input.extent().yMinimum())
-processing.runalg("qgis:creategrid", cellsize, height, width, height, centerx, centery, 1, polygons)
+processing.runalg("qgis:creategrid", cellsize, height, width, height, centerx, centery, 1, input.crs(), polygons)

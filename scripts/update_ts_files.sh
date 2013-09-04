@@ -52,14 +52,17 @@ cleanup() {
 	trap "" EXIT
 }
 
-trap cleanup EXIT
-
 PATH=$QTDIR/bin:$PATH
 
 if type qmake-qt4 >/dev/null 2>&1; then
 	QMAKE=qmake-qt4
 else
 	QMAKE=qmake
+fi
+
+if ! type pylupdate4 >/dev/null 2>&1; then
+      echo "pylupdate4 not found"
+      exit 1
 fi
 
 if type lupdate-qt4 >/dev/null 2>&1; then
@@ -93,10 +96,13 @@ while (( $# > 0 )); do
   fi
 done
 
+trap cleanup EXIT
+
 if [ -n "$exclude" -o -n "$add" ]; then
   echo Saving excluded translations
   tar $fast -cf i18n/qgis_ts.tar i18n/qgis_*.ts$exclude
 fi
+
 echo Updating python translations
 cd python
 pylupdate4 utils.py {console,pyplugin_installer}/*.{py,ui} -ts python-i18n.ts

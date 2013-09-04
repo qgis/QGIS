@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>560</width>
-    <height>1128</height>
+    <width>640</width>
+    <height>600</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -129,7 +129,7 @@
      <property name="minimumSize">
       <size>
        <width>0</width>
-       <height>500</height>
+       <height>300</height>
       </size>
      </property>
      <property name="frameShape">
@@ -198,7 +198,7 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>525</width>
+               <width>605</width>
                <height>300</height>
               </rect>
              </property>
@@ -628,8 +628,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>501</width>
-                       <height>890</height>
+                       <width>566</width>
+                       <height>406</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -1350,8 +1350,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>367</width>
-                       <height>414</height>
+                       <width>640</width>
+                       <height>462</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_14">
@@ -1961,8 +1961,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>283</width>
-                       <height>266</height>
+                       <width>640</width>
+                       <height>462</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -2339,8 +2339,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>377</width>
-                       <height>760</height>
+                       <width>625</width>
+                       <height>753</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_21">
@@ -3170,8 +3170,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>317</width>
-                       <height>440</height>
+                       <width>640</width>
+                       <height>462</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_22">
@@ -3664,8 +3664,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>360</width>
-                       <height>818</height>
+                       <width>625</width>
+                       <height>814</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -4930,8 +4930,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>390</width>
-                       <height>645</height>
+                       <width>625</width>
+                       <height>639</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_8">

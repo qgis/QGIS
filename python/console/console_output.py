@@ -137,7 +137,13 @@ class ShellOutputScintilla(QsciScintilla):
                                              "Python {0} on {1}\n"
                                              "## Type help(iface) for more info and list of methods.\n").format(sys.version,
                                                                                                                 socket.gethostname())
-        initText = self.setText(txtInit)
+        ## some translation string for the console header ends without '\n'
+        ## and the first command in console will be appended at the header text.
+        ## The following code add a '\n' at the end of the string if not present.
+        if txtInit.endswith('\n'):
+            initText = self.setText(txtInit)
+        else:
+            initText = self.setText(txtInit + '\n')
 
     def refreshLexerProperties(self):
         self.setLexers()

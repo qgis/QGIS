@@ -63,7 +63,7 @@ class DlgImportVector(QDialog, Ui_Dialog):
 	def setupWorkingMode(self, mode):
 		""" hide the widget to select a layer/file if the input layer is already set """
 		self.wdgInput.setVisible( mode == self.ASK_FOR_INPUT_MODE )
-		self.resize( 200, 200 )
+		self.resize( 450, 350 )
 
 		self.cboTable.setEditText(self.outUri.table())
 

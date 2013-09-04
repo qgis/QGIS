@@ -149,8 +149,8 @@ class SagaUtils:
 
         try:
             from processing import runalg
-            result = runalg("saga:thiessenpolygons", points(), None)
-            if not os.path.exists(result['POLYGONS']):
+            result = runalg("saga:polygoncentroids", points(), False, None)
+            if result is None or not os.path.exists(result['CENTROIDS']):
                 return "It seems that SAGA is not correctly installed in your system.\nPlease install it before running SAGA algorithms."
         except:
             s = traceback.format_exc()

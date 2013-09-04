@@ -2594,7 +2594,7 @@ De volgende veldnamen zijn langer dan 10 karakters:
     </message>
     <message>
         <source>Processing options</source>
-        <translation type="unfinished"></translation>
+        <translation>Processing opties</translation>
     </message>
 </context>
 <context>
@@ -3020,7 +3020,7 @@ De volgende veldnamen zijn langer dan 10 karakters:
     </message>
     <message>
         <source>Processing modeler</source>
-        <translation type="unfinished"></translation>
+        <translation>Processing modeler</translation>
     </message>
 </context>
 <context>
@@ -7066,7 +7066,7 @@ U kunt de optie &apos;Opslaan als...&apos; gebruiken.</translation>
     </message>
     <message>
         <source>Processing models (*.model)</source>
-        <translation type="unfinished"></translation>
+        <translation>Processing modellen (*.model)</translation>
     </message>
 </context>
 <context>
@@ -8029,62 +8029,62 @@ Pas dat eerst aan, want de OSM-plugin weet niet naar welke kaartlaag moet worden
     <name>Processing</name>
     <message>
         <source>Processing</source>
-        <translation type="unfinished"></translation>
+        <translation>Processing</translation>
     </message>
     <message>
         <source>Toolbox</source>
-        <translation type="unfinished"></translation>
+        <translation>Toolbox</translation>
     </message>
     <message>
         <source>Graphical modeler</source>
-        <translation type="unfinished"></translation>
+        <translation>Grafische model bouwen</translation>
     </message>
     <message>
         <source>History and log</source>
-        <translation type="unfinished">Historie en log</translation>
+        <translation>Historie en log</translation>
     </message>
     <message>
         <source>Options and configuration</source>
-        <translation type="unfinished"></translation>
+        <translation>Opties en configuratie</translation>
     </message>
     <message>
         <source>&amp;Results viewer</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Resultaten bekijken</translation>
     </message>
     <message>
         <source>&amp;Commander</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Commando&apos;s</translation>
     </message>
 </context>
 <context>
     <name>ProcessingToolbox</name>
     <message>
         <source>Processing Toolbox</source>
-        <translation type="unfinished"></translation>
+        <translation>Processing Gereedschap</translation>
     </message>
     <message>
         <source>Enter algorithm name to filter list</source>
-        <translation type="unfinished">Geef naam algoritme als filter</translation>
+        <translation>Geef naam algoritme als filter</translation>
     </message>
     <message>
         <source>Search...</source>
-        <translation type="unfinished">Zoek...</translation>
+        <translation>Zoek...</translation>
     </message>
     <message>
         <source>Execute</source>
-        <translation type="unfinished">Uitvoeren</translation>
+        <translation>Uitvoeren</translation>
     </message>
     <message>
         <source>Execute as batch process</source>
-        <translation type="unfinished">Uitvoeren als batch-proces</translation>
+        <translation>Uitvoeren als batch-proces</translation>
     </message>
     <message>
         <source>Edit rendering styles for outputs</source>
-        <translation type="unfinished">Weergave-stijlen voor uitvoer bewerken</translation>
+        <translation>Weergave-stijlen voor uitvoer bewerken</translation>
     </message>
     <message>
         <source>Recently used algorithms</source>
-        <translation type="unfinished">Recent gebruikte algoritmes</translation>
+        <translation>Recent gebruikte algoritmes</translation>
     </message>
 </context>
 <context>
@@ -8496,69 +8496,72 @@ gebruikt u het  qgis.utils.iface object (een instantie van QgisInterface class).
     </message>
     <message>
         <source>&lt;b&gt;&quot;{0}&quot;&lt;/b&gt; was not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;&quot;{0}&quot;&lt;/b&gt; is niet gevonden.</translation>
     </message>
     <message>
         <source> [Temporary file saved in {0}]</source>
-        <translation type="unfinished"></translation>
+        <translation> [Tijdelijk bestand opgeslagen in {0}]</translation>
     </message>
     <message>
         <source>## Script error: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>## Script fout: {0}</translation>
     </message>
     <message>
         <source>## Script executed successfully: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>## Script succesvol uitgevoerd: {0}</translation>
     </message>
     <message>
         <source>Cannot execute file {0}. Error: {1}
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Fout uit uitvoeren van bestand {0}. Fout: {1}</translation>
     </message>
     <message>
         <source>The file &lt;b&gt;&quot;{0}&quot;&lt;/b&gt; has been deleted or is not accessible</source>
-        <translation type="unfinished"></translation>
+        <translation>Het bestand &lt;b&gt;&quot;{0}&quot;&lt;/b&gt; is verwijderd of niet toegankelijk</translation>
     </message>
     <message>
         <source>The file &lt;b&gt;&quot;{0}&quot;&lt;/b&gt; has been changed and reloaded</source>
-        <translation type="unfinished"></translation>
+        <translation>Het bestand &lt;b&gt;&quot;{0}&quot;&lt;/b&gt; is aangepast en herladen</translation>
     </message>
     <message>
         <source>The file &lt;b&gt;&quot;{0}&quot;&lt;/b&gt; is read only, please save to different file first.</source>
-        <translation type="unfinished"></translation>
+        <translation>Het bestand &lt;b&gt;&quot;{0}&quot;&lt;/b&gt; is read only, bewaar eerst het in een ander bestand.</translation>
     </message>
     <message>
         <source>The file {0} could not be opened. Error: {1}
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Het bestand {0} kon niet worden geopend. fout: {1}</translation>
     </message>
     <message>
         <source>Untitled-{0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Geen naam-{0}</translation>
     </message>
     <message>
         <source>The file &lt;b&gt;&apos;{0}&apos;&lt;/b&gt; has been modified, save changes?</source>
-        <translation type="unfinished"></translation>
+        <translation>Het bestand &lt;b&gt;&apos;{0}&apos;&lt;/b&gt; is aangepast, bestand opslaan?</translation>
     </message>
     <message>
         <source>Unable to restore the file: 
 {0}
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Bestand kan niet worden hersteld: 
+{0}</translation>
     </message>
     <message>
         <source>Python {0} on {1}
 ## Type help(iface) for more info and list of methods.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Python {0} op {1}
+## Type help(iface) om meer informatie of een lijst van methoden te zien.
+</translation>
     </message>
     <message>
         <source>The file &lt;b&gt;{0}&lt;/b&gt; could not be saved. Error: {1}</source>
-        <translation type="unfinished"></translation>
+        <translation>Het bestand &lt;b&gt;{0}&lt;/b&gt; kan niet worden opgeslagen. Fout: {1}</translation>
     </message>
     <message>
         <source>Import Processing class</source>
-        <translation type="unfinished"></translation>
+        <translation>Importeren klasse Processing</translation>
     </message>
 </context>
 <context>
@@ -10952,55 +10955,56 @@ Deze zal daarom niet actief worden gemaakt.</translation>
     <message>
         <source>Unable to determine number of geometry columns of layer %1.%2: 
 %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Het bepalen van het aantal geomtrie kolommen is niet mogelijk van laag %1.%2: 
+%3</translation>
     </message>
     <message>
         <source>no available replacement for internal fieldname ogc_fid found</source>
-        <translation type="unfinished"></translation>
+        <translation>geen vervanging gevonden voor de interne veldnaam ogc_fid</translation>
     </message>
     <message>
         <source>Reserved attribute name ogc_fid replaced with %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Gereserveerde attribuutnaam ogc_fid vervangen door %1</translation>
     </message>
     <message>
         <source>DBF file</source>
-        <translation type="unfinished"></translation>
+        <translation>DBF bestand</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished">Fout</translation>
+        <translation>Fout</translation>
     </message>
     <message>
         <source>Layer</source>
-        <translation type="unfinished">Laag</translation>
+        <translation>Laag</translation>
     </message>
     <message>
         <source>Feature ID</source>
-        <translation type="unfinished"></translation>
+        <translation>Object-ID</translation>
     </message>
     <message>
         <source>empty response</source>
-        <translation type="unfinished"></translation>
+        <translation>lege response</translation>
     </message>
     <message>
         <source>WFS service exception:%1</source>
-        <translation type="unfinished"></translation>
+        <translation>WFS service fout: %1</translation>
     </message>
     <message>
         <source>unsuccessful service response: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>foute service response: %1</translation>
     </message>
     <message>
         <source>WFS exception report (code=%1 text=%2)</source>
-        <translation type="unfinished"></translation>
+        <translation>WFS foutrapportage (code=%1 teks=%2)</translation>
     </message>
     <message>
         <source>missing</source>
-        <translation type="unfinished"></translation>
+        <translation>mist</translation>
     </message>
     <message>
         <source>unhandled response: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>response niet behandeld: %1</translation>
     </message>
 </context>
 <context>
@@ -13661,11 +13665,11 @@ Neem alstublieft contact op met de ontwikkelaars.
     </message>
     <message>
         <source>Compiled against GEOS</source>
-        <translation type="unfinished"></translation>
+        <translation>Gecompileerd tegen GEOS</translation>
     </message>
     <message>
         <source>Running against GEOS</source>
-        <translation type="unfinished"></translation>
+        <translation>Gebruikt nu GEOS</translation>
     </message>
 </context>
 <context>
@@ -14975,7 +14979,7 @@ Gebruikers DB Pad:	%9
     </message>
     <message>
         <source>The filter defines which features are currently shown in the list or on the table</source>
-        <translation type="unfinished"></translation>
+        <translation>Dit filter definieert welke objecten er momenteel getoond worden in de lijst of in de tabel</translation>
     </message>
 </context>
 <context>
@@ -15953,7 +15957,7 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
     </message>
     <message>
         <source>Ctrl (or Alt)-click to toggle all</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl(of Alt)-klik om alles om te schakelen</translation>
     </message>
 </context>
 <context>
@@ -16285,7 +16289,8 @@ Probeer a.u.b. een lagere resolutie of een kleiner papiergrootte</translation>
     <message>
         <source>Trying to create image #%1( %2x%3 @ %4dpi ) may result in a memory overflow.
 Please try a lower resolution or a smaller papersize</source>
-        <translation type="unfinished"></translation>
+        <translation>Het aanmaken van afbeelding #%1( %2x%3 @ %4dpi ) kan resulteren in geheugenproblemen.
+Probeer alstublieft een lagere resolutie of een kleiner papiergrootte</translation>
     </message>
 </context>
 <context>
@@ -18315,7 +18320,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Image search paths</source>
-        <translation type="unfinished"></translation>
+        <translation>Zoekpaden voor afbeelding</translation>
     </message>
 </context>
 <context>
@@ -19464,11 +19469,11 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Error starting help viewer [%1]</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout bij het starten van de help [%1]</translation>
     </message>
     <message>
         <source>Context help</source>
-        <translation type="unfinished"></translation>
+        <translation>Context help</translation>
     </message>
 </context>
 <context>
@@ -20258,7 +20263,7 @@ en het huidige bestand is [%3]</translation>
     </message>
     <message>
         <source>&lt;b&gt;Current definition %1:&lt;/b&gt;&lt;br&gt;%2</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Huidige definitie %1:&lt;/b&gt;&lt;br&gt;%2</translation>
     </message>
 </context>
 <context>
@@ -21690,11 +21695,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>The file is a comma separated value file, fields delimited by commas and quoted by &quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Het bestand is een comma gescheiden bestand, velden gescheiden door comma&apos;s en omgeven met &quot;</translation>
     </message>
     <message>
         <source>Each line in the file is split using a regular expression to define the end of each field</source>
-        <translation type="unfinished"></translation>
+        <translation>Elke regel in het bestand wordt opgedeeld door een reguliere expressie om het eind van een veld te bepalen</translation>
     </message>
 </context>
 <context>
@@ -22732,15 +22737,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>String Concatenation</source>
-        <translation type="unfinished"></translation>
+        <translation>Tekenreeks Samenvoegen</translation>
     </message>
     <message>
         <source>Open Bracket </source>
-        <translation type="unfinished"></translation>
+        <translation>Open Haakje</translation>
     </message>
     <message>
         <source>Close Bracket </source>
-        <translation type="unfinished"></translation>
+        <translation>Sluiten Haakje</translation>
     </message>
 </context>
 <context>
@@ -27645,7 +27650,7 @@ in regel %2 kolom %3</translation>
     </message>
     <message>
         <source>%1 of %2 bad layers were not fixable.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 van de %2 foute lagen waren niet repareerbaar.</translation>
     </message>
 </context>
 <context>
@@ -31441,6 +31446,14 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
         <source>Finally, the value is converted from %1 to %2.</source>
         <translation>Uiteindelijk wordt de waarde geconverteerd van %1 naar %2.</translation>
     </message>
+    <message>
+        <source>Measure (OTF off)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Measure (OTF on)</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsMeasureTool</name>
@@ -31561,9 +31574,9 @@ eigenschappen
     <message numerus="yes">
         <source>%n more</source>
         <comment>unread messages</comment>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n meer</numerusform>
+            <numerusform>%n meer</numerusform>
         </translation>
     </message>
 </context>
@@ -33677,19 +33690,19 @@ Altijd netwerk: altijd ophalen uit het netwerk, en niet checken of er misschien 
     </message>
     <message>
         <source>OGR error syncing to disk: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>OGR fout bij synchroniseren naar dis: %1</translation>
     </message>
     <message>
         <source>Possible corruption after REPACK detected. %1 still exists. This may point to a permission or locking problem of the original DBF.</source>
-        <translation type="unfinished"></translation>
+        <translation>Mogelijke fout bij REPACK gedetecteerd. %1 bestaat nog. Dit kan duiden op een permissie- of locking-probleem van de originele DBF.</translation>
     </message>
     <message>
         <source>Original layer could not be reopened.</source>
-        <translation type="unfinished"></translation>
+        <translation>Originele laag kan niet worden geopend.</translation>
     </message>
     <message>
         <source>Original datasource could not be reopened.</source>
-        <translation type="unfinished"></translation>
+        <translation>Originele databron kan niet worden geopend.</translation>
     </message>
 </context>
 <context>
@@ -39244,7 +39257,7 @@ Doorgaan?</translation>
     </message>
     <message>
         <source>Select %1 from pull-down menu to adjust radii</source>
-        <translation type="unfinished"></translation>
+        <translation>Selecteer %1 uit het afrolmenu om de radii aan te passen</translation>
     </message>
 </context>
 <context>
@@ -39295,7 +39308,7 @@ Doorgaan?</translation>
     </message>
     <message>
         <source>Identifiable layers</source>
-        <translation>Identficeerbare lagen</translation>
+        <translation>Identificeerbare lagen</translation>
     </message>
     <message>
         <source>Layer</source>
@@ -42397,7 +42410,28 @@ standaarddeviatie x</translation>
     </message>
     <message>
         <source> of </source>
-        <translation> van </translation>
+        <translation type="obsolete"> van </translation>
+    </message>
+    <message>
+        <source>cumulative cut</source>
+        <translation>cumulatieve uitsnede</translation>
+    </message>
+    <message>
+        <source>standard deviation</source>
+        <translation>standaard deviatie</translation>
+    </message>
+    <message>
+        <source>full extent</source>
+        <translation>volledige gebied</translation>
+    </message>
+    <message>
+        <source>sub extent</source>
+        <translation>deel gebied</translation>
+    </message>
+    <message>
+        <source>%1 %2 of %3.</source>
+        <comment>min/max origin label in raster properties, where %1 - estimated/exact, %2 - values (min/max, stddev, etc.), %3 - extent</comment>
+        <translation>%1 %2 van %3.</translation>
     </message>
 </context>
 <context>
@@ -43086,7 +43120,7 @@ standaarddeviatie x</translation>
     </message>
     <message>
         <source>Refine current rule</source>
-        <translation type="unfinished"></translation>
+        <translation>Verfijn huidige regel</translation>
     </message>
 </context>
 <context>
@@ -43349,7 +43383,7 @@ standaarddeviatie x</translation>
     </message>
     <message>
         <source>Save style</source>
-        <translation type="unfinished"></translation>
+        <translation>Stijl opslaan</translation>
     </message>
 </context>
 <context>
@@ -44153,6 +44187,33 @@ verbetering</translation>
     </message>
 </context>
 <context>
+    <name>QgsSmartGroupCondition</name>
+    <message>
+        <source>has the tag</source>
+        <translation>heeft de &apos;tag&apos;</translation>
+    </message>
+    <message>
+        <source>is a member of group</source>
+        <translation>is deel van groep</translation>
+    </message>
+    <message>
+        <source>has a part of name matching</source>
+        <translation>een deel van naam komt overeen</translation>
+    </message>
+    <message>
+        <source>does NOT have the tag</source>
+        <translation>bevat niet de &apos;tag&apos;</translation>
+    </message>
+    <message>
+        <source>is NOT a member of group</source>
+        <translation>is GEEN deel van groep</translation>
+    </message>
+    <message>
+        <source>has NO part of name matching</source>
+        <translation>GEEN deel van de naam komt overeen</translation>
+    </message>
+</context>
+<context>
     <name>QgsSmartGroupConditionWidget</name>
     <message>
         <source>Form</source>
@@ -44172,6 +44233,14 @@ verbetering</translation>
     <message>
         <source>The smart group name field is empty. Kindly provide a name</source>
         <translation>Het naamveld van de &quot;smart group&quot; is leeg. Voer een naam in</translation>
+    </message>
+    <message>
+        <source>ALL the constraints</source>
+        <translation>ALLE beperkingen</translation>
+    </message>
+    <message>
+        <source>any ONE of the constraints</source>
+        <translation>EEN van de beperkingen</translation>
     </message>
 </context>
 <context>
@@ -45808,11 +45877,11 @@ Overschrijven?</translation>
     </message>
     <message>
         <source>file specified below</source>
-        <translation type="unfinished"></translation>
+        <translation>bestand zoals onder weergegeven</translation>
     </message>
     <message>
         <source>URL specified below</source>
-        <translation type="unfinished"></translation>
+        <translation>URL hieronder</translation>
     </message>
 </context>
 <context>
@@ -46046,59 +46115,59 @@ Er was een probleem met uw symbolen database.</translation>
     </message>
     <message>
         <source>Type here to filter symbols...</source>
-        <translation type="unfinished"></translation>
+        <translation>Vul hier in om te filteren op symbolen ...</translation>
     </message>
     <message>
         <source>Share Menu</source>
-        <translation type="unfinished"></translation>
+        <translation>Menu Delen</translation>
     </message>
     <message>
         <source>Export</source>
-        <translation type="unfinished">Exporteer</translation>
+        <translation>Exporteer</translation>
     </message>
     <message>
         <source>Import</source>
-        <translation type="unfinished">Importeren</translation>
+        <translation>Importeren</translation>
     </message>
     <message>
         <source>Group Actions</source>
-        <translation type="unfinished"></translation>
+        <translation>Groep Acties</translation>
     </message>
     <message>
         <source>Group Symbols</source>
-        <translation type="unfinished"></translation>
+        <translation>Groep Symbolen</translation>
     </message>
     <message>
         <source>Edit Smart Group</source>
-        <translation type="unfinished"></translation>
+        <translation>Slimme Groep Aanpassen</translation>
     </message>
     <message>
         <source>New Group</source>
-        <translation type="unfinished">Nieuwe Groep</translation>
+        <translation>Nieuwe Groep</translation>
     </message>
     <message>
         <source>Finish Grouping</source>
-        <translation type="unfinished"></translation>
+        <translation>Groepering beeindigen</translation>
     </message>
     <message>
         <source>Edit Group</source>
-        <translation type="unfinished"></translation>
+        <translation>Groep Aanpassen</translation>
     </message>
     <message>
         <source>Add Group</source>
-        <translation type="unfinished"></translation>
+        <translation>Groep Toevoegen</translation>
     </message>
     <message>
         <source>Remove Group</source>
-        <translation type="unfinished"></translation>
+        <translation>Groep verwijderen</translation>
     </message>
     <message>
         <source>Apply Group</source>
-        <translation type="unfinished"></translation>
+        <translation>Groep Toepassen</translation>
     </message>
     <message>
         <source>Un-group</source>
-        <translation type="unfinished"></translation>
+        <translation>Groeperen ongedaan maken</translation>
     </message>
 </context>
 <context>
@@ -46538,6 +46607,14 @@ Er was een probleem met uw symbolen database.</translation>
         <source>Transparency %1%</source>
         <translation>Transparantie %1%</translation>
     </message>
+    <message>
+        <source>Style Manager</source>
+        <translation>Stijl manager</translation>
+    </message>
+    <message>
+        <source>Save in symbol library...</source>
+        <translation>Opslaan in symbolenbibliotheek...</translation>
+    </message>
 </context>
 <context>
     <name>QgsTINInterpolatorDialog</name>
@@ -46842,15 +46919,15 @@ Er was een probleem met uw symbolen database.</translation>
     </message>
     <message>
         <source>In the print composer tool bar you can find two buttons for moving elements. The left one (right arrow icon) selects and moves elements in the layout. After selecting the element with this tool you can also move them around with the arrow keys. For accurate positioning use the &lt;strong&gt;Position and Size&lt;/strong&gt; section, which can be found in the tab &lt;strong&gt;Item Properties -&gt; Position and Size&lt;/strong&gt;. The other move tool (map canvas icon with right arrow) allows one to move the map content within a map frame.</source>
-        <translation type="unfinished"></translation>
+        <translation>In de print layouter werkbalk zie je twee knoppen om elementen te verplaatsen. De linker (pijl naar rechts icoon) selecteert en verplaatst elementen in de layout. Na het selecteren van het element met dit gereedschap kun het het element ook verplaatsen met de pijltjes-toetsen. Voor nauwkeurige positionering gebruikt u de sectie &lt;strong&gt;Positie and Grootte&lt;/strong&gt;, welke u kunt vinden in het tabblad &lt;strong&gt;Item Eigenschappen -&gt; Positie en Grootte&lt;/strong&gt;. Met andere verplaats-gereedschap (kaartbeeld icoon met een rechter pijl) kunt u de inhoud van de kaart verplaatsen in het kaartvenster.</translation>
     </message>
     <message>
         <source>In the Print Composer you can rotate a map by setting its rotation value in the tab &lt;strong&gt;Item Properties -&gt; Map -&gt; Main properties&lt;/strong&gt; section. To place a north arrow in your layout you can use the &lt;strong&gt;Add Image&lt;/strong&gt; tool. After the selection and placement of the north arrow in the layout you can link it with a specific map frame by activating the &lt;strong&gt;Sync with map&lt;/strong&gt; checkbox and selecting a map frame. Whenever you change the rotation value of a linked map, the north arrow will now automatically adjust its rotation.</source>
-        <translation type="unfinished"></translation>
+        <translation>In the Layouter kunt een kaart roteren via de rotatie eigenschappen in het tabblad-onderdeel &lt;strong&gt;Item Eigenschappen -&gt; Kaart -&gt; Algemene Eigenschappen&lt;/strong&gt;. Om een noordpijl in de layout te plaatsen kunt u gebruik maken van het &lt;strong&gt;Afbeelding Toevoegen&lt;/strong&gt; gereedschap. Na het selecteren en plaatsen van de noordpijl in de layout kunt u de pijl koppelen aan een specifieke kaart door het aankruisen van het &lt;strong&gt;Synchroniseer met kaart&lt;/strong&gt; vinkje en dan een kaart te selecteren. Bij het roteren van de kaart zal dan ook de noordpijl automatisch meedraaien.</translation>
     </message>
     <message>
         <source>Sometimes you have a very large dataset which takes ages to draw. You can press &apos;Esc&apos; (the escape key), or click the &apos;Stop map rendering&apos; icon in the status bar to the bottom of the window at any time to halt rendering. If you are going to be performing several actions (e.g. modifying symbology options) and wish to temporarily disable map rendering while you do so, you can uncheck the &apos;Render&apos; checkbox in the bottom right of the status bar. Don&apos;t forget to check it on again when you are ready to have the map draw itself again!</source>
-        <translation type="unfinished"></translation>
+        <translation>Soms duurt het renderen (kaart op het scherm tekenen) van een grote dataset veel te lang. Druk op &apos;esc&apos; (de escape toets) om het renderen te stoppen, of druk op de &quot;Stoppen met (her)tekenen&quot;-knop in de statusbalk rechts van de schaalaanduiding. Wanneer je meerdere aanpassingen in de weergeve gaat doen (bijvoorbeeld nieuwe symbologieën toepassen) dan kun je het renderen tijdelijk uitzetten door de optie (Her)tekenen in de statusbalk uit te vinken. Vergeet deze niet weer aan te vinken wanneer je klaar bent, zodat de kaart weer automatisch wordt getekend!</translation>
     </message>
 </context>
 <context>
@@ -53280,7 +53357,8 @@ Met veld Berekening kunt u attributen invullen met behulp van expressies.
 Displays a north arrow overlayed onto the map.
 &lt;p&gt;
 At present there is only one style available. You can adjust the angle of the arrow or let QGIS set the direction automatically. If you choose to let QGIS determine the direction, it makes its best guess as to how the arrow should be oriented. For placement of the arrow you have four options, corresponding to the four corners of the map canvas.</source>
-        <translation>&lt;h3&gt; Noordpijl Plugin&lt;/h3&gt;
+        <translatorcomment>Geen plugin meer maar sinds 1.8 standaard onderdeel van QGIS</translatorcomment>
+        <translation>&lt;h3&gt; Noordpijl&lt;/h3&gt;
 Toont een noordpijl op de kaart.
 &lt;p&gt;
 Momenteel is er slechts één stijl beschikbaar. Men kan de richting van de pijl aanpassen of die automatisch door QGIS laten bepalen. Indien er voor gekozen wordt om QGIS de richting te laten bepalen, zal deze de beste inschatting doen hoe de noordpijl moet worden georiënteerd. Voor het plaatsen van de noordpijl heb je vier opties, overeenkomend met de vier hoeken van het kaartbeeld.</translation>
@@ -53507,7 +53585,38 @@ This plugin supports basic HTML markup tags for formatting text. For example:
 &lt;/li&gt;
 &lt;/ul&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>Het is geen plugin meer, dus plugin uit de tekst gehaald!</translatorcomment>
+        <translation>&lt;h3&gt;Copyright Label Plugin&lt;/h3&gt;
+Tekent een copyright label met informatie.&lt;br/&gt;
+Je kunt naast het copyright label de gewenste tekst toevoegen op de kaart.
+&lt;p&gt;
+&lt;a href=&quot;#howto&quot;&gt;Werking&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#text&quot;&gt;Tekst opmaak&lt;/a&gt;&lt;br/&gt;
+
+&lt;a name=&quot;howto&quot;&gt;
+&lt;h4&gt;Werking&lt;/h4&gt;
+&lt;/a&gt;
+&lt;ol&gt;
+&lt;li&gt;Selecteer&lt;label&gt;Beeld &gt; Decoraties &gt; Copyright Label&lt;/label&gt; of gebruik de knop &lt;label&gt;Copyright Label&lt;/label&gt; van de werkbalk.
+&lt;li&gt;Geef de tekst die op de kaart geplaatst moet worden. Je kunt daarbij voor de opmaak HTML gebruiken.
+&lt;li&gt;Kies de plaatsing van het label via de keuzelijst&lt;label&gt;Plaats RechtsOnder&lt;/label&gt;
+&lt;li&gt;Zorg ervoor dat het aanvinkvak &lt;label&gt;Copyright Label tonen&lt;/label&gt; is aangevinkt.
+&lt;li&gt;Selecteer &lt;label&gt;OK&lt;/label&gt;.
+&lt;/ol&gt;
+&lt;a name=&quot;text&quot;&gt;
+&lt;h4&gt; Tekst opmaak &lt;/h4&gt;
+&lt;/a&gt;
+Met HTML tags kan de tekst van het Copyright Label van opmaak worden voorzien. Bijvoorbeeld:
+
+&lt;ul&gt;
+&lt;li&gt;&amp;lt;B&amp;gt;&lt;b&gt; Vet &lt;/b&gt;&amp;lt;/B&amp;gt;
+&lt;/li&gt;
+&lt;li&gt;&amp;lt;I&amp;gt;&lt;i&gt; Cursief &lt;/i&gt;&amp;lt;/I&amp;gt;
+&lt;/li&gt;
+&lt;li&gt;&amp;lt;U&amp;gt;&lt;u&gt; Onderstreept &lt;/u&gt;&amp;lt;/U&amp;gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Attribute table&lt;/h3&gt;
@@ -53562,7 +53671,58 @@ The &lt;label&gt;Field Calculator&lt;/label&gt; button in the attribute table al
 The results can be written to a new attribute column or it can be used to update values in an already existing column.&lt;br&gt;
 The vector layer needs to be in editing mode, before you can click on the &lt;label&gt;Field calculator&lt;/label&gt; icon to open the dialog.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Attributentabel&lt;/h3&gt;
+De attributentabel toont de object attribuutwaarden van de geselecteerde laag. Elke rij in de tabel komt overeen met 1 object van de kaart waarvan de attribuutwaarden te zien zijn in verschillende kolommen. Men kan objecten zoeken, selecteren verplaatsen en zelfs bewerken.  Standaard is de attributentabel een vrijstaand venster. Wanneer deze geopend is en niet zichtbaar is, dan is het venster waarschijnlijk verborgen achter het hoofdvenster van QGIS. Je kunt het venster echter ook vastzetten als onderdeel van het hoofdvenster van QGIS door het aanvinkvak &lt;label&gt;Open attributen tabel in een dock window&lt;/label&gt; in &lt;label&gt;Extra &gt; Opties &gt; Algemeen&lt;/label&gt;.&lt;p&gt;
+
+Bovenin het venster wordt informatie gegeven over aantallen objecten, eruit gefilterde, geselecteerde en totale aantal objecten.&lt;p&gt;
+&lt;p&gt;
+&lt;a href=&quot;#Selecting&quot;&gt;Selecteren&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#Sorting&quot;&gt;Sorteren&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#Filtering&quot;&gt;Filteren&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#Editing&quot;&gt;Bewerken&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#FieldCalc&quot;&gt;Veldberekening&lt;/a&gt;&lt;br/&gt;
+
+&lt;a name=&quot;Selecting&quot;&gt;
+&lt;h4&gt;Selecteren&lt;/h4&gt;
+&lt;/a&gt;
+Regels kunnen worden geselecteerd door te klikken op het regelnummer aan de linkerzijde van de rij. Opeenvolgende rijen kunnen worden geselecteerd met ingehouden linkermuisknop. Meerdere niet opeenvolgende rijen kunnen worden geselecteerd met ingehouden &lt;label&gt;Ctrl&lt;/label&gt; toets.&lt;br&gt;
+Een opeenvolgende selectie kan ook gemaakt worden door eerst een rij te selecteren en vervolgens de andere zijde van de selectie te selecteren door een regelnummer aan de linkerzijde te selecteren met de &lt;label&gt;Shift&lt;/label&gt; toets. Alle regels tussen de huidige cursur positie en de geselecteerde rij worden geselecteerd.
+
+&lt;a name=&quot;Sorting&quot;&gt;
+&lt;h4&gt;Sorteren&lt;/h4&gt;
+&lt;/a&gt;
+Elke kolom kan gesorteerd worden door te klikken op het kolomhoofd. Een kleine pijl geeft de sorteervolgorde aan ( naar beneden wijzend zijn de waarden van boven naar beneden aflopende gesorteerd, naar boven wijzend zijn de waarden van boven naar onder oplopend gesorteerd.).&lt;br&gt;
+Gebruik de knop &lt;label&gt;Verplaats selectie naar boven&lt;/label&gt; om de geselecteerde rijen altijd bovenin te plaatsen onafhankelijk van gebruikte sorteervolgorde. 
+
+&lt;a name=&quot;Filtering&quot;&gt;
+&lt;h4&gt;Filteren&lt;/h4&gt;
+&lt;/a&gt;
+Om alleen een deel van de data te doorzoeken kun je de filterknop gebruiken die je linksonderin kunt vinden. De volgende opties zijn beschikbaar.
+&lt;h5&gt;Toon Alle Objecten&lt;/h5&gt;
+Toont alle objecten van de laag.
+&lt;h5&gt;Toon geselecteerde objecten&lt;/h5&gt;
+Toont alle geselecteerde objecten.
+&lt;h5&gt;Toon objecten zichtbaar op de kaart&lt;/h5&gt;
+Toont alle objecten die momenteel getoond worden op de kaart, waarbij rekening wordt gehouden met het volledige kaartgebied en schaalgebaseerde zichtbaarheden.
+&lt;h5&gt;Toon gewijzigde en nieuwe objecten&lt;/h5&gt;
+Toont alleen gewijzigde en nieuwe objecten. In deze modus, worden objecten getoond die nog niet definitief zijn opgeslagen en is daarom een goed filter om de wijzigingen te beoordelen voor deze definitief op te slaan. Merk op dat verwijderde objecten niet worden getoond in deze modus.
+&lt;h5&gt;Kolomfilter&lt;/h5&gt;
+Een eenvoudig filter waarmee je op attribuutwaarde kunt filteren. Wanneer het attribuutveld tekst bevat, zal deze zoeken naar attribuutwaarden die (een deel van) de tekst bevat. Wanneer je zoekt op &lt;b&gt;Amsterdam&lt;/b&gt; zal deze ook het record tonen met &lt;b&gt;Nieuw Amsterdam&lt;/b&gt;. Druk op &lt;label&gt; Enter &lt;/label&gt; na het wijzigen van de filtertekst, of selecteer &lt;label&gt;Apply&lt;/label&gt;. Je kunt het aanvinkvak &lt;label&gt;Hoofdlettergevoelig&lt;/label&gt; uitvinken, zodat je &lt;b&gt;Amsterdam&lt;/b&gt; ook vindt wanneer de zoektekst &lt;b&gt;amsterd&lt;/b&gt;.is gegeven   
+&lt;h5&gt;Uitgebreid Filter&lt;/h5&gt;
+Voor meer complexe zoekopdrachten, bestaat er een krachtige expressie bouwer, die overeenkomt met de SQL WHERE opdracht. Graag verwijs ik naar de ingebouwde helptekst van de expressiebouwer voor de details over syntax.
+
+&lt;a name=&quot;Editing&quot;&gt;
+&lt;h4&gt;Bewerken&lt;/h4&gt;
+&lt;/a&gt;
+Om waarden te bewerken, dient de laag eerst te worden omgeschakeld naar de modus bewerken. Om naar de modus bewerken te switchen selecteer &lt;label&gt;Bewerken aan/uitzetten&lt;/label&gt; (de knop met het potloodje) of gebruik de toetsencombinatie &lt;label&gt;Ctrl + E&lt;/label&gt;. Dubbelklik vervolgens op de cel met de waarde die je wilt bewerken of selecteer een cel en gebruik de &lt;label&gt;Spatiebalk&lt;/label&gt; om een nieuwe waarde in te vullen. Je kunt met de pijltjestoetsen door de cellen navigeren en zo een andere cel selecteren. Je kunt voor elke kolom instellen welk wijzig-hulpmiddel je wilt gebruiken om waarden in te voeren in &lt;label&gt;Kaartlagen &gt; eigenschappen &gt; Velden&lt;/label&gt;  
+
+&lt;a name=&quot;FieldCalc&quot;&gt;
+&lt;h4&gt;Veld berekening&lt;/h4&gt;
+&lt;/a&gt;
+De knop &lt;label&gt;Veldberekening&lt;/label&gt; (de rekenmachine) in de attributentabel geeft de mogelijkheid om berekeningen uit te voeren met bestaande attribuutwaarden, bijvoorbeeld de lengte of oppervlakte van een lijn of polygoon object.&lt;br&gt;
+Het resultaat kan naar een nieuw attribuutveld worden geschreven of men kan de waarden van een bestaande attribuutveld overschrijven.&lt;br&gt;
+De vectorlaag moet in de bewerken modus staan, zodat de knop &lt;label&gt;Veld berekening&lt;/label&gt; geactiveerd is en kan worden gebruikt om het menu te openen.
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Project Properties&lt;/h3&gt;
@@ -53600,7 +53760,41 @@ The Coordinate Reference System (CRS) tab allows you to set the projection for t
 &lt;/a&gt;
 On this tab you can choose on which layers the identify tool will work.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Project Eigenschappen&lt;/h3&gt;
+Dit menu geeft de mogelijkheid om een aantal eigenschappen te wijzigen van het &lt;label&gt;Project&lt;/label&gt;. Een Project is een opgeslagen geheel van kaartlagen en hun instellingen en andere informatie die nodig is om het project weer te openen zoals deze was op het moment van opslaan.&lt;p&gt;
+
+&lt;a href=&quot;#general&quot;&gt;Tabblad Algemeen&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#crs&quot;&gt;Tabblad Coördinaten Referentie Systeem (CRS)&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#layers&quot;&gt;Tabblad Identificeerbare lagen&lt;/a&gt;&lt;br/&gt;
+
+&lt;a name=&quot;general&quot;&gt;
+&lt;h4&gt;Tabblad Algemeen&lt;/h4&gt;
+&lt;/a&gt;
+&lt;table border=1&gt;
+&lt;tr&gt;&lt;td&gt;&lt;label&gt;Project titel&lt;/label&gt;&lt;/td&gt;&lt;td&gt;Een beschrijvende naam voor het project die als titel wordt weergegeven in de bovenste balk van het QGIS applicatievenster.&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;label&gt;Selectie-kleur&lt;/label&gt;&lt;/td&gt;&lt;td&gt;De kleur waarmee geselecteerde objecten worden getoond op de kaart.&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;label&gt;Achtergrondkleur&lt;/label&gt;&lt;/td&gt;&lt;td&gt;De achtergrond kleur van de kaart.&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;label&gt;Paden opslaan&lt;/label&gt;&lt;/td&gt;&lt;td&gt;Geeft de mogelijkheid om gebruikte paden absoluut of relatief op te slaan t.o.v. het project bestand.&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;label&gt;Laageenheden&lt;/label&gt;&lt;/td&gt;&lt;td&gt;Kies de meest geschikte kaarteenheid die je wilt gebruiken voor de kaartlagen van het project.&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;label&gt;Precisie&lt;/label&gt;&lt;/td&gt;&lt;td&gt;Wanneer gekozen is voor handmatige instelling kun je zelf de precisie instellen van de coördinaten die worden getoond in de statusbalk. Wanneer de muis over de kaart beweegt zullen de coördinaten worden bijgewerkt met de precisie die jij hier hebt ingesteld. Automatisch is de standaard instelling zal de precisie aanpassen aan de gekozen kaarteenheid.&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;label&gt;Digitaliseren&lt;/label&gt;&lt;/td&gt;&lt;td&gt;De optie &lt;label&gt; Topologisch bewerken aanzetten &lt;/label&gt; is verplaatst naar het menu &lt;label&gt; Extras &gt; Snapping opties &gt; &lt;/label&gt; via dat menu kun je ervoor zorgen dat er gebruik wordt gemaakt van gezamenlijk grenzen tijden het bewerken en onderhouden van polygonen. Daarbij wordt bij het bewerken van een grens de geometrie van allebei de polygonen waar deze grens deel van uitmaakt bijgewerkt.&lt;p&gt;
+Om te voorkomen dat je alle puntjes van een grens weer exact moet digitaliseren kun je de optie &lt;label&gt;Voorkom kruisingen met nieuwe polygonen&lt;/label&gt; aanzetten. Geef daarbij de kaartlagen aan waarvoor dat moet gelden. Tijdens het digitaliseren kun je nu een deel van het polygoon ruim in het andere polygoon heenleggen. Het overlappende deel wordt langs de grens van de bestaande polygoon vervolgens netjes afgeknipt. &lt;p&gt;
+&lt;label&gt;Snapping opties&lt;/label&gt; ook dit onderdeel is verplaatst naar het menu &lt;label&gt; Extras &gt; Snapping opties &gt; &lt;/label&gt;Snapping waarmee je, voor elke kaartlaag,.ook de snapping tolerantie in pixels of kaarteenheden kunt instellen en deze snapping moet plaatsvinden (modus): &lt;label&gt;Naar hoekpunt&lt;/label&gt;, &lt;label&gt;naar lijnsegment&lt;/label&gt; of &lt;label&gt;Naar vertex en lijnsegment&lt;/label&gt; &lt;/td&gt;&lt;/tr&gt;
+
+&lt;/table&gt;
+&lt;a name=&quot;crs&quot;&gt;
+&lt;h4&gt;Tabblad Coordinaten Referentie Systeem (CRS)&lt;/h4&gt;
+&lt;/a&gt;
+Het tabblad Coördinaten Referentie Systeem (CRS) geeft de mogelijkheid om een kaartprojectie in te stellen voor het huidige project en om gelijktijdige CRS transformatie te gebruiken.
+&lt;p&gt;Activeer het aanvinkvakje &lt;label&gt;Gelijktijdige CRS Transformatie gebruiken&lt;/label&gt; wanneer je kaarten over elkaar heen wilt tekenen waarbij de CRS van de geladen kaartlagen niet allemaal dezelfde zijn. Kies vervolgens het CRS systeem waarmee de projectkaart getekend moet worden van de lijst van geografische en geprojecteerde coordinaten systemen.
+&lt;p&gt;Je kunt een coördinatensysteem vinden door een deel van de naam te geven of via de EPSG code (die van het nederlandse Rijksdriehoek systeem is overigens 28992).of de QGIS ID en vervolgens de knop &lt;label&gt;Vind&lt;/label&gt; te selecteren.
+&lt;p&gt;Een lijst van onlangs gebruikte coördinatensystemen zal onderin worden getoond, zodat je daaruit snel kunt selecteren.
+
+&lt;a name=&quot;layers&quot;&gt;
+&lt;h4&gt;Tabblad Identificeerbare lagen&lt;/h4&gt;
+&lt;/a&gt;
+Met dit tabblad kun je instellen voor welke kaartlagen de tool &apos;Objecten identificeren&apos; moet reageren.
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Add SpatiaLite Tables&lt;/h3&gt;
@@ -53653,7 +53847,46 @@ To delete a bookmark from the Bookmarks dialog, click on it then click the &lt;l
 To update the extent of a bookmark, click on it then click the &lt;label&gt;Update&lt;/label&gt; button. Confirm your choice by clicking &lt;label&gt;OK&lt;/label&gt; or cancel the update by clicking &lt;label&gt;Cancel&lt;/label&gt;.
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Favoriete plaatsen&lt;/h3&gt;
+Je kunt met Favoriete Plaatsen aangeven waar je later (vaker) terug wilt keren.
+&lt;p&gt;
+&lt;a href=&quot;#creating&quot;&gt;Aanmaken van Favoriete Plaats&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#working&quot;&gt;Werken met Favoriete Plaatsen&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#zooming&quot;&gt;Verplaatsen naar een Favoriete Plaats&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#deleting&quot;&gt;Verwijderen van een Favoriete Plaats&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#updating&quot;&gt;Bijwerken van een Favoriete Plaats&lt;/a&gt;&lt;br/&gt;
+
+&lt;a name=&quot;creating&quot;&gt;
+&lt;h4&gt;Aanmaken van Favoriete Plaats&lt;/h4&gt;
+&lt;/a&gt;
+Hoe je een favoriete plaats aanmaakt:
+&lt;ol&gt;
+&lt;li&gt;Zoom in op een gebied naar keuze.
+&lt;li&gt;Selecteer de menu optie &lt;label&gt;Beeld ‣ Nieuwe Favoriet ...&lt;/label&gt; of gebruik de snelkoppeling Ctrl-B.
+&lt;li&gt;Geef een beschrijvende naam waaronder je de Favoriete plaats op wilt slaan (tot 255 tekens).
+&lt;li&gt;Klik op &lt;label&gt;Enter&lt;/label&gt; om de Favoriete plaats toe te voegen of &lt;label&gt;Cancel&lt;/label&gt; om het menu te verlaten zonder een Favoriete plaats toe te voegen.
+&lt;/ol&gt;
+Men kan meerdere favorieten onder dezelfde naam opslaan.
+&lt;a name=&quot;working&quot;&gt;
+&lt;h4&gt;Werken met Favoriete Plaatsen&lt;/h4&gt;
+&lt;/a&gt;
+Om een Favoriet te gebruiken of te beheren, gebruik de knop &lt;label&gt;Favoriete plaatsen&lt;/label&gt; of kies de menu optie &lt;label&gt;Beeld &gt; Toon Favorieten.&lt;/label&gt; De dialoog Favoriete Plaatsen geeft de mogelijkheid om snel te springen naar die opgeslagen favoriete plaats of om een Favoriete plaats te verwijderen. Je kunt de naam of de positie van een Favoriete plaats niet wijzigen.
+&lt;a name=&quot;zooming&quot;&gt;
+&lt;h5&gt;Verplaatsen naar een Favoriete Plaats&lt;/h5&gt;
+&lt;/a&gt;
+Vanuit de dialoog Favorieten plaatsen..., kies de favoriete plaats door deze te selecteren en druk daarna op de knop &lt;label&gt;Zoom naar&lt;/label&gt;. 
+&lt;p&gt;
+Je kunt ook naar een Favoriete plaats springen door hierop te dubbelklikken.
+&lt;a name=&quot;deleting&quot;&gt;
+&lt;h5&gt;Verwijderen van een Favoriete Plaats&lt;/h5&gt;
+&lt;/a&gt;
+Om een favoriete plaats te verwijderen vanuit de dialoog Favorieten plaatsen... selecteer de favoriete plaats en druk op &lt;label&gt;Verwijder&lt;/label&gt;]. Bevestig gemaakte keuze in het vervolgschermpje door op &lt;label&gt;OK&lt;/label&gt;] te drukken of maak het verwijderen alsnog ongedaan door te drukken op &lt;label&gt;Cancel&lt;/label&gt;] .
+&lt;a name=&quot;updating&quot;&gt;
+&lt;h5&gt;Bijwerken van een Favoriete Plaats&lt;/h5&gt;
+&lt;/a&gt;
+Om het gebied van een Favoriete Plaats bij te werken, druk op de knop &lt;label&gt;Wijzigen&lt;/label&gt; Bevestig de keuze door op &lt;label&gt;OK&lt;/label&gt; te drukken of maak het wijzigen ongedaan door op &lt;label&gt;Cancel&lt;/label&gt; te drukken.
+
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Road graph plugin settings&lt;/h3&gt;
@@ -53742,7 +53975,7 @@ Voor een uitgebreide uitleg over het werken met vectordata, zie hoofdstuk 5 &apo
     <message>
         <source>&lt;h3&gt;Style Manager&lt;/h3&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Stijl Manager&lt;/h3</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Options&lt;/h3&gt;
@@ -54420,7 +54653,7 @@ are sometimes limited (e.g. for shape files) or behave diffently.
     <message>
         <source>&lt;h3&gt;Identify&lt;/h3&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Identificeren&lt;/h3&gt;
+        <translation type="unfinished">&lt;h3&gt;Identificeren&lt;/h3&gt;
 </translation>
     </message>
     <message>
@@ -55665,7 +55898,26 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;week(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 104.285...&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;week() function&lt;/h3&gt;
+Extraheer het weeknummer uit een datum, of het aantal weken
+uit een &lt;code&gt;Interval&lt;/code&gt;
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;week(date)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;week(Interval)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumenten&lt;/h4&gt;
+&lt;code&gt;date&lt;/code&gt; - is date of datetime. De datum waaruit de week wordt verkregen.
+&lt;br&gt;
+&lt;code&gt;Interval&lt;/code&gt; - is Interval. De Interval waarmee het aantal weken wordt verkregen.
+
+&lt;h4&gt;Voorbeeld&lt;/h4&gt;
+&lt;!-- Laat voorbeeld van functie zien.--&gt;
+&lt;code&gt;week(&apos;2012-05-12&apos;) &amp;rarr; 19&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;week(tointerval(&apos;3 weeks&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;week(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 104.285...&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;CASE expression&lt;/h3&gt;
@@ -55697,7 +55949,35 @@ return a result.
     END
 &lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;CASE expression&lt;/h3&gt;
+Een conditionele expressie die gebruikt kan worden om meerdere expressies te evalueren en
+die een resultaat geeft.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;
+     CASE
+        WHEN &lt;i&gt;condition&lt;/i&gt; THEN &lt;i&gt;result&lt;/i&gt;
+        [ ...n ]
+        [ ELSE &lt;i&gt;result&lt;/i&gt; ]
+     END
+&lt;/pre&gt;
+[ ] markeert optionele componenten
+
+&lt;h4&gt;Argumenten&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  WHEN condition&lt;/i&gt; - De te evalueren conditionele expressie. &lt;br&gt;
+&lt;i&gt;  THEN result&lt;/i&gt; - Als &lt;i&gt;condition&lt;/i&gt; waar is dan wordt &lt;i&gt;result&lt;/i&gt; geevaluaeerd en gegeven. &lt;br&gt;
+&lt;i&gt;  ELSE result&lt;/i&gt; - Als geen van bovenstaande condities waar is dan wordt &lt;i&gt;result&lt;/i&gt; geevalueerd en gegeven. &lt;br&gt;
+
+&lt;h4&gt;Voorbeeld&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;pre&gt;
+    CASE
+        WHEN &lt;i&gt;&quot;column&quot; IS NULL&lt;/i&gt; THEN &lt;i&gt;&apos;None&apos;&lt;/i&gt;
+        ELSE &lt;i&gt;&quot;column&quot;&lt;/i&gt;
+    END
+&lt;/pre&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;right() function&lt;/h3&gt;
@@ -55716,14 +55996,32 @@ Returns a substring that contains the &lt;i&gt;n&lt;/i&gt; rightmost characters 
 &lt;code&gt;right(&apos;Hello World&apos;,5) &amp;rarr; &apos;World&apos;&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;right() functie&lt;/h3&gt;
+Geeft een substring die het &lt;i&gt;n&lt;/i&gt; meest rechtse teken van de tekenreeks geeft.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;right(string, pos)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumenten&lt;/h4&gt;
+&lt;code&gt;string&lt;/code&gt; - is tekenreeks. De tekenreeks.
+&lt;br&gt;
+&lt;code&gt;length&lt;/code&gt; - is int. Het aantal karakters vanaf rechts dat wordt verkregen.
+
+&lt;h4&gt;Voorbeeld&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;right(&apos;Hello World&apos;,5) &amp;rarr; &apos;World&apos;&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
         <source>
 &lt;h3&gt;Color Group&lt;/h3&gt;
 This group contains functions for manipulating colors
 </source>
-        <translation type="unfinished"></translation>
+        <translation>
+&lt;h3&gt;Kleur Groep&lt;/h3&gt;
+Deze groep bevat functies om kleuren te manipuleren
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;length() function&lt;/h3&gt;
@@ -55740,7 +56038,20 @@ Returns the length of a string.
 &lt;!-- Show example of function.--&gt;
      length(&apos;HELLO&apos;) &amp;rarr; 5&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;length() functie&lt;/h3&gt;
+Geeft de lengte van een string.
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     length(&lt;i&gt;string&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumenten&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is tekenreeks.  De tekenreeks waarvan de lengte wordt berekend.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     length(&apos;HELLO&apos;) &amp;rarr; 5&lt;/p&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;upper() function&lt;/h3&gt;
@@ -55757,7 +56068,20 @@ Converts a string to upper case letters.
 &lt;!-- Show example of function.--&gt;
      upper(&apos;hello WOrld&apos;) &amp;rarr; &apos;HELLO WORLD&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;upper() functie&lt;/h3&gt;
+Converteert een tekenreeks naar hoofdletters.
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     upper(&lt;i&gt;string&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumenten&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is tekenreeks.  De tekenreeks die wordt geconverteerd naar hoofdletters.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Voorbeeld&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     upper(&apos;hello WOrld&apos;) &amp;rarr; &apos;HELLO WORLD&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;left() function&lt;/h3&gt;
@@ -55776,7 +56100,22 @@ Returns a substring that contains the &lt;i&gt;n&lt;/i&gt; leftmost characters o
 &lt;code&gt;left(&apos;Hello World&apos;,5) &amp;rarr; &apos;Hello&apos;&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;left() functie&lt;/h3&gt;
+Geeft een subtekenreeks die de &lt;i&gt;n&lt;/i&gt; meest linkse tekens van de tekenreeks bevat.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;left(string, length)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumenten&lt;/h4&gt;
+&lt;code&gt;string&lt;/code&gt; - is tekenreeks. De tekenreeks.
+&lt;br&gt;
+&lt;code&gt;length&lt;/code&gt; - is int. Het aantal karakters vanaf links dat wordt gegeven.
+
+&lt;h4&gt;Voorbeeld&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;left(&apos;Hello World&apos;,5) &amp;rarr; &apos;Hello&apos;&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;$scale function&lt;/h3&gt;
@@ -55792,7 +56131,19 @@ Note: This function is only available in some contexts and will be 0 otherwise.
 
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;$scale functie&lt;/h3&gt;
+Geeft de huidige schaal van de map canvas.
+&lt;br&gt;
+NB: Deze functie is alleen beschikbaar in sommige contexten en zal anders 0 zijn. 
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;$scale&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Voorbeeld&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;$scale &amp;rarr; 10000&lt;/code&gt;&lt;br&gt;
+
+
+</translation>
     </message>
     <message>
         <source>
@@ -55812,7 +56163,23 @@ Returns a string representation of a color based on its red, green, and blue com
 &lt;!-- Show example of function.--&gt;
      color_rgb(255,127,0) &amp;rarr; &apos;#ff7f00&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>
+&lt;h3&gt;color_rgb() functie&lt;/h3&gt;
+Geeft een tekenreeksaanduiding van een kleur gebaseerd op zijn red, green en blue componenten
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     color_rgb(&lt;i&gt;red, green, blue&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumenten&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  red&lt;/i&gt; &amp;rarr; de red component als een integer waarde van 0 tot 255.&lt;br&gt;
+&lt;i&gt;  green&lt;/i&gt; &amp;rarr; de green component als een integer waarde van 0 tot 255.&lt;br&gt;
+&lt;i&gt;  blue&lt;/i&gt; &amp;rarr; de blue component als een integer waarde van 0 tot 255.&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Voorbeeld&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     color_rgb(255,127,0) &amp;rarr; &apos;#ff7f00&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;$numpages function&lt;/h3&gt;
@@ -55828,7 +56195,19 @@ None
 &lt;pre&gt;$numpages &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;$numpages functie&lt;/h3&gt;
+Geeft het totaal aantal pagina&apos;s in de compositie.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$numpages&lt;/pre&gt;
+
+&lt;h4&gt;Argumenten&lt;/h4&gt;
+Geen
+
+&lt;h4&gt;Voorbeeld&lt;/h4&gt;
+&lt;pre&gt;$numpages &amp;rarr; 42&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;rand() function&lt;/h3&gt;
@@ -55848,7 +56227,23 @@ This function takes two arguments.
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;rand(1, 10) &amp;rarr; 8&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>rand() functie&lt;/h3&gt;
+Geeft een random integer binnen de range weergegeven door het minimum en 
+maximum argument (inclusive).
+&lt;br&gt;
+Deze functie heeft twee argumenten.
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;rand(min, max)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumenten&lt;/h4&gt;
+&lt;code&gt;min&lt;/code&gt; - een integer die het kleinst mogelijke gewenste random getal representeert.&lt;br&gt;
+&lt;code&gt;max&lt;/code&gt; - een integer die het grootst mogelijke gewenste random getal representeert.
+&lt;br&gt;
+
+&lt;h4&gt;Voorbeeld&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;rand(1, 10) &amp;rarr; 8&lt;/code&gt;&lt;br&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;$rownum function&lt;/h3&gt;
@@ -55864,7 +56259,19 @@ None
 &lt;pre&gt;$rownum &amp;rarr; 4711&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;$rownum functie&lt;/h3&gt;
+Geeft het nummer van de huidige rij.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$rownum&lt;/pre&gt;
+
+&lt;h4&gt;Argumenten&lt;/h4&gt;
+Geen
+
+&lt;h4&gt;Voorbeeld&lt;/h4&gt;
+&lt;pre&gt;$rownum &amp;rarr; 4711&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;atan2() function&lt;/h3&gt;
@@ -55883,7 +56290,22 @@ arguments to determine the quadrant of the result
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      atan2(1.0, 1.732) &amp;rarr; 0.523611477769969&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;atan2() functie&lt;/h3&gt;
+Geeft de arcustangens van y/x waarbij de tekens van de twee 
+argumenten worden gebruikt om het quadrant van het resultaat te bepalen
+
+
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     atan2(&lt;i&gt;real&lt;/i&gt;, &lt;i&gt;real&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; y coordinate difference&lt;br&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; x coordinate difference&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+     atan2(1.0, 1.732) &amp;rarr; 0.523611477769969&lt;/p&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;sin() function&lt;/h3&gt;
@@ -55899,7 +56321,19 @@ Returns sinus of an angle.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      sin(1.571) &amp;rarr; 0.999999682931835&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;sin() functie&lt;/h3&gt;
+Geeft de sinus van een hoek.
+
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     sin(&lt;i&gt;real&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumenten&lt;/h4&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; hoek in radialen.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Voorbeeld&lt;/h4&gt;
+     sin(1.571) &amp;rarr; 0.999999682931835&lt;/p&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;clamp() function&lt;/h3&gt;
@@ -55922,7 +56356,26 @@ Restricts an input value to a specified range.
      
      
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;clamp() functie&lt;/h3&gt;
+Beperkt een inputwaarde tot een specifieke range.
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     clamp(&lt;i&gt;minimum&lt;/i&gt;,&lt;i&gt;input&lt;/i&gt;,&lt;i&gt;maximum&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumenten&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  minimum&lt;/i&gt; &amp;rarr; De kleinste waarde &lt;i&gt;input&lt;/i&gt; kan gebruikt worden.&lt;br&gt;
+&lt;i&gt;  input&lt;/i&gt; &amp;rarr; een waarde welke beperkt wordt tot de range gespecificeert door &lt;i&gt;minimum&lt;/i&gt; en &lt;i&gt;maximum&lt;/i&gt;.&lt;br&gt;
+&lt;i&gt;  maximum&lt;/i&gt; &amp;rarr; De hoogste waarde &lt;i&gt;input&lt;/i&gt; kan gebruikt worden.&lt;br&gt;
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     clamp(1,5,10) &amp;rarr; 5 (&lt;i&gt;input&lt;/i&gt; ligt tussen 1 and 10 en is dus onveranderd)&lt;br&gt;
+     clamp(1,0,10) &amp;rarr; 1 (&lt;i&gt;input&lt;/i&gt; is minder dan de minimumwaarde van 1, dus geeft de functie 1)&lt;br&gt;
+     clamp(1,11,10) &amp;rarr; 10 (&lt;i&gt;input&lt;/i&gt; is groter dan de maximumwaarde van 10, dus geeft de function 11)&lt;br&gt;
+     
+     
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;month() function&lt;/h3&gt;
@@ -55945,7 +56398,26 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;month(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 4.033...&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;month() functie&lt;/h3&gt;
+Extraheert het maand-deel uit een datum, of het aantal maanden
+uit een &lt;code&gt;Interval&lt;/code&gt;
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;month(date)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;month(Interval)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumenten&lt;/h4&gt;
+&lt;code&gt;date&lt;/code&gt; - is date of datetime. De datum waaruit de maand wordt geextraheerd.
+&lt;br&gt;
+&lt;code&gt;Interval&lt;/code&gt; - is Interval. De Interval waaruit het aantal maanden wordt gegeven.
+
+&lt;h4&gt;Voorbeeld&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;month(&apos;2012-05-12&apos;) &amp;rarr; 05&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;month(tointerval(&apos;3 months&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;month(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 4.033...&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;$area function&lt;/h3&gt;
@@ -55961,7 +56433,19 @@ None
 &lt;pre&gt;$area &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;$area functie&lt;/h3&gt;
+Geeft het oppervlak van het huidige object.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$area&lt;/pre&gt;
+
+&lt;h4&gt;Argumenten&lt;/h4&gt;
+Geen
+
+&lt;h4&gt;Voorbeeld&lt;/h4&gt;
+&lt;pre&gt;$area &amp;rarr; 42&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;day() function&lt;/h3&gt;
@@ -55984,7 +56468,26 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;day(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 730&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;day() functie&lt;/h3&gt;
+Extraheert de dag uit een datum,of het aantal dagen
+uit een &lt;code&gt;Interval&lt;/code&gt;
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;day(date)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;day(Interval)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumenten&lt;/h4&gt;
+&lt;code&gt;date&lt;/code&gt; - is date of datetime. De datum waaruit de dag wordt geextraheerd.
+&lt;br&gt;
+&lt;code&gt;Interval&lt;/code&gt; - is Interval. De interval waaruit het aantal dagen wordt geextraheerd.
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;day(&apos;2012-05-12&apos;) &amp;rarr; 12&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;day(tointerval(&apos;3 days&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;day(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 730&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;todate() function&lt;/h3&gt;
@@ -56000,7 +56503,20 @@ Convert a string into Qt data type.
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;todate(&apos;2012-05-04&apos;) &amp;rarr; 2012-05-04&lt;/code&gt;&lt;br&gt;</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>Is dit een fout? Qt data type ipvQt date type?</translatorcomment>
+        <translation>&lt;h3&gt;todate() functie&lt;/h3&gt;
+Converteert een tekenreeks naar een Qt datatype.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;todate(&apos;string&apos;)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumenten&lt;/h4&gt;
+&lt;code&gt;string&lt;/code&gt; - is tekenreeks in het &apos;Qt datum&apos; formaat.
+&lt;br&gt;
+
+&lt;h4&gt;Voorbeeld&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;todate(&apos;2012-05-04&apos;) &amp;rarr; 2012-05-04&lt;/code&gt;&lt;br&gt;</translation>
     </message>
     <message>
         <source>&lt;h3&gt;lpad() function&lt;/h3&gt;
@@ -56037,7 +56553,19 @@ Returns arcuscosinus of a value in radians.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      acos(0.5) &amp;rarr; 1.0471975511966&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;acos() functie&lt;/h3&gt;
+Geeft de arcuscosinus van een waarde in radialen.
+
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     acos(&lt;i&gt;real&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumenten&lt;/h4&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; cos van een hoek.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Voorbeeld&lt;/h4&gt;
+     acos(0.5) &amp;rarr; 1.0471975511966&lt;/p&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;log() function&lt;/h3&gt;
@@ -56063,7 +56591,9 @@ This function takes two arguments.
         <source>&lt;h3&gt;Geometry Group&lt;/h3&gt;
 This group contains functions that operate on geometry objects e.g length, area.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Geometrie Groep&lt;/h3&gt;
+Deze groep bevat functies voor geometrie-objecten zoals lengten, oppervlakken.
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;$page function&lt;/h3&gt;
@@ -56079,7 +56609,19 @@ None
 &lt;pre&gt;$page &amp;rarr; 2&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;$page functie&lt;/h3&gt;
+Geeft het huidige paginanummer binnen een compositie.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$page&lt;/pre&gt;
+
+&lt;h4&gt;Argumenten&lt;/h4&gt;
+Geen
+
+&lt;h4&gt;Voorbeeld&lt;/h4&gt;
+&lt;pre&gt;$page &amp;rarr; 2&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;strpos() function&lt;/h3&gt;
@@ -56100,7 +56642,24 @@ Returns -1 if the expression isn&apos;t found.
      strpos(&apos;HELLO WORLD&apos;,&apos;WORLD&apos;) &amp;rarr; 6&lt;br&gt;
      strpos(&apos;HELLO WORLD&apos;,&apos;GOODBYE&apos;) &amp;rarr; -1&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;strpos() functie&lt;/h3&gt;
+Geeft de index van een reguliere expressie in een tekenreeks.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+     strpos(&lt;i&gt;haystack&lt;/i&gt;, &lt;i&gt;needle&lt;/i&gt;)
+&lt;br&gt;&lt;br&gt;
+Geeft -1 als de expressie niet wordt gevonden.
+
+&lt;p&gt;&lt;h4&gt;Argumenten&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  haystack&lt;/i&gt; &amp;rarr; is tekenreeks.  De tekenreeks die wordt gezocht.&lt;br&gt;
+&lt;i&gt;  needle&lt;/i&gt; &amp;rarr; is nummer.  De reguliere expresie die wordt gezocht.&lt;br&gt;
+
+&lt;h4&gt;Voorbeeld&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     strpos(&apos;HELLO WORLD&apos;,&apos;WORLD&apos;) &amp;rarr; 6&lt;br&gt;
+     strpos(&apos;HELLO WORLD&apos;,&apos;GOODBYE&apos;) &amp;rarr; -1&lt;br&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;exp() function&lt;/h3&gt;
@@ -56116,7 +56675,18 @@ Returns exponential of an value.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      exp(1.0) &amp;rarr; 2.71828182845905&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;exp() functie&lt;/h3&gt;
+Geeft de exponent van een waarde
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     exp(&lt;i&gt;real&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumenten&lt;/h4&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; nummer.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Voorbeeld&lt;/h4&gt;
+     exp(1.0) &amp;rarr; 2.71828182845905&lt;/p&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;rpad() function&lt;/h3&gt;
@@ -56162,7 +56732,27 @@ use &lt;code&gt;round(decimal)&lt;/code&gt; to round to the nearest integer&lt;b
 
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;round() functie&lt;/h3&gt;
+Rond een decimaal nummer af op een x aantal plaatsen.
+&lt;br&gt;
+Deze functie kent twee argumenten, afhankelijk van wat is benodigd.
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;round(decimal,places)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;round(decimal)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumenten&lt;/h4&gt;
+&lt;code&gt;decimal&lt;/code&gt; - is decimaal. Het decimale nummer dat wordt afgerond.
+&lt;br&gt;
+&lt;code&gt;places&lt;/code&gt; - is int. Het aantal plaatsen waarop de decimaal wordt afgerond. Kan negatief zijn.
+
+&lt;h4&gt;Voorbeeld&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;round(1234.567, 2 ) &amp;rarr; 1234.57&lt;/code&gt;&lt;br&gt;
+gebruik &lt;code&gt;round(decimal)&lt;/code&gt; om af te ronden tot de dichts nabij gelegen integer&lt;br&gt;
+&lt;code&gt;round(1234.567) &amp;rarr; 1235&lt;/code&gt;&lt;br&gt;
+
+
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;$now function&lt;/h3&gt;
@@ -56178,7 +56768,19 @@ None
 &lt;pre&gt;$now &amp;rarr; 2012-07-22T13:24:57&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;$now functie&lt;/h3&gt;
+Geeft de actuele datum en tijd
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$now&lt;/pre&gt;
+
+&lt;h4&gt;Argumenten&lt;/h4&gt;
+Geen
+
+&lt;h4&gt;Voorbeeld&lt;/h4&gt;
+&lt;pre&gt;$now &amp;rarr; 2012-07-22T13:24:57&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;scale_exp() function&lt;/h3&gt;
@@ -56216,7 +56818,9 @@ accelerating as the input values approach the domain maximum. Smaller exponents 
         <source>&lt;h3&gt;Date and Time Group&lt;/h3&gt;
 This group contains functions for handling date and time data.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Datum en tijdgroup&lt;/h3&gt;
+Deze groep bevat functies voor gebruik van datum en tijddata.
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;$id function&lt;/h3&gt;
@@ -56232,7 +56836,19 @@ None
 &lt;pre&gt;$id &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;$id functie&lt;/h3&gt;
+Geeft het object-id van de actuele rij.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$id&lt;/pre&gt;
+
+&lt;h4&gt;Argumenten&lt;/h4&gt;
+Geen
+
+&lt;h4&gt;Voorbeeld&lt;/h4&gt;
+&lt;pre&gt;$id &amp;rarr; 42&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;$perimeter function&lt;/h3&gt;
@@ -59536,35 +60152,35 @@ Converts a string to real number. Nothing changed if a value cannot be converted
     </message>
     <message>
         <source>First geometry invalid in dangling line test.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ongeldige eerste geometrie in &apos;dangling line test&apos;.</translation>
     </message>
     <message>
         <source>Failed to import first geometry into GEOS in dangling line test.</source>
-        <translation type="unfinished"></translation>
+        <translation>De eerst geometrie importeren in GEOS mislukt.in de &apos;dangling line test&apos;.</translation>
     </message>
     <message>
         <source>Invalid second geometry in duplicate geometry test.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ongeldige tweede geometrie in &apos;duplicate geometry test&apos;.</translation>
     </message>
     <message>
         <source>Failed to import second geometry into GEOS in duplicate geometry test.</source>
-        <translation type="unfinished"></translation>
+        <translation>De tweede geometrie importeren in GEOS mislukt.in de &apos;dangling line test&apos;.</translation>
     </message>
     <message>
         <source>Invalid second geometry in overlaps test.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ongeldige tweede geometrie in &apos;overlaps test&apos;.</translation>
     </message>
     <message>
         <source>Failed to import second geometry into GEOS in overlaps test.</source>
-        <translation type="unfinished"></translation>
+        <translation>De tweede geometrie importeren in GEOS mislukt.in de &apos;overlapse test&apos;.</translation>
     </message>
     <message>
         <source>Skipping invalid second geometry of feature %1 in overlaps test.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ongeldige tweede geometrie van feature %1 wordt overgeslagen in &apos;overlapse test&apos;.</translation>
     </message>
     <message>
         <source>Second geometry missing or GEOS import failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tweede geometrie ontrbreekt of de GEOS import mis mislukt.</translation>
     </message>
 </context>
 <context>

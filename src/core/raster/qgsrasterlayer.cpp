@@ -354,24 +354,22 @@ bool QgsRasterLayer::draw( QgsRenderContext& rendererContext )
   // we could use floating point for raster devices as well, but respecting the
   // output device grid should make it more effective as the resampling is done in
   // the provider anyway
-  if ( true )
-  {
-    myRasterViewPort->mTopLeftPoint.setX( floor( myRasterViewPort->mTopLeftPoint.x() ) );
-    myRasterViewPort->mTopLeftPoint.setY( floor( myRasterViewPort->mTopLeftPoint.y() ) );
-    myRasterViewPort->mBottomRightPoint.setX( ceil( myRasterViewPort->mBottomRightPoint.x() ) );
-    myRasterViewPort->mBottomRightPoint.setY( ceil( myRasterViewPort->mBottomRightPoint.y() ) );
-    // recalc myRasterExtent to aligned values
-    myRasterExtent.set(
-      theQgsMapToPixel.toMapCoordinatesF( myRasterViewPort->mTopLeftPoint.x(),
-                                          myRasterViewPort->mBottomRightPoint.y() ),
-      theQgsMapToPixel.toMapCoordinatesF( myRasterViewPort->mBottomRightPoint.x(),
-                                          myRasterViewPort->mTopLeftPoint.y() )
-    );
+  myRasterViewPort->mTopLeftPoint.setX( floor( myRasterViewPort->mTopLeftPoint.x() ) );
+  myRasterViewPort->mTopLeftPoint.setY( floor( myRasterViewPort->mTopLeftPoint.y() ) );
+  myRasterViewPort->mBottomRightPoint.setX( ceil( myRasterViewPort->mBottomRightPoint.x() ) );
+  myRasterViewPort->mBottomRightPoint.setY( ceil( myRasterViewPort->mBottomRightPoint.y() ) );
+  // recalc myRasterExtent to aligned values
+  myRasterExtent.set(
+    theQgsMapToPixel.toMapCoordinatesF( myRasterViewPort->mTopLeftPoint.x(),
+                                        myRasterViewPort->mBottomRightPoint.y() ),
+    theQgsMapToPixel.toMapCoordinatesF( myRasterViewPort->mBottomRightPoint.x(),
+                                        myRasterViewPort->mTopLeftPoint.y() )
+  );
 
-  }
+  //raster viewport top left / bottom right are already rounded to int
+  myRasterViewPort->mWidth = static_cast<int>( myRasterViewPort->mBottomRightPoint.x() - myRasterViewPort->mTopLeftPoint.x() );
+  myRasterViewPort->mHeight = static_cast<int>( myRasterViewPort->mBottomRightPoint.y() - myRasterViewPort->mTopLeftPoint.y() );
 
-  myRasterViewPort->mWidth = static_cast<int>( qAbs(( myRasterExtent.width() / theQgsMapToPixel.mapUnitsPerPixel() ) ) );
-  myRasterViewPort->mHeight = static_cast<int>( qAbs(( myRasterExtent.height() / theQgsMapToPixel.mapUnitsPerPixel() ) ) );
 
   //the drawable area can start to get very very large when you get down displaying 2x2 or smaller, this is becasue
   //theQgsMapToPixel.mapUnitsPerPixel() is less then 1,

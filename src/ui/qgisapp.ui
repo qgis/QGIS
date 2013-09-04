@@ -1329,9 +1329,6 @@
    <property name="text">
     <string>Add to Overview</string>
    </property>
-   <property name="shortcut">
-    <string>Ctrl+Shift+O</string>
-   </property>
   </action>
   <action name="mActionAddAllToOverview">
    <property name="icon">

@@ -1,6 +1,6 @@
 [general]
-name=SEXTANTE Example Provider
-description=An example plugin that adds algorithms to SEXTANTE. Mainly created to guide developers in the process of creating plugins that add new capabilities to SEXTANTE
+name=Processing Example Provider
+description=An example plugin that adds algorithms to Processing. Mainly created to guide developers in the process of creating plugins that add new capabilities to Processing
 category=Analysis
 version=2.0
 qgisMinimumVersion=2.0

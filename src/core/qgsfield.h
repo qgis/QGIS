@@ -151,66 +151,83 @@ class CORE_EXPORT QgsField
 typedef QMap<int, QgsField> QgsFieldMap;
 
 
+/**
+ \ingroup core
+ Container of fields for a vector layer.
 
+ In addition to storing a list of QgsField instances, it also:
+ - allows quick lookups of field names to index in the list
+ - keeps track of where the field definition comes from (vector data provider, joined layer or newly added from an editing operation)
+ */
 class CORE_EXPORT QgsFields
 {
   public:
 
-    enum FieldOrigin { OriginUnknown, OriginProvider, OriginJoin, OriginEdit };
+    enum FieldOrigin
+    {
+      OriginUnknown,   //!< it has not been specified where the field comes from
+      OriginProvider,  //!< field comes from the underlying data provider of the vector layer  (originIndex = index in provider's fields)
+      OriginJoin,      //!< field comes from a joined layer   (originIndex / 1000 = index of the join, originIndex % 1000 = index within the join)
+      OriginEdit       //!< field has been temporarily added in editing mode (originIndex = index in the list of added attributes)
+    };
+
     typedef struct Field
     {
       Field(): origin( OriginUnknown ), originIndex( -1 ) {}
       Field( const QgsField& f, FieldOrigin o, int oi ): field( f ), origin( o ), originIndex( oi ) {}
 
-      QgsField field;
-      FieldOrigin origin; // TODO[MD]: originIndex or QVariant originID?
-      int originIndex;
+      QgsField field;      //!< field
+      FieldOrigin origin;  //!< origin of the field
+      int originIndex;     //!< index specific to the origin
     } Field;
 
-    void clear() { mFields.clear(); mNameToIndex.clear(); }
-    /** append: fields must have unique names! */
-    bool append( const QgsField& field, FieldOrigin origin = OriginProvider, int originIndex = -1 )
-    {
-      if ( mNameToIndex.contains( field.name() ) )
-        return false;
+    //! Remove all fields
+    void clear();
+    //! Append a field. The field must have unique name, otherwise it is rejected (returns false)
+    bool append( const QgsField& field, FieldOrigin origin = OriginProvider, int originIndex = -1 );
+    //! Remove a field with the given index
+    void remove( int fieldIdx );
+    //! Extend with fields from an other QgsFields container
+    void extend( const QgsFields& other );
 
-      if ( originIndex == -1 && origin == OriginProvider )
-        originIndex = mFields.count();
-      mFields.append( Field( field, origin, originIndex ) );
-
-      mNameToIndex.insert( field.name(), mFields.count() - 1 );
-      return true;
-    }
-    void remove( int fieldIdx ) { mNameToIndex.remove( mFields[fieldIdx].field.name() ); mFields.remove( fieldIdx ); }
-
+    //! Check whether the container is empty
     inline bool isEmpty() const { return mFields.isEmpty(); }
+    //! Return number of items
     inline int count() const { return mFields.count(); }
-    inline int size() const { return mFields.count(); } // TODO[MD]: delete?
-    void extend( const QgsFields& other )
-    {
-      for ( int i = 0; i < other.count(); ++i )
-      {
-        append( other.at( i ), other.fieldOrigin( i ), other.fieldOriginIndex( i ) );
-      }
-    }
-    inline const QgsField& operator[]( int i ) const { return mFields[i].field; }
-    inline QgsField& operator[]( int i ) { return mFields[i].field; }
-    const QgsField& at( int i ) const { return mFields[i].field; }
-    QList<QgsField> toList() const { QList<QgsField> lst; for ( int i = 0; i < mFields.count(); ++i ) lst.append( mFields[i].field ); return lst; } // TODO[MD]: delete?
+    //! Return number of items
+    inline int size() const { return mFields.count(); }
 
+    //! Get field at particular index (must be in range 0..N-1)
+    inline const QgsField& operator[]( int i ) const { return mFields[i].field; }
+    //! Get field at particular index (must be in range 0..N-1)
+    inline QgsField& operator[]( int i ) { return mFields[i].field; }
+    //! Get field at particular index (must be in range 0..N-1)
+    const QgsField& at( int i ) const { return mFields[i].field; }
+    //! Get field at particular index (must be in range 0..N-1)
     const QgsField& field( int fieldIdx ) const { return mFields[fieldIdx].field; }
+    //! Get field at particular index (must be in range 0..N-1)
     const QgsField& field( const QString& name ) const { return mFields[ indexFromName( name )].field; }
+
+    //! Get field's origin (value from an enumeration)
     FieldOrigin fieldOrigin( int fieldIdx ) const { return mFields[fieldIdx].origin; }
+    //! Get field's origin index (its meaning is specific to each type of origin)
     int fieldOriginIndex( int fieldIdx ) const { return mFields[fieldIdx].originIndex; }
 
+    //! Look up field's index from name. Returns -1 on error
     int indexFromName( const QString& name ) const { return mNameToIndex.value( name, -1 ); }
 
+    //! Utility function to return a list of QgsField instances
+    QList<QgsField> toList() const;
+
   protected:
+    //! internal storage of the container
     QVector<Field> mFields;
 
     //! map for quick resolution of name to index
     QHash<QString, int> mNameToIndex;
 };
+
+
 
 
 #endif
