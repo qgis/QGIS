@@ -439,6 +439,7 @@ class TestQgisLocalServerConfig(TestCase):
 
 
 if __name__ == '__main__':
+    # NOTE: see use of QGISSERVER_PNG env var above
     TESTSPAWN = False  # whether to test a preconfigured, spawned process
     # to test connection:
     #   '/test-projects/tests' should == your config 'projdir'
