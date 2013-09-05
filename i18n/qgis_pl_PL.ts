@@ -7156,22 +7156,22 @@ Działa na wszystkich edytowanych warstwach</translation>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1820"/>
         <source>Local Cumulative Cut Stretch</source>
-        <translation type="unfinished"></translation>
+        <translation>Wzmocnij kontrast (z odcięciem) do zasięgu widoku</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1823"/>
         <source>Local cumulative cut stretch using current extent, default limits and estimated values.</source>
-        <translation type="unfinished"></translation>
+        <translation>Wzmocnij kontrast (z odcięciem) do zasięgu widoku</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1832"/>
         <source>Full Dataset Cumulative Cut Stretch</source>
-        <translation type="unfinished"></translation>
+        <translation>Wzmocnij kontrast (z odcięciem) do pełnego zakresu danych</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1835"/>
         <source>Cumulative cut stretch using full dataset extent, default limits and estimated values.</source>
-        <translation type="unfinished"></translation>
+        <translation>Wzmocnij kontrast (z odcięciem) do pełnego zakresu danych</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1847"/>
@@ -7887,12 +7887,12 @@ Działa na aktualnie edytowanej warstwie</translation>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1446"/>
         <source>Local Histogram Stretch</source>
-        <translation>Rozciągnij kontrast</translation>
+        <translation>Wzmocnij kontrast do zasięgu widoku</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1449"/>
         <source>Stretch histogram of active raster to view extents</source>
-        <translation>Rozciągnij kontrast aktywnego rastra w zasięgu widoku</translation>
+        <translation>Wzmocnij kontrast do zasięgu widoku</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1458"/>
@@ -11131,7 +11131,7 @@ Widzisz ten komunikat, bo prawdopodobnie nie ustawiłaś(eś) zmiennej środowis
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="2378"/>
         <source>Math</source>
-        <translation>Matematyka</translation>
+        <translation>Matematyczne</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="2379"/>
@@ -11141,32 +11141,32 @@ Widzisz ten komunikat, bo prawdopodobnie nie ustawiłaś(eś) zmiennej środowis
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="2376"/>
         <source>Conditionals</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyrażenia warunkowe</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="2380"/>
         <source>Date and Time</source>
-        <translation>Date i Time</translation>
+        <translation>Daty i czasu</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="2381"/>
         <source>String</source>
-        <translation>Tekst</translation>
+        <translation>Tekstowe</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="2382"/>
         <source>Color</source>
-        <translation>Kolor</translation>
+        <translation>Koloru</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="2383"/>
         <source>Geometry</source>
-        <translation>Geometria</translation>
+        <translation>Geometrii</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="2384"/>
         <source>Record</source>
-        <translation>Rekord</translation>
+        <translation>Wiersze</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="1685"/>
@@ -23430,7 +23430,7 @@ and current file is [%3]</source>
     <message>
         <location filename="../src/gui/symbology-ng/qgsdatadefinedsymboldialog.cpp" line="168"/>
         <source>double</source>
-        <translation type="unfinished">double</translation>
+        <translation type="unfinished">vdouble</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsdatadefinedsymboldialog.cpp" line="173"/>
@@ -26104,7 +26104,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="74"/>
         <source>&apos;Dia&apos; || Diameter</source>
-        <translation>&apos;Dia&apos; || Średnica</translation>
+        <translation>&apos;Szybkich ślimaków: &apos; || liczba_slimakow</translation>
     </message>
     <message>
         <source>Fields</source>
@@ -35333,7 +35333,7 @@ nie będą wyświetlane</translation>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="350"/>
         <source>&amp;Stretch Using Current Extent</source>
-        <translation>Wzmocnij kontrast w aktualnym zasięgu</translation>
+        <translation>Wzmocnij &amp;kontrast do zasięgu widoku</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="355"/>
@@ -65802,8 +65802,8 @@ Zwraca reprezentację tekstową koloru w oparciu o jego składowe (czerwona, zie
         <source>&lt;h3&gt;Conditionals Group&lt;/h3&gt;
 This group contains functions to handle conditional checks in expressions.
 </source>
-        <translation>&lt;h3&gt;Grupy warunkowe&lt;/h3&gt;
-Te grupy zawierają funkcje do sprawdzania warunków w wyrażeniach.
+        <translation>&lt;h3&gt;Grupa wyrażeń warunkowych&lt;/h3&gt;
+Ta grupa zawierają funkcje do obsługi wyrażeń warunkowych.
 </translation>
     </message>
     <message>
@@ -65818,7 +65818,16 @@ Loading field values from WFS layers isn&apos;t supported, before the layer is
 actually inserted, ie. when building queries.
 &lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Grupa pól i wartości&lt;/h3&gt;
+Zawiera listę pól z warstwy.  Próbka danych jest dostępna pod prawym klawiszem myszy.
+&lt;br&gt;&lt;br&gt;
+Wybierz pole z listy, a następnie prawym klawiszem wyświetl menu kontekstowe z opcjami wczytywania próbki.
+
+&lt;p&gt;&lt;h4&gt;Uwaga:&lt;/h4&gt;
+Wczytywanie wartości z warstwy WFS nie jest obsługiwane przed zasileniem wartościami, czyli 
+przy budowaniu zapytania.
+&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1453"/>
@@ -65860,7 +65869,16 @@ Loading field values from WFS layers isn&apos;t supported, before the layer is
 actually inserted, ie. when building queries.
 &lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Pole&lt;/h3&gt;
+Dwuklik, aby dodać pole do wyrażenia.
+&lt;br&gt;&lt;br&gt;
+Prawy klawisz, aby wyświetlić menu kontekstowe i wczytac próbke danych.
+
+&lt;p&gt;&lt;h4&gt;Uwaga:&lt;/h4&gt;
+Wczytywanie wartości z warstwy WFS nie jest obsługiwane przed zasileniem wartościami, czyli 
+przy budowaniu zapytania.
+&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="996"/>
@@ -65925,7 +65943,9 @@ None
         <source>&lt;h3&gt;Geometry Group&lt;/h3&gt;
 This group contains functions that operate on geometry objects e.g length, area.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Grupa geometrii&lt;/h3&gt;
+Zawiera funkcje operujące na geometrii obiektów, np. długości, powierzchni.
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1234"/>
@@ -66080,7 +66100,39 @@ use &lt;code&gt;day&lt;/code&gt; to extract number of days&lt;br&gt;
 &lt;code&gt;day(age(&apos;2012-05-12&apos;,&apos;2012-05-2&apos;)) &amp;rarr; 10&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja age()&lt;/h3&gt;
+Zwraca różnicę pomiędzy datami.
+&lt;br&gt;&lt;br&gt;
+Róznica jest zwracana jako &lt;code&gt;interwał&lt;/code&gt; 
+i może być używana z jedną z następujących funkcji,
+aby uzyskać niezbędne informacje:
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;year&lt;/code&gt;
+&lt;li&gt;&lt;code&gt;month&lt;/code&gt;
+&lt;li&gt;&lt;code&gt;week&lt;/code&gt;
+&lt;li&gt;&lt;code&gt;day&lt;/code&gt;
+&lt;li&gt;&lt;code&gt;hour&lt;/code&gt;
+&lt;li&gt;&lt;code&gt;minute&lt;/code&gt;
+&lt;li&gt;&lt;code&gt;second&lt;/code&gt;
+&lt;/ul&gt;
+&lt;h4&gt;Składnia&lt;/h4&gt;
+&lt;code&gt;age(tekst, tekst)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;age(data/czas, data/czas)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;age(tekst, data/czas)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;age(data/czas, tekst)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumenty&lt;/h4&gt;
+&lt;code&gt;tekst&lt;/code&gt; - data w postaci ciągu znaków
+&lt;br&gt;
+&lt;code&gt;data/czas&lt;/code&gt; - data lub data/czas
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;age(&apos;2012-05-12&apos;,&apos;2012-05-2&apos;) &amp;rarr; Interval&lt;/code&gt;&lt;br&gt;
+use &lt;code&gt;day&lt;/code&gt; to extract number of days&lt;br&gt;
+&lt;code&gt;day(age(&apos;2012-05-12&apos;,&apos;2012-05-2&apos;)) &amp;rarr; 10&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1248"/>
@@ -66104,7 +66156,25 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;year(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 1.9986..&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja year()&lt;/h3&gt;
+Zwraca rok z daty lub liczbę lat z &lt;code&gt;interwału&lt;/code&gt;
+
+&lt;h4&gt;Składnia&lt;/h4&gt;
+&lt;code&gt;year(data)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;year(interwał)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumenty&lt;/h4&gt;
+&lt;code&gt;data&lt;/code&gt; - data lub data/czas
+&lt;br&gt;
+&lt;code&gt;interwał&lt;/code&gt; - różnica czasu
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;year(&apos;2012-05-12&apos;) &amp;rarr; 2012&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;year(tointerval(&apos;3 Years&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;year(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 1.9986..&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1330"/>
@@ -66122,7 +66192,7 @@ Returns arcustanget of a value in radians.
      atan(0.5) &amp;rarr; 0.463647609000806&lt;/p&gt;
 </source>
         <translation>&lt;h3&gt;funkcja atan()&lt;/h3&gt;
-Zaraca arcus tangens wartości w radianach.
+Zwraca arcus tangens wartości w radianach.
 
 
 &lt;p&gt;&lt;h4&gt;Składnia&lt;/h4&gt;
@@ -66158,7 +66228,26 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;minute(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 1051200&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;minute() function&lt;/h3&gt;
+Zwraca minutę z daty/czasu lub czasu, lub liczbe minut z &lt;code&gt;interwału&lt;/code&gt;
+
+&lt;h4&gt;Składnia&lt;/h4&gt;
+&lt;code&gt;minute(data/czas)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;minute(interwał)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumenty&lt;/h4&gt;
+&lt;code&gt;data/czas&lt;/code&gt; - data lub data/czas
+&lt;br&gt;
+&lt;code&gt;interwał&lt;/code&gt; - różnica czasu
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;minute(&apos;2012-07-22T13:24:57&apos;) &amp;rarr; 24&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;minute(tointerval(&apos;3 minutes&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;minute(age(&apos;2012-07-22T00:20:00&apos;,&apos;2012-07-22T00:00:00&apos;)) &amp;rarr; 20&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;minute(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 1051200&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1271"/>
@@ -66193,7 +66282,10 @@ Brak
 &lt;h3&gt;Color Group&lt;/h3&gt;
 This group contains functions for manipulating colors
 </source>
-        <translation type="unfinished"></translation>
+        <translation>
+&lt;h3&gt;Grupa koloru&lt;/h3&gt;
+Zawiera funkcje do manipulowania kolorami.
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1376"/>
@@ -66370,7 +66462,20 @@ Converts a string to real number. Nothing changed if a value cannot be converted
 &lt;!-- Show example of function.--&gt;
      toreal(&apos;123.45&apos;) &amp;rarr; 123.45&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja toreal()&lt;/h3&gt;
+Konwertuje ciąg znaków na liczbę rzeczywistą, chyba że konwersja jest niemożliwa (np. &apos;123.56asd&apos;). Wartości są zaokrąglane, jeśli dokładność jest mniejsza niż wynik konwersji.
+
+&lt;p&gt;&lt;h4&gt;Składnia&lt;/h4&gt;
+     toreal(&lt;i&gt;tekst&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumenty&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  tekst&lt;/i&gt; &amp;rarr; tekst do konwersji&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     toreal(&apos;123.45&apos;) &amp;rarr; 123.45&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1117"/>
@@ -66440,7 +66545,9 @@ Ogranicza części dziesiętne do zadanej dokładności.
         <source>&lt;h3&gt;String Group&lt;/h3&gt;
 This group contains functions that operate on strings e.g replace, convert to upper case.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Grupa tekst&lt;/h3&gt;
+Zawiera funkcje do operowania na ciągach znaków, np. zamianie, konwersji czy zmianie wielkości liter.
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="260"/>
@@ -66669,14 +66776,34 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;month(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 4.033...&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja month()&lt;/h3&gt;
+Zwraca miesiąc z daty, lub liczbę miesięcy z &lt;code&gt;interwału&lt;/code&gt;
+
+&lt;h4&gt;Składnia&lt;/h4&gt;
+&lt;code&gt;month(data)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;month(interwał)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumenty&lt;/h4&gt;
+&lt;code&gt;data&lt;/code&gt; - data lub data/czas
+&lt;br&gt;
+&lt;code&gt;interwał&lt;/code&gt; - różnica czasu
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;month(&apos;2012-05-12&apos;) &amp;rarr; 05&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;month(tointerval(&apos;3 months&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;month(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 4.033...&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="43"/>
         <source>&lt;h3&gt;Math Group&lt;/h3&gt;
 This group contains math functions e.g square root, sin and cos
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Grupa matematyka&lt;/h3&gt;
+Grupa zawiera funkcje matematyczne, np. pierwiastek kwadratowy, sinus.
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="231"/>
@@ -66898,9 +67025,9 @@ Pobiera numer tygodnia dla daty, lub liczbę tygodni z &lt;code&gt;interwału&lt
 &lt;code&gt;week(interwał)&lt;/code&gt;&lt;br&gt;
 
 &lt;h4&gt;Argumenty&lt;/h4&gt;
-&lt;code&gt;data&lt;/code&gt; - data, lub data i czas.
+&lt;code&gt;data&lt;/code&gt; - data lub data/czas
 &lt;br&gt;
-&lt;code&gt;interwał&lt;/code&gt; - interwał do określenia liczby tygodni.
+&lt;code&gt;interwał&lt;/code&gt; - różnica czasu
 
 &lt;h4&gt;Przykład&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -67012,7 +67139,9 @@ Ta funkcja pobiera jeden argument.
         <source>&lt;h3&gt;Date and Time Group&lt;/h3&gt;
 This group contains functions for handling date and time data.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Grupa daty i czasu&lt;/h3&gt;
+Ta grupa zawiera funkcje do operowania na danych typu data i czas.
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="750"/>
@@ -67180,7 +67309,9 @@ Zamienia tekst na duże litery.
         <source>&lt;h3&gt;Record Group&lt;/h3&gt;
 This group contains functions that operate on record identifiers.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Grupa wiersze&lt;/h3&gt;
+Ta grupa zawiera funkcje operujące na identyfikatorach wierszy.
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="363"/>
@@ -67698,7 +67829,9 @@ return a result.
         <source>&lt;h3&gt;Conditions Group&lt;/h3&gt;
 This group contains functions that operate on condition.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Grupa operatorów warunkowych&lt;/h3&gt;
+Ta grupa zawiera funkcje warunkowe.
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1392"/>
@@ -67730,9 +67863,9 @@ Zwraca z daty dzień lub liczbę dni z &lt;code&gt;interwału&lt;/code&gt;
 &lt;code&gt;day(interwał)&lt;/code&gt;&lt;br&gt;
 
 &lt;h4&gt;Argumenty&lt;/h4&gt;
-&lt;code&gt;data&lt;/code&gt; - data luba data/czas.
+&lt;code&gt;data&lt;/code&gt; - data lub data/czas
 &lt;br&gt;
-&lt;code&gt;interwał&lt;/code&gt; - różnica pomiędzy dwoma momentami w czasie.
+&lt;code&gt;interwał&lt;/code&gt; - różnica czasu
 
 &lt;h4&gt;Przykład&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -67840,7 +67973,24 @@ Returns -1 if the expression isn&apos;t found.
      strpos(&apos;HELLO WORLD&apos;,&apos;WORLD&apos;) &amp;rarr; 6&lt;br&gt;
      strpos(&apos;HELLO WORLD&apos;,&apos;GOODBYE&apos;) &amp;rarr; -1&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja strpos()&lt;/h3&gt;
+Zwraca położenie wyrażenia regularnego w tekście.
+
+&lt;h4&gt;Składnia&lt;/h4&gt;
+     strpos(&lt;i&gt;całość&lt;/i&gt;, &lt;i&gt;fragment&lt;/i&gt;)
+&lt;br&gt;&lt;br&gt;
+Zwraca -1 jeśli fragmentu nie znaleziono.
+
+&lt;p&gt;&lt;h4&gt;Argumenty&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  całość&lt;/i&gt; &amp;rarr; ciąg znaków który będzie przeszukiwany&lt;br&gt;
+&lt;i&gt;  fragment&lt;/i&gt; &amp;rarr; wyszukiwany ciąg znaków&lt;br&gt;
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     strpos(&apos;HELLO WORLD&apos;,&apos;WORLD&apos;) &amp;rarr; 6&lt;br&gt;
+     strpos(&apos;HELLO WORLD&apos;,&apos;GOODBYE&apos;) &amp;rarr; -1&lt;br&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="452"/>
@@ -68057,21 +68207,45 @@ The color ramps available vary between QGIS installations.  This function
 may not give the expected results if you move your Quantum project.
 &lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>
+&lt;h3&gt;funkcja ramp_color()&lt;/h3&gt;
+Zwraca tekst reprezentujący kolor z palety kolorów. 
+
+&lt;p&gt;&lt;h4&gt;Składnia&lt;/h4&gt;
+     ramp_color(&lt;i&gt;paleta, wartość&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumenty&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  paleta&lt;/i&gt; &amp;rarr; nazwa palety kolorów, np. &apos;Spectral&apos;.&lt;br&gt;
+&lt;i&gt;  wartość&lt;/i&gt; &amp;rarr; położenie koloru w palecie; liczba rzeczywista z zakresu od 0 do 1.&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     ramp_color(&apos;Spectral&apos;,0.3) &amp;rarr; &apos;#fdbe73&apos;&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Uwaga:&lt;/h4&gt;
+Nazwy dostępnych palet mogą się różnić, w zależności od wersji QGIS
+Ta funkcja może nie działać przy przenoszeniu projektu QGIS.
+&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="275"/>
         <source>&lt;h3&gt;Conversions Group&lt;/h3&gt;
 This group contains functions to convert on data type to another e.g string to integer, integer to string.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Grupa konwersji&lt;/h3&gt;
+Ta grupa zawiera funkcje konwertujące dane pomiędzy różnymi typami, np. tekst na liczbę, liczbę na tekst.
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="915"/>
         <source>&lt;h3&gt;Operators Group&lt;/h3&gt;
 This group contains operators e.g + - * 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Grupa operatorów&lt;/h3&gt;
+Ta grupa zawiera operatory, np. + - * 
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="56"/>
@@ -68133,7 +68307,7 @@ Zwraca sekundy z czasu lub daty/czasu, lub liczbę sekund z &lt;code&gt;interwa�
 &lt;code&gt;second(interwał)&lt;/code&gt;&lt;br&gt;
 
 &lt;h4&gt;Argumenty&lt;/h4&gt;
-&lt;code&gt;czas&lt;/code&gt; - czas lub data/czas
+&lt;code&gt;data&lt;/code&gt; - data lub data/czas
 &lt;br&gt;
 &lt;code&gt;interwał&lt;/code&gt; - różnica czasu
 
@@ -68191,7 +68365,7 @@ Returns cosinus of an angle.
      cos(1.571) &amp;rarr; 0.000796326710733263&lt;/p&gt;
 </source>
         <translation>&lt;h3&gt;funkcja cos()&lt;/h3&gt;
-Zsraca cosinus kąta.
+Zwraca cosinus kąta.
 
 
 &lt;p&gt;&lt;h4&gt;Składnia&lt;/h4&gt;
@@ -68344,7 +68518,23 @@ Returns a string representation of a color based on its red, green, and blue com
 &lt;!-- Show example of function.--&gt;
      color_rgb(255,127,0) &amp;rarr; &apos;#ff7f00&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>
+&lt;h3&gt;funkcja color_rgb()&lt;/h3&gt;
+Zwraca reprezentację tekstową koloru w oparciu o jego składowe (czerwona, zielona, niebieska).
+
+&lt;p&gt;&lt;h4&gt;Składnia&lt;/h4&gt;
+     color_rgb(&lt;i&gt;czerwony, zielony, niebieski&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumenty&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  czerwony&lt;/i&gt; &amp;rarr; czerwona składowa w postaci liczby całkowitej od 0 do 255.&lt;br&gt;
+&lt;i&gt;  zielony&lt;/i&gt; &amp;rarr; zielona składowa w postaci liczby całkowitej od 0 do 255.&lt;br&gt;
+&lt;i&gt;  niebieski&lt;/i&gt; &amp;rarr; niebieska składowa w postaci liczby całkowitej od 0 do 255.&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;przykład&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     color_rgb(255,127,0) &amp;rarr; &apos;#ff7f00&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="26"/>
@@ -68385,7 +68575,22 @@ Returns a string with the the supplied string replaced.
 &lt;!-- Show example of function.--&gt;
      replace(&apos;QGIS SHOULD ROCK&apos;,&apos;SHOULD&apos;,&apos;DOES&apos;) &amp;rarr; &apos;QGIS DOES ROCK&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja replace()&lt;/h3&gt;
+Zwraca ciąg znaków z zamienionymi fragmentami.
+
+&lt;p&gt;&lt;h4&gt;Składnia&lt;/h4&gt;
+     replace(&lt;i&gt;tekst, przed, po&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumenty&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  tekst&lt;/i&gt; &amp;rarr; ciąg znaków poczatkowy&lt;br&gt;
+&lt;i&gt;  przed&lt;/i&gt; &amp;rarr; ciąg znaków do zamiany&lt;br&gt;
+&lt;i&gt;  po&lt;/i&gt; &amp;rarr; ciąg znaków, który zamieni &lt;i&gt;przed&lt;/i&gt;&lt;br&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     replace(&apos;QGIS SHOULD ROCK&apos;,&apos;SHOULD&apos;,&apos;DOES&apos;) &amp;rarr; &apos;QGIS DOES ROCK&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="298"/>
@@ -68418,7 +68623,7 @@ Zwraca godzinę z czasu lub daty/czasu, lub liczbę godzin z &lt;code&gt;interwa
 &lt;code&gt;hour(interwał)&lt;/code&gt;&lt;br&gt;
 
 &lt;h4&gt;Argumenty&lt;/h4&gt;
-&lt;code&gt;czas&lt;/code&gt; - czas lub data/czas
+&lt;code&gt;data&lt;/code&gt; - data lub data/czas
 &lt;br&gt;
 &lt;code&gt;interwał&lt;/code&gt; - różnica czasu
 
