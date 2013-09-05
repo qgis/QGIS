@@ -47,6 +47,7 @@ QgsComposerView::QgsComposerView( QWidget* parent, const char* name, Qt::WFlags 
     , mPaintingEnabled( true )
     , mHorizontalRuler( 0 )
     , mVerticalRuler( 0 )
+    , mPanning( false )
 {
   Q_UNUSED( f );
   Q_UNUSED( name );
@@ -82,6 +83,15 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
     }
     return;
   }
+  else if ( e->button() == Qt::MidButton )
+  {
+    //pan composer with middle button
+    mPanning = true;
+    mMouseLastXY = e->pos();
+    setCursor( Qt::ClosedHandCursor );
+    e->accept();
+    return;
+  }
 
   switch ( mCurrentTool )
   {
@@ -100,9 +110,24 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
         break;
       }
 
-      selectedItem->setSelected( true );
-      QGraphicsView::mousePressEvent( e );
-      emit selectedItemChanged( selectedItem );
+      if (( e->modifiers() & Qt::ShiftModifier ) && ( selectedItem->selected() ) )
+      {
+        //SHIFT-clicking a selected item deselects it
+        selectedItem->setSelected( false );
+
+        //Check if we have any remaining selected items, and if so, update the item panel
+        QList<QgsComposerItem*> selectedItems = composition()->selectedComposerItems();
+        if ( selectedItems.size() > 0 )
+        {
+          emit selectedItemChanged( selectedItems.at( 0 ) );
+        }
+      }
+      else
+      {
+        selectedItem->setSelected( true );
+        QGraphicsView::mousePressEvent( e );
+        emit selectedItemChanged( selectedItem );
+      }
       break;
     }
 
@@ -264,6 +289,15 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
 
   QPointF scenePoint = mapToScene( e->pos() );
 
+  if ( mPanning )
+  {
+    //panning with middle button
+    mPanning = false;
+    setCursor( Qt::ArrowCursor );
+    e->accept();
+    return;
+  }
+
   switch ( mCurrentTool )
   {
     case Select:
@@ -384,6 +418,15 @@ void QgsComposerView::mouseMoveEvent( QMouseEvent* e )
       QGraphicsView::mouseMoveEvent( e );
     }
   }
+  else if ( mPanning )
+  {
+    //panning with middle mouse button, scroll view
+    horizontalScrollBar()->setValue( horizontalScrollBar()->value() - ( e->x() - mMouseLastXY.x() ) );
+    verticalScrollBar()->setValue( verticalScrollBar()->value() - ( e->y() - mMouseLastXY.y() ) );
+    mMouseLastXY = e->pos();
+    e->accept();
+    return;
+  }
   else
   {
     QPointF scenePoint = mapToScene( e->pos() );
@@ -484,6 +527,14 @@ void QgsComposerView::keyPressEvent( QKeyEvent * e )
   QList<QgsComposerItem*> composerItemList = composition()->selectedComposerItems();
   QList<QgsComposerItem*>::iterator itemIt = composerItemList.begin();
 
+  // increment used for cursor key item movement
+  double increment = 1.0;
+  if ( e->modifiers() & Qt::ShiftModifier )
+  {
+    //holding shift while pressing cursor keys results in a big step
+    increment = 10.0;
+  }
+
   if ( e->matches( QKeySequence::Copy ) || e->matches( QKeySequence::Cut ) )
   {
     QDomDocument doc;
@@ -567,7 +618,7 @@ void QgsComposerView::keyPressEvent( QKeyEvent * e )
     for ( ; itemIt != composerItemList.end(); ++itemIt )
     {
       ( *itemIt )->beginCommand( tr( "Item moved" ), QgsComposerMergeCommand::ItemMove );
-      ( *itemIt )->move( -1.0, 0.0 );
+      ( *itemIt )->move( -1 * increment, 0.0 );
       ( *itemIt )->endCommand();
     }
   }
@@ -576,7 +627,7 @@ void QgsComposerView::keyPressEvent( QKeyEvent * e )
     for ( ; itemIt != composerItemList.end(); ++itemIt )
     {
       ( *itemIt )->beginCommand( tr( "Item moved" ), QgsComposerMergeCommand::ItemMove );
-      ( *itemIt )->move( 1.0, 0.0 );
+      ( *itemIt )->move( increment, 0.0 );
       ( *itemIt )->endCommand();
     }
   }
@@ -585,7 +636,7 @@ void QgsComposerView::keyPressEvent( QKeyEvent * e )
     for ( ; itemIt != composerItemList.end(); ++itemIt )
     {
       ( *itemIt )->beginCommand( tr( "Item moved" ), QgsComposerMergeCommand::ItemMove );
-      ( *itemIt )->move( 0.0, 1.0 );
+      ( *itemIt )->move( 0.0, increment );
       ( *itemIt )->endCommand();
     }
   }
@@ -594,7 +645,7 @@ void QgsComposerView::keyPressEvent( QKeyEvent * e )
     for ( ; itemIt != composerItemList.end(); ++itemIt )
     {
       ( *itemIt )->beginCommand( tr( "Item moved" ), QgsComposerMergeCommand::ItemMove );
-      ( *itemIt )->move( 0.0, -1.0 );
+      ( *itemIt )->move( 0.0, -1 * increment );
       ( *itemIt )->endCommand();
     }
   }
@@ -604,16 +655,47 @@ void QgsComposerView::wheelEvent( QWheelEvent* event )
 {
   QPointF scenePoint = mapToScene( event->pos() );
 
-  //select topmost item at position of event
-  QgsComposerItem* theItem = composition()->composerItemAt( scenePoint );
-  if ( theItem )
+  if ( currentTool() == MoveItemContent )
   {
-    if ( theItem->isSelected() )
+    //move item content tool, so scroll events get handled by the composer item
+
+    //select topmost item at position of event
+    QgsComposerItem* theItem = composition()->composerItemAt( scenePoint );
+    if ( theItem )
     {
-      QPointF itemPoint = theItem->mapFromScene( scenePoint );
-      theItem->beginCommand( tr( "Zoom item content" ) );
-      theItem->zoomContent( event->delta(), itemPoint.x(), itemPoint.y() );
-      theItem->endCommand();
+      if ( theItem->isSelected() )
+      {
+        QPointF itemPoint = theItem->mapFromScene( scenePoint );
+        theItem->beginCommand( tr( "Zoom item content" ) );
+        theItem->zoomContent( event->delta(), itemPoint.x(), itemPoint.y() );
+        theItem->endCommand();
+      }
+    }
+  }
+  else
+  {
+    //zoom whole composition
+    if ( event->delta() > 0 )
+    {
+      scale( 2, 2 );
+    }
+    else
+    {
+      scale( 0.5, 0.5 );
+    }
+
+    updateRulers();
+    update();
+    //redraw cached map items
+    QList<QGraphicsItem *> itemList = composition()->items();
+    QList<QGraphicsItem *>::iterator itemIt = itemList.begin();
+    for ( ; itemIt != itemList.end(); ++itemIt )
+    {
+      QgsComposerMap* mypItem = dynamic_cast<QgsComposerMap *>( *itemIt );
+      if (( mypItem ) && ( mypItem->previewMode() == QgsComposerMap::Render ) )
+      {
+        mypItem->updateCachedImage();
+      }
     }
   }
 }
