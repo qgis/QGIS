@@ -158,6 +158,9 @@ SET(QGIS_APP_SRCS
   pluginmanager/qgspluginitemdelegate.cpp
 
   qgsnewspatialitelayerdialog.cpp
+
+  qgssettingstree.cpp
+  qgsvariantdelegate.cpp
 )
 
 SET (QGIS_APP_MOC_HDRS
@@ -302,6 +305,9 @@ SET (QGIS_APP_MOC_HDRS
   pluginmanager/qgspluginitemdelegate.h
 
   qgsnewspatialitelayerdialog.h
+
+  qgssettingstree.h
+  qgsvariantdelegate.h
   )
 
 SET (WITH_QWTPOLAR TRUE CACHE BOOL "Determines whether QwtPolar should be built")
