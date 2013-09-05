@@ -11658,7 +11658,7 @@ anche per me (rospus)</translatorcomment>
         <location filename="../src/core/raster/qgsrasterrendererregistry.cpp" line="57"/>
         <source>Singleband pseudocolor</source>
         <translatorcomment>? ght</translatorcomment>
-        <translation>Folso colore banda singola</translation>
+        <translation>Falso colore banda singola</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterrendererregistry.cpp" line="59"/>
