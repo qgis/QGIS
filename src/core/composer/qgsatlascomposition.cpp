@@ -153,7 +153,7 @@ void QgsAtlasComposition::beginRender()
 
     if ( mSortFeatures )
     {
-      mFeatureKeys.insert( std::make_pair( feat.id(), feat.attributes()[ mSortKeyAttributeIdx ] ) );
+      mFeatureKeys.insert( feat.id(), feat.attributes()[ mSortKeyAttributeIdx ] );
     }
   }
 
@@ -211,12 +211,12 @@ void QgsAtlasComposition::endRender()
   mComposerMap->setNewExtent( mOrigExtent );
 }
 
-size_t QgsAtlasComposition::numFeatures() const
+int QgsAtlasComposition::numFeatures() const
 {
   return mFeatureIds.size();
 }
 
-void QgsAtlasComposition::prepareForFeature( size_t featureI )
+void QgsAtlasComposition::prepareForFeature( int featureI )
 {
   if ( !mComposerMap || !mCoverageLayer )
   {

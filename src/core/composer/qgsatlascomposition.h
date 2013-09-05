@@ -78,8 +78,8 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     QString featureFilter() const { return mFeatureFilter; }
     void setFeatureFilter( const QString& expression ) { mFeatureFilter = expression; }
 
-    size_t sortKeyAttributeIndex() const { return mSortKeyAttributeIdx; }
-    void setSortKeyAttributeIndex( size_t idx ) { mSortKeyAttributeIdx = idx; }
+    int sortKeyAttributeIndex() const { return mSortKeyAttributeIdx; }
+    void setSortKeyAttributeIndex( int idx ) { mSortKeyAttributeIdx = idx; }
 
     /** Begins the rendering. */
     void beginRender();
@@ -87,10 +87,10 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     void endRender();
 
     /** Returns the number of features in the coverage layer */
-    size_t numFeatures() const;
+    int numFeatures() const;
 
     /** Prepare the atlas map for the given feature. Sets the extent and context variables */
-    void prepareForFeature( size_t i );
+    void prepareForFeature( int i );
 
     /** Returns the current filename. Must be called after prepareForFeature( i ) */
     const QString& currentFilename() const;
@@ -123,12 +123,12 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     // sort direction
     bool mSortAscending;
   public:
-    typedef std::map< QgsFeatureId, QVariant > SorterKeys;
+    typedef QMap< QgsFeatureId, QVariant > SorterKeys;
   private:
     // value of field that is used for ordering of features
     SorterKeys mFeatureKeys;
     // key (attribute index) used for ordering
-    size_t mSortKeyAttributeIdx;
+    int mSortKeyAttributeIdx;
 
     // feature filtering
     bool mFilterFeatures;
