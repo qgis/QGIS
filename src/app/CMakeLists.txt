@@ -459,6 +459,20 @@ ENDIF (ANDROID)
 # shared library used by tests - TODO: use it also for qgis executable?
 ADD_LIBRARY(qgis_app STATIC ${QGIS_APP_SRCS} ${QGIS_APP_MOC_SRCS} ${QGIS_APP_HDRS} ${QGIS_APP_MOC_HDRS} ${IMAGE_RCC_SRCS})
 
+TARGET_LINK_LIBRARIES(qgis_app
+  ${QWT_LIBRARY}
+  ${QT_QTSQL_LIBRARY}
+  ${QT_QTUITOOLS_LIBRARY}
+  ${QT_QTWEBKIT_LIBRARY}
+  #should only be needed for win
+  ${QT_QTMAIN_LIBRARY}
+  ${QWTPOLAR_LIBRARY}
+  ${GDAL_LIBRARY}
+  qgis_core
+  qgis_gui
+  qgis_analysis
+)
+
 if(MSVC AND CMAKE_SIZEOF_VOID_P EQUAL 8)
   SET_TARGET_PROPERTIES(qgis_app PROPERTIES STATIC_LIBRARY_FLAGS "/machine:x64")
 ENDIF(MSVC AND CMAKE_SIZEOF_VOID_P EQUAL 8)
