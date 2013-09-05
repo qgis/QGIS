@@ -39,7 +39,8 @@ class TableWriter:
 
         with open(self.fileName, "wb") as csvFile:
             self.writer = UnicodeWriter(csvFile, encoding=self.encoding)
-            self.writer.writerow(fields)
+            if len(fields) != 0:
+                self.writer.writerow(fields)
 
     def addRecord(self, values):
         with open(self.fileName, "ab") as csvFile:

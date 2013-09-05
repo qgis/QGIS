@@ -23,10 +23,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import csv
 import math
-import codecs
-import cStringIO
 
 from qgis.core import *
 
@@ -38,7 +35,7 @@ from processing.parameters.ParameterVector import ParameterVector
 from processing.parameters.ParameterSelection import ParameterSelection
 from processing.parameters.ParameterTableField import ParameterTableField
 
-from processing.outputs.OutputFile import OutputFile
+from processing.outputs.OutputTable import OutputTable
 
 from processing.algs.ftools import FToolsUtils as utils
 
@@ -73,7 +70,7 @@ class PointDistance(GeoAlgorithm):
         self.addParameter(ParameterSelection(self.MATRIX_TYPE, "Output matrix type", self.MAT_TYPES, 0))
         self.addParameter(ParameterNumber(self.NEAREST_POINTS, "Use only the nearest (k) target points", 0, 9999, 0))
 
-        self.addOutput(OutputFile(self.DISTANCE_MATRIX, "Distance matrix"))
+        self.addOutput(OutputTable(self.DISTANCE_MATRIX, "Distance matrix"))
 
     def processAlgorithm(self, progress):
         inLayer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT_LAYER))
@@ -83,14 +80,12 @@ class PointDistance(GeoAlgorithm):
         matType = self.getParameterValue(self.MATRIX_TYPE)
         nPoints = self.getParameterValue(self.NEAREST_POINTS)
 
-        outputFile = self.getOutputValue(self.DISTANCE_MATRIX)
+        outputFile = self.getOutputFromName(self.DISTANCE_MATRIX)
 
         if nPoints < 1:
             nPoints = len(QGisLayers.features(targetLayer))
 
-        # prepare CSV file writer
-        csvFile = open(outputFile, "wb")
-        self.writer = UnicodeWriter(csvFile)
+        self.writer = outputFile.getTableWriter([])
 
         if matType == 0:   # Linear distance matrix
             self.linearMatrix(inLayer, inField, targetLayer, targetField, matType, nPoints, progress)
@@ -99,14 +94,11 @@ class PointDistance(GeoAlgorithm):
         elif matType == 2: # Summary distance matrix
             self.linearMatrix(inLayer, inField, targetLayer, targetField, matType, nPoints, progress)
 
-        csvFile.close()
-        del self.writer
-
     def linearMatrix(self, inLayer, inField, targetLayer, targetField, matType, nPoints, progress):
         if matType == 0:
-            self.writer.writerow(["InputID", "TargetID", "Distance"])
+            self.writer.addRecord(["InputID", "TargetID", "Distance"])
         else:
-            self.writer.writerow(["InputID", "MEAN", "STDDEV", "MIN", "MAX"])
+            self.writer.addRecord(["InputID", "MEAN", "STDDEV", "MIN", "MAX"])
 
         index = utils.createSpatialIndex(targetLayer);
 
@@ -135,7 +127,7 @@ class PointDistance(GeoAlgorithm):
                 outGeom = outFeat.geometry()
                 dist = distArea.measureLine(inGeom.asPoint(), outGeom.asPoint())
                 if matType == 0:
-                    self.writer.writerow([unicode(inID), unicode(outID), unicode(dist)])
+                    self.writer.addRecord([unicode(inID), unicode(outID), unicode(dist)])
                 else:
                     distList.append(float(dist))
 
@@ -144,7 +136,7 @@ class PointDistance(GeoAlgorithm):
                 for i in distList:
                     vari += (i - mean) * (i - mean)
                 vari = math.sqrt(vari / len(distList))
-                self.writer.writerow([unicode(inID), unicode(mean), unicode(vari), unicode(min(distList)), unicode(max(distList))])
+                self.writer.addRecord([unicode(inID), unicode(mean), unicode(vari), unicode(min(distList)), unicode(max(distList))])
 
             current += 1
             progress.setPercentage(int(current * total))
@@ -176,7 +168,7 @@ class PointDistance(GeoAlgorithm):
                     request = QgsFeatureRequest().setFilterFid(i)
                     outFeat = targetLayer.getFeatures(request).next()
                     data.append(unicode(outFeat.attributes[outIdx]))
-                self.writer.writerow(data)
+                self.writer.addRecord(data)
 
             data = [unicode(inID)]
             for i in featList:
@@ -185,29 +177,7 @@ class PointDistance(GeoAlgorithm):
                 outGeom = outFeat.geometry()
                 dist = distArea.measureLine(inGeom.asPoint(), outGeom.asPoint())
                 data.append(unicode(float(dist)))
-            self.writer.writerow(data)
+            self.writer.addRecord(data)
 
             current += 1
             progress.setPercentage(int(current * total))
-
-class UnicodeWriter:
-    def __init__(self, f, dialect=csv.excel, encoding="utf-8", **kwds):
-        self.queue = cStringIO.StringIO()
-        self.writer = csv.writer(self.queue, dialect=dialect, **kwds)
-        self.stream = f
-        self.encoder = codecs.getincrementalencoder(encoding)()
-
-    def writerow(self, row):
-        try:
-            self.writer.writerow([s.encode("utf-8") for s in row])
-        except:
-            self.writer.writerow(row)
-        data = self.queue.getvalue()
-        data = data.decode("utf-8")
-        data = self.encoder.encode(data)
-        self.stream.write(data)
-        self.queue.truncate(0)
-
-    def writerows(self, rows):
-        for row in rows:
-            self.writerow(row)
