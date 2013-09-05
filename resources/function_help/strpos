@@ -9,7 +9,7 @@ Returns -1 if the expression isn't found.
 <p><h4>Arguments</h4>
 <!-- List args for functions here-->
 <i>  haystack</i> &rarr; is string.  The string that is to be searched.<br>
-<i>  needle</i> &rarr; is number.  The regular expression to look for.<br>
+<i>  needle</i> &rarr; is string.  The regular expression to look for.<br>
 
 <h4>Example</h4>
 <!-- Show example of function.-->
