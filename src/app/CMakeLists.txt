@@ -153,6 +153,9 @@ SET(QGIS_APP_SRCS
   pluginmanager/qgspluginsortfilterproxymodel.cpp
 
   qgsnewspatialitelayerdialog.cpp
+
+  qgssettingstree.cpp  
+  qgsvariantdelegate.cpp
 )
 
 SET (QGIS_APP_MOC_HDRS
@@ -286,6 +289,9 @@ SET (QGIS_APP_MOC_HDRS
   pluginmanager/qgspluginsortfilterproxymodel.h
 
   qgsnewspatialitelayerdialog.h
+
+  qgssettingstree.h 
+  qgsvariantdelegate.h
   )
 
 IF(WITH_INTERNAL_QWTPOLAR)

@@ -258,6 +258,9 @@
 
 #include "nodetool/qgsmaptoolnodetool.h"
 
+#include "qgssettingstree.h"
+#include "qgsdialog.h"
+
 //
 // Conditional Includes
 //
@@ -1059,6 +1062,7 @@ void QgisApp::createActions()
   connect( mActionToggleFullScreen, SIGNAL( triggered() ), this, SLOT( toggleFullScreen() ) );
   connect( mActionProjectProperties, SIGNAL( triggered() ), this, SLOT( projectProperties() ) );
   connect( mActionOptions, SIGNAL( triggered() ), this, SLOT( options() ) );
+  connect( mActionSettingsEditor, SIGNAL( triggered() ), this, SLOT( settingsEditor() ) );
   connect( mActionCustomProjection, SIGNAL( triggered() ), this, SLOT( customProjection() ) );
   connect( mActionConfigureShortcuts, SIGNAL( triggered() ), this, SLOT( configureShortcuts() ) );
   connect( mActionStyleManagerV2, SIGNAL( triggered() ), this, SLOT( showStyleManagerV2() ) );
@@ -1514,6 +1518,10 @@ void QgisApp::createToolBars()
   actionWhatsThis->setIcon( QgsApplication::getThemeIcon( "/mActionWhatsThis.svg" ) );
   mHelpToolBar->addAction( actionWhatsThis );
 
+  // Settings Editor
+  // put this in options dialog?
+  // mSettingsMenu->addSeparator( );
+  mSettingsMenu->addAction( mActionSettingsEditor );
 }
 
 void QgisApp::createStatusBar()
@@ -6818,6 +6826,40 @@ void QgisApp::options()
   }
 
   delete optionsDialog;
+}
+
+void QgisApp::settingsEditor()
+{
+  QgsDialog settingsDialog( this, 0, QDialogButtonBox::Close );
+  settingsDialog.setWindowTitle( tr( "Settings Editor" ) );
+
+  QVBoxLayout *layout = settingsDialog.layout();
+
+  QLabel *label = new QLabel( &settingsDialog );
+  label->setText( tr( "\nSettings Editor - Use at your own risk!!! "
+                      "Any changes here are applied immediately.\n" ) );
+  layout->addWidget( label );
+
+  QgsSettingsTree *settingsTree = new QgsSettingsTree( &settingsDialog );
+
+  QMap< QString, QStringList > map;
+  // entries in QStringList are:
+  // description(tr) ; tooltip(tr) ; tags(tr) ; default value ; type ;  key/value dictionnary for int types
+  map[ "bla1" ] = QStringList() << tr( "This is setting bla1" ) << tr( "bla1" ) << tr( "kw1,kw2" ) << "bla1" << "QString" << "";
+  map[ "bla2" ] = QStringList() << tr( "This is setting bla2" ) << tr( "bla2" ) << tr( "kw3,kw4" ) << "bla2" << "QString" << "";
+  map[ "Qgis/enableMacros" ] = QStringList() << tr( "This is setting enablemacros" ) 
+                                             << tr( "bla2" )<< tr( "kw3,kw4" )  << "enable" << "QString" <<  "";
+  map[ "Qgis/enableMacros4" ] = QStringList() << tr( "This is setting enablemacros4" ) 
+                                              << tr( "bla2" )<< tr( "kw3,kw4" ) << "enable" << "QString" <<  "";
+  settingsTree->setSettingsMap( map );
+
+  QSettings settings;
+  settingsTree->setSettingsObject( &settings );
+
+  // settingsTree->show();
+  layout->addWidget( settingsTree );
+
+  settingsDialog.exec();
 }
 
 void QgisApp::fullHistogramStretch()

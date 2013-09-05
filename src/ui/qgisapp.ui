@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1050</width>
-     <height>31</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="mProjectMenu">
@@ -2120,6 +2120,18 @@ Acts on currently active editable layer</string>
    </property>
    <property name="toolTip">
     <string>Paste features in clipboard into a new memory vector layer.</string>
+   </property>
+  </action>
+  <action name="mActionSettingsEditor">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mIconEditable.png</normaloff>:/images/themes/default/mIconEditable.png</iconset>
+   </property>
+   <property name="text">
+    <string>Settings Editor</string>
+   </property>
+   <property name="toolTip">
+    <string>Advanced Settings Editor</string>
    </property>
   </action>
  </widget>
