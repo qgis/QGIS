@@ -332,6 +332,11 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     /** Sets the overview's inversion mode*/
     void setOverviewInverted( bool inverted );
 
+    /** Returns true if the extent is forced to center on the overview */
+    bool overviewCentered() const { return mOverviewCentered; }
+    /** Set the overview's centering mode */
+    void setOverviewCentered( bool centered );
+
     void setGridLineSymbol( QgsLineSymbolV2* symbol );
     QgsLineSymbolV2* gridLineSymbol() { return mGridLineSymbol; }
 
@@ -408,6 +413,8 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     /**Blend mode for overview*/
     QPainter::CompositionMode mOverviewBlendMode;
     bool mOverviewInverted;
+    /** Centering mode for overview */
+    bool mOverviewCentered;
 
     /**Establishes signal/slot connection for update in case of layer change*/
     void connectUpdateSlot();
@@ -503,6 +510,9 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     @param poly out: the result polygon with the four corner points. The points are clockwise, starting at the top-left point
     @return true in case of success*/
     void mapPolygon( QPolygonF& poly ) const;
+    /** mapPolygon variant using a given extent */
+    void mapPolygon( const QgsRectangle& extent, QPolygonF& poly ) const;
+
     /**Calculates the extent to request and the yShift of the top-left point in case of rotation.*/
     void requestedExtent( QgsRectangle& extent ) const;
     /**Scales a composer map shift (in MM) and rotates it by mRotation
@@ -525,6 +535,11 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     void createDefaultOverviewFrameSymbol();
     void createDefaultGridLineSymbol();
     void initGridAnnotationFormatFromProject();
+
+    /**
+     * Returns the extent, centered on the overview frame
+     */
+    void extentCenteredOnOverview( QgsRectangle& extent ) const;
 };
 
 #endif

@@ -41,7 +41,8 @@
 
 QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int width, int height )
     : QgsComposerItem( x, y, width, height, composition ), mKeepLayerSet( false ),
-    mOverviewFrameMapId( -1 ), mOverviewBlendMode( QPainter::CompositionMode_SourceOver ), mOverviewInverted( false ), mGridEnabled( false ), mGridStyle( Solid ),
+      mOverviewFrameMapId( -1 ), mOverviewBlendMode( QPainter::CompositionMode_SourceOver ), mOverviewInverted( false ), mOverviewCentered( false ),
+      mGridEnabled( false ), mGridStyle( Solid ),
     mGridIntervalX( 0.0 ), mGridIntervalY( 0.0 ), mGridOffsetX( 0.0 ), mGridOffsetY( 0.0 ), mGridAnnotationFontColor( QColor( 0, 0, 0 ) ),
     mGridAnnotationPrecision( 3 ), mShowGridAnnotation( false ), mGridBlendMode( QPainter::CompositionMode_SourceOver ),
     mLeftGridAnnotationPosition( OutsideMapFrame ), mRightGridAnnotationPosition( OutsideMapFrame ),
@@ -86,7 +87,8 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int w
 
 QgsComposerMap::QgsComposerMap( QgsComposition *composition )
     : QgsComposerItem( 0, 0, 10, 10, composition ), mKeepLayerSet( false ), mOverviewFrameMapId( -1 ),
-    mOverviewBlendMode( QPainter::CompositionMode_SourceOver ), mOverviewInverted( false ), mGridEnabled( false ), mGridStyle( Solid ),
+      mOverviewBlendMode( QPainter::CompositionMode_SourceOver ), mOverviewInverted( false ), mOverviewCentered( false ),
+      mGridEnabled( false ), mGridStyle( Solid ),
     mGridIntervalX( 0.0 ), mGridIntervalY( 0.0 ), mGridOffsetX( 0.0 ), mGridOffsetY( 0.0 ), mGridAnnotationFontColor( QColor( 0, 0, 0 ) ),
     mGridAnnotationPrecision( 3 ), mShowGridAnnotation( false ), mGridBlendMode( QPainter::CompositionMode_SourceOver ),
     mLeftGridAnnotationPosition( OutsideMapFrame ), mRightGridAnnotationPosition( OutsideMapFrame ),
@@ -114,6 +116,26 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition )
   setToolTip( tr( "Map %1" ).arg( mId ) );
 
   initGridAnnotationFormatFromProject();
+}
+
+void QgsComposerMap::extentCenteredOnOverview( QgsRectangle& extent ) const
+{
+  extent = mExtent;
+  if ( ! mOverviewCentered ) {
+    return;
+  }
+
+  if ( mOverviewFrameMapId != -1 ) {
+    const QgsComposerMap* overviewFrameMap = mComposition->getComposerMapById( mOverviewFrameMapId );
+    QgsRectangle otherExtent = overviewFrameMap->extent();
+
+    QgsPoint center = otherExtent.center();
+    QgsRectangle movedExtent( center.x() - mExtent.width() / 2,
+			      center.y() - mExtent.height() / 2,
+			      center.x() - mExtent.width() / 2 + mExtent.width(),
+			      center.y() - mExtent.height() / 2 + mExtent.height() );
+    extent = movedExtent;
+  }
 }
 
 QgsComposerMap::~QgsComposerMap()
@@ -297,6 +319,10 @@ void QgsComposerMap::paint( QPainter* painter, const QStyleOptionGraphicsItem* i
 
     QgsRectangle requestRectangle;
     requestedExtent( requestRectangle );
+
+    QgsRectangle cExtent;
+    extentCenteredOnOverview( cExtent );
+
     double horizontalVScaleFactor = horizontalViewScaleFactor();
     if ( horizontalVScaleFactor < 0 )
     {
@@ -305,15 +331,15 @@ void QgsComposerMap::paint( QPainter* painter, const QStyleOptionGraphicsItem* i
 
     double imagePixelWidth = mExtent.width() / requestRectangle.width() * mCacheImage.width() ; //how many pixels of the image are for the map extent?
     double scale = rect().width() / imagePixelWidth;
-    QgsPoint rotationPoint = QgsPoint(( mExtent.xMaximum() + mExtent.xMinimum() ) / 2.0, ( mExtent.yMaximum() + mExtent.yMinimum() ) / 2.0 );
+    QgsPoint rotationPoint = QgsPoint(( cExtent.xMaximum() + cExtent.xMinimum() ) / 2.0, ( cExtent.yMaximum() + cExtent.yMinimum() ) / 2.0 );
 
     //shift such that rotation point is at 0/0 point in the coordinate system
     double yShiftMM = ( requestRectangle.yMaximum() - rotationPoint.y() ) * mapUnitsToMM();
     double xShiftMM = ( requestRectangle.xMinimum() - rotationPoint.x() ) * mapUnitsToMM();
 
     //shift such that top left point of the extent at point 0/0 in item coordinate system
-    double xTopLeftShift = ( rotationPoint.x() - mExtent.xMinimum() ) * mapUnitsToMM();
-    double yTopLeftShift = ( mExtent.yMaximum() - rotationPoint.y() ) * mapUnitsToMM();
+    double xTopLeftShift = ( rotationPoint.x() - cExtent.xMinimum() ) * mapUnitsToMM();
+    double yTopLeftShift = ( cExtent.yMaximum() - rotationPoint.y() ) * mapUnitsToMM();
 
     painter->save();
 
@@ -351,16 +377,20 @@ void QgsComposerMap::paint( QPainter* painter, const QStyleOptionGraphicsItem* i
     QgsRectangle requestRectangle;
     requestedExtent( requestRectangle );
 
+    QgsRectangle cExtent;
+    extentCenteredOnOverview( cExtent );
+
     QSizeF theSize( requestRectangle.width() * mapUnitsToMM(), requestRectangle.height() * mapUnitsToMM() );
-    QgsPoint rotationPoint = QgsPoint(( mExtent.xMaximum() + mExtent.xMinimum() ) / 2.0, ( mExtent.yMaximum() + mExtent.yMinimum() ) / 2.0 );
+
+    QgsPoint rotationPoint = QgsPoint(( cExtent.xMaximum() + cExtent.xMinimum() ) / 2.0, ( cExtent.yMaximum() + cExtent.yMinimum() ) / 2.0 );
 
     //shift such that rotation point is at 0/0 point in the coordinate system
     double yShiftMM = ( requestRectangle.yMaximum() - rotationPoint.y() ) * mapUnitsToMM();
     double xShiftMM = ( requestRectangle.xMinimum() - rotationPoint.x() ) * mapUnitsToMM();
 
     //shift such that top left point of the extent at point 0/0 in item coordinate system
-    double xTopLeftShift = ( rotationPoint.x() - mExtent.xMinimum() ) * mapUnitsToMM();
-    double yTopLeftShift = ( mExtent.yMaximum() - rotationPoint.y() ) * mapUnitsToMM();
+    double xTopLeftShift = ( rotationPoint.x() - cExtent.xMinimum() ) * mapUnitsToMM();
+    double yTopLeftShift = ( cExtent.yMaximum() - rotationPoint.y() ) * mapUnitsToMM();
     painter->save();
     painter->translate( mXOffset, mYOffset );
     painter->translate( xTopLeftShift, yTopLeftShift );
@@ -757,6 +787,9 @@ bool QgsComposerMap::writeXML( QDomElement& elem, QDomDocument & doc ) const
   {
     overviewFrameElem.setAttribute( "overviewInverted", "false" );
   }
+
+  overviewFrameElem.setAttribute( "overviewCentered", mOverviewCentered ? "true" : "false" );
+
   QDomElement overviewFrameStyleElem = QgsSymbolLayerV2Utils::saveSymbol( QString(), mOverviewFrameMapSymbol, doc );
   overviewFrameElem.appendChild( overviewFrameStyleElem );
   composerMapElem.appendChild( overviewFrameElem );
@@ -872,6 +905,15 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
     else
     {
       setOverviewInverted( false );
+    }
+
+    if ( overviewFrameElem.attribute( "overviewCentered" ).compare( "true", Qt::CaseInsensitive ) == 0 )
+    {
+      setOverviewCentered( true );
+    }
+    else
+    {
+      setOverviewCentered( false );
     }
 
     QDomElement overviewFrameSymbolElem = overviewFrameElem.firstChildElement( "symbol" );
@@ -1727,63 +1769,70 @@ double QgsComposerMap::maxExtension() const
   return maxExtension + mAnnotationFrameDistance + gridFrameDist;
 }
 
-void QgsComposerMap::mapPolygon( QPolygonF& poly ) const
+void QgsComposerMap::mapPolygon( const QgsRectangle& extent, QPolygonF& poly ) const
 {
   poly.clear();
   if ( mRotation == 0 )
   {
-    poly << QPointF( mExtent.xMinimum(), mExtent.yMaximum() );
-    poly << QPointF( mExtent.xMaximum(), mExtent.yMaximum() );
-    poly << QPointF( mExtent.xMaximum(), mExtent.yMinimum() );
-    poly << QPointF( mExtent.xMinimum(), mExtent.yMinimum() );
+    poly << QPointF( extent.xMinimum(), extent.yMaximum() );
+    poly << QPointF( extent.xMaximum(), extent.yMaximum() );
+    poly << QPointF( extent.xMaximum(), extent.yMinimum() );
+    poly << QPointF( extent.xMinimum(), extent.yMinimum() );
     return;
   }
 
   //there is rotation
-  QgsPoint rotationPoint(( mExtent.xMaximum() + mExtent.xMinimum() ) / 2.0, ( mExtent.yMaximum() + mExtent.yMinimum() ) / 2.0 );
+  QgsPoint rotationPoint(( extent.xMaximum() + extent.xMinimum() ) / 2.0, ( extent.yMaximum() + extent.yMinimum() ) / 2.0 );
   double dx, dy; //x-, y- shift from rotation point to corner point
 
   //top left point
-  dx = rotationPoint.x() - mExtent.xMinimum();
-  dy = rotationPoint.y() - mExtent.yMaximum();
+  dx = rotationPoint.x() - extent.xMinimum();
+  dy = rotationPoint.y() - extent.yMaximum();
   rotate( mRotation, dx, dy );
   poly << QPointF( rotationPoint.x() + dx, rotationPoint.y() + dy );
 
   //top right point
-  dx = rotationPoint.x() - mExtent.xMaximum();
-  dy = rotationPoint.y() - mExtent.yMaximum();
+  dx = rotationPoint.x() - extent.xMaximum();
+  dy = rotationPoint.y() - extent.yMaximum();
   rotate( mRotation, dx, dy );
   poly << QPointF( rotationPoint.x() + dx, rotationPoint.y() + dy );
 
   //bottom right point
-  dx = rotationPoint.x() - mExtent.xMaximum();
-  dy = rotationPoint.y() - mExtent.yMinimum();
+  dx = rotationPoint.x() - extent.xMaximum();
+  dy = rotationPoint.y() - extent.yMinimum();
   rotate( mRotation, dx, dy );
   poly << QPointF( rotationPoint.x() + dx, rotationPoint.y() + dy );
 
   //bottom left point
-  dx = rotationPoint.x() - mExtent.xMinimum();
-  dy = rotationPoint.y() - mExtent.yMinimum();
+  dx = rotationPoint.x() - extent.xMinimum();
+  dy = rotationPoint.y() - extent.yMinimum();
   rotate( mRotation, dx, dy );
   poly << QPointF( rotationPoint.x() + dx, rotationPoint.y() + dy );
 }
 
+void QgsComposerMap::mapPolygon( QPolygonF& poly ) const
+{
+  return mapPolygon( mExtent, poly );
+}
+
 void QgsComposerMap::requestedExtent( QgsRectangle& extent ) const
 {
+  QgsRectangle newExtent;
+  extentCenteredOnOverview( newExtent );
   if ( mRotation == 0 )
   {
-    extent = mExtent;
-    return;
+    extent = newExtent;
   }
-
-  QPolygonF poly;
-  mapPolygon( poly );
-  QRectF bRect = poly.boundingRect();
-  extent.setXMinimum( bRect.left() );
-  extent.setXMaximum( bRect.right() );
-  extent.setYMinimum( bRect.top() );
-  extent.setYMaximum( bRect.bottom() );
-  return;
+  else
+  {
+    QPolygonF poly;
+    mapPolygon( newExtent, poly );
+    QRectF bRect = poly.boundingRect();
+    extent.setXMinimum( bRect.left() );
+    extent.setXMaximum( bRect.right() );
+    extent.setYMinimum( bRect.top() );
+    extent.setYMaximum( bRect.bottom() );
+  }
 }
 
 double QgsComposerMap::mapUnitsToMM() const
@@ -1833,6 +1882,12 @@ void QgsComposerMap::setOverviewBlendMode( QPainter::CompositionMode blendMode )
 void QgsComposerMap::setOverviewInverted( bool inverted )
 {
   mOverviewInverted = inverted;
+  update();
+}
+
+void QgsComposerMap::setOverviewCentered( bool centered )
+{
+  mOverviewCentered = centered;
   update();
 }
 
@@ -2165,7 +2220,8 @@ void QgsComposerMap::drawOverviewMapExtent( QPainter* p )
   }
 
   QgsRectangle otherExtent = overviewFrameMap->extent();
-  QgsRectangle thisExtent = extent();
+  QgsRectangle thisExtent;
+  extentCenteredOnOverview( thisExtent );
   QgsRectangle intersectRect = thisExtent.intersect( &otherExtent );
 
   QgsRenderContext context;
