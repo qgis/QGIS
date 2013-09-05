@@ -8864,12 +8864,14 @@ void QgisApp::keyPressEvent( QKeyEvent * e )
   {
     stopRendering();
   }
+#if 0
 #if defined(Q_OS_WIN)&& defined(QGISDEBUG)
   else if ( e->key() == Qt::Key_Backslash && e->modifiers() & Qt::ControlModifier )
   {
     extern LONG WINAPI qgisCrashDump( struct _EXCEPTION_POINTERS *ExceptionInfo );
     qgisCrashDump( 0 );
   }
+#endif
 #endif
   else
   {

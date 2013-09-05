@@ -74,6 +74,10 @@ MACRO (ADD_QGIS_TEST testname testsrc)
     qgis_gui
     qgis_analysis
     qgis_app)
+  IF(WIN32)
+    ADD_DEFINITIONS(-DQWT_DLL)
+    TARGET_LINK_LIBRARIES(qgis_${testname} DbgHelp)
+  ENDIF(WIN32)
   ADD_TEST(qgis_${testname} ${CMAKE_CURRENT_BINARY_DIR}/../../../output/bin/qgis_${testname})
   #SET_TARGET_PROPERTIES(qgis_${testname} PROPERTIES
   #  INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/${QGIS_LIB_DIR}
