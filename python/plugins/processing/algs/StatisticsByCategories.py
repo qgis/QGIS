@@ -77,9 +77,10 @@ class StatisticsByCategories(GeoAlgorithm):
             except:
                 pass
 
-        fields = [QgsField("category", QVariant.String), QgsField("min", QVariant.Double),
-                  QgsField("max", QVariant.Double), QgsField("mean", QVariant.Double),
-                  QgsField("stddev", QVariant.Double)]
+        #fields = [QgsField("category", QVariant.String), QgsField("min", QVariant.Double),
+        #          QgsField("max", QVariant.Double), QgsField("mean", QVariant.Double),
+        #          QgsField("stddev", QVariant.Double)]
+        fields = ["category", "min", "max", "mean", "stddev"]
         writer = output.getTableWriter(fields)
         for cat, v in values.items():
             min, max, mean, stddev = calculateStats(v)
