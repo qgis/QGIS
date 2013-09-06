@@ -7238,6 +7238,26 @@ Actúa sobre la capa actual en edición</translation>
         <source>Manage and Install Plugins...</source>
         <translation>Administrar e instalar complementos...</translation>
     </message>
+    <message>
+        <source>Paste Features as</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>New Vector Layer</source>
+        <translation type="unfinished">Nueva capa vectorial</translation>
+    </message>
+    <message>
+        <source>Paste features in clipboard into a new OGR vector layer.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>New Memory Vector Layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Paste features in clipboard into a new memory vector layer.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ModelerDialog</name>
@@ -14438,6 +14458,38 @@ Por favor, contacte con los desarrolladores.</translation>
         <source>Running against GEOS</source>
         <translation>Ejecutándose contra GEOS</translation>
     </message>
+    <message>
+        <source>Pasted</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>New memory layer name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Layer name</source>
+        <translation type="unfinished">Nombre de la capa</translation>
+    </message>
+    <message>
+        <source>No features in clipboard.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No features with geometry found, point type layer will be created.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Multiple geometry types found, features with geometry different from %1 will be created without geometry.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot create new layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot create field %1 (%2,%3)</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgisAppBase</name>
@@ -18738,6 +18790,10 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
         <source>Label font changed</source>
         <translation>Cambiado el tipo de letra de la etiqueta</translation>
     </message>
+    <message>
+        <source>Overview centering mode changed</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerMapWidgetBase</name>
@@ -19016,6 +19072,10 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     <message>
         <source>Offset</source>
         <translation>Desplazamiento</translation>
+    </message>
+    <message>
+        <source>Center on overview</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -24173,6 +24233,22 @@ MyForms.py debe estar en PYTHONPATH, .qgis/python, o dentro de la carpeta del pr
     <message>
         <source>Python Init function</source>
         <translation>Función de Inicio de Python</translation>
+    </message>
+    <message>
+        <source>Suppress attribute form pop-up after feature creation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Default</source>
+        <translation type="unfinished">Predeterminado</translation>
+    </message>
+    <message>
+        <source>On</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Off</source>
+        <translation type="unfinished">Desconectado</translation>
     </message>
 </context>
 <context>
@@ -32411,6 +32487,14 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
         <source>Finally, the value is converted from %1 to %2.</source>
         <translation>Finalmente, el valor está convertido de %1 a %2.</translation>
     </message>
+    <message>
+        <source>Measure (OTF off)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Measure (OTF on)</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsMeasureTool</name>
@@ -32436,6 +32520,10 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     <message>
         <source>Text (string)</source>
         <translation>Texto (cadena)</translation>
+    </message>
+    <message>
+        <source>Date</source>
+        <translation type="unfinished">Fecha</translation>
     </message>
 </context>
 <context>
@@ -35620,7 +35708,7 @@ Siempre red: siempre cargar desde la red y no chequear si el caché tiene una en
     </message>
     <message>
         <source>Suppress attributes pop-up windows after each created feature</source>
-        <translation>Suprimir ventanas emergentes de atributos después de crear cada objeto espacial</translation>
+        <translation type="obsolete">Suprimir ventanas emergentes de atributos después de crear cada objeto espacial</translation>
     </message>
     <message>
         <source>Proxy type</source>
@@ -35956,7 +36044,7 @@ Siempre red: siempre cargar desde la red y no chequear si el caché tiene una en
     </message>
     <message>
         <source>Timeout for timed messages or dialogs</source>
-        <translation>Expiró el tiempo para mensajes o diálogos con tiempo</translation>
+        <translation>Límite de tiempo para mensajes o diálogos con tiempo</translation>
     </message>
     <message>
         <source> s</source>
@@ -36177,6 +36265,10 @@ Siempre red: siempre cargar desde la red y no chequear si el caché tiene una en
     <message>
         <source>&lt;b&gt;Note:&lt;/b&gt; Set below 1000 to prevent display updates until all features have been rendered</source>
         <translation>&lt;b&gt;Nota:&lt;/b&gt; Establecer por debajo de 1000 para evitar actualizaciones de la visualización hasta que todos los objetos espaciales se hayan representado</translation>
+    </message>
+    <message>
+        <source>Suppress attribute form pop-up after feature creation</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -56741,7 +56833,320 @@ The following options can be added
 
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Capa de archivo de texto delimitado&lt;/h3&gt;
+Carga y muestra archivos de texto delmiitado.
+&lt;p&gt;
+&lt;a href=&quot;#re&quot;&gt;Generalidades&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#creating&quot;&gt;Crear una capa de texto delimitado&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#csv&quot;&gt;Cómo funcionan los caracteres delimitador, acotado y escape&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;#regexp&quot;&gt;Cómo funcionan los delimitadores de expresiones regulares&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;#wkt&quot;&gt;Cómo se interpreta el texto WKT&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;#attributes&quot;&gt;Atributos en archivos de texto delimitado&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;#example&quot;&gt;Ejemplo de un archivo de texto con coordenadas de punto X,Y&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#wkt_example&quot;&gt;Ejemplo de un archivo de texto con geometrías WKT&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#python&quot;&gt;Usar capas de texto delimitado en Python&lt;/a&gt;&lt;br/&gt;
+&lt;/p&gt;
+
+&lt;h4&gt;&lt;a name=&quot;re&quot;&gt;Generalidades&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;Un &amp;quot;archivo de texto delimitado&amp;quot; contiene datos en los que cada registro comienza en una nueva línea y 
+está dividido en campos por un delimitador tal como una coma.  
+Este tipo de archivo se exporta normalmente de hojas de cálculo (por ejemplo archivos CSV) o bases de datos.  
+Típicamente la primera línea de una archivo de texto delimitado contiene los nombres de los campos.  
+&lt;/p&gt;
+&lt;p&gt;
+Los archivos de texto delimitado se pueden cargar en QGIS como capas. 
+Los registros se pueden visualizar espacialmente como puntos 
+definidos por coordenadas X e Y, o usando una definición mediante &quot;Texto Bien Conocido&quot; (WKT) de una geometría que puede
+describir puntos, líneas y polígonos de complejidad arbitraria. El archivo también se puede cargar como una tabla solamente de atributos, 
+que se puede entonces unir a otras tablas en QGIS.
+&lt;/p&gt;
+&lt;p&gt;
+Además de la definición de la geometría, el archivo puede contener campos de texto, de números enteros o reales . Por omisión 
+QGIS elegirá el tipo de campo en función de los valores que no estén en blanco en el campo. Si todos se pueden interpretar
+como enteros entonces el tipo será entero, si todos se pueden interpretar como números reales entonces el tipo será
+ doble; de lo contrario el tipo será texto.
+&lt;/p&gt;
+&lt;p&gt;
+QGIS también puede leer los tipos a partir de un archivo &amp;quot;csvt&amp;quot; compatible con el controlador OGR CSV.  
+Esto es un archivo junto con el archivo de datos, pero con una &amp;quot;t&amp;quot; añadida al nombre del archivo. 
+El archivo debería contener solo una línea que lista el tipo de cada campo. 
+Los tipos válidos son &amp;quot;integer (entero)&amp;quot;, &amp;quot;real&amp;quot;, &amp;quot;string (cadena)&amp;quot;, &amp;quot;date (fecha)&amp;quot;, &amp;quot;time (hora)&amp;quot;, y &amp;quot;datetime (fecha y hora)&amp;quot;. Los tipos fecha, hora y fecha y hora son tratados como cadenas en QGIS.
+Cada tipo puede ir seguido por la anchura y precisión, por ejemplo &amp;quot;real(10.4)&amp;quot;.
+La lista de tipos está separada por comas, independientemente del delimitador usado en el archivo de datos. Un
+ejemplo de formato de archivo válido sería:
+&lt;/p&gt;
+
+&lt;pre&gt;
+&amp;quot;integer&amp;quot;,&amp;quot;string&amp;quot;,&amp;quot;string(20)&amp;quot;,&amp;quot;real(20.4)&amp;quot;
+&lt;/pre&gt;
+
+&lt;h4&gt;&lt;a name=&quot;creating&quot;&gt;Crear una capa de texto delimitado&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;Creating a delimited text layer involves choosing the data file, defining the format (how each record is to
+be split into fields), and defining the geometry is represented.  
+This is managed with the delimited text dialog as detailed below.  
+The dialog box displays a sample from the beginning of the file which shows how the format
+options have been applied.
+&lt;/p&gt;
+&lt;h5&gt;Choosing the data file&lt;/h5&gt;
+&lt;p&gt;Use the &amp;quot;Browse...&amp;quot; button to select the data file.  Once the file is selected the
+layer name will automatically be populated based on the file name.  The layer name is used to represent
+the data in the QGIS legend.  
+&lt;/p&gt;
+&lt;p&gt;
+By default files are assumed to be encoded as UTF-8.  However other file
+encodings can be selected.  For example &amp;quot;System&amp;quot; uses the default encoding for the operating system.  
+It is safer to use an explicit coding if the QGIS project needs to be portable.
+&lt;/p&gt;
+&lt;h5&gt;Specifying the file format&lt;/h5&gt;
+&lt;p&gt;The file format can be one of
+&lt;ul&gt;
+    &lt;li&gt;CSV file format.  This is a format commonly used by spreadsheets, in which fields are delimited
+    by a comma character, and quoted using a &amp;quot;(quote) character.  Within quoted fields, a quote
+    mark is entered as &amp;quot;&amp;quot;.&lt;/li&gt;
+    &lt;li&gt;Selected delimiters.  Each record is split into fields using one or more  delimiter character.
+    Quote characters are used for fields which may contain delimiters.  Escape characters may be used 
+    to treat the following character as a normal character (ie to include delimiter, quote, and 
+    new line characters in text fields).  The use of delimiter, quote, and escape characters is detailed &lt;a href=&quot;#csv&quot;&gt;below&lt;/a&gt;.
+    &lt;li&gt;Regular expression.  Each line is split into fields using a &amp;quot;regular expression&amp;quot; delimiter.
+    The use of regular expressions is details &lt;a href=&quot;#regexp&quot;&gt;below&lt;/a&gt;.
+&lt;/ul&gt;
+&lt;h5&gt;Record and field options&lt;/h5&gt;
+&lt;p&gt;The following options affect the selection of records and fields from the data file&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;Number of header lines to discard: used to ignore header lines at the beginning of the text file&lt;/li&gt;
+    &lt;li&gt;First record has fields names: if selected then the first record in the file (after the discarded lines) is interpreted as names of fields, rather than as a data record.&lt;/li&gt;
+    &lt;li&gt;Trim fields: if selected then leading and trailing whitespace characters will be removed from each field (except quoted fields). &lt;/li&gt;
+    &lt;li&gt;Discard empty fields: if selected then empty fields (after trimming) will be discard.  This 
+    affects the alignment of data into fields and is equivalent to treating consecutive delimiters as a 
+    single delimiter.  Quoted fields are never discarded.&lt;/li&gt;
+    &lt;li&gt;Decimal separator is comma: if selected then commas instead of points are used as the decimal separator in real numbers.  For
+    example &lt;tt&gt;-51,354&lt;/tt&gt; is equivalent to -51.354.
+    &lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5&gt;Geometry definition&lt;/h5&gt;
+&lt;p&gt;The geometry is can be define as one of&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;Point coordinates: each feature is represented as a point defined by X and Y coordinates.&lt;/li&gt;
+    &lt;li&gt;Well known text (WKT) geometry: each feature is represented as a well known text string, for example
+    &lt;tt&gt;POINT(1.525622 51.20836)&lt;/tt&gt;.  See details of the &lt;a href=&quot;#wkt&quot;&gt;well known text&lt;/a&gt; format.
+    &lt;li&gt;No geometry (attribute only table): records will not be displayed on the map, but can be viewed
+    in the attribute table and joined to other layers in QGIS&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;For point coordinates the following options apply:&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;X field: specifies the field containing the X coordinate&lt;/li&gt;
+    &lt;li&gt;Y field: specifies the field containing the Y coordinate&lt;/li&gt;
+    &lt;li&gt;DMS angles: if selected coordinates are represented as degrees/minutes/seconds
+    or degrees/minutes.  QGIS is quite permissive in its interpretation of degrees/minutes/seconds.
+    A valid DMS coordinate will contain three numeric fields with an optional hemisphere prefix or suffix
+    (N, E, or + are positive, S, W, or - are negative).  Additional non numeric characters are 
+    generally discarded.  For example &lt;tt&gt;N41d54&apos;01.54&amp;quot;&lt;/tt&gt; is a valid coordinate.
+    &lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;For well known text geometry the following options apply:&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;Geometry field: the field containing the well known text definition.&lt;/li&gt;
+    &lt;li&gt;Geometry type: one of &amp;quot;Detect&amp;quot; (detect), &amp;quot;Point&amp;quot;, &amp;quot;Line&amp;quot;, or &amp;quot;Polygon&amp;quot;.
+    QGIS layers can only display one type of geometry feature (point, line, or polygon). This option selects
+    which geometry type is displayed in text files containing multiple geometry types. Records containing
+   other geometry types are discarded.   
+    If &amp;quot;Detect&amp;quot; is selected then the type of the first geometry in the file will be used.
+    &amp;quot;Point&amp;quot; includes POINT and MULTIPOINT WKT types, &amp;quot;Line&amp;quot; includes LINESTRING and
+    MULTLINESTRING WKT types, and &amp;quot;Polygon&amp;quot; includes POLYGON and MULTIPOLYGON WKT types.
+&lt;/ul&gt;
+&lt;h5&gt;Layer settings&lt;/h5&gt;
+&lt;p&gt;Layer settings control the way the layer is managed in QGIS.  The options available are:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Use spatial index. Create a spatial index to improve the performance of displaying and selecting spatial objects.
+This option may be useful for files larger than a few megabytes in size.&lt;/li&gt;
+&lt;li&gt;Use subset index. Create an index if a subset of records is being used (either by explicitly setting a subset string 
+from the layer properties dialog, or an implicit subset of features for which the geometry is valid in files
+for which all not geometries are valid).  The index will only be created when a subset is defined.&lt;/li&gt;
+&lt;li&gt;Watch file.  If this options is selected QGIS will watch the file for changes by other applications, and 
+reload the file when it is changed.  The map will not be updated until refreshed by the user, but indexes and
+extents will be reloaded.  This option should be selected if indexes are used and it is likely that another
+application will change the file. &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4&gt;&lt;a name=&quot;csv&quot;&gt;Cómo funcionan los caracteres delimitador, acotado y escape&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;Records are split into fields using three character sets: 
+delimiter characters, quote characters, and escape characters.  
+Other characters in the record are considered as data, split into
+fields by delimiter characters. 
+Quote characters occur in pairs and cause the text between them to be treated as a data.  Escape characters cause the character following them to be treated as data.   
+&lt;/p&gt;
+&lt;p&gt;
+Quote and escape characters cannot be the same as delimiter characters - they
+will be ignored if they are. Escape characters can be the same as quote characters, but behave differently
+if they are.&lt;/p&gt;
+&lt;p&gt;The delimiter characters are used to mark the end of each field.  If more than one delimiter character
+is defined then any one of the characters can mark the end of a field.  The quote and escape characters 
+can override the delimiter character, so that it is treated as a normal data character.&lt;/p&gt;
+&lt;p&gt;Quote characters may be used to mark the beginning and end of quoted fields. Quoted fields can 
+contain delimiters and may span multiple lines in the text file.  If a field is quoted then it must
+start and end with the same quote character.  Quote characters cannot occur within a field unless they
+are escaped.&lt;/p&gt;
+&lt;p&gt;Escape characters which are not quote characters force the following character to be treated as data.  
+(that is, to stop it being treated as a new line, delimiter, or quote character).  
+&lt;/p&gt;
+&lt;p&gt;Escape characters that are also quote characters have much more limited effect.  They only apply within quotes and only escape themselves.  For example, if 
+&lt;tt&gt;&apos;&lt;/tt&gt; is a quote and escape character, then the string
+&lt;tt&gt;&apos;Smith&apos;&apos;s&amp;nbsp;Creek&apos;&lt;/tt&gt; will represent the value Smith&apos;s&amp;nbsp;Creek.
+&lt;/p&gt;
+
+
+&lt;h4&gt;&lt;a name=&quot;regexp&quot;&gt;Cómo funcionan los delimitadores de expresiones regulares&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;Regular expressions are mini-language used to represent character patterns.  There are many variations
+of regular expression syntax - QGIS uses the syntax provided by the &lt;a href=&quot;http://qt-project.org/doc/qt-4.8/qregexp.html&quot;&gt;QRegExp&lt;/a&gt; class of the &lt;a href=&quot;http://qt.digia.com&quot;&gt;Qt&lt;/a&gt; framework.&lt;/p&gt;
+&lt;p&gt;In a regular expression delimited file each line is treated as a record.  Each match of the regular expression in the line is treated as the end of a field.  
+If the regular expression contains capture groups (eg &lt;tt&gt;(cat|dog)&lt;/tt&gt;)
+ then these are extracted as fields. 
+ If this is not desired then use non-capturing groups (eg &lt;tt&gt;(?:cat|dog)&lt;/tt&gt;).
+&lt;/p&gt;
+&lt;p&gt;The regular expression is treated differently if it is anchored to the start of the line (that is, the pattern starts with &lt;tt&gt;^&lt;/tt&gt;).
+In this case the regular expression is matched against each line.  If the line does not match it is discarded
+as an invalid record.  Each capture group in the expression is treated as a field.  The regular expression
+is invalid if it does not have capture groups.  As an example this can be used as a (somewhat 
+unintuitive) means of loading data with fixed width fields.  For example the 
+expression
+&lt;pre&gt;
+^(.{5})(.{10})(.{20})(.{20})
+&lt;/pre&gt;
+&lt;p&gt;will extract four fields of widths 5, 10, 20, and 20 characters from each line.  
+Lines less than 55 characters long will be discarded.
+&lt;/p&gt;
+
+
+&lt;h4&gt;&lt;a name=&quot;wkt&quot;&gt;Cómo se interpreta el texto WKT&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;
+The delimited text layer recognizes the following 
+&lt;a href=&quot;http://en.wikipedia.org/wiki/Well-known_text&quot;&gt;well known text&lt;/a&gt; types - 
+&lt;tt&gt;POINT&lt;/tt&gt;, &lt;tt&gt;MULTIPOINT&lt;/tt&gt;, &lt;tt&gt;LINESTRING&lt;/tt&gt;, &lt;tt&gt;MULTILINESTRING&lt;/tt&gt;, &lt;tt&gt;POLYGON&lt;/tt&gt;, and &lt;tt&gt;MULTIPOLYGON&lt;/tt&gt;.  
+It will accept geometries with
+a Z coordinate (eg &lt;tt&gt;POINT&amp;nbsp;Z&lt;/tt&gt;), a measure (&lt;tt&gt;POINT&amp;nbsp;M&lt;/tt&gt;), or both (&lt;tt&gt;POINT&amp;nbsp;ZM&lt;/tt&gt;).
+&lt;/p&gt;
+&lt;p&gt;
+It can also handle the PostGIS EWKT variation, in which the geometry is preceded by an spatial reference 
+system id (eg &lt;tt&gt;SRID=4326;POINT(175.3&amp;nbsp;41.2)&lt;/tt&gt;), and a variant used by Informix in which the WKT is 
+preceded by an integer spatial reference id (eg &lt;tt&gt;1 POINT(175.3&amp;nbsp;41.2)&lt;/tt&gt;).
+In both cases the SRID is ignored.
+&lt;/p&gt;
+
+
+
+&lt;h4&gt;&lt;a name=&quot;attributes&quot;&gt;Atributos en archivos de texto delimitado&lt;/a&gt;&lt;/h4&gt; 
+&lt;p&gt;Each record in the delimited text file is split into fields representing
+attributes of the record.  Usually the attribute names are taken from the first
+data record in the file.  However if this does not contain attribute names, then they will be named &lt;tt&gt;field_1&lt;/tt&gt;, &lt;tt&gt;field_2&lt;/tt&gt;, and so on.  
+Also if records have more fields than are defined in the header record then these
+will be named &lt;tt&gt;field_#&lt;/tt&gt;, where # is the field number (note that empty fields at the end of a record are ignored).
+QGIS may override 
+the names in the text file if they are numbers, or have names like &lt;tt&gt;field_#&lt;/tt&gt;,
+or are duplicated.
+&lt;/p&gt;
+&lt;p&gt;
+In addition to the attributes explicitly in the data file QGIS assigns a unique 
+feature id to each record which is the line number in the source file on which
+the record starts.  
+&lt;/p&gt;
+&lt;p&gt;
+Each attribute also has a data type, one of string (text), integer, or real number.
+The data type is inferred from the content of the fields - if every non blank value
+is a valid integer then the type is integer, otherwise if it is a valid real
+number then the type is real, otherwise the type is string.  Note that this is
+based on the content of the fields - quoting fields does not change the way they
+are interpreted.
+&lt;/p&gt;
+
+
+&lt;h4&gt;&lt;a name=&quot;example&quot;&gt;Ejemplo de un archivo de texto con coordenadas de punto X,Y&lt;/a&gt;&lt;/h4&gt; 
+&lt;pre&gt;
+X;Y;ELEV
+-300120;7689960;13
+-654360;7562040;52
+1640;7512840;3
+&lt;/pre&gt;
+&lt;p&gt;This file:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt; Uses &lt;b&gt;;&lt;/b&gt; as delimiter. Any character can be used to delimit the fields.&lt;/li&gt;
+&lt;li&gt;The first row is the header row. It contains the field names X, Y and ELEV.&lt;/li&gt;
+&lt;li&gt;The x coordinates are contained in the X field.&lt;/li&gt;
+&lt;li&gt;The y coordinates are contained in the Y field.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4&gt;&lt;a name=&quot;wkt_example&quot;&gt;Ejemplo de un archivo de texto con geometrías WKT&lt;/a&gt;&lt;/h4&gt;
+&lt;pre&gt;
+id|wkt
+1|POINT(172.0702250 -43.6031036)
+2|POINT(172.0702250 -43.6031036)
+3|POINT(172.1543206 -43.5731302)
+4|POINT(171.9282585 -43.5493308)
+5|POINT(171.8827359 -43.5875983)
+&lt;/pre&gt;
+&lt;p&gt;This file:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Has two fields defined in the header row: id and wkt.
+  &lt;li&gt;Uses &lt;b&gt;|&lt;/b&gt; as a delimiter.&lt;/li&gt;
+  &lt;li&gt;Specifies each point using the WKT notation
+&lt;/ul&gt;
+
+&lt;h4&gt;&lt;a name=&quot;python&quot;&gt;Usar capas de texto delimitado en Python&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;Delimited text data sources can be creating from Python in a similar way to other vector layers.
+The pattern is:
+&lt;/p&gt;
+&lt;pre&gt;
+from PyQt4.QtCore import QUrl, QString
+from qgis.core import QgsVectorLayer, QgsMapLayerRegistry
+
+# Define the data source
+filename=&quot;test.csv&quot;
+uri=QUrl.fromLocalFile(filename)
+uri.addQueryItem(&quot;type&quot;,&quot;csv&quot;)
+uri.addQueryItem(&quot;delimiter&quot;,&quot;|&quot;)
+uri.addQueryItem(&quot;wktField&quot;,&quot;wkt&quot;)
+# ... other delimited text parameters
+layer=QgsVectorLayer(QString(uri.toEncoded()),&quot;Test CSV layer&quot;,&quot;delimitedtext&quot;)
+# Add the layer to the map
+if layer.isValid():
+    QgsMapLayerRegistry.instance().addMapLayer( layer )
+&lt;/pre&gt;
+&lt;p&gt;This could be used to load the second example file above.&lt;/p&gt;
+&lt;p&gt;The configuration of the delimited text layer is defined by adding query items to the uri.
+The following options can be added
+&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;&lt;tt&gt;encoding=..&lt;/tt&gt; defines the file encoding.  The default is &amp;quot;UTF-8&amp;quot;&lt;/li&gt;
+    &lt;li&gt;&lt;tt&gt;type=(csv|regexp|whitespace)&lt;/tt&gt; defines the delimiter type.  Valid values are csv, 
+       regexp, and whitespace (which is just a special case of regexp).  The default is csv.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;delimiter=...&lt;/tt&gt; defines the delimiters that will be used for csv formatted files, 
+       or the regular expression for regexp formatted files.  The default is , for CSV files.  There is
+       no default for regexp files.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;quote=..&lt;/tt&gt; (for csv files) defines the characters used to quote fields. The default is &amp;quot;&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;escape=..&lt;/tt&gt; (for csv files) defines the characters used to escape the special meaning of the next character. The default is &amp;quot;&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;skipLines=#&lt;/tt&gt; defines the number of lines to discard from the beginning of the file. The default is 0.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;useHeader=(yes|no)&lt;/tt&gt; defines whether the first data record contains the names of the data fields. The default is yes.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;trimFields=(yes|no)&lt;/tt&gt; defines whether leading and trailing whitespace is to be removed from unquoted fields. The default is no.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;maxFields=#&lt;/tt&gt; defines the maximum number of fields that will be loaded from the file.  
+       Additional fields in each record will be discarded. The default is 0 - include all fields.
+       (This option is not available from the delimited text layer dialog box).&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;skipEmptyFields=(yes|no)&lt;/tt&gt; defines whether empty unquoted fields will be discarded (applied after trimFields). The default is no.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;decimalPoint=.&lt;/tt&gt; specifies an alternative character that may be used as a decimal point in numeric fields.  The default is a point (full stop) character.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;wktField=fieldname&lt;/tt&gt; specifies the name or number (starting at 1) of the field containing a well known text geometry definition&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;xField=fieldname&lt;/tt&gt; specifies the name or number (starting at 1) of the field the X coordinate (only applies if wktField is not defined)&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;yField=fieldname&lt;/tt&gt; specifies the name or number (starting at 1) of the field the Y coordinate (only applies if wktField is not defined)&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;geomType=(auto|point|line|polygon|none)&lt;/tt&gt; specifies type of geometry for wkt fields, or none to load the file as an attribute-only table.  The default is auto.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;subset=expression&lt;/tt&gt; specifies an expression used to identify a subset of the records that will be 
+       used.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;crs=...&lt;/tt&gt; specifies the coordinate system to use for the vector layer, in a format accepted by QgsCoordinateReferenceSystem.createFromString (for example &amp;quot;EPSG:4167&amp;quot;).  If this is not 
+       specified then a dialog box may request this information from the user
+       when the layer is loaded (depending on QGIS CRS settings).&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;subsetIndex=(yes|no)&lt;/tt&gt; specifies whether the provider should build an index to define subset during the initial file scan.  The index will apply both for explicitly defined subsets, and for the implicit subset of features for which the geometry definition is valid.  By default the subset index is built if it is applicable.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;spatialIndex=(yes|no)&lt;/tt&gt; specifies whether the provider should build a spatial index during the initial file scan.  By default the spatial index is not built. &lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;watchFile=(yes|no)&lt;/tt&gt; specifies whether the provider should use a file system watcher to monitor for changes to the file.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;quiet=(yes|no)&lt;/tt&gt; specifies whether errors encountered loading the layer are presented in a dialog box (they will be written to the QGIS log in any case). The default is no.  This option is not available from the GUI&lt;/li&gt;
+&lt;/ul&gt;
+
+
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Vector Layer Properties&lt;/h3&gt;
@@ -56889,7 +57294,7 @@ y las propiedades de las capas vectoriales. Hay siete pestañas:
 &lt;p&gt;
 &lt;a href=&quot;#symbology&quot;&gt;Simbología&lt;/a&gt;&lt;br/&gt;
 &lt;a href=&quot;#labels&quot;&gt;Etiquetas&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#attributes&quot;&gt;Atributos&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#attributes&quot;&gt;Campos&lt;/a&gt;&lt;br/&gt;
 &lt;a href=&quot;#general&quot;&gt;General&lt;/a&gt;&lt;br/&gt;
 &lt;a href=&quot;#metadata&quot;&gt;Metadatos&lt;/a&gt;&lt;br/&gt;
 &lt;a href=&quot;#actions&quot;&gt;Acciones&lt;/a&gt;&lt;br/&gt;
@@ -56923,104 +57328,103 @@ Si quiere que siempre se use un estilo particular cada vez que se cargue una cap
 &lt;a name=&quot;labels&quot;&gt;
 &lt;h4&gt;Etiquetas&lt;/h4&gt;
 &lt;/a&gt;
-La pestaña Etiquetas permite habilitar el etiquetado de objetos espaciales y controlar diversas opciones relacionadas con el tipo de letra, ubicación, estilo, alineación y buffering.&lt;br/&gt;
-Check the &lt;label&gt;Display labels&lt;/label&gt; check box to enable labeling.
+La pestaña Etiquetas permite habilitar el etiquetado de objetos espaciales y controlar diversas opciones relacionadas con el tipo de letra, ubicación, estilo, alineación y sombreado.&lt;br/&gt;
+Marque la casilla &lt;label&gt;Mostrar etiquetas&lt;/label&gt; para habilitar el etiquetado.
 
-&lt;h5&gt;Basic Label options&lt;/h5&gt;
-Choose the field to label with.&lt;p&gt;
-Select the use the &lt;label&gt;Font&lt;/label&gt; and  &lt;label&gt;Color&lt;/label&gt; buttons to set the font and color. You can also change the angle and the placement of the text-label.&lt;p&gt;
-If have labels extending over several lines, check &lt;label&gt;Multiline labels?&lt;/label&gt;. QGIS will check for a true line return in your label field and insert the line breaks accordingly. A true line return is a single character &amp;#92;n, (not two separate characters, like a backslash &amp;#92; followed by the character n).
+&lt;h5&gt;Opciones básicas de etiquetas&lt;/h5&gt;
+Seleccione el campo con el que etiquetar.&lt;p&gt;
+Seleccione los botones &lt;label&gt;Tipo de letra&lt;/label&gt; y  &lt;label&gt;Color&lt;/label&gt; para establecer el tipo de letra y el color. También puede cambiar el ángulo y la ubicación de la etiqueta.&lt;p&gt;
+Si tiene etiquetas que ocupan más de una línea, marque, check &lt;label&gt;Etiquetas multilínea&lt;/label&gt;. QGIS comprobará los saltos de línea verdaderos en el campo de etiquetado e insertará saltos de línea en consonancia. Un salto de línea verdadero es un solo carácter &amp;#92;n, (no dos caracteres separados, como una barra invertida &amp;#92; seguida por el caracter n).
 
-&lt;h5&gt;Placement&lt;/h5&gt;
-Change the label placement by selecting one of the radio buttons in the &lt;label&gt;Placement&lt;/label&gt; group.
+&lt;h5&gt;Ubicación&lt;/h5&gt;
+Cambie la ubicación de las etiquetas seleccionando uno de los botones circulares del grupo &lt;label&gt;Ubicación&lt;/label&gt;.
+&lt;h5&gt;Unidades de tamaño de letra&lt;/h5&gt;
+Las &lt;label&gt;Unidades de tamaño de letra&lt;/label&gt; permiten seleccionar entre &lt;label&gt;Puntos&lt;/label&gt; o &lt;label&gt;Unidades de mapa&lt;/label&gt;.
 
-&lt;h5&gt;Font size units&lt;/h5&gt;
-The &lt;label&gt;Font size units&lt;/label&gt; allows you to select between &lt;label&gt;Points&lt;/label&gt; or &lt;label&gt;Map units&lt;/label&gt;.
-
-&lt;h5&gt;Buffer labels&lt;/h5&gt;
-To buffer the labels means putting a backdrop around them to make them stand out better. To buffer the lakes labels:
+&lt;h5&gt;Sombrear etiquetas&lt;/h5&gt;
+Sombrear etiquetas significa poner un fondo alrededor de ellas para que destaquen más. Para sombrear las etiquetas:
 &lt;ol&gt;
-&lt;li&gt;Click the &lt;label&gt;Buffer Labels&lt;/label&gt; check box to enable buffering.
-&lt;li&gt;Choose a size for the buffer using the spin box.
-&lt;li&gt;Choose a color by clicking on &lt;label&gt;Color&lt;/label&gt; and choosing your favorite from the color selector. You can also set some transparency for the buffer if you prefer.
-&lt;li&gt;Click &lt;label&gt;Apply&lt;/label&gt; to see if you like the changes.
+&lt;li&gt;Marque la casilla &lt;label&gt;Dibujar sombras&lt;/label&gt; para habilitar el sombreado.
+&lt;li&gt;Elija un tamaño para el sombreado usando las flechas.
+&lt;li&gt;Seleccionar un color haciendo clic en &lt;label&gt;Color&lt;/label&gt; y elijiendo el color deseado del selector de colores. También puede establecer cierta transparencia para las sombras si lo prefiere.
+&lt;li&gt;Pulse &lt;label&gt;Aplicar&lt;/label&gt; para ver si le gustan los cambios.
 &lt;/ol&gt;
-Notice you can also specify the buffer size in map 
-units if that works out better for you.
+Tenga en cuenta que también puede especificar el tamaño de la sombra en 
+unidades del mapa si le resulta mejor.
 
-&lt;h5&gt;Data defined placement, properties, buffer, position&lt;/h5&gt;
-The remaining entries inside the &lt;label&gt;Label&lt;/label&gt; tab allow you control the appearance of the labels using attributes stored in the layer. The entries beginning with &lt;label&gt;Data defined&lt;/label&gt; allow you to set all the parameters for the labels using fields in the layer.
+&lt;h5&gt;Ubicación, propiedades, sombra, posición definidos por datos&lt;/h5&gt;
+El resto de las entradas dentro de la pestaña &lt;label&gt;Etiquetas&lt;/label&gt; permite controlar el aspecto de las etiquetas usando atributos guardados en la capa. Las entradas que comienzan por &lt;label&gt;Definido por datos&lt;/label&gt; permiten establecer todos los parámetros para las etiquetas usando campos de la capa.
 
 
 &lt;a name=&quot;attributes&quot;&gt;
-&lt;h4&gt;Atributos&lt;/h4&gt;
+&lt;h4&gt;Campos&lt;/h4&gt;
 &lt;/a&gt;
-Within the &lt;label&gt;Attributes&lt;/label&gt; tab the attributes of the selected data set can be manipulated. The buttons &lt;label&gt;New Column&lt;/label&gt; and &lt;label&gt;Delete Column&lt;/label&gt; can be used, when the data set is in editing mode. The OGR library supports to add new columns, but not to remove them, if you have a GDAL version &gt;= 1.6 installed. Otherwise only columns from PostGIS layers can be edited.&lt;p&gt;
-The &lt;label&gt;Toggle editing mode&lt;/label&gt; button toggles this mode.&lt;p&gt;
-Within the Attributes tab you also find an edit widget column. This column can be used to define values or a range of values that are allowed to be added to the specific attribute table column. If you click on the &lt;label&gt;edit widget&lt;/label&gt; button, a dialog opens, where you can define different widgets. These widgets are:&lt;br/&gt;
+Dentro de la pestaña &lt;label&gt;Campos&lt;/label&gt; se pueden manipular los atributos the del conjunto de datos seleccionado. Los botonos &lt;label&gt;Columna nueva&lt;/label&gt; y &lt;label&gt;Borrar columna&lt;/label&gt; se pueden usar cuando el conjunto de datos está en modo edición. La biblioteca OGR admite añadir nuevas columnas, pero no eliminarlas, si tiene instalada una versión de GDAL &gt;= 1.6. De lo contrario solo se pueden editar columns de capas PostGIS.&lt;p&gt;
+El botón &lt;label&gt;Conmutar el modo edición&lt;/label&gt; alterna este modo.&lt;p&gt;
+Dentro de la pestaña Campos también puede encontrar una columna de control de edición. Esta columna se puede usar para definir valores o intervalo de valores que esté permitido añadir a la columna específica de la tabla de atributos. Si pulsa en el botón &lt;label&gt;Control de edición&lt;/label&gt; se abrirá un diálogo en el que puede definir diferentes controles. Estos controles son:&lt;br/&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;label&gt;Line edit&lt;/label&gt; an edit field which allows to enter simple text (or restrict to numbers for numeric attributes).
-&lt;li&gt;&lt;label&gt;Classification&lt;/label&gt; Displays a combo box with the values used for classification, if you have chosen &lt;label&gt;unique value&lt;/label&gt; as legend type in the symbology tab of the properties dialog.
-&lt;li&gt;&lt;label&gt;Range&lt;/label&gt; Allows to set numeric values from a specific range. The edit widget can be either a slider or a spin box.
-&lt;li&gt;&lt;label&gt;Unique value&lt;/label&gt; The user can select one of the values already used in the attribute table. If &lt;label&gt;editable&lt;/label&gt; is activated, a line edit is shown with auto completion support, but additional values are possible, otherwise a combo box is used.
-&lt;li&gt;&lt;label&gt;File name&lt;/label&gt; Simplifies the selection by adding a file chooser dialog.
-&lt;li&gt;&lt;label&gt;Value map&lt;/label&gt; a combo box with predefined items. The value is stored in the attribute, the description is shown in the combo box. You can define values manually or load them from a layer or a csv file.
-&lt;li&gt;&lt;label&gt;Enumeration&lt;/label&gt; Opens a combo box with values that can be used within the columns type. This is currently only supported by the Postgres provider.
-&lt;li&gt;&lt;label&gt;Immutable&lt;/label&gt; The immutable attribute column is read-only. The user is not able to modify the content.
-&lt;li&gt;&lt;label&gt;Hidden&lt;/label&gt; A hidden attribute column is invisible to the user.
-&lt;li&gt;&lt;label&gt;Checkbox&lt;/label&gt; A check box is shown.  The value representing the state of the check box in the attribute has to be entered.
-&lt;li&gt;&lt;label&gt;Text edit&lt;/label&gt; A text edit field is shown, that allows entering multiline text.
+&lt;li&gt;&lt;label&gt;Edición de líneas&lt;/label&gt; un campo de edición que permite introducir texto sencillo (o restringido a número en el caso de atributos numéricos).
+&lt;li&gt;&lt;label&gt;Clasificación&lt;/label&gt; Muestra un cuadro combinado con valores usados para clasificación, si ha elegido &lt;label&gt;valores únicos&lt;/label&gt; como tipo de leyenda en la pestaña simbología del diálogo de propiedades.
+&lt;li&gt;&lt;label&gt;Intervalo&lt;/label&gt; Permite establecer valores numéricos de un determinado intervalo. El control de edición puede ser un deslizador o una caja con flechas.
+&lt;li&gt;&lt;label&gt;Valor único&lt;/label&gt; El usuario puede seleccionar uno de los valores que ya estén en uso en la tabla de atributos. Ai está activado &lt;label&gt;editable&lt;/label&gt;, se muestra una línea de edición con capacidad para autocompletar, pero serán posibles valores adicionales. De lo contrario se usará un cuadro combinado.
+&lt;li&gt;&lt;label&gt;Nombre de archivo&lt;/label&gt; Simplifica la selección al añadir un diálogo para elegir archivos.
+&lt;li&gt;&lt;label&gt;Mapa de valor&lt;/label&gt; Un cuadro combinado con elementos predefinidos. El valor se guarda en el atributo, la descripción se muestra en el cuadro combinado. Puede definir los valores manualmente o cargarlos de una capa o un archvo CSV.
+&lt;li&gt;&lt;label&gt;Enumeración&lt;/label&gt; Abre un cuadro combinado con valores que se pueden usar dentro del tipo de la columna. Actualmente esto sólo es admitido por el proveedor Postgres.
+&lt;li&gt;&lt;label&gt;Immutable&lt;/label&gt; Las columnas de atributos immutables son de sólo lectura. El usuario no puede modificar el contenido.
+&lt;li&gt;&lt;label&gt;Oculta&lt;/label&gt; Una columna de atributos oculta es invisible para el usuario.
+&lt;li&gt;&lt;label&gt;Casilla de verificación&lt;/label&gt; Se muestra una casilla de verificación. Hay que introducir el valor que representa el estado de la casilla de verificación en el atributo.
+&lt;li&gt;&lt;label&gt;Edición de texto&lt;/label&gt; Se muestra un campo de edición de texto que permite introducir texto multilínea.
 &lt;/ul&gt;
 
 &lt;a name=&quot;general&quot;&gt;
 &lt;h4&gt;General&lt;/h4&gt;
 &lt;/a&gt;
-The General tab allows you to change the display name, set scale dependent rendering options, create a spatial index of the vector file (only for OGR supported formats and PostGIS) and view or change the projection of the specific vector layer.&lt;p&gt;
-You can also set a provider specific filter expressions using the &lt;label&gt;Query Builder&lt;/label&gt;.
+La pestaña General permite cambiar el nombre mostrado, establecer opciones de representacion dependiente de la escala, crear un índice espacial del archivo vectorial (solo para formatos soportados por OGR y PostGIS) y ver o cambiar la proyección de la capa vectorial.&lt;p&gt;
+También puede establecer filtros específicos de un proveedor usando el &lt;label&gt;Constructor de consultas&lt;/label&gt;.
 
-&lt;h5&gt;Subset&lt;/h5&gt;
-The &lt;label&gt;Query Builder&lt;/label&gt; button allows you to limit the features of a layer to a subset matching an provider specific filter expression.
+&lt;h5&gt;Subconjuntos&lt;/h5&gt;
+El botón &lt;label&gt;Constructor de consultas&lt;/label&gt; premite limitar los objetos espaciales de una capa a un subconjunto que cumpla una expresión de filtrado específica de un proveedor.
 
 &lt;a name=&quot;metadata&quot;&gt;
 &lt;h4&gt;Metadatos&lt;/h4&gt;
 &lt;/a&gt;
-The &lt;label&gt;Metadata&lt;/label&gt; tab contains information about the layer, including specifics about the type and location, number of features, feature type, and the editing capabilities. The Layer Spatial Reference System section, providing projection information, is displayed on this tab. This is a quick way to get information about the layer.
+La pestaña &lt;label&gt;Metadata&lt;/label&gt; contiene información sobre la capa, que incluye datos sobre el tipo y localización, número de objetos espaciales, tipo de objetos espaciales y capacidades de edición. En esta pestaña se muestra la sección Sistema de referencia espacial de la capa, que proporciona información sobre la proyección. Esta es una forma rápida de obtener informacioń sobre la capa.
 
 &lt;a name=&quot;actions&quot;&gt;
 &lt;h4&gt;Acciones&lt;/h4&gt;
 &lt;/a&gt;
-QGIS provides the ability to perform an action based on the attributes of a feature. This can be used to perform any number of actions, for example, running a program with arguments built from the attributes of a feature or passing parameters to a web reporting tool. &lt;br/&gt;
-Actions are useful when you frequently want to run an external application or view a web page based on one or more values in your vector layer.&lt;p&gt;
+QGIS proporciona la capacidad de realizar una acción basada en los atributos de un objeto espacial. Esto se puede usar para realizar cierto número de acciones, por ejemplo ejecutar un programa con argumentos contruidos a partir de los atributos de un objeto espacial o pasar pará metros a una herremienta de informe vía web. &lt;br/&gt;
+Las acciones son útiles cuando se quiere ejecutar una aplicación externa con frecuencia o ver una página web en base a uno o más valores de su capa vectorial.&lt;p&gt;
 
-The new implementation of actions uses the QGIS expression engine to do evaluations. Each expression is evaluated and replaced by its result at runtime.&lt;p&gt;
-An expression must be enclosed between &lt;code&gt;[%&lt;/code&gt; and &lt;code&gt;%]&lt;/code&gt; - the GUI has some buttons which do that for you automatically. 
-The &lt;label&gt;Insert expression...&lt;/label&gt; button launches the &lt;label&gt;Expression builder&lt;/label&gt; which allows to write an expression easily, the &lt;label&gt;Insert field&lt;/label&gt; button inserts into the action a placeholder like &lt;code&gt;[% &quot;fieldname&quot; %]&lt;/code&gt; where fieldname is the name of the field selected in the field dropdown list.&lt;p&gt;
+La nueva implementación de las acciones utiliza el motor de expresiones de QGIS para hacer evaluaciones. Cada expresión se evalua y remplaza por su resultado en tiempo de ejecución.&lt;p&gt;
+Una expresión debe estar encerrada entre &lt;code&gt;[%&lt;/code&gt; y &lt;code&gt;%]&lt;/code&gt; - la interfaz de usuario tiene botones que hacen ésto automáticamente por usted 
+El botón &lt;label&gt;Insertar expresión...&lt;/label&gt; lanza el &lt;label&gt;Constructor de expresiones&lt;/label&gt; que permite escribir fácilmente una expresión, el botón &lt;label&gt;Insertar campo&lt;/label&gt; inserta en la acción un posicionador como &lt;code&gt;[% &quot;nombrecampo&quot; %]&lt;/code&gt; donde nombrecampo es el nombre del campo seleccionado en la lista desplegable de campos.&lt;p&gt;
 
-See the User Guide for further information.
+COnsulte la Guía de usuario para más información.
 
-&lt;h5&gt;Using Actions&lt;/h5&gt;
-Actions can be invoked from the &lt;label&gt;Identify Results&lt;/label&gt; dialog or using the &lt;label&gt;Run feature action&lt;/label&gt; tool on the toolbar.&lt;p&gt;
+&lt;h5&gt;Usar las acciones&lt;/h5&gt;
+Las acciones se pueden invocar desde el diálogo &lt;label&gt;Resultados de la identificación&lt;/label&gt; o usando la herramienta &lt;label&gt;Ejecutar acción de objeto espacial&lt;/label&gt; de la barra de herramientas.&lt;p&gt;
 
-Each action adds a little set of custom expressions to the default set available in the &lt;label&gt;Expression builder&lt;/label&gt;.&lt;br/&gt;
-While running actions from the &lt;label&gt;Identify Results&lt;/label&gt; dialog the custom expression &lt;code&gt;$currfield&lt;/code&gt; will be replaced with the value of the selected field in the dialog, using the &lt;label&gt;Run feature action&lt;/label&gt; tool the following custom expressions are available (instead of $currfield):
+Cada acción añade un pequeño conjunto de expresiones personalizadas al conjunto predeterminado disponible en el &lt;label&gt;Constructor de expresiones&lt;/label&gt;.&lt;br/&gt;
+Mientras que al ejecutar las acciones desde el diálogo &lt;label&gt;Resultados de la identificación&lt;/label&gt; la expresión pernonalizada &lt;code&gt;$currfield&lt;/code&gt; será remplazada con el valor del campo seleccionado en el diálogo, al usar la herramienta &lt;label&gt;Ejecutar acción de objeto espacial&lt;/label&gt; estarán disponibles las expresiones personalizadas siguientes (en vez de $currfield):
 &lt;ul&gt;
-&lt;li&gt;&lt;code&gt;$clickx&lt;/code&gt; returns the x coordinate of the click position on the canvas&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;$clicky&lt;/code&gt; returns the y coordinate of the click position on the canvas&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;$layerid&lt;/code&gt; returns the ID of the selected layer in the legend&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;$clickx&lt;/code&gt; devuelve la coordenada X de la posición donde se hace clic en el lienzo del mapa&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;$clicky&lt;/code&gt; devuelve la coordenada Y de la posición donde se hace clic en el lienzo del mapa&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;$layerid&lt;/code&gt; devuelve la ID de la capa seleccionada en el panel Capas&lt;/li&gt;
 &lt;/ul&gt;
 
-Note: the &lt;label&gt;Run feature action&lt;/label&gt; tool executes the actions on all the matching features, where as &lt;label&gt;Identify Results&lt;/label&gt; allows you to select which specific feature to run action on.&lt;p&gt;
+Nota: la herramienta &lt;label&gt;Ejecutar acción de objeto espacial&lt;/label&gt; ejecuata the actions on all the matching features, where as &lt;label&gt;Identify Results&lt;/label&gt; allows you to select which specific feature to run action on.&lt;p&gt;
 
 
-&lt;h5&gt;Action Examples&lt;/h5&gt;
-You can add some example actions by clicking on the &lt;label&gt;Add default actions&lt;/label&gt; button.
+&lt;h5&gt;Ejemplos de acciones&lt;/h5&gt;
+Puede añadir algunas acciones de ejemplo haciendo clic en el botón &lt;label&gt;Añadir acciones predeterminadas&lt;/label&gt; button.
 
 
 &lt;a name=&quot;diagram&quot;&gt;
 &lt;h4&gt;Superposición de diagramas&lt;/h4&gt;
 &lt;/a&gt;
-The Diagram tab allows you to add a graphic overlay to a vector layer. To activate this feature, open the &lt;label&gt;Plugin Manager&lt;/label&gt; and select the &lt;label&gt;Diagram Overlay&lt;/label&gt; plugin. After this, there is a new tab in the vector &lt;label&gt;Layer Properties&lt;/label&gt; dialog where the settings for diagrams may be entered.&lt;p&gt;
-The current implementation of diagrams provides support for pie- and bar charts and for linear scaling
+La pestaña Diagramas permite añadir un gráfico superpuesto a una capa vectorial. Para activar esta función, abra el &lt;label&gt;Administrador de complementos&lt;/label&gt; y seleccione el complemento &lt;label&gt;Superposición de diagramas&lt;/label&gt;. Después de estos habrá una nueva pestaña en el diálogo &lt;label&gt;Propieadades de capa&lt;/label&gt; vectorial, en el que se pueden introducir los ajustes para los diagramas.&lt;p&gt;
+La implementación actual de los diagramas proporcioa soporte para gráficos de tipo queso y de barras y para escalado lineal
 of the diagram size according to a classification attribute.
 </translation>
     </message>
@@ -60522,7 +60926,7 @@ Returns -1 if the expression isn&apos;t found.
      strpos(&apos;HELLO WORLD&apos;,&apos;WORLD&apos;) &amp;rarr; 6&lt;br&gt;
      strpos(&apos;HELLO WORLD&apos;,&apos;GOODBYE&apos;) &amp;rarr; -1&lt;br&gt;
 </source>
-        <translation>&lt;h3&gt;Función strpos()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Función strpos()&lt;/h3&gt;
 Devuielve el índice de una expresión regular en una cadena.
 
 &lt;h4&gt;Sintaxis&lt;/h4&gt;
@@ -60748,7 +61152,27 @@ The color ramps available vary between QGIS installations.  This function
 may not give the expected results if you move your Quantum project.
 &lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>
+&lt;h3&gt;Función ramp_color()&lt;/h3&gt;
+Devuelve una cadena que representa un color de una rampa de color.
+
+&lt;p&gt;&lt;h4&gt;Sintaxis&lt;/h4&gt;
+     ramp_color(&lt;i&gt;nombre_rampa,valor&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  nombre_rampa&lt;/i&gt; &amp;rarr; el nombre de la rampa de color como una cadena, por ejemplo &apos;Espectral&apos;.&lt;br&gt;
+&lt;i&gt;  valore&lt;/i&gt; &amp;rarr; la posición en la rampa de la que seleccionar el color como un número real entre 0 y 1.&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     ramp_color(&apos;Espectral&apos;,0.3) &amp;rarr; &apos;#fdbe73&apos;&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Nota:&lt;/h4&gt;
+Las rampas de color disponibles varían entre instalaciones de QGIS. Esta función
+puede no dar los resultados esperados si mueve su proyecto de QGIS.
+&lt;/p&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Conversions Group&lt;/h3&gt;
@@ -60816,7 +61240,27 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;second(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 63072000&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función second()&lt;/h3&gt;
+Extrae los segundos de una fecha y hora o de una hora, o el número de segundos
+de un &lt;code&gt;Intervalo&lt;/code&gt;
+
+&lt;h4&gt;Sintaxis&lt;/h4&gt;
+&lt;code&gt;second(fechahora)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;second(Intervalo)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;code&gt;fecha&lt;/code&gt; - es fecha y hora u hora. La fecha de la que extraer los segundos.
+&lt;br&gt;
+&lt;code&gt;Intervalo&lt;/code&gt; - es un Intervalo. El Intervalo del que devolver el número de segundos.
+
+&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;second(&apos;2012-07-22T13:24:57&apos;) &amp;rarr; 57&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;second(tointerval(&apos;3 seconds&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;second(age(&apos;2012-07-22T00:20:00&apos;,&apos;2012-07-22T00:00:00&apos;)) &amp;rarr; 1200&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;second(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 63072000&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;$y function&lt;/h3&gt;
@@ -60891,7 +61335,23 @@ This function takes two arguments.
 &lt;code&gt;log(2, 32) &amp;rarr; 5&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;log(0.5, 32) &amp;rarr; -5&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función log()&lt;/h3&gt;
+Devuelve el valor del logaritmo del valor y base que se le pasen.
+&lt;br&gt;
+Esta función toma dos argumentos.
+&lt;h4&gt;Sintaxis&lt;/h4&gt;
+&lt;code&gt;log(base, valor)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;code&gt;base&lt;/code&gt; - cualquier número positivo.&lt;br&gt;
+&lt;code&gt;valor&lt;/code&gt; - cualquier número positivo.
+&lt;br&gt;
+
+&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;log(2, 32) &amp;rarr; 5&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;log(0.5, 32) &amp;rarr; -5&lt;/code&gt;&lt;br&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;sin() function&lt;/h3&gt;
@@ -60937,7 +61397,22 @@ Return a part of a string
 &lt;!-- Show example of function.--&gt;
      substr(&apos;HELLO WORLD&apos;,3,5) &amp;rarr; &apos;LLO W&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función substr()&lt;/h3&gt;
+Devuelve una parte de una cadena
+
+&lt;p&gt;&lt;h4&gt;Sintaxis&lt;/h4&gt;
+     substr(&lt;i&gt;cadena,posicióninicial,longitud&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  cadena&lt;/i&gt; &amp;rarr; es una cadena. La cadena completa.&lt;br&gt;
+&lt;i&gt;  posicióninicial&lt;/i&gt; &amp;rarr; es un número. La posición inicial desde la que extraer.&lt;br&gt;
+&lt;i&gt;  longitud&lt;/i&gt; &amp;rarr; es un número. La longitud de la cadena a extraer.&lt;br&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     substr(&apos;HOLA MUNDO&apos;,3,5) &amp;rarr; &apos;A MUN&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;color_hsl() function&lt;/h3&gt;
@@ -60956,7 +61431,22 @@ Returns a string representation of a color based on its hue, saturation, and lig
 &lt;!-- Show example of function.--&gt;
      color_hsl(100,50,70) &amp;rarr; &apos;#a6d98c&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función color_hsl()&lt;/h3&gt;
+Devuelve una representación en forma de cadena de un colo basada en sus atributos de intensidad, saturación y luminosidad.
+
+&lt;p&gt;&lt;h4&gt;Sintaxis&lt;/h4&gt;
+     color_hsl(&lt;i&gt;intensidad, saturación, luminosidad&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  intensidad&lt;/i&gt; &amp;rarr; la intensidad del color, como un valor entero de 0 a 360.&lt;br&gt;
+&lt;i&gt;  saturación&lt;/i&gt; &amp;rarr; el porcentaje de saturación del color como un valor entero de 0 a 100.&lt;br&gt;
+&lt;i&gt;  luminosidad&lt;/i&gt; &amp;rarr; el porcentaje de luminosidad del color como un valor entero de 0 a 100.&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     color_hsl(100,50,70) &amp;rarr; &apos;#a6d98c&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <source>
@@ -60976,7 +61466,23 @@ Returns a string representation of a color based on its red, green, and blue com
 &lt;!-- Show example of function.--&gt;
      color_rgb(255,127,0) &amp;rarr; &apos;#ff7f00&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>
+&lt;h3&gt;Función color_rgb()&lt;/h3&gt;
+Devuelve una representación en forma de cadena de un color basada en sus componentes rojo, verde y azul.
+
+&lt;p&gt;&lt;h4&gt;Sintaxis&lt;/h4&gt;
+     color_rgb(&lt;i&gt;rojo, verde, azul&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  rojo&lt;/i&gt; &amp;rarr; el componente rojo como un valor entero de 0 a 255.&lt;br&gt;
+&lt;i&gt;  verde&lt;/i&gt; &amp;rarr; el componente verde como un valor entero de 0 a 255.&lt;br&gt;
+&lt;i&gt;  azul&lt;/i&gt; &amp;rarr; el componente azul como un valor entero de 0 a 2555.&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     color_rgb(255,127,0) &amp;rarr; &apos;#ff7f00&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;randf() function&lt;/h3&gt;
@@ -60996,7 +61502,22 @@ This function takes two arguments.
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;randf(1, 10) &amp;rarr; 4.59258286403147&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función randf()&lt;/h3&gt;
+Devuelve un número de coma flotante dentro del intervalo especificado por los argumentos mínimo y máximo (incluidos).
+&lt;br&gt;
+Esta función toma dos argumentos.
+&lt;h4&gt;Sintaxis&lt;/h4&gt;
+&lt;code&gt;randf(min, max)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;code&gt;min&lt;/code&gt; - un número de coma flotante que representa el menor número aleatorio posible deseado.&lt;br&gt;
+&lt;code&gt;max&lt;/code&gt; - un número de coma flotante representing el mayor número aleatorio posible deseado.
+&lt;br&gt;
+
+&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;randf(1, 10) &amp;rarr; 4.59258286403147&lt;/code&gt;&lt;br&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;replace() function&lt;/h3&gt;
@@ -61015,7 +61536,22 @@ Returns a string with the the supplied string replaced.
 &lt;!-- Show example of function.--&gt;
      replace(&apos;QGIS SHOULD ROCK&apos;,&apos;SHOULD&apos;,&apos;DOES&apos;) &amp;rarr; &apos;QGIS DOES ROCK&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función replace()&lt;/h3&gt;
+Devuelve una cadena con una parte sustituida por otra cadena proporcionada.
+
+&lt;p&gt;&lt;h4&gt;Sintaxis&lt;/h4&gt;
+     replace(&lt;i&gt;cadena,antes,después&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  cadena&lt;/i&gt; &amp;rarr; es una cadena. La cadena inicial.&lt;br&gt;
+&lt;i&gt;  antes&lt;/i&gt; &amp;rarr; es una cadena. La cadena a remplazar.&lt;br&gt;
+&lt;i&gt;  después&lt;/i&gt; &amp;rarr; es una cadena. La cadena que remplazará a &lt;i&gt;antes&lt;/i&gt;&lt;br&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     replace(&apos;QGIS SERÍA GRANDE&apos;,&apos;SERÍA&apos;,&apos;ES&apos;) &amp;rarr; &apos;QGIS ES GRANDE&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;hour() function&lt;/h3&gt;
@@ -61488,6 +62024,27 @@ Esta función toma un argumento.
 &lt;code&gt;ln(1) &amp;rarr; 0&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;ln(2.7182818284590452354) &amp;rarr; 1&lt;/code&gt;&lt;br&gt;
 </translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;strpos() function&lt;/h3&gt;
+Return the index of a regular expression in a string.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+     strpos(&lt;i&gt;haystack&lt;/i&gt;, &lt;i&gt;needle&lt;/i&gt;)
+&lt;br&gt;&lt;br&gt;
+Returns -1 if the expression isn&apos;t found.
+
+&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  haystack&lt;/i&gt; &amp;rarr; is string.  The string that is to be searched.&lt;br&gt;
+&lt;i&gt;  needle&lt;/i&gt; &amp;rarr; is string.  The regular expression to look for.&lt;br&gt;
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     strpos(&apos;HELLO WORLD&apos;,&apos;WORLD&apos;) &amp;rarr; 6&lt;br&gt;
+     strpos(&apos;HELLO WORLD&apos;,&apos;GOODBYE&apos;) &amp;rarr; -1&lt;br&gt;
+</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
