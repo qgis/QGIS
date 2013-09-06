@@ -5862,7 +5862,7 @@ Ruimtelijk Referentie Systeem (CRS) fout: 1 of meer invoerlagen missen CRS-infor
     </message>
     <message>
         <source>Print Composers</source>
-        <translation>Print Layouter</translation>
+        <translation>Printvormgeving</translation>
     </message>
     <message>
         <source>&amp;View</source>
@@ -5978,7 +5978,7 @@ Ruimtelijk Referentie Systeem (CRS) fout: 1 of meer invoerlagen missen CRS-infor
     </message>
     <message>
         <source>&amp;New Print Composer</source>
-        <translation>&amp;Nieuwe print Layouter</translation>
+        <translation>&amp;Nieuwe Printvormgeving</translation>
     </message>
     <message>
         <source>Ctrl+P</source>
@@ -6614,7 +6614,7 @@ Ruimtelijk Referentie Systeem (CRS) fout: 1 of meer invoerlagen missen CRS-infor
     </message>
     <message>
         <source>Composer Manager...</source>
-        <translation>Layouter-manager...</translation>
+        <translation>Printvormgeving-manager...</translation>
     </message>
     <message>
         <source>Add Feature</source>
@@ -6948,6 +6948,10 @@ Werkt voor huidige actieve bewerkbare laag</translation>
     <message>
         <source>Add Delimited Text Layer</source>
         <translation>Tekstgescheiden kaartlaag Toevoegen</translation>
+    </message>
+    <message>
+        <source>New Vector Layer</source>
+        <translation type="obsolete">Nieuwe Vectorlaag</translation>
     </message>
 </context>
 <context>
@@ -12754,7 +12758,7 @@ This copy of QGIS writes debugging output.</source>
     </message>
     <message>
         <source>Composer %1</source>
-        <translation>Layouter %1</translation>
+        <translation>Printvormgeving %1</translation>
     </message>
     <message>
         <source>Deselect features from all layers</source>
@@ -13671,6 +13675,10 @@ Neem alstublieft contact op met de ontwikkelaars.
         <source>Running against GEOS</source>
         <translation>Gebruikt nu GEOS</translation>
     </message>
+    <message>
+        <source>Layer name</source>
+        <translation type="obsolete">Laagnaam</translation>
+    </message>
 </context>
 <context>
     <name>QgisAppBase</name>
@@ -14135,7 +14143,7 @@ Gebruikers DB Pad:	%9
     </message>
     <message>
         <source>Composer map</source>
-        <translation>Layouter kaart</translation>
+        <translation>Printvormgeving-kaart</translation>
     </message>
     <message>
         <source>Visibility</source>
@@ -16138,7 +16146,7 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
     </message>
     <message>
         <source>Composer</source>
-        <translation>Layouter</translation>
+        <translation>Printvormgeving</translation>
     </message>
     <message>
         <source>Command history</source>
@@ -16150,7 +16158,7 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
     </message>
     <message>
         <source>Composer templates</source>
-        <translation>Layouter sjablonen</translation>
+        <translation>Printvormgeving sjablonen</translation>
     </message>
     <message>
         <source>Composition</source>
@@ -16222,7 +16230,7 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
     </message>
     <message>
         <source>Print Composers</source>
-        <translation>Print Layouter</translation>
+        <translation>Printvormgeving</translation>
     </message>
     <message>
         <source>Window</source>
@@ -16250,7 +16258,7 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
     </message>
     <message>
         <source>Composer error</source>
-        <translation>Layouter-fout</translation>
+        <translation>Printvormgeving-fout</translation>
     </message>
     <message>
         <source>Error, could not create new composer</source>
@@ -16711,7 +16719,7 @@ Probeer alstublieft een lagere resolutie of een kleiner papiergrootte</translati
     </message>
     <message>
         <source>Composer</source>
-        <translation>Layouter</translation>
+        <translation>Printvormgeving</translation>
     </message>
     <message>
         <source>Paper Navigation</source>
@@ -16723,7 +16731,7 @@ Probeer alstublieft een lagere resolutie of een kleiner papiergrootte</translati
     </message>
     <message>
         <source>Composer Items</source>
-        <translation>Layouter onderdelen</translation>
+        <translation>Printvormgevingsonderdelen</translation>
     </message>
     <message>
         <source>Ctrl+P</source>
@@ -16823,19 +16831,19 @@ Probeer alstublieft een lagere resolutie of een kleiner papiergrootte</translati
     </message>
     <message>
         <source>Composer Manager</source>
-        <translation>Layouter manager</translation>
+        <translation>Printvormgeving-manager</translation>
     </message>
     <message>
         <source>Composer manager</source>
-        <translation>Layouter manager</translation>
+        <translation>Printvormgeving-manager</translation>
     </message>
     <message>
         <source>&amp;New Composer</source>
-        <translation>&amp;Nieuwe print Layouter</translation>
+        <translation>&amp;Nieuwe Printvormgeving</translation>
     </message>
     <message>
         <source>New composer</source>
-        <translation>Nieuwe Layouter</translation>
+        <translation>Nieuwe Printvormgeving</translation>
     </message>
     <message>
         <source>Ctrl+N</source>
@@ -17634,15 +17642,15 @@ Probeer alstublieft een lagere resolutie of een kleiner papiergrootte</translati
     </message>
     <message>
         <source>Empty composer</source>
-        <translation>Lege layouter</translation>
+        <translation>Lege printvormgeving</translation>
     </message>
     <message>
         <source>Remove composer</source>
-        <translation>Verwijder &apos;layouter&apos;</translation>
+        <translation>Verwijder printvormgeving</translation>
     </message>
     <message>
         <source>Do you really want to remove the map composer &apos;%1&apos;?</source>
-        <translation>Wilt u echt de &apos;layouter&apos; &apos;%1&apos; verwijderen?</translation>
+        <translation>Wilt u de printvormgeving &apos;%1&apos; echt verwijderen?</translation>
     </message>
     <message>
         <source>Change title</source>
@@ -17674,7 +17682,7 @@ Probeer alstublieft een lagere resolutie of een kleiner papiergrootte</translati
     </message>
     <message>
         <source>Composer error</source>
-        <translation>Layouter-fout</translation>
+        <translation>Printvormgeef-fout</translation>
     </message>
     <message>
         <source>Error, could not create composer</source>
@@ -17694,7 +17702,7 @@ Probeer alstublieft een lagere resolutie of een kleiner papiergrootte</translati
     </message>
     <message>
         <source>Composer templates</source>
-        <translation>Layouter-sjablonen</translation>
+        <translation>Printvormgeving-sjablonen</translation>
     </message>
     <message>
         <source>File system error</source>
@@ -17725,7 +17733,7 @@ Probeer alstublieft een lagere resolutie of een kleiner papiergrootte</translati
     <name>QgsComposerManagerBase</name>
     <message>
         <source>Composer manager</source>
-        <translation>Layouter manager</translation>
+        <translation>Printvormgevings-manager</translation>
     </message>
     <message>
         <source>Add</source>
@@ -18787,7 +18795,7 @@ Probeer alstublieft een lagere resolutie of een kleiner papiergrootte</translati
     </message>
     <message>
         <source>Composer map</source>
-        <translation>Layouter kaart</translation>
+        <translation>Printvormgevings-kaart</translation>
     </message>
     <message>
         <source>Maximum rows</source>
@@ -23240,6 +23248,14 @@ MyForms.py moet aanwezig zijn in PYTHONPATH, .qgis/python, of in de projectfolde
     <message>
         <source>Python Init function</source>
         <translation>Python Init functie</translation>
+    </message>
+    <message>
+        <source>Default</source>
+        <translation type="obsolete">Standaard</translation>
+    </message>
+    <message>
+        <source>Off</source>
+        <translation type="obsolete">Uit</translation>
     </message>
 </context>
 <context>
@@ -31448,11 +31464,11 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     </message>
     <message>
         <source>Measure (OTF off)</source>
-        <translation type="unfinished"></translation>
+        <translation>Meten (Gelijktijdige CRS-transformatie UIT)</translation>
     </message>
     <message>
         <source>Measure (OTF on)</source>
-        <translation type="unfinished"></translation>
+        <translation>Meten (Gelijktijdige CRS-transformatie AAN)</translation>
     </message>
 </context>
 <context>
@@ -31485,6 +31501,10 @@ eigenschappen
     <message>
         <source>Text (string)</source>
         <translation>Tekst (string)</translation>
+    </message>
+    <message>
+        <source>Date</source>
+        <translation type="obsolete">Datum</translation>
     </message>
 </context>
 <context>
@@ -34557,7 +34577,7 @@ Altijd netwerk: altijd ophalen uit het netwerk, en niet checken of er misschien 
     </message>
     <message>
         <source>Suppress attributes pop-up windows after each created feature</source>
-        <translation>Geen attribuut-popups na het aanmaken van elk kaartobject tonen</translation>
+        <translation type="unfinished">Geen attribuut-popups na het aanmaken van elk kaartobject tonen</translation>
     </message>
     <message>
         <source>When a new layer is created, or when a layer is loaded that has no coordinate reference system (CRS)</source>
@@ -39233,11 +39253,11 @@ Doorgaan?</translation>
     </message>
     <message>
         <source>Select print composer</source>
-        <translation>Selecteer print layouter</translation>
+        <translation>Selecteer printvormgeving</translation>
     </message>
     <message>
         <source>Composer Title</source>
-        <translation>Layouter-titel</translation>
+        <translation>Printvormgevings-titel</translation>
     </message>
     <message>
         <source>Select restricted layers and groups</source>
@@ -39690,7 +39710,7 @@ Doorgaan?</translation>
     </message>
     <message>
         <source>Exclude composers</source>
-        <translation>Layouters uitsluiten</translation>
+        <translation>Printvormgeving uitsluiten</translation>
     </message>
     <message>
         <source>WFS capabilitities</source>
@@ -46919,11 +46939,11 @@ Er was een probleem met uw symbolen database.</translation>
     </message>
     <message>
         <source>In the print composer tool bar you can find two buttons for moving elements. The left one (right arrow icon) selects and moves elements in the layout. After selecting the element with this tool you can also move them around with the arrow keys. For accurate positioning use the &lt;strong&gt;Position and Size&lt;/strong&gt; section, which can be found in the tab &lt;strong&gt;Item Properties -&gt; Position and Size&lt;/strong&gt;. The other move tool (map canvas icon with right arrow) allows one to move the map content within a map frame.</source>
-        <translation>In de print layouter werkbalk zie je twee knoppen om elementen te verplaatsen. De linker (pijl naar rechts icoon) selecteert en verplaatst elementen in de layout. Na het selecteren van het element met dit gereedschap kun het het element ook verplaatsen met de pijltjes-toetsen. Voor nauwkeurige positionering gebruikt u de sectie &lt;strong&gt;Positie and Grootte&lt;/strong&gt;, welke u kunt vinden in het tabblad &lt;strong&gt;Item Eigenschappen -&gt; Positie en Grootte&lt;/strong&gt;. Met andere verplaats-gereedschap (kaartbeeld icoon met een rechter pijl) kunt u de inhoud van de kaart verplaatsen in het kaartvenster.</translation>
+        <translation>In de printvormgevingswerkbalk zie je twee knoppen om elementen te verplaatsen. De linker (pijl naar rechts icoon) selecteert en verplaatst elementen in de layout. Na het selecteren van het element met dit gereedschap kun het het element ook verplaatsen met de pijltjes-toetsen. Voor nauwkeurige positionering gebruikt u de sectie &lt;strong&gt;Positie and Grootte&lt;/strong&gt;, welke u kunt vinden in het tabblad &lt;strong&gt;Item Eigenschappen -&gt; Positie en Grootte&lt;/strong&gt;. Met andere verplaats-gereedschap (kaartbeeld icoon met een rechter pijl) kunt u de inhoud van de kaart verplaatsen in het kaartvenster.</translation>
     </message>
     <message>
         <source>In the Print Composer you can rotate a map by setting its rotation value in the tab &lt;strong&gt;Item Properties -&gt; Map -&gt; Main properties&lt;/strong&gt; section. To place a north arrow in your layout you can use the &lt;strong&gt;Add Image&lt;/strong&gt; tool. After the selection and placement of the north arrow in the layout you can link it with a specific map frame by activating the &lt;strong&gt;Sync with map&lt;/strong&gt; checkbox and selecting a map frame. Whenever you change the rotation value of a linked map, the north arrow will now automatically adjust its rotation.</source>
-        <translation>In the Layouter kunt een kaart roteren via de rotatie eigenschappen in het tabblad-onderdeel &lt;strong&gt;Item Eigenschappen -&gt; Kaart -&gt; Algemene Eigenschappen&lt;/strong&gt;. Om een noordpijl in de layout te plaatsen kunt u gebruik maken van het &lt;strong&gt;Afbeelding Toevoegen&lt;/strong&gt; gereedschap. Na het selecteren en plaatsen van de noordpijl in de layout kunt u de pijl koppelen aan een specifieke kaart door het aankruisen van het &lt;strong&gt;Synchroniseer met kaart&lt;/strong&gt; vinkje en dan een kaart te selecteren. Bij het roteren van de kaart zal dan ook de noordpijl automatisch meedraaien.</translation>
+        <translation>Bij het vormgeven voor print kunt een kaart roteren via de rotatie eigenschappen in het tabblad-onderdeel &lt;strong&gt;Item Eigenschappen -&gt; Kaart -&gt; Algemene Eigenschappen&lt;/strong&gt;. Om een noordpijl in de layout te plaatsen kunt u gebruik maken van het &lt;strong&gt;Afbeelding Toevoegen&lt;/strong&gt; gereedschap. Na het selecteren en plaatsen van de noordpijl in de layout kunt u de pijl koppelen aan een specifieke kaart door het aankruisen van het &lt;strong&gt;Synchroniseer met kaart&lt;/strong&gt; vinkje en dan een kaart te selecteren. Bij het roteren van de kaart zal dan ook de noordpijl automatisch meedraaien.</translation>
     </message>
     <message>
         <source>Sometimes you have a very large dataset which takes ages to draw. You can press &apos;Esc&apos; (the escape key), or click the &apos;Stop map rendering&apos; icon in the status bar to the bottom of the window at any time to halt rendering. If you are going to be performing several actions (e.g. modifying symbology options) and wish to temporarily disable map rendering while you do so, you can uncheck the &apos;Render&apos; checkbox in the bottom right of the status bar. Don&apos;t forget to check it on again when you are ready to have the map draw itself again!</source>
@@ -56642,7 +56662,7 @@ Returns -1 if the expression isn&apos;t found.
      strpos(&apos;HELLO WORLD&apos;,&apos;WORLD&apos;) &amp;rarr; 6&lt;br&gt;
      strpos(&apos;HELLO WORLD&apos;,&apos;GOODBYE&apos;) &amp;rarr; -1&lt;br&gt;
 </source>
-        <translation>&lt;h3&gt;strpos() functie&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;strpos() functie&lt;/h3&gt;
 Geeft de index van een reguliere expressie in een tekenreeks.
 
 &lt;h4&gt;Syntax&lt;/h4&gt;
@@ -58127,6 +58147,27 @@ Converts a string to real number. Nothing changed if a value cannot be converted
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
      toreal(&apos;123.45&apos;) &amp;rarr; 123.45&lt;/p&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;strpos() function&lt;/h3&gt;
+Return the index of a regular expression in a string.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+     strpos(&lt;i&gt;haystack&lt;/i&gt;, &lt;i&gt;needle&lt;/i&gt;)
+&lt;br&gt;&lt;br&gt;
+Returns -1 if the expression isn&apos;t found.
+
+&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  haystack&lt;/i&gt; &amp;rarr; is string.  The string that is to be searched.&lt;br&gt;
+&lt;i&gt;  needle&lt;/i&gt; &amp;rarr; is string.  The regular expression to look for.&lt;br&gt;
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     strpos(&apos;HELLO WORLD&apos;,&apos;WORLD&apos;) &amp;rarr; 6&lt;br&gt;
+     strpos(&apos;HELLO WORLD&apos;,&apos;GOODBYE&apos;) &amp;rarr; -1&lt;br&gt;
 </source>
         <translation type="unfinished"></translation>
     </message>
