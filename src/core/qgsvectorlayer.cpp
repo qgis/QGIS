@@ -125,6 +125,7 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
     , mFeatureBlendMode( QPainter::CompositionMode_SourceOver ) // Default to normal feature blending
     , mLayerTransparency( 0 )
     , mVertexMarkerOnlyForSelection( false )
+    , mFeatureFormSuppress( SuppressDefault )
     , mCache( new QgsGeometryCache( this ) )
     , mEditBuffer( 0 )
     , mJoinBuffer( 0 )
@@ -1982,6 +1983,17 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
     mEditFormInit = editFormInitNode.toElement().text();
   }
 
+  QDomNode fFSuppNode = node.namedItem( "featformsuppress" );
+  if ( fFSuppNode.isNull() )
+  {
+    mFeatureFormSuppress = SuppressDefault;
+  }
+  else
+  {
+    QDomElement e = fFSuppNode.toElement();
+    mFeatureFormSuppress = ( QgsVectorLayer::FeatureFormSuppress )e.text().toInt();
+  }
+
   QDomNode annotationFormNode = node.namedItem( "annotationform" );
   if ( !annotationFormNode.isNull() )
   {
@@ -2289,6 +2301,11 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
   QDomText efiText = doc.createTextNode( mEditFormInit );
   efiField.appendChild( efiText );
   node.appendChild( efiField );
+
+  QDomElement fFSuppElem  = doc.createElement( "featformsuppress" );
+  QDomText fFSuppText = doc.createTextNode( QString::number( featureFormSuppress() ) );
+  fFSuppElem.appendChild( fFSuppText );
+  node.appendChild( fFSuppElem );
 
   QDomElement afField = doc.createElement( "annotationform" );
   QDomText afText = doc.createTextNode( QgsProject::instance()->writePath( mAnnotationForm ) );

@@ -2,7 +2,7 @@
                      qgsfeatureaction.cpp  -  description
                               -------------------
       begin                : 2010-09-20
-      copyright            : (C) 2010 by Jürgen E. Fischer
+      copyright            : (C) 2010 by Juergen E. Fischer
       email                : jef at norbit dot de
  ***************************************************************************/
 
@@ -171,6 +171,18 @@ bool QgsFeatureAction::addFeature()
 
   // show the dialog to enter attribute values
   bool isDisabledAttributeValuesDlg = settings.value( "/qgis/digitizing/disable_enter_attribute_values_dialog", false ).toBool();
+  // override application-wide setting with any layer setting
+  switch ( mLayer->featureFormSuppress() )
+  {
+    case QgsVectorLayer::SuppressOn:
+      isDisabledAttributeValuesDlg = true;
+      break;
+    case QgsVectorLayer::SuppressOff:
+      isDisabledAttributeValuesDlg = false;
+      break;
+    case QgsVectorLayer::SuppressDefault:
+      break;
+  }
   if ( isDisabledAttributeValuesDlg )
   {
     res = mLayer->addFeature( mFeature );
