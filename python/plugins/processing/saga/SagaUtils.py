@@ -27,7 +27,7 @@ import os
 import stat
 import traceback
 import subprocess
-from processing.tests.TestData import points
+from processing.tests.TestData import polygons
 from processing.core.ProcessingUtils import ProcessingUtils
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingLog import ProcessingLog
@@ -149,7 +149,7 @@ class SagaUtils:
 
         try:
             from processing import runalg
-            result = runalg("saga:polygoncentroids", points(), False, None)
+            result = runalg("saga:polygoncentroids", polygons(), 0, None)
             if result is None or not os.path.exists(result['CENTROIDS']):
                 return "It seems that SAGA is not correctly installed in your system.\nPlease install it before running SAGA algorithms."
         except:
