@@ -421,7 +421,7 @@ void QgsOSMDatabase::exportSpatiaLiteNodes( const QString& tableName, const QStr
         sqlite3_bind_null( stmtInsert, ++col );
     }
 
-    sqlite3_bind_blob( stmtInsert, ++col, geom->asWkb(), geom->wkbSize(), SQLITE_STATIC );
+    sqlite3_bind_blob( stmtInsert, ++col, geom->asWkb(), (int) geom->wkbSize(), SQLITE_STATIC );
 
     int insertRes = sqlite3_step( stmtInsert );
     if ( insertRes != SQLITE_DONE )
@@ -489,7 +489,7 @@ void QgsOSMDatabase::exportSpatiaLiteWays( bool closed, const QString& tableName
         sqlite3_bind_null( stmtInsert, ++col );
     }
 
-    sqlite3_bind_blob( stmtInsert, ++col, geom->asWkb(), geom->wkbSize(), SQLITE_STATIC );
+    sqlite3_bind_blob( stmtInsert, ++col, geom->asWkb(), (int) geom->wkbSize(), SQLITE_STATIC );
 
     int insertRes = sqlite3_step( stmtInsert );
     if ( insertRes != SQLITE_DONE )
