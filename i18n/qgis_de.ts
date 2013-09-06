@@ -8782,7 +8782,7 @@ Nur %1 von %2 Objekten geschrieben.</translation>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1167"/>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1633"/>
         <source>GeoRSS</source>
-        <translation>GeoJSON</translation>
+        <translation>GeoRSS</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1174"/>
