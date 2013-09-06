@@ -265,11 +265,11 @@ bool QgsComposerItem::_readXML( const QDomElement& itemElem, const QDomDocument&
   QString positionLock = itemElem.attribute( "positionLock" );
   if ( positionLock.compare( "true", Qt::CaseInsensitive ) == 0 )
   {
-    mItemPositionLocked = true;
+    setPositionLock( true );
   }
   else
   {
-    mItemPositionLocked = false;
+    setPositionLock( false );
   }
 
   //position
@@ -800,6 +800,11 @@ void QgsComposerItem::drawFrame( QPainter* p )
     p->setRenderHint( QPainter::Antialiasing, true );
     p->drawRect( QRectF( 0, 0, rect().width(), rect().height() ) );
   }
+}
+
+void QgsComposerItem::setPositionLock( bool lock )
+{
+  mItemPositionLocked = lock;
 }
 
 void QgsComposerItem::move( double dx, double dy )

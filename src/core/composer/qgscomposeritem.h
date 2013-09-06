@@ -281,7 +281,7 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
 
     /**Locks / unlocks the item position for mouse drags
     @note this method was added in version 1.2*/
-    void setPositionLock( bool lock ) {mItemPositionLocked = lock;}
+    void setPositionLock( bool lock );
 
     /**Returns position lock for mouse drags (true means locked)
     @note this method was added in version 1.2*/

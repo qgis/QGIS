@@ -245,6 +245,8 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   layoutMenu->addAction( mActionLowerItems );
   layoutMenu->addAction( mActionMoveItemsToTop );
   layoutMenu->addAction( mActionMoveItemsToBottom );
+  layoutMenu->addAction( mActionLockItems );
+  layoutMenu->addAction( mActionUnlockAll );
 
 #ifdef Q_WS_MAC
   // this doesn't work on Mac anymore: menuBar()->addMenu( mQgis->windowMenu() );
@@ -1642,6 +1644,22 @@ void QgsComposer::on_mActionUngroupItems_triggered()
   if ( mView )
   {
     mView->ungroupItems();
+  }
+}
+
+void QgsComposer::on_mActionLockItems_triggered()
+{
+  if ( mView )
+  {
+    mView->lockItems();
+  }
+}
+
+void QgsComposer::on_mActionUnlockAll_triggered()
+{
+  if ( mView )
+  {
+    mView->unlockAllItems();
   }
 }
 

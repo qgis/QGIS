@@ -100,6 +100,8 @@
    <addaction name="mActionMoveItemContent"/>
    <addaction name="mActionGroupItems"/>
    <addaction name="mActionUngroupItems"/>
+   <addaction name="mActionLockItems"/>
+   <addaction name="mActionUnlockAll"/>
   </widget>
   <widget class="QToolBar" name="mItemToolbar">
    <property name="windowTitle">
@@ -568,6 +570,27 @@
    </property>
    <property name="toolTip">
     <string>New from template</string>
+   </property>
+  </action>
+  <action name="mActionLockItems">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/locked.svg</normaloff>:/images/themes/default/locked.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Lock Selected Items</string>
+   </property>
+  </action>
+  <action name="mActionUnlockAll">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/unlocked.svg</normaloff>:/images/themes/default/unlocked.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Unlock All</string>
+   </property>
+   <property name="toolTip">
+    <string>Unlock All Items</string>
    </property>
   </action>
  </widget>
