@@ -211,6 +211,7 @@ void QgsGPSPlugin::unload()
   mQGisInterface->removePluginVectorMenu( tr( "&GPS" ), mQActionPointer );
   mQGisInterface->removeVectorToolBarIcon( mQActionPointer );
   delete mQActionPointer;
+  mQActionPointer = 0;
 }
 
 void QgsGPSPlugin::loadGPXFile( QString fileName, bool loadWaypoints, bool loadRoutes,
@@ -665,25 +666,28 @@ void QgsGPSPlugin::setCurrentTheme( QString theThemeName )
   QString myCurThemePath = QgsApplication::activeThemePath() + "/plugins/gps_importer/";
   QString myDefThemePath = QgsApplication::defaultThemePath() + "/plugins/gps_importer/";
   QString myQrcPath = ":/";
-  if ( QFile::exists( myCurThemePath ) )
+  if ( mQActionPointer )
   {
-    mQActionPointer->setIcon( QIcon( myCurThemePath + "import_gpx.png" ) );
-    mCreateGPXAction->setIcon( QIcon( myCurThemePath + "create_gpx.png" ) );
-  }
-  else if ( QFile::exists( myDefThemePath ) )
-  {
-    mQActionPointer->setIcon( QIcon( myDefThemePath + "import_gpx.png" ) );
-    mCreateGPXAction->setIcon( QIcon( myDefThemePath + "create_gpx.png" ) );
-  }
-  else if ( QFile::exists( myQrcPath ) )
-  {
-    mQActionPointer->setIcon( QIcon( myQrcPath + "import_gpx.png" ) );
-    mCreateGPXAction->setIcon( QIcon( myQrcPath + "create_gpx.png" ) );
-  }
-  else
-  {
-    mQActionPointer->setIcon( QIcon() );
-    mCreateGPXAction->setIcon( QIcon() );
+    if ( QFile::exists( myCurThemePath ) )
+    {
+      mQActionPointer->setIcon( QIcon( myCurThemePath + "import_gpx.png" ) );
+      mCreateGPXAction->setIcon( QIcon( myCurThemePath + "create_gpx.png" ) );
+    }
+    else if ( QFile::exists( myDefThemePath ) )
+    {
+      mQActionPointer->setIcon( QIcon( myDefThemePath + "import_gpx.png" ) );
+      mCreateGPXAction->setIcon( QIcon( myDefThemePath + "create_gpx.png" ) );
+    }
+    else if ( QFile::exists( myQrcPath ) )
+    {
+      mQActionPointer->setIcon( QIcon( myQrcPath + "import_gpx.png" ) );
+      mCreateGPXAction->setIcon( QIcon( myQrcPath + "create_gpx.png" ) );
+    }
+    else
+    {
+      mQActionPointer->setIcon( QIcon() );
+      mCreateGPXAction->setIcon( QIcon() );
+    }
   }
 }
 
