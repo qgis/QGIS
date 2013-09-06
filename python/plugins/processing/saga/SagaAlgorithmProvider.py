@@ -40,7 +40,6 @@ class SagaAlgorithmProvider(AlgorithmProvider):
     def __init__(self):
         AlgorithmProvider.__init__(self)
         self.activate = True
-        self.createAlgsList() #preloading algorithms to speed up
 
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)
@@ -68,34 +67,33 @@ class SagaAlgorithmProvider(AlgorithmProvider):
         ProcessingConfig.removeSetting(SagaUtils.SAGA_RESAMPLING_REGION_CELLSIZE)
         ProcessingConfig.removeSetting(SagaUtils.SAGA_LOG_CONSOLE)
         ProcessingConfig.removeSetting(SagaUtils.SAGA_LOG_COMMANDS)
+    
 
-    def createAlgsList(self):
-        self.preloadedAlgs = []
-        saga208 = ProcessingConfig.getSetting(SagaUtils.SAGA_208)
+    def _loadAlgorithms(self):        
+        self.algs = []
+        saga208 = ProcessingConfig.getSetting(SagaUtils.SAGA_208)        
         folder = SagaUtils.sagaDescriptionPath()
         for descriptionFile in os.listdir(folder):
-            if descriptionFile.endswith("txt"):
+            if descriptionFile.endswith("txt"):                
                 if not saga208:
                     if descriptionFile.startswith("2.0.8"):
                         continue
                 else:
-                    if descriptionFile.startswith("2.1"):
+                    if descriptionFile.startswith("2.1"):                        
                         continue
                 try:
                     alg = SagaAlgorithm(os.path.join(folder, descriptionFile))
                     if alg.name.strip() != "":
-                        self.preloadedAlgs.append(alg)
+                        self.algs.append(alg)
                     else:
                         ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, "Could not open SAGA algorithm: " + descriptionFile)
                 except Exception,e:
                     ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, "Could not open SAGA algorithm: " + descriptionFile +"\n" + str(e))
-        self.preloadedAlgs.append(SplitRGBBands())
-
-    def _loadAlgorithms(self):
-        self.algs = self.preloadedAlgs
+        self.algs.append(SplitRGBBands())
 
     def getDescription(self):
-        return "SAGA"
+        saga208 = ProcessingConfig.getSetting(SagaUtils.SAGA_208)
+        return "SAGA (2.0.8)" if saga208 else "SAGA (2.1)"
 
     def getName(self):
         return "saga"
