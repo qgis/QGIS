@@ -223,8 +223,8 @@ QgsBrowserDockWidget::QgsBrowserDockWidget( QString name, QWidget * parent ) :
   mBrowserView = new QgsBrowserTreeView( this );
   mLayoutBrowser->addWidget( mBrowserView );
 
-  mBtnRefresh->setIcon( QgsApplication::getThemeIcon( "mActionRefresh.png" ) );
-  mBtnAddLayers->setIcon( QgsApplication::getThemeIcon( "mActionAdd.png" ) );
+  mBtnRefresh->setIcon( QgsApplication::getThemeIcon( "mActionDraw.svg" ) );
+  mBtnAddLayers->setIcon( QgsApplication::getThemeIcon( "mActionAdd.svg" ) );
   mBtnCollapse->setIcon( QgsApplication::getThemeIcon( "mActionCollapseTree.png" ) );
 
   mWidgetFilter->hide();
