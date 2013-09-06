@@ -226,7 +226,9 @@ static void dumpBacktrace( unsigned int depth )
 
       // stdin from pipe
       if ( dup( fd[0] ) != STDIN_FILENO )
+      {
         QgsDebugMsg( "dup to stdin failed" );
+      }
 
       close( fd[1] );        // close writing end
       execl( "/usr/bin/c++filt", "c++filt", ( char * ) 0 );
@@ -241,7 +243,9 @@ static void dumpBacktrace( unsigned int depth )
 
     // stderr to pipe
     if ( dup( fd[1] ) != STDERR_FILENO )
+    {
       QgsDebugMsg( "dup to stderr failed" );
+    }
 
     close( fd[1] );          // close duped pipe
   }
@@ -255,7 +259,9 @@ static void dumpBacktrace( unsigned int depth )
     int status;
     close( STDERR_FILENO );
     if ( dup( stderr_fd ) != STDERR_FILENO )
+    {
       QgsDebugMsg( "dup to stderr failed" );
+    }
     close( stderr_fd );
     wait( &status );
   }

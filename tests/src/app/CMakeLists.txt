@@ -90,4 +90,4 @@ ENDMACRO (ADD_QGIS_TEST)
 #############################################################
 # Tests:
 
-ADD_QGIS_TEST(qgisappclippboard testqgisappclipboard.cpp)
+ADD_QGIS_TEST(qgisappclipboard testqgisappclipboard.cpp)
