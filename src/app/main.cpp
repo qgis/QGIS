@@ -433,7 +433,7 @@ int main( int argc, char *argv[] )
 #if defined(ANDROID)
   QgsDebugMsg( QString( "Android: All params stripped" ) );// Param %1" ).arg( argv[0] ) );
   //put all QGIS settings in the same place
-  configpath = QgsApplication::qgisSettingsPath();
+  configpath = QgsApplication::qgisSettingsDirPath();
   QgsDebugMsg( QString( "Android: configpath set to %1" ).arg( configpath ) );
 #elif defined(Q_WS_WIN)
   for ( int i = 1; i < argc; i++ )
