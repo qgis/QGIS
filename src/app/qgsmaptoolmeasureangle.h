@@ -25,7 +25,7 @@ class QgsDisplayAngle;
 class QgsRubberBand;
 
 /**Map tool to measure angle between two segments*/
-class QgsMapToolMeasureAngle: public QgsMapTool
+class APP_EXPORT QgsMapToolMeasureAngle: public QgsMapTool
 {
     Q_OBJECT
   public:

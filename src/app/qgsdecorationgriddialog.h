@@ -28,7 +28,7 @@ class QgsMarkerSymbolV2;
 /**
 @author Etienne Tourigny
 */
-class QgsDecorationGridDialog : public QDialog, private Ui::QgsDecorationGridDialog
+class APP_EXPORT QgsDecorationGridDialog : public QDialog, private Ui::QgsDecorationGridDialog
 {
     Q_OBJECT
 

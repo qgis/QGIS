@@ -27,7 +27,7 @@ class QAction;
 class QToolBar;
 class QPainter;
 
-class QgsDecorationNorthArrow: public QgsDecorationItem
+class APP_EXPORT QgsDecorationNorthArrow: public QgsDecorationItem
 {
     Q_OBJECT
 

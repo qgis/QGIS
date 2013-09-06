@@ -30,7 +30,7 @@ back to QgsVectorLayer.
 
 class QgsAttributeAction;
 
-class QgsAttributeActionDialog: public QWidget, private Ui::QgsAttributeActionDialogBase
+class APP_EXPORT QgsAttributeActionDialog: public QWidget, private Ui::QgsAttributeActionDialogBase
 {
     Q_OBJECT
 

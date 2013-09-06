@@ -22,7 +22,7 @@ class QgsMapCanvas;
 class QgsRubberBand;
 
 
-class QgsMapToolSelectFreehand : public QgsMapTool
+class APP_EXPORT QgsMapToolSelectFreehand : public QgsMapTool
 {
     Q_OBJECT
   public:

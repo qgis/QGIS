@@ -30,7 +30,7 @@ class QgsVertexMarker;
 class QgsMapLayer;
 class QgsGeometryValidator;
 
-class QgsMapToolCapture : public QgsMapToolEdit
+class APP_EXPORT QgsMapToolCapture : public QgsMapToolEdit
 {
     Q_OBJECT
 

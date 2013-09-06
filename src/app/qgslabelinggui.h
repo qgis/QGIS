@@ -28,7 +28,7 @@ class QgsCharacterSelectorDialog;
 
 #include "qgspallabeling.h"
 
-class QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
+class APP_EXPORT QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
 {
     Q_OBJECT
 

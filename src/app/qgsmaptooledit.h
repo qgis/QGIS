@@ -23,7 +23,7 @@ class QgsRubberBand;
 class QKeyEvent;
 
 /**Base class for map tools that edit vector geometry*/
-class QgsMapToolEdit: public QgsMapTool
+class APP_EXPORT QgsMapToolEdit: public QgsMapTool
 {
   public:
     QgsMapToolEdit( QgsMapCanvas* canvas );

@@ -21,7 +21,7 @@
 class QDomElement;
 
 /**A dialog to select layers and groups from a qgs project*/
-class QgsProjectLayerGroupDialog: public QDialog, private Ui::QgsProjectLayerGroupDialogBase
+class APP_EXPORT QgsProjectLayerGroupDialog: public QDialog, private Ui::QgsProjectLayerGroupDialogBase
 {
     Q_OBJECT
   public:

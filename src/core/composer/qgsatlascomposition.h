@@ -136,7 +136,7 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     QString mFeatureFilter;
 
     // id of each iterated feature (after filtering and sorting)
-    std::vector<QgsFeatureId> mFeatureIds;
+    QVector<QgsFeatureId> mFeatureIds;
 
     QgsFeature mCurrentFeature;
     QgsRectangle mOrigExtent;

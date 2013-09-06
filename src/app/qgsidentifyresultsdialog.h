@@ -46,7 +46,7 @@ class QDockWidget;
  *@author Gary E.Sherman
  */
 
-class QgsIdentifyResultsWebView : public QWebView
+class APP_EXPORT QgsIdentifyResultsWebView : public QWebView
 {
     Q_OBJECT;
   public:
@@ -59,7 +59,7 @@ class QgsIdentifyResultsWebView : public QWebView
     QWebView *createWindow( QWebPage::WebWindowType type );
 };
 
-class QgsIdentifyResultsFeatureItem: public QTreeWidgetItem
+class APP_EXPORT QgsIdentifyResultsFeatureItem: public QTreeWidgetItem
 {
   public:
     QgsIdentifyResultsFeatureItem( const QgsFields &fields, const QgsFeature &feature, const QgsCoordinateReferenceSystem &crs, const QStringList & strings = QStringList() );
@@ -73,7 +73,7 @@ class QgsIdentifyResultsFeatureItem: public QTreeWidgetItem
     QgsCoordinateReferenceSystem mCrs;
 };
 
-class QgsIdentifyResultsWebViewItem: public QObject, public QTreeWidgetItem
+class APP_EXPORT QgsIdentifyResultsWebViewItem: public QObject, public QTreeWidgetItem
 {
     Q_OBJECT
 
@@ -89,7 +89,7 @@ class QgsIdentifyResultsWebViewItem: public QObject, public QTreeWidgetItem
     QgsIdentifyResultsWebView *mWebView;
 };
 
-class QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdentifyResultsBase
+class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdentifyResultsBase
 {
     Q_OBJECT
 

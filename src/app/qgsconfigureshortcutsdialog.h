@@ -20,7 +20,7 @@
 
 #include "ui_qgsconfigureshortcutsdialog.h"
 
-class QgsConfigureShortcutsDialog : public QDialog, private Ui::QgsConfigureShortcutsDialog
+class APP_EXPORT QgsConfigureShortcutsDialog : public QDialog, private Ui::QgsConfigureShortcutsDialog
 {
     Q_OBJECT
 

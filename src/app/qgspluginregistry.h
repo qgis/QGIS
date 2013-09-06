@@ -20,8 +20,8 @@
 #define QGSPLUGINREGISTRY_H
 
 #include <QMap>
+#include "qgspluginmetadata.h"
 
-class QgsPluginMetadata;
 class QgsPythonUtils;
 class QgisPlugin;
 class QgisInterface;
@@ -36,7 +36,7 @@ class QString;
 * - C++ plugins: base name of plugin library, e.g. libgrassplugin
 * - Python plugins: module name (directory) of plugin, e.g. db_manager
 */
-class QgsPluginRegistry
+class APP_EXPORT QgsPluginRegistry
 {
   public:
     //! Returns the instance pointer, creating the object on the first call

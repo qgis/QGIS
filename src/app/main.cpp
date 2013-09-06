@@ -149,49 +149,6 @@ bool bundleclicked( int argc, char *argv[] )
   return ( argc > 1 && memcmp( argv[1], "-psn_", 5 ) == 0 );
 }
 
-#ifdef Q_OS_WIN
-LONG WINAPI qgisCrashDump( struct _EXCEPTION_POINTERS *ExceptionInfo )
-{
-  QString dumpName = QDir::toNativeSeparators(
-                       QString( "%1\\qgis-%2-%3-%4-%5.dmp" )
-                       .arg( QDir::tempPath() )
-                       .arg( QDateTime::currentDateTime().toString( "yyyyMMdd-hhmmss" ) )
-                       .arg( GetCurrentProcessId() )
-                       .arg( GetCurrentThreadId() )
-                       .arg( QGis::QGIS_DEV_VERSION )
-                     );
-
-  QString msg;
-  HANDLE hDumpFile = CreateFile( dumpName.toLocal8Bit(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_WRITE | FILE_SHARE_READ, 0, CREATE_ALWAYS, 0, 0 );
-  if ( hDumpFile != INVALID_HANDLE_VALUE )
-  {
-    MINIDUMP_EXCEPTION_INFORMATION ExpParam;
-    ExpParam.ThreadId = GetCurrentThreadId();
-    ExpParam.ExceptionPointers = ExceptionInfo;
-    ExpParam.ClientPointers = TRUE;
-
-    if ( MiniDumpWriteDump( GetCurrentProcess(), GetCurrentProcessId(), hDumpFile, MiniDumpWithDataSegs, ExceptionInfo ? &ExpParam : NULL, NULL, NULL ) )
-    {
-      msg = QObject::tr( "minidump written to %1" ).arg( dumpName );
-    }
-    else
-    {
-      msg = QObject::tr( "writing of minidump to %1 failed (%2)" ).arg( dumpName ).arg( GetLastError(), 0, 16 );
-    }
-
-    CloseHandle( hDumpFile );
-  }
-  else
-  {
-    msg = QObject::tr( "creation of minidump to %1 failed (%2)" ).arg( dumpName ).arg( GetLastError(), 0, 16 );
-  }
-
-  QMessageBox::critical( 0, QObject::tr( "Crash dumped" ), msg );
-
-  return EXCEPTION_EXECUTE_HANDLER;
-}
-#endif
-
 void myPrint( const char *fmt, ... )
 {
   va_list ap;
@@ -421,7 +378,7 @@ int main( int argc, char *argv[] )
 #endif
 
 #ifdef Q_OS_WIN
-  SetUnhandledExceptionFilter( qgisCrashDump );
+  SetUnhandledExceptionFilter( QgisApp::qgisCrashDump );
 #endif
 
   // initialize random number seed

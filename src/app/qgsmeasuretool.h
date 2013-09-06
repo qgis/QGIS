@@ -27,7 +27,7 @@ class QgsRubberBand;
 
 
 
-class QgsMeasureTool : public QgsMapTool
+class APP_EXPORT QgsMeasureTool : public QgsMapTool
 {
     Q_OBJECT
 

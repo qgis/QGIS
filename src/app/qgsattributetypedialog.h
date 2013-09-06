@@ -25,7 +25,7 @@ class QDialog;
 class QLayout;
 class QgsField;
 
-class QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttributeTypeDialog
+class APP_EXPORT QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttributeTypeDialog
 {
     Q_OBJECT
 

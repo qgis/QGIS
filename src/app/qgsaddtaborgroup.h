@@ -25,7 +25,7 @@
 class QTreeWidgetItem;
 class QgsVectorLayer;
 
-class QgsAddTabOrGroup : public QDialog, private Ui::QgsAddTabOrGroupBase
+class APP_EXPORT QgsAddTabOrGroup : public QDialog, private Ui::QgsAddTabOrGroupBase
 {
     Q_OBJECT
 

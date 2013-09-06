@@ -50,8 +50,8 @@ public:
     QString featureFilter() const;
     void setFeatureFilter( const QString& expression );
 
-    size_t sortKeyAttributeIndex() const;
-    void setSortKeyAttributeIndex( size_t idx );
+    int sortKeyAttributeIndex() const;
+    void setSortKeyAttributeIndex( int idx );
 
     /** Begins the rendering. */
     void beginRender();
@@ -59,10 +59,10 @@ public:
     void endRender();
 
     /** Returns the number of features in the coverage layer */
-    size_t numFeatures() const;
+    int numFeatures() const;
 
     /** Prepare the atlas map for the given feature. Sets the extent and context variables */
-    void prepareForFeature( size_t i );
+    void prepareForFeature( int i );
 
     /** Returns the current filename. Must be called after prepareForFeature( i ) */
     const QString& currentFilename() const;

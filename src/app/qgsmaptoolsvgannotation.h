@@ -20,7 +20,7 @@
 
 #include "qgsmaptoolannotation.h"
 
-class QgsMapToolSvgAnnotation: public QgsMapToolAnnotation
+class APP_EXPORT QgsMapToolSvgAnnotation: public QgsMapToolAnnotation
 {
   public:
     QgsMapToolSvgAnnotation( QgsMapCanvas* canvas );

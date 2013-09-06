@@ -19,7 +19,7 @@
 #include "qgsmaptoolcapture.h"
 
 /**A map tool that draws a line and splits the features cut by the line*/
-class QgsMapToolSplitFeatures: public QgsMapToolCapture
+class APP_EXPORT QgsMapToolSplitFeatures: public QgsMapToolCapture
 {
     Q_OBJECT
   public:

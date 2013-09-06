@@ -24,7 +24,7 @@
 #include "qgsvectorlayer.h"
 #include "ui_qgsfieldspropertiesbase.h"
 
-class QgsAttributesTree : public QTreeWidget
+class APP_EXPORT QgsAttributesTree : public QTreeWidget
 {
     Q_OBJECT
   public:
@@ -42,7 +42,7 @@ class QgsAttributesTree : public QTreeWidget
 };
 
 
-class QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPropertiesBase
+class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPropertiesBase
 {
     Q_OBJECT
 

@@ -22,7 +22,7 @@
 class QgsVectorLayer;
 
 /**A dialog class that provides calculation of new fields using existing fields, values and a set of operators*/
-class QgsFieldCalculator: public QDialog, private Ui::QgsFieldCalculatorBase
+class APP_EXPORT QgsFieldCalculator: public QDialog, private Ui::QgsFieldCalculatorBase
 {
     Q_OBJECT
   public:

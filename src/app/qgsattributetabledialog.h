@@ -41,7 +41,7 @@ class QgsAttributeTableModel;
 class QgsAttributeTableFilterModel;
 class QgsAttributeTableView;
 
-class QgsAttributeTableDialog : public QDialog, private Ui::QgsAttributeTableDialog
+class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttributeTableDialog
 {
     Q_OBJECT
 

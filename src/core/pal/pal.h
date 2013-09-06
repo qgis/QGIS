@@ -35,7 +35,7 @@
 #define _PAL_H
 
 
-#include <list>
+#include <QList>
 #include <iostream>
 #include <ctime>
 
@@ -127,7 +127,7 @@ namespace pal
       friend class FeaturePart;
       friend class Layer;
     private:
-      std::list<Layer*> * layers;
+      QList<Layer*> *layers;
 
       SimpleMutex *lyrsMutex;
 
@@ -287,7 +287,7 @@ namespace pal
        *
        * @return a list of all layers
        */
-      std::list<Layer*> *getLayers();
+      QList<Layer*> *getLayers();
 
       /**
        * \brief remove a layer

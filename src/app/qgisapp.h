@@ -100,10 +100,14 @@ class QgsTileScaleWidget;
 #include <QTapAndHoldGesture>
 #endif
 
+#ifdef Q_OS_WIN
+#include <windows.h>
+#endif
+
 /*! \class QgisApp
  * \brief Main window for the Qgis application
  */
-class QgisApp : public QMainWindow, private Ui::MainWindow
+class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 {
     Q_OBJECT
   public:
@@ -425,11 +429,6 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
      * @note added in 1.9 */
     int messageTimeout();
 
-#ifdef Q_OS_WIN
-    //! ugly hack
-    void skipNextContextMenuEvent();
-#endif
-
     //! emit initializationCompleted signal
     //! @note added in 1.6
     void completeInitialization();
@@ -438,6 +437,13 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
 
     QList<QgsDecorationItem*> decorationItems() { return mDecorationItems; }
     void addDecorationItem( QgsDecorationItem* item ) { mDecorationItems.append( item ); }
+
+#ifdef Q_OS_WIN
+    //! ugly hack
+    void skipNextContextMenuEvent();
+
+    static LONG WINAPI qgisCrashDump( struct _EXCEPTION_POINTERS *ExceptionInfo );
+#endif
 
   public slots:
     //! Zoom to full extent

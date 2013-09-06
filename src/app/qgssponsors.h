@@ -19,7 +19,7 @@
 
 #include "ui_qgssponsorsbase.h"
 
-class QgsSponsors : public QDialog, private Ui::QgsSponsorsBase
+class APP_EXPORT QgsSponsors : public QDialog, private Ui::QgsSponsorsBase
 {
     Q_OBJECT
   public:

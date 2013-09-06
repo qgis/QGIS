@@ -33,7 +33,7 @@ class QgsMapLayer;
 /**
  * Class that handles undo display fo undo commands
  */
-class QgsUndoWidget : public QDockWidget
+class APP_EXPORT QgsUndoWidget : public QDockWidget
 {
     Q_OBJECT
   public:

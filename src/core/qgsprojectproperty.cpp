@@ -21,7 +21,7 @@
 #include <QDomDocument>
 #include <QStringList>
 
-void QgsPropertyValue::dump( size_t tabs ) const
+void QgsPropertyValue::dump( int tabs ) const
 {
   QString tabString;
   tabString.fill( '\t', tabs );
@@ -290,7 +290,7 @@ QVariant QgsPropertyKey::value() const
 } // QVariant QgsPropertyKey::value()
 
 
-void QgsPropertyKey::dump( size_t tabs ) const
+void QgsPropertyKey::dump( int tabs ) const
 {
   QString tabString;
 

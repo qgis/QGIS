@@ -26,7 +26,7 @@
 class QgsMapRenderer;
 
 /**A dialog to enter data defined label attributes*/
-class QgsLabelPropertyDialog: public QDialog, private Ui::QgsLabelPropertyDialogBase
+class APP_EXPORT QgsLabelPropertyDialog: public QDialog, private Ui::QgsLabelPropertyDialogBase
 {
     Q_OBJECT
   public:

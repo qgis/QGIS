@@ -25,7 +25,7 @@
 class QgsRubberBand;
 
 
-class QgsSimplifyDialog : public QDialog, private Ui::SimplifyLineDialog
+class APP_EXPORT QgsSimplifyDialog : public QDialog, private Ui::SimplifyLineDialog
 {
     Q_OBJECT
 
@@ -52,7 +52,7 @@ class QgsSimplifyDialog : public QDialog, private Ui::SimplifyLineDialog
 
 
 /** Map tool to simplify line/polygon features */
-class QgsMapToolSimplify: public QgsMapToolEdit
+class APP_EXPORT QgsMapToolSimplify: public QgsMapToolEdit
 {
     Q_OBJECT
 
@@ -106,7 +106,7 @@ class QgsMapToolSimplify: public QgsMapToolEdit
 /**
   Implementation of Douglas-Peucker simplification algorithm.
  */
-class QgsSimplifyFeature
+class APP_EXPORT QgsSimplifyFeature
 {
     /** structure for one entry in stack for simplification algorithm */
     struct StackEntry

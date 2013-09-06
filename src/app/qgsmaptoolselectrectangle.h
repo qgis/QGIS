@@ -28,7 +28,7 @@ class QgsGeometry;
 class QgsRubberBand;
 
 
-class QgsMapToolSelectRectangle : public QgsMapTool
+class APP_EXPORT QgsMapToolSelectRectangle : public QgsMapTool
 {
     Q_OBJECT
   public:

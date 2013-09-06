@@ -27,7 +27,7 @@
 * @see also QgsTipOfTheDay, QgsTip
 */
 
-class QgsTipFactory : public QObject
+class APP_EXPORT QgsTipFactory : public QObject
 {
     Q_OBJECT //used for tr() so we don't need to do QObject::tr()
   public:

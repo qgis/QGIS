@@ -50,7 +50,7 @@ class QgsVectorLayer;
  */
 #define QGSCLIPBOARD_STYLE_MIME "application/qgis.style"
 
-class QgsClipboard : public QObject
+class APP_EXPORT QgsClipboard : public QObject
 {
     Q_OBJECT
   public:

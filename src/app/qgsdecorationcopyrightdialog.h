@@ -19,7 +19,7 @@ class QFont;
 
 class QgsDecorationCopyright;
 
-class QgsDecorationCopyrightDialog : public QDialog, private Ui::QgsDecorationCopyrightDialog
+class APP_EXPORT QgsDecorationCopyrightDialog : public QDialog, private Ui::QgsDecorationCopyrightDialog
 {
     Q_OBJECT
 

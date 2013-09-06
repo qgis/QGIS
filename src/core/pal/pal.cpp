@@ -85,7 +85,7 @@ namespace pal
     // do not init and exit GEOS - we do it inside QGIS
     //initGEOS( geosNotice, geosError );
 
-    layers = new std::list<Layer*>();
+    layers = new QList<Layer*>();
 
     lyrsMutex = new SimpleMutex();
 
@@ -114,7 +114,7 @@ namespace pal
 
   }
 
-  std::list<Layer*> *Pal::getLayers()
+  QList<Layer*> *Pal::getLayers()
   {
     // TODO make const ! or whatever else
     return layers;
@@ -123,7 +123,7 @@ namespace pal
   Layer *Pal::getLayer( const char *lyrName )
   {
     lyrsMutex->lock();
-    for ( std::list<Layer*>::iterator it = layers->begin(); it != layers->end(); it++ )
+    for ( QList<Layer*>::iterator it = layers->begin(); it != layers->end(); it++ )
       if ( strcmp(( *it )->name, lyrName ) == 0 )
       {
         lyrsMutex->unlock();
@@ -140,7 +140,7 @@ namespace pal
     lyrsMutex->lock();
     if ( layer )
     {
-      layers->remove( layer );
+      layers->removeOne( layer );
       delete layer;
     }
     lyrsMutex->unlock();
@@ -176,7 +176,7 @@ namespace pal
     std::cout << "nbLayers:" << layers->size() << std::endl;
 #endif
 
-    for ( std::list<Layer*>::iterator it = layers->begin(); it != layers->end(); it++ )
+    for ( QList<Layer*>::iterator it = layers->begin(); it != layers->end(); it++ )
     {
       if ( strcmp(( *it )->name, lyrName ) == 0 )   // if layer already known
       {
@@ -401,12 +401,12 @@ namespace pal
     int oldNbft = 0;
     Layer *layer;
 
-    std::list<char*> *labLayers = new std::list<char*>();
+    QList<char*> *labLayers = new QList<char*>();
 
     lyrsMutex->lock();
     for ( i = 0; i < nbLayers; i++ )
     {
-      for ( std::list<Layer*>::iterator it = layers->begin(); it != layers->end(); it++ ) // iterate on pal->layers
+      for ( QList<Layer*>::iterator it = layers->begin(); it != layers->end(); it++ ) // iterate on pal->layers
       {
         layer = *it;
         // Only select those who are active and labellable (with scale constraint) or those who are active and which must be treated as obstaclewhich must be treated as obstacle
@@ -641,7 +641,7 @@ namespace pal
     double *priorities = new double[nbLayers];
     Layer *layer;
     i = 0;
-    for ( std::list<Layer*>::iterator it = layers->begin(); it != layers->end(); it++ )
+    for ( QList<Layer*>::iterator it = layers->begin(); it != layers->end(); it++ )
     {
       layer = *it;
       layersName[i] = layer->name;
@@ -806,7 +806,7 @@ namespace pal
     double *priorities = new double[nbLayers];
     Layer *layer;
     int i = 0;
-    for ( std::list<Layer*>::iterator it = layers->begin(); it != layers->end(); it++ )
+    for ( QList<Layer*>::iterator it = layers->begin(); it != layers->end(); it++ )
     {
       layer = *it;
       layersName[i] = layer->name;

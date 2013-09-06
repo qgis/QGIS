@@ -23,7 +23,7 @@
 /**Base class for vertex manipulation tools.
  Inherited by QgsMapToolMoveVertex, QgsMapToolAddVertex,
 QgsMapToolDeleteVertex*/
-class QgsMapToolVertexEdit: public QgsMapToolEdit
+class APP_EXPORT QgsMapToolVertexEdit: public QgsMapToolEdit
 {
     Q_OBJECT
 

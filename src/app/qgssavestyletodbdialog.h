@@ -14,7 +14,7 @@
 #include "qgisgui.h"
 #include "qgsfield.h"
 
-class QgsSaveStyleToDbDialog : public QDialog, private Ui::QgsSaveToDBDialog
+class APP_EXPORT QgsSaveStyleToDbDialog : public QDialog, private Ui::QgsSaveToDBDialog
 {
     QString mUIFileContent;
     Q_OBJECT

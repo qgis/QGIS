@@ -25,7 +25,7 @@ class QgsLayerItem;
 class QgsDataItem;
 class QgsBrowserTreeFilterProxyModel;
 
-class QgsBrowserDockWidget : public QDockWidget, private Ui::QgsBrowserDockWidgetBase
+class APP_EXPORT QgsBrowserDockWidget : public QDockWidget, private Ui::QgsBrowserDockWidgetBase
 {
     Q_OBJECT
   public:

@@ -21,7 +21,7 @@
 #include "qgsmaptoollabel.h"
 
 /**A map tool for dragging label positions*/
-class QgsMapToolMoveLabel: public QgsMapToolLabel
+class APP_EXPORT QgsMapToolMoveLabel: public QgsMapToolLabel
 {
     Q_OBJECT
 

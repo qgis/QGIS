@@ -21,7 +21,7 @@
 
 class QgsPalLabeling;
 
-class QgsLabelEngineConfigDialog : public QDialog, private Ui::QgsEngineConfigDialog
+class APP_EXPORT QgsLabelEngineConfigDialog : public QDialog, private Ui::QgsEngineConfigDialog
 {
     Q_OBJECT
   public:

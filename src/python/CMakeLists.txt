@@ -1,8 +1,8 @@
 IF (WIN32)
   IF (MSVC)
-    ADD_DEFINITIONS("-DPYTHON_EXPORT=__declspec(dllexport)")
+    ADD_DEFINITIONS("-DPYTHON_EXPORT=${DLLEXPORT}")
   ELSE (MSVC)
-    ADD_DEFINITIONS("\"-DPYTHON_EXPORT=__declspec(dllexport)\"")
+    ADD_DEFINITIONS("\"-DPYTHON_EXPORT=${DLLEXPORT}\"")
   ENDIF (MSVC)
 ELSE (WIN32)
   # other compilers don't use that MSVC construct
