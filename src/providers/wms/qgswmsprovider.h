@@ -31,6 +31,7 @@
 #include <QMap>
 #include <QVector>
 #include <QUrl>
+#include <QPixmap>
 
 class QgsCoordinateTransform;
 class QNetworkAccessManager;
@@ -631,6 +632,8 @@ class QgsWmsProvider : public QgsRasterDataProvider
      */
     QStringList subLayerStyles() const;
 
+    /** Get GetLegendGraphic if service available otherwise NULL */
+    QPixmap getLegendGraphic( double scale, bool forceRefresh = false );
 
     // TODO: Get the WMS connection
 
@@ -736,6 +739,8 @@ class QgsWmsProvider : public QgsRasterDataProvider
     void capabilitiesReplyProgress( qint64, qint64 );
     void identifyReplyFinished();
     void tileReplyFinished();
+    void getLegendGraphicReplyFinished();
+    void getLegendGraphicReplyProgress( qint64, qint64 );
 
   private:
     void showMessageBox( const QString& title, const QString& text );
@@ -907,6 +912,16 @@ class QgsWmsProvider : public QgsRasterDataProvider
     QByteArray mHttpCapabilitiesResponse;
 
     /**
+     * GetLegendGraphic of the WMS (raw)
+     */
+    QByteArray mHttpGetLegendGraphicResponse;
+
+    /**
+     * GetLegendGraphic WMS Pixmap result
+     */
+    QPixmap mGetLegendGraphicPixmap;
+
+    /**
      * Capabilities of the WMS
      */
     QDomDocument mCapabilitiesDom;
@@ -1000,6 +1015,11 @@ class QgsWmsProvider : public QgsRasterDataProvider
      * The reply to the capabilities request
      */
     QNetworkReply *mCapabilitiesReply;
+
+    /**
+     * The reply to the GetLegendGraphic request
+     */
+    QNetworkReply *mGetLegendGraphicReply;
 
     /**
      * The reply to the capabilities request
