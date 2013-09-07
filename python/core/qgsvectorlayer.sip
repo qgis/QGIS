@@ -120,6 +120,15 @@ class QgsVectorLayer : QgsMapLayer
       Color,         /* color @added in 1.9 */
     };
 
+    /** Types of feature form suppression after feature creation
+     * @note added in 2.1 */
+    enum FeatureFormSuppress
+    {
+      SuppressDefault = 0, // use the application-wide setting
+      SuppressOn = 1,
+      SuppressOff = 2
+    };
+
     struct RangeData
     {
       RangeData();
