@@ -36,7 +36,7 @@ class QgisApp;
  * Only those functions "exposed" by QgisInterface can be called from within a
  * plugin.
  */
-class QgisAppInterface : public QgisInterface
+class APP_EXPORT QgisAppInterface : public QgisInterface
 {
     Q_OBJECT
 

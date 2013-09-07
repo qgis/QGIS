@@ -46,6 +46,7 @@ class QgsComposerMapWidget: public QWidget, private Ui::QgsComposerMapWidgetBase
     void on_mOverviewFrameStyleButton_clicked();
     void on_mOverviewBlendModeComboBox_currentIndexChanged( int index );
     void on_mOverviewInvertCheckbox_toggled( bool state );
+    void on_mOverviewCenterCheckbox_toggled( bool state );
 
     void on_mXMinLineEdit_editingFinished();
     void on_mXMaxLineEdit_editingFinished();

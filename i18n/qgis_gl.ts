@@ -95,34 +95,34 @@
     <name>CoordinateCapture</name>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="96"/>
-        <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="160"/>
+        <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="102"/>
         <source>Coordinate Capture</source>
         <translation>Captura de Coordenadas</translation>
     </message>
     <message>
-        <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="98"/>
-        <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="144"/>
+        <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="106"/>
+        <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="153"/>
         <source>Click on the map to view coordinates and capture to clipboard.</source>
         <translation>Premer no mapa para ver coordenadas e capturalas ó portapapeis.</translation>
     </message>
     <message>
-        <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="101"/>
+        <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="109"/>
         <source>&amp;Coordinate Capture</source>
         <translation>&amp;Captura de Coordenadas</translation>
     </message>
     <message>
-        <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="116"/>
+        <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="125"/>
         <source>Click to select the CRS to use for coordinate display</source>
         <translatorcomment>Sistema de Referencia de Coordenadas</translatorcomment>
         <translation>Clicar para selecciona-lo SRC a utilizar</translation>
     </message>
     <message>
-        <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="124"/>
+        <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="133"/>
         <source>Coordinate in your selected CRS (lat,lon or east,north)</source>
         <translation>Coordenadas no SRC seleccionado (latitude, lonxitude ou este, norte)</translation>
     </message>
     <message>
-        <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="128"/>
+        <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="137"/>
         <source>Coordinate in map canvas coordinate reference system (lat,lon or east,north)</source>
         <translation>Coordenadas no sistema de referencia de coordenadas da vista do mapa (latitude, lonxitude ou este, norte)</translation>
     </message>
@@ -136,22 +136,22 @@
         <translation type="obsolete">Coordenadas no sistema de referencia de coordenadas da vista do mapa</translation>
     </message>
     <message>
-        <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="131"/>
+        <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="140"/>
         <source>Copy to clipboard</source>
         <translation>Copiar ó portapapeis</translation>
     </message>
     <message>
-        <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="136"/>
+        <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="145"/>
         <source>Click to enable mouse tracking. Click the canvas to stop</source>
         <translation>Clicar para activa-lo seguemento do rato. Clicar na vista do mapa para parar</translation>
     </message>
     <message>
-        <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="141"/>
+        <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="150"/>
         <source>Start capture</source>
         <translation>Comezar captura</translation>
     </message>
     <message>
-        <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="142"/>
+        <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="151"/>
         <source>Click to enable coordinate capture</source>
         <translation>Clicar para activa-la captura de coordenadas</translation>
     </message>
@@ -2755,7 +2755,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/processing/ui/DlgConfig.ui" line="14"/>
         <source>Processing options</source>
-        <translation type="unfinished"></translation>
+        <translation>Opcións de Procesamento</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgConfig.ui" line="26"/>
@@ -3182,7 +3182,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/processing/ui/DlgModeler.ui" line="14"/>
         <source>Processing modeler</source>
-        <translation type="unfinished"></translation>
+        <translation>Modelizador de Procesamento</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgModeler.ui" line="40"/>
@@ -3435,7 +3435,7 @@ columna de xeometría - columna con valores enteiros únicos</translation>
     </message>
     <message>
         <source>Are you sure</source>
-        <translation>¿Está seguro?</translation>
+        <translation>Está seguro</translation>
     </message>
     <message>
         <source>really delete column &apos;%s&apos;?</source>
@@ -5915,6 +5915,9 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
         <location filename="../src/plugins/globe/globe_plugin.cpp" line="213"/>
         <location filename="../src/plugins/globe/globe_plugin.cpp" line="214"/>
         <location filename="../src/plugins/globe/globe_plugin.cpp" line="215"/>
+        <location filename="../src/plugins/globe/globe_plugin.cpp" line="781"/>
+        <location filename="../src/plugins/globe/globe_plugin.cpp" line="782"/>
+        <location filename="../src/plugins/globe/globe_plugin.cpp" line="783"/>
         <source>&amp;Globe</source>
         <translation>&amp;Globo</translation>
     </message>
@@ -7708,7 +7711,7 @@ Prema na tecla ALT para alterna-las etiquetas seleccionadas entre o estado engan
     </message>
     <message>
         <source>Processing models (*.model)</source>
-        <translation type="unfinished"></translation>
+        <translation>Modelos de Procesamento (*.model)</translation>
     </message>
     <message>
         <source>SEXTANTE models (*.model)</source>
@@ -8672,31 +8675,31 @@ Remedie esta situación primeiro, porque o Plugin OSM non sabe que capa será o 
     <name>Processing</name>
     <message>
         <source>Processing</source>
-        <translation type="unfinished"></translation>
+        <translation>Procesamento</translation>
     </message>
     <message>
         <source>Toolbox</source>
-        <translation type="unfinished"></translation>
+        <translation>Ferramentas</translation>
     </message>
     <message>
         <source>Graphical modeler</source>
-        <translation type="unfinished"></translation>
+        <translation>Modelizador Gráfico</translation>
     </message>
     <message>
         <source>History and log</source>
-        <translation type="unfinished">Historial e incidencias</translation>
+        <translation>Historial e incidencias</translation>
     </message>
     <message>
         <source>Options and configuration</source>
-        <translation type="unfinished"></translation>
+        <translation>Opcións e configuración</translation>
     </message>
     <message>
         <source>&amp;Results viewer</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Visor de resultados</translation>
     </message>
     <message>
         <source>&amp;Commander</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Comandos</translation>
     </message>
 </context>
 <context>
@@ -8704,32 +8707,32 @@ Remedie esta situación primeiro, porque o Plugin OSM non sabe que capa será o 
     <message>
         <location filename="../python/plugins/processing/ui/ProcessingToolbox.ui" line="14"/>
         <source>Processing Toolbox</source>
-        <translation type="unfinished"></translation>
+        <translation>Ferramentas de Procesamento</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/ProcessingToolbox.ui" line="27"/>
         <source>Enter algorithm name to filter list</source>
-        <translation type="unfinished">Introduza nome de algoritmo para filtrar da lista</translation>
+        <translation>Introduza nome de algoritmo para filtrar da lista</translation>
     </message>
     <message>
         <source>Search...</source>
-        <translation type="unfinished">Buscar...</translation>
+        <translation>Buscar...</translation>
     </message>
     <message>
         <source>Execute</source>
-        <translation type="unfinished">Excutar</translation>
+        <translation>Executar</translation>
     </message>
     <message>
         <source>Execute as batch process</source>
-        <translation type="unfinished">Executar como proceso de lotes</translation>
+        <translation>Executar como proceso de lotes</translation>
     </message>
     <message>
         <source>Edit rendering styles for outputs</source>
-        <translation type="unfinished">Editar estilos de renderizado para saídas</translation>
+        <translation>Editar estilos de renderizado para saídas</translation>
     </message>
     <message>
         <source>Recently used algorithms</source>
-        <translation type="unfinished">Algoritmos utilizados recentemente</translation>
+        <translation>Algoritmos utilizados recentemente</translation>
     </message>
 </context>
 <context>
@@ -9068,7 +9071,7 @@ Remedie esta situación primeiro, porque o Plugin OSM non sabe que capa será o 
     </message>
     <message>
         <source>Import Processing class</source>
-        <translation type="unfinished"></translation>
+        <translation>Importar Clase de Procesamento</translation>
     </message>
     <message>
         <source>Enter text to find...</source>
@@ -10281,19 +10284,19 @@ Só %1 de %2 entidades escritas.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1118"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1576"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1582"/>
         <source>Arc/Info ASCII Coverage</source>
         <translation>Coberturas Arc/Info ASCII</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1125"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1581"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1587"/>
         <source>Atlas BNA</source>
         <translation>Atlas BNA</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1132"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1586"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1592"/>
         <source>Comma Separated Value</source>
         <translation>Valores Separados por Comas</translation>
     </message>
@@ -10309,56 +10312,56 @@ Só %1 de %2 entidades escritas.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1153"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1614"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1616"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1620"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1622"/>
         <source>FMEObjects Gateway</source>
         <translation>Entrada FMEObjects</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1160"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1622"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1628"/>
         <source>GeoJSON</source>
         <translation>GeoJSON</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1167"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1627"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1633"/>
         <source>GeoRSS</source>
         <translation>GeoRSS</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1174"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1632"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1638"/>
         <source>Geography Markup Language [GML]</source>
         <translation>Geography Markup Language [GML]</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1181"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1637"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1643"/>
         <source>Generic Mapping Tools [GMT]</source>
         <translation>Generic Mapping Tools [GMT]</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1188"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1642"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1648"/>
         <source>GPS eXchange Format [GPX]</source>
         <translation>GPS eXchange Format [GPX]</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1195"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1655"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1661"/>
         <source>INTERLIS 1</source>
         <translation>INTERLIS 1</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1202"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1660"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1666"/>
         <source>INTERLIS 2</source>
         <translation>INTERLIS 2</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1209"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1669"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1675"/>
         <source>Keyhole Markup Language [KML]</source>
         <translation>Keyhole Markup Language [KML]</translation>
     </message>
@@ -10378,31 +10381,31 @@ Só %1 de %2 entidades escritas.</translation>
         <translation>Fallou a transformación, parada a escritura (Excepción:%1)</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1674"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1680"/>
         <source>Mapinfo File</source>
         <translation>Ficheiro Mapinfo</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1231"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1679"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1685"/>
         <source>Microstation DGN</source>
         <translation>Microstation DGN</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1238"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1708"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1714"/>
         <source>S-57 Base file</source>
         <translation>S-57 Base file</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1245"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1714"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1720"/>
         <source>Spatial Data Transfer Standard [SDTS]</source>
         <translation>Spatial Data Transfer Standard [SDTS]</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1252"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1720"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1726"/>
         <source>SQLite</source>
         <translation>SQLite</translation>
     </message>
@@ -10415,13 +10418,13 @@ Só %1 de %2 entidades escritas.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1267"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1750"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1756"/>
         <source>AutoCAD DXF</source>
         <translation>AutoCAD DXF</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1274"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1745"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1751"/>
         <source>Geoconcept</source>
         <translation>Geoconcept</translation>
     </message>
@@ -11267,7 +11270,7 @@ Só %1 de %2 entidades escritas.</translation>
     </message>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="2002"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1770"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1776"/>
         <source>GDAL/OGR VSIFileHandler</source>
         <translation>GDAL/OGR VSIFileHandler</translation>
     </message>
@@ -11483,14 +11486,14 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="694"/>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="712"/>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="64"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1564"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1941"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1958"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2006"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2033"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2096"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1570"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1947"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1964"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2012"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2039"/>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2102"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2120"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2108"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2126"/>
         <source>OGR</source>
         <translation>OGR</translation>
     </message>
@@ -11500,49 +11503,49 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation>Incapaz de crear a fonte de datos. %1 existe e a etiqueta de sobreescritura é falsa.</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1564"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1570"/>
         <source>Unable to get driver %1</source>
         <translation>Incapaz de acceder ó driver %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1572"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1578"/>
         <source>Arc/Info Binary Coverage</source>
         <translation>Cobertura Arc/Info Binary</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1589"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1595"/>
         <source>DODS</source>
         <translation>DODS</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1281"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1595"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1601"/>
         <source>ESRI FileGDB</source>
         <translation>Ficheiro GDB ESRI</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1599"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1601"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1605"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1607"/>
         <source>ESRI Personal GeoDatabase</source>
         <translation>ESRI Personal GeoDatabase</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1607"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1613"/>
         <source>ESRI ArcSDE</source>
         <translation>ESRI ArcSDE</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1611"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1617"/>
         <source>ESRI Shapefiles</source>
         <translation>ESRI Shapefiles</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1647"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1653"/>
         <source>Grass Vector</source>
         <translation>Vector Grass</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1651"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1657"/>
         <source>Informix DataBlade</source>
         <translation>Informix DataBlade</translation>
     </message>
@@ -11551,98 +11554,98 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation type="obsolete">INGRES</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1665"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1671"/>
         <source>Ingres</source>
         <translation>Ingres</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1684"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1690"/>
         <source>MySQL</source>
         <translation>MySQL</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1688"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1694"/>
         <source>MSSQL</source>
         <translation>MSSQL</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1692"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1698"/>
         <source>Oracle Spatial</source>
         <translation>Oracle Spatial</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1696"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1702"/>
         <source>ODBC</source>
         <translation>ODBC</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1700"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1706"/>
         <source>OGDI Vectors</source>
         <translation>Vectores OGDI</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1704"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1710"/>
         <location filename="../src/providers/postgres/qgspostgresfeatureiterator.cpp" line="261"/>
         <source>PostgreSQL</source>
         <translation>PostgreSQL</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1725"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1731"/>
         <source>UK. NTF2</source>
         <translation>UK. NTF2</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1729"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1735"/>
         <source>U.S. Census TIGER/Line</source>
         <translation>U.S. Census TIGER/Line</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1733"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1739"/>
         <source>VRT - Virtual Datasource</source>
         <translation>VRT - Fonte de datos Virtual</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1739"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1745"/>
         <source>X-Plane/Flightgear</source>
         <translation>X-Plane/Flightgear</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1778"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1784"/>
         <source>All files</source>
         <translation>Tódolos ficheiros</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1941"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1947"/>
         <source>Duplicate field (10 significant characters): %1</source>
         <translation>Campo duplicado (10 caracteres descriptivos): %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1958"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1964"/>
         <source>Creating the data source %1 failed: %2</source>
         <translation>A creación da fonte de datos %1 fallou: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2006"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2012"/>
         <source>Unknown vector type of %1</source>
         <translation>Tipo de vector descoñecido de %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2033"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2039"/>
         <source>Creation of OGR data source %1 failed: %2</source>
         <translation>A creación da fonte de datos OGR %1 fallou: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2096"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2102"/>
         <source>field %1 with unsupported type %2 skipped</source>
         <translation>O ficheiro %1 co tipo non soportado %2 foi omitido</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2102"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2108"/>
         <source>creation of field %1 failed</source>
         <translation>Fallou a creación do campo %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2120"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2126"/>
         <source>Couldn&apos;t create file %1.qpj</source>
         <translation>Non se pode crea-lo ficheiro %1.qpj</translation>
     </message>
@@ -13553,12 +13556,12 @@ Póñase en contacto cos desarrolladores.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2346"/>
         <source>Compiled against GEOS</source>
-        <translation type="unfinished"></translation>
+        <translation>Compilado con GEOS</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2347"/>
         <source>Running against GEOS</source>
-        <translation type="unfinished"></translation>
+        <translation>Funcionando con GEOS</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4252"/>
@@ -14203,12 +14206,12 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsAddAttrDialog</name>
     <message>
-        <location filename="../src/app/qgsaddattrdialog.cpp" line="94"/>
+        <location filename="../src/app/qgsaddattrdialog.cpp" line="91"/>
         <source>Warning</source>
         <translation>Atención</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsaddattrdialog.cpp" line="95"/>
+        <location filename="../src/app/qgsaddattrdialog.cpp" line="92"/>
         <source>Invalid field name. This field name is reserved and cannot be used.</source>
         <translation>Nome de campo inválido. Este nome de campo está reservado e non pode ser usado.</translation>
     </message>
@@ -24263,22 +24266,22 @@ Deixar baleiro para aplicar automaticamente o máximo valor.</translation>
 <context>
     <name>QgsDualView</name>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="280"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="281"/>
         <source>Attributes changed</source>
         <translation>Atributos cambiados</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="299"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="300"/>
         <source>Expression based preview</source>
         <translation>Previsualización baseada nunha expresión</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="319"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="320"/>
         <source>Could not set preview column</source>
         <translation>Non se puido fixa-la columna de vista previa</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="320"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="321"/>
         <source>Could not set column &apos;%1&apos; as preview column.
 Parser error:
 %2</source>
@@ -24287,33 +24290,33 @@ Erro do intérprete:
 %2</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="361"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="362"/>
         <source>Run action</source>
         <translation>Executar acción</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="376"/>
         <location filename="../src/gui/attributetable/qgsdualview.cpp" line="377"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="378"/>
         <source>Open form</source>
         <translation>Abrir formulario</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="416"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="417"/>
         <source>Loading features...</source>
         <translation>Cargando entidades...</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="416"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="417"/>
         <source>Abort</source>
         <translation>Cancelar</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="417"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="418"/>
         <source>Attribute table</source>
         <translation>Táboa de Atributos</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="423"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="424"/>
         <source>%1 features loaded.</source>
         <translation>%1 entidades cargadas.</translation>
     </message>
@@ -32144,62 +32147,62 @@ Isto pode ser un problema de conexión da súa rede ou do servidor WMS.</numerus
         <translation>enteiro [1-10000]</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslabelinggui.cpp" line="1092"/>
+        <location filename="../src/app/qgslabelinggui.cpp" line="1093"/>
         <source>Text/Buffer sample</source>
         <translation>Mostra do Texto/Buffer</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslabelinggui.cpp" line="1099"/>
+        <location filename="../src/app/qgslabelinggui.cpp" line="1100"/>
         <source> @ %1 pts (using map units)</source>
         <translation> @ %1 puntos (usando unidades do mapa)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslabelinggui.cpp" line="1112"/>
+        <location filename="../src/app/qgslabelinggui.cpp" line="1113"/>
         <source> @ %1 pts (using map units, BUFFER IN MILLIMETERS)</source>
         <translation> @ %1 puntos (usando unidades do mapa, BUFFER EN MILÍMETROS)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslabelinggui.cpp" line="1132"/>
+        <location filename="../src/app/qgslabelinggui.cpp" line="1133"/>
         <source> (BUFFER NOT SHOWN, in map units)</source>
         <translation> (BUFFER NON AMOSADO, en unidades do mapa)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslabelinggui.cpp" line="1180"/>
+        <location filename="../src/app/qgslabelinggui.cpp" line="1181"/>
         <source>Expression based label</source>
         <translation>Etiqueta baseada nunha expresión</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslabelinggui.cpp" line="1289"/>
+        <location filename="../src/app/qgslabelinggui.cpp" line="1290"/>
         <source>No change</source>
         <translation>Sen cambios</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslabelinggui.cpp" line="1290"/>
+        <location filename="../src/app/qgslabelinggui.cpp" line="1291"/>
         <source>All uppercase</source>
         <translation>Todo maiúsculas</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslabelinggui.cpp" line="1291"/>
+        <location filename="../src/app/qgslabelinggui.cpp" line="1292"/>
         <source>All lowercase</source>
         <translation>Todo minúsculas</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslabelinggui.cpp" line="1295"/>
+        <location filename="../src/app/qgslabelinggui.cpp" line="1296"/>
         <source>Capitalize first letter</source>
         <translation>Capitalizar a primeira letra</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslabelinggui.cpp" line="1451"/>
+        <location filename="../src/app/qgslabelinggui.cpp" line="1452"/>
         <source>Size%1</source>
         <translation>Tamaño %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslabelinggui.cpp" line="1451"/>
+        <location filename="../src/app/qgslabelinggui.cpp" line="1452"/>
         <source> X</source>
         <translation> X</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslabelinggui.cpp" line="1501"/>
+        <location filename="../src/app/qgslabelinggui.cpp" line="1502"/>
         <source>File not found</source>
         <translation>Ficheiro non atopado</translation>
     </message>
@@ -33762,22 +33765,22 @@ not displayed</source>
 <context>
     <name>QgsLinePatternFillSymbolLayerWidget</name>
     <message>
-        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1540"/>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1558"/>
         <source>Angle</source>
         <translation>Ángulo</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1542"/>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1560"/>
         <source>Distance</source>
         <translation>Distancia</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1544"/>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1562"/>
         <source>Line width</source>
         <translation>Ancho da liña</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1546"/>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1564"/>
         <source>Color</source>
         <translation>Cor</translation>
     </message>
@@ -36758,7 +36761,7 @@ Informacion do erro extendido:
         <translation>Ficheiro Mapinfo</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsnewvectorlayerdialog.cpp" line="242"/>
+        <location filename="../src/gui/qgsnewvectorlayerdialog.cpp" line="243"/>
         <source>Save As</source>
         <translation>Gardar como</translation>
     </message>
@@ -37812,11 +37815,11 @@ Sempre rede: cargar sempre dende a rede e non comprobar se a caché ten unha ent
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="347"/>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="352"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="946"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1245"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1264"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1272"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1470"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="952"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1251"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1270"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1278"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1476"/>
         <source>OGR</source>
         <translation>OGR</translation>
     </message>
@@ -37846,17 +37849,17 @@ Sempre rede: cargar sempre dende a rede e non comprobar se a caché ten unha ent
         <translation>Data</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="360"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="366"/>
         <source>Date &amp; Time</source>
         <translation>Data &amp; Tempo</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="405"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="411"/>
         <source>OGR[%1] error %2: %3</source>
         <translation>OGR[%1] erro %2: %3</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="542"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="548"/>
         <source>Unknown</source>
         <translation>Descoñecido</translation>
     </message>
@@ -37865,116 +37868,116 @@ Sempre rede: cargar sempre dende a rede e non comprobar se a caché ten unha ent
         <translation type="obsolete">Intento de lectura nunha fonte de datos OGR inválida</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="879"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="885"/>
         <source>OGR error creating wkb for feature %1: %2</source>
         <translation>Erro OGR creando wkb para a entidade %1: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="946"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="952"/>
         <source>type %1 for attribute %2 not found</source>
         <translation>Tipo %1 para atributo %2 non atopado</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="954"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="960"/>
         <source>OGR error creating feature %1: %2</source>
         <translation>Erro OGR creando entidade %1: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1018"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1024"/>
         <source>type %1 for field %2 not found</source>
         <translation>Tipo %1 para campo %2 non atopado</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1029"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1035"/>
         <source>OGR error creating field %1: %2</source>
         <translation>Erro OGR creando campo %1: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1049"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1055"/>
         <source>OGR error deleting field %1: %2</source>
         <translation>Erro OGR eliminando campo %1: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1057"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1063"/>
         <source>Deleting fields is not supported prior to GDAL 1.9.0</source>
         <translation>A eliminación de campos non está soportada previo a GDAL 1.9.0</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1078"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1172"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1347"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1084"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1178"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1353"/>
         <source>OGR error on feature %1: id too large</source>
         <translation>Erro OGR na entidade %1: id demasiado longa</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1086"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1092"/>
         <source>Feature %1 for attribute update not found.</source>
         <translation>Entidade %1 para a actualización de atributo non atopada.</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1099"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1105"/>
         <source>Field %1 of feature %2 doesn&apos;t exist.</source>
         <translation>Campo %1 da entidade %2 non existe.</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1142"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1148"/>
         <source>Type %1 of attribute %2 of feature %3 unknown.</source>
         <translation>Tipo %1 de atributo %2 da entidade %3 descoñecido.</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1150"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1213"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1156"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1219"/>
         <source>OGR error setting feature %1: %2</source>
         <translation>Erro OGR configurando entidade %1: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1156"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2332"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1162"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2338"/>
         <source>OGR error syncing to disk: %1</source>
         <translation>Erro OGR sincronizando co disco: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1179"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1185"/>
         <source>OGR error changing geometry: feature %1 not found</source>
         <translation>Erro OGR cambiando a xeometría: entidade %1 non atopada</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1189"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1195"/>
         <source>OGR error creating geometry for feature %1: %2</source>
         <translation>Erro OGR creando a xeometría para a entidade %1: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1197"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1203"/>
         <source>OGR error in feature %1: geometry is null</source>
         <translation>Erro OGR na entidade %1: a xeometría é nula</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1204"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1210"/>
         <source>OGR error setting geometry of feature %1: %2</source>
         <translation>Erro OGR configurando a xeometría da entidade %1: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1245"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1251"/>
         <source>Possible corruption after REPACK detected. %1 still exists. This may point to a permission or locking problem of the original DBF.</source>
         <translation>Posible corrupción logo do REEMPAQUETADO detectado. %1 aínda existe. Isto pode deberse a un problema de permisos ou bloqueo do DBF orixinal.</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1264"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1270"/>
         <source>Original layer could not be reopened.</source>
         <translation>A capa orixinal non pode reabrirse.</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1272"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1278"/>
         <source>Original datasource could not be reopened.</source>
         <translation>A fonte de datos orixinal non pode reabrirse.</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1353"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1359"/>
         <source>OGR error deleting feature %1: %2</source>
         <translation>Erro OGR eliminando entidade %1: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1470"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1476"/>
         <source>Shapefiles without attribute are considered read-only.</source>
         <translation>Shapefiles sen atributos son considerados de só lectura.</translation>
     </message>
@@ -41400,74 +41403,74 @@ Erro: %2
         <translation>Información da conexión</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgspgnewconnectionbase.ui" line="66"/>
+        <location filename="../src/ui/qgspgnewconnectionbase.ui" line="72"/>
         <source>Name</source>
         <translation>Nome</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgspgnewconnectionbase.ui" line="76"/>
+        <location filename="../src/ui/qgspgnewconnectionbase.ui" line="82"/>
         <source>Service</source>
         <translation>Servizo</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgspgnewconnectionbase.ui" line="86"/>
+        <location filename="../src/ui/qgspgnewconnectionbase.ui" line="92"/>
         <source>Host</source>
         <translation>Hóspede</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgspgnewconnectionbase.ui" line="96"/>
+        <location filename="../src/ui/qgspgnewconnectionbase.ui" line="102"/>
         <source>Port</source>
         <translation>Porto</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgspgnewconnectionbase.ui" line="106"/>
+        <location filename="../src/ui/qgspgnewconnectionbase.ui" line="112"/>
         <source>Database</source>
         <translation>Base de datos</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgspgnewconnectionbase.ui" line="116"/>
+        <location filename="../src/ui/qgspgnewconnectionbase.ui" line="122"/>
         <source>SSL mode</source>
         <translation>Modo SSL</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgspgnewconnectionbase.ui" line="126"/>
+        <location filename="../src/ui/qgspgnewconnectionbase.ui" line="132"/>
         <source>Username</source>
         <translation>Nome de usuario</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgspgnewconnectionbase.ui" line="136"/>
+        <location filename="../src/ui/qgspgnewconnectionbase.ui" line="142"/>
         <source>Password</source>
         <translation>Contrasinal</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgspgnewconnectionbase.ui" line="156"/>
+        <location filename="../src/ui/qgspgnewconnectionbase.ui" line="162"/>
         <source>Name of the new connection</source>
         <translation>Nome da nova conexión</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgspgnewconnectionbase.ui" line="169"/>
+        <location filename="../src/ui/qgspgnewconnectionbase.ui" line="175"/>
         <source>5432</source>
         <translation>5432</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgspgnewconnectionbase.ui" line="196"/>
-        <location filename="../src/ui/qgspgnewconnectionbase.ui" line="281"/>
+        <location filename="../src/ui/qgspgnewconnectionbase.ui" line="202"/>
+        <location filename="../src/ui/qgspgnewconnectionbase.ui" line="287"/>
         <source>Restrict the displayed tables to those that are in the layer registries.</source>
         <translation>Restrinxi-las táboas amosadas a aquelas que están nos rexistros de capa.</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgspgnewconnectionbase.ui" line="199"/>
-        <location filename="../src/ui/qgspgnewconnectionbase.ui" line="284"/>
+        <location filename="../src/ui/qgspgnewconnectionbase.ui" line="205"/>
+        <location filename="../src/ui/qgspgnewconnectionbase.ui" line="290"/>
         <source>Restricts the displayed tables to those that are found in the layer registries (geometry_columns, geography_columns, topology.layer). This can speed up the initial display of spatial tables.</source>
         <translation>Restrinxi-las táboas amosadas a aquela que se atopan nos rexistros de capa (geometry_columns, geography_columns, topology.layer). Isto pode axiliza-la visualización inicial das táboas espaciais.</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgspgnewconnectionbase.ui" line="202"/>
+        <location filename="../src/ui/qgspgnewconnectionbase.ui" line="208"/>
         <source>Only look in the layer registries</source>
         <translation>Mirar só nos rexistros da capa</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgspgnewconnectionbase.ui" line="287"/>
+        <location filename="../src/ui/qgspgnewconnectionbase.ui" line="293"/>
         <source>Don&apos;t resolve type of unrestricted columns (GEOMETRY)</source>
         <translation>Non resolver tipo de columnas irrestritas (XEOMETRÍA)</translation>
     </message>
@@ -41485,42 +41488,42 @@ Erro: %2
         <translation type="obsolete">Buscar só na táboa de geometry_columns</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgspgnewconnectionbase.ui" line="209"/>
+        <location filename="../src/ui/qgspgnewconnectionbase.ui" line="215"/>
         <source>Restrict the search to the public schema for spatial tables not in the geometry_columns table</source>
         <translation>Restrinxi-la busca ó esquema público para táboas espaciais que non estean na táboa de geometry_columns</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgspgnewconnectionbase.ui" line="212"/>
+        <location filename="../src/ui/qgspgnewconnectionbase.ui" line="218"/>
         <source>When searching for spatial tables that are not in the geometry_columns tables, restrict the search to tables that are in the public schema (for some databases this can save lots of time)</source>
         <translation>Na busca de táboas espaciais que non estean nas táboas de geometry_columns, restrinxi-la busca a táboas que estean no esquema público (para algunhas bases de datos isto pode aforrar moito tempo)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgspgnewconnectionbase.ui" line="215"/>
+        <location filename="../src/ui/qgspgnewconnectionbase.ui" line="221"/>
         <source>Only look in the &apos;public&apos; schema</source>
         <translation>Buscar só no esquema &apos;público&apos;</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgspgnewconnectionbase.ui" line="227"/>
+        <location filename="../src/ui/qgspgnewconnectionbase.ui" line="233"/>
         <source>Save Username</source>
         <translation>Gardar nome de usuario</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgspgnewconnectionbase.ui" line="234"/>
+        <location filename="../src/ui/qgspgnewconnectionbase.ui" line="240"/>
         <source>&amp;Test Connect</source>
         <translation>&amp;Probar conexión</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgspgnewconnectionbase.ui" line="241"/>
+        <location filename="../src/ui/qgspgnewconnectionbase.ui" line="247"/>
         <source>Save Password</source>
         <translation>Gardar Contrasinal</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgspgnewconnectionbase.ui" line="250"/>
+        <location filename="../src/ui/qgspgnewconnectionbase.ui" line="256"/>
         <source>Use estimated table statistics for the layer metadata.</source>
         <translation>Utilice estadísticas de táboa estimadas para os metadatos da capa.</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgspgnewconnectionbase.ui" line="253"/>
+        <location filename="../src/ui/qgspgnewconnectionbase.ui" line="259"/>
         <source>&lt;html&gt;
 &lt;body&gt;
 &lt;p&gt;When the layer is setup various metadata is required for the PostGIS table. This includes information such as the table row count, geometry type and spatial extents of the data in the geometry column. If the table contains a large number of rows determining this metadata is time consuming.&lt;/p&gt;
@@ -41541,12 +41544,12 @@ Erro: %2
 &lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgspgnewconnectionbase.ui" line="264"/>
+        <location filename="../src/ui/qgspgnewconnectionbase.ui" line="270"/>
         <source>Use estimated table metadata</source>
         <translation>Utilice metadatos de táboa estimados</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgspgnewconnectionbase.ui" line="271"/>
+        <location filename="../src/ui/qgspgnewconnectionbase.ui" line="277"/>
         <source>Also list tables with no geometry</source>
         <translation>Enumerar tamén táboas sen xeometría</translation>
     </message>
@@ -43006,7 +43009,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager_texts.cpp" line="11"/>
         <source>&lt;h3&gt;Installed Plugins&lt;/h3&gt;&lt;p&gt;On the left you see the list of &lt;b&gt;installed plugins&lt;/b&gt; on your system. Both python and cpp plugins are listed. Some plugins come with your QGIS installation while most of them are made available via the plugin repositories.&lt;/p&gt;&lt;p&gt;You can temporarily enable or disable a plugin.To &lt;i&gt;enable&lt;/i&gt; or &lt;i&gt;disable&lt;/i&gt; a plugin, click its checkbox or doubleclick its name...&lt;/p&gt;&lt;p&gt;Plugins showing in &lt;span style=&apos;color:red&apos;&gt;red&lt;/span&gt; are not loaded because there is a problem. Consult the &apos;Invalid&apos; tab to see more details, or to reinstall or uninstall this plugin.&lt;/p&gt;</source>
-        <translation>&lt;h3&gt;Plugins instalados&lt;/h3&gt;&lt;p&gt;Na esquerda pode ver unha lista de &lt;b&gt;plugins instalados&lt;/b&gt; no seu sistema. Ámbolos python e plugins cpp son listados. Algúns plugins veñen coa súa instalación de QGIS mentras que a maioría están dispoñibles vía repositorios de plugins.&lt;/p&gt;&lt;p&gt;Pode activar ou desactivar temporalmente un plugin. Para &lt;i&gt;activar&lt;/i&gt; ou &lt;i&gt;desactivar&lt;/i&gt; un plugin, clique na súa cela ou doble clic no seu nome...&lt;/p&gt;&lt;p&gt;Os plugins amosados en &lt;span style=&apos;color:red&apos;&gt;vermello&lt;/span&gt; non están cargados porque hai un problema. Consulte a pestana &apos;Inválidos&apos; para ver máis detalles, ou reinstale ou desinstale o plugin.&lt;/p&gt;</translation>
+        <translation>&lt;h3&gt;Plugins instalados&lt;/h3&gt;&lt;p&gt;Na esquerda pode ver unha lista de &lt;b&gt;plugins instalados&lt;/b&gt; no seu sistema. Ámbolos python e plugins cpp son listados. Algúns plugins veñen coa súa instalación de QGIS mentras que a maioría están dispoñibles vía repositorios de plugins.&lt;/p&gt;&lt;p&gt;Pode activar ou desactivar temporalmente un plugin. Para &lt;i&gt;activar&lt;/i&gt; ou &lt;i&gt;desactivar&lt;/i&gt; un plugin, clique na súa cela ou doble clic no seu nome...&lt;/p&gt;&lt;p&gt;Os plugins amosados en &lt;span style=&apos;color:red&apos;&gt;vermello&lt;/span&gt; non están cargados porque hai un problema. Consulte a pestana &apos;Inválidos&apos; para ver máis detalles, reinstale ou ben desinstale o plugin.&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager_texts.cpp" line="32"/>
@@ -43333,8 +43336,8 @@ p, li { white-space: pre-wrap; }
         <translation>Ningún</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology-ng/qgspointdisplacementrendererwidget.cpp" line="207"/>
-        <location filename="../src/gui/symbology-ng/qgspointdisplacementrendererwidget.cpp" line="209"/>
+        <location filename="../src/gui/symbology-ng/qgspointdisplacementrendererwidget.cpp" line="212"/>
+        <location filename="../src/gui/symbology-ng/qgspointdisplacementrendererwidget.cpp" line="214"/>
         <source>Label Font</source>
         <translation>Fonte de etiqueta</translation>
     </message>
@@ -43347,7 +43350,7 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Cor da etiqueta</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology-ng/qgspointdisplacementrendererwidget.cpp" line="337"/>
+        <location filename="../src/gui/symbology-ng/qgspointdisplacementrendererwidget.cpp" line="342"/>
         <source>The point displacement renderer only applies to (single) point layers. 
 &apos;%1&apos; is not a point layer and cannot be displayed by the point displacement renderer</source>
         <translation>O renderizador de desprazamento de punto só se aplica a capas de puntos (individuais). 
@@ -43435,22 +43438,22 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsPointPatternFillSymbolLayerWidget</name>
     <message>
-        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1689"/>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1707"/>
         <source>Horizontal distance</source>
         <translation>Distancia horizontal</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1691"/>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1709"/>
         <source>Vertical distance</source>
         <translation>Distancia vertical</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1693"/>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1711"/>
         <source>Horizontal displacement</source>
         <translation>Desprazamento horizontal</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1695"/>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1713"/>
         <source>Vertical displacement</source>
         <translation>Desprazamento vertical</translation>
     </message>
@@ -44308,7 +44311,7 @@ Proceed?</source>
         <location filename="../src/app/qgsprojectproperties.cpp" line="1452"/>
         <location filename="../src/app/qgsprojectproperties.cpp" line="1453"/>
         <source>Select %1 from pull-down menu to adjust radii</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleccione %1 do menú desplegable para axusta-lo radio</translation>
     </message>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="1465"/>
@@ -45944,7 +45947,7 @@ Clique no botón de axuda para obte-las opcións de creación válidas para este
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="284"/>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="294"/>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1578"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1576"/>
         <source>Raster</source>
         <translation>Ráster</translation>
     </message>
@@ -45966,12 +45969,12 @@ Clique no botón de axuda para obte-las opcións de creación válidas para este
         <translation type="obsolete">Driver:</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="477"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="475"/>
         <source>No Data Value</source>
         <translation>Non hai valor de datos</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="487"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="485"/>
         <source>NoDataValue not set</source>
         <translation>Non fixado &apos;non hai valor de datos&apos;</translation>
     </message>
@@ -46024,7 +46027,7 @@ Clique no botón de axuda para obte-las opcións de creación válidas para este
         <translation type="obsolete">GDT_CFloat64 - Complexo Decimal 64 </translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="533"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="531"/>
         <source>Could not determine raster data type.</source>
         <translation>Non se puido determina-lo tipo de datos ráster.</translation>
     </message>
@@ -46045,157 +46048,157 @@ Clique no botón de axuda para obte-las opcións de creación válidas para este
         <translation type="obsolete">Sistema de Referencia Espacial do Proxecto: </translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="467"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="465"/>
         <source>Driver</source>
         <translation>Driver</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="493"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="491"/>
         <source>Data Type</source>
         <translation>Tipo Data</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="500"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="498"/>
         <source>Byte - Eight bit unsigned integer</source>
         <translation>Byte - Enteiro non asinado de oito bits</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="503"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="501"/>
         <source>UInt16 - Sixteen bit unsigned integer </source>
         <translation>UInt16 -Enteiro non asinado de dezaseis bits</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="506"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="504"/>
         <source>Int16 - Sixteen bit signed integer </source>
         <translation>Int16 - Enteiro asinado de dezaseis bits</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="509"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="507"/>
         <source>UInt32 - Thirty two bit unsigned integer </source>
         <translation>UInt32 - Enteiro non asinado de trinta e dous bits</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="512"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="510"/>
         <source>Int32 - Thirty two bit signed integer </source>
         <translation>Int32 -  Enteiro asinado de trinta e dous bits</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="515"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="513"/>
         <source>Float32 - Thirty two bit floating point </source>
         <translation>Float32 -  Coma flotante de trinta e dous bits </translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="518"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="516"/>
         <source>Float64 - Sixty four bit floating point </source>
         <translation>Float64 - Coma flotante de sesenta e catro bits </translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="521"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="519"/>
         <source>CInt16 - Complex Int16 </source>
         <translation>CInt16 - Complexo Enteiro 16 </translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="524"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="522"/>
         <source>CInt32 - Complex Int32 </source>
         <translation>CInt32 - Complexo Enteiro 32 </translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="527"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="525"/>
         <source>CFloat32 - Complex Float32 </source>
         <translation>CFloat32 - Complexo Decimal 32 </translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="530"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="528"/>
         <source>CFloat64 - Complex Float64 </source>
         <translation>CFloat64 - Complexo Decimal 64 </translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="538"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="536"/>
         <source>Pyramid overviews</source>
         <translation>Vista xeral das pirámides</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="543"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="541"/>
         <source>Layer Spatial Reference System</source>
         <translation>Sistema de Referencia Espacial da Capa</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="550"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="548"/>
         <source>Layer Extent (layer original source projection)</source>
         <translation>Extensión da capa (proxección da fonte orixinal da capa)</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="560"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="558"/>
         <source>Project Spatial Reference System</source>
         <translation>Sistema de Referencia Espacial do Proxecto</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="576"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="574"/>
         <source>Band</source>
         <translation>Banda</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="583"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="581"/>
         <source>Band No</source>
         <translation>Ningunha Banda</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="595"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="593"/>
         <source>No Stats</source>
         <translation>Sen estadísticas</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="598"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="596"/>
         <source>No stats collected yet</source>
         <translation>Ningunha estadística recollida aínda</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="608"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="606"/>
         <source>Min Val</source>
         <translation>Valor Mínimo</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="616"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="614"/>
         <source>Max Val</source>
         <translation>Valor Máximo</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="624"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="622"/>
         <source>Range</source>
         <translation>Rango</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="632"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="630"/>
         <source>Mean</source>
         <translation>Media</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="640"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="638"/>
         <source>Sum of squares</source>
         <translation>Suma dos cadrados</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="648"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="646"/>
         <source>Standard Deviation</source>
         <translation>Desviación estándar</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="656"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="654"/>
         <source>Sum of all cells</source>
         <translation>Suma de tódalas celas</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="664"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="662"/>
         <source>Cell Count</source>
         <translation>Contar celas</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="801"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="799"/>
         <source>Cannot instantiate the &apos;%1&apos; data provider</source>
         <translation>Non se puido instancia-lo provedor de datos &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="811"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="809"/>
         <source>Provider is not valid (provider: %1, URI: %2</source>
         <translation>Provedor non válido (provedor: %1, URI: %2)</translation>
     </message>
@@ -46216,7 +46219,7 @@ Clique no botón de axuda para obte-las opcións de creación válidas para este
         <translation type="obsolete">O provedor de datos é inválido (capas: %1, estilos: %2, formatos: %3)</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1578"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1576"/>
         <source>&lt;maplayer&gt; not found.</source>
         <translation>&lt;maplayer&gt; non atopado.</translation>
     </message>
@@ -48231,28 +48234,29 @@ desviación estándar ×</translation>
     <message>
         <location filename="../src/core/raster/qgsrasterrenderer.cpp" line="214"/>
         <source>cumulative cut</source>
-        <translation type="unfinished"></translation>
+        <translation>Corte acumulativo</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterrenderer.cpp" line="218"/>
         <source>standard deviation</source>
-        <translation type="unfinished"></translation>
+        <translation>Desviación estándar</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterrenderer.cpp" line="223"/>
         <source>full extent</source>
-        <translation type="unfinished"></translation>
+        <translation>Extensión completa</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterrenderer.cpp" line="227"/>
         <source>sub extent</source>
-        <translation type="unfinished"></translation>
+        <translation>Subextensión</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterrenderer.cpp" line="230"/>
         <source>%1 %2 of %3.</source>
         <comment>min/max origin label in raster properties, where %1 - estimated/exact, %2 - values (min/max, stddev, etc.), %3 - extent</comment>
-        <translation type="unfinished">%1 de %3. {1 %2 ?}</translation>
+        <translatorcomment>Orixes mín/máx da etiqueta nas propiedades do ráster, onde %1 - estimada/exacta, %2 - valores (mín/máx, desviación estándar, etc.), %3 - extensión</translatorcomment>
+        <translation>%1 %2 de %3.</translation>
     </message>
     <message>
         <source> of </source>
@@ -49124,37 +49128,37 @@ desviación estándar ×</translation>
 <context>
     <name>QgsSVGFillSymbolLayerWidget</name>
     <message>
-        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1205"/>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1223"/>
         <source>Select svg texture file</source>
         <translation>Seleccione ficheiro de textura svg</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1383"/>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1401"/>
         <source>Texture width</source>
         <translation>Ancho da textura</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1385"/>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1403"/>
         <source>SVG file</source>
         <translation>ficheiro SVG</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1387"/>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1405"/>
         <source>Rotation</source>
         <translation>Rotación</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1389"/>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1407"/>
         <source>Color</source>
         <translation>Cor</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1391"/>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1409"/>
         <source>Border color</source>
         <translation>Cor da marxe</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1393"/>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1411"/>
         <source>Border width</source>
         <translation>Ancho da marxe</translation>
     </message>
@@ -50008,6 +50012,39 @@ contraste</translation>
     </message>
 </context>
 <context>
+    <name>QgsSmartGroupCondition</name>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssmartgroupeditordialog.cpp" line="33"/>
+        <source>has the tag</source>
+        <translation>contén a etiqueta</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssmartgroupeditordialog.cpp" line="34"/>
+        <source>is a member of group</source>
+        <translation>é un membro do grupo</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssmartgroupeditordialog.cpp" line="35"/>
+        <source>has a part of name matching</source>
+        <translation>ten unha parte do nome coincidente</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssmartgroupeditordialog.cpp" line="36"/>
+        <source>does NOT have the tag</source>
+        <translation>NON ten a etiqueta</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssmartgroupeditordialog.cpp" line="37"/>
+        <source>is NOT a member of group</source>
+        <translation>NON é un membro do grupo</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssmartgroupeditordialog.cpp" line="38"/>
+        <source>has NO part of name matching</source>
+        <translation>NON ten parte do nome coincidente</translation>
+    </message>
+</context>
+<context>
     <name>QgsSmartGroupConditionWidget</name>
     <message>
         <location filename="../src/ui/qgssmartgroupconditionwidget.ui" line="14"/>
@@ -50022,6 +50059,16 @@ contraste</translation>
 </context>
 <context>
     <name>QgsSmartGroupEditorDialog</name>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssmartgroupeditordialog.cpp" line="86"/>
+        <source>ALL the constraints</source>
+        <translation>TÓDALAS restricións</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssmartgroupeditordialog.cpp" line="87"/>
+        <source>any ONE of the constraints</source>
+        <translation>CALQUERA das restricións</translation>
+    </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssmartgroupeditordialog.cpp" line="204"/>
         <source>Invalid name</source>
@@ -52457,47 +52504,47 @@ Houbo un problema coa base de datos de símbolos.</translation>
 <context>
     <name>QgsSvgMarkerSymbolLayerV2Widget</name>
     <message>
-        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1011"/>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1029"/>
         <source>Select SVG file</source>
         <translation>Seleccione ficheiro SVG</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1013"/>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1031"/>
         <source>SVG files</source>
         <translation>Ficheiros SVG</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1121"/>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1139"/>
         <source>Size</source>
         <translation>Tamaño</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1123"/>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1141"/>
         <source>Border width</source>
         <translation>Ancho da marxe</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1125"/>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1143"/>
         <source>Angle</source>
         <translation>Ángulo</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1127"/>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1145"/>
         <source>Offset</source>
         <translation>Desprazamento</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1129"/>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1147"/>
         <source>SVG file</source>
         <translation>ficheiro SVG</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1131"/>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1149"/>
         <source>Color</source>
         <translation>Cor</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1133"/>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1151"/>
         <source>Border color</source>
         <translation>Cor da marxe</translation>
     </message>
@@ -52723,6 +52770,16 @@ Houbo un problema coa base de datos de símbolos.</translation>
 </context>
 <context>
     <name>QgsSymbolsListWidget</name>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbolslistwidget.cpp" line="74"/>
+        <source>Style Manager</source>
+        <translation>Administrador de Estilo</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbolslistwidget.cpp" line="76"/>
+        <source>Save in symbol library...</source>
+        <translation>Gardar na biblioteca de símbolos...</translation>
+    </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbolslistwidget.cpp" line="223"/>
         <source>Symbol name</source>
@@ -59976,13 +60033,13 @@ Execute a verificación de topoloxía de novo.</translation>
 <context>
     <name>context_help</name>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="734"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="564"/>
         <source>&lt;h3&gt;Database connection&lt;/h3&gt;
 </source>
         <translation>&lt;h3&gt;Conexión da base de datos&lt;/h3</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1433"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="703"/>
         <source>&lt;h3&gt;Create a new WMS connection&lt;/h3&gt;
 WMS layers can be added quite simply, as long as you know the URL to access the WMS server, you have a serviceable connection to that server, and the server understands HTTP as the data transport mechanism.&lt;p&gt;
 QGIS currently can act as a WMS client that understands WMS 1.1, 1.1.1 and 1.3 servers.
@@ -60060,7 +60117,7 @@ Para visualiza-los resultados, seleccione unha entrada de táboa, prema o botón
 Só necesita consulta-la lista de capas clicando no botón &lt;label&gt;Conectar&lt;/label&gt;.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="382"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="741"/>
         <source>&lt;h3&gt;Identify Features&lt;/h3&gt;
 &lt;p&gt;
 The results dialog shows all the features identified within the search tolerance. To see the results details, expand the feature information on the left of each feature.
@@ -60083,7 +60140,7 @@ Capas Identificables pode configurarse no diálogo de Propiedades do Proxecto &l
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="392"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1121"/>
         <source>&lt;h1&gt;Heatmap Plugin Help&lt;/h1&gt;
 &lt;p&gt;The Heatmap plugin uses Kernel Density Estimation to create a density (heatmap)
 raster of an input point vector layer.  The density is calculated based on the
@@ -60138,10 +60195,62 @@ which are described and illustrated on &lt;a href=&quot;http://en.wikipedia.org/
 &lt;p&gt;Contact the author through aruntheguy at gmail dot com&lt;/p&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h1&gt;Axuda do Plugin Mapa de Calor&lt;/h1&gt;
+&lt;p&gt;O plugin Mapa de Calor utiliza a Estimación de Densidade do Núcleo para crear unha densidade ráster (mapa de calor)
+dunha capa vectorial de puntos de entrada.  A densidade é calculada baseada no número de puntos 
+nunha posición, con números elevados de puntos agrupados resultando
+valores altos. O mapa de calor permite unha fácil identificación de &quot;puntos quentes&quot; e a agrupación de puntos.&lt;/p&gt;
+
+&lt;h2&gt;Parámetros do Diálogo&lt;/h2&gt;
+
+&lt;h3&gt;Capa de puntos de entrada&lt;/h3&gt;
+&lt;p&gt;A entrada é sempre unha capa vectorial de tipo punto. Tódalas capas vectoriais de puntos que estean actualmente cargadas na vista do mapa son amosadas na lista despregable. Clique no botón despregable e seleccione as capas desexadas.&lt;/p&gt;
+
+&lt;h3&gt;Ráster de saída&lt;/h3&gt;
+&lt;p&gt;A localización e o nome de ficheiro do ráster de saída poden establecerse clicando o botón &lt;label&gt;...&lt;/label&gt; próximo ó cadro de texto ráster de saída.&lt;br/&gt;
+&lt;b&gt;Nota:&lt;/b&gt; O nome de ficheiro engádese automaticamente dependendo do formato de saída seleccionado, se non se explicita
+ningún.&lt;/p&gt;
+
+&lt;h3&gt;Formato de saída&lt;/h3&gt;
+&lt;p&gt;Toda creación de ficheiro que soporte os formatos GDAL está dispoñible la lista despregable. Clique e seleccione o formato de saída requerido para o seu ficheiro.&lt;br/&gt;
+&lt;b&gt;Nota:&lt;/b&gt; Os formatos GeoTiff e ERDAS Imagine .img son os recomendados. Algúns formatos producen un bloqueo da aplicación. Cíngase amablemente ós formatos recomendados ata que o elemento de bloqueo sexa resolto ou utilice outros formatos se sabe que GDAL os soporta completamente.&lt;/p&gt;
+
+&lt;h3&gt;Radio (ancho de banda)&lt;/h3&gt;
+&lt;p&gt;Usado para especifica-lo radio de busca do mapa de calor (ou ancho de banda do núcleo) en metros ou unidades do mapa. O radio especifica a distancia arredor dun punto no cal a influencia dese punto se deixa notar. Valores grandes resultan nun gran suavizado, mentras que valores baixos poden amosar detalles finos e variación na densidade de puntos.&lt;/p&gt;
+
+&lt;h3&gt;Opcións Avanzadas&lt;/h3&gt;
+
+&lt;h4&gt;Ringleiras e Columnas&lt;/h4&gt;
+&lt;p&gt;Utilizado para cambia-las dimensións do ficheiro ráster de saída. Estes valores están ligados ós valores de &lt;b&gt;Tamaño da cela X&lt;/b&gt; e &lt;b&gt;Tamaño da cela Y&lt;/b&gt;. 
+Inrementando o número de ringleiras ou columnas decrecerá o tamaño de cela e incrementará o tamaño do ficheiro de saída. Os valores en Ringleiras e Columnas
+tamén están ligados, así dobrando o número de ringleiras automaticamente dobrará o número de columnas e o tamaño das celas tamén será reducido á metade. ¡A área xeográfica do ráster de saída permanecerá a mesma!&lt;/p&gt;
+
+&lt;h4&gt;Tamaño de cela X e Y&lt;/h4&gt;
+&lt;p&gt;Controla o tamaño xeográfico de cada píxel no ráster de saída. Cambiando estes valores tamén cambiará o número de Ringleiras e Columnas no ráster de saída.&lt;/p&gt;
+  
+&lt;h4&gt;Forma do Núcleo&lt;/h4&gt;
+&lt;p&gt;A forma do núcleo controla a taxa á cal a influencia dun punto diminúe así como a distancia ó punto incrementa. Núcleos diferentes decaen a taxas diferentes,
+así un núcleo triponderado dá entidades con maior peso para distancias próximas ó punto que o núcleo de Epanechnikov.
+Consecuentemente,
+a triponderación resulta en puntos quentes &quot;nítidos&quot;, mentras que Epanechnikov resulta en puntos quentes &quot;máis suaves&quot;. Hai un certo número de funcións de núcleo estándar
+dispoñibles en QGIS, que se describen e ilustran na &lt;a href=&quot;http://en.wikipedia.org/wiki/Kernel_(statistics)#Kernel_functions_in_common_use&quot;&gt;Wikipedia&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h4&gt;Radio de decaemento&lt;/h4&gt;
+&lt;p&gt;Para núcleos triangulares, o radio de decaemento define a cantidade de influencia que se aplica ós píxeles máis externos no radio do búfer. Un valor 0 reflicte un núcleo triangular estándar, onde a influencia cae a 0 segundo a distancia dende o píxel ó punto se aproxima ó radio especificado. En contraste, un valor de 1 indica que non hai caída segundo a distancia ó punto incrementa.&lt;/p&gt;
+
+&lt;h4&gt;Utilice radio dende campo&lt;/h4&gt;
+&lt;p&gt;Opcionalmente, o valor nun campo especificado pode utilizarse para controlar o radio do núcleo para cada punto na capa de entrada.&lt;/p&gt;
+
+&lt;h4&gt;Utilice peso dende campo&lt;/h4&gt;
+&lt;p&gt;Opcionalmente, un atributo que conteña pesos para puntos pode utilizarse para ponderar algúns puntos na capa de entrada máis que outros.&lt;/p&gt;
+
+&lt;h2&gt;Para máis detalles&lt;/h2&gt;
+&lt;p&gt;Contacte co autor a través de aruntheguy en gmail punto com&lt;/p&gt;
+
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="539"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1492"/>
         <source>&lt;h3&gt;Create a New SpatiaLite Layer&lt;/h3&gt;
 You can use this dialog to create a new SpatiaLite database and/or an empty SpatiaLite layer for editing. See below for an explanation of the dialog inputs.
 &lt;h4&gt;Database&lt;/h4&gt;
@@ -60190,7 +60299,7 @@ Clique en &lt;label&gt;OK&lt;/label&gt; para crea-la capa e pecha-lo diálogo.  
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="562"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1175"/>
         <source>&lt;h3&gt;Custom Coordinate Reference System Definition&lt;/h3&gt;
 If QGIS does not provide the coordinate reference system you need, you can define a custom CRS. &lt;p&gt;
 To define a CRS, select &lt;label&gt;Custom CRS&lt;/label&gt; from the &lt;label&gt;Edit&lt;/label&gt; (Gnome, OSX) or &lt;label&gt;Settings&lt;/label&gt; (KDE, Windows) menu. Custom CRS are stored in your QGIS user database. In addition to your custom CRS, this database also contains your spatial bookmarks and other custom data.
@@ -60226,7 +60335,7 @@ Definir un SRC persoalizado en QGIS require un bo coñecemento da librería de p
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1077"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="617"/>
         <source>&lt;h3&gt;Manage and install Plugins&lt;/h3&gt;
 
 &lt;p&gt;
@@ -60401,7 +60510,7 @@ Nota: Os plugins experimentais xeralmente non son adecuados para o seu uso en pr
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1265"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1247"/>
         <source>&lt;style&gt;
 	#toolbarConsole td{
 		background: #f6f6f6;
@@ -60570,10 +60679,181 @@ that will be automatically deleted after running.&lt;/li&gt;
 	from the close button. This allows you to save the geometry to be restored to the next start.
 &lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;style&gt;
+	#toolbarConsole td{
+		background: #f6f6f6;
+	}
+&lt;/style&gt;
+&lt;h3&gt;Consola Python de QGIS&lt;/h3&gt;
+&lt;a href=&quot;#console&quot;&gt;Consola&lt;/a&gt;&lt;br&gt;
+&lt;a href=&quot;#editor&quot;&gt;Editor&lt;/a&gt;&lt;br&gt;
+&lt;a href=&quot;#settings&quot;&gt;Configuración&lt;/a&gt;&lt;br&gt;&lt;br&gt;
+&lt;table&gt;
+	&lt;tr&gt;
+		&lt;td&gt;
+			&lt;p align=&apos;justify&apos;&gt;
+				A consola Python de QGIS é un terminal interactivo para a execución de comandos
+				python. 
+				Tamén ten un editor de ficheiros python que lle permite editar e garda-los seus
+				scripts python.  
+				Tanto a consola coma o editor están baseados no paquete PyQScintilla2.&lt;br&gt;
+				A consola está dividida en dous paneis principais, o superior e o inferior
+				redimensionable usando o separador horizontal. A área do panel de saída é un
+				widget de só lectura que amosa os comandos de saída.
+				Pode arrastrar e soltar ou copiar e pegar texto na área de entrada e 
+				executar fragmentos de código dende o panel de saída seleccionando algún texto e
+				clicando no comando &lt;label&gt;Introducir seleccionado&lt;/label&gt; no menú contextual.
+				Non pasa nada se o texto seleccionado contén o apuntador do intérprete (&gt;&gt;&gt;, ...).
+				A área do panel de entrada é o terminal python interactivo para 
+				introducir comandos.
+				&lt;br&gt;Para acceder ó editor de ficheiros python utilice o botón 
+				&lt;label&gt;Amosar editor&lt;/label&gt; na barra de ferramentas.
+				O editor permite editar e gardar ficheiros python e ofrece funcionalidades básicas 
+				para a xestión do seu código (comentar e descomentar código, comprobar sintaxe,
+				compartir código vía codepad.org e moito máis).
+			&lt;/p&gt;
+		&lt;/td&gt;
+	&lt;/tr&gt;
+&lt;/table&gt;
+&lt;a name=&quot;console&quot;&gt;
+&lt;h4&gt;Console&lt;/h4&gt;
+&lt;/a&gt;
+&lt;b&gt;&lt;i&gt;Características principais:&lt;/i&gt;&lt;/b&gt;
+&lt;table&gt;
+	&lt;tr&gt;
+		&lt;td&gt;
+			&lt;ul&gt;
+			&lt;li&gt;Autocompletado de código, resalte de sintaxe e calltips para as seguintes APIs:
+				&lt;ol&gt;
+				&lt;li&gt;Python&lt;/li&gt;
+				&lt;li&gt;PyQGIS&lt;/li&gt;
+				&lt;li&gt;PyQt4&lt;/li&gt;
+				&lt;li&gt;QScintilla2&lt;/li&gt;
+				&lt;li&gt;osgeo-gdal-ogr&lt;/li&gt;
+				&lt;/ol&gt;
+			&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;&lt;label&gt;Ctrl+Alt+Space&lt;/label&gt; para ve-la lista de autocompletado.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;&lt;label&gt;Ctrl+Shift+Space&lt;/label&gt; para ve-la lista do historial de comandos.&lt;/li&gt;
+			&lt;br&gt;
+                        &lt;li&gt;Executa fragmentos de código co comando &lt;label&gt;Introducir seleccionado&lt;/label&gt; do panel de saída.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Abre a documentacion API de QGIS API tecleando&lt;label&gt;_api&lt;/label&gt;.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Abre o Libro de Receitas PyQGIS tecleando &lt;label&gt;_pyqgis&lt;/label&gt;.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Gardar e limpa-lo historial de comandos accedidos dende o menú contextual do panel de 					entrada. O historial será gardado no ficheiro ~/.qgis2/console_history.txt&lt;/li&gt;
+			&lt;br&gt;
+			&lt;/ul&gt;
+		&lt;/td&gt;
+		&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/consoleHelp.png&quot; /&gt;&lt;/td&gt;
+	&lt;/tr&gt;
+&lt;/table&gt;
+&lt;b&gt;&lt;i&gt;Toolbar:&lt;/i&gt;&lt;/b&gt;
+	&lt;table width=&quot;100%&quot; id=&apos;toolbarConsole&apos;&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconClearConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Limpar consola python&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconClassConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconSextanteConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;Importar clase Sextante&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconQtCoreConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;Importar clase PyQt4.QtCore&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconQtGuiConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;Ferramenta para importar clase PyQt4.QtGui&lt;/td&gt;
+		&lt;/tr&gt;
+                &lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconRunConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Executar comando (coma tecla Intro pulsada)&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconSettingsConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Configuración&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconHelpConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Axuda&lt;/td&gt;
+		&lt;/tr&gt;
+&lt;/table&gt;
+&lt;a name=&quot;editor&quot;&gt;
+&lt;h4&gt;Editor&lt;/h4&gt;
+&lt;/a&gt;
+&lt;b&gt;&lt;i&gt;Características principais:&lt;/i&gt;&lt;/b&gt;
+&lt;table&gt;
+	&lt;tr&gt;
+		&lt;td&gt;
+			&lt;img src=&quot;qrc:/images/themes/default/console/editorHelp.png&quot; /&gt;
+			&lt;img src=&quot;qrc:/images/themes/default/console/classBrowserHelp.png&quot; /&gt;
+		&lt;/td&gt;
+		&lt;td&gt;
+			&lt;ul&gt;
+			&lt;li&gt;Autocompletado de código, realce de sintaxe e calltips para as seguintes APIs:
+				&lt;ol&gt;
+				&lt;li&gt;Python&lt;/li&gt;
+				&lt;li&gt;PyQGIS&lt;/li&gt;
+				&lt;li&gt;PyQt4&lt;/li&gt;
+				&lt;li&gt;QScintilla2&lt;/li&gt;
+				&lt;li&gt;osgeo-gdal-ogr&lt;/li&gt;
+				&lt;/ol&gt;
+			&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;&lt;label&gt;Ctrl+Space&lt;/label&gt; para ve-la lista de autocompletado.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Compartir fragmentos de código vía codepad.org.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;&lt;label&gt;Ctrl+4&lt;/label&gt; Comprobación de sintaxe.&lt;/li&gt; 
+			&lt;br&gt;
+			&lt;li&gt;Inspector de Obxectos: un buscador de clases e funcións.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Ir a unha definición de obxecto cun clic de rato. (dende o inspector de Obxectos)&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Executa fragmentos de código co comando &lt;label&gt;Introducir seleccionado&lt;/label&gt;.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Exucuta-lo script completo co comando &lt;label&gt;Executar script&lt;/label&gt;
+			(isto crea un ficheiro compilado byte coa extensión .pyc)&lt;/li&gt;
+			&lt;br&gt;
+			&lt;/ul&gt;
+		&lt;/td&gt;
+	&lt;/tr&gt;
+&lt;/table&gt;
+&lt;a name=&quot;settings&quot;&gt;
+&lt;h4&gt;Configuración&lt;/h4&gt;
+&lt;/a&gt;
+&lt;b&gt;&lt;i&gt;Máis axustes para a consola python:&lt;/i&gt;&lt;/b&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;label&gt;Autocompletado:&lt;/label&gt; o completado de código está activado de estar marcada. Pode ter autocompletado
+do documento actual, de APIs instaladas ou ámbalas das APIs e do actual documento&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Marxe de Autocompletado:&lt;/label&gt; Establece a marxe para amosa-la lista de autocompleatado (en caracteres tecleados)&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Insercion automática de parénteses:&lt;/label&gt; Activa o autopechado de parénteses de estar marcado&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Gardar automaticamente script antes de executar:&lt;/label&gt; Permítelle gardar automaticamente 
+o script a executar para evitar gardalo despois de calquera modificación.
+Esta acción almacenará un ficheiro temporal no directorio temporal do sistema que
+será eliminado automaticamente logo de executarse.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Usar ficheiro de APIs precargado:&lt;/label&gt; Pode escoller se usa-lo ficheiro de APIs precargado ou cargar algúns ficheiros de APIs gardados no seu sistema.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Usar ficheiro de APIs preparado:&lt;/label&gt; De ser marcado o ficheiro *.pap será utilizado para o completado de código. Para xenerar un ficheiro de APIs preparado ten que cargar polo menos un ficheiro *.api e logo compilalo clicando no botón &lt;label&gt;Compilar Apis...&lt;/label&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p style=&apos;border: 1px solid; background:#f6f6f6;&apos; align=&apos;justify&apos;&gt;
+	&lt;b&gt;Nota:&lt;/b&gt; Para garda-lo estado dos widgets de consola ten que pecha-la Consola Python
+	no botón pechar. Isto permítelle garda-la xeometría a ser restaurada no próximo inicio.
+&lt;/p&gt;
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1473"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="753"/>
         <source>&lt;h3&gt;Create a New Oracle Connection&lt;/h3&gt;
 This dialog allows you to define the settings for a connection to a Oracle database.
 &lt;p&gt;
@@ -60655,7 +60935,7 @@ será determinada dende as 100 primeiras ringleiras de xeometría non nulas na t
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1260"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1415"/>
         <source>&lt;h3&gt;GPS Plugin&lt;/h3&gt;
 
 </source>
@@ -60664,7 +60944,7 @@ será determinada dende as 100 primeiras ringleiras de xeometría non nulas na t
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="719"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="60"/>
         <source>&lt;h3&gt;Finding shortest path&lt;/h3&gt;
 &lt;p&gt;Road graph is a C++ plugin for QGIS, that calculates the shortest path between two points on any line layer and plots this path over the road network. Before using the plugin to configure it. This can be done in the menu &lt;label&gt;Plugins &amp;rarr; Road graph &amp;rarr; Settings&lt;/label&gt;&lt;/p&gt;
 &lt;p&gt;
@@ -60697,7 +60977,7 @@ Premendo o botón &lt;label&gt;Calcular&lt;/label&gt; calculará a ruta máis cu
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="649"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="23"/>
         <source>&lt;h3&gt;Add PostGIS Tables&lt;/h3&gt;
 This dialog allows you to add PostGIS layers (tables with a geometry column) to the QGIS map canvas.
 &lt;p&gt;
@@ -60774,7 +61054,14 @@ Marcando &lt;label&gt;Opcións de Busca&lt;/label&gt; activa opcións adicionais
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="736"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="154"/>
+        <source>&lt;h3&gt;Identify&lt;/h3&gt;
+</source>
+        <translation>&lt;h3&gt;Identificar&lt;/h3&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="191"/>
         <source>&lt;h3&gt;Vector Layer Properties&lt;/h3&gt;
 This dialog allows you to work with vector layer settings and properties. There are seven tabs:
 &lt;p&gt;
@@ -61052,7 +61339,7 @@ A pestana Diagramas permítelle engadir unha superposición gráfica a unha capa
 A implementación actual dos diagramas proporciona soporte para gráficos de sectores e de barras e para un escalado liñar do tamaño do diagrama en función dun atributo de clasificación.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="453"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="368"/>
         <source>&lt;h3&gt;Query Builder&lt;/h3&gt;
 The query builder allows you to create provider specific filter expressions.
 
@@ -61147,7 +61434,7 @@ pero algunhas veces son limitadas(por exemplo para shapefiles) ou compórtanse d
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1200"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="445"/>
         <source>&lt;h3&gt;Field Calculator&lt;/h3&gt;
 The field calculator allows you to update fields with expressions.
 
@@ -61443,14 +61730,14 @@ Nota: Os plugins experimentais non son adecuados para o seu uso en produción. E
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1263"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1107"/>
         <source>&lt;h3&gt;New OGR Database Connection Dialog&lt;/h3&gt;
 </source>
         <translation>&lt;h3&gt;Novo diálogo de Conexión á base de datos OGR&lt;/h3&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="579"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="613"/>
         <source>&lt;h3&gt; North Arrow Plugin&lt;/h3&gt;
 Displays a north arrow overlayed onto the map.
 &lt;p&gt;
@@ -61529,7 +61816,7 @@ Estes valores son escritos ó ficheiro map nos lugares adecuados para configurar
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1181"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1192"/>
         <source>&lt;h3&gt;Scale bar Plugin&lt;/h3&gt;
 Draws a scale bar on the map.
 &lt;p&gt;
@@ -61570,7 +61857,7 @@ Para engadir unha barra de escala:
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="686"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="566"/>
         <source>&lt;h3&gt;Create a New PostgreSQL Connection&lt;/h3&gt;
 This dialog allows you to define the settings for a connection to a PostgreSQL database.
 &lt;p&gt;
@@ -61639,7 +61926,7 @@ Este diálogo permítelle defini-la configuración para unha conexión a unha ba
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="446"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="107"/>
         <source>&lt;h3&gt;Measure Tools&lt;/h3&gt;
 There are two measure tools: length and area. With them, you can measure both distances and areas on the map canvas. Currently the tools provide results in metric units only. A single right mouse click stops the measuring, while two right mouse clicks starts measuring anew.
 &lt;h4&gt;Measuring Lengths&lt;/h4&gt;
@@ -61655,7 +61942,7 @@ Para medir distancias, seleccione a ferramenta e  cliquee ó longo da ruta que q
 Para medir áreas, seleccione a ferramenta e clique para crea-la áreas. A área total será amosada dinamicamente segundo clique.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="887"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1211"/>
         <source>&lt;h3&gt;Copyright Label Plugin&lt;/h3&gt;
 Draws a copyright label with information.&lt;br/&gt;
 You can add any random text to the map not only a copyright label.
@@ -61862,7 +62149,7 @@ Nota: Os plugins Experimentais non son xeralmente apropiados para o seu uso en p
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="951"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="505"/>
         <source>&lt;h3&gt;Attribute table&lt;/h3&gt;
 The attribute table displays features of a selected layer. Each row in the table represents one map feature with its attributes shown in several columns. The features in the table can be searched, selected, moved or even edited.  By default the attribute table is a separate window. If you opened it and cannot see it anymore, it is most likely hidden under the main QGIS window. You can make it also a docked window, by checking &lt;label&gt;Open attribute table in a dock window&lt;/label&gt; in &lt;label&gt;Settings &gt; Options &gt; General&lt;/label&gt;.&lt;p&gt;
 
@@ -61969,7 +62256,7 @@ A capa vectorial necesita estar en modo edición, antes de clicar na icona &lt;l
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="614"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="156"/>
         <source>&lt;h3&gt;Project Properties&lt;/h3&gt;
 This dialog allows you to set a number of properties related to the &lt;label&gt;Project&lt;/label&gt;. A Project is a saved set of layers and their settings, as well as other information required to restore the project from disk.&lt;p&gt;
 
@@ -62046,7 +62333,7 @@ Nesta pestana pode escoller en que capas funcionará a ferramenta de identificac
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1163"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1243"/>
         <source>&lt;h3&gt;Add SpatiaLite Tables&lt;/h3&gt;
 To define a new connection, click on &lt;label&gt;New&lt;/label&gt; button and use the file browser to point to your SpatiaLite database, which is a file with a &lt;i&gt;.sqlite&lt;/i&gt; extension.&lt;p&gt;
 The connections you define will be remembered for further use and available to choose from the drop down menu.
@@ -62056,7 +62343,7 @@ Para definir unha nova conexión, clique no botón &lt;label&gt;Novo&lt;/label&g
 As conexións que defina serán lembradas para futuros usos e estarán dispoñibles para escoller dende o menú desplegable.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="499"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="114"/>
         <source>&lt;h3&gt;Spatial Bookmarks&lt;/h3&gt;
 Spatial Bookmarks allow you to &quot;bookmark&quot; a geographic location and return to it later.
 &lt;p&gt;
@@ -62139,7 +62426,7 @@ Para actualiza-la extensión dun marcador, clique nel e logo clique o botón &lt
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="583"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="414"/>
         <source>&lt;h3&gt;Road graph plugin settings&lt;/h3&gt;
 &lt;p&gt;Road graph is a C++ plugin for QGIS, that calculates the shortest path between two points on any polyline layer and plots this path over the road network.&lt;/p&gt;
 &lt;p&gt;
@@ -62174,7 +62461,7 @@ Para actualiza-la extensión dun marcador, clique nel e logo clique o botón &lt
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="919"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="75"/>
         <source>&lt;h3&gt;Create a New SQL Anywhere Connection&lt;/h3&gt;
 This dialog allows you to define the settings for a connection to a
 SQL Anywhere database.
@@ -62241,7 +62528,7 @@ SQL Anywhere.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="325"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="557"/>
         <source>&lt;h3&gt;Open Vector Layer Dialog&lt;/h3&gt;
 
 The open vector layer dialog is used to add vector data to the QGIS map view. Vector data are spatial data described using geometries of points, lines and polygons (enclosed areas).&lt;/p&gt;
@@ -62258,7 +62545,7 @@ Unha descrición detallada de como proceder cos datos vectoriais é relatada no 
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1471"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="751"/>
         <source>&lt;h3&gt;Style Manager&lt;/h3&gt;
 </source>
         <translation>&lt;h3&gt;Administrador de Estilo&lt;/h3&gt;
@@ -62605,7 +62892,7 @@ será eliminado automaticamente logo de executarse.&lt;/li&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1003"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1418"/>
         <source>&lt;h3&gt;Options&lt;/h3&gt;
 This dialog allows you to select some basic options for QGIS. There are eight tabs:
 &lt;p&gt;
@@ -62756,7 +63043,7 @@ Tique &lt;label&gt;Use proxy para acceso a internet&lt;/label&gt; para definir h
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="875"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1109"/>
         <source>&lt;h3&gt;Create New Vector Layer&lt;/h3&gt;
 To create a new layer for editing, choose &lt;label&gt;New Vector Layer&lt;/label&gt; from the &lt;label&gt;Layer&lt;/label&gt; menu.&lt;br/&gt;
 With this dialog you can create a shape file layer.
@@ -62783,7 +63070,7 @@ Nesta sección pode ve-la lista de atributos. Para eliminar un deles, clíqueo e
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="344"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="330"/>
         <source>&lt;h3&gt;Add SQL Anywhere Tables&lt;/h3&gt;
 This dialog allows you to add SQL Anywhere layers (tables with a geometry column) to the QGIS map canvas.
 &lt;p&gt;
@@ -62862,7 +63149,7 @@ Marcando &lt;label&gt;Opcións de busca&lt;/label&gt; activa opcións adicionais
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1167"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="599"/>
         <source>&lt;h3&gt;Save vector layer as...&lt;/h3&gt;
 
 &lt;p&gt;This dialog allows you to save vector data in various formats using GDAL/OGR.
@@ -63000,7 +63287,7 @@ dispoñibles en QGIS, que se describen e ilustran na Wikipedia&lt;a href=&quot;h
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="11"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="793"/>
         <source>&lt;h3&gt;Delimited Text File Layer&lt;/h3&gt;
 Loads and displays delimited text files
 &lt;p&gt;
@@ -63617,7 +63904,7 @@ Poden engadirse as seguintes opcións
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="332"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="11"/>
         <source>&lt;h3&gt;Print Composer&lt;/h3&gt;
 
 &lt;p&gt;
@@ -64711,7 +64998,7 @@ O plugin non será activado.</translation>
 <context>
     <name>function_help</name>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="58"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="278"/>
         <source>&lt;h3&gt;week() function&lt;/h3&gt;
 Extract the week number from a date, or the number of weeks
 from a &lt;code&gt;Interval&lt;/code&gt;
@@ -64752,7 +65039,7 @@ dende un &lt;code&gt;Intervalo&lt;/code&gt;
 &lt;code&gt;week(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 104.285...&lt;/code&gt;&lt;br</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="361"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="94"/>
         <source>&lt;h3&gt;CASE expression&lt;/h3&gt;
 A conditional expression that can be used to evaluate multiple expressions and
 return a result.
@@ -64812,7 +65099,7 @@ e devolver un resultado.
 &lt;/pre&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1440"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="363"/>
         <source>&lt;h3&gt;right() function&lt;/h3&gt;
 Returns a substring that contains the &lt;i&gt;n&lt;/i&gt; rightmost characters of the string.
 
@@ -64847,7 +65134,7 @@ Devolve unha subcadea que contén os &lt;i&gt;n&lt;/i&gt; caracteres máis á de
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="881"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1429"/>
         <source>
 &lt;h3&gt;Color Group&lt;/h3&gt;
 This group contains functions for manipulating colors
@@ -64857,7 +65144,7 @@ This group contains functions for manipulating colors
 Este grupo contén funcións para a manipulación das cores</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="563"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1086"/>
         <source>&lt;h3&gt;length() function&lt;/h3&gt;
 Returns the length of a string.
 
@@ -64887,7 +65174,7 @@ Amosa a lonxitude dunha cadea.
      length(&apos;HELLO&apos;) &amp;rarr; 5&lt;/p</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="589"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1480"/>
         <source>&lt;h3&gt;upper() function&lt;/h3&gt;
 Converts a string to upper case letters.
 
@@ -64917,7 +65204,7 @@ Convirte unha cadea a letras maiúsculas.
      upper(&apos;hello WOrld&apos;) &amp;rarr; &apos;HELLO WORLD&apos;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="27"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="347"/>
         <source>&lt;h3&gt;left() function&lt;/h3&gt;
 Returns a substring that contains the &lt;i&gt;n&lt;/i&gt; leftmost characters of the string.
 
@@ -64984,7 +65271,7 @@ Devolve unha cadea coa expresión regular indicada substituída.
      regexp_replace(&apos;QGIS SHOULD ROCK&apos;,&apos;&amp;#92;&amp;#92;sSHOULD&amp;#92;&amp;#92;s&apos;,&apos; DOES &apos;) &amp;rarr; &apos;QGIS DOES ROCK&apos;&lt;/p</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="885"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="205"/>
         <source>&lt;h3&gt;$scale function&lt;/h3&gt;
 Returns the current scale of the map canvas.
 &lt;br&gt;
@@ -65013,7 +65300,7 @@ Nota: Esta función está dispoñible só en certos contextos e será 0 no caso 
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="226"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1512"/>
         <source>
 &lt;h3&gt;color_rgb() function&lt;/h3&gt;
 Returns a string representation of a color based on its red, green, and blue components
@@ -65049,7 +65336,7 @@ Devolve unha representación da cadea dunha cor baseada nos seus compoñentes ve
      color_rgb(255,127,0) &amp;rarr; &apos;#ff7f00&apos;&lt;/p</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="43"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="818"/>
         <source>&lt;h3&gt;ceil() function&lt;/h3&gt;
 Rounds a number upwards.
 
@@ -65065,10 +65352,24 @@ Rounds a number upwards.
 &lt;code&gt;ceil(4.9) &amp;rarr; 5&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;ceil(-4.9) &amp;rarr; -4&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función ceil()&lt;/h3&gt;
+Redondea un número cara arriba.
+
+&lt;h4&gt;Sintaxe&lt;/h4&gt;
+&lt;code&gt;ceil(valor)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;code&gt;valor&lt;/code&gt; - un número.
+&lt;br&gt;
+
+&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;!-- Amosa un exemplo da función.--&gt;
+&lt;code&gt;ceil(4.9) &amp;rarr; 5&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;ceil(-4.9) &amp;rarr; -4&lt;/code&gt;&lt;br&gt;
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="131"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1466"/>
         <source>&lt;h3&gt;toreal() function&lt;/h3&gt;
 Converts a string to real number. Nothing changed if a value cannot be converted to real (e.g &apos;123.56asd&apos; is invalid). Numbers are rounded after saving changes if the precision is smaller than the result of the conversion.
 
@@ -65083,10 +65384,23 @@ Converts a string to real number. Nothing changed if a value cannot be converted
 &lt;!-- Show example of function.--&gt;
      toreal(&apos;123.45&apos;) &amp;rarr; 123.45&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función toreal()&lt;/h3&gt;
+Convirte unha cadea a número real. Non cambiará nada se o valor non pode ser convertido a número real (por exemplo &apos;123.56asd&apos; non é válido). Os números son redondeados logo de garda-los cambios se a precisión é menor que o resultado da conversión.
+
+&lt;p&gt;&lt;h4&gt;Sintaxe&lt;/h4&gt;
+     toreal(&lt;i&gt;cadea&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;!-- Lista os argumentos da función aquí--&gt;
+&lt;i&gt;  cadea&lt;/i&gt; &amp;rarr; tipo cadea.  A cadea a converter a número real.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;!-- Amosa un exemplo da función.--&gt;
+     toreal(&apos;123.45&apos;) &amp;rarr; 123.45&lt;/p&gt;
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="400"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="996"/>
         <source>&lt;h3&gt;$numpages function&lt;/h3&gt;
 Returns the total number of pages in the composition.
 
@@ -65114,7 +65428,7 @@ Ningún
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="494"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="172"/>
         <source>&lt;h3&gt;rand() function&lt;/h3&gt;
 Returns a random integer within the range specified by the minimum and 
 maximum argument (inclusive).
@@ -65150,7 +65464,7 @@ Esta función toma dous argumentos.
 &lt;code&gt;rand(1, 10) &amp;rarr; 8&lt;/code&gt;&lt;br&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1456"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1317"/>
         <source>&lt;h3&gt;$rownum function&lt;/h3&gt;
 Returns the number of the current row.
 
@@ -65179,7 +65493,7 @@ Ningún
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="773"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="660"/>
         <source>&lt;h3&gt;atan2() function&lt;/h3&gt;
 Returns arcustangens of y/x using the signs of the two 
 arguments to determine the quadrant of the result
@@ -65213,7 +65527,7 @@ para determina-lo cuadrante do resultado.
      atan2(1.0, 1.732) &amp;rarr; 0.523611477769969&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1337"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="393"/>
         <source>&lt;h3&gt;sin() function&lt;/h3&gt;
 Returns sinus of an angle.
 
@@ -65241,7 +65555,7 @@ Devolve o seno dun ánguloReturns sinus of an angle.
      sin(1.571) &amp;rarr; 0.999999682931835&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="203"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="465"/>
         <source>&lt;h3&gt;clamp() function&lt;/h3&gt;
 Restricts an input value to a specified range.
 
@@ -65284,7 +65598,7 @@ Restrinxe un valor introducido a un rango específico.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1256"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1433"/>
         <source>&lt;h3&gt;month() function&lt;/h3&gt;
 Extract the month part from a date, or the number of months
 from a &lt;code&gt;Interval&lt;/code&gt;
@@ -65327,7 +65641,7 @@ Extrae a parte do mes dunha data, ou o número de meses dun
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="311"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="792"/>
         <source>&lt;h3&gt;$area function&lt;/h3&gt;
 Returns the area size of the current feature.
 
@@ -65356,7 +65670,7 @@ Ningún
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="162"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1392"/>
         <source>&lt;h3&gt;day() function&lt;/h3&gt;
 Extract the day from a date, or the number of days
 from a &lt;code&gt;Interval&lt;/code&gt;
@@ -65429,7 +65743,7 @@ Convierte unha cadea a número real. Non cambiará nada se o valor non pode ser 
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="646"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="805"/>
         <source>&lt;h3&gt;todate() function&lt;/h3&gt;
 Convert a string into Qt data type.
 
@@ -65458,7 +65772,7 @@ Convirte unha cadea a tipo data Qt.
 &lt;code&gt;todate(&apos;2012-05-04&apos;) &amp;rarr; 2012-05-04&lt;/code&gt;&lt;br&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1181"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1494"/>
         <source>&lt;h3&gt;lpad() function&lt;/h3&gt;
 Returns a string with supplied width padded
 using the fill character.
@@ -65496,7 +65810,7 @@ utilizando caracteres de recheo.
 &lt;code&gt;lpad(&apos;Hello&apos;, 10, &apos;x&apos;) &amp;rarr; &apos;Helloxxxxx&apos;&lt;/code&gt;&lt;br&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1276"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="218"/>
         <source>&lt;h3&gt;acos() function&lt;/h3&gt;
 Returns arcuscosinus of a value in radians.
 
@@ -65525,7 +65839,7 @@ Devolve o arcocoseno dun valor en radiáns.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="616"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="721"/>
         <source>&lt;h3&gt;log() function&lt;/h3&gt;
 Returns the value of the logarithm of the passed value and base.
 &lt;br&gt;
@@ -65562,7 +65876,7 @@ Esta función toma dous argumentos.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="223"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="718"/>
         <source>&lt;h3&gt;Geometry Group&lt;/h3&gt;
 This group contains functions that operate on geometry objects e.g length, area.
 </source>
@@ -65570,7 +65884,7 @@ This group contains functions that operate on geometry objects e.g length, area.
 Este grupo contén funcións que operar coa xeometría dos obxectos, por exemplo lonxitude ou área.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1496"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="56"/>
         <source>&lt;h3&gt;$page function&lt;/h3&gt;
 Returns the current page number within a composition.
 
@@ -65599,7 +65913,7 @@ Ningún
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="932"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1029"/>
         <source>&lt;h3&gt;strpos() function&lt;/h3&gt;
 Return the index of a regular expression in a string.
 
@@ -65672,7 +65986,7 @@ Esta función toma un argumento.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="298"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1206"/>
         <source>&lt;h3&gt;exp() function&lt;/h3&gt;
 Returns exponential of an value.
 
@@ -65733,7 +66047,7 @@ Devolve a porción dunha cadea que coincida cunha expresión regular indicada.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="679"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1357"/>
         <source>&lt;h3&gt;rpad() function&lt;/h3&gt;
 Returns a string with supplied width padded
 using the fill character.
@@ -65804,7 +66118,7 @@ Convirte un número a cadea.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="107"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1296"/>
         <source>&lt;h3&gt;round() function&lt;/h3&gt;
 Rounds a number to number of decimal places.
 &lt;br&gt;
@@ -65849,7 +66163,7 @@ utiliza &lt;code&gt;round(decimal)&lt;/code&gt; para redondear ó enteiro máis 
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="633"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="425"/>
         <source>&lt;h3&gt;$now function&lt;/h3&gt;
 Returns the current date and time
 
@@ -65878,7 +66192,7 @@ Ningún
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="78"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="231"/>
         <source>&lt;h3&gt;scale_exp() function&lt;/h3&gt;
 Transforms a given value from an input domain to an output range using an exponential curve. This function can be used to ease values in or out 
 of the specified output range.   
@@ -65939,7 +66253,7 @@ acelerarse así como os valores de entrada se aproximan ó dominio máximo. Expo
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1571"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1268"/>
         <source>&lt;h3&gt;Date and Time Group&lt;/h3&gt;
 This group contains functions for handling date and time data.
 </source>
@@ -65947,7 +66261,7 @@ This group contains functions for handling date and time data.
 Este grupo contén funcións para a manipulación dos datos de tempo e data.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="445"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="81"/>
         <source>&lt;h3&gt;$id function&lt;/h3&gt;
 Returns the feature id of the current row.
 
@@ -65976,7 +66290,7 @@ Ningún
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1125"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1142"/>
         <source>&lt;h3&gt;$perimeter function&lt;/h3&gt;
 Returns the perimeter length of the current feature.
 
@@ -66037,7 +66351,7 @@ Devolve verdadeiro se calquera parte dunha cadea coincide coa expresión regular
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="273"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1283"/>
         <source>&lt;h3&gt;tointerval() function&lt;/h3&gt;
 Converts a string to a interval type.  Can be used to take days, hours, month, etc off a date. 
 
@@ -66066,7 +66380,7 @@ Convirte unha cadea a tipo intervalo.  Pode usarse para coller días, horas, mes
 &lt;code&gt;todatetime(&apos;2012-05-05 12:00:00&apos;) - tointerval(&apos;1 day 2 hours&apos;) &amp;rarr; 2012-05-04T10:00:00&lt;/code&gt;&lt;br&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="511"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="298"/>
         <source>&lt;h3&gt;hour() function&lt;/h3&gt;
 Extract the hour from a datetime or time, or the number of hours
 from a &lt;code&gt;Interval&lt;/code&gt;
@@ -66111,7 +66425,7 @@ dende un  &lt;code&gt;Intervalo&lt;/code&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="145"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="884"/>
         <source>&lt;h3&gt;color_hsla() function&lt;/h3&gt;
 Returns a string representation of a color based on its hue, saturation, lightness and alpha (transparency) attributes
 
@@ -66148,7 +66462,7 @@ Devolve unha representación da cor da cadea baseada no seu matiz, saturación, 
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="577"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1222"/>
         <source>&lt;h3&gt;$pi constant&lt;/h3&gt;
 Returns pi as value for calculations
 
@@ -66175,7 +66489,7 @@ Ningún
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="345"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="406"/>
         <source>&lt;h3&gt;Record Group&lt;/h3&gt;
 This group contains functions that operate on record identifiers.
 </source>
@@ -66183,7 +66497,7 @@ This group contains functions that operate on record identifiers.
 Este grupo contén funcións que operan co rexistro de identificadores.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="432"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="452"/>
         <source>&lt;h3&gt;totime() function&lt;/h3&gt;
 Convert a string into Qt time type.
 
@@ -66212,7 +66526,7 @@ Convirte unha cadea en tipo tempo de Qt.
 &lt;code&gt;totime(&apos;12:30:01&apos;) &amp;rarr; 12:30:01&lt;/code&gt;&lt;br&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1574"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="776"/>
         <source>&lt;h3&gt;replace() function&lt;/h3&gt;
 Returns a string with the the supplied string replaced.
 
@@ -66247,7 +66561,7 @@ Devolve unha cadea coa cadea indicada reemplazada.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="270"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="977"/>
         <source>&lt;h3&gt;Conditionals Group&lt;/h3&gt;
 This group contains functions to handle conditional checks in expressions.
 </source>
@@ -66255,7 +66569,7 @@ This group contains functions to handle conditional checks in expressions.
 Este grupo contén funcións para manipular comprobacións condicionais nas expresións.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1168"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="951"/>
         <source>&lt;h3&gt;abs() function&lt;/h3&gt;
 Returns the absolute value of a number.&lt;br&gt;
 
@@ -66284,7 +66598,7 @@ abs(&lt;i&gt;valor&lt;/i&gt;)&lt;br&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1482"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1343"/>
         <source>&lt;h3&gt;max() function&lt;/h3&gt;
 Returns the largest value in a set of values.
 
@@ -66315,7 +66629,7 @@ Devolve o valor máis alto dun conxunto de valores.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1396"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1047"/>
         <source>
 &lt;h3&gt;color_cmyk() function&lt;/h3&gt;
 Returns a string representation of a color based on its cyan, magenta, yellow and black components
@@ -66354,7 +66668,7 @@ Devolve unha representación da cor dunha cadea baseada nas súas compoñentes a
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="348"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="705"/>
         <source>&lt;h3&gt;sqrt() function&lt;/h3&gt;
 Returns square root of a value
 
@@ -66383,7 +66697,7 @@ Devolve a raíz cadrada dun valor
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="324"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1065"/>
         <source>
 &lt;h3&gt;ramp_color() function&lt;/h3&gt;
 Returns a string representing a color from a color ramp. 
@@ -66428,7 +66742,7 @@ pode non da-los resultados agardados se cambia o seu proxecto Quantum.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="11"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="980"/>
         <source>&lt;h3&gt;Conditions Group&lt;/h3&gt;
 This group contains functions that operate on condition.
 </source>
@@ -66436,7 +66750,7 @@ This group contains functions that operate on condition.
 Este grupo contén funcións que operan cunha condición.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="475"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1529"/>
         <source>
 &lt;h3&gt;color_cmyka() function&lt;/h3&gt;
 Returns a string representation of a color based on its cyan, magenta, yellow, black and alpha (transparency) components
@@ -66477,7 +66791,7 @@ Devolve unha representación da cor dunha cadea baseada nas súas compoñentes a
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="458"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1100"/>
         <source>&lt;h3&gt;format_number() function&lt;/h3&gt;
 Returns a number formatted with the locale separator for thousands. 
 Also truncates the number to the number of supplied places. 
@@ -66513,7 +66827,7 @@ Tamén corta o número a un número coas cifras indicadas.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="659"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1248"/>
         <source>&lt;h3&gt;year() function&lt;/h3&gt;
 Extract the year part from a date, or the number of years
 from a &lt;code&gt;Interval&lt;/code&gt;
@@ -66556,7 +66870,7 @@ dende un &lt;code&gt;Intervalo&lt;/code&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="698"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1562"/>
         <source>&lt;h3&gt;CASE expression&lt;/h3&gt;
 A conditional expression that can be used to evaluate multiple expressions and
 return a result.
@@ -66615,7 +66929,7 @@ e devolver un resultado.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1320"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="26"/>
         <source>&lt;h3&gt;randf() function&lt;/h3&gt;
 Returns a random float within the range specified by the minimum and 
 maximum argument (inclusive).
@@ -66653,7 +66967,7 @@ Esta función toma dous argumentos.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="912"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1009"/>
         <source>&lt;h3&gt;scale_linear() function&lt;/h3&gt;
 Transforms a given value from an input domain to an output range using linear interpolation. 
 
@@ -66696,7 +67010,7 @@ Transforma un valor dado dende un dominio de entrada a un rango de saída utiliz
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="756"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1548"/>
         <source>&lt;h3&gt;trim() function&lt;/h3&gt;
 Removes all leading and trailing whitespace (spaces, tabs, etc) from a string.
 
@@ -66727,7 +67041,7 @@ Elimina tódolos espazos en branco iniciais e finais (espazos, tabulacións, etc
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1289"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="123"/>
         <source>&lt;h3&gt;minute() function&lt;/h3&gt;
 Extract the minute from a datetime or time, or the number of minutes
 from a &lt;code&gt;Interval&lt;/code&gt;
@@ -66772,7 +67086,7 @@ dun &lt;code&gt;Intervalo&lt;/code&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1350"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="918"/>
         <source>&lt;h3&gt;age() function&lt;/h3&gt;
 Returns the difference between two dates.
 &lt;br&gt;&lt;br&gt;
@@ -66841,7 +67155,7 @@ utilice &lt;code&gt;día&lt;/code&gt; para extrae-lo número de días&lt;br&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="532"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1376"/>
         <source>&lt;h3&gt;log10() function&lt;/h3&gt;
 Returns the value of the base 10 logarithm of the passed expression.
 &lt;br&gt;
@@ -66876,7 +67190,7 @@ Esta función toma un argumento.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1535"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="275"/>
         <source>&lt;h3&gt;Conversions Group&lt;/h3&gt;
 This group contains functions to convert on data type to another e.g string to integer, integer to string.
 </source>
@@ -66910,7 +67224,7 @@ Retorna a coordenada y da entidade actual
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="824"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="763"/>
         <source>&lt;h3&gt;cos() function&lt;/h3&gt;
 Returns cosinus of an angle.
 
@@ -66939,7 +67253,7 @@ Devolve o coseno dun ángulo
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="128"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="915"/>
         <source>&lt;h3&gt;Operators Group&lt;/h3&gt;
 This group contains operators e.g + - * 
 </source>
@@ -66979,7 +67293,7 @@ Redondea un número cara abaixo.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="182"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1185"/>
         <source>&lt;h3&gt;second() function&lt;/h3&gt;
 Extract the seconds from a datetime or time, or the number of seconds
 from a &lt;code&gt;Interval&lt;/code&gt;
@@ -67024,7 +67338,7 @@ dun &lt;code&gt;Intervalo&lt;/code&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="14"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1330"/>
         <source>&lt;h3&gt;atan() function&lt;/h3&gt;
 Returns arcustanget of a value in radians.
 
@@ -67053,7 +67367,7 @@ Devolve o arcotanxente dun valor en radiáns.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1414"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1271"/>
         <source>&lt;h3&gt;$length function&lt;/h3&gt;
 Returns the length of the current feature.
 
@@ -67080,7 +67394,7 @@ Ningún
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="548"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="11"/>
         <source>&lt;h3&gt;title() function&lt;/h3&gt;
 Converts all words of a string to title case (all words lower case with leading
 capital letter).
@@ -67112,7 +67426,7 @@ Capitaliza tódalas palabras dunha cadea (tódalas palabras en minúscula coa le
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1310"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="46"/>
         <source>&lt;h3&gt;Field&lt;/h3&gt;
 Double click to add field name to expression string.
 &lt;br&gt;&lt;br&gt;
@@ -67135,7 +67449,7 @@ A carga de valores dende capas WFS non está soportada, antes de que a capa este
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="865"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="189"/>
         <source>&lt;h3&gt;substr() function&lt;/h3&gt;
 Return a part of a string
 
@@ -67170,7 +67484,7 @@ Devolve unha parte dunha cadea
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="390"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="319"/>
         <source>&lt;h3&gt;Fields and Values&lt;/h3&gt;
 Contains a list of fields from the layer.  Sample values can also be accessed via right-click.
 &lt;br&gt;&lt;br&gt;
@@ -67193,7 +67507,7 @@ A carga de valores dende capas WFS non está soportada, antes de que a capa este
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1426"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="438"/>
         <source>&lt;h3&gt;format() function&lt;/h3&gt;
 Format a string using supplied arguments. 
 
@@ -67224,7 +67538,7 @@ Formateará unha cadea utilizando os argumentos subministrados.
 &lt;code&gt;format(&apos;This %1 a %2&apos;,&apos;is&apos;, &apos;test&apos;) &amp;rarr; This is a test&lt;/code&gt;&lt;br&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1522"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1129"/>
         <source>&lt;h3&gt;$y function&lt;/h3&gt;
 Returns the y coordinate of the current feature.
 
@@ -67253,7 +67567,7 @@ Ningún
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1138"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="329"/>
         <source>
 &lt;h3&gt;color_rgba() function&lt;/h3&gt;
 Returns a string representation of a color based on its red, green, blue, and alpha (transparency) components
@@ -67292,7 +67606,7 @@ Devove unha representación da cor da cadea baseada nas súas compoñentes verme
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="603"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="692"/>
         <source>&lt;h3&gt;$x function&lt;/h3&gt;
 Returns the x coordinate of the current feature.
 
@@ -67379,7 +67693,7 @@ Redondea un número cara arriba.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="726"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="868"/>
         <source>&lt;h3&gt;color_hsv() function&lt;/h3&gt;
 Returns a string representation of a color based on its hue, saturation, and value attributes
 
@@ -67414,7 +67728,7 @@ Devolve unha representación da cor da cadea baseada no matiz, saturación e val
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="413"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="43"/>
         <source>&lt;h3&gt;Math Group&lt;/h3&gt;
 This group contains math functions e.g square root, sin and cos
 </source>
@@ -67422,7 +67736,7 @@ This group contains math functions e.g square root, sin and cos
 Este grupo contén funcións matemáticas, por exemplo raíz cadrada, seno e coseno</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1212"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="901"/>
         <source>&lt;h3&gt;min() function&lt;/h3&gt;
 Returns the smallest value in a set of values.
 
@@ -67453,7 +67767,7 @@ Devolve o valor máis baixo dun conxunto de valores.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="258"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="69"/>
         <source>&lt;h3&gt;lower() function&lt;/h3&gt;
 Converts a string to lower case letters.
 
@@ -67480,7 +67794,7 @@ Convirte unha cadea a minúsculas.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1199"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="750"/>
         <source>&lt;h3&gt;$numfeatures function&lt;/h3&gt;
 In atlas generation, returns the total number of features within the coverage layer.
 
@@ -67509,7 +67823,7 @@ Ningún
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="770"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1219"/>
         <source>&lt;h3&gt;String Group&lt;/h3&gt;
 This group contains functions that operate on strings e.g replace, convert to upper case.
 </source>
@@ -67517,7 +67831,7 @@ This group contains functions that operate on strings e.g replace, convert to up
 Este grupo contén funcións que operan con cadeas, por exemplo reemplazar, convertir a todo maiúsculas.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="742"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1234"/>
         <source>&lt;h3&gt;concat() function&lt;/h3&gt;
 Concatenates several strings to one.
 
@@ -67548,7 +67862,7 @@ Concatena varias cadeas nunha.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="804"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="848"/>
         <source>&lt;h3&gt;coalesce() function&lt;/h3&gt;
 Returns the first non-NULL value from the expression list.
 &lt;br&gt;
@@ -67591,7 +67905,7 @@ Esta función pode tomar calquera número de argumentos.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="416"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1169"/>
         <source>&lt;h3&gt;color_hsl() function&lt;/h3&gt;
 Returns a string representation of a color based on its hue, saturation, and lightness attributes
 
@@ -67627,7 +67941,7 @@ Devolve unha representación da cor da cadea baseada nos seus atributos de matiz
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="852"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="964"/>
         <source>&lt;h3&gt;asin() function&lt;/h3&gt;
 Returns arcussinus of a value in radians.
 
@@ -67656,7 +67970,7 @@ Devolve o arcoseno dun valor en radiáns.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1383"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="983"/>
         <source>&lt;h3&gt;todatetime() function&lt;/h3&gt;
 Convert a string into Qt data time type.
 
@@ -67715,7 +68029,7 @@ Convirte unha cadea a número enteiro. Non cambiará nada se o valor non pode se
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="243"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="833"/>
         <source>&lt;h3&gt;regexp_substr() function&lt;/h3&gt;
 Returns the portion of a string which matches a supplied regular expression.
 
@@ -67748,7 +68062,7 @@ Devolve a porción dunha cadea que coincide coa expresión regular indicada.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="286"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1117"/>
         <source>&lt;h3&gt;xat() function&lt;/h3&gt;
 Retrieves a x coordinate of the current feature
 
@@ -67761,10 +68075,21 @@ Retrieves a x coordinate of the current feature
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;xat(1) &amp;rarr; 5&lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función xat()&lt;/h3&gt;
+Recupera a coordenada x da entidade actual
+
+&lt;h4&gt;Sintaxe&lt;/h4&gt;
+&lt;code&gt;xat(i)&lt;/code&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;code&gt;i&lt;code&gt; - tipo enteiro. Índice do punto da liña (os índices comezan en 0; os valores negativos aplícanse ó último índice).
+
+&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;pre&gt;xat(1) &amp;rarr; 5&lt;/pre&gt;
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="789"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="260"/>
         <source>&lt;h3&gt;floor() function&lt;/h3&gt;
 Rounds a number downwards.
 
@@ -67780,10 +68105,24 @@ Rounds a number downwards.
 &lt;code&gt;floor(4.9) &amp;rarr; 4&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;floor(-4.9) &amp;rarr; -5&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función floor()&lt;/h3&gt;
+Redondea un número cara abaixo.
+
+&lt;h4&gt;Sintaxe&lt;/h4&gt;
+&lt;code&gt;floor(valor)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;code&gt;valor&lt;/code&gt; - un número.
+&lt;br&gt;
+
+&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;!-- Amosa un exemplo da función.--&gt;
+&lt;code&gt;floor(4.9) &amp;rarr; 4&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;floor(-4.9) &amp;rarr; -5&lt;/code&gt;&lt;br&gt;
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="837"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="157"/>
         <source>&lt;h3&gt;regexp_match() function&lt;/h3&gt;
 Returns true if any part of a string matches the supplied regular expression.
 
@@ -67816,7 +68155,7 @@ Devolve certo se calquera parte dunha cadea coincide coa expresión regular indi
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="898"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1155"/>
         <source>&lt;h3&gt;toint() function&lt;/h3&gt;
 Converts a string to integer number. Nothing changed if a value cannot be converted to integer (e.g &apos;123asd&apos; is invalid).
 
@@ -67831,10 +68170,23 @@ Converts a string to integer number. Nothing changed if a value cannot be conver
 &lt;!-- Show example of function.--&gt;
      toint(&apos;123&apos;) &amp;rarr; 123&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función toint()&lt;/h3&gt;
+Convirte unha cadea a número enteiro. Non cambiará nada se o valor non pode ser convertido a enteiro (por exemplo &apos;123asd&apos; non é válido).
+
+&lt;p&gt;&lt;h4&gt;Sintaxe&lt;/h4&gt;
+     toint(&lt;i&gt;cadea&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;!-- Lista os argumentos da función aquí--&gt;
+&lt;i&gt;  cadea&lt;/i&gt; &amp;rarr; tipo cadea.  A Cadea a convertir a número enteiro.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;!-- Amosa un exemplo da función.--&gt;
+     toint(&apos;123&apos;) &amp;rarr; 123&lt;/p&gt;
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="950"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="485"/>
         <source>&lt;h3&gt;format_date() function&lt;/h3&gt;
 Format a date type or string into a custom string format. Uses Qt data time format strings.  See &lt;a href=&apos;http://qt-project.org/doc/qt-4.8/qdatetime.html#toString&apos;&gt;QDateTime::toString&lt;/a&gt;
 
@@ -68187,7 +68539,7 @@ Formatea un tipo de data ou cadea nun formato de cadea persoalizado. Utiliza cad
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1156"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="738"/>
         <source>&lt;h3&gt;yat() function&lt;/h3&gt;
 Retrieves a y coordinate of the current feature
 
@@ -68200,10 +68552,21 @@ Retrieves a y coordinate of the current feature
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;yat(1) &amp;rarr; 5&lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función yat()&lt;/h3&gt;
+Retorna a coordenada y da entidade actual
+
+&lt;h4&gt;Sintaxe&lt;/h4&gt;
+&lt;code&gt;yat(i)&lt;/code&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;code&gt;i&lt;code&gt; - tipo enteiro. Índice do punto da liña (o índice comeza en 0; os valores negativos aplicaránse ó último índice).
+
+&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;pre&gt;yat(1) &amp;rarr; 5&lt;/pre&gt;
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1226"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="379"/>
         <source>&lt;h3&gt;tostring() function&lt;/h3&gt;
 Converts a number to string.
 
@@ -68218,10 +68581,23 @@ Converts a number to string.
 &lt;!-- Show example of function.--&gt;
      tostring(123) &amp;rarr; &apos;123&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función tostring()&lt;/h3&gt;
+Convirte un número a cadea.
+
+&lt;p&gt;&lt;h4&gt;Sintaxe&lt;/h4&gt;
+     tostring(&lt;i&gt;número&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;!-- Lista os argumentos da función aquí--&gt;
+&lt;i&gt;número&lt;/i&gt; &amp;rarr; tipo enteiro ou número real.  O número a convertir a cadea.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;!-- Amosa un exemplo da función.--&gt;
+     tostring(123) &amp;rarr; &apos;123&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1240"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="676"/>
         <source>&lt;h3&gt;regexp_replace() function&lt;/h3&gt;
 Returns a string with the supplied regular expression replaced.
 
@@ -68256,7 +68632,7 @@ Devolve unha cadea coa expresión regular indicada substituída.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1469"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="144"/>
         <source>&lt;h3&gt;tan() function&lt;/h3&gt;
 Returns tangent of an angle.
 
@@ -68285,7 +68661,7 @@ Devolve a tanxente dun ángulo.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1509"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1453"/>
         <source>&lt;h3&gt;$feature function&lt;/h3&gt;
 In atlas generation, returns the current feature number that is iterated over on the coverage layer.
 
@@ -68314,7 +68690,7 @@ Ningún
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1538"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="409"/>
         <source>&lt;h3&gt;ln() function&lt;/h3&gt;
 Returns the value of the natural logarithm of the passed expression.
 &lt;br&gt;
@@ -68331,10 +68707,25 @@ This function takes one argument.
 &lt;code&gt;ln(1) &amp;rarr; 0&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;ln(2.7182818284590452354) &amp;rarr; 1&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función ln()&lt;/h3&gt;
+Devolve o valor do logaritmo natural da expresión tomada.
+&lt;br&gt;
+Esta función toma un argumento.
+&lt;h4&gt;Sintaxe&lt;/h4&gt;
+&lt;code&gt;ln(valor)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;code&gt;valor&lt;/code&gt; - calquera número positivo.
+&lt;br&gt;
+
+&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;!-- Amosa un exemplo da función.--&gt;
+&lt;code&gt;ln(1) &amp;rarr; 0&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;ln(2.7182818284590452354) &amp;rarr; 1&lt;/code&gt;&lt;br&gt;
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1554"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1412"/>
         <source>&lt;h3&gt;color_hsva() function&lt;/h3&gt;
 Returns a string representation of a color based on its hue, saturation, value and alpha (transparency) attributes
 

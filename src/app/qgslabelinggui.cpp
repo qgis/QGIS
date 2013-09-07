@@ -1049,7 +1049,8 @@ void QgsLabelingGui::updateFont( QFont font )
   }
 
   // test if font is actually available
-  mFontMissingLabel->setVisible( !QgsFontUtils::fontMatchOnSystem( mRefFont ) );
+  // NOTE: QgsFontUtils::fontMatchOnSystem may fail here, just crosscheck family
+  mFontMissingLabel->setVisible( !QgsFontUtils::fontFamilyMatchOnSystem( mRefFont.family() ) );
 
   mDirectSymbLeftLineEdit->setFont( mRefFont );
   mDirectSymbRightLineEdit->setFont( mRefFont );

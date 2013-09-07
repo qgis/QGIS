@@ -55,6 +55,11 @@ class QgsMapToolNodeTool: public QgsMapToolVertexEdit
   public slots:
     void selectedFeatureDestroyed();
 
+    /*
+     * the current layer changed
+     */
+    void currentLayerChanged( QgsMapLayer *layer );
+
   private:
     /**
      * Deletes the rubber band pointers and clears mRubberBands

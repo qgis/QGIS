@@ -41,7 +41,7 @@ class QgsLabelingGui;
 class QgsDiagramProperties;
 class QgsFieldsProperties;
 
-class QgsVectorLayerProperties : public QgsOptionsDialogBase, private Ui::QgsVectorLayerPropertiesBase
+class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private Ui::QgsVectorLayerPropertiesBase
 {
     Q_OBJECT
 

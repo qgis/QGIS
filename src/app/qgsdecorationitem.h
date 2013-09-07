@@ -23,7 +23,7 @@
 
 class QPainter;
 
-class QgsDecorationItem: public QObject
+class APP_EXPORT QgsDecorationItem: public QObject
 {
     Q_OBJECT
   public:

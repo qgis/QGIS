@@ -125,6 +125,7 @@ class GlobePlugin : public QObject, public QgisPlugin
     QAction * mQActionPointer;
     //!pointer to the qaction for this plugin
     QAction * mQActionSettingsPointer;
+    QAction * mQActionUnload;
     //! OSG Viewer
     osgViewer::Viewer* mOsgViewer;
     //! QT viewer widget

@@ -222,6 +222,7 @@ void QgsMeasureDialog::updateUi()
     toolTip += "<br> * " + tr( "Project CRS transformation is turned off." ) + " ";
     toolTip += tr( "Canvas units setting is taken from project properties setting (%1)." ).arg( QGis::tr( mCanvasUnits ) );
     toolTip += "<br> * " + tr( "Ellipsoidal calculation is not possible, as project CRS is undefined." );
+    setWindowTitle( tr( "Measure (OTF off)" ) );
   }
   else
   {
@@ -235,6 +236,7 @@ void QgsMeasureDialog::updateUi()
       toolTip += "<br> * " + tr( "Project CRS transformation is turned on but ellipsoidal calculation is not selected." );
       toolTip += "<br> * " + tr( "The canvas units setting is taken from the project CRS (%1)." ).arg( QGis::tr( mCanvasUnits ) );
     }
+    setWindowTitle( tr( "Measure (OTF on)" ) );
   }
 
   if (( mCanvasUnits == QGis::Meters && mDisplayUnits == QGis::Feet ) || ( mCanvasUnits == QGis::Feet && mDisplayUnits == QGis::Meters ) )

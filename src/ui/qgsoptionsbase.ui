@@ -2836,7 +2836,7 @@
                   <item row="0" column="0" colspan="3">
                    <widget class="QCheckBox" name="chkDisableAttributeValuesDlg">
                     <property name="text">
-                     <string>Suppress attributes pop-up windows after each created feature</string>
+                     <string>Suppress attribute form pop-up after feature creation</string>
                     </property>
                     <property name="tristate">
                      <bool>false</bool>

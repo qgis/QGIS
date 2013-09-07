@@ -100,7 +100,7 @@ class CalculatorModelerParametersDialog(QtGui.QDialog):
         self.values = {}
         self.outputs = {}
 
-        name =  self.getSafeNameForHarcodedParameter(self.alg.getParameterFromName(self.alg.FORMULA))        
+        name =  self.getSafeNameForHarcodedParameter(self.alg.getParameterFromName(self.alg.FORMULA))
         value = AlgorithmAndParameter(AlgorithmAndParameter.PARENT_MODEL_ALGORITHM, name)
         self.params[self.alg.FORMULA] = value
         formula = str(self.formulaText.text())

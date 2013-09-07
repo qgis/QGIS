@@ -1,0 +1,8 @@
+#!/bin/sh
+# Use this as a ./run script with daemontools or runit
+# You should replace xxx with the user you want php to run as (and www-data with the user lighty runs as)
+
+exec 2>&1
+PHP_FCGI_CHILDREN=2 \
+PHP_FCGI_MAX_REQUESTS=1000 \
+exec /usr/bin/spawn-fcgi -n -s /var/run/lighttpd/php-xxx.sock -n -u xxx -U www-data -- /usr/bin/php5-cgi

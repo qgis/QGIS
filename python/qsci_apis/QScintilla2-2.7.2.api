@@ -1,0 +1,2737 @@
+Qsci.QSCINTILLA_VERSION?7
+Qsci.QSCINTILLA_VERSION_STR?7
+Qsci.QsciScintillaBase.SC_FONT_SIZE_MULTIPLIER?10
+Qsci.QsciScintillaBase.SC_CASEINSENSITIVEBEHAVIOUR_RESPECTCASE?10
+Qsci.QsciScintillaBase.SC_CASEINSENSITIVEBEHAVIOUR_IGNORECASE?10
+Qsci.QsciScintillaBase.SC_TECHNOLOGY_DEFAULT?10
+Qsci.QsciScintillaBase.SC_TECHNOLOGY_DIRECTWRITE?10
+Qsci.QsciScintillaBase.SC_WEIGHT_NORMAL?10
+Qsci.QsciScintillaBase.SC_WEIGHT_SEMIBOLD?10
+Qsci.QsciScintillaBase.SC_WEIGHT_BOLD?10
+Qsci.QsciScintillaBase.SCLEX_CONTAINER?10
+Qsci.QsciScintillaBase.SCLEX_NULL?10
+Qsci.QsciScintillaBase.SCLEX_PYTHON?10
+Qsci.QsciScintillaBase.SCLEX_CPP?10
+Qsci.QsciScintillaBase.SCLEX_HTML?10
+Qsci.QsciScintillaBase.SCLEX_XML?10
+Qsci.QsciScintillaBase.SCLEX_PERL?10
+Qsci.QsciScintillaBase.SCLEX_SQL?10
+Qsci.QsciScintillaBase.SCLEX_VB?10
+Qsci.QsciScintillaBase.SCLEX_PROPERTIES?10
+Qsci.QsciScintillaBase.SCLEX_ERRORLIST?10
+Qsci.QsciScintillaBase.SCLEX_MAKEFILE?10
+Qsci.QsciScintillaBase.SCLEX_BATCH?10
+Qsci.QsciScintillaBase.SCLEX_LATEX?10
+Qsci.QsciScintillaBase.SCLEX_LUA?10
+Qsci.QsciScintillaBase.SCLEX_DIFF?10
+Qsci.QsciScintillaBase.SCLEX_CONF?10
+Qsci.QsciScintillaBase.SCLEX_PASCAL?10
+Qsci.QsciScintillaBase.SCLEX_AVE?10
+Qsci.QsciScintillaBase.SCLEX_ADA?10
+Qsci.QsciScintillaBase.SCLEX_LISP?10
+Qsci.QsciScintillaBase.SCLEX_RUBY?10
+Qsci.QsciScintillaBase.SCLEX_EIFFEL?10
+Qsci.QsciScintillaBase.SCLEX_EIFFELKW?10
+Qsci.QsciScintillaBase.SCLEX_TCL?10
+Qsci.QsciScintillaBase.SCLEX_NNCRONTAB?10
+Qsci.QsciScintillaBase.SCLEX_BULLANT?10
+Qsci.QsciScintillaBase.SCLEX_VBSCRIPT?10
+Qsci.QsciScintillaBase.SCLEX_ASP?10
+Qsci.QsciScintillaBase.SCLEX_PHP?10
+Qsci.QsciScintillaBase.SCLEX_BAAN?10
+Qsci.QsciScintillaBase.SCLEX_MATLAB?10
+Qsci.QsciScintillaBase.SCLEX_SCRIPTOL?10
+Qsci.QsciScintillaBase.SCLEX_ASM?10
+Qsci.QsciScintillaBase.SCLEX_CPPNOCASE?10
+Qsci.QsciScintillaBase.SCLEX_FORTRAN?10
+Qsci.QsciScintillaBase.SCLEX_F77?10
+Qsci.QsciScintillaBase.SCLEX_CSS?10
+Qsci.QsciScintillaBase.SCLEX_POV?10
+Qsci.QsciScintillaBase.SCLEX_LOUT?10
+Qsci.QsciScintillaBase.SCLEX_ESCRIPT?10
+Qsci.QsciScintillaBase.SCLEX_PS?10
+Qsci.QsciScintillaBase.SCLEX_NSIS?10
+Qsci.QsciScintillaBase.SCLEX_MMIXAL?10
+Qsci.QsciScintillaBase.SCLEX_CLW?10
+Qsci.QsciScintillaBase.SCLEX_CLWNOCASE?10
+Qsci.QsciScintillaBase.SCLEX_LOT?10
+Qsci.QsciScintillaBase.SCLEX_YAML?10
+Qsci.QsciScintillaBase.SCLEX_TEX?10
+Qsci.QsciScintillaBase.SCLEX_METAPOST?10
+Qsci.QsciScintillaBase.SCLEX_POWERBASIC?10
+Qsci.QsciScintillaBase.SCLEX_FORTH?10
+Qsci.QsciScintillaBase.SCLEX_ERLANG?10
+Qsci.QsciScintillaBase.SCLEX_OCTAVE?10
+Qsci.QsciScintillaBase.SCLEX_MSSQL?10
+Qsci.QsciScintillaBase.SCLEX_VERILOG?10
+Qsci.QsciScintillaBase.SCLEX_KIX?10
+Qsci.QsciScintillaBase.SCLEX_GUI4CLI?10
+Qsci.QsciScintillaBase.SCLEX_SPECMAN?10
+Qsci.QsciScintillaBase.SCLEX_AU3?10
+Qsci.QsciScintillaBase.SCLEX_APDL?10
+Qsci.QsciScintillaBase.SCLEX_BASH?10
+Qsci.QsciScintillaBase.SCLEX_ASN1?10
+Qsci.QsciScintillaBase.SCLEX_VHDL?10
+Qsci.QsciScintillaBase.SCLEX_CAML?10
+Qsci.QsciScintillaBase.SCLEX_BLITZBASIC?10
+Qsci.QsciScintillaBase.SCLEX_PUREBASIC?10
+Qsci.QsciScintillaBase.SCLEX_HASKELL?10
+Qsci.QsciScintillaBase.SCLEX_PHPSCRIPT?10
+Qsci.QsciScintillaBase.SCLEX_TADS3?10
+Qsci.QsciScintillaBase.SCLEX_REBOL?10
+Qsci.QsciScintillaBase.SCLEX_SMALLTALK?10
+Qsci.QsciScintillaBase.SCLEX_FLAGSHIP?10
+Qsci.QsciScintillaBase.SCLEX_CSOUND?10
+Qsci.QsciScintillaBase.SCLEX_FREEBASIC?10
+Qsci.QsciScintillaBase.SCLEX_INNOSETUP?10
+Qsci.QsciScintillaBase.SCLEX_OPAL?10
+Qsci.QsciScintillaBase.SCLEX_SPICE?10
+Qsci.QsciScintillaBase.SCLEX_D?10
+Qsci.QsciScintillaBase.SCLEX_CMAKE?10
+Qsci.QsciScintillaBase.SCLEX_GAP?10
+Qsci.QsciScintillaBase.SCLEX_PLM?10
+Qsci.QsciScintillaBase.SCLEX_PROGRESS?10
+Qsci.QsciScintillaBase.SCLEX_ABAQUS?10
+Qsci.QsciScintillaBase.SCLEX_ASYMPTOTE?10
+Qsci.QsciScintillaBase.SCLEX_R?10
+Qsci.QsciScintillaBase.SCLEX_MAGIK?10
+Qsci.QsciScintillaBase.SCLEX_POWERSHELL?10
+Qsci.QsciScintillaBase.SCLEX_MYSQL?10
+Qsci.QsciScintillaBase.SCLEX_PO?10
+Qsci.QsciScintillaBase.SCLEX_TAL?10
+Qsci.QsciScintillaBase.SCLEX_COBOL?10
+Qsci.QsciScintillaBase.SCLEX_TACL?10
+Qsci.QsciScintillaBase.SCLEX_SORCUS?10
+Qsci.QsciScintillaBase.SCLEX_POWERPRO?10
+Qsci.QsciScintillaBase.SCLEX_NIMROD?10
+Qsci.QsciScintillaBase.SCLEX_SML?10
+Qsci.QsciScintillaBase.SCLEX_MARKDOWN?10
+Qsci.QsciScintillaBase.SCLEX_TXT2TAGS?10
+Qsci.QsciScintillaBase.SCLEX_A68K?10
+Qsci.QsciScintillaBase.SCLEX_MODULA?10
+Qsci.QsciScintillaBase.SCLEX_COFFEESCRIPT?10
+Qsci.QsciScintillaBase.SCLEX_TCMD?10
+Qsci.QsciScintillaBase.SCLEX_AVS?10
+Qsci.QsciScintillaBase.SCLEX_ECL?10
+Qsci.QsciScintillaBase.SCLEX_OSCRIPT?10
+Qsci.QsciScintillaBase.SCLEX_VISUALPROLOG?10
+Qsci.QsciScintillaBase.SCMOD_NORM?10
+Qsci.QsciScintillaBase.SCMOD_SHIFT?10
+Qsci.QsciScintillaBase.SCMOD_CTRL?10
+Qsci.QsciScintillaBase.SCMOD_ALT?10
+Qsci.QsciScintillaBase.SCMOD_SUPER?10
+Qsci.QsciScintillaBase.SCMOD_META?10
+Qsci.QsciScintillaBase.SCK_DOWN?10
+Qsci.QsciScintillaBase.SCK_UP?10
+Qsci.QsciScintillaBase.SCK_LEFT?10
+Qsci.QsciScintillaBase.SCK_RIGHT?10
+Qsci.QsciScintillaBase.SCK_HOME?10
+Qsci.QsciScintillaBase.SCK_END?10
+Qsci.QsciScintillaBase.SCK_PRIOR?10
+Qsci.QsciScintillaBase.SCK_NEXT?10
+Qsci.QsciScintillaBase.SCK_DELETE?10
+Qsci.QsciScintillaBase.SCK_INSERT?10
+Qsci.QsciScintillaBase.SCK_ESCAPE?10
+Qsci.QsciScintillaBase.SCK_BACK?10
+Qsci.QsciScintillaBase.SCK_TAB?10
+Qsci.QsciScintillaBase.SCK_RETURN?10
+Qsci.QsciScintillaBase.SCK_ADD?10
+Qsci.QsciScintillaBase.SCK_SUBTRACT?10
+Qsci.QsciScintillaBase.SCK_DIVIDE?10
+Qsci.QsciScintillaBase.SCK_WIN?10
+Qsci.QsciScintillaBase.SCK_RWIN?10
+Qsci.QsciScintillaBase.SCK_MENU?10
+Qsci.QsciScintillaBase.SC_MOD_INSERTTEXT?10
+Qsci.QsciScintillaBase.SC_MOD_DELETETEXT?10
+Qsci.QsciScintillaBase.SC_MOD_CHANGESTYLE?10
+Qsci.QsciScintillaBase.SC_MOD_CHANGEFOLD?10
+Qsci.QsciScintillaBase.SC_PERFORMED_USER?10
+Qsci.QsciScintillaBase.SC_PERFORMED_UNDO?10
+Qsci.QsciScintillaBase.SC_PERFORMED_REDO?10
+Qsci.QsciScintillaBase.SC_MULTISTEPUNDOREDO?10
+Qsci.QsciScintillaBase.SC_LASTSTEPINUNDOREDO?10
+Qsci.QsciScintillaBase.SC_MOD_CHANGEMARKER?10
+Qsci.QsciScintillaBase.SC_MOD_BEFOREINSERT?10
+Qsci.QsciScintillaBase.SC_MOD_BEFOREDELETE?10
+Qsci.QsciScintillaBase.SC_MULTILINEUNDOREDO?10
+Qsci.QsciScintillaBase.SC_STARTACTION?10
+Qsci.QsciScintillaBase.SC_MOD_CHANGEINDICATOR?10
+Qsci.QsciScintillaBase.SC_MOD_CHANGELINESTATE?10
+Qsci.QsciScintillaBase.SC_MOD_CHANGEMARGIN?10
+Qsci.QsciScintillaBase.SC_MOD_CHANGEANNOTATION?10
+Qsci.QsciScintillaBase.SC_MOD_CONTAINER?10
+Qsci.QsciScintillaBase.SC_MOD_LEXERSTATE?10
+Qsci.QsciScintillaBase.SC_MODEVENTMASKALL?10
+Qsci.QsciScintillaBase.CARETSTYLE_INVISIBLE?10
+Qsci.QsciScintillaBase.CARETSTYLE_LINE?10
+Qsci.QsciScintillaBase.CARETSTYLE_BLOCK?10
+Qsci.QsciScintillaBase.CARET_SLOP?10
+Qsci.QsciScintillaBase.CARET_STRICT?10
+Qsci.QsciScintillaBase.CARET_JUMPS?10
+Qsci.QsciScintillaBase.CARET_EVEN?10
+Qsci.QsciScintillaBase.VISIBLE_SLOP?10
+Qsci.QsciScintillaBase.VISIBLE_STRICT?10
+Qsci.QsciScintillaBase.UNDO_MAY_COALESCE?10
+Qsci.QsciScintillaBase.SC_CURSORNORMAL?10
+Qsci.QsciScintillaBase.SC_CURSORARROW?10
+Qsci.QsciScintillaBase.SC_CURSORWAIT?10
+Qsci.QsciScintillaBase.SC_CURSORREVERSEARROW?10
+Qsci.QsciScintillaBase.EDGE_NONE?10
+Qsci.QsciScintillaBase.EDGE_LINE?10
+Qsci.QsciScintillaBase.EDGE_BACKGROUND?10
+Qsci.QsciScintillaBase.ANNOTATION_HIDDEN?10
+Qsci.QsciScintillaBase.ANNOTATION_STANDARD?10
+Qsci.QsciScintillaBase.ANNOTATION_BOXED?10
+Qsci.QsciScintillaBase.SC_CACHE_NONE?10
+Qsci.QsciScintillaBase.SC_CACHE_CARET?10
+Qsci.QsciScintillaBase.SC_CACHE_PAGE?10
+Qsci.QsciScintillaBase.SC_CACHE_DOCUMENT?10
+Qsci.QsciScintillaBase.SC_WRAPINDENT_FIXED?10
+Qsci.QsciScintillaBase.SC_WRAPINDENT_SAME?10
+Qsci.QsciScintillaBase.SC_WRAPINDENT_INDENT?10
+Qsci.QsciScintillaBase.SC_WRAP_NONE?10
+Qsci.QsciScintillaBase.SC_WRAP_WORD?10
+Qsci.QsciScintillaBase.SC_WRAP_CHAR?10
+Qsci.QsciScintillaBase.SC_TIME_FOREVER?10
+Qsci.QsciScintillaBase.SC_FOLDFLAG_LINEBEFORE_EXPANDED?10
+Qsci.QsciScintillaBase.SC_FOLDFLAG_LINEBEFORE_CONTRACTED?10
+Qsci.QsciScintillaBase.SC_FOLDFLAG_LINEAFTER_EXPANDED?10
+Qsci.QsciScintillaBase.SC_FOLDFLAG_LINEAFTER_CONTRACTED?10
+Qsci.QsciScintillaBase.SC_FOLDFLAG_LEVELNUMBERS?10
+Qsci.QsciScintillaBase.SC_FOLDLEVELBASE?10
+Qsci.QsciScintillaBase.SC_FOLDLEVELWHITEFLAG?10
+Qsci.QsciScintillaBase.SC_FOLDLEVELHEADERFLAG?10
+Qsci.QsciScintillaBase.SC_FOLDLEVELNUMBERMASK?10
+Qsci.QsciScintillaBase.SCFIND_WHOLEWORD?10
+Qsci.QsciScintillaBase.SCFIND_MATCHCASE?10
+Qsci.QsciScintillaBase.SCFIND_WORDSTART?10
+Qsci.QsciScintillaBase.SCFIND_REGEXP?10
+Qsci.QsciScintillaBase.SCFIND_POSIX?10
+Qsci.QsciScintillaBase.SC_PRINT_NORMAL?10
+Qsci.QsciScintillaBase.SC_PRINT_INVERTLIGHT?10
+Qsci.QsciScintillaBase.SC_PRINT_BLACKONWHITE?10
+Qsci.QsciScintillaBase.SC_PRINT_COLOURONWHITE?10
+Qsci.QsciScintillaBase.SC_PRINT_COLOURONWHITEDEFAULTBG?10
+Qsci.QsciScintillaBase.INDIC_PLAIN?10
+Qsci.QsciScintillaBase.INDIC_SQUIGGLE?10
+Qsci.QsciScintillaBase.INDIC_TT?10
+Qsci.QsciScintillaBase.INDIC_DIAGONAL?10
+Qsci.QsciScintillaBase.INDIC_STRIKE?10
+Qsci.QsciScintillaBase.INDIC_HIDDEN?10
+Qsci.QsciScintillaBase.INDIC_BOX?10
+Qsci.QsciScintillaBase.INDIC_ROUNDBOX?10
+Qsci.QsciScintillaBase.INDIC_STRAIGHTBOX?10
+Qsci.QsciScintillaBase.INDIC_DASH?10
+Qsci.QsciScintillaBase.INDIC_DOTS?10
+Qsci.QsciScintillaBase.INDIC_SQUIGGLELOW?10
+Qsci.QsciScintillaBase.INDIC_DOTBOX?10
+Qsci.QsciScintillaBase.INDIC_SQUIGGLEPIXMAP?10
+Qsci.QsciScintillaBase.INDIC_CONTAINER?10
+Qsci.QsciScintillaBase.INDIC_MAX?10
+Qsci.QsciScintillaBase.INDIC0_MASK?10
+Qsci.QsciScintillaBase.INDIC1_MASK?10
+Qsci.QsciScintillaBase.INDIC2_MASK?10
+Qsci.QsciScintillaBase.INDICS_MASK?10
+Qsci.QsciScintillaBase.SC_IV_NONE?10
+Qsci.QsciScintillaBase.SC_IV_REAL?10
+Qsci.QsciScintillaBase.SC_IV_LOOKFORWARD?10
+Qsci.QsciScintillaBase.SC_IV_LOOKBOTH?10
+Qsci.QsciScintillaBase.SC_CASE_MIXED?10
+Qsci.QsciScintillaBase.SC_CASE_UPPER?10
+Qsci.QsciScintillaBase.SC_CASE_LOWER?10
+Qsci.QsciScintillaBase.SC_CHARSET_ANSI?10
+Qsci.QsciScintillaBase.SC_CHARSET_DEFAULT?10
+Qsci.QsciScintillaBase.SC_CHARSET_BALTIC?10
+Qsci.QsciScintillaBase.SC_CHARSET_CHINESEBIG5?10
+Qsci.QsciScintillaBase.SC_CHARSET_EASTEUROPE?10
+Qsci.QsciScintillaBase.SC_CHARSET_GB2312?10
+Qsci.QsciScintillaBase.SC_CHARSET_GREEK?10
+Qsci.QsciScintillaBase.SC_CHARSET_HANGUL?10
+Qsci.QsciScintillaBase.SC_CHARSET_MAC?10
+Qsci.QsciScintillaBase.SC_CHARSET_OEM?10
+Qsci.QsciScintillaBase.SC_CHARSET_RUSSIAN?10
+Qsci.QsciScintillaBase.SC_CHARSET_SHIFTJIS?10
+Qsci.QsciScintillaBase.SC_CHARSET_SYMBOL?10
+Qsci.QsciScintillaBase.SC_CHARSET_TURKISH?10
+Qsci.QsciScintillaBase.SC_CHARSET_JOHAB?10
+Qsci.QsciScintillaBase.SC_CHARSET_HEBREW?10
+Qsci.QsciScintillaBase.SC_CHARSET_ARABIC?10
+Qsci.QsciScintillaBase.SC_CHARSET_VIETNAMESE?10
+Qsci.QsciScintillaBase.SC_CHARSET_THAI?10
+Qsci.QsciScintillaBase.SC_CHARSET_8859_15?10
+Qsci.QsciScintillaBase.STYLE_DEFAULT?10
+Qsci.QsciScintillaBase.STYLE_LINENUMBER?10
+Qsci.QsciScintillaBase.STYLE_BRACELIGHT?10
+Qsci.QsciScintillaBase.STYLE_BRACEBAD?10
+Qsci.QsciScintillaBase.STYLE_CONTROLCHAR?10
+Qsci.QsciScintillaBase.STYLE_INDENTGUIDE?10
+Qsci.QsciScintillaBase.STYLE_CALLTIP?10
+Qsci.QsciScintillaBase.STYLE_LASTPREDEFINED?10
+Qsci.QsciScintillaBase.STYLE_MAX?10
+Qsci.QsciScintillaBase.SC_MARGIN_SYMBOL?10
+Qsci.QsciScintillaBase.SC_MARGIN_NUMBER?10
+Qsci.QsciScintillaBase.SC_MARGIN_BACK?10
+Qsci.QsciScintillaBase.SC_MARGIN_FORE?10
+Qsci.QsciScintillaBase.SC_MARGIN_TEXT?10
+Qsci.QsciScintillaBase.SC_MARGIN_RTEXT?10
+Qsci.QsciScintillaBase.SC_MARKNUM_FOLDEREND?10
+Qsci.QsciScintillaBase.SC_MARKNUM_FOLDEROPENMID?10
+Qsci.QsciScintillaBase.SC_MARKNUM_FOLDERMIDTAIL?10
+Qsci.QsciScintillaBase.SC_MARKNUM_FOLDERTAIL?10
+Qsci.QsciScintillaBase.SC_MARKNUM_FOLDERSUB?10
+Qsci.QsciScintillaBase.SC_MARKNUM_FOLDER?10
+Qsci.QsciScintillaBase.SC_MARKNUM_FOLDEROPEN?10
+Qsci.QsciScintillaBase.SC_MASK_FOLDERS?10
+Qsci.QsciScintillaBase.SC_MARK_CIRCLE?10
+Qsci.QsciScintillaBase.SC_MARK_ROUNDRECT?10
+Qsci.QsciScintillaBase.SC_MARK_ARROW?10
+Qsci.QsciScintillaBase.SC_MARK_SMALLRECT?10
+Qsci.QsciScintillaBase.SC_MARK_SHORTARROW?10
+Qsci.QsciScintillaBase.SC_MARK_EMPTY?10
+Qsci.QsciScintillaBase.SC_MARK_ARROWDOWN?10
+Qsci.QsciScintillaBase.SC_MARK_MINUS?10
+Qsci.QsciScintillaBase.SC_MARK_PLUS?10
+Qsci.QsciScintillaBase.SC_MARK_VLINE?10
+Qsci.QsciScintillaBase.SC_MARK_LCORNER?10
+Qsci.QsciScintillaBase.SC_MARK_TCORNER?10
+Qsci.QsciScintillaBase.SC_MARK_BOXPLUS?10
+Qsci.QsciScintillaBase.SC_MARK_BOXPLUSCONNECTED?10
+Qsci.QsciScintillaBase.SC_MARK_BOXMINUS?10
+Qsci.QsciScintillaBase.SC_MARK_BOXMINUSCONNECTED?10
+Qsci.QsciScintillaBase.SC_MARK_LCORNERCURVE?10
+Qsci.QsciScintillaBase.SC_MARK_TCORNERCURVE?10
+Qsci.QsciScintillaBase.SC_MARK_CIRCLEPLUS?10
+Qsci.QsciScintillaBase.SC_MARK_CIRCLEPLUSCONNECTED?10
+Qsci.QsciScintillaBase.SC_MARK_CIRCLEMINUS?10
+Qsci.QsciScintillaBase.SC_MARK_CIRCLEMINUSCONNECTED?10
+Qsci.QsciScintillaBase.SC_MARK_BACKGROUND?10
+Qsci.QsciScintillaBase.SC_MARK_DOTDOTDOT?10
+Qsci.QsciScintillaBase.SC_MARK_ARROWS?10
+Qsci.QsciScintillaBase.SC_MARK_PIXMAP?10
+Qsci.QsciScintillaBase.SC_MARK_FULLRECT?10
+Qsci.QsciScintillaBase.SC_MARK_LEFTRECT?10
+Qsci.QsciScintillaBase.SC_MARK_AVAILABLE?10
+Qsci.QsciScintillaBase.SC_MARK_UNDERLINE?10
+Qsci.QsciScintillaBase.SC_MARK_RGBAIMAGE?10
+Qsci.QsciScintillaBase.SC_MARK_CHARACTER?10
+Qsci.QsciScintillaBase.SC_CP_DBCS?10
+Qsci.QsciScintillaBase.SC_CP_UTF8?10
+Qsci.QsciScintillaBase.SC_EOL_CRLF?10
+Qsci.QsciScintillaBase.SC_EOL_CR?10
+Qsci.QsciScintillaBase.SC_EOL_LF?10
+Qsci.QsciScintillaBase.SCWS_INVISIBLE?10
+Qsci.QsciScintillaBase.SCWS_VISIBLEALWAYS?10
+Qsci.QsciScintillaBase.SCWS_VISIBLEAFTERINDENT?10
+Qsci.QsciScintillaBase.SCVS_NONE?10
+Qsci.QsciScintillaBase.SCVS_RECTANGULARSELECTION?10
+Qsci.QsciScintillaBase.SCVS_USERACCESSIBLE?10
+Qsci.QsciScintillaBase.SC_SEL_STREAM?10
+Qsci.QsciScintillaBase.SC_SEL_RECTANGLE?10
+Qsci.QsciScintillaBase.SC_SEL_LINES?10
+Qsci.QsciScintillaBase.SC_SEL_THIN?10
+Qsci.QsciScintillaBase.SC_WRAPVISUALFLAGLOC_DEFAULT?10
+Qsci.QsciScintillaBase.SC_WRAPVISUALFLAGLOC_END_BY_TEXT?10
+Qsci.QsciScintillaBase.SC_WRAPVISUALFLAGLOC_START_BY_TEXT?10
+Qsci.QsciScintillaBase.SC_WRAPVISUALFLAG_NONE?10
+Qsci.QsciScintillaBase.SC_WRAPVISUALFLAG_END?10
+Qsci.QsciScintillaBase.SC_WRAPVISUALFLAG_START?10
+Qsci.QsciScintillaBase.SC_WRAPVISUALFLAG_MARGIN?10
+Qsci.QsciScintillaBase.SC_UPDATE_CONTENT?10
+Qsci.QsciScintillaBase.SC_UPDATE_SELECTION?10
+Qsci.QsciScintillaBase.SC_UPDATE_V_SCROLL?10
+Qsci.QsciScintillaBase.SC_UPDATE_H_SCROLL?10
+Qsci.QsciScintillaBase.SC_TYPE_BOOLEAN?10
+Qsci.QsciScintillaBase.SC_TYPE_INTEGER?10
+Qsci.QsciScintillaBase.SC_TYPE_STRING?10
+Qsci.QsciScintillaBase.SC_MULTIPASTE_ONCE?10
+Qsci.QsciScintillaBase.SC_MULTIPASTE_EACH?10
+Qsci.QsciScintillaBase.SC_MARGINOPTION_NONE?10
+Qsci.QsciScintillaBase.SC_MARGINOPTION_SUBLINESELECT?10
+Qsci.QsciScintillaBase.SC_EFF_QUALITY_MASK?10
+Qsci.QsciScintillaBase.SC_EFF_QUALITY_DEFAULT?10
+Qsci.QsciScintillaBase.SC_EFF_QUALITY_NON_ANTIALIASED?10
+Qsci.QsciScintillaBase.SC_EFF_QUALITY_ANTIALIASED?10
+Qsci.QsciScintillaBase.SC_EFF_QUALITY_LCD_OPTIMIZED?10
+Qsci.QsciScintillaBase.SC_CARETSTICKY_OFF?10
+Qsci.QsciScintillaBase.SC_CARETSTICKY_ON?10
+Qsci.QsciScintillaBase.SC_CARETSTICKY_WHITESPACE?10
+Qsci.QsciScintillaBase.SC_ALPHA_TRANSPARENT?10
+Qsci.QsciScintillaBase.SC_ALPHA_OPAQUE?10
+Qsci.QsciScintillaBase.SC_ALPHA_NOALPHA?10
+Qsci.QsciScintillaBase.SCI_START?10
+Qsci.QsciScintillaBase.SCI_OPTIONAL_START?10
+Qsci.QsciScintillaBase.SCI_LEXER_START?10
+Qsci.QsciScintillaBase.SCI_ADDTEXT?10
+Qsci.QsciScintillaBase.SCI_ADDSTYLEDTEXT?10
+Qsci.QsciScintillaBase.SCI_INSERTTEXT?10
+Qsci.QsciScintillaBase.SCI_CLEARALL?10
+Qsci.QsciScintillaBase.SCI_CLEARDOCUMENTSTYLE?10
+Qsci.QsciScintillaBase.SCI_GETLENGTH?10
+Qsci.QsciScintillaBase.SCI_GETCHARAT?10
+Qsci.QsciScintillaBase.SCI_GETCURRENTPOS?10
+Qsci.QsciScintillaBase.SCI_GETANCHOR?10
+Qsci.QsciScintillaBase.SCI_GETSTYLEAT?10
+Qsci.QsciScintillaBase.SCI_REDO?10
+Qsci.QsciScintillaBase.SCI_SETUNDOCOLLECTION?10
+Qsci.QsciScintillaBase.SCI_SELECTALL?10
+Qsci.QsciScintillaBase.SCI_SETSAVEPOINT?10
+Qsci.QsciScintillaBase.SCI_GETSTYLEDTEXT?10
+Qsci.QsciScintillaBase.SCI_CANREDO?10
+Qsci.QsciScintillaBase.SCI_MARKERLINEFROMHANDLE?10
+Qsci.QsciScintillaBase.SCI_MARKERDELETEHANDLE?10
+Qsci.QsciScintillaBase.SCI_GETUNDOCOLLECTION?10
+Qsci.QsciScintillaBase.SCI_GETVIEWWS?10
+Qsci.QsciScintillaBase.SCI_SETVIEWWS?10
+Qsci.QsciScintillaBase.SCI_POSITIONFROMPOINT?10
+Qsci.QsciScintillaBase.SCI_POSITIONFROMPOINTCLOSE?10
+Qsci.QsciScintillaBase.SCI_GOTOLINE?10
+Qsci.QsciScintillaBase.SCI_GOTOPOS?10
+Qsci.QsciScintillaBase.SCI_SETANCHOR?10
+Qsci.QsciScintillaBase.SCI_GETCURLINE?10
+Qsci.QsciScintillaBase.SCI_GETENDSTYLED?10
+Qsci.QsciScintillaBase.SCI_CONVERTEOLS?10
+Qsci.QsciScintillaBase.SCI_GETEOLMODE?10
+Qsci.QsciScintillaBase.SCI_SETEOLMODE?10
+Qsci.QsciScintillaBase.SCI_STARTSTYLING?10
+Qsci.QsciScintillaBase.SCI_SETSTYLING?10
+Qsci.QsciScintillaBase.SCI_GETBUFFEREDDRAW?10
+Qsci.QsciScintillaBase.SCI_SETBUFFEREDDRAW?10
+Qsci.QsciScintillaBase.SCI_SETTABWIDTH?10
+Qsci.QsciScintillaBase.SCI_GETTABWIDTH?10
+Qsci.QsciScintillaBase.SCI_SETCODEPAGE?10
+Qsci.QsciScintillaBase.SCI_MARKERDEFINE?10
+Qsci.QsciScintillaBase.SCI_MARKERSETFORE?10
+Qsci.QsciScintillaBase.SCI_MARKERSETBACK?10
+Qsci.QsciScintillaBase.SCI_MARKERADD?10
+Qsci.QsciScintillaBase.SCI_MARKERDELETE?10
+Qsci.QsciScintillaBase.SCI_MARKERDELETEALL?10
+Qsci.QsciScintillaBase.SCI_MARKERGET?10
+Qsci.QsciScintillaBase.SCI_MARKERNEXT?10
+Qsci.QsciScintillaBase.SCI_MARKERPREVIOUS?10
+Qsci.QsciScintillaBase.SCI_MARKERDEFINEPIXMAP?10
+Qsci.QsciScintillaBase.SCI_SETMARGINTYPEN?10
+Qsci.QsciScintillaBase.SCI_GETMARGINTYPEN?10
+Qsci.QsciScintillaBase.SCI_SETMARGINWIDTHN?10
+Qsci.QsciScintillaBase.SCI_GETMARGINWIDTHN?10
+Qsci.QsciScintillaBase.SCI_SETMARGINMASKN?10
+Qsci.QsciScintillaBase.SCI_GETMARGINMASKN?10
+Qsci.QsciScintillaBase.SCI_SETMARGINSENSITIVEN?10
+Qsci.QsciScintillaBase.SCI_GETMARGINSENSITIVEN?10
+Qsci.QsciScintillaBase.SCI_SETMARGINCURSORN?10
+Qsci.QsciScintillaBase.SCI_GETMARGINCURSORN?10
+Qsci.QsciScintillaBase.SCI_STYLECLEARALL?10
+Qsci.QsciScintillaBase.SCI_STYLESETFORE?10
+Qsci.QsciScintillaBase.SCI_STYLESETBACK?10
+Qsci.QsciScintillaBase.SCI_STYLESETBOLD?10
+Qsci.QsciScintillaBase.SCI_STYLESETITALIC?10
+Qsci.QsciScintillaBase.SCI_STYLESETSIZE?10
+Qsci.QsciScintillaBase.SCI_STYLESETFONT?10
+Qsci.QsciScintillaBase.SCI_STYLESETEOLFILLED?10
+Qsci.QsciScintillaBase.SCI_STYLERESETDEFAULT?10
+Qsci.QsciScintillaBase.SCI_STYLESETUNDERLINE?10
+Qsci.QsciScintillaBase.SCI_STYLESETCASE?10
+Qsci.QsciScintillaBase.SCI_STYLESETCHARACTERSET?10
+Qsci.QsciScintillaBase.SCI_SETSELFORE?10
+Qsci.QsciScintillaBase.SCI_SETSELBACK?10
+Qsci.QsciScintillaBase.SCI_SETCARETFORE?10
+Qsci.QsciScintillaBase.SCI_ASSIGNCMDKEY?10
+Qsci.QsciScintillaBase.SCI_CLEARCMDKEY?10
+Qsci.QsciScintillaBase.SCI_CLEARALLCMDKEYS?10
+Qsci.QsciScintillaBase.SCI_SETSTYLINGEX?10
+Qsci.QsciScintillaBase.SCI_STYLESETVISIBLE?10
+Qsci.QsciScintillaBase.SCI_GETCARETPERIOD?10
+Qsci.QsciScintillaBase.SCI_SETCARETPERIOD?10
+Qsci.QsciScintillaBase.SCI_SETWORDCHARS?10
+Qsci.QsciScintillaBase.SCI_BEGINUNDOACTION?10
+Qsci.QsciScintillaBase.SCI_ENDUNDOACTION?10
+Qsci.QsciScintillaBase.SCI_INDICSETSTYLE?10
+Qsci.QsciScintillaBase.SCI_INDICGETSTYLE?10
+Qsci.QsciScintillaBase.SCI_INDICSETFORE?10
+Qsci.QsciScintillaBase.SCI_INDICGETFORE?10
+Qsci.QsciScintillaBase.SCI_SETWHITESPACEFORE?10
+Qsci.QsciScintillaBase.SCI_SETWHITESPACEBACK?10
+Qsci.QsciScintillaBase.SCI_SETWHITESPACESIZE?10
+Qsci.QsciScintillaBase.SCI_GETWHITESPACESIZE?10
+Qsci.QsciScintillaBase.SCI_SETSTYLEBITS?10
+Qsci.QsciScintillaBase.SCI_GETSTYLEBITS?10
+Qsci.QsciScintillaBase.SCI_SETLINESTATE?10
+Qsci.QsciScintillaBase.SCI_GETLINESTATE?10
+Qsci.QsciScintillaBase.SCI_GETMAXLINESTATE?10
+Qsci.QsciScintillaBase.SCI_GETCARETLINEVISIBLE?10
+Qsci.QsciScintillaBase.SCI_SETCARETLINEVISIBLE?10
+Qsci.QsciScintillaBase.SCI_GETCARETLINEBACK?10
+Qsci.QsciScintillaBase.SCI_SETCARETLINEBACK?10
+Qsci.QsciScintillaBase.SCI_STYLESETCHANGEABLE?10
+Qsci.QsciScintillaBase.SCI_AUTOCSHOW?10
+Qsci.QsciScintillaBase.SCI_AUTOCCANCEL?10
+Qsci.QsciScintillaBase.SCI_AUTOCACTIVE?10
+Qsci.QsciScintillaBase.SCI_AUTOCPOSSTART?10
+Qsci.QsciScintillaBase.SCI_AUTOCCOMPLETE?10
+Qsci.QsciScintillaBase.SCI_AUTOCSTOPS?10
+Qsci.QsciScintillaBase.SCI_AUTOCSETSEPARATOR?10
+Qsci.QsciScintillaBase.SCI_AUTOCGETSEPARATOR?10
+Qsci.QsciScintillaBase.SCI_AUTOCSELECT?10
+Qsci.QsciScintillaBase.SCI_AUTOCSETCANCELATSTART?10
+Qsci.QsciScintillaBase.SCI_AUTOCGETCANCELATSTART?10
+Qsci.QsciScintillaBase.SCI_AUTOCSETFILLUPS?10
+Qsci.QsciScintillaBase.SCI_AUTOCSETCHOOSESINGLE?10
+Qsci.QsciScintillaBase.SCI_AUTOCGETCHOOSESINGLE?10
+Qsci.QsciScintillaBase.SCI_AUTOCSETIGNORECASE?10
+Qsci.QsciScintillaBase.SCI_AUTOCGETIGNORECASE?10
+Qsci.QsciScintillaBase.SCI_USERLISTSHOW?10
+Qsci.QsciScintillaBase.SCI_AUTOCSETAUTOHIDE?10
+Qsci.QsciScintillaBase.SCI_AUTOCGETAUTOHIDE?10
+Qsci.QsciScintillaBase.SCI_AUTOCSETDROPRESTOFWORD?10
+Qsci.QsciScintillaBase.SCI_AUTOCGETDROPRESTOFWORD?10
+Qsci.QsciScintillaBase.SCI_SETINDENT?10
+Qsci.QsciScintillaBase.SCI_GETINDENT?10
+Qsci.QsciScintillaBase.SCI_SETUSETABS?10
+Qsci.QsciScintillaBase.SCI_GETUSETABS?10
+Qsci.QsciScintillaBase.SCI_SETLINEINDENTATION?10
+Qsci.QsciScintillaBase.SCI_GETLINEINDENTATION?10
+Qsci.QsciScintillaBase.SCI_GETLINEINDENTPOSITION?10
+Qsci.QsciScintillaBase.SCI_GETCOLUMN?10
+Qsci.QsciScintillaBase.SCI_SETHSCROLLBAR?10
+Qsci.QsciScintillaBase.SCI_GETHSCROLLBAR?10
+Qsci.QsciScintillaBase.SCI_SETINDENTATIONGUIDES?10
+Qsci.QsciScintillaBase.SCI_GETINDENTATIONGUIDES?10
+Qsci.QsciScintillaBase.SCI_SETHIGHLIGHTGUIDE?10
+Qsci.QsciScintillaBase.SCI_GETHIGHLIGHTGUIDE?10
+Qsci.QsciScintillaBase.SCI_GETLINEENDPOSITION?10
+Qsci.QsciScintillaBase.SCI_GETCODEPAGE?10
+Qsci.QsciScintillaBase.SCI_GETCARETFORE?10
+Qsci.QsciScintillaBase.SCI_GETREADONLY?10
+Qsci.QsciScintillaBase.SCI_SETCURRENTPOS?10
+Qsci.QsciScintillaBase.SCI_SETSELECTIONSTART?10
+Qsci.QsciScintillaBase.SCI_GETSELECTIONSTART?10
+Qsci.QsciScintillaBase.SCI_SETSELECTIONEND?10
+Qsci.QsciScintillaBase.SCI_GETSELECTIONEND?10
+Qsci.QsciScintillaBase.SCI_SETPRINTMAGNIFICATION?10
+Qsci.QsciScintillaBase.SCI_GETPRINTMAGNIFICATION?10
+Qsci.QsciScintillaBase.SCI_SETPRINTCOLOURMODE?10
+Qsci.QsciScintillaBase.SCI_GETPRINTCOLOURMODE?10
+Qsci.QsciScintillaBase.SCI_FINDTEXT?10
+Qsci.QsciScintillaBase.SCI_FORMATRANGE?10
+Qsci.QsciScintillaBase.SCI_GETFIRSTVISIBLELINE?10
+Qsci.QsciScintillaBase.SCI_GETLINE?10
+Qsci.QsciScintillaBase.SCI_GETLINECOUNT?10
+Qsci.QsciScintillaBase.SCI_SETMARGINLEFT?10
+Qsci.QsciScintillaBase.SCI_GETMARGINLEFT?10
+Qsci.QsciScintillaBase.SCI_SETMARGINRIGHT?10
+Qsci.QsciScintillaBase.SCI_GETMARGINRIGHT?10
+Qsci.QsciScintillaBase.SCI_GETMODIFY?10
+Qsci.QsciScintillaBase.SCI_SETSEL?10
+Qsci.QsciScintillaBase.SCI_GETSELTEXT?10
+Qsci.QsciScintillaBase.SCI_GETTEXTRANGE?10
+Qsci.QsciScintillaBase.SCI_HIDESELECTION?10
+Qsci.QsciScintillaBase.SCI_POINTXFROMPOSITION?10
+Qsci.QsciScintillaBase.SCI_POINTYFROMPOSITION?10
+Qsci.QsciScintillaBase.SCI_LINEFROMPOSITION?10
+Qsci.QsciScintillaBase.SCI_POSITIONFROMLINE?10
+Qsci.QsciScintillaBase.SCI_LINESCROLL?10
+Qsci.QsciScintillaBase.SCI_SCROLLCARET?10
+Qsci.QsciScintillaBase.SCI_REPLACESEL?10
+Qsci.QsciScintillaBase.SCI_SETREADONLY?10
+Qsci.QsciScintillaBase.SCI_NULL?10
+Qsci.QsciScintillaBase.SCI_CANPASTE?10
+Qsci.QsciScintillaBase.SCI_CANUNDO?10
+Qsci.QsciScintillaBase.SCI_EMPTYUNDOBUFFER?10
+Qsci.QsciScintillaBase.SCI_UNDO?10
+Qsci.QsciScintillaBase.SCI_CUT?10
+Qsci.QsciScintillaBase.SCI_COPY?10
+Qsci.QsciScintillaBase.SCI_PASTE?10
+Qsci.QsciScintillaBase.SCI_CLEAR?10
+Qsci.QsciScintillaBase.SCI_SETTEXT?10
+Qsci.QsciScintillaBase.SCI_GETTEXT?10
+Qsci.QsciScintillaBase.SCI_GETTEXTLENGTH?10
+Qsci.QsciScintillaBase.SCI_GETDIRECTFUNCTION?10
+Qsci.QsciScintillaBase.SCI_GETDIRECTPOINTER?10
+Qsci.QsciScintillaBase.SCI_SETOVERTYPE?10
+Qsci.QsciScintillaBase.SCI_GETOVERTYPE?10
+Qsci.QsciScintillaBase.SCI_SETCARETWIDTH?10
+Qsci.QsciScintillaBase.SCI_GETCARETWIDTH?10
+Qsci.QsciScintillaBase.SCI_SETTARGETSTART?10
+Qsci.QsciScintillaBase.SCI_GETTARGETSTART?10
+Qsci.QsciScintillaBase.SCI_SETTARGETEND?10
+Qsci.QsciScintillaBase.SCI_GETTARGETEND?10
+Qsci.QsciScintillaBase.SCI_REPLACETARGET?10
+Qsci.QsciScintillaBase.SCI_REPLACETARGETRE?10
+Qsci.QsciScintillaBase.SCI_SEARCHINTARGET?10
+Qsci.QsciScintillaBase.SCI_SETSEARCHFLAGS?10
+Qsci.QsciScintillaBase.SCI_GETSEARCHFLAGS?10
+Qsci.QsciScintillaBase.SCI_CALLTIPSHOW?10
+Qsci.QsciScintillaBase.SCI_CALLTIPCANCEL?10
+Qsci.QsciScintillaBase.SCI_CALLTIPACTIVE?10
+Qsci.QsciScintillaBase.SCI_CALLTIPPOSSTART?10
+Qsci.QsciScintillaBase.SCI_CALLTIPSETHLT?10
+Qsci.QsciScintillaBase.SCI_CALLTIPSETBACK?10
+Qsci.QsciScintillaBase.SCI_CALLTIPSETFORE?10
+Qsci.QsciScintillaBase.SCI_CALLTIPSETFOREHLT?10
+Qsci.QsciScintillaBase.SCI_AUTOCSETMAXWIDTH?10
+Qsci.QsciScintillaBase.SCI_AUTOCGETMAXWIDTH?10
+Qsci.QsciScintillaBase.SCI_AUTOCSETMAXHEIGHT?10
+Qsci.QsciScintillaBase.SCI_AUTOCGETMAXHEIGHT?10
+Qsci.QsciScintillaBase.SCI_CALLTIPUSESTYLE?10
+Qsci.QsciScintillaBase.SCI_VISIBLEFROMDOCLINE?10
+Qsci.QsciScintillaBase.SCI_DOCLINEFROMVISIBLE?10
+Qsci.QsciScintillaBase.SCI_SETFOLDLEVEL?10
+Qsci.QsciScintillaBase.SCI_GETFOLDLEVEL?10
+Qsci.QsciScintillaBase.SCI_GETLASTCHILD?10
+Qsci.QsciScintillaBase.SCI_GETFOLDPARENT?10
+Qsci.QsciScintillaBase.SCI_SHOWLINES?10
+Qsci.QsciScintillaBase.SCI_HIDELINES?10
+Qsci.QsciScintillaBase.SCI_GETLINEVISIBLE?10
+Qsci.QsciScintillaBase.SCI_SETFOLDEXPANDED?10
+Qsci.QsciScintillaBase.SCI_GETFOLDEXPANDED?10
+Qsci.QsciScintillaBase.SCI_TOGGLEFOLD?10
+Qsci.QsciScintillaBase.SCI_ENSUREVISIBLE?10
+Qsci.QsciScintillaBase.SCI_SETFOLDFLAGS?10
+Qsci.QsciScintillaBase.SCI_ENSUREVISIBLEENFORCEPOLICY?10
+Qsci.QsciScintillaBase.SCI_WRAPCOUNT?10
+Qsci.QsciScintillaBase.SCI_SETTABINDENTS?10
+Qsci.QsciScintillaBase.SCI_GETTABINDENTS?10
+Qsci.QsciScintillaBase.SCI_SETBACKSPACEUNINDENTS?10
+Qsci.QsciScintillaBase.SCI_GETBACKSPACEUNINDENTS?10
+Qsci.QsciScintillaBase.SCI_SETMOUSEDWELLTIME?10
+Qsci.QsciScintillaBase.SCI_GETMOUSEDWELLTIME?10
+Qsci.QsciScintillaBase.SCI_WORDSTARTPOSITION?10
+Qsci.QsciScintillaBase.SCI_WORDENDPOSITION?10
+Qsci.QsciScintillaBase.SCI_SETWRAPMODE?10
+Qsci.QsciScintillaBase.SCI_GETWRAPMODE?10
+Qsci.QsciScintillaBase.SCI_SETLAYOUTCACHE?10
+Qsci.QsciScintillaBase.SCI_GETLAYOUTCACHE?10
+Qsci.QsciScintillaBase.SCI_SETSCROLLWIDTH?10
+Qsci.QsciScintillaBase.SCI_GETSCROLLWIDTH?10
+Qsci.QsciScintillaBase.SCI_TEXTWIDTH?10
+Qsci.QsciScintillaBase.SCI_SETENDATLASTLINE?10
+Qsci.QsciScintillaBase.SCI_GETENDATLASTLINE?10
+Qsci.QsciScintillaBase.SCI_TEXTHEIGHT?10
+Qsci.QsciScintillaBase.SCI_SETVSCROLLBAR?10
+Qsci.QsciScintillaBase.SCI_GETVSCROLLBAR?10
+Qsci.QsciScintillaBase.SCI_APPENDTEXT?10
+Qsci.QsciScintillaBase.SCI_GETTWOPHASEDRAW?10
+Qsci.QsciScintillaBase.SCI_SETTWOPHASEDRAW?10
+Qsci.QsciScintillaBase.SCI_AUTOCGETTYPESEPARATOR?10
+Qsci.QsciScintillaBase.SCI_AUTOCSETTYPESEPARATOR?10
+Qsci.QsciScintillaBase.SCI_TARGETFROMSELECTION?10
+Qsci.QsciScintillaBase.SCI_LINESJOIN?10
+Qsci.QsciScintillaBase.SCI_LINESSPLIT?10
+Qsci.QsciScintillaBase.SCI_SETFOLDMARGINCOLOUR?10
+Qsci.QsciScintillaBase.SCI_SETFOLDMARGINHICOLOUR?10
+Qsci.QsciScintillaBase.SCI_MARKERSETBACKSELECTED?10
+Qsci.QsciScintillaBase.SCI_MARKERENABLEHIGHLIGHT?10
+Qsci.QsciScintillaBase.SCI_LINEDOWN?10
+Qsci.QsciScintillaBase.SCI_LINEDOWNEXTEND?10
+Qsci.QsciScintillaBase.SCI_LINEUP?10
+Qsci.QsciScintillaBase.SCI_LINEUPEXTEND?10
+Qsci.QsciScintillaBase.SCI_CHARLEFT?10
+Qsci.QsciScintillaBase.SCI_CHARLEFTEXTEND?10
+Qsci.QsciScintillaBase.SCI_CHARRIGHT?10
+Qsci.QsciScintillaBase.SCI_CHARRIGHTEXTEND?10
+Qsci.QsciScintillaBase.SCI_WORDLEFT?10
+Qsci.QsciScintillaBase.SCI_WORDLEFTEXTEND?10
+Qsci.QsciScintillaBase.SCI_WORDRIGHT?10
+Qsci.QsciScintillaBase.SCI_WORDRIGHTEXTEND?10
+Qsci.QsciScintillaBase.SCI_HOME?10
+Qsci.QsciScintillaBase.SCI_HOMEEXTEND?10
+Qsci.QsciScintillaBase.SCI_LINEEND?10
+Qsci.QsciScintillaBase.SCI_LINEENDEXTEND?10
+Qsci.QsciScintillaBase.SCI_DOCUMENTSTART?10
+Qsci.QsciScintillaBase.SCI_DOCUMENTSTARTEXTEND?10
+Qsci.QsciScintillaBase.SCI_DOCUMENTEND?10
+Qsci.QsciScintillaBase.SCI_DOCUMENTENDEXTEND?10
+Qsci.QsciScintillaBase.SCI_PAGEUP?10
+Qsci.QsciScintillaBase.SCI_PAGEUPEXTEND?10
+Qsci.QsciScintillaBase.SCI_PAGEDOWN?10
+Qsci.QsciScintillaBase.SCI_PAGEDOWNEXTEND?10
+Qsci.QsciScintillaBase.SCI_EDITTOGGLEOVERTYPE?10
+Qsci.QsciScintillaBase.SCI_CANCEL?10
+Qsci.QsciScintillaBase.SCI_DELETEBACK?10
+Qsci.QsciScintillaBase.SCI_TAB?10
+Qsci.QsciScintillaBase.SCI_BACKTAB?10
+Qsci.QsciScintillaBase.SCI_NEWLINE?10
+Qsci.QsciScintillaBase.SCI_FORMFEED?10
+Qsci.QsciScintillaBase.SCI_VCHOME?10
+Qsci.QsciScintillaBase.SCI_VCHOMEEXTEND?10
+Qsci.QsciScintillaBase.SCI_ZOOMIN?10
+Qsci.QsciScintillaBase.SCI_ZOOMOUT?10
+Qsci.QsciScintillaBase.SCI_DELWORDLEFT?10
+Qsci.QsciScintillaBase.SCI_DELWORDRIGHT?10
+Qsci.QsciScintillaBase.SCI_LINECUT?10
+Qsci.QsciScintillaBase.SCI_LINEDELETE?10
+Qsci.QsciScintillaBase.SCI_LINETRANSPOSE?10
+Qsci.QsciScintillaBase.SCI_LOWERCASE?10
+Qsci.QsciScintillaBase.SCI_UPPERCASE?10
+Qsci.QsciScintillaBase.SCI_LINESCROLLDOWN?10
+Qsci.QsciScintillaBase.SCI_LINESCROLLUP?10
+Qsci.QsciScintillaBase.SCI_DELETEBACKNOTLINE?10
+Qsci.QsciScintillaBase.SCI_HOMEDISPLAY?10
+Qsci.QsciScintillaBase.SCI_HOMEDISPLAYEXTEND?10
+Qsci.QsciScintillaBase.SCI_LINEENDDISPLAY?10
+Qsci.QsciScintillaBase.SCI_LINEENDDISPLAYEXTEND?10
+Qsci.QsciScintillaBase.SCI_MOVECARETINSIDEVIEW?10
+Qsci.QsciScintillaBase.SCI_LINELENGTH?10
+Qsci.QsciScintillaBase.SCI_BRACEHIGHLIGHT?10
+Qsci.QsciScintillaBase.SCI_BRACEBADLIGHT?10
+Qsci.QsciScintillaBase.SCI_BRACEMATCH?10
+Qsci.QsciScintillaBase.SCI_GETVIEWEOL?10
+Qsci.QsciScintillaBase.SCI_SETVIEWEOL?10
+Qsci.QsciScintillaBase.SCI_GETDOCPOINTER?10
+Qsci.QsciScintillaBase.SCI_SETDOCPOINTER?10
+Qsci.QsciScintillaBase.SCI_SETMODEVENTMASK?10
+Qsci.QsciScintillaBase.SCI_GETEDGECOLUMN?10
+Qsci.QsciScintillaBase.SCI_SETEDGECOLUMN?10
+Qsci.QsciScintillaBase.SCI_GETEDGEMODE?10
+Qsci.QsciScintillaBase.SCI_SETEDGEMODE?10
+Qsci.QsciScintillaBase.SCI_GETEDGECOLOUR?10
+Qsci.QsciScintillaBase.SCI_SETEDGECOLOUR?10
+Qsci.QsciScintillaBase.SCI_SEARCHANCHOR?10
+Qsci.QsciScintillaBase.SCI_SEARCHNEXT?10
+Qsci.QsciScintillaBase.SCI_SEARCHPREV?10
+Qsci.QsciScintillaBase.SCI_LINESONSCREEN?10
+Qsci.QsciScintillaBase.SCI_USEPOPUP?10
+Qsci.QsciScintillaBase.SCI_SELECTIONISRECTANGLE?10
+Qsci.QsciScintillaBase.SCI_SETZOOM?10
+Qsci.QsciScintillaBase.SCI_GETZOOM?10
+Qsci.QsciScintillaBase.SCI_CREATEDOCUMENT?10
+Qsci.QsciScintillaBase.SCI_ADDREFDOCUMENT?10
+Qsci.QsciScintillaBase.SCI_RELEASEDOCUMENT?10
+Qsci.QsciScintillaBase.SCI_GETMODEVENTMASK?10
+Qsci.QsciScintillaBase.SCI_SETFOCUS?10
+Qsci.QsciScintillaBase.SCI_GETFOCUS?10
+Qsci.QsciScintillaBase.SCI_SETSTATUS?10
+Qsci.QsciScintillaBase.SCI_GETSTATUS?10
+Qsci.QsciScintillaBase.SCI_SETMOUSEDOWNCAPTURES?10
+Qsci.QsciScintillaBase.SCI_GETMOUSEDOWNCAPTURES?10
+Qsci.QsciScintillaBase.SCI_SETCURSOR?10
+Qsci.QsciScintillaBase.SCI_GETCURSOR?10
+Qsci.QsciScintillaBase.SCI_SETCONTROLCHARSYMBOL?10
+Qsci.QsciScintillaBase.SCI_GETCONTROLCHARSYMBOL?10
+Qsci.QsciScintillaBase.SCI_WORDPARTLEFT?10
+Qsci.QsciScintillaBase.SCI_WORDPARTLEFTEXTEND?10
+Qsci.QsciScintillaBase.SCI_WORDPARTRIGHT?10
+Qsci.QsciScintillaBase.SCI_WORDPARTRIGHTEXTEND?10
+Qsci.QsciScintillaBase.SCI_SETVISIBLEPOLICY?10
+Qsci.QsciScintillaBase.SCI_DELLINELEFT?10
+Qsci.QsciScintillaBase.SCI_DELLINERIGHT?10
+Qsci.QsciScintillaBase.SCI_SETXOFFSET?10
+Qsci.QsciScintillaBase.SCI_GETXOFFSET?10
+Qsci.QsciScintillaBase.SCI_CHOOSECARETX?10
+Qsci.QsciScintillaBase.SCI_GRABFOCUS?10
+Qsci.QsciScintillaBase.SCI_SETXCARETPOLICY?10
+Qsci.QsciScintillaBase.SCI_SETYCARETPOLICY?10
+Qsci.QsciScintillaBase.SCI_LINEDUPLICATE?10
+Qsci.QsciScintillaBase.SCI_REGISTERIMAGE?10
+Qsci.QsciScintillaBase.SCI_SETPRINTWRAPMODE?10
+Qsci.QsciScintillaBase.SCI_GETPRINTWRAPMODE?10
+Qsci.QsciScintillaBase.SCI_CLEARREGISTEREDIMAGES?10
+Qsci.QsciScintillaBase.SCI_STYLESETHOTSPOT?10
+Qsci.QsciScintillaBase.SCI_SETHOTSPOTACTIVEFORE?10
+Qsci.QsciScintillaBase.SCI_SETHOTSPOTACTIVEBACK?10
+Qsci.QsciScintillaBase.SCI_SETHOTSPOTACTIVEUNDERLINE?10
+Qsci.QsciScintillaBase.SCI_PARADOWN?10
+Qsci.QsciScintillaBase.SCI_PARADOWNEXTEND?10
+Qsci.QsciScintillaBase.SCI_PARAUP?10
+Qsci.QsciScintillaBase.SCI_PARAUPEXTEND?10
+Qsci.QsciScintillaBase.SCI_POSITIONBEFORE?10
+Qsci.QsciScintillaBase.SCI_POSITIONAFTER?10
+Qsci.QsciScintillaBase.SCI_COPYRANGE?10
+Qsci.QsciScintillaBase.SCI_COPYTEXT?10
+Qsci.QsciScintillaBase.SCI_SETSELECTIONMODE?10
+Qsci.QsciScintillaBase.SCI_GETSELECTIONMODE?10
+Qsci.QsciScintillaBase.SCI_GETLINESELSTARTPOSITION?10
+Qsci.QsciScintillaBase.SCI_GETLINESELENDPOSITION?10
+Qsci.QsciScintillaBase.SCI_LINEDOWNRECTEXTEND?10
+Qsci.QsciScintillaBase.SCI_LINEUPRECTEXTEND?10
+Qsci.QsciScintillaBase.SCI_CHARLEFTRECTEXTEND?10
+Qsci.QsciScintillaBase.SCI_CHARRIGHTRECTEXTEND?10
+Qsci.QsciScintillaBase.SCI_HOMERECTEXTEND?10
+Qsci.QsciScintillaBase.SCI_VCHOMERECTEXTEND?10
+Qsci.QsciScintillaBase.SCI_LINEENDRECTEXTEND?10
+Qsci.QsciScintillaBase.SCI_PAGEUPRECTEXTEND?10
+Qsci.QsciScintillaBase.SCI_PAGEDOWNRECTEXTEND?10
+Qsci.QsciScintillaBase.SCI_STUTTEREDPAGEUP?10
+Qsci.QsciScintillaBase.SCI_STUTTEREDPAGEUPEXTEND?10
+Qsci.QsciScintillaBase.SCI_STUTTEREDPAGEDOWN?10
+Qsci.QsciScintillaBase.SCI_STUTTEREDPAGEDOWNEXTEND?10
+Qsci.QsciScintillaBase.SCI_WORDLEFTEND?10
+Qsci.QsciScintillaBase.SCI_WORDLEFTENDEXTEND?10
+Qsci.QsciScintillaBase.SCI_WORDRIGHTEND?10
+Qsci.QsciScintillaBase.SCI_WORDRIGHTENDEXTEND?10
+Qsci.QsciScintillaBase.SCI_SETWHITESPACECHARS?10
+Qsci.QsciScintillaBase.SCI_SETCHARSDEFAULT?10
+Qsci.QsciScintillaBase.SCI_AUTOCGETCURRENT?10
+Qsci.QsciScintillaBase.SCI_ALLOCATE?10
+Qsci.QsciScintillaBase.SCI_HOMEWRAP?10
+Qsci.QsciScintillaBase.SCI_HOMEWRAPEXTEND?10
+Qsci.QsciScintillaBase.SCI_LINEENDWRAP?10
+Qsci.QsciScintillaBase.SCI_LINEENDWRAPEXTEND?10
+Qsci.QsciScintillaBase.SCI_VCHOMEWRAP?10
+Qsci.QsciScintillaBase.SCI_VCHOMEWRAPEXTEND?10
+Qsci.QsciScintillaBase.SCI_LINECOPY?10
+Qsci.QsciScintillaBase.SCI_FINDCOLUMN?10
+Qsci.QsciScintillaBase.SCI_GETCARETSTICKY?10
+Qsci.QsciScintillaBase.SCI_SETCARETSTICKY?10
+Qsci.QsciScintillaBase.SCI_TOGGLECARETSTICKY?10
+Qsci.QsciScintillaBase.SCI_SETWRAPVISUALFLAGS?10
+Qsci.QsciScintillaBase.SCI_GETWRAPVISUALFLAGS?10
+Qsci.QsciScintillaBase.SCI_SETWRAPVISUALFLAGSLOCATION?10
+Qsci.QsciScintillaBase.SCI_GETWRAPVISUALFLAGSLOCATION?10
+Qsci.QsciScintillaBase.SCI_SETWRAPSTARTINDENT?10
+Qsci.QsciScintillaBase.SCI_GETWRAPSTARTINDENT?10
+Qsci.QsciScintillaBase.SCI_MARKERADDSET?10
+Qsci.QsciScintillaBase.SCI_SETPASTECONVERTENDINGS?10
+Qsci.QsciScintillaBase.SCI_GETPASTECONVERTENDINGS?10
+Qsci.QsciScintillaBase.SCI_SELECTIONDUPLICATE?10
+Qsci.QsciScintillaBase.SCI_SETCARETLINEBACKALPHA?10
+Qsci.QsciScintillaBase.SCI_GETCARETLINEBACKALPHA?10
+Qsci.QsciScintillaBase.SCI_SETWRAPINDENTMODE?10
+Qsci.QsciScintillaBase.SCI_GETWRAPINDENTMODE?10
+Qsci.QsciScintillaBase.SCI_MARKERSETALPHA?10
+Qsci.QsciScintillaBase.SCI_GETSELALPHA?10
+Qsci.QsciScintillaBase.SCI_SETSELALPHA?10
+Qsci.QsciScintillaBase.SCI_GETSELEOLFILLED?10
+Qsci.QsciScintillaBase.SCI_SETSELEOLFILLED?10
+Qsci.QsciScintillaBase.SCI_STYLEGETFORE?10
+Qsci.QsciScintillaBase.SCI_STYLEGETBACK?10
+Qsci.QsciScintillaBase.SCI_STYLEGETBOLD?10
+Qsci.QsciScintillaBase.SCI_STYLEGETITALIC?10
+Qsci.QsciScintillaBase.SCI_STYLEGETSIZE?10
+Qsci.QsciScintillaBase.SCI_STYLEGETFONT?10
+Qsci.QsciScintillaBase.SCI_STYLEGETEOLFILLED?10
+Qsci.QsciScintillaBase.SCI_STYLEGETUNDERLINE?10
+Qsci.QsciScintillaBase.SCI_STYLEGETCASE?10
+Qsci.QsciScintillaBase.SCI_STYLEGETCHARACTERSET?10
+Qsci.QsciScintillaBase.SCI_STYLEGETVISIBLE?10
+Qsci.QsciScintillaBase.SCI_STYLEGETCHANGEABLE?10
+Qsci.QsciScintillaBase.SCI_STYLEGETHOTSPOT?10
+Qsci.QsciScintillaBase.SCI_GETHOTSPOTACTIVEFORE?10
+Qsci.QsciScintillaBase.SCI_GETHOTSPOTACTIVEBACK?10
+Qsci.QsciScintillaBase.SCI_GETHOTSPOTACTIVEUNDERLINE?10
+Qsci.QsciScintillaBase.SCI_GETHOTSPOTSINGLELINE?10
+Qsci.QsciScintillaBase.SCI_BRACEHIGHLIGHTINDICATOR?10
+Qsci.QsciScintillaBase.SCI_BRACEBADLIGHTINDICATOR?10
+Qsci.QsciScintillaBase.SCI_SETINDICATORCURRENT?10
+Qsci.QsciScintillaBase.SCI_GETINDICATORCURRENT?10
+Qsci.QsciScintillaBase.SCI_SETINDICATORVALUE?10
+Qsci.QsciScintillaBase.SCI_GETINDICATORVALUE?10
+Qsci.QsciScintillaBase.SCI_INDICATORFILLRANGE?10
+Qsci.QsciScintillaBase.SCI_INDICATORCLEARRANGE?10
+Qsci.QsciScintillaBase.SCI_INDICATORALLONFOR?10
+Qsci.QsciScintillaBase.SCI_INDICATORVALUEAT?10
+Qsci.QsciScintillaBase.SCI_INDICATORSTART?10
+Qsci.QsciScintillaBase.SCI_INDICATOREND?10
+Qsci.QsciScintillaBase.SCI_INDICSETUNDER?10
+Qsci.QsciScintillaBase.SCI_INDICGETUNDER?10
+Qsci.QsciScintillaBase.SCI_SETCARETSTYLE?10
+Qsci.QsciScintillaBase.SCI_GETCARETSTYLE?10
+Qsci.QsciScintillaBase.SCI_SETPOSITIONCACHE?10
+Qsci.QsciScintillaBase.SCI_GETPOSITIONCACHE?10
+Qsci.QsciScintillaBase.SCI_SETSCROLLWIDTHTRACKING?10
+Qsci.QsciScintillaBase.SCI_GETSCROLLWIDTHTRACKING?10
+Qsci.QsciScintillaBase.SCI_DELWORDRIGHTEND?10
+Qsci.QsciScintillaBase.SCI_COPYALLOWLINE?10
+Qsci.QsciScintillaBase.SCI_GETCHARACTERPOINTER?10
+Qsci.QsciScintillaBase.SCI_SETKEYSUNICODE?10
+Qsci.QsciScintillaBase.SCI_GETKEYSUNICODE?10
+Qsci.QsciScintillaBase.SCI_INDICSETALPHA?10
+Qsci.QsciScintillaBase.SCI_INDICGETALPHA?10
+Qsci.QsciScintillaBase.SCI_SETEXTRAASCENT?10
+Qsci.QsciScintillaBase.SCI_GETEXTRAASCENT?10
+Qsci.QsciScintillaBase.SCI_SETEXTRADESCENT?10
+Qsci.QsciScintillaBase.SCI_GETEXTRADESCENT?10
+Qsci.QsciScintillaBase.SCI_MARKERSYMBOLDEFINED?10
+Qsci.QsciScintillaBase.SCI_MARGINSETTEXT?10
+Qsci.QsciScintillaBase.SCI_MARGINGETTEXT?10
+Qsci.QsciScintillaBase.SCI_MARGINSETSTYLE?10
+Qsci.QsciScintillaBase.SCI_MARGINGETSTYLE?10
+Qsci.QsciScintillaBase.SCI_MARGINSETSTYLES?10
+Qsci.QsciScintillaBase.SCI_MARGINGETSTYLES?10
+Qsci.QsciScintillaBase.SCI_MARGINTEXTCLEARALL?10
+Qsci.QsciScintillaBase.SCI_MARGINSETSTYLEOFFSET?10
+Qsci.QsciScintillaBase.SCI_MARGINGETSTYLEOFFSET?10
+Qsci.QsciScintillaBase.SCI_SETMARGINOPTIONS?10
+Qsci.QsciScintillaBase.SCI_ANNOTATIONSETTEXT?10
+Qsci.QsciScintillaBase.SCI_ANNOTATIONGETTEXT?10
+Qsci.QsciScintillaBase.SCI_ANNOTATIONSETSTYLE?10
+Qsci.QsciScintillaBase.SCI_ANNOTATIONGETSTYLE?10
+Qsci.QsciScintillaBase.SCI_ANNOTATIONSETSTYLES?10
+Qsci.QsciScintillaBase.SCI_ANNOTATIONGETSTYLES?10
+Qsci.QsciScintillaBase.SCI_ANNOTATIONGETLINES?10
+Qsci.QsciScintillaBase.SCI_ANNOTATIONCLEARALL?10
+Qsci.QsciScintillaBase.SCI_ANNOTATIONSETVISIBLE?10
+Qsci.QsciScintillaBase.SCI_ANNOTATIONGETVISIBLE?10
+Qsci.QsciScintillaBase.SCI_ANNOTATIONSETSTYLEOFFSET?10
+Qsci.QsciScintillaBase.SCI_ANNOTATIONGETSTYLEOFFSET?10
+Qsci.QsciScintillaBase.SCI_SETEMPTYSELECTION?10
+Qsci.QsciScintillaBase.SCI_GETMARGINOPTIONS?10
+Qsci.QsciScintillaBase.SCI_INDICSETOUTLINEALPHA?10
+Qsci.QsciScintillaBase.SCI_INDICGETOUTLINEALPHA?10
+Qsci.QsciScintillaBase.SCI_ADDUNDOACTION?10
+Qsci.QsciScintillaBase.SCI_CHARPOSITIONFROMPOINT?10
+Qsci.QsciScintillaBase.SCI_CHARPOSITIONFROMPOINTCLOSE?10
+Qsci.QsciScintillaBase.SCI_SETMULTIPLESELECTION?10
+Qsci.QsciScintillaBase.SCI_GETMULTIPLESELECTION?10
+Qsci.QsciScintillaBase.SCI_SETADDITIONALSELECTIONTYPING?10
+Qsci.QsciScintillaBase.SCI_GETADDITIONALSELECTIONTYPING?10
+Qsci.QsciScintillaBase.SCI_SETADDITIONALCARETSBLINK?10
+Qsci.QsciScintillaBase.SCI_GETADDITIONALCARETSBLINK?10
+Qsci.QsciScintillaBase.SCI_SETADDITIONALCARETSVISIBLE?10
+Qsci.QsciScintillaBase.SCI_GETADDITIONALCARETSVISIBLE?10
+Qsci.QsciScintillaBase.SCI_AUTOCGETCURRENTTEXT?10
+Qsci.QsciScintillaBase.SCI_GETSELECTIONS?10
+Qsci.QsciScintillaBase.SCI_CLEARSELECTIONS?10
+Qsci.QsciScintillaBase.SCI_SETSELECTION?10
+Qsci.QsciScintillaBase.SCI_ADDSELECTION?10
+Qsci.QsciScintillaBase.SCI_SETMAINSELECTION?10
+Qsci.QsciScintillaBase.SCI_GETMAINSELECTION?10
+Qsci.QsciScintillaBase.SCI_SETSELECTIONNCARET?10
+Qsci.QsciScintillaBase.SCI_GETSELECTIONNCARET?10
+Qsci.QsciScintillaBase.SCI_SETSELECTIONNANCHOR?10
+Qsci.QsciScintillaBase.SCI_GETSELECTIONNANCHOR?10
+Qsci.QsciScintillaBase.SCI_SETSELECTIONNCARETVIRTUALSPACE?10
+Qsci.QsciScintillaBase.SCI_GETSELECTIONNCARETVIRTUALSPACE?10
+Qsci.QsciScintillaBase.SCI_SETSELECTIONNANCHORVIRTUALSPACE?10
+Qsci.QsciScintillaBase.SCI_GETSELECTIONNANCHORVIRTUALSPACE?10
+Qsci.QsciScintillaBase.SCI_SETSELECTIONNSTART?10
+Qsci.QsciScintillaBase.SCI_GETSELECTIONNSTART?10
+Qsci.QsciScintillaBase.SCI_SETSELECTIONNEND?10
+Qsci.QsciScintillaBase.SCI_GETSELECTIONNEND?10
+Qsci.QsciScintillaBase.SCI_SETRECTANGULARSELECTIONCARET?10
+Qsci.QsciScintillaBase.SCI_GETRECTANGULARSELECTIONCARET?10
+Qsci.QsciScintillaBase.SCI_SETRECTANGULARSELECTIONANCHOR?10
+Qsci.QsciScintillaBase.SCI_GETRECTANGULARSELECTIONANCHOR?10
+Qsci.QsciScintillaBase.SCI_SETRECTANGULARSELECTIONCARETVIRTUALSPACE?10
+Qsci.QsciScintillaBase.SCI_GETRECTANGULARSELECTIONCARETVIRTUALSPACE?10
+Qsci.QsciScintillaBase.SCI_SETRECTANGULARSELECTIONANCHORVIRTUALSPACE?10
+Qsci.QsciScintillaBase.SCI_GETRECTANGULARSELECTIONANCHORVIRTUALSPACE?10
+Qsci.QsciScintillaBase.SCI_SETVIRTUALSPACEOPTIONS?10
+Qsci.QsciScintillaBase.SCI_GETVIRTUALSPACEOPTIONS?10
+Qsci.QsciScintillaBase.SCI_SETRECTANGULARSELECTIONMODIFIER?10
+Qsci.QsciScintillaBase.SCI_GETRECTANGULARSELECTIONMODIFIER?10
+Qsci.QsciScintillaBase.SCI_SETADDITIONALSELFORE?10
+Qsci.QsciScintillaBase.SCI_SETADDITIONALSELBACK?10
+Qsci.QsciScintillaBase.SCI_SETADDITIONALSELALPHA?10
+Qsci.QsciScintillaBase.SCI_GETADDITIONALSELALPHA?10
+Qsci.QsciScintillaBase.SCI_SETADDITIONALCARETFORE?10
+Qsci.QsciScintillaBase.SCI_GETADDITIONALCARETFORE?10
+Qsci.QsciScintillaBase.SCI_ROTATESELECTION?10
+Qsci.QsciScintillaBase.SCI_SWAPMAINANCHORCARET?10
+Qsci.QsciScintillaBase.SCI_SETFONTQUALITY?10
+Qsci.QsciScintillaBase.SCI_GETFONTQUALITY?10
+Qsci.QsciScintillaBase.SCI_SETFIRSTVISIBLELINE?10
+Qsci.QsciScintillaBase.SCI_SETMULTIPASTE?10
+Qsci.QsciScintillaBase.SCI_GETMULTIPASTE?10
+Qsci.QsciScintillaBase.SCI_GETTAG?10
+Qsci.QsciScintillaBase.SCI_CHANGELEXERSTATE?10
+Qsci.QsciScintillaBase.SCI_CONTRACTEDFOLDNEXT?10
+Qsci.QsciScintillaBase.SCI_VERTICALCENTRECARET?10
+Qsci.QsciScintillaBase.SCI_MOVESELECTEDLINESUP?10
+Qsci.QsciScintillaBase.SCI_MOVESELECTEDLINESDOWN?10
+Qsci.QsciScintillaBase.SCI_SETIDENTIFIER?10
+Qsci.QsciScintillaBase.SCI_GETIDENTIFIER?10
+Qsci.QsciScintillaBase.SCI_RGBAIMAGESETWIDTH?10
+Qsci.QsciScintillaBase.SCI_RGBAIMAGESETHEIGHT?10
+Qsci.QsciScintillaBase.SCI_MARKERDEFINERGBAIMAGE?10
+Qsci.QsciScintillaBase.SCI_REGISTERRGBAIMAGE?10
+Qsci.QsciScintillaBase.SCI_SCROLLTOSTART?10
+Qsci.QsciScintillaBase.SCI_SCROLLTOEND?10
+Qsci.QsciScintillaBase.SCI_STARTRECORD?10
+Qsci.QsciScintillaBase.SCI_STOPRECORD?10
+Qsci.QsciScintillaBase.SCI_SETLEXER?10
+Qsci.QsciScintillaBase.SCI_GETLEXER?10
+Qsci.QsciScintillaBase.SCI_COLOURISE?10
+Qsci.QsciScintillaBase.SCI_SETPROPERTY?10
+Qsci.QsciScintillaBase.SCI_SETKEYWORDS?10
+Qsci.QsciScintillaBase.SCI_SETLEXERLANGUAGE?10
+Qsci.QsciScintillaBase.SCI_LOADLEXERLIBRARY?10
+Qsci.QsciScintillaBase.SCI_GETPROPERTY?10
+Qsci.QsciScintillaBase.SCI_GETPROPERTYEXPANDED?10
+Qsci.QsciScintillaBase.SCI_GETPROPERTYINT?10
+Qsci.QsciScintillaBase.SCI_GETSTYLEBITSNEEDED?10
+Qsci.QsciScintillaBase.SCI_GETLEXERLANGUAGE?10
+Qsci.QsciScintillaBase.SCI_PRIVATELEXERCALL?10
+Qsci.QsciScintillaBase.SCI_PROPERTYNAMES?10
+Qsci.QsciScintillaBase.SCI_PROPERTYTYPE?10
+Qsci.QsciScintillaBase.SCI_DESCRIBEPROPERTY?10
+Qsci.QsciScintillaBase.SCI_DESCRIBEKEYWORDSETS?10
+Qsci.QsciScintillaBase.SCI_AUTOCSETCASEINSENSITIVEBEHAVIOUR?10
+Qsci.QsciScintillaBase.SCI_AUTOCGETCASEINSENSITIVEBEHAVIOUR?10
+Qsci.QsciScintillaBase.SCI_CALLTIPSETPOSITION?10
+Qsci.QsciScintillaBase.SCI_COUNTCHARACTERS?10
+Qsci.QsciScintillaBase.SCI_CREATELOADER?10
+Qsci.QsciScintillaBase.SCI_DELETERANGE?10
+Qsci.QsciScintillaBase.SCI_FINDINDICATORFLASH?10
+Qsci.QsciScintillaBase.SCI_FINDINDICATORHIDE?10
+Qsci.QsciScintillaBase.SCI_FINDINDICATORSHOW?10
+Qsci.QsciScintillaBase.SCI_GETALLLINESVISIBLE?10
+Qsci.QsciScintillaBase.SCI_GETGAPPOSITION?10
+Qsci.QsciScintillaBase.SCI_GETPUNCTUATIONCHARS?10
+Qsci.QsciScintillaBase.SCI_GETRANGEPOINTER?10
+Qsci.QsciScintillaBase.SCI_GETSELECTIONEMPTY?10
+Qsci.QsciScintillaBase.SCI_GETTECHNOLOGY?10
+Qsci.QsciScintillaBase.SCI_GETWHITESPACECHARS?10
+Qsci.QsciScintillaBase.SCI_GETWORDCHARS?10
+Qsci.QsciScintillaBase.SCI_RGBAIMAGESETSCALE?10
+Qsci.QsciScintillaBase.SCI_SETPUNCTUATIONCHARS?10
+Qsci.QsciScintillaBase.SCI_SETTECHNOLOGY?10
+Qsci.QsciScintillaBase.SCI_STYLESETSIZEFRACTIONAL?10
+Qsci.QsciScintillaBase.SCI_STYLEGETSIZEFRACTIONAL?10
+Qsci.QsciScintillaBase.SCI_STYLESETWEIGHT?10
+Qsci.QsciScintillaBase.SCI_STYLEGETWEIGHT?10
+Qsci.QsciScintillaBase?1(QWidget parent=None)
+Qsci.QsciScintillaBase.__init__?1(self, QWidget parent=None)
+Qsci.QsciScintillaBase.pool?4() -> QsciScintillaBase
+Qsci.QsciScintillaBase.SendScintilla?4(int, int wParam=0, int lParam=0) -> int
+Qsci.QsciScintillaBase.SendScintilla?4(int, int, sip.voidptr) -> int
+Qsci.QsciScintillaBase.SendScintilla?4(int, int, str) -> int
+Qsci.QsciScintillaBase.SendScintilla?4(int, str) -> int
+Qsci.QsciScintillaBase.SendScintilla?4(int, str, str) -> int
+Qsci.QsciScintillaBase.SendScintilla?4(int, int) -> int
+Qsci.QsciScintillaBase.SendScintilla?4(int, int, int, str) -> int
+Qsci.QsciScintillaBase.SendScintilla?4(int, int, QColor) -> int
+Qsci.QsciScintillaBase.SendScintilla?4(int, QColor) -> int
+Qsci.QsciScintillaBase.SendScintilla?4(int, int, QPainter, QRect, int, int) -> int
+Qsci.QsciScintillaBase.SendScintilla?4(int, int, QPixmap) -> int
+Qsci.QsciScintillaBase.SendScintilla?4(int, int, QImage) -> int
+Qsci.QsciScintillaBase.SendScintillaPtrResult?4(int) -> sip.voidptr
+Qsci.QsciScintillaBase.QSCN_SELCHANGED?4(bool)
+Qsci.QsciScintillaBase.SCEN_CHANGE?4()
+Qsci.QsciScintillaBase.SCN_AUTOCCANCELLED?4()
+Qsci.QsciScintillaBase.SCN_AUTOCCHARDELETED?4()
+Qsci.QsciScintillaBase.SCN_AUTOCSELECTION?4(str, int)
+Qsci.QsciScintillaBase.SCN_CALLTIPCLICK?4(int)
+Qsci.QsciScintillaBase.SCN_CHARADDED?4(int)
+Qsci.QsciScintillaBase.SCN_DOUBLECLICK?4(int, int, int)
+Qsci.QsciScintillaBase.SCN_DWELLEND?4(int, int, int)
+Qsci.QsciScintillaBase.SCN_DWELLSTART?4(int, int, int)
+Qsci.QsciScintillaBase.SCN_HOTSPOTCLICK?4(int, int)
+Qsci.QsciScintillaBase.SCN_HOTSPOTDOUBLECLICK?4(int, int)
+Qsci.QsciScintillaBase.SCN_HOTSPOTRELEASECLICK?4(int, int)
+Qsci.QsciScintillaBase.SCN_INDICATORCLICK?4(int, int)
+Qsci.QsciScintillaBase.SCN_INDICATORRELEASE?4(int, int)
+Qsci.QsciScintillaBase.SCN_MACRORECORD?4(int, int, sip.voidptr)
+Qsci.QsciScintillaBase.SCN_MARGINCLICK?4(int, int, int)
+Qsci.QsciScintillaBase.SCN_MODIFIED?4(int, int, str, int, int, int, int, int, int, int)
+Qsci.QsciScintillaBase.SCN_MODIFYATTEMPTRO?4()
+Qsci.QsciScintillaBase.SCN_NEEDSHOWN?4(int, int)
+Qsci.QsciScintillaBase.SCN_PAINTED?4()
+Qsci.QsciScintillaBase.SCN_SAVEPOINTLEFT?4()
+Qsci.QsciScintillaBase.SCN_SAVEPOINTREACHED?4()
+Qsci.QsciScintillaBase.SCN_STYLENEEDED?4(int)
+Qsci.QsciScintillaBase.SCN_UPDATEUI?4(int)
+Qsci.QsciScintillaBase.SCN_USERLISTSELECTION?4(str, int)
+Qsci.QsciScintillaBase.SCN_ZOOM?4()
+Qsci.QsciScintillaBase.canInsertFromMimeData?4(QMimeData) -> bool
+Qsci.QsciScintillaBase.fromMimeData?4(QMimeData) -> (QByteArray, bool)
+Qsci.QsciScintillaBase.toMimeData?4(QByteArray, bool) -> QMimeData
+Qsci.QsciScintillaBase.contextMenuEvent?4(QContextMenuEvent)
+Qsci.QsciScintillaBase.dragEnterEvent?4(QDragEnterEvent)
+Qsci.QsciScintillaBase.dragLeaveEvent?4(QDragLeaveEvent)
+Qsci.QsciScintillaBase.dragMoveEvent?4(QDragMoveEvent)
+Qsci.QsciScintillaBase.dropEvent?4(QDropEvent)
+Qsci.QsciScintillaBase.focusInEvent?4(QFocusEvent)
+Qsci.QsciScintillaBase.focusOutEvent?4(QFocusEvent)
+Qsci.QsciScintillaBase.focusNextPrevChild?4(bool) -> bool
+Qsci.QsciScintillaBase.keyPressEvent?4(QKeyEvent)
+Qsci.QsciScintillaBase.inputMethodEvent?4(QInputMethodEvent)
+Qsci.QsciScintillaBase.mouseDoubleClickEvent?4(QMouseEvent)
+Qsci.QsciScintillaBase.mouseMoveEvent?4(QMouseEvent)
+Qsci.QsciScintillaBase.mousePressEvent?4(QMouseEvent)
+Qsci.QsciScintillaBase.mouseReleaseEvent?4(QMouseEvent)
+Qsci.QsciScintillaBase.paintEvent?4(QPaintEvent)
+Qsci.QsciScintillaBase.resizeEvent?4(QResizeEvent)
+Qsci.QsciScintillaBase.scrollContentsBy?4(int, int)
+Qsci.QsciScintilla.WrapIndentMode?10
+Qsci.QsciScintilla.WrapIndentFixed?10
+Qsci.QsciScintilla.WrapIndentSame?10
+Qsci.QsciScintilla.WrapIndentIndented?10
+Qsci.QsciScintilla.WrapVisualFlag?10
+Qsci.QsciScintilla.WrapFlagNone?10
+Qsci.QsciScintilla.WrapFlagByText?10
+Qsci.QsciScintilla.WrapFlagByBorder?10
+Qsci.QsciScintilla.WrapFlagInMargin?10
+Qsci.QsciScintilla.WrapMode?10
+Qsci.QsciScintilla.WrapNone?10
+Qsci.QsciScintilla.WrapWord?10
+Qsci.QsciScintilla.WrapCharacter?10
+Qsci.QsciScintilla.WhitespaceVisibility?10
+Qsci.QsciScintilla.WsInvisible?10
+Qsci.QsciScintilla.WsVisible?10
+Qsci.QsciScintilla.WsVisibleAfterIndent?10
+Qsci.QsciScintilla.MarkerSymbol?10
+Qsci.QsciScintilla.Circle?10
+Qsci.QsciScintilla.Rectangle?10
+Qsci.QsciScintilla.RightTriangle?10
+Qsci.QsciScintilla.SmallRectangle?10
+Qsci.QsciScintilla.RightArrow?10
+Qsci.QsciScintilla.Invisible?10
+Qsci.QsciScintilla.DownTriangle?10
+Qsci.QsciScintilla.Minus?10
+Qsci.QsciScintilla.Plus?10
+Qsci.QsciScintilla.VerticalLine?10
+Qsci.QsciScintilla.BottomLeftCorner?10
+Qsci.QsciScintilla.LeftSideSplitter?10
+Qsci.QsciScintilla.BoxedPlus?10
+Qsci.QsciScintilla.BoxedPlusConnected?10
+Qsci.QsciScintilla.BoxedMinus?10
+Qsci.QsciScintilla.BoxedMinusConnected?10
+Qsci.QsciScintilla.RoundedBottomLeftCorner?10
+Qsci.QsciScintilla.LeftSideRoundedSplitter?10
+Qsci.QsciScintilla.CircledPlus?10
+Qsci.QsciScintilla.CircledPlusConnected?10
+Qsci.QsciScintilla.CircledMinus?10
+Qsci.QsciScintilla.CircledMinusConnected?10
+Qsci.QsciScintilla.Background?10
+Qsci.QsciScintilla.ThreeDots?10
+Qsci.QsciScintilla.ThreeRightArrows?10
+Qsci.QsciScintilla.FullRectangle?10
+Qsci.QsciScintilla.LeftRectangle?10
+Qsci.QsciScintilla.Underline?10
+Qsci.QsciScintilla.MarginType?10
+Qsci.QsciScintilla.SymbolMargin?10
+Qsci.QsciScintilla.SymbolMarginDefaultForegroundColor?10
+Qsci.QsciScintilla.SymbolMarginDefaultBackgroundColor?10
+Qsci.QsciScintilla.NumberMargin?10
+Qsci.QsciScintilla.TextMargin?10
+Qsci.QsciScintilla.TextMarginRightJustified?10
+Qsci.QsciScintilla.MoNone?10
+Qsci.QsciScintilla.MoSublineSelect?10
+Qsci.QsciScintilla.IndicatorStyle?10
+Qsci.QsciScintilla.PlainIndicator?10
+Qsci.QsciScintilla.SquiggleIndicator?10
+Qsci.QsciScintilla.TTIndicator?10
+Qsci.QsciScintilla.DiagonalIndicator?10
+Qsci.QsciScintilla.StrikeIndicator?10
+Qsci.QsciScintilla.HiddenIndicator?10
+Qsci.QsciScintilla.BoxIndicator?10
+Qsci.QsciScintilla.RoundBoxIndicator?10
+Qsci.QsciScintilla.StraightBoxIndicator?10
+Qsci.QsciScintilla.DashesIndicator?10
+Qsci.QsciScintilla.DotsIndicator?10
+Qsci.QsciScintilla.SquiggleLowIndicator?10
+Qsci.QsciScintilla.DotBoxIndicator?10
+Qsci.QsciScintilla.SquigglePixmapIndicator?10
+Qsci.QsciScintilla.FoldStyle?10
+Qsci.QsciScintilla.NoFoldStyle?10
+Qsci.QsciScintilla.PlainFoldStyle?10
+Qsci.QsciScintilla.CircledFoldStyle?10
+Qsci.QsciScintilla.BoxedFoldStyle?10
+Qsci.QsciScintilla.CircledTreeFoldStyle?10
+Qsci.QsciScintilla.BoxedTreeFoldStyle?10
+Qsci.QsciScintilla.EolMode?10
+Qsci.QsciScintilla.EolWindows?10
+Qsci.QsciScintilla.EolUnix?10
+Qsci.QsciScintilla.EolMac?10
+Qsci.QsciScintilla.EdgeMode?10
+Qsci.QsciScintilla.EdgeNone?10
+Qsci.QsciScintilla.EdgeLine?10
+Qsci.QsciScintilla.EdgeBackground?10
+Qsci.QsciScintilla.CallTipsStyle?10
+Qsci.QsciScintilla.CallTipsNone?10
+Qsci.QsciScintilla.CallTipsNoContext?10
+Qsci.QsciScintilla.CallTipsNoAutoCompletionContext?10
+Qsci.QsciScintilla.CallTipsContext?10
+Qsci.QsciScintilla.CallTipsPosition?10
+Qsci.QsciScintilla.CallTipsBelowText?10
+Qsci.QsciScintilla.CallTipsAboveText?10
+Qsci.QsciScintilla.BraceMatch?10
+Qsci.QsciScintilla.NoBraceMatch?10
+Qsci.QsciScintilla.StrictBraceMatch?10
+Qsci.QsciScintilla.SloppyBraceMatch?10
+Qsci.QsciScintilla.AutoCompletionUseSingle?10
+Qsci.QsciScintilla.AcusNever?10
+Qsci.QsciScintilla.AcusExplicit?10
+Qsci.QsciScintilla.AcusAlways?10
+Qsci.QsciScintilla.AutoCompletionSource?10
+Qsci.QsciScintilla.AcsNone?10
+Qsci.QsciScintilla.AcsAll?10
+Qsci.QsciScintilla.AcsDocument?10
+Qsci.QsciScintilla.AcsAPIs?10
+Qsci.QsciScintilla.AnnotationDisplay?10
+Qsci.QsciScintilla.AnnotationHidden?10
+Qsci.QsciScintilla.AnnotationStandard?10
+Qsci.QsciScintilla.AnnotationBoxed?10
+Qsci.QsciScintilla.AiMaintain?10
+Qsci.QsciScintilla.AiOpening?10
+Qsci.QsciScintilla.AiClosing?10
+Qsci.QsciScintilla?1(QWidget parent=None)
+Qsci.QsciScintilla.__init__?1(self, QWidget parent=None)
+Qsci.QsciScintilla.apiContext?4(int) -> (QStringList, int, int)
+Qsci.QsciScintilla.annotate?4(int, QString, int)
+Qsci.QsciScintilla.annotate?4(int, QString, QsciStyle)
+Qsci.QsciScintilla.annotate?4(int, QsciStyledText)
+Qsci.QsciScintilla.annotate?4(int, list-of-QsciStyledText)
+Qsci.QsciScintilla.annotation?4(int) -> QString
+Qsci.QsciScintilla.annotationDisplay?4() -> QsciScintilla.AnnotationDisplay
+Qsci.QsciScintilla.clearAnnotations?4(int line=-1)
+Qsci.QsciScintilla.autoCompletionCaseSensitivity?4() -> bool
+Qsci.QsciScintilla.autoCompletionFillupsEnabled?4() -> bool
+Qsci.QsciScintilla.autoCompletionReplaceWord?4() -> bool
+Qsci.QsciScintilla.autoCompletionShowSingle?4() -> bool
+Qsci.QsciScintilla.autoCompletionSource?4() -> QsciScintilla.AutoCompletionSource
+Qsci.QsciScintilla.autoCompletionThreshold?4() -> int
+Qsci.QsciScintilla.autoCompletionUseSingle?4() -> QsciScintilla.AutoCompletionUseSingle
+Qsci.QsciScintilla.autoIndent?4() -> bool
+Qsci.QsciScintilla.backspaceUnindents?4() -> bool
+Qsci.QsciScintilla.beginUndoAction?4()
+Qsci.QsciScintilla.braceMatching?4() -> QsciScintilla.BraceMatch
+Qsci.QsciScintilla.callTipsPosition?4() -> QsciScintilla.CallTipsPosition
+Qsci.QsciScintilla.callTipsStyle?4() -> QsciScintilla.CallTipsStyle
+Qsci.QsciScintilla.callTipsVisible?4() -> int
+Qsci.QsciScintilla.cancelList?4()
+Qsci.QsciScintilla.caseSensitive?4() -> bool
+Qsci.QsciScintilla.clearRegisteredImages?4()
+Qsci.QsciScintilla.color?4() -> QColor
+Qsci.QsciScintilla.contractedFolds?4() -> list-of-int
+Qsci.QsciScintilla.convertEols?4(QsciScintilla.EolMode)
+Qsci.QsciScintilla.createStandardContextMenu?4() -> QMenu
+Qsci.QsciScintilla.document?4() -> QsciDocument
+Qsci.QsciScintilla.endUndoAction?4()
+Qsci.QsciScintilla.edgeColor?4() -> QColor
+Qsci.QsciScintilla.edgeColumn?4() -> int
+Qsci.QsciScintilla.edgeMode?4() -> QsciScintilla.EdgeMode
+Qsci.QsciScintilla.eolMode?4() -> QsciScintilla.EolMode
+Qsci.QsciScintilla.eolVisibility?4() -> bool
+Qsci.QsciScintilla.extraAscent?4() -> int
+Qsci.QsciScintilla.extraDescent?4() -> int
+Qsci.QsciScintilla.findFirst?4(QString, bool, bool, bool, bool, bool forward=True, int line=-1, int index=-1, bool show=True, bool posix=False) -> bool
+Qsci.QsciScintilla.findFirstInSelection?4(QString, bool, bool, bool, bool forward=True, bool show=True, bool posix=False) -> bool
+Qsci.QsciScintilla.findNext?4() -> bool
+Qsci.QsciScintilla.firstVisibleLine?4() -> int
+Qsci.QsciScintilla.folding?4() -> QsciScintilla.FoldStyle
+Qsci.QsciScintilla.getCursorPosition?4() -> (int, int)
+Qsci.QsciScintilla.getSelection?4() -> (int, int, int, int)
+Qsci.QsciScintilla.hasSelectedText?4() -> bool
+Qsci.QsciScintilla.indentation?4(int) -> int
+Qsci.QsciScintilla.indentationGuides?4() -> bool
+Qsci.QsciScintilla.indentationsUseTabs?4() -> bool
+Qsci.QsciScintilla.indentationWidth?4() -> int
+Qsci.QsciScintilla.clearIndicatorRange?4(int, int, int, int, int)
+Qsci.QsciScintilla.fillIndicatorRange?4(int, int, int, int, int)
+Qsci.QsciScintilla.indicatorDefine?4(QsciScintilla.IndicatorStyle, int indicatorNumber=-1) -> int
+Qsci.QsciScintilla.indicatorDrawUnder?4(int) -> bool
+Qsci.QsciScintilla.isCallTipActive?4() -> bool
+Qsci.QsciScintilla.isListActive?4() -> bool
+Qsci.QsciScintilla.isModified?4() -> bool
+Qsci.QsciScintilla.isReadOnly?4() -> bool
+Qsci.QsciScintilla.isRedoAvailable?4() -> bool
+Qsci.QsciScintilla.isUndoAvailable?4() -> bool
+Qsci.QsciScintilla.isUtf8?4() -> bool
+Qsci.QsciScintilla.isWordCharacter?4(str) -> bool
+Qsci.QsciScintilla.lineAt?4(QPoint) -> int
+Qsci.QsciScintilla.lineIndexFromPosition?4(int) -> (int, int)
+Qsci.QsciScintilla.lineLength?4(int) -> int
+Qsci.QsciScintilla.lines?4() -> int
+Qsci.QsciScintilla.length?4() -> int
+Qsci.QsciScintilla.lexer?4() -> QsciLexer
+Qsci.QsciScintilla.marginLineNumbers?4(int) -> bool
+Qsci.QsciScintilla.marginMarkerMask?4(int) -> int
+Qsci.QsciScintilla.marginOptions?4() -> int
+Qsci.QsciScintilla.marginSensitivity?4(int) -> bool
+Qsci.QsciScintilla.marginType?4(int) -> QsciScintilla.MarginType
+Qsci.QsciScintilla.marginWidth?4(int) -> int
+Qsci.QsciScintilla.markerDefine?4(QsciScintilla.MarkerSymbol, int markerNumber=-1) -> int
+Qsci.QsciScintilla.markerDefine?4(str, int markerNumber=-1) -> int
+Qsci.QsciScintilla.markerDefine?4(QPixmap, int markerNumber=-1) -> int
+Qsci.QsciScintilla.markerDefine?4(QImage, int markerNumber=-1) -> int
+Qsci.QsciScintilla.markerAdd?4(int, int) -> int
+Qsci.QsciScintilla.markersAtLine?4(int) -> int
+Qsci.QsciScintilla.markerDelete?4(int, int markerNumber=-1)
+Qsci.QsciScintilla.markerDeleteAll?4(int markerNumber=-1)
+Qsci.QsciScintilla.markerDeleteHandle?4(int)
+Qsci.QsciScintilla.markerLine?4(int) -> int
+Qsci.QsciScintilla.markerFindNext?4(int, int) -> int
+Qsci.QsciScintilla.markerFindPrevious?4(int, int) -> int
+Qsci.QsciScintilla.overwriteMode?4() -> bool
+Qsci.QsciScintilla.paper?4() -> QColor
+Qsci.QsciScintilla.positionFromLineIndex?4(int, int) -> int
+Qsci.QsciScintilla.read?4(QIODevice) -> bool
+Qsci.QsciScintilla.recolor?4(int start=0, int end=-1)
+Qsci.QsciScintilla.registerImage?4(int, QPixmap)
+Qsci.QsciScintilla.registerImage?4(int, QImage)
+Qsci.QsciScintilla.replace?4(QString)
+Qsci.QsciScintilla.resetFoldMarginColors?4()
+Qsci.QsciScintilla.setFoldMarginColors?4(QColor, QColor)
+Qsci.QsciScintilla.setAnnotationDisplay?4(QsciScintilla.AnnotationDisplay)
+Qsci.QsciScintilla.setAutoCompletionFillupsEnabled?4(bool)
+Qsci.QsciScintilla.setAutoCompletionFillups?4(str)
+Qsci.QsciScintilla.setAutoCompletionWordSeparators?4(QStringList)
+Qsci.QsciScintilla.setCallTipsBackgroundColor?4(QColor)
+Qsci.QsciScintilla.setCallTipsForegroundColor?4(QColor)
+Qsci.QsciScintilla.setCallTipsHighlightColor?4(QColor)
+Qsci.QsciScintilla.setCallTipsPosition?4(QsciScintilla.CallTipsPosition)
+Qsci.QsciScintilla.setCallTipsStyle?4(QsciScintilla.CallTipsStyle)
+Qsci.QsciScintilla.setCallTipsVisible?4(int)
+Qsci.QsciScintilla.setContractedFolds?4(list-of-int)
+Qsci.QsciScintilla.setDocument?4(QsciDocument)
+Qsci.QsciScintilla.setEdgeColor?4(QColor)
+Qsci.QsciScintilla.setEdgeColumn?4(int)
+Qsci.QsciScintilla.setEdgeMode?4(QsciScintilla.EdgeMode)
+Qsci.QsciScintilla.setFirstVisibleLine?4(int)
+Qsci.QsciScintilla.setFont?4(QFont)
+Qsci.QsciScintilla.setIndicatorDrawUnder?4(bool, int indicatorNumber=-1)
+Qsci.QsciScintilla.setIndicatorForegroundColor?4(QColor, int indicatorNumber=-1)
+Qsci.QsciScintilla.setIndicatorOutlineColor?4(QColor, int indicatorNumber=-1)
+Qsci.QsciScintilla.setMarginOptions?4(int)
+Qsci.QsciScintilla.setMarginText?4(int, QString, int)
+Qsci.QsciScintilla.setMarginText?4(int, QString, QsciStyle)
+Qsci.QsciScintilla.setMarginText?4(int, QsciStyledText)
+Qsci.QsciScintilla.setMarginText?4(int, list-of-QsciStyledText)
+Qsci.QsciScintilla.setMarginType?4(int, QsciScintilla.MarginType)
+Qsci.QsciScintilla.clearMarginText?4(int line=-1)
+Qsci.QsciScintilla.setMarkerBackgroundColor?4(QColor, int markerNumber=-1)
+Qsci.QsciScintilla.setMarkerForegroundColor?4(QColor, int markerNumber=-1)
+Qsci.QsciScintilla.setMatchedBraceBackgroundColor?4(QColor)
+Qsci.QsciScintilla.setMatchedBraceForegroundColor?4(QColor)
+Qsci.QsciScintilla.setMatchedBraceIndicator?4(int)
+Qsci.QsciScintilla.resetMatchedBraceIndicator?4()
+Qsci.QsciScintilla.setUnmatchedBraceBackgroundColor?4(QColor)
+Qsci.QsciScintilla.setUnmatchedBraceForegroundColor?4(QColor)
+Qsci.QsciScintilla.setUnmatchedBraceIndicator?4(int)
+Qsci.QsciScintilla.resetUnmatchedBraceIndicator?4()
+Qsci.QsciScintilla.setWrapVisualFlags?4(QsciScintilla.WrapVisualFlag, QsciScintilla.WrapVisualFlag startFlag=QsciScintilla.WrapFlagNone, int indent=0)
+Qsci.QsciScintilla.selectedText?4() -> QString
+Qsci.QsciScintilla.selectionToEol?4() -> bool
+Qsci.QsciScintilla.setSelectionToEol?4(bool)
+Qsci.QsciScintilla.setExtraAscent?4(int)
+Qsci.QsciScintilla.setExtraDescent?4(int)
+Qsci.QsciScintilla.setOverwriteMode?4(bool)
+Qsci.QsciScintilla.setWhitespaceBackgroundColor?4(QColor)
+Qsci.QsciScintilla.setWhitespaceForegroundColor?4(QColor)
+Qsci.QsciScintilla.setWhitespaceSize?4(int)
+Qsci.QsciScintilla.setWrapIndentMode?4(QsciScintilla.WrapIndentMode)
+Qsci.QsciScintilla.showUserList?4(int, QStringList)
+Qsci.QsciScintilla.standardCommands?4() -> QsciCommandSet
+Qsci.QsciScintilla.tabIndents?4() -> bool
+Qsci.QsciScintilla.tabWidth?4() -> int
+Qsci.QsciScintilla.text?4() -> QString
+Qsci.QsciScintilla.text?4(int) -> QString
+Qsci.QsciScintilla.textHeight?4(int) -> int
+Qsci.QsciScintilla.whitespaceSize?4() -> int
+Qsci.QsciScintilla.whitespaceVisibility?4() -> QsciScintilla.WhitespaceVisibility
+Qsci.QsciScintilla.wordAtLineIndex?4(int, int) -> QString
+Qsci.QsciScintilla.wordAtPoint?4(QPoint) -> QString
+Qsci.QsciScintilla.wordCharacters?4() -> str
+Qsci.QsciScintilla.wrapMode?4() -> QsciScintilla.WrapMode
+Qsci.QsciScintilla.wrapIndentMode?4() -> QsciScintilla.WrapIndentMode
+Qsci.QsciScintilla.write?4(QIODevice) -> bool
+Qsci.QsciScintilla.append?4(QString)
+Qsci.QsciScintilla.autoCompleteFromAll?4()
+Qsci.QsciScintilla.autoCompleteFromAPIs?4()
+Qsci.QsciScintilla.autoCompleteFromDocument?4()
+Qsci.QsciScintilla.callTip?4()
+Qsci.QsciScintilla.clear?4()
+Qsci.QsciScintilla.copy?4()
+Qsci.QsciScintilla.cut?4()
+Qsci.QsciScintilla.ensureCursorVisible?4()
+Qsci.QsciScintilla.ensureLineVisible?4(int)
+Qsci.QsciScintilla.foldAll?4(bool children=False)
+Qsci.QsciScintilla.foldLine?4(int)
+Qsci.QsciScintilla.indent?4(int)
+Qsci.QsciScintilla.insert?4(QString)
+Qsci.QsciScintilla.insertAt?4(QString, int, int)
+Qsci.QsciScintilla.moveToMatchingBrace?4()
+Qsci.QsciScintilla.paste?4()
+Qsci.QsciScintilla.redo?4()
+Qsci.QsciScintilla.removeSelectedText?4()
+Qsci.QsciScintilla.replaceSelectedText?4(QString)
+Qsci.QsciScintilla.resetSelectionBackgroundColor?4()
+Qsci.QsciScintilla.resetSelectionForegroundColor?4()
+Qsci.QsciScintilla.selectAll?4(bool select=True)
+Qsci.QsciScintilla.selectToMatchingBrace?4()
+Qsci.QsciScintilla.setAutoCompletionCaseSensitivity?4(bool)
+Qsci.QsciScintilla.setAutoCompletionReplaceWord?4(bool)
+Qsci.QsciScintilla.setAutoCompletionShowSingle?4(bool)
+Qsci.QsciScintilla.setAutoCompletionSource?4(QsciScintilla.AutoCompletionSource)
+Qsci.QsciScintilla.setAutoCompletionThreshold?4(int)
+Qsci.QsciScintilla.setAutoCompletionUseSingle?4(QsciScintilla.AutoCompletionUseSingle)
+Qsci.QsciScintilla.setAutoIndent?4(bool)
+Qsci.QsciScintilla.setBraceMatching?4(QsciScintilla.BraceMatch)
+Qsci.QsciScintilla.setBackspaceUnindents?4(bool)
+Qsci.QsciScintilla.setCaretForegroundColor?4(QColor)
+Qsci.QsciScintilla.setCaretLineBackgroundColor?4(QColor)
+Qsci.QsciScintilla.setCaretLineVisible?4(bool)
+Qsci.QsciScintilla.setCaretWidth?4(int)
+Qsci.QsciScintilla.setColor?4(QColor)
+Qsci.QsciScintilla.setCursorPosition?4(int, int)
+Qsci.QsciScintilla.setEolMode?4(QsciScintilla.EolMode)
+Qsci.QsciScintilla.setEolVisibility?4(bool)
+Qsci.QsciScintilla.setFolding?4(QsciScintilla.FoldStyle, int margin=2)
+Qsci.QsciScintilla.clearFolds?4()
+Qsci.QsciScintilla.setIndentation?4(int, int)
+Qsci.QsciScintilla.setIndentationGuides?4(bool)
+Qsci.QsciScintilla.setIndentationGuidesBackgroundColor?4(QColor)
+Qsci.QsciScintilla.setIndentationGuidesForegroundColor?4(QColor)
+Qsci.QsciScintilla.setIndentationsUseTabs?4(bool)
+Qsci.QsciScintilla.setIndentationWidth?4(int)
+Qsci.QsciScintilla.setLexer?4(QsciLexer lexer=None)
+Qsci.QsciScintilla.setMarginsBackgroundColor?4(QColor)
+Qsci.QsciScintilla.setMarginsFont?4(QFont)
+Qsci.QsciScintilla.setMarginsForegroundColor?4(QColor)
+Qsci.QsciScintilla.setMarginLineNumbers?4(int, bool)
+Qsci.QsciScintilla.setMarginMarkerMask?4(int, int)
+Qsci.QsciScintilla.setMarginSensitivity?4(int, bool)
+Qsci.QsciScintilla.setMarginWidth?4(int, int)
+Qsci.QsciScintilla.setMarginWidth?4(int, QString)
+Qsci.QsciScintilla.setModified?4(bool)
+Qsci.QsciScintilla.setPaper?4(QColor)
+Qsci.QsciScintilla.setReadOnly?4(bool)
+Qsci.QsciScintilla.setSelection?4(int, int, int, int)
+Qsci.QsciScintilla.setSelectionBackgroundColor?4(QColor)
+Qsci.QsciScintilla.setSelectionForegroundColor?4(QColor)
+Qsci.QsciScintilla.setTabIndents?4(bool)
+Qsci.QsciScintilla.setTabWidth?4(int)
+Qsci.QsciScintilla.setText?4(QString)
+Qsci.QsciScintilla.setUtf8?4(bool)
+Qsci.QsciScintilla.setWhitespaceVisibility?4(QsciScintilla.WhitespaceVisibility)
+Qsci.QsciScintilla.setWrapMode?4(QsciScintilla.WrapMode)
+Qsci.QsciScintilla.undo?4()
+Qsci.QsciScintilla.unindent?4(int)
+Qsci.QsciScintilla.zoomIn?4(int)
+Qsci.QsciScintilla.zoomIn?4()
+Qsci.QsciScintilla.zoomOut?4(int)
+Qsci.QsciScintilla.zoomOut?4()
+Qsci.QsciScintilla.zoomTo?4(int)
+Qsci.QsciScintilla.cursorPositionChanged?4(int, int)
+Qsci.QsciScintilla.copyAvailable?4(bool)
+Qsci.QsciScintilla.indicatorClicked?4(int, int, Qt.KeyboardModifiers)
+Qsci.QsciScintilla.indicatorReleased?4(int, int, Qt.KeyboardModifiers)
+Qsci.QsciScintilla.linesChanged?4()
+Qsci.QsciScintilla.marginClicked?4(int, int, Qt.KeyboardModifiers)
+Qsci.QsciScintilla.modificationAttempted?4()
+Qsci.QsciScintilla.modificationChanged?4(bool)
+Qsci.QsciScintilla.selectionChanged?4()
+Qsci.QsciScintilla.textChanged?4()
+Qsci.QsciScintilla.userListActivated?4(int, QString)
+Qsci.QsciScintilla.event?4(QEvent) -> bool
+Qsci.QsciScintilla.contextMenuEvent?4(QContextMenuEvent)
+Qsci.QsciAbstractAPIs?1(QsciLexer lexer=None)
+Qsci.QsciAbstractAPIs.__init__?1(self, QsciLexer lexer=None)
+Qsci.QsciAbstractAPIs.lexer?4() -> QsciLexer
+Qsci.QsciAbstractAPIs.updateAutoCompletionList?4(QStringList, QStringList)
+Qsci.QsciAbstractAPIs.autoCompletionSelected?4(QString)
+Qsci.QsciAbstractAPIs.callTips?4(QStringList, int, QsciScintilla.CallTipsStyle, list-of-int) -> QStringList
+Qsci.QsciAPIs?1(QsciLexer lexer=None)
+Qsci.QsciAPIs.__init__?1(self, QsciLexer lexer=None)
+Qsci.QsciAPIs.add?4(QString)
+Qsci.QsciAPIs.clear?4()
+Qsci.QsciAPIs.load?4(QString) -> bool
+Qsci.QsciAPIs.remove?4(QString)
+Qsci.QsciAPIs.prepare?4()
+Qsci.QsciAPIs.cancelPreparation?4()
+Qsci.QsciAPIs.defaultPreparedName?4() -> QString
+Qsci.QsciAPIs.isPrepared?4(QString filename=QString()) -> bool
+Qsci.QsciAPIs.loadPrepared?4(QString filename=QString()) -> bool
+Qsci.QsciAPIs.savePrepared?4(QString filename=QString()) -> bool
+Qsci.QsciAPIs.event?4(QEvent) -> bool
+Qsci.QsciAPIs.installedAPIFiles?4() -> QStringList
+Qsci.QsciAPIs.updateAutoCompletionList?4(QStringList, QStringList)
+Qsci.QsciAPIs.autoCompletionSelected?4(QString)
+Qsci.QsciAPIs.callTips?4(QStringList, int, QsciScintilla.CallTipsStyle, list-of-int) -> QStringList
+Qsci.QsciAPIs.apiPreparationCancelled?4()
+Qsci.QsciAPIs.apiPreparationStarted?4()
+Qsci.QsciAPIs.apiPreparationFinished?4()
+Qsci.QsciCommand.Command?10
+Qsci.QsciCommand.LineDown?10
+Qsci.QsciCommand.LineDownExtend?10
+Qsci.QsciCommand.LineDownRectExtend?10
+Qsci.QsciCommand.LineScrollDown?10
+Qsci.QsciCommand.LineUp?10
+Qsci.QsciCommand.LineUpExtend?10
+Qsci.QsciCommand.LineUpRectExtend?10
+Qsci.QsciCommand.LineScrollUp?10
+Qsci.QsciCommand.ScrollToStart?10
+Qsci.QsciCommand.ScrollToEnd?10
+Qsci.QsciCommand.VerticalCentreCaret?10
+Qsci.QsciCommand.ParaDown?10
+Qsci.QsciCommand.ParaDownExtend?10
+Qsci.QsciCommand.ParaUp?10
+Qsci.QsciCommand.ParaUpExtend?10
+Qsci.QsciCommand.CharLeft?10
+Qsci.QsciCommand.CharLeftExtend?10
+Qsci.QsciCommand.CharLeftRectExtend?10
+Qsci.QsciCommand.CharRight?10
+Qsci.QsciCommand.CharRightExtend?10
+Qsci.QsciCommand.CharRightRectExtend?10
+Qsci.QsciCommand.WordLeft?10
+Qsci.QsciCommand.WordLeftExtend?10
+Qsci.QsciCommand.WordRight?10
+Qsci.QsciCommand.WordRightExtend?10
+Qsci.QsciCommand.WordLeftEnd?10
+Qsci.QsciCommand.WordLeftEndExtend?10
+Qsci.QsciCommand.WordRightEnd?10
+Qsci.QsciCommand.WordRightEndExtend?10
+Qsci.QsciCommand.WordPartLeft?10
+Qsci.QsciCommand.WordPartLeftExtend?10
+Qsci.QsciCommand.WordPartRight?10
+Qsci.QsciCommand.WordPartRightExtend?10
+Qsci.QsciCommand.Home?10
+Qsci.QsciCommand.HomeExtend?10
+Qsci.QsciCommand.HomeRectExtend?10
+Qsci.QsciCommand.HomeDisplay?10
+Qsci.QsciCommand.HomeDisplayExtend?10
+Qsci.QsciCommand.HomeWrap?10
+Qsci.QsciCommand.HomeWrapExtend?10
+Qsci.QsciCommand.VCHome?10
+Qsci.QsciCommand.VCHomeExtend?10
+Qsci.QsciCommand.VCHomeRectExtend?10
+Qsci.QsciCommand.VCHomeWrap?10
+Qsci.QsciCommand.VCHomeWrapExtend?10
+Qsci.QsciCommand.LineEnd?10
+Qsci.QsciCommand.LineEndExtend?10
+Qsci.QsciCommand.LineEndRectExtend?10
+Qsci.QsciCommand.LineEndDisplay?10
+Qsci.QsciCommand.LineEndDisplayExtend?10
+Qsci.QsciCommand.LineEndWrap?10
+Qsci.QsciCommand.LineEndWrapExtend?10
+Qsci.QsciCommand.DocumentStart?10
+Qsci.QsciCommand.DocumentStartExtend?10
+Qsci.QsciCommand.DocumentEnd?10
+Qsci.QsciCommand.DocumentEndExtend?10
+Qsci.QsciCommand.PageUp?10
+Qsci.QsciCommand.PageUpExtend?10
+Qsci.QsciCommand.PageUpRectExtend?10
+Qsci.QsciCommand.PageDown?10
+Qsci.QsciCommand.PageDownExtend?10
+Qsci.QsciCommand.PageDownRectExtend?10
+Qsci.QsciCommand.StutteredPageUp?10
+Qsci.QsciCommand.StutteredPageUpExtend?10
+Qsci.QsciCommand.StutteredPageDown?10
+Qsci.QsciCommand.StutteredPageDownExtend?10
+Qsci.QsciCommand.Delete?10
+Qsci.QsciCommand.DeleteBack?10
+Qsci.QsciCommand.DeleteBackNotLine?10
+Qsci.QsciCommand.DeleteWordLeft?10
+Qsci.QsciCommand.DeleteWordRight?10
+Qsci.QsciCommand.DeleteWordRightEnd?10
+Qsci.QsciCommand.DeleteLineLeft?10
+Qsci.QsciCommand.DeleteLineRight?10
+Qsci.QsciCommand.LineDelete?10
+Qsci.QsciCommand.LineCut?10
+Qsci.QsciCommand.LineCopy?10
+Qsci.QsciCommand.LineTranspose?10
+Qsci.QsciCommand.LineDuplicate?10
+Qsci.QsciCommand.SelectAll?10
+Qsci.QsciCommand.MoveSelectedLinesUp?10
+Qsci.QsciCommand.MoveSelectedLinesDown?10
+Qsci.QsciCommand.SelectionDuplicate?10
+Qsci.QsciCommand.SelectionLowerCase?10
+Qsci.QsciCommand.SelectionUpperCase?10
+Qsci.QsciCommand.SelectionCut?10
+Qsci.QsciCommand.SelectionCopy?10
+Qsci.QsciCommand.Paste?10
+Qsci.QsciCommand.EditToggleOvertype?10
+Qsci.QsciCommand.Newline?10
+Qsci.QsciCommand.Formfeed?10
+Qsci.QsciCommand.Tab?10
+Qsci.QsciCommand.Backtab?10
+Qsci.QsciCommand.Cancel?10
+Qsci.QsciCommand.Undo?10
+Qsci.QsciCommand.Redo?10
+Qsci.QsciCommand.ZoomIn?10
+Qsci.QsciCommand.ZoomOut?10
+Qsci.QsciCommand.command?4() -> QsciCommand.Command
+Qsci.QsciCommand.execute?4()
+Qsci.QsciCommand.setKey?4(int)
+Qsci.QsciCommand.setAlternateKey?4(int)
+Qsci.QsciCommand.key?4() -> int
+Qsci.QsciCommand.alternateKey?4() -> int
+Qsci.QsciCommand.validKey?4(int) -> bool
+Qsci.QsciCommand.description?4() -> QString
+Qsci.QsciCommandSet.readSettings?4(QSettings, str prefix="/Scintilla") -> bool
+Qsci.QsciCommandSet.writeSettings?4(QSettings, str prefix="/Scintilla") -> bool
+Qsci.QsciCommandSet.commands?4() -> list-of-QsciCommand
+Qsci.QsciCommandSet.clearKeys?4()
+Qsci.QsciCommandSet.clearAlternateKeys?4()
+Qsci.QsciCommandSet.boundTo?4(int) -> QsciCommand
+Qsci.QsciCommandSet.find?4(QsciCommand.Command) -> QsciCommand
+Qsci.QsciDocument?1()
+Qsci.QsciDocument.__init__?1(self)
+Qsci.QsciDocument?1(QsciDocument)
+Qsci.QsciDocument.__init__?1(self, QsciDocument)
+Qsci.QsciLexer?1(QObject parent=None)
+Qsci.QsciLexer.__init__?1(self, QObject parent=None)
+Qsci.QsciLexer.language?4() -> str
+Qsci.QsciLexer.lexer?4() -> str
+Qsci.QsciLexer.lexerId?4() -> int
+Qsci.QsciLexer.apis?4() -> QsciAbstractAPIs
+Qsci.QsciLexer.autoIndentStyle?4() -> int
+Qsci.QsciLexer.color?4(int) -> QColor
+Qsci.QsciLexer.eolFill?4(int) -> bool
+Qsci.QsciLexer.font?4(int) -> QFont
+Qsci.QsciLexer.keywords?4(int) -> str
+Qsci.QsciLexer.description?4(int) -> QString
+Qsci.QsciLexer.paper?4(int) -> QColor
+Qsci.QsciLexer.defaultColor?4() -> QColor
+Qsci.QsciLexer.defaultColor?4(int) -> QColor
+Qsci.QsciLexer.defaultEolFill?4(int) -> bool
+Qsci.QsciLexer.defaultFont?4() -> QFont
+Qsci.QsciLexer.defaultFont?4(int) -> QFont
+Qsci.QsciLexer.defaultPaper?4() -> QColor
+Qsci.QsciLexer.defaultPaper?4(int) -> QColor
+Qsci.QsciLexer.editor?4() -> QsciScintilla
+Qsci.QsciLexer.refreshProperties?4()
+Qsci.QsciLexer.setAPIs?4(QsciAbstractAPIs)
+Qsci.QsciLexer.setDefaultColor?4(QColor)
+Qsci.QsciLexer.setDefaultFont?4(QFont)
+Qsci.QsciLexer.setDefaultPaper?4(QColor)
+Qsci.QsciLexer.styleBitsNeeded?4() -> int
+Qsci.QsciLexer.wordCharacters?4() -> str
+Qsci.QsciLexer.readSettings?4(QSettings, str prefix="/Scintilla") -> bool
+Qsci.QsciLexer.writeSettings?4(QSettings, str prefix="/Scintilla") -> bool
+Qsci.QsciLexer.setAutoIndentStyle?4(int)
+Qsci.QsciLexer.setColor?4(QColor, int style=-1)
+Qsci.QsciLexer.setEolFill?4(bool, int style=-1)
+Qsci.QsciLexer.setFont?4(QFont, int style=-1)
+Qsci.QsciLexer.setPaper?4(QColor, int style=-1)
+Qsci.QsciLexer.colorChanged?4(QColor, int)
+Qsci.QsciLexer.eolFillChanged?4(bool, int)
+Qsci.QsciLexer.fontChanged?4(QFont, int)
+Qsci.QsciLexer.paperChanged?4(QColor, int)
+Qsci.QsciLexer.propertyChanged?4(str, str)
+Qsci.QsciLexer.readProperties?4(QSettings, QString) -> bool
+Qsci.QsciLexer.writeProperties?4(QSettings, QString) -> bool
+Qsci.QsciLexerBash.Default?10
+Qsci.QsciLexerBash.Error?10
+Qsci.QsciLexerBash.Comment?10
+Qsci.QsciLexerBash.Number?10
+Qsci.QsciLexerBash.Keyword?10
+Qsci.QsciLexerBash.DoubleQuotedString?10
+Qsci.QsciLexerBash.SingleQuotedString?10
+Qsci.QsciLexerBash.Operator?10
+Qsci.QsciLexerBash.Identifier?10
+Qsci.QsciLexerBash.Scalar?10
+Qsci.QsciLexerBash.ParameterExpansion?10
+Qsci.QsciLexerBash.Backticks?10
+Qsci.QsciLexerBash.HereDocumentDelimiter?10
+Qsci.QsciLexerBash.SingleQuotedHereDocument?10
+Qsci.QsciLexerBash?1(QObject parent=None)
+Qsci.QsciLexerBash.__init__?1(self, QObject parent=None)
+Qsci.QsciLexerBash.language?4() -> str
+Qsci.QsciLexerBash.lexer?4() -> str
+Qsci.QsciLexerBash.defaultColor?4(int) -> QColor
+Qsci.QsciLexerBash.defaultEolFill?4(int) -> bool
+Qsci.QsciLexerBash.defaultFont?4(int) -> QFont
+Qsci.QsciLexerBash.defaultPaper?4(int) -> QColor
+Qsci.QsciLexerBash.keywords?4(int) -> str
+Qsci.QsciLexerBash.description?4(int) -> QString
+Qsci.QsciLexerBash.wordCharacters?4() -> str
+Qsci.QsciLexerBash.refreshProperties?4()
+Qsci.QsciLexerBash.foldComments?4() -> bool
+Qsci.QsciLexerBash.foldCompact?4() -> bool
+Qsci.QsciLexerBash.setFoldComments?4(bool)
+Qsci.QsciLexerBash.setFoldCompact?4(bool)
+Qsci.QsciLexerBash.readProperties?4(QSettings, QString) -> bool
+Qsci.QsciLexerBash.writeProperties?4(QSettings, QString) -> bool
+Qsci.QsciLexerBatch.Default?10
+Qsci.QsciLexerBatch.Comment?10
+Qsci.QsciLexerBatch.Keyword?10
+Qsci.QsciLexerBatch.Label?10
+Qsci.QsciLexerBatch.HideCommandChar?10
+Qsci.QsciLexerBatch.ExternalCommand?10
+Qsci.QsciLexerBatch.Variable?10
+Qsci.QsciLexerBatch.Operator?10
+Qsci.QsciLexerBatch?1(QObject parent=None)
+Qsci.QsciLexerBatch.__init__?1(self, QObject parent=None)
+Qsci.QsciLexerBatch.language?4() -> str
+Qsci.QsciLexerBatch.lexer?4() -> str
+Qsci.QsciLexerBatch.defaultColor?4(int) -> QColor
+Qsci.QsciLexerBatch.defaultEolFill?4(int) -> bool
+Qsci.QsciLexerBatch.defaultFont?4(int) -> QFont
+Qsci.QsciLexerBatch.defaultPaper?4(int) -> QColor
+Qsci.QsciLexerBatch.keywords?4(int) -> str
+Qsci.QsciLexerBatch.description?4(int) -> QString
+Qsci.QsciLexerBatch.wordCharacters?4() -> str
+Qsci.QsciLexerCMake.Default?10
+Qsci.QsciLexerCMake.Comment?10
+Qsci.QsciLexerCMake.String?10
+Qsci.QsciLexerCMake.StringLeftQuote?10
+Qsci.QsciLexerCMake.StringRightQuote?10
+Qsci.QsciLexerCMake.Function?10
+Qsci.QsciLexerCMake.Variable?10
+Qsci.QsciLexerCMake.Label?10
+Qsci.QsciLexerCMake.KeywordSet3?10
+Qsci.QsciLexerCMake.BlockWhile?10
+Qsci.QsciLexerCMake.BlockForeach?10
+Qsci.QsciLexerCMake.BlockIf?10
+Qsci.QsciLexerCMake.BlockMacro?10
+Qsci.QsciLexerCMake.StringVariable?10
+Qsci.QsciLexerCMake.Number?10
+Qsci.QsciLexerCMake?1(QObject parent=None)
+Qsci.QsciLexerCMake.__init__?1(self, QObject parent=None)
+Qsci.QsciLexerCMake.language?4() -> str
+Qsci.QsciLexerCMake.lexer?4() -> str
+Qsci.QsciLexerCMake.defaultColor?4(int) -> QColor
+Qsci.QsciLexerCMake.defaultFont?4(int) -> QFont
+Qsci.QsciLexerCMake.defaultPaper?4(int) -> QColor
+Qsci.QsciLexerCMake.keywords?4(int) -> str
+Qsci.QsciLexerCMake.description?4(int) -> QString
+Qsci.QsciLexerCMake.refreshProperties?4()
+Qsci.QsciLexerCMake.foldAtElse?4() -> bool
+Qsci.QsciLexerCMake.setFoldAtElse?4(bool)
+Qsci.QsciLexerCMake.readProperties?4(QSettings, QString) -> bool
+Qsci.QsciLexerCMake.writeProperties?4(QSettings, QString) -> bool
+Qsci.QsciLexerCPP.Default?10
+Qsci.QsciLexerCPP.InactiveDefault?10
+Qsci.QsciLexerCPP.Comment?10
+Qsci.QsciLexerCPP.InactiveComment?10
+Qsci.QsciLexerCPP.CommentLine?10
+Qsci.QsciLexerCPP.InactiveCommentLine?10
+Qsci.QsciLexerCPP.CommentDoc?10
+Qsci.QsciLexerCPP.InactiveCommentDoc?10
+Qsci.QsciLexerCPP.Number?10
+Qsci.QsciLexerCPP.InactiveNumber?10
+Qsci.QsciLexerCPP.Keyword?10
+Qsci.QsciLexerCPP.InactiveKeyword?10
+Qsci.QsciLexerCPP.DoubleQuotedString?10
+Qsci.QsciLexerCPP.InactiveDoubleQuotedString?10
+Qsci.QsciLexerCPP.SingleQuotedString?10
+Qsci.QsciLexerCPP.InactiveSingleQuotedString?10
+Qsci.QsciLexerCPP.UUID?10
+Qsci.QsciLexerCPP.InactiveUUID?10
+Qsci.QsciLexerCPP.PreProcessor?10
+Qsci.QsciLexerCPP.InactivePreProcessor?10
+Qsci.QsciLexerCPP.Operator?10
+Qsci.QsciLexerCPP.InactiveOperator?10
+Qsci.QsciLexerCPP.Identifier?10
+Qsci.QsciLexerCPP.InactiveIdentifier?10
+Qsci.QsciLexerCPP.UnclosedString?10
+Qsci.QsciLexerCPP.InactiveUnclosedString?10
+Qsci.QsciLexerCPP.VerbatimString?10
+Qsci.QsciLexerCPP.InactiveVerbatimString?10
+Qsci.QsciLexerCPP.Regex?10
+Qsci.QsciLexerCPP.InactiveRegex?10
+Qsci.QsciLexerCPP.CommentLineDoc?10
+Qsci.QsciLexerCPP.InactiveCommentLineDoc?10
+Qsci.QsciLexerCPP.KeywordSet2?10
+Qsci.QsciLexerCPP.InactiveKeywordSet2?10
+Qsci.QsciLexerCPP.CommentDocKeyword?10
+Qsci.QsciLexerCPP.InactiveCommentDocKeyword?10
+Qsci.QsciLexerCPP.CommentDocKeywordError?10
+Qsci.QsciLexerCPP.InactiveCommentDocKeywordError?10
+Qsci.QsciLexerCPP.GlobalClass?10
+Qsci.QsciLexerCPP.InactiveGlobalClass?10
+Qsci.QsciLexerCPP.RawString?10
+Qsci.QsciLexerCPP.InactiveRawString?10
+Qsci.QsciLexerCPP.TripleQuotedVerbatimString?10
+Qsci.QsciLexerCPP.InactiveTripleQuotedVerbatimString?10
+Qsci.QsciLexerCPP.HashQuotedString?10
+Qsci.QsciLexerCPP.InactiveHashQuotedString?10
+Qsci.QsciLexerCPP.PreProcessorComment?10
+Qsci.QsciLexerCPP.InactivePreProcessorComment?10
+Qsci.QsciLexerCPP?1(QObject parent=None, bool caseInsensitiveKeywords=False)
+Qsci.QsciLexerCPP.__init__?1(self, QObject parent=None, bool caseInsensitiveKeywords=False)
+Qsci.QsciLexerCPP.language?4() -> str
+Qsci.QsciLexerCPP.lexer?4() -> str
+Qsci.QsciLexerCPP.defaultColor?4(int) -> QColor
+Qsci.QsciLexerCPP.defaultEolFill?4(int) -> bool
+Qsci.QsciLexerCPP.defaultFont?4(int) -> QFont
+Qsci.QsciLexerCPP.defaultPaper?4(int) -> QColor
+Qsci.QsciLexerCPP.keywords?4(int) -> str
+Qsci.QsciLexerCPP.description?4(int) -> QString
+Qsci.QsciLexerCPP.wordCharacters?4() -> str
+Qsci.QsciLexerCPP.refreshProperties?4()
+Qsci.QsciLexerCPP.foldAtElse?4() -> bool
+Qsci.QsciLexerCPP.foldComments?4() -> bool
+Qsci.QsciLexerCPP.foldCompact?4() -> bool
+Qsci.QsciLexerCPP.foldPreprocessor?4() -> bool
+Qsci.QsciLexerCPP.stylePreprocessor?4() -> bool
+Qsci.QsciLexerCPP.setDollarsAllowed?4(bool)
+Qsci.QsciLexerCPP.dollarsAllowed?4() -> bool
+Qsci.QsciLexerCPP.setHighlightTripleQuotedStrings?4(bool)
+Qsci.QsciLexerCPP.highlightTripleQuotedStrings?4() -> bool
+Qsci.QsciLexerCPP.setHighlightHashQuotedStrings?4(bool)
+Qsci.QsciLexerCPP.highlightHashQuotedStrings?4() -> bool
+Qsci.QsciLexerCPP.setFoldAtElse?4(bool)
+Qsci.QsciLexerCPP.setFoldComments?4(bool)
+Qsci.QsciLexerCPP.setFoldCompact?4(bool)
+Qsci.QsciLexerCPP.setFoldPreprocessor?4(bool)
+Qsci.QsciLexerCPP.setStylePreprocessor?4(bool)
+Qsci.QsciLexerCPP.readProperties?4(QSettings, QString) -> bool
+Qsci.QsciLexerCPP.writeProperties?4(QSettings, QString) -> bool
+Qsci.QsciLexerCSharp?1(QObject parent=None)
+Qsci.QsciLexerCSharp.__init__?1(self, QObject parent=None)
+Qsci.QsciLexerCSharp.language?4() -> str
+Qsci.QsciLexerCSharp.defaultColor?4(int) -> QColor
+Qsci.QsciLexerCSharp.defaultEolFill?4(int) -> bool
+Qsci.QsciLexerCSharp.defaultFont?4(int) -> QFont
+Qsci.QsciLexerCSharp.defaultPaper?4(int) -> QColor
+Qsci.QsciLexerCSharp.keywords?4(int) -> str
+Qsci.QsciLexerCSharp.description?4(int) -> QString
+Qsci.QsciLexerCSS.Default?10
+Qsci.QsciLexerCSS.Tag?10
+Qsci.QsciLexerCSS.ClassSelector?10
+Qsci.QsciLexerCSS.PseudoClass?10
+Qsci.QsciLexerCSS.UnknownPseudoClass?10
+Qsci.QsciLexerCSS.Operator?10
+Qsci.QsciLexerCSS.CSS1Property?10
+Qsci.QsciLexerCSS.UnknownProperty?10
+Qsci.QsciLexerCSS.Value?10
+Qsci.QsciLexerCSS.Comment?10
+Qsci.QsciLexerCSS.IDSelector?10
+Qsci.QsciLexerCSS.Important?10
+Qsci.QsciLexerCSS.AtRule?10
+Qsci.QsciLexerCSS.DoubleQuotedString?10
+Qsci.QsciLexerCSS.SingleQuotedString?10
+Qsci.QsciLexerCSS.CSS2Property?10
+Qsci.QsciLexerCSS.Attribute?10
+Qsci.QsciLexerCSS.CSS3Property?10
+Qsci.QsciLexerCSS.PseudoElement?10
+Qsci.QsciLexerCSS.ExtendedCSSProperty?10
+Qsci.QsciLexerCSS.ExtendedPseudoClass?10
+Qsci.QsciLexerCSS.ExtendedPseudoElement?10
+Qsci.QsciLexerCSS.MediaRule?10
+Qsci.QsciLexerCSS.Variable?10
+Qsci.QsciLexerCSS?1(QObject parent=None)
+Qsci.QsciLexerCSS.__init__?1(self, QObject parent=None)
+Qsci.QsciLexerCSS.language?4() -> str
+Qsci.QsciLexerCSS.lexer?4() -> str
+Qsci.QsciLexerCSS.defaultColor?4(int) -> QColor
+Qsci.QsciLexerCSS.defaultFont?4(int) -> QFont
+Qsci.QsciLexerCSS.keywords?4(int) -> str
+Qsci.QsciLexerCSS.description?4(int) -> QString
+Qsci.QsciLexerCSS.wordCharacters?4() -> str
+Qsci.QsciLexerCSS.refreshProperties?4()
+Qsci.QsciLexerCSS.foldComments?4() -> bool
+Qsci.QsciLexerCSS.foldCompact?4() -> bool
+Qsci.QsciLexerCSS.setHSSLanguage?4(bool)
+Qsci.QsciLexerCSS.HSSLanguage?4() -> bool
+Qsci.QsciLexerCSS.setLessLanguage?4(bool)
+Qsci.QsciLexerCSS.LessLanguage?4() -> bool
+Qsci.QsciLexerCSS.setSCSSLanguage?4(bool)
+Qsci.QsciLexerCSS.SCSSLanguage?4() -> bool
+Qsci.QsciLexerCSS.setFoldComments?4(bool)
+Qsci.QsciLexerCSS.setFoldCompact?4(bool)
+Qsci.QsciLexerCSS.readProperties?4(QSettings, QString) -> bool
+Qsci.QsciLexerCSS.writeProperties?4(QSettings, QString) -> bool
+Qsci.QsciLexerCustom?1(QObject parent=None)
+Qsci.QsciLexerCustom.__init__?1(self, QObject parent=None)
+Qsci.QsciLexerCustom.setEditor?4(QsciScintilla)
+Qsci.QsciLexerCustom.styleBitsNeeded?4() -> int
+Qsci.QsciLexerCustom.setStyling?4(int, int)
+Qsci.QsciLexerCustom.setStyling?4(int, QsciStyle)
+Qsci.QsciLexerCustom.startStyling?4(int, int styleBits=0)
+Qsci.QsciLexerCustom.styleText?4(int, int)
+Qsci.QsciLexerD.Default?10
+Qsci.QsciLexerD.Comment?10
+Qsci.QsciLexerD.CommentLine?10
+Qsci.QsciLexerD.CommentDoc?10
+Qsci.QsciLexerD.CommentNested?10
+Qsci.QsciLexerD.Number?10
+Qsci.QsciLexerD.Keyword?10
+Qsci.QsciLexerD.KeywordSecondary?10
+Qsci.QsciLexerD.KeywordDoc?10
+Qsci.QsciLexerD.Typedefs?10
+Qsci.QsciLexerD.String?10
+Qsci.QsciLexerD.UnclosedString?10
+Qsci.QsciLexerD.Character?10
+Qsci.QsciLexerD.Operator?10
+Qsci.QsciLexerD.Identifier?10
+Qsci.QsciLexerD.CommentLineDoc?10
+Qsci.QsciLexerD.CommentDocKeyword?10
+Qsci.QsciLexerD.CommentDocKeywordError?10
+Qsci.QsciLexerD.BackquoteString?10
+Qsci.QsciLexerD.RawString?10
+Qsci.QsciLexerD.KeywordSet5?10
+Qsci.QsciLexerD.KeywordSet6?10
+Qsci.QsciLexerD.KeywordSet7?10
+Qsci.QsciLexerD?1(QObject parent=None)
+Qsci.QsciLexerD.__init__?1(self, QObject parent=None)
+Qsci.QsciLexerD.language?4() -> str
+Qsci.QsciLexerD.lexer?4() -> str
+Qsci.QsciLexerD.defaultColor?4(int) -> QColor
+Qsci.QsciLexerD.defaultEolFill?4(int) -> bool
+Qsci.QsciLexerD.defaultFont?4(int) -> QFont
+Qsci.QsciLexerD.defaultPaper?4(int) -> QColor
+Qsci.QsciLexerD.keywords?4(int) -> str
+Qsci.QsciLexerD.description?4(int) -> QString
+Qsci.QsciLexerD.wordCharacters?4() -> str
+Qsci.QsciLexerD.refreshProperties?4()
+Qsci.QsciLexerD.foldAtElse?4() -> bool
+Qsci.QsciLexerD.foldComments?4() -> bool
+Qsci.QsciLexerD.foldCompact?4() -> bool
+Qsci.QsciLexerD.setFoldAtElse?4(bool)
+Qsci.QsciLexerD.setFoldComments?4(bool)
+Qsci.QsciLexerD.setFoldCompact?4(bool)
+Qsci.QsciLexerD.readProperties?4(QSettings, QString) -> bool
+Qsci.QsciLexerD.writeProperties?4(QSettings, QString) -> bool
+Qsci.QsciLexerDiff.Default?10
+Qsci.QsciLexerDiff.Comment?10
+Qsci.QsciLexerDiff.Command?10
+Qsci.QsciLexerDiff.Header?10
+Qsci.QsciLexerDiff.Position?10
+Qsci.QsciLexerDiff.LineRemoved?10
+Qsci.QsciLexerDiff.LineAdded?10
+Qsci.QsciLexerDiff.LineChanged?10
+Qsci.QsciLexerDiff?1(QObject parent=None)
+Qsci.QsciLexerDiff.__init__?1(self, QObject parent=None)
+Qsci.QsciLexerDiff.language?4() -> str
+Qsci.QsciLexerDiff.lexer?4() -> str
+Qsci.QsciLexerDiff.defaultColor?4(int) -> QColor
+Qsci.QsciLexerDiff.description?4(int) -> QString
+Qsci.QsciLexerDiff.wordCharacters?4() -> str
+Qsci.QsciLexerFortran77.Default?10
+Qsci.QsciLexerFortran77.Comment?10
+Qsci.QsciLexerFortran77.Number?10
+Qsci.QsciLexerFortran77.SingleQuotedString?10
+Qsci.QsciLexerFortran77.DoubleQuotedString?10
+Qsci.QsciLexerFortran77.UnclosedString?10
+Qsci.QsciLexerFortran77.Operator?10
+Qsci.QsciLexerFortran77.Identifier?10
+Qsci.QsciLexerFortran77.Keyword?10
+Qsci.QsciLexerFortran77.IntrinsicFunction?10
+Qsci.QsciLexerFortran77.ExtendedFunction?10
+Qsci.QsciLexerFortran77.PreProcessor?10
+Qsci.QsciLexerFortran77.DottedOperator?10
+Qsci.QsciLexerFortran77.Label?10
+Qsci.QsciLexerFortran77.Continuation?10
+Qsci.QsciLexerFortran77?1(QObject parent=None)
+Qsci.QsciLexerFortran77.__init__?1(self, QObject parent=None)
+Qsci.QsciLexerFortran77.language?4() -> str
+Qsci.QsciLexerFortran77.lexer?4() -> str
+Qsci.QsciLexerFortran77.defaultColor?4(int) -> QColor
+Qsci.QsciLexerFortran77.defaultEolFill?4(int) -> bool
+Qsci.QsciLexerFortran77.defaultFont?4(int) -> QFont
+Qsci.QsciLexerFortran77.defaultPaper?4(int) -> QColor
+Qsci.QsciLexerFortran77.keywords?4(int) -> str
+Qsci.QsciLexerFortran77.description?4(int) -> QString
+Qsci.QsciLexerFortran77.refreshProperties?4()
+Qsci.QsciLexerFortran77.foldCompact?4() -> bool
+Qsci.QsciLexerFortran77.setFoldCompact?4(bool)
+Qsci.QsciLexerFortran77.readProperties?4(QSettings, QString) -> bool
+Qsci.QsciLexerFortran77.writeProperties?4(QSettings, QString) -> bool
+Qsci.QsciLexerFortran?1(QObject parent=None)
+Qsci.QsciLexerFortran.__init__?1(self, QObject parent=None)
+Qsci.QsciLexerFortran.language?4() -> str
+Qsci.QsciLexerFortran.lexer?4() -> str
+Qsci.QsciLexerFortran.keywords?4(int) -> str
+Qsci.QsciLexerHTML.Default?10
+Qsci.QsciLexerHTML.Tag?10
+Qsci.QsciLexerHTML.UnknownTag?10
+Qsci.QsciLexerHTML.Attribute?10
+Qsci.QsciLexerHTML.UnknownAttribute?10
+Qsci.QsciLexerHTML.HTMLNumber?10
+Qsci.QsciLexerHTML.HTMLDoubleQuotedString?10
+Qsci.QsciLexerHTML.HTMLSingleQuotedString?10
+Qsci.QsciLexerHTML.OtherInTag?10
+Qsci.QsciLexerHTML.HTMLComment?10
+Qsci.QsciLexerHTML.Entity?10
+Qsci.QsciLexerHTML.XMLTagEnd?10
+Qsci.QsciLexerHTML.XMLStart?10
+Qsci.QsciLexerHTML.XMLEnd?10
+Qsci.QsciLexerHTML.Script?10
+Qsci.QsciLexerHTML.ASPAtStart?10
+Qsci.QsciLexerHTML.ASPStart?10
+Qsci.QsciLexerHTML.CDATA?10
+Qsci.QsciLexerHTML.PHPStart?10
+Qsci.QsciLexerHTML.HTMLValue?10
+Qsci.QsciLexerHTML.ASPXCComment?10
+Qsci.QsciLexerHTML.SGMLDefault?10
+Qsci.QsciLexerHTML.SGMLCommand?10
+Qsci.QsciLexerHTML.SGMLParameter?10
+Qsci.QsciLexerHTML.SGMLDoubleQuotedString?10
+Qsci.QsciLexerHTML.SGMLSingleQuotedString?10
+Qsci.QsciLexerHTML.SGMLError?10
+Qsci.QsciLexerHTML.SGMLSpecial?10
+Qsci.QsciLexerHTML.SGMLEntity?10
+Qsci.QsciLexerHTML.SGMLComment?10
+Qsci.QsciLexerHTML.SGMLParameterComment?10
+Qsci.QsciLexerHTML.SGMLBlockDefault?10
+Qsci.QsciLexerHTML.JavaScriptStart?10
+Qsci.QsciLexerHTML.JavaScriptDefault?10
+Qsci.QsciLexerHTML.JavaScriptComment?10
+Qsci.QsciLexerHTML.JavaScriptCommentLine?10
+Qsci.QsciLexerHTML.JavaScriptCommentDoc?10
+Qsci.QsciLexerHTML.JavaScriptNumber?10
+Qsci.QsciLexerHTML.JavaScriptWord?10
+Qsci.QsciLexerHTML.JavaScriptKeyword?10
+Qsci.QsciLexerHTML.JavaScriptDoubleQuotedString?10
+Qsci.QsciLexerHTML.JavaScriptSingleQuotedString?10
+Qsci.QsciLexerHTML.JavaScriptSymbol?10
+Qsci.QsciLexerHTML.JavaScriptUnclosedString?10
+Qsci.QsciLexerHTML.JavaScriptRegex?10
+Qsci.QsciLexerHTML.ASPJavaScriptStart?10
+Qsci.QsciLexerHTML.ASPJavaScriptDefault?10
+Qsci.QsciLexerHTML.ASPJavaScriptComment?10
+Qsci.QsciLexerHTML.ASPJavaScriptCommentLine?10
+Qsci.QsciLexerHTML.ASPJavaScriptCommentDoc?10
+Qsci.QsciLexerHTML.ASPJavaScriptNumber?10
+Qsci.QsciLexerHTML.ASPJavaScriptWord?10
+Qsci.QsciLexerHTML.ASPJavaScriptKeyword?10
+Qsci.QsciLexerHTML.ASPJavaScriptDoubleQuotedString?10
+Qsci.QsciLexerHTML.ASPJavaScriptSingleQuotedString?10
+Qsci.QsciLexerHTML.ASPJavaScriptSymbol?10
+Qsci.QsciLexerHTML.ASPJavaScriptUnclosedString?10
+Qsci.QsciLexerHTML.ASPJavaScriptRegex?10
+Qsci.QsciLexerHTML.VBScriptStart?10
+Qsci.QsciLexerHTML.VBScriptDefault?10
+Qsci.QsciLexerHTML.VBScriptComment?10
+Qsci.QsciLexerHTML.VBScriptNumber?10
+Qsci.QsciLexerHTML.VBScriptKeyword?10
+Qsci.QsciLexerHTML.VBScriptString?10
+Qsci.QsciLexerHTML.VBScriptIdentifier?10
+Qsci.QsciLexerHTML.VBScriptUnclosedString?10
+Qsci.QsciLexerHTML.ASPVBScriptStart?10
+Qsci.QsciLexerHTML.ASPVBScriptDefault?10
+Qsci.QsciLexerHTML.ASPVBScriptComment?10
+Qsci.QsciLexerHTML.ASPVBScriptNumber?10
+Qsci.QsciLexerHTML.ASPVBScriptKeyword?10
+Qsci.QsciLexerHTML.ASPVBScriptString?10
+Qsci.QsciLexerHTML.ASPVBScriptIdentifier?10
+Qsci.QsciLexerHTML.ASPVBScriptUnclosedString?10
+Qsci.QsciLexerHTML.PythonStart?10
+Qsci.QsciLexerHTML.PythonDefault?10
+Qsci.QsciLexerHTML.PythonComment?10
+Qsci.QsciLexerHTML.PythonNumber?10
+Qsci.QsciLexerHTML.PythonDoubleQuotedString?10
+Qsci.QsciLexerHTML.PythonSingleQuotedString?10
+Qsci.QsciLexerHTML.PythonKeyword?10
+Qsci.QsciLexerHTML.PythonTripleSingleQuotedString?10
+Qsci.QsciLexerHTML.PythonTripleDoubleQuotedString?10
+Qsci.QsciLexerHTML.PythonClassName?10
+Qsci.QsciLexerHTML.PythonFunctionMethodName?10
+Qsci.QsciLexerHTML.PythonOperator?10
+Qsci.QsciLexerHTML.PythonIdentifier?10
+Qsci.QsciLexerHTML.ASPPythonStart?10
+Qsci.QsciLexerHTML.ASPPythonDefault?10
+Qsci.QsciLexerHTML.ASPPythonComment?10
+Qsci.QsciLexerHTML.ASPPythonNumber?10
+Qsci.QsciLexerHTML.ASPPythonDoubleQuotedString?10
+Qsci.QsciLexerHTML.ASPPythonSingleQuotedString?10
+Qsci.QsciLexerHTML.ASPPythonKeyword?10
+Qsci.QsciLexerHTML.ASPPythonTripleSingleQuotedString?10
+Qsci.QsciLexerHTML.ASPPythonTripleDoubleQuotedString?10
+Qsci.QsciLexerHTML.ASPPythonClassName?10
+Qsci.QsciLexerHTML.ASPPythonFunctionMethodName?10
+Qsci.QsciLexerHTML.ASPPythonOperator?10
+Qsci.QsciLexerHTML.ASPPythonIdentifier?10
+Qsci.QsciLexerHTML.PHPDefault?10
+Qsci.QsciLexerHTML.PHPDoubleQuotedString?10
+Qsci.QsciLexerHTML.PHPSingleQuotedString?10
+Qsci.QsciLexerHTML.PHPKeyword?10
+Qsci.QsciLexerHTML.PHPNumber?10
+Qsci.QsciLexerHTML.PHPVariable?10
+Qsci.QsciLexerHTML.PHPComment?10
+Qsci.QsciLexerHTML.PHPCommentLine?10
+Qsci.QsciLexerHTML.PHPDoubleQuotedVariable?10
+Qsci.QsciLexerHTML.PHPOperator?10
+Qsci.QsciLexerHTML?1(QObject parent=None)
+Qsci.QsciLexerHTML.__init__?1(self, QObject parent=None)
+Qsci.QsciLexerHTML.language?4() -> str
+Qsci.QsciLexerHTML.lexer?4() -> str
+Qsci.QsciLexerHTML.defaultColor?4(int) -> QColor
+Qsci.QsciLexerHTML.defaultEolFill?4(int) -> bool
+Qsci.QsciLexerHTML.defaultFont?4(int) -> QFont
+Qsci.QsciLexerHTML.defaultPaper?4(int) -> QColor
+Qsci.QsciLexerHTML.keywords?4(int) -> str
+Qsci.QsciLexerHTML.description?4(int) -> QString
+Qsci.QsciLexerHTML.wordCharacters?4() -> str
+Qsci.QsciLexerHTML.refreshProperties?4()
+Qsci.QsciLexerHTML.caseSensitiveTags?4() -> bool
+Qsci.QsciLexerHTML.setDjangoTemplates?4(bool)
+Qsci.QsciLexerHTML.djangoTemplates?4() -> bool
+Qsci.QsciLexerHTML.foldCompact?4() -> bool
+Qsci.QsciLexerHTML.foldPreprocessor?4() -> bool
+Qsci.QsciLexerHTML.setFoldScriptComments?4(bool)
+Qsci.QsciLexerHTML.foldScriptComments?4() -> bool
+Qsci.QsciLexerHTML.setFoldScriptHeredocs?4(bool)
+Qsci.QsciLexerHTML.foldScriptHeredocs?4() -> bool
+Qsci.QsciLexerHTML.setMakoTemplates?4(bool)
+Qsci.QsciLexerHTML.makoTemplates?4() -> bool
+Qsci.QsciLexerHTML.setFoldCompact?4(bool)
+Qsci.QsciLexerHTML.setFoldPreprocessor?4(bool)
+Qsci.QsciLexerHTML.setCaseSensitiveTags?4(bool)
+Qsci.QsciLexerHTML.readProperties?4(QSettings, QString) -> bool
+Qsci.QsciLexerHTML.writeProperties?4(QSettings, QString) -> bool
+Qsci.QsciLexerIDL?1(QObject parent=None)
+Qsci.QsciLexerIDL.__init__?1(self, QObject parent=None)
+Qsci.QsciLexerIDL.language?4() -> str
+Qsci.QsciLexerIDL.defaultColor?4(int) -> QColor
+Qsci.QsciLexerIDL.keywords?4(int) -> str
+Qsci.QsciLexerIDL.description?4(int) -> QString
+Qsci.QsciLexerJava?1(QObject parent=None)
+Qsci.QsciLexerJava.__init__?1(self, QObject parent=None)
+Qsci.QsciLexerJava.language?4() -> str
+Qsci.QsciLexerJava.keywords?4(int) -> str
+Qsci.QsciLexerJavaScript?1(QObject parent=None)
+Qsci.QsciLexerJavaScript.__init__?1(self, QObject parent=None)
+Qsci.QsciLexerJavaScript.language?4() -> str
+Qsci.QsciLexerJavaScript.defaultColor?4(int) -> QColor
+Qsci.QsciLexerJavaScript.defaultEolFill?4(int) -> bool
+Qsci.QsciLexerJavaScript.defaultFont?4(int) -> QFont
+Qsci.QsciLexerJavaScript.defaultPaper?4(int) -> QColor
+Qsci.QsciLexerJavaScript.keywords?4(int) -> str
+Qsci.QsciLexerJavaScript.description?4(int) -> QString
+Qsci.QsciLexerLua.Default?10
+Qsci.QsciLexerLua.Comment?10
+Qsci.QsciLexerLua.LineComment?10
+Qsci.QsciLexerLua.Number?10
+Qsci.QsciLexerLua.Keyword?10
+Qsci.QsciLexerLua.String?10
+Qsci.QsciLexerLua.Character?10
+Qsci.QsciLexerLua.LiteralString?10
+Qsci.QsciLexerLua.Preprocessor?10
+Qsci.QsciLexerLua.Operator?10
+Qsci.QsciLexerLua.Identifier?10
+Qsci.QsciLexerLua.UnclosedString?10
+Qsci.QsciLexerLua.BasicFunctions?10
+Qsci.QsciLexerLua.StringTableMathsFunctions?10
+Qsci.QsciLexerLua.CoroutinesIOSystemFacilities?10
+Qsci.QsciLexerLua.KeywordSet5?10
+Qsci.QsciLexerLua.KeywordSet6?10
+Qsci.QsciLexerLua.KeywordSet7?10
+Qsci.QsciLexerLua.KeywordSet8?10
+Qsci.QsciLexerLua.Label?10
+Qsci.QsciLexerLua?1(QObject parent=None)
+Qsci.QsciLexerLua.__init__?1(self, QObject parent=None)
+Qsci.QsciLexerLua.language?4() -> str
+Qsci.QsciLexerLua.lexer?4() -> str
+Qsci.QsciLexerLua.defaultColor?4(int) -> QColor
+Qsci.QsciLexerLua.defaultEolFill?4(int) -> bool
+Qsci.QsciLexerLua.defaultFont?4(int) -> QFont
+Qsci.QsciLexerLua.defaultPaper?4(int) -> QColor
+Qsci.QsciLexerLua.keywords?4(int) -> str
+Qsci.QsciLexerLua.description?4(int) -> QString
+Qsci.QsciLexerLua.refreshProperties?4()
+Qsci.QsciLexerLua.foldCompact?4() -> bool
+Qsci.QsciLexerLua.setFoldCompact?4(bool)
+Qsci.QsciLexerLua.readProperties?4(QSettings, QString) -> bool
+Qsci.QsciLexerLua.writeProperties?4(QSettings, QString) -> bool
+Qsci.QsciLexerMakefile.Default?10
+Qsci.QsciLexerMakefile.Comment?10
+Qsci.QsciLexerMakefile.Preprocessor?10
+Qsci.QsciLexerMakefile.Variable?10
+Qsci.QsciLexerMakefile.Operator?10
+Qsci.QsciLexerMakefile.Target?10
+Qsci.QsciLexerMakefile.Error?10
+Qsci.QsciLexerMakefile?1(QObject parent=None)
+Qsci.QsciLexerMakefile.__init__?1(self, QObject parent=None)
+Qsci.QsciLexerMakefile.language?4() -> str
+Qsci.QsciLexerMakefile.lexer?4() -> str
+Qsci.QsciLexerMakefile.defaultColor?4(int) -> QColor
+Qsci.QsciLexerMakefile.defaultEolFill?4(int) -> bool
+Qsci.QsciLexerMakefile.defaultFont?4(int) -> QFont
+Qsci.QsciLexerMakefile.defaultPaper?4(int) -> QColor
+Qsci.QsciLexerMakefile.description?4(int) -> QString
+Qsci.QsciLexerMakefile.wordCharacters?4() -> str
+Qsci.QsciLexerMatlab.Default?10
+Qsci.QsciLexerMatlab.Comment?10
+Qsci.QsciLexerMatlab.Command?10
+Qsci.QsciLexerMatlab.Number?10
+Qsci.QsciLexerMatlab.Keyword?10
+Qsci.QsciLexerMatlab.SingleQuotedString?10
+Qsci.QsciLexerMatlab.Operator?10
+Qsci.QsciLexerMatlab.Identifier?10
+Qsci.QsciLexerMatlab.DoubleQuotedString?10
+Qsci.QsciLexerMatlab?1(QObject parent=None)
+Qsci.QsciLexerMatlab.__init__?1(self, QObject parent=None)
+Qsci.QsciLexerMatlab.language?4() -> str
+Qsci.QsciLexerMatlab.lexer?4() -> str
+Qsci.QsciLexerMatlab.defaultColor?4(int) -> QColor
+Qsci.QsciLexerMatlab.defaultFont?4(int) -> QFont
+Qsci.QsciLexerMatlab.keywords?4(int) -> str
+Qsci.QsciLexerMatlab.description?4(int) -> QString
+Qsci.QsciLexerOctave?1(QObject parent=None)
+Qsci.QsciLexerOctave.__init__?1(self, QObject parent=None)
+Qsci.QsciLexerOctave.language?4() -> str
+Qsci.QsciLexerOctave.lexer?4() -> str
+Qsci.QsciLexerOctave.keywords?4(int) -> str
+Qsci.QsciLexerPascal.Default?10
+Qsci.QsciLexerPascal.Identifier?10
+Qsci.QsciLexerPascal.Comment?10
+Qsci.QsciLexerPascal.CommentParenthesis?10
+Qsci.QsciLexerPascal.CommentLine?10
+Qsci.QsciLexerPascal.PreProcessor?10
+Qsci.QsciLexerPascal.PreProcessorParenthesis?10
+Qsci.QsciLexerPascal.Number?10
+Qsci.QsciLexerPascal.HexNumber?10
+Qsci.QsciLexerPascal.Keyword?10
+Qsci.QsciLexerPascal.SingleQuotedString?10
+Qsci.QsciLexerPascal.UnclosedString?10
+Qsci.QsciLexerPascal.Character?10
+Qsci.QsciLexerPascal.Operator?10
+Qsci.QsciLexerPascal.Asm?10
+Qsci.QsciLexerPascal?1(QObject parent=None)
+Qsci.QsciLexerPascal.__init__?1(self, QObject parent=None)
+Qsci.QsciLexerPascal.language?4() -> str
+Qsci.QsciLexerPascal.lexer?4() -> str
+Qsci.QsciLexerPascal.defaultColor?4(int) -> QColor
+Qsci.QsciLexerPascal.defaultEolFill?4(int) -> bool
+Qsci.QsciLexerPascal.defaultFont?4(int) -> QFont
+Qsci.QsciLexerPascal.defaultPaper?4(int) -> QColor
+Qsci.QsciLexerPascal.keywords?4(int) -> str
+Qsci.QsciLexerPascal.description?4(int) -> QString
+Qsci.QsciLexerPascal.refreshProperties?4()
+Qsci.QsciLexerPascal.foldComments?4() -> bool
+Qsci.QsciLexerPascal.foldCompact?4() -> bool
+Qsci.QsciLexerPascal.foldPreprocessor?4() -> bool
+Qsci.QsciLexerPascal.setSmartHighlighting?4(bool)
+Qsci.QsciLexerPascal.smartHighlighting?4() -> bool
+Qsci.QsciLexerPascal.setFoldComments?4(bool)
+Qsci.QsciLexerPascal.setFoldCompact?4(bool)
+Qsci.QsciLexerPascal.setFoldPreprocessor?4(bool)
+Qsci.QsciLexerPascal.readProperties?4(QSettings, QString) -> bool
+Qsci.QsciLexerPascal.writeProperties?4(QSettings, QString) -> bool
+Qsci.QsciLexerPerl.Default?10
+Qsci.QsciLexerPerl.Error?10
+Qsci.QsciLexerPerl.Comment?10
+Qsci.QsciLexerPerl.POD?10
+Qsci.QsciLexerPerl.Number?10
+Qsci.QsciLexerPerl.Keyword?10
+Qsci.QsciLexerPerl.DoubleQuotedString?10
+Qsci.QsciLexerPerl.SingleQuotedString?10
+Qsci.QsciLexerPerl.Operator?10
+Qsci.QsciLexerPerl.Identifier?10
+Qsci.QsciLexerPerl.Scalar?10
+Qsci.QsciLexerPerl.Array?10
+Qsci.QsciLexerPerl.Hash?10
+Qsci.QsciLexerPerl.SymbolTable?10
+Qsci.QsciLexerPerl.Regex?10
+Qsci.QsciLexerPerl.Substitution?10
+Qsci.QsciLexerPerl.Backticks?10
+Qsci.QsciLexerPerl.DataSection?10
+Qsci.QsciLexerPerl.HereDocumentDelimiter?10
+Qsci.QsciLexerPerl.SingleQuotedHereDocument?10
+Qsci.QsciLexerPerl.DoubleQuotedHereDocument?10
+Qsci.QsciLexerPerl.BacktickHereDocument?10
+Qsci.QsciLexerPerl.QuotedStringQ?10
+Qsci.QsciLexerPerl.QuotedStringQQ?10
+Qsci.QsciLexerPerl.QuotedStringQX?10
+Qsci.QsciLexerPerl.QuotedStringQR?10
+Qsci.QsciLexerPerl.QuotedStringQW?10
+Qsci.QsciLexerPerl.PODVerbatim?10
+Qsci.QsciLexerPerl.SubroutinePrototype?10
+Qsci.QsciLexerPerl.FormatIdentifier?10
+Qsci.QsciLexerPerl.FormatBody?10
+Qsci.QsciLexerPerl.DoubleQuotedStringVar?10
+Qsci.QsciLexerPerl.Translation?10
+Qsci.QsciLexerPerl.RegexVar?10
+Qsci.QsciLexerPerl.SubstitutionVar?10
+Qsci.QsciLexerPerl.BackticksVar?10
+Qsci.QsciLexerPerl.DoubleQuotedHereDocumentVar?10
+Qsci.QsciLexerPerl.BacktickHereDocumentVar?10
+Qsci.QsciLexerPerl.QuotedStringQQVar?10
+Qsci.QsciLexerPerl.QuotedStringQXVar?10
+Qsci.QsciLexerPerl.QuotedStringQRVar?10
+Qsci.QsciLexerPerl?1(QObject parent=None)
+Qsci.QsciLexerPerl.__init__?1(self, QObject parent=None)
+Qsci.QsciLexerPerl.language?4() -> str
+Qsci.QsciLexerPerl.lexer?4() -> str
+Qsci.QsciLexerPerl.defaultColor?4(int) -> QColor
+Qsci.QsciLexerPerl.defaultEolFill?4(int) -> bool
+Qsci.QsciLexerPerl.defaultFont?4(int) -> QFont
+Qsci.QsciLexerPerl.defaultPaper?4(int) -> QColor
+Qsci.QsciLexerPerl.keywords?4(int) -> str
+Qsci.QsciLexerPerl.description?4(int) -> QString
+Qsci.QsciLexerPerl.wordCharacters?4() -> str
+Qsci.QsciLexerPerl.refreshProperties?4()
+Qsci.QsciLexerPerl.foldComments?4() -> bool
+Qsci.QsciLexerPerl.foldCompact?4() -> bool
+Qsci.QsciLexerPerl.setFoldAtElse?4(bool)
+Qsci.QsciLexerPerl.foldAtElse?4() -> bool
+Qsci.QsciLexerPerl.setFoldPackages?4(bool)
+Qsci.QsciLexerPerl.foldPackages?4() -> bool
+Qsci.QsciLexerPerl.setFoldPODBlocks?4(bool)
+Qsci.QsciLexerPerl.foldPODBlocks?4() -> bool
+Qsci.QsciLexerPerl.setFoldComments?4(bool)
+Qsci.QsciLexerPerl.setFoldCompact?4(bool)
+Qsci.QsciLexerPerl.readProperties?4(QSettings, QString) -> bool
+Qsci.QsciLexerPerl.writeProperties?4(QSettings, QString) -> bool
+Qsci.QsciLexerPostScript.Default?10
+Qsci.QsciLexerPostScript.Comment?10
+Qsci.QsciLexerPostScript.DSCComment?10
+Qsci.QsciLexerPostScript.DSCCommentValue?10
+Qsci.QsciLexerPostScript.Number?10
+Qsci.QsciLexerPostScript.Name?10
+Qsci.QsciLexerPostScript.Keyword?10
+Qsci.QsciLexerPostScript.Literal?10
+Qsci.QsciLexerPostScript.ImmediateEvalLiteral?10
+Qsci.QsciLexerPostScript.ArrayParenthesis?10
+Qsci.QsciLexerPostScript.DictionaryParenthesis?10
+Qsci.QsciLexerPostScript.ProcedureParenthesis?10
+Qsci.QsciLexerPostScript.Text?10
+Qsci.QsciLexerPostScript.HexString?10
+Qsci.QsciLexerPostScript.Base85String?10
+Qsci.QsciLexerPostScript.BadStringCharacter?10
+Qsci.QsciLexerPostScript?1(QObject parent=None)
+Qsci.QsciLexerPostScript.__init__?1(self, QObject parent=None)
+Qsci.QsciLexerPostScript.language?4() -> str
+Qsci.QsciLexerPostScript.lexer?4() -> str
+Qsci.QsciLexerPostScript.defaultColor?4(int) -> QColor
+Qsci.QsciLexerPostScript.defaultFont?4(int) -> QFont
+Qsci.QsciLexerPostScript.defaultPaper?4(int) -> QColor
+Qsci.QsciLexerPostScript.keywords?4(int) -> str
+Qsci.QsciLexerPostScript.description?4(int) -> QString
+Qsci.QsciLexerPostScript.refreshProperties?4()
+Qsci.QsciLexerPostScript.tokenize?4() -> bool
+Qsci.QsciLexerPostScript.level?4() -> int
+Qsci.QsciLexerPostScript.foldCompact?4() -> bool
+Qsci.QsciLexerPostScript.foldAtElse?4() -> bool
+Qsci.QsciLexerPostScript.setTokenize?4(bool)
+Qsci.QsciLexerPostScript.setLevel?4(int)
+Qsci.QsciLexerPostScript.setFoldCompact?4(bool)
+Qsci.QsciLexerPostScript.setFoldAtElse?4(bool)
+Qsci.QsciLexerPostScript.readProperties?4(QSettings, QString) -> bool
+Qsci.QsciLexerPostScript.writeProperties?4(QSettings, QString) -> bool
+Qsci.QsciLexerPOV.Default?10
+Qsci.QsciLexerPOV.Comment?10
+Qsci.QsciLexerPOV.CommentLine?10
+Qsci.QsciLexerPOV.Number?10
+Qsci.QsciLexerPOV.Operator?10
+Qsci.QsciLexerPOV.Identifier?10
+Qsci.QsciLexerPOV.String?10
+Qsci.QsciLexerPOV.UnclosedString?10
+Qsci.QsciLexerPOV.Directive?10
+Qsci.QsciLexerPOV.BadDirective?10
+Qsci.QsciLexerPOV.ObjectsCSGAppearance?10
+Qsci.QsciLexerPOV.TypesModifiersItems?10
+Qsci.QsciLexerPOV.PredefinedIdentifiers?10
+Qsci.QsciLexerPOV.PredefinedFunctions?10
+Qsci.QsciLexerPOV.KeywordSet6?10
+Qsci.QsciLexerPOV.KeywordSet7?10
+Qsci.QsciLexerPOV.KeywordSet8?10
+Qsci.QsciLexerPOV?1(QObject parent=None)
+Qsci.QsciLexerPOV.__init__?1(self, QObject parent=None)
+Qsci.QsciLexerPOV.language?4() -> str
+Qsci.QsciLexerPOV.lexer?4() -> str
+Qsci.QsciLexerPOV.defaultColor?4(int) -> QColor
+Qsci.QsciLexerPOV.defaultEolFill?4(int) -> bool
+Qsci.QsciLexerPOV.defaultFont?4(int) -> QFont
+Qsci.QsciLexerPOV.defaultPaper?4(int) -> QColor
+Qsci.QsciLexerPOV.keywords?4(int) -> str
+Qsci.QsciLexerPOV.description?4(int) -> QString
+Qsci.QsciLexerPOV.wordCharacters?4() -> str
+Qsci.QsciLexerPOV.refreshProperties?4()
+Qsci.QsciLexerPOV.foldComments?4() -> bool
+Qsci.QsciLexerPOV.foldCompact?4() -> bool
+Qsci.QsciLexerPOV.foldDirectives?4() -> bool
+Qsci.QsciLexerPOV.setFoldComments?4(bool)
+Qsci.QsciLexerPOV.setFoldCompact?4(bool)
+Qsci.QsciLexerPOV.setFoldDirectives?4(bool)
+Qsci.QsciLexerPOV.readProperties?4(QSettings, QString) -> bool
+Qsci.QsciLexerPOV.writeProperties?4(QSettings, QString) -> bool
+Qsci.QsciLexerProperties.Default?10
+Qsci.QsciLexerProperties.Comment?10
+Qsci.QsciLexerProperties.Section?10
+Qsci.QsciLexerProperties.Assignment?10
+Qsci.QsciLexerProperties.DefaultValue?10
+Qsci.QsciLexerProperties.Key?10
+Qsci.QsciLexerProperties?1(QObject parent=None)
+Qsci.QsciLexerProperties.__init__?1(self, QObject parent=None)
+Qsci.QsciLexerProperties.language?4() -> str
+Qsci.QsciLexerProperties.lexer?4() -> str
+Qsci.QsciLexerProperties.defaultColor?4(int) -> QColor
+Qsci.QsciLexerProperties.defaultEolFill?4(int) -> bool
+Qsci.QsciLexerProperties.defaultFont?4(int) -> QFont
+Qsci.QsciLexerProperties.defaultPaper?4(int) -> QColor
+Qsci.QsciLexerProperties.description?4(int) -> QString
+Qsci.QsciLexerProperties.wordCharacters?4() -> str
+Qsci.QsciLexerProperties.refreshProperties?4()
+Qsci.QsciLexerProperties.foldCompact?4() -> bool
+Qsci.QsciLexerProperties.setInitialSpaces?4(bool)
+Qsci.QsciLexerProperties.initialSpaces?4() -> bool
+Qsci.QsciLexerProperties.setFoldCompact?4(bool)
+Qsci.QsciLexerProperties.readProperties?4(QSettings, QString) -> bool
+Qsci.QsciLexerProperties.writeProperties?4(QSettings, QString) -> bool
+Qsci.QsciLexerPython.IndentationWarning?10
+Qsci.QsciLexerPython.NoWarning?10
+Qsci.QsciLexerPython.Inconsistent?10
+Qsci.QsciLexerPython.TabsAfterSpaces?10
+Qsci.QsciLexerPython.Spaces?10
+Qsci.QsciLexerPython.Tabs?10
+Qsci.QsciLexerPython.Default?10
+Qsci.QsciLexerPython.Comment?10
+Qsci.QsciLexerPython.Number?10
+Qsci.QsciLexerPython.DoubleQuotedString?10
+Qsci.QsciLexerPython.SingleQuotedString?10
+Qsci.QsciLexerPython.Keyword?10
+Qsci.QsciLexerPython.TripleSingleQuotedString?10
+Qsci.QsciLexerPython.TripleDoubleQuotedString?10
+Qsci.QsciLexerPython.ClassName?10
+Qsci.QsciLexerPython.FunctionMethodName?10
+Qsci.QsciLexerPython.Operator?10
+Qsci.QsciLexerPython.Identifier?10
+Qsci.QsciLexerPython.CommentBlock?10
+Qsci.QsciLexerPython.UnclosedString?10
+Qsci.QsciLexerPython.HighlightedIdentifier?10
+Qsci.QsciLexerPython.Decorator?10
+Qsci.QsciLexerPython?1(QObject parent=None)
+Qsci.QsciLexerPython.__init__?1(self, QObject parent=None)
+Qsci.QsciLexerPython.language?4() -> str
+Qsci.QsciLexerPython.lexer?4() -> str
+Qsci.QsciLexerPython.defaultColor?4(int) -> QColor
+Qsci.QsciLexerPython.defaultEolFill?4(int) -> bool
+Qsci.QsciLexerPython.defaultFont?4(int) -> QFont
+Qsci.QsciLexerPython.defaultPaper?4(int) -> QColor
+Qsci.QsciLexerPython.keywords?4(int) -> str
+Qsci.QsciLexerPython.description?4(int) -> QString
+Qsci.QsciLexerPython.refreshProperties?4()
+Qsci.QsciLexerPython.foldComments?4() -> bool
+Qsci.QsciLexerPython.setFoldCompact?4(bool)
+Qsci.QsciLexerPython.foldCompact?4() -> bool
+Qsci.QsciLexerPython.foldQuotes?4() -> bool
+Qsci.QsciLexerPython.indentationWarning?4() -> QsciLexerPython.IndentationWarning
+Qsci.QsciLexerPython.setHighlightSubidentifiers?4(bool)
+Qsci.QsciLexerPython.highlightSubidentifiers?4() -> bool
+Qsci.QsciLexerPython.setStringsOverNewlineAllowed?4(bool)
+Qsci.QsciLexerPython.stringsOverNewlineAllowed?4() -> bool
+Qsci.QsciLexerPython.setV2UnicodeAllowed?4(bool)
+Qsci.QsciLexerPython.v2UnicodeAllowed?4() -> bool
+Qsci.QsciLexerPython.setV3BinaryOctalAllowed?4(bool)
+Qsci.QsciLexerPython.v3BinaryOctalAllowed?4() -> bool
+Qsci.QsciLexerPython.setV3BytesAllowed?4(bool)
+Qsci.QsciLexerPython.v3BytesAllowed?4() -> bool
+Qsci.QsciLexerPython.setFoldComments?4(bool)
+Qsci.QsciLexerPython.setFoldQuotes?4(bool)
+Qsci.QsciLexerPython.setIndentationWarning?4(QsciLexerPython.IndentationWarning)
+Qsci.QsciLexerPython.readProperties?4(QSettings, QString) -> bool
+Qsci.QsciLexerPython.writeProperties?4(QSettings, QString) -> bool
+Qsci.QsciLexerRuby.Default?10
+Qsci.QsciLexerRuby.Error?10
+Qsci.QsciLexerRuby.Comment?10
+Qsci.QsciLexerRuby.POD?10
+Qsci.QsciLexerRuby.Number?10
+Qsci.QsciLexerRuby.Keyword?10
+Qsci.QsciLexerRuby.DoubleQuotedString?10
+Qsci.QsciLexerRuby.SingleQuotedString?10
+Qsci.QsciLexerRuby.ClassName?10
+Qsci.QsciLexerRuby.FunctionMethodName?10
+Qsci.QsciLexerRuby.Operator?10
+Qsci.QsciLexerRuby.Identifier?10
+Qsci.QsciLexerRuby.Regex?10
+Qsci.QsciLexerRuby.Global?10
+Qsci.QsciLexerRuby.Symbol?10
+Qsci.QsciLexerRuby.ModuleName?10
+Qsci.QsciLexerRuby.InstanceVariable?10
+Qsci.QsciLexerRuby.ClassVariable?10
+Qsci.QsciLexerRuby.Backticks?10
+Qsci.QsciLexerRuby.DataSection?10
+Qsci.QsciLexerRuby.HereDocumentDelimiter?10
+Qsci.QsciLexerRuby.HereDocument?10
+Qsci.QsciLexerRuby.PercentStringq?10
+Qsci.QsciLexerRuby.PercentStringQ?10
+Qsci.QsciLexerRuby.PercentStringx?10
+Qsci.QsciLexerRuby.PercentStringr?10
+Qsci.QsciLexerRuby.PercentStringw?10
+Qsci.QsciLexerRuby.DemotedKeyword?10
+Qsci.QsciLexerRuby.Stdin?10
+Qsci.QsciLexerRuby.Stdout?10
+Qsci.QsciLexerRuby.Stderr?10
+Qsci.QsciLexerRuby?1(QObject parent=None)
+Qsci.QsciLexerRuby.__init__?1(self, QObject parent=None)
+Qsci.QsciLexerRuby.language?4() -> str
+Qsci.QsciLexerRuby.lexer?4() -> str
+Qsci.QsciLexerRuby.defaultColor?4(int) -> QColor
+Qsci.QsciLexerRuby.defaultEolFill?4(int) -> bool
+Qsci.QsciLexerRuby.defaultFont?4(int) -> QFont
+Qsci.QsciLexerRuby.defaultPaper?4(int) -> QColor
+Qsci.QsciLexerRuby.keywords?4(int) -> str
+Qsci.QsciLexerRuby.description?4(int) -> QString
+Qsci.QsciLexerRuby.refreshProperties?4()
+Qsci.QsciLexerRuby.setFoldComments?4(bool)
+Qsci.QsciLexerRuby.foldComments?4() -> bool
+Qsci.QsciLexerRuby.setFoldCompact?4(bool)
+Qsci.QsciLexerRuby.foldCompact?4() -> bool
+Qsci.QsciLexerRuby.readProperties?4(QSettings, QString) -> bool
+Qsci.QsciLexerRuby.writeProperties?4(QSettings, QString) -> bool
+Qsci.QsciLexerSpice.Default?10
+Qsci.QsciLexerSpice.Identifier?10
+Qsci.QsciLexerSpice.Command?10
+Qsci.QsciLexerSpice.Function?10
+Qsci.QsciLexerSpice.Parameter?10
+Qsci.QsciLexerSpice.Number?10
+Qsci.QsciLexerSpice.Delimiter?10
+Qsci.QsciLexerSpice.Value?10
+Qsci.QsciLexerSpice.Comment?10
+Qsci.QsciLexerSpice?1(QObject parent=None)
+Qsci.QsciLexerSpice.__init__?1(self, QObject parent=None)
+Qsci.QsciLexerSpice.language?4() -> str
+Qsci.QsciLexerSpice.lexer?4() -> str
+Qsci.QsciLexerSpice.keywords?4(int) -> str
+Qsci.QsciLexerSpice.defaultColor?4(int) -> QColor
+Qsci.QsciLexerSpice.defaultFont?4(int) -> QFont
+Qsci.QsciLexerSpice.description?4(int) -> QString
+Qsci.QsciLexerSQL.Default?10
+Qsci.QsciLexerSQL.Comment?10
+Qsci.QsciLexerSQL.CommentLine?10
+Qsci.QsciLexerSQL.CommentDoc?10
+Qsci.QsciLexerSQL.Number?10
+Qsci.QsciLexerSQL.Keyword?10
+Qsci.QsciLexerSQL.DoubleQuotedString?10
+Qsci.QsciLexerSQL.SingleQuotedString?10
+Qsci.QsciLexerSQL.PlusKeyword?10
+Qsci.QsciLexerSQL.PlusPrompt?10
+Qsci.QsciLexerSQL.Operator?10
+Qsci.QsciLexerSQL.Identifier?10
+Qsci.QsciLexerSQL.PlusComment?10
+Qsci.QsciLexerSQL.CommentLineHash?10
+Qsci.QsciLexerSQL.CommentDocKeyword?10
+Qsci.QsciLexerSQL.CommentDocKeywordError?10
+Qsci.QsciLexerSQL.KeywordSet5?10
+Qsci.QsciLexerSQL.KeywordSet6?10
+Qsci.QsciLexerSQL.KeywordSet7?10
+Qsci.QsciLexerSQL.KeywordSet8?10
+Qsci.QsciLexerSQL.QuotedIdentifier?10
+Qsci.QsciLexerSQL?1(QObject parent=None)
+Qsci.QsciLexerSQL.__init__?1(self, QObject parent=None)
+Qsci.QsciLexerSQL.language?4() -> str
+Qsci.QsciLexerSQL.lexer?4() -> str
+Qsci.QsciLexerSQL.defaultColor?4(int) -> QColor
+Qsci.QsciLexerSQL.defaultEolFill?4(int) -> bool
+Qsci.QsciLexerSQL.defaultFont?4(int) -> QFont
+Qsci.QsciLexerSQL.defaultPaper?4(int) -> QColor
+Qsci.QsciLexerSQL.keywords?4(int) -> str
+Qsci.QsciLexerSQL.description?4(int) -> QString
+Qsci.QsciLexerSQL.refreshProperties?4()
+Qsci.QsciLexerSQL.backslashEscapes?4() -> bool
+Qsci.QsciLexerSQL.setDottedWords?4(bool)
+Qsci.QsciLexerSQL.dottedWords?4() -> bool
+Qsci.QsciLexerSQL.setFoldAtElse?4(bool)
+Qsci.QsciLexerSQL.foldAtElse?4() -> bool
+Qsci.QsciLexerSQL.foldComments?4() -> bool
+Qsci.QsciLexerSQL.foldCompact?4() -> bool
+Qsci.QsciLexerSQL.setFoldOnlyBegin?4(bool)
+Qsci.QsciLexerSQL.foldOnlyBegin?4() -> bool
+Qsci.QsciLexerSQL.setHashComments?4(bool)
+Qsci.QsciLexerSQL.hashComments?4() -> bool
+Qsci.QsciLexerSQL.setQuotedIdentifiers?4(bool)
+Qsci.QsciLexerSQL.quotedIdentifiers?4() -> bool
+Qsci.QsciLexerSQL.setBackslashEscapes?4(bool)
+Qsci.QsciLexerSQL.setFoldComments?4(bool)
+Qsci.QsciLexerSQL.setFoldCompact?4(bool)
+Qsci.QsciLexerSQL.readProperties?4(QSettings, QString) -> bool
+Qsci.QsciLexerSQL.writeProperties?4(QSettings, QString) -> bool
+Qsci.QsciLexerTCL.Default?10
+Qsci.QsciLexerTCL.Comment?10
+Qsci.QsciLexerTCL.CommentLine?10
+Qsci.QsciLexerTCL.Number?10
+Qsci.QsciLexerTCL.QuotedKeyword?10
+Qsci.QsciLexerTCL.QuotedString?10
+Qsci.QsciLexerTCL.Operator?10
+Qsci.QsciLexerTCL.Identifier?10
+Qsci.QsciLexerTCL.Substitution?10
+Qsci.QsciLexerTCL.SubstitutionBrace?10
+Qsci.QsciLexerTCL.Modifier?10
+Qsci.QsciLexerTCL.ExpandKeyword?10
+Qsci.QsciLexerTCL.TCLKeyword?10
+Qsci.QsciLexerTCL.TkKeyword?10
+Qsci.QsciLexerTCL.ITCLKeyword?10
+Qsci.QsciLexerTCL.TkCommand?10
+Qsci.QsciLexerTCL.KeywordSet6?10
+Qsci.QsciLexerTCL.KeywordSet7?10
+Qsci.QsciLexerTCL.KeywordSet8?10
+Qsci.QsciLexerTCL.KeywordSet9?10
+Qsci.QsciLexerTCL.CommentBox?10
+Qsci.QsciLexerTCL.CommentBlock?10
+Qsci.QsciLexerTCL?1(QObject parent=None)
+Qsci.QsciLexerTCL.__init__?1(self, QObject parent=None)
+Qsci.QsciLexerTCL.language?4() -> str
+Qsci.QsciLexerTCL.lexer?4() -> str
+Qsci.QsciLexerTCL.defaultColor?4(int) -> QColor
+Qsci.QsciLexerTCL.defaultEolFill?4(int) -> bool
+Qsci.QsciLexerTCL.defaultFont?4(int) -> QFont
+Qsci.QsciLexerTCL.defaultPaper?4(int) -> QColor
+Qsci.QsciLexerTCL.keywords?4(int) -> str
+Qsci.QsciLexerTCL.description?4(int) -> QString
+Qsci.QsciLexerTCL.refreshProperties?4()
+Qsci.QsciLexerTCL.setFoldComments?4(bool)
+Qsci.QsciLexerTCL.foldComments?4() -> bool
+Qsci.QsciLexerTCL.readProperties?4(QSettings, QString) -> bool
+Qsci.QsciLexerTCL.writeProperties?4(QSettings, QString) -> bool
+Qsci.QsciLexerTeX.Default?10
+Qsci.QsciLexerTeX.Special?10
+Qsci.QsciLexerTeX.Group?10
+Qsci.QsciLexerTeX.Symbol?10
+Qsci.QsciLexerTeX.Command?10
+Qsci.QsciLexerTeX.Text?10
+Qsci.QsciLexerTeX?1(QObject parent=None)
+Qsci.QsciLexerTeX.__init__?1(self, QObject parent=None)
+Qsci.QsciLexerTeX.language?4() -> str
+Qsci.QsciLexerTeX.lexer?4() -> str
+Qsci.QsciLexerTeX.defaultColor?4(int) -> QColor
+Qsci.QsciLexerTeX.keywords?4(int) -> str
+Qsci.QsciLexerTeX.description?4(int) -> QString
+Qsci.QsciLexerTeX.wordCharacters?4() -> str
+Qsci.QsciLexerTeX.refreshProperties?4()
+Qsci.QsciLexerTeX.setFoldComments?4(bool)
+Qsci.QsciLexerTeX.foldComments?4() -> bool
+Qsci.QsciLexerTeX.setFoldCompact?4(bool)
+Qsci.QsciLexerTeX.foldCompact?4() -> bool
+Qsci.QsciLexerTeX.setProcessComments?4(bool)
+Qsci.QsciLexerTeX.processComments?4() -> bool
+Qsci.QsciLexerTeX.setProcessIf?4(bool)
+Qsci.QsciLexerTeX.processIf?4() -> bool
+Qsci.QsciLexerTeX.readProperties?4(QSettings, QString) -> bool
+Qsci.QsciLexerTeX.writeProperties?4(QSettings, QString) -> bool
+Qsci.QsciLexerVerilog.Default?10
+Qsci.QsciLexerVerilog.Comment?10
+Qsci.QsciLexerVerilog.CommentLine?10
+Qsci.QsciLexerVerilog.CommentBang?10
+Qsci.QsciLexerVerilog.Number?10
+Qsci.QsciLexerVerilog.Keyword?10
+Qsci.QsciLexerVerilog.String?10
+Qsci.QsciLexerVerilog.KeywordSet2?10
+Qsci.QsciLexerVerilog.SystemTask?10
+Qsci.QsciLexerVerilog.Preprocessor?10
+Qsci.QsciLexerVerilog.Operator?10
+Qsci.QsciLexerVerilog.Identifier?10
+Qsci.QsciLexerVerilog.UnclosedString?10
+Qsci.QsciLexerVerilog.UserKeywordSet?10
+Qsci.QsciLexerVerilog?1(QObject parent=None)
+Qsci.QsciLexerVerilog.__init__?1(self, QObject parent=None)
+Qsci.QsciLexerVerilog.language?4() -> str
+Qsci.QsciLexerVerilog.lexer?4() -> str
+Qsci.QsciLexerVerilog.defaultColor?4(int) -> QColor
+Qsci.QsciLexerVerilog.defaultEolFill?4(int) -> bool
+Qsci.QsciLexerVerilog.defaultFont?4(int) -> QFont
+Qsci.QsciLexerVerilog.defaultPaper?4(int) -> QColor
+Qsci.QsciLexerVerilog.keywords?4(int) -> str
+Qsci.QsciLexerVerilog.description?4(int) -> QString
+Qsci.QsciLexerVerilog.wordCharacters?4() -> str
+Qsci.QsciLexerVerilog.refreshProperties?4()
+Qsci.QsciLexerVerilog.setFoldAtElse?4(bool)
+Qsci.QsciLexerVerilog.foldAtElse?4() -> bool
+Qsci.QsciLexerVerilog.setFoldComments?4(bool)
+Qsci.QsciLexerVerilog.foldComments?4() -> bool
+Qsci.QsciLexerVerilog.setFoldCompact?4(bool)
+Qsci.QsciLexerVerilog.foldCompact?4() -> bool
+Qsci.QsciLexerVerilog.setFoldPreprocessor?4(bool)
+Qsci.QsciLexerVerilog.foldPreprocessor?4() -> bool
+Qsci.QsciLexerVerilog.setFoldAtModule?4(bool)
+Qsci.QsciLexerVerilog.foldAtModule?4() -> bool
+Qsci.QsciLexerVerilog.readProperties?4(QSettings, QString) -> bool
+Qsci.QsciLexerVerilog.writeProperties?4(QSettings, QString) -> bool
+Qsci.QsciLexerVHDL.Default?10
+Qsci.QsciLexerVHDL.Comment?10
+Qsci.QsciLexerVHDL.CommentLine?10
+Qsci.QsciLexerVHDL.Number?10
+Qsci.QsciLexerVHDL.String?10
+Qsci.QsciLexerVHDL.Operator?10
+Qsci.QsciLexerVHDL.Identifier?10
+Qsci.QsciLexerVHDL.UnclosedString?10
+Qsci.QsciLexerVHDL.Keyword?10
+Qsci.QsciLexerVHDL.StandardOperator?10
+Qsci.QsciLexerVHDL.Attribute?10
+Qsci.QsciLexerVHDL.StandardFunction?10
+Qsci.QsciLexerVHDL.StandardPackage?10
+Qsci.QsciLexerVHDL.StandardType?10
+Qsci.QsciLexerVHDL.KeywordSet7?10
+Qsci.QsciLexerVHDL?1(QObject parent=None)
+Qsci.QsciLexerVHDL.__init__?1(self, QObject parent=None)
+Qsci.QsciLexerVHDL.language?4() -> str
+Qsci.QsciLexerVHDL.lexer?4() -> str
+Qsci.QsciLexerVHDL.defaultColor?4(int) -> QColor
+Qsci.QsciLexerVHDL.defaultEolFill?4(int) -> bool
+Qsci.QsciLexerVHDL.defaultFont?4(int) -> QFont
+Qsci.QsciLexerVHDL.defaultPaper?4(int) -> QColor
+Qsci.QsciLexerVHDL.keywords?4(int) -> str
+Qsci.QsciLexerVHDL.description?4(int) -> QString
+Qsci.QsciLexerVHDL.refreshProperties?4()
+Qsci.QsciLexerVHDL.foldComments?4() -> bool
+Qsci.QsciLexerVHDL.foldCompact?4() -> bool
+Qsci.QsciLexerVHDL.foldAtElse?4() -> bool
+Qsci.QsciLexerVHDL.foldAtBegin?4() -> bool
+Qsci.QsciLexerVHDL.foldAtParenthesis?4() -> bool
+Qsci.QsciLexerVHDL.setFoldComments?4(bool)
+Qsci.QsciLexerVHDL.setFoldCompact?4(bool)
+Qsci.QsciLexerVHDL.setFoldAtElse?4(bool)
+Qsci.QsciLexerVHDL.setFoldAtBegin?4(bool)
+Qsci.QsciLexerVHDL.setFoldAtParenthesis?4(bool)
+Qsci.QsciLexerVHDL.readProperties?4(QSettings, QString) -> bool
+Qsci.QsciLexerVHDL.writeProperties?4(QSettings, QString) -> bool
+Qsci.QsciLexerXML?1(QObject parent=None)
+Qsci.QsciLexerXML.__init__?1(self, QObject parent=None)
+Qsci.QsciLexerXML.language?4() -> str
+Qsci.QsciLexerXML.lexer?4() -> str
+Qsci.QsciLexerXML.defaultColor?4(int) -> QColor
+Qsci.QsciLexerXML.defaultEolFill?4(int) -> bool
+Qsci.QsciLexerXML.defaultFont?4(int) -> QFont
+Qsci.QsciLexerXML.defaultPaper?4(int) -> QColor
+Qsci.QsciLexerXML.keywords?4(int) -> str
+Qsci.QsciLexerXML.refreshProperties?4()
+Qsci.QsciLexerXML.setScriptsStyled?4(bool)
+Qsci.QsciLexerXML.scriptsStyled?4() -> bool
+Qsci.QsciLexerXML.readProperties?4(QSettings, QString) -> bool
+Qsci.QsciLexerXML.writeProperties?4(QSettings, QString) -> bool
+Qsci.QsciLexerYAML.Default?10
+Qsci.QsciLexerYAML.Comment?10
+Qsci.QsciLexerYAML.Identifier?10
+Qsci.QsciLexerYAML.Keyword?10
+Qsci.QsciLexerYAML.Number?10
+Qsci.QsciLexerYAML.Reference?10
+Qsci.QsciLexerYAML.DocumentDelimiter?10
+Qsci.QsciLexerYAML.TextBlockMarker?10
+Qsci.QsciLexerYAML.SyntaxErrorMarker?10
+Qsci.QsciLexerYAML.Operator?10
+Qsci.QsciLexerYAML?1(QObject parent=None)
+Qsci.QsciLexerYAML.__init__?1(self, QObject parent=None)
+Qsci.QsciLexerYAML.language?4() -> str
+Qsci.QsciLexerYAML.lexer?4() -> str
+Qsci.QsciLexerYAML.defaultColor?4(int) -> QColor
+Qsci.QsciLexerYAML.defaultEolFill?4(int) -> bool
+Qsci.QsciLexerYAML.defaultFont?4(int) -> QFont
+Qsci.QsciLexerYAML.defaultPaper?4(int) -> QColor
+Qsci.QsciLexerYAML.keywords?4(int) -> str
+Qsci.QsciLexerYAML.description?4(int) -> QString
+Qsci.QsciLexerYAML.refreshProperties?4()
+Qsci.QsciLexerYAML.foldComments?4() -> bool
+Qsci.QsciLexerYAML.setFoldComments?4(bool)
+Qsci.QsciLexerYAML.readProperties?4(QSettings, QString) -> bool
+Qsci.QsciLexerYAML.writeProperties?4(QSettings, QString) -> bool
+Qsci.QsciMacro?1(QsciScintilla)
+Qsci.QsciMacro.__init__?1(self, QsciScintilla)
+Qsci.QsciMacro?1(QString, QsciScintilla)
+Qsci.QsciMacro.__init__?1(self, QString, QsciScintilla)
+Qsci.QsciMacro.clear?4()
+Qsci.QsciMacro.load?4(QString) -> bool
+Qsci.QsciMacro.save?4() -> QString
+Qsci.QsciMacro.play?4()
+Qsci.QsciMacro.startRecording?4()
+Qsci.QsciMacro.endRecording?4()
+Qsci.QsciPrinter?1(QPrinter.PrinterMode mode=QPrinter.ScreenResolution)
+Qsci.QsciPrinter.__init__?1(self, QPrinter.PrinterMode mode=QPrinter.ScreenResolution)
+Qsci.QsciPrinter.formatPage?4(QPainter, bool, QRect, int)
+Qsci.QsciPrinter.magnification?4() -> int
+Qsci.QsciPrinter.setMagnification?4(int)
+Qsci.QsciPrinter.printRange?4(QsciScintillaBase, int from=-1, int to=-1) -> int
+Qsci.QsciPrinter.wrapMode?4() -> QsciScintilla.WrapMode
+Qsci.QsciPrinter.setWrapMode?4(QsciScintilla.WrapMode)
+Qsci.QsciStyle.TextCase?10
+Qsci.QsciStyle.OriginalCase?10
+Qsci.QsciStyle.UpperCase?10
+Qsci.QsciStyle.LowerCase?10
+Qsci.QsciStyle?1(int style=-1)
+Qsci.QsciStyle.__init__?1(self, int style=-1)
+Qsci.QsciStyle?1(int, QString, QColor, QColor, QFont, bool eolFill=False)
+Qsci.QsciStyle.__init__?1(self, int, QString, QColor, QColor, QFont, bool eolFill=False)
+Qsci.QsciStyle?1(QsciStyle)
+Qsci.QsciStyle.__init__?1(self, QsciStyle)
+Qsci.QsciStyle.style?4() -> int
+Qsci.QsciStyle.setDescription?4(QString)
+Qsci.QsciStyle.description?4() -> QString
+Qsci.QsciStyle.setColor?4(QColor)
+Qsci.QsciStyle.color?4() -> QColor
+Qsci.QsciStyle.setPaper?4(QColor)
+Qsci.QsciStyle.paper?4() -> QColor
+Qsci.QsciStyle.setFont?4(QFont)
+Qsci.QsciStyle.font?4() -> QFont
+Qsci.QsciStyle.setEolFill?4(bool)
+Qsci.QsciStyle.eolFill?4() -> bool
+Qsci.QsciStyle.setTextCase?4(QsciStyle.TextCase)
+Qsci.QsciStyle.textCase?4() -> QsciStyle.TextCase
+Qsci.QsciStyle.setVisible?4(bool)
+Qsci.QsciStyle.visible?4() -> bool
+Qsci.QsciStyle.setChangeable?4(bool)
+Qsci.QsciStyle.changeable?4() -> bool
+Qsci.QsciStyle.setHotspot?4(bool)
+Qsci.QsciStyle.hotspot?4() -> bool
+Qsci.QsciStyle.refresh?4()
+Qsci.QsciStyledText?1(QString, int)
+Qsci.QsciStyledText.__init__?1(self, QString, int)
+Qsci.QsciStyledText?1(QString, QsciStyle)
+Qsci.QsciStyledText.__init__?1(self, QString, QsciStyle)
+Qsci.QsciStyledText?1(QsciStyledText)
+Qsci.QsciStyledText.__init__?1(self, QsciStyledText)
+Qsci.QsciStyledText.text?4() -> QString
+Qsci.QsciStyledText.style?4() -> int

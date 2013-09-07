@@ -219,6 +219,7 @@ void QgsFieldsProperties::init()
   loadRows();
 
   mEditorLayoutComboBox->setCurrentIndex( mLayer->editorLayout() );
+  mFormSuppressCmbBx->setCurrentIndex( mLayer->featureFormSuppress() );
 
   loadAttributeEditorTree();
 }
@@ -918,6 +919,7 @@ void QgsFieldsProperties::apply()
   mLayer->setEditorLayout(( QgsVectorLayer::EditorLayout )mEditorLayoutComboBox->currentIndex() );
   mLayer->setEditForm( leEditForm->text() );
   mLayer->setEditFormInit( leEditFormInit->text() );
+  mLayer->setFeatureFormSuppress(( QgsVectorLayer::FeatureFormSuppress )mFormSuppressCmbBx->currentIndex() );
 
   mLayer->setExcludeAttributesWMS( excludeAttributesWMS );
   mLayer->setExcludeAttributesWFS( excludeAttributesWFS );

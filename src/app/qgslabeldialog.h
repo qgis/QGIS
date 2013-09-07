@@ -23,7 +23,7 @@ class QgsLabel;
 
 
 /** QgsLabelDialog is the dialog for label. */
-class QgsLabelDialog: public QWidget, private Ui::QgsLabelDialogBase
+class APP_EXPORT QgsLabelDialog: public QWidget, private Ui::QgsLabelDialogBase
 {
     Q_OBJECT
 

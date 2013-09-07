@@ -105,7 +105,6 @@ class translate(GeoAlgorithm):
         if crsId is not None:
             arguments.append("-a_srs")
             arguments.append(str(crsId))
-            self.crs = QgsCoordinateReferenceSystem(crsId)
         if sds:
             arguments.append("-sds")
         if len(extra) > 0:

@@ -446,6 +446,15 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
       Color,         /**< color @note added in 1.9 */
     };
 
+    /** Types of feature form suppression after feature creation
+     * @note added in 2.1 */
+    enum FeatureFormSuppress
+    {
+      SuppressDefault = 0, // use the application-wide setting
+      SuppressOn = 1,
+      SuppressOff = 2
+    };
+
     struct RangeData
     {
       RangeData() {}
@@ -1112,6 +1121,14 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** set edit form (added in 1.4) */
     void setEditForm( QString ui );
 
+    /** Type of feature form pop-up suppression after feature creation (overrides app setting)
+     * @note added in 2.1 */
+    QgsVectorLayer::FeatureFormSuppress featureFormSuppress() const { return mFeatureFormSuppress; }
+
+    /** Set type of feature form pop-up suppression after feature creation (overrides app setting)
+     * @note added in 2.1 */
+    void setFeatureFormSuppress( QgsVectorLayer::FeatureFormSuppress s ) { mFeatureFormSuppress = s; }
+
     /** get annotation form (added in 1.5)*/
     QString annotationForm() const { return mAnnotationForm; }
 
@@ -1539,6 +1556,11 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     EditorLayout mEditorLayout;
 
     QString mEditForm, mEditFormInit;
+
+    /** Type of feature form suppression after feature creation
+     * @note added in 2.1 */
+    QgsVectorLayer::FeatureFormSuppress mFeatureFormSuppress;
+
     //annotation form for this layer
     QString mAnnotationForm;
 

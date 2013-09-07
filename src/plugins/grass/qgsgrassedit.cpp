@@ -572,12 +572,11 @@ void QgsGrassEdit::setAttributeTable( int field )
 
   if ( !key->isEmpty() )   // Database link defined
   {
-    std::vector<QgsField> *cols = mProvider->columns( field );
+    QVector<QgsField> *cols = mProvider->columns( field );
 
     mAttributeTable->setRowCount( cols->size() );
 
-
-    for ( unsigned int c = 0; c < cols->size(); c++ )
+    for ( int c = 0; c < cols->size(); c++ )
     {
       QgsField col = ( *cols )[c];
 
@@ -1463,7 +1462,7 @@ void QgsGrassEdit::addAttributes( int field, int cat )
 
   if ( !key->isEmpty() )   // Database link defined
   {
-    std::vector<QgsField> *cols = mProvider->columns( field );
+    QVector<QgsField> *cols = mProvider->columns( field );
 
     if ( cols->size() == 0 )
     {
@@ -1481,7 +1480,7 @@ void QgsGrassEdit::addAttributes( int field, int cat )
       }
       else
       {
-        for ( unsigned int j = 0; j < cols->size(); j++ )
+        for ( int j = 0; j < cols->size(); j++ )
         {
           QgsField col = ( *cols )[j];
           QVariant att = ( *atts )[j];

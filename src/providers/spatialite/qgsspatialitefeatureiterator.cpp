@@ -325,14 +325,14 @@ bool QgsSpatiaLiteFeatureIterator::getFeature( sqlite3_stmt *stmt, QgsFeature &f
     else
     {
       int attrIndex = subsetAttributes ? mRequest.subsetOfAttributes()[ic-1] : ic - 1;
-      feature.setAttribute( attrIndex, getFeatureAttribute( stmt, ic ) );
+      feature.setAttribute( attrIndex, getFeatureAttribute( stmt, ic, P->attributeFields[attrIndex].type() ) );
     }
   }
 
   return true;
 }
 
-QVariant QgsSpatiaLiteFeatureIterator::getFeatureAttribute( sqlite3_stmt* stmt, int ic )
+QVariant QgsSpatiaLiteFeatureIterator::getFeatureAttribute( sqlite3_stmt* stmt, int ic, const QVariant::Type& type )
 {
   if ( sqlite3_column_type( stmt, ic ) == SQLITE_INTEGER )
   {
@@ -354,7 +354,7 @@ QVariant QgsSpatiaLiteFeatureIterator::getFeatureAttribute( sqlite3_stmt* stmt, 
   }
 
   // assuming NULL
-  return QVariant();
+  return QVariant( type );
 }
 
 void QgsSpatiaLiteFeatureIterator::getFeatureGeometry( sqlite3_stmt* stmt, int ic, QgsFeature& feature )

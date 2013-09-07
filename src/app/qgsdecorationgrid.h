@@ -29,7 +29,7 @@ class QgsMarkerSymbolV2;
 #include <QPen>
 #include <QFont>
 
-class QgsDecorationGrid: public QgsDecorationItem
+class APP_EXPORT QgsDecorationGrid: public QgsDecorationItem
 {
     Q_OBJECT
   public:

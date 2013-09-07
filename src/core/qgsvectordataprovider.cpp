@@ -245,16 +245,20 @@ const QList< QgsVectorDataProvider::NativeType > &QgsVectorDataProvider::nativeT
 bool QgsVectorDataProvider::supportedType( const QgsField &field ) const
 {
   int i;
+  QgsDebugMsgLevel( QString( "field name = %1 type = %2 length = %3 precision = %4" ).arg( field.name() ).arg( QVariant::typeToName( field.type() ) ).arg( field.length() ).arg( field.precision() ), 2 );
   for ( i = 0; i < mNativeTypes.size(); i++ )
   {
+    QgsDebugMsgLevel( QString( "native field type = %1 min length = %2 max length = %3 min precision = %4 max precision = %5" ).arg( QVariant::typeToName( mNativeTypes[i].mType ) ).arg( mNativeTypes[i].mMinLen ).arg( mNativeTypes[i].mMaxLen ).arg( mNativeTypes[i].mMinPrec ).arg( mNativeTypes[i].mMaxPrec ), 2 );
     if ( field.type() == mNativeTypes[i].mType &&
          field.length() >= mNativeTypes[i].mMinLen && field.length() <= mNativeTypes[i].mMaxLen &&
          field.precision() >= mNativeTypes[i].mMinPrec && field.precision() <= mNativeTypes[i].mMaxPrec )
     {
+      QgsDebugMsg( "native type matches" );
       return true;
     }
   }
 
+  QgsDebugMsg( "no sufficient native type found" );
   return false;
 }
 
@@ -392,8 +396,8 @@ QVariant QgsVectorDataProvider::convertValue( QVariant::Type type, QString value
 {
   QVariant v( value );
 
-  if ( !v.convert( type ) )
-    v = QVariant( QString::null );
+  if ( !v.convert( type ) || value.isNull() )
+    v = QVariant( type );
 
   return v;
 }

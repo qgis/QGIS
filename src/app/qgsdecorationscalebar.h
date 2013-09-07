@@ -28,7 +28,7 @@ class QPainter;
 
 #include <QColor>
 
-class QgsDecorationScaleBar: public QgsDecorationItem
+class APP_EXPORT QgsDecorationScaleBar: public QgsDecorationItem
 {
     Q_OBJECT
   public:

@@ -27,7 +27,7 @@
 * @see also QgsTipOfTheDay, QgsTipFactory
 */
 
-class QgsTip
+class APP_EXPORT QgsTip
 {
   public:
     /** Constructor */

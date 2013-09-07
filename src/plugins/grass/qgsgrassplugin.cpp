@@ -848,7 +848,10 @@ void QgsGrassPlugin::unload()
   delete mNewVectorAction;
 
   if ( toolBarPointer )
+  {
     delete toolBarPointer;
+    toolBarPointer = 0;
+  }
 
   // disconnect slots of QgsGrassPlugin so they're not fired also after unload
   disconnect( mCanvas, SIGNAL( renderComplete( QPainter * ) ), this, SLOT( postRender( QPainter * ) ) );
@@ -864,20 +867,22 @@ void QgsGrassPlugin::unload()
 void QgsGrassPlugin::setCurrentTheme( QString theThemeName )
 {
   Q_UNUSED( theThemeName );
+  if ( toolBarPointer )
+  {
+    mOpenMapsetAction->setIcon( getThemeIcon( "grass_open_mapset.png" ) );
+    mNewMapsetAction->setIcon( getThemeIcon( "grass_new_mapset.png" ) );
+    mCloseMapsetAction->setIcon( getThemeIcon( "grass_close_mapset.png" ) );
 
-  mOpenMapsetAction->setIcon( getThemeIcon( "grass_open_mapset.png" ) );
-  mNewMapsetAction->setIcon( getThemeIcon( "grass_new_mapset.png" ) );
-  mCloseMapsetAction->setIcon( getThemeIcon( "grass_close_mapset.png" ) );
+    mAddVectorAction->setIcon( getThemeIcon( "grass_add_vector.png" ) );
+    mAddRasterAction->setIcon( getThemeIcon( "grass_add_raster.png" ) );
+    mOpenToolsAction->setIcon( getThemeIcon( "grass_tools.png" ) );
 
-  mAddVectorAction->setIcon( getThemeIcon( "grass_add_vector.png" ) );
-  mAddRasterAction->setIcon( getThemeIcon( "grass_add_raster.png" ) );
-  mOpenToolsAction->setIcon( getThemeIcon( "grass_tools.png" ) );
+    mRegionAction->setIcon( getThemeIcon( "grass_region.png" ) );
 
-  mRegionAction->setIcon( getThemeIcon( "grass_region.png" ) );
-
-  mEditRegionAction->setIcon( getThemeIcon( "grass_region_edit.png" ) );
-  mEditAction->setIcon( getThemeIcon( "grass_edit.png" ) );
-  mNewVectorAction->setIcon( getThemeIcon( "grass_new_vector_layer.png" ) );
+    mEditRegionAction->setIcon( getThemeIcon( "grass_region_edit.png" ) );
+    mEditAction->setIcon( getThemeIcon( "grass_edit.png" ) );
+    mNewVectorAction->setIcon( getThemeIcon( "grass_new_vector_layer.png" ) );
+  }
 }
 
 // Note this code is duplicated from qgisapp.cpp because

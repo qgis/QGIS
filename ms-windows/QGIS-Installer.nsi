@@ -27,6 +27,7 @@ RequestExecutionLevel admin
 
 ;NSIS Includes
 
+!include "x64.nsh"
 !include "MUI.nsh"
 !include "LogicLib.nsh"
 
@@ -59,6 +60,14 @@ OutFile "${INSTALLER_NAME}"
 
 ;Define installation folder
 InstallDir "$PROGRAMFILES\${QGIS_BASE}"
+
+${If} ${RunningX64}
+  DetailPrint "Installer running on 64-bit host"
+  ; disable registry redirection (enable access to 64-bit portion of registry)
+  SetRegView 64
+  ; change install dir
+  StrCpy $INSTDIR "$PROGRAMFILES64\${QGIS_BASE}"
+${EndIf}
 
 ;Tell the installer to show Install and Uninstall details as default
 ShowInstDetails show
@@ -270,7 +279,7 @@ Section "QGIS" SecQGIS
 
 	SectionIn RO
 
-        ;Added by Tim to set the reg key so we get default plugin loading 
+        ;Added by Tim to set the reg key so we get default plugin loading
         !include plugins.nsh
         ;Added by Tim to set the reg key so we get default python & py plugins
         !include python_plugins.nsh
@@ -334,7 +343,7 @@ Section "QGIS" SecQGIS
 	
 	;Create the Desktop Shortcut
 	SetShellVarContext current
- 
+
 	;Create the Windows Start Menu Shortcuts
 	SetShellVarContext all
 	
@@ -355,24 +364,6 @@ RebootNecessary:
 	SetRebootFlag true
 
 NoRebootNecessary:
-        Delete "$DESKTOP\QGIS (${VERSION_NUMBER}).lnk"
-        Delete "$SMPROGRAMS\${QGIS_BASE}\QGIS (${VERSION_NUMBER}).lnk"
-
-        Delete "$DESKTOP\QGIS Desktop (${VERSION_NUMBER}).lnk"
-        CreateShortCut "$DESKTOP\QGIS Desktop (${VERSION_NUMBER}).lnk" "$INSTALL_DIR\bin\nircmd.exe" 'exec hide "$INSTALL_DIR\bin\${SHORTNAME}.bat"' \
-        "$INSTALL_DIR\icons\QGIS.ico" "" SW_SHOWNORMAL "" "Launch ${COMPLETE_NAME}"
-
-        Delete "$SMPROGRAMS\${QGIS_BASE}\QGIS Desktop (${VERSION_NUMBER}).lnk"
-        CreateShortCut "$SMPROGRAMS\${QGIS_BASE}\QGIS Desktop (${VERSION_NUMBER}).lnk" "$INSTALL_DIR\bin\nircmd.exe" 'exec hide "$INSTALL_DIR\bin\${SHORTNAME}.bat"' \
-        "$INSTALL_DIR\icons\QGIS.ico" "" SW_SHOWNORMAL "" "Launch ${COMPLETE_NAME}"
-
-        Delete "$DESKTOP\QGIS Browser (${VERSION_NUMBER}).lnk"
-        CreateShortCut "$DESKTOP\QGIS Browser (${VERSION_NUMBER}).lnk" "$INSTALL_DIR\bin\nircmd.exe" 'exec hide "$INSTALL_DIR\bin\${SHORTNAME}-browser.bat"' \
-        "$INSTALL_DIR\icons\QGIS.ico" "" SW_SHOWNORMAL "" "Launch ${COMPLETE_NAME}"
-
-        Delete "$SMPROGRAMS\${QGIS_BASE}\QGIS Browser (${VERSION_NUMBER}).lnk"
-        CreateShortCut "$SMPROGRAMS\${QGIS_BASE}\QGIS Browser (${VERSION_NUMBER}).lnk" "$INSTALL_DIR\bin\nircmd.exe" 'exec hide "$INSTALL_DIR\bin\${SHORTNAME}-browser.bat"' \
-        "$INSTALL_DIR\icons\QGIS.ico" "" SW_SHOWNORMAL "" "Launch ${COMPLETE_NAME}"
 
 SectionEnd
 
@@ -406,7 +397,7 @@ Function DownloadDataSet
 	Pop $0
 	StrCmp $0 "success" untar_ok untar_failed
 	
-	untar_ok:       
+	untar_ok:
 	Rename "$GIS_DATABASE\$ORIGINAL_UNTAR_FOLDER" "$GIS_DATABASE\$CUSTOM_UNTAR_FOLDER"
 	Delete "$TEMP\$ARCHIVE_NAME"
 	Goto end
@@ -434,7 +425,7 @@ Section /O "North Carolina Data Set" SecNorthCarolinaSDB
 	
 	;Set the size (in KB) of the unpacked archive file
 	AddSize 293314
-  
+
 	StrCpy $HTTP_PATH "http://grass.osgeo.org/sampledata"
 	StrCpy $ARCHIVE_NAME "nc_spm_latest.tar.gz"
 	StrCpy $EXTENDED_ARCHIVE_NAME "North Carolina"

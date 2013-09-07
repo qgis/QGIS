@@ -59,7 +59,7 @@ class CORE_EXPORT QgsProperty
     @param tabs is number of tabs to print; used for pretty-printing
     hierarchy
     */
-    virtual void dump( size_t tabs = 0 ) const = 0;
+    virtual void dump( int tabs = 0 ) const = 0;
 
     /** returns true if is a QgsPropertyKey */
     virtual bool isKey() const = 0;
@@ -148,7 +148,7 @@ class CORE_EXPORT QgsPropertyValue : public QgsProperty
     bool isLeaf() const
     { return true; }
 
-    void dump( size_t tabs = 0 ) const;
+    void dump( int tabs = 0 ) const;
 
     bool readXML( QDomNode & keyNode );
 
@@ -156,7 +156,7 @@ class CORE_EXPORT QgsPropertyValue : public QgsProperty
                    QDomElement   & element,
                    QDomDocument  & document );
 
-    size_t count() const
+    int count() const
     { return 0; }
 
 
@@ -258,14 +258,14 @@ class CORE_EXPORT QgsPropertyKey : public QgsProperty
 
 
 
-    void dump( size_t tabs = 0 ) const;
+    void dump( int tabs = 0 ) const;
 
     bool readXML( QDomNode & keyNode );
 
     bool writeXML( const QString &nodeName, QDomElement & element, QDomDocument & document );
 
     /// how many elements are contained within this one?
-    size_t count() const
+    int count() const
     { return mProperties.count(); }
 
     /// Does this property not have any subkeys or values?

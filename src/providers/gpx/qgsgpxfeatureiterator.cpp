@@ -409,7 +409,7 @@ QgsGeometry* QgsGPXFeatureIterator::readRouteGeometry( const QgsRoute& rte )
   geo[0] = QgsApplication::endian();
   geo[geo[0] == QgsApplication::NDR ? 1 : 4] = QGis::WKBLineString;
   std::memcpy( geo + 5, &nPoints, 4 );
-  for ( uint i = 0; i < rte.points.size(); ++i )
+  for ( int i = 0; i < rte.points.size(); ++i )
   {
     std::memcpy( geo + 9 + 16 * i, &rte.points[i].lon, sizeof( double ) );
     std::memcpy( geo + 9 + 16 * i + 8, &rte.points[i].lat, sizeof( double ) );

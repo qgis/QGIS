@@ -147,7 +147,7 @@ static int cell_draw( char *name,
   int big_endian;
   long one = 1;
   FILE *fo;
-  int raster_size;
+  size_t raster_size;
 #ifdef NAN
   double dnul = NAN;
   float fnul = NAN;

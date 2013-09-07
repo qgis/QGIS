@@ -74,7 +74,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
 
   QgsDistanceArea myDa;
 
-  myDa.setSourceCrs( mLayer->crs().srsid() );
+  myDa.setSourceCrs( mLayer->crs() );
   myDa.setEllipsoidalMode( QgisApp::instance()->mapCanvas()->mapRenderer()->hasCrsTransformEnabled() );
   myDa.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
 
@@ -360,6 +360,7 @@ void QgsAttributeTableDialog::on_mOpenFieldCalculator_clicked()
     if ( col >= 0 )
     {
       masterModel->reload( masterModel->index( 0, col ), masterModel->index( masterModel->rowCount() - 1, col ) );
+      mMainView->reloadAttribute( col );
     }
   }
 }

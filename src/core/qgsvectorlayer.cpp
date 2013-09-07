@@ -125,6 +125,7 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
     , mFeatureBlendMode( QPainter::CompositionMode_SourceOver ) // Default to normal feature blending
     , mLayerTransparency( 0 )
     , mVertexMarkerOnlyForSelection( false )
+    , mFeatureFormSuppress( SuppressDefault )
     , mCache( new QgsGeometryCache( this ) )
     , mEditBuffer( 0 )
     , mJoinBuffer( 0 )
@@ -146,10 +147,6 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
   {
     // Always set crs
     setCoordinateSystem();
-
-    mJoinBuffer = new QgsVectorLayerJoinBuffer();
-
-    updateFields();
 
     // check if there is a default style / propertysheet defined
     // for this layer and if so apply it
@@ -271,21 +268,21 @@ void QgsVectorLayer::setDisplayField( QString fldName )
       // We assume that the user has organized the data with the
       // more "interesting" field names first. As such, name should
       // be selected before oldname, othername, etc.
-      if ( fldName.indexOf( "name", false ) > -1 )
+      if ( fldName.indexOf( "name", 0, Qt::CaseInsensitive ) > -1 )
       {
         if ( idxName.isEmpty() )
         {
           idxName = fldName;
         }
       }
-      if ( fldName.indexOf( "descrip", false ) > -1 )
+      if ( fldName.indexOf( "descrip", 0, Qt::CaseInsensitive ) > -1 )
       {
         if ( idxName.isEmpty() )
         {
           idxName = fldName;
         }
       }
-      if ( fldName.indexOf( "id", false ) > -1 )
+      if ( fldName.indexOf( "id", 0, Qt::CaseInsensitive ) > -1 )
       {
         if ( idxId.isEmpty() )
         {
@@ -1633,6 +1630,10 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
       // get and store the feature type
       mWkbType = mDataProvider->geometryType();
 
+      mJoinBuffer = new QgsVectorLayerJoinBuffer();
+
+      updateFields();
+
       // look at the fields in the layer and set the primary
       // display field using some real fuzzy logic
       setDisplayField();
@@ -1982,6 +1983,17 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
     mEditFormInit = editFormInitNode.toElement().text();
   }
 
+  QDomNode fFSuppNode = node.namedItem( "featformsuppress" );
+  if ( fFSuppNode.isNull() )
+  {
+    mFeatureFormSuppress = SuppressDefault;
+  }
+  else
+  {
+    QDomElement e = fFSuppNode.toElement();
+    mFeatureFormSuppress = ( QgsVectorLayer::FeatureFormSuppress )e.text().toInt();
+  }
+
   QDomNode annotationFormNode = node.namedItem( "annotationform" );
   if ( !annotationFormNode.isNull() )
   {
@@ -2289,6 +2301,11 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
   QDomText efiText = doc.createTextNode( mEditFormInit );
   efiField.appendChild( efiText );
   node.appendChild( efiField );
+
+  QDomElement fFSuppElem  = doc.createElement( "featformsuppress" );
+  QDomText fFSuppText = doc.createTextNode( QString::number( featureFormSuppress() ) );
+  fFSuppElem.appendChild( fFSuppText );
+  node.appendChild( fFSuppElem );
 
   QDomElement afField = doc.createElement( "annotationform" );
   QDomText afText = doc.createTextNode( QgsProject::instance()->writePath( mAnnotationForm ) );

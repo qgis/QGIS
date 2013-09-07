@@ -277,10 +277,11 @@ extern "C"
 
 #include "qgspythonutils.h"
 
-#ifndef WIN32
+#ifndef Q_OS_WIN
 #include <dlfcn.h>
 #else
 #include <windows.h>
+#include <DbgHelp.h>
 #endif
 
 #ifdef HAVE_TOUCH
@@ -431,6 +432,7 @@ QgisApp *QgisApp::smInstance = 0;
 QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, Qt::WFlags fl )
     : QMainWindow( parent, fl )
     , mSplash( splash )
+    , mInternalClipboard( 0 )
     , mShowProjectionTab( false )
     , mPythonUtils( NULL )
 #ifdef Q_OS_WIN
@@ -530,7 +532,6 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   updateProjectFromTemplates();
   legendLayerSelectionChanged();
   mSaveRollbackInProgress = false;
-  activateDeactivateLayerRelatedActions( NULL );
 
   // initialize the plugin manager
   mPluginManager = new QgsPluginManager( this, restorePlugins );
@@ -573,6 +574,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   mLogDock->hide();
 
   mInternalClipboard = new QgsClipboard; // create clipboard
+  connect( mInternalClipboard, SIGNAL( changed() ), this, SLOT( clipboardChanged() ) );
   mQgisInterface = new QgisAppInterface( this ); // create the interfce
 
 #ifdef Q_WS_MAC
@@ -583,6 +585,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   // add this window to Window menu
   addWindow( mWindowAction );
 #endif
+
+  activateDeactivateLayerRelatedActions( NULL ); // after members were created
 
   // set application's caption
   QString caption = tr( "QGIS - %1 ('%2')" ).arg( QGis::QGIS_VERSION ).arg( QGis::QGIS_RELEASE_NAME );
@@ -736,7 +740,24 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
 
 } // QgisApp ctor
 
-
+QgisApp::QgisApp( )
+    : QMainWindow( 0, 0 )
+    , mOverviewMapCursor( 0 )
+    , mQgisInterface( 0 )
+    , mInternalClipboard( 0 )
+    , mpMaptip( 0 )
+    , mPythonUtils( 0 )
+    , mpGpsWidget( 0 )
+{
+  smInstance = this;
+  setupUi( this );
+  mInternalClipboard = new QgsClipboard;
+  mMapCanvas = new QgsMapCanvas();
+  mMapCanvas->freeze();
+  mMapLegend = new QgsLegend( mMapCanvas );
+  mUndoWidget = new QgsUndoWidget( NULL, mMapCanvas );
+  // More tests may need more members to be initialized
+}
 
 QgisApp::~QgisApp()
 {
@@ -928,6 +949,8 @@ void QgisApp::createActions()
   connect( mActionCutFeatures, SIGNAL( triggered() ), this, SLOT( editCut() ) );
   connect( mActionCopyFeatures, SIGNAL( triggered() ), this, SLOT( editCopy() ) );
   connect( mActionPasteFeatures, SIGNAL( triggered() ), this, SLOT( editPaste() ) );
+  connect( mActionPasteAsNewVector, SIGNAL( triggered() ), this, SLOT( pasteAsNewVector() ) );
+  connect( mActionPasteAsNewMemoryVector, SIGNAL( triggered() ), this, SLOT( pasteAsNewMemoryVector() ) );
   connect( mActionCopyStyle, SIGNAL( triggered() ), this, SLOT( copyStyle() ) );
   connect( mActionPasteStyle, SIGNAL( triggered() ), this, SLOT( pasteStyle() ) );
   connect( mActionAddFeature, SIGNAL( triggered() ), this, SLOT( addFeature() ) );
@@ -1898,6 +1921,12 @@ void QgisApp::setupConnections()
 
   connect( this, SIGNAL( projectRead() ),
            this, SLOT( fileOpenedOKAfterLaunch() ) );
+
+  // handle deprecated labels in project for QGIS 2.0
+  connect( this, SIGNAL( newProject() ),
+           this, SLOT( checkForDeprecatedLabelsInProject() ) );
+  connect( this, SIGNAL( projectRead() ),
+           this, SLOT( checkForDeprecatedLabelsInProject() ) );
 
   //
   // Do we really need this ??? - its already connected to the esc key...TS
@@ -4525,7 +4554,7 @@ void QgisApp::saveSelectionAsVectorFile()
   saveAsVectorFileGeneral( true );
 }
 
-void QgisApp::saveAsVectorFileGeneral( bool saveOnlySelection )
+void QgisApp::saveAsVectorFileGeneral( bool saveOnlySelection, QgsVectorLayer* vlayer, bool symbologyOption )
 {
   if ( mMapCanvas && mMapCanvas->isDrawing() )
     return;
@@ -4533,13 +4562,23 @@ void QgisApp::saveAsVectorFileGeneral( bool saveOnlySelection )
   if ( !mMapLegend )
     return;
 
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( activeLayer() ); // FIXME: output of multiple layers at once?
+  if ( !vlayer )
+  {
+    vlayer = qobject_cast<QgsVectorLayer *>( activeLayer() ); // FIXME: output of multiple layers at once?
+  }
+
   if ( !vlayer )
     return;
 
   QgsCoordinateReferenceSystem destCRS;
 
-  QgsVectorLayerSaveAsDialog *dialog = new QgsVectorLayerSaveAsDialog( vlayer->crs().srsid(), this );
+  int options = QgsVectorLayerSaveAsDialog::AllOptions;
+  if ( !symbologyOption )
+  {
+    options &= ~QgsVectorLayerSaveAsDialog::Symbology;
+  }
+
+  QgsVectorLayerSaveAsDialog *dialog = new QgsVectorLayerSaveAsDialog( vlayer->crs().srsid(), options, this );
 
   if ( dialog->exec() == QDialog::Accepted )
   {
@@ -4602,6 +4641,39 @@ void QgisApp::saveAsVectorFileGeneral( bool saveOnlySelection )
   delete dialog;
 }
 
+void QgisApp::checkForDeprecatedLabelsInProject()
+{
+  bool ok;
+  QgsProject::instance()->readBoolEntry( "DeprecatedLabels", "/Enabled", false, &ok );
+  if ( ok ) // project already flagged (regardless of project property value)
+  {
+    return;
+  }
+
+  if ( QgsMapLayerRegistry::instance()->count() > 0 )
+  {
+    bool depLabelsUsed = false;
+    QMap<QString, QgsMapLayer*> layers = QgsMapLayerRegistry::instance()->mapLayers();
+    for ( QMap<QString, QgsMapLayer*>::iterator it = layers.begin(); it != layers.end(); it++ )
+    {
+      QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( it.value() );
+      if ( !vl )
+      {
+        continue;
+      }
+
+      depLabelsUsed = vl->hasLabelsEnabled();
+      if ( depLabelsUsed )
+      {
+        break;
+      }
+    }
+    if ( depLabelsUsed )
+    {
+      QgsProject::instance()->writeEntry( "DeprecatedLabels", "/Enabled", true );
+    }
+  }
+}
 
 void QgisApp::layerProperties()
 {
@@ -5413,7 +5485,6 @@ void QgisApp::editCut( QgsMapLayer * layerContainingSelection )
   selectionVectorLayer->beginEditCommand( tr( "Features cut" ) );
   selectionVectorLayer->deleteSelectedFeatures();
   selectionVectorLayer->endEditCommand();
-  activateDeactivateLayerRelatedActions( activeLayer() );
 }
 
 void QgisApp::editCopy( QgsMapLayer * layerContainingSelection )
@@ -5429,9 +5500,12 @@ void QgisApp::editCopy( QgsMapLayer * layerContainingSelection )
 
   // Test for feature support in this layer
   clipboard()->replaceWithCopyOf( selectionVectorLayer );
-  activateDeactivateLayerRelatedActions( activeLayer() );
 }
 
+void QgisApp::clipboardChanged()
+{
+  activateDeactivateLayerRelatedActions( activeLayer() );
+}
 
 void QgisApp::editPaste( QgsMapLayer *destinationLayer )
 {
@@ -5497,6 +5571,172 @@ void QgisApp::editPaste( QgsMapLayer *destinationLayer )
   pasteVectorLayer->addFeatures( features );
   pasteVectorLayer->endEditCommand();
   mMapCanvas->refresh();
+}
+
+void QgisApp::pasteAsNewVector()
+{
+  if ( mMapCanvas && mMapCanvas->isDrawing() ) return;
+
+  QgsVectorLayer * layer = pasteToNewMemoryVector();
+  if ( !layer ) return;
+
+  saveAsVectorFileGeneral( false, layer, false );
+
+  delete layer;
+}
+
+QgsVectorLayer * QgisApp::pasteAsNewMemoryVector( const QString & theLayerName )
+{
+  if ( mMapCanvas && mMapCanvas->isDrawing() ) return 0;
+
+  QString layerName = theLayerName;
+
+  if ( layerName.isEmpty() )
+  {
+    bool ok;
+    QString defaultName = tr( "Pasted" );
+    layerName = QInputDialog::getText( this, tr( "New memory layer name" ),
+                                       tr( "Layer name" ), QLineEdit::Normal,
+                                       defaultName, &ok );
+    if ( !ok ) return 0;
+
+    if ( layerName.isEmpty() )
+    {
+      layerName = defaultName;
+    }
+  }
+
+  QgsVectorLayer * layer = pasteToNewMemoryVector();
+  if ( !layer ) return 0;
+
+  layer->setLayerName( layerName );
+
+  mMapCanvas->freeze();
+
+  QgsMapLayerRegistry::instance()->addMapLayer( layer );
+
+  mMapCanvas->freeze( false );
+  mMapCanvas->refresh();
+
+  qApp->processEvents();
+
+  return layer;
+}
+
+QgsVectorLayer * QgisApp::pasteToNewMemoryVector()
+{
+  // Decide geometry type from features, switch to multi type if at least one multi is found
+  QMap<QGis::WkbType, int> typeCounts;
+  QgsFeatureList features = clipboard()->copyOf();
+  for ( int i = 0; i < features.size(); i++ )
+  {
+    QgsFeature &feature = features[i];
+    if ( !feature.geometry() ) continue;
+    QGis::WkbType type = QGis::flatType( feature.geometry()->wkbType() );
+
+    if ( type == QGis::WKBUnknown || type == QGis::WKBNoGeometry ) continue;
+    if ( QGis::isSingleType( type ) )
+    {
+      if ( typeCounts.contains( QGis::multiType( type ) ) )
+      {
+        typeCounts[ QGis::multiType( type )] = typeCounts[ QGis::multiType( type )] + 1;
+      }
+      else
+      {
+        typeCounts[ type ] = typeCounts[ type ] + 1;
+      }
+    }
+    else if ( QGis::isMultiType( type ) )
+    {
+      if ( typeCounts.contains( QGis::singleType( type ) ) )
+      {
+        // switch to multi type
+        typeCounts[type] = typeCounts[ QGis::singleType( type )];
+        typeCounts.remove( QGis::singleType( type ) );
+      }
+      typeCounts[type] = typeCounts[type] + 1;
+    }
+  }
+
+  QGis::WkbType wkbType = typeCounts.size() > 0 ? typeCounts.keys().value( 0 ) : QGis::WKBPoint;
+
+  QString typeName = QString( QGis::featureType( wkbType ) ).replace( "WKB", "" );
+
+  QgsDebugMsg( QString( "output wkbType = %1 typeName = %2" ).arg( wkbType ).arg( typeName ) );
+
+  QString message;
+
+  if ( features.size() == 0 )
+  {
+    message = tr( "No features in clipboard." ); // should not happen
+  }
+  else if ( typeCounts.size() == 0 )
+  {
+    message = tr( "No features with geometry found, point type layer will be created." );
+  }
+  else if ( typeCounts.size() > 1 )
+  {
+    message = tr( "Multiple geometry types found, features with geometry different from %1 will be created without geometry." ).arg( typeName );
+  }
+
+  if ( !message.isEmpty() )
+  {
+    QMessageBox::warning( this, tr( "Warning" ), message , QMessageBox::Ok );
+  }
+
+  QgsVectorLayer * layer = new QgsVectorLayer( typeName, "pasted_features", "memory" );
+
+  if ( !layer->isValid() || !layer->dataProvider() )
+  {
+    delete layer;
+    QMessageBox::warning( this, tr( "Warning" ), tr( "Cannot create new layer" ), QMessageBox::Ok );
+    return 0;
+  }
+
+  layer->startEditing();
+  layer->setCrs( clipboard()->crs(), false );
+
+  foreach ( QgsField f, clipboard()->fields().toList() )
+  {
+    QgsDebugMsg( QString( "field %1 (%2)" ).arg( f.name() ).arg( QVariant::typeToName( f.type() ) ) );
+    if ( !layer->addAttribute( f ) )
+    {
+      QMessageBox::warning( this, tr( "Warning" ),
+                            tr( "Cannot create field %1 (%2,%3)" ).arg( f.name() ).arg( f.typeName() ).arg( QVariant::typeToName( f.type() ) ),
+                            QMessageBox::Ok );
+      delete layer;
+      return 0;
+    }
+  }
+
+  // Convert to multi if necessary
+  for ( int i = 0; i < features.size(); i++ )
+  {
+    QgsFeature &feature = features[i];
+    if ( !feature.geometry() ) continue;
+    QGis::WkbType type = QGis::flatType( feature.geometry()->wkbType() );
+    if ( type == QGis::WKBUnknown || type == QGis::WKBNoGeometry ) continue;
+
+    if ( QGis::singleType( wkbType ) != QGis::singleType( type ) )
+    {
+      feature.setGeometry( 0 );
+    }
+
+    if ( QGis::isMultiType( wkbType ) &&  QGis::isSingleType( type ) )
+    {
+      feature.geometry()->convertToMultiType();
+    }
+  }
+  if ( ! layer->addFeatures( features ) || ! layer->commitChanges() )
+  {
+    QgsDebugMsg( "Cannot add features or commit changes" );
+    delete layer;
+    return 0;
+  }
+  layer->removeSelection();
+
+  QgsDebugMsg( QString( "%1 features pasted to memory layer" ).arg( layer->featureCount() ) );
+  return layer;
 }
 
 void QgisApp::copyStyle( QgsMapLayer * sourceLayer )
@@ -7964,6 +8204,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
   mActionMoveLabel->setEnabled( enableMove );
   mActionRotateLabel->setEnabled( enableRotate );
   mActionChangeLabelProperties->setEnabled( enableChange );
+  mMenuPasteAs->setEnabled( clipboard() && !clipboard()->empty() );
 
   updateLayerModifiedActions();
 
@@ -7997,6 +8238,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionCutFeatures->setEnabled( false );
     mActionCopyFeatures->setEnabled( false );
     mActionPasteFeatures->setEnabled( false );
+    mMenuPasteAs->setEnabled( false );
     mActionCopyStyle->setEnabled( false );
     mActionPasteStyle->setEnabled( false );
 
@@ -8034,7 +8276,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     return;
   }
 
-  mActionLayerProperties->setEnabled( true );
+  mActionLayerProperties->setEnabled( QgsProject::instance()->layerIsEmbedded( layer->id() ).isEmpty() );
   mActionAddToOverview->setEnabled( true );
   mActionZoomToLayer->setEnabled( true );
 
@@ -8626,7 +8868,6 @@ void QgisApp::keyPressEvent( QKeyEvent * e )
 #if defined(Q_OS_WIN)&& defined(QGISDEBUG)
   else if ( e->key() == Qt::Key_Backslash && e->modifiers() & Qt::ControlModifier )
   {
-    extern LONG WINAPI qgisCrashDump( struct _EXCEPTION_POINTERS *ExceptionInfo );
     qgisCrashDump( 0 );
   }
 #endif
@@ -9158,5 +9399,48 @@ void QgisApp::tapAndHoldTriggered( QTapAndHoldGesture *gesture )
     QApplication::postEvent( receiver, new QMouseEvent( QEvent::MouseButtonPress, receiver->mapFromGlobal( pos ), Qt::RightButton, Qt::RightButton, Qt::NoModifier ) );
     QApplication::postEvent( receiver, new QMouseEvent( QEvent::MouseButtonRelease, receiver->mapFromGlobal( pos ), Qt::RightButton, Qt::RightButton, Qt::NoModifier ) );
   }
+}
+#endif
+
+#ifdef Q_OS_WIN
+LONG WINAPI QgisApp::qgisCrashDump( struct _EXCEPTION_POINTERS *ExceptionInfo )
+{
+  QString dumpName = QDir::toNativeSeparators(
+                       QString( "%1\\qgis-%2-%3-%4-%5.dmp" )
+                       .arg( QDir::tempPath() )
+                       .arg( QDateTime::currentDateTime().toString( "yyyyMMdd-hhmmss" ) )
+                       .arg( GetCurrentProcessId() )
+                       .arg( GetCurrentThreadId() )
+                       .arg( QGis::QGIS_DEV_VERSION )
+                     );
+
+  QString msg;
+  HANDLE hDumpFile = CreateFile( dumpName.toLocal8Bit(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_WRITE | FILE_SHARE_READ, 0, CREATE_ALWAYS, 0, 0 );
+  if ( hDumpFile != INVALID_HANDLE_VALUE )
+  {
+    MINIDUMP_EXCEPTION_INFORMATION ExpParam;
+    ExpParam.ThreadId = GetCurrentThreadId();
+    ExpParam.ExceptionPointers = ExceptionInfo;
+    ExpParam.ClientPointers = TRUE;
+
+    if ( MiniDumpWriteDump( GetCurrentProcess(), GetCurrentProcessId(), hDumpFile, MiniDumpWithDataSegs, ExceptionInfo ? &ExpParam : NULL, NULL, NULL ) )
+    {
+      msg = QObject::tr( "minidump written to %1" ).arg( dumpName );
+    }
+    else
+    {
+      msg = QObject::tr( "writing of minidump to %1 failed (%2)" ).arg( dumpName ).arg( GetLastError(), 0, 16 );
+    }
+
+    CloseHandle( hDumpFile );
+  }
+  else
+  {
+    msg = QObject::tr( "creation of minidump to %1 failed (%2)" ).arg( dumpName ).arg( GetLastError(), 0, 16 );
+  }
+
+  QMessageBox::critical( 0, QObject::tr( "Crash dumped" ), msg );
+
+  return EXCEPTION_EXECUTE_HANDLER;
 }
 #endif

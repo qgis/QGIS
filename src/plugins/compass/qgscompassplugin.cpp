@@ -145,15 +145,21 @@ void QgsCompassPlugin::unload()
   mQGisIface->removePluginMenu( sName, mActionAboutCompass );
 
   delete mActionRunCompass;
+  mActionRunCompass = 0;
   delete mActionAboutCompass;
+  mActionAboutCompass = 0;
   delete mDock;
+  mDock = 0;
 }
 
 //! Set icons to the current theme
 void QgsCompassPlugin::setCurrentTheme( QString )
 {
-  mActionRunCompass->setIcon( getThemeIcon( "/mCompassRun.png" ) );
-  mActionAboutCompass->setIcon( getThemeIcon( "/mActionAbout.png" ) );
+  if ( mActionRunCompass && mActionAboutCompass )
+  {
+    mActionRunCompass->setIcon( getThemeIcon( "/mCompassRun.png" ) );
+    mActionAboutCompass->setIcon( getThemeIcon( "/mActionAbout.png" ) );
+  }
 }
 
 QIcon QgsCompassPlugin::getThemeIcon( const QString &theName )

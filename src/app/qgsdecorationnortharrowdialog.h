@@ -16,7 +16,7 @@
 
 class QgsDecorationNorthArrow;
 
-class QgsDecorationNorthArrowDialog : public QDialog, private Ui::QgsDecorationNorthArrowDialog
+class APP_EXPORT QgsDecorationNorthArrowDialog : public QDialog, private Ui::QgsDecorationNorthArrowDialog
 {
     Q_OBJECT
 

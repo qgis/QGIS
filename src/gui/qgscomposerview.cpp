@@ -100,9 +100,24 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
         break;
       }
 
-      selectedItem->setSelected( true );
-      QGraphicsView::mousePressEvent( e );
-      emit selectedItemChanged( selectedItem );
+      if (( e->modifiers() & Qt::ShiftModifier ) && ( selectedItem->selected() ) )
+      {
+        //SHIFT-clicking a selected item deselects it
+        selectedItem->setSelected( false );
+
+        //Check if we have any remaining selected items, and if so, update the item panel
+        QList<QgsComposerItem*> selectedItems = composition()->selectedComposerItems();
+        if ( selectedItems.size() > 0 )
+        {
+          emit selectedItemChanged( selectedItems.at( 0 ) );
+        }
+      }
+      else
+      {
+        selectedItem->setSelected( true );
+        QGraphicsView::mousePressEvent( e );
+        emit selectedItemChanged( selectedItem );
+      }
       break;
     }
 
@@ -484,6 +499,14 @@ void QgsComposerView::keyPressEvent( QKeyEvent * e )
   QList<QgsComposerItem*> composerItemList = composition()->selectedComposerItems();
   QList<QgsComposerItem*>::iterator itemIt = composerItemList.begin();
 
+  // increment used for cursor key item movement
+  double increment = 1.0;
+  if ( e->modifiers() & Qt::ShiftModifier )
+  {
+    //holding shift while pressing cursor keys results in a big step
+    increment = 10.0;
+  }
+
   if ( e->matches( QKeySequence::Copy ) || e->matches( QKeySequence::Cut ) )
   {
     QDomDocument doc;
@@ -567,7 +590,7 @@ void QgsComposerView::keyPressEvent( QKeyEvent * e )
     for ( ; itemIt != composerItemList.end(); ++itemIt )
     {
       ( *itemIt )->beginCommand( tr( "Item moved" ), QgsComposerMergeCommand::ItemMove );
-      ( *itemIt )->move( -1.0, 0.0 );
+      ( *itemIt )->move( -1 * increment, 0.0 );
       ( *itemIt )->endCommand();
     }
   }
@@ -576,7 +599,7 @@ void QgsComposerView::keyPressEvent( QKeyEvent * e )
     for ( ; itemIt != composerItemList.end(); ++itemIt )
     {
       ( *itemIt )->beginCommand( tr( "Item moved" ), QgsComposerMergeCommand::ItemMove );
-      ( *itemIt )->move( 1.0, 0.0 );
+      ( *itemIt )->move( increment, 0.0 );
       ( *itemIt )->endCommand();
     }
   }
@@ -585,7 +608,7 @@ void QgsComposerView::keyPressEvent( QKeyEvent * e )
     for ( ; itemIt != composerItemList.end(); ++itemIt )
     {
       ( *itemIt )->beginCommand( tr( "Item moved" ), QgsComposerMergeCommand::ItemMove );
-      ( *itemIt )->move( 0.0, 1.0 );
+      ( *itemIt )->move( 0.0, increment );
       ( *itemIt )->endCommand();
     }
   }
@@ -594,7 +617,7 @@ void QgsComposerView::keyPressEvent( QKeyEvent * e )
     for ( ; itemIt != composerItemList.end(); ++itemIt )
     {
       ( *itemIt )->beginCommand( tr( "Item moved" ), QgsComposerMergeCommand::ItemMove );
-      ( *itemIt )->move( 0.0, -1.0 );
+      ( *itemIt )->move( 0.0, -1 * increment );
       ( *itemIt )->endCommand();
     }
   }

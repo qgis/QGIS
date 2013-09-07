@@ -21,7 +21,7 @@
 
 #include <QDialog>
 
-class QgsBookmarks : public QDialog, private Ui::QgsBookmarksBase
+class APP_EXPORT QgsBookmarks : public QDialog, private Ui::QgsBookmarksBase
 {
     Q_OBJECT
 

@@ -23,7 +23,7 @@
 
 class QgsVectorLayer;
 
-class QgsDiagramProperties : public QWidget, private Ui::QgsDiagramPropertiesBase
+class APP_EXPORT QgsDiagramProperties : public QWidget, private Ui::QgsDiagramPropertiesBase
 {
     Q_OBJECT
 

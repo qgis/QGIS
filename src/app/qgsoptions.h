@@ -33,7 +33,7 @@
  * \class QgsOptions
  * \brief Set user options and preferences
  */
-class QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOptionsBase
+class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOptionsBase
 {
     Q_OBJECT
   public:

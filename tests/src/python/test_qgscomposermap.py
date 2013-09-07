@@ -181,6 +181,32 @@ class TestQgsComposerMap(TestCase):
         self.mComposition.removeComposerItem(overviewMap)
         assert myTestResult == True, myMessage
 
+    def testOverviewMapCenter(self):
+        overviewMap = QgsComposerMap(self.mComposition, 20, 130, 70, 70)
+        overviewMap.setFrameEnabled(True)
+        self.mComposition.addComposerMap(overviewMap)
+        # zoom in
+        myRectangle = QgsRectangle(785462.375+5000, 3341423.125,
+                                   789262.375+5000, 3343323.125)
+        self.mComposerMap.setNewExtent(myRectangle)
+        myRectangle2 = QgsRectangle(781662.375, 3339523.125,
+                                    793062.375, 3350923.125)
+        overviewMap.setNewExtent(myRectangle2)
+        overviewMap.setOverviewFrameMap(self.mComposerMap.id())
+        overviewMap.setOverviewInverted(False)
+        overviewMap.setOverviewCentered(True)
+        checker = QgsCompositionChecker()
+        myPngPath = os.path.join(TEST_DATA_DIR,
+                                 'control_images',
+                                 'expected_composermap',
+                                 'composermap_landsat_overview_center.png')
+        myTestResult, myMessage = checker.testComposition(
+                                  'Composer map overview centered',
+                                  self.mComposition,
+                                  myPngPath)
+        self.mComposition.removeComposerItem(overviewMap)
+        assert myTestResult == True, myMessage
+
     # Fails because addItemsFromXML has been commented out in sip
     @expectedFailure
     def testuniqueId(self):

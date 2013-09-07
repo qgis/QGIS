@@ -27,7 +27,7 @@ class QgsMapCanvas;
 
 /**A dialog to enter advanced editing properties, e.g. topological editing, snapping settings
 for the individual layers*/
-class QgsSnappingDialog: public QDialog, private Ui::QgsSnappingDialogBase
+class APP_EXPORT QgsSnappingDialog: public QDialog, private Ui::QgsSnappingDialogBase
 {
     Q_OBJECT
 

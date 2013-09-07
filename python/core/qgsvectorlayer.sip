@@ -120,6 +120,15 @@ class QgsVectorLayer : QgsMapLayer
       Color,         /* color @added in 1.9 */
     };
 
+    /** Types of feature form suppression after feature creation
+     * @note added in 2.1 */
+    enum FeatureFormSuppress
+    {
+      SuppressDefault = 0, // use the application-wide setting
+      SuppressOn = 1,
+      SuppressOff = 2
+    };
+
     struct RangeData
     {
       RangeData();
@@ -773,6 +782,14 @@ class QgsVectorLayer : QgsMapLayer
 
     /** set edit form (added in 1.4) */
     void setEditForm( QString ui );
+
+    /** Type of feature form pop-up suppression after feature creation (overrides app setting)
+     * @note added in 2.1 */
+    QgsVectorLayer::FeatureFormSuppress featureFormSuppress() const;
+
+    /** Set type of feature form pop-up suppression after feature creation (overrides app setting)
+     * @note added in 2.1 */
+    void setFeatureFormSuppress( QgsVectorLayer::FeatureFormSuppress s );
 
     /** get annotation form (added in 1.5)*/
     QString annotationForm() const;

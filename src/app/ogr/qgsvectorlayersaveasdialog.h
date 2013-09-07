@@ -30,7 +30,15 @@ class QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVectorLayerSav
     Q_OBJECT
 
   public:
+    // bitmask of options to be shown
+    enum Options
+    {
+      Symbology = 1,
+      AllOptions = ~0
+    };
+
     QgsVectorLayerSaveAsDialog( long srsid, QWidget* parent = 0,  Qt::WFlags fl = 0 );
+    QgsVectorLayerSaveAsDialog( long srsid, int options = AllOptions, QWidget* parent = 0,  Qt::WFlags fl = 0 );
     ~QgsVectorLayerSaveAsDialog();
 
     QString format() const;
@@ -58,6 +66,8 @@ class QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVectorLayerSav
     void accept();
 
   private:
+    void setup();
+
     long mCRS;
 };
 

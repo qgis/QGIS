@@ -2407,8 +2407,8 @@ QList<QDomElement> QgsProjectParser::publishedComposerElements() const
   QDomNodeList composerNodeList = mXMLDoc->elementsByTagName( "Composer" );
 
   QDomElement propertiesElem = mXMLDoc->documentElement().firstChildElement( "properties" );
-  QDomElement wmsComposerListElem = propertiesElem.firstChildElement( "WMSComposerList" );
-  if ( wmsComposerListElem.isNull() )
+  QDomElement wmsRestrictedComposersElem = propertiesElem.firstChildElement( "WMSRestrictedComposers" );
+  if ( wmsRestrictedComposersElem.isNull() )
   {
     for ( unsigned int i = 0; i < composerNodeList.length(); ++i )
     {
@@ -2417,11 +2417,11 @@ QList<QDomElement> QgsProjectParser::publishedComposerElements() const
     return composerElemList;
   }
 
-  QSet<QString> publishedComposerNames;
-  QDomNodeList valueList = wmsComposerListElem.elementsByTagName( "value" );
+  QSet<QString> restrictedComposerNames;
+  QDomNodeList valueList = wmsRestrictedComposersElem.elementsByTagName( "value" );
   for ( int i = 0; i < valueList.size(); ++i )
   {
-    publishedComposerNames.insert( valueList.at( i ).toElement().text() );
+    restrictedComposerNames.insert( valueList.at( i ).toElement().text() );
   }
 
   //remove unpublished composers from list
@@ -2431,7 +2431,7 @@ QList<QDomElement> QgsProjectParser::publishedComposerElements() const
   {
     currentElem = composerNodeList.at( i ).toElement();
     currentComposerName = currentElem.attribute( "title" );
-    if ( publishedComposerNames.contains( currentComposerName ) )
+    if ( !restrictedComposerNames.contains( currentComposerName ) )
     {
       composerElemList.push_back( currentElem );
     }

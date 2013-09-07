@@ -153,7 +153,7 @@ void TestQgsAtlasComposition::filename()
 {
   mAtlas->setFilenamePattern( "'output_' || $feature" );
   mAtlas->beginRender();
-  for ( size_t fi = 0; fi < mAtlas->numFeatures(); ++fi )
+  for ( int fi = 0; fi < mAtlas->numFeatures(); ++fi )
   {
     mAtlas->prepareForFeature( fi );
     QString expected = QString( "output_%1" ).arg(( int )( fi + 1 ) );
@@ -170,7 +170,7 @@ void TestQgsAtlasComposition::autoscale_render()
 
   mAtlas->beginRender();
 
-  for ( size_t fit = 0; fit < 2; ++fit )
+  for ( int fit = 0; fit < 2; ++fit )
   {
     mAtlas->prepareForFeature( fit );
     mLabel1->adjustSizeToText();
@@ -191,7 +191,7 @@ void TestQgsAtlasComposition::fixedscale_render()
 
   mAtlas->beginRender();
 
-  for ( size_t fit = 0; fit < 2; ++fit )
+  for ( int fit = 0; fit < 2; ++fit )
   {
     mAtlas->prepareForFeature( fit );
     mLabel1->adjustSizeToText();
@@ -214,7 +214,7 @@ void TestQgsAtlasComposition::hiding_render()
 
   mAtlas->beginRender();
 
-  for ( size_t fit = 0; fit < 2; ++fit )
+  for ( int fit = 0; fit < 2; ++fit )
   {
     mAtlas->prepareForFeature( fit );
     mLabel1->adjustSizeToText();
@@ -240,7 +240,7 @@ void TestQgsAtlasComposition::sorting_render()
 
   mAtlas->beginRender();
 
-  for ( size_t fit = 0; fit < 2; ++fit )
+  for ( int fit = 0; fit < 2; ++fit )
   {
     mAtlas->prepareForFeature( fit );
     mLabel1->adjustSizeToText();
@@ -267,7 +267,7 @@ void TestQgsAtlasComposition::filtering_render()
 
   mAtlas->beginRender();
 
-  for ( size_t fit = 0; fit < 1; ++fit )
+  for ( int fit = 0; fit < 1; ++fit )
   {
     mAtlas->prepareForFeature( fit );
     mLabel1->adjustSizeToText();

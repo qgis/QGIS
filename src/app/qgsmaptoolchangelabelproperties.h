@@ -20,7 +20,7 @@
 
 #include "qgsmaptoollabel.h"
 
-class QgsMapToolChangeLabelProperties: public QgsMapToolLabel
+class APP_EXPORT QgsMapToolChangeLabelProperties: public QgsMapToolLabel
 {
     Q_OBJECT
 

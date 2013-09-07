@@ -23,6 +23,7 @@
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsattributeaction.h"
 #include "qgsvectordataprovider.h"
+#include "qgsmessagelog.h"
 
 #include <QDialog>
 #include <QMenu>
@@ -62,10 +63,6 @@ void QgsDualView::init( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, QgsDista
 
   connect( mTableView, SIGNAL( willShowContextMenu( QMenu*, QModelIndex ) ), this, SLOT( viewWillShowContextMenu( QMenu*, QModelIndex ) ) );
 
-  connect( layer, SIGNAL( editingStarted() ), this, SLOT( editingToggled() ) );
-  connect( layer, SIGNAL( beforeCommitChanges() ), this, SLOT( editingToggled() ) );
-  connect( layer, SIGNAL( editingStopped() ), this, SLOT( editingToggled() ) );
-
   initLayerCache( layer );
   initModels( mapCanvas );
 
@@ -84,13 +81,19 @@ void QgsDualView::columnBoxInit()
   // load fields
   QList<QgsField> fields = mLayerCache->layer()->pendingFields().toList();
 
+  QString defaultField;
+
   // default expression: saved value
   QString displayExpression = mLayerCache->layer()->displayExpression();
 
   // if no display expression is saved: use display field instead
   if ( displayExpression == "" )
   {
-    displayExpression = mLayerCache->layer()->displayField();
+    if ( mLayerCache->layer()->displayField() != "" )
+    {
+      defaultField = mLayerCache->layer()->displayField();
+      displayExpression = QString( "COALESCE(\"%1\", '<NULL>')" ).arg( defaultField );
+    }
   }
 
   // if neither diaplay expression nor display field is saved...
@@ -100,23 +103,29 @@ void QgsDualView::columnBoxInit()
 
     if ( pkAttrs.size() > 0 )
     {
+      if ( pkAttrs.size() == 1 )
+        defaultField = pkAttrs.at( 0 );
+
       // ... If there are primary key(s) defined
       QStringList pkFields;
 
-      foreach ( int attr, pkAttrs )
+      Q_FOREACH( int attr, pkAttrs )
       {
-        pkFields.append( "\"" + fields[attr].name() + "\"" );
+        pkFields.append( "COALESCE(\"" + fields[attr].name() + "\", '<NULL>')" );
       }
 
       displayExpression = pkFields.join( "||', '||" );
     }
     else if ( fields.size() > 0 )
     {
+      if ( fields.size() == 1 )
+        defaultField = fields.at( 0 ).name();
+
       // ... concat all fields
       QStringList fieldNames;
       foreach ( QgsField field, fields )
       {
-        fieldNames.append( "\"" + field.name() + "\"" );
+        fieldNames.append( "COALESCE(\"" + field.name() + "\", '<NULL>')" );
       }
 
       displayExpression = fieldNames.join( "||', '||" );
@@ -124,7 +133,7 @@ void QgsDualView::columnBoxInit()
     else
     {
       // ... there isn't really much to display
-      displayExpression = "[Please define preview text]";
+      displayExpression = "'[Please define preview text]'";
     }
   }
 
@@ -155,7 +164,7 @@ void QgsDualView::columnBoxInit()
       connect( previewAction, SIGNAL( triggered() ), mPreviewActionMapper, SLOT( map() ) );
       mPreviewColumnsMenu->addAction( previewAction );
 
-      if ( text == displayExpression )
+      if ( text == defaultField )
       {
         mFeatureListPreviewButton->setDefaultAction( previewAction );
       }
@@ -216,7 +225,12 @@ void QgsDualView::initLayerCache( QgsVectorLayer* layer )
     mLayerCache->setFullCache( true );
   }
 
+  connect( layer, SIGNAL( editingStarted() ), this, SLOT( editingToggled() ) );
+  connect( layer, SIGNAL( beforeCommitChanges() ), this, SLOT( editingToggled() ) );
+  connect( layer, SIGNAL( editingStopped() ), this, SLOT( editingToggled() ) );
+  connect( layer, SIGNAL( attributeAdded( int ) ), this, SLOT( attributeAdded( int ) ) );
   connect( layer, SIGNAL( attributeDeleted( int ) ), this, SLOT( attributeDeleted( int ) ) );
+  connect( layer, SIGNAL( featureDeleted( QgsFeatureId ) ), this, SLOT( featureDeleted( QgsFeatureId ) ) );
 }
 
 void QgsDualView::initModels( QgsMapCanvas* mapCanvas )
@@ -243,7 +257,7 @@ void QgsDualView::on_mFeatureList_currentEditSelectionChanged( const QgsFeature 
   // Backup old dialog and delete only after creating the new dialog, so we can "hot-swap" the contained QgsFeature
   QgsAttributeDialog* oldDialog = mAttributeDialog;
 
-  if ( mAttributeDialog->dialog() )
+  if ( mAttributeDialog && mAttributeDialog->dialog() )
   {
     saveEditChanges();
     mAttributeEditorLayout->removeWidget( mAttributeDialog->dialog() );
@@ -277,6 +291,12 @@ void QgsDualView::saveEditChanges()
       mAttributeDialog->accept();
       // Get the edited feature
       const QgsAttributes &dst = mAttributeDialog->feature()->attributes();
+
+      if ( src.count() != dst.count() )
+      {
+        // bail out
+        return;
+      }
 
       mLayerCache->layer()->beginEditCommand( tr( "Attributes changed" ) );
 
@@ -314,7 +334,7 @@ void QgsDualView::previewColumnChanged( QObject* action )
 
   if ( previewAction )
   {
-    if ( !mFeatureList->setDisplayExpression( previewAction->text() ) )
+    if ( !mFeatureList->setDisplayExpression( QString( "COALESCE( \"%1\", '<NULL>' )" ).arg( previewAction->text() ) ) )
     {
       QMessageBox::warning( this
                             , tr( "Could not set preview column" )
@@ -336,7 +356,7 @@ void QgsDualView::previewColumnChanged( QObject* action )
 void QgsDualView::editingToggled()
 {
   // Reload the attribute dialog widget and commit changes if any
-  if ( mAttributeDialog->dialog() && mAttributeDialog->feature() )
+  if ( mAttributeDialog && mAttributeDialog->dialog() && mAttributeDialog->feature() )
   {
     on_mFeatureList_currentEditSelectionChanged( *mAttributeDialog->feature() );
   }
@@ -392,6 +412,90 @@ void QgsDualView::attributeDeleted( int attribute )
     // Get the edited feature
     QgsFeature* feat = mAttributeDialog->feature();
     feat->deleteAttribute( attribute );
+
+    // Backup old dialog and delete only after creating the new dialog, so we can "hot-swap" the contained QgsFeature
+    QgsAttributeDialog* oldDialog = mAttributeDialog;
+
+    mAttributeEditorLayout->removeWidget( mAttributeDialog->dialog() );
+
+    mAttributeDialog = new QgsAttributeDialog( mLayerCache->layer(), new QgsFeature( *feat ), true, mDistanceArea, this, false );
+    mAttributeEditorLayout->addWidget( mAttributeDialog->dialog() );
+
+    delete oldDialog;
+  }
+}
+
+void QgsDualView::attributeAdded( int attribute )
+{
+  if ( mAttributeDialog && mAttributeDialog->dialog() )
+  {
+    // Let the dialog write the edited widget values to it's feature
+    mAttributeDialog->accept();
+    // Get the edited feature
+    QgsFeature* feat = mAttributeDialog->feature();
+
+    // Get the feature including the newly added attribute
+    QgsFeature newFeat;
+    mLayerCache->featureAtId( feat->id(), newFeat );
+
+    int offset = 0;
+    for ( int idx = 0; idx < newFeat.attributes().count(); ++idx )
+    {
+      if ( idx == attribute )
+      {
+        offset = 1;
+      }
+      else
+      {
+        newFeat.setAttribute( idx, feat->attribute( idx - offset ) );
+      }
+    }
+
+    *feat = newFeat;
+
+    // Backup old dialog and delete only after creating the new dialog, so we can "hot-swap" the contained QgsFeature
+    QgsAttributeDialog* oldDialog = mAttributeDialog;
+
+    mAttributeEditorLayout->removeWidget( mAttributeDialog->dialog() );
+
+    mAttributeDialog = new QgsAttributeDialog( mLayerCache->layer(), new QgsFeature( *feat ), true, mDistanceArea, this, false );
+    mAttributeEditorLayout->addWidget( mAttributeDialog->dialog() );
+
+    delete oldDialog;
+  }
+}
+
+void QgsDualView::featureDeleted( QgsFeatureId fid )
+{
+  if ( mAttributeDialog && mAttributeDialog->dialog() )
+  {
+    QgsFeature* feat = mAttributeDialog->feature();
+    if ( feat )
+    {
+      if ( fid == feat->id() )
+      {
+        delete( mAttributeDialog );
+        mAttributeDialog = NULL;
+      }
+    }
+  }
+}
+
+void QgsDualView::reloadAttribute( const int& idx )
+{
+  if ( mAttributeDialog && mAttributeDialog->dialog() )
+  {
+    // Let the dialog write the edited widget values to it's feature
+    mAttributeDialog->accept();
+    // Get the edited feature
+    QgsFeature* feat = mAttributeDialog->feature();
+
+    // Get the feature including the changed attribute
+    QgsFeature newFeat;
+    mLayerCache->featureAtId( feat->id(), newFeat );
+
+    // Update the attribute
+    feat->setAttribute( idx, newFeat.attribute( idx ) );
 
     // Backup old dialog and delete only after creating the new dialog, so we can "hot-swap" the contained QgsFeature
     QgsAttributeDialog* oldDialog = mAttributeDialog;

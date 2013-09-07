@@ -21,7 +21,7 @@
 
 class QgsRenderContext;
 
-class QgsLabelPreview : public QLabel
+class APP_EXPORT QgsLabelPreview : public QLabel
 {
   public:
     QgsLabelPreview( QWidget* parent = NULL );

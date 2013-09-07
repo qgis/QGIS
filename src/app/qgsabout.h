@@ -19,7 +19,7 @@
 
 #include "ui_qgsabout.h"
 
-class QgsAbout : public QDialog, private Ui::QgsAbout
+class APP_EXPORT QgsAbout : public QDialog, private Ui::QgsAbout
 {
     Q_OBJECT
   public:

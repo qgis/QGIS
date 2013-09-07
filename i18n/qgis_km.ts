@@ -41533,7 +41533,28 @@ standard deviation ×</source>
     </message>
     <message>
         <source> of </source>
-        <translation>នៃ</translation>
+        <translation type="obsolete">នៃ</translation>
+    </message>
+    <message>
+        <source>cumulative cut</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>standard deviation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>full extent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>sub extent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 %2 of %3.</source>
+        <comment>min/max origin label in raster properties, where %1 - estimated/exact, %2 - values (min/max, stddev, etc.), %3 - extent</comment>
+        <translation type="unfinished">%1 នៃ %3. {1 %2 ?}</translation>
     </message>
 </context>
 <context>
@@ -43094,6 +43115,33 @@ enhancement</source>
     </message>
 </context>
 <context>
+    <name>QgsSmartGroupCondition</name>
+    <message>
+        <source>has the tag</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>is a member of group</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>has a part of name matching</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>does NOT have the tag</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>is NOT a member of group</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>has NO part of name matching</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsSmartGroupConditionWidget</name>
     <message>
         <source>Form</source>
@@ -43116,6 +43164,14 @@ enhancement</source>
         <source>The smart group name field is empty. Kindly provide a name</source>
         <translation type="unfinished">
             </translation>
+    </message>
+    <message>
+        <source>ALL the constraints</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>any ONE of the constraints</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -45387,6 +45443,15 @@ There was a problem with your symbol database.</source>
         <source>Transparency %1%</source>
         <translation type="unfinished">
             </translation>
+    </message>
+    <message>
+        <source>Style Manager</source>
+        <translation type="unfinished">
+            </translation>
+    </message>
+    <message>
+        <source>Save in symbol library...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -52882,6 +52947,11 @@ that will be automatically deleted after running.&lt;/li&gt;
 	&lt;b&gt;Note:&lt;/b&gt; To save the state of console&apos;s widgets you have to close the Python Console 
 	from the close button. This allows you to save the geometry to be restored to the next start.
 &lt;/p&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;Identify&lt;/h3&gt;
 </source>
         <translation type="unfinished"></translation>
     </message>

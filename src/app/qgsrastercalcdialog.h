@@ -22,7 +22,7 @@
 #include "qgsrastercalculator.h"
 
 /**A dialog to enter a raster calculation expression*/
-class QgsRasterCalcDialog: public QDialog, private Ui::QgsRasterCalcDialogBase
+class APP_EXPORT QgsRasterCalcDialog: public QDialog, private Ui::QgsRasterCalcDialogBase
 {
     Q_OBJECT
   public:

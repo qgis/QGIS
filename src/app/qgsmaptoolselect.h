@@ -21,7 +21,7 @@
 class QgsMapCanvas;
 class QMouseEvent;
 
-class QgsMapToolSelect : public QgsMapTool
+class APP_EXPORT QgsMapToolSelect : public QgsMapTool
 {
     Q_OBJECT
   public:

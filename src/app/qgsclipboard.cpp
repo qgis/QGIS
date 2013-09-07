@@ -18,6 +18,7 @@
 #include <fstream>
 
 #include <QApplication>
+#include <QObject>
 #include <QString>
 #include <QStringList>
 #include <QClipboard>
@@ -33,7 +34,8 @@
 #include "qgsvectorlayer.h"
 
 QgsClipboard::QgsClipboard()
-    : mFeatureClipboard()
+    : QObject()
+    , mFeatureClipboard()
     , mFeatureFields()
 {
 }
@@ -55,6 +57,7 @@ void QgsClipboard::replaceWithCopyOf( QgsVectorLayer *src )
   QgsDebugMsg( "replaced QGis clipboard." );
 
   setSystemClipboard();
+  emit changed();
 }
 
 void QgsClipboard::replaceWithCopyOf( QgsFeatureStore & featureStore )
@@ -64,6 +67,7 @@ void QgsClipboard::replaceWithCopyOf( QgsFeatureStore & featureStore )
   mFeatureClipboard = featureStore.features();
   mCRS = featureStore.crs();
   setSystemClipboard();
+  emit changed();
 }
 
 void QgsClipboard::setSystemClipboard()
@@ -149,6 +153,7 @@ void QgsClipboard::clear()
   mFeatureClipboard.clear();
 
   QgsDebugMsg( "cleared clipboard." );
+  emit changed();
 }
 
 void QgsClipboard::insert( QgsFeature& feature )
@@ -156,6 +161,7 @@ void QgsClipboard::insert( QgsFeature& feature )
   mFeatureClipboard.push_back( feature );
 
   QgsDebugMsg( "inserted " + feature.geometry()->exportToWkt() );
+  emit changed();
 }
 
 bool QgsClipboard::empty()

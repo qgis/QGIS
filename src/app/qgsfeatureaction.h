@@ -28,7 +28,7 @@ class QgsVectorLayer;
 class QgsHighlight;
 class QgsAttributeDialog;
 
-class QgsFeatureAction : public QAction
+class APP_EXPORT QgsFeatureAction : public QAction
 {
     Q_OBJECT
 

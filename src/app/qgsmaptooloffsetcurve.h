@@ -24,7 +24,7 @@ class QgsVertexMarker;
 class QDoubleSpinBox;
 class QGraphicsProxyWidget;
 
-class QgsMapToolOffsetCurve: public QgsMapToolEdit
+class APP_EXPORT QgsMapToolOffsetCurve: public QgsMapToolEdit
 {
     Q_OBJECT
   public:

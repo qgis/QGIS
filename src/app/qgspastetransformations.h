@@ -27,7 +27,7 @@ class QPushButton;
 /*!
  * \brief Dialog to allow the user to set up how source fields are transformed to destination fields in copy/paste operations
  */
-class QgsPasteTransformations : public QDialog, private Ui::QgsPasteTransformationsBase
+class APP_EXPORT QgsPasteTransformations : public QDialog, private Ui::QgsPasteTransformationsBase
 {
     Q_OBJECT
 

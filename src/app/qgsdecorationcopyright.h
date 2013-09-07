@@ -29,7 +29,7 @@ class QPainter;
 
 class QgsDecorationCopyrightDialog;
 
-class QgsDecorationCopyright : public QgsDecorationItem
+class APP_EXPORT QgsDecorationCopyright : public QgsDecorationItem
 {
     Q_OBJECT
   public:

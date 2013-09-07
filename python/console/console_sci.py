@@ -192,7 +192,8 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         chekBoxAPI = self.settings.value("pythonConsole/preloadAPI", True, type=bool)
         chekBoxPreparedAPI = self.settings.value("pythonConsole/usePreparedAPIFile", False, type=bool)
         if chekBoxAPI:
-            self.api.loadPrepared(QgsApplication.pkgDataPath() + "/python/qsci_apis/pyqgis_master.pap")
+            pap = os.path.join(QgsApplication.pkgDataPath(), "python", "qsci_apis", "pyqgis.pap")
+            self.api.loadPrepared(pap)
         elif chekBoxPreparedAPI:
             self.api.loadPrepared(self.settings.value("pythonConsole/preparedAPIFile"))
         else:
@@ -514,16 +515,17 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
 
     def insertFromDropPaste(self, textDP):
         pasteList = unicode(textDP).splitlines()
-        for line in pasteList[:-1]:
-            cleanLine = line.replace(">>> ", "").replace("... ", "")
-            self.insert(unicode(cleanLine))
-            self.move_cursor_to_end()
-            self.runCommand(unicode(self.currentCommand()))
-        if pasteList[-1] != "":
-            line = pasteList[-1]
-            cleanLine = line.replace(">>> ", "").replace("... ", "")
-            self.insert(unicode(cleanLine))
-            self.move_cursor_to_end()
+        if pasteList:
+            for line in pasteList[:-1]:
+                cleanLine = line.replace(">>> ", "").replace("... ", "")
+                self.insert(unicode(cleanLine))
+                self.move_cursor_to_end()
+                self.runCommand(unicode(self.currentCommand()))
+            if pasteList[-1] != "":
+                line = pasteList[-1]
+                cleanLine = line.replace(">>> ", "").replace("... ", "")
+                self.insert(unicode(cleanLine))
+                self.move_cursor_to_end()
 
     def insertTextFromFile(self, listOpenFile):
         for line in listOpenFile[:-1]:

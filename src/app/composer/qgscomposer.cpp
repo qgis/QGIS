@@ -750,7 +750,7 @@ void QgsComposer::on_mActionExportAsPDF_triggered()
     QProgressDialog progress( tr( "Rendering maps..." ), tr( "Abort" ), 0, atlasMap->numFeatures(), this );
     QApplication::setOverrideCursor( Qt::BusyCursor );
 
-    for ( size_t featureI = 0; featureI < atlasMap->numFeatures(); ++featureI )
+    for ( int featureI = 0; featureI < atlasMap->numFeatures(); ++featureI )
     {
       progress.setValue( featureI );
       // process input events in order to allow aborting
@@ -880,7 +880,7 @@ void QgsComposer::on_mActionPrint_triggered()
     }
     QProgressDialog progress( tr( "Rendering maps..." ), tr( "Abort" ), 0, atlasMap->numFeatures(), this );
 
-    for ( size_t i = 0; i < atlasMap->numFeatures(); ++i )
+    for ( int i = 0; i < atlasMap->numFeatures(); ++i )
     {
       progress.setValue( i );
       // process input events in order to allow cancelling
@@ -1095,7 +1095,7 @@ void QgsComposer::on_mActionExportAsImage_triggered()
 
     QProgressDialog progress( tr( "Rendering maps..." ), tr( "Abort" ), 0, atlasMap->numFeatures(), this );
 
-    for ( size_t feature = 0; feature < atlasMap->numFeatures(); ++feature )
+    for ( int feature = 0; feature < atlasMap->numFeatures(); ++feature )
     {
       progress.setValue( feature );
       // process input events in order to allow cancelling
@@ -1246,7 +1246,7 @@ void QgsComposer::on_mActionExportAsSVG_triggered()
 
   mView->setPaintingEnabled( false );
 
-  size_t featureI = 0;
+  int featureI = 0;
   if ( hasAnAtlas )
   {
     try

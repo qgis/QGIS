@@ -82,6 +82,20 @@ class CORE_EXPORT QGis
       }
     }
 
+    static WkbType multiType( WkbType type )
+    {
+      switch ( type )
+      {
+        case WKBPoint:         return WKBMultiPoint;
+        case WKBLineString:    return WKBMultiLineString;
+        case WKBPolygon:       return WKBMultiPolygon;
+        case WKBPoint25D:      return WKBMultiPoint25D;
+        case WKBLineString25D: return WKBMultiLineString25D;
+        case WKBPolygon25D:    return WKBMultiPolygon25D;
+        default:                    return type;
+      }
+    }
+
     static WkbType flatType( WkbType type )
     {
       switch ( type )
@@ -93,6 +107,32 @@ class CORE_EXPORT QGis
         case WKBMultiLineString25D: return WKBMultiLineString;
         case WKBMultiPolygon25D:    return WKBMultiPolygon;
         default:                    return type;
+      }
+    }
+
+    static bool isSingleType( WkbType type )
+    {
+      switch ( flatType( type ) )
+      {
+        case WKBPoint:
+        case WKBLineString:
+        case WKBPolygon:
+          return true;
+        default:
+          return false;
+      }
+    }
+
+    static bool isMultiType( WkbType type )
+    {
+      switch ( flatType( type ) )
+      {
+        case WKBMultiPoint:
+        case WKBMultiLineString:
+        case WKBMultiPolygon:
+          return true;
+        default:
+          return false;
       }
     }
 

@@ -20,7 +20,7 @@
 #include "ui_qgshandlebadlayersbase.h"
 #include "qgsproject.h"
 
-class QgsHandleBadLayersHandler
+class APP_EXPORT QgsHandleBadLayersHandler
       : public QObject
       , public QgsProjectBadLayerHandler
 {
@@ -36,7 +36,7 @@ class QgsHandleBadLayersHandler
 
 class QPushButton;
 
-class QgsHandleBadLayers
+class APP_EXPORT QgsHandleBadLayers
       : public QDialog
       , private Ui::QgsHandleBadLayersBase
 {

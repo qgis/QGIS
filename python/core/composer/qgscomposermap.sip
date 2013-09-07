@@ -300,7 +300,12 @@ class QgsComposerMap : QgsComposerItem
     /**Sets flag if overview frame should be inverted
     @note this function was added in version 1.9*/
     void setOverviewInverted( bool inverted );
-    bool overviewInverted() const;        
+    bool overviewInverted() const;
+
+    /** Returns true if the extent is forced to center on the overview */
+    bool overviewCentered() const;
+    /** Set the overview's centering mode */
+    void setOverviewCentered( bool centered );
 
     /**Sets mId to a number not yet used in the composition. mId is kept if it is not in use.
         Usually, this function is called before adding the composer map to the composition*/

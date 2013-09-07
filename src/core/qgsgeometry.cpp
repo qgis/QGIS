@@ -5208,7 +5208,7 @@ bool QgsGeometry::convertToMultiType()
     return false; //no need to convert
   }
 
-  int newGeomSize = mGeometrySize + 1 + 2 * sizeof( int ); //endian: 1, multitype: sizeof(int), number of geometries: sizeof(int)
+  size_t newGeomSize = mGeometrySize + 1 + 2 * sizeof( int ); //endian: 1, multitype: sizeof(int), number of geometries: sizeof(int)
   unsigned char* newGeometry = new unsigned char[newGeomSize];
 
   int currentWkbPosition = 0;

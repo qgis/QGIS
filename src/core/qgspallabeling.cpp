@@ -1170,11 +1170,6 @@ QgsDataDefined* QgsPalLayerSettings::dataDefinedProperty( DataDefinedProperties 
   return 0;
 }
 
-QList<QgsPalLayerSettings::DataDefinedProperties> QgsPalLayerSettings::dataDefinedPropertyList()
-{
-  return dataDefinedProperties.keys();
-}
-
 QMap<QString, QString> QgsPalLayerSettings::dataDefinedMap( DataDefinedProperties p ) const
 {
   QMap<QString, QString> map;

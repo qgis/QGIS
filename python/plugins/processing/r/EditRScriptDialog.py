@@ -16,10 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from processing.gui.ParametersDialog import ParametersDialog
-from processing.core.QGisLayers import QGisLayers
-from processing.modeler.Providers import Providers
-
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -27,11 +23,13 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import sys
-
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from processing.gui.HelpEditionDialog import HelpEditionDialog
+from processing.gui.ParametersDialog import ParametersDialog
+from processing.core.QGisLayers import QGisLayers
+from processing.modeler.Providers import Providers
 import pickle
 from processing.r.RAlgorithm import RAlgorithm
 from processing.r.RUtils import RUtils
@@ -51,11 +49,11 @@ class EditRScriptDialog(QtGui.QDialog):
 
     def setupUi(self):
         self.resize(600,400)
+        self.setWindowFlags(self.windowFlags() | Qt.WindowSystemMenuHint |
+                            Qt.WindowMinMaxButtonsHint)
         self.setWindowTitle("Edit script")
         layout = QVBoxLayout()
-        self.text = QtGui.QTextEdit()
-        self.text.setObjectName("text")
-        self.text.setEnabled(True)
+        self.text = ScriptEditorWidget(self.alg.script if self.alg is not None else "")
         self.buttonBox = QtGui.QDialogButtonBox()
         self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
         if self.alg != None:
@@ -83,7 +81,7 @@ class EditRScriptDialog(QtGui.QDialog):
 
     def editHelp(self):
         if self.alg is None:
-            alg = RAlgorithm(None, unicode(self.text.toPlainText()))
+            alg = RAlgorithm(None, unicode(self.text.text()))
         else:
             alg = self.alg
         dlg = HelpEditionDialog(alg)
@@ -94,7 +92,7 @@ class EditRScriptDialog(QtGui.QDialog):
             self.help = dlg.descriptions
 
     def runAlgorithm(self):
-        alg = RAlgorithm(None, unicode(self.text.toPlainText()))
+        alg = RAlgorithm(None, unicode(self.text.text()))
         alg.provider = Providers.providers['r']
         dlg = alg.getCustomParametersDialog()
         if not dlg:
@@ -117,7 +115,7 @@ class EditRScriptDialog(QtGui.QDialog):
         if self.filename:
             if not self.filename.endswith(".rsx"):
                 self.filename += ".rsx"
-            text = str(self.text.toPlainText())
+            text = str(self.text.text())
             if self.alg is not None:
                 self.alg.script = text
             try:
@@ -144,3 +142,34 @@ class EditRScriptDialog(QtGui.QDialog):
     def cancelPressed(self):
         #self.update = False
         self.close()
+
+from PyQt4.Qsci import QsciScintilla
+
+class ScriptEditorWidget(QsciScintilla):
+    ARROW_MARKER_NUM = 8
+
+    def __init__(self, text, parent=None):
+        super(ScriptEditorWidget, self).__init__(parent)
+
+        font = QFont()
+        font.setFamily('Courier')
+        font.setFixedPitch(True)
+        font.setPointSize(10)
+        self.setFont(font)
+        self.setMarginsFont(font)
+
+        fontmetrics = QFontMetrics(font)
+        self.setMarginsFont(font)
+        self.setMarginWidth(0, fontmetrics.width("00000") + 6)
+        self.setMarginLineNumbers(0, True)
+        self.setMarginsBackgroundColor(QColor("#cccccc"))
+
+        self.setBraceMatching(QsciScintilla.SloppyBraceMatch)
+
+        self.setCaretLineVisible(True)
+        self.setCaretLineBackgroundColor(QColor("#ffe4e4"))
+
+        self.SendScintilla(QsciScintilla.SCI_STYLESETFONT, 1, 'Courier')
+
+        self.setText(text)
+

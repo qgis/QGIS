@@ -61,11 +61,7 @@ class ProcessingUtils:
     @staticmethod
     def setTempOutput(out, alg):
         ext = out.getDefaultFileExtension(alg)
-        validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-        safeCmdName = ''.join(c for c in alg.commandLineName() if c in validChars)
-        uniqueSufix = str(uuid.uuid4()).replace("-","")
-        filename = ProcessingUtils.tempFolder() + os.sep + safeCmdName + uniqueSufix + "." + ext
-        out.value = filename
+        out.value = ProcessingUtils.getTempFilenameInTempFolder(out.name + "." + ext)
 
     @staticmethod
     def getTempFilename(ext):

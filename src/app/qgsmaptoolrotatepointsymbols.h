@@ -22,7 +22,7 @@
 class QgsPointRotationItem;
 
 /**A class that allows to interactively manipulate the value of the rotation field(s) for point layers*/
-class QgsMapToolRotatePointSymbols: public QgsMapToolEdit
+class APP_EXPORT QgsMapToolRotatePointSymbols: public QgsMapToolEdit
 {
     Q_OBJECT
 

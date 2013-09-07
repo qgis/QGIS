@@ -21,7 +21,7 @@
 #include "qgsmaptool.h"
 #include "qgsannotationitem.h"
 
-class QgsMapToolAnnotation: public QgsMapTool
+class APP_EXPORT QgsMapToolAnnotation: public QgsMapTool
 {
   public:
     QgsMapToolAnnotation( QgsMapCanvas* canvas );

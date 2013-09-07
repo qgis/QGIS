@@ -181,7 +181,7 @@ int QgsLogger::debugLevel()
 {
   if ( sPrefixLength == -1 )
   {
-    sPrefixLength = strlen( CMAKE_SOURCE_DIR ) + 1;
+    sPrefixLength = sizeof( CMAKE_SOURCE_DIR ) + 1;
   }
 
   if ( sDebugLevel == -999 )

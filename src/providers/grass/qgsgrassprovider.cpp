@@ -62,8 +62,8 @@ extern "C"
 #endif
 
 
-std::vector<GLAYER> QgsGrassProvider::mLayers;
-std::vector<GMAP> QgsGrassProvider::mMaps;
+QVector<GLAYER> QgsGrassProvider::mLayers;
+QVector<GMAP> QgsGrassProvider::mMaps;
 
 
 static QString GRASS_KEY = "grass"; // XXX verify this
@@ -370,7 +370,7 @@ int QgsGrassProvider::openLayer( QString gisdbase, QString location, QString map
 
   // Check if this layer is already opened
 
-  for ( unsigned int i = 0; i <  mLayers.size(); i++ )
+  for ( int i = 0; i <  mLayers.size(); i++ )
   {
     if ( !( mLayers[i].valid ) )
       continue;
@@ -719,7 +719,7 @@ int QgsGrassProvider::openMap( QString gisdbase, QString location, QString mapse
   QString tmpPath = gisdbase + "/" + location + "/" + mapset + "/" + mapName;
 
   // Check if this map is already opened
-  for ( unsigned int i = 0; i <  mMaps.size(); i++ )
+  for ( int i = 0; i <  mMaps.size(); i++ )
   {
     if ( mMaps[i].valid && mMaps[i].path == tmpPath )
     {
@@ -869,7 +869,7 @@ void QgsGrassProvider::updateMap( int mapId )
     QgsDebugMsg( QString( "Cannot reopen GRASS vector: %1" ).arg( e.what() ) );
 
     // if reopen fails, mLayers should be also updated
-    for ( unsigned int i = 0; i <  mLayers.size(); i++ )
+    for ( int i = 0; i <  mLayers.size(); i++ )
     {
       if ( mLayers[i].mapId == mapId )
       {
@@ -881,7 +881,7 @@ void QgsGrassProvider::updateMap( int mapId )
 
   QgsDebugMsg( "GRASS map successfully reopened for reading." );
 
-  for ( unsigned int i = 0; i <  mLayers.size(); i++ )
+  for ( int i = 0; i <  mLayers.size(); i++ )
   {
     // if ( !(mLayers[i].valid) )
     //   continue; // ?
@@ -1365,7 +1365,7 @@ bool QgsGrassProvider::reopenMap()
   QgsDebugMsg( "GRASS map successfully reopened for reading." );
 
   // Reload sources to layers
-  for ( unsigned int i = 0; i <  mLayers.size(); i++ )
+  for ( int i = 0; i <  mLayers.size(); i++ )
   {
     // if ( !(mLayers[i].valid) )
     //   continue; // ?
@@ -1609,11 +1609,11 @@ QString *QgsGrassProvider::key( int field )
   return key;
 }
 
-std::vector<QgsField> *QgsGrassProvider::columns( int field )
+QVector<QgsField> *QgsGrassProvider::columns( int field )
 {
   QgsDebugMsg( QString( "field = %1" ).arg( field ) );
 
-  std::vector<QgsField> *col = new std::vector<QgsField>;
+  QVector<QgsField> *col = new QVector<QgsField>;
 
   struct  field_info *fi = Vect_get_field( mMap, field ); // should work also with field = 0
 
@@ -1621,7 +1621,7 @@ std::vector<QgsField> *QgsGrassProvider::columns( int field )
   if ( !fi )
   {
     QgsDebugMsg( "No field info -> no attributes" );
-    return ( col );
+    return col;
   }
 
   QgsDebugMsg( "Field info found -> open database" );
@@ -1631,7 +1631,7 @@ std::vector<QgsField> *QgsGrassProvider::columns( int field )
   if ( !driver )
   {
     QgsDebugMsg( QString( "Cannot open database %1 by driver %2" ).arg( fi->database ).arg( fi->driver ) );
-    return ( col );
+    return col;
   }
 
   QgsDebugMsg( "Database opened -> describe table" );
@@ -1644,7 +1644,7 @@ std::vector<QgsField> *QgsGrassProvider::columns( int field )
   if ( db_describe_table( driver, &tableName, &table ) != DB_OK )
   {
     QgsDebugMsg( "Cannot describe table" );
-    return ( col );
+    return col;
   }
 
   int nCols = db_get_table_number_of_columns( table );

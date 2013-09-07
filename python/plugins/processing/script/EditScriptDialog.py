@@ -48,15 +48,13 @@ class EditScriptDialog(QtGui.QDialog):
 
     def setupUi(self):
         self.resize(600,400)
+        self.setWindowFlags(self.windowFlags() | Qt.WindowSystemMenuHint |
+                            Qt.WindowMinMaxButtonsHint)
         self.setWindowTitle("Edit script")
         layout = QVBoxLayout()
-        self.text = QtGui.QTextEdit()
-        self.text.setObjectName("text")
-        self.text.setEnabled(True)
+        self.text = ScriptEditorWidget(self.alg.script if self.alg is not None else "")
         self.buttonBox = QtGui.QDialogButtonBox()
         self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
-        if self.alg != None:
-            self.text.setText(self.alg.script)
         self.editHelpButton = QtGui.QPushButton()
         self.editHelpButton.setText("Edit script help")
         self.buttonBox.addButton(self.editHelpButton, QtGui.QDialogButtonBox.ActionRole)
@@ -77,7 +75,7 @@ class EditScriptDialog(QtGui.QDialog):
 
     def editHelp(self):
         if self.alg is None:
-            alg = ScriptAlgorithm(None, unicode(self.text.toPlainText()))
+            alg = ScriptAlgorithm(None, unicode(self.text.text()))
         else:
             alg = self.alg
         dlg = HelpEditionDialog(alg)
@@ -95,7 +93,7 @@ class EditScriptDialog(QtGui.QDialog):
         if self.filename:
             if not self.filename.endswith(".py"):
                 self.filename += ".py"
-            text = str(self.text.toPlainText())
+            text = self.text.text()
             if self.alg is not None:
                 self.alg.script = text
             try:
@@ -122,3 +120,37 @@ class EditScriptDialog(QtGui.QDialog):
     def cancelPressed(self):
         #self.update = False
         self.close()
+
+from PyQt4.Qsci import QsciScintilla, QsciLexerPython
+
+class ScriptEditorWidget(QsciScintilla):
+    ARROW_MARKER_NUM = 8
+
+    def __init__(self, text, parent=None):
+        super(ScriptEditorWidget, self).__init__(parent)
+
+        font = QFont()
+        font.setFamily('Courier')
+        font.setFixedPitch(True)
+        font.setPointSize(10)
+        self.setFont(font)
+        self.setMarginsFont(font)
+
+        fontmetrics = QFontMetrics(font)
+        self.setMarginsFont(font)
+        self.setMarginWidth(0, fontmetrics.width("00000") + 6)
+        self.setMarginLineNumbers(0, True)
+        self.setMarginsBackgroundColor(QColor("#cccccc"))
+
+        self.setBraceMatching(QsciScintilla.SloppyBraceMatch)
+
+        self.setCaretLineVisible(True)
+        self.setCaretLineBackgroundColor(QColor("#ffe4e4"))
+
+        lexer = QsciLexerPython()
+        lexer.setDefaultFont(font)
+        self.setLexer(lexer)
+        self.SendScintilla(QsciScintilla.SCI_STYLESETFONT, 1, 'Courier')
+
+        self.setText(text)
+

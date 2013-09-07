@@ -132,7 +132,11 @@ bool QgsPostgresFeatureIterator::nextFeature( QgsFeature& feature )
     QgsDebugMsg( QString( "Finished after %1 features" ).arg( mFetched ) );
     close();
 
-    if ( P->mFeaturesCounted < mFetched )
+    /* only updates the feature count if it was already once.
+     * Otherwise, this would lead to false feature count if
+     * an existing project is open at a restrictive extent.
+     */
+    if ( P->mFeaturesCounted > 0 && P->mFeaturesCounted < mFetched )
     {
       QgsDebugMsg( QString( "feature count adjusted from %1 to %2" ).arg( P->mFeaturesCounted ).arg( mFetched ) );
       P->mFeaturesCounted = mFetched;
@@ -270,7 +274,9 @@ bool QgsPostgresFeatureIterator::declareCursor( const QString& whereClause )
     {
       query += QString( "%1(%2(%3%4),'%5')" )
                .arg( P->mConnectionRO->majorVersion() < 2 ? "asbinary" : "st_asbinary" )
-               .arg( P->mConnectionRO->majorVersion() < 2 ? "force_2d" : "st_force_2d" )
+               .arg( P->mConnectionRO->majorVersion() < 2 ? "force_2d"
+                   : P->mConnectionRO->majorVersion() > 2 || P->mConnectionRO->minorVersion() > 0 ? "ST_Force2D"
+                   : "st_force_2d" )
                .arg( P->quotedIdentifier( P->mGeometryColumn ) )
                .arg( P->mSpatialColType == sctGeography ? "::geometry" : "" )
                .arg( P->endianString() );

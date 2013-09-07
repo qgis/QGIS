@@ -135,6 +135,9 @@ class  CORE_EXPORT QgsAttributeAction
     //! Removes all actions
     void clearActions() { mActions.clear(); }
 
+    //! List all actions
+    const QList<QgsAction>& listActions() { return mActions; }
+
     //! Return the layer
     QgsVectorLayer *layer() { return mLayer; }
 

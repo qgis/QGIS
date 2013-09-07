@@ -30,7 +30,7 @@ class QString;
 class QWidget;
 class QTreeWidgetItem;
 
-class QgsCustomizationDialog : public QMainWindow, private Ui::QgsCustomizationDialogBase
+class APP_EXPORT QgsCustomizationDialog : public QMainWindow, private Ui::QgsCustomizationDialogBase
 {
     Q_OBJECT
   public:
@@ -100,7 +100,7 @@ class QgsCustomizationDialog : public QMainWindow, private Ui::QgsCustomizationD
     QSettings* mSettings;
 };
 
-class QgsCustomization : public QObject
+class APP_EXPORT QgsCustomization : public QObject
 {
     Q_OBJECT
 

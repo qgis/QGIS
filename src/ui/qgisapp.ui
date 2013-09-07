@@ -20,35 +20,6 @@
      <height>31</height>
     </rect>
    </property>
-   <widget class="QMenu" name="mEditMenu">
-    <property name="title">
-     <string>&amp;Edit</string>
-    </property>
-    <addaction name="mActionUndo"/>
-    <addaction name="mActionRedo"/>
-    <addaction name="separator"/>
-    <addaction name="mActionCutFeatures"/>
-    <addaction name="mActionCopyFeatures"/>
-    <addaction name="mActionPasteFeatures"/>
-    <addaction name="separator"/>
-    <addaction name="mActionAddFeature"/>
-    <addaction name="mActionMoveFeature"/>
-    <addaction name="mActionDeleteSelected"/>
-    <addaction name="separator"/>
-    <addaction name="mActionRotateFeature"/>
-    <addaction name="mActionSimplifyFeature"/>
-    <addaction name="mActionAddRing"/>
-    <addaction name="mActionAddPart"/>
-    <addaction name="mActionDeleteRing"/>
-    <addaction name="mActionDeletePart"/>
-    <addaction name="mActionReshapeFeatures"/>
-    <addaction name="mActionOffsetCurve"/>
-    <addaction name="mActionSplitFeatures"/>
-    <addaction name="mActionMergeFeatures"/>
-    <addaction name="mActionMergeFeatureAttributes"/>
-    <addaction name="mActionNodeTool"/>
-    <addaction name="mActionRotatePointSymbols"/>
-   </widget>
    <widget class="QMenu" name="mProjectMenu">
     <property name="title">
      <string>P&amp;roject</string>
@@ -241,6 +212,43 @@
      <addaction name="mActionOSMExport"/>
     </widget>
     <addaction name="menuOpenStreetMap"/>
+   </widget>
+   <widget class="QMenu" name="mEditMenu">
+    <property name="title">
+     <string>&amp;Edit</string>
+    </property>
+    <widget class="QMenu" name="mMenuPasteAs">
+     <property name="title">
+      <string>Paste Features as</string>
+     </property>
+     <addaction name="mActionPasteAsNewVector"/>
+     <addaction name="mActionPasteAsNewMemoryVector"/>
+    </widget>
+    <addaction name="mActionUndo"/>
+    <addaction name="mActionRedo"/>
+    <addaction name="separator"/>
+    <addaction name="mActionCutFeatures"/>
+    <addaction name="mActionCopyFeatures"/>
+    <addaction name="mActionPasteFeatures"/>
+    <addaction name="mMenuPasteAs"/>
+    <addaction name="separator"/>
+    <addaction name="mActionAddFeature"/>
+    <addaction name="mActionMoveFeature"/>
+    <addaction name="mActionDeleteSelected"/>
+    <addaction name="separator"/>
+    <addaction name="mActionRotateFeature"/>
+    <addaction name="mActionSimplifyFeature"/>
+    <addaction name="mActionAddRing"/>
+    <addaction name="mActionAddPart"/>
+    <addaction name="mActionDeleteRing"/>
+    <addaction name="mActionDeletePart"/>
+    <addaction name="mActionReshapeFeatures"/>
+    <addaction name="mActionOffsetCurve"/>
+    <addaction name="mActionSplitFeatures"/>
+    <addaction name="mActionMergeFeatures"/>
+    <addaction name="mActionMergeFeatureAttributes"/>
+    <addaction name="mActionNodeTool"/>
+    <addaction name="mActionRotatePointSymbols"/>
    </widget>
    <addaction name="mProjectMenu"/>
    <addaction name="mEditMenu"/>
@@ -1329,9 +1337,6 @@
    <property name="text">
     <string>Add to Overview</string>
    </property>
-   <property name="shortcut">
-    <string>Ctrl+Shift+O</string>
-   </property>
   </action>
   <action name="mActionAddAllToOverview">
    <property name="icon">
@@ -2099,6 +2104,22 @@ Acts on currently active editable layer</string>
    </property>
    <property name="toolTip">
     <string>Add Delimited Text Layer</string>
+   </property>
+  </action>
+  <action name="mActionPasteAsNewVector">
+   <property name="text">
+    <string>New Vector Layer</string>
+   </property>
+   <property name="toolTip">
+    <string>Paste features in clipboard into a new OGR vector layer.</string>
+   </property>
+  </action>
+  <action name="mActionPasteAsNewMemoryVector">
+   <property name="text">
+    <string>New Memory Vector Layer</string>
+   </property>
+   <property name="toolTip">
+    <string>Paste features in clipboard into a new memory vector layer.</string>
    </property>
   </action>
  </widget>

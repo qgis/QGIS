@@ -352,7 +352,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
      *   @param cat
      *   @return vector of attributes
      */
-    std::vector<QgsField> *columns( int field );
+    QVector<QgsField> *columns( int field );
 
     /** Read attributes from DB
      *   @param field
@@ -640,8 +640,8 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     void ensureUpdated();
 
     /* Static arrays of opened layers and vectors */
-    static  std::vector<GLAYER> mLayers; // Map + field/attributes
-    static  std::vector<GMAP> mMaps;     // Map
+    static QVector<GLAYER> mLayers; // Map + field/attributes
+    static QVector<GMAP> mMaps;     // Map
 
     friend class QgsGrassFeatureIterator;
     QSet< QgsGrassFeatureIterator *> mActiveIterators;

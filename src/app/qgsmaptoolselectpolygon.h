@@ -22,7 +22,7 @@ class QgsMapCanvas;
 class QgsRubberBand;
 
 
-class QgsMapToolSelectPolygon : public QgsMapTool
+class APP_EXPORT QgsMapToolSelectPolygon : public QgsMapTool
 {
     Q_OBJECT
   public:

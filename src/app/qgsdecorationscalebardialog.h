@@ -20,7 +20,7 @@ class QgsDecorationScaleBar;
 /**
 @author Peter Brewer
 */
-class QgsDecorationScaleBarDialog : public QDialog, private Ui::QgsDecorationScaleBarDialog
+class APP_EXPORT QgsDecorationScaleBarDialog : public QDialog, private Ui::QgsDecorationScaleBarDialog
 {
     Q_OBJECT
 

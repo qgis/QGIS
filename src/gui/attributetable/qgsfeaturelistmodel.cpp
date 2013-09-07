@@ -30,6 +30,9 @@ void QgsFeatureListModel::setSourceModel( QgsAttributeTableFilterModel *sourceMo
     connect( mFilterModel, SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), SLOT( onEndRemoveRows( const QModelIndex&, int, int ) ) );
     connect( mFilterModel, SIGNAL( rowsAboutToBeInserted( const QModelIndex&, int, int ) ), SLOT( onBeginInsertRows( const QModelIndex&, int, int ) ) );
     connect( mFilterModel, SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), SLOT( onEndInsertRows( const QModelIndex&, int, int ) ) );
+    // propagate sort order changes from source model to views connected to this model
+    connect( mFilterModel, SIGNAL( layoutAboutToBeChanged() ), this, SIGNAL( layoutAboutToBeChanged() ) );
+    connect( mFilterModel, SIGNAL( layoutChanged() ), this, SIGNAL( layoutChanged() ) );
   }
 }
 
@@ -164,7 +167,6 @@ void QgsFeatureListModel::onEndInsertRows( const QModelIndex& parent, int first,
   Q_UNUSED( last )
   endInsertRows();
 }
-
 
 QModelIndex QgsFeatureListModel::mapToMaster( const QModelIndex &proxyIndex ) const
 {

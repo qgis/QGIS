@@ -58,7 +58,7 @@
         </property>
         <property name="icon">
          <iconset resource="../../images/images.qrc">
-          <normaloff>:/images/themes/default/mActionRefresh.png</normaloff>:/images/themes/default/mActionRefresh.png</iconset>
+          <normaloff>:/images/themes/default/mActionDraw.svg</normaloff>:/images/themes/default/mActionDraw.svg</iconset>
         </property>
         <property name="toolButtonStyle">
          <enum>Qt::ToolButtonIconOnly</enum>
@@ -78,7 +78,7 @@
         </property>
         <property name="icon">
          <iconset resource="../../images/images.qrc">
-          <normaloff>:/images/themes/default/mActionAdd.png</normaloff>:/images/themes/default/mActionAdd.png</iconset>
+          <normaloff>:/images/themes/default/mActionAdd.svg</normaloff>:/images/themes/default/mActionAdd.svg</iconset>
         </property>
         <property name="toolButtonStyle">
          <enum>Qt::ToolButtonTextBesideIcon</enum>

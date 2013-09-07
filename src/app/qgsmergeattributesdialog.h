@@ -29,7 +29,7 @@ class QComboBox;
 
 
 /**A dialog to insert the merge behaviour for attributes (e.g. for the union features editing tool)*/
-class QgsMergeAttributesDialog: public QDialog, private Ui::QgsMergeAttributesDialogBase
+class APP_EXPORT QgsMergeAttributesDialog: public QDialog, private Ui::QgsMergeAttributesDialogBase
 {
     Q_OBJECT
   public:

@@ -24,7 +24,7 @@ class QgsMapCanvas;
 class QgsRubberBand;
 
 
-class QgsMapToolSelectRadius : public QgsMapTool
+class APP_EXPORT QgsMapToolSelectRadius : public QgsMapTool
 {
     Q_OBJECT
   public:

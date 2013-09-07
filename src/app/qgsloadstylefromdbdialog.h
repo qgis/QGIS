@@ -14,7 +14,7 @@
 #include "qgisgui.h"
 #include "qgsfield.h"
 
-class QgsLoadStyleFromDBDialog : public QDialog, private Ui::QgsLoadStyleFromDBDialogLayout
+class APP_EXPORT QgsLoadStyleFromDBDialog : public QDialog, private Ui::QgsLoadStyleFromDBDialogLayout
 {
     QString mSelectedStyleId;
     int mSectionLimit;

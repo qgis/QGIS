@@ -20,7 +20,7 @@
 
 class QgsAnnotationWidget;
 
-class QgsHtmlAnnotationDialog: public QDialog, private Ui::QgsFormAnnotationDialogBase
+class APP_EXPORT QgsHtmlAnnotationDialog: public QDialog, private Ui::QgsFormAnnotationDialogBase
 {
     Q_OBJECT
   public:

@@ -21,7 +21,7 @@
 #include "qgsmaptoollabel.h"
 class QgsPointRotationItem;
 
-class QgsMapToolRotateLabel: public QgsMapToolLabel
+class APP_EXPORT QgsMapToolRotateLabel: public QgsMapToolLabel
 {
     Q_OBJECT
 

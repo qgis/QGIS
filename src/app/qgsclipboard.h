@@ -20,6 +20,7 @@
 
 #include <QList>
 #include <QMap>
+#include <QObject>
 
 #include "qgsfield.h"
 #include "qgsfeature.h"
@@ -49,8 +50,9 @@ class QgsVectorLayer;
  */
 #define QGSCLIPBOARD_STYLE_MIME "application/qgis.style"
 
-class QgsClipboard
+class APP_EXPORT QgsClipboard : public QObject
 {
+    Q_OBJECT
   public:
     /**
     * Constructor for the clipboard.
@@ -138,6 +140,10 @@ class QgsClipboard
      * source fields
      */
     const QgsFields &fields() { return mFeatureFields; }
+
+  signals:
+    /** Emited when content changed */
+    void changed();
 
   private:
     /*

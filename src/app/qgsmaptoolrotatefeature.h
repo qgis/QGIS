@@ -22,7 +22,7 @@
 class QgsVertexMarker;
 
 /**Map tool for translating feature position by mouse drag*/
-class QgsMapToolRotateFeature: public QgsMapToolEdit
+class APP_EXPORT QgsMapToolRotateFeature: public QgsMapToolEdit
 {
     Q_OBJECT
   public:

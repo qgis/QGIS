@@ -905,9 +905,27 @@ void QgsSvgMarkerSymbolLayerV2Widget::setGuiForSvg( const QgsSvgMarkerSymbolLaye
   mBorderWidthSpinBox->setEnabled( hasOutlineWidthParam );
 
   if ( hasFillParam )
-    mChangeColorButton->setColor( defaultFill );
+  {
+    if ( layer->fillColor().isValid() )
+    {
+      mChangeColorButton->setColor( layer->fillColor() );
+    }
+    else
+    {
+      mChangeColorButton->setColor( defaultFill );
+    }
+  }
   if ( hasOutlineParam )
-    mChangeBorderColorButton->setColor( defaultOutline );
+  {
+    if ( layer->outlineColor().isValid() )
+    {
+      mChangeBorderColorButton->setColor( layer->outlineColor() );
+    }
+    else
+    {
+      mChangeBorderColorButton->setColor( defaultOutline );
+    }
+  }
 
   mFileLineEdit->blockSignals( true );
   mFileLineEdit->setText( layer->path() );

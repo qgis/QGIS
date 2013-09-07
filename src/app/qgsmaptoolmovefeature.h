@@ -20,7 +20,7 @@
 #include "qgsvectorlayer.h"
 
 /**Map tool for translating feature position by mouse drag*/
-class QgsMapToolMoveFeature: public QgsMapToolEdit
+class APP_EXPORT QgsMapToolMoveFeature: public QgsMapToolEdit
 {
     Q_OBJECT
   public:

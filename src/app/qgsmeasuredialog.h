@@ -26,7 +26,7 @@
 class QCloseEvent;
 class QgsMeasureTool;
 
-class QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
+class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
 {
     Q_OBJECT
 
