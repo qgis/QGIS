@@ -151,7 +151,8 @@ K3Process::setupEnvironment()
   }
   if ( !d->wd.isEmpty() )
   {
-    ( void ) chdir( QFile::encodeName( d->wd ).data() );
+    if( chdir( QFile::encodeName( d->wd ).data() ) < 0 )
+      perror( "chdir" );
   }
 }
 
@@ -334,13 +335,15 @@ bool K3Process::start( RunMode runmode, Communication comm )
 
     if ( !runPrivileged() )
     {
-      setgid( getgid() );
+      if( setgid( getgid() ) < 0 )
+        perror( "setgid" );
 #ifdef HAVE_INITGROUPS
       if ( pw )
         initgroups( pw->pw_name, pw->pw_gid );
 #endif
       if ( geteuid() != getuid() )
-        setuid( getuid() );
+        if( setuid( getuid() ) < 0 )
+          perror( "setuid" );
       if ( geteuid() != getuid() )
         _exit( 1 );
     }
@@ -356,7 +359,8 @@ bool K3Process::start( RunMode runmode, Communication comm )
     execvp( executable, arglist );
 
     char resultByte = 1;
-    ( void ) write( fd[1], &resultByte, 1 );
+    if( write( fd[1], &resultByte, 1 ) < 0 )
+      perror( "write" );
     _exit( -1 );
   }
   else if ( pid_ == -1 )
