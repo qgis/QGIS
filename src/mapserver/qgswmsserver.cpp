@@ -2342,3 +2342,122 @@ void QgsWMSServer::convertFeatureInfoToSIA2045( QDomDocument& doc )
   }
   doc = SIAInfoDoc;
 }
+
+/* get from qgswfsserver.cpp */
+QDomElement QgsWMSServer::createFeatureGML2( QgsFeature* feat, QDomDocument& doc, QgsCoordinateReferenceSystem& crs, QgsAttributeList attrIndexes, QSet<QString> excludedAttributes ) /*const*/
+{
+  //gml:FeatureMember
+  QDomElement featureElement = doc.createElement( "gml:featureMember"/*wfs:FeatureMember*/ );
+
+  //qgs:%TYPENAME%
+  QDomElement typeNameElement = doc.createElement( "qgs:" + mTypeName /*qgs:%TYPENAME%*/ );
+  typeNameElement.setAttribute( "fid", mTypeName + "." + QString::number( feat->id() ) );
+  featureElement.appendChild( typeNameElement );
+
+  if ( mWithGeom )
+  {
+    //add geometry column (as gml)
+    QgsGeometry* geom = feat->geometry();
+
+    QDomElement geomElem = doc.createElement( "qgs:geometry" );
+    QDomElement gmlElem = QgsOgcUtils::geometryToGML( geom, doc );
+    if ( !gmlElem.isNull() )
+    {
+      QgsRectangle box = geom->boundingBox();
+      QDomElement bbElem = doc.createElement( "gml:boundedBy" );
+      QDomElement boxElem = QgsOgcUtils::rectangleToGMLBox( &box, doc );
+
+      if ( crs.isValid() )
+      {
+        boxElem.setAttribute( "srsName", crs.authid() );
+        gmlElem.setAttribute( "srsName", crs.authid() );
+      }
+
+      bbElem.appendChild( boxElem );
+      typeNameElement.appendChild( bbElem );
+
+      geomElem.appendChild( gmlElem );
+      typeNameElement.appendChild( geomElem );
+    }
+  }
+
+  //read all attribute values from the feature
+  QgsAttributes featureAttributes = feat->attributes();
+  const QgsFields* fields = feat->fields();
+  for ( int i = 0; i < attrIndexes.count(); ++i )
+  {
+    int idx = attrIndexes[i];
+    QString attributeName = fields->at( idx ).name();
+    //skip attribute if it is excluded from WFS publication
+    if ( excludedAttributes.contains( attributeName ) )
+    {
+      continue;
+    }
+
+    QDomElement fieldElem = doc.createElement( "qgs:" + attributeName.replace( QString( " " ), QString( "_" ) ) );
+    QDomText fieldText = doc.createTextNode( featureAttributes[idx].toString() );
+    fieldElem.appendChild( fieldText );
+    typeNameElement.appendChild( fieldElem );
+  }
+
+  return featureElement;
+}
+
+QDomElement QgsWMSServer::createFeatureGML3( QgsFeature* feat, QDomDocument& doc, QgsCoordinateReferenceSystem& crs, QgsAttributeList attrIndexes, QSet<QString> excludedAttributes ) /*const*/
+{
+  //gml:FeatureMember
+  QDomElement featureElement = doc.createElement( "gml:featureMember"/*wfs:FeatureMember*/ );
+
+  //qgs:%TYPENAME%
+  QDomElement typeNameElement = doc.createElement( "qgs:" + mTypeName /*qgs:%TYPENAME%*/ );
+  typeNameElement.setAttribute( "gml:id", mTypeName + "." + QString::number( feat->id() ) );
+  featureElement.appendChild( typeNameElement );
+
+  if ( mWithGeom )
+  {
+    //add geometry column (as gml)
+    QgsGeometry* geom = feat->geometry();
+
+    QDomElement geomElem = doc.createElement( "qgs:geometry" );
+    QDomElement gmlElem = QgsOgcUtils::geometryToGML( geom, doc, "GML3" );
+    if ( !gmlElem.isNull() )
+    {
+      QgsRectangle box = geom->boundingBox();
+      QDomElement bbElem = doc.createElement( "gml:boundedBy" );
+      QDomElement boxElem = QgsOgcUtils::rectangleToGMLEnvelope( &box, doc );
+
+      if ( crs.isValid() )
+      {
+        boxElem.setAttribute( "srsName", crs.authid() );
+        gmlElem.setAttribute( "srsName", crs.authid() );
+      }
+
+      bbElem.appendChild( boxElem );
+      typeNameElement.appendChild( bbElem );
+
+      geomElem.appendChild( gmlElem );
+      typeNameElement.appendChild( geomElem );
+    }
+  }
+
+  //read all attribute values from the feature
+  QgsAttributes featureAttributes = feat->attributes();
+  const QgsFields* fields = feat->fields();
+  for ( int i = 0; i < attrIndexes.count(); ++i )
+  {
+    int idx = attrIndexes[i];
+    QString attributeName = fields->at( idx ).name();
+    //skip attribute if it is excluded from WFS publication
+    if ( excludedAttributes.contains( attributeName ) )
+    {
+      continue;
+    }
+
+    QDomElement fieldElem = doc.createElement( "qgs:" + attributeName.replace( QString( " " ), QString( "_" ) ) );
+    QDomText fieldText = doc.createTextNode( featureAttributes[idx].toString() );
+    fieldElem.appendChild( fieldText );
+    typeNameElement.appendChild( fieldElem );
+  }
+
+  return featureElement;
+}
