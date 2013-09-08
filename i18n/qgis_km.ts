@@ -30621,6 +30621,14 @@ http://my.host.com/cgi-bin/mapserv.exe</source>
         <translation type="unfinished">
              {1 ?} {2.?}</translation>
     </message>
+    <message>
+        <source>Measure (OTF off)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Measure (OTF on)</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsMeasureTool</name>
