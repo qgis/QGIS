@@ -249,6 +249,21 @@ class TestQgsComposerMap(TestCase):
                                              myPngPath)
         assert testResult == True, myMessage
 
+    def testWorldFileGeneration( self ):
+        myRectangle = QgsRectangle(781662.375, 3339523.125, 793062.375, 3345223.125)
+        self.mComposerMap.setNewExtent( myRectangle )
+        self.mComposerMap.setRotation( 30.0 )
+
+        self.mComposition.setGenerateWorldFile( True )
+        self.mComposition.setWorldFileMap( self.mComposerMap )
+
+        p = self.mComposition.computeWorldFileParameters()
+        pexpected = (4.180480199790922, 2.4133064516129026, 779443.7612381146,
+                     2.4136013686911886, -4.179969388427311, 3342408.5663611)
+        ptolerance = (0.001, 0.001, 1, 0.001, 0.001, 1e+03)
+        for i in range(0,6):
+            assert abs(p[i]-pexpected[i]) < ptolerance[i]
+
 if __name__ == '__main__':
     unittest.main()
 
