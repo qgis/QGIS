@@ -205,6 +205,12 @@ class QgsWMSServer
     QMap<QString, QString> mParameterMap;
     QgsConfigParser* mConfigParser;
     QgsMapRenderer* mMapRenderer;
+
+    /* get from qgswfsserver.h */
+    //methods to write GML2
+    QDomElement createFeatureGML2( QgsFeature* feat, QDomDocument& doc, QgsCoordinateReferenceSystem& crs ) /*const*/;
+    //methods to write GML3
+    QDomElement createFeatureGML3( QgsFeature* feat, QDomDocument& doc, QgsCoordinateReferenceSystem& crs ) /*const*/;
 };
 
 #endif
