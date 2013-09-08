@@ -1158,15 +1158,15 @@ void QgsComposer::on_mActionExportAsImage_triggered()
       // Write the world file if asked to
       if ( mComposition->generateWorldFile() )
       {
-	double a, b, c, d, e, f;
-	mComposition->computeWorldFileParameters( a, b, c, d, e, f );
-	
-	QFileInfo fi( filename );
-	// build the world file name
-	QString worldFileName = fi.absolutePath() + "/" + fi.baseName() + "."
-	  + fi.suffix()[0] + fi.suffix()[fi.suffix().size()-1] + "w";
-	
-	writeWorldFile( worldFileName, a, b, c, d, e, f );
+        double a, b, c, d, e, f;
+        mComposition->computeWorldFileParameters( a, b, c, d, e, f );
+
+        QFileInfo fi( filename );
+        // build the world file name
+        QString worldFileName = fi.absolutePath() + "/" + fi.baseName() + "."
+                                + fi.suffix()[0] + fi.suffix()[fi.suffix().size()-1] + "w";
+
+        writeWorldFile( worldFileName, a, b, c, d, e, f );
       }
     }
     atlasMap->endRender();
@@ -2365,10 +2365,10 @@ void QgsComposer::writeWorldFile( QString worldFileName, double a, double b, dou
 
   // QString::number does not use locale settings (for the decimal point)
   // which is what we want here
-  fout << QString::number(a, 'f') << "\r\n";
-  fout << QString::number(d, 'f') << "\r\n";
-  fout << QString::number(b, 'f') << "\r\n";
-  fout << QString::number(e, 'f') << "\r\n";
-  fout << QString::number(c, 'f') << "\r\n";
-  fout << QString::number(f, 'f') << "\r\n";
+  fout << QString::number( a, 'f' ) << "\r\n";
+  fout << QString::number( d, 'f' ) << "\r\n";
+  fout << QString::number( b, 'f' ) << "\r\n";
+  fout << QString::number( e, 'f' ) << "\r\n";
+  fout << QString::number( c, 'f' ) << "\r\n";
+  fout << QString::number( f, 'f' ) << "\r\n";
 }
