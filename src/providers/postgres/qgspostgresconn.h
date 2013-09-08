@@ -60,7 +60,8 @@ struct QgsPostgresLayerProperty
   // TODO: rename this !
   int size() const { Q_ASSERT( types.size() == srids.size() ); return types.size(); }
 
-  QString   defaultName() const {
+  QString   defaultName() const
+  {
     QString n = tableName;
     if ( nSpCols > 1 ) n += "." + geometryColName;
     return n;

@@ -69,7 +69,7 @@ void TestQgisAppClipboard::copyPaste()
 {
   qDebug() << "TestQgisAppClipboard::copyPaste()";
 
-  QMap<QString,int> filesCounts;
+  QMap<QString, int> filesCounts;
   filesCounts.insert( "points.shp", 17 );
   filesCounts.insert( "lines.shp", 6 );
   filesCounts.insert( "polys.shp", 10 );
@@ -79,7 +79,7 @@ void TestQgisAppClipboard::copyPaste()
     // add vector layer
     QString filePath = mTestDataDir + fileName;
     qDebug() << "add vector layer: " << filePath;
-    QgsVectorLayer *inputLayer = mQgisApp->addVectorLayer ( filePath, fileName, "ogr" );
+    QgsVectorLayer *inputLayer = mQgisApp->addVectorLayer( filePath, fileName, "ogr" );
     QVERIFY( inputLayer->isValid() );
 
     // copy all features to clipboard
@@ -89,13 +89,13 @@ void TestQgisAppClipboard::copyPaste()
     QgsFeatureList features = mQgisApp->clipboard()->copyOf();
     qDebug() << features.size() << " features copied to clipboard";
 
-    QVERIFY( features.size() == filesCounts.value(fileName) );
+    QVERIFY( features.size() == filesCounts.value( fileName ) );
 
     QgsVectorLayer *pastedLayer = mQgisApp->pasteAsNewMemoryVector( "pasted" );
     QVERIFY( pastedLayer );
     QVERIFY( pastedLayer->isValid() );
     qDebug() << pastedLayer->featureCount() << " features in pasted layer";
-    QVERIFY( pastedLayer->featureCount() == filesCounts.value(fileName) );
+    QVERIFY( pastedLayer->featureCount() == filesCounts.value( fileName ) );
   }
 }
 
