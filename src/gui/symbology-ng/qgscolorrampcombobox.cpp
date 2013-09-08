@@ -22,7 +22,7 @@
 QSize QgsColorRampComboBox::rampIconSize( 50, 16 );
 
 QgsColorRampComboBox::QgsColorRampComboBox( QWidget *parent ) :
-    QComboBox( parent ), mStyle( NULL ), mSourceColorRamp( NULL )
+    QComboBox( parent ), mStyle( NULL ), mSourceColorRamp( NULL ), mShowGradientOnly( false )
 {
 }
 
@@ -44,10 +44,13 @@ void QgsColorRampComboBox::populate( QgsStyleV2* style )
   for ( QStringList::iterator it = rampNames.begin(); it != rampNames.end(); ++it )
   {
     QgsVectorColorRampV2* ramp = style->colorRamp( *it );
-    QIcon icon = QgsSymbolLayerV2Utils::colorRampPreviewIcon( ramp, rampIconSize );
 
-    addItem( icon, *it );
+    if ( !mShowGradientOnly || ramp->type() == "gradient" )
+    {
+      QIcon icon = QgsSymbolLayerV2Utils::colorRampPreviewIcon( ramp, rampIconSize );
 
+      addItem( icon, *it );
+    }
     delete ramp;
   }
 
@@ -82,7 +85,15 @@ void QgsColorRampComboBox::colorRampChanged( int index )
     return;
 
   // last item: "new color ramp..."
-  QString rampName = QgsStyleV2ManagerDialog::addColorRampStatic( this, mStyle );
+  QString rampName;
+  if ( !mShowGradientOnly )
+  {
+    rampName = QgsStyleV2ManagerDialog::addColorRampStatic( this, mStyle );
+  }
+  else
+  {
+    rampName = QgsStyleV2ManagerDialog::addColorRampStatic( this, mStyle, "Gradient" );
+  }
   if ( rampName.isEmpty() )
     return;
 

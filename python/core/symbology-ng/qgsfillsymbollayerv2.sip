@@ -59,6 +59,102 @@ class QgsSimpleFillSymbolLayerV2 : QgsFillSymbolLayerV2
     QgsSymbolV2::OutputUnit outputUnit() const;
 };
 
+class QgsGradientFillSymbolLayerV2 : QgsFillSymbolLayerV2
+{
+%TypeHeaderCode
+#include <qgsfillsymbollayerv2.h>
+%End
+
+  public:
+  
+    enum GradientColorType
+    {
+      SimpleTwoColor,
+      ColorRamp
+    };
+
+    enum GradientType
+    {
+      Linear,
+      Radial,
+      Conical
+    };
+
+    enum GradientCoordinateMode
+    {
+      Feature,
+      Viewport
+    };
+
+    enum GradientSpread
+    {
+      Pad,
+      Reflect,
+      Repeat
+    };
+  
+    QgsGradientFillSymbolLayerV2( QColor color = DEFAULT_SIMPLEFILL_COLOR,
+                                  QColor color2 = Qt::white,
+                                  GradientColorType gradientColorType = SimpleTwoColor,
+                                  GradientType gradientType = Linear,
+                                  GradientCoordinateMode coordinateMode = Feature,
+                                  GradientSpread gradientSpread = Pad );
+                                                               
+    // static stuff
+
+    static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
+
+    // implemented from base classes
+
+    QString layerType() const;
+
+    void startRender( QgsSymbolV2RenderContext& context );
+
+    void stopRender( QgsSymbolV2RenderContext& context );
+
+    void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context );
+
+    QgsStringMap properties() const;
+
+    QgsSymbolLayerV2* clone() const /Factory/;
+
+//up to here
+
+    GradientType gradientType() const;
+    void setGradientType( GradientType gradientType );
+
+    GradientColorType gradientColorType() const;
+    void setGradientColorType( GradientColorType gradientColorType );
+
+    QgsVectorColorRampV2* colorRamp();
+    void setColorRamp( QgsVectorColorRampV2* ramp );
+
+    QColor color2() const;
+    void setColor2( QColor color2 );
+
+    GradientCoordinateMode coordinateMode() const;
+    void setCoordinateMode( GradientCoordinateMode coordinateMode );
+
+    GradientSpread gradientSpread() const;
+    void setGradientSpread( GradientSpread gradientSpread );
+
+    void setReferencePoint1( QPointF referencePoint );
+    QPointF referencePoint1() const;
+
+    void setReferencePoint2( QPointF referencePoint );
+    QPointF referencePoint2() const;
+
+    void setAngle( double angle );
+    double angle() const;
+
+    void setOffset( QPointF offset );
+    QPointF offset() const;
+
+    void setOffsetUnit( QgsSymbolV2::OutputUnit unit );
+    QgsSymbolV2::OutputUnit offsetUnit() const;
+    
+};
+
 /**Base class for polygon renderers generating texture images*/
 class QgsImageFillSymbolLayer: QgsFillSymbolLayerV2
 {

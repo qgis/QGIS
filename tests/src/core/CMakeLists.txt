@@ -112,3 +112,5 @@ ADD_QGIS_TEST(rectangletest testqgsrectangle.cpp)
 ADD_QGIS_TEST(composerscalebartest testqgscomposerscalebar.cpp )
 ADD_QGIS_TEST(ogcutilstest testqgsogcutils.cpp)
 ADD_QGIS_TEST(vectorlayercachetest testqgsvectorlayercache.cpp )
+ADD_QGIS_TEST(gradienttest testqgsgradients.cpp )
+

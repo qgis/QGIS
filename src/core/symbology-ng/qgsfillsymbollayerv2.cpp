@@ -21,6 +21,7 @@
 #include "qgsproject.h"
 #include "qgssvgcache.h"
 #include "qgslogger.h"
+#include "qgsvectorcolorrampv2.h"
 
 #include <QPainter>
 #include <QFile>
@@ -282,6 +283,408 @@ QgsSymbolLayerV2* QgsSimpleFillSymbolLayerV2::createFromSld( QDomElement &elemen
   return sl;
 }
 
+//QgsGradientFillSymbolLayer
+
+QgsGradientFillSymbolLayerV2::QgsGradientFillSymbolLayerV2( QColor color, QColor color2,
+    GradientColorType colorType, GradientType gradientType,
+    GradientCoordinateMode coordinateMode, GradientSpread spread )
+    : mGradientColorType( colorType ),
+    mGradientRamp( NULL ),
+    mGradientType( gradientType ),
+    mCoordinateMode( coordinateMode ),
+    mGradientSpread( spread ),
+    mReferencePoint1( QPointF( 0, 0 ) ),
+    mReferencePoint2( QPointF( 1, 1 ) ),
+    mAngle( 0 ),
+    mOffsetUnit( QgsSymbolV2::MM )
+{
+  mColor = color;
+  mColor2 = color2;
+}
+
+QgsGradientFillSymbolLayerV2::~QgsGradientFillSymbolLayerV2()
+{
+  delete mGradientRamp;
+}
+
+QgsSymbolLayerV2* QgsGradientFillSymbolLayerV2::create( const QgsStringMap& props )
+{
+  //default to a two-color, linear gradient with feature mode and pad spreading
+  GradientType type = QgsGradientFillSymbolLayerV2::Linear;
+  GradientColorType colorType = QgsGradientFillSymbolLayerV2::SimpleTwoColor;
+  GradientCoordinateMode coordinateMode = QgsGradientFillSymbolLayerV2::Feature;
+  GradientSpread gradientSpread = QgsGradientFillSymbolLayerV2::Pad;
+  //default to gradient from the default fill color to white
+  QColor color = DEFAULT_SIMPLEFILL_COLOR, color2 = Qt::white;
+  QPointF referencePoint1 = QPointF( 0, 0 );
+  QPointF referencePoint2 = QPointF( 1, 1 );
+  double angle = 0;
+  QPointF offset;
+
+  //update gradient properties from props
+  if ( props.contains( "type" ) )
+    type = ( GradientType )props["type"].toInt();
+  if ( props.contains( "coordinate_mode" ) )
+    coordinateMode = ( GradientCoordinateMode )props["coordinate_mode"].toInt();
+  if ( props.contains( "spread" ) )
+    gradientSpread = ( GradientSpread )props["spread"].toInt();
+  if ( props.contains( "color_type" ) )
+    colorType = ( GradientColorType )props["color_type"].toInt();
+  if ( props.contains( "gradient_color" ) )
+    color = QgsSymbolLayerV2Utils::decodeColor( props["gradient_color"] );
+  if ( props.contains( "gradient_color2" ) )
+    color2 = QgsSymbolLayerV2Utils::decodeColor( props["gradient_color2"] );
+  if ( props.contains( "reference_point1" ) )
+    referencePoint1 = QgsSymbolLayerV2Utils::decodePoint( props["reference_point1"] );
+  if ( props.contains( "reference_point2" ) )
+    referencePoint2 = QgsSymbolLayerV2Utils::decodePoint( props["reference_point2"] );
+  if ( props.contains( "angle" ) )
+    angle = props["angle"].toDouble();
+  if ( props.contains( "offset" ) )
+    offset = QgsSymbolLayerV2Utils::decodePoint( props["offset"] );
+
+  //attempt to create color ramp from props
+  QgsVectorColorRampV2* gradientRamp = QgsVectorGradientColorRampV2::create( props );
+
+  //create a new gradient fill layer with desired properties
+  QgsGradientFillSymbolLayerV2* sl = new QgsGradientFillSymbolLayerV2( color, color2, colorType, type, coordinateMode, gradientSpread );
+  sl->setOffset( offset );
+  if ( props.contains( "offset_unit" ) )
+    sl->setOffsetUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["offset_unit"] ) );
+  sl->setReferencePoint1( referencePoint1 );
+  sl->setReferencePoint2( referencePoint2 );
+  sl->setAngle( angle );
+  if ( gradientRamp )
+    sl->setColorRamp( gradientRamp );
+
+  //data defined symbology expressions
+  if ( props.contains( "color_expression" ) )
+    sl->setDataDefinedProperty( "color", props["color_expression"] );
+  if ( props.contains( "color2_expression" ) )
+    sl->setDataDefinedProperty( "color2", props["color2_expression"] );
+  if ( props.contains( "angle_expression" ) )
+    sl->setDataDefinedProperty( "angle", props["angle_expression"] );
+  if ( props.contains( "gradient_type_expression" ) )
+    sl->setDataDefinedProperty( "gradient_type", props["gradient_type_expression"] );
+  if ( props.contains( "coordinate_mode_expression" ) )
+    sl->setDataDefinedProperty( "coordinate_mode", props["coordinate_mode_expression"] );
+  if ( props.contains( "spread_expression" ) )
+    sl->setDataDefinedProperty( "spread", props["spread_expression"] );
+  if ( props.contains( "reference1_x_expression" ) )
+    sl->setDataDefinedProperty( "reference1_x", props["reference1_x_expression"] );
+  if ( props.contains( "reference1_y_expression" ) )
+    sl->setDataDefinedProperty( "reference1_y", props["reference1_y_expression"] );
+  if ( props.contains( "reference2_x_expression" ) )
+    sl->setDataDefinedProperty( "reference2_x", props["reference2_x_expression"] );
+  if ( props.contains( "reference2_y_expression" ) )
+    sl->setDataDefinedProperty( "reference2_y", props["reference2_y_expression"] );
+
+  return sl;
+}
+
+void QgsGradientFillSymbolLayerV2::setColorRamp( QgsVectorColorRampV2* ramp )
+{
+  delete mGradientRamp;
+  mGradientRamp = ramp;
+}
+
+QString QgsGradientFillSymbolLayerV2::layerType() const
+{
+  return "GradientFill";
+}
+
+void QgsGradientFillSymbolLayerV2::applyDataDefinedSymbology( QgsSymbolV2RenderContext& context )
+{
+  //first gradient color
+  QgsExpression* colorExpression = expression( "color" );
+  QColor color = mColor;
+  if ( colorExpression )
+    color = QgsSymbolLayerV2Utils::decodeColor( colorExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() );
+
+  //second gradient color
+  QgsExpression* colorExpression2 = expression( "color2" );
+  QColor color2 = mColor2;
+  if ( colorExpression2 )
+    color2 = QgsSymbolLayerV2Utils::decodeColor( colorExpression2->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() );
+
+  //gradient rotation angle
+  QgsExpression* angleExpression = expression( "angle" );
+  double angle = mAngle;
+  if ( angleExpression )
+    angle = angleExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble();
+
+  //gradient type
+  QgsExpression* typeExpression = expression( "gradient_type" );
+  QgsGradientFillSymbolLayerV2::GradientType gradientType = mGradientType;
+  if ( typeExpression )
+  {
+    QString currentType = typeExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString();
+    if ( currentType == QObject::tr( "linear" ) )
+    {
+      gradientType = QgsGradientFillSymbolLayerV2::Linear;
+    }
+    else if ( currentType == QObject::tr( "radial" ) )
+    {
+      gradientType = QgsGradientFillSymbolLayerV2::Radial;
+    }
+    else if ( currentType == QObject::tr( "conical" ) )
+    {
+      gradientType = QgsGradientFillSymbolLayerV2::Conical;
+    }
+    else
+    {
+      //default to linear
+      gradientType = QgsGradientFillSymbolLayerV2::Linear;
+    }
+  }
+
+  //coordinate mode
+  QgsExpression* coordModeExpression = expression( "coordinate_mode" );
+  GradientCoordinateMode coordinateMode = mCoordinateMode;
+  if ( coordModeExpression )
+  {
+    QString currentCoordMode = coordModeExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString();
+    if ( currentCoordMode == QObject::tr( "feature" ) )
+    {
+      coordinateMode = QgsGradientFillSymbolLayerV2::Feature;
+    }
+    else if ( currentCoordMode == QObject::tr( "viewport" ) )
+    {
+      coordinateMode = QgsGradientFillSymbolLayerV2::Viewport;
+    }
+    else
+    {
+      //default to feature mode
+      coordinateMode = QgsGradientFillSymbolLayerV2::Feature;
+    }
+  }
+
+  //gradient spread
+  QgsExpression* spreadExpression = expression( "spread" );
+  GradientSpread spread = mGradientSpread;
+  if ( spreadExpression )
+  {
+    QString currentSpread = spreadExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString();
+    if ( currentSpread == QObject::tr( "pad" ) )
+    {
+      spread = QgsGradientFillSymbolLayerV2::Pad;
+    }
+    else if ( currentSpread == QObject::tr( "repeat" ) )
+    {
+      spread = QgsGradientFillSymbolLayerV2::Repeat;
+    }
+    else if ( currentSpread == QObject::tr( "reflect" ) )
+    {
+      spread = QgsGradientFillSymbolLayerV2::Reflect;
+    }
+    else
+    {
+      //default to pad spread
+      spread = QgsGradientFillSymbolLayerV2::Pad;
+    }
+  }
+
+  //reference point 1 x & y
+  QgsExpression* ref1XExpression = expression( "reference1_x" );
+  double refPoint1X = mReferencePoint1.x();
+  if ( ref1XExpression )
+    refPoint1X = ref1XExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble();
+  QgsExpression* ref1YExpression = expression( "reference1_y" );
+  double refPoint1Y = mReferencePoint1.y();
+  if ( ref1YExpression )
+    refPoint1Y = ref1YExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble();
+
+  //reference point 2 x & y
+  QgsExpression* ref2XExpression = expression( "reference2_x" );
+  double refPoint2X = mReferencePoint2.x();
+  if ( ref2XExpression )
+    refPoint2X = ref2XExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble();
+  QgsExpression* ref2YExpression = expression( "reference2_y" );
+  double refPoint2Y = mReferencePoint2.y();
+  if ( ref2YExpression )
+    refPoint2Y = ref2YExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble();
+
+  //update gradient with data defined values
+  applyGradient( context, mBrush, color, color2,  mGradientColorType, mGradientRamp, gradientType, coordinateMode,
+                 spread, QPointF( refPoint1X, refPoint1Y ), QPointF( refPoint2X, refPoint2Y ), angle );
+}
+
+QPointF QgsGradientFillSymbolLayerV2::rotateReferencePoint( const QPointF & refPoint, double angle )
+{
+  //rotate a reference point by a specified angle around the point (0.5, 0.5)
+
+  //create a line from the centrepoint of a rectangle bounded by (0, 0) and (1, 1) to the reference point
+  QLineF refLine = QLineF( QPointF( 0.5, 0.5 ), refPoint );
+  //rotate this line by the current rotation angle
+  refLine.setAngle( refLine.angle() + angle );
+  //get new end point of line
+  QPointF rotatedReferencePoint = refLine.p2();
+  //make sure coords of new end point is within [0, 1]
+  if ( rotatedReferencePoint.x() > 1 )
+    rotatedReferencePoint.setX( 1 );
+  if ( rotatedReferencePoint.x() < 0 )
+    rotatedReferencePoint.setX( 0 );
+  if ( rotatedReferencePoint.y() > 1 )
+    rotatedReferencePoint.setY( 1 );
+  if ( rotatedReferencePoint.y() < 0 )
+    rotatedReferencePoint.setY( 0 );
+
+  return rotatedReferencePoint;
+}
+
+void QgsGradientFillSymbolLayerV2::applyGradient( const QgsSymbolV2RenderContext& context, QBrush& brush,
+    const QColor& color, const QColor& color2, const GradientColorType gradientColorType,
+    QgsVectorColorRampV2 * gradientRamp, const GradientType gradientType,
+    const GradientCoordinateMode coordinateMode, const GradientSpread gradientSpread,
+    const QPointF referencePoint1, const QPointF referencePoint2, const double angle )
+{
+  //update alpha of gradient colors
+  QColor fillColor = color;
+  fillColor.setAlphaF( context.alpha() * fillColor.alphaF() );
+  QColor fillColor2 = color2;
+  fillColor2.setAlphaF( context.alpha() * fillColor2.alphaF() );
+
+  //rotate reference points
+  QPointF rotatedReferencePoint1 = rotateReferencePoint( referencePoint1, angle );
+  QPointF rotatedReferencePoint2 = rotateReferencePoint( referencePoint2, angle );
+
+  //create a QGradient with the desired properties
+  QGradient gradient;
+  switch ( gradientType )
+  {
+    case QgsGradientFillSymbolLayerV2::Linear:
+      gradient = QLinearGradient( rotatedReferencePoint1, rotatedReferencePoint2 );
+      break;
+    case QgsGradientFillSymbolLayerV2::Radial:
+      gradient = QRadialGradient( rotatedReferencePoint1, QLineF( rotatedReferencePoint1, rotatedReferencePoint2 ).length() );
+      break;
+    case QgsGradientFillSymbolLayerV2::Conical:
+      gradient = QConicalGradient( rotatedReferencePoint1, QLineF( rotatedReferencePoint1, rotatedReferencePoint2 ).angle() );
+      break;
+  }
+  switch ( coordinateMode )
+  {
+    case QgsGradientFillSymbolLayerV2::Feature:
+      gradient.setCoordinateMode( QGradient::ObjectBoundingMode );
+      break;
+    case QgsGradientFillSymbolLayerV2::Viewport:
+      gradient.setCoordinateMode( QGradient::StretchToDeviceMode );
+      break;
+  }
+  switch ( gradientSpread )
+  {
+    case QgsGradientFillSymbolLayerV2::Pad:
+      gradient.setSpread( QGradient::PadSpread );
+      break;
+    case QgsGradientFillSymbolLayerV2::Reflect:
+      gradient.setSpread( QGradient::ReflectSpread );
+      break;
+    case QgsGradientFillSymbolLayerV2::Repeat:
+      gradient.setSpread( QGradient::RepeatSpread );
+      break;
+  }
+
+  //add stops to gradient
+  if ( gradientColorType == QgsGradientFillSymbolLayerV2::ColorRamp && gradientRamp && gradientRamp->type() == "gradient" )
+  {
+    //color ramp gradient
+    QgsVectorGradientColorRampV2* gradRamp = static_cast<QgsVectorGradientColorRampV2*>( gradientRamp );
+    gradRamp->addStopsToGradient( &gradient );
+  }
+  else
+  {
+    //two color gradient
+    gradient.setColorAt( 0.0, fillColor );
+    gradient.setColorAt( 1.0, fillColor2 );
+  }
+
+  //update QBrush use gradient
+  brush = QBrush( gradient );
+}
+
+void QgsGradientFillSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context )
+{
+  //update mBrush to use a gradient fill with specified properties
+  applyGradient( context, mBrush, mColor, mColor2,  mGradientColorType, mGradientRamp, mGradientType, mCoordinateMode,
+                 mGradientSpread, mReferencePoint1, mReferencePoint2, mAngle );
+
+  QColor selColor = context.renderContext().selectionColor();
+  if ( ! selectionIsOpaque ) selColor.setAlphaF( context.alpha() );
+  mSelBrush = QBrush( selColor );
+
+  prepareExpressions( context.layer() );
+}
+
+void QgsGradientFillSymbolLayerV2::stopRender( QgsSymbolV2RenderContext& context )
+{
+  Q_UNUSED( context );
+}
+
+void QgsGradientFillSymbolLayerV2::renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context )
+{
+  QPainter* p = context.renderContext().painter();
+  if ( !p )
+  {
+    return;
+  }
+
+  QPen mSelPen;
+  applyDataDefinedSymbology( context );
+
+  p->setBrush( context.selected() ? mSelBrush : mBrush );
+  p->setPen( QPen( Qt::NoPen ) );
+
+  QPointF offset;
+  if ( !mOffset.isNull() )
+  {
+    offset.setX( mOffset.x() * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOffsetUnit ) );
+    offset.setY( mOffset.y() * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOffsetUnit ) );
+    p->translate( offset );
+  }
+
+  _renderPolygon( p, points, rings );
+
+  if ( !mOffset.isNull() )
+  {
+    p->translate( -offset );
+  }
+}
+
+QgsStringMap QgsGradientFillSymbolLayerV2::properties() const
+{
+  QgsStringMap map;
+  map["gradient_color"] = QgsSymbolLayerV2Utils::encodeColor( mColor );
+  map["gradient_color2"] = QgsSymbolLayerV2Utils::encodeColor( mColor2 );
+  map["color_type"] = QString::number( mGradientColorType );
+  map["type"] = QString::number( mGradientType );
+  map["coordinate_mode"] = QString::number( mCoordinateMode );
+  map["spread"] = QString::number( mGradientSpread );
+  map["reference_point1"] = QgsSymbolLayerV2Utils::encodePoint( mReferencePoint1 );
+  map["reference_point2"] = QgsSymbolLayerV2Utils::encodePoint( mReferencePoint2 );
+  map["angle"] = QString::number( mAngle );
+  map["offset"] = QgsSymbolLayerV2Utils::encodePoint( mOffset );
+  map["offset_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mOffsetUnit );
+  saveDataDefinedProperties( map );
+  if ( mGradientRamp )
+  {
+    map.unite( mGradientRamp->properties() );
+  }
+  return map;
+}
+
+QgsSymbolLayerV2* QgsGradientFillSymbolLayerV2::clone() const
+{
+  QgsGradientFillSymbolLayerV2* sl = new QgsGradientFillSymbolLayerV2( mColor, mColor2, mGradientColorType, mGradientType, mCoordinateMode, mGradientSpread );
+  if ( mGradientRamp )
+    sl->setColorRamp( mGradientRamp->clone() );
+  sl->setReferencePoint1( mReferencePoint1 );
+  sl->setReferencePoint2( mReferencePoint2 );
+  sl->setAngle( mAngle );
+  sl->setOffset( mOffset );
+  sl->setOffsetUnit( mOffsetUnit );
+  copyDataDefinedProperties( sl );
+  return sl;
+}
 
 //QgsImageFillSymbolLayer
 

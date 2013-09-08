@@ -17,6 +17,7 @@
 #define QGSVECTORCOLORRAMPV2_H
 
 #include <QColor>
+#include <QGradient>
 
 #include "qgssymbollayerv2.h" // for QgsStringMap
 #include "qgslogger.h"
@@ -90,6 +91,10 @@ class CORE_EXPORT QgsVectorGradientColorRampV2 : public QgsVectorColorRampV2
 
     QgsStringMap info() const { return mInfo; }
     void setInfo( const QgsStringMap& info ) { mInfo = info; }
+
+    /**copy color ramp stops to a QGradient
+    * @note added in 2.1 */
+    void addStopsToGradient( QGradient* gradient );
 
   protected:
     QColor mColor1, mColor2;

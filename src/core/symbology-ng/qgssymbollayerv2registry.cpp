@@ -44,6 +44,8 @@ QgsSymbolLayerV2Registry::QgsSymbolLayerV2Registry()
 
   addSymbolLayerType( new QgsSymbolLayerV2Metadata( "SimpleFill", QObject::tr( "Simple fill" ), QgsSymbolV2::Fill,
                       QgsSimpleFillSymbolLayerV2::create, QgsSimpleFillSymbolLayerV2::createFromSld ) );
+  addSymbolLayerType( new QgsSymbolLayerV2Metadata( "GradientFill", QObject::tr( "Gradient fill" ), QgsSymbolV2::Fill,
+                      QgsGradientFillSymbolLayerV2::create ) );
   addSymbolLayerType( new QgsSymbolLayerV2Metadata( "SVGFill", QObject::tr( "SVG fill" ), QgsSymbolV2::Fill,
                       QgsSVGFillSymbolLayer::create, QgsSVGFillSymbolLayer::createFromSld ) );
   addSymbolLayerType( new QgsSymbolLayerV2Metadata( "CentroidFill", QObject::tr( "Centroid fill" ), QgsSymbolV2::Fill,

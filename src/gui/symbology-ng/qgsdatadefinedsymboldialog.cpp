@@ -192,3 +192,20 @@ QString QgsDataDefinedSymbolDialog::verticalAnchorHelpText()
 {
   return tr( "'top'|'center'|'bottom'" );
 }
+
+QString QgsDataDefinedSymbolDialog::gradientTypeHelpText()
+{
+  return tr( "'linear'|'radial'|'conical'" );
+}
+
+QString QgsDataDefinedSymbolDialog::gradientCoordModeHelpText()
+{
+  return tr( "'feature'|'viewport'" );
+}
+
+QString QgsDataDefinedSymbolDialog::gradientSpreadHelpText()
+{
+  return tr( "'pad'|'repeat'|'reflect'" );
+}
+
+
