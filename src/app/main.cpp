@@ -363,7 +363,9 @@ int main( int argc, char *argv[] )
 #endif  // WIN32
 
   // Set up the custom qWarning/qDebug custom handler
+#ifndef ANDROID
   qInstallMsgHandler( myMessageOutput );
+#endif
 
 #if (defined(linux) && !defined(ANDROID)) || defined(__FreeBSD__)
   signal( SIGQUIT, qgisCrash );
