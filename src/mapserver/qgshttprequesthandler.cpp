@@ -162,7 +162,7 @@ void QgsHttpRequestHandler::sendGetFeatureInfoResponse( const QDomDocument& info
   QByteArray ba;
   QgsDebugMsg( "Info format is:" + infoFormat );
 
-  if ( infoFormat == "text/xml" )
+  if ( infoFormat == "text/xml" || infoFormat.startsWith("application/vnd.ogc.gml") )
   {
     ba = infoDoc.toByteArray();
   }

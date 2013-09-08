@@ -29,6 +29,7 @@ class QgsComposerLayerItem;
 class QgsComposerLegendItem;
 class QgsComposition;
 class QgsConfigParser;
+class QgsFeature;
 class QgsFeatureRendererV2;
 class QgsMapLayer;
 class QgsMapRenderer;
@@ -122,10 +123,23 @@ class QgsWMSServer
     /**Appends feature info xml for the layer to the layer element of the feature info dom document
     @param featureBBox the bounding box of the selected features in output CRS
     @return 0 in case of success*/
-    int featureInfoFromVectorLayer( QgsVectorLayer* layer, const QgsPoint* infoPoint, int nFeatures, QDomDocument& infoDocument, QDomElement& layerElement, QgsMapRenderer* mapRender,
-                                    QgsRenderContext& renderContext, QString version, QgsRectangle* featureBBox = 0 ) const;
+    int featureInfoFromVectorLayer( QgsVectorLayer* layer,
+        const QgsPoint* infoPoint,
+        int nFeatures,
+        QDomDocument& infoDocument,
+        QDomElement& layerElement,
+        QgsMapRenderer* mapRender,
+        QgsRenderContext& renderContext,
+        QString version,
+        QString infoFormat,
+        QgsRectangle* featureBBox = 0 ) const;
     /**Appends feature info xml for the layer to the layer element of the dom document*/
-    int featureInfoFromRasterLayer( QgsRasterLayer* layer, const QgsPoint* infoPoint, QDomDocument& infoDocument, QDomElement& layerElement, QString version ) const;
+    int featureInfoFromRasterLayer( QgsRasterLayer* layer,
+        const QgsPoint* infoPoint,
+        QDomDocument& infoDocument,
+        QDomElement& layerElement,
+        QString version,
+        QString infoFormat ) const;
 
     /**Creates a layer set and returns a stringlist with layer ids that can be passed to a QgsMapRenderer. Usually used in conjunction with readLayersAndStyles
        @param scaleDenominator Filter out layer if scale based visibility does not match (or use -1 if no scale restriction)*/
@@ -206,11 +220,13 @@ class QgsWMSServer
     QgsConfigParser* mConfigParser;
     QgsMapRenderer* mMapRenderer;
 
-    /* get from qgswfsserver.h */
-    //methods to write GML2
-    QDomElement createFeatureGML2( QgsFeature* feat, QDomDocument& doc, QgsCoordinateReferenceSystem& crs ) /*const*/;
-    //methods to write GML3
-    QDomElement createFeatureGML3( QgsFeature* feat, QDomDocument& doc, QgsCoordinateReferenceSystem& crs ) /*const*/;
+    QDomElement createFeatureGML(
+      QgsFeature* feat,
+      QDomDocument& doc,
+      QgsCoordinateReferenceSystem& crs,
+      QString typeName,
+      bool withGeom,
+      int version) const;
 };
 
 #endif
