@@ -31,8 +31,38 @@
 #include <qgsapplication.h>
 #include <qgsproviderregistry.h>
 #include <qgsmaplayerregistry.h>
+#include <qgssymbolv2.h>
+#include <qgssinglesymbolrendererv2.h>
 //qgis test includes
 #include "qgsrenderchecker.h"
+
+class TestSignalReceiver : public QObject
+{
+    Q_OBJECT;
+    
+public:
+  TestSignalReceiver() : QObject( 0 ),
+                         rendererChanged( false ),
+                         featureBlendMode( QPainter::CompositionMode(0) ),
+                         transparency( 0 )
+  {}
+  bool rendererChanged;
+  QPainter::CompositionMode featureBlendMode;
+  int transparency;
+public slots:
+  void onRendererChanged()
+  {
+    rendererChanged = true;
+  }
+  void onFeatureBlendModeChanged( const QPainter::CompositionMode blendMode )
+  {
+    featureBlendMode = blendMode;
+  }
+  void onLayerTransparencyChanged( int layerTransparency )
+  {
+    transparency = layerTransparency;
+  }
+};
 
 /** \ingroup UnitTests
  * This is a unit test for the vector layer class.
@@ -575,11 +605,19 @@ class TestQgsVectorLayer: public QObject
     };
     void QgsVectorLayersetRendererV2()
     {
+      QgsVectorLayer* vLayer = static_cast< QgsVectorLayer * >( mpPointsLayer );
+      TestSignalReceiver receiver;
+      QObject::connect( vLayer, SIGNAL( rendererChanged() ),
+                        &receiver, SLOT( onRendererChanged() ) );
+      QgsSingleSymbolRendererV2* symbolRenderer = new QgsSingleSymbolRendererV2( QgsSymbolV2::defaultSymbol( QGis::Point ) );
 
+      QCOMPARE( receiver.rendererChanged, false );
+      vLayer->setRendererV2( symbolRenderer );
+      QCOMPARE( receiver.rendererChanged, true );
+      QCOMPARE( vLayer->rendererV2(), symbolRenderer );
     };
     void QgsVectorLayerisUsingRendererV2()
     {
-
     };
     void QgsVectorLayersetUsingRendererV2()
     {
@@ -638,6 +676,31 @@ class TestQgsVectorLayer: public QObject
 
     };
 
+  void QgsVectorLayersetFeatureBlendMode()
+  {
+      QgsVectorLayer* vLayer = static_cast< QgsVectorLayer * >( mpPointsLayer );
+      TestSignalReceiver receiver;
+      QObject::connect( vLayer, SIGNAL( featureBlendModeChanged( const QPainter::CompositionMode ) ),
+                        &receiver, SLOT( onFeatureBlendModeChanged( const QPainter::CompositionMode ) ) );
+
+      QCOMPARE( int(receiver.featureBlendMode), 0 );
+      vLayer->setFeatureBlendMode( QPainter::CompositionMode_Screen );
+      QCOMPARE( receiver.featureBlendMode, QPainter::CompositionMode_Screen );
+      QCOMPARE( vLayer->featureBlendMode(), QPainter::CompositionMode_Screen );
+  }
+
+  void QgsVectorLayersetLayerTransparency()
+  {
+      QgsVectorLayer* vLayer = static_cast< QgsVectorLayer * >( mpPointsLayer );
+      TestSignalReceiver receiver;
+      QObject::connect( vLayer, SIGNAL( layerTransparencyChanged( int ) ),
+                        &receiver, SLOT( onLayerTransparencyChanged( int ) ) );
+
+      QCOMPARE( receiver.transparency, 0 );
+      vLayer->setLayerTransparency( 50 );
+      QCOMPARE( receiver.transparency, 50 );
+      QCOMPARE( vLayer->layerTransparency(), 50 );
+  }
 };
 
 QTEST_MAIN( TestQgsVectorLayer )

@@ -3168,6 +3168,8 @@ void QgsVectorLayer::setRendererV2( QgsFeatureRendererV2 *r )
     mRendererV2 = r;
     mSymbolFeatureCounted = false;
     mSymbolFeatureCountMap.clear();
+
+    emit rendererChanged();
   }
 }
 
@@ -3453,6 +3455,7 @@ QVariant QgsVectorLayer::maximumValue( int index )
 void QgsVectorLayer::setFeatureBlendMode( const QPainter::CompositionMode featureBlendMode )
 {
   mFeatureBlendMode = featureBlendMode;
+  emit featureBlendModeChanged( featureBlendMode );
 }
 
 /** Read blend mode for layer */
@@ -3465,6 +3468,7 @@ QPainter::CompositionMode QgsVectorLayer::featureBlendMode() const
 void QgsVectorLayer::setLayerTransparency( int layerTransparency )
 {
   mLayerTransparency = layerTransparency;
+  emit layerTransparencyChanged( layerTransparency );
 }
 
 /** Read transparency for layer */

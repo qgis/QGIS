@@ -138,6 +138,7 @@ QgsRectangle QgsMapLayer::extent()
 void QgsMapLayer::setBlendMode( const QPainter::CompositionMode blendMode )
 {
   mBlendMode = blendMode;
+  emit blendModeChanged( blendMode );
 }
 
 /** Read blend mode for layer */
