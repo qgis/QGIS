@@ -272,11 +272,8 @@ bool QgsPostgresFeatureIterator::declareCursor( const QString& whereClause )
 
     if ( fetchGeometry )
     {
-      query += QString( "%1(%2(%3%4),'%5')" )
+      query += QString( "%1(%2%3,'%4')" )
                .arg( P->mConnectionRO->majorVersion() < 2 ? "asbinary" : "st_asbinary" )
-               .arg( P->mConnectionRO->majorVersion() < 2 ? "force_2d"
-                     : P->mConnectionRO->majorVersion() > 2 || P->mConnectionRO->minorVersion() > 0 ? "st_force2d"
-                     : "st_force_2d" )
                .arg( P->quotedIdentifier( P->mGeometryColumn ) )
                .arg( P->mSpatialColType == sctGeography ? "::geometry" : "" )
                .arg( P->endianString() );
