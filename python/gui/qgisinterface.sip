@@ -535,4 +535,7 @@ class QgisInterface : QObject
         Added in v1.6
       */
     void newProjectCreated();
+
+    /**Emitted when a layer's properties has been changed through the UI*/
+    void propertiesChanged( QgsMapLayer* );
 };
