@@ -209,7 +209,8 @@ void K3ProcessController::theSigCHLDHandler( int arg )
   int saved_errno = errno;
 
   char dummy = 0;
-  ( void ) ::write( instance()->d->fd[1], &dummy, 1 );
+  if( ::write( instance()->d->fd[1], &dummy, 1 ) < 0 )
+    perror( "write failed" );
 
 #ifdef Q_OS_UNIX
   if ( Private::oldChildHandlerData.sa_handler != SIG_IGN &&
@@ -243,14 +244,16 @@ K3ProcessController::rescheduleCheck()
   {
     d->needcheck = false;
     char dummy = 0;
-    ( void ) ::write( d->fd[1], &dummy, 1 );
+    if( ::write( d->fd[1], &dummy, 1 ) < 0 )
+      perror( "write failed" );
   }
 }
 
 void K3ProcessController::slotDoHousekeeping()
 {
   char dummy[16]; // somewhat bigger - just in case several have queued up
-  ( void ) ::read( d->fd[0], dummy, sizeof( dummy ) );
+  if( ::read( d->fd[0], dummy, sizeof( dummy ) ) < 0 )
+    perror( "read failed" );
 
   int status;
 again:

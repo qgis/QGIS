@@ -277,8 +277,8 @@ void QgsPostgresConn::addColumnInfo( QgsPostgresLayerProperty& layerProperty, co
   //       could use array_agg() and count()
   //       array output would look like this: "{One,tWo}"
   QString sql = QString( "SELECT attname, CASE WHEN typname = ANY(ARRAY['geometry','geography','topogeometry']) THEN 1 ELSE null END AS isSpatial FROM pg_attribute JOIN pg_type ON atttypid=pg_type.oid WHERE attrelid=regclass('%1.%2')" )
-              .arg( quotedIdentifier( schemaName ) )
-              .arg( quotedIdentifier( viewName ) );
+                .arg( quotedIdentifier( schemaName ) )
+                .arg( quotedIdentifier( viewName ) );
   QgsDebugMsg( sql );
   QgsPostgresResult colRes = PQexec( sql );
 
@@ -288,12 +288,14 @@ void QgsPostgresConn::addColumnInfo( QgsPostgresLayerProperty& layerProperty, co
   {
     for ( int i = 0; i < colRes.PQntuples(); i++ )
     {
-      if ( fetchPkCandidates ) {
+      if ( fetchPkCandidates )
+      {
         QgsDebugMsg( colRes.PQgetvalue( i, 0 ) );
         layerProperty.pkCols << colRes.PQgetvalue( i, 0 );
       }
 
-      if ( colRes.PQgetisnull( i, 1 ) == 0 ) {
+      if ( colRes.PQgetisnull( i, 1 ) == 0 )
+      {
         ++layerProperty.nSpCols;
       }
     }

@@ -303,8 +303,10 @@ bool KPty::open()
               p = getgrnam( "wheel" );
             gid_t gid = p ? p->gr_gid : getgid();
 
-            ( void ) chown( d->ttyName.data(), getuid(), gid );
-            ( void ) chmod( d->ttyName.data(), S_IRUSR | S_IWUSR | S_IWGRP );
+            if( chown( d->ttyName.data(), getuid(), gid ) < 0 )
+              perror( "chown" );
+            if( chmod( d->ttyName.data(), S_IRUSR | S_IWUSR | S_IWGRP ) < 0 )
+              perror( "chmod" );
           }
           goto gotpty;
         }
@@ -397,7 +399,8 @@ void KPty::close()
       struct stat st;
       if ( !stat( d->ttyName.data(), &st ) )
       {
-        ( void ) chown( d->ttyName.data(), 0, st.st_gid == getgid() ? 0 : -1 );
+        if( chown( d->ttyName.data(), 0, st.st_gid == getgid() ? 0 : -1 ) < 0 )
+          perror( "chown" );
         chmod( d->ttyName.data(), S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH );
       }
     }

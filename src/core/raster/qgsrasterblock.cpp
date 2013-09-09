@@ -324,7 +324,7 @@ bool QgsRasterBlock::isNoData( size_t index )
     return false;
   }
   // TODO: optimize
-  int row = (int) index / mWidth;
+  int row = ( int ) index / mWidth;
   int column = index % mWidth;
   size_t byte = ( size_t )row * mNoDataBitmapWidth + column / 8 ;
   int bit = column % 8;
@@ -406,7 +406,7 @@ bool QgsRasterBlock::setIsNoData( size_t index )
       }
     }
     // TODO: optimize
-    int row = (int) index / mWidth;
+    int row = ( int ) index / mWidth;
     int column = index % mWidth;
     size_t byte = ( size_t )row * mNoDataBitmapWidth + column / 8;
     int bit = column % 8;

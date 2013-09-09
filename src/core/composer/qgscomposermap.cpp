@@ -41,8 +41,8 @@
 
 QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int width, int height )
     : QgsComposerItem( x, y, width, height, composition ), mKeepLayerSet( false ),
-      mOverviewFrameMapId( -1 ), mOverviewBlendMode( QPainter::CompositionMode_SourceOver ), mOverviewInverted( false ), mOverviewCentered( false ),
-      mGridEnabled( false ), mGridStyle( Solid ),
+    mOverviewFrameMapId( -1 ), mOverviewBlendMode( QPainter::CompositionMode_SourceOver ), mOverviewInverted( false ), mOverviewCentered( false ),
+    mGridEnabled( false ), mGridStyle( Solid ),
     mGridIntervalX( 0.0 ), mGridIntervalY( 0.0 ), mGridOffsetX( 0.0 ), mGridOffsetY( 0.0 ), mGridAnnotationFontColor( QColor( 0, 0, 0 ) ),
     mGridAnnotationPrecision( 3 ), mShowGridAnnotation( false ), mGridBlendMode( QPainter::CompositionMode_SourceOver ),
     mLeftGridAnnotationPosition( OutsideMapFrame ), mRightGridAnnotationPosition( OutsideMapFrame ),
@@ -87,8 +87,8 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int w
 
 QgsComposerMap::QgsComposerMap( QgsComposition *composition )
     : QgsComposerItem( 0, 0, 10, 10, composition ), mKeepLayerSet( false ), mOverviewFrameMapId( -1 ),
-      mOverviewBlendMode( QPainter::CompositionMode_SourceOver ), mOverviewInverted( false ), mOverviewCentered( false ),
-      mGridEnabled( false ), mGridStyle( Solid ),
+    mOverviewBlendMode( QPainter::CompositionMode_SourceOver ), mOverviewInverted( false ), mOverviewCentered( false ),
+    mGridEnabled( false ), mGridStyle( Solid ),
     mGridIntervalX( 0.0 ), mGridIntervalY( 0.0 ), mGridOffsetX( 0.0 ), mGridOffsetY( 0.0 ), mGridAnnotationFontColor( QColor( 0, 0, 0 ) ),
     mGridAnnotationPrecision( 3 ), mShowGridAnnotation( false ), mGridBlendMode( QPainter::CompositionMode_SourceOver ),
     mLeftGridAnnotationPosition( OutsideMapFrame ), mRightGridAnnotationPosition( OutsideMapFrame ),
@@ -121,19 +121,21 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition )
 void QgsComposerMap::extentCenteredOnOverview( QgsRectangle& extent ) const
 {
   extent = mExtent;
-  if ( ! mOverviewCentered ) {
+  if ( ! mOverviewCentered )
+  {
     return;
   }
 
-  if ( mOverviewFrameMapId != -1 ) {
+  if ( mOverviewFrameMapId != -1 )
+  {
     const QgsComposerMap* overviewFrameMap = mComposition->getComposerMapById( mOverviewFrameMapId );
     QgsRectangle otherExtent = overviewFrameMap->extent();
 
     QgsPoint center = otherExtent.center();
     QgsRectangle movedExtent( center.x() - mExtent.width() / 2,
-			      center.y() - mExtent.height() / 2,
-			      center.x() - mExtent.width() / 2 + mExtent.width(),
-			      center.y() - mExtent.height() / 2 + mExtent.height() );
+                              center.y() - mExtent.height() / 2,
+                              center.x() - mExtent.width() / 2 + mExtent.width(),
+                              center.y() - mExtent.height() / 2 + mExtent.height() );
     extent = movedExtent;
   }
 }
