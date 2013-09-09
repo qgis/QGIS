@@ -240,7 +240,8 @@ class Editor(QsciScintilla):
         chekBoxAPI = self.settings.value("pythonConsole/preloadAPI", True, type=bool)
         chekBoxPreparedAPI = self.settings.value("pythonConsole/usePreparedAPIFile", False, type=bool)
         if chekBoxAPI:
-            self.api.loadPrepared(QgsApplication.pkgDataPath() + "/python/qsci_apis/pyqgis_master.pap")
+            pap = os.path.join(QgsApplication.pkgDataPath(), "python", "qsci_apis", "pyqgis.pap")
+            self.api.loadPrepared(pap)
         elif chekBoxPreparedAPI:
             self.api.loadPrepared(self.settings.value("pythonConsole/preparedAPIFile"))
         else:
@@ -655,23 +656,26 @@ class Editor(QsciScintilla):
             t = unicode(e.text())
             ## Close bracket automatically
             if t in self.opening:
+                self.beginUndoAction()
                 i = self.opening.index(t)
                 if self.hasSelectedText():
-                    self.beginUndoAction()
                     selText = self.selectedText()
                     self.removeSelectedText()
                     if startLine == endLine:
                         self.insert(self.opening[i] + selText + self.closing[i])
                         self.setCursorPosition(endLine, endPos+2)
+                        self.endUndoAction()
                         return
                     elif startLine < endLine and self.opening[i] in ("'", '"'):
                         self.insert("'''" + selText + "'''")
+                        self.setCursorPosition(endLine, endPos+3)
+                        self.endUndoAction()
                         return
                     else:
                         self.insert(self.closing[i])
-                    self.endUndoAction()
                 else:
                     self.insert(self.closing[i])
+                self.endUndoAction()
             ## FIXES #8392 (automatically removes the redundant char
             ## when autoclosing brackets option is enabled)
             if t in [')', ']', '}']:

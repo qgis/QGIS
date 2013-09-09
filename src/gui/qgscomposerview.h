@@ -76,6 +76,12 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     /**Ungroups the selected items*/
     void ungroupItems();
 
+    /**Lock the selected items*/
+    void lockItems();
+
+    /**Unlock all items*/
+    void unlockAllItems();
+
     QgsComposerView::Tool currentTool() const {return mCurrentTool;}
     void setCurrentTool( QgsComposerView::Tool t ) {mCurrentTool = t;}
 

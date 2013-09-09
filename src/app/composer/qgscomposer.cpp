@@ -245,6 +245,8 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   layoutMenu->addAction( mActionLowerItems );
   layoutMenu->addAction( mActionMoveItemsToTop );
   layoutMenu->addAction( mActionMoveItemsToBottom );
+  layoutMenu->addAction( mActionLockItems );
+  layoutMenu->addAction( mActionUnlockAll );
 
 #ifdef Q_WS_MAC
   // this doesn't work on Mac anymore: menuBar()->addMenu( mQgis->windowMenu() );
@@ -995,6 +997,22 @@ void QgsComposer::on_mActionExportAsImage_triggered()
         image.save( outputFilePath, fileNExt.second.toLocal8Bit().constData() );
       }
     }
+
+    //
+    // Write the world file if asked to
+    if ( mComposition->generateWorldFile() )
+    {
+      double a, b, c, d, e, f;
+      mComposition->computeWorldFileParameters( a, b, c, d, e, f );
+
+      QFileInfo fi( fileNExt.first );
+      // build the world file name
+      QString worldFileName = fi.absolutePath() + "/" + fi.baseName() + "."
+                              + fi.suffix()[0] + fi.suffix()[fi.suffix().size()-1] + "w";
+
+      writeWorldFile( worldFileName, a, b, c, d, e, f );
+    }
+
     mView->setPaintingEnabled( true );
   }
   else
@@ -1136,6 +1154,21 @@ void QgsComposer::on_mActionExportAsImage_triggered()
           QString outputFilePath = fi.absolutePath() + "/" + fi.baseName() + "_" + QString::number( i + 1 ) + "." + fi.suffix();
           image.save( outputFilePath, format.toLocal8Bit().constData() );
         }
+      }
+
+      //
+      // Write the world file if asked to
+      if ( mComposition->generateWorldFile() )
+      {
+        double a, b, c, d, e, f;
+        mComposition->computeWorldFileParameters( a, b, c, d, e, f );
+
+        QFileInfo fi( filename );
+        // build the world file name
+        QString worldFileName = fi.absolutePath() + "/" + fi.baseName() + "."
+                                + fi.suffix()[0] + fi.suffix()[fi.suffix().size()-1] + "w";
+
+        writeWorldFile( worldFileName, a, b, c, d, e, f );
       }
     }
     atlasMap->endRender();
@@ -1614,6 +1647,22 @@ void QgsComposer::on_mActionUngroupItems_triggered()
   }
 }
 
+void QgsComposer::on_mActionLockItems_triggered()
+{
+  if ( mView )
+  {
+    mView->lockItems();
+  }
+}
+
+void QgsComposer::on_mActionUnlockAll_triggered()
+{
+  if ( mView )
+  {
+    mView->unlockAllItems();
+  }
+}
+
 void QgsComposer::on_mActionRaiseItems_triggered()
 {
   if ( mComposition )
@@ -1879,6 +1928,24 @@ void QgsComposer::readXML( const QDomElement& composerElem, const QDomDocument& 
   if ( mComposition )
   {
     mComposition->addItemsFromXML( composerElem, doc, &mMapsToRestore );
+  }
+
+  // look for world file composer map, if needed
+  // Note: this must be done after maps have been added by addItemsFromXML
+  if ( mComposition->generateWorldFile() )
+  {
+    QDomElement compositionElem = compositionNodeList.at( 0 ).toElement();
+    QgsComposerMap* worldFileMap = 0;
+    QList<const QgsComposerMap*> maps = mComposition->composerMapItems();
+    for ( QList<const QgsComposerMap*>::const_iterator it = maps.begin(); it != maps.end(); ++it )
+    {
+      if (( *it )->id() == compositionElem.attribute( "worldFileMap" ).toInt() )
+      {
+        worldFileMap = const_cast<QgsComposerMap*>( *it );
+        break;
+      }
+    }
+    mComposition->setWorldFileMap( worldFileMap );
   }
 
   mComposition->sortZList();
@@ -2303,4 +2370,23 @@ void QgsComposer::createComposerView()
   mView->setHorizontalRuler( mHorizontalRuler );
   mView->setVerticalRuler( mVerticalRuler );
   mViewLayout->addWidget( mView, 1, 1 );
+}
+
+void QgsComposer::writeWorldFile( QString worldFileName, double a, double b, double c, double d, double e, double f ) const
+{
+  QFile worldFile( worldFileName );
+  if ( !worldFile.open( QIODevice::WriteOnly | QIODevice::Text ) )
+  {
+    return;
+  }
+  QTextStream fout( &worldFile );
+
+  // QString::number does not use locale settings (for the decimal point)
+  // which is what we want here
+  fout << QString::number( a, 'f' ) << "\r\n";
+  fout << QString::number( d, 'f' ) << "\r\n";
+  fout << QString::number( b, 'f' ) << "\r\n";
+  fout << QString::number( e, 'f' ) << "\r\n";
+  fout << QString::number( c, 'f' ) << "\r\n";
+  fout << QString::number( f, 'f' ) << "\r\n";
 }

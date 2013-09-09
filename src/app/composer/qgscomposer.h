@@ -210,6 +210,12 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Ungroup selected item group
     void on_mActionUngroupItems_triggered();
 
+    //! Lock selected items
+    void on_mActionLockItems_triggered();
+
+    //! Unlock all items
+    void on_mActionUnlockAll_triggered();
+
     //! Move selected items one position up
     void on_mActionRaiseItems_triggered();
 
@@ -333,6 +339,9 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     //! Create composer view and rulers
     void createComposerView();
+
+    //! Write a world file
+    void writeWorldFile( QString fileName, double a, double b, double c, double d, double e, double f ) const;
 
     /**Composer title*/
     QString mTitle;

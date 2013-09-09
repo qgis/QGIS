@@ -253,9 +253,15 @@ void qgisCrash( int signal )
   {
     // take full stacktrace using gdb
     // http://stackoverflow.com/questions/3151779/how-its-better-to-invoke-gdb-from-program-to-print-its-stacktrace
+    // unfortunately, this is not so simple. the proper method is way more OS-specific
+    // than this code would suggest, see http://stackoverflow.com/a/1024937
 
     char exename[512];
+#if defined(__FreeBSD__)
+    int len = readlink( "/proc/curproc/file", exename, sizeof( exename ) - 1 );
+#else
     int len = readlink( "/proc/self/exe", exename, sizeof( exename ) - 1 );
+#endif
     if ( len < 0 )
     {
       myPrint( "Could not read link (%d:%s)\n", errno, strerror( errno ) );
@@ -363,7 +369,9 @@ int main( int argc, char *argv[] )
 #endif  // WIN32
 
   // Set up the custom qWarning/qDebug custom handler
+#ifndef ANDROID
   qInstallMsgHandler( myMessageOutput );
+#endif
 
 #if (defined(linux) && !defined(ANDROID)) || defined(__FreeBSD__)
   signal( SIGQUIT, qgisCrash );

@@ -67,19 +67,19 @@ class SagaAlgorithmProvider(AlgorithmProvider):
         ProcessingConfig.removeSetting(SagaUtils.SAGA_RESAMPLING_REGION_CELLSIZE)
         ProcessingConfig.removeSetting(SagaUtils.SAGA_LOG_CONSOLE)
         ProcessingConfig.removeSetting(SagaUtils.SAGA_LOG_COMMANDS)
-    
 
-    def _loadAlgorithms(self):        
+
+    def _loadAlgorithms(self):
         self.algs = []
-        saga208 = ProcessingConfig.getSetting(SagaUtils.SAGA_208)        
+        saga208 = ProcessingConfig.getSetting(SagaUtils.SAGA_208)
         folder = SagaUtils.sagaDescriptionPath()
         for descriptionFile in os.listdir(folder):
-            if descriptionFile.endswith("txt"):                
+            if descriptionFile.endswith("txt"):
                 if not saga208:
                     if descriptionFile.startswith("2.0.8"):
                         continue
                 else:
-                    if descriptionFile.startswith("2.1"):                        
+                    if descriptionFile.startswith("2.1"):
                         continue
                 try:
                     alg = SagaAlgorithm(os.path.join(folder, descriptionFile))

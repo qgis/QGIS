@@ -751,6 +751,43 @@ void QgsComposerView::ungroupItems()
   }
 }
 
+void QgsComposerView::lockItems()
+{
+  if ( !composition() )
+  {
+    return;
+  }
+
+  QList<QgsComposerItem*> selectionList = composition()->selectedComposerItems();
+  QList<QgsComposerItem*>::iterator itemIter = selectionList.begin();
+  for ( ; itemIter != selectionList.end(); ++itemIter )
+  {
+    ( *itemIter )->setPositionLock( true );
+  }
+
+  composition()->clearSelection();
+}
+
+void QgsComposerView::unlockAllItems()
+{
+  if ( !composition() )
+  {
+    return;
+  }
+
+  //unlock all items in composer
+  QList<QGraphicsItem *> itemList = composition()->items();
+  QList<QGraphicsItem *>::iterator itemIt = itemList.begin();
+  for ( ; itemIt != itemList.end(); ++itemIt )
+  {
+    QgsComposerItem* mypItem = dynamic_cast<QgsComposerItem *>( *itemIt );
+    if ( mypItem )
+    {
+      mypItem->setPositionLock( false );
+    }
+  }
+}
+
 QMainWindow* QgsComposerView::composerWindow()
 {
   QMainWindow* composerObject = 0;
