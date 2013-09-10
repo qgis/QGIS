@@ -1811,7 +1811,11 @@ void QgsComposer::saveWindowState()
   settings.setValue( "/ComposerUI/state", saveState() );
 }
 
+#ifdef ANDROID
+#include "ui_defaults_android.h"
+#else
 #include "ui_defaults.h"
+#endif
 
 void QgsComposer::restoreWindowState()
 {
