@@ -86,6 +86,7 @@ QgsWmsProvider::QgsWmsProvider( QString const &uri )
     , mHttpCapabilitiesResponse( 0 )
     , mHttpGetLegendGraphicResponse( 0 )
     , mGetLegendGraphicPixmap()
+    , mGetLegendGraphicScale( 0 )
     , mImageCrs( DEFAULT_LATLON_CRS )
     , mCachedImage( 0 )
     , mCacheReply( 0 )
@@ -4551,8 +4552,16 @@ QPixmap QgsWmsProvider::getLegendGraphic( double scale, bool forceRefresh )
 {
   QgsDebugMsg( "entering." );
 
+  if ( !scale && !mGetLegendGraphicScale)
+  {
+    QgsDebugMsg( QString( "No scale factor set" ) );
+    return QPixmap();
+  }
+
   if ( mHttpGetLegendGraphicResponse.isNull() || forceRefresh )
   {
+    mGetLegendGraphicScale = scale;
+
     // add WMS GetGraphicLegend request
     // TODO set wms version using instance var something like mWmsVersion... brobabilly get from the same getMap call parameter
     // TODO set sld version using instance var something like mSldVersion... brobabilly get from the same getMap call parameter

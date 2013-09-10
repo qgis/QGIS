@@ -632,8 +632,11 @@ class QgsWmsProvider : public QgsRasterDataProvider
      */
     QStringList subLayerStyles() const;
 
-    /** Get GetLegendGraphic if service available otherwise NULL */
-    QPixmap getLegendGraphic( double scale, bool forceRefresh = false );
+    /** Get GetLegendGraphic if service available otherwise QPixmap() 
+     * BEAWARE this can be called afer a firs call to getLegendGraphic( double scale, bool forceRefresh = false )
+     * otherwise it always return QPixmap()
+     */
+    QPixmap getLegendGraphic( double scale = 0, bool forceRefresh = false );
 
     // TODO: Get the WMS connection
 
@@ -920,6 +923,11 @@ class QgsWmsProvider : public QgsRasterDataProvider
      * GetLegendGraphic WMS Pixmap result
      */
     QPixmap mGetLegendGraphicPixmap;
+
+    /**
+     * GetLegendGraphic scale for the WMS Pixmap result
+     */
+    double mGetLegendGraphicScale;
 
     /**
      * Capabilities of the WMS
