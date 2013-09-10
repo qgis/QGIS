@@ -245,6 +245,7 @@
 #include "qgsmaptoolreshape.h"
 #include "qgsmaptoolrotatepointsymbols.h"
 #include "qgsmaptoolsplitfeatures.h"
+#include "qgsmaptoolsplitparts.h"
 #include "qgsmaptooltextannotation.h"
 #include "qgsmaptoolvertexedit.h"
 #include "qgsmaptoolzoom.h"
@@ -806,6 +807,7 @@ QgisApp::~QgisApp()
   delete mMapTools.mShowHideLabels;
   delete mMapTools.mSimplifyFeature;
   delete mMapTools.mSplitFeatures;
+  delete mMapTools.mSplitParts;
   delete mMapTools.mSvgAnnotation;
   delete mMapTools.mTextAnnotation;
 
@@ -963,6 +965,7 @@ void QgisApp::createActions()
 
   connect( mActionReshapeFeatures, SIGNAL( triggered() ), this, SLOT( reshapeFeatures() ) );
   connect( mActionSplitFeatures, SIGNAL( triggered() ), this, SLOT( splitFeatures() ) );
+  connect( mActionSplitParts, SIGNAL( triggered() ), this, SLOT( splitParts() ) );
   connect( mActionDeleteSelected, SIGNAL( triggered() ), this, SLOT( deleteSelected() ) );
   connect( mActionAddRing, SIGNAL( triggered() ), this, SLOT( addRing() ) );
   connect( mActionAddPart, SIGNAL( triggered() ), this, SLOT( addPart() ) );
@@ -1233,6 +1236,7 @@ void QgisApp::createActionGroups()
 #endif
   mMapToolGroup->addAction( mActionReshapeFeatures );
   mMapToolGroup->addAction( mActionSplitFeatures );
+  mMapToolGroup->addAction( mActionSplitParts );
   mMapToolGroup->addAction( mActionDeleteSelected );
   mMapToolGroup->addAction( mActionAddRing );
   mMapToolGroup->addAction( mActionAddPart );
@@ -1774,6 +1778,7 @@ void QgisApp::setTheme( QString theThemeName )
   mActionRotateFeature->setIcon( QgsApplication::getThemeIcon( "/mActionRotateFeature.png" ) );
   mActionReshapeFeatures->setIcon( QgsApplication::getThemeIcon( "/mActionReshape.png" ) );
   mActionSplitFeatures->setIcon( QgsApplication::getThemeIcon( "/mActionSplitFeatures.svg" ) );
+  mActionSplitParts->setIcon( QgsApplication::getThemeIcon( "/mActionSplitParts.svg" ) );  
   mActionDeleteSelected->setIcon( QgsApplication::getThemeIcon( "/mActionDeleteSelected.svg" ) );
   mActionNodeTool->setIcon( QgsApplication::getThemeIcon( "/mActionNodeTool.png" ) );
   mActionSimplifyFeature->setIcon( QgsApplication::getThemeIcon( "/mActionSimplify.png" ) );
@@ -1997,6 +2002,8 @@ void QgisApp::createCanvasTools()
   mMapTools.mReshapeFeatures->setAction( mActionReshapeFeatures );
   mMapTools.mSplitFeatures = new QgsMapToolSplitFeatures( mMapCanvas );
   mMapTools.mSplitFeatures->setAction( mActionSplitFeatures );
+  mMapTools.mSplitParts = new QgsMapToolSplitParts( mMapCanvas );
+  mMapTools.mSplitParts->setAction( mActionSplitParts );
   mMapTools.mSelect = new QgsMapToolSelect( mMapCanvas );
   mMapTools.mSelect->setAction( mActionSelect );
   mMapTools.mSelectRectangle = new QgsMapToolSelectRectangle( mMapCanvas );
@@ -5369,6 +5376,11 @@ void QgisApp::splitFeatures()
   mMapCanvas->setMapTool( mMapTools.mSplitFeatures );
 }
 
+void QgisApp::splitParts()
+{
+  mMapCanvas->setMapTool( mMapTools.mSplitParts );
+}
+
 void QgisApp::reshapeFeatures()
 {
   mMapCanvas->setMapTool( mMapTools.mReshapeFeatures );
@@ -8257,6 +8269,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionReshapeFeatures->setEnabled( false );
     mActionOffsetCurve->setEnabled( false );
     mActionSplitFeatures->setEnabled( false );
+    mActionSplitParts->setEnabled( false );
     mActionMergeFeatures->setEnabled( false );
     mActionMergeFeatureAttributes->setEnabled( false );
     mActionRotatePointSymbols->setEnabled( false );
@@ -8384,6 +8397,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
         mActionAddRing->setEnabled( false );
         mActionReshapeFeatures->setEnabled( false );
         mActionSplitFeatures->setEnabled( false );
+        mActionSplitParts->setEnabled( false );
         mActionSimplifyFeature->setEnabled( false );
         mActionDeleteRing->setEnabled( false );
         mActionRotatePointSymbols->setEnabled( false );
@@ -8405,6 +8419,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
 
         mActionReshapeFeatures->setEnabled( isEditable && canAddFeatures );
         mActionSplitFeatures->setEnabled( isEditable && canAddFeatures );
+        mActionSplitParts->setEnabled( isEditable && canAddFeatures );
         mActionSimplifyFeature->setEnabled( isEditable && canAddFeatures );
         mActionOffsetCurve->setEnabled( isEditable && canAddFeatures && canChangeAttributes );
 
@@ -8418,6 +8433,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
         mActionAddRing->setEnabled( isEditable && canAddFeatures );
         mActionReshapeFeatures->setEnabled( isEditable && canAddFeatures );
         mActionSplitFeatures->setEnabled( isEditable && canAddFeatures );
+        mActionSplitParts->setEnabled( isEditable && canAddFeatures );
         mActionSimplifyFeature->setEnabled( isEditable && canAddFeatures );
         mActionDeleteRing->setEnabled( isEditable && canAddFeatures );
         mActionOffsetCurve->setEnabled( false );
@@ -8502,6 +8518,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionSimplifyFeature->setEnabled( false );
     mActionReshapeFeatures->setEnabled( false );
     mActionSplitFeatures->setEnabled( false );
+    mActionSplitParts->setEnabled( false );
     mActionLabeling->setEnabled( false );
 
     //NOTE: This check does not really add any protection, as it is called on load not on layer select/activate
