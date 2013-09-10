@@ -116,7 +116,7 @@ p, li { white-space: pre-wrap; }
          </property>
         </spacer>
        </item>
-       <item row="6" column="0">
+       <item row="7" column="0">
         <layout class="QHBoxLayout">
          <item>
           <widget class="QPushButton" name="btnQgisHome">
@@ -141,11 +141,21 @@ p, li { white-space: pre-wrap; }
         </layout>
        </item>
        <item row="1" column="0">
-        <widget class="QWebView" name="txtVersion">
-         <property name="url">
+        <widget class="QWebView" name="txtVersion" native="true">
+         <property name="url" stdset="0">
           <url>
            <string>about:blank</string>
           </url>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="0">
+        <widget class="QLabel" name="label_5">
+         <property name="text">
+          <string>Splashscreen map: ©Swisstopo 2013, topographic map series</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
          </property>
         </widget>
        </item>
@@ -239,8 +249,8 @@ p, li { white-space: pre-wrap; }
       </attribute>
       <layout class="QGridLayout">
        <item row="0" column="0">
-        <widget class="QWebView" name="txtTranslators">
-         <property name="url">
+        <widget class="QWebView" name="txtTranslators" native="true">
+         <property name="url" stdset="0">
           <url>
            <string>about:blank</string>
           </url>
