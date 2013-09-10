@@ -38,6 +38,12 @@ Change history for the QGIS Project
 Last Updated: %%date(%A %B %d, %Y)
 Last Change : %%mtime(%A %B %d, %Y)
 
+= Whats new in Version 2.0.1 'Dufour'? =
+
+This is a small bugfix release to address the missing copyright / credits for
+our new splash screen and to update supporting documentation. The spanish 
+translation was also updated.
+
 = Whats new in Version 2.0.0 'Dufour'? =
 
 This is a new major release. Building on the foundation of
