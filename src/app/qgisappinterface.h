@@ -332,6 +332,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     virtual QAction *actionDeleteSelected();
     virtual QAction *actionMoveFeature();
     virtual QAction *actionSplitFeatures();
+    virtual QAction *actionSplitParts();
     virtual QAction *actionAddRing();
     virtual QAction *actionAddPart();
     virtual QAction *actionSimplifyFeature();

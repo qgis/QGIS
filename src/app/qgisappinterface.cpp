@@ -482,6 +482,7 @@ QAction *QgisAppInterface::actionAddFeature() { return qgis->actionAddFeature();
 QAction *QgisAppInterface::actionDeleteSelected() { return qgis->actionDeleteSelected(); }
 QAction *QgisAppInterface::actionMoveFeature() { return qgis->actionMoveFeature(); }
 QAction *QgisAppInterface::actionSplitFeatures() { return qgis->actionSplitFeatures(); }
+QAction *QgisAppInterface::actionSplitParts() { return qgis->actionSplitParts(); }
 QAction *QgisAppInterface::actionAddRing() { return qgis->actionAddRing(); }
 QAction *QgisAppInterface::actionAddPart() { return qgis->actionAddPart(); }
 QAction *QgisAppInterface::actionSimplifyFeature() { return qgis->actionSimplifyFeature(); }

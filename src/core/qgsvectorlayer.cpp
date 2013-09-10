@@ -1378,6 +1378,15 @@ int QgsVectorLayer::translateFeature( QgsFeatureId featureId, double dx, double 
   return utils.translateFeature( featureId, dx, dy );
 }
 
+int QgsVectorLayer::splitParts( const QList<QgsPoint>& splitLine, bool topologicalEditing )
+{
+  if ( !mEditBuffer || !mDataProvider )
+    return -1;
+
+  QgsVectorLayerEditUtils utils( this );
+  return utils.splitParts( splitLine, topologicalEditing );
+}
+
 int QgsVectorLayer::splitFeatures( const QList<QgsPoint>& splitLine, bool topologicalEditing )
 {
   if ( !mEditBuffer || !mDataProvider )

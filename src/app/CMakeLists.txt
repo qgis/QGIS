@@ -76,6 +76,7 @@ SET(QGIS_APP_SRCS
   qgsmaptoolselectutils.cpp
   qgsmaptoolsimplify.cpp
   qgsmaptoolsplitfeatures.cpp
+  qgsmaptoolsplitparts.cpp
   qgsmaptoolsvgannotation.cpp
   qgsmaptooltextannotation.cpp
   qgsmaptoolvertexedit.cpp
@@ -226,6 +227,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsmaptoolselectrectangle.h
   qgsmaptoolsimplify.h
   qgsmaptoolsplitfeatures.h
+  qgsmaptoolsplitparts.h
   qgsmaptoolvertexedit.h
 
   nodetool/qgsmaptoolnodetool.h

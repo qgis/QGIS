@@ -273,8 +273,8 @@
     <file>themes/default/mActionSignMinus.png</file>
     <file>themes/default/mActionSignPlus.png</file>
     <file>themes/default/mActionSimplify.png</file>
-    <file>themes/default/mActionSplitFeatures.png</file>
     <file>themes/default/mActionSplitFeatures.svg</file>
+    <file>themes/default/mActionSplitParts.svg</file>
     <file>themes/default/mActionSum.png</file>
     <file>themes/default/mActionTextAnnotation.png</file>
     <file>themes/default/mActionToggleEditing.png</file>

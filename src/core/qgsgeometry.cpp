@@ -2935,25 +2935,6 @@ int QgsGeometry::addPart( const QList<QgsPoint> &points )
       return 2;
   }
 
-  if ( !isMultipart() && !convertToMultiType() )
-  {
-    QgsDebugMsg( "could not convert to multipart" );
-    return 1;
-  }
-
-  //create geos geometry from wkb if not already there
-  if ( mDirtyGeos )
-  {
-    exportWkbToGeos();
-  }
-
-  if ( !mGeos )
-  {
-    QgsDebugMsg( "GEOS geometry not available!" );
-    return 4;
-  }
-
-  int geosType = GEOSGeomTypeId( mGeos );
   GEOSGeometry *newPart = 0;
 
   switch ( geomType )
@@ -2996,6 +2977,39 @@ int QgsGeometry::addPart( const QList<QgsPoint> &points )
       return 2;
   }
 
+  return addPart( newPart );
+}
+
+int QgsGeometry::addPart( QgsGeometry * newPart )
+{
+  const GEOSGeometry * geosPart = newPart->asGeos();
+  return addPart( GEOSGeom_clone( geosPart ) );
+}
+
+int QgsGeometry::addPart( GEOSGeometry * newPart )
+{
+  QGis::GeometryType geomType = type();
+
+  if ( !isMultipart() && !convertToMultiType() )
+  {
+    QgsDebugMsg( "could not convert to multipart" );
+    return 1;
+  }
+
+  //create geos geometry from wkb if not already there
+  if ( mDirtyGeos )
+  {
+    exportWkbToGeos();
+  }
+
+  if ( !mGeos )
+  {
+    QgsDebugMsg( "GEOS geometry not available!" );
+    return 4;
+  }
+
+  int geosType = GEOSGeomTypeId( mGeos );
+
   Q_ASSERT( newPart );
 
   try
@@ -3023,8 +3037,8 @@ int QgsGeometry::addPart( const QList<QgsPoint> &points )
   {
     const GEOSGeometry *partN = GEOSGetGeometryN( mGeos, i );
 
-    if ( geomType == QGis::Polygon && !GEOSDisjoint( partN, newPart ) )
-      //bail out if new polygon is not disjoint with existing ones
+    if ( geomType == QGis::Polygon && GEOSOverlaps( partN, newPart ) )
+      //bail out if new polygon overlaps with existing ones
       break;
 
     parts << GEOSGeom_clone( partN );
@@ -3036,11 +3050,16 @@ int QgsGeometry::addPart( const QList<QgsPoint> &points )
     for ( int i = 0; i < parts.size(); i++ )
       GEOSGeom_destroy( parts[i] );
 
-    QgsDebugMsg( "new polygon part not disjoint" );
+    QgsDebugMsg( "new polygon part overlaps" );
     return 3;
   }
 
-  parts << newPart;
+  int nPartGeoms = GEOSGetNumGeometries( newPart );
+  for( int i = 0; i < nPartGeoms; ++i )
+  {
+    parts << GEOSGeom_clone( GEOSGetGeometryN( newPart, i ) );
+  }
+  GEOSGeom_destroy( newPart );
 
   GEOSGeom_destroy( mGeos );
 
