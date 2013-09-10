@@ -42,10 +42,11 @@ class GUI_EXPORT QgsMessageLogViewer: public QDialog, private Ui::QgsMessageLogV
   public slots:
     void logMessage( QString message, QString tag, QgsMessageLog::MessageLevel level );
 
-  private:
+  protected:
     void showEvent( QShowEvent * );
     void hideEvent( QHideEvent * );
 
+  private:
     QToolButton *mButton;
     int mCount;
 
