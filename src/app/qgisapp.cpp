@@ -1389,6 +1389,9 @@ void QgisApp::createToolBars()
 
   QList<QToolBar*> toolbarMenuToolBars;
   toolbarMenuToolBars << mFileToolBar
+#ifdef WITH_SAVEONLYTOOLBAR
+  << mSaveToolBar
+#endif
   << mLayerToolBar
   << mDigitizeToolBar
   << mAdvancedDigitizeToolBar

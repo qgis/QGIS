@@ -451,6 +451,9 @@ QMenu *QgisAppInterface::helpMenu() { return qgis->helpMenu(); }
 
 //! ToolBars
 QToolBar *QgisAppInterface::fileToolBar() { return qgis->fileToolBar(); }
+#ifdef WITH_SAVEONLYTOOLBAR
+QToolBar *QgisAppInterface::saveToolBar() { return qgis->saveToolBar(); }
+#endif
 QToolBar *QgisAppInterface::layerToolBar() { return qgis->layerToolBar(); }
 QToolBar *QgisAppInterface::mapNavToolToolBar() { return qgis->mapNavToolToolBar(); }
 QToolBar *QgisAppInterface::digitizeToolBar() { return qgis->digitizeToolBar(); }
