@@ -413,7 +413,7 @@ int QgsVectorLayerEditUtils::splitParts( const QList<QgsPoint>& splitLine, bool 
     qDeleteAll( newGeometries );
   }
 
-  if ( numberOfSplittedParts == 0 && selectedIds.size() > 0 )
+  if ( numberOfSplittedParts == 0 && selectedIds.size() > 0  && returnCode == 0)
   {
     //There is a selection but no feature has been split.
     //Maybe user forgot that only the selected features are split
