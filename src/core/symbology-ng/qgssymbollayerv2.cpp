@@ -190,6 +190,14 @@ void QgsMarkerSymbolLayerV2::markerOffset( QgsSymbolV2RenderContext& context, do
 
   offsetX *= QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOffsetUnit );
   offsetY *= QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOffsetUnit );
+
+  //consider anchor point corrections
+  if( mHorizontalAnchorPoint == HCenter && mVerticalAnchorPoint == VCenter )
+  {
+      return;
+  }
+
+
 }
 
 QPointF QgsMarkerSymbolLayerV2::_rotatedOffset( const QPointF& offset, double angle )

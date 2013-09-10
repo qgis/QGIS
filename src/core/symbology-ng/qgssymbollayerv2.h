@@ -121,6 +121,21 @@ class CORE_EXPORT QgsSymbolLayerV2
 class CORE_EXPORT QgsMarkerSymbolLayerV2 : public QgsSymbolLayerV2
 {
   public:
+
+    enum HorizontalAnchorPoint
+    {
+        Left,
+        HCenter,
+        Right
+    };
+
+    enum VerticalAnchorPoint
+    {
+        Top,
+        VCenter,
+        Bottom
+    };
+
     virtual void renderPoint( const QPointF& point, QgsSymbolV2RenderContext& context ) = 0;
 
     void drawPreviewIcon( QgsSymbolV2RenderContext& context, QSize size );
@@ -153,6 +168,7 @@ class CORE_EXPORT QgsMarkerSymbolLayerV2 : public QgsSymbolLayerV2
 
   protected:
     QgsMarkerSymbolLayerV2( bool locked = false );
+    //handles marker offset and anchor point shift together
     void markerOffset( QgsSymbolV2RenderContext& context, double& offsetX, double& offsetY );
     static QPointF _rotatedOffset( const QPointF& offset, double angle );
 
@@ -162,6 +178,8 @@ class CORE_EXPORT QgsMarkerSymbolLayerV2 : public QgsSymbolLayerV2
     QPointF mOffset;
     QgsSymbolV2::OutputUnit mOffsetUnit;
     QgsSymbolV2::ScaleMethod mScaleMethod;
+    HorizontalAnchorPoint mHorizontalAnchorPoint;
+    VerticalAnchorPoint mVerticalAnchorPoint;
 };
 
 class CORE_EXPORT QgsLineSymbolLayerV2 : public QgsSymbolLayerV2
