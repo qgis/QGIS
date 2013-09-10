@@ -1,49 +1,20 @@
 QGIS News
 Change history for the QGIS Project
-Monday May 20, 2013
+Tuesday September 10, 2013
 
 
 ------------------------------------------------------------------------
 
 
-  1. Whats new in Version 1.8.0 'Lisboa'?
+  1. Whats new in Version 2.0.0 'Dufour'?
   2. Whats new in Version 1.7.2 'Wroclaw'?
   3. Whats new in Version 1.7.1 'Wroclaw'?
   4. Whats new in Version 1.7.0 'Wroclaw'?
-    4.1. Symbology labels and diagrams
-    4.2. New Tools
-    4.3. User interface updates
-    4.4. CRS Handling
-    4.5. Rasters
-    4.6. Providers and Data Handling
-    4.7. Api and Developer Centric
-    4.8. QGIS Mapserver
-    4.9. Plugins
-    4.10. Printing
   5. Whats new in Version 1.6.0 'Capiapo'?
-    5.1. General Improvements
-    5.2. Table of contents (TOC) improvements
-    5.3. Labelling (New generation only)
-    5.4. Layer properties and symbology
-    5.5. Map Composer
   6. Whats new in Version 1.5.0?
-    6.1. Main GUI
-    6.2. WMS and WMS-C Support
-    6.3. API Updates
   7. Whats new in Version 1.4.0 'Enceladus'?
   8. Whats new in Version 1.3.0 'Mimas'?
-    8.1. OSM plugin &amp; provider updates
-    8.2. Other notable features and improvements in this release
   9. Version 1.2.0 'Daphnis'
-    9.1. Editing
-    9.2. Keyboard shortcuts
-    9.3. Map Composer
-    9.4. Attribute tables
-    9.5. Plugins
-    9.6. Projects Management
-    9.7. PostGIS & the PostgreSQL Provider
-    9.8. Symbology enhancements
-    9.9. Command line arguments
   10. Version 1.0.0 'Kore'
   11. Version 0.11.0 'Metis'
   12. Version 0.10.0 'Io'
@@ -58,12 +29,96 @@ Monday May 20, 2013
 ------------------------------------------------------------------------
 
 
-Last Updated: Monday May 20, 2013
-Last Change : Monday May 20, 2013
+Last Updated: Tuesday September 10, 2013
+Last Change : Tuesday September 10, 2013
 
 
-  1. Whats new in Version 1.8.0 'Lisboa'?
+  1. Whats new in Version 2.0.0 'Dufour'?
   =======================================
+
+This is a new major release. Building on the foundation of
+QGIS 1.x.x releases, QGIS Dufour introduces many new features,
+improvements and bug fixes. Here is a summary of some of the
+key new features.
+
+- We have updated out icon theme to use the 'GIS' theme which introduces
+      an improved level of consistency and professionalism to the QGIS user
+      interface.
+- The new symbol layer overview uses a clear, tree-structured layout
+      which allows for easy and fast access to all symbol layers.
+- QGIS 2.0 now includes Oracle Spatial support.
+- With the new data defined properties, it is possible to control symbol
+      type, size, color, rotation, and many other properties through feature
+      attributes.
+- You can now place html elements onto your map.
+- Having nicely aligned map items is critical to making nice printed
+      maps. Auto snapping lines have been added to allow for easy composer
+      object alignment by simply dragging an object close to another.
+- Sometimes you need to align objects a curtain distance on the composer.
+      With the new manual snapping lines you are able to add manual snap lines
+      which allow for better align objects using a common alignment. Simply
+      drag from the top or side ruler to add new guide line.
+- Ever needed to generate a map series? Of course you have. The composer
+      now includes built in map series generation using the atlas feature.
+      Coverage layers can be points, lines, polygons, and the current feature
+      attribute data is available in labels for on the fly value replacement.
+- A single composer window can now contain more then one page.
+- The composer label item in 1.8 was quite limited and only allowed a single
+      token $CURRENT_DATE to be used. In 2.0 full expression support has been
+      added too greater power and control of the final labels.
+- The map frame now contains the ability to show the extents of another
+      map and will update when moved. Using this with the atlas generation
+      feature now core in the composer allows for some slick map generation.
+      Overview frame style uses the same styling as a normal map polygon
+      object so your creativity is never restricted.
+- Layer blending makes it possible to combine layers in new and exciting
+      ways. While in older versions, all you could do was to make the layer
+      transparent, you can now choose between much more advanced options such as
+      "multiply", "darken only", and many more. Blending can be used in the
+      normal map view as well as in print composer.
+- HTML support has been added map composer label item to give you even
+      more control over your final maps. HTML labels support full css styles
+      sheets, html, and even javascript if you are that way inclined.
+- The labelling system has been totally overhauled - it now includes many
+      new features such as drop shadows, 'highway shields', many more data bound
+      options, and various performance enhancements. We are slowly doing away
+      with the 'old labels' system, although you will still find that
+      functionality available for this release, you should expect that it will
+      disappear in a follow up release.
+- The full power of normal label and rule expressions can now be used for
+      label properties. Nearly every property can be defined with an expression
+      or field value giving you more control over the label result. Expressions
+      can refer to a field (e.g. set the font size to the value of the field
+      'font') or can include more complex logic. Examples of bindable
+      properties include: Font, Size, Style and Buffer size.
+- With the expression engine being used more and more though out QGIS to
+      allow for things like expression based labels and symbol, many more
+      functions have been added to the expression builder and are all accessible
+      though the expression builder. All functions include comprehensive help
+      and usage guides for ease of use.
+- If the expression engine doesn't have the function that you need. Not to
+      worry. New functions can be added via a plugin using a simple Python API.
+- The Python API has been revamped to allow for a more cleaner, more
+      pythonic, programming experience. The QGIS 2.0 API uses SIP V2 which
+      removes the messy toString(), toInt() logic that was needed when working
+      with values. Types are now converted into native Python types making for a
+      much nicer API. Attributes access is now done on the feature itself using
+      a simple key lookup, no more index lookup and attribute maps.
+      Note: Most plugins written for QGIS < 1.x will need to be
+        ported to work correctly in QGIS 2.x. Please consult
+        http://hub.qgis.org/wiki/quantum-gis/Python_plugin_API_changes_from_18_to_20
+        for more details.
+- The raster data provider system has been completely overhauled. One of
+      the best new features stemming from this work is the ability to 'Layer ->
+      Save As...' to save any raster layer as a new layer. In the process you
+      can clip, resample, and reproject the layer to a new Coordinate Reference
+      System. You can also save a raster layer as a rendered image so if you for
+      example have single band raster that you have applied a colour palette to,
+      you can save the rendered layer out to a georeferenced RGB layer.
+- There are many, many more new features  in QGIS 2.0 - we invite
+      you to explore the software and discover them all!
+
+= Whats new in Version 1.8.0 'Lisboa'? =
 
 This is a new feature release. Building on the foundation of
 QGIS 1.7.x releases, Lisboa introduces many new features,
