@@ -20,10 +20,12 @@ class QgsQtLocationConnection: QgsGPSConnection
     /**Called when the position updated.*/
     // void positionUpdated( const QGeoPositionInfo &info );
 
+%If (!ANDROID)
     /**Called when the number of satellites in view is updated.*/
     void satellitesInViewUpdated( const QList<QGeoSatelliteInfo>& satellites );
 
     /**Called when the number of satellites in use is updated.*/
     void satellitesInUseUpdated( const QList<QGeoSatelliteInfo>& satellites );
+%End
 };
 %End

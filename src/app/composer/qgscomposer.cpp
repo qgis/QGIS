@@ -374,6 +374,12 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   {
     connect( QgsProject::instance(), SIGNAL( writeProject( QDomDocument& ) ), this, SLOT( writeXML( QDomDocument& ) ) );
   }
+
+#if defined(ANDROID)
+  // fix for Qt Ministro hiding app's menubar in favor of native Android menus
+  menuBar()->setNativeMenuBar( false );
+  menuBar()->setVisible( true );
+#endif
 }
 
 QgsComposer::~QgsComposer()

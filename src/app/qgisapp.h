@@ -622,6 +622,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! reimplements widget keyPress event so we can check if cancel was pressed
     virtual void keyPressEvent( QKeyEvent * event );
 
+#ifdef ANDROID
+    //! reimplements widget keyReleaseEvent event so we can check if back was pressed
+    virtual void keyReleaseEvent( QKeyEvent * event );
+#endif
+
 #ifdef Q_OS_WIN
     //! reimplements context menu event
     virtual void contextMenuEvent( QContextMenuEvent *event );
