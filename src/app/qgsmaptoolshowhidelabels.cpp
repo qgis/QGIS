@@ -173,10 +173,10 @@ void QgsMapToolShowHideLabels::showHideLabels( QMouseEvent * e )
       labelChanged = true;
     }
   }
-  vlayer->endEditCommand();
 
   if ( labelChanged )
   {
+    vlayer->endEditCommand();
     mCanvas->refresh();
   }
   else

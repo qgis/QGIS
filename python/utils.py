@@ -342,7 +342,7 @@ def reloadProjectMacros():
 
   from qgis.core import QgsProject
   code, ok = QgsProject.instance().readEntry("Macros", "/pythonCode")
-  if not ok or code.isEmpty():
+  if not ok or not code or code == '':
     return
 
   # create a new empty python module

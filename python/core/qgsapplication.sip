@@ -1,3 +1,4 @@
+%Feature ANDROID
 
 class QgsApplication : QApplication
 {
@@ -293,6 +294,11 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
      * @see skippedGdalDrivers
      * @note added in 2.0 */
     static void applyGdalSkippedDrivers();
+
+
+%If(ANDROID)
+    bool x11EventFilter ( XEvent * event );
+%End
 
   signals:
     // void preNotify( QObject * receiver, QEvent * event, bool * done );

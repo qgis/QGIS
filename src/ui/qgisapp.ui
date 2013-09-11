@@ -245,6 +245,7 @@
     <addaction name="mActionReshapeFeatures"/>
     <addaction name="mActionOffsetCurve"/>
     <addaction name="mActionSplitFeatures"/>
+    <addaction name="mActionSplitParts"/>
     <addaction name="mActionMergeFeatures"/>
     <addaction name="mActionMergeFeatureAttributes"/>
     <addaction name="mActionNodeTool"/>
@@ -342,6 +343,7 @@
    <addaction name="mActionReshapeFeatures"/>
    <addaction name="mActionOffsetCurve"/>
    <addaction name="mActionSplitFeatures"/>
+   <addaction name="mActionSplitParts"/>
    <addaction name="mActionMergeFeatures"/>
    <addaction name="mActionMergeFeatureAttributes"/>
    <addaction name="mActionRotatePointSymbols"/>
@@ -679,10 +681,22 @@
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionSplitFeatures.png</normaloff>:/images/themes/default/mActionSplitFeatures.png</iconset>
+     <normaloff>:/images/themes/default/mActionSplitFeatures.svg</normaloff>:/images/themes/default/mActionSplitFeatures.svg</iconset>
    </property>
    <property name="text">
     <string>Split Features</string>
+   </property>
+  </action>
+  <action name="mActionSplitParts">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSplitFeatures.svg</normaloff>:/images/themes/default/mActionSplitFeatures.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Split Parts</string>
    </property>
   </action>
   <action name="mActionDeleteSelected">

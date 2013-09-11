@@ -38,10 +38,12 @@ class QgsClipper
     // feature in x and y. The shapeOpen parameter determines whether
     // the function treats the points as a closed shape (polygon), or as
     // an open shape (linestring).
+
+%If (!ANDROID)
     static void trimFeature( QVector<double>& x,
                              QVector<double>& y,
                              bool shapeOpen );
-
+%End
     static void trimPolygon( QPolygonF& pts, const QgsRectangle& clipRect );
 
     /**Reads a polyline from WKB and clips it to clipExtent

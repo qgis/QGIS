@@ -441,6 +441,7 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QAction *actionDeleteSelected() = 0;
     virtual QAction *actionMoveFeature() = 0;
     virtual QAction *actionSplitFeatures() = 0;
+    virtual QAction *actionSplitParts() = 0;
     virtual QAction *actionAddRing() = 0;
     virtual QAction *actionAddPart() = 0;
     virtual QAction *actionSimplifyFeature() = 0;
