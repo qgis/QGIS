@@ -496,8 +496,11 @@ void GlobePlugin::syncExtent()
 
 void GlobePlugin::setupControls()
 {
-
   std::string imgDir = QDir::cleanPath( QgsApplication::pkgDataPath() + "/globe/gui" ).toStdString();
+  if ( QgsApplication::isRunningFromBuildDir() )
+  {
+    imgDir = QDir::cleanPath( QgsApplication::buildSourcePath() + "/src/plugins/globe/images/gui" ).toStdString();
+  }
   osgEarth::Util::EarthManipulator* manip = dynamic_cast<osgEarth::Util::EarthManipulator*>( mOsgViewer->getCameraManipulator() );
 
   osg::Image* yawPitchWheelImg = osgDB::readImageFile( imgDir + "/YawPitchWheel.png" );
