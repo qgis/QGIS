@@ -659,6 +659,14 @@ void QgsPluginManager::showPluginDetails( QStandardItem * item )
                      "  </td></tr>"
                      "</table>" ).arg( tr( "This plugin is experimental" ) );
   };
+  if ( metadata->value( "deprecated" ) == "true" )
+  {
+    html += QString( "<table bgcolor=\"#EEBBCC\" cellspacing=\"2\" cellpadding=\"2\" width=\"100%\">"
+                     "  <tr><td width=\"100%\" style=\"color:#660000\">"
+                     "    <img src=\":/images/themes/default/pluginDeprecated.png\" width=\"32\"><b>%1</b>"
+                     "  </td></tr>"
+                     "</table>" ).arg( tr( "This plugin is deprecated" ) );
+  };
   // if ( metadata->value( "status" ) == t.b.d. )
   // {
   //   html += QString( "<table bgcolor=\"#CCCCFF\" cellspacing=\"2\" cellpadding=\"6\" width=\"100%\">"

@@ -208,6 +208,7 @@ class QgsPluginInstaller(QObject):
         "error" : plugin["error"],
         "error_details" : plugin["error_details"],
         "experimental" : plugin["experimental"] and "true" or "false",
+        "deprecated" : plugin["deprecated"] and "true" or "false",
         "version_available" : plugin["version_available"],
         "zip_repository" : plugin["zip_repository"],
         "download_url" : plugin["download_url"],
