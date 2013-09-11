@@ -4560,7 +4560,10 @@ QPixmap QgsWmsProvider::getLegendGraphic( double scale, bool forceRefresh )
 
   if ( mHttpGetLegendGraphicResponse.isNull() || forceRefresh )
   {
-    mGetLegendGraphicScale = scale;
+    if ( scale )
+    {
+      mGetLegendGraphicScale = scale;
+    }
 
     // add WMS GetGraphicLegend request
     // TODO set wms version using instance var something like mWmsVersion... brobabilly get from the same getMap call parameter
