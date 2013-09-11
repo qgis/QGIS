@@ -1,0 +1,10 @@
+m.cogo
+m.cogo - A simple utility for converting bearing and distance measurements to coordinates and vice versa. It assumes a cartesian coordinate system 
+Miscellaneous (m.*)
+ParameterFile|input|Name of input file|False
+OutputFile|output|Output text file
+ParameterString|coord|Starting coordinate pair (default 0.0, 0.0)|0.0,0.0
+*ParameterBoolean|-l|Lines are labelled|False
+*ParameterBoolean|-q|Suppress warnings|False
+*ParameterBoolean|-r|Convert from coordinates to bearing and distance|False
+*ParameterBoolean|-c|Repeat the starting coordinate at the end to close a loop|False
