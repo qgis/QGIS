@@ -187,6 +187,12 @@ void QgsPluginManager::setPythonUtils( QgsPythonUtils* pythonUtils )
     ckbExperimental->setChecked( true );
   }
 
+  if ( settings.value( settingsGroup + "/allowDeprecated", false ).toBool() )
+  {
+    ckbDeprecated->setChecked( true );
+  }
+
+
   int interval = settings.value( settingsGroup + "/checkOnStartInterval", "" ).toInt( );
   int indx = mCheckingOnStartIntervals.indexOf( interval ); // if none found, just use -1 index.
   comboInterval->setCurrentIndex( indx );
@@ -1236,6 +1242,15 @@ void QgsPluginManager::on_ckbExperimental_toggled( bool state )
   QgsPythonRunner::run( "pyplugin_installer.instance().exportPluginsToManager()" );
 }
 
+void QgsPluginManager::on_ckbDeprecated_toggled( bool state )
+{
+  QString settingsGroup;
+  QgsPythonRunner::eval( "pyplugin_installer.instance().exportSettingsGroup()", settingsGroup );
+  QSettings settings;
+  settings.setValue( settingsGroup + "/allowDeprecated", QVariant( state ) );
+  QgsPythonRunner::run( "pyplugin_installer.installer_data.plugins.rebuild()" );
+  QgsPythonRunner::run( "pyplugin_installer.instance().exportPluginsToManager()" );
+}
 
 
 // PRIVATE METHODS ///////////////////////////////////////////////////////////////////
