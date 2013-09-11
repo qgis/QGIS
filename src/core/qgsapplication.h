@@ -26,6 +26,11 @@
  * Extends QApplication to provide access to QGIS specific resources such
  * as theme paths, database paths etc.
  */
+
+#ifdef ANDROID
+typedef void XEvent;
+#endif
+
 class CORE_EXPORT QgsApplication: public QApplication
 {
     Q_OBJECT
@@ -273,6 +278,13 @@ class CORE_EXPORT QgsApplication: public QApplication
      * @see skippedGdalDrivers
      * @note added in 2.0 */
     static void applyGdalSkippedDrivers();
+
+#ifdef ANDROID
+    //dummy method to workaround sip generation issue issue
+    bool x11EventFilter ( XEvent * event ){
+        return 0;
+    }
+#endif
 
   signals:
     //! @note not available in python bindings

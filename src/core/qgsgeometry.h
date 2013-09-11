@@ -267,6 +267,16 @@ class CORE_EXPORT QgsGeometry
      not disjoint with existing polygons of the feature*/
     int addPart( const QList<QgsPoint> &points );
 
+    /**Adds a new island polygon to a multipolygon feature
+     @return 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring
+     not disjoint with existing polygons of the feature*/
+    int addPart( GEOSGeometry *newPart );
+
+    /**Adds a new island polygon to a multipolygon feature
+     @return 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring
+     not disjoint with existing polygons of the feature*/
+    int addPart( QgsGeometry *newPart );
+
     /**Translate this geometry by dx, dy
      @return 0 in case of success*/
     int translate( double dx, double dy );

@@ -1097,6 +1097,12 @@ int main( int argc, char *argv[] )
   delete mypSplash;
 
   qgis->completeInitialization();
+  
+#if defined(ANDROID)
+  // fix for Qt Ministro hiding app's menubar in favor of native Android menus
+  qgis->menuBar()->setNativeMenuBar( false );
+  qgis->menuBar()->setVisible( true );
+#endif
 
   int retval = myApp.exec();
   delete qgis;

@@ -1,10 +1,10 @@
 QGIS
 Building QGIS from source - step by step
-Saturday July 27, 2013
+Tuesday September 10, 2013
 
 
-Last Updated: Saturday July 27, 2013
-Last Change : Saturday July 27, 2013
+Last Updated: Tuesday September 10, 2013
+Last Change : Tuesday September 10, 2013
 
 
   1. Introduction
@@ -210,8 +210,8 @@ applications is used in all cases:
 Use the simple command line dialog that appears after running each of the
 above commands to select the Qt4 version of the relevant applications.
 
-/!\ Note: For python language bindings SIP >= 4.8 and PyQt4 >= 4.1 is required! Some stable GNU/Linux
-distributions (e.g. Debian or SuSE) only provide SIP < 4.8 and PyQt4 < 4.1. To include support for python 
+/!\ Note: For python language bindings SIP >= 4.5 and PyQt4 >= 4.1 is required! Some stable GNU/Linux
+distributions (e.g. Debian or SuSE) only provide SIP < 4.5 and PyQt4 < 4.1. To include support for python 
 language bindings you may need to build and install those packages from source.
 
 

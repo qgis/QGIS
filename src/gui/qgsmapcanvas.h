@@ -410,6 +410,11 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     /// Handle pattern for implementation object
     std::auto_ptr<CanvasProperties> mCanvasProperties;
 
+    /**debugging member
+       invoked when a connect() is made to this object
+    */
+    void connectNotify( const char * signal );
+
   private slots:
     void crsTransformEnabled( bool );
 
@@ -458,11 +463,6 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
        rendering may put their sizes into this list. The canvas then picks up
        the last entry in case a lot of resize events arrive in short time*/
     QList< QPair<int, int> > mResizeQueue;
-
-    /**debugging member
-       invoked when a connect() is made to this object
-    */
-    void connectNotify( const char * signal );
 
     //! current layer in legend
     QgsMapLayer* mCurrentLayer;

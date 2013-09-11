@@ -59,9 +59,10 @@ class GUI_EXPORT QgsAttributeDialog : public QObject
 
     void dialogDestroyed();
 
-  private:
+  protected:
     bool eventFilter( QObject *obj, QEvent *event );
 
+  private:
     QDialog *mDialog;
     QString mSettingsPath;
     // Used to sync multiple widgets for the same field

@@ -1,68 +1,135 @@
 QGIS News
 Change history for the QGIS Project
-Monday May 20, 2013
+Wednesday September 11, 2013
 
 
 ------------------------------------------------------------------------
 
 
-  1. Whats new in Version 1.8.0 'Lisboa'?
-  2. Whats new in Version 1.7.2 'Wroclaw'?
-  3. Whats new in Version 1.7.1 'Wroclaw'?
-  4. Whats new in Version 1.7.0 'Wroclaw'?
-    4.1. Symbology labels and diagrams
-    4.2. New Tools
-    4.3. User interface updates
-    4.4. CRS Handling
-    4.5. Rasters
-    4.6. Providers and Data Handling
-    4.7. Api and Developer Centric
-    4.8. QGIS Mapserver
-    4.9. Plugins
-    4.10. Printing
-  5. Whats new in Version 1.6.0 'Capiapo'?
-    5.1. General Improvements
-    5.2. Table of contents (TOC) improvements
-    5.3. Labelling (New generation only)
-    5.4. Layer properties and symbology
-    5.5. Map Composer
-  6. Whats new in Version 1.5.0?
-    6.1. Main GUI
-    6.2. WMS and WMS-C Support
-    6.3. API Updates
-  7. Whats new in Version 1.4.0 'Enceladus'?
-  8. Whats new in Version 1.3.0 'Mimas'?
-    8.1. OSM plugin &amp; provider updates
-    8.2. Other notable features and improvements in this release
-  9. Version 1.2.0 'Daphnis'
-    9.1. Editing
-    9.2. Keyboard shortcuts
-    9.3. Map Composer
-    9.4. Attribute tables
-    9.5. Plugins
-    9.6. Projects Management
-    9.7. PostGIS & the PostgreSQL Provider
-    9.8. Symbology enhancements
-    9.9. Command line arguments
-  10. Version 1.0.0 'Kore'
-  11. Version 0.11.0 'Metis'
-  12. Version 0.10.0 'Io'
-  13. Version 0.9.2rc1 'Ganymede'
-  14. Version 0.9.1 'Ganymede'
-  15. Version 0.9 'Ganymede'
-  16. Version 0.8 'Joesephine' .... development version
-  17. Version 0.6 'Simon'
-  18. 0.5
+  1. Whats new in Version 2.0.1 'Dufour'?
+  2. Whats new in Version 2.0.0 'Dufour'?
+  3. Whats new in Version 1.8.0 'Lisboa'?
+  4. Whats new in Version 1.7.2 'Wroclaw'?
+  5. Whats new in Version 1.7.1 'Wroclaw'?
+  6. Whats new in Version 1.7.0 'Wroclaw'?
+  7. Whats new in Version 1.6.0 'Capiapo'?
+  8. Whats new in Version 1.5.0?
+  9. Whats new in Version 1.4.0 'Enceladus'?
+  10. Whats new in Version 1.3.0 'Mimas'?
+  11. Version 1.2.0 'Daphnis'
+  12. Version 1.0.0 'Kore'
+  13. Version 0.11.0 'Metis'
+  14. Version 0.10.0 'Io'
+  15. Version 0.9.2rc1 'Ganymede'
+  16. Version 0.9.1 'Ganymede'
+  17. Version 0.9 'Ganymede'
+  18. Version 0.8 'Joesephine' .... development version
+  19. Version 0.6 'Simon'
+  20. 0.5
 
 
 ------------------------------------------------------------------------
 
 
-Last Updated: Monday May 20, 2013
-Last Change : Monday May 20, 2013
+Last Updated: Wednesday September 11, 2013
+Last Change : Wednesday September 11, 2013
 
 
-  1. Whats new in Version 1.8.0 'Lisboa'?
+  1. Whats new in Version 2.0.1 'Dufour'?
+  =======================================
+
+This is a small bugfix release to address the missing copyright / credits for
+our new splash screen and to update supporting documentation. The spanish 
+translation was also updated.
+
+
+  2. Whats new in Version 2.0.0 'Dufour'?
+  =======================================
+
+This is a new major release. Building on the foundation of
+QGIS 1.x.x releases, QGIS Dufour introduces many new features,
+improvements and bug fixes. Here is a summary of some of the
+key new features.
+
+- We have updated out icon theme to use the 'GIS' theme which introduces
+      an improved level of consistency and professionalism to the QGIS user
+      interface.
+- The new symbol layer overview uses a clear, tree-structured layout
+      which allows for easy and fast access to all symbol layers.
+- QGIS 2.0 now includes Oracle Spatial support.
+- With the new data defined properties, it is possible to control symbol
+      type, size, color, rotation, and many other properties through feature
+      attributes.
+- You can now place html elements onto your map.
+- Having nicely aligned map items is critical to making nice printed
+      maps. Auto snapping lines have been added to allow for easy composer
+      object alignment by simply dragging an object close to another.
+- Sometimes you need to align objects a curtain distance on the composer.
+      With the new manual snapping lines you are able to add manual snap lines
+      which allow for better align objects using a common alignment. Simply
+      drag from the top or side ruler to add new guide line.
+- Ever needed to generate a map series? Of course you have. The composer
+      now includes built in map series generation using the atlas feature.
+      Coverage layers can be points, lines, polygons, and the current feature
+      attribute data is available in labels for on the fly value replacement.
+- A single composer window can now contain more then one page.
+- The composer label item in 1.8 was quite limited and only allowed a single
+      token $CURRENT_DATE to be used. In 2.0 full expression support has been
+      added too greater power and control of the final labels.
+- The map frame now contains the ability to show the extents of another
+      map and will update when moved. Using this with the atlas generation
+      feature now core in the composer allows for some slick map generation.
+      Overview frame style uses the same styling as a normal map polygon
+      object so your creativity is never restricted.
+- Layer blending makes it possible to combine layers in new and exciting
+      ways. While in older versions, all you could do was to make the layer
+      transparent, you can now choose between much more advanced options such as
+      "multiply", "darken only", and many more. Blending can be used in the
+      normal map view as well as in print composer.
+- HTML support has been added map composer label item to give you even
+      more control over your final maps. HTML labels support full css styles
+      sheets, html, and even javascript if you are that way inclined.
+- The labelling system has been totally overhauled - it now includes many
+      new features such as drop shadows, 'highway shields', many more data bound
+      options, and various performance enhancements. We are slowly doing away
+      with the 'old labels' system, although you will still find that
+      functionality available for this release, you should expect that it will
+      disappear in a follow up release.
+- The full power of normal label and rule expressions can now be used for
+      label properties. Nearly every property can be defined with an expression
+      or field value giving you more control over the label result. Expressions
+      can refer to a field (e.g. set the font size to the value of the field
+      'font') or can include more complex logic. Examples of bindable
+      properties include: Font, Size, Style and Buffer size.
+- With the expression engine being used more and more though out QGIS to
+      allow for things like expression based labels and symbol, many more
+      functions have been added to the expression builder and are all accessible
+      though the expression builder. All functions include comprehensive help
+      and usage guides for ease of use.
+- If the expression engine doesn't have the function that you need. Not to
+      worry. New functions can be added via a plugin using a simple Python API.
+- The Python API has been revamped to allow for a more cleaner, more
+      pythonic, programming experience. The QGIS 2.0 API uses SIP V2 which
+      removes the messy toString(), toInt() logic that was needed when working
+      with values. Types are now converted into native Python types making for a
+      much nicer API. Attributes access is now done on the feature itself using
+      a simple key lookup, no more index lookup and attribute maps.
+      Note: Most plugins written for QGIS < 1.x will need to be
+        ported to work correctly in QGIS 2.x. Please consult
+        http://hub.qgis.org/wiki/quantum-gis/Python_plugin_API_changes_from_18_to_20
+        for more details.
+- The raster data provider system has been completely overhauled. One of
+      the best new features stemming from this work is the ability to 'Layer ->
+      Save As...' to save any raster layer as a new layer. In the process you
+      can clip, resample, and reproject the layer to a new Coordinate Reference
+      System. You can also save a raster layer as a rendered image so if you for
+      example have single band raster that you have applied a colour palette to,
+      you can save the rendered layer out to a georeferenced RGB layer.
+- There are many, many more new features  in QGIS 2.0 - we invite
+      you to explore the software and discover them all!
+
+
+  3. Whats new in Version 1.8.0 'Lisboa'?
   =======================================
 
 This is a new feature release. Building on the foundation of
@@ -117,7 +184,7 @@ added gdal_fillnodata to GDALTools plugin
 - Support for nesting projects within other projects
 
 
-  2. Whats new in Version 1.7.2 'Wroclaw'?
+  4. Whats new in Version 1.7.2 'Wroclaw'?
   ========================================
 
 This is a bugfix release over version 1.7.1. The following changes
@@ -164,7 +231,7 @@ were made.
 - Fix broken Assign projection functionality in GDALTools and improve handling output file extension
 
 
-  3. Whats new in Version 1.7.1 'Wroclaw'?
+  5. Whats new in Version 1.7.1 'Wroclaw'?
   ========================================
 
 This is a bugfix release over version 1.7.0. The following changes 
@@ -227,7 +294,7 @@ http://linfiniti.com/2011/08/improvements-to-raster-performance-in-qgis-master/]
 - Fixed a bug where map= was not being published in onlineresource url when project files are not in the same dir as cgi
 
 
-  4. Whats new in Version 1.7.0 'Wroclaw'?
+  6. Whats new in Version 1.7.0 'Wroclaw'?
   ========================================
 
 This release is named after the town of Wroclaw in Poland. The Department of
@@ -244,7 +311,7 @@ enhancements. Once again it is impossible to document everything here that has
 changed so we will just provide a bullet list of key new features here.
 
 
-  4.1. Symbology labels and diagrams
+  6.1. Symbology labels and diagrams
   ==================================
 
 - New symbology now used by default!
@@ -262,7 +329,7 @@ changed so we will just provide a bullet list of key new features here.
 - Move/rotate/change label edit tools to interactively change data defined label properties.
 
 
-  4.2. New Tools
+  6.2. New Tools
   ==============
 
 - Added GUI for gdaldem.
@@ -271,7 +338,7 @@ changed so we will just provide a bullet list of key new features here.
 - Added voronoi polygon tool to Vector menu.
 
 
-  4.3. User interface updates
+  6.3. User interface updates
   ===========================
 
 - Allow managing missing layers in a list.
@@ -282,7 +349,7 @@ changed so we will just provide a bullet list of key new features here.
 - General clean-ups and usability improvements.
 
 
-  4.4. CRS Handling
+  6.4. CRS Handling
   =================
 
 - Show active crs in status bar.
@@ -292,7 +359,7 @@ changed so we will just provide a bullet list of key new features here.
 - Default to last selection when prompting for CRS.
 
 
-  4.5. Rasters
+  6.5. Rasters
   ============
 
 - Added AND and OR operator for raster calculator
@@ -301,7 +368,7 @@ changed so we will just provide a bullet list of key new features here.
 - Added raster toolbar with histogram stretch functions.
 
 
-  4.6. Providers and Data Handling
+  6.6. Providers and Data Handling
   ================================
 
 - New SQLAnywhere vector provider.
@@ -327,7 +394,7 @@ changed so we will just provide a bullet list of key new features here.
  - Allow OGR 'save as' without attributes (for eg. DGN/DXF).
 
 
-  4.7. Api and Developer Centric
+  6.7. Api and Developer Centric
   ==============================
 
 - Refactored attribute dialog calls to QgsFeatureAttribute.
@@ -339,7 +406,7 @@ changed so we will just provide a bullet list of key new features here.
   new QgsGeometry.validateGeometry function
 
 
-  4.8. QGIS Mapserver
+  6.8. QGIS Mapserver
   ===================
 
 - Ability to specify wms service capabilities in the properties 
@@ -347,7 +414,7 @@ changed so we will just provide a bullet list of key new features here.
 - Support for wms printing with GetPrint-Request.
 
 
-  4.9. Plugins
+  6.9. Plugins
   ============
 
 - Support for icons of plugins in the plugin manager dialog.
@@ -355,13 +422,13 @@ changed so we will just provide a bullet list of key new features here.
 - Removed ogr converter plugin - use 'save as' context menu rather.
 
 
-  4.10. Printing
+  6.10. Printing
   ==============
 
 - Undo/Redo support for the print composer
 
 
-  5. Whats new in Version 1.6.0 'Capiapo'?
+  7. Whats new in Version 1.6.0 'Capiapo'?
   ========================================
 
 Please note that this is a release in our 'cutting edge' release series. As
@@ -373,7 +440,7 @@ Once again it is impossible to document everything here that has changed so we w
 just provide a bullet list of key new features here.
 
 
-  5.1. General Improvements
+  7.1. General Improvements
   =========================
 
 - Added gpsd support to live gps tracking.
@@ -407,7 +474,7 @@ caching providers (currently WMS and WFS) can synchronize with changes in
 the datasource.
 
 
-  5.2. Table of contents (TOC) improvements
+  7.2. Table of contents (TOC) improvements
   =========================================
 
 - Added a new option to the raster legend menu that will stretch the current
@@ -417,14 +484,14 @@ as' option, you can now specify OGR creation options.
 - In the table of contents, it is now possible to select and remove several layers at once.
 
 
-  5.3. Labelling (New generation only)
+  7.3. Labelling (New generation only)
   ====================================
 
 - Data defined label position in labeling-ng.
 - Line wrapping, data defined font and buffer settings for labeling-ng.
 
 
-  5.4. Layer properties and symbology
+  7.4. Layer properties and symbology
   ===================================
 
 - Three new classification modes added to graduated symbol renderer (version
@@ -445,7 +512,7 @@ the transparency table in the raster layer properties dialog.
 the style manager more easily.
 
 
-  5.5. Map Composer
+  7.5. Map Composer
   =================
 
 - add capability to show and manipulate composer item width/ height in item
@@ -454,7 +521,7 @@ position dialog.
 - Sorting for composer attribute table (several columns and ascending / descending).
 
 
-  6. Whats new in Version 1.5.0?
+  8. Whats new in Version 1.5.0?
   ==============================
 
 Please note that this is a release in our 'cutting edge' release series. As
@@ -469,7 +536,7 @@ Once again it is impossible to document everything here that has changed so we w
 just provide a bullet list of key new features here.
 
 
-  6.1. Main GUI
+  8.1. Main GUI
   =============
 
 - There is a new angle measuring tool that allows you to interactively
@@ -524,7 +591,7 @@ only visible features in composer table or all features
 closed and reappears when reactivated.
 
 
-  6.2. WMS and WMS-C Support
+  8.2. WMS and WMS-C Support
   ==========================
 
 - WMS-C support, new spatial authorities, wms selection improvements
@@ -537,7 +604,7 @@ IGNF definitions in srs.db
 - WMS-C scale slider gui added and more selection improvements
 
 
-  6.3. API Updates
+  8.3. API Updates
   ================
 
 - QgsDataProvider &amp; QgsMapLayer: add dataChanged() signal, so that a
@@ -554,7 +621,7 @@ variables. More paths can be passed, separated by semicolon.
 - Support more GEOS operators
 
 
-  7. Whats new in Version 1.4.0 'Enceladus'?
+  9. Whats new in Version 1.4.0 'Enceladus'?
   ==========================================
 
 Please note that this is a release in our 'cutting edge' release series. As
@@ -612,14 +679,14 @@ For power users, you can now create customizable attribute forms using Qt
 Designer dialog UIs.
 
 
-  8. Whats new in Version 1.3.0 'Mimas'?
-  ======================================
+  10. Whats new in Version 1.3.0 'Mimas'?
+  =======================================
 
 This release includes over 30 bug fixes and several useful new features:
 
 
-  8.1. OSM plugin &amp; provider updates
-  ======================================
+  10.1. OSM plugin &amp; provider updates
+  =======================================
 
 - new OSM style files.
 - new icons.
@@ -630,8 +697,8 @@ This release includes over 30 bug fixes and several useful new features:
 - other OSM related bugfixes.
 
 
-  8.2. Other notable features and improvements in this release
-  ============================================================
+  10.2. Other notable features and improvements in this release
+  =============================================================
 
 - Marker size is now configurable when editing a layer.
 - Incorporation of the analysis library into the mainstream release.
@@ -645,8 +712,8 @@ This release includes over 30 bug fixes and several useful new features:
 - Zoom to a coordinate by entering it in the status bar coordinate display.
 
 
-  9. Version 1.2.0 'Daphnis'
-  ==========================
+  11. Version 1.2.0 'Daphnis'
+  ===========================
 
 Please note that this is a release in our 'cutting edge' release series. As 
 such it contains new features and extends the programmatic interface over 
@@ -658,8 +725,8 @@ over the QGIS 1.1.0 release. In addition we have added
 the following new features:
 
 
-  9.1. Editing
-  ============
+  11.1. Editing
+  =============
 
 Editing functionality in QGIS has had a major update in this release. This
 includes the addition of new vector editing tools:
@@ -690,15 +757,15 @@ this tool: the redraws are much faster and the map is not cluttered with
 markers. 
 
 
-  9.2. Keyboard shortcuts
-  =======================
+  11.2. Keyboard shortcuts
+  ========================
 
 New feature: configure shortcuts for actions within main window of qgis!
 See menu Setting->Configure shortcuts
 
 
-  9.3. Map Composer
-  =================
+  11.3. Map Composer
+  ==================
 
 It is now possible to lock/unlock composer item positions by right mouse click.
 The width and height of the composer map will now remain fixed if user sets the
@@ -708,8 +775,8 @@ It is now possible to keep the current layers in a composer map even if further
 layers are added to the main map. Export to PDF in composer is now possible.
 
 
-  9.4. Attribute tables
-  =====================
+  11.4. Attribute tables
+  ======================
 
 It is now possible to search the attribute table within selected records only.
 General speedups have been made on the attribute table. Setting of field width
@@ -724,8 +791,8 @@ for layer attributes.  A new dialog allows loading a value map from a layer
 be respected in the attribute table.
 
 
-  9.5. Plugins
-  ============
+  11.5. Plugins
+  =============
 
 - The order of layers in the WMS dialog can now be changed.
 - The eVis plugin, version 1.1.0, has been added to the QGIS project and
@@ -737,15 +804,15 @@ be respected in the attribute table.
 - An new OpenStreetMap provider and plugin have been added to QGIS.
 
 
-  9.6. Projects Management
-  ========================
+  11.6. Projects Management
+  =========================
 
 QGIS now includes support for  project relative position of file data sources
 and svgs. The saving of relative paths of file data sources is optional.
 
 
-  9.7. PostGIS & the PostgreSQL Provider
-  ======================================
+  11.7. PostGIS & the PostgreSQL Provider
+  =======================================
 
 You can now select the SSL mode when adding a new DB connection. Turning off
 SSL encryption can greatly improve performance of PostGIS data loading where
@@ -753,8 +820,8 @@ connection security is not required. Support has been added for more native
 types and for setting of column comments.
 
 
-  9.8. Symbology enhancements
-  ===========================
+  11.8. Symbology enhancements
+  ============================
 
 - allow refresh of symbols via popup menu on the renderer's symbol selection
 - add support for data defined symbols
@@ -763,8 +830,8 @@ types and for setting of column comments.
   independent of the mapscale)
 
 
-  9.9. Command line arguments
-  ===========================
+  11.9. Command line arguments
+  ============================
 
 Added command line argument support on windows.
 Enhancement of command line arguments:
@@ -834,7 +901,7 @@ implementation based on the SQLITE database.
 layers based on attribute data.
 
 
-  10. Version 1.0.0 'Kore'
+  12. Version 1.0.0 'Kore'
   ========================
 
 This release includes over 265 bug fixes and enhancements over the 
@@ -863,7 +930,7 @@ running will support a plugin that is being installed.
 - Ported all GDAL/OGR and GEOS usage to use C APIs only.
 
 
-  11. Version 0.11.0 'Metis'
+  13. Version 0.11.0 'Metis'
   ==========================
 
 This release includes over 60 bug fixes and enhancements over the 
@@ -879,7 +946,7 @@ QGIS 0.10.0 release. In addition we have made the following changes:
 - QML Style support for rasters and database layers
 
 
-  12. Version 0.10.0 'Io'
+  14. Version 0.10.0 'Io'
   =======================
 
 This release includes over 120 bug fixes and enchancements 
@@ -900,7 +967,7 @@ improvements 'under the hood'.
 - Support for migration of old projects to work in newer QGIS versions.
 
 
-  13. Version 0.9.2rc1 'Ganymede'
+  15. Version 0.9.2rc1 'Ganymede'
   ===============================
 
 - This release candidate includes over 40 bug fixes and enchancements 
@@ -917,7 +984,7 @@ in raster layers. Support for color ramps in raster layers.
 improvements 'under the hood'.
 
 
-  14. Version 0.9.1 'Ganymede'
+  16. Version 0.9.1 'Ganymede'
   ============================
 
 This is a bug fix release
@@ -930,7 +997,7 @@ This is a bug fix release
 - Python Plugin installer to install PyQGIS plugins from the repository
 
 
-  15. Version 0.9 'Ganymede'
+  17. Version 0.9 'Ganymede'
   ==========================
 
 - Python bindings - This is the major focus of this release
@@ -945,7 +1012,7 @@ This is a bug fix release
 - Improvements to the GeoReferencer
 
 
-  16. Version 0.8 'Joesephine' .... development version
+  18. Version 0.8 'Joesephine' .... development version
   =====================================================
 
 - 2006-01-23 [timlinux] 0.7.9.10 Dropped use of qpicture and resampling for point markers in favour of
@@ -969,7 +1036,7 @@ over time,
 grid_maker plugin
 
 
-  17. Version 0.6 'Simon'
+  19. Version 0.6 'Simon'
   =======================
 
 QGIS Change Log
@@ -1057,7 +1124,7 @@ under construction.
  save or save as (if not specified by the user). 
 
 
-  18. 0.5
+  20. 0.5
   =======
 
 - 2004-12-01 [gsherman] 0.5.0devel30 Added functions to qgsdataprovider.h to support updating the feature count

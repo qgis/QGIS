@@ -262,6 +262,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionMoveFeature() { return mActionMoveFeature; }
     QAction *actionRotateFeature() { return mActionRotateFeature;}
     QAction *actionSplitFeatures() { return mActionSplitFeatures; }
+    QAction *actionSplitParts() { return mActionSplitParts; }
     QAction *actionAddRing() { return mActionAddRing; }
     QAction *actionAddPart() { return mActionAddPart; }
     QAction *actionSimplifyFeature() { return mActionSimplifyFeature; }
@@ -622,6 +623,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! reimplements widget keyPress event so we can check if cancel was pressed
     virtual void keyPressEvent( QKeyEvent * event );
 
+#ifdef ANDROID
+    //! reimplements widget keyReleaseEvent event so we can check if back was pressed
+    virtual void keyReleaseEvent( QKeyEvent * event );
+#endif
+
 #ifdef Q_OS_WIN
     //! reimplements context menu event
     virtual void contextMenuEvent( QContextMenuEvent *event );
@@ -914,6 +920,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void reshapeFeatures();
     //! activates the split features tool
     void splitFeatures();
+    //! activates the split parts tool
+    void splitParts();
     //! activates the add ring tool
     void addRing();
     //! activates the add part tool
@@ -1327,6 +1335,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
         QgsMapTool* mOffsetCurve;
         QgsMapTool* mReshapeFeatures;
         QgsMapTool* mSplitFeatures;
+        QgsMapTool* mSplitParts;
         QgsMapTool* mSelect;
         QgsMapTool* mSelectRectangle;
         QgsMapTool* mSelectPolygon;

@@ -17,6 +17,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgsgeometrycache.h"
 #include "qgsvectorlayereditbuffer.h"
+#include "qgslogger.h"
 
 #include <limits>
 
@@ -295,6 +296,132 @@ int QgsVectorLayerEditUtils::splitFeatures( const QList<QgsPoint>& splitLine, bo
   return returnCode;
 }
 
+int QgsVectorLayerEditUtils::splitParts( const QList<QgsPoint>& splitLine, bool topologicalEditing )
+{
+  if ( !L->hasGeometryType() )
+    return 4;
+
+  double xMin, yMin, xMax, yMax;
+  QgsRectangle bBox; //bounding box of the split line
+  int returnCode = 0;
+  int splitFunctionReturn; //return code of QgsGeometry::splitGeometry
+  int numberOfSplittedParts = 0;
+
+  QgsFeatureList featureList;
+  const QgsFeatureIds selectedIds = L->selectedFeaturesIds();
+
+  if ( selectedIds.size() > 0 ) //consider only the selected features if there is a selection
+  {
+    featureList = L->selectedFeatures();
+  }
+  else //else consider all the feature that intersect the bounding box of the split line
+  {
+    if ( boundingBoxFromPointList( splitLine, xMin, yMin, xMax, yMax ) == 0 )
+    {
+      bBox.setXMinimum( xMin ); bBox.setYMinimum( yMin );
+      bBox.setXMaximum( xMax ); bBox.setYMaximum( yMax );
+    }
+    else
+    {
+      return 1;
+    }
+
+    if ( bBox.isEmpty() )
+    {
+      //if the bbox is a line, try to make a square out of it
+      if ( bBox.width() == 0.0 && bBox.height() > 0 )
+      {
+        bBox.setXMinimum( bBox.xMinimum() - bBox.height() / 2 );
+        bBox.setXMaximum( bBox.xMaximum() + bBox.height() / 2 );
+      }
+      else if ( bBox.height() == 0.0 && bBox.width() > 0 )
+      {
+        bBox.setYMinimum( bBox.yMinimum() - bBox.width() / 2 );
+        bBox.setYMaximum( bBox.yMaximum() + bBox.width() / 2 );
+      }
+      else
+      {
+        return 2;
+      }
+    }
+
+    QgsFeatureIterator fit = L->getFeatures( QgsFeatureRequest().setFilterRect( bBox ).setFlags( QgsFeatureRequest::ExactIntersect ) );
+
+    QgsFeature f;
+    while ( fit.nextFeature( f ) )
+      featureList << QgsFeature( f );
+  }
+
+  int addPartRet;
+  foreach ( const QgsFeature& feat, featureList )
+  {
+    QList<QgsGeometry*> newGeometries;
+    QList<QgsPoint> topologyTestPoints;
+    splitFunctionReturn = feat.geometry()->splitGeometry( splitLine, newGeometries, topologicalEditing, topologyTestPoints );
+    if ( splitFunctionReturn == 0 )
+    {
+      //add new parts
+      for ( int i = 0; i < newGeometries.size(); ++i )
+      {
+        addPartRet = feat.geometry()->addPart( newGeometries.at( i ) );
+        if ( addPartRet != 0 )
+          break;
+      }
+
+      // For test only: Exception already thrown here...
+      // feat.geometry()->asWkb();
+
+      if ( addPartRet == 0 )
+      {
+        L->editBuffer()->changeGeometry( feat.id(), feat.geometry() );
+      }
+      else
+      {
+        // Test addPartRet
+        switch ( addPartRet )
+        {
+          case 1:
+            QgsDebugMsg( "Not a multipolygon" );
+            break;
+
+          case 2:
+            QgsDebugMsg( "Not a valid geometry" );
+            break;
+
+          case 3:
+            QgsDebugMsg( "New polygon ring" );
+            break;
+        }
+      }
+      L->editBuffer()->changeGeometry( feat.id(), feat.geometry() );
+
+      if ( topologicalEditing )
+      {
+        QList<QgsPoint>::const_iterator topol_it = topologyTestPoints.constBegin();
+        for ( ; topol_it != topologyTestPoints.constEnd(); ++topol_it )
+        {
+          addTopologicalPoints( *topol_it );
+        }
+      }
+      ++numberOfSplittedParts;
+    }
+    else if ( splitFunctionReturn > 1 ) //1 means no split but also no error
+    {
+      returnCode = splitFunctionReturn;
+    }
+
+    qDeleteAll( newGeometries );
+  }
+
+  if ( numberOfSplittedParts == 0 && selectedIds.size() > 0  && returnCode == 0)
+  {
+    //There is a selection but no feature has been split.
+    //Maybe user forgot that only the selected features are split
+    returnCode = 4;
+  }
+
+  return returnCode;
+}
 
 
 int QgsVectorLayerEditUtils::addTopologicalPoints( QgsGeometry* geom )
