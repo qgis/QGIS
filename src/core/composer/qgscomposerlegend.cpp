@@ -347,13 +347,62 @@ QgsComposerLegend::Nucleon QgsComposerLegend::drawSymbolItem( QgsComposerLegendI
   }
   else if ( rasterItem )
   {
-    if ( painter )
+    // manage icon lenged for wms
+    // actual code recognise it's a legend becaouse it has icon and text is empty => this is a
+    // good MV pattern implementation :(
+    QIcon symbolIcon = symbolItem->icon();
+    if ( !symbolIcon.isNull() && symbolItem->text().isEmpty() )
     {
-      painter->setBrush( rasterItem->color() );
-      painter->drawRect( QRectF( point.x(), point.y() + ( itemHeight - mSymbolHeight ) / 2, mSymbolWidth, mSymbolHeight ) );
+//       // get LegendGraphic from item data Qt::UserRole
+//       QVariant container = symbolItem->data();
+//       if ( !container.isNull() && container.canConvert<QPixmap>() ) {
+// //         QPixmap pixmap = container.value<QPixmap>();
+//         QPixmap pixmap = container.value<QPixmap>();
+//         if ( !pixmap.isNull() )
+//         {
+//           if (painter) painter->drawPixmap( point.x(), point.y() + ( itemHeight - mSymbolHeight ) / 2, pixmap);
+// 
+//           symbolSize.rwidth() = pixmap.width();
+//           symbolSize.rheight() = pixmap.height();
+//         }
+//       }
+
+      // find max size
+      QList<QSize> sizes = symbolIcon.availableSizes();
+      double maxWidth = 0;
+      double maxHeight = 0;
+      foreach ( QSize size, sizes )
+      {
+        QgsDebugMsg(QString("a size width: %1 - Max height: %2").arg(size.width()).arg(size.height()));
+        if ( maxWidth < size.width() ) maxWidth = size.width();
+        if ( maxHeight < size.height() ) maxHeight = size.height();
+      }
+      QSize maxSize(maxWidth, maxHeight);
+      QgsDebugMsg(QString("Max width: %1 - Max height: %2").arg(mSymbolWidth).arg(mSymbolHeight));
+
+      // get pixmap
+      QPixmap pixmap = symbolIcon.pixmap(maxWidth, maxHeight);
+      pixmap = pixmap.scaled( maxWidth/2, maxHeight/2, Qt::KeepAspectRatioByExpanding );
+
+      // scale Icon
+      if ( painter )
+      {
+        symbolIcon.paint( painter, point.x(), point.y() + ( itemHeight - mSymbolHeight ) / 2, maxWidth, maxHeight );
+//         painter->drawPixmap( point.x(), point.y() + ( itemHeight - mSymbolHeight ) / 2, pixmap);
+      }
+      symbolSize.rwidth() = maxWidth;
+      symbolSize.rheight() = maxHeight;
     }
-    symbolSize.rwidth() = mSymbolWidth;
-    symbolSize.rheight() = mSymbolHeight;
+    else
+    {
+      if ( painter )
+      {
+        painter->setBrush( rasterItem->color() );
+        painter->drawRect( QRectF( point.x(), point.y() + ( itemHeight - mSymbolHeight ) / 2, mSymbolWidth, mSymbolHeight ) );
+      }
+      symbolSize.rwidth() = mSymbolWidth;
+      symbolSize.rheight() = mSymbolHeight;
+    }
   }
   else //item with icon?
   {
