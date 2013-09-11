@@ -24,14 +24,10 @@ __copyright__ = '(C) 2013, Alexander Bruy'
 __revision__ = '$Format:%H$'
 
 import math
-
 from PyQt4.QtCore import *
-
 from qgis.core import *
-
+from processing.tools import dataobjects, vector
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.QGisLayers import QGisLayers
-
 from processing.parameters.ParameterVector import ParameterVector
 from processing.parameters.ParameterNumber import ParameterNumber
 from processing.parameters.ParameterBoolean import ParameterBoolean
@@ -58,12 +54,12 @@ class PointsDisplacement(GeoAlgorithm):
         horizontal = self.getParameterValue(self.HORIZONTAL)
         output = self.getOutputFromName(self.OUTPUT_LAYER)
 
-        layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT_LAYER))
+        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_LAYER))
 
         provider = layer.dataProvider()
         writer = output.getVectorWriter(provider.fields(), provider.geometryType(), provider.crs())
 
-        features = QGisLayers.features(layer)
+        features = vector.features(layer)
 
         current = 0
         total = 100.0 / len(features)

@@ -24,25 +24,18 @@ __copyright__ = '(C) 2013, Alexander Bruy'
 __revision__ = '$Format:%H$'
 
 from PyQt4.QtCore import *
-
 import numpy
 from osgeo import gdal, ogr, osr
-
 from qgis.core import *
-
+from processing.tools.raster import mapToPixel
+from processing.tools import dataobjects, vector
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.QGisLayers import QGisLayers
-
 from processing.parameters.ParameterVector import ParameterVector
 from processing.parameters.ParameterRaster import ParameterRaster
 from processing.parameters.ParameterString import ParameterString
 from processing.parameters.ParameterNumber import ParameterNumber
 from processing.parameters.ParameterBoolean import ParameterBoolean
-
 from processing.outputs.OutputVector import OutputVector
-
-from processing.algs.ftools import FToolsUtils as ftools_utils
-from processing.algs import QGISUtils as utils
 
 class ZonalStatistics(GeoAlgorithm):
 
@@ -65,7 +58,7 @@ class ZonalStatistics(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT_LAYER, "Output layer"))
 
     def processAlgorithm(self, progress):
-        layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT_VECTOR))
+        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_VECTOR))
 
         rasterPath = unicode(self.getParameterValue(self.INPUT_RASTER))
         bandNumber = self.getParameterValue(self.RASTER_BAND)
@@ -99,8 +92,8 @@ class ZonalStatistics(GeoAlgorithm):
             yMin = rasterBBox.yMinimum()
             yMax = rasterBBox.yMaximum()
 
-            startColumn, startRow = utils.mapToPixel(xMin, yMax, geoTransform)
-            endColumn, endRow = utils.mapToPixel(xMax, yMin, geoTransform)
+            startColumn, startRow = mapToPixel(xMin, yMax, geoTransform)
+            endColumn, endRow = mapToPixel(xMax, yMin, geoTransform)
 
             width = endColumn - startColumn
             height = endRow - startRow
@@ -120,15 +113,15 @@ class ZonalStatistics(GeoAlgorithm):
         memRasterDriver = gdal.GetDriverByName("MEM")
 
         fields = layer.pendingFields()
-        idxMin, fields = ftools_utils.findOrCreateField(layer, fields, columnPrefix + "min", 21, 6)
-        idxMax, fields = ftools_utils.findOrCreateField(layer, fields, columnPrefix + "max", 21, 6)
-        idxSum, fields = ftools_utils.findOrCreateField(layer, fields, columnPrefix + "sum", 21, 6)
-        idxCount, fields = ftools_utils.findOrCreateField(layer, fields, columnPrefix + "count", 21, 6)
-        idxMean, fields = ftools_utils.findOrCreateField(layer, fields, columnPrefix + "mean", 21, 6)
-        idxStd, fields = ftools_utils.findOrCreateField(layer, fields, columnPrefix + "std", 21, 6)
-        idxUnique, fields = ftools_utils.findOrCreateField(layer, fields, columnPrefix + "unique", 21, 6)
-        idxRange, fields = ftools_utils.findOrCreateField(layer, fields, columnPrefix + "range", 21, 6)
-        idxCV, fields = ftools_utils.findOrCreateField(layer, fields, columnPrefix + "cv", 21, 6)
+        idxMin, fields = vector.findOrCreateField(layer, fields, columnPrefix + "min", 21, 6)
+        idxMax, fields = vector.findOrCreateField(layer, fields, columnPrefix + "max", 21, 6)
+        idxSum, fields = vector.findOrCreateField(layer, fields, columnPrefix + "sum", 21, 6)
+        idxCount, fields = vector.findOrCreateField(layer, fields, columnPrefix + "count", 21, 6)
+        idxMean, fields = vector.findOrCreateField(layer, fields, columnPrefix + "mean", 21, 6)
+        idxStd, fields = vector.findOrCreateField(layer, fields, columnPrefix + "std", 21, 6)
+        idxUnique, fields = vector.findOrCreateField(layer, fields, columnPrefix + "unique", 21, 6)
+        idxRange, fields = vector.findOrCreateField(layer, fields, columnPrefix + "range", 21, 6)
+        idxCV, fields = vector.findOrCreateField(layer, fields, columnPrefix + "cv", 21, 6)
         #idxMedian, fields = ftools_utils.findOrCreateField(layer, fields, columnPrefix + "median", 21, 6)
 
         writer = self.getOutputFromName(self.OUTPUT_LAYER).getVectorWriter(fields.toList(),
@@ -140,7 +133,7 @@ class ZonalStatistics(GeoAlgorithm):
         outFeat.setFields(fields)
 
         current = 0
-        features = QGisLayers.features(layer)
+        features = vector.features(layer)
         total = 100.0 / len(features)
         for f in features:
             geom = f.geometry()
@@ -156,8 +149,8 @@ class ZonalStatistics(GeoAlgorithm):
                 yMin = bbox.yMinimum()
                 yMax = bbox.yMaximum()
 
-                startColumn, startRow = utils.mapToPixel(xMin, yMax, geoTransform)
-                endColumn, endRow = utils.mapToPixel(xMax, yMin, geoTransform)
+                startColumn, startRow = mapToPixel(xMin, yMax, geoTransform)
+                endColumn, endRow = mapToPixel(xMax, yMin, geoTransform)
 
                 width = endColumn - startColumn
                 height = endRow - startRow

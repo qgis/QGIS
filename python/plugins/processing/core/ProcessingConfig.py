@@ -54,8 +54,8 @@ class ProcessingConfig():
     def initialize():
         icon =  QtGui.QIcon(os.path.dirname(__file__) + "/../images/alg.png")
         ProcessingConfig.settingIcons["General"] = icon
-        ProcessingConfig.addSetting(Setting("General", ProcessingConfig.USE_THREADS, "Run algorithms in a new thread", True))
-        ProcessingConfig.addSetting(Setting("General", ProcessingConfig.SHOW_DEBUG_IN_DIALOG, "Show extra info in Log panel (threaded execution only)", True))
+        ProcessingConfig.addSetting(Setting("General", ProcessingConfig.USE_THREADS, "Run algorithms in a new thread (unstable)", False))
+        ProcessingConfig.addSetting(Setting("General", ProcessingConfig.SHOW_DEBUG_IN_DIALOG, "Show extra info in Log panel", True))
         ProcessingConfig.addSetting(Setting("General", ProcessingConfig.KEEP_DIALOG_OPEN, "Keep dialog open after running an algorithm", False))
         ProcessingConfig.addSetting(Setting("General", ProcessingConfig.USE_SELECTED, "Use only selected features", True))
         ProcessingConfig.addSetting(Setting("General", ProcessingConfig.TABLE_LIKE_PARAM_PANEL, "Show table-like parameter panels", False))

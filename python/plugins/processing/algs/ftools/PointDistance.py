@@ -143,7 +143,7 @@ class PointDistance(GeoAlgorithm):
 
         first = True
         current = 0
-        features = QGisLayers.features(inLayer)
+        features = vector.features(inLayer)
         total = 100.0 / float(len(features))
 
         for inFeat in features:

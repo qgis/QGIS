@@ -23,21 +23,15 @@ __copyright__ = '(C) 2013, Alexander Bruy'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-
 from osgeo import gdal
-
 from qgis.core import *
-
+from PyQt4.QtCore import *
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.QGisLayers import QGisLayers
-
 from processing.parameters.ParameterRaster import ParameterRaster
 from processing.parameters.ParameterVector import ParameterVector
-
 from processing.outputs.OutputVector import OutputVector
-
-from processing.algs import QGISUtils as utils
+from processing.tools import dataobjects, vector
+from processing.tools.general import *
 
 class PointsFromPolygons(GeoAlgorithm):
 
@@ -55,7 +49,7 @@ class PointsFromPolygons(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT_LAYER, "Output layer"))
 
     def processAlgorithm(self, progress):
-        layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT_VECTOR))
+        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_VECTOR))
 
         rasterPath = unicode(self.getParameterValue(self.INPUT_RASTER))
 
@@ -79,7 +73,7 @@ class PointsFromPolygons(GeoAlgorithm):
         pointId = 0
 
         current = 0
-        features = QGisLayers.features(layer)
+        features = vector.features(layer)
         total = 100.0 / len(features)
         for f in features:
             geom = f.geometry()
@@ -90,12 +84,12 @@ class PointsFromPolygons(GeoAlgorithm):
             yMin = bbox.yMinimum()
             yMax = bbox.yMaximum()
 
-            startRow, startColumn = utils.mapToPixel(xMin, yMax, geoTransform)
-            endRow, endColumn = utils.mapToPixel(xMax, yMin, geoTransform)
+            startRow, startColumn = mapToPixel(xMin, yMax, geoTransform)
+            endRow, endColumn = mapToPixel(xMax, yMin, geoTransform)
 
             for row in xrange(startRow, endRow + 1):
                 for col in xrange(startColumn, endColumn + 1):
-                    x, y = utils.pixelToMap(row, col, geoTransform)
+                    x, y = pixelToMap(row, col, geoTransform)
                     point.setX(x)
                     point.setY(y)
 

@@ -24,20 +24,13 @@ __copyright__ = '(C) 2013, Alexander Bruy'
 __revision__ = '$Format:%H$'
 
 from PyQt4.QtCore import *
-
 from osgeo import gdal
-
 from qgis.core import *
-
+from processing.tools import vector, raster, dataobjects
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.QGisLayers import QGisLayers
-
 from processing.parameters.ParameterRaster import ParameterRaster
 from processing.parameters.ParameterVector import ParameterVector
-
 from processing.outputs.OutputVector import OutputVector
-
-from processing.algs import QGISUtils as utils
 
 class PointsFromLines(GeoAlgorithm):
 
@@ -47,7 +40,7 @@ class PointsFromLines(GeoAlgorithm):
     OUTPUT_LAYER = "OUTPUT_LAYER"
 
     def defineCharacteristics(self):
-        self.name = "Points from lines"
+        self.name = "Get raster values at layer point"
         self.group = "Vector geometry tools"
 
         self.addParameter(ParameterRaster(self.INPUT_RASTER, "Raster layer"))
@@ -55,7 +48,7 @@ class PointsFromLines(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT_LAYER, "Output layer"))
 
     def processAlgorithm(self, progress):
-        layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT_VECTOR))
+        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_VECTOR))
 
         rasterPath = unicode(self.getParameterValue(self.INPUT_RASTER))
 
@@ -78,7 +71,7 @@ class PointsFromLines(GeoAlgorithm):
         self.pointId = 0
 
         current = 0
-        features = QGisLayers.features(layer)
+        features = vector.features(layer)
         total = 100.0 / len(features)
         for f in features:
             geom = f.geometry()
@@ -89,8 +82,8 @@ class PointsFromLines(GeoAlgorithm):
                         p1 = line[i]
                         p2 = line[i + 1]
 
-                        x1, y1 = utils.mapToPixel(p1.x(), p1.y(), geoTransform)
-                        x2, y2 = utils.mapToPixel(p2.x(), p2.y(), geoTransform)
+                        x1, y1 = raster.mapToPixel(p1.x(), p1.y(), geoTransform)
+                        x2, y2 = raster.mapToPixel(p2.x(), p2.y(), geoTransform)
 
                         self.buildLine(x1, y1, x2, y2, geoTransform, writer, outFeature)
             else:
@@ -99,8 +92,8 @@ class PointsFromLines(GeoAlgorithm):
                     p1 = points[i]
                     p2 = points[i + 1]
 
-                    x1, y1 = utils.mapToPixel(p1.x(), p1.y(), geoTransform)
-                    x2, y2 = utils.mapToPixel(p2.x(), p2.y(), geoTransform)
+                    x1, y1 = raster.mapToPixel(p1.x(), p1.y(), geoTransform)
+                    x2, y2 = raster.mapToPixel(p2.x(), p2.y(), geoTransform)
 
                     self.buildLine(x1, y1, x2, y2, geoTransform, writer, outFeature)
 
@@ -114,7 +107,6 @@ class PointsFromLines(GeoAlgorithm):
 
     def buildLine(self, startX, startY, endX, endY, geoTransform, writer, feature):
         point = QgsPoint()
-
         if startX == endX:
             if startY > endY:
                 startY, endY = endY, startY
@@ -168,7 +160,7 @@ class PointsFromLines(GeoAlgorithm):
                     startY += dy2
 
     def createPoint(self, pX, pY, geoTransform, writer, feature):
-        x, y = utils.pixelToMap(pX, pY, geoTransform)
+        x, y = raster.pixelToMap(pX, pY, geoTransform)
 
         feature.setGeometry(QgsGeometry.fromPoint(QgsPoint(x, y)))
         feature["id"] = self.fid

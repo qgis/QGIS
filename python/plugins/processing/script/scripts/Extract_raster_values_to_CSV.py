@@ -5,13 +5,10 @@
 ##Output_table=output table
 
 import os
-
+from processing.raster import *
 from osgeo import gdal, ogr, osr
-
 from processing.core.TableWriter import TableWriter
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-
-from processing.algs import QGISUtils as utils
 
 raster = gdal.Open(Input_raster)
 
@@ -81,7 +78,7 @@ for i in xrange(bandCount):
             pnt = coordTransform.TransformPoint(x, y, 0)
             x = pnt[0]
             y = pnt[1]
-        rX, rY = utils.mapToPixel(x, y, geoTransform)
+        rX, rY = raster.mapToPixel(x, y, geoTransform)
         if rX > rasterXSize or rY > rasterYSize:
             feature = layer.GetNextFeature()
             continue
