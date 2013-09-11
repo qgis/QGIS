@@ -25,17 +25,13 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import codecs
-
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.QGisLayers import QGisLayers
-
 from processing.parameters.ParameterVector import ParameterVector
 from processing.parameters.ParameterTableField import ParameterTableField
-
 from processing.outputs.OutputHTML import OutputHTML
 from processing.outputs.OutputNumber import OutputNumber
-
-from processing.algs.ftools import FToolsUtils as utils
+from processing.tools import vector as utils
 
 class UniqueValues(GeoAlgorithm):
 

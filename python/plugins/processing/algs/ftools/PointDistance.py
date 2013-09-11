@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -24,20 +23,15 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import math
-
 from qgis.core import *
-
+from processing.tools import dataobjects, vector
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.QGisLayers import QGisLayers
-
 from processing.parameters.ParameterNumber import ParameterNumber
 from processing.parameters.ParameterVector import ParameterVector
 from processing.parameters.ParameterSelection import ParameterSelection
 from processing.parameters.ParameterTableField import ParameterTableField
-
 from processing.outputs.OutputTable import OutputTable
 
-from processing.algs.ftools import FToolsUtils as utils
 
 class PointDistance(GeoAlgorithm):
 
@@ -54,11 +48,6 @@ class PointDistance(GeoAlgorithm):
                  "Summary distance matrix (mean, std. dev., min, max)"
                 ]
 
-    #===========================================================================
-    # def getIcon(self):
-    #    return QtGui.QIcon(os.path.dirname(__file__) + "/icons/matrix.png")
-    #===========================================================================
-
     def defineCharacteristics(self):
         self.name = "Distance matrix"
         self.group = "Vector analysis tools"
@@ -73,9 +62,9 @@ class PointDistance(GeoAlgorithm):
         self.addOutput(OutputTable(self.DISTANCE_MATRIX, "Distance matrix"))
 
     def processAlgorithm(self, progress):
-        inLayer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT_LAYER))
+        inLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_LAYER))
         inField = self.getParameterValue(self.INPUT_FIELD)
-        targetLayer = QGisLayers.getObjectFromUri(self.getParameterValue(self.TARGET_LAYER))
+        targetLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.TARGET_LAYER))
         targetField = self.getParameterValue(self.TARGET_FIELD)
         matType = self.getParameterValue(self.MATRIX_TYPE)
         nPoints = self.getParameterValue(self.NEAREST_POINTS)
@@ -83,7 +72,7 @@ class PointDistance(GeoAlgorithm):
         outputFile = self.getOutputFromName(self.DISTANCE_MATRIX)
 
         if nPoints < 1:
-            nPoints = len(QGisLayers.features(targetLayer))
+            nPoints = len(vector.features(targetLayer))
 
         self.writer = outputFile.getTableWriter([])
 
@@ -100,7 +89,7 @@ class PointDistance(GeoAlgorithm):
         else:
             self.writer.addRecord(["InputID", "MEAN", "STDDEV", "MIN", "MAX"])
 
-        index = utils.createSpatialIndex(targetLayer);
+        index = vector.spatialindex(targetLayer);
 
         inIdx = inLayer.fieldNameIndex(inField)
         inLayer.select([inIdx])
@@ -111,7 +100,7 @@ class PointDistance(GeoAlgorithm):
         outGeom = QgsGeometry()
         distArea = QgsDistanceArea()
 
-        features = QGisLayers.features(inLayer)
+        features = vector.features(inLayer)
         current = 0
         total = 100.0 / float(len(features))
         for inFeat in features:
@@ -142,7 +131,7 @@ class PointDistance(GeoAlgorithm):
             progress.setPercentage(int(current * total))
 
     def regularMatrix(self, inLayer, inField, targetLayer, targetField, nPoints, progress):
-        index = utils.createSpatialIndex(targetLayer)
+        index = vector.spatialindex(targetLayer)
 
         inIdx = inLayer.fieldNameIndex(inField)
         outIdx = targetLayer.fieldNameIndex(inField)

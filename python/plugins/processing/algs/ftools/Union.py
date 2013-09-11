@@ -30,7 +30,7 @@ from qgis.core import *
 from processing.parameters.ParameterVector import ParameterVector
 from processing.core.QGisLayers import QGisLayers
 from processing.outputs.OutputVector import OutputVector
-from processing.algs.ftools import FToolsUtils as utils
+from processing.tools import vector as utils
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.GeoAlgorithm import GeoAlgorithm
 
@@ -59,8 +59,8 @@ class   Union(GeoAlgorithm):
         inFeatA = QgsFeature()
         inFeatB = QgsFeature()
         outFeat = QgsFeature()
-        indexA = utils.createSpatialIndex(vlayerB)
-        indexB = utils.createSpatialIndex(vlayerA)
+        indexA = utils.spatialindex(vlayerB)
+        indexB = utils.spatialindex(vlayerA)
 
         count = 0
         nElement = 0

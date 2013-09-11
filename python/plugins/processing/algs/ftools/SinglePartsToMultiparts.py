@@ -28,10 +28,9 @@ from qgis.core import *
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.QGisLayers import QGisLayers
-from processing.algs.ftools import FToolsUtils as utils
+from processing.tools import vector as utils
 from processing.parameters.ParameterVector import ParameterVector
 from processing.parameters.ParameterTableField import ParameterTableField
-
 from processing.outputs.OutputVector import OutputVector
 
 class SinglePartsToMultiparts(GeoAlgorithm):

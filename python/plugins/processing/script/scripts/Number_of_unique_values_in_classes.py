@@ -31,7 +31,6 @@ nElement = 0
 classes = {}
 
 #Iterate over input layer to count unique values in each class
-
 feats = processing.getfeatures(layer)
 nFeat = len(feats)
 for inFeat in feats:

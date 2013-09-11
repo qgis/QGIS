@@ -119,7 +119,7 @@ class LayerExporter():
             isASCII=False
         isDbf = unicode(table.source()).endswith("dbf") or unicode(table.source()).endswith("shp")
         if (not isDbf or not isASCII):
-            writer = QgsVectorFileWriter( output, systemEncoding, provider.fields(), QGis.WKBNoGeometry, layer.crs() )
+            writer = QgsVectorFileWriter( output, systemEncoding, provider.fields(), QGis.WKBNoGeometry, QgsCoordinateReferenceSystem('4326')  )
             for feat in table.getFeatures():
                 writer.addFeature(feat)
             del writer

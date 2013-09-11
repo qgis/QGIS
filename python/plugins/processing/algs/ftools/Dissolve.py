@@ -28,13 +28,12 @@ from processing.core.GeoAlgorithm import GeoAlgorithm
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
-from processing.algs.ftools import FToolsUtils as utils
+from processing.tools import vector as utils
 from processing.parameters.ParameterVector import ParameterVector
 from processing.core.QGisLayers import QGisLayers
 from processing.outputs.OutputVector import OutputVector
 from processing.parameters.ParameterBoolean import ParameterBoolean
 from processing.parameters.ParameterTableField import ParameterTableField
-from processing.core.ProcessingLog import ProcessingLog
 
 class Dissolve(GeoAlgorithm):
 

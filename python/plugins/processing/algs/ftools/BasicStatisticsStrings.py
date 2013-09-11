@@ -26,20 +26,14 @@ __revision__ = '$Format:%H$'
 import codecs
 
 from PyQt4.QtCore import *
-
 from qgis.core import *
-
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.QGisLayers import QGisLayers
-
 from processing.parameters.ParameterVector import ParameterVector
 from processing.parameters.ParameterTableField import ParameterTableField
-from processing.parameters.ParameterBoolean import ParameterBoolean
-
 from processing.outputs.OutputHTML import OutputHTML
 from processing.outputs.OutputNumber import OutputNumber
-
-from processing.algs.ftools import FToolsUtils as utils
+from processing.tools import vector as utils
 
 class BasicStatisticsStrings(GeoAlgorithm):
 

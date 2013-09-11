@@ -29,10 +29,8 @@ from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.QGisLayers import QGisLayers
 from processing.parameters.ParameterSelection import ParameterSelection
 from processing.parameters.ParameterVector import ParameterVector
-
 from processing.outputs.OutputVector import OutputVector
-
-from processing.algs.ftools import FToolsUtils as utils
+from processing.tools import vector as utils
 
 class SelectByLocation(GeoAlgorithm):
 
@@ -67,7 +65,7 @@ class SelectByLocation(GeoAlgorithm):
         selectLayer = QGisLayers.getObjectFromUri(filename)
 
         oldSelection = set(inputLayer.selectedFeaturesIds())
-        index = spatialIndex = utils.createSpatialIndex(inputLayer)
+        index = spatialIndex = utils.spatialindex(inputLayer)
 
         feat = QgsFeature()
         geom = QgsGeometry()

@@ -30,7 +30,7 @@ from processing.core.QGisLayers import QGisLayers
 from processing.parameters.ParameterVector import ParameterVector
 from processing.outputs.OutputHTML import OutputHTML
 from processing.outputs.OutputNumber import OutputNumber
-from processing.algs.ftools import FToolsUtils as utils
+from processing.tools import vector as utils
 
 class NearestNeighbourAnalysis(GeoAlgorithm):
 
@@ -67,7 +67,7 @@ class NearestNeighbourAnalysis(GeoAlgorithm):
         layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.POINTS))
         output = self.getOutputValue(self.OUTPUT)
 
-        spatialIndex = utils.createSpatialIndex(layer)
+        spatialIndex = utils.spatialindex(layer)
 
         neighbour = QgsFeature()
         distance = QgsDistanceArea()

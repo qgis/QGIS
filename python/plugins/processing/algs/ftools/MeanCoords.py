@@ -30,7 +30,7 @@ from processing.core.QGisLayers import QGisLayers
 from processing.parameters.ParameterTableField import ParameterTableField
 from processing.parameters.ParameterVector import ParameterVector
 from processing.outputs.OutputVector import OutputVector
-from processing.algs.ftools import FToolsUtils as utils
+from processing.tools import vector as utils
 
 class MeanCoords(GeoAlgorithm):
 

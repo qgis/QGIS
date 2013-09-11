@@ -16,7 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
+
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -30,8 +30,7 @@ from qgis.core import *
 from processing.parameters.ParameterVector import ParameterVector
 from processing.core.QGisLayers import QGisLayers
 from processing.outputs.OutputVector import OutputVector
-from processing.algs.ftools import FToolsUtils as utils
-from processing.core.ProcessingLog import ProcessingLog
+from processing.tools import vector as utils
 
 class Intersection(GeoAlgorithm):
 
@@ -54,7 +53,7 @@ class Intersection(GeoAlgorithm):
         inFeatA = QgsFeature()
         inFeatB = QgsFeature()
         outFeat = QgsFeature()
-        index = utils.createSpatialIndex(vlayerB)
+        index = utils.spatialindex(vlayerB)
         nElement = 0
         selectionA = QGisLayers.features(vlayerA)
         nFeat = len(selectionA)

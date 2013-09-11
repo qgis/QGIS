@@ -24,18 +24,13 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from PyQt4.QtCore import *
-
 from qgis.core import *
-
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.QGisLayers import QGisLayers
 from processing.core.ProcessingLog import ProcessingLog
-
 from processing.parameters.ParameterVector import ParameterVector
-
 from processing.outputs.OutputVector import OutputVector
-
-from processing.algs.ftools import FToolsUtils as utils
+from processing.tools import vector as utils
 
 class Clip(GeoAlgorithm):
 
@@ -69,7 +64,7 @@ class Clip(GeoAlgorithm):
         inFeatB = QgsFeature()
         outFeat = QgsFeature()
 
-        index = utils.createSpatialIndex(layerB)
+        index = utils.spatialindex(layerB)
 
         selectionA = QGisLayers.features(layerA)
 
@@ -113,7 +108,7 @@ class Clip(GeoAlgorithm):
                             outFeat.setAttributes(attrs)
                             writer.addFeature(outFeat)
                         except:
-                            FEAT_EXCEPT = False
+                            FEATURE_EXCEPT = False
                             continue
                     except:
                         GEOS_EXCEPT = False
