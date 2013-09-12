@@ -121,7 +121,6 @@ class GUI_EXPORT QgsGraduatedSymbolRendererV2Widget : public QgsRendererV2Widget
     QgsSymbolV2* findSymbolForRange( double lowerBound, double upperBound, const QgsRangeList& ranges ) const;
     void refreshSymbolView();
 
-
   protected:
     QgsGraduatedSymbolRendererV2* mRenderer;
 

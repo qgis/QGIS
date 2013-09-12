@@ -197,6 +197,8 @@ void QgsRuleBasedRendererV2Widget::currentRuleChanged( const QModelIndex& curren
 #include "qgsexpressionbuilderdialog.h"
 #include <QDialogButtonBox>
 #include <QInputDialog>
+#include <QKeyEvent>
+#include <QClipboard>
 
 void QgsRuleBasedRendererV2Widget::refineRule( int type )
 {
@@ -402,6 +404,26 @@ void QgsRuleBasedRendererV2Widget::restoreSectionWidths()
   head->resizeSection( 4, settings.value( path + QString::number( 4 ), 50 ).toInt() );
   head->resizeSection( 5, settings.value( path + QString::number( 5 ), 50 ).toInt() );
 }
+
+void QgsRuleBasedRendererV2Widget::copy()
+{
+    QModelIndexList indexlist = viewRules->selectionModel()->selectedRows();
+    QgsDebugMsg(QString("%1").arg(indexlist.count()));
+
+    if ( indexlist.isEmpty() )
+      return;
+
+    QMimeData* mime = mModel->mimeData( indexlist );
+    QApplication::clipboard()->setMimeData(mime);
+}
+
+void QgsRuleBasedRendererV2Widget::paste()
+{
+    const QMimeData* mime = QApplication::clipboard()->mimeData();
+    QModelIndex index = viewRules->selectionModel()->selectedRows().first();
+    mModel->dropMimeData( mime, Qt::CopyAction, index.row(), index.column(), index.parent() );
+}
+
 
 void QgsRuleBasedRendererV2Widget::countFeatures()
 {

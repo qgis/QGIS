@@ -128,7 +128,6 @@ class GUI_EXPORT QgsRuleBasedRendererV2Widget : public QgsRendererV2Widget, priv
     void restoreSectionWidths();
 
   protected:
-
     void refineRule( int type );
     void refineRuleCategoriesGui( const QModelIndexList& index );
     void refineRuleRangesGui( const QModelIndexList& index );
@@ -143,6 +142,10 @@ class GUI_EXPORT QgsRuleBasedRendererV2Widget : public QgsRendererV2Widget, priv
     QgsRuleBasedRendererV2Model* mModel;
 
     QMenu* mRefineMenu;
+
+  protected slots:
+    void copy();
+    void paste();
 };
 
 ///////

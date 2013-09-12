@@ -27,6 +27,9 @@ QgsRendererV2Widget::QgsRendererV2Widget( QgsVectorLayer* layer, QgsStyleV2* sty
 {
   contextMenu = new QMenu( "Renderer Options " );
 
+  contextMenu->addAction( tr( "Copy" ), this, SLOT( copy() ) );
+  contextMenu->addAction( tr( "Paste" ), this, SLOT( paste() ) );
+
   contextMenu->addAction( tr( "Change color" ), this, SLOT( changeSymbolColor( ) ) );
   contextMenu->addAction( tr( "Change transparency" ), this, SLOT( changeSymbolTransparency() ) );
   contextMenu->addAction( tr( "Change output unit" ), this, SLOT( changeSymbolUnit() ) );

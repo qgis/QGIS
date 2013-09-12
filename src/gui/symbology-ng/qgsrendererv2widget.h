@@ -71,6 +71,10 @@ class GUI_EXPORT QgsRendererV2Widget : public QWidget
     void changeSymbolWidth();
     /**Change marker sizes of selected symbols*/
     void changeSymbolSize();
+
+    virtual void copy() {}
+    virtual void paste() {}
+
 };
 
 
