@@ -162,7 +162,7 @@ class CORE_EXPORT QgsExpression
 
     //! Sets the geometry calculator used in evaluation of expressions,
     // instead of the default.
-    void setGeomCalculator( QgsDistanceArea &calc );
+    void setGeomCalculator( const QgsDistanceArea &calc );
 
     /** This function currently replaces each expression between [% and %]
        in the string with the result of its evaluation on the feature

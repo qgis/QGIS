@@ -48,6 +48,11 @@ attributetable/qgsfeaturelistviewdelegate.cpp
 attributetable/qgsfeatureselectionmodel.cpp
 attributetable/qgsdualview.cpp
 
+editorwidgets/core/qgseditorconfigwidget.cpp
+editorwidgets/core/qgseditorwidgetfactory.cpp
+editorwidgets/core/qgseditorwidgetregistry.cpp
+editorwidgets/core/qgseditorwidgetwrapper.cpp
+
 qgisgui.cpp
 qgisinterface.cpp
 qgsannotationitem.cpp
@@ -97,6 +102,7 @@ qgsnewvectorlayerdialog.cpp
 qgsnumericsortlistviewitem.cpp
 qgsoptionsdialogbase.cpp
 qgscredentialdialog.cpp
+qgsattributeeditorcontext.cpp
 qgsowssourceselect.cpp
 qgsprojectbadlayerguihandler.cpp
 qgsprojectionselector.cpp
@@ -177,6 +183,10 @@ attributetable/qgsfeatureselectionmodel.h
 attributetable/qgsfeaturelistviewdelegate.h
 attributetable/qgsdualview.h
 
+editorwidgets/core/qgseditorconfigwidget.h
+editorwidgets/core/qgseditorwidgetregistry.h
+editorwidgets/core/qgseditorwidgetwrapper.h
+
 qgsattributedialog.h
 qgsattributeeditor.h
 qgsblendmodecombobox.h
@@ -236,6 +246,7 @@ QT4_WRAP_CPP(QGIS_GUI_MOC_SRCS ${QGIS_GUI_MOC_HDRS})
 SET(QGIS_GUI_HDRS
 qgisgui.h
 qgisinterface.h
+qgsattributeeditorcontext.h
 qgsbusyindicatordialog.h
 qgscharacterselectdialog.h
 qgscolordialog.h
@@ -296,6 +307,11 @@ attributetable/qgsfeaturelistviewdelegate.h
 attributetable/qgsfeatureselectionmodel.h
 attributetable/qgsdualview.h
 
+editorwidgets/core/qgseditorconfigwidget.h
+editorwidgets/core/qgseditorwidgetfactory.h
+editorwidgets/core/qgseditorwidgetregistry.h
+editorwidgets/core/qgseditorwidgetwrapper.h
+
 raster/qgsrasterrendererwidget.h
 )
 
@@ -339,6 +355,8 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}/symbology-ng
   ${CMAKE_CURRENT_SOURCE_DIR}/attributetable
+  ${CMAKE_CURRENT_SOURCE_DIR}/editorwidgets
+  ${CMAKE_CURRENT_SOURCE_DIR}/editorwidgets/core
   ../core
   ../core/composer
   ../core/raster

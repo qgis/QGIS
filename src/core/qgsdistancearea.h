@@ -62,7 +62,7 @@ class CORE_EXPORT QgsDistanceArea
     void setSourceAuthId( QString authid );
 
     //! returns source spatial reference system
-    long sourceCrs() { return mSourceRefSys; }
+    long sourceCrs() const { return mSourceRefSys; }
     //! What sort of coordinate system is being used?
     bool geographic() { return mCoordTransform->sourceCrs().geographicFlag(); }
 

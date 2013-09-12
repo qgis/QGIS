@@ -382,6 +382,7 @@ SET(QGIS_CORE_HDRS
   qgsdataitem.h
   qgsdistancearea.h
   qgscsexception.h
+  qgseditorwidgetconfig.h
   qgserror.h
   qgsexception.h
   qgsexpression.h

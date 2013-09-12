@@ -7,23 +7,13 @@
     <x>0</x>
     <y>0</y>
     <width>751</width>
-    <height>487</height>
+    <height>451</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Attribute Edit Dialog</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_4">
-   <item row="4" column="1">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
-   </item>
    <item row="0" column="0" rowspan="5">
     <widget class="QListWidget" name="selectionListWidget">
      <item>
@@ -120,6 +110,16 @@
      </property>
      <property name="checked">
       <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>
@@ -877,6 +877,9 @@
         </spacer>
        </item>
       </layout>
+     </widget>
+     <widget class="QWidget" name="pageEditorWidget">
+      <layout class="QHBoxLayout" name="horizontalLayout"/>
      </widget>
     </widget>
    </item>

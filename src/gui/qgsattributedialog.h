@@ -18,21 +18,37 @@
 #define QGSATTRIBUTEDIALOG_H
 
 #include "qgsfeature.h"
+#include "qgsattributeeditorcontext.h"
 
 class QDialog;
-class QgsFeature;
 class QLayout;
-class QgsField;
-class QgsVectorLayer;
-class QgsHighlight;
+
 class QgsDistanceArea;
+class QgsFeature;
+class QgsField;
+class QgsHighlight;
+class QgsVectorLayer;
 
 class GUI_EXPORT QgsAttributeDialog : public QObject
 {
     Q_OBJECT
 
   public:
+    /**
+     * @brief QgsAttributeDialog
+     * @param vl
+     * @param thepFeature
+     * @param featureOwner
+     * @param myDa
+     * @param parent
+     * @param showDialogButtons
+     *
+     * @deprecated
+     */
     QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature, bool featureOwner, QgsDistanceArea myDa, QWidget* parent = 0, bool showDialogButtons = true );
+
+    QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature, bool featureOwner, QWidget* parent = 0, bool showDialogButtons = true, QgsAttributeEditorContext context = QgsAttributeEditorContext() );
+
     ~QgsAttributeDialog();
 
     /** Saves the size and position for the next time
@@ -63,18 +79,22 @@ class GUI_EXPORT QgsAttributeDialog : public QObject
     bool eventFilter( QObject *obj, QEvent *event );
 
   private:
+    void init();
+
     QDialog *mDialog;
     QString mSettingsPath;
     // Used to sync multiple widgets for the same field
-    QMap<int, QWidget*> mProxyWidgets;
+    QgsAttributeEditorContext mContext;
     QgsVectorLayer *mLayer;
-    QgsFeature *mFeature;
+    QgsFeature* mFeature;
     bool mFeatureOwner;
     QgsHighlight *mHighlight;
     int mFormNr;
-    static int smFormCounter;
     bool mShowDialogButtons;
     QString mReturnvarname;
+
+    static int sFormCounter;
+    static QString sSettingsPath;
 };
 
 #endif

@@ -29,6 +29,7 @@
 %Include qgsdistancearea.sip
 %Include qgserror.sip
 %Include qgsexpression.sip
+%Include qgseditorwidgetconfig.sip
 %Include qgsfeature.sip
 %Include qgsfeatureiterator.sip
 %Include qgsfeaturerequest.sip

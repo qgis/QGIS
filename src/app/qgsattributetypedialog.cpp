@@ -24,6 +24,8 @@
 #include "qgisapp.h"
 #include "qgsproject.h"
 #include "qgslogger.h"
+#include "qgseditorwidgetfactory.h"
+#include "qgseditorwidgetregistry.h"
 
 #include <QTableWidgetItem>
 #include <QFile>
@@ -47,6 +49,16 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl )
   connect( tableWidget, SIGNAL( cellChanged( int, int ) ), this, SLOT( vCellChanged( int, int ) ) );
   connect( valueRelationEditExpression, SIGNAL( clicked() ), this, SLOT( editValueRelationExpression() ) );
 
+  QMapIterator<QString, QgsEditorWidgetFactory*> i( QgsEditorWidgetRegistry::instance()->factories() );
+  while ( i.hasNext() )
+  {
+    i.next();
+    QListWidgetItem* item = new QListWidgetItem( selectionListWidget );
+    item->setText( i.value()->name() );
+    item->setData( Qt::UserRole, i.key() );
+    selectionListWidget->addItem( item );
+  }
+
   valueRelationLayer->clear();
   foreach ( QgsMapLayer *l, QgsMapLayerRegistry::instance()->mapLayers() )
   {
@@ -67,6 +79,53 @@ QgsAttributeTypeDialog::~QgsAttributeTypeDialog()
 QgsVectorLayer::EditType QgsAttributeTypeDialog::editType()
 {
   return mEditType;
+}
+
+const QString QgsAttributeTypeDialog::editorWidgetV2Type()
+{
+  QListWidgetItem* item = selectionListWidget->currentItem();
+  if ( item )
+  {
+    return item->data( Qt::UserRole ).toString();
+  }
+  else
+  {
+    return QString();
+  }
+}
+
+const QString QgsAttributeTypeDialog::editorWidgetV2Text()
+{
+  QListWidgetItem* item = selectionListWidget->currentItem();
+  if ( item )
+  {
+    return item->text();
+  }
+  else
+  {
+    return QString();
+  }
+}
+
+const QMap<QString, QVariant> QgsAttributeTypeDialog::editorWidgetV2Config()
+{
+  QListWidgetItem* item = selectionListWidget->currentItem();
+  if ( item )
+  {
+    QString widgetType = item->data( Qt::UserRole ).toString();
+    QgsEditorConfigWidget* cfgWdg = mEditorConfigWidgets[ widgetType ];
+    if ( cfgWdg )
+    {
+      return cfgWdg->config();
+    }
+  }
+
+  return QMap<QString, QVariant>();
+}
+
+void QgsAttributeTypeDialog::setWidgetV2Config( const QMap<QString, QVariant>& config )
+{
+  mWidgetV2Config = config;
 }
 
 QgsVectorLayer::RangeData QgsAttributeTypeDialog::rangeData()
@@ -357,6 +416,10 @@ void QgsAttributeTypeDialog::setPageForEditType( QgsVectorLayer::EditType editTy
     case QgsVectorLayer::Color:
       setPage( 16 );
       break;
+
+    case QgsVectorLayer::EditorWidgetV2:
+      setPage( 17 );
+      break;
   }
 }
 
@@ -544,6 +607,7 @@ void QgsAttributeTypeDialog::setIndex( int index, QgsVectorLayer::EditType editT
     case QgsVectorLayer::TextEdit:
     case QgsVectorLayer::UuidGenerator:
     case QgsVectorLayer::Color:
+    case QgsVectorLayer::EditorWidgetV2:
       break;
   }
 }
@@ -612,7 +676,40 @@ void QgsAttributeTypeDialog::setStackPage( int index )
       stackedWidget->setCurrentIndex( 15 );
       break;
     default:
-      stackedWidget->setCurrentIndex( index );
+      if ( selectionListWidget->item( index )->data( Qt::UserRole ).isNull() )
+      {
+        stackedWidget->setCurrentIndex( index );
+      }
+      else
+      {
+        QString factoryId = selectionListWidget->item( index )->data( Qt::UserRole ).toString();
+
+        // Set to (empty) editor widget page
+        stackedWidget->setCurrentIndex( 16 );
+
+        if ( mEditorConfigWidgets.contains( factoryId ) )
+        {
+          mEditorConfigWidgets[factoryId]->show();
+        }
+        else
+        {
+          QgsEditorConfigWidget* cfgWdg = QgsEditorWidgetRegistry::instance()->createConfigWidget( factoryId, mLayer, mIndex, this );
+          QgsEditorConfigWidget* oldWdg = pageEditorWidget->findChild<QgsEditorConfigWidget*>();
+
+          if ( oldWdg )
+          {
+            oldWdg->hide();
+          }
+
+          if ( cfgWdg )
+          {
+            cfgWdg->setConfig( mWidgetV2Config );
+            pageEditorWidget->layout()->addWidget( cfgWdg );
+
+            mEditorConfigWidgets.insert( factoryId, cfgWdg );
+          }
+        }
+      }
       break;
   }
 
@@ -739,6 +836,9 @@ void QgsAttributeTypeDialog::accept()
       break;
     case 16:
       mEditType = QgsVectorLayer::Color;
+      break;
+    case 17:
+      mEditType = QgsVectorLayer::EditorWidgetV2;
       break;
   }
 
