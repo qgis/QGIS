@@ -112,16 +112,13 @@ class Dialog(QDialog, Ui_Dialog):
 
     def processFinished(self):
         self.stopProcessing()
-
-        addToTOC = QMessageBox.question(self, self.tr("Count Points in Polygon"),
-                                        self.tr("Created output shapefile:\n%s\n\nWould you like to add the new layer to the TOC?") % (self.outShape.text()),
-                                        QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
-        if addToTOC == QMessageBox.Yes:
-            fileInfo = QFileInfo( self.outShape.text() )
-            layerName = fileInfo.completeBaseName()
-            layer = QgsVectorLayer(self.outShape.text(), layerName, "ogr")
-            QgsMapLayerRegistry.instance().addMapLayers([layer])
+        if self.addToCanvasCheck.isChecked():
+            addCanvasCheck = ftools_utils.addShapeToCanvas(unicode(self.outShape.text()))
+            if not addCanvasCheck:
+                QMessageBox.warning( self, self.tr("Count Points in Polygon"), self.tr( "Error loading output shapefile:\n%s" ) % ( unicode( outPath ) ))
             self.populateLayers()
+        else:
+            QMessageBox.information(self, self.tr("Count Points in Polygon"),self.tr("Created output shapefile:\n%s" ) % ( unicode( self.outShape.text() )))
 
         self.restoreGui()
 

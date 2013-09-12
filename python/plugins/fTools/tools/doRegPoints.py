@@ -84,11 +84,13 @@ class Dialog(QDialog, Ui_Dialog):
                 print crs.isValid()
                 if not crs.isValid(): crs = None
             self.regularize(boundBox, outPath, offset, value, self.rdoSpacing.isChecked(), self.spnInset.value(), crs)
-            addToTOC = QMessageBox.question(self, self.tr("Generate Regular Points"), self.tr("Created output point shapefile:\n%s\n\nWould you like to add the new layer to the TOC?") % ( outPath ), QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
-            if addToTOC == QMessageBox.Yes:
-                self.vlayer = QgsVectorLayer(outPath, unicode(outName), "ogr")
-                QgsMapLayerRegistry.instance().addMapLayers([self.vlayer])
+            if self.addToCanvasCheck.isChecked():
+                addCanvasCheck = ftools_utils.addShapeToCanvas(unicode(outPath))
+                if not addCanvasCheck:
+                    QMessageBox.warning( self, self.tr("Generate Regular Points"), self.tr( "Error loading output shapefile:\n%s" ) % ( unicode( outPath ) ))
                 self.populateLayers()
+            else:
+                QMessageBox.information(self, self.tr("Generate Regular Points"),self.tr("Created output shapefile:\n%s" ) % ( unicode( outPath )))
         self.progressBar.setValue(0)
         self.buttonOk.setEnabled( True )
 

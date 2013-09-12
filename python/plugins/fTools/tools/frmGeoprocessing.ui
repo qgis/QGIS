@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>422</width>
-    <height>448</height>
+    <height>497</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -20,7 +20,7 @@
    <string>Geoprocessing</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0" colspan="2">
+   <item row="0" column="0">
     <layout class="QVBoxLayout">
      <item>
       <widget class="QLabel" name="label_1">
@@ -41,7 +41,7 @@
      </item>
     </layout>
    </item>
-   <item row="2" column="0">
+   <item row="1" column="0">
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
       <widget class="QCheckBox" name="useSelectedA">
@@ -52,7 +52,7 @@
      </item>
     </layout>
    </item>
-   <item row="3" column="0" colspan="2">
+   <item row="2" column="0">
     <layout class="QVBoxLayout">
      <item>
       <widget class="QLabel" name="label_2">
@@ -73,7 +73,7 @@
      </item>
     </layout>
    </item>
-   <item row="4" column="0">
+   <item row="3" column="0">
     <layout class="QVBoxLayout" name="verticalLayout_2">
      <item>
       <widget class="QCheckBox" name="useSelectedB">
@@ -84,7 +84,28 @@
      </item>
     </layout>
    </item>
-   <item row="7" column="0" colspan="2">
+   <item row="4" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QLabel" name="lblSegments">
+       <property name="text">
+        <string>Segments to approximate</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QSpinBox" name="spnSegments">
+       <property name="minimum">
+        <number>5</number>
+       </property>
+       <property name="value">
+        <number>5</number>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="5" column="0">
     <layout class="QHBoxLayout">
      <item>
       <layout class="QHBoxLayout">
@@ -124,7 +145,7 @@
      </item>
     </layout>
    </item>
-   <item row="9" column="0" colspan="2">
+   <item row="6" column="0">
     <layout class="QVBoxLayout">
      <item>
       <layout class="QHBoxLayout">
@@ -172,7 +193,7 @@
      </item>
     </layout>
    </item>
-   <item row="10" column="0">
+   <item row="7" column="0">
     <layout class="QHBoxLayout">
      <property name="spacing">
       <number>6</number>
@@ -192,7 +213,7 @@
      </item>
     </layout>
    </item>
-   <item row="11" column="0">
+   <item row="8" column="0">
     <spacer>
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -205,7 +226,7 @@
      </property>
     </spacer>
    </item>
-   <item row="12" column="0" colspan="2">
+   <item row="9" column="0">
     <layout class="QVBoxLayout">
      <item>
       <widget class="QLabel" name="label_5">
@@ -234,42 +255,32 @@
      </item>
     </layout>
    </item>
-   <item row="13" column="0">
-    <widget class="QProgressBar" name="progressBar">
-     <property name="value">
-      <number>0</number>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
+   <item row="10" column="0">
+    <widget class="QCheckBox" name="addToCanvasCheck">
+     <property name="text">
+      <string>Add result to canvas</string>
      </property>
     </widget>
    </item>
-   <item row="13" column="1">
-    <widget class="QDialogButtonBox" name="buttonBox_2">
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Close|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
-   </item>
-   <item row="6" column="0">
-    <layout class="QHBoxLayout" name="horizontalLayout">
+   <item row="11" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
-      <widget class="QLabel" name="lblSegments">
-       <property name="text">
-        <string>Segments to approximate</string>
+      <widget class="QProgressBar" name="progressBar">
+       <property name="value">
+        <number>0</number>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QSpinBox" name="spnSegments">
-       <property name="minimum">
-        <number>5</number>
-       </property>
-       <property name="value">
-        <number>5</number>
+      <widget class="QDialogButtonBox" name="buttonBox_2">
+       <property name="standardButtons">
+        <set>QDialogButtonBox::Close|QDialogButtonBox::Ok</set>
        </property>
       </widget>
      </item>

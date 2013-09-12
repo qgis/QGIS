@@ -95,11 +95,13 @@ class Dialog(QDialog, Ui_Dialog):
             self.outShape.clear()
             self.compute(line1, line2, field1, field2, outPath, self.progressBar)
             self.progressBar.setValue(100)
-            addToTOC = QMessageBox.question(self, self.tr("Generate Centroids"), self.tr("Created output point shapefile:\n%s\n\nWould you like to add the new layer to the TOC?") % ( outPath ), QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
-            if addToTOC == QMessageBox.Yes:
-                if not ftools_utils.addShapeToCanvas( unicode( outPath ) ):
+            if self.addToCanvasCheck.isChecked():
+                addCanvasCheck = ftools_utils.addShapeToCanvas(unicode(outPath))
+                if not addCanvasCheck:
                     QMessageBox.warning( self, self.tr("Geoprocessing"), self.tr( "Error loading output shapefile:\n%s" ) % ( unicode( outPath ) ))
                 self.populateLayers()
+            else:
+                QMessageBox.information(self, self.tr("Generate Centroids"),self.tr("Created output shapefile:\n%s" ) % ( unicode( outPath )))
         self.progressBar.setValue(0)
         self.buttonOk.setEnabled( True )
 

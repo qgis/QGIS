@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>370</width>
-    <height>484</height>
+    <height>531</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -31,6 +31,17 @@
      </item>
      <item>
       <widget class="QComboBox" name="inShape"/>
+     </item>
+    </layout>
+   </item>
+   <item row="1" column="0">
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="QCheckBox" name="useSelected">
+       <property name="text">
+        <string>Use only selected features</string>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>
@@ -114,6 +125,20 @@
      </item>
     </layout>
    </item>
+   <item row="5" column="0">
+    <widget class="QLabel" name="label_5">
+     <property name="text">
+      <string>Press Ctrl+C to copy results to the clipboard</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="0">
+    <widget class="Line" name="line">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
    <item row="7" column="0">
     <widget class="QCheckBox" name="ckBoxShpError">
      <property name="text">
@@ -121,10 +146,10 @@
      </property>
     </widget>
    </item>
-   <item row="5" column="0">
-    <widget class="QLabel" name="label_5">
+   <item row="8" column="0">
+    <widget class="QLabel" name="label_6">
      <property name="text">
-      <string>Press Ctrl+C to copy results to the clipboard</string>
+      <string>Output point shapefile</string>
      </property>
     </widget>
    </item>
@@ -146,25 +171,14 @@
      </item>
     </layout>
    </item>
-   <item row="8" column="0">
-    <widget class="QLabel" name="label_6">
+   <item row="10" column="0">
+    <widget class="QCheckBox" name="addToCanvasCheck">
      <property name="text">
-      <string>Output point shapefile</string>
+      <string>Add result to canvas</string>
      </property>
     </widget>
    </item>
-   <item row="1" column="0">
-    <layout class="QVBoxLayout" name="verticalLayout">
-     <item>
-      <widget class="QCheckBox" name="useSelected">
-       <property name="text">
-        <string>Use only selected features</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="10" column="0">
+   <item row="11" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
       <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -198,13 +212,6 @@
       </widget>
      </item>
     </layout>
-   </item>
-   <item row="6" column="0">
-    <widget class="Line" name="line">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
    </item>
   </layout>
  </widget>

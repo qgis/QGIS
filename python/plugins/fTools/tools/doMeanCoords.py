@@ -90,11 +90,13 @@ class Dialog(QDialog, Ui_Dialog):
             self.compute(inName, outPath, self.weightField.currentText(), self.sizeValue.value(), self.uniqueField.currentText())
             self.progressBar.setValue(100)
             self.outShape.clear()
-            addToTOC = QMessageBox.question(self, self.tr("Coordinate statistics"), self.tr("Created output point shapefile:\n%s\n\nWould you like to add the new layer to the TOC?") % ( outPath ), QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
-            if addToTOC == QMessageBox.Yes:
-                vlayer = QgsVectorLayer(outPath, unicode(outName), "ogr")
-                QgsMapLayerRegistry.instance().addMapLayers([vlayer])
+            if self.addToCanvasCheck.isChecked():
+                addCanvasCheck = ftools_utils.addShapeToCanvas(unicode(outPath))
+                if not addCanvasCheck:
+                    QMessageBox.warning( self, self.tr("Coordinate statistics"), self.tr( "Error loading output shapefile:\n%s" ) % ( unicode( outPath ) ))
                 self.populateLayers()
+            else:
+                QMessageBox.information(self, self.tr("Coordinate statistics"),self.tr("Created output shapefile:\n%s" ) % ( unicode( outPath )))
         self.progressBar.setValue(0)
         self.buttonOk.setEnabled( True )
 
