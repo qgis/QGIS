@@ -83,7 +83,8 @@ const char* QGis::qgisUnitTypes[] =
   QT_TRANSLATE_NOOP( "QGis::UnitType", "<unknown>" ),
   QT_TRANSLATE_NOOP( "QGis::UnitType", "degrees" ),
   QT_TRANSLATE_NOOP( "QGis::UnitType", "degrees" ),
-  QT_TRANSLATE_NOOP( "QGis::UnitType", "degrees" )
+  QT_TRANSLATE_NOOP( "QGis::UnitType", "degrees" ),
+  QT_TRANSLATE_NOOP( "QGis::UnitType", "nautical miles" )
 };
 
 QGis::UnitType QGis::fromLiteral( QString literal, QGis::UnitType defaultType )

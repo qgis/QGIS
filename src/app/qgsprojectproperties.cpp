@@ -79,6 +79,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
 
   connect( radMeters, SIGNAL( toggled( bool ) ), btnGrpDegreeDisplay, SLOT( setDisabled( bool ) ) );
   connect( radFeet, SIGNAL( toggled( bool ) ), btnGrpDegreeDisplay, SLOT( setDisabled( bool ) ) );
+  connect( radNMiles, SIGNAL( toggled( bool ) ), btnGrpDegreeDisplay, SLOT( setDisabled( bool ) ) );
   connect( radDegrees, SIGNAL( toggled( bool ) ), btnGrpDegreeDisplay, SLOT( setEnabled( bool ) ) );
 
   connect( radAutomatic, SIGNAL( toggled( bool ) ), mPrecisionFrame, SLOT( setDisabled( bool ) ) );
@@ -495,6 +496,7 @@ void QgsProjectProperties::setMapUnits( QGis::UnitType unit )
 
   radMeters->setChecked( unit == QGis::Meters );
   radFeet->setChecked( unit == QGis::Feet );
+  radNMiles->setChecked( unit == QGis::NauticalMiles );
   radDegrees->setChecked( unit == QGis::Degrees );
 
   mMapCanvas->mapRenderer()->setMapUnits( unit );
@@ -857,6 +859,7 @@ void QgsProjectProperties::on_cbxProjectionEnabled_toggled( bool onFlyEnabled )
 
     radMeters->setChecked( units == QGis::Meters );
     radFeet->setChecked( units == QGis::Feet );
+    radNMiles->setChecked( units == QGis::NauticalMiles );
     radDegrees->setChecked( units == QGis::Degrees );
 
     // unset ellipsoid
@@ -952,6 +955,7 @@ void QgsProjectProperties::setMapUnitsToCurrentProjection()
 
   radMeters->setChecked( units == QGis::Meters );
   radFeet->setChecked( units == QGis::Feet );
+  radNMiles->setChecked( units == QGis::NauticalMiles );
   radDegrees->setChecked( units == QGis::Degrees );
 
   // attempt to reset the projection ellipsoid according to the srs
