@@ -16,9 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from processing.tools import dataobjects
-from processing.parameters.ParameterBoolean import ParameterBoolean
-
 
 __author__ = 'Victor Olaya'
 __date__ = 'October 2012'
@@ -27,6 +24,8 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
+from processing.core.QGisLayers import QGisLayers
+from processing.parameters.ParameterBoolean import ParameterBoolean
 from processing.parameters.ParameterVector import ParameterVector
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -40,6 +39,7 @@ class ImportIntoPostGIS(GeoAlgorithm):
 
     DATABASE = "DATABASE"
     TABLENAME = "TABLENAME"
+    SCHEMA = "SCHEMA"
     INPUT = "INPUT"
     OVERWRITE = "OVERWRITE"
     CREATEINDEX = "CREATEINDEX"
@@ -49,6 +49,7 @@ class ImportIntoPostGIS(GeoAlgorithm):
 
     def processAlgorithm(self, progress):
         connection = self.getParameterValue(self.DATABASE)
+        schema = self.getParameterValue(self.SCHEMA)
         overwrite = self.getParameterValue(self.OVERWRITE)
         createIndex = self.getParameterValue(self.CREATEINDEX)
         settings = QSettings()
@@ -73,22 +74,22 @@ class ImportIntoPostGIS(GeoAlgorithm):
 
         uri = QgsDataSourceURI()
         uri.setConnection(host, str(port), database, username, password)
-        uri.setDataSource("public", table, "the_geom", "")
+        uri.setDataSource(schema, table, "the_geom", "")
 
         options = {}
         if overwrite:
             options['overwrite'] = True
 
         layerUri = self.getParameterValue(self.INPUT);
-        layer = dataobjects.getObjectFromUri(layerUri)
+        layer = QGisLayers.getObjectFromUri(layerUri)
         ret, errMsg = QgsVectorLayerImport.importLayer(layer, uri.uri(), providerName, self.crs, False, False, options)
         if ret != 0:
             raise GeoAlgorithmExecutionException(u"Error importing to PostGIS\n%s" %  errMsg)
 
         if createIndex:
-            db.create_spatial_index(table, "public", "the_geom")
+            db.create_spatial_index(table, schema, "the_geom")
 
-        db.vacuum_analyze(table, "public")
+        db.vacuum_analyze(table, schema)
 
     def defineCharacteristics(self):
         self.name = "Import into PostGIS"
