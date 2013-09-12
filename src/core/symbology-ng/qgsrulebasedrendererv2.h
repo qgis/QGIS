@@ -152,17 +152,19 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
         Rule* parent() { return mParent; }
 
         //! add child rule, take ownership, sets this as parent
-        void appendChild( Rule* rule ) { mChildren.append( rule ); rule->mParent = this; }
+        void appendChild( Rule* rule );
         //! add child rule, take ownership, sets this as parent
-        void insertChild( int i, Rule* rule ) { mChildren.insert( i, rule ); rule->mParent = this; }
+        void insertChild( int i, Rule* rule );
         //! delete child rule
-        void removeChild( Rule* rule ) { mChildren.removeAll( rule ); delete rule; }
+        void removeChild( Rule* rule );
         //! delete child rule
-        void removeChildAt( int i ) { Rule* rule = mChildren[i]; mChildren.removeAt( i ); delete rule; }
+        void removeChildAt( int i );
         //! take child rule out, set parent as null
-        void takeChild( Rule* rule ) { mChildren.removeAll( rule ); rule->mParent = NULL; }
+        void takeChild( Rule* rule );
         //! take child rule out, set parent as null
-        Rule* takeChildAt( int i ) { Rule* rule = mChildren.takeAt( i ); rule->mParent = NULL; return rule; }
+        Rule* takeChildAt( int i );
+
+        void updateElseRules();
 
         void setIsElse( bool iselse ) { mElseRule = iselse; }
         bool isElse() { return mElseRule; }
@@ -176,6 +178,7 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
         QString mFilterExp, mLabel, mDescription;
         bool mElseRule;
         RuleList mChildren;
+        RuleList mElseRules;
 
         // temporary
         QgsExpression* mFilter;
