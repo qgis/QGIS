@@ -196,7 +196,6 @@ def getObjectFromUri(uri, forceLoad = True):
 These methods are used by the GeoAlgorithm class and allow the developer to use transparently
 any layer that is loaded into QGIS, without having to worry about its origin'''
 
-@staticmethod
 def exportVectorLayer(layer):
     '''Takes a QgsVectorLayer and returns the filename to refer to it, which allows external
     apps which support only file-based layers to use it. It performs the necessary export
@@ -245,8 +244,6 @@ def exportVectorLayer(layer):
             return unicode(layer.source())
 
 
-
-@staticmethod
 def exportRasterLayer(layer):
     '''Takes a QgsRasterLayer and returns the filename to refer to it, which allows external
     apps which support only file-based layers to use it. It performs the necessary export
@@ -259,8 +256,6 @@ def exportRasterLayer(layer):
     #TODO:Do the conversion here
     return unicode(layer.source())
 
-
-@staticmethod
 def exportTable( table):
     '''Takes a QgsVectorLayer and returns the filename to refer to its attributes table,
     which allows external apps which support only file-based layers to use it.

@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from processing import interface
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -28,6 +27,8 @@ import processing
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
+from processing import interface
+from processing.gui.MessageBarProgress import MessageBarProgress
 from processing.tools import dataobjects
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -341,11 +342,13 @@ class Processing:
             algEx.start()
             algEx.wait()
         else:
-            progress = SilentProgress()
+            #progress = SilentProgress()
+            progress = MessageBarProgress()
             ret = UnthreadedAlgorithmExecutor.runalg(alg, progress)
             if onFinish is not None and ret:
                 onFinish(alg, progress)
             QApplication.restoreOverrideCursor()
+            progress.close()
         return alg
 
 
