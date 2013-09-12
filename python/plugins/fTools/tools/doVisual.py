@@ -48,6 +48,7 @@ class VisualDialog( QDialog, Ui_Dialog ):
     self.lineEditShpError.hide()
     self.label_6.hide()
     self.line.hide()
+    self.addToCanvasCheck.hide()
     self.buttonBox_2.setOrientation(Qt.Horizontal)
 
     if self.myFunction == 2 or self.myFunction == 3:

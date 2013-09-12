@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>436</width>
-    <height>218</height>
+    <height>242</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -38,7 +38,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QToolButton" name="toolOut">
+      <widget class="QPushButton" name="toolOut">
        <property name="text">
         <string>Browse</string>
        </property>
