@@ -194,6 +194,7 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
         checkCRS = ProcessingConfig.getSetting(ProcessingConfig.WARN_UNMATCHING_CRS)
         keepOpen = ProcessingConfig.getSetting(ProcessingConfig.KEEP_DIALOG_OPEN)
         useThread = ProcessingConfig.getSetting(ProcessingConfig.USE_THREADS)
+        self.showDebug = ProcessingConfig.getSetting(ProcessingConfig.SHOW_DEBUG_IN_DIALOG)
         try:
             self.setParamValues()
             if checkCRS and not self.alg.checkInputCRS():
@@ -219,6 +220,7 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
                     self.iterateParam = buttons.keys()[i]
                     break
 
+            self.tabWidget.setCurrentIndex(1) # log tab
             self.progress.setMaximum(0)
             self.progressLabel.setText("Processing algorithm...")
             QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
@@ -232,15 +234,14 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
                 self.algEx.percentageChanged.connect(self.setPercentage)
                 self.algEx.textChanged.connect(self.setText)
                 self.algEx.iterated.connect(self.iterate)
-                self.algEx.infoSet.connect(self.setInfo)
-                if ProcessingConfig.getSetting(ProcessingConfig.SHOW_DEBUG_IN_DIALOG):
-                    self.algEx.commandSet.connect(self.setCommand)
-                    self.algEx.debugInfoSet.connect(self.setDebugInfo)
-                    self.algEx.consoleInfoSet.connect(self.setConsoleInfo)
+                self.algEx.infoSet.connect(self.setInfo)                
+                self.algEx.commandSet.connect(self.setCommand)
+                self.algEx.debugInfoSet.connect(self.setDebugInfo)
+                self.algEx.consoleInfoSet.connect(self.setConsoleInfo)
                 self.algEx.start()
                 self.setInfo("<b>Algorithm %s started</b>" % self.alg.name)
                 self.buttonBox.button(QtGui.QDialogButtonBox.Cancel).setEnabled(True)
-            else:
+            else:                
                 self.setInfo("<b>Algorithm %s starting...</b>" % self.alg.name)
                 if self.iterateParam:
                     if UnthreadedAlgorithmExecutor.runalgIterating(self.alg, self.iterateParam, self):
@@ -262,8 +263,7 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
                         if not keepOpen:
                             self.close()
                         else:
-                            self.resetGUI()
-            self.tabWidget.setCurrentIndex(1) # log tab
+                            self.resetGUI()            
         except AlgorithmExecutionDialog.InvalidParameterValue as ex:
             try:
                 self.buttonBox.accepted.connect(lambda: ex.widget.setPalette(QPalette()))
@@ -336,15 +336,18 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
 
     @pyqtSlot(str)
     def setCommand(self, cmd):
-        self.setInfo('<tt>' + cmd + '<tt>')
+        if self.showDebug:
+            self.setInfo('<tt>' + cmd + '<tt>')
 
     @pyqtSlot(str)
     def setDebugInfo(self, msg):
-        self.setInfo('<span style="color:blue">' + msg + '</span>')
+        if self.showDebug:
+            self.setInfo('<span style="color:blue">' + msg + '</span>')
 
     @pyqtSlot(str)
     def setConsoleInfo(self, msg):
-        self.setCommand('<span style="color:darkgray">' + msg + '</span>')
+        if self.showDebug:
+            self.setCommand('<span style="color:darkgray">' + msg + '</span>')
 
     def setPercentage(self, i):
         if self.progress.maximum() == 0:
