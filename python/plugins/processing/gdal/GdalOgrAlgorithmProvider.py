@@ -16,10 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from processing.gdal.gdaladdo import gdaladdo
-from processing.gdal.ogr2ogr import Ogr2Ogr
-from processing.gdal.ogrinfo import OgrInfo
-from processing.gdal.ogrsql import OgrSql
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -30,19 +26,29 @@ __revision__ = '$Format:%H$'
 import os
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+
 from processing.core.AlgorithmProvider import AlgorithmProvider
-from processing.script.WrongScriptException import WrongScriptException
 from processing.core.ProcessingLog import ProcessingLog
+from processing.script.WrongScriptException import WrongScriptException
+
 from processing.gdal.GdalAlgorithm import GdalAlgorithm
+from processing.gdal.GdalUtils import GdalUtils
+
 from processing.gdal.nearblack import nearblack
 from processing.gdal.information import information
-from processing.gdal.GdalUtils import GdalUtils
 from processing.gdal.warp import warp
 from processing.gdal.rgb2pct import rgb2pct
 from processing.gdal.translate import translate
 from processing.gdal.pct2rgb import pct2rgb
 from processing.gdal.merge import merge
 from processing.gdal.polygonize import polygonize
+from processing.gdal.gdaladdo import gdaladdo
+from processing.gdal.ClipByExtent import ClipByExtent
+
+from processing.gdal.ogr2ogr import Ogr2Ogr
+from processing.gdal.ogrinfo import OgrInfo
+from processing.gdal.ogrsql import OgrSql
+
 
 class GdalOgrAlgorithmProvider(AlgorithmProvider):
 
@@ -85,7 +91,8 @@ class GdalOgrAlgorithmProvider(AlgorithmProvider):
         #GeoAlgorithm directly (those that execute GDAL using the console)
 
         self.preloadedAlgs = [nearblack(), information(), warp(), translate(),
-                              rgb2pct(), pct2rgb(), merge(), polygonize(), gdaladdo(),
+                              rgb2pct(), pct2rgb(), merge(), polygonize(),
+                              gdaladdo(), ClipByExtent(),
                               OgrInfo(), Ogr2Ogr(), OgrSql()]
 
         #And then we add those that are created as python scripts
