@@ -29,11 +29,11 @@
 
 
 
-QgsRuleBasedRendererV2::Rule::Rule( QgsSymbolV2* symbol, int scaleMinDenom, int scaleMaxDenom, QString filterExp, QString label, QString description )
+QgsRuleBasedRendererV2::Rule::Rule(QgsSymbolV2* symbol, int scaleMinDenom, int scaleMaxDenom, QString filterExp, QString label, QString description , bool elseRule)
     : mParent( NULL ), mSymbol( symbol ),
     mScaleMinDenom( scaleMinDenom ), mScaleMaxDenom( scaleMaxDenom ),
     mFilterExp( filterExp ), mLabel( label ), mDescription( description ),
-    mFilter( NULL )
+    mFilter( NULL ), mElseRule( elseRule )
 {
   initFilter();
 }
@@ -48,7 +48,12 @@ QgsRuleBasedRendererV2::Rule::~Rule()
 
 void QgsRuleBasedRendererV2::Rule::initFilter()
 {
-  if ( !mFilterExp.isEmpty() )
+  if ( mElseRule || mFilterExp.compare("ELSE", Qt::CaseInsensitive) == 0 )
+  {
+     mElseRule = true;
+     mFilter = NULL;
+  }
+  else if ( !mFilterExp.isEmpty() )
   {
     delete mFilter;
     mFilter = new QgsExpression( mFilterExp );
@@ -132,7 +137,7 @@ QgsLegendSymbolList QgsRuleBasedRendererV2::Rule::legendSymbolItems()
 
 bool QgsRuleBasedRendererV2::Rule::isFilterOK( QgsFeature& f ) const
 {
-  if ( ! mFilter )
+  if ( ! mFilter || mElseRule )
     return true;
 
   QVariant res = mFilter->evaluate( &f );
@@ -373,12 +378,31 @@ bool QgsRuleBasedRendererV2::Rule::renderFeature( QgsRuleBasedRendererV2::Featur
     rendered = true;
   }
 
+  QList<Rule*> elserules;
+  bool willrendersomething = false;
+
   // process children
   for ( QList<Rule*>::iterator it = mActiveChildren.begin(); it != mActiveChildren.end(); ++it )
   {
     Rule* rule = *it;
-    rendered |= rule->renderFeature( featToRender, context, renderQueue );
+    if ( rule->isElse())
+    {
+      elserules << rule;
+      continue;
+    }
+    willrendersomething |= rule->renderFeature( featToRender, context, renderQueue );
+    rendered |= willrendersomething;
   }
+
+  // If none of the rules passed then we jump into the else rules and process them.
+  if ( !willrendersomething )
+  {
+      foreach(Rule* rule, elserules)
+      {
+          rendered |= rule->renderFeature( featToRender, context, renderQueue );
+      }
+  }
+
   return rendered;
 }
 

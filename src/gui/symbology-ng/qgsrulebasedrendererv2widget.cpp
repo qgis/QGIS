@@ -636,7 +636,15 @@ QVariant QgsRuleBasedRendererV2Model::data( const QModelIndex &index, int role )
     switch ( index.column() )
     {
       case 0: return rule->label();
-      case 1: return rule->filterExpression().isEmpty() ? tr( "(no filter)" ) : rule->filterExpression();
+      case 1:
+        if ( rule->isElse() )
+        {
+            return "ELSE";
+        }
+        else
+        {
+            return rule->filterExpression().isEmpty() ? tr( "(no filter)" ) : rule->filterExpression();
+        }
       case 2: return rule->dependsOnScale() ? _formatScale( rule->scaleMinDenom() ) : QVariant();
       case 3: return rule->dependsOnScale() ? _formatScale( rule->scaleMaxDenom() ) : QVariant();
       case 4:
@@ -682,6 +690,16 @@ QVariant QgsRuleBasedRendererV2Model::data( const QModelIndex &index, int role )
   else if ( role == Qt::TextAlignmentRole )
   {
     return ( index.column() == 2 || index.column() == 3 ) ? Qt::AlignRight : Qt::AlignLeft;
+  }
+  else if (role == Qt::FontRole && index.column() == 1)
+  {
+      if ( rule->isElse() )
+      {
+          QFont italicFont;
+          italicFont.setItalic(true);
+          return italicFont;
+      }
+      return QVariant();
   }
   else if ( role == Qt::EditRole )
   {

@@ -86,7 +86,7 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
       public:
         //! Constructor takes ownership of the symbol
         Rule( QgsSymbolV2* symbol, int scaleMinDenom = 0, int scaleMaxDenom = 0, QString filterExp = QString(),
-              QString label = QString(), QString description = QString() );
+              QString label = QString(), QString description = QString(), bool elseRule = false );
         //Rule( const Rule& other );
         ~Rule();
         QString dump( int offset = 0 ) const;
@@ -163,6 +163,9 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
         void takeChild( Rule* rule ) { mChildren.removeAll( rule ); rule->mParent = NULL; }
         //! take child rule out, set parent as null
         Rule* takeChildAt( int i ) { Rule* rule = mChildren.takeAt( i ); rule->mParent = NULL; return rule; }
+
+        void setIsElse( bool iselse ) { mElseRule = iselse; }
+        bool isElse() { return mElseRule; }
 
       protected:
         void initFilter();
