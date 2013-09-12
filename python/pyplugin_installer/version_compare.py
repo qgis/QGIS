@@ -46,6 +46,8 @@ list is usually recognized as higher, except following suffixes:
 ALPHA, BETA, RC, PREVIEW and TRUNK which make the version number lower.
 """
 
+import re
+
 # ------------------------------------------------------------------------ #
 def normalizeVersion(s):
   """ remove possible prefix from given string and convert to uppercase """
@@ -169,9 +171,9 @@ def splitVersion(s):
 
 def isCompatible(curVer, minVer, maxVer=None):
   """ Compare current QGIS version with qgisMinVersion and qgisMaxVersion """
-  minVer = splitVersion(minVer)
-  maxVer = splitVersion(maxVer)
-  curVer = splitVersion( curVer.split("-")[0] )
+  minVer = splitVersion( re.sub(r'[^0-9.]+', '', minVer) )
+  maxVer = splitVersion( re.sub(r'[^0-9.]+', '', maxVer) )
+  curVer = splitVersion( re.sub(r'[^0-9.]+', '', curVer) )
 
   if not minVer or not curVer:
     return False
