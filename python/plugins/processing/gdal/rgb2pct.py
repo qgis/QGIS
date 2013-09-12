@@ -27,7 +27,7 @@ import os
 from PyQt4 import QtGui
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.ProcessingUtils import ProcessingUtils
+from processing.tools.system import *
 
 from processing.parameters.ParameterRaster import ParameterRaster
 from processing.parameters.ParameterNumber import ParameterNumber
@@ -62,7 +62,7 @@ class rgb2pct(GeoAlgorithm):
         arguments.append(self.getParameterValue(rgb2pct.INPUT))
         arguments.append(out)
 
-        if ProcessingUtils.isWindows():
+        if isWindows():
             commands = ["cmd.exe", "/C ", "rgb2pct.bat", GdalUtils.escapeAndJoin(arguments)]
         else:
             commands = ["rgb2pct.py", GdalUtils.escapeAndJoin(arguments)]

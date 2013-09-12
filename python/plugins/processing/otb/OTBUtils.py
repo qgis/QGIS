@@ -28,7 +28,7 @@ from qgis.core import QgsApplication
 import subprocess
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingLog import ProcessingLog
-from processing.core.ProcessingUtils import ProcessingUtils
+from processing.tools.system import *
 
 class OTBUtils:
 
@@ -43,7 +43,7 @@ class OTBUtils:
         if folder == None:
             folder = ""
             #try to configure the path automatically
-            if ProcessingUtils.isMac():
+            if isMac():
                 testfolder = os.path.join(str(QgsApplication.prefixPath()), "bin")
                 if os.path.exists(os.path.join(testfolder, "otbcli")):
                     folder = testfolder
@@ -51,7 +51,7 @@ class OTBUtils:
                     testfolder = "/usr/local/bin"
                     if os.path.exists(os.path.join(testfolder, "otbcli")):
                         folder = testfolder
-            elif ProcessingUtils.isWindows():
+            elif isWindows():
                 testfolder = os.path.dirname(str(QgsApplication.prefixPath()))
                 testfolder = os.path.dirname(testfolder)
                 testfolder = os.path.join(testfolder,  "bin")
@@ -70,7 +70,7 @@ class OTBUtils:
         if folder == None:
             folder =""
             #try to configure the path automatically
-            if ProcessingUtils.isMac():
+            if isMac():
                 testfolder = os.path.join(str(QgsApplication.prefixPath()), "lib/otb/applications")
                 if os.path.exists(testfolder):
                     folder = testfolder
@@ -78,7 +78,7 @@ class OTBUtils:
                     testfolder = "/usr/local/lib/otb/applications"
                     if os.path.exists(testfolder):
                         folder = testfolder
-            elif ProcessingUtils.isWindows():
+            elif isWindows():
                 testfolder = os.path.dirname(str(QgsApplication.prefixPath()))
                 testfolder = os.path.join(testfolder,  "orfeotoolbox")
                 testfolder = os.path.join(testfolder,  "applications")

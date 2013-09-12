@@ -27,7 +27,7 @@ import unittest
 import processing
 from processing.tests.TestData import points, points2, polygons, polygons2, lines, union,\
     table, raster
-from processing.core.QGisLayers import QGisLayers
+from processing.tools import dataobjects
 import os
 from osgeo import gdal
 from osgeo.gdalconst import GA_ReadOnly
@@ -105,7 +105,7 @@ class ModelerAlgorithmTest(unittest.TestCase):
     def test_modelersagagrass(self):
         outputs=processing.runalg("modeler:sagagrass",points(),None)
         output=outputs['CENTROIDS_ALG1']
-        layer=QGisLayers.getObjectFromUri(output, True)
+        layer=dataobjects.getObjectFromUri(output, True)
         fields=layer.pendingFields()
         expectednames=['CAT']
         expectedtypes=['Real']
@@ -113,7 +113,7 @@ class ModelerAlgorithmTest(unittest.TestCase):
         types=[str(f.typeName()) for f in fields]
         self.assertEqual(expectednames, names)
         self.assertEqual(expectedtypes, types)
-        features=processing.getfeatures(layer)
+        features=processing.features(layer)
         self.assertEqual(12, len(features))
         feature=features.next()
         attrs=feature.attributes()
@@ -150,7 +150,7 @@ class ModelerAlgorithmTest(unittest.TestCase):
     def test_modeleroptionalfield(self):
         outputs=processing.runalg("modeler:optionalfield",points(),None)
         output=outputs['OUTPUT_ALG0']
-        layer=QGisLayers.getObjectFromUri(output, True)
+        layer=dataobjects.getObjectFromUri(output, True)
         fields=layer.pendingFields()
         expectednames=['id','value','area','perim']
         expectedtypes=['Integer','String','Real','Real']
@@ -158,7 +158,7 @@ class ModelerAlgorithmTest(unittest.TestCase):
         types=[str(f.typeName()) for f in fields]
         self.assertEqual(expectednames, names)
         self.assertEqual(expectedtypes, types)
-        features=processing.getfeatures(layer)
+        features=processing.features(layer)
         self.assertEqual(1, len(features))
         feature=features.next()
         attrs=feature.attributes()
@@ -171,7 +171,7 @@ class ModelerAlgorithmTest(unittest.TestCase):
     def test_modeleremptystring(self):
         outputs=processing.runalg("modeler:emptystring",union(),None)
         output=outputs['OUTPUT_LAYER_ALG0']
-        layer=QGisLayers.getObjectFromUri(output, True)
+        layer=dataobjects.getObjectFromUri(output, True)
         fields=layer.pendingFields()
         expectednames=['ID','POLY_NUM_A','POLY_ST_A','ID_2','POLY_NUM_B','POLY_ST_B','NewField']
         expectedtypes=['Integer','Real','String','Integer','Real','String','Integer']
@@ -179,7 +179,7 @@ class ModelerAlgorithmTest(unittest.TestCase):
         types=[str(f.typeName()) for f in fields]
         self.assertEqual(expectednames, names)
         self.assertEqual(expectedtypes, types)
-        features=processing.getfeatures(layer)
+        features=processing.features(layer)
         self.assertEqual(8, len(features))
         feature=features.next()
         attrs=feature.attributes()

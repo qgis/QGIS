@@ -30,7 +30,7 @@ import traceback
 import subprocess
 from processing.tests.TestData import points
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.core.ProcessingUtils import ProcessingUtils, mkdir
+from processing.tools.system import *
 from processing.core.ProcessingLog import ProcessingLog
 import stat
 import shutil
@@ -57,7 +57,7 @@ class GrassUtils:
         '''This is used in linux. This is the batch job that we assign to
         GRASS_BATCH_JOB and then call GRASS and let it do the work'''
         filename = "grass_batch_job.sh"
-        batchfile = ProcessingUtils.userFolder() + os.sep + filename
+        batchfile = userFolder() + os.sep + filename
         return batchfile
 
     @staticmethod
@@ -65,17 +65,17 @@ class GrassUtils:
         '''this is used in windows. We create a script that initializes
         GRASS and then uses grass commands'''
         filename = "grass_script.bat"
-        filename = ProcessingUtils.userFolder() + os.sep + filename
+        filename = userFolder() + os.sep + filename
         return filename
 
     @staticmethod
     def grassPath():
-        if not ProcessingUtils.isWindows() and not ProcessingUtils.isMac():
+        if not isWindows() and not isMac():
             return ""
 
         folder = ProcessingConfig.getSetting(GrassUtils.GRASS_FOLDER)
         if folder == None:
-            if ProcessingUtils.isWindows():
+            if isWindows():
                 testfolder = os.path.dirname(str(QgsApplication.prefixPath()))
                 testfolder = os.path.join(testfolder,  "grass")
                 if os.path.isdir(testfolder):
@@ -108,7 +108,7 @@ class GrassUtils:
         shell = GrassUtils.grassWinShell()
 
         script = GrassUtils.grassScriptFilename()
-        gisrc =  ProcessingUtils.userFolder() + os.sep + "processing.gisrc"
+        gisrc =  userFolder() + os.sep + "processing.gisrc"
 
         #temporary gisrc file
         output = open(gisrc, "w")
@@ -169,7 +169,7 @@ class GrassUtils:
 
     @staticmethod
     def grassDataFolder():
-        tempfolder = os.path.join(ProcessingUtils.tempFolder(), "grassdata")
+        tempfolder = os.path.join(tempFolder(), "grassdata")
         mkdir(tempfolder)
         return tempfolder
 
@@ -221,17 +221,17 @@ class GrassUtils:
 
     @staticmethod
     def prepareGrassExecution(commands):
-        if ProcessingUtils.isWindows():
+        if isWindows():
             GrassUtils.createGrassScript(commands)
             command = ["cmd.exe", "/C ", GrassUtils.grassScriptFilename()]
         else:
-            gisrc =  ProcessingUtils.userFolder() + os.sep + "processing.gisrc"
+            gisrc =  userFolder() + os.sep + "processing.gisrc"
             os.putenv("GISRC", gisrc)
             os.putenv("GRASS_MESSAGE_FORMAT", "gui")
             os.putenv("GRASS_BATCH_JOB", GrassUtils.grassBatchJobFilename())
             GrassUtils.createGrassBatchJobFileFromGrassCommands(commands)
             os.chmod(GrassUtils.grassBatchJobFilename(), stat.S_IEXEC | stat.S_IREAD | stat.S_IWRITE)
-            if ProcessingUtils.isMac():
+            if isMac():
                 command = GrassUtils.grassPath() + os.sep + "grass.sh " + GrassUtils.grassMapsetFolder() + "/PERMANENT"
             else:
                 command = "grass64 " + GrassUtils.grassMapsetFolder() + "/PERMANENT"
@@ -310,7 +310,7 @@ class GrassUtils:
 
     @staticmethod
     def checkGrassIsInstalled(ignoreRegistrySettings=False):
-        if ProcessingUtils.isWindows():
+        if isWindows():
             path = GrassUtils.grassPath()
             if path == "":
                 return "GRASS folder is not configured.\nPlease configure it before running SAGA algorithms."

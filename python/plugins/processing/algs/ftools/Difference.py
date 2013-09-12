@@ -24,7 +24,7 @@ __revision__ = '$Format:%H$'
 
 from PyQt4.QtCore import *
 from qgis.core import *
-from processing.core.QGisLayers import QGisLayers
+from processing.tools import dataobjects, vector
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.parameters.ParameterVector import ParameterVector
@@ -50,8 +50,8 @@ class Difference(GeoAlgorithm):
         self.addOutput(OutputVector(Difference.OUTPUT, "Difference"))
 
     def processAlgorithm(self, progress):
-        layerA = QGisLayers.getObjectFromUri(self.getParameterValue(Difference.INPUT))
-        layerB = QGisLayers.getObjectFromUri(self.getParameterValue(Difference.OVERLAY))
+        layerA = dataobjects.getObjectFromUri(self.getParameterValue(Difference.INPUT))
+        layerB = dataobjects.getObjectFromUri(self.getParameterValue(Difference.OVERLAY))
 
         GEOS_EXCEPT = True
 
@@ -66,7 +66,7 @@ class Difference(GeoAlgorithm):
 
         index = utils.spatialindex(layerB)
 
-        selectionA = QGisLayers.features(layerA)
+        selectionA = vector.features(layerA)
 
         current = 0
         total = 100.0 / float(len(selectionA))

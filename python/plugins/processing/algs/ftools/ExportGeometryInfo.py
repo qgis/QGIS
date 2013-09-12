@@ -17,6 +17,7 @@
 ***************************************************************************
 """
 
+
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -25,8 +26,9 @@ __revision__ = '$Format:%H$'
 
 from PyQt4.QtCore import *
 from qgis.core import *
+from processing import interface
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.QGisLayers import QGisLayers
+from processing.tools import dataobjects, vector
 from processing.parameters.ParameterVector import ParameterVector
 from processing.parameters.ParameterSelection import ParameterSelection
 from processing.outputs.OutputVector import OutputVector
@@ -58,7 +60,7 @@ class ExportGeometryInfo(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, "Output layer"))
 
     def processAlgorithm(self, progress):
-        layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT))
+        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
         method = self.getParameterValue(self.METHOD)
 
         geometryType = layer.geometryType()
@@ -91,10 +93,10 @@ class ExportGeometryInfo(GeoAlgorithm):
         # 1 - project CRS
         # 2 - ellipsoidal
         if method == 2:
-            ellips = QgsProject.instance().readEntry("Measure", "/Ellipsoid", GEO_NONE)[0]
+            ellips = QgsProject.instance().readEntry("Measure", "/Ellipsoid", "NONE")[0]
             crs = layer.crs().srsid()
         elif method == 1:
-            mapCRS = QGisLayers.iface.mapCanvas().mapRenderer().destinationCrs()
+            mapCRS = interface.iface.mapCanvas().mapRenderer().destinationCrs()
             layCRS = layer.crs()
             coordTransform = QgsCoordinateTransform(layCRS, mapCRS)
 
@@ -105,7 +107,7 @@ class ExportGeometryInfo(GeoAlgorithm):
         outFeat.setFields(fields)
 
         current = 0
-        features = QGisLayers.features(layer)
+        features = vector.features(layer)
         total = 100.0 / float(len(features))
         for f in features:
             inGeom = f.geometry()

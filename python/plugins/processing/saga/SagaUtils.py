@@ -28,7 +28,7 @@ import stat
 import traceback
 import subprocess
 from processing.tests.TestData import polygons
-from processing.core.ProcessingUtils import ProcessingUtils
+from processing.tools.system import *
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingLog import ProcessingLog
 from qgis.core import *
@@ -50,12 +50,12 @@ class SagaUtils:
     @staticmethod
     def sagaBatchJobFilename():
 
-        if ProcessingUtils.isWindows():
+        if isWindows():
             filename = "saga_batch_job.bat";
         else:
             filename = "saga_batch_job.sh";
 
-        batchfile = ProcessingUtils.userFolder() + os.sep + filename
+        batchfile = userFolder() + os.sep + filename
 
         return batchfile
 
@@ -65,7 +65,7 @@ class SagaUtils:
         if folder == None:
             folder =""
             #try to auto-configure the folder
-            if ProcessingUtils.isMac():
+            if isMac():
                 testfolder = os.path.join(str(QgsApplication.prefixPath()), "bin")
                 if os.path.exists(os.path.join(testfolder, "saga_cmd")):
                     folder = testfolder
@@ -73,7 +73,7 @@ class SagaUtils:
                     testfolder = "/usr/local/bin"
                     if os.path.exists(os.path.join(testfolder, "saga_cmd")):
                         folder = testfolder
-            elif ProcessingUtils.isWindows():
+            elif isWindows():
                 testfolder = os.path.dirname(str(QgsApplication.prefixPath()))
                 testfolder = os.path.join(testfolder,  "saga")
                 if os.path.exists(os.path.join(testfolder, "saga_cmd.exe")):
@@ -88,11 +88,11 @@ class SagaUtils:
     def createSagaBatchJobFileFromSagaCommands(commands):
 
         fout = open(SagaUtils.sagaBatchJobFilename(), "w")
-        if ProcessingUtils.isWindows():
+        if isWindows():
             fout.write("set SAGA=" + SagaUtils.sagaPath() + "\n");
             fout.write("set SAGA_MLB=" + SagaUtils.sagaPath() + os.sep + "modules" + "\n");
             fout.write("PATH=PATH;%SAGA%;%SAGA_MLB%\n");
-        elif ProcessingUtils.isMac():
+        elif isMac():
             fout.write("export SAGA_MLB=" + SagaUtils.sagaPath() + "/../lib/saga\n");
             fout.write("export PATH=" + SagaUtils.sagaPath() + ":$PATH\n");
         else:
@@ -105,7 +105,7 @@ class SagaUtils:
 
     @staticmethod
     def executeSaga(progress):
-        if ProcessingUtils.isWindows():
+        if isWindows():
             command = ["cmd.exe", "/C ", SagaUtils.sagaBatchJobFilename()]
         else:
             os.chmod(SagaUtils.sagaBatchJobFilename(), stat.S_IEXEC | stat.S_IREAD | stat.S_IWRITE)
@@ -131,7 +131,7 @@ class SagaUtils:
 
     @staticmethod
     def checkSagaIsInstalled(ignoreRegistrySettings=False):
-        if ProcessingUtils.isWindows():
+        if isWindows():
             path = SagaUtils.sagaPath()
             if path == "":
                 return "SAGA folder is not configured.\nPlease configure it before running SAGA algorithms."

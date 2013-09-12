@@ -27,7 +27,7 @@ import os
 from PyQt4 import QtGui, QtCore
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.ProcessingUtils import ProcessingUtils
+from processing.tools.system import *
 
 from processing.parameters.ParameterRaster import ParameterRaster
 from processing.parameters.ParameterString import ParameterString
@@ -63,7 +63,7 @@ class polygonize(GeoAlgorithm):
         arguments.append(self.getParameterValue(polygonize.FIELD))
 
         commands = []
-        if ProcessingUtils.isWindows():
+        if isWindows():
             commands = ["cmd.exe", "/C ", "gdal_polygonize.bat", GdalUtils.escapeAndJoin(arguments)]
         else:
             commands = ["gdal_polygonize.py", GdalUtils.escapeAndJoin(arguments)]

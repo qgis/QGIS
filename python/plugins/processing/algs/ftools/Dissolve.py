@@ -28,9 +28,9 @@ from processing.core.GeoAlgorithm import GeoAlgorithm
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
-from processing.tools import vector as utils
+from processing.tools import vector as utils, vector
 from processing.parameters.ParameterVector import ParameterVector
-from processing.core.QGisLayers import QGisLayers
+from processing.tools import dataobjects
 from processing.outputs.OutputVector import OutputVector
 from processing.parameters.ParameterBoolean import ParameterBoolean
 from processing.parameters.ParameterTableField import ParameterTableField
@@ -50,7 +50,7 @@ class Dissolve(GeoAlgorithm):
     def processAlgorithm(self, progress):
         useField = not self.getParameterValue(Dissolve.DISSOLVE_ALL)
         fieldname = self.getParameterValue(Dissolve.FIELD)
-        vlayerA = QGisLayers.getObjectFromUri(self.getParameterValue(Dissolve.INPUT))
+        vlayerA = dataobjects.getObjectFromUri(self.getParameterValue(Dissolve.INPUT))
         field = vlayerA.fieldNameIndex(fieldname)
         vproviderA = vlayerA.dataProvider()
         fields = vproviderA.fields()
@@ -60,7 +60,7 @@ class Dissolve(GeoAlgorithm):
         nFeat = vproviderA.featureCount()
         if not useField:
             first = True
-            features = QGisLayers.features(vlayerA)
+            features = vector.features(vlayerA)
             for inFeat in features:
                 nElement += 1
                 progress.setPercentage(int(nElement/nFeat * 100))
@@ -85,7 +85,7 @@ class Dissolve(GeoAlgorithm):
             for item in unique:
                 first = True
                 add = True
-                features = QGisLayers.features(vlayerA)
+                features = vector.features(vlayerA)
                 for inFeat in features:
                     nElement += 1
                     progress.setPercentage(int(nElement/nFeat * 100))

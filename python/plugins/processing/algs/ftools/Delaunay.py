@@ -24,31 +24,19 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from sets import Set
-
 from PyQt4.QtCore import *
-
 from qgis.core import *
-
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.QGisLayers import QGisLayers
-
+from processing.tools import dataobjects, vector
 from processing.parameters.ParameterVector import ParameterVector
-
 from processing.outputs.OutputVector import OutputVector
-
 from processing.algs.ftools import voronoi
-
 
 class Delaunay(GeoAlgorithm):
 
     INPUT = "INPUT"
     OUTPUT = "OUTPUT"
-
-    #===========================================================================
-    # def getIcon(self):
-    #    return QtGui.QIcon(os.path.dirname(__file__) + "/icons/delaunay.png")
-    #===========================================================================
 
     def defineCharacteristics(self):
         self.name = "Delaunay triangulation"
@@ -59,7 +47,7 @@ class Delaunay(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, "Delaunay triangulation"))
 
     def processAlgorithm(self, progress):
-        layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT))
+        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
 
 
         fields = [QgsField("POINTA", QVariant.Double, "", 24, 15),
@@ -74,7 +62,7 @@ class Delaunay(GeoAlgorithm):
         ptDict = {}
         ptNdx = -1
         c = voronoi.Context()
-        features = QGisLayers.features(layer)
+        features = vector.features(layer)
         for inFeat in features:
             geom = QgsGeometry(inFeat.geometry())
             point = geom.asPoint()

@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from processing import interface
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -27,7 +28,7 @@ import processing
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
-from processing.core.QGisLayers import QGisLayers
+from processing.tools import dataobjects
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingLog import ProcessingLog
@@ -53,7 +54,6 @@ from processing.admintools.AdminToolsAlgorithmProvider import AdminToolsAlgorith
 
 class Processing:
 
-    iface = None
     listeners = []
     providers = []
     #a dictionary of algorithms. Keys are names of providers
@@ -102,19 +102,12 @@ class Processing:
 
     @staticmethod
     def getInterface():
-        return Processing.iface
+        return interface.iface
 
     @staticmethod
     def setInterface(iface):
-        Processing.iface = iface
+        pass#Processing.iface = iface
 
-    @staticmethod
-    def setPlugin(iface):
-        Processing.plugin = iface
-
-    @staticmethod
-    def getPlugin():
-        return Processing.plugin
 
     @staticmethod
     def initialize():
@@ -251,7 +244,7 @@ class Processing:
     @staticmethod
     def getObject(uri):
         '''Returns the QGIS object identified by the given URI'''
-        return QGisLayers.getObjectFromUri(uri)
+        return dataobjects.getObjectFromUri(uri)
 
     @staticmethod
     def runandload(name, *args):

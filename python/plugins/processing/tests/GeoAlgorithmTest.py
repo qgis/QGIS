@@ -27,16 +27,16 @@ import processing
 import unittest
 from processing.tests.TestData import points, points2, polygons, polygons2, lines, union,\
     table, polygonsGeoJson, raster
-from processing.core.QGisLayers import QGisLayers
-from processing.core.ProcessingUtils import ProcessingUtils
+from processing.tools import dataobjects
+from processing.tools.system import *
 
 class GeoAlgorithmTest(unittest.TestCase):
 
     def testWrongformat(self):
-        outputs=processing.runalg("qgis:countpointsinpolygon",polygons(),points(),"NUMPOINTS",ProcessingUtils.getTempFilename("wrongext"))
+        outputs=processing.runalg("qgis:countpointsinpolygon",polygons(),points(),"NUMPOINTS",getTempFilename("wrongext"))
         output=outputs['OUTPUT']
         self.assertTrue(output.endswith('shp'))
-        layer=QGisLayers.getObjectFromUri(output, True)
+        layer=dataobjects.getObjectFromUri(output, True)
         fields=layer.pendingFields()
         expectednames=['ID','POLY_NUM_A','POLY_ST_A','NUMPOINTS']
         expectedtypes=['Integer','Real','String','Real']
@@ -44,7 +44,7 @@ class GeoAlgorithmTest(unittest.TestCase):
         types=[str(f.typeName()) for f in fields]
         self.assertEqual(expectednames, names)
         self.assertEqual(expectedtypes, types)
-        features=processing.getfeatures(layer)
+        features=processing.features(layer)
         self.assertEqual(2, len(features))
         feature=features.next()
         attrs=feature.attributes()

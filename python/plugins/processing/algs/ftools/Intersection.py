@@ -28,7 +28,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
 from processing.parameters.ParameterVector import ParameterVector
-from processing.core.QGisLayers import QGisLayers
+from processing.tools import dataobjects, vector
 from processing.outputs.OutputVector import OutputVector
 from processing.tools import vector as utils
 
@@ -44,8 +44,8 @@ class Intersection(GeoAlgorithm):
     #===========================================================================
 
     def processAlgorithm(self, progress):
-        vlayerA = QGisLayers.getObjectFromUri(self.getParameterValue(Intersection.INPUT))
-        vlayerB = QGisLayers.getObjectFromUri(self.getParameterValue(Intersection.INPUT2))
+        vlayerA = dataobjects.getObjectFromUri(self.getParameterValue(Intersection.INPUT))
+        vlayerB = dataobjects.getObjectFromUri(self.getParameterValue(Intersection.INPUT2))
         vproviderA = vlayerA.dataProvider()
 
         fields = utils.combineVectorFields(vlayerA, vlayerB)
@@ -55,7 +55,7 @@ class Intersection(GeoAlgorithm):
         outFeat = QgsFeature()
         index = utils.spatialindex(vlayerB)
         nElement = 0
-        selectionA = QGisLayers.features(vlayerA)
+        selectionA = vector.features(vlayerA)
         nFeat = len(selectionA)
         for inFeatA in selectionA:
             nElement += 1

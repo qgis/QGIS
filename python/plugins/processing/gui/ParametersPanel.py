@@ -28,7 +28,7 @@ import locale
 
 from PyQt4 import QtCore, QtGui
 
-from processing.core.QGisLayers import QGisLayers
+from processing.tools import dataobjects
 from processing.core.ProcessingConfig import ProcessingConfig
 
 from processing.gui.OutputSelectionPanel import OutputSelectionPanel
@@ -194,7 +194,7 @@ class ParametersPanel(QtGui.QWidget):
 
     def getWidgetFromParameter(self, param):
         if isinstance(param, ParameterRaster):
-            layers = QGisLayers.getRasterLayers()
+            layers = dataobjects.getRasterLayers()
             items = []
             if (param.optional):
                 items.append((self.NOT_SELECTED, None))
@@ -204,7 +204,7 @@ class ParametersPanel(QtGui.QWidget):
         elif isinstance(param, ParameterVector):
             if self.somethingDependsOnThisParameter(param) or self.alg.allowOnlyOpenedLayers:
                 item = QtGui.QComboBox()
-                layers = QGisLayers.getVectorLayers(param.shapetype)
+                layers = dataobjects.getVectorLayers(param.shapetype)
                 if (param.optional):
                     item.addItem(self.NOT_SELECTED, None)
                 for layer in layers:
@@ -212,7 +212,7 @@ class ParametersPanel(QtGui.QWidget):
                 item.currentIndexChanged.connect(self.updateDependentFields)
                 item.name = param.name
             else:
-                layers = QGisLayers.getVectorLayers(param.shapetype)
+                layers = dataobjects.getVectorLayers(param.shapetype)
                 items = []
                 if (param.optional):
                     items.append((self.NOT_SELECTED, None))
@@ -222,7 +222,7 @@ class ParametersPanel(QtGui.QWidget):
         elif isinstance(param, ParameterTable):
             if self.somethingDependsOnThisParameter(param):
                 item = QtGui.QComboBox()
-                layers = QGisLayers.getTables()
+                layers = dataobjects.getTables()
                 if (param.optional):
                     item.addItem(self.NOT_SELECTED, None)
                 for layer in layers:
@@ -230,7 +230,7 @@ class ParametersPanel(QtGui.QWidget):
                 item.currentIndexChanged.connect(self.updateDependentFields)
                 item.name = param.name
             else:
-                layers = QGisLayers.getTables()
+                layers = dataobjects.getTables()
                 items = []
                 if (param.optional):
                     items.append((self.NOT_SELECTED, None))
@@ -255,9 +255,9 @@ class ParametersPanel(QtGui.QWidget):
             items.append(param.name)
             parent = self.alg.getParameterFromName(param.parent)
             if isinstance(parent, ParameterVector):
-                layers = QGisLayers.getVectorLayers(parent.shapetype)
+                layers = dataobjects.getVectorLayers(parent.shapetype)
             else:
-                layers = QGisLayers.getTables()
+                layers = dataobjects.getTables()
             if len(layers)>0:
                 item.addItems(self.getFields(layers[0], param.datatype))
         elif isinstance(param, ParameterSelection):
@@ -272,11 +272,11 @@ class ParametersPanel(QtGui.QWidget):
             item = FileSelectionPanel(param.isFolder)
         elif isinstance(param, ParameterMultipleInput):
             if param.datatype == ParameterMultipleInput.TYPE_RASTER:
-                options = QGisLayers.getRasterLayers()
+                options = dataobjects.getRasterLayers()
             elif param.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
-                options = QGisLayers.getVectorLayers()
+                options = dataobjects.getVectorLayers()
             else:
-                options = QGisLayers.getVectorLayers(param.datatype)
+                options = dataobjects.getVectorLayers(param.datatype)
             opts = []
             for opt in options:
                 opts.append(self.getExtendedLayerName(opt))

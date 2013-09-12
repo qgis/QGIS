@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -25,15 +26,11 @@ __revision__ = '$Format:%H$'
 
 
 from PyQt4.QtCore import *
-
 from qgis.core import *
-
-from processing.core.QGisLayers import QGisLayers
+from processing.tools import dataobjects, vector
 from processing.core.ProcessingLog import ProcessingLog
 
 def buffering(progress, writer, distance, field, useField, layer, dissolve, segments):
-    GEOS_EXCEPT = True
-    FEATURE_EXCEPT = True
 
     if useField:
         field = layer.fieldNameIndex(field)
@@ -44,7 +41,7 @@ def buffering(progress, writer, distance, field, useField, layer, dissolve, segm
     outGeom = QgsGeometry()
 
     current = 0
-    features = QGisLayers.features(layer)
+    features = vector.features(layer)
     total = 100.0 / float(len(features))
 
     # with dissolve
@@ -57,30 +54,21 @@ def buffering(progress, writer, distance, field, useField, layer, dissolve, segm
             else:
                 value = distance
 
-            inGeom = QgsGeometry(inFeat.geometry())
-            try:
-                outGeom = inGeom.buffer(float(value), segments)
-                if first:
-                    tempGeom = QgsGeometry(outGeom)
-                    first = False
-                else:
-                    try:
-                        tempGeom = tempGeom.combine(outGeom)
-                    except:
-                        GEOS_EXCEPT = False
-                        continue
-            except:
-                GEOS_EXCEPT = False
-                continue
+            inGeom = QgsGeometry(inFeat.geometry())            
+            outGeom = inGeom.buffer(float(value), segments)
+            if first:
+                tempGeom = QgsGeometry(outGeom)
+                first = False
+            else:                   
+                tempGeom = tempGeom.combine(outGeom)                   
 
             current += 1
             progress.setPercentage(int(current * total))
-        try:
-            outFeat.setGeometry(tempGeom)
-            outFeat.setAttributes(attrs)
-            writer.addFeature(outFeat)
-        except:
-            FEATURE_EXCEPT = False
+    
+        outFeat.setGeometry(tempGeom)
+        outFeat.setAttributes(attrs)
+        writer.addFeature(outFeat)
+        
     # without dissolve
     else:
         for inFeat in features:
@@ -89,27 +77,12 @@ def buffering(progress, writer, distance, field, useField, layer, dissolve, segm
                 value = attrs[field]
             else:
                 value = distance
-
-            inGeom = QgsGeometry(inFeat.geometry())
-            try:
-                outGeom = inGeom.buffer(float(value), segments)
-                try:
-                    outFeat.setGeometry(outGeom)
-                    outFeat.setAttributes(attrs)
-                    writer.addFeature(outFeat)
-                except:
-                    FEATURE_EXCEPT = False
-                    continue
-            except:
-                GEOS_EXCEPT = False
-                continue
-
+            inGeom = QgsGeometry(inFeat.geometry())            
+            outGeom = inGeom.buffer(float(value), segments)            
+            outFeat.setGeometry(outGeom)
+            outFeat.setAttributes(attrs)
+            writer.addFeature(outFeat)                                        
             current += 1
             progress.setPercentage(int(current * total))
 
     del writer
-
-    if not GEOS_EXCEPT:
-        ProcessingLog.addToLog(ProcessingLog.LOG_WARNING, "Geometry exception while computing buffer")
-    if not FEATURE_EXCEPT:
-        ProcessingLog.addToLog(ProcessingLog.LOG_WARNING, "Feature exception while computing buffer")

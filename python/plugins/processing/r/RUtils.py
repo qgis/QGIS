@@ -28,7 +28,7 @@ from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 from processing.core.ProcessingConfig import ProcessingConfig
 import os
-from processing.core.ProcessingUtils import mkdir, ProcessingUtils
+from processing.tools.system import *
 import subprocess
 from processing.core.ProcessingLog import ProcessingLog
 import stat
@@ -51,7 +51,7 @@ class RUtils:
     def RScriptsFolder():
         folder = ProcessingConfig.getSetting(RUtils.RSCRIPTS_FOLDER)
         if folder == None:
-            folder = unicode(os.path.join(ProcessingUtils.userFolder(), "rscripts"))
+            folder = unicode(os.path.join(userFolder(), "rscripts"))
         mkdir(folder)
 
         return os.path.abspath(folder)
@@ -65,7 +65,7 @@ class RUtils:
 
     @staticmethod
     def getRScriptFilename():
-        return ProcessingUtils.userFolder() + os.sep + "processing_script.r"
+        return userFolder() + os.sep + "processing_script.r"
 
     @staticmethod
     def getConsoleOutputFilename():
@@ -75,7 +75,7 @@ class RUtils:
     def executeRAlgorithm(alg, progress):
         RUtils.verboseCommands = alg.getVerboseCommands();
         RUtils.createRScriptFromRCommands(alg.getFullSetOfRCommands())
-        if ProcessingUtils.isWindows():
+        if isWindows():
             if ProcessingConfig.getSetting(RUtils.R_USE64):
                 execDir = "x64"
             else:
@@ -128,7 +128,7 @@ class RUtils:
 
     @staticmethod
     def checkRIsInstalled(ignoreRegistrySettings=False):
-        if ProcessingUtils.isWindows():
+        if isWindows():
             path = RUtils.RFolder()
             if path == "":
                 return "R folder is not configured.\nPlease configure it before running R scripts."
@@ -138,7 +138,7 @@ class RUtils:
         if not ignoreRegistrySettings:
             if settings.contains(R_INSTALLED):
                 return
-        if ProcessingUtils.isWindows():
+        if isWindows():
             if ProcessingConfig.getSetting(RUtils.R_USE64):
                 execDir = "x64"
             else:

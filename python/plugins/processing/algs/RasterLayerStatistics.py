@@ -28,7 +28,7 @@ import math
 from PyQt4.QtCore import *
 from qgis.core import *
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.QGisLayers import QGisLayers
+from processing.tools import dataobjects
 from processing.parameters.ParameterRaster import ParameterRaster
 from processing.tools import raster
 from processing.outputs.OutputNumber import OutputNumber
@@ -50,7 +50,7 @@ class RasterLayerStatistics(GeoAlgorithm):
     def processAlgorithm(self, progress):
         outputFile = self.getOutputValue(self.OUTPUT_HTML_FILE)
         uri = self.getParameterValue(self.INPUT)
-        layer = QGisLayers.getObjectFromUri(uri)
+        layer = dataobjects.getObjectFromUri(uri)
         values = raster.scanraster(layer, progress)
 
         n = 0

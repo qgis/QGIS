@@ -26,7 +26,7 @@ __revision__ = '$Format:%H$'
 from PyQt4.QtCore import *
 from qgis.core import *
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.QGisLayers import QGisLayers
+from processing.tools import dataobjects, vector
 from processing.parameters.ParameterVector import ParameterVector
 from processing.parameters.ParameterTableField import ParameterTableField
 from processing.outputs.OutputVector import OutputVector
@@ -58,8 +58,8 @@ class LinesIntersection(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, "Output layer"))
 
     def processAlgorithm(self, progress):
-        layerA = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT_A))
-        layerB = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT_B))
+        layerA = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_A))
+        layerB = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_B))
         fieldA = self.getParameterValue(self.FIELD_A)
         fieldB = self.getParameterValue(self.FIELD_B)
 
@@ -81,7 +81,7 @@ class LinesIntersection(GeoAlgorithm):
         inGeom = QgsGeometry()
         tmpGeom = QgsGeometry()
 
-        features = QGisLayers.features(layerA)
+        features = vector.features(layerA)
 
         current = 0
         total = 100.0 / float(len(features))

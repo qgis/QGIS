@@ -26,7 +26,7 @@ __revision__ = '$Format:%H$'
 from PyQt4.QtCore import *
 from qgis.core import *
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.QGisLayers import QGisLayers
+from processing.tools import dataobjects, vector
 from processing.core.ProcessingLog import ProcessingLog
 from processing.parameters.ParameterVector import ParameterVector
 from processing.outputs.OutputVector import OutputVector
@@ -38,11 +38,6 @@ class Clip(GeoAlgorithm):
     OVERLAY = "OVERLAY"
     OUTPUT = "OUTPUT"
 
-    #===========================================================================
-    # def getIcon(self):
-    #    return QtGui.QIcon(os.path.dirname(__file__) + "/icons/clip.png")
-    #===========================================================================
-
     def defineCharacteristics(self):
         self.name = "Clip"
         self.group = "Vector overlay tools"
@@ -51,11 +46,8 @@ class Clip(GeoAlgorithm):
         self.addOutput(OutputVector(Clip.OUTPUT, "Clipped"))
 
     def processAlgorithm(self, progress):
-        layerA = QGisLayers.getObjectFromUri(self.getParameterValue(Clip.INPUT))
-        layerB = QGisLayers.getObjectFromUri(self.getParameterValue(Clip.OVERLAY))
-
-        GEOS_EXCEPT = True
-        FEATURE_EXCEPT = True
+        layerA = dataobjects.getObjectFromUri(self.getParameterValue(Clip.INPUT))
+        layerB = dataobjects.getObjectFromUri(self.getParameterValue(Clip.OVERLAY))
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layerA.pendingFields(),
                      layerA.dataProvider().geometryType(), layerA.dataProvider().crs())
@@ -66,7 +58,7 @@ class Clip(GeoAlgorithm):
 
         index = utils.spatialindex(layerB)
 
-        selectionA = QGisLayers.features(layerA)
+        selectionA = vector.features(layerA)
 
         current = 0
         total = 100.0 / float(len(selectionA))
@@ -88,38 +80,21 @@ class Clip(GeoAlgorithm):
                             outFeat.setGeometry(QgsGeometry(tmpGeom))
                             first = False
                         else:
-                            try:
-                                cur_geom = QgsGeometry(outFeat.geometry())
-                                new_geom = QgsGeometry(cur_geom.combine(tmpGeom))
-                                outFeat.setGeometry(QgsGeometry(new_geom))
-                            except:
-                                GEOS_EXCEPT = False
-                                break
-                if found:
-                    try:
-                        cur_geom = QgsGeometry(outFeat.geometry())
-                        new_geom = QgsGeometry(geom.intersection(cur_geom))
-                        if new_geom.wkbType() == QGis.WKBNoGeometry :
-                            int_com = QgsGeometry(geom.combine(cur_geom))
-                            int_sym = QgsGeometry(geom.symDifference(cur_geom))
-                            new_geom = QgsGeometry(int_com.difference(int_sym))
-                        try:
-                            outFeat.setGeometry(new_geom)
-                            outFeat.setAttributes(attrs)
-                            writer.addFeature(outFeat)
-                        except:
-                            FEATURE_EXCEPT = False
-                            continue
-                    except:
-                        GEOS_EXCEPT = False
-                        continue
+                            cur_geom = QgsGeometry(outFeat.geometry())
+                            new_geom = QgsGeometry(cur_geom.combine(tmpGeom))
+                            outFeat.setGeometry(QgsGeometry(new_geom))
+                if found:               
+                    cur_geom = QgsGeometry(outFeat.geometry())
+                    new_geom = QgsGeometry(geom.intersection(cur_geom))
+                    if new_geom.wkbType() == QGis.WKBNoGeometry :
+                        int_com = QgsGeometry(geom.combine(cur_geom))
+                        int_sym = QgsGeometry(geom.symDifference(cur_geom))
+                        new_geom = QgsGeometry(int_com.difference(int_sym))                        
+                    outFeat.setGeometry(new_geom)
+                    outFeat.setAttributes(attrs)
+                    writer.addFeature(outFeat)                                        
 
             current += 1
             progress.setPercentage(int(current * total))
 
         del writer
-
-        if not GEOS_EXCEPT:
-            ProcessingLog.addToLog(ProcessingLog.LOG_WARNING, "Geometry exception while computing clip")
-        if not FEATURE_EXCEPT:
-            ProcessingLog.addToLog(ProcessingLog.LOG_WARNING, "Feature exception while computing clip")

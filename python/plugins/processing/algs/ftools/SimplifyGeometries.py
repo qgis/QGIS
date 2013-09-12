@@ -28,7 +28,7 @@ from PyQt4.QtCore import *
 from qgis.core import *
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.QGisLayers import QGisLayers
+from processing.tools import dataobjects, vector
 from processing.core.ProcessingLog import ProcessingLog
 from processing.parameters.ParameterVector import ParameterVector
 from processing.parameters.ParameterNumber import ParameterNumber
@@ -55,7 +55,7 @@ class SimplifyGeometries(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, "Simplified layer"))
 
     def processAlgorithm(self, progress):
-        layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT))
+        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
         tolerance =self.getParameterValue(self.TOLERANCE)
 
         pointsBefore = 0
@@ -65,7 +65,7 @@ class SimplifyGeometries(GeoAlgorithm):
                      layer.wkbType(), layer.crs())
 
         current = 0
-        selection = QGisLayers.features(layer)
+        selection = vector.features(layer)
         total =  100.0 / float(len(selection))
         for f in selection:
             featGeometry = QgsGeometry(f.geometry())

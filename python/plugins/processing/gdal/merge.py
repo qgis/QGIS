@@ -28,7 +28,7 @@ import os
 from PyQt4 import QtGui
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.ProcessingUtils import ProcessingUtils
+from processing.tools.system import *
 
 from processing.outputs.OutputRaster import OutputRaster
 from processing.parameters.ParameterBoolean import ParameterBoolean
@@ -69,7 +69,7 @@ class merge(GeoAlgorithm):
         arguments.extend(self.getParameterValue(merge.INPUT).split(";"))
 
         commands = []
-        if ProcessingUtils.isWindows():
+        if isWindows():
             commands = ["cmd.exe", "/C ", "gdal_merge.bat", GdalUtils.escapeAndJoin(arguments)]
         else:
             commands = ["gdal_merge.py", GdalUtils.escapeAndJoin(arguments)]

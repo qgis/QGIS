@@ -24,9 +24,9 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from processing.parameters.ParameterDataObject import ParameterDataObject
-from processing.core.QGisLayers import QGisLayers
+from processing.tools import dataobjects
 from qgis.core import *
-from processing.core.LayerExporter import LayerExporter
+from processing.tools import dataobjects
 
 
 class ParameterMultipleInput(ParameterDataObject):
@@ -100,16 +100,16 @@ class ParameterMultipleInput(ParameterDataObject):
             return self.value
         if self.datatype == ParameterMultipleInput.TYPE_RASTER:
             for layerfile in layers:
-                layer = QGisLayers.getObjectFromUri(layerfile, False)
+                layer = dataobjects.getObjectFromUri(layerfile, False)
                 if layer:
-                    filename = LayerExporter.exportRasterLayer(layer)
+                    filename = dataobjects.exportRasterLayer(layer)
                     self.exported = self.exported.replace(layerfile, filename)
             return self.exported
         else:
             for layerfile in layers:
-                layer = QGisLayers.getObjectFromUri(layerfile, False)
+                layer = dataobjects.getObjectFromUri(layerfile, False)
                 if layer:
-                    filename = LayerExporter.exportVectorLayer(layer)
+                    filename = dataobjects.exportVectorLayer(layer)
                     self.exported = self.exported.replace(layerfile, filename)
             return self.exported
 
@@ -119,7 +119,7 @@ class ParameterMultipleInput(ParameterDataObject):
                 return unicode(value.dataProvider().dataSourceUri())
             else:
                 s = unicode(value)
-                layers = QGisLayers.getRasterLayers()
+                layers = dataobjects.getRasterLayers()
                 for layer in layers:
                     if layer.name() == s:
                         return unicode(layer.dataProvider().dataSourceUri())
@@ -129,7 +129,7 @@ class ParameterMultipleInput(ParameterDataObject):
                 return unicode(value.source())
             else:
                 s = unicode(value)
-                layers = QGisLayers.getVectorLayers(self.datatype)
+                layers = dataobjects.getVectorLayers(self.datatype)
                 for layer in layers:
                     if layer.name() == s:
                         return unicode(layer.source())
@@ -137,9 +137,9 @@ class ParameterMultipleInput(ParameterDataObject):
 
     def getFileFilter(self):
         if self.datatype == ParameterMultipleInput.TYPE_RASTER:
-            exts = QGisLayers.getSupportedOutputRasterLayerExtensions()
+            exts = dataobjects.getSupportedOutputRasterLayerExtensions()
         else:
-            exts = QGisLayers.getSupportedOutputVectorLayerExtensions()
+            exts = dataobjects.getSupportedOutputVectorLayerExtensions()
         for i in range(len(exts)):
             exts[i] = exts[i].upper() + " files(*." + exts[i].lower() + ")"
         return ";;".join(exts)

@@ -26,7 +26,7 @@ __revision__ = '$Format:%H$'
 from PyQt4.QtCore import *
 from qgis.core import *
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.QGisLayers import QGisLayers
+from processing.tools import dataobjects, vector
 from processing.parameters.ParameterTableField import ParameterTableField
 from processing.parameters.ParameterVector import ParameterVector
 from processing.outputs.OutputVector import OutputVector
@@ -56,7 +56,7 @@ class MeanCoords(GeoAlgorithm):
         self.addOutput(OutputVector(MeanCoords.OUTPUT, "Result"))
 
     def processAlgorithm(self, progress):
-        layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.POINTS))
+        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.POINTS))
         weightField = self.getParameterValue(self.WEIGHT)
         uniqueField = self.getParameterValue(self.UID)
 
@@ -72,7 +72,7 @@ class MeanCoords(GeoAlgorithm):
                      QGis.WKBPoint, layer.crs())
 
         current = 0
-        features = QGisLayers.features(layer)
+        features = vector.features(layer)
         total = 100.0 / float(len(features))
 
         means = {}

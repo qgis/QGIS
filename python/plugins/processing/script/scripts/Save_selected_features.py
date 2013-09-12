@@ -14,8 +14,8 @@ from processing.core.VectorWriter import VectorWriter
 
 #input layers values are always a string with its location.
 #That string can be converted into a QGIS object (a QgsVectorLayer in this case))
-#using the processing.getobject() method
-vectorLayer = processing.getobject(input)
+#using the processing.getObject() method
+vectorLayer = processing.getObject(input)
 
 #And now we can process
 

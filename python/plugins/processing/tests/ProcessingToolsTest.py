@@ -29,39 +29,39 @@ from processing.tests.TestData import points, points2, polygons, polygons2, line
     table, polygonsGeoJson, raster
 from processing.core import Processing
 from processing.tools.vector import values
-from processing.tools.general import getfromname
+from processing.tools.dataobjects import * 
 
 class ProcessingToolsTest(unittest.TestCase):
     '''tests the method imported when doing an "import processing", and also in processing.tools.
     They are mostly convenience tools'''
 
     def test_getobject(self):
-        layer = processing.getobject(points());
+        layer = processing.getObject(points());
         self.assertIsNotNone(layer)
-        layer = processing.getobject("points");
+        layer = processing.getObject("points");
         self.assertIsNotNone(layer)
 
     def test_runandload(self):
         processing.runandload("qgis:countpointsinpolygon",polygons(),points(),"NUMPOINTS", None)
-        layer = getfromname("Result")
+        layer = getObjectFromName("Result")
         self.assertIsNotNone(layer)
 
     def test_featuresWithoutSelection(self):
-        layer = processing.getobject(points())
-        features = processing.getfeatures(layer)
+        layer = processing.getObject(points())
+        features = processing.features(layer)
         self.assertEqual(12, len(features))
 
     def test_featuresWithSelection(self):
-        layer = processing.getobject(points())
+        layer = processing.getObject(points())
         feature = layer.getFeatures().next()
         selected = [feature.id()]
         layer.setSelectedFeatures(selected)
-        features = processing.getfeatures(layer)
+        features = processing.features(layer)
         self.assertEqual(1, len(features))
         layer.setSelectedFeatures([])
 
     def test_attributeValues(self):
-        layer = processing.getobject(points())
+        layer = processing.getObject(points())
         attributeValues = values(layer, "ID")
         i = 1
         for value in attributeValues['ID']:

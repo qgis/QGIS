@@ -28,7 +28,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
 from processing.parameters.ParameterVector import ParameterVector
-from processing.core.QGisLayers import QGisLayers
+from processing.tools import dataobjects, vector
 from processing.outputs.OutputVector import OutputVector
 
 class Explode(GeoAlgorithm):
@@ -42,7 +42,7 @@ class Explode(GeoAlgorithm):
     #===========================================================================
 
     def processAlgorithm(self, progress):
-        vlayer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT))
+        vlayer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
         output = self.getOutputFromName(self.OUTPUT)
         vprovider = vlayer.dataProvider()
         fields = vprovider.fields()
@@ -50,7 +50,7 @@ class Explode(GeoAlgorithm):
         outFeat = QgsFeature()
         inGeom = QgsGeometry()
         nElement = 0
-        features = QGisLayers.features(vlayer)
+        features = vector.features(vlayer)
         nFeat = len(features)
         for feature in features:
             nElement += 1

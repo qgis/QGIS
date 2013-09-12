@@ -33,7 +33,7 @@ from qgis.core import *
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingLog import ProcessingLog
-from processing.core.ProcessingUtils import ProcessingUtils
+from processing.tools.system import *
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 

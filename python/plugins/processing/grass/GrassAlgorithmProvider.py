@@ -32,7 +32,7 @@ from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.core.ProcessingLog import ProcessingLog
 from processing.grass.GrassUtils import GrassUtils
 from processing.grass.GrassAlgorithm import GrassAlgorithm
-from processing.core.ProcessingUtils import ProcessingUtils
+from processing.tools.system import *
 
 class GrassAlgorithmProvider(AlgorithmProvider):
 
@@ -42,7 +42,7 @@ class GrassAlgorithmProvider(AlgorithmProvider):
 
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)
-        if ProcessingUtils.isWindows() or ProcessingUtils.isMac():
+        if isWindows() or isMac():
             ProcessingConfig.addSetting(Setting(self.getDescription(), GrassUtils.GRASS_FOLDER, "GRASS folder", GrassUtils.grassPath()))
             ProcessingConfig.addSetting(Setting(self.getDescription(), GrassUtils.GRASS_WIN_SHELL, "Msys folder", GrassUtils.grassWinShell()))
         ProcessingConfig.addSetting(Setting(self.getDescription(), GrassUtils.GRASS_LOG_COMMANDS, "Log execution commands", False))
@@ -50,7 +50,7 @@ class GrassAlgorithmProvider(AlgorithmProvider):
 
     def unload(self):
         AlgorithmProvider.unload(self)
-        if ProcessingUtils.isWindows() or ProcessingUtils.isMac():
+        if isWindows() or isMac():
             ProcessingConfig.removeSetting(GrassUtils.GRASS_FOLDER)
             ProcessingConfig.removeSetting(GrassUtils.GRASS_WIN_SHELL)
         ProcessingConfig.removeSetting(GrassUtils.GRASS_LOG_COMMANDS)

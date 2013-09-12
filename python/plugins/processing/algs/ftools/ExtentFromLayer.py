@@ -28,7 +28,7 @@ from PyQt4.QtCore import *
 from qgis.core import *
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.QGisLayers import QGisLayers
+from processing.tools import dataobjects, vector
 
 from processing.parameters.ParameterVector import ParameterVector
 from processing.parameters.ParameterBoolean import ParameterBoolean
@@ -57,7 +57,7 @@ class ExtentFromLayer(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, "Output layer"))
 
     def processAlgorithm(self, progress):
-        layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT_LAYER))
+        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_LAYER))
         byFeature = self.getParameterValue(self.BY_FEATURE)
 
         fields = [ QgsField("MINX", QVariant.Double),
@@ -110,7 +110,7 @@ class ExtentFromLayer(GeoAlgorithm):
 
     def featureExtent(self, layer, writer, progress):
         current = 0
-        features = QGisLayers.features(layer)
+        features = vector.features(layer)
         total = 100.0 / float(len(features))
         feat = QgsFeature()
         for f in features:

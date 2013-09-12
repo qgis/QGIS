@@ -16,6 +16,8 @@
 *                                                                         *
 ***************************************************************************
 """
+from processing.core.SilentProgress import SilentProgress
+from processing.core.ProcessingLog import ProcessingLog
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -27,9 +29,9 @@ from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 from qgis.core import *
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.QGisLayers import QGisLayers
-from processing.core.ProcessingUtils import ProcessingUtils
-from processing.tools.vector import getfeatures
+from processing.tools import dataobjects
+from processing.tools.system import *
+from processing.tools.vector import *
 from processing.gui.Postprocessing import Postprocessing
 import sys
 
@@ -74,12 +76,12 @@ class AlgorithmExecutor(QThread):
             settings = QSettings()
             systemEncoding = settings.value( "/UI/encoding", "System" )
             layerfile = alg.getParameterValue(self.parameterToIterate)
-            layer = QGisLayers.getObjectFromUri(layerfile, False)
+            layer = dataobjects.getObjectFromUri(layerfile, False)
             provider = layer.dataProvider()
-            features = getfeatures(layer)
+            features = features(layer)
             self.filelist = []
             for feat in features:
-                output = ProcessingUtils.getTempFilename("shp")
+                output = getTempFilename("shp")
                 self.filelist.append(output)
                 writer = QgsVectorFileWriter(output, systemEncoding,provider.fields(), provider.geometryType(), layer.crs() )
                 writer.addFeature(feat)
@@ -98,14 +100,18 @@ class AlgorithmExecutor(QThread):
                 self.algExecuted.emit()
         except GeoAlgorithmExecutionException, e :
             self.error.emit(e.msg)
-        except BaseException, e:
-            self.internalError.emit(e)
-        # catch *all* errors, because QGIS tries to handle them in the GUI, which is fatal, this
-        # being a separate thread.
+            ProcessingLog.addToLog(sys.exc_info()[0], ProcessingLog.LOG_ERROR)
+        #=======================================================================
+        # except BaseException, e:
+        #    self.error.emit(str(e))
+        #=======================================================================
+            # catch *all* errors, because QGIS tries to handle them in the GUI, which is fatal, this
+            # being a separate thread.
         except:
-            msg = "Error executing " + str(self.alg.name) + "\n" + sys.exc_info()[0]
+            msg = "Error executing " + str(self.alg.name) + "\nSee log for more information"
+            ProcessingLog.addToLog(sys.exc_info()[0], ProcessingLog.LOG_ERROR)
             print msg
-            self.internalError.emit(msg)
+            self.error.emit(msg)
 
     def runalgIterating(self):
         try:
@@ -124,7 +130,7 @@ class AlgorithmExecutor(QThread):
                 self.progress.setText("Executing iteration " + str(i) + "/" + str(len(self.filelist)) + "...")
                 self.progress.setPercentage((i * 100) / len(self.filelist))
                 self.runalg()
-                Postprocessing.handleAlgorithmResults(self.algorithm, self.progress, False)
+                Postprocessing.handleAlgorithmResults(self.algorithm, SilentProgress().progress, False)
                 self.iterated.emit(i)
                 i += 1
             self.algExecuted.emit()

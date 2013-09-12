@@ -29,7 +29,7 @@ from PyQt4.QtGui import *
 from qgis.core import *
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.QGisLayers import QGisLayers
+from processing.tools import dataobjects, vector
 
 from processing.parameters.ParameterVector import ParameterVector
 from processing.parameters.ParameterString import ParameterString
@@ -72,7 +72,7 @@ class AddTableField(GeoAlgorithm):
         fieldPrecision = self.getParameterValue(self.FIELD_PRECISION)
         output = self.getOutputFromName(self.OUTPUT_LAYER)
 
-        layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT_LAYER))
+        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_LAYER))
 
         provider = layer.dataProvider()
         fields = provider.fields()
@@ -81,7 +81,7 @@ class AddTableField(GeoAlgorithm):
         outFeat = QgsFeature()
         inGeom = QgsGeometry()
         nElement = 0
-        features = QGisLayers.features(layer)
+        features = vector.features(layer)
         nFeat = len(features)
         for inFeat in features:
             progress.setPercentage(int((100 * nElement)/nFeat))

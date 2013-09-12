@@ -23,7 +23,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from processing.core.ProcessingUtils import ProcessingUtils
+from processing.tools.system import *
 
 class Output(object):
 
@@ -48,7 +48,7 @@ class Output(object):
         if self.value == None:
             return str(None)
         else:
-            if not ProcessingUtils.isWindows():
+            if not isWindows():
                 return "\"" + str(self.value) + "\""
             else:
                 return "\"" + str(self.value).replace("\\", "\\\\") + "\""

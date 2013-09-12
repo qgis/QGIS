@@ -23,7 +23,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from processing.core.ProcessingUtils import ProcessingUtils
+from processing.tools.system import *
 import os.path
 
 class RenderingStyles():
@@ -38,7 +38,7 @@ class RenderingStyles():
 
     @staticmethod
     def configFile():
-        return os.path.join(ProcessingUtils.userFolder(), "processing_qgis_styles.conf")
+        return os.path.join(userFolder(), "processing_qgis_styles.conf")
 
     @staticmethod
     def loadStyles():

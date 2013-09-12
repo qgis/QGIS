@@ -30,7 +30,7 @@ from processing.parameters.ParameterTableField import ParameterTableField
 from qgis.core import *
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-from processing.core.QGisLayers import QGisLayers
+from processing.tools import dataobjects, vector
 
 
 class JoinAttributes(GeoAlgorithm):
@@ -58,11 +58,11 @@ class JoinAttributes(GeoAlgorithm):
         field2 = self.getParameterValue(self.TABLE_FIELD_2)
 
         # Layer 1
-        layer = QGisLayers.getObjectFromUri(input)
+        layer = dataobjects.getObjectFromUri(input)
         provider = layer.dataProvider()
         joinField1Index = layer.fieldNameIndex(field)
         # Layer 2
-        layer2 = QGisLayers.getObjectFromUri(input2)
+        layer2 = dataobjects.getObjectFromUri(input2)
         provider2 = layer2.dataProvider()
 
         joinField2Index = layer2.fieldNameIndex(field2)
@@ -79,12 +79,12 @@ class JoinAttributes(GeoAlgorithm):
         outFeat = QgsFeature()
 
         # Create output vector layer with additional attribute
-        features = QGisLayers.features(layer);
+        features = vector.features(layer);
         for inFeat in features:
             inGeom = inFeat.geometry()
             attrs = inFeat.attributes()
             joinValue1 = attrs[joinField1Index]
-            features2 = QGisLayers.features(layer2);
+            features2 = vector.features(layer2);
             for inFeat2 in features2:
                 ## Maybe it should cache this entries...
                 attrs2 = inFeat2.attributes()

@@ -28,7 +28,7 @@ from xml.etree.ElementTree import TreeBuilder, tostring
 import urllib
 import urlparse
 from zipfile import ZipFile
-from processing.core.ProcessingUtils import ProcessingUtils
+from processing.tools.system import *
 
 
 logger = logging.getLogger("gsconfig.support")
@@ -195,7 +195,7 @@ def prepare_upload_bundle(name, data):
     file-like objects. The client code is responsible for deleting the zip
     archive when it's done."""
     #we ut the zip file in the processing temp dir, so it is deleted at the end.
-    f = ProcessingUtils.getTempFilename('zip')
+    f = getTempFilename('zip')
     zip_file = ZipFile(f, 'w')
     for ext, stream in data.iteritems():
         fname = "%s.%s" % (name, ext)

@@ -17,7 +17,7 @@
 # *                                                                         *
 # ***************************************************************************
 # """
-# from processing.core.LayerExporter import LayerExporter
+# from processing.tools import dataobjects
 # from processing.parameters.ParameterString import ParameterString
 # from processing.servertools.GeoServerToolsAlgorithm import GeoServerToolsAlgorithm
 #
@@ -29,7 +29,7 @@
 #
 # from qgis.core import *
 # from processing.parameters.ParameterVector import ParameterVector
-# from processing.core.QGisLayers import QGisLayers
+# from processing.tools import dataobjects
 # import os
 #
 # class CreateMosaicDatastore(GeoServerToolsAlgorithm):

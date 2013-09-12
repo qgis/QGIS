@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from processing import interface
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -34,7 +35,7 @@ from processing.gui.AlgorithmClassification import AlgorithmDecorator
 from processing.core.Processing import Processing
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.core.QGisLayers import QGisLayers
+from processing.tools import dataobjects
 from processing.gui.ParametersDialog import ParametersDialog
 from processing.gui.BatchProcessingDialog import BatchProcessingDialog
 from processing.gui.EditRenderingStylesDialog import EditRenderingStylesDialog
@@ -45,12 +46,10 @@ class ProcessingToolbox(QDockWidget, Ui_ProcessingToolbox):
 
     USE_CATEGORIES = "/ProcessingQGIS/UseCategories"
 
-    def __init__(self, iface):
+    def __init__(self):
         QDockWidget.__init__(self, None)
         self.setupUi(self)
         self.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea)
-
-        self.iface=iface
 
         self.modeComboBox.clear()
         self.modeComboBox.addItems(['Simplified interface', 'Advanced interface'])
@@ -145,7 +144,7 @@ class ProcessingToolbox(QDockWidget, Ui_ProcessingToolbox):
             dlg = alg.getCustomParametersDialog()
             if not dlg:
                 dlg = ParametersDialog(alg)
-            canvas = QGisLayers.iface.mapCanvas()
+            canvas = interface.iface.mapCanvas()
             prevMapTool = canvas.mapTool()
             dlg.show()
             dlg.exec_()

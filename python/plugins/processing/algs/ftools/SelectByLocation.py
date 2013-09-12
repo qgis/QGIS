@@ -26,7 +26,7 @@ __revision__ = '$Format:%H$'
 from PyQt4.QtCore import *
 from qgis.core import *
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.QGisLayers import QGisLayers
+from processing.tools import dataobjects, vector
 from processing.parameters.ParameterSelection import ParameterSelection
 from processing.parameters.ParameterVector import ParameterVector
 from processing.outputs.OutputVector import OutputVector
@@ -59,10 +59,10 @@ class SelectByLocation(GeoAlgorithm):
 
     def processAlgorithm(self, progress):
         filename = self.getParameterValue(self.INPUT)
-        inputLayer = QGisLayers.getObjectFromUri(filename)
+        inputLayer = dataobjects.getObjectFromUri(filename)
         method = self.getParameterValue(self.METHOD)
         filename = self.getParameterValue(self.INTERSECT)
-        selectLayer = QGisLayers.getObjectFromUri(filename)
+        selectLayer = dataobjects.getObjectFromUri(filename)
 
         oldSelection = set(inputLayer.selectedFeaturesIds())
         index = spatialIndex = utils.spatialindex(inputLayer)
@@ -71,7 +71,7 @@ class SelectByLocation(GeoAlgorithm):
         geom = QgsGeometry()
         selectedSet = []
         current = 0
-        features = QGisLayers.features(selectLayer)
+        features = vector.features(selectLayer)
         total = 100.0 / float(len(features))
         for f in features:
             geom = QgsGeometry(f.geometry())

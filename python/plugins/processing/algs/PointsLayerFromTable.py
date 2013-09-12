@@ -30,7 +30,7 @@ from processing.core.GeoAlgorithm import GeoAlgorithm
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
-from processing.core.QGisLayers import QGisLayers
+from processing.tools import dataobjects, vector
 from processing.outputs.OutputVector import OutputVector
 
 class PointsLayerFromTable(GeoAlgorithm):
@@ -43,7 +43,7 @@ class PointsLayerFromTable(GeoAlgorithm):
 
     def processAlgorithm(self, progress):
         source = self.getParameterValue(self.INPUT)
-        vlayer = QGisLayers.getObjectFromUri(source)
+        vlayer = dataobjects.getObjectFromUri(source)
         output = self.getOutputFromName(self.OUTPUT)
         vprovider = vlayer.dataProvider()
         fields = vprovider.fields()
@@ -57,7 +57,7 @@ class PointsLayerFromTable(GeoAlgorithm):
 
         outFeat = QgsFeature()
         nElement = 0
-        features = QGisLayers.features(vlayer)
+        features = vector.features(vlayer)
         nFeat = len(features)
         for feature in features:
             nElement += 1

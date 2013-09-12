@@ -25,7 +25,7 @@ __revision__ = '$Format:%H$'
 
 from processing.core.Processing import Processing
 import os
-from processing.core.ProcessingUtils import mkdir
+from processing.tools.system import mkdir
 from processing.parameters.ParameterSelection import ParameterSelection
 
 def createBaseHelpFile(alg, folder):

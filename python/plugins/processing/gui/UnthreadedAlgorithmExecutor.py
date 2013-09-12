@@ -16,7 +16,8 @@
 *                                                                         *
 ***************************************************************************
 """
-from processing.tools.vector import getfeatures
+from processing.tools.vector import features
+from processing.core.ProcessingLog import ProcessingLog
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -28,8 +29,8 @@ from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 from qgis.core import *
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.QGisLayers import QGisLayers
-from processing.core.ProcessingUtils import ProcessingUtils
+from processing.tools import dataobjects
+from processing.tools.system import *
 from processing.gui.Postprocessing import Postprocessing
 from processing.core.SilentProgress import SilentProgress
 import traceback
@@ -44,10 +45,13 @@ class UnthreadedAlgorithmExecutor:
             alg.execute(progress)
             return True
         except GeoAlgorithmExecutionException, e :
+            ProcessingLog.addToLog(sys.exc_info()[0], ProcessingLog.LOG_ERROR)            
             QMessageBox.critical(None, "Error", e.msg)
             return False
         except Exception:
-            QMessageBox.critical(None, "Uncaught error", traceback.format_exc())
+            msg = "Error executing " + str(alg.name) + "\nSee log for more information"
+            ProcessingLog.addToLog(sys.exc_info()[0], ProcessingLog.LOG_ERROR)                        
+            QMessageBox.critical(None, "Uncaught error", msg)
             return False
 
     @staticmethod
@@ -56,14 +60,14 @@ class UnthreadedAlgorithmExecutor:
         settings = QSettings()
         systemEncoding = settings.value( "/UI/encoding", "System" )
         layerfile = alg.getParameterValue(paramToIter)
-        layer = QGisLayers.getObjectFromUri(layerfile, False)
+        layer = dataobjects.getObjectFromUri(layerfile, False)
         feat = QgsFeature()
         filelist = []
         outputs = {}
         provider = layer.dataProvider()
-        features = getfeatures(layer)
+        features = features(layer)
         for feat in features:
-            output = ProcessingUtils.getTempFilename("shp")
+            output = getTempFilename("shp")
             filelist.append(output)
             writer = QgsVectorFileWriter(output, systemEncoding, provider.fields(), provider.geometryType(), layer.crs() )
             writer.addFeature(feat)
@@ -85,7 +89,7 @@ class UnthreadedAlgorithmExecutor:
             progress.setText("Executing iteration " + str(i) + "/" + str(len(filelist)) + "...")
             progress.setPercentage((i * 100) / len(filelist))
             if UnthreadedAlgorithmExecutor.runalg(alg, SilentProgress()):
-                Postprocessing.handleAlgorithmResults(alg, progress, False)
+                Postprocessing.handleAlgorithmResults(alg, SilentProgress(), False)
                 i+=1
             else:
                 return False;

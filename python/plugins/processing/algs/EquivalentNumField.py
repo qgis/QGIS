@@ -27,7 +27,7 @@ from processing.core.GeoAlgorithm import GeoAlgorithm
 from PyQt4.QtCore import *
 from qgis.core import *
 from processing.parameters.ParameterVector import ParameterVector
-from processing.core.QGisLayers import QGisLayers
+from processing.tools import dataobjects, vector
 from processing.outputs.OutputVector import OutputVector
 from processing.parameters.ParameterTableField import ParameterTableField
 
@@ -45,7 +45,7 @@ class EquivalentNumField(GeoAlgorithm):
     def processAlgorithm(self, progress):
         fieldname = self.getParameterValue(self.FIELD)
         output = self.getOutputFromName(self.OUTPUT)
-        vlayer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT))
+        vlayer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
         vprovider = vlayer.dataProvider()
         fieldindex = vlayer.fieldNameIndex(fieldname)
         fields = vprovider.fields()
@@ -55,7 +55,7 @@ class EquivalentNumField(GeoAlgorithm):
         inGeom = QgsGeometry()
         nElement = 0
         classes = {}
-        features = QGisLayers.features(vlayer)
+        features = vector.features(vlayer)
         nFeat = len(features)
         for feature in features:
             progress.setPercentage(int((100 * nElement)/nFeat))

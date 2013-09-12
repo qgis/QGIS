@@ -24,7 +24,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from processing.core.TableWriter import TableWriter
-from processing.core.ProcessingUtils import ProcessingUtils
+from processing.tools.system import *
 from processing.outputs.Output import Output
 
 from PyQt4.QtCore import *
@@ -52,7 +52,7 @@ class OutputTable(Output):
             return self.value
         else:
             if self.compatible is None:
-                self.compatible = ProcessingUtils.getTempFilenameInTempFolder(self.name + "." + self.getDefaultFileExtension(alg))
+                self.compatible = getTempFilenameInTempFolder(self.name + "." + self.getDefaultFileExtension(alg))
             return self.compatible;
 
     def getTableWriter(self, fields):

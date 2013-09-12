@@ -26,7 +26,7 @@ __revision__ = '$Format:%H$'
 from PyQt4.QtCore import *
 from qgis.core import *
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.QGisLayers import QGisLayers
+from processing.tools import dataobjects, vector
 from processing.parameters.ParameterVector import ParameterVector
 from processing.parameters.ParameterCrs import ParameterCrs
 from processing.outputs.OutputVector import OutputVector
@@ -52,7 +52,7 @@ class ReprojectLayer(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, "Reprojected layer"))
 
     def processAlgorithm(self, progress):
-        layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT))
+        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
         crsId = self.getParameterValue(self.TARGET_CRS)
         targetCrs = QgsCoordinateReferenceSystem(crsId)
 
@@ -64,7 +64,7 @@ class ReprojectLayer(GeoAlgorithm):
 
         outFeat = QgsFeature()
         current = 0
-        features = QGisLayers.features(layer)
+        features = vector.features(layer)
         total = 100.0 / float(len(features))
         for f in features:
             geom = f.geometry()

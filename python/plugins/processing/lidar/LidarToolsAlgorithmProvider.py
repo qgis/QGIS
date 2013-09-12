@@ -27,7 +27,7 @@ import os
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from processing.core.AlgorithmProvider import AlgorithmProvider
-from processing.core.ProcessingUtils import ProcessingUtils
+from processing.tools.system import *
 from processing.lidar.lastools.LasToolsUtils import LasToolsUtils
 from processing.core.ProcessingConfig import Setting, ProcessingConfig
 from processing.lidar.lastools.las2dem import las2dem
@@ -62,7 +62,7 @@ class LidarToolsAlgorithmProvider(AlgorithmProvider):
         AlgorithmProvider.__init__(self)
         self.activate = False
         self.algsList = []
-        if ProcessingUtils.isWindows():
+        if isWindows():
             lastools = [las2shp(), lasboundary(), las2dem(), las2iso(), lasgrid(), lasground(),
                          lasinfo(), lasheight(), lasprecision(), lassplit(), lasclassify(), lasclip()]
         else:
@@ -71,7 +71,7 @@ class LidarToolsAlgorithmProvider(AlgorithmProvider):
             alg.group = "LASTools"
         self.algsList.extend(lastools)
 
-        if ProcessingUtils.isWindows():
+        if isWindows():
             self.actions.append(OpenViewerAction())
             fusiontools = [CloudMetrics(), CanopyMaxima(), CanopyModel(), ClipData(), Cover(), FilterData(),
                          GridMetrics(), GroundFilter(), GridSurfaceCreate(), MergeData()]

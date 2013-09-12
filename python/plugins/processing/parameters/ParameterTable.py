@@ -17,7 +17,7 @@
 ***************************************************************************
 """
 import os
-from processing.core.LayerExporter import LayerExporter
+from processing.tools import dataobjects
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -26,7 +26,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from processing.parameters.ParameterDataObject import ParameterDataObject
-from processing.core.QGisLayers import QGisLayers
+from processing.tools import dataobjects
 from qgis.core import *
 
 class ParameterTable(ParameterDataObject):
@@ -50,7 +50,7 @@ class ParameterTable(ParameterDataObject):
             self.value = source
             return True
         else:
-            layers = QGisLayers.getVectorLayers()
+            layers = dataobjects.getVectorLayers()
             for layer in layers:
                 if layer.name() == self.value:
                     source = unicode(layer.source())
@@ -72,9 +72,9 @@ class ParameterTable(ParameterDataObject):
         several times and it will always return the same file, performing the export only the first time.'''
         if self.exported:
             return self.exported
-        table = QGisLayers.getObjectFromUri(self.value, False)
+        table = dataobjects.getObjectFromUri(self.value, False)
         if table:
-            self.exported = LayerExporter.exportTable(table)
+            self.exported = dataobjects.exportTable(table)
         else:
             self.exported = self.value
         return self.exported

@@ -46,7 +46,7 @@ from processing.outputs.OutputHTML import OutputHTML
 from processing.r.RUtils import RUtils
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.ProcessingLog import ProcessingLog
-from processing.core.ProcessingUtils import ProcessingUtils
+from processing.tools.system import *
 import subprocess
 from processing.parameters.ParameterExtent import ParameterExtent
 from processing.parameters.ParameterFile import ParameterFile
@@ -210,7 +210,7 @@ class RAlgorithm(GeoAlgorithm):
             raise WrongScriptException("Could not load R script:" + self.descriptionFile + ".\n Problem with line \"" + line + "\"")
 
     def processAlgorithm(self, progress):
-        if ProcessingUtils.isWindows():
+        if isWindows():
             path = RUtils.RFolder()
             if path == "":
                 raise GeoAlgorithmExecutionException("R folder is not configured.\nPlease configure it before running R scripts.")

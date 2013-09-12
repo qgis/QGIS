@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from processing import interface
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -23,12 +24,13 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
+import time
+import uuid
+import importlib
 from qgis.core import *
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-import uuid
 from processing.outputs.OutputHTML import OutputHTML
-import importlib
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.parameters.ParameterTable import ParameterTable
 from processing.parameters.ParameterMultipleInput import ParameterMultipleInput
@@ -42,12 +44,10 @@ from processing.core.ProcessingLog import ProcessingLog
 from processing.parameters.ParameterFactory import ParameterFactory
 from processing.outputs.OutputFactory import OutputFactory
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.core.QGisLayers import QGisLayers
+from processing.tools import dataobjects
 from processing.grass.GrassUtils import GrassUtils
-import time
-from processing.core.ProcessingUtils import ProcessingUtils
+from processing.tools.system import *
 from processing.parameters.ParameterSelection import ParameterSelection
-from processing.core.LayerExporter import LayerExporter
 from processing.core.WrongHelpFileException import WrongHelpFileException
 from processing.outputs.OutputFile import OutputFile
 from processing.parameters.ParameterExtent import ParameterExtent
@@ -170,13 +170,13 @@ class GrassAlgorithm(GeoAlgorithm):
                     if isinstance(param.value, QgsRasterLayer):
                         layer = param.value
                     else:
-                        layer = QGisLayers.getObjectFromUri(param.value)
+                        layer = dataobjects.getObjectFromUri(param.value)
                     cellsize = max(cellsize, (layer.extent().xMaximum() - layer.extent().xMinimum())/layer.width())
 
                 elif isinstance(param, ParameterMultipleInput):
                     layers = param.value.split(";")
                     for layername in layers:
-                        layer = QGisLayers.getObjectFromUri(layername)
+                        layer = dataobjects.getObjectFromUri(layername)
                         if isinstance(layer, QgsRasterLayer):
                             cellsize = max(cellsize, (layer.extent().xMaximum() - layer.extent().xMinimum())/layer.width())
 
@@ -186,7 +186,7 @@ class GrassAlgorithm(GeoAlgorithm):
 
 
     def processAlgorithm(self, progress):
-        if ProcessingUtils.isWindows():
+        if isWindows():
             path = GrassUtils.grassPath()
             if path == "":
                 raise GeoAlgorithmExecutionException("GRASS folder is not configured.\nPlease configure it before running GRASS algorithms.")
@@ -377,15 +377,15 @@ class GrassAlgorithm(GeoAlgorithm):
         #but the functionality of v.in.ogr could be used for this.
         #We also export if there is a selection
         if not os.path.exists(orgFilename) or not orgFilename.endswith("shp"):
-            layer = QGisLayers.getObjectFromUri(orgFilename, False)
+            layer = dataobjects.getObjectFromUri(orgFilename, False)
             if layer:
-                filename = LayerExporter.exportVectorLayer(layer)
+                filename = dataobjects.exportVectorLayer(layer)
         else:
-            layer = QGisLayers.getObjectFromUri(orgFilename, False)
+            layer = dataobjects.getObjectFromUri(orgFilename, False)
             if layer:
                 useSelection = ProcessingConfig.getSetting(ProcessingConfig.USE_SELECTED)
                 if useSelection and layer.selectedFeatureCount() != 0:
-                    filename = LayerExporter.exportVectorLayer(layer)
+                    filename = dataobjects.exportVectorLayer(layer)
                 else:
                     filename = orgFilename
             else:
@@ -404,10 +404,8 @@ class GrassAlgorithm(GeoAlgorithm):
         return command
 
     def setSessionProjectionFromProject(self, commands):
-        if not GrassUtils.projectionSet:
-            from processing.core.Processing import Processing
-            qgis = Processing.getInterface()
-            proj4 = qgis.mapCanvas().mapRenderer().destinationCrs().toProj4()
+        if not GrassUtils.projectionSet:                    
+            proj4 = interface.iface.mapCanvas().mapRenderer().destinationCrs().toProj4()
             command = "g.proj"
             command +=" -c"
             command +=" proj4=\""+proj4+"\""
@@ -416,7 +414,7 @@ class GrassAlgorithm(GeoAlgorithm):
 
     def setSessionProjectionFromLayer(self, layer, commands):
         if not GrassUtils.projectionSet:
-            qGisLayer = QGisLayers.getObjectFromUri(layer)
+            qGisLayer = dataobjects.getObjectFromUri(layer)
             if qGisLayer:
                 proj4 = str(qGisLayer.crs().toProj4())
                 command = "g.proj"
@@ -438,7 +436,7 @@ class GrassAlgorithm(GeoAlgorithm):
 
 
     def getTempFilename(self):
-        filename =  "tmp" + str(time.time()).replace(".","") + str(ProcessingUtils.getNumExportedLayers())
+        filename =  "tmp" + str(time.time()).replace(".","") + str(getNumExportedLayers())
         return filename
 
     def commandLineName(self):

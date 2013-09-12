@@ -36,7 +36,7 @@ from processing.r.RUtils import RUtils
 from processing.r.RAlgorithm import RAlgorithm
 from processing.r.CreateNewRScriptAction import CreateNewRScriptAction
 from processing.r.EditRScriptAction import EditRScriptAction
-from processing.core.ProcessingUtils import ProcessingUtils
+from processing.tools.system import *
 
 class RAlgorithmProvider(AlgorithmProvider):
 
@@ -49,14 +49,14 @@ class RAlgorithmProvider(AlgorithmProvider):
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)
         ProcessingConfig.addSetting(Setting(self.getDescription(), RUtils.RSCRIPTS_FOLDER, "R Scripts folder", RUtils.RScriptsFolder()))
-        if ProcessingUtils.isWindows():
+        if isWindows():
             ProcessingConfig.addSetting(Setting(self.getDescription(), RUtils.R_FOLDER, "R folder", RUtils.RFolder()))
             ProcessingConfig.addSetting(Setting(self.getDescription(), RUtils.R_USE64, "Use 64 bit version", False))
 
     def unload(self):
         AlgorithmProvider.unload(self)
         ProcessingConfig.removeSetting(RUtils.RSCRIPTS_FOLDER)
-        if ProcessingUtils.isWindows():
+        if isWindows():
             ProcessingConfig.removeSetting(RUtils.R_FOLDER)
             ProcessingConfig.removeSetting(RUtils.R_USE64)
 

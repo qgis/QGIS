@@ -27,7 +27,7 @@ import processing
 import unittest
 from processing.tests.TestData import points, points2, polygons, polygons2, lines, union,\
     table
-from processing.core.QGisLayers import QGisLayers
+from processing.tools import dataobjects
 
 class ScriptTest(unittest.TestCase):
     '''tests that use scripts'''
@@ -35,7 +35,7 @@ class ScriptTest(unittest.TestCase):
     def test_scriptcreatetilingfromvectorlayer(self):
         outputs=processing.runalg("script:createtilingfromvectorlayer",union(),10,None)
         output=outputs['polygons']
-        layer=QGisLayers.getObjectFromUri(output, True)
+        layer=dataobjects.getObjectFromUri(output, True)
         fields=layer.pendingFields()
         expectednames=['longitude','latitude']
         expectedtypes=['Real','Real']
@@ -43,7 +43,7 @@ class ScriptTest(unittest.TestCase):
         types=[str(f.typeName()) for f in fields]
         self.assertEqual(expectednames, names)
         self.assertEqual(expectedtypes, types)
-        features=processing.getfeatures(layer)
+        features=processing.features(layer)
         self.assertEqual(10, len(features))
         feature=features.next()
         attrs=feature.attributes()
@@ -56,7 +56,7 @@ class ScriptTest(unittest.TestCase):
     def test_scripthexgridfromlayerbounds(self):
         outputs=processing.runalg("script:hexgridfromlayerbounds",polygons(),10,None)
         output=outputs['grid']
-        layer=QGisLayers.getObjectFromUri(output, True)
+        layer=dataobjects.getObjectFromUri(output, True)
         fields=layer.pendingFields()
         expectednames=['longitude','latitude']
         expectedtypes=['Real','Real']
@@ -64,7 +64,7 @@ class ScriptTest(unittest.TestCase):
         types=[str(f.typeName()) for f in fields]
         self.assertEqual(expectednames, names)
         self.assertEqual(expectedtypes, types)
-        features=processing.getfeatures(layer)
+        features=processing.features(layer)
         self.assertEqual(117, len(features))
         feature=features.next()
         attrs=feature.attributes()

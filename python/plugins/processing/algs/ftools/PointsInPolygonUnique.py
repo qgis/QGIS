@@ -27,7 +27,7 @@ __revision__ = '$Format:%H$'
 from PyQt4.QtCore import *
 from qgis.core import *
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.QGisLayers import QGisLayers
+from processing.tools import dataobjects, vector
 from processing.parameters.ParameterVector import ParameterVector
 from processing.parameters.ParameterString import ParameterString
 from processing.outputs.OutputVector import OutputVector
@@ -56,8 +56,8 @@ class PointsInPolygonUnique(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, "Result"))
 
     def processAlgorithm(self, progress):
-        polyLayer = QGisLayers.getObjectFromUri(self.getParameterValue(self.POLYGONS))
-        pointLayer = QGisLayers.getObjectFromUri(self.getParameterValue(self.POINTS))
+        polyLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.POLYGONS))
+        pointLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.POINTS))
         fieldName = self.getParameterValue(self.FIELD)
         classFieldName = self.getParameterValue(self.CLASSFIELD)
 
@@ -78,7 +78,7 @@ class PointsInPolygonUnique(GeoAlgorithm):
         current = 0
         hasIntersections = False
 
-        features = QGisLayers.features(polyLayer)
+        features = vector.features(polyLayer)
         total = 100.0 / float(len(features))
         for ftPoly in features:
             geom = ftPoly.geometry()

@@ -29,11 +29,11 @@ from processing.parameters.ParameterMultipleInput import ParameterMultipleInput
 from processing.grass.GrassUtils import GrassUtils
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from PyQt4 import QtGui
-from processing.core.ProcessingUtils import ProcessingUtils
+from processing.tools.system import *
 from processing.parameters.ParameterExtent import ParameterExtent
 from processing.parameters.ParameterNumber import ParameterNumber
 from processing.parameters.ParameterRaster import ParameterRaster
-from processing.core.QGisLayers import QGisLayers
+from processing.tools import dataobjects
 import time
 
 class nviz(GeoAlgorithm):
@@ -95,7 +95,7 @@ class nviz(GeoAlgorithm):
         GrassUtils.executeGrass(commands, progress)
 
     def getTempFilename(self):
-        filename =  "tmp" + str(time.time()).replace(".","") + str(ProcessingUtils.getNumExportedLayers())
+        filename =  "tmp" + str(time.time()).replace(".","") + str(getNumExportedLayers())
         return filename
 
     def exportVectorLayer(self,layer):
@@ -125,13 +125,13 @@ class nviz(GeoAlgorithm):
                     if isinstance(param.value, QgsRasterLayer):
                         layer = param.value
                     else:
-                        layer = QGisLayers.getObjectFromUri(param.value)
+                        layer = dataobjects.getObjectFromUri(param.value)
                     cellsize = max(cellsize, (layer.extent().xMaximum() - layer.extent().xMinimum())/layer.width())
 
                 elif isinstance(param, ParameterMultipleInput):
                     layers = param.value.split(";")
                     for layername in layers:
-                        layer = QGisLayers.getObjectFromUri(layername)
+                        layer = dataobjects.getObjectFromUri(layername)
                         if isinstance(layer, QgsRasterLayer):
                             cellsize = max(cellsize, (layer.extent().xMaximum() - layer.extent().xMinimum())/layer.width())
 

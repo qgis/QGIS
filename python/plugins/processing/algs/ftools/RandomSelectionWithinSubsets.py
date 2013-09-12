@@ -28,7 +28,7 @@ from PyQt4.QtCore import *
 from qgis.core import *
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.QGisLayers import QGisLayers
+from processing.tools import dataobjects, vector
 from processing.tools import vector as utils
 from processing.parameters.ParameterSelection import ParameterSelection
 from processing.parameters.ParameterVector import ParameterVector
@@ -69,7 +69,7 @@ class RandomSelectionWithinSubsets(GeoAlgorithm):
     def processAlgorithm(self, progress):
         filename = self.getParameterValue(self.INPUT)
 
-        layer = QGisLayers.getObjectFromUri(filename)
+        layer = dataobjects.getObjectFromUri(filename)
         field = self.getParameterValue(self.FIELD)
         method = self.getParameterValue(self.METHOD)
 
@@ -94,7 +94,7 @@ class RandomSelectionWithinSubsets(GeoAlgorithm):
         current = 0
         total = 100.0 / float(featureCount * len(unique))
 
-        features = QGisLayers.features(layer)
+        features = vector.features(layer)
 
         if not len(unique) == featureCount:
             for i in unique:

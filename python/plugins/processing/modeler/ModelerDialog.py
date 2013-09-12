@@ -30,7 +30,7 @@ from PyQt4.QtGui import *
 import codecs
 import pickle
 
-from processing.core.ProcessingUtils import ProcessingUtils
+from processing.tools.system import *
 from processing.gui.HelpEditionDialog import HelpEditionDialog
 from processing.gui.ParametersDialog import ParametersDialog
 from processing.core.ProcessingConfig import ProcessingConfig
@@ -135,7 +135,7 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
             return
 
         if self.alg.descriptionFile is None:
-            self.alg.descriptionFile = ProcessingUtils.getTempFilename("model")
+            self.alg.descriptionFile = getTempFilename("model")
             text = self.alg.serialize()
             fout = open(self.alg.descriptionFile, "w")
             fout.write(text)

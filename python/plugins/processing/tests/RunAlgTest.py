@@ -27,8 +27,8 @@ import processing
 import unittest
 from processing.tests.TestData import points, points2, polygons, polygons2, lines, union,\
     table
-from processing.core.QGisLayers import QGisLayers
-from processing.core.ProcessingUtils import ProcessingUtils
+from processing.tools import dataobjects
+from processing.tools.system import *
 
 class ParametrizedTestCase(unittest.TestCase):
 
@@ -54,12 +54,12 @@ class RunAlgTest(ParametrizedTestCase):
         if self.useTempFiles:
             return None
         else:
-            return ProcessingUtils.getTempFilename('shp')
+            return getTempFilename('shp')
 
     def test_qgiscountpointsinpolygon(self):
         outputs=processing.runalg("qgis:countpointsinpolygon",polygons(),points(),"NUMPOINTS", self.getOutputFile())
         output=outputs['OUTPUT']
-        layer=QGisLayers.getObjectFromUri(output, True)
+        layer=dataobjects.getObjectFromUri(output, True)
         fields=layer.pendingFields()
         expectednames=['ID','POLY_NUM_A','POLY_ST_A','NUMPOINTS']
         expectedtypes=['Integer','Real','String','Real']
@@ -67,7 +67,7 @@ class RunAlgTest(ParametrizedTestCase):
         types=[str(f.typeName()) for f in fields]
         self.assertEqual(expectednames, names)
         self.assertEqual(expectedtypes, types)
-        features=processing.getfeatures(layer)
+        features=processing.features(layer)
         self.assertEqual(2, len(features))
         feature=features.next()
         attrs=feature.attributes()

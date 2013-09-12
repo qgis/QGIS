@@ -33,7 +33,7 @@ from processing.parameters.ParameterFactory import ParameterFactory
 from processing.modeler.WrongModelException import WrongModelException
 from processing.modeler.ModelerUtils import ModelerUtils
 from processing.parameters.ParameterRaster import ParameterRaster
-from processing.core.QGisLayers import QGisLayers
+from processing.tools import dataobjects
 from processing.parameters.ParameterExtent import ParameterExtent
 from PyQt4 import QtCore, QtGui
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -487,14 +487,14 @@ class ModelerAlgorithm(GeoAlgorithm):
                     if isinstance(param.value, (QgsRasterLayer, QgsVectorLayer)):
                         layer = param.value
                     else:
-                        layer = QGisLayers.getObjectFromUri(param.value)
+                        layer = dataobjects.getObjectFromUri(param.value)
                     self.addToRegion(layer, first)
                     first = False
                 elif isinstance(param, ParameterMultipleInput):
                     found = True
                     layers = param.value.split(";")
                     for layername in layers:
-                        layer = QGisLayers.getObjectFromUri(layername)
+                        layer = dataobjects.getObjectFromUri(layername)
                         self.addToRegion(layer, first)
                         first = False
         if found:

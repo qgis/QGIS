@@ -28,7 +28,7 @@ from PyQt4.QtCore import *
 from qgis.core import *
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.QGisLayers import QGisLayers
+from processing.tools import dataobjects
 from processing.parameters.ParameterVector import ParameterVector
 from processing.parameters.ParameterBoolean import ParameterBoolean
 from processing.parameters.ParameterNumber import ParameterNumber
@@ -63,7 +63,7 @@ class VariableDistanceBuffer(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, "Buffer"))
 
     def processAlgorithm(self, progress):
-        layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT))
+        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
         dissolve = self.getParameterValue(self.DISSOLVE)
         field = self.getParameterValue(self.FIELD)
         segments = int(self.getParameterValue(self.SEGMENTS))

@@ -28,7 +28,7 @@ from PyQt4.QtCore import *
 from qgis.core import *
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.QGisLayers import QGisLayers
+from processing.tools import dataobjects, vector
 
 from processing.parameters.ParameterVector import ParameterVector
 from processing.parameters.ParameterString import ParameterString
@@ -70,7 +70,7 @@ class FieldsCalculator(GeoAlgorithm):
         formula = self.getParameterValue(self.FORMULA)
         output = self.getOutputFromName(self.OUTPUT_LAYER)
 
-        layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT_LAYER))
+        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_LAYER))
         provider = layer.dataProvider()
         fields = provider.fields()
         fields.append(QgsField(fieldName, self.TYPES[fieldType], "", fieldLength, fieldPrecision))
@@ -80,7 +80,7 @@ class FieldsCalculator(GeoAlgorithm):
         inGeom = QgsGeometry()
         nFeat = provider.featureCount()
         nElement = 0
-        features = QGisLayers.features(layer)
+        features = vector.features(layer)
 
         fieldnames = [field.name() for field in provider.fields()]
         fieldnames.sort(key=len, reverse=False)

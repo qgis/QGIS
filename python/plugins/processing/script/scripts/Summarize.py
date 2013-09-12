@@ -7,8 +7,8 @@ from qgis.core import *
 
 from processing.core.VectorWriter import VectorWriter
 
-inputLayer = processing.getobject(input)
-features = processing.getfeatures(inputLayer)
+inputLayer = processing.getObject(input)
+features = processing.features(inputLayer)
 fields = inputLayer.pendingFields().toList()
 outputLayer = VectorWriter(output, None, fields, QGis.WKBPoint, inputLayer.crs())
 count = 0

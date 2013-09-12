@@ -29,7 +29,7 @@ from processing.parameters.ParameterVector import ParameterVector
 from qgis.core import *
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-from processing.core.QGisLayers import QGisLayers
+from processing.tools import dataobjects, vector
 
 
 class SaveSelectedFeatures(GeoAlgorithm):
@@ -76,8 +76,8 @@ class SaveSelectedFeatures(GeoAlgorithm):
 
         #input layers values are always a string with its location.
         #That string can be converted into a QGIS object (a QgsVectorLayer in this case))
-        #using the Processing.getObject() method
-        vectorLayer = QGisLayers.getObjectFromUri(inputFilename)
+        #using the processing.getObject() method
+        vectorLayer = dataobjects.getObjectFromUri(inputFilename)
 
         #And now we can process
 
@@ -88,7 +88,7 @@ class SaveSelectedFeatures(GeoAlgorithm):
         writer = output.getVectorWriter( provider.fields(), provider.geometryType(), vectorLayer.crs() )
 
         #Now we take the selected features and add them to the output layer
-        features = QGisLayers.features(vectorLayer)
+        features = vector.features(vectorLayer)
         total = len(features)
         i = 0
         for feat in features:

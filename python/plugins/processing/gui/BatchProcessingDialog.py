@@ -36,7 +36,7 @@ from processing.gui.AlgorithmExecutionDialog import AlgorithmExecutionDialog
 from processing.gui.CrsSelectionPanel import CrsSelectionPanel
 from processing.outputs.OutputNumber import OutputNumber
 from processing.outputs.OutputString import OutputString
-from processing.core.ProcessingUtils import ProcessingUtils
+from processing.tools.system import *
 from processing.parameters.ParameterExtent import ParameterExtent
 from processing.parameters.ParameterCrs import ParameterCrs
 from processing.gui.ExtentSelectionPanel import ExtentSelectionPanel
@@ -252,7 +252,7 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
                 break
         if not createTable:
             return
-        outputFile = ProcessingUtils.getTempFilename("html")
+        outputFile = getTempFilename("html")
         f = open(outputFile, "w")
         for alg in self.algs:
             f.write("<hr>\n")

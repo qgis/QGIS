@@ -14,7 +14,7 @@ from processing.core.VectorWriter import VectorWriter
 
 # "input" contains the location of the selected layer.
 # We get the actual object, so we can get its bounds
-layer = processing.getobject(input)
+layer = processing.getObject(input)
 provider = layer.dataProvider()
 fields = provider.fields()
 fields.append(QgsField("UNIQ_COUNT", QVariant.Int))
@@ -31,7 +31,7 @@ nElement = 0
 classes = {}
 
 #Iterate over input layer to count unique values in each class
-feats = processing.getfeatures(layer)
+feats = processing.features(layer)
 nFeat = len(feats)
 for inFeat in feats:
     progress.setPercentage(int((100 * nElement)/nFeat))
@@ -45,7 +45,7 @@ for inFeat in feats:
         classes[clazz].append(value)
 
 # Create output vector layer with additional attribute
-feats = processing.getfeatures(layer)
+feats = processing.features(layer)
 nElement = 0
 for inFeat in feats:
     progress.setPercentage(int((100 * nElement)/nFeat))

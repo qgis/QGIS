@@ -28,7 +28,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from processing.gui.HelpEditionDialog import HelpEditionDialog
 from processing.gui.ParametersDialog import ParametersDialog
-from processing.core.QGisLayers import QGisLayers
+from processing.tools import dataobjects
 from processing.modeler.Providers import Providers
 import pickle
 from processing.r.RAlgorithm import RAlgorithm
@@ -97,7 +97,7 @@ class EditRScriptDialog(QtGui.QDialog):
         dlg = alg.getCustomParametersDialog()
         if not dlg:
             dlg = ParametersDialog(alg)
-        canvas = QGisLayers.iface.mapCanvas()
+        canvas = dataobjects.iface.mapCanvas()
         prevMapTool = canvas.mapTool()
         dlg.show()
         dlg.exec_()

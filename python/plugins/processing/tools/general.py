@@ -25,7 +25,7 @@ __copyright__ = '(C) 2013, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from qgis.core import *
-from processing.core.QGisLayers import QGisLayers
+from processing.tools import dataobjects
 from processing.core.Processing import Processing
 from processing.parameters.ParameterSelection import ParameterSelection
 from processing.gui.Postprocessing import Postprocessing
@@ -74,7 +74,7 @@ def extent(layers):
     first = True
     for layer in layers:
         if not isinstance(layer, (QgsRasterLayer, QgsVectorLayer)):
-            layer = QGisLayers.getObjectFromUri(layer)
+            layer = dataobjects.getObjectFromUri(layer)
             if layer is None:
                 continue
         if first:
@@ -93,22 +93,5 @@ def extent(layers):
     else:
         return str(xmin) + "," + str(xmax) + "," + str(ymin) + "," + str(ymax)
 
-def getfromname(name):
-    layers = QGisLayers.getAllLayers()
-    for layer in layers:
-        if layer.name() == name:
-            return layer
 
-def getfromuri(uri):
-    return QGisLayers.getObjectFromUri(uri, True)
-
-def getobject(uriorname):
-    ret = getfromname(uriorname)
-    if ret is None:
-        ret = getfromuri(uriorname)
-    return ret
-
-def load(path):
-    '''Loads a layer into QGIS'''
-    return QGisLayers.load(path)
 

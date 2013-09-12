@@ -24,7 +24,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from processing.core.ProcessingUtils import mkdir, ProcessingUtils
+from processing.tools.system import *
 from processing.core.ProcessingConfig import ProcessingConfig
 
 class ModelerUtils:
@@ -36,7 +36,7 @@ class ModelerUtils:
     def modelsFolder():
         folder = ProcessingConfig.getSetting(ModelerUtils.MODELS_FOLDER)
         if folder == None:
-            folder = unicode(os.path.join(ProcessingUtils.userFolder(), "models"))
+            folder = unicode(os.path.join(userFolder(), "models"))
         mkdir(folder)
 
         return os.path.abspath(folder)

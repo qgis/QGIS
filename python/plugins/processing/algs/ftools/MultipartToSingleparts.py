@@ -29,7 +29,7 @@ from qgis.core import *
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.QGisLayers import QGisLayers
+from processing.tools import dataobjects, vector
 
 from processing.parameters.ParameterVector import ParameterVector
 
@@ -53,7 +53,7 @@ class MultipartToSingleparts(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, "Output layer"))
 
     def processAlgorithm(self, progress):
-        layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT))
+        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
 
         geomType = self.multiToSingleGeom(layer.dataProvider().geometryType())
 
@@ -64,7 +64,7 @@ class MultipartToSingleparts(GeoAlgorithm):
         inGeom = QgsGeometry()
 
         current = 0
-        features = QGisLayers.features(layer)
+        features = vector.features(layer)
         total = 100.0 / float(len(features))
         for f in features:
             inGeom = f.geometry()

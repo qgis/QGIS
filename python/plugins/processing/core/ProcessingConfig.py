@@ -23,7 +23,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from processing.core.ProcessingUtils import ProcessingUtils
+from processing.tools.system import *
 import os.path
 from PyQt4 import QtGui
 
@@ -61,7 +61,7 @@ class ProcessingConfig():
         ProcessingConfig.addSetting(Setting("General", ProcessingConfig.TABLE_LIKE_PARAM_PANEL, "Show table-like parameter panels", False))
         ProcessingConfig.addSetting(Setting("General", ProcessingConfig.USE_FILENAME_AS_LAYER_NAME, "Use filename as layer name", False))
         ProcessingConfig.addSetting(Setting("General", ProcessingConfig.SHOW_RECENT_ALGORITHMS, "Show recently executed algorithms", True))
-        ProcessingConfig.addSetting(Setting("General", ProcessingConfig.OUTPUT_FOLDER, "Output folder", ProcessingUtils.tempFolder()))
+        ProcessingConfig.addSetting(Setting("General", ProcessingConfig.OUTPUT_FOLDER, "Output folder", tempFolder()))
         ProcessingConfig.addSetting(Setting("General", ProcessingConfig.SHOW_CRS_DEF, "Show layer CRS definition in selection boxes", True))
         ProcessingConfig.addSetting(Setting("General", ProcessingConfig.WARN_UNMATCHING_CRS, "Warn before executing if layer CRS's do not match", True))
         ProcessingConfig.addSetting(Setting("General", ProcessingConfig.RASTER_STYLE,"Style for raster layers",""))
@@ -109,7 +109,7 @@ class ProcessingConfig():
 
     @staticmethod
     def configFile():
-        return os.path.join(ProcessingUtils.userFolder(), "processing_qgis.conf")
+        return os.path.join(userFolder(), "processing_qgis.conf")
 
     @staticmethod
     def loadSettings():

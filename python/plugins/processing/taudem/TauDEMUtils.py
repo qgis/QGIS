@@ -30,7 +30,7 @@ import subprocess
 
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingLog import ProcessingLog
-from processing.core.ProcessingUtils import ProcessingUtils
+from processing.tools.system import *
 
 class TauDEMUtils:
 
@@ -44,7 +44,7 @@ class TauDEMUtils:
         if folder == None:
             folder = ""
 
-        if ProcessingUtils.isMac():
+        if isMac():
             testfolder = os.path.join(QgsApplication.prefixPath(), "bin")
             if os.path.exists(os.path.join(testfolder, "slopearea")):
                 folder = testfolder
@@ -60,7 +60,7 @@ class TauDEMUtils:
         if folder == None:
             folder = ""
 
-        if ProcessingUtils.isMac():
+        if isMac():
             testfolder = os.path.join(QgsApplication.prefixPath(), "bin")
             if os.path.exists(os.path.join(testfolder, "mpiexec")):
                 folder = testfolder

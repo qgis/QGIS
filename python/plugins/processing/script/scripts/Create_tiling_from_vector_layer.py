@@ -3,7 +3,7 @@
 ##numpolygons=number 10
 ##polygons=output vector
 
-input = processing.getobject(input)
+input = processing.getObject(input)
 centerx = (input.extent().xMinimum() + input.extent().xMaximum()) / 2
 centery = (input.extent().yMinimum() + input.extent().yMaximum()) / 2
 width = (input.extent().xMaximum() - input.extent().xMinimum())

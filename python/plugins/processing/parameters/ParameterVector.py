@@ -25,9 +25,9 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from processing.parameters.ParameterDataObject import ParameterDataObject
-from processing.core.QGisLayers import QGisLayers
+from processing.tools import dataobjects
 from qgis.core import *
-from processing.core.LayerExporter import LayerExporter
+from processing.tools import dataobjects
 
 class ParameterVector(ParameterDataObject):
 
@@ -58,7 +58,7 @@ class ParameterVector(ParameterDataObject):
             return True
         else:
             self.value = unicode(obj)
-            layers = QGisLayers.getVectorLayers(self.shapetype)
+            layers = dataobjects.getVectorLayers(self.shapetype)
             for layer in layers:
                 if layer.name() == self.value  or layer.source() == self.value:
                     self.value = unicode(layer.source())
@@ -79,15 +79,15 @@ class ParameterVector(ParameterDataObject):
         several times and it will always return the same file, performing the export only the first time.'''
         if self.exported:
             return self.exported
-        layer = QGisLayers.getObjectFromUri(self.value, False)
+        layer = dataobjects.getObjectFromUri(self.value, False)
         if layer:
-            self.exported = LayerExporter.exportVectorLayer(layer)
+            self.exported = dataobjects.exportVectorLayer(layer)
         else:
             self.exported = self.value
         return self.exported
 
     def getFileFilter(self):
-        exts = QGisLayers.getSupportedOutputVectorLayerExtensions()
+        exts = dataobjects.getSupportedOutputVectorLayerExtensions()
         for i in range(len(exts)):
             exts[i] = exts[i].upper() + " files(*." + exts[i].lower() + ")"
         return ";;".join(exts)

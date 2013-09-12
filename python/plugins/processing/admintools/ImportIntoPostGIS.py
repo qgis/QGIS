@@ -16,7 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
-from processing.core.QGisLayers import QGisLayers
+from processing.tools import dataobjects
 from processing.parameters.ParameterBoolean import ParameterBoolean
 
 
@@ -80,7 +80,7 @@ class ImportIntoPostGIS(GeoAlgorithm):
             options['overwrite'] = True
 
         layerUri = self.getParameterValue(self.INPUT);
-        layer = QGisLayers.getObjectFromUri(layerUri)
+        layer = dataobjects.getObjectFromUri(layerUri)
         ret, errMsg = QgsVectorLayerImport.importLayer(layer, uri.uri(), providerName, self.crs, False, False, options)
         if ret != 0:
             raise GeoAlgorithmExecutionException(u"Error importing to PostGIS\n%s" %  errMsg)

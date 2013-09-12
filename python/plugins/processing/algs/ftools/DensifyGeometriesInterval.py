@@ -31,7 +31,7 @@ from PyQt4.QtCore import *
 from qgis.core import *
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.QGisLayers import QGisLayers
+from processing.tools import dataobjects, vector
 from processing.parameters.ParameterVector import ParameterVector
 from processing.parameters.ParameterNumber import ParameterNumber
 from processing.outputs.OutputVector import OutputVector
@@ -52,7 +52,7 @@ class DensifyGeometriesInterval(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, "Densified layer"))
 
     def processAlgorithm(self, progress):
-        layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT))
+        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
         interval = self.getParameterValue(self.INTERVAL)
 
         isPolygon = layer.geometryType() == QGis.Polygon
@@ -60,7 +60,7 @@ class DensifyGeometriesInterval(GeoAlgorithm):
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.pendingFields().toList(),
                      layer.wkbType(), layer.crs())
 
-        features = QGisLayers.features(layer)
+        features = vector.features(layer)
         total = 100.0 / float(len(features))
         current = 0
         for f in features:

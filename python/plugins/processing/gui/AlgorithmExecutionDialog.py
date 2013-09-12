@@ -28,7 +28,7 @@ __revision__ = '$Format:%H$'
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PyQt4 import QtCore, QtGui, QtWebKit
-from processing.core.QGisLayers import QGisLayers
+from processing.tools import dataobjects
 from processing.parameters.ParameterRaster import ParameterRaster
 from processing.parameters.ParameterVector import ParameterVector
 from processing.parameters.ParameterBoolean import ParameterBoolean
@@ -121,10 +121,8 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
         self.verticalLayout.addWidget(self.progress)
         self.verticalLayout.addWidget(self.buttonBox)
         self.setLayout(self.verticalLayout)
-        #self.buttonBox.accepted.connect(self.accept)
         self.buttonBox.rejected.connect(self.close)
         self.buttonBox.button(QtGui.QDialogButtonBox.Cancel).clicked.connect(self.cancel)
-        #~ QtCore.QMetaObject.connectSlotsByName(self)
 
 
     def setParamValues(self):
@@ -174,9 +172,9 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
             return param.setValue(widget.currentText())
         elif isinstance(param, ParameterMultipleInput):
             if param.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
-                options = QGisLayers.getVectorLayers()
+                options = dataobjects.getVectorLayers()
             else:
-                options = QGisLayers.getRasterLayers()
+                options = dataobjects.getRasterLayers()
             value = []
             for index in widget.selectedoptions:
                 value.append(options[index])
@@ -322,8 +320,7 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
     def resetGUI(self):
         QApplication.restoreOverrideCursor()
         self.progressLabel.setText("")
-        self.progress.setValue(100)
-        #self.progress.setMaximum(100)
+        self.progress.setValue(0)        
         self.runButton.setEnabled(True)
         self.buttonBox.button(QtGui.QDialogButtonBox.Close).setEnabled(True)
         self.buttonBox.button(QtGui.QDialogButtonBox.Cancel).setEnabled(False)

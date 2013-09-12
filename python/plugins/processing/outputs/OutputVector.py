@@ -16,7 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
-from processing.core.QGisLayers import QGisLayers
+from processing.tools import dataobjects
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -28,7 +28,7 @@ from PyQt4.QtCore import *
 from qgis.core import *
 from processing.outputs.Output import Output
 from processing.core.VectorWriter import VectorWriter
-from processing.core.ProcessingUtils import ProcessingUtils
+from processing.tools.system import *
 
 
 class OutputVector(Output):
@@ -37,7 +37,7 @@ class OutputVector(Output):
     compatible = None
 
     def getFileFilter(self,alg):
-        exts = QGisLayers.getSupportedOutputVectorLayerExtensions()
+        exts = dataobjects.getSupportedOutputVectorLayerExtensions()
         for i in range(len(exts)):
             exts[i] = exts[i].upper() + " files(*." + exts[i].lower() + ")"
         return ";;".join(exts)
@@ -55,7 +55,7 @@ class OutputVector(Output):
             return self.value
         else:
             if self.compatible is None:
-                self.compatible = ProcessingUtils.getTempFilenameInTempFolder(self.name + "." + self.getDefaultFileExtension(alg))
+                self.compatible = getTempFilenameInTempFolder(self.name + "." + self.getDefaultFileExtension(alg))
             return self.compatible;
 
 

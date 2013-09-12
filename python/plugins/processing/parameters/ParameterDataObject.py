@@ -24,7 +24,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from processing.parameters.Parameter import Parameter
-from processing.core.ProcessingUtils import ProcessingUtils
+from processing.tools.system import *
 
 class ParameterDataObject(Parameter):
 
@@ -32,7 +32,7 @@ class ParameterDataObject(Parameter):
         if self.value == None:
             return str(None)
         else:
-            if not ProcessingUtils.isWindows():
+            if not isWindows():
                 return "\"" + unicode(self.value) + "\""
             else:
                 return "\"" + unicode(self.value).replace("\\", "\\\\") + "\""

@@ -29,7 +29,7 @@ import subprocess
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
 import os
-from processing.core.ProcessingUtils import ProcessingUtils
+from processing.tools.system import *
 
 class FusionUtils():
 
@@ -46,7 +46,7 @@ class FusionUtils():
     @staticmethod
     def tempFileListFilepath():
         filename = "fusion_files_list.txt";
-        filepath = ProcessingUtils.userFolder() + os.sep + filename
+        filepath = userFolder() + os.sep + filename
         return filepath
 
     @staticmethod

@@ -27,8 +27,8 @@ import processing
 import unittest
 from processing.tests.TestData import points, points2, polygons, polygons2, lines, union,\
     table, polygonsGeoJson, raster
-from processing.core.QGisLayers import QGisLayers
-from processing.core.ProcessingUtils import ProcessingUtils
+from processing.tools import dataobjects
+from processing.tools.system import *
 from osgeo.gdalconst import GA_ReadOnly
 import os
 from osgeo import gdal
@@ -57,14 +57,14 @@ class SagaTest(unittest.TestCase):
     the selection awareness of SAGA process, etc'''
 
     def test_SagaVectorAlgorithmWithSelection(self):
-        layer = processing.getobject(polygons2());
+        layer = processing.getObject(polygons2());
         feature = layer.getFeatures().next()
         selected = [feature.id()]
         layer.setSelectedFeatures(selected)
         outputs=processing.runalg("saga:polygoncentroids",polygons2(),True,None)
         layer.setSelectedFeatures([])
         output=outputs['CENTROIDS']
-        layer=QGisLayers.getObjectFromUri(output, True)
+        layer=dataobjects.getObjectFromUri(output, True)
         fields=layer.pendingFields()
         expectednames=['ID','POLY_NUM_B','POLY_ST_B']
         expectedtypes=['Real','Real','String']
@@ -72,7 +72,7 @@ class SagaTest(unittest.TestCase):
         types=[str(f.typeName()) for f in fields]
         self.assertEqual(expectednames, names)
         self.assertEqual(expectedtypes, types)
-        features=processing.getfeatures(layer)
+        features=processing.features(layer)
         self.assertEqual(1, len(features))
         feature=features.next()
         attrs=feature.attributes()
@@ -84,14 +84,14 @@ class SagaTest(unittest.TestCase):
 
     def test_SagaVectorAlgorithWithUnsupportedInputAndOutputFormat(self):
         '''this tests both the exporting to shp and then the format change in the output layer'''
-        layer = processing.getobject(polygonsGeoJson());
+        layer = processing.getObject(polygonsGeoJson());
         feature = layer.getFeatures().next()
         selected = [feature.id()]
         layer.setSelectedFeatures(selected)
-        outputs=processing.runalg("saga:polygoncentroids",polygonsGeoJson(),True, ProcessingUtils.getTempFilename("geojson"))
+        outputs=processing.runalg("saga:polygoncentroids",polygonsGeoJson(),True, getTempFilename("geojson"))
         layer.setSelectedFeatures([])
         output=outputs['CENTROIDS']
-        layer=QGisLayers.getObjectFromUri(output, True)
+        layer=dataobjects.getObjectFromUri(output, True)
         fields=layer.pendingFields()
         expectednames=['ID','POLY_NUM_A','POLY_ST_A']
         expectedtypes=['Real','Real','String']
@@ -99,7 +99,7 @@ class SagaTest(unittest.TestCase):
         types=[str(f.typeName()) for f in fields]
         self.assertEqual(expectednames, names)
         self.assertEqual(expectedtypes, types)
-        features=processing.getfeatures(layer)
+        features=processing.features(layer)
         self.assertEqual(1, len(features))
         feature=features.next()
         attrs=feature.attributes()
@@ -110,7 +110,7 @@ class SagaTest(unittest.TestCase):
         self.assertEqual(wkt, str(feature.geometry().exportToWkt()))
 
     def test_SagaRasterAlgorithmWithUnsupportedOutputFormat(self):
-        outputs=processing.runalg("saga:convergenceindex",raster(),0,0,ProcessingUtils.getTempFilename("img"))
+        outputs=processing.runalg("saga:convergenceindex",raster(),0,0,getTempFilename("img"))
         output=outputs['RESULT']
         self.assertTrue(os.path.isfile(output))
         dataset=gdal.Open(output, GA_ReadOnly)

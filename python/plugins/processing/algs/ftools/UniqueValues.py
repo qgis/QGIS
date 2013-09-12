@@ -26,7 +26,7 @@ __revision__ = '$Format:%H$'
 
 import codecs
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.QGisLayers import QGisLayers
+from processing.tools import dataobjects
 from processing.parameters.ParameterVector import ParameterVector
 from processing.parameters.ParameterTableField import ParameterTableField
 from processing.outputs.OutputHTML import OutputHTML
@@ -56,7 +56,7 @@ class UniqueValues(GeoAlgorithm):
         self.addOutput(OutputString(self.UNIQUE_VALUES, "Unique values"))
 
     def processAlgorithm(self, progress):
-        layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT_LAYER))
+        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_LAYER))
         fieldName = self.getParameterValue(self.FIELD_NAME)
         outputFile = self.getOutputValue(self.OUTPUT)
         values = utils.getUniqueValues(layer, layer.fieldNameIndex(fieldName))
