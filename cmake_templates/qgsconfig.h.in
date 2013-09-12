@@ -50,5 +50,7 @@
 
 #cmakedefine MAPSERVER_SKIP_ECW
 
+#cmakedefine HAVE_MACAPP_BUNDLED_OSG
+
 #endif
 

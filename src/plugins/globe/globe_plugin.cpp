@@ -96,10 +96,11 @@ GlobePlugin::GlobePlugin( QgisInterface* theQgisInterface )
   setParent( theQgisInterface->mainWindow() );
 
 // add internal osg plugin path if bundled osg on OS X
-#ifdef QGIS_MACAPP_BUNDLE
-#if QGIS_MACAPP_BUNDLE > 0
-  setLibraryFilePathList( QgsApplication::prefixPath() + "/QGIS_PLUGIN_SUBDIR/../osgPlugins" );
-#endif
+#ifdef HAVE_MACAPP_BUNDLED_OSG
+  if ( !QgsApplication::isRunningFromBuildDir() )
+  {
+    osgDB::Registry::instance()->setLibraryFilePathList( QDir::cleanPath( QgsApplication::pluginPath() + "/../osgPlugins" ).toStdString() );
+  }
 #endif
 
   mSettingsDialog = new QgsGlobePluginDialog( theQgisInterface->mainWindow(), QgisGui::ModalDialogFlags );
