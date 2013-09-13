@@ -98,7 +98,7 @@ void QgsLegendModel::setLayerSetAndGroups( const QStringList& layerIds, const QL
   }
 }
 
-void QgsLegendModel::setLayerSet( const QStringList& layerIds )
+void QgsLegendModel::setLayerSet( const QStringList& layerIds, double scaleDenominator )
 {
   mLayerIds = layerIds;
 
@@ -111,7 +111,7 @@ void QgsLegendModel::setLayerSet( const QStringList& layerIds )
   for ( ; idIter != mLayerIds.constEnd(); ++idIter )
   {
     currentLayer = QgsMapLayerRegistry::instance()->mapLayer( *idIter );
-    addLayer( currentLayer );
+    addLayer( currentLayer, scaleDenominator );
   }
 }
 
@@ -135,7 +135,7 @@ QStandardItem* QgsLegendModel::addGroup( QString text, int position )
   return groupItem;
 }
 
-int QgsLegendModel::addVectorLayerItemsV2( QStandardItem* layerItem, QgsVectorLayer* vlayer )
+int QgsLegendModel::addVectorLayerItemsV2( QStandardItem* layerItem, QgsVectorLayer* vlayer, double scaleDenominator )
 {
   QgsComposerLayerItem* lItem = dynamic_cast<QgsComposerLayerItem*>( layerItem );
 
@@ -158,7 +158,7 @@ int QgsLegendModel::addVectorLayerItemsV2( QStandardItem* layerItem, QgsVectorLa
     }
   }
 
-  QgsLegendSymbolList lst = renderer->legendSymbolItems();
+  QgsLegendSymbolList lst = renderer->legendSymbolItems( scaleDenominator );
   QgsLegendSymbolList::const_iterator symbolIt = lst.constBegin();
   int row = 0;
   for ( ; symbolIt != lst.constEnd(); ++symbolIt )
@@ -454,7 +454,7 @@ void QgsLegendModel::removeLayer( const QString& layerId )
   }
 }
 
-void QgsLegendModel::addLayer( QgsMapLayer* theMapLayer )
+void QgsLegendModel::addLayer( QgsMapLayer* theMapLayer, double scaleDenominator )
 {
   if ( !theMapLayer )
   {
@@ -468,7 +468,7 @@ void QgsLegendModel::addLayer( QgsMapLayer* theMapLayer )
     layerItem->setUserText( theMapLayer->title() );
   }
   layerItem->setLayerID( theMapLayer->id() );
-  layerItem->setDefaultStyle();
+  layerItem->setDefaultStyle( scaleDenominator );
   layerItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
 
   QList<QStandardItem *> itemsList;
@@ -482,7 +482,7 @@ void QgsLegendModel::addLayer( QgsMapLayer* theMapLayer )
       QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( theMapLayer );
       if ( vl )
       {
-        addVectorLayerItemsV2( layerItem, vl );
+        addVectorLayerItemsV2( layerItem, vl, scaleDenominator );
       }
       break;
     }
