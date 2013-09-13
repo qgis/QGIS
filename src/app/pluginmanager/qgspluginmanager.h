@@ -153,6 +153,9 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     //! Reload plugin metadata registry after allowing/disallowing experimental plugins
     void on_ckbExperimental_toggled( bool state );
 
+    //! Reload plugin metadata registry after allowing/disallowing deprecated plugins
+    void on_ckbDeprecated_toggled( bool state );
+
     //! Open help browser
     void on_buttonBox_helpRequested( ) { QgsContextHelp::run( metaObject()->className() ); }
 
