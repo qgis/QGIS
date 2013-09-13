@@ -80,7 +80,8 @@ class SaveSelectedFeatures(GeoAlgorithm):
         inputFilename = self.getParameterValue(self.INPUT_LAYER)
         
         #The output. It will get the value of the destinatation file entered by the user.
-        #If the user select "Save to temporary file", when we arrive here it will already have an asigned value, which will be 
+        #If the user select "Save to temporary file", when we arrive here it will already have an asigned value, 
+        #which will be a temporary file using the first supported file format of the corresponding algorithm provider 
         output = self.getOutputFromName(self.OUTPUT_LAYER)
 
         #input layers values are always a string with its location.
@@ -93,6 +94,9 @@ class SaveSelectedFeatures(GeoAlgorithm):
         #First we create the output layer.
         #To do so, we call the getVectorWriter method in the Output object.
         #That will give us a VectorWriter, that we can later use to add features.
+        #The destination file has its format selected based on the file extension.
+        #If the selected format is not supported, the first available format from
+        #the provider is used, and the corresponding file extension appended
         provider = vectorLayer.dataProvider()
         writer = output.getVectorWriter( provider.fields(), 
                                          provider.geometryType(), 

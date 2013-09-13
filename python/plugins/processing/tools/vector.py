@@ -236,8 +236,8 @@ def getUniqueValues(layer, fieldIndex):
 def getUniqueValuesCount(layer, fieldIndex):
     return len(getUniqueValues(layer, fieldIndex))
 
-# From two input field maps, create single field map
 def combineVectorFields(layerA, layerB):
+    '''Create single field map from two input field maps'''
     fields = []
     fieldsA = layerA.dataProvider().fields()
     fields.extend(fieldsA)

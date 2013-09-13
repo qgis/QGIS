@@ -52,6 +52,7 @@ class HistoryDialog(QDialog, Ui_DlgHistory):
         self.tree.currentItemChanged.connect(self.changeText)
         self.clearButton.clicked.connect(self.clearLog)
 
+        self.tree.setContextMenuPolicy(Qt.CustomContextMenu)
         self.tree.customContextMenuRequested.connect(self.showPopupMenu)
 
         self.fillTree()

@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    py
+    dataobject.py
     ---------------------
     Date                 : August 2012
     Copyright            : (C) 2012 by Victor Olaya
@@ -101,6 +101,7 @@ def loadList(layers):
         load(layer)
 
 def load(fileName, name = None, crs = None, style  = None):
+    '''Loads a layer/table into the current project, given its file'''
     if fileName == None:
         return
     prjSetting = None
@@ -156,6 +157,10 @@ def getObject(uriorname):
     return ret
 
 def getObjectFromUri(uri, forceLoad = True):
+    '''returns an object (layer/table) given a file location.
+    if forceLoad is true, it tries to load it if it is not currently open
+    Otherwise, it will return the object only if it is loaded in QGIS'''
+    
     if uri is None:
         return None
     layers = getRasterLayers()
