@@ -45,8 +45,24 @@ int QgsDxfExport::writeToFile( QIODevice* d )
   return 0;
 }
 
-int QgsDxfExport::writeHeader( QTextStream& stream )
+void QgsDxfExport::writeHeader( QTextStream& stream )
 {
-  stream << "Hello, dxf!";
-  return 0; //soon...
+  stream << "999\n";
+  stream << "DXF created from QGIS\n";
+  stream << "  0\n";
+  stream << "SECTION\n";
+  stream << "  2\n";
+  stream << "HEADER\n";
+  stream << "  9\n";
+  stream << "$LTSCALE\n";
+  stream << " 40\n";
+  stream << "1\n";
+  stream << "  0\n";
+  stream << "ENDSEC\n";
+}
+
+void QgsDxfExport::writeEndFile( QTextStream& stream )
+{
+  stream << "  0\n";
+  stream << "ENDSEC\n";
 }

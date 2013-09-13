@@ -37,7 +37,8 @@ class QgsDxfExport
 
     QList< QgsMapLayer* > mLayers;
 
-    int writeHeader( QTextStream& stream );
+    void writeHeader( QTextStream& stream );
+    void writeEndFile( QTextStream& stream );
     //collect styles
     //writeEntities
 
