@@ -60,7 +60,9 @@ class QgsGrassFeatureIterator : public QgsAbstractFeatureIterator
     char    *mSelection;           // !UPDATE!
     int     mSelectionSize;        // !UPDATE! Size of selection array
 
+    // Either mNextCidx or mNextTopoId is used according to type
     int    mNextCidx;          // !UPDATE! Next index in cidxFieldIndex to be read, used to find nextFeature
+    int    mNextTopoId;          // !UPDATE! Next topology id to be read, used to find nextFeature, starts from 1
 
     /*! reset selection */
     void resetSelection( bool sel );

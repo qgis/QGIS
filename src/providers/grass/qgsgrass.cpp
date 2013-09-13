@@ -877,6 +877,21 @@ QStringList GRASS_LIB_EXPORT QgsGrass::vectorLayers( QString gisdbase,
       list.append( l );
     }
   }
+
+  // add topology layers
+  if ( Vect_get_num_primitives( &map, GV_POINTS ) > 0 )
+  {
+    list.append( "topo_point" );
+  }
+  if ( Vect_get_num_primitives( &map, GV_LINES ) > 0 )
+  {
+    list.append( "topo_line" );
+  }
+  if ( Vect_get_num_nodes( &map ) > 0 )
+  {
+    list.append( "topo_node" );
+  }
+
   Vect_close( &map );
 
   return list;
