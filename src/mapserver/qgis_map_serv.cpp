@@ -297,14 +297,22 @@ int main( int argc, char * argv[] )
     //set admin config file to wms server object
     QString configFilePath( defaultConfigFilePath );
 
-    paramIt = parameterMap.find( "MAP" );
-    if ( paramIt == parameterMap.constEnd() )
+    QString projectFile = getenv( "QGIS_PROJECT_FILE" );
+    if ( !projectFile.isEmpty() )
     {
-      QgsDebugMsg( QString( "Using default configuration file path: %1" ).arg( defaultConfigFilePath ) );
+      configFilePath = projectFile;
     }
     else
     {
-      configFilePath = paramIt.value();
+      paramIt = parameterMap.find( "MAP" );
+      if ( paramIt == parameterMap.constEnd() )
+      {
+        QgsDebugMsg( QString( "Using default configuration file path: %1" ).arg( defaultConfigFilePath ) );
+      }
+      else
+      {
+        configFilePath = paramIt.value();
+      }
     }
 
     QgsConfigParser* adminConfigParser = QgsConfigCache::instance()->searchConfiguration( configFilePath );
