@@ -62,6 +62,7 @@ SET(QGIS_CORE_SRCS
   qgsdbfilterproxymodel.cpp
   qgsdiagramrendererv2.cpp
   qgsdistancearea.cpp
+  qgsdxfexport.cpp
   qgserror.cpp
   qgsexpression.cpp
   qgsexpression_texts.cpp
