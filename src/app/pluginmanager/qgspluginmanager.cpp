@@ -187,6 +187,12 @@ void QgsPluginManager::setPythonUtils( QgsPythonUtils* pythonUtils )
     ckbExperimental->setChecked( true );
   }
 
+  if ( settings.value( settingsGroup + "/allowDeprecated", false ).toBool() )
+  {
+    ckbDeprecated->setChecked( true );
+  }
+
+
   int interval = settings.value( settingsGroup + "/checkOnStartInterval", "" ).toInt( );
   int indx = mCheckingOnStartIntervals.indexOf( interval ); // if none found, just use -1 index.
   comboInterval->setCurrentIndex( indx );
@@ -658,6 +664,14 @@ void QgsPluginManager::showPluginDetails( QStandardItem * item )
                      "    <img src=\":/images/themes/default/pluginExperimental.png\" width=\"32\"><b>%1</b>"
                      "  </td></tr>"
                      "</table>" ).arg( tr( "This plugin is experimental" ) );
+  };
+  if ( metadata->value( "deprecated" ) == "true" )
+  {
+    html += QString( "<table bgcolor=\"#EEBBCC\" cellspacing=\"2\" cellpadding=\"2\" width=\"100%\">"
+                     "  <tr><td width=\"100%\" style=\"color:#660000\">"
+                     "    <img src=\":/images/themes/default/pluginDeprecated.png\" width=\"32\"><b>%1</b>"
+                     "  </td></tr>"
+                     "</table>" ).arg( tr( "This plugin is deprecated" ) );
   };
   // if ( metadata->value( "status" ) == t.b.d. )
   // {
@@ -1228,6 +1242,15 @@ void QgsPluginManager::on_ckbExperimental_toggled( bool state )
   QgsPythonRunner::run( "pyplugin_installer.instance().exportPluginsToManager()" );
 }
 
+void QgsPluginManager::on_ckbDeprecated_toggled( bool state )
+{
+  QString settingsGroup;
+  QgsPythonRunner::eval( "pyplugin_installer.instance().exportSettingsGroup()", settingsGroup );
+  QSettings settings;
+  settings.setValue( settingsGroup + "/allowDeprecated", QVariant( state ) );
+  QgsPythonRunner::run( "pyplugin_installer.installer_data.plugins.rebuild()" );
+  QgsPythonRunner::run( "pyplugin_installer.instance().exportPluginsToManager()" );
+}
 
 
 // PRIVATE METHODS ///////////////////////////////////////////////////////////////////

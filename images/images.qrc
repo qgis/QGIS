@@ -369,6 +369,7 @@
     <file>themes/default/pie-chart.png</file>
     <file>themes/default/plugin.png</file>
     <file>themes/default/pluginExperimental.png</file>
+    <file>themes/default/pluginDeprecated.png</file>
     <file>themes/default/propertyicons/action.svg</file>
     <file>themes/default/propertyicons/attributes.png</file>
     <file>themes/default/propertyicons/colormap.png</file>
