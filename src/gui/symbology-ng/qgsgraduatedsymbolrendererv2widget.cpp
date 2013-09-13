@@ -488,7 +488,7 @@ void QgsGraduatedSymbolRendererV2Widget::classifyGraduated()
   if ( QgsGraduatedSymbolRendererV2::Jenks == mode
        && mLayer->featureCount() > 50000 )
   {
-    if ( QMessageBox::Cancel == QMessageBox::question( this, tr( "Warning" ), tr( "Natural break classification (Jenks) is O(n2) complexity, your classification may take a long time." ), QMessageBox::Cancel, QMessageBox::Ok ) ) return;
+    if ( QMessageBox::Cancel == QMessageBox::question( this, tr( "Warning" ), tr( "Natural break classification (Jenks) is O(n2) complexity, your classification may take a long time.\nPress cancel to abort breaks calculation or OK to continue." ), QMessageBox::Cancel, QMessageBox::Ok ) ) return;
   }
 
   // create and set new renderer
