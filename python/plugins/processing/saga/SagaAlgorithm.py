@@ -384,8 +384,7 @@ class SagaAlgorithm(GeoAlgorithm):
             filename = str(layer.name())
         else:
             filename = os.path.basename(source)
-        validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:"
-        filename = ''.join(c for c in filename if c in validChars)
+        filename = removeInvalidChars(filename)
         if len(filename) == 0:
             filename = "layer"
         destFilename = getTempFilenameInTempFolder(filename + ".sgrd")

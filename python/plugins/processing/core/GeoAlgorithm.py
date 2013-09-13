@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from processing import interface
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -283,7 +284,7 @@ class GeoAlgorithm:
                         if p is not None:
                             self.crs = p.crs()
                             return
-        qgis = dataobjects.iface
+        qgis = interface.iface
         self.crs = qgis.mapCanvas().mapRenderer().destinationCrs()
 
     def checkInputCRS(self):
@@ -368,10 +369,8 @@ class GeoAlgorithm:
 
     def commandLineName(self):
         name = self.provider.getName().lower() + ":" + self.name.lower()
-        validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:"
-        name = ''.join(c for c in name if c in validChars)
+        name = removeInvalidChars(name)
         return name
-
 
     def removeOutputFromName(self, name):
         for out in self.outputs:

@@ -55,8 +55,7 @@ class SplitRGBBands(GeoAlgorithm):
         input = self.getParameterValue(SplitRGBBands.INPUT)
         temp = getTempFilename(None).replace('.','');
         basename = os.path.basename(temp)
-        validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-        safeBasename = ''.join(c for c in basename if c in validChars)
+        safeBasename = removeInvalidChars(basename)
         temp = os.path.join(os.path.dirname(temp), safeBasename)
 
         r = self.getOutputValue(SplitRGBBands.R)
