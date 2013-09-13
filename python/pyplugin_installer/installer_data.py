@@ -563,14 +563,14 @@ class Plugins(QObject):
         """ plugin metadata parser reimplemented from qgis.utils
             for better control on wchich module is examined
             in case there is an installed plugin masking a core one """
-        metadataFile = os.path.join(path, 'metadata.txt')
-        if not os.path.exists(metadataFile):
-          return "" # plugin has no metadata.txt file
+        global errorDetails
         cp = ConfigParser.ConfigParser()
         try:
           cp.readfp(codecs.open(metadataFile, "r", "utf8"))
           return cp.get('general', fct)
-        except:
+        except Exception, e:
+          if not errorDetails:
+            errorDetails = e.args[0] # set to the first problem
           return ""
 
     def pluginMetadata(fct):
@@ -587,11 +587,16 @@ class Plugins(QObject):
     if not QDir(path).exists():
       return
 
+    global errorDetails # to communicate with the metadataParser fn
     plugin = dict()
     error = ""
     errorDetails = ""
+    version = None
 
-    version = normalizeVersion( pluginMetadata("version") )
+    metadataFile = os.path.join(path, 'metadata.txt')
+    if os.path.exists(metadataFile):
+      version = normalizeVersion( pluginMetadata("version") )
+
     if version:
       qgisMinimumVersion = pluginMetadata("qgisMinimumVersion").strip()
       if not qgisMinimumVersion: qgisMinimumVersion = "0"
@@ -607,26 +612,32 @@ class Plugins(QObject):
           exec "import %s" % key in globals(), locals()
           exec "reload (%s)" % key in globals(), locals()
           exec "%s.classFactory(iface)" % key in globals(), locals()
-        except Exception, error:
-          error = unicode(error.args[0])
-        except SystemExit, error:
-          error = QCoreApplication.translate("QgsPluginInstaller", "The plugin exited with error status: {0}").format(error.args[0])
+        except Exception, e:
+          error = "broken"
+          errorDetails = unicode(e.args[0])
+        except SystemExit, e:
+          error = "broken"
+          errorDetails = QCoreApplication.translate("QgsPluginInstaller", "The plugin exited with error status: {0}").format(e.args[0])
         except:
-          error = QCoreApplication.translate("QgsPluginInstaller", "Unknown error")
+          error = "broken"
+          errorDetails = QCoreApplication.translate("QgsPluginInstaller", "Unknown error")
+    elif not os.path.exists(metadataFile):
+      error = "broken"
+      errorDetails = QCoreApplication.translate("QgsPluginInstaller", "Missing metadata file")
     else:
-        # seems there is no metadata.txt file. Maybe it's an old plugin for QGIS 1.x.
-        version = "-1"
-        error = "incompatible"
-        errorDetails = "1.x"
+      error = "broken"
+      e = errorDetails
+      errorDetails = QCoreApplication.translate("QgsPluginInstaller", u"Error reading metadata")
+      if e: errorDetails += ": " + e
+
+    if not version:
+      version = "?"
 
     if error[:16] == "No module named ":
       mona = error.replace("No module named ","")
       if mona != key:
         error = "dependent"
         errorDetails = mona
-    if not error in ["", "dependent", "incompatible"]:
-      errorDetails = error
-      error = "broken"
 
     icon = pluginMetadata("icon")
     if QFileInfo( icon ).isRelative():
