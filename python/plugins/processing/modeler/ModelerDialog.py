@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-import sys
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -24,18 +23,20 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-
+import sys
 import codecs
 import pickle
 
-from processing.tools.system import *
-from processing.gui.HelpEditionDialog import HelpEditionDialog
-from processing.gui.ParametersDialog import ParametersDialog
+from PyQt4.QtCore import *
+from PyQt4.QtGui import *
+
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithm import GeoAlgorithm
+
+from processing.gui.HelpEditionDialog import HelpEditionDialog
+from processing.gui.ParametersDialog import ParametersDialog
 from processing.gui.AlgorithmClassification import AlgorithmDecorator
+
 from processing.modeler.ModelerParameterDefinitionDialog import ModelerParameterDefinitionDialog
 from processing.modeler.ModelerAlgorithm import ModelerAlgorithm
 from processing.modeler.ModelerParametersDialog import ModelerParametersDialog
@@ -43,6 +44,9 @@ from processing.modeler.ModelerUtils import ModelerUtils
 from processing.modeler.WrongModelException import WrongModelException
 from processing.modeler.ModelerScene import ModelerScene
 from processing.modeler.Providers import Providers
+
+from processing.tools.system import *
+
 from processing.ui.ui_DlgModeler import Ui_DlgModeler
 
 class ModelerDialog(QDialog, Ui_DlgModeler):
@@ -76,9 +80,12 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
         self.saveButton = QPushButton(self.tr("Save"))
         self.saveButton.setToolTip(self.tr("Save current model"))
         self.buttonBox.addButton(self.saveButton, QDialogButtonBox.ActionRole)
-        self.saveAsButton = QPushButton(self.tr("Save as ..."))
+        self.saveAsButton = QPushButton(self.tr("Save as..."))
         self.saveAsButton.setToolTip(self.tr("Save current model as"))
         self.buttonBox.addButton(self.saveAsButton, QDialogButtonBox.ActionRole)
+        self.saveAsImageButton = QPushButton(self.tr("Export as image..."))
+        self.exportAsImageButton.setToolTip(self.tr("Export current model to image"))
+        self.buttonBox.addButton(self.saveAsImageButton, QDialogButtonBox.ActionRole)
 
         # fill trees with inputs and algorithms
         self.fillInputsTree()
@@ -100,6 +107,7 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
         self.openButton.clicked.connect(self.openModel)
         self.saveButton.clicked.connect(self.save)
         self.saveAsButton.clicked.connect(self.saveAs)
+        self.exportAsImageButton.clicked.connect(self.exportAsImage)
         self.runButton.clicked.connect(self.runModel)
         self.editHelpButton.clicked.connect(self.editHelp)
 
@@ -115,7 +123,6 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
         self.alg.setModelerView(self)
         self.help = None
         self.update = False #indicates whether to update or not the toolbox after closing this dialog
-
 
     def editHelp(self):
         dlg = HelpEditionDialog(self.alg)
@@ -158,6 +165,33 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
 
     def saveAs(self):
         self.saveModel(True)
+
+    def exportAsImage(self):
+        filename = unicode(QFileDialog.getSaveFileName(self,
+                                                       self.tr("Save Model As Image"),
+                                                       "",
+                                                       self.tr("PNG files (*.png *.PNG)")
+                                                      ))
+        if not filename:
+            return
+
+        if not filename.lower().endswith(".png"):
+            filename += ".png"
+
+        totalRect = QRectF(0, 0, 1, 1)
+        for item in self.scene.items():
+            totalRect = totalRect.united(item.sceneBoundingRect())
+        totalRect.adjust(-10, -10, 10, 10)
+
+        img = QImage(totalRect.width(), totalRect.height(), QImage.Format_ARGB32_Premultiplied)
+        img.fill(Qt.white)
+        painter = QPainter()
+        painter.setRenderHint(QPainter.Antialiasing)
+        painter.begin(img)
+        self.scene.render(painter, totalRect, totalRect)
+        painter.end()
+
+        img.save(filename)
 
     def saveModel(self, saveAs):
         if unicode(self.textGroup.text()).strip() == "" or unicode(self.textName.text()).strip() == "":
@@ -427,4 +461,3 @@ class TreeAlgorithmItem(QTreeWidgetItem):
         self.setIcon(0, icon)
         self.setToolTip(0, name)
         self.setText(0, name)
-
