@@ -1,6 +1,4 @@
 from qgis.core import *
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
 from processing.core.VectorWriter import VectorWriter
 
 #Here we define the input and outputs
@@ -12,7 +10,7 @@ from processing.core.VectorWriter import VectorWriter
 #And here is the body of the algorithm
 #=======================================
 
-#input layers values are always a string with its location.
+#input layers values are always a string with its source.
 #That string can be converted into a QGIS object (a QgsVectorLayer in this case))
 #using the processing.getObject() method
 vectorLayer = processing.getObject(input)
@@ -22,11 +20,12 @@ vectorLayer = processing.getObject(input)
 #First we create the output layer.
 #To do so, we create a ProcessingVectorWriter, that we can later use to add features.
 provider = vectorLayer.dataProvider()
+
 writer = VectorWriter(output, None, provider.fields(), provider.geometryType(), vectorLayer.crs())
 
 #Now we take the selected features and add them to the output layer
-selection = vectorLayer.selectedFeatures()
-for feat in selection:
+features = processing.features(vectorLayer)
+for feat in features:
     writer.addFeature(feat)
 del writer
 

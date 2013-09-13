@@ -290,7 +290,7 @@ class SagaAlgorithm(GeoAlgorithm):
         for out in self.outputs:
             if isinstance(out, OutputRaster):
                 filename = out.getCompatibleFileName(self)
-                filename = tempFolder() + os.sep + os.path.basename(filename) + ".sgrd"
+                filename += ".sgrd"
                 command+=(" -" + out.name + " \"" + filename + "\"");
             if isinstance(out, OutputVector):
                 filename = out.getCompatibleFileName(self)
@@ -305,7 +305,7 @@ class SagaAlgorithm(GeoAlgorithm):
         for out in self.outputs:
             if isinstance(out, OutputRaster):
                 filename = out.getCompatibleFileName(self)
-                filename2 = tempFolder() + os.sep + os.path.basename(filename) + ".sgrd"
+                filename2 = filename + ".sgrd"
                 formatIndex = 1 if saga208 else 4
                 if isWindows() or isMac() or not saga208:
                     commands.append("io_gdal 1 -GRIDS \"" + filename2 + "\" -FORMAT " + str(formatIndex) +" -TYPE 0 -FILE \"" + filename + "\"");
@@ -383,7 +383,7 @@ class SagaAlgorithm(GeoAlgorithm):
         if layer:
             filename = str(layer.name())
         else:
-            filename = source.rstrip(".sgrd")
+            filename = os.path.basename(filename)
         validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:"
         filename = ''.join(c for c in filename if c in validChars)
         if len(filename) == 0:
