@@ -772,22 +772,25 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
       //min/max scale denominatormScaleBasedVisibility
       if ( currentLayer->hasScaleBasedVisibility() )
       {
-        QString minScaleString = QString::number( currentLayer->minimumScale() );
-        QString maxScaleString = QString::number( currentLayer->maximumScale() );
-
         if ( version == "1.1.1" )
         {
+          double OGC_PX_M = 0.00028; // OGC referance pixel size in meter, also used by qgis
+          double SCALE_TO_SCALEHINT = OGC_PX_M * sqrt( 2 );
+
           QDomElement scaleHintElem = doc.createElement( "ScaleHint" );
-          scaleHintElem.setAttribute( "min", minScaleString );
-          scaleHintElem.setAttribute( "max", maxScaleString );
+          scaleHintElem.setAttribute( "min", QString::number( currentLayer->minimumScale() * SCALE_TO_SCALEHINT ) );
+          scaleHintElem.setAttribute( "max", QString::number( currentLayer->maximumScale() * SCALE_TO_SCALEHINT ) );
           layerElem.appendChild( scaleHintElem );
         }
         else
         {
+          QString minScaleString = QString::number( currentLayer->minimumScale() );
           QDomElement minScaleElem = doc.createElement( "MinScaleDenominator" );
           QDomText minScaleText = doc.createTextNode( minScaleString );
           minScaleElem.appendChild( minScaleText );
           layerElem.appendChild( minScaleElem );
+
+          QString maxScaleString = QString::number( currentLayer->maximumScale() );
           QDomElement maxScaleElem = doc.createElement( "MaxScaleDenominator" );
           QDomText maxScaleText = doc.createTextNode( maxScaleString );
           maxScaleElem.appendChild( maxScaleText );
