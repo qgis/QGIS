@@ -7258,6 +7258,10 @@ Actúa sobre la capa actual en edición</translation>
         <source>Paste features in clipboard into a new memory vector layer.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Split Parts</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ModelerDialog</name>
@@ -11512,7 +11516,7 @@ Se desactivará.</translation>
     </message>
     <message>
         <source>Exit QGIS</source>
-        <translation type="obsolete">Salir de QGIS</translation>
+        <translation type="unfinished">Salir de QGIS</translation>
     </message>
     <message>
         <source>Add a Vector Layer</source>
@@ -14488,6 +14492,10 @@ Por favor, contacte con los desarrolladores.</translation>
     </message>
     <message>
         <source>Cannot create field %1 (%2,%3)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Do you really want to quit QGIS?</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -17714,6 +17722,18 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
         <source>New from template</source>
         <translation>Nuevo a partir de plantilla</translation>
     </message>
+    <message>
+        <source>Lock Selected Items</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unlock All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unlock All Items</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerHtmlWidget</name>
@@ -20149,6 +20169,10 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
         <source>Arch E1 (30x42 in)</source>
         <translation>Arch E1 (30x42 pulgadas)</translation>
     </message>
+    <message>
+        <source>Map %1</source>
+        <translation type="unfinished">Mapa %1</translation>
+    </message>
 </context>
 <context>
     <name>QgsCompositionWidgetBase</name>
@@ -20291,6 +20315,10 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     <message>
         <source>Export resolution</source>
         <translation>Resolución de exportación</translation>
+    </message>
+    <message>
+        <source>World file on</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -32172,6 +32200,45 @@ mo se muestran</translation>
     </message>
 </context>
 <context>
+    <name>QgsMapToolSplitParts</name>
+    <message>
+        <source>Coordinate transform error</source>
+        <translation type="unfinished">Error de transformación de coordenadas</translation>
+    </message>
+    <message>
+        <source>Cannot transform the point to the layers coordinate system</source>
+        <translation type="unfinished">No se puede transformar el punto al sistema de coordenadas de las capas</translation>
+    </message>
+    <message>
+        <source>Parts split</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No part split done</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>If there are selected parts, the split tool only applies to the selected ones. If you like to split all parts under the split line, clear the selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cut edges detected. Make sure the line splits parts into multiple parts.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The geometry is invalid. Please repair before trying to split it.</source>
+        <translation type="unfinished">La geometría no es válida. Por favor, arréglela antes de intentar dividirla.</translation>
+    </message>
+    <message>
+        <source>Split error</source>
+        <translation type="unfinished">Error en la división</translation>
+    </message>
+    <message>
+        <source>An error occured during feature splitting</source>
+        <translation type="unfinished">Ocurrió un error durante la división de los objetos espaciales</translation>
+    </message>
+</context>
+<context>
     <name>QgsMapToolVertexEdit</name>
     <message>
         <source>Snap tolerance</source>
@@ -40464,7 +40531,7 @@ Proceed?</source>
     </message>
     <message>
         <source>Add WKT geometry to feature info response</source>
-        <translation>Añadir geometría WKT a la respuesta de información del objeto espacial</translation>
+        <translation type="obsolete">Añadir geometría WKT a la respuesta de información del objeto espacial</translation>
     </message>
     <message>
         <source>WMS</source>
@@ -40827,6 +40894,10 @@ Proceed?</source>
     <message>
         <source>Delete</source>
         <translation>Borrar</translation>
+    </message>
+    <message>
+        <source>Add geometry to feature response</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -46741,11 +46812,32 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Cantarell&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt;We work really hard to make this nice software for you. See all the cool features it has? Get a warm fuzzy feeling when you use it? QGIS is a labour of love by a dedicated team of developers. We want you to copy &amp;amp; share it and put it in the hands of as many people as possible. If QGIS is saving you money or you like our work and have the financial ability to help, please consider sponsoring the development of QGIS. We use money from sponsors to pay for travel and costs related to our bi-annual hackfests, and to generally support the goals of our project.  Please see the &lt;/span&gt;&lt;a href=&quot;http://qgis.org/en/sponsorship.html&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;QGIS Sponsorship Web Page&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt; for more details. In the &lt;/span&gt;&lt;a href=&quot;http://qgis.org/en/sponsorship/sponsors.html&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Sponsors page&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt; you can see the fine people and companies that are helping us financially - a great big &apos;thank you&apos; to you all!&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Cantarell&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt;Trabajamos realmente duro para hacer este gran software para usted. ¿Ve todas las estupendas funciones que tiene? ¿Tiene una agradable sensación cuando lo usa? QGIS es una labor de amor por un equipo dedicado de desarrolladores. Queremos que lo copie &amp;amp; lo comparta y lo ponga en manos de toda la gente que sea posible. Si QGIS le está ahorrando dinero o le gusta nuestro trabajo y tiene la posibilidad económica de ayudar, por favor considere patrocinar el desarrollo de QGIS. Usamos el dinero de los patrocinadores para pagar viajes y coster relacionados con nuestros encuentros bianuales de desarrollo y para apoyar los objetivos generales del proyecto. Por favor, vea la &lt;/span&gt;&lt;a href=&quot;http://qgis.org/en/sponsorship.html&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;página  web del patrocinio de QGIS&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt; para más detalles. En la &lt;/span&gt;&lt;a href=&quot;http://qgis.org/en/sponsorship/sponsors.html&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;página de Sponsors&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt; puede ver la buena gente y empresas que nos están ayudando financieramente - !un gran &apos;gracias&apos; a todos ellos!&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Cantarell&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt;We work really hard to make this nice software for you. See all the cool features it has? Get a warm fuzzy feeling when you use it? QGIS is a labour of love by a dedicated team of developers. We want you to copy &amp;amp; share it and put it in the hands of as many people as possible. If QGIS is saving you money or you like our work and have the financial ability to help, please consider sponsoring the development of QGIS. We use money from sponsors to pay for travel and costs related to our bi-annual hackfests, and to generally support the goals of our project.  &lt;br /&gt;&lt;br /&gt;Please see the &lt;/span&gt;&lt;a href=&quot;http://qgis.org/en/sponsorship.html&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;QGIS Sponsorship Web Page&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt; for more details. In the &lt;/span&gt;&lt;a href=&quot;http://qgis.org/en/sponsorship/sponsors.html&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Sponsors page&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt; you can see the fine people and companies that are helping us financially - a great big &apos;thank you&apos; to you all!&lt;/span&gt;&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/images/sponsors/sponsors/gold.png&quot; /&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/images/sponsors/sponsors/aas_300wide.png&quot; /&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/images/sponsors/sponsors/silver.png&quot; /&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/images/sponsors/sponsors/vorarlberg.png&quot; /&gt;   &lt;img src=&quot;:/images/sponsors/sponsors/gaia.png&quot; /&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/images/sponsors/sponsors/bronze.png&quot; /&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/images/sponsors/sponsors/ibw.png&quot; /&gt;   &lt;img src=&quot;:/images/sponsors/sponsors/geosynergy.png&quot; /&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;hr /&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -57697,7 +57789,7 @@ Nota: los complementos experimentales generalmente no son adecuados para un uso 
     <message>
         <source>&lt;h3&gt;Identify&lt;/h3&gt;
 </source>
-        <translation>&lt;h3&gt;Identificar&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Identificar&lt;/h3&gt;
 </translation>
     </message>
     <message>
