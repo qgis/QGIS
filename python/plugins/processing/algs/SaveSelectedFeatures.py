@@ -36,9 +36,9 @@ class SaveSelectedFeatures(GeoAlgorithm):
     '''This is an example algorithm that takes a vector layer and creates
     a new one just with just those features of the input layer that are
     selected.
-    It is meant to be used as an example of how to create your own SEXTANTE
+    It is meant to be used as an example of how to create your own Processing
     algorithms and explain methods and variables used to do it.
-    An algorithm like this will be available in all SEXTANTE elements, and
+    An algorithm like this will be available in all Processing elements, and
     there is not need for additional work.
 
     All geoprocessingalgorithms should extend the GeoAlgorithm class'''
@@ -51,7 +51,11 @@ class SaveSelectedFeatures(GeoAlgorithm):
 
     def defineCharacteristics(self):
         '''Here we define the inputs and output of the algorithm, along
-        with some other properties'''
+        with some other properties.
+        This will give the algorithm its semantics, and allow to use it in the modeler.
+        As a rule of thumb, do not produce anything not declared here. 
+        It will work fine in the toolbox, but it will not work in the modeler.
+        If that's what you intend, then set self.showInModeler = False'''
 
         #the name that the user will see in the toolbox
         self.name = "Save selected features"
@@ -70,8 +74,13 @@ class SaveSelectedFeatures(GeoAlgorithm):
         '''Here is where the processing itself takes place'''
 
         #the first thing to do is retrieve the values of the parameters
-        #entered by the user
+        #entered by the user. 
+        #The getParameterValue will return the value with its corresponding type,
+        #strings in the case of inputs and outputs
         inputFilename = self.getParameterValue(self.INPUT_LAYER)
+        
+        #The output. It will get the value of the destinatation file entered by the user.
+        #If the user select "Save to temporary file", when we arrive here it will already have an asigned value, which will be 
         output = self.getOutputFromName(self.OUTPUT_LAYER)
 
         #input layers values are always a string with its location.
@@ -83,16 +92,24 @@ class SaveSelectedFeatures(GeoAlgorithm):
 
         #First we create the output layer.
         #To do so, we call the getVectorWriter method in the Output object.
-        #That will give as a ProcessingVectorWriter, that we can later use to add features.
+        #That will give us a VectorWriter, that we can later use to add features.
         provider = vectorLayer.dataProvider()
-        writer = output.getVectorWriter( provider.fields(), provider.geometryType(), vectorLayer.crs() )
+        writer = output.getVectorWriter( provider.fields(), 
+                                         provider.geometryType(), 
+                                         #this is the layer crs. By default all resulting layers are 
+                                         #assumed to be in the same crs are the inputs, and will be loaded
+                                         #with this assumptions when executed from the toolbox.
+                                         #The self.crs variable has to be canged in case this is not true,
+                                         #or in case there are no input layer from which the output crs can be infered 
+                                         vectorLayer.crs() )
 
         #Now we take the selected features and add them to the output layer
         features = vector.features(vectorLayer)
         total = len(features)
         i = 0
-        for feat in features:
+        for i, feat in enumerate(features):
             writer.addFeature(feat)
+            #we use the progress object to communicate with the user
             progress.setPercentage(100 * i / float(total))
             i += 1
         del writer
