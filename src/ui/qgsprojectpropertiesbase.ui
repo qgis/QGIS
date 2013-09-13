@@ -1458,7 +1458,7 @@
                   <item row="2" column="0" colspan="3">
                    <widget class="QCheckBox" name="mAddWktGeometryCheckBox">
                     <property name="text">
-                     <string>Add WKT geometry to feature info response</string>
+                     <string>Add geometry to feature response</string>
                     </property>
                    </widget>
                   </item>
