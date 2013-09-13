@@ -383,7 +383,7 @@ class SagaAlgorithm(GeoAlgorithm):
         if layer:
             filename = str(layer.name())
         else:
-            filename = os.path.basename(filename)
+            filename = os.path.basename(source)
         validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:"
         filename = ''.join(c for c in filename if c in validChars)
         if len(filename) == 0:
