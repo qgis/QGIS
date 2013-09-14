@@ -142,6 +142,7 @@ class GUI_EXPORT QgsRuleBasedRendererV2Widget : public QgsRendererV2Widget, priv
     QgsRuleBasedRendererV2Model* mModel;
 
     QMenu* mRefineMenu;
+    QAction* mDeleteAction;
 
   protected slots:
     void copy();

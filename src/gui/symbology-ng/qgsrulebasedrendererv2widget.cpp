@@ -65,6 +65,11 @@ QgsRuleBasedRendererV2Widget::QgsRuleBasedRendererV2Widget( QgsVectorLayer* laye
   mModel = new QgsRuleBasedRendererV2Model( mRenderer );
   //new ModelTest( mModel, this ); // for model validity checking
   viewRules->setModel( mModel );
+
+  mDeleteAction = new QAction( tr( "Remove Rule"), this );
+  mDeleteAction->setShortcut( QKeySequence( QKeySequence::Delete ) );
+
+  viewRules->addAction( mDeleteAction );
   viewRules->addAction( mCopyAction );
   viewRules->addAction( mPasteAction );
 
@@ -89,6 +94,7 @@ QgsRuleBasedRendererV2Widget::QgsRuleBasedRendererV2Widget( QgsVectorLayer* laye
   connect( btnAddRule, SIGNAL( clicked() ), this, SLOT( addRule() ) );
   connect( btnEditRule, SIGNAL( clicked() ), this, SLOT( editRule() ) );
   connect( btnRemoveRule, SIGNAL( clicked() ), this, SLOT( removeRule() ) );
+  connect( mDeleteAction, SIGNAL( triggered() ), this, SLOT( removeRule() ) );
   connect( btnCountFeatures, SIGNAL( clicked() ), this, SLOT( countFeatures() ) );
 
   connect( btnRenderingOrder, SIGNAL( clicked() ), this, SLOT( setRenderingOrder() ) );

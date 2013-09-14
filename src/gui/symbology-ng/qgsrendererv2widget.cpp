@@ -32,6 +32,7 @@ QgsRendererV2Widget::QgsRendererV2Widget( QgsVectorLayer* layer, QgsStyleV2* sty
   mPasteAction = contextMenu->addAction( tr( "Paste" ), this, SLOT( paste() ) );
   mPasteAction->setShortcut( QKeySequence( QKeySequence::Paste ) );
 
+  contextMenu->addSeparator();
   contextMenu->addAction( tr( "Change color" ), this, SLOT( changeSymbolColor( ) ) );
   contextMenu->addAction( tr( "Change transparency" ), this, SLOT( changeSymbolTransparency() ) );
   contextMenu->addAction( tr( "Change output unit" ), this, SLOT( changeSymbolUnit() ) );
