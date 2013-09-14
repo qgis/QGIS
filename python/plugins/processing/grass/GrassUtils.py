@@ -275,12 +275,6 @@ class GrassUtils:
             ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)
         return loglines;
 
-    @staticmethod
-    def getGrassVersion():
-        #I do not know if this should be removed or let the user enter it
-        #or something like that... This is just a temporary thing
-        return "6.4.0"
-
     # GRASS session is used to hold the layers already exported or produced in GRASS
     # between multiple calls to GRASS algorithms. This way they don't have
     # to be loaded multiple times and following algorithms can use the results

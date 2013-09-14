@@ -40,8 +40,8 @@ class PointsFromLines(GeoAlgorithm):
     OUTPUT_LAYER = "OUTPUT_LAYER"
 
     def defineCharacteristics(self):
-        self.name = "Get raster values at layer point"
-        self.group = "Vector geometry tools"
+        self.name = "Get raster values at line nodes"
+        self.group = "Vector analysis tools"
 
         self.addParameter(ParameterRaster(self.INPUT_RASTER, "Raster layer"))
         self.addParameter(ParameterVector(self.INPUT_VECTOR, "Vector layer", [ParameterVector.VECTOR_TYPE_LINE]))

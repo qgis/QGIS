@@ -35,11 +35,6 @@ class AutoincrementalField(GeoAlgorithm):
     INPUT = "INPUT"
     OUTPUT = "OUTPUT"
 
-    #===========================================================================
-    # def getIcon(self):
-    #    return QtGui.QIcon(os.path.dirname(__file__) + "/../images/toolbox.png")
-    #===========================================================================
-
     def processAlgorithm(self, progress):
         output = self.getOutputFromName(self.OUTPUT)
         vlayer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))

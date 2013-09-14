@@ -33,7 +33,6 @@ from processing.parameters.ParameterTableField import ParameterTableField
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.outputs.OutputHTML import OutputHTML
 from processing.tools import *
-from processing.tools import dataobjects
 
 class MeanAndStdDevPlot(GeoAlgorithm):
 
@@ -53,7 +52,6 @@ class MeanAndStdDevPlot(GeoAlgorithm):
         output = self.getOutputValue(self.OUTPUT)
         values = vector.getAttributeValues(layer, namefieldname, meanfieldname, stddevfieldname)
         plt.close()
-
 
         ind = np.arange(len(values[namefieldname]))
         width = 0.8

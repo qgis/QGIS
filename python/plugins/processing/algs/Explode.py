@@ -36,11 +36,6 @@ class Explode(GeoAlgorithm):
     INPUT = "INPUT"
     OUTPUT = "OUTPUT"
 
-    #===========================================================================
-    # def getIcon(self):
-    #    return QtGui.QIcon(os.path.dirname(__file__) + "/../images/toolbox.png")
-    #===========================================================================
-
     def processAlgorithm(self, progress):
         vlayer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
         output = self.getOutputFromName(self.OUTPUT)

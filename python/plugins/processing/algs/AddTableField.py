@@ -25,12 +25,9 @@ __revision__ = '$Format:%H$'
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-
 from qgis.core import *
-
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.tools import dataobjects, vector
-
 from processing.parameters.ParameterVector import ParameterVector
 from processing.parameters.ParameterString import ParameterString
 from processing.parameters.ParameterNumber import ParameterNumber
@@ -48,11 +45,6 @@ class AddTableField(GeoAlgorithm):
 
     TYPE_NAMES = ["Integer", "Float", "String"]
     TYPES = [QVariant.Int, QVariant.Double, QVariant.String]
-
-    #===========================================================================
-    # def getIcon(self):
-    #    return QtGui.QIcon(os.path.dirname(__file__) + "/../images/qgis.png")
-    #===========================================================================
 
     def defineCharacteristics(self):
         self.name = "Add field to attributes table"

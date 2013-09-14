@@ -16,7 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
-from processing import interface
+
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -30,6 +30,8 @@ import importlib
 from qgis.core import *
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+from processing import interface
+from processing.tools.system import isWindows
 from processing.outputs.OutputHTML import OutputHTML
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.parameters.ParameterTable import ParameterTable
@@ -46,13 +48,18 @@ from processing.outputs.OutputFactory import OutputFactory
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.tools import dataobjects
 from processing.grass.GrassUtils import GrassUtils
-from processing.tools.system import *
 from processing.parameters.ParameterSelection import ParameterSelection
 from processing.core.WrongHelpFileException import WrongHelpFileException
 from processing.outputs.OutputFile import OutputFile
 from processing.parameters.ParameterExtent import ParameterExtent
 from processing.parameters.ParameterNumber import ParameterNumber
 from processing.parameters.ParameterString import ParameterString
+
+NUM_EXPORTED = 1
+
+def getNumExportedLayers():
+    NUM_EXPORTED += 1
+    return NUM_EXPORTED
 
 class GrassAlgorithm(GeoAlgorithm):
 

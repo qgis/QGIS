@@ -32,7 +32,6 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from processing.tools import dataobjects, vector
 
-
 class JoinAttributes(GeoAlgorithm):
 
     OUTPUT_LAYER = "OUTPUT_LAYER"

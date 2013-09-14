@@ -37,11 +37,6 @@ class EquivalentNumField(GeoAlgorithm):
     OUTPUT = "OUTPUT"
     FIELD = "FIELD"
 
-    #===========================================================================
-    # def getIcon(self):
-    #    return QtGui.QIcon(os.path.dirname(__file__) + "/../images/qgis.png")
-    #===========================================================================
-
     def processAlgorithm(self, progress):
         fieldname = self.getParameterValue(self.FIELD)
         output = self.getOutputFromName(self.OUTPUT)

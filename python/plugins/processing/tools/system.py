@@ -30,7 +30,6 @@ import uuid
 from PyQt4.QtCore import *
 from qgis.core import *
 
-
 def userFolder():
     userDir = QFileInfo(QgsApplication.qgisUserDbFilePath()).path() + "/processing"
     if not QDir(userDir).exists():
@@ -73,7 +72,7 @@ def getTempFilenameInTempFolder(basename):
     return filename
 
 def removeInvalidChars(string):
-    validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:"
+    validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:."
     string = ''.join(c for c in string if c in validChars)
     return string
 

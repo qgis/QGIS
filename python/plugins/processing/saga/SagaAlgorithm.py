@@ -16,8 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from processing.parameters.ParameterTableField import ParameterTableField
-
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -48,7 +46,7 @@ from processing.core.ProcessingConfig import ProcessingConfig
 from processing.tools import dataobjects
 from processing.parameters.ParameterNumber import ParameterNumber
 from processing.parameters.ParameterSelection import ParameterSelection
-from processing.tools import dataobjects
+from processing.parameters.ParameterTableField import ParameterTableField
 from processing.parameters.ParameterExtent import ParameterExtent
 from processing.parameters.ParameterFixedTable import ParameterFixedTable
 from processing.core.ProcessingLog import ProcessingLog
@@ -329,7 +327,7 @@ class SagaAlgorithm(GeoAlgorithm):
     def preProcessInputs(self):
         name = self.commandLineName().replace('.','_')[len('saga:'):]
         try:
-            module = importlib.import_module('processing.grass.ext.' + name)
+            module = importlib.import_module('processing.saga.ext.' + name)
         except ImportError:
             return
         if hasattr(module, 'preProcessInputs'):
