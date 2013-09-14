@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    ClipByExtent.py
+    ClipByMask.py
     ---------------------
     Date                 : September 2013
     Copyright            : (C) 2013 by Alexander Bruy
@@ -30,19 +30,21 @@ from qgis.core import *
 from processing.core.GeoAlgorithm import GeoAlgorithm
 
 from processing.parameters.ParameterRaster import ParameterRaster
-from processing.parameters.ParameterExtent import ParameterExtent
+from processing.parameters.ParameterVector import ParameterVector
+from processing.parameters.ParameterBoolean import ParameterBoolean
 from processing.parameters.ParameterString import ParameterString
 
 from processing.outputs.OutputRaster import OutputRaster
 
 from processing.gdal.GdalUtils import GdalUtils
 
-class ClipByExtent(GeoAlgorithm):
+class ClipByMask(GeoAlgorithm):
 
     INPUT = "INPUT"
     OUTPUT = "OUTPUT"
     NO_DATA = "NO_DATA"
-    PROJWIN = "PROJWIN"
+    MASK = "MASK"
+    ALPHA_BAND = "ALPHA_BAND"
     EXTRA = "EXTRA"
 
     def getIcon(self):
@@ -50,32 +52,35 @@ class ClipByExtent(GeoAlgorithm):
         return QtGui.QIcon(filepath)
 
     def defineCharacteristics(self):
-        self.name = "Clip raster by extent"
+        self.name = "Clip raster by mask layer"
         self.group = "[GDAL] Extraction"
         self.addParameter(ParameterRaster(self.INPUT, "Input layer", False))
+        self.addParameter(ParameterVector(self.MASK, "Mask layer", [ParameterVector.VECTOR_TYPE_POLYGON]))
         self.addParameter(ParameterString(self.NO_DATA, "Nodata value, leave as none to take the nodata value from input", "none"))
-        self.addParameter(ParameterExtent(self.PROJWIN, "Clipping extent"))
+        self.addParameter(ParameterBoolean(self.ALPHA_BAND, "Create and output alpha band", False))
         self.addParameter(ParameterString(self.EXTRA, "Additional creation parameters", ""))
         self.addOutput(OutputRaster(self.OUTPUT, "Output layer"))
 
     def processAlgorithm(self, progress):
         out = self.getOutputValue(self.OUTPUT)
+        mask = self.getParameterValue(self.MASK)
         noData = str(self.getParameterValue(self.NO_DATA))
-        projwin = str(self.getParameterValue(self.PROJWIN))
+        addAlphaBand = self.getParameterValue(self.ALPHA_BAND)
         extra = str(self.getParameterValue(self.EXTRA))
 
         arguments = []
+        arguments.append("-q")
         arguments.append("-of")
         arguments.append(GdalUtils.getFormatShortNameFromFilename(out))
-        arguments.append("-a_nodata")
+        arguments.append("-dstnodata")
         arguments.append(noData)
 
-        regionCoords = projwin.split(",")
-        arguments.append("-projwin")
-        arguments.append(regionCoords[0])
-        arguments.append(regionCoords[3])
-        arguments.append(regionCoords[1])
-        arguments.append(regionCoords[2])
+        arguments.append("-cutline")
+        arguments.append(mask)
+        arguments.append("-crop_to_cutline")
+
+        if addAlphaBand:
+            arguments.append("-dstalpha")
 
         if len(extra) > 0:
             arguments.append(extra)
@@ -83,4 +88,4 @@ class ClipByExtent(GeoAlgorithm):
         arguments.append(self.getParameterValue(self.INPUT))
         arguments.append(out)
 
-        GdalUtils.runGdal(["gdal_translate", GdalUtils.escapeAndJoin(arguments)], progress)
+        GdalUtils.runGdal(["gdalwarp", GdalUtils.escapeAndJoin(arguments)], progress)
