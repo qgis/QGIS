@@ -163,37 +163,50 @@ int QgsLegendModel::addVectorLayerItemsV2( QStandardItem* layerItem, QgsVectorLa
   int row = 0;
   for ( ; symbolIt != lst.constEnd(); ++symbolIt )
   {
-    QgsComposerSymbolV2Item* currentSymbolItem = new QgsComposerSymbolV2Item( "" );
-
-    // Get userText from old item if exists
-    QgsComposerSymbolV2Item* oldSymbolItem = dynamic_cast<QgsComposerSymbolV2Item*>( layerItem->child( row, 0 ) );
-    if ( oldSymbolItem )
+    if ( scaleDenominator == -1 )
     {
-      currentSymbolItem->setUserText( oldSymbolItem->userText() );
+      QgsComposerSymbolV2Item* currentSymbolItem = new QgsComposerSymbolV2Item( "" );
 
-    }
-
-    currentSymbolItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
-    if ( symbolIt->second )
-    {
-      if ( mHasTopLevelWindow ) //only use QIcon / QPixmap if we have a running x-server
+      // Get userText from old item if exists
+      QgsComposerSymbolV2Item* oldSymbolItem = dynamic_cast<QgsComposerSymbolV2Item*>( layerItem->child( row, 0 ) );
+      if ( oldSymbolItem )
       {
-        currentSymbolItem->setIcon( QgsSymbolLayerV2Utils::symbolPreviewIcon( symbolIt->second, QSize( 30, 30 ) ) );
+        currentSymbolItem->setUserText( oldSymbolItem->userText() );
       }
-      currentSymbolItem->setSymbolV2( symbolIt->second->clone() );
+
+      currentSymbolItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+      if ( symbolIt->second )
+      {
+        if ( mHasTopLevelWindow ) //only use QIcon / QPixmap if we have a running x-server
+        {
+          currentSymbolItem->setIcon( QgsSymbolLayerV2Utils::symbolPreviewIcon( symbolIt->second, QSize( 30, 30 ) ) );
+        }
+        currentSymbolItem->setSymbolV2( symbolIt->second->clone() );
+      }
+      layerItem->setChild( row, 0, currentSymbolItem );
+
+      // updateSymbolV2ItemText needs layer set
+      updateSymbolV2ItemText( currentSymbolItem );
+
+      row++;
     }
-    layerItem->setChild( row, 0, currentSymbolItem );
-
-    // updateSymbolV2ItemText needs layer set
-    updateSymbolV2ItemText( currentSymbolItem );
-
-    row++;
+    else
+    {
+      QgsComposerSymbolV2Item* currentSymbolItem = new QgsComposerSymbolV2Item( "" );
+      currentSymbolItem->setIcon( QgsSymbolLayerV2Utils::symbolPreviewIcon( symbolIt->second, QSize( 30, 30 ) ) );
+      currentSymbolItem->setSymbolV2( symbolIt->second );
+      layerItem->setChild( 0, 0, currentSymbolItem );
+      currentSymbolItem->setText( symbolIt->first );
+    }
   }
 
-  // Delete following old items (if current number of items decreased)
-  for ( int i = layerItem->rowCount() - 1; i >= row; --i )
+  if ( scaleDenominator == -1 )
   {
-    layerItem->removeRow( i );
+    // Delete following old items (if current number of items decreased)
+    for ( int i = layerItem->rowCount() - 1; i >= row; --i )
+    {
+      layerItem->removeRow( i );
+    }
   }
 
   return 0;
