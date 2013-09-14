@@ -776,6 +776,9 @@ void GlobePlugin::reset()
     delete mOsgViewer;
     mOsgViewer = 0;
   }
+  mQgisMapLayer = 0;
+
+  setGlobeNotRunning();
 }
 
 void GlobePlugin::unload()
