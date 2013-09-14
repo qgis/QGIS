@@ -48,8 +48,12 @@ creation_type = 'Float32'
 
 gdal.AllRegister()
 options.append( 'MAXDIST=' + str(maxdist))
-options.append( 'VALUES=' + values )
-options.append( 'DISTUNITS=' + str(distunits))
+if len(values) > 0:
+    options.append( 'VALUES=' + values )
+if distunits == 0:
+    options.append( 'DISTUNITS=GEO')
+else:
+    options.append( 'DISTUNITS=PIXEL')
 options.append( 'NODATA=' + str(nodata))
 options.append( 'FIXED_BUF_VAL=' +str(fixed_buf_val))
 
