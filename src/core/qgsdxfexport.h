@@ -47,8 +47,12 @@ class QgsDxfExport
     QList< QgsMapLayer* > mLayers;
 
     void writeHeader( QTextStream& stream );
+    void writeTables( QTextStream& stream );
     void writeEntities( QTextStream& stream );
     void writeEndFile( QTextStream& stream );
+
+    void startSection( QTextStream& stream );
+    void endSection( QTextStream& stream );
 
     void writePolyline( QTextStream& stream, const QgsPolyline& line, const QString& layer, bool closed = false );
     void writeVertex( QTextStream& stream, const QgsPoint& pt, const QString& layer );

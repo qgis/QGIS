@@ -46,6 +46,7 @@ int QgsDxfExport::writeToFile( QIODevice* d, SymbologyExport s )
 
   QTextStream outStream( d );
   writeHeader( outStream );
+  writeTables( outStream );
   writeEntities( outStream );
   writeEndFile( outStream );
   return 0;
@@ -55,22 +56,56 @@ void QgsDxfExport::writeHeader( QTextStream& stream )
 {
   stream << "999\n";
   stream << "DXF created from QGIS\n";
-  stream << "  0\n";
-  stream << "SECTION\n";
+  startSection( stream );
   stream << "  2\n";
   stream << "HEADER\n";
+  stream << "  9\n";
+  stream << "$ACADVER";
+  stream << "AC1009\n";
   stream << "  9\n";
   stream << "$LTSCALE\n";
   stream << " 40\n";
   stream << "1\n";
+  endSection( stream );
+}
+
+void QgsDxfExport::writeTables( QTextStream& stream )
+{
+  startSection( stream );
+  stream << "  2\n";
+  stream << "TABLES\n";
+
+  //
   stream << "  0\n";
-  stream << "ENDSEC\n";
+  stream << "TABLE\n";
+  stream << "  0\n";
+  stream << "LAYER\n";
+  QList< QgsMapLayer* >::iterator layerIt = mLayers.begin();
+  for ( ; layerIt != mLayers.end(); ++layerIt )
+  {
+    stream << "  0\n";
+    stream << "LAYER\n";
+    stream << "  2\n";
+    if ( *layerIt )
+    {
+      stream << ( *layerIt )->name() << "\n";
+    }
+    stream << " 70\n"; //layer property
+    stream << "64\n";
+    stream << " 62\n"; //layer color
+    stream << "1\n";
+    stream << "  6\n"; //layer line type
+    stream << "CONTINUOUS\n";
+  }
+  stream << "  0\n";
+  stream << "ENDTAB\n";
+
+  endSection( stream );
 }
 
 void QgsDxfExport::writeEntities( QTextStream& stream )
 {
-  stream << "0\n";
-  stream << "SECTION\n";
+  startSection( stream );
   stream << "  2\n";
   stream << "ENTITIES\n";
 
@@ -100,16 +135,26 @@ void QgsDxfExport::writeEntities( QTextStream& stream )
       if ( geom )
       {
         //try with line first
-        writePolyline( stream, geom->asPolyline(), vl->name() ); //todo.......
+        writePolyline( stream, geom->asPolyline(), vl->name() );
       }
     }
   }
 
-  stream << "  0\n";
-  stream << "ENDSEC\n";
+  endSection( stream );
 }
 
 void QgsDxfExport::writeEndFile( QTextStream& stream )
+{
+  endSection( stream );
+}
+
+void QgsDxfExport::startSection( QTextStream& stream )
+{
+  stream << "  0\n";
+  stream << "SECTION\n";
+}
+
+void QgsDxfExport::endSection( QTextStream& stream )
 {
   stream << "  0\n";
   stream << "ENDSEC\n";
