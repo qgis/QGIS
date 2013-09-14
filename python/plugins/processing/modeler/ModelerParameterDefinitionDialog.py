@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from processing.tools.general import removeInvalidChars
 
 
 __author__ = 'Victor Olaya'
@@ -229,7 +228,8 @@ class ModelerParameterDefinitionDialog(QtGui.QDialog):
             QMessageBox.critical(self, "Unable to define parameter", "Invalid parameter name")
             return
         if self.param is None:
-            safeName = removeInvalidChars(description)            
+            validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+            safeName = ''.join(c for c in description if c in validChars)
             name = self.paramType.upper().replace(" ","") + "_" + safeName.upper()
         else:
             name = self.param.name

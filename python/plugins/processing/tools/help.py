@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from processing.tools.general import removeInvalidChars
 
 __author__ = 'Victor Olaya'
 __date__ = 'March 2013'
@@ -33,7 +32,8 @@ def createBaseHelpFile(alg, folder):
     folder = os.path.join(folder, alg.provider.getName().lower())
     mkdir(folder)
     cmdLineName = alg.commandLineName()[alg.commandLineName().find(":") + 1:].lower()
-    safeFilename = removeInvalidChars(cmdLineName)    
+    validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+    safeFilename = ''.join(c for c in cmdLineName if c in validChars)
     filepath = os.path.join(folder, safeFilename + ".rst")
     file = open(filepath, "w")
     file.write(alg.name.upper())

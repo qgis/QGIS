@@ -93,8 +93,5 @@ def extent(layers):
     else:
         return str(xmin) + "," + str(xmax) + "," + str(ymin) + "," + str(ymax)
 
-def removeInvalidChars(string):
-    validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:"
-    string = ''.join(c for c in string if c in validChars)
-    return string
+
 

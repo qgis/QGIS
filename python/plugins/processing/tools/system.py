@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from processing.tools.general import removeInvalidChars
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -69,7 +68,6 @@ def getTempFilenameInTempFolder(basename):
     path = tempFolder()
     path = os.path.join(path, str(uuid.uuid4()).replace("-",""))
     mkdir(path)
-    basename = removeInvalidChars(basename)
     filename =  os.path.join(path, basename)
     return filename
 

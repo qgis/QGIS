@@ -219,9 +219,10 @@ def exportVectorLayer(layer):
         filename = filename[:idx]
 
     filename = str(layer.name())
-    filename = removeInvalidChars(filename)
+    validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:"
+    filename = ''.join(c for c in filename if c in validChars)
     if len(filename) == 0:
-        filename = "layer"
+         filename = "layer"
     output = getTempFilenameInTempFolder(filename + ".shp")
     provider = layer.dataProvider()
     useSelection = ProcessingConfig.getSetting(ProcessingConfig.USE_SELECTED)
