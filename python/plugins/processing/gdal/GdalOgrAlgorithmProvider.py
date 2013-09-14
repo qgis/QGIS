@@ -45,6 +45,7 @@ from processing.gdal.polygonize import polygonize
 from processing.gdal.gdaladdo import gdaladdo
 from processing.gdal.ClipByExtent import ClipByExtent
 from processing.gdal.ClipByMask import ClipByMask
+from processing.gdal.contour import contour
 
 from processing.gdal.ogr2ogr import Ogr2Ogr
 from processing.gdal.ogrinfo import OgrInfo
@@ -94,6 +95,7 @@ class GdalOgrAlgorithmProvider(AlgorithmProvider):
         self.preloadedAlgs = [nearblack(), information(), warp(), translate(),
                               rgb2pct(), pct2rgb(), merge(), polygonize(),
                               gdaladdo(), ClipByExtent(), ClipByMask(),
+                              contour(),
                               OgrInfo(), Ogr2Ogr(), OgrSql()]
 
         #And then we add those that are created as python scripts
