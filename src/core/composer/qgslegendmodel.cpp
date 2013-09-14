@@ -98,7 +98,7 @@ void QgsLegendModel::setLayerSetAndGroups( const QStringList& layerIds, const QL
   }
 }
 
-void QgsLegendModel::setLayerSet( const QStringList& layerIds, double scaleDenominator )
+void QgsLegendModel::setLayerSet( const QStringList& layerIds, double scaleDenominator, QString rule )
 {
   mLayerIds = layerIds;
 
@@ -111,7 +111,7 @@ void QgsLegendModel::setLayerSet( const QStringList& layerIds, double scaleDenom
   for ( ; idIter != mLayerIds.constEnd(); ++idIter )
   {
     currentLayer = QgsMapLayerRegistry::instance()->mapLayer( *idIter );
-    addLayer( currentLayer, scaleDenominator );
+    addLayer( currentLayer, scaleDenominator, rule );
   }
 }
 
@@ -135,7 +135,7 @@ QStandardItem* QgsLegendModel::addGroup( QString text, int position )
   return groupItem;
 }
 
-int QgsLegendModel::addVectorLayerItemsV2( QStandardItem* layerItem, QgsVectorLayer* vlayer, double scaleDenominator )
+int QgsLegendModel::addVectorLayerItemsV2( QStandardItem* layerItem, QgsVectorLayer* vlayer, double scaleDenominator, QString rule )
 {
   QgsComposerLayerItem* lItem = dynamic_cast<QgsComposerLayerItem*>( layerItem );
 
@@ -158,12 +158,12 @@ int QgsLegendModel::addVectorLayerItemsV2( QStandardItem* layerItem, QgsVectorLa
     }
   }
 
-  QgsLegendSymbolList lst = renderer->legendSymbolItems( scaleDenominator );
+  QgsLegendSymbolList lst = renderer->legendSymbolItems( scaleDenominator, rule );
   QgsLegendSymbolList::const_iterator symbolIt = lst.constBegin();
   int row = 0;
   for ( ; symbolIt != lst.constEnd(); ++symbolIt )
   {
-    if ( scaleDenominator == -1 )
+    if ( scaleDenominator == -1 && rule.isEmpty() )
     {
       QgsComposerSymbolV2Item* currentSymbolItem = new QgsComposerSymbolV2Item( "" );
 
@@ -200,7 +200,8 @@ int QgsLegendModel::addVectorLayerItemsV2( QStandardItem* layerItem, QgsVectorLa
     }
   }
 
-  if ( scaleDenominator == -1 )
+  // Don't remove row on getLegendGraphic (read only with filter)
+  if ( scaleDenominator == -1 && rule.isEmpty() )
   {
     // Delete following old items (if current number of items decreased)
     for ( int i = layerItem->rowCount() - 1; i >= row; --i )
@@ -467,7 +468,7 @@ void QgsLegendModel::removeLayer( const QString& layerId )
   }
 }
 
-void QgsLegendModel::addLayer( QgsMapLayer* theMapLayer, double scaleDenominator )
+void QgsLegendModel::addLayer( QgsMapLayer* theMapLayer, double scaleDenominator, QString rule )
 {
   if ( !theMapLayer )
   {
@@ -481,7 +482,7 @@ void QgsLegendModel::addLayer( QgsMapLayer* theMapLayer, double scaleDenominator
     layerItem->setUserText( theMapLayer->title() );
   }
   layerItem->setLayerID( theMapLayer->id() );
-  layerItem->setDefaultStyle( scaleDenominator );
+  layerItem->setDefaultStyle( scaleDenominator, rule );
   layerItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
 
   QList<QStandardItem *> itemsList;
@@ -495,7 +496,7 @@ void QgsLegendModel::addLayer( QgsMapLayer* theMapLayer, double scaleDenominator
       QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( theMapLayer );
       if ( vl )
       {
-        addVectorLayerItemsV2( layerItem, vl, scaleDenominator );
+        addVectorLayerItemsV2( layerItem, vl, scaleDenominator, rule );
       }
       break;
     }

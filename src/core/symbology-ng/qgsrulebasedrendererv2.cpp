@@ -175,10 +175,10 @@ void QgsRuleBasedRendererV2::Rule::setSymbol( QgsSymbolV2* sym )
   mSymbol = sym;
 }
 
-QgsLegendSymbolList QgsRuleBasedRendererV2::Rule::legendSymbolItems( double scaleDenominator )
+QgsLegendSymbolList QgsRuleBasedRendererV2::Rule::legendSymbolItems( double scaleDenominator, QString ruleFilter )
 {
   QgsLegendSymbolList lst;
-  if ( mSymbol )
+  if ( mSymbol && ( ruleFilter.isEmpty() || mLabel == ruleFilter ) )
     lst << qMakePair( mLabel, mSymbol );
 
   for ( RuleList::iterator it = mChildren.begin(); it != mChildren.end(); ++it )
@@ -188,7 +188,7 @@ QgsLegendSymbolList QgsRuleBasedRendererV2::Rule::legendSymbolItems( double scal
            ( rule->mScaleMinDenom == -1 || rule->mScaleMinDenom < scaleDenominator ) &&
            ( rule->mScaleMaxDenom == -1 || scaleDenominator < rule->mScaleMaxDenom ) ) )
     {
-      lst << rule->legendSymbolItems( scaleDenominator );
+      lst << rule->legendSymbolItems( scaleDenominator, ruleFilter );
     }
   }
   return lst;
@@ -849,9 +849,9 @@ QgsLegendSymbologyList QgsRuleBasedRendererV2::legendSymbologyItems( QSize iconS
   return lst;
 }
 
-QgsLegendSymbolList QgsRuleBasedRendererV2::legendSymbolItems( double scaleDenominator )
+QgsLegendSymbolList QgsRuleBasedRendererV2::legendSymbolItems( double scaleDenominator, QString rule )
 {
-  return mRootRule->legendSymbolItems( scaleDenominator );
+  return mRootRule->legendSymbolItems( scaleDenominator, rule );
 }
 
 

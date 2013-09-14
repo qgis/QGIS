@@ -333,9 +333,6 @@ QImage* QgsWMSServer::getLegendGraphics()
     return 0;
   }
 
-  QgsLegendModel legendModel;
-  legendModel.setLayerSet( layerIds, scaleDenominator );
-
   //create first image (to find out dpi)
   QImage* theImage = createImage( 10, 10 );
   if ( !theImage )
@@ -354,11 +351,79 @@ QImage* QgsWMSServer::getLegendGraphics()
   legendParameters( mmToPixelFactor, fontOversamplingFactor, boxSpace, layerSpace, layerTitleSpace, symbolSpace,
                     iconLabelSpace, symbolWidth, symbolHeight, layerFont, itemFont, layerFontColor, itemFontColor );
 
+  QString rule;
+  QMap<QString, QString>::const_iterator ruleIt = mParameterMap.find( "RULE" );
+  if ( ruleIt != mParameterMap.constEnd() )
+  {
+    rule = ruleIt.value();
+
+    QMap<QString, QString>::const_iterator widthIt = mParameterMap.find( "WIDTH" );
+    if ( widthIt != mParameterMap.constEnd() )
+    {
+      bool conversionSuccess;
+      double width = widthIt.value().toDouble( &conversionSuccess );
+      if ( conversionSuccess )
+      {
+        symbolWidth = width;
+      }
+    }
+
+    QMap<QString, QString>::const_iterator heightIt = mParameterMap.find( "HEIGHT" );
+    if ( heightIt != mParameterMap.constEnd() )
+    {
+      bool conversionSuccess;
+      double width = heightIt.value().toDouble( &conversionSuccess );
+      if ( conversionSuccess )
+      {
+        symbolHeight = width;
+      }
+    }
+  }
+
+  QgsLegendModel legendModel;
+  legendModel.setLayerSet( layerIds, scaleDenominator, rule );
+
   //first find out image dimensions without painting
   QStandardItem* rootItem = legendModel.invisibleRootItem();
   if ( !rootItem )
   {
     return 0;
+  }
+
+  if ( !rule.isEmpty() ) {
+    //create second image with the right dimensions
+    QImage* paintImage = createImage( symbolWidth, symbolHeight );
+
+    //go through the items a second time for painting
+    QPainter p( paintImage );
+    p.setRenderHint( QPainter::Antialiasing, true );
+
+    QgsComposerLegendItem* currentComposerItem = dynamic_cast<QgsComposerLegendItem*>( rootItem->child( 0 )->child( 0 ) );
+    if ( currentComposerItem != NULL ) {
+      QgsComposerLegendItem::ItemType type = currentComposerItem->itemType();
+      switch ( type )
+      {
+        case QgsComposerLegendItem::SymbologyV2Item:
+          drawLegendSymbolV2( currentComposerItem, &p, 0., 0., symbolWidth, symbolHeight, theImage->dotsPerMeterX() * 0.0254, 0. );
+          break;
+        case QgsComposerLegendItem::RasterSymbolItem:
+          drawRasterSymbol( currentComposerItem, &p, 0., 0., symbolWidth, symbolHeight, 0. );
+          break;
+        case QgsComposerLegendItem::GroupItem:
+          //QgsDebugMsg( "GroupItem not handled" );
+          break;
+        case QgsComposerLegendItem::LayerItem:
+          //QgsDebugMsg( "GroupItem not handled" );
+          break;
+        case QgsComposerLegendItem::StyleItem:
+          //QgsDebugMsg( "StyleItem not handled" );
+          break;
+      }
+    }
+
+    QgsMapLayerRegistry::instance()->removeAllMapLayers();
+    delete theImage;
+    return paintImage;
   }
 
   double currentY = drawLegendGraphics( 0, fontOversamplingFactor, rootItem, boxSpace, layerSpace, layerTitleSpace, symbolSpace,
