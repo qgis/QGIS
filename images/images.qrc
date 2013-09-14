@@ -96,6 +96,7 @@
     <file>themes/default/console/iconSearchNextEditorConsole.png</file>
     <file>themes/default/console/iconSearchPrevEditorConsole.png</file>
     <file>themes/default/console/iconSyntaxErrorConsole.png</file>
+    <file>themes/default/console/iconResetColorConsole.png</file>
     <file>themes/default/copyright_label.png</file>
     <file>themes/default/extents.png</file>
     <file>themes/default/favourites.png</file>

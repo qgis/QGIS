@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>580</width>
+    <width>583</width>
     <height>569</height>
    </rect>
   </property>
@@ -58,240 +58,17 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>546</width>
-        <height>687</height>
+        <width>550</width>
+        <height>997</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout_2">
-       <item row="1" column="0">
-        <widget class="QGroupBox" name="groupBox_3">
-         <property name="title">
-          <string>Editor</string>
-         </property>
-         <layout class="QGridLayout" name="gridLayout_10">
-          <item row="1" column="0">
-           <widget class="QCheckBox" name="autoSaveScript">
-            <property name="text">
-             <string>Auto-save script before running</string>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="0">
-           <widget class="QgsCollapsibleGroupBox" name="groupBoxAutoCompletionEditor">
-            <property name="title">
-             <string>Autocompletion</string>
-            </property>
-            <property name="checkable">
-             <bool>true</bool>
-            </property>
-            <property name="checked">
-             <bool>true</bool>
-            </property>
-            <property name="collapsed" stdset="0">
-             <bool>true</bool>
-            </property>
-            <property name="saveCheckedState" stdset="0">
-             <bool>true</bool>
-            </property>
-            <property name="saveCollapsedState" stdset="0">
-             <bool>true</bool>
-            </property>
-            <layout class="QGridLayout" name="gridLayout_4">
-             <item row="1" column="0" colspan="2">
-              <layout class="QGridLayout" name="layoutRadioButtonEditor">
-               <item row="0" column="0">
-                <widget class="QRadioButton" name="autoCompFromDocEditor">
-                 <property name="toolTip">
-                  <string>Get autocompletion from current document</string>
-                 </property>
-                 <property name="text">
-                  <string>from Document</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="2">
-                <widget class="QRadioButton" name="autoCompFromDocAPIEditor">
-                 <property name="toolTip">
-                  <string>Get autocompletion from current document and installed APIs</string>
-                 </property>
-                 <property name="text">
-                  <string>from Doc and APIs</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="1">
-                <widget class="QRadioButton" name="autoCompFromAPIEditor">
-                 <property name="toolTip">
-                  <string>Get autocompletion from installed APIs</string>
-                 </property>
-                 <property name="text">
-                  <string>from APIs files</string>
-                 </property>
-                 <property name="checked">
-                  <bool>true</bool>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </item>
-             <item row="0" column="0">
-              <widget class="QLabel" name="label_2">
-               <property name="text">
-                <string>Autocompletion threshold</string>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="1">
-              <widget class="QSpinBox" name="autoCompThresholdEditor">
-               <property name="maximum">
-                <number>10</number>
-               </property>
-               <property name="value">
-                <number>2</number>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </widget>
-          </item>
-          <item row="5" column="0">
-           <widget class="QCheckBox" name="autoCloseBracketEditor">
-            <property name="text">
-             <string>Automatic parentheses insertion</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <layout class="QHBoxLayout" name="horizontalLayout_3">
-            <item>
-             <widget class="QLabel" name="label_4">
-              <property name="text">
-               <string>Font</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QFontComboBox" name="fontComboBoxEditor">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="insertPolicy">
-               <enum>QComboBox::NoInsert</enum>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="label_5">
-              <property name="text">
-               <string>Size</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QSpinBox" name="spinBoxEditor">
-              <property name="minimumSize">
-               <size>
-                <width>51</width>
-                <height>26</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>51</width>
-                <height>26</height>
-               </size>
-              </property>
-              <property name="minimum">
-               <number>6</number>
-              </property>
-              <property name="maximum">
-               <number>15</number>
-              </property>
-              <property name="value">
-               <number>10</number>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item row="0" column="0">
-           <widget class="QCheckBox" name="enableObjectInspector">
-            <property name="text">
-             <string>Enable Object Inspector (switching between tabs may be slow)</string>
-            </property>
-            <property name="checked">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
        <item row="0" column="0">
         <widget class="QGroupBox" name="groupBox">
          <property name="title">
           <string>Console</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_9">
-          <item row="1" column="0">
-           <layout class="QHBoxLayout" name="horizontalLayout">
-            <item>
-             <widget class="QLabel" name="label">
-              <property name="text">
-               <string>Font</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QFontComboBox" name="fontComboBox">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="insertPolicy">
-               <enum>QComboBox::NoInsert</enum>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="label_3">
-              <property name="text">
-               <string>Size</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QSpinBox" name="spinBox">
-              <property name="minimumSize">
-               <size>
-                <width>51</width>
-                <height>26</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>51</width>
-                <height>26</height>
-               </size>
-              </property>
-              <property name="minimum">
-               <number>6</number>
-              </property>
-              <property name="maximum">
-               <number>15</number>
-              </property>
-              <property name="value">
-               <number>10</number>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
           <item row="6" column="0">
            <widget class="QCheckBox" name="autoCloseBracket">
             <property name="text">
@@ -373,6 +150,192 @@
                 </widget>
                </item>
               </layout>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QgsCollapsibleGroupBox" name="groupBoxFontColor">
+            <property name="title">
+             <string>Font and Color</string>
+            </property>
+            <property name="collapsed" stdset="0">
+             <bool>true</bool>
+            </property>
+            <property name="saveCollapsedState" stdset="0">
+             <bool>true</bool>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_8">
+             <item row="0" column="0">
+              <layout class="QHBoxLayout" name="horizontalLayout">
+               <item>
+                <widget class="QLabel" name="label">
+                 <property name="text">
+                  <string>Font</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QFontComboBox" name="fontComboBox">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="insertPolicy">
+                  <enum>QComboBox::NoInsert</enum>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="label_3">
+                 <property name="text">
+                  <string>Size</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QSpinBox" name="spinBox">
+                 <property name="minimumSize">
+                  <size>
+                   <width>51</width>
+                   <height>26</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>51</width>
+                   <height>26</height>
+                  </size>
+                 </property>
+                 <property name="minimum">
+                  <number>6</number>
+                 </property>
+                 <property name="maximum">
+                  <number>15</number>
+                 </property>
+                 <property name="value">
+                  <number>10</number>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item row="1" column="0">
+              <layout class="QGridLayout" name="layoutColor">
+               <item row="1" column="5">
+                <widget class="QgsColorButton" name="commentBlockFontColor">
+                 <property name="text">
+                  <string/>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="5">
+                <widget class="QgsColorButton" name="methodFontColor">
+                 <property name="text">
+                  <string/>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="2">
+                <widget class="QLabel" name="label_17">
+                 <property name="text">
+                  <string>Keyword:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="4">
+                <widget class="QLabel" name="label_13">
+                 <property name="text">
+                  <string>Function:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="2">
+                <widget class="QLabel" name="label_19">
+                 <property name="text">
+                  <string>Comment:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="0">
+                <widget class="QLabel" name="label_16">
+                 <property name="text">
+                  <string>Default:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="3">
+                <widget class="QgsColorButton" name="commentFontColor">
+                 <property name="text">
+                  <string/>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="1">
+                <widget class="QgsColorButton" name="decorFontColor">
+                 <property name="text">
+                  <string/>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="0">
+                <widget class="QLabel" name="label_18">
+                 <property name="text">
+                  <string>Decorator:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="1">
+                <widget class="QgsColorButton" name="defaultFontColor">
+                 <property name="text">
+                  <string/>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="4">
+                <widget class="QLabel" name="label_20">
+                 <property name="text">
+                  <string>Comment block:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="3">
+                <widget class="QgsColorButton" name="keywordFontColor">
+                 <property name="text">
+                  <string/>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="0">
+                <widget class="QLabel" name="label_14">
+                 <property name="text">
+                  <string>Error</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="1">
+                <widget class="QgsColorButton" name="stderrFontColor">
+                 <property name="text">
+                  <string/>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item row="1" column="1">
+              <widget class="QToolButton" name="resetFontColor">
+               <property name="toolTip">
+                <string>Reset to default color</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="autoRaise">
+                <bool>true</bool>
+               </property>
+              </widget>
              </item>
             </layout>
            </widget>
@@ -573,6 +536,289 @@
          </layout>
         </widget>
        </item>
+       <item row="1" column="0">
+        <widget class="QGroupBox" name="groupBox_3">
+         <property name="title">
+          <string>Editor</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_10">
+          <item row="1" column="0">
+           <widget class="QCheckBox" name="autoSaveScript">
+            <property name="text">
+             <string>Auto-save script before running</string>
+            </property>
+           </widget>
+          </item>
+          <item row="8" column="0">
+           <widget class="QgsCollapsibleGroupBox" name="groupBoxAutoCompletionEditor">
+            <property name="title">
+             <string>Autocompletion</string>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+            <property name="collapsed" stdset="0">
+             <bool>true</bool>
+            </property>
+            <property name="saveCheckedState" stdset="0">
+             <bool>true</bool>
+            </property>
+            <property name="saveCollapsedState" stdset="0">
+             <bool>true</bool>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_4">
+             <item row="1" column="0" colspan="2">
+              <layout class="QGridLayout" name="layoutRadioButtonEditor">
+               <item row="0" column="0">
+                <widget class="QRadioButton" name="autoCompFromDocEditor">
+                 <property name="toolTip">
+                  <string>Get autocompletion from current document</string>
+                 </property>
+                 <property name="text">
+                  <string>from Document</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="2">
+                <widget class="QRadioButton" name="autoCompFromDocAPIEditor">
+                 <property name="toolTip">
+                  <string>Get autocompletion from current document and installed APIs</string>
+                 </property>
+                 <property name="text">
+                  <string>from Doc and APIs</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="1">
+                <widget class="QRadioButton" name="autoCompFromAPIEditor">
+                 <property name="toolTip">
+                  <string>Get autocompletion from installed APIs</string>
+                 </property>
+                 <property name="text">
+                  <string>from APIs files</string>
+                 </property>
+                 <property name="checked">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item row="0" column="0">
+              <widget class="QLabel" name="label_2">
+               <property name="text">
+                <string>Autocompletion threshold</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QSpinBox" name="autoCompThresholdEditor">
+               <property name="maximum">
+                <number>10</number>
+               </property>
+               <property name="value">
+                <number>2</number>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item row="9" column="0">
+           <widget class="QCheckBox" name="autoCloseBracketEditor">
+            <property name="text">
+             <string>Automatic parentheses insertion</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QCheckBox" name="enableObjectInspector">
+            <property name="text">
+             <string>Enable Object Inspector (switching between tabs may be slow)</string>
+            </property>
+            <property name="checked">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QgsCollapsibleGroupBox" name="groupBoxFontColorEditor">
+            <property name="title">
+             <string>Font and Color</string>
+            </property>
+            <property name="collapsed" stdset="0">
+             <bool>false</bool>
+            </property>
+            <property name="saveCollapsedState" stdset="0">
+             <bool>true</bool>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_13">
+             <item row="1" column="0">
+              <layout class="QGridLayout" name="layoutColorEditor">
+               <item row="0" column="0">
+                <widget class="QLabel" name="label_7">
+                 <property name="text">
+                  <string>Default:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="1">
+                <widget class="QgsColorButton" name="defaultFontColorEditor">
+                 <property name="text">
+                  <string/>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="2">
+                <widget class="QLabel" name="label_8">
+                 <property name="text">
+                  <string>Keyword:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="3">
+                <widget class="QgsColorButton" name="keywordFontColorEditor">
+                 <property name="text">
+                  <string/>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="4">
+                <widget class="QLabel" name="label_11">
+                 <property name="text">
+                  <string>Function:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="5">
+                <widget class="QgsColorButton" name="methodFontColorEditor">
+                 <property name="text">
+                  <string/>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="0">
+                <widget class="QLabel" name="label_9">
+                 <property name="text">
+                  <string>Decorator:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="1">
+                <widget class="QgsColorButton" name="decorFontColorEditor">
+                 <property name="text">
+                  <string/>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="2">
+                <widget class="QLabel" name="label_10">
+                 <property name="text">
+                  <string>Comment:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="3">
+                <widget class="QgsColorButton" name="commentFontColorEditor">
+                 <property name="text">
+                  <string/>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="4">
+                <widget class="QLabel" name="label_12">
+                 <property name="text">
+                  <string>Comment block:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="5">
+                <widget class="QgsColorButton" name="commentBlockFontColorEditor">
+                 <property name="text">
+                  <string/>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item row="1" column="1">
+              <widget class="QToolButton" name="resetFontColorEditor">
+               <property name="toolTip">
+                <string>Reset to default color</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="autoRaise">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="0" colspan="2">
+              <layout class="QHBoxLayout" name="horizontalLayout_3">
+               <item>
+                <widget class="QLabel" name="label_4">
+                 <property name="text">
+                  <string>Font</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QFontComboBox" name="fontComboBoxEditor">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="insertPolicy">
+                  <enum>QComboBox::NoInsert</enum>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="label_5">
+                 <property name="text">
+                  <string>Size</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QSpinBox" name="spinBoxEditor">
+                 <property name="minimumSize">
+                  <size>
+                   <width>51</width>
+                   <height>26</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>51</width>
+                   <height>26</height>
+                  </size>
+                 </property>
+                 <property name="minimum">
+                  <number>6</number>
+                 </property>
+                 <property name="maximum">
+                  <number>15</number>
+                 </property>
+                 <property name="value">
+                  <number>10</number>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
       </layout>
      </widget>
     </widget>
@@ -585,6 +831,11 @@
    <extends>QGroupBox</extends>
    <header location="global">qgis.gui</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsColorButton</class>
+   <extends>QPushButton</extends>
+   <header location="global">qgis.gui</header>
   </customwidget>
  </customwidgets>
  <resources/>
