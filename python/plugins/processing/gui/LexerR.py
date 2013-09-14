@@ -104,6 +104,6 @@ class LexerR(QsciLexerCustom):
             if line.startswith("#"):
                 state = self.Comment
             else:
-                pass
+                state = self.Default
 
             set_style(length, state)
