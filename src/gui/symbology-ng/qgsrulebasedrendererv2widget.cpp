@@ -420,7 +420,11 @@ void QgsRuleBasedRendererV2Widget::copy()
 void QgsRuleBasedRendererV2Widget::paste()
 {
     const QMimeData* mime = QApplication::clipboard()->mimeData();
-    QModelIndex index = viewRules->selectionModel()->selectedRows().first();
+    QModelIndexList indexlist = viewRules->selectionModel()->selectedRows();
+    if ( indexlist.isEmpty() )
+        return;
+
+    QModelIndex index = indexlist.first();
     mModel->dropMimeData( mime, Qt::CopyAction, index.row(), index.column(), index.parent() );
 }
 
