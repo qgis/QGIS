@@ -65,6 +65,11 @@ class GeoAlgorithm:
         self.canRunInBatchMode = True
         #to be set by the provider when it loads the algorithm
         self.provider = None
+        
+        #if the algorithm is run as part of a model, the parent model can be set in this variable, 
+        #to allow for customized behaviour, in case some operations should be run differently when 
+        #running as part of a model
+        self.model = None
 
         self.defineCharacteristics()
 
@@ -135,13 +140,14 @@ class GeoAlgorithm:
     #=========================================================
 
 
-    def execute(self, progress):
+    def execute(self, progress, model = None):
+        
         '''The method to use to call a processing algorithm.
         Although the body of the algorithm is in processAlgorithm(),
         it should be called using this method, since it performs
         some additional operations.
         Raises a GeoAlgorithmExecutionException in case anything goes wrong.'''
-
+        self.model = model
         try:
             self.setOutputCRS()
             self.resolveTemporaryOutputs()

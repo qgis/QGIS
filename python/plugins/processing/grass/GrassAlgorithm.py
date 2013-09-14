@@ -46,7 +46,7 @@ from processing.core.ProcessingLog import ProcessingLog
 from processing.parameters.ParameterFactory import ParameterFactory
 from processing.outputs.OutputFactory import OutputFactory
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.tools import dataobjects
+from processing.tools import dataobjects, system
 from processing.grass.GrassUtils import GrassUtils
 from processing.parameters.ParameterSelection import ParameterSelection
 from processing.core.WrongHelpFileException import WrongHelpFileException
@@ -54,12 +54,6 @@ from processing.outputs.OutputFile import OutputFile
 from processing.parameters.ParameterExtent import ParameterExtent
 from processing.parameters.ParameterNumber import ParameterNumber
 from processing.parameters.ParameterString import ParameterString
-
-NUM_EXPORTED = 1
-
-def getNumExportedLayers():
-    NUM_EXPORTED += 1
-    return NUM_EXPORTED
 
 class GrassAlgorithm(GeoAlgorithm):
 
@@ -443,7 +437,7 @@ class GrassAlgorithm(GeoAlgorithm):
 
 
     def getTempFilename(self):
-        filename =  "tmp" + str(time.time()).replace(".","") + str(getNumExportedLayers())
+        filename =  "tmp" + str(time.time()).replace(".","") + str(system.getNumExportedLayers())
         return filename
 
     def commandLineName(self):

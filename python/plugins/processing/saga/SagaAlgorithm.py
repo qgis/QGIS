@@ -51,6 +51,8 @@ from processing.parameters.ParameterExtent import ParameterExtent
 from processing.parameters.ParameterFixedTable import ParameterFixedTable
 from processing.core.ProcessingLog import ProcessingLog
 
+sessionExportedLayers = {}
+
 class SagaAlgorithm(GeoAlgorithm):
 
     OUTPUT_EXTENT = "OUTPUT_EXTENT"
@@ -193,7 +195,9 @@ class SagaAlgorithm(GeoAlgorithm):
                     continue
                 value = param.value
                 if not value.endswith("sgrd"):
-                    commands.append(self.exportRasterLayer(value))
+                    exportCommand = self.exportRasterLayer(value)
+                    if exportCommand is not None:
+                        commands.append(exportCommand)
                 if self.resample:
                     commands.append(self.resampleRasterLayer(value));
             if isinstance(param, ParameterVector):
@@ -309,6 +313,7 @@ class SagaAlgorithm(GeoAlgorithm):
                     commands.append("io_gdal 1 -GRIDS \"" + filename2 + "\" -FORMAT " + str(formatIndex) +" -TYPE 0 -FILE \"" + filename + "\"");
                 else:
                     commands.append("libio_gdal 1 -GRIDS \"" + filename2 + "\" -FORMAT 1 -TYPE 0 -FILE \"" + filename + "\"");
+                sessionExportedLayers[filename] = filename2
 
 
         #4 Run SAGA
@@ -377,6 +382,9 @@ class SagaAlgorithm(GeoAlgorithm):
 
 
     def exportRasterLayer(self, source):
+        if source in sessionExportedLayers:
+            self.exportedLayers[source] = sessionExportedLayers[source]
+            return None
         layer = dataobjects.getObjectFromUri(source, False)
         if layer:
             filename = str(layer.name())
@@ -388,14 +396,12 @@ class SagaAlgorithm(GeoAlgorithm):
             filename = "layer"
         destFilename = getTempFilenameInTempFolder(filename + ".sgrd")
         self.exportedLayers[source]= destFilename
+        sessionExportedLayers[source] = destFilename
         saga208 = ProcessingConfig.getSetting(SagaUtils.SAGA_208)
         if isWindows() or isMac() or not saga208:
             return "io_gdal 0 -GRIDS \"" + destFilename + "\" -FILES \"" + source+"\""
         else:
             return "libio_gdal 0 -GRIDS \"" + destFilename + "\" -FILES \"" + source + "\""
-
-
-
 
     def checkBeforeOpeningParametersDialog(self):
         msg = SagaUtils.checkSagaIsInstalled()

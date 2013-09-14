@@ -77,11 +77,12 @@ def removeInvalidChars(string):
     return string
 
 
-NUM_EXPORTED = 1
+numExported = 1
 
 def getNumExportedLayers():
-    NUM_EXPORTED += 1
-    return NUM_EXPORTED
+    global numExported
+    numExported += 1
+    return numExported
 
 def mkdir(newdir):
     if os.path.isdir(newdir):

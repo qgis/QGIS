@@ -23,7 +23,6 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import os
 from qgis.core import *
 from processing.parameters.ParameterMultipleInput import ParameterMultipleInput
 from processing.grass.GrassUtils import GrassUtils
@@ -34,7 +33,6 @@ from processing.parameters.ParameterExtent import ParameterExtent
 from processing.parameters.ParameterNumber import ParameterNumber
 from processing.parameters.ParameterRaster import ParameterRaster
 from processing.tools import dataobjects
-import time
 
 class nviz(GeoAlgorithm):
 

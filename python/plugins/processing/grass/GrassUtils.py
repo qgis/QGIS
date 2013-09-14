@@ -23,7 +23,8 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import os
+import stat
+import shutil
 from qgis.core import QgsApplication
 from PyQt4.QtCore import *
 import traceback
@@ -32,8 +33,7 @@ from processing.tests.TestData import points
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.tools.system import *
 from processing.core.ProcessingLog import ProcessingLog
-import stat
-import shutil
+
 
 class GrassUtils:
 
@@ -67,6 +67,12 @@ class GrassUtils:
         filename = "grass_script.bat"
         filename = userFolder() + os.sep + filename
         return filename
+    
+    @staticmethod
+    def getGrassVersion():
+        #I do not know if this should be removed or let the user enter it
+        #or something like that... This is just a temporary thing
+        return "6.4.0"    
 
     @staticmethod
     def grassPath():

@@ -16,8 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
-from processing.tools.vector import features
-from processing.core.ProcessingLog import ProcessingLog
+
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -31,6 +30,8 @@ from qgis.core import *
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.tools import dataobjects
 from processing.tools.system import *
+from processing.tools import vector 
+from processing.core.ProcessingLog import ProcessingLog
 from processing.gui.Postprocessing import Postprocessing
 from processing.core.SilentProgress import SilentProgress
 import traceback
@@ -65,7 +66,7 @@ class UnthreadedAlgorithmExecutor:
         filelist = []
         outputs = {}
         provider = layer.dataProvider()
-        features = features(layer)
+        features = vector.features(layer)
         for feat in features:
             output = getTempFilename("shp")
             filelist.append(output)
