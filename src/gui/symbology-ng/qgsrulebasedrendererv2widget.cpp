@@ -65,6 +65,8 @@ QgsRuleBasedRendererV2Widget::QgsRuleBasedRendererV2Widget( QgsVectorLayer* laye
   mModel = new QgsRuleBasedRendererV2Model( mRenderer );
   //new ModelTest( mModel, this ); // for model validity checking
   viewRules->setModel( mModel );
+  viewRules->addAction( mCopyAction );
+  viewRules->addAction( mPasteAction );
 
   mRefineMenu = new QMenu( tr( "Refine current rule" ), btnRefineRule );
   mRefineMenu->addAction( tr( "Add scales to rule" ), this, SLOT( refineRuleScales() ) );

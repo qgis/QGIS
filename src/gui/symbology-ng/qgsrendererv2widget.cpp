@@ -27,8 +27,10 @@ QgsRendererV2Widget::QgsRendererV2Widget( QgsVectorLayer* layer, QgsStyleV2* sty
 {
   contextMenu = new QMenu( "Renderer Options " );
 
-  contextMenu->addAction( tr( "Copy" ), this, SLOT( copy() ) );
-  contextMenu->addAction( tr( "Paste" ), this, SLOT( paste() ) );
+  mCopyAction = contextMenu->addAction( tr( "Copy" ), this, SLOT( copy() ) );
+  mCopyAction->setShortcut( QKeySequence( QKeySequence::Copy ) );
+  mPasteAction = contextMenu->addAction( tr( "Paste" ), this, SLOT( paste() ) );
+  mPasteAction->setShortcut( QKeySequence( QKeySequence::Paste ) );
 
   contextMenu->addAction( tr( "Change color" ), this, SLOT( changeSymbolColor( ) ) );
   contextMenu->addAction( tr( "Change transparency" ), this, SLOT( changeSymbolTransparency() ) );
