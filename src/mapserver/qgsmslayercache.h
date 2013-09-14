@@ -86,6 +86,9 @@ class QgsMSLayerCache: public QObject
     /**Check for configuration file updates (remove layers from cache if configuration file changes)*/
     QFileSystemWatcher mFileSystemWatcher;
 
+    /**Maximum number of layers in the cache*/
+    int mDefaultMaxLayers;
+
     /**Maximum number of layers in the cache, overrides DEFAULT_MAX_N_LAYERS if larger*/
     int mProjectMaxLayers;
 
