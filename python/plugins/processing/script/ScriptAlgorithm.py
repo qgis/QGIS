@@ -133,7 +133,7 @@ class ScriptAlgorithm(GeoAlgorithm):
             param = ParameterMultipleInput(tokens[0], desc, ParameterMultipleInput.TYPE_VECTOR_ANY)
             param.optional = False
         elif tokens[1].lower().strip().startswith("selection"):
-            options = tokens[1].strip()[len("selection"):].split(";")
+            options = tokens[1].strip()[len("selection "):].split(";")
             param = ParameterSelection(tokens[0],  desc, options);
         elif tokens[1].lower().strip().startswith("boolean"):
             default = tokens[1].strip()[len("boolean")+1:]
