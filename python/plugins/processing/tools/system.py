@@ -68,8 +68,15 @@ def getTempFilenameInTempFolder(basename):
     path = tempFolder()
     path = os.path.join(path, str(uuid.uuid4()).replace("-",""))
     mkdir(path)
+    basename = removeInvalidChars(basename)
     filename =  os.path.join(path, basename)
     return filename
+
+def removeInvalidChars(string):
+    validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:"
+    string = ''.join(c for c in string if c in validChars)
+    return string
+
 
 NUM_EXPORTED = 1
 

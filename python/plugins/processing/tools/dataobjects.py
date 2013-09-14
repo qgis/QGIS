@@ -95,6 +95,29 @@ def getTables():
             tables.append(layer)
     return tables
 
+def extent(layers):
+    first = True
+    for layer in layers:
+        if not isinstance(layer, (QgsRasterLayer, QgsVectorLayer)):
+            layer = getObjectFromUri(layer)
+            if layer is None:
+                continue
+        if first:
+            xmin = layer.extent().xMinimum()
+            xmax = layer.extent().xMaximum()
+            ymin = layer.extent().yMinimum()
+            ymax = layer.extent().yMaximum()
+        else:
+            xmin = min(xmin, layer.extent().xMinimum())
+            xmax = max(xmax, layer.extent().xMaximum())
+            ymin = min(ymin, layer.extent().yMinimum())
+            ymax = max(ymax, layer.extent().yMaximum())
+        first = False
+    if first:
+        return "0,0,0,0"
+    else:
+        return str(xmin) + "," + str(xmax) + "," + str(ymin) + "," + str(ymax)
+
 
 def loadList(layers):
     for layer in layers:

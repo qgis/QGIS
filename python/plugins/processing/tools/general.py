@@ -25,7 +25,6 @@ __copyright__ = '(C) 2013, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from qgis.core import *
-from processing.tools import dataobjects
 from processing.core.Processing import Processing
 from processing.parameters.ParameterSelection import ParameterSelection
 from processing.gui.Postprocessing import Postprocessing
@@ -69,29 +68,6 @@ def runalg(algOrName, *args):
 
 def runandload(name, *args):
     return Processing.runAlgorithm(name, Postprocessing.handleAlgorithmResults, *args)
-
-def extent(layers):
-    first = True
-    for layer in layers:
-        if not isinstance(layer, (QgsRasterLayer, QgsVectorLayer)):
-            layer = dataobjects.getObjectFromUri(layer)
-            if layer is None:
-                continue
-        if first:
-            xmin = layer.extent().xMinimum()
-            xmax = layer.extent().xMaximum()
-            ymin = layer.extent().yMinimum()
-            ymax = layer.extent().yMaximum()
-        else:
-            xmin = min(xmin, layer.extent().xMinimum())
-            xmax = max(xmax, layer.extent().xMaximum())
-            ymin = min(ymin, layer.extent().yMinimum())
-            ymax = max(ymax, layer.extent().yMaximum())
-        first = False
-    if first:
-        return "0,0,0,0"
-    else:
-        return str(xmin) + "," + str(xmax) + "," + str(ymin) + "," + str(ymax)
 
 
 
