@@ -93,7 +93,7 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
         QSet<QString> usedAttributes();
         QgsSymbolV2List symbols();
         //! @note not available in python bindings
-        QgsLegendSymbolList legendSymbolItems();
+        QgsLegendSymbolList legendSymbolItems( double scaleDenominator=-1 );
         bool isFilterOK( QgsFeature& f ) const;
         bool isScaleOK( double scale ) const;
 
@@ -226,7 +226,7 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
     //! return a list of item text / symbol
     //! @note: this method was added in version 1.5
     //! @note not available in python bindings
-    virtual QgsLegendSymbolList legendSymbolItems();
+    virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator=-1 );
 
     //! for debugging
     virtual QString dump() const;

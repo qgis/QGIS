@@ -54,7 +54,7 @@ class CORE_EXPORT QgsLegendModel: public QStandardItemModel
 
     /**Sets layer set and groups*/
     void setLayerSetAndGroups( const QStringList& layerIds, const QList< GroupLayerInfo >& groupInfo );
-    void setLayerSet( const QStringList& layerIds );
+    void setLayerSet( const QStringList& layerIds, double scaleDenominator=-1 );
     /**Adds a group
       @param text name of group (defaults to translation of "Group")
       @param position insertion position (toplevel position (or -1 if it should be placed at the end of the legend).
@@ -97,14 +97,14 @@ class CORE_EXPORT QgsLegendModel: public QStandardItemModel
 
   public slots:
     void removeLayer( const QString& layerId );
-    void addLayer( QgsMapLayer* theMapLayer );
+    void addLayer( QgsMapLayer* theMapLayer, double scaleDenominator=-1 );
 
   signals:
     void layersChanged();
 
   private:
     /**Adds classification items of vector layers using new symbology*/
-    int addVectorLayerItemsV2( QStandardItem* layerItem, QgsVectorLayer* vlayer );
+    int addVectorLayerItemsV2( QStandardItem* layerItem, QgsVectorLayer* vlayer, double scaleDenominator=-1 );
 
     /**Adds item of raster layer
      @return 0 in case of success*/

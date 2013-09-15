@@ -175,7 +175,7 @@ void QgsRuleBasedRendererV2::Rule::setSymbol( QgsSymbolV2* sym )
   mSymbol = sym;
 }
 
-QgsLegendSymbolList QgsRuleBasedRendererV2::Rule::legendSymbolItems()
+QgsLegendSymbolList QgsRuleBasedRendererV2::Rule::legendSymbolItems( double scaleDenominator )
 {
   QgsLegendSymbolList lst;
   if ( mSymbol )
@@ -184,7 +184,11 @@ QgsLegendSymbolList QgsRuleBasedRendererV2::Rule::legendSymbolItems()
   for ( RuleList::iterator it = mChildren.begin(); it != mChildren.end(); ++it )
   {
     Rule* rule = *it;
-    lst << rule->legendSymbolItems();
+    if ( scaleDenominator == -1 || (
+        ( rule->mScaleMinDenom == -1 || rule->mScaleMinDenom < scaleDenominator ) &&
+        ( rule->mScaleMaxDenom == -1 || scaleDenominator < rule->mScaleMaxDenom ) ) ) {
+      lst << rule->legendSymbolItems( scaleDenominator );
+    }
   }
   return lst;
 }
@@ -844,9 +848,9 @@ QgsLegendSymbologyList QgsRuleBasedRendererV2::legendSymbologyItems( QSize iconS
   return lst;
 }
 
-QgsLegendSymbolList QgsRuleBasedRendererV2::legendSymbolItems()
+QgsLegendSymbolList QgsRuleBasedRendererV2::legendSymbolItems( double scaleDenominator )
 {
-  return mRootRule->legendSymbolItems();
+  return mRootRule->legendSymbolItems( scaleDenominator );
 }
 
 
