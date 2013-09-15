@@ -191,7 +191,10 @@ int QgsLegendModel::addVectorLayerItemsV2( QStandardItem* layerItem, QgsVectorLa
     else
     {
       QgsComposerSymbolV2Item* currentSymbolItem = new QgsComposerSymbolV2Item( "" );
-      currentSymbolItem->setIcon( QgsSymbolLayerV2Utils::symbolPreviewIcon( symbolIt->second, QSize( 30, 30 ) ) );
+      if ( mHasTopLevelWindow ) //only use QIcon / QPixmap if we have a running x-server
+      {
+        currentSymbolItem->setIcon( QgsSymbolLayerV2Utils::symbolPreviewIcon( symbolIt->second, QSize( 30, 30 ) ) );
+      }
       currentSymbolItem->setSymbolV2( symbolIt->second );
       layerItem->setChild( row, 0, currentSymbolItem );
       currentSymbolItem->setText( symbolIt->first );
