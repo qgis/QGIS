@@ -21,6 +21,7 @@
 #include <ui_qgsvectorlayersaveasdialogbase.h>
 #include <QDialog>
 #include "qgscontexthelp.h"
+#include "qgsvectorfilewriter.h"
 
 /**
  *  Class to select destination file, type and CRS for ogr layrs
@@ -67,6 +68,7 @@ class QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVectorLayerSav
 
   private:
     void setup();
+    QList< QPair< QLabel*, QWidget* > > createControls( const QMap<QString, QgsVectorFileWriter::Option*>& options );
 
     long mCRS;
 };
