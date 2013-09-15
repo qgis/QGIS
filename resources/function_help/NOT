@@ -1,0 +1,14 @@
+<h3>NOT</h3>
+Returns 1 if a is not the same as b.
+
+<h4>Syntax</h4>
+<pre> a NOT b </pre>
+
+<h4>Arguments</h4>
+None
+
+<h4>Example</h4>
+<pre> 'a' IS NOT 'b'  &rarr; returns 1 </pre>
+<pre> 'a' IS NOT 'a'  &rarr; returns 0 </pre>
+<pre> 4 IS NOT 2+2    &rarr; returns 0 </pre>
+
