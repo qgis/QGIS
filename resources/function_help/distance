@@ -1,0 +1,12 @@
+<h3>distance function</h3>
+ Returns the minimum distance (based on spatial ref) between two geometries in projected units.
+
+<h4>Syntax</h4>
+<pre>distance( $geometry , $geometry)</pre>
+
+<h4>Arguments</h4>
+geometry &rarr; geometry
+geometry &rarr; geometry
+
+<h4>Example</h4>
+<pre> distance( geomFromWKT( 'POINT(4 4)' ) , geomFromWKT( 'POINT(4 8)' ))    &rarr; returns 4</pre>
