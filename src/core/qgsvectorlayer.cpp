@@ -792,17 +792,17 @@ void QgsVectorLayer::modifySelection( QgsFeatureIds selectIds, QgsFeatureIds des
 
 void QgsVectorLayer::invertSelection()
 {
-  QgsFeatureIds ids = listAllFeatureIds();
+  QgsFeatureIds ids = allFeatureIds();
   ids.subtract( mSelectedFeatureIds );
   setSelectedFeatures( ids );
 }
 
 void QgsVectorLayer::selectAll()
 {
-  setSelectedFeatures( listAllFeatureIds() );
+  setSelectedFeatures( allFeatureIds() );
 }
 
-QgsFeatureIds QgsVectorLayer::listAllFeatureIds()
+QgsFeatureIds QgsVectorLayer::allFeatureIds()
 {
   QgsFeatureIterator fit = getFeatures( QgsFeatureRequest()
                                         .setFlags( QgsFeatureRequest::NoGeometry )
@@ -2675,7 +2675,7 @@ void QgsVectorLayer::setSelectedFeatures( const QgsFeatureIds& ids )
 
   mSelectedFeatureIds = ids;
 
-  QgsFeatureIds allIds = listAllFeatureIds();
+  QgsFeatureIds allIds = allFeatureIds();
   QgsFeatureIds::iterator id = mSelectedFeatureIds.begin();
   while ( id != mSelectedFeatureIds.end() )
   {
