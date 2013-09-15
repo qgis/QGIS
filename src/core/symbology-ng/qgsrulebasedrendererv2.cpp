@@ -184,10 +184,7 @@ QgsLegendSymbolList QgsRuleBasedRendererV2::Rule::legendSymbolItems( double scal
   for ( RuleList::iterator it = mChildren.begin(); it != mChildren.end(); ++it )
   {
     Rule* rule = *it;
-    if ( scaleDenominator == -1 || (
-           ( rule->mScaleMinDenom == -1 || rule->mScaleMinDenom < scaleDenominator ) &&
-           ( rule->mScaleMaxDenom == -1 || scaleDenominator < rule->mScaleMaxDenom ) ) )
-    {
+    if ( scaleDenominator == -1 || rule->isScaleOK(scaleDenominator) ) {
       lst << rule->legendSymbolItems( scaleDenominator, ruleFilter );
     }
   }
