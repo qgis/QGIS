@@ -93,7 +93,6 @@ QgsPluginManager::QgsPluginManager( QWidget * parent, bool pluginsAreEnabled, Qt
 
   // Preset widgets
   leFilter->setFocus( Qt::MouseFocusReason );
-  rbFilterNames->setChecked( true );
 
   // Don't restore the last used tab from QSettings
   mOptionsListWidget->setCurrentRow( 0 );
@@ -107,8 +106,6 @@ QgsPluginManager::QgsPluginManager( QWidget * parent, bool pluginsAreEnabled, Qt
   setCurrentTab( 0 );
 
   // Hide widgets only suitable with Python support enabled (they will be uncovered back in setPythonUtils)
-  rbFilterTags->hide();
-  rbFilterAuthors->hide();
   buttonUpgradeAll->hide();
   buttonInstall->hide();
   buttonUninstall->hide();
@@ -134,8 +131,6 @@ void QgsPluginManager::setPythonUtils( QgsPythonUtils* pythonUtils )
 
   // Now enable Python support:
   // Show and preset widgets only suitable when Python support active
-  rbFilterTags->show();
-  rbFilterAuthors->show();
   buttonUpgradeAll->show();
   buttonInstall->show();
   buttonUninstall->show();
@@ -1075,51 +1070,22 @@ void QgsPluginManager::on_vwPlugins_doubleClicked( const QModelIndex & theIndex 
 
 void QgsPluginManager::on_leFilter_textChanged( QString theText )
 {
-  QgsDebugMsg( "PluginManager filter changed to :" + theText );
+  if ( theText.startsWith( "tag:", Qt::CaseInsensitive ) )
+  {
+    theText = theText.remove( "tag:" );
+    mModelProxy->setFilterRole( PLUGIN_TAGS_ROLE );
+    QgsDebugMsg( "PluginManager TAG filter changed to :" + theText );
+  }
+  else
+  {
+    mModelProxy->setFilterRole( 0 );
+    QgsDebugMsg( "PluginManager filter changed to :" + theText );
+  }
+
   QRegExp::PatternSyntax mySyntax = QRegExp::PatternSyntax( QRegExp::RegExp );
   Qt::CaseSensitivity myCaseSensitivity = Qt::CaseInsensitive;
   QRegExp myRegExp( theText, myCaseSensitivity, mySyntax );
   mModelProxy->setFilterRegExp( myRegExp );
-}
-
-
-
-void QgsPluginManager::on_rbFilterNames_toggled( bool checked )
-{
-  if ( checked )
-  {
-    mModelProxy->setFilterRole( Qt::DisplayRole );
-  }
-}
-
-
-
-void QgsPluginManager::on_rbFilterDescriptions_toggled( bool checked )
-{
-  if ( checked )
-  {
-    mModelProxy->setFilterRole( PLUGIN_DESCRIPTION_ROLE );
-  }
-}
-
-
-
-void QgsPluginManager::on_rbFilterTags_toggled( bool checked )
-{
-  if ( checked )
-  {
-    mModelProxy->setFilterRole( PLUGIN_TAGS_ROLE );
-  }
-}
-
-
-
-void QgsPluginManager::on_rbFilterAuthors_toggled( bool checked )
-{
-  if ( checked )
-  {
-    mModelProxy->setFilterRole( PLUGIN_AUTHOR_ROLE );
-  }
 }
 
 

@@ -118,18 +118,6 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     //! Update the filter when user changes the filter expression
     void on_leFilter_textChanged( QString theText );
 
-    //! Set filter mode to filter by name
-    void on_rbFilterNames_toggled( bool checked );
-
-    //! Set filter mode to filter by description
-    void on_rbFilterDescriptions_toggled( bool checked );
-
-    //! Set filter mode to filter by tags
-    void on_rbFilterTags_toggled( bool checked );
-
-    //! Set filter mode to filter by autor
-    void on_rbFilterAuthors_toggled( bool checked );
-
     //! Upgrade all upgradeable plugins
     void on_buttonUpgradeAll_clicked( );
 

@@ -305,47 +305,6 @@
                </property>
               </widget>
              </item>
-             <item>
-              <widget class="QLabel" name="lblIn">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="text">
-                <string>in:</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QRadioButton" name="rbFilterNames">
-               <property name="text">
-                <string>names</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QRadioButton" name="rbFilterDescriptions">
-               <property name="text">
-                <string>descriptions</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QRadioButton" name="rbFilterTags">
-               <property name="text">
-                <string>tags</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QRadioButton" name="rbFilterAuthors">
-               <property name="text">
-                <string>authors</string>
-               </property>
-              </widget>
-             </item>
             </layout>
            </item>
            <item>
@@ -1026,10 +985,6 @@ p, li { white-space: pre-wrap; }
  <tabstops>
   <tabstop>mOptionsListWidget</tabstop>
   <tabstop>leFilter</tabstop>
-  <tabstop>rbFilterNames</tabstop>
-  <tabstop>rbFilterDescriptions</tabstop>
-  <tabstop>rbFilterTags</tabstop>
-  <tabstop>rbFilterAuthors</tabstop>
   <tabstop>vwPlugins</tabstop>
   <tabstop>tbDetails</tabstop>
   <tabstop>buttonUpgradeAll</tabstop>

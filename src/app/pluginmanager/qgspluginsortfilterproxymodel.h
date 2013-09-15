@@ -63,6 +63,9 @@ class QgsPluginSortFilterProxyModel : public QSortFilterProxyModel
     //! Filter by status: this method is used in both filterAcceptsRow and countWithCurrentStatus.
     bool filterByStatus( QModelIndex &index ) const;
 
+    //! Filter by phrase: this method is used in filterAcceptsRow.
+    bool filterByPhrase( QModelIndex &index ) const;
+
     //! The main filter method
     bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const;
 
