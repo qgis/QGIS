@@ -1,0 +1,12 @@
+<h3>convexHull function</h3>
+Returns the convex hull of a geometry. It represents the minimum convex geometry that encloses all geometries within the set.
+
+<h4>Syntax</h4>
+<pre>convexHull( $geometry , $geometry)</pre>
+
+<h4>Arguments</h4>
+geometry &rarr; geometry
+geometry &rarr; geometry
+
+<h4>Example</h4>
+<pre>   &rarr; returns </pre>
