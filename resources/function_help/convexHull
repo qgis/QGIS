@@ -9,4 +9,4 @@ geometry &rarr; geometry
 geometry &rarr; geometry
 
 <h4>Example</h4>
-<pre>   &rarr; returns </pre>
+<pre>  geomToWKT( convexHull( geomFromWKT( 'LINESTRING(3 3 , 4 4 , 4 10)' )) )   &rarr; returns POLYGON((3 3,4 10,4 4,3 3)) </pre>
