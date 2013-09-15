@@ -924,6 +924,13 @@ void QgsComposerItem::setEffectsEnabled( bool effectsEnabled )
 
 void QgsComposerItem::hoverMoveEvent( QGraphicsSceneHoverEvent * event )
 {
+  if ( QgsApplication::mouseButtons() == Qt::MidButton )
+  {
+    //middle mouse button panning, make sure we use the closed hand cursor
+    setCursor( Qt::ClosedHandCursor );
+    return;
+  }
+
   if ( isSelected() )
   {
     setCursor( cursorForPosition( event->pos() ) );
