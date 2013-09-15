@@ -103,6 +103,11 @@ void QgsDxfExport::writeHeader( QTextStream& stream )
   stream << " 40\n";
   stream << "1\n";
   endSection( stream );
+  //PSLTSCALE
+  stream << "  9\n";
+  stream << "$PSLTSCALE\n";
+  stream << " 70\n";
+  stream << "0\n";
 }
 
 void QgsDxfExport::writeTables( QTextStream& stream )
@@ -186,6 +191,31 @@ void QgsDxfExport::writeEntities( QTextStream& stream )
     QgsFeature fet;
     while ( featureIt.nextFeature( fet ) )
     {
+      if ( mSymbologyExport == NoSymbology )
+      {
+        addFeature( fet, stream, vl->name(), 0 ); //no symbology at all
+      }
+      else
+      {
+        if ( !renderer )
+        {
+          continue;
+        }
+        QgsSymbolV2List symbolList = renderer->symbolsForFeature( fet );
+        if ( symbolList.size() < 1 )
+        {
+          continue;
+        }
+
+        //take first symbollayer from first symbol
+        QgsSymbolV2* s = symbolList.first();
+        if ( !s || s->symbolLayerCount() < 1 )
+        {
+          continue;
+        }
+        addFeature( fet, stream, vl->name(), s->symbolLayer( 0 ) );
+      }
+#if 0
       //get geometry and write it. Todo: consider symbolisation
       QgsGeometry* geom = fet.geometry();
       if ( geom )
@@ -193,10 +223,16 @@ void QgsDxfExport::writeEntities( QTextStream& stream )
         //try with line first
         writePolyline( stream, geom->asPolyline(), vl->name() );
       }
+#endif //0
     }
   }
 
   endSection( stream );
+}
+
+void QgsDxfExport::writeEntitiesSymbolLevels( QTextStream& stream )
+{
+  //todo....
 }
 
 void QgsDxfExport::writeEndFile( QTextStream& stream )
@@ -216,17 +252,26 @@ void QgsDxfExport::endSection( QTextStream& stream )
   stream << "ENDSEC\n";
 }
 
-void QgsDxfExport::writePolyline( QTextStream& stream, const QgsPolyline& line, const QString& layer, bool closed )
+void QgsDxfExport::writePolyline( QTextStream& stream, const QgsPolyline& line, const QString& layer, int color,
+                                  double width, bool closed )
 {
   stream << "  0\n";
   stream << "POLYLINE\n";
   stream << "  8\n";
   stream << layer << "\n";
+  stream << "  6\n";
+  stream << "CONTINUOUS\n"; //todo: reference to linetype here
+  stream << " 62\n";
+  stream << color << "\n";
   stream << " 66\n";
-  stream << "  1\n";
+  stream << "1\n";
   stream << " 70\n";
   int type = closed ? 32 : 0;
   stream << type << "\n";
+  stream << " 40\n";
+  stream << width << "\n";
+  stream << " 41\n";
+  stream << width << "\n";
 
   QgsPolyline::const_iterator lineIt = line.constBegin();
   for ( ; lineIt != line.constEnd(); ++lineIt )
@@ -269,4 +314,47 @@ QgsRectangle QgsDxfExport::dxfExtent() const
     }
   }
   return extent;
+}
+
+void QgsDxfExport::addFeature( const QgsFeature& fet, QTextStream& stream, const QString& layer, const QgsSymbolLayerV2* symbolLayer )
+{
+  QgsGeometry* geom = fet.geometry();
+  if ( geom )
+  {
+    //get color from symbollayer
+    int c = colorFromSymbolLayer( symbolLayer );
+    //get width from symbollayer
+    double width = widthFromSymbolLayer( symbolLayer );
+    writePolyline( stream, geom->asPolyline(), layer, c, width );
+  }
+}
+
+double QgsDxfExport::scaleToMapUnits( double value, QgsSymbolV2::OutputUnit symbolUnits, QGis::UnitType mapUnits ) const
+{
+  if ( symbolUnits == QgsSymbolV2::MapUnit )
+  {
+    return 1.0;
+  }
+
+  //symbology in mm
+  value *= mSymbologyScaleDenominator / 1000;
+  if ( mapUnits == QGis::Feet )
+  {
+    value *= 0.3048;
+  }
+  else if ( mapUnits == QGis::Degrees )
+  {
+    value /= 111120;
+  }
+  return value;
+}
+
+int QgsDxfExport::colorFromSymbolLayer( const QgsSymbolLayerV2* symbolLayer )
+{
+  return 5; //todo...
+}
+
+double QgsDxfExport::widthFromSymbolLayer( const QgsSymbolLayerV2* symbolLayer )
+{
+  return 50; //todo...
 }

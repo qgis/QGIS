@@ -19,10 +19,12 @@
 #define QGSDXFEXPORT_H
 
 #include "qgsgeometry.h"
+#include "qgssymbolv2.h"
 #include <QList>
 
 class QgsMapLayer;
 class QgsPoint;
+class QgsSymbolLayerV2;
 class QIODevice;
 class QTextStream;
 
@@ -42,27 +44,40 @@ class QgsDxfExport
     void addLayers( QList< QgsMapLayer* >& layers ) { mLayers = layers; }
     int writeToFile( QIODevice* d, SymbologyExport s = SymbolLayerSymbology );  //maybe add progress dialog? //other parameters (e.g. scale, dpi)?
 
+    void setSymbologyScaleDenominator( double d ) { mSymbologyScaleDenominator = d; }
+    double symbologyScaleDenominator() const { return mSymbologyScaleDenominator; }
+
+    void setSymbologyExport( SymbologyExport e ) { mSymbologyExport = e; }
+    SymbologyExport symbologyExport() const { return mSymbologyExport; }
+
   private:
 
     QList< QgsMapLayer* > mLayers;
+    /**Scale for symbology export (used if symbols units are mm)*/
+    double mSymbologyScaleDenominator;
+    SymbologyExport mSymbologyExport;
 
     void writeHeader( QTextStream& stream );
     void writeTables( QTextStream& stream );
     void writeEntities( QTextStream& stream );
+    void writeEntitiesSymbolLevels( QTextStream& stream );
     void writeEndFile( QTextStream& stream );
 
     void startSection( QTextStream& stream );
     void endSection( QTextStream& stream );
 
-    void writePolyline( QTextStream& stream, const QgsPolyline& line, const QString& layer, bool closed = false );
+    void writePolyline( QTextStream& stream, const QgsPolyline& line, const QString& layer, int color,
+                        double width = -1, bool closed = false );
     void writeVertex( QTextStream& stream, const QgsPoint& pt, const QString& layer );
 
     QgsRectangle dxfExtent() const;
 
-    //collect styles
-    //writeEntities
+    void addFeature( const QgsFeature& fet, QTextStream& stream, const QString& layer, const QgsSymbolLayerV2* symbolLayer );
+    double scaleToMapUnits( double value, QgsSymbolV2::OutputUnit symbolUnits, QGis::UnitType mapUnits ) const;
 
-    //Option: export feature once / multiple export (considering symbol layers / symbol levels)
+    //returns dxf palette index from symbol layer color
+    int colorFromSymbolLayer( const QgsSymbolLayerV2* symbolLayer );
+    double widthFromSymbolLayer( const QgsSymbolLayerV2* symbolLayer );
 };
 
 #endif // QGSDXFEXPORT_H
