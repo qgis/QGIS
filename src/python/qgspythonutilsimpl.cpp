@@ -77,7 +77,17 @@ void QgsPythonUtilsImpl::initPython( QgisInterface* interface )
 #ifdef Q_OS_WIN
     p = p.replace( '\\', "\\\\" );
 #endif
-    pluginpaths << '"' + p + '"';
+    if ( !QDir( p ).exists() )
+    {
+      QgsMessageOutput* msg = QgsMessageOutput::createMessageOutput();
+      msg->setTitle( QObject::tr( "Python error" ) );
+      msg->setMessage( QString( QObject::tr("The extra plugin path '%1' does not exist !") ).arg(p), QgsMessageOutput::MessageText );
+      msg->showMessage();
+    }
+	// we store here paths in unicode strings
+	// the str constant will contain utf8 code (through runString)
+	// so we call '...'.decode('utf-8') to make a unicode string
+    pluginpaths << '"' + p + "\".decode('utf-8')";
   }
   pluginpaths << homePluginsPath();
   pluginpaths << '"' + pluginsPath() + '"';
@@ -469,11 +479,11 @@ QString QgsPythonUtilsImpl::homePythonPath()
   QString settingsDir = QgsApplication::qgisSettingsDirPath();
   if ( QDir::cleanPath( settingsDir ) == QDir::homePath() + QString( "/.qgis%1" ).arg( 2 /* FIXME QGis::QGIS_VERSION_INT / 10000 */ ) )
   {
-    return QString( "os.path.expanduser(\"~/.qgis%1/python\")" ).arg( 2 /* FIXME: QGis::QGIS_VERSION_INT / 10000 */ );
+    return QString( "os.path.expanduser(\"~/.qgis%1/python\").decode('utf-8')" ).arg( 2 /* FIXME: QGis::QGIS_VERSION_INT / 10000 */ );
   }
   else
   {
-    return '"' + settingsDir.replace( '\\', "\\\\" ) + "python\"";
+    return '"' + settingsDir.replace( '\\', "\\\\" ) + "python\".decode('utf-8')";
   }
 }
 
