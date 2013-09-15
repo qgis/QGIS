@@ -153,6 +153,8 @@ class SagaAlgorithm(GeoAlgorithm):
 
 
     def addToResamplingExtent(self, layer, first):
+        if layer is None:
+            return
         if first:
             self.inputExtentsCount = 1
             self.xmin = layer.extent().xMinimum()
@@ -304,16 +306,30 @@ class SagaAlgorithm(GeoAlgorithm):
         commands.append(command)
 
         #3:Export resulting raster layers
+        optim = ProcessingConfig.getSetting(SagaUtils.SAGA_IMPORT_EXPORT_OPTIMIZATION)
         for out in self.outputs:
             if isinstance(out, OutputRaster):
                 filename = out.getCompatibleFileName(self)
                 filename2 = filename + ".sgrd"
                 formatIndex = 1 if saga208 else 4
+                sessionExportedLayers[filename] = filename2
+                dontExport = True
+                
+                #Do not export is the output is not a final output of the model
+                if self.model is not None and optim:
+                    for subalg in self.model.algOutputs:
+                        if out.name in subalg:
+                            if subalg[out.name] is not None:
+                                dontExport = False
+                                break                            
+                    if dontExport:
+                        continue                          
+                        
                 if isWindows() or isMac() or not saga208:
                     commands.append("io_gdal 1 -GRIDS \"" + filename2 + "\" -FORMAT " + str(formatIndex) +" -TYPE 0 -FILE \"" + filename + "\"");
                 else:
                     commands.append("libio_gdal 1 -GRIDS \"" + filename2 + "\" -FORMAT 1 -TYPE 0 -FILE \"" + filename + "\"");
-                sessionExportedLayers[filename] = filename2
+                
 
 
         #4 Run SAGA
