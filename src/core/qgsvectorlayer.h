@@ -1409,6 +1409,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     void labelingFontNotFound( QgsVectorLayer* layer, const QString& fontfamily );
 
+    /** Signals emitted on symbology changes */
+    void rendererChanged();
+
+    void featureBlendModeChanged( const QPainter::CompositionMode blendMode );
+    void layerTransparencyChanged( int layerTransparency );
+
   protected:
     /** Set the extent */
     void setExtent( const QgsRectangle &rect );

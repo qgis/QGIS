@@ -432,6 +432,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * added in 1.5 */
     void dataChanged();
 
+    void blendModeChanged( const QPainter::CompositionMode blendMode );
+
   protected:
     /** Set the extent */
     virtual void setExtent( const QgsRectangle &rect );

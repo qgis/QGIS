@@ -1059,6 +1059,11 @@ class QgsVectorLayer : QgsMapLayer
      */
     void labelingFontNotFound( QgsVectorLayer* layer, const QString& fontfamily );
 
+    void rendererChanged();
+
+    void featureBlendModeChanged( const QPainter::CompositionMode blendMode );
+    void layerTransparencyChanged( int layerTransparency );
+
   protected:
     /** Set the extent */
     void setExtent( const QgsRectangle &rect );
