@@ -33,8 +33,6 @@ from qgis.core import *
 
 from processing import interface
 
-from processing.core.QGisLayers import QGisLayers
-
 from processing.gui.ParametersDialog import ParametersDialog
 from processing.gui.HelpEditionDialog import HelpEditionDialog
 from processing.gui.ScriptEdit import ScriptEdit
