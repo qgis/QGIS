@@ -128,7 +128,7 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
                 self.table.setColumnHidden(i, not self.showAdvanced)
             i+=1
         for out in self.alg.outputs:
-            if not out.visible:
+            if not out.hidden:
                 self.table.setColumnWidth(i,250)
                 self.table.setHorizontalHeaderItem(i, QtGui.QTableWidgetItem(out.description))
                 i+=1
