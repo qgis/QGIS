@@ -83,7 +83,7 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
         self.saveAsButton = QPushButton(self.tr("Save as..."))
         self.saveAsButton.setToolTip(self.tr("Save current model as"))
         self.buttonBox.addButton(self.saveAsButton, QDialogButtonBox.ActionRole)
-        self.saveAsImageButton = QPushButton(self.tr("Export as image..."))
+        self.exportAsImageButton = QPushButton(self.tr("Export as image..."))
         self.exportAsImageButton.setToolTip(self.tr("Export current model to image"))
         self.buttonBox.addButton(self.saveAsImageButton, QDialogButtonBox.ActionRole)
 
