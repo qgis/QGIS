@@ -1689,17 +1689,17 @@ void QgsComposer::on_mActionUngroupItems_triggered()
 
 void QgsComposer::on_mActionLockItems_triggered()
 {
-  if ( mView )
+  if ( mComposition )
   {
-    mView->lockItems();
+    mComposition->lockSelectedItems();
   }
 }
 
 void QgsComposer::on_mActionUnlockAll_triggered()
 {
-  if ( mView )
+  if ( mComposition )
   {
-    mView->unlockAllItems();
+    mComposition->unlockAllItems();
   }
 }
 

@@ -1149,6 +1149,43 @@ void QgsComposition::alignSelectedItemsBottom()
   mUndoStack.push( parentCommand );
 }
 
+void QgsComposition::lockSelectedItems()
+{
+  QUndoCommand* parentCommand = new QUndoCommand( tr( "Items locked" ) );
+  QList<QgsComposerItem*> selectionList = selectedComposerItems();
+  QList<QgsComposerItem*>::iterator itemIter = selectionList.begin();
+  for ( ; itemIter != selectionList.end(); ++itemIter )
+  {
+    QgsComposerItemCommand* subcommand = new QgsComposerItemCommand( *itemIter, "", parentCommand );
+    subcommand->savePreviousState();
+    ( *itemIter )->setPositionLock( true );
+    subcommand->saveAfterState();
+  }
+
+  clearSelection();
+  mUndoStack.push( parentCommand );
+}
+
+void QgsComposition::unlockAllItems()
+{
+  //unlock all items in composer
+  QUndoCommand* parentCommand = new QUndoCommand( tr( "Items unlocked" ) );
+  QList<QGraphicsItem *> itemList = items();
+  QList<QGraphicsItem *>::iterator itemIt = itemList.begin();
+  for ( ; itemIt != itemList.end(); ++itemIt )
+  {
+    QgsComposerItem* mypItem = dynamic_cast<QgsComposerItem *>( *itemIt );
+    if ( mypItem )
+    {
+      QgsComposerItemCommand* subcommand = new QgsComposerItemCommand( mypItem, "", parentCommand );
+      subcommand->savePreviousState();
+      mypItem->setPositionLock( false );
+      subcommand->saveAfterState();
+    }
+  }
+  mUndoStack.push( parentCommand );
+}
+
 void QgsComposition::updateZValues()
 {
   int counter = 1;

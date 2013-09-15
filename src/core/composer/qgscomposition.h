@@ -260,6 +260,12 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     void alignSelectedItemsVCenter();
     void alignSelectedItemsBottom();
 
+    //functions to lock and unlock items
+    /**Lock the selected items*/
+    void lockSelectedItems();
+    /**Unlock all items*/
+    void unlockAllItems();
+
     /**Sorts the zList. The only time where this function needs to be called is from QgsComposer
      after reading all the items from xml file*/
     void sortZList();
