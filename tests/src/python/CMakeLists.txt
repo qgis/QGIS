@@ -29,4 +29,4 @@ ADD_PYTHON_TEST(PyQgsPalLabelingServer test_qgspallabeling_server.py)
 ADD_PYTHON_TEST(PyQgsVectorFileWriter test_qgsvectorfilewriter.py)
 ADD_PYTHON_TEST(PyQgsSpatialiteProvider test_qgsspatialiteprovider.py)
 ADD_PYTHON_TEST(PyQgsZonalStatistics test_qgszonalstatistics.py)
-
+ADD_PYTHON_TEST(PyQgsAppStartup test_qgsappstartup.py)
