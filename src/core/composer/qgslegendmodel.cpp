@@ -98,7 +98,7 @@ void QgsLegendModel::setLayerSetAndGroups( const QStringList& layerIds, const QL
   }
 }
 
-void QgsLegendModel::setLayerSet( const QStringList& layerIds )
+void QgsLegendModel::setLayerSet( const QStringList& layerIds, double scaleDenominator )
 {
   mLayerIds = layerIds;
 
@@ -111,7 +111,7 @@ void QgsLegendModel::setLayerSet( const QStringList& layerIds )
   for ( ; idIter != mLayerIds.constEnd(); ++idIter )
   {
     currentLayer = QgsMapLayerRegistry::instance()->mapLayer( *idIter );
-    addLayer( currentLayer );
+    addLayer( currentLayer, scaleDenominator );
   }
 }
 
@@ -135,7 +135,7 @@ QStandardItem* QgsLegendModel::addGroup( QString text, int position )
   return groupItem;
 }
 
-int QgsLegendModel::addVectorLayerItemsV2( QStandardItem* layerItem, QgsVectorLayer* vlayer )
+int QgsLegendModel::addVectorLayerItemsV2( QStandardItem* layerItem, QgsVectorLayer* vlayer, double scaleDenominator )
 {
   QgsComposerLayerItem* lItem = dynamic_cast<QgsComposerLayerItem*>( layerItem );
 
@@ -158,42 +158,55 @@ int QgsLegendModel::addVectorLayerItemsV2( QStandardItem* layerItem, QgsVectorLa
     }
   }
 
-  QgsLegendSymbolList lst = renderer->legendSymbolItems();
+  QgsLegendSymbolList lst = renderer->legendSymbolItems( scaleDenominator );
   QgsLegendSymbolList::const_iterator symbolIt = lst.constBegin();
   int row = 0;
   for ( ; symbolIt != lst.constEnd(); ++symbolIt )
   {
-    QgsComposerSymbolV2Item* currentSymbolItem = new QgsComposerSymbolV2Item( "" );
-
-    // Get userText from old item if exists
-    QgsComposerSymbolV2Item* oldSymbolItem = dynamic_cast<QgsComposerSymbolV2Item*>( layerItem->child( row, 0 ) );
-    if ( oldSymbolItem )
+    if ( scaleDenominator == -1 )
     {
-      currentSymbolItem->setUserText( oldSymbolItem->userText() );
+      QgsComposerSymbolV2Item* currentSymbolItem = new QgsComposerSymbolV2Item( "" );
 
-    }
-
-    currentSymbolItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
-    if ( symbolIt->second )
-    {
-      if ( mHasTopLevelWindow ) //only use QIcon / QPixmap if we have a running x-server
+      // Get userText from old item if exists
+      QgsComposerSymbolV2Item* oldSymbolItem = dynamic_cast<QgsComposerSymbolV2Item*>( layerItem->child( row, 0 ) );
+      if ( oldSymbolItem )
       {
-        currentSymbolItem->setIcon( QgsSymbolLayerV2Utils::symbolPreviewIcon( symbolIt->second, QSize( 30, 30 ) ) );
+        currentSymbolItem->setUserText( oldSymbolItem->userText() );
       }
-      currentSymbolItem->setSymbolV2( symbolIt->second->clone() );
+
+      currentSymbolItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+      if ( symbolIt->second )
+      {
+        if ( mHasTopLevelWindow ) //only use QIcon / QPixmap if we have a running x-server
+        {
+          currentSymbolItem->setIcon( QgsSymbolLayerV2Utils::symbolPreviewIcon( symbolIt->second, QSize( 30, 30 ) ) );
+        }
+        currentSymbolItem->setSymbolV2( symbolIt->second->clone() );
+      }
+      layerItem->setChild( row, 0, currentSymbolItem );
+
+      // updateSymbolV2ItemText needs layer set
+      updateSymbolV2ItemText( currentSymbolItem );
+
+      row++;
     }
-    layerItem->setChild( row, 0, currentSymbolItem );
-
-    // updateSymbolV2ItemText needs layer set
-    updateSymbolV2ItemText( currentSymbolItem );
-
-    row++;
+    else
+    {
+      QgsComposerSymbolV2Item* currentSymbolItem = new QgsComposerSymbolV2Item( "" );
+      currentSymbolItem->setIcon( QgsSymbolLayerV2Utils::symbolPreviewIcon( symbolIt->second, QSize( 30, 30 ) ) );
+      currentSymbolItem->setSymbolV2( symbolIt->second );
+      layerItem->setChild( 0, 0, currentSymbolItem );
+      currentSymbolItem->setText( symbolIt->first );
+    }
   }
 
-  // Delete following old items (if current number of items decreased)
-  for ( int i = layerItem->rowCount() - 1; i >= row; --i )
+  if ( scaleDenominator == -1 )
   {
-    layerItem->removeRow( i );
+    // Delete following old items (if current number of items decreased)
+    for ( int i = layerItem->rowCount() - 1; i >= row; --i )
+    {
+      layerItem->removeRow( i );
+    }
   }
 
   return 0;
@@ -454,7 +467,7 @@ void QgsLegendModel::removeLayer( const QString& layerId )
   }
 }
 
-void QgsLegendModel::addLayer( QgsMapLayer* theMapLayer )
+void QgsLegendModel::addLayer( QgsMapLayer* theMapLayer, double scaleDenominator )
 {
   if ( !theMapLayer )
   {
@@ -468,7 +481,7 @@ void QgsLegendModel::addLayer( QgsMapLayer* theMapLayer )
     layerItem->setUserText( theMapLayer->title() );
   }
   layerItem->setLayerID( theMapLayer->id() );
-  layerItem->setDefaultStyle();
+  layerItem->setDefaultStyle( scaleDenominator );
   layerItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
 
   QList<QStandardItem *> itemsList;
@@ -482,7 +495,7 @@ void QgsLegendModel::addLayer( QgsMapLayer* theMapLayer )
       QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( theMapLayer );
       if ( vl )
       {
-        addVectorLayerItemsV2( layerItem, vl );
+        addVectorLayerItemsV2( layerItem, vl, scaleDenominator );
       }
       break;
     }

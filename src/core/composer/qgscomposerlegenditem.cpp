@@ -286,7 +286,7 @@ void QgsComposerLayerItem::readXML( const QDomElement& itemElem, bool xServerAva
   }
 }
 
-void QgsComposerLayerItem::setDefaultStyle()
+void QgsComposerLayerItem::setDefaultStyle( double scaleDenominator )
 {
   // set default style according to number of symbols
   QgsVectorLayer* vLayer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerID() ) );
@@ -295,7 +295,7 @@ void QgsComposerLayerItem::setDefaultStyle()
     QgsFeatureRendererV2* renderer = vLayer->rendererV2();
     if ( renderer )
     {
-      QPair<QString, QgsSymbolV2*> symbolItem = renderer->legendSymbolItems().value( 0 );
+      QPair<QString, QgsSymbolV2*> symbolItem = renderer->legendSymbolItems( scaleDenominator ).value( 0 );
       if ( renderer->legendSymbolItems().size() > 1 || !symbolItem.first.isEmpty() )
       {
         setStyle( QgsComposerLegendStyle::Subgroup );

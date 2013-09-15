@@ -334,7 +334,7 @@ QImage* QgsWMSServer::getLegendGraphics()
   }
 
   QgsLegendModel legendModel;
-  legendModel.setLayerSet( layerIds );
+  legendModel.setLayerSet( layerIds, scaleDenominator );
 
   //create first image (to find out dpi)
   QImage* theImage = createImage( 10, 10 );
