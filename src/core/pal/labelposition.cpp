@@ -184,6 +184,39 @@ namespace pal
       return false;
 
   }
+  
+  bool LabelPosition::isIntersect( double *bbox )
+  {
+    int i;
+
+    for ( i = 0; i < 4; i++ )
+    {
+      if ( x[i] >= bbox[0] && x[i] <= bbox[2] &&
+           y[i] >= bbox[1] && y[i] <= bbox[3] )
+        return true;
+    }
+
+    if ( nextPart )
+      return nextPart->isIntersect( bbox );
+    else
+      return false;
+  }
+  
+  bool LabelPosition::isInside( double *bbox )
+  {
+    for (int i = 0; i < 4; i++ )
+    {
+      if ( !( x[i] >= bbox[0] && x[i] <= bbox[2] &&
+           y[i] >= bbox[1] && y[i] <= bbox[3] ) )
+        return false;
+    }
+
+    if ( nextPart )
+      return nextPart->isInside( bbox );
+    else
+      return true;
+
+  }
 
   void LabelPosition::print()
   {
