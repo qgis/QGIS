@@ -1,0 +1,13 @@
+<h3>intersects function</h3>
+Returns 1 if the geometries spatially intersect (share any portion of space) and 0 if they don't.
+
+<h4>Syntax</h4>
+<pre>intersects( $geometry , $geometry)</pre>
+
+<h4>Arguments</h4>
+geometry &rarr; geometry
+geometry &rarr; geometry
+
+<h4>Example</h4>
+<pre> intersects( geomFromWKT( 'POINT(4 4)' ) , geomFromWKT( 'LINESTRING(3 3 , 4 4 , 5 5)' ))    &rarr; returns 1</pre>
+<pre> intersects( geomFromWKT( 'POINT(4 5)' ) , geomFromWKT( 'POINT(5 5)' ))             &rarr; returns 0</pre>
