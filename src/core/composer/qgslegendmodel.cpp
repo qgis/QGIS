@@ -187,17 +187,17 @@ int QgsLegendModel::addVectorLayerItemsV2( QStandardItem* layerItem, QgsVectorLa
 
       // updateSymbolV2ItemText needs layer set
       updateSymbolV2ItemText( currentSymbolItem );
-
-      row++;
     }
     else
     {
       QgsComposerSymbolV2Item* currentSymbolItem = new QgsComposerSymbolV2Item( "" );
       currentSymbolItem->setIcon( QgsSymbolLayerV2Utils::symbolPreviewIcon( symbolIt->second, QSize( 30, 30 ) ) );
       currentSymbolItem->setSymbolV2( symbolIt->second );
-      layerItem->setChild( 0, 0, currentSymbolItem );
+      layerItem->setChild( row, 0, currentSymbolItem );
       currentSymbolItem->setText( symbolIt->first );
     }
+
+    row++;
   }
 
   // Don't remove row on getLegendGraphic (read only with filter)
