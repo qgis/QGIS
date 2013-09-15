@@ -1,12 +1,12 @@
 <h3>disjoint function</h3>
-Returns 1 if the Geometries do not "spatially intersect" - if they do not share any space together. 
+Returns 1 if the geometries do not "spatially intersect" - if they do not share any space together. 
 
 <h4>Syntax</h4>
-<pre>disjoint( $geometry , $geometry)</pre>
+<pre>disjoint( a, b )</pre>
 
 <h4>Arguments</h4>
-geometry &rarr; geometry
-geometry &rarr; geometry
+a &rarr; geometry
+b &rarr; geometry
 
 <h4>Example</h4>
 <pre> disjoint( geomFromWKT( 'POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))' ) , geomFromWKT( 'LINESTRING(3 3 , 4 4 , 5 5)' )) &rarr; returns 1</pre>
