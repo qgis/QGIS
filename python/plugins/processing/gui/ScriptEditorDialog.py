@@ -31,6 +31,8 @@ from PyQt4.Qsci import *
 
 from qgis.core import *
 
+from processing import interface
+
 from processing.core.QGisLayers import QGisLayers
 
 from processing.gui.ParametersDialog import ParametersDialog
@@ -178,7 +180,7 @@ class ScriptEditorDialog(QDialog, Ui_DlgScriptEditor):
         if not dlg:
             dlg = ParametersDialog(alg)
 
-        canvas = QGisLayers.iface.mapCanvas()
+        canvas = interface.iface.mapCanvas()
         prevMapTool = canvas.mapTool()
 
         dlg.show()

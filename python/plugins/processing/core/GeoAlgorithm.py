@@ -283,7 +283,7 @@ class GeoAlgorithm:
                         if p is not None:
                             self.crs = p.crs()
                             return
-        qgis = dataobjects.iface
+        qgis = dataobjects.interface.iface
         self.crs = qgis.mapCanvas().mapRenderer().destinationCrs()
 
     def checkInputCRS(self):

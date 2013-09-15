@@ -36,12 +36,13 @@ from processing.core.ProcessingUtils import ProcessingUtils
 from processing.gui.EditScriptAction import EditScriptAction
 from processing.gui.DeleteScriptAction import DeleteScriptAction
 from processing.gui.CreateNewScriptAction import CreateNewScriptAction
-p
+
 from processing.r.RUtils import RUtils
 from processing.r.RAlgorithm import RAlgorithm
 
 from processing.script.WrongScriptException import WrongScriptException
 from processing.tools.system import *
+
 import processing.resources_rc
 
 class RAlgorithmProvider(AlgorithmProvider):
