@@ -1109,16 +1109,18 @@ QImage* QgsWMSServer::createImage( int width, int height ) const
 
   //apply DPI parameter if present. This is an extension of QGIS mapserver compared to WMS 1.3.
   //Because of backwards compatibility, this parameter is optional
+  double OGC_PX_M = 0.00028; // OGC referance pixel size in meter, also used by qgis
+  int dpm = 1 / OGC_PX_M;
   if ( mParameterMap.contains( "DPI" ) )
   {
     int dpi = mParameterMap[ "DPI" ].toInt( &conversionSuccess );
     if ( conversionSuccess )
     {
-      int dpm = dpi / 0.0254;
-      theImage->setDotsPerMeterX( dpm );
-      theImage->setDotsPerMeterY( dpm );
+      dpm = dpi / 0.0254;
     }
   }
+  theImage->setDotsPerMeterX( dpm );
+  theImage->setDotsPerMeterY( dpm );
   return theImage;
 }
 
