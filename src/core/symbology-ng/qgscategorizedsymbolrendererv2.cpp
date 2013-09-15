@@ -197,14 +197,18 @@ QgsSymbolV2* QgsCategorizedSymbolRendererV2::symbolForValue( QVariant value )
 QgsSymbolV2* QgsCategorizedSymbolRendererV2::symbolForFeature( QgsFeature& feature )
 {
   const QgsAttributes& attrs = feature.attributes();
+  QVariant value;
   if ( mAttrNum < 0 || mAttrNum >= attrs.count() )
   {
-    QgsDebugMsg( "attribute '" + mAttrName + "' (index " + QString::number( mAttrNum ) + ") required by renderer not found" );
-    return NULL;
+      value = mExpression->evaluate( &feature );
+  }
+  else
+  {
+      value = attrs[mAttrNum];
   }
 
   // find the right symbol for the category
-  QgsSymbolV2* symbol = symbolForValue( attrs[mAttrNum] );
+  QgsSymbolV2* symbol = symbolForValue( value );
   if ( symbol == NULL )
   {
     // if no symbol found use default one
@@ -361,6 +365,11 @@ void QgsCategorizedSymbolRendererV2::startRender( QgsRenderContext& context, con
 
   // find out classification attribute index from name
   mAttrNum = vlayer ? vlayer->fieldNameIndex( mAttrName ) : -1;
+  if ( mAttrNum == -1 )
+  {
+      mExpression = new QgsExpression( mAttrName );
+      mExpression->prepare( vlayer->pendingFields() );
+  }
 
   mRotationFieldIdx  = ( mRotationField.isEmpty()  ? -1 : vlayer->fieldNameIndex( mRotationField ) );
   mSizeScaleFieldIdx = ( mSizeScaleField.isEmpty() ? -1 : vlayer->fieldNameIndex( mSizeScaleField ) );
@@ -401,7 +410,11 @@ void QgsCategorizedSymbolRendererV2::stopRender( QgsRenderContext& context )
 QList<QString> QgsCategorizedSymbolRendererV2::usedAttributes()
 {
   QSet<QString> attributes;
-  attributes.insert( mAttrName );
+  QgsExpression exp( mAttrName );
+  foreach (QString attr, exp.referencedColumns() )
+  {
+      attributes << attr;
+  }
   if ( !mRotationField.isEmpty() )
   {
     attributes.insert( mRotationField );

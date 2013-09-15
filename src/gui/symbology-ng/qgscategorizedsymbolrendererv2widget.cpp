@@ -23,10 +23,12 @@
 #include "qgsstylev2.h"
 
 #include "qgssymbolv2selectordialog.h"
+#include "qgsexpressionbuilderdialog.h"
 
 #include "qgsvectorlayer.h"
 
 #include "qgsproject.h"
+#include "qgsexpression.h"
 
 #include <QMenu>
 #include <QMessageBox>
@@ -387,6 +389,7 @@ QgsCategorizedSymbolRendererV2Widget::QgsCategorizedSymbolRendererV2Widget( QgsV
   connect( btnDeleteAllCategories, SIGNAL( clicked() ), this, SLOT( deleteAllCategories() ) );
   connect( btnAddCategory, SIGNAL( clicked() ), this, SLOT( addCategory() ) );
 
+  connect( btnExpression, SIGNAL( clicked() ), this, SLOT( setExpression() ) );
   // update GUI from renderer
   updateUiFromRenderer();
 
@@ -420,7 +423,12 @@ void QgsCategorizedSymbolRendererV2Widget::updateUiFromRenderer()
   QString attrName = mRenderer->classAttribute();
   mOldClassificationAttribute = attrName;
   int idx = cboCategorizedColumn->findText( attrName, Qt::MatchExactly );
-  cboCategorizedColumn->setCurrentIndex( idx >= 0 ? idx : 0 );
+  if ( idx == -1 )
+  {
+      cboCategorizedColumn->addItem( attrName );
+      idx = cboCategorizedColumn->count() - 1;
+  }
+  cboCategorizedColumn->setCurrentIndex( idx );
   connect( cboCategorizedColumn, SIGNAL( currentIndexChanged( int ) ), this, SLOT( categoryColumnChanged() ) );
 
   // set source symbol
@@ -590,7 +598,25 @@ void QgsCategorizedSymbolRendererV2Widget::addCategories()
   QString attrName = cboCategorizedColumn->currentText();
   int idx = mLayer->fieldNameIndex( attrName );
   QList<QVariant> unique_vals;
-  mLayer->uniqueValues( idx, unique_vals );
+  if ( idx == -1 )
+  {
+     // Lets assume it's an expression
+     QgsExpression* expression = new QgsExpression( attrName );
+     expression->prepare( mLayer->pendingFields() );
+     QgsFeatureIterator fit = mLayer->getFeatures();
+     QgsFeature feature;
+     while ( fit.nextFeature( feature ) )
+     {
+        QVariant value = expression->evaluate( feature ) ;
+        if ( unique_vals.contains( value ) )
+             continue;
+        unique_vals << value;
+     }
+  }
+  else
+  {
+      mLayer->uniqueValues( idx, unique_vals );
+  }
 
   // ask to abort if too many classes
   if ( unique_vals.size() >= 1000 )
@@ -731,6 +757,22 @@ void QgsCategorizedSymbolRendererV2Widget::deleteCategories()
 void QgsCategorizedSymbolRendererV2Widget::deleteAllCategories()
 {
   mModel->removeAllRows();
+}
+
+void QgsCategorizedSymbolRendererV2Widget::setExpression()
+{
+    QgsExpressionBuilderDialog dlg( mLayer, cboCategorizedColumn->currentText(), this );
+    dlg.setWindowTitle( "Set column expression" );
+    if ( dlg.exec() )
+    {
+        QString expression = dlg.expressionText();
+        if ( !expression.isEmpty() )
+        {
+            cboCategorizedColumn->addItem( expression );
+            cboCategorizedColumn->setCurrentIndex( cboCategorizedColumn->count() - 1 );
+        }
+    }
+
 }
 
 void QgsCategorizedSymbolRendererV2Widget::addCategory()
