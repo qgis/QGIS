@@ -13,7 +13,7 @@ from processing.core.VectorWriter import VectorWriter
 
 # "input" contains the location of the selected layer.
 # We get the actual object,
-layer = processing.getobject(input)
+layer = processing.getObject(input)
 provider = layer.dataProvider()
 fields = provider.fields()
 writers = {}
@@ -27,7 +27,7 @@ inGeom = QgsGeometry()
 nElement = 0
 writers = {}
 
-feats = processing.getfeatures(layer)
+feats = processing.features(layer)
 nFeat = len(feats)
 for inFeat in feats:
     progress.setPercentage(int((100 * nElement)/nFeat))

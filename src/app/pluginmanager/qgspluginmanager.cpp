@@ -39,6 +39,7 @@
 #include "qgspluginmanager.h"
 #include "qgisplugin.h"
 #include "qgslogger.h"
+#include "qgspluginitemdelegate.h"
 
 // Do we need this?
 // #define TESTLIB
@@ -87,11 +88,11 @@ QgsPluginManager::QgsPluginManager( QWidget * parent, bool pluginsAreEnabled, Qt
   mModelProxy->setDynamicSortFilter( true );
   mModelProxy->sort( 0, Qt::AscendingOrder );
   vwPlugins->setModel( mModelProxy );
+  vwPlugins->setItemDelegate( new QgsPluginItemDelegate( vwPlugins ) );
   vwPlugins->setFocus();
 
   // Preset widgets
   leFilter->setFocus( Qt::MouseFocusReason );
-  rbFilterNames->setChecked( true );
 
   // Don't restore the last used tab from QSettings
   mOptionsListWidget->setCurrentRow( 0 );
@@ -105,8 +106,6 @@ QgsPluginManager::QgsPluginManager( QWidget * parent, bool pluginsAreEnabled, Qt
   setCurrentTab( 0 );
 
   // Hide widgets only suitable with Python support enabled (they will be uncovered back in setPythonUtils)
-  rbFilterTags->hide();
-  rbFilterAuthors->hide();
   buttonUpgradeAll->hide();
   buttonInstall->hide();
   buttonUninstall->hide();
@@ -132,8 +131,6 @@ void QgsPluginManager::setPythonUtils( QgsPythonUtils* pythonUtils )
 
   // Now enable Python support:
   // Show and preset widgets only suitable when Python support active
-  rbFilterTags->show();
-  rbFilterAuthors->show();
   buttonUpgradeAll->show();
   buttonInstall->show();
   buttonUninstall->show();
@@ -186,6 +183,12 @@ void QgsPluginManager::setPythonUtils( QgsPythonUtils* pythonUtils )
   {
     ckbExperimental->setChecked( true );
   }
+
+  if ( settings.value( settingsGroup + "/allowDeprecated", false ).toBool() )
+  {
+    ckbDeprecated->setChecked( true );
+  }
+
 
   int interval = settings.value( settingsGroup + "/checkOnStartInterval", "" ).toInt( );
   int indx = mCheckingOnStartIntervals.indexOf( interval ); // if none found, just use -1 index.
@@ -487,28 +490,14 @@ void QgsPluginManager::reloadModelData()
 
       if ( QFileInfo( iconPath ).isFile() )
       {
-        mypDetailItem->setIcon( QPixmap( iconPath ) );
+        mypDetailItem->setData( QPixmap( iconPath ), Qt::DecorationRole );
       }
       else
       {
-        mypDetailItem->setIcon( QPixmap( QgsApplication::defaultThemePath() + "/plugin.png" ) );
+        mypDetailItem->setData( QPixmap( QgsApplication::defaultThemePath() + "/plugin.png" ), Qt::DecorationRole );
       }
 
       mypDetailItem->setEditable( false );
-
-      // set item display style
-      if ( ! it->value( "error" ).isEmpty() )
-      {
-        QBrush brush = mypDetailItem->foreground();
-        brush.setColor( Qt::red );
-        mypDetailItem->setForeground( brush );
-      }
-      if ( ! it->value( "error" ).isEmpty() || it->value( "status" ) == "upgradeable" || it->value( "status" ) == "new" )
-      {
-        QFont font = mypDetailItem->font();
-        font.setBold( true );
-        mypDetailItem->setFont( font );
-      }
 
       // Set checkable if the plugin is installed and not disabled due to incompatibility.
       // Broken plugins are checkable to to allow disabling them
@@ -546,6 +535,7 @@ void QgsPluginManager::reloadModelData()
     if ( hasReinstallablePlugins() ) mModelPlugins->appendRow( createSpacerItem( tr( "Reinstallable", "category: plugins that are installed and available" )  , "installedZ" ) );
     if ( hasUpgradeablePlugins() ) mModelPlugins->appendRow( createSpacerItem( tr( "Upgradeable", "category: plugins that are installed and there is a newer version available" ), "upgradeableZ" ) );
     if ( hasNewerPlugins() ) mModelPlugins->appendRow( createSpacerItem( tr( "Downgradeable", "category: plugins that are installed and there is an OLDER version available" ), "newerZ" ) );
+    if ( hasAvailablePlugins() ) mModelPlugins->appendRow( createSpacerItem( tr( "Installable", "category: plugins that are available for installation" ), "not installedZ" ) );
   }
 
   updateTabTitle();
@@ -553,10 +543,10 @@ void QgsPluginManager::reloadModelData()
   buttonUpgradeAll->setEnabled( hasUpgradeablePlugins() );
 
   // Disable tabs that are empty because of no suitable plugins in the model.
-  mOptionsListWidget->item( 1 )->setHidden( ! hasAvailablePlugins() );
-  mOptionsListWidget->item( 2 )->setHidden( ! hasUpgradeablePlugins() );
-  mOptionsListWidget->item( 3 )->setHidden( ! hasNewPlugins() );
-  mOptionsListWidget->item( 4 )->setHidden( ! hasInvalidPlugins() );
+  mOptionsListWidget->item( PLUGMAN_TAB_NOT_INSTALLED )->setHidden( ! hasAvailablePlugins() );
+  mOptionsListWidget->item( PLUGMAN_TAB_UPGRADEABLE )->setHidden( ! hasUpgradeablePlugins() );
+  mOptionsListWidget->item( PLUGMAN_TAB_NEW )->setHidden( ! hasNewPlugins() );
+  mOptionsListWidget->item( PLUGMAN_TAB_INVALID )->setHidden( ! hasInvalidPlugins() );
 }
 
 
@@ -658,6 +648,14 @@ void QgsPluginManager::showPluginDetails( QStandardItem * item )
                      "    <img src=\":/images/themes/default/pluginExperimental.png\" width=\"32\"><b>%1</b>"
                      "  </td></tr>"
                      "</table>" ).arg( tr( "This plugin is experimental" ) );
+  };
+  if ( metadata->value( "deprecated" ) == "true" )
+  {
+    html += QString( "<table bgcolor=\"#EEBBCC\" cellspacing=\"2\" cellpadding=\"2\" width=\"100%\">"
+                     "  <tr><td width=\"100%\" style=\"color:#660000\">"
+                     "    <img src=\":/images/themes/default/pluginDeprecated.png\" width=\"32\"><b>%1</b>"
+                     "  </td></tr>"
+                     "</table>" ).arg( tr( "This plugin is deprecated" ) );
   };
   // if ( metadata->value( "status" ) == t.b.d. )
   // {
@@ -959,27 +957,32 @@ void QgsPluginManager::setCurrentTab( int idx )
     QString tabTitle;
     switch ( idx )
     {
-      case 0:
+      case PLUGMAN_TAB_ALL:
+        // all (statuses ends with Z are for spacers to always sort properly)
+        acceptedStatuses << "installed" << "not installed" << "orphan" << "newer" << "upgradeable" << "not installedZ" << "installedZ" << "upgradeableZ" << "orphanZ" << "newerZZ" << "" ;
+        tabTitle = "all_plugins";
+        break;
+      case PLUGMAN_TAB_INSTALLED:
         // installed (statuses ends with Z are for spacers to always sort properly)
         acceptedStatuses << "installed" << "orphan" << "newer" << "upgradeable" << "installedZ" << "upgradeableZ" << "orphanZ" << "newerZZ" << "" ;
         tabTitle = "installed_plugins";
         break;
-      case 1:
+      case PLUGMAN_TAB_NOT_INSTALLED:
         // not installed (get more)
         acceptedStatuses << "not installed" << "new" ;
-        tabTitle = "get_more_plugins";
+        tabTitle = "not_installed_plugins";
         break;
-      case 2:
+      case PLUGMAN_TAB_UPGRADEABLE:
         // upgradeable
         acceptedStatuses << "upgradeable" ;
         tabTitle = "upgradeable_plugins";
         break;
-      case 3:
+      case PLUGMAN_TAB_NEW:
         // new
         acceptedStatuses << "new" ;
         tabTitle = "new_plugins";
         break;
-      case 4:
+      case PLUGMAN_TAB_INVALID:
         // invalid
         acceptedStatuses << "invalid" ;
         tabTitle = "invalid_plugins";
@@ -1067,51 +1070,22 @@ void QgsPluginManager::on_vwPlugins_doubleClicked( const QModelIndex & theIndex 
 
 void QgsPluginManager::on_leFilter_textChanged( QString theText )
 {
-  QgsDebugMsg( "PluginManager filter changed to :" + theText );
+  if ( theText.startsWith( "tag:", Qt::CaseInsensitive ) )
+  {
+    theText = theText.remove( "tag:" );
+    mModelProxy->setFilterRole( PLUGIN_TAGS_ROLE );
+    QgsDebugMsg( "PluginManager TAG filter changed to :" + theText );
+  }
+  else
+  {
+    mModelProxy->setFilterRole( 0 );
+    QgsDebugMsg( "PluginManager filter changed to :" + theText );
+  }
+
   QRegExp::PatternSyntax mySyntax = QRegExp::PatternSyntax( QRegExp::RegExp );
   Qt::CaseSensitivity myCaseSensitivity = Qt::CaseInsensitive;
   QRegExp myRegExp( theText, myCaseSensitivity, mySyntax );
   mModelProxy->setFilterRegExp( myRegExp );
-}
-
-
-
-void QgsPluginManager::on_rbFilterNames_toggled( bool checked )
-{
-  if ( checked )
-  {
-    mModelProxy->setFilterRole( Qt::DisplayRole );
-  }
-}
-
-
-
-void QgsPluginManager::on_rbFilterDescriptions_toggled( bool checked )
-{
-  if ( checked )
-  {
-    mModelProxy->setFilterRole( PLUGIN_DESCRIPTION_ROLE );
-  }
-}
-
-
-
-void QgsPluginManager::on_rbFilterTags_toggled( bool checked )
-{
-  if ( checked )
-  {
-    mModelProxy->setFilterRole( PLUGIN_TAGS_ROLE );
-  }
-}
-
-
-
-void QgsPluginManager::on_rbFilterAuthors_toggled( bool checked )
-{
-  if ( checked )
-  {
-    mModelProxy->setFilterRole( PLUGIN_AUTHOR_ROLE );
-  }
 }
 
 
@@ -1228,6 +1202,15 @@ void QgsPluginManager::on_ckbExperimental_toggled( bool state )
   QgsPythonRunner::run( "pyplugin_installer.instance().exportPluginsToManager()" );
 }
 
+void QgsPluginManager::on_ckbDeprecated_toggled( bool state )
+{
+  QString settingsGroup;
+  QgsPythonRunner::eval( "pyplugin_installer.instance().exportSettingsGroup()", settingsGroup );
+  QSettings settings;
+  settings.setValue( settingsGroup + "/allowDeprecated", QVariant( state ) );
+  QgsPythonRunner::run( "pyplugin_installer.installer_data.plugins.rebuild()" );
+  QgsPythonRunner::run( "pyplugin_installer.instance().exportPluginsToManager()" );
+}
 
 
 // PRIVATE METHODS ///////////////////////////////////////////////////////////////////

@@ -93,7 +93,7 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
         QSet<QString> usedAttributes();
         QgsSymbolV2List symbols();
         //! @note not available in python bindings
-        QgsLegendSymbolList legendSymbolItems();
+        QgsLegendSymbolList legendSymbolItems( double scaleDenominator=-1 );
         bool isFilterOK( QgsFeature& f ) const;
         bool isScaleOK( double scale ) const;
 
@@ -152,17 +152,19 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
         Rule* parent() { return mParent; }
 
         //! add child rule, take ownership, sets this as parent
-        void appendChild( Rule* rule ) { mChildren.append( rule ); rule->mParent = this; }
+        void appendChild( Rule* rule );
         //! add child rule, take ownership, sets this as parent
-        void insertChild( int i, Rule* rule ) { mChildren.insert( i, rule ); rule->mParent = this; }
+        void insertChild( int i, Rule* rule );
         //! delete child rule
-        void removeChild( Rule* rule ) { mChildren.removeAll( rule ); delete rule; }
+        void removeChild( Rule* rule );
         //! delete child rule
-        void removeChildAt( int i ) { Rule* rule = mChildren[i]; mChildren.removeAt( i ); delete rule; }
+        void removeChildAt( int i );
         //! take child rule out, set parent as null
-        void takeChild( Rule* rule ) { mChildren.removeAll( rule ); rule->mParent = NULL; }
+        void takeChild( Rule* rule );
         //! take child rule out, set parent as null
-        Rule* takeChildAt( int i ) { Rule* rule = mChildren.takeAt( i ); rule->mParent = NULL; return rule; }
+        Rule* takeChildAt( int i );
+
+        void updateElseRules();
 
         void setIsElse( bool iselse ) { mElseRule = iselse; }
         bool isElse() { return mElseRule; }
@@ -176,6 +178,7 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
         QString mFilterExp, mLabel, mDescription;
         bool mElseRule;
         RuleList mChildren;
+        RuleList mElseRules;
 
         // temporary
         QgsExpression* mFilter;
@@ -223,7 +226,7 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
     //! return a list of item text / symbol
     //! @note: this method was added in version 1.5
     //! @note not available in python bindings
-    virtual QgsLegendSymbolList legendSymbolItems();
+    virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator=-1 );
 
     //! for debugging
     virtual QString dump() const;

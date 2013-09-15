@@ -64,6 +64,61 @@ void QgsRuleBasedRendererV2::Rule::initFilter()
   }
 }
 
+void QgsRuleBasedRendererV2::Rule::appendChild( Rule* rule )
+{
+    mChildren.append( rule );
+    rule->mParent = this;
+    updateElseRules();
+}
+
+void QgsRuleBasedRendererV2::Rule::insertChild( int i, Rule* rule )
+{
+    mChildren.insert( i, rule );
+    rule->mParent = this;
+    updateElseRules();
+}
+
+void QgsRuleBasedRendererV2::Rule::removeChild( Rule* rule )
+{
+    mChildren.removeAll( rule );
+    delete rule;
+    updateElseRules();
+}
+
+void QgsRuleBasedRendererV2::Rule::removeChildAt( int i )
+{
+    Rule* rule = mChildren[i];
+    mChildren.removeAt( i );
+    delete rule;
+    updateElseRules();
+}
+
+void QgsRuleBasedRendererV2::Rule::takeChild( Rule* rule )
+{
+    mChildren.removeAll( rule );
+    rule->mParent = NULL;
+    updateElseRules();
+}
+
+QgsRuleBasedRendererV2::Rule* QgsRuleBasedRendererV2::Rule::takeChildAt( int i )
+{
+    Rule* rule = mChildren.takeAt( i );
+    rule->mParent = NULL;
+    return rule;
+    updateElseRules();
+}
+
+void QgsRuleBasedRendererV2::Rule::updateElseRules()
+{
+    mElseRules.clear();
+    foreach (Rule* rule, mChildren )
+    {
+        if ( rule->isElse() )
+            mElseRules << rule;
+    }
+}
+
+
 QString QgsRuleBasedRendererV2::Rule::dump( int offset ) const
 {
   QString off;
@@ -120,7 +175,7 @@ void QgsRuleBasedRendererV2::Rule::setSymbol( QgsSymbolV2* sym )
   mSymbol = sym;
 }
 
-QgsLegendSymbolList QgsRuleBasedRendererV2::Rule::legendSymbolItems()
+QgsLegendSymbolList QgsRuleBasedRendererV2::Rule::legendSymbolItems( double scaleDenominator )
 {
   QgsLegendSymbolList lst;
   if ( mSymbol )
@@ -129,7 +184,11 @@ QgsLegendSymbolList QgsRuleBasedRendererV2::Rule::legendSymbolItems()
   for ( RuleList::iterator it = mChildren.begin(); it != mChildren.end(); ++it )
   {
     Rule* rule = *it;
-    lst << rule->legendSymbolItems();
+    if ( scaleDenominator == -1 || (
+        ( rule->mScaleMinDenom == -1 || rule->mScaleMinDenom < scaleDenominator ) &&
+        ( rule->mScaleMaxDenom == -1 || scaleDenominator < rule->mScaleMaxDenom ) ) ) {
+      lst << rule->legendSymbolItems( scaleDenominator );
+    }
   }
   return lst;
 }
@@ -378,7 +437,6 @@ bool QgsRuleBasedRendererV2::Rule::renderFeature( QgsRuleBasedRendererV2::Featur
     rendered = true;
   }
 
-  QList<Rule*> elserules;
   bool willrendersomething = false;
 
   // process children
@@ -387,7 +445,7 @@ bool QgsRuleBasedRendererV2::Rule::renderFeature( QgsRuleBasedRendererV2::Featur
     Rule* rule = *it;
     if ( rule->isElse())
     {
-      elserules << rule;
+      // Don't process else rules yet
       continue;
     }
     willrendersomething |= rule->renderFeature( featToRender, context, renderQueue );
@@ -397,7 +455,7 @@ bool QgsRuleBasedRendererV2::Rule::renderFeature( QgsRuleBasedRendererV2::Featur
   // If none of the rules passed then we jump into the else rules and process them.
   if ( !willrendersomething )
   {
-      foreach(Rule* rule, elserules)
+      foreach(Rule* rule, mElseRules)
       {
           rendered |= rule->renderFeature( featToRender, context, renderQueue );
       }
@@ -790,9 +848,9 @@ QgsLegendSymbologyList QgsRuleBasedRendererV2::legendSymbologyItems( QSize iconS
   return lst;
 }
 
-QgsLegendSymbolList QgsRuleBasedRendererV2::legendSymbolItems()
+QgsLegendSymbolList QgsRuleBasedRendererV2::legendSymbolItems( double scaleDenominator )
 {
-  return mRootRule->legendSymbolItems();
+  return mRootRule->legendSymbolItems( scaleDenominator );
 }
 
 

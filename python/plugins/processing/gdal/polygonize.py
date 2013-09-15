@@ -27,11 +27,12 @@ import os
 from PyQt4 import QtGui, QtCore
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.ProcessingUtils import ProcessingUtils
 
 from processing.parameters.ParameterRaster import ParameterRaster
 from processing.parameters.ParameterString import ParameterString
 from processing.outputs.OutputVector import OutputVector
+
+from processing.tools.system import *
 
 from processing.gdal.GdalUtils import GdalUtils
 
@@ -56,14 +57,14 @@ class polygonize(GeoAlgorithm):
         arguments = []
         arguments.append(self.getParameterValue(polygonize.INPUT))
         arguments.append('-f')
-        arguments.append('"ESRI Shapefile"')
+        arguments.append('ESRI Shapefile')
         output = self.getOutputValue(polygonize.OUTPUT)
         arguments.append(output)
         arguments.append(QtCore.QFileInfo(output).baseName())
         arguments.append(self.getParameterValue(polygonize.FIELD))
 
         commands = []
-        if ProcessingUtils.isWindows():
+        if isWindows():
             commands = ["cmd.exe", "/C ", "gdal_polygonize.bat", GdalUtils.escapeAndJoin(arguments)]
         else:
             commands = ["gdal_polygonize.py", GdalUtils.escapeAndJoin(arguments)]

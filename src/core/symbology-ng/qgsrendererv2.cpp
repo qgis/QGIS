@@ -507,7 +507,7 @@ QgsLegendSymbologyList QgsFeatureRendererV2::legendSymbologyItems( QSize iconSiz
   return QgsLegendSymbologyList();
 }
 
-QgsLegendSymbolList QgsFeatureRendererV2::legendSymbolItems()
+QgsLegendSymbolList QgsFeatureRendererV2::legendSymbolItems( double scaleDenominator )
 {
   return QgsLegendSymbolList();
 }

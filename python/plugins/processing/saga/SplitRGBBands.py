@@ -16,8 +16,8 @@
 *                                                                         *
 ***************************************************************************
 """
-from processing.core.ProcessingUtils import ProcessingUtils
-from processing.core.QGisLayers import QGisLayers
+from processing.tools.system import *
+from processing.tools import dataobjects
 from processing.saga.SagaUtils import SagaUtils
 
 __author__ = 'Victor Olaya'
@@ -53,7 +53,7 @@ class SplitRGBBands(GeoAlgorithm):
     def processAlgorithm(self, progress):
         #TODO:check correct num of bands
         input = self.getParameterValue(SplitRGBBands.INPUT)
-        temp = ProcessingUtils.getTempFilename(None).replace('.','');
+        temp = getTempFilename(None).replace('.','');
         basename = os.path.basename(temp)
         validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
         safeBasename = ''.join(c for c in basename if c in validChars)
@@ -63,7 +63,7 @@ class SplitRGBBands(GeoAlgorithm):
         g = self.getOutputValue(SplitRGBBands.G)
         b = self.getOutputValue(SplitRGBBands.B)
         commands = []
-        if ProcessingUtils.isWindows():
+        if isWindows():
             commands.append("io_gdal 0 -GRIDS \"" + temp + "\" -FILES \"" + input+"\"")
             commands.append("io_gdal 1 -GRIDS \"" + temp + "_0001.sgrd\" -FORMAT 1 -TYPE 0 -FILE \"" + r + "\"");
             commands.append("io_gdal 1 -GRIDS \"" + temp + "_0002.sgrd\" -FORMAT 1 -TYPE 0 -FILE \"" + g + "\"");

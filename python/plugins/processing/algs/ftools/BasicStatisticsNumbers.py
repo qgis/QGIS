@@ -24,21 +24,15 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import math
-
 from PyQt4.QtCore import *
-
 from qgis.core import *
-
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.QGisLayers import QGisLayers
-
+from processing.tools import dataobjects, vector
 from processing.parameters.ParameterVector import ParameterVector
 from processing.parameters.ParameterTableField import ParameterTableField
-
 from processing.outputs.OutputHTML import OutputHTML
 from processing.outputs.OutputNumber import OutputNumber
-
-from processing.algs.ftools import FToolsUtils as utils
+from processing.tools import vector as utils
 
 class BasicStatisticsNumbers(GeoAlgorithm):
 
@@ -56,12 +50,6 @@ class BasicStatisticsNumbers(GeoAlgorithm):
     RANGE = "RANGE"
     MEDIAN = "MEDIAN"
     UNIQUE = "UNIQUE"
-
-
-    #===========================================================================
-    # def getIcon(self):
-    #    return QtGui.QIcon(os.path.dirname(__file__) + "/icons/basic_statistics.png")
-    #===========================================================================
 
     def defineCharacteristics(self):
         self.name = "Basic statistics for numeric fields"
@@ -85,7 +73,7 @@ class BasicStatisticsNumbers(GeoAlgorithm):
         self.addOutput(OutputNumber(self.STD_DEV, "Standard deviation"))
 
     def processAlgorithm(self, progress):
-        layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT_LAYER))
+        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_LAYER))
         fieldName = self.getParameterValue(self.FIELD_NAME)
 
         outputFile = self.getOutputValue(self.OUTPUT_HTML_FILE)
@@ -103,7 +91,7 @@ class BasicStatisticsNumbers(GeoAlgorithm):
         isFirst = True
         values = []
 
-        features = QGisLayers.features(layer)
+        features = vector.features(layer)
         count = len(features)
         total = 100.0 / float(count)
         current = 0

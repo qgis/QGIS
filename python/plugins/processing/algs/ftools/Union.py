@@ -28,9 +28,9 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
 from processing.parameters.ParameterVector import ParameterVector
-from processing.core.QGisLayers import QGisLayers
+from processing.tools import dataobjects, vector
 from processing.outputs.OutputVector import OutputVector
-from processing.algs.ftools import FToolsUtils as utils
+from processing.tools import vector as utils
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.GeoAlgorithm import GeoAlgorithm
 
@@ -46,8 +46,8 @@ class   Union(GeoAlgorithm):
     #===========================================================================
 
     def processAlgorithm(self, progress):
-        vlayerA = QGisLayers.getObjectFromUri(self.getParameterValue(Union.INPUT))
-        vlayerB = QGisLayers.getObjectFromUri(self.getParameterValue(Union.INPUT2))
+        vlayerA = dataobjects.getObjectFromUri(self.getParameterValue(Union.INPUT))
+        vlayerB = dataobjects.getObjectFromUri(self.getParameterValue(Union.INPUT2))
         GEOS_EXCEPT = True
         FEATURE_EXCEPT = True
         vproviderA = vlayerA.dataProvider()
@@ -59,12 +59,12 @@ class   Union(GeoAlgorithm):
         inFeatA = QgsFeature()
         inFeatB = QgsFeature()
         outFeat = QgsFeature()
-        indexA = utils.createSpatialIndex(vlayerB)
-        indexB = utils.createSpatialIndex(vlayerA)
+        indexA = utils.spatialindex(vlayerB)
+        indexB = utils.spatialindex(vlayerA)
 
         count = 0
         nElement = 0
-        featuresA = QGisLayers.features(vlayerA)
+        featuresA = vector.features(vlayerA)
         nFeat = len(featuresA)
         for inFeatA in featuresA:
           progress.setPercentage(nElement/float(nFeat) * 50)
@@ -151,7 +151,7 @@ class   Union(GeoAlgorithm):
 
         length = len(vproviderA.fields())
 
-        featuresA = QGisLayers.features(vlayerB)
+        featuresA = vector.features(vlayerB)
         nFeat = len(featuresA)
         for inFeatA in featuresA:
             progress.setPercentage(nElement/float(nFeat) * 100)

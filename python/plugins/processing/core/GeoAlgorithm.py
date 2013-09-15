@@ -27,13 +27,13 @@ import traceback
 import copy
 from processing.outputs.Output import Output
 from processing.parameters.Parameter import Parameter
-from processing.core.QGisLayers import QGisLayers
+from processing.tools import dataobjects, vector
 from processing.parameters.ParameterRaster import ParameterRaster
 from processing.parameters.ParameterVector import ParameterVector
 from PyQt4 import QtGui
 from PyQt4.QtCore import *
 from qgis.core import *
-from processing.core.ProcessingUtils import ProcessingUtils
+from processing.tools.system import *
 from processing.parameters.ParameterMultipleInput import ParameterMultipleInput
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.ProcessingLog import ProcessingLog
@@ -65,6 +65,11 @@ class GeoAlgorithm:
         self.canRunInBatchMode = True
         #to be set by the provider when it loads the algorithm
         self.provider = None
+        
+        #if the algorithm is run as part of a model, the parent model can be set in this variable, 
+        #to allow for customized behaviour, in case some operations should be run differently when 
+        #running as part of a model
+        self.model = None
 
         self.defineCharacteristics()
 
@@ -135,13 +140,14 @@ class GeoAlgorithm:
     #=========================================================
 
 
-    def execute(self, progress):
+    def execute(self, progress, model = None):
+        
         '''The method to use to call a processing algorithm.
         Although the body of the algorithm is in processAlgorithm(),
         it should be called using this method, since it performs
         some additional operations.
         Raises a GeoAlgorithmExecutionException in case anything goes wrong.'''
-
+        self.model = model
         try:
             self.setOutputCRS()
             self.resolveTemporaryOutputs()
@@ -153,7 +159,7 @@ class GeoAlgorithm:
         except GeoAlgorithmExecutionException, gaee:
             ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, gaee.msg)
             raise gaee
-        except:
+        except Exception, e:
             #if something goes wrong and is not caught in the algorithm,
             #we catch it here and wrap it
             lines = ["Uncaught error while executing algorithm"]
@@ -165,7 +171,7 @@ class GeoAlgorithm:
                 lines.append(errstring)
             lines.append(errstring.replace("\n", "|"))
             ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, lines)
-            raise GeoAlgorithmExecutionException(errstring)
+            raise GeoAlgorithmExecutionException(str(e))
 
 
     def runPostExecutionScript(self, progress):
@@ -198,17 +204,17 @@ class GeoAlgorithm:
         for out in self.outputs:
             if isinstance(out, OutputVector):
                 if out.compatible is not None:
-                    layer = QGisLayers.getObjectFromUri(out.compatible)
+                    layer = dataobjects.getObjectFromUri(out.compatible)
                     if layer is None: # for the case of memory layer, if the getCompatible method has been called
                         continue
                     provider = layer.dataProvider()
                     writer = out.getVectorWriter( provider.fields(), provider.geometryType(), layer.crs())
-                    features = QGisLayers.features(layer)
+                    features = vector.features(layer)
                     for feature in features:
                         writer.addFeature(feature)
             elif isinstance(out, OutputRaster):
                 if out.compatible is not None:
-                    layer = QGisLayers.getObjectFromUri(out.compatible)
+                    layer = dataobjects.getObjectFromUri(out.compatible)
                     provider = layer.dataProvider()
                     writer = QgsRasterFileWriter(out.value)
                     format = self.getFormatShortNameFromFilename(out.value)
@@ -216,10 +222,10 @@ class GeoAlgorithm:
                     writer.writeRaster(layer.pipe(), layer.width(), layer.height(), layer.extent(), layer.crs())
             elif isinstance(out, OutputTable):
                 if out.compatible is not None:
-                    layer = QGisLayers.getObjectFromUri(out.compatible)
+                    layer = dataobjects.getObjectFromUri(out.compatible)
                     provider = layer.dataProvider()
                     writer = out.getTableWriter(provider.fields())
-                    features = QGisLayers.features(layer)
+                    features = vector.features(layer)
                     for feature in features:
                         writer.addRecord(feature)
             progress.setPercentage(100 * i / float(len(self.outputs)))
@@ -241,11 +247,11 @@ class GeoAlgorithm:
                 if not os.path.isabs(out.value):
                     continue
                 if isinstance(out, OutputRaster):
-                    exts = QGisLayers.getSupportedOutputRasterLayerExtensions()
+                    exts = dataobjects.getSupportedOutputRasterLayerExtensions()
                 elif isinstance(out, OutputVector):
-                    exts = QGisLayers.getSupportedOutputVectorLayerExtensions()
+                    exts = dataobjects.getSupportedOutputVectorLayerExtensions()
                 elif isinstance(out, OutputTable):
-                    exts = QGisLayers.getSupportedOutputTableExtensions()
+                    exts = dataobjects.getSupportedOutputTableExtensions()
                 elif isinstance(out, OutputHTML):
                     exts =["html", "htm"]
                 else:
@@ -262,10 +268,10 @@ class GeoAlgorithm:
         '''sets temporary outputs (output.value = None) with a temporary file instead'''
         for out in self.outputs:
             if (not out.hidden) and out.value == None:
-                ProcessingUtils.setTempOutput(out, self)
+                setTempOutput(out, self)
 
     def setOutputCRS(self):
-        layers = QGisLayers.getAllLayers()
+        layers = dataobjects.getAllLayers()
         for param in self.parameters:
             if isinstance(param, (ParameterRaster, ParameterVector, ParameterMultipleInput)):
                 if param.value:
@@ -283,13 +289,13 @@ class GeoAlgorithm:
                         if p is not None:
                             self.crs = p.crs()
                             return
-        qgis = QGisLayers.iface
+        qgis = dataobjects.interface.iface
         self.crs = qgis.mapCanvas().mapRenderer().destinationCrs()
 
     def checkInputCRS(self):
         '''it checks that all input layers use the same CRS. If so, returns True. False otherwise'''
         crs = None;
-        layers = QGisLayers.getAllLayers()
+        layers = dataobjects.getAllLayers()
         for param in self.parameters:
             if isinstance(param, (ParameterRaster, ParameterVector, ParameterMultipleInput)):
                 if param.value:

@@ -24,7 +24,7 @@ from processing.parameters.ParameterString import ParameterString
 from processing.parameters.ParameterTableField import ParameterTableField
 from processing.parameters.ParameterVector import ParameterVector
 from processing.outputs.OutputVector import OutputVector
-from processing.core.QGisLayers import QGisLayers
+from processing.tools import dataobjects, vector
 from processing.parameters.ParameterCrs import ParameterCrs
 
 
@@ -49,7 +49,7 @@ class mmqgisx_delete_columns_algorithm(GeoAlgorithm):
 
   def processAlgorithm(self, progress):
 
-    layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.LAYERNAME))
+    layer = dataobjects.getObjectFromUri(self.getParameterValue(self.LAYERNAME))
     idx = layer.fieldNameIndex(self.getParameterValue(self.COLUMN))
     output = self.getOutputFromName(self.SAVENAME)
     fields = layer.pendingFields()
@@ -60,7 +60,7 @@ class mmqgisx_delete_columns_algorithm(GeoAlgorithm):
         newFields.append(field)
       i += 1
     outfile = output.getVectorWriter(newFields, layer.wkbType(), layer.crs() )
-    features = QGisLayers.features(layer)
+    features = vector.features(layer)
     featurecount = len(features)
     i = 0
     outFeat = QgsFeature()
@@ -97,11 +97,11 @@ class mmqgisx_delete_duplicate_geometries_algorithm(GeoAlgorithm):
   #===========================================================================
 
   def processAlgorithm(self, progress):
-    layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.LAYERNAME))
+    layer = dataobjects.getObjectFromUri(self.getParameterValue(self.LAYERNAME))
     output = self.getOutputFromName(self.SAVENAME)
     fields = layer.pendingFields()
     outfile = output.getVectorWriter(fields, layer.wkbType(), layer.crs() )
-    features = QGisLayers.features(layer)
+    features = vector.features(layer)
     featurecount = len(features)
     i = 0
     cleaned = {}
@@ -139,7 +139,7 @@ class mmqgisx_geometry_convert_algorithm(GeoAlgorithm):
 
   def processAlgorithm(self, progress):
 
-    layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.LAYERNAME))
+    layer = dataobjects.getObjectFromUri(self.getParameterValue(self.LAYERNAME))
     output = self.getOutputFromName(self.SAVENAME)
     index = self.getParameterValue(self.NEWTYPE)
 
@@ -161,7 +161,7 @@ class mmqgisx_geometry_convert_algorithm(GeoAlgorithm):
     fields = layer.pendingFields()
     outfile = output.getVectorWriter(fields, newtype, layer.crs() )
 
-    features = QGisLayers.features(layer)
+    features = vector.features(layer)
     feature_count = len(features)
     i = 0
     for feature in features:
@@ -590,7 +590,7 @@ class mmqgisx_gridify_algorithm(GeoAlgorithm):
 
   def processAlgorithm(self, progress):
 
-    layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.LAYERNAME))
+    layer = dataobjects.getObjectFromUri(self.getParameterValue(self.LAYERNAME))
     hspacing = self.getParameterValue(self.HSPACING)
     vspacing = self.getParameterValue(self.VSPACING)
 
@@ -604,7 +604,7 @@ class mmqgisx_gridify_algorithm(GeoAlgorithm):
     deleted_points = 0
     feature_number = 0
 
-    features = QGisLayers.features(layer)
+    features = vector.features(layer)
     feature_count = len(features)
     for feature in features:
       progress.setPercentage(float(feature_number) / feature_count * 100)
@@ -778,8 +778,8 @@ class mmqgisx_hub_distance_algorithm(GeoAlgorithm):
 
   def processAlgorithm(self, progress):
 
-    layersource = QGisLayers.getObjectFromUri(self.getParameterValue(self.SOURCENAME))
-    layerdest = QGisLayers.getObjectFromUri(self.getParameterValue(self.DESTNAME))
+    layersource = dataobjects.getObjectFromUri(self.getParameterValue(self.SOURCENAME))
+    layerdest = dataobjects.getObjectFromUri(self.getParameterValue(self.DESTNAME))
 
     nameattribute = self.getParameterValue(self.NAMEATTRIBUTE)
     units = self.unitlist[self.getParameterValue(self.UNITS)]
@@ -806,14 +806,14 @@ class mmqgisx_hub_distance_algorithm(GeoAlgorithm):
 
     # Create array of hubs in memory
     hubs = []
-    features = QGisLayers.features(layerdest)
+    features = vector.features(layerdest)
     for feature in features:
       hubs.append(mmqgisx_hub(feature.geometry().boundingBox().center(), \
           unicode(feature.attributes()[nameindex])))
 
     # Scan source points, find nearest hub, and write to output file
     writecount = 0
-    features = QGisLayers.features(layersource)
+    features = vector.features(layersource)
     featureCount = len(features)
     for feature in features:
       source = feature.geometry().boundingBox().center()
@@ -889,8 +889,8 @@ class mmqgisx_hub_lines_algorithm(GeoAlgorithm):
 
   def processAlgorithm(self, progress):
 
-    hublayer = QGisLayers.getObjectFromUri(self.getParameterValue(self.HUBNAME))
-    spokelayer = QGisLayers.getObjectFromUri(self.getParameterValue(self.SPOKENAME))
+    hublayer = dataobjects.getObjectFromUri(self.getParameterValue(self.HUBNAME))
+    spokelayer = dataobjects.getObjectFromUri(self.getParameterValue(self.SPOKENAME))
 
     hubattr = self.getParameterValue(self.HUBATTRIBUTE)
     spokeattr = self.getParameterValue(self.SPOKEATTRIBUTE)
@@ -909,7 +909,7 @@ class mmqgisx_hub_lines_algorithm(GeoAlgorithm):
 
     # Scan spoke points
     linecount = 0
-    spokepoints = QGisLayers.features(spokelayer)
+    spokepoints = vector.features(spokelayer)
     i = 0
     for spokepoint in spokepoints:
       i += 1
@@ -918,7 +918,7 @@ class mmqgisx_hub_lines_algorithm(GeoAlgorithm):
       spokeid = unicode(spokepoint.attributes()[spokeindex])
       progress.setPercentage(float(i) / len(spokepoints) * 100)
       # Scan hub points to find first matching hub
-      hubpoints = QGisLayers.features(hublayer)
+      hubpoints = vector.features(hublayer)
       for hubpoint in hubpoints:
         hubid = unicode(hubpoint.attributes()[hubindex])
         if hubid == spokeid:
@@ -965,8 +965,8 @@ class mmqgisx_merge_algorithm(GeoAlgorithm):
 
   def processAlgorithm(self, progress):
 
-    layer1 = QGisLayers.getObjectFromUri(self.getParameterValue(self.LAYER1))
-    layer2 = QGisLayers.getObjectFromUri(self.getParameterValue(self.LAYER2))
+    layer1 = dataobjects.getObjectFromUri(self.getParameterValue(self.LAYER1))
+    layer2 = dataobjects.getObjectFromUri(self.getParameterValue(self.LAYER2))
 
     fields = []
     layers = [layer1, layer2]
@@ -1006,7 +1006,7 @@ class mmqgisx_merge_algorithm(GeoAlgorithm):
             break
           i += 1
 
-      features = QGisLayers.features(layer)
+      features = vector.features(layer)
       for feature in features:
         sattributes = feature.attributes()
         dattributes = []
@@ -1053,7 +1053,7 @@ class mmqgisx_select_algorithm(GeoAlgorithm):
   def processAlgorithm(self, progress):
 
     filename = self.getParameterValue(self.LAYERNAME)
-    layer = QGisLayers.getObjectFromUri(filename)
+    layer = dataobjects.getObjectFromUri(filename)
 
     attribute = self.getParameterValue(self.ATTRIBUTE)
     comparison = self.comparisons [self.getParameterValue(self.COMPARISON)]
@@ -1122,7 +1122,7 @@ class mmqgisx_text_to_float_algorithm(GeoAlgorithm):
   #===========================================================================
 
   def processAlgorithm(self, progress):
-    layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.LAYERNAME))
+    layer = dataobjects.getObjectFromUri(self.getParameterValue(self.LAYERNAME))
     attribute = self.getParameterValue(self.ATTRIBUTE)
     idx = layer.fieldNameIndex(attribute)
     fields = layer.pendingFields()
@@ -1131,7 +1131,7 @@ class mmqgisx_text_to_float_algorithm(GeoAlgorithm):
     out = output.getVectorWriter(fields, layer.wkbType(), layer.crs())
 
     i = 0
-    features = QGisLayers.features(layer)
+    features = vector.features(layer)
     featurecount = len(features)
     for feature in features:
       i+=1

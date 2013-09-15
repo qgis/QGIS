@@ -24,19 +24,13 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from PyQt4.QtCore import *
-
 from qgis.core import *
-
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.QGisLayers import QGisLayers
-from processing.core.ProcessingLog import ProcessingLog
-
+from processing.tools import dataobjects, vector
 from processing.parameters.ParameterVector import ParameterVector
 from processing.parameters.ParameterString import ParameterString
-
 from processing.outputs.OutputVector import OutputVector
-
-from processing.algs.ftools import FToolsUtils as utils
+from processing.tools import vector as utils
 
 class PointsInPolygon(GeoAlgorithm):
 
@@ -60,8 +54,8 @@ class PointsInPolygon(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, "Result"))
 
     def processAlgorithm(self, progress):
-        polyLayer = QGisLayers.getObjectFromUri(self.getParameterValue(self.POLYGONS))
-        pointLayer = QGisLayers.getObjectFromUri(self.getParameterValue(self.POINTS))
+        polyLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.POLYGONS))
+        pointLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.POINTS))
         fieldName = self.getParameterValue(self.FIELD)
 
         polyProvider = polyLayer.dataProvider()
@@ -71,7 +65,7 @@ class PointsInPolygon(GeoAlgorithm):
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fieldList.toList(),
                      polyProvider.geometryType(), polyProvider.crs())
 
-        spatialIndex = utils.createSpatialIndex(pointLayer)
+        spatialIndex = utils.spatialindex(pointLayer)
 
         ftPoly = QgsFeature()
         ftPoint = QgsFeature()
@@ -81,7 +75,7 @@ class PointsInPolygon(GeoAlgorithm):
         current = 0
         hasIntersections = False
 
-        features = QGisLayers.features(polyLayer)
+        features = vector.features(polyLayer)
         total = 100.0 / float(len(features))
         for ftPoly in features:
             geom = ftPoly.geometry()

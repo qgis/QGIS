@@ -30,6 +30,13 @@
 #include "qgspythonutils.h"
 #include "qgspluginsortfilterproxymodel.h"
 
+const int PLUGMAN_TAB_ALL = 0;
+const int PLUGMAN_TAB_INSTALLED = 1;
+const int PLUGMAN_TAB_NOT_INSTALLED = 2;
+const int PLUGMAN_TAB_UPGRADEABLE = 3;
+const int PLUGMAN_TAB_NEW = 4;
+const int PLUGMAN_TAB_INVALID = 5;
+
 /*!
  * \brief Plugin manager for browsing, (un)installing and (un)loading plugins
 @author Gary Sherman
@@ -111,18 +118,6 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     //! Update the filter when user changes the filter expression
     void on_leFilter_textChanged( QString theText );
 
-    //! Set filter mode to filter by name
-    void on_rbFilterNames_toggled( bool checked );
-
-    //! Set filter mode to filter by description
-    void on_rbFilterDescriptions_toggled( bool checked );
-
-    //! Set filter mode to filter by tags
-    void on_rbFilterTags_toggled( bool checked );
-
-    //! Set filter mode to filter by autor
-    void on_rbFilterAuthors_toggled( bool checked );
-
     //! Upgrade all upgradeable plugins
     void on_buttonUpgradeAll_clicked( );
 
@@ -152,6 +147,9 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
 
     //! Reload plugin metadata registry after allowing/disallowing experimental plugins
     void on_ckbExperimental_toggled( bool state );
+
+    //! Reload plugin metadata registry after allowing/disallowing deprecated plugins
+    void on_ckbDeprecated_toggled( bool state );
 
     //! Open help browser
     void on_buttonBox_helpRequested( ) { QgsContextHelp::run( metaObject()->className() ); }

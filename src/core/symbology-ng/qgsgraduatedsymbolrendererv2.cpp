@@ -22,7 +22,7 @@
 #include "qgsvectorlayer.h"
 #include "qgslogger.h"
 #include "qgsvectordataprovider.h"
-
+#include "qgsexpression.h"
 #include <QDomDocument>
 #include <QDomElement>
 #include <QSettings> // for legend
@@ -184,18 +184,22 @@ QgsSymbolV2* QgsGraduatedSymbolRendererV2::symbolForValue( double value )
 QgsSymbolV2* QgsGraduatedSymbolRendererV2::symbolForFeature( QgsFeature& feature )
 {
   const QgsAttributes& attrs = feature.attributes();
+  QVariant value;
   if ( mAttrNum < 0 || mAttrNum >= attrs.count() )
   {
-    QgsDebugMsg( "attribute required by renderer not found: " + mAttrName + "(index " + QString::number( mAttrNum ) + ")" );
-    return NULL;
+      value = mExpression->evaluate( &feature );
+  }
+  else
+  {
+      value = attrs[mAttrNum];
   }
 
   // Null values should not be categorized
-  if ( attrs[mAttrNum].isNull() )
+  if ( value.isNull() )
     return NULL;
 
   // find the right category
-  QgsSymbolV2* symbol = symbolForValue( attrs[mAttrNum].toDouble() );
+  QgsSymbolV2* symbol = symbolForValue( value.toDouble() );
   if ( symbol == NULL )
     return NULL;
 
@@ -236,6 +240,12 @@ void QgsGraduatedSymbolRendererV2::startRender( QgsRenderContext& context, const
 {
   // find out classification attribute index from name
   mAttrNum = vlayer ? vlayer->fieldNameIndex( mAttrName ) : -1;
+
+  if ( mAttrNum == -1 )
+  {
+      mExpression = new QgsExpression( mAttrName );
+      mExpression->prepare( vlayer->pendingFields() );
+  }
 
   mRotationFieldIdx  = ( mRotationField.isEmpty()  ? -1 : vlayer->fieldNameIndex( mRotationField ) );
   mSizeScaleFieldIdx = ( mSizeScaleField.isEmpty() ? -1 : vlayer->fieldNameIndex( mSizeScaleField ) );
@@ -279,7 +289,11 @@ void QgsGraduatedSymbolRendererV2::stopRender( QgsRenderContext& context )
 QList<QString> QgsGraduatedSymbolRendererV2::usedAttributes()
 {
   QSet<QString> attributes;
-  attributes.insert( mAttrName );
+  QgsExpression exp( mAttrName );
+  foreach (QString attr, exp.referencedColumns() )
+  {
+      attributes << attr;
+  }
   if ( !mRotationField.isEmpty() )
   {
     attributes.insert( mRotationField );
@@ -780,11 +794,29 @@ QgsGraduatedSymbolRendererV2* QgsGraduatedSymbolRendererV2::createRenderer(
     return NULL;
 
   int attrNum = vlayer->fieldNameIndex( attrName );
+  double minimum;
+  double maximum;
+  if ( attrNum == -1 )
+  {
+      QList<double> values;
+      QgsFeatureIterator fit = vlayer->getFeatures();
+      QgsFeature feature;
+      QgsExpression expression( attrName );
+      while ( fit.nextFeature( feature ) )
+      {
+          values << expression.evaluate( feature ).toDouble();
+      }
+      qSort( values );
+      minimum = values.first();
+      maximum = values.last();
+  }
+  else
+  {
+     minimum = vlayer->minimumValue( attrNum ).toDouble();
+     maximum = vlayer->maximumValue( attrNum ).toDouble();
+  }
 
-  double minimum = vlayer->minimumValue( attrNum ).toDouble();
-  double maximum = vlayer->maximumValue( attrNum ).toDouble();
   QgsDebugMsg( QString( "min %1 // max %2" ).arg( minimum ).arg( maximum ) );
-
   QList<double> breaks;
   QList<int> labels;
   if ( mode == EqualInterval )

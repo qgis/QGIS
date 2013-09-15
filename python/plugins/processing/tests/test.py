@@ -129,7 +129,7 @@ class ProcessingProviderTestCase(unittest.TestCase):
                 yield
 
     def setUp(self):
-        ProcessingConfig.setSettingValue(ProcessingConfig.USE_THREADS, self.threaded)
+        #ProcessingConfig.setSettingValue(ProcessingConfig.USE_THREADS, self.threaded)
         print
         print bcolors.INFO, self.msg, bcolors.ENDC,
         print "Parameters: ", self.alg.parameters,

@@ -51,6 +51,11 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
                      SIGNAL("clicked()"), self.removeAPI)
         self.compileAPIs.clicked.connect(self._prepareAPI)
 
+        self.resetFontColor.setIcon(QIcon(":/images/themes/default/console/iconResetColorConsole.png"))
+        self.resetFontColorEditor.setIcon(QIcon(":/images/themes/default/console/iconResetColorConsole.png"))
+        self.resetFontColor.clicked.connect(self._resetFontColor)
+        self.resetFontColorEditor.clicked.connect(self._resetFontColorEditor)
+
     def initialCheck(self):
         if self.preloadAPI.isChecked():
             self.enableDisable(False)
@@ -176,6 +181,21 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
         settings.setValue("pythonConsole/autoCloseBracket", self.autoCloseBracket.isChecked())
         settings.setValue("pythonConsole/autoCloseBracketEditor", self.autoCloseBracketEditor.isChecked())
 
+        settings.setValue("pythonConsole/defaultFontColor", self.defaultFontColor.color())
+        settings.setValue("pythonConsole/keywordFontColor", self.keywordFontColor.color())
+        settings.setValue("pythonConsole/decorFontColor", self.decorFontColor.color())
+        settings.setValue("pythonConsole/methodFontColor", self.methodFontColor.color())
+        settings.setValue("pythonConsole/commentFontColor", self.commentFontColor.color())
+        settings.setValue("pythonConsole/commentBlockFontColor", self.commentBlockFontColor.color())
+        settings.setValue("pythonConsole/stderrFontColor", self.stderrFontColor.color())
+
+        settings.setValue("pythonConsole/defaultFontColorEditor", self.defaultFontColorEditor.color())
+        settings.setValue("pythonConsole/keywordFontColorEditor", self.keywordFontColorEditor.color())
+        settings.setValue("pythonConsole/decorFontColorEditor", self.decorFontColorEditor.color())
+        settings.setValue("pythonConsole/methodFontColorEditor", self.methodFontColorEditor.color())
+        settings.setValue("pythonConsole/commentFontColorEditor", self.commentFontColorEditor.color())
+        settings.setValue("pythonConsole/commentBlockFontColorEditor", self.commentBlockFontColorEditor.color())
+
     def restoreSettings(self):
         settings = QSettings()
         self.spinBox.setValue(settings.value("pythonConsole/fontsize", 10, type=int))
@@ -217,6 +237,48 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
             self.autoCompFromAPIEditor.setChecked(True)
         elif settings.value("pythonConsole/autoCompleteSourceEditor") == 'fromDocAPI':
             self.autoCompFromDocAPIEditor.setChecked(True)
+
+        ## Setting font lexer color
+        self.defaultFontColor.setColor(QColor(settings.value("pythonConsole/defaultFontColor", QColor(Qt.black))))
+        self.keywordFontColor.setColor(QColor(settings.value("pythonConsole/keywordFontColor", QColor(Qt.darkGreen))))
+        self.methodFontColor.setColor(QColor(settings.value("pythonConsole/methodFontColor", QColor(Qt.darkGray))))
+        self.decorFontColor.setColor(QColor(settings.value("pythonConsole/decorFontColor", QColor(Qt.darkBlue))))
+        self.commentFontColor.setColor(QColor(settings.value("pythonConsole/commentFontColor", QColor(Qt.gray))))
+        self.commentBlockFontColor.setColor(QColor(settings.value("pythonConsole/commentBlockFontColor", QColor(Qt.gray))))
+        self.defaultFontColorEditor.setColor(QColor(settings.value("pythonConsole/defaultFontColorEditor", QColor(Qt.black))))
+        self.keywordFontColorEditor.setColor(QColor(settings.value("pythonConsole/keywordFontColorEditor", QColor(Qt.darkGreen))))
+        self.methodFontColorEditor.setColor(QColor(settings.value("pythonConsole/methodFontColorEditor", QColor(Qt.darkGray))))
+        self.decorFontColorEditor.setColor(QColor(settings.value("pythonConsole/decorFontColorEditor", QColor(Qt.darkBlue))))
+        self.commentFontColorEditor.setColor(QColor(settings.value("pythonConsole/commentFontColorEditor", QColor(Qt.gray))))
+        self.commentBlockFontColorEditor.setColor(QColor(settings.value("pythonConsole/commentBlockFontColorEditor", QColor(Qt.gray))))
+        self.stderrFontColor.setColor(QColor(settings.value("pythonConsole/stderrFontColor", QColor(Qt.red))))
+
+        self.defaultFontColor.setButtonBackground()
+        self.defaultFontColorEditor.setButtonBackground()
+
+    def _resetFontColor(self):
+        self.defaultFontColor.setColor(QColor(Qt.black))
+        self.keywordFontColor.setColor(QColor(Qt.darkGreen))
+        self.methodFontColor.setColor(QColor(Qt.darkGray))
+        self.decorFontColor.setColor(QColor(Qt.darkBlue))
+        self.commentFontColor.setColor(QColor(Qt.gray))
+        self.commentBlockFontColor.setColor(QColor(Qt.gray))
+        self.stderrFontColor.setColor(QColor(Qt.red))
+
+    def _resetFontColorEditor(self):
+        self.defaultFontColorEditor.setColor(QColor(Qt.black))
+        self.keywordFontColorEditor.setColor(QColor(Qt.darkGreen))
+        self.methodFontColorEditor.setColor(QColor(Qt.darkGray))
+        self.decorFontColorEditor.setColor(QColor(Qt.darkBlue))
+        self.commentFontColorEditor.setColor(QColor(Qt.gray))
+        self.commentBlockFontColorEditor.setColor(QColor(Qt.gray))
+
+#     def _setButtonBack(self, w):
+#         from qgis.gui import QgsColorButton
+#         objs = [w.itemAt(i) for i in range(w.count())]
+#         for obj in objs:
+#             if isinstance(obj, QgsColorButton):
+#                 return obj.setButtonBackground()
 
     def reject(self):
         QDialog.reject(self)

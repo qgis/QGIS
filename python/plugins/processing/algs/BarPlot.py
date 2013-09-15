@@ -33,7 +33,7 @@ from processing.parameters.ParameterTableField import ParameterTableField
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.outputs.OutputHTML import OutputHTML
 from processing.tools import *
-from processing.core.QGisLayers import QGisLayers
+from processing.tools import dataobjects
 
 class BarPlot(GeoAlgorithm):
 
@@ -44,7 +44,7 @@ class BarPlot(GeoAlgorithm):
 
     def processAlgorithm(self, progress):
         uri = self.getParameterValue(self.INPUT)
-        layer = QGisLayers.getObjectFromUri(uri)
+        layer = dataobjects.getObjectFromUri(uri)
         namefieldname = self.getParameterValue(self.NAME_FIELD)
         valuefieldname = self.getParameterValue(self.VALUE_FIELD)
         output = self.getOutputValue(self.OUTPUT)

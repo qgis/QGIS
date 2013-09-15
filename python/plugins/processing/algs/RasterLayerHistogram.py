@@ -30,7 +30,7 @@ from PyQt4.QtCore import *
 from qgis.core import *
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.outputs.OutputHTML import OutputHTML
-from processing.core.QGisLayers import QGisLayers
+from processing.tools import dataobjects
 from processing.parameters.ParameterNumber import ParameterNumber
 from processing.parameters.ParameterRaster import ParameterRaster
 from processing.tools import raster
@@ -45,7 +45,7 @@ class RasterLayerHistogram(GeoAlgorithm):
 
     def processAlgorithm(self, progress):
         uri = self.getParameterValue(self.INPUT)
-        layer = QGisLayers.getObjectFromUri(uri)
+        layer = dataobjects.getObjectFromUri(uri)
         outputplot = self.getOutputValue(self.PLOT)
         outputtable = self.getOutputFromName(self.TABLE)
         values = raster.scanraster(layer, progress)

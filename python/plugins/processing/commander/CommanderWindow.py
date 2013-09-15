@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from processing import interface
 __author__ = 'Victor Olaya'
 __date__ = 'April 2013'
 __copyright__ = '(C) 2013, Victor Olaya'
@@ -28,8 +29,8 @@ from PyQt4.QtGui import *
 from processing.core.Processing import Processing
 from processing.gui.MissingDependencyDialog import MissingDependencyDialog
 from processing.gui.ParametersDialog import ParametersDialog
-from processing.core.QGisLayers import QGisLayers
-from processing.core.ProcessingUtils import ProcessingUtils, mkdir
+from processing.tools import dataobjects
+from processing.tools.system import *
 import types
 import os
 import imp
@@ -47,7 +48,7 @@ class CommanderWindow(QtGui.QDialog):
         self.initGui()
 
     def commandsFolder(self):
-        folder = unicode(os.path.join(ProcessingUtils.userFolder(), "commander"))
+        folder = unicode(os.path.join(userFolder(), "commander"))
         mkdir(folder)
         return os.path.abspath(folder)
 
@@ -206,7 +207,7 @@ class CommanderWindow(QtGui.QDialog):
         dlg = alg.getCustomParametersDialog()
         if not dlg:
             dlg = ParametersDialog(alg)
-        canvas = QGisLayers.iface.mapCanvas()
+        canvas = interface.iface.mapCanvas()
         prevMapTool = canvas.mapTool()
         dlg.show()
         dlg.exec_()

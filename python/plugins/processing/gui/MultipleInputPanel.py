@@ -56,11 +56,11 @@ class MultipleInputPanel(QtGui.QWidget):
         # #If there is a datatype, we use it to create the list of options
         # if self.datatype is not None:
         #    if self.datatype == ParameterMultipleInput.TYPE_RASTER:
-        #        options = QGisLayers.getRasterLayers()
+        #        options = dataobjects.getRasterLayers()
         #    elif self.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
-        #        options = QGisLayers.getVectorLayers()
+        #        options = dataobjects.getVectorLayers()
         #    else:
-        #        options = QGisLayers.getVectorLayers(self.datatype)
+        #        options = dataobjects.getVectorLayers(self.datatype)
         #    opts = []
         #    for opt in options:
         #        opts.append(opt.name())

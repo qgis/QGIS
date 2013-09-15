@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from processing import interface
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -28,7 +29,7 @@ from PyQt4 import QtGui, QtCore
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from processing.gui.RectangleMapTool import RectangleMapTool
-from processing.core.QGisLayers import QGisLayers
+from processing.tools import dataobjects
 from processing.parameters.ParameterRaster import ParameterRaster
 from processing.parameters.ParameterVector import ParameterVector
 from processing.parameters.ParameterMultipleInput import ParameterMultipleInput
@@ -55,7 +56,7 @@ class ExtentSelectionPanel(QtGui.QWidget):
         self.pushButton.clicked.connect(self.buttonPushed)
         self.horizontalLayout.addWidget(self.pushButton)
         self.setLayout(self.horizontalLayout)
-        canvas = QGisLayers.iface.mapCanvas()
+        canvas = interface.iface.mapCanvas()
         self.prevMapTool = canvas.mapTool()
         self.tool = RectangleMapTool(canvas)
         self.connect(self.tool, SIGNAL("rectangleCreated()"), self.fillCoords)
@@ -96,7 +97,7 @@ class ExtentSelectionPanel(QtGui.QWidget):
                     if isinstance(param.value, (QgsRasterLayer, QgsVectorLayer)):
                         layer = param.value
                     else:
-                        layer = QGisLayers.getObjectFromUri(param.value)
+                        layer = dataobjects.getObjectFromUri(param.value)
                     if layer:
                         found = True
                         self.addToRegion(layer, first)
@@ -104,7 +105,7 @@ class ExtentSelectionPanel(QtGui.QWidget):
                 elif isinstance(param, ParameterMultipleInput):
                     layers = param.value.split(";")
                     for layername in layers:
-                        layer = QGisLayers.getObjectFromUri(layername, first)
+                        layer = dataobjects.getObjectFromUri(layername, first)
                         if layer:
                             found = True
                             self.addToRegion(layer, first)
@@ -132,9 +133,9 @@ class ExtentSelectionPanel(QtGui.QWidget):
     def useLayerExtent(self):
         CANVAS_KEY = "Use canvas extent"
         extentsDict = {}
-        extentsDict[CANVAS_KEY] = QGisLayers.iface.mapCanvas().extent()
+        extentsDict[CANVAS_KEY] = interface.iface.mapCanvas().extent()
         extents = [CANVAS_KEY]
-        layers = QGisLayers.getAllLayers()
+        layers = dataobjects.getAllLayers()
         for layer in layers:
             extents.append(layer.name())
             extentsDict[layer.name()] = layer.extent()
@@ -143,7 +144,7 @@ class ExtentSelectionPanel(QtGui.QWidget):
             self.setValueFromRect(extentsDict[item])
 
     def selectOnCanvas(self):
-        canvas = QGisLayers.iface.mapCanvas()
+        canvas = interface.iface.mapCanvas()
         canvas.setMapTool(self.tool)
         self.dialog.showMinimized()
 
@@ -155,7 +156,7 @@ class ExtentSelectionPanel(QtGui.QWidget):
         s = str(r.xMinimum()) + "," + str(r.xMaximum()) + "," + str(r.yMinimum()) + "," + str(r.yMaximum())
         self.text.setText(s)
         self.tool.reset()
-        canvas = QGisLayers.iface.mapCanvas()
+        canvas = interface.iface.mapCanvas()
         canvas.setMapTool(self.prevMapTool)
         self.dialog.showNormal()
         self.dialog.raise_()

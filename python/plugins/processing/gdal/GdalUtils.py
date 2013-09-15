@@ -25,9 +25,7 @@ __revision__ = '$Format:%H$'
 
 import os
 import subprocess
-
 from PyQt4.QtCore import *
-
 from processing.core.ProcessingLog import ProcessingLog
 
 try:

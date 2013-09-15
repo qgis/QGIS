@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-import os
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -24,10 +23,10 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
+import os
 from processing.parameters.ParameterDataObject import ParameterDataObject
-from processing.core.QGisLayers import QGisLayers
+from processing.tools import dataobjects
 from qgis.core import *
-from processing.core.LayerExporter import LayerExporter
 
 class ParameterRaster(ParameterDataObject):
 
@@ -49,9 +48,9 @@ class ParameterRaster(ParameterDataObject):
         several times and it will always return the same file, performing the export only the first time.'''
         if self.exported:
             return self.exported
-        layer = QGisLayers.getObjectFromUri(self.value, False)
+        layer = dataobjects.getObjectFromUri(self.value, False)
         if layer:
-            self.exported = LayerExporter.exportRasterLayer(layer)
+            self.exported = dataobjects.exportRasterLayer(layer)
         else:
             self.exported = self.value
         return self.exported
@@ -69,7 +68,7 @@ class ParameterRaster(ParameterDataObject):
             return True
         else:
             self.value = unicode(obj)
-            layers = QGisLayers.getRasterLayers()
+            layers = dataobjects.getRasterLayers()
             for layer in layers:
                 if layer.name() == self.value:
                     self.value = unicode(layer.dataProvider().dataSourceUri())
@@ -77,7 +76,7 @@ class ParameterRaster(ParameterDataObject):
             return os.path.exists(self.value)
 
     def getFileFilter(self):
-        exts = QGisLayers.getSupportedOutputRasterLayerExtensions()
+        exts = dataobjects.getSupportedOutputRasterLayerExtensions()
         for i in range(len(exts)):
             exts[i] = exts[i].upper() + " files(*." + exts[i].lower() + ")"
         return ";;".join(exts)

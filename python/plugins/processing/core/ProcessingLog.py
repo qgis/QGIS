@@ -27,8 +27,7 @@ import os
 import codecs
 import datetime
 from PyQt4 import QtGui
-
-from processing.core.ProcessingUtils import ProcessingUtils
+from processing.tools.system import *
 from processing.core.ProcessingConfig import ProcessingConfig
 
 class ProcessingLog():
@@ -51,7 +50,7 @@ class ProcessingLog():
 
     @staticmethod
     def logFilename():
-        batchfile = ProcessingUtils.userFolder() + os.sep + "processing_qgis.log"
+        batchfile = userFolder() + os.sep + "processing_qgis.log"
         return batchfile
 
     @staticmethod

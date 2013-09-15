@@ -32,7 +32,7 @@ from processing.saga.SagaUtils import SagaUtils
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.core.ProcessingLog import ProcessingLog
-from processing.core.ProcessingUtils import ProcessingUtils
+from processing.tools.system import *
 
 class SagaAlgorithmProvider(AlgorithmProvider):
 
@@ -43,9 +43,10 @@ class SagaAlgorithmProvider(AlgorithmProvider):
 
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)
-        if ProcessingUtils.isWindows():
+        if isWindows():
             ProcessingConfig.addSetting(Setting(self.getDescription(), SagaUtils.SAGA_FOLDER, "SAGA folder", SagaUtils.sagaPath()))
         ProcessingConfig.addSetting(Setting(self.getDescription(), SagaUtils.SAGA_208, "Enable SAGA 2.0.8 compatibility", False))
+        ProcessingConfig.addSetting(Setting(self.getDescription(), SagaUtils.SAGA_IMPORT_EXPORT_OPTIMIZATION, "Enable SAGA Import/Export optimizations", False))
         ProcessingConfig.addSetting(Setting(self.getDescription(), SagaUtils.SAGA_AUTO_RESAMPLING, "Use min covering grid system for resampling", True))
         ProcessingConfig.addSetting(Setting(self.getDescription(), SagaUtils.SAGA_LOG_COMMANDS, "Log execution commands", True))
         ProcessingConfig.addSetting(Setting(self.getDescription(), SagaUtils.SAGA_LOG_CONSOLE, "Log console output", True))
@@ -57,7 +58,7 @@ class SagaAlgorithmProvider(AlgorithmProvider):
 
     def unload(self):
         AlgorithmProvider.unload(self)
-        if ProcessingUtils.isWindows():
+        if isWindows():
             ProcessingConfig.removeSetting(SagaUtils.SAGA_FOLDER)
         ProcessingConfig.removeSetting(SagaUtils.SAGA_AUTO_RESAMPLING)
         ProcessingConfig.removeSetting(SagaUtils.SAGA_RESAMPLING_REGION_XMIN)

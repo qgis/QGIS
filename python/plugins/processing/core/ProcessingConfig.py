@@ -23,13 +23,12 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from processing.core.ProcessingUtils import ProcessingUtils
+from processing.tools.system import *
 import os.path
 from PyQt4 import QtGui
 
 class ProcessingConfig():
 
-    TABLE_LIKE_PARAM_PANEL = "TABLE_LIKE_PARAM_PANEL"
     OUTPUT_FOLDER = "OUTPUT_FOLDER"
     RASTER_STYLE = "RASTER_STYLE"
     VECTOR_POINT_STYLE = "VECTOR_POINT_STYLE"
@@ -39,7 +38,6 @@ class ProcessingConfig():
     USE_SELECTED = "USE_SELECTED"
     USE_FILENAME_AS_LAYER_NAME = "USE_FILENAME_AS_LAYER_NAME"
     KEEP_DIALOG_OPEN = "KEEP_DIALOG_OPEN"
-    USE_THREADS = "USE_THREADS"
     SHOW_DEBUG_IN_DIALOG = "SHOW_DEBUG_IN_DIALOG"
     RECENT_ALGORITHMS = "RECENT_ALGORITHMS"
     PRE_EXECUTION_SCRIPT = "PRE_EXECUTION_SCRIPT"
@@ -54,14 +52,12 @@ class ProcessingConfig():
     def initialize():
         icon =  QtGui.QIcon(os.path.dirname(__file__) + "/../images/alg.png")
         ProcessingConfig.settingIcons["General"] = icon
-        ProcessingConfig.addSetting(Setting("General", ProcessingConfig.USE_THREADS, "Run algorithms in a new thread", True))
-        ProcessingConfig.addSetting(Setting("General", ProcessingConfig.SHOW_DEBUG_IN_DIALOG, "Show extra info in Log panel (threaded execution only)", True))
+        ProcessingConfig.addSetting(Setting("General", ProcessingConfig.SHOW_DEBUG_IN_DIALOG, "Show extra info in Log panel", True))
         ProcessingConfig.addSetting(Setting("General", ProcessingConfig.KEEP_DIALOG_OPEN, "Keep dialog open after running an algorithm", False))
-        ProcessingConfig.addSetting(Setting("General", ProcessingConfig.USE_SELECTED, "Use only selected features", True))
-        ProcessingConfig.addSetting(Setting("General", ProcessingConfig.TABLE_LIKE_PARAM_PANEL, "Show table-like parameter panels", False))
+        ProcessingConfig.addSetting(Setting("General", ProcessingConfig.USE_SELECTED, "Use only selected features", True))        
         ProcessingConfig.addSetting(Setting("General", ProcessingConfig.USE_FILENAME_AS_LAYER_NAME, "Use filename as layer name", False))
         ProcessingConfig.addSetting(Setting("General", ProcessingConfig.SHOW_RECENT_ALGORITHMS, "Show recently executed algorithms", True))
-        ProcessingConfig.addSetting(Setting("General", ProcessingConfig.OUTPUT_FOLDER, "Output folder", ProcessingUtils.tempFolder()))
+        ProcessingConfig.addSetting(Setting("General", ProcessingConfig.OUTPUT_FOLDER, "Output folder", tempFolder()))
         ProcessingConfig.addSetting(Setting("General", ProcessingConfig.SHOW_CRS_DEF, "Show layer CRS definition in selection boxes", True))
         ProcessingConfig.addSetting(Setting("General", ProcessingConfig.WARN_UNMATCHING_CRS, "Warn before executing if layer CRS's do not match", True))
         ProcessingConfig.addSetting(Setting("General", ProcessingConfig.RASTER_STYLE,"Style for raster layers",""))
@@ -109,7 +105,7 @@ class ProcessingConfig():
 
     @staticmethod
     def configFile():
-        return os.path.join(ProcessingUtils.userFolder(), "processing_qgis.conf")
+        return os.path.join(userFolder(), "processing_qgis.conf")
 
     @staticmethod
     def loadSettings():

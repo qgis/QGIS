@@ -96,7 +96,7 @@ to tag a parameter as "advanced", just add "*" before its declaration. For insta
 ADVANCED OUTPUT PROCESSING
 --------------------------
 
-In some cases, it might be interesting to take the console otput from GRASS and
+In some cases, it might be interesting to take the console output from GRASS and
 extract a part of it for saving or formatting.
 
 Two things can be done about this:
@@ -108,7 +108,7 @@ Two things can be done about this:
    by low hyphens (for instance r_quantile.py for the r.quantile command), and
    add a postProcessResults(alg) method. It will be called when the execution of
    the GRASS command is finished.
- - Creating a text file. Do as above, but adding an otput of type OutputFile.
+ - Creating a text file. Do as above, but adding an output of type OutputFile.
    Since some GRASS commands might use this type of output, and to make sure that
-   the value of this output is not passed to the GRASS comman when calling it,
+   the value of this output is not passed to the GRASS command when calling it,
    the output has to be named 'outputtext'

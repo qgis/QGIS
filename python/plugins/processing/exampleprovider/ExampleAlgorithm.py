@@ -31,7 +31,7 @@ from qgis.core import *
 
 from processing.core.Processing import Processing
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.QGisLayers import QGisLayers
+from processing.tools import dataobjects, vector
 
 from processing.parameters.ParameterVector import ParameterVector
 
@@ -85,8 +85,8 @@ class ExampleAlgorithm(GeoAlgorithm):
 
         # input layers vales are always a string with its location.
         # That string can be converted into a QGIS object (a QgsVectorLayer in
-        # this case) using the Processing.getObjectFromUri() method.
-        vectorLayer = QGisLayers.getObjectFromUri(inputFilename)
+        # this case) using the processing.getObjectFromUri() method.
+        vectorLayer = dataobjects.getObjectFromUri(inputFilename)
 
         # And now we can process
 
@@ -106,7 +106,7 @@ class ExampleAlgorithm(GeoAlgorithm):
         # Method features() returns an iterator, considering the selection that
         # might exist in layer and the configuration that indicates
         # should algorithm use only selected features or all of them
-        features = QGisLayers.features(vectorLayer)
+        features = vector.features(vectorLayer)
         for f in features:
             writer.addFeature(f)
 

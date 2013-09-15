@@ -26,8 +26,8 @@ __revision__ = '$Format:%H$'
 import os
 from qgis.core import *
 from processing.parameters.ParameterVector import ParameterVector
-from processing.core.QGisLayers import QGisLayers
-from processing.core.LayerExporter import LayerExporter
+from processing.tools import dataobjects
+from processing.tools import dataobjects
 from processing.parameters.ParameterString import ParameterString
 from processing.admintools.GeoServerToolsAlgorithm import GeoServerToolsAlgorithm
 
@@ -39,9 +39,9 @@ class ImportVectorIntoGeoServer(GeoServerToolsAlgorithm):
     def processAlgorithm(self, progress):
         self.createCatalog()
         inputFilename = self.getParameterValue(self.INPUT)
-        layer = QGisLayers.getObjectFromUri(inputFilename)
+        layer = dataobjects.getObjectFromUri(inputFilename)
         workspaceName = self.getParameterValue(self.WORKSPACE)
-        filename = LayerExporter.exportVectorLayer(layer)
+        filename = dataobjects.exportVectorLayer(layer)
         basefilename = os.path.basename(filename)
         basepathname = os.path.dirname(filename) + os.sep + basefilename[:basefilename.find('.')]
         connection = {

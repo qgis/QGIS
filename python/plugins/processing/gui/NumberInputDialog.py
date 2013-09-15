@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from processing import interface
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -27,7 +28,7 @@ from qgis.core import *
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PyQt4 import QtCore, QtGui
-from processing.core.QGisLayers import QGisLayers
+from processing.tools import dataobjects
 
 class NumberInputDialog(QtGui.QDialog):
 
@@ -68,7 +69,7 @@ class NumberInputDialog(QtGui.QDialog):
         layersItem = QtGui.QTreeWidgetItem()
         layersItem.setText(0, "Values from data layers extents")
         self.tree.addTopLevelItem(layersItem)
-        layers = QGisLayers.getAllLayers()
+        layers = dataobjects.getAllLayers()
         for layer in layers:
             layerItem = QtGui.QTreeWidgetItem()
             layerItem.setText(0, unicode(layer.name()))
@@ -83,7 +84,7 @@ class NumberInputDialog(QtGui.QDialog):
         layersItem = QtGui.QTreeWidgetItem()
         layersItem.setText(0, "Values from raster layers statistics")
         self.tree.addTopLevelItem(layersItem)
-        layers = QGisLayers.getRasterLayers()
+        layers = dataobjects.getRasterLayers()
         for layer in layers:
             for i in range(layer.bandCount()):
                 if QGis.QGIS_VERSION_INT >= 10900:
@@ -101,7 +102,7 @@ class NumberInputDialog(QtGui.QDialog):
         canvasItem = QtGui.QTreeWidgetItem()
         canvasItem.setText(0, "Values from QGIS map canvas")
         self.tree.addTopLevelItem(canvasItem)
-        extent = QGisLayers.iface.mapCanvas().extent()
+        extent = interface.iface.mapCanvas().extent()
         extentItem  = QtGui.QTreeWidgetItem()
         extentItem.setText(0, "Current extent")
         extentItem.addChild(TreeValueItem("Min X", extent.xMinimum()))
@@ -109,7 +110,7 @@ class NumberInputDialog(QtGui.QDialog):
         extentItem.addChild(TreeValueItem("Min Y", extent.yMinimum()))
         extentItem.addChild(TreeValueItem("Max y", extent.yMaximum()))
         canvasItem.addChild(extentItem)
-        extent = QGisLayers.iface.mapCanvas().fullExtent()
+        extent = interface.iface.mapCanvas().fullExtent()
         extentItem  = QtGui.QTreeWidgetItem()
         extentItem.setText(0, "Full extent of all layers in map canvas")
         extentItem.addChild(TreeValueItem("Min X", extent.xMinimum()))

@@ -28,7 +28,7 @@ from PyQt4.QtCore import QVariant
 from qgis.core import QgsFeature, QgsField, QgsFields, QgsGeometry, QGis
 from processing.parameters.ParameterVector import ParameterVector
 from processing.parameters.ParameterBoolean import ParameterBoolean
-from processing.core.QGisLayers import QGisLayers
+from processing.tools import dataobjects, vector
 from processing.outputs.OutputVector import OutputVector
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 
@@ -44,7 +44,7 @@ class Polygonize(GeoAlgorithm):
             from shapely.geometry import Point,MultiLineString
         except ImportError:
             raise GeoAlgorithmExecutionException('Polygonize algorithm requires shapely module!')
-        vlayer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT))
+        vlayer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
         output = self.getOutputFromName(self.OUTPUT)
         vprovider = vlayer.dataProvider()
         if self.getParameterValue(self.FIELDS):
@@ -56,7 +56,7 @@ class Polygonize(GeoAlgorithm):
             fields.append(QgsField("area",QVariant.Double,"double",16,2))
             fields.append(QgsField("perimeter",QVariant.Double,"double",16,2))
         allLinesList = []
-        features = QGisLayers.features(vlayer)
+        features = vector.features(vlayer)
         current = 0
         total = 40.0 / float(len(features))
         for inFeat in features:

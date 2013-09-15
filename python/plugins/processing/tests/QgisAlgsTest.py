@@ -27,14 +27,14 @@ import processing
 import unittest
 from processing.tests.TestData import points, points2, polygons, polygons2, lines, union,\
     table
-from processing.core.QGisLayers import QGisLayers
+from processing.tools import dataobjects
 
 class QgisAlgsTest(unittest.TestCase):
 
     def test_qgiscountpointsinpolygon(self):
         outputs=processing.runalg("qgis:countpointsinpolygon",polygons(),points(),"NUMPOINTS",None)
         output=outputs['OUTPUT']
-        layer=QGisLayers.getObjectFromUri(output, True)
+        layer=dataobjects.getObjectFromUri(output, True)
         fields=layer.pendingFields()
         expectednames=['ID','POLY_NUM_A','POLY_ST_A','NUMPOINTS']
         expectedtypes=['Integer','Real','String','Real']
@@ -42,7 +42,7 @@ class QgisAlgsTest(unittest.TestCase):
         types=[str(f.typeName()) for f in fields]
         self.assertEqual(expectednames, names)
         self.assertEqual(expectedtypes, types)
-        features=processing.getfeatures(layer)
+        features=processing.features(layer)
         self.assertEqual(2, len(features))
         feature=features.next()
         attrs=feature.attributes()
@@ -53,7 +53,7 @@ class QgisAlgsTest(unittest.TestCase):
     def test_qgiscountpointsinpolygonweighted(self):
         outputs=processing.runalg("qgis:countpointsinpolygonweighted",polygons(),points(),"PT_NUM_A","NUMPOINTS",None)
         output=outputs['OUTPUT']
-        layer=QGisLayers.getObjectFromUri(output, True)
+        layer=dataobjects.getObjectFromUri(output, True)
         fields=layer.pendingFields()
         expectednames=['ID','POLY_NUM_A','POLY_ST_A','NUMPOINTS']
         expectedtypes=['Integer','Real','String','Real']
@@ -61,7 +61,7 @@ class QgisAlgsTest(unittest.TestCase):
         types=[str(f.typeName()) for f in fields]
         self.assertEqual(expectednames, names)
         self.assertEqual(expectedtypes, types)
-        features=processing.getfeatures(layer)
+        features=processing.features(layer)
         self.assertEqual(2, len(features))
         feature=features.next()
         attrs=feature.attributes()
@@ -72,7 +72,7 @@ class QgisAlgsTest(unittest.TestCase):
     def test_qgiscountuniquepointsinpolygon(self):
         outputs=processing.runalg("qgis:countuniquepointsinpolygon", polygons(),points(),"PT_ST_A","NUMPOINTS",None)
         output=outputs['OUTPUT']
-        layer=QGisLayers.getObjectFromUri(output, True)
+        layer=dataobjects.getObjectFromUri(output, True)
         fields=layer.pendingFields()
         expectednames=['ID','POLY_NUM_A','POLY_ST_A','NUMPOINTS']
         expectedtypes=['Integer','Real','String','Real']
@@ -80,7 +80,7 @@ class QgisAlgsTest(unittest.TestCase):
         types=[str(f.typeName()) for f in fields]
         self.assertEqual(expectednames, names)
         self.assertEqual(expectedtypes, types)
-        features=processing.getfeatures(layer)
+        features=processing.features(layer)
         self.assertEqual(2, len(features))
         feature=features.next()
         attrs=feature.attributes()
@@ -91,7 +91,7 @@ class QgisAlgsTest(unittest.TestCase):
     def test_qgisdistancetonearesthub(self):
         outputs=processing.runalg("qgis:distancetonearesthub",points(),points2(),"ID",1,0,None)
         output=outputs['SAVENAME']
-        layer=QGisLayers.getObjectFromUri(output, True)
+        layer=dataobjects.getObjectFromUri(output, True)
         fields=layer.pendingFields()
         expectednames=['ID','PT_NUM_A','PT_ST_A','HubName','HubDist']
         expectedtypes=['Integer','Real','String','String','Real']
@@ -99,7 +99,7 @@ class QgisAlgsTest(unittest.TestCase):
         types=[str(f.typeName()) for f in fields]
         self.assertEqual(expectednames, names)
         self.assertEqual(expectedtypes, types)
-        features=processing.getfeatures(layer)
+        features=processing.features(layer)
         self.assertEqual(12, len(features))
         feature=features.next()
         attrs=feature.attributes()
@@ -110,7 +110,7 @@ class QgisAlgsTest(unittest.TestCase):
     def test_qgismeancoordinates(self):
         outputs=processing.runalg("qgis:meancoordinates",union(),"POLY_NUM_A","ID_2",None)
         output=outputs['OUTPUT']
-        layer=QGisLayers.getObjectFromUri(output, True)
+        layer=dataobjects.getObjectFromUri(output, True)
         fields=layer.pendingFields()
         expectednames=['MEAN_X','MEAN_Y','UID']
         expectedtypes=['Real','Real','String']
@@ -118,7 +118,7 @@ class QgisAlgsTest(unittest.TestCase):
         types=[str(f.typeName()) for f in fields]
         self.assertEqual(expectednames, names)
         self.assertEqual(expectedtypes, types)
-        features=processing.getfeatures(layer)
+        features=processing.features(layer)
         self.assertEqual(3, len(features))
         feature=features.next()
         attrs=feature.attributes()
@@ -129,7 +129,7 @@ class QgisAlgsTest(unittest.TestCase):
     def test_qgissumlinelengths(self):
         outputs=processing.runalg("qgis:sumlinelengths",lines(),polygons(),"LENGTH","COUNT",None)
         output=outputs['OUTPUT']
-        layer=QGisLayers.getObjectFromUri(output, True)
+        layer=dataobjects.getObjectFromUri(output, True)
         fields=layer.pendingFields()
         expectednames=['ID','POLY_NUM_A','POLY_ST_A','LENGTH','COUNT']
         expectedtypes=['Integer','Real','String','Real','Real']
@@ -137,7 +137,7 @@ class QgisAlgsTest(unittest.TestCase):
         types=[str(f.typeName()) for f in fields]
         self.assertEqual(expectednames, names)
         self.assertEqual(expectedtypes, types)
-        features=processing.getfeatures(layer)
+        features=processing.features(layer)
         self.assertEqual(2, len(features))
         feature=features.next()
         attrs=feature.attributes()
@@ -148,7 +148,7 @@ class QgisAlgsTest(unittest.TestCase):
     def test_qgiscreategrid(self):
         outputs=processing.runalg("qgis:creategrid",10,10,360,180,0,0,0,None)
         output=outputs['SAVENAME']
-        layer=QGisLayers.getObjectFromUri(output, True)
+        layer=dataobjects.getObjectFromUri(output, True)
         fields=layer.pendingFields()
         expectednames=['longitude','latitude']
         expectedtypes=['Real','Real']
@@ -156,7 +156,7 @@ class QgisAlgsTest(unittest.TestCase):
         types=[str(f.typeName()) for f in fields]
         self.assertEqual(expectednames, names)
         self.assertEqual(expectedtypes, types)
-        features=processing.getfeatures(layer)
+        features=processing.features(layer)
         self.assertEqual(56, len(features))
         feature=features.next()
         attrs=feature.attributes()
@@ -169,7 +169,7 @@ class QgisAlgsTest(unittest.TestCase):
     def test_qgiscreategridnointeger(self):
         outputs=processing.runalg("qgis:creategrid",0.1,0.1,1,1,0,0,0,None)
         output=outputs['SAVENAME']
-        layer=QGisLayers.getObjectFromUri(output, True)
+        layer=dataobjects.getObjectFromUri(output, True)
         fields=layer.pendingFields()
         expectednames=['longitude','latitude']
         expectedtypes=['Real','Real']
@@ -177,7 +177,7 @@ class QgisAlgsTest(unittest.TestCase):
         types=[str(f.typeName()) for f in fields]
         self.assertEqual(expectednames, names)
         self.assertEqual(expectedtypes, types)
-        features=processing.getfeatures(layer)
+        features=processing.features(layer)
         self.assertEqual(22, len(features))
         feature=features.next()
         attrs=feature.attributes()
@@ -190,7 +190,7 @@ class QgisAlgsTest(unittest.TestCase):
     def test_qgiscreategridhex(self):
         outputs=processing.runalg("qgis:creategrid",10,10,360,180,0,0,3,None)
         output=outputs['SAVENAME']
-        layer=QGisLayers.getObjectFromUri(output, True)
+        layer=dataobjects.getObjectFromUri(output, True)
         fields=layer.pendingFields()
         expectednames=['longitude','latitude']
         expectedtypes=['Real','Real']
@@ -198,7 +198,7 @@ class QgisAlgsTest(unittest.TestCase):
         types=[str(f.typeName()) for f in fields]
         self.assertEqual(expectednames, names)
         self.assertEqual(expectedtypes, types)
-        features=processing.getfeatures(layer)
+        features=processing.features(layer)
         self.assertEqual(718, len(features))
         feature=features.next()
         attrs=feature.attributes()
@@ -211,7 +211,7 @@ class QgisAlgsTest(unittest.TestCase):
     def test_qgispointslayerfromtable(self):
         outputs=processing.runalg("qgis:pointslayerfromtable",table(),"NUM_A","NUM_A",None)
         output=outputs['OUTPUT']
-        layer=QGisLayers.getObjectFromUri(output, True)
+        layer=dataobjects.getObjectFromUri(output, True)
         fields=layer.pendingFields()
         expectednames=['ID','NUM_A','ST_A']
         expectedtypes=['Integer','Real','String']
@@ -219,7 +219,7 @@ class QgisAlgsTest(unittest.TestCase):
         types=[str(f.typeName()) for f in fields]
         self.assertEqual(expectednames, names)
         self.assertEqual(expectedtypes, types)
-        features=processing.getfeatures(layer)
+        features=processing.features(layer)
         self.assertEqual(8, len(features))
         feature=features.next()
         attrs=feature.attributes()
@@ -232,7 +232,7 @@ class QgisAlgsTest(unittest.TestCase):
     def test_qgisreprojectlayer(self):
         outputs=processing.runalg("qgis:reprojectlayer",polygons(),"EPSG:4326",None)
         output=outputs['OUTPUT']
-        layer=QGisLayers.getObjectFromUri(output, True)
+        layer=dataobjects.getObjectFromUri(output, True)
         fields=layer.pendingFields()
         expectednames=['ID','POLY_NUM_A','POLY_ST_A']
         expectedtypes=['Integer','Real','String']
@@ -240,7 +240,7 @@ class QgisAlgsTest(unittest.TestCase):
         types=[str(f.typeName()) for f in fields]
         self.assertEqual(expectednames, names)
         self.assertEqual(expectedtypes, types)
-        features=processing.getfeatures(layer)
+        features=processing.features(layer)
         self.assertEqual(2, len(features))
         feature=features.next()
         attrs=feature.attributes()
@@ -253,7 +253,7 @@ class QgisAlgsTest(unittest.TestCase):
     def test_qgispolygonfromlayerextent(self):
         outputs=processing.runalg("qgis:polygonfromlayerextent",polygons(),False,None)
         output=outputs['OUTPUT']
-        layer=QGisLayers.getObjectFromUri(output, True)
+        layer=dataobjects.getObjectFromUri(output, True)
         fields=layer.pendingFields()
         expectednames=['MINX','MINY','MAXX','MAXY','CNTX','CNTY','AREA','PERIM','HEIGHT','WIDTH']
         expectedtypes=['Real','Real','Real','Real','Real','Real','Real','Real','Real','Real']
@@ -261,7 +261,7 @@ class QgisAlgsTest(unittest.TestCase):
         types=[str(f.typeName()) for f in fields]
         self.assertEqual(expectednames, names)
         self.assertEqual(expectedtypes, types)
-        features=processing.getfeatures(layer)
+        features=processing.features(layer)
         self.assertEqual(1, len(features))
         feature=features.next()
         attrs=feature.attributes()
@@ -274,7 +274,7 @@ class QgisAlgsTest(unittest.TestCase):
     def test_qgispolygonfromlayerextentindividual(self):
         outputs=processing.runalg("qgis:polygonfromlayerextent",polygons(),True,None)
         output=outputs['OUTPUT']
-        layer=QGisLayers.getObjectFromUri(output, True)
+        layer=dataobjects.getObjectFromUri(output, True)
         fields=layer.pendingFields()
         expectednames=['MINX','MINY','MAXX','MAXY','CNTX','CNTY','AREA','PERIM','HEIGHT','WIDTH']
         expectedtypes=['Real','Real','Real','Real','Real','Real','Real','Real','Real','Real']
@@ -282,7 +282,7 @@ class QgisAlgsTest(unittest.TestCase):
         types=[str(f.typeName()) for f in fields]
         self.assertEqual(expectednames, names)
         self.assertEqual(expectedtypes, types)
-        features=processing.getfeatures(layer)
+        features=processing.features(layer)
         self.assertEqual(2, len(features))
         feature=features.next()
         attrs=feature.attributes()
@@ -295,7 +295,7 @@ class QgisAlgsTest(unittest.TestCase):
     def test_qgisconvexhull(self):
         outputs=processing.runalg("qgis:convexhull",points(),"ID",0,None)
         output=outputs['OUTPUT']
-        layer=QGisLayers.getObjectFromUri(output, True)
+        layer=dataobjects.getObjectFromUri(output, True)
         fields=layer.pendingFields()
         expectednames=['id','value','area','perim']
         expectedtypes=['Integer','String','Real','Real']
@@ -303,7 +303,7 @@ class QgisAlgsTest(unittest.TestCase):
         types=[str(f.typeName()) for f in fields]
         self.assertEqual(expectednames, names)
         self.assertEqual(expectedtypes, types)
-        features=processing.getfeatures(layer)
+        features=processing.features(layer)
         self.assertEqual(1, len(features))
         feature=features.next()
         attrs=feature.attributes()
@@ -316,7 +316,7 @@ class QgisAlgsTest(unittest.TestCase):
     def test_qgisconvexhullindividual(self):
         outputs=processing.runalg("qgis:convexhull",points(),"PT_ST_A",1,None)
         output=outputs['OUTPUT']
-        layer=QGisLayers.getObjectFromUri(output, True)
+        layer=dataobjects.getObjectFromUri(output, True)
         fields=layer.pendingFields()
         expectednames=['id','value','area','perim']
         expectedtypes=['Integer','String','Real','Real']
@@ -324,7 +324,7 @@ class QgisAlgsTest(unittest.TestCase):
         types=[str(f.typeName()) for f in fields]
         self.assertEqual(expectednames, names)
         self.assertEqual(expectedtypes, types)
-        features=processing.getfeatures(layer)
+        features=processing.features(layer)
         self.assertEqual(2, len(features))
         feature=features.next()
         attrs=feature.attributes()
@@ -337,7 +337,7 @@ class QgisAlgsTest(unittest.TestCase):
     def test_qgisdelaunaytriangulation(self):
         outputs=processing.runalg("qgis:delaunaytriangulation",points(),None)
         output=outputs['OUTPUT']
-        layer=QGisLayers.getObjectFromUri(output, True)
+        layer=dataobjects.getObjectFromUri(output, True)
         fields=layer.pendingFields()
         expectednames=['POINTA','POINTB','POINTC']
         expectedtypes=['Real','Real','Real']
@@ -345,7 +345,7 @@ class QgisAlgsTest(unittest.TestCase):
         types=[str(f.typeName()) for f in fields]
         self.assertEqual(expectednames, names)
         self.assertEqual(expectedtypes, types)
-        features=processing.getfeatures(layer)
+        features=processing.features(layer)
         self.assertEqual(16, len(features))
         feature=features.next()
         attrs=feature.attributes()
@@ -358,7 +358,7 @@ class QgisAlgsTest(unittest.TestCase):
     def test_qgisconvertgeometrytypepolyg(self):
         outputs=processing.runalg("qgis:convertgeometrytype",lines(),4,None)
         output=outputs['SAVENAME']
-        layer=QGisLayers.getObjectFromUri(output, True)
+        layer=dataobjects.getObjectFromUri(output, True)
         fields=layer.pendingFields()
         expectednames=['ID','LINE_NUM_A','LINE_ST_A']
         expectedtypes=['Integer','Real','String']
@@ -366,13 +366,13 @@ class QgisAlgsTest(unittest.TestCase):
         types=[str(f.typeName()) for f in fields]
         self.assertEqual(expectednames, names)
         self.assertEqual(expectedtypes, types)
-        features=processing.getfeatures(layer)
+        features=processing.features(layer)
         self.assertEqual(0, len(features))
 
     def test_qgisconvertgeometrytypemultiline(self):
         outputs=processing.runalg("qgis:convertgeometrytype",polygons(),3,None)
         output=outputs['SAVENAME']
-        layer=QGisLayers.getObjectFromUri(output, True)
+        layer=dataobjects.getObjectFromUri(output, True)
         fields=layer.pendingFields()
         expectednames=['ID','POLY_NUM_A','POLY_ST_A']
         expectedtypes=['Integer','Real','String']
@@ -380,7 +380,7 @@ class QgisAlgsTest(unittest.TestCase):
         types=[str(f.typeName()) for f in fields]
         self.assertEqual(expectednames, names)
         self.assertEqual(expectedtypes, types)
-        features=processing.getfeatures(layer)
+        features=processing.features(layer)
         self.assertEqual(2, len(features))
         feature=features.next()
         attrs=feature.attributes()
@@ -393,7 +393,7 @@ class QgisAlgsTest(unittest.TestCase):
     def test_qgisconvertgeometrytypenodes(self):
         outputs=processing.runalg("qgis:convertgeometrytype",polygons(),1,None)
         output=outputs['SAVENAME']
-        layer=QGisLayers.getObjectFromUri(output, True)
+        layer=dataobjects.getObjectFromUri(output, True)
         fields=layer.pendingFields()
         expectednames=['ID','POLY_NUM_A','POLY_ST_A']
         expectedtypes=['Integer','Real','String']
@@ -401,7 +401,7 @@ class QgisAlgsTest(unittest.TestCase):
         types=[str(f.typeName()) for f in fields]
         self.assertEqual(expectednames, names)
         self.assertEqual(expectedtypes, types)
-        features=processing.getfeatures(layer)
+        features=processing.features(layer)
         self.assertEqual(20, len(features))
         feature=features.next()
         attrs=feature.attributes()
@@ -414,7 +414,7 @@ class QgisAlgsTest(unittest.TestCase):
     def test_qgissnappointstogrid(self):
         outputs=processing.runalg("qgis:snappointstogrid",points(),5,5,None)
         output=outputs['SAVENAME']
-        layer=QGisLayers.getObjectFromUri(output, True)
+        layer=dataobjects.getObjectFromUri(output, True)
         fields=layer.pendingFields()
         expectednames=['ID','PT_NUM_A','PT_ST_A']
         expectedtypes=['Integer','Real','String']
@@ -422,7 +422,7 @@ class QgisAlgsTest(unittest.TestCase):
         types=[str(f.typeName()) for f in fields]
         self.assertEqual(expectednames, names)
         self.assertEqual(expectedtypes, types)
-        features=processing.getfeatures(layer)
+        features=processing.features(layer)
         self.assertEqual(12, len(features))
         feature=features.next()
         attrs=feature.attributes()
@@ -436,7 +436,7 @@ class QgisAlgsTest(unittest.TestCase):
     def test_qgisdensifygeometriesgivenaninterval(self):
         outputs=processing.runalg("qgis:densifygeometriesgivenaninterval",lines(),25,None)
         output=outputs['OUTPUT']
-        layer=QGisLayers.getObjectFromUri(output, True)
+        layer=dataobjects.getObjectFromUri(output, True)
         fields=layer.pendingFields()
         expectednames=['ID','LINE_NUM_A','LINE_ST_A']
         expectedtypes=['Integer','Real','String']
@@ -444,7 +444,7 @@ class QgisAlgsTest(unittest.TestCase):
         types=[str(f.typeName()) for f in fields]
         self.assertEqual(expectednames, names)
         self.assertEqual(expectedtypes, types)
-        features=processing.getfeatures(layer)
+        features=processing.features(layer)
         self.assertEqual(3, len(features))
         feature=features.next()
         attrs=feature.attributes()
@@ -457,7 +457,7 @@ class QgisAlgsTest(unittest.TestCase):
     def test_qgisdensifygeometries(self):
         outputs=processing.runalg("qgis:densifygeometries",lines(),5,None)
         output=outputs['OUTPUT']
-        layer=QGisLayers.getObjectFromUri(output, True)
+        layer=dataobjects.getObjectFromUri(output, True)
         fields=layer.pendingFields()
         expectednames=['ID','LINE_NUM_A','LINE_ST_A']
         expectedtypes=['Integer','Real','String']
@@ -465,7 +465,7 @@ class QgisAlgsTest(unittest.TestCase):
         types=[str(f.typeName()) for f in fields]
         self.assertEqual(expectednames, names)
         self.assertEqual(expectedtypes, types)
-        features=processing.getfeatures(layer)
+        features=processing.features(layer)
         self.assertEqual(3, len(features))
         feature=features.next()
         attrs=feature.attributes()
@@ -478,7 +478,7 @@ class QgisAlgsTest(unittest.TestCase):
     def test_qgisexplodelines(self):
         outputs=processing.runalg("qgis:explodelines",lines(),None)
         output=outputs['OUTPUT']
-        layer=QGisLayers.getObjectFromUri(output, True)
+        layer=dataobjects.getObjectFromUri(output, True)
         fields=layer.pendingFields()
         expectednames=['ID','LINE_NUM_A','LINE_ST_A']
         expectedtypes=['Integer','Real','String']
@@ -486,7 +486,7 @@ class QgisAlgsTest(unittest.TestCase):
         types=[str(f.typeName()) for f in fields]
         self.assertEqual(expectednames, names)
         self.assertEqual(expectedtypes, types)
-        features=processing.getfeatures(layer)
+        features=processing.features(layer)
         self.assertEqual(25, len(features))
         feature=features.next()
         attrs=feature.attributes()
@@ -499,7 +499,7 @@ class QgisAlgsTest(unittest.TestCase):
     def test_qgisextractnodes(self):
         outputs=processing.runalg("qgis:extractnodes",lines(),None)
         output=outputs['OUTPUT']
-        layer=QGisLayers.getObjectFromUri(output, True)
+        layer=dataobjects.getObjectFromUri(output, True)
         fields=layer.pendingFields()
         expectednames=['ID','LINE_NUM_A','LINE_ST_A']
         expectedtypes=['Integer','Real','String']
@@ -507,7 +507,7 @@ class QgisAlgsTest(unittest.TestCase):
         types=[str(f.typeName()) for f in fields]
         self.assertEqual(expectednames, names)
         self.assertEqual(expectedtypes, types)
-        features=processing.getfeatures(layer)
+        features=processing.features(layer)
         self.assertEqual(28, len(features))
         feature=features.next()
         attrs=feature.attributes()
@@ -520,7 +520,7 @@ class QgisAlgsTest(unittest.TestCase):
     def test_qgisfixeddistancebuffer(self):
         outputs=processing.runalg("qgis:fixeddistancebuffer",points(),10,5,False,None)
         output=outputs['OUTPUT']
-        layer=QGisLayers.getObjectFromUri(output, True)
+        layer=dataobjects.getObjectFromUri(output, True)
         fields=layer.pendingFields()
         expectednames=['ID','PT_NUM_A','PT_ST_A']
         expectedtypes=['Integer','Real','String']
@@ -528,7 +528,7 @@ class QgisAlgsTest(unittest.TestCase):
         types=[str(f.typeName()) for f in fields]
         self.assertEqual(expectednames, names)
         self.assertEqual(expectedtypes, types)
-        features=processing.getfeatures(layer)
+        features=processing.features(layer)
         self.assertEqual(12, len(features))
         feature=features.next()
         attrs=feature.attributes()
@@ -541,7 +541,7 @@ class QgisAlgsTest(unittest.TestCase):
     def test_qgisfixeddistancebufferdissolve(self):
         outputs=processing.runalg("qgis:fixeddistancebuffer",points(),10,5,True,None)
         output=outputs['OUTPUT']
-        layer=QGisLayers.getObjectFromUri(output, True)
+        layer=dataobjects.getObjectFromUri(output, True)
         fields=layer.pendingFields()
         expectednames=['ID','PT_NUM_A','PT_ST_A']
         expectedtypes=['Integer','Real','String']
@@ -549,7 +549,7 @@ class QgisAlgsTest(unittest.TestCase):
         types=[str(f.typeName()) for f in fields]
         self.assertEqual(expectednames, names)
         self.assertEqual(expectedtypes, types)
-        features=processing.getfeatures(layer)
+        features=processing.features(layer)
         self.assertEqual(1, len(features))
         feature=features.next()
         attrs=feature.attributes()
@@ -562,7 +562,7 @@ class QgisAlgsTest(unittest.TestCase):
     def test_qgisvoronoipolygons(self):
         outputs=processing.runalg("qgis:voronoipolygons",points(),None)
         output=outputs['OUTPUT']
-        layer=QGisLayers.getObjectFromUri(output, True)
+        layer=dataobjects.getObjectFromUri(output, True)
         fields=layer.pendingFields()
         expectednames=['ID','PT_NUM_A','PT_ST_A']
         expectedtypes=['Integer','Real','String']
@@ -570,7 +570,7 @@ class QgisAlgsTest(unittest.TestCase):
         types=[str(f.typeName()) for f in fields]
         self.assertEqual(expectednames, names)
         self.assertEqual(expectedtypes, types)
-        features=processing.getfeatures(layer)
+        features=processing.features(layer)
         self.assertEqual(12, len(features))
         feature=features.next()
         attrs=feature.attributes()
@@ -583,7 +583,7 @@ class QgisAlgsTest(unittest.TestCase):
     def test_qgisvariabledistancebufferdissolve(self):
         outputs=processing.runalg("qgis:variabledistancebuffer",lines(),"LINE_NUM_A",5,True,None)
         output=outputs['OUTPUT']
-        layer=QGisLayers.getObjectFromUri(output, True)
+        layer=dataobjects.getObjectFromUri(output, True)
         fields=layer.pendingFields()
         expectednames=['ID','LINE_NUM_A','LINE_ST_A']
         expectedtypes=['Integer','Real','String']
@@ -591,7 +591,7 @@ class QgisAlgsTest(unittest.TestCase):
         types=[str(f.typeName()) for f in fields]
         self.assertEqual(expectednames, names)
         self.assertEqual(expectedtypes, types)
-        features=processing.getfeatures(layer)
+        features=processing.features(layer)
         self.assertEqual(1, len(features))
         feature=features.next()
         attrs=feature.attributes()
@@ -604,7 +604,7 @@ class QgisAlgsTest(unittest.TestCase):
     def test_qgisvariabledistancebuffer(self):
         outputs=processing.runalg("qgis:variabledistancebuffer",lines(),"LINE_NUM_A",5,False,None)
         output=outputs['OUTPUT']
-        layer=QGisLayers.getObjectFromUri(output, True)
+        layer=dataobjects.getObjectFromUri(output, True)
         fields=layer.pendingFields()
         expectednames=['ID','LINE_NUM_A','LINE_ST_A']
         expectedtypes=['Integer','Real','String']
@@ -612,7 +612,7 @@ class QgisAlgsTest(unittest.TestCase):
         types=[str(f.typeName()) for f in fields]
         self.assertEqual(expectednames, names)
         self.assertEqual(expectedtypes, types)
-        features=processing.getfeatures(layer)
+        features=processing.features(layer)
         self.assertEqual(3, len(features))
         feature=features.next()
         attrs=feature.attributes()
@@ -625,7 +625,7 @@ class QgisAlgsTest(unittest.TestCase):
     def test_qgissimplifygeometries(self):
         outputs=processing.runalg("qgis:simplifygeometries",polygons(),5,None)
         output=outputs['OUTPUT']
-        layer=QGisLayers.getObjectFromUri(output, True)
+        layer=dataobjects.getObjectFromUri(output, True)
         fields=layer.pendingFields()
         expectednames=['ID','POLY_NUM_A','POLY_ST_A']
         expectedtypes=['Integer','Real','String']
@@ -633,7 +633,7 @@ class QgisAlgsTest(unittest.TestCase):
         types=[str(f.typeName()) for f in fields]
         self.assertEqual(expectednames, names)
         self.assertEqual(expectedtypes, types)
-        features=processing.getfeatures(layer)
+        features=processing.features(layer)
         self.assertEqual(2, len(features))
         feature=features.next()
         attrs=feature.attributes()
@@ -646,7 +646,7 @@ class QgisAlgsTest(unittest.TestCase):
     def test_qgispolygonstolines(self):
         outputs=processing.runalg("qgis:polygonstolines",polygons(),None)
         output=outputs['OUTPUT']
-        layer=QGisLayers.getObjectFromUri(output, True)
+        layer=dataobjects.getObjectFromUri(output, True)
         fields=layer.pendingFields()
         expectednames=['ID','POLY_NUM_A','POLY_ST_A']
         expectedtypes=['Integer','Real','String']
@@ -654,7 +654,7 @@ class QgisAlgsTest(unittest.TestCase):
         types=[str(f.typeName()) for f in fields]
         self.assertEqual(expectednames, names)
         self.assertEqual(expectedtypes, types)
-        features=processing.getfeatures(layer)
+        features=processing.features(layer)
         self.assertEqual(2, len(features))
         feature=features.next()
         attrs=feature.attributes()
@@ -667,7 +667,7 @@ class QgisAlgsTest(unittest.TestCase):
     def test_qgispolygoncentroids(self):
         outputs=processing.runalg("qgis:polygoncentroids",polygons(),None)
         output=outputs['OUTPUT_LAYER']
-        layer=QGisLayers.getObjectFromUri(output, True)
+        layer=dataobjects.getObjectFromUri(output, True)
         fields=layer.pendingFields()
         expectednames=['ID','POLY_NUM_A','POLY_ST_A']
         expectedtypes=['Integer','Real','String']
@@ -675,7 +675,7 @@ class QgisAlgsTest(unittest.TestCase):
         types=[str(f.typeName()) for f in fields]
         self.assertEqual(expectednames, names)
         self.assertEqual(expectedtypes, types)
-        features=processing.getfeatures(layer)
+        features=processing.features(layer)
         self.assertEqual(2, len(features))
         feature=features.next()
         attrs=feature.attributes()
@@ -688,7 +688,7 @@ class QgisAlgsTest(unittest.TestCase):
     def test_qgislinestopolygons(self):
         outputs=processing.runalg("qgis:linestopolygons",lines(),None)
         output=outputs['OUTPUT']
-        layer=QGisLayers.getObjectFromUri(output, True)
+        layer=dataobjects.getObjectFromUri(output, True)
         fields=layer.pendingFields()
         expectednames=['ID','LINE_NUM_A','LINE_ST_A']
         expectedtypes=['Integer','Real','String']
@@ -696,7 +696,7 @@ class QgisAlgsTest(unittest.TestCase):
         types=[str(f.typeName()) for f in fields]
         self.assertEqual(expectednames, names)
         self.assertEqual(expectedtypes, types)
-        features=processing.getfeatures(layer)
+        features=processing.features(layer)
         self.assertEqual(3, len(features))
         feature=features.next()
         attrs=feature.attributes()
@@ -709,7 +709,7 @@ class QgisAlgsTest(unittest.TestCase):
     def test_qgisunion(self):
         outputs=processing.runalg("qgis:union",polygons(),polygons2(),None)
         output=outputs['OUTPUT']
-        layer=QGisLayers.getObjectFromUri(output, True)
+        layer=dataobjects.getObjectFromUri(output, True)
         fields=layer.pendingFields()
         expectednames=['ID','POLY_NUM_A','POLY_ST_A','id_2','POLY_NUM_B','POLY_ST_B']
         expectedtypes=['Integer','Real','String','Integer','Real','String']
@@ -717,7 +717,7 @@ class QgisAlgsTest(unittest.TestCase):
         types=[str(f.typeName()) for f in fields]
         self.assertEqual(expectednames, names)
         self.assertEqual(expectedtypes, types)
-        features=processing.getfeatures(layer)
+        features=processing.features(layer)
         self.assertEqual(8, len(features))
         feature=features.next()
         attrs=feature.attributes()
@@ -730,7 +730,7 @@ class QgisAlgsTest(unittest.TestCase):
     def test_qgisclip(self):
         outputs=processing.runalg("qgis:clip",polygons(),polygons2(),None)
         output=outputs['OUTPUT']
-        layer=QGisLayers.getObjectFromUri(output, True)
+        layer=dataobjects.getObjectFromUri(output, True)
         fields=layer.pendingFields()
         expectednames=['ID','POLY_NUM_A','POLY_ST_A']
         expectedtypes=['Integer','Real','String']
@@ -738,7 +738,7 @@ class QgisAlgsTest(unittest.TestCase):
         types=[str(f.typeName()) for f in fields]
         self.assertEqual(expectednames, names)
         self.assertEqual(expectedtypes, types)
-        features=processing.getfeatures(layer)
+        features=processing.features(layer)
         self.assertEqual(2, len(features))
         feature=features.next()
         attrs=feature.attributes()
@@ -751,7 +751,7 @@ class QgisAlgsTest(unittest.TestCase):
     def test_qgisdifference(self):
         outputs=processing.runalg("qgis:difference",polygons(),polygons2(),None)
         output=outputs['OUTPUT']
-        layer=QGisLayers.getObjectFromUri(output, True)
+        layer=dataobjects.getObjectFromUri(output, True)
         fields=layer.pendingFields()
         expectednames=['ID','POLY_NUM_A','POLY_ST_A']
         expectedtypes=['Integer','Real','String']
@@ -759,7 +759,7 @@ class QgisAlgsTest(unittest.TestCase):
         types=[str(f.typeName()) for f in fields]
         self.assertEqual(expectednames, names)
         self.assertEqual(expectedtypes, types)
-        features=processing.getfeatures(layer)
+        features=processing.features(layer)
         self.assertEqual(2, len(features))
         feature=features.next()
         attrs=feature.attributes()
@@ -773,7 +773,7 @@ class QgisAlgsTest(unittest.TestCase):
     def test_qgisintersection(self):
         outputs=processing.runalg("qgis:intersection",polygons(),polygons2(),None)
         output=outputs['OUTPUT']
-        layer=QGisLayers.getObjectFromUri(output, True)
+        layer=dataobjects.getObjectFromUri(output, True)
         fields=layer.pendingFields()
         expectednames=['ID','POLY_NUM_A','POLY_ST_A','id_2','POLY_NUM_B','POLY_ST_B']
         expectedtypes=['Integer','Real','String','Integer','Real','String']
@@ -781,7 +781,7 @@ class QgisAlgsTest(unittest.TestCase):
         types=[str(f.typeName()) for f in fields]
         self.assertEqual(expectednames, names)
         self.assertEqual(expectedtypes, types)
-        features=processing.getfeatures(layer)
+        features=processing.features(layer)
         self.assertEqual(4, len(features))
         feature=features.next()
         attrs=feature.attributes()
@@ -794,7 +794,7 @@ class QgisAlgsTest(unittest.TestCase):
     def test_qgisaddautoincrementalfield(self):
         outputs=processing.runalg("qgis:addautoincrementalfield",points(),None)
         output=outputs['OUTPUT']
-        layer=QGisLayers.getObjectFromUri(output, True)
+        layer=dataobjects.getObjectFromUri(output, True)
         fields=layer.pendingFields()
         expectednames=['ID','PT_NUM_A','PT_ST_A','AUTO']
         expectedtypes=['Integer','Real','String','Integer']
@@ -802,7 +802,7 @@ class QgisAlgsTest(unittest.TestCase):
         types=[str(f.typeName()) for f in fields]
         self.assertEqual(expectednames, names)
         self.assertEqual(expectedtypes, types)
-        features=processing.getfeatures(layer)
+        features=processing.features(layer)
         self.assertEqual(12, len(features))
         feature=features.next()
         attrs=feature.attributes()
@@ -815,7 +815,7 @@ class QgisAlgsTest(unittest.TestCase):
     def test_qgisaddfieldtoattributestable(self):
         outputs=processing.runalg("qgis:addfieldtoattributestable",lines(),"field",0,10,0,None)
         output=outputs['OUTPUT_LAYER']
-        layer=QGisLayers.getObjectFromUri(output, True)
+        layer=dataobjects.getObjectFromUri(output, True)
         fields=layer.pendingFields()
         expectednames=['ID','LINE_NUM_A','LINE_ST_A','field']
         expectedtypes=['Integer','Real','String','Integer']
@@ -823,7 +823,7 @@ class QgisAlgsTest(unittest.TestCase):
         types=[str(f.typeName()) for f in fields]
         self.assertEqual(expectednames, names)
         self.assertEqual(expectedtypes, types)
-        features=processing.getfeatures(layer)
+        features=processing.features(layer)
         self.assertEqual(3, len(features))
         feature=features.next()
         attrs=feature.attributes()
@@ -836,7 +836,7 @@ class QgisAlgsTest(unittest.TestCase):
     def test_qgiscreateequivalentnumericalfield(self):
         outputs=processing.runalg("qgis:createequivalentnumericalfield",points2(),"POLY_ST_A",None)
         output=outputs['OUTPUT']
-        layer=QGisLayers.getObjectFromUri(output, True)
+        layer=dataobjects.getObjectFromUri(output, True)
         fields=layer.pendingFields()
         expectednames=['ID','POLY_NUM_A','POLY_ST_A','ID_2','POLY_NUM_B','POLY_ST_B','NUM_FIELD']
         expectedtypes=['Integer','Real','String','Integer','Real','String','Integer']
@@ -844,7 +844,7 @@ class QgisAlgsTest(unittest.TestCase):
         types=[str(f.typeName()) for f in fields]
         self.assertEqual(expectednames, names)
         self.assertEqual(expectedtypes, types)
-        features=processing.getfeatures(layer)
+        features=processing.features(layer)
         self.assertEqual(8, len(features))
         feature=features.next()
         attrs=feature.attributes()
@@ -857,7 +857,7 @@ class QgisAlgsTest(unittest.TestCase):
     def test_qgisdeletecolumn(self):
         outputs=processing.runalg("qgis:deletecolumn",points(),"PT_NUM_A",None)
         output=outputs['SAVENAME']
-        layer=QGisLayers.getObjectFromUri(output, True)
+        layer=dataobjects.getObjectFromUri(output, True)
         fields=layer.pendingFields()
         expectednames=['ID','PT_ST_A']
         expectedtypes=['Integer','String']
@@ -865,7 +865,7 @@ class QgisAlgsTest(unittest.TestCase):
         types=[str(f.typeName()) for f in fields]
         self.assertEqual(expectednames, names)
         self.assertEqual(expectedtypes, types)
-        features=processing.getfeatures(layer)
+        features=processing.features(layer)
         self.assertEqual(12, len(features))
         feature=features.next()
         attrs=feature.attributes()
@@ -878,7 +878,7 @@ class QgisAlgsTest(unittest.TestCase):
     def test_qgisexportaddgeometrycolumnspoints(self):
         outputs=processing.runalg("qgis:exportaddgeometrycolumns",points(),0,None)
         output=outputs['OUTPUT']
-        layer=QGisLayers.getObjectFromUri(output, True)
+        layer=dataobjects.getObjectFromUri(output, True)
         fields=layer.pendingFields()
         expectednames=['ID','PT_NUM_A','PT_ST_A','xcoord','ycoord']
         expectedtypes=['Integer','Real','String','Real','Real']
@@ -886,7 +886,7 @@ class QgisAlgsTest(unittest.TestCase):
         types=[str(f.typeName()) for f in fields]
         self.assertEqual(expectednames, names)
         self.assertEqual(expectedtypes, types)
-        features=processing.getfeatures(layer)
+        features=processing.features(layer)
         self.assertEqual(12, len(features))
         feature=features.next()
         attrs=feature.attributes()
@@ -900,7 +900,7 @@ class QgisAlgsTest(unittest.TestCase):
     def test_qgisexportaddgeometrycolumnslines(self):
         outputs=processing.runalg("qgis:exportaddgeometrycolumns",lines(),0,None)
         output=outputs['OUTPUT']
-        layer=QGisLayers.getObjectFromUri(output, True)
+        layer=dataobjects.getObjectFromUri(output, True)
         fields=layer.pendingFields()
         expectednames=['ID','LINE_NUM_A','LINE_ST_A','length']
         expectedtypes=['Integer','Real','String','Real']
@@ -908,7 +908,7 @@ class QgisAlgsTest(unittest.TestCase):
         types=[str(f.typeName()) for f in fields]
         self.assertEqual(expectednames, names)
         self.assertEqual(expectedtypes, types)
-        features=processing.getfeatures(layer)
+        features=processing.features(layer)
         self.assertEqual(3, len(features))
         feature=features.next()
         attrs=feature.attributes()
@@ -921,7 +921,7 @@ class QgisAlgsTest(unittest.TestCase):
     def test_qgisexportaddgeometrycolumnspolygons(self):
         outputs=processing.runalg("qgis:exportaddgeometrycolumns",polygons(),0,None)
         output=outputs['OUTPUT']
-        layer=QGisLayers.getObjectFromUri(output, True)
+        layer=dataobjects.getObjectFromUri(output, True)
         fields=layer.pendingFields()
         expectednames=['ID','POLY_NUM_A','POLY_ST_A','area','perimeter']
         expectedtypes=['Integer','Real','String','Real','Real']
@@ -929,7 +929,7 @@ class QgisAlgsTest(unittest.TestCase):
         types=[str(f.typeName()) for f in fields]
         self.assertEqual(expectednames, names)
         self.assertEqual(expectedtypes, types)
-        features=processing.getfeatures(layer)
+        features=processing.features(layer)
         self.assertEqual(2, len(features))
         feature=features.next()
         attrs=feature.attributes()
@@ -942,12 +942,12 @@ class QgisAlgsTest(unittest.TestCase):
     def test_qgisstatisticsbycategories(self):
         outputs=processing.runalg("qgis:statisticsbycategories",points2(),"POLY_NUM_A","POLY_ST_B", None)
         output=outputs['OUTPUT']
-        layer=QGisLayers.getObjectFromUri(output, True)
+        layer=dataobjects.getObjectFromUri(output, True)
         fields=layer.pendingFields()
         expectednames=['category','min','max','mean','stddev']
         names=[str(f.name()) for f in fields]
         self.assertEqual(expectednames, names)
-        features=processing.getfeatures(layer)
+        features=processing.features(layer)
         self.assertEqual(3, len(features))
         feature=features.next()
         attrs=feature.attributes()

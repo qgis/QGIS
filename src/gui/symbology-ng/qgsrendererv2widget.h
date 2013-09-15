@@ -53,6 +53,8 @@ class GUI_EXPORT QgsRendererV2Widget : public QWidget
     QgsVectorLayer* mLayer;
     QgsStyleV2* mStyle;
     QMenu* contextMenu;
+    QAction* mCopyAction;
+    QAction* mPasteAction;
 
     /**Subclasses may provide the capability of changing multiple symbols at once by implementing the following two methods
       and by connecting the slot contextMenuViewCategories(const QPoint&)*/

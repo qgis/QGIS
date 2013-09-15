@@ -171,6 +171,9 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
      */
     void update();
 
+    /** Load info (mNumberFeatures, mCidxFieldIndex, mCidxFieldNumCats)  from map */
+    void loadMapInfo();
+
     /**Returns true if this is a valid layer
      */
     bool isValid();
@@ -497,7 +500,12 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
       FACE,        // <field>_face
       POLYGON,     // <field>_polygon
       BOUNDARY,    // boundary (currently not used)
-      CENTROID     // centroid (currently not used)
+      CENTROID,    // centroid (currently not used)
+      // topology layers, may be used to display internal GRASS topology info
+      // useful for debugging of GRASS topology and modules using topology
+      TOPO_POINT,  // all points with topology id
+      TOPO_LINE,   // all lines with topology id
+      TOPO_NODE    // topology nodes
     };
 
     QString mGisdbase;      // map gisdabase
@@ -639,9 +647,20 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     /** check if provider is outdated and update if necessary */
     void ensureUpdated();
 
+    /** check if layer is topology layer TOPO_POINT, TOPO_NODE, TOPO_LINE */
+    bool isTopoType() const;
+
+    void setTopoFields();
+
+    /* Get name of GRASS primitive type */
+    static QString primitiveTypeName( int type );
+
     /* Static arrays of opened layers and vectors */
     static QVector<GLAYER> mLayers; // Map + field/attributes
     static QVector<GMAP> mMaps;     // Map
+
+    /** Fields used for topo layers */
+    QgsFields mTopoFields;
 
     friend class QgsGrassFeatureIterator;
     QSet< QgsGrassFeatureIterator *> mActiveIterators;

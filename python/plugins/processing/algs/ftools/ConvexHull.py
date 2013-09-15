@@ -26,20 +26,14 @@ __revision__ = '$Format:%H$'
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-
 from qgis.core import *
-
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.QGisLayers import QGisLayers
-from processing.core.ProcessingLog import ProcessingLog
-
+from processing.tools import dataobjects, vector
 from processing.parameters.ParameterVector import ParameterVector
 from processing.parameters.ParameterTableField import ParameterTableField
 from processing.parameters.ParameterSelection import ParameterSelection
-
 from processing.outputs.OutputVector import OutputVector
-
-from processing.algs.ftools import FToolsUtils as utils
+from processing.tools import vector as utils
 
 class ConvexHull(GeoAlgorithm):
 
@@ -48,13 +42,7 @@ class ConvexHull(GeoAlgorithm):
     FIELD = "FIELD"
     METHOD = "METHOD"
     METHODS = ["Create single minimum convex hull",
-               "Create convex hulls based on field"
-              ]
-
-    #===========================================================================
-    # def getIcon(self):
-    #    return QtGui.QIcon(os.path.dirname(__file__) + "/icons/convex_hull.png")
-    #===========================================================================
+               "Create convex hulls based on field"]
 
     def defineCharacteristics(self):
         self.name = "Convex hull"
@@ -67,7 +55,7 @@ class ConvexHull(GeoAlgorithm):
     def processAlgorithm(self, progress):
         useField = (self.getParameterValue(ConvexHull.METHOD) == 1)
         fieldName = self.getParameterValue(ConvexHull.FIELD)
-        layer = QGisLayers.getObjectFromUri(self.getParameterValue(ConvexHull.INPUT))
+        layer = dataobjects.getObjectFromUri(self.getParameterValue(ConvexHull.INPUT))
 
         f = QgsField("value")
         f.setType(QVariant.String)
@@ -109,7 +97,7 @@ class ConvexHull(GeoAlgorithm):
             for i in unique:
                 hull = []
                 first = True
-                features = QGisLayers.features(layer)
+                features = vector.features(layer)
                 for f in features:
                     idVar = f[fieldName]
                     if unicode(idVar).strip() == unicode(i).strip:
@@ -136,7 +124,7 @@ class ConvexHull(GeoAlgorithm):
         else:
           hull = []
           total = 100.0 / float(layer.featureCount())
-          features = QGisLayers.features(layer)
+          features = vector.features(layer)
           for f in features:
               inGeom = QgsGeometry(f.geometry())
               points = utils.extractPoints(inGeom)

@@ -41,10 +41,14 @@ class writeOut:
     def write(self, m):
         if self.style == "_traceback":
             # Show errors in red
+            stderrColor = QColor(self.sO.settings.value("pythonConsole/stderrFontColor", QColor(Qt.red)))
+            self.sO.SendScintilla(QsciScintilla.SCI_STYLESETFORE, 001, stderrColor)
+            self.sO.SendScintilla(QsciScintilla.SCI_STYLESETITALIC, 001, True)
+            self.sO.SendScintilla(QsciScintilla.SCI_STYLESETBOLD, 001, True)
             pos = self.sO.SendScintilla(QsciScintilla.SCI_GETCURRENTPOS)
             self.sO.SendScintilla(QsciScintilla.SCI_STARTSTYLING, pos, 31)
             self.sO.append(m)
-            self.sO.SendScintilla(QsciScintilla.SCI_SETSTYLING, len(m), 1)
+            self.sO.SendScintilla(QsciScintilla.SCI_SETSTYLING, len(m), 001)
         else:
             self.sO.append(m)
 
@@ -162,9 +166,13 @@ class ShellOutputScintilla(QsciScintilla):
         font.setBold(False)
 
         self.lexer.setDefaultFont(font)
-        self.lexer.setColor(Qt.red, 1)
-        self.lexer.setColor(Qt.darkGreen, 5)
-        self.lexer.setColor(Qt.darkBlue, 15)
+        self.lexer.setDefaultColor(QColor(self.settings.value("pythonConsole/defaultFontColor", QColor(Qt.black))))
+        self.lexer.setColor(QColor(self.settings.value("pythonConsole/commentFontColor", QColor(Qt.gray))), 1)
+        self.lexer.setColor(QColor(self.settings.value("pythonConsole/keywordFontColor", QColor(Qt.darkGreen))), 5)
+        self.lexer.setColor(QColor(self.settings.value("pythonConsole/methodFontColor", QColor(Qt.darkGray))), 9)
+        self.lexer.setColor(QColor(self.settings.value("pythonConsole/decorFontColor", QColor(Qt.darkBlue))), 15)
+        self.lexer.setColor(QColor(self.settings.value("pythonConsole/commentBlockFontColor", QColor(Qt.gray))), 12)
+        self.lexer.setColor(QColor(Qt.red), 14)
         self.lexer.setFont(font, 1)
         self.lexer.setFont(font, 2)
         self.lexer.setFont(font, 3)

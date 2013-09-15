@@ -132,7 +132,7 @@ def extractPoints( geom ):
             temp_geom = geom.asMultiPoint()
         else:
             temp_geom.append(geom.asPoint())
-    if geom.type() == 1: # it's a line
+    elif geom.type() == 1: # it's a line
         if geom.isMultipart():
             multi_geom = geom.asMultiPolyline() #multi_geog is a multiline
             for i in multi_geom: #i is a line
@@ -149,6 +149,7 @@ def extractPoints( geom ):
             multi_geom = geom.asPolygon() #multi_geom is a polygon
             for i in multi_geom: #i is a line
                 temp_geom.extend( i )
+    # FIXME - if there is none of know geoms (point, line, polygon) show an warning message
     return temp_geom
 
 # Check if two input field maps are unique, and resolve name issues if they aren't

@@ -28,7 +28,7 @@ from PyQt4.QtCore import *
 from qgis.core import *
 from processing.outputs.OutputTable import OutputTable
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.QGisLayers import QGisLayers
+from processing.tools import dataobjects, vector
 from processing.parameters.ParameterVector import ParameterVector
 from processing.parameters.ParameterTableField import ParameterTableField
 
@@ -52,7 +52,7 @@ class StatisticsByCategories(GeoAlgorithm):
         self.addOutput(OutputTable(self.OUTPUT, "Statistics"))
 
     def processAlgorithm(self, progress):
-        layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT_LAYER))
+        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_LAYER))
         valuesFieldName = self.getParameterValue(self.VALUES_FIELD_NAME)
         categoriesFieldName = self.getParameterValue(self.CATEGORIES_FIELD_NAME)
 
@@ -60,7 +60,7 @@ class StatisticsByCategories(GeoAlgorithm):
         valuesField = layer.fieldNameIndex(valuesFieldName)
         categoriesField = layer.fieldNameIndex(categoriesFieldName)
 
-        features = QGisLayers.features(layer)
+        features = vector.features(layer)
         nFeats = len(features)
         values = {}
         nFeat = 0

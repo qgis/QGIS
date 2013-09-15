@@ -23,23 +23,37 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from processing.script.ScriptAlgorithm import ScriptAlgorithm
-from processing.gui.ContextAction import ContextAction
 import os
-from PyQt4 import QtGui
+
+from PyQt4.QtGui import *
+
+from processing.gui.ContextAction import ContextAction
+
+from processing.r.RAlgorithm import RAlgorithm
+from processing.script.ScriptAlgorithm import ScriptAlgorithm
 
 class DeleteScriptAction(ContextAction):
 
-    def __init__(self):
-        self.name="Delete script"
+    SCRIPT_PYTHON = 0
+    SCRIPT_R = 1
+
+    def __init__(self, scriptType):
+        self.name = "Delete script"
+        self.scriptType = scriptType
 
     def isEnabled(self):
-        return isinstance(self.alg, ScriptAlgorithm)
+        if self.scriptType == self.SCRIPT_PYTHON:
+            return isinstance(self.alg, ScriptAlgorithm)
+        elif self.scriptType == self.SCRIPT_R:
+            return isinstance(self.alg, RAlgorithm)
 
     def execute(self, alg):
-        reply = QtGui.QMessageBox.question(None, 'Confirmation',
-                            "Are you sure you want to delete this script?", QtGui.QMessageBox.Yes |
-                            QtGui.QMessageBox.No, QtGui.QMessageBox.No)
-        if reply == QtGui.QMessageBox.Yes:
+        reply = QMessageBox.question(None,
+                                     "Confirmation",
+                                     "Are you sure you want to delete this script?",
+                                     QMessageBox.Yes | QMessageBox.No,
+                                     QMessageBox.No
+                                    )
+        if reply == QMessageBox.Yes:
             os.remove(self.alg.descriptionFile)
             self.toolbox.updateTree()

@@ -29,7 +29,7 @@ from processing.outputs.OutputString import OutputString
 from processing.outputs.OutputRaster import OutputRaster
 from osgeo import gdal
 from osgeo.gdalconst import GA_ReadOnly
-from processing.core.QGisLayers import QGisLayers
+from processing.tools import dataobjects, vector
 from processing.outputs.OutputVector import OutputVector
 
 def createTest(text):
@@ -68,9 +68,9 @@ def createTest(text):
             s+="\tstrhash=hash(str(dataset.ReadAsArray(0).tolist()))\n"
             s+="\tself.assertEqual(strhash," + str(strhash) + ")\n"
         if isinstance(out, OutputVector):
-            layer = Processing.getObject(filename)
+            layer = processing.getObject(filename)
             fields = layer.pendingFields()
-            s+="\tlayer=QGisLayers.getObjectFromUri(output, True)\n"
+            s+="\tlayer=dataobjects.getObjectFromUri(output, True)\n"
             s+="\tfields=layer.pendingFields()\n"
             s+="\texpectednames=[" + ",".join(["'" + str(f.name()) + "'" for f in fields]) + "]\n"
             s+="\texpectedtypes=[" + ",".join(["'" + str(f.typeName()) +"'" for f in fields]) + "]\n"
@@ -78,9 +78,9 @@ def createTest(text):
             s+="\ttypes=[str(f.typeName()) for f in fields]\n"
             s+="\tself.assertEqual(expectednames, names)\n"
             s+="\tself.assertEqual(expectedtypes, types)\n"
-            features = QGisLayers.features(layer)
+            features = vector.features(layer)
             numfeat = len(features)
-            s+="\tfeatures=processing.getfeatures(layer)\n"
+            s+="\tfeatures=processing.features(layer)\n"
             s+="\tself.assertEqual(" + str(numfeat) + ", len(features))\n"
             if numfeat > 0:
                 feature = features.next()

@@ -8,22 +8,39 @@ void QgsPluginManager::initTabDescriptions()
   if ( !mTabDescriptions.isEmpty() )
     return;
 
-  mTabDescriptions.insert( "installed_plugins", tr( "<h3>Installed Plugins</h3>\
+  mTabDescriptions.insert( "all_plugins", tr( "<h3>All Plugins</h3>\
+\
 <p>\
-On the left you see the list of <b>installed plugins</b> on your system. Both python and cpp \
-plugins are listed. Some plugins come with your QGIS installation while most of\
- them are made available via the plugin repositories.\
+On the left you see the list of all plugins available for your QGIS, both installed and available for download. \
+Some plugins come with your QGIS installation while most of them are made available via the plugin repositories.\
 </p>\
 \
 <p>\
 You can temporarily enable or disable a plugin.\
-To <i>enable</i> or <i>disable</i> a plugin,\
- click its checkbox or doubleclick its name...\
+ To <i>enable</i> or <i>disable</i> a plugin, click its checkbox or doubleclick its name...\
 </p>\
 \
 <p>\
-Plugins showing in <span style='color:red'>red</span> are not loaded because there is a problem. Consult the \
-'Invalid' tab to see more details, or to reinstall or uninstall this plugin.\
+Plugins showing in <span style='color:red'>red</span> are not loaded because there is a problem. They are also listed \
+on the 'Invalid' tab. Click on the plugin name to see more details, or to reinstall or uninstall this plugin.\
+</p>\
+" ) );
+
+
+
+  mTabDescriptions.insert( "installed_plugins", tr( "<h3>Installed Plugins</h3>\
+\
+<p>\
+Here you only see plugins <b>installed on your QGIS</b>.\
+</p>\
+<p>\
+Click on the name to see details. \
+</p>\
+<p>\
+Click the checkbox or doubleclick the name to <i>activate</i> or <i>deactivate</i> the plugin.\
+</p>\
+<p>\
+You can change the sorting via the context menu (right click).\
 </p>\
 " ) );
 
@@ -40,7 +57,7 @@ plugins are available in the repositories.\
 
 
 
-  mTabDescriptions.insert( "get_more_plugins", tr( "<h3>Get more plugins</h3>\
+  mTabDescriptions.insert( "not_installed_plugins", tr( "<h3>Not installed plugins</h3>\
 \
 <p>\
 Here you see the list of all plugins available in the repositories, but which are <b>not yet installed</b>.\

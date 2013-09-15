@@ -22,6 +22,7 @@
 #include "qgsvectorlayer.h"
 
 #include "qgssymbolv2selectordialog.h"
+#include "qgsexpressionbuilderdialog.h"
 
 #include "qgsludialog.h"
 
@@ -359,6 +360,7 @@ QgsGraduatedSymbolRendererV2Widget::QgsGraduatedSymbolRendererV2Widget( QgsVecto
   mGraduatedSymbol = QgsSymbolV2::defaultSymbol( mLayer->geometryType() );
 
   connect( cboGraduatedColumn, SIGNAL( currentIndexChanged( int ) ), this, SLOT( graduatedColumnChanged() ) );
+  connect( btnExpression, SIGNAL( clicked() ), this, SLOT( setExpression() ) );
   connect( viewGraduated, SIGNAL( doubleClicked( const QModelIndex & ) ), this, SLOT( rangesDoubleClicked( const QModelIndex & ) ) );
   connect( viewGraduated, SIGNAL( clicked( const QModelIndex & ) ), this, SLOT( rangesClicked( const QModelIndex & ) ) );
   connect( viewGraduated, SIGNAL( customContextMenuRequested( const QPoint& ) ),  this, SLOT( contextMenuViewCategories( const QPoint& ) ) );
@@ -417,7 +419,12 @@ void QgsGraduatedSymbolRendererV2Widget::updateUiFromRenderer()
   disconnect( cboGraduatedColumn, SIGNAL( currentIndexChanged( int ) ), this, SLOT( graduatedColumnChanged() ) );
   QString attrName = mRenderer->classAttribute();
   int idx = cboGraduatedColumn->findText( attrName, Qt::MatchExactly );
-  cboGraduatedColumn->setCurrentIndex( idx >= 0 ? idx : 0 );
+  if ( idx == -1 )
+  {
+      cboGraduatedColumn->addItem( attrName );
+      idx = cboGraduatedColumn->count() - 1;
+  }
+  cboGraduatedColumn->setCurrentIndex( idx );
   connect( cboGraduatedColumn, SIGNAL( currentIndexChanged( int ) ), this, SLOT( graduatedColumnChanged() ) );
 
   // set source symbol
@@ -453,6 +460,22 @@ void QgsGraduatedSymbolRendererV2Widget::graduatedColumnChanged()
 }
 
 
+void QgsGraduatedSymbolRendererV2Widget::setExpression()
+{
+    QgsExpressionBuilderDialog dlg( mLayer, cboGraduatedColumn->currentText(), this );
+    dlg.setWindowTitle( "Set column expression" );
+    if ( dlg.exec() )
+    {
+        QString expression = dlg.expressionText();
+        if ( !expression.isEmpty() )
+        {
+            cboGraduatedColumn->addItem( expression );
+            cboGraduatedColumn->setCurrentIndex( cboGraduatedColumn->count() - 1 );
+        }
+    }
+
+}
+
 void QgsGraduatedSymbolRendererV2Widget::classifyGraduated()
 {
   QString attrName = cboGraduatedColumn->currentText();
@@ -481,6 +504,15 @@ void QgsGraduatedSymbolRendererV2Widget::classifyGraduated()
     mode = QgsGraduatedSymbolRendererV2::Pretty;
   else // default should be quantile for now
     mode = QgsGraduatedSymbolRendererV2::Quantile;
+
+
+  // Jenks is n^2 complexity, warn for big dataset (more than 50k records)
+  // and give the user the chance to cancel
+  if ( QgsGraduatedSymbolRendererV2::Jenks == mode
+       && mLayer->featureCount() > 50000 )
+  {
+    if ( QMessageBox::Cancel == QMessageBox::question( this, tr( "Warning" ), tr( "Natural break classification (Jenks) is O(n2) complexity, your classification may take a long time.\nPress cancel to abort breaks calculation or OK to continue." ), QMessageBox::Cancel, QMessageBox::Ok ) ) return;
+  }
 
   // create and set new renderer
   QApplication::setOverrideCursor( Qt::WaitCursor );

@@ -23,16 +23,16 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from processing.core.QGisLayers import QGisLayers
+from processing.tools import dataobjects
 from processing.outputs.Output import Output
-from processing.core.ProcessingUtils import ProcessingUtils
+from processing.tools.system import *
 
 class OutputRaster(Output):
 
     compatible = None
 
     def getFileFilter(self, alg):
-        exts = QGisLayers.getSupportedOutputRasterLayerExtensions()
+        exts = dataobjects.getSupportedOutputRasterLayerExtensions()
         for i in range(len(exts)):
             exts[i] = exts[i].upper() + " files(*." + exts[i].lower() + ")"
         return ";;".join(exts)
@@ -49,6 +49,6 @@ class OutputRaster(Output):
             return self.value
         else:
             if self.compatible is None:
-                self.compatible = ProcessingUtils.getTempFilenameInTempFolder(self.name + "." + self.getDefaultFileExtension(alg))
+                self.compatible = getTempFilenameInTempFolder(self.name + "." + self.getDefaultFileExtension(alg))
             return self.compatible;
 

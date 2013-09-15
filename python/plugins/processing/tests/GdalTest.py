@@ -27,11 +27,11 @@ import processing
 import unittest
 from processing.tests.TestData import points, points2, polygons, polygons2, lines, union,\
     table, polygonsGeoJson, raster
-from processing.core.QGisLayers import QGisLayers
+from processing.tools import dataobjects
 import os
 from osgeo import gdal
 from osgeo.gdalconst import GA_ReadOnly
-from processing.core.ProcessingUtils import ProcessingUtils
+from processing.tools.system import *
 
 class GdalTest(unittest.TestCase):
 
@@ -44,7 +44,7 @@ class GdalTest(unittest.TestCase):
         self.assertEqual(strhash,-1353696889)
 
     def test_gdalogrsieveWithUnsupportedOutputFormat(self):
-        outputs=processing.runalg("gdalogr:sieve",raster(),2,0, ProcessingUtils.getTempFilename("img"))
+        outputs=processing.runalg("gdalogr:sieve",raster(),2,0, getTempFilename("img"))
         output=outputs['dst_filename']
         self.assertTrue(os.path.isfile(output))
         dataset=gdal.Open(output, GA_ReadOnly)
@@ -70,7 +70,7 @@ class GdalTest(unittest.TestCase):
     def test_gdalogrogr2ogr(self):
         outputs=processing.runalg("gdalogr:ogr2ogr",union(),3,"",None)
         output=outputs['OUTPUT_LAYER']
-        layer=QGisLayers.getObjectFromUri(output, True)
+        layer=dataobjects.getObjectFromUri(output, True)
         fields=layer.pendingFields()
         expectednames=['id','poly_num_a','poly_st_a','id_2','poly_num_b','poly_st_b']
         expectedtypes=['Integer','Real','String','Integer','Real','String']
@@ -78,7 +78,7 @@ class GdalTest(unittest.TestCase):
         types=[str(f.typeName()) for f in fields]
         self.assertEqual(expectednames, names)
         self.assertEqual(expectedtypes, types)
-        features=processing.getfeatures(layer)
+        features=processing.features(layer)
         self.assertEqual(8, len(features))
         feature=features.next()
         attrs=feature.attributes()
@@ -89,9 +89,9 @@ class GdalTest(unittest.TestCase):
         self.assertEqual(wkt, str(feature.geometry().exportToWkt()))
 
     def test_gdalogrogr2ogrWrongExtension(self):
-            outputs=processing.runalg("gdalogr:ogr2ogr",union(),3,"",ProcessingUtils.getTempFilename("wrongext"))
+            outputs=processing.runalg("gdalogr:ogr2ogr",union(),3,"",getTempFilename("wrongext"))
             output=outputs['OUTPUT_LAYER']
-            layer=QGisLayers.getObjectFromUri(output, True)
+            layer=dataobjects.getObjectFromUri(output, True)
             fields=layer.pendingFields()
             expectednames=['id','poly_num_a','poly_st_a','id_2','poly_num_b','poly_st_b']
             expectedtypes=['Integer','Real','String','Integer','Real','String']
@@ -99,7 +99,7 @@ class GdalTest(unittest.TestCase):
             types=[str(f.typeName()) for f in fields]
             self.assertEqual(expectednames, names)
             self.assertEqual(expectedtypes, types)
-            features=processing.getfeatures(layer)
+            features=processing.features(layer)
             self.assertEqual(8, len(features))
             feature=features.next()
             attrs=feature.attributes()

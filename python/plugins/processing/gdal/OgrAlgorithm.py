@@ -24,7 +24,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.QGisLayers import QGisLayers
+from processing.tools import dataobjects
 from qgis.core import *
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -44,7 +44,7 @@ class OgrAlgorithm(GeoAlgorithm):
     def ogrConnectionString(self, uri):
         ogrstr = None
 
-        layer = QGisLayers.getObjectFromUri(uri, False)
+        layer = dataobjects.getObjectFromUri(uri, False)
         if layer == None:
             return uri;
         provider = layer.dataProvider().name()

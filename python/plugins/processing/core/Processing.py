@@ -27,16 +27,16 @@ import processing
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
-from processing.core.QGisLayers import QGisLayers
+from processing import interface
+from processing.gui.MessageBarProgress import MessageBarProgress
+from processing.tools import dataobjects
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingLog import ProcessingLog
 from processing.gui.AlgorithmClassification import AlgorithmDecorator
-from processing.gui.AlgorithmExecutor import AlgorithmExecutor
 from processing.gui.RenderingStyles import RenderingStyles
 from processing.gui.Postprocessing import Postprocessing
 from processing.gui.UnthreadedAlgorithmExecutor import UnthreadedAlgorithmExecutor
-from processing.core.SilentProgress import SilentProgress
 from processing.modeler.Providers import Providers
 from processing.modeler.ModelerAlgorithmProvider import ModelerAlgorithmProvider
 from processing.modeler.ModelerOnlyAlgorithmProvider import ModelerOnlyAlgorithmProvider
@@ -53,7 +53,6 @@ from processing.admintools.AdminToolsAlgorithmProvider import AdminToolsAlgorith
 
 class Processing:
 
-    iface = None
     listeners = []
     providers = []
     #a dictionary of algorithms. Keys are names of providers
@@ -102,19 +101,12 @@ class Processing:
 
     @staticmethod
     def getInterface():
-        return Processing.iface
+        return interface.iface
 
     @staticmethod
     def setInterface(iface):
-        Processing.iface = iface
+        pass#Processing.iface = iface
 
-    @staticmethod
-    def setPlugin(iface):
-        Processing.plugin = iface
-
-    @staticmethod
-    def getPlugin():
-        return Processing.plugin
 
     @staticmethod
     def initialize():
@@ -251,7 +243,7 @@ class Processing:
     @staticmethod
     def getObject(uri):
         '''Returns the QGIS object identified by the given URI'''
-        return QGisLayers.getObjectFromUri(uri)
+        return dataobjects.getObjectFromUri(uri)
 
     @staticmethod
     def runandload(name, *args):
@@ -316,43 +308,12 @@ class Processing:
         elif cursor.shape() != Qt.WaitCursor:
             QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
 
-        useThreads = ProcessingConfig.getSetting(ProcessingConfig.USE_THREADS)
-
-        #this is doing strange things, so temporarily the thread execution is disabled from the console
-        useThreads = False
-
-        if useThreads:
-            algEx = AlgorithmExecutor(alg)
-            progress = QProgressDialog()
-            progress.setWindowTitle(alg.name)
-            progress.setLabelText("Executing %s..." % alg.name)
-            def finish():
-                QApplication.restoreOverrideCursor()
-                if onFinish is not None:
-                    onFinish(alg, SilentProgress())
-                progress.close()
-            def error(msg):
-                QApplication.restoreOverrideCursor()
-                print msg
-                ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, msg)
-            def cancel():
-                try:
-                    algEx.finished.disconnect()
-                    algEx.terminate()
-                    QApplication.restoreOverrideCursor()
-                    progress.close()
-                except:
-                    pass
-            algEx.error.connect(error)
-            algEx.finished.connect(finish)
-            algEx.start()
-            algEx.wait()
-        else:
-            progress = SilentProgress()
-            ret = UnthreadedAlgorithmExecutor.runalg(alg, progress)
-            if onFinish is not None and ret:
-                onFinish(alg, progress)
-            QApplication.restoreOverrideCursor()
+        progress = MessageBarProgress()
+        ret = UnthreadedAlgorithmExecutor.runalg(alg, progress)
+        if onFinish is not None and ret:
+            onFinish(alg, progress)
+        QApplication.restoreOverrideCursor()
+        progress.close()
         return alg
 
 

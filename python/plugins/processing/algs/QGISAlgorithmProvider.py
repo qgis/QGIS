@@ -25,9 +25,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from PyQt4.QtGui import *
-
 from processing.core.AlgorithmProvider import AlgorithmProvider
-
 from processing.algs.ftools.PointsInPolygon import PointsInPolygon
 from processing.algs.ftools.PointsInPolygonUnique import PointsInPolygonUnique
 from processing.algs.ftools.PointsInPolygonWeighted import PointsInPolygonWeighted
@@ -85,6 +83,10 @@ from processing.algs.FieldPyculator import FieldsPyculator
 from processing.algs.JoinAttributes import JoinAttributes
 from processing.algs.CreateConstantRaster import CreateConstantRaster
 from processing.algs.PointsLayerFromTable import PointsLayerFromTable
+from processing.algs.PointsDisplacement import PointsDisplacement
+from processing.algs.ZonalStatistics import ZonalStatistics
+from processing.algs.PointsFromPolygons import PointsFromPolygons
+from processing.algs.PointsFromLines import PointsFromLines
 
 #from processing.algs.VectorLayerHistogram import VectorLayerHistogram
 #from processing.algs.VectorLayerScatterplot import VectorLayerScatterplot
@@ -134,10 +136,15 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         PointsLayerFromTable(), StatisticsByCategories(), Polygonize(),
                         # ------ raster ------
                         #CreateConstantRaster(),
-                        RasterLayerStatistics()
+                        RasterLayerStatistics(),
                         # ------ graphics ------
                         #VectorLayerHistogram(), VectorLayerScatterplot(), RasterLayerHistogram(),
                         #MeanAndStdDevPlot(), BarPlot(), PolarPlot()
+                        # ------ vector ------
+                        PointsDisplacement(),
+                        ZonalStatistics(),
+                        PointsFromPolygons(),
+                        PointsFromLines()
                         ]
 
     def initializeSettings(self):

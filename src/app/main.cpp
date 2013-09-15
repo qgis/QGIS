@@ -443,208 +443,105 @@ int main( int argc, char *argv[] )
   //put all QGIS settings in the same place
   configpath = QgsApplication::qgisSettingsDirPath();
   QgsDebugMsg( QString( "Android: configpath set to %1" ).arg( configpath ) );
-#elif defined(Q_WS_WIN)
-  for ( int i = 1; i < argc; i++ )
-  {
-    QString arg = argv[i];
+#endif
 
-    if ( arg == "--help" || arg == "-?" )
-    {
-      usage( argv[0] );
-      return 2;
-    }
-    else if ( arg == "-nologo" || arg == "-n" )
-    {
-      myHideSplash = true;
-    }
-    else if ( arg == "--noplugins" || arg == "-P" )
-    {
-      myRestorePlugins = false;
-    }
-    else if ( arg == "--nocustomization" || arg == "-C" )
-    {
-      myCustomization = false;
-    }
-    else if ( i + 1 < argc && ( arg == "--snapshot" || arg == "-s" ) )
-    {
-      mySnapshotFileName = QDir::convertSeparators( QFileInfo( QFile::decodeName( argv[++i] ) ).absoluteFilePath() );
-    }
-    else if ( i + 1 < argc && ( arg == "--width" || arg == "-w" ) )
-    {
-      mySnapshotWidth = QString( argv[++i] ).toInt();
-    }
-    else if ( i + 1 < argc && ( arg == "--height" || arg == "-h" ) )
-    {
-      mySnapshotHeight = QString( argv[++i] ).toInt();
-    }
-    else if ( i + 1 < argc && ( arg == "--lang" || arg == "-l" ) )
-    {
-      myTranslationCode = argv[++i];
-    }
-    else if ( i + 1 < argc && ( arg == "--project" || arg == "-p" ) )
-    {
-      myProjectFileName = QDir::convertSeparators( QFileInfo( QFile::decodeName( argv[++i] ) ).absoluteFilePath() );
-    }
-    else if ( i + 1 < argc && ( arg == "--extent" || arg == "-e" ) )
-    {
-      myInitialExtent = argv[++i];
-    }
-    else if ( i + 1 < argc && ( arg == "--optionspath" || arg == "-o" ) )
-    {
-      optionpath = argv[++i];
-    }
-    else if ( i + 1 < argc && ( arg == "--configpath" || arg == "-c" ) )
-    {
-      configpath = argv[++i];
-    }
-    else if ( i + 1 < argc && ( arg == "--code" || arg == "-f" ) )
-    {
-      pythonfile = argv[++i];
-    }
-    else if ( i + 1 < argc && ( arg == "--customizationfile" || arg == "-z" ) )
-    {
-      customizationfile = argv[++i];
-    }
-    else
-    {
-      myFileList.append( QDir::convertSeparators( QFileInfo( QFile::decodeName( argv[i] ) ).absoluteFilePath() ) );
-    }
+  QStringList args;
+  {
+    // Build a local QCoreApplication from arguments. This way, arguments are correctly parsed from their native locale
+    // It will use QString::fromLocal8Bit( argv ) under Unix and GetCommandLine() under Windows.
+    QCoreApplication coreApp( argc, argv );
+    args = QCoreApplication::arguments();
   }
-#else
+    
   if ( !bundleclicked( argc, argv ) )
   {
-
-    ////////////////////////////////////////////////////////////////
-    // Use the GNU Getopts utility to parse cli arguments
-    // Invokes ctor `GetOpt (int argc, char **argv,  char *optstring);'
-    ///////////////////////////////////////////////////////////////
-    int optionChar;
-    while ( 1 )
+    for ( int i = 1; i < args.size(); ++i )
     {
-      static struct option long_options[] =
+      QString arg = args[i];
+      
+      if ( arg == "--help" || arg == "-?" )
       {
-        /* These options set a flag. */
-        {"help", no_argument, 0, '?'},
-        {"nologo", no_argument, 0, 'n'},
-        {"noplugins", no_argument, 0, 'P'},
-        {"nocustomization", no_argument, 0, 'C'},
-        /* These options don't set a flag.
-         *  We distinguish them by their indices. */
-        {"snapshot", required_argument, 0, 's'},
-        {"width",    required_argument, 0, 'w'},
-        {"height",   required_argument, 0, 'h'},
-        {"lang",     required_argument, 0, 'l'},
-        {"project",  required_argument, 0, 'p'},
-        {"extent",   required_argument, 0, 'e'},
-        {"optionspath", required_argument, 0, 'o'},
-        {"configpath", required_argument, 0, 'c'},
-        {"customizationfile", required_argument, 0, 'z'},
-        {"code", required_argument, 0, 'f'},
-        {"android", required_argument, 0, 'a'},
-        {0, 0, 0, 0}
-      };
-
-      /* getopt_long stores the option index here. */
-      int option_index = 0;
-
-      optionChar = getopt_long( argc, argv, "swhlpeoc",
-                                long_options, &option_index );
-      QgsDebugMsg( QString( "Qgis main Debug" ) + optionChar );
-      /* Detect the end of the options. */
-      if ( optionChar == -1 )
-        break;
-
-      switch ( optionChar )
-      {
-        case 0:
-          /* If this option set a flag, do nothing else now. */
-          if ( long_options[option_index].flag != 0 )
-            break;
-          printf( "option %s", long_options[option_index].name );
-          if ( optarg )
-            printf( " with arg %s", optarg );
-          printf( "\n" );
-          break;
-
-        case 's':
-          mySnapshotFileName = QDir::convertSeparators( QFileInfo( QFile::decodeName( optarg ) ).absoluteFilePath() );
-          break;
-
-        case 'w':
-          mySnapshotWidth = QString( optarg ).toInt();
-          break;
-
-        case 'h':
-          mySnapshotHeight = QString( optarg ).toInt();
-          break;
-
-        case 'n':
-          myHideSplash = true;
-          break;
-
-        case 'l':
-          myTranslationCode = optarg;
-          break;
-
-        case 'p':
-          myProjectFileName = QDir::convertSeparators( QFileInfo( QFile::decodeName( optarg ) ).absoluteFilePath() );
-          break;
-
-        case 'P':
-          myRestorePlugins = false;
-          break;
-
-        case 'C':
-          myCustomization = false;
-          break;
-
-        case 'e':
-          myInitialExtent = optarg;
-          break;
-
-        case 'o':
-          optionpath = optarg;
-          break;
-
-        case 'c':
-          configpath = optarg;
-          break;
-
-        case 'f':
-          pythonfile = optarg;
-          break;
-
-        case 'z':
-          customizationfile = optarg;
-          break;
-
-        case '?':
-          usage( argv[0] );
-          return 2;   // XXX need standard exit codes
-          break;
-
-        default:
-          QgsDebugMsg( QString( "%1: getopt returned character code %2" ).arg( argv[0] ).arg( optionChar ) );
-          return 1;   // XXX need standard exit codes
+	usage( args[0].toStdString() );
+	return 2;
       }
-    }
-
-    // Add any remaining args to the file list - we will attempt to load them
-    // as layers in the map view further down....
-    QgsDebugMsg( QString( "Files specified on command line: %1" ).arg( optind ) );
-    if ( optind < argc )
-    {
-      while ( optind < argc )
+      else if ( arg == "--nologo" || arg == "-n" )
       {
-#ifdef QGISDEBUG
-        int idx = optind;
-        QgsDebugMsg( QString( "%1: %2" ).arg( idx ).arg( argv[idx] ) );
-#endif
-        myFileList.append( QDir::convertSeparators( QFileInfo( QFile::decodeName( argv[optind++] ) ).absoluteFilePath() ) );
+	myHideSplash = true;
+      }
+      else if ( arg == "--noplugins" || arg == "-P" )
+      {
+	myRestorePlugins = false;
+      }
+      else if ( arg == "--nocustomization" || arg == "-C" )
+      {
+	myCustomization = false;
+      }
+      else if ( i + 1 < argc && ( arg == "--snapshot" || arg == "-s" ) )
+      {
+	mySnapshotFileName = QDir::convertSeparators( QFileInfo( args[++i] ).absoluteFilePath() );
+      }
+      else if ( i + 1 < argc && ( arg == "--width" || arg == "-w" ) )
+      {
+      mySnapshotWidth = QString( args[++i] ).toInt();
+      }
+      else if ( i + 1 < argc && ( arg == "--height" || arg == "-h" ) )
+      {
+	mySnapshotHeight = QString( args[++i] ).toInt();
+      }
+      else if ( i + 1 < argc && ( arg == "--lang" || arg == "-l" ) )
+      {
+	myTranslationCode = args[++i];
+      }
+      else if ( i + 1 < argc && ( arg == "--project" || arg == "-p" ) )
+      {
+	myProjectFileName = QDir::convertSeparators( QFileInfo( args[++i] ).absoluteFilePath() );
+      }
+      else if ( i + 1 < argc && ( arg == "--extent" || arg == "-e" ) )
+      {
+	myInitialExtent = args[++i];
+      }
+      else if ( i + 1 < argc && ( arg == "--optionspath" || arg == "-o" ) )
+      {
+	optionpath = QDir::convertSeparators( QDir( args[++i] ).absolutePath() );
+      }
+      else if ( i + 1 < argc && ( arg == "--configpath" || arg == "-c" ) )
+      {
+	configpath = QDir::convertSeparators( QDir( args[++i] ).absolutePath() );
+      }
+      else if ( i + 1 < argc && ( arg == "--code" || arg == "-f" ) )
+      {
+	pythonfile = QDir::convertSeparators( QFileInfo( args[++i] ).absoluteFilePath() );
+      }
+      else if ( i + 1 < argc && ( arg == "--customizationfile" || arg == "-z" ) )
+      {
+	customizationfile = QDir::convertSeparators( QFileInfo( args[++i] ).absoluteFilePath() );
+      }
+      else
+      {
+	myFileList.append( QDir::convertSeparators( QFileInfo( args[i] ).absoluteFilePath() ) );
       }
     }
   }
-#endif
+
+  /////////////////////////////////////////////////////////////////////
+  // If no --project was specified, parse the args to look for a     //
+  // .qgs file and set myProjectFileName to it. This allows loading  //
+  // of a project file by clicking on it in various desktop managers //
+  // where an appropriate mime-type has been set up.                 //
+  /////////////////////////////////////////////////////////////////////
+  if ( myProjectFileName.isEmpty() )
+  {
+    // check for a .qgs
+    for ( int i = 0; i < args.size(); i++ )
+    {
+      QString arg = QDir::convertSeparators( QFileInfo( args[i] ).absoluteFilePath() );
+      if ( arg.contains( ".qgs" ) )
+      {
+        myProjectFileName = arg;
+        break;
+      }
+    }
+  }
 
 
   /////////////////////////////////////////////////////////////////////
@@ -955,26 +852,6 @@ int main( int argc, char *argv[] )
     //qgis, SLOT( preNotify( QObject *, QEvent *))
     QgsCustomization::instance(), SLOT( preNotify( QObject *, QEvent *, bool * ) )
   );
-
-  /////////////////////////////////////////////////////////////////////
-  // If no --project was specified, parse the args to look for a     //
-  // .qgs file and set myProjectFileName to it. This allows loading  //
-  // of a project file by clicking on it in various desktop managers //
-  // where an appropriate mime-type has been set up.                 //
-  /////////////////////////////////////////////////////////////////////
-  if ( myProjectFileName.isEmpty() )
-  {
-    // check for a .qgs
-    for ( int i = 0; i < argc; i++ )
-    {
-      QString arg = QDir::convertSeparators( QFileInfo( QFile::decodeName( argv[i] ) ).absoluteFilePath() );
-      if ( arg.contains( ".qgs" ) )
-      {
-        myProjectFileName = arg;
-        break;
-      }
-    }
-  }
 
   /////////////////////////////////////////////////////////////////////
   // Load a project file if one was specified

@@ -24,10 +24,9 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-# -*- coding: latin-1 -*-
+from PyQt4 import QtGui
 from processing.gui.ParametersPanel import ParametersPanel
 from processing.gui.AlgorithmExecutionDialog import AlgorithmExecutionDialog
-from PyQt4 import QtCore
 
 
 class ParametersDialog(AlgorithmExecutionDialog):
@@ -36,5 +35,8 @@ class ParametersDialog(AlgorithmExecutionDialog):
     '''the default parameters dialog, to be used when an algorithm is called from the toolbox'''
     def __init__(self, alg):
         self.paramTable = ParametersPanel(self, alg)
-        AlgorithmExecutionDialog.__init__(self, alg, self.paramTable)
+        self.scrollArea = QtGui.QScrollArea()        
+        self.scrollArea.setWidget(self.paramTable)
+        self.scrollArea.setWidgetResizable(True)
+        AlgorithmExecutionDialog.__init__(self, alg, self.scrollArea)
         self.executed = False

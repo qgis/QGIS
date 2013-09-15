@@ -5,7 +5,7 @@
     FieldPyculator.py
     ---------------------
     Date                 : August 2012
-    Copyright            : (C) 2012 by Victor Olaya
+    Copyright            : (C) 2012 by Victor Olaya & NextGIS
     Email                : volayaf at gmail dot com
 ***************************************************************************
 *                                                                         *
@@ -17,27 +17,22 @@
 ***************************************************************************
 """
 
-__author__ = 'Victor Olaya'
+__author__ = 'Victor Olaya & NextGIS'
 __date__ = 'August 2012'
-__copyright__ = '(C) 2012, Victor Olaya'
+__copyright__ = '(C) 2012, Victor Olaya & NextGIS'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
 import sys
-
 from PyQt4.QtCore import *
-
 from qgis.core import *
-
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.QGisLayers import QGisLayers
+from processing.tools import dataobjects, vector
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-
 from processing.parameters.ParameterVector import ParameterVector
 from processing.parameters.ParameterString import ParameterString
 from processing.parameters.ParameterNumber import ParameterNumber
 from processing.parameters.ParameterSelection import ParameterSelection
-
 from processing.outputs.OutputVector import OutputVector
 
 
@@ -82,7 +77,7 @@ class FieldsPyculator(GeoAlgorithm):
         globalExpression = self.getParameterValue(self.GLOBAL)
         output = self.getOutputFromName(self.OUTPUT_LAYER)
 
-        layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT_LAYER))
+        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_LAYER))
         provider = layer.dataProvider()
         fields = provider.fields()
         fields.append(QgsField(fieldName, self.TYPES[fieldType], "", fieldLength, fieldPrecision))
@@ -125,7 +120,7 @@ class FieldsPyculator(GeoAlgorithm):
                                  unicode(sys.exc_info()[0].__name__), unicode(sys.exc_info()[1]))
 
         #run
-        features = QGisLayers.features(layer)
+        features = vector.features(layer)
         nFeatures = len(features)
         nElement = 1
         for feat in features:

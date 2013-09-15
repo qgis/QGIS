@@ -26,11 +26,11 @@ __revision__ = '$Format:%H$'
 import math
 from qgis.core import *
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.QGisLayers import QGisLayers
+from processing.tools import dataobjects, vector
 from processing.parameters.ParameterVector import ParameterVector
 from processing.outputs.OutputHTML import OutputHTML
 from processing.outputs.OutputNumber import OutputNumber
-from processing.algs.ftools import FToolsUtils as utils
+from processing.tools import vector as utils
 
 class NearestNeighbourAnalysis(GeoAlgorithm):
 
@@ -64,10 +64,10 @@ class NearestNeighbourAnalysis(GeoAlgorithm):
         self.addOutput(OutputNumber(self.Z_SCORE, "Z-Score"))
 
     def processAlgorithm(self, progress):
-        layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.POINTS))
+        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.POINTS))
         output = self.getOutputValue(self.OUTPUT)
 
-        spatialIndex = utils.createSpatialIndex(layer)
+        spatialIndex = utils.spatialindex(layer)
 
         neighbour = QgsFeature()
         distance = QgsDistanceArea()
@@ -77,7 +77,7 @@ class NearestNeighbourAnalysis(GeoAlgorithm):
         A = float(A.width() * A.height())
 
         current = 0
-        features = QGisLayers.features(layer)
+        features = vector.features(layer)
         count = len(features)
         total = 100.0 / float(len(features))
         for feat in features:

@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -33,7 +34,8 @@ from processing.parameters.ParameterFactory import ParameterFactory
 from processing.modeler.WrongModelException import WrongModelException
 from processing.modeler.ModelerUtils import ModelerUtils
 from processing.parameters.ParameterRaster import ParameterRaster
-from processing.core.QGisLayers import QGisLayers
+from processing.parameters.ParameterDataObject import ParameterDataObject
+from processing.tools import dataobjects
 from processing.parameters.ParameterExtent import ParameterExtent
 from PyQt4 import QtCore, QtGui
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -461,12 +463,14 @@ class ModelerAlgorithm(GeoAlgorithm):
                     value = self.getValueFromAlgorithmAndParameter(aap)
                     layerslist.append(str(value))
                 value = ";".join(layerslist)
-                if not param.setValue(value):
-                    raise GeoAlgorithmExecutionException("Wrong value: " + str(value))
+                
+                #if not param.setValue(value):
+                    #raise GeoAlgorithmExecutionException("Wrong value: " + str(value))
 
             else:
                 value = self.getValueFromAlgorithmAndParameter(aap)
-                if not param.setValue(value):
+                #we allow unexistent filepaths, since that allows algorithms to skip some conversion routines
+                if not param.setValue(value) and not isinstance(param, ParameterDataObject):
                     raise GeoAlgorithmExecutionException("Wrong value: " + str(value))
         for out in alg.outputs:
             val = self.algOutputs[iAlg][out.name]
@@ -487,14 +491,14 @@ class ModelerAlgorithm(GeoAlgorithm):
                     if isinstance(param.value, (QgsRasterLayer, QgsVectorLayer)):
                         layer = param.value
                     else:
-                        layer = QGisLayers.getObjectFromUri(param.value)
+                        layer = dataobjects.getObjectFromUri(param.value)
                     self.addToRegion(layer, first)
                     first = False
                 elif isinstance(param, ParameterMultipleInput):
                     found = True
                     layers = param.value.split(";")
                     for layername in layers:
-                        layer = QGisLayers.getObjectFromUri(layername)
+                        layer = dataobjects.getObjectFromUri(layername)
                         self.addToRegion(layer, first)
                         first = False
         if found:
@@ -557,7 +561,7 @@ class ModelerAlgorithm(GeoAlgorithm):
                             progress.setDebugInfo("Parameters: " +
                                 ', '.join([unicode(p).strip() + "=" + unicode(p.value) for p in alg.parameters]))
                             t0 = time.time()
-                            alg.execute(progress)
+                            alg.execute(progress, self)
                             dt = time.time() - t0
                             for out in alg.outputs:
                                 outputs[out.name] = out.value

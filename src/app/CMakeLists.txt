@@ -152,6 +152,7 @@ SET(QGIS_APP_SRCS
   pluginmanager/qgspluginmanager_texts.cpp
   pluginmanager/qgsapppluginmanagerinterface.cpp
   pluginmanager/qgspluginsortfilterproxymodel.cpp
+  pluginmanager/qgspluginitemdelegate.cpp
 
   qgsnewspatialitelayerdialog.cpp
 )
@@ -286,6 +287,7 @@ SET (QGIS_APP_MOC_HDRS
   pluginmanager/qgspluginmanager.h
   pluginmanager/qgsapppluginmanagerinterface.h
   pluginmanager/qgspluginsortfilterproxymodel.h
+  pluginmanager/qgspluginitemdelegate.h
 
   qgsnewspatialitelayerdialog.h
   )

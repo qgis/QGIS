@@ -33,7 +33,7 @@ from processing.parameters.ParameterTableField import ParameterTableField
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.outputs.OutputHTML import OutputHTML
 from processing.tools import *
-from processing.core.QGisLayers import QGisLayers
+from processing.tools import dataobjects
 
 class VectorLayerScatterplot(GeoAlgorithm):
 
@@ -45,7 +45,7 @@ class VectorLayerScatterplot(GeoAlgorithm):
 
     def processAlgorithm(self, progress):
         uri = self.getParameterValue(self.INPUT)
-        layer = QGisLayers.getObjectFromUri(uri)
+        layer = dataobjects.getObjectFromUri(uri)
         xfieldname = self.getParameterValue(self.YFIELD)
         yfieldname = self.getParameterValue(self.XFIELD)
         output = self.getOutputValue(self.OUTPUT)

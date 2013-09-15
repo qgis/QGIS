@@ -26,7 +26,7 @@ __revision__ = '$Format:%H$'
 import os
 from PyQt4.QtGui import *
 from qgis.core import *
-from processing.core.QGisLayers import QGisLayers
+from processing.tools import dataobjects
 from processing.outputs.OutputRaster import OutputRaster
 from processing.outputs.OutputVector import OutputVector
 from processing.outputs.OutputTable import OutputTable
@@ -59,7 +59,7 @@ class Postprocessing:
                             name = os.path.basename(out.value)
                         else:
                             name = out.description
-                        QGisLayers.load(out.value, name, alg.crs, RenderingStyles.getStyle(alg.commandLineName(),out.name))
+                        dataobjects.load(out.value, name, alg.crs, RenderingStyles.getStyle(alg.commandLineName(),out.name))
                 except Exception, e:
                     wrongLayers.append(out)
                     #QMessageBox.critical(None, "Error", str(e))

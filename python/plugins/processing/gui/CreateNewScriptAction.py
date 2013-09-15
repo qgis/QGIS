@@ -23,22 +23,35 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from processing.script.EditScriptDialog import EditScriptDialog
+from PyQt4.QtGui import *
+
 from processing.gui.ToolboxAction import ToolboxAction
-import os
-from PyQt4 import QtGui
+from processing.gui.ScriptEditorDialog import ScriptEditorDialog
+
+import processing.resources_rc
 
 class CreateNewScriptAction(ToolboxAction):
 
-    def __init__(self):
-        self.name="Create new script"
-        self.group="Tools"
+    SCRIPT_PYTHON = 0
+    SCRIPT_R = 1
+
+    def __init__(self, actionName, scriptType):
+        self.name = actionName
+        self.group = "Tools"
+        self.scriptType = scriptType
 
     def getIcon(self):
-        return QtGui.QIcon(os.path.dirname(__file__) + "/../images/script.png")
+        if self.scriptType == self.SCRIPT_PYTHON:
+            return QIcon(":/sextante/images/script.png")
+        elif self.scriptType == self.SCRIPT_R:
+            return QIcon(":/sextante/images/r.png")
 
     def execute(self):
-        dlg = EditScriptDialog(None)
+        dlg = None
+        if self.scriptType == self.SCRIPT_PYTHON:
+             dlg = ScriptEditorDialog(ScriptEditorDialog.SCRIPT_PYTHON, None)
+        if self.scriptType == self.SCRIPT_R:
+             dlg = ScriptEditorDialog(ScriptEditorDialog.SCRIPT_R, None)
         dlg.exec_()
         if dlg.update:
             self.toolbox.updateTree()

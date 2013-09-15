@@ -321,11 +321,14 @@ void QgsGrassPlugin::addVector()
     QString field;
     QString type;
 
-    QRegExp rx( "(\\d+)_(.+)" );
-    if ( rx.indexIn( sel->layer ) != -1 )
+    if ( !sel->layer.startsWith( "topo_" ) )
     {
-      field = rx.cap( 1 );
-      type = rx.cap( 2 );
+      QRegExp rx( "(\\d+)_(.+)" );
+      if ( rx.indexIn( sel->layer ) != -1 )
+      {
+        field = rx.cap( 1 );
+        type = rx.cap( 2 );
+      }
     }
 
     // Set location
@@ -355,26 +358,33 @@ void QgsGrassPlugin::addVector()
 
       if ( level >= 2 )
       {
-        // Count layers
-        int cnt = 0;
-        int ncidx = Vect_cidx_get_num_fields( &map );
-
-        for ( int i = 0; i < ncidx; i++ )
+        if ( !sel->layer.startsWith( "topo_" ) )
         {
-          int field = Vect_cidx_get_field_number( &map, i );
+          // Count layers
+          int cnt = 0;
+          int ncidx = Vect_cidx_get_num_fields( &map );
 
-          if ( Vect_cidx_get_type_count( &map, field, GV_POINT | GV_LINE | GV_AREA ) > 0 ||
-               ( field > 1 && Vect_cidx_get_type_count( &map, field, GV_BOUNDARY ) ) )
+          for ( int i = 0; i < ncidx; i++ )
           {
-            cnt++;
+            int field = Vect_cidx_get_field_number( &map, i );
+
+            if ( Vect_cidx_get_type_count( &map, field, GV_POINT | GV_LINE | GV_AREA ) > 0 ||
+                 ( field > 1 && Vect_cidx_get_type_count( &map, field, GV_BOUNDARY ) ) )
+            {
+              cnt++;
+            }
+          }
+
+          if ( cnt > 1 )
+          {
+            name.append( " " + field );
+
+            // No need to ad type, the type is obvious from the legend
           }
         }
-
-        if ( cnt > 1 )
+        else
         {
-          name.append( " " + field );
-
-          // No need to ad type, the type is obvious from the legend
+          name.append( " " + sel->layer );
         }
       }
 

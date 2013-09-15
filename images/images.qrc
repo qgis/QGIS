@@ -96,6 +96,7 @@
     <file>themes/default/console/iconSearchNextEditorConsole.png</file>
     <file>themes/default/console/iconSearchPrevEditorConsole.png</file>
     <file>themes/default/console/iconSyntaxErrorConsole.png</file>
+    <file>themes/default/console/iconResetColorConsole.png</file>
     <file>themes/default/copyright_label.png</file>
     <file>themes/default/extents.png</file>
     <file>themes/default/favourites.png</file>
@@ -369,6 +370,7 @@
     <file>themes/default/pie-chart.png</file>
     <file>themes/default/plugin.png</file>
     <file>themes/default/pluginExperimental.png</file>
+    <file>themes/default/pluginDeprecated.png</file>
     <file>themes/default/propertyicons/action.svg</file>
     <file>themes/default/propertyicons/attributes.png</file>
     <file>themes/default/propertyicons/colormap.png</file>

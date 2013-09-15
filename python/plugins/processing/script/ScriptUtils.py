@@ -24,8 +24,8 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from processing.core.ProcessingUtils import ProcessingUtils
-from processing.core.ProcessingUtils import mkdir
+from processing.tools.system import *
+from processing.tools.system import mkdir
 from processing.core.ProcessingConfig import ProcessingConfig
 
 class ScriptUtils:
@@ -37,7 +37,7 @@ class ScriptUtils:
     def scriptsFolder():
         folder = ProcessingConfig.getSetting(ScriptUtils.SCRIPTS_FOLDER)
         if folder == None:
-            folder = unicode(os.path.join(ProcessingUtils.userFolder(), "scripts"))
+            folder = unicode(os.path.join(userFolder(), "scripts"))
         mkdir(folder)
 
         return os.path.abspath(folder)

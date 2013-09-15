@@ -46,6 +46,8 @@ list is usually recognized as higher, except following suffixes:
 ALPHA, BETA, RC, PREVIEW and TRUNK which make the version number lower.
 """
 
+import re
+
 # ------------------------------------------------------------------------ #
 def normalizeVersion(s):
   """ remove possible prefix from given string and convert to uppercase """
@@ -167,17 +169,15 @@ def splitVersion(s):
   return l
 
 
-def isCompatible(curVer, minVer, maxVer=None):
+def isCompatible(curVer, minVer, maxVer):
   """ Compare current QGIS version with qgisMinVersion and qgisMaxVersion """
-  minVer = splitVersion(minVer)
-  maxVer = splitVersion(maxVer)
-  curVer = splitVersion( curVer.split("-")[0] )
 
-  if not minVer or not curVer:
+  if not minVer or not curVer or not maxVer:
     return False
 
-  if not maxVer:
-    maxVer = [minVer[0], "99", "99"]
+  minVer = splitVersion( re.sub(r'[^0-9.]+', '', minVer) )
+  maxVer = splitVersion( re.sub(r'[^0-9.]+', '', maxVer) )
+  curVer = splitVersion( re.sub(r'[^0-9.]+', '', curVer) )
 
   if len(minVer)<3:
     minVer += ["0"]
@@ -188,8 +188,8 @@ def isCompatible(curVer, minVer, maxVer=None):
   if len(maxVer)<3:
     maxVer += ["99"]
 
-  minVer = "%02d%02d%02d" % ( int(minVer[0]), int(minVer[1]), int(minVer[2]) )
-  maxVer = "%02d%02d%02d" % ( int(maxVer[0]), int(maxVer[1]), int(maxVer[2]) )
-  curVer = "%02d%02d%02d" % ( int(curVer[0]), int(curVer[1]), int(curVer[2]) )
+  minVer = "%04d%04d%04d" % ( int(minVer[0]), int(minVer[1]), int(minVer[2]) )
+  maxVer = "%04d%04d%04d" % ( int(maxVer[0]), int(maxVer[1]), int(maxVer[2]) )
+  curVer = "%04d%04d%04d" % ( int(curVer[0]), int(curVer[1]), int(curVer[2]) )
 
   return ( minVer <= curVer and maxVer >= curVer)

@@ -25,7 +25,7 @@ __revision__ = '$Format:%H$'
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.outputs.OutputNumber import OutputNumber
-from processing.core.QGisLayers import QGisLayers
+from processing.tools import dataobjects
 from processing.parameters.ParameterVector import ParameterVector
 
 class VectorLayerBoundsAlgorithm(GeoAlgorithm):
@@ -51,7 +51,7 @@ class VectorLayerBoundsAlgorithm(GeoAlgorithm):
 
     def processAlgorithm(self, progress):
         uri = self.getParameterValue(self.LAYER)
-        layer = QGisLayers.getObjectFromUri(uri);
+        layer = dataobjects.getObjectFromUri(uri);
         self.setOutputValue(self.XMIN, layer.extent().xMinimum())
         self.setOutputValue(self.XMAX, layer.extent().xMaximum())
         self.setOutputValue(self.YMIN, layer.extent().yMinimum())

@@ -32,10 +32,10 @@ bool QgsPluginSortFilterProxyModel::filterAcceptsRow( int sourceRow, const QMode
   {
     // it's a status spacer.
     // TODO: the condition below is only suitable for status spacers
-    return ( filterByStatus( inx ) &&  mAcceptedStatuses.count() > 1 && sourceModel()->data( inx, SPACER_ROLE ).toString() == mAcceptedSpacers );
+    return ( filterByStatus( inx ) &&  mAcceptedStatuses.count() > 2 && sourceModel()->data( inx, SPACER_ROLE ).toString() == mAcceptedSpacers );
   }
 
-  return ( filterByStatus( inx ) && sourceModel()->data( inx, filterRole() ).toString().contains( filterRegExp() ) );
+  return ( filterByStatus( inx ) && filterByPhrase( inx ) );
 }
 
 
@@ -77,6 +77,29 @@ bool QgsPluginSortFilterProxyModel::filterByStatus( QModelIndex &index ) const
 
   // Otherwise, let the item go.
   return true;
+}
+
+
+
+bool QgsPluginSortFilterProxyModel::filterByPhrase( QModelIndex &index ) const
+{
+  switch ( filterRole() )
+  {
+    case PLUGIN_TAGS_ROLE:
+      // search in tags only
+      return sourceModel()->data( index, PLUGIN_TAGS_ROLE ).toString().contains( filterRegExp() );
+      break;
+    case 0:
+      // full search: name + description + tags + author
+      return sourceModel()->data( index, PLUGIN_DESCRIPTION_ROLE ).toString().contains( filterRegExp() )
+          || sourceModel()->data( index, PLUGIN_AUTHOR_ROLE ).toString().contains( filterRegExp() )
+          || sourceModel()->data( index, Qt::DisplayRole ).toString().contains( filterRegExp() )
+          || sourceModel()->data( index, PLUGIN_TAGS_ROLE ).toString().contains( filterRegExp() );
+      break;
+    default:
+      // unknown filter mode, return nothing
+      return false;
+  }
 }
 
 

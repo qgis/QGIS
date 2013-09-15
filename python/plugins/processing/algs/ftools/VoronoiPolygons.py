@@ -30,7 +30,7 @@ from PyQt4.QtCore import *
 from qgis.core import *
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.QGisLayers import QGisLayers
+from processing.tools import dataobjects, vector
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 
 from processing.parameters.ParameterVector import ParameterVector
@@ -58,7 +58,7 @@ class VoronoiPolygons(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, "Voronoi polygons"))
 
     def processAlgorithm(self, progress):
-        layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT))
+        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.pendingFields().toList(),
                      QGis.WKBPolygon, layer.crs())
@@ -73,7 +73,7 @@ class VoronoiPolygons(GeoAlgorithm):
         ptDict = {}
         ptNdx = -1
 
-        features = QGisLayers.features(layer)
+        features = vector.features(layer)
         for inFeat in features:
             geom = QgsGeometry(inFeat.geometry())
             point = geom.asPoint()

@@ -17,6 +17,7 @@
 
 #include "qgssymbolv2.h"
 #include "qgsrendererv2.h"
+#include "qgsexpression.h"
 
 class CORE_EXPORT QgsRendererRangeV2
 {
@@ -177,7 +178,7 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
     QString mRotationField;
     QString mSizeScaleField;
     QgsSymbolV2::ScaleMethod mScaleMethod;
-
+    QgsExpression* mExpression;
     //! attribute index (derived from attribute name in startRender)
     int mAttrNum;
     int mRotationFieldIdx, mSizeScaleFieldIdx;

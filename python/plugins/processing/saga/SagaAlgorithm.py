@@ -16,8 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from processing.parameters.ParameterTableField import ParameterTableField
-
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -37,7 +35,7 @@ from processing.parameters.ParameterRaster import ParameterRaster
 from processing.outputs.OutputRaster import OutputRaster
 from processing.parameters.ParameterVector import ParameterVector
 from processing.parameters.ParameterBoolean import ParameterBoolean
-from processing.core.ProcessingUtils import ProcessingUtils
+from processing.tools.system import *
 from processing.outputs.OutputVector import OutputVector
 from processing.saga.SagaUtils import SagaUtils
 from processing.saga.SagaGroupNameDecorator import SagaGroupNameDecorator
@@ -45,13 +43,15 @@ from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecution
 from processing.parameters.ParameterFactory import ParameterFactory
 from processing.outputs.OutputFactory import OutputFactory
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.core.QGisLayers import QGisLayers
+from processing.tools import dataobjects
 from processing.parameters.ParameterNumber import ParameterNumber
 from processing.parameters.ParameterSelection import ParameterSelection
-from processing.core.LayerExporter import LayerExporter
+from processing.parameters.ParameterTableField import ParameterTableField
 from processing.parameters.ParameterExtent import ParameterExtent
 from processing.parameters.ParameterFixedTable import ParameterFixedTable
 from processing.core.ProcessingLog import ProcessingLog
+
+sessionExportedLayers = {}
 
 class SagaAlgorithm(GeoAlgorithm):
 
@@ -132,14 +132,14 @@ class SagaAlgorithm(GeoAlgorithm):
                         if isinstance(param.value, QgsRasterLayer):
                             layer = param.value
                         else:
-                            layer = QGisLayers.getObjectFromUri(param.value)
+                            layer = dataobjects.getObjectFromUri(param.value)
                         self.addToResamplingExtent(layer, first)
                         first = False
                     if isinstance(param, ParameterMultipleInput):
                         if param.datatype == ParameterMultipleInput.TYPE_RASTER:
                             layers = param.value.split(";")
                             for layername in layers:
-                                layer = QGisLayers.getObjectFromUri(layername)
+                                layer = dataobjects.getObjectFromUri(layername)
                                 self.addToResamplingExtent(layer, first)
                                 first = False
             if self.inputExtentsCount < 2:
@@ -153,6 +153,8 @@ class SagaAlgorithm(GeoAlgorithm):
 
 
     def addToResamplingExtent(self, layer, first):
+        if layer is None:
+            return
         if first:
             self.inputExtentsCount = 1
             self.xmin = layer.extent().xMinimum()
@@ -176,7 +178,7 @@ class SagaAlgorithm(GeoAlgorithm):
 
 
     def processAlgorithm(self, progress):
-        if ProcessingUtils.isWindows():
+        if isWindows():
             path = SagaUtils.sagaPath()
             if path == "":
                 raise GeoAlgorithmExecutionException("SAGA folder is not configured.\nPlease configure it before running SAGA algorithms.")
@@ -195,24 +197,26 @@ class SagaAlgorithm(GeoAlgorithm):
                     continue
                 value = param.value
                 if not value.endswith("sgrd"):
-                    commands.append(self.exportRasterLayer(value))
+                    exportCommand = self.exportRasterLayer(value)
+                    if exportCommand is not None:
+                        commands.append(exportCommand)
                 if self.resample:
                     commands.append(self.resampleRasterLayer(value));
             if isinstance(param, ParameterVector):
                 if param.value == None:
                     continue
-                layer = QGisLayers.getObjectFromUri(param.value, False)
+                layer = dataobjects.getObjectFromUri(param.value, False)
                 if layer:
-                    filename = LayerExporter.exportVectorLayer(layer)
+                    filename = dataobjects.exportVectorLayer(layer)
                     self.exportedLayers[param.value]=filename
                 elif not param.value.endswith("shp"):
                     raise GeoAlgorithmExecutionException("Unsupported file format")
             if isinstance(param, ParameterTable):
                 if param.value == None:
                     continue
-                table = QGisLayers.getObjectFromUri(param.value, False)
+                table = dataobjects.getObjectFromUri(param.value, False)
                 if table:
-                    filename = LayerExporter.exportTable(table)
+                    filename = dataobjects.exportTable(table)
                     self.exportedLayers[param.value]=filename
                 elif not param.value.endswith("shp"):
                         raise GeoAlgorithmExecutionException("Unsupported file format")
@@ -230,16 +234,16 @@ class SagaAlgorithm(GeoAlgorithm):
                             commands.append(self.resampleRasterLayer(layerfile));
                 elif param.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
                     for layerfile in layers:
-                        layer = QGisLayers.getObjectFromUri(layerfile, False)
+                        layer = dataobjects.getObjectFromUri(layerfile, False)
                         if layer:
-                            filename = LayerExporter.exportVectorLayer(layer)
+                            filename = dataobjects.exportVectorLayer(layer)
                             self.exportedLayers[layerfile]=filename
                         elif (not layerfile.endswith("shp")):
                             raise GeoAlgorithmExecutionException("Unsupported file format")
 
         #2: set parameters and outputs
         saga208 = ProcessingConfig.getSetting(SagaUtils.SAGA_208)
-        if ProcessingUtils.isWindows() or ProcessingUtils.isMac() or not saga208:
+        if isWindows() or isMac() or not saga208:
             command = self.undecoratedGroup  + " \"" + self.cmdname + "\""
         else:
             command = "lib" + self.undecoratedGroup  + " \"" + self.cmdname + "\""
@@ -266,7 +270,7 @@ class SagaAlgorithm(GeoAlgorithm):
                 if param.value:
                     command+=(" -" + param.name);
             elif isinstance(param, ParameterFixedTable):
-                tempTableFile  = ProcessingUtils.getTempFilename("txt")
+                tempTableFile  = getTempFilename("txt")
                 f = open(tempTableFile, "w")
                 f.write('\t'.join([col for col in param.cols]) + "\n")
                 values = param.value.split(",")
@@ -290,7 +294,7 @@ class SagaAlgorithm(GeoAlgorithm):
         for out in self.outputs:
             if isinstance(out, OutputRaster):
                 filename = out.getCompatibleFileName(self)
-                filename = ProcessingUtils.tempFolder() + os.sep + os.path.basename(filename) + ".sgrd"
+                filename += ".sgrd"
                 command+=(" -" + out.name + " \"" + filename + "\"");
             if isinstance(out, OutputVector):
                 filename = out.getCompatibleFileName(self)
@@ -302,15 +306,30 @@ class SagaAlgorithm(GeoAlgorithm):
         commands.append(command)
 
         #3:Export resulting raster layers
+        optim = ProcessingConfig.getSetting(SagaUtils.SAGA_IMPORT_EXPORT_OPTIMIZATION)
         for out in self.outputs:
             if isinstance(out, OutputRaster):
                 filename = out.getCompatibleFileName(self)
-                filename2 = ProcessingUtils.tempFolder() + os.sep + os.path.basename(filename) + ".sgrd"
+                filename2 = filename + ".sgrd"
                 formatIndex = 1 if saga208 else 4
-                if ProcessingUtils.isWindows() or ProcessingUtils.isMac() or not saga208:
+                sessionExportedLayers[filename] = filename2
+                dontExport = True
+                
+                #Do not export is the output is not a final output of the model
+                if self.model is not None and optim:
+                    for subalg in self.model.algOutputs:
+                        if out.name in subalg:
+                            if subalg[out.name] is not None:
+                                dontExport = False
+                                break                            
+                    if dontExport:
+                        continue                          
+                        
+                if isWindows() or isMac() or not saga208:
                     commands.append("io_gdal 1 -GRIDS \"" + filename2 + "\" -FORMAT " + str(formatIndex) +" -TYPE 0 -FILE \"" + filename + "\"");
                 else:
                     commands.append("libio_gdal 1 -GRIDS \"" + filename2 + "\" -FORMAT 1 -TYPE 0 -FILE \"" + filename + "\"");
+                
 
 
         #4 Run SAGA
@@ -329,7 +348,7 @@ class SagaAlgorithm(GeoAlgorithm):
     def preProcessInputs(self):
         name = self.commandLineName().replace('.','_')[len('saga:'):]
         try:
-            module = importlib.import_module('processing.grass.ext.' + name)
+            module = importlib.import_module('processing.saga.ext.' + name)
         except ImportError:
             return
         if hasattr(module, 'preProcessInputs'):
@@ -364,10 +383,10 @@ class SagaAlgorithm(GeoAlgorithm):
             inputFilename = self.exportedLayers[layer]
         else:
             inputFilename = layer
-        destFilename = ProcessingUtils.getTempFilename("sgrd")
+        destFilename = getTempFilename("sgrd")
         self.exportedLayers[layer]= destFilename
         saga208 = ProcessingConfig.getSetting(SagaUtils.SAGA_208)
-        if ProcessingUtils.isWindows() or ProcessingUtils.isMac() or not saga208:
+        if isWindows() or isMac() or not saga208:
             s = "grid_tools \"Resampling\" -INPUT \"" + inputFilename + "\" -TARGET 0 -SCALE_UP_METHOD 4 -SCALE_DOWN_METHOD 4 -USER_XMIN " +\
                 str(self.xmin) + " -USER_XMAX " + str(self.xmax) + " -USER_YMIN " + str(self.ymin) + " -USER_YMAX "  + str(self.ymax) +\
                 " -USER_SIZE " + str(self.cellsize) + " -USER_GRID \"" + destFilename + "\""
@@ -379,25 +398,26 @@ class SagaAlgorithm(GeoAlgorithm):
 
 
     def exportRasterLayer(self, source):
-        layer = QGisLayers.getObjectFromUri(source, False)
+        if source in sessionExportedLayers:
+            self.exportedLayers[source] = sessionExportedLayers[source]
+            return None
+        layer = dataobjects.getObjectFromUri(source, False)
         if layer:
             filename = str(layer.name())
         else:
-            filename = source.rstrip(".sgrd")
+            filename = os.path.basename(source)
         validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:"
         filename = ''.join(c for c in filename if c in validChars)
         if len(filename) == 0:
             filename = "layer"
-        destFilename = ProcessingUtils.getTempFilenameInTempFolder(filename + ".sgrd")
+        destFilename = getTempFilenameInTempFolder(filename + ".sgrd")
         self.exportedLayers[source]= destFilename
+        sessionExportedLayers[source] = destFilename
         saga208 = ProcessingConfig.getSetting(SagaUtils.SAGA_208)
-        if ProcessingUtils.isWindows() or ProcessingUtils.isMac() or not saga208:
+        if isWindows() or isMac() or not saga208:
             return "io_gdal 0 -GRIDS \"" + destFilename + "\" -FILES \"" + source+"\""
         else:
             return "libio_gdal 0 -GRIDS \"" + destFilename + "\" -FILES \"" + source + "\""
-
-
-
 
     def checkBeforeOpeningParametersDialog(self):
         msg = SagaUtils.checkSagaIsInstalled()
@@ -413,7 +433,7 @@ class SagaAlgorithm(GeoAlgorithm):
         for param in self.parameters:
             if isinstance(param, ParameterRaster):
                 value = param.value
-                layer = QGisLayers.getObjectFromUri(value)
+                layer = dataobjects.getObjectFromUri(value)
                 if layer is not None and layer.bandCount() > 1:
                         return ("Input layer " + str(layer.name()) + " has more than one band.\n"
                                 + "Multiband layers are not supported by SAGA")

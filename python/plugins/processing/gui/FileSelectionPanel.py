@@ -25,7 +25,7 @@ __revision__ = '$Format:%H$'
 
 import os
 from PyQt4 import QtGui, QtCore
-from processing.core.ProcessingUtils import ProcessingUtils
+from processing.tools.system import *
 
 class FileSelectionPanel(QtGui.QWidget):
 
@@ -70,7 +70,7 @@ class FileSelectionPanel(QtGui.QWidget):
 
     def getValue(self):
         s = unicode(self.text.text())
-        if ProcessingUtils.isWindows():
+        if isWindows():
             s = s.replace("\\", "/")
         return s
 

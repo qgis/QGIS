@@ -32,7 +32,7 @@ from processing.parameters.ParameterTableField import ParameterTableField
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.outputs.OutputHTML import OutputHTML
 from processing.tools import *
-from processing.core.QGisLayers import QGisLayers
+from processing.tools import dataobjects
 from processing.parameters.ParameterNumber import ParameterNumber
 
 class VectorLayerHistogram(GeoAlgorithm):
@@ -45,7 +45,7 @@ class VectorLayerHistogram(GeoAlgorithm):
 
     def processAlgorithm(self, progress):
         uri = self.getParameterValue(self.INPUT)
-        layer = QGisLayers.getObjectFromUri(uri)
+        layer = dataobjects.getObjectFromUri(uri)
         fieldname = self.getParameterValue(self.FIELD)
         output = self.getOutputValue(self.OUTPUT)
         values = vector.getAttributeValues(layer, fieldname)

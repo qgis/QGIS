@@ -24,7 +24,7 @@ __copyright__ = '(C) 2013, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os.path
-from processing.core.QGisLayers import QGisLayers
+from processing.tools import dataobjects
 
 dataFolder = os.path.join(os.path.dirname(__file__), 'data')
 
@@ -57,12 +57,12 @@ def union():
     return os.path.join(dataFolder, "union.shp")
 
 def loadTestData():
-    QGisLayers.load(points(), "points");
-    QGisLayers.load(points2(), "points2");
-    QGisLayers.load(polygons(), "polygons");
-    QGisLayers.load(polygons2(), "polygons2");
-    QGisLayers.load(polygonsGeoJson(), "polygonsGeoJson");
-    QGisLayers.load(lines(), "lines");
-    QGisLayers.load(raster(), "raster");
-    QGisLayers.load(table(), "table");
-    QGisLayers.load(union(), "union");
+    dataobjects.load(points(), "points");
+    dataobjects.load(points2(), "points2");
+    dataobjects.load(polygons(), "polygons");
+    dataobjects.load(polygons2(), "polygons2");
+    dataobjects.load(polygonsGeoJson(), "polygonsGeoJson");
+    dataobjects.load(lines(), "lines");
+    dataobjects.load(raster(), "raster");
+    dataobjects.load(table(), "table");
+    dataobjects.load(union(), "union");

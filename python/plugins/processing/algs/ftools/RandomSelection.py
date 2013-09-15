@@ -31,7 +31,7 @@ from qgis.core import *
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.QGisLayers import QGisLayers
+from processing.tools import dataobjects
 
 from processing.parameters.ParameterSelection import ParameterSelection
 from processing.parameters.ParameterVector import ParameterVector
@@ -67,7 +67,7 @@ class RandomSelection(GeoAlgorithm):
 
     def processAlgorithm(self, progress):
         filename = self.getParameterValue(self.INPUT)
-        layer = QGisLayers.getObjectFromUri(filename)
+        layer = dataobjects.getObjectFromUri(filename)
         method = self.getParameterValue(self.METHOD)
 
         featureCount = layer.featureCount()

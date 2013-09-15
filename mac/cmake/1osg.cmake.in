@@ -15,7 +15,7 @@ SET (OSG_PLUGINS_PATH "@OSG_PLUGINS_PATH@")
 
 # list of osg frameworks to bundle
 
-SET (OSGLIST OpenThreads osg osgDB osgGA osgViewer osgEarth osgEarthAnnotation osgEarthFeatures osgEarthSymbology osgEarthUtil osgFX osgManipulator osgShadow osgSim osgTerrain osgText osgUtil osgWidget)
+SET (OSGLIST OpenThreads osg osgAnimation osgDB osgGA osgViewer osgEarth osgEarthAnnotation osgEarthFeatures osgEarthSymbology osgEarthUtil osgFX osgManipulator osgParticle osgPresentation osgShadow osgSim osgTerrain osgText osgUtil osgVolume osgWidget)
 IF (@HAVE_OSGEARTHQT@)
     SET (OSGLIST ${OSGLIST} osgQt osgEarthQt)
 ENDIF (@HAVE_OSGEARTHQT@)

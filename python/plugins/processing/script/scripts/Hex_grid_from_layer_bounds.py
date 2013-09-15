@@ -3,7 +3,7 @@
 ##cellsize=number 1000.0
 ##grid=output vector
 
-input = processing.getobject(input)
+input = processing.getObject(input)
 centerx = (input.extent().xMinimum() + input.extent().xMaximum()) / 2
 centery = (input.extent().yMinimum() + input.extent().yMaximum()) / 2
 width = (input.extent().xMaximum() - input.extent().xMinimum())

@@ -33,7 +33,7 @@ from PyQt4.QtCore import *
 from qgis.core import *
 from processing.parameters.ParameterNumber import ParameterNumber
 from processing.outputs.OutputRaster import OutputRaster
-from processing.core.QGisLayers import QGisLayers
+from processing.tools import dataobjects
 
 class CreateConstantRaster(GeoAlgorithm):
 
@@ -49,7 +49,7 @@ class CreateConstantRaster(GeoAlgorithm):
     def processAlgorithm(self, progress):
         output = self.getOutputFromName(self.OUTPUT)
         value = self.getOutputValue(self.NUMBER)
-        layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT))
+        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
         cellsize = (layer.extent().xMaximum() - layer.extent().xMinimum())/layer.width()
         w = RasterWriter(output.getCompatibleFileName(self), layer.extent().xMinimum(), layer.extent().yMinimum(), layer.extent().xMaximum(),
                                  layer.extent().yMaximum(), cellsize, 1, self.crs)

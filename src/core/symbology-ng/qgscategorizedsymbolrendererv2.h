@@ -17,6 +17,7 @@
 
 #include "qgssymbolv2.h"
 #include "qgsrendererv2.h"
+#include "qgsexpression.h"
 
 #include <QHash>
 
@@ -155,6 +156,7 @@ class CORE_EXPORT QgsCategorizedSymbolRendererV2 : public QgsFeatureRendererV2
     QString mRotationField;
     QString mSizeScaleField;
     QgsSymbolV2::ScaleMethod mScaleMethod;
+    QgsExpression* mExpression;
 
     //! attribute index (derived from attribute name in startRender)
     int mAttrNum;

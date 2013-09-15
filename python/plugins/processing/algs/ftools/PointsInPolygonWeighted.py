@@ -24,20 +24,14 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from PyQt4 import QtGui
 from PyQt4.QtCore import *
-
 from qgis.core import *
-
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.QGisLayers import QGisLayers
-
+from processing.tools import dataobjects, vector
 from processing.parameters.ParameterVector import ParameterVector
 from processing.parameters.ParameterString import ParameterString
-
 from processing.outputs.OutputVector import OutputVector
-
-from processing.algs.ftools import FToolsUtils as utils
+from processing.tools import vector as utils
 
 class PointsInPolygonWeighted(GeoAlgorithm):
 
@@ -64,8 +58,8 @@ class PointsInPolygonWeighted(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, "Result"))
 
     def processAlgorithm(self, progress):
-        polyLayer = QGisLayers.getObjectFromUri(self.getParameterValue(self.POLYGONS))
-        pointLayer = QGisLayers.getObjectFromUri(self.getParameterValue(self.POINTS))
+        polyLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.POLYGONS))
+        pointLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.POINTS))
         fieldName = self.getParameterValue(self.FIELD)
         fieldIdx = pointLayer.fieldNameIndex(self.getParameterValue(self.WEIGHT))
 
@@ -76,7 +70,7 @@ class PointsInPolygonWeighted(GeoAlgorithm):
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fieldList.toList(),
                      polyProvider.geometryType(), polyProvider.crs())
 
-        spatialIndex = utils.createSpatialIndex(pointLayer)
+        spatialIndex = utils.spatialindex(pointLayer)
 
         ftPoint = QgsFeature()
         outFeat = QgsFeature()
@@ -85,7 +79,7 @@ class PointsInPolygonWeighted(GeoAlgorithm):
         current = 0
         hasIntersections = False
 
-        features = QGisLayers.features(polyLayer)
+        features = vector.features(polyLayer)
         total = 100.0 / float(len(features))
         for ftPoly in features:
             geom = ftPoly.geometry()

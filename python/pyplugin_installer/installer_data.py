@@ -71,6 +71,7 @@ mPlugins = dict of dicts {id : {
     "error" unicode,                            # NULL | broken | incompatible | dependent
     "error_details" unicode,                    # error description
     "experimental" boolean,                     # true if experimental, false if stable
+    "deprecated" boolean,                       # true if deprected, false if actual
     "version_available" unicode,                # available version
     "zip_repository" unicode,                   # the remote repository id
     "download_url" unicode,                     # url for downloading the plugin
@@ -403,6 +404,9 @@ class Repositories(QObject):
           experimental = False
           if pluginNodes.item(i).firstChildElement("experimental").text().strip().upper() in ["TRUE","YES"]:
             experimental = True
+          deprecated = False
+          if pluginNodes.item(i).firstChildElement("deprecated").text().strip().upper() in ["TRUE","YES"]:
+            deprecated = True
           icon = pluginNodes.item(i).firstChildElement("icon").text().strip()
           if icon and not icon.startswith("http"):
             icon = "http://%s/%s" % ( QUrl(self.mRepositories[reposName]["url"]).host() , icon )
@@ -427,6 +431,7 @@ class Repositories(QObject):
             "rating_votes"  : pluginNodes.item(i).firstChildElement("rating_votes").text().strip(),
             "icon"          : icon,
             "experimental"  : experimental,
+            "deprecated"    : deprecated,
             "filename"      : fileName,
             "installed"     : False,
             "available"     : True,
@@ -558,14 +563,14 @@ class Plugins(QObject):
         """ plugin metadata parser reimplemented from qgis.utils
             for better control on wchich module is examined
             in case there is an installed plugin masking a core one """
-        metadataFile = os.path.join(path, 'metadata.txt')
-        if not os.path.exists(metadataFile):
-          return "" # plugin has no metadata.txt file
+        global errorDetails
         cp = ConfigParser.ConfigParser()
         try:
           cp.readfp(codecs.open(metadataFile, "r", "utf8"))
           return cp.get('general', fct)
-        except:
+        except Exception, e:
+          if not errorDetails:
+            errorDetails = e.args[0] # set to the first problem
           return ""
 
     def pluginMetadata(fct):
@@ -582,11 +587,16 @@ class Plugins(QObject):
     if not QDir(path).exists():
       return
 
+    global errorDetails # to communicate with the metadataParser fn
     plugin = dict()
     error = ""
     errorDetails = ""
+    version = None
 
-    version = normalizeVersion( pluginMetadata("version") )
+    metadataFile = os.path.join(path, 'metadata.txt')
+    if os.path.exists(metadataFile):
+      version = normalizeVersion( pluginMetadata("version") )
+
     if version:
       qgisMinimumVersion = pluginMetadata("qgisMinimumVersion").strip()
       if not qgisMinimumVersion: qgisMinimumVersion = "0"
@@ -602,26 +612,32 @@ class Plugins(QObject):
           exec "import %s" % key in globals(), locals()
           exec "reload (%s)" % key in globals(), locals()
           exec "%s.classFactory(iface)" % key in globals(), locals()
-        except Exception, error:
-          error = unicode(error.args[0])
-        except SystemExit, error:
-          error = QCoreApplication.translate("QgsPluginInstaller", "The plugin exited with error status: {0}").format(error.args[0])
+        except Exception, e:
+          error = "broken"
+          errorDetails = unicode(e.args[0])
+        except SystemExit, e:
+          error = "broken"
+          errorDetails = QCoreApplication.translate("QgsPluginInstaller", "The plugin exited with error status: {0}").format(e.args[0])
         except:
-          error = QCoreApplication.translate("QgsPluginInstaller", "Unknown error")
+          error = "broken"
+          errorDetails = QCoreApplication.translate("QgsPluginInstaller", "Unknown error")
+    elif not os.path.exists(metadataFile):
+      error = "broken"
+      errorDetails = QCoreApplication.translate("QgsPluginInstaller", "Missing metadata file")
     else:
-        # seems there is no metadata.txt file. Maybe it's an old plugin for QGIS 1.x.
-        version = "-1"
-        error = "incompatible"
-        errorDetails = "1.x"
+      error = "broken"
+      e = errorDetails
+      errorDetails = QCoreApplication.translate("QgsPluginInstaller", u"Error reading metadata")
+      if e: errorDetails += ": " + e
+
+    if not version:
+      version = "?"
 
     if error[:16] == "No module named ":
       mona = error.replace("No module named ","")
       if mona != key:
         error = "dependent"
         errorDetails = mona
-    if not error in ["", "dependent", "incompatible"]:
-      errorDetails = error
-      error = "broken"
 
     icon = pluginMetadata("icon")
     if QFileInfo( icon ).isRelative():
@@ -645,6 +661,7 @@ class Plugins(QObject):
         "library"           : path,
         "pythonic"          : True,
         "experimental"      : pluginMetadata("experimental").strip().upper() in ["TRUE","YES"],
+        "deprecated"        : pluginMetadata("deprecated").strip().upper() in ["TRUE","YES"],
         "version_available" : "",
         "zip_repository"    : "",
         "download_url"      : path,      # warning: local path as url!
@@ -707,12 +724,14 @@ class Plugins(QObject):
       self.mPlugins[i] = self.localCache[i].copy()
     settings = QSettings()
     allowExperimental = settings.value(settingsGroup+"/allowExperimental", False, type=bool)
+    allowDeprecated = settings.value(settingsGroup+"/allowDeprecated", False, type=bool)
     for i in self.repoCache.values():
       for j in i:
         plugin=j.copy() # do not update repoCache elements!
         key = plugin["id"]
         # check if the plugin is allowed and if there isn't any better one added already.
         if (allowExperimental or not plugin["experimental"]) \
+        and (allowDeprecated or not plugin["deprecated"]) \
         and not (self.mPlugins.has_key(key) and self.mPlugins[key]["version_available"] and compareVersions(self.mPlugins[key]["version_available"], plugin["version_available"]) < 2):
           # The mPlugins dict contains now locally installed plugins.
           # Now, add the available one if not present yet or update it if present already.
@@ -729,7 +748,7 @@ class Plugins(QObject):
                     self.mPlugins[key][attrib] = plugin[attrib]
             # other remote metadata is preffered:
             for attrib in ["name", "description", "about", "category", "tags", "changelog", "author_name", "author_email", "homepage",
-                           "tracker", "code_repository", "experimental", "version_available", "zip_repository",
+                           "tracker", "code_repository", "experimental", "deprecated", "version_available", "zip_repository",
                            "download_url", "filename", "downloads", "average_vote", "rating_votes"]:
               if ( not attrib in translatableAttributes ) or ( attrib == "name" ): # include name!
                 if plugin[attrib]:

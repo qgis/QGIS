@@ -24,7 +24,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import pickle
-from processing.core.ProcessingUtils import ProcessingUtils
+from processing.tools.system import *
 import os
 
 class Help2Html():
@@ -49,7 +49,7 @@ class Help2Html():
         for out in self.alg.outputs:
             s += "<h3>" + out.description + "</h3>\n"
             s += "<p>" + self.getDescription(out.name) + "</p>\n"
-        filename = ProcessingUtils.tempFolder() + os.sep + "temphelp.html"
+        filename = tempFolder() + os.sep + "temphelp.html"
         tempHtml = open(filename, "w")
         tempHtml.write(s)
 

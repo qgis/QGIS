@@ -66,6 +66,13 @@ QgsRuleBasedRendererV2Widget::QgsRuleBasedRendererV2Widget( QgsVectorLayer* laye
   //new ModelTest( mModel, this ); // for model validity checking
   viewRules->setModel( mModel );
 
+  mDeleteAction = new QAction( tr( "Remove Rule"), this );
+  mDeleteAction->setShortcut( QKeySequence( QKeySequence::Delete ) );
+
+  viewRules->addAction( mDeleteAction );
+  viewRules->addAction( mCopyAction );
+  viewRules->addAction( mPasteAction );
+
   mRefineMenu = new QMenu( tr( "Refine current rule" ), btnRefineRule );
   mRefineMenu->addAction( tr( "Add scales to rule" ), this, SLOT( refineRuleScales() ) );
   mRefineMenu->addAction( tr( "Add categories to rule" ), this, SLOT( refineRuleCategories() ) );
@@ -87,6 +94,7 @@ QgsRuleBasedRendererV2Widget::QgsRuleBasedRendererV2Widget( QgsVectorLayer* laye
   connect( btnAddRule, SIGNAL( clicked() ), this, SLOT( addRule() ) );
   connect( btnEditRule, SIGNAL( clicked() ), this, SLOT( editRule() ) );
   connect( btnRemoveRule, SIGNAL( clicked() ), this, SLOT( removeRule() ) );
+  connect( mDeleteAction, SIGNAL( triggered() ), this, SLOT( removeRule() ) );
   connect( btnCountFeatures, SIGNAL( clicked() ), this, SLOT( countFeatures() ) );
 
   connect( btnRenderingOrder, SIGNAL( clicked() ), this, SLOT( setRenderingOrder() ) );
@@ -420,7 +428,12 @@ void QgsRuleBasedRendererV2Widget::copy()
 void QgsRuleBasedRendererV2Widget::paste()
 {
     const QMimeData* mime = QApplication::clipboard()->mimeData();
-    QModelIndex index = viewRules->selectionModel()->selectedRows().first();
+    QModelIndexList indexlist = viewRules->selectionModel()->selectedRows();
+    QModelIndex index;
+    if ( indexlist.isEmpty() )
+        index = mModel->index(mModel->rowCount(), 0);
+    else
+        index = indexlist.first();
     mModel->dropMimeData( mime, Qt::CopyAction, index.row(), index.column(), index.parent() );
 }
 
