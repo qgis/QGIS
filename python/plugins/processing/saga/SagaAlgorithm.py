@@ -229,7 +229,9 @@ class SagaAlgorithm(GeoAlgorithm):
                 if param.datatype == ParameterMultipleInput.TYPE_RASTER:
                     for layerfile in layers:
                         if not layerfile.endswith("sgrd"):
-                            commands.append(self.exportRasterLayer(layerfile))
+                            exportCommand = self.exportRasterLayer(layerfile)
+                            if exportCommand is not None:
+                                commands.append()
                         if self.resample:
                             commands.append(self.resampleRasterLayer(layerfile));
                 elif param.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
