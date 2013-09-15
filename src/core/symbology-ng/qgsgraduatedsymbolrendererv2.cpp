@@ -1109,16 +1109,19 @@ QgsLegendSymbolList QgsGraduatedSymbolRendererV2::legendSymbolItems( double scal
 
   foreach ( const QgsRendererRangeV2& range, mRanges )
   {
-    QgsSymbolV2* symbol;
-    if ( mRotationFieldIdx == -1 && mSizeScaleFieldIdx == -1 )
+    if ( rule.isEmpty() || range.label() == rule )
     {
-      symbol = range.symbol();
+      QgsSymbolV2* symbol;
+      if ( mRotationFieldIdx == -1 && mSizeScaleFieldIdx == -1 )
+      {
+        symbol = range.symbol();
+      }
+      else
+      {
+        symbol = mTempSymbols[range.symbol()];
+      }
+      lst << qMakePair( range.label(), symbol );
     }
-    else
-    {
-      symbol = mTempSymbols[range.symbol()];
-    }
-    lst << qMakePair( range.label(), symbol );
   }
   return lst;
 }
