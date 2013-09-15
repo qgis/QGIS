@@ -159,7 +159,7 @@ class GeoAlgorithm:
         except GeoAlgorithmExecutionException, gaee:
             ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, gaee.msg)
             raise gaee
-        except:
+        except Exception, e:
             #if something goes wrong and is not caught in the algorithm,
             #we catch it here and wrap it
             lines = ["Uncaught error while executing algorithm"]
@@ -171,7 +171,7 @@ class GeoAlgorithm:
                 lines.append(errstring)
             lines.append(errstring.replace("\n", "|"))
             ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, lines)
-            raise GeoAlgorithmExecutionException(errstring)
+            raise GeoAlgorithmExecutionException(str(e))
 
 
     def runPostExecutionScript(self, progress):

@@ -46,11 +46,8 @@ from processing.parameters.ParameterFixedTable import ParameterFixedTable
 from processing.gui.FixedTablePanel import FixedTablePanel
 from processing.parameters.ParameterMultipleInput import ParameterMultipleInput
 from processing.gui.BatchOutputSelectionPanel import BatchOutputSelectionPanel
-from processing.gui.AlgorithmExecutor import AlgorithmExecutor
 from processing.outputs.OutputHTML import OutputHTML
 from processing.core.ProcessingResults import ProcessingResults
-from processing.core.ProcessingLog import ProcessingLog
-from processing.core.ProcessingConfig import ProcessingConfig
 from processing.gui.UnthreadedAlgorithmExecutor import UnthreadedAlgorithmExecutor
 
 class BatchProcessingDialog(AlgorithmExecutionDialog):
@@ -144,10 +141,11 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
 
 
     def accept(self):
+        self.canceled = False
         self.algs = []
         self.load = []
         for row in range(self.table.rowCount()):
-            alg = self.alg.getCopy()#copy.deepcopy(self.alg)
+            alg = self.alg.getCopy()
             col = 0
             for param in alg.parameters:
                 if param.hidden:
@@ -176,23 +174,18 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
 
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
         self.table.setEnabled(False)
-        if ProcessingConfig.getSetting(ProcessingConfig.USE_THREADS):
-            self.tabWidget.setCurrentIndex(1)
-            self.nextAlg(0)
-        else:
-            i=0
-            self.progress.setMaximum(len(self.algs))
-            for alg in self.algs:
-                self.setBaseText("Processing algorithm " + str(i+1) + "/" + str(len(self.algs)) + "...")
-                if UnthreadedAlgorithmExecutor.runalg(alg, self):
-                    if self.load[i]:
-                        Postprocessing.handleAlgorithmResults(alg, self, False)
-                    i+=1
-                else:
-                    QApplication.restoreOverrideCursor()
-                    return
+        self.tabWidget.setCurrentIndex(1)        
+        self.progress.setMaximum(len(self.algs))
+        for i, alg in enumerate(self.algs):
+            self.setBaseText("Processing algorithm " + str(i+1) + "/" + str(len(self.algs)) + "...")
+            if UnthreadedAlgorithmExecutor.runalg(alg, self) and not self.canceled:
+                if self.load[i]:
+                    Postprocessing.handleAlgorithmResults(alg, self, False)                
+            else:
+                QApplication.restoreOverrideCursor()
+                return
 
-            self.finishAll()
+        self.finishAll()
 
     def loadHTMLResults(self, alg, i):
         for out in alg.outputs:
@@ -202,47 +195,8 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
                 ProcessingResults.addResult(out.description + "[" + str(i) + "]", out.value)
 
     def cancel(self):
-        self.algs = None
-        if self.algEx:
-            self.algEx.terminate()
+        self.canceled = True
         self.table.setEnabled(True)
-
-    @pyqtSlot()
-    def finish(self, i):
-        if not self.stop:
-            if self.load[i]:
-                Postprocessing.handleAlgorithmResults(self.algs[i], self, False)
-            i += 1
-            if len(self.algs) == i:
-                self.finishAll()
-                self.algEx = None
-            else:
-                self.nextAlg(i)
-
-    @pyqtSlot(str)
-    def error(self, msg):
-        QApplication.restoreOverrideCursor()
-        QMessageBox.critical(self, "Error", msg)
-        ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, msg)
-        if self.algEx:
-            self.algEx.terminate()
-        self.table.setEnabled(True)
-
-
-    def nextAlg(self, i):
-        self.stop = False
-        self.setBaseText("Processing algorithm " + str(i + 1) + "/" + str(len(self.algs)) + "...")
-        self.algEx = AlgorithmExecutor(self.algs[i]);
-        self.algEx.percentageChanged.connect(self.setPercentage)
-        self.algEx.textChanged.connect(self.setText)
-        self.algEx.error.connect(self.error)
-        self.algEx.finished.connect(lambda: self.finish(i))
-        self.algEx.infoSet.connect(self.setInfo)
-        if ProcessingConfig.getSetting(ProcessingConfig.SHOW_DEBUG_IN_DIALOG):
-            self.algEx.commandSet.connect(self.setCommand)
-            self.algEx.debugInfoSet.connect(self.setDebugInfo)
-            self.algEx.consoleInfoSet.connect(self.setConsoleInfo)
-        self.algEx.start()
 
     def createSummaryTable(self):
         createTable = False

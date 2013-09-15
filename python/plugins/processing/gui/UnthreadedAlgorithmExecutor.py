@@ -34,7 +34,6 @@ from processing.tools import vector
 from processing.core.ProcessingLog import ProcessingLog
 from processing.gui.Postprocessing import Postprocessing
 from processing.core.SilentProgress import SilentProgress
-import traceback
 
 class UnthreadedAlgorithmExecutor:
 

@@ -37,12 +37,10 @@ from processing.parameters.ParameterMultipleInput import ParameterMultipleInput
 from processing.parameters.ParameterFixedTable import ParameterFixedTable
 from processing.parameters.ParameterTableField import ParameterTableField
 from processing.parameters.ParameterTable import ParameterTable
-from processing.gui.AlgorithmExecutor import AlgorithmExecutor
 from processing.core.ProcessingLog import ProcessingLog
 from processing.gui.Postprocessing import Postprocessing
 from processing.parameters.ParameterRange import ParameterRange
 from processing.parameters.ParameterNumber import ParameterNumber
-
 from processing.parameters.ParameterFile import ParameterFile
 from processing.parameters.ParameterCrs import ParameterCrs
 from processing.core.ProcessingConfig import ProcessingConfig
@@ -75,11 +73,7 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
         self.runButton = QtGui.QPushButton()
         self.runButton.setText("Run")
         self.buttonBox.addButton(self.runButton, QtGui.QDialogButtonBox.ActionRole)
-        self.runButton.clicked.connect(self.accept)
-        self.scrollArea = QtGui.QScrollArea()
-        if self.mainWidget:
-            self.scrollArea.setWidget(self.mainWidget)
-        self.scrollArea.setWidgetResizable(True)
+        self.runButton.clicked.connect(self.accept)        
         self.setWindowTitle(self.alg.name)
         self.progressLabel = QtGui.QLabel()
         self.progress = QtGui.QProgressBar()
@@ -91,7 +85,7 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
         self.verticalLayout.setMargin(0)
         self.tabWidget = QtGui.QTabWidget()
         self.tabWidget.setMinimumWidth(300)
-        self.tabWidget.addTab(self.scrollArea, "Parameters")
+        self.tabWidget.addTab(self.mainWidget, "Parameters")
         self.verticalLayout.addWidget(self.tabWidget)
         self.logText = QTextEdit()
         self.logText.readOnly = True
@@ -146,9 +140,8 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
             if output.hidden:
                 continue
             output.value = self.paramTable.valueItems[output.name].getValue()
-            if not ProcessingConfig.getSetting(ProcessingConfig.TABLE_LIKE_PARAM_PANEL):
-                if isinstance(output, (OutputRaster, OutputVector, OutputTable)):
-                    output.open = self.paramTable.checkBoxes[output.name].isChecked()
+            if isinstance(output, (OutputRaster, OutputVector, OutputTable)):
+                output.open = self.paramTable.checkBoxes[output.name].isChecked()
 
         return True
 
@@ -192,8 +185,7 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
     @pyqtSlot()
     def accept(self):
         checkCRS = ProcessingConfig.getSetting(ProcessingConfig.WARN_UNMATCHING_CRS)
-        keepOpen = ProcessingConfig.getSetting(ProcessingConfig.KEEP_DIALOG_OPEN)
-        useThread = ProcessingConfig.getSetting(ProcessingConfig.USE_THREADS)
+        keepOpen = ProcessingConfig.getSetting(ProcessingConfig.KEEP_DIALOG_OPEN)        
         self.showDebug = ProcessingConfig.getSetting(ProcessingConfig.SHOW_DEBUG_IN_DIALOG)
         try:
             self.setParamValues()
@@ -224,46 +216,29 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
             self.progress.setMaximum(0)
             self.progressLabel.setText("Processing algorithm...")
             QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-            if useThread and not self.iterateParam: #iterative execution on separate thread is still not working fine...
+              
+            self.setInfo("<b>Algorithm %s starting...</b>" % self.alg.name)
+            if self.iterateParam:
+                if UnthreadedAlgorithmExecutor.runalgIterating(self.alg, self.iterateParam, self):
+                    self.finish()
+                else:
+                    QApplication.restoreOverrideCursor()
+                    if not keepOpen:
+                        self.close()
+                    else:
+                        self.resetGUI()
+            else:
                 command = self.alg.getAsCommand()
                 if command:
                     ProcessingLog.addToLog(ProcessingLog.LOG_ALGORITHM, command)
-                self.algEx = AlgorithmExecutor(self.alg)
-                self.algEx.algExecuted.connect(self.finish)
-                self.algEx.error.connect(self.error)
-                self.algEx.percentageChanged.connect(self.setPercentage)
-                self.algEx.textChanged.connect(self.setText)
-                self.algEx.iterated.connect(self.iterate)
-                self.algEx.infoSet.connect(self.setInfo)                
-                self.algEx.commandSet.connect(self.setCommand)
-                self.algEx.debugInfoSet.connect(self.setDebugInfo)
-                self.algEx.consoleInfoSet.connect(self.setConsoleInfo)
-                self.algEx.start()
-                self.setInfo("<b>Algorithm %s started</b>" % self.alg.name)
-                self.buttonBox.button(QtGui.QDialogButtonBox.Cancel).setEnabled(True)
-            else:                
-                self.setInfo("<b>Algorithm %s starting...</b>" % self.alg.name)
-                if self.iterateParam:
-                    if UnthreadedAlgorithmExecutor.runalgIterating(self.alg, self.iterateParam, self):
-                        self.finish()
-                    else:
-                        QApplication.restoreOverrideCursor()
-                        if not keepOpen:
-                            self.close()
-                        else:
-                            self.resetGUI()
+                if UnthreadedAlgorithmExecutor.runalg(self.alg, self):
+                    self.finish()
                 else:
-                    command = self.alg.getAsCommand()
-                    if command:
-                        ProcessingLog.addToLog(ProcessingLog.LOG_ALGORITHM, command)
-                    if UnthreadedAlgorithmExecutor.runalg(self.alg, self):
-                        self.finish()
+                    QApplication.restoreOverrideCursor()
+                    if not keepOpen:
+                        self.close()
                     else:
-                        QApplication.restoreOverrideCursor()
-                        if not keepOpen:
-                            self.close()
-                        else:
-                            self.resetGUI()            
+                        self.resetGUI()            
         except AlgorithmExecutionDialog.InvalidParameterValue as ex:
             try:
                 self.buttonBox.accepted.connect(lambda: ex.widget.setPalette(QPalette()))

@@ -138,7 +138,6 @@ class ProcessingToolbox(QDockWidget, Ui_ProcessingToolbox):
             if message:
                 dlg = MissingDependencyDialog(message)
                 dlg.exec_()
-                #QMessageBox.warning(self, self.tr("Warning"), message)
                 return
             alg = alg.getCopy()
             dlg = alg.getCustomParametersDialog()

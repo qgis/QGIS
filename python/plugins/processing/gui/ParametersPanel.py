@@ -79,93 +79,75 @@ class ParametersPanel(QtGui.QWidget):
 
     def initGUI(self):
         tooltips = self.alg.getParameterDescriptions()
-        tableLike = ProcessingConfig.getSetting(ProcessingConfig.TABLE_LIKE_PARAM_PANEL)
-        if tableLike:
-            self.tableWidget = QtGui.QTableWidget()
-            self.tableWidget.setSelectionMode(QtGui.QAbstractItemView.NoSelection)
-            self.tableWidget.setColumnCount(2)
-            self.tableWidget.setColumnWidth(0,300)
-            self.tableWidget.setColumnWidth(1,300)
-            self.tableWidget.setHorizontalHeaderItem(0, QtGui.QTableWidgetItem("Parameter"))
-            self.tableWidget.setHorizontalHeaderItem(1, QtGui.QTableWidgetItem("Value"))
-            self.tableWidget.verticalHeader().setVisible(False)
-            self.tableWidget.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
-            self.setTableContent()
-            self.verticalLayout = QtGui.QVBoxLayout()
-            self.verticalLayout.setSpacing(0)
-            self.verticalLayout.setMargin(0)
-            self.verticalLayout.addWidget(self.tableWidget)
-            self.setLayout(self.verticalLayout)
-        else:
-            self.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
-            self.verticalLayout = QtGui.QVBoxLayout()
-            self.verticalLayout.setSpacing(5)
-            self.verticalLayout.setMargin(20)
-            for param in self.alg.parameters:
-                if param.isAdvanced:
-                    self.advancedButton = QtGui.QPushButton()
-                    self.advancedButton.setText("Show advanced parameters")
-                    self.advancedButton.setMaximumWidth(250)
-                    QtCore.QObject.connect(self.advancedButton, QtCore.SIGNAL("clicked()"), self.showAdvancedParametersClicked)
-                    self.verticalLayout.addWidget(self.advancedButton)
-                    break
-            for param in self.alg.parameters:
-                if param.hidden:
-                    continue
-                desc = param.description
-                if isinstance(param, ParameterExtent):
-                    desc += "(xmin, xmax, ymin, ymax)"
-                label = QtGui.QLabel(desc)
-                self.labels[param.name] = label
-                widget = self.getWidgetFromParameter(param)
-                self.valueItems[param.name] = widget
-                if isinstance(param, ParameterVector) and not self.alg.allowOnlyOpenedLayers:
-                    layout = QtGui.QHBoxLayout()
-                    layout.setSpacing(2)
-                    layout.setMargin(0)
-                    layout.addWidget(widget)
-                    button = QtGui.QToolButton()
-                    icon = QtGui.QIcon(os.path.dirname(__file__) + "/../images/iterate.png")
-                    button.setIcon(icon)
-                    button.setToolTip("Iterate over this layer")
-                    button.setCheckable(True)
-                    button.setMaximumWidth(30)
-                    button.setMaximumHeight(30)
-                    layout.addWidget(button)
-                    self.iterateButtons[param.name] = button
-                    QtCore.QObject.connect(button, QtCore.SIGNAL("toggled(bool)"), self.buttonToggled)
-                    widget = QtGui.QWidget()
-                    widget.setLayout(layout)
-                if param.name in tooltips.keys():
-                    tooltip = tooltips[param.name]
-                else:
-                    tooltip = param.description
-                label.setToolTip(tooltip)
-                widget.setToolTip(tooltip)
-                if param.isAdvanced:
-                    label.setVisible(self.showAdvanced)
-                    widget.setVisible(self.showAdvanced)
-                    self.widgets[param.name] = widget
-                self.verticalLayout.addWidget(label)
-                self.verticalLayout.addWidget(widget)
+        self.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        self.verticalLayout = QtGui.QVBoxLayout()
+        self.verticalLayout.setSpacing(5)
+        self.verticalLayout.setMargin(20)
+        for param in self.alg.parameters:
+            if param.isAdvanced:
+                self.advancedButton = QtGui.QPushButton()
+                self.advancedButton.setText("Show advanced parameters")
+                self.advancedButton.setMaximumWidth(250)
+                QtCore.QObject.connect(self.advancedButton, QtCore.SIGNAL("clicked()"), self.showAdvancedParametersClicked)
+                self.verticalLayout.addWidget(self.advancedButton)
+                break
+        for param in self.alg.parameters:
+            if param.hidden:
+                continue
+            desc = param.description
+            if isinstance(param, ParameterExtent):
+                desc += "(xmin, xmax, ymin, ymax)"
+            label = QtGui.QLabel(desc)
+            self.labels[param.name] = label
+            widget = self.getWidgetFromParameter(param)
+            self.valueItems[param.name] = widget
+            if isinstance(param, ParameterVector) and not self.alg.allowOnlyOpenedLayers:
+                layout = QtGui.QHBoxLayout()
+                layout.setSpacing(2)
+                layout.setMargin(0)
+                layout.addWidget(widget)
+                button = QtGui.QToolButton()
+                icon = QtGui.QIcon(os.path.dirname(__file__) + "/../images/iterate.png")
+                button.setIcon(icon)
+                button.setToolTip("Iterate over this layer")
+                button.setCheckable(True)
+                button.setMaximumWidth(30)
+                button.setMaximumHeight(30)
+                layout.addWidget(button)
+                self.iterateButtons[param.name] = button
+                QtCore.QObject.connect(button, QtCore.SIGNAL("toggled(bool)"), self.buttonToggled)
+                widget = QtGui.QWidget()
+                widget.setLayout(layout)
+            if param.name in tooltips.keys():
+                tooltip = tooltips[param.name]
+            else:
+                tooltip = param.description
+            label.setToolTip(tooltip)
+            widget.setToolTip(tooltip)
+            if param.isAdvanced:
+                label.setVisible(self.showAdvanced)
+                widget.setVisible(self.showAdvanced)
+                self.widgets[param.name] = widget
+            self.verticalLayout.addWidget(label)
+            self.verticalLayout.addWidget(widget)
 
-            for output in self.alg.outputs:
-                if output.hidden:
-                    continue
-                label = QtGui.QLabel(output.description)
-                widget = OutputSelectionPanel(output,self.alg)
-                self.verticalLayout.addWidget(label)
-                self.verticalLayout.addWidget(widget)
-                if isinstance(output, (OutputRaster, OutputVector, OutputTable)):
-                    check = QtGui.QCheckBox()
-                    check.setText("Open output file after running algorithm")
-                    check.setChecked(True)
-                    self.verticalLayout.addWidget(check)
-                    self.checkBoxes[output.name] = check
-                self.valueItems[output.name] = widget
+        for output in self.alg.outputs:
+            if output.hidden:
+                continue
+            label = QtGui.QLabel(output.description)
+            widget = OutputSelectionPanel(output,self.alg)
+            self.verticalLayout.addWidget(label)
+            self.verticalLayout.addWidget(widget)
+            if isinstance(output, (OutputRaster, OutputVector, OutputTable)):
+                check = QtGui.QCheckBox()
+                check.setText("Open output file after running algorithm")
+                check.setChecked(True)
+                self.verticalLayout.addWidget(check)
+                self.checkBoxes[output.name] = check
+            self.valueItems[output.name] = widget
 
-            self.verticalLayout.addStretch(1000)
-            self.setLayout(self.verticalLayout)
+        self.verticalLayout.addStretch(1000)
+        self.setLayout(self.verticalLayout)
 
     def showAdvancedParametersClicked(self):
         self.showAdvanced = not self.showAdvanced
