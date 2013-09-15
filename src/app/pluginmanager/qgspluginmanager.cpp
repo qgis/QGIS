@@ -39,6 +39,7 @@
 #include "qgspluginmanager.h"
 #include "qgisplugin.h"
 #include "qgslogger.h"
+#include "qgspluginitemdelegate.h"
 
 // Do we need this?
 // #define TESTLIB
@@ -87,6 +88,7 @@ QgsPluginManager::QgsPluginManager( QWidget * parent, bool pluginsAreEnabled, Qt
   mModelProxy->setDynamicSortFilter( true );
   mModelProxy->sort( 0, Qt::AscendingOrder );
   vwPlugins->setModel( mModelProxy );
+  vwPlugins->setItemDelegate( new QgsPluginItemDelegate( vwPlugins ) );
   vwPlugins->setFocus();
 
   // Preset widgets
@@ -493,28 +495,14 @@ void QgsPluginManager::reloadModelData()
 
       if ( QFileInfo( iconPath ).isFile() )
       {
-        mypDetailItem->setIcon( QPixmap( iconPath ) );
+        mypDetailItem->setData( QPixmap( iconPath ), Qt::DecorationRole );
       }
       else
       {
-        mypDetailItem->setIcon( QPixmap( QgsApplication::defaultThemePath() + "/plugin.png" ) );
+        mypDetailItem->setData( QPixmap( QgsApplication::defaultThemePath() + "/plugin.png" ), Qt::DecorationRole );
       }
 
       mypDetailItem->setEditable( false );
-
-      // set item display style
-      if ( ! it->value( "error" ).isEmpty() )
-      {
-        QBrush brush = mypDetailItem->foreground();
-        brush.setColor( Qt::red );
-        mypDetailItem->setForeground( brush );
-      }
-      if ( ! it->value( "error" ).isEmpty() || it->value( "status" ) == "upgradeable" || it->value( "status" ) == "new" )
-      {
-        QFont font = mypDetailItem->font();
-        font.setBold( true );
-        mypDetailItem->setFont( font );
-      }
 
       // Set checkable if the plugin is installed and not disabled due to incompatibility.
       // Broken plugins are checkable to to allow disabling them
@@ -552,6 +540,7 @@ void QgsPluginManager::reloadModelData()
     if ( hasReinstallablePlugins() ) mModelPlugins->appendRow( createSpacerItem( tr( "Reinstallable", "category: plugins that are installed and available" )  , "installedZ" ) );
     if ( hasUpgradeablePlugins() ) mModelPlugins->appendRow( createSpacerItem( tr( "Upgradeable", "category: plugins that are installed and there is a newer version available" ), "upgradeableZ" ) );
     if ( hasNewerPlugins() ) mModelPlugins->appendRow( createSpacerItem( tr( "Downgradeable", "category: plugins that are installed and there is an OLDER version available" ), "newerZ" ) );
+    if ( hasAvailablePlugins() ) mModelPlugins->appendRow( createSpacerItem( tr( "Installable", "category: plugins that are available for installation" ), "not installedZ" ) );
   }
 
   updateTabTitle();
@@ -559,10 +548,10 @@ void QgsPluginManager::reloadModelData()
   buttonUpgradeAll->setEnabled( hasUpgradeablePlugins() );
 
   // Disable tabs that are empty because of no suitable plugins in the model.
-  mOptionsListWidget->item( 1 )->setHidden( ! hasAvailablePlugins() );
-  mOptionsListWidget->item( 2 )->setHidden( ! hasUpgradeablePlugins() );
-  mOptionsListWidget->item( 3 )->setHidden( ! hasNewPlugins() );
-  mOptionsListWidget->item( 4 )->setHidden( ! hasInvalidPlugins() );
+  mOptionsListWidget->item( PLUGMAN_TAB_NOT_INSTALLED )->setHidden( ! hasAvailablePlugins() );
+  mOptionsListWidget->item( PLUGMAN_TAB_UPGRADEABLE )->setHidden( ! hasUpgradeablePlugins() );
+  mOptionsListWidget->item( PLUGMAN_TAB_NEW )->setHidden( ! hasNewPlugins() );
+  mOptionsListWidget->item( PLUGMAN_TAB_INVALID )->setHidden( ! hasInvalidPlugins() );
 }
 
 
@@ -973,27 +962,32 @@ void QgsPluginManager::setCurrentTab( int idx )
     QString tabTitle;
     switch ( idx )
     {
-      case 0:
+      case PLUGMAN_TAB_ALL:
+        // all (statuses ends with Z are for spacers to always sort properly)
+        acceptedStatuses << "installed" << "not installed" << "orphan" << "newer" << "upgradeable" << "not installedZ" << "installedZ" << "upgradeableZ" << "orphanZ" << "newerZZ" << "" ;
+        tabTitle = "all_plugins";
+        break;
+      case PLUGMAN_TAB_INSTALLED:
         // installed (statuses ends with Z are for spacers to always sort properly)
         acceptedStatuses << "installed" << "orphan" << "newer" << "upgradeable" << "installedZ" << "upgradeableZ" << "orphanZ" << "newerZZ" << "" ;
         tabTitle = "installed_plugins";
         break;
-      case 1:
+      case PLUGMAN_TAB_NOT_INSTALLED:
         // not installed (get more)
         acceptedStatuses << "not installed" << "new" ;
-        tabTitle = "get_more_plugins";
+        tabTitle = "not_installed_plugins";
         break;
-      case 2:
+      case PLUGMAN_TAB_UPGRADEABLE:
         // upgradeable
         acceptedStatuses << "upgradeable" ;
         tabTitle = "upgradeable_plugins";
         break;
-      case 3:
+      case PLUGMAN_TAB_NEW:
         // new
         acceptedStatuses << "new" ;
         tabTitle = "new_plugins";
         break;
-      case 4:
+      case PLUGMAN_TAB_INVALID:
         // invalid
         acceptedStatuses << "invalid" ;
         tabTitle = "invalid_plugins";

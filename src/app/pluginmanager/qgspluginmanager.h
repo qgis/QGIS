@@ -30,6 +30,13 @@
 #include "qgspythonutils.h"
 #include "qgspluginsortfilterproxymodel.h"
 
+const int PLUGMAN_TAB_ALL = 0;
+const int PLUGMAN_TAB_INSTALLED = 1;
+const int PLUGMAN_TAB_NOT_INSTALLED = 2;
+const int PLUGMAN_TAB_UPGRADEABLE = 3;
+const int PLUGMAN_TAB_NEW = 4;
+const int PLUGMAN_TAB_INVALID = 5;
+
 /*!
  * \brief Plugin manager for browsing, (un)installing and (un)loading plugins
 @author Gary Sherman

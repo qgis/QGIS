@@ -106,6 +106,15 @@
          </property>
          <item>
           <property name="text">
+           <string>All</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../images/images.qrc">
+            <normaloff>:/images/themes/default/propertyicons/plugins.svg</normaloff>:/images/themes/default/propertyicons/plugins.svg</iconset>
+          </property>
+         </item>
+         <item>
+          <property name="text">
            <string>Installed</string>
           </property>
           <property name="toolTip">
@@ -121,14 +130,14 @@
          </item>
          <item>
           <property name="text">
-           <string>Get more</string>
+           <string>Not installed</string>
           </property>
           <property name="toolTip">
            <string>Not installed plugins available for download</string>
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/propertyicons/plugins.svg</normaloff>:/images/themes/default/propertyicons/plugins.svg</iconset>
+            <normaloff>:/images/themes/default/propertyicons/plugin.svg</normaloff>:/images/themes/default/propertyicons/plugin.svg</iconset>
           </property>
           <property name="flags">
            <set>ItemIsSelectable|ItemIsEnabled</set>
@@ -556,8 +565,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>547</width>
-                   <height>748</height>
+                   <width>352</width>
+                   <height>758</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_10">

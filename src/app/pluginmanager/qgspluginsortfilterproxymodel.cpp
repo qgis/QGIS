@@ -32,7 +32,7 @@ bool QgsPluginSortFilterProxyModel::filterAcceptsRow( int sourceRow, const QMode
   {
     // it's a status spacer.
     // TODO: the condition below is only suitable for status spacers
-    return ( filterByStatus( inx ) &&  mAcceptedStatuses.count() > 1 && sourceModel()->data( inx, SPACER_ROLE ).toString() == mAcceptedSpacers );
+    return ( filterByStatus( inx ) &&  mAcceptedStatuses.count() > 2 && sourceModel()->data( inx, SPACER_ROLE ).toString() == mAcceptedSpacers );
   }
 
   return ( filterByStatus( inx ) && sourceModel()->data( inx, filterRole() ).toString().contains( filterRegExp() ) );

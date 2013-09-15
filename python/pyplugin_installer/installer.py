@@ -143,12 +143,12 @@ class QgsPluginInstaller(QObject):
     for key in plugins.all():
       if plugins.all()[key]["status"] == "new":
         status = self.tr("There is a new plugin available")
-        tabIndex = 3 # tab 3 contains new plugins
+        tabIndex = 4 # PLUGMAN_TAB_NEW
     # then check for updates (and eventually overwrite status)
     for key in plugins.all():
       if plugins.all()[key]["status"] == "upgradeable":
         status = self.tr("There is a plugin update available")
-        tabIndex = 2 # tab 2 contains upgradeable plugins
+        tabIndex = 3 # PLUGMAN_TAB_UPGRADEABLE
     # finally set the notify label
     if status:
       self.statusLabel.setText(u' <a href="%d">%s</a>  ' % (tabIndex,status) )
