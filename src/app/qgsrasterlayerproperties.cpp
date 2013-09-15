@@ -938,8 +938,6 @@ void QgsRasterLayerProperties::apply()
 
   // notify the project we've made a change
   QgsProject::instance()->dirty( true );
-
-  emit propertiesChanged( mRasterLayer );
 }//apply
 
 void QgsRasterLayerProperties::on_mLayerOrigNameLineEd_textEdited( const QString& text )

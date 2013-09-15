@@ -538,8 +538,6 @@ void QgsVectorLayerProperties::apply()
   layer->triggerRepaint();
   // notify the project we've made a change
   QgsProject::instance()->dirty( true );
-
-  emit propertiesChanged( layer );
 }
 
 void QgsVectorLayerProperties::on_pbnQueryBuilder_clicked()

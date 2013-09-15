@@ -9110,7 +9110,6 @@ void QgisApp::showLayerProperties( QgsMapLayer *ml )
     {
       rlp = new QgsRasterLayerProperties( ml, mMapCanvas, this );
       connect( rlp, SIGNAL( refreshLegend( QString, bool ) ), mMapLegend, SLOT( refreshLayerSymbology( QString, bool ) ) );
-      connect( rlp, SIGNAL( propertiesChanged( QgsMapLayer* ) ), this, SLOT( onPropertiesChanged( QgsMapLayer* ) ) );
     }
 
     rlp->exec();
@@ -9129,7 +9128,6 @@ void QgisApp::showLayerProperties( QgsMapLayer *ml )
     {
       vlp = new QgsVectorLayerProperties( vlayer, this );
       connect( vlp, SIGNAL( refreshLegend( QString, QgsLegendItem::Expansion ) ), mMapLegend, SLOT( refreshLayerSymbology( QString, QgsLegendItem::Expansion ) ) );
-      connect( vlp, SIGNAL( propertiesChanged( QgsMapLayer* ) ), this, SLOT( onPropertiesChanged( QgsMapLayer* ) ) );
     }
 
     if ( vlp->exec() )
@@ -9423,12 +9421,6 @@ void QgisApp::osmExportDialog()
   dlg.exec();
 }
 
-
-void QgisApp::onPropertiesChanged( QgsMapLayer * layer )
-{
-  // reemit the signal
-  emit propertiesChanged( layer );
-}
 
 #ifdef HAVE_TOUCH
 bool QgisApp::gestureEvent( QGestureEvent *event )

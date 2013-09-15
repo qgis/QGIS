@@ -127,9 +127,6 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
 
     void toggleEditing( QgsMapLayer * );
 
-    /** Emitted (with layer as parameter) when properties have changed */
-    void propertiesChanged( QgsMapLayer* );
-
   private slots:
     /** toggle editing of layer */
     void toggleEditing();
