@@ -80,6 +80,7 @@ class GUI_EXPORT QgsGraduatedSymbolRendererV2Widget : public QgsRendererV2Widget
   public slots:
     void changeGraduatedSymbol();
     void graduatedColumnChanged();
+    void setExpression();
     void classifyGraduated();
     void reapplyColorRamp();
     void rangesDoubleClicked( const QModelIndex & idx );

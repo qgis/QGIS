@@ -22,6 +22,7 @@
 #include "qgsvectorlayer.h"
 
 #include "qgssymbolv2selectordialog.h"
+#include "qgsexpressionbuilderdialog.h"
 
 #include "qgsludialog.h"
 
@@ -359,6 +360,7 @@ QgsGraduatedSymbolRendererV2Widget::QgsGraduatedSymbolRendererV2Widget( QgsVecto
   mGraduatedSymbol = QgsSymbolV2::defaultSymbol( mLayer->geometryType() );
 
   connect( cboGraduatedColumn, SIGNAL( currentIndexChanged( int ) ), this, SLOT( graduatedColumnChanged() ) );
+  connect( btnExpression, SIGNAL( clicked() ), this, SLOT( setExpression() ) );
   connect( viewGraduated, SIGNAL( doubleClicked( const QModelIndex & ) ), this, SLOT( rangesDoubleClicked( const QModelIndex & ) ) );
   connect( viewGraduated, SIGNAL( clicked( const QModelIndex & ) ), this, SLOT( rangesClicked( const QModelIndex & ) ) );
   connect( viewGraduated, SIGNAL( customContextMenuRequested( const QPoint& ) ),  this, SLOT( contextMenuViewCategories( const QPoint& ) ) );
@@ -417,7 +419,12 @@ void QgsGraduatedSymbolRendererV2Widget::updateUiFromRenderer()
   disconnect( cboGraduatedColumn, SIGNAL( currentIndexChanged( int ) ), this, SLOT( graduatedColumnChanged() ) );
   QString attrName = mRenderer->classAttribute();
   int idx = cboGraduatedColumn->findText( attrName, Qt::MatchExactly );
-  cboGraduatedColumn->setCurrentIndex( idx >= 0 ? idx : 0 );
+  if ( idx == -1 )
+  {
+      cboGraduatedColumn->addItem( attrName );
+      idx = cboGraduatedColumn->count() - 1;
+  }
+  cboGraduatedColumn->setCurrentIndex( idx );
   connect( cboGraduatedColumn, SIGNAL( currentIndexChanged( int ) ), this, SLOT( graduatedColumnChanged() ) );
 
   // set source symbol
@@ -452,6 +459,22 @@ void QgsGraduatedSymbolRendererV2Widget::graduatedColumnChanged()
   classifyGraduated();
 }
 
+
+void QgsGraduatedSymbolRendererV2Widget::setExpression()
+{
+    QgsExpressionBuilderDialog dlg( mLayer, cboGraduatedColumn->currentText(), this );
+    dlg.setWindowTitle( "Set column expression" );
+    if ( dlg.exec() )
+    {
+        QString expression = dlg.expressionText();
+        if ( !expression.isEmpty() )
+        {
+            cboGraduatedColumn->addItem( expression );
+            cboGraduatedColumn->setCurrentIndex( cboGraduatedColumn->count() - 1 );
+        }
+    }
+
+}
 
 void QgsGraduatedSymbolRendererV2Widget::classifyGraduated()
 {
