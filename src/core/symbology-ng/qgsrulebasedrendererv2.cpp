@@ -30,10 +30,10 @@
 
 
 QgsRuleBasedRendererV2::Rule::Rule(QgsSymbolV2* symbol, int scaleMinDenom, int scaleMaxDenom, QString filterExp, QString label, QString description , bool elseRule)
-    : mParent( NULL ), mSymbol( symbol ),
-    mScaleMinDenom( scaleMinDenom ), mScaleMaxDenom( scaleMaxDenom ),
-    mFilterExp( filterExp ), mLabel( label ), mDescription( description ),
-    mFilter( NULL ), mElseRule( elseRule )
+    : mParent( NULL ), mSymbol( symbol )
+    , mScaleMinDenom( scaleMinDenom ), mScaleMaxDenom( scaleMaxDenom )
+    , mFilterExp( filterExp ), mLabel( label ), mDescription( description )
+    , mElseRule( elseRule ), mFilter( NULL )
 {
   initFilter();
 }
