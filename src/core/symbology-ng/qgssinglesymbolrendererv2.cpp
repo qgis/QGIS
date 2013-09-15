@@ -373,9 +373,10 @@ QgsLegendSymbologyList QgsSingleSymbolRendererV2::legendSymbologyItems( QSize ic
   return lst;
 }
 
-QgsLegendSymbolList QgsSingleSymbolRendererV2::legendSymbolItems( double scaleDenominator )
+QgsLegendSymbolList QgsSingleSymbolRendererV2::legendSymbolItems( double scaleDenominator, QString rule )
 {
   Q_UNUSED( scaleDenominator );
+  Q_UNUSED( rule );
   QgsLegendSymbolList lst;
   lst << qMakePair( QString(), mSymbol );
   return lst;
