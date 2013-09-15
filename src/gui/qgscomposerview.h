@@ -89,12 +89,6 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     /**Ungroups the selected items*/
     void ungroupItems();
 
-    /**Lock the selected items*/
-    void lockItems();
-
-    /**Unlock all items*/
-    void unlockAllItems();
-
     /**Cuts or copies the selected items*/
     void copyItems( ClipboardMode mode );
 

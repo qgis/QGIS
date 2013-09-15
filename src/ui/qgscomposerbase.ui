@@ -580,6 +580,9 @@
    <property name="text">
     <string>Lock Selected Items</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+L</string>
+   </property>
   </action>
   <action name="mActionUnlockAll">
    <property name="icon">
@@ -591,6 +594,9 @@
    </property>
    <property name="toolTip">
     <string>Unlock All Items</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+L</string>
    </property>
   </action>
   <action name="mActionPasteInPlace">
