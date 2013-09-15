@@ -44280,7 +44280,13 @@ Musisz włączyć ponownie program QGIS, żeby ją przeładować.</translation>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="546"/>
         <source>Reinstallable</source>
         <comment>category: plugins that are installed and available</comment>
-        <translation>Dostępne w repozytoriach</translation>
+        <translation>Dostępne do reinstalacji</translation>
+    </message>
+    <message>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="543"/>
+        <source>Installable</source>
+        <comment>category: plugins that are available for installation</comment>
+        <translation>Dostępne do instalacji</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="547"/>
