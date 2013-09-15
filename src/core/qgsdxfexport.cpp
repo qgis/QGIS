@@ -59,11 +59,47 @@ void QgsDxfExport::writeHeader( QTextStream& stream )
   startSection( stream );
   stream << "  2\n";
   stream << "HEADER\n";
+  //ACADVER
   stream << "  9\n";
-  stream << "$ACADVER";
+  stream << "$ACADVER\n";
+  stream << "  1\n";
   stream << "AC1009\n";
+
+  QgsRectangle ext = dxfExtent();
+  if ( !ext.isEmpty() )
+  {
+    //EXTMIN
+    stream << "  9\n";
+    stream << "$EXTMIN\n";
+    stream << " 10\n";
+    stream << ext.xMinimum() << "\n";
+    stream << " 20\n";
+    stream << ext.yMinimum() << "\n";
+    stream << " 30\n";
+    stream << "0\n";
+    //EXTMAX
+    stream << "  9\n";
+    stream << "$EXTMAX\n";
+    stream << " 10\n";
+    stream << ext.xMaximum() << "\n";
+    stream << " 20\n";
+    stream << ext.yMaximum() << "\n";
+    stream << " 30\n";
+    stream << "0\n";
+  }
+  //LTSCALE
   stream << "  9\n";
   stream << "$LTSCALE\n";
+  stream << " 40\n";
+  stream << "1.0\n";
+  //PDMODE
+  stream << "  9\n";
+  stream << "$PDMODE\n";
+  stream << " 70\n";
+  stream << "33\n";
+  //PDSIZE
+  stream << "  9\n";
+  stream << "$PDSIZE\n";
   stream << " 40\n";
   stream << "1\n";
   endSection( stream );
@@ -75,7 +111,27 @@ void QgsDxfExport::writeTables( QTextStream& stream )
   stream << "  2\n";
   stream << "TABLES\n";
 
-  //
+  //LTYPE
+  stream << "  0\n";
+  stream << "TABLE\n";
+  stream << "  0\n";
+  stream << "LTYPE\n";
+  stream << "  2\n";
+  stream << "CONTINUOUS\n";
+  stream << "  70\n";
+  stream << "64\n";
+  stream << "  3\n";
+  stream << "Defaultstyle\n";
+  stream << " 72\n";
+  stream << "65\n";
+  stream << " 73\n";
+  stream << "0\n";
+  stream << " 40\n"; //todo: add segments in group 49
+  stream << "0\n";
+  stream << "  0\n";
+  stream << "ENDTAB\n";
+
+  //LAYER
   stream << "  0\n";
   stream << "TABLE\n";
   stream << "  0\n";
@@ -191,4 +247,26 @@ void QgsDxfExport::writeVertex( QTextStream& stream, const QgsPoint& pt, const Q
   stream << pt.y() << "\n";
   stream << " 30\n";
   stream << "0.0\n";
+}
+
+QgsRectangle QgsDxfExport::dxfExtent() const
+{
+  QgsRectangle extent;
+  QList< QgsMapLayer* >::const_iterator layerIt = mLayers.constBegin();
+  for ( ; layerIt != mLayers.constEnd(); ++layerIt )
+  {
+    if ( *layerIt )
+    {
+      if ( extent.isEmpty() )
+      {
+        extent = ( *layerIt )->extent();
+      }
+      else
+      {
+        QgsRectangle layerExtent = ( *layerIt )->extent();
+        extent.combineExtentWith( &layerExtent );
+      }
+    }
+  }
+  return extent;
 }

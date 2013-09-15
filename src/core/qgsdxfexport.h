@@ -57,6 +57,8 @@ class QgsDxfExport
     void writePolyline( QTextStream& stream, const QgsPolyline& line, const QString& layer, bool closed = false );
     void writeVertex( QTextStream& stream, const QgsPoint& pt, const QString& layer );
 
+    QgsRectangle dxfExtent() const;
+
     //collect styles
     //writeEntities
 
