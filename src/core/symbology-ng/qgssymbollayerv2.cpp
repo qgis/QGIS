@@ -76,7 +76,7 @@ void QgsSymbolLayerV2::removeDataDefinedProperties()
   mDataDefinedProperties.clear();
 }
 
-void QgsSymbolLayerV2::prepareExpressions( const QgsVectorLayer* vl )
+void QgsSymbolLayerV2::prepareExpressions( const QgsVectorLayer* vl, double scale )
 {
   if ( !vl )
   {
@@ -90,6 +90,10 @@ void QgsSymbolLayerV2::prepareExpressions( const QgsVectorLayer* vl )
     if ( it.value() )
     {
       it.value()->prepare( fields );
+      if ( scale > 0 )
+      {
+        it.value()->setScale( scale );
+      }
     }
   }
 }

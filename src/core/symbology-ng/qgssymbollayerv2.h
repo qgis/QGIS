@@ -108,7 +108,7 @@ class CORE_EXPORT QgsSymbolLayerV2
     static const bool selectFillBorder = false;  // Fill symbol layer also selects border symbology
     static const bool selectFillStyle = false;   // Fill symbol uses symbol layer style..
 
-    virtual void prepareExpressions( const QgsVectorLayer* vl );
+    virtual void prepareExpressions( const QgsVectorLayer* vl, double scale = -1 );
     virtual QgsExpression* expression( const QString& property );
     /**Saves data defined properties to string map*/
     void saveDataDefinedProperties( QgsStringMap& stringMap ) const;

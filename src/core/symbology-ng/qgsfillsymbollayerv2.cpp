@@ -152,7 +152,7 @@ void QgsSimpleFillSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context 
   mSelPen = QPen( selPenColor );
   mPen.setStyle( mBorderStyle );
   mPen.setWidthF( mBorderWidth * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mBorderWidthUnit ) );
-  prepareExpressions( context.layer() );
+  prepareExpressions( context.layer(), context.renderContext().rendererScale() );
 }
 
 void QgsSimpleFillSymbolLayerV2::stopRender( QgsSymbolV2RenderContext& context )
@@ -576,7 +576,7 @@ void QgsSVGFillSymbolLayer::startRender( QgsSymbolV2RenderContext& context )
     mOutline->startRender( context.renderContext() );
   }
 
-  prepareExpressions( context.layer() );
+  prepareExpressions( context.layer(), context.renderContext().rendererScale() );
 }
 
 void QgsSVGFillSymbolLayer::stopRender( QgsSymbolV2RenderContext& context )
@@ -1096,7 +1096,7 @@ void QgsLinePatternFillSymbolLayer::startRender( QgsSymbolV2RenderContext& conte
     mOutline->startRender( context.renderContext() );
   }
 
-  prepareExpressions( context.layer() );
+  prepareExpressions( context.layer(), context.renderContext().rendererScale() );
 }
 
 void QgsLinePatternFillSymbolLayer::stopRender( QgsSymbolV2RenderContext & )
@@ -1467,7 +1467,7 @@ void QgsPointPatternFillSymbolLayer::startRender( QgsSymbolV2RenderContext& cont
   {
     mOutline->startRender( context.renderContext() );
   }
-  prepareExpressions( context.layer() );
+  prepareExpressions( context.layer(), context.renderContext().rendererScale() );
 }
 
 void QgsPointPatternFillSymbolLayer::stopRender( QgsSymbolV2RenderContext& context )
