@@ -1169,17 +1169,25 @@ void QgsComposition::lockSelectedItems()
 void QgsComposition::unlockAllItems()
 {
   //unlock all items in composer
+
   QUndoCommand* parentCommand = new QUndoCommand( tr( "Items unlocked" ) );
+
+  //first, clear the selection
+  clearSelection();
+
   QList<QGraphicsItem *> itemList = items();
   QList<QGraphicsItem *>::iterator itemIt = itemList.begin();
   for ( ; itemIt != itemList.end(); ++itemIt )
   {
     QgsComposerItem* mypItem = dynamic_cast<QgsComposerItem *>( *itemIt );
-    if ( mypItem )
+    if ( mypItem && mypItem->positionLock() )
     {
       QgsComposerItemCommand* subcommand = new QgsComposerItemCommand( mypItem, "", parentCommand );
       subcommand->savePreviousState();
       mypItem->setPositionLock( false );
+      //select unlocked items, same behaviour as illustrator
+      mypItem->setSelected( true );
+      emit selectedItemChanged( mypItem );
       subcommand->saveAfterState();
     }
   }
