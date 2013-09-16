@@ -1,8 +1,9 @@
 qgis (2.1.0) UNRELEASED; urgency=low
 
   * new development version 2.1 after branch of 2.0
+  * drop qgis_icon.xpm and use "upstream" version
 
- -- Jürgen E. Fischer <jef@norbit.de>  Sat, 27 Jul 2013 16:45:43 +0200
+ -- Jürgen E. Fischer <jef@norbit.de>  Sun, 15 Sep 2013 21:59:49 +0200
 
 qgis (1.9.0) UNRELEASED; urgency=low
 
