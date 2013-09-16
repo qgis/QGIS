@@ -47,7 +47,7 @@
         <x>0</x>
         <y>0</y>
         <width>283</width>
-        <height>405</height>
+        <height>404</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -69,28 +69,49 @@
           <property name="labelAlignment">
            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
           </property>
-          <item row="0" column="0" colspan="2">
-           <widget class="QComboBox" name="mShapeComboBox"/>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="label">
-            <property name="text">
-             <string>Rotation</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QSpinBox" name="mRotationSpinBox">
-            <property name="suffix">
-             <string> °</string>
-            </property>
-            <property name="prefix">
-             <string comment="Rotation" extracomment="Rotation"/>
-            </property>
-            <property name="maximum">
-             <number>359</number>
-            </property>
-           </widget>
+          <item row="2" column="0" colspan="2">
+           <layout class="QGridLayout" name="gridLayout">
+            <item row="1" column="0">
+             <widget class="QLabel" name="label">
+              <property name="text">
+               <string>Rotation</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QSpinBox" name="mRotationSpinBox">
+              <property name="suffix">
+               <string> °</string>
+              </property>
+              <property name="prefix">
+               <string comment="Rotation" extracomment="Rotation"/>
+              </property>
+              <property name="maximum">
+               <number>359</number>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="label_3">
+              <property name="text">
+               <string>Corner radius</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QDoubleSpinBox" name="mCornerRadiusSpinBox">
+              <property name="suffix">
+               <string> mm</string>
+              </property>
+              <property name="maximum">
+               <double>999.000000000000000</double>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="0" colspan="2">
+             <widget class="QComboBox" name="mShapeComboBox"/>
+            </item>
+           </layout>
           </item>
          </layout>
         </widget>

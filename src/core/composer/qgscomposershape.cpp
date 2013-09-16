@@ -18,12 +18,14 @@
 #include "qgscomposershape.h"
 #include <QPainter>
 
-QgsComposerShape::QgsComposerShape( QgsComposition* composition ): QgsComposerItem( composition ), mShape( Ellipse )
+QgsComposerShape::QgsComposerShape( QgsComposition* composition ): QgsComposerItem( composition ), mShape( Ellipse ), mCornerRadius( 0 )
 {
   setFrameEnabled( true );
 }
 
-QgsComposerShape::QgsComposerShape( qreal x, qreal y, qreal width, qreal height, QgsComposition* composition ): QgsComposerItem( x, y, width, height, composition ), mShape( Ellipse )
+QgsComposerShape::QgsComposerShape( qreal x, qreal y, qreal width, qreal height, QgsComposition* composition ): QgsComposerItem( x, y, width, height, composition ),
+    mShape( Ellipse ),
+    mCornerRadius( 0 )
 {
   setSceneRect( QRectF( x, y, width, height ) );
   setFrameEnabled( true );
@@ -68,7 +70,15 @@ void QgsComposerShape::drawShape( QPainter* p )
       p->drawEllipse( QRectF( 0, 0 , rect().width(), rect().height() ) );
       break;
     case Rectangle:
-      p->drawRect( QRectF( 0, 0 , rect().width(), rect().height() ) );
+      //if corner radius set, then draw a rounded rectangle
+      if ( mCornerRadius > 0 )
+      {
+        p->drawRoundedRect( QRectF( 0, 0 , rect().width(), rect().height() ), mCornerRadius, mCornerRadius );
+      }
+      else
+      {
+        p->drawRect( QRectF( 0, 0 , rect().width(), rect().height() ) );
+      }
       break;
     case Triangle:
       QPolygonF triangle;
@@ -110,6 +120,7 @@ bool QgsComposerShape::writeXML( QDomElement& elem, QDomDocument & doc ) const
 {
   QDomElement composerShapeElem = doc.createElement( "ComposerShape" );
   composerShapeElem.setAttribute( "shapeType", mShape );
+  composerShapeElem.setAttribute( "cornerRadius", mCornerRadius );
   elem.appendChild( composerShapeElem );
   return _writeXML( composerShapeElem, doc );
 }
@@ -117,6 +128,7 @@ bool QgsComposerShape::writeXML( QDomElement& elem, QDomDocument & doc ) const
 bool QgsComposerShape::readXML( const QDomElement& itemElem, const QDomDocument& doc )
 {
   mShape = QgsComposerShape::Shape( itemElem.attribute( "shapeType", "0" ).toInt() );
+  mCornerRadius = itemElem.attribute( "cornerRadius", "0" ).toDouble();
 
   //restore general composer item properties
   QDomNodeList composerItemList = itemElem.elementsByTagName( "ComposerItem" );
@@ -145,10 +157,13 @@ void QgsComposerShape::setRotation( double r )
   QgsComposerItem::setRotation( r );
 }
 
+void QgsComposerShape::setCornerRadius( double radius )
+{
+  mCornerRadius = radius;
+}
+
 void QgsComposerShape::setSceneRect( const QRectF& rectangle )
 {
-
-
   //consider to change size of the shape if the rectangle changes width and/or height
   if ( rectangle.width() != rect().width() || rectangle.height() != rect().height() )
   {

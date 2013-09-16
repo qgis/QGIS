@@ -39,9 +39,13 @@ class QgsComposerShapeWidget: public QWidget, private Ui::QgsComposerShapeWidget
   private slots:
     void on_mShapeComboBox_currentIndexChanged( const QString& text );
     void on_mRotationSpinBox_valueChanged( int val );
+    void on_mCornerRadiusSpinBox_valueChanged( double val );
 
     /**Sets the GUI elements to the currentValues of mComposerShape*/
     void setGuiElementValues();
+
+    /**Enables or disables the rounded radius spin box based on shape type*/
+    void toggleRadiusSpin( const QString& shapeText );
 };
 
 #endif // QGSCOMPOSERSHAPEWIDGET_H
