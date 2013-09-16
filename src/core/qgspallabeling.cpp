@@ -3049,6 +3049,7 @@ QgsPalLabeling::QgsPalLabeling()
   mShowingCandidates = false;
   mShowingShadowRects = false;
   mShowingAllLabels = false;
+  mShowingPartialsLabels = p.getShowPartial();
 
   mLabelSearchTree = new QgsLabelSearchTree();
 }
