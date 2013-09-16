@@ -88,7 +88,8 @@ class ConfigDialog(QDialog, Ui_DlgConfig):
                     labelItem = QStandardItem(setting.description)
                     labelItem.setIcon(icon)
                     labelItem.setEditable(False)
-                    groupItem.insertRow(0, [labelItem, SettingItem(setting)])
+                    self.items[setting] = SettingItem(setting)
+                    groupItem.insertRow(0, [labelItem, self.items[setting]])
 
             if text != "":
                 self.tree.expand(groupItem.index())
@@ -116,7 +117,8 @@ class ConfigDialog(QDialog, Ui_DlgConfig):
                     labelItem = QStandardItem(setting.description)
                     labelItem.setIcon(icon)
                     labelItem.setEditable(False)
-                    groupItem.insertRow(0, [labelItem, SettingItem(setting)])
+                    self.items[setting] = SettingItem(setting)
+                    groupItem.insertRow(0, [labelItem, self.items[setting]])
 
             providersItem.appendRow([groupItem, emptyItem])
 
@@ -126,9 +128,9 @@ class ConfigDialog(QDialog, Ui_DlgConfig):
     def accept(self):
         for setting in self.items.keys():
             if isinstance(setting.value, bool):
-                setting.value = (self.items[setting].checkState(1) == Qt.Checked)
+                setting.value = (self.items[setting].checkState() == Qt.Checked)
             elif isinstance(setting.value, (float, int, long)):
-                value = str(self.items[setting].text(1))
+                value = str(self.items[setting].text())
                 try:
                     value = float(value)
                     setting.value = value
@@ -139,7 +141,7 @@ class ConfigDialog(QDialog, Ui_DlgConfig):
                                         )
                     return
             else:
-                setting.value = str(self.items[setting].text(1))
+                setting.value = str(self.items[setting].text())
             ProcessingConfig.addSetting(setting)
         ProcessingConfig.saveSettings()
         self.toolbox.updateTree()
@@ -177,7 +179,7 @@ class SettingDelegate(QStyledItemDelegate):
             return spnBox
         elif isinstance(value, float):
             spnBox = QDoubleSpinBox(parent)
-            spnBox.setRange(-999999999,999999, 999999999,999999)
+            spnBox.setRange(-999999999.999999, 999999999.999999)
             spnBox.setDecimals(6)
             return spnBox
         elif isinstance(value, (str, unicode)):
