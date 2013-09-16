@@ -684,7 +684,6 @@ class PythonConsoleWidget(QWidget):
         QgsContextHelp.run( "PythonConsole" )
 
     def openSettings(self):
-        self.options.restoreSettings()
         self.options.exec_()
 
     def prefChanged(self):

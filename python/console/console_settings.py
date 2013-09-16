@@ -35,7 +35,7 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
         self.listPath = []
         self.lineEdit.setReadOnly(True)
 
-        #self.restoreSettings()
+        self.restoreSettings()
         self.initialCheck()
 
         self.addAPIpath.setIcon(QIcon(":/images/themes/default/symbologyAdd.png"))
@@ -210,6 +210,7 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
         self.lineEdit.setText(settings.value("pythonConsole/preparedAPIFile", "", type=str))
         itemTable = settings.value("pythonConsole/userAPI", [])
         if itemTable:
+            self.tableWidget.setRowCount(0)
             for i in range(len(itemTable)):
                 self.tableWidget.insertRow(i)
                 self.tableWidget.setColumnCount(2)
@@ -221,6 +222,8 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
 
         self.autoCompThreshold.setValue(settings.value("pythonConsole/autoCompThreshold", 2, type=int))
         self.autoCompThresholdEditor.setValue(settings.value("pythonConsole/autoCompThresholdEditor", 2, type=int))
+        self.groupBoxAutoCompletionEditor.setChecked(settings.value("pythonConsole/autoCompleteEnabledEditor", True, type=bool))
+        self.groupBoxAutoCompletion.setChecked(settings.value("pythonConsole/autoCompleteEnabled", True, type=bool))
 
         self.enableObjectInspector.setChecked(settings.value("pythonConsole/enableObjectInsp", False, type=bool))
         self.autoCloseBracketEditor.setChecked(settings.value("pythonConsole/autoCloseBracketEditor", False, type=bool))
@@ -285,4 +288,5 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
 #                 return obj.setButtonBackground()
 
     def reject(self):
+        self.restoreSettings()
         QDialog.reject(self)
