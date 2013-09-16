@@ -84,6 +84,9 @@ QgsWmsProvider::QgsWmsProvider( QString const &uri )
     : QgsRasterDataProvider( uri )
     , mHttpUri( uri )
     , mHttpCapabilitiesResponse( 0 )
+    , mHttpGetLegendGraphicResponse( 0 )
+    , mGetLegendGraphicPixmap()
+    , mGetLegendGraphicScale( 0 )
     , mImageCrs( DEFAULT_LATLON_CRS )
     , mCachedImage( 0 )
     , mCacheReply( 0 )
@@ -4585,6 +4588,189 @@ void QgsWmsProvider::showMessageBox( const QString& title, const QString& text )
   message->setTitle( title );
   message->setMessage( text, QgsMessageOutput::MessageText );
   message->showMessage();
+}
+
+QPixmap QgsWmsProvider::getLegendGraphic( double scale, bool forceRefresh )
+{
+  // TODO manage return basing of getCapablity => avoid call if service is not available
+  // some services dowsn't expose getLegendGraphic in capabilities but adding LegendURL in
+  // the layer tags inside capabilities
+  QgsDebugMsg( "entering." );
+
+  if ( !scale && !mGetLegendGraphicScale)
+  {
+    QgsDebugMsg( QString( "No scale factor set" ) );
+    return QPixmap();
+  }
+
+  if ( scale && scale != mGetLegendGraphicScale )
+  {
+    forceRefresh = true;
+    QgsDebugMsg( QString( "Download again due to scale change from: %1 to: %2" ).arg( mGetLegendGraphicScale ).arg( scale ) );
+  }
+  
+  if ( forceRefresh )
+  {
+    if ( scale )
+    {
+      mGetLegendGraphicScale = scale;
+    }
+
+    // if style is not defined, set as "default"
+    QString currentStyle("default");
+    if ( mActiveSubStyles[0] != "" )
+    {
+      currentStyle = mActiveSubStyles[0];
+    }
+
+    // add WMS GetGraphicLegend request
+    // TODO set sld version using instance var something like mSldVersion
+    // TODO at this moment LSD version can be get from LegendURL in getCapability,but parsing of
+    // this tag is not complete. Below the code that should work if pasing whould correct
+    //     if ( mActiveSubLayers[0] == mCapabilities.capability.layer.name )
+    //     {
+    //       foreach( QgsWmsStyleProperty style,  mCapabilities.capability.layer.style )
+    //       {
+    //         if ( currentStyle == style.name )
+    //         {
+    //           url.setUrl( style.legendUrl[0].onlineResource.xlinkHref, QUrl::StrictMode );
+    //         }
+    //       }
+    //     } // is a sublayer
+    //     else if ( mActiveSubLayers[0].contains( mCapabilities.capability.layer.name ) )
+    //     {
+    //       foreach( QgsWmsLayerProperty layerProperty, mCapabilities.capability.layer.layer )
+    //       {
+    //         if ( mActiveSubLayers[0] == layerProperty.name )
+    //         {
+    //           foreach( QgsWmsStyleProperty style, layerProperty.style )
+    //           {
+    //             if ( currentStyle == style.name )
+    //             {
+    //               url.setUrl( style.legendUrl[0].onlineResource.xlinkHref, QUrl::StrictMode );
+    //             }
+    //           }
+    //         }
+    //       }
+    //     }
+    QUrl url( mIgnoreGetMapUrl ? mBaseUrl : getMapUrl(), QUrl::StrictMode );
+    setQueryItem( url, "SERVICE", "WMS" );
+    setQueryItem( url, "VERSION", mCapabilities.version );
+    setQueryItem( url, "SLD_VERSION", "1.1.0" ); // can not determine SLD_VERSION
+    setQueryItem( url, "REQUEST", "GetLegendGraphic" );
+    setQueryItem( url, "LAYER", mActiveSubLayers[0] );
+    setQueryItem( url, "STYLE", currentStyle );
+    setQueryItem( url, "SCALE", QString::number( scale, 'f') );
+    setQueryItem( url, "FORMAT", mImageMimeType );
+
+    mError = "";
+
+    QNetworkRequest request( url );
+    setAuthorization( request );
+    request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferNetwork );
+    request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
+
+    QgsDebugMsg( QString( "getlegendgraphics: %1" ).arg( url.toString() ) );
+    mGetLegendGraphicReply = QgsNetworkAccessManager::instance()->get( request );
+
+    connect( mGetLegendGraphicReply, SIGNAL( finished() ), this, SLOT( getLegendGraphicReplyFinished() ) );
+    connect( mGetLegendGraphicReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( getLegendGraphicReplyProgress( qint64, qint64 ) ) );
+
+    while ( mGetLegendGraphicReply )
+    {
+      QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, WMS_THRESHOLD );
+    }
+  }
+  else
+  {
+    QgsDebugMsg( "get cached pixmap." );
+  }
+
+  QgsDebugMsg( "exiting." );
+
+  return mGetLegendGraphicPixmap; 
+}
+
+void QgsWmsProvider::getLegendGraphicReplyFinished()
+{
+  QgsDebugMsg( "entering." );
+  if ( mGetLegendGraphicReply->error() == QNetworkReply::NoError )
+  {
+    QgsDebugMsg( "reply ok" );
+    QVariant redirect = mGetLegendGraphicReply->attribute( QNetworkRequest::RedirectionTargetAttribute );
+    if ( !redirect.isNull() )
+    {
+      emit statusChanged( tr( "GetLegendGraphic request redirected." ) );
+
+      const QUrl& toUrl = redirect.toUrl();
+      mGetLegendGraphicReply->request();
+      if ( toUrl == mGetLegendGraphicReply->url() )
+      {
+        mErrorFormat = "text/plain";
+        mError = tr( "Redirect loop detected: %1" ).arg( toUrl.toString() );
+        QgsMessageLog::logMessage( mError, tr( "WMS" ) );
+        mHttpGetLegendGraphicResponse.clear();
+      }
+      else
+      {
+        QNetworkRequest request( toUrl );
+        setAuthorization( request );
+        request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferNetwork );
+        request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
+
+        mGetLegendGraphicReply->deleteLater();
+        QgsDebugMsg( QString( "redirected GetLegendGraphic: %1" ).arg( redirect.toString() ) );
+        mGetLegendGraphicReply = QgsNetworkAccessManager::instance()->get( request );
+
+        connect( mGetLegendGraphicReply, SIGNAL( finished() ), this, SLOT( getLegendGraphicReplyFinished() ) );
+        connect( mGetLegendGraphicReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( getLegendGraphicReplyProgress( qint64, qint64 ) ) );
+        return;
+      }
+    }
+
+    QVariant status = mGetLegendGraphicReply->attribute( QNetworkRequest::HttpStatusCodeAttribute );
+    if ( !status.isNull() && status.toInt() >= 400 )
+    {
+      QVariant phrase = mGetLegendGraphicReply->attribute( QNetworkRequest::HttpReasonPhraseAttribute );
+      showMessageBox( tr( "GetLegendGraphic request error" ), tr( "Status: %1\nReason phrase: %2" ).arg( status.toInt() ).arg( phrase.toString() ) );
+    }
+    else
+    {
+      QPixmap myLocalImage = QPixmap::fromImage( QImage::fromData( mGetLegendGraphicReply->readAll() ) );
+      if ( myLocalImage.isNull() )
+      {
+        QgsMessageLog::logMessage( tr( "Returned legend image is flawed [URL: %2]" )
+                                    .arg( mGetLegendGraphicReply->url().toString() ), tr( "WMS" ) );
+      }
+      else
+      {
+        mGetLegendGraphicPixmap = myLocalImage;
+
+#ifdef QGISDEBUG
+        QString filename = QDir::tempPath() + "/GetLegendGraphic.png";
+        mGetLegendGraphicPixmap.save(filename);
+        QgsDebugMsg( "saved GetLegendGraphic result in debug ile: "+filename );
+#endif
+      }
+    }
+  }
+  else
+  {
+    mErrorFormat = "text/plain";
+    mError = tr( "Download of GetLegendGraphic failed: %1" ).arg( mGetLegendGraphicReply->errorString() );
+    QgsMessageLog::logMessage( mError, tr( "WMS" ) );
+    mHttpGetLegendGraphicResponse.clear();
+  }
+
+  mGetLegendGraphicReply->deleteLater();
+  mGetLegendGraphicReply = 0;
+}
+
+void QgsWmsProvider::getLegendGraphicReplyProgress( qint64 bytesReceived, qint64 bytesTotal )
+{
+  QString msg = tr( "%1 of %2 bytes of GetLegendGraphic downloaded." ).arg( bytesReceived ).arg( bytesTotal < 0 ? QString( "unknown number of" ) : QString::number( bytesTotal ) );
+  QgsDebugMsg( msg );
+  emit statusChanged( msg );
 }
 
 /**
