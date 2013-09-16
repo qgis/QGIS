@@ -88,9 +88,6 @@ p, li { white-space: pre-wrap; }
          <property name="alignment">
           <set>Qt::AlignCenter</set>
          </property>
-         <property name="wordWrap">
-          <bool>true</bool>
-         </property>
         </widget>
        </item>
        <item row="4" column="0">
