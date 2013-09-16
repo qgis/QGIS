@@ -774,8 +774,8 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
       {
         if ( version == "1.1.1" )
         {
-          double OGC_PX_M = 0.00028; // OGC referance pixel size in meter, also used by qgis
-          double SCALE_TO_SCALEHINT = OGC_PX_M * sqrt( 2 );
+          double OGC_PX_M = 0.00028; // OGC reference pixel size in meter, also used by qgis
+          double SCALE_TO_SCALEHINT = OGC_PX_M * sqrt( 2.0 );
 
           QDomElement scaleHintElem = doc.createElement( "ScaleHint" );
           scaleHintElem.setAttribute( "min", QString::number( currentLayer->minimumScale() * SCALE_TO_SCALEHINT ) );
