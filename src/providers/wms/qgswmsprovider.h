@@ -632,6 +632,11 @@ class QgsWmsProvider : public QgsRasterDataProvider
     QStringList subLayerStyles() const;
 
 
+    /** Get GetLegendGraphic if service available otherwise QPixmap() 
+     * BEAWARE call it the first time specifying scale parameter otherwise it always return QPixmap()
+     */
+    QPixmap getLegendGraphic( double scale = 0, bool forceRefresh = false );
+
     // TODO: Get the WMS connection
 
     // TODO: Get the table name associated with this provider instance
@@ -736,6 +741,8 @@ class QgsWmsProvider : public QgsRasterDataProvider
     void capabilitiesReplyProgress( qint64, qint64 );
     void identifyReplyFinished();
     void tileReplyFinished();
+    void getLegendGraphicReplyFinished();
+    void getLegendGraphicReplyProgress( qint64, qint64 );
 
   private:
     void showMessageBox( const QString& title, const QString& text );
@@ -912,6 +919,21 @@ class QgsWmsProvider : public QgsRasterDataProvider
     QDomDocument mCapabilitiesDom;
 
     /**
+     * GetLegendGraphic of the WMS (raw)
+     */
+    QByteArray mHttpGetLegendGraphicResponse;
+
+    /**
+     * GetLegendGraphic WMS Pixmap result
+     */
+    QPixmap mGetLegendGraphicPixmap;
+
+    /**
+     * GetLegendGraphic scale for the WMS Pixmap result
+     */
+    double mGetLegendGraphicScale;
+
+    /**
      * Last Service Exception Report from the WMS
      */
     QDomDocument mServiceExceptionReportDom;
@@ -1000,6 +1022,11 @@ class QgsWmsProvider : public QgsRasterDataProvider
      * The reply to the capabilities request
      */
     QNetworkReply *mCapabilitiesReply;
+
+    /**
+     * The reply to the GetLegendGraphic request
+     */
+    QNetworkReply *mGetLegendGraphicReply;
 
     /**
      * The reply to the capabilities request

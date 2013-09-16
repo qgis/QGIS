@@ -84,6 +84,9 @@ QgsWmsProvider::QgsWmsProvider( QString const &uri )
     : QgsRasterDataProvider( uri )
     , mHttpUri( uri )
     , mHttpCapabilitiesResponse( 0 )
+    , mHttpGetLegendGraphicResponse( 0 )
+    , mGetLegendGraphicPixmap()
+    , mGetLegendGraphicScale( 0 )
     , mImageCrs( DEFAULT_LATLON_CRS )
     , mCachedImage( 0 )
     , mCacheReply( 0 )
@@ -4544,6 +4547,146 @@ void QgsWmsProvider::showMessageBox( const QString& title, const QString& text )
   message->setTitle( title );
   message->setMessage( text, QgsMessageOutput::MessageText );
   message->showMessage();
+}
+
+QPixmap QgsWmsProvider::getLegendGraphic( double scale, bool forceRefresh )
+{
+  QgsDebugMsg( "entering." );
+
+  if ( !scale && !mGetLegendGraphicScale)
+  {
+    QgsDebugMsg( QString( "No scale factor set" ) );
+    return QPixmap();
+  }
+
+  if ( mHttpGetLegendGraphicResponse.isNull() || forceRefresh )
+  {
+    if ( scale )
+    {
+      mGetLegendGraphicScale = scale;
+    }
+
+    // add WMS GetGraphicLegend request
+    // TODO set wms version using instance var something like mWmsVersion... brobabilly get from the same getMap call parameter
+    // TODO set sld version using instance var something like mSldVersion... brobabilly get from the same getMap call parameter
+    QUrl url( mIgnoreGetMapUrl ? mBaseUrl : getMapUrl() );
+    setQueryItem( url, "SERVICE", "WMS" );
+    setQueryItem( url, "VERSION", "1.3.0" );
+    setQueryItem( url, "SLD_VERSION", "1.1.0" );
+    setQueryItem( url, "REQUEST", "GetLegendGraphic" );
+    setQueryItem( url, "LAYER", mActiveSubLayers.join( "," ) );
+    setQueryItem( url, "STYLE", mActiveSubStyles.join( "," ) );
+    setQueryItem( url, "SCALE", QString::number( scale ) );
+    setQueryItem( url, "FORMAT", mImageMimeType );
+
+    mError = "";
+
+    QNetworkRequest request( url );
+    setAuthorization( request );
+    request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferNetwork );
+    request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
+
+    QgsDebugMsg( QString( "getlegendgraphics: %1" ).arg( url.toString() ) );
+    mGetLegendGraphicReply = QgsNetworkAccessManager::instance()->get( request );
+
+    connect( mGetLegendGraphicReply, SIGNAL( finished() ), this, SLOT( getLegendGraphicReplyFinished() ) );
+    connect( mGetLegendGraphicReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( getLegendGraphicReplyProgress( qint64, qint64 ) ) );
+
+    while ( mGetLegendGraphicReply )
+    {
+      QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, WMS_THRESHOLD );
+    }
+  }
+  else
+  {
+    QgsDebugMsg( "get cached pixmap." );
+  }
+
+  QgsDebugMsg( "exiting." );
+
+  return mGetLegendGraphicPixmap; 
+}
+
+void QgsWmsProvider::getLegendGraphicReplyFinished()
+{
+  QgsDebugMsg( "entering." );
+  if ( mGetLegendGraphicReply->error() == QNetworkReply::NoError )
+  {
+    QgsDebugMsg( "reply ok" );
+    QVariant redirect = mGetLegendGraphicReply->attribute( QNetworkRequest::RedirectionTargetAttribute );
+    if ( !redirect.isNull() )
+    {
+      emit statusChanged( tr( "GetLegendGraphic request redirected." ) );
+
+      const QUrl& toUrl = redirect.toUrl();
+      mGetLegendGraphicReply->request();
+      if ( toUrl == mGetLegendGraphicReply->url() )
+      {
+        mErrorFormat = "text/plain";
+        mError = tr( "Redirect loop detected: %1" ).arg( toUrl.toString() );
+        QgsMessageLog::logMessage( mError, tr( "WMS" ) );
+        mHttpGetLegendGraphicResponse.clear();
+      }
+      else
+      {
+        QNetworkRequest request( toUrl );
+        setAuthorization( request );
+        request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferNetwork );
+        request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
+
+        mGetLegendGraphicReply->deleteLater();
+        QgsDebugMsg( QString( "redirected GetLegendGraphic: %1" ).arg( redirect.toString() ) );
+        mGetLegendGraphicReply = QgsNetworkAccessManager::instance()->get( request );
+
+        connect( mGetLegendGraphicReply, SIGNAL( finished() ), this, SLOT( getLegendGraphicReplyFinished() ) );
+        connect( mGetLegendGraphicReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( getLegendGraphicReplyProgress( qint64, qint64 ) ) );
+        return;
+      }
+    }
+
+    QVariant status = mGetLegendGraphicReply->attribute( QNetworkRequest::HttpStatusCodeAttribute );
+    if ( !status.isNull() && status.toInt() >= 400 )
+    {
+      QVariant phrase = mGetLegendGraphicReply->attribute( QNetworkRequest::HttpReasonPhraseAttribute );
+      showMessageBox( tr( "GetLegendGraphic request error" ), tr( "Status: %1\nReason phrase: %2" ).arg( status.toInt() ).arg( phrase.toString() ) );
+    }
+    else
+    {
+      QPixmap myLocalImage = QPixmap::fromImage( QImage::fromData( mGetLegendGraphicReply->readAll() ) );
+      if ( myLocalImage.isNull() )
+      {
+        QgsMessageLog::logMessage( tr( "Returned legend image is flawed [URL: %2]" )
+                                    .arg( mGetLegendGraphicReply->url().toString() ), tr( "WMS" ) );
+      }
+      else
+      {
+        mGetLegendGraphicPixmap = myLocalImage;
+
+#ifdef QGISDEBUG
+        QString filename = QDir::tempPath() + "/GetLegendGraphic.png";
+        mGetLegendGraphicPixmap.save(filename);
+        QgsDebugMsg( "saved GetLegendGraphic result in debug ile: "+filename );
+#endif
+      }
+    }
+  }
+  else
+  {
+    mErrorFormat = "text/plain";
+    mError = tr( "Download of GetLegendGraphic failed: %1" ).arg( mGetLegendGraphicReply->errorString() );
+    QgsMessageLog::logMessage( mError, tr( "WMS" ) );
+    mHttpGetLegendGraphicResponse.clear();
+  }
+
+  mGetLegendGraphicReply->deleteLater();
+  mGetLegendGraphicReply = 0;
+}
+
+void QgsWmsProvider::getLegendGraphicReplyProgress( qint64 bytesReceived, qint64 bytesTotal )
+{
+  QString msg = tr( "%1 of %2 bytes of GetLegendGraphic downloaded." ).arg( bytesReceived ).arg( bytesTotal < 0 ? QString( "unknown number of" ) : QString::number( bytesTotal ) );
+  QgsDebugMsg( msg );
+  emit statusChanged( msg );
 }
 
 /**
