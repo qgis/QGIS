@@ -294,6 +294,9 @@ class QgsVectorLayer : QgsMapLayer
     /** Select all the features */
     void selectAll();
 
+    /** Get all feature Ids */
+    QgsFeatureIds allFeatureIds();
+
     /**
      * Invert selection of features found within the search rectangle (in layer's coordinates)
      *

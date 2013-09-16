@@ -792,27 +792,17 @@ void QgsVectorLayer::modifySelection( QgsFeatureIds selectIds, QgsFeatureIds des
 
 void QgsVectorLayer::invertSelection()
 {
-  // copy the ids of selected features to tmp
-  QgsFeatureIds tmp = mSelectedFeatureIds;
-
-  QgsFeatureIterator fit = getFeatures( QgsFeatureRequest()
-                                        .setFlags( QgsFeatureRequest::NoGeometry )
-                                        .setSubsetOfAttributes( QgsAttributeList() ) );
-
-  QgsFeatureIds ids;
-
-  QgsFeature fet;
-  while ( fit.nextFeature( fet ) )
-  {
-    ids << fet.id();
-  }
-
+  QgsFeatureIds ids = allFeatureIds();
   ids.subtract( mSelectedFeatureIds );
-
   setSelectedFeatures( ids );
 }
 
 void QgsVectorLayer::selectAll()
+{
+  setSelectedFeatures( allFeatureIds() );
+}
+
+QgsFeatureIds QgsVectorLayer::allFeatureIds()
 {
   QgsFeatureIterator fit = getFeatures( QgsFeatureRequest()
                                         .setFlags( QgsFeatureRequest::NoGeometry )
@@ -826,7 +816,7 @@ void QgsVectorLayer::selectAll()
     ids << fet.id();
   }
 
-  setSelectedFeatures( ids );
+  return ids;
 }
 
 void QgsVectorLayer::invertSelectionInRectangle( QgsRectangle & rect )
@@ -2682,8 +2672,22 @@ bool QgsVectorLayer::rollBack( bool deleteBuffer )
 void QgsVectorLayer::setSelectedFeatures( const QgsFeatureIds& ids )
 {
   QgsFeatureIds deselectedFeatures = mSelectedFeatureIds - ids;
-  // TODO: check whether features with these ID exist
+
   mSelectedFeatureIds = ids;
+
+  QgsFeatureIds allIds = allFeatureIds();
+  QgsFeatureIds::iterator id = mSelectedFeatureIds.begin();
+  while ( id != mSelectedFeatureIds.end() )
+  {
+    if ( !allIds.contains( *id ) )
+    {
+      id = mSelectedFeatureIds.erase( id );
+    }
+    else
+    {
+      ++id;
+    }
+  }
 
   // invalidate cache
   setCacheImage( 0 );

@@ -57,7 +57,6 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
         self.table = QtGui.QTableWidget(None)
         AlgorithmExecutionDialog.__init__(self, alg, self.table)
         self.setWindowModality(1)
-        self.algEx = None
         self.resize(800, 500)
         self.setWindowTitle("Batch Processing - " + self.alg.name)
         for param in self.alg.parameters:
@@ -129,9 +128,10 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
                 self.table.setColumnHidden(i, not self.showAdvanced)
             i+=1
         for out in self.alg.outputs:
-            self.table.setColumnWidth(i,250)
-            self.table.setHorizontalHeaderItem(i, QtGui.QTableWidgetItem(out.description))
-            i+=1
+            if not out.hidden:
+                self.table.setColumnWidth(i,250)
+                self.table.setHorizontalHeaderItem(i, QtGui.QTableWidgetItem(out.description))
+                i+=1
 
         self.table.setColumnWidth(i, 200)
         self.table.setHorizontalHeaderItem(i, QtGui.QTableWidgetItem("Load in QGIS"))

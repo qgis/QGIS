@@ -30,6 +30,7 @@ import sys
 import os
 import code
 import codecs
+import re
 
 from qgis.core import QgsApplication
 from ui_console_history_dlg import Ui_HistoryDialogPythonConsole
@@ -414,30 +415,39 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
             self.showNext()
         ## TODO: press event for auto-completion file directory
         else:
-            if self.settings.value("pythonConsole/autoCloseBracket", False, type=bool):
-                t = unicode(e.text())
-                ## Close bracket automatically
-                if t in self.opening:
-                    i = self.opening.index(t)
-                    if self.hasSelectedText() and startPos != 0:
-                        selText = self.selectedText()
-                        self.removeSelectedText()
-                        self.insert(self.opening[i] + selText + self.closing[i])
-                        self.setCursorPosition(endLine, endPos+2)
-                        return
-                    else:
-                        self.insert(self.closing[i])
-                ## FIXES #8392 (automatically removes the redundant char
-                ## when autoclosing brackets option is enabled)
-                if t in [')', ']', '}']:
-                    l, pos = self.getCursorPosition()
-                    txt = self.text(l)
-                    try:
-                        if txt[pos-1] in self.opening:
-                            self.setCursorPosition(l, pos+1)
-                            self.SendScintilla(QsciScintilla.SCI_DELETEBACK)
-                    except IndexError:
-                        pass
+            t = unicode(e.text())
+            self.autoCloseBracket = self.settings.value("pythonConsole/autoCloseBracket", False, type=bool)
+            self.autoImport = self.settings.value("pythonConsole/autoInsertionImport", True, type=bool)
+            txt = cmd[:index].replace('>>> ', '').replace('... ', '')
+            ## Close bracket automatically
+            if t in self.opening and self.autoCloseBracket:
+                i = self.opening.index(t)
+                if self.hasSelectedText() and startPos != 0:
+                    selText = self.selectedText()
+                    self.removeSelectedText()
+                    self.insert(self.opening[i] + selText + self.closing[i])
+                    self.setCursorPosition(endLine, endPos+2)
+                    return
+                elif t == '(' and (re.match(r'^[ \t]*def \w+$', txt) \
+                                   or re.match(r'^[ \t]*class \w+$', txt)):
+                        self.insert('):')
+                else:
+                    self.insert(self.closing[i])
+            ## FIXES #8392 (automatically removes the redundant char
+            ## when autoclosing brackets option is enabled)
+            elif t in [')', ']', '}'] and self.autoCloseBracket:
+                txt = self.text(line)
+                try:
+                    if txt[index-1] in self.opening and t == txt[index]:
+                        self.setCursorPosition(line, index+1)
+                        self.SendScintilla(QsciScintilla.SCI_DELETEBACK)
+                except IndexError:
+                    pass
+            elif t == ' ' and self.autoImport:
+                ptrn = r'^[ \t]*from [\w.]+$'
+                if re.match(ptrn, txt):
+                    self.insert(' import')
+                    self.setCursorPosition(line, index + 7)
             QsciScintilla.keyPressEvent(self, e)
 
     def contextMenuEvent(self, e):

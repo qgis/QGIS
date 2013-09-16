@@ -607,6 +607,7 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString theProj4String
     // split on spaces followed by a plus sign (+) to deal
     // also with parameters containing spaces (e.g. +nadgrids)
     // make sure result is trimmed (#5598)
+    QStringList myParams;
     foreach ( QString param, myProj4String.split( QRegExp( "\\s+(?=\\+)" ), QString::SkipEmptyParts ) )
     {
       QString arg = QString( "' '||parameters||' ' LIKE %1" ).arg( quotedValue( QString( "% %1 %" ).arg( param.trimmed() ) ) );
@@ -618,6 +619,7 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString theProj4String
       {
         sql += delim + arg;
         delim = " AND ";
+        myParams << param.trimmed();
       }
     }
 
@@ -630,6 +632,25 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString theProj4String
     {
       // datum might have disappeared in definition - retry without it
       myRecord = getRecord( sql + " order by deprecated" );
+    }
+
+    if ( !myRecord.empty() )
+    {
+      // Bugfix 8487 : test param lists are equal, except for +datum
+      QStringList foundParams;
+      foreach ( QString param, myRecord["parameters"].split( QRegExp( "\\s+(?=\\+)" ), QString::SkipEmptyParts ) )
+      {
+        if ( !param.startsWith( "+datum=" ) )
+          foundParams << param.trimmed();
+      }
+
+      myParams.sort();
+      foundParams.sort();
+
+      if ( myParams != foundParams )
+      {
+        myRecord.clear();
+      }
     }
   }
 

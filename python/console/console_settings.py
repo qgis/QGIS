@@ -35,7 +35,7 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
         self.listPath = []
         self.lineEdit.setReadOnly(True)
 
-        self.restoreSettings()
+        #self.restoreSettings()
         self.initialCheck()
 
         self.addAPIpath.setIcon(QIcon(":/images/themes/default/symbologyAdd.png"))
@@ -180,6 +180,8 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
         settings.setValue("pythonConsole/enableObjectInsp", self.enableObjectInspector.isChecked())
         settings.setValue("pythonConsole/autoCloseBracket", self.autoCloseBracket.isChecked())
         settings.setValue("pythonConsole/autoCloseBracketEditor", self.autoCloseBracketEditor.isChecked())
+        settings.setValue("pythonConsole/autoInsertionImport", self.autoInsertionImport.isChecked())
+        settings.setValue("pythonConsole/autoInsertionImportEditor", self.autoInsertionImportEditor.isChecked())
 
         settings.setValue("pythonConsole/defaultFontColor", self.defaultFontColor.color())
         settings.setValue("pythonConsole/keywordFontColor", self.keywordFontColor.color())
@@ -223,6 +225,8 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
         self.enableObjectInspector.setChecked(settings.value("pythonConsole/enableObjectInsp", False, type=bool))
         self.autoCloseBracketEditor.setChecked(settings.value("pythonConsole/autoCloseBracketEditor", False, type=bool))
         self.autoCloseBracket.setChecked(settings.value("pythonConsole/autoCloseBracket", False, type=bool))
+        self.autoInsertionImportEditor.setChecked(settings.value("pythonConsole/autoInsertionImportEditor", True, type=bool))
+        self.autoInsertionImport.setChecked(settings.value("pythonConsole/autoInsertionImport", True, type=bool))
 
         if settings.value("pythonConsole/autoCompleteSource") == 'fromDoc':
             self.autoCompFromDoc.setChecked(True)

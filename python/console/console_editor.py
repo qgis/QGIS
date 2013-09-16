@@ -36,6 +36,7 @@ import pyclbr
 from operator import itemgetter
 import traceback
 import codecs
+import re
 
 class KeyFilter(QObject):
     SHORTCUTS = {
@@ -654,45 +655,51 @@ class Editor(QsciScintilla):
             return True
 
     def keyPressEvent(self, e):
-        if self.settings.value("pythonConsole/autoCloseBracketEditor", False, type=bool):
-            startLine, _, endLine, endPos = self.getSelection()
-            t = unicode(e.text())
-            ## Close bracket automatically
-            if t in self.opening:
-                self.beginUndoAction()
-                i = self.opening.index(t)
-                if self.hasSelectedText():
-                    selText = self.selectedText()
-                    self.removeSelectedText()
-                    if startLine == endLine:
-                        self.insert(self.opening[i] + selText + self.closing[i])
-                        self.setCursorPosition(endLine, endPos+2)
-                        self.endUndoAction()
-                        return
-                    elif startLine < endLine and self.opening[i] in ("'", '"'):
-                        self.insert("'''" + selText + "'''")
-                        self.setCursorPosition(endLine, endPos+3)
-                        self.endUndoAction()
-                        return
-                    else:
-                        self.insert(self.closing[i])
-                else:
-                    self.insert(self.closing[i])
-                self.endUndoAction()
-            ## FIXES #8392 (automatically removes the redundant char
-            ## when autoclosing brackets option is enabled)
-            if t in [')', ']', '}']:
-                l, pos = self.getCursorPosition()
-                txt = self.text(l)
-                try:
-                    if txt[pos-1] in self.opening:
-                        self.setCursorPosition(l, pos+1)
-                        self.SendScintilla(QsciScintilla.SCI_DELETEBACK)
-                except IndexError:
-                    pass
-            QsciScintilla.keyPressEvent(self, e)
-        else:
-            QsciScintilla.keyPressEvent(self, e)
+        t = unicode(e.text())
+        startLine, _, endLine, endPos = self.getSelection()
+        line, pos = self.getCursorPosition()
+        self.autoCloseBracket = self.settings.value("pythonConsole/autoCloseBracketEditor", False, type=bool)
+        self.autoImport = self.settings.value("pythonConsole/autoInsertionImportEditor", True, type=bool)
+        txt = self.text(line)[:pos]
+        ## Close bracket automatically
+        if t in self.opening and self.autoCloseBracket:
+            self.beginUndoAction()
+            i = self.opening.index(t)
+            if self.hasSelectedText():
+                selText = self.selectedText()
+                self.removeSelectedText()
+                if startLine == endLine:
+                    self.insert(self.opening[i] + selText + self.closing[i])
+                    self.setCursorPosition(endLine, endPos+2)
+                    self.endUndoAction()
+                    return
+                elif startLine < endLine and self.opening[i] in ("'", '"'):
+                    self.insert("'''" + selText + "'''")
+                    self.setCursorPosition(endLine, endPos+3)
+                    self.endUndoAction()
+                    return
+            elif t == '(' and (re.match(r'^[ \t]*def \w+$', txt) \
+                               or re.match(r'^[ \t]*class \w+$', txt)):
+                    self.insert('):')
+            else:
+                self.insert(self.closing[i])
+            self.endUndoAction()
+        ## FIXES #8392 (automatically removes the redundant char
+        ## when autoclosing brackets option is enabled)
+        elif t in [')', ']', '}'] and self.autoCloseBracket:
+            txt = self.text(line)
+            try:
+                if txt[pos-1] in self.opening and t == txt[pos]:
+                    self.setCursorPosition(line, pos+1)
+                    self.SendScintilla(QsciScintilla.SCI_DELETEBACK)
+            except IndexError:
+                pass
+        elif t == ' ' and self.autoImport:
+            ptrn = r'^[ \t]*from [\w.]+$'
+            if re.match(ptrn, txt):
+                self.insert(' import')
+                self.setCursorPosition(line, pos + 7)
+        QsciScintilla.keyPressEvent(self, e)
 
     def focusInEvent(self, e):
         pathfile = self.parent.path

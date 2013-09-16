@@ -171,7 +171,7 @@ class GeoAlgorithm:
                 lines.append(errstring)
             lines.append(errstring.replace("\n", "|"))
             ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, lines)
-            raise GeoAlgorithmExecutionException(str(e))
+            raise GeoAlgorithmExecutionException(str(e) + "\nSee log for more details")
 
 
     def runPostExecutionScript(self, progress):

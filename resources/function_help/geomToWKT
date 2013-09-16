@@ -2,11 +2,10 @@
 Returns the Well-Known Text (WKT) representation of the geometry without SRID metadata.
 
 <h4>Syntax</h4>
-<pre>geomToWKT($geometry)</pre>
+<pre>geomToWKT(a)</pre>
 
 <h4>Arguments</h4>
-$geometry &rarr;  geometry of your current feature
+a &rarr; geometry
 
 <h4>Example</h4>
 <pre> geomToWKT( $geometry ) &rarr; POINT(6 50)</pre>
-
