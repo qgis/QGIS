@@ -23,7 +23,7 @@
 #include <QIODevice>
 #include <QTextStream>
 
-QgsDxfExport::QgsDxfExport()
+QgsDxfExport::QgsDxfExport(): mSymbologyScaleDenominator( 1.0 ), mSymbologyExport( NoSymbology )
 {
 }
 
@@ -351,10 +351,47 @@ double QgsDxfExport::scaleToMapUnits( double value, QgsSymbolV2::OutputUnit symb
 
 int QgsDxfExport::colorFromSymbolLayer( const QgsSymbolLayerV2* symbolLayer )
 {
+  if ( !symbolLayer )
+  {
+    return 0;
+  }
+
+
   return 5; //todo...
 }
 
 double QgsDxfExport::widthFromSymbolLayer( const QgsSymbolLayerV2* symbolLayer )
 {
   return 50; //todo...
+}
+
+int QgsDxfExport::closestMatch( QRgb pixel, const QVector<QRgb>& palette )
+{
+  int idx = 0;
+  int current_distance = INT_MAX;
+  for ( int i = 0; i < palette.size(); ++i )
+  {
+    int dist = pixel_distance( pixel, palette.at( i ) );
+    if ( dist < current_distance )
+    {
+      current_distance = dist;
+      idx = i;
+    }
+  }
+  return idx;
+}
+
+int QgsDxfExport::pixel_distance( QRgb p1, QRgb p2 )
+{
+  int r1 = qRed( p1 );
+  int g1 = qGreen( p1 );
+  int b1 = qBlue( p1 );
+  int a1 = qAlpha( p1 );
+
+  int r2 = qRed( p2 );
+  int g2 = qGreen( p2 );
+  int b2 = qBlue( p2 );
+  int a2 = qAlpha( p2 );
+
+  return abs( r1 - r2 ) + abs( g1 - g2 ) + abs( b1 - b2 ) + abs( a1 - a2 );
 }

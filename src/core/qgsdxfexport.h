@@ -20,6 +20,7 @@
 
 #include "qgsgeometry.h"
 #include "qgssymbolv2.h"
+#include <QColor>
 #include <QList>
 
 class QgsMapLayer;
@@ -78,6 +79,11 @@ class QgsDxfExport
     //returns dxf palette index from symbol layer color
     int colorFromSymbolLayer( const QgsSymbolLayerV2* symbolLayer );
     double widthFromSymbolLayer( const QgsSymbolLayerV2* symbolLayer );
+
+    //functions for dxf palette
+    static int closestMatch( QRgb pixel, const QVector<QRgb>& palette );
+    static int pixel_distance( QRgb p1, QRgb p2 );
+
 };
 
 #endif // QGSDXFEXPORT_H
