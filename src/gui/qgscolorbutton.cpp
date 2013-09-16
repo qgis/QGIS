@@ -45,6 +45,7 @@ QgsColorButton::QgsColorButton( QWidget *parent, QString cdt, QColorDialog::Colo
     , mColorDialogOptions( cdo )
     , mAcceptLiveUpdates( true )
     , mTempPNG( NULL )
+    , mColorSet( false )
 {
   connect( this, SIGNAL( clicked() ), this, SLOT( onButtonClicked() ) );
 }
@@ -134,7 +135,8 @@ void QgsColorButton::setColor( const QColor &color )
   QColor oldColor = mColor;
   mColor = color;
 
-  if ( oldColor != mColor )
+  // handle when initially set color is same as default (Qt::black); consider it a color change
+  if ( oldColor != mColor || ( mColor == QColor( Qt::black ) && !mColorSet ) )
   {
     setButtonBackground();
     if ( isEnabled() )
@@ -144,6 +146,7 @@ void QgsColorButton::setColor( const QColor &color )
       emit colorChanged( mColor );
     }
   }
+  mColorSet = true;
 }
 
 void QgsColorButton::setButtonBackground()

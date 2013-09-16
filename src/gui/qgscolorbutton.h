@@ -140,6 +140,7 @@ class GUI_EXPORT QgsColorButton: public QPushButton
     QColorDialog::ColorDialogOptions mColorDialogOptions;
     bool mAcceptLiveUpdates;
     QTemporaryFile mTempPNG;
+    bool mColorSet; // added in QGIS 2.1
 
   private slots:
     void onButtonClicked();
