@@ -446,79 +446,78 @@ int main( int argc, char *argv[] )
 #endif
 
   QStringList args;
+
+  if ( !bundleclicked( argc, argv ) )
   {
     // Build a local QCoreApplication from arguments. This way, arguments are correctly parsed from their native locale
     // It will use QString::fromLocal8Bit( argv ) under Unix and GetCommandLine() under Windows.
     QCoreApplication coreApp( argc, argv );
     args = QCoreApplication::arguments();
-  }
-    
-  if ( !bundleclicked( argc, argv ) )
-  {
+
     for ( int i = 1; i < args.size(); ++i )
     {
       QString arg = args[i];
-      
+
       if ( arg == "--help" || arg == "-?" )
       {
-	usage( args[0].toStdString() );
-	return 2;
+        usage( args[0].toStdString() );
+        return 2;
       }
       else if ( arg == "--nologo" || arg == "-n" )
       {
-	myHideSplash = true;
+        myHideSplash = true;
       }
       else if ( arg == "--noplugins" || arg == "-P" )
       {
-	myRestorePlugins = false;
+        myRestorePlugins = false;
       }
       else if ( arg == "--nocustomization" || arg == "-C" )
       {
-	myCustomization = false;
+        myCustomization = false;
       }
       else if ( i + 1 < argc && ( arg == "--snapshot" || arg == "-s" ) )
       {
-	mySnapshotFileName = QDir::convertSeparators( QFileInfo( args[++i] ).absoluteFilePath() );
+        mySnapshotFileName = QDir::convertSeparators( QFileInfo( args[++i] ).absoluteFilePath() );
       }
       else if ( i + 1 < argc && ( arg == "--width" || arg == "-w" ) )
       {
-      mySnapshotWidth = QString( args[++i] ).toInt();
+        mySnapshotWidth = QString( args[++i] ).toInt();
       }
       else if ( i + 1 < argc && ( arg == "--height" || arg == "-h" ) )
       {
-	mySnapshotHeight = QString( args[++i] ).toInt();
+        mySnapshotHeight = QString( args[++i] ).toInt();
       }
       else if ( i + 1 < argc && ( arg == "--lang" || arg == "-l" ) )
       {
-	myTranslationCode = args[++i];
+        myTranslationCode = args[++i];
       }
       else if ( i + 1 < argc && ( arg == "--project" || arg == "-p" ) )
       {
-	myProjectFileName = QDir::convertSeparators( QFileInfo( args[++i] ).absoluteFilePath() );
+        myProjectFileName = QDir::convertSeparators( QFileInfo( args[++i] ).absoluteFilePath() );
       }
       else if ( i + 1 < argc && ( arg == "--extent" || arg == "-e" ) )
       {
-	myInitialExtent = args[++i];
+        myInitialExtent = args[++i];
       }
       else if ( i + 1 < argc && ( arg == "--optionspath" || arg == "-o" ) )
       {
-	optionpath = QDir::convertSeparators( QDir( args[++i] ).absolutePath() );
+        optionpath = QDir::convertSeparators( QDir( args[++i] ).absolutePath() );
       }
       else if ( i + 1 < argc && ( arg == "--configpath" || arg == "-c" ) )
       {
-	configpath = QDir::convertSeparators( QDir( args[++i] ).absolutePath() );
+        configpath = QDir::convertSeparators( QDir( args[++i] ).absolutePath() );
       }
       else if ( i + 1 < argc && ( arg == "--code" || arg == "-f" ) )
       {
-	pythonfile = QDir::convertSeparators( QFileInfo( args[++i] ).absoluteFilePath() );
+        pythonfile = QDir::convertSeparators( QFileInfo( args[++i] ).absoluteFilePath() );
       }
       else if ( i + 1 < argc && ( arg == "--customizationfile" || arg == "-z" ) )
       {
-	customizationfile = QDir::convertSeparators( QFileInfo( args[++i] ).absoluteFilePath() );
+        customizationfile = QDir::convertSeparators( QFileInfo( args[++i] ).absoluteFilePath() );
       }
       else
       {
-	myFileList.append( QDir::convertSeparators( QFileInfo( args[i] ).absoluteFilePath() ) );
+        myFileList.append( QDir::convertSeparators( QFileInfo( args[i] ).absoluteFilePath() ) );
       }
     }
   }
@@ -974,7 +973,7 @@ int main( int argc, char *argv[] )
   delete mypSplash;
 
   qgis->completeInitialization();
-  
+
 #if defined(ANDROID)
   // fix for Qt Ministro hiding app's menubar in favor of native Android menus
   qgis->menuBar()->setNativeMenuBar( false );
