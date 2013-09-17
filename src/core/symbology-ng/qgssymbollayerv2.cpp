@@ -148,7 +148,8 @@ void QgsSymbolLayerV2::copyDataDefinedProperties( QgsSymbolLayerV2* destLayer ) 
 
 
 QgsMarkerSymbolLayerV2::QgsMarkerSymbolLayerV2( bool locked )
-    : QgsSymbolLayerV2( QgsSymbolV2::Marker, locked ), mSizeUnit( QgsSymbolV2::MM ),  mOffsetUnit( QgsSymbolV2::MM )
+    : QgsSymbolLayerV2( QgsSymbolV2::Marker, locked ), mSizeUnit( QgsSymbolV2::MM ),  mOffsetUnit( QgsSymbolV2::MM ),
+    mHorizontalAnchorPoint( HCenter ), mVerticalAnchorPoint( VCenter )
 {
 }
 
@@ -191,13 +192,31 @@ void QgsMarkerSymbolLayerV2::markerOffset( QgsSymbolV2RenderContext& context, do
   offsetX *= QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOffsetUnit );
   offsetY *= QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOffsetUnit );
 
-  //consider anchor point corrections
-  if( mHorizontalAnchorPoint == HCenter && mVerticalAnchorPoint == VCenter )
+  //correct horizontal position according to anchor point
+  if ( mHorizontalAnchorPoint == HCenter && mVerticalAnchorPoint == VCenter )
   {
-      return;
+    return;
   }
 
+  double anchorPointCorrection = mSize * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mSizeUnit ) / 2.0;
+  if ( mHorizontalAnchorPoint == Left )
+  {
+    offsetX += anchorPointCorrection;
+  }
+  else if ( mHorizontalAnchorPoint == Right )
+  {
+    offsetX -= anchorPointCorrection;
+  }
 
+  //correct vertical position according to anchor point
+  if ( mVerticalAnchorPoint == Top )
+  {
+    offsetY += anchorPointCorrection;
+  }
+  else if ( mVerticalAnchorPoint == Bottom )
+  {
+    offsetY -= anchorPointCorrection;
+  }
 }
 
 QPointF QgsMarkerSymbolLayerV2::_rotatedOffset( const QPointF& offset, double angle )

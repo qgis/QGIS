@@ -124,16 +124,16 @@ class CORE_EXPORT QgsMarkerSymbolLayerV2 : public QgsSymbolLayerV2
 
     enum HorizontalAnchorPoint
     {
-        Left,
-        HCenter,
-        Right
+      Left,
+      HCenter,
+      Right
     };
 
     enum VerticalAnchorPoint
     {
-        Top,
-        VCenter,
-        Bottom
+      Top,
+      VCenter,
+      Bottom
     };
 
     virtual void renderPoint( const QPointF& point, QgsSymbolV2RenderContext& context ) = 0;
@@ -165,6 +165,12 @@ class CORE_EXPORT QgsMarkerSymbolLayerV2 : public QgsSymbolLayerV2
 
     virtual void setOutputUnit( QgsSymbolV2::OutputUnit unit );
     virtual QgsSymbolV2::OutputUnit outputUnit() const;
+
+    void setHorizontalAnchorPoint( HorizontalAnchorPoint h ) { mHorizontalAnchorPoint = h; }
+    HorizontalAnchorPoint horizontalAnchorPoint() const { return mHorizontalAnchorPoint; }
+
+    void setVerticalAnchorPoint( VerticalAnchorPoint v ) { mVerticalAnchorPoint = v; }
+    VerticalAnchorPoint verticalAnchorPoint() const { return mVerticalAnchorPoint; }
 
   protected:
     QgsMarkerSymbolLayerV2( bool locked = false );

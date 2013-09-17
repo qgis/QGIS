@@ -320,6 +320,14 @@ void QgsSimpleMarkerSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer
   mOutlineWidthUnitComboBox->blockSignals( true );
   mOutlineWidthUnitComboBox->setCurrentIndex( mLayer->outlineWidthUnit() );
   mOutlineWidthUnitComboBox->blockSignals( false );
+
+  //anchor points
+  mHorizontalAnchorComboBox->blockSignals( true );
+  mVerticalAnchorComboBox->blockSignals( true );
+  mHorizontalAnchorComboBox->setCurrentIndex( mLayer->horizontalAnchorPoint() );
+  mVerticalAnchorComboBox->setCurrentIndex( mLayer->verticalAnchorPoint() );
+  mHorizontalAnchorComboBox->blockSignals( false );
+  mVerticalAnchorComboBox->blockSignals( false );
 }
 
 QgsSymbolLayerV2* QgsSimpleMarkerSymbolLayerV2Widget::symbolLayer()
@@ -436,6 +444,24 @@ void QgsSimpleMarkerSymbolLayerV2Widget::on_mDataDefinedPropertiesButton_clicked
         mLayer->setDataDefinedProperty( it.key(), it.value() );
       }
     }
+    emit changed();
+  }
+}
+
+void QgsSimpleMarkerSymbolLayerV2Widget::on_mHorizontalAnchorComboBox_currentIndexChanged( int index )
+{
+  if ( mLayer )
+  {
+    mLayer->setHorizontalAnchorPoint(( QgsMarkerSymbolLayerV2::HorizontalAnchorPoint ) index );
+    emit changed();
+  }
+}
+
+void QgsSimpleMarkerSymbolLayerV2Widget::on_mVerticalAnchorComboBox_currentIndexChanged( int index )
+{
+  if ( mLayer )
+  {
+    mLayer->setVerticalAnchorPoint(( QgsMarkerSymbolLayerV2::VerticalAnchorPoint ) index );
     emit changed();
   }
 }
