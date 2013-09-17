@@ -332,10 +332,6 @@ class QgsComposerItem: QObject, QGraphicsRectItem
     @note this method was added in version 1.2*/
     bool positionLock() const;
 
-    /**Update mouse cursor at (item) position
-    @note this method was added in version 1.2*/
-    void updateCursor( const QPointF& itemPos );
-
     double rotation() const;
 
     /**Updates item, with the possibility to do custom update for subclasses*/
@@ -366,22 +362,6 @@ class QgsComposerItem: QObject, QGraphicsRectItem
     virtual void mouseReleaseEvent( QGraphicsSceneMouseEvent * event );
 
     virtual void hoverMoveEvent( QGraphicsSceneHoverEvent * event );
-
-    /**Finds out the appropriate cursor for the current mouse position in the widget (e.g. move in the middle, resize at border)*/
-    Qt::CursorShape cursorForPosition( const QPointF& itemCoordPos );
-
-    /**Finds out which mouse move action to choose depending on the cursor position inside the widget*/
-    QgsComposerItem::MouseMoveAction mouseMoveActionForPosition( const QPointF& itemCoordPos );
-
-    /**Changes the rectangle of an item depending on current mouse action (resize or move)
-     @param currentPosition current position of mouse cursor
-     @param mouseMoveStartPos cursor position at the start of the current mouse action
-     @param originalItem Item position at the start of the mouse action
-     @param dx x-Change of mouse cursor
-     @param dy y-Change of mouse cursor
-     @param changeItem Item to change size (can be the same as originalItem or a differen one)
-    */
-    void changeItemRectangle( const QPointF& currentPosition, const QPointF& mouseMoveStartPos, const QGraphicsRectItem* originalItem, double dx, double dy, QGraphicsRectItem* changeItem );
 
     /**Draw selection boxes around item*/
     virtual void drawSelectionBoxes( QPainter* p );

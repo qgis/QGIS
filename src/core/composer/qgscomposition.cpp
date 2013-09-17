@@ -21,6 +21,7 @@
 #include "qgscomposerlabel.h"
 #include "qgscomposerlegend.h"
 #include "qgscomposermap.h"
+#include "qgscomposermousehandles.h"
 #include "qgscomposeritemgroup.h"
 #include "qgscomposerpicture.h"
 #include "qgscomposerscalebar.h"
@@ -64,12 +65,18 @@ QgsComposition::QgsComposition( QgsMapRenderer* mapRenderer )
     , mSnapGridOffsetY( 0.0 )
     , mAlignmentSnap( true )
     , mAlignmentSnapTolerance( 2 )
+    , mSelectionHandles( 0 )
     , mActiveItemCommand( 0 )
     , mActiveMultiFrameCommand( 0 )
     , mAtlasComposition( this )
 {
   setBackgroundBrush( Qt::gray );
   addPaperItem();
+
+  mSelectionHandles = new QgsComposerMouseHandles( this );
+  addItem( mSelectionHandles );
+  mSelectionHandles->setRect( 30, 30, 100, 100 );
+  mSelectionHandles->setZValue( 200 );
 
   mPrintResolution = 300; //hardcoded default
   loadSettings();
@@ -93,6 +100,7 @@ QgsComposition::QgsComposition()
     mSnapGridOffsetY( 0.0 ),
     mAlignmentSnap( true ),
     mAlignmentSnapTolerance( 2 ),
+    mSelectionHandles( 0 ),
     mActiveItemCommand( 0 ),
     mActiveMultiFrameCommand( 0 ),
     mAtlasComposition( this )
@@ -1350,88 +1358,6 @@ QPointF QgsComposition::snapPointToGrid( const QPointF& scenePoint ) const
   return QPointF( xRatio * mSnapGridResolution + mSnapGridOffsetX, yRatio * mSnapGridResolution + mSnapGridOffsetY + yOffset );
 }
 
-QPointF QgsComposition::alignItem( const QgsComposerItem* item, double& alignX, double& alignY, double dx, double dy )
-{
-  if ( !item )
-  {
-    return QPointF();
-  }
-
-  double left = item->transform().dx() + dx;
-  double right = left + item->rect().width();
-  double midH = ( left + right ) / 2.0;
-  double top = item->transform().dy() + dy;
-  double bottom = top + item->rect().height();
-  double midV = ( top + bottom ) / 2.0;
-
-  QMap<double, const QgsComposerItem* > xAlignCoordinates;
-  QMap<double, const QgsComposerItem* > yAlignCoordinates;
-  collectAlignCoordinates( xAlignCoordinates, yAlignCoordinates, item );
-
-  //find nearest matches x
-  double xItemLeft = left; //new left coordinate of the item
-  double xAlignCoord = 0;
-  double smallestDiffX = DBL_MAX;
-
-  checkNearestItem( left, xAlignCoordinates, smallestDiffX, 0, xItemLeft, xAlignCoord );
-  checkNearestItem( midH, xAlignCoordinates, smallestDiffX, ( left - right ) / 2.0, xItemLeft, xAlignCoord );
-  checkNearestItem( right, xAlignCoordinates, smallestDiffX, left - right, xItemLeft, xAlignCoord );
-
-  //find nearest matches y
-  double yItemTop = top; //new top coordinate of the item
-  double yAlignCoord = 0;
-  double smallestDiffY = DBL_MAX;
-
-  checkNearestItem( top, yAlignCoordinates, smallestDiffY, 0, yItemTop, yAlignCoord );
-  checkNearestItem( midV, yAlignCoordinates, smallestDiffY, ( top - bottom ) / 2.0, yItemTop, yAlignCoord );
-  checkNearestItem( bottom, yAlignCoordinates, smallestDiffY, top - bottom, yItemTop, yAlignCoord );
-
-  double xCoord = ( smallestDiffX < 5 ) ? xItemLeft : item->transform().dx() + dx;
-  alignX = ( smallestDiffX < 5 ) ? xAlignCoord : -1;
-  double yCoord = ( smallestDiffY < 5 ) ? yItemTop : item->transform().dy() + dy;
-  alignY = ( smallestDiffY < 5 ) ? yAlignCoord : -1;
-  return QPointF( xCoord, yCoord );
-}
-
-QPointF QgsComposition::alignPos( const QPointF& pos, const QgsComposerItem* excludeItem, double& alignX, double& alignY )
-{
-  QMap<double, const QgsComposerItem* > xAlignCoordinates;
-  QMap<double, const QgsComposerItem* > yAlignCoordinates;
-  collectAlignCoordinates( xAlignCoordinates, yAlignCoordinates, excludeItem );
-
-  double nearestX = pos.x();
-  double nearestY = pos.y();
-  if ( !nearestItem( xAlignCoordinates, pos.x(), nearestX )
-       || !nearestItem( yAlignCoordinates, pos.y(), nearestY ) )
-  {
-    alignX = -1;
-    alignY = -1;
-    return pos;
-  }
-
-  QPointF result( pos.x(), pos.y() );
-  if ( abs( nearestX - pos.x() ) < mAlignmentSnapTolerance )
-  {
-    result.setX( nearestX );
-    alignX = nearestX;
-  }
-  else
-  {
-    alignX = -1;
-  }
-
-  if ( abs( nearestY - pos.y() ) < mAlignmentSnapTolerance )
-  {
-    result.setY( nearestY );
-    alignY = nearestY;
-  }
-  else
-  {
-    alignY = -1;
-  }
-  return result;
-}
-
 QGraphicsLineItem* QgsComposition::addSnapLine()
 {
   QGraphicsLineItem* item = new QGraphicsLineItem();
@@ -2216,108 +2142,6 @@ QString QgsComposition::encodeStringForXML( const QString& str )
   modifiedStr.replace( "<", "&lt;" );
   modifiedStr.replace( ">", "&gt;" );
   return modifiedStr;
-}
-
-void QgsComposition::collectAlignCoordinates( QMap< double, const QgsComposerItem* >& alignCoordsX, QMap< double, const QgsComposerItem* >& alignCoordsY,
-    const QgsComposerItem* excludeItem )
-{
-  alignCoordsX.clear();
-  alignCoordsY.clear();
-
-  QList<QGraphicsItem *> itemList = items();
-  QList<QGraphicsItem *>::iterator itemIt = itemList.begin();
-  for ( ; itemIt != itemList.end(); ++itemIt )
-  {
-    const QgsComposerItem* currentItem = dynamic_cast<const QgsComposerItem *>( *itemIt );
-    if ( excludeItem )
-    {
-      if ( !currentItem || currentItem == excludeItem )
-      {
-        continue;
-      }
-      alignCoordsX.insert( currentItem->transform().dx(), currentItem );
-      alignCoordsX.insert( currentItem->transform().dx() + currentItem->rect().width(), currentItem );
-      alignCoordsX.insert( currentItem->transform().dx() + currentItem->rect().center().x(), currentItem );
-      alignCoordsY.insert( currentItem->transform().dy() + currentItem->rect().top(), currentItem );
-      alignCoordsY.insert( currentItem->transform().dy() + currentItem->rect().center().y(), currentItem );
-      alignCoordsY.insert( currentItem->transform().dy() + currentItem->rect().bottom(), currentItem );
-    }
-  }
-
-  //arbitrary snap lines
-  QList< QGraphicsLineItem* >::const_iterator sIt = mSnapLines.constBegin();
-  for ( ; sIt != mSnapLines.constEnd(); ++sIt )
-  {
-    double x = ( *sIt )->line().x1();
-    double y = ( *sIt )->line().y1();
-    if ( qgsDoubleNear( y, 0.0 ) )
-    {
-      alignCoordsX.insert( x, 0 );
-    }
-    else
-    {
-      alignCoordsY.insert( y, 0 );
-    }
-  }
-}
-
-void QgsComposition::checkNearestItem( double checkCoord, const QMap< double, const QgsComposerItem* >& alignCoords, double& smallestDiff,
-                                       double itemCoordOffset, double& itemCoord, double& alignCoord ) const
-{
-  double currentCoord = 0;
-  if ( !nearestItem( alignCoords, checkCoord, currentCoord ) )
-  {
-    return;
-  }
-
-  double currentDiff = abs( checkCoord - currentCoord );
-  if ( currentDiff < mAlignmentSnapTolerance )
-  {
-    itemCoord = currentCoord + itemCoordOffset;
-    alignCoord = currentCoord;
-    smallestDiff = currentDiff;
-  }
-}
-
-bool QgsComposition::nearestItem( const QMap< double, const QgsComposerItem* >& coords, double value, double& nearestValue )
-{
-  if ( coords.size() < 1 )
-  {
-    return false;
-  }
-
-  QMap< double, const QgsComposerItem* >::const_iterator it = coords.lowerBound( value );
-  if ( it == coords.constBegin() ) //value smaller than first map value
-  {
-    nearestValue = it.key();
-    return true;
-  }
-  else if ( it == coords.constEnd() ) //value larger than last map value
-  {
-    --it;
-    nearestValue = it.key();
-    return true;
-  }
-  else
-  {
-    //get smaller value and larger value and return the closer one
-    double upperVal = it.key();
-    --it;
-    double lowerVal = it.key();
-
-    double lowerDiff = value - lowerVal;
-    double upperDiff = upperVal - value;
-    if ( lowerDiff < upperDiff )
-    {
-      nearestValue = lowerVal;
-      return true;
-    }
-    else
-    {
-      nearestValue = upperVal;
-      return true;
-    }
-  }
 }
 
 void QgsComposition::computeWorldFileParameters( double& a, double& b, double& c, double& d, double& e, double& f ) const

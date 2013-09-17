@@ -30,6 +30,7 @@
 #include "qgscomposerlabel.h"
 #include "qgscomposerlegend.h"
 #include "qgscomposermap.h"
+#include "qgscomposermousehandles.h"
 #include "qgscomposeritemgroup.h"
 #include "qgscomposerpicture.h"
 #include "qgscomposerruler.h"
@@ -77,9 +78,6 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
       bool lock = selectedItem->positionLock() ? false : true;
       selectedItem->setPositionLock( lock );
       selectedItem->update();
-      //make sure the new cursor is correct
-      QPointF itemPoint = selectedItem->mapFromScene( scenePoint );
-      selectedItem->updateCursor( itemPoint );
     }
     return;
   }
@@ -89,7 +87,21 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
       //select/deselect items and pass mouse event further
     case Select:
     {
-      QgsComposerItem* selectedItem;
+      //check if we are clicking on a selection handle
+      if ( composition()->selectionHandles()->isVisible() )
+      {
+        //selection handles are being shown, get mouse action for current cursor position
+        QgsComposerMouseHandles::MouseAction mouseAction = composition()->selectionHandles()->mouseActionForScenePos( scenePoint );
+
+        if ( mouseAction != QgsComposerMouseHandles::MoveItem && mouseAction != QgsComposerMouseHandles::NoAction && mouseAction != QgsComposerMouseHandles::SelectItem )
+        {
+          //mouse is over a resize handle, so propagate event onward
+          QGraphicsView::mousePressEvent( e );
+          return;
+        }
+      }
+
+      QgsComposerItem* selectedItem = 0;
       QgsComposerItem* previousSelectedItem = 0;
 
       if ( e->modifiers() & Qt::ControlModifier )
@@ -101,11 +113,6 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
         {
           previousSelectedItem = selectedItems.at( 0 );
         }
-      }
-
-      if ( !( e->modifiers() & Qt::ShiftModifier ) ) //keep selection if shift key pressed
-      {
-        composition()->clearSelection();
       }
 
       if ( previousSelectedItem )
@@ -128,7 +135,14 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
 
       if ( !selectedItem )
       {
+        composition()->clearSelection();
         break;
+      }
+
+      if (( !selectedItem->selected() ) &&        //keep selection if an already selected item pressed
+          !( e->modifiers() & Qt::ShiftModifier ) ) //keep selection if shift key pressed
+      {
+        composition()->clearSelection();
       }
 
       if (( e->modifiers() & Qt::ShiftModifier ) && ( selectedItem->selected() ) )
@@ -154,14 +168,31 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
 
     case MoveItemContent:
     {
-      //store item as member if it is selected and cursor is over item
-      QgsComposerItem* item = dynamic_cast<QgsComposerItem *>( itemAt( e->pos() ) );
-      if ( item )
+      //get a list of items at clicked position
+      QList<QGraphicsItem *> itemsAtCursorPos = items( e->pos() );
+      if ( itemsAtCursorPos.size() == 0 )
       {
-        mMoveContentStartPos = scenePoint;
+        //no items at clicked position
+        return;
       }
-      mMoveContentItem = item;
-      break;
+
+      //find highest QgsComposerItem at clicked position
+      //(other graphics items may be higher, eg selection handles)
+      QList<QGraphicsItem*>::iterator itemIter = itemsAtCursorPos.begin();
+      for ( ; itemIter != itemsAtCursorPos.end(); ++itemIter )
+      {
+        QgsComposerItem* item = dynamic_cast<QgsComposerItem *>(( *itemIter ) );
+        if ( item )
+        {
+          //we've found the highest QgsComposerItem
+          mMoveContentStartPos = scenePoint;
+          mMoveContentItem = item;
+          break;
+        }
+      }
+
+      //no QgsComposerItem at clicked position
+      return;
     }
 
     case AddArrow:
