@@ -53,7 +53,7 @@ class QgsAttributeAction
 
     //! Remove an action at given index
     void removeAction( int index );
-    
+
      /*! Does the given values. defaultValueIndex is the index of the
      *  field to be used if the action has a $currfield placeholder.
      *  @note added in 1.9

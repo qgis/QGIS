@@ -179,7 +179,7 @@ QDomDocument QgsWMSServer::getCapabilities( QString version, bool fullProjectInf
 
   //wms:GetFeatureInfo
   elem = doc.createElement( "GetFeatureInfo" );
-  appendFormats( doc, elem, QStringList() << "text/plain" << "text/html" << "text/xml" << "application/vnd.ogc.gml" << "application/vnd.ogc.gml/3.1.1");
+  appendFormats( doc, elem, QStringList() << "text/plain" << "text/html" << "text/xml" << "application/vnd.ogc.gml" << "application/vnd.ogc.gml/3.1.1" );
   elem.appendChild( dcpTypeElement.cloneNode().toElement() ); //this is the same as for 'GetCapabilities'
   requestElement.appendChild( elem );
 
@@ -811,19 +811,21 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result, QString version )
   QMap<QString, QString> originalLayerFilters = applyRequestedLayerFilters( layersList );
 
   QDomElement getFeatureInfoElement;
-  QString infoFormat = mParameterMap.value("INFO_FORMAT");
-  if (infoFormat.startsWith("application/vnd.ogc.gml")) {
-    getFeatureInfoElement = result.createElement("wfs:FeatureCollection");
-    getFeatureInfoElement.setAttribute("xmlns:wfs", "http://www.opengis.net/wfs");
-    getFeatureInfoElement.setAttribute("xmlns:ogc", "http://www.opengis.net/ogc");
-    getFeatureInfoElement.setAttribute("xmlns:gml", "http://www.opengis.net/gml");
-    getFeatureInfoElement.setAttribute("xmlns:ows", "http://www.opengis.net/ows");
-    getFeatureInfoElement.setAttribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
-    getFeatureInfoElement.setAttribute("xmlns:qgs", "http://www.qgis.org/gml");
-    getFeatureInfoElement.setAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
-    getFeatureInfoElement.setAttribute("xsi:schemaLocation", "http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/wfs.xsd http://www.qgis.org/gml");
+  QString infoFormat = mParameterMap.value( "INFO_FORMAT" );
+  if ( infoFormat.startsWith( "application/vnd.ogc.gml" ) )
+  {
+    getFeatureInfoElement = result.createElement( "wfs:FeatureCollection" );
+    getFeatureInfoElement.setAttribute( "xmlns:wfs", "http://www.opengis.net/wfs" );
+    getFeatureInfoElement.setAttribute( "xmlns:ogc", "http://www.opengis.net/ogc" );
+    getFeatureInfoElement.setAttribute( "xmlns:gml", "http://www.opengis.net/gml" );
+    getFeatureInfoElement.setAttribute( "xmlns:ows", "http://www.opengis.net/ows" );
+    getFeatureInfoElement.setAttribute( "xmlns:xlink", "http://www.w3.org/1999/xlink" );
+    getFeatureInfoElement.setAttribute( "xmlns:qgs", "http://www.qgis.org/gml" );
+    getFeatureInfoElement.setAttribute( "xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance" );
+    getFeatureInfoElement.setAttribute( "xsi:schemaLocation", "http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/wfs.xsd http://www.qgis.org/gml" );
   }
-  else {
+  else
+  {
     QString featureInfoElemName = mConfigParser->featureInfoDocumentElement( "GetFeatureInfoResponse" );
     QString featureInfoElemNS = mConfigParser->featureInfoDocumentElementNS();
     if ( featureInfoElemNS.isEmpty() )
@@ -894,10 +896,12 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result, QString version )
       QgsVectorLayer* vectorLayer = dynamic_cast<QgsVectorLayer*>( currentLayer );
 
       QDomElement layerElement;
-      if (infoFormat.startsWith("application/vnd.ogc.gml")) {
+      if ( infoFormat.startsWith( "application/vnd.ogc.gml" ) )
+      {
         layerElement = getFeatureInfoElement;
       }
-      else {
+      else
+      {
         layerElement = result.createElement( "Layer" );
         QString layerName = currentLayer->name();
 
@@ -942,7 +946,8 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result, QString version )
       }
       else //raster layer
       {
-        if (infoFormat.startsWith("application/vnd.ogc.gml")) {
+        if ( infoFormat.startsWith( "application/vnd.ogc.gml" ) )
+        {
           layerElement = result.createElement( "gml:featureMember"/*wfs:FeatureMember*/ );
           getFeatureInfoElement.appendChild( layerElement );
         }
@@ -1376,7 +1381,7 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
     }
 
     // Creates the gml:featureMember only if we have at least one element
-    if ( infoFormat.startsWith("application/vnd.ogc.gml") && featureCounter == 1 )
+    if ( infoFormat.startsWith( "application/vnd.ogc.gml" ) && featureCounter == 1 )
     {
       QDomElement realLayerElement = infoDocument.createElement( "gml:featureMember"/*wfs:FeatureMember*/ );
       layerElement.appendChild( realLayerElement );
@@ -1398,15 +1403,17 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
       continue;
     }
 
-    if (infoFormat == "application/vnd.ogc.gml") {
+    if ( infoFormat == "application/vnd.ogc.gml" )
+    {
       QgsCoordinateReferenceSystem layerCrs = layer->crs();
       bool withGeom = layer->wkbType() != QGis::WKBNoGeometry;
-      int version = infoFormat.startsWith("application/vnd.ogc.gml/3") ? 3 : 2;
-      QDomElement elem = createFeatureGML(&feature, infoDocument, layerCrs, layer->name(), withGeom, version);
-      layerElement.appendChild(elem);
+      int version = infoFormat.startsWith( "application/vnd.ogc.gml/3" ) ? 3 : 2;
+      QDomElement elem = createFeatureGML( &feature, infoDocument, layerCrs, layer->name(), withGeom, version );
+      layerElement.appendChild( elem );
       continue;
     }
-    else {
+    else
+    {
       QDomElement featureElement = infoDocument.createElement( "Feature" );
       featureElement.setAttribute( "id", FID_TO_STRING( feature.id() ) );
       layerElement.appendChild( featureElement );
@@ -1420,16 +1427,16 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
         {
           continue;
         }
-  
+
         //replace attribute name if there is an attribute alias?
         QString attributeName = layer->attributeDisplayName( i );
-  
+
         QDomElement attributeElement = infoDocument.createElement( "Attribute" );
         attributeElement.setAttribute( "name", attributeName );
         attributeElement.setAttribute( "value", featureAttributes[i].toString() );
         featureElement.appendChild( attributeElement );
       }
-  
+
       //also append the wkt geometry as an attribute
       QgsGeometry* geom = feature.geometry();
       if ( addWktGeometry && geom )
@@ -1451,7 +1458,7 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
         {
           featureBBox->combineExtentWith( &box );
         }
-  
+
         //append feature bounding box to feature info xml
         QDomElement bBoxElem = infoDocument.createElement( "BoundingBox" );
         bBoxElem.setAttribute( version == "1.1.1" ? "SRS" : "CRS", mapRender->destinationCrs().authid() );
@@ -1500,19 +1507,21 @@ int QgsWMSServer::featureInfoFromRasterLayer( QgsRasterLayer* layer,
     attributes = layer->dataProvider()->identify( *infoPoint, QgsRaster::IdentifyFormatValue, mMapRenderer->extent(), mMapRenderer->outputSize().width(), mMapRenderer->outputSize().height() ).results();
   }
 
-  if (infoFormat == "application/vnd.ogc.gml") {
+  if ( infoFormat == "application/vnd.ogc.gml" )
+  {
     QgsFeature feature;
-    for (QMap<int, QVariant>::const_iterator it = attributes.constBegin(); it != attributes.constEnd(); ++it)
+    for ( QMap<int, QVariant>::const_iterator it = attributes.constBegin(); it != attributes.constEnd(); ++it )
     {
-      feature.setAttribute(layer->bandName(it.key()), QString::number(it.value().toDouble()));
+      feature.setAttribute( layer->bandName( it.key() ), QString::number( it.value().toDouble() ) );
     }
-    
+
     QgsCoordinateReferenceSystem layerCrs = layer->crs();
-    int version = infoFormat.startsWith("application/vnd.ogc.gml/3") ? 3 : 2;
-    QDomElement elem = createFeatureGML(&feature, infoDocument, layerCrs, layer->name(), false, version);
-    layerElement.appendChild(elem);
+    int version = infoFormat.startsWith( "application/vnd.ogc.gml/3" ) ? 3 : 2;
+    QDomElement elem = createFeatureGML( &feature, infoDocument, layerCrs, layer->name(), false, version );
+    layerElement.appendChild( elem );
   }
-  else {
+  else
+  {
     for ( QMap<int, QVariant>::const_iterator it = attributes.constBegin(); it != attributes.constEnd(); ++it )
     {
       QDomElement attributeElement = infoDocument.createElement( "Attribute" );
@@ -2407,12 +2416,12 @@ void QgsWMSServer::convertFeatureInfoToSIA2045( QDomDocument& doc )
 }
 
 QDomElement QgsWMSServer::createFeatureGML(
-    QgsFeature* feat,
-    QDomDocument& doc,
-    QgsCoordinateReferenceSystem& crs,
-    QString typeName,
-    bool withGeom,
-    int version) const
+  QgsFeature* feat,
+  QDomDocument& doc,
+  QgsCoordinateReferenceSystem& crs,
+  QString typeName,
+  bool withGeom,
+  int version ) const
 {
   //qgs:%TYPENAME%
   QDomElement typeNameElement = doc.createElement( "qgs:" + typeName /*qgs:%TYPENAME%*/ );
@@ -2425,22 +2434,26 @@ QDomElement QgsWMSServer::createFeatureGML(
 
     QDomElement geomElem = doc.createElement( "qgs:geometry" );
     QDomElement gmlElem;
-    if (version < 3) {
+    if ( version < 3 )
+    {
       gmlElem = QgsOgcUtils::geometryToGML( geom, doc );
     }
-    else {
+    else
+    {
       gmlElem = QgsOgcUtils::geometryToGML( geom, doc, "GML3" );
     }
-    
+
     if ( !gmlElem.isNull() )
     {
       QgsRectangle box = geom->boundingBox();
       QDomElement bbElem = doc.createElement( "gml:boundedBy" );
       QDomElement boxElem;
-      if (version < 3) {
+      if ( version < 3 )
+      {
         boxElem = QgsOgcUtils::rectangleToGMLBox( &box, doc );
       }
-      else {
+      else
+      {
         boxElem = QgsOgcUtils::rectangleToGMLEnvelope( &box, doc );
       }
 

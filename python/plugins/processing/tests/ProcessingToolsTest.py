@@ -29,7 +29,7 @@ from processing.tests.TestData import points, points2, polygons, polygons2, line
     table, polygonsGeoJson, raster
 from processing.core import Processing
 from processing.tools.vector import values
-from processing.tools.dataobjects import * 
+from processing.tools.dataobjects import *
 
 class ProcessingToolsTest(unittest.TestCase):
     '''tests the method imported when doing an "import processing", and also in processing.tools.

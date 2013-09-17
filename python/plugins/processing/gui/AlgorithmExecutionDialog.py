@@ -73,7 +73,7 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
         self.runButton = QtGui.QPushButton()
         self.runButton.setText("Run")
         self.buttonBox.addButton(self.runButton, QtGui.QDialogButtonBox.ActionRole)
-        self.runButton.clicked.connect(self.accept)        
+        self.runButton.clicked.connect(self.accept)
         self.setWindowTitle(self.alg.name)
         self.progressLabel = QtGui.QLabel()
         self.progress = QtGui.QProgressBar()
@@ -185,7 +185,7 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
     @pyqtSlot()
     def accept(self):
         checkCRS = ProcessingConfig.getSetting(ProcessingConfig.WARN_UNMATCHING_CRS)
-        keepOpen = ProcessingConfig.getSetting(ProcessingConfig.KEEP_DIALOG_OPEN)        
+        keepOpen = ProcessingConfig.getSetting(ProcessingConfig.KEEP_DIALOG_OPEN)
         self.showDebug = ProcessingConfig.getSetting(ProcessingConfig.SHOW_DEBUG_IN_DIALOG)
         try:
             self.setParamValues()
@@ -216,7 +216,7 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
             self.progress.setMaximum(0)
             self.progressLabel.setText("Processing algorithm...")
             QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-              
+
             self.setInfo("<b>Algorithm %s starting...</b>" % self.alg.name)
             if self.iterateParam:
                 if UnthreadedAlgorithmExecutor.runalgIterating(self.alg, self.iterateParam, self):
@@ -238,7 +238,7 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
                     if not keepOpen:
                         self.close()
                     else:
-                        self.resetGUI()            
+                        self.resetGUI()
         except AlgorithmExecutionDialog.InvalidParameterValue as ex:
             try:
                 self.buttonBox.accepted.connect(lambda: ex.widget.setPalette(QPalette()))
@@ -295,7 +295,7 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
     def resetGUI(self):
         QApplication.restoreOverrideCursor()
         self.progressLabel.setText("")
-        self.progress.setValue(0)        
+        self.progress.setValue(0)
         self.runButton.setEnabled(True)
         self.buttonBox.button(QtGui.QDialogButtonBox.Close).setEnabled(True)
         self.buttonBox.button(QtGui.QDialogButtonBox.Cancel).setEnabled(False)

@@ -43,7 +43,7 @@ class QgsMessageBar: QFrame
     static QgsMessageBarItem* createMessage( const QString &title, const QString &text, QWidget *parent = 0 )  /Factory/;
      //! make out a widget containing title and message to be displayed on the bar
     static QgsMessageBarItem* createMessage( QWidget *widget, QWidget *parent = 0 ) /Factory/;
-    
+
     //! convenience method for pushing a non-widget-based message to the bar
     void pushMessage( const QString &text, MessageLevel level = INFO, int duration = 0 );
     //! convenience method for pushing a non-widget-based message with title to the bar

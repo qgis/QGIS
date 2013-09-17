@@ -425,8 +425,8 @@ void QgsCategorizedSymbolRendererV2Widget::updateUiFromRenderer()
   int idx = cboCategorizedColumn->findText( attrName, Qt::MatchExactly );
   if ( idx == -1 )
   {
-      cboCategorizedColumn->addItem( attrName );
-      idx = cboCategorizedColumn->count() - 1;
+    cboCategorizedColumn->addItem( attrName );
+    idx = cboCategorizedColumn->count() - 1;
   }
   cboCategorizedColumn->setCurrentIndex( idx );
   connect( cboCategorizedColumn, SIGNAL( currentIndexChanged( int ) ), this, SLOT( categoryColumnChanged() ) );
@@ -600,22 +600,22 @@ void QgsCategorizedSymbolRendererV2Widget::addCategories()
   QList<QVariant> unique_vals;
   if ( idx == -1 )
   {
-     // Lets assume it's an expression
-     QgsExpression* expression = new QgsExpression( attrName );
-     expression->prepare( mLayer->pendingFields() );
-     QgsFeatureIterator fit = mLayer->getFeatures();
-     QgsFeature feature;
-     while ( fit.nextFeature( feature ) )
-     {
-        QVariant value = expression->evaluate( feature ) ;
-        if ( unique_vals.contains( value ) )
-             continue;
-        unique_vals << value;
-     }
+    // Lets assume it's an expression
+    QgsExpression* expression = new QgsExpression( attrName );
+    expression->prepare( mLayer->pendingFields() );
+    QgsFeatureIterator fit = mLayer->getFeatures();
+    QgsFeature feature;
+    while ( fit.nextFeature( feature ) )
+    {
+      QVariant value = expression->evaluate( feature ) ;
+      if ( unique_vals.contains( value ) )
+        continue;
+      unique_vals << value;
+    }
   }
   else
   {
-      mLayer->uniqueValues( idx, unique_vals );
+    mLayer->uniqueValues( idx, unique_vals );
   }
 
   // ask to abort if too many classes
@@ -761,17 +761,17 @@ void QgsCategorizedSymbolRendererV2Widget::deleteAllCategories()
 
 void QgsCategorizedSymbolRendererV2Widget::setExpression()
 {
-    QgsExpressionBuilderDialog dlg( mLayer, cboCategorizedColumn->currentText(), this );
-    dlg.setWindowTitle( "Set column expression" );
-    if ( dlg.exec() )
+  QgsExpressionBuilderDialog dlg( mLayer, cboCategorizedColumn->currentText(), this );
+  dlg.setWindowTitle( "Set column expression" );
+  if ( dlg.exec() )
+  {
+    QString expression = dlg.expressionText();
+    if ( !expression.isEmpty() )
     {
-        QString expression = dlg.expressionText();
-        if ( !expression.isEmpty() )
-        {
-            cboCategorizedColumn->addItem( expression );
-            cboCategorizedColumn->setCurrentIndex( cboCategorizedColumn->count() - 1 );
-        }
+      cboCategorizedColumn->addItem( expression );
+      cboCategorizedColumn->setCurrentIndex( cboCategorizedColumn->count() - 1 );
     }
+  }
 
 }
 

@@ -200,11 +200,11 @@ QgsSymbolV2* QgsCategorizedSymbolRendererV2::symbolForFeature( QgsFeature& featu
   QVariant value;
   if ( mAttrNum < 0 || mAttrNum >= attrs.count() )
   {
-      value = mExpression->evaluate( &feature );
+    value = mExpression->evaluate( &feature );
   }
   else
   {
-      value = attrs[mAttrNum];
+    value = attrs[mAttrNum];
   }
 
   // find the right symbol for the category
@@ -367,8 +367,8 @@ void QgsCategorizedSymbolRendererV2::startRender( QgsRenderContext& context, con
   mAttrNum = vlayer ? vlayer->fieldNameIndex( mAttrName ) : -1;
   if ( mAttrNum == -1 )
   {
-      mExpression = new QgsExpression( mAttrName );
-      mExpression->prepare( vlayer->pendingFields() );
+    mExpression = new QgsExpression( mAttrName );
+    mExpression->prepare( vlayer->pendingFields() );
   }
 
   mRotationFieldIdx  = ( mRotationField.isEmpty()  ? -1 : vlayer->fieldNameIndex( mRotationField ) );
@@ -411,9 +411,9 @@ QList<QString> QgsCategorizedSymbolRendererV2::usedAttributes()
 {
   QSet<QString> attributes;
   QgsExpression exp( mAttrName );
-  foreach (QString attr, exp.referencedColumns() )
+  foreach ( QString attr, exp.referencedColumns() )
   {
-      attributes << attr;
+    attributes << attr;
   }
   if ( !mRotationField.isEmpty() )
   {

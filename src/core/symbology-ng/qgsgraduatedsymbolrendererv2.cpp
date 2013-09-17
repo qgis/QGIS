@@ -187,11 +187,11 @@ QgsSymbolV2* QgsGraduatedSymbolRendererV2::symbolForFeature( QgsFeature& feature
   QVariant value;
   if ( mAttrNum < 0 || mAttrNum >= attrs.count() )
   {
-      value = mExpression->evaluate( &feature );
+    value = mExpression->evaluate( &feature );
   }
   else
   {
-      value = attrs[mAttrNum];
+    value = attrs[mAttrNum];
   }
 
   // Null values should not be categorized
@@ -243,8 +243,8 @@ void QgsGraduatedSymbolRendererV2::startRender( QgsRenderContext& context, const
 
   if ( mAttrNum == -1 )
   {
-      mExpression = new QgsExpression( mAttrName );
-      mExpression->prepare( vlayer->pendingFields() );
+    mExpression = new QgsExpression( mAttrName );
+    mExpression->prepare( vlayer->pendingFields() );
   }
 
   mRotationFieldIdx  = ( mRotationField.isEmpty()  ? -1 : vlayer->fieldNameIndex( mRotationField ) );
@@ -290,9 +290,9 @@ QList<QString> QgsGraduatedSymbolRendererV2::usedAttributes()
 {
   QSet<QString> attributes;
   QgsExpression exp( mAttrName );
-  foreach (QString attr, exp.referencedColumns() )
+  foreach ( QString attr, exp.referencedColumns() )
   {
-      attributes << attr;
+    attributes << attr;
   }
   if ( !mRotationField.isEmpty() )
   {
@@ -798,22 +798,22 @@ QgsGraduatedSymbolRendererV2* QgsGraduatedSymbolRendererV2::createRenderer(
   double maximum;
   if ( attrNum == -1 )
   {
-      QList<double> values;
-      QgsFeatureIterator fit = vlayer->getFeatures();
-      QgsFeature feature;
-      QgsExpression expression( attrName );
-      while ( fit.nextFeature( feature ) )
-      {
-          values << expression.evaluate( feature ).toDouble();
-      }
-      qSort( values );
-      minimum = values.first();
-      maximum = values.last();
+    QList<double> values;
+    QgsFeatureIterator fit = vlayer->getFeatures();
+    QgsFeature feature;
+    QgsExpression expression( attrName );
+    while ( fit.nextFeature( feature ) )
+    {
+      values << expression.evaluate( feature ).toDouble();
+    }
+    qSort( values );
+    minimum = values.first();
+    maximum = values.last();
   }
   else
   {
-     minimum = vlayer->minimumValue( attrNum ).toDouble();
-     maximum = vlayer->maximumValue( attrNum ).toDouble();
+    minimum = vlayer->minimumValue( attrNum ).toDouble();
+    maximum = vlayer->maximumValue( attrNum ).toDouble();
   }
 
   QgsDebugMsg( QString( "min %1 // max %2" ).arg( minimum ).arg( maximum ) );

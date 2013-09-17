@@ -463,7 +463,7 @@ class ModelerAlgorithm(GeoAlgorithm):
                     value = self.getValueFromAlgorithmAndParameter(aap)
                     layerslist.append(str(value))
                 value = ";".join(layerslist)
-                
+
                 #if not param.setValue(value):
                     #raise GeoAlgorithmExecutionException("Wrong value: " + str(value))
 

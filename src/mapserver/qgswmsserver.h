@@ -124,22 +124,22 @@ class QgsWMSServer
     @param featureBBox the bounding box of the selected features in output CRS
     @return 0 in case of success*/
     int featureInfoFromVectorLayer( QgsVectorLayer* layer,
-        const QgsPoint* infoPoint,
-        int nFeatures,
-        QDomDocument& infoDocument,
-        QDomElement& layerElement,
-        QgsMapRenderer* mapRender,
-        QgsRenderContext& renderContext,
-        QString version,
-        QString infoFormat,
-        QgsRectangle* featureBBox = 0 ) const;
+                                    const QgsPoint* infoPoint,
+                                    int nFeatures,
+                                    QDomDocument& infoDocument,
+                                    QDomElement& layerElement,
+                                    QgsMapRenderer* mapRender,
+                                    QgsRenderContext& renderContext,
+                                    QString version,
+                                    QString infoFormat,
+                                    QgsRectangle* featureBBox = 0 ) const;
     /**Appends feature info xml for the layer to the layer element of the dom document*/
     int featureInfoFromRasterLayer( QgsRasterLayer* layer,
-        const QgsPoint* infoPoint,
-        QDomDocument& infoDocument,
-        QDomElement& layerElement,
-        QString version,
-        QString infoFormat ) const;
+                                    const QgsPoint* infoPoint,
+                                    QDomDocument& infoDocument,
+                                    QDomElement& layerElement,
+                                    QString version,
+                                    QString infoFormat ) const;
 
     /**Creates a layer set and returns a stringlist with layer ids that can be passed to a QgsMapRenderer. Usually used in conjunction with readLayersAndStyles
        @param scaleDenominator Filter out layer if scale based visibility does not match (or use -1 if no scale restriction)*/
@@ -226,7 +226,7 @@ class QgsWMSServer
       QgsCoordinateReferenceSystem& crs,
       QString typeName,
       bool withGeom,
-      int version) const;
+      int version ) const;
 };
 
 #endif

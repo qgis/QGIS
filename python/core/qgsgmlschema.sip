@@ -18,7 +18,7 @@ class QgsGmlFeatureClass
     QStringList & geometryAttributes();
 };
 
-class QgsGmlSchema: QObject 
+class QgsGmlSchema: QObject
 {
 
 %TypeHeaderCode

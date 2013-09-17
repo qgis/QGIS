@@ -174,13 +174,13 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
 
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
         self.table.setEnabled(False)
-        self.tabWidget.setCurrentIndex(1)        
+        self.tabWidget.setCurrentIndex(1)
         self.progress.setMaximum(len(self.algs))
         for i, alg in enumerate(self.algs):
             self.setBaseText("Processing algorithm " + str(i+1) + "/" + str(len(self.algs)) + "...")
             if UnthreadedAlgorithmExecutor.runalg(alg, self) and not self.canceled:
                 if self.load[i]:
-                    Postprocessing.handleAlgorithmResults(alg, self, False)                
+                    Postprocessing.handleAlgorithmResults(alg, self, False)
             else:
                 QApplication.restoreOverrideCursor()
                 return

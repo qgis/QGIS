@@ -54,21 +54,21 @@ def buffering(progress, writer, distance, field, useField, layer, dissolve, segm
             else:
                 value = distance
 
-            inGeom = QgsGeometry(inFeat.geometry())            
+            inGeom = QgsGeometry(inFeat.geometry())
             outGeom = inGeom.buffer(float(value), segments)
             if first:
                 tempGeom = QgsGeometry(outGeom)
                 first = False
-            else:                   
-                tempGeom = tempGeom.combine(outGeom)                   
+            else:
+                tempGeom = tempGeom.combine(outGeom)
 
             current += 1
             progress.setPercentage(int(current * total))
-    
+
         outFeat.setGeometry(tempGeom)
         outFeat.setAttributes(attrs)
         writer.addFeature(outFeat)
-        
+
     # without dissolve
     else:
         for inFeat in features:
@@ -77,11 +77,11 @@ def buffering(progress, writer, distance, field, useField, layer, dissolve, segm
                 value = attrs[field]
             else:
                 value = distance
-            inGeom = QgsGeometry(inFeat.geometry())            
-            outGeom = inGeom.buffer(float(value), segments)            
+            inGeom = QgsGeometry(inFeat.geometry())
+            outGeom = inGeom.buffer(float(value), segments)
             outFeat.setGeometry(outGeom)
             outFeat.setAttributes(attrs)
-            writer.addFeature(outFeat)                                        
+            writer.addFeature(outFeat)
             current += 1
             progress.setPercentage(int(current * total))
 

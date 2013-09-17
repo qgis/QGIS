@@ -42,16 +42,15 @@ class QgsComposerShape: QgsComposerItem
     /**Sets this items bound in scene coordinates such that 1 item size units
      corresponds to 1 scene size unit. Also, the shape is scaled*/
     void setSceneRect( const QRectF& rectangle );
-    
-    /**Sets radius for rounded rectangle corners*/
+
+    /**Sets radius for rounded rectangle corners. Added in v2.1 */
     void setCornerRadius( double radius );
-    /**Returns the radius for rounded rectangle corners*/    
-    double cornerRadius() const;    
+    /**Returns the radius for rounded rectangle corners*/
+    double cornerRadius() const;
 
   public slots:
     /**Sets item rotation and resizes item bounds such that the shape always has the same size*/
     virtual void setRotation( double r );
-
 
   protected:
     /* reimplement drawFrame, since it's not a rect, but a custom shape */

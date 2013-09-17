@@ -109,7 +109,7 @@ class TestQgsComposerShapes(TestCase):
 
         self.mComposerShape.setCornerRadius(0)
         assert myTestResult == True, myMessage
-                        
+
 if __name__ == '__main__':
     unittest.main()
 

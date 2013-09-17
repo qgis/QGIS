@@ -53,7 +53,7 @@ class SaveSelectedFeatures(GeoAlgorithm):
         '''Here we define the inputs and output of the algorithm, along
         with some other properties.
         This will give the algorithm its semantics, and allow to use it in the modeler.
-        As a rule of thumb, do not produce anything not declared here. 
+        As a rule of thumb, do not produce anything not declared here.
         It will work fine in the toolbox, but it will not work in the modeler.
         If that's what you intend, then set self.showInModeler = False'''
 
@@ -74,14 +74,14 @@ class SaveSelectedFeatures(GeoAlgorithm):
         '''Here is where the processing itself takes place'''
 
         #the first thing to do is retrieve the values of the parameters
-        #entered by the user. 
+        #entered by the user.
         #The getParameterValue will return the value with its corresponding type,
         #strings in the case of inputs and outputs
         inputFilename = self.getParameterValue(self.INPUT_LAYER)
-        
+
         #The output. It will get the value of the destinatation file entered by the user.
-        #If the user select "Save to temporary file", when we arrive here it will already have an asigned value, 
-        #which will be a temporary file using the first supported file format of the corresponding algorithm provider 
+        #If the user select "Save to temporary file", when we arrive here it will already have an asigned value,
+        #which will be a temporary file using the first supported file format of the corresponding algorithm provider
         output = self.getOutputFromName(self.OUTPUT_LAYER)
 
         #input layers values are always a string with its location.
@@ -98,13 +98,13 @@ class SaveSelectedFeatures(GeoAlgorithm):
         #If the selected format is not supported, the first available format from
         #the provider is used, and the corresponding file extension appended
         provider = vectorLayer.dataProvider()
-        writer = output.getVectorWriter( provider.fields(), 
-                                         provider.geometryType(), 
-                                         #this is the layer crs. By default all resulting layers are 
+        writer = output.getVectorWriter( provider.fields(),
+                                         provider.geometryType(),
+                                         #this is the layer crs. By default all resulting layers are
                                          #assumed to be in the same crs are the inputs, and will be loaded
                                          #with this assumptions when executed from the toolbox.
                                          #The self.crs variable has to be canged in case this is not true,
-                                         #or in case there are no input layer from which the output crs can be infered 
+                                         #or in case there are no input layer from which the output crs can be infered
                                          vectorLayer.crs() )
 
         #Now we take the selected features and add them to the output layer

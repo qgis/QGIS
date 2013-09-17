@@ -29,14 +29,14 @@ from PyQt4.QtCore import *
 from PyQt4 import QtGui
 
 class MessageBarProgress():
-    
+
     def __init__(self):
         self.progressMessageBar = interface.iface.messageBar().createMessage("Executing algorithm")
         self.progress = QtGui.QProgressBar()
         self.progress.setMaximum(100)
         self.progress.setAlignment(Qt.AlignLeft|Qt.AlignVCenter)
-        self.progressMessageBar.layout().addWidget(self.progress) 
-        interface.iface.messageBar().pushWidget(self.progressMessageBar, interface.iface.messageBar().INFO)  
+        self.progressMessageBar.layout().addWidget(self.progress)
+        interface.iface.messageBar().pushWidget(self.progressMessageBar, interface.iface.messageBar().INFO)
 
     def setText(self, text):
         pass
@@ -55,8 +55,7 @@ class MessageBarProgress():
 
     def setConsoleInfo(self, _):
         pass
-    
+
     def close(self):
         interface.iface.messageBar().clearWidgets()
 
-         

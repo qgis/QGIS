@@ -316,22 +316,22 @@ class SagaAlgorithm(GeoAlgorithm):
                 formatIndex = 1 if saga208 else 4
                 sessionExportedLayers[filename] = filename2
                 dontExport = True
-                
+
                 #Do not export is the output is not a final output of the model
                 if self.model is not None and optim:
                     for subalg in self.model.algOutputs:
                         if out.name in subalg:
                             if subalg[out.name] is not None:
                                 dontExport = False
-                                break                            
+                                break
                     if dontExport:
-                        continue                          
-                        
+                        continue
+
                 if isWindows() or isMac() or not saga208:
                     commands.append("io_gdal 1 -GRIDS \"" + filename2 + "\" -FORMAT " + str(formatIndex) +" -TYPE 0 -FILE \"" + filename + "\"");
                 else:
                     commands.append("libio_gdal 1 -GRIDS \"" + filename2 + "\" -FORMAT 1 -TYPE 0 -FILE \"" + filename + "\"");
-                
+
 
 
         #4 Run SAGA

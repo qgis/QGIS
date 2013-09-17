@@ -183,7 +183,7 @@ def getObjectFromUri(uri, forceLoad = True):
     '''returns an object (layer/table) given a file location.
     if forceLoad is true, it tries to load it if it is not currently open
     Otherwise, it will return the object only if it is loaded in QGIS'''
-    
+
     if uri is None:
         return None
     layers = getRasterLayers()

@@ -48,8 +48,8 @@ if cmd_folder not in sys.path:
 class ProcessingPlugin:
 
     def __init__(self, iface):
-        interface.iface = iface                 
-        Processing.initialize()                
+        interface.iface = iface
+        Processing.initialize()
 
     def initGui(self):
         self.commander = None

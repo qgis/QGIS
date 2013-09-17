@@ -405,7 +405,7 @@ class GrassAlgorithm(GeoAlgorithm):
         return command
 
     def setSessionProjectionFromProject(self, commands):
-        if not GrassUtils.projectionSet:                    
+        if not GrassUtils.projectionSet:
             proj4 = interface.iface.mapCanvas().mapRenderer().destinationCrs().toProj4()
             command = "g.proj"
             command +=" -c"

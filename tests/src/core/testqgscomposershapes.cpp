@@ -51,8 +51,8 @@ void TestQgsComposerShapes::initTestCase()
   mComposition = new QgsComposition( 0 );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
   mComposerShape = new QgsComposerShape( 20, 20, 150, 100, mComposition );
-  mComposerShape->setBackgroundColor( QColor::fromRgb( 255, 150, 0 ) );  
-  mComposition->addComposerShape( mComposerShape );  
+  mComposerShape->setBackgroundColor( QColor::fromRgb( 255, 150, 0 ) );
+  mComposition->addComposerShape( mComposerShape );
 }
 
 void TestQgsComposerShapes::cleanupTestCase()
@@ -101,7 +101,7 @@ void TestQgsComposerShapes::roundedRectangle()
 {
   mComposerShape->setShapeType( QgsComposerShape::Rectangle );
   mComposerShape->setCornerRadius( 30 );
-  
+
   QgsCompositionChecker checker( "Composer shapes", mComposition, QString( QString( TEST_DATA_DIR ) + QDir::separator() +
                                  "control_images" + QDir::separator() + "expected_composershapes" + QDir::separator() + "composershape_roundedrectangle.png" ) );
   QVERIFY( checker.testComposition() );

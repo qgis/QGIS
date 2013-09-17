@@ -569,7 +569,7 @@ class geoprocessingThread( QThread ):
           hull = []
           fitA = vproviderA.getFeatures()
           while fitA.nextFeature( inFeat ):
-            idVar = inFeat.attribute( importedFieldName ) 
+            idVar = inFeat.attribute( importedFieldName )
             if idVar == i:
               if first:
                 firstFeature = QgsFeature( inFeat )

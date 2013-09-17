@@ -35,7 +35,7 @@ class ParametersDialog(AlgorithmExecutionDialog):
     '''the default parameters dialog, to be used when an algorithm is called from the toolbox'''
     def __init__(self, alg):
         self.paramTable = ParametersPanel(self, alg)
-        self.scrollArea = QtGui.QScrollArea()        
+        self.scrollArea = QtGui.QScrollArea()
         self.scrollArea.setWidget(self.paramTable)
         self.scrollArea.setWidgetResizable(True)
         AlgorithmExecutionDialog.__init__(self, alg, self.scrollArea)

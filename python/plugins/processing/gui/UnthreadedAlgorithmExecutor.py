@@ -30,7 +30,7 @@ from qgis.core import *
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.tools import dataobjects
 from processing.tools.system import *
-from processing.tools import vector 
+from processing.tools import vector
 from processing.core.ProcessingLog import ProcessingLog
 from processing.gui.Postprocessing import Postprocessing
 from processing.core.SilentProgress import SilentProgress
@@ -45,12 +45,12 @@ class UnthreadedAlgorithmExecutor:
             alg.execute(progress)
             return True
         except GeoAlgorithmExecutionException, e :
-            ProcessingLog.addToLog(sys.exc_info()[0], ProcessingLog.LOG_ERROR)            
+            ProcessingLog.addToLog(sys.exc_info()[0], ProcessingLog.LOG_ERROR)
             QMessageBox.critical(None, "Error", e.msg)
             return False
         except Exception:
             msg = "Error executing " + str(alg.name) + "\nSee log for more information"
-            ProcessingLog.addToLog(sys.exc_info()[0], ProcessingLog.LOG_ERROR)                        
+            ProcessingLog.addToLog(sys.exc_info()[0], ProcessingLog.LOG_ERROR)
             QMessageBox.critical(None, "Uncaught error", msg)
             return False
 

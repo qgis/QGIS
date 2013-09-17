@@ -32,7 +32,7 @@ class QgsMessageBarItem: QWidget
 
     //! returns the duration in second of the message
     int duration();
-    
+
     //! returns the level
     QgsMessageBar::MessageLevel level();
 

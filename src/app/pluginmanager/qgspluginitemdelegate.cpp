@@ -51,11 +51,11 @@ void QgsPluginItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
     checkBoxStyle.rect = option.rect;
     if ( index.data( Qt::CheckStateRole ).toBool() )
     {
-      checkBoxStyle.state = QStyle::State_On|QStyle::State_Enabled;
+      checkBoxStyle.state = QStyle::State_On | QStyle::State_Enabled;
     }
     else
     {
-      checkBoxStyle.state = QStyle::State_Off|QStyle::State_Enabled;
+      checkBoxStyle.state = QStyle::State_Off | QStyle::State_Enabled;
     }
     style->drawControl( QStyle::CE_CheckBox, &checkBoxStyle, painter );
   }
@@ -85,8 +85,8 @@ void QgsPluginItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
   }
 
   if ( ! index.data( PLUGIN_ERROR_ROLE ).toString().isEmpty()
-      || index.data( PLUGIN_STATUS_ROLE ).toString() == QString( "upgradeable" )
-      || index.data( PLUGIN_STATUS_ROLE ).toString() == QString( "new" ) )
+       || index.data( PLUGIN_STATUS_ROLE ).toString() == QString( "upgradeable" )
+       || index.data( PLUGIN_STATUS_ROLE ).toString() == QString( "new" ) )
   {
     QFont font = painter->font();
     font.setBold( true );

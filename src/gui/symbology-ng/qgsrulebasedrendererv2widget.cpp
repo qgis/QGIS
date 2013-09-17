@@ -66,7 +66,7 @@ QgsRuleBasedRendererV2Widget::QgsRuleBasedRendererV2Widget( QgsVectorLayer* laye
   //new ModelTest( mModel, this ); // for model validity checking
   viewRules->setModel( mModel );
 
-  mDeleteAction = new QAction( tr( "Remove Rule"), this );
+  mDeleteAction = new QAction( tr( "Remove Rule" ), this );
   mDeleteAction->setShortcut( QKeySequence( QKeySequence::Delete ) );
 
   viewRules->addAction( mDeleteAction );
@@ -415,26 +415,26 @@ void QgsRuleBasedRendererV2Widget::restoreSectionWidths()
 
 void QgsRuleBasedRendererV2Widget::copy()
 {
-    QModelIndexList indexlist = viewRules->selectionModel()->selectedRows();
-    QgsDebugMsg(QString("%1").arg(indexlist.count()));
+  QModelIndexList indexlist = viewRules->selectionModel()->selectedRows();
+  QgsDebugMsg( QString( "%1" ).arg( indexlist.count() ) );
 
-    if ( indexlist.isEmpty() )
-      return;
+  if ( indexlist.isEmpty() )
+    return;
 
-    QMimeData* mime = mModel->mimeData( indexlist );
-    QApplication::clipboard()->setMimeData(mime);
+  QMimeData* mime = mModel->mimeData( indexlist );
+  QApplication::clipboard()->setMimeData( mime );
 }
 
 void QgsRuleBasedRendererV2Widget::paste()
 {
-    const QMimeData* mime = QApplication::clipboard()->mimeData();
-    QModelIndexList indexlist = viewRules->selectionModel()->selectedRows();
-    QModelIndex index;
-    if ( indexlist.isEmpty() )
-        index = mModel->index(mModel->rowCount(), 0);
-    else
-        index = indexlist.first();
-    mModel->dropMimeData( mime, Qt::CopyAction, index.row(), index.column(), index.parent() );
+  const QMimeData* mime = QApplication::clipboard()->mimeData();
+  QModelIndexList indexlist = viewRules->selectionModel()->selectedRows();
+  QModelIndex index;
+  if ( indexlist.isEmpty() )
+    index = mModel->index( mModel->rowCount(), 0 );
+  else
+    index = indexlist.first();
+  mModel->dropMimeData( mime, Qt::CopyAction, index.row(), index.column(), index.parent() );
 }
 
 
@@ -674,11 +674,11 @@ QVariant QgsRuleBasedRendererV2Model::data( const QModelIndex &index, int role )
       case 1:
         if ( rule->isElse() )
         {
-            return "ELSE";
+          return "ELSE";
         }
         else
         {
-            return rule->filterExpression().isEmpty() ? tr( "(no filter)" ) : rule->filterExpression();
+          return rule->filterExpression().isEmpty() ? tr( "(no filter)" ) : rule->filterExpression();
         }
       case 2: return rule->dependsOnScale() ? _formatScale( rule->scaleMinDenom() ) : QVariant();
       case 3: return rule->dependsOnScale() ? _formatScale( rule->scaleMaxDenom() ) : QVariant();
@@ -726,15 +726,15 @@ QVariant QgsRuleBasedRendererV2Model::data( const QModelIndex &index, int role )
   {
     return ( index.column() == 2 || index.column() == 3 ) ? Qt::AlignRight : Qt::AlignLeft;
   }
-  else if (role == Qt::FontRole && index.column() == 1)
+  else if ( role == Qt::FontRole && index.column() == 1 )
   {
-      if ( rule->isElse() )
-      {
-          QFont italicFont;
-          italicFont.setItalic(true);
-          return italicFont;
-      }
-      return QVariant();
+    if ( rule->isElse() )
+    {
+      QFont italicFont;
+      italicFont.setItalic( true );
+      return italicFont;
+    }
+    return QVariant();
   }
   else if ( role == Qt::EditRole )
   {

@@ -29,7 +29,7 @@
 
 
 
-QgsRuleBasedRendererV2::Rule::Rule(QgsSymbolV2* symbol, int scaleMinDenom, int scaleMaxDenom, QString filterExp, QString label, QString description , bool elseRule)
+QgsRuleBasedRendererV2::Rule::Rule( QgsSymbolV2* symbol, int scaleMinDenom, int scaleMaxDenom, QString filterExp, QString label, QString description , bool elseRule )
     : mParent( NULL ), mSymbol( symbol )
     , mScaleMinDenom( scaleMinDenom ), mScaleMaxDenom( scaleMaxDenom )
     , mFilterExp( filterExp ), mLabel( label ), mDescription( description )
@@ -48,10 +48,10 @@ QgsRuleBasedRendererV2::Rule::~Rule()
 
 void QgsRuleBasedRendererV2::Rule::initFilter()
 {
-  if ( mElseRule || mFilterExp.compare("ELSE", Qt::CaseInsensitive) == 0 )
+  if ( mElseRule || mFilterExp.compare( "ELSE", Qt::CaseInsensitive ) == 0 )
   {
-     mElseRule = true;
-     mFilter = NULL;
+    mElseRule = true;
+    mFilter = NULL;
   }
   else if ( !mFilterExp.isEmpty() )
   {
@@ -66,56 +66,56 @@ void QgsRuleBasedRendererV2::Rule::initFilter()
 
 void QgsRuleBasedRendererV2::Rule::appendChild( Rule* rule )
 {
-    mChildren.append( rule );
-    rule->mParent = this;
-    updateElseRules();
+  mChildren.append( rule );
+  rule->mParent = this;
+  updateElseRules();
 }
 
 void QgsRuleBasedRendererV2::Rule::insertChild( int i, Rule* rule )
 {
-    mChildren.insert( i, rule );
-    rule->mParent = this;
-    updateElseRules();
+  mChildren.insert( i, rule );
+  rule->mParent = this;
+  updateElseRules();
 }
 
 void QgsRuleBasedRendererV2::Rule::removeChild( Rule* rule )
 {
-    mChildren.removeAll( rule );
-    delete rule;
-    updateElseRules();
+  mChildren.removeAll( rule );
+  delete rule;
+  updateElseRules();
 }
 
 void QgsRuleBasedRendererV2::Rule::removeChildAt( int i )
 {
-    Rule* rule = mChildren[i];
-    mChildren.removeAt( i );
-    delete rule;
-    updateElseRules();
+  Rule* rule = mChildren[i];
+  mChildren.removeAt( i );
+  delete rule;
+  updateElseRules();
 }
 
 void QgsRuleBasedRendererV2::Rule::takeChild( Rule* rule )
 {
-    mChildren.removeAll( rule );
-    rule->mParent = NULL;
-    updateElseRules();
+  mChildren.removeAll( rule );
+  rule->mParent = NULL;
+  updateElseRules();
 }
 
 QgsRuleBasedRendererV2::Rule* QgsRuleBasedRendererV2::Rule::takeChildAt( int i )
 {
-    Rule* rule = mChildren.takeAt( i );
-    rule->mParent = NULL;
-    return rule;
-    updateElseRules();
+  Rule* rule = mChildren.takeAt( i );
+  rule->mParent = NULL;
+  return rule;
+  updateElseRules();
 }
 
 void QgsRuleBasedRendererV2::Rule::updateElseRules()
 {
-    mElseRules.clear();
-    foreach (Rule* rule, mChildren )
-    {
-        if ( rule->isElse() )
-            mElseRules << rule;
-    }
+  mElseRules.clear();
+  foreach ( Rule* rule, mChildren )
+  {
+    if ( rule->isElse() )
+      mElseRules << rule;
+  }
 }
 
 
@@ -185,8 +185,9 @@ QgsLegendSymbolList QgsRuleBasedRendererV2::Rule::legendSymbolItems( double scal
   {
     Rule* rule = *it;
     if ( scaleDenominator == -1 || (
-        ( rule->mScaleMinDenom == -1 || rule->mScaleMinDenom < scaleDenominator ) &&
-        ( rule->mScaleMaxDenom == -1 || scaleDenominator < rule->mScaleMaxDenom ) ) ) {
+           ( rule->mScaleMinDenom == -1 || rule->mScaleMinDenom < scaleDenominator ) &&
+           ( rule->mScaleMaxDenom == -1 || scaleDenominator < rule->mScaleMaxDenom ) ) )
+    {
       lst << rule->legendSymbolItems( scaleDenominator );
     }
   }
@@ -443,7 +444,7 @@ bool QgsRuleBasedRendererV2::Rule::renderFeature( QgsRuleBasedRendererV2::Featur
   for ( QList<Rule*>::iterator it = mActiveChildren.begin(); it != mActiveChildren.end(); ++it )
   {
     Rule* rule = *it;
-    if ( rule->isElse())
+    if ( rule->isElse() )
     {
       // Don't process else rules yet
       continue;
@@ -455,10 +456,10 @@ bool QgsRuleBasedRendererV2::Rule::renderFeature( QgsRuleBasedRendererV2::Featur
   // If none of the rules passed then we jump into the else rules and process them.
   if ( !willrendersomething )
   {
-      foreach(Rule* rule, mElseRules)
-      {
-          rendered |= rule->renderFeature( featToRender, context, renderQueue );
-      }
+    foreach ( Rule* rule, mElseRules )
+    {
+      rendered |= rule->renderFeature( featToRender, context, renderQueue );
+    }
   }
 
   return rendered;

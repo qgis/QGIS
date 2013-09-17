@@ -81,12 +81,12 @@ void QgsPythonUtilsImpl::initPython( QgisInterface* interface )
     {
       QgsMessageOutput* msg = QgsMessageOutput::createMessageOutput();
       msg->setTitle( QObject::tr( "Python error" ) );
-      msg->setMessage( QString( QObject::tr("The extra plugin path '%1' does not exist !") ).arg(p), QgsMessageOutput::MessageText );
+      msg->setMessage( QString( QObject::tr( "The extra plugin path '%1' does not exist !" ) ).arg( p ), QgsMessageOutput::MessageText );
       msg->showMessage();
     }
-	// we store here paths in unicode strings
-	// the str constant will contain utf8 code (through runString)
-	// so we call '...'.decode('utf-8') to make a unicode string
+    // we store here paths in unicode strings
+    // the str constant will contain utf8 code (through runString)
+    // so we call '...'.decode('utf-8') to make a unicode string
     pluginpaths << '"' + p + "\".decode('utf-8')";
   }
   pluginpaths << homePluginsPath();

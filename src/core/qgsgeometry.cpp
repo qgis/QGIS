@@ -3055,7 +3055,7 @@ int QgsGeometry::addPart( GEOSGeometry * newPart )
   }
 
   int nPartGeoms = GEOSGetNumGeometries( newPart );
-  for( int i = 0; i < nPartGeoms; ++i )
+  for ( int i = 0; i < nPartGeoms; ++i )
   {
     parts << GEOSGeom_clone( GEOSGetGeometryN( newPart, i ) );
   }

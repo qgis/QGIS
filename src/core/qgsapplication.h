@@ -281,8 +281,9 @@ class CORE_EXPORT QgsApplication: public QApplication
 
 #ifdef ANDROID
     //dummy method to workaround sip generation issue issue
-    bool x11EventFilter ( XEvent * event ){
-        return 0;
+    bool x11EventFilter( XEvent * event )
+    {
+      return 0;
     }
 #endif
 

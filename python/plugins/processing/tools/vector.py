@@ -44,10 +44,10 @@ def features(layer):
                 if len(self.selected) > 0:
                     self.selection = True
                     self.idx = 0;
-    
+
         def __iter__(self):
             return self
-    
+
         def next(self):
             if self.selection:
                 if self.idx < len(self.selected):
@@ -65,13 +65,13 @@ def features(layer):
                 else:
                     self.iter.close()
                     raise StopIteration()
-    
+
         def __len__(self):
             if self.selection:
                 return int(self.layer.selectedFeatureCount())
             else:
                 return int(self.layer.featureCount())
-            
+
     return Features(layer)
 
 def uniqueValues(layer, attribute):

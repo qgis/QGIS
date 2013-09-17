@@ -1778,7 +1778,7 @@ void QgisApp::setTheme( QString theThemeName )
   mActionRotateFeature->setIcon( QgsApplication::getThemeIcon( "/mActionRotateFeature.png" ) );
   mActionReshapeFeatures->setIcon( QgsApplication::getThemeIcon( "/mActionReshape.png" ) );
   mActionSplitFeatures->setIcon( QgsApplication::getThemeIcon( "/mActionSplitFeatures.svg" ) );
-  mActionSplitParts->setIcon( QgsApplication::getThemeIcon( "/mActionSplitParts.svg" ) );  
+  mActionSplitParts->setIcon( QgsApplication::getThemeIcon( "/mActionSplitParts.svg" ) );
   mActionDeleteSelected->setIcon( QgsApplication::getThemeIcon( "/mActionDeleteSelected.svg" ) );
   mActionNodeTool->setIcon( QgsApplication::getThemeIcon( "/mActionNodeTool.png" ) );
   mActionSimplifyFeature->setIcon( QgsApplication::getThemeIcon( "/mActionSimplify.png" ) );
@@ -8873,27 +8873,27 @@ bool QgisApp::addRasterLayers( QStringList const &theFileNameQStringList, bool g
 ///////////////////////////////////////////////////////////////////
 
 #ifdef ANDROID
-void QgisApp::keyReleaseEvent(QKeyEvent *event)
+void QgisApp::keyReleaseEvent( QKeyEvent *event )
 {
-static bool accepted=true;
-    if (event->key()==Qt::Key_Close)
+  static bool accepted = true;
+  if ( event->key() == Qt::Key_Close )
+  {
+    // do something useful here
+    int ret = QMessageBox::question( this, tr( "Exit QGIS" ),
+                                     tr( "Do you really want to quit QGIS?" ),
+                                     QMessageBox::Yes | QMessageBox::No );
+    switch ( ret )
     {
-        // do something useful here
-        int ret = QMessageBox::question(this, tr("Exit QGIS"),
-                                        tr("Do you really want to quit QGIS?"),
-                                        QMessageBox::Yes | QMessageBox::No);
-        switch(ret)
-        {
-        case QMessageBox::Yes:
-          this->close();
-          break;
+      case QMessageBox::Yes:
+        this->close();
+        break;
 
-        case QMessageBox::No:
-          break;
-        }
-        event->setAccepted(accepted); // dont't close my Top Level Widget !
-        accepted=false;// close the app next time when the user press back button
+      case QMessageBox::No:
+        break;
     }
+    event->setAccepted( accepted ); // dont't close my Top Level Widget !
+    accepted = false;// close the app next time when the user press back button
+  }
 }
 #endif
 

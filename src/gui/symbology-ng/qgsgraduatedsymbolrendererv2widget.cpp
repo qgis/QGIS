@@ -421,8 +421,8 @@ void QgsGraduatedSymbolRendererV2Widget::updateUiFromRenderer()
   int idx = cboGraduatedColumn->findText( attrName, Qt::MatchExactly );
   if ( idx == -1 )
   {
-      cboGraduatedColumn->addItem( attrName );
-      idx = cboGraduatedColumn->count() - 1;
+    cboGraduatedColumn->addItem( attrName );
+    idx = cboGraduatedColumn->count() - 1;
   }
   cboGraduatedColumn->setCurrentIndex( idx );
   connect( cboGraduatedColumn, SIGNAL( currentIndexChanged( int ) ), this, SLOT( graduatedColumnChanged() ) );
@@ -462,17 +462,17 @@ void QgsGraduatedSymbolRendererV2Widget::graduatedColumnChanged()
 
 void QgsGraduatedSymbolRendererV2Widget::setExpression()
 {
-    QgsExpressionBuilderDialog dlg( mLayer, cboGraduatedColumn->currentText(), this );
-    dlg.setWindowTitle( "Set column expression" );
-    if ( dlg.exec() )
+  QgsExpressionBuilderDialog dlg( mLayer, cboGraduatedColumn->currentText(), this );
+  dlg.setWindowTitle( "Set column expression" );
+  if ( dlg.exec() )
+  {
+    QString expression = dlg.expressionText();
+    if ( !expression.isEmpty() )
     {
-        QString expression = dlg.expressionText();
-        if ( !expression.isEmpty() )
-        {
-            cboGraduatedColumn->addItem( expression );
-            cboGraduatedColumn->setCurrentIndex( cboGraduatedColumn->count() - 1 );
-        }
+      cboGraduatedColumn->addItem( expression );
+      cboGraduatedColumn->setCurrentIndex( cboGraduatedColumn->count() - 1 );
     }
+  }
 
 }
 

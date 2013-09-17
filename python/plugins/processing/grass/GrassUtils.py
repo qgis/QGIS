@@ -67,12 +67,12 @@ class GrassUtils:
         filename = "grass_script.bat"
         filename = userFolder() + os.sep + filename
         return filename
-    
+
     @staticmethod
     def getGrassVersion():
         #I do not know if this should be removed or let the user enter it
         #or something like that... This is just a temporary thing
-        return "6.4.0"    
+        return "6.4.0"
 
     @staticmethod
     def grassPath():

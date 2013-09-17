@@ -24,7 +24,7 @@
  */
 class QgsPluginItemDelegate : public QStyledItemDelegate
 {
-  Q_OBJECT
+    Q_OBJECT
   public:
     QgsPluginItemDelegate( QObject * parent = 0 );
     QSize sizeHint( const QStyleOptionViewItem & theOption, const QModelIndex & theIndex ) const;

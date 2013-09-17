@@ -95,7 +95,7 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
                                    const QString & theResamplingMethod = "NEAREST",
                                    QgsRaster::RasterPyramidsFormat theFormat = QgsRaster::PyramidsGTiff,
                                    const QStringList & theConfigOptions = QStringList() );
- 
+
     /** \brief Accessor for ths raster layers pyramid list.
      * @param overviewList used to construct the pyramid list (optional), when empty the list is defined by the provider.
      * A pyramid list defines the
