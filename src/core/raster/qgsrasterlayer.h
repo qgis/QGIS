@@ -388,6 +388,8 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      */
     void dataChanged();
 
+    void rendererChanged();
+
   protected:
     /** \brief Read the symbology for the current layer from the Dom node supplied */
     bool readSymbology( const QDomNode& node, QString& errorMessage );
