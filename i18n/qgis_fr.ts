@@ -33783,18 +33783,13 @@ at line %2 column %3</source>
         <source>Closing down connection</source>
         <translation>Terminaison de la connection</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <location filename="../src/core/qgshttptransaction.cpp" line="485"/>
         <source>Network timed out after %n second(s) of inactivity.
 This may be a problem in your network connection or at the WMS server.</source>
         <comment>inactivity timeout</comment>
-        <translation>
-            <numerusform>Le réseau s&apos;est déconncté après %n secondes d&apos;inactivité.
-Ceci est peut-être dûà votre connexion ou celle du serveru WMS.
-        
-        </numerusform>
-            <numerusform></numerusform>
-        </translation>
+        <translation>Le réseau s&apos;est déconnecté après %n seconde(s) d&apos;inactivité.
+Ceci est peut-être dû à votre connexion ou celle du serveur WMS.      </translation>
     </message>
 </context>
 <context>
@@ -38265,7 +38260,7 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     <message>
         <location filename="../src/providers/memory/qgsmemoryprovider.cpp" line="84"/>
         <source>Date</source>
-        <translation type="unfinished">Date</translation>
+        <translation>Date</translation>
     </message>
 </context>
 <context>
@@ -39173,12 +39168,12 @@ Note : donner votre mot de passe est optionel, il vous sera demandé quand réel
     <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="168"/>
         <source>Smooth pixmap transform</source>
-        <translation type="unfinished"></translation>
+        <translation>Transformation lissée</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="178"/>
         <source>Referer</source>
-        <translation type="unfinished"></translation>
+        <translation>Entête HTTP Referer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="14"/>
@@ -40228,7 +40223,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/qgsowssourceselect.cpp" line="286"/>
         <source>Confirm Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Confirmer suppression</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsowssourceselect.cpp" line="304"/>
@@ -40258,7 +40253,8 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/gui/qgsowssourceselect.cpp" line="570"/>
         <source>Could not understand the response:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Réponse incompréhensible :
+%1</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsowssourceselect.cpp" line="621"/>
@@ -40445,7 +40441,15 @@ Prefer network: default value; load from the network if the cached entry is olde
 
 Always network: always load from network and do not check if the cache has a valid entry (similar to the &quot;Reload&quot; feature in browsers)
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Préférence du cache
+
+Toujours utiliser le cache : charge depuis le cache, même si expiré
+
+Préférer le cache : charge depuis le cache si disponible sinon charger depuis le réseau. Il est possible que des éléments périmés (mais pas expiré) soient utilisés depuis le cache
+
+Préférer le réseau : valeur par défaut; charger depuis le réseau si l&apos;entrée du cache est plus ancienne
+
+Toujours le réseau : toujours charger depuis le réseau sans vérifier si le cache a une entrée valide (équivalent à la fonction recharger d&apos;un navigateur)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="379"/>
@@ -40926,7 +40930,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1251"/>
         <source>Possible corruption after REPACK detected. %1 still exists. This may point to a permission or locking problem of the original DBF.</source>
-        <translation type="unfinished"></translation>
+        <translation>Une possible corruption après REPACK détectée. %1 existe toujours. Ceci peut venir d&apos;un problème de permissions ou de verrous du DBF original.</translation>
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1270"/>
@@ -43180,7 +43184,7 @@ erreur : %2</translation>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="211"/>
         <source>Only list the existing geometry types and don&apos;t offer to add others.</source>
-        <translation type="unfinished"></translation>
+        <translation>Lister uniquement les types de géométries existants et ne pas proposer d&apos;en ajouter d&apos;autres.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="217"/>
