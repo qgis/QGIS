@@ -96,11 +96,11 @@ call "%OSGEO4W_ROOT%\bin\o4w_env.bat"
 ```
 
 Start the batch file and on the command prompt checkout the QGIS source from
-git to the source directory ``Quantum-GIS``:
+git to the source directory ``QGIS``:
 
 
 ```
-git clone git://github.com/qgis/Quantum-GIS.git
+git clone git://github.com/qgis/QGIS.git
 ```
 
 Create a 'build' directory somewhere. This will be where all the build output

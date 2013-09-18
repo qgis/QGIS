@@ -42,7 +42,7 @@ Then do:
   chmod +x cgi-bin/wcstest-1.9.0
   mkdir -p /var/www/wcs/testdata/qgis-1.9.0/raster/
   cd /var/www/wcs/testdata/qgis-1.9.0/raster/
-  cp -r /home/timlinux/Quantum-GIS/tests/testdata/raster/* .
+  cp -r /home/timlinux/QGIS/tests/testdata/raster/* .
 ```
 
 Edit wcs.map and set the shapepath to this:

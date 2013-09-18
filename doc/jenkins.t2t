@@ -42,9 +42,9 @@ procedure is:
  - Tick enable project based security (you need to elsewhere configure your
    Jenkins security to per project settings)
  - Allow Anonymous user Read and Discover access
- - Set the github project to https://github.com/qgis/Quantum-GIS/
+ - Set the github project to https://github.com/qgis/QGIS/
  - Set source code management to Git
- - Set repository url to git://github.com/qgis/Quantum-GIS.git
+ - Set repository url to git://github.com/qgis/QGIS.git
  - In advanced repository url settings set refspec to : 
 
 ```

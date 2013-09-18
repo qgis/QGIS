@@ -762,19 +762,19 @@ this.
 If you want to experiment with the latest development sources, go to the github
 QGIS project page:
 
-http://github.com/qgis/Quantum-GIS
+http://github.com/qgis/QGIS
 
 It should default to the master branch.  Click the __Downloads__ button and
 select __Download .tar.gz__. Double-click the tarball to unzip it.
 
 //Alternatively//, install git from http://git-scm.com and do the following.
 
-Make a specific repository directory somewhere, e.g. ~/QGIS/Quantum-GIS, and cd
+Make a specific repository directory somewhere, e.g. ~/QGIS/QGIS, and cd
 into it. The following will read-only clone the master branch to the directory:
 
 ```
 git init
-git remote add -f -t master -m master qgisupstream git://github.com/qgis/Quantum-GIS.git
+git remote add -f -t master -m master qgisupstream git://github.com/qgis/QGIS.git
 git merge qgisupstream
 
 ```

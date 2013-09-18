@@ -131,14 +131,14 @@ if you do not have edit privileges for the QGIS source repository, or use
 
 ``` 
 cd ${HOME}/dev/cpp 
-git clone git://github.com/qgis/Quantum-GIS.git
+git clone git://github.com/qgis/QGIS.git
 ```
 
 2. Developer Checkout
 
 ``` 
 cd ${HOME}/dev/cpp 
-git clone git@github.com:qgis/Quantum-GIS.git
+git clone git@github.com:qgis/QGIS.git
 ```
 
 == Starting the compile ==
@@ -155,7 +155,7 @@ mkdir -p ${HOME}/apps
 Now we create a build directory and run ccmake:
 
 ```
-cd Quantum-GIS
+cd QGIS
 mkdir build-master
 cd build-master
 ccmake ..
@@ -437,7 +437,7 @@ As for GRASS you can obtain the QGIS source code from different sources as descr
 in section 2 above. Once you have the sources, create a build directory in them:
 
 ``` 
-cd Quantum-GIS
+cd QGIS
 mkdir build
 cd build
 ```

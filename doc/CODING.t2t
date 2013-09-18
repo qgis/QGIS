@@ -456,7 +456,7 @@ export NO_PYTHON=
 To clone QGIS master:
 
 ```
-git://github.com/qgis/Quantum-GIS.git
+git://github.com/qgis/QGIS.git
 ```
 
 == Check out a branch ==
@@ -1246,7 +1246,7 @@ I'm assuming you have already got a local QGIS clone containing the
 source code, and have installed all needed build dependencies etc. There are
 detailed in instructions on doing that here:
 
-http://github.com/qgis/Quantum-GIS/blob/master/CODING
+http://github.com/qgis/QGIS/blob/master/CODING
 
 
 On my system I have checked out the code into $HOME/dev/cpp/QGIS and the

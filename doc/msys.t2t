@@ -136,7 +136,7 @@ cd c:\dev\cpp
 Check out sources from GIT:
 
 ```
-git clone git://github.com/qgis/Quantum-GIS.git
+git clone git://github.com/qgis/QGIS.git
 ```
 
 === Compiling ===

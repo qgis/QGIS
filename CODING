@@ -476,7 +476,7 @@ If you don't need any of the extras, Perl, Python or TclTk (GUI), you can disabl
 
 To clone QGIS master:
 
-  git://github.com/qgis/Quantum-GIS.git
+  git://github.com/qgis/QGIS.git
 
 
   2.3. Check out a branch
@@ -1240,7 +1240,7 @@ I'm assuming you have already got a local QGIS clone containing the
 source code, and have installed all needed build dependencies etc. There are
 detailed in instructions on doing that here:
 
-http://github.com/qgis/Quantum-GIS/blob/master/CODING
+http://github.com/qgis/QGIS/blob/master/CODING
 
 On my system I have checked out the code into $HOME/dev/cpp/QGIS and the
 rest of the article is written assuming that, you should update these paths as
