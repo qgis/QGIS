@@ -7282,7 +7282,7 @@ Activables sur toutes les couches éditables</translation>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1842"/>
         <source>Local cumulative cut stretch using current extent, default limits and estimated values.</source>
-        <translation type="unfinished">Histogramme cumulatif de l&apos;emprise locale utilisant l&apos;emprise actuel, les limites par défauts et les valeurs estimées</translation>
+        <translation type="unfinished">Histogramme cumulatif de l&apos;emprise locale utilisant l&apos;emprise actuelle, les limites par défauts et les valeurs estimées.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1851"/>
@@ -47749,7 +47749,7 @@ Proceed?</source>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="1120"/>
         <source>Scale denominator</source>
-        <translation type="unfinished"></translation>
+        <translation>Dénominateur de l&apos;échelle</translation>
     </message>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="1144"/>
@@ -50750,7 +50750,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1983"/>
         <source>MetadataUrl</source>
-        <translation type="unfinished"></translation>
+        <translation>URL Métadonnées</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="2004"/>
