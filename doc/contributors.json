@@ -303,6 +303,23 @@
           53.60615521721495
         ]
       }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Salvatore Larosa",
+        "Committer": "Yes",
+        "First Commit Message": "New Python Console",
+        "First Commit Date": "10-09-2012",
+        "GIT Nickname": "slarosa"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          16.22705340385437,
+          39.357056058541474
+        ]
+      }
     }
   ]
 }
