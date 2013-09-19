@@ -8410,8 +8410,6 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
             mActionRotatePointSymbols->setEnabled( true );
           }
         }
-
-        return;
       }
       else if ( vlayer->geometryType() == QGis::Line )
       {
