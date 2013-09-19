@@ -1,6 +1,7 @@
 INCLUDE(UsePythonTest)
 ADD_PYTHON_TEST(PyQgsApplication test_qgsapplication.py)
 ADD_PYTHON_TEST(PyQgsFeature test_qgsfeature.py)
+ADD_PYTHON_TEST(PyQgsFeatureIterator test_qgsfeatureiterator.py)
 ADD_PYTHON_TEST(PyQgsGeometry test_qgsgeometry.py)
 ADD_PYTHON_TEST(PyQgsVectorLayer test_qgsvectorlayer.py)
 ADD_PYTHON_TEST(PyQgsRasterLayer test_qgsrasterlayer.py)

@@ -1,0 +1,325 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Tim Sutton",
+        "Committer": "Yes",
+        "First Commit Message": "Added support for grayscale tifs too.",
+        "First Commit Date": "31-12-2003",
+        "GIT Nickname": "timlinux"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          20.443990230560303,
+          -34.01992347338913
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Marco Hugentobler",
+        "Committer": "Yes",
+        "First Commit Message": "Changes in the display behaviour of qgsmapcanvas (updating the screen, avoid flickering when paning).",
+        "First Commit Date": "15-06-2003",
+        "GIT Nickname": "mhugent"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          8.536376953125,
+          47.368594345213374
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Marco Bernasocchi",
+        "Committer": "No",
+        "GIT Nickname": "mbernasocchi",
+        "First Commit Date": "25-03-2011"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          9.252706468105316,
+          46.789811217009586
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Larry Shaffer",
+        "Committer": "Yes",
+        "First Commit Message": "Added SIP generation to build/python directory of API files for QScintilla code completion/call tips.",
+        "First Commit Date": "09-04-2012",
+        "GIT Nickname": "dakcarto"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -103.575687,
+          43.933346
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Giovanni Allegri",
+        "Committer": "No",
+        "GIT Nickname": "giohappy"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          11.07272,
+          43.88417
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Nathan Woodrow",
+        "Committer": "Yes",
+        "First Commit Message": "Added expression based labels, simple dialog for entering expressions.",
+        "First Commit Date": "25-05-2011",
+        "GIT Nickname": "NathanW2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          153.42407226562497,
+          -28.05259082333986
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Nyall Dawson",
+        "Committer": "Yes",
+        "First Commit Message": "Fix calculation of graduated symbology breaks",
+        "First Commit Date": "28-02-2013",
+        "GIT Nickname": "nyalldawson"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          145.0349675,
+          -37.9170952
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Richard Duivenvoorde",
+        "Committer": "Yes",
+        "First Commit Message": "some dutch translations for git testing",
+        "First Commit Date": "4-9-2011",
+        "GIT Nickname": "duiv"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.6,
+          52.3
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Borys Jurgiel",
+        "Committer": "Yes",
+        "First Commit Message": "Plugin Installer update: inclusion to i18n",
+        "First Commit Date": "10-11-2008",
+        "GIT Nickname": "borysiasty"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          20.95,
+          52.2815
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Vinayan Parameswaran",
+        "Committer": "Yes",
+        "First Commit Message": "Feature:Topology Checker",
+        "First Commit Date": "12-12-2012",
+        "GIT Nickname": "vinayan"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          76.33026123046874,
+          10.308163730851513
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Paolo Cavallini",
+        "Committer": "Yes",
+        "First Commit Message": "unknown",
+        "First Commit Date": "unknown",
+        "GIT Nickname": "pcav"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.631332397460938,
+          43.659924074789
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Marco Hugentobler",
+        "Committer": "Yes",
+        "First Commit Message": "Changes in the display behaviour of qgsmapcanvas (updating the screen, avoid flickering when paning).",
+        "First Commit Date": "15-06-2003",
+        "GIT Nickname": "mhugent"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          8.536376953125,
+          47.368594345213374
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Régis Haubourg",
+        "Committer": "No",
+        "First Commit Message": "minor fr ui translation",
+        "First Commit Date": "05-08-2013",
+        "GIT Nickname": "haubourg"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          1.444251537322998,
+          43.58023541434867
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Yoichi Kayama",
+        "Committer": "No",
+        "First Commit Message": "unknown",
+        "First Commit Date": "unknown",
+        "GIT Nickname": "yoichigmf"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          139.4000244140625,
+          35.69689817401091
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Radim Blazek",
+        "Committer": "Yes",
+        "First Commit Message": "some bugfixes",
+        "First Commit Date": "07-04-2004",
+        "GIT Nickname": "rabla,rblazek,blazek"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          14.3231406,
+          49.9590836
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Hien Tran-Quang",
+        "Committer": "Yes",
+        "First Commit Message": "Customization of legend dock (right click)",
+        "First Commit Date": "08-10-2012",
+        "GIT Nickname": "tqhien"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.25494384765625,
+          48.80007963827956
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Luigi Pirelli",
+        "Committer": "Yes",
+        "First Commit Message": "WMS Tile retry feature ",
+        "First Commit Date": "22-08-2013",
+        "GIT Nickname": "luipir"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.397524356842041,
+          43.37283922663916
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Juergen Fischer",
+        "Committer": "Yes",
+        "First Commit Message": "fix for ticket #790 and #791 and another msvc logger update",
+        "First Commit Date": "5-11-2013",
+        "GIT Nickname": "jef-n"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          7.2145843505859375,
+          53.60615521721495
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Salvatore Larosa",
+        "Committer": "Yes",
+        "First Commit Message": "New Python Console",
+        "First Commit Date": "10-09-2012",
+        "GIT Nickname": "slarosa"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          16.22705340385437,
+          39.357056058541474
+        ]
+      }
+    }
+  ]
+}

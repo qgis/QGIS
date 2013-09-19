@@ -32,9 +32,6 @@ class QgsOracleFeatureIterator : public QgsAbstractFeatureIterator
 
     ~QgsOracleFeatureIterator();
 
-    //! fetch next feature, return true on success
-    virtual bool nextFeature( QgsFeature& feature );
-
     //! reset the iterator to the starting position
     virtual bool rewind();
 
@@ -42,11 +39,12 @@ class QgsOracleFeatureIterator : public QgsAbstractFeatureIterator
     virtual bool close();
 
   protected:
+    //! fetch next feature, return true on success
+    virtual bool fetchFeature( QgsFeature& feature );
+
     QgsOracleProvider *P;
 
     bool openQuery( QString whereClause );
-
-    bool getFeature( QgsFeature &feature );
 
     QSqlQuery mQry;
     bool mRewind;

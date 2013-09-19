@@ -109,7 +109,7 @@ class Editor(QsciScintilla):
         self.setMarginsForegroundColor(QColor("#3E3EE3"))
         self.setMarginsBackgroundColor(QColor("#f9f9f9"))
         self.setCaretLineVisible(True)
-        self.setCaretLineBackgroundColor(QColor("#fcf3ed"))
+        self.setCaretWidth(2)
 
         self.markerDefine(QgsApplication.getThemePixmap("console/iconSyntaxErrorConsole.png"),
                           self.MARKER_NUM)
@@ -199,6 +199,11 @@ class Editor(QsciScintilla):
         else:
             self.setAutoCompletionSource(self.AcsNone)
 
+        caretLineColorEditor = self.settings.value("pythonConsole/caretLineColorEditor", QColor("#fcf3ed"))
+        cursorColorEditor = self.settings.value("pythonConsole/cursorColorEditor", QColor(Qt.black))
+        self.setCaretLineBackgroundColor(caretLineColorEditor)
+        self.setCaretForegroundColor(cursorColorEditor)
+
     def autoCompleteKeyBinding(self):
         radioButtonSource = self.settings.value("pythonConsole/autoCompleteSourceEditor", 'fromAPI')
         autoCompEnabled = self.settings.value("pythonConsole/autoCompleteEnabledEditor", True, type=bool)
@@ -233,12 +238,21 @@ class Editor(QsciScintilla):
         self.lexer.setDefaultColor(QColor(self.settings.value("pythonConsole/defaultFontColorEditor", QColor(Qt.black))))
         self.lexer.setColor(QColor(self.settings.value("pythonConsole/commentFontColorEditor", QColor(Qt.gray))), 1)
         self.lexer.setColor(QColor(self.settings.value("pythonConsole/keywordFontColorEditor", QColor(Qt.darkGreen))), 5)
+        self.lexer.setColor(QColor(self.settings.value("pythonConsole/classFontColorEditor", QColor(Qt.blue))), 8)
         self.lexer.setColor(QColor(self.settings.value("pythonConsole/methodFontColorEditor", QColor(Qt.darkGray))), 9)
         self.lexer.setColor(QColor(self.settings.value("pythonConsole/decorFontColorEditor", QColor(Qt.darkBlue))), 15)
         self.lexer.setColor(QColor(self.settings.value("pythonConsole/commentBlockFontColorEditor", QColor(Qt.gray))), 12)
+        self.lexer.setColor(QColor(self.settings.value("pythonConsole/singleQuoteFontColorEditor", QColor(Qt.blue))), 4)
+        self.lexer.setColor(QColor(self.settings.value("pythonConsole/doubleQuoteFontColorEditor", QColor(Qt.blue))), 3)
+        self.lexer.setColor(QColor(self.settings.value("pythonConsole/tripleSingleQuoteFontColorEditor", QColor(Qt.blue))), 6)
+        self.lexer.setColor(QColor(self.settings.value("pythonConsole/tripleDoubleQuoteFontColorEditor", QColor(Qt.blue))), 7)
         self.lexer.setFont(font, 1)
         self.lexer.setFont(font, 3)
         self.lexer.setFont(font, 4)
+
+        for style in range(0, 33):
+            paperColor = QColor(self.settings.value("pythonConsole/paperBackgroundColorEditor", QColor(Qt.white)))
+            self.lexer.setPaper(paperColor, style)
 
         self.api = QsciAPIs(self.lexer)
         chekBoxAPI = self.settings.value("pythonConsole/preloadAPI", True, type=bool)

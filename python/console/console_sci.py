@@ -82,7 +82,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         # Current line visible with special background color
         self.setCaretWidth(2)
 
-        self.settingsShell()
+        self.refreshSettingsShell()
 
         # Don't want to see the horizontal scrollbar at all
         # Use raw message to Scintilla here (all messages are documented
@@ -113,7 +113,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         self.newShortcutCAS.activated.connect(self.autoCompleteKeyBinding)
         self.newShortcutCSS.activated.connect(self.showHistory)
 
-    def settingsShell(self):
+    def refreshSettingsShell(self):
         # Set Python lexer
         self.setLexers()
         threshold = self.settings.value("pythonConsole/autoCompThreshold", 2, type=int)
@@ -129,6 +129,9 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
                 self.setAutoCompletionSource(self.AcsAll)
         else:
             self.setAutoCompletionSource(self.AcsNone)
+
+        cursorColor = self.settings.value("pythonConsole/cursorColor", QColor(Qt.black))
+        self.setCaretForegroundColor(cursorColor)
 
     def showHistory(self):
         if not self.historyDlg.isVisible():
@@ -185,12 +188,21 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         self.lexer.setDefaultColor(QColor(self.settings.value("pythonConsole/defaultFontColor", QColor(Qt.black))))
         self.lexer.setColor(QColor(self.settings.value("pythonConsole/commentFontColor", QColor(Qt.gray))), 1)
         self.lexer.setColor(QColor(self.settings.value("pythonConsole/keywordFontColor", QColor(Qt.darkGreen))), 5)
+        self.lexer.setColor(QColor(self.settings.value("pythonConsole/classFontColor", QColor(Qt.blue))), 8)
         self.lexer.setColor(QColor(self.settings.value("pythonConsole/methodFontColor", QColor(Qt.darkGray))), 9)
         self.lexer.setColor(QColor(self.settings.value("pythonConsole/decorFontColor", QColor(Qt.darkBlue))), 15)
         self.lexer.setColor(QColor(self.settings.value("pythonConsole/commentBlockFontColor", QColor(Qt.gray))), 12)
+        self.lexer.setColor(QColor(self.settings.value("pythonConsole/singleQuoteFontColor", QColor(Qt.blue))), 4)
+        self.lexer.setColor(QColor(self.settings.value("pythonConsole/doubleQuoteFontColor", QColor(Qt.blue))), 3)
+        self.lexer.setColor(QColor(self.settings.value("pythonConsole/tripleSingleQuoteFontColor", QColor(Qt.blue))), 6)
+        self.lexer.setColor(QColor(self.settings.value("pythonConsole/tripleDoubleQuoteFontColor", QColor(Qt.blue))), 7)
         self.lexer.setFont(font, 1)
         self.lexer.setFont(font, 3)
         self.lexer.setFont(font, 4)
+
+        for style in range(0, 33):
+            paperColor = QColor(self.settings.value("pythonConsole/paperBackgroundColor", QColor(Qt.white)))
+            self.lexer.setPaper(paperColor, style)
 
         self.api = QsciAPIs(self.lexer)
         chekBoxAPI = self.settings.value("pythonConsole/preloadAPI", True, type=bool)

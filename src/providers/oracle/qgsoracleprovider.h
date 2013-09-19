@@ -262,6 +262,7 @@ class QgsOracleProvider : public QgsVectorDataProvider
 
   private:
     QString whereClause( QgsFeatureId featureId ) const;
+    QString whereClause( QgsFeatureIds featureIds ) const;
     QString pkParamWhereClause() const;
     QString paramValue( QString fieldvalue, const QString &defaultValue ) const;
     void appendGeomParam( const QgsGeometry *geom, QSqlQuery &qry ) const;

@@ -47,8 +47,6 @@ class QgsPostgresFeatureIterator : public QgsAbstractFeatureIterator
     void getFeatureAttribute( int idx, QgsPostgresResult& queryResult, int row, int& col, QgsFeature& feature );
     bool declareCursor( const QString& whereClause );
 
-    bool fetchNextFeature( QgsFeature& feature );
-
     QString mCursorName;
 
     /**
