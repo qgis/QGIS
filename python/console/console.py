@@ -687,8 +687,8 @@ class PythonConsoleWidget(QWidget):
         self.options.exec_()
 
     def prefChanged(self):
-        self.shell.settingsShell()
-        self.shellOut.refreshLexerProperties()
+        self.shell.refreshSettingsShell()
+        self.shellOut.refreshSettingsOutput()
         self.tabEditorWidget.refreshSettingsEditor()
 
     def callWidgetMessageBar(self, text):

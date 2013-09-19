@@ -99,7 +99,7 @@ class ShellOutputScintilla(QsciScintilla):
         sys.stderr = writeOut(self, sys.stderr, "_traceback")
 
         self.insertInitText()
-        self.setLexers()
+        self.refreshSettingsOutput()
         self.setReadOnly(True)
 
         # Set the default font
@@ -120,7 +120,7 @@ class ShellOutputScintilla(QsciScintilla):
         self.setMarginsForegroundColor(QColor("#3E3EE3"))
         self.setMarginsBackgroundColor(QColor("#f9f9f9"))
         self.setCaretLineVisible(True)
-        self.setCaretLineBackgroundColor(QColor("#fcf3ed"))
+        self.setCaretWidth(0)
 
         self.setMinimumHeight(120)
 
@@ -149,8 +149,13 @@ class ShellOutputScintilla(QsciScintilla):
         else:
             initText = self.setText(txtInit + '\n')
 
-    def refreshLexerProperties(self):
+    def refreshSettingsOutput(self):
+        # Set Python lexer
         self.setLexers()
+        caretLineColor = self.settings.value("pythonConsole/caretLineColor", QColor("#fcf3ed"))
+        cursorColor = self.settings.value("pythonConsole/cursorColor", QColor(Qt.black))
+        self.setCaretLineBackgroundColor(caretLineColor)
+        self.setCaretForegroundColor(cursorColor)
 
     def setLexers(self):
         self.lexer = QsciLexerPython()
@@ -169,14 +174,23 @@ class ShellOutputScintilla(QsciScintilla):
         self.lexer.setDefaultColor(QColor(self.settings.value("pythonConsole/defaultFontColor", QColor(Qt.black))))
         self.lexer.setColor(QColor(self.settings.value("pythonConsole/commentFontColor", QColor(Qt.gray))), 1)
         self.lexer.setColor(QColor(self.settings.value("pythonConsole/keywordFontColor", QColor(Qt.darkGreen))), 5)
+        self.lexer.setColor(QColor(self.settings.value("pythonConsole/classFontColor", QColor(Qt.blue))), 8)
         self.lexer.setColor(QColor(self.settings.value("pythonConsole/methodFontColor", QColor(Qt.darkGray))), 9)
         self.lexer.setColor(QColor(self.settings.value("pythonConsole/decorFontColor", QColor(Qt.darkBlue))), 15)
         self.lexer.setColor(QColor(self.settings.value("pythonConsole/commentBlockFontColor", QColor(Qt.gray))), 12)
+        self.lexer.setColor(QColor(self.settings.value("pythonConsole/singleQuoteFontColor", QColor(Qt.blue))), 4)
+        self.lexer.setColor(QColor(self.settings.value("pythonConsole/doubleQuoteFontColor", QColor(Qt.blue))), 3)
+        self.lexer.setColor(QColor(self.settings.value("pythonConsole/tripleSingleQuoteFontColor", QColor(Qt.blue))), 6)
+        self.lexer.setColor(QColor(self.settings.value("pythonConsole/tripleDoubleQuoteFontColor", QColor(Qt.blue))), 7)
         self.lexer.setColor(QColor(Qt.red), 14)
         self.lexer.setFont(font, 1)
         self.lexer.setFont(font, 2)
         self.lexer.setFont(font, 3)
         self.lexer.setFont(font, 4)
+
+        for style in range(0, 33):
+            paperColor = QColor(self.settings.value("pythonConsole/paperBackgroundColor", QColor(Qt.white)))
+            self.lexer.setPaper(paperColor, style)
 
         self.setLexer(self.lexer)
 
