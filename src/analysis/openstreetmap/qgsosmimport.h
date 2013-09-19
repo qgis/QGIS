@@ -21,6 +21,20 @@
 
 #include "qgsosmbase.h"
 
+/**
+ * QXmlStream* was moved from QtXml to QtCore in Qt 4.4.0.
+ * Apple Mac OS X and IBM AIX executables do not support symbol renaming or
+ * duplication, so we have to move things about here.
+ * See original comments in corelib/xml/qxmlstream.h
+ */
+#if QT_VERSION >= 0x040400
+# if defined(Q_OS_MAC32) || defined(Q_OS_AIX)
+#  if !defined QT_BUILD_XML_LIB
+#   define QXmlStreamReader QCoreXmlStreamReader
+#  endif
+# endif
+#endif
+
 class QXmlStreamReader;
 
 /**
