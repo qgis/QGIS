@@ -77,6 +77,10 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleProvider *p, const 
       whereClause = P->whereClause( request.filterFid() );
       break;
 
+    case QgsFeatureRequest::FilterFids:
+      whereClause = P->whereClause( request.filterFids() );
+      break;
+
     case QgsFeatureRequest::FilterNone:
       break;
   }
@@ -105,7 +109,7 @@ QgsOracleFeatureIterator::~QgsOracleFeatureIterator()
   close();
 }
 
-bool QgsOracleFeatureIterator::nextFeature( QgsFeature& feature )
+bool QgsOracleFeatureIterator::fetchFeature( QgsFeature& feature )
 {
   feature.setValid( false );
 
@@ -219,6 +223,8 @@ bool QgsOracleFeatureIterator::nextFeature( QgsFeature& feature )
     }
 
     feature.setValid( true );
+    feature.setFields( &P->mAttributeFields ); // allow name-based attribute lookups
+
     return true;
   }
 }

@@ -464,15 +464,17 @@ QString QgsOracleProvider::whereClause( QgsFeatureId featureId ) const
       break;
   }
 
-  if ( !mSqlWhereClause.isEmpty() )
-  {
-    if ( !whereClause.isEmpty() )
-      whereClause += " AND ";
-
-    whereClause += "(" + mSqlWhereClause + ")";
-  }
-
   return whereClause;
+}
+
+QString QgsOracleProvider::whereClause( QgsFeatureIds featureIds ) const
+{
+  QStringList whereClauses;
+  foreach ( const QgsFeatureId featureId, featureIds )
+  {
+    whereClauses << whereClause( featureId );
+  }
+  return whereClauses.join( " AND " );
 }
 
 void QgsOracleProvider::setExtent( QgsRectangle& newExtent )
