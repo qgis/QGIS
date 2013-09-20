@@ -482,6 +482,23 @@
           47.6
         ]
       }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Denis Rouzaud",
+        "Committer": "Yes",
+        "First Commit Message": "[FEATURE] add multiple selection option in value relations",
+        "First Commit Date": "28-06-2012",
+        "GIT Nickname": "3nids"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.86121,
+          46.47796
+        ]
+      }
     }
   ]
 }
