@@ -309,7 +309,7 @@ class CORE_EXPORT QgsCptCityBrowserModel : public QAbstractItemModel
     {
       Authors = 0,
       Selections = 1,
-      List = 2
+      List = 2 // not used anymore
     };
 
     QgsCptCityBrowserModel( QObject* parent = 0,

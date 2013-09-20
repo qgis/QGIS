@@ -860,7 +860,7 @@ QVector< QgsCptCityDataItem* > QgsCptCityCollectionItem::childrenRamps( bool rec
   {
     QgsCptCityCollectionItem* collectionItem = dynamic_cast<QgsCptCityCollectionItem*>( childItem );
     QgsCptCityColorRampItem* rampItem = dynamic_cast<QgsCptCityColorRampItem*>( childItem );
-    QgsDebugMsg( QString( "child path= %1 coll= %2 ramp = %3" ).arg( childItem->path() ).arg( collectionItem != 0 ).arg( rampItem != 0 ) );
+    QgsDebugMsgLevel( QString( "child path= %1 coll= %2 ramp = %3" ).arg( childItem->path() ).arg( collectionItem != 0 ).arg( rampItem != 0 ), 2 );
     if ( collectionItem && recursive )
     {
       collectionItem->populate();
@@ -1492,6 +1492,26 @@ QModelIndex QgsCptCityBrowserModel::findPath( QString path )
   QString itemPath;
 
   QgsDebugMsg( "path = " + path );
+
+  // special case if searching for first item "All Ramps", do not search into tree
+  if ( path.isEmpty() )
+  {
+    for ( int i = 0; i < rowCount( theIndex ); i++ )
+    {
+      QModelIndex idx = index( i, 0, theIndex );
+      QgsCptCityDataItem *item = dataItem( idx );
+      if ( !item )
+        return QModelIndex(); // an error occurred
+
+      itemPath = item->path();
+
+      if ( itemPath == path )
+      {
+        QgsDebugMsg( "Arrived " + itemPath );
+        return idx; // we have found the item we have been looking for
+      }
+    }
+  }
 
   while ( foundChild )
   {

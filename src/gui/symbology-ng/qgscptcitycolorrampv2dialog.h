@@ -48,6 +48,7 @@ class GUI_EXPORT QgsCptCityColorRampV2Dialog : public QDialog, private Ui::QgsCp
 
     void on_mTreeView_clicked( const QModelIndex & );
     void on_mListWidget_itemClicked( QListWidgetItem * item );
+    void on_mListWidget_itemSelectionChanged();
     void on_tabBar_currentChanged( int index );
     void on_pbtnLicenseDetails_pressed();
     void on_cboVariantName_currentIndexChanged( int index );
@@ -70,6 +71,7 @@ class GUI_EXPORT QgsCptCityColorRampV2Dialog : public QDialog, private Ui::QgsCp
 
     /* void refreshModel( const QModelIndex& index ); */
     bool updateRamp();
+    void showAll();
     void setTreeModel( QgsCptCityBrowserModel* model );
 
     QgsCptCityBrowserModel* mModel;
