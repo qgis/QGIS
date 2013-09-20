@@ -4,6 +4,23 @@
     {
       "type": "Feature",
       "properties": {
+        "Name": "Gary Sherman",
+        "Committer": "Yes",
+        "First Commit Message": "Initial revision",
+        "First Commit Date": "06-07-2002",
+        "GIT Nickname": "gsherman"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -149.908447265625,
+          61.22266872659718
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
         "Name": "Tim Sutton",
         "Committer": "Yes",
         "First Commit Message": "Added support for grayscale tifs too.",
@@ -15,23 +32,6 @@
         "coordinates": [
           20.443990230560303,
           -34.01992347338913
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "Name": "Marco Hugentobler",
-        "Committer": "Yes",
-        "First Commit Message": "Changes in the display behaviour of qgsmapcanvas (updating the screen, avoid flickering when paning).",
-        "First Commit Date": "15-06-2003",
-        "GIT Nickname": "mhugent"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          8.536376953125,
-          47.368594345213374
         ]
       }
     },
@@ -290,10 +290,27 @@
     {
       "type": "Feature",
       "properties": {
+        "Name": "Matthias Kuhn",
+        "Committer": "Yes",
+        "First Commit Message": "Add backbuffering option to resolve flickering on X11 systems",
+        "First Commit Date": "07-08-2012",
+        "GIT Nickname": "matthias-kuhn"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          8.740423321723938,
+          47.4989812888759
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
         "Name": "Juergen Fischer",
         "Committer": "Yes",
         "First Commit Message": "fix for ticket #790 and #791 and another msvc logger update",
-        "First Commit Date": "5-11-2013",
+        "First Commit Date": "5-11-2007",
         "GIT Nickname": "jef-n"
       },
       "geometry": {
@@ -318,6 +335,151 @@
         "coordinates": [
           16.22705340385437,
           39.357056058541474
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Brent Wood",
+        "Committer": "No"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          174.811004639,
+          -41.3275985718
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Hugo Mercier",
+        "Committer": "No",
+        "First Commit Message": "Implement basic copy/paste of styles between layers",
+        "First Commit Date": "15-04-2012",
+        "GIT Nickname": "mhugo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -1.547486,
+          47.199934
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Germán Carrillo",
+        "Committer": "No",
+        "GIT Nickname": "gacarrillor"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.07595,
+          4.59805
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Alexander Bruy",
+        "Committer": "Yes",
+        "First Commit Message": "allow users to enter path to shapefiles manually in Merge shapefiles tool (apply #2897)",
+        "First Commit Date": "25-06-2010",
+        "GIT Nickname": "alexbruy"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          35.101318359375,
+          47.857402894658
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Sandro Santilli",
+        "Committer": "Yes",
+        "First Commit Message": "Added patch from strk that improves calculation of extents for a postgres layer",
+        "First Commit Date": "29-06-2004",
+        "GIT Nickname": "strk"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          12.1728515625,
+          42.31692400697034
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "John Tull",
+        "Committer": "No",
+        "GIT Nickname": "jctull"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -119.82,
+          39.18
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Robert Szczepanek",
+        "Committer": "No",
+        "First Commit Date": "9-12-2011",
+        "GIT Nickname": "Cracert"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          19.938,
+          50.061
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Andreas Neumann",
+        "Committer": "Yes",
+        "First Commit Date": "19-04-2011",
+        "First Commit Message": "initial chekin of qgiswebclient",
+        "GIT Nickname": "andreasneumann"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          8.78342,
+          47.30919
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Tamas Szekeres",
+        "Committer": "No",
+        "First Commit Date": "06-02-2012",
+        "First Commit Message": "Adding the native MSSQL provider",
+        "GIT Nickname": "szekerest"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          19.1,
+          47.6
         ]
       }
     }
