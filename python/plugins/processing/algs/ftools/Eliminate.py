@@ -49,7 +49,7 @@ class Eliminate(GeoAlgorithm):
         self.name = "Eliminate sliver polygons"
         self.group = "Vector geometry tools"
         self.addParameter(ParameterVector(self.INPUT, "Input layer", [ParameterVector.VECTOR_TYPE_POLYGON]))        
-        self.addParameter(ParameterSelection(self.MODE, "Segments", self.MODES))        
+        self.addParameter(ParameterSelection(self.MODE, "Merge selection with the neighbouring polygon with the largest", self.MODES))        
         self.addOutput(OutputVector(self.OUTPUT, "Cleaned layer"))
 
     def processAlgorithm(self, progress):
@@ -183,3 +183,9 @@ class Eliminate(GeoAlgorithm):
                 msg = msg + "\n" + aStrm
             outLayer.rollBack()
             raise GeoAlgorithmExecutionException("Commit error:\n%s" % (msg))
+        
+    def checkParameterValuesBeforeExecuting(self):
+        inLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
+        if inLayer.selectedFeatureCount() == 0:
+            return "No selection in input layer"
+        
