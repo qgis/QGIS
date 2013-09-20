@@ -25,7 +25,7 @@
     <name>ConfigDialog</name>
     <message>
         <source>Search...</source>
-        <translation>Rechercher</translation>
+        <translation>Rechercher...</translation>
     </message>
     <message>
         <source>Wrong value</source>
@@ -1255,7 +1255,7 @@ Colonnes</translation>
     <message>
         <location filename="../python/plugins/fTools/tools/frmEliminate.ui" line="100"/>
         <source>Selected features:</source>
-        <translation>Entités sélectionnées</translation>
+        <translation>Entités sélectionnées :</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmEliminate.ui" line="107"/>
@@ -14053,7 +14053,7 @@ Veuillez contacter les développeurs.
     </message>
     <message>
         <source>[ERROR] Can not make qgis.db private copy</source>
-        <translation type="obsolete">Errur : impossible de faire une copie de qgis.db</translation>
+        <translation type="obsolete">Erreur : impossible de faire une copie de qgis.db</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2371"/>
@@ -20055,17 +20055,17 @@ Essayez une résolution ou une taille de papier inférieur.</translation>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="581"/>
         <source>Lock Selected Items</source>
-        <translation type="unfinished"></translation>
+        <translation>Verrouiller les objets sélectionnés</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="590"/>
         <source>Unlock All</source>
-        <translation type="unfinished"></translation>
+        <translation>Tout déverrouiller</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="593"/>
         <source>Unlock All Items</source>
-        <translation type="unfinished"></translation>
+        <translation>Déverrouiller tous les objets</translation>
     </message>
     <message>
         <source>Load From template</source>
@@ -23009,7 +23009,7 @@ Essayez une résolution ou une taille de papier inférieur.</translation>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="63"/>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="458"/>
         <source>Map %1</source>
-        <translation type="unfinished">Carte %1</translation>
+        <translation>Carte %1</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="92"/>
@@ -34837,17 +34837,17 @@ Ceci est peut-être dû à votre connexion ou celle du serveur WMS.      </trans
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="797"/>
         <source>[&lt;b&gt;family&lt;/b&gt;|&lt;b&gt;family[foundry]&lt;/b&gt;],&lt;br&gt;e.g. Helvetica or Helvetica [Cronyx]</source>
-        <translation type="unfinished"></translation>
+        <translation>[&lt;b&gt;famille&lt;/b&gt;|&lt;b&gt;famille[fondeur]&lt;/b&gt;,&lt;br&gt;exemple : Helvectica ou Helvetica [Cronyx]</translation>
     </message>
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="802"/>
         <source>[&lt;b&gt;font style name&lt;/b&gt;|&lt;b&gt;Ignore&lt;/b&gt;],&lt;br&gt;e.g. Bold Condensed or Light Italic</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">[&lt;b&gt;Nom du style de police&lt;/b&gt;|&lt;b&gt;Ignore&lt;/b&gt;],&lt;br&gt;exemple : Bold Condensed or Light Italic</translation>
     </message>
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="846"/>
         <source>double [0.0-10.0]</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nombre à virgule [0.0 - 10.0]</translation>
     </message>
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="868"/>
@@ -34872,12 +34872,13 @@ Ceci est peut-être dû à votre connexion ou celle du serveur WMS.      </trans
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="987"/>
         <source>In edit mode, layer&apos;s relevant labeling map tool is:&lt;br&gt;&amp;nbsp;&amp;nbsp;Defined attribute field -&amp;gt; &lt;i&gt;enabled&lt;/i&gt;&lt;br&gt;&amp;nbsp;&amp;nbsp;Defined expression -&amp;gt; &lt;i&gt;disabled&lt;/i&gt;</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>Still true ?</translatorcomment>
+        <translation type="unfinished">En mode édition, la façon la plus pratique d&apos;éditer une couche est :&lt;br&gt;&amp;nbsp;&amp;nbsp;Définit par un attribut  &amp;gt; &lt;i&gt;activé&lt;/i&gt;&lt;br&gt;&amp;nbsp;&amp;nbsp;Définit par une expression  &amp;gt; &lt;i&gt;Désactivé&lt;/i&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="1010"/>
         <source>Value &amp;lt; 0 represents a scale closer than 1:1, e.g. -10 = 10:1&lt;br&gt;Value of 0 disables the specific limit.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Une valeur &amp;lt; 0 représente une échelle plus proche que 1:1, exemple : -10 =10:1&lt;br&gt;Une valeur de 0 désactive cette limite.</translation>
     </message>
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="1026"/>
@@ -34897,12 +34898,12 @@ Ceci est peut-être dû à votre connexion ou celle du serveur WMS.      </trans
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="1100"/>
         <source> @ %1 pts (using map units)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"> @ %1 pts (en unités de la carte)</translation>
     </message>
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="1113"/>
         <source> @ %1 pts (using map units, BUFFER IN MILLIMETERS)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"> @ %1 pts (en unités de la carte, TAMPON EN MILLIMETRES)</translation>
     </message>
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="1133"/>
