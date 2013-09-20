@@ -204,27 +204,27 @@
     </message>
     <message>
         <source>Filename:</source>
-        <translation>Nom du fichier :</translation>
+        <translation>Nom du fichier&amp;nbsp;:</translation>
     </message>
     <message>
         <source>SQLite version:</source>
-        <translation>Version de SQLite :</translation>
+        <translation>Version de SQLite&amp;nbsp;:</translation>
     </message>
     <message>
         <source>Server version: </source>
-        <translation>Version du serveur :</translation>
+        <translation>Version du serveur&amp;nbsp;:</translation>
     </message>
     <message>
         <source>Host:</source>
-        <translation>Hôte :</translation>
+        <translation>Hôte&amp;nbsp;:</translation>
     </message>
     <message>
         <source>User:</source>
-        <translation>Utilisateur :</translation>
+        <translation>Utilisateur&amp;nbsp;:</translation>
     </message>
     <message>
         <source>Library:</source>
-        <translation>Bibliothèque :</translation>
+        <translation>Bibliothèque&amp;nbsp;:</translation>
     </message>
     <message>
         <source>&lt;warning&gt; geometry_columns table doesn&apos;t exist!
@@ -270,11 +270,11 @@ Cette table est indispensable pour qu&apos;une application SIG puisse correcteme
     </message>
     <message>
         <source>Owner:</source>
-        <translation>Propriétaire :</translation>
+        <translation>Propriétaire&amp;nbsp;:</translation>
     </message>
     <message>
         <source>Comment:</source>
-        <translation>Commentaire :</translation>
+        <translation>Commentaire&amp;nbsp;:</translation>
     </message>
     <message>
         <source>create new objects</source>
@@ -306,7 +306,7 @@ Cette table est indispensable pour qu&apos;une application SIG puisse correcteme
     </message>
     <message>
         <source>Rows:</source>
-        <translation>Lignes :</translation>
+        <translation>Lignes&amp;bnsp;:</translation>
     </message>
     <message>
         <source>Unknown (&lt;a href=&quot;action:rows/count&quot;&gt;find out&lt;/a&gt;)</source>
@@ -350,15 +350,15 @@ Cette table est indispensable pour qu&apos;une application SIG puisse correcteme
     </message>
     <message>
         <source>Column:</source>
-        <translation>Colonne:</translation>
+        <translation>Colonne&amp;nbsp;:</translation>
     </message>
     <message>
         <source>Geometry:</source>
-        <translation>Géométrie :</translation>
+        <translation>Géométrie&amp;nbsp;:</translation>
     </message>
     <message>
         <source>Dimension:</source>
-        <translation>Dimension:</translation>
+        <translation>Dimension&amp;nbsp;:</translation>
     </message>
     <message>
         <source>Undefined</source>
@@ -366,11 +366,11 @@ Cette table est indispensable pour qu&apos;une application SIG puisse correcteme
     </message>
     <message>
         <source>Spatial ref:</source>
-        <translation>Réf. spatiale :</translation>
+        <translation>Réf. spatiale&amp;nbsp;:</translation>
     </message>
     <message>
         <source>Estimated extent:</source>
-        <translation>Emprise estimée :</translation>
+        <translation>Emprise estimée&amp;nbsp;:</translation>
     </message>
     <message>
         <source>(unknown) (&lt;a href=&quot;action:extent/get&quot;&gt;find out&lt;/a&gt;)</source>
@@ -378,7 +378,7 @@ Cette table est indispensable pour qu&apos;une application SIG puisse correcteme
     </message>
     <message>
         <source>Extent:</source>
-        <translation>Emprise :</translation>
+        <translation>Emprise&amp;nbsp;:</translation>
     </message>
     <message>
         <source>&lt;warning&gt; There isn&apos;t entry in geometry_columns!</source>
@@ -395,7 +395,7 @@ Cette table est indispensable pour qu&apos;une application SIG puisse correcteme
     <message>
         <source>Error:
 %s</source>
-        <translation>Erreur :
+        <translation>Erreur&amp;nbsp;:
 %s</translation>
     </message>
     <message>
@@ -405,7 +405,7 @@ Query:
 %s</source>
         <translation>
 
-Requete :
+Requête&amp;nbsp;:
 %s</translation>
     </message>
     <message>
@@ -570,7 +570,7 @@ Requete :
     </message>
     <message>
         <source>Privileges:</source>
-        <translation>Privilèges :</translation>
+        <translation>Privilèges&amp;nbsp;:</translation>
     </message>
     <message>
         <source>&lt;warning&gt; This user doesn&apos;t have usage privileges for this schema!</source>
