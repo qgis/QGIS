@@ -186,6 +186,10 @@ class CORE_EXPORT QgsMarkerSymbolLayerV2 : public QgsSymbolLayerV2
     QgsSymbolV2::ScaleMethod mScaleMethod;
     HorizontalAnchorPoint mHorizontalAnchorPoint;
     VerticalAnchorPoint mVerticalAnchorPoint;
+
+  private:
+    static QgsMarkerSymbolLayerV2::HorizontalAnchorPoint decodeHorizontalAnchorPoint( const QString& str );
+    static QgsMarkerSymbolLayerV2::VerticalAnchorPoint decodeVerticalAnchorPoint( const QString& str );
 };
 
 class CORE_EXPORT QgsLineSymbolLayerV2 : public QgsSymbolLayerV2

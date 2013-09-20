@@ -123,6 +123,14 @@ QgsSymbolLayerV2* QgsSimpleMarkerSymbolLayerV2::create( const QgsStringMap& prop
   {
     m->setDataDefinedProperty( "offset", props["offset_expression"] );
   }
+  if ( props.contains( "horizontal_anchor_point_expression" ) )
+  {
+    m->setDataDefinedProperty( "horizontal_anchor_point", props[ "horizontal_anchor_point_expression" ] );
+  }
+  if ( props.contains( "vertical_anchor_point_expression" ) )
+  {
+    m->setDataDefinedProperty( "vertical_anchor_point", props[ "vertical_anchor_point_expression" ] );
+  }
   return m;
 }
 
@@ -817,6 +825,14 @@ QgsSymbolLayerV2* QgsSvgMarkerSymbolLayerV2::create( const QgsStringMap& props )
   if ( props.contains( "outline_expression" ) )
   {
     m->setDataDefinedProperty( "outline", props["outline_expression"] );
+  }
+  if ( props.contains( "horizontal_anchor_point_expression" ) )
+  {
+    m->setDataDefinedProperty( "horizontal_anchor_point", props[ "horizontal_anchor_point_expression" ] );
+  }
+  if ( props.contains( "vertical_anchor_point_expression" ) )
+  {
+    m->setDataDefinedProperty( "vertical_anchor_point", props[ "vertical_anchor_point_expression" ] );
   }
   return m;
 }

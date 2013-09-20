@@ -192,28 +192,41 @@ void QgsMarkerSymbolLayerV2::markerOffset( QgsSymbolV2RenderContext& context, do
   offsetX *= QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOffsetUnit );
   offsetY *= QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOffsetUnit );
 
+  HorizontalAnchorPoint horizontalAnchorPoint = mHorizontalAnchorPoint;
+  VerticalAnchorPoint verticalAnchorPoint = mVerticalAnchorPoint;
+  QgsExpression* horizontalAnchorExpression = expression( "horizontal_anchor_point" );
+  if ( horizontalAnchorExpression )
+  {
+    horizontalAnchorPoint = decodeHorizontalAnchorPoint( horizontalAnchorExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() );
+  }
+  QgsExpression* verticalAnchorExpression = expression( "vertical_anchor_point" );
+  if ( verticalAnchorExpression )
+  {
+    verticalAnchorPoint = decodeVerticalAnchorPoint( verticalAnchorExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() );
+  }
+
   //correct horizontal position according to anchor point
-  if ( mHorizontalAnchorPoint == HCenter && mVerticalAnchorPoint == VCenter )
+  if ( horizontalAnchorPoint == HCenter && verticalAnchorPoint == VCenter )
   {
     return;
   }
 
   double anchorPointCorrection = mSize * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mSizeUnit ) / 2.0;
-  if ( mHorizontalAnchorPoint == Left )
+  if ( horizontalAnchorPoint == Left )
   {
     offsetX += anchorPointCorrection;
   }
-  else if ( mHorizontalAnchorPoint == Right )
+  else if ( horizontalAnchorPoint == Right )
   {
     offsetX -= anchorPointCorrection;
   }
 
   //correct vertical position according to anchor point
-  if ( mVerticalAnchorPoint == Top )
+  if ( verticalAnchorPoint == Top )
   {
     offsetY += anchorPointCorrection;
   }
-  else if ( mVerticalAnchorPoint == Bottom )
+  else if ( verticalAnchorPoint == Bottom )
   {
     offsetY -= anchorPointCorrection;
   }
@@ -224,6 +237,38 @@ QPointF QgsMarkerSymbolLayerV2::_rotatedOffset( const QPointF& offset, double an
   angle = DEG2RAD( angle );
   double c = cos( angle ), s = sin( angle );
   return QPointF( offset.x() * c - offset.y() * s, offset.x() * s + offset.y() * c );
+}
+
+QgsMarkerSymbolLayerV2::HorizontalAnchorPoint QgsMarkerSymbolLayerV2::decodeHorizontalAnchorPoint( const QString& str )
+{
+  if ( str.compare( "left", Qt::CaseInsensitive ) == 0 )
+  {
+    return QgsMarkerSymbolLayerV2::Left;
+  }
+  else if ( str.compare( "right", Qt::CaseInsensitive ) == 0 )
+  {
+    return QgsMarkerSymbolLayerV2::Right;
+  }
+  else
+  {
+    return QgsMarkerSymbolLayerV2::HCenter;
+  }
+}
+
+QgsMarkerSymbolLayerV2::VerticalAnchorPoint QgsMarkerSymbolLayerV2::decodeVerticalAnchorPoint( const QString& str )
+{
+  if ( str.compare( "top", Qt::CaseInsensitive ) == 0 )
+  {
+    return QgsMarkerSymbolLayerV2::Top;
+  }
+  else if ( str.compare( "bottom", Qt::CaseInsensitive ) == 0 )
+  {
+    return QgsMarkerSymbolLayerV2::Bottom;
+  }
+  else
+  {
+    return QgsMarkerSymbolLayerV2::VCenter;
+  }
 }
 
 QgsSymbolV2::OutputUnit QgsMarkerSymbolLayerV2::outputUnit() const
