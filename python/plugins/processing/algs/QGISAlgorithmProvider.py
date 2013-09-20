@@ -17,6 +17,7 @@
 ***************************************************************************
 """
 from processing.algs.Polygonize import Polygonize
+from processing.algs.ftools.Eliminate import Eliminate
 
 __author__ = 'Victor Olaya'
 __date__ = 'December 2012'
@@ -112,7 +113,7 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         ExportGeometryInfo(), Centroids(), Delaunay(), VoronoiPolygons(),
                         SimplifyGeometries(), DensifyGeometries(), DensifyGeometriesInterval(),
                         MultipartToSingleparts(), SinglePartsToMultiparts(), PolygonsToLines(),
-                        LinesToPolygons(), ExtractNodes(),
+                        LinesToPolygons(), ExtractNodes(),Eliminate(),
                         # geoprocessing
                         ConvexHull(), FixedDistanceBuffer(), VariableDistanceBuffer(),
                         Dissolve(), Difference(), Intersection(), Union(), Clip(),
