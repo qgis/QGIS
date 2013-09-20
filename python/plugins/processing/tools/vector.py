@@ -22,7 +22,6 @@ __copyright__ = '(C) 2013, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from processing.tools import dataobjects
 from processing.core.ProcessingConfig import ProcessingConfig
 from qgis.core import *
 from PyQt4.QtCore import *
@@ -37,8 +36,7 @@ def features(layer):
         def __init__(self, layer):
             self.layer = layer
             self.iter = layer.getFeatures()
-            self.selection = False;
-            ##self.layer.dataProvider().rewind()
+            self.selection = False;            
             if ProcessingConfig.getSetting(ProcessingConfig.USE_SELECTED):
                 self.selected = layer.selectedFeatures()
                 if len(self.selected) > 0:
