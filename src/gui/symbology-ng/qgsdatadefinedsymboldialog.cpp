@@ -185,10 +185,10 @@ QString QgsDataDefinedSymbolDialog::fileNameHelpText()
 
 QString QgsDataDefinedSymbolDialog::horizontalAnchorHelpText()
 {
-  return tr( "'left'|'hcenter'|'right'" );
+  return tr( "'left'|'center'|'right'" );
 }
 
 QString QgsDataDefinedSymbolDialog::verticalAnchorHelpText()
 {
-  return tr( "'top'|'vcenter'|'bottom'" );
+  return tr( "'top'|'center'|'bottom'" );
 }
