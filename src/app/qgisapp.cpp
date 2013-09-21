@@ -1798,7 +1798,7 @@ void QgisApp::setTheme( QString theThemeName )
   mActionZoomToSelected->setIcon( QgsApplication::getThemeIcon( "/mActionZoomToSelected.svg" ) );
   mActionShowRasterCalculator->setIcon( QgsApplication::getThemeIcon( "/mActionShowRasterCalculator.png" ) );
 #ifdef HAVE_TOUCH
-  mActionTouch->setIcon( QgsApplication::getThemeIcon( "/mActionTouch.png" ) );
+  mActionTouch->setIcon( QgsApplication::getThemeIcon( "/mActionTouch.svg" ) );
 #endif
   mActionPan->setIcon( QgsApplication::getThemeIcon( "/mActionPan.svg" ) );
   mActionPanToSelected->setIcon( QgsApplication::getThemeIcon( "/mActionPanToSelected.svg" ) );
