@@ -25,7 +25,7 @@
     <name>ConfigDialog</name>
     <message>
         <source>Search...</source>
-        <translation>Rechercher</translation>
+        <translation>Rechercher...</translation>
     </message>
     <message>
         <source>Wrong value</source>
@@ -204,27 +204,27 @@
     </message>
     <message>
         <source>Filename:</source>
-        <translation>Nom du fichier :</translation>
+        <translation>Nom du fichier&amp;nbsp;:</translation>
     </message>
     <message>
         <source>SQLite version:</source>
-        <translation>Version de SQLite :</translation>
+        <translation>Version de SQLite&amp;nbsp;:</translation>
     </message>
     <message>
         <source>Server version: </source>
-        <translation>Version du serveur :</translation>
+        <translation>Version du serveur&amp;nbsp;:</translation>
     </message>
     <message>
         <source>Host:</source>
-        <translation>Hôte :</translation>
+        <translation>Hôte&amp;nbsp;:</translation>
     </message>
     <message>
         <source>User:</source>
-        <translation>Utilisateur </translation>
+        <translation>Utilisateur&amp;nbsp;:</translation>
     </message>
     <message>
         <source>Library:</source>
-        <translation>Bibliothèque :</translation>
+        <translation>Bibliothèque&amp;nbsp;:</translation>
     </message>
     <message>
         <source>&lt;warning&gt; geometry_columns table doesn&apos;t exist!
@@ -270,11 +270,11 @@ Cette table est indispensable pour qu&apos;une application SIG puisse correcteme
     </message>
     <message>
         <source>Owner:</source>
-        <translation>Propriétaire :</translation>
+        <translation>Propriétaire&amp;nbsp;:</translation>
     </message>
     <message>
         <source>Comment:</source>
-        <translation>Commentaire :</translation>
+        <translation>Commentaire&amp;nbsp;:</translation>
     </message>
     <message>
         <source>create new objects</source>
@@ -306,11 +306,11 @@ Cette table est indispensable pour qu&apos;une application SIG puisse correcteme
     </message>
     <message>
         <source>Rows:</source>
-        <translation>Lignes :</translation>
+        <translation>Lignes&amp;bnsp;:</translation>
     </message>
     <message>
         <source>Unknown (&lt;a href=&quot;action:rows/count&quot;&gt;find out&lt;/a&gt;)</source>
-        <translation type="unfinished"></translation>
+        <translation>inconnu (&lt;a href=&quot;action:rows/coun&quot;&gt;calculer&lt;/a&gt;)</translation>
     </message>
     <message>
         <source>Null</source>
@@ -350,15 +350,15 @@ Cette table est indispensable pour qu&apos;une application SIG puisse correcteme
     </message>
     <message>
         <source>Column:</source>
-        <translation>Colonne</translation>
+        <translation>Colonne&amp;nbsp;:</translation>
     </message>
     <message>
         <source>Geometry:</source>
-        <translation>Géométrie :</translation>
+        <translation>Géométrie&amp;nbsp;:</translation>
     </message>
     <message>
         <source>Dimension:</source>
-        <translation>Dimension</translation>
+        <translation>Dimension&amp;nbsp;:</translation>
     </message>
     <message>
         <source>Undefined</source>
@@ -366,19 +366,19 @@ Cette table est indispensable pour qu&apos;une application SIG puisse correcteme
     </message>
     <message>
         <source>Spatial ref:</source>
-        <translation>Réf. spatiale :</translation>
+        <translation>Réf. spatiale&amp;nbsp;:</translation>
     </message>
     <message>
         <source>Estimated extent:</source>
-        <translation>Emprise estimée :</translation>
+        <translation>Emprise estimée&amp;nbsp;:</translation>
     </message>
     <message>
         <source>(unknown) (&lt;a href=&quot;action:extent/get&quot;&gt;find out&lt;/a&gt;)</source>
-        <translation type="unfinished"></translation>
+        <translation>(inconnu) (&lt;a href=&quot;action:extent/get&quot;&gt;calculer&lt;/a&gt;)</translation>
     </message>
     <message>
         <source>Extent:</source>
-        <translation>Emprise :</translation>
+        <translation>Emprise&amp;nbsp;:</translation>
     </message>
     <message>
         <source>&lt;warning&gt; There isn&apos;t entry in geometry_columns!</source>
@@ -395,7 +395,7 @@ Cette table est indispensable pour qu&apos;une application SIG puisse correcteme
     <message>
         <source>Error:
 %s</source>
-        <translation>Erreur :
+        <translation>Erreur&amp;nbsp;:
 %s</translation>
     </message>
     <message>
@@ -405,7 +405,7 @@ Query:
 %s</source>
         <translation>
 
-Requete :
+Requête&amp;nbsp;:
 %s</translation>
     </message>
     <message>
@@ -474,7 +474,7 @@ Requete :
     </message>
     <message>
         <source>Select an empty SCHEMA for deletion.</source>
-        <translation>Sélectionnez un schma vide pour pouvoir le supprimer</translation>
+        <translation>Sélectionnez un schéma vide pour pouvoir le supprimer.</translation>
     </message>
     <message>
         <source>hey!</source>
@@ -518,7 +518,7 @@ Requete :
     </message>
     <message>
         <source>Do you want to %s trigger %s?</source>
-        <translation type="unfinished"></translation>
+        <translation>Souhaitez-vous exécuter l&apos;opération : %s sur le trigger %s ?</translation>
     </message>
     <message>
         <source>Table trigger</source>
@@ -526,7 +526,7 @@ Requete :
     </message>
     <message>
         <source>Do you want to %s spatial index for field %s?</source>
-        <translation type="unfinished"></translation>
+        <translation>Souhaitez-vous exécuter l&apos;opération %s sur l&apos;index spatial du champ %s ?</translation>
     </message>
     <message>
         <source>Spatial Index</source>
@@ -570,7 +570,7 @@ Requete :
     </message>
     <message>
         <source>Privileges:</source>
-        <translation>Privilèges :</translation>
+        <translation>Privilèges&amp;nbsp;:</translation>
     </message>
     <message>
         <source>&lt;warning&gt; This user doesn&apos;t have usage privileges for this schema!</source>
@@ -626,7 +626,7 @@ Cette table est essentielle pour les applications SIG pour énumérer les tables
     </message>
     <message>
         <source>&lt;a href=&quot;action:triggers/enable&quot;&gt;Enable all triggers&lt;/a&gt; / &lt;a href=&quot;action:triggers/disable&quot;&gt;Disable all triggers&lt;/a&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;a href=&quot;action:triggers/enable&quot;&gt;Activer tous les déclencheurs&lt;/a&gt; / &lt;a href=&quot;action:triggers/disable&quot;&gt;Désactiver tous les déclencheurs&lt;/a&gt;</translation>
     </message>
     <message>
         <source>Definition</source>
@@ -1255,7 +1255,7 @@ Colonnes</translation>
     <message>
         <location filename="../python/plugins/fTools/tools/frmEliminate.ui" line="100"/>
         <source>Selected features:</source>
-        <translation>Entités sélectionnées</translation>
+        <translation>Entités sélectionnées :</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmEliminate.ui" line="107"/>
@@ -6826,7 +6826,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="222"/>
         <source>Paste Features as</source>
-        <translation type="unfinished"></translation>
+        <translation>Coller les entités comme</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="267"/>
@@ -6962,7 +6962,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="699"/>
         <source>Split Parts</source>
-        <translation type="unfinished"></translation>
+        <translation>Séparer les parties</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="777"/>
@@ -7162,7 +7162,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2125"/>
         <source>New Vector Layer</source>
-        <translation type="unfinished">Nouvelle couche vecteur</translation>
+        <translation>Nouvelle couche vecteur</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2128"/>
@@ -7172,7 +7172,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2133"/>
         <source>New Memory Vector Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Nouvelle couche vecteur en mémoire</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2136"/>
@@ -7282,7 +7282,7 @@ Activables sur toutes les couches éditables</translation>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1842"/>
         <source>Local cumulative cut stretch using current extent, default limits and estimated values.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Histogramme cumulatif de l&apos;emprise locale utilisant l&apos;emprise actuelle, les limites par défauts et les valeurs estimées.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1851"/>
@@ -14053,7 +14053,7 @@ Veuillez contacter les développeurs.
     </message>
     <message>
         <source>[ERROR] Can not make qgis.db private copy</source>
-        <translation type="obsolete">Errur : impossible de faire une copie de qgis.db</translation>
+        <translation type="obsolete">Erreur : impossible de faire une copie de qgis.db</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2371"/>
@@ -20055,17 +20055,17 @@ Essayez une résolution ou une taille de papier inférieur.</translation>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="581"/>
         <source>Lock Selected Items</source>
-        <translation type="unfinished"></translation>
+        <translation>Verrouiller les objets sélectionnés</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="590"/>
         <source>Unlock All</source>
-        <translation type="unfinished"></translation>
+        <translation>Tout déverrouiller</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="593"/>
         <source>Unlock All Items</source>
-        <translation type="unfinished"></translation>
+        <translation>Déverrouiller tous les objets</translation>
     </message>
     <message>
         <source>Load From template</source>
@@ -20762,12 +20762,12 @@ Essayez une résolution ou une taille de papier inférieur.</translation>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="239"/>
         <source>Legend split layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Séparer les couches dans la légende</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="251"/>
         <source>Legend equal column width</source>
-        <translation type="unfinished"></translation>
+        <translation>Égaliser la largeur des colonnes dans la légende</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="263"/>
@@ -20782,7 +20782,7 @@ Essayez une résolution ou une taille de papier inférieur.</translation>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="287"/>
         <source>Legend title space bottom</source>
-        <translation type="unfinished"></translation>
+        <translation>Espacement sous le titre de la légende</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="299"/>
@@ -21412,7 +21412,7 @@ Essayez une résolution ou une taille de papier inférieur.</translation>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="603"/>
         <source>Overview centering mode changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Mode de centrage de l&apos;aperçu modifié</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="772"/>
@@ -21754,7 +21754,7 @@ Essayez une résolution ou une taille de papier inférieur.</translation>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="703"/>
         <source>Center on overview</source>
-        <translation type="unfinished"></translation>
+        <translation>Centrer sur l&apos;aperçu</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="168"/>
@@ -23009,7 +23009,7 @@ Essayez une résolution ou une taille de papier inférieur.</translation>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="63"/>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="458"/>
         <source>Map %1</source>
-        <translation type="unfinished">Carte %1</translation>
+        <translation>Carte %1</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="92"/>
@@ -23193,7 +23193,7 @@ Essayez une résolution ou une taille de papier inférieur.</translation>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="262"/>
         <source>World file on</source>
-        <translation type="unfinished"></translation>
+        <translation>Générer fichier World file</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="306"/>
@@ -25586,7 +25586,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="695"/>
         <source>^.. expression needs capture groups</source>
-        <translation type="unfinished"></translation>
+        <translation>expression ^.. nécessite des groupes de capture</translation>
     </message>
     <message>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="706"/>
@@ -33783,18 +33783,13 @@ at line %2 column %3</source>
         <source>Closing down connection</source>
         <translation>Terminaison de la connection</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <location filename="../src/core/qgshttptransaction.cpp" line="485"/>
         <source>Network timed out after %n second(s) of inactivity.
 This may be a problem in your network connection or at the WMS server.</source>
         <comment>inactivity timeout</comment>
-        <translation>
-            <numerusform>Le réseau s&apos;est déconncté après %n secondes d&apos;inactivité.
-Ceci est peut-être dûà votre connexion ou celle du serveru WMS.
-        
-        </numerusform>
-            <numerusform></numerusform>
-        </translation>
+        <translation>Le réseau s&apos;est déconnecté après %n seconde(s) d&apos;inactivité.
+Ceci est peut-être dû à votre connexion ou celle du serveur WMS.      </translation>
     </message>
 </context>
 <context>
@@ -34842,17 +34837,17 @@ Ceci est peut-être dûà votre connexion ou celle du serveru WMS.
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="797"/>
         <source>[&lt;b&gt;family&lt;/b&gt;|&lt;b&gt;family[foundry]&lt;/b&gt;],&lt;br&gt;e.g. Helvetica or Helvetica [Cronyx]</source>
-        <translation type="unfinished"></translation>
+        <translation>[&lt;b&gt;famille&lt;/b&gt;|&lt;b&gt;famille[fondeur]&lt;/b&gt;,&lt;br&gt;exemple : Helvectica ou Helvetica [Cronyx]</translation>
     </message>
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="802"/>
         <source>[&lt;b&gt;font style name&lt;/b&gt;|&lt;b&gt;Ignore&lt;/b&gt;],&lt;br&gt;e.g. Bold Condensed or Light Italic</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">[&lt;b&gt;Nom du style de police&lt;/b&gt;|&lt;b&gt;Ignore&lt;/b&gt;],&lt;br&gt;exemple : Bold Condensed or Light Italic</translation>
     </message>
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="846"/>
         <source>double [0.0-10.0]</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nombre à virgule [0.0 - 10.0]</translation>
     </message>
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="868"/>
@@ -34877,12 +34872,13 @@ Ceci est peut-être dûà votre connexion ou celle du serveru WMS.
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="987"/>
         <source>In edit mode, layer&apos;s relevant labeling map tool is:&lt;br&gt;&amp;nbsp;&amp;nbsp;Defined attribute field -&amp;gt; &lt;i&gt;enabled&lt;/i&gt;&lt;br&gt;&amp;nbsp;&amp;nbsp;Defined expression -&amp;gt; &lt;i&gt;disabled&lt;/i&gt;</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>Still true ?</translatorcomment>
+        <translation type="unfinished">En mode édition, la façon la plus pratique d&apos;éditer une couche est :&lt;br&gt;&amp;nbsp;&amp;nbsp;Définit par un attribut  &amp;gt; &lt;i&gt;activé&lt;/i&gt;&lt;br&gt;&amp;nbsp;&amp;nbsp;Définit par une expression  &amp;gt; &lt;i&gt;Désactivé&lt;/i&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="1010"/>
         <source>Value &amp;lt; 0 represents a scale closer than 1:1, e.g. -10 = 10:1&lt;br&gt;Value of 0 disables the specific limit.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Une valeur &amp;lt; 0 représente une échelle plus proche que 1:1, exemple : -10 =10:1&lt;br&gt;Une valeur de 0 désactive cette limite.</translation>
     </message>
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="1026"/>
@@ -34902,12 +34898,12 @@ Ceci est peut-être dûà votre connexion ou celle du serveru WMS.
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="1100"/>
         <source> @ %1 pts (using map units)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"> @ %1 pts (en unités de la carte)</translation>
     </message>
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="1113"/>
         <source> @ %1 pts (using map units, BUFFER IN MILLIMETERS)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"> @ %1 pts (en unités de la carte, TAMPON EN MILLIMETRES)</translation>
     </message>
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="1133"/>
@@ -38265,7 +38261,7 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     <message>
         <location filename="../src/providers/memory/qgsmemoryprovider.cpp" line="84"/>
         <source>Date</source>
-        <translation type="unfinished">Date</translation>
+        <translation>Date</translation>
     </message>
 </context>
 <context>
@@ -39173,12 +39169,12 @@ Note : donner votre mot de passe est optionel, il vous sera demandé quand réel
     <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="168"/>
         <source>Smooth pixmap transform</source>
-        <translation type="unfinished"></translation>
+        <translation>Transformation lissée</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="178"/>
         <source>Referer</source>
-        <translation type="unfinished"></translation>
+        <translation>Entête HTTP Referer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="14"/>
@@ -40228,7 +40224,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/qgsowssourceselect.cpp" line="286"/>
         <source>Confirm Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Confirmer suppression</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsowssourceselect.cpp" line="304"/>
@@ -40258,7 +40254,8 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/gui/qgsowssourceselect.cpp" line="570"/>
         <source>Could not understand the response:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Réponse incompréhensible :
+%1</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsowssourceselect.cpp" line="621"/>
@@ -40445,7 +40442,15 @@ Prefer network: default value; load from the network if the cached entry is olde
 
 Always network: always load from network and do not check if the cache has a valid entry (similar to the &quot;Reload&quot; feature in browsers)
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Préférence du cache
+
+Toujours utiliser le cache : charge depuis le cache, même si expiré
+
+Préférer le cache : charge depuis le cache si disponible sinon charger depuis le réseau. Il est possible que des éléments périmés (mais pas expiré) soient utilisés depuis le cache
+
+Préférer le réseau : valeur par défaut; charger depuis le réseau si l&apos;entrée du cache est plus ancienne
+
+Toujours le réseau : toujours charger depuis le réseau sans vérifier si le cache a une entrée valide (équivalent à la fonction recharger d&apos;un navigateur)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="379"/>
@@ -40926,7 +40931,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1251"/>
         <source>Possible corruption after REPACK detected. %1 still exists. This may point to a permission or locking problem of the original DBF.</source>
-        <translation type="unfinished"></translation>
+        <translation>Une possible corruption après REPACK détectée. %1 existe toujours. Ceci peut venir d&apos;un problème de permissions ou de verrous du DBF original.</translation>
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1270"/>
@@ -43180,7 +43185,7 @@ erreur : %2</translation>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="211"/>
         <source>Only list the existing geometry types and don&apos;t offer to add others.</source>
-        <translation type="unfinished"></translation>
+        <translation>Lister uniquement les types de géométries existants et ne pas proposer d&apos;en ajouter d&apos;autres.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="217"/>
@@ -46728,12 +46733,12 @@ Le message d&apos;erreur de la base de donnée est :
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1529"/>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1539"/>
         <source>Query could not be canceled [%1]</source>
-        <translation type="unfinished"></translation>
+        <translation>La requête ne peut être annulée [%1]</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1529"/>
         <source>PQgetCancel failed</source>
-        <translation type="unfinished"></translation>
+        <translation>PQgetCancel a échoué</translation>
     </message>
     <message>
         <source>Errornous query: %1 returned %2 [%3]</source>
@@ -47161,12 +47166,12 @@ Erreur : %2</translation>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="133"/>
         <source>invalid PostgreSQL topology layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Couche topologique PostgreSQL invalide</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="145"/>
         <source>PostgreSQL layer has no primary key.</source>
-        <translation type="unfinished"></translation>
+        <translation>Couche PostgreSQL sans clé primaire</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="163"/>
@@ -47202,7 +47207,7 @@ Erreur dans la base de données : %2</translation>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="574"/>
         <source>FAILURE: Field %1 not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>Échec: Champ %1 introuvable.</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="792"/>
@@ -47230,22 +47235,22 @@ Erreur dans la base de données : %2</translation>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="204"/>
         <source>PostgreSQL layer has unknown primary key type.</source>
-        <translation type="unfinished"></translation>
+        <translation>Couche PostgreSQL avec un type de clé primaire inconnu.</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="811"/>
         <source>Field %1 ignored, because of unsupported type type %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Champ %1 ignoré parce qu&apos;il est d&apos;un type non supporté : %2</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1060"/>
         <source>The table has no column suitable for use as a key. QGIS requires a primary key, a PostgreSQL oid column or a ctid for tables.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">La table n&apos;a pas de colonne utilisable comme clé. QGis a besoin d&apos;un clé primaire, une colonne OID PostgreSQL ou un ctid pour une table.</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1088"/>
         <source>Key field &apos;%1&apos; for view not found.</source>
-        <translation>Champ de clé &apos;%1&apos; pour vue non trouvée</translation>
+        <translation>Champ de clé &apos;%1&apos; pour la vue non trouvée.</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1093"/>
@@ -47265,7 +47270,7 @@ Erreur dans la base de données : %2</translation>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1460"/>
         <source>Could not find topology of layer %1.%2.%3</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de trouver la topologie de la couche %1.%2.%3</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1787"/>
@@ -47320,7 +47325,7 @@ Erreur dans la base de données : %2</translation>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3108"/>
         <source>PostgreSQL version: unknown</source>
-        <translation type="unfinished"></translation>
+        <translation>Version de PostgreSQL: inconnue</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3109"/>
@@ -47330,7 +47335,7 @@ Erreur dans la base de données : %2</translation>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3129"/>
         <source>PostgreSQL not connected</source>
-        <translation type="unfinished"></translation>
+        <translation>PostgreSQL pas connecté</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3132"/>
@@ -47745,7 +47750,7 @@ Proceed?</source>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="1120"/>
         <source>Scale denominator</source>
-        <translation type="unfinished"></translation>
+        <translation>Dénominateur de l&apos;échelle</translation>
     </message>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="1144"/>
@@ -50746,7 +50751,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1983"/>
         <source>MetadataUrl</source>
-        <translation type="unfinished"></translation>
+        <translation>URL Métadonnées</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="2004"/>
@@ -59185,7 +59190,7 @@ Les classes existantes doivent-elles être effacées avant la classification ?</
     <message>
         <location filename="../src/providers/wfs/qgswfscapabilities.cpp" line="213"/>
         <source>Either the WFS server does not support WFS version 1.0.0 or the WFS url is wrong</source>
-        <translation type="unfinished"></translation>
+        <translation>Soit le serveur WFS ne supporte pas la version 1.0.0 de WFS ou l&apos;adresse du service WFS est fausse</translation>
     </message>
 </context>
 <context>
