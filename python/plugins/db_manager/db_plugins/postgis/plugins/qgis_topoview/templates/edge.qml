@@ -16,9 +16,28 @@
     </rules>
     <symbols>
       <symbol outputUnit="MM" alpha="1" type="line" name="0">
-        <layer pass="0" class="LineDecoration" locked="0">
-          <prop k="color" v="0,0,0,255"/>
-          <prop k="width" v="0.6"/>
+        <layer pass="0" class="MarkerLine" locked="0">
+          <prop k="interval" v="3"/>
+          <prop k="interval_unit" v="MM"/>
+          <prop k="offset" v="0"/>
+          <prop k="offset_unit" v="MM"/>
+          <prop k="placement" v="lastvertex"/>
+          <prop k="rotate" v="1"/>
+          <symbol alpha="1" type="marker" name="@0@1">
+            <layer pass="0" class="SimpleMarker" locked="0">
+              <prop k="angle" v="0"/>
+              <prop k="color" v="0,0,0,255"/>
+              <prop k="color_border" v="0,0,0,255"/>
+              <prop k="name" v="arrowhead"/>
+              <prop k="offset" v="0,0"/>
+              <prop k="offset_unit" v="MM"/>
+              <prop k="outline_width" v="0.6"/>
+              <prop k="outline_width_unit" v="MM"/>
+              <prop k="scale_method" v="area"/>
+              <prop k="size" v="6"/>
+              <prop k="size_unit" v="MM"/>
+            </layer>
+          </symbol>
         </layer>
         <layer pass="0" class="SimpleLine" locked="0">
           <prop k="capstyle" v="square"/>
@@ -32,9 +51,28 @@
         </layer>
       </symbol>
       <symbol outputUnit="MM" alpha="1" type="line" name="1">
-        <layer pass="0" class="LineDecoration" locked="0">
-          <prop k="color" v="76,51,152,255"/>
-          <prop k="width" v="0.6"/>
+        <layer pass="0" class="MarkerLine" locked="0">
+          <prop k="interval" v="3"/>
+          <prop k="interval_unit" v="MM"/>
+          <prop k="offset" v="0"/>
+          <prop k="offset_unit" v="MM"/>
+          <prop k="placement" v="lastvertex"/>
+          <prop k="rotate" v="1"/>
+          <symbol alpha="1" type="marker" name="@0@1">
+            <layer pass="0" class="SimpleMarker" locked="0">
+              <prop k="angle" v="0"/>
+              <prop k="color" v="76,51,152,255"/>
+              <prop k="color_border" v="76,51,152,255"/>
+              <prop k="name" v="arrowhead"/>
+              <prop k="offset" v="0,0"/>
+              <prop k="offset_unit" v="MM"/>
+              <prop k="outline_width" v="0.6"/>
+              <prop k="outline_width_unit" v="MM"/>
+              <prop k="scale_method" v="area"/>
+              <prop k="size" v="6"/>
+              <prop k="size_unit" v="MM"/>
+            </layer>
+          </symbol>
         </layer>
         <layer pass="0" class="SimpleLine" locked="0">
           <prop k="capstyle" v="square"/>
@@ -48,9 +86,28 @@
         </layer>
       </symbol>
       <symbol outputUnit="MM" alpha="1" type="line" name="2">
-        <layer pass="0" class="LineDecoration" locked="0">
-          <prop k="color" v="60,150,68,255"/>
-          <prop k="width" v="0.6"/>
+        <layer pass="0" class="MarkerLine" locked="0">
+          <prop k="interval" v="3"/>
+          <prop k="interval_unit" v="MM"/>
+          <prop k="offset" v="0"/>
+          <prop k="offset_unit" v="MM"/>
+          <prop k="placement" v="lastvertex"/>
+          <prop k="rotate" v="1"/>
+          <symbol alpha="1" type="marker" name="@0@1">
+            <layer pass="0" class="SimpleMarker" locked="0">
+              <prop k="angle" v="0"/>
+              <prop k="color" v="60,150,68,255"/>
+              <prop k="color_border" v="60,150,68,255"/>
+              <prop k="name" v="arrowhead"/>
+              <prop k="offset" v="0,0"/>
+              <prop k="offset_unit" v="MM"/>
+              <prop k="outline_width" v="0.6"/>
+              <prop k="outline_width_unit" v="MM"/>
+              <prop k="scale_method" v="area"/>
+              <prop k="size" v="6"/>
+              <prop k="size_unit" v="MM"/>
+            </layer>
+          </symbol>
         </layer>
         <layer pass="0" class="SimpleLine" locked="0">
           <prop k="capstyle" v="square"/>
@@ -64,9 +121,28 @@
         </layer>
       </symbol>
       <symbol outputUnit="MM" alpha="1" type="line" name="3">
-        <layer pass="0" class="LineDecoration" locked="0">
-          <prop k="color" v="166,47,49,255"/>
-          <prop k="width" v="0.6"/>
+        <layer pass="0" class="MarkerLine" locked="0">
+          <prop k="interval" v="3"/>
+          <prop k="interval_unit" v="MM"/>
+          <prop k="offset" v="0"/>
+          <prop k="offset_unit" v="MM"/>
+          <prop k="placement" v="lastvertex"/>
+          <prop k="rotate" v="1"/>
+          <symbol alpha="1" type="marker" name="@0@1">
+            <layer pass="0" class="SimpleMarker" locked="0">
+              <prop k="angle" v="0"/>
+              <prop k="color" v="166,47,49,255"/>
+              <prop k="color_border" v="166,47,49,255"/>
+              <prop k="name" v="arrowhead"/>
+              <prop k="offset" v="0,0"/>
+              <prop k="offset_unit" v="MM"/>
+              <prop k="outline_width" v="0.6"/>
+              <prop k="outline_width_unit" v="MM"/>
+              <prop k="scale_method" v="area"/>
+              <prop k="size" v="6"/>
+              <prop k="size_unit" v="MM"/>
+            </layer>
+          </symbol>
         </layer>
         <layer pass="0" class="SimpleLine" locked="0">
           <prop k="capstyle" v="square"/>
@@ -80,9 +156,28 @@
         </layer>
       </symbol>
       <symbol outputUnit="MM" alpha="1" type="line" name="4">
-        <layer pass="0" class="LineDecoration" locked="0">
-          <prop k="color" v="176,172,55,255"/>
-          <prop k="width" v="0.6"/>
+        <layer pass="0" class="MarkerLine" locked="0">
+          <prop k="interval" v="3"/>
+          <prop k="interval_unit" v="MM"/>
+          <prop k="offset" v="0"/>
+          <prop k="offset_unit" v="MM"/>
+          <prop k="placement" v="lastvertex"/>
+          <prop k="rotate" v="1"/>
+          <symbol alpha="1" type="marker" name="@0@1">
+            <layer pass="0" class="SimpleMarker" locked="0">
+              <prop k="angle" v="0"/>
+              <prop k="color" v="176,172,55,255"/>
+              <prop k="color_border" v="176,172,55,255"/>
+              <prop k="name" v="arrowhead"/>
+              <prop k="offset" v="0,0"/>
+              <prop k="offset_unit" v="MM"/>
+              <prop k="outline_width" v="0.6"/>
+              <prop k="outline_width_unit" v="MM"/>
+              <prop k="scale_method" v="area"/>
+              <prop k="size" v="6"/>
+              <prop k="size_unit" v="MM"/>
+            </layer>
+          </symbol>
         </layer>
         <layer pass="0" class="SimpleLine" locked="0">
           <prop k="capstyle" v="square"/>
@@ -96,9 +191,28 @@
         </layer>
       </symbol>
       <symbol outputUnit="MM" alpha="1" type="line" name="5">
-        <layer pass="0" class="LineDecoration" locked="0">
-          <prop k="color" v="7,79,167,255"/>
-          <prop k="width" v="0.6"/>
+        <layer pass="0" class="MarkerLine" locked="0">
+          <prop k="interval" v="3"/>
+          <prop k="interval_unit" v="MM"/>
+          <prop k="offset" v="0"/>
+          <prop k="offset_unit" v="MM"/>
+          <prop k="placement" v="lastvertex"/>
+          <prop k="rotate" v="1"/>
+          <symbol alpha="1" type="marker" name="@0@1">
+            <layer pass="0" class="SimpleMarker" locked="0">
+              <prop k="angle" v="0"/>
+              <prop k="color" v="7,79,167,255"/>
+              <prop k="color_border" v="7,79,167,255"/>
+              <prop k="name" v="arrowhead"/>
+              <prop k="offset" v="0,0"/>
+              <prop k="offset_unit" v="MM"/>
+              <prop k="outline_width" v="0.6"/>
+              <prop k="outline_width_unit" v="MM"/>
+              <prop k="scale_method" v="area"/>
+              <prop k="size" v="6"/>
+              <prop k="size_unit" v="MM"/>
+            </layer>
+          </symbol>
         </layer>
         <layer pass="0" class="SimpleLine" locked="0">
           <prop k="capstyle" v="square"/>
@@ -112,9 +226,28 @@
         </layer>
       </symbol>
       <symbol outputUnit="MM" alpha="1" type="line" name="6">
-        <layer pass="0" class="LineDecoration" locked="0">
-          <prop k="color" v="203,213,14,255"/>
-          <prop k="width" v="0.6"/>
+        <layer pass="0" class="MarkerLine" locked="0">
+          <prop k="interval" v="3"/>
+          <prop k="interval_unit" v="MM"/>
+          <prop k="offset" v="0"/>
+          <prop k="offset_unit" v="MM"/>
+          <prop k="placement" v="lastvertex"/>
+          <prop k="rotate" v="1"/>
+          <symbol alpha="1" type="marker" name="@0@1">
+            <layer pass="0" class="SimpleMarker" locked="0">
+              <prop k="angle" v="0"/>
+              <prop k="color" v="203,213,14,255"/>
+              <prop k="color_border" v="203,213,14,255"/>
+              <prop k="name" v="arrowhead"/>
+              <prop k="offset" v="0,0"/>
+              <prop k="offset_unit" v="MM"/>
+              <prop k="outline_width" v="0.6"/>
+              <prop k="outline_width_unit" v="MM"/>
+              <prop k="scale_method" v="area"/>
+              <prop k="size" v="6"/>
+              <prop k="size_unit" v="MM"/>
+            </layer>
+          </symbol>
         </layer>
         <layer pass="0" class="SimpleLine" locked="0">
           <prop k="capstyle" v="square"/>
@@ -128,9 +261,28 @@
         </layer>
       </symbol>
       <symbol outputUnit="MM" alpha="1" type="line" name="7">
-        <layer pass="0" class="LineDecoration" locked="0">
-          <prop k="color" v="198,7,157,255"/>
-          <prop k="width" v="0.6"/>
+        <layer pass="0" class="MarkerLine" locked="0">
+          <prop k="interval" v="3"/>
+          <prop k="interval_unit" v="MM"/>
+          <prop k="offset" v="0"/>
+          <prop k="offset_unit" v="MM"/>
+          <prop k="placement" v="lastvertex"/>
+          <prop k="rotate" v="1"/>
+          <symbol alpha="1" type="marker" name="@0@1">
+            <layer pass="0" class="SimpleMarker" locked="0">
+              <prop k="angle" v="0"/>
+              <prop k="color" v="198,7,157,255"/>
+              <prop k="color_border" v="198,7,157,255"/>
+              <prop k="name" v="arrowhead"/>
+              <prop k="offset" v="0,0"/>
+              <prop k="offset_unit" v="MM"/>
+              <prop k="outline_width" v="0.6"/>
+              <prop k="outline_width_unit" v="MM"/>
+              <prop k="scale_method" v="area"/>
+              <prop k="size" v="6"/>
+              <prop k="size_unit" v="MM"/>
+            </layer>
+          </symbol>
         </layer>
         <layer pass="0" class="SimpleLine" locked="0">
           <prop k="capstyle" v="square"/>
@@ -144,9 +296,28 @@
         </layer>
       </symbol>
       <symbol outputUnit="MM" alpha="1" type="line" name="8">
-        <layer pass="0" class="LineDecoration" locked="0">
-          <prop k="color" v="56,211,21,255"/>
-          <prop k="width" v="0.6"/>
+        <layer pass="0" class="MarkerLine" locked="0">
+          <prop k="interval" v="3"/>
+          <prop k="interval_unit" v="MM"/>
+          <prop k="offset" v="0"/>
+          <prop k="offset_unit" v="MM"/>
+          <prop k="placement" v="lastvertex"/>
+          <prop k="rotate" v="1"/>
+          <symbol alpha="1" type="marker" name="@0@1">
+            <layer pass="0" class="SimpleMarker" locked="0">
+              <prop k="angle" v="0"/>
+              <prop k="color" v="56,211,21,255"/>
+              <prop k="color_border" v="56,211,21,255"/>
+              <prop k="name" v="arrowhead"/>
+              <prop k="offset" v="0,0"/>
+              <prop k="offset_unit" v="MM"/>
+              <prop k="outline_width" v="0.6"/>
+              <prop k="outline_width_unit" v="MM"/>
+              <prop k="scale_method" v="area"/>
+              <prop k="size" v="6"/>
+              <prop k="size_unit" v="MM"/>
+            </layer>
+          </symbol>
         </layer>
         <layer pass="0" class="SimpleLine" locked="0">
           <prop k="capstyle" v="square"/>
@@ -160,9 +331,28 @@
         </layer>
       </symbol>
       <symbol outputUnit="MM" alpha="1" type="line" name="9">
-        <layer pass="0" class="LineDecoration" locked="0">
-          <prop k="color" v="12,204,198,255"/>
-          <prop k="width" v="0.6"/>
+        <layer pass="0" class="MarkerLine" locked="0">
+          <prop k="interval" v="3"/>
+          <prop k="interval_unit" v="MM"/>
+          <prop k="offset" v="0"/>
+          <prop k="offset_unit" v="MM"/>
+          <prop k="placement" v="lastvertex"/>
+          <prop k="rotate" v="1"/>
+          <symbol alpha="1" type="marker" name="@0@1">
+            <layer pass="0" class="SimpleMarker" locked="0">
+              <prop k="angle" v="0"/>
+              <prop k="color" v="12,204,198,255"/>
+              <prop k="color_border" v="12,204,198,255"/>
+              <prop k="name" v="arrowhead"/>
+              <prop k="offset" v="0,0"/>
+              <prop k="offset_unit" v="MM"/>
+              <prop k="outline_width" v="0.6"/>
+              <prop k="outline_width_unit" v="MM"/>
+              <prop k="scale_method" v="area"/>
+              <prop k="size" v="6"/>
+              <prop k="size_unit" v="MM"/>
+            </layer>
+          </symbol>
         </layer>
         <layer pass="0" class="SimpleLine" locked="0">
           <prop k="capstyle" v="square"/>
