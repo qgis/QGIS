@@ -499,6 +499,23 @@
           46.47796
         ]
       }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Etienne Tourigny",
+        "Committer": "Yes",
+        "First Commit Message": "fixes for browser (GDAL rasters) : skip *.aux.xml files ; add suffix to raster file names in browser ; add HDF4 file suffix (.hdf) in buildSupportedRasterFileFilterAndExtensions()",
+        "First Commit Date": "09-03-2012",
+        "GIT Nickname": "etiennesky"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -45.87558,
+          -23.199067
+        ]
+      }
     }
   ]
 }
