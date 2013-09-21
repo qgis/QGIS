@@ -486,6 +486,22 @@
     {
       "type": "Feature",
       "properties": {
+        "Name": "Luiz Motta",
+        "Committer": "No",
+        "GIT Nickname": "lmotta",
+        "First Commit Date": 2010
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8645133972168,
+          -15.763344662010184
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
         "Name": "Denis Rouzaud",
         "Committer": "Yes",
         "First Commit Message": "[FEATURE] add multiple selection option in value relations",
