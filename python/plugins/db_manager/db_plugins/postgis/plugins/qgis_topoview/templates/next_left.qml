@@ -14,7 +14,7 @@
       <symbolfieldname></symbolfieldname>
       <outlinecolor red="0" blue="0" green="170"/>
       <outlinestyle>SolidLine</outlinestyle>
-      <outlinewidth>1</outlinewidth>
+      <outlinewidth>0.26</outlinewidth>
       <fillcolor red="0" blue="0" green="0"/>
       <fillpattern>NoBrush</fillpattern>
       <texturepath>../../../../../../../../../src/qgis/plugins/db_manager/db_manager/db_plugins/postgis/plugins/qgis_topoview</texturepath>
