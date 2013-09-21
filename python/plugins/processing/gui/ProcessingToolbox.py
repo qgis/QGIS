@@ -16,7 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
-from processing import interface
+
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -26,8 +26,7 @@ __revision__ = '$Format:%H$'
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-
-import webbrowser
+from processing import interface
 from processing.gui.MissingDependencyDialog import MissingDependencyDialog
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.modeler.Providers import Providers
@@ -35,7 +34,6 @@ from processing.gui.AlgorithmClassification import AlgorithmDecorator
 from processing.core.Processing import Processing
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.tools import dataobjects
 from processing.gui.ParametersDialog import ParametersDialog
 from processing.gui.BatchProcessingDialog import BatchProcessingDialog
 from processing.gui.EditRenderingStylesDialog import EditRenderingStylesDialog
@@ -302,6 +300,7 @@ class ProcessingToolbox(QDockWidget, Ui_ProcessingToolbox):
         text = unicode(self.searchBox.text())
         for providerName in Processing.algs.keys():
             groups = {}
+            count = 0
             provider = Processing.algs[providerName]
             name = "ACTIVATE_" + providerName.upper().replace(" ", "_")
             if not ProcessingConfig.getSetting(name):
@@ -321,6 +320,7 @@ class ProcessingToolbox(QDockWidget, Ui_ProcessingToolbox):
                         groups[alg.group] = groupItem
                     algItem = TreeAlgorithmItem(alg)
                     groupItem.addChild(algItem)
+                    count += 1
 
             actions = Processing.actions[providerName]
             for action in actions:
@@ -337,7 +337,7 @@ class ProcessingToolbox(QDockWidget, Ui_ProcessingToolbox):
             if len(groups) > 0:
                 providerItem = QTreeWidgetItem()
                 providerItem.setText(0, Processing.getProviderFromName(providerName).getDescription()
-                                     + " [" + str(len(provider)) + " geoalgorithms]")
+                                     + " [" + str(count) + " geoalgorithms]")
                 providerItem.setIcon(0, Processing.getProviderFromName(providerName).getIcon())
                 providerItem.setToolTip(0, providerItem.text(0))
                 for groupItem in groups.values():

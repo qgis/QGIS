@@ -139,6 +139,9 @@ class ModelerAlgorithm(GeoAlgorithm):
                     self.name = line[len("NAME:"):]
                 elif line.startswith("GROUP:"):
                     self.group = line[len("GROUP:"):]
+                    if self.group == "[Test models]":
+                        self.showInModeler = False
+                        self.showInToolbox = False
                 elif line.startswith("ALGORITHM:"):
                     algParams={}
                     algOutputs={}

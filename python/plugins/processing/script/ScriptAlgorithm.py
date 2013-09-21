@@ -87,6 +87,9 @@ class ScriptAlgorithm(GeoAlgorithm):
             self.script += line
             line = lines.readline()
         lines.close()
+        if self.group == "[Test scripts]":
+            self.showInModeler = False
+            self.showInToolbox = False
 
     def defineCharacteristicsFromScript(self):
         lines = self.script.split("\n")
