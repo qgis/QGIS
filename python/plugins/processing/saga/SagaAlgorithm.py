@@ -313,7 +313,7 @@ class SagaAlgorithm(GeoAlgorithm):
             if isinstance(out, OutputRaster):
                 filename = out.getCompatibleFileName(self)
                 filename2 = filename + ".sgrd"
-                formatIndex = 1 if saga208 else 4
+                formatIndex = 4 if not saga208 and isWindows() else 1
                 sessionExportedLayers[filename] = filename2
                 dontExport = True
 
