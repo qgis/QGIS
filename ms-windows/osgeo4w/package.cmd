@@ -147,6 +147,10 @@ echo ALL_BUILD: %DATE% %TIME%>>%LOG% 2>&1
 %DEVENV% qgis%VERSION%.sln /Project ALL_BUILD /Build %BUILDCONF% /Out %LOG%>>%LOG% 2>&1
 if errorlevel 1 goto error
 
+echo REMOVE: %DATE% %TIME%>>%LOG% 2>&1
+rmdir /s /q %OSGEO4W_ROOT%\apps\%PACKAGENAME%
+if errorlevel 1 goto error
+
 echo INSTALL: %DATE% %TIME%>>%LOG% 2>&1
 %DEVENV% qgis%VERSION%.sln /Project INSTALL /Build %BUILDCONF% /Out %LOG%>>%LOG% 2>&1
 if errorlevel 1 goto error
