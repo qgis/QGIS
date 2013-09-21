@@ -36,11 +36,6 @@ class LinesToPolygons(GeoAlgorithm):
     INPUT = "INPUT"
     OUTPUT = "OUTPUT"
 
-    #===========================================================================
-    # def getIcon(self):
-    #    return QtGui.QIcon(os.path.dirname(__file__) + "/icons/to_lines.png")
-    #===========================================================================
-
     def defineCharacteristics(self):
         self.name = "Lines to polygons"
         self.group = "Vector geometry tools"

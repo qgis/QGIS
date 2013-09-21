@@ -40,11 +40,6 @@ class MeanCoords(GeoAlgorithm):
     UID = "UID"
     WEIGHT = "WEIGHT"
 
-    #===========================================================================
-    # def getIcon(self):
-    #    return QtGui.QIcon(os.path.dirname(__file__) + "/icons/mean.png")
-    #===========================================================================
-
     def defineCharacteristics(self):
         self.name = "Mean coordinate(s)"
         self.group = "Vector analysis tools"

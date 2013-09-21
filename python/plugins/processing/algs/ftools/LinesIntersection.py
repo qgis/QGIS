@@ -41,11 +41,6 @@ class LinesIntersection(GeoAlgorithm):
 
     OUTPUT = "OUTPUT"
 
-    #===========================================================================
-    # def getIcon(self):
-    #    return QtGui.QIcon(os.path.dirname(__file__) + "/icons/intersections.png")
-    #===========================================================================
-
     def defineCharacteristics(self):
         self.name = "Line intersections"
         self.group = "Vector overlay tools"

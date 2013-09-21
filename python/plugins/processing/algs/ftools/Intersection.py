@@ -38,11 +38,6 @@ class Intersection(GeoAlgorithm):
     INPUT2 = "INPUT2"
     OUTPUT = "OUTPUT"
 
-    #===========================================================================
-    # def getIcon(self):
-    #    return QtGui.QIcon(os.path.dirname(__file__) + "/icons/intersect.png")
-    #===========================================================================
-
     def processAlgorithm(self, progress):
         vlayerA = dataobjects.getObjectFromUri(self.getParameterValue(Intersection.INPUT))
         vlayerB = dataobjects.getObjectFromUri(self.getParameterValue(Intersection.INPUT2))

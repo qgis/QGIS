@@ -36,11 +36,6 @@ class ExtractNodes(GeoAlgorithm):
     INPUT = "INPUT"
     OUTPUT = "OUTPUT"
 
-    #===========================================================================
-    # def getIcon(self):
-    #    return QtGui.QIcon(os.path.dirname(__file__) + "/icons/extract_nodes.png")
-    #===========================================================================
-
     def defineCharacteristics(self):
         self.name = "Extract nodes"
         self.group = "Vector geometry tools"

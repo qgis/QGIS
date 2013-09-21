@@ -62,7 +62,6 @@ class Postprocessing:
                         dataobjects.load(out.value, name, alg.crs, RenderingStyles.getStyle(alg.commandLineName(),out.name))
                 except Exception, e:
                     wrongLayers.append(out)
-                    #QMessageBox.critical(None, "Error", str(e))
             elif isinstance(out, OutputHTML):
                 ProcessingResults.addResult(out.description, out.value)
                 htmlResults = True
