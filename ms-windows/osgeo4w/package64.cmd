@@ -29,17 +29,16 @@ if "%VERSION%"=="" goto error
 if "%PACKAGE%"=="" goto error
 if "%PACKAGENAME%"=="" set PACKAGENAME=qgis
 
-path %SYSTEMROOT%\system32;%SYSTEMROOT%;%SYSTEMROOT%\System32\Wbem;%PROGRAMFILES%\CMake 2.8\bin
+path %SYSTEMROOT%\system32;%SYSTEMROOT%;%SYSTEMROOT%\System32\Wbem;%PROGRAMFILES(X86)%\CMake 2.8\bin
 set PYTHONPATH=
 
-call "%PROGRAMFILES%\Microsoft Visual Studio 10.0\VC\vcvarsall.bat" amd64
+call "%PROGRAMFILES(X86)%\Microsoft Visual Studio 10.0\VC\vcvarsall.bat" amd64
 path %PATH%;%PROGRAMFILES(X86)%\Microsoft Visual Studio 10.0\Common7\IDE
 
 if "%OSGEO4W_ROOT%"=="" set OSGEO4W_ROOT=C:\OSGeo4W64
 if not exist "%OSGEO4W_ROOT%\bin\o4w_env.bat" goto error
 call "%OSGEO4W_ROOT%\bin\o4w_env.bat"
 path %PATH%;c:\cygwin\bin
-echo on
 
 set O4W_ROOT=%OSGEO4W_ROOT:\=/%
 set LIB_DIR=%O4W_ROOT%
@@ -144,9 +143,11 @@ echo ALL_BUILD: %DATE% %TIME%>>%LOG% 2>&1
 %DEVENV% qgis%VERSION%.sln /Project ALL_BUILD /Build %BUILDCONF% /Out %LOG%>>%LOG% 2>&1
 if errorlevel 1 goto error
 
-echo RMDIR: %DATE% %TIME%>>%LOG% 2>&1
-rmdir /s /q %OSGEO4W_ROOT%\apps\%PACKAGENAME%
-if errorlevel 1 goto error
+if exist %OSGEO4W_ROOT%\apps\%PACKAGENAME% (
+	echo REMOVE: %DATE% %TIME%>>%LOG% 2>&1
+	rmdir /s /q %OSGEO4W_ROOT%\apps\%PACKAGENAME%
+	if errorlevel 1 goto error
+)
 
 echo INSTALL: %DATE% %TIME%>>%LOG% 2>&1
 %DEVENV% qgis%VERSION%.sln /Project INSTALL /Build %BUILDCONF% /Out %LOG%>>%LOG% 2>&1
@@ -166,6 +167,7 @@ sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e 's/@grassve
 
 sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e 's/@grassversion@/%GRASS_VERSION%/g' postinstall-server.bat >%OSGEO4W_ROOT%\etc\postinstall\%PACKAGENAME%-server.bat
 sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e 's/@grassversion@/%GRASS_VERSION%/g' preremove-server.bat >%OSGEO4W_ROOT%\etc\preremove\%PACKAGENAME%-server.bat
+if not exist %OSGEO4W_ROOT%\httpd.d mkdir %OSGEO4W_ROOT%\httpd.d
 sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e 's/@grassversion@/%GRASS_VERSION%/g' httpd.conf.tmpl >%OSGEO4W_ROOT%\httpd.d\httpd_%PACKAGENAME%.conf.tmpl
 
 REM sed -e 's/%OSGEO4W_ROOT:\=\\\\\\\\%/@osgeo4w@/' %OSGEO4W_ROOT%\apps\%PACKAGENAME%\python\qgis\qgisconfig.py >%OSGEO4W_ROOT%\apps\%PACKAGENAME%\python\qgis\qgisconfig.py.tmpl
@@ -185,7 +187,6 @@ tar -C %OSGEO4W_ROOT% -cjf %PACKAGENAME%-common-%VERSION%-%PACKAGE%.tar.bz2 ^
 	"apps/%PACKAGENAME%/bin/qgis_gui.dll" ^
 	"apps/%PACKAGENAME%/doc/" ^
 	"apps/%PACKAGENAME%/plugins/delimitedtextprovider.dll" ^
-	"apps/%PACKAGENAME%/plugins/diagramoverlay.dll" ^
 	"apps/%PACKAGENAME%/plugins/gdalprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/gpxprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/memoryprovider.dll" ^
@@ -235,7 +236,6 @@ tar -C %OSGEO4W_ROOT% -cjf %PACKAGENAME%-%VERSION%-%PACKAGE%.tar.bz2 ^
 	"apps/%PACKAGENAME%/icons/" ^
 	"apps/%PACKAGENAME%/images/" ^
 	"apps/%PACKAGENAME%/plugins/coordinatecaptureplugin.dll" ^
-	"apps/%PACKAGENAME%/plugins/delimitedtextplugin.dll" ^
 	"apps/%PACKAGENAME%/plugins/dxf2shpconverterplugin.dll" ^
 	"apps/%PACKAGENAME%/plugins/evis.dll" ^
 	"apps/%PACKAGENAME%/plugins/georefplugin.dll" ^
@@ -254,10 +254,7 @@ tar -C %OSGEO4W_ROOT% -cjf %PACKAGENAME%-%VERSION%-%PACKAGE%.tar.bz2 ^
 	"apps/%PACKAGENAME%/qgis_help.exe" ^
         "apps/qt4/plugins/sqldrivers/qsqlspatialite.dll" ^
 	"apps/%PACKAGENAME%/python/" ^
-	"apps/%PACKAGENAME%/resources/context_help/" ^
-	"apps/%PACKAGENAME%/resources/function_help/" ^
 	"apps/%PACKAGENAME%/resources/customization.xml" ^
-	"apps/%PACKAGENAME%/resources/qgis_help.db" ^
 	"bin/%PACKAGENAME%.bat.tmpl" ^
 	"bin/%PACKAGENAME%-browser.bat.tmpl" ^
 	"etc/postinstall/%PACKAGENAME%.bat" ^

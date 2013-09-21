@@ -277,8 +277,8 @@ close F;
 $version = "$major.$minor.$patch" unless defined $version;
 
 unless( defined $binary ) {
-	if( -f "binary-$version" ) {
-		open P, "binary-$version";
+	if( -f "binary-$archpostfix$version" ) {
+		open P, "binary-$archpostfix$version";
 		$binary = <P>;
 		close P;
 		$binary++;
@@ -363,18 +363,19 @@ $cmd .= " -DVERSION_NUMBER='$version'";
 $cmd .= " -DBINARY_REVISION=$binary";
 $cmd .= sprintf( " -DVERSION_INT='%d%02d%02d%02d'", $major, $minor, $patch, $binary );
 $cmd .= " -DQGIS_BASE='$packagename $releasename'";
-$cmd .= " -DINSTALLER_NAME='QGIS-OSGeo4W-$version-$binary-Setup$archpostfix.exe'";
+$cmd .= " -DINSTALLER_NAME='$packagename-OSGeo4W-$version-$binary-Setup$archpostfix.exe'";
 $cmd .= " -DDISPLAYED_NAME='$packagename \'$releasename\' ($version)'";
 $cmd .= " -DSHORTNAME='$shortname'";
 $cmd .= " -DINSTALLER_TYPE=OSGeo4W";
 $cmd .= " -DPACKAGE_FOLDER=osgeo4w/$unpacked";
 $cmd .= " -DLICENSE_FILE='$license'";
+$cmd .= " -DARCH='$arch'";
 $cmd .= " QGIS-Installer.nsi";
 
 system $cmd;
 die "running nsis failed" if $?;
 
-open P, ">osgeo4w/binary-$version";
+open P, ">osgeo4w/binary-$archpostfix$version";
 print P $binary;
 close P;
 
