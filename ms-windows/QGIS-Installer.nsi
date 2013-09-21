@@ -90,12 +90,14 @@ ShowUnInstDetails show
 ;    if the uninstall procedure succeeded, call the current installer asking for the install PATH
 
 Function .onInit
-	${If} ${RunningX64}
-		DetailPrint "Installer running on 64-bit host"
-		; disable registry redirection (enable access to 64-bit portion of registry)
-		SetRegView 64
-		; change install dir
-		StrCpy $INSTDIR "$PROGRAMFILES64\${QGIS_BASE}"
+	${If} ${ARCH} == "x86_64"
+		${If} ${RunningX64}
+			DetailPrint "Installer running on 64-bit host"
+			; disable registry redirection (enable access to 64-bit portion of registry)
+			SetRegView 64
+			; change install dir
+			StrCpy $INSTDIR "$PROGRAMFILES64\${QGIS_BASE}"
+		${EndIf}
 	${EndIf}
 
 	Var /GLOBAL ASK_FOR_PATH
