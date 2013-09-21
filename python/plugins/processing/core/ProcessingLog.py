@@ -50,7 +50,7 @@ class ProcessingLog():
 
     @staticmethod
     def logFilename():
-        batchfile = userFolder() + os.sep + "processing_qgis.log"
+        batchfile = userFolder() + os.sep + "processing.log"
         return batchfile
 
     @staticmethod

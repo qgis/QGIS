@@ -105,7 +105,7 @@ class ProcessingConfig():
 
     @staticmethod
     def configFile():
-        return os.path.join(userFolder(), "processing_qgis.conf")
+        return os.path.join(userFolder(), "processing.conf")
 
     @staticmethod
     def loadSettings():
