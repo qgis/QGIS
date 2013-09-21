@@ -145,6 +145,7 @@ static GEOSInit geosinit;
 #define GEOSArea(g, a) GEOSArea( (GEOSGeometry*) g, a )
 #define GEOSTopologyPreserveSimplify(g, t) GEOSTopologyPreserveSimplify( (GEOSGeometry*) g, t )
 #define GEOSGetCentroid(g) GEOSGetCentroid( (GEOSGeometry*) g )
+#define GEOSPointOnSurface(g) GEOSPointOnSurface( (GEOSGeometry*) g )
 
 #define GEOSCoordSeq_getSize(cs,n) GEOSCoordSeq_getSize( (GEOSCoordSequence *) cs, n )
 #define GEOSCoordSeq_getX(cs,i,x) GEOSCoordSeq_getX( (GEOSCoordSequence *)cs, i, x )
@@ -6486,6 +6487,23 @@ QgsGeometry* QgsGeometry::centroid()
   try
   {
     return fromGeosGeom( GEOSGetCentroid( mGeos ) );
+  }
+  CATCH_GEOS( 0 )
+}
+
+QgsGeometry* QgsGeometry::pointOnSurface()
+{
+  if ( mDirtyGeos )
+  {
+    exportWkbToGeos();
+  }
+  if ( !mGeos )
+  {
+    return 0;
+  }
+  try
+  {
+    return fromGeosGeom( GEOSPointOnSurface( mGeos ) );
   }
   CATCH_GEOS( 0 )
 }

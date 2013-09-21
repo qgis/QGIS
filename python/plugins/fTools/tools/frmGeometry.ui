@@ -119,6 +119,13 @@
     </widget>
    </item>
    <item row="6" column="0">
+    <widget class="QCheckBox" name="chkEnsurePointInPolygon">
+     <property name="text">
+      <string>Always return points inside polygon</string>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="0">
     <spacer>
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -131,7 +138,7 @@
      </property>
     </spacer>
    </item>
-   <item row="7" column="0">
+   <item row="8" column="0">
     <layout class="QVBoxLayout">
      <item>
       <widget class="QCheckBox" name="chkWriteShapefile">
@@ -167,7 +174,7 @@
      </item>
     </layout>
    </item>
-   <item row="8" column="0">
+   <item row="9" column="0">
     <spacer>
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -180,14 +187,14 @@
      </property>
     </spacer>
    </item>
-   <item row="9" column="0">
+   <item row="10" column="0">
     <widget class="QCheckBox" name="addToCanvasCheck">
      <property name="text">
       <string>Add result to canvas</string>
      </property>
     </widget>
    </item>
-   <item row="10" column="0">
+   <item row="11" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QProgressBar" name="progressBar">
