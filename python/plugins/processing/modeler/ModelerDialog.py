@@ -23,20 +23,16 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import sys
+
 import codecs
 import pickle
-
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithm import GeoAlgorithm
-
 from processing.gui.HelpEditionDialog import HelpEditionDialog
 from processing.gui.ParametersDialog import ParametersDialog
 from processing.gui.AlgorithmClassification import AlgorithmDecorator
-
 from processing.modeler.ModelerParameterDefinitionDialog import ModelerParameterDefinitionDialog
 from processing.modeler.ModelerAlgorithm import ModelerAlgorithm
 from processing.modeler.ModelerParametersDialog import ModelerParametersDialog
@@ -44,9 +40,7 @@ from processing.modeler.ModelerUtils import ModelerUtils
 from processing.modeler.WrongModelException import WrongModelException
 from processing.modeler.ModelerScene import ModelerScene
 from processing.modeler.Providers import Providers
-
 from processing.tools.system import *
-
 from processing.ui.ui_DlgModeler import Ui_DlgModeler
 
 class ModelerDialog(QDialog, Ui_DlgModeler):
@@ -56,13 +50,12 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
     def __init__(self, alg=None):
         QDialog.__init__(self)
 
+        self.hasChanged = False
         self.setupUi(self)
 
         self.setWindowFlags(self.windowFlags() | Qt.WindowSystemMenuHint |
                             Qt.WindowMinMaxButtonsHint)
-
         self.tabWidget.setCurrentIndex(0)
-
         self.scene = ModelerScene(self)
         self.scene.setSceneRect(QRectF(0, 0, 4000, 4000))
         self.view.setScene(self.scene)
@@ -124,6 +117,19 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
         self.help = None
         self.update = False #indicates whether to update or not the toolbox after closing this dialog
 
+    def closeEvent(self, evt):        
+        if self.hasChanged:
+            ret = QMessageBox.question(self, 'Message',
+                                              "The are unchanged changes in model. Close modeler without saving?", 
+                                              QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+
+            if ret == QMessageBox.Yes:
+                evt.accept()
+            else:
+                evt.ignore()            
+        else:
+            evt.accept()       
+    
     def editHelp(self):
         dlg = HelpEditionDialog(self.alg)
         dlg.exec_()
@@ -240,6 +246,8 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
                                     self.tr("Model saved"),
                                     self.tr("Model was correctly saved.")
                                    )
+            
+            self.hasChanged = False
 
     def openModel(self):
         filename = unicode(QFileDialog.getOpenFileName(self, self.tr("Open Model"), ModelerUtils.modelsFolder(), self.tr("Processing models (*.model)")))
@@ -255,6 +263,7 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
                 if self.scene.getLastAlgorithmItem():
                     self.view.ensureVisible(self.scene.getLastAlgorithmItem())
                 self.view.centerOn(0,0)
+                self.hasChanged = False
             except WrongModelException, e:
                 QMessageBox.critical(self,
                                      self.tr("Could not open model"),
@@ -278,6 +287,7 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
                 self.alg.addParameter(dlg.param)
                 self.repaintModel()
                 self.view.ensureVisible(self.scene.getLastParameterItem())
+                self.hasChanged = True
 
     def fillInputsTree(self):
         parametersItem = QTreeWidgetItem()
@@ -303,6 +313,7 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
                 self.alg.addAlgorithm(alg, dlg.params, dlg.values, dlg.outputs, dlg.dependencies)
                 self.repaintModel()
                 self.view.ensureVisible(self.scene.getLastAlgorithmItem())
+                self.hasChanged = False
 
     def fillAlgorithmTree(self):
         settings = QSettings()
