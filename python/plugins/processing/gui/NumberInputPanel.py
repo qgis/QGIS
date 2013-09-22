@@ -28,7 +28,7 @@ from processing.gui.NumberInputDialog import NumberInputDialog
 
 class NumberInputPanel(QtGui.QWidget):
 
-    def __init__(self, number, isInteger):
+    def __init__(self, number, minimum, maximum, isInteger):
         super(NumberInputPanel, self).__init__(None)
         self.horizontalLayout = QtGui.QHBoxLayout(self)
         self.horizontalLayout.setSpacing(2)
@@ -36,8 +36,8 @@ class NumberInputPanel(QtGui.QWidget):
         self.isInteger = isInteger
         if isInteger:
             self.spin = QtGui.QSpinBox()
-            self.spin.setMaximum(1000000000)
-            self.spin.setMinimum(-1000000000)
+            self.spin.setMaximum(maximum)
+            self.spin.setMinimum(minimum)
             self.spin.setValue(number)
             self.horizontalLayout.addWidget(self.spin)
             self.setLayout(self.horizontalLayout)

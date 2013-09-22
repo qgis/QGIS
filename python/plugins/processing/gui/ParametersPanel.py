@@ -264,7 +264,7 @@ class ParametersPanel(QtGui.QWidget):
                 opts.append(self.getExtendedLayerName(opt))
             item = MultipleInputPanel(opts)
         elif isinstance(param, ParameterNumber):
-            item = NumberInputPanel(param.default, param.isInteger)
+            item = NumberInputPanel(param.default, param.min, param.max, param.isInteger)
         elif isinstance(param, ParameterExtent):
             item = ExtentSelectionPanel(self.parent, self.alg, param.default)
         elif isinstance(param, ParameterCrs):
