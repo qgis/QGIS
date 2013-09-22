@@ -1,10 +1,10 @@
 QGIS
 Building QGIS from source - step by step
-Tuesday September 10, 2013
+Sunday September 22, 2013
 
 
-Last Updated: Tuesday September 10, 2013
-Last Change : Tuesday September 10, 2013
+Last Updated: Sunday September 22, 2013
+Last Change : Sunday September 22, 2013
 
 
   1. Introduction
@@ -249,12 +249,12 @@ if you do not have edit privileges for the QGIS source repository, or use
 1. Anonymous Checkout
 
   cd ${HOME}/dev/cpp 
-  git clone git://github.com/qgis/Quantum-GIS.git
+  git clone git://github.com/qgis/QGIS.git
 
 2. Developer Checkout
 
   cd ${HOME}/dev/cpp 
-  git clone git@github.com:qgis/Quantum-GIS.git
+  git clone git@github.com:qgis/QGIS.git
 
 
   3.7. Starting the compile
@@ -269,7 +269,7 @@ development version. I suggest you do something similar:
 
 Now we create a build directory and run ccmake:
 
-  cd Quantum-GIS
+  cd QGIS
   mkdir build-master
   cd build-master
   ccmake ..
@@ -325,6 +325,11 @@ you can install them using apt-get and re-run the command.
 /!\ Note: If you have libqgis1-dev installed, you need to remove it first
 using dpkg -r libqgis1-dev.  Otherwise dpkg-buildpackage will complain about a
 build conflict.
+
+/!\ Note: By default tests are run in the process of building and their
+results are uploaded to http://dash.orfeo-toolbox.org/index.php?project=QGIS.
+You can turn the tests off using DEB_BUILD_OPTIONS=nocheck in front of the
+build command. The upload of results can be avoided with DEB_TEST_TARGET=test.
 
 The packages are created in the parent directory (ie. one level up).
 Install them using dpkg.  E.g.:
@@ -504,7 +509,7 @@ may want to give it a try
 As for GRASS you can obtain the QGIS source code from different sources as described 
 in section 2 above. Once you have the sources, create a build directory in them:
 
-  cd Quantum-GIS
+  cd QGIS
   mkdir build
   cd build
 
@@ -637,9 +642,9 @@ installed in the default locations):
   @cmd
 
 Start the batch file and on the command prompt checkout the QGIS source from
-git to the source directory Quantum-GIS:
+git to the source directory QGIS:
 
-  git clone git://github.com/qgis/Quantum-GIS.git
+  git clone git://github.com/qgis/QGIS.git
 
 Create a 'build' directory somewhere. This will be where all the build output
 will be generated.
@@ -881,7 +886,7 @@ directory and move into it
 
 Check out sources from GIT:
 
-  git clone git://github.com/qgis/Quantum-GIS.git
+  git clone git://github.com/qgis/QGIS.git
 
 
     4.2.8. Compiling
@@ -1868,18 +1873,18 @@ this.
 If you want to experiment with the latest development sources, go to the github
 QGIS project page:
 
-http://github.com/qgis/Quantum-GIS
+http://github.com/qgis/QGIS
 
 It should default to the master branch.  Click the Downloads button and
 select Download .tar.gz. Double-click the tarball to unzip it.
 
 Alternatively, install git from http://git-scm.com and do the following.
 
-Make a specific repository directory somewhere, e.g. ~/QGIS/Quantum-GIS, and cd
+Make a specific repository directory somewhere, e.g. ~/QGIS/QGIS, and cd
 into it. The following will read-only clone the master branch to the directory:
 
   git init
-  git remote add -f -t master -m master qgisupstream git://github.com/qgis/Quantum-GIS.git
+  git remote add -f -t master -m master qgisupstream git://github.com/qgis/QGIS.git
   git merge qgisupstream
   
 
@@ -2071,7 +2076,7 @@ Then do:
     chmod +x cgi-bin/wcstest-1.9.0
     mkdir -p /var/www/wcs/testdata/qgis-1.9.0/raster/
     cd /var/www/wcs/testdata/qgis-1.9.0/raster/
-    cp -r /home/timlinux/Quantum-GIS/tests/testdata/raster/* .
+    cp -r /home/timlinux/QGIS/tests/testdata/raster/* .
 
 Edit wcs.map and set the shapepath to this:
 
@@ -2179,9 +2184,9 @@ procedure is:
  - Tick enable project based security (you need to elsewhere configure your
    Jenkins security to per project settings)
  - Allow Anonymous user Read and Discover access
- - Set the github project to https://github.com/qgis/Quantum-GIS/
+ - Set the github project to https://github.com/qgis/QGIS/
  - Set source code management to Git
- - Set repository url to git://github.com/qgis/Quantum-GIS.git
+ - Set repository url to git://github.com/qgis/QGIS.git
  - In advanced repository url settings set refspec to : 
 
   +refs/heads/master:refs/remotes/origin/master

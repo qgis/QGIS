@@ -16,7 +16,7 @@ ifeq (,$(DISTRIBUTION))
 	DISTRIBUTION := $(shell dpkg-parsechangelog --format rfc822 | sed -ne "s/^Distribution: //p")
 endif
 
-ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"squeeze wheezy lucid maverick natty oneiric precise quantal raring sid-oracle"))
+ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"squeeze wheezy jessie lucid maverick natty oneiric precise quantal raring saucy sid-oracle"))
 	DISTRIBUTION := sid
 endif
 
@@ -70,7 +70,7 @@ ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
 	MAKEFLAGS += -j$(NUMJOBS)
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"squeeze wheezy sid lucid maverick natty oneiric precise raring"))
+ifneq (,$(findstring $(DISTRIBUTION),"squeeze wheezy jessie sid lucid maverick natty oneiric precise raring saucy"))
 	CMAKE_OPTS += -D WITH_PYSPATIALITE=TRUE
 endif
 
@@ -84,7 +84,7 @@ else
 	CMAKE_OPTS += -D WITH_GLOBE=TRUE
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"raring sid sid-oracle"))
+ifneq (,$(findstring $(DISTRIBUTION),"raring saucy sid sid-oracle"))
 	CMAKE_OPTS += -D PYTHON_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libpython2.7.so
 endif
 
@@ -92,7 +92,7 @@ ifneq (,$(findstring -oracle,$(DISTRIBUTION)))
 	CMAKE_OPTS += -D WITH_ORACLE=TRUE
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"wheezy sid"))
+ifneq (,$(findstring $(DISTRIBUTION),"wheezy jessie saucy sid"))
 CPPFLAGS := $(shell dpkg-buildflags --get CPPFLAGS)
 CFLAGS   := $(shell dpkg-buildflags --get CFLAGS) $(CPPFLAGS)
 CXXFLAGS := $(shell dpkg-buildflags --get CXXFLAGS) $(CPPFLAGS)
@@ -233,7 +233,7 @@ binary-arch: build install
 ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"natty oneiric"))
 	dh_sip
 endif
-ifneq (,$(findstring $(DISTRIBUTION),"wheezy sid quantal raring"))
+ifneq (,$(findstring $(DISTRIBUTION),"wheezy jessie sid quantal raring saucy"))
 	dh_python2 --no-guessing-versions
 else
 	dh_pycentral

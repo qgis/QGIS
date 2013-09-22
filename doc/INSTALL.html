@@ -77,13 +77,13 @@ label{  background-color: #FFFFCC;
 <DIV CLASS="header" ID="header">
 <H1>QGIS</H1>
 <H2>Building QGIS from source - step by step</H2>
-<H3>Saturday July 27, 2013</H3>
+<H3>Sunday September 22, 2013</H3>
 </DIV>
 
 <DIV CLASS="body" ID="body">
 <P>
-Last Updated: Saturday July 27, 2013
-Last Change : Saturday July 27, 2013
+Last Updated: Sunday September 22, 2013
+Last Change : Sunday September 22, 2013
 </P>
 <DIV CLASS="toc">
 
@@ -423,7 +423,7 @@ if you do not have edit privileges for the QGIS source repository, or use
 
 <div class="code"><PRE>
 cd ${HOME}/dev/cpp 
-git clone git://github.com/qgis/Quantum-GIS.git
+git clone git://github.com/qgis/QGIS.git
 </PRE></div>
 
 <P>
@@ -432,7 +432,7 @@ git clone git://github.com/qgis/Quantum-GIS.git
 
 <div class="code"><PRE>
 cd ${HOME}/dev/cpp 
-git clone git@github.com:qgis/Quantum-GIS.git
+git clone git@github.com:qgis/QGIS.git
 </PRE></div>
 
 <A NAME="toc10"></A>
@@ -454,7 +454,7 @@ Now we create a build directory and run ccmake:
 </P>
 
 <div class="code"><PRE>
-cd Quantum-GIS
+cd QGIS
 mkdir build-master
 cd build-master
 ccmake ..
@@ -537,6 +537,12 @@ you can install them using <CODE>apt-get</CODE> and re-run the command.
 /!\ <B>Note:</B> If you have <CODE>libqgis1-dev</CODE> installed, you need to remove it first
 using <CODE>dpkg -r libqgis1-dev</CODE>.  Otherwise <CODE>dpkg-buildpackage</CODE> will complain about a
 build conflict.
+</P>
+<P>
+/!\ <B>Note:</B> By default tests are run in the process of building and their
+results are uploaded to <A HREF="http://dash.orfeo-toolbox.org/index.php?project=QGIS.">http://dash.orfeo-toolbox.org/index.php?project=QGIS.</A>
+You can turn the tests off using DEB_BUILD_OPTIONS=nocheck in front of the
+build command. The upload of results can be avoided with DEB_TEST_TARGET=test.
 </P>
 <P>
 The packages are created in the parent directory (ie. one level up).
@@ -808,7 +814,7 @@ in section 2 above. Once you have the sources, create a build directory in them:
 </P>
 
 <div class="code"><PRE>
-cd Quantum-GIS
+cd QGIS
 mkdir build
 cd build
 </PRE></div>
@@ -1001,11 +1007,11 @@ call "%OSGEO4W_ROOT%\bin\o4w_env.bat"
 
 <P>
 Start the batch file and on the command prompt checkout the QGIS source from
-git to the source directory <CODE>Quantum-GIS</CODE>:
+git to the source directory <CODE>QGIS</CODE>:
 </P>
 
 <div class="code"><PRE>
-git clone git://github.com/qgis/Quantum-GIS.git
+git clone git://github.com/qgis/QGIS.git
 </PRE></div>
 
 <P>
@@ -1305,7 +1311,7 @@ Check out sources from GIT:
 </P>
 
 <div class="code"><PRE>
-git clone git://github.com/qgis/Quantum-GIS.git
+git clone git://github.com/qgis/QGIS.git
 </PRE></div>
 
 <H3>4.2.8. Compiling</H3>
@@ -2625,7 +2631,7 @@ If you want to experiment with the latest development sources, go to the github
 QGIS project page:
 </P>
 <P>
-<A HREF="http://github.com/qgis/Quantum-GIS">http://github.com/qgis/Quantum-GIS</A>
+<A HREF="http://github.com/qgis/QGIS">http://github.com/qgis/QGIS</A>
 </P>
 <P>
 It should default to the master branch.  Click the <U>Downloads</U> button and
@@ -2635,13 +2641,13 @@ select <U>Download .tar.gz</U>. Double-click the tarball to unzip it.
 <I>Alternatively</I>, install git from <A HREF="http://git-scm.com">http://git-scm.com</A> and do the following.
 </P>
 <P>
-Make a specific repository directory somewhere, e.g. ~/QGIS/Quantum-GIS, and cd
+Make a specific repository directory somewhere, e.g. ~/QGIS/QGIS, and cd
 into it. The following will read-only clone the master branch to the directory:
 </P>
 
 <div class="code"><PRE>
 git init
-git remote add -f -t master -m master qgisupstream git://github.com/qgis/Quantum-GIS.git
+git remote add -f -t master -m master qgisupstream git://github.com/qgis/QGIS.git
 git merge qgisupstream
 
 </PRE></div>
@@ -2907,7 +2913,7 @@ Then do:
   chmod +x cgi-bin/wcstest-1.9.0
   mkdir -p /var/www/wcs/testdata/qgis-1.9.0/raster/
   cd /var/www/wcs/testdata/qgis-1.9.0/raster/
-  cp -r /home/timlinux/Quantum-GIS/tests/testdata/raster/* .
+  cp -r /home/timlinux/QGIS/tests/testdata/raster/* .
 </PRE></div>
 
 <P>
@@ -3037,9 +3043,9 @@ procedure is:
  <LI>Tick enable project based security (you need to elsewhere configure your
    Jenkins security to per project settings)
  <LI>Allow Anonymous user Read and Discover access
- <LI>Set the github project to <A HREF="https://github.com/qgis/Quantum-GIS/">https://github.com/qgis/Quantum-GIS/</A>
+ <LI>Set the github project to <A HREF="https://github.com/qgis/QGIS/">https://github.com/qgis/QGIS/</A>
  <LI>Set source code management to Git
- <LI>Set repository url to git://github.com/qgis/Quantum-GIS.git
+ <LI>Set repository url to git://github.com/qgis/QGIS.git
  <LI>In advanced repository url settings set refspec to : 
  <P></P>
 

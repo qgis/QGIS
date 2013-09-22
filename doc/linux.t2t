@@ -222,6 +222,11 @@ you can install them using ``apt-get`` and re-run the command.
 using ``dpkg -r libqgis1-dev``.  Otherwise ``dpkg-buildpackage`` will complain about a
 build conflict.
 
+/!\ **Note:** By default tests are run in the process of building and their
+results are uploaded to http://dash.orfeo-toolbox.org/index.php?project=QGIS.
+You can turn the tests off using DEB_BUILD_OPTIONS=nocheck in front of the
+build command. The upload of results can be avoided with DEB_TEST_TARGET=test.
+
 The packages are created in the parent directory (ie. one level up).
 Install them using dpkg.  E.g.:
 
