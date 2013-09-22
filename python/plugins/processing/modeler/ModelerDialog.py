@@ -53,32 +53,21 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
         self.hasChanged = False
         self.setupUi(self)
 
-        self.setWindowFlags(self.windowFlags() | Qt.WindowSystemMenuHint |
-                            Qt.WindowMinMaxButtonsHint)
+        #self.setWindowFlags(self.windowFlags() | Qt.WindowSystemMenuHint |
+        #                    Qt.WindowMinMaxButtonsHint)
         self.tabWidget.setCurrentIndex(0)
         self.scene = ModelerScene(self)
         self.scene.setSceneRect(QRectF(0, 0, 4000, 4000))
         self.view.setScene(self.scene)
         self.view.ensureVisible(0, 0, 10, 10)
 
-        # additional buttons
-        self.editHelpButton = QPushButton(self.tr("Edit model help"))
-        self.buttonBox.addButton(self.editHelpButton, QDialogButtonBox.ActionRole)
-        self.runButton = QPushButton(self.tr("Run"))
-        self.runButton.setToolTip(self.tr("Execute current model"))
-        self.buttonBox.addButton(self.runButton, QDialogButtonBox.ActionRole)
-        self.openButton = QPushButton(self.tr("Open"))
-        self.openButton.setToolTip(self.tr("Open existing model"))
-        self.buttonBox.addButton(self.openButton, QDialogButtonBox.ActionRole)
-        self.saveButton = QPushButton(self.tr("Save"))
-        self.saveButton.setToolTip(self.tr("Save current model"))
-        self.buttonBox.addButton(self.saveButton, QDialogButtonBox.ActionRole)
-        self.saveAsButton = QPushButton(self.tr("Save as..."))
-        self.saveAsButton.setToolTip(self.tr("Save current model as"))
-        self.buttonBox.addButton(self.saveAsButton, QDialogButtonBox.ActionRole)
-        self.exportAsImageButton = QPushButton(self.tr("Export as image..."))
-        self.exportAsImageButton.setToolTip(self.tr("Export current model to image"))
-        self.buttonBox.addButton(self.exportAsImageButton, QDialogButtonBox.ActionRole)
+        # set icons
+        self.btnOpen.setIcon(QgsApplication.getThemeIcon("/mActionFileOpen.svg"))
+        self.btnSave.setIcon(QgsApplication.getThemeIcon("/mActionFileSave.svg"))
+        self.btnSaveAs.setIcon(QgsApplication.getThemeIcon("/mActionFileSaveAs.svg"))
+        self.btnExportImage.setIcon(QgsApplication.getThemeIcon("/mActionSaveMapAsImage.png"))
+        self.btnEditHelp.setIcon(QIcon(":/processing/images/edithelp.png"))
+        self.btnRun.setIcon(QIcon(":/processing/images/runalgorithm.png"))
 
         # fill trees with inputs and algorithms
         self.fillInputsTree()
@@ -97,12 +86,12 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
         self.searchBox.textChanged.connect(self.fillAlgorithmTree)
         self.algorithmTree.doubleClicked.connect(self.addAlgorithm)
 
-        self.openButton.clicked.connect(self.openModel)
-        self.saveButton.clicked.connect(self.save)
-        self.saveAsButton.clicked.connect(self.saveAs)
-        self.exportAsImageButton.clicked.connect(self.exportAsImage)
-        self.runButton.clicked.connect(self.runModel)
-        self.editHelpButton.clicked.connect(self.editHelp)
+        self.btnOpen.clicked.connect(self.openModel)
+        self.btnSave.clicked.connect(self.save)
+        self.btnSaveAs.clicked.connect(self.saveAs)
+        self.btnExportImage.clicked.connect(self.exportAsImage)
+        self.btnEditHelp.clicked.connect(self.editHelp)
+        self.btnRun.clicked.connect(self.runModel)
 
         if alg is not None:
             self.alg = alg
@@ -117,19 +106,21 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
         self.help = None
         self.update = False #indicates whether to update or not the toolbox after closing this dialog
 
-    def closeEvent(self, evt):        
+    def closeEvent(self, evt):
         if self.hasChanged:
-            ret = QMessageBox.question(self, 'Message',
-                                              "The are unchanged changes in model. Close modeler without saving?", 
-                                              QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+            ret = QMessageBox.question(self,
+                                       self.tr("Message"),
+                                       self.tr("The are unchanged changes in model. Close modeler without saving?"),
+                                       QMessageBox.Yes | QMessageBox.No, QMessageBox.No
+                                      )
 
             if ret == QMessageBox.Yes:
                 evt.accept()
             else:
-                evt.ignore()            
+                evt.ignore()
         else:
-            evt.accept()       
-    
+            evt.accept()
+
     def editHelp(self):
         dlg = HelpEditionDialog(self.alg)
         dlg.exec_()
@@ -212,7 +203,10 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
         if self.alg.descriptionFile != None and not saveAs:
             filename = self.alg.descriptionFile
         else:
-            filename = unicode(QFileDialog.getSaveFileName(self, self.tr("Save Model"), ModelerUtils.modelsFolder(), self.tr("Processing models (*.model)")))
+            filename = unicode(QFileDialog.getSaveFileName(self,
+                                                           self.tr("Save Model"),
+                                                           ModelerUtils.modelsFolder(),
+                                                           self.tr("Processing models (*.model)")))
             if filename:
                 if not filename.endswith(".model"):
                     filename += ".model"
@@ -224,14 +218,14 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
             except:
                 if saveAs:
                     QMessageBox.warning(self,
-                                    self.tr("I/O error"),
-                                    self.tr("Unable to save edits. Reason:\n %1").arg(unicode(sys.exc_info()[1]))
-                                   )
+                                        self.tr("I/O error"),
+                                        self.tr("Unable to save edits. Reason:\n %s") % (unicode(sys.exc_info()[1]))
+                                       )
                 else:
                     QMessageBox.warning(self,
-                                    self.tr("Can't save model"),
-                                    self.tr("This model can't be saved in its original location\n(probably you do not have permission to do it).\nPlease, use the 'Save as...' option.")
-                                   )
+                                        self.tr("Can't save model"),
+                                        self.tr("This model can't be saved in its original location\n(probably you do not have permission to do it).\nPlease, use the 'Save as...' option.")
+                                       )
                 return
             fout.write(text)
             fout.close()
@@ -246,11 +240,14 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
                                     self.tr("Model saved"),
                                     self.tr("Model was correctly saved.")
                                    )
-            
+
             self.hasChanged = False
 
     def openModel(self):
-        filename = unicode(QFileDialog.getOpenFileName(self, self.tr("Open Model"), ModelerUtils.modelsFolder(), self.tr("Processing models (*.model)")))
+        filename = unicode(QFileDialog.getOpenFileName(self,
+                                                       self.tr("Open Model"),
+                                                       ModelerUtils.modelsFolder(),
+                                                       self.tr("Processing models (*.model)")))
         if filename:
             try:
                 alg = ModelerAlgorithm()
@@ -267,7 +264,7 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
             except WrongModelException, e:
                 QMessageBox.critical(self,
                                      self.tr("Could not open model"),
-                                     self.tr("The selected model could not be loaded.\nWrong line: %1").arg(e.msg)
+                                     self.tr("The selected model could not be loaded.\nWrong line: %s") % e.msg
                                     )
 
     def repaintModel(self):
@@ -417,7 +414,6 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
                 for groupItem in groups.values():
                     if text != "":
                         groupItem.setExpanded(True)
-
 
     def fillAlgorithmTreeUsingProviders(self):
         self.algorithmTree.clear()
