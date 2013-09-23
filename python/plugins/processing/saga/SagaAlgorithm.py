@@ -327,10 +327,11 @@ class SagaAlgorithm(GeoAlgorithm):
                     if dontExport:
                         continue
 
+                transform = "" if saga208 else "-TRANSFORM"
                 if isWindows() or isMac() or not saga208:
-                    commands.append("io_gdal 1 -GRIDS \"" + filename2 + "\" -FORMAT " + str(formatIndex) +" -TYPE 0 -FILE \"" + filename + "\"");
+                    commands.append("io_gdal 1 -GRIDS \"" + filename2 + "\" -FORMAT " + str(formatIndex) +" -TYPE 0 -FILE \"" + filename + "\"" + transform);
                 else:
-                    commands.append("libio_gdal 1 -GRIDS \"" + filename2 + "\" -FORMAT 1 -TYPE 0 -FILE \"" + filename + "\"");
+                    commands.append("libio_gdal 1 -GRIDS \"" + filename2 + "\" -FORMAT 1 -TYPE 0 -FILE \"" + filename + "\"" + transform);
 
 
 
