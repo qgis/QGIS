@@ -27,11 +27,12 @@
 #include <QObject>
 #include <QPointer>
 
+class QgsHighlight;
 class QgsIdentifyResultsDialog;
 class QgsMapLayer;
 class QgsRasterLayer;
-class QgsRubberBand;
 class QgsVectorLayer;
+class QMenu;
 
 /**
   \brief Map tool for identifying features layers and showing results
@@ -76,9 +77,23 @@ class APP_EXPORT QgsMapToolIdentifyAction : public QgsMapToolIdentify
     //! Pointer to the identify results dialog for name/value pairs
     QPointer<QgsIdentifyResultsDialog> mResultsDialog;
 
+    //! layer id map for layer select mode
+    QMap< QgsMapLayer*, QList<IdentifyResult> > mLayerIdResults;
+    //! rubber bands for layer select mode
+    QList<QgsHighlight*> mRubberBands;
+
     QgsIdentifyResultsDialog *resultsDialog();
 
     virtual QGis::UnitType displayUnits();
+
+    //helper functions for layer selection mode
+    void deleteRubberBands();
+    void fillLayerIdResults( int x, int y );
+    void fillLayerSelectionMenu( QMenu& menu );
+    void execLayerSelectionMenu( QMenu& menu, const QPoint& pos, QList<IdentifyResult>& resultList );
+
+  private slots:
+    void handleMenuHover();
 };
 
 #endif

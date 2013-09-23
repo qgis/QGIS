@@ -51,7 +51,8 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
       DefaultQgsSetting = -1,
       ActiveLayer,
       TopDownStopAtFirst,
-      TopDownAll
+      TopDownAll,
+      LayerSelection
     };
 
     enum LayerType
