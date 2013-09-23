@@ -1,3 +1,10 @@
+qgis (2.0.1-2) UNRELEASED; urgency=low
+
+  * add support for debian jessie and ubuntu saucy
+  * backport some patches from master
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Sun, 22 Sep 2013 21:44:48 +0200
+
 qgis (2.0.1-1) UNRELEASED; urgency=low
 
   * drop qgis_icon.xpm and use "upstream" version
