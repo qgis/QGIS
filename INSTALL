@@ -688,7 +688,7 @@ To create a standalone installer there is a perl script named 'creatensis.pl'
 in 'qgis/ms-windows/osgeo4w'.  It downloads all required packages from OSGeo4W
 and repackages them into an installer using NSIS.
 
-The script can either be run on Windows, but also can be run on Linux.
+The script can either be run on Windows or on Linux.
 
 On Debian/Ubuntu you can just install the 'nsis' package.
 
