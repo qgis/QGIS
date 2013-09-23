@@ -320,6 +320,14 @@ void QgsSimpleMarkerSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer
   mOutlineWidthUnitComboBox->blockSignals( true );
   mOutlineWidthUnitComboBox->setCurrentIndex( mLayer->outlineWidthUnit() );
   mOutlineWidthUnitComboBox->blockSignals( false );
+
+  //anchor points
+  mHorizontalAnchorComboBox->blockSignals( true );
+  mVerticalAnchorComboBox->blockSignals( true );
+  mHorizontalAnchorComboBox->setCurrentIndex( mLayer->horizontalAnchorPoint() );
+  mVerticalAnchorComboBox->setCurrentIndex( mLayer->verticalAnchorPoint() );
+  mHorizontalAnchorComboBox->blockSignals( false );
+  mVerticalAnchorComboBox->blockSignals( false );
 }
 
 QgsSymbolLayerV2* QgsSimpleMarkerSymbolLayerV2Widget::symbolLayer()
@@ -421,6 +429,10 @@ void QgsSimpleMarkerSymbolLayerV2Widget::on_mDataDefinedPropertiesButton_clicked
       QgsDataDefinedSymbolDialog::doubleHelpText() );
   dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "offset", tr( "Offset" ), mLayer->dataDefinedPropertyString( "offset" ),
       QgsDataDefinedSymbolDialog::offsetHelpText() );
+  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "horizontal_anchor_point", tr( "Horizontal anchor point" ), mLayer->dataDefinedPropertyString( "horizontal_anchor_point" ),
+      QgsDataDefinedSymbolDialog::horizontalAnchorHelpText() );
+  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "vertical_anchor_point", tr( "Vertical anchor point" ), mLayer->dataDefinedPropertyString( "vertical_anchor_point" ),
+      QgsDataDefinedSymbolDialog::verticalAnchorHelpText() );
   QgsDataDefinedSymbolDialog d( dataDefinedProperties, mVectorLayer );
   if ( d.exec() == QDialog::Accepted )
   {
@@ -436,6 +448,24 @@ void QgsSimpleMarkerSymbolLayerV2Widget::on_mDataDefinedPropertiesButton_clicked
         mLayer->setDataDefinedProperty( it.key(), it.value() );
       }
     }
+    emit changed();
+  }
+}
+
+void QgsSimpleMarkerSymbolLayerV2Widget::on_mHorizontalAnchorComboBox_currentIndexChanged( int index )
+{
+  if ( mLayer )
+  {
+    mLayer->setHorizontalAnchorPoint(( QgsMarkerSymbolLayerV2::HorizontalAnchorPoint ) index );
+    emit changed();
+  }
+}
+
+void QgsSimpleMarkerSymbolLayerV2Widget::on_mVerticalAnchorComboBox_currentIndexChanged( int index )
+{
+  if ( mLayer )
+  {
+    mLayer->setVerticalAnchorPoint(( QgsMarkerSymbolLayerV2::VerticalAnchorPoint ) index );
     emit changed();
   }
 }
@@ -562,6 +592,10 @@ void QgsSimpleFillSymbolLayerV2Widget::on_mDataDefinedPropertiesButton_clicked()
       QgsDataDefinedSymbolDialog::colorHelpText() );
   dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "width_border", tr( "Border width" ), mLayer->dataDefinedPropertyString( "width_border" ),
       QgsDataDefinedSymbolDialog::doubleHelpText() );
+  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "horizontal_anchor_point", tr( "Horizontal anchor point" ), mLayer->dataDefinedPropertyString( "horizontal_anchor_point" ),
+      QgsDataDefinedSymbolDialog::horizontalAnchorHelpText() );
+  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "vertical_anchor_point", tr( "Vertical anchor point" ), mLayer->dataDefinedPropertyString( "vertical_anchor_point" ),
+      QgsDataDefinedSymbolDialog::verticalAnchorHelpText() );
   QgsDataDefinedSymbolDialog d( dataDefinedProperties, mVectorLayer );
   if ( d.exec() == QDialog::Accepted )
   {
@@ -986,6 +1020,15 @@ void QgsSvgMarkerSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
   mOffsetUnitComboBox->blockSignals( true );
   mOffsetUnitComboBox->setCurrentIndex( mLayer->offsetUnit() );
   mOffsetUnitComboBox->blockSignals( false );
+
+  //anchor points
+  mHorizontalAnchorComboBox->blockSignals( true );
+  mVerticalAnchorComboBox->blockSignals( true );
+  mHorizontalAnchorComboBox->setCurrentIndex( mLayer->horizontalAnchorPoint() );
+  mVerticalAnchorComboBox->setCurrentIndex( mLayer->verticalAnchorPoint() );
+  mHorizontalAnchorComboBox->blockSignals( false );
+  mVerticalAnchorComboBox->blockSignals( false );
+
   setGuiForSvg( mLayer );
 }
 
@@ -1150,6 +1193,10 @@ void QgsSvgMarkerSymbolLayerV2Widget::on_mDataDefinedPropertiesButton_clicked()
       QgsDataDefinedSymbolDialog::colorHelpText() );
   dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "outline", tr( "Border color" ), mLayer->dataDefinedPropertyString( "outline" ),
       QgsDataDefinedSymbolDialog::colorHelpText() );
+  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "horizontal_anchor_point", tr( "Horizontal anchor point" ), mLayer->dataDefinedPropertyString( "horizontal_anchor_point" ),
+      QgsDataDefinedSymbolDialog::horizontalAnchorHelpText() );
+  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "vertical_anchor_point", tr( "Vertical anchor point" ), mLayer->dataDefinedPropertyString( "vertical_anchor_point" ),
+      QgsDataDefinedSymbolDialog::verticalAnchorHelpText() );
   QgsDataDefinedSymbolDialog d( dataDefinedProperties, mVectorLayer );
   if ( d.exec() == QDialog::Accepted )
   {
@@ -1165,6 +1212,24 @@ void QgsSvgMarkerSymbolLayerV2Widget::on_mDataDefinedPropertiesButton_clicked()
         mLayer->setDataDefinedProperty( it.key(), it.value() );
       }
     }
+    emit changed();
+  }
+}
+
+void QgsSvgMarkerSymbolLayerV2Widget::on_mHorizontalAnchorComboBox_currentIndexChanged( int index )
+{
+  if ( mLayer )
+  {
+    mLayer->setHorizontalAnchorPoint( QgsMarkerSymbolLayerV2::HorizontalAnchorPoint( index ) );
+    emit changed();
+  }
+}
+
+void QgsSvgMarkerSymbolLayerV2Widget::on_mVerticalAnchorComboBox_currentIndexChanged( int index )
+{
+  if ( mLayer )
+  {
+    mLayer->setVerticalAnchorPoint( QgsMarkerSymbolLayerV2::VerticalAnchorPoint( index ) );
     emit changed();
   }
 }
@@ -1782,6 +1847,14 @@ void QgsFontMarkerSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
   mOffsetUnitComboBox->blockSignals( true );
   mOffsetUnitComboBox->setCurrentIndex( mLayer->offsetUnit() );
   mOffsetUnitComboBox->blockSignals( false );
+
+  //anchor points
+  mHorizontalAnchorComboBox->blockSignals( true );
+  mVerticalAnchorComboBox->blockSignals( true );
+  mHorizontalAnchorComboBox->setCurrentIndex( mLayer->horizontalAnchorPoint() );
+  mVerticalAnchorComboBox->setCurrentIndex( mLayer->verticalAnchorPoint() );
+  mHorizontalAnchorComboBox->blockSignals( false );
+  mVerticalAnchorComboBox->blockSignals( false );
 }
 
 QgsSymbolLayerV2* QgsFontMarkerSymbolLayerV2Widget::symbolLayer()
@@ -1843,6 +1916,24 @@ void QgsFontMarkerSymbolLayerV2Widget::on_mOffsetUnitComboBox_currentIndexChange
     mLayer->setOffsetUnit(( QgsSymbolV2::OutputUnit ) index );
   }
   emit changed();
+}
+
+void QgsFontMarkerSymbolLayerV2Widget::on_mHorizontalAnchorComboBox_currentIndexChanged( int index )
+{
+  if ( mLayer )
+  {
+    mLayer->setHorizontalAnchorPoint( QgsMarkerSymbolLayerV2::HorizontalAnchorPoint( index ) );
+    emit changed();
+  }
+}
+
+void QgsFontMarkerSymbolLayerV2Widget::on_mVerticalAnchorComboBox_currentIndexChanged( int index )
+{
+  if ( mLayer )
+  {
+    mLayer->setVerticalAnchorPoint( QgsMarkerSymbolLayerV2::VerticalAnchorPoint( index ) );
+    emit changed();
+  }
 }
 
 

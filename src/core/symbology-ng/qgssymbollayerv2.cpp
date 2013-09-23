@@ -152,7 +152,8 @@ void QgsSymbolLayerV2::copyDataDefinedProperties( QgsSymbolLayerV2* destLayer ) 
 
 
 QgsMarkerSymbolLayerV2::QgsMarkerSymbolLayerV2( bool locked )
-    : QgsSymbolLayerV2( QgsSymbolV2::Marker, locked ), mSizeUnit( QgsSymbolV2::MM ),  mOffsetUnit( QgsSymbolV2::MM )
+    : QgsSymbolLayerV2( QgsSymbolV2::Marker, locked ), mSizeUnit( QgsSymbolV2::MM ),  mOffsetUnit( QgsSymbolV2::MM ),
+    mHorizontalAnchorPoint( HCenter ), mVerticalAnchorPoint( VCenter )
 {
 }
 
@@ -181,6 +182,13 @@ void QgsMarkerSymbolLayerV2::setOutputUnit( QgsSymbolV2::OutputUnit unit )
 
 void QgsMarkerSymbolLayerV2::markerOffset( QgsSymbolV2RenderContext& context, double& offsetX, double& offsetY )
 {
+  markerOffset( context, mSize, mSize, mSizeUnit, mSizeUnit, offsetX, offsetY );
+}
+
+void QgsMarkerSymbolLayerV2::markerOffset( QgsSymbolV2RenderContext& context, double width, double height,
+    QgsSymbolV2::OutputUnit widthUnit, QgsSymbolV2::OutputUnit heightUnit,
+    double& offsetX, double& offsetY )
+{
   offsetX = mOffset.x();
   offsetY = mOffset.y();
 
@@ -194,6 +202,46 @@ void QgsMarkerSymbolLayerV2::markerOffset( QgsSymbolV2RenderContext& context, do
 
   offsetX *= QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOffsetUnit );
   offsetY *= QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOffsetUnit );
+
+  HorizontalAnchorPoint horizontalAnchorPoint = mHorizontalAnchorPoint;
+  VerticalAnchorPoint verticalAnchorPoint = mVerticalAnchorPoint;
+  QgsExpression* horizontalAnchorExpression = expression( "horizontal_anchor_point" );
+  if ( horizontalAnchorExpression )
+  {
+    horizontalAnchorPoint = decodeHorizontalAnchorPoint( horizontalAnchorExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() );
+  }
+  QgsExpression* verticalAnchorExpression = expression( "vertical_anchor_point" );
+  if ( verticalAnchorExpression )
+  {
+    verticalAnchorPoint = decodeVerticalAnchorPoint( verticalAnchorExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() );
+  }
+
+  //correct horizontal position according to anchor point
+  if ( horizontalAnchorPoint == HCenter && verticalAnchorPoint == VCenter )
+  {
+    return;
+  }
+
+  double anchorPointCorrectionX = width * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), widthUnit ) / 2.0;
+  double anchorPointCorrectionY = height * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), heightUnit ) / 2.0;
+  if ( horizontalAnchorPoint == Left )
+  {
+    offsetX += anchorPointCorrectionX;
+  }
+  else if ( horizontalAnchorPoint == Right )
+  {
+    offsetX -= anchorPointCorrectionX;
+  }
+
+  //correct vertical position according to anchor point
+  if ( verticalAnchorPoint == Top )
+  {
+    offsetY += anchorPointCorrectionY;
+  }
+  else if ( verticalAnchorPoint == Bottom )
+  {
+    offsetY -= anchorPointCorrectionY;
+  }
 }
 
 QPointF QgsMarkerSymbolLayerV2::_rotatedOffset( const QPointF& offset, double angle )
@@ -201,6 +249,38 @@ QPointF QgsMarkerSymbolLayerV2::_rotatedOffset( const QPointF& offset, double an
   angle = DEG2RAD( angle );
   double c = cos( angle ), s = sin( angle );
   return QPointF( offset.x() * c - offset.y() * s, offset.x() * s + offset.y() * c );
+}
+
+QgsMarkerSymbolLayerV2::HorizontalAnchorPoint QgsMarkerSymbolLayerV2::decodeHorizontalAnchorPoint( const QString& str )
+{
+  if ( str.compare( "left", Qt::CaseInsensitive ) == 0 )
+  {
+    return QgsMarkerSymbolLayerV2::Left;
+  }
+  else if ( str.compare( "right", Qt::CaseInsensitive ) == 0 )
+  {
+    return QgsMarkerSymbolLayerV2::Right;
+  }
+  else
+  {
+    return QgsMarkerSymbolLayerV2::HCenter;
+  }
+}
+
+QgsMarkerSymbolLayerV2::VerticalAnchorPoint QgsMarkerSymbolLayerV2::decodeVerticalAnchorPoint( const QString& str )
+{
+  if ( str.compare( "top", Qt::CaseInsensitive ) == 0 )
+  {
+    return QgsMarkerSymbolLayerV2::Top;
+  }
+  else if ( str.compare( "bottom", Qt::CaseInsensitive ) == 0 )
+  {
+    return QgsMarkerSymbolLayerV2::Bottom;
+  }
+  else
+  {
+    return QgsMarkerSymbolLayerV2::VCenter;
+  }
 }
 
 QgsSymbolV2::OutputUnit QgsMarkerSymbolLayerV2::outputUnit() const

@@ -33,6 +33,8 @@ class GUI_EXPORT QgsDataDefinedSymbolDialog: public QDialog, private Ui::QgsData
     static QString colorHelpText();
     static QString offsetHelpText();
     static QString fileNameHelpText();
+    static QString horizontalAnchorHelpText();
+    static QString verticalAnchorHelpText();
 
   private slots:
     void expressionButtonClicked();

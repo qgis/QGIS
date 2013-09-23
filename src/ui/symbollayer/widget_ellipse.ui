@@ -7,35 +7,47 @@
     <x>0</x>
     <y>0</y>
     <width>404</width>
-    <height>504</height>
+    <height>436</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
-   <property name="margin">
-    <number>1</number>
-   </property>
+  <layout class="QGridLayout" name="gridLayout_2">
    <item row="0" column="0">
-    <layout class="QFormLayout" name="formLayout">
-     <property name="fieldGrowthPolicy">
-      <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-     </property>
-     <property name="labelAlignment">
-      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-     </property>
-     <property name="horizontalSpacing">
-      <number>28</number>
-     </property>
-     <item row="1" column="0">
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="0" column="0">
       <widget class="QLabel" name="label_2">
        <property name="text">
         <string>Colors</string>
        </property>
       </widget>
      </item>
-     <item row="1" column="1">
+     <item row="3" column="1">
+      <widget class="QDoubleSpinBox" name="mRotationSpinBox">
+       <property name="minimum">
+        <double>-360.000000000000000</double>
+       </property>
+       <property name="maximum">
+        <double>360.000000000000000</double>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="mSymbolHeightLabel">
+       <property name="text">
+        <string>Symbol height</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="mRotationLabel">
+       <property name="text">
+        <string>Rotation</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
       <layout class="QHBoxLayout" name="horizontalLayout_4">
        <item>
         <widget class="QLabel" name="label_3">
@@ -116,113 +128,7 @@
        </item>
       </layout>
      </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="mSymbolWidthLabel">
-       <property name="text">
-        <string>Symbol width</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="1">
-      <layout class="QHBoxLayout" name="horizontalLayout">
-       <item>
-        <widget class="QDoubleSpinBox" name="mWidthSpinBox">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-           <horstretch>1</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="decimals">
-          <number>6</number>
-         </property>
-         <property name="maximum">
-          <double>999999999.000000000000000</double>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QComboBox" name="mSymbolWidthUnitComboBox">
-         <item>
-          <property name="text">
-           <string>Millimeter</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Map unit</string>
-          </property>
-         </item>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item row="3" column="0">
-      <widget class="QLabel" name="mOutlineWidthLabel">
-       <property name="text">
-        <string>Outline width</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="1">
-      <layout class="QHBoxLayout" name="horizontalLayout_2">
-       <item>
-        <widget class="QDoubleSpinBox" name="mOutlineWidthSpinBox">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-           <horstretch>1</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="decimals">
-          <number>6</number>
-         </property>
-         <property name="maximum">
-          <double>999999999.000000000000000</double>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QComboBox" name="mOutlineWidthUnitComboBox">
-         <item>
-          <property name="text">
-           <string>Millimeter</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Map unit</string>
-          </property>
-         </item>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item row="4" column="0">
-      <widget class="QLabel" name="mRotationLabel">
-       <property name="text">
-        <string>Rotation</string>
-       </property>
-      </widget>
-     </item>
      <item row="4" column="1">
-      <widget class="QDoubleSpinBox" name="mRotationSpinBox">
-       <property name="minimum">
-        <double>-360.000000000000000</double>
-       </property>
-       <property name="maximum">
-        <double>360.000000000000000</double>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="0">
-      <widget class="QLabel" name="mSymbolHeightLabel">
-       <property name="text">
-        <string>Symbol height</string>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="1">
       <layout class="QHBoxLayout" name="horizontalLayout_3">
        <item>
         <widget class="QDoubleSpinBox" name="mHeightSpinBox">
@@ -262,20 +168,145 @@
        </item>
       </layout>
      </item>
-     <item row="7" column="0" colspan="2">
-      <widget class="QPushButton" name="mDataDefinedPropertiesButton">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
+     <item row="1" column="1">
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QDoubleSpinBox" name="mWidthSpinBox">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>1</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="decimals">
+          <number>6</number>
+         </property>
+         <property name="maximum">
+          <double>999999999.000000000000000</double>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="mSymbolWidthUnitComboBox">
+         <item>
+          <property name="text">
+           <string>Millimeter</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Map unit</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="mSymbolWidthLabel">
        <property name="text">
-        <string>Data defined properties...</string>
+        <string>Symbol width</string>
        </property>
       </widget>
      </item>
      <item row="6" column="1">
+      <layout class="QHBoxLayout" name="horizontalLayout_6">
+       <item>
+        <widget class="QComboBox" name="mHorizontalAnchorComboBox">
+         <item>
+          <property name="text">
+           <string>Left</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>HCenter</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Right</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="mVerticalAnchorComboBox">
+         <item>
+          <property name="text">
+           <string>Top</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>VCenter</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Bottom</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="2" column="1">
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item>
+        <widget class="QDoubleSpinBox" name="mOutlineWidthSpinBox">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>1</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="decimals">
+          <number>6</number>
+         </property>
+         <property name="maximum">
+          <double>999999999.000000000000000</double>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="mOutlineWidthUnitComboBox">
+         <item>
+          <property name="text">
+           <string>Millimeter</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Map unit</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="mOutlineWidthLabel">
+       <property name="text">
+        <string>Outline width</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="0">
+      <widget class="QLabel" name="mAnchorPointLabel">
+       <property name="text">
+        <string>Anchor point</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="0">
+      <widget class="QLabel" name="label_5">
+       <property name="text">
+        <string>Offset X,Y</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="1">
       <layout class="QHBoxLayout" name="horizontalLayout_5">
        <item>
         <widget class="QDoubleSpinBox" name="spinOffsetX">
@@ -325,10 +356,16 @@
        </item>
       </layout>
      </item>
-     <item row="6" column="0">
-      <widget class="QLabel" name="label_5">
+     <item row="7" column="0" colspan="2">
+      <widget class="QPushButton" name="mDataDefinedPropertiesButton">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="text">
-        <string>Offset X,Y</string>
+        <string>Data defined properties...</string>
        </property>
       </widget>
      </item>

@@ -110,6 +110,8 @@ class GUI_EXPORT QgsSimpleMarkerSymbolLayerV2Widget : public QgsSymbolLayerV2Wid
     void on_mOutlineWidthUnitComboBox_currentIndexChanged( int index );
     void on_mDataDefinedPropertiesButton_clicked();
     void on_mOutlineWidthSpinBox_valueChanged( double d );
+    void on_mHorizontalAnchorComboBox_currentIndexChanged( int index );
+    void on_mVerticalAnchorComboBox_currentIndexChanged( int index );
 
   protected:
     QgsSimpleMarkerSymbolLayerV2* mLayer;
@@ -220,6 +222,9 @@ class GUI_EXPORT QgsSvgMarkerSymbolLayerV2Widget : public QgsSymbolLayerV2Widget
     void on_mBorderWidthUnitComboBox_currentIndexChanged( int index );
     void on_mOffsetUnitComboBox_currentIndexChanged( int index );
     void on_mDataDefinedPropertiesButton_clicked();
+    void on_mHorizontalAnchorComboBox_currentIndexChanged( int index );
+    void on_mVerticalAnchorComboBox_currentIndexChanged( int index );
+
 
   protected:
 
@@ -365,6 +370,8 @@ class GUI_EXPORT QgsFontMarkerSymbolLayerV2Widget : public QgsSymbolLayerV2Widge
     void setOffset();
     void on_mSizeUnitComboBox_currentIndexChanged( int index );
     void on_mOffsetUnitComboBox_currentIndexChanged( int index );
+    void on_mHorizontalAnchorComboBox_currentIndexChanged( int index );
+    void on_mVerticalAnchorComboBox_currentIndexChanged( int index );
 
   protected:
     QgsFontMarkerSymbolLayerV2* mLayer;

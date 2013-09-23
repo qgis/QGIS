@@ -85,6 +85,15 @@ QgsSymbolLayerV2* QgsSimpleMarkerSymbolLayerV2::create( const QgsStringMap& prop
     m->setOutlineWidthUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["outline_width_unit"] ) );
   }
 
+  if ( props.contains( "horizontal_anchor_point" ) )
+  {
+    m->setHorizontalAnchorPoint( QgsMarkerSymbolLayerV2::HorizontalAnchorPoint( props[ "horizontal_anchor_point" ].toInt() ) );
+  }
+  if ( props.contains( "vertical_anchor_point" ) )
+  {
+    m->setVerticalAnchorPoint( QgsMarkerSymbolLayerV2::VerticalAnchorPoint( props[ "vertical_anchor_point" ].toInt() ) );
+  }
+
   //data defined properties
   if ( props.contains( "name_expression" ) )
   {
@@ -113,6 +122,14 @@ QgsSymbolLayerV2* QgsSimpleMarkerSymbolLayerV2::create( const QgsStringMap& prop
   if ( props.contains( "offset_expression" ) )
   {
     m->setDataDefinedProperty( "offset", props["offset_expression"] );
+  }
+  if ( props.contains( "horizontal_anchor_point_expression" ) )
+  {
+    m->setDataDefinedProperty( "horizontal_anchor_point", props[ "horizontal_anchor_point_expression" ] );
+  }
+  if ( props.contains( "vertical_anchor_point_expression" ) )
+  {
+    m->setDataDefinedProperty( "vertical_anchor_point", props[ "vertical_anchor_point_expression" ] );
   }
   return m;
 }
@@ -546,6 +563,8 @@ QgsStringMap QgsSimpleMarkerSymbolLayerV2::properties() const
   map["scale_method"] = QgsSymbolLayerV2Utils::encodeScaleMethod( mScaleMethod );
   map["outline_width"] = QString::number( mOutlineWidth );
   map["outline_width_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mOutlineWidthUnit );
+  map["horizontal_anchor_point"] = QString::number( mHorizontalAnchorPoint );
+  map["vertical_anchor_point"] = QString::number( mVerticalAnchorPoint );
 
   //data define properties
   saveDataDefinedProperties( map );
@@ -560,6 +579,8 @@ QgsSymbolLayerV2* QgsSimpleMarkerSymbolLayerV2::clone() const
   m->setOffsetUnit( mOffsetUnit );
   m->setOutlineWidth( mOutlineWidth );
   m->setOutlineWidthUnit( mOutlineWidthUnit );
+  m->setHorizontalAnchorPoint( mHorizontalAnchorPoint );
+  m->setVerticalAnchorPoint( mVerticalAnchorPoint );
   copyDataDefinedProperties( m );
   return m;
 }
@@ -767,6 +788,15 @@ QgsSymbolLayerV2* QgsSvgMarkerSymbolLayerV2::create( const QgsStringMap& props )
   if ( props.contains( "outline_width_unit" ) )
     m->setOutlineWidthUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["outline_width_unit"] ) );
 
+  if ( props.contains( "horizontal_anchor_point" ) )
+  {
+    m->setHorizontalAnchorPoint( QgsMarkerSymbolLayerV2::HorizontalAnchorPoint( props[ "horizontal_anchor_point" ].toInt() ) );
+  }
+  if ( props.contains( "vertical_anchor_point" ) )
+  {
+    m->setVerticalAnchorPoint( QgsMarkerSymbolLayerV2::VerticalAnchorPoint( props[ "vertical_anchor_point" ].toInt() ) );
+  }
+
   //data defined properties
   if ( props.contains( "size_expression" ) )
   {
@@ -795,6 +825,14 @@ QgsSymbolLayerV2* QgsSvgMarkerSymbolLayerV2::create( const QgsStringMap& props )
   if ( props.contains( "outline_expression" ) )
   {
     m->setDataDefinedProperty( "outline", props["outline_expression"] );
+  }
+  if ( props.contains( "horizontal_anchor_point_expression" ) )
+  {
+    m->setDataDefinedProperty( "horizontal_anchor_point", props[ "horizontal_anchor_point_expression" ] );
+  }
+  if ( props.contains( "vertical_anchor_point_expression" ) )
+  {
+    m->setDataDefinedProperty( "vertical_anchor_point", props[ "vertical_anchor_point_expression" ] );
   }
   return m;
 }
@@ -874,15 +912,10 @@ void QgsSvgMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Re
 
   p->save();
 
-  QPointF offset = mOffset;
-  QgsExpression* offsetExpression = expression( "offset" );
-  if ( offsetExpression )
-  {
-    QString offsetString =  offsetExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString();
-    offset = QgsSymbolLayerV2Utils::decodePoint( offsetString );
-  }
-  double offsetX = offset.x() * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOffsetUnit );
-  double offsetY = offset.y() * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOffsetUnit );
+  //offset
+  double offsetX = 0;
+  double offsetY = 0;
+  markerOffset( context, offsetX, offsetY );
   QPointF outputOffset( offsetX, offsetY );
 
   double angle = mAngle;
@@ -1003,6 +1036,9 @@ QgsStringMap QgsSvgMarkerSymbolLayerV2::properties() const
   map["outline"] = mOutlineColor.name();
   map["outline-width"] = QString::number( mOutlineWidth );
   map["outline_width_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mOutlineWidthUnit );
+  map["horizontal_anchor_point"] = QString::number( mHorizontalAnchorPoint );
+  map["vertical_anchor_point"] = QString::number( mVerticalAnchorPoint );
+
   saveDataDefinedProperties( map );
   return map;
 }
@@ -1017,6 +1053,8 @@ QgsSymbolLayerV2* QgsSvgMarkerSymbolLayerV2::clone() const
   m->setOffset( mOffset );
   m->setOffsetUnit( mOffsetUnit );
   m->setSizeUnit( mSizeUnit );
+  m->setHorizontalAnchorPoint( mHorizontalAnchorPoint );
+  m->setVerticalAnchorPoint( mVerticalAnchorPoint );
   copyDataDefinedProperties( m );
   return m;
 }
@@ -1145,6 +1183,14 @@ QgsSymbolLayerV2* QgsFontMarkerSymbolLayerV2::create( const QgsStringMap& props 
     m->setOffsetUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["offset_unit" ] ) );
   if ( props.contains( "size_unit" ) )
     m->setSizeUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["size_unit"] ) );
+  if ( props.contains( "horizontal_anchor_point" ) )
+  {
+    m->setHorizontalAnchorPoint( QgsMarkerSymbolLayerV2::HorizontalAnchorPoint( props[ "horizontal_anchor_point" ].toInt() ) );
+  }
+  if ( props.contains( "vertical_anchor_point" ) )
+  {
+    m->setVerticalAnchorPoint( QgsMarkerSymbolLayerV2::VerticalAnchorPoint( props[ "vertical_anchor_point" ].toInt() ) );
+  }
   return m;
 }
 
@@ -1180,8 +1226,10 @@ void QgsFontMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2R
   p->setFont( mFont );
 
   p->save();
-  double offsetX = mOffset.x() * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOffsetUnit );
-  double offsetY = mOffset.y() * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOffsetUnit );
+  //offset
+  double offsetX = 0;
+  double offsetY = 0;
+  markerOffset( context, offsetX, offsetY );
   QPointF outputOffset( offsetX, offsetY );
   if ( mAngle )
     outputOffset = _rotatedOffset( outputOffset, mAngle );
@@ -1211,6 +1259,8 @@ QgsStringMap QgsFontMarkerSymbolLayerV2::properties() const
   props["angle"] = QString::number( mAngle );
   props["offset"] = QgsSymbolLayerV2Utils::encodePoint( mOffset );
   props["offset_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mOffsetUnit );
+  props["horizontal_anchor_point"] = QString::number( mHorizontalAnchorPoint );
+  props["vertical_anchor_point"] = QString::number( mVerticalAnchorPoint );
   return props;
 }
 
@@ -1220,6 +1270,8 @@ QgsSymbolLayerV2* QgsFontMarkerSymbolLayerV2::clone() const
   m->setOffset( mOffset );
   m->setOffsetUnit( mOffsetUnit );
   m->setSizeUnit( mSizeUnit );
+  m->setHorizontalAnchorPoint( mHorizontalAnchorPoint );
+  m->setVerticalAnchorPoint( mVerticalAnchorPoint );
   return m;
 }
 

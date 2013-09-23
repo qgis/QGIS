@@ -121,6 +121,21 @@ class CORE_EXPORT QgsSymbolLayerV2
 class CORE_EXPORT QgsMarkerSymbolLayerV2 : public QgsSymbolLayerV2
 {
   public:
+
+    enum HorizontalAnchorPoint
+    {
+      Left,
+      HCenter,
+      Right
+    };
+
+    enum VerticalAnchorPoint
+    {
+      Top,
+      VCenter,
+      Bottom
+    };
+
     virtual void renderPoint( const QPointF& point, QgsSymbolV2RenderContext& context ) = 0;
 
     void drawPreviewIcon( QgsSymbolV2RenderContext& context, QSize size );
@@ -151,9 +166,19 @@ class CORE_EXPORT QgsMarkerSymbolLayerV2 : public QgsSymbolLayerV2
     virtual void setOutputUnit( QgsSymbolV2::OutputUnit unit );
     virtual QgsSymbolV2::OutputUnit outputUnit() const;
 
+    void setHorizontalAnchorPoint( HorizontalAnchorPoint h ) { mHorizontalAnchorPoint = h; }
+    HorizontalAnchorPoint horizontalAnchorPoint() const { return mHorizontalAnchorPoint; }
+
+    void setVerticalAnchorPoint( VerticalAnchorPoint v ) { mVerticalAnchorPoint = v; }
+    VerticalAnchorPoint verticalAnchorPoint() const { return mVerticalAnchorPoint; }
+
   protected:
     QgsMarkerSymbolLayerV2( bool locked = false );
+    //handles marker offset and anchor point shift together
     void markerOffset( QgsSymbolV2RenderContext& context, double& offsetX, double& offsetY );
+    void markerOffset( QgsSymbolV2RenderContext& context, double width, double height,
+                       QgsSymbolV2::OutputUnit widthUnit, QgsSymbolV2::OutputUnit heightUnit,
+                       double& offsetX, double& offsetY );
     static QPointF _rotatedOffset( const QPointF& offset, double angle );
 
     double mAngle;
@@ -162,6 +187,12 @@ class CORE_EXPORT QgsMarkerSymbolLayerV2 : public QgsSymbolLayerV2
     QPointF mOffset;
     QgsSymbolV2::OutputUnit mOffsetUnit;
     QgsSymbolV2::ScaleMethod mScaleMethod;
+    HorizontalAnchorPoint mHorizontalAnchorPoint;
+    VerticalAnchorPoint mVerticalAnchorPoint;
+
+  private:
+    static QgsMarkerSymbolLayerV2::HorizontalAnchorPoint decodeHorizontalAnchorPoint( const QString& str );
+    static QgsMarkerSymbolLayerV2::VerticalAnchorPoint decodeVerticalAnchorPoint( const QString& str );
 };
 
 class CORE_EXPORT QgsLineSymbolLayerV2 : public QgsSymbolLayerV2

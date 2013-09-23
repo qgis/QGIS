@@ -182,3 +182,13 @@ QString QgsDataDefinedSymbolDialog::fileNameHelpText()
 {
   return tr( "'<filename>'" );
 }
+
+QString QgsDataDefinedSymbolDialog::horizontalAnchorHelpText()
+{
+  return tr( "'left'|'center'|'right'" );
+}
+
+QString QgsDataDefinedSymbolDialog::verticalAnchorHelpText()
+{
+  return tr( "'top'|'center'|'bottom'" );
+}
