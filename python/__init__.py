@@ -24,6 +24,7 @@ __copyright__ = '(C) 2007, Martin Dobias'
 __revision__ = '$Format:%H$'
 
 import sip
+from qgis.core import QgsFeature, QgsGeometry
 
 try:
     apis = ["QDate", "QDateTime", "QString", "QTextStream", "QTime", "QUrl", "QVariant"]
@@ -64,3 +65,23 @@ try:
     core.NULL = QPyNullVariant( int )
 except ImportError:
     pass
+
+
+def mapping_feature(feature):
+    geom = feature.geometry()
+    properties = {}
+    fields = [field.name() for field in feature.fields()]
+    properties = dict(zip(fields, feature.attributes()))
+    return { 
+             'type' : 'Feature',
+             'properties' : properties,
+             'geometry' : geom.__geo_interface__}
+
+def mapping_geometry(geometry):
+    geo = geometry.exportToGeoJSON()
+    # We have to use eval because exportToGeoJSON() gives us
+    # back a string that looks like a dictionary. 
+    return eval(geo)
+
+QgsFeature.__geo_interface__ = property(mapping_feature)
+QgsGeometry.__geo_interface__ = property(mapping_geometry)
