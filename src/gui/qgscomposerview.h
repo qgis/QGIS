@@ -167,9 +167,6 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     /** Draw a shape on the canvas */
     void addShape( Tool currentTool );
 
-    bool mPanning;
-    QPoint mMouseLastXY;
-
     //void connectAddRemoveCommandSignals( QgsAddRemoveItemCommand* c );
 
   signals:

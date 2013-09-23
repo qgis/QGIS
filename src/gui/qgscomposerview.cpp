@@ -48,7 +48,6 @@ QgsComposerView::QgsComposerView( QWidget* parent, const char* name, Qt::WFlags 
     , mPaintingEnabled( true )
     , mHorizontalRuler( 0 )
     , mVerticalRuler( 0 )
-    , mPanning( false )
 {
   Q_UNUSED( f );
   Q_UNUSED( name );
@@ -82,15 +81,6 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
       QPointF itemPoint = selectedItem->mapFromScene( scenePoint );
       selectedItem->updateCursor( itemPoint );
     }
-    return;
-  }
-  else if ( e->button() == Qt::MidButton )
-  {
-    //pan composer with middle button
-    mPanning = true;
-    mMouseLastXY = e->pos();
-    setCursor( Qt::ClosedHandCursor );
-    e->accept();
     return;
   }
 
@@ -320,15 +310,6 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
 
   QPointF scenePoint = mapToScene( e->pos() );
 
-  if ( mPanning )
-  {
-    //panning with middle button
-    mPanning = false;
-    setCursor( Qt::ArrowCursor );
-    e->accept();
-    return;
-  }
-
   switch ( mCurrentTool )
   {
     case Select:
@@ -448,15 +429,6 @@ void QgsComposerView::mouseMoveEvent( QMouseEvent* e )
     {
       QGraphicsView::mouseMoveEvent( e );
     }
-  }
-  else if ( mPanning )
-  {
-    //panning with middle mouse button, scroll view
-    horizontalScrollBar()->setValue( horizontalScrollBar()->value() - ( e->x() - mMouseLastXY.x() ) );
-    verticalScrollBar()->setValue( verticalScrollBar()->value() - ( e->y() - mMouseLastXY.y() ) );
-    mMouseLastXY = e->pos();
-    e->accept();
-    return;
   }
   else
   {
@@ -785,47 +757,16 @@ void QgsComposerView::wheelEvent( QWheelEvent* event )
 {
   QPointF scenePoint = mapToScene( event->pos() );
 
-  if ( currentTool() == MoveItemContent )
+  //select topmost item at position of event
+  QgsComposerItem* theItem = composition()->composerItemAt( scenePoint );
+  if ( theItem )
   {
-    //move item content tool, so scroll events get handled by the composer item
-
-    //select topmost item at position of event
-    QgsComposerItem* theItem = composition()->composerItemAt( scenePoint );
-    if ( theItem )
+    if ( theItem->isSelected() )
     {
-      if ( theItem->isSelected() )
-      {
-        QPointF itemPoint = theItem->mapFromScene( scenePoint );
-        theItem->beginCommand( tr( "Zoom item content" ) );
-        theItem->zoomContent( event->delta(), itemPoint.x(), itemPoint.y() );
-        theItem->endCommand();
-      }
-    }
-  }
-  else
-  {
-    //zoom whole composition
-    if ( event->delta() > 0 )
-    {
-      scale( 2, 2 );
-    }
-    else
-    {
-      scale( 0.5, 0.5 );
-    }
-
-    updateRulers();
-    update();
-    //redraw cached map items
-    QList<QGraphicsItem *> itemList = composition()->items();
-    QList<QGraphicsItem *>::iterator itemIt = itemList.begin();
-    for ( ; itemIt != itemList.end(); ++itemIt )
-    {
-      QgsComposerMap* mypItem = dynamic_cast<QgsComposerMap *>( *itemIt );
-      if (( mypItem ) && ( mypItem->previewMode() == QgsComposerMap::Render ) )
-      {
-        mypItem->updateCachedImage();
-      }
+      QPointF itemPoint = theItem->mapFromScene( scenePoint );
+      theItem->beginCommand( tr( "Zoom item content" ) );
+      theItem->zoomContent( event->delta(), itemPoint.x(), itemPoint.y() );
+      theItem->endCommand();
     }
   }
 }
