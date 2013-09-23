@@ -26,6 +26,7 @@ __revision__ = '$Format:%H$'
 import pickle
 from processing.tools.system import *
 import os
+import codecs
 
 class Help2Html():
 
@@ -39,7 +40,7 @@ class Help2Html():
         self.alg = alg
         f = open(helpFile, "rb")
         self.descriptions = pickle.load(f)
-        s = "<h2>Algorithm description</h2>\n"
+        s = "<html><body><h2>Algorithm description</h2>\n"
         s += "<p>" + self.getDescription(self.ALG_DESC) + "</p>\n"
         s += "<h2>Input parameters</h2>\n"
         for param in self.alg.parameters:
@@ -49,9 +50,11 @@ class Help2Html():
         for out in self.alg.outputs:
             s += "<h3>" + out.description + "</h3>\n"
             s += "<p>" + self.getDescription(out.name) + "</p>\n"
+        s += "</body></html>"
         filename = tempFolder() + os.sep + "temphelp.html"
-        tempHtml = open(filename, "w")
+        tempHtml = codecs.open(filename, "w", encoding = 'utf-8')        
         tempHtml.write(s)
+        tempHtml.close()
 
         return filename
 

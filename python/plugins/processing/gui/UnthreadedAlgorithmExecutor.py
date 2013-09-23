@@ -46,12 +46,14 @@ class UnthreadedAlgorithmExecutor:
             return True
         except GeoAlgorithmExecutionException, e :
             ProcessingLog.addToLog(sys.exc_info()[0], ProcessingLog.LOG_ERROR)
-            QMessageBox.critical(None, "Error", e.msg)
+            progress.error(e.msg)
+            #QMessageBox.critical(None, "Error", e.msg)
             return False
         except Exception:
-            msg = "Error executing " + str(alg.name) + "\nSee log for more information"
+            msg = "Uncaught error executing " + str(alg.name) + "\nSee log for more information"
             ProcessingLog.addToLog(sys.exc_info()[0], ProcessingLog.LOG_ERROR)
-            QMessageBox.critical(None, "Uncaught error", msg)
+            progress.error(e.msg)
+            #QMessageBox.critical(None, "Uncaught error", msg)
             return False
 
     @staticmethod

@@ -85,6 +85,7 @@ def getNumExportedLayers():
     return numExported
 
 def mkdir(newdir):
+    newdir = newdir.strip("\n\r ")
     if os.path.isdir(newdir):
         pass
     else:

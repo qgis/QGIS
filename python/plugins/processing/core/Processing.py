@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+import sys
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -71,11 +72,16 @@ class Processing:
         '''Adding a new provider automatically initializes it, so there is no need to do it in advance'''
         #Note: this might slow down the initialization process if there are many new providers added.
         #Should think of a different solution
-        provider.initializeSettings()
-        Processing.providers.append(provider)
-        ProcessingConfig.loadSettings()
-        if updateList:
-            Processing.updateAlgsList()
+        try:
+            provider.initializeSettings()
+            Processing.providers.append(provider)
+            ProcessingConfig.loadSettings()
+            if updateList:
+                Processing.updateAlgsList()
+        except:
+            ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, "Could not load provider:" 
+                                   + provider.getDescription() + "\n" + sys.exc_info()[0])
+            Processing.removeProvider(provider)
 
     @staticmethod
     def removeProvider(provider):
