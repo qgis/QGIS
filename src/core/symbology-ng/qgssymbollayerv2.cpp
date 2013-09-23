@@ -178,6 +178,13 @@ void QgsMarkerSymbolLayerV2::setOutputUnit( QgsSymbolV2::OutputUnit unit )
 
 void QgsMarkerSymbolLayerV2::markerOffset( QgsSymbolV2RenderContext& context, double& offsetX, double& offsetY )
 {
+  markerOffset( context, mSize, mSize, mSizeUnit, mSizeUnit, offsetX, offsetY );
+}
+
+void QgsMarkerSymbolLayerV2::markerOffset( QgsSymbolV2RenderContext& context, double width, double height,
+    QgsSymbolV2::OutputUnit widthUnit, QgsSymbolV2::OutputUnit heightUnit,
+    double& offsetX, double& offsetY )
+{
   offsetX = mOffset.x();
   offsetY = mOffset.y();
 
@@ -211,24 +218,25 @@ void QgsMarkerSymbolLayerV2::markerOffset( QgsSymbolV2RenderContext& context, do
     return;
   }
 
-  double anchorPointCorrection = mSize * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mSizeUnit ) / 2.0;
+  double anchorPointCorrectionX = width * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), widthUnit ) / 2.0;
+  double anchorPointCorrectionY = height * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), heightUnit ) / 2.0;
   if ( horizontalAnchorPoint == Left )
   {
-    offsetX += anchorPointCorrection;
+    offsetX += anchorPointCorrectionX;
   }
   else if ( horizontalAnchorPoint == Right )
   {
-    offsetX -= anchorPointCorrection;
+    offsetX -= anchorPointCorrectionX;
   }
 
   //correct vertical position according to anchor point
   if ( verticalAnchorPoint == Top )
   {
-    offsetY += anchorPointCorrection;
+    offsetY += anchorPointCorrectionY;
   }
   else if ( verticalAnchorPoint == Bottom )
   {
-    offsetY -= anchorPointCorrection;
+    offsetY -= anchorPointCorrectionY;
   }
 }
 

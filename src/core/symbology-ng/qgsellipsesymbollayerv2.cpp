@@ -92,6 +92,14 @@ QgsSymbolLayerV2* QgsEllipseSymbolLayerV2::create( const QgsStringMap& propertie
   {
     layer->setOffsetUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( properties["offset_unit"] ) );
   }
+  if ( properties.contains( "horizontal_anchor_point" ) )
+  {
+    layer->setHorizontalAnchorPoint( QgsMarkerSymbolLayerV2::HorizontalAnchorPoint( properties[ "horizontal_anchor_point" ].toInt() ) );
+  }
+  if ( properties.contains( "vertical_anchor_point" ) )
+  {
+    layer->setVerticalAnchorPoint( QgsMarkerSymbolLayerV2::VerticalAnchorPoint( properties[ "vertical_anchor_point" ].toInt() ) );
+  }
 
   //data defined properties
   if ( properties.contains( "width_expression" ) )
@@ -125,6 +133,14 @@ QgsSymbolLayerV2* QgsEllipseSymbolLayerV2::create( const QgsStringMap& propertie
   if ( properties.contains( "offset_expression" ) )
   {
     layer->setDataDefinedProperty( "offset", properties["offset_expression"] );
+  }
+  if ( properties.contains( "horizontal_anchor_point_expression" ) )
+  {
+    layer->setDataDefinedProperty( "horizontal_anchor_point", properties[ "horizontal_anchor_point_expression" ] );
+  }
+  if ( properties.contains( "vertical_anchor_point_expression" ) )
+  {
+    layer->setDataDefinedProperty( "vertical_anchor_point", properties[ "vertical_anchor_point_expression" ] );
   }
 
   //compatibility with old project file format
@@ -199,7 +215,7 @@ void QgsEllipseSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Rend
   //offset
   double offsetX = 0;
   double offsetY = 0;
-  markerOffset( context, offsetX, offsetY );
+  markerOffset( context, mSymbolWidth, mSymbolHeight, mSymbolWidthUnit, mSymbolHeightUnit, offsetX, offsetY );
   QPointF off( offsetX, offsetY );
 
   QPainter* p = context.renderContext().painter();
@@ -385,6 +401,8 @@ QgsStringMap QgsEllipseSymbolLayerV2::properties() const
   map["outline_color"] = QgsSymbolLayerV2Utils::encodeColor( mOutlineColor );
   map["offset"] = QgsSymbolLayerV2Utils::encodePoint( mOffset );
   map["offset_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mOffsetUnit );
+  map["horizontal_anchor_point"] = QString::number( mHorizontalAnchorPoint );
+  map["vertical_anchor_point"] = QString::number( mVerticalAnchorPoint );
   saveDataDefinedProperties( map );
   return map;
 }

@@ -176,6 +176,9 @@ class CORE_EXPORT QgsMarkerSymbolLayerV2 : public QgsSymbolLayerV2
     QgsMarkerSymbolLayerV2( bool locked = false );
     //handles marker offset and anchor point shift together
     void markerOffset( QgsSymbolV2RenderContext& context, double& offsetX, double& offsetY );
+    void markerOffset( QgsSymbolV2RenderContext& context, double width, double height,
+                       QgsSymbolV2::OutputUnit widthUnit, QgsSymbolV2::OutputUnit heightUnit,
+                       double& offsetX, double& offsetY );
     static QPointF _rotatedOffset( const QPointF& offset, double angle );
 
     double mAngle;

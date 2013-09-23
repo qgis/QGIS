@@ -82,6 +82,8 @@ void QgsEllipseSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
   QPointF offsetPt = mLayer->offset();
   spinOffsetX->setValue( offsetPt.x() );
   spinOffsetY->setValue( offsetPt.y() );
+  mHorizontalAnchorComboBox->setCurrentIndex( mLayer->horizontalAnchorPoint() );
+  mVerticalAnchorComboBox->setCurrentIndex( mLayer->verticalAnchorPoint() );
   blockComboSignals( false );
 }
 
@@ -202,6 +204,26 @@ void QgsEllipseSymbolLayerV2Widget::blockComboSignals( bool block )
   mSymbolWidthUnitComboBox->blockSignals( block );
   mOutlineWidthUnitComboBox->blockSignals( block );
   mSymbolHeightUnitComboBox->blockSignals( block );
+  mHorizontalAnchorComboBox->blockSignals( block );
+  mVerticalAnchorComboBox->blockSignals( block );
+}
+
+void QgsEllipseSymbolLayerV2Widget::on_mHorizontalAnchorComboBox_currentIndexChanged( int index )
+{
+  if ( mLayer )
+  {
+    mLayer->setHorizontalAnchorPoint(( QgsMarkerSymbolLayerV2::HorizontalAnchorPoint ) index );
+    emit changed();
+  }
+}
+
+void QgsEllipseSymbolLayerV2Widget::on_mVerticalAnchorComboBox_currentIndexChanged( int index )
+{
+  if ( mLayer )
+  {
+    mLayer->setVerticalAnchorPoint(( QgsMarkerSymbolLayerV2::VerticalAnchorPoint ) index );
+    emit changed();
+  }
 }
 
 void QgsEllipseSymbolLayerV2Widget::on_mDataDefinedPropertiesButton_clicked()
@@ -228,6 +250,10 @@ void QgsEllipseSymbolLayerV2Widget::on_mDataDefinedPropertiesButton_clicked()
       "'circle'|'rectangle'|'cross'|'triangle'" );
   dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "offset", tr( "Offset" ), mLayer->dataDefinedPropertyString( "offset" ),
       QgsDataDefinedSymbolDialog::offsetHelpText() );
+  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "horizontal_anchor_point", tr( "Horizontal anchor point" ), mLayer->dataDefinedPropertyString( "horizontal_anchor_point" ),
+      QgsDataDefinedSymbolDialog::horizontalAnchorHelpText() );
+  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "vertical_anchor_point", tr( "Vertical anchor point" ), mLayer->dataDefinedPropertyString( "vertical_anchor_point" ),
+      QgsDataDefinedSymbolDialog::verticalAnchorHelpText() );
   QgsDataDefinedSymbolDialog d( dataDefinedProperties, mVectorLayer );
   if ( d.exec() == QDialog::Accepted )
   {
