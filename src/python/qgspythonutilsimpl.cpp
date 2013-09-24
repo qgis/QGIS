@@ -61,6 +61,14 @@ void QgsPythonUtilsImpl::initPython( QgisInterface* interface )
   runString( "import sys" ); // import sys module (for display / exception hooks)
   runString( "import os" ); // import os module (for user paths)
 
+  // support for PYTHONSTARTUP-like environment variable: PYQGIS_STARTUP
+  // (unlike PYTHONHOME and PYTHONPATH, PYTHONSTARTUP is not supported for embedded interpreter by default)
+  // this is different than user's 'startup.py' (below), since it is loaded just after Py_Initialize
+  // it is very useful for cleaning sys.path, which may have undesireable paths, or for
+  // isolating/loading the initial environ without requiring a virt env, e.g. homebrew or MacPorts installs on Mac
+  runString( "pyqgstart = os.getenv('PYQGIS_STARTUP')\n" );
+  runString( "if pyqgstart is not None and os.path.exists(pyqgstart): execfile(pyqgstart)\n" );
+
 #ifdef Q_OS_WIN
   runString( "oldhome=None" );
   runString( "if os.environ.has_key('HOME'): oldhome=os.environ['HOME']\n" );
