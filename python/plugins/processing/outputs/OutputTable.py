@@ -67,6 +67,6 @@ class OutputTable(Output):
 
         if self.encoding is None:
             settings = QSettings()
-            self.encoding = settings.value("/ProcessingQGIS/encoding", "System")
+            self.encoding = settings.value("/Processing/encoding", "System")
 
         return TableWriter(self.value, self.encoding, fields)

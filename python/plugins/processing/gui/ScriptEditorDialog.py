@@ -123,7 +123,7 @@ class ScriptEditorDialog(QDialog, Ui_DlgScriptEditor):
                 filterName = self.tr("Python scripts (*.py)")
             elif self.algType == self.SCRIPT_R:
                 scriptDir = RUtils.RScriptsFolder()
-                filterName = self.tr("SEXTANTE R script (*.rsx)")
+                filterName = self.tr("Processing R script (*.rsx)")
 
             self.filename = unicode(QFileDialog.getSaveFileName(self,
                                                                 self.tr("Save script"),

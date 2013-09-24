@@ -52,8 +52,8 @@ class FileSelectionPanel(QtGui.QWidget):
             path = text
         elif os.path.isdir( os.path.dirname(text) ):
             path = os.path.dirname(text)
-        elif settings.contains("/ProcessingQGIS/LastInputPath"):
-            path = settings.value( "/ProcessingQGIS/LastInputPath")
+        elif settings.contains("/Processing/LastInputPath"):
+            path = settings.value( "/Processing/LastInputPath")
         else:
             path = ""
 
@@ -61,12 +61,12 @@ class FileSelectionPanel(QtGui.QWidget):
             folder = QtGui.QFileDialog.getExistingDirectory(self, "Select folder", path)
             if folder:
                 self.text.setText(str(folder))
-                settings.setValue("/ProcessingQGIS/LastInputPath", os.path.dirname(unicode(folder)))
+                settings.setValue("/Processing/LastInputPath", os.path.dirname(unicode(folder)))
         else:
             filenames = QtGui.QFileDialog.getOpenFileNames(self, "Open file", path, "*.*")
             if filenames:
                 self.text.setText(u";".join(filenames))
-                settings.setValue("/ProcessingQGIS/LastInputPath", os.path.dirname(unicode(filenames[0])))
+                settings.setValue("/Processing/LastInputPath", os.path.dirname(unicode(filenames[0])))
 
     def getValue(self):
         s = unicode(self.text.text())

@@ -42,7 +42,7 @@ from processing.ui.ui_ProcessingToolbox import Ui_ProcessingToolbox
 
 class ProcessingToolbox(QDockWidget, Ui_ProcessingToolbox):
 
-    USE_CATEGORIES = "/ProcessingQGIS/UseCategories"
+    USE_CATEGORIES = "/Processing/UseSimplifiedInterface"
 
     def __init__(self):
         QDockWidget.__init__(self, None)
@@ -53,7 +53,7 @@ class ProcessingToolbox(QDockWidget, Ui_ProcessingToolbox):
         self.modeComboBox.addItems(['Simplified interface', 'Advanced interface'])
         settings = QSettings()
         if not settings.contains(self.USE_CATEGORIES):
-            settings.setValue(self.USE_CATEGORIES, True)
+            settings.setValue(self.USE_CATEGORIES, False)
         useCategories = settings.value(self.USE_CATEGORIES, type = bool)
         if useCategories:
             self.modeComboBox.setCurrentIndex(0)

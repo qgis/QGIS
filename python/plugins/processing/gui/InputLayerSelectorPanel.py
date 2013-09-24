@@ -52,8 +52,8 @@ class InputLayerSelectorPanel(QtGui.QWidget):
             path = text
         elif os.path.isdir( os.path.dirname(text) ):
             path = os.path.dirname(text)
-        elif settings.contains("/ProcessingQGIS/LastInputPath"):
-            path = unicode(settings.value( "/ProcessingQGIS/LastInputPath"))
+        elif settings.contains("/Processing/LastInputPath"):
+            path = unicode(settings.value( "/Processing/LastInputPath"))
         else:
             path = ""
 
@@ -61,7 +61,7 @@ class InputLayerSelectorPanel(QtGui.QWidget):
         if filename:
             self.text.addItem(filename, filename)
             self.text.setCurrentIndex(self.text.count() - 1)
-            settings.setValue("/ProcessingQGIS/LastInputPath", os.path.dirname(unicode(filename)))
+            settings.setValue("/Processing/LastInputPath", os.path.dirname(unicode(filename)))
 
     def getValue(self):
         return self.text.itemData(self.text.currentIndex())

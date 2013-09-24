@@ -47,7 +47,7 @@ class VectorWriter:
 
         if encoding is None:
             settings = QSettings()
-            encoding = settings.value("/ProcessingQGIS/encoding", "System")
+            encoding = settings.value("/Processing/encoding", "System")
 
         if self.fileName.startswith(self.MEMORY_LAYER_PREFIX):
             self.isMemory = True

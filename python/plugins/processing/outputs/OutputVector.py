@@ -80,7 +80,7 @@ class OutputVector(Output):
 
         if self.encoding is None:
             settings = QSettings()
-            self.encoding = settings.value("/ProcessingQGIS/encoding", "System")
+            self.encoding = settings.value("/Processing/encoding", "System")
 
         w = VectorWriter(self.value, self.encoding, fields, geomType, crs, options)
         self.memoryLayer = w.memLayer

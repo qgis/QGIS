@@ -77,11 +77,11 @@ class OutputSelectionPanel(QWidget):
     def saveToFile(self):
         filefilter = self.output.getFileFilter(self.alg)
         settings = QSettings()
-        if settings.contains("/ProcessingQGIS/LastOutputPath"):
-            path = settings.value( "/ProcessingQGIS/LastOutputPath")
+        if settings.contains("/Processing/LastOutputPath"):
+            path = settings.value( "/Processing/LastOutputPath")
         else:
             path = ProcessingConfig.getSetting(ProcessingConfig.OUTPUT_FOLDER)
-        lastEncoding = settings.value("/ProcessingQGIS/encoding", "System")
+        lastEncoding = settings.value("/Processing/encoding", "System")
         fileDialog = QgsEncodingFileDialog(self, "Save file", path, filefilter, lastEncoding)
         fileDialog.setFileMode(QFileDialog.AnyFile)
         fileDialog.setAcceptMode(QFileDialog.AcceptSave)
@@ -97,8 +97,8 @@ class OutputSelectionPanel(QWidget):
                 if ext:
                     filename = filename + ext.group(1)
             self.text.setText(filename)
-            settings.setValue("/ProcessingQGIS/LastOutputPath", os.path.dirname(filename))
-            settings.setValue("/ProcessingQGIS/encoding", encoding)
+            settings.setValue("/Processing/LastOutputPath", os.path.dirname(filename))
+            settings.setValue("/Processing/encoding", encoding)
 
     def getValue(self):
         filename = unicode(self.text.text())

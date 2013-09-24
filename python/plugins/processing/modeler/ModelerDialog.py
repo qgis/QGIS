@@ -45,7 +45,7 @@ from processing.ui.ui_DlgModeler import Ui_DlgModeler
 
 class ModelerDialog(QDialog, Ui_DlgModeler):
 
-    USE_CATEGORIES = "/ProcessingQGIS/UseCategories"
+    USE_CATEGORIES = "/Processing/UseSimplifiedInterface"
 
     def __init__(self, alg=None):
         QDialog.__init__(self)
@@ -53,8 +53,6 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
         self.hasChanged = False
         self.setupUi(self)
 
-        #self.setWindowFlags(self.windowFlags() | Qt.WindowSystemMenuHint |
-        #                    Qt.WindowMinMaxButtonsHint)
         self.tabWidget.setCurrentIndex(0)
         self.scene = ModelerScene(self)
         self.scene.setSceneRect(QRectF(0, 0, 4000, 4000))

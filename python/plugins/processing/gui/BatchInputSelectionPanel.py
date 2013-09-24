@@ -57,8 +57,8 @@ class BatchInputSelectionPanel(QtGui.QWidget):
             path = text
         elif os.path.isdir(os.path.dirname(text)):
             path = os.path.dirname(text)
-        elif settings.contains("/ProcessingQGIS/LastInputPath"):
-            path = unicode(settings.value( "/ProcessingQGIS/LastInputPath"))
+        elif settings.contains("/Processing/LastInputPath"):
+            path = unicode(settings.value( "/Processing/LastInputPath"))
         else:
             path = ""
 
@@ -66,10 +66,10 @@ class BatchInputSelectionPanel(QtGui.QWidget):
         if ret:
             files = list(ret)
             if len(files) == 1:
-                settings.setValue("/ProcessingQGIS/LastInputPath", os.path.dirname(unicode(files[0])))
+                settings.setValue("/Processing/LastInputPath", os.path.dirname(unicode(files[0])))
                 self.text.setText(str(files[0]))
             else:
-                settings.setValue("/ProcessingQGIS/LastInputPath", os.path.dirname(unicode(files[0])))
+                settings.setValue("/Processing/LastInputPath", os.path.dirname(unicode(files[0])))
                 if isinstance(self.param, ParameterMultipleInput):
                     self.text.setText(";".join(unicode(f) for f in files))
                 else:
