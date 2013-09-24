@@ -327,6 +327,18 @@ IF (PEDANTIC)
     IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
       SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-return-type-c-linkage -Wno-overloaded-virtual")
     ENDIF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+
+    # add any extra CXXFLAGS flags set by user. can be -D CXX_EXTRA_FLAGS or environment variable
+    # command line -D option overrides environment variable
+    # e.g. useful for suppressing transient upstream warnings in dependencies, like Qt
+    SET(CXX_EXTRA_FLAGS "" CACHE STRING "Additional appended CXXFLAGS")
+    IF ("${CXX_EXTRA_FLAGS}" STREQUAL "" AND DEFINED $ENV{CXX_EXTRA_FLAGS})
+      SET(CXX_EXTRA_FLAGS "$ENV{CXX_EXTRA_FLAGS}")
+    ENDIF ("${CXX_EXTRA_FLAGS}" STREQUAL "" AND DEFINED $ENV{CXX_EXTRA_FLAGS})
+    IF (NOT "${CXX_EXTRA_FLAGS}" STREQUAL "")
+      MESSAGE (STATUS "Appending CXX_EXTRA_FLAGS")
+      SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CXX_EXTRA_FLAGS}")
+    ENDIF (NOT "${CXX_EXTRA_FLAGS}" STREQUAL "")
   ENDIF (MSVC)
 
 ENDIF (PEDANTIC)
