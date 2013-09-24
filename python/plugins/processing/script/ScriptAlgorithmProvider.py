@@ -24,29 +24,24 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os.path
-
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.AlgorithmProvider import AlgorithmProvider
-
 from processing.gui.EditScriptAction import EditScriptAction
 from processing.gui.DeleteScriptAction import DeleteScriptAction
 from processing.gui.CreateNewScriptAction import CreateNewScriptAction
-
 from processing.script.ScriptAlgorithm import ScriptAlgorithm
 from processing.script.ScriptUtils import ScriptUtils
 from processing.script.WrongScriptException import WrongScriptException
-
 import processing.resources_rc
 
 class ScriptAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
         AlgorithmProvider.__init__(self)
-        #self.actions.append(CreateNewScriptAction("Create new script", CreateNewScriptAction.SCRIPT_PYTHON))
+        self.actions.append(CreateNewScriptAction("Create new script", CreateNewScriptAction.SCRIPT_PYTHON))
         self.contextMenuActions = [EditScriptAction(EditScriptAction.SCRIPT_PYTHON),
                                    DeleteScriptAction(DeleteScriptAction.SCRIPT_PYTHON)
                                   ]

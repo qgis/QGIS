@@ -24,7 +24,6 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os.path
-
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
@@ -44,7 +43,7 @@ class RAlgorithmProvider(AlgorithmProvider):
     def __init__(self):
         AlgorithmProvider.__init__(self)
         self.activate = False
-        #self.actions.append(CreateNewScriptAction("Create new R script", CreateNewScriptAction.SCRIPT_R))
+        self.actions.append(CreateNewScriptAction("Create new R script", CreateNewScriptAction.SCRIPT_R))
         self.contextMenuActions = [EditScriptAction(EditScriptAction.SCRIPT_R),
                                    DeleteScriptAction(DeleteScriptAction.SCRIPT_R)
                                   ]
