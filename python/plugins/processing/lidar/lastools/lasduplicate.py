@@ -2,11 +2,7 @@
 
 """
 ***************************************************************************
-    lasground.py
-    ---------------------
-    Date                 : August 2012
-    Copyright            : (C) 2012 by Victor Olaya
-    Email                : volayaf at gmail dot com
+    lasduplicate.py
     ---------------------
     Date                 : September 2013
     Copyright            : (C) 2013 by Martin Isenburg
@@ -21,50 +17,52 @@
 ***************************************************************************
 """
 
-__author__ = 'Victor Olaya'
-__date__ = 'August 2012'
-__copyright__ = '(C) 2012, Victor Olaya'
+__author__ = 'Martin Isenburg'
+__date__ = 'September 2013'
+__copyright__ = '(C) 2013, Martin Isenburg'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
 import os
-from PyQt4 import QtGui
 from processing.lidar.lastools.LAStoolsUtils import LAStoolsUtils
 from processing.lidar.lastools.LAStoolsAlgorithm import LAStoolsAlgorithm
 
 from processing.parameters.ParameterBoolean import ParameterBoolean
-from processing.parameters.ParameterSelection import ParameterSelection
+from processing.parameters.ParameterFile import ParameterFile
 
-class lasground(LAStoolsAlgorithm):
+class lasduplicate(LAStoolsAlgorithm):
 
-    AIRBORNE = "AIRBORNE"
-    TERRAIN = "TERRAIN"
-    TERRAINS = ["wilderness", "nature", "town", "city", "metro"]
-    GRANULARITY = "GRANULARITY"
-    GRANULARITIES = ["coarse", "default", "fine", "extra_fine", "ultra_fine"]
+    LOWEST_Z = "LOWEST_Z"
+    UNIQUE_XYZ = "UNIQUE_XYZ"
+    SINGLE_RETURNS = "SINGLE_RETURNS"
+    RECORD_REMOVED = "RECORD_REMOVED"
 
     def defineCharacteristics(self):
-        self.name = "lasground"
+        self.name = "lasduplicate"
         self.group = "LAStools"
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
-        self.addParametersHorizontalAndVerticalFeetGUI()
-        self.addParameter(ParameterBoolean(lasground.AIRBORNE, "airborne LiDAR", True))
-        self.addParameter(ParameterSelection(lasground.TERRAIN, "terrain type", lasground.TERRAINS, 1))
-        self.addParameter(ParameterSelection(lasground.GRANULARITY, "preprocessing", lasground.GRANULARITIES, 1))
+        self.addParameter(ParameterBoolean(lasduplicate.LOWEST_Z, "keep duplicate with lowest z coordinate", False))
+        self.addParameter(ParameterBoolean(lasduplicate.UNIQUE_XYZ, "only remove duplicates in x y and z", False))
+        self.addParameter(ParameterBoolean(lasduplicate.SINGLE_RETURNS, "mark surviving duplicate as single return", False))
+        self.addParameter(ParameterFile(lasduplicate.RECORD_REMOVED, "record removed duplictates to LAS/LAZ file"))
         self.addParametersPointOutputGUI()
 
+
     def processAlgorithm(self, progress):
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasground.exe")]
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasduplicate.exe")]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputCommands(commands)
-        self.addParametersHorizontalAndVerticalFeetCommands(commands)        
-        method = self.getParameterValue(lasground.TERRAIN)
-        if method != 1:
-            commands.append("-" + lasground.TERRAINS[method])
-        granularity = self.getParameterValue(lasground.GRANULARITY)
-        if granularity != 1:
-            commands.append("-" + lasground.GRANULARITIES[granularity])
+        if self.getParameterValue(lasduplicate.LOWEST_Z):
+            commands.append("-lowest_z")
+        if self.getParameterValue(lasduplicate.UNIQUE_XYZ):
+            commands.append("-unique_xyz")
+        if self.getParameterValue(lasduplicate.SINGLE_RETURNS):
+            commands.append("-single_returns")
+        record_removed = self.getParameterValue(lasduplicate.RECORD_REMOVED)
+        if record_removed != Null:
+            commands.append("-record_removed")
+            commands.append(record_removed)
         self.addParametersPointOutputCommands(commands)
 
         LAStoolsUtils.runLAStools(commands, progress)

@@ -2,11 +2,7 @@
 
 """
 ***************************************************************************
-    lasclip.py
-    ---------------------
-    Date                 : August 2012
-    Copyright            : (C) 2012 by Victor Olaya
-    Email                : volayaf at gmail dot com
+    las2las_transform.py
     ---------------------
     Date                 : September 2013
     Copyright            : (C) 2013 by Martin Isenburg
@@ -21,9 +17,9 @@
 ***************************************************************************
 """
 
-__author__ = 'Victor Olaya'
-__date__ = 'August 2012'
-__copyright__ = '(C) 2012, Victor Olaya'
+__author__ = 'Martin Isenburg'
+__date__ = 'September 2013'
+__copyright__ = '(C) 2013, Martin Isenburg'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
@@ -31,45 +27,46 @@ import os
 from processing.lidar.lastools.LAStoolsUtils import LAStoolsUtils
 from processing.lidar.lastools.LAStoolsAlgorithm import LAStoolsAlgorithm
 
-from processing.parameters.ParameterVector import ParameterVector
 from processing.parameters.ParameterBoolean import ParameterBoolean
 from processing.parameters.ParameterNumber import ParameterNumber
+from processing.parameters.ParameterString import ParameterString
 from processing.parameters.ParameterSelection import ParameterSelection
 
-class lasclip(LAStoolsAlgorithm):
+class las2las_transform(LAStoolsAlgorithm):
 
-    POLYGON = "POLYGON"
-    INTERIOR = "INTERIOR"
+    STEP = "STEP"
     OPERATION = "OPERATION"
-    OPERATIONS = ["clip", "classify"]
-    CLASSIFY_AS = "CLASSIFY_AS"
+    OPERATIONS = ["---", "set_point_type", "set_point_size", "set_version_minor", "set_version_major", "start_at_point", "stop_at_point", "remove_vlr", "auto_reoffset", "week_to_adjusted", "adjusted_to_week", "scale_rgb_up", "scale_rgb_down", "remove_all_vlrs", "remove_extra", "clip_to_bounding_box"]
+    OPERATIONARG = "OPERATIONARG"
 
     def defineCharacteristics(self):
-        self.name = "lasclip"
+        self.name = "las2las_transform"
         self.group = "LAStools"
-        self.addParametersVerboseGUI();
+        self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
-        self.addParameter(ParameterVector(lasclip.POLYGON, "Input polygon(s)", ParameterVector.VECTOR_TYPE_POLYGON))
-        self.addParameter(ParameterBoolean(lasclip.INTERIOR, "interior", False))
-        self.addParameter(ParameterSelection(lasclip.OPERATION, "what to do with isolated points", lasclip.OPERATIONS, 0))
-        self.addParameter(ParameterNumber(lasclip.CLASSIFY_AS, "classify as", 0, None, 12))
+        self.addParametersTransform1CoordinateGUI()
+        self.addParametersTransform2CoordinateGUI()
+        self.addParametersTransform1OtherGUI()
+        self.addParametersTransform2OtherGUI()
+        self.addParameter(ParameterSelection(las2las_transform.OPERATION, "operations (first 7 need an argument)", las2las_transform.OPERATIONS, 0))
+        self.addParameter(ParameterString(las2las_transform.OPERATIONARG, "argument for operation"))
         self.addParametersPointOutputGUI()
 
+
     def processAlgorithm(self, progress):
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasclip.exe")]
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2las.exe")]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputCommands(commands)
-        poly = self.getParameterValue(lasclip.POLYGON)
-        if poly != None:
-            commands.append("-poly")
-            commands.append(poly)
-        if self.getParameterValue(lasclip.INTERIOR):
-            commands.append("-interior")
-        operation = self.getParameterValue(lasclip.OPERATION)
+        self.addParametersTransform1CoordinateCommands(commands)
+        self.addParametersTransform2CoordinateCommands(commands)
+        self.addParametersTransform1OtherCommands(commands)
+        self.addParametersTransform2OtherCommands(commands)
+        operation = self.getParameterValue(las2las_transform.OPERATION)
         if operation != 0:
-            commands.append("-classify")
-            classify_as = self.getParameterValue(lasclip.CLASSIFY_AS)
-            commands.append(str(classify_as))
+            commands.append("-" + las2las_transform.OPERATIONS[operation])
+            if operation > 7:
+                commands.append(self.getParameterValue(las2las_transform.OPERATIONARG))
+                
         self.addParametersPointOutputCommands(commands)
 
         LAStoolsUtils.runLAStools(commands, progress)

@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    LasToolsUtils.py
+    LAStoolsUtils.py
     ---------------------
     Date                 : August 2012
     Copyright            : (C) 2012 by Victor Olaya
@@ -29,22 +29,22 @@ import subprocess
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
 
-class LasToolsUtils():
+class LAStoolsUtils():
 
     LASTOOLS_FOLDER = "LASTOOLS_FOLDER"
 
     @staticmethod
-    def LasToolsPath():
-        folder = ProcessingConfig.getSetting(LasToolsUtils.LASTOOLS_FOLDER)
+    def LAStoolsPath():
+        folder = ProcessingConfig.getSetting(LAStoolsUtils.LASTOOLS_FOLDER)
         if folder == None:
             folder =""
 
         return folder
 
     @staticmethod
-    def runLasTools(commands, progress):
+    def runLAStools(commands, progress):
         loglines = []
-        loglines.append("LasTools execution console output")
+        loglines.append("LAStools console output")
         commandline = " ".join(commands)
         proc = subprocess.Popen(commandline, shell=True, stdout=subprocess.PIPE, stdin=subprocess.PIPE,stderr=subprocess.STDOUT, universal_newlines=False).stdout
         for line in iter(proc.readline, ""):

@@ -2,11 +2,11 @@
 
 """
 ***************************************************************************
-    lasheight.py
+    lasduplicate.py
     ---------------------
-    Date                 : August 2012
-    Copyright            : (C) 2012 by Victor Olaya
-    Email                : volayaf at gmail dot com
+    Date                 : September 2013
+    Copyright            : (C) 2013 by Martin Isenburg
+    Email                : martin near rapidlasso point com
 ***************************************************************************
 *                                                                         *
 *   This program is free software; you can redistribute it and/or modify  *
@@ -24,29 +24,31 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from processing.lidar.lastools.LasToolsUtils import LasToolsUtils
-from processing.lidar.lastools.LasToolsAlgorithm import LasToolsAlgorithm
-from processing.parameters.ParameterFile import ParameterFile
-from processing.outputs.OutputFile import OutputFile
+from processing.lidar.lastools.LAStoolsUtils import LAStoolsUtils
+from processing.lidar.lastools.LAStoolsAlgorithm import LAStoolsAlgorithm
 
-class lasheight(LasToolsAlgorithm):
+from processing.parameters.ParameterBoolean import ParameterBoolean
 
-    INPUT = "INPUT"
-    OUTPUT = "OUTPUT"
+class lasheight(LAStoolsAlgorithm):
+
+    REPLACE_Z = "REPLACE_Z"
 
     def defineCharacteristics(self):
         self.name = "lasheight"
-        self.group = "Tools"
-        self.addParameter(ParameterFile(lasheight.INPUT, "Input las layer"))
-        self.addOutput(OutputFile(lasheight.OUTPUT, "Output height las file"))
-        self.addCommonParameters()
+        self.group = "LAStools"
+        self.addParametersVerboseGUI()
+        self.addParametersPointInputGUI()
+        self.addParameter(ParameterBoolean(lasheight.REPLACE_Z, "replace z", False))
+        self.addParametersPointOutputGUI()
+
 
     def processAlgorithm(self, progress):
-        commands = [os.path.join(LasToolsUtils.LasToolsPath(), "bin", "lasheight.exe")]
-        commands.append("-i")
-        commands.append(self.getParameterValue(lasheight.INPUT))
-        commands.append("-o")
-        commands.append(self.getOutputValue(lasheight.OUTPUT))
-        self.addCommonParameterValuesToCommand(commands)
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasheight.exe")]
+        self.addParametersVerboseCommands(commands)
+        self.addParametersPointInputCommands(commands)
+        replace_z = self.getParameterValue(lasheight.REPLACE_Z)
+        if replace_z == True:
+            commands.append("-replace_z")
+        self.addParametersPointOutputCommands(commands)
 
-        LasToolsUtils.runLasTools(commands, progress)
+        LAStoolsUtils.runLAStools(commands, progress)

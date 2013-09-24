@@ -2,11 +2,7 @@
 
 """
 ***************************************************************************
-    lasground.py
-    ---------------------
-    Date                 : August 2012
-    Copyright            : (C) 2012 by Victor Olaya
-    Email                : volayaf at gmail dot com
+    lascontrol.py
     ---------------------
     Date                 : September 2013
     Copyright            : (C) 2013 by Martin Isenburg
@@ -21,50 +17,55 @@
 ***************************************************************************
 """
 
-__author__ = 'Victor Olaya'
-__date__ = 'August 2012'
-__copyright__ = '(C) 2012, Victor Olaya'
+__author__ = 'Martin Isenburg'
+__date__ = 'September 2013'
+__copyright__ = '(C) 2013, Martin Isenburg'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
 import os
-from PyQt4 import QtGui
 from processing.lidar.lastools.LAStoolsUtils import LAStoolsUtils
 from processing.lidar.lastools.LAStoolsAlgorithm import LAStoolsAlgorithm
 
+from processing.parameters.ParameterVector import ParameterVector
 from processing.parameters.ParameterBoolean import ParameterBoolean
+from processing.parameters.ParameterNumber import ParameterNumber
 from processing.parameters.ParameterSelection import ParameterSelection
 
-class lasground(LAStoolsAlgorithm):
+class lascontrol(LAStoolsAlgorithm):
 
-    AIRBORNE = "AIRBORNE"
-    TERRAIN = "TERRAIN"
-    TERRAINS = ["wilderness", "nature", "town", "city", "metro"]
-    GRANULARITY = "GRANULARITY"
-    GRANULARITIES = ["coarse", "default", "fine", "extra_fine", "ultra_fine"]
+    POLYGON = "POLYGON"
+    INTERIOR = "INTERIOR"
+    OPERATION = "OPERATION"
+    OPERATIONS = ["clip", "classify"]
+    CLASSIFY_AS = "CLASSIFY_AS"
 
     def defineCharacteristics(self):
-        self.name = "lasground"
+        self.name = "lascontrol"
         self.group = "LAStools"
-        self.addParametersVerboseGUI()
+        self.addParametersVerboseGUI();
         self.addParametersPointInputGUI()
-        self.addParametersHorizontalAndVerticalFeetGUI()
-        self.addParameter(ParameterBoolean(lasground.AIRBORNE, "airborne LiDAR", True))
-        self.addParameter(ParameterSelection(lasground.TERRAIN, "terrain type", lasground.TERRAINS, 1))
-        self.addParameter(ParameterSelection(lasground.GRANULARITY, "preprocessing", lasground.GRANULARITIES, 1))
+        self.addParameter(ParameterVector(lascontrol.POLYGON, "Input polygon(s)", ParameterVector.VECTOR_TYPE_POLYGON))
+        self.addParameter(ParameterBoolean(lascontrol.INTERIOR, "interior", False))
+        self.addParameter(ParameterSelection(lascontrol.OPERATION, "what to do with isolated points", lascontrol.OPERATIONS, 0))
+        self.addParameter(ParameterNumber(lascontrol.CLASSIFY_AS, "classify as", 0, None, 12))
         self.addParametersPointOutputGUI()
 
     def processAlgorithm(self, progress):
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasground.exe")]
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lascontrol.exe")]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputCommands(commands)
-        self.addParametersHorizontalAndVerticalFeetCommands(commands)        
-        method = self.getParameterValue(lasground.TERRAIN)
-        if method != 1:
-            commands.append("-" + lasground.TERRAINS[method])
-        granularity = self.getParameterValue(lasground.GRANULARITY)
-        if granularity != 1:
-            commands.append("-" + lasground.GRANULARITIES[granularity])
+        poly = self.getParameterValue(lascontrol.POLYGON)
+        if poly != None:
+            commands.append("-poly")
+            commands.append(poly)
+        if self.getParameterValue(lascontrol.INTERIOR):
+            commands.append("-interior")
+        operation = self.getParameterValue(lascontrol.OPERATION)
+        if operation != 0:
+            commands.append("-classify")
+            classify_as = self.getParameterValue(lascontrol.CLASSIFY_AS)
+            commands.append(str(classify_as))
         self.addParametersPointOutputCommands(commands)
 
         LAStoolsUtils.runLAStools(commands, progress)

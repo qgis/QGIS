@@ -2,11 +2,7 @@
 
 """
 ***************************************************************************
-    lasclip.py
-    ---------------------
-    Date                 : August 2012
-    Copyright            : (C) 2012 by Victor Olaya
-    Email                : volayaf at gmail dot com
+    lasnoise.py
     ---------------------
     Date                 : September 2013
     Copyright            : (C) 2013 by Martin Isenburg
@@ -21,9 +17,9 @@
 ***************************************************************************
 """
 
-__author__ = 'Victor Olaya'
-__date__ = 'August 2012'
-__copyright__ = '(C) 2012, Victor Olaya'
+__author__ = 'Martin Isenburg'
+__date__ = 'September 2013'
+__copyright__ = '(C) 2013, Martin Isenburg'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
@@ -31,44 +27,50 @@ import os
 from processing.lidar.lastools.LAStoolsUtils import LAStoolsUtils
 from processing.lidar.lastools.LAStoolsAlgorithm import LAStoolsAlgorithm
 
-from processing.parameters.ParameterVector import ParameterVector
-from processing.parameters.ParameterBoolean import ParameterBoolean
 from processing.parameters.ParameterNumber import ParameterNumber
 from processing.parameters.ParameterSelection import ParameterSelection
 
-class lasclip(LAStoolsAlgorithm):
+class lasnoise(LAStoolsAlgorithm):
 
-    POLYGON = "POLYGON"
-    INTERIOR = "INTERIOR"
+    ISOLATED = "ISOLATED"
+    STEP_XY = "STEP_XY"
+    STEP_Z = "STEP_Z"
     OPERATION = "OPERATION"
-    OPERATIONS = ["clip", "classify"]
+    OPERATIONS = ["classify", "remove"]
     CLASSIFY_AS = "CLASSIFY_AS"
 
     def defineCharacteristics(self):
-        self.name = "lasclip"
+        self.name = "lasnoise"
         self.group = "LAStools"
-        self.addParametersVerboseGUI();
+        self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
-        self.addParameter(ParameterVector(lasclip.POLYGON, "Input polygon(s)", ParameterVector.VECTOR_TYPE_POLYGON))
-        self.addParameter(ParameterBoolean(lasclip.INTERIOR, "interior", False))
-        self.addParameter(ParameterSelection(lasclip.OPERATION, "what to do with isolated points", lasclip.OPERATIONS, 0))
-        self.addParameter(ParameterNumber(lasclip.CLASSIFY_AS, "classify as", 0, None, 12))
+        self.addParameter(ParameterNumber(lasnoise.ISOLATED, "isolated if surrounding cells have only", 0, None, 5))
+        self.addParameter(ParameterNumber(lasnoise.STEP_XY, "resolution of isolation grid in xy", 0, None, 4.0))
+        self.addParameter(ParameterNumber(lasnoise.STEP_Z, "resolution of isolation grid in z ", 0, None, 4.0))
+        self.addParameter(ParameterSelection(lasnoise.OPERATION, "what to do with isolated points", lasnoise.OPERATIONS, 0))
+        self.addParameter(ParameterNumber(lasnoise.CLASSIFY_AS, "classify as", 0, None, 7))
         self.addParametersPointOutputGUI()
 
+
     def processAlgorithm(self, progress):
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasclip.exe")]
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasnoise.exe")]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputCommands(commands)
-        poly = self.getParameterValue(lasclip.POLYGON)
-        if poly != None:
-            commands.append("-poly")
-            commands.append(poly)
-        if self.getParameterValue(lasclip.INTERIOR):
-            commands.append("-interior")
-        operation = self.getParameterValue(lasclip.OPERATION)
+        isolated = self.getParameterValue(lasnoise.ISOLATED)
+        commands.append("-isolated")
+        commands.append(str(isolated))
+        step_xy = self.getParameterValue(lasnoise.STEP_XY)
+        commands.append("-step_xy")
+        commands.append(str(step_xy))
+        step_z = self.getParameterValue(lasnoise.STEP_Z)
+        commands.append("-step_z")
+        commands.append(str(step_z))
+        operation = self.getParameterValue(lasnoise.OPERATION)
         if operation != 0:
-            commands.append("-classify")
-            classify_as = self.getParameterValue(lasclip.CLASSIFY_AS)
+            commands.append("-remove_noise")
+        else:
+            commands.append("-classify_as")
+            classify_as = self.getParameterValue(lasnoise.CLASSIFY_AS)
             commands.append(str(classify_as))
         self.addParametersPointOutputCommands(commands)
 

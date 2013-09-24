@@ -17,19 +17,20 @@
 ***************************************************************************
 """
 
+
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
+import os
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 import subprocess
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
-import os
-from processing.tools.system import *
+from processing.tools.system import userFolder
 
 class FusionUtils():
 

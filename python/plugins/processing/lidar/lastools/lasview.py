@@ -2,11 +2,15 @@
 
 """
 ***************************************************************************
-    OpenViewerAction.py
+    lasinfo.py
     ---------------------
     Date                 : August 2012
     Copyright            : (C) 2012 by Victor Olaya
     Email                : volayaf at gmail dot com
+    ---------------------
+    Date                 : September 2013
+    Copyright            : (C) 2013 by Martin Isenburg
+    Email                : martin near rapidlasso point com
 ***************************************************************************
 *                                                                         *
 *   This program is free software; you can redistribute it and/or modify  *
@@ -17,30 +21,30 @@
 ***************************************************************************
 """
 
-__author__ = 'Victor Olaya'
-__date__ = 'August 2012'
-__copyright__ = '(C) 2012, Victor Olaya'
+__author__ = 'Martin Isenburg'
+__date__ = 'September 2013'
+__copyright__ = '(C) 2013, Martin Isenburg'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from processing.gui.ToolboxAction import ToolboxAction
 import os
-from PyQt4 import QtGui
-import subprocess
-from processing.lidar.fusion.FusionUtils import FusionUtils
+from processing.lidar.lastools.LAStoolsUtils import LAStoolsUtils
+from processing.lidar.lastools.LAStoolsAlgorithm import LAStoolsAlgorithm
 
-class OpenViewerAction(ToolboxAction):
+class lasview(LAStoolsAlgorithm):
 
-    def __init__(self):
-        self.name="Open Fusion LAS viewer"
-        self.group="Visualization"
+    INPUT = "INPUT"
+    OUTPUT = "OUTPUT"
 
-    def getIcon(self):
-        return QtGui.QIcon(os.path.dirname(__file__) + "/../images/tool.png")
+    def defineCharacteristics(self):
+        self.name = "lasview"
+        self.group = "LAStools"
+        self.addParametersVerboseGUI()
+        self.addParametersPointInputGUI()
 
-    def execute(self):
-        f = os.path.join(FusionUtils.FusionPath(), "pdq.exe")
-        if os.path.exists(f):
-            subprocess.Popen(f)
-        else:
-            QtGui.QMessageBox.critical(None, "Unable to open viewer", "The current Fusion folder does not contain the viewer executable.\nPlease check the configuration in the Processing settings dialog.")
+    def processAlgorithm(self, progress):
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasview.exe")]
+        self.addParametersVerboseCommands(commands)
+        self.addParametersPointInputCommands(commands)
+
+        LAStoolsUtils.runLAStools(commands, progress)

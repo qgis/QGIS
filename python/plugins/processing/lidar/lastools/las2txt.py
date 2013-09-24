@@ -2,11 +2,7 @@
 
 """
 ***************************************************************************
-    lasinfo.py
-    ---------------------
-    Date                 : August 2012
-    Copyright            : (C) 2012 by Victor Olaya
-    Email                : volayaf at gmail dot com
+    las2txt.py
     ---------------------
     Date                 : September 2013
     Copyright            : (C) 2013 by Martin Isenburg
@@ -21,34 +17,42 @@
 ***************************************************************************
 """
 
-__author__ = 'Victor Olaya'
-__date__ = 'August 2012'
-__copyright__ = '(C) 2012, Victor Olaya'
+__author__ = 'Martin Isenburg'
+__date__ = 'September 2013'
+__copyright__ = '(C) 2013, Martin Isenburg'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
 import os
 from processing.lidar.lastools.LAStoolsUtils import LAStoolsUtils
 from processing.lidar.lastools.LAStoolsAlgorithm import LAStoolsAlgorithm
-from processing.parameters.ParameterFile import ParameterFile
+
+from processing.parameters.ParameterBoolean import ParameterBoolean
+from processing.parameters.ParameterString import ParameterString
 from processing.outputs.OutputFile import OutputFile
 
-class lasinfo(LAStoolsAlgorithm):
+class las2txt(LAStoolsAlgorithm):
 
+    PARSE_STRING = "PARSE_STRING"
     OUTPUT = "OUTPUT"
 
     def defineCharacteristics(self):
-        self.name = "lasinfo"
+        self.name = "las2txt"
         self.group = "LAStools"
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
-        self.addOutput(OutputFile(lasinfo.OUTPUT, "Output ASCII file"))
+        self.addParameter(ParameterString(las2txt.PARSE_STRING, "parse_string", "xyz"))
+        self.addOutput(OutputFile(las2txt.OUTPUT, "Output ASCII file"))
 
     def processAlgorithm(self, progress):
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasinfo.exe")]
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2txt.exe")]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputCommands(commands)
+        parse_string = self.getParameterValue(las2txt.PARSE_STRING)
+        if parse_string != "xyz":
+            commands.append("-parse_string")
+            commands.append(parse_string)
         commands.append("-o")
-        commands.append(self.getOutputValue(lasinfo.OUTPUT))
+        commands.append(self.getOutputValue(las2txt.OUTPUT))
 
         LAStoolsUtils.runLAStools(commands, progress)

@@ -7,6 +7,10 @@
     Date                 : August 2012
     Copyright            : (C) 2012 by Victor Olaya
     Email                : volayaf at gmail dot com
+    ---------------------
+    Date                 : September 2013
+    Copyright            : (C) 2013 by Martin Isenburg
+    Email                : martin near rapidlasso point com
 ***************************************************************************
 *                                                                         *
 *   This program is free software; you can redistribute it and/or modify  *
@@ -25,40 +29,43 @@ __revision__ = '$Format:%H$'
 
 import os
 from PyQt4 import QtGui
+from processing.lidar.lastools.LAStoolsUtils import LAStoolsUtils
+from processing.lidar.lastools.LAStoolsAlgorithm import LAStoolsAlgorithm
+
 from processing.parameters.ParameterString import ParameterString
-from processing.lidar.lastools.LasToolsUtils import LasToolsUtils
 from processing.parameters.ParameterBoolean import ParameterBoolean
-from processing.outputs.OutputRaster import OutputRaster
-from processing.lidar.lastools.LasToolsAlgorithm import LasToolsAlgorithm
 from processing.parameters.ParameterSelection import ParameterSelection
-from processing.parameters.ParameterFile import ParameterFile
 
-class lasgrid(LasToolsAlgorithm):
+class lasgrid(LAStoolsAlgorithm):
 
-    INPUT = "INPUT"
-    OUTPUT = "OUTPUT"
-    INTENSITY = "INTENSITY"
+    ATTRIBUTE = "ATTRIBUTE"
     METHOD = "METHOD"
-    METHODS = ["-average", "-lowest", "-highest", "-stddev"]
+    ATTRIBUTES = ["elevation", "intensity", "rgb", "classification"]
+    METHODS = ["lowest", "highest", "average", "stddev"]
 
     def defineCharacteristics(self):
         self.name = "lasgrid"
-        self.group = "Tools"
-        self.addParameter(ParameterFile(lasgrid.INPUT, "Input las layer"))
-        self.addParameter(ParameterBoolean(lasgrid.INTENSITY, "Use intensity instead of elevation", False))
-        self.addParameter(ParameterSelection(lasgrid.METHOD, "Method", lasgrid.METHODS))
-        self.addOutput(OutputRaster(lasgrid.OUTPUT, "Output grid layer"))
-        self.addCommonParameters()
+        self.group = "LAStools"
+        self.addParametersVerboseGUI()
+        self.addParametersPointInputGUI()
+        self.addParametersFilter1ReturnClassFlagsGUI()
+        self.addParametersStepGUI()
+        self.addParameter(ParameterSelection(lasgrid.ATTRIBUTE, "Attribute", lasgrid.ATTRIBUTES, 0))
+        self.addParameter(ParameterSelection(lasgrid.METHOD, "Method", lasgrid.METHODS, 0))
+        self.addParametersRasterOutputGUI()
 
     def processAlgorithm(self, progress):
-        commands = [os.path.join(LasToolsUtils.LasToolsPath(), "bin", "lasgrid.exe")]
-        commands.append("-i")
-        commands.append(self.getParameterValue(lasgrid.INPUT))
-        commands.append("-o")
-        commands.append(self.getOutputValue(lasgrid.OUTPUT))
-        if self.getParameterValue(lasgrid.INTENSITY):
-            commands.append("-intensity")
-        commands.append(lasgrid.METHODS[self.getParameterValue(lasgrid.METHOD)])
-        self.addCommonParameterValuesToCommand(commands)
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasgrid.exe")]
+        self.addParametersVerboseCommands(commands)
+        self.addParametersPointInputCommands(commands)
+        self.addParametersFilter1ReturnClassFlagsCommands(commands)
+        self.addParametersStepCommands(commands)
+        attribute = self.getParameterValue(lasgrid.ATTRIBUTE)
+        if attribute != 0:
+            commands.append("-" + lasgrid.ATTRIBUTES[attribute])
+        method = self.getParameterValue(lasgrid.METHOD)
+        if method != 0:
+            commands.append("-" + lasgrid.METHODS[method])
+        self.addParametersRasterOutputCommands(commands)
 
-        LasToolsUtils.runLasTools(commands, progress)
+        LAStoolsUtils.runLAStools(commands, progress)

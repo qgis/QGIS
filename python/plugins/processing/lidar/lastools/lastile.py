@@ -2,11 +2,7 @@
 
 """
 ***************************************************************************
-    lasground.py
-    ---------------------
-    Date                 : August 2012
-    Copyright            : (C) 2012 by Victor Olaya
-    Email                : volayaf at gmail dot com
+    lastile.py
     ---------------------
     Date                 : September 2013
     Copyright            : (C) 2013 by Martin Isenburg
@@ -21,50 +17,50 @@
 ***************************************************************************
 """
 
-__author__ = 'Victor Olaya'
-__date__ = 'August 2012'
-__copyright__ = '(C) 2012, Victor Olaya'
+__author__ = 'Martin Isenburg'
+__date__ = 'September 2013'
+__copyright__ = '(C) 2013, Martin Isenburg'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
 import os
-from PyQt4 import QtGui
 from processing.lidar.lastools.LAStoolsUtils import LAStoolsUtils
 from processing.lidar.lastools.LAStoolsAlgorithm import LAStoolsAlgorithm
 
 from processing.parameters.ParameterBoolean import ParameterBoolean
-from processing.parameters.ParameterSelection import ParameterSelection
+from processing.parameters.ParameterNumber import ParameterNumber
 
-class lasground(LAStoolsAlgorithm):
+class lastile(LAStoolsAlgorithm):
 
-    AIRBORNE = "AIRBORNE"
-    TERRAIN = "TERRAIN"
-    TERRAINS = ["wilderness", "nature", "town", "city", "metro"]
-    GRANULARITY = "GRANULARITY"
-    GRANULARITIES = ["coarse", "default", "fine", "extra_fine", "ultra_fine"]
+    TILE_SIZE = "TILE_SIZE"
+    BUFFER = "BUFFER"
+    REVERSIBLE = "REVERSIBLE"
 
     def defineCharacteristics(self):
-        self.name = "lasground"
+        self.name = "lastile"
         self.group = "LAStools"
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
-        self.addParametersHorizontalAndVerticalFeetGUI()
-        self.addParameter(ParameterBoolean(lasground.AIRBORNE, "airborne LiDAR", True))
-        self.addParameter(ParameterSelection(lasground.TERRAIN, "terrain type", lasground.TERRAINS, 1))
-        self.addParameter(ParameterSelection(lasground.GRANULARITY, "preprocessing", lasground.GRANULARITIES, 1))
+        self.addParametersFilesAreFlightlinesGUI()
+        self.addParameter(ParameterNumber(lastile.TILE_SIZE, "tile size (side length of square tile)",  None, None, 1000.0))
+        self.addParameter(ParameterNumber(lastile.BUFFER, "buffer around each tile",  None, None, 0.0))
+        self.addParameter(ParameterNumber(lastile.BUFFER, "make tiling reversible (advanced)", False))
         self.addParametersPointOutputGUI()
 
     def processAlgorithm(self, progress):
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasground.exe")]
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lastile.exe")]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputCommands(commands)
-        self.addParametersHorizontalAndVerticalFeetCommands(commands)        
-        method = self.getParameterValue(lasground.TERRAIN)
-        if method != 1:
-            commands.append("-" + lasground.TERRAINS[method])
-        granularity = self.getParameterValue(lasground.GRANULARITY)
-        if granularity != 1:
-            commands.append("-" + lasground.GRANULARITIES[granularity])
+        self.addParametersFilesAreFlightlinesCommands(commands)
+        tile_size = self.getParameterValue(lastile.TILE_SIZE)
+        commands.append("-tile_size")
+        commands.append(str(tile_size))
+        buffer = self.getParameterValue(lastile.BUFFER)
+        if buffer != 0.0:
+            commands.append("-buffer")
+            commands.append(str(buffer))
+        if self.getParameterValue(lastile.REVERSIBLE):
+            commands.append("-reversible")
         self.addParametersPointOutputCommands(commands)
 
         LAStoolsUtils.runLAStools(commands, progress)

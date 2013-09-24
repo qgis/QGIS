@@ -2,11 +2,7 @@
 
 """
 ***************************************************************************
-    las2dem.py
-    ---------------------
-    Date                 : August 2012
-    Copyright            : (C) 2012 by Victor Olaya
-    Email                : volayaf at gmail dot com
+    lasoverlap.py
     ---------------------
     Date                 : September 2013
     Copyright            : (C) 2013 by Martin Isenburg
@@ -21,53 +17,65 @@
 ***************************************************************************
 """
 
-__author__ = 'Victor Olaya'
-__date__ = 'August 2012'
-__copyright__ = '(C) 2012, Victor Olaya'
+__author__ = 'Martin Isenburg'
+__date__ = 'September 2013'
+__copyright__ = '(C) 2013, Martin Isenburg'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
 import os
 from PyQt4 import QtGui
-
 from processing.lidar.lastools.LAStoolsUtils import LAStoolsUtils
 from processing.lidar.lastools.LAStoolsAlgorithm import LAStoolsAlgorithm
 
 from processing.parameters.ParameterString import ParameterString
 from processing.parameters.ParameterBoolean import ParameterBoolean
+from processing.parameters.ParameterNumber import ParameterNumber
 from processing.parameters.ParameterSelection import ParameterSelection
 
-class las2dem(LAStoolsAlgorithm):
+class lasoverlap(LAStoolsAlgorithm):
 
+    CHECK_STEP = "CHECK_STEP"
     ATTRIBUTE = "ATTRIBUTE"
-    PRODUCT = "PRODUCT"
-    ATTRIBUTES = ["elevation", "slope", "intensity", "rgb"]
-    PRODUCTS = ["actual values", "hillshade", "gray", "false"]
-
+    OPERATION = "OPERATION"
+    ATTRIBUTES = ["elevation", "intensity", "number_of_returns", "scan_angle_abs", "density"]
+    OPERATIONS = ["lowest", "highest", "average"]
+    CREATE_OVERLAP_RASTER = "CREATE_OVERLAP_RASTER"
+    CREATE_DIFFERENCE_RASTER = "CREATE_DIFFERENCE_RASTER"
 
     def defineCharacteristics(self):
-        self.name = "las2dem"
+        self.name = "lasoverlap"
         self.group = "LAStools"
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
         self.addParametersFilter1ReturnClassFlagsGUI()
-        self.addParametersStepGUI()
-        self.addParameter(ParameterSelection(las2dem.ATTRIBUTE, "Attribute", las2dem.ATTRIBUTES, 0))
-        self.addParameter(ParameterSelection(las2dem.PRODUCT, "Product", las2dem.PRODUCTS, 0))
+        self.addParameter(ParameterNumber(lasoverlap.CHECK_STEP, "size of grid used for overlap check", 0, None, 2.0))
+        self.addParameter(ParameterSelection(lasoverlap.ATTRIBUTE, "attribute to check", lasoverlap.ATTRIBUTES, 0))
+        self.addParameter(ParameterSelection(lasoverlap.OPERATION, "operation on attribute per cell", lasoverlap.OPERATIONS, 0))
+        self.addParameter(ParameterBoolean(lasoverlap.CREATE_OVERLAP_RASTER, "create overlap raster", True))
+        self.addParameter(ParameterBoolean(lasoverlap.CREATE_DIFFERENCE_RASTER, "create difference raster", True))
         self.addParametersRasterOutputGUI()
 
     def processAlgorithm(self, progress):
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2dem.exe")]
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasoverlap.exe")]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputCommands(commands)
         self.addParametersFilter1ReturnClassFlagsCommands(commands)
-        self.addParametersStepCommands(commands)
-        attribute = self.getParameterValue(las2dem.ATTRIBUTE)
+        step = self.getParameterValue(lasoverlap.CHECK_STEP)
+        if step != 0.0:
+            commands.append("-step")
+            commands.append(str(step))
+        commands.append("-values")
+        attribute = self.getParameterValue(lasoverlap.ATTRIBUTE)
         if attribute != 0:
-            commands.append("-" + las2dem.ATTRIBUTES[attribute])
-        product = self.getParameterValue(las2dem.PRODUCT)
-        if product != 0:
-            commands.append("-" + las2dem.PRODUCTS[product])
+            commands.append("-" + lasoverlap.ATTRIBUTES[attribute])
+        operation = self.getParameterValue(lasoverlap.OPERATION)
+        if operation != 0:
+            commands.append("-" + lasoverlap.OPERATIONS[operation])
+        if self.getParameterValue(lasoverlap.CREATE_OVERLAP_RASTER) != True:
+            commands.append("-no_over")
+        if self.getParameterValue(lasoverlap.CREATE_DIFFERENCE_RASTER) != True:
+            commands.append("-no_diff")
         self.addParametersRasterOutputCommands(commands)
 
         LAStoolsUtils.runLAStools(commands, progress)

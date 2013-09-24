@@ -2,11 +2,7 @@
 
 """
 ***************************************************************************
-    lasinfo.py
-    ---------------------
-    Date                 : August 2012
-    Copyright            : (C) 2012 by Victor Olaya
-    Email                : volayaf at gmail dot com
+    las2txt.py
     ---------------------
     Date                 : September 2013
     Copyright            : (C) 2013 by Martin Isenburg
@@ -21,34 +17,46 @@
 ***************************************************************************
 """
 
-__author__ = 'Victor Olaya'
-__date__ = 'August 2012'
-__copyright__ = '(C) 2012, Victor Olaya'
+__author__ = 'Martin Isenburg'
+__date__ = 'September 2013'
+__copyright__ = '(C) 2013, Martin Isenburg'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
 import os
 from processing.lidar.lastools.LAStoolsUtils import LAStoolsUtils
 from processing.lidar.lastools.LAStoolsAlgorithm import LAStoolsAlgorithm
+
+from processing.parameters.ParameterBoolean import ParameterBoolean
+from processing.parameters.ParameterNumber import ParameterNumber
+from processing.parameters.ParameterString import ParameterString
 from processing.parameters.ParameterFile import ParameterFile
-from processing.outputs.OutputFile import OutputFile
 
-class lasinfo(LAStoolsAlgorithm):
+class shp2las(LAStoolsAlgorithm):
 
-    OUTPUT = "OUTPUT"
+    INPUT = "INPUT"
+    SCALE_FACTOR_XY = "SCALE_FACTOR_XY"
+    SCALE_FACTOR_Z = "SCALE_FACTOR_Z"
 
     def defineCharacteristics(self):
-        self.name = "lasinfo"
+        self.name = "shp2las"
         self.group = "LAStools"
         self.addParametersVerboseGUI()
-        self.addParametersPointInputGUI()
-        self.addOutput(OutputFile(lasinfo.OUTPUT, "Output ASCII file"))
+        self.addParameter(ParameterFile(shp2las.INPUT, "Input SHP file"))
+        self.addParameter(ParameterNumber(shp2las.SCALE_FACTOR_XY, "resolution of x and y coordinate", False, False, 0.01))
+        self.addParameter(ParameterNumber(shp2las.SCALE_FACTOR_Z, "resolution of z coordinate", False, False, 0.01))
+        self.addParametersPointOutputGUI()
 
     def processAlgorithm(self, progress):
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasinfo.exe")]
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "shp2las.exe")]
         self.addParametersVerboseCommands(commands)
-        self.addParametersPointInputCommands(commands)
-        commands.append("-o")
-        commands.append(self.getOutputValue(lasinfo.OUTPUT))
+        commands.append("-i")
+        commands.append(self.getParameterValue(shp2las.INPUT))
+        scale_factor_xy = self.getParameterValue(shp2las.SCALE_FACTOR_XY)
+        scale_factor_z = self.getParameterValue(shp2las.SCALE_FACTOR_Z)
+        if scale_factor_xy != 0.01 or scale_factor_z != 0.01:
+            commands.append("-set_scale_factor")
+            commands.append(str(scale_factor_xy) + " " + str(scale_factor_xy) + " " + str(scale_factor_z))        
+        self.addParametersPointOutputCommands(commands)
 
         LAStoolsUtils.runLAStools(commands, progress)

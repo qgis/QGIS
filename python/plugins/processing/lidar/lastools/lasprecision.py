@@ -7,6 +7,10 @@
     Date                 : August 2012
     Copyright            : (C) 2012 by Victor Olaya
     Email                : volayaf at gmail dot com
+    ---------------------
+    Date                 : September 2013
+    Copyright            : (C) 2013 by Martin Isenburg
+    Email                : martin near rapidlasso point com
 ***************************************************************************
 *                                                                         *
 *   This program is free software; you can redistribute it and/or modify  *
@@ -25,35 +29,27 @@ __revision__ = '$Format:%H$'
 
 import os
 from PyQt4 import QtGui
-from processing.lidar.lastools.LasToolsUtils import LasToolsUtils
-from processing.lidar.lastools.LasToolsAlgorithm import LasToolsAlgorithm
-from processing.parameters.ParameterFile import ParameterFile
-from processing.outputs.OutputHTML import OutputHTML
+from processing.lidar.lastools.LAStoolsUtils import LAStoolsUtils
+from processing.lidar.lastools.LAStoolsAlgorithm import LAStoolsAlgorithm
 
-class lasprecision(LasToolsAlgorithm):
+from processing.outputs.OutputFile import OutputFile
 
-    INPUT = "INPUT"
+class lasprecision(LAStoolsAlgorithm):
+
     OUTPUT = "OUTPUT"
 
     def defineCharacteristics(self):
         self.name = "lasprecision"
-        self.group = "Tools"
-        self.addParameter(ParameterFile(lasprecision.INPUT, "Input las layer"))
-        self.addOutput(OutputHTML(lasprecision.OUTPUT, "Output info file"))
+        self.group = "LAStools"
+        self.addParametersVerboseGUI()
+        self.addParametersPointInputGUI()
+        self.addOutput(OutputFile(lasprecision.OUTPUT, "Output ASCII file"))
 
     def processAlgorithm(self, progress):
-        commands = [os.path.join(LasToolsUtils.LasToolsPath(), "bin", "lasprecision.exe")]
-        commands.append("-i")
-        commands.append(self.getParameterValue(lasprecision.INPUT))
-        commands.append(">")
-        commands.append(self.getOutputValue(lasprecision.OUTPUT) + ".txt")
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasprecision.exe")]
+        self.addParametersVerboseCommands(commands)
+        self.addParametersPointInputCommands(commands)
+        commands.append("-o")
+        commands.append(self.getOutputValue(lasprecision.OUTPUT))
 
-        LasToolsUtils.runLasTools(commands, progress)
-        fin = open (self.getOutputValue(lasprecision.OUTPUT) + ".txt")
-        fout = open (self.getOutputValue(lasprecision.OUTPUT), "w")
-        lines = fin.readlines()
-        for line in lines:
-            fout.write(line + "<br>")
-        fin.close()
-        fout.close()
-
+        LAStoolsUtils.runLAStools(commands, progress)
