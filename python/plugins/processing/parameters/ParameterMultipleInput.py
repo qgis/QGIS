@@ -26,7 +26,6 @@ __revision__ = '$Format:%H$'
 from processing.parameters.ParameterDataObject import ParameterDataObject
 from processing.tools import dataobjects
 from qgis.core import *
-from processing.tools import dataobjects
 
 
 class ParameterMultipleInput(ParameterDataObject):

@@ -258,7 +258,7 @@ class ParametersPanel(QtGui.QWidget):
             elif param.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
                 options = dataobjects.getVectorLayers()
             else:
-                options = dataobjects.getVectorLayers(param.datatype)
+                options = dataobjects.getVectorLayers([param.datatype])
             opts = []
             for opt in options:
                 opts.append(self.getExtendedLayerName(opt))
