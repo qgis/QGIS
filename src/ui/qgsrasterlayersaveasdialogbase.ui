@@ -97,6 +97,26 @@ datasets with maximum width and height specified below.</string>
        </property>
       </widget>
      </item>
+     <item>
+      <spacer name="horizontalSpacer_6">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="mAddLayerToCanvasCheckBox">
+       <property name="text">
+        <string>Load into canvas when finished</string>
+       </property>
+      </widget>
+     </item>
     </layout>
    </item>
    <item>
@@ -201,8 +221,8 @@ datasets with maximum width and height specified below.</string>
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>549</width>
-        <height>700</height>
+        <width>541</width>
+        <height>724</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -222,7 +242,7 @@ datasets with maximum width and height specified below.</string>
         <number>0</number>
        </property>
        <item>
-        <widget class="QgsCollapsibleGroupBox" name="mExtentGroupBox"><property name="collapsed" stdset="0"><bool>false</bool></property><property name="saveCollapsedState" stdset="0"><bool>true</bool></property>
+        <widget class="QgsCollapsibleGroupBox" name="mExtentGroupBox">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
            <horstretch>0</horstretch>
@@ -240,6 +260,12 @@ datasets with maximum width and height specified below.</string>
          </property>
          <property name="checkable">
           <bool>false</bool>
+         </property>
+         <property name="collapsed" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="saveCollapsedState" stdset="0">
+          <bool>true</bool>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_2">
           <item>
@@ -380,7 +406,7 @@ datasets with maximum width and height specified below.</string>
         </widget>
        </item>
        <item>
-        <widget class="QgsCollapsibleGroupBox" name="mResolutionGroupBox"><property name="collapsed" stdset="0"><bool>false</bool></property><property name="saveCollapsedState" stdset="0"><bool>true</bool></property>
+        <widget class="QgsCollapsibleGroupBox" name="mResolutionGroupBox">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
            <horstretch>0</horstretch>
@@ -395,6 +421,12 @@ datasets with maximum width and height specified below.</string>
          </property>
          <property name="checkable">
           <bool>false</bool>
+         </property>
+         <property name="collapsed" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="saveCollapsedState" stdset="0">
+          <bool>true</bool>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_3">
           <item>
@@ -465,7 +497,7 @@ datasets with maximum width and height specified below.</string>
         </widget>
        </item>
        <item>
-        <widget class="QgsCollapsibleGroupBox" name="mTilesGroupBox"><property name="collapsed" stdset="0"><bool>false</bool></property><property name="saveCollapsedState" stdset="0"><bool>true</bool></property>
+        <widget class="QgsCollapsibleGroupBox" name="mTilesGroupBox">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
            <horstretch>0</horstretch>
@@ -480,6 +512,12 @@ datasets with maximum width and height specified below.</string>
          </property>
          <property name="checked">
           <bool>false</bool>
+         </property>
+         <property name="collapsed" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="saveCollapsedState" stdset="0">
+          <bool>true</bool>
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout_5">
           <item>
@@ -520,7 +558,7 @@ datasets with maximum width and height specified below.</string>
         </widget>
        </item>
        <item>
-        <widget class="QgsCollapsibleGroupBox" name="mCreateOptionsGroupBox"><property name="collapsed" stdset="0"><bool>false</bool></property><property name="saveCollapsedState" stdset="0"><bool>true</bool></property>
+        <widget class="QgsCollapsibleGroupBox" name="mCreateOptionsGroupBox">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
            <horstretch>0</horstretch>
@@ -536,6 +574,12 @@ datasets with maximum width and height specified below.</string>
          <property name="checked">
           <bool>false</bool>
          </property>
+         <property name="collapsed" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="saveCollapsedState" stdset="0">
+          <bool>true</bool>
+         </property>
          <layout class="QGridLayout" name="gridLayout_5">
           <item row="0" column="0">
            <widget class="QgsRasterFormatSaveOptionsWidget" name="mCreateOptionsWidget" native="true"/>
@@ -544,7 +588,7 @@ datasets with maximum width and height specified below.</string>
         </widget>
        </item>
        <item>
-        <widget class="QgsCollapsibleGroupBox" name="mPyramidsGroupBox"><property name="collapsed" stdset="0"><bool>false</bool></property><property name="saveCollapsedState" stdset="0"><bool>true</bool></property>
+        <widget class="QgsCollapsibleGroupBox" name="mPyramidsGroupBox">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
            <horstretch>0</horstretch>
@@ -559,6 +603,12 @@ datasets with maximum width and height specified below.</string>
          </property>
          <property name="checked">
           <bool>false</bool>
+         </property>
+         <property name="collapsed" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="saveCollapsedState" stdset="0">
+          <bool>true</bool>
          </property>
          <layout class="QGridLayout" name="gridLayout_3">
           <item row="3" column="0">
@@ -628,7 +678,7 @@ datasets with maximum width and height specified below.</string>
         </widget>
        </item>
        <item>
-        <widget class="QgsCollapsibleGroupBox" name="mNoDataGroupBox"><property name="collapsed" stdset="0"><bool>false</bool></property><property name="saveCollapsedState" stdset="0"><bool>true</bool></property>
+        <widget class="QgsCollapsibleGroupBox" name="mNoDataGroupBox">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
            <horstretch>0</horstretch>
@@ -646,6 +696,12 @@ datasets with maximum width and height specified below.</string>
          </property>
          <property name="checked">
           <bool>false</bool>
+         </property>
+         <property name="collapsed" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="saveCollapsedState" stdset="0">
+          <bool>true</bool>
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout_7">
           <item>

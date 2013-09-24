@@ -4459,7 +4459,7 @@ void QgisApp::saveAsRasterFile()
     }
 
     QProgressDialog pd( 0, tr( "Abort..." ), 0, 0 );
-    // Show the dialo immediately because cloning pipe can take some time (WCS)
+    // Show the dialog immediately because cloning pipe can take some time (WCS)
     pd.setLabelText( tr( "Reading raster" ) );
     pd.show();
     pd.setWindowModality( Qt::WindowModal );
@@ -4538,6 +4538,15 @@ void QgisApp::saveAsRasterFile()
                             tr( "Cannot write raster error code: %1" ).arg( err ),
                             QMessageBox::Ok );
 
+    }
+    else
+    {
+      // add layer to canvas using gdal provider
+      if ( d.addLayerToCanvas() )
+      {
+        QgsDebugMsg( QString( "adding saved raster file %1 to canvas" ).arg( d.outputFileName() ) );
+        addRasterLayer( d.outputFileName(), QFileInfo( d.outputFileName() ).baseName(), "gdal" );
+      }
     }
     delete pipe;
   }
