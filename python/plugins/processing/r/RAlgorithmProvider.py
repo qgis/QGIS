@@ -27,21 +27,16 @@ import os.path
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.AlgorithmProvider import AlgorithmProvider
-
 from processing.gui.EditScriptAction import EditScriptAction
 from processing.gui.DeleteScriptAction import DeleteScriptAction
 from processing.gui.CreateNewScriptAction import CreateNewScriptAction
-
 from processing.r.RUtils import RUtils
 from processing.r.RAlgorithm import RAlgorithm
-
 from processing.script.WrongScriptException import WrongScriptException
 from processing.tools.system import *
-
 import processing.resources_rc
 
 class RAlgorithmProvider(AlgorithmProvider):
@@ -95,9 +90,9 @@ class RAlgorithmProvider(AlgorithmProvider):
                     if alg.name.strip() != "":
                         self.algs.append(alg)
                 except WrongScriptException, e:
-                    ProcessingLog.addToLog(SextanteLog.LOG_ERROR, e.msg)
+                    ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, e.msg)
                 except Exception, e:
-                    ProcessingLog.addToLog(SextanteLog.LOG_ERROR, "Could not load R script:" + descriptionFile + "\n" + unicode(e))
+                    ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, "Could not load R script:" + descriptionFile + "\n" + unicode(e))
 
 
 

@@ -118,9 +118,9 @@ class ProcessingConfig():
             if tokens[0] in ProcessingConfig.settings.keys():
                 setting = ProcessingConfig.settings[tokens[0]]
                 if isinstance(setting.value, bool):
-                    setting.value = (tokens[1].strip() == str(True))
+                    setting.value = (tokens[1].strip("\n\r ") == str(True))
                 else:
-                    setting.value = tokens[1]
+                    setting.value = tokens[1].strip("\n\r ")
                 ProcessingConfig.addSetting(setting)
             line = lines.readline().strip("\n")
         lines.close()

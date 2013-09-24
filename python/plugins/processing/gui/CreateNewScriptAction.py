@@ -24,10 +24,8 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from PyQt4.QtGui import *
-
 from processing.gui.ToolboxAction import ToolboxAction
 from processing.gui.ScriptEditorDialog import ScriptEditorDialog
-
 import processing.resources_rc
 
 class CreateNewScriptAction(ToolboxAction):
@@ -42,16 +40,16 @@ class CreateNewScriptAction(ToolboxAction):
 
     def getIcon(self):
         if self.scriptType == self.SCRIPT_PYTHON:
-            return QIcon(":/sextante/images/script.png")
+            return QIcon(":/processing/images/script.png")
         elif self.scriptType == self.SCRIPT_R:
-            return QIcon(":/sextante/images/r.png")
+            return QIcon(":/processing/images/r.png")
 
     def execute(self):
         dlg = None
         if self.scriptType == self.SCRIPT_PYTHON:
-             dlg = ScriptEditorDialog(ScriptEditorDialog.SCRIPT_PYTHON, None)
+            dlg = ScriptEditorDialog(ScriptEditorDialog.SCRIPT_PYTHON, None)
         if self.scriptType == self.SCRIPT_R:
-             dlg = ScriptEditorDialog(ScriptEditorDialog.SCRIPT_R, None)
+            dlg = ScriptEditorDialog(ScriptEditorDialog.SCRIPT_R, None)
         dlg.exec_()
         if dlg.update:
             self.toolbox.updateTree()

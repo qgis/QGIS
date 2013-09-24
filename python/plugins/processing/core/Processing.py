@@ -80,7 +80,7 @@ class Processing:
                 Processing.updateAlgsList()
         except:
             ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, "Could not load provider:" 
-                                   + provider.getDescription() + "\n" + sys.exc_info()[0])
+                                   + provider.getDescription() + "\n" + unicode(sys.exc_info()[1]))
             Processing.removeProvider(provider)
 
     @staticmethod
