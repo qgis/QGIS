@@ -107,6 +107,12 @@ class OTBAlgorithm(GeoAlgorithm):
         lines.close()
 
 
+    def checkBeforeOpeningParametersDialog(self):
+        path = OTBUtils.otbPath()
+        libpath = OTBUtils.otbLibPath()
+        if path == "" or libpath == "":
+            return "OTB folder is not configured.\nPlease configure it before running OTB algorithms."
+    
     def processAlgorithm(self, progress):
         path = OTBUtils.otbPath()
         libpath = OTBUtils.otbLibPath()

@@ -47,6 +47,8 @@ class SagaUtils:
     SAGA_RESAMPLING_REGION_CELLSIZE = "SAGA_RESAMPLING_REGION_CELLSIZE"
     SAGA_FOLDER = "SAGA_FOLDER"
     SAGA_IMPORT_EXPORT_OPTIMIZATION = "SAGA_IMPORT_EXPORT_OPTIMIZATION"
+    
+    isSagaInstalled = False
 
 
     @staticmethod
@@ -132,7 +134,7 @@ class SagaUtils:
 
 
     @staticmethod
-    def checkSagaIsInstalled(ignoreRegistrySettings=False):
+    def checkSagaIsInstalled(ignorePreviousState=False):
         if isWindows():
             path = SagaUtils.sagaPath()
             if path == "":
@@ -142,11 +144,9 @@ class SagaUtils:
                 return ("The specified SAGA folder does not contain a valid SAGA executable.\n"
                         + "Please, go to the processing settings dialog, and check that the SAGA\n"
                         + "folder is correctly configured")
-
-        settings = QSettings()
-        SAGA_INSTALLED = "/ProcessingQGIS/SagaInstalled"
-        if not ignoreRegistrySettings:
-            if settings.contains(SAGA_INSTALLED):
+        
+        if not ignorePreviousState:
+            if SagaUtils.isSagaInstalled:
                 return
 
         try:
@@ -158,4 +158,4 @@ class SagaUtils:
             s = traceback.format_exc()
             return "Error while checking SAGA installation. SAGA might not be correctly configured.\n" + s;
 
-        settings.setValue(SAGA_INSTALLED, True)
+        SagaUtils.isSagaInstalled = True

@@ -50,6 +50,8 @@ class GrassUtils:
     sessionRunning = False
     sessionLayers = {}
     projectionSet = False
+    
+    isGrassInstalled = False
 
 
     @staticmethod
@@ -309,7 +311,7 @@ class GrassUtils:
         GrassUtils.sessionLayers = dict(GrassUtils.sessionLayers.items() + exportedLayers.items())
 
     @staticmethod
-    def checkGrassIsInstalled(ignoreRegistrySettings=False):
+    def checkGrassIsInstalled(ignorePreviousState=False):
         if isWindows():
             path = GrassUtils.grassPath()
             if path == "":
@@ -320,10 +322,9 @@ class GrassUtils:
                         + "Please, go to the processing settings dialog, and check that the GRASS\n"
                         + "folder is correctly configured")
 
-        settings = QSettings()
-        GRASS_INSTALLED = "/ProcessingQGIS/GrassInstalled"
-        if not ignoreRegistrySettings:
-            if settings.contains(GRASS_INSTALLED):
+
+        if not ignorePreviousState:
+            if GrassUtils.isGrassInstalled:
                 return
         try:
             from processing import runalg
@@ -334,7 +335,7 @@ class GrassUtils:
             s = traceback.format_exc()
             return "Error while checking GRASS installation. GRASS might not be correctly configured.\n" + s;
 
-        settings.setValue(GRASS_INSTALLED, True)
+        GrassUtils.isGrassInstalled = True
 
 
 
