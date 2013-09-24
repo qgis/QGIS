@@ -206,7 +206,6 @@ tar -C %OSGEO4W_ROOT% -cjf %PACKAGENAME%-common-%VERSION%-%PACKAGE%.tar.bz2 ^
 	"apps/%PACKAGENAME%/resources/symbology-ng-style.db" ^
 	"apps/%PACKAGENAME%/resources/cpt-city-qgis-min/" ^
 	"apps/%PACKAGENAME%/svg/" ^
-	"apps/%PACKAGENAME%/cpt-city-qgis-min/" ^
 	"apps/%PACKAGENAME%/crssync.exe" ^
 	"etc/postinstall/%PACKAGENAME%-common.bat" ^
 	>>%LOG% 2>&1

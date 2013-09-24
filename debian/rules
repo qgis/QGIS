@@ -84,7 +84,7 @@ else
 	CMAKE_OPTS += -D WITH_GLOBE=TRUE
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"raring saucy sid sid-oracle"))
+ifneq (,$(findstring $(DISTRIBUTION),"jessie raring saucy sid sid-oracle"))
 	CMAKE_OPTS += -D PYTHON_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libpython2.7.so
 endif
 
