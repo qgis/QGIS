@@ -51,7 +51,6 @@ void QgsPaperItem::paint( QPainter* painter, const QStyleOptionGraphicsItem* ite
   drawBackground( painter );
 
   //draw grid
-
   if ( mComposition )
   {
     if ( mComposition->snapToGridEnabled() && mComposition->plotStyle() ==  QgsComposition::Preview
@@ -63,13 +62,15 @@ void QgsPaperItem::paint( QPainter* painter, const QStyleOptionGraphicsItem* ite
       double currentYCoord;
       double minYCoord = mComposition->snapGridOffsetY() - gridMultiplyY * mComposition->snapGridResolution();
 
+      painter->save();
+      //turn of antialiasing so grid is nice and sharp
+      painter->setRenderHint( QPainter::Antialiasing, false );
+
       if ( mComposition->gridStyle() == QgsComposition::Solid )
       {
         painter->setPen( mComposition->gridPen() );
 
         //draw vertical lines
-
-
         for ( ; currentXCoord <= rect().width(); currentXCoord += mComposition->snapGridResolution() )
         {
           painter->drawLine( QPointF( currentXCoord, 0 ), QPointF( currentXCoord, rect().height() ) );
@@ -87,26 +88,41 @@ void QgsPaperItem::paint( QPainter* painter, const QStyleOptionGraphicsItem* ite
         QPen gridPen = mComposition->gridPen();
         painter->setPen( gridPen );
         painter->setBrush( QBrush( gridPen.color() ) );
-        double halfCrossLength = mComposition->snapGridResolution() / 6;
+        double halfCrossLength = 1;
+        if ( mComposition->gridStyle() == QgsComposition::Dots )
+        {
+          //dots are actually drawn as tiny crosses a few pixels across
+          //check QGraphicsView to get current transform
+          if ( scene() )
+          {
+            QList<QGraphicsView*> viewList = scene()->views();
+            if ( viewList.size() > 0 )
+            {
+              QGraphicsView* currentView = viewList.at( 0 );
+              if ( currentView->isVisible() )
+              {
+                //set halfCrossLength to equivalent of 1 pixel
+                halfCrossLength = 1 / currentView->transform().m11();
+              }
+            }
+          }
+        }
+        else if ( mComposition->gridStyle() == QgsComposition::Crosses )
+        {
+          halfCrossLength = mComposition->snapGridResolution() / 6;
+        }
 
         for ( ; currentXCoord <= rect().width(); currentXCoord += mComposition->snapGridResolution() )
         {
           currentYCoord = minYCoord;
           for ( ; currentYCoord <= rect().height(); currentYCoord += mComposition->snapGridResolution() )
           {
-            if ( mComposition->gridStyle() == QgsComposition::Dots )
-            {
-              QRectF pieRect( currentXCoord - gridPen.widthF() / 2, currentYCoord - gridPen.widthF() / 2, gridPen.widthF(), gridPen.widthF() );
-              painter->drawChord( pieRect, 0, 5760 );
-            }
-            else if ( mComposition->gridStyle() == QgsComposition::Crosses )
-            {
-              painter->drawLine( QPointF( currentXCoord - halfCrossLength, currentYCoord ), QPointF( currentXCoord + halfCrossLength, currentYCoord ) );
-              painter->drawLine( QPointF( currentXCoord, currentYCoord - halfCrossLength ), QPointF( currentXCoord, currentYCoord + halfCrossLength ) );
-            }
+            painter->drawLine( QPointF( currentXCoord - halfCrossLength, currentYCoord ), QPointF( currentXCoord + halfCrossLength, currentYCoord ) );
+            painter->drawLine( QPointF( currentXCoord, currentYCoord - halfCrossLength ), QPointF( currentXCoord, currentYCoord + halfCrossLength ) );
           }
         }
       }
+      painter->restore();
     }
   }
 }
