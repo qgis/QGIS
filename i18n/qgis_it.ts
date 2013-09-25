@@ -31567,7 +31567,7 @@ In 1.8 è tradotto &quot;Form vista geometria&quot;. Forse è meglio &quot;Vedi 
         <location filename="../src/ui/qgslabelingguibase.ui" line="1999"/>
         <source>Draw text buffer</source>
         <translatorcomment>#dubbio#</translatorcomment>
-        <translation>Disegna buffer del testo</translation>
+        <translation>Disegna contorno del testo</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="2074"/>
@@ -38383,7 +38383,7 @@ Sempre rete: carica sempre dalle rete e non controllare se la cache ha geometrie
         <location filename="../src/ui/qgsoptionsbase.ui" line="800"/>
         <source>Prompt to save project and data source changes when required</source>
         <translatorcomment>#dubbio#</translatorcomment>
-        <translation>Chiedi di salvare il progetto e cambia sorgent dati quando richiesto</translation>
+        <translation>Chiedi di salvare il progetto e cambia sorgente dati quando richiesto</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="816"/>
@@ -43876,12 +43876,12 @@ Procedere?</translation>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="420"/>
         <source>Semi-major</source>
-        <translation>Semiasse-maggiore</translation>
+        <translation>Semiasse maggiore</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="433"/>
         <source>Semi-minor</source>
-        <translation>Semiasse-minore</translation>
+        <translation>Semiasse minore</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="452"/>
