@@ -150,7 +150,6 @@ if errorlevel 1 goto error
 if exist %OSGEO4W_ROOT%\apps\%PACKAGENAME% (
 	echo REMOVE: %DATE% %TIME%>>%LOG% 2>&1
 	rmdir /s /q %OSGEO4W_ROOT%\apps\%PACKAGENAME%
-	if errorlevel 1 goto error
 )
 
 echo INSTALL: %DATE% %TIME%>>%LOG% 2>&1

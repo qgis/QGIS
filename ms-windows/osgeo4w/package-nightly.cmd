@@ -154,9 +154,10 @@ echo RUN_TESTS: %DATE% %TIME%>>%LOG% 2>&1
 %DEVENV% qgis%VERSION%.sln /Project Nightly /Build %BUILDCONF% /Out %LOG%>>%LOG% 2>&1
 REM if errorlevel 1 echo "TESTS WERE NOT SUCCESSFUL."
 
-echo RMDIR: %DATE% %TIME%>>%LOG% 2>&1
-rmdir /s /q %OSGEO4W_ROOT%\apps\%PACKAGENAME%
-if errorlevel 1 goto error
+if exist %OSGEO4W_ROOT%\apps\%PACKAGENAME% (
+	echo REMOVE: %DATE% %TIME%>>%LOG% 2>&1
+	rmdir /s /q %OSGEO4W_ROOT%\apps\%PACKAGENAME%
+)
 
 echo INSTALL: %DATE% %TIME%>>%LOG% 2>&1
 %DEVENV% qgis%VERSION%.sln /Project INSTALL /Build %BUILDCONF% /Out %LOG%>>%LOG% 2>&1
