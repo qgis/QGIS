@@ -29,7 +29,7 @@ import subprocess
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
 
-class LAStoolsUtils():
+class LAStoolsUtils:
 
     LASTOOLS_FOLDER = "LASTOOLS_FOLDER"
 
