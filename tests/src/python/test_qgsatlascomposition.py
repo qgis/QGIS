@@ -29,7 +29,7 @@ class TestQgsAtlasComposition(unittest.TestCase):
 
     def testCase(self):
         self.TEST_DATA_DIR = unitTestDataPath()
-        vectorFileInfo = QFileInfo( self.TEST_DATA_DIR + QDir().separator() + "france_parts.shp")
+        vectorFileInfo = QFileInfo( self.TEST_DATA_DIR + "/france_parts.shp")
         mVectorLayer = QgsVectorLayer( vectorFileInfo.filePath(), vectorFileInfo.completeBaseName(), "ogr" )
 
         QgsMapLayerRegistry.instance().addMapLayers( [mVectorLayer] )
