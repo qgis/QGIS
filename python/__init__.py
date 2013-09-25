@@ -24,8 +24,6 @@ __copyright__ = '(C) 2007, Martin Dobias'
 __revision__ = '$Format:%H$'
 
 import sip
-from qgis.core import QgsFeature, QgsGeometry
-
 try:
     apis = ["QDate", "QDateTime", "QString", "QTextStream", "QTime", "QUrl", "QVariant"]
     for api in apis:
@@ -33,6 +31,8 @@ try:
 except ValueError:
     # API has already been set so we can't set it again.
     pass
+
+from qgis.core import QgsFeature, QgsGeometry
 
 try:
     # Add a __nonzero__ method onto QPyNullVariant so we can check for null values easier.
@@ -72,7 +72,7 @@ def mapping_feature(feature):
     properties = {}
     fields = [field.name() for field in feature.fields()]
     properties = dict(zip(fields, feature.attributes()))
-    return { 
+    return {
              'type' : 'Feature',
              'properties' : properties,
              'geometry' : geom.__geo_interface__}
@@ -80,7 +80,7 @@ def mapping_feature(feature):
 def mapping_geometry(geometry):
     geo = geometry.exportToGeoJSON()
     # We have to use eval because exportToGeoJSON() gives us
-    # back a string that looks like a dictionary. 
+    # back a string that looks like a dictionary.
     return eval(geo)
 
 QgsFeature.__geo_interface__ = property(mapping_feature)
