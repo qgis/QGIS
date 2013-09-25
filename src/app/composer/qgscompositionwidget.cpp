@@ -108,6 +108,7 @@ QgsCompositionWidget::QgsCompositionWidget( QWidget* parent, QgsComposition* c )
     }
 
     mSelectionToleranceSpinBox->setValue( mComposition->selectionTolerance() );
+    mGridToleranceSpinBox->setValue( mComposition->snapGridTolerance() );
   }
   blockSignals( false );
 }
@@ -561,6 +562,14 @@ void QgsCompositionWidget::on_mGridStyleComboBox_currentIndexChanged( const QStr
   }
 }
 
+void QgsCompositionWidget::on_mGridToleranceSpinBox_valueChanged( double d )
+{
+  if ( mComposition )
+  {
+    mComposition->setSnapGridTolerance( d );
+  }
+}
+
 void QgsCompositionWidget::on_mSelectionToleranceSpinBox_valueChanged( double d )
 {
   if ( mComposition )
@@ -601,6 +610,7 @@ void QgsCompositionWidget::blockSignals( bool block )
   mOffsetYSpinBox->blockSignals( block );
   mGridColorButton->blockSignals( block );
   mGridStyleComboBox->blockSignals( block );
+  mGridToleranceSpinBox->blockSignals( block );
   mSelectionToleranceSpinBox->blockSignals( block );
   mAlignmentSnapGroupCheckBox->blockSignals( block );
   mAlignmentToleranceSpinBox->blockSignals( block );

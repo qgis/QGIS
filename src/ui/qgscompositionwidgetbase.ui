@@ -286,6 +286,38 @@
         </widget>
        </item>
        <item>
+        <widget class="QgsCollapsibleGroupBoxBasic" name="generalSettingsGroupBox">
+         <property name="title">
+          <string>General settings</string>
+         </property>
+         <property name="collapsed" stdset="0">
+          <bool>false</bool>
+         </property>
+         <layout class="QFormLayout" name="formLayout_2">
+          <property name="fieldGrowthPolicy">
+           <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+          </property>
+          <property name="labelAlignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+          </property>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_5">
+            <property name="text">
+             <string>Selection tolerance</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QDoubleSpinBox" name="mSelectionToleranceSpinBox">
+            <property name="suffix">
+             <string> mm</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="mSnapToGridGroupCheckBox">
          <property name="title">
           <string>Snap to grid</string>
@@ -395,7 +427,7 @@
           <item row="4" column="0">
            <widget class="QLabel" name="label_4">
             <property name="text">
-             <string>Selection tolerance</string>
+             <string>Tolerance</string>
             </property>
             <property name="wordWrap">
              <bool>true</bool>
@@ -403,12 +435,15 @@
            </widget>
           </item>
           <item row="4" column="1">
-           <widget class="QDoubleSpinBox" name="mSelectionToleranceSpinBox">
+           <widget class="QDoubleSpinBox" name="mGridToleranceSpinBox">
             <property name="prefix">
              <string/>
             </property>
             <property name="suffix">
              <string> mm</string>
+            </property>
+            <property name="value">
+             <double>2.000000000000000</double>
             </property>
            </widget>
           </item>

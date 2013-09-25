@@ -60,6 +60,7 @@ QgsComposition::QgsComposition( QgsMapRenderer* mapRenderer )
     , mSelectionTolerance( 0.0 )
     , mSnapToGrid( false )
     , mSnapGridResolution( 10.0 )
+    , mSnapGridTolerance( 2 )
     , mSnapGridOffsetX( 0.0 )
     , mSnapGridOffsetY( 0.0 )
     , mAlignmentSnap( true )
@@ -89,6 +90,7 @@ QgsComposition::QgsComposition()
     mSelectionTolerance( 0.0 ),
     mSnapToGrid( false ),
     mSnapGridResolution( 10.0 ),
+    mSnapGridTolerance( 2 ),
     mSnapGridOffsetX( 0.0 ),
     mSnapGridOffsetY( 0.0 ),
     mAlignmentSnap( true ),
@@ -405,6 +407,7 @@ bool QgsComposition::writeXML( QDomElement& composerElem, QDomDocument& doc )
     compositionElem.setAttribute( "snapping", "0" );
   }
   compositionElem.setAttribute( "snapGridResolution", QString::number( mSnapGridResolution ) );
+  compositionElem.setAttribute( "snapGridTolerance", QString::number( mSnapGridTolerance ) );
   compositionElem.setAttribute( "snapGridOffsetX", QString::number( mSnapGridOffsetX ) );
   compositionElem.setAttribute( "snapGridOffsetY", QString::number( mSnapGridOffsetY ) );
 
@@ -493,6 +496,7 @@ bool QgsComposition::readXML( const QDomElement& compositionElem, const QDomDocu
     mSnapToGrid = true;
   }
   mSnapGridResolution = compositionElem.attribute( "snapGridResolution" ).toDouble();
+  mSnapGridTolerance = compositionElem.attribute( "snapGridTolerance", "2.0" ).toDouble();
   mSnapGridOffsetX = compositionElem.attribute( "snapGridOffsetX" ).toDouble();
   mSnapGridOffsetY = compositionElem.attribute( "snapGridOffsetY" ).toDouble();
 
@@ -1213,7 +1217,21 @@ QPointF QgsComposition::snapPointToGrid( const QPointF& scenePoint ) const
   int xRatio = ( int )(( scenePoint.x() - mSnapGridOffsetX ) / mSnapGridResolution + 0.5 );
   int yRatio = ( int )(( yPage - mSnapGridOffsetY ) / mSnapGridResolution + 0.5 );
 
-  return QPointF( xRatio * mSnapGridResolution + mSnapGridOffsetX, yRatio * mSnapGridResolution + mSnapGridOffsetY + yOffset );
+  double xSnapped = xRatio * mSnapGridResolution + mSnapGridOffsetX;
+  double ySnapped = yRatio * mSnapGridResolution + mSnapGridOffsetY + yOffset;
+
+  if ( abs( xSnapped - scenePoint.x() ) > mSnapGridTolerance )
+  {
+    //snap distance is outside of tolerance
+    xSnapped = scenePoint.x();
+  }
+  if ( abs( ySnapped - scenePoint.y() ) > mSnapGridTolerance )
+  {
+    //snap distance is outside of tolerance
+    ySnapped = scenePoint.y();
+  }
+
+  return QPointF( xSnapped, ySnapped );
 }
 
 QPointF QgsComposition::alignItem( const QgsComposerItem* item, double& alignX, double& alignY, double dx, double dy )
@@ -1471,6 +1489,12 @@ void QgsComposition::setSnapGridResolution( double r )
 {
   mSnapGridResolution = r;
   updatePaperItems();
+  saveSettings();
+}
+
+void QgsComposition::setSnapGridTolerance( double tolerance )
+{
+  mSnapGridTolerance = tolerance;
   saveSettings();
 }
 

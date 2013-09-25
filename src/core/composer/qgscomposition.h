@@ -107,6 +107,9 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     void setSnapGridResolution( double r );
     double snapGridResolution() const {return mSnapGridResolution;}
 
+    void setSnapGridTolerance( double tolerance );
+    double snapGridTolerance() const {return mSnapGridTolerance;}
+
     void setSnapGridOffsetX( double offset );
     double snapGridOffsetX() const {return mSnapGridOffsetX;}
 
@@ -407,6 +410,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     /**Parameters for snap to grid function*/
     bool mSnapToGrid;
     double mSnapGridResolution;
+    double mSnapGridTolerance;
     double mSnapGridOffsetX;
     double mSnapGridOffsetY;
     QPen mGridPen;
