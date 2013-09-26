@@ -57,6 +57,7 @@ class QgsPoint;
 class QgsProviderRegistry;
 class QgsPythonUtils;
 class QgsRectangle;
+
 class QgsUndoWidget;
 class QgsVectorLayer;
 
@@ -175,6 +176,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     /** Get the mapcanvas object from the app */
     QgsMapCanvas *mapCanvas();
 
+    /** Return the messageBar object which allows to display unobtrusive messages to the user.*/
     QgsMessageBar* messageBar();
 
     /** Get the mapcanvas object from the app */
@@ -239,7 +241,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     /** overloaded function used to sort menu entries alphabetically */
     QMenu* createPopupMenu();
-
 
     //! Actions to be inserted in menus and toolbars
     QAction *actionNewProject() { return mActionNewProject; }

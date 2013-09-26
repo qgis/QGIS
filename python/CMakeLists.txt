@@ -44,6 +44,8 @@ INCLUDE_DIRECTORIES(
 
   ../src/gui/raster
   ../src/gui/attributetable
+  ../src/gui/editorwidgets
+  ../src/gui/editorwidgets/core
 
   ${CMAKE_BINARY_DIR}  # qgsconfig.h, qgsversion.h
 )

@@ -6,32 +6,11 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>871</width>
-    <height>712</height>
+    <width>613</width>
+    <height>634</height>
    </rect>
   </property>
   <layout class="QGridLayout" name="gridLayout_6">
-   <item row="1" column="5">
-    <widget class="QLabel" name="label_3">
-     <property name="toolTip">
-      <string>QGIS forms can have a Python function that is called when the form is opened.  
-Use this function to add extra logic to your forms.
-
-An example is (in module MyForms.py):
-
-          def open(dialog, layer, feature):
-	geom = feature.geometry()
-	control = dialog.findChild(QWidget,&quot;MyLineEdit&quot;)
-
-Reference in Python Init Function like so: MyForms.open
-
-MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.</string>
-     </property>
-     <property name="text">
-      <string>Python Init function</string>
-     </property>
-    </widget>
-   </item>
    <item row="0" column="4">
     <spacer>
      <property name="orientation">
@@ -44,6 +23,13 @@ MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.<
       </size>
      </property>
     </spacer>
+   </item>
+   <item row="0" column="5">
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>Attribute editor layout:</string>
+     </property>
+    </widget>
    </item>
    <item row="0" column="0">
     <widget class="QToolButton" name="mAddAttributeButton">
@@ -68,13 +54,19 @@ MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.<
      </property>
     </widget>
    </item>
-   <item row="1" column="6">
-    <widget class="QLineEdit" name="leEditFormInit"/>
-   </item>
-   <item row="0" column="5">
-    <widget class="QLabel" name="label_2">
+   <item row="0" column="3">
+    <widget class="QToolButton" name="mCalculateFieldButton">
+     <property name="toolTip">
+      <string>Field calculator</string>
+     </property>
+     <property name="whatsThis">
+      <string>Click to toggle table editing</string>
+     </property>
      <property name="text">
-      <string>Attribute editor layout:</string>
+      <string/>
+     </property>
+     <property name="checkable">
+      <bool>false</bool>
      </property>
     </widget>
    </item>
@@ -94,43 +86,37 @@ MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.<
      </property>
     </widget>
    </item>
-   <item row="0" column="6">
-    <widget class="QComboBox" name="mEditorLayoutComboBox">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <item>
-      <property name="text">
-       <string>Autogenerate</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Drag and drop designer</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Provide ui-file</string>
-      </property>
-     </item>
-    </widget>
-   </item>
    <item row="2" column="0" colspan="7">
     <widget class="QSplitter" name="mSplitter">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
-     <widget class="QWidget" name="mAttributesListFrame" native="true">
+     <widget class="QWidget" name="mRelationsAndFieldsFrame" native="true">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
         <horstretch>1</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
       </property>
+      <layout class="QGridLayout" name="gridLayout">
+       <property name="margin">
+        <number>0</number>
+       </property>
+       <item row="0" column="0">
+        <widget class="QSplitter" name="splitter">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <widget class="QWidget" name="mAttributesListFrame" native="true">
+          <layout class="QGridLayout" name="mAttributesListLayout">
+           <property name="margin">
+            <number>0</number>
+           </property>
+          </layout>
+         </widget>
+        </widget>
+       </item>
+      </layout>
      </widget>
      <widget class="QStackedWidget" name="mAttributeEditorOptionsWidget">
       <property name="currentIndex">
@@ -138,6 +124,9 @@ MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.<
       </property>
       <widget class="QWidget" name="page">
        <layout class="QGridLayout" name="gridLayout_2">
+        <property name="margin">
+         <number>0</number>
+        </property>
         <item row="0" column="1">
          <layout class="QHBoxLayout" name="horizontalLayout_2">
           <item>
@@ -175,150 +164,178 @@ MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.<
        </layout>
       </widget>
       <widget class="QWidget" name="page_2">
-       <widget class="QWidget" name="mAttributesTreeButtonFrame" native="true">
-        <property name="geometry">
-         <rect>
-          <x>9</x>
-          <y>9</y>
-          <width>30</width>
-          <height>548</height>
-         </rect>
+       <layout class="QGridLayout" name="gridLayout_5">
+        <property name="horizontalSpacing">
+         <number>0</number>
         </property>
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
+        <property name="margin">
+         <number>0</number>
         </property>
-        <property name="maximumSize">
-         <size>
-          <width>30</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <layout class="QVBoxLayout" name="verticalLayout">
-         <property name="margin">
-          <number>0</number>
-         </property>
-         <item>
-          <spacer name="verticalSpacer_4">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
+        <item row="0" column="0">
+         <widget class="QWidget" name="mAttributesTreeButtonFrame" native="true">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>30</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout">
+           <property name="spacing">
+            <number>6</number>
            </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>20</width>
-             <height>186</height>
-            </size>
+           <property name="margin">
+            <number>0</number>
            </property>
-          </spacer>
-         </item>
-         <item>
-          <widget class="QToolButton" name="mAddTabOrGroupButton">
-           <property name="text">
-            <string>+</string>
+           <item>
+            <spacer name="verticalSpacer_4">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>186</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QToolButton" name="mAddTabOrGroupButton">
+             <property name="text">
+              <string>+</string>
+             </property>
+             <property name="icon">
+              <iconset resource="../../images/images.qrc">
+               <normaloff>:/images/themes/default/mActionSignPlus.png</normaloff>:/images/themes/default/mActionSignPlus.png</iconset>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QToolButton" name="mRemoveTabGroupItemButton">
+             <property name="text">
+              <string>-</string>
+             </property>
+             <property name="icon">
+              <iconset resource="../../images/images.qrc">
+               <normaloff>:/images/themes/default/mActionSignMinus.png</normaloff>:/images/themes/default/mActionSignMinus.png</iconset>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QToolButton" name="mAddItemButton">
+             <property name="text">
+              <string>&gt;</string>
+             </property>
+             <property name="icon">
+              <iconset resource="../../images/images.qrc">
+               <normaloff>:/images/themes/default/mActionArrowRight.png</normaloff>:/images/themes/default/mActionArrowRight.png</iconset>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QToolButton" name="mMoveUpItem">
+             <property name="text">
+              <string>^</string>
+             </property>
+             <property name="icon">
+              <iconset resource="../../images/images.qrc">
+               <normaloff>:/images/themes/default/mActionArrowUp.png</normaloff>:/images/themes/default/mActionArrowUp.png</iconset>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QToolButton" name="mMoveDownItem">
+             <property name="text">
+              <string>v</string>
+             </property>
+             <property name="icon">
+              <iconset resource="../../images/images.qrc">
+               <normaloff>:/images/themes/default/mActionArrowDown.png</normaloff>:/images/themes/default/mActionArrowDown.png</iconset>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="verticalSpacer_3">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>5</width>
+               <height>176</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QWidget" name="mAttributesTreeFrame" native="true">
+          <property name="autoFillBackground">
+           <bool>true</bool>
+          </property>
+          <layout class="QGridLayout" name="mDesignerListLayout">
+           <property name="margin">
+            <number>0</number>
            </property>
-           <property name="icon">
-            <iconset resource="../../images/images.qrc">
-             <normaloff>:/images/themes/default/mActionSignPlus.png</normaloff>:/images/themes/default/mActionSignPlus.png</iconset>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QToolButton" name="mRemoveTabGroupItemButton">
-           <property name="text">
-            <string>-</string>
-           </property>
-           <property name="icon">
-            <iconset resource="../../images/images.qrc">
-             <normaloff>:/images/themes/default/mActionSignMinus.png</normaloff>:/images/themes/default/mActionSignMinus.png</iconset>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QToolButton" name="mAddItemButton">
-           <property name="text">
-            <string>&gt;</string>
-           </property>
-           <property name="icon">
-            <iconset resource="../../images/images.qrc">
-             <normaloff>:/images/themes/default/mActionArrowRight.png</normaloff>:/images/themes/default/mActionArrowRight.png</iconset>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QToolButton" name="mMoveUpItem">
-           <property name="text">
-            <string>^</string>
-           </property>
-           <property name="icon">
-            <iconset resource="../../images/images.qrc">
-             <normaloff>:/images/themes/default/mActionArrowUp.png</normaloff>:/images/themes/default/mActionArrowUp.png</iconset>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QToolButton" name="mMoveDownItem">
-           <property name="text">
-            <string>v</string>
-           </property>
-           <property name="icon">
-            <iconset resource="../../images/images.qrc">
-             <normaloff>:/images/themes/default/mActionArrowDown.png</normaloff>:/images/themes/default/mActionArrowDown.png</iconset>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <spacer name="verticalSpacer_3">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>5</width>
-             <height>176</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-        </layout>
-       </widget>
-       <widget class="QWidget" name="mAttributesTreeFrame" native="true">
-        <property name="geometry">
-         <rect>
-          <x>45</x>
-          <y>9</y>
-          <width>702</width>
-          <height>548</height>
-         </rect>
-        </property>
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="autoFillBackground">
-         <bool>true</bool>
-        </property>
-       </widget>
+          </layout>
+         </widget>
+        </item>
+       </layout>
       </widget>
      </widget>
     </widget>
    </item>
-   <item row="0" column="3">
-    <widget class="QToolButton" name="mCalculateFieldButton">
-     <property name="toolTip">
-      <string>Field calculator</string>
+   <item row="0" column="6">
+    <widget class="QComboBox" name="mEditorLayoutComboBox">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
      </property>
-     <property name="whatsThis">
-      <string>Click to toggle table editing</string>
+     <item>
+      <property name="text">
+       <string>Autogenerate</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Drag and drop designer</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Provide ui-file</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="1" column="5">
+    <widget class="QLabel" name="label_3">
+     <property name="toolTip">
+      <string>QGIS forms can have a Python function that is called when the form is opened.  
+Use this function to add extra logic to your forms.
+
+An example is (in module MyForms.py):
+
+          def open(dialog, layer, feature):
+	geom = feature.geometry()
+	control = dialog.findChild(QWidget,&quot;MyLineEdit&quot;)
+
+Reference in Python Init Function like so: MyForms.open
+
+MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.</string>
      </property>
      <property name="text">
-      <string/>
-     </property>
-     <property name="checkable">
-      <bool>false</bool>
+      <string>Python Init function</string>
      </property>
     </widget>
    </item>
@@ -392,6 +409,24 @@ MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.<
       </widget>
      </item>
     </layout>
+   </item>
+   <item row="1" column="6">
+    <widget class="QLineEdit" name="leEditFormInit">
+     <property name="toolTip">
+      <string>QGIS forms can have a Python function that is called when the form is opened.  
+Use this function to add extra logic to your forms.
+
+An example is (in module MyForms.py):
+
+          def open(dialog, layer, feature):
+	geom = feature.geometry()
+	control = dialog.findChild(QWidget,&quot;MyLineEdit&quot;)
+
+Reference in Python Init Function like so: MyForms.open
+
+MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.</string>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

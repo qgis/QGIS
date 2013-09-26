@@ -422,7 +422,7 @@ INCLUDE_DIRECTORIES(
   ../core
   ../core/gps
   ../core/composer ../core/raster ../core/symbology-ng
-  ../gui ../gui/symbology-ng ../gui/attributetable ../gui/raster
+  ../gui ../gui/symbology-ng ../gui/attributetable ../gui/raster ../gui/editorwidgets ../gui/editorwidgets/core
   ../plugins
   ../python
   gps

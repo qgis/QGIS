@@ -1666,15 +1666,10 @@ void QgsExpression::initGeomCalculator()
   mCalc->setEllipsoidalMode( false );
 }
 
-void QgsExpression::setGeomCalculator( QgsDistanceArea &calc )
+void QgsExpression::setGeomCalculator( const QgsDistanceArea &calc )
 {
-  if ( !mCalc )
-    mCalc = new QgsDistanceArea();
-
-  // Copy from supplied calculator
-  mCalc->setEllipsoid( calc.ellipsoid() );
-  mCalc->setEllipsoidalMode( calc.ellipsoidalEnabled() );
-  mCalc->setSourceCrs( calc.sourceCrs() );
+  delete mCalc;
+  mCalc = new QgsDistanceArea( calc );
 }
 
 bool QgsExpression::prepare( const QgsFields& fields )

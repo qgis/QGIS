@@ -20,33 +20,101 @@
 #include <QPushButton>
 #include <QTreeWidget>
 #include <QTableWidget>
+#include <QMimeData>
 
 #include "qgsvectorlayer.h"
 #include "ui_qgsfieldspropertiesbase.h"
-
-class APP_EXPORT QgsAttributesTree : public QTreeWidget
-{
-    Q_OBJECT
-  public:
-    QgsAttributesTree( QWidget* parent = 0 )
-        : QTreeWidget( parent )
-    {}
-    QTreeWidgetItem* addContainer( QTreeWidgetItem* parent , QString title );
-    QTreeWidgetItem* addItem( QTreeWidgetItem* parent , QString fieldName );
-
-  protected:
-    virtual void dragMoveEvent( QDragMoveEvent *event );
-    virtual void dropEvent( QDropEvent *event );
-    virtual bool dropMimeData( QTreeWidgetItem * parent, int index, const QMimeData * data, Qt::DropAction action );
-    /* Qt::DropActions supportedDropActions() const;*/
-};
-
 
 class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPropertiesBase
 {
     Q_OBJECT
 
   public:
+
+    enum FieldPropertiesRoles
+    {
+      DesignerTreeRole = Qt::UserRole,
+      FieldConfigRole
+    };
+
+    class DesignerTreeItemData
+    {
+      public:
+        enum Type
+        {
+          Field,
+          Container
+        };
+
+        DesignerTreeItemData()
+        {}
+
+        DesignerTreeItemData( Type type, const QString& name )
+            : mType( type )
+            , mName( name ) {}
+
+        QString name() const { return mName; }
+        void setName( const QString& name ) { mName = name; }
+
+        Type type() const { return mType; }
+        void setType( const Type& type ) { mType = type; }
+
+        QVariant asQVariant() { return QVariant::fromValue<DesignerTreeItemData>( *this ); }
+
+      protected:
+        Type mType;
+        QString mName;
+    };
+
+    /**
+     * This class overrides mime type handling to be able to work with
+     * the drag and drop attribute editor.
+     *
+     * The mime type is application/x-qgsattributetablefield
+     */
+
+    class DragList : public QTableWidget
+    {
+      public:
+        DragList( QWidget* parent = 0 )
+            : QTableWidget( parent )
+        {}
+
+        // QTreeWidget interface
+      protected:
+        virtual QStringList mimeTypes() const;
+
+        virtual QMimeData* mimeData( const QList<QTableWidgetItem*> items ) const;
+    };
+
+
+    /**
+     * Graphical representation for the attribute editor drag and drop editor
+     */
+    class DesignerTree : public QTreeWidget
+    {
+      public:
+        DesignerTree( QWidget* parent = 0 )
+            : QTreeWidget( parent )
+        {}
+        QTreeWidgetItem* addItem( QTreeWidgetItem* parent, DesignerTreeItemData data );
+        QTreeWidgetItem* addContainer( QTreeWidgetItem* parent, QString title );
+
+      protected:
+        virtual void dragMoveEvent( QDragMoveEvent *event );
+        virtual void dropEvent( QDropEvent *event );
+        virtual bool dropMimeData( QTreeWidgetItem * parent, int index, const QMimeData * data, Qt::DropAction action );
+        /* Qt::DropActions supportedDropActions() const;*/
+
+        // QTreeWidget interface
+      protected:
+        virtual QStringList mimeTypes() const;
+        virtual QMimeData* mimeData( const QList<QTreeWidgetItem*> items ) const;
+    };
+
+    /**
+     * Holds the configuration for a field
+     */
     class FieldConfig
     {
       public:
@@ -64,6 +132,8 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
         QPushButton* mButton;
         QString mDateFormat;
         QSize mWidgetSize;
+        QString mEditorWidgetV2Type;
+        QMap<QString, QVariant> mEditorWidgetV2Config;
     };
 
   public:
@@ -125,8 +195,8 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
     void setConfigForRow( int row, FieldConfig cfg );
 
     QgsVectorLayer* mLayer;
-    QgsAttributesTree* mAttributesTree;
-    QTableWidget* mAttributesList;
+    DesignerTree* mDesignerTree;
+    DragList* mFieldsList;
 
     // Holds all the first column items (header: id) of the table.
     // The index in the list is the fieldIdx, and therefore acts as a mapping
@@ -152,10 +222,14 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
     static QMap< QgsVectorLayer::EditType, QString > editTypeMap;
     static void setupEditTypes();
     static QString editTypeButtonText( QgsVectorLayer::EditType type );
-    static QgsVectorLayer::EditType editTypeFromButtonText( QString text );
+    static QgsVectorLayer::EditType editTypeFromButton( QPushButton* btn );
 
 };
 
+QDataStream& operator<< ( QDataStream& stream, const QgsFieldsProperties::DesignerTreeItemData& data );
+QDataStream& operator>> ( QDataStream& stream, QgsFieldsProperties::DesignerTreeItemData& data );
+
 Q_DECLARE_METATYPE( QgsFieldsProperties::FieldConfig )
+Q_DECLARE_METATYPE( QgsFieldsProperties::DesignerTreeItemData )
 
 #endif // QGSFIELDSPROPERTIES_H

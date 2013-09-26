@@ -1964,6 +1964,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
         case UniqueValuesEditable:
         case UuidGenerator:
         case Color:
+        case EditorWidgetV2: // Will get a signal and read there
           break;
       }
     }
@@ -2086,6 +2087,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
     QgsAttributeEditorElement *attributeEditorWidget = attributeEditorElementFromDomElement( elem, this );
     mAttributeEditorElements.append( attributeEditorWidget );
   }
+
   return true;
 }
 
@@ -2103,7 +2105,8 @@ QgsAttributeEditorElement* QgsVectorLayer::attributeEditorElementFromDomElement(
     {
       QDomElement childElem = childNodeList.at( i ).toElement();
       QgsAttributeEditorElement* myElem = attributeEditorElementFromDomElement( childElem, container );
-      container->addChildElement( myElem );
+      if ( myElem )
+        container->addChildElement( myElem );
     }
 
     newElement = container;
@@ -2114,7 +2117,6 @@ QgsAttributeEditorElement* QgsVectorLayer::attributeEditorElementFromDomElement(
     int idx = *( dataProvider()->fieldNameMap() ).find( name );
     newElement = new QgsAttributeEditorField( name, idx, parent );
   }
-
   return newElement;
 }
 
@@ -2282,6 +2284,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
         case Immutable:
         case UuidGenerator:
         case Color:
+        case EditorWidgetV2: // Will get a signal and save there
           break;
       }
 
@@ -2477,6 +2480,16 @@ void QgsVectorLayer::addAttributeAlias( int attIndex, QString aliasString )
 void QgsVectorLayer::addAttributeEditorWidget( QgsAttributeEditorElement* data )
 {
   mAttributeEditorElements.append( data );
+}
+
+const QString QgsVectorLayer::editorWidgetV2( int fieldIdx )
+{
+  return mEditorWidgetV2Types.value( fieldIdx );
+}
+
+const QgsEditorWidgetConfig QgsVectorLayer::editorWidgetV2Config( int fieldIdx )
+{
+  return mEditorWidgetV2Configs.value( fieldIdx );
 }
 
 QString QgsVectorLayer::attributeAlias( int attributeIndex ) const
@@ -3004,6 +3017,16 @@ QgsVectorLayer::EditorLayout QgsVectorLayer::editorLayout()
 void QgsVectorLayer::setEditorLayout( EditorLayout editorLayout )
 {
   mEditorLayout = editorLayout;
+}
+
+void QgsVectorLayer::setEditorWidgetV2( int attrIdx, const QString& widgetType )
+{
+  mEditorWidgetV2Types[ attrIdx ] = widgetType;
+}
+
+void QgsVectorLayer::setEditorWidgetV2Config( int attrIdx, const QMap<QString, QVariant>& config )
+{
+  mEditorWidgetV2Configs[ attrIdx ] = config;
 }
 
 QString QgsVectorLayer::editForm()
@@ -3842,17 +3865,38 @@ QDomElement QgsAttributeEditorContainer::toDomElement( QDomDocument& doc ) const
 {
   QDomElement elem = doc.createElement( "attributeEditorContainer" );
   elem.setAttribute( "name", mName );
-  for ( QList< QgsAttributeEditorElement* >::const_iterator it = mChildren.begin(); it != mChildren.end(); ++it )
+
+  Q_FOREACH( QgsAttributeEditorElement* child, mChildren )
   {
-    elem.appendChild(( *it )->toDomElement( doc ) );
+    elem.appendChild( child->toDomElement( doc ) );
   }
   return elem;
 }
 
-
 void QgsAttributeEditorContainer::addChildElement( QgsAttributeEditorElement *widget )
 {
   mChildren.append( widget );
+}
+
+QList<QgsAttributeEditorElement*> QgsAttributeEditorContainer::findElements( QgsAttributeEditorElement::AttributeEditorType type ) const
+{
+  QList<QgsAttributeEditorElement*> results;
+
+  Q_FOREACH( QgsAttributeEditorElement* elem, mChildren )
+  {
+    if ( elem->type() == type )
+    {
+      results.append( elem );
+    }
+
+    if ( elem->type() == AeTypeContainer )
+    {
+      QgsAttributeEditorContainer* cont = dynamic_cast<QgsAttributeEditorContainer*>( elem );
+      results += cont->findElements( type );
+    }
+  }
+
+  return results;
 }
 
 QDomElement QgsAttributeEditorField::toDomElement( QDomDocument& doc ) const
