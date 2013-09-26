@@ -18,11 +18,10 @@
 """
 from processing.parameters.ParameterSelection import ParameterSelection
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from PyQt4 import QtCore
 
-__author__ = 'Bernhard Strobl'
-__date__ = 'August 2013'
-__copyright__ = '(C) 2013, Bernhard Strobl'
+__author__ = 'Bernhard Ströbl'
+__date__ = 'September 2013'
+__copyright__ = '(C) 2013, Bernhard Ströbl'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
@@ -31,161 +30,231 @@ from qgis.core import *
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.tools import dataobjects
 from processing.parameters.ParameterVector import ParameterVector
+from processing.parameters.ParameterBoolean import ParameterBoolean
+from processing.parameters.ParameterTableField import ParameterTableField
+from processing.parameters.ParameterString import ParameterString
 from processing.outputs.OutputVector import OutputVector
-
+from processing.core.ProcessingLog import ProcessingLog
 
 class Eliminate(GeoAlgorithm):
 
     INPUT = "INPUT"
     OUTPUT = "OUTPUT"
     MODE = "MODE"
-    
+    KEEPSELECTION = "KEEPSELECTION"
+    ATTRIBUTE = "ATTRIBUTE"
+    COMPARISONVALUE = "COMPARISONVALUE"
+    COMPARISON = "COMPARISON"
+
     MODES = ["Area", "Common boundary"]
     MODE_AREA = 0
     MODE_BOUNDARY = 1
-    
 
     def defineCharacteristics(self):
         self.name = "Eliminate sliver polygons"
         self.group = "Vector geometry tools"
-        self.addParameter(ParameterVector(self.INPUT, "Input layer", [ParameterVector.VECTOR_TYPE_POLYGON]))        
-        self.addParameter(ParameterSelection(self.MODE, "Merge selection with the neighbouring polygon with the largest", self.MODES))        
+        self.addParameter(ParameterVector(self.INPUT, "Input layer", [ParameterVector.VECTOR_TYPE_POLYGON]))
+        self.addParameter(ParameterBoolean(self.KEEPSELECTION, "Use current selection in input layer (works only if called from toolbox)",  False))
+        self.addParameter(ParameterTableField(self.ATTRIBUTE, "Selection attribute", self.INPUT))
+        self.comparisons = ['==', '!=', '>', '>=', '<', '<=', 'begins with', 'contains']
+        self.addParameter(ParameterSelection(self.COMPARISON, "Comparison", self.comparisons, default = 0))
+        self.addParameter(ParameterString(self.COMPARISONVALUE, "Value", default = "0"))
+        self.addParameter(ParameterSelection(self.MODE, "Merge selection with the neighbouring polygon with the largest", self.MODES))
         self.addOutput(OutputVector(self.OUTPUT, "Cleaned layer"))
 
     def processAlgorithm(self, progress):
-        inLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))        
-        boundary = self.getParameterValue(self.MODE) == self.MODE_BOUNDARY        
+        inLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
+        boundary = self.getParameterValue(self.MODE) == self.MODE_BOUNDARY
+        keepSelection = self.getParameterValue(self.KEEPSELECTION)
+
+        if not keepSelection:
+            # make a selection with the values provided
+            attribute = self.getParameterValue(self.ATTRIBUTE)
+            comparison = self.comparisons [self.getParameterValue(self.COMPARISON)]
+            comparisonvalue = self.getParameterValue(self.COMPARISONVALUE)
+
+            selectindex = inLayer.dataProvider().fieldNameIndex(attribute)
+            selectType = inLayer.dataProvider().fields()[selectindex].type()
+            selectionError = False
+
+            if selectType == 2:
+                try:
+                    y = int(comparisonvalue)
+                except ValueError:
+                    selectionError = True
+                    msg = "Cannot convert \"" + unicode(comparisonvalue) + "\" to integer"
+            elif selectType == 6:
+                try:
+                    y = float(comparisonvalue)
+                except ValueError:
+                    selectionError = True
+                    msg = "Cannot convert \"" + unicode(comparisonvalue) + "\" to float"
+            elif selectType == 10: # 10: string, boolean
+                try:
+                    y = unicode(comparisonvalue)
+                except ValueError:
+                    selectionError = True
+                    msg = "Cannot convert \"" + unicode(comparisonvalue) + "\" to unicode"
+            elif selectType == 14: # date
+                dateAndFormat = comparisonvalue.split(" ")
+
+                if len(dateAndFormat) == 1:
+                    y = QLocale.system().toDate(dateAndFormat[0]) # QtCore.QDate object
+
+                    if y.isNull():
+                        msg = "Cannot convert \"" + unicode(dateAndFormat) + "\" to date with system date format " + QLocale.system().dateFormat()
+                elif len(dateAndFormat) == 2:
+                    y = QDate.fromString(dateAndFormat[0],  dateAndFormat[1])
+
+                    if y.isNull():
+                        msg = "Cannot convert \"" + unicode(dateAndFormat[0]) + "\" to date with format string \"" + unicode(dateAndFormat[1] + "\". ")
+                else:
+                    y = QDate()
+                    msg = ""
+
+                if y.isNull(): # conversion was unsuccessfull
+                    selectionError = True
+                    msg += "Enter the date and the date format, e.g. \"07.26.2011\" \"MM.dd.yyyy\"."
+
+            if ((comparison == 'begins with') or (comparison == 'contains')) and selectType != 10:
+                selectionError = True
+                msg = "\"" + comparison + "\" can only be used with string fields"
+
+            selected = []
+
+            if selectionError:
+                raise GeoAlgorithmExecutionException("Error in selection input: " + msg)
+            else:
+                for feature in inLayer.getFeatures():
+                    aValue = feature.attributes()[selectindex]
+
+                    if aValue == None:
+                        continue
+
+                    if selectType == 2:
+                        x = int(aValue)
+                    elif selectType == 6:
+                        x = float(aValue)
+                    elif selectType == 10: # 10: string, boolean
+                        x = unicode(aValue)
+                    elif selectType == 14: # date
+                        x = aValue # should be date
+
+                    match = False
+
+                    if (comparison == '=='):
+                        match = (x == y)
+                    elif (comparison == '!='):
+                        match = (x != y)
+                    elif (comparison == '>'):
+                        match = (x > y)
+                    elif (comparison == '>='):
+                        match = (x >= y)
+                    elif (comparison == '<'):
+                        match = (x < y)
+                    elif (comparison == '<='):
+                        match = (x <= y)
+                    elif (comparison == 'begins with'):
+                        match = x.startswith(y)
+                    elif (comparison == 'contains'):
+                        match = (x.find(y) >= 0)
+
+                    if (match):
+                        selected.append(feature.id())
+
+            inLayer.setSelectedFeatures(selected)
+
+        if inLayer.selectedFeatureCount() == 0:
+            ProcessingLog.addToLog(ProcessingLog.LOG_WARNING, self.commandLineName() + "(No selection in input layer \"" + self.getParameterValue(self.INPUT) + "\")")
+            #self.iface.messageBar().pushMessage("Eliminate",  "No selection provided")
 
         # keep references to the features to eliminate
-        fidsToEliminate = inLayer.selectedFeaturesIds()
+        featToEliminate = []
+        for aFeat in inLayer.selectedFeatures():
+            featToEliminate.append( aFeat )
 
-
-        provider = inLayer.dataProvider()
-        output = self.getOutputFromName(self.OUTPUT)
-        writer = output.getVectorWriter( provider.fields(), 
-                                         provider.geometryType(),                                           
-                                         inLayer.crs() )
-        
-        #write all features to output layer 
-        iterator = inLayer.getFeatures()
-        for feature in iterator:
-            writer.addFeature(feature)
-            
-        #Open the layer to start cleaning it
-        outFileName = output.value
-        outLayer = QgsVectorLayer(outFileName, QtCore.QFileInfo(outFileName).completeBaseName(), "ogr")
-                
-
-        # delete features to be eliminated in outLayer
-        outLayer.setSelectedFeatures(fidsToEliminate)
-        outLayer.startEditing()
-
-        if outLayer.deleteSelectedFeatures():
-            if self.saveChanges(outLayer):
-                outLayer.startEditing()
-        else:
-            raise GeoAlgorithmExecutionException("Could not delete features")       
+        #delete all features to eliminate in inLayer (we won't save this)
+        inLayer.startEditing()
+        inLayer.deleteSelectedFeatures()
 
         # ANALYZE
-        start = 20.00
-        progress.setPercentage(start)
-        add = 80.00 / len(fidsToEliminate)
+        if len( featToEliminate ) > 0: # prevent zero division
+            start = 20.00
+            add = 80.00 / len( featToEliminate )
+        else:
+            start = 100
 
-        lastLen = 0
-        geomsToMerge = dict()
+        progress.setPercentage( start )
+        madeProgress = True
 
         # we go through the list and see if we find any polygons we can merge the selected with
         # if we have no success with some we merge and then restart the whole story
-        while (lastLen != inLayer.selectedFeatureCount()): #check if we made any progress
-            lastLen = inLayer.selectedFeatureCount()
-            fidsToDeselect = []
+        while ( madeProgress ): #check if we made any progress
+            madeProgress = False
+            featNotEliminated = []
 
             #iterate over the polygons to eliminate
-            for fid2Eliminate in inLayer.selectedFeaturesIds():
-                feat = QgsFeature()
+            for i in range( len( featToEliminate )):
+                feat = featToEliminate.pop()
+                geom2Eliminate = feat.geometry()
+                bbox = geom2Eliminate.boundingBox()
+                fit = inLayer.getFeatures( QgsFeatureRequest().setFilterRect( bbox ) )
+                mergeWithFid = None
+                mergeWithGeom = None
+                max = 0
+                selFeat = QgsFeature()
 
-                if inLayer.getFeatures( QgsFeatureRequest().setFilterFid( fid2Eliminate ).setSubsetOfAttributes([]) ).nextFeature( feat ):
-                    geom2Eliminate = feat.geometry()
-                    bbox = geom2Eliminate.boundingBox()
-                    fit = outLayer.getFeatures( QgsFeatureRequest().setFilterRect( bbox ) )
-                    mergeWithFid = None
-                    mergeWithGeom = None
-                    max = 0
+                while fit.nextFeature( selFeat ):
+                    selGeom = selFeat.geometry()
 
-                    selFeat = QgsFeature()
-                    while fit.nextFeature(selFeat):
-                            selGeom = selFeat.geometry()
+                    if geom2Eliminate.intersects( selGeom ): # we have a candidate
+                        iGeom = geom2Eliminate.intersection( selGeom )
 
-                            if geom2Eliminate.intersects(selGeom): # we have a candidate
-                                iGeom = geom2Eliminate.intersection(selGeom)
-
-                                if boundary:
-                                    selValue = iGeom.length()
-                                else:
-                                    # we need a common boundary
-                                    if 0 < iGeom.length():
-                                        selValue = selGeom.area()
-                                    else:
-                                        selValue = 0
-
-                                if selValue > max:
-                                    max = selValue
-                                    mergeWithFid = selFeat.id()
-                                    mergeWithGeom = QgsGeometry(selGeom) # deep copy of the geometry
-
-                    if mergeWithFid != None: # a successful candidate
-                        newGeom = mergeWithGeom.combine(geom2Eliminate)
-
-                        if outLayer.changeGeometry(mergeWithFid, newGeom):
-                            # write change back to disc
-                            if self.saveChanges(outLayer):
-                                outLayer.startEditing()
+                        if boundary:
+                            selValue = iGeom.length()
+                        else: # largest area
+                            # we need a common boundary in order to merge
+                            if 0 < iGeom.length():
+                                selValue = selGeom.area()
                             else:
-                                return
+                                selValue = 0
 
-                            # mark feature as eliminated in inLayer
-                            fidsToDeselect.append(fid2Eliminate)
-                        else:
-                            raise GeoAlgorithmExecutionException("Could not replace geometry of feature with id %s" % (mergeWithFid))                            
+                        if selValue > max:
+                            max = selValue
+                            mergeWithFid = selFeat.id()
+                            mergeWithGeom = QgsGeometry( selGeom ) # deep copy of the geometry
+                # end while fit
 
-                        start = start + add
-                        progress.setPercentage(start)
-            # end for fid2Eliminate
+                if mergeWithFid != None: # a successful candidate
+                    newGeom = mergeWithGeom.combine( geom2Eliminate )
 
-            # deselect features that are already eliminated in inLayer
-            inLayer.deselect(fidsToDeselect)
+                    if inLayer.changeGeometry( mergeWithFid, newGeom ):
+                        madeProgress = True
+                    else:
+                        raise GeoAlgorithmExecutionException("Could not replace geometry of feature with id %s" % (mergeWithFid))
 
+                    start = start + add
+                    progress.setPercentage( start )
+                else:
+                    featNotEliminated.append( feat )
+            # end for featToEliminate
+            featToEliminate = featNotEliminated
         #end while
 
-        if inLayer.selectedFeatureCount() > 0:
-            # copy all features that could not be eliminated to outLayer
-            if outLayer.addFeatures(inLayer.selectedFeatures()):
-                # inform user
-                fidList = ""
+        # create output
+        provider = inLayer.dataProvider()
+        output = self.getOutputFromName( self.OUTPUT )
+        writer = output.getVectorWriter( provider.fields(),
+                                         provider.geometryType(),
+                                         inLayer.crs() )
 
-                for fid in inLayer.selectedFeaturesIds():
-                    if not fidList == "":
-                        fidList += ", "
+        #write all features that are left over to output layer
+        iterator = inLayer.getFeatures()
+        for feature in iterator:
+            writer.addFeature( feature )
 
-                    fidList += str(fid)
+        # leave inLayer untouched
+        inLayer.rollBack()
 
-                raise GeoAlgorithmExecutionException("Could not eliminate features with these ids:\n%s" % (fidList))
-            else:
-                raise GeoAlgorithmExecutionException("Could not add features")
-
-        # stop editing outLayer and commit any pending changes
-        self.saveChanges(outLayer)
-
-    def saveChanges(self, outLayer):
-        if not outLayer.commitChanges():                    
-            msg = ""
-            for aStrm in outLayer.commitErrors():
-                msg = msg + "\n" + aStrm
-            outLayer.rollBack()
-            raise GeoAlgorithmExecutionException("Commit error:\n%s" % (msg))
-        
-    def checkParameterValuesBeforeExecuting(self):
-        inLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
-        if inLayer.selectedFeatureCount() == 0:
-            return "No selection in input layer"
-        
+        for feature in featNotEliminated:
+            writer.addFeature( feature )
