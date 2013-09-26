@@ -55,6 +55,7 @@ class QgsComposerMultiFrame;
 class QgsComposerMultiFrameCommand;
 class QgsVectorLayer;
 class QgsComposer;
+class QgsFillSymbolV2;
 
 /** \ingroup MapComposer
  * Graphics scene for map printing. The class manages the paper item which always
@@ -107,6 +108,11 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     void setNumPages( int pages );
     /**Note: added in version 1.9*/
     int numPages() const;
+
+    /**Note: added in version 2.1*/
+    void setPageStyleSymbol( QgsFillSymbolV2* symbol );
+    /**Note: added in version 2.1*/
+    QgsFillSymbolV2* pageStyleSymbol() { return mPageStyleSymbol; }
 
     /**Returns the position within a page of a point in the composition
       @note Added in QGIS 2.1
@@ -431,6 +437,10 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     double mPageHeight;
     QList< QgsPaperItem* > mPages;
     double mSpaceBetweenPages; //space in preview between pages
+
+    /**Drawing style for page*/
+    QgsFillSymbolV2* mPageStyleSymbol;
+    void createDefaultPageStyleSymbol();
 
     /**Maintains z-Order of items. Starts with item at position 1 (position 0 is always paper item)*/
     QLinkedList<QgsComposerItem*> mItemZList;

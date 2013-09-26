@@ -48,6 +48,7 @@ class QgsCompositionWidget: public QWidget, private Ui::QgsCompositionWidgetBase
     void on_mPaperWidthDoubleSpinBox_editingFinished();
     void on_mPaperHeightDoubleSpinBox_editingFinished();
     void on_mNumPagesSpinBox_valueChanged( int value );
+    void on_mPageStyleButton_clicked();
     void on_mResolutionSpinBox_valueChanged( const int value );
     void on_mPrintAsRasterCheckBox_toggled( bool state );
     void on_mGenerateWorldFileCheckBox_toggled( bool state );
@@ -83,6 +84,8 @@ class QgsCompositionWidget: public QWidget, private Ui::QgsCompositionWidgetBase
     void adjustOrientation();
     /**Sets GUI elements to snaping distances of composition*/
     void displaySnapingSettings();
+
+    void updatePageStyle();
 
     void createPaperEntries();
     void insertPaperEntries();

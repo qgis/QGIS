@@ -19,6 +19,9 @@
 #include "qgscomposition.h"
 #include "qgscomposermap.h"
 #include "qgscomposeritem.h"
+#include "qgsstylev2.h"
+#include "qgssymbolv2selectordialog.h"
+#include "qgssymbollayerv2utils.h"
 #include <QColorDialog>
 #include <QWidget>
 #include <QPrinter> //for screen resolution
@@ -44,6 +47,8 @@ QgsCompositionWidget::QgsCompositionWidget( QWidget* parent, QgsComposition* c )
   if ( mComposition )
   {
     mNumPagesSpinBox->setValue( mComposition->numPages() );
+
+    updatePageStyle();
 
     //read printout resolution from composition
     mResolutionSpinBox->setValue( mComposition->printResolution() );
@@ -374,6 +379,30 @@ void QgsCompositionWidget::displayCompositionWidthHeight()
   }
 }
 
+void QgsCompositionWidget::on_mPageStyleButton_clicked()
+{
+  if ( !mComposition )
+  {
+    return;
+  }
+
+  QgsSymbolV2SelectorDialog d( mComposition->pageStyleSymbol(), QgsStyleV2::defaultStyle(), 0 );
+
+  if ( d.exec() == QDialog::Accepted )
+  {
+    updatePageStyle();
+  }
+}
+
+void QgsCompositionWidget::updatePageStyle()
+{
+  if ( mComposition )
+  {
+    QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( mComposition->pageStyleSymbol(), mPageStyleButton->iconSize() );
+    mPageStyleButton->setIcon( icon );
+  }
+}
+
 void QgsCompositionWidget::setPrintAsRasterCheckBox( bool state )
 {
   mPrintAsRasterCheckBox->blockSignals( true );
@@ -520,6 +549,7 @@ void QgsCompositionWidget::blockSignals( bool block )
   mPaperHeightDoubleSpinBox->blockSignals( block );
   mNumPagesSpinBox->blockSignals( block );
   mPaperOrientationComboBox->blockSignals( block );
+  mPageStyleButton->blockSignals( block );
   mResolutionSpinBox->blockSignals( block );
   mPrintAsRasterCheckBox->blockSignals( block );
   mGridResolutionSpinBox->blockSignals( block );

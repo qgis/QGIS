@@ -37,6 +37,8 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgsexpression.h"
+#include "qgssymbolv2.h"
+#include "qgssymbollayerv2utils.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -54,6 +56,7 @@ QgsComposition::QgsComposition( QgsMapRenderer* mapRenderer )
     , mPageWidth( 297 )
     , mPageHeight( 210 )
     , mSpaceBetweenPages( 10 )
+    , mPageStyleSymbol( 0 )
     , mPrintAsRaster( false )
     , mGenerateWorldFile( false )
     , mWorldFileMap( 0 )
@@ -75,6 +78,7 @@ QgsComposition::QgsComposition( QgsMapRenderer* mapRenderer )
     , mPreventCursorChange( false )
 {
   setBackgroundBrush( Qt::gray );
+  createDefaultPageStyleSymbol();
   addPaperItem();
 
   //add mouse selection handles to composition, and initially hide
@@ -97,6 +101,7 @@ QgsComposition::QgsComposition()
     mPageWidth( 297 ),
     mPageHeight( 210 ),
     mSpaceBetweenPages( 10 ),
+    mPageStyleSymbol( 0 ),
     mPrintAsRaster( false ),
     mGenerateWorldFile( false ),
     mWorldFileMap( 0 ),
@@ -133,6 +138,7 @@ QgsComposition::~QgsComposition()
   clear();
   delete mActiveItemCommand;
   delete mActiveMultiFrameCommand;
+  delete mPageStyleSymbol;
 }
 
 void QgsComposition::loadDefaults()
@@ -198,6 +204,22 @@ void QgsComposition::setNumPages( int pages )
 int QgsComposition::numPages() const
 {
   return mPages.size();
+}
+
+void QgsComposition::setPageStyleSymbol( QgsFillSymbolV2* symbol )
+{
+  delete mPageStyleSymbol;
+  mPageStyleSymbol = symbol;
+}
+
+void QgsComposition::createDefaultPageStyleSymbol()
+{
+  delete mPageStyleSymbol;
+  QgsStringMap properties;
+  properties.insert( "color", "white" );
+  properties.insert( "style", "solid" );
+  properties.insert( "style_border", "no" );
+  mPageStyleSymbol = QgsFillSymbolV2::createSimple( properties );
 }
 
 QPointF QgsComposition::positionOnPage( const QPointF & position ) const
@@ -469,6 +491,9 @@ bool QgsComposition::writeXML( QDomElement& composerElem, QDomDocument& doc )
   compositionElem.setAttribute( "paperHeight", QString::number( mPageHeight ) );
   compositionElem.setAttribute( "numPages", mPages.size() );
 
+  QDomElement pageStyleElem = QgsSymbolLayerV2Utils::saveSymbol( QString(), mPageStyleSymbol, doc );
+  compositionElem.appendChild( pageStyleElem );
+
   //snapping
   if ( mSnapToGrid )
   {
@@ -558,6 +583,13 @@ bool QgsComposition::readXML( const QDomElement& compositionElem, const QDomDocu
   mPageHeight = compositionElem.attribute( "paperHeight" ).toDouble( &heightConversionOk );
   emit paperSizeChanged();
   int numPages = compositionElem.attribute( "numPages", "1" ).toInt();
+
+  QDomElement pageStyleSymbolElem = compositionElem.firstChildElement( "symbol" );
+  if ( !pageStyleSymbolElem.isNull() )
+  {
+    delete mPageStyleSymbol;
+    mPageStyleSymbol = dynamic_cast<QgsFillSymbolV2*>( QgsSymbolLayerV2Utils::loadSymbol( pageStyleSymbolElem ) );
+  }
 
   if ( widthConversionOk && heightConversionOk )
   {

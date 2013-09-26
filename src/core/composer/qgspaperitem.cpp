@@ -17,6 +17,7 @@
 
 #include "qgspaperitem.h"
 #include "qgscomposition.h"
+#include "qgsstylev2.h"
 #include "qgslogger.h"
 #include <QGraphicsRectItem>
 #include <QPainter>
@@ -152,7 +153,27 @@ void QgsPaperItem::paint( QPainter* painter, const QStyleOptionGraphicsItem* ite
     return;
   }
 
-  drawBackground( painter );
+  QgsRenderContext context;
+  context.setPainter( painter );
+  context.setScaleFactor( 1.0 );
+  if ( mComposition->plotStyle() ==  QgsComposition::Preview )
+  {
+    context.setRasterScaleFactor( horizontalViewScaleFactor() );
+  }
+  else
+  {
+    context.setRasterScaleFactor( mComposition->printResolution() / 25.4 );
+  }
+
+  painter->save();
+  painter->setRenderHint( QPainter::Antialiasing );
+  QPolygonF pagePolygon = QPolygonF( QRectF( 0, 0, rect().width(), rect().height() ) );
+  mComposition->pageStyleSymbol()->startRender( context );
+  QList<QPolygonF> rings; //empty list
+  mComposition->pageStyleSymbol()->renderPolygon( pagePolygon, &rings, 0, context );
+  mComposition->pageStyleSymbol()->stopRender( context );
+  painter->restore();
+
 }
 
 bool QgsPaperItem::writeXML( QDomElement& elem, QDomDocument & doc ) const
