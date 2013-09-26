@@ -299,6 +299,24 @@ class TestPALConfig(TestQgsPalLabeling):
 
         msg = '\nLayer settings read not same as settings written'
         self.assertDictEqual(lyr1dict, lyr2dict, msg)
+        
+    def test_default_partials_labels_enabled(self):
+        # Verify ShowingPartialsLabels is enabled for PAL by default
+        pal = QgsPalLabeling()
+        self.assertTrue(pal.isShowingPartialsLabels())
+        
+    def test_partials_labels_activate(self):
+        pal = QgsPalLabeling()
+         # Enable partials labels
+        pal.setShowingPartialsLabels(True)
+        self.assertTrue(pal.isShowingPartialsLabels())
+     
+    def test_partials_labels_deactivate(self):
+        pal = QgsPalLabeling()
+        # Disable partials labels
+        pal.setShowingPartialsLabels(False)
+        self.assertFalse(pal.isShowingPartialsLabels())
+        
 
 
 def runSuite(module, tests):
