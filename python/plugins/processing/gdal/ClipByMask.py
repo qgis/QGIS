@@ -25,6 +25,7 @@ __revision__ = '$Format:%H$'
 
 import os
 from PyQt4 import QtGui
+from osgeo import gdal
 from qgis.core import *
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -45,6 +46,7 @@ class ClipByMask(GeoAlgorithm):
     NO_DATA = "NO_DATA"
     MASK = "MASK"
     ALPHA_BAND = "ALPHA_BAND"
+    KEEP_RESOLUTION = "KEEP_RESOLUTION"
     EXTRA = "EXTRA"
 
     def getIcon(self):
@@ -58,6 +60,7 @@ class ClipByMask(GeoAlgorithm):
         self.addParameter(ParameterVector(self.MASK, "Mask layer", [ParameterVector.VECTOR_TYPE_POLYGON]))
         self.addParameter(ParameterString(self.NO_DATA, "Nodata value, leave as none to take the nodata value from input", "none"))
         self.addParameter(ParameterBoolean(self.ALPHA_BAND, "Create and output alpha band", False))
+        self.addParameter(ParameterBoolean(self.KEEP_RESOLUTION, "Keep resolution of output raster", False))
         self.addParameter(ParameterString(self.EXTRA, "Additional creation parameters", ""))
         self.addOutput(OutputRaster(self.OUTPUT, "Output layer"))
 
@@ -66,6 +69,7 @@ class ClipByMask(GeoAlgorithm):
         mask = self.getParameterValue(self.MASK)
         noData = str(self.getParameterValue(self.NO_DATA))
         addAlphaBand = self.getParameterValue(self.ALPHA_BAND)
+        keepResolution = self.getParameterValue(self.KEEP_RESOLUTION)
         extra = str(self.getParameterValue(self.EXTRA))
 
         arguments = []
@@ -74,6 +78,15 @@ class ClipByMask(GeoAlgorithm):
         arguments.append(GdalUtils.getFormatShortNameFromFilename(out))
         arguments.append("-dstnodata")
         arguments.append(noData)
+
+        if keepResolution:
+          r = gdal.Open(self.getParameterValue(self.INPUT))
+          geoTransform = r.GetGeoTransform()
+          r = None
+          arguments.append("-tr")
+          arguments.append(str(geoTransform[1]))
+          arguments.append(str(geoTransform[5]))
+          arguments.append("-tap")
 
         arguments.append("-cutline")
         arguments.append(mask)
