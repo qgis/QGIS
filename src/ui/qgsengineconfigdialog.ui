@@ -17,7 +17,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>Labeling engine settings</string>
+   <string>Automated Placement Engine</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
