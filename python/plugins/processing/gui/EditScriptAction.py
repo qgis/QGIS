@@ -27,7 +27,6 @@ __revision__ = '$Format:%H$'
 
 from processing.gui.ContextAction import ContextAction
 from processing.gui.ScriptEditorDialog import ScriptEditorDialog
-
 from processing.r.RAlgorithm import RAlgorithm
 from processing.script.ScriptAlgorithm import ScriptAlgorithm
 

@@ -57,20 +57,7 @@ class MultipleInputPanel(QtGui.QWidget):
                            + ' elements selected')
 
     def showSelectionDialog(self):
-        # =====================================================================
-        # #If there is a datatype, we use it to create the list of options
-        # if self.datatype is not None:
-        #    if self.datatype == ParameterMultipleInput.TYPE_RASTER:
-        #        options = dataobjects.getRasterLayers()
-        #    elif self.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
-        #        options = dataobjects.getVectorLayers()
-        #    else:
-        #        options = dataobjects.getVectorLayers(self.datatype)
-        #    opts = []
-        #    for opt in options:
-        #        opts.append(opt.name())
-        #    self.options = opts
-        # =====================================================================
+
         dlg = MultipleInputDialog(self.options, self.selectedoptions)
         dlg.exec_()
         if dlg.selectedoptions is not None:
