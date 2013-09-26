@@ -24414,7 +24414,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsfieldsproperties.cpp" line="751"/>
         <source>Line edit</source>
-        <translation>Modifica riga</translation>
+        <translation>Modifica contenuto</translation>
     </message>
     <message>
         <location filename="../src/app/qgsfieldsproperties.cpp" line="752"/>
@@ -41870,7 +41870,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="694"/>
         <source>&lt;br/&gt;%1 rating vote(s)&lt;br/&gt;</source>
         <translatorcomment>#dubbio#</translatorcomment>
-        <translation>&lt;br/&gt;%1 classifica voto(i)&lt;br/&gt;</translation>
+        <translation>&lt;br/&gt;%1 voti&lt;br/&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="709"/>
@@ -58320,12 +58320,12 @@ Vuoi aggiungerlo alla legenda?</translation>
     <message>
         <location filename="../src/plugins/topology/checkDock.ui" line="41"/>
         <source>Validate All</source>
-        <translation>Valida tutto</translation>
+        <translation>Verifica tutto</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/checkDock.ui" line="48"/>
         <source>Validate Extent</source>
-        <translation>Valida l&apos;estensione</translation>
+        <translation>Verifica l&apos;estensione</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/checkDock.ui" line="72"/>
