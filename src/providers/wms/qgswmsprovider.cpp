@@ -4550,6 +4550,9 @@ void QgsWmsProvider::showMessageBox( const QString& title, const QString& text )
 
 QPixmap QgsWmsProvider::getLegendGraphic( double scale, bool forceRefresh )
 {
+  // TODO manage return basing of getCapablity => avoid call if service is not available
+  // some services dowsn't expose getLegendGraphic in capabilities but adding LegendURL in
+  // the layer tags inside capabilities
   QgsDebugMsg( "entering." );
 
   if ( !scale && !mGetLegendGraphicScale)
@@ -4558,24 +4561,64 @@ QPixmap QgsWmsProvider::getLegendGraphic( double scale, bool forceRefresh )
     return QPixmap();
   }
 
-  if ( mHttpGetLegendGraphicResponse.isNull() || forceRefresh )
+  if ( scale && scale != mGetLegendGraphicScale )
+  {
+    forceRefresh = true;
+    QgsDebugMsg( QString( "Download again due to scale change from: %1 to: %2" ).arg( mGetLegendGraphicScale ).arg( scale ) );
+  }
+  
+  if ( forceRefresh )
   {
     if ( scale )
     {
       mGetLegendGraphicScale = scale;
     }
 
+    // if style is not defined, set as "default"
+    QString currentStyle("default");
+    if ( mActiveSubStyles[0] != "" )
+    {
+      currentStyle = mActiveSubStyles[0];
+    }
+
     // add WMS GetGraphicLegend request
-    // TODO set wms version using instance var something like mWmsVersion... brobabilly get from the same getMap call parameter
-    // TODO set sld version using instance var something like mSldVersion... brobabilly get from the same getMap call parameter
-    QUrl url( mIgnoreGetMapUrl ? mBaseUrl : getMapUrl() );
+    // TODO set sld version using instance var something like mSldVersion
+    // TODO at this moment LSD version can be get from LegendURL in getCapability,but parsing of
+    // this tag is not complete. Below the code that should work if pasing whould correct
+    //     if ( mActiveSubLayers[0] == mCapabilities.capability.layer.name )
+    //     {
+    //       foreach( QgsWmsStyleProperty style,  mCapabilities.capability.layer.style )
+    //       {
+    //         if ( currentStyle == style.name )
+    //         {
+    //           url.setUrl( style.legendUrl[0].onlineResource.xlinkHref, QUrl::StrictMode );
+    //         }
+    //       }
+    //     } // is a sublayer
+    //     else if ( mActiveSubLayers[0].contains( mCapabilities.capability.layer.name ) )
+    //     {
+    //       foreach( QgsWmsLayerProperty layerProperty, mCapabilities.capability.layer.layer )
+    //       {
+    //         if ( mActiveSubLayers[0] == layerProperty.name )
+    //         {
+    //           foreach( QgsWmsStyleProperty style, layerProperty.style )
+    //           {
+    //             if ( currentStyle == style.name )
+    //             {
+    //               url.setUrl( style.legendUrl[0].onlineResource.xlinkHref, QUrl::StrictMode );
+    //             }
+    //           }
+    //         }
+    //       }
+    //     }
+    QUrl url( mIgnoreGetMapUrl ? mBaseUrl : getMapUrl(), QUrl::StrictMode );
     setQueryItem( url, "SERVICE", "WMS" );
-    setQueryItem( url, "VERSION", "1.3.0" );
-    setQueryItem( url, "SLD_VERSION", "1.1.0" );
+    setQueryItem( url, "VERSION", mCapabilities.version );
+    setQueryItem( url, "SLD_VERSION", "1.1.0" ); // can not determine SLD_VERSION
     setQueryItem( url, "REQUEST", "GetLegendGraphic" );
-    setQueryItem( url, "LAYER", mActiveSubLayers.join( "," ) );
-    setQueryItem( url, "STYLE", mActiveSubStyles.join( "," ) );
-    setQueryItem( url, "SCALE", QString::number( scale ) );
+    setQueryItem( url, "LAYER", mActiveSubLayers[0] );
+    setQueryItem( url, "STYLE", currentStyle );
+    setQueryItem( url, "SCALE", QString::number( scale, 'f') );
     setQueryItem( url, "FORMAT", mImageMimeType );
 
     mError = "";
