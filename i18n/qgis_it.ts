@@ -16548,7 +16548,7 @@ Prova una risoluzione minore o una minor dimensione di stampa</translation>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="1212"/>
         <source>If you require a vector-based output file from Qgis it is suggested that you try printing to PostScript if the SVG output is not satisfactory.&lt;/p&gt;</source>
-        <translation>Se serve un formato vettoriale come output da Qgis, e l´output SVG ottenuto non è soddisfacente, si consiglia di utilizzare la stampa su PostScript&lt;/p&gt;</translation>
+        <translation>Se serve un formato vettoriale come output da QGIS, e l´output SVG ottenuto non è soddisfacente, si consiglia di utilizzare la stampa su PostScript&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="1552"/>
