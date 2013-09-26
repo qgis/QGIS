@@ -57,8 +57,8 @@ class Ogr2Ogr(OgrAlgorithm):
     DEST_DSCO = "DEST_DSCO"
 
     def defineCharacteristics(self):
-        self.name = "ogr2ogr"
-        self.group = "[OGR] Transformation"
+        self.name = "Convert format"
+        self.group = "[OGR] Conversion"
 
         #we add the input vector layer. It can have any kind of geometry
         #It is a mandatory (not optional) one, hence the False argument

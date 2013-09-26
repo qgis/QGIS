@@ -47,14 +47,12 @@ class rasterize(GeoAlgorithm):
     HEIGHT = "HEIGHT"
     OUTPUT = "OUTPUT"
 
-
-
     def getIcon(self):
         filepath = os.path.dirname(__file__) + "/icons/rasterize.png"
         return QtGui.QIcon(filepath)
 
     def defineCharacteristics(self):
-        self.name = "Rasterize"
+        self.name = "Rasterize (vector to raster)"
         self.group = "[GDAL] Conversion"
         self.addParameter(ParameterVector(self.INPUT, "Input layer"))
         self.addParameter(ParameterTableField(self.FIELD, "Attribute field", self.INPUT))

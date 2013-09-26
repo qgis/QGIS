@@ -59,7 +59,7 @@ class gdaladdo(GeoAlgorithm):
         return QtGui.QIcon(filepath)
 
     def defineCharacteristics(self):
-        self.name = "Build pyramids (overviews)"
+        self.name = "Build overviews (pyramids)"
         self.group = "[GDAL] Miscellaneous"
         self.addParameter(ParameterRaster(self.INPUT, "Input layer", False))
         self.addParameter(ParameterString(self.LEVELS, "Overview levels", "2 4 8 16"))
