@@ -357,7 +357,7 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
 
             # Add algorithms
             for alg in algs:
-                if not alg.showInModeler:
+                if not alg.showInModeler or alg.allowOnlyOpenedLayers:
                     continue
                 (altgroup, altsubgroup, altname) = \
                     AlgorithmDecorator.getGroupsAndName(alg)
@@ -406,7 +406,7 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
 
             # Add algorithms
             for alg in algs:
-                if not alg.showInModeler:
+                if not alg.showInModeler or alg.allowOnlyOpenedLayers:
                     continue
                 if text == '' or text.lower() in alg.name.lower():
                     if alg.group in groups:
@@ -445,7 +445,7 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
 
             # Add algorithms
             for alg in algs:
-                if not alg.showInModeler:
+                if not alg.showInModeler or alg.allowOnlyOpenedLayers:
                     continue
                 if text == '' or text.lower() in alg.name.lower():
                     if alg.group in groups:

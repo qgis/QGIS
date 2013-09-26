@@ -99,7 +99,7 @@ class ProcessingToolbox(QDockWidget, Ui_ProcessingToolbox):
             executeAction = QAction(self.tr('Execute'), self.algorithmTree)
             executeAction.triggered.connect(self.executeAlgorithm)
             popupmenu.addAction(executeAction)
-            if alg.canRunInBatchMode:
+            if alg.canRunInBatchMode and not self.allowOnlyOpenedLayers:
                 executeBatchAction = QAction(
                         self.tr('Execute as batch process'),
                         self.algorithmTree)

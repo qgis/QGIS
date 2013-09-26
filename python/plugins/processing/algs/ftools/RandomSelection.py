@@ -49,13 +49,6 @@ class RandomSelection(GeoAlgorithm):
 
     METHODS = ['Number of selected features',
                'Percentage of selected features']
-
-    # =========================================================================
-    # def getIcon(self):
-    #    return QIcon(os.path.dirname(__file__) + \
-    #                  "/icons/random_selection.png")
-    # =========================================================================
-
     def defineCharacteristics(self):
         self.allowOnlyOpenedLayers = True
         self.name = 'Random selection'
