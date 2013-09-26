@@ -13924,7 +13924,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsaddtaborgroupbase.ui" line="62"/>
         <source>a group in container</source>
         <translatorcomment>Senso ambiguo, forse non è corretto tredurre così. (rospus)</translatorcomment>
-        <translation>un gruppo in contenitore</translation>
+        <translation>un gruppo nella scheda</translation>
     </message>
 </context>
 <context>
@@ -24624,7 +24624,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="112"/>
         <source>Drag and drop designer</source>
-        <translation>Trascina e rilascia designer</translation>
+        <translation>Crea maschera di inserimento</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="117"/>
