@@ -632,12 +632,6 @@ class QgsWmsProvider : public QgsRasterDataProvider
      */
     QStringList subLayerStyles() const;
 
-<<<<<<< HEAD
-    /** Get GetLegendGraphic if service available otherwise QPixmap() 
-     * BEAWARE this can be called afer a firs call to getLegendGraphic( double scale, bool forceRefresh = false )
-     * otherwise it always return QPixmap()
-=======
-
     /**
      * \brief Get GetLegendGraphic if service available otherwise QPixmap() 
      * BEAWARE call it the first time specifying scale parameter otherwise it always return QPixmap()
@@ -648,7 +642,6 @@ class QgsWmsProvider : public QgsRasterDataProvider
      * in getCapability
      * \param scale Optional parameter that is the Scale of the wms layer
      * \param forceRefresh Optional bool parameter to force refresh getLegendGraphic call 
->>>>>>> 8554c7a... better scale management to avoid call getLegendGraphics everytime + some defaults + added code example to manage LegendURL when it will be correctly parsed
      */
     QPixmap getLegendGraphic( double scale = 0, bool forceRefresh = false );
 
