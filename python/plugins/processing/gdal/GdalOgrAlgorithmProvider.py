@@ -50,6 +50,7 @@ from processing.gdal.rasterize import rasterize
 from processing.gdal.proximity import proximity
 from processing.gdal.sieve import sieve
 from processing.gdal.fillnodata import fillnodata
+from processing.gdal.extractprojection import ExtractProjection
 
 from processing.gdal.ogr2ogr import Ogr2Ogr
 from processing.gdal.ogrinfo import OgrInfo
@@ -100,19 +101,20 @@ class GdalOgrAlgorithmProvider(AlgorithmProvider):
                               rgb2pct(), pct2rgb(), merge(), polygonize(),
                               gdaladdo(), ClipByExtent(), ClipByMask(),
                               contour(), rasterize(), proximity(), sieve(),
-                              fillnodata(),
+                              fillnodata(), ExtractProjection(),
                               OgrInfo(), Ogr2Ogr(), OgrSql()]
 
         #And then we add those that are created as python scripts
         folder = self.scriptsFolder()
-        for descriptionFile in os.listdir(folder):
-            if descriptionFile.endswith("py"):
-                try:
-                    fullpath = os.path.join(self.scriptsFolder(), descriptionFile)
-                    alg = GdalAlgorithm(fullpath)
-                    self.preloadedAlgs.append(alg)
-                except WrongScriptException,e:
-                    ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,e.msg)
+        if os.path.exists(folder):
+            for descriptionFile in os.listdir(folder):
+                if descriptionFile.endswith("py"):
+                    try:
+                        fullpath = os.path.join(self.scriptsFolder(), descriptionFile)
+                        alg = GdalAlgorithm(fullpath)
+                        self.preloadedAlgs.append(alg)
+                    except WrongScriptException,e:
+                        ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,e.msg)
 
     def getSupportedOutputRasterLayerExtensions(self):
         return GdalUtils.getSupportedRasterExtensions()

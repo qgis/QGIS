@@ -1061,18 +1061,72 @@ class mmqgisx_select_algorithm(GeoAlgorithm):
 
     selectindex = layer.dataProvider().fieldNameIndex(attribute)
 
+    selectType = layer.dataProvider().fields()[selectindex].type()
+    selectionError = False
+
+    if selectType == 2:
+      try:
+        y = int(comparisonvalue)
+      except ValueError:
+        selectionError = True
+        msg = "Cannot convert \"" + unicode(comparisonvalue) + "\" to integer"
+    elif selectType == 6:
+      try:
+        y = float(comparisonvalue)
+      except ValueError:
+        selectionError = True
+        msg = "Cannot convert \"" + unicode(comparisonvalue) + "\" to float"
+    elif selectType == 10: # 10: string, boolean
+      try:
+        y = unicode(comparisonvalue)
+      except ValueError:
+        selectionError = True
+        msg = "Cannot convert \"" + unicode(comparisonvalue) + "\" to unicode"
+    elif selectType == 14: # date
+      dateAndFormat = comparisonvalue.split(" ")
+
+      if len(dateAndFormat) == 1:
+        y = QLocale.system().toDate(dateAndFormat[0]) # QtCore.QDate object
+
+        if y.isNull():
+          msg = "Cannot convert \"" + unicode(dateAndFormat) + "\" to date with system date format " + QLocale.system().dateFormat()
+      elif len(dateAndFormat) == 2:
+        y = QDate.fromString(dateAndFormat[0],  dateAndFormat[1])
+
+        if y.isNull():
+          msg = "Cannot convert \"" + unicode(dateAndFormat[0]) + "\" to date with format string \"" + unicode(dateAndFormat[1] + "\". ")
+      else:
+        y = QDate()
+        msg = ""
+
+      if y.isNull(): # conversion was unsuccessfull
+        selectionError = True
+        msg += "Enter the date and the date format, e.g. \"07.26.2011\" \"MM.dd.yyyy\"."
+
+    if ((comparison == 'begins with') or (comparison == 'contains')) and selectType != 10:
+      selectionError = True
+      msg = "\"" + comparison + "\" can only be used with string fields"
+
+    if selectionError:
+      raise GeoAlgorithmExecutionException("Error in selection input: " + msg)
+
     readcount = 0
     selected = []
     totalcount = layer.featureCount()
     for feature in layer.getFeatures():
-      if (comparison == 'begins with') or (comparison == 'contains') or \
-            isinstance(feature.attributes()[selectindex], basestring) or \
-            isinstance(comparisonvalue, basestring):
-        x = unicode(feature.attributes()[selectindex])
-        y = unicode(comparisonvalue)
-      else:
-        x = float(feature.attributes()[selectindex])
-        y = float(comparisonvalue)
+      aValue = feature[selectindex]
+
+      if aValue == None:
+        continue
+
+      if selectType == 2:
+        x = int(aValue)
+      elif selectType == 6:
+        x = float(aValue)
+      elif selectType == 10: # 10: string, boolean
+        x = unicode(aValue)
+      elif selectType == 14: # date
+        x = aValue # should be date
 
       match = False
       if (comparison == '=='):

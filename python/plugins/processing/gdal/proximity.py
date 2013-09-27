@@ -55,7 +55,7 @@ class proximity(GeoAlgorithm):
         return QtGui.QIcon(filepath)
 
     def defineCharacteristics(self):
-        self.name = "Proximity"
+        self.name = "Proximity (raster distance)"
         self.group = "[GDAL] Analysis"
         self.addParameter(ParameterRaster(self.INPUT, "Input layer", False))
         self.addParameter(ParameterString(self.VALUES, "Values", ""))

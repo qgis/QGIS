@@ -47,7 +47,7 @@ class polygonize(GeoAlgorithm):
         return QtGui.QIcon(filepath)
 
     def defineCharacteristics(self):
-        self.name = "Polygonize"
+        self.name = "Polygonize (raster to vector)"
         self.group = "[GDAL] Conversion"
         self.addParameter(ParameterRaster(polygonize.INPUT, "Input layer", False))
         self.addParameter(ParameterString(polygonize.FIELD, "Output field name", "DN"))

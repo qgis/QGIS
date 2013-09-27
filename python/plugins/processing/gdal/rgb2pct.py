@@ -46,7 +46,7 @@ class rgb2pct(GeoAlgorithm):
         return QtGui.QIcon(filepath)
 
     def defineCharacteristics(self):
-        self.name = "rgb2pct"
+        self.name = "RGB to PCT"
         self.group = "[GDAL] Conversion"
         self.addParameter(ParameterRaster(rgb2pct.INPUT, "Input layer", False))
         self.addParameter(ParameterNumber(rgb2pct.NCOLORS, "Number of colors", 1, None, 2))
