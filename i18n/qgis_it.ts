@@ -6395,7 +6395,7 @@ Ctl (Cmd) incrementa di 15 gradi.</translation>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="222"/>
         <source>Paste Features as</source>
-        <translation type="unfinished"></translation>
+        <translation>Incolla elementi come</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="492"/>
@@ -6500,7 +6500,7 @@ Ctl (Cmd) incrementa di 15 gradi.</translation>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="699"/>
         <source>Split Parts</source>
-        <translation type="unfinished"></translation>
+        <translation>Dividi parti</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="708"/>
@@ -7055,7 +7055,7 @@ Agisce su tutti i vettori editabili attivi al momento
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2125"/>
         <source>New Vector Layer</source>
-        <translation type="unfinished">Nuovo vettore</translation>
+        <translation>Nuovo vettore</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2128"/>
@@ -13022,12 +13022,12 @@ Ignora sempre questi errori?</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="8882"/>
         <source>Exit QGIS</source>
-        <translation type="unfinished">Esci da QGIS</translation>
+        <translation>Esci da QGIS</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="8883"/>
         <source>Do you really want to quit QGIS?</source>
-        <translation type="unfinished"></translation>
+        <translation>Vuoi chiudere QGIS?</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="9152"/>
@@ -13534,7 +13534,7 @@ Secondo me si (rospus ;-)</translatorcomment>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5613"/>
         <source>Pasted</source>
-        <translation type="unfinished"></translation>
+        <translation>Incollato</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5614"/>
@@ -13544,7 +13544,7 @@ Secondo me si (rospus ;-)</translatorcomment>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5615"/>
         <source>Layer name</source>
-        <translation type="unfinished"></translation>
+        <translation>Nome layer</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5687"/>
@@ -20037,7 +20037,7 @@ Per me buona la prima (rospus)</translatorcomment>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="63"/>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="458"/>
         <source>Map %1</source>
-        <translation type="unfinished">Mappa %1</translation>
+        <translation>Mappa %1</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="92"/>
@@ -24604,17 +24604,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="379"/>
         <source>Default</source>
-        <translation type="unfinished">Predefinito</translation>
+        <translation>Predefinito</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="384"/>
         <source>On</source>
-        <translation type="unfinished"></translation>
+        <translation>Acceso</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="389"/>
         <source>Off</source>
-        <translation type="unfinished">Spento</translation>
+        <translation>Spento</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="107"/>
@@ -25473,7 +25473,7 @@ grigio = nessun dato
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="90"/>
         <source>&amp;Create new GPX layer</source>
-        <translation>&amp;Crea nuovo vettore GPX</translation>
+        <translation>Nuovo vettore &amp;GPX</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="93"/>
@@ -30410,7 +30410,7 @@ Può essere o un problema della propria connessione di rete o sul lato del serve
         <translatorcomment>non deve essere &quot;modulo&quot; (gc)
 In 1.8 è tradotto &quot;Form vista geometria&quot;. Forse è meglio &quot;Vedi modulo della geometria&quot; (skampus)
 #dubbio#</translatorcomment>
-        <translation>Form vista geometria</translation>
+        <translation>Modulo vista geometria</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="497"/>
@@ -34003,7 +34003,7 @@ non visualizzati</translation>
     <message>
         <location filename="../src/app/qgsmaptoolsplitparts.cpp" line="65"/>
         <source>Coordinate transform error</source>
-        <translation type="unfinished">Errore trasformazione coordinate</translation>
+        <translation>Errore trasformazione coordinate</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsplitparts.cpp" line="66"/>
@@ -34035,17 +34035,17 @@ non visualizzati</translation>
     <message>
         <location filename="../src/app/qgsmaptoolsplitparts.cpp" line="103"/>
         <source>The geometry is invalid. Please repair before trying to split it.</source>
-        <translation type="unfinished">La geometria non è valida. Riparala prima di tentare di dividerla.</translation>
+        <translation>La geometria non è valida. Riparala prima di tentare di dividerla.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsplitparts.cpp" line="111"/>
         <source>Split error</source>
-        <translation type="unfinished">Errore Divisione</translation>
+        <translation>Errore divisione</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsplitparts.cpp" line="112"/>
         <source>An error occured during feature splitting</source>
-        <translation type="unfinished">Si è verificato un errore durante la divisione dell&apos;elemento</translation>
+        <translation>Si è verificato un errore durante la divisione dell&apos;elemento</translation>
     </message>
 </context>
 <context>
@@ -34426,7 +34426,7 @@ http://mio.server.it/cgi-bin/mapserver.exe</translation>
     <message>
         <location filename="../src/providers/memory/qgsmemoryprovider.cpp" line="84"/>
         <source>Date</source>
-        <translation type="unfinished">Data</translation>
+        <translation>Data</translation>
     </message>
 </context>
 <context>
@@ -35615,7 +35615,7 @@ Ulteriori informazioni sull&apos;errore:
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="144"/>
         <source>geometry</source>
-        <translation>geometria</translation>
+        <translation>geom</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="159"/>
@@ -45676,7 +45676,7 @@ Clicca sul pulsante di aiuto per avere opzioni di creazione valide per questo fo
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="700"/>
         <source>No-Data Value: %1</source>
-        <translation>Valore non presente: %1</translation>
+        <translation>Valore nullo: %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="983"/>
@@ -48372,8 +48372,8 @@ enhancement</source>
         <translatorcomment>Miglioramento
 contrasto
 #dubbio#</translatorcomment>
-        <translation>Contrasto
-miglioramento</translation>
+        <translation>Miglioramento
+contrasto</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssinglebandgrayrendererwidgetbase.ui" line="36"/>
@@ -48615,7 +48615,7 @@ concordo (ght)
     <message>
         <location filename="../src/ui/qgssinglebandpseudocolorrendererwidgetbase.ui" line="192"/>
         <source>Generate new color map</source>
-        <translation>Genera nuova mappa colore</translation>
+        <translation>Genera nuova scala di colore</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssinglebandpseudocolorrendererwidgetbase.ui" line="203"/>
