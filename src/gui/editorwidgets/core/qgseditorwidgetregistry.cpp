@@ -21,11 +21,13 @@
 #include "qgsmessagelog.h"
 
 
-QgsEditorWidgetRegistry  QgsEditorWidgetRegistry::sInstance;
+QgsEditorWidgetRegistry *QgsEditorWidgetRegistry::sInstance = 0;
 
 QgsEditorWidgetRegistry* QgsEditorWidgetRegistry::instance()
 {
-  return &sInstance;
+  if( !sInstance )
+    sInstance = new QgsEditorWidgetRegistry();
+  return sInstance;
 }
 
 QgsEditorWidgetRegistry::QgsEditorWidgetRegistry()
