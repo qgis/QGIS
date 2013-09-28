@@ -88,6 +88,8 @@ QgsRendererV2AbstractMetadata* QgsRendererV2Registry::rendererMetadata( QString 
   return mRenderers.value( rendererName );
 }
 
+QgsRendererV2Metadata::~QgsRendererV2Metadata(){}
+
 QStringList QgsRendererV2Registry::renderersList()
 {
   return mRenderersOrder;
