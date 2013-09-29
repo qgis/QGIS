@@ -166,6 +166,11 @@ namespace pal
       int ejChainDeg;
       int tenure;
       double candListSize;
+      
+      /**
+       * \brief show partial labels (cut-off by the map canvas) or not
+       */
+      bool showPartial;
 
       /**
        * \brief Problem factory
@@ -352,8 +357,20 @@ namespace pal
        * @return map resolution (dot per inch)
        */
       int getDpi();
-
-
+      
+      /**
+       *\brief Set flag show partial label
+       *
+       * @param show flag value
+       */ 
+      void setShowPartial(bool show);
+      
+      /**
+       * \brief Get flag show partial label
+       *
+       * @return value of flag
+       */
+      bool getShowPartial();
 
       /**
        * \brief set # candidates to generate for points features

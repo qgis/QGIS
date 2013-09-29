@@ -106,12 +106,17 @@ class TestQgsPalLabeling(TestCase):
         cls._MapRenderer.setDestinationCrs(cls._CRS)
         # use platform's native logical output dpi for QgsMapRenderer on launch
 
-        cls._Pal = QgsPalLabeling()
-        cls._MapRenderer.setLabelingEngine(cls._Pal)
-        cls._PalEngine = cls._MapRenderer.labelingEngine()
+        cls.setDefaultEngineSettings()
         msg = ('\nCould not initialize PAL labeling engine, '
                'SKIPPING TEST SUITE')
         assert cls._PalEngine, msg
+
+    @classmethod
+    def setDefaultEngineSettings(cls):
+        """Restore default settings for pal labelling"""
+        cls._Pal = QgsPalLabeling()
+        cls._MapRenderer.setLabelingEngine(cls._Pal)
+        cls._PalEngine = cls._MapRenderer.labelingEngine()
 
     @classmethod
     def tearDownClass(cls):
@@ -294,6 +299,24 @@ class TestPALConfig(TestQgsPalLabeling):
 
         msg = '\nLayer settings read not same as settings written'
         self.assertDictEqual(lyr1dict, lyr2dict, msg)
+        
+    def test_default_partials_labels_enabled(self):
+        # Verify ShowingPartialsLabels is enabled for PAL by default
+        pal = QgsPalLabeling()
+        self.assertTrue(pal.isShowingPartialsLabels())
+        
+    def test_partials_labels_activate(self):
+        pal = QgsPalLabeling()
+         # Enable partials labels
+        pal.setShowingPartialsLabels(True)
+        self.assertTrue(pal.isShowingPartialsLabels())
+     
+    def test_partials_labels_deactivate(self):
+        pal = QgsPalLabeling()
+        # Disable partials labels
+        pal.setShowingPartialsLabels(False)
+        self.assertFalse(pal.isShowingPartialsLabels())
+        
 
 
 def runSuite(module, tests):

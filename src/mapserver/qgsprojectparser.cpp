@@ -3661,5 +3661,12 @@ void QgsProjectParser::loadLabelSettings( QgsLabelingEngineInterface* lbl )
     {
       pal->setShowingAllLabels( showAllLabelsElem.text().compare( "true", Qt::CaseInsensitive ) == 0 );
     }
+    
+    //mShowingPartialsLabels
+    QDomElement showPartialsLabelsElem = palElem.firstChildElement( "ShowingPartialsLabels" );
+    if ( !showPartialsLabelsElem.isNull() )
+    {
+      pal->setShowingPartialsLabels( showPartialsLabelsElem.text().compare( "true", Qt::CaseInsensitive ) == 0 );
+    }
   }
 }
