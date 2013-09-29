@@ -46,6 +46,7 @@ class TestCanvasPoint(TestQgsPalLabeling, TestPointBase):
     def setUp(self):
         """Run before each test."""
         self.configTest('pal_canvas', 'sp')
+        TestQgsPalLabeling.setDefaultEngineSettings()
         self.lyr = self.defaultSettings()
 
     def tearDown(self):
