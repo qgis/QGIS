@@ -26,7 +26,9 @@ __revision__ = '$Format:%H$'
 from processing.tests.TestData import table
 
 def editCommands(commands):
-    commands[-3] = commands[-3] + " -STATS " + table()
-    return commands
-
-
+	saga208 = ProcessingConfig.getSetting(SagaUtils.SAGA_208)
+	if not saga208:
+		commands[-3] = commands[-3] + " -STATS " + table()
+		return commands
+	else:
+		return commands
