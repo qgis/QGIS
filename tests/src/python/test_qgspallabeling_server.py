@@ -151,6 +151,7 @@ class TestServerPoint(TestServerBase, TestPointBase):
     def setUp(self):
         """Run before each test."""
         self.configTest('pal_server', 'sp')
+        TestQgsPalLabeling.setDefaultEngineSettings()
         self.lyr = self.defaultSettings()
         self.params = self.defaultWmsParams('point')
         self._TestImage = ''

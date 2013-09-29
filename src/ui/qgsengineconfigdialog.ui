@@ -17,7 +17,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Automated Placement Engine</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -215,7 +215,7 @@
      <property name="verticalSpacing">
       <number>6</number>
      </property>
-     <item row="1" column="0">
+     <item row="2" column="0">
       <spacer name="horizontalSpacer_3">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
@@ -231,7 +231,7 @@
        </property>
       </spacer>
      </item>
-     <item row="0" column="0" colspan="3">
+     <item row="1" column="0" colspan="3">
       <widget class="QCheckBox" name="chkShowAllLabels">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
@@ -244,7 +244,7 @@
        </property>
       </widget>
      </item>
-     <item row="4" column="0" colspan="3">
+     <item row="5" column="0" colspan="3">
       <widget class="QCheckBox" name="mSaveWithProjectChkBox">
        <property name="layoutDirection">
         <enum>Qt::LeftToRight</enum>
@@ -257,14 +257,14 @@
        </property>
       </widget>
      </item>
-     <item row="2" column="0" colspan="3">
+     <item row="3" column="0" colspan="3">
       <widget class="QCheckBox" name="chkShowCandidates">
        <property name="text">
         <string>Show candidates (for debugging)</string>
        </property>
       </widget>
      </item>
-     <item row="1" column="1">
+     <item row="2" column="1">
       <widget class="QLabel" name="label_6">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
@@ -277,7 +277,7 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="2">
+     <item row="2" column="2">
       <spacer name="horizontalSpacer_4">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
@@ -290,10 +290,17 @@
        </property>
       </spacer>
      </item>
-     <item row="3" column="0" colspan="3">
+     <item row="4" column="0" colspan="3">
       <widget class="QCheckBox" name="mShadowDebugRectChkBox">
        <property name="text">
         <string>Show shadow rectangles (for debugging)</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0" colspan="3">
+      <widget class="QCheckBox" name="chkShowPartialsLabels">
+       <property name="text">
+        <string>Show partials labels</string>
        </property>
       </widget>
      </item>
