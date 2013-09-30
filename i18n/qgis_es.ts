@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE TS>
 <TS version="2.0" language="es_ES" sourcelanguage="en">
 <context>
@@ -8879,6 +8879,10 @@ use el objeto qgis.utils.iface (instancia de la clase QgisInterface).
     <message>
         <source>feet</source>
         <translation>pies</translation>
+    </message>
+     <message>
+        <source>nautical miles</source>
+        <translation>Millas naúticas</translation>
     </message>
     <message>
         <source>degrees</source>

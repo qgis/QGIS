@@ -2500,6 +2500,13 @@
                     </property>
                    </widget>
                   </item>
+		    <item row="5" column="3">
+                   <widget class="QRadioButton" name="radNautical">
+                    <property name="text">
+                     <string>Nautical Miles</string>
+                    </property>
+                   </widget>
+                  </item>
                   <item row="6" column="0">
                    <widget class="QLabel" name="mAngleUnitsLabel">
                     <property name="text">
