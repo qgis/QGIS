@@ -224,7 +224,7 @@ void QgsLegendLayer::rasterLayerSymbology( QgsRasterLayer* layer )
 #if QT_VERSION >= 0x40700
       if ( rasterItemList.size() == 0) itemList.reserve( 1 );
 #endif
-      itemList.append( qMakePair( QString(""), legendGraphic ) );
+      itemList.append( qMakePair( QString(""), QPixmap::fromImage(legendGraphic) ) );
     }
   }
 
