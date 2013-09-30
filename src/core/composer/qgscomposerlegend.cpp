@@ -54,6 +54,8 @@ QgsComposerLegend::QgsComposerLegend( QgsComposition* composition )
 
   mSymbolWidth = 7;
   mSymbolHeight = 4;
+  mWmsLegendWidth = 50;
+  mWmsLegendHeight = 25;
   mWrapChar = "";
   mlineSpacing = 1.5;
   adjustBoxSize();
@@ -353,45 +355,25 @@ QgsComposerLegend::Nucleon QgsComposerLegend::drawSymbolItem( QgsComposerLegendI
     QIcon symbolIcon = symbolItem->icon();
     if ( !symbolIcon.isNull() && symbolItem->text().isEmpty() )
     {
-//       // get LegendGraphic from item data Qt::UserRole
-//       QVariant container = symbolItem->data();
-//       if ( !container.isNull() && container.canConvert<QPixmap>() ) {
-// //         QPixmap pixmap = container.value<QPixmap>();
-//         QPixmap pixmap = container.value<QPixmap>();
-//         if ( !pixmap.isNull() )
-//         {
-//           if (painter) painter->drawPixmap( point.x(), point.y() + ( itemHeight - mSymbolHeight ) / 2, pixmap);
-// 
-//           symbolSize.rwidth() = pixmap.width();
-//           symbolSize.rheight() = pixmap.height();
-//         }
-//       }
-
       // find max size
       QList<QSize> sizes = symbolIcon.availableSizes();
       double maxWidth = 0;
       double maxHeight = 0;
       foreach ( QSize size, sizes )
       {
-        QgsDebugMsg(QString("a size width: %1 - Max height: %2").arg(size.width()).arg(size.height()));
         if ( maxWidth < size.width() ) maxWidth = size.width();
         if ( maxHeight < size.height() ) maxHeight = size.height();
       }
       QSize maxSize(maxWidth, maxHeight);
-      QgsDebugMsg(QString("Max width: %1 - Max height: %2").arg(mSymbolWidth).arg(mSymbolHeight));
 
-      // get pixmap
+      // get and print pixmap
       QPixmap pixmap = symbolIcon.pixmap(maxWidth, maxHeight);
-      pixmap = pixmap.scaled( maxWidth/2, maxHeight/2, Qt::KeepAspectRatioByExpanding );
-
-      // scale Icon
       if ( painter )
       {
-        symbolIcon.paint( painter, point.x(), point.y() + ( itemHeight - mSymbolHeight ) / 2, maxWidth, maxHeight );
-//         painter->drawPixmap( point.x(), point.y() + ( itemHeight - mSymbolHeight ) / 2, pixmap);
+        painter->drawPixmap( QRectF( point.x(), point.y(), mWmsLegendWidth, mWmsLegendHeight ), pixmap, QRectF( 0, 0, maxWidth, maxHeight ) );
       }
-      symbolSize.rwidth() = maxWidth;
-      symbolSize.rheight() = maxHeight;
+      symbolSize.rwidth() = mWmsLegendWidth;
+      symbolSize.rheight() = mWmsLegendHeight;
     }
     else
     {
@@ -604,6 +586,8 @@ bool QgsComposerLegend::writeXML( QDomElement& elem, QDomDocument & doc ) const
 
   composerLegendElem.setAttribute( "symbolWidth", QString::number( mSymbolWidth ) );
   composerLegendElem.setAttribute( "symbolHeight", QString::number( mSymbolHeight ) );
+  composerLegendElem.setAttribute( "wmsLegendWidth", QString::number( mWmsLegendWidth ) );
+  composerLegendElem.setAttribute( "wmsLegendHeight", QString::number( mWmsLegendHeight ) );
   composerLegendElem.setAttribute( "wrapChar", mWrapChar );
   composerLegendElem.setAttribute( "fontColor", mFontColor.name() );
 
@@ -671,6 +655,8 @@ bool QgsComposerLegend::readXML( const QDomElement& itemElem, const QDomDocument
 
   mSymbolWidth = itemElem.attribute( "symbolWidth", "7.0" ).toDouble();
   mSymbolHeight = itemElem.attribute( "symbolHeight", "14.0" ).toDouble();
+  mWmsLegendWidth = itemElem.attribute( "wmsLegendWidth", "50" ).toDouble();
+  mWmsLegendHeight = itemElem.attribute( "wmsLegendHeight", "25" ).toDouble();
 
   mWrapChar = itemElem.attribute( "wrapChar" );
 
