@@ -217,7 +217,6 @@ void QgsLegendLayer::rasterLayerSymbology( QgsRasterLayer* layer )
     double currentScale = legend()->canvas()->scale();
     
     QPixmap legendGraphic = layer->dataProvider()->getLegendGraphic(currentScale);
-    //legendGraphic = legendGraphic.scaled(300,300, Qt::KeepAspectRatioByExpanding);
     if ( !legendGraphic.isNull() )
     {
       QgsDebugMsg( QString( "downloaded legend with dimension Width:" )+QString::number(legendGraphic.width())+QString(" and Height:")+QString::number(legendGraphic.height()) );
