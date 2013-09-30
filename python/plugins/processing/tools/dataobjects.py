@@ -241,7 +241,7 @@ def exportVectorLayer(layer):
     if idx != -1:
         filename = filename[:idx]
 
-    filename = str(layer.name())
+    filename = unicode(layer.name())
     validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:"
     filename = ''.join(c for c in filename if c in validChars)
     if len(filename) == 0:
