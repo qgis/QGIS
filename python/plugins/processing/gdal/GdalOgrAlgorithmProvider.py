@@ -51,6 +51,7 @@ from processing.gdal.proximity import proximity
 from processing.gdal.sieve import sieve
 from processing.gdal.fillnodata import fillnodata
 from processing.gdal.extractprojection import ExtractProjection
+from processing.gdal.gdal2xyz import gdal2xyz
 
 from processing.gdal.ogr2ogr import Ogr2Ogr
 from processing.gdal.ogrinfo import OgrInfo
@@ -101,7 +102,7 @@ class GdalOgrAlgorithmProvider(AlgorithmProvider):
                               rgb2pct(), pct2rgb(), merge(), polygonize(),
                               gdaladdo(), ClipByExtent(), ClipByMask(),
                               contour(), rasterize(), proximity(), sieve(),
-                              fillnodata(), ExtractProjection(),
+                              fillnodata(), ExtractProjection(), gdal2xyz(),
                               OgrInfo(), Ogr2Ogr(), OgrSql()]
 
         #And then we add those that are created as python scripts

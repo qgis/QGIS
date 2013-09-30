@@ -646,4 +646,6 @@ void QgsAttributeTableModel::prefetchColumnData( int column )
 void QgsAttributeTableModel::setRequest( const QgsFeatureRequest& request )
 {
   mFeatureRequest = request;
+  if( layer() && !layer()->hasGeometryType() )
+    mFeatureRequest.setFlags( mFeatureRequest.flags() | QgsFeatureRequest::NoGeometry );
 }
