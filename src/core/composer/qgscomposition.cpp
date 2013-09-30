@@ -1625,6 +1625,8 @@ void QgsComposition::setSnapGridOffsetY( double offset )
 void QgsComposition::setGridPen( const QPen& p )
 {
   mGridPen = p;
+  //make sure grid is drawn using a zero-width cosmetic pen
+  mGridPen.setWidthF( 0 );
   updatePaperItems();
   saveSettings();
 }
@@ -1649,16 +1651,14 @@ void QgsComposition::loadSettings()
 
   QString gridStyleString;
   int red, green, blue;
-  double penWidth;
 
   gridStyleString = s.value( "/qgis/composerGridStyle", "Dots" ).toString();
-  penWidth = s.value( "/qgis/composerGridWidth", 0.5 ).toDouble();
   red = s.value( "/qgis/composerGridRed", 0 ).toInt();
   green = s.value( "/qgis/composerGridGreen", 0 ).toInt();
   blue = s.value( "/qgis/composerGridBlue", 0 ).toInt();
 
   mGridPen.setColor( QColor( red, green, blue ) );
-  mGridPen.setWidthF( penWidth );
+  mGridPen.setWidthF( 0 );
 
   if ( gridStyleString == "Dots" )
   {
@@ -1680,7 +1680,6 @@ void QgsComposition::saveSettings()
 {
   //store grid appearance settings
   QSettings s;
-  s.setValue( "/qgis/composerGridWidth", mGridPen.widthF() );
   s.setValue( "/qgis/composerGridRed", mGridPen.color().red() );
   s.setValue( "/qgis/composerGridGreen", mGridPen.color().green() );
   s.setValue( "/qgis/composerGridBlue", mGridPen.color().blue() );
