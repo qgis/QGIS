@@ -4663,6 +4663,24 @@ QImage QgsWmsProvider::getLegendGraphic( double scale, bool forceRefresh )
     setQueryItem( url, "SCALE", QString::number( scale, 'f') );
     setQueryItem( url, "FORMAT", mImageMimeType );
 
+    // add config parameter related to resolution
+    QSettings s;
+    int defaultLegendGraphicResolution = s.value( "/qgis/defaultLegendGraphicResolution", 0 ).toInt();
+    QgsDebugMsg( QString( "defaultLegendGraphicResolution: %1" ).arg( defaultLegendGraphicResolution ) );
+    if ( defaultLegendGraphicResolution ) {
+      if (url.queryItemValue("map_resolution") != "")
+      {
+        setQueryItem( url, "map_resolution", QString::number(defaultLegendGraphicResolution) );
+      }
+      else if (url.queryItemValue("dpi") != "")
+      {
+        setQueryItem( url, "dpi", QString::number(defaultLegendGraphicResolution) );
+      }
+      else{
+        QgsLogger::warning(tr("getLegendGraphic: Can not determine resolution uri parameter [map_resolution | dpi]. No resolution parameter will be used"));
+      }
+    }
+
     mError = "";
 
     QNetworkRequest request( url );
