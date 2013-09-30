@@ -228,6 +228,7 @@ int QgsLegendModel::addRasterLayerItems( QStandardItem* layerItem, QgsMapLayer* 
       QgsDebugMsg( QString( "downloaded legend with dimension Width:" )+QString::number(legendGraphic.width())+QString(" and Height:")+QString::number(legendGraphic.height()) );
       if ( mHasTopLevelWindow )
       {
+        //legendGraphic = legendGraphic.scaled(legendGraphic.width()*3, legendGraphic.height()*3, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation);
         currentSymbolItem->setIcon( QIcon( legendGraphic ) );
       }
     }
