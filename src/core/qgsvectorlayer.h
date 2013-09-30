@@ -1572,17 +1572,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
   private:                       // Private attributes
 
-    /** Update threshold for drawing features as they are read. A value of zero indicates
-     *  that no features will be drawn until all have been read
-     */
-    int mUpdateThreshold;
-
-    /** Enables backbuffering for the map window. This improves graphics performance,
-     *  but the possibility to cancel rendering and incremental feature drawing will be lost.
-     *
-     */
-    bool mEnableBackbuffer;
-
     /** Pointer to data provider derived from the abastract base class QgsDataProvider */
     QgsVectorDataProvider *mDataProvider;
 

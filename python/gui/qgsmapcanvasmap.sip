@@ -33,8 +33,6 @@ class QgsMapCanvasMap : QGraphicsRectItem
 
     void enableAntiAliasing( bool flag );
 
-    void useImageToRender( bool flag );
-
     //! renders map using QgsMapRenderer to mPixmap
     void render();
 

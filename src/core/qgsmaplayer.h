@@ -360,17 +360,11 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /** Return pointer to layer's undo stack */
     QUndoStack* undoStack();
 
-    /** Get the QImage used for caching render operations
-     * @note This method was added in QGIS 1.4 **/
-    QImage *cacheImage() { return mpCacheImage; }
-    /** Set the QImage used for caching render operations
-     * @note This method was added in QGIS 1.4 **/
-    void setCacheImage( QImage * thepImage );
-
-    /**
-     * @brief Is called when the cache image is being deleted. Overwrite and use to clean up.
-     * @note added in 2.0
-     */
+    /** \note Deprecated from 2.1 - returns NULL */
+    QImage *cacheImage() { return 0; }
+    /** \note Deprecated from 2.1 - does nothing */
+    void setCacheImage( QImage * ) {}
+    /** @note Deprecated from 2.1 - does nothing */
     virtual void onCacheImageDelete() {}
 
   public slots:
@@ -421,8 +415,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     void repaintRequested();
 
-    /**The layer emits this signal when a screen update is requested.
-     This signal should be connected with the slot QgsMapCanvas::updateMap()*/
+    //! \note Deprecated in 2.1 and not emitted anymore
     void screenUpdateRequested();
 
     /** This is used to send a request that any mapcanvas using this layer update its extents */
@@ -543,10 +536,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
     QUndoStack mUndoStack;
 
     QMap<QString, QVariant> mCustomProperties;
-
-    /**QImage for caching of rendering operations
-     * @note This property was added in QGIS 1.4 **/
-    QImage * mpCacheImage;
 
 };
 

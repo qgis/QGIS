@@ -3,6 +3,9 @@
 
 SET(QGIS_CORE_SRCS
 
+  qgsmaprendererv2.cpp
+  qgsmaprendererjob.cpp
+
   gps/qgsgpsconnection.cpp
   gps/qgsgpsconnectionregistry.cpp
   gps/qgsnmeaconnection.cpp
@@ -293,6 +296,10 @@ ADD_FLEX_FILES(QGIS_CORE_SRCS qgsexpressionlexer.ll)
 ADD_BISON_FILES(QGIS_CORE_SRCS qgsexpressionparser.yy)
 
 SET(QGIS_CORE_MOC_HDRS
+
+  qgsmaprendererv2.h
+  qgsmaprendererjob.h
+
   qgsapplication.h
   qgsbrowsermodel.h
   qgscontexthelp.h

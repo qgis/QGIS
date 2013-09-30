@@ -18,56 +18,68 @@
 
 #include <QGraphicsRectItem>
 #include <QPixmap>
+#include <QTimer>
 
 #include <qgis.h>
+#include <qgsmaptopixel.h>
 
 class QgsMapRenderer;
+class QgsMapRendererSettings;
+class QgsMapRendererV2;
 class QgsMapCanvas;
 
 /** \ingroup gui
  * A rectangular graphics item representing the map on the canvas.
  */
-class GUI_EXPORT QgsMapCanvasMap : public QGraphicsRectItem
+class GUI_EXPORT QgsMapCanvasMap : public QObject, public QGraphicsRectItem
 {
+  Q_OBJECT
   public:
 
     //! constructor
     QgsMapCanvasMap( QgsMapCanvas* canvas );
+
+    ~QgsMapCanvasMap();
+
+    void refresh();
 
     //! resize canvas item and pixmap
     void resize( QSize size );
 
     void enableAntiAliasing( bool flag ) { mAntiAliasing = flag; }
 
-    void useImageToRender( bool flag ) { mUseQImageToRender = flag; }
-
-    //! renders map using QgsMapRenderer to mPixmap
-    void render();
+    //! @deprecated in 2.1 - does nothing. Kept for API compatibility
+    void render() {}
 
     void setBackgroundColor( const QColor& color ) { mBgColor = color; }
 
     void setPanningOffset( const QPoint& point );
 
+    //! @deprecated in 2.1
     QPaintDevice& paintDevice();
 
     void paint( QPainter* p, const QStyleOptionGraphicsItem*, QWidget* );
 
     QRectF boundingRect() const;
 
-    //! Update contents - can be called while drawing to show the status.
-    //! Added in version 1.2
-    void updateContents();
+    //! @deprecated in 2.1 - does nothing. Kept for API compatibility
+    void updateContents() {}
+
+    const QgsMapRendererSettings& settings() const;
+
+    QgsMapToPixel* coordinateTransform(); // TODO: rename!
+
+public slots:
+    void finish();
+    void onMapUpdateTimeout();
 
   private:
 
     //! indicates whether antialiasing will be used for rendering
     bool mAntiAliasing;
 
-    //! Whether to use a QPixmap or a QImage for the rendering
-    bool mUseQImageToRender;
-
-    QPixmap mPixmap;
     QImage mImage;
+    QImage mLastImage;
 
     //QgsMapRenderer* mRender;
     QgsMapCanvas* mCanvas;
@@ -75,6 +87,16 @@ class GUI_EXPORT QgsMapCanvasMap : public QGraphicsRectItem
     QColor mBgColor;
 
     QPoint mOffset;
+
+    bool mDirty; //!< whether a new rendering job should be started upon next paint() call
+
+    QgsMapRendererV2* mRend;
+
+    QPainter* mPainter;
+
+    QTimer mTimer;
+
+    QgsMapToPixel mMapToPixel;
 };
 
 #endif

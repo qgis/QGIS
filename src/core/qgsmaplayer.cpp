@@ -73,16 +73,11 @@ QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
   mMinScale = 0;
   mMaxScale = 100000000;
   mScaleBasedVisibility = false;
-  mpCacheImage = 0;
 }
 
 QgsMapLayer::~QgsMapLayer()
 {
   delete mCRS;
-  if ( mpCacheImage )
-  {
-    delete mpCacheImage;
-  }
 }
 
 QgsMapLayer::LayerType QgsMapLayer::type() const
@@ -1332,20 +1327,6 @@ void QgsMapLayer::writeCustomProperties( QDomNode & layerNode, QDomDocument & do
   }
 
   layerNode.appendChild( propsElement );
-}
-
-void QgsMapLayer::setCacheImage( QImage * thepImage )
-{
-  QgsDebugMsg( "cache Image set!" );
-  if ( mpCacheImage == thepImage )
-    return;
-
-  if ( mpCacheImage )
-  {
-    onCacheImageDelete();
-    delete mpCacheImage;
-  }
-  mpCacheImage = thepImage;
 }
 
 bool QgsMapLayer::isEditable() const

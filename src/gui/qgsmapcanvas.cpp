@@ -81,8 +81,8 @@ class QgsMapCanvas::CanvasProperties
 QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
     : QGraphicsView( parent )
     , mCanvasProperties( new CanvasProperties )
-    , mNewSize( QSize() )
-    , mPainting( false )
+    //, mNewSize( QSize() )
+    //, mPainting( false )
     , mAntiAliasing( false )
 {
   setObjectName( name );
@@ -96,7 +96,6 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
   mMapTool = NULL;
   mLastNonZoomMapTool = NULL;
 
-  mBackbufferEnabled = true;
   mDrawing = false;
   mFrozen = false;
   mDirty = true;
@@ -178,8 +177,8 @@ void QgsMapCanvas::enableAntiAliasing( bool theFlag )
 
 void QgsMapCanvas::useImageToRender( bool theFlag )
 {
-  mMap->useImageToRender( theFlag );
-  refresh(); // redraw the map on change - prevents black map view
+  //mMap->useImageToRender( theFlag );
+  //refresh(); // redraw the map on change - prevents black map view
 }
 
 QgsMapCanvasMap* QgsMapCanvas::map()
@@ -187,10 +186,10 @@ QgsMapCanvasMap* QgsMapCanvas::map()
   return mMap;
 }
 
-QgsMapRenderer* QgsMapCanvas::mapRenderer()
+/*QgsMapRenderer* QgsMapCanvas::mapRenderer()
 {
   return mMapRenderer;
-}
+}*/
 
 
 QgsMapLayer* QgsMapCanvas::layer( int index )
@@ -235,7 +234,7 @@ bool QgsMapCanvas::isDrawing()
 // device size
 const QgsMapToPixel * QgsMapCanvas::getCoordinateTransform()
 {
-  return mMapRenderer->coordinateTransform();
+  return mMap->coordinateTransform();
 }
 
 void QgsMapCanvas::setLayerSet( QList<QgsMapCanvasLayer> &layers )
@@ -284,7 +283,6 @@ void QgsMapCanvas::setLayerSet( QList<QgsMapCanvasLayer> &layers )
       // Ticket #811 - racicot
       QgsMapLayer *currentLayer = layer( i );
       disconnect( currentLayer, SIGNAL( repaintRequested() ), this, SLOT( refresh() ) );
-      disconnect( currentLayer, SIGNAL( screenUpdateRequested() ), this, SLOT( updateMap() ) );
       QgsVectorLayer *isVectLyr = qobject_cast<QgsVectorLayer *>( currentLayer );
       if ( isVectLyr )
       {
@@ -300,7 +298,6 @@ void QgsMapCanvas::setLayerSet( QList<QgsMapCanvasLayer> &layers )
       // Ticket #811 - racicot
       QgsMapLayer *currentLayer = layer( i );
       connect( currentLayer, SIGNAL( repaintRequested() ), this, SLOT( refresh() ) );
-      connect( currentLayer, SIGNAL( screenUpdateRequested() ), this, SLOT( updateMap() ) );
       QgsVectorLayer *isVectLyr = qobject_cast<QgsVectorLayer *>( currentLayer );
       if ( isVectLyr )
       {
@@ -353,6 +350,11 @@ void QgsMapCanvas::enableOverviewMode( QgsMapOverviewCanvas* overview )
   }
 }
 
+const QgsMapRendererSettings &QgsMapCanvas::mapRendererSettings() const
+{
+  return mMap->settings();
+}
+
 
 void QgsMapCanvas::updateOverview()
 {
@@ -372,6 +374,9 @@ QgsMapLayer* QgsMapCanvas::currentLayer()
 
 void QgsMapCanvas::refresh()
 {
+  mMap->refresh();
+
+  /*
   // we can't draw again if already drawing...
   if ( mDrawing )
     return;
@@ -383,32 +388,6 @@ void QgsMapCanvas::refresh()
   {
     t.start();
   }
-
-#ifdef Q_WS_X11
-  bool enableBackbufferSetting = settings.value( "/Map/enableBackbuffer", 1 ).toBool();
-#endif
-
-#ifdef Q_WS_X11
-#ifndef ANDROID
-  // disable the update that leads to the resize crash on X11 systems
-  if ( viewport() )
-  {
-    if ( enableBackbufferSetting != mBackbufferEnabled )
-    {
-      qDebug() << "Enable back buffering: " << enableBackbufferSetting;
-      if ( enableBackbufferSetting )
-      {
-        viewport()->setAttribute( Qt::WA_PaintOnScreen, false );
-      }
-      else
-      {
-        viewport()->setAttribute( Qt::WA_PaintOnScreen, true );
-      }
-      mBackbufferEnabled = enableBackbufferSetting;
-    }
-  }
-#endif // ANDROID
-#endif // Q_WS_X11
 
   mDrawing = true;
 
@@ -454,15 +433,12 @@ void QgsMapCanvas::refresh()
     }
     QgsMessageLog::logMessage( logMsg, tr( "Rendering" ) );
   }
+  */
 
 } // refresh
 
 void QgsMapCanvas::updateMap()
 {
-  if ( mMap )
-  {
-    mMap->updateContents();
-  }
 }
 
 //the format defaults to "PNG" if not specified
@@ -484,6 +460,7 @@ void QgsMapCanvas::saveAsImage( QString theFileName, QPixmap * theQPixmap, QStri
   }
   else //use the map view
   {
+    // TODO[MD]: fix
     QPixmap *pixmap = dynamic_cast<QPixmap *>( &mMap->paintDevice() );
     if ( !pixmap )
       return;
@@ -1022,13 +999,28 @@ void QgsMapCanvas::mouseReleaseEvent( QMouseEvent * e )
 
 void QgsMapCanvas::resizeEvent( QResizeEvent * e )
 {
-  mNewSize = e->size();
+  QGraphicsView::resizeEvent(e);
+
+  QSize lastSize = size();
+
+  //set map size before scene size helps keep scene indexes updated properly
+  // this was the cause of rubberband artifacts
+  mMap->resize( lastSize );
+  mScene->setSceneRect( QRectF( 0, 0, lastSize.width(), lastSize.height() ) );
+
+  // notify canvas items of change
+  updateCanvasItemPositions();
+
+  updateScale();
+
+  refresh();
+
+  emit extentsChanged();
 }
 
 void QgsMapCanvas::paintEvent( QPaintEvent *e )
 {
-  if ( mNewSize.isValid() )
-  {
+  /*
     if ( mPainting || mDrawing )
     {
       //cancel current render progress
@@ -1042,31 +1034,7 @@ void QgsMapCanvas::paintEvent( QPaintEvent *e )
       }
       return;
     }
-
-    mPainting = true;
-
-    while ( mNewSize.isValid() )
-    {
-      QSize lastSize = mNewSize;
-      mNewSize = QSize();
-
-      //set map size before scene size helps keep scene indexes updated properly
-      // this was the cause of rubberband artifacts
-      mMap->resize( lastSize );
-      mScene->setSceneRect( QRectF( 0, 0, lastSize.width(), lastSize.height() ) );
-
-      // notify canvas items of change
-      updateCanvasItemPositions();
-
-      updateScale();
-
-      refresh();
-
-      emit extentsChanged();
-    }
-
-    mPainting = false;
-  }
+  */
 
   QGraphicsView::paintEvent( e );
 } // paintEvent
@@ -1401,11 +1369,18 @@ void QgsMapCanvas::panActionEnd( QPoint releasePoint )
   QgsPoint start = getCoordinateTransform()->toMapCoordinates( mCanvasProperties->rubberStartPoint );
   QgsPoint end = getCoordinateTransform()->toMapCoordinates( releasePoint );
 
+  qDebug("start %f,%f", start.x(), start.y());
+  qDebug("end %f,%f", end.x(), end.y());
+
   double dx = qAbs( end.x() - start.x() );
   double dy = qAbs( end.y() - start.y() );
 
+
   // modify the extent
   QgsRectangle r = mMapRenderer->extent();
+
+  qDebug(" -------------XXX diff: %f,%f", dx, dy);
+  qDebug(" ------------oldR: %f,%f", r.xMinimum(), r.yMinimum());
 
   if ( end.x() < start.x() )
   {
@@ -1432,6 +1407,10 @@ void QgsMapCanvas::panActionEnd( QPoint releasePoint )
   }
 
   setExtent( r );
+
+  r = mMapRenderer->extent();
+  qDebug(" ------------newR: %f,%f", r.xMinimum(), r.yMinimum());
+
   refresh();
 }
 

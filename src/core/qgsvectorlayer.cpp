@@ -115,7 +115,6 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
                                 QString providerKey,
                                 bool loadDefaultStyleFlag )
     : QgsMapLayer( VectorLayer, baseName, vectorLayerPath )
-    , mUpdateThreshold( 0 )     // XXX better default value?
     , mDataProvider( NULL )
     , mProviderKey( providerKey )
     , mReadOnly( false )
@@ -379,11 +378,6 @@ void QgsVectorLayer::drawLabels( QgsRenderContext& rendererContext )
     }
 
     QgsDebugMsg( QString( "Total features processed %1" ).arg( featureCount ) );
-
-    // XXX Something in our draw event is triggering an additional draw event when resizing [TE 01/26/06]
-    // XXX Calling this will begin processing the next draw event causing image havoc and recursion crashes.
-    //qApp->processEvents();
-
   }
 }
 
@@ -399,10 +393,6 @@ void QgsVectorLayer::drawRendererV2( QgsFeatureIterator &fit, QgsRenderContext& 
   QSettings settings;
   bool vertexMarkerOnlyForSelection = settings.value( "/qgis/digitizing/marker_only_for_selected", false ).toBool();
 
-#ifndef Q_WS_MAC
-  int featureCount = 0;
-#endif //Q_WS_MAC
-
   QgsFeature fet;
   while ( fit.nextFeature( fet ) )
   {
@@ -411,29 +401,9 @@ void QgsVectorLayer::drawRendererV2( QgsFeatureIterator &fit, QgsRenderContext& 
       if ( !fet.geometry() )
         continue; // skip features without geometry
 
-#ifndef Q_WS_MAC //MH: disable this on Mac for now to avoid problems with resizing
-#ifdef Q_WS_X11
-      if ( !mEnableBackbuffer ) // do not handle events, as we're already inside a paint event
-      {
-#endif // Q_WS_X11
-        if ( mUpdateThreshold > 0 && 0 == featureCount % mUpdateThreshold )
-        {
-          emit screenUpdateRequested();
-          // emit drawingProgress( featureCount, totalFeatures );
-          qApp->processEvents();
-        }
-        else if ( featureCount % 1000 == 0 )
-        {
-          // emit drawingProgress( featureCount, totalFeatures );
-          qApp->processEvents();
-        }
-#ifdef Q_WS_X11
-      }
-#endif // Q_WS_X11
-#endif // Q_WS_MAC
-
       if ( rendererContext.renderingStopped() )
       {
+        qDebug("breaking!");
         break;
       }
 
@@ -468,18 +438,11 @@ void QgsVectorLayer::drawRendererV2( QgsFeatureIterator &fit, QgsRenderContext& 
       QgsDebugMsg( QString( "Failed to transform a point while drawing a feature with ID '%1'. Ignoring this feature. %2" )
                    .arg( fet.id() ).arg( cse.what() ) );
     }
-#ifndef Q_WS_MAC
-    ++featureCount;
-#endif //Q_WS_MAC
   }
 
   stopRendererV2( rendererContext, NULL );
 
   mCurrentRendererContext = NULL;
-
-#ifndef Q_WS_MAC
-  QgsDebugMsg( QString( "Total features processed %1" ).arg( featureCount ) );
-#endif
 }
 
 void QgsVectorLayer::drawRendererV2Levels( QgsFeatureIterator &fit, QgsRenderContext& rendererContext, bool labeling )
@@ -503,9 +466,6 @@ void QgsVectorLayer::drawRendererV2Levels( QgsFeatureIterator &fit, QgsRenderCon
 
   // 1. fetch features
   QgsFeature fet;
-#ifndef Q_WS_MAC
-  int featureCount = 0;
-#endif //Q_WS_MAC
   while ( fit.nextFeature( fet ) )
   {
     if ( !fet.geometry() )
@@ -513,15 +473,11 @@ void QgsVectorLayer::drawRendererV2Levels( QgsFeatureIterator &fit, QgsRenderCon
 
     if ( rendererContext.renderingStopped() )
     {
+      qDebug("rendering stop!");
       stopRendererV2( rendererContext, selRenderer );
       return;
     }
-#ifndef Q_WS_MAC
-    if ( featureCount % 1000 == 0 )
-    {
-      qApp->processEvents();
-    }
-#endif //Q_WS_MAC
+
     QgsSymbolV2* sym = mRendererV2->symbolForFeature( fet );
     if ( !sym )
     {
@@ -551,10 +507,6 @@ void QgsVectorLayer::drawRendererV2Levels( QgsFeatureIterator &fit, QgsRenderCon
         rendererContext.labelingEngine()->registerDiagramFeature( this, fet, rendererContext );
       }
     }
-
-#ifndef Q_WS_MAC
-    ++featureCount;
-#endif //Q_WS_MAC
   }
 
   // find out the order
@@ -590,9 +542,6 @@ void QgsVectorLayer::drawRendererV2Levels( QgsFeatureIterator &fit, QgsRenderCon
       int layer = item.layer();
       QList<QgsFeature>& lst = features[item.symbol()];
       QList<QgsFeature>::iterator fit;
-#ifndef Q_WS_MAC
-      featureCount = 0;
-#endif //Q_WS_MAC
       for ( fit = lst.begin(); fit != lst.end(); ++fit )
       {
         if ( rendererContext.renderingStopped() )
@@ -600,12 +549,7 @@ void QgsVectorLayer::drawRendererV2Levels( QgsFeatureIterator &fit, QgsRenderCon
           stopRendererV2( rendererContext, selRenderer );
           return;
         }
-#ifndef Q_WS_MAC
-        if ( featureCount % 1000 == 0 )
-        {
-          qApp->processEvents();
-        }
-#endif //Q_WS_MAC
+
         bool sel = mSelectedFeatureIds.contains( fit->id() );
         // maybe vertex markers should be drawn only during the last pass...
         bool drawMarker = ( mEditBuffer && ( !vertexMarkerOnlyForSelection || sel ) );
@@ -620,9 +564,6 @@ void QgsVectorLayer::drawRendererV2Levels( QgsFeatureIterator &fit, QgsRenderCon
           QgsDebugMsg( QString( "Failed to transform a point while drawing a feature with ID '%1'. Ignoring this feature. %2" )
                        .arg( fet.id() ).arg( cse.what() ) );
         }
-#ifndef Q_WS_MAC
-        ++featureCount;
-#endif //Q_WS_MAC
       }
     }
   }
@@ -642,20 +583,6 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
 {
   if ( !hasGeometryType() )
     return true;
-
-  //set update threshold before each draw to make sure the current setting is picked up
-  QSettings settings;
-  mUpdateThreshold = settings.value( "Map/updateThreshold", 0 ).toInt();
-  // users could accidently set updateThreshold threshold to a small value
-  // and complain about bad performance -> force min 1000 here
-  if ( mUpdateThreshold > 0 && mUpdateThreshold < 1000 )
-  {
-    mUpdateThreshold = 1000;
-  }
-
-#ifdef Q_WS_X11
-  mEnableBackbuffer = settings.value( "/Map/enableBackbuffer", 1 ).toBool();
-#endif
 
   if ( !mRendererV2 )
     return false;

@@ -57,6 +57,7 @@ class QgsHighlight;
 class QgsVectorLayer;
 
 class QgsMapRenderer;
+class QgsMapRendererSettings;
 class QgsMapCanvasMap;
 class QgsMapOverviewCanvas;
 class QgsMapTool;
@@ -118,11 +119,16 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     void enableOverviewMode( QgsMapOverviewCanvas* overview );
 
+    const QgsMapRendererSettings& mapRendererSettings() const;
+
+    //! @deprecated since 2.1 - there could be more than just one "map" items
     QgsMapCanvasMap* map();
 
-    QgsMapRenderer* mapRenderer();
+    //! @deprecated since 2.1 - use mapRendererSettings() for anything related to current renderer settings
+    // temporarily disabled QgsMapRenderer* mapRenderer();
 
     //! Accessor for the canvas paint device
+    //! @deprecated since 2.1
     QPaintDevice &canvasPaintDevice();
 
     //! Get the last reported scale of the canvas
@@ -291,7 +297,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     /** The map units may have changed, so cope with that */
     void mapUnitsChanged();
 
-    /** updates pixmap on render progress */
+    //! \note Deprecated in 2.1 - does nothing - kept for API compatibility
     void updateMap();
 
     //! show whatever error is exposed by the QgsMapLayer.
@@ -437,8 +443,6 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! map overview widget - it's controlled by QgsMapCanvas
     QgsMapOverviewCanvas* mMapOverview;
 
-    //! If backbuffering is currently enabled
-    bool mBackbufferEnabled;
     //! Flag indicating a map refresh is in progress
     bool mDrawing;
 
@@ -487,10 +491,10 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     WheelAction mWheelAction;
 
     //! resize canvas size
-    QSize mNewSize;
+    //QSize mNewSize;
 
     //! currently in paint event
-    bool mPainting;
+    //bool mPainting;
 
     //! indicates whether antialiasing will be used for rendering
     bool mAntiAliasing;
