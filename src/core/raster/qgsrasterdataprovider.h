@@ -191,6 +191,8 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      *  useful for that layer that need to get legend layer remotly as WMS */
     virtual QPixmap getLegendGraphic( double scale=0, bool forceRefresh = false )
     {
+      Q_UNUSED(scale);
+      Q_UNUSED(forceRefresh);
       return QPixmap();
     }
 
