@@ -145,7 +145,10 @@ bool QgsSpatiaLiteFeatureIterator::close()
 bool QgsSpatiaLiteFeatureIterator::prepareStatement( QString whereClause )
 {
   if ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) && P->mGeometryColumn.isNull() )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Trying to fetch geometry on a layer without geometry." ), QObject::tr( "SpatiaLite" ) );
     return false;
+  }
 
   try
   {
