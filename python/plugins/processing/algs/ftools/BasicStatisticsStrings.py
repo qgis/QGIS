@@ -20,53 +20,62 @@
 __author__ = 'Victor Olaya'
 __date__ = 'September 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
 import codecs
 from PyQt4.QtCore import *
 from qgis.core import *
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.tools import dataobjects, vector
 from processing.parameters.ParameterVector import ParameterVector
 from processing.parameters.ParameterTableField import ParameterTableField
 from processing.outputs.OutputHTML import OutputHTML
 from processing.outputs.OutputNumber import OutputNumber
-from processing.tools import vector as utils
+from processing.tools import dataobjects, vector
+
 
 class BasicStatisticsStrings(GeoAlgorithm):
 
-    INPUT_LAYER = "INPUT_LAYER"
-    FIELD_NAME = "FIELD_NAME"
-    OUTPUT_HTML_FILE = "OUTPUT_HTML_FILE"
+    INPUT_LAYER = 'INPUT_LAYER'
+    FIELD_NAME = 'FIELD_NAME'
+    OUTPUT_HTML_FILE = 'OUTPUT_HTML_FILE'
 
-    MIN_LEN = "MIN_LEN"
-    MAX_LEN = "MAX_LEN"
-    MEAN_LEN = "MEAN_LEN"
-    COUNT = "COUNT"
-    EMPTY = "EMPTY"
-    FILLED = "FILLED"
-    UNIQUE = "UNIQUE"
+    MIN_LEN = 'MIN_LEN'
+    MAX_LEN = 'MAX_LEN'
+    MEAN_LEN = 'MEAN_LEN'
+    COUNT = 'COUNT'
+    EMPTY = 'EMPTY'
+    FILLED = 'FILLED'
+    UNIQUE = 'UNIQUE'
 
     def defineCharacteristics(self):
-        self.name = "Basic statistics for text fields"
-        self.group = "Vector table tools"
+        self.name = 'Basic statistics for text fields'
+        self.group = 'Vector table tools'
 
-        self.addParameter(ParameterVector(self.INPUT_LAYER, "Input vector layer", ParameterVector.VECTOR_TYPE_ANY, False))
-        self.addParameter(ParameterTableField(self.FIELD_NAME, "Field to calculate statistics on", self.INPUT_LAYER, ParameterTableField.DATA_TYPE_STRING))
+        self.addParameter(ParameterVector(self.INPUT_LAYER,
+                          'Input vector layer',
+                          ParameterVector.VECTOR_TYPE_ANY, False))
+        self.addParameter(ParameterTableField(self.FIELD_NAME,
+                          'Field to calculate statistics on',
+                          self.INPUT_LAYER,
+                          ParameterTableField.DATA_TYPE_STRING))
 
-        self.addOutput(OutputHTML(self.OUTPUT_HTML_FILE, "Statistics for text field"))
+        self.addOutput(OutputHTML(self.OUTPUT_HTML_FILE,
+                       'Statistics for text field'))
 
-        self.addOutput(OutputNumber(self.MIN_LEN, "Minimum length"))
-        self.addOutput(OutputNumber(self.MAX_LEN, "Maximum length"))
-        self.addOutput(OutputNumber(self.MEAN_LEN, "Mean length"))
-        self.addOutput(OutputNumber(self.COUNT, "Count"))
-        self.addOutput(OutputNumber(self.EMPTY, "Number of empty values"))
-        self.addOutput(OutputNumber(self.FILLED, "Number of non-empty values"))
-        self.addOutput(OutputNumber(self.UNIQUE, "Number of unique values"))
+        self.addOutput(OutputNumber(self.MIN_LEN, 'Minimum length'))
+        self.addOutput(OutputNumber(self.MAX_LEN, 'Maximum length'))
+        self.addOutput(OutputNumber(self.MEAN_LEN, 'Mean length'))
+        self.addOutput(OutputNumber(self.COUNT, 'Count'))
+        self.addOutput(OutputNumber(self.EMPTY, 'Number of empty values'))
+        self.addOutput(OutputNumber(self.FILLED, 'Number of non-empty values'))
+        self.addOutput(OutputNumber(self.UNIQUE, 'Number of unique values'))
 
     def processAlgorithm(self, progress):
-        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_LAYER))
+        layer = dataobjects.getObjectFromUri(
+                self.getParameterValue(self.INPUT_LAYER))
         fieldName = self.getParameterValue(self.FIELD_NAME)
 
         outputFile = self.getOutputValue(self.OUTPUT_HTML_FILE)
@@ -115,16 +124,16 @@ class BasicStatisticsStrings(GeoAlgorithm):
         if n > 0:
             meanValue = sumValue / n
 
-        uniqueValues = utils.getUniqueValuesCount(layer, index)
+        uniqueValues = vector.getUniqueValuesCount(layer, index)
 
         data = []
-        data.append("Minimum length: " + unicode(minValue))
-        data.append("Maximum length: " + unicode(maxValue))
-        data.append("Mean length: " + unicode(meanValue))
-        data.append("Filled: " + unicode(countFilled))
-        data.append("Empty: " + unicode(countEmpty))
-        data.append("Count: " + unicode(count))
-        data.append("Unique: " + unicode(uniqueValues))
+        data.append('Minimum length: ' + unicode(minValue))
+        data.append('Maximum length: ' + unicode(maxValue))
+        data.append('Mean length: ' + unicode(meanValue))
+        data.append('Filled: ' + unicode(countFilled))
+        data.append('Empty: ' + unicode(countEmpty))
+        data.append('Count: ' + unicode(count))
+        data.append('Unique: ' + unicode(uniqueValues))
 
         self.createHTML(outputFile, data)
 
@@ -137,10 +146,11 @@ class BasicStatisticsStrings(GeoAlgorithm):
         self.setOutputValue(self.UNIQUE, uniqueValues)
 
     def createHTML(self, outputFile, algData):
-        f = codecs.open(outputFile, "w", encoding="utf-8")
+        f = codecs.open(outputFile, 'w', encoding='utf-8')
         f.write('<html><head>')
-        f.write('<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /></head><body>')
+        f.write('<meta http-equiv="Content-Type" content="text/html; \
+                charset=utf-8" /></head><body>')
         for s in algData:
-            f.write("<p>" + str(s) + "</p>")
-        f.write("</body></html>")
+            f.write('<p>' + str(s) + '</p>')
+        f.write('</body></html>')
         f.close()

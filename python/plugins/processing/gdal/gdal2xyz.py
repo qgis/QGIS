@@ -20,7 +20,9 @@
 __author__ = 'Alexander Bruy'
 __date__ = 'September 2013'
 __copyright__ = '(C) 2013, Alexander Bruy'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
 import os
@@ -37,36 +39,39 @@ from processing.tools.system import *
 
 from processing.gdal.GdalUtils import GdalUtils
 
+
 class gdal2xyz(GeoAlgorithm):
 
-    INPUT = "INPUT"
-    BAND = "BAND"
-    OUTPUT = "OUTPUT"
+    INPUT = 'INPUT'
+    BAND = 'BAND'
+    OUTPUT = 'OUTPUT'
 
     #def getIcon(self):
-    #    return QIcon(os.path.dirname(__file__) + "/icons/gdal2xyz.png")
+    #   return QIcon(os.path.dirname(__file__) + "/icons/gdal2xyz.png")
 
     def defineCharacteristics(self):
-        self.name = "gdal2xyz"
-        self.group = "[GDAL] Conversion"
-        self.addParameter(ParameterRaster(self.INPUT, "Input layer", False))
-        self.addParameter(ParameterNumber(self.BAND, "Band number", 1, 9999, 1))
+        self.name = 'gdal2xyz'
+        self.group = '[GDAL] Conversion'
+        self.addParameter(ParameterRaster(self.INPUT, 'Input layer', False))
+        self.addParameter(ParameterNumber(self.BAND, 'Band number', 1, 9999,
+                          1))
 
-        self.addOutput(OutputTable(self.OUTPUT, "Output file"))
+        self.addOutput(OutputTable(self.OUTPUT, 'Output file'))
 
     def processAlgorithm(self, progress):
         arguments = []
-        arguments.append("-band")
+        arguments.append('-band')
         arguments.append(str(self.getParameterValue(self.BAND)))
 
-        arguments.append("-csv")
+        arguments.append('-csv')
         arguments.append(self.getParameterValue(self.INPUT))
         arguments.append(self.getOutputValue(self.OUTPUT))
 
         commands = []
         if isWindows():
-            commands = ["cmd.exe", "/C ", "gdal2xyz.bat", GdalUtils.escapeAndJoin(arguments)]
+            commands = ['cmd.exe', '/C ', 'gdal2xyz.bat',
+                        GdalUtils.escapeAndJoin(arguments)]
         else:
-            commands = ["gdal2xyz.py", GdalUtils.escapeAndJoin(arguments)]
+            commands = ['gdal2xyz.py', GdalUtils.escapeAndJoin(arguments)]
 
         GdalUtils.runGdal(commands, progress)

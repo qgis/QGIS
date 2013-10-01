@@ -20,27 +20,33 @@
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
-from processing.gui.ToolboxAction import ToolboxAction
 import os
-from PyQt4 import QtGui
 import subprocess
+from PyQt4 import QtGui
+from processing.gui.ToolboxAction import ToolboxAction
 from processing.lidar.fusion.FusionUtils import FusionUtils
+
 
 class OpenViewerAction(ToolboxAction):
 
     def __init__(self):
-        self.name="Open Fusion LAS viewer"
-        self.group="Visualization"
+        self.name = 'Open Fusion LAS viewer'
+        self.group = 'Visualization'
 
     def getIcon(self):
-        return QtGui.QIcon(os.path.dirname(__file__) + "/../images/tool.png")
+        return QtGui.QIcon(os.path.dirname(__file__) + '/../images/tool.png')
 
     def execute(self):
-        f = os.path.join(FusionUtils.FusionPath(), "pdq.exe")
+        f = os.path.join(FusionUtils.FusionPath(), 'pdq.exe')
         if os.path.exists(f):
             subprocess.Popen(f)
         else:
-            QtGui.QMessageBox.critical(None, "Unable to open viewer", "The current Fusion folder does not contain the viewer executable.\nPlease check the configuration in the Processing settings dialog.")
+            QtGui.QMessageBox.critical(None, 'Unable to open viewer',
+                    'The current Fusion folder does not contain the viewer \
+                    executable.\nPlease check the configuration in the \
+                    Processing settings dialog.')

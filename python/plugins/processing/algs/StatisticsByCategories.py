@@ -20,7 +20,9 @@
 __author__ = 'Victor Olaya'
 __date__ = 'September 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
 import math
@@ -32,29 +34,37 @@ from processing.tools import dataobjects, vector
 from processing.parameters.ParameterVector import ParameterVector
 from processing.parameters.ParameterTableField import ParameterTableField
 
+
 class StatisticsByCategories(GeoAlgorithm):
 
-    INPUT_LAYER = "INPUT_LAYER"
-    VALUES_FIELD_NAME = "VALUES_FIELD_NAME"
-    CATEGORIES_FIELD_NAME = "CATEGORIES_FIELD_NAME"
-    OUTPUT = "OUTPUT"
+    INPUT_LAYER = 'INPUT_LAYER'
+    VALUES_FIELD_NAME = 'VALUES_FIELD_NAME'
+    CATEGORIES_FIELD_NAME = 'CATEGORIES_FIELD_NAME'
+    OUTPUT = 'OUTPUT'
 
     def defineCharacteristics(self):
-        self.name = "Statistics by categories"
-        self.group = "Vector table tools"
+        self.name = 'Statistics by categories'
+        self.group = 'Vector table tools'
 
-        self.addParameter(ParameterVector(self.INPUT_LAYER, "Input vector layer", [ParameterVector.VECTOR_TYPE_ANY], False))
-        self.addParameter(ParameterTableField(self.VALUES_FIELD_NAME, "Field to calculate statistics on",
-                                              self.INPUT_LAYER, ParameterTableField.DATA_TYPE_NUMBER))
-        self.addParameter(ParameterTableField(self.CATEGORIES_FIELD_NAME, "Field with categories",
-                                              self.INPUT_LAYER, ParameterTableField.DATA_TYPE_ANY))
+        self.addParameter(ParameterVector(self.INPUT_LAYER,
+                          'Input vector layer',
+                          [ParameterVector.VECTOR_TYPE_ANY], False))
+        self.addParameter(ParameterTableField(self.VALUES_FIELD_NAME,
+                          'Field to calculate statistics on',
+                          self.INPUT_LAYER,
+                          ParameterTableField.DATA_TYPE_NUMBER))
+        self.addParameter(ParameterTableField(self.CATEGORIES_FIELD_NAME,
+                          'Field with categories', self.INPUT_LAYER,
+                          ParameterTableField.DATA_TYPE_ANY))
 
-        self.addOutput(OutputTable(self.OUTPUT, "Statistics"))
+        self.addOutput(OutputTable(self.OUTPUT, 'Statistics'))
 
     def processAlgorithm(self, progress):
-        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_LAYER))
+        layer = dataobjects.getObjectFromUri(
+                self.getParameterValue(self.INPUT_LAYER))
         valuesFieldName = self.getParameterValue(self.VALUES_FIELD_NAME)
-        categoriesFieldName = self.getParameterValue(self.CATEGORIES_FIELD_NAME)
+        categoriesFieldName = self.getParameterValue(
+                self.CATEGORIES_FIELD_NAME)
 
         output = self.getOutputFromName(self.OUTPUT)
         valuesField = layer.fieldNameIndex(valuesFieldName)
@@ -66,7 +76,7 @@ class StatisticsByCategories(GeoAlgorithm):
         nFeat = 0
         for feat in features:
             nFeat += 1
-            progress.setPercentage(int((100 * nFeats) / nFeat))
+            progress.setPercentage(int(100 * nFeats / nFeat))
             attrs = feat.attributes()
             try:
                 value = float(attrs[valuesField])
@@ -77,15 +87,13 @@ class StatisticsByCategories(GeoAlgorithm):
             except:
                 pass
 
-        #fields = [QgsField("category", QVariant.String), QgsField("min", QVariant.Double),
-        #          QgsField("max", QVariant.Double), QgsField("mean", QVariant.Double),
-        #          QgsField("stddev", QVariant.Double)]
-        fields = ["category", "min", "max", "mean", "stddev"]
+        fields = ['category', 'min', 'max', 'mean', 'stddev']
         writer = output.getTableWriter(fields)
-        for cat, v in values.items():
-            min, max, mean, stddev = calculateStats(v)
+        for (cat, v) in values.items():
+            (min, max, mean, stddev) = calculateStats(v)
             record = [cat, min, max, mean, stddev]
             writer.addRecord(record)
+
 
 def calculateStats(values):
     n = 0
@@ -99,8 +107,8 @@ def calculateStats(values):
         sum += v
         n = n + 1
         delta = v - mean
-        mean = mean + delta/n
-        M2 = M2 + delta*(v - mean)
+        mean = mean + delta / n
+        M2 = M2 + delta * (v - mean)
         if minvalue is None:
             minvalue = v
             maxvalue = v
@@ -109,8 +117,8 @@ def calculateStats(values):
             maxvalue = max(v, maxvalue)
 
     if n > 1:
-        variance = M2/(n - 1)
+        variance = M2 / (n - 1)
     else:
-        variance = 0;
+        variance = 0
     stddev = math.sqrt(variance)
-    return minvalue,maxvalue, mean, stddev
+    return (minvalue, maxvalue, mean, stddev)

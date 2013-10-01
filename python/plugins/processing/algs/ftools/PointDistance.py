@@ -16,55 +16,69 @@
 *                                                                         *
 ***************************************************************************
 """
+
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
 import math
 from qgis.core import *
-from processing.tools import dataobjects, vector
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.parameters.ParameterNumber import ParameterNumber
 from processing.parameters.ParameterVector import ParameterVector
 from processing.parameters.ParameterSelection import ParameterSelection
 from processing.parameters.ParameterTableField import ParameterTableField
 from processing.outputs.OutputTable import OutputTable
+from processing.tools import dataobjects, vector
 
 
 class PointDistance(GeoAlgorithm):
 
-    INPUT_LAYER = "INPUT_LAYER"
-    INPUT_FIELD = "INPUT_FIELD"
-    TARGET_LAYER = "TARGET_LAYER"
-    TARGET_FIELD = "TARGET_FIELD"
-    MATRIX_TYPE = "MATRIX_TYPE"
-    NEAREST_POINTS = "NEAREST_POINTS"
-    DISTANCE_MATRIX = "DISTANCE_MATRIX"
+    INPUT_LAYER = 'INPUT_LAYER'
+    INPUT_FIELD = 'INPUT_FIELD'
+    TARGET_LAYER = 'TARGET_LAYER'
+    TARGET_FIELD = 'TARGET_FIELD'
+    MATRIX_TYPE = 'MATRIX_TYPE'
+    NEAREST_POINTS = 'NEAREST_POINTS'
+    DISTANCE_MATRIX = 'DISTANCE_MATRIX'
 
-    MAT_TYPES = ["Linear (N*k x 3) distance matrix",
-                 "Standard (N x T) distance matrix",
-                 "Summary distance matrix (mean, std. dev., min, max)"
-                ]
+    MAT_TYPES = ['Linear (N*k x 3) distance matrix',
+                 'Standard (N x T) distance matrix',
+                 'Summary distance matrix (mean, std. dev., min, max)']
 
     def defineCharacteristics(self):
-        self.name = "Distance matrix"
-        self.group = "Vector analysis tools"
+        self.name = 'Distance matrix'
+        self.group = 'Vector analysis tools'
 
-        self.addParameter(ParameterVector(self.INPUT_LAYER, "Input point layer", [ParameterVector.VECTOR_TYPE_POINT]))
-        self.addParameter(ParameterTableField(self.INPUT_FIELD, "Input unique ID field", self.INPUT_LAYER, ParameterTableField.DATA_TYPE_ANY))
-        self.addParameter(ParameterVector(self.TARGET_LAYER, "Target point layer", ParameterVector.VECTOR_TYPE_POINT))
-        self.addParameter(ParameterTableField(self.TARGET_FIELD, "Target unique ID field", self.TARGET_LAYER, ParameterTableField.DATA_TYPE_ANY))
-        self.addParameter(ParameterSelection(self.MATRIX_TYPE, "Output matrix type", self.MAT_TYPES, 0))
-        self.addParameter(ParameterNumber(self.NEAREST_POINTS, "Use only the nearest (k) target points", 0, 9999, 0))
+        self.addParameter(ParameterVector(self.INPUT_LAYER, 'Input point layer'
+                          , [ParameterVector.VECTOR_TYPE_POINT]))
+        self.addParameter(ParameterTableField(self.INPUT_FIELD,
+                          'Input unique ID field', self.INPUT_LAYER,
+                          ParameterTableField.DATA_TYPE_ANY))
+        self.addParameter(ParameterVector(self.TARGET_LAYER,
+                          'Target point layer',
+                          ParameterVector.VECTOR_TYPE_POINT))
+        self.addParameter(ParameterTableField(self.TARGET_FIELD,
+                          'Target unique ID field', self.TARGET_LAYER,
+                          ParameterTableField.DATA_TYPE_ANY))
+        self.addParameter(ParameterSelection(self.MATRIX_TYPE,
+                          'Output matrix type', self.MAT_TYPES, 0))
+        self.addParameter(ParameterNumber(self.NEAREST_POINTS,
+                          'Use only the nearest (k) target points', 0, 9999,
+                          0))
 
-        self.addOutput(OutputTable(self.DISTANCE_MATRIX, "Distance matrix"))
+        self.addOutput(OutputTable(self.DISTANCE_MATRIX, 'Distance matrix'))
 
     def processAlgorithm(self, progress):
-        inLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_LAYER))
+        inLayer = dataobjects.getObjectFromUri(
+                self.getParameterValue(self.INPUT_LAYER))
         inField = self.getParameterValue(self.INPUT_FIELD)
-        targetLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.TARGET_LAYER))
+        targetLayer = dataobjects.getObjectFromUri(
+                self.getParameterValue(self.TARGET_LAYER))
         targetField = self.getParameterValue(self.TARGET_FIELD)
         matType = self.getParameterValue(self.MATRIX_TYPE)
         nPoints = self.getParameterValue(self.NEAREST_POINTS)
@@ -76,20 +90,27 @@ class PointDistance(GeoAlgorithm):
 
         self.writer = outputFile.getTableWriter([])
 
-        if matType == 0:   # Linear distance matrix
-            self.linearMatrix(inLayer, inField, targetLayer, targetField, matType, nPoints, progress)
-        elif matType == 1: # Standard distance matrix
-            self.regularMatrix(inLayer, inField, targetLayer, targetField, nPoints, progress)
-        elif matType == 2: # Summary distance matrix
-            self.linearMatrix(inLayer, inField, targetLayer, targetField, matType, nPoints, progress)
-
-    def linearMatrix(self, inLayer, inField, targetLayer, targetField, matType, nPoints, progress):
         if matType == 0:
-            self.writer.addRecord(["InputID", "TargetID", "Distance"])
-        else:
-            self.writer.addRecord(["InputID", "MEAN", "STDDEV", "MIN", "MAX"])
+            # Linear distance matrix
+            self.linearMatrix(inLayer, inField, targetLayer, targetField,
+                matType, nPoints, progress)
+        elif matType == 1:
+           # Standard distance matrix
+            self.regularMatrix(inLayer, inField, targetLayer, targetField,
+                nPoints, progress)
+        elif matType == 2:
+            # Summary distance matrix
+            self.linearMatrix(inLayer, inField, targetLayer, targetField,
+                matType, nPoints, progress)
 
-        index = vector.spatialindex(targetLayer);
+    def linearMatrix(self, inLayer, inField, targetLayer, targetField,
+                     matType, nPoints, progress):
+        if matType == 0:
+            self.writer.addRecord(['InputID', 'TargetID', 'Distance'])
+        else:
+            self.writer.addRecord(['InputID', 'MEAN', 'STDDEV', 'MIN', 'MAX'])
+
+        index = vector.spatialindex(targetLayer)
 
         inIdx = inLayer.fieldNameIndex(inField)
         inLayer.select([inIdx])
@@ -114,9 +135,11 @@ class PointDistance(GeoAlgorithm):
                 outFeat = targetLayer.getFeatures(request).next()
                 outID = outFeat.attributes()[outIdx]
                 outGeom = outFeat.geometry()
-                dist = distArea.measureLine(inGeom.asPoint(), outGeom.asPoint())
+                dist = distArea.measureLine(inGeom.asPoint(),
+                        outGeom.asPoint())
                 if matType == 0:
-                    self.writer.addRecord([unicode(inID), unicode(outID), unicode(dist)])
+                    self.writer.addRecord([unicode(inID), unicode(outID),
+                            unicode(dist)])
                 else:
                     distList.append(float(dist))
 
@@ -125,12 +148,15 @@ class PointDistance(GeoAlgorithm):
                 for i in distList:
                     vari += (i - mean) * (i - mean)
                 vari = math.sqrt(vari / len(distList))
-                self.writer.addRecord([unicode(inID), unicode(mean), unicode(vari), unicode(min(distList)), unicode(max(distList))])
+                self.writer.addRecord([unicode(inID), unicode(mean),
+                                      unicode(vari), unicode(min(distList)),
+                                      unicode(max(distList))])
 
             current += 1
             progress.setPercentage(int(current * total))
 
-    def regularMatrix(self, inLayer, inField, targetLayer, targetField, nPoints, progress):
+    def regularMatrix(self, inLayer, inField, targetLayer, targetField,
+                      nPoints, progress):
         index = vector.spatialindex(targetLayer)
 
         inIdx = inLayer.fieldNameIndex(inField)
@@ -152,7 +178,7 @@ class PointDistance(GeoAlgorithm):
             if first:
                 featList = index.nearestNeighbor(inGeom.asPoint(), nPoints)
                 first = False
-                data = ["ID"]
+                data = ['ID']
                 for i in featList:
                     request = QgsFeatureRequest().setFilterFid(i)
                     outFeat = targetLayer.getFeatures(request).next()
@@ -164,7 +190,8 @@ class PointDistance(GeoAlgorithm):
                 request = QgsFeatureRequest().setFilterFid(i)
                 outFeat = targetLayer.getFeatures(request).next()
                 outGeom = outFeat.geometry()
-                dist = distArea.measureLine(inGeom.asPoint(), outGeom.asPoint())
+                dist = distArea.measureLine(inGeom.asPoint(),
+                        outGeom.asPoint())
                 data.append(unicode(float(dist)))
             self.writer.addRecord(data)
 

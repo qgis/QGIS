@@ -20,7 +20,9 @@
 __author__ = 'Alexander Bruy'
 __date__ = 'August 2013'
 __copyright__ = '(C) 2013, Alexander Bruy'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
 from osgeo import gdal
@@ -33,23 +35,26 @@ from processing.outputs.OutputVector import OutputVector
 from processing.tools import dataobjects, vector
 from processing.tools.general import *
 
+
 class PointsFromPolygons(GeoAlgorithm):
 
-    INPUT_RASTER = "INPUT_RASTER"
-    RASTER_BAND = "RASTER_BAND"
-    INPUT_VECTOR = "INPUT_VECTOR"
-    OUTPUT_LAYER = "OUTPUT_LAYER"
+    INPUT_RASTER = 'INPUT_RASTER'
+    RASTER_BAND = 'RASTER_BAND'
+    INPUT_VECTOR = 'INPUT_VECTOR'
+    OUTPUT_LAYER = 'OUTPUT_LAYER'
 
     def defineCharacteristics(self):
-        self.name = "Get raster values at polygon nodes"
-        self.group = "Vector analysis tools"
+        self.name = 'Get raster values at polygon nodes'
+        self.group = 'Vector analysis tools'
 
-        self.addParameter(ParameterRaster(self.INPUT_RASTER, "Raster layer"))
-        self.addParameter(ParameterVector(self.INPUT_VECTOR, "Vector layer", [ParameterVector.VECTOR_TYPE_POLYGON]))
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, "Output layer"))
+        self.addParameter(ParameterRaster(self.INPUT_RASTER, 'Raster layer'))
+        self.addParameter(ParameterVector(self.INPUT_VECTOR, 'Vector layer',
+                          [ParameterVector.VECTOR_TYPE_POLYGON]))
+        self.addOutput(OutputVector(self.OUTPUT_LAYER, 'Output layer'))
 
     def processAlgorithm(self, progress):
-        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_VECTOR))
+        layer = dataobjects.getObjectFromUri(
+                self.getParameterValue(self.INPUT_VECTOR))
 
         rasterPath = unicode(self.getParameterValue(self.INPUT_RASTER))
 
@@ -58,11 +63,14 @@ class PointsFromPolygons(GeoAlgorithm):
         rasterDS = None
 
         fields = QgsFields()
-        fields.append(QgsField("id", QVariant.Int, "", 10, 0))
-        fields.append(QgsField("poly_id", QVariant.Int, "", 10, 0))
-        fields.append(QgsField("point_id", QVariant.Int, "", 10, 0))
+        fields.append(QgsField('id', QVariant.Int, '', 10, 0))
+        fields.append(QgsField('poly_id', QVariant.Int, '', 10, 0))
+        fields.append(QgsField('point_id', QVariant.Int, '', 10, 0))
 
-        writer = self.getOutputFromName(self.OUTPUT_LAYER).getVectorWriter(fields.toList(), QGis.WKBPoint, layer.crs())
+        writer = self.getOutputFromName(
+                self.OUTPUT_LAYER).getVectorWriter(fields.toList(),
+                                                   QGis.WKBPoint,
+                                                   layer.crs())
 
         outFeature = QgsFeature()
         outFeature.setFields(fields)
@@ -84,23 +92,23 @@ class PointsFromPolygons(GeoAlgorithm):
             yMin = bbox.yMinimum()
             yMax = bbox.yMaximum()
 
-            startRow, startColumn = mapToPixel(xMin, yMax, geoTransform)
-            endRow, endColumn = mapToPixel(xMax, yMin, geoTransform)
+            (startRow, startColumn) = mapToPixel(xMin, yMax, geoTransform)
+            (endRow, endColumn) = mapToPixel(xMax, yMin, geoTransform)
 
             for row in xrange(startRow, endRow + 1):
                 for col in xrange(startColumn, endColumn + 1):
-                    x, y = pixelToMap(row, col, geoTransform)
+                    (x, y) = pixelToMap(row, col, geoTransform)
                     point.setX(x)
                     point.setY(y)
 
                     if geom.contains(point):
                         outFeature.setGeometry(QgsGeometry.fromPoint(point))
-                        outFeature["id"] = fid
-                        outFeature["poly_id"] = polyId
-                        outFeature["point_id"] = pointId
+                        outFeature['id'] = fid
+                        outFeature['poly_id'] = polyId
+                        outFeature['point_id'] = pointId
 
                         fid += 1
-                        pointId +=1
+                        pointId += 1
 
                         writer.addFeature(outFeature)
 
@@ -111,4 +119,3 @@ class PointsFromPolygons(GeoAlgorithm):
             progress.setPercentage(int(current * total))
 
         del writer
-

@@ -20,7 +20,9 @@
 __author__ = 'Martin Isenburg'
 __date__ = 'September 2013'
 __copyright__ = '(C) 2013, Martin Isenburg'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
 import os
@@ -28,22 +30,24 @@ from processing.lidar.lastools.LAStoolsUtils import LAStoolsUtils
 from processing.lidar.lastools.LAStoolsAlgorithm import LAStoolsAlgorithm
 from processing.outputs.OutputFile import OutputFile
 
+
 class lasvalidate(LAStoolsAlgorithm):
 
-    OUTPUT = "OUTPUT"
+    OUTPUT = 'OUTPUT'
 
     def defineCharacteristics(self):
-        self.name = "lasvalidate"
-        self.group = "LAStools"
+        self.name = 'lasvalidate'
+        self.group = 'LAStools'
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
-        self.addOutput(OutputFile(lasvalidate.OUTPUT, "Output XML file"))
+        self.addOutput(OutputFile(lasvalidate.OUTPUT, 'Output XML file'))
 
     def processAlgorithm(self, progress):
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasvalidate.exe")]
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), 'bin',
+                    'lasvalidate.exe')]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputCommands(commands)
-        commands.append("-o")
+        commands.append('-o')
         commands.append(self.getOutputValue(lasvalidate.OUTPUT))
 
         LAStoolsUtils.runLAStools(commands, progress)

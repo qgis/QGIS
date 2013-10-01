@@ -20,15 +20,18 @@
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
 from processing.outputs.Output import Output
 
+
 class OutputHTML(Output):
 
-    def getFileFilter(self,alg):
-        return "HTML files(*.html)"
+    def getFileFilter(self, alg):
+        return 'HTML files(*.html)'
 
     def getDefaultFileExtension(self, alg):
-        return "html"
+        return 'html'

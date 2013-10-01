@@ -20,53 +20,63 @@
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
-from processing.core.TableWriter import TableWriter
-from processing.tools.system import *
-from processing.outputs.Output import Output
-
 from PyQt4.QtCore import *
+
+from processing.core.TableWriter import TableWriter
+from processing.outputs.Output import Output
+from processing.tools.system import *
+
 
 class OutputTable(Output):
 
     encoding = None
     compatible = None
 
-    def getFileFilter(self,alg):
+    def getFileFilter(self, alg):
         exts = ['csv']
         for i in range(len(exts)):
-            exts[i] = exts[i].upper() + " files(*." + exts[i].lower() + ")"
-        return ";;".join(exts)
+            exts[i] = exts[i].upper() + ' files(*.' + exts[i].lower() + ')'
+        return ';;'.join(exts)
 
     def getDefaultFileExtension(self, alg):
         return alg.provider.getSupportedOutputTableExtensions()[0]
 
     def getCompatibleFileName(self, alg):
-        '''Returns a filename that is compatible with the algorithm that is going to generate this output.
-        If the algorithm supports the file format of the current output value, it returns that value. If not,
-        it returns a temporary file with a supported file format, to be used to generate the output result.'''
-        ext = self.value[self.value.rfind(".") + 1:]
+        """Returns a filename that is compatible with the algorithm
+        that is going to generate this output.
+
+        If the algorithm supports the file format of the current
+        output value, it returns that value. If not, it returns a
+        temporary file with a supported file format, to be used to
+        generate the output result.
+        """
+
+        ext = self.value[self.value.rfind('.') + 1:]
         if ext in alg.provider.getSupportedOutputTableExtensions():
             return self.value
         else:
             if self.compatible is None:
-                self.compatible = getTempFilenameInTempFolder(self.name + "." + self.getDefaultFileExtension(alg))
-            return self.compatible;
+                self.compatible = getTempFilenameInTempFolder(self.name + '.'
+                        + self.getDefaultFileExtension(alg))
+            return self.compatible
 
     def getTableWriter(self, fields):
-        '''Returns a suitable writer to which records can be added as a
-        result of the algorithm. Use this to transparently handle output
-        values instead of creating your own method.
+        """Returns a suitable writer to which records can be added as a
+        result of the algorithm. Use this to transparently handle
+        output values instead of creating your own method.
 
         @param fields   a list of QgsField
 
         @return writer  instance of the table writer class
-        '''
+        """
 
         if self.encoding is None:
             settings = QSettings()
-            self.encoding = settings.value("/Processing/encoding", "System")
+            self.encoding = settings.value('/Processing/encoding', 'System')
 
         return TableWriter(self.value, self.encoding, fields)

@@ -20,53 +20,60 @@
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
 from PyQt4.QtCore import *
-
 from qgis.core import *
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.tools import dataobjects, vector
 from processing.core.ProcessingLog import ProcessingLog
 from processing.parameters.ParameterVector import ParameterVector
 from processing.parameters.ParameterNumber import ParameterNumber
 from processing.outputs.OutputVector import OutputVector
+from processing.tools import dataobjects, vector
+
 
 class SimplifyGeometries(GeoAlgorithm):
 
-    INPUT = "INPUT"
-    TOLERANCE = "TOLERANCE"
-    OUTPUT = "OUTPUT"
+    INPUT = 'INPUT'
+    TOLERANCE = 'TOLERANCE'
+    OUTPUT = 'OUTPUT'
 
-    #===========================================================================
+    # =========================================================================
     # def getIcon(self):
-    #    return QtGui.QIcon(os.path.dirname(__file__) + "/icons/simplify.png")
-    #===========================================================================
+    #    return QIcon(os.path.dirname(__file__) + "/icons/simplify.png")
+    # =========================================================================
 
     def defineCharacteristics(self):
-        self.name = "Simplify geometries"
-        self.group = "Vector geometry tools"
+        self.name = 'Simplify geometries'
+        self.group = 'Vector geometry tools'
 
-        self.addParameter(ParameterVector(self.INPUT, "Input layer", [ParameterVector.VECTOR_TYPE_POLYGON, ParameterVector.VECTOR_TYPE_LINE]))
-        self.addParameter(ParameterNumber(self.TOLERANCE, "Tolerance", 0.0, 10000000.0, 1.0))
+        self.addParameter(ParameterVector(self.INPUT, 'Input layer',
+                          [ParameterVector.VECTOR_TYPE_POLYGON,
+                          ParameterVector.VECTOR_TYPE_LINE]))
+        self.addParameter(ParameterNumber(self.TOLERANCE, 'Tolerance', 0.0,
+                          10000000.0, 1.0))
 
-        self.addOutput(OutputVector(self.OUTPUT, "Simplified layer"))
+        self.addOutput(OutputVector(self.OUTPUT, 'Simplified layer'))
 
     def processAlgorithm(self, progress):
-        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
-        tolerance =self.getParameterValue(self.TOLERANCE)
+        layer = dataobjects.getObjectFromUri(
+                self.getParameterValue(self.INPUT))
+        tolerance = self.getParameterValue(self.TOLERANCE)
 
         pointsBefore = 0
         pointsAfter = 0
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.pendingFields().toList(),
-                     layer.wkbType(), layer.crs())
+        writer = self.getOutputFromName(
+                self.OUTPUT).getVectorWriter(layer.pendingFields().toList(),
+                                             layer.wkbType(), layer.crs())
 
         current = 0
         selection = vector.features(layer)
-        total =  100.0 / float(len(selection))
+        total = 100.0 / float(len(selection))
         for f in selection:
             featGeometry = QgsGeometry(f.geometry())
             attrs = f.attributes()
@@ -82,8 +89,10 @@ class SimplifyGeometries(GeoAlgorithm):
 
         del writer
 
-        ProcessingLog.addToLog(ProcessingLog.LOG_INFO, "Simplify: Input geometries have been simplified from"
-                             + str(pointsBefore) + " to "  + str(pointsAfter) + " points.")
+        ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
+                'Simplify: Input geometries have been simplified from'
+                + str(pointsBefore) + ' to '
+                 + str(pointsAfter) + ' points.')
 
     def geomVertexCount(self, geometry):
         geomType = geometry.type()
@@ -91,21 +100,21 @@ class SimplifyGeometries(GeoAlgorithm):
         if geomType == QGis.Line:
             if geometry.isMultipart():
                 pointsList = geometry.asMultiPolyline()
-                points = sum( pointsList, [] )
+                points = sum(pointsList, [])
             else:
                 points = geometry.asPolyline()
-            return len( points )
+            return len(points)
         elif geomType == QGis.Polygon:
             if geometry.isMultipart():
                 polylinesList = geometry.asMultiPolygon()
-                polylines = sum( polylinesList, [] )
+                polylines = sum(polylinesList, [])
             else:
                 polylines = geometry.asPolygon()
 
             points = []
             for l in polylines:
-                points.extend( l )
+                points.extend(l)
 
-            return len( points )
+            return len(points)
         else:
             return None

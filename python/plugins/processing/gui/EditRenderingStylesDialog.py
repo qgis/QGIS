@@ -20,18 +20,22 @@
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PyQt4 import QtCore, QtGui
-from processing.outputs.OutputRaster import OutputRaster
-from processing.outputs.OutputVector import OutputVector
 from processing.gui.RenderingStyles import RenderingStyles
 from processing.gui.RenderingStyleFilePanel import RenderingStyleFilePanel
+from processing.outputs.OutputRaster import OutputRaster
+from processing.outputs.OutputVector import OutputVector
+
 
 class EditRenderingStylesDialog(QtGui.QDialog):
+
     def __init__(self, alg):
         QtGui.QDialog.__init__(self)
         self.setModal(True)
@@ -44,16 +48,20 @@ class EditRenderingStylesDialog(QtGui.QDialog):
         self.resize(650, 450)
         self.buttonBox = QtGui.QDialogButtonBox()
         self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
-        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok)
+        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel
+                | QtGui.QDialogButtonBox.Ok)
         self.tableWidget = QtGui.QTableWidget()
         self.tableWidget.setSelectionMode(QtGui.QAbstractItemView.NoSelection)
         self.tableWidget.setColumnCount(2)
         self.tableWidget.setColumnWidth(0, 300)
         self.tableWidget.setColumnWidth(1, 300)
-        self.tableWidget.setHorizontalHeaderItem(0, QtGui.QTableWidgetItem("Output"))
-        self.tableWidget.setHorizontalHeaderItem(1, QtGui.QTableWidgetItem("Style"))
+        self.tableWidget.setHorizontalHeaderItem(0,
+                QtGui.QTableWidgetItem('Output'))
+        self.tableWidget.setHorizontalHeaderItem(1,
+                QtGui.QTableWidgetItem('Style'))
         self.tableWidget.verticalHeader().setVisible(False)
-        self.tableWidget.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
+        self.tableWidget.horizontalHeader().setResizeMode(
+                QtGui.QHeaderView.Stretch)
         self.setTableContent()
         self.setWindowTitle(self.alg.name)
         self.verticalLayout = QtGui.QVBoxLayout()
@@ -62,8 +70,10 @@ class EditRenderingStylesDialog(QtGui.QDialog):
         self.verticalLayout.addWidget(self.tableWidget)
         self.verticalLayout.addWidget(self.buttonBox)
         self.setLayout(self.verticalLayout)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL("accepted()"), self.okPressed)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL("rejected()"), self.cancelPressed)
+        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL('accepted()'),
+                               self.okPressed)
+        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL('rejected()'),
+                               self.cancelPressed)
         QtCore.QMetaObject.connectSlotsByName(self)
 
     def setTableContent(self):
@@ -78,11 +88,14 @@ class EditRenderingStylesDialog(QtGui.QDialog):
         for output in self.alg.outputs:
             if isinstance(output, (OutputVector, OutputRaster)):
                 if not output.hidden:
-                    item = QtGui.QTableWidgetItem(output.description + "<" + output.__module__.split(".")[-1] + ">")
+                    item = QtGui.QTableWidgetItem(output.description + '<'
+                            + output.__module__.split('.')[-1] + '>')
                     item.setFlags(QtCore.Qt.ItemIsEnabled)
                     self.tableWidget.setItem(i, 0, item)
                     item = RenderingStyleFilePanel()
-                    style = RenderingStyles.getStyle(self.alg.commandLineName(), output.name)
+                    style = \
+                        RenderingStyles.getStyle(self.alg.commandLineName(),
+                            output.name)
                     if style:
                         item.setText(str(style))
                     self.valueItems[output.name] = item

@@ -20,7 +20,9 @@
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
 import os
@@ -32,13 +34,14 @@ from processing.gui.ContextAction import ContextAction
 from processing.r.RAlgorithm import RAlgorithm
 from processing.script.ScriptAlgorithm import ScriptAlgorithm
 
+
 class DeleteScriptAction(ContextAction):
 
     SCRIPT_PYTHON = 0
     SCRIPT_R = 1
 
     def __init__(self, scriptType):
-        self.name = "Delete script"
+        self.name = 'Delete script'
         self.scriptType = scriptType
 
     def isEnabled(self):
@@ -48,12 +51,10 @@ class DeleteScriptAction(ContextAction):
             return isinstance(self.alg, RAlgorithm)
 
     def execute(self, alg):
-        reply = QMessageBox.question(None,
-                                     "Confirmation",
-                                     "Are you sure you want to delete this script?",
-                                     QMessageBox.Yes | QMessageBox.No,
-                                     QMessageBox.No
-                                    )
+        reply = QMessageBox.question(None, 'Confirmation',
+                'Are you sure you want to delete this script?',
+                QMessageBox.Yes | QMessageBox.No,
+                QMessageBox.No)
         if reply == QMessageBox.Yes:
             os.remove(self.alg.descriptionFile)
             self.toolbox.updateTree()

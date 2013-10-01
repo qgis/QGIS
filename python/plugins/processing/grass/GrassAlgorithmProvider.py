@@ -16,12 +16,15 @@
 *                                                                         *
 ***************************************************************************
 """
+
 from processing.grass.nviz import nviz
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
 import os
@@ -34,19 +37,28 @@ from processing.grass.GrassUtils import GrassUtils
 from processing.grass.GrassAlgorithm import GrassAlgorithm
 from processing.tools.system import *
 
+
 class GrassAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
         AlgorithmProvider.__init__(self)
-        self.createAlgsList() #preloading algorithms to speed up
+        self.createAlgsList()  # Preloading algorithms to speed up
 
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)
         if isWindows() or isMac():
-            ProcessingConfig.addSetting(Setting(self.getDescription(), GrassUtils.GRASS_FOLDER, "GRASS folder", GrassUtils.grassPath()))
-            ProcessingConfig.addSetting(Setting(self.getDescription(), GrassUtils.GRASS_WIN_SHELL, "Msys folder", GrassUtils.grassWinShell()))
-        ProcessingConfig.addSetting(Setting(self.getDescription(), GrassUtils.GRASS_LOG_COMMANDS, "Log execution commands", False))
-        ProcessingConfig.addSetting(Setting(self.getDescription(), GrassUtils.GRASS_LOG_CONSOLE, "Log console output", False))
+            ProcessingConfig.addSetting(Setting(self.getDescription(),
+                    GrassUtils.GRASS_FOLDER, 'GRASS folder',
+                    GrassUtils.grassPath()))
+            ProcessingConfig.addSetting(Setting(self.getDescription(),
+                    GrassUtils.GRASS_WIN_SHELL, 'Msys folder',
+                    GrassUtils.grassWinShell()))
+        ProcessingConfig.addSetting(Setting(self.getDescription(),
+                                    GrassUtils.GRASS_LOG_COMMANDS,
+                                    'Log execution commands', False))
+        ProcessingConfig.addSetting(Setting(self.getDescription(),
+                                    GrassUtils.GRASS_LOG_CONSOLE,
+                                    'Log console output', False))
 
     def unload(self):
         AlgorithmProvider.unload(self)
@@ -60,33 +72,35 @@ class GrassAlgorithmProvider(AlgorithmProvider):
         self.preloadedAlgs = []
         folder = GrassUtils.grassDescriptionPath()
         for descriptionFile in os.listdir(folder):
-            if descriptionFile.endswith("txt"):
+            if descriptionFile.endswith('txt'):
                 try:
                     alg = GrassAlgorithm(os.path.join(folder, descriptionFile))
-                    if alg.name.strip() != "":
+                    if alg.name.strip() != '':
                         self.preloadedAlgs.append(alg)
                     else:
-                        ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, "Could not open GRASS algorithm: " + descriptionFile)
-                except Exception,e:
-                    ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, "Could not open GRASS algorithm: " + descriptionFile)
+                        ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
+                                'Could not open GRASS algorithm: '
+                                + descriptionFile)
+                except Exception, e:
+                    ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
+                            'Could not open GRASS algorithm: '
+                            + descriptionFile)
         self.preloadedAlgs.append(nviz())
 
     def _loadAlgorithms(self):
         self.algs = self.preloadedAlgs
 
     def getDescription(self):
-        return "GRASS commands"
+        return 'GRASS commands'
 
     def getName(self):
-        return "grass"
+        return 'grass'
 
     def getIcon(self):
-        return  QIcon(os.path.dirname(__file__) + "/../images/grass.png")
+        return QIcon(os.path.dirname(__file__) + '/../images/grass.png')
 
     def getSupportedOutputVectorLayerExtensions(self):
-        return ["shp"]
+        return ['shp']
 
     def getSupportedOutputRasterLayerExtensions(self):
-        return ["tif"]
-
-
+        return ['tif']

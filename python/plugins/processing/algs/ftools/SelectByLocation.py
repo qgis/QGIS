@@ -20,42 +20,47 @@
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
 from PyQt4.QtCore import *
 from qgis.core import *
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.tools import dataobjects, vector
 from processing.parameters.ParameterSelection import ParameterSelection
 from processing.parameters.ParameterVector import ParameterVector
 from processing.outputs.OutputVector import OutputVector
-from processing.tools import vector as utils
+from processing.tools import dataobjects, vector
+
 
 class SelectByLocation(GeoAlgorithm):
 
-    INPUT = "INPUT"
-    INTERSECT = "INTERSECT"
-    METHOD = "METHOD"
-    OUTPUT = "OUTPUT"
+    INPUT = 'INPUT'
+    INTERSECT = 'INTERSECT'
+    METHOD = 'METHOD'
+    OUTPUT = 'OUTPUT'
 
-    METHODS = ["creating new selection",
-               "adding to current selection",
-               "removing from current selection"]
+    METHODS = ['creating new selection', 'adding to current selection',
+               'removing from current selection']
 
-    #===========================================================================
+    # =========================================================================
     # def getIcon(self):
-    #    return QtGui.QIcon(os.path.dirname(__file__) + "/icons/select_location.png")
-    #===========================================================================
+    #    return QIcon(os.path.dirname(__file__) + "/icons/select_location.png")
+    # =========================================================================
 
     def defineCharacteristics(self):
         self.allowOnlyOpenedLayers = True
-        self.name = "Select by location"
-        self.group = "Vector selection tools"
-        self.addParameter(ParameterVector(self.INPUT, "Layer to select from", [ParameterVector.VECTOR_TYPE_ANY]))
-        self.addParameter(ParameterVector(self.INTERSECT, "Additional layer (intersection layer)", [ParameterVector.VECTOR_TYPE_ANY]))
-        self.addParameter(ParameterSelection(self.METHOD, "Modify current selection by", self.METHODS, 0))
-        self.addOutput(OutputVector(self.OUTPUT, "Selection", True))
+        self.name = 'Select by location'
+        self.group = 'Vector selection tools'
+        self.addParameter(ParameterVector(self.INPUT, 'Layer to select from',
+                          [ParameterVector.VECTOR_TYPE_ANY]))
+        self.addParameter(ParameterVector(self.INTERSECT,
+                          'Additional layer (intersection layer)',
+                          [ParameterVector.VECTOR_TYPE_ANY]))
+        self.addParameter(ParameterSelection(self.METHOD,
+                          'Modify current selection by', self.METHODS, 0))
+        self.addOutput(OutputVector(self.OUTPUT, 'Selection', True))
 
     def processAlgorithm(self, progress):
         filename = self.getParameterValue(self.INPUT)
@@ -65,7 +70,7 @@ class SelectByLocation(GeoAlgorithm):
         selectLayer = dataobjects.getObjectFromUri(filename)
 
         oldSelection = set(inputLayer.selectedFeaturesIds())
-        index = spatialIndex = utils.spatialindex(inputLayer)
+        index = spatialIndex = vector.spatialindex(inputLayer)
 
         feat = QgsFeature()
         geom = QgsGeometry()

@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 """
@@ -21,7 +20,9 @@
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
 from PyQt4 import QtGui
@@ -31,8 +32,8 @@ from processing.gui.AlgorithmExecutionDialog import AlgorithmExecutionDialog
 
 class ParametersDialog(AlgorithmExecutionDialog):
 
-    NOT_SELECTED = "[Not selected]"
-    '''the default parameters dialog, to be used when an algorithm is called from the toolbox'''
+    NOT_SELECTED = '[Not selected]'
+
     def __init__(self, alg):
         self.paramTable = ParametersPanel(self, alg)
         self.scrollArea = QtGui.QScrollArea()

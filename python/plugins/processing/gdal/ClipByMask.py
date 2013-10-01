@@ -20,7 +20,9 @@
 __author__ = 'Alexander Bruy'
 __date__ = 'September 2013'
 __copyright__ = '(C) 2013, Alexander Bruy'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
 import os
@@ -39,30 +41,37 @@ from processing.outputs.OutputRaster import OutputRaster
 
 from processing.gdal.GdalUtils import GdalUtils
 
+
 class ClipByMask(GeoAlgorithm):
 
-    INPUT = "INPUT"
-    OUTPUT = "OUTPUT"
-    NO_DATA = "NO_DATA"
-    MASK = "MASK"
-    ALPHA_BAND = "ALPHA_BAND"
-    KEEP_RESOLUTION = "KEEP_RESOLUTION"
-    EXTRA = "EXTRA"
+    INPUT = 'INPUT'
+    OUTPUT = 'OUTPUT'
+    NO_DATA = 'NO_DATA'
+    MASK = 'MASK'
+    ALPHA_BAND = 'ALPHA_BAND'
+    KEEP_RESOLUTION = 'KEEP_RESOLUTION'
+    EXTRA = 'EXTRA'
 
     def getIcon(self):
-        filepath = os.path.dirname(__file__) + "/icons/raster-clip.png"
+        filepath = os.path.dirname(__file__) + '/icons/raster-clip.png'
         return QtGui.QIcon(filepath)
 
     def defineCharacteristics(self):
-        self.name = "Clip raster by mask layer"
-        self.group = "[GDAL] Extraction"
-        self.addParameter(ParameterRaster(self.INPUT, "Input layer", False))
-        self.addParameter(ParameterVector(self.MASK, "Mask layer", [ParameterVector.VECTOR_TYPE_POLYGON]))
-        self.addParameter(ParameterString(self.NO_DATA, "Nodata value, leave as none to take the nodata value from input", "none"))
-        self.addParameter(ParameterBoolean(self.ALPHA_BAND, "Create and output alpha band", False))
-        self.addParameter(ParameterBoolean(self.KEEP_RESOLUTION, "Keep resolution of output raster", False))
-        self.addParameter(ParameterString(self.EXTRA, "Additional creation parameters", ""))
-        self.addOutput(OutputRaster(self.OUTPUT, "Output layer"))
+        self.name = 'Clip raster by mask layer'
+        self.group = '[GDAL] Extraction'
+        self.addParameter(ParameterRaster(self.INPUT, 'Input layer', False))
+        self.addParameter(ParameterVector(self.MASK, 'Mask layer',
+                          [ParameterVector.VECTOR_TYPE_POLYGON]))
+        self.addParameter(ParameterString(self.NO_DATA,
+            'Nodata value, leave as none to take the nodata value from input',
+            'none'))
+        self.addParameter(ParameterBoolean(self.ALPHA_BAND,
+                          'Create and output alpha band', False))
+        self.addParameter(ParameterBoolean(self.KEEP_RESOLUTION,
+                          'Keep resolution of output raster', False))
+        self.addParameter(ParameterString(self.EXTRA,
+                          'Additional creation parameters', ''))
+        self.addOutput(OutputRaster(self.OUTPUT, 'Output layer'))
 
     def processAlgorithm(self, progress):
         out = self.getOutputValue(self.OUTPUT)
@@ -73,27 +82,27 @@ class ClipByMask(GeoAlgorithm):
         extra = str(self.getParameterValue(self.EXTRA))
 
         arguments = []
-        arguments.append("-q")
-        arguments.append("-of")
+        arguments.append('-q')
+        arguments.append('-of')
         arguments.append(GdalUtils.getFormatShortNameFromFilename(out))
-        arguments.append("-dstnodata")
+        arguments.append('-dstnodata')
         arguments.append(noData)
 
         if keepResolution:
-          r = gdal.Open(self.getParameterValue(self.INPUT))
-          geoTransform = r.GetGeoTransform()
-          r = None
-          arguments.append("-tr")
-          arguments.append(str(geoTransform[1]))
-          arguments.append(str(geoTransform[5]))
-          arguments.append("-tap")
+            r = gdal.Open(self.getParameterValue(self.INPUT))
+            geoTransform = r.GetGeoTransform()
+            r = None
+            arguments.append('-tr')
+            arguments.append(str(geoTransform[1]))
+            arguments.append(str(geoTransform[5]))
+            arguments.append('-tap')
 
-        arguments.append("-cutline")
+        arguments.append('-cutline')
         arguments.append(mask)
-        arguments.append("-crop_to_cutline")
+        arguments.append('-crop_to_cutline')
 
         if addAlphaBand:
-            arguments.append("-dstalpha")
+            arguments.append('-dstalpha')
 
         if len(extra) > 0:
             arguments.append(extra)
@@ -101,4 +110,5 @@ class ClipByMask(GeoAlgorithm):
         arguments.append(self.getParameterValue(self.INPUT))
         arguments.append(out)
 
-        GdalUtils.runGdal(["gdalwarp", GdalUtils.escapeAndJoin(arguments)], progress)
+        GdalUtils.runGdal(['gdalwarp', GdalUtils.escapeAndJoin(arguments)],
+                          progress)

@@ -20,32 +20,34 @@
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
 import os
 from processing.parameters.ParameterFile import ParameterFile
-from processing.lidar.fusion.FusionUtils import FusionUtils
 from processing.outputs.OutputFile import OutputFile
 from processing.lidar.fusion.FusionAlgorithm import FusionAlgorithm
+from processing.lidar.fusion.FusionUtils import FusionUtils
+
 
 class MergeData(FusionAlgorithm):
 
-    INPUT = "INPUT"
-    OUTPUT = "OUTPUT"
-
+    INPUT = 'INPUT'
+    OUTPUT = 'OUTPUT'
 
     def defineCharacteristics(self):
-        self.name = "Merge LAS Files"
-        self.group = "Points"
-        self.addParameter(ParameterFile(self.INPUT, "Input LAS files"))
-        self.addOutput(OutputFile(self.OUTPUT, "Output merged LAS file"))
+        self.name = 'Merge LAS Files'
+        self.group = 'Points'
+        self.addParameter(ParameterFile(self.INPUT, 'Input LAS files'))
+        self.addOutput(OutputFile(self.OUTPUT, 'Output merged LAS file'))
 
     def processAlgorithm(self, progress):
-        commands = [os.path.join(FusionUtils.FusionPath(), "MergeData.exe")]
-        commands.append("/verbose")
+        commands = [os.path.join(FusionUtils.FusionPath(), 'MergeData.exe')]
+        commands.append('/verbose')
         self.addAdvancedModifiersToCommand(commands)
-        files = self.getParameterValue(self.INPUT).split(";")
+        files = self.getParameterValue(self.INPUT).split(';')
         if len(files) == 1:
             commands.append(self.getParameterValue(self.INPUT))
         else:

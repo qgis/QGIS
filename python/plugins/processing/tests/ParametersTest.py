@@ -20,7 +20,9 @@
 __author__ = 'Victor Olaya'
 __date__ = 'March 2013'
 __copyright__ = '(C) 2013, Victor Olaya'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
 import unittest
@@ -28,16 +30,17 @@ from processing.parameters.ParameterNumber import ParameterNumber
 from processing.parameters.ParameterCrs import ParameterCrs
 from processing.parameters.ParameterExtent import ParameterExtent
 
+
 class ParametersTest(unittest.TestCase):
 
     def testParameterNumber(self):
-        param = ParameterNumber("name", "desc", 0, 10)
-        assert not param.setValue("wrongvalue")
+        param = ParameterNumber('name', 'desc', 0, 10)
+        assert not param.setValue('wrongvalue')
         assert param.value is None
         assert not param.setValue(25)
         assert param.value is None
         assert param.setValue(5)
-        assert param.value ==  5
+        assert param.value == 5
         assert param.setValue(None)
         assert param.value == param.default
         s = param.serialize()
@@ -50,9 +53,9 @@ class ParametersTest(unittest.TestCase):
         assert param.name == param2.name
 
     def testParameterCRS(self):
-        param = ParameterCrs("name", "desc")
-        assert param.setValue("EPSG:12003")
-        assert param.value ==  "EPSG:12003"
+        param = ParameterCrs('name', 'desc')
+        assert param.setValue('EPSG:12003')
+        assert param.value == 'EPSG:12003'
         assert param.setValue(None)
         assert param.value == param.default
         s = param.serialize()
@@ -63,11 +66,11 @@ class ParametersTest(unittest.TestCase):
         assert param.name == param2.name
 
     def testParameterExtent(self):
-        param = ParameterExtent("name", "desc")
-        assert not param.setValue("0,2,0")
-        assert not param.setValue("0,2,0,a")
-        assert not param.setValue("0,2,2,4")
-        assert param.value ==  "0,2,2,4"
+        param = ParameterExtent('name', 'desc')
+        assert not param.setValue('0,2,0')
+        assert not param.setValue('0,2,0,a')
+        assert not param.setValue('0,2,2,4')
+        assert param.value == '0,2,2,4'
         assert param.setValue(None)
         assert param.value == param.default
         s = param.serialize()
@@ -77,9 +80,11 @@ class ParametersTest(unittest.TestCase):
         assert param.description == param2.description
         assert param.name == param2.name
 
+
 def suite():
     suite = unittest.makeSuite(ParametersTest, 'test')
     return suite
+
 
 def runtests():
     result = unittest.TestResult()

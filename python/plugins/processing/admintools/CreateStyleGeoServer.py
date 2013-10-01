@@ -20,21 +20,24 @@
 __author__ = 'Victor Olaya'
 __date__ = 'October 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
 from qgis.core import *
+from processing.admintools.GeoServerToolsAlgorithm import \
+        GeoServerToolsAlgorithm
 from processing.parameters.ParameterString import ParameterString
-from processing.admintools.GeoServerToolsAlgorithm import GeoServerToolsAlgorithm
 from processing.parameters.ParameterFile import ParameterFile
 from processing.parameters.ParameterBoolean import ParameterBoolean
 
 
 class CreateStyleGeoServer(GeoServerToolsAlgorithm):
 
-    STYLE = "STYLE"
-    OVERWRITE = "OVERWRITE"
-    NAME = "NAME"
+    STYLE = 'STYLE'
+    OVERWRITE = 'OVERWRITE'
+    NAME = 'NAME'
 
     def processAlgorithm(self, progress):
         self.createCatalog()
@@ -43,14 +46,10 @@ class CreateStyleGeoServer(GeoServerToolsAlgorithm):
         name = self.getParameterValue(self.NAME)
         self.catalog.create_style(name, stylefile, overwrite)
 
-
     def defineCharacteristics(self):
         self.addBaseParameters()
-        self.name = "Add style"
-        self.group = "GeoServer management tools"
-        self.addParameter(ParameterString(self.NAME, "Style name"))
-        self.addParameter(ParameterFile(self.STYLE, "Style SLD file"))
-        self.addParameter(ParameterBoolean(self.OVERWRITE, "Overwrite"))
-
-
-
+        self.name = 'Add style'
+        self.group = 'GeoServer management tools'
+        self.addParameter(ParameterString(self.NAME, 'Style name'))
+        self.addParameter(ParameterFile(self.STYLE, 'Style SLD file'))
+        self.addParameter(ParameterBoolean(self.OVERWRITE, 'Overwrite'))

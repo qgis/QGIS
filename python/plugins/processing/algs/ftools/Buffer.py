@@ -20,14 +20,18 @@
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
 from PyQt4.QtCore import *
 from qgis.core import *
 from processing.tools import vector
 
-def buffering(progress, writer, distance, field, useField, layer, dissolve, segments):
+
+def buffering(progress, writer, distance, field, useField, layer, dissolve,
+              segments):
 
     if useField:
         field = layer.fieldNameIndex(field)
@@ -41,7 +45,7 @@ def buffering(progress, writer, distance, field, useField, layer, dissolve, segm
     features = vector.features(layer)
     total = 100.0 / float(len(features))
 
-    # with dissolve
+    # With dissolve
     if dissolve:
         first = True
         for inFeat in features:
@@ -65,9 +69,8 @@ def buffering(progress, writer, distance, field, useField, layer, dissolve, segm
         outFeat.setGeometry(tempGeom)
         outFeat.setAttributes(attrs)
         writer.addFeature(outFeat)
-
-    # without dissolve
     else:
+        # Without dissolve
         for inFeat in features:
             attrs = inFeat.attributes()
             if useField:

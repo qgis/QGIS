@@ -20,34 +20,40 @@
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
 from PyQt4.QtCore import *
 from qgis.core import *
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.tools import dataobjects, vector
 from processing.parameters.ParameterVector import ParameterVector
 from processing.outputs.OutputVector import OutputVector
+from processing.tools import dataobjects, vector
+
 
 class LinesToPolygons(GeoAlgorithm):
 
-    INPUT = "INPUT"
-    OUTPUT = "OUTPUT"
+    INPUT = 'INPUT'
+    OUTPUT = 'OUTPUT'
 
     def defineCharacteristics(self):
-        self.name = "Lines to polygons"
-        self.group = "Vector geometry tools"
+        self.name = 'Lines to polygons'
+        self.group = 'Vector geometry tools'
 
-        self.addParameter(ParameterVector(self.INPUT, "Input layer", [ParameterVector.VECTOR_TYPE_LINE]))
-        self.addOutput(OutputVector(self.OUTPUT, "Output layer"))
+        self.addParameter(ParameterVector(self.INPUT, 'Input layer',
+                          [ParameterVector.VECTOR_TYPE_LINE]))
+        self.addOutput(OutputVector(self.OUTPUT, 'Output layer'))
 
     def processAlgorithm(self, progress):
-        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
+        layer = dataobjects.getObjectFromUri(
+                self.getParameterValue(self.INPUT))
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.pendingFields().toList(),
-                     QGis.WKBPolygon, layer.crs())
+        writer = self.getOutputFromName(
+                self.OUTPUT).getVectorWriter(layer.pendingFields().toList(),
+                                             QGis.WKBPolygon, layer.crs())
 
         outFeat = QgsFeature()
 
@@ -62,7 +68,7 @@ class LinesToPolygons(GeoAlgorithm):
                 outGeomList.append(f.geometry().asPolyline())
 
             polyGeom = self.removeBadLines(outGeomList)
-            if len(polyGeom) <> 0:
+            if len(polyGeom) != 0:
                 outFeat.setGeometry(QgsGeometry.fromPolygon(polyGeom))
                 attrs = f.attributes()
                 outFeat.setAttributes(attrs)

@@ -20,7 +20,9 @@
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
 from processing.gui.ContextAction import ContextAction
@@ -29,13 +31,14 @@ from processing.gui.ScriptEditorDialog import ScriptEditorDialog
 from processing.r.RAlgorithm import RAlgorithm
 from processing.script.ScriptAlgorithm import ScriptAlgorithm
 
+
 class EditScriptAction(ContextAction):
 
     SCRIPT_PYTHON = 0
     SCRIPT_R = 1
 
     def __init__(self, scriptType):
-        self.name = "Edit script"
+        self.name = 'Edit script'
         self.scriptType = scriptType
 
     def isEnabled(self):

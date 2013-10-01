@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    warp.py
+    self.py
     ---------------------
     Date                 : August 2012
     Copyright            : (C) 2012 by Victor Olaya
@@ -20,7 +20,9 @@
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
 import os
@@ -35,53 +37,62 @@ from processing.parameters.ParameterString import ParameterString
 from processing.outputs.OutputRaster import OutputRaster
 from processing.gdal.GdalUtils import GdalUtils
 
+
 class warp(GeoAlgorithm):
 
-    INPUT = "INPUT"
-    OUTPUT = "OUTPUT"
-    SOURCE_SRS = "SOURCE_SRS"
-    DEST_SRS = "DEST_SRS "
-    METHOD = "METHOD"
-    METHOD_OPTIONS = ["near", "bilinear", "cubic", "cubicspline", "lanczos"]
-    TR = "TR"
-    EXTRA = "EXTRA"
+    INPUT = 'INPUT'
+    OUTPUT = 'OUTPUT'
+    SOURCE_SRS = 'SOURCE_SRS'
+    DEST_SRS = 'DEST_SRS '
+    METHOD = 'METHOD'
+    METHOD_OPTIONS = ['near', 'bilinear', 'cubic', 'cubicspline', 'lanczos']
+    TR = 'TR'
+    EXTRA = 'EXTRA'
 
     def getIcon(self):
-        filepath = os.path.dirname(__file__) + "/icons/warp.png"
+        filepath = os.path.dirname(__file__) + '/icons/self.png'
         return QtGui.QIcon(filepath)
 
     def defineCharacteristics(self):
-        self.name = "Warp (reproject)"
-        self.group = "[GDAL] Projections"
-        self.addParameter(ParameterRaster(warp.INPUT, "Input layer", False))
-        self.addParameter(ParameterCrs(warp.SOURCE_SRS, "Source SRS (EPSG Code)", "EPSG:4326"))
-        self.addParameter(ParameterCrs(warp.DEST_SRS, "Destination SRS (EPSG Code)", "EPSG:4326"))
-        self.addParameter(ParameterNumber(warp.TR, "Output file resolution in target georeferenced units (leave 0 for no change)", 0.0, None, 0.0))
-        self.addParameter(ParameterSelection(warp.METHOD, "Resampling method", warp.METHOD_OPTIONS))
-        self.addParameter(ParameterString(warp.EXTRA, "Additional creation parameters", ""))
-        self.addOutput(OutputRaster(warp.OUTPUT, "Output layer"))
+        self.name = 'Warp (reproject)'
+        self.group = '[GDAL] Projections'
+        self.addParameter(ParameterRaster(self.INPUT, 'Input layer', False))
+        self.addParameter(ParameterCrs(self.SOURCE_SRS,
+                          'Source SRS (EPSG Code)', 'EPSG:4326'))
+        self.addParameter(ParameterCrs(self.DEST_SRS,
+                          'Destination SRS (EPSG Code)', 'EPSG:4326'))
+        self.addParameter(ParameterNumber(self.TR,
+            'Output file resolution in target georeferenced units \
+            (leave 0 for no change)', 0.0, None, 0.0))
+        self.addParameter(ParameterSelection(self.METHOD, 'Resampling method',
+                          self.METHOD_OPTIONS))
+        self.addParameter(ParameterString(self.EXTRA,
+                          'Additional creation parameters', ''))
+        self.addOutput(OutputRaster(self.OUTPUT, 'Output layer'))
 
     def processAlgorithm(self, progress):
         arguments = []
-        arguments.append("-s_srs")
-        arguments.append(str(self.getParameterValue(warp.SOURCE_SRS)))
-        arguments.append("-t_srs")
-        crsId = self.getParameterValue(warp.DEST_SRS)
+        arguments.append('-s_srs')
+        arguments.append(str(self.getParameterValue(self.SOURCE_SRS)))
+        arguments.append('-t_srs')
+        crsId = self.getParameterValue(self.DEST_SRS)
         self.crs = QgsCoordinateReferenceSystem(crsId)
         arguments.append(str(crsId))
-        arguments.append("-r")
-        arguments.append(warp.METHOD_OPTIONS[self.getParameterValue(warp.METHOD)])
-        arguments.append("-of")
-        out = self.getOutputValue(warp.OUTPUT)
+        arguments.append('-r')
+        arguments.append(
+                self.METHOD_OPTIONS[self.getParameterValue(self.METHOD)])
+        arguments.append('-of')
+        out = self.getOutputValue(self.OUTPUT)
         arguments.append(GdalUtils.getFormatShortNameFromFilename(out))
-        if self.getParameterValue(warp.TR) != 0:
-            arguments.append("-tr")
-            arguments.append(str(self.getParameterValue(warp.TR)))
-            arguments.append(str(self.getParameterValue(warp.TR)))
-        extra = str(self.getParameterValue(warp.EXTRA))
+        if self.getParameterValue(self.TR) != 0:
+            arguments.append('-tr')
+            arguments.append(str(self.getParameterValue(self.TR)))
+            arguments.append(str(self.getParameterValue(self.TR)))
+        extra = str(self.getParameterValue(self.EXTRA))
         if len(extra) > 0:
             arguments.append(extra)
-        arguments.append(self.getParameterValue(warp.INPUT))
+        arguments.append(self.getParameterValue(self.INPUT))
         arguments.append(out)
 
-        GdalUtils.runGdal(["gdalwarp", GdalUtils.escapeAndJoin(arguments)], progress)
+        GdalUtils.runGdal(['gdalwarp', GdalUtils.escapeAndJoin(arguments)],
+                          progress)

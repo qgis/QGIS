@@ -20,44 +20,49 @@
 __author__ = 'Victor Olaya'
 __date__ = 'October 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
 from PyQt4.QtCore import *
-
 from qgis.core import *
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.tools import dataobjects, vector
-
 from processing.parameters.ParameterVector import ParameterVector
 from processing.parameters.ParameterNumber import ParameterNumber
-
 from processing.outputs.OutputVector import OutputVector
+from processing.tools import dataobjects, vector
+
 
 class DensifyGeometries(GeoAlgorithm):
 
-    INPUT = "INPUT"
-    VERTICES = "VERTICES"
-    OUTPUT = "OUTPUT"
+    INPUT = 'INPUT'
+    VERTICES = 'VERTICES'
+    OUTPUT = 'OUTPUT'
 
     def defineCharacteristics(self):
-        self.name = "Densify geometries"
-        self.group = "Vector geometry tools"
+        self.name = 'Densify geometries'
+        self.group = 'Vector geometry tools'
 
-        self.addParameter(ParameterVector(self.INPUT, "Input layer", [ParameterVector.VECTOR_TYPE_POLYGON,ParameterVector.VECTOR_TYPE_LINE]))
-        self.addParameter(ParameterNumber(self.VERTICES, "Vertices to add", 1, 10000000, 1))
+        self.addParameter(ParameterVector(self.INPUT, 'Input layer',
+                          [ParameterVector.VECTOR_TYPE_POLYGON,
+                          ParameterVector.VECTOR_TYPE_LINE]))
+        self.addParameter(ParameterNumber(self.VERTICES, 'Vertices to add', 1,
+                          10000000, 1))
 
-        self.addOutput(OutputVector(self.OUTPUT, "Densified layer"))
+        self.addOutput(OutputVector(self.OUTPUT, 'Densified layer'))
 
     def processAlgorithm(self, progress):
-        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
+        layer = dataobjects.getObjectFromUri(
+                self.getParameterValue(self.INPUT))
         vertices = self.getParameterValue(self.VERTICES)
 
         isPolygon = layer.geometryType() == QGis.Polygon
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.pendingFields().toList(),
-                     layer.wkbType(), layer.crs())
+        writer = self.getOutputFromName(
+                self.OUTPUT).getVectorWriter(layer.pendingFields().toList(),
+                                             layer.wkbType(), layer.crs())
 
         features = vector.features(layer)
         total = 100.0 / float(len(features))
@@ -65,7 +70,8 @@ class DensifyGeometries(GeoAlgorithm):
         for f in features:
             featGeometry = QgsGeometry(f.geometry())
             attrs = f.attributes()
-            newGeometry = self.densifyGeometry(featGeometry, int(vertices), isPolygon)
+            newGeometry = self.densifyGeometry(featGeometry, int(vertices),
+                    isPolygon)
             feature = QgsFeature()
             feature.setGeometry(newGeometry)
             feature.setAttributes(attrs)

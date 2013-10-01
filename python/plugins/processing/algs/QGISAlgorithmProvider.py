@@ -16,24 +16,28 @@
 *                                                                         *
 ***************************************************************************
 """
-from processing.algs.Polygonize import Polygonize
-from processing.algs.ftools.Eliminate import Eliminate
 
 __author__ = 'Victor Olaya'
 __date__ = 'December 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
 from PyQt4.QtGui import *
 from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.algs.ftools.PointsInPolygon import PointsInPolygon
 from processing.algs.ftools.PointsInPolygonUnique import PointsInPolygonUnique
-from processing.algs.ftools.PointsInPolygonWeighted import PointsInPolygonWeighted
+from processing.algs.ftools.PointsInPolygonWeighted import \
+        PointsInPolygonWeighted
 from processing.algs.ftools.SumLines import SumLines
-from processing.algs.ftools.BasicStatisticsNumbers import BasicStatisticsNumbers
-from processing.algs.ftools.BasicStatisticsStrings import BasicStatisticsStrings
-from processing.algs.ftools.NearestNeighbourAnalysis import NearestNeighbourAnalysis
+from processing.algs.ftools.BasicStatisticsNumbers import \
+        BasicStatisticsNumbers
+from processing.algs.ftools.BasicStatisticsStrings import \
+        BasicStatisticsStrings
+from processing.algs.ftools.NearestNeighbourAnalysis import \
+        NearestNeighbourAnalysis
 from processing.algs.ftools.LinesIntersection import LinesIntersection
 from processing.algs.ftools.MeanCoords import MeanCoords
 from processing.algs.ftools.PointDistance import PointDistance
@@ -44,34 +48,41 @@ from processing.algs.ftools.Centroids import Centroids
 from processing.algs.ftools.Delaunay import Delaunay
 from processing.algs.ftools.VoronoiPolygons import VoronoiPolygons
 from processing.algs.ftools.DensifyGeometries import DensifyGeometries
-from processing.algs.ftools.MultipartToSingleparts import MultipartToSingleparts
+from processing.algs.ftools.MultipartToSingleparts import \
+        MultipartToSingleparts
 from processing.algs.ftools.SimplifyGeometries import SimplifyGeometries
 from processing.algs.ftools.LinesToPolygons import LinesToPolygons
 from processing.algs.ftools.PolygonsToLines import PolygonsToLines
-from processing.algs.ftools.SinglePartsToMultiparts import SinglePartsToMultiparts
+from processing.algs.ftools.SinglePartsToMultiparts import \
+        SinglePartsToMultiparts
 from processing.algs.ftools.ExtractNodes import ExtractNodes
 from processing.algs.ftools.ConvexHull import ConvexHull
 from processing.algs.ftools.FixedDistanceBuffer import FixedDistanceBuffer
-from processing.algs.ftools.VariableDistanceBuffer import VariableDistanceBuffer
+from processing.algs.ftools.VariableDistanceBuffer import \
+        VariableDistanceBuffer
 from processing.algs.ftools.Clip import Clip
 from processing.algs.ftools.Difference import Difference
 from processing.algs.ftools.Dissolve import Dissolve
 from processing.algs.ftools.Intersection import Intersection
 from processing.algs.ftools.ExtentFromLayer import ExtentFromLayer
 from processing.algs.ftools.RandomSelection import RandomSelection
-from processing.algs.ftools.RandomSelectionWithinSubsets import RandomSelectionWithinSubsets
+from processing.algs.ftools.RandomSelectionWithinSubsets import \
+        RandomSelectionWithinSubsets
 from processing.algs.ftools.SelectByLocation import SelectByLocation
 from processing.algs.ftools.Union import Union
-from processing.algs.ftools.DensifyGeometriesInterval import DensifyGeometriesInterval
+from processing.algs.ftools.DensifyGeometriesInterval import \
+        DensifyGeometriesInterval
+from processing.algs.ftools.Eliminate import Eliminate
 
-from processing.algs.mmqgisx.MMQGISXAlgorithms import  (mmqgisx_delete_columns_algorithm,
-    mmqgisx_delete_duplicate_geometries_algorithm,
-    mmqgisx_geometry_convert_algorithm,
-    mmqgisx_grid_algorithm, mmqgisx_gridify_algorithm,
-    mmqgisx_hub_distance_algorithm, mmqgisx_hub_lines_algorithm,
-    mmqgisx_merge_algorithm, mmqgisx_select_algorithm,
-    mmqgisx_text_to_float_algorithm)
+from processing.algs.mmqgisx.MMQGISXAlgorithms import \
+    mmqgisx_delete_columns_algorithm, \
+    mmqgisx_delete_duplicate_geometries_algorithm, \
+    mmqgisx_geometry_convert_algorithm, mmqgisx_grid_algorithm, \
+    mmqgisx_gridify_algorithm, mmqgisx_hub_distance_algorithm, \
+    mmqgisx_hub_lines_algorithm, mmqgisx_merge_algorithm, \
+    mmqgisx_select_algorithm, mmqgisx_text_to_float_algorithm
 
+from processing.algs.Polygonize import Polygonize
 from processing.algs.RasterLayerStatistics import RasterLayerStatistics
 from processing.algs.StatisticsByCategories import StatisticsByCategories
 from processing.algs.EquivalentNumField import EquivalentNumField
@@ -89,36 +100,34 @@ from processing.algs.ZonalStatistics import ZonalStatistics
 from processing.algs.PointsFromPolygons import PointsFromPolygons
 from processing.algs.PointsFromLines import PointsFromLines
 
-#from processing.algs.VectorLayerHistogram import VectorLayerHistogram
-#from processing.algs.VectorLayerScatterplot import VectorLayerScatterplot
-#from processing.algs.MeanAndStdDevPlot import MeanAndStdDevPlot
-#from processing.algs.BarPlot import BarPlot
-#from processing.algs.PolarPlot import PolarPlot
-#from processing.algs.RasterLayerHistogram import RasterLayerHistogram
+# from processing.algs.VectorLayerHistogram import VectorLayerHistogram
+# from processing.algs.VectorLayerScatterplot import VectorLayerScatterplot
+# from processing.algs.MeanAndStdDevPlot import MeanAndStdDevPlot
+# from processing.algs.BarPlot import BarPlot
+# from processing.algs.PolarPlot import PolarPlot
+# from processing.algs.RasterLayerHistogram import RasterLayerHistogram
 
 import processing.resources_rc
+
 
 class QGISAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
         AlgorithmProvider.__init__(self)
-        self.alglist = [# ------ fTools ------
-                        SumLines(), PointsInPolygon(), PointsInPolygonWeighted(),
-                        PointsInPolygonUnique(), BasicStatisticsStrings(),
-                        BasicStatisticsNumbers(), NearestNeighbourAnalysis(),
-                        MeanCoords(), LinesIntersection(), UniqueValues(), PointDistance(),
-                        # data management
-                        ReprojectLayer(),
-                        # geometry
-                        ExportGeometryInfo(), Centroids(), Delaunay(), VoronoiPolygons(),
-                        SimplifyGeometries(), DensifyGeometries(), DensifyGeometriesInterval(),
-                        MultipartToSingleparts(), SinglePartsToMultiparts(), PolygonsToLines(),
-                        LinesToPolygons(), ExtractNodes(),Eliminate(),
-                        # geoprocessing
-                        ConvexHull(), FixedDistanceBuffer(), VariableDistanceBuffer(),
-                        Dissolve(), Difference(), Intersection(), Union(), Clip(),
-                        # research
-                        ExtentFromLayer(), RandomSelection(), RandomSelectionWithinSubsets(),
+        self.alglist = [SumLines(), PointsInPolygon(),
+                        PointsInPolygonWeighted(), PointsInPolygonUnique(),
+                        BasicStatisticsStrings(), BasicStatisticsNumbers(),
+                        NearestNeighbourAnalysis(), MeanCoords(),
+                        LinesIntersection(), UniqueValues(), PointDistance(),
+                        ReprojectLayer(), ExportGeometryInfo(), Centroids(),
+                        Delaunay(), VoronoiPolygons(), SimplifyGeometries(),
+                        DensifyGeometries(), DensifyGeometriesInterval(),
+                        MultipartToSingleparts(), SinglePartsToMultiparts(),
+                        PolygonsToLines(), LinesToPolygons(), ExtractNodes(),
+                        Eliminate(), ConvexHull(), FixedDistanceBuffer(),
+                        VariableDistanceBuffer(), Dissolve(), Difference(),
+                        Intersection(), Union(), Clip(), ExtentFromLayer(),
+                        RandomSelection(), RandomSelectionWithinSubsets(),
                         SelectByLocation(),
                         # ------ mmqgisx ------
                         mmqgisx_delete_columns_algorithm(),
@@ -132,21 +141,21 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         mmqgisx_select_algorithm(),
                         mmqgisx_text_to_float_algorithm(),
                         # ------ native algs ------
-                        AddTableField(), FieldsCalculator(), SaveSelectedFeatures(), JoinAttributes(),
-                        AutoincrementalField(), Explode(), FieldsPyculator(), EquivalentNumField(),
-                        PointsLayerFromTable(), StatisticsByCategories(), Polygonize(),
+                        AddTableField(), FieldsCalculator(),
+                        SaveSelectedFeatures(), JoinAttributes(),
+                        AutoincrementalField(), Explode(), FieldsPyculator(),
+                        EquivalentNumField(), PointsLayerFromTable(),
+                        StatisticsByCategories(), Polygonize(),
+                        RasterLayerStatistics(), PointsDisplacement(),
+                        ZonalStatistics(), PointsFromPolygons(),
+                        PointsFromLines(),
                         # ------ raster ------
-                        #CreateConstantRaster(),
-                        RasterLayerStatistics(),
+                        # CreateConstantRaster(),
                         # ------ graphics ------
-                        #VectorLayerHistogram(), VectorLayerScatterplot(), RasterLayerHistogram(),
-                        #MeanAndStdDevPlot(), BarPlot(), PolarPlot()
-                        # ------ vector ------
-                        PointsDisplacement(),
-                        ZonalStatistics(),
-                        PointsFromPolygons(),
-                        PointsFromLines()
-                        ]
+                        # VectorLayerHistogram(), VectorLayerScatterplot(),
+                        # RasterLayerHistogram(), MeanAndStdDevPlot(),
+                        # BarPlot(), PolarPlot()
+                       ]
 
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)
@@ -155,13 +164,13 @@ class QGISAlgorithmProvider(AlgorithmProvider):
         AlgorithmProvider.unload(self)
 
     def getName(self):
-        return "qgis"
+        return 'qgis'
 
     def getDescription(self):
-        return "QGIS geoalgorithms"
+        return 'QGIS geoalgorithms'
 
     def getIcon(self):
-        return QIcon(":/processing/images/qgis.png")
+        return QIcon(':/processing/images/qgis.png')
 
     def _loadAlgorithms(self):
         self.algs = self.alglist

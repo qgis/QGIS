@@ -17,11 +17,12 @@
 ***************************************************************************
 """
 
-
 __author__ = 'Alexander Bruy'
 __date__ = 'October 2012'
 __copyright__ = '(C) 2012, Alexander Bruy'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
 import os
@@ -46,6 +47,7 @@ from processing.taudem.gridnet import GridNet
 from processing.taudem.dinftranslimaccum import DinfTransLimAccum
 from processing.taudem.dinftranslimaccum2 import DinfTransLimAccum2
 
+
 class TauDEMAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
@@ -54,19 +56,28 @@ class TauDEMAlgorithmProvider(AlgorithmProvider):
         self.createAlgsList()
 
     def getDescription(self):
-        return "TauDEM (hydrologic analysis)"
+        return 'TauDEM (hydrologic analysis)'
 
     def getName(self):
-        return "taudem"
+        return 'taudem'
 
     def getIcon(self):
-        return QIcon(os.path.dirname(__file__) + "/../images/taudem.png")
+        return QIcon(os.path.dirname(__file__) + '/../images/taudem.png')
 
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)
-        ProcessingConfig.addSetting(Setting(self.getDescription(), TauDEMUtils.TAUDEM_FOLDER, "TauDEM command line tools folder", TauDEMUtils.taudemPath()))
-        ProcessingConfig.addSetting(Setting(self.getDescription(), TauDEMUtils.MPIEXEC_FOLDER, "MPICH2/OpenMPI bin directory", TauDEMUtils.mpiexecPath()))
-        ProcessingConfig.addSetting(Setting(self.getDescription(), TauDEMUtils.MPI_PROCESSES, "Number of MPI parallel processes to use", 2))
+        ProcessingConfig.addSetting(Setting(self.getDescription(),
+                                    TauDEMUtils.TAUDEM_FOLDER,
+                                    'TauDEM command line tools folder',
+                                    TauDEMUtils.taudemPath()))
+        ProcessingConfig.addSetting(Setting(self.getDescription(),
+                                    TauDEMUtils.MPIEXEC_FOLDER,
+                                    'MPICH2/OpenMPI bin directory',
+                                    TauDEMUtils.mpiexecPath()))
+        ProcessingConfig.addSetting(Setting(self.getDescription(),
+                                    TauDEMUtils.MPI_PROCESSES,
+                                    'Number of MPI parallel processes to use',
+                                    2))
 
     def unload(self):
         AlgorithmProvider.unload(self)
@@ -81,15 +92,20 @@ class TauDEMAlgorithmProvider(AlgorithmProvider):
         self.preloadedAlgs = []
         folder = TauDEMUtils.taudemDescriptionPath()
         for descriptionFile in os.listdir(folder):
-            if descriptionFile.endswith("txt"):
+            if descriptionFile.endswith('txt'):
                 try:
-                    alg = TauDEMAlgorithm(os.path.join(folder, descriptionFile))
-                    if alg.name.strip() != "":
+                    alg = TauDEMAlgorithm(os.path.join(folder,
+                            descriptionFile))
+                    if alg.name.strip() != '':
                         self.preloadedAlgs.append(alg)
                     else:
-                        ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, "Could not open TauDEM algorithm: " + descriptionFile)
+                        ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
+                                'Could not open TauDEM algorithm: '
+                                + descriptionFile)
                 except Exception, e:
-                    ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, "Could not open TauDEM algorithm: " + descriptionFile)
+                    ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
+                            'Could not open TauDEM algorithm: '
+                            + descriptionFile)
 
         self.preloadedAlgs.append(PeukerDouglas())
         self.preloadedAlgs.append(SlopeArea())

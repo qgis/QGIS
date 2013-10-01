@@ -20,13 +20,16 @@
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
 from PyQt4.QtGui import *
 from processing.gui.ToolboxAction import ToolboxAction
 from processing.gui.ScriptEditorDialog import ScriptEditorDialog
 import processing.resources_rc
+
 
 class CreateNewScriptAction(ToolboxAction):
 
@@ -35,14 +38,14 @@ class CreateNewScriptAction(ToolboxAction):
 
     def __init__(self, actionName, scriptType):
         self.name = actionName
-        self.group = "Tools"
+        self.group = 'Tools'
         self.scriptType = scriptType
 
     def getIcon(self):
         if self.scriptType == self.SCRIPT_PYTHON:
-            return QIcon(":/processing/images/script.png")
+            return QIcon(':/processing/images/script.png')
         elif self.scriptType == self.SCRIPT_R:
-            return QIcon(":/processing/images/r.png")
+            return QIcon(':/processing/images/r.png')
 
     def execute(self):
         dlg = None

@@ -20,40 +20,46 @@
 __author__ = 'Victor Olaya'
 __date__ = 'September 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
 import csv
 import codecs
 import cStringIO
 
+
 class TableWriter:
+
     def __init__(self, fileName, encoding, fields):
         self.fileName = fileName
-        if not self.fileName.lower().endswith("csv"):
-            self.fileName += ".csv"
+        if not self.fileName.lower().endswith('csv'):
+            self.fileName += '.csv'
 
         self.encoding = encoding
-        if self.encoding is None or encoding == "System":
-            self.encoding = "utf-8"
+        if self.encoding is None or encoding == 'System':
+            self.encoding = 'utf-8'
 
-        with open(self.fileName, "wb") as csvFile:
+        with open(self.fileName, 'wb') as csvFile:
             self.writer = UnicodeWriter(csvFile, encoding=self.encoding)
             if len(fields) != 0:
                 self.writer.writerow(fields)
 
     def addRecord(self, values):
-        with open(self.fileName, "ab") as csvFile:
+        with open(self.fileName, 'ab') as csvFile:
             self.writer = UnicodeWriter(csvFile, encoding=self.encoding)
             self.writer.writerow(values)
 
     def addRecords(self, records):
-        with open(self.fileName, "ab") as csvFile:
+        with open(self.fileName, 'ab') as csvFile:
             self.writer = UnicodeWriter(csvFile, encoding=self.encoding)
             self.writer.writerows(records)
 
+
 class UnicodeWriter:
-    def __init__(self, f, dialect=csv.excel, encoding="utf-8", **kwds):
+
+    def __init__(self, f, dialect=csv.excel, encoding='utf-8', **kwds):
         self.queue = cStringIO.StringIO()
         self.writer = csv.writer(self.queue, dialect=dialect, **kwds)
         self.stream = f
@@ -62,11 +68,11 @@ class UnicodeWriter:
     def writerow(self, row):
         row = map(unicode, row)
         try:
-            self.writer.writerow([s.encode("utf-8") for s in row])
+            self.writer.writerow([s.encode('utf-8') for s in row])
         except:
             self.writer.writerow(row)
         data = self.queue.getvalue()
-        data = data.decode("utf-8")
+        data = data.decode('utf-8')
         data = self.encoder.encode(data)
         self.stream.write(data)
         self.queue.truncate(0)

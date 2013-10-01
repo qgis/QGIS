@@ -20,31 +20,38 @@
 __author__ = 'Piotr Pociask'
 __date__ = 'March 2013'
 __copyright__ = '(C) 2013, Piotr Pociask'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
 from PyQt4.QtCore import QVariant
-from qgis.core import QgsFeature, QgsField, QgsFields, QgsGeometry, QGis
+from qgis.core import *
+from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.core.GeoAlgorithmExecutionException import \
+    GeoAlgorithmExecutionException
 from processing.parameters.ParameterVector import ParameterVector
 from processing.parameters.ParameterBoolean import ParameterBoolean
-from processing.tools import dataobjects, vector
 from processing.outputs.OutputVector import OutputVector
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
+from processing.tools import dataobjects, vector
+
 
 class Polygonize(GeoAlgorithm):
-    INPUT = "INPUT"
-    OUTPUT = "OUTPUT"
-    FIELDS = "FIELDS"
-    GEOMETRY = "GEOMETRY"
+
+    INPUT = 'INPUT'
+    OUTPUT = 'OUTPUT'
+    FIELDS = 'FIELDS'
+    GEOMETRY = 'GEOMETRY'
 
     def processAlgorithm(self, progress):
         try:
             from shapely.ops import polygonize
-            from shapely.geometry import Point,MultiLineString
+            from shapely.geometry import Point, MultiLineString
         except ImportError:
-            raise GeoAlgorithmExecutionException('Polygonize algorithm requires shapely module!')
-        vlayer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
+            raise GeoAlgorithmExecutionException(
+                    'Polygonize algorithm requires shapely module!')
+        vlayer = dataobjects.getObjectFromUri(
+                self.getParameterValue(self.INPUT))
         output = self.getOutputFromName(self.OUTPUT)
         vprovider = vlayer.dataProvider()
         if self.getParameterValue(self.FIELDS):
@@ -53,8 +60,9 @@ class Polygonize(GeoAlgorithm):
             fields = QgsFields()
         if self.getParameterValue(self.GEOMETRY):
             fieldsCount = fields.count()
-            fields.append(QgsField("area",QVariant.Double,"double",16,2))
-            fields.append(QgsField("perimeter",QVariant.Double,"double",16,2))
+            fields.append(QgsField('area', QVariant.Double, 'double', 16, 2))
+            fields.append(QgsField('perimeter', QVariant.Double,
+                                   'double', 16, 2))
         allLinesList = []
         features = vector.features(vlayer)
         current = 0
@@ -69,27 +77,31 @@ class Polygonize(GeoAlgorithm):
             progress.setPercentage(int(current * total))
         progress.setPercentage(40)
         allLines = MultiLineString(allLinesList)
-        allLines = allLines.union(Point(0,0))
+        allLines = allLines.union(Point(0, 0))
         progress.setPercentage(45)
         polygons = list(polygonize([allLines]))
         progress.setPercentage(50)
-        writer = output.getVectorWriter(fields, QGis.WKBPolygon, vlayer.crs() )
+        writer = output.getVectorWriter(fields, QGis.WKBPolygon, vlayer.crs())
         outFeat = QgsFeature()
         current = 0
         total = 50.0 / float(len(polygons))
         for polygon in polygons:
-            outFeat.setGeometry(QgsGeometry.fromWkt( polygon.wkt ))
+            outFeat.setGeometry(QgsGeometry.fromWkt(polygon.wkt))
             if self.getParameterValue(self.GEOMETRY):
-                outFeat.setAttributes([None]*fieldsCount + [ polygon.area, polygon.length])
+                outFeat.setAttributes([None] * fieldsCount + [polygon.area,
+                                      polygon.length])
             writer.addFeature(outFeat)
             current += 1
-            progress.setPercentage(50+int(current * total))
+            progress.setPercentage(50 + int(current * total))
         del writer
 
     def defineCharacteristics(self):
-        self.name = "Polygonize"
-        self.group = "Vector geometry tools"
-        self.addParameter(ParameterVector(self.INPUT, "Input layer", [ParameterVector.VECTOR_TYPE_LINE]))
-        self.addParameter(ParameterBoolean(self.FIELDS, "Keep table structure of line layer", False))
-        self.addParameter(ParameterBoolean(self.GEOMETRY, "Create geometry columns", True))
-        self.addOutput(OutputVector(self.OUTPUT, "Output layer"))
+        self.name = 'Polygonize'
+        self.group = 'Vector geometry tools'
+        self.addParameter(ParameterVector(self.INPUT, 'Input layer',
+                          [ParameterVector.VECTOR_TYPE_LINE]))
+        self.addParameter(ParameterBoolean(self.FIELDS,
+                          'Keep table structure of line layer', False))
+        self.addParameter(ParameterBoolean(self.GEOMETRY,
+                          'Create geometry columns', True))
+        self.addOutput(OutputVector(self.OUTPUT, 'Output layer'))

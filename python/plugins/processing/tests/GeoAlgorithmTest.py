@@ -20,42 +20,50 @@
 __author__ = 'Victor Olaya'
 __date__ = 'March 2013'
 __copyright__ = '(C) 2013, Victor Olaya'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
-import processing
 import unittest
-from processing.tests.TestData import points, points2, polygons, polygons2, lines, union,\
-    table, polygonsGeoJson, raster
+
+import processing
 from processing.tools import dataobjects
 from processing.tools.system import *
+
+from processing.tests.TestData import points, points2, polygons, polygons2, \
+    lines, union, table, polygonsGeoJson, raster
+
 
 class GeoAlgorithmTest(unittest.TestCase):
 
     def testWrongformat(self):
-        outputs=processing.runalg("qgis:countpointsinpolygon",polygons(),points(),"NUMPOINTS",getTempFilename("wrongext"))
-        output=outputs['OUTPUT']
+        outputs = processing.runalg('qgis:countpointsinpolygon', polygons(),
+                                    points(), 'NUMPOINTS',
+                                    getTempFilename('wrongext'))
+        output = outputs['OUTPUT']
         self.assertTrue(output.endswith('shp'))
-        layer=dataobjects.getObjectFromUri(output, True)
-        fields=layer.pendingFields()
-        expectednames=['ID','POLY_NUM_A','POLY_ST_A','NUMPOINTS']
-        expectedtypes=['Integer','Real','String','Real']
-        names=[str(f.name()) for f in fields]
-        types=[str(f.typeName()) for f in fields]
+        layer = dataobjects.getObjectFromUri(output, True)
+        fields = layer.pendingFields()
+        expectednames = ['ID', 'POLY_NUM_A', 'POLY_ST_A', 'NUMPOINTS']
+        expectedtypes = ['Integer', 'Real', 'String', 'Real']
+        names = [str(f.name()) for f in fields]
+        types = [str(f.typeName()) for f in fields]
         self.assertEqual(expectednames, names)
         self.assertEqual(expectedtypes, types)
-        features=processing.features(layer)
+        features = processing.features(layer)
         self.assertEqual(2, len(features))
-        feature=features.next()
-        attrs=feature.attributes()
-        expectedvalues=["1","1.1","string a","6.0"]
-        values=[str(attr) for attr in attrs]
+        feature = features.next()
+        attrs = feature.attributes()
+        expectedvalues = ['1', '1.1', 'string a', '6.0']
+        values = [str(attr) for attr in attrs]
         self.assertEqual(expectedvalues, values)
 
 
 def suite():
     suite = unittest.makeSuite(GeoAlgorithmTest, 'test')
     return suite
+
 
 def runtests():
     result = unittest.TestResult()

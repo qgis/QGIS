@@ -20,7 +20,9 @@
 __author__ = 'Martin Isenburg'
 __date__ = 'September 2013'
 __copyright__ = '(C) 2013, Martin Isenburg'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
 import os
@@ -32,11 +34,12 @@ from processing.parameters.ParameterNumber import ParameterNumber
 from processing.parameters.ParameterString import ParameterString
 from processing.parameters.ParameterSelection import ParameterSelection
 
+
 class las2las_filter(LAStoolsAlgorithm):
 
     def defineCharacteristics(self):
-        self.name = "las2las_filter"
-        self.group = "LAStools"
+        self.name = 'las2las_filter'
+        self.group = 'LAStools'
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
         self.addParametersFilter1ReturnClassFlagsGUI()
@@ -45,16 +48,16 @@ class las2las_filter(LAStoolsAlgorithm):
         self.addParametersFilter2CoordsIntensityGUI()
         self.addParametersPointOutputGUI()
 
-
     def processAlgorithm(self, progress):
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2las.exe")]
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), 'bin',
+                    'las2las.exe')]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputCommands(commands)
         self.addParametersFilter1ReturnClassFlagsCommands(commands)
         self.addParametersFilter2ReturnClassFlagsCommands(commands)
         self.addParametersFilter1CoordsIntensityCommands(commands)
         self.addParametersFilter2CoordsIntensityCommands(commands)
-                
+
         self.addParametersPointOutputCommands(commands)
 
         LAStoolsUtils.runLAStools(commands, progress)

@@ -20,7 +20,9 @@
 __author__ = 'Martin Isenburg'
 __date__ = 'September 2013'
 __copyright__ = '(C) 2013, Martin Isenburg'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
 import os
@@ -31,39 +33,44 @@ from processing.parameters.ParameterBoolean import ParameterBoolean
 from processing.parameters.ParameterNumber import ParameterNumber
 from processing.parameters.ParameterSelection import ParameterSelection
 
+
 class lasoverage(LAStoolsAlgorithm):
 
-    CHECK_STEP = "CHECK_STEP"
-    OPERATION = "OPERATION"
-    OPERATIONS= ["classify as overlap", "flag as withheld", "remove from output"]
+    CHECK_STEP = 'CHECK_STEP'
+    OPERATION = 'OPERATION'
+    OPERATIONS = ['classify as overlap', 'flag as withheld',
+                  'remove from output']
 
     def defineCharacteristics(self):
-        self.name = "lasoverage"
-        self.group = "LAStools"
+        self.name = 'lasoverage'
+        self.group = 'LAStools'
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
         self.addParametersHorizontalFeetGUI()
         self.addParametersFilesAreFlightlinesGUI()
-        self.addParameter(ParameterNumber(lasoverage.CHECK_STEP, "size of grid used for scan angle check", 0, None, 1.0))
-        self.addParameter(ParameterSelection(lasoverage.OPERATION, "mode of operation", lasoverage.OPERATIONS, 0))
+        self.addParameter(ParameterNumber(lasoverage.CHECK_STEP,
+                          'size of grid used for scan angle check', 0, None,
+                          1.0))
+        self.addParameter(ParameterSelection(lasoverage.OPERATION,
+                          'mode of operation', lasoverage.OPERATIONS, 0))
         self.addParametersPointOutputGUI()
 
-
     def processAlgorithm(self, progress):
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasoverage.exe")]
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), 'bin',
+                    'lasoverage.exe')]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputCommands(commands)
         self.addParametersHorizontalFeetCommands(commands)
         self.addParametersFilesAreFlightlinesCommands(commands)
         step = self.getParameterValue(lasoverage.CHECK_STEP)
         if step != 1.0:
-            commands.append("-step")
+            commands.append('-step')
             commands.append(str(step))
         operation = self.getParameterValue(lasoverage.OPERATION)
         if operation != 0:
-            commands.append("-" + OPERATIONS[operation])
+            commands.append('-' + OPERATIONS[operation])
         if self.getParameterValue(lasoverage.WITHHELD):
-            commands.append("-withheld")
+            commands.append('-withheld')
         self.addParametersPointOutputCommands(commands)
 
         LAStoolsUtils.runLAStools(commands, progress)

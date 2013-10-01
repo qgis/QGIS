@@ -20,7 +20,9 @@
 __author__ = 'Alexander Bruy'
 __date__ = 'September 2013'
 __copyright__ = '(C) 2013, Alexander Bruy'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
 import os
@@ -35,17 +37,19 @@ from processing.parameters.ParameterBoolean import ParameterBoolean
 
 class ExtractProjection(GeoAlgorithm):
 
-    INPUT = "INPUT"
-    PRJ_FILE = "PRJ_FILE"
+    INPUT = 'INPUT'
+    PRJ_FILE = 'PRJ_FILE'
 
     def getIcon(self):
-        return QIcon(os.path.dirname(__file__) + "/icons/projection-export.png")
+        return QIcon(os.path.dirname(__file__) + '/icons/projection-export.png'
+                     )
 
     def defineCharacteristics(self):
-        self.name = "Extract projection"
-        self.group = "[GDAL] Projections"
-        self.addParameter(ParameterRaster(self.INPUT, "Input file"))
-        self.addParameter(ParameterBoolean(self.PRJ_FILE, "Create also .prj file", False))
+        self.name = 'Extract projection'
+        self.group = '[GDAL] Projections'
+        self.addParameter(ParameterRaster(self.INPUT, 'Input file'))
+        self.addParameter(ParameterBoolean(self.PRJ_FILE,
+                          'Create also .prj file', False))
 
     def processAlgorithm(self, progress):
         rasterPath = self.getParameterValue(self.INPUT)
@@ -58,22 +62,24 @@ class ExtractProjection(GeoAlgorithm):
 
         outFileName = os.path.splitext(unicode(rasterPath))[0]
 
-        if crs != "" and createPrj:
+        if crs != '' and createPrj:
             tmp = osr.SpatialReference()
-            tmp.ImportFromWkt( crs )
+            tmp.ImportFromWkt(crs)
             tmp.MorphToESRI()
             crs = tmp.ExportToWkt()
             tmp = None
 
             prj = open(outFileName + '.prj', 'wt')
-            prj.write( crs )
+            prj.write(crs)
             prj.close()
 
         wld = open(outFileName + '.wld', 'wt')
-        wld.write("%0.8f\n" % geotransform[1])
-        wld.write("%0.8f\n" % geotransform[4])
-        wld.write("%0.8f\n" % geotransform[2])
-        wld.write("%0.8f\n" % geotransform[5])
-        wld.write("%0.8f\n" % (geotransform[0] + 0.5 * geotransform[1] + 0.5 * geotransform[2]))
-        wld.write("%0.8f\n" % (geotransform[3] + 0.5 * geotransform[4] + 0.5 * geotransform[5]))
+        wld.write('%0.8f\n' % geotransform[1])
+        wld.write('%0.8f\n' % geotransform[4])
+        wld.write('%0.8f\n' % geotransform[2])
+        wld.write('%0.8f\n' % geotransform[5])
+        wld.write('%0.8f\n' % (geotransform[0] + 0.5 * geotransform[1] + 0.5
+                  * geotransform[2]))
+        wld.write('%0.8f\n' % (geotransform[3] + 0.5 * geotransform[4] + 0.5
+                  * geotransform[5]))
         wld.close()

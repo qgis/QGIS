@@ -20,7 +20,9 @@
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
 import os
@@ -34,32 +36,38 @@ from processing.outputs.OutputRaster import OutputRaster
 
 from processing.gdal.GdalUtils import GdalUtils
 
+
 class nearblack(GeoAlgorithm):
 
-    INPUT = "INPUT"
-    OUTPUT = "OUTPUT"
-    NEAR = "NEAR"
-    WHITE = "WHITE"
+    INPUT = 'INPUT'
+    OUTPUT = 'OUTPUT'
+    NEAR = 'NEAR'
+    WHITE = 'WHITE'
 
     def getIcon(self):
-        filepath = os.path.dirname(__file__) + "/icons/nearblack.png"
+        filepath = os.path.dirname(__file__) + '/icons/nearblack.png'
         return QtGui.QIcon(filepath)
 
     def defineCharacteristics(self):
-        self.name = "Near black"
-        self.group = "[GDAL] Analysis"
-        self.addParameter(ParameterRaster(nearblack.INPUT, "Input layer", False))
-        self.addParameter(ParameterNumber(nearblack.NEAR, "How far from black (white)", 0, None, 15))
-        self.addParameter(ParameterBoolean(nearblack.WHITE, "Search for nearly white pixels instead of nearly black", False))
-        self.addOutput(OutputRaster(nearblack.OUTPUT, "Output layer"))
+        self.name = 'Near black'
+        self.group = '[GDAL] Analysis'
+        self.addParameter(ParameterRaster(nearblack.INPUT, 'Input layer',
+                          False))
+        self.addParameter(ParameterNumber(nearblack.NEAR,
+                          'How far from black (white)', 0, None, 15))
+        self.addParameter(ParameterBoolean(nearblack.WHITE,
+                'Search for nearly white pixels instead of nearly black',
+                False))
+        self.addOutput(OutputRaster(nearblack.OUTPUT, 'Output layer'))
 
     def processAlgorithm(self, progress):
         arguments = []
-        arguments.append("-o")
+        arguments.append('-o')
         arguments.append(self.getOutputValue(nearblack.OUTPUT))
-        arguments.append("-near")
+        arguments.append('-near')
         arguments.append(str(self.getParameterValue(nearblack.NEAR)))
         if self.getParameterValue(nearblack.WHITE):
-            arguments.append("-white")
+            arguments.append('-white')
         arguments.append(self.getParameterValue(nearblack.INPUT))
-        GdalUtils.runGdal(["nearblack", GdalUtils.escapeAndJoin(arguments)], progress)
+        GdalUtils.runGdal(['nearblack', GdalUtils.escapeAndJoin(arguments)],
+                          progress)

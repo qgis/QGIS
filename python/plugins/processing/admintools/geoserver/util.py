@@ -20,11 +20,12 @@
 __author__ = 'David Winslow'
 __date__ = 'November 2012'
 __copyright__ = '(C) 2012, David Winslow'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
-# shapefile_and_friends = None
-# shapefile_plus_sidecars = shapefile_and_friends("test/data/states")
 
 def shapefile_and_friends(path):
-    return dict((ext, path + "." + ext) for ext in ['shx', 'shp', 'dbf', 'prj'])
+    return dict((ext, path + '.' + ext) for ext in ['shx', 'shp', 'dbf', 'prj'
+                ])

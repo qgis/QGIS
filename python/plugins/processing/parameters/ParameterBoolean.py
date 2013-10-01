@@ -20,14 +20,17 @@
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
 from processing.parameters.Parameter import Parameter
 
+
 class ParameterBoolean(Parameter):
 
-    def __init__(self, name="", description="", default=True):
+    def __init__(self, name='', description='', default=True):
         Parameter.__init__(self, name, description)
         self.default = default
         self.value = None
@@ -40,11 +43,12 @@ class ParameterBoolean(Parameter):
         return True
 
     def serialize(self):
-        return self.__module__.split(".")[-1] + "|" + self.name + "|" + self.description + "|" + str(self.default)
+        return self.__module__.split('.')[-1] + '|' + self.name + '|' \
+            + self.description + '|' + str(self.default)
 
     def deserialize(self, s):
-        tokens = s.split("|")
-        return ParameterBoolean (tokens[1], tokens[2], tokens[3] == str(True))
+        tokens = s.split('|')
+        return ParameterBoolean(tokens[1], tokens[2], tokens[3] == str(True))
 
     def getAsScriptCode(self):
-        return "##" + self.name + "=boolean " + str(self.default)
+        return '##' + self.name + '=boolean ' + str(self.default)

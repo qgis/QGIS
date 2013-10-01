@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """
 InaSAFE Disaster risk assessment tool developed by AusAid -
 **QGIS plugin implementation.**
@@ -19,14 +21,13 @@ Contact : ole.moller.nielsen@gmail.com
 __author__ = 'tim@linfiniti.com'
 __version__ = '0.3.0'
 __date__ = '10/01/2011'
-__copyright__ = ('Copyright (c) 2010 by Ivan Mincik, ivan.mincik@gista.sk and '
-                 'Copyright (c) 2011 German Carrillo, '
-                 'geotux_tuxman@linuxmail.org')
-
+__copyright__ = 'Copyright (c) 2010 by Ivan Mincik, ivan.mincik@gista.sk \
+        and Copyright (c) 2011 German Carrillo, geotux_tuxman@linuxmail.org'
 
 from PyQt4.QtCore import QObject
 from qgis.core import QgsMapLayerRegistry
 from qgis.core import *
+
 
 class QgisInterface(QObject):
     """Class to expose qgis objects and functionalities to plugins.
@@ -39,13 +40,13 @@ class QgisInterface(QObject):
         """Constructor"""
         QObject.__init__(self)
         self.canvas = canvas
-        self.testRaster = QgsRasterLayer('data/raster', "raster")
-        self.testVector = QgsVectorLayer('data/vector', "vector", 'ogr')
-        QgsMapLayerRegistry.instance().addMapLayers([self.testRaster,self.testVector])
+        self.testRaster = QgsRasterLayer('data/raster', 'raster')
+        self.testVector = QgsVectorLayer('data/vector', 'vector', 'ogr')
+        QgsMapLayerRegistry.instance().addMapLayers([self.testRaster,
+                self.testVector])
 
-        self.statusBar = type('FakeStatusBar', (),
-        {'showMessage' : lambda _, m: None
-            })()
+        self.statusBar = type('FakeStatusBar', (), {'showMessage': lambda _,
+                              m: None})()
 
     def zoomFull(self):
         """Zoom to the map full extent"""
@@ -90,23 +91,18 @@ class QgisInterface(QObject):
         return self.canvas
 
     def mainWindow(self):
-        """Return a pointer to the main window
+        """Return a pointer to the main window.
 
         In case of QGIS it returns an instance of QgisApp
         """
-        return type('FakeMainWindow', (),
-        {'statusBar' :
-            lambda _: self.statusBar
-            })()
+
+        return type('FakeMainWindow', (), {'statusBar': lambda _:
+                    self.statusBar})()
 
     def addDockWidget(self, area, dockwidget):
-        """ Add a dock widget to the main window """
+        """Add a dock widget to the main window"""
         pass
 
     def legendInterface(self):
-        return type('FakeLInterface', (),
-        {'layers' :
-            lambda _: [
-                self.testRaster,
-                self.testVector]
-            })()
+        return type('FakeLInterface', (), {'layers': lambda _:
+                    [self.testRaster, self.testVector]})()

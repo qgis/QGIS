@@ -20,21 +20,24 @@
 __author__ = 'Victor Olaya'
 __date__ = 'October 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
 import os
 from qgis.core import *
+from processing.admintools.GeoServerToolsAlgorithm import \
+        GeoServerToolsAlgorithm
 from processing.parameters.ParameterVector import ParameterVector
-from processing.tools import dataobjects
-from processing.tools import dataobjects
 from processing.parameters.ParameterString import ParameterString
-from processing.admintools.GeoServerToolsAlgorithm import GeoServerToolsAlgorithm
+from processing.tools import dataobjects
+
 
 class ImportVectorIntoGeoServer(GeoServerToolsAlgorithm):
 
-    INPUT = "INPUT"
-    WORKSPACE = "WORKSPACE"
+    INPUT = 'INPUT'
+    WORKSPACE = 'WORKSPACE'
 
     def processAlgorithm(self, progress):
         self.createCatalog()
@@ -43,22 +46,22 @@ class ImportVectorIntoGeoServer(GeoServerToolsAlgorithm):
         workspaceName = self.getParameterValue(self.WORKSPACE)
         filename = dataobjects.exportVectorLayer(layer)
         basefilename = os.path.basename(filename)
-        basepathname = os.path.dirname(filename) + os.sep + basefilename[:basefilename.find('.')]
+        basepathname = os.path.dirname(filename) + os.sep \
+            + basefilename[:basefilename.find('.')]
         connection = {
             'shp': basepathname + '.shp',
             'shx': basepathname + '.shx',
             'dbf': basepathname + '.dbf',
-            'prj': basepathname + '.prj'
-        }
+            'prj': basepathname + '.prj',
+            }
 
         workspace = self.catalog.get_workspace(workspaceName)
         self.catalog.create_featurestore(basefilename, connection, workspace)
 
-
     def defineCharacteristics(self):
         self.addBaseParameters()
-        self.name = "Import vector into GeoServer"
-        self.group = "GeoServer management tools"
-        self.addParameter(ParameterVector(self.INPUT, "Layer to import", [ParameterVector.VECTOR_TYPE_ANY]))
-        self.addParameter(ParameterString(self.WORKSPACE, "Workspace"))
-
+        self.name = 'Import vector into GeoServer'
+        self.group = 'GeoServer management tools'
+        self.addParameter(ParameterVector(self.INPUT, 'Layer to import',
+                          [ParameterVector.VECTOR_TYPE_ANY]))
+        self.addParameter(ParameterString(self.WORKSPACE, 'Workspace'))

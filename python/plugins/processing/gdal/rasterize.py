@@ -20,7 +20,9 @@
 __author__ = 'Alexander Bruy'
 __date__ = 'September 2013'
 __copyright__ = '(C) 2013, Alexander Bruy'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
 import os
@@ -38,49 +40,58 @@ from processing.outputs.OutputRaster import OutputRaster
 
 from processing.gdal.GdalUtils import GdalUtils
 
+
 class rasterize(GeoAlgorithm):
 
-    INPUT = "INPUT"
-    FIELD = "FIELD"
-    DIMENSIONS = "DIMENSIONS"
-    WIDTH = "WIDTH"
-    HEIGHT = "HEIGHT"
-    OUTPUT = "OUTPUT"
+    INPUT = 'INPUT'
+    FIELD = 'FIELD'
+    DIMENSIONS = 'DIMENSIONS'
+    WIDTH = 'WIDTH'
+    HEIGHT = 'HEIGHT'
+    OUTPUT = 'OUTPUT'
 
     def getIcon(self):
-        filepath = os.path.dirname(__file__) + "/icons/rasterize.png"
+        filepath = os.path.dirname(__file__) + '/icons/rasterize.png'
         return QtGui.QIcon(filepath)
 
     def defineCharacteristics(self):
-        self.name = "Rasterize (vector to raster)"
-        self.group = "[GDAL] Conversion"
-        self.addParameter(ParameterVector(self.INPUT, "Input layer"))
-        self.addParameter(ParameterTableField(self.FIELD, "Attribute field", self.INPUT))
-        self.addParameter(ParameterSelection(self.DIMENSIONS, "Set output raster size", ["Output size in pixels", "Output resolution in map units per pixel"], 0))
-        self.addParameter(ParameterNumber(self.WIDTH, "Horizontal", 0.0, 99999999.999999, 3000.0))
-        self.addParameter(ParameterNumber(self.HEIGHT, "Vertical", 0.0, 99999999.999999, 3000.0))
+        self.name = 'Rasterize (vector to raster)'
+        self.group = '[GDAL] Conversion'
+        self.addParameter(ParameterVector(self.INPUT, 'Input layer'))
+        self.addParameter(ParameterTableField(self.FIELD, 'Attribute field',
+                          self.INPUT))
+        self.addParameter(ParameterSelection(self.DIMENSIONS,
+                          'Set output raster size', ['Output size in pixels',
+                          'Output resolution in map units per pixel'], 0))
+        self.addParameter(ParameterNumber(self.WIDTH, 'Horizontal', 0.0,
+                          99999999.999999, 3000.0))
+        self.addParameter(ParameterNumber(self.HEIGHT, 'Vertical', 0.0,
+                          99999999.999999, 3000.0))
 
-        self.addOutput(OutputRaster(self.OUTPUT, "Output layer"))
+        self.addOutput(OutputRaster(self.OUTPUT, 'Output layer'))
 
     def processAlgorithm(self, progress):
         arguments = []
-        arguments.append("-a")
+        arguments.append('-a')
         arguments.append(str(self.getParameterValue(self.FIELD)))
 
         dimType = self.getParameterValue(self.DIMENSIONS)
         if dimType == 0:
             # size in pixels
-            arguments.append("-ts")
+            arguments.append('-ts')
         else:
             # resolution in map units per pixel
-            arguments.append("-tr")
+            arguments.append('-tr')
         arguments.append(str(self.getParameterValue(self.WIDTH)))
         arguments.append(str(self.getParameterValue(self.HEIGHT)))
 
-        arguments.append("-l")
-        arguments.append(os.path.basename(os.path.splitext(unicode(self.getParameterValue(self.INPUT)))[0]))
+        arguments.append('-l')
+        arguments.append(
+                os.path.basename(os.path.splitext(
+                        unicode(self.getParameterValue(self.INPUT)))[0]))
         arguments.append(unicode(self.getParameterValue(self.INPUT)))
 
         arguments.append(unicode(self.getOutputValue(self.OUTPUT)))
 
-        GdalUtils.runGdal(["gdal_rasterize", GdalUtils.escapeAndJoin(arguments)], progress)
+        GdalUtils.runGdal(['gdal_rasterize',
+                          GdalUtils.escapeAndJoin(arguments)], progress)

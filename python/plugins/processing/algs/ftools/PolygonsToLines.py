@@ -20,44 +20,46 @@
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
-
 from PyQt4.QtCore import *
-
 from qgis.core import *
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.parameters.ParameterVector import ParameterVector
+from processing.outputs.OutputVector import OutputVector
 from processing.tools import dataobjects, vector
 
-from processing.parameters.ParameterVector import ParameterVector
-
-from processing.outputs.OutputVector import OutputVector
 
 class PolygonsToLines(GeoAlgorithm):
 
-    INPUT = "INPUT"
-    OUTPUT = "OUTPUT"
+    INPUT = 'INPUT'
+    OUTPUT = 'OUTPUT'
 
-    #===========================================================================
+    # =========================================================================
     # def getIcon(self):
-    #    return QtGui.QIcon(os.path.dirname(__file__) + "/icons/to_lines.png")
-    #===========================================================================
+    #    return QIcon(os.path.dirname(__file__) + "/icons/to_lines.png")
+    # =========================================================================
 
     def defineCharacteristics(self):
-        self.name = "Polygons to lines"
-        self.group = "Vector geometry tools"
+        self.name = 'Polygons to lines'
+        self.group = 'Vector geometry tools'
 
-        self.addParameter(ParameterVector(self.INPUT, "Input layer", [ParameterVector.VECTOR_TYPE_POLYGON]))
+        self.addParameter(ParameterVector(self.INPUT, 'Input layer',
+                          [ParameterVector.VECTOR_TYPE_POLYGON]))
 
-        self.addOutput(OutputVector(self.OUTPUT, "Output layer"))
+        self.addOutput(OutputVector(self.OUTPUT, 'Output layer'))
 
     def processAlgorithm(self, progress):
-        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
+        layer = dataobjects.getObjectFromUri(
+                self.getParameterValue(self.INPUT))
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.pendingFields().toList(),
-                     QGis.WKBLineString, layer.crs())
+        writer = self.getOutputFromName(
+                self.OUTPUT).getVectorWriter(layer.pendingFields().toList(),
+                                             QGis.WKBLineString, layer.crs())
 
         outFeat = QgsFeature()
         inGeom = QgsGeometry()
@@ -84,13 +86,13 @@ class PolygonsToLines(GeoAlgorithm):
         multiGeom = QgsGeometry()
         lines = []
         if geom.type() == QGis.Polygon:
-          if geom.isMultipart():
-              multiGeom = geom.asMultiPolygon()
-              for i in multiGeom:
-                  lines.extend(i)
-          else:
-              multiGeom = geom.asPolygon()
-              lines = multiGeom
-          return lines
+            if geom.isMultipart():
+                multiGeom = geom.asMultiPolygon()
+                for i in multiGeom:
+                    lines.extend(i)
+            else:
+                multiGeom = geom.asPolygon()
+                lines = multiGeom
+            return lines
         else:
             return []

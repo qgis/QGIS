@@ -20,7 +20,9 @@
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
 import os
@@ -37,38 +39,43 @@ from processing.tools.system import *
 
 from processing.gdal.GdalUtils import GdalUtils
 
+
 class sieve(GeoAlgorithm):
 
-    INPUT = "INPUT"
-    THRESHOLD = "THRESHOLD"
-    CONNECTIONS = "CONNECTIONS"
-    OUTPUT = "OUTPUT"
+    INPUT = 'INPUT'
+    THRESHOLD = 'THRESHOLD'
+    CONNECTIONS = 'CONNECTIONS'
+    OUTPUT = 'OUTPUT'
 
-    PIXEL_CONNECTIONS = ["4", "8"]
+    PIXEL_CONNECTIONS = ['4', '8']
 
     def getIcon(self):
-        filepath = os.path.dirname(__file__) + "/icons/sieve.png"
+        filepath = os.path.dirname(__file__) + '/icons/sieve.png'
         return QtGui.QIcon(filepath)
 
     def defineCharacteristics(self):
-        self.name = "Sieve"
-        self.group = "[GDAL] Analysis"
-        self.addParameter(ParameterRaster(self.INPUT, "Input layer", False))
-        self.addParameter(ParameterNumber(self.THRESHOLD, "Threshold", 0, 9999, 2))
-        self.addParameter(ParameterSelection(self.CONNECTIONS, "Pixel connection", self.PIXEL_CONNECTIONS, 0))
+        self.name = 'Sieve'
+        self.group = '[GDAL] Analysis'
+        self.addParameter(ParameterRaster(self.INPUT, 'Input layer', False))
+        self.addParameter(ParameterNumber(self.THRESHOLD, 'Threshold', 0,
+                          9999, 2))
+        self.addParameter(ParameterSelection(self.CONNECTIONS,
+                          'Pixel connection', self.PIXEL_CONNECTIONS, 0))
 
-        self.addOutput(OutputRaster(self.OUTPUT, "Output layer"))
+        self.addOutput(OutputRaster(self.OUTPUT, 'Output layer'))
 
     def processAlgorithm(self, progress):
         output = self.getOutputValue(self.OUTPUT)
 
         arguments = []
-        arguments.append("-st")
+        arguments.append('-st')
         arguments.append(str(self.getParameterValue(self.THRESHOLD)))
 
-        arguments.append("-" + self.PIXEL_CONNECTIONS[self.getParameterValue(self.CONNECTIONS)])
+        arguments.append('-' +
+                self.PIXEL_CONNECTIONS[self.getParameterValue(
+                        self.CONNECTIONS)])
 
-        arguments.append("-of")
+        arguments.append('-of')
         arguments.append(GdalUtils.getFormatShortNameFromFilename(output))
 
         arguments.append(self.getParameterValue(self.INPUT))
@@ -76,8 +83,9 @@ class sieve(GeoAlgorithm):
 
         commands = []
         if isWindows():
-            commands = ["cmd.exe", "/C ", "gdal_sieve.bat", GdalUtils.escapeAndJoin(arguments)]
+            commands = ['cmd.exe', '/C ', 'gdal_sieve.bat',
+                        GdalUtils.escapeAndJoin(arguments)]
         else:
-            commands = ["gdal_sieve.py", GdalUtils.escapeAndJoin(arguments)]
+            commands = ['gdal_sieve.py', GdalUtils.escapeAndJoin(arguments)]
 
         GdalUtils.runGdal(commands, progress)

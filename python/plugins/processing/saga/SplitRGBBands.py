@@ -16,46 +16,51 @@
 *                                                                         *
 ***************************************************************************
 """
-from processing.tools.system import *
-from processing.tools import dataobjects
-from processing.saga.SagaUtils import SagaUtils
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
+import os
 from PyQt4 import QtGui
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.parameters.ParameterRaster import ParameterRaster
 from processing.outputs.OutputRaster import OutputRaster
-import os
+from processing.tools.system import *
+from processing.tools import dataobjects
+from processing.saga.SagaUtils import SagaUtils
+
 
 class SplitRGBBands(GeoAlgorithm):
 
-    INPUT = "INPUT"
-    R = "R"
-    G = "G"
-    B = "B"
+    INPUT = 'INPUT'
+    R = 'R'
+    G = 'G'
+    B = 'B'
 
     def getIcon(self):
-        return  QtGui.QIcon(os.path.dirname(__file__) + "/../images/saga.png")
+        return QtGui.QIcon(os.path.dirname(__file__) + '/../images/saga.png')
 
     def defineCharacteristics(self):
-        self.name = "Split RGB bands"
-        self.group = "Grid - Tools"
-        self.addParameter(ParameterRaster(SplitRGBBands.INPUT, "Input layer", False))
-        self.addOutput(OutputRaster(SplitRGBBands.R, "Output R band layer"))
-        self.addOutput(OutputRaster(SplitRGBBands.G, "Output G band layer"))
-        self.addOutput(OutputRaster(SplitRGBBands.B, "Output B band layer"))
+        self.name = 'Split RGB bands'
+        self.group = 'Grid - Tools'
+        self.addParameter(ParameterRaster(SplitRGBBands.INPUT, 'Input layer',
+                          False))
+        self.addOutput(OutputRaster(SplitRGBBands.R, 'Output R band layer'))
+        self.addOutput(OutputRaster(SplitRGBBands.G, 'Output G band layer'))
+        self.addOutput(OutputRaster(SplitRGBBands.B, 'Output B band layer'))
 
     def processAlgorithm(self, progress):
-        #TODO:check correct num of bands
+        # TODO: check correct num of bands
         input = self.getParameterValue(SplitRGBBands.INPUT)
-        temp = getTempFilename(None).replace('.','');
+        temp = getTempFilename(None).replace('.', '')
         basename = os.path.basename(temp)
-        validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+        validChars = \
+            'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
         safeBasename = ''.join(c for c in basename if c in validChars)
         temp = os.path.join(os.path.dirname(temp), safeBasename)
 
@@ -64,15 +69,29 @@ class SplitRGBBands(GeoAlgorithm):
         b = self.getOutputValue(SplitRGBBands.B)
         commands = []
         if isWindows():
-            commands.append("io_gdal 0 -GRIDS \"" + temp + "\" -FILES \"" + input+"\"")
-            commands.append("io_gdal 1 -GRIDS \"" + temp + "_0001.sgrd\" -FORMAT 1 -TYPE 0 -FILE \"" + r + "\"");
-            commands.append("io_gdal 1 -GRIDS \"" + temp + "_0002.sgrd\" -FORMAT 1 -TYPE 0 -FILE \"" + g + "\"");
-            commands.append("io_gdal 1 -GRIDS \"" + temp + "_0003.sgrd\" -FORMAT 1 -TYPE 0 -FILE \"" + b + "\"");
+            commands.append('io_gdal 0 -GRIDS "' + temp + '" -FILES "' + input
+                            + '"')
+            commands.append('io_gdal 1 -GRIDS "' + temp
+                            + '_0001.sgrd" -FORMAT 1 -TYPE 0 -FILE "' + r + '"'
+                            )
+            commands.append('io_gdal 1 -GRIDS "' + temp
+                            + '_0002.sgrd" -FORMAT 1 -TYPE 0 -FILE "' + g + '"'
+                            )
+            commands.append('io_gdal 1 -GRIDS "' + temp
+                            + '_0003.sgrd" -FORMAT 1 -TYPE 0 -FILE "' + b + '"'
+                            )
         else:
-            commands.append("libio_gdal 0 -GRIDS \"" + temp + "\" -FILES \"" + input + "\"")
-            commands.append("libio_gdal 1 -GRIDS \"" + temp + "_0001.sgrd\" -FORMAT 1 -TYPE 0 -FILE \"" + r + "\"");
-            commands.append("libio_gdal 1 -GRIDS \"" + temp + "_0002.sgrd\" -FORMAT 1 -TYPE 0 -FILE \"" + g + "\"");
-            commands.append("libio_gdal 1 -GRIDS \"" + temp + "_0003.sgrd\" -FORMAT 1 -TYPE 0 -FILE \"" + b + "\"");
+            commands.append('libio_gdal 0 -GRIDS "' + temp + '" -FILES "'
+                            + input + '"')
+            commands.append('libio_gdal 1 -GRIDS "' + temp
+                            + '_0001.sgrd" -FORMAT 1 -TYPE 0 -FILE "' + r + '"'
+                            )
+            commands.append('libio_gdal 1 -GRIDS "' + temp
+                            + '_0002.sgrd" -FORMAT 1 -TYPE 0 -FILE "' + g + '"'
+                            )
+            commands.append('libio_gdal 1 -GRIDS "' + temp
+                            + '_0003.sgrd" -FORMAT 1 -TYPE 0 -FILE "' + b + '"'
+                            )
 
         SagaUtils.createSagaBatchJobFileFromSagaCommands(commands)
-        SagaUtils.executeSaga(progress);
+        SagaUtils.executeSaga(progress)

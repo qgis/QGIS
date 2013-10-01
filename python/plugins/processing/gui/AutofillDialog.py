@@ -20,7 +20,9 @@
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
 from PyQt4 import QtGui, QtCore
@@ -34,7 +36,7 @@ class AutofillDialog(QtGui.QDialog):
     FILL_WITH_NUMBERS = 1
     FILL_WITH_PARAMETER = 2
 
-    def __init__(self,alg):
+    def __init__(self, alg):
         QtGui.QDialog.__init__(self)
 
         self.verticalLayout = QtGui.QVBoxLayout(self)
@@ -43,18 +45,18 @@ class AutofillDialog(QtGui.QDialog):
         self.horizontalLayout = QtGui.QHBoxLayout(self)
         self.horizontalLayout.setSpacing(2)
         self.horizontalLayout.setMargin(0)
-        self.label = QtGui.QLabel("Autofill mode")
+        self.label = QtGui.QLabel('Autofill mode')
         self.horizontalLayout.addWidget(self.label)
         self.typeCombo = QtGui.QComboBox()
-        self.typeCombo.addItem("Do not autofill")
-        self.typeCombo.addItem("Fill with numbers")
-        self.typeCombo.addItem("Fill with parameter values")
+        self.typeCombo.addItem('Do not autofill')
+        self.typeCombo.addItem('Fill with numbers')
+        self.typeCombo.addItem('Fill with parameter values')
         self.horizontalLayout.addWidget(self.typeCombo)
         self.verticalLayout.addLayout(self.horizontalLayout)
         self.horizontalLayout2 = QtGui.QHBoxLayout(self)
         self.horizontalLayout2.setSpacing(2)
         self.horizontalLayout2.setMargin(0)
-        self.label2 = QtGui.QLabel("Parameter to use")
+        self.label2 = QtGui.QLabel('Parameter to use')
         self.horizontalLayout2.addWidget(self.label2)
         self.fieldCombo = QtGui.QComboBox()
         for param in alg.parameters:
@@ -64,13 +66,15 @@ class AutofillDialog(QtGui.QDialog):
 
         self.buttonBox = QtGui.QDialogButtonBox(self)
         self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
-        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
-        QObject.connect(self.buttonBox, QtCore.SIGNAL("accepted()"), self.okPressed)
-        QObject.connect(self.buttonBox, QtCore.SIGNAL("rejected()"), self.cancelPressed)
+        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel
+                | QtGui.QDialogButtonBox.Ok)
+        QObject.connect(self.buttonBox, QtCore.SIGNAL('accepted()'),
+                        self.okPressed)
+        QObject.connect(self.buttonBox, QtCore.SIGNAL('rejected()'),
+                        self.cancelPressed)
         self.verticalLayout.addWidget(self.buttonBox)
 
         self.setLayout(self.verticalLayout)
-
 
     def okPressed(self):
         self.mode = self.typeCombo.currentIndex()

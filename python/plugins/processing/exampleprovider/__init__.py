@@ -20,10 +20,14 @@
 __author__ = 'Victor Olaya'
 __date__ = 'July 2013'
 __copyright__ = '(C) 2013, Victor Olaya'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
+
+from exampleprovider.ProcessingExampleProviderPlugin import \
+            ProcessingExampleProviderPlugin
 
 
 def classFactory(iface):
-    from exampleprovider.ProcessingExampleProviderPlugin import ProcessingExampleProviderPlugin
     return ProcessingExampleProviderPlugin()

@@ -20,10 +20,13 @@
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
 from PyQt4 import QtGui
+
 
 class RangePanel(QtGui.QWidget):
 
@@ -33,15 +36,17 @@ class RangePanel(QtGui.QWidget):
         self.horizontalLayout.setSpacing(2)
         self.horizontalLayout.setMargin(0)
         self.labelmin = QtGui.QLabel()
-        self.labelmin.setText("Min")
+        self.labelmin.setText('Min')
         self.textmin = QtGui.QLineEdit()
-        self.textmin.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        self.textmin.setSizePolicy(QtGui.QSizePolicy.Expanding,
+                                   QtGui.QSizePolicy.Expanding)
         self.labelmax = QtGui.QLabel()
-        self.labelmax.setText("Max")
+        self.labelmax.setText('Max')
         self.textmax = QtGui.QLineEdit()
-        self.textmin.setText(param.default.split(",")[0])
-        self.textmax.setText(param.default.split(",")[1])
-        self.textmax.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        self.textmin.setText(param.default.split(',')[0])
+        self.textmax.setText(param.default.split(',')[1])
+        self.textmax.setSizePolicy(QtGui.QSizePolicy.Expanding,
+                                   QtGui.QSizePolicy.Expanding)
         self.horizontalLayout.addWidget(self.labelmin)
         self.horizontalLayout.addWidget(self.textmin)
         self.horizontalLayout.addWidget(self.labelmax)
@@ -49,4 +54,4 @@ class RangePanel(QtGui.QWidget):
         self.setLayout(self.horizontalLayout)
 
     def getValue(self):
-        return self.textmin.text() + "," + self.textmax.text()
+        return self.textmin.text() + ',' + self.textmax.text()

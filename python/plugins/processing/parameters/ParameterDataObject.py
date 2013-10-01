@@ -20,19 +20,22 @@
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
 from processing.parameters.Parameter import Parameter
 from processing.tools.system import *
 
+
 class ParameterDataObject(Parameter):
 
     def getValueAsCommandLineParameter(self):
-        if self.value == None:
+        if self.value is None:
             return str(None)
         else:
             if not isWindows():
-                return "\"" + unicode(self.value) + "\""
+                return '"' + unicode(self.value) + '"'
             else:
-                return "\"" + unicode(self.value).replace("\\", "\\\\") + "\""
+                return '"' + unicode(self.value).replace('\\', '\\\\') + '"'

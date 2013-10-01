@@ -16,41 +16,47 @@
 *                                                                         *
 ***************************************************************************
 """
+
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+from processing.core.ProcessingResults import ProcessingResults
 from processing.gui.Postprocessing import Postprocessing
-from processing.parameters.ParameterFile import ParameterFile
 from processing.gui.FileSelectionPanel import FileSelectionPanel
-from processing.parameters.ParameterRaster import ParameterRaster
-from processing.parameters.ParameterTable import ParameterTable
-from processing.parameters.ParameterVector import ParameterVector
 from processing.gui.BatchInputSelectionPanel import BatchInputSelectionPanel
 from processing.gui.AlgorithmExecutionDialog import AlgorithmExecutionDialog
 from processing.gui.CrsSelectionPanel import CrsSelectionPanel
-from processing.outputs.OutputNumber import OutputNumber
-from processing.outputs.OutputString import OutputString
-from processing.tools.system import *
+from processing.gui.ExtentSelectionPanel import ExtentSelectionPanel
+from processing.gui.FixedTablePanel import FixedTablePanel
+from processing.gui.BatchOutputSelectionPanel import BatchOutputSelectionPanel
+from processing.gui.UnthreadedAlgorithmExecutor import \
+        UnthreadedAlgorithmExecutor
+from processing.parameters.ParameterFile import ParameterFile
+from processing.parameters.ParameterRaster import ParameterRaster
+from processing.parameters.ParameterTable import ParameterTable
+from processing.parameters.ParameterVector import ParameterVector
 from processing.parameters.ParameterExtent import ParameterExtent
 from processing.parameters.ParameterCrs import ParameterCrs
-from processing.gui.ExtentSelectionPanel import ExtentSelectionPanel
 from processing.parameters.ParameterBoolean import ParameterBoolean
 from processing.parameters.ParameterSelection import ParameterSelection
 from processing.parameters.ParameterFixedTable import ParameterFixedTable
-from processing.gui.FixedTablePanel import FixedTablePanel
 from processing.parameters.ParameterMultipleInput import ParameterMultipleInput
-from processing.gui.BatchOutputSelectionPanel import BatchOutputSelectionPanel
+from processing.outputs.OutputNumber import OutputNumber
+from processing.outputs.OutputString import OutputString
 from processing.outputs.OutputHTML import OutputHTML
-from processing.core.ProcessingResults import ProcessingResults
-from processing.gui.UnthreadedAlgorithmExecutor import UnthreadedAlgorithmExecutor
+from processing.tools.system import *
+
 
 class BatchProcessingDialog(AlgorithmExecutionDialog):
+
     def __init__(self, alg):
         self.algs = None
         self.showAdvanced = False
@@ -58,32 +64,39 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
         AlgorithmExecutionDialog.__init__(self, alg, self.table)
         self.setWindowModality(1)
         self.resize(800, 500)
-        self.setWindowTitle("Batch Processing - " + self.alg.name)
+        self.setWindowTitle('Batch Processing - ' + self.alg.name)
         for param in self.alg.parameters:
             if param.isAdvanced:
                 self.advancedButton = QtGui.QPushButton()
-                self.advancedButton.setText("Show advanced parameters")
+                self.advancedButton.setText('Show advanced parameters')
                 self.advancedButton.setMaximumWidth(150)
-                self.buttonBox.addButton(self.advancedButton, QtGui.QDialogButtonBox.ActionRole)
-                self.advancedButton.clicked.connect(self.showAdvancedParametersClicked)
+                self.buttonBox.addButton(self.advancedButton,
+                        QtGui.QDialogButtonBox.ActionRole)
+                self.advancedButton.clicked.connect(
+                        self.showAdvancedParametersClicked)
                 break
         self.addRowButton = QtGui.QPushButton()
-        self.addRowButton.setText("Add row")
-        self.buttonBox.addButton(self.addRowButton, QtGui.QDialogButtonBox.ActionRole)
+        self.addRowButton.setText('Add row')
+        self.buttonBox.addButton(self.addRowButton,
+                                 QtGui.QDialogButtonBox.ActionRole)
         self.deleteRowButton = QtGui.QPushButton()
-        self.deleteRowButton.setText("Delete row")
-        self.buttonBox.addButton(self.addRowButton, QtGui.QDialogButtonBox.ActionRole)
-        self.buttonBox.addButton(self.deleteRowButton, QtGui.QDialogButtonBox.ActionRole)
+        self.deleteRowButton.setText('Delete row')
+        self.buttonBox.addButton(self.addRowButton,
+                                 QtGui.QDialogButtonBox.ActionRole)
+        self.buttonBox.addButton(self.deleteRowButton,
+                                 QtGui.QDialogButtonBox.ActionRole)
 
-        self.table.setColumnCount(self.alg.getVisibleParametersCount() + self.alg.getVisibleOutputsCount() + 1)
+        self.table.setColumnCount(self.alg.getVisibleParametersCount()
+                                  + self.alg.getVisibleOutputsCount() + 1)
         self.setTableContent()
         self.table.horizontalHeader().setStretchLastSection(True)
         self.table.verticalHeader().setVisible(False)
-        self.table.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        self.table.setSizePolicy(QtGui.QSizePolicy.Expanding,
+                                 QtGui.QSizePolicy.Expanding)
         self.addRowButton.clicked.connect(self.addRow)
         self.deleteRowButton.clicked.connect(self.deleteRow)
-        self.table.horizontalHeader().sectionDoubleClicked.connect(self.headerDoubleClicked)
-
+        self.table.horizontalHeader().sectionDoubleClicked.connect(
+                self.headerDoubleClicked)
 
     def headerDoubleClicked(self, col):
         widget = self.table.cellWidget(0, col)
@@ -94,10 +107,10 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
         elif isinstance(widget, ExtentSelectionPanel):
             widgetValue = widget.getValue()
             for row in range(1, self.table.rowCount()):
-                if widgetValue != None:
+                if widgetValue is not None:
                     self.table.cellWidget(row, col).text.setText(widgetValue)
                 else:
-                    self.table.cellWidget(row, col).text.setText("")
+                    self.table.cellWidget(row, col).text.setText('')
         elif isinstance(widget, CrsSelectionPanel):
             widgetValue = widget.getValue()
             for row in range(1, self.table.rowCount()):
@@ -114,31 +127,31 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
             widgetValue = widget.getText()
             for row in range(1, self.table.rowCount()):
                 self.table.cellWidget(row, col).setText(widgetValue)
-
         else:
             pass
-
 
     def setTableContent(self):
         i = 0
         for param in self.alg.parameters:
-            self.table.setColumnWidth(i,250)
-            self.table.setHorizontalHeaderItem(i, QtGui.QTableWidgetItem(param.description))
+            self.table.setColumnWidth(i, 250)
+            self.table.setHorizontalHeaderItem(i,
+                    QtGui.QTableWidgetItem(param.description))
             if param.isAdvanced:
                 self.table.setColumnHidden(i, not self.showAdvanced)
-            i+=1
+            i += 1
         for out in self.alg.outputs:
             if not out.hidden:
-                self.table.setColumnWidth(i,250)
-                self.table.setHorizontalHeaderItem(i, QtGui.QTableWidgetItem(out.description))
-                i+=1
+                self.table.setColumnWidth(i, 250)
+                self.table.setHorizontalHeaderItem(i,
+                        QtGui.QTableWidgetItem(out.description))
+                i += 1
 
         self.table.setColumnWidth(i, 200)
-        self.table.setHorizontalHeaderItem(i, QtGui.QTableWidgetItem("Load in QGIS"))
+        self.table.setHorizontalHeaderItem(i,
+                QtGui.QTableWidgetItem('Load in QGIS'))
 
         for i in range(3):
             self.addRow()
-
 
     def accept(self):
         self.canceled = False
@@ -152,20 +165,25 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
                     continue
                 widget = self.table.cellWidget(row, col)
                 if not self.setParameterValueFromWidget(param, widget, alg):
-                    self.progressLabel.setText("<b>Missing parameter value: " + param.description + " (row " + str(row + 1) + ")</b>")
+                    self.progressLabel.setText('<b>Missing parameter value: '
+                            + param.description + ' (row ' + str(row + 1)
+                            + ')</b>')
                     self.algs = None
                     return
-                col+=1
+                col += 1
             for out in alg.outputs:
                 if out.hidden:
                     continue
                 widget = self.table.cellWidget(row, col)
                 text = widget.getValue()
-                if text.strip() != "":
+                if text.strip() != '':
                     out.value = text
-                    col+=1
+                    col += 1
                 else:
-                    self.progressLabel.setText("<b>Wrong or missing parameter value: " + out.description + " (row " + str(row + 1) + ")</b>")
+                    self.progressLabel.setText(
+                            '<b>Wrong or missing parameter value: '
+                             + out.description + ' (row ' + str(row + 1)
+                             + ')</b>')
                     self.algs = None
                     return
             self.algs.append(alg)
@@ -176,9 +194,11 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
         self.table.setEnabled(False)
         self.tabWidget.setCurrentIndex(1)
         self.progress.setMaximum(len(self.algs))
-        for i, alg in enumerate(self.algs):
-            self.setBaseText("Processing algorithm " + str(i+1) + "/" + str(len(self.algs)) + "...")
-            if UnthreadedAlgorithmExecutor.runalg(alg, self) and not self.canceled:
+        for (i, alg) in enumerate(self.algs):
+            self.setBaseText('Processing algorithm ' + str(i + 1) + '/'
+                             + str(len(self.algs)) + '...')
+            if UnthreadedAlgorithmExecutor.runalg(alg, self) \
+                and not self.canceled:
                 if self.load[i]:
                     Postprocessing.handleAlgorithmResults(alg, self, False)
             else:
@@ -192,7 +212,8 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
             if out.hidden or not out.open:
                 continue
             if isinstance(out, OutputHTML):
-                ProcessingResults.addResult(out.description + "[" + str(i) + "]", out.value)
+                ProcessingResults.addResult(out.description + '[' + str(i)
+                        + ']', out.value)
 
     def cancel(self):
         self.canceled = True
@@ -201,21 +222,23 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
     def createSummaryTable(self):
         createTable = False
         for out in self.algs[0].outputs:
-            if isinstance(out, (OutputNumber,OutputString)):
+            if isinstance(out, (OutputNumber, OutputString)):
                 createTable = True
                 break
         if not createTable:
             return
-        outputFile = getTempFilename("html")
-        f = open(outputFile, "w")
+        outputFile = getTempFilename('html')
+        f = open(outputFile, 'w')
         for alg in self.algs:
-            f.write("<hr>\n")
+            f.write('<hr>\n')
             for out in alg.outputs:
-                if isinstance(out, (OutputNumber,OutputString)):
-                    f.write("<p>" + out.description + ": " + str(out.value) + "</p>\n")
-        f.write("<hr>\n")
+                if isinstance(out, (OutputNumber, OutputString)):
+                    f.write('<p>' + out.description + ': ' + str(out.value)
+                            + '</p>\n')
+        f.write('<hr>\n')
         f.close()
-        ProcessingResults.addResult(self.algs[0].name + "[summary]", outputFile)
+        ProcessingResults.addResult(self.algs[0].name + '[summary]',
+                                    outputFile)
 
     def finishAll(self):
         i = 0
@@ -225,12 +248,14 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
         self.createSummaryTable()
         QApplication.restoreOverrideCursor()
         self.table.setEnabled(True)
-        QMessageBox.information(self, "Batch processing", "Batch processing successfully completed!")
+        QMessageBox.information(self, 'Batch processing',
+                                'Batch processing successfully completed!')
 
-    def setParameterValueFromWidget(self, param, widget, alg = None):
-        if isinstance(param, (ParameterRaster, ParameterVector, ParameterTable, ParameterMultipleInput)):
+    def setParameterValueFromWidget(self, param, widget, alg=None):
+        if isinstance(param, (ParameterRaster, ParameterVector,
+                      ParameterTable, ParameterMultipleInput)):
             value = widget.getText()
-            if unicode(value).strip() == "":
+            if unicode(value).strip() == '':
                 value = None
             return param.setValue(value)
         elif isinstance(param, ParameterBoolean):
@@ -239,8 +264,8 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
             return param.setValue(widget.currentIndex())
         elif isinstance(param, ParameterFixedTable):
             return param.setValue(widget.table)
-        elif isinstance(param, (ParameterExtent)):
-            if alg != None:
+        elif isinstance(param, ParameterExtent):
+            if alg is not None:
                 widget.useNewAlg(alg)
             return param.setValue(widget.getValue())
         elif isinstance(param, (ParameterCrs, ParameterFile)):
@@ -249,12 +274,13 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
             return param.setValue(widget.text())
 
     def getWidgetFromParameter(self, param, row, col):
-        if isinstance(param, (ParameterRaster, ParameterVector, ParameterTable, ParameterMultipleInput)):
+        if isinstance(param, (ParameterRaster, ParameterVector,
+                      ParameterTable, ParameterMultipleInput)):
             item = BatchInputSelectionPanel(param, row, col, self)
         elif isinstance(param, ParameterBoolean):
             item = QtGui.QComboBox()
-            item.addItem("Yes")
-            item.addItem("No")
+            item.addItem('Yes')
+            item.addItem('No')
             if param.default:
                 item.setCurrentIndex(0)
             else:
@@ -281,39 +307,43 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
 
     def deleteRow(self):
         if self.table.rowCount() > 2:
-            self.table.setRowCount(self.table.rowCount()-1)
+            self.table.setRowCount(self.table.rowCount() - 1)
 
     def addRow(self):
-        self.table.setRowCount(self.table.rowCount()+1)
-        self.table.setRowHeight(self.table.rowCount()-1, 22)
-        i=0
+        self.table.setRowCount(self.table.rowCount() + 1)
+        self.table.setRowHeight(self.table.rowCount() - 1, 22)
+        i = 0
         for param in self.alg.parameters:
-            self.table.setCellWidget(self.table.rowCount()-1,i, self.getWidgetFromParameter(param, self.table.rowCount()-1, i))
-            i+=1
+            self.table.setCellWidget(self.table.rowCount() - 1, i,
+                                     self.getWidgetFromParameter(param,
+                                     self.table.rowCount() - 1, i))
+            i += 1
         for out in self.alg.outputs:
-            self.table.setCellWidget(self.table.rowCount()-1,i, BatchOutputSelectionPanel(out, self.alg, self.table.rowCount()-1, i, self))
-            i+=1
+            self.table.setCellWidget(self.table.rowCount() - 1, i,
+                                     BatchOutputSelectionPanel(out, self.alg,
+                                     self.table.rowCount() - 1, i, self))
+            i += 1
 
         item = QtGui.QComboBox()
-        item.addItem("Yes")
-        item.addItem("No")
+        item.addItem('Yes')
+        item.addItem('No')
         item.setCurrentIndex(0)
-        self.table.setCellWidget(self.table.rowCount()-1, i, item)
+        self.table.setCellWidget(self.table.rowCount() - 1, i, item)
 
     def showAdvancedParametersClicked(self):
         self.showAdvanced = not self.showAdvanced
         if self.showAdvanced:
-            self.advancedButton.setText("Hide advanced parameters")
+            self.advancedButton.setText('Hide advanced parameters')
         else:
-            self.advancedButton.setText("Show advanced parameters")
+            self.advancedButton.setText('Show advanced parameters')
         i = 0
         for param in self.alg.parameters:
             if param.isAdvanced:
                 self.table.setColumnHidden(i, not self.showAdvanced)
-            i+=1
+            i += 1
 
     def setText(self, text):
-        self.progressLabel.setText(self.baseText + "   --- [" + text + "]")
+        self.progressLabel.setText(self.baseText + '   --- [' + text + ']')
 
     def setBaseText(self, text):
         self.baseText = text

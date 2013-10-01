@@ -20,12 +20,17 @@
 __author__ = 'David Winslow'
 __date__ = 'November 2012'
 __copyright__ = '(C) 2012, David Winslow'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
-from processing.admintools.geoserver.support import ResourceInfo, url, xml_property
+from processing.admintools.geoserver.support import ResourceInfo, url, \
+    xml_property
+
 
 class Style(ResourceInfo):
+
     def __init__(self, catalog, name):
         super(Style, self).__init__()
         assert isinstance(name, basestring)
@@ -36,12 +41,12 @@ class Style(ResourceInfo):
 
     @property
     def href(self):
-        return url(self.catalog.service_url, ["styles", self.name + ".xml"])
+        return url(self.catalog.service_url, ['styles', self.name + '.xml'])
 
     def body_href(self):
-        return url(self.catalog.service_url, ["styles", self.name + ".sld"])
+        return url(self.catalog.service_url, ['styles', self.name + '.sld'])
 
-    filename = xml_property("filename")
+    filename = xml_property('filename')
 
     def _get_sld_dom(self):
         if self._sld_dom is None:
@@ -50,15 +55,17 @@ class Style(ResourceInfo):
 
     @property
     def sld_title(self):
-        user_style = self._get_sld_dom().find("{http://www.opengis.net/sld}NamedLayer/{http://www.opengis.net/sld}UserStyle")
-        title_node = user_style.find("{http://www.opengis.net/sld}Title")
-        return title_node.text if title_node is not None else None
+        user_style = \
+            self._get_sld_dom().find('{http://www.opengis.net/sld}NamedLayer/{http://www.opengis.net/sld}UserStyle')
+        title_node = user_style.find('{http://www.opengis.net/sld}Title')
+        return (title_node.text if title_node is not None else None)
 
     @property
     def sld_name(self):
-        user_style = self._get_sld_dom().find("{http://www.opengis.net/sld}NamedLayer/{http://www.opengis.net/sld}UserStyle")
-        name_node = user_style.find("{http://www.opengis.net/sld}Name")
-        return name_node.text if name_node is not None else None
+        user_style = \
+            self._get_sld_dom().find('{http://www.opengis.net/sld}NamedLayer/{http://www.opengis.net/sld}UserStyle')
+        name_node = user_style.find('{http://www.opengis.net/sld}Name')
+        return (name_node.text if name_node is not None else None)
 
     @property
     def sld_body(self):
@@ -66,6 +73,5 @@ class Style(ResourceInfo):
         return content
 
     def update_body(self, body):
-        headers = { "Content-Type": "application/vnd.ogc.sld+xml" }
-        self.catalog.http.request(
-            self.body_href(), "PUT", body, headers)
+        headers = {'Content-Type': 'application/vnd.ogc.sld+xml'}
+        self.catalog.http.request(self.body_href(), 'PUT', body, headers)

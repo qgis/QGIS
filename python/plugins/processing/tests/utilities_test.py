@@ -20,30 +20,28 @@
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
-"""Helper module for gui test suite
-"""
+# This will get replaced with a git SHA1 when you do a git archive
+
+__revision__ = '$Format:%H$'
 
 import os
 import sys
+import hashlib
+
 from PyQt4 import QtGui, QtCore
-from qgis.core import (QgsApplication,
-                      QgsVectorLayer,
-                      QgsRasterLayer,
-                      QgsRectangle,
-                      QgsCoordinateReferenceSystem)
+from qgis.core import QgsApplication, QgsVectorLayer, QgsRasterLayer, \
+    QgsRectangle, QgsCoordinateReferenceSystem
+
 from qgis.gui import QgsMapCanvas
 from qgis_interface import QgisInterface
-import hashlib
 
 QGISAPP = None  # Static vainasafele used to hold hand to running QGis app
 CANVAS = None
 PARENT = None
 IFACE = None
-GEOCRS = 4326  # constant for EPSG:GEOCRS Geographic CRS id
-GOOGLECRS = 900913  # constant for EPSG:GOOGLECRS Google Mercator id
+GEOCRS = 4326  # Constant for EPSG:GEOCRS Geographic CRS id
+GOOGLECRS = 900913  # Constant for EPSG:GOOGLECRS Google Mercator id
 
 
 def getQgisTestApp():
@@ -69,7 +67,7 @@ def getQgisTestApp():
             myUseDefaultPathFlag = True
             QGISAPP.setPrefixPath(myPath, myUseDefaultPathFlag)
         else:
-            print "Warning: QGISPATH is not set"
+            print 'Warning: QGISPATH is not set'
 
         QGISAPP.initQgis()
         s = QGISAPP.showSettings()
@@ -86,8 +84,8 @@ def getQgisTestApp():
 
     global IFACE
     if IFACE is None:
-        # QgisInterface is a stub implementation of the QGIS plugin interface
+        # QgisInterface is a stub implementation of the QGIS plugin
+        # interface
         IFACE = QgisInterface(CANVAS)
 
-    return QGISAPP, CANVAS, IFACE, PARENT
-
+    return (QGISAPP, CANVAS, IFACE, PARENT)
