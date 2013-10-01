@@ -369,6 +369,7 @@ void QgsCompositionWidget::displayCompositionWidthHeight()
   setSize( mPaperHeightDoubleSpinBox, paperHeight );
 
   //set orientation
+  mPaperOrientationComboBox->blockSignals( true );
   if ( paperWidth > paperHeight )
   {
     mPaperOrientationComboBox->setCurrentIndex( mPaperOrientationComboBox->findText( tr( "Landscape" ) ) );
@@ -377,6 +378,7 @@ void QgsCompositionWidget::displayCompositionWidthHeight()
   {
     mPaperOrientationComboBox->setCurrentIndex( mPaperOrientationComboBox->findText( tr( "Portrait" ) ) );
   }
+  mPaperOrientationComboBox->blockSignals( false );
 
   //set paper name
   bool found = false;

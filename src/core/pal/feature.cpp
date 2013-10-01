@@ -1361,7 +1361,12 @@ namespace pal
     // purge candidates that are outside the bbox
     for ( i = 0; i < nbp; i++ )
     {
-      if ( !( *lPos )[i]->isIn( bbox ) )
+      bool outside = false;
+      if ( f->layer->pal->getShowPartial() )
+        outside = !( *lPos )[i]->isIntersect( bbox );
+      else
+        outside = !( *lPos )[i]->isInside( bbox );
+      if ( outside )
       {
         rnbp--;
         ( *lPos )[i]->setCost( DBL_MAX ); // infinite cost => do not use

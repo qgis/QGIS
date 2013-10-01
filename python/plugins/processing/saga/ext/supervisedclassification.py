@@ -24,9 +24,13 @@ __copyright__ = '(C) 2013, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from processing.tests.TestData import table
+from processing.core.ProcessingConfig import ProcessingConfig
+from processing.saga.SagaUtils import SagaUtils
 
 def editCommands(commands):
-    commands[-3] = commands[-3] + " -STATS " + table()
-    return commands
-
-
+	saga208 = ProcessingConfig.getSetting(SagaUtils.SAGA_208)
+	if not saga208:
+		commands[-3] = commands[-3] + " -STATS " + table()
+		return commands
+	else:
+		return commands

@@ -617,6 +617,9 @@ class QgsPalLabeling : QgsLabelingEngineInterface
 
     bool isShowingAllLabels() const;
     void setShowingAllLabels( bool showing );
+    
+    bool isShowingPartialsLabels() const;
+    void setShowingPartialsLabels( bool showing );
 
     // implemented methods from labeling engine interface
 

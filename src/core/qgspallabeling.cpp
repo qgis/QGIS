@@ -3049,6 +3049,7 @@ QgsPalLabeling::QgsPalLabeling()
   mShowingCandidates = false;
   mShowingShadowRects = false;
   mShowingAllLabels = false;
+  mShowingPartialsLabels = p.getShowPartial();
 
   mLabelSearchTree = new QgsLabelSearchTree();
 }
@@ -3443,6 +3444,8 @@ void QgsPalLabeling::init( QgsMapRenderer* mr )
   mPal->setPointP( mCandPoint );
   mPal->setLineP( mCandLine );
   mPal->setPolyP( mCandPolygon );
+
+  mPal->setShowPartial( mShowingPartialsLabels );
 
   clearActiveLayers(); // free any previous QgsDataDefined objects
   mActiveDiagramLayers.clear();
@@ -4812,6 +4815,8 @@ void QgsPalLabeling::loadEngineSettings()
                           "PAL", "/ShowingShadowRects", false, &saved );
   mShowingAllLabels = QgsProject::instance()->readBoolEntry(
                         "PAL", "/ShowingAllLabels", false, &saved );
+  mShowingPartialsLabels = QgsProject::instance()->readBoolEntry(
+                        "PAL", "/ShowingPartialsLabels", p.getShowPartial(), &saved );
   mSavedWithProject = saved;
 }
 
@@ -4824,6 +4829,7 @@ void QgsPalLabeling::saveEngineSettings()
   QgsProject::instance()->writeEntry( "PAL", "/ShowingCandidates", mShowingCandidates );
   QgsProject::instance()->writeEntry( "PAL", "/ShowingShadowRects", mShowingShadowRects );
   QgsProject::instance()->writeEntry( "PAL", "/ShowingAllLabels", mShowingAllLabels );
+  QgsProject::instance()->writeEntry( "PAL", "/ShowingPartialsLabels", mShowingPartialsLabels );
   mSavedWithProject = true;
 }
 
@@ -4836,6 +4842,7 @@ void QgsPalLabeling::clearEngineSettings()
   QgsProject::instance()->removeEntry( "PAL", "/ShowingCandidates" );
   QgsProject::instance()->removeEntry( "PAL", "/ShowingShadowRects" );
   QgsProject::instance()->removeEntry( "PAL", "/ShowingAllLabels" );
+  QgsProject::instance()->removeEntry( "PAL", "/ShowingPartialsLabels" );
   mSavedWithProject = false;
 }
 
@@ -4845,5 +4852,6 @@ QgsLabelingEngineInterface* QgsPalLabeling::clone()
   lbl->mShowingAllLabels = mShowingAllLabels;
   lbl->mShowingCandidates = mShowingCandidates;
   lbl->mShowingShadowRects = mShowingShadowRects;
+  lbl->mShowingPartialsLabels = mShowingPartialsLabels;  
   return lbl;
 }

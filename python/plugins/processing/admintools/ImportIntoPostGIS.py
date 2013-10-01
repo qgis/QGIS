@@ -96,6 +96,7 @@ class ImportIntoPostGIS(GeoAlgorithm):
         self.group = "PostGIS management tools"
         self.addParameter(ParameterVector(self.INPUT, "Layer to import"))
         self.addParameter(ParameterString(self.DATABASE, "Database (connection name)"))
+        self.addParameter(ParameterString(self.SCHEMA, "Schema (schema name)"))
         self.addParameter(ParameterString(self.TABLENAME, "Table to import to"))
         self.addParameter(ParameterBoolean(self.OVERWRITE, "Overwrite", True))
         self.addParameter(ParameterBoolean(self.CREATEINDEX, "Create spatial index", True))

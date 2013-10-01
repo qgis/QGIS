@@ -51,6 +51,26 @@ class TestPointBase(object):
         # Label color change
         self.lyr.textColor = Qt.blue
         self.checkTest()
+        
+    def test_partials_labels_enabled(self):
+        # Set Big font size
+        font = QFont(self._TestFont)
+        font.setPointSizeF(90)
+        self.lyr.textFont = font
+        # Enable partials labels
+        self._PalEngine.setShowingPartialsLabels(True)
+        # Check
+        self.checkTest()
+
+    def test_partials_labels_disabled(self):
+        # Set Big font size
+        font = QFont(self._TestFont)
+        font.setPointSizeF(90)
+        self.lyr.textFont = font
+        # Disable partials labels
+        self._PalEngine.setShowingPartialsLabels(False)
+        # Check
+        self.checkTest()
 
 
 if __name__ == '__main__':

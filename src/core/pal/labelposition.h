@@ -109,11 +109,25 @@ namespace pal
 
 
       /**
-       * \brief is the labelposition in the bounding-box ?
+       * \brief Is the labelposition in the bounding-box ? (intersect or inside????)
        *
        *\param bbox the bounding-box double[4] = {xmin, ymin, xmax, ymax}
        */
       bool isIn( double *bbox );
+
+      /**
+       * \brief Is the labelposition intersect the bounding-box ?
+       *
+       *\param bbox the bounding-box double[4] = {xmin, ymin, xmax, ymax}
+       */
+      bool isIntersect( double *bbox );
+      
+      /**
+       * \brief Is the labelposition inside the bounding-box ?
+       *
+       *\param bbox the bounding-box double[4] = {xmin, ymin, xmax, ymax}
+       */
+      bool isInside( double *bbox );
 
       /**
        * \brief Check whether or not this overlap with another labelPosition
