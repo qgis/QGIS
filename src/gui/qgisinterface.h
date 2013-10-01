@@ -402,6 +402,9 @@ class GUI_EXPORT QgisInterface : public QObject
 
     //! ToolBars
     virtual QToolBar *fileToolBar() = 0;
+#ifdef WITH_SAVEONLYTOOLBAR
+    virtual QToolBar *saveToolBar() = 0;
+#endif
     virtual QToolBar *layerToolBar() = 0;
     virtual QToolBar *mapNavToolToolBar() = 0;
     virtual QToolBar *digitizeToolBar() = 0;

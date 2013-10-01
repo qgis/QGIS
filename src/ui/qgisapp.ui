@@ -279,6 +279,18 @@
    <addaction name="mActionNewPrintComposer"/>
    <addaction name="mActionShowComposerManager"/>
   </widget>
+  <widget class="QToolBar" name="mSaveToolBar">
+   <property name="windowTitle">
+    <string>Save</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="mActionSaveProject"/>
+  </widget>
   <widget class="QToolBar" name="mLayerToolBar">
    <property name="windowTitle">
     <string>Manage Layers</string>
