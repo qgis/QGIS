@@ -16,6 +16,7 @@
 #include "qgshighlight.h"
 #include "qgsgeometry.h"
 #include "qgsmapcanvas.h"
+#include "qgsmaplayer.h"
 #include "qgsmaprenderer.h"
 #include "qgscoordinatetransform.h"
 #include "qgsvectorlayer.h"
@@ -25,14 +26,27 @@
   \brief The QgsHighlight class provides a transparent overlay widget
   for highlightng features on the map.
 */
-QgsHighlight::QgsHighlight( QgsMapCanvas* mapCanvas, QgsGeometry *geom, QgsVectorLayer *layer )
+QgsHighlight::QgsHighlight( QgsMapCanvas* mapCanvas, QgsGeometry *geom, QgsMapLayer *layer )
     : QgsMapCanvasItem( mapCanvas )
     , mLayer( layer )
 {
   mGeometry = geom ? new QgsGeometry( *geom ) : 0;
-  if ( mapCanvas->mapRenderer()->hasCrsTransformEnabled() )
+  init();
+}
+
+QgsHighlight::QgsHighlight( QgsMapCanvas* mapCanvas, QgsGeometry *geom, QgsVectorLayer *layer )
+    : QgsMapCanvasItem( mapCanvas )
+    , mLayer( static_cast<QgsMapLayer *>( layer ) )
+{
+  mGeometry = geom ? new QgsGeometry( *geom ) : 0;
+  init();
+}
+
+void QgsHighlight::init()
+{
+  if ( mMapCanvas->mapRenderer()->hasCrsTransformEnabled() )
   {
-    QgsCoordinateTransform transform( mLayer->crs(), mapCanvas->mapRenderer()->destinationCrs() );
+    QgsCoordinateTransform transform( mLayer->crs(), mMapCanvas->mapRenderer()->destinationCrs() );
     mGeometry->transform( transform );
   }
   updateRect();

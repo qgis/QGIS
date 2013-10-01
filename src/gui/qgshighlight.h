@@ -23,6 +23,7 @@
 #include <QPainter>
 #include <QPainterPath>
 
+class QgsMapLayer;
 class QgsVectorLayer;
 
 /** A class for highlight features on the map.
@@ -30,6 +31,7 @@ class QgsVectorLayer;
 class GUI_EXPORT QgsHighlight: public QgsMapCanvasItem
 {
   public:
+    QgsHighlight( QgsMapCanvas *mapCanvas, QgsGeometry *geom, QgsMapLayer *layer );
     QgsHighlight( QgsMapCanvas *mapCanvas, QgsGeometry *geom, QgsVectorLayer *layer );
     ~QgsHighlight();
 
@@ -43,6 +45,7 @@ class GUI_EXPORT QgsHighlight: public QgsMapCanvasItem
     void updateRect();
 
   private:
+    void init();
     void paintPoint( QPainter *p, QgsPoint point );
     void paintLine( QPainter *p, QgsPolyline line );
     void paintPolygon( QPainter *p, QgsPolygon polygon );
@@ -52,7 +55,7 @@ class GUI_EXPORT QgsHighlight: public QgsMapCanvasItem
     QBrush mBrush;
     QPen mPen;
     QgsGeometry *mGeometry;
-    QgsVectorLayer *mLayer;
+    QgsMapLayer *mLayer;
 };
 
 #endif
