@@ -122,7 +122,7 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest& request )
     ++fieldCount;
   }
   // get geometry col
-  if ( request.flags() != QgsFeatureRequest::NoGeometry && !mProvider->mGeometryColName.isEmpty() )
+  if ( !( request.flags() & QgsFeatureRequest::NoGeometry ) && !mProvider->mGeometryColName.isEmpty() )
   {
     if ( fieldCount != 0 )
       mStatement += ",";

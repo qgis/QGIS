@@ -89,9 +89,9 @@ QgsOgrFeatureIterator::~QgsOgrFeatureIterator()
 
 void QgsOgrFeatureIterator::ensureRelevantFields()
 {
-  bool needGeom = ( mRequest.filterType() == QgsFeatureRequest::FilterRect ) || !( mRequest.flags() & QgsFeatureRequest::NoGeometry );
+  mFetchGeometry = ( mRequest.filterType() == QgsFeatureRequest::FilterRect ) || !( mRequest.flags() & QgsFeatureRequest::NoGeometry );
   QgsAttributeList attrs = ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes ) ? mRequest.subsetOfAttributes() : P->attributeIndexes();
-  P->setRelevantFields( needGeom, attrs );
+  P->setRelevantFields( mFetchGeometry, attrs );
   P->mRelevantFieldsForNextFeature = true;
 }
 
@@ -225,10 +225,9 @@ bool QgsOgrFeatureIterator::readFeature( OGRFeatureH fet, QgsFeature& feature )
   feature.initAttributes( P->fields().count() );
   feature.setFields( &P->mAttributeFields ); // allow name-based attribute lookups
 
-  bool fetchGeom    = !( mRequest.flags() & QgsFeatureRequest::NoGeometry );
   bool useIntersect = mRequest.flags() & QgsFeatureRequest::ExactIntersect;
   bool geometryTypeFilter = P->mOgrGeometryTypeFilter != wkbUnknown;
-  if ( fetchGeom || useIntersect || geometryTypeFilter )
+  if ( mFetchGeometry || useIntersect || geometryTypeFilter )
   {
     OGRGeometryH geom = OGR_F_GetGeometryRef( fet );
 
@@ -248,7 +247,7 @@ bool QgsOgrFeatureIterator::readFeature( OGRFeatureH fet, QgsFeature& feature )
     }
   }
 
-  if ( !fetchGeom )
+  if ( !mFetchGeometry )
   {
     feature.setGeometry( 0 );
   }

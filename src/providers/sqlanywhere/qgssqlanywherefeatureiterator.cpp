@@ -106,7 +106,7 @@ bool QgsSqlAnywhereFeatureIterator::nextFeature( QgsFeature& feature, SqlAnyStat
 {
   feature.setValid( false );
 
-  bool fetchGeometry = !( mRequest.flags() & QgsFeatureRequest::NoGeometry );
+  mFetchGeometry = !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) && !P->mGeometryColumn.isNull();
   bool subsetAttributes = mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes;
 
   if ( mClosed )
@@ -130,7 +130,7 @@ bool QgsSqlAnywhereFeatureIterator::nextFeature( QgsFeature& feature, SqlAnyStat
   if ( !ok )
     return false;
 
-  if ( !fetchGeometry )
+  if ( !mFetchGeometry )
     feature.setGeometryAndOwnership( 0, 0 );
 
   int numAttributes = P->fields().count(); // also used later for sanity check
@@ -151,7 +151,7 @@ bool QgsSqlAnywhereFeatureIterator::nextFeature( QgsFeature& feature, SqlAnyStat
       QgsDebugMsgLevel( QString( "pid=%1" ).arg( id ), 3 );
       feature.setFeatureId( id );
     }
-    else if ( i == 1 && fetchGeometry )
+    else if ( i == 1 && mFetchGeometry )
     {
       // second column contains QKB geometry value
       ok = stmt->getColumn( i, &geom );
@@ -174,7 +174,7 @@ bool QgsSqlAnywhereFeatureIterator::nextFeature( QgsFeature& feature, SqlAnyStat
 
       // Sanity check before setting the attribute value
       if ( colidx - 1 == i  // First column is always pk, so colidx should be at least 1 behind
-           || ( colidx - 1 == i - 1 && fetchGeometry ) // if fetchGeometry is true, colidx should be 2 behind
+           || ( colidx - 1 == i - 1 && mFetchGeometry ) // if fetchGeometry is true, colidx should be 2 behind
            || attrIndex >= numAttributes ) // index should always be less than the count
       {
         SaDebugMsg( QString( "Error retrieving feature column %1 with attribute index %2" ).arg( i ).arg( attrIndex ) );
@@ -220,9 +220,6 @@ bool
 QgsSqlAnywhereFeatureIterator::prepareStatement( QString whereClause )
 // adapted from QgsSpatialLiteFeatureIterator::prepareStatement
 {
-  if ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) && P->mGeometryColumn.isNull() )
-    return false;
-
   if ( !P->ensureConnRO() )
   {
     SaDebugMsg( "No read-only database connection." );
@@ -232,7 +229,7 @@ QgsSqlAnywhereFeatureIterator::prepareStatement( QString whereClause )
   QString sql = QString( "SELECT %1" ).arg( quotedPrimaryKey() ); // Column 0 is primary key
 
   // Column 1 is geometry, if applicable
-  if ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) )
+  if ( mFetchGeometry )
   {
     sql += QString( ", %1 .ST_AsBinary('WKB(Version=1.1;endian=%2)') " )
            .arg( P->mGeometryColumn )

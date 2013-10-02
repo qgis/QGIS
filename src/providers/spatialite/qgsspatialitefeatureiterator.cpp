@@ -144,12 +144,6 @@ bool QgsSpatiaLiteFeatureIterator::close()
 
 bool QgsSpatiaLiteFeatureIterator::prepareStatement( QString whereClause )
 {
-  if ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) && P->mGeometryColumn.isNull() )
-  {
-    QgsMessageLog::logMessage( QObject::tr( "Trying to fetch geometry on a layer without geometry." ), QObject::tr( "SpatiaLite" ) );
-    return false;
-  }
-
   try
   {
     QString sql = QString( "SELECT %1" ).arg( quotedPrimaryKey() );
@@ -174,7 +168,7 @@ bool QgsSpatiaLiteFeatureIterator::prepareStatement( QString whereClause )
       }
     }
 
-    if ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) )
+    if ( mFetchGeometry )
     {
       sql += QString( ", AsBinary(%1)" ).arg( P->quotedIdentifier( P->mGeometryColumn ) );
       mGeomColIdx = colIdx;
@@ -284,7 +278,7 @@ QString QgsSpatiaLiteFeatureIterator::fieldName( const QgsField& fld )
 
 bool QgsSpatiaLiteFeatureIterator::getFeature( sqlite3_stmt *stmt, QgsFeature &feature )
 {
-  bool fetchGeometry = !( mRequest.flags() & QgsFeatureRequest::NoGeometry );
+  mFetchGeometry = !( mRequest.flags() & QgsFeatureRequest::NoGeometry );
   bool subsetAttributes = mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes;
 
   int ret = sqlite3_step( stmt );
@@ -301,7 +295,7 @@ bool QgsSpatiaLiteFeatureIterator::getFeature( sqlite3_stmt *stmt, QgsFeature &f
   }
 
   // one valid row has been fetched from the result set
-  if ( !fetchGeometry )
+  if ( !mFetchGeometry )
   {
     // no geometry was required
     feature.setGeometryAndOwnership( 0, 0 );
@@ -321,7 +315,7 @@ bool QgsSpatiaLiteFeatureIterator::getFeature( sqlite3_stmt *stmt, QgsFeature &f
       QgsDebugMsgLevel( QString( "fid=%1" ).arg( fid ), 3 );
       feature.setFeatureId( fid );
     }
-    else if ( fetchGeometry && ic == mGeomColIdx )
+    else if ( mFetchGeometry && ic == mGeomColIdx )
     {
       getFeatureGeometry( stmt, ic, feature );
     }

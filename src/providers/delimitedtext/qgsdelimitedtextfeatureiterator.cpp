@@ -36,7 +36,7 @@ QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTe
 
   // Does the layer have geometry - will revise later to determine if we actually need to
   // load it.
-  mLoadGeometry = P->mGeomRep != QgsDelimitedTextProvider::GeomNone;
+  bool hasGeometry = P->mGeomRep != QgsDelimitedTextProvider::GeomNone;
 
   // Does the layer have an explicit or implicit subset (implicit subset is if we have geometry which can
   // be invalid)
@@ -59,8 +59,7 @@ QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTe
   // requesting no geometry? Have preserved current logic of ignoring spatial filter
   // if not requesting geometry.
 
-  else if ( request.filterType() == QgsFeatureRequest::FilterRect && mLoadGeometry
-            && !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) )
+  else if ( request.filterType() == QgsFeatureRequest::FilterRect && hasGeometry )
   {
     QgsDebugMsg( "Configuring for rectangle select" );
     mTestGeometry = true;
@@ -114,14 +113,23 @@ QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTe
     QgsDebugMsg( "File will be scanned for desired features" );
   }
 
-  // If the request does not require geometry, can we avoid loading it?
-  // We need it if we are testing geometry (ie spatial filter), or
-  // if testing the subset expression, and it uses geometry.
-  if ( mRequest.flags() & QgsFeatureRequest::NoGeometry &&
-       ! mTestGeometry &&
-       !( mTestSubset && P->mSubsetExpression->needsGeometry() ) )
+  // If the layer has geometry, do we really need to load it?
+  // We need it if it is asked for explicitly in the request,
+  // if we are testing geometry (ie spatial filter), or
+  // if testing the subset expression.
+  if ( hasGeometry
+       && (
+         !( mRequest.flags() & QgsFeatureRequest::NoGeometry )
+         || mTestGeometry
+         || ( mTestSubset && P->mSubsetExpression->needsGeometry() )
+       )
+     )
   {
-    QgsDebugMsg( "Feature geometries not required" );
+    mLoadGeometry = true;
+  }
+  else
+  {
+    QgsDebugMsgLevel( "Feature geometries not required", 4 );
     mLoadGeometry = false;
   }
 

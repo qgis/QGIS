@@ -61,6 +61,9 @@ class QgsSqlAnywhereFeatureIterator : public QgsAbstractFeatureIterator
 
     QgsRectangle mStmtRect;
 
+    //! Set to true, if geometry is in the requested columns
+    bool mFetchGeometry;
+
 };
 
 #endif // QGSSQLANYWHEREFEATUREITERATOR_H
