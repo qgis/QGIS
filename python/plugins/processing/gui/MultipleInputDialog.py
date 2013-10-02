@@ -25,81 +25,58 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4 import QtCore, QtGui
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
+from processing.ui.ui_DlgMultipleSelection import Ui_DlgMultipleSelection
 
-class MultipleInputDialog(QtGui.QDialog):
 
-    def __init__(self, options, selectedoptions):
+class MultipleInputDialog(QDialog, Ui_DlgMultipleSelection):
+
+    def __init__(self, options, selectedoptions=None):
+        QDialog.__init__(self)
+        self.setupUi(self)
+
         self.options = options
         self.selectedoptions = selectedoptions
-        QtGui.QDialog.__init__(self)
-        self.setModal(True)
-        self.setupUi()
-        self.selectedoptions = None
 
-    def setupUi(self):
-        self.resize(381, 320)
-        self.setWindowTitle('Multiple selection')
-        self.horizontalLayout = QtGui.QHBoxLayout(self)
-        self.horizontalLayout.setSpacing(2)
-        self.horizontalLayout.setMargin(0)
-        self.buttonBox = QtGui.QDialogButtonBox()
-        self.buttonBox.setOrientation(QtCore.Qt.Vertical)
-        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel
-                | QtGui.QDialogButtonBox.Ok)
-        self.table = QtGui.QTableWidget()
-        self.table.setColumnCount(1)
-        self.table.setColumnWidth(0, 270)
-        self.table.verticalHeader().setVisible(False)
-        self.table.horizontalHeader().setVisible(False)
-        self.table.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
-        self.selectAllButton = QtGui.QPushButton()
-        self.selectAllButton.setText('(de)Select all')
+        # Additional buttons
+        self.btnSelectAll = QPushButton(self.tr('(de)Select all'))
+        self.buttonBox.addButton(self.btnSelectAll,
+                                 QDialogButtonBox.ActionRole)
+
+        self.btnSelectAll.clicked.connect(self.toggleSelection)
+
         self.setTableContent()
-        self.buttonBox.addButton(self.selectAllButton,
-                                 QtGui.QDialogButtonBox.ActionRole)
-        self.horizontalLayout.addWidget(self.table)
-        self.horizontalLayout.addWidget(self.buttonBox)
-        self.setLayout(self.horizontalLayout)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL('accepted()'),
-                               self.okPressed)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL('rejected()'),
-                               self.cancelPressed)
-        QtCore.QObject.connect(self.selectAllButton, QtCore.SIGNAL('clicked()'
-                               ), self.selectAll)
-        QtCore.QMetaObject.connectSlotsByName(self)
 
     def setTableContent(self):
-        self.table.setRowCount(len(self.options))
+        self.tblLayers.setRowCount(len(self.options))
         for i in range(len(self.options)):
-            item = QtGui.QCheckBox()
+            item = QCheckBox()
             item.setText(self.options[i])
             if i in self.selectedoptions:
                 item.setChecked(True)
-            self.table.setCellWidget(i, 0, item)
+            self.tblLayers.setCellWidget(i, 0, item)
 
-    def okPressed(self):
+    def accept(self):
         self.selectedoptions = []
         for i in range(len(self.options)):
-            widget = self.table.cellWidget(i, 0)
+            widget = self.tblLayers.cellWidget(i, 0)
             if widget.isChecked():
                 self.selectedoptions.append(i)
-        self.close()
+        QDialog.accept(self)
 
-    def cancelPressed(self):
+    def reject(self):
         self.selectedoptions = None
-        self.close()
+        QDialog.reject(self)
 
-    def selectAll(self):
+    def toggleSelection(self):
         checked = False
         for i in range(len(self.options)):
-            widget = self.table.cellWidget(i, 0)
+            widget = self.tblLayers.cellWidget(i, 0)
             if not widget.isChecked():
                 checked = True
                 break
         for i in range(len(self.options)):
-            widget = self.table.cellWidget(i, 0)
+            widget = self.tblLayers.cellWidget(i, 0)
             widget.setChecked(checked)
