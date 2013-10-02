@@ -20,7 +20,9 @@
 __author__ = 'Alexander Bruy'
 __date__ = 'September 2013'
 __copyright__ = '(C) 2013, Alexander Bruy'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
 import os
@@ -32,31 +34,34 @@ from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.parameters.ParameterRaster import ParameterRaster
 from processing.parameters.ParameterExtent import ParameterExtent
 from processing.parameters.ParameterString import ParameterString
-
 from processing.outputs.OutputRaster import OutputRaster
 
 from processing.gdal.GdalUtils import GdalUtils
 
+
 class ClipByExtent(GeoAlgorithm):
 
-    INPUT = "INPUT"
-    OUTPUT = "OUTPUT"
-    NO_DATA = "NO_DATA"
-    PROJWIN = "PROJWIN"
-    EXTRA = "EXTRA"
+    INPUT = 'INPUT'
+    OUTPUT = 'OUTPUT'
+    NO_DATA = 'NO_DATA'
+    PROJWIN = 'PROJWIN'
+    EXTRA = 'EXTRA'
 
     def getIcon(self):
-        filepath = os.path.dirname(__file__) + "/icons/raster-clip.png"
+        filepath = os.path.dirname(__file__) + '/icons/raster-clip.png'
         return QtGui.QIcon(filepath)
 
     def defineCharacteristics(self):
-        self.name = "Clip raster by extent"
-        self.group = "[GDAL] Extraction"
-        self.addParameter(ParameterRaster(self.INPUT, "Input layer", False))
-        self.addParameter(ParameterString(self.NO_DATA, "Nodata value, leave as none to take the nodata value from input", "none"))
-        self.addParameter(ParameterExtent(self.PROJWIN, "Clipping extent"))
-        self.addParameter(ParameterString(self.EXTRA, "Additional creation parameters", ""))
-        self.addOutput(OutputRaster(self.OUTPUT, "Output layer"))
+        self.name = 'Clip raster by extent'
+        self.group = '[GDAL] Extraction'
+        self.addParameter(ParameterRaster(self.INPUT, 'Input layer', False))
+        self.addParameter(ParameterString(self.NO_DATA,
+            'Nodata value, leave as none to take the nodata value from input',
+            'none'))
+        self.addParameter(ParameterExtent(self.PROJWIN, 'Clipping extent'))
+        self.addParameter(ParameterString(self.EXTRA,
+                          'Additional creation parameters', ''))
+        self.addOutput(OutputRaster(self.OUTPUT, 'Output layer'))
 
     def processAlgorithm(self, progress):
         out = self.getOutputValue(self.OUTPUT)
@@ -65,13 +70,13 @@ class ClipByExtent(GeoAlgorithm):
         extra = str(self.getParameterValue(self.EXTRA))
 
         arguments = []
-        arguments.append("-of")
+        arguments.append('-of')
         arguments.append(GdalUtils.getFormatShortNameFromFilename(out))
-        arguments.append("-a_nodata")
+        arguments.append('-a_nodata')
         arguments.append(noData)
 
-        regionCoords = projwin.split(",")
-        arguments.append("-projwin")
+        regionCoords = projwin.split(',')
+        arguments.append('-projwin')
         arguments.append(regionCoords[0])
         arguments.append(regionCoords[3])
         arguments.append(regionCoords[1])
@@ -83,4 +88,5 @@ class ClipByExtent(GeoAlgorithm):
         arguments.append(self.getParameterValue(self.INPUT))
         arguments.append(out)
 
-        GdalUtils.runGdal(["gdal_translate", GdalUtils.escapeAndJoin(arguments)], progress)
+        GdalUtils.runGdal(['gdal_translate',
+                          GdalUtils.escapeAndJoin(arguments)], progress)

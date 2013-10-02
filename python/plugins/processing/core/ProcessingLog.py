@@ -20,79 +20,92 @@
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
 import os
+import re
 import codecs
 import datetime
 from PyQt4 import QtGui
 from processing.tools.system import *
 from processing.core.ProcessingConfig import ProcessingConfig
 
-class ProcessingLog():
 
-    LOG_ERROR = "ERROR"
-    LOG_INFO = "INFO"
-    LOG_WARNING = "WARNING"
-    LOG_ALGORITHM = "ALGORITHM"
-    DATE_FORMAT = u"%a %b %d %Y %H:%M:%S".encode("utf-8")
+class ProcessingLog:
+
+    LOG_ERROR = 'ERROR'
+    LOG_INFO = 'INFO'
+    LOG_WARNING = 'WARNING'
+    LOG_ALGORITHM = 'ALGORITHM'
+    DATE_FORMAT = u'%a %b %d %Y %H:%M:%S'.encode('utf-8')
     recentAlgs = []
 
     @staticmethod
     def startLogging():
         if os.path.isfile(ProcessingLog.logFilename()):
-            logfile = codecs.open(ProcessingLog.logFilename(), "a", encoding="utf-8")
+            logfile = codecs.open(ProcessingLog.logFilename(), 'a',
+                                  encoding='utf-8')
         else:
-            logfile = codecs.open(ProcessingLog.logFilename(), "w", encoding="utf-8")
-        logfile.write("Started logging at " + datetime.datetime.now().strftime(ProcessingLog.DATE_FORMAT).decode("utf-8") + "\n")
+            logfile = codecs.open(ProcessingLog.logFilename(), 'w',
+                                  encoding='utf-8')
+        logfile.write('Started logging at '
+                + datetime.datetime.now().strftime(
+                        ProcessingLog.DATE_FORMAT).decode('utf-8') + '\n')
         logfile.close()
 
     @staticmethod
     def logFilename():
-        batchfile = userFolder() + os.sep + "processing.log"
+        batchfile = userFolder() + os.sep + 'processing.log'
         return batchfile
 
     @staticmethod
     def addToLog(msgtype, msg):
-        try: #it seems that this fails sometimes depending on the msg added:
-            #To avoid it stopping the normal functioning of the algorithm,
-            #we catch all errors, assuming that is better to miss some log info
-            #that breaking the algorithm.
+        try:
+            # It seems that this fails sometimes depending on the msg
+            # added. To avoid it stopping the normal functioning of the
+            # algorithm, we catch all errors, assuming that is better
+            # to miss some log info that breaking the algorithm.
             if isinstance(msg, list):
-                a = "|".join(m.strip("\n")  for m in msg)
+                a = '|'.join(m.strip('\n') for m in msg)
                 text = a
             else:
-                text = msg.replace("\n", "|")
-            line = msgtype + "|" + datetime.datetime.now().strftime(ProcessingLog.DATE_FORMAT).decode("utf-8") + "|" + text + "\n"
-            logfile = codecs.open(ProcessingLog.logFilename(), "a", encoding="utf-8")
-            #logfile = codecs.open(ProcessingLog.logFilename(), "a", encoding='utf-8')
+                text = msg.replace('\n', '|')
+            line = msgtype + '|' + datetime.datetime.now().strftime(
+                    ProcessingLog.DATE_FORMAT).decode('utf-8') + '|' \
+                    + text + '\n'
+            logfile = codecs.open(ProcessingLog.logFilename(), 'a',
+                                  encoding='utf-8')
             logfile.write(line)
             logfile.close()
-            if msgtype==ProcessingLog.LOG_ALGORITHM:
-               algname = text[len("Processing.runalg(\""):]
-               algname = algname[:algname.index("\"")]
-               if algname not in ProcessingLog.recentAlgs:
-                   ProcessingLog.recentAlgs.append(algname)
-                   recentAlgsString = ';'.join(ProcessingLog.recentAlgs[-6:])
-                   ProcessingConfig.setSettingValue(ProcessingConfig.RECENT_ALGORITHMS, recentAlgsString)
+            if msgtype == ProcessingLog.LOG_ALGORITHM:
+                algname = text[len('Processing.runalg("'):]
+                algname = algname[:algname.index('"')]
+                if algname not in ProcessingLog.recentAlgs:
+                    ProcessingLog.recentAlgs.append(algname)
+                    recentAlgsString = ';'.join(ProcessingLog.recentAlgs[-6:])
+                    ProcessingConfig.setSettingValue(
+                            ProcessingConfig.RECENT_ALGORITHMS,
+                            recentAlgsString)
         except:
             pass
 
     @staticmethod
     def getLogEntries():
-        entries={}
-        errors=[]
-        algorithms=[]
-        warnings=[]
-        info=[]
+        entries = {}
+        errors = []
+        algorithms = []
+        warnings = []
+        info = []
         lines = tail(ProcessingLog.logFilename())
         for line in lines:
-            line = line.strip("\n").strip()
-            tokens = line.split("|")
-            text=""
+            line = line.strip('\n').strip()
+            tokens = line.split('|')
+            text = ''
             for i in range(2, len(tokens)):
-                text+=tokens[i] + "|"
+                text += tokens[i] + '|'
             if line.startswith(ProcessingLog.LOG_ERROR):
                 errors.append(LogEntry(tokens[1], text))
             elif line.startswith(ProcessingLog.LOG_ALGORITHM):
@@ -110,7 +123,8 @@ class ProcessingLog():
 
     @staticmethod
     def getRecentAlgorithms():
-        recentAlgsSetting = ProcessingConfig.getSetting(ProcessingConfig.RECENT_ALGORITHMS)
+        recentAlgsSetting = ProcessingConfig.getSetting(
+                ProcessingConfig.RECENT_ALGORITHMS)
         try:
             ProcessingLog.recentAlgs = recentAlgsSetting.split(';')
         except:
@@ -122,44 +136,50 @@ class ProcessingLog():
         os.unlink(ProcessingLog.logFilename())
         ProcessingLog.startLogging()
 
-class LogEntry():
+
+class LogEntry:
+
     def __init__(self, date, text):
         self.date = date
         self.text = text
 
-import re
+"""
+***************************************************************************
+    This code has been take from pytailer
+    http://code.google.com/p/pytailer/
 
-#===============================================================================
+    Permission is hereby granted, free of charge, to any person
+    obtaining a copy of this software and associated documentation
+    files (the "Software"), to deal in the Software without
+    restriction, including without limitation the rights to use, copy,
+    modify, merge, publish, distribute, sublicense, and/or sell copies
+    of the Software, and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
 
-#this code has been take from pytailer
-# http://code.google.com/p/pytailer/
+    The above copyright notice and this permission notice shall be
+    included in all copies or substantial portions of the Software.
 
-# Permission is hereby granted, free of charge, to any person obtaining a copy of this software
-# and associated documentation files (the "Software"), to deal in the Software without restriction,
-# including without limitation the rights to use, copy, modify, merge, publish, distribute,
-# sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in all
-# copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
-# BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-# DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-#===============================================================================
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+    MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+    NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+    BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+    ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+    CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+    SOFTWARE.
+***************************************************************************
+"""
+
 
 class Tailer(object):
-    """\
-    Implements tailing and heading functionality like GNU tail and head
-    commands.
+    """Implements tailing and heading functionality like GNU tail and
+    head commands.
     """
     line_terminators = ('\r\n', '\n', '\r')
 
     def __init__(self, filename, read_size=1024, end=False):
         self.read_size = read_size
-        self.file = codecs.open(filename, encoding="utf-8")
+        self.file = codecs.open(filename, encoding='utf-8')
         self.start_pos = self.file.tell()
         if end:
             self.seek_end()
@@ -179,12 +199,11 @@ class Tailer(object):
         else:
             read_str = self.file.read()
 
-        return len(read_str), read_str
+        return (len(read_str), read_str)
 
     def seek_line(self):
-        """\
-        Searches backwards from the current file position for a line terminator
-        and seeks to the charachter after it.
+        """Searches backwards from the current file position for a
+        line terminator and seeks to the charachter after it.
         """
         pos = end_pos = self.file.tell()
 
@@ -197,14 +216,15 @@ class Tailer(object):
 
         self.seek(pos)
 
-        bytes_read, read_str = self.read(read_size)
+        (bytes_read, read_str) = self.read(read_size)
 
         if bytes_read and read_str[-1] in self.line_terminators:
-            # The last charachter is a line terminator, don't count this one
+            # The last charachter is a line terminator, don't count
+            # this one.
             bytes_read -= 1
 
             if read_str[-2:] == '\r\n' and '\r\n' in self.line_terminators:
-                # found crlf
+                # found CRLF
                 bytes_read -= 1
 
         while bytes_read > 0:
@@ -224,13 +244,12 @@ class Tailer(object):
             pos -= self.read_size
             self.seek(pos)
 
-            bytes_read, read_str = self.read(self.read_size)
+            (bytes_read, read_str) = self.read(self.read_size)
 
         return None
 
     def tail(self, lines=10):
-        """\
-        Return the last lines of the file.
+        """Return the last lines of the file.
         """
         self.seek_end()
         end_pos = self.file.tell()
@@ -250,6 +269,7 @@ class Tailer(object):
 
     def close(self):
         self.file.close()
+
 
 def tail(file, lines=200):
     return Tailer(file).tail(lines)

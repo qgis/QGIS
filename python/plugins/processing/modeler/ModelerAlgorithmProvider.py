@@ -20,34 +20,40 @@
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
+import os.path
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-import os.path
+from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
-from processing.modeler.SaveAsPythonScriptAction import SaveAsPythonScriptAction
 from processing.core.ProcessingLog import ProcessingLog
+from processing.modeler.SaveAsPythonScriptAction import \
+        SaveAsPythonScriptAction
 from processing.modeler.ModelerUtils import ModelerUtils
 from processing.modeler.ModelerAlgorithm import ModelerAlgorithm
 from processing.modeler.WrongModelException import WrongModelException
 from processing.modeler.EditModelAction import EditModelAction
 from processing.modeler.CreateNewModelAction import CreateNewModelAction
-from processing.core.AlgorithmProvider import AlgorithmProvider
-from PyQt4 import QtGui
 from processing.modeler.DeleteModelAction import DeleteModelAction
+
 
 class ModelerAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
         AlgorithmProvider.__init__(self)
-        #self.actions = [CreateNewModelAction()]
-        self.contextMenuActions = [EditModelAction(), DeleteModelAction(), SaveAsPythonScriptAction()]
+        # self.actions = [CreateNewModelAction()]
+        self.contextMenuActions = [EditModelAction(), DeleteModelAction(),
+                                   SaveAsPythonScriptAction()]
 
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)
-        ProcessingConfig.addSetting(Setting(self.getDescription(), ModelerUtils.MODELS_FOLDER, "Models folder", ModelerUtils.modelsFolder()))
+        ProcessingConfig.addSetting(Setting(self.getDescription(),
+                                    ModelerUtils.MODELS_FOLDER, 'Models folder'
+                                    , ModelerUtils.modelsFolder()))
 
     def setAlgsList(self, algs):
         ModelerUtils.allAlgs = algs
@@ -56,31 +62,33 @@ class ModelerAlgorithmProvider(AlgorithmProvider):
         return ModelerUtils.modelsFolder()
 
     def getDescription(self):
-        return "Models"
+        return 'Models'
 
     def getName(self):
-        return "model"
+        return 'model'
 
     def getIcon(self):
-        return QtGui.QIcon(os.path.dirname(__file__) + "/../images/model.png")
+        return QIcon(os.path.dirname(__file__) + '/../images/model.png')
 
     def _loadAlgorithms(self):
         folder = ModelerUtils.modelsFolder()
         self.loadFromFolder(folder)
-        folder = os.path.join(os.path.dirname(__file__), "models")
+        folder = os.path.join(os.path.dirname(__file__), 'models')
         self.loadFromFolder(folder)
 
-    def loadFromFolder(self,folder):
+    def loadFromFolder(self, folder):
         if not os.path.exists(folder):
             return
         for descriptionFile in os.listdir(folder):
-            if descriptionFile.endswith("model"):
+            if descriptionFile.endswith('model'):
                 try:
                     alg = ModelerAlgorithm()
-                    fullpath = os.path.join(folder ,descriptionFile)
+                    fullpath = os.path.join(folder, descriptionFile)
                     alg.openModel(fullpath)
-                    if alg.name.strip() != "":
+                    if alg.name.strip() != '':
                         alg.provider = self
                         self.algs.append(alg)
-                except WrongModelException,e:
-                    ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,"Could not load model " + descriptionFile + "\n" + e.msg)
+                except WrongModelException, e:
+                    ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
+                            'Could not load model ' + descriptionFile + '\n'
+                            + e.msg)

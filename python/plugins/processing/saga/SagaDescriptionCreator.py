@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 """
@@ -20,35 +21,44 @@
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
 import subprocess
 import os
 
+
 class SagaDescriptionCreator:
 
-
     def createLibraryFiles(self):
-        f = open("c:\\saga\\sagalibs.txt")
+        f = open('c:\\saga\\sagalibs.txt')
         for lib in f:
-            lib = lib.strip("\n")
-            command = ["c:\\saga\\saga_cmd.exe", lib]
-            f2 = open("c:\\saga\\desc\\" + lib + ".sagalib", "w")
-            subprocess.Popen(command, shell=True, stdout=f2, stdin=subprocess.PIPE,stderr=subprocess.STDOUT, universal_newlines=True)
+            lib = lib.strip('\n')
+            command = ['c:\\saga\\saga_cmd.exe', lib]
+            f2 = open('c:\\saga\\desc\\' + lib + '.sagalib', 'w')
+            subprocess.Popen(
+                command,
+                shell=True,
+                stdout=f2,
+                stdin=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                universal_newlines=True,
+                )
             f2.close()
         f.close()
 
     def createLibraryMap(self):
         self.map = {}
-        for libFile in os.listdir("c:\\saga\\desc"):
-            if libFile.endswith("sagalib"):
+        for libFile in os.listdir('c:\\saga\\desc'):
+            if libFile.endswith('sagalib'):
                 print libFile
                 algs = []
-                f = open(os.path.join("c:\\saga\\desc", libFile))
+                f = open(os.path.join('c:\\saga\\desc', libFile))
                 for line in f:
-                    line = line.strip("\n").strip(" ")
-                    digit = line.split("\t")[0]
+                    line = line.strip('\n').strip(' ')
+                    digit = line.split('\t')[0]
                     print digit
                     if digit.isdigit():
                         algs.append(digit)
@@ -61,15 +71,23 @@ class SagaDescriptionCreator:
         for lib in self.map.keys():
             algs = self.map[lib]
             for alg in algs:
-                command = ["c:\\saga\\saga_cmd.exe", lib, alg]
-                f = open("c:\\saga\\desc\\" + lib + "_" + alg + ".txt", "w")
-                print (str(command))
-                subprocess.Popen(command, shell=True, stdout=f, stdin=subprocess.PIPE,stderr=f, universal_newlines=True)
+                command = ['c:\\saga\\saga_cmd.exe', lib, alg]
+                f = open('c:\\saga\\desc\\' + lib + '_' + alg + '.txt', 'w')
+                print str(command)
+                subprocess.Popen(
+                    command,
+                    shell=True,
+                    stdout=f,
+                    stdin=subprocess.PIPE,
+                    stderr=f,
+                    universal_newlines=True,
+                    )
                 f.close()
 
     def create(self):
         self.createLibraryMap()
         self.createDescriptionFiles()
+
 
 def main():
 

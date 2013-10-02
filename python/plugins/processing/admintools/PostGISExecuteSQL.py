@@ -16,59 +16,64 @@
 *                                                                         *
 ***************************************************************************
 """
-from processing.core.GeoAlgorithm import GeoAlgorithm
 
 __author__ = 'Victor Olaya, Carterix Geomatics'
 __date__ = 'October 2012'
 __copyright__ = '(C) 2012, Victor Olaya, Carterix Geomatics'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
 import os
 from qgis.core import *
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.core.GeoAlgorithmExecutionException import \
+        GeoAlgorithmExecutionException
 from processing.parameters.ParameterString import ParameterString
 from processing.admintools import postgis_utils
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
+
 
 class PostGISExecuteSQL(GeoAlgorithm):
 
-    DATABASE = "DATABASE"
-    SQL = "SQL"
+    DATABASE = 'DATABASE'
+    SQL = 'SQL'
 
     def getIcon(self):
-        return QIcon(os.path.dirname(__file__) + "/../images/postgis.png")
+        return QIcon(os.path.dirname(__file__) + '/../images/postgis.png')
 
     def processAlgorithm(self, progress):
 
         connection = self.getParameterValue(self.DATABASE)
         settings = QSettings()
-        mySettings = "/PostgreSQL/connections/"+ connection
+        mySettings = '/PostgreSQL/connections/' + connection
         try:
-            database = settings.value(mySettings+"/database")
-            username = settings.value(mySettings+"/username")
-            host = settings.value(mySettings+"/host")
-            port = settings.value(mySettings+"/port", type = int)
-            password = settings.value(mySettings+"/password")
+            database = settings.value(mySettings + '/database')
+            username = settings.value(mySettings + '/username')
+            host = settings.value(mySettings + '/host')
+            port = settings.value(mySettings + '/port', type=int)
+            password = settings.value(mySettings + '/password')
         except Exception, e:
-            raise GeoAlgorithmExecutionException("Wrong database connection name: " + connection)
+            raise GeoAlgorithmExecutionException(
+                    'Wrong database connection name: ' + connection)
         try:
-            self.db = postgis_utils.GeoDB(host=host, port=port, dbname=database, user=username, passwd=password)
+            self.db = postgis_utils.GeoDB(host=host, port=port,
+                    dbname=database, user=username, passwd=password)
         except postgis_utils.DbError, e:
-            raise GeoAlgorithmExecutionException("Couldn't connect to database:\n"+e.message)
+            raise GeoAlgorithmExecutionException(
+                    "Couldn't connect to database:\n" + e.message)
 
-        sql = self.getParameterValue(self.SQL).replace("\n", " ")
+        sql = self.getParameterValue(self.SQL).replace('\n', ' ')
         try:
             self.db._exec_sql_and_commit(str(sql))
         except postgis_utils.DbError, e:
-            raise GeoAlgorithmExecutionException("Error executing SQL:\n"+e.message)
+            raise GeoAlgorithmExecutionException('Error executing SQL:\n'
+                    + e.message)
 
     def defineCharacteristics(self):
-        self.name = "PostGIS execute SQL"
-        self.group = "PostGIS management tools"
-        self.addParameter(ParameterString(self.DATABASE, "Database"))
-        self.addParameter(ParameterString(self.SQL, "SQL query", "", True))
-
-
-
+        self.name = 'PostGIS execute SQL'
+        self.group = 'PostGIS management tools'
+        self.addParameter(ParameterString(self.DATABASE, 'Database'))
+        self.addParameter(ParameterString(self.SQL, 'SQL query', '', True))

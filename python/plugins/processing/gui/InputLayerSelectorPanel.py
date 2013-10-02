@@ -20,11 +20,14 @@
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
 import os
 from PyQt4 import QtGui, QtCore
+
 
 class InputLayerSelectorPanel(QtGui.QWidget):
 
@@ -34,34 +37,37 @@ class InputLayerSelectorPanel(QtGui.QWidget):
         self.horizontalLayout.setSpacing(2)
         self.horizontalLayout.setMargin(0)
         self.text = QtGui.QComboBox()
-        for name, value in options:
+        for (name, value) in options:
             self.text.addItem(name, value)
-        self.text.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        self.text.setSizePolicy(QtGui.QSizePolicy.Expanding,
+                                QtGui.QSizePolicy.Expanding)
         self.horizontalLayout.addWidget(self.text)
         self.pushButton = QtGui.QPushButton()
-        self.pushButton.setText("...")
+        self.pushButton.setText('...')
         self.pushButton.clicked.connect(self.showSelectionDialog)
         self.horizontalLayout.addWidget(self.pushButton)
         self.setLayout(self.horizontalLayout)
 
     def showSelectionDialog(self):
-        # find the file dialog's working directory
+        # Find the file dialog's working directory
         settings = QtCore.QSettings()
         text = unicode(self.text.currentText())
         if os.path.isdir(text):
             path = text
-        elif os.path.isdir( os.path.dirname(text) ):
+        elif os.path.isdir(os.path.dirname(text)):
             path = os.path.dirname(text)
-        elif settings.contains("/Processing/LastInputPath"):
-            path = unicode(settings.value( "/Processing/LastInputPath"))
+        elif settings.contains('/Processing/LastInputPath'):
+            path = unicode(settings.value('/Processing/LastInputPath'))
         else:
-            path = ""
+            path = ''
 
-        filename = QtGui.QFileDialog.getOpenFileName(self, "All files", path, "*.*")
+        filename = QtGui.QFileDialog.getOpenFileName(self, 'All files', path,
+                '*.*')
         if filename:
             self.text.addItem(filename, filename)
             self.text.setCurrentIndex(self.text.count() - 1)
-            settings.setValue("/Processing/LastInputPath", os.path.dirname(unicode(filename)))
+            settings.setValue('/Processing/LastInputPath',
+                              os.path.dirname(unicode(filename)))
 
     def getValue(self):
         return self.text.itemData(self.text.currentIndex())

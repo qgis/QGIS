@@ -17,11 +17,12 @@
 ***************************************************************************
 """
 
-
 __author__ = 'Alexander Bruy'
 __date__ = 'October 2012'
 __copyright__ = '(C) 2012, Alexander Bruy'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
 import os
@@ -33,9 +34,9 @@ from qgis.core import *
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingLog import ProcessingLog
-from processing.tools.system import *
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
+from processing.core.GeoAlgorithmExecutionException import \
+    GeoAlgorithmExecutionException
 
 from processing.parameters.ParameterFactory import ParameterFactory
 from processing.parameters.ParameterRaster import ParameterRaster
@@ -43,13 +44,15 @@ from processing.parameters.ParameterVector import ParameterVector
 from processing.parameters.ParameterBoolean import ParameterBoolean
 from processing.parameters.ParameterString import ParameterString
 from processing.parameters.ParameterNumber import ParameterNumber
-
 from processing.outputs.OutputFactory import OutputFactory
 from processing.outputs.OutputRaster import OutputRaster
 from processing.outputs.OutputVector import OutputVector
 from processing.outputs.OutputFile import OutputFile
 
+from processing.tools.system import *
+
 from processing.taudem.TauDEMUtils import TauDEMUtils
+
 
 class TauDEMAlgorithm(GeoAlgorithm):
 
@@ -64,44 +67,49 @@ class TauDEMAlgorithm(GeoAlgorithm):
         return newone
 
     def getIcon(self):
-        return  QIcon(os.path.dirname(__file__) + "/../images/taudem.png")
+        return QIcon(os.path.dirname(__file__) + '/../images/taudem.png')
 
     def defineCharacteristicsFromFile(self):
         lines = open(self.descriptionFile)
-        line = lines.readline().strip("\n").strip()
+        line = lines.readline().strip('\n').strip()
         self.name = line
-        line = lines.readline().strip("\n").strip()
+        line = lines.readline().strip('\n').strip()
         self.cmdName = line
-        line = lines.readline().strip("\n").strip()
+        line = lines.readline().strip('\n').strip()
         self.group = line
-        while line != "":
-          try:
-              line = line.strip("\n").strip()
-              if line.startswith("Parameter"):
-                  param = ParameterFactory.getFromString(line)
-                  self.addParameter(param)
-              else:
-                  self.addOutput(OutputFactory.getFromString(line))
-              line = lines.readline().strip("\n").strip()
-          except Exception, e:
-              ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, "Could not load TauDEM algorithm: " + self.descriptionFile + "\n" + line)
-              raise e
+        while line != '':
+            try:
+                line = line.strip('\n').strip()
+                if line.startswith('Parameter'):
+                    param = ParameterFactory.getFromString(line)
+                    self.addParameter(param)
+                else:
+                    self.addOutput(OutputFactory.getFromString(line))
+                line = lines.readline().strip('\n').strip()
+            except Exception, e:
+                ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
+                                       'Could not load TauDEM algorithm: '
+                                       + self.descriptionFile + '\n' + line)
+                raise e
         lines.close()
 
     def processAlgorithm(self, progress):
         commands = []
-        commands.append(os.path.join(TauDEMUtils.mpiexecPath(), "mpiexec"))
+        commands.append(os.path.join(TauDEMUtils.mpiexecPath(), 'mpiexec'))
 
         processNum = ProcessingConfig.getSetting(TauDEMUtils.MPI_PROCESSES)
         if processNum <= 0:
-          raise GeoAlgorithmExecutionException("Wrong number of MPI processes used.\nPlease set correct number before running TauDEM algorithms.")
+            raise GeoAlgorithmExecutionException('Wrong number of MPI \
+                processes used.\nPlease set correct number before running \
+                TauDEM algorithms.'
+                )
 
-        commands.append("-n")
+        commands.append('-n')
         commands.append(str(processNum))
         commands.append(os.path.join(TauDEMUtils.taudemPath(), self.cmdName))
 
         for param in self.parameters:
-            if param.value == None or param.value == "":
+            if param.value is None or param.value == '':
                 continue
             if isinstance(param, ParameterNumber):
                 commands.append(param.name)
@@ -110,7 +118,7 @@ class TauDEMAlgorithm(GeoAlgorithm):
                 commands.append(param.name)
                 commands.append(param.value)
             elif isinstance(param, ParameterBoolean):
-                if param.value and str(param.value).lower() == "false":
+                if param.value and str(param.value).lower() == 'false':
                     commands.append(param.name)
             elif isinstance(param, ParameterString):
                 commands.append(param.name)
@@ -121,11 +129,8 @@ class TauDEMAlgorithm(GeoAlgorithm):
             commands.append(out.value)
 
         loglines = []
-        loglines.append("TauDEM execution command")
+        loglines.append('TauDEM execution command')
         for line in commands:
             loglines.append(line)
         ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)
         TauDEMUtils.executeTauDEM(commands, progress)
-
-    #def helpFile(self):
-    #    return os.path.join(os.path.dirname(__file__), "help", self.cmdName + ".html")

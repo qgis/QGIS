@@ -20,7 +20,9 @@
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
 import os
@@ -36,22 +38,25 @@ from processing.tools.system import *
 
 from processing.gdal.GdalUtils import GdalUtils
 
+
 class polygonize(GeoAlgorithm):
 
-    INPUT = "INPUT"
-    OUTPUT = "OUTPUT"
-    FIELD = "FIELD"
+    INPUT = 'INPUT'
+    OUTPUT = 'OUTPUT'
+    FIELD = 'FIELD'
 
     def getIcon(self):
-        filepath = os.path.dirname(__file__) + "/icons/polygonize.png"
+        filepath = os.path.dirname(__file__) + '/icons/polygonize.png'
         return QtGui.QIcon(filepath)
 
     def defineCharacteristics(self):
-        self.name = "Polygonize (raster to vector)"
-        self.group = "[GDAL] Conversion"
-        self.addParameter(ParameterRaster(polygonize.INPUT, "Input layer", False))
-        self.addParameter(ParameterString(polygonize.FIELD, "Output field name", "DN"))
-        self.addOutput(OutputVector(polygonize.OUTPUT, "Output layer"))
+        self.name = 'Polygonize (raster to vector)'
+        self.group = '[GDAL] Conversion'
+        self.addParameter(ParameterRaster(polygonize.INPUT, 'Input layer',
+                          False))
+        self.addParameter(ParameterString(polygonize.FIELD, 'Output field name'
+                          , 'DN'))
+        self.addOutput(OutputVector(polygonize.OUTPUT, 'Output layer'))
 
     def processAlgorithm(self, progress):
         arguments = []
@@ -65,8 +70,10 @@ class polygonize(GeoAlgorithm):
 
         commands = []
         if isWindows():
-            commands = ["cmd.exe", "/C ", "gdal_polygonize.bat", GdalUtils.escapeAndJoin(arguments)]
+            commands = ['cmd.exe', '/C ', 'gdal_polygonize.bat',
+                        GdalUtils.escapeAndJoin(arguments)]
         else:
-            commands = ["gdal_polygonize.py", GdalUtils.escapeAndJoin(arguments)]
+            commands = ['gdal_polygonize.py',
+                        GdalUtils.escapeAndJoin(arguments)]
 
         GdalUtils.runGdal(commands, progress)

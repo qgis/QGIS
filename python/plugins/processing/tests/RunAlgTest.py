@@ -20,15 +20,19 @@
 __author__ = 'Victor Olaya'
 __date__ = 'March 2013'
 __copyright__ = '(C) 2013, Victor Olaya'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
-import processing
 import unittest
-from processing.tests.TestData import points, points2, polygons, polygons2, lines, union,\
-    table
+import processing
 from processing.tools import dataobjects
 from processing.tools.system import *
+
+from processing.tests.TestData import points, points2, polygons, polygons2, \
+    lines, union, table
+
 
 class ParametrizedTestCase(unittest.TestCase):
 
@@ -45,10 +49,15 @@ class ParametrizedTestCase(unittest.TestCase):
             suite.addTest(testcase_klass(name, useTempFiles=useTempFiles))
         return suite
 
+
 class RunAlgTest(ParametrizedTestCase):
-    '''This test takes a reduced set of algorithms and executes them in different ways, changing
-    parameters such as whether to use temp outputs, the output file format, etc.
-    Basically, it uses some algorithms to test other parts of the processign framework, not the algorithms themselves'''
+    """This test takes a reduced set of algorithms and executes them in
+    different ways, changing parameters such as whether to use temp
+    outputs, the output file format, etc.
+
+    Basically, it uses some algorithms to test other parts of the
+    Processign framework, not the algorithms themselves
+    """
 
     def getOutputFile(self):
         if self.useTempFiles:
@@ -57,29 +66,33 @@ class RunAlgTest(ParametrizedTestCase):
             return getTempFilename('shp')
 
     def test_qgiscountpointsinpolygon(self):
-        outputs=processing.runalg("qgis:countpointsinpolygon",polygons(),points(),"NUMPOINTS", self.getOutputFile())
-        output=outputs['OUTPUT']
-        layer=dataobjects.getObjectFromUri(output, True)
-        fields=layer.pendingFields()
-        expectednames=['ID','POLY_NUM_A','POLY_ST_A','NUMPOINTS']
-        expectedtypes=['Integer','Real','String','Real']
-        names=[str(f.name()) for f in fields]
-        types=[str(f.typeName()) for f in fields]
+        outputs = processing.runalg('qgis:countpointsinpolygon', polygons(),
+                                    points(), 'NUMPOINTS',
+                                    self.getOutputFile())
+        output = outputs['OUTPUT']
+        layer = dataobjects.getObjectFromUri(output, True)
+        fields = layer.pendingFields()
+        expectednames = ['ID', 'POLY_NUM_A', 'POLY_ST_A', 'NUMPOINTS']
+        expectedtypes = ['Integer', 'Real', 'String', 'Real']
+        names = [str(f.name()) for f in fields]
+        types = [str(f.typeName()) for f in fields]
         self.assertEqual(expectednames, names)
         self.assertEqual(expectedtypes, types)
-        features=processing.features(layer)
+        features = processing.features(layer)
         self.assertEqual(2, len(features))
-        feature=features.next()
-        attrs=feature.attributes()
-        expectedvalues=["1","1.1","string a","6"]
-        values=[str(attr) for attr in attrs]
+        feature = features.next()
+        attrs = feature.attributes()
+        expectedvalues = ['1', '1.1', 'string a', '6']
+        values = [str(attr) for attr in attrs]
         self.assertEqual(expectedvalues, values)
+
 
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(ParametrizedTestCase.parametrize(RunAlgTest, False))
     suite.addTest(ParametrizedTestCase.parametrize(RunAlgTest, True))
     return suite
+
 
 def runtests():
     result = unittest.TestResult()

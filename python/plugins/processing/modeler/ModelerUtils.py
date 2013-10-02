@@ -20,23 +20,26 @@
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
 import os
 from processing.tools.system import *
 from processing.core.ProcessingConfig import ProcessingConfig
 
+
 class ModelerUtils:
 
-    MODELS_FOLDER = "MODELS_FOLDER"
-    ACTIVATE_MODELS = "ACTIVATE_MODELS"
+    MODELS_FOLDER = 'MODELS_FOLDER'
+    ACTIVATE_MODELS = 'ACTIVATE_MODELS'
 
     @staticmethod
     def modelsFolder():
         folder = ProcessingConfig.getSetting(ModelerUtils.MODELS_FOLDER)
-        if folder == None:
-            folder = unicode(os.path.join(userFolder(), "models"))
+        if folder is None:
+            folder = unicode(os.path.join(userFolder(), 'models'))
         mkdir(folder)
 
         return os.path.abspath(folder)

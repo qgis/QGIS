@@ -16,36 +16,41 @@
 *                                                                         *
 ***************************************************************************
 """
-from processing.tools import dataobjects
 
 __author__ = 'Victor Olaya'
 __date__ = 'October 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
 import os
-from processing.parameters.ParameterBoolean import ParameterBoolean
-from processing.parameters.ParameterVector import ParameterVector
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from qgis.core import *
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+from qgis.core import *
+from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.core.GeoAlgorithmExecutionException import \
+        GeoAlgorithmExecutionException
+from processing.parameters.ParameterBoolean import ParameterBoolean
+from processing.parameters.ParameterVector import ParameterVector
 from processing.parameters.ParameterString import ParameterString
+from processing.tools import dataobjects
+
 from processing.admintools import postgis_utils
+
 
 class ImportIntoPostGIS(GeoAlgorithm):
 
-    DATABASE = "DATABASE"
-    TABLENAME = "TABLENAME"
-    SCHEMA = "SCHEMA"
-    INPUT = "INPUT"
-    OVERWRITE = "OVERWRITE"
-    CREATEINDEX = "CREATEINDEX"
+    DATABASE = 'DATABASE'
+    TABLENAME = 'TABLENAME'
+    SCHEMA = 'SCHEMA'
+    INPUT = 'INPUT'
+    OVERWRITE = 'OVERWRITE'
+    CREATEINDEX = 'CREATEINDEX'
 
     def getIcon(self):
-        return QIcon(os.path.dirname(__file__) + "/../images/postgis.png")
+        return QIcon(os.path.dirname(__file__) + '/../images/postgis.png')
 
     def processAlgorithm(self, progress):
         connection = self.getParameterValue(self.DATABASE)
@@ -53,55 +58,65 @@ class ImportIntoPostGIS(GeoAlgorithm):
         overwrite = self.getParameterValue(self.OVERWRITE)
         createIndex = self.getParameterValue(self.CREATEINDEX)
         settings = QSettings()
-        mySettings = "/PostgreSQL/connections/"+ connection
+        mySettings = '/PostgreSQL/connections/' + connection
         try:
-            database = settings.value(mySettings+"/database")
-            username = settings.value(mySettings+"/username")
-            host = settings.value(mySettings+"/host")
-            port = settings.value(mySettings+"/port", type = int)
-            password = settings.value(mySettings+"/password")
+            database = settings.value(mySettings + '/database')
+            username = settings.value(mySettings + '/username')
+            host = settings.value(mySettings + '/host')
+            port = settings.value(mySettings + '/port', type=int)
+            password = settings.value(mySettings + '/password')
         except Exception, e:
-            raise GeoAlgorithmExecutionException("Wrong database connection name: " + connection)
+            raise GeoAlgorithmExecutionException(
+                    'Wrong database connection name: ' + connection)
 
-        table = self.getParameterValue(self.TABLENAME);
-        table.replace(" ", "")
-        providerName = "postgres"
+        table = self.getParameterValue(self.TABLENAME)
+        table.replace(' ', '')
+        providerName = 'postgres'
 
         try:
-            db = postgis_utils.GeoDB(host=host, port=port, dbname=database, user=username, passwd=password)
+            db = postgis_utils.GeoDB(host=host, port=port, dbname=database,
+                                     user=username, passwd=password)
         except postgis_utils.DbError, e:
-            raise GeoAlgorithmExecutionException("Couldn't connect to database:\n"+e.message)
+            raise GeoAlgorithmExecutionException(
+                    "Couldn't connect to database:\n" + e.message)
 
         uri = QgsDataSourceURI()
         uri.setConnection(host, str(port), database, username, password)
-        uri.setDataSource(schema, table, "the_geom", "")
+        uri.setDataSource(schema, table, 'the_geom', '')
 
         options = {}
         if overwrite:
             options['overwrite'] = True
 
-        layerUri = self.getParameterValue(self.INPUT);
+        layerUri = self.getParameterValue(self.INPUT)
         layer = dataobjects.getObjectFromUri(layerUri)
-        ret, errMsg = QgsVectorLayerImport.importLayer(layer, uri.uri(), providerName, self.crs, False, False, options)
+        (ret, errMsg) = QgsVectorLayerImport.importLayer(
+            layer,
+            uri.uri(),
+            providerName,
+            self.crs,
+            False,
+            False,
+            options,
+            )
         if ret != 0:
-            raise GeoAlgorithmExecutionException(u"Error importing to PostGIS\n%s" %  errMsg)
+            raise GeoAlgorithmExecutionException(
+                    'Error importing to PostGIS\n%s' % errMsg)
 
         if createIndex:
-            db.create_spatial_index(table, schema, "the_geom")
+            db.create_spatial_index(table, schema, 'the_geom')
 
         db.vacuum_analyze(table, schema)
 
     def defineCharacteristics(self):
-        self.name = "Import into PostGIS"
-        self.group = "PostGIS management tools"
-        self.addParameter(ParameterVector(self.INPUT, "Layer to import"))
-        self.addParameter(ParameterString(self.DATABASE, "Database (connection name)"))
-        self.addParameter(ParameterString(self.SCHEMA, "Schema (schema name)"))
-        self.addParameter(ParameterString(self.TABLENAME, "Table to import to"))
-        self.addParameter(ParameterBoolean(self.OVERWRITE, "Overwrite", True))
-        self.addParameter(ParameterBoolean(self.CREATEINDEX, "Create spatial index", True))
-
-
-
-
-
+        self.name = 'Import into PostGIS'
+        self.group = 'PostGIS management tools'
+        self.addParameter(ParameterVector(self.INPUT, 'Layer to import'))
+        self.addParameter(ParameterString(self.DATABASE,
+                          'Database (connection name)'))
+        self.addParameter(ParameterString(self.SCHEMA, 'Schema (schema name)'))
+        self.addParameter(ParameterString(self.TABLENAME, 'Table to import to'
+                          ))
+        self.addParameter(ParameterBoolean(self.OVERWRITE, 'Overwrite', True))
+        self.addParameter(ParameterBoolean(self.CREATEINDEX,
+                          'Create spatial index', True))

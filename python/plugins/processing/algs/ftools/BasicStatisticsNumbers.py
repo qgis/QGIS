@@ -20,60 +20,68 @@
 __author__ = 'Victor Olaya'
 __date__ = 'September 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
 import math
 from PyQt4.QtCore import *
 from qgis.core import *
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.tools import dataobjects, vector
 from processing.parameters.ParameterVector import ParameterVector
 from processing.parameters.ParameterTableField import ParameterTableField
 from processing.outputs.OutputHTML import OutputHTML
 from processing.outputs.OutputNumber import OutputNumber
-from processing.tools import vector as utils
+from processing.tools import dataobjects, vector
+
 
 class BasicStatisticsNumbers(GeoAlgorithm):
 
-    INPUT_LAYER = "INPUT_LAYER"
-    FIELD_NAME = "FIELD_NAME"
-    OUTPUT_HTML_FILE = "OUTPUT_HTML_FILE"
+    INPUT_LAYER = 'INPUT_LAYER'
+    FIELD_NAME = 'FIELD_NAME'
+    OUTPUT_HTML_FILE = 'OUTPUT_HTML_FILE'
 
-    CV = "CV"
-    MIN = "MIN"
-    MAX = "MAX"
-    SUM = "SUM"
-    MEAN = "MEAN"
-    COUNT = "COUNT"
-    STD_DEV = "STD_DEV"
-    RANGE = "RANGE"
-    MEDIAN = "MEDIAN"
-    UNIQUE = "UNIQUE"
+    CV = 'CV'
+    MIN = 'MIN'
+    MAX = 'MAX'
+    SUM = 'SUM'
+    MEAN = 'MEAN'
+    COUNT = 'COUNT'
+    STD_DEV = 'STD_DEV'
+    RANGE = 'RANGE'
+    MEDIAN = 'MEDIAN'
+    UNIQUE = 'UNIQUE'
 
     def defineCharacteristics(self):
-        self.name = "Basic statistics for numeric fields"
-        self.group = "Vector table tools"
+        self.name = 'Basic statistics for numeric fields'
+        self.group = 'Vector table tools'
 
-        self.addParameter(ParameterVector(self.INPUT_LAYER, "Input vector layer", ParameterVector.VECTOR_TYPE_ANY, False))
-        self.addParameter(ParameterTableField(self.FIELD_NAME, "Field to calculate statistics on",
-                                              self.INPUT_LAYER, ParameterTableField.DATA_TYPE_NUMBER))
+        self.addParameter(ParameterVector(self.INPUT_LAYER,
+                          'Input vector layer',
+                          ParameterVector.VECTOR_TYPE_ANY, False))
+        self.addParameter(ParameterTableField(self.FIELD_NAME,
+                          'Field to calculate statistics on',
+                          self.INPUT_LAYER,
+                          ParameterTableField.DATA_TYPE_NUMBER))
 
-        self.addOutput(OutputHTML(self.OUTPUT_HTML_FILE, "Statistics for numeric field"))
+        self.addOutput(OutputHTML(self.OUTPUT_HTML_FILE,
+                       'Statistics for numeric field'))
 
-        self.addOutput(OutputNumber(self.CV, "Coefficient of Variation"))
-        self.addOutput(OutputNumber(self.MIN, "Minimum value"))
-        self.addOutput(OutputNumber(self.MAX, "Maximum value"))
-        self.addOutput(OutputNumber(self.SUM, "Sum"))
-        self.addOutput(OutputNumber(self.MEAN, "Mean value"))
-        self.addOutput(OutputNumber(self.COUNT, "Count"))
-        self.addOutput(OutputNumber(self.RANGE, "Range"))
-        self.addOutput(OutputNumber(self.MEDIAN, "Median"))
-        self.addOutput(OutputNumber(self.UNIQUE, "Number of unique values"))
-        self.addOutput(OutputNumber(self.STD_DEV, "Standard deviation"))
+        self.addOutput(OutputNumber(self.CV, 'Coefficient of Variation'))
+        self.addOutput(OutputNumber(self.MIN, 'Minimum value'))
+        self.addOutput(OutputNumber(self.MAX, 'Maximum value'))
+        self.addOutput(OutputNumber(self.SUM, 'Sum'))
+        self.addOutput(OutputNumber(self.MEAN, 'Mean value'))
+        self.addOutput(OutputNumber(self.COUNT, 'Count'))
+        self.addOutput(OutputNumber(self.RANGE, 'Range'))
+        self.addOutput(OutputNumber(self.MEDIAN, 'Median'))
+        self.addOutput(OutputNumber(self.UNIQUE, 'Number of unique values'))
+        self.addOutput(OutputNumber(self.STD_DEV, 'Standard deviation'))
 
     def processAlgorithm(self, progress):
-        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_LAYER))
+        layer = dataobjects.getObjectFromUri(
+                self.getParameterValue(self.INPUT_LAYER))
         fieldName = self.getParameterValue(self.FIELD_NAME)
 
         outputFile = self.getOutputValue(self.OUTPUT_HTML_FILE)
@@ -107,44 +115,45 @@ class BasicStatisticsNumbers(GeoAlgorithm):
                 if value > maxValue:
                     maxValue = value
 
-            values.append( value )
+            values.append(value)
             sumValue += value
 
             current += 1
             progress.setPercentage(int(current * total))
 
-        # calculate additional values
+        # Calculate additional values
         rValue = maxValue - minValue
-        uniqueValue = utils.getUniqueValuesCount(layer, index)
+        uniqueValue = vector.getUniqueValuesCount(layer, index)
 
         if count > 0:
             meanValue = sumValue / count
             if meanValue != 0.00:
                 for v in values:
-                    stdDevValue += ((v - meanValue) * (v - meanValue))
+                    stdDevValue += (v - meanValue) * (v - meanValue)
                 stdDevValue = math.sqrt(stdDevValue / count)
                 cvValue = stdDevValue / meanValue
 
         if count > 1:
             tmp = values
             tmp.sort()
-            # calculate median
-            if (count % 2) == 0:
+
+            # Calculate median
+            if count % 2 == 0:
                 medianValue = 0.5 * (tmp[(count - 1) / 2] + tmp[count / 2])
             else:
                 medianValue = tmp[(count + 1) / 2 - 1]
 
         data = []
-        data.append("Count: " + unicode(count))
-        data.append("Unique values: " + unicode(uniqueValue))
-        data.append("Minimum value: " + unicode(minValue))
-        data.append("Maximum value: " + unicode(maxValue))
-        data.append("Range: " + unicode(rValue))
-        data.append("Sum: " + unicode(sumValue))
-        data.append("Mean value: " + unicode(meanValue))
-        data.append("Median value: " + unicode(medianValue))
-        data.append("Standard deviation: " + unicode(stdDevValue))
-        data.append("Coefficient of Variation: " + unicode(cvValue))
+        data.append('Count: ' + unicode(count))
+        data.append('Unique values: ' + unicode(uniqueValue))
+        data.append('Minimum value: ' + unicode(minValue))
+        data.append('Maximum value: ' + unicode(maxValue))
+        data.append('Range: ' + unicode(rValue))
+        data.append('Sum: ' + unicode(sumValue))
+        data.append('Mean value: ' + unicode(meanValue))
+        data.append('Median value: ' + unicode(medianValue))
+        data.append('Standard deviation: ' + unicode(stdDevValue))
+        data.append('Coefficient of Variation: ' + unicode(cvValue))
 
         self.createHTML(outputFile, data)
 
@@ -160,7 +169,7 @@ class BasicStatisticsNumbers(GeoAlgorithm):
         self.setOutputValue(self.CV, cvValue)
 
     def createHTML(self, outputFile, algData):
-        f = open(outputFile, "w")
+        f = open(outputFile, 'w')
         for s in algData:
-            f.write("<p>" + str(s) + "</p>")
+            f.write('<p>' + str(s) + '</p>')
         f.close()

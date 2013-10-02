@@ -20,7 +20,9 @@
 __author__ = 'Victor Olaya'
 __date__ = 'January 2013'
 __copyright__ = '(C) 2013, Victor Olaya'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
 from PyQt4 import QtCore, QtGui
@@ -30,7 +32,7 @@ class MultilineTextPanel(QtGui.QWidget):
 
     USE_TEXT = 0
 
-    def __init__(self, options, model, parent = None):
+    def __init__(self, options, model, parent=None):
         super(MultilineTextPanel, self).__init__(parent)
         self.options = options
         self.model = model
@@ -38,10 +40,11 @@ class MultilineTextPanel(QtGui.QWidget):
         self.verticalLayout.setSpacing(2)
         self.verticalLayout.setMargin(0)
         self.combo = QtGui.QComboBox()
-        self.combo.addItem("[Use text below]")
+        self.combo.addItem('[Use text below]')
         for option in options:
             self.combo.addItem(option.name(), option)
-        self.combo.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        self.combo.setSizePolicy(QtGui.QSizePolicy.Expanding,
+                                 QtGui.QSizePolicy.Expanding)
         self.verticalLayout.addWidget(self.combo)
         self.textBox = QtGui.QPlainTextEdit()
         self.verticalLayout.addWidget(self.textBox)
@@ -60,7 +63,7 @@ class MultilineTextPanel(QtGui.QWidget):
             return self.combo.itemData(self.combo.currentIndex())
 
     def setValue(self, value):
-        items = [self.combo.itemData(i) for i in range(1,self.combo.count())]
+        items = [self.combo.itemData(i) for i in range(1, self.combo.count())]
         idx = 0
         for item in items:
             idx += 1

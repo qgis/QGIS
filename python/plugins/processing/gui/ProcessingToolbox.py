@@ -17,32 +17,34 @@
 ***************************************************************************
 """
 
-
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from processing import interface
-from processing.gui.MissingDependencyDialog import MissingDependencyDialog
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.modeler.Providers import Providers
-from processing.gui.AlgorithmClassification import AlgorithmDecorator
 from processing.core.Processing import Processing
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
+from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.gui.MissingDependencyDialog import MissingDependencyDialog
+from processing.gui.AlgorithmClassification import AlgorithmDecorator
 from processing.gui.ParametersDialog import ParametersDialog
 from processing.gui.BatchProcessingDialog import BatchProcessingDialog
 from processing.gui.EditRenderingStylesDialog import EditRenderingStylesDialog
+from processing.modeler.Providers import Providers
+
 from processing.ui.ui_ProcessingToolbox import Ui_ProcessingToolbox
 
 
 class ProcessingToolbox(QDockWidget, Ui_ProcessingToolbox):
 
-    USE_CATEGORIES = "/Processing/UseSimplifiedInterface"
+    USE_CATEGORIES = '/Processing/UseSimplifiedInterface'
 
     def __init__(self):
         QDockWidget.__init__(self, None)
@@ -50,11 +52,12 @@ class ProcessingToolbox(QDockWidget, Ui_ProcessingToolbox):
         self.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea)
 
         self.modeComboBox.clear()
-        self.modeComboBox.addItems(['Simplified interface', 'Advanced interface'])
+        self.modeComboBox.addItems(['Simplified interface',
+                                   'Advanced interface'])
         settings = QSettings()
         if not settings.contains(self.USE_CATEGORIES):
             settings.setValue(self.USE_CATEGORIES, False)
-        useCategories = settings.value(self.USE_CATEGORIES, type = bool)
+        useCategories = settings.value(self.USE_CATEGORIES, type=bool)
         if useCategories:
             self.modeComboBox.setCurrentIndex(0)
         else:
@@ -62,18 +65,20 @@ class ProcessingToolbox(QDockWidget, Ui_ProcessingToolbox):
         self.modeComboBox.currentIndexChanged.connect(self.modeHasChanged)
 
         self.searchBox.textChanged.connect(self.fillTree)
-        self.algorithmTree.customContextMenuRequested.connect(self.showPopupMenu)
+        self.algorithmTree.customContextMenuRequested.connect(
+                self.showPopupMenu)
         self.algorithmTree.doubleClicked.connect(self.executeAlgorithm)
 
         if hasattr(self.searchBox, 'setPlaceholderText'):
-            self.searchBox.setPlaceholderText(self.tr("Search..."))
+            self.searchBox.setPlaceholderText(self.tr('Search...'))
 
         self.fillTree()
 
     def modeHasChanged(self):
         idx = self.modeComboBox.currentIndex()
         settings = QSettings()
-        if idx == 0: #simplified
+        if idx == 0:
+            # Simplified
             settings.setValue(self.USE_CATEGORIES, True)
         else:
             settings.setValue(self.USE_CATEGORIES, False)
@@ -86,21 +91,27 @@ class ProcessingToolbox(QDockWidget, Ui_ProcessingToolbox):
     def updateTree(self):
         Processing.updateAlgsList()
 
-    def showPopupMenu(self,point):
+    def showPopupMenu(self, point):
         item = self.algorithmTree.itemAt(point)
         if isinstance(item, TreeAlgorithmItem):
             alg = item.alg
             popupmenu = QMenu()
-            executeAction = QAction(self.tr("Execute"), self.algorithmTree)
+            executeAction = QAction(self.tr('Execute'), self.algorithmTree)
             executeAction.triggered.connect(self.executeAlgorithm)
             popupmenu.addAction(executeAction)
             if alg.canRunInBatchMode:
-                executeBatchAction = QAction(self.tr("Execute as batch process"), self.algorithmTree)
-                executeBatchAction.triggered.connect(self.executeAlgorithmAsBatchProcess)
+                executeBatchAction = QAction(
+                        self.tr('Execute as batch process'),
+                        self.algorithmTree)
+                executeBatchAction.triggered.connect(
+                        self.executeAlgorithmAsBatchProcess)
                 popupmenu.addAction(executeBatchAction)
             popupmenu.addSeparator()
-            editRenderingStylesAction = QAction(self.tr("Edit rendering styles for outputs"), self.algorithmTree)
-            editRenderingStylesAction.triggered.connect(self.editRenderingStyles)
+            editRenderingStylesAction = QAction(
+                    self.tr('Edit rendering styles for outputs'),
+                    self.algorithmTree)
+            editRenderingStylesAction.triggered.connect(
+                    self.editRenderingStyles)
             popupmenu.addAction(editRenderingStylesAction)
             actions = Processing.contextMenuActions
             if len(actions) > 0:
@@ -108,7 +119,8 @@ class ProcessingToolbox(QDockWidget, Ui_ProcessingToolbox):
             for action in actions:
                 action.setData(alg, self)
                 if action.isEnabled():
-                    contextMenuAction = QAction(action.name, self.algorithmTree)
+                    contextMenuAction = QAction(action.name,
+                            self.algorithmTree)
                     contextMenuAction.triggered.connect(action.execute)
                     popupmenu.addAction(contextMenuAction)
 
@@ -145,14 +157,15 @@ class ProcessingToolbox(QDockWidget, Ui_ProcessingToolbox):
             prevMapTool = canvas.mapTool()
             dlg.show()
             dlg.exec_()
-            if canvas.mapTool()!=prevMapTool:
+            if canvas.mapTool() != prevMapTool:
                 try:
                     canvas.mapTool().reset()
                 except:
                     pass
                 canvas.setMapTool(prevMapTool)
             if dlg.executed:
-                showRecent = ProcessingConfig.getSetting(ProcessingConfig.SHOW_RECENT_ALGORITHMS)
+                showRecent = ProcessingConfig.getSetting(
+                        ProcessingConfig.SHOW_RECENT_ALGORITHMS)
                 if showRecent:
                     self.addRecentAlgorithms(True)
         if isinstance(item, TreeActionItem):
@@ -162,7 +175,7 @@ class ProcessingToolbox(QDockWidget, Ui_ProcessingToolbox):
 
     def fillTree(self):
         settings = QSettings()
-        useCategories = settings.value(self.USE_CATEGORIES, type = bool)
+        useCategories = settings.value(self.USE_CATEGORIES, type=bool)
         if useCategories:
             self.fillTreeUsingCategories()
         else:
@@ -171,7 +184,8 @@ class ProcessingToolbox(QDockWidget, Ui_ProcessingToolbox):
         self.addRecentAlgorithms(False)
 
     def addRecentAlgorithms(self, updating):
-        showRecent = ProcessingConfig.getSetting(ProcessingConfig.SHOW_RECENT_ALGORITHMS)
+        showRecent = ProcessingConfig.getSetting(
+                ProcessingConfig.SHOW_RECENT_ALGORITHMS)
         if showRecent:
             recent = ProcessingLog.getRecentAlgorithms()
             if len(recent) != 0:
@@ -179,10 +193,11 @@ class ProcessingToolbox(QDockWidget, Ui_ProcessingToolbox):
                 if updating:
                     recentItem = self.algorithmTree.topLevelItem(0)
                     treeWidget = recentItem.treeWidget()
-                    treeWidget.takeTopLevelItem(treeWidget.indexOfTopLevelItem(recentItem))
+                    treeWidget.takeTopLevelItem(
+                            treeWidget.indexOfTopLevelItem(recentItem))
 
                 recentItem = QTreeWidgetItem()
-                recentItem.setText(0, self.tr("Recently used algorithms"))
+                recentItem.setText(0, self.tr('Recently used algorithms'))
                 for algname in recent:
                     alg = Processing.getAlgorithm(algname)
                     if alg is not None:
@@ -196,26 +211,30 @@ class ProcessingToolbox(QDockWidget, Ui_ProcessingToolbox):
             self.algorithmTree.setWordWrap(True)
 
     def fillTreeUsingCategories(self):
-        providersToExclude = ["model", "script"]
+        providersToExclude = ['model', 'script']
         self.algorithmTree.clear()
         text = unicode(self.searchBox.text())
         groups = {}
         for providerName in Processing.algs.keys():
             provider = Processing.algs[providerName]
-            name = "ACTIVATE_" + providerName.upper().replace(" ", "_")
+            name = 'ACTIVATE_' + providerName.upper().replace(' ', '_')
             if not ProcessingConfig.getSetting(name):
                 continue
-            if providerName in providersToExclude or len(Providers.providers[providerName].actions) != 0:
+            if providerName in providersToExclude \
+                        or len(Providers.providers[providerName].actions) != 0:
                 continue
             algs = provider.values()
-            #add algorithms
+
+            # add algorithms
+
             for alg in algs:
                 if not alg.showInToolbox:
                     continue
-                altgroup, altsubgroup, altname = AlgorithmDecorator.getGroupsAndName(alg)
+                (altgroup, altsubgroup, altname) = \
+                    AlgorithmDecorator.getGroupsAndName(alg)
                 if altgroup is None:
                     continue
-                if text =="" or text.lower() in altname.lower():
+                if text == '' or text.lower() in altname.lower():
                     if altgroup not in groups:
                         groups[altgroup] = {}
                     group = groups[altgroup]
@@ -226,16 +245,16 @@ class ProcessingToolbox(QDockWidget, Ui_ProcessingToolbox):
 
         if len(groups) > 0:
             mainItem = QTreeWidgetItem()
-            mainItem.setText(0, "Geoalgorithms")
+            mainItem.setText(0, 'Geoalgorithms')
             mainItem.setIcon(0, GeoAlgorithm.getDefaultIcon())
             mainItem.setToolTip(0, mainItem.text(0))
-            for groupname, group in groups.items():
+            for (groupname, group) in groups.items():
                 groupItem = QTreeWidgetItem()
                 groupItem.setText(0, groupname)
                 groupItem.setIcon(0, GeoAlgorithm.getDefaultIcon())
                 groupItem.setToolTip(0, groupItem.text(0))
                 mainItem.addChild(groupItem)
-                for subgroupname, subgroup in group.items():
+                for (subgroupname, subgroup) in group.items():
                     subgroupItem = QTreeWidgetItem()
                     subgroupItem.setText(0, subgroupname)
                     subgroupItem.setIcon(0, GeoAlgorithm.getDefaultIcon())
@@ -250,17 +269,19 @@ class ProcessingToolbox(QDockWidget, Ui_ProcessingToolbox):
         for providerName in Processing.algs.keys():
             groups = {}
             provider = Processing.algs[providerName]
-            name = "ACTIVATE_" + providerName.upper().replace(" ", "_")
+            name = 'ACTIVATE_' + providerName.upper().replace(' ', '_')
             if not ProcessingConfig.getSetting(name):
                 continue
             if providerName not in providersToExclude:
                 continue
             algs = provider.values()
-            #add algorithms
+
+            # add algorithms
+
             for alg in algs:
                 if not alg.showInToolbox:
                     continue
-                if text =="" or text.lower() in alg.name.lower():
+                if text == '' or text.lower() in alg.name.lower():
                     if alg.group in groups:
                         groupItem = groups[alg.group]
                     else:
@@ -273,26 +294,28 @@ class ProcessingToolbox(QDockWidget, Ui_ProcessingToolbox):
 
             actions = Processing.actions[providerName]
             for action in actions:
-                if text =="" or text.lower() in action.name.lower():
+                if text == '' or text.lower() in action.name.lower():
                     if action.group in groups:
                         groupItem = groups[action.group]
                     else:
                         groupItem = QTreeWidgetItem()
-                        groupItem.setText(0,action.group)
+                        groupItem.setText(0, action.group)
                         groups[action.group] = groupItem
                     algItem = TreeActionItem(action)
                     groupItem.addChild(algItem)
 
             if len(groups) > 0:
                 providerItem = QTreeWidgetItem()
-                providerItem.setText(0, Processing.getProviderFromName(providerName).getDescription())
-                providerItem.setIcon(0, Processing.getProviderFromName(providerName).getIcon())
+                providerItem.setText(0, Processing.getProviderFromName(
+                        providerName).getDescription())
+                providerItem.setIcon(0, Processing.getProviderFromName(
+                        providerName).getIcon())
                 providerItem.setToolTip(0, providerItem.text(0))
                 for groupItem in groups.values():
                     providerItem.addChild(groupItem)
                 self.algorithmTree.addTopLevelItem(providerItem)
 
-        if (text != ""):
+        if text != '':
             self.algorithmTree.expandAll()
 
     def fillTreeUsingProviders(self):
@@ -302,15 +325,16 @@ class ProcessingToolbox(QDockWidget, Ui_ProcessingToolbox):
             groups = {}
             count = 0
             provider = Processing.algs[providerName]
-            name = "ACTIVATE_" + providerName.upper().replace(" ", "_")
+            name = 'ACTIVATE_' + providerName.upper().replace(' ', '_')
             if not ProcessingConfig.getSetting(name):
                 continue
             algs = provider.values()
-            #add algorithms
+
+            # Add algorithms
             for alg in algs:
                 if not alg.showInToolbox:
                     continue
-                if text =="" or text.lower() in alg.name.lower():
+                if text == '' or text.lower() in alg.name.lower():
                     if alg.group in groups:
                         groupItem = groups[alg.group]
                     else:
@@ -324,44 +348,49 @@ class ProcessingToolbox(QDockWidget, Ui_ProcessingToolbox):
 
             actions = Processing.actions[providerName]
             for action in actions:
-                if text =="" or text.lower() in action.name.lower():
+                if text == '' or text.lower() in action.name.lower():
                     if action.group in groups:
                         groupItem = groups[action.group]
                     else:
                         groupItem = QTreeWidgetItem()
-                        groupItem.setText(0,action.group)
+                        groupItem.setText(0, action.group)
                         groups[action.group] = groupItem
                     algItem = TreeActionItem(action)
                     groupItem.addChild(algItem)
 
             if len(groups) > 0:
                 providerItem = QTreeWidgetItem()
-                providerItem.setText(0, Processing.getProviderFromName(providerName).getDescription()
-                                     + " [" + str(count) + " geoalgorithms]")
-                providerItem.setIcon(0, Processing.getProviderFromName(providerName).getIcon())
+                providerItem.setText(0, Processing.getProviderFromName(
+                        providerName).getDescription()
+                        + ' [' + str(count) + ' geoalgorithms]')
+                providerItem.setIcon(0, Processing.getProviderFromName(
+                        providerName).getIcon())
                 providerItem.setToolTip(0, providerItem.text(0))
                 for groupItem in groups.values():
                     providerItem.addChild(groupItem)
                 self.algorithmTree.addTopLevelItem(providerItem)
-                providerItem.setExpanded(text!="")
+                providerItem.setExpanded(text != '')
                 for groupItem in groups.values():
-                    groupItem.setExpanded(text != "")
+                    groupItem.setExpanded(text != '')
+
 
 class TreeAlgorithmItem(QTreeWidgetItem):
 
     def __init__(self, alg):
         settings = QSettings()
-        useCategories = settings.value(ProcessingToolbox.USE_CATEGORIES, type = bool)
+        useCategories = settings.value(ProcessingToolbox.USE_CATEGORIES,
+                                       type=bool)
         QTreeWidgetItem.__init__(self)
         self.alg = alg
         icon = alg.getIcon()
         name = alg.name
         if useCategories:
             icon = GeoAlgorithm.getDefaultIcon()
-            group, subgroup, name = AlgorithmDecorator.getGroupsAndName(alg)
+            (group, subgroup, name) = AlgorithmDecorator.getGroupsAndName(alg)
         self.setIcon(0, icon)
         self.setToolTip(0, name)
         self.setText(0, name)
+
 
 class TreeActionItem(QTreeWidgetItem):
 

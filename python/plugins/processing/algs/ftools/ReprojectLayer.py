@@ -20,44 +20,51 @@
 __author__ = 'Alexander Bruy'
 __date__ = 'October 2012'
 __copyright__ = '(C) 2012, Alexander Bruy'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
 from PyQt4.QtCore import *
 from qgis.core import *
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.tools import dataobjects, vector
 from processing.parameters.ParameterVector import ParameterVector
 from processing.parameters.ParameterCrs import ParameterCrs
 from processing.outputs.OutputVector import OutputVector
+from processing.tools import dataobjects, vector
+
 
 class ReprojectLayer(GeoAlgorithm):
 
-    INPUT = "INPUT"
-    TARGET_CRS = "TARGET_CRS"
-    OUTPUT = "OUTPUT"
+    INPUT = 'INPUT'
+    TARGET_CRS = 'TARGET_CRS'
+    OUTPUT = 'OUTPUT'
 
-    #===========================================================================
+    # =========================================================================
     # def getIcon(self):
-    #    return QtGui.QIcon(os.path.dirname(__file__) + "/icons/reproject.png")
-    #===========================================================================
+    #    return QIcon(os.path.dirname(__file__) + "/icons/reproject.png")
+    # =========================================================================
 
     def defineCharacteristics(self):
-        self.name = "Reproject layer"
-        self.group = "Vector general tools"
+        self.name = 'Reproject layer'
+        self.group = 'Vector general tools'
 
-        self.addParameter(ParameterVector(self.INPUT, "Input layer", [ParameterVector.VECTOR_TYPE_ANY]))
-        self.addParameter(ParameterCrs(self.TARGET_CRS, "Target CRS", "EPSG:4326"))
+        self.addParameter(ParameterVector(self.INPUT, 'Input layer',
+                          [ParameterVector.VECTOR_TYPE_ANY]))
+        self.addParameter(ParameterCrs(self.TARGET_CRS, 'Target CRS',
+                          'EPSG:4326'))
 
-        self.addOutput(OutputVector(self.OUTPUT, "Reprojected layer"))
+        self.addOutput(OutputVector(self.OUTPUT, 'Reprojected layer'))
 
     def processAlgorithm(self, progress):
-        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
+        layer = dataobjects.getObjectFromUri(
+                self.getParameterValue(self.INPUT))
         crsId = self.getParameterValue(self.TARGET_CRS)
         targetCrs = QgsCoordinateReferenceSystem(crsId)
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.pendingFields().toList(),
-                     layer.wkbType(), targetCrs)
+        writer = self.getOutputFromName(
+                self.OUTPUT).getVectorWriter(layer.pendingFields().toList(),
+                                             layer.wkbType(), targetCrs)
 
         layerCrs = layer.crs()
         crsTransform = QgsCoordinateTransform(layerCrs, targetCrs)

@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 """
@@ -21,14 +20,22 @@
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
-# -*- coding: latin-1 -*-
+import os
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PyQt4 import QtCore, QtGui, QtWebKit
-from processing.tools import dataobjects
+
+from processing.core.ProcessingLog import ProcessingLog
+from processing.core.ProcessingConfig import ProcessingConfig
+from processing.core.WrongHelpFileException import WrongHelpFileException
+from processing.gui.Postprocessing import Postprocessing
+from processing.gui.UnthreadedAlgorithmExecutor import \
+        UnthreadedAlgorithmExecutor
 from processing.parameters.ParameterRaster import ParameterRaster
 from processing.parameters.ParameterVector import ParameterVector
 from processing.parameters.ParameterBoolean import ParameterBoolean
@@ -37,42 +44,41 @@ from processing.parameters.ParameterMultipleInput import ParameterMultipleInput
 from processing.parameters.ParameterFixedTable import ParameterFixedTable
 from processing.parameters.ParameterTableField import ParameterTableField
 from processing.parameters.ParameterTable import ParameterTable
-from processing.core.ProcessingLog import ProcessingLog
-from processing.gui.Postprocessing import Postprocessing
 from processing.parameters.ParameterRange import ParameterRange
 from processing.parameters.ParameterNumber import ParameterNumber
 from processing.parameters.ParameterFile import ParameterFile
 from processing.parameters.ParameterCrs import ParameterCrs
-from processing.core.ProcessingConfig import ProcessingConfig
 from processing.parameters.ParameterExtent import ParameterExtent
+from processing.parameters.ParameterString import ParameterString
 from processing.outputs.OutputRaster import OutputRaster
 from processing.outputs.OutputVector import OutputVector
 from processing.outputs.OutputTable import OutputTable
-from processing.core.WrongHelpFileException import WrongHelpFileException
-import os
-from processing.gui.UnthreadedAlgorithmExecutor import UnthreadedAlgorithmExecutor
-from processing.parameters.ParameterString import ParameterString
+from processing.tools import dataobjects
+
 
 class AlgorithmExecutionDialog(QtGui.QDialog):
-    class InvalidParameterValue(Exception):
-        def __init__(self, param, widget):
-            self.parameter, self.widget = param, widget
 
-    '''Base class for dialogs that execute algorithms'''
+    class InvalidParameterValue(Exception):
+
+        def __init__(self, param, widget):
+            (self.parameter, self.widget) = (param, widget)
+
     def __init__(self, alg, mainWidget):
-        QtGui.QDialog.__init__(self, None, QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.WindowTitleHint)
+        QtGui.QDialog.__init__(self, None, QtCore.Qt.WindowSystemMenuHint
+                               | QtCore.Qt.WindowTitleHint)
         self.executed = False
         self.mainWidget = mainWidget
         self.alg = alg
         self.resize(650, 450)
         self.buttonBox = QtGui.QDialogButtonBox()
         self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
-        self.buttonBox.setStandardButtons(
-            QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Close)
+        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel
+                | QtGui.QDialogButtonBox.Close)
         self.buttonBox.button(QtGui.QDialogButtonBox.Cancel).setEnabled(False)
         self.runButton = QtGui.QPushButton()
-        self.runButton.setText("Run")
-        self.buttonBox.addButton(self.runButton, QtGui.QDialogButtonBox.ActionRole)
+        self.runButton.setText('Run')
+        self.buttonBox.addButton(self.runButton,
+                                 QtGui.QDialogButtonBox.ActionRole)
         self.runButton.clicked.connect(self.accept)
         self.setWindowTitle(self.alg.name)
         self.progressLabel = QtGui.QLabel()
@@ -85,23 +91,25 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
         self.verticalLayout.setMargin(0)
         self.tabWidget = QtGui.QTabWidget()
         self.tabWidget.setMinimumWidth(300)
-        self.tabWidget.addTab(self.mainWidget, "Parameters")
+        self.tabWidget.addTab(self.mainWidget, 'Parameters')
         self.verticalLayout.addWidget(self.tabWidget)
         self.logText = QTextEdit()
         self.logText.readOnly = True
-        self.tabWidget.addTab(self.logText, "Log")
+        self.tabWidget.addTab(self.logText, 'Log')
         self.webView = QtWebKit.QWebView()
-        cssUrl = QtCore.QUrl(os.path.join(os.path.dirname(__file__), "help", "help.css"))
+        cssUrl = QtCore.QUrl(os.path.join(os.path.dirname(__file__), 'help',
+                             'help.css'))
         self.webView.settings().setUserStyleSheetUrl(cssUrl)
         html = None
         try:
             if self.alg.helpFile():
-                helpFile = self.alg.helpFile()                
+                helpFile = self.alg.helpFile()
             else:
-                html = "<h2>Sorry, no help is available for this algorithm.</h2>"
+                html = '<h2>Sorry, no help is available for this \
+                        algorithm.</h2>'
         except WrongHelpFileException, e:
             html = e.msg
-            self.webView.setHtml("<h2>Could not open help file :-( </h2>")
+            self.webView.setHtml('<h2>Could not open help file :-( </h2>')
         try:
             if html:
                 self.webView.setHtml(html)
@@ -109,15 +117,15 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
                 url = QtCore.QUrl(helpFile)
                 self.webView.load(url)
         except:
-            self.webView.setHtml("<h2>Could not open help file :-( </h2>")
-        self.tabWidget.addTab(self.webView, "Help")
+            self.webView.setHtml('<h2>Could not open help file :-( </h2>')
+        self.tabWidget.addTab(self.webView, 'Help')
         self.verticalLayout.addWidget(self.progressLabel)
         self.verticalLayout.addWidget(self.progress)
         self.verticalLayout.addWidget(self.buttonBox)
         self.setLayout(self.verticalLayout)
         self.buttonBox.rejected.connect(self.close)
-        self.buttonBox.button(QtGui.QDialogButtonBox.Cancel).clicked.connect(self.cancel)
-
+        self.buttonBox.button(
+                QtGui.QDialogButtonBox.Cancel).clicked.connect(self.cancel)
 
     def setParamValues(self):
         params = self.alg.parameters
@@ -128,20 +136,25 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
                 continue
             if isinstance(param, ParameterExtent):
                 continue
-            if not self.setParamValue(param, self.paramTable.valueItems[param.name]):
-                raise AlgorithmExecutionDialog.InvalidParameterValue(param, self.paramTable.valueItems[param.name])
+            if not self.setParamValue(param,
+                                      self.paramTable.valueItems[param.name]):
+                raise AlgorithmExecutionDialog.InvalidParameterValue(param,
+                        self.paramTable.valueItems[param.name])
 
         for param in params:
             if isinstance(param, ParameterExtent):
-                if not self.setParamValue(param, self.paramTable.valueItems[param.name]):
-                    raise AlgorithmExecutionDialog.InvalidParameterValue(param, self.paramTable.valueItems[param.name])
+                if not self.setParamValue(param,
+                        self.paramTable.valueItems[param.name]):
+                    raise AlgorithmExecutionDialog.InvalidParameterValue(param,
+                            self.paramTable.valueItems[param.name])
 
         for output in outputs:
             if output.hidden:
                 continue
             output.value = self.paramTable.valueItems[output.name].getValue()
             if isinstance(output, (OutputRaster, OutputVector, OutputTable)):
-                output.open = self.paramTable.checkBoxes[output.name].isChecked()
+                output.open = \
+                    self.paramTable.checkBoxes[output.name].isChecked()
 
         return True
 
@@ -172,7 +185,8 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
             for index in widget.selectedoptions:
                 value.append(options[index])
             return param.setValue(value)
-        elif isinstance(param, (ParameterNumber, ParameterFile, ParameterCrs, ParameterExtent)):
+        elif isinstance(param, (ParameterNumber, ParameterFile, ParameterCrs,
+                        ParameterExtent)):
             return param.setValue(widget.getValue())
         elif isinstance(param, ParameterString):
             if param.multiline:
@@ -184,25 +198,30 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
 
     @pyqtSlot()
     def accept(self):
-        checkCRS = ProcessingConfig.getSetting(ProcessingConfig.WARN_UNMATCHING_CRS)
-        keepOpen = ProcessingConfig.getSetting(ProcessingConfig.KEEP_DIALOG_OPEN)
-        self.showDebug = ProcessingConfig.getSetting(ProcessingConfig.SHOW_DEBUG_IN_DIALOG)
+        checkCRS = ProcessingConfig.getSetting(
+                ProcessingConfig.WARN_UNMATCHING_CRS)
+        keepOpen = ProcessingConfig.getSetting(
+                ProcessingConfig.KEEP_DIALOG_OPEN)
+        self.showDebug = ProcessingConfig.getSetting(
+                ProcessingConfig.SHOW_DEBUG_IN_DIALOG)
         try:
             self.setParamValues()
             if checkCRS and not self.alg.checkInputCRS():
                 reply = QMessageBox.question(self, "Unmatching CRS's",
-                        "Layers do not all use the same CRS.\n" +
-                        "This can cause unexpected results.\n" +
-                        "Do you want to continue?",
-                        QtGui.QMessageBox.Yes | QtGui.QMessageBox.No, QtGui.QMessageBox.No)
+                        'Layers do not all use the same CRS.\n'
+                        + 'This can cause unexpected results.\n'
+                        + 'Do you want to continue?',
+                        QtGui.QMessageBox.Yes | QtGui.QMessageBox.No,
+                        QtGui.QMessageBox.No)
                 if reply == QtGui.QMessageBox.No:
                     return
             msg = self.alg.checkParameterValuesBeforeExecuting()
             if msg:
-                QMessageBox.critical(self, "Unable to execute algorithm", msg)
+                QMessageBox.critical(self, 'Unable to execute algorithm', msg)
                 return
             self.runButton.setEnabled(False)
-            self.buttonBox.button(QtGui.QDialogButtonBox.Close).setEnabled(False)
+            self.buttonBox.button(
+                    QtGui.QDialogButtonBox.Close).setEnabled(False)
             buttons = self.paramTable.iterateButtons
             self.iterateParam = None
 
@@ -212,14 +231,15 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
                     self.iterateParam = buttons.keys()[i]
                     break
 
-            self.tabWidget.setCurrentIndex(1) # log tab
+            self.tabWidget.setCurrentIndex(1)  # Log tab
             self.progress.setMaximum(0)
-            self.progressLabel.setText("Processing algorithm...")
+            self.progressLabel.setText('Processing algorithm...')
             QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
 
-            self.setInfo("<b>Algorithm %s starting...</b>" % self.alg.name)
+            self.setInfo('<b>Algorithm %s starting...</b>' % self.alg.name)
             if self.iterateParam:
-                if UnthreadedAlgorithmExecutor.runalgIterating(self.alg, self.iterateParam, self):
+                if UnthreadedAlgorithmExecutor.runalgIterating(self.alg,
+                        self.iterateParam, self):
                     self.finish()
                 else:
                     QApplication.restoreOverrideCursor()
@@ -230,7 +250,8 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
             else:
                 command = self.alg.getAsCommand()
                 if command:
-                    ProcessingLog.addToLog(ProcessingLog.LOG_ALGORITHM, command)
+                    ProcessingLog.addToLog(ProcessingLog.LOG_ALGORITHM,
+                            command)
                 if UnthreadedAlgorithmExecutor.runalg(self.alg, self):
                     self.finish()
                 else:
@@ -239,50 +260,54 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
                         self.close()
                     else:
                         self.resetGUI()
-        except AlgorithmExecutionDialog.InvalidParameterValue as ex:
+        except AlgorithmExecutionDialog.InvalidParameterValue, ex:
             try:
-                self.buttonBox.accepted.connect(lambda: ex.widget.setPalette(QPalette()))
+                self.buttonBox.accepted.connect(lambda :
+                        ex.widget.setPalette(QPalette()))
                 palette = ex.widget.palette()
                 palette.setColor(QPalette.Base, QColor(255, 255, 0))
                 ex.widget.setPalette(palette)
-                self.progressLabel.setText("<b>Missing parameter value: " + ex.parameter.description + "</b>")
+                self.progressLabel.setText('<b>Missing parameter value: '
+                        + ex.parameter.description + '</b>')
                 return
             except:
-                QMessageBox.critical(self, "Unable to execute algorithm", "Wrong or missing parameter values")
-    
+                QMessageBox.critical(self, 'Unable to execute algorithm',
+                                     'Wrong or missing parameter values')
+
     def finish(self):
-        keepOpen = ProcessingConfig.getSetting(ProcessingConfig.KEEP_DIALOG_OPEN)
+        keepOpen = ProcessingConfig.getSetting(
+                ProcessingConfig.KEEP_DIALOG_OPEN)
         if self.iterateParam is None:
             Postprocessing.handleAlgorithmResults(self.alg, self, not keepOpen)
         self.executed = True
-        self.setInfo("Algorithm %s finished" % self.alg.name)
+        self.setInfo('Algorithm %s finished' % self.alg.name)
         QApplication.restoreOverrideCursor()
         if not keepOpen:
             self.close()
         else:
             self.resetGUI()
             if self.alg.getHTMLOutputsCount() > 0:
-                self.setInfo("HTML output has been generated by this algorithm.\nOpen the results dialog to check it.")
-
+                self.setInfo('HTML output has been generated by this '
+                        + 'algorithm.\nOpen the results dialog to check it.')
 
     def error(self, msg):
         QApplication.restoreOverrideCursor()
-        keepOpen = ProcessingConfig.getSetting(ProcessingConfig.KEEP_DIALOG_OPEN)
+        keepOpen = ProcessingConfig.getSetting(
+                ProcessingConfig.KEEP_DIALOG_OPEN)
         self.setInfo(msg, True)
         if not keepOpen:
-            QMessageBox.critical(self, "Error", msg)
+            QMessageBox.critical(self, 'Error', msg)
             self.close()
         else:
-            self.resetGUI()            
-            self.tabWidget.setCurrentIndex(1) # log tab
-
+            self.resetGUI()
+            self.tabWidget.setCurrentIndex(1)  # log tab
 
     def iterate(self, i):
-        self.setInfo("<b>Algorithm %s iteration #%i completed</b>" % (self.alg.name, i))
-
+        self.setInfo('<b>Algorithm %s iteration #%i completed</b>'
+                     % (self.alg.name, i))
 
     def cancel(self):
-        self.setInfo("<b>Algorithm %s canceled</b>" % self.alg.name)
+        self.setInfo('<b>Algorithm %s canceled</b>' % self.alg.name)
         try:
             self.algEx.algExecuted.disconnect()
             self.algEx.terminate()
@@ -292,31 +317,27 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
 
     def resetGUI(self):
         QApplication.restoreOverrideCursor()
-        self.progressLabel.setText("")
+        self.progressLabel.setText('')
         self.progress.setMaximum(100)
         self.progress.setValue(0)
         self.runButton.setEnabled(True)
         self.buttonBox.button(QtGui.QDialogButtonBox.Close).setEnabled(True)
         self.buttonBox.button(QtGui.QDialogButtonBox.Cancel).setEnabled(False)
 
-    
-    def setInfo(self, msg, error = False):
+    def setInfo(self, msg, error=False):
         if error:
             self.logText.append('<span style="color:red">' + msg + '</span>')
         else:
             self.logText.append(msg)
 
-    
     def setCommand(self, cmd):
         if self.showDebug:
             self.setInfo('<tt>' + cmd + '<tt>')
 
-    
     def setDebugInfo(self, msg):
         if self.showDebug:
             self.setInfo('<span style="color:blue">' + msg + '</span>')
 
-    
     def setConsoleInfo(self, msg):
         if self.showDebug:
             self.setCommand('<span style="color:darkgray">' + msg + '</span>')

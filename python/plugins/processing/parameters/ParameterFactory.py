@@ -20,7 +20,9 @@
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
 from processing.parameters.ParameterBoolean import ParameterBoolean
@@ -38,14 +40,27 @@ from processing.parameters.ParameterExtent import ParameterExtent
 from processing.parameters.ParameterFile import ParameterFile
 from processing.parameters.ParameterCrs import ParameterCrs
 
-class ParameterFactory():
+
+class ParameterFactory:
 
     @staticmethod
     def getFromString(s):
-        classes = [ParameterBoolean, ParameterMultipleInput,ParameterNumber,
-                   ParameterRaster, ParameterString, ParameterVector, ParameterTableField,
-                   ParameterTable, ParameterSelection, ParameterRange, ParameterFixedTable,
-                   ParameterExtent, ParameterFile, ParameterCrs]
+        classes = [
+            ParameterBoolean,
+            ParameterMultipleInput,
+            ParameterNumber,
+            ParameterRaster,
+            ParameterString,
+            ParameterVector,
+            ParameterTableField,
+            ParameterTable,
+            ParameterSelection,
+            ParameterRange,
+            ParameterFixedTable,
+            ParameterExtent,
+            ParameterFile,
+            ParameterCrs,
+            ]
         for clazz in classes:
             if s.startswith(clazz().parameterName()):
                 return clazz().deserialize(s)

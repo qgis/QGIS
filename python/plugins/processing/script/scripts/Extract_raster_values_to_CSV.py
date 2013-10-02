@@ -5,10 +5,11 @@
 ##Output_table=output table
 
 import os
-from processing.raster import *
 from osgeo import gdal, ogr, osr
 from processing.core.TableWriter import TableWriter
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
+from processing.core.GeoAlgorithmExecutionException import \
+        GeoAlgorithmExecutionException
+from processing.tools.raster import *
 
 raster = gdal.Open(Input_raster)
 
@@ -25,7 +26,8 @@ vector = ogr.Open(Input_vector, False)
 layer = vector.GetLayer(0)
 featureCount = layer.GetFeatureCount()
 if featureCount == 0:
-    raise GeoAlgorithmExecutionException("There are no features in input vector.")
+    raise GeoAlgorithmExecutionException(
+            'There are no features in input vector.')
 
 vectorCRS = layer.GetSpatialRef()
 
@@ -54,7 +56,8 @@ total = bandCount + featureCount * bandCount
 if Transform_vector_to_raster_CRS:
     coordTransform = osr.CoordinateTransformation(vectorCRS, rasterCRS)
     if coordTransform is None:
-        raise GeoAlgorithmExecutionException("Error while creating coordinate transformation.")
+        raise GeoAlgorithmExecutionException(
+                'Error while creating coordinate transformation.')
 
 columnName = rasterBaseName[:8]
 for i in xrange(bandCount):
@@ -78,7 +81,7 @@ for i in xrange(bandCount):
             pnt = coordTransform.TransformPoint(x, y, 0)
             x = pnt[0]
             y = pnt[1]
-        rX, rY = raster.mapToPixel(x, y, geoTransform)
+        (rX, rY) = raster.mapToPixel(x, y, geoTransform)
         if rX > rasterXSize or rY > rasterYSize:
             feature = layer.GetNextFeature()
             continue
@@ -93,7 +96,7 @@ for i in xrange(bandCount):
 raster = None
 vector.Destroy()
 
-writer = TableWriter(Output_table, "utf-8", [])
+writer = TableWriter(Output_table, 'utf-8', [])
 row = []
 for i in xrange(len(columns[0])):
     for col in columns:

@@ -20,7 +20,9 @@
 __author__ = 'Alexander Bruy'
 __date__ = 'December 2012'
 __copyright__ = '(C) 2012, Alexander Bruy'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
 import pickle
@@ -48,6 +50,7 @@ from processing.ui.ui_DlgScriptEditor import Ui_DlgScriptEditor
 
 import processing.resources_rc
 
+
 class ScriptEditorDialog(QDialog, Ui_DlgScriptEditor):
 
     SCRIPT_PYTHON = 0
@@ -57,18 +60,22 @@ class ScriptEditorDialog(QDialog, Ui_DlgScriptEditor):
         QDialog.__init__(self)
         self.setupUi(self)
 
-        # set icons
-        self.btnSave.setIcon(QgsApplication.getThemeIcon("/mActionFileSave.svg"))
-        self.btnSaveAs.setIcon(QgsApplication.getThemeIcon("/mActionFileSaveAs.svg"))
-        self.btnEditHelp.setIcon(QIcon(":/processing/images/edithelp.png"))
-        self.btnRun.setIcon(QIcon(":/processing/images/runalgorithm.png"))
-        self.btnCut.setIcon(QgsApplication.getThemeIcon("/mActionEditCut.png"))
-        self.btnCopy.setIcon(QgsApplication.getThemeIcon("/mActionEditCopy.png"))
-        self.btnPaste.setIcon(QgsApplication.getThemeIcon("/mActionEditPaste.png"))
-        self.btnUndo.setIcon(QgsApplication.getThemeIcon("/mActionUndo.png"))
-        self.btnRedo.setIcon(QgsApplication.getThemeIcon("/mActionRedo.png"))
+        # Set icons
+        self.btnSave.setIcon(
+                QgsApplication.getThemeIcon('/mActionFileSave.svg'))
+        self.btnSaveAs.setIcon(
+                QgsApplication.getThemeIcon('/mActionFileSaveAs.svg'))
+        self.btnEditHelp.setIcon(QIcon(':/processing/images/edithelp.png'))
+        self.btnRun.setIcon(QIcon(':/processing/images/runalgorithm.png'))
+        self.btnCut.setIcon(QgsApplication.getThemeIcon('/mActionEditCut.png'))
+        self.btnCopy.setIcon(
+                QgsApplication.getThemeIcon('/mActionEditCopy.png'))
+        self.btnPaste.setIcon(
+                QgsApplication.getThemeIcon('/mActionEditPaste.png'))
+        self.btnUndo.setIcon(QgsApplication.getThemeIcon('/mActionUndo.png'))
+        self.btnRedo.setIcon(QgsApplication.getThemeIcon('/mActionRedo.png'))
 
-        # connect signals and slots
+        # Connect signals and slots
         self.btnSave.clicked.connect(self.save)
         self.btnSaveAs.clicked.connect(self.saveAs)
         self.btnEditHelp.clicked.connect(self.editHelp)
@@ -105,8 +112,8 @@ class ScriptEditorDialog(QDialog, Ui_DlgScriptEditor):
         dlg = HelpEditionDialog(alg)
         dlg.exec_()
 
-        # we store the description string in case there were not saved because
-        # there was no filename defined yet
+        # We store the description string in case there were not saved
+        # because there was no filename defined yet
         if self.alg is None and dlg.descriptions:
             self.help = dlg.descriptions
 
@@ -120,49 +127,46 @@ class ScriptEditorDialog(QDialog, Ui_DlgScriptEditor):
         if self.filename is None or saveAs:
             if self.algType == self.SCRIPT_PYTHON:
                 scriptDir = ScriptUtils.scriptsFolder()
-                filterName = self.tr("Python scripts (*.py)")
+                filterName = self.tr('Python scripts (*.py)')
             elif self.algType == self.SCRIPT_R:
                 scriptDir = RUtils.RScriptsFolder()
-                filterName = self.tr("Processing R script (*.rsx)")
+                filterName = self.tr('Processing R script (*.rsx)')
 
             self.filename = unicode(QFileDialog.getSaveFileName(self,
-                                                                self.tr("Save script"),
-                                                                scriptDir,
-                                                                filterName
-                                                               ))
+                                    self.tr('Save script'), scriptDir,
+                                    filterName))
 
         if self.filename:
-            if self.algType == self.SCRIPT_PYTHON and not self.filename.lower().endswith(".py"):
-                self.filename += ".py"
-            if self.algType == self.SCRIPT_R and not self.filename.lower().endswith(".rsx"):
-                self.filename += ".rsx"
+            if self.algType == self.SCRIPT_PYTHON \
+                        and not self.filename.lower().endswith('.py'):
+                self.filename += '.py'
+            if self.algType == self.SCRIPT_R \
+                        and not self.filename.lower().endswith('.rsx'):
+                self.filename += '.rsx'
 
             text = unicode(self.editor.text())
             if self.alg is not None:
                 self.alg.script = text
             try:
-                fout = open(self.filename, "w")
+                fout = open(self.filename, 'w')
                 fout.write(text)
                 fout.close()
             except IOError:
-                QMessageBox.warning(self,
-                                    self.tr("I/O error"),
-                                    self.tr("Unable to save edits. Reason:\n %1").arg(unicode(sys.exc_info()[1]))
-                                   )
+                QMessageBox.warning(self, self.tr('I/O error'),
+                        self.tr('Unable to save edits. Reason:\n %1')
+                        % unicode(sys.exc_info()[1]))
                 return
             self.update = True
 
-            # if help strings were defined before saving the script for the first
-            # time, we do it here
+            # If help strings were defined before saving the script for
+            # the first time, we do it here
             if self.help:
-                f = open(self.filename + ".help", "wb")
+                f = open(self.filename + '.help', 'wb')
                 pickle.dump(self.help, f)
                 f.close()
                 self.help = None
-            QMessageBox.information(self,
-                                    self.tr("Script saving"),
-                                    self.tr("Script was correctly saved.")
-                                   )
+            QMessageBox.information(self, self.tr('Script saving'),
+                                    self.tr('Script was correctly saved.'))
         else:
             self.filename = None
 

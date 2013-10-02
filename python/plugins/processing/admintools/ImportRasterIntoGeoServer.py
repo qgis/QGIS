@@ -20,20 +20,23 @@
 __author__ = 'Victor Olaya'
 __date__ = 'October 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
 from qgis.core import *
+from processing.admintools.GeoServerToolsAlgorithm import \
+        GeoServerToolsAlgorithm
 from processing.parameters.ParameterString import ParameterString
-from processing.admintools.GeoServerToolsAlgorithm import GeoServerToolsAlgorithm
 from processing.parameters.ParameterRaster import ParameterRaster
 
 
 class ImportRasterIntoGeoServer(GeoServerToolsAlgorithm):
 
-    INPUT = "INPUT"
-    WORKSPACE = "WORKSPACE"
-    NAME = "NAME"
+    INPUT = 'INPUT'
+    WORKSPACE = 'WORKSPACE'
+    NAME = 'NAME'
 
     def exportRasterLayer(self, inputFilename):
         return inputFilename
@@ -46,15 +49,13 @@ class ImportRasterIntoGeoServer(GeoServerToolsAlgorithm):
         filename = self.exportRasterLayer(inputFilename)
         workspace = self.catalog.get_workspace(workspaceName)
         ds = self.catalog.create_coveragestore2(name, workspace)
-        ds.data_url = "file:" + filename;
+        ds.data_url = 'file:' + filename
         self.catalog.save(ds)
-
 
     def defineCharacteristics(self):
         self.addBaseParameters()
-        self.name = "Import raster into GeoServer"
-        self.group = "GeoServer management tools"
-        self.addParameter(ParameterRaster(self.INPUT, "Layer to import"))
-        self.addParameter(ParameterString(self.WORKSPACE, "Workspace"))
-        self.addParameter(ParameterString(self.NAME, "Store name"))
-
+        self.name = 'Import raster into GeoServer'
+        self.group = 'GeoServer management tools'
+        self.addParameter(ParameterRaster(self.INPUT, 'Layer to import'))
+        self.addParameter(ParameterString(self.WORKSPACE, 'Workspace'))
+        self.addParameter(ParameterString(self.NAME, 'Store name'))

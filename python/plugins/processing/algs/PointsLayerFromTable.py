@@ -16,30 +16,33 @@
 *                                                                         *
 ***************************************************************************
 """
-from processing.parameters.ParameterTable import ParameterTable
-from processing.parameters.ParameterTableField import ParameterTableField
-from processing.parameters.ParameterCrs import ParameterCrs
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2013'
 __copyright__ = '(C) 2013, Victor Olaya'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
-from processing.tools import dataobjects, vector
+from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.parameters.ParameterTable import ParameterTable
+from processing.parameters.ParameterTableField import ParameterTableField
+from processing.parameters.ParameterCrs import ParameterCrs
 from processing.outputs.OutputVector import OutputVector
+from processing.tools import dataobjects, vector
+
 
 class PointsLayerFromTable(GeoAlgorithm):
 
-    INPUT = "INPUT"
-    XFIELD = "XFIELD"
-    YFIELD = "YFIELD"
-    OUTPUT = "OUTPUT"
-    TARGET_CRS = "TARGET_CRS"
+    INPUT = 'INPUT'
+    XFIELD = 'XFIELD'
+    YFIELD = 'YFIELD'
+    OUTPUT = 'OUTPUT'
+    TARGET_CRS = 'TARGET_CRS'
 
     def processAlgorithm(self, progress):
         source = self.getParameterValue(self.INPUT)
@@ -48,8 +51,10 @@ class PointsLayerFromTable(GeoAlgorithm):
         vprovider = vlayer.dataProvider()
         fields = vprovider.fields()
         writer = output.getVectorWriter(fields, QGis.WKBPoint, self.crs)
-        xfieldindex = vlayer.fieldNameIndex(self.getParameterValue(self.XFIELD))
-        yfieldindex = vlayer.fieldNameIndex(self.getParameterValue(self.YFIELD))
+        xfieldindex = vlayer.fieldNameIndex(
+                self.getParameterValue(self.XFIELD))
+        yfieldindex = vlayer.fieldNameIndex(
+                self.getParameterValue(self.YFIELD))
 
         crsId = self.getParameterValue(self.TARGET_CRS)
         targetCrs = QgsCoordinateReferenceSystem(crsId)
@@ -61,11 +66,11 @@ class PointsLayerFromTable(GeoAlgorithm):
         nFeat = len(features)
         for feature in features:
             nElement += 1
-            progress.setPercentage((nElement*100)/nFeat)
+            progress.setPercentage(nElement * 100 / nFeat)
             attrs = feature.attributes()
             try:
-                x =  float(attrs[xfieldindex])
-                y =  float(attrs[yfieldindex])
+                x = float(attrs[xfieldindex])
+                y = float(attrs[yfieldindex])
             except:
                 continue
             pt = QgsPoint(x, y)
@@ -75,13 +80,14 @@ class PointsLayerFromTable(GeoAlgorithm):
 
         del writer
 
-
     def defineCharacteristics(self):
-        self.name = "Points layer from table"
-        self.group = "Vector creation tools"
-        self.addParameter(ParameterTable(self.INPUT, "Input layer"))
-        self.addParameter(ParameterTableField(self.XFIELD, "X field", self.INPUT, ParameterTableField.DATA_TYPE_ANY))
-        self.addParameter(ParameterTableField(self.YFIELD, "Y field", self.INPUT, ParameterTableField.DATA_TYPE_ANY))
-        self.addParameter(ParameterCrs(self.TARGET_CRS, "Target CRS", "EPSG:4326"))
-        self.addOutput(OutputVector(self.OUTPUT, "Output layer"))
-
+        self.name = 'Points layer from table'
+        self.group = 'Vector creation tools'
+        self.addParameter(ParameterTable(self.INPUT, 'Input layer'))
+        self.addParameter(ParameterTableField(self.XFIELD, 'X field',
+                          self.INPUT, ParameterTableField.DATA_TYPE_ANY))
+        self.addParameter(ParameterTableField(self.YFIELD, 'Y field',
+                          self.INPUT, ParameterTableField.DATA_TYPE_ANY))
+        self.addParameter(ParameterCrs(self.TARGET_CRS, 'Target CRS',
+                          'EPSG:4326'))
+        self.addOutput(OutputVector(self.OUTPUT, 'Output layer'))

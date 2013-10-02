@@ -20,7 +20,9 @@
 __author__ = 'Alexander Bruy'
 __date__ = 'April 2013'
 __copyright__ = '(C) 2013, Alexander Bruy'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
 import os
@@ -32,6 +34,7 @@ from PyQt4.Qsci import *
 from qgis.core import *
 
 from processing.gui.LexerR import LexerR
+
 
 class ScriptEdit(QsciScintilla):
 
@@ -49,12 +52,12 @@ class ScriptEdit(QsciScintilla):
         self.initShortcuts()
 
     def setCommonOptions(self):
-        # enable non-ASCII characters
+        # Enable non-ASCII characters
         self.setUtf8(True)
 
-        # default font
+        # Default font
         font = QFont()
-        font.setFamily("Courier")
+        font.setFamily('Courier')
         font.setFixedPitch(True)
         font.setPointSize(10)
         self.setFont(font)
@@ -65,31 +68,32 @@ class ScriptEdit(QsciScintilla):
         self.setBraceMatching(QsciScintilla.SloppyBraceMatch)
 
         self.setWrapMode(QsciScintilla.WrapWord)
-        self.setWrapVisualFlags(QsciScintilla.WrapFlagByText, QsciScintilla.WrapFlagNone, 4)
+        self.setWrapVisualFlags(QsciScintilla.WrapFlagByText,
+                                QsciScintilla.WrapFlagNone, 4)
 
-        self.setSelectionForegroundColor(QColor("#2e3436"))
-        self.setSelectionBackgroundColor(QColor("#babdb6"))
+        self.setSelectionForegroundColor(QColor('#2e3436'))
+        self.setSelectionBackgroundColor(QColor('#babdb6'))
 
-        # show line numbers
-        self.setMarginWidth(1, "000")
+        # Show line numbers
+        self.setMarginWidth(1, '000')
         self.setMarginLineNumbers(1, True)
-        self.setMarginsForegroundColor(QColor("#2e3436"))
-        self.setMarginsBackgroundColor(QColor("#babdb6"))
+        self.setMarginsForegroundColor(QColor('#2e3436'))
+        self.setMarginsBackgroundColor(QColor('#babdb6'))
 
-        # highlight current line
+        # Highlight current line
         self.setCaretLineVisible(True)
-        self.setCaretLineBackgroundColor(QColor("#d3d7cf"))
+        self.setCaretLineBackgroundColor(QColor('#d3d7cf'))
 
-        # folding
+        # Folding
         self.setFolding(QsciScintilla.BoxedTreeFoldStyle)
-        self.setFoldMarginColors(QColor("#d3d7cf"), QColor("#d3d7cf"))
+        self.setFoldMarginColors(QColor('#d3d7cf'), QColor('#d3d7cf'))
 
-        # mark column 80 with vertical line
+        # Mark column 80 with vertical line
         self.setEdgeMode(QsciScintilla.EdgeLine)
         self.setEdgeColumn(80)
-        self.setEdgeColor(QColor("#eeeeec"))
+        self.setEdgeColor(QColor('#eeeeec'))
 
-        # indentation
+        # Indentation
         self.setAutoIndent(True)
         self.setIndentationsUseTabs(False)
         self.setIndentationWidth(4)
@@ -97,14 +101,14 @@ class ScriptEdit(QsciScintilla):
         self.setBackspaceUnindents(True)
         self.setTabWidth(4)
 
-        # autocomletion
+        # Autocomletion
         self.setAutoCompletionThreshold(2)
         self.setAutoCompletionSource(QsciScintilla.AcsAPIs)
 
-        # load font from Python console settings
+        # Load font from Python console settings
         settings = QSettings()
-        fontName = settings.value("pythonConsole/fontfamilytext", "Monospace")
-        fontSize = int(settings.value("pythonConsole/fontsize", 10))
+        fontName = settings.value('pythonConsole/fontfamilytext', 'Monospace')
+        fontSize = int(settings.value('pythonConsole/fontsize', 10))
 
         self.defaultFont = QFont(fontName)
         self.defaultFont.setFixedPitch(True)
@@ -124,18 +128,21 @@ class ScriptEdit(QsciScintilla):
         self.setMarginsFont(self.defaultFont)
 
     def initShortcuts(self):
-        ctrl, shift = self.SCMOD_CTRL << 16, self.SCMOD_SHIFT << 16
+        (ctrl, shift) = (self.SCMOD_CTRL << 16, self.SCMOD_SHIFT << 16)
 
-        # disable some shortcuts
-        self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord("D") + ctrl)
-        self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord("L") + ctrl)
-        self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord("L") + ctrl + shift)
-        self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord("T") + ctrl)
+        # Disable some shortcuts
+        self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('D') + ctrl)
+        self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('L') + ctrl)
+        self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('L') + ctrl
+                           + shift)
+        self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('T') + ctrl)
+
         #self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord("Z") + ctrl)
         #self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord("Y") + ctrl)
 
-        # use Ctrl+Space for autocompletion
-        self.shortcutAutocomplete = QShortcut(QKeySequence(Qt.CTRL + Qt.Key_Space), self)
+        # Use Ctrl+Space for autocompletion
+        self.shortcutAutocomplete = QShortcut(QKeySequence(Qt.CTRL
+                + Qt.Key_Space), self)
         self.shortcutAutocomplete.setContext(Qt.WidgetShortcut)
         self.shortcutAutocomplete.activated.connect(self.autoComplete)
 
@@ -143,20 +150,20 @@ class ScriptEdit(QsciScintilla):
         self.autoCompleteFromAll()
 
     def setLexerType(self, lexerType):
-      self.lexerType = lexerType
-      self.initLexer()
+        self.lexerType = lexerType
+        self.initLexer()
 
     def initLexer(self):
         if self.lexerType == self.LEXER_PYTHON:
             self.lexer = QsciLexerPython()
 
-            colorDefault = QColor("#2e3436")
-            colorComment = QColor("#c00")
-            colorCommentBlock = QColor("#3465a4")
-            colorNumber = QColor("#4e9a06")
-            colorType = QColor("#4e9a06")
-            colorKeyword = QColor("#204a87")
-            colorString = QColor("#ce5c00")
+            colorDefault = QColor('#2e3436')
+            colorComment = QColor('#c00')
+            colorCommentBlock = QColor('#3465a4')
+            colorNumber = QColor('#4e9a06')
+            colorType = QColor('#4e9a06')
+            colorKeyword = QColor('#204a87')
+            colorString = QColor('#ce5c00')
 
             self.lexer.setDefaultFont(self.defaultFont)
             self.lexer.setDefaultColor(colorDefault)
@@ -180,13 +187,16 @@ class ScriptEdit(QsciScintilla):
             self.api = QsciAPIs(self.lexer)
 
             settings = QSettings()
-            useDefaultAPI = bool(settings.value("pythonConsole/preloadAPI", True))
+            useDefaultAPI = bool(settings.value('pythonConsole/preloadAPI',
+                                 True))
             if useDefaultAPI:
-                # load QGIS API shipped with Python console
-                self.api.loadPrepared(os.path.join(QgsApplication.pkgDataPath(), "python", "qsci_apis", "pyqgis.pap"))
+                # Load QGIS API shipped with Python console
+                self.api.loadPrepared(
+                        os.path.join(QgsApplication.pkgDataPath(),
+                        'python', 'qsci_apis', 'pyqgis.pap'))
             else:
-                # load user-defined API files
-                apiPaths = settings.value("pythonConsole/userAPI", [])
+                # Load user-defined API files
+                apiPaths = settings.value('pythonConsole/userAPI', [])
                 for path in apiPaths:
                     self.api.load(path)
                 self.api.prepare()

@@ -21,44 +21,51 @@
 __author__ = 'Anita Graser'
 __date__ = 'Dec 2012'
 __copyright__ = '(C) 2012, Anita Graser'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
 from math import sqrt
 
 from PyQt4.QtCore import *
-
 from qgis.core import *
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.tools import dataobjects, vector
 from processing.parameters.ParameterVector import ParameterVector
 from processing.parameters.ParameterNumber import ParameterNumber
 from processing.outputs.OutputVector import OutputVector
+from processing.tools import dataobjects, vector
+
 
 class DensifyGeometriesInterval(GeoAlgorithm):
 
-    INPUT = "INPUT"
-    INTERVAL = "INTERVAL"
-    OUTPUT = "OUTPUT"
+    INPUT = 'INPUT'
+    INTERVAL = 'INTERVAL'
+    OUTPUT = 'OUTPUT'
 
     def defineCharacteristics(self):
-        self.name = "Densify geometries given an interval"
-        self.group = "Vector geometry tools"
+        self.name = 'Densify geometries given an interval'
+        self.group = 'Vector geometry tools'
 
-        self.addParameter(ParameterVector(self.INPUT, "Input layer", [ParameterVector.VECTOR_TYPE_POLYGON,ParameterVector.VECTOR_TYPE_LINE]))
-        self.addParameter(ParameterNumber(self.INTERVAL, "Interval between Vertices to add", 1, 10000000, 1))
+        self.addParameter(ParameterVector(self.INPUT, 'Input layer',
+                          [ParameterVector.VECTOR_TYPE_POLYGON,
+                          ParameterVector.VECTOR_TYPE_LINE]))
+        self.addParameter(ParameterNumber(self.INTERVAL,
+                          'Interval between Vertices to add', 1, 10000000, 1))
 
-        self.addOutput(OutputVector(self.OUTPUT, "Densified layer"))
+        self.addOutput(OutputVector(self.OUTPUT, 'Densified layer'))
 
     def processAlgorithm(self, progress):
-        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
+        layer = dataobjects.getObjectFromUri(
+                self.getParameterValue(self.INPUT))
         interval = self.getParameterValue(self.INTERVAL)
 
         isPolygon = layer.geometryType() == QGis.Polygon
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.pendingFields().toList(),
-                     layer.wkbType(), layer.crs())
+        writer = self.getOutputFromName(
+                self.OUTPUT).getVectorWriter(layer.pendingFields().toList(),
+                                             layer.wkbType(), layer.crs())
 
         features = vector.features(layer)
         total = 100.0 / float(len(features))
@@ -66,7 +73,8 @@ class DensifyGeometriesInterval(GeoAlgorithm):
         for f in features:
             featGeometry = QgsGeometry(f.geometry())
             attrs = f.attributes()
-            newGeometry = self.densifyGeometry(featGeometry, interval, isPolygon)
+            newGeometry = self.densifyGeometry(featGeometry, interval,
+                    isPolygon)
             feature = QgsFeature()
             feature.setGeometry(newGeometry)
             feature.setAttributes(attrs)
@@ -110,7 +118,8 @@ class DensifyGeometriesInterval(GeoAlgorithm):
             p1 = polyline[i]
             p2 = polyline[i + 1]
             output.append(p1)
-            # calculate necessary number of points between p1 and p2
+
+            # Calculate necessary number of points between p1 and p2
             pointsNumber = sqrt(p1.sqrDist(p2)) / interval
             if pointsNumber > 1:
                 multiplier = 1.0 / float(pointsNumber)

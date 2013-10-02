@@ -20,56 +20,64 @@
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
 from PyQt4.QtCore import *
 from qgis.core import *
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.tools import dataobjects, vector
 from processing.parameters.ParameterVector import ParameterVector
 from processing.parameters.ParameterBoolean import ParameterBoolean
 from processing.outputs.OutputVector import OutputVector
+from processing.tools import dataobjects, vector
+
 
 class ExtentFromLayer(GeoAlgorithm):
 
-    INPUT_LAYER = "INPUT_LAYER"
-    BY_FEATURE = "BY_FEATURE"
+    INPUT_LAYER = 'INPUT_LAYER'
+    BY_FEATURE = 'BY_FEATURE'
 
-    OUTPUT = "OUTPUT"
+    OUTPUT = 'OUTPUT'
 
-    #===========================================================================
-    # def getIcon(self):
-    #    return QtGui.QIcon(os.path.dirname(__file__) + "/icons/layer_extent.png")
-    #===========================================================================
+    #==========================================================================
+    #def getIcon(self):
+    #   return QIcon(os.path.dirname(__file__) + "/icons/layer_extent.png")
+    #==========================================================================
 
     def defineCharacteristics(self):
-        self.name = "Polygon from layer extent"
-        self.group = "Vector general tools"
+        self.name = 'Polygon from layer extent'
+        self.group = 'Vector general tools'
 
-        self.addParameter(ParameterVector(self.INPUT_LAYER, "Input layer", [ParameterVector.VECTOR_TYPE_ANY]))
-        self.addParameter(ParameterBoolean(self.BY_FEATURE, "Calculate extent for each feature separately", False))
+        self.addParameter(ParameterVector(self.INPUT_LAYER, 'Input layer',
+                          [ParameterVector.VECTOR_TYPE_ANY]))
+        self.addParameter(ParameterBoolean(self.BY_FEATURE,
+                          'Calculate extent for each feature separately',
+                          False))
 
-        self.addOutput(OutputVector(self.OUTPUT, "Output layer"))
+        self.addOutput(OutputVector(self.OUTPUT, 'Output layer'))
 
     def processAlgorithm(self, progress):
-        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_LAYER))
+        layer = dataobjects.getObjectFromUri(
+                self.getParameterValue(self.INPUT_LAYER))
         byFeature = self.getParameterValue(self.BY_FEATURE)
 
-        fields = [ QgsField("MINX", QVariant.Double),
-                   QgsField("MINY", QVariant.Double),
-                   QgsField("MAXX", QVariant.Double),
-                   QgsField("MAXY", QVariant.Double),
-                   QgsField("CNTX", QVariant.Double),
-                   QgsField("CNTY", QVariant.Double),
-                   QgsField("AREA", QVariant.Double),
-                   QgsField("PERIM", QVariant.Double),
-                   QgsField("HEIGHT", QVariant.Double),
-                   QgsField("WIDTH", QVariant.Double)
-                 ]
+        fields = [
+            QgsField('MINX', QVariant.Double),
+            QgsField('MINY', QVariant.Double),
+            QgsField('MAXX', QVariant.Double),
+            QgsField('MAXY', QVariant.Double),
+            QgsField('CNTX', QVariant.Double),
+            QgsField('CNTY', QVariant.Double),
+            QgsField('AREA', QVariant.Double),
+            QgsField('PERIM', QVariant.Double),
+            QgsField('HEIGHT', QVariant.Double),
+            QgsField('WIDTH', QVariant.Double),
+            ]
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields,
-                     QGis.WKBPolygon, layer.crs())
+                QGis.WKBPolygon, layer.crs())
 
         if byFeature:
             self.featureExtent(layer, writer, progress)
@@ -86,21 +94,28 @@ class ExtentFromLayer(GeoAlgorithm):
         maxy = rect.yMaximum()
         height = rect.height()
         width = rect.width()
-        cntx = minx + (width / 2.0)
-        cnty = miny + (height / 2.0)
+        cntx = minx + width / 2.0
+        cnty = miny + height / 2.0
         area = width * height
-        perim = (2 * width) + (2 * height)
+        perim = 2 * width + 2 * height
 
-        rect = [QgsPoint(minx, miny),
-                QgsPoint(minx, maxy),
-                QgsPoint(maxx, maxy),
-                QgsPoint(maxx, miny),
-                QgsPoint(minx, miny)
-               ]
+        rect = [QgsPoint(minx, miny), QgsPoint(minx, maxy), QgsPoint(maxx,
+                maxy), QgsPoint(maxx, miny), QgsPoint(minx, miny)]
         geometry = QgsGeometry().fromPolygon([rect])
         feat = QgsFeature()
         feat.setGeometry(geometry)
-        attrs = [minx,miny,maxx,maxy,cntx,cnty,area,perim,height,width]
+        attrs = [
+            minx,
+            miny,
+            maxx,
+            maxy,
+            cntx,
+            cnty,
+            area,
+            perim,
+            height,
+            width,
+            ]
         feat.setAttributes(attrs)
         writer.addFeature(feat)
 
@@ -117,20 +132,27 @@ class ExtentFromLayer(GeoAlgorithm):
             maxy = rect.yMaximum()
             height = rect.height()
             width = rect.width()
-            cntx = minx + (width / 2.0)
-            cnty = miny + (height / 2.0)
+            cntx = minx + width / 2.0
+            cnty = miny + height / 2.0
             area = width * height
-            perim = (2 * width) + (2 * height)
-            rect = [QgsPoint(minx, miny),
-                    QgsPoint(minx, maxy),
-                    QgsPoint(maxx, maxy),
-                    QgsPoint(maxx, miny),
-                    QgsPoint(minx, miny)
-                   ]
+            perim = 2 * width + 2 * height
+            rect = [QgsPoint(minx, miny), QgsPoint(minx, maxy), QgsPoint(maxx,
+                    maxy), QgsPoint(maxx, miny), QgsPoint(minx, miny)]
 
             geometry = QgsGeometry().fromPolygon([rect])
             feat.setGeometry(geometry)
-            attrs = [minx,miny,maxx,maxy,cntx,cnty,area,perim,height,width]
+            attrs = [
+                minx,
+                miny,
+                maxx,
+                maxy,
+                cntx,
+                cnty,
+                area,
+                perim,
+                height,
+                width,
+                ]
             feat.setAttributes(attrs)
 
             writer.addFeature(feat)

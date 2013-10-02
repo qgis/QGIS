@@ -20,10 +20,11 @@
 __author__ = 'Victor Olaya'
 __date__ = 'April 2013'
 __copyright__ = '(C) 2013, Victor Olaya'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
-'''Convenience module to create a test suite will all processing tests'''
 import unittest
 from processing.tests import QgisAlgsTest
 from processing.tests import ParametersTest
@@ -33,6 +34,7 @@ from processing.tests import ScriptTest
 from processing.tests import SagaTest
 from processing.tests import GeoAlgorithmTest
 from processing.tests import GdalTest
+
 
 def suite():
     suite = unittest.TestSuite()
@@ -45,6 +47,7 @@ def suite():
     #suite.addTests(ParametersTest.suite())
     suite.addTests(GeoAlgorithmTest.suite())
     return suite
+
 
 def runtests():
     result = unittest.TestResult()

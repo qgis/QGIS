@@ -20,7 +20,9 @@
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
 import os
@@ -30,66 +32,82 @@ import uuid
 from PyQt4.QtCore import *
 from qgis.core import *
 
+numExported = 1
+
+
 def userFolder():
-    userDir = QFileInfo(QgsApplication.qgisUserDbFilePath()).path() + "/processing"
+    userDir = QFileInfo(QgsApplication.qgisUserDbFilePath()).path() \
+        + '/processing'
     if not QDir(userDir).exists():
         QDir().mkpath(userDir)
 
     return unicode(QDir.toNativeSeparators(userDir))
 
+
 def isWindows():
-    return os.name =="nt"
+    return os.name == 'nt'
+
 
 def isMac():
-    return sys.platform == "darwin"
+    return sys.platform == 'darwin'
+
 
 def tempFolder():
-    tempDir = os.path.join(unicode(QDir.tempPath()), "processing")
+    tempDir = os.path.join(unicode(QDir.tempPath()), 'processing')
     if not QDir(tempDir).exists():
         QDir().mkpath(tempDir)
 
     return unicode(os.path.abspath(tempDir))
 
+
 def setTempOutput(out, alg):
     ext = out.getDefaultFileExtension(alg)
-    out.value = getTempFilenameInTempFolder(out.name + "." + ext)
+    out.value = getTempFilenameInTempFolder(out.name + '.' + ext)
+
 
 def getTempFilename(ext):
     path = tempFolder()
     if ext is None:
-        filename = path + os.sep + str(time.time()) + str(getNumExportedLayers())
+        filename = path + os.sep + str(time.time()) \
+            + str(getNumExportedLayers())
     else:
-        filename = path + os.sep + str(time.time()) + str(getNumExportedLayers()) + "." + ext
+        filename = path + os.sep + str(time.time()) \
+            + str(getNumExportedLayers()) + '.' + ext
     return filename
+
 
 def getTempFilenameInTempFolder(basename):
-    '''returns a temporary filename for a given file, putting it into a temp folder but not changing its basename'''
+    """Returns a temporary filename for a given file, putting it into
+    a temp folder but not changing its basename.
+    """
+
     path = tempFolder()
-    path = os.path.join(path, str(uuid.uuid4()).replace("-",""))
+    path = os.path.join(path, str(uuid.uuid4()).replace('-', ''))
     mkdir(path)
     basename = removeInvalidChars(basename)
-    filename =  os.path.join(path, basename)
+    filename = os.path.join(path, basename)
     return filename
 
+
 def removeInvalidChars(string):
-    validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:."
+    validChars = \
+        'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:.'
     string = ''.join(c for c in string if c in validChars)
     return string
 
-
-numExported = 1
 
 def getNumExportedLayers():
     global numExported
     numExported += 1
     return numExported
 
+
 def mkdir(newdir):
-    newdir = newdir.strip("\n\r ")
+    newdir = newdir.strip('\n\r ')
     if os.path.isdir(newdir):
         pass
     else:
-        head, tail = os.path.split(newdir)
+        (head, tail) = os.path.split(newdir)
         if head and not os.path.isdir(head):
             mkdir(head)
         if tail:

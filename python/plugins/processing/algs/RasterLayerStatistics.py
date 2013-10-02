@@ -17,35 +17,37 @@
 ***************************************************************************
 """
 
-
 __author__ = 'Victor Olaya'
 __date__ = 'January 2013'
 __copyright__ = '(C) 2013, Victor Olaya'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
 import math
 from PyQt4.QtCore import *
 from qgis.core import *
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.tools import dataobjects
 from processing.parameters.ParameterRaster import ParameterRaster
-from processing.tools import raster
 from processing.outputs.OutputNumber import OutputNumber
 from processing.outputs.OutputHTML import OutputHTML
+from processing.tools import dataobjects
+from processing.tools import raster
+
 
 class RasterLayerStatistics(GeoAlgorithm):
 
-    INPUT = "INPUT"
+    INPUT = 'INPUT'
 
-    MIN = "MIN"
-    MAX = "MAX"
-    SUM = "SUM"
-    MEAN = "MEAN"
-    COUNT = "COUNT"
-    NO_DATA_COUNT = "NO_DATA_COUNT"
-    STD_DEV = "STD_DEV"
-    OUTPUT_HTML_FILE = "OUTPUT_HTML_FILE"
+    MIN = 'MIN'
+    MAX = 'MAX'
+    SUM = 'SUM'
+    MEAN = 'MEAN'
+    COUNT = 'COUNT'
+    NO_DATA_COUNT = 'NO_DATA_COUNT'
+    STD_DEV = 'STD_DEV'
+    OUTPUT_HTML_FILE = 'OUTPUT_HTML_FILE'
 
     def processAlgorithm(self, progress):
         outputFile = self.getOutputValue(self.OUTPUT_HTML_FILE)
@@ -66,8 +68,8 @@ class RasterLayerStatistics(GeoAlgorithm):
                 sum += v
                 n = n + 1
                 delta = v - mean
-                mean = mean + delta/n
-                M2 = M2 + delta*(v - mean)
+                mean = mean + delta / n
+                M2 = M2 + delta * (v - mean)
                 if minvalue is None:
                     minvalue = v
                     maxvalue = v
@@ -77,17 +79,17 @@ class RasterLayerStatistics(GeoAlgorithm):
             else:
                 nodata += 1
 
-        variance = M2/(n - 1)
+        variance = M2 / (n - 1)
         stddev = math.sqrt(variance)
 
         data = []
-        data.append("Valid cells: " + unicode(n))
-        data.append("No-data cells: " + unicode(nodata))
-        data.append("Minimum value: " + unicode(minvalue))
-        data.append("Maximum value: " + unicode(maxvalue))
-        data.append("Sum: " + unicode(sum))
-        data.append("Mean value: " + unicode(mean))
-        data.append("Standard deviation: " + unicode(stddev))
+        data.append('Valid cells: ' + unicode(n))
+        data.append('No-data cells: ' + unicode(nodata))
+        data.append('Minimum value: ' + unicode(minvalue))
+        data.append('Maximum value: ' + unicode(maxvalue))
+        data.append('Sum: ' + unicode(sum))
+        data.append('Mean value: ' + unicode(mean))
+        data.append('Standard deviation: ' + unicode(stddev))
 
         self.createHTML(outputFile, data)
 
@@ -99,22 +101,21 @@ class RasterLayerStatistics(GeoAlgorithm):
         self.setOutputValue(self.MEAN, mean)
         self.setOutputValue(self.STD_DEV, stddev)
 
-
     def defineCharacteristics(self):
-        self.name = "Raster layer statistics"
-        self.group = "Raster tools"
-        self.addParameter(ParameterRaster(self.INPUT, "Input layer"))
-        self.addOutput(OutputHTML(self.OUTPUT_HTML_FILE, "Statistics"))
-        self.addOutput(OutputNumber(self.MIN, "Minimum value"))
-        self.addOutput(OutputNumber(self.MAX, "Maximum value"))
-        self.addOutput(OutputNumber(self.SUM, "Sum"))
-        self.addOutput(OutputNumber(self.MEAN, "Mean value"))
-        self.addOutput(OutputNumber(self.COUNT, "valid cells count"))
-        self.addOutput(OutputNumber(self.COUNT, "No-data cells count"))
-        self.addOutput(OutputNumber(self.STD_DEV, "Standard deviation"))
+        self.name = 'Raster layer statistics'
+        self.group = 'Raster tools'
+        self.addParameter(ParameterRaster(self.INPUT, 'Input layer'))
+        self.addOutput(OutputHTML(self.OUTPUT_HTML_FILE, 'Statistics'))
+        self.addOutput(OutputNumber(self.MIN, 'Minimum value'))
+        self.addOutput(OutputNumber(self.MAX, 'Maximum value'))
+        self.addOutput(OutputNumber(self.SUM, 'Sum'))
+        self.addOutput(OutputNumber(self.MEAN, 'Mean value'))
+        self.addOutput(OutputNumber(self.COUNT, 'valid cells count'))
+        self.addOutput(OutputNumber(self.COUNT, 'No-data cells count'))
+        self.addOutput(OutputNumber(self.STD_DEV, 'Standard deviation'))
 
     def createHTML(self, outputFile, algData):
-        f = open(outputFile, "w")
+        f = open(outputFile, 'w')
         for s in algData:
-            f.write("<p>" + str(s) + "</p>")
+            f.write('<p>' + str(s) + '</p>')
         f.close()

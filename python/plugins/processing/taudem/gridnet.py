@@ -17,11 +17,12 @@
 ***************************************************************************
 """
 
-
 __author__ = 'Alexander Bruy'
 __date__ = 'October 2012'
 __copyright__ = '(C) 2012, Alexander Bruy'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
 import os
@@ -30,83 +31,92 @@ from PyQt4.QtGui import *
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingLog import ProcessingLog
-from processing.tools.system import *
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
+from processing.core.GeoAlgorithmExecutionException import \
+    GeoAlgorithmExecutionException
 
 from processing.parameters.ParameterRaster import ParameterRaster
 from processing.parameters.ParameterVector import ParameterVector
 from processing.parameters.ParameterNumber import ParameterNumber
-
 from processing.outputs.OutputRaster import OutputRaster
+
+from processing.tools.system import *
 
 from processing.taudem.TauDEMUtils import TauDEMUtils
 
-class GridNet(GeoAlgorithm):
-    D8_FLOW_DIR_GRID = "D8_FLOW_DIR_GRID"
-    OUTLETS_SHAPE = "OUTLETS_SHAPE"
-    MASK_GRID = "MASK_GRID"
-    THRESHOLD = "THRESHOLD"
 
-    LONGEST_LEN_GRID = "LONGEST_LEN_GRID"
-    TOTAL_LEN_GRID = "TOTAL_LEN_GRID"
-    STRAHLER_GRID = "STRAHLER_GRID"
+class GridNet(GeoAlgorithm):
+
+    D8_FLOW_DIR_GRID = 'D8_FLOW_DIR_GRID'
+    OUTLETS_SHAPE = 'OUTLETS_SHAPE'
+    MASK_GRID = 'MASK_GRID'
+    THRESHOLD = 'THRESHOLD'
+
+    LONGEST_LEN_GRID = 'LONGEST_LEN_GRID'
+    TOTAL_LEN_GRID = 'TOTAL_LEN_GRID'
+    STRAHLER_GRID = 'STRAHLER_GRID'
 
     def getIcon(self):
-        return  QIcon(os.path.dirname(__file__) + "/../images/taudem.png")
+        return QIcon(os.path.dirname(__file__) + '/../images/taudem.png')
 
     def defineCharacteristics(self):
-        self.name = "Grid Network"
-        self.cmdName = "gridnet"
-        self.group = "Basic Grid Analysis tools"
+        self.name = 'Grid Network'
+        self.cmdName = 'gridnet'
+        self.group = 'Basic Grid Analysis tools'
 
-        self.addParameter(ParameterRaster(self.D8_FLOW_DIR_GRID, "D8 Flow Direction Grid", False))
-        self.addParameter(ParameterVector(self.OUTLETS_SHAPE, "Outlets Shapefile", [ParameterVector.VECTOR_TYPE_POINT], True))
-        self.addParameter(ParameterRaster(self.MASK_GRID, "Mask Grid", True))
-        self.addParameter(ParameterNumber(self.THRESHOLD, "Proportion Threshold", 0, None, 100))
+        self.addParameter(ParameterRaster(self.D8_FLOW_DIR_GRID,
+                          'D8 Flow Direction Grid', False))
+        self.addParameter(ParameterVector(self.OUTLETS_SHAPE,
+                          'Outlets Shapefile',
+                          [ParameterVector.VECTOR_TYPE_POINT], True))
+        self.addParameter(ParameterRaster(self.MASK_GRID, 'Mask Grid', True))
+        self.addParameter(ParameterNumber(self.THRESHOLD,
+                          'Proportion Threshold', 0, None, 100))
 
-        self.addOutput(OutputRaster(self.LONGEST_LEN_GRID, "Longest Upslope Length Grid"))
-        self.addOutput(OutputRaster(self.TOTAL_LEN_GRID, "Total Upslope Length Grid"))
-        self.addOutput(OutputRaster(self.STRAHLER_GRID, "Strahler Network Order Grid"))
+        self.addOutput(OutputRaster(self.LONGEST_LEN_GRID,
+                       'Longest Upslope Length Grid'))
+        self.addOutput(OutputRaster(self.TOTAL_LEN_GRID,
+                       'Total Upslope Length Grid'))
+        self.addOutput(OutputRaster(self.STRAHLER_GRID,
+                       'Strahler Network Order Grid'))
 
     def processAlgorithm(self, progress):
         commands = []
-        commands.append(os.path.join(TauDEMUtils.mpiexecPath(), "mpiexec"))
+        commands.append(os.path.join(TauDEMUtils.mpiexecPath(), 'mpiexec'))
 
         processNum = ProcessingConfig.getSetting(TauDEMUtils.MPI_PROCESSES)
         if processNum <= 0:
-          raise GeoAlgorithmExecutionException("Wrong number of MPI processes used.\nPlease set correct number before running TauDEM algorithms.")
+            raise GeoAlgorithmExecutionException('Wrong number of MPI \
+                processes used.\nPlease set correct number before running \
+                TauDEM algorithms.')
 
-        commands.append("-n")
+        commands.append('-n')
         commands.append(str(processNum))
         commands.append(os.path.join(TauDEMUtils.taudemPath(), self.cmdName))
-        commands.append("-p")
+        commands.append('-p')
         commands.append(self.getParameterValue(self.D8_FLOW_DIR_GRID))
         param = self.getParameterValue(self.OUTLETS_SHAPE)
         if param is not None:
-          commands.append("-o")
-          commands.append(param)
+            commands.append('-o')
+            commands.append(param)
         param = self.getParameterValue(self.MASK_GRID)
         if param is not None:
-          commands.append("-mask")
-          commands.append(param)
-          commands.append("-thresh")
-          commands.append(self.getParameterValue(self.THRESHOLD))
+            commands.append('-mask')
+            commands.append(param)
+            commands.append('-thresh')
+            commands.append(self.getParameterValue(self.THRESHOLD))
 
-        commands.append("-plen")
+        commands.append('-plen')
         commands.append(self.getOutputValue(self.LONGEST_LEN_GRID))
-        commands.append("-tlen")
+        commands.append('-tlen')
         commands.append(self.getOutputValue(self.TOTAL_LEN_GRID))
-        commands.append("-gord")
+        commands.append('-gord')
         commands.append(self.getOutputValue(self.STRAHLER_GRID))
 
         loglines = []
-        loglines.append("TauDEM execution command")
+        loglines.append('TauDEM execution command')
         for line in commands:
             loglines.append(line)
         ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)
 
         TauDEMUtils.executeTauDEM(commands, progress)
-
-    #def helpFile(self):
-    #    return os.path.join(os.path.dirname(__file__), "help", self.cmdName + ".html")

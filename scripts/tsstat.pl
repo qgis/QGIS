@@ -51,6 +51,7 @@ my $translators= {
 	fi => 'Kari Salovaara, Marko Järvenpää',
 	fr => 'Eve Rousseau, Marc Monnerat, Lionel Roubeyrie, Jean Roc Morreale, Benjamin Bohard, Jeremy Garniaux, Yves Jacolin, Benjamin Lerre, Stéphane Morel, Marie Silvestre, Tahir Tamba, Xavier M, Mayeul Kauffmann, Mehdi Semchaoui, Robin Cura, Etienne Tourigny, Mathieu Bossaert',
 	gl => 'Xan Vieiro',
+	hi => '',
 	hu => 'Zoltan Siki',
 	hr_HR => 'Zoran Jankovic',
 	is => 'Thordur Ivarsson',

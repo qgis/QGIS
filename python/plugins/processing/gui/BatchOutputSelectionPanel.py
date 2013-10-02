@@ -20,11 +20,14 @@
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
+import os.path
 from PyQt4 import QtGui, QtCore
-from processing.gui.AutofillDialog import  AutofillDialog
+from processing.gui.AutofillDialog import AutofillDialog
 from processing.parameters.ParameterMultipleInput import ParameterMultipleInput
 from processing.parameters.ParameterRaster import ParameterRaster
 from processing.parameters.ParameterTable import ParameterTable
@@ -32,7 +35,6 @@ from processing.parameters.ParameterVector import ParameterVector
 from processing.parameters.ParameterBoolean import ParameterBoolean
 from processing.parameters.ParameterSelection import ParameterSelection
 from processing.parameters.ParameterFixedTable import ParameterFixedTable
-import os.path
 
 
 class BatchOutputSelectionPanel(QtGui.QWidget):
@@ -49,41 +51,48 @@ class BatchOutputSelectionPanel(QtGui.QWidget):
         self.horizontalLayout.setSpacing(2)
         self.horizontalLayout.setMargin(0)
         self.text = QtGui.QLineEdit()
-        self.text.setText("")
-        self.text.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        self.text.setText('')
+        self.text.setSizePolicy(QtGui.QSizePolicy.Expanding,
+                                QtGui.QSizePolicy.Expanding)
         self.horizontalLayout.addWidget(self.text)
         self.pushButton = QtGui.QPushButton()
-        self.pushButton.setText("...")
+        self.pushButton.setText('...')
         self.pushButton.clicked.connect(self.showSelectionDialog)
         self.horizontalLayout.addWidget(self.pushButton)
         self.setLayout(self.horizontalLayout)
 
     def showSelectionDialog(self):
         filefilter = self.output.getFileFilter(self.alg)
-        filename = QtGui.QFileDialog.getSaveFileName(self, "Save file", "", filefilter)
+        filename = QtGui.QFileDialog.getSaveFileName(self, 'Save file', '',
+                filefilter)
         if filename:
             filename = unicode(filename)
             dlg = AutofillDialog(self.alg)
             dlg.exec_()
-            if dlg.mode != None:
+            if dlg.mode is not None:
                 try:
                     if dlg.mode == AutofillDialog.DO_NOT_AUTOFILL:
-                        #self.text.setValue(filename)
-                        self.table.cellWidget(self.row, self.col).setValue(filename)
+                        self.table.cellWidget(self.row,
+                                self.col).setValue(filename)
                     elif dlg.mode == AutofillDialog.FILL_WITH_NUMBERS:
                         n = self.table.rowCount() - self.row
                         for i in range(n):
-                            name = filename[:filename.rfind(".")] + str(i+1) + filename[filename.rfind("."):]
-                            self.table.cellWidget(i + self.row, self.col).setValue(name)
+                            name = filename[:filename.rfind('.')] \
+                                + str(i + 1) + filename[filename.rfind('.'):]
+                            self.table.cellWidget(i + self.row,
+                                    self.col).setValue(name)
                     elif dlg.mode == AutofillDialog.FILL_WITH_PARAMETER:
                         n = self.table.rowCount() - self.row
                         for i in range(n):
-                            widget = self.table.cellWidget(i+self.row, dlg.param)
+                            widget = self.table.cellWidget(i + self.row,
+                                    dlg.param)
                             param = self.alg.parameters[dlg.param]
-                            if isinstance(param, (ParameterRaster, ParameterVector, ParameterTable, ParameterMultipleInput)):
+                            if isinstance(param, (ParameterRaster,
+                                    ParameterVector, ParameterTable,
+                                    ParameterMultipleInput)):
                                 s = unicode(widget.getText())
                                 s = os.path.basename(s)
-                                s= s[:s.rfind(".")]
+                                s = s[:s.rfind('.')]
                             elif isinstance(param, ParameterBoolean):
                                 s = str(widget.currentIndex() == 0)
                             elif isinstance(param, ParameterSelection):
@@ -92,13 +101,15 @@ class BatchOutputSelectionPanel(QtGui.QWidget):
                                 s = unicode(widget.table)
                             else:
                                 s = unicode(widget.text())
-                            name = filename[:filename.rfind(".")] + s + filename[filename.rfind("."):]
-                            self.table.cellWidget(i + self.row, self.col).setValue(name)
+                            name = filename[:filename.rfind('.')] + s \
+                                + filename[filename.rfind('.'):]
+                            self.table.cellWidget(i + self.row,
+                                    self.col).setValue(name)
                 except:
                     pass
+
     def setValue(self, text):
         return self.text.setText(text)
 
     def getValue(self):
         return unicode(self.text.text())
-

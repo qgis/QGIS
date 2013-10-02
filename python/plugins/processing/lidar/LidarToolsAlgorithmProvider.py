@@ -24,16 +24,19 @@
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
 import os
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.tools.system import isWindows
+
 from processing.lidar.lastools.LAStoolsUtils import LAStoolsUtils
-from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.lidar.lastools.lasground import lasground
 from processing.lidar.lastools.lasheight import lasheight
 from processing.lidar.lastools.lasclassify import lasclassify
@@ -66,8 +69,6 @@ from processing.lidar.lastools.lassplit import lassplit
 from processing.lidar.lastools.lascanopy import lascanopy
 from processing.lidar.lastools.lasoverage import lasoverage
 from processing.lidar.lastools.lasoverlap import lasoverlap
-"""
-"""
 from processing.lidar.fusion.OpenViewerAction import OpenViewerAction
 from processing.lidar.fusion.CanopyMaxima import CanopyMaxima
 from processing.lidar.fusion.CanopyModel import CanopyModel
@@ -81,6 +82,7 @@ from processing.lidar.fusion.MergeData import MergeData
 from processing.lidar.fusion.FilterData import FilterData
 from processing.lidar.fusion.FusionUtils import FusionUtils
 
+
 class LidarToolsAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
@@ -88,37 +90,56 @@ class LidarToolsAlgorithmProvider(AlgorithmProvider):
         self.activate = False
         self.algsList = []
         if isWindows():
-            lastools = [lasground(), lasheight(), lasclassify(), lasclip(), lastile(), lasgrid(), las2dem(),  blast2dem(), las2iso(), blast2iso(), lasview(), lasboundary(), lasinfo(), lasprecision(), lasvalidate(), lasduplicate(), las2txt(), txt2las(), laszip(), lasindex(), lasthin(), lassort(), lascanopy(), lasmerge(), las2shp(), shp2las(), lasnoise(), lassplit(),  las2las_filter(), las2las_transform(), lasoverage(), lasoverlap()]
+            lastools = [
+                lasground(), lasheight(), lasclassify(), lasclip(), lastile(),
+                lasgrid(), las2dem(), blast2dem(), las2iso(), blast2iso(),
+                lasview(), lasboundary(), lasinfo(), lasprecision(),
+                lasvalidate(), lasduplicate(), las2txt(), txt2las(), laszip(),
+                lasindex(), lasthin(), lassort(), lascanopy(), lasmerge(),
+                las2shp(), shp2las(), lasnoise(), lassplit(), las2las_filter(),
+                las2las_transform(), lasoverage(), lasoverlap()
+                ]
         else:
-            lastools = [lasinfo(), lasprecision(), lasvalidate(), las2txt(), txt2las(), laszip(), lasindex(), lasmerge(), las2las_filter(), las2las_transform()]
+            lastools = [
+                lasinfo(), lasprecision(), lasvalidate(), las2txt(), txt2las(),
+                laszip(), lasindex(), lasmerge(), las2las_filter(),
+                las2las_transform()
+                ]
         for alg in lastools:
-            alg.group = "LAStools"
+            alg.group = 'LAStools'
         self.algsList.extend(lastools)
 
         if isWindows():
             self.actions.append(OpenViewerAction())
-            fusiontools = [CloudMetrics(), CanopyMaxima(), CanopyModel(), ClipData(), Cover(), FilterData(),
-                         GridMetrics(), GroundFilter(), GridSurfaceCreate(), MergeData()]
+            fusiontools = [
+                CloudMetrics(), CanopyMaxima(), CanopyModel(), ClipData(),
+                Cover(), FilterData(), GridMetrics(), GroundFilter(),
+                GridSurfaceCreate(), MergeData()
+                ]
             for alg in fusiontools:
-                alg.group = "Fusion"
+                alg.group = 'Fusion'
             self.algsList.extend(fusiontools)
 
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)
-        ProcessingConfig.addSetting(Setting(self.getDescription(), LAStoolsUtils.LASTOOLS_FOLDER, "LAStools folder", LAStoolsUtils.LAStoolsPath()))
-        ProcessingConfig.addSetting(Setting(self.getDescription(), FusionUtils.FUSION_FOLDER, "Fusion folder", FusionUtils.FusionPath()))
+        ProcessingConfig.addSetting(Setting(self.getDescription(),
+                LAStoolsUtils.LASTOOLS_FOLDER,
+                'LAStools folder', LAStoolsUtils.LAStoolsPath()))
+        ProcessingConfig.addSetting(Setting(self.getDescription(),
+                FusionUtils.FUSION_FOLDER,
+                'Fusion folder', FusionUtils.FusionPath()))
 
     def getName(self):
-        return "lidartools"
+        return 'lidartools'
 
     def getDescription(self):
-        return "Tools for LiDAR data"
+        return 'Tools for LiDAR data'
 
     def getIcon(self):
-        return QIcon(os.path.dirname(__file__) + "/../images/tool.png")
+        return QIcon(os.path.dirname(__file__) + '/../images/tool.png')
 
     def _loadAlgorithms(self):
         self.algs = self.algsList
 
     def getSupportedOutputTableExtensions(self):
-        return ["csv"]
+        return ['csv']

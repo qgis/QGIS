@@ -20,34 +20,41 @@
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.outputs.OutputVector import OutputVector
-from processing.parameters.ParameterVector import ParameterVector
-from processing.parameters.ParameterTableField import ParameterTableField
-from qgis.core import *
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+from qgis.core import *
+from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.parameters.ParameterVector import ParameterVector
+from processing.parameters.ParameterTableField import ParameterTableField
+from processing.outputs.OutputVector import OutputVector
 from processing.tools import dataobjects, vector
+
 
 class JoinAttributes(GeoAlgorithm):
 
-    OUTPUT_LAYER = "OUTPUT_LAYER"
-    INPUT_LAYER = "INPUT_LAYER"
-    INPUT_LAYER_2 = "INPUT_LAYER_2"
-    TABLE_FIELD = "TABLE_FIELD"
-    TABLE_FIELD_2 = "TABLE_FIELD_2"
+    OUTPUT_LAYER = 'OUTPUT_LAYER'
+    INPUT_LAYER = 'INPUT_LAYER'
+    INPUT_LAYER_2 = 'INPUT_LAYER_2'
+    TABLE_FIELD = 'TABLE_FIELD'
+    TABLE_FIELD_2 = 'TABLE_FIELD_2'
 
     def defineCharacteristics(self):
-        self.name = "Join attributes table"
-        self.group = "Vector general tools"
-        self.addParameter(ParameterVector(self.INPUT_LAYER, "Input layer", [ParameterVector.VECTOR_TYPE_ANY], False))
-        self.addParameter(ParameterVector(self.INPUT_LAYER_2, "Input layer 2", [ParameterVector.VECTOR_TYPE_ANY], False))
-        self.addParameter(ParameterTableField(self.TABLE_FIELD, "Table field", self.INPUT_LAYER))
-        self.addParameter(ParameterTableField(self.TABLE_FIELD_2, "Table field 2", self.INPUT_LAYER_2))
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, "Output layer"))
+        self.name = 'Join attributes table'
+        self.group = 'Vector general tools'
+        self.addParameter(ParameterVector(self.INPUT_LAYER, 'Input layer',
+                          [ParameterVector.VECTOR_TYPE_ANY], False))
+        self.addParameter(ParameterVector(self.INPUT_LAYER_2, 'Input layer 2',
+                          [ParameterVector.VECTOR_TYPE_ANY], False))
+        self.addParameter(ParameterTableField(self.TABLE_FIELD, 'Table field',
+                          self.INPUT_LAYER))
+        self.addParameter(ParameterTableField(self.TABLE_FIELD_2,
+                          'Table field 2', self.INPUT_LAYER_2))
+        self.addOutput(OutputVector(self.OUTPUT_LAYER, 'Output layer'))
 
     def processAlgorithm(self, progress):
         input = self.getParameterValue(self.INPUT_LAYER)
@@ -60,6 +67,7 @@ class JoinAttributes(GeoAlgorithm):
         layer = dataobjects.getObjectFromUri(input)
         provider = layer.dataProvider()
         joinField1Index = layer.fieldNameIndex(field)
+
         # Layer 2
         layer2 = dataobjects.getObjectFromUri(input2)
         provider2 = layer2.dataProvider()
@@ -71,28 +79,30 @@ class JoinAttributes(GeoAlgorithm):
         outFields.extend(provider.fields())
         outFields.extend(provider2.fields())
 
-        writer = output.getVectorWriter(outFields, provider.geometryType(), layer.crs())
+        writer = output.getVectorWriter(outFields, provider.geometryType(),
+                layer.crs())
 
         inFeat = QgsFeature()
         inFeat2 = QgsFeature()
         outFeat = QgsFeature()
 
         # Create output vector layer with additional attribute
-        features = vector.features(layer);
+        features = vector.features(layer)
         for inFeat in features:
             inGeom = inFeat.geometry()
             attrs = inFeat.attributes()
             joinValue1 = attrs[joinField1Index]
-            features2 = vector.features(layer2);
+            features2 = vector.features(layer2)
             for inFeat2 in features2:
-                ## Maybe it should cache this entries...
+                # Maybe it should cache this entries...
                 attrs2 = inFeat2.attributes()
                 joinValue2 = attrs2[joinField2Index]
                 if joinValue1 == joinValue2:
-                    # create the new feature
+
+                    # Create the new feature
                     outFeat.setGeometry(inGeom)
                     attrs.extend(attrs2)
-                    break;
+                    break
             outFeat.setAttributes(attrs)
             writer.addFeature(outFeat)
 

@@ -20,7 +20,9 @@
 __author__ = 'Alexander Bruy'
 __date__ = 'September 2013'
 __copyright__ = '(C) 2013, Alexander Bruy'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
 import os
@@ -37,27 +39,35 @@ from processing.outputs.OutputVector import OutputVector
 
 from processing.gdal.GdalUtils import GdalUtils
 
+
 class contour(GeoAlgorithm):
 
-    INPUT_RASTER = "INPUT_RASTER"
-    OUTPUT_VECTOR = "OUTPUT_VECTOR"
-    INTERVAL = "INTERVAL"
-    FIELD_NAME = "FIELD_NAME"
-    EXTRA = "EXTRA"
+    INPUT_RASTER = 'INPUT_RASTER'
+    OUTPUT_VECTOR = 'OUTPUT_VECTOR'
+    INTERVAL = 'INTERVAL'
+    FIELD_NAME = 'FIELD_NAME'
+    EXTRA = 'EXTRA'
 
     def getIcon(self):
-        filepath = os.path.dirname(__file__) + "/icons/contour.png"
+        filepath = os.path.dirname(__file__) + '/icons/contour.png'
         return QtGui.QIcon(filepath)
 
     def defineCharacteristics(self):
-        self.name = "Contour"
-        self.group = "[GDAL] Extraction"
-        self.addParameter(ParameterRaster(self.INPUT_RASTER, "Input layer", False))
-        self.addParameter(ParameterNumber(self.INTERVAL, "Interval between contour lines", 0.0, 99999999.999999, 10.0))
-        self.addParameter(ParameterString(self.FIELD_NAME, "Attribute name (if not provided, no elecation attribute is attached)", "ELEV", optional=True))
-        self.addParameter(ParameterString(self.EXTRA, "Additional creation parameters", ""))
+        self.name = 'Contour'
+        self.group = '[GDAL] Extraction'
+        self.addParameter(ParameterRaster(self.INPUT_RASTER, 'Input layer',
+                          False))
+        self.addParameter(ParameterNumber(self.INTERVAL,
+                          'Interval between contour lines', 0.0,
+                          99999999.999999, 10.0))
+        self.addParameter(ParameterString(self.FIELD_NAME,
+            'Attribute name (if not set, no elevation attribute is attached)',
+            'ELEV', optional=True))
+        self.addParameter(ParameterString(self.EXTRA,
+                          'Additional creation parameters', ''))
 
-        self.addOutput(OutputVector(self.OUTPUT_VECTOR, "Output file for contour lines (vector)"))
+        self.addOutput(OutputVector(self.OUTPUT_VECTOR,
+                       'Output file for contour lines (vector)'))
 
     def processAlgorithm(self, progress):
         interval = str(self.getParameterValue(self.INTERVAL))
@@ -66,9 +76,9 @@ class contour(GeoAlgorithm):
 
         arguments = []
         if len(fieldName) > 0:
-            arguments.append("-a")
+            arguments.append('-a')
             arguments.append(fieldName)
-        arguments.append("-i")
+        arguments.append('-i')
         arguments.append(interval)
 
         if len(extra) > 0:
@@ -77,4 +87,5 @@ class contour(GeoAlgorithm):
         arguments.append(self.getParameterValue(self.INPUT_RASTER))
         arguments.append(self.getOutputValue(self.OUTPUT_VECTOR))
 
-        GdalUtils.runGdal(["gdal_contour", GdalUtils.escapeAndJoin(arguments)], progress)
+        GdalUtils.runGdal(['gdal_contour',
+                          GdalUtils.escapeAndJoin(arguments)], progress)

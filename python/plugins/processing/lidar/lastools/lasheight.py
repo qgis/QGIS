@@ -20,7 +20,9 @@
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
 import os
@@ -29,26 +31,28 @@ from processing.lidar.lastools.LAStoolsAlgorithm import LAStoolsAlgorithm
 
 from processing.parameters.ParameterBoolean import ParameterBoolean
 
+
 class lasheight(LAStoolsAlgorithm):
 
-    REPLACE_Z = "REPLACE_Z"
+    REPLACE_Z = 'REPLACE_Z'
 
     def defineCharacteristics(self):
-        self.name = "lasheight"
-        self.group = "LAStools"
+        self.name = 'lasheight'
+        self.group = 'LAStools'
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
-        self.addParameter(ParameterBoolean(lasheight.REPLACE_Z, "replace z", False))
+        self.addParameter(ParameterBoolean(lasheight.REPLACE_Z, 'replace z',
+                          False))
         self.addParametersPointOutputGUI()
 
-
     def processAlgorithm(self, progress):
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasheight.exe")]
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), 'bin',
+                    'lasheight.exe')]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputCommands(commands)
         replace_z = self.getParameterValue(lasheight.REPLACE_Z)
-        if replace_z == True:
-            commands.append("-replace_z")
+        if replace_z:
+            commands.append('-replace_z')
         self.addParametersPointOutputCommands(commands)
 
         LAStoolsUtils.runLAStools(commands, progress)

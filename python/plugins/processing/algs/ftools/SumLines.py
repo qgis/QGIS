@@ -20,58 +20,69 @@
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
-from PyQt4 import QtGui
 from PyQt4.QtCore import *
 from qgis.core import *
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.tools import dataobjects, vector
 from processing.parameters.ParameterVector import ParameterVector
 from processing.parameters.ParameterString import ParameterString
 from processing.outputs.OutputVector import OutputVector
-from processing.tools import vector as utils
+from processing.tools import dataobjects, vector
+
 
 class SumLines(GeoAlgorithm):
 
-    LINES = "LINES"
-    POLYGONS = "POLYGONS"
-    LEN_FIELD = "LEN_FIELD"
-    COUNT_FIELD = "COUNT_FIELD"
-    OUTPUT = "OUTPUT"
+    LINES = 'LINES'
+    POLYGONS = 'POLYGONS'
+    LEN_FIELD = 'LEN_FIELD'
+    COUNT_FIELD = 'COUNT_FIELD'
+    OUTPUT = 'OUTPUT'
 
-    #===========================================================================
+    # =========================================================================
     # def getIcon(self):
-    #    return QtGui.QIcon(os.path.dirname(__file__) + "/icons/sum_lines.png")
-    #===========================================================================
+    #    return QIcon(os.path.dirname(__file__) + "/icons/sum_lines.png")
+    # =========================================================================
 
     def defineCharacteristics(self):
-        self.name = "Sum line lengths"
-        self.group = "Vector analysis tools"
+        self.name = 'Sum line lengths'
+        self.group = 'Vector analysis tools'
 
-        self.addParameter(ParameterVector(self.LINES, "Lines", [ParameterVector.VECTOR_TYPE_LINE]))
-        self.addParameter(ParameterVector(self.POLYGONS, "Polygons", [ParameterVector.VECTOR_TYPE_POLYGON]))
-        self.addParameter(ParameterString(self.LEN_FIELD, "Lines length field name", "LENGTH"))
-        self.addParameter(ParameterString(self.COUNT_FIELD, "Lines count field name", "COUNT"))
+        self.addParameter(ParameterVector(self.LINES, 'Lines',
+                          [ParameterVector.VECTOR_TYPE_LINE]))
+        self.addParameter(ParameterVector(self.POLYGONS, 'Polygons',
+                          [ParameterVector.VECTOR_TYPE_POLYGON]))
+        self.addParameter(ParameterString(self.LEN_FIELD,
+                          'Lines length field name', 'LENGTH'))
+        self.addParameter(ParameterString(self.COUNT_FIELD,
+                          'Lines count field name', 'COUNT'))
 
-        self.addOutput(OutputVector(self.OUTPUT, "Result"))
+        self.addOutput(OutputVector(self.OUTPUT, 'Result'))
 
     def processAlgorithm(self, progress):
-        lineLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.LINES))
-        polyLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.POLYGONS))
+        lineLayer = dataobjects.getObjectFromUri(
+                self.getParameterValue(self.LINES))
+        polyLayer = dataobjects.getObjectFromUri(
+                self.getParameterValue(self.POLYGONS))
         lengthFieldName = self.getParameterValue(self.LEN_FIELD)
         countFieldName = self.getParameterValue(self.COUNT_FIELD)
 
         polyProvider = polyLayer.dataProvider()
 
-        idxLength, fieldList = utils.findOrCreateField(polyLayer, polyLayer.pendingFields(), lengthFieldName)
-        idxCount, fieldList = utils.findOrCreateField(polyLayer, fieldList, countFieldName)
+        (idxLength, fieldList) = vector.findOrCreateField(polyLayer,
+                polyLayer.pendingFields(), lengthFieldName)
+        (idxCount, fieldList) = vector.findOrCreateField(polyLayer, fieldList,
+                countFieldName)
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fieldList.toList(),
-                     polyProvider.geometryType(), polyProvider.crs())
+        writer = self.getOutputFromName(
+                self.OUTPUT).getVectorWriter(fieldList.toList(),
+                                             polyProvider.geometryType(),
+                                             polyProvider.crs())
 
-        spatialIndex = utils.spatialindex(lineLayer)
+        spatialIndex = vector.spatialindex(lineLayer)
 
         ftLine = QgsFeature()
         ftPoly = QgsFeature()

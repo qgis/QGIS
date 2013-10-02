@@ -20,11 +20,14 @@
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
 from PyQt4 import QtGui
 from processing.gui.NumberInputDialog import NumberInputDialog
+
 
 class NumberInputPanel(QtGui.QWidget):
 
@@ -50,10 +53,11 @@ class NumberInputPanel(QtGui.QWidget):
         else:
             self.text = QtGui.QLineEdit()
             self.text.setText(str(number))
-            self.text.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+            self.text.setSizePolicy(QtGui.QSizePolicy.Expanding,
+                                    QtGui.QSizePolicy.Expanding)
             self.horizontalLayout.addWidget(self.text)
             self.pushButton = QtGui.QPushButton()
-            self.pushButton.setText("...")
+            self.pushButton.setText('...')
             self.pushButton.clicked.connect(self.showNumberInputDialog)
             self.horizontalLayout.addWidget(self.pushButton)
             self.setLayout(self.horizontalLayout)
@@ -62,7 +66,7 @@ class NumberInputPanel(QtGui.QWidget):
         pass
         dlg = NumberInputDialog()
         dlg.exec_()
-        if dlg.value != None:
+        if dlg.value is not None:
             self.text.setText(str(dlg.value))
 
     def getValue(self):

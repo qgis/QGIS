@@ -108,7 +108,7 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     virtual void setSelected( bool s );
 
     /** \brief Is selected */
-    virtual bool selected() {return QGraphicsRectItem::isSelected();}
+    virtual bool selected() const {return QGraphicsRectItem::isSelected();};
 
     /** stores state in project */
     virtual bool writeSettings();
@@ -287,10 +287,6 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     @note this method was added in version 1.2*/
     bool positionLock() const {return mItemPositionLocked;}
 
-    /**Update mouse cursor at (item) position
-    @note this method was added in version 1.2*/
-    void updateCursor( const QPointF& itemPos );
-
     double rotation() const {return mRotation;}
 
     /**Updates item, with the possibility to do custom update for subclasses*/
@@ -356,29 +352,6 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     /**The item's position mode
     @note: this member was added in version 2.0*/
     ItemPositionMode mLastUsedPositionMode;
-
-    //event handlers
-    virtual void mouseMoveEvent( QGraphicsSceneMouseEvent * event );
-    virtual void mousePressEvent( QGraphicsSceneMouseEvent * event );
-    virtual void mouseReleaseEvent( QGraphicsSceneMouseEvent * event );
-
-    virtual void hoverMoveEvent( QGraphicsSceneHoverEvent * event );
-
-    /**Finds out the appropriate cursor for the current mouse position in the widget (e.g. move in the middle, resize at border)*/
-    Qt::CursorShape cursorForPosition( const QPointF& itemCoordPos );
-
-    /**Finds out which mouse move action to choose depending on the cursor position inside the widget*/
-    QgsComposerItem::MouseMoveAction mouseMoveActionForPosition( const QPointF& itemCoordPos );
-
-    /**Changes the rectangle of an item depending on current mouse action (resize or move)
-     @param currentPosition current position of mouse cursor
-     @param mouseMoveStartPos cursor position at the start of the current mouse action
-     @param originalItem Item position at the start of the mouse action
-     @param dx x-Change of mouse cursor
-     @param dy y-Change of mouse cursor
-     @param changeItem Item to change size (can be the same as originalItem or a differen one)
-    */
-    void changeItemRectangle( const QPointF& currentPosition, const QPointF& mouseMoveStartPos, const QGraphicsRectItem* originalItem, double dx, double dy, QGraphicsRectItem* changeItem );
 
     /**Draw selection boxes around item*/
     virtual void drawSelectionBoxes( QPainter* p );

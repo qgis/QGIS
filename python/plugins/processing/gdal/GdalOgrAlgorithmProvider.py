@@ -20,7 +20,9 @@
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
 import os
@@ -59,68 +61,66 @@ from processing.gdal.ogrsql import OgrSql
 
 
 class GdalOgrAlgorithmProvider(AlgorithmProvider):
+    """This provider incorporates GDAL-based algorithms into the
+    Processing framework.
 
-    '''This provider incorporates GDAL-based algorithms into the processing framework.
     Algorithms have been implemented using two different mechanisms,
     which should serve as an example of different ways of extending
     the processing capabilities of QGIS:
-    1)when a python script exist for a given process, it has been adapted
-    as a processing python script and loaded using the ScriptAlgorithm class.
-    This algorithms call GDAL using its Python bindings
-    2)Other algorithms are called directly using the command line interface,
-    These have been implemented individually extending the GeoAlgorithm class'''
+      1. when a python script exist for a given process, it has been
+         adapted as a Processing python script and loaded using the
+         ScriptAlgorithm class. This algorithms call GDAL using its
+         Python bindings.
+      2. Other algorithms are called directly using the command line
+         interface. These have been implemented individually extending
+         the GeoAlgorithm class.
+    """
 
     def __init__(self):
         AlgorithmProvider.__init__(self)
         self.createAlgsList()
 
     def scriptsFolder(self):
-        '''The folder where script algorithms are stored'''
-        return os.path.dirname(__file__) + "/scripts"
+        """The folder where script algorithms are stored.
+        """
+        return os.path.dirname(__file__) + '/scripts'
 
     def getDescription(self):
-        return "GDAL/OGR"
+        return 'GDAL/OGR'
 
     def getName(self):
-        return "gdalogr"
+        return 'gdalogr'
 
     def getIcon(self):
-        return QIcon(os.path.dirname(__file__) + "/icons/gdalicon.png")
+        return QIcon(os.path.dirname(__file__) + '/icons/gdalicon.png')
 
     def _loadAlgorithms(self):
-        '''This is called each time there is a change in the set of algorithms,
-        for instance, when the users adds a new model or script. Since this provider
-        cannot be extended by the user, we create the list in advance and then just
-        assign it to self.algs'''
         self.algs = self.preloadedAlgs
 
     def createAlgsList(self):
-        #First we populate the list of algorithms with those created extending
-        #GeoAlgorithm directly (those that execute GDAL using the console)
-
+        # First we populate the list of algorithms with those created
+        # extending GeoAlgorithm directly (those that execute GDAL
+        # using the console)
         self.preloadedAlgs = [nearblack(), information(), warp(), translate(),
-                              rgb2pct(), pct2rgb(), merge(), polygonize(),
-                              gdaladdo(), ClipByExtent(), ClipByMask(),
-                              contour(), rasterize(), proximity(), sieve(),
-                              fillnodata(), ExtractProjection(), gdal2xyz(),
-                              OgrInfo(), Ogr2Ogr(), OgrSql()]
+            rgb2pct(), pct2rgb(), merge(), polygonize(), gdaladdo(),
+            ClipByExtent(), ClipByMask(), contour(), rasterize(), proximity(),
+            sieve(), fillnodata(), ExtractProjection(), gdal2xyz(),
+            # ----- OGR tools -----
+            OgrInfo(), Ogr2Ogr(), OgrSql(),
+            ]
 
-        #And then we add those that are created as python scripts
+        # And then we add those that are created as python scripts
         folder = self.scriptsFolder()
         if os.path.exists(folder):
             for descriptionFile in os.listdir(folder):
-                if descriptionFile.endswith("py"):
+                if descriptionFile.endswith('py'):
                     try:
-                        fullpath = os.path.join(self.scriptsFolder(), descriptionFile)
+                        fullpath = os.path.join(self.scriptsFolder(),
+                                descriptionFile)
                         alg = GdalAlgorithm(fullpath)
                         self.preloadedAlgs.append(alg)
-                    except WrongScriptException,e:
-                        ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,e.msg)
+                    except WrongScriptException, e:
+                        ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, e.msg)
 
     def getSupportedOutputRasterLayerExtensions(self):
         return GdalUtils.getSupportedRasterExtensions()
-
-    #===========================================================================
-    # def getSupportedOutputVectorLayerExtensions(self):
-    #    return ["shp", "sqlite"]
-    #===========================================================================

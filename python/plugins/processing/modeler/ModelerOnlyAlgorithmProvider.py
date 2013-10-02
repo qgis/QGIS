@@ -20,18 +20,22 @@
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
-from PyQt4 import QtGui
+import os.path
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from processing.core.AlgorithmProvider import AlgorithmProvider
-from processing.modeler.CalculatorModelerAlgorithm import CalculatorModelerAlgorithm
-from processing.modeler.RasterLayerBoundsAlgorithm import RasterLayerBoundsAlgorithm
-from processing.modeler.VectorLayerBoundsAlgorithm import VectorLayerBoundsAlgorithm
+from processing.modeler.CalculatorModelerAlgorithm import \
+        CalculatorModelerAlgorithm
+from processing.modeler.RasterLayerBoundsAlgorithm import \
+        RasterLayerBoundsAlgorithm
+from processing.modeler.VectorLayerBoundsAlgorithm import \
+        VectorLayerBoundsAlgorithm
 
-import os.path
 
 class ModelerOnlyAlgorithmProvider(AlgorithmProvider):
 
@@ -39,15 +43,17 @@ class ModelerOnlyAlgorithmProvider(AlgorithmProvider):
         AlgorithmProvider.__init__(self)
 
     def getName(self):
-        return "modelertools"
+        return 'modelertools'
 
     def getDescription(self):
-        return "Modeler-only tools"
+        return 'Modeler-only tools'
 
     def getIcon(self):
-        return QtGui.QIcon(os.path.dirname(__file__) + "/../images/model.png")
+        return QIcon(os.path.dirname(__file__) + '/../images/model.png')
 
     def _loadAlgorithms(self):
-        self.algs = [CalculatorModelerAlgorithm(), RasterLayerBoundsAlgorithm(), VectorLayerBoundsAlgorithm()]
+        self.algs = [CalculatorModelerAlgorithm(),
+                     RasterLayerBoundsAlgorithm(),
+                     VectorLayerBoundsAlgorithm()]
         for alg in self.algs:
             alg.provider = self

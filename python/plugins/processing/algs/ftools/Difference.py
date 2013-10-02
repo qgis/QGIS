@@ -16,55 +16,65 @@
 *                                                                         *
 ***************************************************************************
 """
+
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
 from PyQt4.QtCore import *
 from qgis.core import *
-from processing.tools import dataobjects, vector
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.parameters.ParameterVector import ParameterVector
 from processing.outputs.OutputVector import OutputVector
-from processing.tools import vector as utils
+from processing.tools import dataobjects, vector
+
 
 class Difference(GeoAlgorithm):
 
-    INPUT = "INPUT"
-    OVERLAY = "OVERLAY"
-    OUTPUT = "OUTPUT"
+    INPUT = 'INPUT'
+    OVERLAY = 'OVERLAY'
+    OUTPUT = 'OUTPUT'
 
-    #===========================================================================
-    # def getIcon(self):
-    #    return QtGui.QIcon(os.path.dirname(__file__) + "/icons/difference.png")
-    #===========================================================================
+    #==========================================================================
+    #def getIcon(self):
+    #   return QtGui.QIcon(os.path.dirname(__file__) + "/icons/difference.png")
+    #==========================================================================
 
     def defineCharacteristics(self):
-        self.name = "Difference"
-        self.group = "Vector overlay tools"
-        self.addParameter(ParameterVector(Difference.INPUT, "Input layer", [ParameterVector.VECTOR_TYPE_ANY]))
-        self.addParameter(ParameterVector(Difference.OVERLAY, "Difference layer", [ParameterVector.VECTOR_TYPE_ANY]))
-        self.addOutput(OutputVector(Difference.OUTPUT, "Difference"))
+        self.name = 'Difference'
+        self.group = 'Vector overlay tools'
+        self.addParameter(ParameterVector(Difference.INPUT, 'Input layer',
+                          [ParameterVector.VECTOR_TYPE_ANY]))
+        self.addParameter(ParameterVector(Difference.OVERLAY,
+                          'Difference layer',
+                          [ParameterVector.VECTOR_TYPE_ANY]))
+        self.addOutput(OutputVector(Difference.OUTPUT, 'Difference'))
 
     def processAlgorithm(self, progress):
-        layerA = dataobjects.getObjectFromUri(self.getParameterValue(Difference.INPUT))
-        layerB = dataobjects.getObjectFromUri(self.getParameterValue(Difference.OVERLAY))
+        layerA = dataobjects.getObjectFromUri(
+                self.getParameterValue(Difference.INPUT))
+        layerB = dataobjects.getObjectFromUri(
+                self.getParameterValue(Difference.OVERLAY))
 
         GEOS_EXCEPT = True
 
         FEATURE_EXCEPT = True
 
-        writer = self.getOutputFromName(Difference.OUTPUT).getVectorWriter(layerA.pendingFields(),
-                     layerA.dataProvider().geometryType(), layerA.dataProvider().crs())
+        writer = self.getOutputFromName(
+                Difference.OUTPUT).getVectorWriter(layerA.pendingFields(),
+                        layerA.dataProvider().geometryType(),
+                        layerA.dataProvider().crs())
 
         inFeatA = QgsFeature()
         inFeatB = QgsFeature()
         outFeat = QgsFeature()
 
-        index = utils.spatialindex(layerB)
+        index = vector.spatialindex(layerB)
 
         selectionA = vector.features(layerA)
 
@@ -104,6 +114,10 @@ class Difference(GeoAlgorithm):
         del writer
 
         if not GEOS_EXCEPT:
-            ProcessingLog.addToLog(ProcessingLog.LOG_WARNING, "Geometry exception while computing difference")
+            ProcessingLog.addToLog(
+                    ProcessingLog.LOG_WARNING,
+                    'Geometry exception while computing difference')
         if not FEATURE_EXCEPT:
-            ProcessingLog.addToLog(ProcessingLog.LOG_WARNING, "Feature exception while computing difference")
+            ProcessingLog.addToLog(
+                    ProcessingLog.LOG_WARNING,
+                    'Feature exception while computing difference')

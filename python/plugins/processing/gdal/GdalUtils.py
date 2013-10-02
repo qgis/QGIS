@@ -20,7 +20,9 @@
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
 import os
@@ -34,6 +36,7 @@ try:
 except:
     gdalAvailable = False
 
+
 class GdalUtils:
 
     supportedRasters = None
@@ -41,16 +44,23 @@ class GdalUtils:
     @staticmethod
     def runGdal(commands, progress):
         settings = QSettings()
-        path = unicode(settings.value( "/GdalTools/gdalPath", ""))
-        envval = unicode(os.getenv("PATH"))
+        path = unicode(settings.value('/GdalTools/gdalPath', ''))
+        envval = unicode(os.getenv('PATH'))
         if not path.lower() in envval.lower().split(os.pathsep):
-            envval += "%s%s" % (os.pathsep, path)
-            os.putenv( "PATH", envval )
+            envval += '%s%s' % (os.pathsep, path)
+            os.putenv('PATH', envval)
         loglines = []
-        loglines.append("GDAL execution console output")
+        loglines.append('GDAL execution console output')
         fused_command = ''.join(['%s ' % c for c in commands])
-        proc = subprocess.Popen(fused_command, shell=True, stdout=subprocess.PIPE, stdin=subprocess.PIPE,stderr=subprocess.STDOUT, universal_newlines=False).stdout
-        for line in iter(proc.readline, ""):
+        proc = subprocess.Popen(
+            fused_command,
+            shell=True,
+            stdout=subprocess.PIPE,
+            stdin=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            universal_newlines=False,
+            ).stdout
+        for line in iter(proc.readline, ''):
             loglines.append(line)
         ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)
         GdalUtils.consoleOutput = loglines
@@ -64,25 +74,25 @@ class GdalUtils:
         if not gdalAvailable:
             return {}
 
-        '''this has been adapted from GdalTools plugin'''
-        if GdalUtils.supportedRasters != None:
+        if GdalUtils.supportedRasters is not None:
             return GdalUtils.supportedRasters
 
         if gdal.GetDriverCount() == 0:
             gdal.AllRegister()
 
         GdalUtils.supportedRasters = {}
-        GdalUtils.supportedRasters["GTiff"] = ["tif"]
+        GdalUtils.supportedRasters['GTiff'] = ['tif']
         for i in range(gdal.GetDriverCount()):
             driver = gdal.GetDriver(i)
-            if driver == None:
+            if driver is None:
                 continue
-            shortName = driver.ShortName#.remove( QRegExp( '\(.*$' ) ).trimmed())
+            shortName = driver.ShortName
             metadata = driver.GetMetadata()
-            if not metadata.has_key(gdal.DCAP_CREATE) or metadata[gdal.DCAP_CREATE] != 'YES':
+            if gdal.DCAP_CREATE not in metadata \
+                    or metadata[gdal.DCAP_CREATE] != 'YES':
                 continue
-            if metadata.has_key(gdal.DMD_EXTENSION):
-                extensions = metadata[gdal.DMD_EXTENSION].split("/")
+            if gdal.DMD_EXTENSION in metadata:
+                extensions = metadata[gdal.DMD_EXTENSION].split('/')
                 if extensions:
                     GdalUtils.supportedRasters[shortName] = extensions
 
@@ -90,30 +100,31 @@ class GdalUtils:
 
     @staticmethod
     def getSupportedRasterExtensions():
-        allexts = ["tif"]
+        allexts = ['tif']
         for exts in GdalUtils.getSupportedRasters().values():
             for ext in exts:
-                if ext not in allexts and ext != "":
+                if ext not in allexts and ext != '':
                     allexts.append(ext)
         return allexts
 
     @staticmethod
     def getFormatShortNameFromFilename(filename):
-        ext = filename[filename.rfind(".")+1:]
+        ext = filename[filename.rfind('.') + 1:]
         supported = GdalUtils.getSupportedRasters()
         for name in supported.keys():
             exts = supported[name]
             if ext in exts:
                 return name
-        return "GTiff"
+        return 'GTiff'
 
     @staticmethod
     def escapeAndJoin(strList):
-        joined = ""
+        joined = ''
         for s in strList:
-            if " " in s:
-                escaped = '"' + s.replace('\\', '\\\\').replace('"', '\\"') + '"'
+            if ' ' in s:
+                escaped = '"' + s.replace('\\', '\\\\').replace('"', '\\"') \
+                    + '"'
             else:
                 escaped = s
-            joined += escaped + " "
+            joined += escaped + ' '
         return joined.strip()

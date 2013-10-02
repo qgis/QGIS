@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 
 """
@@ -20,51 +21,56 @@
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
 import os
 from PyQt4 import QtGui
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.tools.system import *
 
 from processing.parameters.ParameterRaster import ParameterRaster
 from processing.parameters.ParameterNumber import ParameterNumber
 from processing.outputs.OutputRaster import OutputRaster
 
+from processing.tools.system import *
 from processing.gdal.GdalUtils import GdalUtils
+
 
 class rgb2pct(GeoAlgorithm):
 
-    INPUT = "INPUT"
-    OUTPUT = "OUTPUT"
-    NCOLORS = "NCOLORS"
+    INPUT = 'INPUT'
+    OUTPUT = 'OUTPUT'
+    NCOLORS = 'NCOLORS'
 
     def getIcon(self):
-        filepath = os.path.dirname(__file__) + "/icons/24-to-8-bits.png"
+        filepath = os.path.dirname(__file__) + '/icons/24-to-8-bits.png'
         return QtGui.QIcon(filepath)
 
     def defineCharacteristics(self):
-        self.name = "RGB to PCT"
-        self.group = "[GDAL] Conversion"
-        self.addParameter(ParameterRaster(rgb2pct.INPUT, "Input layer", False))
-        self.addParameter(ParameterNumber(rgb2pct.NCOLORS, "Number of colors", 1, None, 2))
-        self.addOutput(OutputRaster(rgb2pct.OUTPUT, "Output layer"))
+        self.name = 'RGB to PCT'
+        self.group = '[GDAL] Conversion'
+        self.addParameter(ParameterRaster(rgb2pct.INPUT, 'Input layer', False))
+        self.addParameter(ParameterNumber(rgb2pct.NCOLORS, 'Number of colors',
+                          1, None, 2))
+        self.addOutput(OutputRaster(rgb2pct.OUTPUT, 'Output layer'))
 
     def processAlgorithm(self, progress):
         arguments = []
-        arguments.append("-n")
+        arguments.append('-n')
         arguments.append(str(self.getParameterValue(rgb2pct.NCOLORS)))
-        arguments.append("-of")
+        arguments.append('-of')
         out = self.getOutputValue(rgb2pct.OUTPUT)
         arguments.append(GdalUtils.getFormatShortNameFromFilename(out))
         arguments.append(self.getParameterValue(rgb2pct.INPUT))
         arguments.append(out)
 
         if isWindows():
-            commands = ["cmd.exe", "/C ", "rgb2pct.bat", GdalUtils.escapeAndJoin(arguments)]
+            commands = ['cmd.exe', '/C ', 'rgb2pct.bat',
+                        GdalUtils.escapeAndJoin(arguments)]
         else:
-            commands = ["rgb2pct.py", GdalUtils.escapeAndJoin(arguments)]
+            commands = ['rgb2pct.py', GdalUtils.escapeAndJoin(arguments)]
 
         GdalUtils.runGdal(commands, progress)

@@ -16,50 +16,52 @@
 *                                                                         *
 ***************************************************************************
 """
+
 __author__ = 'Victor Olaya'
 __date__ = 'November 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
 import os
 
-class AlgorithmDecorator():
 
-    classification = {};
+class AlgorithmDecorator:
+
+    classification = {}
 
     @staticmethod
     def loadClassification():
         if not os.path.isfile(AlgorithmDecorator.classificationFile()):
             return
         lines = open(AlgorithmDecorator.classificationFile())
-        line = lines.readline().strip("\n")
-        while line != "":
-            tokens = line.split(",")
-            subtokens = tokens[2].split("/")
+        line = lines.readline().strip('\n')
+        while line != '':
+            tokens = line.split(',')
+            subtokens = tokens[2].split('/')
             try:
-                AlgorithmDecorator.classification[tokens[0]] = (subtokens[0], subtokens[1], tokens[1]);
+                AlgorithmDecorator.classification[tokens[0]] = (subtokens[0],
+                        subtokens[1], tokens[1])
             except:
-                raise Exception(line);
-            line = lines.readline().strip("\n")
+                raise Exception(line)
+            line = lines.readline().strip('\n')
         lines.close()
 
     @staticmethod
     def classificationFile():
-        folder = os.path.join(os.path.dirname(__file__), "help")
-        f = os.path.join(folder, "algclasssification.txt")
+        folder = os.path.join(os.path.dirname(__file__), 'help')
+        f = os.path.join(folder, 'algclasssification.txt')
         return f
 
     @staticmethod
     def getGroupsAndName(alg):
         if alg.commandLineName().lower() in AlgorithmDecorator.classification:
-            group, subgroup, name = AlgorithmDecorator.classification[alg.commandLineName()]
-            if name == "USE_ORIGINAL_NAME":
+            (group, subgroup, name) = \
+                AlgorithmDecorator.classification[alg.commandLineName()]
+            if name == 'USE_ORIGINAL_NAME':
                 name = alg.name
             return (group, subgroup, name)
         else:
-            return (None,None, alg.name)
-
-
-
-
+            return (None, None, alg.name)

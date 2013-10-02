@@ -20,31 +20,36 @@
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
 from PyQt4 import QtCore, QtGui
 from processing.gui.FixedTableDialog import FixedTableDialog
 
+
 class FixedTablePanel(QtGui.QWidget):
 
-    def __init__(self, param, parent = None):
+    def __init__(self, param, parent=None):
         super(FixedTablePanel, self).__init__(parent)
         self.param = param
         self.table = []
         for i in range(param.numRows):
             self.table.append(list())
             for j in range(len(param.cols)):
-                self.table[i].append("0")
+                self.table[i].append('0')
         self.horizontalLayout = QtGui.QHBoxLayout(self)
         self.horizontalLayout.setSpacing(2)
         self.horizontalLayout.setMargin(0)
         self.label = QtGui.QLabel()
-        self.label.setText("Fixed table " + str(len(param.cols)) + " X " + str(param.numRows))
-        self.label.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        self.label.setText('Fixed table ' + str(len(param.cols)) + ' X '
+                           + str(param.numRows))
+        self.label.setSizePolicy(QtGui.QSizePolicy.Expanding,
+                                 QtGui.QSizePolicy.Expanding)
         self.horizontalLayout.addWidget(self.label)
         self.pushButton = QtGui.QPushButton()
-        self.pushButton.setText("...")
+        self.pushButton.setText('...')
         self.pushButton.clicked.connect(self.showFixedTableDialog)
         self.horizontalLayout.addWidget(self.pushButton)
         self.setLayout(self.horizontalLayout)
@@ -52,5 +57,5 @@ class FixedTablePanel(QtGui.QWidget):
     def showFixedTableDialog(self):
         dlg = FixedTableDialog(self.param, self.table)
         dlg.exec_()
-        if dlg.rettable != None:
+        if dlg.rettable is not None:
             self.table = dlg.rettable

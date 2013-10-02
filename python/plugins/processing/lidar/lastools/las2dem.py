@@ -24,7 +24,9 @@
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
 import os
@@ -37,37 +39,40 @@ from processing.parameters.ParameterString import ParameterString
 from processing.parameters.ParameterBoolean import ParameterBoolean
 from processing.parameters.ParameterSelection import ParameterSelection
 
+
 class las2dem(LAStoolsAlgorithm):
 
-    ATTRIBUTE = "ATTRIBUTE"
-    PRODUCT = "PRODUCT"
-    ATTRIBUTES = ["elevation", "slope", "intensity", "rgb"]
-    PRODUCTS = ["actual values", "hillshade", "gray", "false"]
-
+    ATTRIBUTE = 'ATTRIBUTE'
+    PRODUCT = 'PRODUCT'
+    ATTRIBUTES = ['elevation', 'slope', 'intensity', 'rgb']
+    PRODUCTS = ['actual values', 'hillshade', 'gray', 'false']
 
     def defineCharacteristics(self):
-        self.name = "las2dem"
-        self.group = "LAStools"
+        self.name = 'las2dem'
+        self.group = 'LAStools'
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
         self.addParametersFilter1ReturnClassFlagsGUI()
         self.addParametersStepGUI()
-        self.addParameter(ParameterSelection(las2dem.ATTRIBUTE, "Attribute", las2dem.ATTRIBUTES, 0))
-        self.addParameter(ParameterSelection(las2dem.PRODUCT, "Product", las2dem.PRODUCTS, 0))
+        self.addParameter(ParameterSelection(las2dem.ATTRIBUTE, 'Attribute',
+                          las2dem.ATTRIBUTES, 0))
+        self.addParameter(ParameterSelection(las2dem.PRODUCT, 'Product',
+                          las2dem.PRODUCTS, 0))
         self.addParametersRasterOutputGUI()
 
     def processAlgorithm(self, progress):
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2dem.exe")]
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), 'bin',
+                    'las2dem.exe')]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputCommands(commands)
         self.addParametersFilter1ReturnClassFlagsCommands(commands)
         self.addParametersStepCommands(commands)
         attribute = self.getParameterValue(las2dem.ATTRIBUTE)
         if attribute != 0:
-            commands.append("-" + las2dem.ATTRIBUTES[attribute])
+            commands.append('-' + las2dem.ATTRIBUTES[attribute])
         product = self.getParameterValue(las2dem.PRODUCT)
         if product != 0:
-            commands.append("-" + las2dem.PRODUCTS[product])
+            commands.append('-' + las2dem.PRODUCTS[product])
         self.addParametersRasterOutputCommands(commands)
 
         LAStoolsUtils.runLAStools(commands, progress)

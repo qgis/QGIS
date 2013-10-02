@@ -20,49 +20,52 @@
 __author__ = 'Victor Olaya'
 __date__ = 'January 2013'
 __copyright__ = '(C) 2013, Victor Olaya'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
 import matplotlib.pyplot as plt
 import matplotlib.pylab as lab
 from PyQt4.QtCore import *
 from qgis.core import *
+from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.parameters.ParameterVector import ParameterVector
 from processing.parameters.ParameterTableField import ParameterTableField
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.parameters.ParameterNumber import ParameterNumber
 from processing.outputs.OutputHTML import OutputHTML
 from processing.tools import *
-from processing.tools import dataobjects
-from processing.parameters.ParameterNumber import ParameterNumber
+
 
 class VectorLayerHistogram(GeoAlgorithm):
 
-    INPUT = "INPUT"
-    OUTPUT = "OUTPUT"
-    FIELD = "FIELD"
-    BINS = "BINS"
-
+    INPUT = 'INPUT'
+    OUTPUT = 'OUTPUT'
+    FIELD = 'FIELD'
+    BINS = 'BINS'
 
     def processAlgorithm(self, progress):
         uri = self.getParameterValue(self.INPUT)
-        layer = dataobjects.getObjectFromUri(uri)
+        layer = getObjectFromUri(uri)
         fieldname = self.getParameterValue(self.FIELD)
         output = self.getOutputValue(self.OUTPUT)
         values = vector.getAttributeValues(layer, fieldname)
         plt.close()
         bins = self.getParameterValue(self.BINS)
         plt.hist(values[fieldname], bins)
-        plotFilename = output +".png"
+        plotFilename = output + '.png'
         lab.savefig(plotFilename)
-        f = open(output, "w")
-        f.write("<img src=\"" + plotFilename + "\"/>")
+        f = open(output, 'w')
+        f.write('<img src="' + plotFilename + '"/>')
         f.close()
 
     def defineCharacteristics(self):
-        self.name = "Vector layer histogram"
-        self.group = "Graphics"
-        self.addParameter(ParameterVector(self.INPUT, "Input layer", [ParameterVector.VECTOR_TYPE_ANY]))
-        self.addParameter(ParameterTableField(self.FIELD, "Attribute", self.INPUT,ParameterTableField.DATA_TYPE_NUMBER))
-        self.addParameter(ParameterNumber(self.BINS, "number of bins", 2, None, 10))
-        self.addOutput(OutputHTML(self.OUTPUT, "Output"))
-
+        self.name = 'Vector layer histogram'
+        self.group = 'Graphics'
+        self.addParameter(ParameterVector(self.INPUT, 'Input layer',
+                          [ParameterVector.VECTOR_TYPE_ANY]))
+        self.addParameter(ParameterTableField(self.FIELD, 'Attribute',
+                          self.INPUT, ParameterTableField.DATA_TYPE_NUMBER))
+        self.addParameter(ParameterNumber(self.BINS, 'number of bins', 2,
+                          None, 10))
+        self.addOutput(OutputHTML(self.OUTPUT, 'Output'))

@@ -20,7 +20,9 @@
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
 from PyQt4.QtCore import *
@@ -31,21 +33,22 @@ from processing.ui.ui_DlgHistory import Ui_DlgHistory
 
 
 class HistoryDialog(QDialog, Ui_DlgHistory):
+
     def __init__(self):
         QDialog.__init__(self)
         self.setupUi(self)
 
         self.groupIcon = QIcon()
-        self.groupIcon.addPixmap(self.style().standardPixmap(QStyle.SP_DirClosedIcon),
-                QIcon.Normal, QIcon.Off)
-        self.groupIcon.addPixmap(self.style().standardPixmap(QStyle.SP_DirOpenIcon),
-                QIcon.Normal, QIcon.On)
+        self.groupIcon.addPixmap(self.style().standardPixmap(
+                QStyle.SP_DirClosedIcon), QIcon.Normal, QIcon.Off)
+        self.groupIcon.addPixmap(self.style().standardPixmap(
+                QStyle.SP_DirOpenIcon), QIcon.Normal, QIcon.On)
 
         self.keyIcon = QIcon()
         self.keyIcon.addPixmap(self.style().standardPixmap(QStyle.SP_FileIcon))
 
-        self.clearButton = QPushButton(self.tr("Clear"))
-        self.clearButton.setToolTip(self.tr("Clear history and log"))
+        self.clearButton = QPushButton(self.tr('Clear'))
+        self.clearButton.setToolTip(self.tr('Clear history and log'))
         self.buttonBox.addButton(self.clearButton, QDialogButtonBox.ActionRole)
 
         self.tree.doubleClicked.connect(self.executeAlgorithm)
@@ -66,26 +69,27 @@ class HistoryDialog(QDialog, Ui_DlgHistory):
         elements = ProcessingLog.getLogEntries()
         for category in elements.keys():
             groupItem = QTreeWidgetItem()
-            groupItem.setText(0,category)
+            groupItem.setText(0, category)
             groupItem.setIcon(0, self.groupIcon)
             for entry in elements[category]:
-                item = TreeLogEntryItem(entry, category==ProcessingLog.LOG_ALGORITHM)
+                item = TreeLogEntryItem(entry, category
+                        == ProcessingLog.LOG_ALGORITHM)
                 item.setIcon(0, self.keyIcon)
-                groupItem.insertChild(0,item)
+                groupItem.insertChild(0, item)
             self.tree.addTopLevelItem(groupItem)
 
     def executeAlgorithm(self):
         item = self.tree.currentItem()
         if isinstance(item, TreeLogEntryItem):
             if item.isAlg:
-                script = "import processing\n"
-                script+=item.entry.text.replace("runalg(","runandload(")
-                exec(script)
+                script = 'import processing\n'
+                script += item.entry.text.replace('runalg(', 'runandload(')
+                exec script
 
     def changeText(self):
         item = self.tree.currentItem()
         if isinstance(item, TreeLogEntryItem):
-                self.text.setText(item.entry.text.replace("|","\n"))
+            self.text.setText(item.entry.text.replace('|', '\n'))
 
     def createTest(self):
         item = self.tree.currentItem()
@@ -93,19 +97,21 @@ class HistoryDialog(QDialog, Ui_DlgHistory):
             if item.isAlg:
                 TestTools.createTest(item.entry.text)
 
-    def showPopupMenu(self,point):
+    def showPopupMenu(self, point):
         item = self.tree.currentItem()
         if isinstance(item, TreeLogEntryItem):
-           if item.isAlg:
+            if item.isAlg:
                 popupmenu = QMenu()
-                createTestAction = QAction(self.tr("Create test"), self.tree)
+                createTestAction = QAction(self.tr('Create test'), self.tree)
                 createTestAction.triggered.connect(self.createTest)
                 popupmenu.addAction(createTestAction)
                 popupmenu.exec_(self.tree.mapToGlobal(point))
 
+
 class TreeLogEntryItem(QTreeWidgetItem):
+
     def __init__(self, entry, isAlg):
         QTreeWidgetItem.__init__(self)
         self.entry = entry
         self.isAlg = isAlg
-        self.setText(0, "[" + entry.date + "] " + entry.text.split("|")[0])
+        self.setText(0, '[' + entry.date + '] ' + entry.text.split('|')[0])

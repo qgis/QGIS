@@ -20,15 +20,18 @@
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
 from processing.outputs.Output import Output
 
+
 class OutputFile(Output):
 
-    def getFileFilter(self,alg):
-        return "All files(*.*)"
+    def getFileFilter(self, alg):
+        return 'All files(*.*)'
 
     def getDefaultFileExtension(self, alg):
-        return "file"
+        return 'file'

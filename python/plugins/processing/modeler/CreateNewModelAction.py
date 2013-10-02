@@ -20,26 +20,28 @@
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
+
 # This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
 
-from processing.gui.ToolboxAction import ToolboxAction
-from processing.modeler.ModelerDialog import ModelerDialog
 import os
 from PyQt4 import QtGui
+from processing.gui.ToolboxAction import ToolboxAction
+from processing.modeler.ModelerDialog import ModelerDialog
+
 
 class CreateNewModelAction(ToolboxAction):
 
     def __init__(self):
-        self.name="Create new model"
-        self.group="Tools"
+        self.name = 'Create new model'
+        self.group = 'Tools'
 
     def getIcon(self):
-        return QtGui.QIcon(os.path.dirname(__file__) + "/../images/model.png")
+        return QtGui.QIcon(os.path.dirname(__file__) + '/../images/model.png')
 
     def execute(self):
         dlg = ModelerDialog()
         dlg.exec_()
         if dlg.update:
             self.toolbox.updateTree()
-
