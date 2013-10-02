@@ -13443,7 +13443,7 @@ Secondo me si (rospus ;-)</translatorcomment>
         <location filename="../src/app/qgisapp.cpp" line="4916"/>
         <location filename="../src/app/qgisapp.cpp" line="4997"/>
         <source>Composer %1</source>
-        <translation>Layout %1</translation>
+        <translation>Modello %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4959"/>
@@ -13648,7 +13648,8 @@ Errori: %2
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2144"/>
         <source>Layers</source>
-        <translation>Layer</translation>
+        <translatorcomment>Prima era &quot;Layer&quot;, inappropriato</translatorcomment>
+        <translation>Legenda</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4744"/>
@@ -16290,7 +16291,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="227"/>
         <source>Layout</source>
-        <translation>Layout</translation>
+        <translation>Modello</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="254"/>
@@ -24634,7 +24635,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="77"/>
         <source>Attribute editor layout:</source>
-        <translation>Layout dell&apos;editor degli attributi:</translation>
+        <translation>Modello dell&apos;editor degli attributi:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="17"/>
