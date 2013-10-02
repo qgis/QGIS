@@ -58,8 +58,11 @@ class QgsPostgresFeatureIterator : public QgsAbstractFeatureIterator
     //! Maximal size of the feature queue
     int mFeatureQueueSize;
 
-    //!< Number of retrieved features
+    //! Number of retrieved features
     int mFetched;
+
+    //! Set to true, if geometry is in the requested columns
+    bool mFetchGeometry;
 
     static const int sFeatureQueueSize;
 

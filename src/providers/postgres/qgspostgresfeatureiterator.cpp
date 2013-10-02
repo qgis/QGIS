@@ -149,7 +149,7 @@ bool QgsPostgresFeatureIterator::fetchFeature( QgsFeature& feature )
   }
 
   // Now return the next feature from the queue
-  if ( mRequest.flags() & QgsFeatureRequest::NoGeometry )
+  if ( !mFetchGeometry )
   {
     feature.setGeometryAndOwnership( 0, 0 );
   }
@@ -264,18 +264,13 @@ QString QgsPostgresFeatureIterator::whereClauseRect()
 
 bool QgsPostgresFeatureIterator::declareCursor( const QString& whereClause )
 {
-  bool fetchGeometry = !( mRequest.flags() & QgsFeatureRequest::NoGeometry );
-  if ( fetchGeometry && P->mGeometryColumn.isNull() )
-  {
-    QgsMessageLog::logMessage( QObject::tr( "Trying to fetch geometry on a layer without geometry." ), QObject::tr( "PostgreSQL" ) );
-    return false;
-  }
+  mFetchGeometry = !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) && !P->mGeometryColumn.isNull();
 
   try
   {
     QString query = "SELECT ", delim = "";
 
-    if ( fetchGeometry )
+    if ( mFetchGeometry )
     {
       query += QString( "%1(%2%3,'%4')" )
                .arg( P->mConnectionRO->majorVersion() < 2 ? "asbinary" : "st_asbinary" )
@@ -356,7 +351,7 @@ bool QgsPostgresFeatureIterator::getFeature( QgsPostgresResult &queryResult, int
 
     int col = 0;
 
-    if ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) )
+    if ( mFetchGeometry )
     {
       int returnedLength = ::PQgetlength( queryResult.result(), row, col );
       if ( returnedLength > 0 )

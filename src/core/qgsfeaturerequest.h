@@ -59,7 +59,7 @@ class CORE_EXPORT QgsFeatureRequest
     enum Flag
     {
       NoFlags            = 0,
-      NoGeometry         = 1,  //!< Do not fetch geometry
+      NoGeometry         = 1,  //!< Geometry is not required. It may still be returned if e.g. required for a filter condition.
       SubsetOfAttributes = 2,  //!< Fetch only a subset of attributes (setSubsetOfAttributes sets this flag)
       ExactIntersect     = 4   //!< Use exact geometry intersection (slower) instead of bounding boxes
     };
@@ -68,7 +68,7 @@ class CORE_EXPORT QgsFeatureRequest
     enum FilterType
     {
       FilterNone,       //!< No filter is applied
-      FilterRect,       //!< Filter using a rectangle
+      FilterRect,       //!< Filter using a rectangle, no need to set NoGeometry
       FilterFid,        //!< Filter using feature ID
       FilterExpression, //!< Filter using expression
       FilterFids        //!< Filter using feature ID's
@@ -117,8 +117,8 @@ class CORE_EXPORT QgsFeatureRequest
 
     //! Set a subset of attributes by names that will be fetched
     QgsFeatureRequest& setSubsetOfAttributes( const QStringList& attrNames, const QgsFields& fields );
-    
-    /** 
+
+    /**
      * Check if a feature is accepted by this requests filter
      *
      * @param feature  The feature which will be tested
