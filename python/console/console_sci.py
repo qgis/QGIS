@@ -91,7 +91,6 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
 
         # not too small
         #self.setMinimumSize(500, 300)
-        self.setMinimumHeight(20)
 
         self.setWrapMode(QsciScintilla.WrapCharacter)
         self.SendScintilla(QsciScintilla.SCI_EMPTYUNDOBUFFER)
@@ -113,6 +112,13 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         self.newShortcutCAS.activated.connect(self.autoCompleteKeyBinding)
         self.newShortcutCSS.activated.connect(self.showHistory)
 
+    def _setMinimumHeight(self):
+        fnt = self.settings.value("pythonConsole/fontfamilytext", "Monospace")
+        fntSize = self.settings.value("pythonConsole/fontsize", 10, type=int)
+        fm = QFontMetrics(QFont(fnt, fntSize))
+
+        self.setMinimumHeight(fm.height() + 10)
+
     def refreshSettingsShell(self):
         # Set Python lexer
         self.setLexers()
@@ -132,6 +138,9 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
 
         cursorColor = self.settings.value("pythonConsole/cursorColor", QColor(Qt.black))
         self.setCaretForegroundColor(cursorColor)
+
+        # Sets minimum height for input area based of font metric
+        self._setMinimumHeight()
 
     def showHistory(self):
         if not self.historyDlg.isVisible():
