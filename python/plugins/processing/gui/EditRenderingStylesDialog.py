@@ -44,7 +44,6 @@ class EditRenderingStylesDialog(QDialog, Ui_DlgRenderingStyles):
 
         self.alg = alg
 
-        self.setModal(True)
         self.tblStyles.horizontalHeader().setResizeMode(QHeaderView.Stretch)
         self.setWindowTitle(self.alg.name)
 
@@ -79,7 +78,7 @@ class EditRenderingStylesDialog(QDialog, Ui_DlgRenderingStyles):
                     self.tblStyles.setRowHeight(i, 22)
             i += 1
 
-    def accepted(self):
+    def accept(self):
         styles = {}
         for key in self.valueItems.keys():
             styles[key] = str(self.valueItems[key].getValue())
@@ -87,5 +86,5 @@ class EditRenderingStylesDialog(QDialog, Ui_DlgRenderingStyles):
 
         QDialog.accept(self)
 
-    def rejected(self):
+    def reject(self):
         QDialog.reject(self)
