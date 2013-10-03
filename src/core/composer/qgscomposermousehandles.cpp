@@ -516,11 +516,23 @@ void QgsComposerMouseHandles::dragMouseMove( const QPointF& currentPosition, boo
   //snap to grid and guides
   QPointF snappedLeftPoint = snapPoint( upperLeftPoint, QgsComposerMouseHandles::Item );
 
-  //TODO: shift moving should lock to horizontal/vertical movement
-
   //calculate total shift for item from beginning of drag operation to current position
   double moveRectX = snappedLeftPoint.x() - mBeginHandlePos.x();
   double moveRectY = snappedLeftPoint.y() - mBeginHandlePos.y();
+
+  if ( lockMovement )
+  {
+    //constrained (shift) moving should lock to horizontal/vertical movement
+    //reset the smaller of the x/y movements
+    if ( abs( moveRectX ) <= abs( moveRectY ) )
+    {
+      moveRectX = 0;
+    }
+    else
+    {
+      moveRectY = 0;
+    }
+  }
 
   //shift handle item to new position
   QTransform moveTransform;
