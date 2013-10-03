@@ -41,42 +41,58 @@ class MultipleInputDialog(QDialog, Ui_DlgMultipleSelection):
         self.selectedoptions = selectedoptions
 
         # Additional buttons
-        self.btnSelectAll = QPushButton(self.tr('(de)Select all'))
+        self.btnSelectAll = QPushButton(self.tr('Select all'))
         self.buttonBox.addButton(self.btnSelectAll,
                                  QDialogButtonBox.ActionRole)
+        self.btnClearSelection = QPushButton(self.tr('Clear selection'))
+        self.buttonBox.addButton(self.btnClearSelection,
+                                 QDialogButtonBox.ActionRole)
+        self.btnToggleSelection = QPushButton(self.tr('Toggle selection'))
+        self.buttonBox.addButton(self.btnToggleSelection,
+                                 QDialogButtonBox.ActionRole)
 
-        self.btnSelectAll.clicked.connect(self.toggleSelection)
+        self.btnSelectAll.clicked.connect(self.selectAll)
+        self.btnClearSelection.clicked.connect(self.lstLayers.clearSelection)
+        self.btnToggleSelection.clicked.connect(self.toggleSelection)
 
-        self.setTableContent()
+        self.populateList()
 
-    def setTableContent(self):
-        self.tblLayers.setRowCount(len(self.options))
-        for i in range(len(self.options)):
-            item = QCheckBox()
-            item.setText(self.options[i])
-            if i in self.selectedoptions:
-                item.setChecked(True)
-            self.tblLayers.setCellWidget(i, 0, item)
+    def populateList(self):
+        self.lstLayers.clear()
+        self.lstLayers.addItems(self.options)
+        selModel = self.lstLayers.selectionModel()
+        self.lstLayers.blockSignals(True)
+        for i in xrange(self.lstLayers.count()):
+            item = self.lstLayers.item(i)
+            if item.text() in self.selectedoptions:
+                selModel.select(self.lstLayers.indexFromItem(item),
+                                QItemSelectionModel.Select)
+        self.lstLayers.blockSignals(False)
 
     def accept(self):
         self.selectedoptions = []
-        for i in range(len(self.options)):
-            widget = self.tblLayers.cellWidget(i, 0)
-            if widget.isChecked():
-                self.selectedoptions.append(i)
+        for i in self.lstLayers.selectedItems():
+            self.selectedoptions.append(i.text())
         QDialog.accept(self)
 
     def reject(self):
         self.selectedoptions = None
         QDialog.reject(self)
 
+    def selectAll(self):
+        selModel = self.lstLayers.selectionModel()
+        self.lstLayers.blockSignals(True)
+        for i in xrange(self.lstLayers.count()):
+            item = self.lstLayers.item(i)
+            selModel.select(self.lstLayers.indexFromItem(item),
+                            QItemSelectionModel.Select)
+        self.lstLayers.blockSignals(False)
+
     def toggleSelection(self):
-        checked = False
-        for i in range(len(self.options)):
-            widget = self.tblLayers.cellWidget(i, 0)
-            if not widget.isChecked():
-                checked = True
-                break
-        for i in range(len(self.options)):
-            widget = self.tblLayers.cellWidget(i, 0)
-            widget.setChecked(checked)
+        selModel = self.lstLayers.selectionModel()
+        self.lstLayers.blockSignals(True)
+        for i in xrange(self.lstLayers.count()):
+            item = self.lstLayers.item(i)
+            selModel.select(self.lstLayers.indexFromItem(item),
+                            QItemSelectionModel.Toggle)
+        self.lstLayers.blockSignals(False)
