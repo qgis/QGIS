@@ -73,10 +73,11 @@ QgsComposition::QgsComposition( QgsMapRenderer* mapRenderer )
   setBackgroundBrush( Qt::gray );
   addPaperItem();
 
+  //add mouse selection handles to composition, and initially hide
   mSelectionHandles = new QgsComposerMouseHandles( this );
   addItem( mSelectionHandles );
-  mSelectionHandles->setRect( 30, 30, 100, 100 );
-  mSelectionHandles->setZValue( 200 );
+  mSelectionHandles->hide();
+  mSelectionHandles->setZValue( 500 );
 
   mPrintResolution = 300; //hardcoded default
   loadSettings();
