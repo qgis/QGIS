@@ -355,7 +355,7 @@ class GrassUtils:
             path = GrassUtils.grassPath()
             if path == '':
                 return 'GRASS folder is not configured.\nPlease configure \
-                        it before running SAGA algorithms.'
+                        it before running GRASS algorithms.'
             cmdpath = os.path.join(path, 'bin', 'r.out.gdal.exe')
             if not os.path.exists(cmdpath):
                 return 'The specified GRASS folder does not contain a valid \
