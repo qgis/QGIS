@@ -164,16 +164,27 @@ if( -d $unpacked ) {
 my $taropt = "v" x $verbose;
 
 unless(-d $unpacked ) {
-	mkdir $unpacked, 0755;
+	mkdir "$unpacked", 0755;
+	mkdir "$unpacked/bin", 0755;
+	mkdir "$unpacked/etc", 0755;
+	mkdir "$unpacked/etc/setup", 0755;
 
-	foreach my $p ( keys %pkgs ) {
-		$p = $file{$p};
+	# Create package database
+	open O, ">$unpacked/etc/setup/installed.db";
+	print O "INSTALLED.DB 2\n";
+
+	foreach my $pn ( keys %pkgs ) {
+		$p = $file{$pn};
 		$p =~ s#^.*/#$packages/#;
 
+		print O "$pn $p 0\n";
+
 		print "Unpacking $p...\n" if $verbose;
-		system "tar $taropt -C $unpacked -xjf $p";
+		system "tar $taropt -C $unpacked -xjvf $p | gzip -c >$unpacked/etc/setup/$pn.lst.gz";
 		die "unpacking of $p failed" if $?;
 	}
+
+	close O;
 
 	chdir $unpacked;
 
