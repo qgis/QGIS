@@ -1677,10 +1677,13 @@ bool QgsCoordinateReferenceSystem::loadIDs( QHash<int, QString> &wkts )
 
 int QgsCoordinateReferenceSystem::syncDb()
 {
+  QString dbFilePath = QgsApplication::srsDbFilePath();
+  syncDatumTransform( dbFilePath );
+
   int inserted = 0, updated = 0, deleted = 0, errors = 0;
 
   sqlite3 *database;
-  if ( sqlite3_open( QgsApplication::srsDbFilePath().toUtf8().constData(), &database ) != SQLITE_OK )
+  if ( sqlite3_open( dbFilePath.toUtf8().constData(), &database ) != SQLITE_OK )
   {
     qCritical( "Could not open database: %s [%s]\n", QgsApplication::srsDbFilePath().toLocal8Bit().constData(), sqlite3_errmsg( database ) );
     return -1;
@@ -1932,4 +1935,98 @@ int QgsCoordinateReferenceSystem::syncDb()
     return -errors;
   else
     return updated + inserted;
+}
+
+bool QgsCoordinateReferenceSystem::syncDatumTransform( const QString& dbPath )
+{
+  QString filename = CPLFindFile( "gdal", "datum_shift.csv" );
+
+  QFile f( filename );
+  if ( !f.open( QIODevice::ReadOnly ) )
+  {
+    return false;
+  }
+
+  sqlite3* db;
+  int openResult = sqlite3_open( dbPath.toUtf8().constData(), &db );
+  if ( openResult != SQLITE_OK )
+  {
+    return false;
+  }
+
+
+  QTextStream textStream( &f );
+  textStream.readLine();
+
+  QString line, coord_op, source_crs, target_crs, coord_op_method,
+  p1, p2, p3, p4, p5, p6, p7;
+
+  while ( !textStream.atEnd() )
+  {
+    line = textStream.readLine();
+    QStringList csList = line.split( "," );
+    int csSize = csList.size();
+    if ( csSize < 22 )
+    {
+      continue;
+    }
+
+    coord_op = csList[1];
+    source_crs = csList[2];
+    target_crs = csList[3];
+    coord_op_method = csList[csSize - 9];
+    p1 = csList[csSize - 8];
+    p1 = p1.isEmpty() ? "NULL" : p1;
+    p2 = csList[csSize - 7];
+    p2 = p2.isEmpty() ? "NULL" : p2;
+    p3 = csList[csSize - 6];
+    p3 = p3.isEmpty() ? "NULL" : p3;
+    p4 = csList[csSize - 5];
+    p4 = p4.isEmpty() ? "NULL" : p4;
+    p5 = csList[csSize - 4];
+    p5 = p5.isEmpty() ? "NULL" : p5;
+    p6 = csList[csSize - 3];
+    p6 = p6.isEmpty() ? "NULL" : p6;
+    p7 = csList[csSize - 2];
+    p7 = p7.isEmpty() ? "NULL" : p7;
+
+    //entry already in db?
+    sqlite3_stmt* stmt;
+    QString cOpCode;
+    QString sql = QString( "SELECT coord_op_code FROM tbl_datum_transform WHERE coord_op_code=%1" ).arg( coord_op );
+    int prepareRes = sqlite3_prepare( db, sql.toAscii(), sql.size(), &stmt, NULL );
+    if ( prepareRes != SQLITE_OK )
+    {
+      continue;
+    }
+
+    if ( sqlite3_step( stmt ) == SQLITE_ROW )
+    {
+      cOpCode = ( const char * ) sqlite3_column_text( stmt, 0 );
+    }
+    sqlite3_finalize( stmt );
+
+    if ( !cOpCode.isEmpty() )
+    {
+      //already in database, do update
+      QgsDebugMsg( "Trying datum transform update" );
+      sql = QString( "UPDATE tbl_datum_transform SET source_crs = %2, target_crs = %3, coord_op_method = %4, p1 = %5, p2 = %6, p3 = %7, p4 = %8, p5 = %9, p6 = %10, p7 = %11 WHERE coord_op = %1" )
+            .arg( coord_op ).arg( source_crs ).arg( target_crs ).arg( coord_op_method ).arg( p1 ).arg( p2 ).arg( p3 ).arg( p4 ).arg( p5 ).arg( p6 ).arg( p7 );
+    }
+    {
+      //not yet in database, do insert
+      QgsDebugMsg( "Trying datum transform insert" );
+      sql = QString( "INSERT INTO tbl_datum_transform ( coord_op_code, source_crs_code, target_crs_code, coord_op_method_code, p1, p2, p3, p4, p5, p6, p7 ) VALUES ( %1, %2, %3, %4, %5, %6, %7, %8, %9, %10, %11 )" )
+            .arg( coord_op ).arg( source_crs ).arg( target_crs ).arg( coord_op_method ).arg( p1 ).arg( p2 ).arg( p3 ).arg( p4 ).arg( p5 ).arg( p6 ).arg( p7 );
+
+    }
+
+    if ( sqlite3_exec( db, sql.toUtf8(), 0, 0, 0 ) != SQLITE_OK )
+    {
+      QgsDebugMsg( "Error" );
+    }
+  }
+
+  sqlite3_close( db );
+  return true; //soon...
 }

@@ -465,6 +465,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     static bool loadIDs( QHash<int, QString> &wkts );
     static bool loadWkts( QHash<int, QString> &wkts, const char *filename );
+    static bool syncDatumTransform( const QString& dbPath );
 
     //!Whether this is a coordinate system has inverted axis
     mutable int mAxisInverted;
