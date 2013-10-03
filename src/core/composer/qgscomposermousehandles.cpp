@@ -118,13 +118,13 @@ void QgsComposerMouseHandles::drawSelectedItemBounds( QPainter* painter )
     QRectF itemSceneBounds = ( *itemIter )->sceneBoundingRect();
     //convert scene bounds to handle item bounds
     QRectF itemBounds;
-    if ( mIsDragging )
+    if ( mIsDragging && !( *itemIter )->positionLock() )
     {
       //if currently dragging, draw selected item bounds relative to current mouse position
       itemBounds = mapRectFromScene( itemSceneBounds );
       itemBounds.translate( transform().dx(), transform().dy() );
     }
-    else if ( mIsResizing )
+    else if ( mIsResizing && !( *itemIter )->positionLock() )
     {
       //if currently resizing, calculate relative resize of this item
       itemBounds = itemSceneBounds;
@@ -402,6 +402,11 @@ void QgsComposerMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent* event
     QList<QgsComposerItem*>::iterator itemIter = selectedItems.begin();
     for ( ; itemIter != selectedItems.end(); ++itemIter )
     {
+      if (( *itemIter )->positionLock() )
+      {
+        //don't move locked items
+        continue;
+      }
       QgsComposerItemCommand* subcommand = new QgsComposerItemCommand( *itemIter, "", parentCommand );
       subcommand->savePreviousState();
       ( *itemIter )->move( mEndHandleMovePos.x() - mBeginHandlePos.x(), mEndHandleMovePos.y() - mBeginHandlePos.y() );
@@ -420,6 +425,11 @@ void QgsComposerMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent* event
     QList<QgsComposerItem*>::iterator itemIter = selectedItems.begin();
     for ( ; itemIter != selectedItems.end(); ++itemIter )
     {
+      if (( *itemIter )->positionLock() )
+      {
+        //don't resize locked items
+        continue;
+      }
       QgsComposerItemCommand* subcommand = new QgsComposerItemCommand( *itemIter, "", parentCommand );
       subcommand->savePreviousState();
       QRectF itemBounds = ( *itemIter )->sceneBoundingRect();
@@ -468,7 +478,7 @@ void QgsComposerMouseHandles::mousePressEvent( QGraphicsSceneMouseEvent* event )
   {
     mIsDragging = true;
   }
-  else if (  mCurrentMouseMoveAction != QgsComposerMouseHandles::SelectItem &&
+  else if ( mCurrentMouseMoveAction != QgsComposerMouseHandles::SelectItem &&
             mCurrentMouseMoveAction != QgsComposerMouseHandles::NoAction )
   {
     mIsResizing = true;
