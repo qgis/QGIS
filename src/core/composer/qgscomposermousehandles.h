@@ -25,7 +25,7 @@ class QgsComposerItem;
 
 /** \ingroup MapComposer
  * Handles drawing of selection outlines and mouse handles. Responsible for mouse
- * interactions such as resizing and moving selected items. 
+ * interactions such as resizing and moving selected items.
  * */
 class CORE_EXPORT QgsComposerMouseHandles: public QObject, public QGraphicsRectItem
 {
@@ -79,14 +79,14 @@ class CORE_EXPORT QgsComposerMouseHandles: public QObject, public QGraphicsRectI
     QgsComposerMouseHandles::MouseAction mouseActionForScenePos( const QPointF& sceneCoordPos );
 
   protected:
-  
+
     void mouseMoveEvent( QGraphicsSceneMouseEvent* event );
     void mouseReleaseEvent( QGraphicsSceneMouseEvent* event );
     void mousePressEvent( QGraphicsSceneMouseEvent* event );
     void hoverMoveEvent( QGraphicsSceneHoverEvent * event );
 
   public slots:
-  
+
     /**Sets up listeners to sizeChanged signal for all selected items*/
     void selectionChanged();
 
@@ -94,7 +94,7 @@ class CORE_EXPORT QgsComposerMouseHandles: public QObject, public QGraphicsRectI
     void selectedItemSizeChanged();
 
   private:
-  
+
     QgsComposition* mComposition; //reference to composition
 
     QgsComposerMouseHandles::MouseAction mCurrentMouseMoveAction;
@@ -140,9 +140,9 @@ class CORE_EXPORT QgsComposerMouseHandles: public QObject, public QGraphicsRectI
     QgsComposerMouseHandles::MouseAction mouseActionForPosition( const QPointF& itemCoordPos );
 
     /**Handles dragging of items during mouse move*/
-    void dragMouseMove( const QPointF& currentPosition );
+    void dragMouseMove( const QPointF& currentPosition, bool lockMovement );
     /**Handles resizing of items during mouse move*/
-    void resizeMouseMove( const QPointF& currentPosition );
+    void resizeMouseMove( const QPointF& currentPosition, bool lockAspect, bool fromCenter );
 
     /**Resizes a QRectF relative to the change from boundsBefore to boundsAfter*/
     void relativeResizeRect( QRectF& rectToResize, const QRectF& boundsBefore, const QRectF& boundsAfter );
@@ -163,7 +163,7 @@ class CORE_EXPORT QgsComposerMouseHandles: public QObject, public QGraphicsRectI
     QPointF alignItem( double& alignX, double& alignY, double unalignedX, double unalignedY );
     /**Snaps a point to to the grid or align rulers*/
     QPointF alignPos( const QPointF& pos, double& alignX, double& alignY );
-    
+
     //helper functions for item align
     void collectAlignCoordinates( QMap< double, const QgsComposerItem* >& alignCoordsX, QMap< double, const QgsComposerItem* >& alignCoordsY );
     bool nearestItem( const QMap< double, const QgsComposerItem* >& coords, double value, double& nearestValue ) const;
