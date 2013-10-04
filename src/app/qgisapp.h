@@ -900,6 +900,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void customize();
     //! options dialog slot
     void options();
+    //! Settings Editor dialog slot
+    void settingsEditor();
     //! Whats-this help slot
     void whatsThis();
     //! Set project properties, including map untis
