@@ -44,7 +44,6 @@
 //qgis unit test includes
 #include <qgsrenderchecker.h>
 
-
 /** \ingroup UnitTests
  * This is a unit test for the QgsRasterLayer class.
  */
@@ -70,6 +69,7 @@ class TestQgsRasterLayer: public QObject
     void buildExternalOverviews();
     void registry();
     void transparency();
+    void setRenderer();
   private:
     bool render( QString theFileName );
     bool setQml( QString theType );
@@ -84,6 +84,22 @@ class TestQgsRasterLayer: public QObject
     QgsRasterLayer * mpFloat32RasterLayer;
     QgsMapRenderer * mpMapRenderer;
     QString mReport;
+};
+
+class TestSignalReceiver : public QObject
+{
+    Q_OBJECT;
+    
+public:
+  TestSignalReceiver() : QObject( 0 ),
+                         rendererChanged( false )
+  {}
+  bool rendererChanged;
+public slots:
+  void onRendererChanged()
+  {
+    rendererChanged = true;
+  }
 };
 
 //runs before all tests
@@ -146,7 +162,6 @@ void TestQgsRasterLayer::cleanupTestCase()
     myFile.close();
     //QDesktopServices::openUrl( "file:///" + myReportFile );
   }
-
 }
 
 void TestQgsRasterLayer::isValid()
@@ -297,6 +312,7 @@ void TestQgsRasterLayer::landsatBasic()
   mpMapRenderer->setExtent( mpLandsatRasterLayer->extent() );
   QVERIFY( render( "landsat_basic" ) );
 }
+
 void TestQgsRasterLayer::landsatBasic875Qml()
 {
   //a qml that orders the rgb bands as 8,7,5
@@ -320,6 +336,7 @@ void TestQgsRasterLayer::checkDimensions()
 }
 void TestQgsRasterLayer::checkStats()
 {
+
   mReport += "<h2>Check Stats</h2>\n";
   QgsRasterBandStats myStatistics = mpRasterLayer->dataProvider()->bandStatistics( 1,
                                     QgsRasterBandStats::Min | QgsRasterBandStats::Max |
@@ -443,6 +460,7 @@ bool TestQgsRasterLayer::setQml( QString theType )
 
 void TestQgsRasterLayer::transparency()
 {
+
   QVERIFY( mpFloat32RasterLayer->isValid() );
   QgsSingleBandGrayRenderer* renderer = new QgsSingleBandGrayRenderer( mpRasterLayer->dataProvider(), 1 );
   mpFloat32RasterLayer->setRenderer( renderer );
@@ -477,6 +495,19 @@ void TestQgsRasterLayer::transparency()
 
   mpMapRenderer->setExtent( mpFloat32RasterLayer->extent() );
   QVERIFY( render( "raster_transparency" ) );
+}
+
+void TestQgsRasterLayer::setRenderer()
+{
+  TestSignalReceiver receiver;
+  QObject::connect( mpRasterLayer, SIGNAL( rendererChanged() ),
+                    &receiver, SLOT( onRendererChanged() ) );
+  QgsRasterRenderer* renderer = (QgsRasterRenderer*) mpRasterLayer->renderer()->clone();
+  QCOMPARE( receiver.rendererChanged, false );
+  mpRasterLayer->setRenderer( renderer );
+  QCOMPARE( receiver.rendererChanged, true );
+  QCOMPARE( mpRasterLayer->renderer(), renderer );
+  delete renderer;
 }
 
 QTEST_MAIN( TestQgsRasterLayer )

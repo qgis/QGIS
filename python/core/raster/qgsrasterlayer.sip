@@ -118,6 +118,9 @@ class QgsRasterLayer : QgsMapLayer
     //void setResampleFilter( QgsRasterResampleFilter* resampleFilter /Transfer/ );
     QgsRasterResampleFilter * resampleFilter() const;
 
+    QgsBrightnessContrastFilter * brightnessFilter() const;
+    QgsHueSaturationFilter * hueSaturationFilter() const;
+
     /** Get raster pipe */
     QgsRasterPipe * pipe();
 
@@ -245,6 +248,9 @@ class QgsRasterLayer : QgsMapLayer
      *   @note added in 1.7
      */
     void dataChanged();
+
+    /** Signal emitted when the symbology changes, through call to setRenderer() */
+    void rendererChanged();
 
   protected:
 

@@ -25,137 +25,117 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import *
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-from PyQt4 import QtCore, QtGui
+from qgis.core import *
+
 from processing import interface
 from processing.tools import dataobjects
 
+from processing.ui.ui_DlgNumberInput import Ui_DlgNumberInput
 
-class NumberInputDialog(QtGui.QDialog):
+
+class NumberInputDialog(QDialog, Ui_DlgNumberInput):
 
     def __init__(self):
-        QtGui.QDialog.__init__(self)
-        self.setModal(True)
-        self.setupUi()
+        QDialog.__init__(self)
+        self.setupUi(self)
+
+        if hasattr(self.leFormula, 'setPlaceholderText'):
+            self.leFormula.setPlaceholderText(
+                    self.tr('[Enter your formula here]'))
+
+        self.treeValues.doubleClicked.connect(self.addValue)
+
         self.value = None
 
-    def setupUi(self):
-        self.resize(500, 350)
-        self.buttonBox = QtGui.QDialogButtonBox()
-        self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
-        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel
-                | QtGui.QDialogButtonBox.Ok)
-        self.label = QtGui.QLabel()
-        self.label.setText('Enter expression in the text field.\nDouble click\
-            on elements in the tree to add their values to the expression.')
-        self.tree = QtGui.QTreeWidget()
-        self.tree.setHeaderHidden(True)
         self.fillTree()
-        self.formulaText = QtGui.QLineEdit()
-        if hasattr(self.formulaText, 'setPlaceholderText'):
-            self.formulaText.setPlaceholderText('[Enter your formula here]')
-        self.setWindowTitle('Enter number or expression')
-        self.verticalLayout = QtGui.QVBoxLayout()
-        self.verticalLayout.setSpacing(2)
-        self.verticalLayout.setMargin(0)
-        self.verticalLayout.addWidget(self.label)
-        self.verticalLayout.addWidget(self.tree)
-        self.verticalLayout.addWidget(self.formulaText)
-        self.verticalLayout.addWidget(self.buttonBox)
-        self.setLayout(self.verticalLayout)
-        self.tree.doubleClicked.connect(self.addValue)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL('accepted()'),
-                               self.okPressed)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL('rejected()'),
-                               self.cancelPressed)
-        QtCore.QMetaObject.connectSlotsByName(self)
 
     def fillTree(self):
-        layersItem = QtGui.QTreeWidgetItem()
-        layersItem.setText(0, 'Values from data layers extents')
-        self.tree.addTopLevelItem(layersItem)
+        layersItem = QTreeWidgetItem()
+        layersItem.setText(0, self.tr('Values from data layers extents'))
+        self.treeValues.addTopLevelItem(layersItem)
         layers = dataobjects.getAllLayers()
         for layer in layers:
-            layerItem = QtGui.QTreeWidgetItem()
+            layerItem = QTreeWidgetItem()
             layerItem.setText(0, unicode(layer.name()))
-            layerItem.addChild(TreeValueItem('Min X',
+            layerItem.addChild(TreeValueItem(self.tr('Min X'),
                                layer.extent().xMinimum()))
-            layerItem.addChild(TreeValueItem('Max X',
+            layerItem.addChild(TreeValueItem(self.tr('Max X'),
                                layer.extent().xMaximum()))
-            layerItem.addChild(TreeValueItem('Min Y',
+            layerItem.addChild(TreeValueItem(self.tr('Min Y'),
                                layer.extent().yMinimum()))
-            layerItem.addChild(TreeValueItem('Max y',
+            layerItem.addChild(TreeValueItem(self.tr('Max Y'),
                                layer.extent().yMaximum()))
             if isinstance(layer, QgsRasterLayer):
                 cellsize = (layer.extent().xMaximum()
                             - layer.extent().xMinimum()) / layer.width()
-                layerItem.addChild(TreeValueItem('Cellsize', cellsize))
+                layerItem.addChild(TreeValueItem(self.tr('Cellsize'),
+                                                 cellsize))
             layersItem.addChild(layerItem)
-        layersItem = QtGui.QTreeWidgetItem()
-        layersItem.setText(0, 'Values from raster layers statistics')
-        self.tree.addTopLevelItem(layersItem)
+
+        layersItem = QTreeWidgetItem()
+        layersItem.setText(0, self.tr('Values from raster layers statistics'))
+        self.treeValues.addTopLevelItem(layersItem)
         layers = dataobjects.getRasterLayers()
         for layer in layers:
             for i in range(layer.bandCount()):
-                if QGis.QGIS_VERSION_INT >= 10900:
-                    stats = layer.dataProvider().bandStatistics(i + 1)
-                else:
-                    stats = layer.bandStatistics(i)
-                layerItem = QtGui.QTreeWidgetItem()
+                stats = layer.dataProvider().bandStatistics(i + 1)
+                layerItem = QTreeWidgetItem()
                 layerItem.setText(0, unicode(layer.name()))
-                layerItem.addChild(TreeValueItem('Mean', stats.mean))
-                layerItem.addChild(TreeValueItem('Std. deviation',
+                layerItem.addChild(TreeValueItem(self.tr('Mean'), stats.mean))
+                layerItem.addChild(TreeValueItem(self.tr('Std. deviation'),
                                    stats.stdDev))
-                layerItem.addChild(TreeValueItem('Max value',
+                layerItem.addChild(TreeValueItem(self.tr('Max value'),
                                    stats.maximumValue))
-                layerItem.addChild(TreeValueItem('Min value',
+                layerItem.addChild(TreeValueItem(self.tr('Min value'),
                                    stats.minimumValue))
                 layersItem.addChild(layerItem)
 
-        canvasItem = QtGui.QTreeWidgetItem()
-        canvasItem.setText(0, 'Values from QGIS map canvas')
-        self.tree.addTopLevelItem(canvasItem)
+        canvasItem = QTreeWidgetItem()
+        canvasItem.setText(0, self.tr('Values from QGIS map canvas'))
+        self.treeValues.addTopLevelItem(canvasItem)
         extent = interface.iface.mapCanvas().extent()
-        extentItem = QtGui.QTreeWidgetItem()
-        extentItem.setText(0, 'Current extent')
-        extentItem.addChild(TreeValueItem('Min X', extent.xMinimum()))
-        extentItem.addChild(TreeValueItem('Max X', extent.xMaximum()))
-        extentItem.addChild(TreeValueItem('Min Y', extent.yMinimum()))
-        extentItem.addChild(TreeValueItem('Max y', extent.yMaximum()))
+        extentItem = QTreeWidgetItem()
+        extentItem.setText(0, self.tr('Current extent'))
+        extentItem.addChild(TreeValueItem(self.tr('Min X'), extent.xMinimum()))
+        extentItem.addChild(TreeValueItem(self.tr('Max X'), extent.xMaximum()))
+        extentItem.addChild(TreeValueItem(self.tr('Min Y'), extent.yMinimum()))
+        extentItem.addChild(TreeValueItem(self.tr('Max Y'), extent.yMaximum()))
         canvasItem.addChild(extentItem)
+
         extent = interface.iface.mapCanvas().fullExtent()
-        extentItem = QtGui.QTreeWidgetItem()
-        extentItem.setText(0, 'Full extent of all layers in map canvas')
-        extentItem.addChild(TreeValueItem('Min X', extent.xMinimum()))
-        extentItem.addChild(TreeValueItem('Max X', extent.xMaximum()))
-        extentItem.addChild(TreeValueItem('Min Y', extent.yMinimum()))
-        extentItem.addChild(TreeValueItem('Max y', extent.yMaximum()))
+        extentItem = QTreeWidgetItem()
+        extentItem.setText(0,
+                self.tr('Full extent of all layers in map canvas'))
+        extentItem.addChild(TreeValueItem(self.tr('Min X'), extent.xMinimum()))
+        extentItem.addChild(TreeValueItem(self.tr('Max X'), extent.xMaximum()))
+        extentItem.addChild(TreeValueItem(self.tr('Min Y'), extent.yMinimum()))
+        extentItem.addChild(TreeValueItem(self.tr('Max Y'), extent.yMaximum()))
         canvasItem.addChild(extentItem)
 
     def addValue(self):
-        item = self.tree.currentItem()
+        item = self.treeValues.currentItem()
         if isinstance(item, TreeValueItem):
-            self.formulaText.setText(str(self.formulaText.text()) + ' '
-                                     + str(item.value))
+            formula = self.leFormula.text() + ' ' + str(item.value)
+            self.leFormula.setText(formula.strip())
 
-    def okPressed(self):
+    def accept(self):
         try:
-            self.value = float(eval(str(self.formulaText.text())))
-            self.close()
+            self.value = float(eval(str(self.leFormula.text())))
+            QDialog.accept(self)
         except:
-            QMessageBox.critical(self, 'Wrong expression',
-                                 'The expression entered is not correct')
+            QMessageBox.critical(self, self.tr('Wrong expression'),
+                    self.tr('The expression entered is not correct'))
 
-    def cancelPressed(self):
+    def reject(self):
         self.value = None
-        self.close()
+        QDialog.reject(self)
 
 
-class TreeValueItem(QtGui.QTreeWidgetItem):
+class TreeValueItem(QTreeWidgetItem):
 
     def __init__(self, name, value):
         QTreeWidgetItem.__init__(self)
         self.value = value
-        self.setText(0, name + ':' + str(value))
+        self.setText(0, name + ': ' + str(value))

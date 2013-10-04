@@ -1204,6 +1204,7 @@ void QgsRasterLayer::setRenderer( QgsRasterRenderer* theRenderer )
   QgsDebugMsg( "Entered" );
   if ( !theRenderer ) { return; }
   mPipe.set( theRenderer );
+  emit rendererChanged();
 }
 
 void QgsRasterLayer::showProgress( int theValue )

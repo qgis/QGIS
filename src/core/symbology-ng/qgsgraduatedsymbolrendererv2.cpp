@@ -1095,8 +1095,9 @@ QgsLegendSymbologyList QgsGraduatedSymbolRendererV2::legendSymbologyItems( QSize
   return lst;
 }
 
-QgsLegendSymbolList QgsGraduatedSymbolRendererV2::legendSymbolItems()
+QgsLegendSymbolList QgsGraduatedSymbolRendererV2::legendSymbolItems( double scaleDenominator )
 {
+  Q_UNUSED( scaleDenominator );
   QSettings settings;
   bool showClassifiers = settings.value( "/qgis/showLegendClassifiers", false ).toBool();
 

@@ -418,6 +418,9 @@ class QgsMapLayer : QObject
      * added in 1.5 */
     void dataChanged();
 
+    /** Signal emitted when the blend mode is changed, through QgsMapLayer::setBlendMode() */
+    void blendModeChanged( const QPainter::CompositionMode blendMode );
+
   protected:
     /** Set the extent */
     virtual void setExtent( const QgsRectangle &rect );

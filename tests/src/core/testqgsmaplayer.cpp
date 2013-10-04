@@ -28,6 +28,20 @@
 #include <qgsapplication.h>
 #include <qgsproviderregistry.h>
 
+class TestSignalReceiver : public QObject
+{
+    Q_OBJECT;
+    
+public:
+  TestSignalReceiver() : QObject( 0 ), blendMode( QPainter::CompositionMode_SourceOver ) {}
+  QPainter::CompositionMode blendMode;
+public slots:
+  void onBlendModeChanged( const QPainter::CompositionMode blendMode )
+  {
+    this->blendMode = blendMode;
+  }
+};
+
 /** \ingroup UnitTests
  * This is a unit test for the QgsMapLayer class.
  */
@@ -41,6 +55,8 @@ class TestQgsMapLayer: public QObject
     void cleanup() {};// will be called after every testfunction.
 
     void isValid();
+    
+    void setBlendMode();
   private:
     QgsMapLayer * mpLayer;
 };
@@ -67,6 +83,19 @@ void TestQgsMapLayer::initTestCase()
 void TestQgsMapLayer::isValid()
 {
   QVERIFY( mpLayer->isValid() );
+}
+
+void TestQgsMapLayer::setBlendMode()
+{
+  TestSignalReceiver receiver;
+  QObject::connect( mpLayer, SIGNAL( blendModeChanged( const QPainter::CompositionMode ) ),
+                    &receiver, SLOT( onBlendModeChanged( const QPainter::CompositionMode ) ) );
+  QCOMPARE( int(receiver.blendMode), 0 );
+  mpLayer->setBlendMode( QPainter::CompositionMode_Screen );
+  // check the signal has been correctly emitted
+  QCOMPARE( receiver.blendMode, QPainter::CompositionMode_Screen );
+  // check accessor
+  QCOMPARE( mpLayer->blendMode(), QPainter::CompositionMode_Screen );
 }
 
 QTEST_MAIN( TestQgsMapLayer )

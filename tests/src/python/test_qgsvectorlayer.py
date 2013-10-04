@@ -14,9 +14,11 @@ __revision__ = '$Format:%H$'
 
 import os
 import qgis
-from PyQt4.QtCore import QVariant
+from PyQt4.QtCore import QVariant, QObject, SIGNAL
+from PyQt4.QtGui import QPainter
 
-from qgis.core import (QgsVectorLayer,
+from qgis.core import (QGis,
+                       QgsVectorLayer,
                        QgsFeature,
                        QgsFeatureRequest,
                        QgsGeometry,
@@ -24,7 +26,9 @@ from qgis.core import (QgsVectorLayer,
                        QgsField,
                        QgsFields,
                        QgsMapLayerRegistry,
-                       QgsVectorJoinInfo)
+                       QgsVectorJoinInfo,
+                       QgsSymbolV2,
+                       QgsSingleSymbolRendererV2)
 from utilities import (unitTestDataPath,
                        getQgisTestApp,
                        TestCase,
@@ -912,6 +916,58 @@ class TestQgsVectorLayer(TestCase):
         # DELETE ATTRIBUTE
 
         assert not layer.deleteAttribute(-1)
+
+    def onBlendModeChanged( self, mode ):
+        self.blendModeTest = mode
+
+    def test_setBlendMode( self ):
+        layer = createLayerWithOnePoint()
+
+        self.blendModeTest = 0
+        QObject.connect( layer, SIGNAL( "blendModeChanged( const QPainter::CompositionMode )" ),
+                         self.onBlendModeChanged )
+        layer.setBlendMode( QPainter.CompositionMode_Screen )
+
+        assert self.blendModeTest == QPainter.CompositionMode_Screen
+        assert layer.blendMode() == QPainter.CompositionMode_Screen
+
+    def test_setFeatureBlendMode( self ):
+        layer = createLayerWithOnePoint()
+
+        self.blendModeTest = 0
+        QObject.connect( layer, SIGNAL( "featureBlendModeChanged( const QPainter::CompositionMode )" ),
+                         self.onBlendModeChanged )
+        layer.setFeatureBlendMode( QPainter.CompositionMode_Screen )
+
+        assert self.blendModeTest == QPainter.CompositionMode_Screen
+        assert layer.featureBlendMode() == QPainter.CompositionMode_Screen
+
+    def onLayerTransparencyChanged( self, tr ):
+        self.transparencyTest = tr
+
+    def test_setLayerTransparency( self ):
+        layer = createLayerWithOnePoint()
+
+        self.transparencyTest = 0
+        QObject.connect( layer, SIGNAL( "layerTransparencyChanged( int )" ),
+                         self.onLayerTransparencyChanged )
+        layer.setLayerTransparency( 50 )
+        assert self.transparencyTest == 50
+        assert layer.layerTransparency() == 50
+
+    def onRendererChanged( self ):
+        self.rendererChanged = True
+    def test_setRendererV2( self ):
+        layer = createLayerWithOnePoint()
+
+        self.rendererChanged = False
+        QObject.connect( layer, SIGNAL( "rendererChanged()" ),
+                         self.onRendererChanged )
+
+        r = QgsSingleSymbolRendererV2( QgsSymbolV2.defaultSymbol( QGis.Point ) )
+        layer.setRendererV2( r )
+        assert self.rendererChanged == True
+        assert layer.rendererV2() == r
 
 # TODO:
 # - fetch rect: feat with changed geometry: 1. in rect, 2. out of rect

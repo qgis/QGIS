@@ -16,7 +16,7 @@ import os
 import unittest
 import qgis
 
-from PyQt4.QtCore import QFileInfo
+from PyQt4.QtCore import QFileInfo, QObject, SIGNAL
 from PyQt4 import QtGui
 
 from qgis.core import (QgsRaster,
@@ -215,6 +215,26 @@ class TestQgsRasterLayer(TestCase):
         myPseudoRenderer = QgsSingleBandPseudoColorRenderer(
             myRasterLayer.dataProvider(), 1,  myRasterShader)
         myRasterLayer.setRenderer(myPseudoRenderer)
+
+    def onRendererChanged( self ):
+        self.rendererChanged = True
+    def test_setRenderer( self ):
+        myPath = os.path.join(unitTestDataPath('raster'),
+                              'band1_float32_noct_epsg4326.tif')
+        myFileInfo = QFileInfo(myPath)
+        myBaseName = myFileInfo.baseName()
+        layer = QgsRasterLayer(myPath, myBaseName)
+
+        self.rendererChanged = False
+        QObject.connect( layer, SIGNAL( "rendererChanged()" ),
+                         self.onRendererChanged )
+
+        rShader = QgsRasterShader()
+        r = QgsSingleBandPseudoColorRenderer( layer.dataProvider(), 1, rShader )
+
+        layer.setRenderer( r )
+        assert self.rendererChanged == True
+        assert layer.renderer() == r
 
 if __name__ == '__main__':
     unittest.main()

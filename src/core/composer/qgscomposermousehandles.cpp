@@ -118,13 +118,13 @@ void QgsComposerMouseHandles::drawSelectedItemBounds( QPainter* painter )
     QRectF itemSceneBounds = ( *itemIter )->sceneBoundingRect();
     //convert scene bounds to handle item bounds
     QRectF itemBounds;
-    if ( mIsDragging )
+    if ( mIsDragging && !( *itemIter )->positionLock() )
     {
       //if currently dragging, draw selected item bounds relative to current mouse position
       itemBounds = mapRectFromScene( itemSceneBounds );
       itemBounds.translate( transform().dx(), transform().dy() );
     }
-    else if ( mIsResizing )
+    else if ( mIsResizing && !( *itemIter )->positionLock() )
     {
       //if currently resizing, calculate relative resize of this item
       itemBounds = itemSceneBounds;
@@ -362,15 +362,28 @@ void QgsComposerMouseHandles::hoverMoveEvent( QGraphicsSceneHoverEvent * event )
 
 void QgsComposerMouseHandles::mouseMoveEvent( QGraphicsSceneMouseEvent* event )
 {
+  bool shiftModifier = false;
+  bool controlModifier = false;
+  if ( event->modifiers() & Qt::ShiftModifier )
+  {
+    //shift key depressed
+    shiftModifier = true;
+  }
+  if ( event->modifiers() & Qt::ControlModifier )
+  {
+    //shift key depressed
+    controlModifier = true;
+  }
+
   if ( mIsDragging )
   {
     //currently dragging a selection
-    dragMouseMove( event->lastScenePos() );
+    dragMouseMove( event->lastScenePos(), shiftModifier, controlModifier );
   }
   else if ( mIsResizing )
   {
     //currently resizing a selection
-    resizeMouseMove( event->lastScenePos() );
+    resizeMouseMove( event->lastScenePos(), shiftModifier, controlModifier );
   }
 
   mLastMouseEventPos = event->lastScenePos();
@@ -402,6 +415,11 @@ void QgsComposerMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent* event
     QList<QgsComposerItem*>::iterator itemIter = selectedItems.begin();
     for ( ; itemIter != selectedItems.end(); ++itemIter )
     {
+      if (( *itemIter )->positionLock() )
+      {
+        //don't move locked items
+        continue;
+      }
       QgsComposerItemCommand* subcommand = new QgsComposerItemCommand( *itemIter, "", parentCommand );
       subcommand->savePreviousState();
       ( *itemIter )->move( mEndHandleMovePos.x() - mBeginHandlePos.x(), mEndHandleMovePos.y() - mBeginHandlePos.y() );
@@ -420,6 +438,11 @@ void QgsComposerMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent* event
     QList<QgsComposerItem*>::iterator itemIter = selectedItems.begin();
     for ( ; itemIter != selectedItems.end(); ++itemIter )
     {
+      if (( *itemIter )->positionLock() )
+      {
+        //don't resize locked items
+        continue;
+      }
       QgsComposerItemCommand* subcommand = new QgsComposerItemCommand( *itemIter, "", parentCommand );
       subcommand->savePreviousState();
       QRectF itemBounds = ( *itemIter )->sceneBoundingRect();
@@ -468,7 +491,7 @@ void QgsComposerMouseHandles::mousePressEvent( QGraphicsSceneMouseEvent* event )
   {
     mIsDragging = true;
   }
-  else if (  mCurrentMouseMoveAction != QgsComposerMouseHandles::SelectItem &&
+  else if ( mCurrentMouseMoveAction != QgsComposerMouseHandles::SelectItem &&
             mCurrentMouseMoveAction != QgsComposerMouseHandles::NoAction )
   {
     mIsResizing = true;
@@ -476,7 +499,7 @@ void QgsComposerMouseHandles::mousePressEvent( QGraphicsSceneMouseEvent* event )
 
 }
 
-void QgsComposerMouseHandles::dragMouseMove( const QPointF& currentPosition )
+void QgsComposerMouseHandles::dragMouseMove( const QPointF& currentPosition, bool lockMovement, bool preventSnap )
 {
   if ( !mComposition )
   {
@@ -490,14 +513,36 @@ void QgsComposerMouseHandles::dragMouseMove( const QPointF& currentPosition )
   //find target position before snapping (in scene coordinates)
   QPointF upperLeftPoint( mBeginHandlePos.x() + moveX, mBeginHandlePos.y() + moveY );
 
-  //snap to grid and guides
-  QPointF snappedLeftPoint = snapPoint( upperLeftPoint, QgsComposerMouseHandles::Item );
-
-  //TODO: shift moving should lock to horizontal/vertical movement
+  QPointF snappedLeftPoint;
+  if ( !preventSnap )
+  {
+    //snap to grid and guides
+    snappedLeftPoint = snapPoint( upperLeftPoint, QgsComposerMouseHandles::Item );
+  }
+  else
+  {
+    //no snapping
+    snappedLeftPoint = upperLeftPoint;
+    deleteAlignItems();
+  }
 
   //calculate total shift for item from beginning of drag operation to current position
   double moveRectX = snappedLeftPoint.x() - mBeginHandlePos.x();
   double moveRectY = snappedLeftPoint.y() - mBeginHandlePos.y();
+
+  if ( lockMovement )
+  {
+    //constrained (shift) moving should lock to horizontal/vertical movement
+    //reset the smaller of the x/y movements
+    if ( abs( moveRectX ) <= abs( moveRectY ) )
+    {
+      moveRectX = 0;
+    }
+    else
+    {
+      moveRectY = 0;
+    }
+  }
 
   //shift handle item to new position
   QTransform moveTransform;
@@ -505,7 +550,7 @@ void QgsComposerMouseHandles::dragMouseMove( const QPointF& currentPosition )
   setTransform( moveTransform );
 }
 
-void QgsComposerMouseHandles::resizeMouseMove( const QPointF& currentPosition )
+void QgsComposerMouseHandles::resizeMouseMove( const QPointF& currentPosition, bool lockRatio, bool fromCenter )
 {
 
   if ( !mComposition )
@@ -519,7 +564,11 @@ void QgsComposerMouseHandles::resizeMouseMove( const QPointF& currentPosition )
   double diffX = 0;
   double diffY = 0;
 
-  //TODO: shift-resizing should lock aspect ratio
+  double ratio = 0;
+  if ( lockRatio && mBeginHandleHeight != 0 )
+  {
+    ratio = mBeginHandleWidth / mBeginHandleHeight;
+  }
 
   //TODO: resizing eg from top handle to below bottom handle
   switch ( mCurrentMouseMoveAction )
@@ -527,47 +576,127 @@ void QgsComposerMouseHandles::resizeMouseMove( const QPointF& currentPosition )
       //vertical resize
     case QgsComposerMouseHandles::ResizeUp:
       diffY = snappedPosition.y() - mBeginHandlePos.y();
-      mx = 0; my = diffY; rx = 0; ry = -diffY;
+      if ( ratio )
+      {
+        diffX = (( mBeginHandleHeight - diffY ) * ratio ) - mBeginHandleWidth;
+        mx = -diffX / 2; my = diffY; rx = diffX; ry = -diffY;
+      }
+      else
+      {
+        mx = 0; my = diffY; rx = 0; ry = -diffY;
+      }
       break;
 
     case QgsComposerMouseHandles::ResizeDown:
       diffY = snappedPosition.y() - ( mBeginHandlePos.y() + mBeginHandleHeight );
-      mx = 0; my = 0; rx = 0; ry = diffY;
+      if ( ratio )
+      {
+        diffX = (( mBeginHandleHeight + diffY ) * ratio ) - mBeginHandleWidth;
+        mx = -diffX / 2; my = 0; rx = diffX; ry = diffY;
+      }
+      else
+      {
+        mx = 0; my = 0; rx = 0; ry = diffY;
+      }
       break;
 
       //horizontal resize
     case QgsComposerMouseHandles::ResizeLeft:
       diffX = snappedPosition.x() - mBeginHandlePos.x();
-      mx = diffX, my = 0; rx = -diffX; ry = 0;
+      if ( ratio )
+      {
+        diffY = (( mBeginHandleWidth - diffX ) / ratio ) - mBeginHandleHeight;
+        mx = diffX; my = -diffY / 2; rx = -diffX; ry = diffY;
+      }
+      else
+      {
+        mx = diffX, my = 0; rx = -diffX; ry = 0;
+      }
       break;
 
     case QgsComposerMouseHandles::ResizeRight:
       diffX = snappedPosition.x() - ( mBeginHandlePos.x() + mBeginHandleWidth );
-      mx = 0; my = 0; rx = diffX, ry = 0;
+      if ( ratio )
+      {
+        diffY = (( mBeginHandleWidth + diffX ) / ratio ) - mBeginHandleHeight;
+        mx = 0; my = -diffY / 2; rx = diffX; ry = diffY;
+      }
+      else
+      {
+        mx = 0; my = 0; rx = diffX, ry = 0;
+      }
       break;
 
       //diagonal resize
     case QgsComposerMouseHandles::ResizeLeftUp:
       diffX = snappedPosition.x() - mBeginHandlePos.x();
       diffY = snappedPosition.y() - mBeginHandlePos.y();
+      if ( ratio )
+      {
+        //ratio locked resize
+        if (( mBeginHandleWidth - diffX ) / ( mBeginHandleHeight - diffY ) > ratio )
+        {
+          diffX = mBeginHandleWidth - (( mBeginHandleHeight - diffY ) * ratio );
+        }
+        else
+        {
+          diffY = mBeginHandleHeight - (( mBeginHandleWidth - diffX ) / ratio );
+        }
+      }
       mx = diffX, my = diffY; rx = -diffX; ry = -diffY;
       break;
 
     case QgsComposerMouseHandles::ResizeRightDown:
       diffX = snappedPosition.x() - ( mBeginHandlePos.x() + mBeginHandleWidth );
       diffY = snappedPosition.y() - ( mBeginHandlePos.y() + mBeginHandleHeight );
+      if ( ratio )
+      {
+        //ratio locked resize
+        if (( mBeginHandleWidth + diffX ) / ( mBeginHandleHeight + diffY ) > ratio )
+        {
+          diffX = (( mBeginHandleHeight + diffY ) * ratio ) - mBeginHandleWidth;
+        }
+        else
+        {
+          diffY = (( mBeginHandleWidth + diffX ) / ratio ) - mBeginHandleHeight;
+        }
+      }
       mx = 0; my = 0; rx = diffX, ry = diffY;
       break;
 
     case QgsComposerMouseHandles::ResizeRightUp:
       diffX = snappedPosition.x() - ( mBeginHandlePos.x() + mBeginHandleWidth );
       diffY = snappedPosition.y() - mBeginHandlePos.y();
+      if ( ratio )
+      {
+        //ratio locked resize
+        if (( mBeginHandleWidth + diffX ) / ( mBeginHandleHeight - diffY ) > ratio )
+        {
+          diffX = (( mBeginHandleHeight - diffY ) * ratio ) - mBeginHandleWidth;
+        }
+        else
+        {
+          diffY = mBeginHandleHeight - (( mBeginHandleWidth + diffX ) / ratio );
+        }
+      }
       mx = 0; my = diffY, rx = diffX, ry = -diffY;
       break;
 
     case QgsComposerMouseHandles::ResizeLeftDown:
       diffX = snappedPosition.x() - mBeginHandlePos.x();
       diffY = snappedPosition.y() - ( mBeginHandlePos.y() + mBeginHandleHeight );
+      if ( ratio )
+      {
+        //ratio locked resize
+        if (( mBeginHandleWidth - diffX ) / ( mBeginHandleHeight + diffY ) > ratio )
+        {
+          diffX = mBeginHandleWidth - (( mBeginHandleHeight + diffY ) * ratio );
+        }
+        else
+        {
+          diffY = (( mBeginHandleWidth - diffX ) / ratio ) - mBeginHandleHeight;
+        }
+      }
       mx = diffX, my = 0; rx = -diffX; ry = diffY;
       break;
 
@@ -575,6 +704,15 @@ void QgsComposerMouseHandles::resizeMouseMove( const QPointF& currentPosition )
     case QgsComposerMouseHandles::SelectItem:
     case QgsComposerMouseHandles::NoAction:
       break;
+  }
+
+  //resizing from center of objects?
+  if ( fromCenter )
+  {
+    my = -ry;
+    mx = -rx;
+    ry = 2 * ry;
+    rx = 2 * rx;
   }
 
   //update selection handle rectangle
