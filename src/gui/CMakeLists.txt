@@ -38,15 +38,17 @@ symbology-ng/qgssvgselectorwidget.cpp
 symbology-ng/qgslayerpropertieswidget.cpp
 symbology-ng/qgssmartgroupeditordialog.cpp
 
+attributetable/qgsattributetabledelegate.cpp
+attributetable/qgsattributetablefiltermodel.cpp
 attributetable/qgsattributetablemodel.cpp
 attributetable/qgsattributetableview.cpp
-attributetable/qgsattributetablefiltermodel.cpp
-attributetable/qgsattributetabledelegate.cpp
-attributetable/qgsfeaturelistview.cpp
+attributetable/qgsdualview.cpp
 attributetable/qgsfeaturelistmodel.cpp
+attributetable/qgsfeaturelistview.cpp
 attributetable/qgsfeaturelistviewdelegate.cpp
 attributetable/qgsfeatureselectionmodel.cpp
-attributetable/qgsdualview.cpp
+attributetable/qgsgenericfeatureselectionmanager.cpp
+attributetable/qgsvectorlayerselectionmanager.cpp
 
 editorwidgets/core/qgseditorconfigwidget.cpp
 editorwidgets/core/qgseditorwidgetfactory.cpp
@@ -173,15 +175,18 @@ symbology-ng/qgssvgselectorwidget.h
 symbology-ng/qgslayerpropertieswidget.h
 symbology-ng/qgssmartgroupeditordialog.h
 
-attributetable/qgsattributetableview.h
-attributetable/qgsattributetablemodel.h
-attributetable/qgsattributetablefiltermodel.h
 attributetable/qgsattributetabledelegate.h
-attributetable/qgsfeaturelistview.h
-attributetable/qgsfeaturelistmodel.h
-attributetable/qgsfeatureselectionmodel.h
-attributetable/qgsfeaturelistviewdelegate.h
+attributetable/qgsattributetablefiltermodel.h
+attributetable/qgsattributetablemodel.h
+attributetable/qgsattributetableview.h
 attributetable/qgsdualview.h
+attributetable/qgsfeaturelistmodel.h
+attributetable/qgsfeaturelistview.h
+attributetable/qgsfeaturelistviewdelegate.h
+attributetable/qgsfeatureselectionmodel.h
+attributetable/qgsgenericfeatureselectionmanager.h
+attributetable/qgsifeatureselectionmanager.h
+attributetable/qgsvectorlayerselectionmanager.h
 
 editorwidgets/core/qgseditorconfigwidget.h
 editorwidgets/core/qgseditorwidgetregistry.h
@@ -296,16 +301,19 @@ qgssvgannotationitem.h
 qgscomposerruler.h
 qgsdetaileditemdata.h
 
+attributetable/qgsattributetabledelegate.h
+attributetable/qgsattributetablefiltermodel.h
 attributetable/qgsattributetablemodel.h
 attributetable/qgsattributetableview.h
-attributetable/qgsattributetablefiltermodel.h
-attributetable/qgsattributetabledelegate.h
-attributetable/qgsfeaturelistview.h
-attributetable/qgsfeaturemodel.h
-attributetable/qgsfeaturelistmodel.h
-attributetable/qgsfeaturelistviewdelegate.h
-attributetable/qgsfeatureselectionmodel.h
 attributetable/qgsdualview.h
+attributetable/qgsfeaturelistmodel.h
+attributetable/qgsfeaturelistview.h
+attributetable/qgsfeaturelistviewdelegate.h
+attributetable/qgsfeaturemodel.h
+attributetable/qgsfeatureselectionmodel.h
+attributetable/qgsgenericfeatureselectionmanager.h
+attributetable/qgsifeatureselectionmanager.h
+attributetable/qgsvectorlayerselectionmanager.h
 
 editorwidgets/core/qgseditorconfigwidget.h
 editorwidgets/core/qgseditorwidgetfactory.h

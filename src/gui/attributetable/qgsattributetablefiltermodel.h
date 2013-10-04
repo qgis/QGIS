@@ -167,7 +167,6 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
     QgsMapCanvas* mCanvas;
     FilterMode mFilterMode;
     bool mSelectedOnTop;
-    QItemSelectionModel* mMasterSelection;
     QgsAttributeTableModel* mTableModel;
 };
 

@@ -24,6 +24,7 @@
 #include "qgsattributetablefiltermodel.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayercache.h"
+#include "qgsvectorlayerselectionmanager.h"
 #include "qgsvectordataprovider.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
@@ -34,6 +35,7 @@ QgsAttributeTableView::QgsAttributeTableView( QWidget *parent )
     , mMasterModel( NULL )
     , mFilterModel( NULL )
     , mFeatureSelectionModel( NULL )
+    , mFeatureSelectionManager( NULL )
     , mActionPopup( NULL )
 {
   QSettings settings;
@@ -62,7 +64,7 @@ QgsAttributeTableView::~QgsAttributeTableView()
     delete mActionPopup;
   }
 }
-
+#if 0
 void QgsAttributeTableView::setCanvasAndLayerCache( QgsMapCanvas *canvas, QgsVectorLayerCache *layerCache )
 {
   QgsAttributeTableModel* oldModel = mMasterModel;
@@ -77,7 +79,7 @@ void QgsAttributeTableView::setCanvasAndLayerCache( QgsMapCanvas *canvas, QgsVec
   mFilterModel = new QgsAttributeTableFilterModel( canvas, mMasterModel, mMasterModel );
   setModel( mFilterModel );
   delete mFeatureSelectionModel;
-  mFeatureSelectionModel = new QgsFeatureSelectionModel( mFilterModel, mFilterModel, layerCache->layer(), mFilterModel );
+  mFeatureSelectionModel = new QgsFeatureSelectionModel( mFilterModel, mFilterModel, new QgsVectorLayerSelectionManager( layerCache->layer(), mFilterModel ), mFilterModel );
   connect( mFeatureSelectionModel, SIGNAL( requestRepaint( QModelIndexList ) ), this, SLOT( repaintRequested( QModelIndexList ) ) );
   connect( mFeatureSelectionModel, SIGNAL( requestRepaint() ), this, SLOT( repaintRequested() ) );
   setSelectionModel( mFeatureSelectionModel );
@@ -85,7 +87,7 @@ void QgsAttributeTableView::setCanvasAndLayerCache( QgsMapCanvas *canvas, QgsVec
   delete oldModel;
   delete filterModel;
 }
-
+#endif
 bool QgsAttributeTableView::eventFilter( QObject *object, QEvent *event )
 {
   if ( object == verticalHeader()->viewport() )
@@ -124,12 +126,28 @@ void QgsAttributeTableView::setModel( QgsAttributeTableFilterModel* filterModel 
 
   if ( filterModel )
   {
-    mFeatureSelectionModel = new QgsFeatureSelectionModel( mFilterModel, mFilterModel, mFilterModel->layer(), mFilterModel );
+    if ( !mFeatureSelectionManager )
+    {
+      mFeatureSelectionManager = new QgsVectorLayerSelectionManager( mFilterModel->layer(), mFilterModel );
+    }
+
+    mFeatureSelectionModel = new QgsFeatureSelectionModel( mFilterModel, mFilterModel, mFeatureSelectionManager, mFilterModel );
     setSelectionModel( mFeatureSelectionModel );
     mTableDelegate->setFeatureSelectionModel( mFeatureSelectionModel );
     connect( mFeatureSelectionModel, SIGNAL( requestRepaint( QModelIndexList ) ), this, SLOT( repaintRequested( QModelIndexList ) ) );
     connect( mFeatureSelectionModel, SIGNAL( requestRepaint() ), this, SLOT( repaintRequested() ) );
   }
+}
+
+void QgsAttributeTableView::setFeatureSelectionManager( QgsIFeatureSelectionManager* featureSelectionManager )
+{
+  if ( mFeatureSelectionManager )
+    delete mFeatureSelectionManager;
+
+  mFeatureSelectionManager = featureSelectionManager;
+
+  if ( mFeatureSelectionModel )
+    mFeatureSelectionModel->setFeatureSelectionManager( mFeatureSelectionManager );
 }
 
 void QgsAttributeTableView::closeEvent( QCloseEvent *e )

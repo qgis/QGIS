@@ -7,12 +7,13 @@
 
 class QgsVectorLayer;
 class QgsFeatureModel;
+class QgsIFeatureSelectionManager;
 
 class GUI_EXPORT QgsFeatureSelectionModel : public QItemSelectionModel
 {
     Q_OBJECT
   public:
-    explicit QgsFeatureSelectionModel( QAbstractItemModel* model, QgsFeatureModel* featureModel, QgsVectorLayer* layer, QObject* parent );
+    explicit QgsFeatureSelectionModel( QAbstractItemModel* model, QgsFeatureModel* featureModel, QgsIFeatureSelectionManager* featureSelectionHandler, QObject* parent );
 
     /**
      * Enables or disables synchronisation to the {@link QgsVectorLayer}
@@ -81,6 +82,8 @@ class GUI_EXPORT QgsFeatureSelectionModel : public QItemSelectionModel
      */
     virtual void selectFeatures( const QItemSelection &selection, SelectionFlags command );
 
+    virtual void setFeatureSelectionManager( QgsIFeatureSelectionManager* featureSelectionManager );
+
   private slots:
     virtual void layerSelectionChanged( QgsFeatureIds selected, QgsFeatureIds deselected, bool clearAndSelect );
 
@@ -89,10 +92,19 @@ class GUI_EXPORT QgsFeatureSelectionModel : public QItemSelectionModel
 
   private:
     QgsFeatureModel* mFeatureModel;
-    QgsVectorLayer* mLayer;
+    QgsIFeatureSelectionManager* mFeatureSelectionManager;
     bool mSyncEnabled;
+
+    //! If sync is disabled
+    //! Holds a list of newly selected features which will be synced when re-enabled
     QgsFeatureIds mSelectedBuffer;
+
+    //! If sync is disabled
+    //! Holds a list of newly deselected features which will be synced when re-enabled
     QgsFeatureIds mDeselectedBuffer;
+
+    //! If sync is disabled
+    //! Is set to true, if a clear and select operation should be performed before syncing
     bool mClearAndSelectBuffer;
 };
 

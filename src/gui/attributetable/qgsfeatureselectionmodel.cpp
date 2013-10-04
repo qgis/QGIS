@@ -1,17 +1,17 @@
 #include "qgsattributetablemodel.h"
 #include "qgsfeaturemodel.h"
+#include "qgsifeatureselectionmanager.h"
 #include "qgsfeatureselectionmodel.h"
 #include "qgsvectorlayer.h"
 #include <qdebug.h>
 
-QgsFeatureSelectionModel::QgsFeatureSelectionModel( QAbstractItemModel* model, QgsFeatureModel* featureModel, QgsVectorLayer* layer, QObject* parent )
+QgsFeatureSelectionModel::QgsFeatureSelectionModel( QAbstractItemModel* model, QgsFeatureModel* featureModel, QgsIFeatureSelectionManager* featureSelectionManager, QObject* parent )
     : QItemSelectionModel( model, parent )
     , mFeatureModel( featureModel )
-    , mLayer( layer )
     , mSyncEnabled( true )
     , mClearAndSelectBuffer( false )
 {
-  connect( mLayer, SIGNAL( selectionChanged( QgsFeatureIds, QgsFeatureIds, bool ) ), this, SLOT( layerSelectionChanged( QgsFeatureIds, QgsFeatureIds, bool ) ) );
+  setFeatureSelectionManager( featureSelectionManager );
 }
 
 void QgsFeatureSelectionModel::enableSync( bool enable )
@@ -22,12 +22,12 @@ void QgsFeatureSelectionModel::enableSync( bool enable )
   {
     if ( mClearAndSelectBuffer )
     {
-      mLayer->setSelectedFeatures( mSelectedBuffer );
+      mFeatureSelectionManager->setSelectedFeatures( mSelectedBuffer );
     }
     else
     {
-      mLayer->select( mSelectedBuffer );
-      mLayer->deselect( mDeselectedBuffer );
+      mFeatureSelectionManager->select( mSelectedBuffer );
+      mFeatureSelectionManager->deselect( mDeselectedBuffer );
     }
 
     mSelectedBuffer.clear();
@@ -44,7 +44,7 @@ bool QgsFeatureSelectionModel::isSelected( QgsFeatureId fid )
   if ( mDeselectedBuffer.contains( fid ) )
     return false;
 
-  if ( !mClearAndSelectBuffer && mLayer->selectedFeaturesIds().contains( fid ) )
+  if ( !mClearAndSelectBuffer && mFeatureSelectionManager->selectedFeaturesIds().contains( fid ) )
     return true;
 
   return false;
@@ -66,7 +66,7 @@ void QgsFeatureSelectionModel::selectFeatures( const QItemSelection &selection, 
     ids << id;
   }
 
-  disconnect( mLayer, SIGNAL( selectionChanged( QgsFeatureIds, QgsFeatureIds, bool ) ), this, SLOT( layerSelectionChanged( QgsFeatureIds, QgsFeatureIds, bool ) ) );
+  disconnect( mFeatureSelectionManager, SIGNAL( selectionChanged( QgsFeatureIds, QgsFeatureIds, bool ) ), this, SLOT( layerSelectionChanged( QgsFeatureIds, QgsFeatureIds, bool ) ) );
 
   if ( command.testFlag( QItemSelectionModel::ClearAndSelect ) )
   {
@@ -83,7 +83,7 @@ void QgsFeatureSelectionModel::selectFeatures( const QItemSelection &selection, 
     }
     else
     {
-      mLayer->setSelectedFeatures( ids );
+      mFeatureSelectionManager->setSelectedFeatures( ids );
     }
   }
   else if ( command.testFlag( QItemSelectionModel::Select ) )
@@ -100,7 +100,7 @@ void QgsFeatureSelectionModel::selectFeatures( const QItemSelection &selection, 
     }
     else
     {
-      mLayer->select( ids );
+      mFeatureSelectionManager->select( ids );
     }
   }
   else if ( command.testFlag( QItemSelectionModel::Deselect ) )
@@ -117,11 +117,11 @@ void QgsFeatureSelectionModel::selectFeatures( const QItemSelection &selection, 
     }
     else
     {
-      mLayer->deselect( ids );
+      mFeatureSelectionManager->deselect( ids );
     }
   }
 
-  connect( mLayer, SIGNAL( selectionChanged( QgsFeatureIds, QgsFeatureIds, bool ) ), this, SLOT( layerSelectionChanged( QgsFeatureIds, QgsFeatureIds, bool ) ) );
+  connect( mFeatureSelectionManager, SIGNAL( selectionChanged( QgsFeatureIds, QgsFeatureIds, bool ) ), this, SLOT( layerSelectionChanged( QgsFeatureIds, QgsFeatureIds, bool ) ) );
 
   QModelIndexList updatedIndexes;
   foreach ( QModelIndex idx, selection.indexes() )
@@ -130,6 +130,13 @@ void QgsFeatureSelectionModel::selectFeatures( const QItemSelection &selection, 
   }
 
   emit requestRepaint( updatedIndexes );
+}
+
+void QgsFeatureSelectionModel::setFeatureSelectionManager( QgsIFeatureSelectionManager* featureSelectionManager )
+{
+  mFeatureSelectionManager = featureSelectionManager;
+
+  connect( mFeatureSelectionManager, SIGNAL( selectionChanged( QgsFeatureIds, QgsFeatureIds, bool ) ), this, SLOT( layerSelectionChanged( QgsFeatureIds, QgsFeatureIds, bool ) ) );
 }
 
 void QgsFeatureSelectionModel::layerSelectionChanged( QgsFeatureIds selected, QgsFeatureIds deselected, bool clearAndSelect )

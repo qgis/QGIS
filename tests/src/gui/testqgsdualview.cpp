@@ -71,7 +71,7 @@ void TestQgsDualView::cleanupTestCase()
 void TestQgsDualView::init()
 {
   mDualView = new QgsDualView();
-  mDualView->init( mPointsLayer, mCanvas, QgsDistanceArea() );
+  mDualView->init( mPointsLayer, mCanvas );
 }
 
 void TestQgsDualView::cleanup()

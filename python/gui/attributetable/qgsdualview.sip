@@ -32,16 +32,6 @@ class QgsDualView : QStackedWidget
     virtual ~QgsDualView();
 
     /**
-     * Has to be called to initialize the dual view.
-     *
-     * @param layer      The layer which should be used to fetch features
-     * @param mapCanvas  The mapCanvas (used for the FilterMode
-     *                   {@link QgsAttributeTableFilterModel::ShowVisible}
-     * @param myDa       Used for attribute dialog creation
-     */
-    void init( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, QgsDistanceArea myDa );
-
-    /**
      * Change the current view mode.
      *
      * @param view The view mode to set

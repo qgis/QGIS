@@ -90,6 +90,7 @@
 %Include attributetable/qgsfeaturelistviewdelegate.sip
 %Include attributetable/qgsfeaturemodel.sip
 %Include attributetable/qgsfeatureselectionmodel.sip
+%Include attributetable/qgsifeatureselectionmanager.sip
 
 %Include raster/qgsmultibandcolorrendererwidget.sip
 %Include raster/qgspalettedrendererwidget.sip

@@ -13,17 +13,19 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsdualview.h"
-#include "qgsmapcanvas.h"
-#include "qgsvectorlayercache.h"
-#include "qgsattributetablemodel.h"
-#include "qgsfeaturelistmodel.h"
-#include "qgsattributedialog.h"
 #include "qgsapplication.h"
-#include "qgsexpressionbuilderdialog.h"
 #include "qgsattributeaction.h"
 #include "qgsvectordataprovider.h"
 #include "qgsmessagelog.h"
+#include "qgsattributedialog.h"
+#include "qgsattributetablemodel.h"
+#include "qgsdualview.h"
+#include "qgsexpressionbuilderdialog.h"
+#include "qgsfeaturelistmodel.h"
+#include "qgsifeatureselectionmanager.h"
+#include "qgsmapcanvas.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayercache.h"
 
 #include <QDialog>
 #include <QMenu>
@@ -32,8 +34,11 @@
 
 QgsDualView::QgsDualView( QWidget* parent )
     : QStackedWidget( parent )
+    , mEditorContext()
+    , mMasterModel( NULL )
     , mAttributeDialog( NULL )
     , mProgressDlg( NULL )
+    , mFeatureSelectionManager( NULL )
 {
   setupUi( this );
 
@@ -57,9 +62,9 @@ QgsDualView::~QgsDualView()
   delete mAttributeDialog;
 }
 
-void QgsDualView::init( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, QgsDistanceArea myDa, const QgsFeatureRequest &request )
+void QgsDualView::init( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, const QgsFeatureRequest &request, QgsAttributeEditorContext context )
 {
-  mDistanceArea = myDa;
+  mEditorContext = context;
 
   connect( mTableView, SIGNAL( willShowContextMenu( QMenu*, QModelIndex ) ), this, SLOT( viewWillShowContextMenu( QMenu*, QModelIndex ) ) );
 
@@ -69,7 +74,7 @@ void QgsDualView::init( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, QgsDista
   mTableView->setModel( mFilterModel );
   mFeatureList->setModel( mFeatureListModel );
 
-  mAttributeDialog = new QgsAttributeDialog( layer, 0, false, myDa );
+  mAttributeDialog = new QgsAttributeDialog( layer, NULL, false, NULL, true, mEditorContext );
   if ( mAttributeDialog->dialog() )
     mAttributeEditorLayout->addWidget( mAttributeDialog->dialog() );
 
@@ -264,7 +269,7 @@ void QgsDualView::on_mFeatureList_currentEditSelectionChanged( const QgsFeature 
     mAttributeEditorLayout->removeWidget( mAttributeDialog->dialog() );
   }
 
-  mAttributeDialog = new QgsAttributeDialog( mLayerCache->layer(), new QgsFeature( feat ), true, mDistanceArea, this, false );
+  mAttributeDialog = new QgsAttributeDialog( mLayerCache->layer(), new QgsFeature( feat ), true, this, false, mEditorContext );
   mAttributeEditorLayout->addWidget( mAttributeDialog->dialog() );
   mAttributeDialog->dialog()->setVisible( true );
 
@@ -419,7 +424,7 @@ void QgsDualView::attributeDeleted( int attribute )
 
     mAttributeEditorLayout->removeWidget( mAttributeDialog->dialog() );
 
-    mAttributeDialog = new QgsAttributeDialog( mLayerCache->layer(), new QgsFeature( *feat ), true, mDistanceArea, this, false );
+    mAttributeDialog = new QgsAttributeDialog( mLayerCache->layer(), new QgsFeature( *feat ), true, this, false );
     mAttributeEditorLayout->addWidget( mAttributeDialog->dialog() );
 
     delete oldDialog;
@@ -459,7 +464,7 @@ void QgsDualView::attributeAdded( int attribute )
 
     mAttributeEditorLayout->removeWidget( mAttributeDialog->dialog() );
 
-    mAttributeDialog = new QgsAttributeDialog( mLayerCache->layer(), new QgsFeature( *feat ), true, mDistanceArea, this, false );
+    mAttributeDialog = new QgsAttributeDialog( mLayerCache->layer(), new QgsFeature( *feat ), true, this, false );
     mAttributeEditorLayout->addWidget( mAttributeDialog->dialog() );
 
     delete oldDialog;
@@ -503,7 +508,7 @@ void QgsDualView::reloadAttribute( const int& idx )
 
     mAttributeEditorLayout->removeWidget( mAttributeDialog->dialog() );
 
-    mAttributeDialog = new QgsAttributeDialog( mLayerCache->layer(), new QgsFeature( *feat ), true, mDistanceArea, this, false );
+    mAttributeDialog = new QgsAttributeDialog( mLayerCache->layer(), new QgsFeature( *feat ), true, this, false );
     mAttributeEditorLayout->addWidget( mAttributeDialog->dialog() );
 
     delete oldDialog;
@@ -518,6 +523,17 @@ void QgsDualView::setFilteredFeatures( QgsFeatureIds filteredFeatures )
 void QgsDualView::setRequest( const QgsFeatureRequest& request )
 {
   mMasterModel->setRequest( request );
+}
+
+void QgsDualView::setFeatureSelectionManager( QgsIFeatureSelectionManager* featureSelectionManager )
+{
+  mTableView->setFeatureSelectionManager( featureSelectionManager );
+  // mFeatureList->setFeatureSelectionManager( featureSelectionManager );
+
+  if ( mFeatureSelectionManager && mFeatureSelectionManager->parent() == this )
+    delete mFeatureSelectionManager;
+
+  mFeatureSelectionManager = featureSelectionManager;
 }
 
 void QgsDualView::progress( int i, bool& cancel )

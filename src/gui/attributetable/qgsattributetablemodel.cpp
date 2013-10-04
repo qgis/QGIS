@@ -50,11 +50,11 @@ QgsAttributeTableModel::QgsAttributeTableModel( QgsVectorLayerCache *layerCache,
 
   loadAttributes();
 
-  connect( layer(), SIGNAL( attributeValueChanged( QgsFeatureId, int, const QVariant& ) ), this, SLOT( attributeValueChanged( QgsFeatureId, int, const QVariant& ) ) );
-  connect( layer(), SIGNAL( featureAdded( QgsFeatureId ) ), this, SLOT( featureAdded( QgsFeatureId ) ) );
+  connect( mLayerCache, SIGNAL( attributeValueChanged( QgsFeatureId, int, const QVariant& ) ), this, SLOT( attributeValueChanged( QgsFeatureId, int, const QVariant& ) ) );
   connect( layer(), SIGNAL( featureDeleted( QgsFeatureId ) ), this, SLOT( featureDeleted( QgsFeatureId ) ) );
   connect( layer(), SIGNAL( attributeDeleted( int ) ), this, SLOT( attributeDeleted( int ) ) );
   connect( layer(), SIGNAL( updatedFields() ), this, SLOT( updatedFields() ) );
+  connect( mLayerCache, SIGNAL( featureAdded( QgsFeatureId ) ), this, SLOT( featureAdded( QgsFeatureId ) ) );
   connect( mLayerCache, SIGNAL( cachedLayerDeleted() ), this, SLOT( layerDeleted() ) );
 }
 
@@ -77,13 +77,17 @@ bool QgsAttributeTableModel::loadFeatureAtId( QgsFeatureId fid ) const
 
 void QgsAttributeTableModel::featureDeleted( QgsFeatureId fid )
 {
-  prefetchColumnData( -1 ); // Invalidate cached column data
+  QgsDebugMsg( QString( "(%2) fid: %1" ).arg( fid ).arg( mFeatureRequest.filterType() ) );
+  mFieldCache.remove( fid );
 
   int row = idToRow( fid );
 
-  beginRemoveRows( QModelIndex(), row, row );
-  removeRow( row );
-  endRemoveRows();
+  if ( row != -1 )
+  {
+    beginRemoveRows( QModelIndex(), row, row );
+    removeRow( row );
+    endRemoveRows();
+  }
 }
 
 bool QgsAttributeTableModel::removeRows( int row, int count, const QModelIndex &parent )
@@ -126,20 +130,23 @@ bool QgsAttributeTableModel::removeRows( int row, int count, const QModelIndex &
   return true;
 }
 
-void QgsAttributeTableModel::featureAdded( QgsFeatureId fid, bool newOperation )
+void QgsAttributeTableModel::featureAdded( QgsFeatureId fid )
 {
-  prefetchColumnData( -1 ); // Invalidate cached column data
-  int n = mRowIdMap.size();
-  if ( newOperation )
+  QgsDebugMsg( QString( "(%2) fid: %1" ).arg( fid ).arg( mFeatureRequest.filterType() ) );
+  if ( loadFeatureAtId( fid ) && mFeatureRequest.acceptFeature( mFeat ) )
+  {
+    mFieldCache[ fid ] = mFeat.attribute( mCachedField );
+
+    int n = mRowIdMap.size();
     beginInsertRows( QModelIndex(), n, n );
 
-  mIdRowMap.insert( fid, n );
-  mRowIdMap.insert( n, fid );
+    mIdRowMap.insert( fid, n );
+    mRowIdMap.insert( n, fid );
 
-  if ( newOperation )
     endInsertRows();
 
-  reload( index( rowCount() - 1, 0 ), index( rowCount() - 1, columnCount() ) );
+    reload( index( rowCount() - 1, 0 ), index( rowCount() - 1, columnCount() ) );
+  }
 }
 
 void QgsAttributeTableModel::updatedFields()
@@ -176,14 +183,33 @@ void QgsAttributeTableModel::layerDeleted()
 
 void QgsAttributeTableModel::attributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value )
 {
-  if ( mCachedField == idx )
-    mFieldCache[ fid ] = value;
-
-  if ( fid == mFeat.id() )
+  QgsDebugMsg( QString( "(%4) fid: %1, idx: %2, value: %3" ).arg( fid ).arg( idx ).arg( value.toString() ).arg( mFeatureRequest.filterType() ) );
+  if ( loadFeatureAtId( fid ) )
   {
-    mFeat.setValid( false );
+    if ( mFeatureRequest.acceptFeature( mFeat ) )
+    {
+      if ( !mIdRowMap.contains( fid ) )
+      {
+        // Feature changed in such a way, it will be shown now
+        featureAdded( fid );
+      }
+      else
+      {
+        mFieldCache[ fid ] = value;
+        // Update representation
+        setData( index( idToRow( fid ), fieldCol( idx ) ), value, Qt::EditRole );
+      }
+    }
+    else
+    {
+      if ( mIdRowMap.contains( fid ) )
+      {
+        // Feature changed such, that it is no longer shown
+        featureDeleted( fid );
+      }
+      // else: we don't care
+    }
   }
-  setData( index( idToRow( fid ), fieldCol( idx ) ), value, Qt::EditRole );
 }
 
 void QgsAttributeTableModel::loadAttributes()
@@ -582,12 +608,6 @@ Qt::ItemFlags QgsAttributeTableModel::flags( const QModelIndex &index ) const
 
 void QgsAttributeTableModel::reload( const QModelIndex &index1, const QModelIndex &index2 )
 {
-  for ( int row = index1.row(); row <= index2.row(); row++ )
-  {
-    QgsFeatureId fid = rowToId( row );
-    mLayerCache->removeCachedFeature( fid );
-  }
-
   mFeat.setFeatureId( std::numeric_limits<int>::min() );
   emit dataChanged( index1, index2 );
 }
@@ -646,6 +666,6 @@ void QgsAttributeTableModel::prefetchColumnData( int column )
 void QgsAttributeTableModel::setRequest( const QgsFeatureRequest& request )
 {
   mFeatureRequest = request;
-  if( layer() && !layer()->hasGeometryType() )
+  if ( layer() && !layer()->hasGeometryType() )
     mFeatureRequest.setFlags( mFeatureRequest.flags() | QgsFeatureRequest::NoGeometry );
 }

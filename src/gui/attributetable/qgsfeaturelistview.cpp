@@ -13,23 +13,24 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QKeyEvent>
-#include <QSettings>
 #include <QHeaderView>
+#include <QKeyEvent>
 #include <QMenu>
+#include <QSet>
+#include <QSettings>
 
-#include "qgsfeaturelistview.h"
-#include "qgsattributetablemodel.h"
 #include "qgsattributetabledelegate.h"
 #include "qgsattributetablefiltermodel.h"
-#include "qgsvectorlayer.h"
-#include "qgsvectordataprovider.h"
+#include "qgsattributetablemodel.h"
+#include "qgsfeaturelistmodel.h"
+#include "qgsfeaturelistviewdelegate.h"
+#include "qgsfeaturelistview.h"
+#include "qgsfeatureselectionmodel.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
-#include "qgsfeaturelistviewdelegate.h"
-#include "qgsfeaturelistmodel.h"
-#include "qgsfeatureselectionmodel.h"
-#include <QSet>
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerselectionmanager.h"
 
 QgsFeatureListView::QgsFeatureListView( QWidget *parent )
     : QListView( parent )
@@ -52,7 +53,7 @@ void QgsFeatureListView::setModel( QgsFeatureListModel* featureListModel )
   mModel = featureListModel;
 
   delete mFeatureSelectionModel;
-  mFeatureSelectionModel = new QgsFeatureSelectionModel( featureListModel, featureListModel, featureListModel->layerCache()->layer(), this );
+  mFeatureSelectionModel = new QgsFeatureSelectionModel( featureListModel, featureListModel, new QgsVectorLayerSelectionManager( featureListModel->layerCache()->layer(), this ), this );
   setSelectionModel( mFeatureSelectionModel );
 
   mCurrentEditSelectionModel = new QItemSelectionModel( mModel->masterModel(), this );

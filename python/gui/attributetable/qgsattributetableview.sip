@@ -10,15 +10,6 @@ class QgsAttributeTableView : QTableView
 
     virtual void setModel( QgsAttributeTableFilterModel* filterModel );
 
-    /**
-     * Autocreates the models
-     * @param layerCache The @link QgsVectorLayerCache @endlink to use ( as backend )
-     * @param canvas     The @link QgsMapCanvas @endlink to use ( for the currently visible features filter )
-     *
-     * @deprecated
-     */
-    void setCanvasAndLayerCache( QgsMapCanvas *canvas, QgsVectorLayerCache *layerCache );
-
   protected:
     /**
      * Called for mouse press events on a table cell.

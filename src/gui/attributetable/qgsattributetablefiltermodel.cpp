@@ -33,7 +33,6 @@ QgsAttributeTableFilterModel::QgsAttributeTableFilterModel( QgsMapCanvas* canvas
     , mFilterMode( ShowAll )
     , mSelectedOnTop( false )
 {
-  mMasterSelection = new QItemSelectionModel( this, this );
   setSourceModel( sourceModel );
   setDynamicSortFilter( true );
   setSortRole( QgsAttributeTableModel::SortRole );
@@ -115,8 +114,6 @@ void QgsAttributeTableFilterModel::setSelectedOnTop( bool selectedOnTop )
 void QgsAttributeTableFilterModel::setSourceModel( QgsAttributeTableModel* sourceModel )
 {
   mTableModel = sourceModel;
-  delete mMasterSelection;
-  mMasterSelection = new QItemSelectionModel( sourceModel, this );
 
   QSortFilterProxyModel::setSourceModel( sourceModel );
 }

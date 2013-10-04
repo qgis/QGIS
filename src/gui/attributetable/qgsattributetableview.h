@@ -21,15 +21,17 @@
 
 #include "qgsfeature.h" // For QgsFeatureIds
 
-class QgsAttributeTableModel;
-class QgsAttributeTableFilterModel;
-class QgsVectorLayerCache;
-class QgsFeatureSelectionModel;
 class QgsAttributeTableDelegate;
+class QgsAttributeTableFilterModel;
+class QgsAttributeTableModel;
+class QgsFeatureSelectionModel;
+class QgsIFeatureSelectionManager;
 class QgsMapCanvas;
 class QgsVectorLayer;
+class QgsVectorLayerCache;
 class QMenu;
 class QProgressDialog;
+
 
 /**
  * @brief
@@ -50,13 +52,10 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
     virtual void setModel( QgsAttributeTableFilterModel* filterModel );
 
     /**
-     * Autocreates the models
-     * @param layerCache The @link QgsVectorLayerCache @endlink to use ( as backend )
-     * @param canvas     The @link QgsMapCanvas @endlink to use ( for the currently visible features filter )
-     *
-     * @deprecated
+     * @brief setFeatureSelectionManager
+     * @param featureSelectionManager We will take ownership
      */
-    void setCanvasAndLayerCache( QgsMapCanvas *canvas, QgsVectorLayerCache *layerCache );
+    void setFeatureSelectionManager( QgsIFeatureSelectionManager* featureSelectionManager );
 
     /**
      * This event filter is installed on the verticalHeader to intercept mouse press and release
@@ -143,6 +142,7 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
     QgsAttributeTableModel* mMasterModel;
     QgsAttributeTableFilterModel* mFilterModel;
     QgsFeatureSelectionModel* mFeatureSelectionModel;
+    QgsIFeatureSelectionManager* mFeatureSelectionManager;
     QgsAttributeTableDelegate* mTableDelegate;
     QAbstractItemModel* mModel; // Most likely the filter model
     QMenu *mActionPopup;
