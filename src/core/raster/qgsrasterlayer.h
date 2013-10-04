@@ -388,6 +388,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      */
     void dataChanged();
 
+    /** Signal emitted when the symbology changes, through call to setRenderer() */
     void rendererChanged();
 
   protected:
