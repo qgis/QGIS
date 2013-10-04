@@ -210,9 +210,10 @@ applications is used in all cases:
 Use the simple command line dialog that appears after running each of the
 above commands to select the Qt4 version of the relevant applications.
 
-/!\ Note: For python language bindings SIP >= 4.5 and PyQt4 >= 4.1 is required! Some stable GNU/Linux
-distributions (e.g. Debian or SuSE) only provide SIP < 4.5 and PyQt4 < 4.1. To include support for python 
-language bindings you may need to build and install those packages from source.
+/!\ Note: For python language bindings. If your distributions ships with older
+versions of SIP or PyQt4 than specified in Section 2: Overview, you will need
+to build and install those packages from source if you want to include support 
+for python language bindings.
 
 
   3.4. Setup ccache (Optional)
@@ -1479,8 +1480,7 @@ More configuration is needed to install outside the system path:
 Snow Leopard system Python
 
 Similar to Leopard, you should install outside the system Python path.
-Also, you need to specify the architecture you want (requires at least SIP
-4.9), and make sure to run the versioned python binary (this one responds to
+Also, you need to specify the architecture you want, and make sure to run the versioned python binary (this one responds to
 the 'arch' command, 'python' does not).
 Substitute '2.7' for python version and 10.7 for SDK version below for Lion.
 
