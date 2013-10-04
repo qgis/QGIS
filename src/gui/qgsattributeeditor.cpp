@@ -21,8 +21,8 @@
 #include "qgseditorwidgetwrapper.h"
 
 #include "qgsattributedialog.h"
-#include "qgsattributeeditorcontext.h"
 #include "qgsattributeeditor.h"
+#include "qgsattributeeditorcontext.h"
 #include "qgscategorizedsymbolrendererv2.h"
 #include "qgscolorbutton.h"
 #include "qgsexpression.h"
@@ -32,6 +32,8 @@
 #include "qgslonglongvalidator.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsnetworkaccessmanager.h"
+#include "qgsrelationeditor.h"
+#include "qgsrelationmanager.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 
@@ -1427,6 +1429,16 @@ QWidget* QgsAttributeEditor::createWidgetFromDef( const QgsAttributeEditorElemen
       }
       labelOnTop = vl->labelOnTop( fieldDef->idx() );
       labelText = vl->attributeDisplayName( fieldDef->idx() );
+      break;
+    }
+
+    case QgsAttributeEditorElement::AeTypeRelation:
+    {
+      const QgsAttributeEditorRelation* relDef = dynamic_cast<const QgsAttributeEditorRelation*>( widgetDef );
+
+      newWidget = QgsRelationEditorWidget::createRelationEditor( relDef->relation(), feat, context );
+      labelText = QString::null;
+      labelOnTop = true;
       break;
     }
 

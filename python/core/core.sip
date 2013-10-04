@@ -27,9 +27,9 @@
 %Include qgsdatasourceuri.sip
 %Include qgsdbfilterproxymodel.sip
 %Include qgsdistancearea.sip
+%Include qgseditorwidgetconfig.sip
 %Include qgserror.sip
 %Include qgsexpression.sip
-%Include qgseditorwidgetconfig.sip
 %Include qgsfeature.sip
 %Include qgsfeatureiterator.sip
 %Include qgsfeaturerequest.sip
@@ -68,6 +68,7 @@
 %Include qgsproviderregistry.sip
 %Include qgspythonrunner.sip
 %Include qgsrectangle.sip
+%Include qgsrelation.sip
 %Include qgsrenderchecker.sip
 %Include qgsrendercontext.sip
 %Include qgsrunprocess.sip

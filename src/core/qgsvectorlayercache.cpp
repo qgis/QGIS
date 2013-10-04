@@ -26,7 +26,7 @@ QgsVectorLayerCache::QgsVectorLayerCache( QgsVectorLayer* layer, int cacheSize, 
   mCache.setMaxCost( cacheSize );
 
   connect( mLayer, SIGNAL( featureDeleted( QgsFeatureId ) ), SLOT( featureDeleted( QgsFeatureId ) ) );
-  connect( mLayer, SIGNAL( featureAdded( QgsFeatureId ) ), SLOT( featureAdded( QgsFeatureId ) ) );
+  connect( mLayer, SIGNAL( featureAdded( QgsFeatureId ) ), SLOT( onFeatureAdded( QgsFeatureId ) ) );
   connect( mLayer, SIGNAL( layerDeleted() ), SLOT( layerDeleted() ) );
 
   setCacheGeometry( true );
@@ -200,7 +200,7 @@ void QgsVectorLayerCache::featureDeleted( QgsFeatureId fid )
   mCache.remove( fid );
 }
 
-void QgsVectorLayerCache::featureAdded( QgsFeatureId fid )
+void QgsVectorLayerCache::onFeatureAdded( QgsFeatureId fid )
 {
   if ( mFullCache )
   {
@@ -212,6 +212,7 @@ void QgsVectorLayerCache::featureAdded( QgsFeatureId fid )
     QgsFeature feat;
     featureAtId( fid, feat );
   }
+  emit( featureAdded( fid ) );
 }
 
 void QgsVectorLayerCache::attributeAdded( int field )

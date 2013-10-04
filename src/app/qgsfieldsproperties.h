@@ -43,6 +43,7 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
         enum Type
         {
           Field,
+          Relation,
           Container
         };
 
@@ -159,6 +160,8 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
     void loadRows();
     void setRow( int row, int idx, const QgsField &field );
 
+    void loadRelations();
+
     void loadAttributeEditorTree();
     QTreeWidgetItem *loadAttributeEditorTreeItem( QgsAttributeEditorElement* const widgetDef, QTreeWidgetItem* parent );
 
@@ -197,6 +200,7 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
     QgsVectorLayer* mLayer;
     DesignerTree* mDesignerTree;
     DragList* mFieldsList;
+    DragList* mRelationsList;
 
     // Holds all the first column items (header: id) of the table.
     // The index in the list is the fieldIdx, and therefore acts as a mapping
@@ -217,6 +221,15 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
       attrWMSCol,
       attrWFSCol,
       attrColCount,
+    };
+
+    enum relationColumns
+    {
+      RelNameCol = 0,
+      RelLayerCol,
+      RelFieldCol,
+      RelIdCol,
+      RelColCount
     };
 
     static QMap< QgsVectorLayer::EditType, QString > editTypeMap;

@@ -423,15 +423,34 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     virtual QAction *actionCheckQgisVersion();
     virtual QAction *actionAbout();
 
-    //! open feature form
-    // returns true when dialog was accepted
-    // @param l vector layer
-    // @param f feature to show/modify
-    // @param updateFeatureOnly only update the feature update (don't change any attributes of the layer)
-    // @added in 1.6
+    /**
+     * Open feature form
+     * returns true when dialog was accepted
+     * @param l vector layer
+     * @param f feature to show/modify
+     * @param updateFeatureOnly only update the feature update (don't change any attributes of the layer)
+     * @note added in 1.6
+     */
     virtual bool openFeatureForm( QgsVectorLayer *l, QgsFeature &f, bool updateFeatureOnly = false );
 
-    virtual QDialog* getFeatureForm( QgsVectorLayer *l, QgsFeature &f );
+    /**
+     * Returns a feature form for a given feature
+     *
+     * @param layer   The layer for which the dialog will be created
+     * @param feature The feature for which the dialog will be created
+     *
+     * @return A feature form
+     */
+    virtual QDialog* getFeatureForm( QgsVectorLayer *layer, QgsFeature &feature );
+
+    /**
+     * Access the vector layer tools instance.
+     * With the help of this you can access methods like addFeature, startEditing
+     * or stopEditing while giving the user the appropriate dialogs.
+     *
+     * @return An instance of the vector layer tools
+     */
+    virtual QgsVectorLayerTools* vectorLayerTools();
 
     /** This method is only needed when using a UI form with a custom widget plugin and calling
      * openFeatureForm or getFeatureForm from Python (PyQt4) and you havn't used the info tool first.
@@ -449,11 +468,13 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     /** Return vector layers in edit mode
      * @param modified whether to return only layers that have been modified
      * @returns list of layers in legend order, or empty list
-     * @note added in 1.9 */
+     * @note added in 1.9
+     */
     virtual QList<QgsMapLayer *> editableLayers( bool modified = false ) const;
 
     /** Get timeout for timed messages: default of 5 seconds
-     * @note added in 1.9 */
+     * @note added in 1.9
+     */
     virtual int messageTimeout();
 
   signals:

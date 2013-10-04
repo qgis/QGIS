@@ -168,11 +168,13 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      */
     virtual void uniqueValues( int index, QList<QVariant> &uniqueValues, int limit = -1 );
 
-    /**Returns the possible enum values of an attribute. Returns an empty stringlist if a provider does not support enum types
-      or if the given attribute is not an enum type.
+    /**
+     * Returns the possible enum values of an attribute. Returns an empty stringlist if a provider does not support enum types
+     * or if the given attribute is not an enum type.
      * @param index the index of the attribute
      * @param enumList reference to the list to fill
-      @note: added in version 1.2*/
+     * @note: added in version 1.2
+     */
     virtual void enumValues( int index, QStringList& enumList ) { Q_UNUSED( index ); enumList.clear(); }
 
     /**
@@ -260,7 +262,9 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      */
     int fieldNameIndex( const QString& fieldName ) const;
 
-    /**Return a map where the key is the name of the field and the value is its index*/
+    /**
+     * Return a map where the key is the name of the field and the value is its index
+     */
     QMap<QString, int> fieldNameMap() const;
 
     /**
@@ -313,17 +317,20 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
     /** Returns a list of available encodings */
     static const QStringList &availableEncodings();
 
-    /* provider has errors to report
+    /**
+     * Provider has errors to report
      * @note added in 1.7
      */
     bool hasErrors();
 
-    /* clear recorded errors
+    /**
+     * Clear recorded errors
      * @note added in 1.7
      */
     void clearErrors();
 
-    /* get recorded errors
+    /**
+     * Get recorded errors
      * @note added in 1.7
      */
     QStringList errors();
@@ -350,13 +357,13 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
     /** should provider fetch also features that don't have geometry? */
     bool mFetchFeaturesWithoutGeom;
 
-    /**True if geometry should be added to the features in nextFeature calls*/
+    /** True if geometry should be added to the features in nextFeature calls*/
     bool mFetchGeom;
 
-    /**List of attribute indices to fetch with nextFeature calls*/
+    /** List of attribute indices to fetch with nextFeature calls*/
     QgsAttributeList mAttributesToFetch;
 
-    /**The names of the providers native types*/
+    /** The names of the providers native types*/
     QList< NativeType > mNativeTypes;
 
     void pushError( QString msg );
@@ -368,7 +375,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
     /** old notation **/
     QMap<QString, QVariant::Type> mOldTypeList;
 
-    // list of errors
+    /** list of errors */
     QStringList mErrors;
 
     static QStringList smEncodings;

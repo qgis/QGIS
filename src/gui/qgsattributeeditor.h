@@ -22,6 +22,7 @@
 #include <QGridLayout>
 
 #include "qgsfeature.h"
+#include "qgsrelationmanager.h"
 
 class QObject;
 class QWidget;
@@ -31,6 +32,7 @@ class QListWidget;
 class QgsAttributeEditorContext;
 class QgsAttributeEditorElement;
 class QgsDualView;
+class QgsRelationManager;
 class QgsVectorLayer;
 
 /* \brief create attribute widget for editing */
@@ -67,7 +69,6 @@ class GUI_EXPORT QgsAttributeEditor : public QObject
      *
      */
     static QWidget* createAttributeEditor( QWidget* parent, QWidget* editor, QgsVectorLayer* vl, int idx, const QVariant& value );
-
     /**
      * Creates or prepares a attributre editor widget
      * @param parent The parent object

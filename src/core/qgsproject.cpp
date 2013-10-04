@@ -20,18 +20,19 @@
 #include <deque>
 #include <memory>
 
-#include "qgslogger.h"
-#include "qgsrectangle.h"
-#include "qgsvectorlayer.h"
-#include "qgsrasterlayer.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsdatasourceuri.h"
 #include "qgsexception.h"
-#include "qgsprojectproperty.h"
-#include "qgsprojectfiletransform.h"
-#include "qgsprojectversion.h"
+#include "qgslogger.h"
+#include "qgsmaplayerregistry.h"
 #include "qgspluginlayer.h"
 #include "qgspluginlayerregistry.h"
-#include "qgsdatasourceuri.h"
+#include "qgsprojectfiletransform.h"
+#include "qgsprojectproperty.h"
+#include "qgsprojectversion.h"
+#include "qgsrasterlayer.h"
+#include "qgsrectangle.h"
+#include "qgsrelationmanager.h"
+#include "qgsvectorlayer.h"
 
 #include <QApplication>
 #include <QFileInfo>
@@ -332,7 +333,9 @@ struct QgsProject::Imp
 
 
 QgsProject::QgsProject()
-    : imp_( new QgsProject::Imp ), mBadLayerHandler( new QgsProjectBadLayerDefaultHandler() )
+    : imp_( new QgsProject::Imp )
+    , mBadLayerHandler( new QgsProjectBadLayerDefaultHandler() )
+    , mRelationManager( new QgsRelationManager( this ) )
 {
   // Set some default project properties
   // XXX THESE SHOULD BE MOVED TO STATUSBAR RELATED SOURCE
@@ -349,6 +352,7 @@ QgsProject::QgsProject()
 QgsProject::~QgsProject()
 {
   delete mBadLayerHandler;
+  delete mRelationManager;
 
   // note that std::auto_ptr automatically deletes imp_ when it's destroyed
 } // QgsProject dtor
@@ -717,7 +721,6 @@ QPair< bool, QList<QDomNode> > QgsProject::_getMapLayers( QDomDocument const &do
 
 } // _getMapLayers
 
-
 bool QgsProject::addLayer( const QDomElement& layerElem, QList<QDomNode>& brokenNodes, QList< QPair< QgsVectorLayer*, QDomElement > >& vectorLayerList )
 {
   QString type = layerElem.attribute( "type" );
@@ -865,6 +868,7 @@ bool QgsProject::read()
 
   imp_->clear();
   mEmbeddedLayers.clear();
+  mRelationManager->clear();
 
   // now get any properties
   _getProperties( *doc, imp_->properties_ );
@@ -1800,4 +1804,9 @@ QString QgsProject::homePath() const
     return QString::null;
 
   return pfi.canonicalPath();
+}
+
+QgsRelationManager* QgsProject::relationManager() const
+{
+  return mRelationManager;
 }

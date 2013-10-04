@@ -24,6 +24,7 @@
 #include "qgslogger.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsproject.h"
+#include "qgsrelationmanager.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 
@@ -96,8 +97,22 @@ QgsFieldsProperties::QgsFieldsProperties( QgsVectorLayer *layer, QWidget* parent
   connect( mDesignerTree, SIGNAL( itemSelectionChanged() ), this, SLOT( onAttributeSelectionChanged() ) );
   connect( mFieldsList, SIGNAL( itemSelectionChanged() ), this, SLOT( onAttributeSelectionChanged() ) );
 
+  mRelationsList = new DragList( mRelationsFrame );
+  mRelationsFrameLayout->addWidget( mRelationsList );
+  mRelationsList->setColumnCount( RelColCount );
+  mRelationsList->setDragDropMode( QAbstractItemView::DragOnly );
+  mRelationsList->setSelectionMode( QAbstractItemView::SingleSelection );
+  mRelationsList->setSelectionBehavior( QAbstractItemView::SelectRows );
+  mRelationsList->setHorizontalHeaderItem( RelIdCol, new QTableWidgetItem( tr( "Id" ) ) );
+  mRelationsList->setHorizontalHeaderItem( RelNameCol, new QTableWidgetItem( tr( "Name" ) ) );
+  mRelationsList->setHorizontalHeaderItem( RelLayerCol, new QTableWidgetItem( tr( "Layer" ) ) );
+  mRelationsList->setHorizontalHeaderItem( RelFieldCol, new QTableWidgetItem( tr( "Field" ) ) );
+  mRelationsList->verticalHeader()->hide();
+
   leEditForm->setText( layer->editForm() );
   leEditFormInit->setText( layer->editFormInit() );
+
+  loadRelations();
 
   updateButtons();
 }
@@ -132,6 +147,10 @@ QTreeWidgetItem *QgsFieldsProperties::loadAttributeEditorTreeItem( QgsAttributeE
   switch ( widgetDef->type() )
   {
     case QgsAttributeEditorElement::AeTypeField:
+      newWidget = mDesignerTree->addItem( parent, DesignerTreeItemData( DesignerTreeItemData::Field, widgetDef->name() ) );
+      break;
+
+    case QgsAttributeEditorElement::AeTypeRelation:
       newWidget = mDesignerTree->addItem( parent, DesignerTreeItemData( DesignerTreeItemData::Field, widgetDef->name() ) );
       break;
 
@@ -233,6 +252,40 @@ void QgsFieldsProperties::setRow( int row, int idx, const QgsField &field )
   wfsAttrItem->setCheckState( mLayer->excludeAttributesWFS().contains( field.name() ) ? Qt::Unchecked : Qt::Checked );
   wfsAttrItem->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsUserCheckable );
   mFieldsList->setItem( row, attrWFSCol, wfsAttrItem );
+}
+
+void QgsFieldsProperties::loadRelations()
+{
+  mRelationsList->setRowCount( 0 );
+
+  QList<QgsRelation> relations = QgsProject::instance()->relationManager()->referencedRelations( mLayer );
+
+  int idx = 0;
+
+  Q_FOREACH( const QgsRelation& relation, relations )
+  {
+    mRelationsList->insertRow( idx );
+
+    QTableWidgetItem* item = new QTableWidgetItem( relation.name() );
+    item->setFlags( Qt::ItemIsDragEnabled | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+    DesignerTreeItemData itemData( DesignerTreeItemData::Relation, QString( "%1" ).arg( relation.id() ) );
+    item->setData( DesignerTreeRole, itemData.asQVariant() );
+    mRelationsList->setItem( idx, RelNameCol, item );
+
+    item = new QTableWidgetItem( relation.referencingLayer()->name() );
+    item->setFlags( Qt::ItemIsDragEnabled | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+    mRelationsList->setItem( idx, RelLayerCol, item );
+
+    item = new QTableWidgetItem( relation.fieldPairs().first().referencingField() );
+    item->setFlags( Qt::ItemIsDragEnabled | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+    mRelationsList->setItem( idx, RelFieldCol, item );
+
+    item = new QTableWidgetItem( relation.id() );
+    item->setFlags( Qt::ItemIsDragEnabled | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+    mRelationsList->setItem( idx, RelIdCol, item );
+
+    ++idx;
+  }
 }
 
 void QgsFieldsProperties::on_mAddItemButton_clicked()
@@ -690,6 +743,13 @@ QgsAttributeEditorElement* QgsFieldsProperties::createAttributeEditorWidget( QTr
     {
       int idx = mLayer->fieldNameIndex( itemData.name() );
       widgetDef = new QgsAttributeEditorField( itemData.name(), idx, parent );
+      break;
+    }
+
+    case DesignerTreeItemData::Relation:
+    {
+      QgsRelation relation = QgsProject::instance()->relationManager()->relation( itemData.name() );
+      widgetDef = new QgsAttributeEditorRelation( itemData.name(), relation, parent );
       break;
     }
 

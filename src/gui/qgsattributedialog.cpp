@@ -20,8 +20,9 @@
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsproject.h"
-#include "qgsvectorlayer.h"
+#include "qgsrelationeditor.h"
 #include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
 #include "qgsattributeeditor.h"
 #include "qgshighlight.h"
 #include "qgsexpression.h"
@@ -266,6 +267,22 @@ void QgsAttributeDialog::init()
       }
     }
 
+    QList<QgsRelation> relations = QgsProject::instance()->relationManager()->referencedRelations( mLayer );
+
+    foreach ( const QgsRelation& relation, relations )
+    {
+      relation.id();
+
+      QWidget *myWidget = QgsRelationEditorWidget::createRelationEditor( relation, *mFeature, mContext );
+      myWidget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+      if ( !myWidget )
+        continue;
+
+      mypInnerLayout->addWidget( myWidget, index, 0, 1, 2 );
+      mypInnerLayout->setRowStretch( index, 1 );
+      ++index;
+    }
+
     // Set focus to first widget in list, to help entering data without moving the mouse.
     if ( mypInnerLayout->rowCount() > 0 )
     {
@@ -274,7 +291,7 @@ void QgsAttributeDialog::init()
         widget->setFocus( Qt::OtherFocusReason );
     }
 
-    QSpacerItem *mypSpacer = new QSpacerItem( 10, 10, QSizePolicy::Fixed, QSizePolicy::Expanding );
+    QSpacerItem *mypSpacer = new QSpacerItem( 0, 0, QSizePolicy::Fixed, QSizePolicy::MinimumExpanding );
     mypInnerLayout->addItem( mypSpacer, mypInnerLayout->rowCount() + 1, 0 );
   }
   else

@@ -43,6 +43,9 @@
 #include "qgsstylev2managerdialog.h"
 #include "qgsvectorcolorrampv2.h"
 #include "qgssymbolv2selectordialog.h"
+#include "qgsrelationmanagerdialog.h"
+#include "qgsrelationmanager.h"
+#include "qgisapp.h"
 
 //qt includes
 #include <QColorDialog>
@@ -442,6 +445,20 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
     resetPythonMacros();
   }
 
+  // Initialize relation manager
+  mRelationManagerDlg = new QgsRelationManagerDialog( QgsProject::instance()->relationManager(), mTabRelations );
+  mTabRelations->layout()->addWidget( mRelationManagerDlg );
+
+  QList<QgsVectorLayer*> vectorLayers;
+  foreach ( QgsMapLayer* mapLayer, mapLayers.values() )
+  {
+    if ( QgsMapLayer::VectorLayer == mapLayer->type() )
+    {
+      vectorLayers.append( qobject_cast<QgsVectorLayer*> ( mapLayer ) );
+    }
+  }
+  mRelationManagerDlg->setLayers( vectorLayers );
+
   // Update projection selector (after mLayerSrsId is set)
   bool myProjectionEnabled = myRenderer->hasCrsTransformEnabled();
   bool onFlyChecked = cbxProjectionEnabled->isChecked();
@@ -793,6 +810,8 @@ void QgsProjectProperties::apply()
     resetPythonMacros();
   }
   QgsProject::instance()->writeEntry( "Macros", "/pythonCode", pythonMacros );
+
+  QgsProject::instance()->relationManager()->setRelations( mRelationManagerDlg->relations() );
 
   //todo XXX set canvas color
   emit refresh();

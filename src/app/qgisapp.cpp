@@ -260,6 +260,10 @@
 
 #include "nodetool/qgsmaptoolnodetool.h"
 
+// Editor widgets
+#include "qgseditorwidgetregistry.h"
+#include "qgsrelationreferencefactory.h"
+
 //
 // Conditional Includes
 //
@@ -576,6 +580,13 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   mLogDock->hide();
 
   mVectorLayerTools = new QgsGuiVectorLayerTools();
+
+  // Init the editor widget types
+  QgsEditorWidgetRegistry* editorWidgetRegistry = QgsEditorWidgetRegistry::instance();
+  QgsAttributeEditorContext context;
+  context.setVectorLayerTools( vectorLayerTools() );
+  editorWidgetRegistry->registerWidget( "RelationReference", new QgsRelationReferenceFactory( context, tr( "Relation Reference" ) ) );
+
 
   mInternalClipboard = new QgsClipboard; // create clipboard
   connect( mInternalClipboard, SIGNAL( changed() ), this, SLOT( clipboardChanged() ) );

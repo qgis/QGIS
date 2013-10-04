@@ -107,12 +107,20 @@
          <property name="orientation">
           <enum>Qt::Vertical</enum>
          </property>
-         <widget class="QWidget" name="mAttributesListFrame" native="true">
-          <layout class="QGridLayout" name="mAttributesListLayout">
-           <property name="margin">
-            <number>0</number>
-           </property>
-          </layout>
+         <widget class="QgsCollapsibleGroupBox" name="mAttributesListFrame">
+          <property name="title">
+           <string>Fields</string>
+          </property>
+          <layout class="QGridLayout" name="mAttributesListLayout"/>
+         </widget>
+         <widget class="QgsCollapsibleGroupBox" name="mRelationsFrame">
+          <property name="title">
+           <string>Relations</string>
+          </property>
+          <property name="collapsed" stdset="0">
+           <bool>true</bool>
+          </property>
+          <layout class="QGridLayout" name="mRelationsFrameLayout"/>
          </widget>
         </widget>
        </item>
@@ -430,6 +438,14 @@ MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.<
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="../../images/images.qrc"/>
  </resources>

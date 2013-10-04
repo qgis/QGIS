@@ -152,6 +152,15 @@
             <normaloff>:/images/themes/default/propertyicons/action.svg</normaloff>:/images/themes/default/propertyicons/action.svg</iconset>
           </property>
          </item>
+         <item>
+          <property name="text">
+           <string>Relations</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../images/images.qrc">
+            <normaloff>:/images/themes/default/relation.svg</normaloff>:/images/themes/default/relation.svg</iconset>
+          </property>
+         </item>
         </widget>
        </item>
       </layout>
@@ -217,9 +226,9 @@
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>-19</y>
-                <width>631</width>
-                <height>686</height>
+                <y>0</y>
+                <width>640</width>
+                <height>712</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -776,8 +785,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>646</width>
-                <height>667</height>
+                <width>323</width>
+                <height>46</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -836,8 +845,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>646</width>
-                <height>669</height>
+                <width>133</width>
+                <height>100</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_10">
@@ -918,8 +927,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>646</width>
-                <height>669</height>
+                <width>371</width>
+                <height>336</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -1296,8 +1305,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>631</width>
-                <height>1254</height>
+                <width>491</width>
+                <height>1347</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -1928,8 +1937,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>646</width>
-                <height>669</height>
+                <width>163</width>
+                <height>111</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -1968,6 +1977,13 @@
              </widget>
             </widget>
            </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="mTabRelations">
+          <layout class="QGridLayout" name="gridLayout_16">
+           <property name="margin">
+            <number>0</number>
+           </property>
           </layout>
          </widget>
         </widget>

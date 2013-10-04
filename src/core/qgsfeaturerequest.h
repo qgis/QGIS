@@ -130,7 +130,6 @@ class CORE_EXPORT QgsFeatureRequest
     bool acceptFeature( const QgsFeature& feature );
 
     // TODO: in future
-    // void setFilterExpression(const QString& expression); // using QgsExpression
     // void setFilterNativeExpression(con QString& expr);   // using provider's SQL (if supported)
     // void setLimit(int limit);
 

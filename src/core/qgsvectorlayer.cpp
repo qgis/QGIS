@@ -52,6 +52,7 @@
 #include "qgspoint.h"
 #include "qgsproviderregistry.h"
 #include "qgsrectangle.h"
+#include "qgsrelationmanager.h"
 #include "qgsrendercontext.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsvectordataprovider.h"
@@ -176,6 +177,8 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
   }
 
   connect( this, SIGNAL( selectionChanged( QgsFeatureIds, QgsFeatureIds, bool ) ), this, SIGNAL( selectionChanged() ) );
+
+  connect( QgsProject::instance()->relationManager(), SIGNAL( relationsLoaded() ), this, SLOT( onRelationsLoaded() ) );
 } // QgsVectorLayer ctor
 
 
@@ -2117,6 +2120,13 @@ QgsAttributeEditorElement* QgsVectorLayer::attributeEditorElementFromDomElement(
     int idx = *( dataProvider()->fieldNameMap() ).find( name );
     newElement = new QgsAttributeEditorField( name, idx, parent );
   }
+  else if ( elem.tagName() == "attributeEditorRelation" )
+  {
+    // At this time, the relations are not loaded
+    // So we only grab the id and delegate the rest to onRelationsLoaded()
+    QString name = elem.attribute( "name" );
+    newElement = new QgsAttributeEditorRelation( name, elem.attribute( "relation", "[None]" ), parent );
+  }
   return newElement;
 }
 
@@ -3834,6 +3844,23 @@ void QgsVectorLayer::invalidateSymbolCountedFlag()
   mSymbolFeatureCounted = false;
 }
 
+void QgsVectorLayer::onRelationsLoaded()
+{
+  Q_FOREACH( QgsAttributeEditorElement* elem, mAttributeEditorElements )
+  {
+    if ( elem->type() == QgsAttributeEditorElement::AeTypeContainer )
+    {
+      QgsAttributeEditorContainer* cont = dynamic_cast< QgsAttributeEditorContainer* >( elem );
+      QList<QgsAttributeEditorElement*> relations = cont->findElements( QgsAttributeEditorElement::AeTypeRelation );
+      Q_FOREACH( QgsAttributeEditorElement* relElem, relations )
+      {
+        QgsAttributeEditorRelation* rel = dynamic_cast< QgsAttributeEditorRelation* >( relElem );
+        rel->init( QgsProject::instance()->relationManager() );
+      }
+    }
+  }
+}
+
 QgsVectorLayer::ValueRelationData &QgsVectorLayer::valueRelation( int idx )
 {
   const QgsFields &fields = pendingFields();
@@ -3853,6 +3880,11 @@ QgsVectorLayer::ValueRelationData &QgsVectorLayer::valueRelation( int idx )
   }
 
   return mValueRelations[fieldName];
+}
+
+QList<QgsRelation> QgsVectorLayer::referencingRelations( int idx )
+{
+  return QgsProject::instance()->relationManager()->referencingRelations( this, idx );
 }
 
 QList<QgsAttributeEditorElement*> &QgsVectorLayer::attributeEditorElements()
@@ -4056,4 +4088,19 @@ bool QgsVectorLayer::applyNamedStyle( QString namedStyle, QString errorMsg )
 #endif
 
   return readSymbology( myRoot, errorMsg );
+}
+
+
+QDomElement QgsAttributeEditorRelation::toDomElement( QDomDocument& doc ) const
+{
+  QDomElement elem = doc.createElement( "attributeEditorRelation" );
+  elem.setAttribute( "name", mName );
+  elem.setAttribute( "relation", mRelation.id() );
+  return elem;
+}
+
+bool QgsAttributeEditorRelation::init( QgsRelationManager* relationManager )
+{
+  mRelation = relationManager->relation( mRelationId );
+  return mRelation.isValid();
 }

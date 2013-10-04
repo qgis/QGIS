@@ -31,6 +31,7 @@
 #include "qgsfield.h"
 #include "qgssnapper.h"
 #include "qgsfield.h"
+#include "qgsrelation.h"
 
 class QPainter;
 class QImage;
@@ -44,6 +45,8 @@ class QgsGeometryVertexIndex;
 class QgsLabel;
 class QgsMapToPixel;
 class QgsRectangle;
+class QgsRelation;
+class QgsRelationManager;
 class QgsVectorDataProvider;
 class QgsSingleSymbolRendererV2;
 class QgsRectangle;
@@ -68,6 +71,7 @@ class CORE_EXPORT QgsAttributeEditorElement : public QObject
     {
       AeTypeContainer,
       AeTypeField,
+      AeTypeRelation,
       AeTypeInvalid
     };
 
@@ -119,6 +123,37 @@ class CORE_EXPORT QgsAttributeEditorField : public QgsAttributeEditorElement
 
   private:
     int mIdx;
+};
+
+/** @note Added in 2.1 */
+class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
+{
+  public:
+    QgsAttributeEditorRelation( QString name , const QString relationId, QObject *parent )
+        : QgsAttributeEditorElement( AeTypeRelation, name, parent )
+        , mRelationId( relationId ) {}
+
+    QgsAttributeEditorRelation( QString name , const QgsRelation& relation, QObject *parent )
+        : QgsAttributeEditorElement( AeTypeRelation, name, parent )
+        , mRelationId( relation.id() )
+        , mRelation( relation ) {}
+
+    ~QgsAttributeEditorRelation() {}
+
+    virtual QDomElement toDomElement( QDomDocument& doc ) const;
+    const QgsRelation& relation() const { return mRelation; }
+
+    /**
+     * Initializes the relation from the id
+     *
+     * @param relManager The relation manager to use for the initialization
+     * @return true if the relation was found in the relationmanager
+     */
+    bool init( QgsRelationManager* relManager );
+
+  private:
+    QString mRelationId;
+    QgsRelation mRelation;
 };
 
 /** @note added in 1.7 */
@@ -1202,6 +1237,22 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      **/
     ValueRelationData &valueRelation( int idx );
 
+    /**
+     * Get relations, where the foreign key is on this layer
+     *
+     * @param idx Only get relations, where idx forms part of the foreign key
+     * @return A list of relations
+     */
+    QList<QgsRelation> referencingRelations( int idx );
+
+    /**
+     * Get relations, where the foreign key is on another layer, referencing this layer
+     *
+     * @param idx Only get relations, where idx forms part of the referenced key
+     * @return A list of relations
+     */
+    QList<QgsRelation> referencedRelations( int idx );
+
     /**access date format
      * @note added in 1.9
      */
@@ -1446,6 +1497,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     void committedAttributeValuesChanges( const QString& layerId, const QgsChangedAttributesMap& changedAttributesValues );
     void committedGeometriesChanges( const QString& layerId, const QgsGeometryMap& changedGeometries );
 
+    void saveLayerToProject();
+
     /** Emitted when the font family defined for labeling layer is not found on system
      * @note added in 1.9
      */
@@ -1459,6 +1512,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     /** Signal emitted when setLayerTransparency() is called */
     void layerTransparencyChanged( int layerTransparency );
+
+  private slots:
+    void onRelationsLoaded();
 
   protected:
     /** Set the extent */

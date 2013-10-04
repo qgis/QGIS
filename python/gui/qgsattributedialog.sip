@@ -5,11 +5,12 @@ class QgsAttributeDialog : QObject
 %End
 
     public:
-      QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature, bool featureOwner, QgsDistanceArea myDa, QWidget* parent = 0, bool showDialogButtons = true );
+      QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature, bool featureOwner, QgsDistanceArea myDa, QWidget* parent = 0, bool showDialogButtons = true ) /Deprecated/;
+      QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature, bool featureOwner, QWidget* parent = 0, bool showDialogButtons = true );
       void saveGeometry();
       void restoreGeometry();
       QDialog *dialog();
-      QgsFeature* feature();
+      const QgsFeature* feature();
 
     public slots:
       void accept();

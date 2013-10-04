@@ -56,7 +56,7 @@ QgsFeatureRequest& QgsFeatureRequest::operator=( const QgsFeatureRequest & rh )
   mFilterFids = rh.mFilterFids;
   if ( rh.mFilterExpression )
   {
-    mFilterExpression = new QgsExpression( rh.mFilterExpression->expression() );
+    mFilterExpression = new QgsExpression( rh.mFilterExpression->dump() );
   }
   else
   {
@@ -144,7 +144,7 @@ bool QgsFeatureRequest::acceptFeature( const QgsFeature& feature )
       break;
 
     case QgsFeatureRequest::FilterFid:
-      if ( feature.id () == mFilterFid )
+      if ( feature.id() == mFilterFid )
         return true;
       else
         return false;
@@ -158,7 +158,7 @@ bool QgsFeatureRequest::acceptFeature( const QgsFeature& feature )
       break;
 
     case QgsFeatureRequest::FilterFids:
-      if ( mFilterFids.contains ( feature.id () ) )
+      if ( mFilterFids.contains( feature.id() ) )
         return true;
       else
         return false;

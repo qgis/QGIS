@@ -24,6 +24,7 @@
 #include "qgscontexthelp.h"
 
 class QgsMapCanvas;
+class QgsRelationManagerDialog;
 class QgsStyleV2;
 
 /*!  Dialog to set project level properties
@@ -162,6 +163,7 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     void refresh();
 
   private:
+    QgsRelationManagerDialog *mRelationManagerDlg;
     QgsMapCanvas* mMapCanvas;
     QgsStyleV2* mStyle;
 

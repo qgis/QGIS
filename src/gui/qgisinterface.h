@@ -34,6 +34,7 @@ class QgsLegendInterface;
 class QgsPluginManagerInterface;
 class QgsFeature;
 class QgsMessageBar;
+class QgsVectorLayerTools;
 
 #include <QObject>
 #include <QFont>
@@ -217,7 +218,7 @@ class GUI_EXPORT QgisInterface : public QObject
     /** Return the message bar of the main app */
     virtual QgsMessageBar * messageBar() = 0;
 
-    /**Return mainwindows / composer views of running composer instances (currently only one)*/
+    /** Return mainwindows / composer views of running composer instances (currently only one) */
     virtual QList<QgsComposerView*> activeComposers() = 0;
 
     /** Create a new composer
@@ -530,12 +531,16 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QAction *actionCheckQgisVersion() = 0;
     virtual QAction *actionAbout() = 0;
 
-    //! Open feature form
-    // returns true when dialog was accepted
-    // @added in 1.6
+    /**
+     * Open feature form
+     * @return true when dialog was accepted
+     * @note added in 1.6
+     */
     virtual bool openFeatureForm( QgsVectorLayer *l, QgsFeature &f, bool updateFeatureOnly = false ) = 0;
 
     virtual QDialog* getFeatureForm( QgsVectorLayer *l, QgsFeature &f ) = 0;
+
+    virtual QgsVectorLayerTools* vectorLayerTools() = 0;
 
     virtual void preloadForm( QString uifile ) = 0;
 
@@ -555,18 +560,21 @@ class GUI_EXPORT QgisInterface : public QObject
      */
     void currentLayerChanged( QgsMapLayer * layer );
 
-    /**This signal is emitted when a new composer instance has been created
+    /**
+     * This signal is emitted when a new composer instance has been created
      * @note added in 1.4
      */
     void composerAdded( QgsComposerView* v );
 
-    /**This signal is emitted before a new composer instance is going to be removed
+    /**
+     * This signal is emitted before a new composer instance is going to be removed
      * @note added in 1.4
      */
     void composerWillBeRemoved( QgsComposerView* v );
-    /**This signal is emitted when the initialization is complete
-      * @note added in version 1.6
-      */
+    /**
+     * This signal is emitted when the initialization is complete
+     * @note added in 1.6
+     */
     void initializationCompleted();
     /** emitted when a project file is successfully read
         @note
@@ -574,7 +582,7 @@ class GUI_EXPORT QgisInterface : public QObject
         plug-in can connect to this signal.  When it is emitted, the plug-in
         knows to then check the project properties for any relevant state.
 
-        Added in v1.6
+        Added in 1.6
      */
     void projectRead();
     /** emitted when starting an entirely new project
@@ -585,7 +593,7 @@ class GUI_EXPORT QgisInterface : public QObject
         it's probably more semantically correct to have an entirely separate
         signal for when this happens.
 
-        Added in v1.6
+        Added in 1.6
       */
     void newProjectCreated();
 };
