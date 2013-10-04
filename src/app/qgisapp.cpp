@@ -133,6 +133,7 @@
 #include "qgshtmlannotationitem.h"
 #include "qgsgenericprojectionselector.h"
 #include "qgsgpsinformationwidget.h"
+#include "qgsguivectorlayertools.h"
 #include "qgslabelinggui.h"
 #include "qgslegend.h"
 #include "qgslayerorder.h"
@@ -573,6 +574,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   addDockWidget( Qt::BottomDockWidgetArea, mLogDock );
   mLogDock->setWidget( mLogViewer );
   mLogDock->hide();
+
+  mVectorLayerTools = new QgsGuiVectorLayerTools();
 
   mInternalClipboard = new QgsClipboard; // create clipboard
   connect( mInternalClipboard, SIGNAL( changed() ), this, SLOT( clipboardChanged() ) );

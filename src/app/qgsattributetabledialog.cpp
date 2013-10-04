@@ -80,6 +80,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   myDa.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
 
   context.setDistanceArea( myDa );
+  context.setVectorLayerTools( QgisApp::instance()->vectorLayerTools() );
 
   // Initialize dual view
   mMainView->init( mLayer, QgisApp::instance()->mapCanvas(), QgsFeatureRequest(), context );

@@ -69,6 +69,7 @@
 %Include qgssearchquerybuilder.sip
 %Include qgstextannotationitem.sip
 %Include qgsvertexmarker.sip
+%Include qgsvectorlayertools.sip
 %Include qgssublayersdialog.sip
 %Include qgscharacterselectdialog.sip
 %Include qgscomposerruler.sip

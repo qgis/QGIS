@@ -15,16 +15,17 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsfeatureaction.h"
-#include "qgsvectorlayer.h"
-#include "qgsvectordataprovider.h"
-#include "qgsidentifyresultsdialog.h"
-#include "qgsattributedialog.h"
-#include "qgslogger.h"
-#include "qgsdistancearea.h"
 #include "qgisapp.h"
-#include "qgsproject.h"
+#include "qgsattributedialog.h"
+#include "qgsdistancearea.h"
+#include "qgsfeatureaction.h"
+#include "qgsguivectorlayertools.h"
+#include "qgsidentifyresultsdialog.h"
+#include "qgslogger.h"
 #include "qgsmapcanvas.h"
+#include "qgsproject.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
 
 #include <QPushButton>
 #include <QSettings>
@@ -47,13 +48,18 @@ QgsAttributeDialog *QgsFeatureAction::newDialog( bool cloneFeature )
 {
   QgsFeature *f = cloneFeature ? new QgsFeature( mFeature ) : &mFeature;
 
+  QgsAttributeEditorContext context;
+
   QgsDistanceArea myDa;
 
   myDa.setSourceCrs( mLayer->crs() );
   myDa.setEllipsoidalMode( QgisApp::instance()->mapCanvas()->mapRenderer()->hasCrsTransformEnabled() );
   myDa.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
 
-  QgsAttributeDialog *dialog = new QgsAttributeDialog( mLayer, f, cloneFeature, myDa );
+  context.setDistanceArea( myDa );
+  context.setVectorLayerTools( QgisApp::instance()->vectorLayerTools() );
+
+  QgsAttributeDialog *dialog = new QgsAttributeDialog( mLayer, f, cloneFeature, NULL, true, context );
 
   if ( mLayer->actions()->size() > 0 )
   {
@@ -138,7 +144,7 @@ bool QgsFeatureAction::editFeature()
   return res;
 }
 
-bool QgsFeatureAction::addFeature()
+bool QgsFeatureAction::addFeature( const QgsAttributeMap& defaultAttributes )
 {
   if ( !mLayer || !mLayer->isEditable() )
     return false;
@@ -154,7 +160,12 @@ bool QgsFeatureAction::addFeature()
   mFeature.initAttributes( fields.count() );
   for ( int idx = 0; idx < fields.count(); ++idx )
   {
-    if ( reuseLastValues && mLastUsedValues.contains( mLayer ) && mLastUsedValues[ mLayer ].contains( idx ) )
+    if ( defaultAttributes.contains( idx ) )
+    {
+      QgsDebugMsg( QString( "Using specified default %1 for %2" ).arg( defaultAttributes.value( idx ).toString() ).arg( idx ) );
+      mFeature.setAttribute( idx, defaultAttributes.value( idx ) );
+    }
+    else if ( reuseLastValues && mLastUsedValues.contains( mLayer ) && mLastUsedValues[ mLayer ].contains( idx ) )
     {
       QgsDebugMsg( QString( "reusing %1 for %2" ).arg( mLastUsedValues[ mLayer ][idx].toString() ).arg( idx ) );
       mFeature.setAttribute( idx, mLastUsedValues[ mLayer ][idx] );

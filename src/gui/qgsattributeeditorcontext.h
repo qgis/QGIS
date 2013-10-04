@@ -21,6 +21,7 @@
 
 #include <qgsdistancearea.h>
 #include <qgsvectorlayer.h>
+#include <qgsvectorlayertools.h>
 
 
 /**
@@ -41,6 +42,9 @@ class GUI_EXPORT QgsAttributeEditorContext
     void setDistanceArea( const QgsDistanceArea& distanceArea ) { mDistanceArea = distanceArea; }
     inline const QgsDistanceArea& distanceArea() { return mDistanceArea; }
 
+    void setVectorLayerTools( QgsVectorLayerTools* vlTools ) { mVectorLayerTools = vlTools; }
+    QgsVectorLayerTools* vectorLayerTools() { return mVectorLayerTools; }
+
     /**
      * When copying the context for another layer,  call this.
      * Will adjast the distance area for this layer
@@ -49,7 +53,10 @@ class GUI_EXPORT QgsAttributeEditorContext
      */
     void adjustForLayer( QgsVectorLayer* layer );
 
+
   private:
+    QgsVectorLayerTools* mVectorLayerTools;
+
     //! vectorlayer => ( fieldIdx, proxyWidget )
     QMap<QgsVectorLayer*, QMap<int, QWidget*> > mProxyWidgets;
 

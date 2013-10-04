@@ -57,9 +57,9 @@ class QgsPoint;
 class QgsProviderRegistry;
 class QgsPythonUtils;
 class QgsRectangle;
-
 class QgsUndoWidget;
 class QgsVectorLayer;
+class QgsVectorLayerTools;
 
 class QDomDocument;
 class QNetworkReply;
@@ -241,6 +241,13 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     /** overloaded function used to sort menu entries alphabetically */
     QMenu* createPopupMenu();
+
+    /**
+     * Access the vector layer tools. This will be an instance of {@see QgsGuiVectorLayerTools}
+     * by default.
+     * @return  The vector layer tools
+     */
+    QgsVectorLayerTools* vectorLayerTools() { return mVectorLayerTools; }
 
     //! Actions to be inserted in menus and toolbars
     QAction *actionNewProject() { return mActionNewProject; }
@@ -1518,6 +1525,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsMessageBar *mInfoBar;
     QWidget *mMacrosWarn;
 
+    QgsVectorLayerTools* mVectorLayerTools;
 #ifdef HAVE_TOUCH
     bool gestureEvent( QGestureEvent *event );
     void tapAndHoldTriggered( QTapAndHoldGesture *gesture );

@@ -16,6 +16,7 @@
 #include "qgsattributeeditorcontext.h"
 
 QgsAttributeEditorContext::QgsAttributeEditorContext()
+    : mVectorLayerTools( NULL )
 {
 
 }

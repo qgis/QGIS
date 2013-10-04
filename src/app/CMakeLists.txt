@@ -43,6 +43,7 @@ SET(QGIS_APP_SRCS
   qgslabelpreview.cpp
   qgsloadstylefromdbdialog.cpp
   qgssavestyletodbdialog.cpp
+  qgsguivectorlayertools.cpp
 
   qgsmaptooladdfeature.cpp
   qgsmaptooladdpart.cpp
@@ -99,6 +100,7 @@ SET(QGIS_APP_SRCS
   qgsrasterlayerproperties.cpp
   qgstextannotationdialog.cpp
   qgsshortcutsmanager.cpp
+  qgsguivectorlayertools.h
   qgssnappingdialog.cpp
   qgssvgannotationdialog.cpp
   qgsundowidget.cpp
