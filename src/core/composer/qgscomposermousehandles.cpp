@@ -378,7 +378,7 @@ void QgsComposerMouseHandles::mouseMoveEvent( QGraphicsSceneMouseEvent* event )
   if ( mIsDragging )
   {
     //currently dragging a selection
-    dragMouseMove( event->lastScenePos(), shiftModifier );
+    dragMouseMove( event->lastScenePos(), shiftModifier, controlModifier );
   }
   else if ( mIsResizing )
   {
@@ -499,7 +499,7 @@ void QgsComposerMouseHandles::mousePressEvent( QGraphicsSceneMouseEvent* event )
 
 }
 
-void QgsComposerMouseHandles::dragMouseMove( const QPointF& currentPosition, bool lockMovement )
+void QgsComposerMouseHandles::dragMouseMove( const QPointF& currentPosition, bool lockMovement, bool preventSnap )
 {
   if ( !mComposition )
   {
@@ -513,8 +513,18 @@ void QgsComposerMouseHandles::dragMouseMove( const QPointF& currentPosition, boo
   //find target position before snapping (in scene coordinates)
   QPointF upperLeftPoint( mBeginHandlePos.x() + moveX, mBeginHandlePos.y() + moveY );
 
-  //snap to grid and guides
-  QPointF snappedLeftPoint = snapPoint( upperLeftPoint, QgsComposerMouseHandles::Item );
+  QPointF snappedLeftPoint;
+  if ( !preventSnap )
+  {
+    //snap to grid and guides
+    snappedLeftPoint = snapPoint( upperLeftPoint, QgsComposerMouseHandles::Item );
+  }
+  else
+  {
+    //no snapping
+    snappedLeftPoint = upperLeftPoint;
+    deleteAlignItems();
+  }
 
   //calculate total shift for item from beginning of drag operation to current position
   double moveRectX = snappedLeftPoint.x() - mBeginHandlePos.x();

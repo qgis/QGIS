@@ -140,7 +140,7 @@ class CORE_EXPORT QgsComposerMouseHandles: public QObject, public QGraphicsRectI
     QgsComposerMouseHandles::MouseAction mouseActionForPosition( const QPointF& itemCoordPos );
 
     /**Handles dragging of items during mouse move*/
-    void dragMouseMove( const QPointF& currentPosition, bool lockMovement );
+    void dragMouseMove( const QPointF& currentPosition, bool lockMovement, bool preventSnap );
     /**Handles resizing of items during mouse move*/
     void resizeMouseMove( const QPointF& currentPosition, bool lockAspect, bool fromCenter );
 
