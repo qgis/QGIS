@@ -483,7 +483,7 @@ class GrassAlgorithm(GeoAlgorithm):
         command += ' input="' + layer + '"'
         command += ' band=1'
         command += ' output=' + destFilename
-        command += ' --overwrite -o'
+        command += ' --overwrite -o -r'
         return command
 
     def getTempFilename(self):
