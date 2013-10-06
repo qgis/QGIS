@@ -1,15 +1,15 @@
-gdalogr:buildpyramidsoverviews,USE_ORIGINAL_NAME,Raster/Creation
+gdalogr:overviews,USE_ORIGINAL_NAME,Raster/Creation
 gdalogr:executesql,Execute SQL on vector layer,Vector/General tools
-gdalogr:information,Raster layer information,Raster/General tools
+gdalogr:rasterinfo,Raster layer information,Raster/General tools
 gdalogr:merge,USE_ORIGINAL_NAME,Raster/General tools
 gdalogr:nearblack,USE_ORIGINAL_NAME,Raster/Analysis
 gdalogr:ogr2ogr,Export vector layer,Vector/General tools
-gdalogr:ogrinfo,Vector layer information,Vector/Statistics
-gdalogr:pct2rgb,PCT to RGB,Images/Image Manipulation
+gdalogr:vectorinfo,Vector layer information,Vector/Statistics
+gdalogr:pcttorgb,PCT to RGB,Images/Image Manipulation
 gdalogr:proximity,USE_ORIGINAL_NAME,Raster/Analysis
-gdalogr:rgb2pct,RGB to PCT,Images/Image Manipulation
+gdalogr:rgbtopct,RGB to PCT,Images/Image Manipulation
 gdalogr:sieve,Remove small pixel clumps (nearest neighbour),Raster/Edition
-gdalogr:translateconvertformat,Export raster layer,Raster/General tools
+gdalogr:translate,Export raster layer,Raster/General tools
 gdalogr:warpreproject,Reproject raster layer,Raster/General tools
 otb:bandmath,USE_ORIGINAL_NAME,Images/Miscellaneous
 otb:binarymorphologicaloperation,USE_ORIGINAL_NAME,Images/Image Filtering

@@ -110,6 +110,10 @@ class Ogr2Ogr(OgrAlgorithm):
                           ''))
 
         self.addOutput(OutputVector(self.OUTPUT_LAYER, 'Output layer'))
+        
+    def commandLineName(self):
+        return "gdalogr:ogr2ogr"
+        
 
     def processAlgorithm(self, progress):
         if not gdalAvailable:

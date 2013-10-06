@@ -26,18 +26,14 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from PyQt4 import QtGui, QtCore
-
+from PyQt4 import QtGui
 from processing.core.GeoAlgorithm import GeoAlgorithm
-
 from processing.parameters.ParameterRaster import ParameterRaster
 from processing.parameters.ParameterString import ParameterString
 from processing.parameters.ParameterSelection import ParameterSelection
 from processing.parameters.ParameterNumber import ParameterNumber
 from processing.outputs.OutputRaster import OutputRaster
-
 from processing.tools.system import *
-
 from processing.gdal.GdalUtils import GdalUtils
 
 
@@ -56,6 +52,9 @@ class proximity(GeoAlgorithm):
     def getIcon(self):
         filepath = os.path.dirname(__file__) + '/icons/proximity.png'
         return QtGui.QIcon(filepath)
+    
+    def commandLineName(self):
+        return "gdalogr:proximity"
 
     def defineCharacteristics(self):
         self.name = 'Proximity (raster distance)'

@@ -56,6 +56,9 @@ class OgrInfo(OgrAlgorithm):
                           [ParameterVector.VECTOR_TYPE_ANY], False))
 
         self.addOutput(OutputHTML(self.OUTPUT, 'Layer information'))
+        
+    def commandLineName(self):
+        return "gdalogr:vectorinfo"        
 
     def processAlgorithm(self, progress):
 
