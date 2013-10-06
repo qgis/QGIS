@@ -378,7 +378,15 @@ QSet<QString> QgsSymbolV2::usedAttributes() const
 QgsSymbolV2RenderContext::QgsSymbolV2RenderContext( QgsRenderContext& c, QgsSymbolV2::OutputUnit u, qreal alpha, bool selected, int renderHints, const QgsFeature* f )
     : mRenderContext( c ), mOutputUnit( u ), mAlpha( alpha ), mSelected( selected ), mRenderHints( renderHints ), mFeature( f ), mLayer( 0 )
 {
+	// Indicates that the feature was generalized in the current rendering context.
+	mGeneralizedByBoundingBox = false;
+}
 
+QgsSymbolV2RenderContext::QgsSymbolV2RenderContext( QgsRenderContext& c, QgsSymbolV2::OutputUnit u, qreal alpha, bool selected, bool generalizedByBoundingBox, int renderHints, const QgsFeature* f )
+    : mRenderContext( c ), mOutputUnit( u ), mAlpha( alpha ), mSelected( selected ), mRenderHints( renderHints ), mFeature( f ), mLayer( 0 )
+{
+	// Indicates that the feature was generalized in the current rendering context.
+	mGeneralizedByBoundingBox = generalizedByBoundingBox;
 }
 
 QgsSymbolV2RenderContext::~QgsSymbolV2RenderContext()
@@ -597,9 +605,9 @@ double QgsLineSymbolV2::width()
   return maxWidth;
 }
 
-void QgsLineSymbolV2::renderPolyline( const QPolygonF& points, const QgsFeature* f, QgsRenderContext& context, int layer, bool selected )
+void QgsLineSymbolV2::renderPolyline( const QPolygonF& points, const QgsFeature* f, QgsRenderContext& context, int layer, bool selected, bool generalizedByBoundingBox )
 {
-  QgsSymbolV2RenderContext symbolContext( context, outputUnit(), mAlpha, selected, mRenderHints, f );
+  QgsSymbolV2RenderContext symbolContext( context, outputUnit(), mAlpha, selected, generalizedByBoundingBox, mRenderHints, f );
   if ( layer != -1 )
   {
     if ( layer >= 0 && layer < mLayers.count() )
@@ -632,9 +640,9 @@ QgsFillSymbolV2::QgsFillSymbolV2( QgsSymbolLayerV2List layers )
     mLayers.append( new QgsSimpleFillSymbolLayerV2() );
 }
 
-void QgsFillSymbolV2::renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, const QgsFeature* f, QgsRenderContext& context, int layer, bool selected )
+void QgsFillSymbolV2::renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, const QgsFeature* f, QgsRenderContext& context, int layer, bool selected, bool generalizedByBoundingBox )
 {
-  QgsSymbolV2RenderContext symbolContext( context, outputUnit(), mAlpha, selected, mRenderHints, f );
+  QgsSymbolV2RenderContext symbolContext( context, outputUnit(), mAlpha, selected, generalizedByBoundingBox, mRenderHints, f );
   if ( layer != -1 )
   {
     if ( layer >= 0 && layer < mLayers.count() )

@@ -23,6 +23,7 @@ SET(QGIS_CORE_SRCS
   symbology-ng/qgslinesymbollayerv2.cpp
   symbology-ng/qgsmarkersymbollayerv2.cpp
   symbology-ng/qgsfillsymbollayerv2.cpp
+  symbology-ng/qgsrendererv2geometrysimplifier.cpp
   symbology-ng/qgsrendererv2.cpp
   symbology-ng/qgsrendererv2registry.cpp
   symbology-ng/qgssinglesymbolrendererv2.cpp
@@ -106,6 +107,7 @@ SET(QGIS_CORE_SRCS
   qgsprovidermetadata.cpp
   qgsproviderregistry.cpp
   qgspythonrunner.cpp
+  qgsrenderstats.cpp
   qgsrendercontext.cpp
   qgsrenderchecker.cpp
   qgsrectangle.cpp

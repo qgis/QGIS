@@ -153,6 +153,7 @@ class CORE_EXPORT QgsSymbolV2RenderContext
 {
   public:
     QgsSymbolV2RenderContext( QgsRenderContext& c, QgsSymbolV2::OutputUnit u , qreal alpha = 1.0, bool selected = false, int renderHints = 0, const QgsFeature* f = 0 );
+    QgsSymbolV2RenderContext( QgsRenderContext& c, QgsSymbolV2::OutputUnit u , qreal alpha, bool selected, bool generalizedByBoundingBox, int renderHints, const QgsFeature* f );
     ~QgsSymbolV2RenderContext();
 
     QgsRenderContext& renderContext() { return mRenderContext; }
@@ -169,6 +170,9 @@ class CORE_EXPORT QgsSymbolV2RenderContext
 
     bool selected() const { return mSelected; }
     void setSelected( bool selected ) { mSelected = selected; }
+
+    bool generalizedByBoundingBox() const { return mGeneralizedByBoundingBox; }
+    void setGeneralizedByBoundingBox( bool generalizedByBoundingBox ) { mGeneralizedByBoundingBox = generalizedByBoundingBox; }
 
     //! @note added in 1.5
     int renderHints() const { return mRenderHints; }
@@ -192,6 +196,7 @@ class CORE_EXPORT QgsSymbolV2RenderContext
     QgsSymbolV2::OutputUnit mOutputUnit;
     qreal mAlpha;
     bool mSelected;
+	bool mGeneralizedByBoundingBox; 
     int mRenderHints;
     const QgsFeature* mFeature; //current feature
     const QgsVectorLayer* mLayer; //current vectorlayer
@@ -244,7 +249,7 @@ class CORE_EXPORT QgsLineSymbolV2 : public QgsSymbolV2
     void setWidth( double width );
     double width();
 
-    void renderPolyline( const QPolygonF& points, const QgsFeature* f, QgsRenderContext& context, int layer = -1, bool selected = false );
+    void renderPolyline( const QPolygonF& points, const QgsFeature* f, QgsRenderContext& context, int layer = -1, bool selected = false, bool generalizedByBoundingBox = false );
 
     virtual QgsSymbolV2* clone() const;
 };
@@ -262,7 +267,7 @@ class CORE_EXPORT QgsFillSymbolV2 : public QgsSymbolV2
 
     QgsFillSymbolV2( QgsSymbolLayerV2List layers = QgsSymbolLayerV2List() );
     void setAngle( double angle );
-    void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, const QgsFeature* f, QgsRenderContext& context, int layer = -1, bool selected = false );
+    void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, const QgsFeature* f, QgsRenderContext& context, int layer = -1, bool selected = false, bool generalizedByBoundingBox = false );
 
     virtual QgsSymbolV2* clone() const;
 };

@@ -70,7 +70,13 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrProvider* p, const QgsFeatur
 
     OGR_G_CreateFromWkt(( char ** )&wktText, NULL, &filter );
     QgsDebugMsg( "Setting spatial filter using " + wktExtent );
-    OGR_L_SetSpatialFilter( ogrLayer, filter );
+
+	// Checks whether is really needed filter by rect. 
+	OGREnvelope extent;
+	OGR_L_GetExtent(ogrLayer, &extent, true);
+	QgsRectangle layerRect(extent.MinX, extent.MinY, extent.MaxX, extent.MaxY);
+	if (!mRequest.filterRect().contains(layerRect)) OGR_L_SetSpatialFilter( ogrLayer, filter );
+
     OGR_G_DestroyGeometry( filter );
   }
   else
