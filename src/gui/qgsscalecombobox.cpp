@@ -63,6 +63,18 @@ void QgsScaleComboBox::updateScales( const QStringList &scales )
     }
   }
 
+  // Feature #8733: Better formatting for scales as "1.000.000" instead of "1000000"
+  QString locale = QLocale::system().toString( 1000 );
+  bool ok;
+  for ( int i = 0; i < myScalesList.size(); i++ )
+  {
+	  QStringList parts = myScalesList[i].split( ':' );
+	  QString tempTx = parts.at( 1 ); tempTx = tempTx.replace( locale[1], "" );
+
+	  double scale = QLocale::system().toDouble( tempTx, &ok );
+	  if (ok) myScalesList[i] = toString(1.0 / scale);
+  }
+
   blockSignals( true );
   clear();
   addItems( myScalesList );
@@ -82,12 +94,20 @@ void QgsScaleComboBox::showPopup()
   bool ok;
   int idx = 0;
   int min = 999999;
-  long currScale = parts.at( 1 ).toLong( &ok );
+
+  QString locale = QLocale::system().toString( 1000 );
+  QString tempTx = parts.at( 1 ); tempTx = tempTx.replace( locale[1], "" );
+  long currScale = tempTx.toLong( &ok );
   long nextScale, delta;
+
   for ( int i = 0; i < count(); i++ )
   {
     parts = itemText( i ).split( ':' );
-    nextScale = parts.at( 1 ).toLong( &ok );
+
+	tempTx = parts.at( 1 );
+	tempTx = tempTx.replace( locale[1], "" );
+	nextScale = tempTx.toLong( &ok );
+
     delta = qAbs( currScale - nextScale );
     if ( delta < min )
     {
@@ -180,11 +200,11 @@ QString QgsScaleComboBox::toString( double scale )
 {
   if ( scale > 1 )
   {
-    return QString( "%1:1" ).arg( qRound( scale ) );
+    return QString( "%1:1" ).arg( QLocale::system().toString( qRound( scale ) ));
   }
   else
   {
-    return QString( "1:%1" ).arg( qRound( 1.0 / scale ) );
+    return QString( "1:%1" ).arg( QLocale::system().toString( qRound( 1.0 / scale ) ));
   }
 }
 

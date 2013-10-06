@@ -24,6 +24,9 @@
 #include "qgsmaptopixel.h"
 #include "qgsrectangle.h"
 
+// Provides statistical information about of a rendering operation.
+#include "qgsrenderstats.h"
+
 class QPainter;
 
 class QgsLabelingEngineInterface;
@@ -95,6 +98,13 @@ class CORE_EXPORT QgsRenderContext
     //! Added in QGIS v2.0
     void setSelectionColor( const QColor& color ) { mSelectionColor = color; }
 
+	void setDestinationCrs( const QgsCoordinateReferenceSystem* crs ) { mDestCRS = crs; }
+	const QgsCoordinateReferenceSystem* destinationCrs() const { return mDestCRS; }
+
+	#ifdef QGISDEBUG_STATS
+	QgsRenderStats stats; // Provides statistical information about of a rendering operation.
+	#endif
+
   private:
 
     /**Painter for rendering operations*/
@@ -102,6 +112,9 @@ class CORE_EXPORT QgsRenderContext
 
     /**For transformation between coordinate systems. Can be 0 if on-the-fly reprojection is not used*/
     const QgsCoordinateTransform* mCoordTransform;
+
+	/**Destination spatial reference system of the projection*/
+    const QgsCoordinateReferenceSystem* mDestCRS;
 
     /**True if vertex markers for editing should be drawn*/
     bool mDrawEditingInformation;

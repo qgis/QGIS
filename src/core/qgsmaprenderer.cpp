@@ -269,11 +269,16 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
   renderTime.start();
 #endif
 
+  #ifdef QGISDEBUG_STATS
+  mRenderContext.stats.start(); // Starts the statistics of the rendering operation.
+  #endif
+
   if ( mOverview )
     mRenderContext.setDrawEditingInformation( !mOverview );
 
   mRenderContext.setPainter( painter );
   mRenderContext.setCoordinateTransform( 0 );
+  mRenderContext.setDestinationCrs( 0 );
   //this flag is only for stopping during the current rendering progress,
   //so must be false at every new render operation
   mRenderContext.setRenderingStopped( false );
@@ -428,6 +433,9 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
 
       mRenderContext.setCoordinateTransform( ct );
 
+	  // Sets the destination spatial reference system of the projection.
+	  mRenderContext.setDestinationCrs( mDestCRS );
+
       //decide if we have to scale the raster
       //this is necessary in case QGraphicsScene is used
       bool scaleRaster = false;
@@ -558,6 +566,10 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
         QgsDebugMsg( "Layer rendered without issues" );
       }
 
+	  #ifdef QGISDEBUG_STATS
+	  mRenderContext.stats.LayerCount++; // Update counters of the rendering operation.
+	  #endif
+
       if ( split )
       {
         mRenderContext.setExtent( r2 );
@@ -665,6 +677,9 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
 
           mRenderContext.setCoordinateTransform( ct );
 
+		  // Sets the destination spatial reference system of the projection.
+		  mRenderContext.setDestinationCrs( mDestCRS );
+
           ml->drawLabels( mRenderContext );
           if ( split )
           {
@@ -684,12 +699,17 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
     // set correct extent
     mRenderContext.setExtent( mExtent );
     mRenderContext.setCoordinateTransform( NULL );
+	mRenderContext.setDestinationCrs( NULL );
 
     mLabelingEngine->drawLabeling( mRenderContext );
     mLabelingEngine->exit();
   }
 
   QgsDebugMsg( "Rendering completed in (seconds): " + QString( "%1" ).arg( renderTime.elapsed() / 1000.0 ) );
+
+  #ifdef QGISDEBUG_STATS
+  mRenderContext.stats.stopAndFlush("C:/temp/test_data_qgis_master_RenderingStatsQGIS.log"); // Stop and flush the statistics of the rendering operation.
+  #endif
 
   mDrawing = false;
 }

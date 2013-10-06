@@ -21,6 +21,7 @@
 QgsRenderContext::QgsRenderContext()
     : mPainter( 0 ),
     mCoordTransform( 0 ),
+	mDestCRS( 0 ),
     mDrawEditingInformation( true ),
     mForceVectorOutput( false ),
     mUseAdvancedEffects( true ),
