@@ -28,17 +28,14 @@ if "%VERSION%"=="" goto error
 if "%PACKAGE%"=="" goto error
 if "%PACKAGENAME%"=="" set PACKAGENAME=qgis-dev
 
-path %SYSTEMROOT%\system32;%SYSTEMROOT%;%SYSTEMROOT%\System32\Wbem;%PROGRAMFILES(X86)%\CMake 2.8\bin
-set PYTHONPATH=
-
-call "%PROGRAMFILES(X86)%\Microsoft Visual Studio 10.0\VC\vcvarsall.bat" amd64
-path %PATH%;%PROGRAMFILES(X86)%\Microsoft Visual Studio 10.0\Common7\IDE
-
 if "%OSGEO4W_ROOT%"=="" set OSGEO4W_ROOT=C:\OSGeo4W64
 if not exist "%OSGEO4W_ROOT%\bin\o4w_env.bat" goto error
 call "%OSGEO4W_ROOT%\bin\o4w_env.bat"
-path %PATH%;c:\cygwin\bin
 echo on
+
+set PYTHONPATH=
+call "%PROGRAMFILES(X86)%\Microsoft Visual Studio 10.0\VC\vcvarsall.bat" amd64
+path %PROGRAMFILES(X86)%\CMake 2.8\bin;%PROGRAMFILES(X86)%\Microsoft Visual Studio 10.0\Common7\IDE;%PATH%;c:\cygwin\bin
 
 set O4W_ROOT=%OSGEO4W_ROOT:\=/%
 set LIB_DIR=%O4W_ROOT%
