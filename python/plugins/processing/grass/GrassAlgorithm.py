@@ -381,7 +381,7 @@ class GrassAlgorithm(GeoAlgorithm):
 
             if isinstance(out, OutputVector):
                 filename = out.value
-                command = 'v.out.ogr -c -e input=' + out.name + uniqueSufix
+                command = 'v.out.ogr -c -e -z input=' + out.name + uniqueSufix
                 command += ' dsn="' + os.path.dirname(out.value) + '"'
                 command += ' format=ESRI_Shapefile'
                 command += ' olayer=' + os.path.basename(out.value)[:-4]
@@ -483,7 +483,7 @@ class GrassAlgorithm(GeoAlgorithm):
         command += ' input="' + layer + '"'
         command += ' band=1'
         command += ' output=' + destFilename
-        command += ' --overwrite -o'
+        command += ' --overwrite -o -r'
         return command
 
     def getTempFilename(self):
