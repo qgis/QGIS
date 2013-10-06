@@ -963,7 +963,7 @@ void QgsComposition::selectNextByZOrder( ZValueDirection direction )
   }
 
   //select item with target z value
-  QgsComposerItem* selectedItem;
+  QgsComposerItem* selectedItem = 0;
   switch ( direction )
   {
     case QgsComposition::ZValueBelow:

@@ -352,7 +352,7 @@ int QgsVectorLayerEditUtils::splitParts( const QList<QgsPoint>& splitLine, bool 
       featureList << QgsFeature( f );
   }
 
-  int addPartRet;
+  int addPartRet = 0;
   foreach ( const QgsFeature& feat, featureList )
   {
     QList<QgsGeometry*> newGeometries;
@@ -364,14 +364,14 @@ int QgsVectorLayerEditUtils::splitParts( const QList<QgsPoint>& splitLine, bool 
       for ( int i = 0; i < newGeometries.size(); ++i )
       {
         addPartRet = feat.geometry()->addPart( newGeometries.at( i ) );
-        if ( addPartRet != 0 )
+        if ( addPartRet )
           break;
       }
 
       // For test only: Exception already thrown here...
       // feat.geometry()->asWkb();
 
-      if ( addPartRet == 0 )
+      if ( !addPartRet )
       {
         L->editBuffer()->changeGeometry( feat.id(), feat.geometry() );
       }
