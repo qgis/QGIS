@@ -608,6 +608,7 @@ void QgsProjectProperties::apply()
   QgsProject::instance()->writeEntry( "Gui", "/CanvasColorRedPart", myColor.red() );
   QgsProject::instance()->writeEntry( "Gui", "/CanvasColorGreenPart", myColor.green() );
   QgsProject::instance()->writeEntry( "Gui", "/CanvasColorBluePart", myColor.blue() );
+  mMapCanvas->setCanvasColor( myColor );
 
   //save project scales
   QStringList myScales;
@@ -813,7 +814,6 @@ void QgsProjectProperties::apply()
 
   QgsProject::instance()->relationManager()->setRelations( mRelationManagerDlg->relations() );
 
-  //todo XXX set canvas color
   emit refresh();
 }
 
