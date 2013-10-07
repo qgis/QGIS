@@ -47,12 +47,6 @@ class mmqgisx_delete_columns_algorithm(GeoAlgorithm):
                           self.LAYERNAME))
         self.addOutput(OutputVector(self.SAVENAME, 'Output'))
 
-  # =========================================================================
-  # def getIcon(self):
-  # return  QIcon(os.path.dirname(__file__) +
-  #                "/icons/mmqgis_attribute_join.png")
-  # =========================================================================
-
     def processAlgorithm(self, progress):
 
         layer = dataobjects.getObjectFromUri(
@@ -100,12 +94,6 @@ class mmqgisx_delete_duplicate_geometries_algorithm(GeoAlgorithm):
                           [ParameterVector.VECTOR_TYPE_ANY]))
         self.addOutput(OutputVector(self.SAVENAME, 'Output'))
 
-  # ===========================================================================
-  # def getIcon(self):
-  # return  QIcon(os.path.dirname(__file__) +
-  #                "/icons/mmqgis_attribute_join.png")
-  # ===========================================================================
-
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(
                 self.getParameterValue(self.LAYERNAME))
@@ -145,12 +133,6 @@ class mmqgisx_geometry_convert_algorithm(GeoAlgorithm):
                           , self.newtypes, default=0))
 
         self.addOutput(OutputVector(self.SAVENAME, 'Output'))
-
-  # ===========================================================================
-  # def getIcon(self):
-  # return  QIcon(os.path.dirname(__file__) +
-  #                "/icons/mmqgis_attribute_export.png")
-  # ===========================================================================
 
     def processAlgorithm(self, progress):
 
@@ -429,11 +411,6 @@ class mmqgisx_grid_algorithm(GeoAlgorithm):
         self.addParameter(ParameterCrs(self.CRS, 'CRS'))
         self.addOutput(OutputVector(self.SAVENAME, 'Output'))
 
-  # ===========================================================================
-  # def getIcon(self):
-  # return  QtGui.QIcon(os.path.dirname(__file__) + "/icons/mmqgis_grid.png")
-  # ===========================================================================
-
     def processAlgorithm(self, progress):
         hspacing = self.getParameterValue(self.HSPACING)
         vspacing = self.getParameterValue(self.VSPACING)
@@ -617,11 +594,6 @@ class mmqgisx_gridify_algorithm(GeoAlgorithm):
         self.addParameter(ParameterNumber(self.VSPACING, 'Vertical spacing',
                           default=0.1))
         self.addOutput(OutputVector(self.SAVENAME, 'Output'))
-
-  # ===========================================================================
-  # def getIcon(self):
-  # return  QIcon(os.path.dirname(__file__) + "/icons/mmqgis_gridify.png")
-  # ===========================================================================
 
     def processAlgorithm(self, progress):
 
@@ -817,12 +789,6 @@ class mmqgisx_hub_distance_algorithm(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.SAVENAME, 'Output'))
 
-  # ===========================================================================
-  # def getIcon(self):
-  # return  QIcon(os.path.dirname(__file__) +
-  #               "/icons/mmqgis_hub_distance.png")
-  # ===========================================================================
-
     def processAlgorithm(self, progress):
 
         layersource = dataobjects.getObjectFromUri(
@@ -936,12 +902,6 @@ class mmqgisx_hub_lines_algorithm(GeoAlgorithm):
                           'Spoke Hub ID Attribute', self.SPOKENAME))
         self.addOutput(OutputVector(self.SAVENAME, 'Output'))
 
-  # ===========================================================================
-  # def getIcon(self):
-  # return  QIcon(os.path.dirname(__file__) +
-  #               "/icons/mmqgis_hub_distance.png")
-  # ===========================================================================
-
     def processAlgorithm(self, progress):
 
         hublayer = dataobjects.getObjectFromUri(
@@ -1019,11 +979,6 @@ class mmqgisx_merge_algorithm(GeoAlgorithm):
         self.addParameter(ParameterVector(self.LAYER2, 'Source layer 2',
                           [ParameterVector.VECTOR_TYPE_ANY]))
         self.addOutput(OutputVector(self.SAVENAME, 'Output'))
-
-  # ===========================================================================
-  # def getIcon(self):
-  # return  QtGui.QIcon(os.path.dirname(__file__) + "/icons/mmqgis_merge.png")
-  # ===========================================================================
 
     def processAlgorithm(self, progress):
 
@@ -1130,11 +1085,52 @@ class mmqgisx_select_algorithm(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.RESULT, 'Output', True))
 
-  # ===========================================================================
-  # def getIcon(self):
-  # return  QIcon(os.path.dirname(__file__) +
-  #               "/icons/mmqgis_attribute_export.png")
-  # ===========================================================================
+    def processAlgorithm(self, progress):
+
+        filename = self.getParameterValue(self.LAYERNAME)
+        layer = dataobjects.getObjectFromUri(filename)
+
+        attribute = self.getParameterValue(self.ATTRIBUTE)
+        comparison = self.comparisons[self.getParameterValue(self.COMPARISON)]
+        comparisonvalue = self.getParameterValue(self.COMPARISONVALUE)
+
+        selected = select(layer, attribute, comparison, comparisonvalue, progress)
+
+        layer.setSelectedFeatures(selected)
+        self.setOutputValue(self.RESULT, filename)
+        
+class mmqgisx_extract_algorithm(GeoAlgorithm):
+
+    LAYERNAME = 'LAYERNAME'
+    ATTRIBUTE = 'ATTRIBUTE'
+    COMPARISONVALUE = 'COMPARISONVALUE'
+    COMPARISON = 'COMPARISON'
+    RESULT = 'RESULT'
+
+    def defineCharacteristics(self):        
+        self.name = 'Extract by attribute'
+        self.group = 'Vector selection tools'
+
+        self.addParameter(ParameterVector(self.LAYERNAME, 'Input Layer',
+                          [ParameterVector.VECTOR_TYPE_ANY]))
+        self.addParameter(ParameterTableField(self.ATTRIBUTE,
+                          'Selection attribute', self.LAYERNAME))
+        self.comparisons = [
+            '==',
+            '!=',
+            '>',
+            '>=',
+            '<',
+            '<=',
+            'begins with',
+            'contains',
+            ]
+        self.addParameter(ParameterSelection(self.COMPARISON, 'Comparison',
+                          self.comparisons, default=0))
+        self.addParameter(ParameterString(self.COMPARISONVALUE, 'Value',
+                          default='0'))
+
+        self.addOutput(OutputVector(self.RESULT, 'Output'))
 
     def processAlgorithm(self, progress):
 
@@ -1145,118 +1141,130 @@ class mmqgisx_select_algorithm(GeoAlgorithm):
         comparison = self.comparisons[self.getParameterValue(self.COMPARISON)]
         comparisonvalue = self.getParameterValue(self.COMPARISONVALUE)
 
-        selectindex = layer.dataProvider().fieldNameIndex(attribute)
+        selected = select(layer, attribute, comparison, comparisonvalue, progress)
+        
+        features = vector.features(layer)
+        featureCount = len(features)
+        output = self.getOutputFromName(self.OUTPUT)        
+        writer = output.getVectorWriter(layer.fields(),
+                layer.geometryType(), layer.crs())
+        for (i, feat) in enumerate(features):
+            if feat.id() in selected:
+                writer.addFeature(feat)            
+            progress.setPercentage(100 * i / float(featureCount))            
+        del writer       
 
-        selectType = layer.dataProvider().fields()[selectindex].type()
-        selectionError = False
+def select(layer, attribute, comparison, comparisonvalue, progress):    
+    selectindex = layer.dataProvider().fieldNameIndex(attribute)
+    selectType = layer.dataProvider().fields()[selectindex].type()
+    selectionError = False
 
-        if selectType == 2:
-            try:
-                y = int(comparisonvalue)
-            except ValueError:
-                selectionError = True
-                msg = 'Cannot convert "' + unicode(comparisonvalue) \
-                    + '" to integer'
-        elif selectType == 6:
-            try:
-                y = float(comparisonvalue)
-            except ValueError:
-                selectionError = True
-                msg = 'Cannot convert "' + unicode(comparisonvalue) \
-                    + '" to float'
-        elif selectType == 10:
-            # string, boolean
-            try:
-                y = unicode(comparisonvalue)
-            except ValueError:
-                selectionError = True
-                msg = 'Cannot convert "' + unicode(comparisonvalue) \
-                    + '" to unicode'
-        elif selectType == 14:
-            # Date
-            dateAndFormat = comparisonvalue.split(' ')
+    if selectType == 2:
+        try:
+            y = int(comparisonvalue)
+        except ValueError:
+            selectionError = True
+            msg = 'Cannot convert "' + unicode(comparisonvalue) \
+                + '" to integer'
+    elif selectType == 6:
+        try:
+            y = float(comparisonvalue)
+        except ValueError:
+            selectionError = True
+            msg = 'Cannot convert "' + unicode(comparisonvalue) \
+                + '" to float'
+    elif selectType == 10:
+        # string, boolean
+        try:
+            y = unicode(comparisonvalue)
+        except ValueError:
+            selectionError = True
+            msg = 'Cannot convert "' + unicode(comparisonvalue) \
+                + '" to unicode'
+    elif selectType == 14:
+        # Date
+        dateAndFormat = comparisonvalue.split(' ')
 
-            if len(dateAndFormat) == 1:
-                # QtCore.QDate object
-                y = QLocale.system().toDate(dateAndFormat[0])
-
-                if y.isNull():
-                    msg = 'Cannot convert "' + unicode(dateAndFormat) \
-                        + '" to date with system date format ' \
-                        + QLocale.system().dateFormat()
-            elif len(dateAndFormat) == 2:
-                y = QDate.fromString(dateAndFormat[0], dateAndFormat[1])
-
-                if y.isNull():
-                    msg = 'Cannot convert "' + unicode(dateAndFormat[0]) \
-                        + '" to date with format string "' \
-                        + unicode(dateAndFormat[1] + '". ')
-            else:
-                y = QDate()
-                msg = ''
+        if len(dateAndFormat) == 1:
+            # QtCore.QDate object
+            y = QLocale.system().toDate(dateAndFormat[0])
 
             if y.isNull():
-                # Conversion was unsuccessfull
-                selectionError = True
-                msg += 'Enter the date and the date format, e.g. \
-                        "07.26.2011" "MM.dd.yyyy".'
+                msg = 'Cannot convert "' + unicode(dateAndFormat) \
+                    + '" to date with system date format ' \
+                    + QLocale.system().dateFormat()
+        elif len(dateAndFormat) == 2:
+            y = QDate.fromString(dateAndFormat[0], dateAndFormat[1])
 
-        if (comparison == 'begins with' or comparison == 'contains') \
-            and selectType != 10:
+            if y.isNull():
+                msg = 'Cannot convert "' + unicode(dateAndFormat[0]) \
+                    + '" to date with format string "' \
+                    + unicode(dateAndFormat[1] + '". ')
+        else:
+            y = QDate()
+            msg = ''
+
+        if y.isNull():
+            # Conversion was unsuccessfull
             selectionError = True
-            msg = '"' + comparison + '" can only be used with string fields'
+            msg += 'Enter the date and the date format, e.g. \
+                    "07.26.2011" "MM.dd.yyyy".'
 
-        if selectionError:
-            raise GeoAlgorithmExecutionException('Error in selection input: '
-                    + msg)
+    if (comparison == 'begins with' or comparison == 'contains') \
+        and selectType != 10:
+        selectionError = True
+        msg = '"' + comparison + '" can only be used with string fields'
 
-        readcount = 0
-        selected = []
-        totalcount = layer.featureCount()
-        for feature in layer.getFeatures():
-            aValue = feature[selectindex]
+    if selectionError:
+        raise GeoAlgorithmExecutionException('Error in selection input: '
+                + msg)
 
-            if aValue is None:
-                continue
+    readcount = 0
+    selected = []
+    features = vector.features(layer)
+    totalcount = len(features)
+    for feature in features:
+        aValue = feature[selectindex]
 
-            if selectType == 2:
-                x = int(aValue)
-            elif selectType == 6:
-                x = float(aValue)
-            elif selectType == 10:
-                # string, boolean
-                x = unicode(aValue)
-            elif selectType == 14:
-                # date
-                x = aValue
+        if aValue is None:
+            continue
 
-            match = False
-            if comparison == '==':
-                match = x == y
-            elif comparison == '!=':
-                match = x != y
-            elif comparison == '>':
-                match = x > y
-            elif comparison == '>=':
-                match = x >= y
-            elif comparison == '<':
-                match = x < y
-            elif comparison == '<=':
-                match = x <= y
-            elif comparison == 'begins with':
-                match = x.startswith(y)
-            elif comparison == 'contains':
-                match = x.find(y) >= 0
+        if selectType == 2:
+            x = int(aValue)
+        elif selectType == 6:
+            x = float(aValue)
+        elif selectType == 10:
+            # string, boolean
+            x = unicode(aValue)
+        elif selectType == 14:
+            # date
+            x = aValue
 
-            readcount += 1
-            if match:
-                selected.append(feature.id())
+        match = False
+        if comparison == '==':
+            match = x == y
+        elif comparison == '!=':
+            match = x != y
+        elif comparison == '>':
+            match = x > y
+        elif comparison == '>=':
+            match = x >= y
+        elif comparison == '<':
+            match = x < y
+        elif comparison == '<=':
+            match = x <= y
+        elif comparison == 'begins with':
+            match = x.startswith(y)
+        elif comparison == 'contains':
+            match = x.find(y) >= 0
 
-            progress.setPercentage(float(readcount) / totalcount * 100)
+        readcount += 1
+        if match:
+            selected.append(feature.id())
 
-        layer.setSelectedFeatures(selected)
-        self.setOutputValue(self.RESULT, filename)
-
+        progress.setPercentage(float(readcount) / totalcount * 100)
+            
+    return selected
 
 class mmqgisx_text_to_float_algorithm(GeoAlgorithm):
 
@@ -1274,12 +1282,6 @@ class mmqgisx_text_to_float_algorithm(GeoAlgorithm):
                           'Text attribute to convert to float',
                           self.LAYERNAME))
         self.addOutput(OutputVector(self.SAVENAME, 'Output'))
-
-  # ===========================================================================
-  # def getIcon(self):
-  # return  QIcon(os.path.dirname(__file__) +
-  #                "/icons/mmqgis_text_to_float.png")
-  # ===========================================================================
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(

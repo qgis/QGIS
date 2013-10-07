@@ -26,6 +26,11 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from PyQt4.QtGui import *
+from processing.algs.ftools.RandomExtract import RandomExtract
+from processing.algs.ftools.RandomExtractWithinSubsets import \
+        RandomExtractWithinSubsets
+from processing.algs.ftools.ExtractByLocation import ExtractByLocation
+
 from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.algs.ftools.PointsInPolygon import PointsInPolygon
 from processing.algs.ftools.PointsInPolygonUnique import PointsInPolygonUnique
@@ -80,7 +85,8 @@ from processing.algs.mmqgisx.MMQGISXAlgorithms import \
     mmqgisx_geometry_convert_algorithm, mmqgisx_grid_algorithm, \
     mmqgisx_gridify_algorithm, mmqgisx_hub_distance_algorithm, \
     mmqgisx_hub_lines_algorithm, mmqgisx_merge_algorithm, \
-    mmqgisx_select_algorithm, mmqgisx_text_to_float_algorithm
+    mmqgisx_select_algorithm, mmqgisx_text_to_float_algorithm,\
+    mmqgisx_extract_algorithm
 
 from processing.algs.Polygonize import Polygonize
 from processing.algs.RasterLayerStatistics import RasterLayerStatistics
@@ -128,7 +134,8 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         VariableDistanceBuffer(), Dissolve(), Difference(),
                         Intersection(), Union(), Clip(), ExtentFromLayer(),
                         RandomSelection(), RandomSelectionWithinSubsets(),
-                        SelectByLocation(),
+                        SelectByLocation(), RandomExtract(), RandomExtractWithinSubsets(),
+                        ExtractByLocation(),
                         # ------ mmqgisx ------
                         mmqgisx_delete_columns_algorithm(),
                         mmqgisx_delete_duplicate_geometries_algorithm(),
@@ -139,6 +146,7 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         mmqgisx_hub_lines_algorithm(),
                         mmqgisx_merge_algorithm(),
                         mmqgisx_select_algorithm(),
+                        mmqgisx_extract_algorithm(),
                         mmqgisx_text_to_float_algorithm(),
                         # ------ native algs ------
                         AddTableField(), FieldsCalculator(),

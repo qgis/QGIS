@@ -39,7 +39,7 @@ from processing.outputs.OutputVector import OutputVector
 from processing.tools import dataobjects, vector
 
 
-class RandomSelectionWithinSubsets(GeoAlgorithm):
+class RandomExtractWithinSubsets(GeoAlgorithm):
 
     INPUT = 'INPUT'
     METHOD = 'METHOD'
@@ -50,9 +50,8 @@ class RandomSelectionWithinSubsets(GeoAlgorithm):
     METHODS = ['Number of selected features',
                'Percentage of selected features']
 
-    def defineCharacteristics(self):
-        self.allowOnlyOpenedLayers = True
-        self.name = 'Random selection within subsets'
+    def defineCharacteristics(self):        
+        self.name = 'Random extract within subsets'
         self.group = 'Vector selection tools'
 
         self.addParameter(ParameterVector(self.INPUT, 'Input layer',
@@ -65,7 +64,7 @@ class RandomSelectionWithinSubsets(GeoAlgorithm):
                           'Number/percentage of selected features', 1, None,
                           10))
 
-        self.addOutput(OutputVector(self.OUTPUT, 'Selection', True))
+        self.addOutput(OutputVector(self.OUTPUT, 'Selection'))
 
     def processAlgorithm(self, progress):
         filename = self.getParameterValue(self.INPUT)
@@ -73,13 +72,12 @@ class RandomSelectionWithinSubsets(GeoAlgorithm):
         layer = dataobjects.getObjectFromUri(filename)
         field = self.getParameterValue(self.FIELD)
         method = self.getParameterValue(self.METHOD)
-
-        layer.removeSelection()
+        
         index = layer.fieldNameIndex(field)
-
-        unique = vector.getUniqueValues(layer, index)
-        featureCount = layer.featureCount()
-
+        
+        features = vector.features(layer)
+        featureCount = len(features)
+        unique = vector.getUniqueValues(layer, index)        
         value = int(self.getParameterValue(self.NUMBER))
         if method == 0:
             if value > featureCount:
@@ -89,41 +87,48 @@ class RandomSelectionWithinSubsets(GeoAlgorithm):
         else:
             if value > 100:
                 raise GeoAlgorithmExecutionException(
-                        "Persentage can't be greater than 100. Set corrent \
+                        "Percentage can't be greater than 100. Set correct \
                         value and try again.")
             value = value / 100.0
 
-        selran = []
-        inFeat = QgsFeature()
 
+        output = self.getOutputFromName(self.OUTPUT)        
+        writer = output.getVectorWriter(layer.fields(),
+                layer.geometryType(), layer.crs())
+        
+        selran = []        
         current = 0
         total = 100.0 / float(featureCount * len(unique))
-
         features = vector.features(layer)
 
         if not len(unique) == featureCount:
-            for i in unique:
-                FIDs = []
-                for inFeat in features:
-                    attrs = inFeat.attributes()
-                    if attrs[index] == i:
-                        FIDs.append(inFeat.id())
+            for classValue in unique:
+                classFeatures = []
+                for i, feature in enumerate(features):
+                    attrs = feature.attributes()
+                    if attrs[index] == classValue:
+                        classFeatures.append(i)
                     current += 1
                     progress.setPercentage(int(current * total))
 
                 if method == 1:
-                    selValue = int(round(value * len(FIDs), 0))
+                    selValue = int(round(value * len(classFeatures), 0))
                 else:
                     selValue = value
 
-                if selValue >= len(FIDs):
-                    selFeat = FIDs
+                if selValue >= len(classFeatures):
+                    selFeat = classFeatures
                 else:
-                    selFeat = random.sample(FIDs, selValue)
+                    selFeat = random.sample(classFeatures, selValue)
 
                 selran.extend(selFeat)
-            layer.setSelectedFeatures(selran)
         else:
-            layer.setSelectedFeatures(range(0, featureCount))
+            selran = range(0, featureCount)
 
-        self.setOutputValue(self.OUTPUT, filename)
+
+        features = vector.features(layer)
+        for (i, feat) in enumerate(features):
+            if i in selran:
+                writer.addFeature(feat)            
+            progress.setPercentage(100 * i / float(featureCount))            
+        del writer
