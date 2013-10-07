@@ -1341,6 +1341,10 @@ QStringList QgsOptions::i18nList()
   while ( myIterator.hasNext() )
   {
     QString myFileName = myIterator.next();
+
+	// Ignore the 'en' translation file, already added as 'en_US'.
+	if (myFileName.compare( "qgis_en.qm" )==0) continue;
+
     myList << myFileName.replace( "qgis_", "" ).replace( ".qm", "" );
   }
   return myList;
