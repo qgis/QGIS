@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsfeaturefactory.h
+    qgsguivectorlayertools.h
      --------------------------------------
     Date                 : 30.5.2013
     Copyright            : (C) 2013 Matthias Kuhn

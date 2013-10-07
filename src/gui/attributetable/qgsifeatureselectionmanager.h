@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsifeatureselection.h
+    qgsifeatureselectionmanager.h
      --------------------------------------
     Date                 : 6.6.2013
     Copyright            : (C) 2013 Matthias Kuhn

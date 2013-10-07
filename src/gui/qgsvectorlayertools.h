@@ -1,5 +1,5 @@
 /***************************************************************************
-    QgsAbstractFeatureAction.h
+    qgsvectorlayertools.h
      --------------------------------------
     Date                 : 29.5.2013
     Copyright            : (C) 2013 Matthias Kuhn

@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsgenericfeatureselectionmgr.cpp
+    qgsgenericfeatureselectionmanager.cpp
      --------------------------------------
     Date                 : 11.6.2013
     Copyright            : (C) 2013 Matthias Kuhn
