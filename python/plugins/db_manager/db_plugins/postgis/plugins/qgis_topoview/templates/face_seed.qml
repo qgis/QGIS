@@ -60,7 +60,7 @@
     <property key="labeling/enabled" value="true"/>
     <property key="labeling/fieldName" value="face_id"/>
     <property key="labeling/fontCapitals" value="0"/>
-    <property key="labeling/fontFamily" value="AlArabiya"/>
+    <property key="labeling/fontFamily" value="Sans"/>
     <property key="labeling/fontItalic" value="false"/>
     <property key="labeling/fontLetterSpacing" value="0"/>
     <property key="labeling/fontSize" value="8"/>
