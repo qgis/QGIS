@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+    
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -119,8 +120,7 @@ class ModelerAlgorithm(GeoAlgorithm):
         self.algParameters = []
         self.algOutputs = []
         self.paramValues = {}
-        self.dependencies = []
-
+        self.dependencies = []            
         self.descriptionFile = filename
         lines = codecs.open(filename, 'r', encoding='utf-8')
         line = lines.readline().strip('\n').strip('\r')

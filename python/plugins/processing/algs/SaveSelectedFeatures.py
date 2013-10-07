@@ -115,14 +115,15 @@ class SaveSelectedFeatures(GeoAlgorithm):
         # first available format from the provider is used, and the
         # corresponding file extension appended.
 
-        provider = vectorLayer.dataProvider()
-
         # vectorLayer.crs() is the layer crs. By default all resulting
         # layers are assumed to be in the same crs are the inputs, and
         # will be loaded with this assumptions when executed from the
-        # toolbox. The self.crs variable has to be canged in case this
+        # toolbox. The self.crs variable has to be changed in case this
         # is not true, or in case there are no input layer from which
         # the output crs can be infered
+        
+        
+        provider = vectorLayer.dataProvider()
 
         writer = output.getVectorWriter(provider.fields(),
                 provider.geometryType(), vectorLayer.crs())
@@ -130,14 +131,12 @@ class SaveSelectedFeatures(GeoAlgorithm):
         # Now we take the selected features and add them to the output
         # layer
         features = vector.features(vectorLayer)
-        total = len(features)
-        i = 0
+        total = len(features)        
         for (i, feat) in enumerate(features):
             writer.addFeature(feat)
 
             # We use the progress object to communicate with the user
-            progress.setPercentage(100 * i / float(total))
-            i += 1
+            progress.setPercentage(100 * i / float(total))            
         del writer
 
         # There is nothing more to do here. We do not have to open the

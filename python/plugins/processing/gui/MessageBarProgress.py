@@ -28,6 +28,7 @@ __revision__ = '$Format:%H$'
 from PyQt4.QtCore import *
 from PyQt4 import QtGui
 from processing import interface
+from qgis.gui import *
 
 
 class MessageBarProgress:
@@ -42,6 +43,12 @@ class MessageBarProgress:
         interface.iface.messageBar().pushWidget(self.progressMessageBar,
                 interface.iface.messageBar().INFO)
 
+    def error(self, msg):
+        interface.iface.messageBar().clearWidgets()
+        interface.iface.messageBar().pushMessage("Error", msg, 
+                                                  level = QgsMessageBar.CRITICAL,
+                                                  duration = 3)
+        
     def setText(self, text):
         pass
 

@@ -60,7 +60,7 @@ class UnthreadedAlgorithmExecutor:
             msg = 'Uncaught error executing ' + str(alg.name) \
                 + '\nSee log for more information'
             ProcessingLog.addToLog(sys.exc_info()[0], ProcessingLog.LOG_ERROR)
-            progress.error(e.msg)
+            progress.error(msg)
             return False
 
     @staticmethod
