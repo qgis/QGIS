@@ -33,6 +33,10 @@ class QgsPluginLayerRegistry
 
     ~QgsPluginLayerRegistry();
 
+    /** list all known layer types
+     *  \note added in v2.1 */
+    QStringList pluginLayerTypes();
+
     /** add plugin layer type (take ownership) and return true on success */
     bool addPluginLayerType( QgsPluginLayerType* pluginLayerType /Transfer/ );
 
