@@ -74,6 +74,11 @@ QgsPluginLayerRegistry::~QgsPluginLayerRegistry()
   }
 }
 
+QStringList QgsPluginLayerRegistry::pluginLayerTypes()
+{
+  return mPluginLayerTypes.keys();
+}
+
 bool QgsPluginLayerRegistry::addPluginLayerType( QgsPluginLayerType* type )
 {
   if ( type == NULL )
