@@ -5,6 +5,12 @@ QgsRelationAddDlg::QgsRelationAddDlg( QWidget *parent ) :
     QDialog( parent )
 {
   setupUi( this );
+
+#if QT_VERSION >= 0x40700
+  mTxtRelationId->setPlaceholderText( tr( "[Generated automatically]" ) );
+#else
+  mTxtRelationId->setToolTip( tr( "[Generated automatically]" ) );
+#endif
 }
 
 void QgsRelationAddDlg::addLayers( QList< QgsVectorLayer* > layers )

@@ -20,7 +20,7 @@
 
 class QgsVectorLayer;
 
-class CORE_EXPORT QgsVectorLayerSelectionManager : public QgsIFeatureSelectionManager
+class GUI_EXPORT QgsVectorLayerSelectionManager : public QgsIFeatureSelectionManager
 {
     Q_OBJECT
 
