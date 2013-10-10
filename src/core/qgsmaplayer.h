@@ -470,9 +470,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /** Set error message */
     void setError( const QgsError & theError ) { mError = theError;}
 
-    /** Transparency level for this layer should be 0-255 (255 being opaque) */
-    unsigned int mTransparencyLevel;
-
     /** Extent of the layer */
     QgsRectangle mExtent;
 
