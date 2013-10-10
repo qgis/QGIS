@@ -105,6 +105,19 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
     }
     return;
   }
+  else if ( e->button() == Qt::MidButton )
+  {
+    //pan composer with middle button
+    mPanning = true;
+    mMouseLastXY = e->pos();
+    if ( composition() )
+    {
+      //lock cursor to closed hand cursor
+      composition()->setPreventCursorChange( true );
+    }
+    viewport()->setCursor( Qt::ClosedHandCursor );
+    return;
+  }
 
   switch ( mCurrentTool )
   {
