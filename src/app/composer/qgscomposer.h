@@ -204,6 +204,9 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Set tool to move item content
     void on_mActionMoveItemContent_triggered();
 
+    //! Set tool to move item content
+    void on_mActionPan_triggered();
+
     //! Group selected items
     void on_mActionGroupItems_triggered();
 
@@ -242,7 +245,7 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     //! Select next item below
     void on_mActionSelectNextAbove_triggered();
-    
+
     //! Select next item above
     void on_mActionSelectNextBelow_triggered();
 

@@ -144,6 +144,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
 
   QActionGroup* toggleActionGroup = new QActionGroup( this );
   toggleActionGroup->addAction( mActionMoveItemContent );
+  toggleActionGroup->addAction( mActionPan );
   toggleActionGroup->addAction( mActionAddNewMap );
   toggleActionGroup->addAction( mActionAddNewLabel );
   toggleActionGroup->addAction( mActionAddNewLegend );
@@ -166,6 +167,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   mActionAddNewScalebar->setCheckable( true );
   mActionAddImage->setCheckable( true );
   mActionMoveItemContent->setCheckable( true );
+  mActionPan->setCheckable( true );
   mActionAddArrow->setCheckable( true );
 
 #ifdef Q_WS_MAC
@@ -1670,6 +1672,14 @@ void QgsComposer::on_mActionMoveItemContent_triggered()
   if ( mView )
   {
     mView->setCurrentTool( QgsComposerView::MoveItemContent );
+  }
+}
+
+void QgsComposer::on_mActionPan_triggered()
+{
+  if ( mView )
+  {
+    mView->setCurrentTool( QgsComposerView::Pan );
   }
 }
 

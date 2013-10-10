@@ -49,6 +49,7 @@ QgsComposerView::QgsComposerView( QWidget* parent, const char* name, Qt::WFlags 
     , mPaintingEnabled( true )
     , mHorizontalRuler( 0 )
     , mVerticalRuler( 0 )
+    , mPanning( false )
 {
   Q_UNUSED( f );
   Q_UNUSED( name );
@@ -57,6 +58,29 @@ QgsComposerView::QgsComposerView( QWidget* parent, const char* name, Qt::WFlags 
   setMouseTracking( true );
   viewport()->setMouseTracking( true );
   setFrameShape( QFrame::NoFrame );
+}
+
+void QgsComposerView::setCurrentTool( QgsComposerView::Tool t )
+{
+  mCurrentTool = t;
+
+  //update mouse cursor for current tool
+  if ( !composition() )
+  {
+    return;
+  }
+  if ( t == QgsComposerView::Pan )
+  {
+    //lock cursor to prevent composer items changing it
+    composition()->setPreventCursorChange( true );
+    viewport()->setCursor( Qt::OpenHandCursor );
+  }
+  else
+  {
+    //not using pan tool, composer items can change cursor
+    composition()->setPreventCursorChange( false );
+    viewport()->setCursor( Qt::ArrowCursor );
+  }
 }
 
 void QgsComposerView::mousePressEvent( QMouseEvent* e )
@@ -163,6 +187,15 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
         QGraphicsView::mousePressEvent( e );
         emit selectedItemChanged( selectedItem );
       }
+      break;
+    }
+
+    case Pan:
+    {
+      //pan action
+      mPanning = true;
+      mMouseLastXY = e->pos();
+      viewport()->setCursor( Qt::ClosedHandCursor );
       break;
     }
 
@@ -341,6 +374,27 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
 
   QPointF scenePoint = mapToScene( e->pos() );
 
+  if ( mPanning )
+  {
+    mPanning = false;
+
+    //set new cursor
+    if ( mCurrentTool == Pan )
+    {
+      viewport()->setCursor( Qt::OpenHandCursor );
+    }
+    else
+    {
+      if ( composition() )
+      {
+        //allow composer items to change cursor
+        composition()->setPreventCursorChange( false );
+      }
+      viewport()->setCursor( Qt::ArrowCursor );
+    }
+    return;
+  }
+
   switch ( mCurrentTool )
   {
     case Select:
@@ -444,6 +498,8 @@ void QgsComposerView::mouseMoveEvent( QMouseEvent* e )
     return;
   }
 
+  mMouseCurrentXY = e->pos();
+
   updateRulers();
   if ( mHorizontalRuler )
   {
@@ -454,7 +510,15 @@ void QgsComposerView::mouseMoveEvent( QMouseEvent* e )
     mVerticalRuler->updateMarker( e->posF() );
   }
 
-  if ( e->buttons() == Qt::NoButton )
+  if ( mPanning )
+  {
+    //panning, so scroll view
+    horizontalScrollBar()->setValue( horizontalScrollBar()->value() - ( e->x() - mMouseLastXY.x() ) );
+    verticalScrollBar()->setValue( verticalScrollBar()->value() - ( e->y() - mMouseLastXY.y() ) );
+    mMouseLastXY = e->pos();
+    return;
+  }
+  else if ( e->buttons() == Qt::NoButton )
   {
     if ( mCurrentTool == Select )
     {
