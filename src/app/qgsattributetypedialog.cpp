@@ -251,7 +251,7 @@ void QgsAttributeTypeDialog::loadFromLayerButtonPushed()
   if ( !layerDialog.exec() )
     return;
 
-  updateMap( layerDialog.valueMap() );
+  updateMap( layerDialog.valueMap(), layerDialog.insertNull() );
 }
 
 void QgsAttributeTypeDialog::loadFromCSVButtonPushed()
@@ -318,7 +318,7 @@ void QgsAttributeTypeDialog::loadFromCSVButtonPushed()
   updateMap( map );
 }
 
-void QgsAttributeTypeDialog::updateMap( const QMap<QString, QVariant> &map )
+void QgsAttributeTypeDialog::updateMap( const QMap<QString, QVariant> &map, bool insertNull )
 {
   tableWidget->clearContents();
   for ( int i = tableWidget->rowCount() - 1; i > 0; i-- )
@@ -326,6 +326,15 @@ void QgsAttributeTypeDialog::updateMap( const QMap<QString, QVariant> &map )
     tableWidget->removeRow( i );
   }
   int row = 0;
+
+  if ( insertNull )
+  {
+    QSettings settings;
+    tableWidget->setItem( row, 0, new QTableWidgetItem( settings.value( "qgis/nullValue", "NULL" ).toString() ) );
+    tableWidget->setItem( row, 1, new QTableWidgetItem( "<NULL>" ) );
+    ++row;
+  }
+
   for ( QMap<QString, QVariant>::const_iterator mit = map.begin(); mit != map.end(); mit++, row++ )
   {
     tableWidget->insertRow( row );

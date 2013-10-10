@@ -162,6 +162,11 @@ QMap<QString, QVariant> &QgsAttributeTypeLoadDialog::valueMap()
   return mValueMap;
 }
 
+bool QgsAttributeTypeLoadDialog::insertNull()
+{
+  return nullCheckBox->isChecked();
+}
+
 void QgsAttributeTypeLoadDialog::loadDataToValueMap()
 {
   mValueMap.clear();
