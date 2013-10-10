@@ -28,6 +28,7 @@
 QgsComposerMouseHandles::QgsComposerMouseHandles( QgsComposition *composition ) : QObject( 0 ),
     QGraphicsRectItem( 0 ),
     mComposition( composition ),
+    mGraphicsView( 0 ),
     mBeginHandleWidth( 0 ),
     mBeginHandleHeight( 0 ),
     mIsDragging( false ),
@@ -45,6 +46,29 @@ QgsComposerMouseHandles::QgsComposerMouseHandles( QgsComposition *composition ) 
 QgsComposerMouseHandles::~QgsComposerMouseHandles()
 {
 
+}
+
+QGraphicsView* QgsComposerMouseHandles::graphicsView()
+{
+  //have we already found the current view?
+  if ( mGraphicsView )
+  {
+    return mGraphicsView;
+  }
+
+  //otherwise, try and find current view attached to composition
+  if ( scene() )
+  {
+    QList<QGraphicsView*> viewList = scene()->views();
+    if ( viewList.size() > 0 )
+    {
+      mGraphicsView = viewList.at( 0 );
+      return mGraphicsView;
+    }
+  }
+
+  //no view attached to composition
+  return 0;
 }
 
 void QgsComposerMouseHandles::paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget )
@@ -216,13 +240,11 @@ QRectF QgsComposerMouseHandles::selectionBounds() const
   return bounds;
 }
 
-double QgsComposerMouseHandles::rectHandlerBorderTolerance() const
+double QgsComposerMouseHandles::rectHandlerBorderTolerance()
 {
   //calculate size for resize handles
   //get view scale factor
-  QList<QGraphicsView*> viewList = mComposition->views();
-  QGraphicsView* currentView = viewList.at( 0 );
-  double viewScaleFactor = currentView->transform().m11();
+  double viewScaleFactor = graphicsView()->transform().m11();
 
   //size of handle boxes depends on zoom level in composer view
   double rectHandlerSize = 10.0 / viewScaleFactor;
@@ -357,7 +379,24 @@ QgsComposerMouseHandles::MouseAction QgsComposerMouseHandles::mouseActionForScen
 
 void QgsComposerMouseHandles::hoverMoveEvent( QGraphicsSceneHoverEvent * event )
 {
-  setCursor( cursorForPosition( event->pos() ) );
+  setViewportCursor( cursorForPosition( event->pos() ) );
+}
+
+void QgsComposerMouseHandles::hoverLeaveEvent( QGraphicsSceneHoverEvent * event )
+{
+  Q_UNUSED( event );
+  setViewportCursor( Qt::ArrowCursor );
+}
+
+void QgsComposerMouseHandles::setViewportCursor( Qt::CursorShape cursor )
+{
+  //workaround qt bug #3732 by setting cursor for QGraphicsView viewport,
+  //rather then setting it directly here
+
+  if ( !mComposition->preventCursorChange() )
+  {
+    graphicsView()->viewport()->setCursor( cursor );
+  }
 }
 
 void QgsComposerMouseHandles::mouseMoveEvent( QGraphicsSceneMouseEvent* event )
@@ -466,7 +505,7 @@ void QgsComposerMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent* event
 
   //reset default action
   mCurrentMouseMoveAction = QgsComposerMouseHandles::MoveItem;
-  setCursor( Qt::ArrowCursor );
+  setViewportCursor( Qt::ArrowCursor );
   //redraw handles
   resetTransform();
   updateHandles();

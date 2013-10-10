@@ -69,6 +69,7 @@ QgsComposition::QgsComposition( QgsMapRenderer* mapRenderer )
     , mActiveItemCommand( 0 )
     , mActiveMultiFrameCommand( 0 )
     , mAtlasComposition( this )
+    , mPreventCursorChange( false )
 {
   setBackgroundBrush( Qt::gray );
   addPaperItem();
@@ -104,7 +105,8 @@ QgsComposition::QgsComposition()
     mSelectionHandles( 0 ),
     mActiveItemCommand( 0 ),
     mActiveMultiFrameCommand( 0 ),
-    mAtlasComposition( this )
+    mAtlasComposition( this ),
+    mPreventCursorChange( false )
 {
   loadSettings();
 

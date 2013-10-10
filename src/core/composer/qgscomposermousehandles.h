@@ -22,6 +22,7 @@
 
 class QgsComposition;
 class QgsComposerItem;
+class QGraphicsView;
 
 /** \ingroup MapComposer
  * Handles drawing of selection outlines and mouse handles. Responsible for mouse
@@ -84,6 +85,7 @@ class CORE_EXPORT QgsComposerMouseHandles: public QObject, public QGraphicsRectI
     void mouseReleaseEvent( QGraphicsSceneMouseEvent* event );
     void mousePressEvent( QGraphicsSceneMouseEvent* event );
     void hoverMoveEvent( QGraphicsSceneHoverEvent * event );
+    void hoverLeaveEvent( QGraphicsSceneHoverEvent * event );
 
   public slots:
 
@@ -96,6 +98,7 @@ class CORE_EXPORT QgsComposerMouseHandles: public QObject, public QGraphicsRectI
   private:
 
     QgsComposition* mComposition; //reference to composition
+    QGraphicsView* mGraphicsView; //reference to QGraphicsView
 
     QgsComposerMouseHandles::MouseAction mCurrentMouseMoveAction;
     /**Start point of the last mouse move action (in scene coordinates)*/
@@ -131,7 +134,7 @@ class CORE_EXPORT QgsComposerMouseHandles: public QObject, public QGraphicsRectI
 
     /**Returns the current (zoom level dependent) tolerance to decide if mouse position is close enough to the
     item border for resizing*/
-    double rectHandlerBorderTolerance() const;
+    double rectHandlerBorderTolerance();
 
     /**Finds out the appropriate cursor for the current mouse position in the widget (e.g. move in the middle, resize at border)*/
     Qt::CursorShape cursorForPosition( const QPointF& itemCoordPos );
@@ -169,6 +172,11 @@ class CORE_EXPORT QgsComposerMouseHandles: public QObject, public QGraphicsRectI
     bool nearestItem( const QMap< double, const QgsComposerItem* >& coords, double value, double& nearestValue ) const;
     void checkNearestItem( double checkCoord, const QMap< double, const QgsComposerItem* >& alignCoords, double& smallestDiff, double itemCoordOffset, double& itemCoord, double& alignCoord ) const;
 
+    //tries to return the current QGraphicsView attached to the composition
+    QGraphicsView* graphicsView();
+
+    //sets the mouse cursor for the QGraphicsView attached to the composition (workaround qt bug #3732)
+    void setViewportCursor( Qt::CursorShape cursor );
 };
 
 #endif // QGSCOMPOSERMOUSEHANDLES_H
