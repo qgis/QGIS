@@ -1721,7 +1721,7 @@ void QgsExpression::acceptVisitor( QgsExpression::Visitor& v ) const
     mRootNode->accept( v );
 }
 
-QString QgsExpression::replaceExpressionText( QString action, QgsFeature* feat,
+QString QgsExpression::replaceExpressionText( QString action, const QgsFeature* feat,
     QgsVectorLayer* layer,
     const QMap<QString, QVariant> *substitutionMap )
 {
@@ -1793,14 +1793,6 @@ QString QgsExpression::replaceExpressionText( QString action, QgsFeature* feat,
   }
 
   return expr_action;
-}
-
-
-QString QgsExpression::replaceExpressionText( QString action, QgsFeature& feat,
-    QgsVectorLayer* layer,
-    const QMap<QString, QVariant> *substitutionMap )
-{
-  return replaceExpressionText( action, &feat, layer, substitutionMap );
 }
 
 

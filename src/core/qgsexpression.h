@@ -171,12 +171,7 @@ class CORE_EXPORT QgsExpression
        Additional substitutions can be passed through the substitutionMap
        parameter
     */
-    static QString replaceExpressionText( QString action, QgsFeature* feat,
-                                          QgsVectorLayer* layer,
-                                          const QMap<QString, QVariant> *substitutionMap = 0 );
-
-
-    static QString replaceExpressionText( QString action, QgsFeature& feat,
+    static QString replaceExpressionText( const QString action, const QgsFeature* feat,
                                           QgsVectorLayer* layer,
                                           const QMap<QString, QVariant> *substitutionMap = 0 );
     enum UnaryOperator
