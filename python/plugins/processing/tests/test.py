@@ -53,7 +53,7 @@ from utilities_test import getQgisTestApp
 pardir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 sys.path.append(pardir)
 
-sys.path.append('/usr/share/qgis/python/plugins')
+sys.path.append( qgis.utils.sys_plugin_path )
 
 (QGISAPP, CANVAS, IFACE, PARENT) = getQgisTestApp()
 

@@ -287,7 +287,7 @@ class QgsPluginInstaller(QObject):
 
     if dlg.result():
       infoString = (self.tr("Plugin installation failed"), dlg.result())
-    elif not QDir(QDir.cleanPath(QgsApplication.qgisSettingsDirPath() + "/python/plugins/" + key)).exists():
+    elif not QDir( qgis.utils.home_plugin_path + "/" + key ).exists():
       infoString = (self.tr("Plugin has disappeared"), self.tr("The plugin seems to have been installed but I don't know where. Probably the plugin package contained a wrong named directory.\nPlease search the list of installed plugins. I'm nearly sure you'll find the plugin there, but I just can't determine which of them it is. It also means that I won't be able to determine if this plugin is installed and inform you about available updates. However the plugin may work. Please contact the plugin author and submit this issue."))
       QApplication.setOverrideCursor(Qt.WaitCursor)
       plugins.getAllInstalled()
@@ -336,7 +336,7 @@ class QgsPluginInstaller(QObject):
         dlg.exec_()
         if dlg.result():
           # revert installation
-          pluginDir = QFileInfo(QgsApplication.qgisUserDbFilePath()).path() + "/python/plugins/" + plugin["id"]
+          pluginDir = qgis.utils.home_python_pluginpath + "/" + plugin["id"]
           removeDir(pluginDir)
           if QDir(pluginDir).exists():
             infoString = (self.tr("Plugin uninstall failed"), result)
@@ -380,7 +380,7 @@ class QgsPluginInstaller(QObject):
       unloadPlugin(key)
     except:
       pass
-    pluginDir = QFileInfo(QgsApplication.qgisUserDbFilePath()).path() + "/python/plugins/" + plugin["id"]
+    pluginDir = qgis.utils.home_python_pluginpath + "/" + plugin["id"]
     result = removeDir(pluginDir)
     if result:
       QMessageBox.warning(iface.mainWindow(), self.tr("Plugin uninstall failed"), result)

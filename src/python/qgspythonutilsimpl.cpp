@@ -155,6 +155,8 @@ void QgsPythonUtilsImpl::initPython( QgisInterface* interface )
 
   // tell the utils script where to look for the plugins
   runString( "qgis.utils.plugin_paths = [" + pluginpaths.join( "," ) + "]" );
+  runString( "qgis.utils.sys_plugin_path = \"" + pluginsPath() + "\"" );
+  runString( "qgis.utils.home_plugin_path = " + homePluginsPath() );
 
 #ifdef Q_OS_WIN
   runString( "if oldhome: os.environ['HOME']=oldhome\n" );
