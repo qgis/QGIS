@@ -697,7 +697,7 @@ static QVariant fcnRegexpSubstr( const QVariantList& values, const QgsFeature* ,
   }
 }
 
-static QVariant fcnUuid( const QVariantList& values, const QgsFeature* , QgsExpression* parent )
+static QVariant fcnUuid( const QVariantList&, const QgsFeature* , QgsExpression* )
 {
   return QUuid::createUuid().toString();
 }
