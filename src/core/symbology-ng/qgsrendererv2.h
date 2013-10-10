@@ -194,6 +194,9 @@ class CORE_EXPORT QgsFeatureRendererV2
     static const unsigned char* _getLineString( QPolygonF& pts, QgsRenderContext& context, const unsigned char* wkb );
     static const unsigned char* _getPolygon( QPolygonF& pts, QList<QPolygonF>& holes, QgsRenderContext& context, const unsigned char* wkb );
 
+    static const unsigned char* _getLineString( QPolygonF& pts, QgsRenderContext& context, const unsigned char* wkb, bool& generalizedByBoundingBox );
+    static const unsigned char* _getPolygon( QPolygonF& pts, QList<QPolygonF>& holes, QgsRenderContext& context, const unsigned char* wkb, bool& generalizedByBoundingBox );
+
     void setScaleMethodToSymbol( QgsSymbolV2* symbol, int scaleMethod );
 
     QString mType;

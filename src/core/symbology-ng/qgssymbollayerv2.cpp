@@ -324,11 +324,20 @@ void QgsFillSymbolLayerV2::drawPreviewIcon( QgsSymbolV2RenderContext& context, Q
   stopRender( context );
 }
 
-void QgsFillSymbolLayerV2::_renderPolygon( QPainter* p, const QPolygonF& points, const QList<QPolygonF>* rings )
+void QgsFillSymbolLayerV2::_renderPolygon( QPainter* p, const QPolygonF& points, const QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context )
 {
   if ( !p )
   {
     return;
+  }
+
+  // Disable 'Antialiasing' if the geometry was generalized in the current RenderContext.
+  if ( context.generalizedByBoundingBox() && p->renderHints() & QPainter::Antialiasing )
+  {
+	p->setRenderHint(QPainter::Antialiasing, false);
+	p->drawPolygon( points );
+	p->setRenderHint(QPainter::Antialiasing);
+	return;
   }
 
   if ( rings == NULL )
