@@ -217,8 +217,9 @@ class APP_EXPORT QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttribut
     /**
      * Function to update the value map
      * @param map new map
+     * @param insertNull Add a Null value on top
      */
-    void updateMap( const QMap<QString, QVariant> &map );
+    void updateMap( const QMap<QString, QVariant> &map, bool insertNull = false );
 
     bool mFieldEditable;
     bool mLabelOnTop;

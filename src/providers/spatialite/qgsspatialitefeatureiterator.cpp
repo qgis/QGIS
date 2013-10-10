@@ -321,8 +321,19 @@ bool QgsSpatiaLiteFeatureIterator::getFeature( sqlite3_stmt *stmt, QgsFeature &f
     }
     else
     {
-      int attrIndex = subsetAttributes ? mRequest.subsetOfAttributes()[ic-1] : ic - 1;
-      feature.setAttribute( attrIndex, getFeatureAttribute( stmt, ic, P->attributeFields[attrIndex].type() ) );
+      if ( subsetAttributes )
+      {
+        if ( mRequest.subsetOfAttributes().contains( ic - 1 ) )
+        {
+          int attrIndex = mRequest.subsetOfAttributes()[ic-1];
+          feature.setAttribute( attrIndex, getFeatureAttribute( stmt, ic, P->attributeFields[attrIndex].type() ) );
+        }
+      }
+      else
+      {
+        int attrIndex = subsetAttributes ? mRequest.subsetOfAttributes()[ic-1] : ic - 1;
+        feature.setAttribute( attrIndex, getFeatureAttribute( stmt, ic, P->attributeFields[attrIndex].type() ) );
+      }
     }
   }
 
