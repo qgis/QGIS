@@ -812,6 +812,26 @@ void QgsComposerView::keyPressEvent( QKeyEvent * e )
     return;
   }
 
+  if ( mPanning )
+    return;
+
+  if ( e->key() == Qt::Key_Space )
+  {
+    // Pan composer with space bar
+    if ( ! e->isAutoRepeat() )
+    {
+      mPanning = true;
+      mMouseLastXY = mMouseCurrentXY;
+      if ( composition() )
+      {
+        //prevent cursor changes while panning
+        composition()->setPreventCursorChange( true );
+      }
+      viewport()->setCursor( Qt::ClosedHandCursor );
+    }
+    return;
+  }
+
   QList<QgsComposerItem*> composerItemList = composition()->selectedComposerItems();
   QList<QgsComposerItem*>::iterator itemIt = composerItemList.begin();
 
@@ -858,6 +878,31 @@ void QgsComposerView::keyPressEvent( QKeyEvent * e )
       ( *itemIt )->move( 0.0, -1 * increment );
       ( *itemIt )->endCommand();
     }
+  }
+}
+
+void QgsComposerView::keyReleaseEvent( QKeyEvent * e )
+{
+  if ( e->key() == Qt::Key_Space && !e->isAutoRepeat() && mPanning )
+  {
+    //end of panning with space key
+    mPanning = false;
+
+    //reset cursor
+    if ( mCurrentTool == Pan )
+    {
+      viewport()->setCursor( Qt::OpenHandCursor );
+    }
+    else
+    {
+      if ( composition() )
+      {
+        //allow cursor changes again
+        composition()->setPreventCursorChange( false );
+      }
+      viewport()->setCursor( Qt::ArrowCursor );
+    }
+    return;
   }
 }
 

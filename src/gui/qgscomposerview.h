@@ -135,6 +135,7 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     void mouseDoubleClickEvent( QMouseEvent* e );
 
     void keyPressEvent( QKeyEvent * e );
+    void keyReleaseEvent( QKeyEvent * e );
 
     void wheelEvent( QWheelEvent* event );
 
