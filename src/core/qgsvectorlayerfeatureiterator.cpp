@@ -25,8 +25,6 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayer* la
 {
   QgsVectorLayerJoinBuffer* joinBuffer = L->mJoinBuffer;
 
-  // by default provider's request is the same
-  mProviderRequest = mRequest;
   mChangedFeaturesRequest = mRequest;
 
   if ( L->editBuffer() )
@@ -43,6 +41,9 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayer* la
   // prepare joins: may add more attributes to fetch (in order to allow join)
   if ( joinBuffer->containsJoins() )
     prepareJoins();
+
+  // by default provider's request is the same
+  mProviderRequest = mRequest;
 
   if ( mProviderRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )
   {
@@ -208,7 +209,7 @@ bool QgsVectorLayerFeatureIterator::fetchNextAddedFeature( QgsFeature& f )
       // must have changed geometry outside rectangle
       continue;
 
-    if ( !mRequest.acceptFeature ( *mFetchAddedFeaturesIt ) )
+    if ( !mRequest.acceptFeature( *mFetchAddedFeaturesIt ) )
       // skip features which are not accepted by the filter
       continue;
 
