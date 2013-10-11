@@ -1145,8 +1145,11 @@ QgsRectangle QgsVectorLayer::extent()
 
     for ( QgsFeatureMap::iterator it = mEditBuffer->mAddedFeatures.begin(); it != mEditBuffer->mAddedFeatures.end(); it++ )
     {
-      QgsRectangle r = it->geometry()->boundingBox();
-      rect.combineExtentWith( &r );
+      if ( it->geometry() )
+      {
+        QgsRectangle r = it->geometry()->boundingBox();
+        rect.combineExtentWith( &r );
+      }
     }
   }
   else
