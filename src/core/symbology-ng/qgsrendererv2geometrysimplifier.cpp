@@ -14,9 +14,9 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "limits.h"
 #include "qgsrendererv2geometrysimplifier.h"
 #include "QtCore/qrect.h"
-
 
 /** Returns the squared 2D-distance of the vector defined by the two points specified */
 float QgsFeatureRendererSimplifier::lengthGeneralizedSquared2D(double x1, double y1, double x2, double y2)
