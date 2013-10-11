@@ -334,9 +334,9 @@ void QgsFillSymbolLayerV2::_renderPolygon( QPainter* p, const QPolygonF& points,
   // Disable 'Antialiasing' if the geometry was generalized in the current RenderContext.
   if ( context.generalizedByBoundingBox() && p->renderHints() & QPainter::Antialiasing )
   {
-	p->setRenderHint(QPainter::Antialiasing, false);
+	p->setRenderHint( QPainter::Antialiasing, false );
 	p->drawPolygon( points );
-	p->setRenderHint(QPainter::Antialiasing);
+	p->setRenderHint( QPainter::Antialiasing, true );
 	return;
   }
 

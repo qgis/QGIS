@@ -19,7 +19,6 @@
 
 #include "qgsrendercontext.h"
 #include "qgsgeometry.h"
-#include "qgsfeature.h"
 
 /** \ingroup core
  * Provides geometry simplification methods for optimize the drawing of features.
@@ -31,19 +30,20 @@ class CORE_EXPORT QgsFeatureRendererSimplifier
 {
 private:
 
-	/** Returns the squared 2D-distance of the vector defined by the two points specified */
-	static float LengthGeneralizedSquared2D(double x1, double y1, double x2, double y2);
+  /** Returns the squared 2D-distance of the vector defined by the two points specified */
+  static float lengthGeneralizedSquared2D(double x1, double y1, double x2, double y2);
 
-	/** Returns the MapTolerance of the current View for transforms between map coordinates and device coordinates */
-	static float CalculateViewPixelTolerance(QgsRenderContext& context, QRectF& boundingRect);
+  /** Returns the MapTolerance of the current View for transforms between map coordinates and device coordinates */
+  static float calculateViewPixelTolerance(QgsRenderContext& context, QRectF& boundingRect);
 
-	/** Returns the view-valid number of points of the specified geometry */
-	static unsigned int CalculateGeneralizedPointCount(QgsRenderContext& context, QGis::WkbType wkbType, const unsigned char* wkb, unsigned int numPoints, QRectF& boundingRect, bool& generalizedByBoundingBox);
+  /** Returns the view-valid number of points of the specified geometry */
+  static unsigned int calculateGeneralizedPointCount(QgsRenderContext& context, float map2pixelTol, QGis::WkbType wkbType, const unsigned char* wkb, unsigned int numPoints, QRectF& boundingRect, bool& generalizedByBoundingBox);
 
 public:
 
-	/** Fill the view-valid simplified points to the specified geometry */
-	static unsigned int SimplifyGeometry(QgsRenderContext& context, QGis::WkbType wkbType, const unsigned char* wkb, unsigned int numPoints, QVector<QPointF>& outputPoints, bool& generalizedByBoundingBox);
+  /** Fill the view-valid simplified points to the specified geometry */
+  static unsigned int simplifyGeometry(QgsRenderContext& context, float map2pixelTol, QGis::WkbType wkbType, const unsigned char* wkb, unsigned int numPoints, QVector<QPointF>& outputPoints, bool& generalizedByBoundingBox);
+
 };
 
 #endif

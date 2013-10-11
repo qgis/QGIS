@@ -17,12 +17,9 @@
 #include "qgsrendererv2geometrysimplifier.h"
 #include "QtCore/qrect.h"
 
-/** Threshold of the map2pixel value in the current RenderContext */
-#define MAP2PIXEL_THRESHOLD_FACTOR 1.3
-
 
 /** Returns the squared 2D-distance of the vector defined by the two points specified */
-float QgsFeatureRendererSimplifier::LengthGeneralizedSquared2D(double x1, double y1, double x2, double y2)
+float QgsFeatureRendererSimplifier::lengthGeneralizedSquared2D(double x1, double y1, double x2, double y2)
 {
 	float vx = (float)(x2-x1);
 	float vy = (float)(y2-y1);
@@ -31,7 +28,7 @@ float QgsFeatureRendererSimplifier::LengthGeneralizedSquared2D(double x1, double
 }
 
 /** Returns the MapTolerance of the current View for transforms between map coordinates and device coordinates */
-float QgsFeatureRendererSimplifier::CalculateViewPixelTolerance(QgsRenderContext& context, QRectF& boundingRect)
+float QgsFeatureRendererSimplifier::calculateViewPixelTolerance(QgsRenderContext& context, QRectF& boundingRect)
 {
 	const QgsMapToPixel& mtp = context.mapToPixel();
 	const QgsCoordinateTransform* ct = context.coordinateTransform();
@@ -50,21 +47,24 @@ float QgsFeatureRendererSimplifier::CalculateViewPixelTolerance(QgsRenderContext
 		QgsPoint minimumDstPoint( targetRect.xMinimum(), targetRect.yMinimum() );
 		QgsPoint maximumDstPoint( targetRect.xMaximum(), targetRect.yMaximum() );
 
-		double sourceHypothenuse = sqrt( LengthGeneralizedSquared2D( minimumSrcPoint.x(), minimumSrcPoint.y(), maximumSrcPoint.x(), maximumSrcPoint.y() ) );
-		double targetHypothenuse = sqrt( LengthGeneralizedSquared2D( minimumDstPoint.x(), minimumDstPoint.y(), maximumDstPoint.x(), maximumDstPoint.y() ) );
+		double sourceHypothenuse = sqrt( lengthGeneralizedSquared2D( minimumSrcPoint.x(), minimumSrcPoint.y(), maximumSrcPoint.x(), maximumSrcPoint.y() ) );
+		double targetHypothenuse = sqrt( lengthGeneralizedSquared2D( minimumDstPoint.x(), minimumDstPoint.y(), maximumDstPoint.x(), maximumDstPoint.y() ) );
 
 		if (targetHypothenuse!=0) 
 		mapUnitsFactor = sourceHypothenuse/targetHypothenuse;
 	}
-	return (float)( MAP2PIXEL_THRESHOLD_FACTOR * mapUnitsPerPixel * mapUnitsFactor );
+	return (float)( mapUnitsPerPixel * mapUnitsFactor );
 }
 
 /** Returns the view-valid number of points of the specified geometry */
-unsigned int QgsFeatureRendererSimplifier::CalculateGeneralizedPointCount(QgsRenderContext& context, QGis::WkbType wkbType, const unsigned char* wkb, unsigned int numPoints, QRectF& boundingRect, bool& generalizedByBoundingBox)
+unsigned int QgsFeatureRendererSimplifier::calculateGeneralizedPointCount(QgsRenderContext& context, float map2pixelTol, QGis::WkbType wkbType, const unsigned char* wkb, unsigned int numPoints, QRectF& boundingRect, bool& generalizedByBoundingBox)
 {
 	const unsigned char* wkb2 = wkb;
 
-	double xmin = DBL_MAX, ymin = DBL_MAX, xmax = -DBL_MAX, ymax = -DBL_MAX;
+	double xmin =  std::numeric_limits<double>::max();
+	double ymin =  std::numeric_limits<double>::max();
+	double xmax = -std::numeric_limits<double>::max();
+	double ymax = -std::numeric_limits<double>::max();
 	double x,y, lastX=0,lastY=0;
 
 	int sizeOfDoubleX = sizeof(double);
@@ -85,9 +85,9 @@ unsigned int QgsFeatureRendererSimplifier::CalculateGeneralizedPointCount(QgsRen
 	wkb = wkb2;
 
 	// MapTolerance of the current View for transforms between map coordinates and device coordinates.
-	float mappixelTol = QgsFeatureRendererSimplifier::CalculateViewPixelTolerance( context, boundingRect );
+	float mappixelTol = map2pixelTol * QgsFeatureRendererSimplifier::calculateViewPixelTolerance( context, boundingRect );
 
-	// Can simplify the geometry using the full BBOX ¿?
+	// Can simplify the geometry using the full BBOX ?
 	if ((generalizedByBoundingBox = ((xmax-xmin)<=mappixelTol && (ymax-ymin)<=mappixelTol)))
 	{
 		return QGis::flatType(wkbType)==QGis::WKBLineString ? 2 : 5;
@@ -109,7 +109,7 @@ unsigned int QgsFeatureRendererSimplifier::CalculateGeneralizedPointCount(QgsRen
 		x = *(( double * ) wkb ); wkb += sizeOfDoubleX;
 		y = *(( double * ) wkb ); wkb += sizeOfDoubleY;
 
-		if (jdx==0 || LengthGeneralizedSquared2D(lastX,lastY,x,y)>mappixelTol)
+		if (jdx==0 || lengthGeneralizedSquared2D(lastX,lastY,x,y)>mappixelTol)
 		{
 			simplifiedPointCount++;
 			lastX = x;
@@ -134,7 +134,7 @@ unsigned int QgsFeatureRendererSimplifier::CalculateGeneralizedPointCount(QgsRen
 }
 
 /** Fill the view-valid simplified points to the specified geometry */
-unsigned int QgsFeatureRendererSimplifier::SimplifyGeometry(QgsRenderContext& context, QGis::WkbType wkbType, const unsigned char* wkb, unsigned int numPoints, QVector<QPointF>& outputPoints, bool& generalizedByBoundingBox)
+unsigned int QgsFeatureRendererSimplifier::simplifyGeometry(QgsRenderContext& context, float map2pixelTol, QGis::WkbType wkbType, const unsigned char* wkb, unsigned int numPoints, QVector<QPointF>& outputPoints, bool& generalizedByBoundingBox)
 {
 	QGis::WkbType flatType = QGis::flatType(wkbType);
 
@@ -151,12 +151,12 @@ unsigned int QgsFeatureRendererSimplifier::SimplifyGeometry(QgsRenderContext& co
 
 		// Calculate the view-valid number of points of the geometry.
 		QRectF boundingRect;
-		unsigned int simplifiedPointCount = CalculateGeneralizedPointCount(context, wkbType, wkb, numPoints, boundingRect, generalizedByBoundingBox);
+		unsigned int simplifiedPointCount = calculateGeneralizedPointCount(context, map2pixelTol, wkbType, wkb, numPoints, boundingRect, generalizedByBoundingBox);
 
 		outputPoints.resize(simplifiedPointCount);
 		QPointF* ptr = outputPoints.data();
 
-		// Can simplify the geometry using the full BBOX ¿?
+		// Can simplify the geometry using the full BBOX ?
 		if (generalizedByBoundingBox)
 		{
 			if (flatType==QGis::WKBLineString)
@@ -177,7 +177,7 @@ unsigned int QgsFeatureRendererSimplifier::SimplifyGeometry(QgsRenderContext& co
 		}
 
 		// MapTolerance of the current View for transforms between map coordinates and device coordinates.
-		float mappixelTol = QgsFeatureRendererSimplifier::CalculateViewPixelTolerance( context, boundingRect );
+		float mappixelTol = map2pixelTol * QgsFeatureRendererSimplifier::calculateViewPixelTolerance( context, boundingRect );
 		mappixelTol *= mappixelTol; //-> Use mappixelTol for 'LengthSquare' calculations.
 
 		// Force equal the first and last point of the closed geometry.
@@ -190,7 +190,7 @@ unsigned int QgsFeatureRendererSimplifier::SimplifyGeometry(QgsRenderContext& co
 			x = *(( double * ) wkb ); wkb += sizeOfDoubleX;
 			y = *(( double * ) wkb ); wkb += sizeOfDoubleY;
 
-			if (jdx==0 || LengthGeneralizedSquared2D(lastX,lastY,x,y)>mappixelTol)
+			if (jdx==0 || lengthGeneralizedSquared2D(lastX,lastY,x,y)>mappixelTol)
 			{
 			   *ptr = QPointF(x, y); ++ptr;
 				lastX = x; 

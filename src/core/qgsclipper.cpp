@@ -105,6 +105,58 @@ const unsigned char* QgsClipper::clippedLineWKB( const unsigned char* wkb, const
   return wkb;
 }
 
+void QgsClipper::clippedLine( const QVector<QPointF>& points, const QgsRectangle& clipExtent, QPolygonF& line )
+{
+  unsigned int nPoints = points.size();
+
+  double p0x, p0y, p1x = 0.0, p1y = 0.0; //original coordinates
+  double p1x_c, p1y_c; //clipped end coordinates
+  double lastClipX = 0.0, lastClipY = 0.0; //last successfully clipped coords
+
+  line.reserve( nPoints + 1 );
+  line.clear();
+
+  for ( unsigned int i = 0; i < nPoints; ++i )
+  {
+    if ( i == 0 )
+    {
+	  p1x = points[i].x();
+	  p1y = points[i].y();
+
+      continue;
+    }
+    else
+    {
+      p0x = p1x;
+      p0y = p1y;
+
+	  p1x = points[i].x();
+	  p1y = points[i].y();
+
+      p1x_c = p1x; p1y_c = p1y;
+      if ( clipLineSegment( clipExtent.xMinimum(), clipExtent.xMaximum(), clipExtent.yMinimum(), clipExtent.yMaximum(),
+                            p0x, p0y, p1x_c,  p1y_c ) )
+      {
+        bool newLine = line.size() > 0 && ( p0x != lastClipX || p0y != lastClipY );
+        if ( newLine )
+        {
+          //add edge points to connect old and new line
+          connectSeparatedLines( lastClipX, lastClipY, p0x, p0y, clipExtent, line );
+        }
+        if ( line.size() < 1 || newLine )
+        {
+          //add first point
+          line << QPointF( p0x, p0y );
+        }
+
+        //add second point
+        lastClipX = p1x_c; lastClipY = p1y_c;
+        line << QPointF( p1x_c,  p1y_c );
+      }
+    }
+  }
+}
+
 void QgsClipper::connectSeparatedLines( double x0, double y0, double x1, double y1,
                                         const QgsRectangle& clipRect, QPolygonF& pts )
 {

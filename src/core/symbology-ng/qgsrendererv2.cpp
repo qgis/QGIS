@@ -68,6 +68,8 @@ const unsigned char* QgsFeatureRendererV2::_getLineString( QPolygonF& pts, QgsRe
 {
   // Indicates whether the geometry can be generalized.
   generalizedByBoundingBox = false;
+  // Threshold of the map2pixel value in the current RenderContext. //TODO: Find optimum value
+  float map2pixelTol = 1.0f;
 
   wkb++; // jump over endian info
   unsigned int wkbType = *(( int* ) wkb );
@@ -79,11 +81,23 @@ const unsigned char* QgsFeatureRendererV2::_getLineString( QPolygonF& pts, QgsRe
 
   const QgsCoordinateTransform* ct = context.coordinateTransform();
   const QgsMapToPixel& mtp = context.mapToPixel();
+  const QgsRectangle& e = context.extent();
+  double cw = e.width() / 10; double ch = e.height() / 10;
+  QgsRectangle clipRect( e.xMinimum() - cw, e.yMinimum() - ch, e.xMaximum() + cw, e.yMaximum() + ch );
 
-  // Feature #8725: Speed improvement in the render of geometries, extract the points from the WKB validating view precision. 
-  QgsFeatureRendererSimplifier::SimplifyGeometry(context, (QGis::WkbType)wkbType, wkb, nPoints, pts, generalizedByBoundingBox);
+  // Extract the points from the WKB and store in a pair of vectors, validating view precision. 
+  QgsFeatureRendererSimplifier::simplifyGeometry(context, map2pixelTol, (QGis::WkbType)wkbType, wkb, nPoints, pts, generalizedByBoundingBox);
   wkb += hasZValue ? 3*nPoints*sizeof(double) : 2*nPoints*sizeof(double);
   nPoints = pts.size();
+
+  //apply clipping for large lines to achieve a better rendering performance
+  if ( nPoints > 1 && !generalizedByBoundingBox && !clipRect.contains( pts.boundingRect() ))
+  {
+	QPolygonF line;
+    QgsClipper::clippedLine( pts, clipRect, line );
+	pts = line;
+	nPoints = pts.size();
+  }
 
   //transform the QPolygonF to screen coordinates
   if ( ct )
@@ -110,6 +124,8 @@ const unsigned char* QgsFeatureRendererV2::_getPolygon( QPolygonF& pts, QList<QP
 {
   // Indicates whether the geometry can be generalized.
   generalizedByBoundingBox = false;
+  // Threshold of the map2pixel value in the current RenderContext. //TODO: Find optimum value
+  float map2pixelTol = 1.0f;
 
   wkb++; // jump over endian info
   unsigned int wkbType = *(( int* ) wkb );
@@ -136,7 +152,7 @@ const unsigned char* QgsFeatureRendererV2::_getPolygon( QPolygonF& pts, QList<QP
 
 	// Extract the points from the WKB and store in a pair of vectors, validating view precision. 
 	QPolygonF poly;
-	QgsFeatureRendererSimplifier::SimplifyGeometry(context, (QGis::WkbType)wkbType, wkb, nPoints, poly, generalizedByBoundingBox);
+	QgsFeatureRendererSimplifier::simplifyGeometry(context, map2pixelTol, (QGis::WkbType)wkbType, wkb, nPoints, poly, generalizedByBoundingBox);
 	wkb += hasZValue ? 3*nPoints*sizeof(double) : 2*nPoints*sizeof(double);
 	QPointF* ptr = poly.data();
 	nPoints = poly.size();
@@ -146,7 +162,7 @@ const unsigned char* QgsFeatureRendererV2::_getPolygon( QPolygonF& pts, QList<QP
 
 	// Clip close to view extent validating if needed.
 	QRectF ptsRect = poly.boundingRect();
-	if (!clipRect.contains(ptsRect)) QgsClipper::trimPolygon( poly, clipRect );
+	if (!clipRect.contains( ptsRect )) QgsClipper::trimPolygon( poly, clipRect );
 
     //transform the QPolygonF to screen coordinates
     if ( ct )

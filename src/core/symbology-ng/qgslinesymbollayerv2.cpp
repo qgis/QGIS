@@ -178,9 +178,9 @@ void QgsSimpleLineSymbolLayerV2::renderPolyline( const QPolygonF& points, QgsSym
   // Disable 'Antialiasing' if the geometry was generalized in the current RenderContext.
   if ( context.generalizedByBoundingBox() && p->renderHints() & QPainter::Antialiasing )
   {
-	p->setRenderHint(QPainter::Antialiasing, false);
+	p->setRenderHint( QPainter::Antialiasing, false );
 	p->drawPolyline( points );
-	p->setRenderHint(QPainter::Antialiasing);
+	p->setRenderHint( QPainter::Antialiasing, true );
 	return;
   }
 
