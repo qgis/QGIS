@@ -150,17 +150,17 @@ const unsigned char* QgsFeatureRendererV2::_getPolygon( QPolygonF& pts, QList<QP
     unsigned int nPoints = *(( int* )wkb );
     wkb += sizeof( unsigned int );
 
-	// Extract the points from the WKB and store in a pair of vectors, validating view precision. 
+    // Extract the points from the WKB and store in a pair of vectors, validating view precision. 
     QPolygonF poly;
     QgsFeatureRendererSimplifier::simplifyGeometry(context, map2pixelTol, (QGis::WkbType)wkbType, wkb, nPoints, poly, generalizedByBoundingBox);
     wkb += hasZValue ? 3*nPoints*sizeof(double) : 2*nPoints*sizeof(double);
     QPointF* ptr = poly.data();
     nPoints = poly.size();
 	
-	if ( nPoints < 1 )
+    if ( nPoints < 1 )
       continue;
 
-	// Clip close to view extent validating if needed.
+    // Clip close to view extent validating if needed.
     QRectF ptsRect = poly.boundingRect();
     if (!context.extent().contains( ptsRect )) QgsClipper::trimPolygon( poly, clipRect );
 
