@@ -196,7 +196,7 @@ class CORE_EXPORT QgsSymbolV2RenderContext
     QgsSymbolV2::OutputUnit mOutputUnit;
     qreal mAlpha;
     bool mSelected;
-	bool mGeneralizedByBoundingBox; 
+    bool mGeneralizedByBoundingBox; 
     int mRenderHints;
     const QgsFeature* mFeature; //current feature
     const QgsVectorLayer* mLayer; //current vectorlayer
