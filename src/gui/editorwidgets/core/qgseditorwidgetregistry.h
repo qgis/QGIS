@@ -112,7 +112,6 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
 
   private:
     QMap<QString, QgsEditorWidgetFactory*> mWidgetFactories;
-    static QgsEditorWidgetRegistry *sInstance;
 };
 
 
