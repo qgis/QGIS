@@ -130,8 +130,8 @@ void QgsClipper::clippedLine( const QVector<QPointF>& points, const QgsRectangle
       p0x = p1x;
       p0y = p1y;
 
-	  p1x = points[i].x();
-	  p1y = points[i].y();
+      p1x = points[i].x();
+      p1y = points[i].y();
 
       p1x_c = p1x; p1y_c = p1y;
       if ( clipLineSegment( clipExtent.xMinimum(), clipExtent.xMaximum(), clipExtent.yMinimum(), clipExtent.yMaximum(),
