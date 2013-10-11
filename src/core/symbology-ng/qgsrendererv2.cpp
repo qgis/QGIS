@@ -123,7 +123,7 @@ const unsigned char* QgsFeatureRendererV2::_getPolygon( QPolygonF& pts, QList<QP
 const unsigned char* QgsFeatureRendererV2::_getPolygon( QPolygonF& pts, QList<QPolygonF>& holes, QgsRenderContext& context, const unsigned char* wkb, bool& generalizedByBoundingBox )
 {
   // Indicates whether the geometry can be generalized.
-  generalizedByBoundingBox = false;
+  generalizedByBoundingBox = true;
   // Threshold of the map2pixel value in the current RenderContext. //TODO: Find optimum value
   float map2pixelTol = 1.0f;
 
@@ -147,15 +147,18 @@ const unsigned char* QgsFeatureRendererV2::_getPolygon( QPolygonF& pts, QList<QP
 
   for ( unsigned int idx = 0; idx < numRings; idx++ )
   {
+    bool ringGeneralizedByBoundingBox = false;
+
     unsigned int nPoints = *(( int* )wkb );
     wkb += sizeof( unsigned int );
 
     // Extract the points from the WKB and store in a pair of vectors, validating view precision. 
     QPolygonF poly;
-    QgsFeatureRendererSimplifier::simplifyGeometry(context, map2pixelTol, (QGis::WkbType)wkbType, wkb, nPoints, poly, generalizedByBoundingBox);
+    QgsFeatureRendererSimplifier::simplifyGeometry(context, map2pixelTol, (QGis::WkbType)wkbType, wkb, nPoints, poly, ringGeneralizedByBoundingBox);
     wkb += hasZValue ? 3*nPoints*sizeof(double) : 2*nPoints*sizeof(double);
     QPointF* ptr = poly.data();
     nPoints = poly.size();
+    if (!ringGeneralizedByBoundingBox) generalizedByBoundingBox = false;
 	
     if ( nPoints < 1 )
       continue;
