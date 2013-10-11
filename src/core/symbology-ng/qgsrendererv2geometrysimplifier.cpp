@@ -14,7 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "limits.h"
+#include <limits.h>
 #include "qgsrendererv2geometrysimplifier.h"
 #include "QtCore/qrect.h"
 
