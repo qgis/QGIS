@@ -359,16 +359,14 @@ class SagaAlgorithm(GeoAlgorithm):
                     if dontExport:
                         continue
 
-                transform = ('' if saga208 else '-TRANSFORM')
                 if isWindows() or isMac() or not saga208:
                     commands.append('io_gdal 1 -GRIDS "' + filename2
                                     + '" -FORMAT ' + str(formatIndex)
-                                    + ' -TYPE 0 -FILE "' + filename + '"'
-                                    + transform)
+                                    + ' -TYPE 0 -FILE "' + filename + '"')
                 else:
                     commands.append('libio_gdal 1 -GRIDS "' + filename2
                                     + '" -FORMAT 1 -TYPE 0 -FILE "' + filename
-                                    + '"' + transform)
+                                    + '"')
 
         # 4: Run SAGA
         commands = self.editCommands(commands)
@@ -463,7 +461,7 @@ class SagaAlgorithm(GeoAlgorithm):
         sessionExportedLayers[source] = destFilename
         saga208 = ProcessingConfig.getSetting(SagaUtils.SAGA_208)
         if isWindows() or isMac() or not saga208:
-            return 'io_gdal 0 -GRIDS "' + destFilename + '" -FILES "' + source \
+            return 'io_gdal 0 -TRANSFORM -INTERPOL 0 -GRIDS "' + destFilename + '" -FILES "' + source \
                 + '"'
         else:
             return 'libio_gdal 0 -GRIDS "' + destFilename + '" -FILES "' \
