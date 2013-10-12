@@ -148,6 +148,9 @@
    <property name="toolTip">
     <string>Zoom full</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+0</string>
+   </property>
   </action>
   <action name="mActionZoomIn">
    <property name="icon">
@@ -160,6 +163,9 @@
    <property name="toolTip">
     <string>Zoom in</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl++</string>
+   </property>
   </action>
   <action name="mActionZoomOut">
    <property name="icon">
@@ -171,6 +177,9 @@
    </property>
    <property name="toolTip">
     <string>Zoom out</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+-</string>
    </property>
   </action>
   <action name="mActionAddNewMap">
@@ -302,6 +311,9 @@
    <property name="toolTip">
     <string>Group items</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+G</string>
+   </property>
   </action>
   <action name="mActionUngroupItems">
    <property name="text">
@@ -309,6 +321,9 @@
    </property>
    <property name="toolTip">
     <string>Ungroup items</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+G</string>
    </property>
   </action>
   <action name="mActionRaiseItems">
@@ -453,7 +468,7 @@
   </action>
   <action name="mActionUndo">
    <property name="icon">
-    <iconset resource="../../images/images.qrc">
+    <iconset>
      <normalon>:/images/themes/default/mActionUndo.png</normalon>
     </iconset>
    </property>
@@ -672,7 +687,7 @@
    <property name="shortcut">
     <string>Ctrl+Alt+]</string>
    </property>
-  </action>  
+  </action>
  </widget>
  <resources>
   <include location="../../images/images.qrc"/>
