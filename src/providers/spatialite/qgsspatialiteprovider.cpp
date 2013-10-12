@@ -3650,6 +3650,11 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
         // binding an INTEGER value
         sqlite3_bind_int( stmt, ++ia, v.toInt() );
       }
+      else if ( type == QVariant::LongLong )
+      {
+        // binding a LONGLONG value
+        sqlite3_bind_int64( stmt, ++ia, v.toLongLong() );
+      }
       else if ( type == QVariant::Double )
       {
         // binding a DOUBLE value
