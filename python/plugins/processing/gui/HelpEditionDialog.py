@@ -139,7 +139,7 @@ class HelpEditionDialog(QDialog, Ui_DlgHelpEdition):
 
     def getDescription(self, name):
         if name in self.descriptions:
-            return self.descriptions[name]
+            return self.descriptions[name].replace('\n', '<br>')            
         else:
             return ''
 

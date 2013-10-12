@@ -126,4 +126,9 @@ class QgsPoint
         PyErr_SetString(PyExc_IndexError, msg.toAscii().constData());
     }
 %End
+
+  long __hash__() const;
+%MethodCode
+  sipRes = qHash( *sipCpp );
+%End
 }; // class QgsPoint

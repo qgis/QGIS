@@ -43,7 +43,6 @@ class GUI_EXPORT QgsRelationManagerDialog : public QWidget, private Ui::QgsRelat
 
   private:
     QgsRelationManager* mRelationManager;
-    // QgsRelationManagerTreeModel* mRelationTreeModel;
     QList< QgsVectorLayer* > mLayers;
 };
 

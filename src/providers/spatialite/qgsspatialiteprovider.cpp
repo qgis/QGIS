@@ -3552,168 +3552,164 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
   const QgsAttributes & attributevec = flist[0].attributes();
 
   ret = sqlite3_exec( sqliteHandle, "BEGIN", NULL, NULL, &errMsg );
-  if ( ret != SQLITE_OK )
+  if ( ret == SQLITE_OK )
   {
-    // some error occurred
-    goto abort;
-  }
-  toCommit = true;
+    toCommit = true;
 
-  sql = QString( "INSERT INTO %1(" ).arg( quotedIdentifier( mTableName ) );
-  values = QString( ") VALUES (" );
-  separator = "";
-
-  if ( !mGeometryColumn.isEmpty() )
-  {
-    sql += separator + quotedIdentifier( mGeometryColumn );
-    values += separator + geomParam();
-    separator = ",";
-  }
-
-  for ( int i = 0; i < attributevec.count(); ++i )
-  {
-    if ( !attributevec[i].isNull() )
-      continue;
-
-    if ( i >= attributeFields.count() )
-      continue;
-
-    QString fieldname = attributeFields[i].name();
-    if ( fieldname.isEmpty() || fieldname == mGeometryColumn )
-      continue;
-
-    sql += separator + quotedIdentifier( fieldname );
-    values += separator + "?";
-    separator = ",";
-  }
-
-  sql += values;
-  sql += ")";
-
-  // SQLite prepared statement
-  if ( sqlite3_prepare_v2( sqliteHandle, sql.toUtf8().constData(), -1, &stmt, NULL ) != SQLITE_OK )
-  {
-    // some error occurred
-    QgsMessageLog::logMessage( tr( "SQLite error: %2\nSQL: %1" ).arg( sql ).arg( sqlite3_errmsg( sqliteHandle ) ), tr( "SpatiaLite" ) );
-    return false;
-  }
-
-  for ( QgsFeatureList::iterator features = flist.begin(); features != flist.end(); features++ )
-  {
-    // looping on each feature to insert
-    const QgsAttributes& attributevec = features->attributes();
-
-    // resetting Prepared Statement and bindings
-    sqlite3_reset( stmt );
-    sqlite3_clear_bindings( stmt );
-
-    // initializing the column counter
-    ia = 0;
+    sql = QString( "INSERT INTO %1(" ).arg( quotedIdentifier( mTableName ) );
+    values = QString( ") VALUES (" );
+    separator = "";
 
     if ( !mGeometryColumn.isEmpty() )
     {
-      // binding GEOMETRY to Prepared Statement
-      if ( !features->geometry() )
-      {
-        sqlite3_bind_null( stmt, ++ia );
-      }
-      else
-      {
-        unsigned char *wkb = NULL;
-        size_t wkb_size;
-        convertFromGeosWKB( features->geometry()->asWkb(),
-                            features->geometry()->wkbSize(),
-                            &wkb, &wkb_size, nDims );
-        if ( !wkb )
-          sqlite3_bind_null( stmt, ++ia );
-        else
-          sqlite3_bind_blob( stmt, ++ia, wkb, wkb_size, free );
-      }
+      sql += separator + quotedIdentifier( mGeometryColumn );
+      values += separator + geomParam();
+      separator = ",";
     }
 
     for ( int i = 0; i < attributevec.count(); ++i )
     {
-      QVariant v = attributevec[i];
-      if ( !v.isNull() )
+      if ( !attributevec[i].isValid() )
         continue;
 
-      // binding values for each attribute
       if ( i >= attributeFields.count() )
-        break;
+        continue;
 
       QString fieldname = attributeFields[i].name();
       if ( fieldname.isEmpty() || fieldname == mGeometryColumn )
         continue;
 
-      QVariant::Type type = attributeFields[i].type();
-
-      if ( type == QVariant::Int )
-      {
-        // binding an INTEGER value
-        sqlite3_bind_int( stmt, ++ia, v.toInt() );
-      }
-      else if ( type == QVariant::Double )
-      {
-        // binding a DOUBLE value
-        sqlite3_bind_double( stmt, ++ia, v.toDouble() );
-      }
-      else if ( type == QVariant::String )
-      {
-        // binding a TEXT value
-        QByteArray ba = v.toString().toUtf8();
-        sqlite3_bind_text( stmt, ++ia, ba.constData(), ba.size(), SQLITE_TRANSIENT );
-      }
-      else
-      {
-        // binding a NULL value
-        sqlite3_bind_null( stmt, ++ia );
-      }
+      sql += separator + quotedIdentifier( fieldname );
+      values += separator + "?";
+      separator = ",";
     }
 
-    // performing actual row insert
-    ret = sqlite3_step( stmt );
+    sql += values;
+    sql += ")";
 
-    if ( ret == SQLITE_DONE || ret == SQLITE_ROW )
+    // SQLite prepared statement
+    ret = sqlite3_prepare_v2( sqliteHandle, sql.toUtf8().constData(), -1, &stmt, NULL );
+    if ( ret == SQLITE_OK )
     {
-      // update feature id
-      features->setFeatureId( sqlite3_last_insert_rowid( sqliteHandle ) );
-      numberFeatures++;
-    }
-    else
-    {
-      // some unexpected error occurred
-      const char *err = sqlite3_errmsg( sqliteHandle );
-      int len = strlen( err );
-      errMsg = ( char * ) sqlite3_malloc( len + 1 );
-      strcpy( errMsg, err );
-      goto abort;
-    }
+      for ( QgsFeatureList::iterator feature = flist.begin(); feature != flist.end(); feature++ )
+      {
+        // looping on each feature to insert
+        const QgsAttributes& attributevec = feature->attributes();
 
-  }
-  sqlite3_finalize( stmt );
+        // resetting Prepared Statement and bindings
+        sqlite3_reset( stmt );
+        sqlite3_clear_bindings( stmt );
 
-  ret = sqlite3_exec( sqliteHandle, "COMMIT", NULL, NULL, &errMsg );
+        // initializing the column counter
+        ia = 0;
+
+        if ( !mGeometryColumn.isEmpty() )
+        {
+          // binding GEOMETRY to Prepared Statement
+          if ( !feature->geometry() )
+          {
+            sqlite3_bind_null( stmt, ++ia );
+          }
+          else
+          {
+            unsigned char *wkb = NULL;
+            size_t wkb_size;
+            convertFromGeosWKB( feature->geometry()->asWkb(),
+                                feature->geometry()->wkbSize(),
+                                &wkb, &wkb_size, nDims );
+            if ( !wkb )
+              sqlite3_bind_null( stmt, ++ia );
+            else
+              sqlite3_bind_blob( stmt, ++ia, wkb, wkb_size, free );
+          }
+        }
+
+        for ( int i = 0; i < attributevec.count(); ++i )
+        {
+          QVariant v = attributevec[i];
+          if ( !v.isValid() )
+            continue;
+
+          // binding values for each attribute
+          if ( i >= attributeFields.count() )
+            break;
+
+          QString fieldname = attributeFields[i].name();
+          if ( fieldname.isEmpty() || fieldname == mGeometryColumn )
+            continue;
+
+          QVariant::Type type = attributeFields[i].type();
+
+          if ( type == QVariant::Int )
+          {
+            // binding an INTEGER value
+            sqlite3_bind_int( stmt, ++ia, v.toInt() );
+          }
+          if ( type == QVariant::LongLong )
+          {
+            // binding a LONGLONG value
+            sqlite3_bind_int64( stmt, ++ia, v.toLongLong() );
+          }
+          else if ( type == QVariant::Double )
+          {
+            // binding a DOUBLE value
+            sqlite3_bind_double( stmt, ++ia, v.toDouble() );
+          }
+          else if ( type == QVariant::String )
+          {
+            // binding a TEXT value
+            QByteArray ba = v.toString().toUtf8();
+            sqlite3_bind_text( stmt, ++ia, ba.constData(), ba.size(), SQLITE_TRANSIENT );
+          }
+          else
+          {
+            // binding a NULL value
+            sqlite3_bind_null( stmt, ++ia );
+          }
+        }
+
+        // performing actual row insert
+        ret = sqlite3_step( stmt );
+
+        if ( ret == SQLITE_DONE || ret == SQLITE_ROW )
+        {
+          // update feature id
+          feature->setFeatureId( sqlite3_last_insert_rowid( sqliteHandle ) );
+          numberFeatures++;
+        }
+        else
+        {
+          // some unexpected error occurred
+          const char *err = sqlite3_errmsg( sqliteHandle );
+          int len = strlen( err );
+          errMsg = ( char * ) sqlite3_malloc( len + 1 );
+          strcpy( errMsg, err );
+          break;
+        }
+      }
+      if ( ret == SQLITE_DONE || ret == SQLITE_ROW )
+      {
+        ret = sqlite3_exec( sqliteHandle, "COMMIT", NULL, NULL, &errMsg );
+      }
+    } // prepared statement
+  } // BEGIN statement
+
   if ( ret != SQLITE_OK )
   {
-    // some error occurred
-    goto abort;
-  }
-  return true;
+    pushError( tr( "SQLite error: %2\nSQL: %1" ).arg( sql ).arg( errMsg ? errMsg : tr( "unknown cause" ) ) );
+    if ( errMsg )
+    {
+      sqlite3_free( errMsg );
+    }
 
-abort:
-  pushError( tr( "SQLite error: %2\nSQL: %1" ).arg( sql ).arg( errMsg ? errMsg : tr( "unknown cause" ) ) );
-  if ( errMsg )
-  {
-    sqlite3_free( errMsg );
-  }
-
-  if ( toCommit )
-  {
-    // ROLLBACK after some previous error
-    sqlite3_exec( sqliteHandle, "ROLLBACK", NULL, NULL, NULL );
+    if ( toCommit )
+    {
+      // ROLLBACK after some previous error
+      sqlite3_exec( sqliteHandle, "ROLLBACK", NULL, NULL, NULL );
+    }
   }
 
-  return false;
+  return ret == SQLITE_OK;
 }
 
 bool QgsSpatiaLiteProvider::deleteFeatures( const QgsFeatureIds &id )

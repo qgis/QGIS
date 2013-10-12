@@ -136,7 +136,7 @@ def removeDir(path):
     if QFile(path).exists():
       result = QCoreApplication.translate("QgsPluginInstaller","Failed to remove the directory:")+"\n"+path+"\n"+QCoreApplication.translate("QgsPluginInstaller","Check permissions or remove it manually")
     # restore plugin directory if removed by QDir().rmpath()
-    pluginDir = QFileInfo(QgsApplication.qgisUserDbFilePath()).path() + "/python/plugins"
+    pluginDir = qgis.utils.home_plugin_path
     if not QDir(pluginDir).exists():
       QDir().mkpath(pluginDir)
     return result
