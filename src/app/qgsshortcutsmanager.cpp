@@ -17,11 +17,16 @@
 
 #include <QSettings>
 
+QgsShortcutsManager* QgsShortcutsManager::mInstance = NULL;
+
 QgsShortcutsManager::QgsShortcutsManager( QObject *parent ) : QObject( parent )
 {
 }
 
-QgsShortcutsManager* QgsShortcutsManager::mInstance = NULL;
+QgsShortcutsManager::~QgsShortcutsManager()
+{
+  mInstance = 0;
+}
 
 QgsShortcutsManager* QgsShortcutsManager::instance( QObject *parent )
 {

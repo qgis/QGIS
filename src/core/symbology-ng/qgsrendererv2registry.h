@@ -156,8 +156,6 @@ class CORE_EXPORT QgsRendererV2Registry
     QgsRendererV2Registry();
     ~QgsRendererV2Registry();
 
-    static QgsRendererV2Registry* mInstance;
-
     QMap<QString, QgsRendererV2AbstractMetadata*> mRenderers;
 
     //! list to keep order in which renderers have been added

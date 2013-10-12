@@ -592,7 +592,6 @@ void QgsApplication::initQgis()
 void QgsApplication::exitQgis()
 {
   delete QgsMapLayerRegistry::instance();
-  delete QgsProviderRegistry::instance();
 }
 
 QString QgsApplication::showSettings()

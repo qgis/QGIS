@@ -41,7 +41,7 @@
 #include <QTextStream>
 
 // canonical project instance
-QgsProject * QgsProject::theProject_;
+QgsProject *QgsProject::theProject_ = 0;
 
 /**
     Take the given scope and key and convert them to a string list of key
@@ -304,8 +304,8 @@ struct QgsProject::Imp
   bool dirty;
 
   Imp()
-      : title( "" ),
-      dirty( false )
+      : title( "" )
+      , dirty( false )
   {                             // top property node is the root
     // "properties" that contains all plug-in
     // and extra property keys and values
@@ -359,18 +359,14 @@ QgsProject::~QgsProject()
 
 
 
-QgsProject * QgsProject::instance()
+QgsProject *QgsProject::instance()
 {
-  if ( !QgsProject::theProject_ )
+  if ( !theProject_ )
   {
-    QgsProject::theProject_ = new QgsProject;
+    theProject_ = new QgsProject;
   }
-
-  return QgsProject::theProject_;
-} // QgsProject * instance()
-
-
-
+  return theProject_;
+} // QgsProject *instance()
 
 void QgsProject::title( QString const &title )
 {

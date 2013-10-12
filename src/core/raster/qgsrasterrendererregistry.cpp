@@ -35,15 +35,10 @@ QgsRasterRendererRegistryEntry::QgsRasterRendererRegistryEntry(): rendererCreate
 {
 }
 
-QgsRasterRendererRegistry* QgsRasterRendererRegistry::mInstance = 0;
-
 QgsRasterRendererRegistry* QgsRasterRendererRegistry::instance()
 {
-  if ( !mInstance )
-  {
-    mInstance = new QgsRasterRendererRegistry();
-  }
-  return mInstance;
+  static QgsRasterRendererRegistry mInstance;
+  return &mInstance;
 }
 
 QgsRasterRendererRegistry::QgsRasterRendererRegistry()

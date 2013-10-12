@@ -20,15 +20,10 @@
 #include "qgslogger.h"
 #include <QFile>
 
-QgsMSLayerCache* QgsMSLayerCache::mInstance = 0;
-
 QgsMSLayerCache* QgsMSLayerCache::instance()
 {
-  if ( !mInstance )
-  {
-    mInstance = new QgsMSLayerCache();
-  }
-  return mInstance;
+  static QgsMSLayerCache mInstance;
+  return &mInstance;
 }
 
 QgsMSLayerCache::QgsMSLayerCache()
@@ -55,7 +50,6 @@ QgsMSLayerCache::~QgsMSLayerCache()
   {
     delete entry.layerPointer;
   }
-  delete mInstance;
 }
 
 void QgsMSLayerCache::insertLayer( const QString& url, const QString& layerName, QgsMapLayer* layer, const QString& configFile, const QList<QString>& tempFiles )
