@@ -65,7 +65,6 @@ class QgsSpatiaLiteFeatureIterator : public QgsAbstractFeatureIterator
 
     //! Set to true, if geometry is in the requested columns
     bool mFetchGeometry;
-
 };
 
 #endif // QGSSPATIALITEFEATUREITERATOR_H

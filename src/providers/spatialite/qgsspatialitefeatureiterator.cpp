@@ -44,6 +44,8 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteProvide
 {
   P->mActiveIterators << this;
 
+  mFetchGeometry = !P->mGeometryColumn.isNull() && !( mRequest.flags() & QgsFeatureRequest::NoGeometry );
+
   QString whereClause;
   if ( request.filterType() == QgsFeatureRequest::FilterRect && !P->mGeometryColumn.isNull() )
   {
@@ -278,7 +280,6 @@ QString QgsSpatiaLiteFeatureIterator::fieldName( const QgsField& fld )
 
 bool QgsSpatiaLiteFeatureIterator::getFeature( sqlite3_stmt *stmt, QgsFeature &feature )
 {
-  mFetchGeometry = !( mRequest.flags() & QgsFeatureRequest::NoGeometry );
   bool subsetAttributes = mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes;
 
   int ret = sqlite3_step( stmt );
@@ -331,7 +332,7 @@ bool QgsSpatiaLiteFeatureIterator::getFeature( sqlite3_stmt *stmt, QgsFeature &f
       }
       else
       {
-        int attrIndex = subsetAttributes ? mRequest.subsetOfAttributes()[ic-1] : ic - 1;
+        int attrIndex = ic - 1;
         feature.setAttribute( attrIndex, getFeatureAttribute( stmt, ic, P->attributeFields[attrIndex].type() ) );
       }
     }
