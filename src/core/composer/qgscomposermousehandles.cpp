@@ -571,7 +571,6 @@ void QgsComposerMouseHandles::resizeMouseMove( const QPointF& currentPosition, b
     ratio = mBeginHandleWidth / mBeginHandleHeight;
   }
 
-  //TODO: resizing eg from top handle to below bottom handle
   switch ( mCurrentMouseMoveAction )
   {
       //vertical resize
