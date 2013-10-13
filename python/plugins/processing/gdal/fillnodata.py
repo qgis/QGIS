@@ -50,9 +50,9 @@ class fillnodata(GeoAlgorithm):
     NO_DEFAULT_MASK = 'NO_DEFAULT_MASK'
     OUTPUT = 'OUTPUT'
 
-    def getIcon(self):
-        filepath = os.path.dirname(__file__) + '/icons/fillnodata.png'
-        return QtGui.QIcon(filepath)
+    #def getIcon(self):
+    #    filepath = os.path.dirname(__file__) + '/icons/fillnodata.png'
+    #    return QtGui.QIcon(filepath)
 
     def defineCharacteristics(self):
         self.name = 'Fill nodata'
