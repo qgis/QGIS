@@ -3867,6 +3867,8 @@ bool QgsSpatiaLiteProvider::changeAttributeValues( const QgsChangedAttributesMap
 
   for ( QgsChangedAttributesMap::const_iterator iter = attr_map.begin(); iter != attr_map.end(); ++iter )
   {
+    // Loop over all changed features
+
     QgsFeatureId fid = iter.key();
 
     // skip added features
@@ -3881,36 +3883,33 @@ bool QgsSpatiaLiteProvider::changeAttributeValues( const QgsChangedAttributesMap
     // cycle through the changed attributes of the feature
     for ( QgsAttributeMap::const_iterator siter = attrs.begin(); siter != attrs.end(); ++siter )
     {
+      // Loop over all changed attributes
       try
       {
-        QString fieldName = field( siter.key() ).name();
+        const QgsField& fld = field( siter.key() );
+        const QVariant& val = siter.value();
 
         if ( !first )
           sql += ",";
         else
           first = false;
 
-        QVariant::Type type = siter->type();
-        if ( siter->toString().isEmpty() )
-        {
-          // assuming to be a NULL value
-          type = QVariant::Invalid;
-        }
+        QVariant::Type type = fld.type();
 
-        if ( type == QVariant::Invalid )
+        if ( val.isNull() || !val.isValid() )
         {
           // binding a NULL value
-          sql += QString( "%1=NULL" ).arg( quotedIdentifier( fieldName ) );
+          sql += QString( "%1=NULL" ).arg( quotedIdentifier( fld.name() ) );
         }
-        else if ( type == QVariant::Int || type == QVariant::Double )
+        else if ( type == QVariant::Int || type == QVariant::LongLong || type == QVariant::Double )
         {
           // binding a NUMERIC value
-          sql += QString( "%1=%2" ).arg( quotedIdentifier( fieldName ) ).arg( siter->toString() );
+          sql += QString( "%1=%2" ).arg( quotedIdentifier( fld.name() ) ).arg( val.toString() );
         }
         else
         {
           // binding a TEXT value
-          sql += QString( "%1=%2" ).arg( quotedIdentifier( fieldName ) ).arg( quotedValue( siter->toString() ) );
+          sql += QString( "%1=%2" ).arg( quotedIdentifier( fld.name() ) ).arg( quotedValue( val.toString() ) );
         }
       }
       catch ( SLFieldNotFound )
