@@ -3640,12 +3640,17 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
 
           QVariant::Type type = attributeFields[i].type();
 
-          if ( type == QVariant::Int )
+          if ( v.isNull() )
+          {
+            // binding a NULL value
+            sqlite3_bind_null( stmt, ++ia );
+          }
+          else if ( type == QVariant::Int )
           {
             // binding an INTEGER value
             sqlite3_bind_int( stmt, ++ia, v.toInt() );
           }
-          if ( type == QVariant::LongLong )
+          else if ( type == QVariant::LongLong )
           {
             // binding a LONGLONG value
             sqlite3_bind_int64( stmt, ++ia, v.toLongLong() );
@@ -3663,7 +3668,7 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
           }
           else
           {
-            // binding a NULL value
+            // Unknown type: bind a NULL value
             sqlite3_bind_null( stmt, ++ia );
           }
         }
