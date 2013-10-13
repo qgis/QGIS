@@ -110,6 +110,8 @@ class CORE_EXPORT QgsComposerMouseHandles: public QObject, public QGraphicsRectI
     double mBeginHandleWidth;
     double mBeginHandleHeight;
 
+    QRectF mResizeRect;
+
     /**True if user is currently dragging items*/
     bool mIsDragging;
     /**True is user is currently resizing items*/
