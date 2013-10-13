@@ -5087,37 +5087,46 @@ QGISEXTERN QgsVectorLayerImport::ImportError createEmptyLayer(
 static bool initializeSpatialMetadata( sqlite3 *sqlite_handle, QString& errCause )
 {
   // attempting to perform self-initialization for a newly created DB
-  int ret;
-  char sql[1024];
-  char *errMsg = NULL;
-  int count = 0;
-  int i;
-  char **results;
-  int rows;
-  int columns;
-
-  if ( sqlite_handle == NULL )
+  if ( !sqlite_handle )
     return false;
+
   // checking if this DB is really empty
-  strcpy( sql, "SELECT Count(*) from sqlite_master" );
-  ret = sqlite3_get_table( sqlite_handle, sql, &results, &rows, &columns, NULL );
+  char **results;
+  int rows, columns;
+  int ret = sqlite3_get_table( sqlite_handle, "select count(*) from sqlite_master", &results, &rows, &columns, NULL );
   if ( ret != SQLITE_OK )
     return false;
-  if ( rows < 1 )
-    ;
-  else
+
+  int count = 0;
+  if ( rows >= 1 )
   {
-    for ( i = 1; i <= rows; i++ )
+    for ( int i = 1; i <= rows; i++ )
       count = atoi( results[( i * columns ) + 0] );
   }
+
   sqlite3_free_table( results );
 
   if ( count > 0 )
     return false;
 
+  bool above41 = false;
+  ret = sqlite3_get_table( sqlite_handle, "select spatialite_version()", &results, &rows, &columns, NULL );
+  if ( ret == SQLITE_OK && rows == 1 && columns == 1 )
+  {
+    QString version = QString::fromUtf8( results[1] );
+    QStringList parts = version.split( " ", QString::SkipEmptyParts );
+    if ( parts.size() >= 1 )
+    {
+      QStringList verparts = parts[0].split( ".", QString::SkipEmptyParts );
+      above41 = verparts.size() >= 2 && ( verparts[0].toInt() > 4 || ( verparts[0].toInt() == 4 && verparts[1].toInt() >= 1 ) );
+    }
+  }
+
+  sqlite3_free_table( results );
+
   // all right, it's empty: proceding to initialize
-  strcpy( sql, "SELECT InitSpatialMetadata()" );
-  ret = sqlite3_exec( sqlite_handle, sql, NULL, NULL, &errMsg );
+  char *errMsg = 0;
+  ret = sqlite3_exec( sqlite_handle, above41 ? "SELECT InitSpatialMetadata(1)" : "SELECT InitSpatialMetadata()", NULL, NULL, &errMsg );
   if ( ret != SQLITE_OK )
   {
     errCause = QObject::tr( "Unable to initialize SpatialMetadata:\n" );
