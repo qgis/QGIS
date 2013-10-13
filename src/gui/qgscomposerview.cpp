@@ -40,6 +40,7 @@
 #include "qgslogger.h"
 #include "qgsaddremovemultiframecommand.h"
 #include "qgspaperitem.h"
+#include "qgsmapcanvas.h" //for QgsMapCanvas::WheelAction
 
 QgsComposerView::QgsComposerView( QWidget* parent, const char* name, Qt::WFlags f )
     : QGraphicsView( parent )
@@ -786,18 +787,98 @@ void QgsComposerView::keyPressEvent( QKeyEvent * e )
 
 void QgsComposerView::wheelEvent( QWheelEvent* event )
 {
+  if ( currentTool() == MoveItemContent )
+  {
+    //move item content tool, so scroll events get handled by the selected composer item
+
+    QPointF scenePoint = mapToScene( event->pos() );
+    //select topmost item at position of event
+    QgsComposerItem* theItem = composition()->composerItemAt( scenePoint );
+    if ( theItem )
+    {
+      if ( theItem->isSelected() )
+      {
+        QPointF itemPoint = theItem->mapFromScene( scenePoint );
+        theItem->beginCommand( tr( "Zoom item content" ) );
+        theItem->zoomContent( event->delta(), itemPoint.x(), itemPoint.y() );
+        theItem->endCommand();
+      }
+    }
+  }
+  else
+  {
+    //not using move item content tool, so zoom whole composition
+    wheelZoom( event );
+  }
+}
+
+void QgsComposerView::wheelZoom( QWheelEvent * event )
+{
+  //get mouse wheel zoom behaviour settings
+  QSettings mySettings;
+  int wheelAction = mySettings.value( "/qgis/wheel_action", 2 ).toInt();
+  double zoomFactor = mySettings.value( "/qgis/zoom_factor", 2 ).toDouble();
+
+  //caculate zoom scale factor
+  bool zoomIn = event->delta() > 0;
+  double scaleFactor = ( zoomIn ? 1 / zoomFactor : zoomFactor );
+
+  //get current visible part of scene
+  QRect viewportRect( 0, 0, viewport()->width(), viewport()->height() );
+  QgsRectangle visibleRect = QgsRectangle( mapToScene( viewportRect ).boundingRect() );
+
+  //transform the mouse pos to scene coordinates
   QPointF scenePoint = mapToScene( event->pos() );
 
-  //select topmost item at position of event
-  QgsComposerItem* theItem = composition()->composerItemAt( scenePoint );
-  if ( theItem )
+  //zoom composition, respecting wheel action setting
+  switch (( QgsMapCanvas::WheelAction )wheelAction )
   {
-    if ( theItem->isSelected() )
+    case QgsMapCanvas::WheelZoom:
+      // zoom without changing extent
+      if ( zoomIn )
+      {
+        scale( zoomFactor, zoomFactor );
+      }
+      else
+      {
+        scale( 1 / zoomFactor, 1 / zoomFactor );
+      }
+      break;
+
+    case QgsMapCanvas::WheelZoomAndRecenter:
     {
-      QPointF itemPoint = theItem->mapFromScene( scenePoint );
-      theItem->beginCommand( tr( "Zoom item content" ) );
-      theItem->zoomContent( event->delta(), itemPoint.x(), itemPoint.y() );
-      theItem->endCommand();
+      visibleRect.scale( scaleFactor, scenePoint.x(), scenePoint.y() );
+      fitInView( visibleRect.toRectF(), Qt::KeepAspectRatio );
+      break;
+    }
+
+    case QgsMapCanvas::WheelZoomToMouseCursor:
+    {
+      QgsPoint oldCenter( visibleRect.center() );
+      QgsPoint newCenter( scenePoint.x() + (( oldCenter.x() - scenePoint.x() ) * scaleFactor ),
+                          scenePoint.y() + (( oldCenter.y() - scenePoint.y() ) * scaleFactor ) );
+
+      visibleRect.scale( scaleFactor, newCenter.x(), newCenter.y() );
+      fitInView( visibleRect.toRectF(), Qt::KeepAspectRatio );
+      break;
+    }
+
+    case QgsMapCanvas::WheelNothing:
+      return;
+  }
+
+  //update composition for new zoom
+  updateRulers();
+  update();
+  //redraw cached map items
+  QList<QGraphicsItem *> itemList = composition()->items();
+  QList<QGraphicsItem *>::iterator itemIt = itemList.begin();
+  for ( ; itemIt != itemList.end(); ++itemIt )
+  {
+    QgsComposerMap* mypItem = dynamic_cast<QgsComposerMap *>( *itemIt );
+    if (( mypItem ) && ( mypItem->previewMode() == QgsComposerMap::Render ) )
+    {
+      mypItem->updateCachedImage();
     }
   }
 }

@@ -81,6 +81,7 @@ class CORE_EXPORT QgsRectangle
     QgsPoint center() const;
     //! Scale the rectangle around its center point
     void scale( double scaleFactor, const QgsPoint *c = 0 );
+    void scale( double scaleFactor, double centerX, double centerY );
     //! return the intersection with the given rectangle
     QgsRectangle intersect( const QgsRectangle *rect ) const;
     //! returns true when rectangle intersects with other rectangle

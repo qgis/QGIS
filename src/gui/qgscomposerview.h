@@ -167,6 +167,9 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     /** Draw a shape on the canvas */
     void addShape( Tool currentTool );
 
+    /**Zoom composition from a mouse wheel event*/
+    void wheelZoom( QWheelEvent * event );
+
     //void connectAddRemoveCommandSignals( QgsAddRemoveItemCommand* c );
 
   signals:
