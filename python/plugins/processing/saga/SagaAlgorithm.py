@@ -193,7 +193,7 @@ class SagaAlgorithm(GeoAlgorithm):
                 self.xmax = max(self.xmax, layer.extent().xMaximum())
                 self.ymin = min(self.ymin, layer.extent().yMinimum())
                 self.ymax = max(self.ymax, layer.extent().yMaximum())
-                self.cellsize = max(self.cellsize, cellsize)
+                self.cellsize = min(self.cellsize, cellsize)
                 self.inputExtentsCount += 1
 
     def processAlgorithm(self, progress):
@@ -428,14 +428,14 @@ class SagaAlgorithm(GeoAlgorithm):
         saga208 = ProcessingConfig.getSetting(SagaUtils.SAGA_208)
         if isWindows() or isMac() or not saga208:
             s = 'grid_tools "Resampling" -INPUT "' + inputFilename \
-                + '" -TARGET 0 -SCALE_UP_METHOD 4 -SCALE_DOWN_METHOD 4 -USER_XMIN ' \
+                + '" -TARGET 0 -SCALE_UP_METHOD 0 -SCALE_DOWN_METHOD 0 -USER_XMIN ' \
                 + str(self.xmin) + ' -USER_XMAX ' + str(self.xmax) \
                 + ' -USER_YMIN ' + str(self.ymin) + ' -USER_YMAX ' \
                 + str(self.ymax) + ' -USER_SIZE ' + str(self.cellsize) \
                 + ' -USER_GRID "' + destFilename + '"'
         else:
             s = 'libgrid_tools "Resampling" -INPUT "' + inputFilename \
-                + '" -TARGET 0 -SCALE_UP_METHOD 4 -SCALE_DOWN_METHOD 4 -USER_XMIN ' \
+                + '" -TARGET 0 -SCALE_UP_METHOD 0 -SCALE_DOWN_METHOD 0 -USER_XMIN ' \
                 + str(self.xmin) + ' -USER_XMAX ' + str(self.xmax) \
                 + ' -USER_YMIN ' + str(self.ymin) + ' -USER_YMAX ' \
                 + str(self.ymax) + ' -USER_SIZE ' + str(self.cellsize) \
