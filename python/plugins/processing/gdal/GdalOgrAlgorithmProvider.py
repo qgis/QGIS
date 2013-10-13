@@ -60,6 +60,7 @@ from processing.gdal.aspect import aspect
 from processing.gdal.tri import tri
 from processing.gdal.tpi import tpi
 from processing.gdal.roughness import roughness
+from processing.gdal.ColorRelief import ColorRelief
 
 from processing.gdal.ogr2ogr import Ogr2Ogr
 from processing.gdal.ogrinfo import OgrInfo
@@ -112,6 +113,7 @@ class GdalOgrAlgorithmProvider(AlgorithmProvider):
             ClipByExtent(), ClipByMask(), contour(), rasterize(), proximity(),
             sieve(), fillnodata(), ExtractProjection(), gdal2xyz(),
             hillshade(), slope(), aspect(), tri(), tpi(), roughness(),
+            ColorRelief(),
             # ----- OGR tools -----
             OgrInfo(), Ogr2Ogr(), OgrSql(),
             ]
