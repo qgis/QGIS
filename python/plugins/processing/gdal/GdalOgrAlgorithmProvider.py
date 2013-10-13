@@ -64,6 +64,7 @@ from processing.gdal.ColorRelief import ColorRelief
 from processing.gdal.GridInvDist import GridInvDist
 from processing.gdal.GridAverage import GridAverage
 from processing.gdal.GridNearest import GridNearest
+from processing.gdal.GridDataMetrics import GridDataMetrics
 
 from processing.gdal.ogr2ogr import Ogr2Ogr
 from processing.gdal.ogrinfo import OgrInfo
@@ -117,6 +118,7 @@ class GdalOgrAlgorithmProvider(AlgorithmProvider):
             sieve(), fillnodata(), ExtractProjection(), gdal2xyz(),
             hillshade(), slope(), aspect(), tri(), tpi(), roughness(),
             ColorRelief(), GridInvDist(), GridAverage(), GridNearest(),
+            GridDataMetrics(),
             # ----- OGR tools -----
             OgrInfo(), Ogr2Ogr(), OgrSql(),
             ]
