@@ -58,6 +58,7 @@ from processing.gdal.hillshade import hillshade
 from processing.gdal.slope import slope
 from processing.gdal.aspect import aspect
 from processing.gdal.tri import tri
+from processing.gdal.tpi import tpi
 
 from processing.gdal.ogr2ogr import Ogr2Ogr
 from processing.gdal.ogrinfo import OgrInfo
@@ -109,7 +110,7 @@ class GdalOgrAlgorithmProvider(AlgorithmProvider):
             rgb2pct(), pct2rgb(), merge(), polygonize(), gdaladdo(),
             ClipByExtent(), ClipByMask(), contour(), rasterize(), proximity(),
             sieve(), fillnodata(), ExtractProjection(), gdal2xyz(),
-            hillshade(), slope(), aspect(), tri(),
+            hillshade(), slope(), aspect(), tri(), tpi(),
             # ----- OGR tools -----
             OgrInfo(), Ogr2Ogr(), OgrSql(),
             ]
