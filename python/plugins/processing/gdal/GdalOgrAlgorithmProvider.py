@@ -54,6 +54,7 @@ from processing.gdal.sieve import sieve
 from processing.gdal.fillnodata import fillnodata
 from processing.gdal.extractprojection import ExtractProjection
 from processing.gdal.gdal2xyz import gdal2xyz
+from processing.gdal.hillshade import hillshade
 
 from processing.gdal.ogr2ogr import Ogr2Ogr
 from processing.gdal.ogrinfo import OgrInfo
@@ -105,6 +106,7 @@ class GdalOgrAlgorithmProvider(AlgorithmProvider):
             rgb2pct(), pct2rgb(), merge(), polygonize(), gdaladdo(),
             ClipByExtent(), ClipByMask(), contour(), rasterize(), proximity(),
             sieve(), fillnodata(), ExtractProjection(), gdal2xyz(),
+            hillshade(),
             # ----- OGR tools -----
             OgrInfo(), Ogr2Ogr(), OgrSql(),
             ]
