@@ -128,7 +128,7 @@ void QgsComposerMouseHandles::drawSelectedItemBounds( QPainter* painter )
     {
       //if currently resizing, calculate relative resize of this item
       itemBounds = itemSceneBounds;
-      relativeResizeRect( itemBounds, QRectF( mBeginHandlePos.x(), mBeginHandlePos.y(), mBeginHandleWidth, mBeginHandleHeight ), sceneBoundingRect() );
+      relativeResizeRect( itemBounds, QRectF( mBeginHandlePos.x(), mBeginHandlePos.y(), mBeginHandleWidth, mBeginHandleHeight ), mResizeRect );
       itemBounds = mapRectFromScene( itemBounds );
     }
     else
@@ -446,7 +446,7 @@ void QgsComposerMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent* event
       QgsComposerItemCommand* subcommand = new QgsComposerItemCommand( *itemIter, "", parentCommand );
       subcommand->savePreviousState();
       QRectF itemBounds = ( *itemIter )->sceneBoundingRect();
-      relativeResizeRect( itemBounds, QRectF( mBeginHandlePos.x(), mBeginHandlePos.y(), mBeginHandleWidth, mBeginHandleHeight ), sceneBoundingRect() );
+      relativeResizeRect( itemBounds, QRectF( mBeginHandlePos.x(), mBeginHandlePos.y(), mBeginHandleWidth, mBeginHandleHeight ), mResizeRect );
       ( *itemIter )->setSceneRect( itemBounds );
       subcommand->saveAfterState();
     }
@@ -495,6 +495,7 @@ void QgsComposerMouseHandles::mousePressEvent( QGraphicsSceneMouseEvent* event )
             mCurrentMouseMoveAction != QgsComposerMouseHandles::NoAction )
   {
     mIsResizing = true;
+    mResizeRect = QRectF( mBeginHandlePos.x(), mBeginHandlePos.y(), mBeginHandleWidth, mBeginHandleHeight );
   }
 
 }
@@ -570,7 +571,6 @@ void QgsComposerMouseHandles::resizeMouseMove( const QPointF& currentPosition, b
     ratio = mBeginHandleWidth / mBeginHandleHeight;
   }
 
-  //TODO: resizing eg from top handle to below bottom handle
   switch ( mCurrentMouseMoveAction )
   {
       //vertical resize
@@ -717,10 +717,14 @@ void QgsComposerMouseHandles::resizeMouseMove( const QPointF& currentPosition, b
 
   //update selection handle rectangle
   QTransform itemTransform;
-  itemTransform.translate( mx, my );
+  //make sure selection handle size rectangle is normalized (ie, left coord < right coord)
+  double translateX = mBeginHandleWidth + rx > 0 ? mx : mx + mBeginHandleWidth + rx;
+  double translateY = mBeginHandleHeight + ry > 0 ? my : my + mBeginHandleHeight + ry;
+  itemTransform.translate( translateX, translateY );
+
   setTransform( itemTransform );
-  QRectF itemRect( 0, 0, mBeginHandleWidth + rx, mBeginHandleHeight + ry );
-  setRect( itemRect );
+  mResizeRect = QRectF( mBeginHandlePos.x() + mx, mBeginHandlePos.y() + my, mBeginHandleWidth + rx, mBeginHandleHeight + ry );
+  setRect( 0, 0, fabs( mBeginHandleWidth + rx ), fabs( mBeginHandleHeight + ry ) );
 }
 
 void QgsComposerMouseHandles::relativeResizeRect( QRectF& rectToResize, const QRectF& boundsBefore, const QRectF& boundsAfter )

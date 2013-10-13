@@ -23,15 +23,11 @@
 #include "qgssldparser.h"
 #include <QCoreApplication>
 
-QgsConfigCache* QgsConfigCache::mInstance = 0;
 
 QgsConfigCache* QgsConfigCache::instance()
 {
-  if ( !mInstance )
-  {
-    mInstance = new QgsConfigCache();
-  }
-  return mInstance;
+  static QgsConfigCache mInstance;
+  return &mInstance;
 }
 
 QgsConfigCache::QgsConfigCache()

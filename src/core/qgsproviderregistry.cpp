@@ -43,17 +43,12 @@ typedef QString protocolDrivers_t();
 //typedef int dataCapabilities_t();
 //typedef QgsDataItem * dataItem_t(QString);
 
-QgsProviderRegistry *QgsProviderRegistry::_instance = 0;
+
 
 QgsProviderRegistry *QgsProviderRegistry::instance( QString pluginPath )
 {
-  if ( _instance == 0 )
-  {
-    _instance = new QgsProviderRegistry( pluginPath );
-  }
-
-  return _instance;
-
+  static QgsProviderRegistry mInstance( pluginPath );
+  return &mInstance;
 } // QgsProviderRegistry::instance
 
 

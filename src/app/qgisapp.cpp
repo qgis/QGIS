@@ -837,7 +837,6 @@ QgisApp::~QgisApp()
   // cancel request for FileOpen events
   QgsApplication::setFileOpenEventReceiver( 0 );
 
-  // delete map layer registry and provider registry
   QgsApplication::exitQgis();
 
   delete QgsProject::instance();

@@ -21,8 +21,6 @@
 #include "qgsfillsymbollayerv2.h"
 #include "qgsvectorfieldsymbollayer.h"
 
-QgsSymbolLayerV2Registry* QgsSymbolLayerV2Registry::mInstance = NULL;
-
 QgsSymbolLayerV2Registry::QgsSymbolLayerV2Registry()
 {
   // init registry with known symbol layers
@@ -83,9 +81,8 @@ QgsSymbolLayerV2AbstractMetadata* QgsSymbolLayerV2Registry::symbolLayerMetadata(
 
 QgsSymbolLayerV2Registry* QgsSymbolLayerV2Registry::instance()
 {
-  if ( !mInstance )
-    mInstance = new QgsSymbolLayerV2Registry();
-  return mInstance;
+  static QgsSymbolLayerV2Registry mInstance;
+  return &mInstance;
 }
 
 QgsSymbolLayerV2* QgsSymbolLayerV2Registry::defaultSymbolLayer( QgsSymbolV2::SymbolType type )

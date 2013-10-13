@@ -60,8 +60,6 @@ class QgsPgUtil
   private:
     //! Initialize the list of reserved words
     void initReservedWords();
-    //! Instance member
-    static QgsPgUtil* mInstance;
     //! Reserved word list
     QStringList mReservedWords;
     //! PostgreSQL connection

@@ -155,12 +155,8 @@ class CORE_EXPORT QgsProviderRegistry
     typedef std::map<QString, QgsProviderMetadata*> Providers;
 
   private:
-
     /** ctor private since instance() creates it */
     QgsProviderRegistry( QString pluginPath );
-
-    /** pointer to canonical Singleton object */
-    static QgsProviderRegistry* _instance;
 
     /** associative container of provider metadata handles */
     Providers mProviders;

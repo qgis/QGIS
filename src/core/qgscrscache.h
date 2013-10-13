@@ -38,7 +38,6 @@ class CORE_EXPORT QgsCoordinateTransformCache
     void invalidateCrs( const QString& crsAuthId );
 
   private:
-    static QgsCoordinateTransformCache* mInstance;
     QHash< QPair< QString, QString >, QgsCoordinateTransform* > mTransforms;
 };
 
@@ -57,7 +56,6 @@ class CORE_EXPORT QgsCRSCache
     QgsCRSCache();
 
   private:
-    static QgsCRSCache* mInstance;
     QHash< QString, QgsCoordinateReferenceSystem > mCRS;
     /**CRS that is not initialised (returned in case of error)*/
     QgsCoordinateReferenceSystem mInvalidCRS;

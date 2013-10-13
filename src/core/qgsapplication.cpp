@@ -85,7 +85,7 @@ void QgsApplication::init( QString customConfigPath )
 {
   if ( customConfigPath.isEmpty() )
   {
-    customConfigPath = QDir::homePath() + QString( "/.qgis%1/" ).arg( 2 /* FIXME QGis::QGIS_VERSION_INT / 10000 */ );
+    customConfigPath = QString( "%1/.qgis%2/" ).arg( QDir::homePath() ).arg( QGis::QGIS_VERSION_INT / 10000 );
   }
 
   qRegisterMetaType<QgsGeometry::Error>( "QgsGeometry::Error" );
@@ -592,7 +592,6 @@ void QgsApplication::initQgis()
 void QgsApplication::exitQgis()
 {
   delete QgsMapLayerRegistry::instance();
-  delete QgsProviderRegistry::instance();
 }
 
 QString QgsApplication::showSettings()

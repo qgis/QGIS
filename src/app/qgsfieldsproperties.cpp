@@ -734,7 +734,7 @@ QgsVectorLayer::EditType QgsFieldsProperties::editTypeFromButton( QPushButton* b
 
 QgsAttributeEditorElement* QgsFieldsProperties::createAttributeEditorWidget( QTreeWidgetItem* item, QObject *parent )
 {
-  QgsAttributeEditorElement* widgetDef;
+  QgsAttributeEditorElement *widgetDef = 0;
 
   DesignerTreeItemData itemData = item->data( 0, DesignerTreeRole ).value<DesignerTreeItemData>();
   switch ( itemData.type() )
