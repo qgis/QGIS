@@ -173,6 +173,9 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     QPoint mMouseLastXY;
     QPoint mMouseCurrentXY;
 
+    /**Zoom composition from a mouse wheel event*/
+    void wheelZoom( QWheelEvent * event );
+
     //void connectAddRemoveCommandSignals( QgsAddRemoveItemCommand* c );
 
   signals:
