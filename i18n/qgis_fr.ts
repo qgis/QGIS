@@ -53864,7 +53864,7 @@ du contraste</translation>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialiteconnection.cpp" line="90"/>
         <source>obsolete libspatialite: connecting to this DB requires using v.4.0 (or any subsequent)</source>
-        <translation type="unfinished"></translation>
+        <translation>libspatialite obsolète : la connexion à cette base de données nécessite la v 4.0 ou ultérieure</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialiteconnection.cpp" line="379"/>
@@ -53876,7 +53876,7 @@ du contraste</translation>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialiteconnection.cpp" line="294"/>
         <source>obsolete libspatialite: AbstractInterface is unsupported</source>
-        <translation type="unfinished"></translation>
+        <translation>libspatialite obsolète : AbstractInterface n&apos;est pas supporté</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialiteconnection.cpp" line="190"/>
@@ -53955,12 +53955,12 @@ du contraste</translation>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="679"/>
         <source>Retrieval of spatialite version failed</source>
-        <translation type="unfinished"></translation>
+        <translation>L&apos;identification de la version de spatialite a échouée</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="694"/>
         <source>Could not parse spatialite version string &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de récupérer la chaîne de versionnement de spatialite &apos;%1&apos;</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="784"/>
@@ -54041,7 +54041,7 @@ SQL: %1</translation>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5027"/>
         <source>FAILURE: Field %1 not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>Échec : Champ %1 introuvable.</translation>
     </message>
 </context>
 <context>
@@ -54123,12 +54123,15 @@ SQL: %1</translation>
 
 This could take a long time (depending on the DB size),
 but implies better performance thereafter.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Êtes-vous sûr de vouloir mettre à jour les statistiques internes pour la base de données : %1 ?
+
+Cette opération peut prendre du temps (dépend de la taille de la base de données),
+mais amélioreras les performances.</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitesourceselect.cpp" line="151"/>
         <source>Confirm Update Statistics</source>
-        <translation type="unfinished"></translation>
+        <translation>Confirmer la mise à jour des statistiques</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitesourceselect.cpp" line="159"/>
@@ -54139,12 +54142,12 @@ but implies better performance thereafter.</source>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitesourceselect.cpp" line="160"/>
         <source>Internal statistics successfully updated for: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Mise à jour des statistiques internes réussie pour : %1</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitesourceselect.cpp" line="165"/>
         <source>Error while updating internal statistics for: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur lors de la mise à jour des statistiques internes pour : %1</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitesourceselect.cpp" line="266"/>
@@ -54431,7 +54434,7 @@ but implies better performance thereafter.</source>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="223"/>
         <source>Finish at %L1 (processing time %L2 minutes)</source>
-        <translation>Terminé à %1 (temps de calcul %L2 minutes)</translation>
+        <translation>Terminé à %L1 (temps de calcul %L2 minutes)</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="286"/>
@@ -55356,7 +55359,24 @@ p, li { white-space: pre-wrap; }
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/images/sponsors/sponsors/ibw.png&quot; /&gt;   &lt;img src=&quot;:/images/sponsors/sponsors/geosynergy.png&quot; /&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;hr /&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Cantarell&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt;Nous travaillons vraiment dur pour faire ce logiciel pour vous. Vous voyez toutes les fonctions interr&amp;eacute;ssantes qu&apos;il contient ? Vous ressentez du plaisir &amp;agrave; l&apos;utiliser ? QGIS est un travail r&amp;eacute;alis&amp;eacute; par une équipe d&amp;eacute;di&amp;eacute;e de d&amp;eacute;veloppeurs. Nous souhaitons de votre part que vous le copiiez &amp;amp; partagiez et le mettez dans les mains du plus grand nombre de personnes possibles. Si QGIS vous fait &amp;eacute;conomiser de l&apos;argent o&amp;ugrave; si vous aimez notre travail et avez la possibilit&amp;eacute; financi&amp;egrave;re de nous aider, merci de consid&amp;eacute;rer &amp;agrave; sponsoriser le d&amp;eacute;veloppement de QGIS. Nous utilisons l&apos;argent des sponsors pour payer les voyages et co&amp;ucirc;ts li&amp;eacute;s &amp;agrave; notre &quot;hackfest&quot; bi-annuelle, et plus g&amp;eacute;n&amp;eacute;ralement pour supporter les objectifs du projet. &lt;br /&gt;&lt;br /&gt;Merci de consulter la &lt;/span&gt;&lt;a href=&quot;http://qgis.org/fr/sponsorship.html&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;Page web de sponsorisation de QGIS&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt; pour plus de détails. Sur la &lt;/span&gt;&lt;a href=&quot;http://qgis.org/en/sponsorship/sponsors.html&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;page des Sponsors&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt; vous pouvez voir toutes les personnes et entreprises qui nous aident financi&amp;egrave;rement - un grand merci à tous !&lt;/span&gt;&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/images/sponsors/sponsors/gold.png&quot; /&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/images/sponsors/sponsors/aas_300wide.png&quot; /&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/images/sponsors/sponsors/silver.png&quot; /&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/images/sponsors/sponsors/vorarlberg.png&quot; /&gt;   &lt;img src=&quot;:/images/sponsors/sponsors/gaia.png&quot; /&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/images/sponsors/sponsors/bronze.png&quot; /&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/images/sponsors/sponsors/ibw.png&quot; /&gt;   &lt;img src=&quot;:/images/sponsors/sponsors/geosynergy.png&quot; /&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;hr /&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message utf8="true">
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -64489,26 +64509,38 @@ This dialog allows you to define the settings for a connection to a PostgreSQL d
 
 &lt;/ul&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;Create a new PostGIS connection&lt;/h3&gt;
-&lt;h3&gt;Créer une nouvelle connexion PostGIS&lt;/h3&gt;
-Vous devez connaître le nom de l&apos;hôte, le port d&apos;accès, le nom d&apos;utilisateur et le mot de passe permettant d&apos;accéder au serveur de base de données.
-&lt;h4&gt;Paramètres requis&lt;/h4&gt;
+        <translation>&lt;h3&gt;Créer une nouvelle connexion PostgreSQL&lt;/h3&gt;
+Cette boite de dialogue vous permet de définir les paramètres de connexion vers une base de données PostgreSQL.
+&lt;p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;label&gt;Nom&gt;/label&gt; - un nom décrivant cette connexion (&quot;Serveur voirie&quot;)
-&lt;li&gt;&lt;label&gt;Hôte&lt;/label&gt; - le nom d&apos;hôte du serveur (p. ex. test.qgis.org)
-&lt;li&gt;&lt;label&gt;Base de données&lt;/label&gt; - nom de la base à laquelle se connecter
-&lt;li&gt;&lt;label&gt;Port&lt;/label&gt; - port sur lequel PostgreSQL écoute. Par défaut, il s&apos;agit du 5432. Dans le doute, demandez à votre administrateur.
-&lt;li&gt;&lt;label&gt;Nom utilisateur&lt;/label&gt; - un nom d&apos;utilisateur ayant les accès à cette base
-&lt;li&gt;&lt;label&gt;Mot de passe&lt;/label&gt; - votre mot de passe
+&lt;li&gt; &lt;label&gt;Nom&gt;/label&gt; Un nom pour identifier les paramètres de connexion.
+
+&lt;li&gt; &lt;label&gt;Service&lt;/label&gt; Le nom d&apos;un des services listés dans le &lt;a href=&quot;http://www.postgresql.org/docs/current/static/libpq-pgservice.html&quot;&gt;fichier de connexion aux services&lt;/a&gt;.
+
+&lt;li&gt; &lt;label&gt;Hôte&lt;/label&gt; Nom ou adresse IP de l&apos;ordinateur hébergeant le serveur de base de données (laissez blanc pour les connexions ou services locaux).
+
+&lt;li&gt; &lt;label&gt;Port&lt;/label&gt; Port IP utilisé par le serveur de base de données (laissez blanc pour les connexions locales ou pour utiliser le port par défaut 5432).
+
+&lt;li&gt; &lt;label&gt;Base de données&lt;/label&gt; Nom de la base de données (laissez blanc pour la base par défaut).
+
+&lt;li&gt; &lt;label&gt;mode SSL&lt;/label&gt; &lt;a href=&quot;http://www.postgresql.org/docs/9.0/static/libpq-ssl.html#LIBPQ-SSL-SSLMODE-STATEMENTS&quot;&gt;SSL mode&lt;/a&gt; de la connexion.
+
+&lt;li&gt;&lt;label&gt;Nom utilisateur&lt;/label&gt; Nom d&apos;utilisateur pour la base de données.
+&lt;li&gt;&lt;label&gt;Mot de passe&lt;/label&gt; Mot de passe pour la base de données.
+
+&lt;li&gt; &lt;label&gt;Enregistrer le nom d&apos;utilisateur&lt;/label&gt; Indique si vous souhaitez enregistrer le nom d&apos;utilisateur dans la configuration de la connexion.
+
+&lt;li&gt; &lt;label&gt;Enregistrer le mot de passe&lt;/label&gt; Indique si vous souhaitez enregistrer le mot de passe dans la configuration de la connexion. &lt;font color=&quot;red&quot;&gt;Les mots de passe sont stockés &lt;strong&gt;en clair&lt;/strong&gt; dans la configuration du système et dans les fichiers de projets&amp;nbsp;!&lt;/font&gt;
+
+&lt;li&gt; &lt;label&gt;Regarder uniquement dans la vue geometry_columns&lt;/label&gt; Indique que seules les colonnes de géométrie «&amp;nbsp;listées&amp;nbsp;» doivent être utilisées - par opposition à la recherche des colonnes de géométrie pour toutes les tables.
+
+&lt;li&gt; &lt;label&gt;Regarder uniquement dans le schéma «&amp;nbsp;public&amp;nbsp;&lt;/label&gt; Indique de n&apos;utiliser que les tables dans le schéma «&amp;nbsp;public&amp;nbsp;» - par opposition à toutes les tables accessibles.
+
+&lt;li&gt; &lt;label&gt;Lister également les tables sans géométrie&lt;/label&gt; Indique que les tables sans colonne de géométrie doivent également être listées.
+
+&lt;li&gt; &lt;label&gt;Utiliser une estimation des métadonnées de tables&lt;/label&gt; Lors de l&apos;initialisation des couches, de nombreuses requêtes doivent être effectuées pour établir les caractéristiques des géométries enregistrées dans la table. Lorsque cette option est cochée, ces requêtes utilisent des statistiques de table sur un échantillon de lignes, plutôt que la table entière. Ceci améliore sensiblement les opérations sur de gros jeux de données, mais peut conduire à une caractérisation incorrecte des couches (par exemple le &lt;font color=&quot;red&quot;&gt;nombre d&apos;ojets&lt;/font&gt; dans une couche filtrée sera incorrect).
+
 &lt;/ul&gt;
-&lt;h4&gt;Options&lt;/h4&gt;
-&lt;ol&gt;
-&lt;li&gt;&lt;label&gt;Enregistrer le mot de passe&lt;/label&gt; - enregistre votre mot de passe pour que n&apos;ayez pas à le resaisir à chaque fois. Le mot de passe est stocké en clair dans les préférences de QGIS.
-&lt;li&gt;&lt;label&gt;Uniquemenr regarder la table geometry_columns&lt;/label&gt; - normalement QGIS examines chaque table de la base pour voir si il y a une table de géométrie pour l&apos;ajouter à la liste des couches. Cocher cette case demande à QGIS de ne lister que les tables qui ont une entrée dans leur colonne géométrique.
-&lt;li&gt;&lt;label&gt;Uniquemenr regarder dans le schéma public&lt;/label&gt; - cela limite la recherche aux couches ayant le schéma public
-&lt;/ol&gt;
-&lt;h4&gt;Tester la connexion&lt;/h4&gt;
-En cliquant sur le bouton&lt;label&gt;Tester la Connexion&lt;/label&gt;, un essai est fait sur la base en utilisant les paramètres spécifiés. C&apos;est une bonne façon de vérifier que ces paramètres fonctionnent avant d&apos;enregistrer la connexion.
 </translation>
     </message>
     <message>
@@ -64525,68 +64557,17 @@ You can also define the width and precision of the new attribute column.
 &lt;h4&gt;Attributes list&lt;/h4&gt;
 In this section you can see the list of attributes. To delete one of them, click on it and choose &lt;label&gt;Remove selected attribute&lt;/label&gt; button.
 </source>
-        <translation type="unfinished">&lt;h3&gt;Créer une nouvelle couche vectorielle&lt;/h3&gt;
-QGIS offre la possibilité de créer une couche de données vectorielles
-possédant des attributs définis et configurés par l&apos;utilisateur.&lt;br&gt;
-Pour l&apos;instant, cette couche vectorielle ne peut être créée qu&apos;au
-format ESRI shapefile (.shp), mais il possible d&apos;utiliser séparément
-des outils comme OGR pour convertir cette couche dans un autre format.
-&lt;p&gt;Pour accéder à la boîte de dialogue de création de couche
-vectorielle, il existe trois possibilités:
-&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Sur la barre d&apos;outils contrôle des couches de QGIS, appuyer sur le bouton &lt;label&gt;Nouvelle couche vectorielle&lt;/label&gt;;
-&lt;/li&gt;
-&lt;li&gt;ou dans le menu &lt;label&gt;Couche&lt;/label&gt;, sélectionner la fonction &lt;label&gt;Nouvelle couche vectorielle...&lt;/label&gt;;
-&lt;/li&gt;
-&lt;li&gt;ou taper directement le raccourci clavier (&lt;label&gt;Shift+Ctrl+N&lt;/label&gt; sous Mac OSX).
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h4&gt;Configuration de la couche vectorielle&lt;/h4&gt;
-&lt;h5&gt;&lt;u&gt;Étape 1 : Choix du type&lt;/u&gt;&lt;/h5&gt;
-Dans la boîte de dialogue &lt;label&gt;Nouvelle couche vecteur&lt;/label&gt;, sélectionner le type de couche à créer en cochant le bouton souhaité:
-&lt;ul&gt;
-&lt;li&gt;&lt;label&gt;Point&lt;/label&gt; pour créer une couche contenant des objets de type ponctuels;
-&lt;/li&gt;
-&lt;li&gt;&lt;label&gt;Ligne&lt;/label&gt; pour créer une couche contenant des objets de type linéaires;
-&lt;/li&gt;
-&lt;li&gt;&lt;label&gt;Polygone&lt;/label&gt; pour créer une couche contenant des objets de type surfaciques.
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h5&gt;&lt;u&gt;Étape 2 : Création et configuration des Attributs de couche&lt;/u&gt;&lt;/h5&gt;
-Quel que soit le type de couche choisi, la configuration des attributs de la couche se fait toujours de la même manière:
-&lt;ol&gt;
-&lt;li&gt;Entrer un nom pour l&apos;attribut dans la case &lt;label&gt;Nom&lt;/label&gt;;
-&lt;/li&gt;
-&lt;li&gt;Choisir le type d&apos;attribut à l&apos;aide du menu déroulant &lt;label&gt;Type&lt;/label&gt;
-: &lt;br&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;tab&gt;Ligne (string) pour un attribut de type chaîne de caractère&lt;/tab&gt;&lt;/li&gt;
-&lt;li&gt;&lt;tab&gt;Entier (integer) pour un attribut de type nombres entiers&lt;/tab&gt;&lt;/li&gt;
-&lt;li&gt;&lt;tab&gt;Réel (real) pour un attribut de type nombres réels&lt;/tab&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;li&gt;Spécifier la largeur de l&apos;attribut (nombre de caractères maximum) en entrant une valeur dans la case &lt;label&gt;Largeur&lt;/label&gt; (facultatif);
-&lt;/li&gt;
-&lt;li&gt;Pour les attributs de type réel uniquement, entrer la précision (nombre de chiffres après la virgule) dans la case &lt;label&gt;Précision&lt;/label&gt;;
-&lt;/li&gt;
-&lt;li&gt;Créer l&apos;attribut de couche en appuyant sur le bouton &lt;label&gt;Ajouter l&apos;attribut&lt;/label&gt;.
-&lt;/li&gt;
-&lt;/ol&gt;
-L&apos;attribut créé apparaît alors dans la liste de la boîte de dialogue.&lt;br&gt;
-Pour créer les attributs suivants, recommencer les opérations
-ci-dessus.
-&lt;h5&gt;&lt;u&gt;Étape 3 optionnelle : Effacer un attribut de couche&lt;/u&gt;&lt;/h5&gt;
-En cas d&apos;erreur, il est possible d&apos;effacer un attribut créé. Pour cela, sélectionner l&apos;attribut dans la liste et appuyer sur le bouton &lt;label&gt;Effacer l&apos;attribut sélectionné&lt;/label&gt;.
-&lt;h5&gt;&lt;u&gt;Étape 4: Valider et créer la couche vectorielle&lt;/u&gt;&lt;/h5&gt;
-Une fois les étapes 1 et 2 réalisées, valider la création de la couche en appuyant sur le bouton &lt;label&gt;OK&lt;/label&gt; pour créer la couche ou sur le
-bouton &lt;label&gt;Annuler&lt;/label&gt; pour fermer la boîte de dialogue sans créer la couche.
-&lt;p&gt;QGIS propose alors de choisir le nom et l&apos;emplacement physique de stockage des fichiers shape dans l&apos;arborescence de l&apos;ordinateur : choisir un nom et un emplacement pour la couche puis appuyer sur &lt;label&gt;OK&lt;/label&gt;
-pour valider le choix, ou sur &lt;label&gt;Annuler&lt;/label&gt; pour quitter sans enregistrer.&lt;/p&gt;
-&lt;p&gt;Une fois cette action réalisée, la couche est chargée dans le projet QGIS en cours.&lt;/p&gt;
-&lt;p&gt;&lt;u&gt;Important : &lt;/u&gt; une nouvelle couche créée est forcément vide, il est donc normal qu&apos;une couche nouvellement créée apparaisse dans la
-barre d&apos;outils &lt;label&gt;Couches&lt;/label&gt;, mais qu&apos;aucune donnée n&apos;apparaisse sur la carte du projet. Pour entrer des données dans la couche il est
-nécessaire de passer par la fonction &lt;label&gt;Basculer en mode édition&lt;/label&gt;.&lt;/p&gt;
+        <translation>&lt;h3&gt;Créer une nouvelle couche vectorielle&lt;/h3&gt;
+Pour créer une nouvelle couche à éditer, choisissez &lt;label&gt;Nouvelle couche&lt;/label&gt; dans le menu &lt;label&gt;Couches&lt;/label&gt;.&lt;br/&gt;
+Vous pouvez alors créer une couche de type fichier shape.
+&lt;h4&gt;Type&lt;/h4&gt;
+Choississez le type de couche &lt;label&gt;Point&lt;/label&gt;, &lt;label&gt;Ligne&lt;/label&gt; ou &lt;label&gt;Polygone&lt;/label&gt;.&lt;br/&gt;
+Cliquez sur le boutton &lt;label&gt;Spécifier le SCR&lt;/label&gt; pour si besoin modifier le système de coordonnées de références de la couche.
+&lt;h4&gt;Nouvel attribut&lt;/h4&gt;
+Ajouter les attributs désirés en cliquant sur le boutton &lt;label&gt;Ajouter à la liste d&apos;attributs&lt;/label&gt; une fois que vous avez spécifié le nom et le type de l&apos;attribut. Seuls les attributs de type nombre décimal, nombre entier et donnée texte sont supportés.&lt;br/&gt;
+Vous pouvez également définir la largeur et la précision de la nouvelle colonne d&apos;attribut.
+&lt;h4&gt;Liste d&apos;attributs&lt;/h4&gt;
+Dans cette section vous pouvez voir la liste des attributs. Pour en supprimer un, cliquez dessus et choisissez le boutton &lt;label&gt;Supprimer l&apos;attribut&lt;/label&gt;.
 </translation>
     </message>
     <message>
@@ -65495,11 +65476,9 @@ On this tab you can search for WMS servers. It is possible to enter a search-str
 To visualize the results, select an table entry, press the &lt;label&gt;Add selected row to WMS list&lt;/label&gt; button and change back to the &lt;label&gt;Servers&lt;/label&gt; tab.&lt;p&gt;
 You only need to request the list of layers by clicking the &lt;label&gt;Connect&lt;/label&gt; button.
 </source>
-        <translation type="unfinished">&lt;h3&gt;Créer une nouvelle connections WMS&lt;/h3&gt;
-Des couches WMS peuvent être ajoutées simplement; et tant que vous connaissez l&apos;URL d&apos;accès à votre serveur WMS, 
-vous avez une connexion à ce serveur dont vous pouvez vous servir, le serveur WMS prendra en compte le HTTP 
-comme protocole de communication et comme mécanisme de transfert de données.&lt;p&gt;
-QGIS peut actuellement agir avec client WMS qui comprend les serveurs WMS 1.1, 1.1.1 et 1.3
+        <translation>&lt;h3&gt;Créer une nouvelle connection WMS&lt;/h3&gt;
+Des couches WMS peuvent être ajoutées simplement, tant que vous connaissez l&apos;URL d&apos;accès au serveur WMS, que vous avez une connexion à ce serveur, et que le serveur WMS sait utiliser le http comme méchanisme de transfert des données.&lt;p&gt;
+QGIS peut actuellement agir comme client WMS qui comprend les serveurs WMS 1.1, 1.1.1 et 1.3.
 &lt;p&gt;
 &lt;a href=&quot;#serv&quot;&gt;Serveurs&lt;/a&gt;&lt;br/&gt;
 &lt;a href=&quot;#load&quot;&gt;Charger des couches WMS&lt;/a&gt;&lt;br&gt;
@@ -65509,39 +65488,33 @@ QGIS peut actuellement agir avec client WMS qui comprend les serveurs WMS 1.1, 1
 &lt;a name=&quot;serv&quot;&gt;
 &lt;h4&gt;Serveurs&lt;/h4&gt;
 &lt;/a&gt;
-Afin de définir un nouveau serveur WMS dans la fenêtre &quot;&lt;LABEL&gt;Ajoute le(s) couche(s) du serveur&lt;/LABEL&gt;&quot;, cliquez sur le bouton &lt;LABEL&gt;Nouveau&lt;/LABEL&gt; se trouvant sous l&apos;onglet &quot;Couches&quot;.
-Entrez ensuite les paramètres afin de vous connecter au serveur WMS voulu.
-Vous pouvez ajouter plusieurs serveurs pour vous amuser en cliquant sur &quot; &lt;LABEL&gt;Ajouter les serveurs par défaut&lt;/LABEL&gt;&quot;.
-Cela va ajouter pas moins de 3 serveurs WMS que vous pourrez utiliser, incluant les serveurs de la NASA (JPL) ou le serveur LIZARDTECH.
-Une fois qu&apos;une nouvelle connexion à un serveur WMS a été créée, elle sera sauvegardée dans votre future session QGIS.
+Pour définir un nouveau serveur WMS dans la section &lt;label&gt;Connexions aux Serveurs&lt;/label&gt;, sélectionnez &lt;label&gt;Nouveau&lt;/label&gt;. Il faut alors entrer les paramètres afin de vous connecter au serveur WMS désiré.&lt;p&gt;
+Vous pouvez ajouter plusieurs serveurs pour vous amuser en cliquant sur le boutton &lt;label&gt;Ajouter les serveurs par défaut&lt;/label&gt;. Cela va ajouter au moins 3 serveurs WMS que vous pourrez utiliser.
+Une fois qu&apos;une nouvelle connexion à un serveur WMS a été créée, elle sera disponible dans vos futures sessions QGIS.
 
 &lt;a name=&quot;load&quot;&gt;
 &lt;h5&gt;Charger des couches WMS&lt;/h5&gt;
 &lt;/a&gt;
-Sélectionner le bouton &lt;label&gt;Connexion&lt;/label&gt; pour récupérer les possibilités du serveur sélectionné. 
-Cela inclut l&apos;encodage d&apos;images, les couches, les styles de couches et des projections.&lt;br/&gt;
-Pendant que le téléchargement des données depuis le serveur WMS a lieu, la progression du téléchargement 
-est visualisée en bas à gauche de la fenêtre d&apos;ajout des couches de serveur.&lt;p&gt;
-La section d&apos; &lt;label&gt;Encodage de l&apos;image&lt;/label&gt; liste à présent les formats qui sont supportés à la fois par le client et le serveur sélectionné.&lt;br/&gt;
+Sélectionner le bouton &lt;label&gt;Connexion&lt;/label&gt; pour récupérer les possibilités du serveur sélectionné. Cela inclut l&apos;encodage des images, les couches, les styles de couches et les projections.&lt;br/&gt;
+Pendant le téléchargement des données depuis le serveur WMS, la progression du téléchargement est visualisée en bas à gauche la boite de dialogue WMS.&lt;p&gt;
+La section &lt;label&gt;Encodage de l&apos;image&lt;/label&gt; liste à présent les formats qui sont supportés à la fois par le client et le serveur.&lt;br/&gt;
 Choisir l&apos;un des formats d&apos;image en fonction de vos besoins.&lt;p&gt;
-Vous pouvez sélectionner plusieurs couches d&apos;un serveur WMS à la fois, elles seront combinées au niveau du serveur WMS et transmise à QGIS en une seule fois.&lt;p&gt;
-Chaque couche WMS peut être présentée dans de multiples 
-Systèmes de Référence de Coordonnées (SRS) &lt;i&gt;(CRS - Coordinate Reference Systems en anglais).&lt;/i&gt;, cela dépendant des possibilités du serveur WMS.
-Pour choisir un SRS (CRS), cliquez sur le bouton &lt;label&gt;Modification&lt;/label&gt;.
+Vous pouvez sélectionner plusieurs couches à la fois, elles seront combinées au niveau du serveur WMS et transmise à QGIS en une seule fois.&lt;p&gt;
+Chaque couche WMS peut être présentée dans de multiples SCR, en fonction des capacités du serveur WMS.
+Pour choisir un SCR, cliquez sur le bouton &lt;label&gt;Modification&lt;/label&gt;.
 
 &lt;a name=&quot;lay&quot;&gt;
 &lt;h4&gt;Ordre des couches&lt;/h4&gt;
 &lt;/a&gt;
-Cliquez sur l&apos;onglet &quot;Ordre des couches&quot; pour changer l&apos;ordre des couches WMS chargées.
+Dans cet onglet vous pouvez modifier l&apos;ordre des couches chargées.
 
 &lt;a name=&quot;search&quot;&gt;
 &lt;h4&gt;Recherche de serveurs&lt;/h4&gt;
 &lt;/a&gt;
-Dans l&apos;onglet &quot;Recherche de serveurs&quot; vous pouvez chercher des serveurs WMS. Il est possible de renseigner un texte de recherche 
-dans le champ prévu à cet effet et cliquez ensuite sur le bouton &quot; &lt;LABEL&gt;Rechercher&lt;/LABEL&gt;&quot;.
-Pour visualiser les résultats, sélectionner une entrée, et cliquez sur le bouton &quot;&lt;label&gt;Aligner les colonnes sélectionnées à la liste WMS&lt;/label&gt;&quot;
-et revenir sur l&apos;onglet &lt;label&gt;Couches&lt;/label&gt;.&lt;p&gt;
-Vous avez seulement besoin d&apos;interroger la liste des couches en cliquant sur le bouton &quot;&lt;label&gt;Connexion&lt;/label&gt;&quot;
+Dans cet onglet vous pouvez chercher des serveurs WMS. Il est possible de renseigner un texte de recherche 
+dans le champ prévu à cet effet et cliquez ensuite sur le bouton &lt;label&gt;Rechercher&lt;/label&gt;.
+Pour visualiser les résultats, sélectionner une entrée, et cliquez sur le bouton &lt;label&gt;Ajouter les colonnes sélectionnées à la liste WMS&lt;/label&gt; puis revenir sur l&apos;onglet &lt;label&gt;Couches&lt;/label&gt;.&lt;p&gt;
+Vous avez seulement besoin d&apos;interroger la liste des couches en cliquant sur le bouton &lt;label&gt;Connexion&lt;/label&gt;.
 </translation>
     </message>
     <message>
@@ -67446,43 +67419,37 @@ SQL Anywhere database.
 
 &lt;/ul&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;Créer une nouvelle connexion SQL AnyWhere&lt;/
-3&gt;
-
+        <translation>&lt;h3&gt;Créer une nouvelle connexion SQL AnyWhere&lt;/3&gt;
 Cette boite de dialogue vous permet de définir les paramètres de connexion vers une base de données SQL AnyWhere
-
 &lt;p&gt;
 &lt;ul&gt;
-&lt;li&gt; &lt;label&gt;Nom&lt;/label&gt; Un nom pour identifier les paramètres de connexion
+&lt;li&gt; &lt;label&gt;Nom&lt;/label&gt; Un nom pour identifier les paramètres de connexion.
 
-&lt;li&gt; &lt;label&gt;Hôte&lt;/label&gt; Nom ou adresse IP de l&apos;ordinateur hébergeant un serveur de base de données (laissez un blanc pour les connexions en local).
+&lt;li&gt; &lt;label&gt;Hôte&lt;/label&gt; Nom ou adresse IP de l&apos;ordinateur hébergeant le serveur de base de données (laissez blanc pour les connexions locales).
 
-&lt;li&gt; &lt;label&gt;Port&lt;/label&gt; Port IP utilisé par le serveur de base de données (laissez un blanc pour les connexions en local ou utilisant le port par
-défaut 2638)
+&lt;li&gt; &lt;label&gt;Port&lt;/label&gt; Port IP utilisé par le serveur de base de données (laissez blanc pour les connexions locales ou pour utiliser le port par défaut 2638).
 
-&lt;li&gt; &lt;label&gt;Serveur&lt;/label&gt; Nom du serveur de base de données (laissez un blanc pour le serveur par défaut sur l&apos;hôte.
+&lt;li&gt; &lt;label&gt;Serveur&lt;/label&gt; Nom du serveur de base de données (laissez blanc pour le serveur par défaut sur l&apos;hôte).
 
-&lt;li&gt; &lt;label&gt;Base de données&lt;/label&gt; Nom de la base de données (laissez un blanc pour le serveur par défaut sur l&apos;hôte.
+&lt;li&gt; &lt;label&gt;Base de données&lt;/label&gt; Nom de la base de données (laissez blanc pour la base par défaut du serveur).
 
-&lt;li&gt; &lt;label&gt;Paramètres de connexion&lt;/label&gt; Paramètres additionnels à ajouter à la chaîne de connexion (liste délimitée avec points virgules).
-Reportez-vous à la documentation de SQL AnyWhere pour avoir une liste et une description des paramètres de connexion valables
+&lt;li&gt; &lt;label&gt;Paramètres de connexion&lt;/label&gt; Paramètres additionnels à ajouter à la chaîne de connexion (liste délimitée par des points virgules).
+Reportez-vous à la documentation de SQL AnyWhere pour avoir une liste et une description des paramètres de connexion disponibles.
 
-&lt;li&gt; &lt;label&gt;Nom d&apos;utilisateur&lt;/label&gt; Nom de l&apos;utilisateur de la Base de données
+&lt;li&gt; &lt;label&gt;Nom d&apos;utilisateur&lt;/label&gt; Nom de l&apos;utilisateur pour la Base de données.
 
-&lt;li&gt; &lt;label&gt;Mot de passe&lt;/label&gt; Mot de passe de la base de données
+&lt;li&gt; &lt;label&gt;Mot de passe&lt;/label&gt; Mot de passe pour la base de données.
 
-&lt;li&gt; &lt;label&gt;Enregistrer le nom d&apos;utilisateur&lt;/label&gt; indique si vous souhaitez enregistrer le nom d&apos;utilisateur de base de données dans la configuration de la connexion.
+&lt;li&gt; &lt;label&gt;Enregistrer le nom d&apos;utilisateur&lt;/label&gt; Indique si vous souhaitez enregistrer le nom d&apos;utilisateur dans la configuration de la connexion.
 
-&lt;li&gt; &lt;label&gt;Sauver le mot de passe&lt;/label&gt; indique si vous souhaitez sauver le mot de passe dans les paramètres de connexion. &lt;em&gt;Les mots de passe sont sauvegardés en&lt;strong&gt;texte clair&lt;/strong&gt; dans le système de configuration!&lt;/em&gt;
+&lt;li&gt; &lt;label&gt;Enregistrer le mot de passe&lt;/label&gt; Indique si vous souhaitez enregistrer le mot de passe dans les paramètres de connexion. &lt;em&gt;Les mots de passe sont enregistrés &lt;strong&gt;en clair&lt;/strong&gt; dans la configuration du système&amp;nbsp;!&lt;/em&gt;
 
-&lt;li&gt; &lt;label&gt;Le cryptage simple&lt;/label&gt; Securise la connexion à la base de données utilisant un cryptage simple
+&lt;li&gt; &lt;label&gt;Cryptage simple&lt;/label&gt; Sécuriser la connexion à la base de données utilisant un cryptage simple.
 
-&lt;li&gt; &lt;label&gt;Estimate table metadata&lt;/label&gt;
-Quand vous initialisez des couches, différentes requêtes peuvent être nécessaires pour établir les caractéristiques de la géométrie stockées dans la table de base de données.
-Lorsque cette option est cochée, ces requêtes examinent uniquement un échantillon de lignes, plutôt que l&apos;ensemble du tableau.
-Ceci peut accélérer de façon significative l&apos;initialisation d&apos;une couche, mais peut conduire à la caractérisation erronée de couches contenant des types hétérogènes.
+&lt;li&gt; &lt;label&gt;Estimate table metadata&lt;/label&gt; Lors de l&apos;initialisation des couches, de nombreuses requêtes sont nécessaires pour établir les caractéristiques de la géométrie stockées dans la table de base de données. Lorsque cette option est cochée, ces requêtes examinent uniquement un échantillon de lignes, plutôt que l&apos;ensemble de la table. Ceci peut accélérer de façon significative l&apos;initialisation d&apos;une couche, mais peut conduire à une mauvaise caractérisation des couches contenant des types hétérogènes.
 
-&lt;li&gt; &lt;label&gt;Recherche d&apos;autres tables utilisateurs&lt;/label&gt; indique que la liste des calques doit être remplie par toutes les couches stockées dans la base de données. Lorsqu&apos;elle n&apos;est pas cochée (par défaut), seules les couches stockées dans des tables appartenant à l&apos;utilisateur connecté sont affichées.
+&lt;li&gt; &lt;label&gt;Recherche les tables d&apos;autres utilisateurs&lt;/label&gt; Indique que la liste des couches doit contenir toutes les couches stockées dans la base de données. Lorsque décochée (par défaut), seules les couches stockées dans des tables appartenant à l&apos;utilisateur connecté sont affichées.
+
 &lt;/ul&gt;
 </translation>
     </message>
@@ -67503,7 +67470,7 @@ Pressing the &lt;label&gt;Calculate&lt;/label&gt; button will run the shortest p
 &lt;h5&gt;Note&lt;/h5&gt;
 &lt;p&gt;In order to bind the start and stop points of the route to the road network Road graph selects the nearest point or arc of the graph. In fact it can bind to any part of the road network. Nevertheless, their route and its characteristics do not take into account the distance from the starting point to the road network and of the road network to the stopping point.&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;Trouver le chemin le plus court&lt;/h3&gt;
+        <translation>&lt;h3&gt;Trouver le chemin le plus court&lt;/h3&gt;
 &lt;p&gt;Graphes Routiers est une extension pour QGIS écrite en C++ qui calcule le chemin le chemin le plus court entre 2 points sur n&apos;importe quelle polyligne et trace ce chemin au-dessus du réseau routier. Avant d&apos;utiliser cette extension, il convient de la configurer. Ceci peut être fait dans le menu &lt;label&gt;Extensions &amp;rarr; Graphes Routiers &amp;rarr; Paramètres&lt;/label&gt;&lt;/p&gt;
 &lt;p&gt;
 &lt;a href=&quot;#howto&quot;&gt;Comment faire ?&lt;/a&gt;&lt;br/&gt;
