@@ -161,6 +161,9 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     /**Start of rubber band creation*/
     QPointF mRubberBandStartPos;
 
+    /**True if user is currently selecting by marquee*/
+    bool mMarqueeSelect;
+
     bool mPaintingEnabled;
 
     QgsComposerRuler* mHorizontalRuler;
@@ -175,6 +178,15 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
 
     /**Zoom composition from a mouse wheel event*/
     void wheelZoom( QWheelEvent * event );
+    /**Redraws the rubber band*/
+    void updateRubberBand( QPointF & pos );
+    /**Removes the rubber band and cleans up*/
+    void removeRubberBand();
+
+    /**Starts a marquee selection*/
+    void startMarqueeSelect( QPointF & scenePoint );
+    /**Finalises a marquee selection*/
+    void endMarqueeSelect( QMouseEvent* e );
 
     //void connectAddRemoveCommandSignals( QgsAddRemoveItemCommand* c );
 
