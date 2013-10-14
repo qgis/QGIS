@@ -359,14 +359,24 @@ class SagaAlgorithm(GeoAlgorithm):
                     if dontExport:
                         continue
 
-                if isWindows() or isMac() or not saga208:
-                    commands.append('io_gdal 1 -GRIDS "' + filename2
-                                    + '" -FORMAT ' + str(formatIndex)
-                                    + ' -TYPE 0 -FILE "' + filename + '"')
+                if self.cmdname == 'RGB Composite':
+	                if isWindows() or isMac() or not saga208:
+   	        		commands.append('io_grid_image 0 -IS_RGB -GRID:"' + filename2
+                                	+ '" -FILE:"' + filename
+                                	+ '"')
+                	else:
+   	        		commands.append('libio_grid_image 0 -IS_RGB -GRID:"' + filename2
+                                	+ '" -FILE:"' + filename
+                                	+ '"')
                 else:
-                    commands.append('libio_gdal 1 -GRIDS "' + filename2
-                                    + '" -FORMAT 1 -TYPE 0 -FILE "' + filename
-                                    + '"')
+	                if isWindows() or isMac() or not saga208:
+	                    commands.append('io_gdal 1 -GRIDS "' + filename2
+	                                    + '" -FORMAT ' + str(formatIndex)
+	                                    + ' -TYPE 0 -FILE "' + filename + '"')
+	                else:
+	                    commands.append('libio_gdal 1 -GRIDS "' + filename2
+	                                    + '" -FORMAT 1 -TYPE 0 -FILE "' + filename
+	                                    + '"')
 
         # 4: Run SAGA
         commands = self.editCommands(commands)
