@@ -351,6 +351,10 @@ class CORE_EXPORT QgsGeometry
         of segments used to approximate curves */
     QgsGeometry* buffer( double distance, int segments );
 
+    /** Returns a single sided buffer region around this geometry having the given width, with a specified number
+        of segments used to approximate curves, side = 0 for left side and side = 1 for right side */
+    QgsGeometry* buffer( double distance, int segments, int side );
+
     /** Returns a simplified version of this geometry using a specified tolerance value */
     QgsGeometry* simplify( double tolerance );
 

@@ -292,6 +292,10 @@ class QgsGeometry
     /** Returns a buffer region around this geometry having the given width and with a specified number
         of segments used to approximate curves */
     QgsGeometry* buffer( double distance, int segments ) /Factory/;
+    
+    /** Returns a buffer region around this geometry having the given width and with a specified number
+        of segments used to approximate curves */
+    QgsGeometry* buffer( double distance, int segments, int side ) /Factory/;
 
     /** Returns a simplified version of this geometry using a specified tolerance value */
     QgsGeometry* simplify( double tolerance ) /Factory/;
