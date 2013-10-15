@@ -28,6 +28,7 @@ __revision__ = '$Format:%H$'
 import os
 from PyQt4 import QtGui
 from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.core.ProcessingConfig import ProcessingConfig
 from processing.parameters.ParameterRaster import ParameterRaster
 from processing.outputs.OutputRaster import OutputRaster
 from processing.tools.system import *
@@ -68,17 +69,18 @@ class SplitRGBBands(GeoAlgorithm):
         g = self.getOutputValue(SplitRGBBands.G)
         b = self.getOutputValue(SplitRGBBands.B)
         commands = []
-        if isWindows():
-            commands.append('io_gdal 0 -GRIDS "' + temp + '" -FILES "' + input
+        saga208 = ProcessingConfig.getSetting(SagaUtils.SAGA_208)
+        if isWindows() or isMac() or not saga208:
+            commands.append('io_gdal 0 -TRANSFORM -INTERPOL 0 -GRIDS "' + temp + '" -FILES "' + input
                             + '"')
             commands.append('io_gdal 1 -GRIDS "' + temp
-                            + '_0001.sgrd" -FORMAT 1 -TYPE 0 -FILE "' + r + '"'
+                            + '_1.sgrd" -FORMAT 1 -TYPE 0 -FILE "' + r + '"'
                             )
             commands.append('io_gdal 1 -GRIDS "' + temp
-                            + '_0002.sgrd" -FORMAT 1 -TYPE 0 -FILE "' + g + '"'
+                            + '_2.sgrd" -FORMAT 1 -TYPE 0 -FILE "' + g + '"'
                             )
             commands.append('io_gdal 1 -GRIDS "' + temp
-                            + '_0003.sgrd" -FORMAT 1 -TYPE 0 -FILE "' + b + '"'
+                            + '_3.sgrd" -FORMAT 1 -TYPE 0 -FILE "' + b + '"'
                             )
         else:
             commands.append('libio_gdal 0 -GRIDS "' + temp + '" -FILES "'

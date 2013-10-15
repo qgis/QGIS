@@ -193,7 +193,7 @@ class SagaAlgorithm(GeoAlgorithm):
                 self.xmax = max(self.xmax, layer.extent().xMaximum())
                 self.ymin = min(self.ymin, layer.extent().yMinimum())
                 self.ymax = max(self.ymax, layer.extent().yMaximum())
-                self.cellsize = max(self.cellsize, cellsize)
+                self.cellsize = min(self.cellsize, cellsize)
                 self.inputExtentsCount += 1
 
     def processAlgorithm(self, progress):
@@ -359,16 +359,24 @@ class SagaAlgorithm(GeoAlgorithm):
                     if dontExport:
                         continue
 
-                transform = ('' if saga208 else '-TRANSFORM')
-                if isWindows() or isMac() or not saga208:
-                    commands.append('io_gdal 1 -GRIDS "' + filename2
-                                    + '" -FORMAT ' + str(formatIndex)
-                                    + ' -TYPE 0 -FILE "' + filename + '"'
-                                    + transform)
+                if self.cmdname == 'RGB Composite':
+	                if isWindows() or isMac() or not saga208:
+   	        		commands.append('io_grid_image 0 -IS_RGB -GRID:"' + filename2
+                                	+ '" -FILE:"' + filename
+                                	+ '"')
+                	else:
+   	        		commands.append('libio_grid_image 0 -IS_RGB -GRID:"' + filename2
+                                	+ '" -FILE:"' + filename
+                                	+ '"')
                 else:
-                    commands.append('libio_gdal 1 -GRIDS "' + filename2
-                                    + '" -FORMAT 1 -TYPE 0 -FILE "' + filename
-                                    + '"' + transform)
+	                if isWindows() or isMac() or not saga208:
+	                    commands.append('io_gdal 1 -GRIDS "' + filename2
+	                                    + '" -FORMAT ' + str(formatIndex)
+	                                    + ' -TYPE 0 -FILE "' + filename + '"')
+	                else:
+	                    commands.append('libio_gdal 1 -GRIDS "' + filename2
+	                                    + '" -FORMAT 1 -TYPE 0 -FILE "' + filename
+	                                    + '"')
 
         # 4: Run SAGA
         commands = self.editCommands(commands)
@@ -430,14 +438,14 @@ class SagaAlgorithm(GeoAlgorithm):
         saga208 = ProcessingConfig.getSetting(SagaUtils.SAGA_208)
         if isWindows() or isMac() or not saga208:
             s = 'grid_tools "Resampling" -INPUT "' + inputFilename \
-                + '" -TARGET 0 -SCALE_UP_METHOD 4 -SCALE_DOWN_METHOD 4 -USER_XMIN ' \
+                + '" -TARGET 0 -SCALE_UP_METHOD 0 -SCALE_DOWN_METHOD 0 -USER_XMIN ' \
                 + str(self.xmin) + ' -USER_XMAX ' + str(self.xmax) \
                 + ' -USER_YMIN ' + str(self.ymin) + ' -USER_YMAX ' \
                 + str(self.ymax) + ' -USER_SIZE ' + str(self.cellsize) \
                 + ' -USER_GRID "' + destFilename + '"'
         else:
             s = 'libgrid_tools "Resampling" -INPUT "' + inputFilename \
-                + '" -TARGET 0 -SCALE_UP_METHOD 4 -SCALE_DOWN_METHOD 4 -USER_XMIN ' \
+                + '" -TARGET 0 -SCALE_UP_METHOD 0 -SCALE_DOWN_METHOD 0 -USER_XMIN ' \
                 + str(self.xmin) + ' -USER_XMAX ' + str(self.xmax) \
                 + ' -USER_YMIN ' + str(self.ymin) + ' -USER_YMAX ' \
                 + str(self.ymax) + ' -USER_SIZE ' + str(self.cellsize) \
@@ -463,7 +471,7 @@ class SagaAlgorithm(GeoAlgorithm):
         sessionExportedLayers[source] = destFilename
         saga208 = ProcessingConfig.getSetting(SagaUtils.SAGA_208)
         if isWindows() or isMac() or not saga208:
-            return 'io_gdal 0 -GRIDS "' + destFilename + '" -FILES "' + source \
+            return 'io_gdal 0 -TRANSFORM -INTERPOL 0 -GRIDS "' + destFilename + '" -FILES "' + source \
                 + '"'
         else:
             return 'libio_gdal 0 -GRIDS "' + destFilename + '" -FILES "' \
