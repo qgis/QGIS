@@ -335,7 +335,7 @@ class GrassAlgorithm(GeoAlgorithm):
             elif isinstance(param, ParameterString):
                 command += ' ' + param.name + '="' + str(param.value) + '"'
             else:
-                command += ' ' + param.name + '=' + str(param.value)
+                command += ' ' + param.name + '="' + str(param.value) + '"'
 
         uniqueSufix = str(uuid.uuid4()).replace('-', '')
         for out in self.outputs:
