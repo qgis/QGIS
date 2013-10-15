@@ -2030,3 +2030,19 @@ bool QgsCoordinateReferenceSystem::syncDatumTransform( const QString& dbPath )
   sqlite3_close( db );
   return true; //soon...
 }
+
+QString QgsCoordinateReferenceSystem::geographicCRSAuthId() const
+{
+  if ( geographicFlag() )
+  {
+    return mAuthId;
+  }
+  else if ( mCRS )
+  {
+    return OSRGetAuthorityName( mCRS, "GEOGCS" ) + QString( ":" ) + OSRGetAuthorityCode( mCRS, "GEOGCS" );
+  }
+  else
+  {
+    return "";
+  }
+}

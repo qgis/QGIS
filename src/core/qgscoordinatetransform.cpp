@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgscoordinatetransform.h"
+#include "qgsapplication.h"
 #include "qgscrscache.h"
 #include "qgsmessagelog.h"
 #include "qgslogger.h"
@@ -24,12 +25,14 @@
 #include <QDomElement>
 #include <QApplication>
 #include <QPolygonF>
+#include <QStringList>
 #include <QVector>
 
 extern "C"
 {
 #include <proj_api.h>
 }
+#include <sqlite3.h>
 
 // if defined shows all information about transform to stdout
 // #define COORDINATE_TRANSFORM_VERBOSE
@@ -715,4 +718,89 @@ void QgsCoordinateTransform::setFinder()
 
   pj_set_finder( finder );
 #endif
+}
+
+QList< QList< int > > QgsCoordinateTransform::datumTransformations( const QgsCoordinateReferenceSystem& srcCRS, const QgsCoordinateReferenceSystem& destCRS )
+{
+  QList< QList< int > > transformations;
+
+  QString srcGeoId = srcCRS.geographicCRSAuthId();
+  QString destGeoId = destCRS.geographicCRSAuthId();
+
+  if ( srcGeoId.isEmpty() || destGeoId.isEmpty() )
+  {
+    return transformations;
+  }
+
+  QStringList srcSplit = srcGeoId.split( ":" );
+  QStringList destSplit = destGeoId.split( ":" );
+
+  if ( srcSplit.size() < 2 || destSplit.size() < 2 )
+  {
+    return transformations;
+  }
+
+  int srcAuthCode = srcSplit.at( 1 ).toInt();
+  int destAuthCode = destSplit.at( 1 ).toInt();
+
+  if ( srcAuthCode == destAuthCode )
+  {
+    return transformations; //crs have the same datum
+  }
+
+  QList<int> directTransforms;
+  searchDatumTransform( QString( "SELECT coord_op_code FROM tbl_datum_transform WHERE source_crs_code = %1 AND dest_crs_code = %2" ).arg( srcAuthCode ).arg( destAuthCode ),
+                        directTransforms );
+  QList<int> srcToWgs84;
+  searchDatumTransform( QString( "SELECT coord_op_code FROM tbl_datum_transform WHERE ( source_crs_code = %1 AND target_crs_code = %2 ) OR ( source_crs_code = %2 AND target_crs_code = %1 )" ).arg( srcAuthCode ).arg( 4326 ),
+                        srcToWgs84 );
+  QList<int> destToWgs84;
+  searchDatumTransform( QString( "SELECT coord_op_code FROM tbl_datum_transform WHERE ( source_crs_code = %1 AND target_crs_code = %2 ) OR ( source_crs_code = %2 AND target_crs_code = %1 )" ).arg( destAuthCode ).arg( 4326 ),
+                        destToWgs84 );
+
+  //add direct datum transformations
+  QList<int>::const_iterator directIt = directTransforms.constBegin();
+  for ( ; directIt != directTransforms.constEnd(); ++directIt )
+  {
+    transformations.push_back( QList<int>() << *directIt << -1 );
+  }
+
+
+  QList<int>::const_iterator srcWgsIt = srcToWgs84.constBegin();
+  for ( ; srcWgsIt != srcToWgs84.constEnd(); ++srcWgsIt )
+  {
+    QList<int>::const_iterator dstWgsIt = destToWgs84.constBegin();
+    for ( ; dstWgsIt != destToWgs84.constEnd(); ++dstWgsIt )
+    {
+      transformations.push_back( QList<int>() << *srcWgsIt << *dstWgsIt );
+    }
+  }
+
+  return transformations;
+}
+
+void QgsCoordinateTransform::searchDatumTransform( const QString& sql, QList< int >& transforms )
+{
+  sqlite3* db;
+  int openResult = sqlite3_open( QgsApplication::srsDbFilePath().toUtf8().constData(), &db );
+  if ( openResult != SQLITE_OK )
+  {
+    return;
+  }
+
+  sqlite3_stmt* stmt;
+  int prepareRes = sqlite3_prepare( db, sql.toAscii(), sql.size(), &stmt, NULL );
+  if ( prepareRes != SQLITE_OK )
+  {
+    return;
+  }
+
+  QString cOpCode;
+  while ( sqlite3_step( stmt ) == SQLITE_ROW )
+  {
+    cOpCode = ( const char * ) sqlite3_column_text( stmt, 0 );
+    transforms.push_back( cOpCode.toInt() );
+  }
+  sqlite3_finalize( stmt );
+  sqlite3_close( db );
 }

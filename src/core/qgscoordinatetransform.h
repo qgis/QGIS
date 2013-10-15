@@ -211,6 +211,9 @@ class CORE_EXPORT QgsCoordinateTransform : public QObject
     * @param theCRSID -  A long representing the srsid of the srs to be used */
     void setDestCRSID( long theCRSID );
 
+    /**Returns list of datum transformations for the given src and dest CRS*/
+    static QList< QList< int > > datumTransformations( const QgsCoordinateReferenceSystem& srcCRS, const QgsCoordinateReferenceSystem& destCRS );
+
   public slots:
     //!initialise is used to actually create the Transformer instance
     void initialise();
@@ -269,6 +272,8 @@ class CORE_EXPORT QgsCoordinateTransform : public QObject
      * Finder for PROJ grid files.
      */
     void setFinder();
+
+    static void searchDatumTransform( const QString& sql, QList< int >& transforms );
 };
 
 //! Output stream operator

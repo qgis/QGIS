@@ -354,6 +354,9 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      */
     bool saveAsUserCRS( QString name );
 
+    /**Returns auth id of related geographic CRS*/
+    QString geographicCRSAuthId() const;
+
     // Mutators -----------------------------------
     // We don't want to expose these to the public api since they wont create
     // a fully valid crs. Programmers should use the createFrom* methods rather
