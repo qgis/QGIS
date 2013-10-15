@@ -3785,6 +3785,24 @@
                     </item>
                    </layout>
                   </item>
+                  <item>
+                   <layout class="QHBoxLayout" name="horizontalLayout_33">
+                    <item>
+                     <widget class="QLabel" name="label_57">
+                      <property name="text">
+                       <string>Max retry in case of tile request errors</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QSpinBox" name="mDefaultTileMaxRetrySpinBox">
+                      <property name="maximum">
+                       <number>100000000</number>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </item>
                  </layout>
                 </widget>
                </item>
