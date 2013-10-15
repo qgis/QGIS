@@ -137,7 +137,7 @@ void QgsCoordinateTransform::setDestCRSID( long theCRSID )
 
 // XXX This whole function is full of multiple return statements!!!
 // And probably shouldn't be a void
-void QgsCoordinateTransform::initialise()
+void QgsCoordinateTransform::initialise( int srcDatumTransform, int destDatumTransform )
 {
   // XXX Warning - multiple return paths in this block!!
   if ( !mSourceCRS.isValid() )
@@ -157,11 +157,32 @@ void QgsCoordinateTransform::initialise()
     mDestCRS = QgsCRSCache::instance()->crsByAuthId( mSourceCRS.authid() );
   }
 
+  bool useDefaultDatumTransform = ( srcDatumTransform == - 1 && destDatumTransform == -1 );
+
   // init the projections (destination and source)
   pj_free( mDestinationProjection );
-  mDestinationProjection = pj_init_plus( mDestCRS.toProj4().toUtf8() );
+  QString destProjString = mDestCRS.toProj4();
+  if ( !useDefaultDatumTransform )
+  {
+    destProjString = stripDatumTransform( destProjString );
+  }
+  if ( destDatumTransform != -1 )
+  {
+    destProjString += ( " " +  datumTransformString( destDatumTransform ) );
+  }
+  mDestinationProjection = pj_init_plus( destProjString.toUtf8() );
+
   pj_free( mSourceProjection );
-  mSourceProjection = pj_init_plus( mSourceCRS.toProj4().toUtf8() );
+  QString sourceProjString = mSourceCRS.toProj4();
+  if ( !useDefaultDatumTransform )
+  {
+    sourceProjString = stripDatumTransform( sourceProjString );
+  }
+  if ( srcDatumTransform != -1 )
+  {
+    sourceProjString += ( " " + datumTransformString( srcDatumTransform ) );
+  }
+  mSourceProjection = pj_init_plus( sourceProjString.toUtf8() );
 
 #ifdef COORDINATE_TRANSFORM_VERBOSE
   QgsDebugMsg( "From proj : " + mSourceCRS.toProj4() );
@@ -779,6 +800,26 @@ QList< QList< int > > QgsCoordinateTransform::datumTransformations( const QgsCoo
   return transformations;
 }
 
+QString QgsCoordinateTransform::stripDatumTransform( const QString& proj4 )
+{
+  QStringList parameterSplit = proj4.split( "+", QString::SkipEmptyParts );
+  QString currentParameter;
+  QString newProjString;
+
+  for ( int i = 0; i < parameterSplit.size(); ++i )
+  {
+    currentParameter = parameterSplit.at( i );
+    if ( !currentParameter.startsWith( "towgs84", Qt::CaseInsensitive )
+         && !currentParameter.startsWith( "nadgrids",  Qt::CaseInsensitive ) )
+    {
+      newProjString.append( "+" );
+      newProjString.append( currentParameter );
+      newProjString.append( " " );
+    }
+  }
+  return newProjString;
+}
+
 void QgsCoordinateTransform::searchDatumTransform( const QString& sql, QList< int >& transforms )
 {
   sqlite3* db;
@@ -803,4 +844,55 @@ void QgsCoordinateTransform::searchDatumTransform( const QString& sql, QList< in
   }
   sqlite3_finalize( stmt );
   sqlite3_close( db );
+}
+
+QString QgsCoordinateTransform::datumTransformString( int datumTransform )
+{
+  QString transformString;
+
+  sqlite3* db;
+  int openResult = sqlite3_open( QgsApplication::srsDbFilePath().toUtf8().constData(), &db );
+  if ( openResult != SQLITE_OK )
+  {
+    return transformString;
+  }
+
+  sqlite3_stmt* stmt;
+  QString sql = QString( "SELECT coord_op_method_code, p1, p2, p3, p4, p5, p6, p7 FROM tbl_datum_transform WHERE coord_op_code = %1" ).arg( datumTransform );
+  int prepareRes = sqlite3_prepare( db, sql.toAscii(), sql.size(), &stmt, NULL );
+  if ( prepareRes != SQLITE_OK )
+  {
+    return transformString;
+  }
+
+  if ( sqlite3_step( stmt ) == SQLITE_ROW )
+  {
+    //coord_op_methode_code
+    int methodCode = sqlite3_column_int( stmt, 0 );
+    if ( methodCode == 9615 ) //ntv2
+    {
+      transformString = "+nadgrids=" + QString(( const char * )sqlite3_column_text( stmt, 1 ) );
+    }
+    else if ( methodCode == 9603 || methodCode == 9606 || methodCode == 9607 )
+    {
+      transformString += "+towgs84=";
+      double p1 = sqlite3_column_double( stmt, 1 );
+      double p2 = sqlite3_column_double( stmt, 2 );
+      double p3 = sqlite3_column_double( stmt, 3 );
+      double p4 = sqlite3_column_double( stmt, 4 );
+      double p5 = sqlite3_column_double( stmt, 5 );
+      double p6 = sqlite3_column_double( stmt, 6 );
+      double p7 = sqlite3_column_double( stmt, 7 );
+      if ( methodCode == 9603 ) //3 parameter transformation
+      {
+        transformString += QString( "%1,%2,%3" ).arg( p1 ).arg( p2 ).arg( p3 );
+      }
+      else //7 parameter transformation
+      {
+        transformString += QString( "%1,%2,%3,%4,%5,%6,%7" ).arg( p1 ).arg( p2 ).arg( p3 ).arg( p4 ).arg( p5 ).arg( p6 ).arg( p7 );
+      }
+    }
+  }
+
+  return transformString;
 }

@@ -216,7 +216,7 @@ class CORE_EXPORT QgsCoordinateTransform : public QObject
 
   public slots:
     //!initialise is used to actually create the Transformer instance
-    void initialise();
+    void initialise( int srcDatumTransform = -1, int destDatumTransform = -1 );
 
     /*! Restores state from the given Dom node.
     * @param theNode The node from which state will be restored
@@ -273,7 +273,10 @@ class CORE_EXPORT QgsCoordinateTransform : public QObject
      */
     void setFinder();
 
+    /**Removes +nadgrids and +towgs84 from proj4 string*/
+    static QString stripDatumTransform( const QString& proj4 );
     static void searchDatumTransform( const QString& sql, QList< int >& transforms );
+    static QString datumTransformString( int datumTransform );
 };
 
 //! Output stream operator
