@@ -236,7 +236,7 @@
        <item>
         <widget class="QStackedWidget" name="mOptionsStackedWidget">
          <property name="currentIndex">
-          <number>1</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="mOptionsPage_01">
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -266,8 +266,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>661</width>
-                <height>674</height>
+                <width>687</width>
+                <height>523</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -912,8 +912,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>661</width>
-                <height>803</height>
+                <width>670</width>
+                <height>750</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_22">
@@ -1248,8 +1248,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>527</width>
-                <height>443</height>
+                <width>687</width>
+                <height>523</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -1577,8 +1577,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>611</width>
-                <height>757</height>
+                <width>572</width>
+                <height>611</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_29">
@@ -2092,8 +2092,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>476</width>
-                <height>353</height>
+                <width>441</width>
+                <height>281</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -2395,8 +2395,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>529</width>
-                <height>770</height>
+                <width>494</width>
+                <height>619</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_30">
@@ -2802,8 +2802,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>489</width>
-                <height>691</height>
+                <width>670</width>
+                <height>551</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -3303,8 +3303,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>462</width>
-                <height>386</height>
+                <width>687</width>
+                <height>523</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -3443,8 +3443,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>635</width>
-                <height>422</height>
+                <width>687</width>
+                <height>523</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_15">
@@ -3543,18 +3543,15 @@
                   <string>Default CRS for new projects</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_22">
-                  <item row="3" column="1">
-                   <widget class="QPushButton" name="pbnSelectOtfProjection">
+                  <item row="2" column="0">
+                   <widget class="QRadioButton" name="radOtfTransform">
                     <property name="text">
-                     <string>Select...</string>
+                     <string>Enable 'on the &amp;fly' reprojection by default</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="0" column="0">
-                   <widget class="QCheckBox" name="chkOtfAuto">
-                    <property name="toolTip">
-                     <string/>
-                    </property>
+                  <item row="1" column="0">
+                   <widget class="QRadioButton" name="radOtfAuto">
                     <property name="whatsThis">
                      <string>Automatically enable 'on the fly' reprojection if CRS of a new added layer differ from CRS of layer(s) already present. CRS of present layer(s) will be used.</string>
                     </property>
@@ -3563,27 +3560,34 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="2" column="0">
+                  <item row="4" column="0">
+                   <widget class="QLineEdit" name="leProjectGlobalCrs">
+                    <property name="readOnly">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="0">
+                   <widget class="QRadioButton" name="radOtfNone">
+                    <property name="text">
+                     <string>Don't enable 'on the fly' reprojection</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="4" column="1">
+                   <widget class="QPushButton" name="pbnSelectOtfProjection">
+                    <property name="text">
+                     <string>Select...</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="0">
                    <widget class="QLabel" name="label_16">
                     <property name="text">
                      <string>Always start new projects with this CRS</string>
                     </property>
                     <property name="buddy">
                      <cstring>leProjectGlobalCrs</cstring>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="0">
-                   <widget class="QCheckBox" name="chkOtfTransform">
-                    <property name="text">
-                     <string>Enable 'on the &amp;fly' reprojection by default</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="3" column="0">
-                   <widget class="QLineEdit" name="leProjectGlobalCrs">
-                    <property name="readOnly">
-                     <bool>true</bool>
                     </property>
                    </widget>
                   </item>
@@ -3624,8 +3628,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>298</width>
-                <height>240</height>
+                <width>265</width>
+                <height>197</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -3724,8 +3728,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>528</width>
-                <height>672</height>
+                <width>469</width>
+                <height>556</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_33">
