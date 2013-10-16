@@ -1235,13 +1235,13 @@ colonne</translation>
     <message>
         <location filename="../python/plugins/fTools/tools/frmEliminate.ui" line="20"/>
         <source>common boundary</source>
-        <translation>Contorno in comune</translation>
+        <translation>contorno in comune</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmEliminate.ui" line="27"/>
         <source>Merge selection with the neighbouring polygon with the largest</source>
         <translatorcomment>La frase resta in sospeso perchè presumo vada completata con un&apos;altro blocco di traduzione (rospus)</translatorcomment>
-        <translation>Fondi la selezione con il poligono adiacente con il più largo</translation>
+        <translation>Fondi la selezione con il poligono adiacente con maggiore</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmEliminate.ui" line="43"/>
@@ -5389,7 +5389,7 @@ Il valore &apos;grigio&apos; (a partire da GDAL 1.7.0) consente di espandere un 
     </message>
     <message>
         <source>Buffer region</source>
-        <translation>Regione del buffer</translation>
+        <translation>Buffer della regione</translation>
     </message>
     <message>
         <source>Lines to polygons</source>
@@ -11688,7 +11688,7 @@ anche per me (rospus)</translatorcomment>
         <location filename="../src/core/raster/qgsrasterrendererregistry.cpp" line="57"/>
         <source>Singleband pseudocolor</source>
         <translatorcomment>? ght</translatorcomment>
-        <translation>Falso colore banda singola</translation>
+        <translation>Banda singola falso colore </translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterrendererregistry.cpp" line="59"/>
@@ -49623,7 +49623,7 @@ p, li { white-space: pre-wrap; }
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;Se selezionato, l&apos;operazione considererà solo le entità selezionate del layer di output/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;Se selezionato, l&apos;operazione considererà solo le entità selezionate del layer di output&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="74"/>
@@ -53606,7 +53606,7 @@ Seguiamo la maggioranza delle traduzioni (rospus)</translatorcomment>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="373"/>
         <source>Coordinate reference system</source>
-        <translation>Sistema di riferimento delle coodinate</translation>
+        <translation>Sistema di riferimento delle coordinate</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="406"/>
