@@ -61134,7 +61134,7 @@ Selezionando un plugin vengono visualizzati tutti i dettagli nel pannello inform
 &lt;/p&gt;
 &lt;p&gt;
 È disponibile un menu contestuale (click con il tasto destro), che permette di ordinare i plugin in base a:
-nome, numero di download, votazione e stato..
+nome, numero di download, votazione e stato.
 &lt;/p&gt;
 
 
@@ -61169,8 +61169,7 @@ dai repositories remoti.
 &lt;h4&gt;Scheda Non valido&lt;/h4&gt;
 &lt;/a&gt;
 &lt;p&gt;
-Questa scheda è disponibile solamente quando un plugin non è più valido. Il più delle volte il problema è causato da un errore
-durante il caricamento del plugin.
+Questa scheda è disponibile solamente quando un plugin non è più valido. Il più delle volte il problema è causato da un errore durante il caricamento del plugin.
 &lt;/p&gt;
 
 &lt;a name=&quot;settingstab&quot;&gt;
