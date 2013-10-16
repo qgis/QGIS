@@ -696,6 +696,12 @@ void QgsAttributeTypeDialog::setStackPage( int index )
         // Set to (empty) editor widget page
         stackedWidget->setCurrentIndex( 16 );
 
+        // hide any other config widget
+        Q_FOREACH( QgsEditorConfigWidget* wdg, mEditorConfigWidgets.values() )
+        {
+          wdg->hide();
+        }
+
         if ( mEditorConfigWidgets.contains( factoryId ) )
         {
           mEditorConfigWidgets[factoryId]->show();
@@ -703,12 +709,6 @@ void QgsAttributeTypeDialog::setStackPage( int index )
         else
         {
           QgsEditorConfigWidget* cfgWdg = QgsEditorWidgetRegistry::instance()->createConfigWidget( factoryId, mLayer, mIndex, this );
-          QgsEditorConfigWidget* oldWdg = pageEditorWidget->findChild<QgsEditorConfigWidget*>();
-
-          if ( oldWdg )
-          {
-            oldWdg->hide();
-          }
 
           if ( cfgWdg )
           {
