@@ -214,9 +214,14 @@ class CORE_EXPORT QgsCoordinateTransform : public QObject
     /**Returns list of datum transformations for the given src and dest CRS*/
     static QList< QList< int > > datumTransformations( const QgsCoordinateReferenceSystem& srcCRS, const QgsCoordinateReferenceSystem& destCRS );
 
+    int sourceDatumTransform() const { return mSourceDatumTransform; }
+    void setSourceDatumTransform( int dt ) { mSourceDatumTransform = dt; }
+    int destinationDatumTransform() const { return mDestinationDatumTransform; }
+    void setDestinationDatumTransform( int dt ) { mDestinationDatumTransform = dt; }
+
   public slots:
     //!initialise is used to actually create the Transformer instance
-    void initialise( int srcDatumTransform = -1, int destDatumTransform = -1 );
+    void initialise();
 
     /*! Restores state from the given Dom node.
     * @param theNode The node from which state will be restored
@@ -267,6 +272,9 @@ class CORE_EXPORT QgsCoordinateTransform : public QObject
      * Proj4 data structure of the destination projection (map canvas coordinate system)
      */
     projPJ mDestinationProjection;
+
+    int mSourceDatumTransform;
+    int mDestinationDatumTransform;
 
     /*!
      * Finder for PROJ grid files.

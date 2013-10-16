@@ -42,6 +42,8 @@ QgsCoordinateTransform::QgsCoordinateTransform()
     , mInitialisedFlag( false )
     , mSourceProjection( 0 )
     , mDestinationProjection( 0 )
+    , mSourceDatumTransform( -1 )
+    , mDestinationDatumTransform( -1 )
 {
   setFinder();
 }
@@ -51,6 +53,8 @@ QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateReferenceSyst
     , mInitialisedFlag( false )
     , mSourceProjection( 0 )
     , mDestinationProjection( 0 )
+    , mSourceDatumTransform( -1 )
+    , mDestinationDatumTransform( -1 )
 {
   setFinder();
   mSourceCRS = source;
@@ -65,6 +69,8 @@ QgsCoordinateTransform::QgsCoordinateTransform( long theSourceSrsId, long theDes
     , mDestCRS( theDestSrsId, QgsCoordinateReferenceSystem::InternalCrsId )
     , mSourceProjection( 0 )
     , mDestinationProjection( 0 )
+    , mSourceDatumTransform( -1 )
+    , mDestinationDatumTransform( -1 )
 {
   initialise();
 }
@@ -74,6 +80,8 @@ QgsCoordinateTransform::QgsCoordinateTransform( QString theSourceCRS, QString th
     , mInitialisedFlag( false )
     , mSourceProjection( 0 )
     , mDestinationProjection( 0 )
+    , mSourceDatumTransform( -1 )
+    , mDestinationDatumTransform( -1 )
 {
   setFinder();
   mSourceCRS.createFromWkt( theSourceCRS );
@@ -92,6 +100,8 @@ QgsCoordinateTransform::QgsCoordinateTransform( long theSourceSrid,
     , mInitialisedFlag( false )
     , mSourceProjection( 0 )
     , mDestinationProjection( 0 )
+    , mSourceDatumTransform( -1 )
+    , mDestinationDatumTransform( -1 )
 {
   setFinder();
 
@@ -137,7 +147,7 @@ void QgsCoordinateTransform::setDestCRSID( long theCRSID )
 
 // XXX This whole function is full of multiple return statements!!!
 // And probably shouldn't be a void
-void QgsCoordinateTransform::initialise( int srcDatumTransform, int destDatumTransform )
+void QgsCoordinateTransform::initialise()
 {
   // XXX Warning - multiple return paths in this block!!
   if ( !mSourceCRS.isValid() )
@@ -157,7 +167,7 @@ void QgsCoordinateTransform::initialise( int srcDatumTransform, int destDatumTra
     mDestCRS = QgsCRSCache::instance()->crsByAuthId( mSourceCRS.authid() );
   }
 
-  bool useDefaultDatumTransform = ( srcDatumTransform == - 1 && destDatumTransform == -1 );
+  bool useDefaultDatumTransform = ( mSourceDatumTransform == - 1 && mDestinationDatumTransform == -1 );
 
   // init the projections (destination and source)
   pj_free( mDestinationProjection );
@@ -166,9 +176,9 @@ void QgsCoordinateTransform::initialise( int srcDatumTransform, int destDatumTra
   {
     destProjString = stripDatumTransform( destProjString );
   }
-  if ( destDatumTransform != -1 )
+  if ( mDestinationDatumTransform != -1 )
   {
-    destProjString += ( " " +  datumTransformString( destDatumTransform ) );
+    destProjString += ( " " +  datumTransformString( mDestinationDatumTransform ) );
   }
   mDestinationProjection = pj_init_plus( destProjString.toUtf8() );
 
@@ -178,9 +188,9 @@ void QgsCoordinateTransform::initialise( int srcDatumTransform, int destDatumTra
   {
     sourceProjString = stripDatumTransform( sourceProjString );
   }
-  if ( srcDatumTransform != -1 )
+  if ( mSourceDatumTransform != -1 )
   {
-    sourceProjString += ( " " + datumTransformString( srcDatumTransform ) );
+    sourceProjString += ( " " + datumTransformString( mSourceDatumTransform ) );
   }
   mSourceProjection = pj_init_plus( sourceProjString.toUtf8() );
 
@@ -690,6 +700,9 @@ bool QgsCoordinateTransform::readXML( QDomNode & theNode )
   QDomNode myDestNode = theNode.namedItem( "destinationsrs" );
   mDestCRS.readXML( myDestNode );
 
+  mSourceDatumTransform = theNode.toElement().attribute( "sourceDatumTransform", "-1" ).toInt();
+  mDestinationDatumTransform = theNode.toElement().attribute( "destinationDatumTransform", "-1" ).toInt();
+
   initialise();
 
   return true;
@@ -699,6 +712,8 @@ bool QgsCoordinateTransform::writeXML( QDomNode & theNode, QDomDocument & theDoc
 {
   QDomElement myNodeElement = theNode.toElement();
   QDomElement myTransformElement = theDoc.createElement( "coordinatetransform" );
+  myTransformElement.setAttribute( "sourceDatumTransform", QString::number( mSourceDatumTransform ) );
+  myTransformElement.setAttribute( "destinationDatumTransform", QString::number( mDestinationDatumTransform ) );
 
   QDomElement mySourceElement = theDoc.createElement( "sourcesrs" );
   mSourceCRS.writeXML( mySourceElement, theDoc );
