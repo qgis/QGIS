@@ -3991,20 +3991,54 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
   }
 
   QgsRectangle myExtent = theExtent;
-  if ( myExtent.isEmpty() )
-  {
-    // use full extent
-    myExtent = extent();
-  }
 
-  // We don't know highest resolution, so it is difficult to guess any
-  // but that is why theExtent, theWidth, theHeight params are here
-  // Keep resolution in both axis equal! Otherwise silly server (like QGIS mapserver)
-  // fail to calculate coordinate because it is using single resolution average!!!
-  if ( theWidth == 0 ) theWidth = 1000; // just some number
-  if ( theHeight == 0 )
+  if ( !myExtent.isEmpty() )
   {
-    theHeight =  myExtent.height() / ( myExtent.width() / theWidth );
+    // we cannot reliably identify WMS if theExtent is specified but theWidth or theHeight
+    // are not, because we dont know original resolution
+    if ( theWidth == 0 || theHeight == 0 )
+    {
+      return QgsRasterIdentifyResult( ERROR( tr( "Context not fully specified (extent was defined but width and/or height was not)." ) ) );
+    }
+  }
+  else // context (theExtent, theWidth, theHeight) not defined
+  {
+    // We don't know original source resolution, so we take some small extent around the point.
+
+    double xRes = 0.001; // expecting meters
+
+    // TODO: add CRS as class member
+    QgsCoordinateReferenceSystem crs;
+    if ( crs.createFromOgcWmsCrs( mImageCrs ) )
+    {
+      // set resolution approximately to 1mm
+      switch ( crs.mapUnits() )
+      {
+        case QGis::Meters:
+          xRes = 0.001;
+          break;
+        case QGis::Feet:
+          xRes = 0.003;
+          break;
+        case QGis::Degrees:
+          // max length of degree of latitude on pole is 111694 m
+          xRes = 1e-8;
+          break;
+        default:
+          xRes = 0.001; // expecting meters
+      }
+    }
+
+    // Keep resolution in both axis equal! Otherwise silly server (like QGIS mapserver)
+    // fail to calculate coordinate because it is using single resolution average!!!
+    double yRes = xRes;
+
+    // 1x1 should be sufficient but at least we know that GDAL ECW was very unefficient
+    // so we use 2x2 (until we find that it is too small for some server)
+    theWidth = theHeight = 2;
+
+    myExtent = QgsRectangle( thePoint.x() - xRes, thePoint.y() - yRes,
+                             thePoint.x() + xRes, thePoint.y() + yRes );
   }
 
   // Point in BBOX/WIDTH/HEIGHT coordinates
