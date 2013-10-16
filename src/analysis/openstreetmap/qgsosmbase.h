@@ -38,7 +38,7 @@ class ANALYSIS_EXPORT QgsOSMElement
 
     // fetched automatically from DB
     QgsOSMElementID elemID() const { return mElemID; }
-    int id() const { return mElemID.id; }
+    QgsOSMId id() const { return mElemID.id; }
     //QString username() const;
     //QDateTime timestamp() const;
     //int version() const;
