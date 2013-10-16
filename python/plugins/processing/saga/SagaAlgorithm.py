@@ -470,12 +470,16 @@ class SagaAlgorithm(GeoAlgorithm):
         self.exportedLayers[source] = destFilename
         sessionExportedLayers[source] = destFilename
         saga208 = ProcessingConfig.getSetting(SagaUtils.SAGA_208)
-        if isWindows() or isMac() or not saga208:
+        if saga208:
+			if isWindows() or isMac():
+				return 'io_gdal 0 -GRIDS "' + destFilename + '" -FILES "' + source \
+					+ '"'
+			else:
+				return 'libio_gdal 0 -GRIDS "' + destFilename + '" -FILES "' \
+					+ source + '"'
+        else:
             return 'io_gdal 0 -TRANSFORM -INTERPOL 0 -GRIDS "' + destFilename + '" -FILES "' + source \
                 + '"'
-        else:
-            return 'libio_gdal 0 -GRIDS "' + destFilename + '" -FILES "' \
-                + source + '"'
 
     def checkBeforeOpeningParametersDialog(self):
         msg = SagaUtils.checkSagaIsInstalled()
