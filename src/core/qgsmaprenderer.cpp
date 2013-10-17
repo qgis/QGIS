@@ -412,7 +412,7 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
       {
         r1 = mExtent;
         split = splitLayersExtent( ml, r1, r2 );
-        ct = QgsCoordinateTransformCache::instance()->transform( ml->crs().authid(), mDestCRS->authid() );
+        ct = tr( ml );
         mRenderContext.setExtent( r1 );
         QgsDebugMsg( "  extent 1: " + r1.toString() );
         QgsDebugMsg( "  extent 2: " + r2.toString() );
@@ -742,6 +742,8 @@ void QgsMapRenderer::setDestinationCrs( const QgsCoordinateReferenceSystem& crs 
   QgsDebugMsg( "* DestCRS.srsid() = " + QString::number( crs.srsid() ) );
   if ( *mDestCRS != crs )
   {
+    mLayerCoordinateTransformInfo.clear();
+
     QgsRectangle rect;
     if ( !mExtent.isEmpty() )
     {
@@ -1026,6 +1028,27 @@ void QgsMapRenderer::setLayerSet( const QStringList& layers )
 {
   QgsDebugMsg( QString( "Entering: %1" ).arg( layers.join( ", " ) ) );
   mLayerSet = layers;
+
+  //remove all entries in mLayerCoordinateTransformInfo which are not part of the layer set
+  if ( mLayerCoordinateTransformInfo.size() > 0 )
+  {
+    QSet<QString> layerSet = layers.toSet();
+    QStringList removeEntries;
+    QHash< QString, QgsLayerCoordinateTransform >::const_iterator lctIt = mLayerCoordinateTransformInfo.constBegin();
+    for ( ; lctIt != mLayerCoordinateTransformInfo.constEnd(); ++lctIt )
+    {
+      if ( !layerSet.contains( lctIt.key() ) )
+      {
+        removeEntries.push_back( lctIt.key() );
+      }
+    }
+
+    QStringList::const_iterator rIt = removeEntries.constBegin();
+    for ( ; rIt != removeEntries.constEnd(); ++rIt )
+    {
+      mLayerCoordinateTransformInfo.remove( *rIt );
+    }
+  }
   updateFullExtent();
 }
 
@@ -1101,6 +1124,31 @@ bool QgsMapRenderer::readXML( QDomNode & theNode )
   aoi.setYMaximum( ymax );
 
   setExtent( aoi );
+
+  mLayerCoordinateTransformInfo.clear();
+  QDomElement layerCoordTransformInfoElem = theNode.firstChildElement( "layer_coordinate_transform_info" );
+  if ( !layerCoordTransformInfoElem.isNull() )
+  {
+    QDomNodeList layerCoordinateTransformList = layerCoordTransformInfoElem.elementsByTagName( "layer_coordinate_transform" );
+    QDomElement layerCoordTransformElem;
+    for ( int i = 0; i < layerCoordinateTransformList.size(); ++i )
+    {
+      layerCoordTransformElem = layerCoordinateTransformList.at( i ).toElement();
+      QString layerId = layerCoordTransformElem.attribute( "layerid" );
+      if ( layerId.isEmpty() )
+      {
+        continue;
+      }
+
+      QgsLayerCoordinateTransform lct;
+      lct.srcAuthId = layerCoordTransformElem.attribute( "srcAuthId" );
+      lct.destAuthId = layerCoordTransformElem.attribute( "destAuthId" );
+      lct.srcDatumTransform = layerCoordTransformElem.attribute( "srcDatumTransform", "-1" ).toInt();
+      lct.destDatumTransform = layerCoordTransformElem.attribute( "destDatumTransform", "-1" ).toInt();
+      mLayerCoordinateTransformInfo.insert( layerId, lct );
+    }
+  }
+
   return true;
 }
 
@@ -1170,6 +1218,20 @@ bool QgsMapRenderer::writeXML( QDomNode & theNode, QDomDocument & theDoc )
   theNode.appendChild( srsNode );
   destinationCrs().writeXML( srsNode, theDoc );
 
+  // layer coordinate transform infos
+  QDomElement layerCoordTransformInfo = theDoc.createElement( "layer_coordinate_transform_info" );
+  QHash< QString, QgsLayerCoordinateTransform >::const_iterator coordIt = mLayerCoordinateTransformInfo.constBegin();
+  for ( ; coordIt != mLayerCoordinateTransformInfo.constEnd(); ++coordIt )
+  {
+    QDomElement layerCoordTransformElem = theDoc.createElement( "layer_coordinate_transform" );
+    layerCoordTransformElem.setAttribute( "layerid", coordIt.key() );
+    layerCoordTransformElem.setAttribute( "srcAuthId", coordIt->srcAuthId );
+    layerCoordTransformElem.setAttribute( "destAuthId", coordIt->destAuthId );
+    layerCoordTransformElem.setAttribute( "srcDatumTransform", QString::number( coordIt->srcDatumTransform ) );
+    layerCoordTransformElem.setAttribute( "destDatumTransform", QString::number( coordIt->destDatumTransform ) );
+    layerCoordTransformInfo.appendChild( layerCoordTransformElem );
+  }
+  theNode.appendChild( layerCoordTransformInfo );
   return true;
 }
 
@@ -1187,7 +1249,24 @@ const QgsCoordinateTransform* QgsMapRenderer::tr( QgsMapLayer *layer )
   {
     return 0;
   }
-  return QgsCoordinateTransformCache::instance()->transform( layer->crs().authid(), mDestCRS->authid() );
+
+  QHash< QString, QgsLayerCoordinateTransform >::const_iterator ctIt = mLayerCoordinateTransformInfo.find( layer->id() );
+  if ( ctIt != mLayerCoordinateTransformInfo.constEnd() )
+  {
+    return QgsCoordinateTransformCache::instance()->transform( ctIt->srcAuthId, ctIt->destAuthId, ctIt->srcDatumTransform, ctIt->destDatumTransform );
+  }
+  else
+  {
+    emit datumTransformInfoRequested( layer, layer->crs().authid(), mDestCRS->authid() );
+  }
+
+  //still not present? get coordinate transformation with -1/-1 datum transform as default
+  ctIt = mLayerCoordinateTransformInfo.find( layer->id() );
+  if ( ctIt == mLayerCoordinateTransformInfo.constEnd() )
+  {
+    return QgsCoordinateTransformCache::instance()->transform( layer->crs().authid(), mDestCRS->authid(), -1, -1 );
+  }
+  return QgsCoordinateTransformCache::instance()->transform( ctIt->srcAuthId, ctIt->destAuthId, ctIt->srcDatumTransform, ctIt->destDatumTransform );
 }
 
 /** Returns a QPainter::CompositionMode corresponding to a QgsMapRenderer::BlendMode
@@ -1262,6 +1341,16 @@ QgsMapRenderer::BlendMode QgsMapRenderer::getBlendModeEnum( const QPainter::Comp
     default:
       return QgsMapRenderer::BlendNormal;
   }
+}
+
+void QgsMapRenderer::addLayerCoordinateTransform( const QString& layerId, const QString& srcAuthId, const QString& destAuthId, int srcDatumTransform, int destDatumTransform )
+{
+  QgsLayerCoordinateTransform lt;
+  lt.srcAuthId = srcAuthId;
+  lt.destAuthId = destAuthId;
+  lt.srcDatumTransform = srcDatumTransform;
+  lt.destDatumTransform = destDatumTransform;
+  mLayerCoordinateTransformInfo.insert( layerId, lt );
 }
 
 bool QgsMapRenderer::mDrawing = false;
