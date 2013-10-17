@@ -57,7 +57,6 @@ QString QgsError::message( QgsErrorMessage::Format theFormat ) const
   //       and there are no local not commited changes
   QString hash = QString( QGis::QGIS_DEV_VERSION );
   QString remote = QString( QGS_GIT_REMOTE_URL );
-  QgsDebugMsg( "remote = " + remote );
   if ( !hash.isEmpty() && !remote.isEmpty() && remote.contains( "github.com" ) )
   {
     QString path = remote.remove( QRegExp( ".*github.com[:/]" ) ).remove( ".git" );
@@ -79,9 +78,29 @@ QString QgsError::message( QgsErrorMessage::Format theFormat ) const
 
     if ( theFormat == QgsErrorMessage::Text )
     {
-      str += m.tag() + " " + m.message();
+      if ( !str.isEmpty() )
+      {
+        str += "\n"; // new message
+      }
+      if ( !m.tag().isEmpty() )
+      {
+        str += m.tag() + " ";
+      }
+      str += m.message();
 #ifdef QGISDEBUG
-      str += QString( "\nat %1 : %2 : %3" ).arg( file ).arg( m.line() ).arg( m.function() );
+      QString where;
+      if ( !file.isEmpty() )
+      {
+        where += QString( "file: %1 row: %2" ).arg( file ).arg( m.line() );
+      }
+      if ( !m.function().isEmpty() )
+      {
+        where += QString( "function %1:" ).arg( m.function() );
+      }
+      if ( !where.isEmpty() )
+      {
+        str += QString( " (%1)" ).arg( where );
+      }
 #endif
     }
     else // QgsErrorMessage::Html

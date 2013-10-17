@@ -4315,7 +4315,14 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
       else
       {
         // guess from GML
-        gmlSchema.guessSchema( mIdentifyResultBodies.value( gmlPart ) );
+        bool ok = gmlSchema.guessSchema( mIdentifyResultBodies.value( gmlPart ) );
+        if ( ! ok )
+        {
+          QgsError err = gmlSchema.error();
+          err.append( tr( "Cannot identify" ) );
+          QgsDebugMsg( "guess schema error: " +  err.message() );
+          return QgsRasterIdentifyResult( err );
+        }
       }
 
       QStringList featureTypeNames = gmlSchema.typeNames();
