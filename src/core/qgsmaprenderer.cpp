@@ -1101,6 +1101,31 @@ bool QgsMapRenderer::readXML( QDomNode & theNode )
   aoi.setYMaximum( ymax );
 
   setExtent( aoi );
+
+  mLayerCoordinateTransformInfo.clear();
+  QDomElement layerCoordTransformInfoElem = theNode.firstChildElement( "layer_coordinate_transform_info" );
+  if ( !layerCoordTransformInfoElem.isNull() )
+  {
+    QDomNodeList layerCoordinateTransformList = layerCoordTransformInfoElem.elementsByTagName( "layer_coordinate_transform" );
+    QDomElement layerCoordTransformElem;
+    for ( int i = 0; i < layerCoordinateTransformList.size(); ++i )
+    {
+      layerCoordTransformElem = layerCoordinateTransformList.at( i ).toElement();
+      QString layerId = layerCoordTransformElem.attribute( "layerid" );
+      if ( layerId.isEmpty() )
+      {
+        continue;
+      }
+
+      QgsLayerCoordinateTransform lct;
+      lct.srcAuthId = layerCoordTransformElem.attribute( "srcAuthId" );
+      lct.destAuthId = layerCoordTransformElem.attribute( "destAuthId" );
+      lct.srcDatumTransform = layerCoordTransformElem.attribute( "srcDatumTransform", "-1" ).toInt();
+      lct.destDatumTransform = layerCoordTransformElem.attribute( "destDatumTransform", "-1" ).toInt();
+      mLayerCoordinateTransformInfo.insert( layerId, lct );
+    }
+  }
+
   return true;
 }
 
@@ -1170,6 +1195,20 @@ bool QgsMapRenderer::writeXML( QDomNode & theNode, QDomDocument & theDoc )
   theNode.appendChild( srsNode );
   destinationCrs().writeXML( srsNode, theDoc );
 
+  // layer coordinate transform infos
+  QDomElement layerCoordTransformInfo = theDoc.createElement( "layer_coordinate_transform_info" );
+  QHash< QString, QgsLayerCoordinateTransform >::const_iterator coordIt = mLayerCoordinateTransformInfo.constBegin();
+  for ( ; coordIt != mLayerCoordinateTransformInfo.constEnd(); ++coordIt )
+  {
+    QDomElement layerCoordTransformElem = theDoc.createElement( "layer_coordinate_transform" );
+    layerCoordTransformElem.setAttribute( "layerid", coordIt.key() );
+    layerCoordTransformElem.setAttribute( "srcAuthId", coordIt->srcAuthId );
+    layerCoordTransformElem.setAttribute( "destAuthId", coordIt->destAuthId );
+    layerCoordTransformElem.setAttribute( "srcDatumTransform", QString::number( coordIt->srcDatumTransform ) );
+    layerCoordTransformElem.setAttribute( "destDatumTransform", QString::number( coordIt->destDatumTransform ) );
+    layerCoordTransformInfo.appendChild( layerCoordTransformElem );
+  }
+  theNode.appendChild( layerCoordTransformInfo );
   return true;
 }
 
@@ -1262,6 +1301,15 @@ QgsMapRenderer::BlendMode QgsMapRenderer::getBlendModeEnum( const QPainter::Comp
     default:
       return QgsMapRenderer::BlendNormal;
   }
+}
+
+const QgsCoordinateTransform* QgsMapRenderer::coordinateTransformFromCache( const QString& layerId )
+{
+  //todo: lookup in mLayerCoordinateTransformInfo
+  //not present? Emit signal
+  //still not present? get coordinate transformation with -1/-1 datum transform
+
+  return 0;
 }
 
 bool QgsMapRenderer::mDrawing = false;
