@@ -52,6 +52,12 @@ void QgsComposerMouseHandles::paint( QPainter* painter, const QStyleOptionGraphi
   Q_UNUSED( itemStyle );
   Q_UNUSED( pWidget );
 
+  if ( mComposition->plotStyle() != QgsComposition::Preview )
+  {
+    //don't draw selection handles in composition outputs
+    return;
+  }
+
   //draw resize handles around bounds of entire selection
   double rectHandlerSize = rectHandlerBorderTolerance();
   drawHandles( painter, rectHandlerSize );
