@@ -20,6 +20,8 @@
 #include "qgisgui.h"
 
 #include <QDialog>
+#include <QPointer>
+#include <QSettings>
 
 class QDialogButtonBox;
 class QListWidget;
@@ -54,13 +56,16 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
      * @param parent parent object (owner)
      * @param fl widget flags
      */
-    QgsOptionsDialogBase( QString settingsKey, QWidget* parent = 0, Qt::WFlags fl = 0 );
+    QgsOptionsDialogBase( QString settingsKey, QWidget* parent = 0, Qt::WFlags fl = 0, QSettings* settings = 0 );
     ~QgsOptionsDialogBase();
 
     /** Set up the base ui connections for vertical tabs.
      * @param restoreUi Whether to restore the base ui at this time.
      */
     void initOptionsBase( bool restoreUi = true );
+
+    // set custom QSettings pointer if dialog used outside QGIS (in plugin)
+    void setSettings( QSettings* settings );
 
     /** Restore the base ui.
      * Sometimes useful to do at end of subclass's constructor.
@@ -76,6 +81,11 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
   protected:
     void showEvent( QShowEvent* e );
     void paintEvent( QPaintEvent* e );
+
+    // pointer to app or custom, external QSettings
+    // QPointer in case custom settings obj gets deleted while dialog is open
+    QPointer<QSettings> mSettings;
+    bool mDelSettings;
 
     QString mOptsKey;
     bool mInit;

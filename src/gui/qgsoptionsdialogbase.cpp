@@ -28,8 +28,8 @@
 #include <QTimer>
 
 
-QgsOptionsDialogBase::QgsOptionsDialogBase( QString settingsKey, QWidget* parent, Qt::WFlags fl )
-    : QDialog( parent, fl ), mOptsKey( settingsKey ), mInit( false )
+QgsOptionsDialogBase::QgsOptionsDialogBase( QString settingsKey, QWidget* parent, Qt::WFlags fl, QSettings* settings )
+    : QDialog( parent, fl ), mOptsKey( settingsKey ), mInit( false ), mSettings( settings )
 {
 }
 
@@ -38,14 +38,27 @@ QgsOptionsDialogBase::~QgsOptionsDialogBase()
   if ( mInit )
   {
     QSettings settings;
-    settings.setValue( QString( "/Windows/%1/geometry" ).arg( mOptsKey ), saveGeometry() );
-    settings.setValue( QString( "/Windows/%1/splitState" ).arg( mOptsKey ), mOptSplitter->saveState() );
-    settings.setValue( QString( "/Windows/%1/tab" ).arg( mOptsKey ), mOptStackedWidget->currentIndex() );
+    mSettings->setValue( QString( "/Windows/%1/geometry" ).arg( mOptsKey ), saveGeometry() );
+    mSettings->setValue( QString( "/Windows/%1/splitState" ).arg( mOptsKey ), mOptSplitter->saveState() );
+    mSettings->setValue( QString( "/Windows/%1/tab" ).arg( mOptsKey ), mOptStackedWidget->currentIndex() );
   }
+
+  if ( mDelSettings ) // local settings obj to delete
+    delete mSettings;
+  mSettings = 0; // null the pointer (in case of outside settings obj)
 }
 
 void QgsOptionsDialogBase::initOptionsBase( bool restoreUi )
 {
+  // use pointer to app QSettings if no custom QSettings specified
+  // custom QSettings object may be from Python plugin
+  mDelSettings = false;
+  if ( !mSettings )
+  {
+    mSettings = new QSettings();
+    mDelSettings = true; // only delete obj created by class
+  }
+
   // don't add to dialog margins
   // redefine now, or those in inherited .ui file will be added
   if ( layout() )
@@ -80,6 +93,14 @@ void QgsOptionsDialogBase::initOptionsBase( bool restoreUi )
     restoreOptionsBaseUi();
 }
 
+void QgsOptionsDialogBase::setSettings( QSettings* settings )
+{
+  if ( mDelSettings ) // local settings obj to delete
+    delete mSettings;
+  mSettings = settings;
+  mDelSettings = false; // don't delete outside obj
+}
+
 void QgsOptionsDialogBase::restoreOptionsBaseUi()
 {
   if ( !mInit )
@@ -87,14 +108,13 @@ void QgsOptionsDialogBase::restoreOptionsBaseUi()
     return;
   }
 
-  QSettings settings;
-  restoreGeometry( settings.value( QString( "/Windows/%1/geometry" ).arg( mOptsKey ) ).toByteArray() );
+  restoreGeometry( mSettings->value( QString( "/Windows/%1/geometry" ).arg( mOptsKey ) ).toByteArray() );
   // mOptListWidget width is fixed to take up less space in QtDesigner
   // revert it now unless the splitter's state hasn't been saved yet
   mOptListWidget->setMaximumWidth(
-    settings.value( QString( "/Windows/%1/splitState" ).arg( mOptsKey ) ).isNull() ? 150 : 16777215 );
-  mOptSplitter->restoreState( settings.value( QString( "/Windows/%1/splitState" ).arg( mOptsKey ) ).toByteArray() );
-  int curIndx = settings.value( QString( "/Windows/%1/tab" ).arg( mOptsKey ), 0 ).toInt();
+    mSettings->value( QString( "/Windows/%1/splitState" ).arg( mOptsKey ) ).isNull() ? 150 : 16777215 );
+  mOptSplitter->restoreState( mSettings->value( QString( "/Windows/%1/splitState" ).arg( mOptsKey ) ).toByteArray() );
+  int curIndx = mSettings->value( QString( "/Windows/%1/tab" ).arg( mOptsKey ), 0 ).toInt();
 
   // if the last used tab is out of range or not enabled display the first enabled one
   if ( mOptStackedWidget->count() < ( curIndx + 1 )
