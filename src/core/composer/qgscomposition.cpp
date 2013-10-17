@@ -61,6 +61,7 @@ QgsComposition::QgsComposition( QgsMapRenderer* mapRenderer )
     , mSelectionTolerance( 0.0 )
     , mSnapToGrid( false )
     , mSnapGridResolution( 10.0 )
+    , mSnapGridTolerance( 2 )
     , mSnapGridOffsetX( 0.0 )
     , mSnapGridOffsetY( 0.0 )
     , mAlignmentSnap( true )
@@ -97,6 +98,7 @@ QgsComposition::QgsComposition()
     mSelectionTolerance( 0.0 ),
     mSnapToGrid( false ),
     mSnapGridResolution( 10.0 ),
+    mSnapGridTolerance( 2 ),
     mSnapGridOffsetX( 0.0 ),
     mSnapGridOffsetY( 0.0 ),
     mAlignmentSnap( true ),
@@ -434,6 +436,7 @@ bool QgsComposition::writeXML( QDomElement& composerElem, QDomDocument& doc )
     compositionElem.setAttribute( "snapping", "0" );
   }
   compositionElem.setAttribute( "snapGridResolution", QString::number( mSnapGridResolution ) );
+  compositionElem.setAttribute( "snapGridTolerance", QString::number( mSnapGridTolerance ) );
   compositionElem.setAttribute( "snapGridOffsetX", QString::number( mSnapGridOffsetX ) );
   compositionElem.setAttribute( "snapGridOffsetY", QString::number( mSnapGridOffsetY ) );
 
@@ -522,6 +525,7 @@ bool QgsComposition::readXML( const QDomElement& compositionElem, const QDomDocu
     mSnapToGrid = true;
   }
   mSnapGridResolution = compositionElem.attribute( "snapGridResolution" ).toDouble();
+  mSnapGridTolerance = compositionElem.attribute( "snapGridTolerance", "2.0" ).toDouble();
   mSnapGridOffsetX = compositionElem.attribute( "snapGridOffsetX" ).toDouble();
   mSnapGridOffsetY = compositionElem.attribute( "snapGridOffsetY" ).toDouble();
 
@@ -1356,7 +1360,21 @@ QPointF QgsComposition::snapPointToGrid( const QPointF& scenePoint ) const
   int xRatio = ( int )(( scenePoint.x() - mSnapGridOffsetX ) / mSnapGridResolution + 0.5 );
   int yRatio = ( int )(( yPage - mSnapGridOffsetY ) / mSnapGridResolution + 0.5 );
 
-  return QPointF( xRatio * mSnapGridResolution + mSnapGridOffsetX, yRatio * mSnapGridResolution + mSnapGridOffsetY + yOffset );
+  double xSnapped = xRatio * mSnapGridResolution + mSnapGridOffsetX;
+  double ySnapped = yRatio * mSnapGridResolution + mSnapGridOffsetY + yOffset;
+
+  if ( abs( xSnapped - scenePoint.x() ) > mSnapGridTolerance )
+  {
+    //snap distance is outside of tolerance
+    xSnapped = scenePoint.x();
+  }
+  if ( abs( ySnapped - scenePoint.y() ) > mSnapGridTolerance )
+  {
+    //snap distance is outside of tolerance
+    ySnapped = scenePoint.y();
+  }
+
+  return QPointF( xSnapped, ySnapped );
 }
 
 QGraphicsLineItem* QgsComposition::addSnapLine()
@@ -1535,6 +1553,12 @@ void QgsComposition::setSnapGridResolution( double r )
   saveSettings();
 }
 
+void QgsComposition::setSnapGridTolerance( double tolerance )
+{
+  mSnapGridTolerance = tolerance;
+  saveSettings();
+}
+
 void QgsComposition::setSnapGridOffsetX( double offset )
 {
   mSnapGridOffsetX = offset;
@@ -1552,6 +1576,8 @@ void QgsComposition::setSnapGridOffsetY( double offset )
 void QgsComposition::setGridPen( const QPen& p )
 {
   mGridPen = p;
+  //make sure grid is drawn using a zero-width cosmetic pen
+  mGridPen.setWidthF( 0 );
   updatePaperItems();
   saveSettings();
 }
@@ -1576,16 +1602,14 @@ void QgsComposition::loadSettings()
 
   QString gridStyleString;
   int red, green, blue;
-  double penWidth;
 
   gridStyleString = s.value( "/qgis/composerGridStyle", "Dots" ).toString();
-  penWidth = s.value( "/qgis/composerGridWidth", 0.5 ).toDouble();
   red = s.value( "/qgis/composerGridRed", 0 ).toInt();
   green = s.value( "/qgis/composerGridGreen", 0 ).toInt();
   blue = s.value( "/qgis/composerGridBlue", 0 ).toInt();
 
   mGridPen.setColor( QColor( red, green, blue ) );
-  mGridPen.setWidthF( penWidth );
+  mGridPen.setWidthF( 0 );
 
   if ( gridStyleString == "Dots" )
   {
@@ -1607,7 +1631,6 @@ void QgsComposition::saveSettings()
 {
   //store grid appearance settings
   QSettings s;
-  s.setValue( "/qgis/composerGridWidth", mGridPen.widthF() );
   s.setValue( "/qgis/composerGridRed", mGridPen.color().red() );
   s.setValue( "/qgis/composerGridGreen", mGridPen.color().green() );
   s.setValue( "/qgis/composerGridBlue", mGridPen.color().blue() );

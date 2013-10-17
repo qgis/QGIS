@@ -84,9 +84,6 @@ QgsCompositionWidget::QgsCompositionWidget( QWidget* parent, QgsComposition* c )
     mOffsetYSpinBox->setValue( mComposition->snapGridOffsetY() );
 
 
-    //grid pen width
-    mPenWidthSpinBox->setValue( mComposition->gridPen().widthF() );
-
     //grid pen color
     mGridColorButton->setColor( mComposition->gridPen().color() );
     mGridColorButton->setColorDialogTitle( tr( "Select grid color" ) );
@@ -111,6 +108,7 @@ QgsCompositionWidget::QgsCompositionWidget( QWidget* parent, QgsComposition* c )
     }
 
     mSelectionToleranceSpinBox->setValue( mComposition->selectionTolerance() );
+    mGridToleranceSpinBox->setValue( mComposition->snapGridTolerance() );
   }
   blockSignals( false );
 }
@@ -566,13 +564,11 @@ void QgsCompositionWidget::on_mGridStyleComboBox_currentIndexChanged( const QStr
   }
 }
 
-void QgsCompositionWidget::on_mPenWidthSpinBox_valueChanged( double d )
+void QgsCompositionWidget::on_mGridToleranceSpinBox_valueChanged( double d )
 {
   if ( mComposition )
   {
-    QPen pen = mComposition->gridPen();
-    pen.setWidthF( d );
-    mComposition->setGridPen( pen );
+    mComposition->setSnapGridTolerance( d );
   }
 }
 
@@ -614,9 +610,9 @@ void QgsCompositionWidget::blockSignals( bool block )
   mGridResolutionSpinBox->blockSignals( block );
   mOffsetXSpinBox->blockSignals( block );
   mOffsetYSpinBox->blockSignals( block );
-  mPenWidthSpinBox->blockSignals( block );
   mGridColorButton->blockSignals( block );
   mGridStyleComboBox->blockSignals( block );
+  mGridToleranceSpinBox->blockSignals( block );
   mSelectionToleranceSpinBox->blockSignals( block );
   mAlignmentSnapGroupCheckBox->blockSignals( block );
   mAlignmentToleranceSpinBox->blockSignals( block );
