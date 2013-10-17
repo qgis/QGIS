@@ -19,9 +19,24 @@
 #define QGSPAPERITEM_H
 
 #include "qgscomposeritem.h"
+#include <QGraphicsRectItem>
 
-/**Item representing the paper. May draw the snapping grid lines if composition is in
- preview mode*/
+/**Item representing a grid. This is drawn seperately to the underlying paper item since the grid needs to be
+ * drawn above all other composer items, while the paper item is drawn below all others.*/
+class CORE_EXPORT QgsPaperGrid: public QGraphicsRectItem
+{
+  public:
+    QgsPaperGrid( double x, double y, double width, double height, QgsComposition* composition );
+    ~QgsPaperGrid();
+
+    /** \brief Reimplementation of QCanvasItem::paint*/
+    void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget );
+
+  private:
+    QgsComposition* mComposition;
+};
+
+/**Item representing the paper.*/
 class CORE_EXPORT QgsPaperItem: public QgsComposerItem
 {
   public:
@@ -47,10 +62,14 @@ class CORE_EXPORT QgsPaperItem: public QgsComposerItem
      */
     bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
 
+    virtual void setSceneRect( const QRectF& rectangle );
+
   private:
     QgsPaperItem();
     /**Set flags and z-value*/
     void initialize();
+
+    QgsPaperGrid* mPageGrid;
 };
 
 #endif
