@@ -251,6 +251,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   // WMS/WMS-C tile expiry time
   mDefaultTileExpirySpinBox->setValue( settings.value( "/qgis/defaultTileExpiry", "24" ).toInt() );
 
+  // Feature funded by Regione Toscana - SITA
   // WMS/WMS-C default max retry in case of tile request errors
   mDefaultTileMaxRetrySpinBox->setValue( settings.value( "/qgis/defaultTileMaxRetry", "3" ).toInt() );
 
@@ -905,6 +906,7 @@ void QgsOptions::saveOptions()
   // WMS/WMS-C tile expiry time
   settings.setValue( "/qgis/defaultTileExpiry", mDefaultTileExpirySpinBox->value() );
 
+  // Feature funded by Regione Toscana - SITA
   // WMS/WMS-C default max retry in case of tile request errors
   settings.setValue( "/qgis/defaultTileMaxRetry", mDefaultTileMaxRetrySpinBox->value() );
 

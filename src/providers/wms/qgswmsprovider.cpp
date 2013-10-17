@@ -846,7 +846,6 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
         }
 
         int i = 0;
-        int retry = 0;
         for ( int row = row0; row <= row1; row++ )
         {
           for ( int col = col0; col <= col1; col++ )
@@ -868,6 +867,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
             request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 1 ), i );
             request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 2 ),
                                   QRectF( tm->topLeft.x() + col * twMap, tm->topLeft.y() - ( row + 1 ) * thMap, twMap, thMap ) );
+            int retry = 0; // just for readability
             request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 3 ), retry );
 
             QgsDebugMsg( QString( "gettile: %1" ).arg( turl ) );
@@ -905,7 +905,6 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
           url.removeQueryItem( "TILECOL" );
 
           int i = 0;
-          int retry = 0;
           for ( int row = row0; row <= row1; row++ )
           {
             for ( int col = col0; col <= col1; col++ )
@@ -923,6 +922,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
               request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 1 ), i );
               request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 2 ),
                                     QRectF( tm->topLeft.x() + col * twMap, tm->topLeft.y() - ( row + 1 ) * thMap, twMap, thMap ) );
+              int retry = 0; // just for readability
               request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 3 ), retry );
 
               QgsDebugMsg( QString( "gettile: %1" ).arg( turl ) );
@@ -947,7 +947,6 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
           }
 
           int i = 0;
-          int retry = 0;
           for ( int row = row0; row <= row1; row++ )
           {
             for ( int col = col0; col <= col1; col++ )
@@ -965,6 +964,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
               request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 1 ), i );
               request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 2 ),
                                     QRectF( tm->topLeft.x() + col * twMap, tm->topLeft.y() - ( row + 1 ) * thMap, twMap, thMap ) );
+              int retry = 0; // just for readability
               request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 3 ), retry );
 
               QgsDebugMsg( QString( "gettile: %1" ).arg( turl ) );
@@ -1042,6 +1042,7 @@ void QgsWmsProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, in
   //delete image;
 }
 
+// tile retry management developed with funding from Regione Toscana-SITA
 void QgsWmsProvider::repeatTileRequest( QNetworkRequest const &oldRequest )
 {
   if ( mErrors == 100 )
