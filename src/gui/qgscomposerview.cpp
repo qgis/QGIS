@@ -46,6 +46,7 @@ QgsComposerView::QgsComposerView( QWidget* parent, const char* name, Qt::WFlags 
     , mRubberBandItem( 0 )
     , mRubberBandLineItem( 0 )
     , mMoveContentItem( 0 )
+    , mMarqueeSelect( false )
     , mPaintingEnabled( true )
     , mHorizontalRuler( 0 )
     , mVerticalRuler( 0 )
@@ -135,7 +136,8 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
 
       if ( !selectedItem )
       {
-        composition()->clearSelection();
+        //not clicking over an item, so start marquee selection
+        startMarqueeSelect( scenePoint );
         break;
       }
 
@@ -199,7 +201,7 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
     {
       mRubberBandStartPos = QPointF( snappedScenePoint.x(), snappedScenePoint.y() );
       mRubberBandLineItem = new QGraphicsLineItem( snappedScenePoint.x(), snappedScenePoint.y(), snappedScenePoint.x(), snappedScenePoint.y() );
-      mRubberBandLineItem->setZValue( 100 );
+      mRubberBandLineItem->setZValue( 1000 );
       scene()->addItem( mRubberBandLineItem );
       scene()->update();
       break;
@@ -217,7 +219,7 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
       mRubberBandStartPos = QPointF( snappedScenePoint.x(), snappedScenePoint.y() );
       t.translate( snappedScenePoint.x(), snappedScenePoint.y() );
       mRubberBandItem->setTransform( t );
-      mRubberBandItem->setZValue( 100 );
+      mRubberBandItem->setZValue( 1000 );
       scene()->addItem( mRubberBandItem );
       scene()->update();
     }
@@ -302,9 +304,7 @@ void QgsComposerView::addShape( Tool currentTool )
 
   if ( !mRubberBandItem || mRubberBandItem->rect().width() < 0.1 || mRubberBandItem->rect().width() < 0.1 )
   {
-    scene()->removeItem( mRubberBandItem );
-    delete mRubberBandItem;
-    mRubberBandItem = 0;
+    removeRubberBand();
     return;
   }
   if ( composition() )
@@ -312,9 +312,7 @@ void QgsComposerView::addShape( Tool currentTool )
     QgsComposerShape* composerShape = new QgsComposerShape( mRubberBandItem->transform().dx(), mRubberBandItem->transform().dy(), mRubberBandItem->rect().width(), mRubberBandItem->rect().height(), composition() );
     composerShape->setShapeType( shape );
     composition()->addComposerShape( composerShape );
-    scene()->removeItem( mRubberBandItem );
-    delete mRubberBandItem;
-    mRubberBandItem = 0;
+    removeRubberBand();
     emit actionFinished();
     composition()->pushAddRemoveCommand( composerShape, tr( "Shape added" ) );
   }
@@ -332,6 +330,102 @@ void QgsComposerView::updateRulers()
   }
 }
 
+void QgsComposerView::removeRubberBand()
+{
+  if ( mRubberBandItem )
+  {
+    scene()->removeItem( mRubberBandItem );
+    delete mRubberBandItem;
+    mRubberBandItem = 0;
+  }
+}
+
+void QgsComposerView::startMarqueeSelect( QPointF & scenePoint )
+{
+  mMarqueeSelect = true;
+
+  QTransform t;
+  mRubberBandItem = new QGraphicsRectItem( 0, 0, 0, 0 );
+  mRubberBandItem->setBrush( QBrush( QColor( 225, 50, 70, 25 ) ) );
+  mRubberBandItem->setPen( QPen( Qt::DotLine ) );
+  mRubberBandStartPos = QPointF( scenePoint.x(), scenePoint.y() );
+  t.translate( scenePoint.x(), scenePoint.y() );
+  mRubberBandItem->setTransform( t );
+  mRubberBandItem->setZValue( 1000 );
+  scene()->addItem( mRubberBandItem );
+  scene()->update();
+}
+
+void QgsComposerView::endMarqueeSelect( QMouseEvent* e )
+{
+  mMarqueeSelect = false;
+
+  bool subtractingSelection = false;
+  if ( e->modifiers() & Qt::ShiftModifier )
+  {
+    //shift modifer means adding to selection, nothing required here
+  }
+  else if ( e->modifiers() & Qt::ControlModifier )
+  {
+    //control modifier means subtract from current selection
+    subtractingSelection = true;
+  }
+  else
+  {
+    //not adding to or removing from selection, so clear current selection
+    composition()->clearSelection();
+  }
+
+  if ( !mRubberBandItem || ( mRubberBandItem->rect().width() < 0.1 && mRubberBandItem->rect().height() < 0.1 ) )
+  {
+    //just a click, do nothing
+    removeRubberBand();
+    return;
+  }
+
+  QRect boundsRect = QRect( mRubberBandItem->transform().dx(), mRubberBandItem->transform().dy(),
+                            mRubberBandItem->rect().width(), mRubberBandItem->rect().height() );
+
+  //determine item selection mode, default to intersection
+  Qt::ItemSelectionMode selectionMode = Qt::IntersectsItemShape;
+  if ( e->modifiers() & Qt::AltModifier )
+  {
+    //alt modifier switches to contains selection mode
+    selectionMode = Qt::ContainsItemShape;
+  }
+
+  //find all items in rubber band
+  QList<QGraphicsItem *> itemList = composition()->items( boundsRect, selectionMode );
+  QList<QGraphicsItem *>::iterator itemIt = itemList.begin();
+  for ( ; itemIt != itemList.end(); ++itemIt )
+  {
+    QgsComposerItem* mypItem = dynamic_cast<QgsComposerItem *>( *itemIt );
+    QgsPaperItem* paperItem = dynamic_cast<QgsPaperItem*>( *itemIt );
+    if ( mypItem && !paperItem )
+    {
+      if ( !mypItem->positionLock() )
+      {
+        if ( subtractingSelection )
+        {
+          mypItem->setSelected( false );
+        }
+        else
+        {
+          mypItem->setSelected( true );
+        }
+      }
+    }
+  }
+  removeRubberBand();
+
+  //update item panel
+  QList<QgsComposerItem*> selectedItemList = composition()->selectedComposerItems();
+  if ( selectedItemList.size() > 0 )
+  {
+    emit selectedItemChanged( selectedItemList[0] );
+  }
+}
+
 void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
 {
   if ( !composition() )
@@ -340,6 +434,12 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
   }
 
   QPointF scenePoint = mapToScene( e->pos() );
+
+  if ( mMarqueeSelect )
+  {
+    endMarqueeSelect( e );
+    return;
+  }
 
   switch ( mCurrentTool )
   {
@@ -394,21 +494,14 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
     case AddMap:
       if ( !mRubberBandItem || mRubberBandItem->rect().width() < 0.1 || mRubberBandItem->rect().width() < 0.1 )
       {
-        if ( mRubberBandItem )
-        {
-          scene()->removeItem( mRubberBandItem );
-          delete mRubberBandItem;
-          mRubberBandItem = 0;
-        }
+        removeRubberBand();
         return;
       }
       if ( composition() )
       {
         QgsComposerMap* composerMap = new QgsComposerMap( composition(), mRubberBandItem->transform().dx(), mRubberBandItem->transform().dy(), mRubberBandItem->rect().width(), mRubberBandItem->rect().height() );
         composition()->addComposerMap( composerMap );
-        scene()->removeItem( mRubberBandItem );
-        delete mRubberBandItem;
-        mRubberBandItem = 0;
+        removeRubberBand();
         emit actionFinished();
         composition()->pushAddRemoveCommand( composerMap, tr( "Map added" ) );
       }
@@ -427,9 +520,7 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
         composition()->beginMultiFrameCommand( composerHtml, tr( "Html frame added" ) );
         composerHtml->addFrame( frame );
         composition()->endMultiFrameCommand();
-        scene()->removeItem( mRubberBandItem );
-        delete mRubberBandItem;
-        mRubberBandItem = 0;
+        removeRubberBand();
         emit actionFinished();
       }
     default:
@@ -465,6 +556,12 @@ void QgsComposerView::mouseMoveEvent( QMouseEvent* e )
   {
     QPointF scenePoint = mapToScene( e->pos() );
 
+    if ( mMarqueeSelect )
+    {
+      updateRubberBand( scenePoint );
+      return;
+    }
+
     switch ( mCurrentTool )
     {
       case Select:
@@ -487,43 +584,7 @@ void QgsComposerView::mouseMoveEvent( QMouseEvent* e )
       case AddHtml:
         //adjust rubber band item
       {
-        double x = 0;
-        double y = 0;
-        double width = 0;
-        double height = 0;
-
-        double dx = scenePoint.x() - mRubberBandStartPos.x();
-        double dy = scenePoint.y() - mRubberBandStartPos.y();
-
-        if ( dx < 0 )
-        {
-          x = scenePoint.x();
-          width = -dx;
-        }
-        else
-        {
-          x = mRubberBandStartPos.x();
-          width = dx;
-        }
-
-        if ( dy < 0 )
-        {
-          y = scenePoint.y();
-          height = -dy;
-        }
-        else
-        {
-          y = mRubberBandStartPos.y();
-          height = dy;
-        }
-
-        if ( mRubberBandItem )
-        {
-          mRubberBandItem->setRect( 0, 0, width, height );
-          QTransform t;
-          t.translate( x, y );
-          mRubberBandItem->setTransform( t );
-        }
+        updateRubberBand( scenePoint );
         break;
       }
 
@@ -541,6 +602,47 @@ void QgsComposerView::mouseMoveEvent( QMouseEvent* e )
       default:
         break;
     }
+  }
+}
+
+void QgsComposerView::updateRubberBand( QPointF & pos )
+{
+  double x = 0;
+  double y = 0;
+  double width = 0;
+  double height = 0;
+
+  double dx = pos.x() - mRubberBandStartPos.x();
+  double dy = pos.y() - mRubberBandStartPos.y();
+
+  if ( dx < 0 )
+  {
+    x = pos.x();
+    width = -dx;
+  }
+  else
+  {
+    x = mRubberBandStartPos.x();
+    width = dx;
+  }
+
+  if ( dy < 0 )
+  {
+    y = pos.y();
+    height = -dy;
+  }
+  else
+  {
+    y = mRubberBandStartPos.y();
+    height = dy;
+  }
+
+  if ( mRubberBandItem )
+  {
+    mRubberBandItem->setRect( 0, 0, width, height );
+    QTransform t;
+    t.translate( x, y );
+    mRubberBandItem->setTransform( t );
   }
 }
 
