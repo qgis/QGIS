@@ -535,12 +535,13 @@ bool QgsRasterBlock::setIsNoDataExcept( const QRect & theExceptRect )
       QgsDebugMsg( "set mNoDataBitmap to 1" );
 
       char *nodataRow = new char[mNoDataBitmapWidth]; // full row of no data
+      // TODO: we can simply set all bytes to 11111111 (~0) I think
       memset( nodataRow, 0, mNoDataBitmapWidth );
       for ( int c = 0; c < mWidth; c ++ )
       {
         int byte = c / 8;
         int bit = c % 8;
-        int nodata = 0x80 >> bit;
+        char nodata = 0x80 >> bit;
         memset( nodataRow + byte, nodataRow[byte] | nodata, 1 );
       }
 
@@ -558,7 +559,7 @@ bool QgsRasterBlock::setIsNoDataExcept( const QRect & theExceptRect )
         if ( c >= left && c <= right ) continue; // middle
         int byte = c / 8;
         int bit = c % 8;
-        int nodata = 0x80 >> bit;
+        char nodata = 0x80 >> bit;
         memset( nodataRow + byte, nodataRow[byte] | nodata, 1 );
       }
       for ( int r = top; r <= bottom; r++ )
@@ -578,7 +579,22 @@ bool QgsRasterBlock::setIsNoDataExcept( const QRect & theExceptRect )
       QgsDebugMsg( "Image not allocated" );
       return false;
     }
-    QgsDebugMsg( "Fill image" );
+
+    if ( mImage->width() != mWidth ||  mImage->height() != mHeight )
+    {
+      QgsDebugMsg( "Image and block size differ" );
+      return false;
+    }
+
+    QgsDebugMsg( QString( "Fill image depth = %1" ).arg( mImage->depth() ) );
+
+    // TODO: support different depths
+    if ( mImage->depth() != 32 )
+    {
+      QgsDebugMsg( "Unsupported image depth" );
+      return false;
+    }
+
     QRgb nodataRgba = qRgba( 0, 0, 0, 0 );
     QRgb *nodataRow = new QRgb[mWidth]; // full row of no data
     int rgbSize = sizeof( QRgb );
@@ -597,12 +613,15 @@ bool QgsRasterBlock::setIsNoDataExcept( const QRect & theExceptRect )
     // middle
     for ( int r = top; r <= bottom; r++ )
     {
-      size_t i = r * mWidth;
+      size_t i = ( size_t )r * mWidth;
       // middle left
-      memcpy(( void * )( mImage->bits() + rgbSize*i ), nodataRow, rgbSize*left );
+      if ( left > 0 )
+      {
+        memcpy(( void * )( mImage->bits() + rgbSize*i ), nodataRow, rgbSize*( left - 1 ) );
+      }
       // middle right
       i += right + 1;
-      int w = mWidth - right;
+      int w = mWidth - right - 1;
       memcpy(( void * )( mImage->bits() + rgbSize*i ), nodataRow, rgbSize*w );
     }
     delete [] nodataRow;
