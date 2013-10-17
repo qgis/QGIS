@@ -336,7 +336,7 @@ class QgsPluginInstaller(QObject):
         dlg.exec_()
         if dlg.result():
           # revert installation
-          pluginDir = qgis.utils.home_python_pluginpath + "/" + plugin["id"]
+          pluginDir = qgis.utils.home_plugin_path + "/" + plugin["id"]
           removeDir(pluginDir)
           if QDir(pluginDir).exists():
             infoString = (self.tr("Plugin uninstall failed"), result)
@@ -380,7 +380,7 @@ class QgsPluginInstaller(QObject):
       unloadPlugin(key)
     except:
       pass
-    pluginDir = qgis.utils.home_python_pluginpath + "/" + plugin["id"]
+    pluginDir = qgis.utils.home_plugin_path + "/" + plugin["id"]
     result = removeDir(pluginDir)
     if result:
       QMessageBox.warning(iface.mainWindow(), self.tr("Plugin uninstall failed"), result)
