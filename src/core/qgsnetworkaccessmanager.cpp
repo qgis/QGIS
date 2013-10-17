@@ -133,6 +133,9 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
 {
   emit requestAboutToBeCreated( op, req, outgoingData );
   QNetworkReply *reply = QNetworkAccessManager::createRequest( op, req, outgoingData );
+  connect( reply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( connectionProgress() ) );
+  connect( reply, SIGNAL( uploadProgress( qint64, qint64 ) ), this, SLOT( connectionProgress() ) );
+  connect( reply, SIGNAL( destroyed( QObject* ) ), this, SLOT( connectionDestroyed( QObject* ) ) );
   emit requestCreated( reply );
 
   // abort request, when network timeout happens
@@ -142,7 +145,25 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
   timer->setSingleShot( true );
   timer->start( s.value( "/qgis/networkAndProxy/networkTimeout", "20000" ).toInt() );
 
+  mActiveRequests.insert( reply, timer );
   return reply;
+}
+
+void QgsNetworkAccessManager::connectionProgress()
+{
+  QNetworkReply *reply = qobject_cast<QNetworkReply *>( sender() );
+  Q_ASSERT( reply );
+
+  QTimer* timer = mActiveRequests.find( reply ).value();
+  Q_ASSERT( timer );
+
+  QSettings s;
+  timer->start( s.value( "/qgis/networkAndProxy/networkTimeout", "20000" ).toInt() );
+}
+
+void QgsNetworkAccessManager::connectionDestroyed( QObject* reply )
+{
+  mActiveRequests.remove( qobject_cast<QNetworkReply*>( reply ) );
 }
 
 void QgsNetworkAccessManager::abortRequest()
