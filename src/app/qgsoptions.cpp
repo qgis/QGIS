@@ -251,7 +251,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   // WMS/WMS-C tile expiry time
   mDefaultTileExpirySpinBox->setValue( settings.value( "/qgis/defaultTileExpiry", "24" ).toInt() );
 
-  // WMS/WMS-C default max retry in case of tile request errors
+  // WMS/WMS-C default max retry in case of tile request errors 
   mDefaultTileMaxRetrySpinBox->setValue( settings.value( "/qgis/defaultTileMaxRetry", "3" ).toInt() );
 
   //Web proxy settings
@@ -902,7 +902,7 @@ void QgsOptions::saveOptions()
   // WMS/WMS-C tile expiry time
   settings.setValue( "/qgis/defaultTileExpiry", mDefaultTileExpirySpinBox->value() );
 
-  // WMS/WMS-C default max retry in case of tile request errors
+  // WMS/WMS-C default max retry in case of tile request errors 
   settings.setValue( "/qgis/defaultTileMaxRetry", mDefaultTileMaxRetrySpinBox->value() );
 
   //Web proxy settings

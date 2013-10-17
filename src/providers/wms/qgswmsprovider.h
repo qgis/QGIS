@@ -745,6 +745,8 @@ class QgsWmsProvider : public QgsRasterDataProvider
 
     /**
      * \brief Relaunch tile request cloning previous request parameters and managing max repeat
+     * 
+     * \note feature founded by Regione Toscana - SITA
      *
      * \param oldRequest request to clone to generate new tile request
      *
