@@ -102,8 +102,6 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     QStringList mExcludedURLs;
 
     QMap<QNetworkReply*, QTimer*> mActiveRequests;
-
-    static QgsNetworkAccessManager *smNAM;
 };
 
 #endif // QGSNETWORKACCESSMANAGER_H

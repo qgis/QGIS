@@ -72,16 +72,11 @@ class QgsNetworkProxyFactory : public QNetworkProxyFactory
 };
 #endif
 
-QgsNetworkAccessManager *QgsNetworkAccessManager::smNAM = 0;
-
 QgsNetworkAccessManager *QgsNetworkAccessManager::instance()
 {
-  if ( smNAM )
-    return smNAM;
+  static QgsNetworkAccessManager sInstance;
 
-  smNAM = new QgsNetworkAccessManager();
-
-  return smNAM;
+  return &sInstance;
 }
 
 QgsNetworkAccessManager::QgsNetworkAccessManager( QObject *parent )
