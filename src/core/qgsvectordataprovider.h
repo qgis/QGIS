@@ -86,6 +86,8 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
       CreateAttributeIndex =         1 << 12,
       /** allows user to select encoding */
       SelectEncoding =               1 << 13,
+      /** supports simplification of geometries before fetch the feature */
+      SimplifyGeometries =           1 << 14,
     };
 
     /** bitmask of all provider's editing capabilities */

@@ -687,12 +687,19 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
   //do startRender before getFeatures to give renderers the possibility of querying features in the startRender method
   mRendererV2->startRender( rendererContext, this );
 
-  QgsFeatureIterator fit = getFeatures( QgsFeatureRequest()
-                                        .setFilterRect( rendererContext.extent() )
-                                        .setSubsetOfAttributes( attributes ) );
+  QgsFeatureRequest& featureRequest = QgsFeatureRequest()
+                                     .setFilterRect( rendererContext.extent() )
+                                     .setSubsetOfAttributes( attributes );
 
-  if (( mRendererV2->capabilities() & QgsFeatureRendererV2::SymbolLevels )
-      && mRendererV2->usingSymbolLevels() )
+  // Enable the simplification of the geometries before fetch the features using the current map2pixel context.
+  featureRequest.setFlags( featureRequest.flags() | QgsFeatureRequest::SimplifyGeometries );
+  featureRequest.setCoordinateTransform( rendererContext.coordinateTransform() );
+  featureRequest.setMapToPixel( &rendererContext.mapToPixel() );
+  featureRequest.setMapToPixelTol( rendererContext.mapToPixelTol() );
+
+  QgsFeatureIterator fit = getFeatures( featureRequest );
+
+  if (( mRendererV2->capabilities() & QgsFeatureRendererV2::SymbolLevels ) && mRendererV2->usingSymbolLevels() )
     drawRendererV2Levels( fit, rendererContext, labeling );
   else
     drawRendererV2( fit, rendererContext, labeling );
@@ -1208,6 +1215,9 @@ QgsFeatureIterator QgsVectorLayer::getFeatures( const QgsFeatureRequest& request
 {
   if ( !mDataProvider )
     return QgsFeatureIterator();
+
+  if ( request.flags() & QgsFeatureRequest::SimplifyGeometries )
+    return QgsFeatureIterator( new QgsSimplifiedVectorLayerFeatureIterator( this, request ) );
 
   return QgsFeatureIterator( new QgsVectorLayerFeatureIterator( this, request ) );
 }

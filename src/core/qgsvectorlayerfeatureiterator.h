@@ -116,4 +116,38 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
     QMap<QgsVectorLayer*, FetchJoinInfo> mFetchJoinInfo;
 };
 
+/***************************************************************************
+    MapToPixel simplification classes
+    ----------------------
+    begin                : October 2013
+    copyright            : (C) 2013 by Alvaro Huarte
+    email                : http://wiki.osgeo.org/wiki/Alvaro_Huarte
+
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+//! Provides a specialized VectorLayerFeatureIterator for enable map2pixel simplification of the geometries
+class CORE_EXPORT QgsSimplifiedVectorLayerFeatureIterator : public QgsVectorLayerFeatureIterator
+{
+  public:
+    QgsSimplifiedVectorLayerFeatureIterator( QgsVectorLayer* layer, const QgsFeatureRequest& request );
+   ~QgsSimplifiedVectorLayerFeatureIterator( );
+
+  protected:
+    //! fetch next feature, return true on success
+    virtual bool fetchFeature( QgsFeature& feature );
+
+  private:
+    //! Indicates the related vector provider supports simplify the geometries before fecth the feature
+    bool  mSupportsPresimplify;
+};
+
+/***************************************************************************/
+
 #endif // QGSVECTORLAYERFEATUREITERATOR_H

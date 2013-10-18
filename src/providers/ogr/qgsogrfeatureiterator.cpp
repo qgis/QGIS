@@ -233,11 +233,15 @@ bool QgsOgrFeatureIterator::readFeature( OGRFeatureH fet, QgsFeature& feature )
 
     if ( geom )
     {
+      notifyReadedFeature( fet, geom, feature );
+
       // get the wkb representation
       unsigned char *wkb = new unsigned char[OGR_G_WkbSize( geom )];
       OGR_G_ExportToWkb( geom, ( OGRwkbByteOrder ) QgsApplication::endian(), wkb );
 
       feature.setGeometryAndOwnership( wkb, OGR_G_WkbSize( geom ) );
+
+      notifyLoadedFeature( fet, feature );
     }
     if (( useIntersect && ( !feature.geometry() || !feature.geometry()->intersects( mRequest.filterRect() ) ) )
         || ( geometryTypeFilter && ( !feature.geometry() || QgsOgrProvider::ogrWkbSingleFlatten(( OGRwkbGeometryType )feature.geometry()->wkbType() ) != P->mOgrGeometryTypeFilter ) ) )
@@ -272,3 +276,54 @@ bool QgsOgrFeatureIterator::readFeature( OGRFeatureH fet, QgsFeature& feature )
 
   return true;
 }
+
+//! notify the OGRFeatureH was readed of the data provider
+void QgsOgrFeatureIterator::notifyReadedFeature( OGRFeatureH fet, OGRGeometryH geom, QgsFeature& feature )
+{
+}
+//! notify the OGRFeatureH was loaded to the QgsFeature object
+void QgsOgrFeatureIterator::notifyLoadedFeature( OGRFeatureH fet, QgsFeature& feature )
+{
+}
+
+/***************************************************************************
+    MapToPixel simplification classes
+    ----------------------
+    begin                : October 2013
+    copyright            : (C) 2013 by Alvaro Huarte
+    email                : http://wiki.osgeo.org/wiki/Alvaro_Huarte
+
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+//! Provides a specialized FeatureIterator for enable map2pixel simplification of the geometries
+QgsOgrSimplifiedFeatureIterator::QgsOgrSimplifiedFeatureIterator( QgsOgrProvider* p, const QgsFeatureRequest& request ) : QgsOgrFeatureIterator( p, request )
+{
+}
+QgsOgrSimplifiedFeatureIterator::~QgsOgrSimplifiedFeatureIterator( )
+{
+}
+
+//! notify the OGRFeatureH was readed of the data provider
+void QgsOgrSimplifiedFeatureIterator::notifyReadedFeature( OGRFeatureH fet, OGRGeometryH geom, QgsFeature& feature )
+{
+  /* TODO: ### ahuarte47!
+  if ( mRequest.flags() & QgsFeatureRequest::SimplifyGeometries )
+  {
+    OGRwkbGeometryType wkbType = OGR_G_GetGeometryType( geom );
+    OGRwkbGeometryType wkbGeometryType = QgsOgrProvider::ogrWkbSingleFlatten( wkbType );
+
+    if (wkbGeometryType==wkbLineString || wkbGeometryType==wkbPolygon)
+    {
+    }
+  }*/
+  QgsOgrFeatureIterator::notifyReadedFeature( fet, geom, feature );
+}
+
+/***************************************************************************/

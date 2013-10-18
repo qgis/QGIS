@@ -17,6 +17,7 @@
 
 #include <QFlags>
 
+#include "qgsmaprequest.h"
 #include "qgsfeature.h"
 #include "qgsrectangle.h"
 #include "qgsexpression.h"
@@ -53,7 +54,7 @@ typedef QList<int> QgsAttributeList;
  *     QgsFeatureRequest().setFilterFid(45)
  *
  */
-class CORE_EXPORT QgsFeatureRequest
+class CORE_EXPORT QgsFeatureRequest : public QgsMapRequest
 {
   public:
     enum Flag
@@ -61,7 +62,8 @@ class CORE_EXPORT QgsFeatureRequest
       NoFlags            = 0,
       NoGeometry         = 1,  //!< Geometry is not required. It may still be returned if e.g. required for a filter condition.
       SubsetOfAttributes = 2,  //!< Fetch only a subset of attributes (setSubsetOfAttributes sets this flag)
-      ExactIntersect     = 4   //!< Use exact geometry intersection (slower) instead of bounding boxes
+      ExactIntersect     = 4,  //!< Use exact geometry intersection (slower) instead of bounding boxes
+      SimplifyGeometries = 8   //!< Simplify the geometry using the current map2pixel context
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 

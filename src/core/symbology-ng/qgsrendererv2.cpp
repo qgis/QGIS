@@ -67,6 +67,10 @@ const unsigned char* QgsFeatureRendererV2::_getLineString( QPolygonF& pts, QgsRe
   wkb += sizeof( unsigned int );
 
   bool hasZValue = ( wkbType == QGis::WKBLineString25D );
+
+  int sizeOfDoubleX = sizeof(double);
+  int sizeOfDoubleY = hasZValue ? 2*sizeof(double) : sizeof(double);
+
   double x, y;
   const QgsCoordinateTransform* ct = context.coordinateTransform();
   const QgsMapToPixel& mtp = context.mapToPixel();
@@ -86,13 +90,8 @@ const unsigned char* QgsFeatureRendererV2::_getLineString( QPolygonF& pts, QgsRe
     QPointF* ptr = pts.data();
     for ( unsigned int i = 0; i < nPoints; ++i, ++ptr )
     {
-      x = *(( double * ) wkb );
-      wkb += sizeof( double );
-      y = *(( double * ) wkb );
-      wkb += sizeof( double );
-
-      if ( hasZValue ) // ignore Z value
-        wkb += sizeof( double );
+      x = *(( double * ) wkb ); wkb += sizeOfDoubleX;
+      y = *(( double * ) wkb ); wkb += sizeOfDoubleY;
 
       *ptr = QPointF( x, y );
     }
@@ -126,6 +125,10 @@ const unsigned char* QgsFeatureRendererV2::_getPolygon( QPolygonF& pts, QList<QP
     return wkb;
 
   bool hasZValue = ( wkbType == QGis::WKBPolygon25D );
+
+  int sizeOfDoubleX = sizeof(double);
+  int sizeOfDoubleY = hasZValue ? 2*sizeof(double) : sizeof(double);
+
   double x, y;
   holes.clear();
 
@@ -146,20 +149,18 @@ const unsigned char* QgsFeatureRendererV2::_getPolygon( QPolygonF& pts, QList<QP
     QPointF* ptr = poly.data();
     for ( unsigned int jdx = 0; jdx < nPoints; ++jdx, ++ptr )
     {
-      x = *(( double * ) wkb ); wkb += sizeof( double );
-      y = *(( double * ) wkb ); wkb += sizeof( double );
+      x = *(( double * ) wkb ); wkb += sizeOfDoubleX;
+      y = *(( double * ) wkb ); wkb += sizeOfDoubleY;
 
       *ptr = QPointF( x, y );
-
-      if ( hasZValue )
-        wkb += sizeof( double );
     }
 
     if ( nPoints < 1 )
       continue;
 
-    //clip close to view extent
-    QgsClipper::trimPolygon( poly, clipRect );
+    //clip close to view extent, if needed
+    QRectF ptsRect = poly.boundingRect();
+    if (!context.extent().contains( ptsRect )) QgsClipper::trimPolygon( poly, clipRect );
 
     //transform the QPolygonF to screen coordinates
     if ( ct )

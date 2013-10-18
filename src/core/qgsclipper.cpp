@@ -45,6 +45,9 @@ const unsigned char* QgsClipper::clippedLineWKB( const unsigned char* wkb, const
 
   bool hasZValue = ( wkbType == QGis::WKBLineString25D );
 
+  int sizeOfDoubleX = sizeof(double);
+  int sizeOfDoubleY = hasZValue ? 2*sizeof(double) : sizeof(double);
+
   double p0x, p0y, p1x = 0.0, p1y = 0.0; //original coordinates
   double p1x_c, p1y_c; //clipped end coordinates
   double lastClipX = 0.0, lastClipY = 0.0; //last successfully clipped coords
@@ -56,14 +59,9 @@ const unsigned char* QgsClipper::clippedLineWKB( const unsigned char* wkb, const
   {
     if ( i == 0 )
     {
-      memcpy( &p1x, wkb, sizeof( double ) );
-      wkb += sizeof( double );
-      memcpy( &p1y, wkb, sizeof( double ) );
-      wkb += sizeof( double );
-      if ( hasZValue ) // ignore Z value
-      {
-        wkb += sizeof( double );
-      }
+      memcpy( &p1x, wkb, sizeof( double ) ); wkb += sizeOfDoubleX;
+      memcpy( &p1y, wkb, sizeof( double ) ); wkb += sizeOfDoubleY;
+
       continue;
     }
     else
@@ -71,14 +69,8 @@ const unsigned char* QgsClipper::clippedLineWKB( const unsigned char* wkb, const
       p0x = p1x;
       p0y = p1y;
 
-      memcpy( &p1x, wkb, sizeof( double ) );
-      wkb += sizeof( double );
-      memcpy( &p1y, wkb, sizeof( double ) );
-      wkb += sizeof( double );
-      if ( hasZValue ) // ignore Z value
-      {
-        wkb += sizeof( double );
-      }
+      memcpy( &p1x, wkb, sizeof( double ) ); wkb += sizeOfDoubleX;
+      memcpy( &p1y, wkb, sizeof( double ) ); wkb += sizeOfDoubleY;
 
       p1x_c = p1x; p1y_c = p1y;
       if ( clipLineSegment( clipExtent.xMinimum(), clipExtent.xMaximum(), clipExtent.yMinimum(), clipExtent.yMaximum(),
