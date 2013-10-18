@@ -1065,7 +1065,7 @@ bool QgsPostgresProvider::determinePrimaryKey()
         }
 
       }
-      else if ( type == "v" ) // the relation is a view
+      else if ( type == "v" || type == "m" ) // the relation is a view
       {
         QString primaryKey = mUri.keyColumn();
         mPrimaryKeyType = pktUnknown;
