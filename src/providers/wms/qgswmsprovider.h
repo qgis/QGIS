@@ -632,6 +632,19 @@ class QgsWmsProvider : public QgsRasterDataProvider
     QStringList subLayerStyles() const;
 
 
+    /**
+     * \brief Get GetLegendGraphic if service available otherwise QPixmap() 
+     * BEAWARE call it the first time specifying scale parameter otherwise it always return QPixmap()
+     * \todo some services dowsn't expose getLegendGraphic in capabilities but adding LegendURL in 
+     * the layer tags inside capabilities, but LegendURL parsing is still not developed => getLegendGraphic is
+     * always called assuming that error means service is not available. Other drowback is that SLD_VERSION
+     * is inside LegendURL, so at this moment it is fixed to 1.1.0 waiting a correct parsing of LegendURL
+     * in getCapability
+     * \param scale Optional parameter that is the Scale of the wms layer
+     * \param forceRefresh Optional bool parameter to force refresh getLegendGraphic call 
+     */
+    QPixmap getLegendGraphic( double scale = 0, bool forceRefresh = false );
+
     // TODO: Get the WMS connection
 
     // TODO: Get the table name associated with this provider instance
@@ -736,6 +749,8 @@ class QgsWmsProvider : public QgsRasterDataProvider
     void capabilitiesReplyProgress( qint64, qint64 );
     void identifyReplyFinished();
     void tileReplyFinished();
+    void getLegendGraphicReplyFinished();
+    void getLegendGraphicReplyProgress( qint64, qint64 );
 
   private:
     void showMessageBox( const QString& title, const QString& text );
@@ -914,6 +929,21 @@ class QgsWmsProvider : public QgsRasterDataProvider
     QDomDocument mCapabilitiesDom;
 
     /**
+     * GetLegendGraphic of the WMS (raw)
+     */
+    QByteArray mHttpGetLegendGraphicResponse;
+
+    /**
+     * GetLegendGraphic WMS Pixmap result
+     */
+    QPixmap mGetLegendGraphicPixmap;
+
+    /**
+     * GetLegendGraphic scale for the WMS Pixmap result
+     */
+    double mGetLegendGraphicScale;
+
+    /**
      * Last Service Exception Report from the WMS
      */
     QDomDocument mServiceExceptionReportDom;
@@ -1002,6 +1032,11 @@ class QgsWmsProvider : public QgsRasterDataProvider
      * The reply to the capabilities request
      */
     QNetworkReply *mCapabilitiesReply;
+
+    /**
+     * The reply to the GetLegendGraphic request
+     */
+    QNetworkReply *mGetLegendGraphicReply;
 
     /**
      * The reply to the capabilities request

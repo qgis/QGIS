@@ -54,6 +54,8 @@ QgsComposerLegend::QgsComposerLegend( QgsComposition* composition )
 
   mSymbolWidth = 7;
   mSymbolHeight = 4;
+  mWmsLegendWidth = 50;
+  mWmsLegendHeight = 25;
   mWrapChar = "";
   mlineSpacing = 1.5;
   adjustBoxSize();
@@ -347,13 +349,41 @@ QgsComposerLegend::Nucleon QgsComposerLegend::drawSymbolItem( QgsComposerLegendI
   }
   else if ( rasterItem )
   {
-    if ( painter )
+    // manage WMS lengendGraphic
+    // actual code recognise if it's a legend because it has an icon and it's text is empty => this is not good MV pattern implementation :(
+    QIcon symbolIcon = symbolItem->icon();
+    if ( !symbolIcon.isNull() && symbolItem->text().isEmpty() )
     {
-      painter->setBrush( rasterItem->color() );
-      painter->drawRect( QRectF( point.x(), point.y() + ( itemHeight - mSymbolHeight ) / 2, mSymbolWidth, mSymbolHeight ) );
+      // find max size
+      QList<QSize> sizes = symbolIcon.availableSizes();
+      double maxWidth = 0;
+      double maxHeight = 0;
+      foreach ( QSize size, sizes )
+      {
+        if ( maxWidth < size.width() ) maxWidth = size.width();
+        if ( maxHeight < size.height() ) maxHeight = size.height();
+      }
+      QSize maxSize(maxWidth, maxHeight);
+
+      // get and print pixmap
+      QPixmap pixmap = symbolIcon.pixmap(maxWidth, maxHeight);
+      if ( painter )
+      {
+        painter->drawPixmap( QRectF( point.x(), point.y(), mWmsLegendWidth, mWmsLegendHeight ), pixmap, QRectF( 0, 0, maxWidth, maxHeight ) );
+      }
+      symbolSize.rwidth() = mWmsLegendWidth;
+      symbolSize.rheight() = mWmsLegendHeight;
     }
-    symbolSize.rwidth() = mSymbolWidth;
-    symbolSize.rheight() = mSymbolHeight;
+    else
+    {
+      if ( painter )
+      {
+        painter->setBrush( rasterItem->color() );
+        painter->drawRect( QRectF( point.x(), point.y() + ( itemHeight - mSymbolHeight ) / 2, mSymbolWidth, mSymbolHeight ) );
+      }
+      symbolSize.rwidth() = mSymbolWidth;
+      symbolSize.rheight() = mSymbolHeight;
+    }
   }
   else //item with icon?
   {
@@ -555,6 +585,8 @@ bool QgsComposerLegend::writeXML( QDomElement& elem, QDomDocument & doc ) const
 
   composerLegendElem.setAttribute( "symbolWidth", QString::number( mSymbolWidth ) );
   composerLegendElem.setAttribute( "symbolHeight", QString::number( mSymbolHeight ) );
+  composerLegendElem.setAttribute( "wmsLegendWidth", QString::number( mWmsLegendWidth ) );
+  composerLegendElem.setAttribute( "wmsLegendHeight", QString::number( mWmsLegendHeight ) );
   composerLegendElem.setAttribute( "wrapChar", mWrapChar );
   composerLegendElem.setAttribute( "fontColor", mFontColor.name() );
 
@@ -622,6 +654,8 @@ bool QgsComposerLegend::readXML( const QDomElement& itemElem, const QDomDocument
 
   mSymbolWidth = itemElem.attribute( "symbolWidth", "7.0" ).toDouble();
   mSymbolHeight = itemElem.attribute( "symbolHeight", "14.0" ).toDouble();
+  mWmsLegendWidth = itemElem.attribute( "wmsLegendWidth", "50" ).toDouble();
+  mWmsLegendHeight = itemElem.attribute( "wmsLegendHeight", "25" ).toDouble();
 
   mWrapChar = itemElem.attribute( "wrapChar" );
 
