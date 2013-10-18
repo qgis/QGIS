@@ -38,6 +38,7 @@ email                : sherman at mrcc.com
 
 #include "qgis.h"
 #include "qgsapplication.h"
+#include "qgscrscache.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapcanvasmap.h"
@@ -110,6 +111,8 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
   setFocusPolicy( Qt::StrongFocus );
 
   mMapRenderer = new QgsMapRenderer;
+  connect( mMapRenderer, SIGNAL( datumTransformInfoRequested( QgsMapLayer*, const QString&, const QString& ) ),
+           this, SLOT( getDatumTransformInfo( QgsMapLayer*, const QString& , const QString& ) ) );
 
   // create map canvas item which will show the map
   mMap = new QgsMapCanvasMap( this );
@@ -1541,6 +1544,40 @@ void QgsMapCanvas::writeProject( QDomDocument & doc )
   QDomElement mapcanvasNode = doc.createElement( "mapcanvas" );
   qgisNode.appendChild( mapcanvasNode );
   mMapRenderer->writeXML( mapcanvasNode, doc );
+}
+
+/**Ask user which datum transform to use*/
+void QgsMapCanvas::getDatumTransformInfo( QgsMapLayer* ml, const QString& srcAuthId, const QString& destAuthId )
+{
+  if ( !ml )
+  {
+    return;
+  }
+
+  //create two crs
+  const QgsCoordinateReferenceSystem& srcCRS = QgsCRSCache::instance()->crsByAuthId( srcAuthId );
+  const QgsCoordinateReferenceSystem& destCRS = QgsCRSCache::instance()->crsByAuthId( destAuthId );
+
+  //get list of datum transforms (QgsCoordinateTransform::datumTransformations
+  QList< QList< int > > dt = QgsCoordinateTransform::datumTransformations( srcCRS, destCRS );
+  if ( dt.size() < 2 )
+  {
+    return; //skip?
+  }
+
+  //if several possibilities:  present dialog
+  //QgsDatumTransformDialog d( dt );
+  //if( d.exec() == QDialog::Accepted )
+  //{
+  //  int srcTransform = -1;
+  //  int destTransform = -1;
+  //  QList<int> t = d.selectedDatumTransform();
+  //  if( t.size() > 0 )
+  //  {
+  //      srcTransform = t.at( 0 );
+  //  }
+  //  QgsMapRenderer::addLayerCoordinateTransform( ml->id(), const QString& srcAuthId, const QString& destAuthId, int srcTransform = -1, int destTransform = -1 )
+  //}
 }
 
 void QgsMapCanvas::zoomByFactor( double scaleFactor )

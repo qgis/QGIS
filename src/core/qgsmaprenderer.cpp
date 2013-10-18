@@ -792,17 +792,23 @@ bool QgsMapRenderer::splitLayersExtent( QgsMapLayer* layer, QgsRectangle& extent
       // extent separately.
       static const double splitCoord = 180.0;
 
+      const QgsCoordinateTransform* transform = tr( layer );
       if ( layer->crs().geographicFlag() )
       {
         // Note: ll = lower left point
         //   and ur = upper right point
-        QgsPoint ll = tr( layer )->transform( extent.xMinimum(), extent.yMinimum(),
-                                              QgsCoordinateTransform::ReverseTransform );
 
-        QgsPoint ur = tr( layer )->transform( extent.xMaximum(), extent.yMaximum(),
-                                              QgsCoordinateTransform::ReverseTransform );
+        QgsPoint ll( extent.xMinimum(), extent.yMinimum() );
+        QgsPoint ur( extent.xMaximum(), extent.yMaximum() );
 
-        extent = tr( layer )->transformBoundingBox( extent, QgsCoordinateTransform::ReverseTransform );
+        if ( transform )
+        {
+          ll = transform->transform( ll.x(), ll.y(),
+                                     QgsCoordinateTransform::ReverseTransform );
+          ur = transform->transform( ur.x(), ur.y(),
+                                     QgsCoordinateTransform::ReverseTransform );
+          extent = transform->transformBoundingBox( extent, QgsCoordinateTransform::ReverseTransform );
+        }
 
         if ( ll.x() > ur.x() )
         {
@@ -814,7 +820,10 @@ bool QgsMapRenderer::splitLayersExtent( QgsMapLayer* layer, QgsRectangle& extent
       }
       else // can't cross 180
       {
-        extent = tr( layer )->transformBoundingBox( extent, QgsCoordinateTransform::ReverseTransform );
+        if ( transform )
+        {
+          extent = transform->transformBoundingBox( extent, QgsCoordinateTransform::ReverseTransform );
+        }
       }
     }
     catch ( QgsCsException &cse )
@@ -830,14 +839,18 @@ bool QgsMapRenderer::splitLayersExtent( QgsMapLayer* layer, QgsRectangle& extent
 
 QgsRectangle QgsMapRenderer::layerExtentToOutputExtent( QgsMapLayer* theLayer, QgsRectangle extent )
 {
-  QgsDebugMsg( QString( "sourceCrs = " + tr( theLayer )->sourceCrs().authid() ) );
-  QgsDebugMsg( QString( "destCRS = " + tr( theLayer )->destCRS().authid() ) );
-  QgsDebugMsg( QString( "extent = " + extent.toString() ) );
+  //QgsDebugMsg( QString( "sourceCrs = " + tr( theLayer )->sourceCrs().authid() ) );
+  //QgsDebugMsg( QString( "destCRS = " + tr( theLayer )->destCRS().authid() ) );
+  //QgsDebugMsg( QString( "extent = " + extent.toString() ) );
   if ( hasCrsTransformEnabled() )
   {
     try
     {
-      extent = tr( theLayer )->transformBoundingBox( extent );
+      const QgsCoordinateTransform* transform = tr( theLayer );
+      if ( transform )
+      {
+        extent = transform->transformBoundingBox( extent );
+      }
     }
     catch ( QgsCsException &cse )
     {
@@ -1246,6 +1259,11 @@ void QgsMapRenderer::setLabelingEngine( QgsLabelingEngineInterface* iface )
 const QgsCoordinateTransform* QgsMapRenderer::tr( QgsMapLayer *layer )
 {
   if ( !layer || !mDestCRS )
+  {
+    return 0;
+  }
+
+  if ( layer->crs().authid() == mDestCRS->authid() )
   {
     return 0;
   }
