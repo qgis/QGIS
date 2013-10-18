@@ -56,6 +56,8 @@ QgsFeatureRequest::QgsFeatureRequest( const QgsFeatureRequest &rh )
 
 QgsFeatureRequest& QgsFeatureRequest::operator=( const QgsFeatureRequest & rh )
 {
+  QgsMapRequest::operator=( rh );
+
   mFlags = rh.mFlags;
   mFilter = rh.mFilter;
   mFilterRect = rh.mFilterRect;

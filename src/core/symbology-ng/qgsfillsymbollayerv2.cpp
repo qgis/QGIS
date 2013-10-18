@@ -183,7 +183,7 @@ void QgsSimpleFillSymbolLayerV2::renderPolygon( const QPolygonF& points, QList<Q
     p->translate( offset );
   }
 
-  _renderPolygon( p, points, rings );
+  _renderPolygon( p, points, rings, context );
 
   if ( !mOffset.isNull() )
   {
@@ -760,7 +760,7 @@ void QgsImageFillSymbolLayer::renderPolygon( const QPolygonF& points, QList<QPol
     //if ( ! selectionIsOpaque )
     //  selColor.setAlphaF( context.alpha() );
     p->setBrush( QBrush( selColor ) );
-    _renderPolygon( p, points, rings );
+    _renderPolygon( p, points, rings, context );
   }
 
   if ( qgsDoubleNear( mNextAngle, 0.0 ) )
@@ -775,7 +775,7 @@ void QgsImageFillSymbolLayer::renderPolygon( const QPolygonF& points, QList<QPol
     rotatedBrush.setTransform( t );
     p->setBrush( rotatedBrush );
   }
-  _renderPolygon( p, points, rings );
+  _renderPolygon( p, points, rings, context );
   if ( mOutline )
   {
     mOutline->renderPolyline( points, context.feature(), context.renderContext(), -1, selectFillBorder && context.selected() );
