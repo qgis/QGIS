@@ -7412,7 +7412,7 @@ Agisce su tutti i vettori editabili attivi al momento
     </message>
     <message>
         <source>Processing models (*.model)</source>
-        <translation>Elaborazione modelli (*.model)</translation>
+        <translation>Modelli di analisi (*.model)</translation>
     </message>
     <message>
         <source>SEXTANTE models (*.model)</source>
@@ -8859,7 +8859,7 @@ Cambiare questa situazione prima, perché il plugin OSM non quale layer è la de
     </message>
     <message>
         <source>URL copied to clipboard.</source>
-        <translation>URL copiata nella clipboard.</translation>
+        <translation>URL copiata nel blocco appunti.</translation>
     </message>
     <message>
         <source>Connection error: </source>
@@ -13539,7 +13539,7 @@ Secondo me si (rospus ;-)</translatorcomment>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5614"/>
         <source>New memory layer name</source>
-        <translation type="unfinished"></translation>
+        <translation>Nome del nuovo layer in memoria</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5615"/>
@@ -13549,7 +13549,7 @@ Secondo me si (rospus ;-)</translatorcomment>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5687"/>
         <source>No features in clipboard.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nessun elemento nel blocco appunti.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5691"/>
@@ -13564,12 +13564,12 @@ Secondo me si (rospus ;-)</translatorcomment>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5708"/>
         <source>Cannot create new layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile creare nuovo layer</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5721"/>
         <source>Cannot create field %1 (%2,%3)</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile creare il campo %1 (%2,%3)</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5776"/>
@@ -17085,17 +17085,17 @@ Prova una risoluzione minore o una minor dimensione di stampa</translation>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="581"/>
         <source>Lock Selected Items</source>
-        <translation type="unfinished"></translation>
+        <translation>Blocca gli oggetti selezionati</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="590"/>
         <source>Unlock All</source>
-        <translation type="unfinished"></translation>
+        <translation>Sblocca tutto</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="593"/>
         <source>Unlock All Items</source>
-        <translation type="unfinished"></translation>
+        <translation>Sblocca tutti gli elementi</translation>
     </message>
     <message>
         <source>Load From template</source>
@@ -18755,7 +18755,7 @@ Per me buona la prima (rospus)</translatorcomment>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="703"/>
         <source>Center on overview</source>
-        <translation type="unfinished"></translation>
+        <translation>Centra sulla panoramica</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="168"/>
