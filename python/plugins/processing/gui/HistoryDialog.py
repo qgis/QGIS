@@ -61,8 +61,14 @@ class HistoryDialog(QDialog, Ui_DlgHistory):
         self.fillTree()
 
     def clearLog(self):
-        ProcessingLog.clearLog()
-        self.fillTree()
+        reply = QMessageBox.question(self,
+                    self.tr('Confirmation'),
+                    self.tr('Are you sure you want to clear log?'),
+                    QMessageBox.Yes | QMessageBox.No,
+                    QMessageBox.No)
+        if reply == QMessageBox.Yes:
+            ProcessingLog.clearLog()
+            self.fillTree()
 
     def fillTree(self):
         self.tree.clear()
