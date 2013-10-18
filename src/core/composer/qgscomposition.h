@@ -354,6 +354,10 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     /**Convenience function to create a QgsAddRemoveItemCommand, connect its signals and push it to the undo stack*/
     void pushAddRemoveCommand( QgsComposerItem* item, const QString& text, QgsAddRemoveItemCommand::State state = QgsAddRemoveItemCommand::Added );
 
+    /**If true, prevents any mouse cursor changes by the composition or by any composer items
+      Used by QgsComposer and QgsComposerView to prevent unwanted cursor changes*/
+    void setPreventCursorChange( bool preventChange ) { mPreventCursorChange = preventChange; };
+    bool preventCursorChange() { return mPreventCursorChange; };
 
     //printing
 
@@ -465,6 +469,8 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     void deleteAndRemoveMultiFrames();
 
     static QString encodeStringForXML( const QString& str );
+
+    bool mPreventCursorChange;
 
   signals:
     void paperSizeChanged();

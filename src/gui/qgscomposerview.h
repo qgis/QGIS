@@ -65,7 +65,8 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
       AddEllipse,
       AddTriangle,
       AddTable, //add attribute table
-      MoveItemContent //move content of item (e.g. content of map)
+      MoveItemContent, //move content of item (e.g. content of map)
+      Pan
     };
 
     enum ClipboardMode
@@ -108,7 +109,7 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     void selectInvert();
 
     QgsComposerView::Tool currentTool() const {return mCurrentTool;}
-    void setCurrentTool( QgsComposerView::Tool t ) {mCurrentTool = t;}
+    void setCurrentTool( QgsComposerView::Tool t );
 
     /**Sets composition (derived from QGraphicsScene)*/
     void setComposition( QgsComposition* c );
@@ -134,6 +135,7 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     void mouseDoubleClickEvent( QMouseEvent* e );
 
     void keyPressEvent( QKeyEvent * e );
+    void keyReleaseEvent( QKeyEvent * e );
 
     void wheelEvent( QWheelEvent* event );
 
@@ -166,6 +168,10 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
 
     /** Draw a shape on the canvas */
     void addShape( Tool currentTool );
+
+    bool mPanning;
+    QPoint mMouseLastXY;
+    QPoint mMouseCurrentXY;
 
     //void connectAddRemoveCommandSignals( QgsAddRemoveItemCommand* c );
 

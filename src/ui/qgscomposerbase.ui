@@ -96,6 +96,7 @@
    <attribute name="toolBarBreak">
     <bool>true</bool>
    </attribute>
+   <addaction name="mActionPan"/>
    <addaction name="mActionSelectMoveItem"/>
    <addaction name="mActionMoveItemContent"/>
    <addaction name="mActionGroupItems"/>
@@ -673,6 +674,15 @@
     <string>Ctrl+Alt+]</string>
    </property>
   </action>  
+  <action name="mActionPan">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionPan.svg</normaloff>:/images/themes/default/mActionPan.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Pan Composer</string>
+   </property>
+  </action>     
  </widget>
  <resources>
   <include location="../../images/images.qrc"/>
