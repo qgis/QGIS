@@ -82,8 +82,8 @@
     <bool>true</bool>
    </attribute>
    <addaction name="mActionZoomAll"/>
-   <addaction name="mActionZoomIn"/>
-   <addaction name="mActionZoomOut"/>
+   <addaction name="mActionMouseZoomIn"/>
+   <addaction name="mActionMouseZoomOut"/>
    <addaction name="mActionRefreshView"/>
   </widget>
   <widget class="QToolBar" name="mItemActionToolbar">
@@ -166,8 +166,20 @@
    </property>
    <property name="shortcut">
     <string>Ctrl++</string>
-   </property>
+   </property>   
   </action>
+  <action name="mActionMouseZoomIn">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionZoomIn.svg</normaloff>:/images/themes/default/mActionZoomIn.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Zoom In</string>
+   </property>
+   <property name="toolTip">
+    <string>Zoom in</string>
+   </property>
+  </action>  
   <action name="mActionZoomOut">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
@@ -183,6 +195,18 @@
     <string>Ctrl+-</string>
    </property>
   </action>
+  <action name="mActionMouseZoomOut">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionZoomOut.svg</normaloff>:/images/themes/default/mActionZoomOut.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Zoom Out</string>
+   </property>
+   <property name="toolTip">
+    <string>Zoom out</string>
+   </property>
+  </action>  
   <action name="mActionAddNewMap">
    <property name="icon">
     <iconset resource="../../images/images.qrc">

@@ -145,6 +145,8 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   QActionGroup* toggleActionGroup = new QActionGroup( this );
   toggleActionGroup->addAction( mActionMoveItemContent );
   toggleActionGroup->addAction( mActionPan );
+  toggleActionGroup->addAction( mActionMouseZoomIn );
+  toggleActionGroup->addAction( mActionMouseZoomOut );
   toggleActionGroup->addAction( mActionAddNewMap );
   toggleActionGroup->addAction( mActionAddNewLabel );
   toggleActionGroup->addAction( mActionAddNewLegend );
@@ -159,7 +161,6 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   toggleActionGroup->addAction( mActionAddHtml );
   toggleActionGroup->setExclusive( true );
 
-
   mActionAddNewMap->setCheckable( true );
   mActionAddNewLabel->setCheckable( true );
   mActionAddNewLegend->setCheckable( true );
@@ -169,6 +170,8 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   mActionMoveItemContent->setCheckable( true );
   mActionPan->setCheckable( true );
   mActionAddArrow->setCheckable( true );
+  mActionMouseZoomIn->setCheckable( true );
+  mActionMouseZoomOut->setCheckable( true );
 
 #ifdef Q_WS_MAC
   mActionQuit->setText( tr( "Close" ) );
@@ -446,7 +449,9 @@ void QgsComposer::setupTheme()
   mActionPrint->setIcon( QgsApplication::getThemeIcon( "/mActionFilePrint.png" ) );
   mActionZoomAll->setIcon( QgsApplication::getThemeIcon( "/mActionZoomFullExtent.svg" ) );
   mActionZoomIn->setIcon( QgsApplication::getThemeIcon( "/mActionZoomIn.svg" ) );
+  mActionMouseZoomIn->setIcon( QgsApplication::getThemeIcon( "/mActionZoomIn.svg" ) );
   mActionZoomOut->setIcon( QgsApplication::getThemeIcon( "/mActionZoomOut.svg" ) );
+  mActionMouseZoomOut->setIcon( QgsApplication::getThemeIcon( "/mActionZoomOut.svg" ) );
   mActionRefreshView->setIcon( QgsApplication::getThemeIcon( "/mActionDraw.svg" ) );
   mActionUndo->setIcon( QgsApplication::getThemeIcon( "/mActionUndo.png" ) );
   mActionRedo->setIcon( QgsApplication::getThemeIcon( "/mActionRedo.png" ) );
@@ -631,12 +636,28 @@ void QgsComposer::on_mActionZoomAll_triggered()
   emit zoomLevelChanged();
 }
 
+void QgsComposer::on_mActionMouseZoomIn_triggered()
+{
+  if ( mView )
+  {
+    mView->setCurrentTool( QgsComposerView::ZoomIn );
+  }
+}
+
 void QgsComposer::on_mActionZoomIn_triggered()
 {
   mView->scale( 2, 2 );
   mView->updateRulers();
   mView->update();
   emit zoomLevelChanged();
+}
+
+void QgsComposer::on_mActionMouseZoomOut_triggered()
+{
+  if ( mView )
+  {
+    mView->setCurrentTool( QgsComposerView::ZoomOut );
+  }
 }
 
 void QgsComposer::on_mActionZoomOut_triggered()
