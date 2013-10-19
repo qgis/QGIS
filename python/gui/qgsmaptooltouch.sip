@@ -24,5 +24,7 @@ class QgsMapToolTouch : QgsMapTool
     virtual void canvasDoubleClickEvent( QMouseEvent * e );
 
     virtual bool isTransient();
+
+    bool gestureEvent( QGestureEvent *event );
 };
 %End

@@ -49,13 +49,14 @@ class GUI_EXPORT QgsMapToolTouch : public QgsMapTool
 
     virtual bool isTransient() { return true; }
 
+    bool gestureEvent( QGestureEvent *event );
+
   private:
 
     //! Flag to indicate a map canvas drag operation is taking place
     bool mDragging;
     //! Flag to indicate a pinch gesture is taking place
     bool mPinching;
-    bool gestureEvent( QGestureEvent *event );
     void pinchTriggered( QPinchGesture *gesture );
 };
 
