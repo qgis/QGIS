@@ -120,6 +120,7 @@ class GdalToolsDialog( QDialog, Ui_Dialog ):
 
   def processingFinished( self ):
     self.stopProcessing()
+    QMessageBox.information(self, self.tr( "Finished" ), self.tr( "Processing completed." ) )
 
   def processingInterrupted( self ):
     self.restoreGui()
