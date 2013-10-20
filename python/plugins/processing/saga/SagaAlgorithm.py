@@ -359,16 +359,24 @@ class SagaAlgorithm(GeoAlgorithm):
                     if dontExport:
                         continue
 
-                transform = ('' if saga208 else '-TRANSFORM')
-                if isWindows() or isMac() or not saga208:
-                    commands.append('io_gdal 1 -GRIDS "' + filename2
-                                    + '" -FORMAT ' + str(formatIndex)
-                                    + ' -TYPE 0 -FILE "' + filename + '"'
-                                    + transform)
+                if self.cmdname == 'RGB Composite':
+	                if isWindows() or isMac() or not saga208:
+   	        		commands.append('io_grid_image 0 -IS_RGB -GRID:"' + filename2
+                                	+ '" -FILE:"' + filename
+                                	+ '"')
+                	else:
+   	        		commands.append('libio_grid_image 0 -IS_RGB -GRID:"' + filename2
+                                	+ '" -FILE:"' + filename
+                                	+ '"')
                 else:
-                    commands.append('libio_gdal 1 -GRIDS "' + filename2
-                                    + '" -FORMAT 1 -TYPE 0 -FILE "' + filename
-                                    + '"' + transform)
+	                if isWindows() or isMac() or not saga208:
+	                    commands.append('io_gdal 1 -GRIDS "' + filename2
+	                                    + '" -FORMAT ' + str(formatIndex)
+	                                    + ' -TYPE 0 -FILE "' + filename + '"')
+	                else:
+	                    commands.append('libio_gdal 1 -GRIDS "' + filename2
+	                                    + '" -FORMAT 1 -TYPE 0 -FILE "' + filename
+	                                    + '"')
 
         # 4: Run SAGA
         commands = self.editCommands(commands)
@@ -462,12 +470,16 @@ class SagaAlgorithm(GeoAlgorithm):
         self.exportedLayers[source] = destFilename
         sessionExportedLayers[source] = destFilename
         saga208 = ProcessingConfig.getSetting(SagaUtils.SAGA_208)
-        if isWindows() or isMac() or not saga208:
-            return 'io_gdal 0 -GRIDS "' + destFilename + '" -FILES "' + source \
-                + '"'
+        if saga208:
+			if isWindows() or isMac():
+				return 'io_gdal 0 -GRIDS "' + destFilename + '" -FILES "' + source \
+					+ '"'
+			else:
+				return 'libio_gdal 0 -GRIDS "' + destFilename + '" -FILES "' \
+					+ source + '"'
         else:
-            return 'libio_gdal 0 -GRIDS "' + destFilename + '" -FILES "' \
-                + source + '"'
+            return 'io_gdal 0 -TRANSFORM -INTERPOL 0 -GRIDS "' + destFilename + '" -FILES "' + source \
+                + '"'
 
     def checkBeforeOpeningParametersDialog(self):
         msg = SagaUtils.checkSagaIsInstalled()
