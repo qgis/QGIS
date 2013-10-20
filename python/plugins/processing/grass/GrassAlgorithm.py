@@ -373,22 +373,23 @@ class GrassAlgorithm(GeoAlgorithm):
                 outputCommands.append('g.region rast=' + out.name
                                       + uniqueSufix)
                 if self.grassName == 'r.composite':
-               		command = 'r.out.tiff -t --verbose'
-                	command += ' input='
-			command += out.name + uniqueSufix
-                	command += ' output="' + filename + '"'
-                	commands.append(command)
-                	outputCommands.append(command)
-		else:
-                	command = 'r.out.gdal -c createopt="TFW=YES,COMPRESS=LZW"'
-                	command += ' input='
-                	if self.grassName == 'r.horizon':
-				command += out.name + uniqueSufix + '_0'
-			else:
-				command += out.name + uniqueSufix
-                	command += ' output="' + filename + '"'
-                	commands.append(command)
-                	outputCommands.append(command)
+                    command = 'r.out.tiff -t --verbose'
+                    command += ' input='
+                    command += out.name + uniqueSufix
+                    command += ' output="' + filename + '"'
+                    commands.append(command)
+                    outputCommands.append(command)
+                else:
+                    command = 'r.out.gdal -c createopt="TFW=YES,COMPRESS=LZW"'
+                    command += ' input='
+                    
+                if self.grassName == 'r.horizon':
+                    command += out.name + uniqueSufix + '_0'
+                else:
+                    command += out.name + uniqueSufix
+                    command += ' output="' + filename + '"'
+                    commands.append(command)
+                    outputCommands.append(command)
 
             if isinstance(out, OutputVector):
                 filename = out.value

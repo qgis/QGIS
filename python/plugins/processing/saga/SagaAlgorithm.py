@@ -360,21 +360,21 @@ class SagaAlgorithm(GeoAlgorithm):
                         continue
 
                 if self.cmdname == 'RGB Composite':
-	                if isWindows() or isMac() or not saga208:
-   	        		commands.append('io_grid_image 0 -IS_RGB -GRID:"' + filename2
+                    if isWindows() or isMac() or not saga208:
+                        commands.append('io_grid_image 0 -IS_RGB -GRID:"' + filename2
                                 	+ '" -FILE:"' + filename
                                 	+ '"')
-                	else:
-   	        		commands.append('libio_grid_image 0 -IS_RGB -GRID:"' + filename2
+                    else:
+                        commands.append('libio_grid_image 0 -IS_RGB -GRID:"' + filename2
                                 	+ '" -FILE:"' + filename
                                 	+ '"')
                 else:
-	                if isWindows() or isMac() or not saga208:
-	                    commands.append('io_gdal 1 -GRIDS "' + filename2
+                    if isWindows() or isMac() or not saga208:
+                        commands.append('io_gdal 1 -GRIDS "' + filename2
 	                                    + '" -FORMAT ' + str(formatIndex)
 	                                    + ' -TYPE 0 -FILE "' + filename + '"')
-	                else:
-	                    commands.append('libio_gdal 1 -GRIDS "' + filename2
+                    else:
+                        commands.append('libio_gdal 1 -GRIDS "' + filename2
 	                                    + '" -FORMAT 1 -TYPE 0 -FILE "' + filename
 	                                    + '"')
 
@@ -471,11 +471,11 @@ class SagaAlgorithm(GeoAlgorithm):
         sessionExportedLayers[source] = destFilename
         saga208 = ProcessingConfig.getSetting(SagaUtils.SAGA_208)
         if saga208:
-			if isWindows() or isMac():
-				return 'io_gdal 0 -GRIDS "' + destFilename + '" -FILES "' + source \
+            if isWindows() or isMac():
+                return 'io_gdal 0 -GRIDS "' + destFilename + '" -FILES "' + source \
 					+ '"'
-			else:
-				return 'libio_gdal 0 -GRIDS "' + destFilename + '" -FILES "' \
+            else:
+                return 'libio_gdal 0 -GRIDS "' + destFilename + '" -FILES "' \
 					+ source + '"'
         else:
             return 'io_gdal 0 -TRANSFORM -INTERPOL 0 -GRIDS "' + destFilename + '" -FILES "' + source \
