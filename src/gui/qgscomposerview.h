@@ -84,6 +84,13 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
       PasteModeInPlace
     };
 
+    enum ToolStatus
+    {
+      Inactive,
+      Active,
+      ActiveUntilMouseRelease
+    };
+
     QgsComposerView( QWidget* parent = 0, const char* name = 0, Qt::WFlags f = 0 );
 
     /**Add an item group containing the selected items*/
@@ -152,6 +159,9 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
   private:
     /**Current composer tool*/
     QgsComposerView::Tool mCurrentTool;
+    /**Previous composer tool*/
+    QgsComposerView::Tool mPreviousTool;
+
     /**Rubber band item*/
     QGraphicsRectItem* mRubberBandItem;
     /**Rubber band item for arrows*/
@@ -167,6 +177,8 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     bool mMarqueeSelect;
     /**True if user is currently zooming by marquee*/
     bool mMarqueeZoom;
+    /**True if user is currently temporarily activating the zoom tool by holding control+space*/
+    QgsComposerView::ToolStatus mTemporaryZoomStatus;
 
     bool mPaintingEnabled;
 

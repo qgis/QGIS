@@ -50,6 +50,7 @@ QgsComposerView::QgsComposerView( QWidget* parent, const char* name, Qt::WFlags 
     , mMoveContentItem( 0 )
     , mMarqueeSelect( false )
     , mMarqueeZoom( false )
+    , mTemporaryZoomStatus( QgsComposerView::Inactive )
     , mPaintingEnabled( true )
     , mHorizontalRuler( 0 )
     , mVerticalRuler( 0 )
@@ -557,6 +558,13 @@ void QgsComposerView::endMarqueeZoom( QMouseEvent* e )
   removeRubberBand();
   //zoom view to fit desired bounds
   fitInView( boundsRect, Qt::KeepAspectRatio );
+
+  if ( mTemporaryZoomStatus == QgsComposerView::ActiveUntilMouseRelease )
+  {
+    //control or space key previously released, end of temporary zoom tool
+    mTemporaryZoomStatus = QgsComposerView::Inactive;
+    setCurrentTool( mPreviousTool );
+  }
 }
 
 void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
@@ -1009,11 +1017,39 @@ void QgsComposerView::keyPressEvent( QKeyEvent * e )
   if ( mPanning )
     return;
 
-  if ( e->key() == Qt::Key_Space )
+  if ( mTemporaryZoomStatus != QgsComposerView::Inactive )
   {
-    // Pan composer with space bar
-    if ( ! e->isAutoRepeat() )
+    //temporary zoom is active
+
+    //response to changes in ctrl key status
+    if ( !( e->modifiers() & Qt::ControlModifier ) && !mMarqueeZoom )
     {
+      //control key released, end of temporary zoom tool
+      mTemporaryZoomStatus = QgsComposerView::Inactive;
+      setCurrentTool( mPreviousTool );
+    }
+    else if ( !( e->modifiers() & Qt::ControlModifier ) && mMarqueeZoom )
+    {
+      //control key released, but mid way through marquee zoom
+      mTemporaryZoomStatus = QgsComposerView::ActiveUntilMouseRelease;
+    }
+    //respond to changes in alt key status
+    else if ( e->modifiers() & Qt::AltModifier )
+    {
+      setCurrentTool( ZoomOut );
+    }
+    else
+    {
+      setCurrentTool( ZoomIn );
+    }
+    return;
+  }
+
+  if ( e->key() == Qt::Key_Space && ! e->isAutoRepeat() )
+  {
+    if ( !( e->modifiers() & Qt::ControlModifier ) )
+    {
+      // Pan composer with space bar
       mPanning = true;
       mMouseLastXY = mMouseCurrentXY;
       if ( composition() )
@@ -1022,8 +1058,25 @@ void QgsComposerView::keyPressEvent( QKeyEvent * e )
         composition()->setPreventCursorChange( true );
       }
       viewport()->setCursor( Qt::ClosedHandCursor );
+      return;
     }
-    return;
+    else
+    {
+      //ctrl+space = temporarily switch to zoom in tool
+      mTemporaryZoomStatus = QgsComposerView::Active;
+      mPreviousTool = mCurrentTool;
+      if ( e->modifiers() & Qt::AltModifier )
+      {
+        //ctrl+alt+space = zoom out
+        setCurrentTool( ZoomOut );
+      }
+      else
+      {
+        //ctrl+space = zoom in
+        setCurrentTool( ZoomIn );
+      }
+      return;
+    }
   }
 
   QList<QgsComposerItem*> composerItemList = composition()->selectedComposerItems();
@@ -1097,6 +1150,20 @@ void QgsComposerView::keyReleaseEvent( QKeyEvent * e )
       viewport()->setCursor( Qt::ArrowCursor );
     }
     return;
+  }
+  else if ( e->key() == Qt::Key_Space && !e->isAutoRepeat() && mTemporaryZoomStatus != QgsComposerView::Inactive )
+  {
+    //end of temporary zoom tool switch
+    if ( mMarqueeZoom )
+    {
+      //currently in the middle of a marquee operation, so don't switch tool back immediately
+      mTemporaryZoomStatus = QgsComposerView::ActiveUntilMouseRelease;
+    }
+    else
+    {
+      mTemporaryZoomStatus = QgsComposerView::Inactive;
+      setCurrentTool( mPreviousTool );
+    }
   }
 }
 
