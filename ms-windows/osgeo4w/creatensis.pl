@@ -122,6 +122,10 @@ my @lic;
 my @desc;
 foreach my $p ( keys %pkgs ) {
 	my @f;
+	unless( exists $file{$p} ) {
+		print "No file for package $p found found.\n" if $verbose;
+		next;
+	}
 	push @f, "$root/$file{$p}";
 
 	if( exists $lic{$p} ) {
@@ -174,8 +178,18 @@ unless(-d $unpacked ) {
 	print O "INSTALLED.DB 2\n";
 
 	foreach my $pn ( keys %pkgs ) {
-		$p = $file{$pn};
+		my $p = $file{$pn};
+		unless( defined $p ) {
+			print "No package found for $pn\n" if $verbose;
+			next;
+		}
+
 		$p =~ s#^.*/#$packages/#;
+
+		unless( -r $p ) {
+			print "Package $p not found.\n" if $verbose;
+			next;
+		}
 
 		print O "$pn $p 0\n";
 
@@ -288,8 +302,8 @@ close F;
 $version = "$major.$minor.$patch" unless defined $version;
 
 unless( defined $binary ) {
-	if( -f "binary-$archpostfix$version" ) {
-		open P, "binary-$archpostfix$version";
+	if( -f "binary$archpostfix-$version" ) {
+		open P, "binary$archpostfix-$version";
 		$binary = <P>;
 		close P;
 		$binary++;
@@ -386,7 +400,7 @@ $cmd .= " QGIS-Installer.nsi";
 system $cmd;
 die "running nsis failed" if $?;
 
-open P, ">osgeo4w/binary-$archpostfix$version";
+open P, ">osgeo4w/binary$archpostfix-$version";
 print P $binary;
 close P;
 
