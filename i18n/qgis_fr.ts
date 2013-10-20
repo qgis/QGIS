@@ -29,15 +29,15 @@
     </message>
     <message>
         <source>Setting</source>
-        <translation type="unfinished">Paramètres</translation>
+        <translation>Paramètres</translation>
     </message>
     <message>
         <source>Value</source>
-        <translation type="unfinished">Valeur</translation>
+        <translation>Valeur</translation>
     </message>
     <message>
         <source>Providers</source>
-        <translation type="unfinished">Prestataires de services</translation>
+        <translation>Prestataires de services</translation>
     </message>
     <message>
         <source>Wrong value</source>
@@ -2575,7 +2575,7 @@ il n&apos;y en aura plus que %d après simplification.</translation>
     </message>
     <message>
         <source>Please specify an input layer</source>
-        <translation type="unfinished">Veuillez spécifier une couche en entrée</translation>
+        <translation>Veuillez spécifier une couche en entrée</translation>
     </message>
     <message>
         <source>Currently QGIS doesn&apos;t allow simultaneous access from 
@@ -3356,32 +3356,32 @@ Are you sure you want to proceed?</source>
         <location filename="../python/plugins/processing/ui/DlgModeler.ui" line="91"/>
         <location filename="../python/plugins/processing/ui/DlgModeler.ui" line="108"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgModeler.ui" line="44"/>
         <source>Save</source>
-        <translation type="unfinished">Sauvegarder</translation>
+        <translation>Sauvegarder</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgModeler.ui" line="54"/>
         <source>Save as...</source>
-        <translation type="unfinished">Sauvegarder sous...</translation>
+        <translation>Sauvegarder sous...</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgModeler.ui" line="71"/>
         <source>Export as image</source>
-        <translation type="unfinished">Exporter comme image </translation>
+        <translation>Exporter comme image </translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgModeler.ui" line="88"/>
         <source>Edit model help</source>
-        <translation type="unfinished">Éditeur d&apos;aide du modèle</translation>
+        <translation>Éditeur d&apos;aide du modèle</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgModeler.ui" line="105"/>
         <source>Run model</source>
-        <translation type="unfinished"></translation>
+        <translation>Lancer le modèle</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgModeler.ui" line="147"/>
@@ -3414,7 +3414,7 @@ Are you sure you want to proceed?</source>
     <message>
         <location filename="../python/plugins/processing/ui/DlgMultipleSelection.ui" line="14"/>
         <source>Multiple selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Sélection multiple</translation>
     </message>
 </context>
 <context>
@@ -3440,17 +3440,17 @@ Are you sure you want to proceed?</source>
     <message>
         <location filename="../python/plugins/processing/ui/DlgRenderingStyles.ui" line="14"/>
         <source>Dialog</source>
-        <translation type="unfinished">Dialogue</translation>
+        <translation>Dialogue</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgRenderingStyles.ui" line="30"/>
         <source>Output</source>
-        <translation type="unfinished"></translation>
+        <translation>Sortie</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgRenderingStyles.ui" line="35"/>
         <source>Style</source>
-        <translation type="unfinished">Style</translation>
+        <translation>Style</translation>
     </message>
 </context>
 <context>
@@ -3476,7 +3476,7 @@ Are you sure you want to proceed?</source>
     <message>
         <location filename="../python/plugins/processing/ui/DlgScriptEditor.ui" line="40"/>
         <source>Save</source>
-        <translation type="unfinished">Sauvegarder</translation>
+        <translation>Sauvegarder</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgScriptEditor.ui" line="43"/>
@@ -3489,12 +3489,12 @@ Are you sure you want to proceed?</source>
         <location filename="../python/plugins/processing/ui/DlgScriptEditor.ui" line="141"/>
         <location filename="../python/plugins/processing/ui/DlgScriptEditor.ui" line="151"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgScriptEditor.ui" line="50"/>
         <source>Save as...</source>
-        <translation type="unfinished">Sauvegarder sous...</translation>
+        <translation>Sauvegarder sous...</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgScriptEditor.ui" line="67"/>
@@ -3509,27 +3509,27 @@ Are you sure you want to proceed?</source>
     <message>
         <location filename="../python/plugins/processing/ui/DlgScriptEditor.ui" line="101"/>
         <source>Cut</source>
-        <translation type="unfinished">Couper</translation>
+        <translation>Couper</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgScriptEditor.ui" line="111"/>
         <source>Copy</source>
-        <translation type="unfinished">Copier</translation>
+        <translation>Copier</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgScriptEditor.ui" line="121"/>
         <source>Paste</source>
-        <translation type="unfinished">Coller</translation>
+        <translation>Coller</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgScriptEditor.ui" line="138"/>
         <source>Undo</source>
-        <translation type="unfinished">Annuler</translation>
+        <translation>Annuler</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgScriptEditor.ui" line="148"/>
         <source>Redo</source>
-        <translation type="unfinished">Refaire</translation>
+        <translation>Refaire</translation>
     </message>
 </context>
 <context>
@@ -3865,19 +3865,19 @@ colonne géométrique - colonne avec des entiers uniques</translation>
     <name>FileDirectorySelector</name>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>Select directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Sélectionner un répertoire</translation>
     </message>
     <message>
         <source>Select file</source>
-        <translation type="unfinished"></translation>
+        <translation>Sélectionner un fichier</translation>
     </message>
     <message>
         <source>All files (*.*)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tous les fichiers (*.*)</translation>
     </message>
 </context>
 <context>
@@ -4213,7 +4213,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogAbout.ui" line="115"/>
         <source>Web</source>
-        <translation>SIte internet</translation>
+        <translation>Site internet</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogAbout.ui" line="122"/>
@@ -6295,14 +6295,16 @@ Veulliez essayer un autre champ...</translation>
     <message>
         <source>Error loading output shapefile:
 %s</source>
-        <translation type="unfinished">Erreur lors du chargement du shp :
+        <translation>Erreur lors du chargement du shp :
 %s</translation>
     </message>
     <message>
         <source>Created output shapefile:
 %s
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Création du shp :
+%s
+%s</translation>
     </message>
     <message>
         <source>Created output shapefile:
@@ -6917,7 +6919,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <source>Confirmation</source>
-        <translation type="unfinished"></translation>
+        <translation>Confirmation</translation>
     </message>
     <message>
         <source>Are you sure you want to clear log?</source>
@@ -7528,7 +7530,7 @@ Activables sur toutes les couches éditables</translation>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1842"/>
         <source>Local cumulative cut stretch using current extent, default limits and estimated values.</source>
-        <translation type="unfinished">Histogramme cumulatif de l&apos;emprise locale utilisant l&apos;emprise actuelle, les limites par défauts et les valeurs estimées.</translation>
+        <translation>Histogramme cumulatif de l&apos;emprise locale utilisant l&apos;emprise actuelle, les limites par défauts et les valeurs estimées.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1851"/>
@@ -8404,7 +8406,7 @@ Agit sur toutes les couches actives courantes</translation>
     </message>
     <message>
         <source>Message</source>
-        <translation type="unfinished">Message</translation>
+        <translation>Message</translation>
     </message>
     <message>
         <source>The are unchanged changes in model. Close modeler without saving?</source>
@@ -8545,23 +8547,23 @@ Ligne erronée : %1
     </message>
     <message>
         <source>Min X</source>
-        <translation type="unfinished"></translation>
+        <translation>Min X</translation>
     </message>
     <message>
         <source>Max X</source>
-        <translation type="unfinished"></translation>
+        <translation>Max X</translation>
     </message>
     <message>
         <source>Min Y</source>
-        <translation type="unfinished"></translation>
+        <translation>Min Y</translation>
     </message>
     <message>
         <source>Max Y</source>
-        <translation type="unfinished"></translation>
+        <translation>Max X</translation>
     </message>
     <message>
         <source>Cellsize</source>
-        <translation type="unfinished"></translation>
+        <translation>Taille de cellule</translation>
     </message>
     <message>
         <source>Values from raster layers statistics</source>
@@ -8569,7 +8571,7 @@ Ligne erronée : %1
     </message>
     <message>
         <source>Mean</source>
-        <translation type="unfinished">Moyenne</translation>
+        <translation>Moyenne</translation>
     </message>
     <message>
         <source>Std. deviation</source>
@@ -8589,7 +8591,7 @@ Ligne erronée : %1
     </message>
     <message>
         <source>Current extent</source>
-        <translation type="unfinished">Emprise actuelle</translation>
+        <translation>Emprise actuelle</translation>
     </message>
     <message>
         <source>Full extent of all layers in map canvas</source>
@@ -10110,7 +10112,7 @@ utilisez l&apos;objet qgis.utils.iface (instancede la classe QgisInterface).
     <message>
         <location filename="../src/core/qgis.cpp" line="87"/>
         <source>nautical miles</source>
-        <translation type="unfinished"></translation>
+        <translation>miles nautiques</translation>
     </message>
 </context>
 <context>
@@ -31331,7 +31333,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/symbology-ng/qgsgraduatedsymbolrendererv2widget.cpp" line="514"/>
         <source>Warning</source>
-        <translation type="unfinished">Attention</translation>
+        <translation>Attention</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsgraduatedsymbolrendererv2widget.cpp" line="514"/>
@@ -34207,61 +34209,61 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/app/qgsguivectorlayertools.cpp" line="39"/>
         <source>Add feature</source>
-        <translation type="unfinished">Ajouter une entité</translation>
+        <translation>Ajouter une entité</translation>
     </message>
     <message>
         <location filename="../src/app/qgsguivectorlayertools.cpp" line="56"/>
         <source>Start editing failed</source>
-        <translation type="unfinished">Echec du lancement de l&apos;édition</translation>
+        <translation>Echec du lancement de l&apos;édition</translation>
     </message>
     <message>
         <location filename="../src/app/qgsguivectorlayertools.cpp" line="57"/>
         <source>Provider cannot be opened for editing</source>
-        <translation type="unfinished">Le prestataire de données ne peut être ouvert pour l&apos;édition</translation>
+        <translation>Le prestataire de données ne peut être ouvert pour l&apos;édition</translation>
     </message>
     <message>
         <location filename="../src/app/qgsguivectorlayertools.cpp" line="79"/>
         <source>Stop editing</source>
-        <translation type="unfinished">Arrêter l&apos;édition</translation>
+        <translation>Arrêter l&apos;édition</translation>
     </message>
     <message>
         <location filename="../src/app/qgsguivectorlayertools.cpp" line="80"/>
         <source>Do you want to save the changes to layer %1?</source>
-        <translation type="unfinished">Voulez-vous sauvegarder les modifications pour la couche %1 ?</translation>
+        <translation>Voulez-vous sauvegarder les modifications pour la couche %1 ?</translation>
     </message>
     <message>
         <location filename="../src/app/qgsguivectorlayertools.cpp" line="104"/>
         <source>Error</source>
-        <translation type="unfinished">Erreur</translation>
+        <translation>Erreur</translation>
     </message>
     <message>
         <location filename="../src/app/qgsguivectorlayertools.cpp" line="105"/>
         <source>Problems during roll back</source>
-        <translation type="unfinished">Problèmes pendant le retour en arrière</translation>
+        <translation>Problèmes pendant le retour en arrière</translation>
     </message>
     <message>
         <location filename="../src/app/qgsguivectorlayertools.cpp" line="133"/>
         <location filename="../src/app/qgsguivectorlayertools.cpp" line="154"/>
         <source>Commit errors</source>
-        <translation type="unfinished">Erreurs de commi:
+        <translation>Erreurs de commi:
 %s</translation>
     </message>
     <message>
         <location filename="../src/app/qgsguivectorlayertools.cpp" line="134"/>
         <location filename="../src/app/qgsguivectorlayertools.cpp" line="155"/>
         <source>Could not commit changes to layer %1</source>
-        <translation type="unfinished">Impossible de valider les changements  pour la couche %1</translation>
+        <translation>Impossible de valider les changements  pour la couche %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgsguivectorlayertools.cpp" line="136"/>
         <source>Errors: %1
 </source>
-        <translation type="unfinished">Erreurs : %1</translation>
+        <translation>Erreurs : %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgsguivectorlayertools.cpp" line="143"/>
         <source>Show more</source>
-        <translation type="unfinished">En afficher plus</translation>
+        <translation>En afficher plus</translation>
     </message>
 </context>
 <context>
@@ -35627,12 +35629,12 @@ Ceci est peut-être dû à votre connexion ou celle du serveur WMS.      </numer
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="802"/>
         <source>[&lt;b&gt;font style name&lt;/b&gt;|&lt;b&gt;Ignore&lt;/b&gt;],&lt;br&gt;e.g. Bold Condensed or Light Italic</source>
-        <translation type="unfinished">[&lt;b&gt;Nom du style de police&lt;/b&gt;|&lt;b&gt;Ignore&lt;/b&gt;],&lt;br&gt;exemple : Bold Condensed or Light Italic</translation>
+        <translation>[&lt;b&gt;Nom du style de police&lt;/b&gt;|&lt;b&gt;Ignore&lt;/b&gt;],&lt;br&gt;exemple : Bold Condensed or Light Italic</translation>
     </message>
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="846"/>
         <source>double [0.0-10.0]</source>
-        <translation type="unfinished">Nombre à virgule [0.0 - 10.0]</translation>
+        <translation>Nombre à virgule [0.0 - 10.0]</translation>
     </message>
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="868"/>
@@ -35658,12 +35660,12 @@ Ceci est peut-être dû à votre connexion ou celle du serveur WMS.      </numer
         <location filename="../src/app/qgslabelinggui.cpp" line="987"/>
         <source>In edit mode, layer&apos;s relevant labeling map tool is:&lt;br&gt;&amp;nbsp;&amp;nbsp;Defined attribute field -&amp;gt; &lt;i&gt;enabled&lt;/i&gt;&lt;br&gt;&amp;nbsp;&amp;nbsp;Defined expression -&amp;gt; &lt;i&gt;disabled&lt;/i&gt;</source>
         <translatorcomment>Still true ?</translatorcomment>
-        <translation type="unfinished">En mode édition, la façon la plus pratique d&apos;éditer une couche est :&lt;br&gt;&amp;nbsp;&amp;nbsp;Définit par un attribut  &amp;gt; &lt;i&gt;activé&lt;/i&gt;&lt;br&gt;&amp;nbsp;&amp;nbsp;Définit par une expression  &amp;gt; &lt;i&gt;Désactivé&lt;/i&gt;</translation>
+        <translation>En mode édition, la façon la plus pratique d&apos;éditer une couche est :&lt;br&gt;&amp;nbsp;&amp;nbsp;Définit par un attribut  &amp;gt; &lt;i&gt;activé&lt;/i&gt;&lt;br&gt;&amp;nbsp;&amp;nbsp;Définit par une expression  &amp;gt; &lt;i&gt;Désactivé&lt;/i&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="1010"/>
         <source>Value &amp;lt; 0 represents a scale closer than 1:1, e.g. -10 = 10:1&lt;br&gt;Value of 0 disables the specific limit.</source>
-        <translation type="unfinished">Une valeur &amp;lt; 0 représente une échelle plus proche que 1:1, exemple : -10 =10:1&lt;br&gt;Une valeur de 0 désactive cette limite.</translation>
+        <translation>Une valeur &amp;lt; 0 représente une échelle plus proche que 1:1, exemple : -10 =10:1&lt;br&gt;Une valeur de 0 désactive cette limite.</translation>
     </message>
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="1026"/>
@@ -35683,12 +35685,12 @@ Ceci est peut-être dû à votre connexion ou celle du serveur WMS.      </numer
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="1100"/>
         <source> @ %1 pts (using map units)</source>
-        <translation type="unfinished"> @ %1 pts (en unités de la carte)</translation>
+        <translation> @ %1 pts (en unités de la carte)</translation>
     </message>
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="1113"/>
         <source> @ %1 pts (using map units, BUFFER IN MILLIMETERS)</source>
-        <translation type="unfinished"> @ %1 pts (en unités de la carte, TAMPON EN MILLIMETRES)</translation>
+        <translation> @ %1 pts (en unités de la carte, TAMPON EN MILLIMETRES)</translation>
     </message>
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="1133"/>
@@ -38627,12 +38629,12 @@ ne sont pas affichés</translation>
     <message>
         <location filename="../src/app/qgsmaptoolsplitparts.cpp" line="65"/>
         <source>Coordinate transform error</source>
-        <translation type="unfinished">Erreur de transformation de coordonnée</translation>
+        <translation>Erreur de transformation de coordonnée</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsplitparts.cpp" line="66"/>
         <source>Cannot transform the point to the layers coordinate system</source>
-        <translation type="unfinished">Impossible de transformer le point dans le système de coordonnée de la couche</translation>
+        <translation>Impossible de transformer le point dans le système de coordonnée de la couche</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsplitparts.cpp" line="80"/>
@@ -38659,17 +38661,17 @@ ne sont pas affichés</translation>
     <message>
         <location filename="../src/app/qgsmaptoolsplitparts.cpp" line="103"/>
         <source>The geometry is invalid. Please repair before trying to split it.</source>
-        <translation type="unfinished">La géométrie est invalide. Veuillez la réparer avant d&apos;essayer de la diviser.</translation>
+        <translation>La géométrie est invalide. Veuillez la réparer avant d&apos;essayer de la diviser.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsplitparts.cpp" line="111"/>
         <source>Split error</source>
-        <translation type="unfinished">Erreur de partage</translation>
+        <translation>Erreur de séparation</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsplitparts.cpp" line="112"/>
         <source>An error occured during feature splitting</source>
-        <translation type="unfinished">Une erreur est survenue lors du partage de l&apos;entité</translation>
+        <translation>Une erreur est survenue lors du partage de l&apos;entité</translation>
     </message>
 </context>
 <context>
@@ -42196,7 +42198,7 @@ Toujours le réseau : toujours charger depuis le réseau sans vérifier si le ca
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="1737"/>
         <source>Scale denominator</source>
-        <translation type="unfinished">Dénominateur de l&apos;échelle</translation>
+        <translation>Dénominateur de l&apos;échelle</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="1776"/>
@@ -44207,7 +44209,7 @@ erreur : %2</translation>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2761"/>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2770"/>
         <source>Oracle</source>
-        <translation type="unfinished">Oracle</translation>
+        <translation>Oracle</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="511"/>
@@ -44769,12 +44771,12 @@ Error: %2</source>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="142"/>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="148"/>
         <source>Select...</source>
-        <translation type="unfinished"></translation>
+        <translation>Sélection...</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="160"/>
         <source>Enter...</source>
-        <translation type="unfinished"></translation>
+        <translation>Saisir...</translation>
     </message>
 </context>
 <context>
@@ -44807,7 +44809,7 @@ Error: %2</source>
     <message>
         <location filename="../src/providers/oracle/qgsoracletablemodel.cpp" line="32"/>
         <source>Primary key column</source>
-        <translation type="unfinished"></translation>
+        <translation>Colonne de la clé primaire</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracletablemodel.cpp" line="33"/>
@@ -44817,7 +44819,7 @@ Error: %2</source>
     <message>
         <location filename="../src/providers/oracle/qgsoracletablemodel.cpp" line="34"/>
         <source>Sql</source>
-        <translation type="unfinished"></translation>
+        <translation>Sql</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracletablemodel.cpp" line="64"/>
@@ -44841,12 +44843,12 @@ Error: %2</source>
         <location filename="../src/providers/oracle/qgsoracletablemodel.cpp" line="77"/>
         <location filename="../src/providers/oracle/qgsoracletablemodel.cpp" line="96"/>
         <source>Select...</source>
-        <translation type="unfinished"></translation>
+        <translation>Sélection...</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracletablemodel.cpp" line="89"/>
         <source>Enter...</source>
-        <translation type="unfinished"></translation>
+        <translation>Saisir</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracletablemodel.cpp" line="108"/>
@@ -49086,12 +49088,12 @@ Proceed?</source>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="97"/>
         <source>CRS</source>
-        <translation type="unfinished">SCR</translation>
+        <translation>SCR</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="100"/>
         <source>Coordinate Reference System</source>
-        <translation type="unfinished">Système de coordonnées de référence</translation>
+        <translation>Système de coordonnées de référence</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="109"/>
@@ -49935,7 +49937,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/gui/qgsrasterformatsaveoptionswidget.cpp" line="60"/>
         <location filename="../src/gui/qgsrasterformatsaveoptionswidget.cpp" line="76"/>
         <source>High compression</source>
-        <translation>Compression impotante</translation>
+        <translation>Compression élevée</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsrasterformatsaveoptionswidget.cpp" line="63"/>
@@ -49965,7 +49967,7 @@ Click on help button to get valid creation options for this format.</source>
     <message>
         <location filename="../src/gui/qgsrasterformatsaveoptionswidget.cpp" line="378"/>
         <source>pyramid creation option</source>
-        <translation type="unfinished"></translation>
+        <translation>option de création des pyramides</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsrasterformatsaveoptionswidget.cpp" line="378"/>
@@ -52773,7 +52775,7 @@ standard deviation ×</source>
     <message>
         <location filename="../src/ui/editorwidgets/qgsrelreferenceconfigdlgbase.ui" line="14"/>
         <source>Dialog</source>
-        <translation type="unfinished">Dialogue</translation>
+        <translation>Dialogue</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsrelreferenceconfigdlgbase.ui" line="20"/>
@@ -52830,7 +52832,7 @@ standard deviation ×</source>
     <message>
         <location filename="../src/ui/qgsrelationadddlgbase.ui" line="14"/>
         <source>Dialog</source>
-        <translation type="unfinished">Dialogue</translation>
+        <translation>Dialogue</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrelationadddlgbase.ui" line="26"/>
@@ -52855,12 +52857,12 @@ standard deviation ×</source>
     <message>
         <location filename="../src/ui/qgsrelationadddlgbase.ui" line="60"/>
         <source>Name</source>
-        <translation type="unfinished">Nom</translation>
+        <translation>Nom</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrelationadddlgbase.ui" line="77"/>
         <source>Id</source>
-        <translation type="unfinished">Id</translation>
+        <translation>Id</translation>
     </message>
 </context>
 <context>
@@ -52868,23 +52870,23 @@ standard deviation ×</source>
     <message>
         <location filename="../src/ui/qgsrelationeditorwidgetbase.ui" line="6"/>
         <source>Form</source>
-        <translation type="unfinished">Formulaire</translation>
+        <translation>Formulaire</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrelationeditorwidgetbase.ui" line="14"/>
         <location filename="../src/ui/qgsrelationeditorwidgetbase.ui" line="17"/>
         <source>Toggle editing</source>
-        <translation type="unfinished">Basculer en mode édition</translation>
+        <translation>Basculer en mode édition</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrelationeditorwidgetbase.ui" line="37"/>
         <source>New</source>
-        <translation type="unfinished"></translation>
+        <translation>Nouveau</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrelationeditorwidgetbase.ui" line="54"/>
         <source>Delete</source>
-        <translation type="unfinished">Effacer</translation>
+        <translation>Effacer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrelationeditorwidgetbase.ui" line="65"/>
@@ -52904,7 +52906,7 @@ standard deviation ×</source>
     <message>
         <location filename="../src/ui/qgsrelationeditorwidgetbase.ui" line="123"/>
         <source>Table View</source>
-        <translation type="unfinished">Vue table</translation>
+        <translation>Vue table</translation>
     </message>
 </context>
 <context>
@@ -52912,12 +52914,12 @@ standard deviation ×</source>
     <message>
         <location filename="../src/ui/qgsrelationmanagerdialogbase.ui" line="14"/>
         <source>Dialog</source>
-        <translation type="unfinished">Dialogue</translation>
+        <translation>Dialogue</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrelationmanagerdialogbase.ui" line="21"/>
         <source>Name</source>
-        <translation type="unfinished">Nom</translation>
+        <translation>Nom</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrelationmanagerdialogbase.ui" line="26"/>
@@ -52942,7 +52944,7 @@ standard deviation ×</source>
     <message>
         <location filename="../src/ui/qgsrelationmanagerdialogbase.ui" line="46"/>
         <source>Id</source>
-        <translation type="unfinished">Id</translation>
+        <translation>Id</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrelationmanagerdialogbase.ui" line="69"/>
@@ -63412,12 +63414,12 @@ Description : %3</translation>
     </message>
     <message>
         <source>I/O error</source>
-        <translation type="unfinished">Error I/O</translation>
+        <translation>Error I/O</translation>
     </message>
     <message>
         <source>Unable to save edits. Reason:
  %1</source>
-        <translation type="unfinished">Impossible de &apos;enregistrer les modifications. Voici la raison :
+        <translation>Impossible de &apos;enregistrer les modifications. Voici la raison :
  %1</translation>
     </message>
     <message>
@@ -63426,7 +63428,7 @@ Description : %3</translation>
     </message>
     <message>
         <source>Script was correctly saved.</source>
-        <translation type="unfinished">Le script a été sauvegardé</translation>
+        <translation>Le script a été sauvegardé correctement.</translation>
     </message>
 </context>
 <context>
@@ -63590,7 +63592,7 @@ Description : %3</translation>
         <location filename="../python/console/console_settings.ui" line="425"/>
         <location filename="../python/console/console_settings.ui" line="957"/>
         <source>Comment:</source>
-        <translation type="unfinished">Commentaire&amp;nbsp;:</translation>
+        <translation>Commentaire&amp;nbsp;:</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="439"/>
@@ -71744,7 +71746,7 @@ L&apos;extension ne sera pas activée.</translation>
     <message>
         <location filename="../python/plugins/processing/ui/widgetNumberInput.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished">Formulaire</translation>
+        <translation>Formulaire</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/widgetNumberInput.ui" line="50"/>
@@ -71754,7 +71756,7 @@ L&apos;extension ne sera pas activée.</translation>
     <message>
         <location filename="../python/plugins/processing/ui/widgetNumberInput.ui" line="53"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
 </context>
 </TS>
