@@ -570,8 +570,8 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
   mNativeTypes
   << QgsVectorDataProvider::NativeType( tr( "Binary object (BLOB)" ), "BLOB", QVariant::ByteArray )
   << QgsVectorDataProvider::NativeType( tr( "Text" ), "TEXT", QVariant::String )
-  << QgsVectorDataProvider::NativeType( tr( "Decimal number (double)" ), "FLOAT", QVariant::Double, 0, 20, 0, 20 )
-  << QgsVectorDataProvider::NativeType( tr( "Whole number (integer)" ), "INTEGER", QVariant::LongLong, 0, 20 )
+  << QgsVectorDataProvider::NativeType( tr( "Decimal number (double)" ), "FLOAT", QVariant::Double )
+  << QgsVectorDataProvider::NativeType( tr( "Whole number (integer)" ), "INTEGER", QVariant::LongLong )
   ;
 }
 
