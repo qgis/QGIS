@@ -618,7 +618,7 @@ void QgsSpatiaLiteProvider::loadFieldsAbstractInterface( gaiaVectorLayerPtr lyr 
       if ( fld->IntegerValuesCount != 0 && fld->DoubleValuesCount == 0 &&
            fld->TextValuesCount == 0 && fld->BlobValuesCount == 0 )
       {
-        fieldType = QVariant::Int;
+        fieldType = QVariant::LongLong;
         type = "INTEGER";
       }
       if ( fld->DoubleValuesCount != 0 && fld->TextValuesCount == 0 &&
@@ -825,7 +825,7 @@ void QgsSpatiaLiteProvider::loadFields()
                strcasecmp( type, "tinyint" ) == 0 ||
                strcasecmp( type, "boolean" ) == 0 )
           {
-            fieldType = QVariant::Int;
+            fieldType = QVariant::LongLong;
           }
           else if ( strcasecmp( type, "real" ) == 0 ||
                     strcasecmp( type, "double" ) == 0 ||
