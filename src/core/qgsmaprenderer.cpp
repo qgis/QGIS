@@ -736,14 +736,16 @@ bool QgsMapRenderer::hasCrsTransformEnabled() const
   return mProjectionsEnabled;
 }
 
-void QgsMapRenderer::setDestinationCrs( const QgsCoordinateReferenceSystem& crs )
+void QgsMapRenderer::setDestinationCrs( const QgsCoordinateReferenceSystem& crs, bool refreshCoordinateTransformInfo )
 {
   QgsDebugMsg( "* Setting destCRS : = " + crs.toProj4() );
   QgsDebugMsg( "* DestCRS.srsid() = " + QString::number( crs.srsid() ) );
   if ( *mDestCRS != crs )
   {
-    mLayerCoordinateTransformInfo.clear();
-
+    if ( refreshCoordinateTransformInfo )
+    {
+      mLayerCoordinateTransformInfo.clear();
+    }
     QgsRectangle rect;
     if ( !mExtent.isEmpty() )
     {
@@ -1043,7 +1045,7 @@ void QgsMapRenderer::setLayerSet( const QStringList& layers )
   mLayerSet = layers;
 
   //remove all entries in mLayerCoordinateTransformInfo which are not part of the layer set
-  if ( mLayerCoordinateTransformInfo.size() > 0 )
+  /*if ( mLayerCoordinateTransformInfo.size() > 0 )
   {
     QSet<QString> layerSet = layers.toSet();
     QStringList removeEntries;
@@ -1061,7 +1063,7 @@ void QgsMapRenderer::setLayerSet( const QStringList& layers )
     {
       mLayerCoordinateTransformInfo.remove( *rIt );
     }
-  }
+  }*/
   updateFullExtent();
 }
 
@@ -1105,11 +1107,36 @@ bool QgsMapRenderer::readXML( QDomNode & theNode )
   element = projNode.toElement();
   setProjectionsEnabled( element.text().toInt() );
 
+  //load coordinate transform into
+  mLayerCoordinateTransformInfo.clear();
+  QDomElement layerCoordTransformInfoElem = theNode.firstChildElement( "layer_coordinate_transform_info" );
+  if ( !layerCoordTransformInfoElem.isNull() )
+  {
+    QDomNodeList layerCoordinateTransformList = layerCoordTransformInfoElem.elementsByTagName( "layer_coordinate_transform" );
+    QDomElement layerCoordTransformElem;
+    for ( int i = 0; i < layerCoordinateTransformList.size(); ++i )
+    {
+      layerCoordTransformElem = layerCoordinateTransformList.at( i ).toElement();
+      QString layerId = layerCoordTransformElem.attribute( "layerid" );
+      if ( layerId.isEmpty() )
+      {
+        continue;
+      }
+
+      QgsLayerCoordinateTransform lct;
+      lct.srcAuthId = layerCoordTransformElem.attribute( "srcAuthId" );
+      lct.destAuthId = layerCoordTransformElem.attribute( "destAuthId" );
+      lct.srcDatumTransform = layerCoordTransformElem.attribute( "srcDatumTransform", "-1" ).toInt();
+      lct.destDatumTransform = layerCoordTransformElem.attribute( "destDatumTransform", "-1" ).toInt();
+      mLayerCoordinateTransformInfo.insert( layerId, lct );
+    }
+  }
+
   // set destination CRS
   QgsCoordinateReferenceSystem srs;
   QDomNode srsNode = theNode.namedItem( "destinationsrs" );
   srs.readXML( srsNode );
-  setDestinationCrs( srs );
+  setDestinationCrs( srs, false );
 
   // set extent
   QgsRectangle aoi;
@@ -1137,30 +1164,6 @@ bool QgsMapRenderer::readXML( QDomNode & theNode )
   aoi.setYMaximum( ymax );
 
   setExtent( aoi );
-
-  mLayerCoordinateTransformInfo.clear();
-  QDomElement layerCoordTransformInfoElem = theNode.firstChildElement( "layer_coordinate_transform_info" );
-  if ( !layerCoordTransformInfoElem.isNull() )
-  {
-    QDomNodeList layerCoordinateTransformList = layerCoordTransformInfoElem.elementsByTagName( "layer_coordinate_transform" );
-    QDomElement layerCoordTransformElem;
-    for ( int i = 0; i < layerCoordinateTransformList.size(); ++i )
-    {
-      layerCoordTransformElem = layerCoordinateTransformList.at( i ).toElement();
-      QString layerId = layerCoordTransformElem.attribute( "layerid" );
-      if ( layerId.isEmpty() )
-      {
-        continue;
-      }
-
-      QgsLayerCoordinateTransform lct;
-      lct.srcAuthId = layerCoordTransformElem.attribute( "srcAuthId" );
-      lct.destAuthId = layerCoordTransformElem.attribute( "destAuthId" );
-      lct.srcDatumTransform = layerCoordTransformElem.attribute( "srcDatumTransform", "-1" ).toInt();
-      lct.destDatumTransform = layerCoordTransformElem.attribute( "destDatumTransform", "-1" ).toInt();
-      mLayerCoordinateTransformInfo.insert( layerId, lct );
-    }
-  }
 
   return true;
 }
