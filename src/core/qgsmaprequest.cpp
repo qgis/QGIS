@@ -270,7 +270,7 @@ inline static bool simplifyWkbGeometry( QGis::WkbType wkbType, unsigned char* so
       x = *((double*)sourceWkb); sourceWkb += sizeOfDoubleX;
       y = *((double*)sourceWkb); sourceWkb += sizeOfDoubleY;
 	  
-      if ( i==0 || !canbeGeneralizable || calculateLengthSquared2D(x,y,lastX,lastY)>map2pixelTol)
+      if ( i==0 || !canbeGeneralizable || calculateLengthSquared2D(x,y,lastX,lastY)>map2pixelTol )
       {
        *ptr = lastX = x; ptr++;
        *ptr = lastY = y; ptr++;
@@ -369,16 +369,29 @@ inline static bool simplifyWkbGeometry( QGis::WkbType wkbType, unsigned char* so
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 
-//! Returns whether the devide-geometry can be replaced by its BBOX when is applied the specified the map2pixel context
+//! Returns whether the device-geometry can be replaced by its BBOX when is applied the specified map2pixel tolerance
 bool QgsMapRequest::canbeGeneralizedByWndBoundingBox( const QgsRectangle& envelope, float mapToPixelTol )
 {
   return (envelope.xMaximum()-envelope.xMinimum()) < mapToPixelTol && (envelope.yMaximum()-envelope.yMinimum()) < mapToPixelTol;
 }
-//! Returns whether the devide-geometry can be replaced by its BBOX when is applied the specified the map2pixel context
+//! Returns whether the device-geometry can be replaced by its BBOX when is applied the specified map2pixel tolerance
 bool QgsMapRequest::canbeGeneralizedByWndBoundingBox( const QVector<QPointF>& points, float mapToPixelTol )
 {
   QgsRectangle env = calculateBoundingBox( points );
   return canbeGeneralizedByWndBoundingBox( env, mapToPixelTol);
+}
+
+//! Returns whether the envelope can be replaced by its BBOX when is applied the map2pixel context
+bool QgsMapRequest::canbeGeneralizedByMapBoundingBox( const QgsRectangle& envelope, const QgsCoordinateTransform* coordinateTransform, const QgsMapToPixel* mtp, float mapToPixelTol )
+{
+  double map2pixelTol = mapToPixelTol * calculateViewPixelTolerance( envelope, coordinateTransform, mtp );
+
+  // Can replace the geometry by its BBOX ?
+  if ( (envelope.xMaximum()-envelope.xMinimum()) < map2pixelTol && (envelope.yMaximum()-envelope.yMinimum()) < map2pixelTol )
+  {
+    return true;
+  }
+  return false;
 }
 
 //! Simplify the specified geometry (Removing duplicated points) when is applied the map2pixel context
@@ -406,4 +419,41 @@ bool QgsMapRequest::simplifyGeometry( QgsGeometry* geometry, const QgsCoordinate
 	return true;
   }
   return false;
+}
+
+//! Simplify the specified point stream (Removing duplicated points) when is applied the map2pixel context
+bool QgsMapRequest::simplifyGeometry( QGis::GeometryType geometryType, const QgsRectangle& envelope, double* xptr, int xStride, double* yptr, int yStride, int pointCount, int& pointSimplifiedCount, const QgsCoordinateTransform* coordinateTransform, const QgsMapToPixel* mtp, float mapToPixelTol )
+{
+  pointSimplifiedCount = pointCount;
+  if (geometryType==QGis::Point || geometryType==QGis::UnknownGeometry) return false;
+  pointSimplifiedCount = 0;
+
+  double map2pixelTol = mapToPixelTol * calculateViewPixelTolerance( envelope, coordinateTransform, mtp );
+  map2pixelTol *= map2pixelTol; //-> Use mappixelTol for 'LengthSquare' calculations.
+  double x,y, lastX=0, lastY=0;
+
+  char* xsourcePtr = (char*)xptr;
+  char* ysourcePtr = (char*)yptr;
+  char* xtargetPtr = (char*)xptr;
+  char* ytargetPtr = (char*)yptr;
+
+  for ( int i = 0, numPoints = geometryType==QGis::Polygon ? pointCount-1 : pointCount; i < numPoints; ++i )
+  {
+    x = *((double*)xsourcePtr); xsourcePtr += xStride;
+    y = *((double*)ysourcePtr); ysourcePtr += yStride;
+
+    if ( i==0 || calculateLengthSquared2D(x,y,lastX,lastY)>map2pixelTol )
+    {
+     *((double*)xtargetPtr) = lastX = x; xtargetPtr += xStride;
+     *((double*)ytargetPtr) = lastY = y; ytargetPtr += yStride;
+      pointSimplifiedCount++;
+    }
+  }
+  if ( geometryType==QGis::Polygon )
+  {
+   *((double*)xtargetPtr) = *xptr;
+   *((double*)ytargetPtr) = *yptr;
+    pointSimplifiedCount++;
+  }
+  return pointSimplifiedCount!=pointCount;
 }

@@ -59,17 +59,31 @@ class CORE_EXPORT QgsMapRequest
     float mMapToPixelTol;
 
   public:
-    //! Returns whether the devided-geometry can be replaced by its BBOX when is applied the specified the map2pixel context
+    //! Returns whether the device-geometry can be replaced by its BBOX when is applied the specified map2pixel tolerance
     static bool canbeGeneralizedByWndBoundingBox( const QgsRectangle&   envelope, float mapToPixelTol = 1.0f );
-    //! Returns whether the devided-geometry can be replaced by its BBOX when is applied the specified the map2pixel context
+    //! Returns whether the device-geometry can be replaced by its BBOX when is applied the specified map2pixel tolerance
     static bool canbeGeneralizedByWndBoundingBox( const QVector<QPointF>& points, float mapToPixelTol = 1.0f );
+
+    //! Returns whether the envelope can be replaced by its BBOX when is applied the map2pixel context
+    static bool canbeGeneralizedByMapBoundingBox( const QgsRectangle& envelope,
+                                  const QgsCoordinateTransform* coordinateTransform, const QgsMapToPixel* mtp, float mapToPixelTol = 1.0f );
+
+    //! Returns whether the envelope can be replaced by its BBOX when is applied the map2pixel context
+    inline bool canbeGeneralizedByMapBoundingBox( const QgsRectangle& envelope ) const { return canbeGeneralizedByMapBoundingBox( envelope, mMapCoordTransform, mMapToPixel, mMapToPixelTol ); }
 
     //! Simplify the specified geometry (Removing duplicated points) when is applied the map2pixel context
     static bool simplifyGeometry( QgsGeometry* geometry, 
                                   const QgsCoordinateTransform* coordinateTransform, const QgsMapToPixel* mtp, float mapToPixelTol = 1.0f );
 
-	//! Simplify the specified geometry (Removing duplicated points) when is applied the map2pixel context
-    inline bool simplifyGeometry( QgsGeometry* geometry ) { return simplifyGeometry( geometry, mMapCoordTransform, mMapToPixel, mMapToPixelTol ); }
+    //! Simplify the specified geometry (Removing duplicated points) when is applied the map2pixel context
+    inline bool simplifyGeometry( QgsGeometry* geometry ) const { return simplifyGeometry( geometry, mMapCoordTransform, mMapToPixel, mMapToPixelTol ); }
+
+    //! Simplify the specified point stream (Removing duplicated points) when is applied a map2pixel context
+    static bool simplifyGeometry( QGis::GeometryType geometryType, const QgsRectangle& envelope, double* xptr, int xStride, double* yptr, int yStride, int pointCount, int& pointSimplifiedCount,
+                                  const QgsCoordinateTransform* coordinateTransform, const QgsMapToPixel* mtp, float mapToPixelTol = 1.0f );
+
+    //! Simplify the specified point stream (Removing duplicated points) when is applied the map2pixel context
+    inline bool simplifyGeometry( QGis::GeometryType geometryType, const QgsRectangle& envelope, double* xptr, int xStride, double* yptr, int yStride, int pointCount, int& pointSimplifiedCount ) const { return simplifyGeometry( geometryType, envelope, xptr, xStride, yptr, yStride, pointCount, pointSimplifiedCount, mMapCoordTransform, mMapToPixel, mMapToPixelTol ); }
 };
 
 #endif // QGSMAPREQUEST_H
