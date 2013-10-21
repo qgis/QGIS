@@ -149,7 +149,7 @@ class QgsWMSServer
     double drawLegendGraphics( QPainter* p, double fontOversamplingFactor, QStandardItem* rootItem, double boxSpace, double layerSpace, double layerTitleSpace,
                                double symbolSpace, double iconLabelSpace, double symbolWidth, double symbolHeight,
                                const QFont& layerFont, const QFont& itemFont, const QColor& layerFontColor, const QColor& itemFontColor,
-                               double& maxTextWidth, double& maxSymbolWidth, double dpi );
+                               double& maxTextWidth, double& maxSymbolWidth );
 
     //helper functions for GetLegendGraphics
     /**Draws layer item and subitems
@@ -159,9 +159,9 @@ class QgsWMSServer
       */
     void drawLegendLayerItem( QgsComposerLayerItem* item, QPainter* p, double& maxTextWidth, double& maxSymbolWidth, double& currentY, const QFont& layerFont,
                               const QColor& layerFontColor, const QFont& itemFont, const QColor&  itemFontColor, double boxSpace, double layerSpace,
-                              double layerTitleSpace, double symbolSpace, double iconLabelSpace, double symbolWidth, double symbolHeight, double fontOversamplingFactor, double dpi ) const;
+                              double layerTitleSpace, double symbolSpace, double iconLabelSpace, double symbolWidth, double symbolHeight, double fontOversamplingFactor ) const;
     /**Draws a symbol. Optionally, maxHeight is adapted (e.g. for large point markers) */
-    void drawLegendSymbolV2( QgsComposerLegendItem* item, QPainter* p, double boxSpace, double currentY, double& symbolWidth, double& symbolHeight, double dpi, double yDownShift ) const;
+    void drawLegendSymbolV2( QgsComposerLegendItem* item, QPainter* p, double boxSpace, double currentY, double& symbolWidth, double& symbolHeight, double yDownShift ) const;
     void drawRasterSymbol( QgsComposerLegendItem* item, QPainter* p, double boxSpace, double currentY, double symbolWidth, double symbolHeight, double yDownShift ) const;
 
     /**Read legend parameter from the request or from the first print composer in the project*/
