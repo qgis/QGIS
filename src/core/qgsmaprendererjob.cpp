@@ -82,12 +82,6 @@ void QgsMapRendererCustomPainterJob::cancel()
 }
 
 
-QImage QgsMapRendererCustomPainterJob::renderedImage()
-{
-  return QImage();
-}
-
-
 void QgsMapRendererCustomPainterJob::futureFinished()
 {
   qDebug("futureFinished");

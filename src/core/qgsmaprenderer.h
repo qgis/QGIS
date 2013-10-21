@@ -158,136 +158,136 @@ class CORE_EXPORT QgsMapRenderer : public QObject
 
     //! starts rendering
     //! @ param forceWidthScale Force a specific scale factor for line widths and marker sizes. Automatically calculated from output device DPI if 0
-    void render( QPainter* painter, double* forceWidthScale = 0 );
+    Q_DECL_DEPRECATED void render( QPainter* painter, double* forceWidthScale = 0 );
 
     //! sets extent and checks whether suitable (returns false if not)
-    bool setExtent( const QgsRectangle& extent );
+    Q_DECL_DEPRECATED bool setExtent( const QgsRectangle& extent );
 
     //! returns current extent
-    QgsRectangle extent() const;
+    Q_DECL_DEPRECATED QgsRectangle extent() const;
 
-    const QgsMapToPixel* coordinateTransform() { return &( mRenderContext.mapToPixel() ); }
+    Q_DECL_DEPRECATED const QgsMapToPixel* coordinateTransform() { return &( mRenderContext.mapToPixel() ); }
 
     //! Scale denominator
-    double scale() const { return mScale; }
+    Q_DECL_DEPRECATED double scale() const { return mScale; }
     /**Sets scale for scale based visibility. Normally, the scale is calculated automatically. This
      function is only used to force a preview scale (e.g. for print composer)*/
-    void setScale( double scale ) {mScale = scale;}
-    double mapUnitsPerPixel() const { return mMapUnitsPerPixel; }
+    Q_DECL_DEPRECATED void setScale( double scale ) {mScale = scale;}
+    Q_DECL_DEPRECATED double mapUnitsPerPixel() const { return mMapUnitsPerPixel; }
 
-    int width() const { return mSize.width(); };
-    int height() const { return mSize.height(); };
+    Q_DECL_DEPRECATED int width() const { return mSize.width(); }
+    Q_DECL_DEPRECATED int height() const { return mSize.height(); }
 
     //! Recalculate the map scale
-    void updateScale();
+    Q_DECL_DEPRECATED void updateScale();
 
-    QGis::UnitType mapUnits() const;
-    void setMapUnits( QGis::UnitType u );
+    Q_DECL_DEPRECATED QGis::UnitType mapUnits() const;
+    Q_DECL_DEPRECATED void setMapUnits( QGis::UnitType u );
 
     //! sets whether map image will be for overview
-    void enableOverviewMode( bool isOverview = true ) { mOverview = isOverview; }
+    Q_DECL_DEPRECATED void enableOverviewMode( bool isOverview = true ) { mOverview = isOverview; }
 
-    void setOutputSize( QSize size, int dpi );
-    void setOutputSize( QSizeF size, double dpi );
+    Q_DECL_DEPRECATED void setOutputSize( QSize size, int dpi );
+    Q_DECL_DEPRECATED void setOutputSize( QSizeF size, double dpi );
 
     //!accessor for output dpi
-    double outputDpi();
+    Q_DECL_DEPRECATED double outputDpi();
     //!accessor for output size
-    QSize outputSize();
-    QSizeF outputSizeF();
+    Q_DECL_DEPRECATED QSize outputSize();
+    Q_DECL_DEPRECATED QSizeF outputSizeF();
 
     /**
      * @brief transform bounding box from layer's CRS to output CRS
      * @see layerToMapCoordinates( QgsMapLayer* theLayer, QgsRectangle rect ) if you want to transform a rectangle
      * @return a bounding box (aligned rectangle) containing the transformed extent
      */
-    QgsRectangle layerExtentToOutputExtent( QgsMapLayer* theLayer, QgsRectangle extent );
+    Q_DECL_DEPRECATED QgsRectangle layerExtentToOutputExtent( QgsMapLayer* theLayer, QgsRectangle extent );
 
     /**
      * @brief transform bounding box from output CRS to layer's CRS
      * @see mapToLayerCoordinates( QgsMapLayer* theLayer,QgsRectangle rect ) if you want to transform a rectangle
      * @return a bounding box (aligned rectangle) containing the transformed extent
      */
-    QgsRectangle outputExtentToLayerExtent( QgsMapLayer* theLayer, QgsRectangle extent );
+    Q_DECL_DEPRECATED QgsRectangle outputExtentToLayerExtent( QgsMapLayer* theLayer, QgsRectangle extent );
 
     /**
      * @brief transform point coordinates from layer's CRS to output CRS
      * @return the transformed point
      */
-    QgsPoint layerToMapCoordinates( QgsMapLayer* theLayer, QgsPoint point );
+    Q_DECL_DEPRECATED QgsPoint layerToMapCoordinates( QgsMapLayer* theLayer, QgsPoint point );
 
     /**
      * @brief transform rectangle from layer's CRS to output CRS
      * @see layerExtentToOutputExtent() if you want to transform a bounding box
      * @return the transformed rectangle
      */
-    QgsRectangle layerToMapCoordinates( QgsMapLayer* theLayer, QgsRectangle rect );
+    Q_DECL_DEPRECATED QgsRectangle layerToMapCoordinates( QgsMapLayer* theLayer, QgsRectangle rect );
 
     /**
      * @brief transform point coordinates from output CRS to layer's CRS
      * @return the transformed point
      */
-    QgsPoint mapToLayerCoordinates( QgsMapLayer* theLayer, QgsPoint point );
+    Q_DECL_DEPRECATED QgsPoint mapToLayerCoordinates( QgsMapLayer* theLayer, QgsPoint point );
 
     /**
      * @brief transform rectangle from output CRS to layer's CRS
      * @see outputExtentToLayerExtent() if you want to transform a bounding box
      * @return the transformed rectangle
      */
-    QgsRectangle mapToLayerCoordinates( QgsMapLayer* theLayer, QgsRectangle rect );
+    Q_DECL_DEPRECATED QgsRectangle mapToLayerCoordinates( QgsMapLayer* theLayer, QgsRectangle rect );
 
     //! sets whether to use projections for this layer set
-    void setProjectionsEnabled( bool enabled );
+    Q_DECL_DEPRECATED void setProjectionsEnabled( bool enabled );
 
     //! returns true if projections are enabled for this layer set
-    bool hasCrsTransformEnabled() const;
+    Q_DECL_DEPRECATED bool hasCrsTransformEnabled() const;
 
     //! sets destination coordinate reference system
-    void setDestinationCrs( const QgsCoordinateReferenceSystem& crs );
+    Q_DECL_DEPRECATED void setDestinationCrs( const QgsCoordinateReferenceSystem& crs );
 
     //! returns CRS of destination coordinate reference system
-    const QgsCoordinateReferenceSystem& destinationCrs() const;
+    Q_DECL_DEPRECATED const QgsCoordinateReferenceSystem& destinationCrs() const;
 
-    void setOutputUnits( OutputUnits u ) {mOutputUnits = u;}
+    Q_DECL_DEPRECATED void setOutputUnits( OutputUnits u ) {mOutputUnits = u;}
 
-    OutputUnits outputUnits() const {return mOutputUnits;}
+    Q_DECL_DEPRECATED OutputUnits outputUnits() const {return mOutputUnits;}
 
     //! returns current extent of layer set
-    QgsRectangle fullExtent();
+    Q_DECL_DEPRECATED QgsRectangle fullExtent();
 
     //! returns current layer set
-    QStringList& layerSet();
+    Q_DECL_DEPRECATED QStringList& layerSet();
 
     //! change current layer set
-    void setLayerSet( const QStringList& layers );
+    Q_DECL_DEPRECATED void setLayerSet( const QStringList& layers );
 
     //! updates extent of the layer set
-    void updateFullExtent();
+    Q_DECL_DEPRECATED void updateFullExtent();
 
     //! read settings
-    bool readXML( QDomNode & theNode );
+    Q_DECL_DEPRECATED bool readXML( QDomNode & theNode );
 
     //! write settings
-    bool writeXML( QDomNode & theNode, QDomDocument & theDoc );
+    Q_DECL_DEPRECATED bool writeXML( QDomNode & theNode, QDomDocument & theDoc );
 
     //! Accessor for render context
-    QgsRenderContext* rendererContext() {return &mRenderContext;}
+    Q_DECL_DEPRECATED QgsRenderContext* rendererContext() {return &mRenderContext;}
 
     //! Labeling engine (NULL if there's no custom engine)
     //! \note Added in QGIS v1.4
-    QgsLabelingEngineInterface* labelingEngine() { return mLabelingEngine; }
+    Q_DECL_DEPRECATED QgsLabelingEngineInterface* labelingEngine() { return mLabelingEngine; }
 
     //! Set labeling engine. Previous engine (if any) is deleted.
     //! Takes ownership of the engine.
     //! Added in QGIS v1.4
-    void setLabelingEngine( QgsLabelingEngineInterface* iface );
+    Q_DECL_DEPRECATED void setLabelingEngine( QgsLabelingEngineInterface* iface );
 
     //! Returns a QPainter::CompositionMode corresponding to a BlendMode
     //! Added in 1.9
-    static QPainter::CompositionMode getCompositionMode( const QgsMapRenderer::BlendMode blendMode );
+    Q_DECL_DEPRECATED static QPainter::CompositionMode getCompositionMode( const QgsMapRenderer::BlendMode blendMode );
     //! Returns a BlendMode corresponding to a QPainter::CompositionMode
     //! Added in 1.9
-    static QgsMapRenderer::BlendMode getBlendModeEnum( const QPainter::CompositionMode blendMode );
+    Q_DECL_DEPRECATED static QgsMapRenderer::BlendMode getBlendModeEnum( const QPainter::CompositionMode blendMode );
 
   signals:
 
@@ -307,7 +307,7 @@ class CORE_EXPORT QgsMapRenderer : public QObject
   public slots:
 
     //! called by signal from layer current being drawn
-    void onDrawingProgress( int current, int total );
+    Q_DECL_DEPRECATED void onDrawingProgress( int current, int total );
 
   protected:
 

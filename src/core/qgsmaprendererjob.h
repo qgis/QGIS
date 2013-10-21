@@ -34,10 +34,6 @@ public:
   //! Stop the rendering job - does not return until the job has terminated.
   virtual void cancel() = 0;
 
-  //! Get a preview/resulting image - in case QPainter has not been provided.
-  //! With QPainter specified, it will return invalid QImage (there's no way to provide it).
-  virtual QImage renderedImage() = 0;
-
 signals:
 
   //! emitted when asynchronous rendering is finished (or canceled).
@@ -51,11 +47,22 @@ protected:
 };
 
 
+class QgsMapRendererJobWithPreview : public QgsMapRendererJob
+{
+
+public:
+
+  //! Get a preview/resulting image - in case QPainter has not been provided.
+  //! With QPainter specified, it will return invalid QImage (there's no way to provide it).
+  virtual QImage renderedImage() = 0;
+};
+
+
 class QgsMapRendererCustomPainterJob;
 
 
 /** job implementation that renders everything sequentially in one thread */
-class QgsMapRendererSequentialJob : public QgsMapRendererJob
+class QgsMapRendererSequentialJob : public QgsMapRendererJobWithPreview
 {
   Q_OBJECT
 public:
@@ -63,6 +70,8 @@ public:
 
   virtual void start();
   virtual void cancel();
+
+  // from QgsMapRendererJobWithPreview
   virtual QImage renderedImage();
 
 public slots:
@@ -79,7 +88,7 @@ protected:
 
 
 /** job implementation that renders all layers in parallel - the implication is that rendering is done to QImage */
-//class QgsMapRendererParallelJob : public QgsMapRendererJob
+//class QgsMapRendererParallelJob : public QgsMapRendererJobWithPreview
 //{
 //};
 
@@ -98,7 +107,7 @@ public:
 
   virtual void start();
   virtual void cancel();
-  virtual QImage renderedImage();
+  //virtual QImage renderedImage();
 
 protected slots:
   void futureFinished();
