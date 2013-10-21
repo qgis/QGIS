@@ -430,7 +430,7 @@ void QgsComposerView::endMarqueeSelect( QMouseEvent* e )
     return;
   }
 
-  QRect boundsRect = QRect( mRubberBandItem->transform().dx(), mRubberBandItem->transform().dy(),
+  QRectF boundsRect = QRectF( mRubberBandItem->transform().dx(), mRubberBandItem->transform().dy(),
                             mRubberBandItem->rect().width(), mRubberBandItem->rect().height() );
 
   //determine item selection mode, default to intersection
