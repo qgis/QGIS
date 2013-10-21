@@ -749,10 +749,9 @@ void QgsOgrProvider::setRelevantFields( bool fetchGeometry, const QgsAttributeLi
 
 QgsFeatureIterator QgsOgrProvider::getFeatures( const QgsFeatureRequest& request )
 {
-  /* TODO: ### ahuarte47!
   if ( request.flags() & QgsFeatureRequest::SimplifyGeometries )
     return QgsFeatureIterator( new QgsOgrSimplifiedFeatureIterator( this, request ) );
-   */
+
   return QgsFeatureIterator( new QgsOgrFeatureIterator( this, request ) );
 }
 
@@ -1489,9 +1488,8 @@ int QgsOgrProvider::capabilities() const
       }
     }
 
-    // TODO: ### ahuarte47!
     // By default, supports simplification of geometries before fetch the OGR-feature.
-    // ability |= SimplifyGeometries;
+    ability |= SimplifyGeometries;
   }
 
   return ability;

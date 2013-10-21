@@ -79,6 +79,9 @@ class QgsOgrFeatureIterator : public QgsAbstractFeatureIterator
  *                                                                         *
  ***************************************************************************/
 
+class OGRRawPoint;
+class OGRGeometry;
+
 //! Provides a specialized FeatureIterator for enable map2pixel simplification of the geometries
 class QgsOgrSimplifiedFeatureIterator : public QgsOgrFeatureIterator
 {
@@ -89,6 +92,18 @@ class QgsOgrSimplifiedFeatureIterator : public QgsOgrFeatureIterator
   protected:
     //! notify the OGRFeatureH was readed of the data provider
     virtual void notifyReadedFeature( OGRFeatureH fet, OGRGeometryH geom, QgsFeature& feature );
+
+  private:
+    //! Point memory buffer for optimize the simplification process
+    OGRRawPoint* mPointBufferPtr;
+    //! Current Point memory buffer size
+    int mPointBufferCount;
+
+    //! Simplify the OGR-geometry using the specified tolerance
+    bool simplifyOgrGeometry ( const QgsFeatureRequest& request, OGRGeometry* geometry, bool isaLinearRing );
+
+    //! Returns a point buffer of the specified size
+    OGRRawPoint* mallocPoints( int numPoints );
 };
 
 /***************************************************************************/
