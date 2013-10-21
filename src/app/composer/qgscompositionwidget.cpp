@@ -80,30 +80,6 @@ QgsCompositionWidget::QgsCompositionWidget( QWidget* parent, QgsComposition* c )
     mOffsetXSpinBox->setValue( mComposition->snapGridOffsetX() );
     mOffsetYSpinBox->setValue( mComposition->snapGridOffsetY() );
 
-
-    //grid pen color
-    mGridColorButton->setColor( mComposition->gridPen().color() );
-    mGridColorButton->setColorDialogTitle( tr( "Select grid color" ) );
-    mGridColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
-
-    mGridStyleComboBox->insertItem( 0, tr( "Solid" ) );
-    mGridStyleComboBox->insertItem( 1, tr( "Dots" ) );
-    mGridStyleComboBox->insertItem( 2, tr( "Crosses" ) );
-
-    QgsComposition::GridStyle snapGridStyle = mComposition->gridStyle();
-    if ( snapGridStyle == QgsComposition::Solid )
-    {
-      mGridStyleComboBox->setCurrentIndex( 0 );
-    }
-    else if ( snapGridStyle == QgsComposition::Dots )
-    {
-      mGridStyleComboBox->setCurrentIndex( 1 );
-    }
-    else
-    {
-      mGridStyleComboBox->setCurrentIndex( 2 );
-    }
-
     mGridToleranceSpinBox->setValue( mComposition->snapGridTolerance() );
   }
   blockSignals( false );
@@ -520,37 +496,6 @@ void QgsCompositionWidget::on_mOffsetYSpinBox_valueChanged( double d )
   }
 }
 
-void QgsCompositionWidget::on_mGridColorButton_colorChanged( const QColor &newColor )
-{
-  if ( mComposition )
-  {
-    QPen pen = mComposition->gridPen();
-    pen.setColor( newColor );
-    mComposition->setGridPen( pen );
-  }
-}
-
-void QgsCompositionWidget::on_mGridStyleComboBox_currentIndexChanged( const QString& text )
-{
-  Q_UNUSED( text );
-
-  if ( mComposition )
-  {
-    if ( mGridStyleComboBox->currentText() == tr( "Solid" ) )
-    {
-      mComposition->setGridStyle( QgsComposition::Solid );
-    }
-    else if ( mGridStyleComboBox->currentText() == tr( "Dots" ) )
-    {
-      mComposition->setGridStyle( QgsComposition::Dots );
-    }
-    else if ( mGridStyleComboBox->currentText() == tr( "Crosses" ) )
-    {
-      mComposition->setGridStyle( QgsComposition::Crosses );
-    }
-  }
-}
-
 void QgsCompositionWidget::on_mGridToleranceSpinBox_valueChanged( double d )
 {
   if ( mComposition )
@@ -580,8 +525,6 @@ void QgsCompositionWidget::blockSignals( bool block )
   mGridResolutionSpinBox->blockSignals( block );
   mOffsetXSpinBox->blockSignals( block );
   mOffsetYSpinBox->blockSignals( block );
-  mGridColorButton->blockSignals( block );
-  mGridStyleComboBox->blockSignals( block );
   mGridToleranceSpinBox->blockSignals( block );
   mAlignmentToleranceSpinBox->blockSignals( block );
 }

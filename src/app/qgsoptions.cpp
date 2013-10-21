@@ -684,6 +684,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   //
   // Composer settings
   //
+  
+  //default composer font
   mComposerFontComboBox->blockSignals( true );
 
   QString composerFontFamily = settings.value( "/Composer/defaultFont" ).toString();
@@ -698,6 +700,37 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
 
   mComposerFontComboBox->blockSignals( false );
 
+  //default composer grid color
+  int gridRed, gridGreen, gridBlue, gridAlpha;
+  gridRed = settings.value( "/Composer/gridRed", 190 ).toInt();
+  gridGreen = settings.value( "/Composer/gridGreen", 190 ).toInt();
+  gridBlue = settings.value( "/Composer/gridBlue", 190 ).toInt();
+  gridAlpha = settings.value( "/Composer/gridAlpha", 100 ).toInt();
+  QColor gridColor = QColor( gridRed, gridGreen, gridBlue, gridAlpha );
+  mGridColorButton->setColor( gridColor );
+  mGridColorButton->setColorDialogTitle( tr( "Select grid color" ) );
+  mGridColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+
+  //default composer grid style
+  QString gridStyleString;
+  gridStyleString = settings.value( "/Composer/gridStyle", "Dots" ).toString();
+  mGridStyleComboBox->insertItem( 0, tr( "Solid" ) );
+  mGridStyleComboBox->insertItem( 1, tr( "Dots" ) );
+  mGridStyleComboBox->insertItem( 2, tr( "Crosses" ) );
+  if ( gridStyleString == "Solid" )
+  {
+    mGridStyleComboBox->setCurrentIndex( 0 );
+  }
+  else if ( gridStyleString == "Crosses" )
+  {
+    mGridStyleComboBox->setCurrentIndex( 2 );
+  }
+  else
+  {
+    //default grid is dots
+    mGridStyleComboBox->setCurrentIndex( 1 );
+  }
+  
   //
   // Locale settings
   //
@@ -1231,9 +1264,31 @@ void QgsOptions::saveOptions()
   //
   // Composer settings
   //
+  
+  //default font
   QString composerFont = mComposerFontComboBox->currentFont().family();
   settings.setValue( "/Composer/defaultFont", composerFont );
 
+  //grid color
+  settings.setValue( "/Composer/gridRed", mGridColorButton->color().red() );
+  settings.setValue( "/Composer/gridGreen", mGridColorButton->color().green() );
+  settings.setValue( "/Composer/gridBlue", mGridColorButton->color().blue() );
+  settings.setValue( "/Composer/gridAlpha", mGridColorButton->color().alpha() );
+
+  //grid style
+  if ( mGridStyleComboBox->currentText() == tr( "Solid" ) )
+  {
+    settings.setValue( "/Composer/gridStyle", "Solid" );
+  }
+  else if ( mGridStyleComboBox->currentText() == tr( "Dots" ) )
+  {
+    settings.setValue( "/Composer/gridStyle", "Dots" );
+  }
+  else if ( mGridStyleComboBox->currentText() == tr( "Crosses" ) )
+  {
+    settings.setValue( "/Composer/gridStyle", "Crosses" );
+  }
+  
   //
   // Locale settings
   //

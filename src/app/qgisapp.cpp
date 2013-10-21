@@ -6863,6 +6863,17 @@ void QgisApp::options()
     double zoomFactor = mySettings.value( "/qgis/zoom_factor", 2 ).toDouble();
     mMapCanvas->setWheelAction(( QgsMapCanvas::WheelAction ) action, zoomFactor );
 
+    //update any open compositions so they reflect new composer settings
+    //we have to push the changes to the compositions here, because compositions
+    //have no access to qgisapp and accordingly can't listen in to changes
+    QSet<QgsComposer*> composers = instance()->printComposers();
+    QSet<QgsComposer*>::iterator composer_it = composers.begin();
+    for ( ; composer_it != composers.end(); ++composer_it )
+    {
+      QgsComposition* composition = ( *composer_it )->composition();
+      composition->updateSettings();
+    }
+
     //do we need this? TS
     mMapCanvas->refresh();
 

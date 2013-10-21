@@ -123,6 +123,10 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     */
     void setStatusMessage( const QString & message );
 
+    /**Refreshes the composition when composer related options change
+     *Note: added in version 2.1*/
+    void updateSettings();
+
     void setSnapToGridEnabled( bool b );
     bool snapToGridEnabled() const {return mSnapToGrid;}
 
@@ -482,7 +486,6 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     int boundingRectOfSelectedItems( QRectF& bRect );
 
     void loadSettings();
-    void saveSettings();
 
     void connectAddRemoveCommandSignals( QgsAddRemoveItemCommand* c );
 
