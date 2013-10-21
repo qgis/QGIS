@@ -52,6 +52,11 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
      */
     QString theme();
 
+    /** Sets the page with the specified widget name as the current page
+     * @note added in QGIS 2.1
+     */
+    void setCurrentPage( QString pageWidgetName );
+
   public slots:
     void on_cbxProjectDefaultNew_toggled( bool checked );
     void on_pbnProjectDefaultSetCurrent_clicked();

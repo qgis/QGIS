@@ -780,7 +780,19 @@
    <property name="text">
     <string>Pan Composer</string>
    </property>
-  </action>
+  </action> 
+  <action name="mActionOptions">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionOptions.svg</normaloff>:/images/themes/default/mActionOptions.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Composer Options...</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::PreferencesRole</enum>
+   </property>
+  </action>      
  </widget>
  <resources>
   <include location="../../images/images.qrc"/>

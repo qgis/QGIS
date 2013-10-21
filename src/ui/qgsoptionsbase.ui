@@ -250,7 +250,7 @@
          <property name="currentIndex">
           <number>0</number>
          </property>
-         <widget class="QWidget" name="mOptionsPage_01">
+         <widget class="QWidget" name="mOptionsPageGeneral">
           <layout class="QVBoxLayout" name="verticalLayout_3">
            <property name="margin">
             <number>0</number>
@@ -896,7 +896,7 @@
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="mOptionsPage_03">
+         <widget class="QWidget" name="mOptionsPageSystem">
           <layout class="QVBoxLayout" name="verticalLayout_7">
            <property name="margin">
             <number>0</number>
@@ -1232,7 +1232,7 @@
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="mOptionsPage_11">
+         <widget class="QWidget" name="mOptionsPageDataSources">
           <layout class="QVBoxLayout" name="verticalLayout_26">
            <property name="margin">
             <number>0</number>
@@ -1561,7 +1561,7 @@
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="mOptionsPage_04">
+         <widget class="QWidget" name="mOptionsPageRendering">
           <layout class="QVBoxLayout" name="verticalLayout_12">
            <property name="margin">
             <number>0</number>
@@ -2076,7 +2076,7 @@
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="mOptionsPage_06">
+         <widget class="QWidget" name="mOptionsPageMapCanvas">
           <layout class="QVBoxLayout" name="verticalLayout_16">
            <property name="margin">
             <number>0</number>
@@ -2422,7 +2422,7 @@
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="mOptionsPage_05">
+         <widget class="QWidget" name="mOptionsPageMapTools">
           <layout class="QVBoxLayout" name="verticalLayout_14">
            <property name="margin">
             <number>0</number>
@@ -2836,7 +2836,7 @@
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="mOptionsPage_12">
+         <widget class="QWidget" name="mOptionsPageComposer">
           <layout class="QVBoxLayout" name="verticalLayout_9">
            <property name="margin">
             <number>0</number>
@@ -2945,7 +2945,7 @@
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="mOptionsPage_07">
+         <widget class="QWidget" name="mOptionsPageDigitizing">
           <layout class="QVBoxLayout" name="verticalLayout_17">
            <property name="margin">
             <number>0</number>
@@ -3446,7 +3446,7 @@
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="mOptionsPage_02">
+         <widget class="QWidget" name="mOptionsPageGDAL">
           <layout class="QVBoxLayout" name="verticalLayout_4">
            <property name="margin">
             <number>0</number>
@@ -3586,7 +3586,7 @@
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="mOptionsPage_08">
+         <widget class="QWidget" name="mOptionsPageCRS">
           <layout class="QVBoxLayout" name="verticalLayout_18">
            <property name="margin">
             <number>0</number>
@@ -3843,7 +3843,7 @@
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="mOptionsPage_09">
+         <widget class="QWidget" name="mOptionsPageLocale">
           <layout class="QVBoxLayout" name="verticalLayout_19">
            <property name="margin">
             <number>0</number>
@@ -3943,7 +3943,7 @@
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="mOptionsPage_10">
+         <widget class="QWidget" name="mOptionsPageNetwork">
           <layout class="QVBoxLayout" name="verticalLayout_20">
            <property name="margin">
             <number>0</number>

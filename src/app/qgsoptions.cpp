@@ -684,7 +684,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   //
   // Composer settings
   //
-  
+
   //default composer font
   mComposerFontComboBox->blockSignals( true );
 
@@ -730,7 +730,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
     //default grid is dots
     mGridStyleComboBox->setCurrentIndex( 1 );
   }
-  
+
   //
   // Locale settings
   //
@@ -844,6 +844,21 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
 //! Destructor
 QgsOptions::~QgsOptions()
 {
+}
+
+void QgsOptions::setCurrentPage( QString pageWidgetName )
+{
+  //find the page with a matching widget name
+  for ( int idx = 0; idx < mOptionsStackedWidget->count(); ++idx )
+  {
+    QWidget * currentPage = mOptionsStackedWidget->widget( idx );
+    if ( currentPage->objectName() == pageWidgetName )
+    {
+      //found the page, set it as current
+      mOptionsStackedWidget->setCurrentIndex( idx );
+      return;
+    }
+  }
 }
 
 void QgsOptions::on_cbxProjectDefaultNew_toggled( bool checked )
@@ -1264,7 +1279,7 @@ void QgsOptions::saveOptions()
   //
   // Composer settings
   //
-  
+
   //default font
   QString composerFont = mComposerFontComboBox->currentFont().family();
   settings.setValue( "/Composer/defaultFont", composerFont );
@@ -1288,7 +1303,7 @@ void QgsOptions::saveOptions()
   {
     settings.setValue( "/Composer/gridStyle", "Crosses" );
   }
-  
+
   //
   // Locale settings
   //
@@ -1676,7 +1691,7 @@ void QgsOptions::on_mOptionsStackedWidget_currentChanged( int theIndx )
 {
   Q_UNUSED( theIndx );
   // load gdal driver list when gdal tab is first opened
-  if ( mOptionsStackedWidget->currentWidget()->objectName() == QString( "mOptionsPage_02" )
+  if ( mOptionsStackedWidget->currentWidget()->objectName() == QString( "mOptionsPageGDAL" )
        && ! mLoadedGdalDriverList )
   {
     loadGdalDriverList();

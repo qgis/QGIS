@@ -6839,8 +6839,12 @@ void QgisApp::customize()
   QgsCustomization::instance()->openDialog( this );
 }
 
-
 void QgisApp::options()
+{
+  showOptionsDialog( this );
+}
+
+void QgisApp::showOptionsDialog( QWidget *parent, QString currentPage )
 {
   if ( mMapCanvas && mMapCanvas->isDrawing() )
   {
@@ -6850,7 +6854,12 @@ void QgisApp::options()
   QSettings mySettings;
   QString oldScales = mySettings.value( "Map/scales", PROJECT_SCALES ).toString();
 
-  QgsOptions *optionsDialog = new QgsOptions( this );
+  QgsOptions *optionsDialog = new QgsOptions( parent );
+  if ( !currentPage.isEmpty() )
+  {
+    optionsDialog->setCurrentPage( currentPage );
+  }
+
   if ( optionsDialog->exec() )
   {
     // set the theme if it changed
