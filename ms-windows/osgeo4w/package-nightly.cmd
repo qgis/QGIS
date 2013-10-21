@@ -44,13 +44,16 @@ call "%OSGEO4W_ROOT%\bin\o4w_env.bat"
 set O4W_ROOT=%OSGEO4W_ROOT:\=/%
 set LIB_DIR=%O4W_ROOT%
 
+if not "%PROGRAMFILES(X86)%"=="" set PF86=%PROGRAMFILES(X86)%
+if "%PF86%"=="" set PF86=%PROGRAMFILES%
+if "%PF86%"=="" (echo "PROGRAMFILES not set" & goto error)
+
 if "%ARCH%"=="x86" goto devenv_x86
 goto devenv_x86_64
 
 :devenv_x86
-if "%PROGRAMFILES(X86)%"=="" set "PROGRAMFILES(X86)"=%PROGRAMFILES%
-set VS90COMNTOOLS=%PROGRAMFILES(X86)%\Microsoft Visual Studio 9.0\Common7\Tools\
-call "%PROGRAMFILES(X86)%\Microsoft Visual Studio 9.0\VC\vcvarsall.bat" x86
+set VS90COMNTOOLS=%PF86%\Microsoft Visual Studio 9.0\Common7\Tools\
+call "%PF86%\Microsoft Visual Studio 9.0\VC\vcvarsall.bat" x86
 
 set DEVENV=
 if exist "%DevEnvDir%\vcexpress.exe" set DEVENV=vcexpress
@@ -66,7 +69,7 @@ set CMAKE_OPT=^
 goto devenv
 
 :devenv_x86_64
-call "%PROGRAMFILES(X86)%\Microsoft Visual Studio 10.0\VC\vcvarsall.bat" amd64
+call "%PF86%\Microsoft Visual Studio 10.0\VC\vcvarsall.bat" amd64
 
 set DEVENV=devenv
 set CMAKE_OPT=^
@@ -75,11 +78,11 @@ set CMAKE_OPT=^
 	-D SPATIALINDEX_LIBRARY=%O4W_ROOT%/lib/spatialindex-64.lib ^
 	-D SIP_BINARY_PATH=%O4W_ROOT%/bin/sip.exe ^
 	-D CMAKE_CXX_FLAGS_RELWITHDEBINFO="/MD /Zi /MP /Od /D NDEBUG /D QGISDEBUG" ^
-	-D SETUPAPI_LIBRARY="%PROGRAMFILES(X86)%/Microsoft SDKs/Windows/v7.0A/Lib/x64/SetupAPI.Lib"
+	-D SETUPAPI_LIBRARY="%PF86%/Microsoft SDKs/Windows/v7.0A/Lib/x64/SetupAPI.Lib"
 
 :devenv
 set PYTHONPATH=
-path %PROGRAMFILES(X86)%\CMake 2.8\bin;%PATH%;c:\cygwin\bin
+path %PF86%\CMake 2.8\bin;%PATH%;c:\cygwin\bin
 if "%DEVENV%"=="" (echo "DEVENV not found" & goto error)
 
 PROMPT qgis%VERSION%$g 
@@ -189,7 +192,6 @@ set PKGDIR=%OSGEO4W_ROOT%\apps\%PACKAGENAME%
 if exist %PKGDIR% (
 	echo REMOVE: %DATE% %TIME%>>%LOG% 2>&1
 	rmdir /s /q %PKGDIR%
-	if errorlevel 1 (echo "could not remove package directory %PKGDIR%" & goto error)
 )
 
 echo INSTALL: %DATE% %TIME%>>%LOG% 2>&1
