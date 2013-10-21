@@ -69,6 +69,7 @@ qgscomposerview.cpp
 qgscomposerruler.cpp
 qgscursors.cpp
 qgsdatadefinedbutton.cpp
+qgsdatumtransformdialog.cpp
 qgsdetaileditemdelegate.cpp
 qgsdetaileditemwidget.cpp
 qgsdetaileditemdata.cpp
@@ -195,6 +196,7 @@ qgscharacterselectdialog.h
 qgscolordialog.h
 qgscomposerview.h
 qgsdatadefinedbutton.h
+qgsdatumtransformdialog.h
 qgsdetaileditemdelegate.h
 qgsdetaileditemwidget.h
 qgsdialog.h

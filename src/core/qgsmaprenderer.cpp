@@ -655,7 +655,7 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
           {
             QgsRectangle r1 = mExtent;
             split = splitLayersExtent( ml, r1, r2 );
-            ct = new QgsCoordinateTransform( ml->crs(), *mDestCRS );
+            ct = tr( ml );
             mRenderContext.setExtent( r1 );
           }
           else

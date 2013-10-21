@@ -39,6 +39,7 @@ email                : sherman at mrcc.com
 #include "qgis.h"
 #include "qgsapplication.h"
 #include "qgscrscache.h"
+#include "qgsdatumtransformdialog.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapcanvasmap.h"
@@ -1566,18 +1567,22 @@ void QgsMapCanvas::getDatumTransformInfo( QgsMapLayer* ml, const QString& srcAut
   }
 
   //if several possibilities:  present dialog
-  //QgsDatumTransformDialog d( dt );
-  //if( d.exec() == QDialog::Accepted )
-  //{
-  //  int srcTransform = -1;
-  //  int destTransform = -1;
-  //  QList<int> t = d.selectedDatumTransform();
-  //  if( t.size() > 0 )
-  //  {
-  //      srcTransform = t.at( 0 );
-  //  }
-  //  QgsMapRenderer::addLayerCoordinateTransform( ml->id(), const QString& srcAuthId, const QString& destAuthId, int srcTransform = -1, int destTransform = -1 )
-  //}
+  QgsDatumTransformDialog d( dt );
+  if ( mMapRenderer && ( d.exec() == QDialog::Accepted ) )
+  {
+    int srcTransform = -1;
+    int destTransform = -1;
+    QList<int> t = d.selectedDatumTransform();
+    if ( t.size() > 0 )
+    {
+      srcTransform = t.at( 0 );
+    }
+    mMapRenderer->addLayerCoordinateTransform( ml->id(), srcAuthId, destAuthId, srcTransform, destTransform );
+  }
+  else
+  {
+    mMapRenderer->addLayerCoordinateTransform( ml->id(), srcAuthId, destAuthId, -1, -1 );
+  }
 }
 
 void QgsMapCanvas::zoomByFactor( double scaleFactor )

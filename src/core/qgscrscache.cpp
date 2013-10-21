@@ -59,6 +59,7 @@ const QgsCoordinateTransform* QgsCoordinateTransformCache::transform( const QStr
   QgsCoordinateTransform* ct = new QgsCoordinateTransform( srcCrs, destCrs );
   ct->setSourceDatumTransform( srcDatumTransform );
   ct->setDestinationDatumTransform( destDatumTransform );
+  ct->initialise();
   mTransforms.insertMulti( qMakePair( srcAuthId, destAuthId ), ct );
   return ct;
 }
