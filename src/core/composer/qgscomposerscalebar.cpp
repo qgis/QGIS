@@ -235,6 +235,13 @@ void QgsComposerScaleBar::applyDefaultSettings()
   mBrush.setColor( QColor( 0, 0, 0 ) );
   mBrush.setStyle( Qt::SolidPattern );
 
+  //get default composer font from settings
+  QSettings settings;
+  QString defaultFontString = settings.value( "/Composer/defaultFont" ).toString();
+  if ( !defaultFontString.isEmpty() )
+  {
+    mFont.setFamily( defaultFontString );
+  }
   mFont.setPointSizeF( 12.0 );
   mFontColor = QColor( 0, 0, 0 );
 

@@ -682,6 +682,23 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   }
 
   //
+  // Composer settings
+  //
+  mComposerFontComboBox->blockSignals( true );
+
+  QString composerFontFamily = settings.value( "/Composer/defaultFont" ).toString();
+
+  QFont *tempComposerFont = new QFont( composerFontFamily );
+  // is exact family match returned from system?
+  if ( tempComposerFont->family() == composerFontFamily )
+  {
+    mComposerFontComboBox->setCurrentFont( *tempComposerFont );
+  }
+  delete tempComposerFont;
+
+  mComposerFontComboBox->blockSignals( false );
+
+  //
   // Locale settings
   //
   QString mySystemLocale = QLocale::system().name();
@@ -1210,6 +1227,12 @@ void QgsOptions::saveOptions()
     myPaths += mListGlobalScales->item( i )->text();
   }
   settings.setValue( "Map/scales", myPaths );
+
+  //
+  // Composer settings
+  //
+  QString composerFont = mComposerFontComboBox->currentFont().family();
+  settings.setValue( "/Composer/defaultFont", composerFont );
 
   //
   // Locale settings

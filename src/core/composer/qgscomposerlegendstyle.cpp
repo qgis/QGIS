@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgscomposerlegendstyle.h"
+#include "qgscomposition.h"
 #include <QFont>
 #include <QMap>
 #include <QString>
@@ -25,6 +26,13 @@
 
 QgsComposerLegendStyle::QgsComposerLegendStyle()
 {
+  //get default composer font from settings
+  QSettings settings;
+  QString defaultFontString = settings.value( "/Composer/defaultFont" ).toString();
+  if ( !defaultFontString.isEmpty() )
+  {
+    mFont.setFamily( defaultFontString );
+  }
 }
 
 QgsComposerLegendStyle::~QgsComposerLegendStyle()

@@ -33,8 +33,18 @@ QgsComposerLabel::QgsComposerLabel( QgsComposition *composition ):
     mExpressionFeature( 0 ), mExpressionLayer( 0 )
 {
   mHtmlUnitsToMM = htmlUnitsToMM();
-  //default font size is 10 point
+
+  //get default composer font from settings
+  QSettings settings;
+  QString defaultFontString = settings.value( "/Composer/defaultFont" ).toString();
+  if ( !defaultFontString.isEmpty() )
+  {
+    mFont.setFamily( defaultFontString );
+  }
+
+  //default to a 10 point font size
   mFont.setPointSizeF( 10 );
+
 }
 
 QgsComposerLabel::~QgsComposerLabel()

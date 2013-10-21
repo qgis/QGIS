@@ -72,6 +72,14 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int w
   mXOffset = 0.0;
   mYOffset = 0.0;
 
+  //get default composer font from settings
+  QSettings settings;
+  QString defaultFontString = settings.value( "/Composer/defaultFont" ).toString();
+  if ( !defaultFontString.isEmpty() )
+  {
+    mGridAnnotationFont.setFamily( defaultFontString );
+  }
+
   connectUpdateSlot();
 
   //calculate mExtent based on width/height ratio and map canvas extent

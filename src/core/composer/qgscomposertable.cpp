@@ -26,6 +26,14 @@ QgsComposerTable::QgsComposerTable( QgsComposition* composition )
     , mGridStrokeWidth( 0.5 )
     , mGridColor( QColor( 0, 0, 0 ) )
 {
+  //get default composer font from settings
+  QSettings settings;
+  QString defaultFontString = settings.value( "/Composer/defaultFont" ).toString();
+  if ( !defaultFontString.isEmpty() )
+  {
+    mHeaderFont.setFamily( defaultFontString );
+    mContentFont.setFamily( defaultFontString );
+  }
 }
 
 QgsComposerTable::~QgsComposerTable()
