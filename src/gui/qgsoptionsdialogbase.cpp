@@ -37,7 +37,6 @@ QgsOptionsDialogBase::~QgsOptionsDialogBase()
 {
   if ( mInit )
   {
-    QSettings settings;
     mSettings->setValue( QString( "/Windows/%1/geometry" ).arg( mOptsKey ), saveGeometry() );
     mSettings->setValue( QString( "/Windows/%1/splitState" ).arg( mOptsKey ), mOptSplitter->saveState() );
     mSettings->setValue( QString( "/Windows/%1/tab" ).arg( mOptsKey ), mOptStackedWidget->currentIndex() );
