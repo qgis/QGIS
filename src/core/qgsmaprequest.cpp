@@ -14,6 +14,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <limits>
+
 #include "qgsmaprequest.h"
 #include "qgsrectangle.h"
 #include "qgsgeometry.h"
