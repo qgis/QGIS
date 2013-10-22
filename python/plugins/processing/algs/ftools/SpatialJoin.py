@@ -53,6 +53,16 @@ def myself(L):
             medianVal = L[ (nVal + 1) / 2 - 1]
     return medianVal
 
+# translate single part to multi part geometry type
+multipart = {
+    QGis.WKBPoint: QGis.WKBMultiPoint,
+    QGis.WKBLineString: QGis.WKBMultiLineString,
+    QGis.WKBPolygon: QGis.WKBMultiPolygon,
+    QGis.WKBPoint25D: QGis.WKBMultiPoint25D,
+    QGis.WKBLineString25D: QGis.WKBMultiLineString25D,
+    QGis.WKBPolygon25D: QGis.WKBMultiPolygon25D,
+}
+
 class SpatialJoin(GeoAlgorithm):
     '''
     Join attributes by location
@@ -64,12 +74,18 @@ class SpatialJoin(GeoAlgorithm):
     INPUT2 = "INPUT2"
     SUMMARY = "SUMMARY"
     STATS = "STATS"
+    GEOMETRY = "GEOMETRY"
     KEEP = "KEEP"
     OUTPUT = "OUTPUT"
     
     SUMMARYS = [
         'Take attributes of the first located feature',
         'Take summary of intersecting features'
+    ]
+
+    GEOMETRYS = [
+        'Use geometry from target layer',
+        'Use geometry from joined layer (multipart if summary)'
     ]
     
     KEEPS = [
@@ -88,7 +104,8 @@ class SpatialJoin(GeoAlgorithm):
         self.addParameter(ParameterVector(SpatialJoin.INPUT1, "Target vector layer", [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterVector(SpatialJoin.INPUT2, "Join vector layer", [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterSelection(self.SUMMARY, "Attribute summary", self.SUMMARYS, 0))
-        self.addParameter(ParameterString(self.STATS, "Statistics for summary (comma separated)", "sum,mean,min,max,med"))
+        self.addParameter(ParameterString(self.STATS, "Statistics for summary (comma separated)", "sum,mean,min,max,median"))
+        self.addParameter(ParameterSelection(self.GEOMETRY, "Output geometry", self.GEOMETRYS, 0))
         self.addParameter(ParameterSelection(self.KEEP, "Output table", self.KEEPS, 0))
         self.addOutput(OutputVector(SpatialJoin.OUTPUT, "Output layer"))
 
@@ -97,6 +114,7 @@ class SpatialJoin(GeoAlgorithm):
 
         summary = self.getParameterValue(self.SUMMARY) == 1
         sumList = self.getParameterValue(self.STATS).upper().replace(' ','').split(',')
+        use_geom = self.getParameterValue(self.GEOMETRY)
         keep = self.getParameterValue(self.KEEP) == 1
         
         input1 = self.getParameterValue(self.INPUT1)
@@ -130,13 +148,25 @@ class SpatialJoin(GeoAlgorithm):
             seq = range(0, len(fieldList1))
             fieldList1 = dict(zip(seq, fieldList1))
 
-        sRs = provider1.crs()        
         progress.setPercentage(13)
         fields = QgsFields()
         for f in fieldList1.values():
             fields.append(f)
         output = self.getOutputFromName(self.OUTPUT)
-        writer = output.getVectorWriter(fields, provider1.geometryType(), sRs)
+
+        if use_geom == 0:
+            # from target layer
+            crs = provider1.crs()
+            geometry_type = provider1.geometryType()
+        else:
+            # from joined layer
+            crs = provider2.crs()
+            if summary:
+                geometry_type = multipart[provider2.geometryType()]
+            else:
+                geometry_type = provider2.geometryType()
+
+        writer = output.getVectorWriter(fields, geometry_type, crs)
         
         inFeat = QgsFeature()
         outFeat = QgsFeature()
@@ -154,7 +184,8 @@ class SpatialJoin(GeoAlgorithm):
         while fit1.nextFeature(inFeat):
             inGeom = inFeat.geometry()
             atMap1 = inFeat.attributes()
-            outFeat.setGeometry(inGeom)
+            if use_geom == 0:
+                outFeat.setGeometry(inGeom)
             none = True
             joinList = []
             if inGeom.type() == QGis.Point:
@@ -171,17 +202,30 @@ class SpatialJoin(GeoAlgorithm):
                     provider2.getFeatures( QgsFeatureRequest().setFilterFid( int(i) ) ).nextFeature( inFeatB )
                     if inGeom.intersects(inFeatB.geometry()):
                         count = count + 1
-                        none = False
                         atMap2 = inFeatB.attributes()
                         if not summary:
+                            # first located feature
                             atMap = atMap1
                             atMap2 = atMap2
                             atMap.extend(atMap2)
                             atMap = dict(zip(seq, atMap))
+                            if use_geom == 1:
+                                outFeat.setGeometry(inFeatB.geometry())
+                            none = False
                             break
                         else:
                             for j in numFields.keys():
                                 numFields[j].append(atMap2[j])
+                            if none:
+                                # first located feature in summary
+                                outFeat.setGeometry(inFeatB.geometry())
+                            else:
+                                # combine (union) with existing geometry
+                                existing = outFeat.geometry()
+                                additional = inFeatB.geometry()
+                                union = existing.combine(additional)
+                                outFeat.setGeometry(union)
+                            none = False
                 if summary and not none:
                     atMap = atMap1
                     for j in numFields.keys():
@@ -189,7 +233,7 @@ class SpatialJoin(GeoAlgorithm):
                             if k == "SUM": atMap.append(sum(numFields[j]))
                             elif k == "MEAN": atMap.append(sum(numFields[j]) / count)
                             elif k == "MIN": atMap.append(min(numFields[j]))
-                            elif k == "MED": atMap.append(myself(numFields[j]))
+                            elif k == "MEDIAN": atMap.append(myself(numFields[j]))
                             else: atMap.append(max(numFields[j]))
                         numFields[j] = []
                     atMap.append(count)
