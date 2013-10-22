@@ -35847,7 +35847,7 @@ Ulteriori informazioni sull&apos;errore:
         <location filename="../src/ui/qgsosmexportdialog.ui" line="84"/>
         <source>Exported tags</source>
         <translatorcomment>#dubbio#</translatorcomment>
-        <translation>Tag esportati</translation>
+        <translation>Etichette esportate</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsosmexportdialog.ui" line="92"/>
@@ -35864,7 +35864,7 @@ Ulteriori informazioni sull&apos;errore:
         <source>Tag</source>
         <translatorcomment>Etichetta?
 #dubbio#</translatorcomment>
-        <translation>Tag</translation>
+        <translation>Etichetta</translation>
     </message>
     <message>
         <location filename="../src/app/openstreetmap/qgsosmexportdialog.cpp" line="45"/>
@@ -41683,7 +41683,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="713"/>
         <source>Tags</source>
         <translatorcomment>#dubbio#</translatorcomment>
-        <translation>Tags</translation>
+        <translation>Etichette</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="736"/>
@@ -50880,7 +50880,7 @@ C&apos;è stato un problema con il tuo database dei simboli.</translation>
     <message>
         <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="287"/>
         <source>Tags</source>
-        <translation>Tag</translation>
+        <translation>Etichette</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="328"/>
