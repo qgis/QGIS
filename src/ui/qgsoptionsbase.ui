@@ -2500,7 +2500,7 @@
                     </property>
                    </widget>
                   </item>
-		    <item row="5" column="3">
+                  <item row="5" column="3">
                    <widget class="QRadioButton" name="radNautical">
                     <property name="text">
                      <string>Nautical Miles</string>
@@ -3811,6 +3811,20 @@
                        <number>100000000</number>
                       </property>
                      </widget>
+                    </item>
+                   </layout>
+                  </item>
+                  <item>
+                   <layout class="QHBoxLayout" name="horizontalLayout_34">
+                    <item>
+                     <widget class="QLabel" name="lblUserAgent">
+                      <property name="text">
+                       <string>User-Agent</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QLineEdit" name="leUserAgent"/>
                     </item>
                    </layout>
                   </item>

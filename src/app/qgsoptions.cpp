@@ -247,11 +247,11 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
 
   //Network timeout
   mNetworkTimeoutSpinBox->setValue( settings.value( "/qgis/networkAndProxy/networkTimeout", "60000" ).toInt() );
+  leUserAgent->setText( settings.value( "/qgis/networkAndProxy/userAgent", "Mozilla/5.0" ).toString() );
 
   // WMS/WMS-C tile expiry time
   mDefaultTileExpirySpinBox->setValue( settings.value( "/qgis/defaultTileExpiry", "24" ).toInt() );
 
-  // Feature funded by Regione Toscana - SITA
   // WMS/WMS-C default max retry in case of tile request errors
   mDefaultTileMaxRetrySpinBox->setValue( settings.value( "/qgis/defaultTileMaxRetry", "3" ).toInt() );
 
@@ -903,11 +903,11 @@ void QgsOptions::saveOptions()
 
   //Network timeout
   settings.setValue( "/qgis/networkAndProxy/networkTimeout", mNetworkTimeoutSpinBox->value() );
+  settings.setValue( "/qgis/networkAndProxy/userAgent", leUserAgent->text() );
 
   // WMS/WMS-C tile expiry time
   settings.setValue( "/qgis/defaultTileExpiry", mDefaultTileExpirySpinBox->value() );
 
-  // Feature funded by Regione Toscana - SITA
   // WMS/WMS-C default max retry in case of tile request errors
   settings.setValue( "/qgis/defaultTileMaxRetry", mDefaultTileMaxRetrySpinBox->value() );
 

@@ -78,9 +78,9 @@ QgsWMSConnection::QgsWMSConnection( QString theConnName ) :
   bool ignoreAxisOrientation = settings.value( key + "/ignoreAxisOrientation", false ).toBool();
   bool invertAxisOrientation = settings.value( key + "/invertAxisOrientation", false ).toBool();
   bool smoothPixmapTransform = settings.value( key + "/smoothPixmapTransform", false ).toBool();
+  QString dpiMode = settings.value( key + "/dpiMode", "all" ).toString();
 
   QString connArgs, delim;
-
 
   if ( ignoreGetMap )
   {
@@ -115,6 +115,13 @@ QgsWMSConnection::QgsWMSConnection( QString theConnName ) :
     connArgs += delim + "SmoothPixmapTransform";
     delim = ";";
     mUri.setParam( "SmoothPixmapTransform", "1" );
+  }
+
+  if ( !dpiMode.isEmpty() )
+  {
+    connArgs += delim + "dpiMode=" + dpiMode;
+    delim = ";";
+    mUri.setParam( "dpiMode", dpiMode );
   }
 
   if ( !connArgs.isEmpty() )

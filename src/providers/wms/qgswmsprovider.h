@@ -434,6 +434,23 @@ struct QgsWmsSupportedFormat
   QString label;
 };
 
+enum QgsWmsTileAttribute
+{
+  TileReqNo = QNetworkRequest::User + 0,
+  TileIndex = QNetworkRequest::User + 1,
+  TileRect  = QNetworkRequest::User + 2,
+  TileRetry = QNetworkRequest::User + 3,
+};
+
+enum QgsWmsDpiMode
+{
+  dpiNone = 0,
+  dpiQGIS = 1,
+  dpiUMN = 2,
+  dpiGeoServer = 4,
+  dpiAll = dpiQGIS | dpiUMN | dpiUMN,
+};
+
 /**
 
   \brief Data provider for OGC WMS layers.
@@ -1096,6 +1113,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
     bool mIgnoreAxisOrientation;
     bool mInvertAxisOrientation;
     bool mSmoothPixmapTransform;
+    enum QgsWmsDpiMode mDpiMode;
 
     //! supported formats for GetFeatureInfo in order of preference
     QStringList mSupportedGetFeatureFormats;

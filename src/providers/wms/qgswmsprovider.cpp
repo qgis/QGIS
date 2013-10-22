@@ -8,6 +8,9 @@
 
     wms-c/wmts support   : Jürgen E. Fischer < jef at norbit dot de >, norBIT GmbH
 
+    tile retry support   : Luigi Pirelli < luipir at gmail dot com >
+                           (funded by Regione Toscana-SITA)
+
  ***************************************************************************/
 
 /***************************************************************************
@@ -158,6 +161,8 @@ bool QgsWmsProvider::parseUri( QString uriString )
   mIgnoreAxisOrientation = uri.hasParam( "IgnoreAxisOrientation" ); // must be before parsing!
   mInvertAxisOrientation = uri.hasParam( "InvertAxisOrientation" ); // must be before parsing!
   mSmoothPixmapTransform = uri.hasParam( "SmoothPixmapTransform" );
+
+  mDpiMode = uri.hasParam( "dpiMode" ) ? ( QgsWmsDpiMode ) uri.param( "dpiMode" ).toInt() : dpiAll;
 
   mUserName = uri.param( "username" );
   QgsDebugMsg( "set username to " + mUserName );
@@ -645,15 +650,14 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
     setQueryItem( url, "STYLES", styles );
     setQueryItem( url, "FORMAT", mImageMimeType );
 
-    //DPI parameter is accepted by QGIS mapserver (and ignored by the other WMS servers)
-    //map_resolution parameter works for UMN mapserver
-
-    //Different WMS servers have DPI parameters:
     if ( mDpi != -1 )
     {
-      setQueryItem( url, "DPI", QString::number( mDpi ) ); //QGIS server
-      setQueryItem( url, "MAP_RESOLUTION", QString::number( mDpi ) ); //UMN mapserver
-      setQueryItem( url, "FORMAT_OPTIONS", QString( "dpi:%1" ).arg( mDpi ) ); //geoserver
+      if ( mDpiMode & dpiQGIS )
+        setQueryItem( url, "DPI", QString::number( mDpi ) );
+      if ( mDpiMode & dpiUMN )
+        setQueryItem( url, "MAP_RESOLUTION", QString::number( mDpi ) );
+      if ( mDpiMode & dpiGeoServer )
+        setQueryItem( url, "FORMAT_OPTIONS", QString( "dpi:%1" ).arg( mDpi ) );
     }
 
     //MH: jpeg does not support transparency and some servers complain if jpg and transparent=true
@@ -830,9 +834,12 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
 
         if ( mDpi != -1 )
         {
-          setQueryItem( url, "DPI", QString::number( mDpi ) ); //QGIS server
-          setQueryItem( url, "MAP_RESOLUTION", QString::number( mDpi ) ); //UMN mapserver
-          setQueryItem( url, "FORMAT_OPTIONS", QString( "dpi:%1" ).arg( mDpi ) ); //geoserver
+          if ( mDpiMode & dpiQGIS )
+            setQueryItem( url, "DPI", QString::number( mDpi ) );
+          if ( mDpiMode & dpiUMN )
+            setQueryItem( url, "MAP_RESOLUTION", QString::number( mDpi ) );
+          if ( mDpiMode & dpiGeoServer )
+            setQueryItem( url, "FORMAT_OPTIONS", QString( "dpi:%1" ).arg( mDpi ) );
         }
 
         if ( mImageMimeType == "image/x-jpegorpng" ||
@@ -860,12 +867,11 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
             QgsDebugMsg( QString( "tileRequest %1 %2/%3 (%4,%5): %6" ).arg( mTileReqNo ).arg( i++ ).arg( n ).arg( row ).arg( col ).arg( turl ) );
             request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
             request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
-            request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 0 ), mTileReqNo );
-            request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 1 ), i );
-            request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 2 ),
+            request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileReqNo ), mTileReqNo );
+            request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileIndex ), i );
+            request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileRect ),
                                   QRectF( tm->topLeft.x() + col * twMap, tm->topLeft.y() - ( row + 1 ) * thMap, twMap, thMap ) );
-            int retry = 0; // just for readability
-            request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 3 ), retry );
+            request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileRetry ), 0 );
 
             QgsDebugMsg( QString( "gettile: %1" ).arg( turl ) );
             QNetworkReply *reply = QgsNetworkAccessManager::instance()->get( request );
@@ -915,12 +921,11 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
               QgsDebugMsg( QString( "tileRequest %1 %2/%3 (%4,%5): %6" ).arg( mTileReqNo ).arg( i++ ).arg( n ).arg( row ).arg( col ).arg( turl ) );
               request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
               request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
-              request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 0 ), mTileReqNo );
-              request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 1 ), i );
-              request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 2 ),
+              request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileReqNo ), mTileReqNo );
+              request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileIndex ), i );
+              request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileRect ),
                                     QRectF( tm->topLeft.x() + col * twMap, tm->topLeft.y() - ( row + 1 ) * thMap, twMap, thMap ) );
-              int retry = 0; // just for readability
-              request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 3 ), retry );
+              request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileRetry ), 0 );
 
               QgsDebugMsg( QString( "gettile: %1" ).arg( turl ) );
               QNetworkReply *reply = QgsNetworkAccessManager::instance()->get( request );
@@ -957,12 +962,11 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
               QgsDebugMsg( QString( "tileRequest %1 %2/%3 (%4,%5): %6" ).arg( mTileReqNo ).arg( i++ ).arg( n ).arg( row ).arg( col ).arg( turl ) );
               request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
               request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
-              request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 0 ), mTileReqNo );
-              request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 1 ), i );
-              request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 2 ),
+              request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileReqNo ), mTileReqNo );
+              request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileIndex ), i );
+              request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileRect ),
                                     QRectF( tm->topLeft.x() + col * twMap, tm->topLeft.y() - ( row + 1 ) * thMap, twMap, thMap ) );
-              int retry = 0; // just for readability
-              request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 3 ), retry );
+              request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileRetry ), 0 );
 
               QgsDebugMsg( QString( "gettile: %1" ).arg( turl ) );
               QNetworkReply *reply = QgsNetworkAccessManager::instance()->get( request );
@@ -1039,7 +1043,6 @@ void QgsWmsProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, in
   //delete image;
 }
 
-// tile retry management developed with funding from Regione Toscana-SITA
 void QgsWmsProvider::repeatTileRequest( QNetworkRequest const &oldRequest )
 {
   if ( mErrors == 100 )
@@ -1050,9 +1053,9 @@ void QgsWmsProvider::repeatTileRequest( QNetworkRequest const &oldRequest )
   QNetworkRequest request( oldRequest );
 
   QString url = request.url().toString();
-  int tileReqNo = request.attribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 0 ) ).toInt();
-  int tileNo = request.attribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 1 ) ).toInt();
-  int retry = request.attribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 3 ) ).toInt();
+  int tileReqNo = request.attribute( static_cast<QNetworkRequest::Attribute>( TileReqNo ) ).toInt();
+  int tileNo = request.attribute( static_cast<QNetworkRequest::Attribute>( TileIndex ) ).toInt();
+  int retry = request.attribute( static_cast<QNetworkRequest::Attribute>( TileRetry ) ).toInt();
   retry++;
 
   QSettings s;
@@ -1074,7 +1077,7 @@ void QgsWmsProvider::repeatTileRequest( QNetworkRequest const &oldRequest )
                                .arg( tileReqNo ).arg( tileNo ).arg( retry ), tr( "WMS" ), QgsMessageLog::INFO );
   }
   QgsDebugMsg( QString( "repeat tileRequest %1 %2(retry %3) for url: %4" ).arg( tileReqNo ).arg( tileNo ).arg( retry ).arg( url ) );
-  request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 3 ), retry );
+  request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileRetry ), retry );
 
   QNetworkReply *reply = QgsNetworkAccessManager::instance()->get( request );
   mTileReplies << reply;
@@ -1124,10 +1127,10 @@ void QgsWmsProvider::tileReplyFinished()
     QgsNetworkAccessManager::instance()->cache()->updateMetaData( cmd );
   }
 
-  int tileReqNo = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 0 ) ).toInt();
-  int tileNo = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 1 ) ).toInt();
-  QRectF r = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 2 ) ).toRectF();
-  int retry = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 3 ) ).toInt();
+  int tileReqNo = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( TileReqNo ) ).toInt();
+  int tileNo = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( TileIndex ) ).toInt();
+  QRectF r = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( TileRect ) ).toRectF();
+  int retry = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( TileRetry ) ).toInt();
 
 #if QT_VERSION >= 0x40500
   QgsDebugMsg( QString( "tile reply %1 (%2) tile:%3(retry %4) rect:%5,%6 %7,%8) fromcache:%9 error:%10 url:%11" )
@@ -1155,10 +1158,10 @@ void QgsWmsProvider::tileReplyFinished()
       setAuthorization( request );
       request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
       request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
-      request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 0 ), tileReqNo );
-      request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 1 ), tileNo );
-      request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 2 ), r );
-      request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 3 ), retry );
+      request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileReqNo ), tileReqNo );
+      request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileIndex ), tileNo );
+      request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileRect ), r );
+      request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileRetry ), 0 );
 
       mTileReplies.removeOne( reply );
       reply->deleteLater();
@@ -1496,7 +1499,7 @@ bool QgsWmsProvider::retrieveServerCapabilities( bool forceRefresh )
 
   QgsDebugMsg( "exiting." );
 
-  return true;
+  return mError.isEmpty();
 }
 
 void QgsWmsProvider::capabilitiesReplyFinished()

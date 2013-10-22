@@ -347,6 +347,7 @@ QDomDocument QgsManageConnectionsDialog::saveOWSConnections( const QStringList &
       el.setAttribute( "invertAxisOrientation", settings.value( path + connections[i] + "/invertAxisOrientation", false ).toBool() ? "true" : "false" );
       el.setAttribute( "referer", settings.value( path + connections[ i ] + "/referer", "" ).toString() );
       el.setAttribute( "smoothPixmapTransform", settings.value( path + connections[i] + "/smoothPixmapTransform", false ).toBool() ? "true" : "false" );
+      el.setAttribute( "dpiMode", settings.value( path + connections[i] + "/dpiMode", "7" ).toInt() );
     }
 
     path = "/Qgis/" + service.toUpper() + "/";
@@ -582,6 +583,7 @@ void QgsManageConnectionsDialog::loadOWSConnections( const QDomDocument &doc, co
     settings.setValue( QString( "/" + connectionName + "/invertAxisOrientation" ), child.attribute( "invertAxisOrientation" ) == "true" );
     settings.setValue( QString( "/" + connectionName + "/referer" ), child.attribute( "referer" ) );
     settings.setValue( QString( "/" + connectionName + "/smoothPixmapTransform" ), child.attribute( "smoothPixmapTransform" ) == "true" );
+    settings.setValue( QString( "/" + connectionName + "/dpiMode" ), child.attribute( "dpiMode", "7" ).toInt() );
     settings.endGroup();
 
     if ( !child.attribute( "username" ).isEmpty() )
