@@ -285,6 +285,12 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //!Redo last composer change
     void on_mActionRedo_triggered();
 
+    //!Show/hide grid
+    void on_mActionShowGrid_triggered( bool checked );
+
+    //!Enable or disable snap items to grid
+    void on_mActionSnapGrid_triggered( bool checked );
+
     //! Save window state
     void saveWindowState();
 

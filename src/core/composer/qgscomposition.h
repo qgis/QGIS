@@ -111,6 +111,9 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     void setSnapToGridEnabled( bool b );
     bool snapToGridEnabled() const {return mSnapToGrid;}
 
+    void setGridVisible( bool b );
+    bool gridVisible() const {return mGridVisible;}
+
     void setSnapGridResolution( double r );
     double snapGridResolution() const {return mSnapGridResolution;}
 
@@ -425,6 +428,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
 
     /**Parameters for snap to grid function*/
     bool mSnapToGrid;
+    bool mGridVisible;
     double mSnapGridResolution;
     double mSnapGridTolerance;
     double mSnapGridOffsetX;

@@ -60,6 +60,7 @@ QgsComposition::QgsComposition( QgsMapRenderer* mapRenderer )
     , mUseAdvancedEffects( true )
     , mSelectionTolerance( 0.0 )
     , mSnapToGrid( false )
+    , mGridVisible( false )
     , mSnapGridResolution( 10.0 )
     , mSnapGridTolerance( 2 )
     , mSnapGridOffsetX( 0.0 )
@@ -98,6 +99,7 @@ QgsComposition::QgsComposition()
     mUseAdvancedEffects( true ),
     mSelectionTolerance( 0.0 ),
     mSnapToGrid( false ),
+    mGridVisible( false ),
     mSnapGridResolution( 10.0 ),
     mSnapGridTolerance( 2 ),
     mSnapGridOffsetX( 0.0 ),
@@ -437,6 +439,14 @@ bool QgsComposition::writeXML( QDomElement& composerElem, QDomDocument& doc )
   {
     compositionElem.setAttribute( "snapping", "0" );
   }
+  if ( mGridVisible )
+  {
+    compositionElem.setAttribute( "gridVisible", "1" );
+  }
+  else
+  {
+    compositionElem.setAttribute( "gridVisible", "0" );
+  }
   compositionElem.setAttribute( "snapGridResolution", QString::number( mSnapGridResolution ) );
   compositionElem.setAttribute( "snapGridTolerance", QString::number( mSnapGridTolerance ) );
   compositionElem.setAttribute( "snapGridOffsetX", QString::number( mSnapGridOffsetX ) );
@@ -525,6 +535,14 @@ bool QgsComposition::readXML( const QDomElement& compositionElem, const QDomDocu
   else
   {
     mSnapToGrid = true;
+  }
+  if ( compositionElem.attribute( "gridVisible" ) == "0" )
+  {
+    mGridVisible = false;
+  }
+  else
+  {
+    mGridVisible = true;
   }
   mSnapGridResolution = compositionElem.attribute( "snapGridResolution" ).toDouble();
   mSnapGridTolerance = compositionElem.attribute( "snapGridTolerance", "2.0" ).toDouble();
@@ -1544,6 +1562,13 @@ int QgsComposition::boundingRectOfSelectedItems( QRectF& bRect )
 void QgsComposition::setSnapToGridEnabled( bool b )
 {
   mSnapToGrid = b;
+  updatePaperItems();
+  saveSettings();
+}
+
+void QgsComposition::setGridVisible( bool b )
+{
+  mGridVisible = b;
   updatePaperItems();
   saveSettings();
 }

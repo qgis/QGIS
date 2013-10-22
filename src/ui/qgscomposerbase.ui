@@ -285,6 +285,28 @@
     <string>Refresh view</string>
    </property>
   </action>
+  <action name="mActionShowGrid">
+   <property name="text">
+    <string>Show Grid</string>
+   </property>
+   <property name="toolTip">
+    <string>Show grid</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+'</string>
+   </property>
+  </action>
+  <action name="mActionSnapGrid">
+   <property name="text">
+    <string>Snap to Grid</string>
+   </property>
+   <property name="toolTip">
+    <string>Snap to grid</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+&quot;</string>
+   </property>
+  </action>
   <action name="mActionAddImage">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
@@ -688,7 +710,7 @@
    <property name="shortcut">
     <string>Ctrl+Alt+]</string>
    </property>
-  </action>  
+  </action>
   <action name="mActionPan">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
@@ -697,7 +719,7 @@
    <property name="text">
     <string>Pan Composer</string>
    </property>
-  </action>     
+  </action>
  </widget>
  <resources>
   <include location="../../images/images.qrc"/>

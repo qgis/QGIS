@@ -170,6 +170,9 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   mActionPan->setCheckable( true );
   mActionAddArrow->setCheckable( true );
 
+  mActionShowGrid->setCheckable( true );
+  mActionSnapGrid->setCheckable( true );
+
 #ifdef Q_WS_MAC
   mActionQuit->setText( tr( "Close" ) );
   mActionQuit->setShortcut( QKeySequence::Close );
@@ -252,6 +255,9 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   viewMenu->addAction( mActionZoomAll );
   viewMenu->addSeparator();
   viewMenu->addAction( mActionRefreshView );
+  viewMenu->addSeparator();
+  viewMenu->addAction( mActionShowGrid );
+  viewMenu->addAction( mActionSnapGrid );
 
   // Panel and toolbar submenus
   mPanelMenu = new QMenu( tr( "Panels" ), this );
@@ -667,6 +673,24 @@ void QgsComposer::on_mActionRefreshView_triggered()
   }
 
   mComposition->update();
+}
+
+void QgsComposer::on_mActionShowGrid_triggered( bool checked )
+{
+  //enable or disable snap items to grid
+  if ( mComposition )
+  {
+    mComposition->setGridVisible( checked );
+  }
+}
+
+void QgsComposer::on_mActionSnapGrid_triggered( bool checked )
+{
+  //enable or disable snap items to grid
+  if ( mComposition )
+  {
+    mComposition->setSnapToGridEnabled( checked );
+  }
 }
 
 void QgsComposer::on_mActionExportAsPDF_triggered()
@@ -2076,6 +2100,10 @@ void QgsComposer::readXML( const QDomElement& composerElem, const QDomDocument& 
   {
     mComposition->addItemsFromXML( composerElem, doc, &mMapsToRestore );
   }
+
+  //restore grid settings
+  mActionSnapGrid->setChecked( mComposition->snapToGridEnabled() );
+  mActionShowGrid->setChecked( mComposition->gridVisible() );
 
   // look for world file composer map, if needed
   // Note: this must be done after maps have been added by addItemsFromXML
