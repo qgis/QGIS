@@ -78,6 +78,7 @@ from processing.algs.ftools.Union import Union
 from processing.algs.ftools.DensifyGeometriesInterval import \
         DensifyGeometriesInterval
 from processing.algs.ftools.Eliminate import Eliminate
+from processing.algs.ftools.SpatialJoin import SpatialJoin
 
 from processing.algs.mmqgisx.MMQGISXAlgorithms import \
     mmqgisx_delete_columns_algorithm, \
@@ -135,7 +136,7 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         Intersection(), Union(), Clip(), ExtentFromLayer(),
                         RandomSelection(), RandomSelectionWithinSubsets(),
                         SelectByLocation(), RandomExtract(), RandomExtractWithinSubsets(),
-                        ExtractByLocation(),
+                        ExtractByLocation(), SpatialJoin(),
                         # ------ mmqgisx ------
                         mmqgisx_delete_columns_algorithm(),
                         mmqgisx_delete_duplicate_geometries_algorithm(),

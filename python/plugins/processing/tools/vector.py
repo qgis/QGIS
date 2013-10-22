@@ -141,6 +141,20 @@ def values(layer, *attributes):
         ret[attr] = values
     return ret
 
+def testForUniqueness( fieldList1, fieldList2 ):
+    '''Returns a modified version of fieldList2, removing naming
+    collisions with fieldList1.'''
+    changed = True
+    while changed:
+        changed = False
+        for i in range(0,len(fieldList1)):
+            for j in range(0,len(fieldList2)):
+                if fieldList1[i].name() == fieldList2[j].name():
+                    field = fieldList2[j]
+                    name = createUniqueFieldName( field.name(), fieldList1 )
+                    fieldList2[j] = QgsField(name, field.type(), len=field.length(), prec=field.precision(), comment=field.comment())
+                    changed = True
+    return fieldList2
 
 def spatialindex(layer):
     """Creates a spatial index for the passed vector layer.
