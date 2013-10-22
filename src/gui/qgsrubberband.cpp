@@ -473,6 +473,10 @@ void QgsRubberBand::paint( QPainter* p )
                 p->drawLine( QLineF( x - s, y + s, x - s, y - s ) );
                 break;
 
+              case ICON_FULL_BOX:
+                p->drawRect( x - s, y - s, mIconSize, mIconSize );
+                break;
+
               case ICON_CIRCLE:
                 p->drawEllipse( x - s, y - s, mIconSize, mIconSize );
                 break;

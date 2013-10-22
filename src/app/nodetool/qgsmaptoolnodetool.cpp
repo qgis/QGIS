@@ -724,23 +724,14 @@ void QgsMapToolNodeTool::keyReleaseEvent( QKeyEvent* e )
 
 QgsRubberBand* QgsMapToolNodeTool::createRubberBandMarker( QgsPoint center, QgsVectorLayer* vlayer )
 {
+
   // create rubberband marker for moving points
-  QgsRubberBand* marker = new QgsRubberBand( mCanvas, QGis::Polygon );
+  QgsRubberBand* marker = new QgsRubberBand( mCanvas, QGis::Point );
   marker->setColor( Qt::red );
   marker->setWidth( 2 );
-  double movement = 4;
-  double s = QgsTolerance::toleranceInMapUnits( movement, vlayer, mCanvas->mapRenderer(), QgsTolerance::Pixels );
+  marker->setIcon( QgsRubberBand::ICON_FULL_BOX );
+  marker->setIconSize( 8 );
   QgsPoint pom = toMapCoordinates( vlayer, center );
-  pom.setX( pom.x() - s );
-  pom.setY( pom.y() - s );
-  marker->addPoint( pom );
-  pom.setX( pom.x() + 2*s );
-  marker->addPoint( pom );
-  pom.setY( pom.y() + 2*s );
-  marker->addPoint( pom );
-  pom.setX( pom.x() - 2*s );
-  marker->addPoint( pom );
-  pom.setY( pom.y() - 2*s );
   marker->addPoint( pom );
   return marker;
 }
