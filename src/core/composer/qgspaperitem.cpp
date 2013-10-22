@@ -43,7 +43,7 @@ void QgsPaperGrid::paint( QPainter* painter, const QStyleOptionGraphicsItem* ite
   //draw grid
   if ( mComposition )
   {
-    if ( mComposition->snapToGridEnabled() && mComposition->plotStyle() ==  QgsComposition::Preview
+    if ( mComposition->gridVisible() && mComposition->plotStyle() ==  QgsComposition::Preview
          && mComposition->snapGridResolution() > 0 )
     {
       int gridMultiplyX = ( int )( mComposition->snapGridOffsetX() / mComposition->snapGridResolution() );

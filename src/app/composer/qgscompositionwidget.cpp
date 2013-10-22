@@ -78,7 +78,6 @@ QgsCompositionWidget::QgsCompositionWidget( QWidget* parent, QgsComposition* c )
     mAlignmentToleranceSpinBox->setValue( mComposition->alignmentSnapTolerance() );
 
     //snap grid
-    mSnapToGridGroupCheckBox->setChecked( mComposition->snapToGridEnabled() );
     mGridResolutionSpinBox->setValue( mComposition->snapGridResolution() );
     mOffsetXSpinBox->setValue( mComposition->snapGridOffsetX() );
     mOffsetYSpinBox->setValue( mComposition->snapGridOffsetY() );
@@ -416,7 +415,6 @@ void QgsCompositionWidget::displaySnapingSettings()
     return;
   }
 
-  mSnapToGridGroupCheckBox->setChecked( mComposition->snapToGridEnabled() );
   mGridResolutionSpinBox->setValue( mComposition->snapGridResolution() );
   mOffsetXSpinBox->setValue( mComposition->snapGridOffsetX() );
   mOffsetYSpinBox->setValue( mComposition->snapGridOffsetY() );
@@ -498,14 +496,6 @@ void QgsCompositionWidget::on_mWorldFileMapComboBox_currentIndexChanged( int ind
   {
     QgsComposerMap* map = reinterpret_cast<QgsComposerMap*>( mWorldFileMapComboBox->itemData( index ).value<void*>() );
     mComposition->setWorldFileMap( map );
-  }
-}
-
-void QgsCompositionWidget::on_mSnapToGridGroupCheckBox_toggled( bool state )
-{
-  if ( mComposition )
-  {
-    mComposition->setSnapToGridEnabled( state );
   }
 }
 
@@ -606,7 +596,6 @@ void QgsCompositionWidget::blockSignals( bool block )
   mPaperOrientationComboBox->blockSignals( block );
   mResolutionSpinBox->blockSignals( block );
   mPrintAsRasterCheckBox->blockSignals( block );
-  mSnapToGridGroupCheckBox->blockSignals( block );
   mGridResolutionSpinBox->blockSignals( block );
   mOffsetXSpinBox->blockSignals( block );
   mOffsetYSpinBox->blockSignals( block );

@@ -50,6 +50,9 @@ class QgsComposition : QGraphicsScene
     void setSnapToGridEnabled( bool b );
     bool snapToGridEnabled() const;
 
+    void setGridVisible( bool b );
+    bool gridVisible() const;
+
     void setSnapGridResolution( double r );
     double snapGridResolution() const;
 
