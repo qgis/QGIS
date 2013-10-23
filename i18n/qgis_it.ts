@@ -42143,7 +42143,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="821"/>
         <source>Reload repository</source>
-        <translation>Ricarica depository</translation>
+        <translation>Ricarica repository</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="841"/>
