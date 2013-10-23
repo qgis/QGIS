@@ -16870,7 +16870,7 @@ Prova una risoluzione minore o una minor dimensione di stampa</translation>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="330"/>
         <source>Bring to Front</source>
-        <translation>Porta in cima</translation>
+        <translation>Sposta in cima</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="333"/>
@@ -17877,7 +17877,7 @@ Secondo me si (rospus)</translatorcomment>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="445"/>
         <source>Count</source>
-        <translation>Conteggio</translation>
+        <translation>Numero di colonne</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="465"/>
@@ -35625,7 +35625,7 @@ Ulteriori informazioni sull&apos;errore:
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="105"/>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="192"/>
         <source>Width</source>
-        <translation>Larghezza</translation>
+        <translation>Lunghezza</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="118"/>
