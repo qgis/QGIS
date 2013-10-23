@@ -13849,6 +13849,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsaddattrdialogbase.ui" line="72"/>
         <source>Width</source>
+        <translatorcomment>Il campo ha una lunghezza, non una larghezza</translatorcomment>
         <translation>Lunghezza</translation>
     </message>
     <message>
