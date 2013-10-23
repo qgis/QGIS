@@ -278,10 +278,6 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
   //so must be false at every new render operation
   mRenderContext.setRenderingStopped( false );
 
-  // Gets the configured Tolerance for simplify transformations between map coordinates and device coordinates
-  QSettings mySettings2;
-  mRenderContext.setMapToPixelTol( mySettings2.value( "Map/map2pixelTol", 1.0f ).toFloat() );
-
   // set selection color
   QgsProject* prj = QgsProject::instance();
   int myRed = prj->readNumEntry( "Gui", "/SelectionColorRedPart", 255 );
