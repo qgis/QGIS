@@ -1567,7 +1567,7 @@ void QgsMapCanvas::getDatumTransformInfo( QgsMapLayer* ml, const QString& srcAut
   }
 
   //if several possibilities:  present dialog
-  QgsDatumTransformDialog d( dt );
+  QgsDatumTransformDialog d( ml->name(), dt );
   if ( mMapRenderer && ( d.exec() == QDialog::Accepted ) )
   {
     int srcTransform = -1;

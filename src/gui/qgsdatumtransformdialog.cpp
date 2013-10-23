@@ -1,9 +1,10 @@
 #include "qgsdatumtransformdialog.h"
 #include "qgscoordinatetransform.h"
 
-QgsDatumTransformDialog::QgsDatumTransformDialog( const QList< QList< int > >& dt, QWidget* parent, Qt::WindowFlags f ): QDialog( parent, f )
+QgsDatumTransformDialog::QgsDatumTransformDialog( const QString& layerName, const QList< QList< int > >& dt, QWidget* parent, Qt::WindowFlags f ): QDialog( parent, f )
 {
   setupUi( this );
+  setWindowTitle( tr( "Select datum transformations for layer" ) + " " + layerName );
   QList< QList< int > >::const_iterator it = dt.constBegin();
   for ( ; it != dt.constEnd(); ++it )
   {
