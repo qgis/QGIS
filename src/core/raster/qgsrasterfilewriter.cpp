@@ -495,9 +495,8 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeImageRaster( QgsRaste
   QgsRasterBlock *inputBlock = 0;
   while ( iter->readNextRasterPart( 1, iterCols, iterRows, &inputBlock, iterLeft, iterTop ) )
   {
-    if ( iterCols <= 5 || iterRows <= 5 ) //some wms servers don't like small values
+    if ( !inputBlock )
     {
-      delete &inputBlock;
       continue;
     }
 
