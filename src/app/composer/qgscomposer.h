@@ -122,9 +122,11 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     //! Zoom in
     void on_mActionZoomIn_triggered();
+    void on_mActionMouseZoomIn_triggered();
 
     //! Zoom out
     void on_mActionZoomOut_triggered();
+    void on_mActionMouseZoomOut_triggered();
 
     //! Refresh view
     void on_mActionRefreshView_triggered();
