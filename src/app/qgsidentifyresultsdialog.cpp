@@ -748,7 +748,10 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent* event )
   mActionPopup->addAction( tr( "Highlight all" ), this, SLOT( highlightAll() ) );
   mActionPopup->addAction( tr( "Highlight layer" ), this, SLOT( highlightLayer() ) );
   if ( layer && QgsProject::instance()->layerIsEmbedded( layer->id() ).isEmpty() )
+  {
+    mActionPopup->addAction( tr( "Activate layer" ), this, SLOT( activateLayer() ) );
     mActionPopup->addAction( tr( "Layer properties..." ), this, SLOT( layerProperties() ) );
+  }
   mActionPopup->addSeparator();
   mActionPopup->addAction( tr( "Expand all" ), this, SLOT( expandAll() ) );
   mActionPopup->addAction( tr( "Collapse all" ), this, SLOT( collapseAll() ) );
@@ -947,12 +950,19 @@ QTreeWidgetItem *QgsIdentifyResultsDialog::layerItem( QTreeWidgetItem *item )
   return item;
 }
 
+QgsMapLayer *QgsIdentifyResultsDialog::layer( QTreeWidgetItem *item )
+{
+  item = layerItem( item );
+  if ( !item )
+    return 0;
+  return qobject_cast<QgsMapLayer *>( item->data( 0, Qt::UserRole ).value<QObject *>() );
+}
 
 QgsVectorLayer *QgsIdentifyResultsDialog::vectorLayer( QTreeWidgetItem *item )
 {
   item = layerItem( item );
   if ( !item )
-    return NULL;
+    return 0;
   return qobject_cast<QgsVectorLayer *>( item->data( 0, Qt::UserRole ).value<QObject *>() );
 }
 
@@ -960,7 +970,7 @@ QgsRasterLayer *QgsIdentifyResultsDialog::rasterLayer( QTreeWidgetItem *item )
 {
   item = layerItem( item );
   if ( !item )
-    return NULL;
+    return 0;
   return qobject_cast<QgsRasterLayer *>( item->data( 0, Qt::UserRole ).value<QObject *>() );
 }
 
@@ -1278,6 +1288,13 @@ void QgsIdentifyResultsDialog::highlightLayer( QTreeWidgetItem *item )
 void QgsIdentifyResultsDialog::layerProperties()
 {
   layerProperties( lstResults->currentItem() );
+}
+
+void QgsIdentifyResultsDialog::activateLayer()
+{
+  connect( this, SIGNAL( activateLayer( QgsMapLayer * ) ), QgisApp::instance(), SLOT( setActiveLayer( QgsMapLayer * ) ) );
+  emit activateLayer( layer( lstResults->currentItem() ) );
+  disconnect( this, SIGNAL( activateLayer( QgsMapLayer * ) ), QgisApp::instance(), SLOT( setActiveLayer( QgsMapLayer * ) ) );
 }
 
 void QgsIdentifyResultsDialog::layerProperties( QTreeWidgetItem *item )
