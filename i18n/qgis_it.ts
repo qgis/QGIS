@@ -24295,7 +24295,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsfieldsproperties.cpp" line="750"/>
         <source>Line edit</source>
-        <translation>Modifica riga</translation>
+        <translation>Modifica valore</translation>
     </message>
     <message>
         <location filename="../src/app/qgsfieldsproperties.cpp" line="751"/>
