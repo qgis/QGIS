@@ -27,18 +27,24 @@ __revision__ = '$Format:%H$'
 
 from PyQt4.QtCore import *
 from qgis.core import *
+from processing import interface
 from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.core.GeoAlgorithmExecutionException import \
+        GeoAlgorithmExecutionException
 from processing.parameters.ParameterVector import ParameterVector
 from processing.parameters.ParameterString import ParameterString
 from processing.parameters.ParameterNumber import ParameterNumber
+from processing.parameters.ParameterBoolean import ParameterBoolean
 from processing.parameters.ParameterSelection import ParameterSelection
 from processing.outputs.OutputVector import OutputVector
 from processing.tools import dataobjects, vector
 
+from processing.algs.ui.FieldsCalculatorDialog import FieldsCalculatorDialog
 
 class FieldsCalculator(GeoAlgorithm):
 
     INPUT_LAYER = 'INPUT_LAYER'
+    NEW_FIELD = 'NEW_FIELD'
     FIELD_NAME = 'FIELD_NAME'
     FIELD_TYPE = 'FIELD_TYPE'
     FIELD_LENGTH = 'FIELD_LENGTH'
@@ -46,8 +52,8 @@ class FieldsCalculator(GeoAlgorithm):
     FORMULA = 'FORMULA'
     OUTPUT_LAYER = 'OUTPUT_LAYER'
 
-    TYPE_NAMES = ['Float', 'Integer', 'String']
-    TYPES = [QVariant.Double, QVariant.Int, QVariant.String]
+    TYPE_NAMES = ['Float', 'Integer', 'String', 'Date']
+    TYPES = [QVariant.Double, QVariant.Int, QVariant.String, QVariant.Date]
 
     def defineCharacteristics(self):
         self.name = 'Field calculator'
@@ -61,58 +67,95 @@ class FieldsCalculator(GeoAlgorithm):
         self.addParameter(ParameterNumber(self.FIELD_LENGTH, 'Field length',
                           1, 255, 10))
         self.addParameter(ParameterNumber(self.FIELD_PRECISION,
-                          'Field precision', 0, 10, 5))
+                          'Field precision', 0, 15, 3))
+        self.addParameter(ParameterBoolean(self.NEW_FIELD,
+                          'Create new field', True))
         self.addParameter(ParameterString(self.FORMULA, 'Formula'))
         self.addOutput(OutputVector(self.OUTPUT_LAYER, 'Output layer'))
 
     def processAlgorithm(self, progress):
-        fieldName = self.getParameterValue(self.FIELD_NAME)
-        fieldType = self.getParameterValue(self.FIELD_TYPE)
-        fieldLength = self.getParameterValue(self.FIELD_LENGTH)
-        fieldPrecision = self.getParameterValue(self.FIELD_PRECISION)
-        formula = self.getParameterValue(self.FORMULA)
-        output = self.getOutputFromName(self.OUTPUT_LAYER)
-
         layer = dataobjects.getObjectFromUri(
                 self.getParameterValue(self.INPUT_LAYER))
+        fieldName = self.getParameterValue(self.FIELD_NAME)
+        fieldType = self.TYPES[self.getParameterValue(self.FIELD_TYPE)]
+        width = self.getParameterValue(self.FIELD_LENGTH)
+        precision = self.getParameterValue(self.FIELD_PRECISION)
+        newField = self.getParameterValue(self.NEW_FIELD)
+        formula = self.getParameterValue(self.FORMULA)
+
+        output = self.getOutputFromName(self.OUTPUT_LAYER)
+
         provider = layer.dataProvider()
-        fields = provider.fields()
-        fields.append(QgsField(fieldName, self.TYPES[fieldType], '',
-                      fieldLength, fieldPrecision))
+        fields = layer.pendingFields()
+        if newField:
+            fields.append(QgsField(fieldName, fieldType, '', width, precision))
+
         writer = output.getVectorWriter(fields, provider.geometryType(),
-                layer.crs())
+                                        layer.crs())
 
-        outFeat = QgsFeature()
-        inGeom = QgsGeometry()
-        nFeat = provider.featureCount()
-        nElement = 0
+        exp = QgsExpression(formula)
+
+        da = QgsDistanceArea()
+        da.setSourceCrs(layer.crs().srsid())
+        canvas = interface.iface.mapCanvas()
+        da.setEllipsoidalMode(canvas.mapRenderer().hasCrsTransformEnabled())
+        da.setEllipsoid(QgsProject.instance().readEntry('Measure',
+                                                        '/Ellipsoid',
+                                                        GEO_NONE)[0])
+        exp.setGeomCalculator(da)
+
+        if not exp.prepare(layer.pendingFields()):
+            raise GeoAlgorithmExecutionException(
+                'Evaluation error: ' + exp.evalErrorString())
+
+        outFeature = QgsFeature()
+        outFeature.initAttributes(len(fields))
+        outFeature.setFields(fields)
+
+        error = ''
+        calculationSuccess = True
+
+        current = 0
         features = vector.features(layer)
+        total = 100.0 / len(features)
 
-        fieldnames = [field.name() for field in provider.fields()]
-        fieldnames.sort(key=len, reverse=False)
-        fieldidx = [fieldnames.index(field.name()) for field in
-                    provider.fields()]
-        print fieldidx
-        for inFeat in features:
-            progress.setPercentage(int(100 * nElement / nFeat))
-            attrs = inFeat.attributes()
-            expression = formula
-            for idx in fieldidx:
-                expression = expression.replace(unicode(fields[idx].name()),
-                        unicode(attrs[idx]))
-            try:
-                result = eval(expression)
-            except Exception:
-                result = None
-            nElement += 1
-            inGeom = inFeat.geometry()
-            outFeat.setGeometry(inGeom)
-            attrs = inFeat.attributes()
-            attrs.append(result)
-            outFeat.setAttributes(attrs)
-            writer.addFeature(outFeat)
+        rownum = 1
+        for f in features:
+            exp.setCurrentRowNumber(rownum)
+            value = exp.evaluate(f)
+            if exp.hasEvalError():
+                calculationSuccess = False
+                error = exp.evalErrorString()
+                break
+            else:
+                outFeature.setGeometry(f.geometry())
+                for fld in f.fields():
+                    outFeature[fld.name()] = f[fld.name()]
+                outFeature[fieldName] = value
+                writer.addFeature(outFeature)
+
+            current += 1
+            progress.setPercentage(int(current * total))
         del writer
 
+        if not calculationSuccess:
+            raise GeoAlgorithmExecutionException(
+                'An error occured while evaluating the calculation '
+                'string:\n' + error)
+
+
     def checkParameterValuesBeforeExecuting(self):
-        # TODO check that formula is correct and fields exist
-        pass
+        newField = self.getParameterValue(self.NEW_FIELD)
+        fieldName = self.getParameterValue(self.FIELD_NAME)
+        if newField and len(fieldName) == 0:
+            raise GeoAlgorithmExecutionException('Field name is not set. '
+                                                 'Please enter a field name')
+
+        outputName = self.getOutputValue(self.OUTPUT_LAYER)
+        if outputName == '':
+            raise GeoAlgorithmExecutionException('Output is not set. '
+                'Please specify valid filename')
+
+
+    def getCustomParametersDialog(self):
+        return FieldsCalculatorDialog(self)
