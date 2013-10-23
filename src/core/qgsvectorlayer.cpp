@@ -135,6 +135,8 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
     , mValidExtent( false )
     , mSymbolFeatureCounted( false )
     , mCurrentRendererContext( 0 )
+    , mSimplifyDrawingTol( QgsFeatureRequest::MAPTOPIXEL_THRESHOLD_DEFAULT )
+    , mSimplifyDrawing( true )
 
 {
   mActions = new QgsAttributeAction( this );
@@ -692,10 +694,13 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
                                      .setSubsetOfAttributes( attributes );
 
   // Enable the simplification of the geometries before fetch the features using the current map2pixel context.
-  featureRequest.setFlags( featureRequest.flags() | QgsFeatureRequest::SimplifyGeometries );
-  featureRequest.setCoordinateTransform( rendererContext.coordinateTransform() );
-  featureRequest.setMapToPixel( &rendererContext.mapToPixel() );
-  featureRequest.setMapToPixelTol( rendererContext.mapToPixelTol() );
+  if ( mSimplifyDrawing )
+  {
+    featureRequest.setFlags( featureRequest.flags() | QgsFeatureRequest::SimplifyGeometries );
+    featureRequest.setCoordinateTransform( rendererContext.coordinateTransform() );
+    featureRequest.setMapToPixel( &rendererContext.mapToPixel() );
+    featureRequest.setMapToPixelTol( mSimplifyDrawingTol );
+  }
 
   QgsFeatureIterator fit = getFeatures( featureRequest );
 
@@ -1216,7 +1221,7 @@ QgsFeatureIterator QgsVectorLayer::getFeatures( const QgsFeatureRequest& request
   if ( !mDataProvider )
     return QgsFeatureIterator();
 
-  if ( request.flags() & QgsFeatureRequest::SimplifyGeometries )
+  if ( mSimplifyDrawing && request.flags() & QgsFeatureRequest::SimplifyGeometries )
     return QgsFeatureIterator( new QgsSimplifiedVectorLayerFeatureIterator( this, request ) );
 
   return QgsFeatureIterator( new QgsVectorLayerFeatureIterator( this, request ) );

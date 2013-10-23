@@ -95,9 +95,6 @@ class CORE_EXPORT QgsRenderContext
     //! Added in QGIS v2.0
     void setSelectionColor( const QColor& color ) { mSelectionColor = color; }
 
-    float mapToPixelTol() const { return mMapToPixelTol; }
-    void setMapToPixelTol( float map2pixelTol );
-
   private:
 
     /**Painter for rendering operations*/
@@ -118,8 +115,6 @@ class CORE_EXPORT QgsRenderContext
     bool mUseAdvancedEffects;
 
     QgsMapToPixel mMapToPixel;
-    /** Tolerance for simplify transformations between map coordinates and device coordinates*/
-    float mMapToPixelTol;
 
     /**True if the rendering has been canceled*/
     bool mRenderingStopped;

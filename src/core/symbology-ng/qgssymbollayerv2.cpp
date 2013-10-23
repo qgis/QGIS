@@ -332,7 +332,7 @@ void QgsFillSymbolLayerV2::_renderPolygon( QPainter* p, const QPolygonF& points,
   }
 
   // Disable 'Antialiasing' if the geometry was generalized in the current RenderContext (We known that it must have least #5 points).
-  if ( points.size()<=5 && QgsMapRequest::canbeGeneralizedByWndBoundingBox( points, context.renderContext().mapToPixelTol() ) && p->renderHints() & QPainter::Antialiasing )
+  if ( points.size()<=5 && QgsFeatureRequest::canbeGeneralizedByWndBoundingBox( points, context.layer() ? context.layer()->simplifyDrawingTol() : QgsFeatureRequest::MAPTOPIXEL_THRESHOLD_DEFAULT ) && p->renderHints() & QPainter::Antialiasing )
   {
     p->setRenderHint( QPainter::Antialiasing, false );
     p->drawPolygon( points );

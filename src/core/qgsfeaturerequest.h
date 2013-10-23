@@ -17,10 +17,12 @@
 
 #include <QFlags>
 
-#include "qgsmaprequest.h"
 #include "qgsfeature.h"
 #include "qgsrectangle.h"
 #include "qgsexpression.h"
+
+#include "qgscoordinatetransform.h"
+#include "qgsmaptopixel.h"
 
 #include <QList>
 typedef QList<int> QgsAttributeList;
@@ -54,7 +56,7 @@ typedef QList<int> QgsAttributeList;
  *     QgsFeatureRequest().setFilterFid(45)
  *
  */
-class CORE_EXPORT QgsFeatureRequest : public QgsMapRequest
+class CORE_EXPORT QgsFeatureRequest
 {
   public:
     enum Flag
@@ -63,7 +65,7 @@ class CORE_EXPORT QgsFeatureRequest : public QgsMapRequest
       NoGeometry         = 1,  //!< Geometry is not required. It may still be returned if e.g. required for a filter condition.
       SubsetOfAttributes = 2,  //!< Fetch only a subset of attributes (setSubsetOfAttributes sets this flag)
       ExactIntersect     = 4,  //!< Use exact geometry intersection (slower) instead of bounding boxes
-      SimplifyGeometries = 8   //!< Simplify the geometry using the current map2pixel context
+      SimplifyGeometries = 8   //!< Simplify the geometry using the current map2pixel context (e.g. for fast rendering...)
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
@@ -135,6 +137,15 @@ class CORE_EXPORT QgsFeatureRequest : public QgsMapRequest
     // void setFilterNativeExpression(con QString& expr);   // using provider's SQL (if supported)
     // void setLimit(int limit);
 
+    const QgsCoordinateTransform* coordinateTransform() const { return mMapCoordTransform; }
+    QgsFeatureRequest& setCoordinateTransform( const QgsCoordinateTransform* ct );
+	
+    const QgsMapToPixel* mapToPixel() const { return mMapToPixel; }
+    QgsFeatureRequest& setMapToPixel( const QgsMapToPixel* mtp );
+
+    float mapToPixelTol() const { return mMapToPixelTol; }
+    QgsFeatureRequest& setMapToPixelTol( float map2pixelTol );
+
   protected:
     FilterType mFilter;
     QgsRectangle mFilterRect;
@@ -143,6 +154,44 @@ class CORE_EXPORT QgsFeatureRequest : public QgsMapRequest
     QgsExpression* mFilterExpression;
     Flags mFlags;
     QgsAttributeList mAttrs;
+
+    //! For transformation between coordinate systems from current layer to map target. Can be 0 if on-the-fly reprojection is not used
+    const QgsCoordinateTransform* mMapCoordTransform;    
+    //! For transformation between map coordinates and device coordinates
+    const QgsMapToPixel* mMapToPixel;
+    //! Factor tolterance to apply in transformation between map coordinates and device coordinates
+    float mMapToPixelTol;
+
+  // Map2pixel simplification for fast rendering
+  public:
+    //! Default Threshold of map2pixel simplification between map coordinates and device coordinates for fast rendering
+    static float const MAPTOPIXEL_THRESHOLD_DEFAULT;
+
+    //! Returns whether the device-geometry can be replaced by its BBOX when is applied the specified map2pixel tolerance
+    static bool canbeGeneralizedByWndBoundingBox( const QgsRectangle&   envelope, float mapToPixelTol = 1.0f );
+    //! Returns whether the device-geometry can be replaced by its BBOX when is applied the specified map2pixel tolerance
+    static bool canbeGeneralizedByWndBoundingBox( const QVector<QPointF>& points, float mapToPixelTol = 1.0f );
+
+    //! Returns whether the envelope can be replaced by its BBOX when is applied the map2pixel context
+    static bool canbeGeneralizedByMapBoundingBox( const QgsRectangle& envelope,
+                                  const QgsCoordinateTransform* coordinateTransform, const QgsMapToPixel* mtp, float mapToPixelTol = 1.0f );
+
+    //! Returns whether the envelope can be replaced by its BBOX when is applied the map2pixel context
+    inline bool canbeGeneralizedByMapBoundingBox( const QgsRectangle& envelope ) const { return canbeGeneralizedByMapBoundingBox( envelope, mMapCoordTransform, mMapToPixel, mMapToPixelTol ); }
+
+    //! Simplify the specified geometry (Removing duplicated points) when is applied the map2pixel context
+    static bool simplifyGeometry( QgsGeometry* geometry, 
+                                  const QgsCoordinateTransform* coordinateTransform, const QgsMapToPixel* mtp, float mapToPixelTol = 1.0f );
+
+    //! Simplify the specified geometry (Removing duplicated points) when is applied the map2pixel context
+    inline bool simplifyGeometry( QgsGeometry* geometry ) const { return simplifyGeometry( geometry, mMapCoordTransform, mMapToPixel, mMapToPixelTol ); }
+
+    //! Simplify the specified point stream (Removing duplicated points) when is applied a map2pixel context
+    static bool simplifyGeometry( QGis::GeometryType geometryType, const QgsRectangle& envelope, double* xptr, int xStride, double* yptr, int yStride, int pointCount, int& pointSimplifiedCount,
+                                  const QgsCoordinateTransform* coordinateTransform, const QgsMapToPixel* mtp, float mapToPixelTol = 1.0f );
+
+    //! Simplify the specified point stream (Removing duplicated points) when is applied the map2pixel context
+    inline bool simplifyGeometry( QGis::GeometryType geometryType, const QgsRectangle& envelope, double* xptr, int xStride, double* yptr, int yStride, int pointCount, int& pointSimplifiedCount ) const { return simplifyGeometry( geometryType, envelope, xptr, xStride, yptr, yStride, pointCount, pointSimplifiedCount, mMapCoordTransform, mMapToPixel, mMapToPixelTol ); }
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsFeatureRequest::Flags )

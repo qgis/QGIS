@@ -1362,6 +1362,15 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** @note not available in python bindings */
     inline QgsGeometryCache* cache() { return mCache; }
 
+    /** Set the Map2pixel simplification threshold for fast rendering of features */
+    void setSimplifyDrawingTol( float simplifyDrawingTol ) { mSimplifyDrawingTol = simplifyDrawingTol; }
+    /** Returns the Map2pixel simplification threshold for fast rendering of features */
+    float simplifyDrawingTol() const { return mSimplifyDrawingTol; }
+
+    /** Enable the Map2pixel simplification for fast rendering of features */
+    void setSimplifyDrawing( bool simplifyDrawing ) { mSimplifyDrawing = simplifyDrawing; }
+    /** Returns whether is enabled the map2pixel simplification of geometries for fast rendering of features */
+    bool simplifyDrawing() const { return mSimplifyDrawing; }
 
   public slots:
     /**
@@ -1631,6 +1640,11 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     /** Renderer object which holds the information about how to display the features */
     QgsFeatureRendererV2 *mRendererV2;
+
+    /** Map2pixel simplification threshold for fast rendering of features */
+    float mSimplifyDrawingTol;
+    /** Enable map2pixel simplification of geometries for fast rendering of features */
+    bool mSimplifyDrawing;
 
     /** Label */
     QgsLabel *mLabel;

@@ -28,8 +28,7 @@ QgsRenderContext::QgsRenderContext()
     mScaleFactor( 1.0 ),
     mRasterScaleFactor( 1.0 ),
     mRendererScale( 1.0 ),
-    mLabelingEngine( NULL ),
-    mMapToPixelTol( 1.0f )
+    mLabelingEngine( NULL )
 {
 
 }
@@ -41,9 +40,4 @@ QgsRenderContext::~QgsRenderContext()
 void QgsRenderContext::setCoordinateTransform( const QgsCoordinateTransform* t )
 {
   mCoordTransform = t;
-}
-
-void QgsRenderContext::setMapToPixelTol( float map2pixelTol )
-{
-  mMapToPixelTol = map2pixelTol;
 }
