@@ -694,7 +694,7 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
                                      .setSubsetOfAttributes( attributes );
 
   // Enable the simplification of the geometries before fetch the features using the current map2pixel context.
-  if ( mSimplifyDrawing )
+  if ( mSimplifyDrawing && !(featureRequest.flags() & QgsFeatureRequest::NoGeometry) )
   {
     featureRequest.setFlags( featureRequest.flags() | QgsFeatureRequest::SimplifyGeometries );
     featureRequest.setCoordinateTransform( rendererContext.coordinateTransform() );
@@ -1221,7 +1221,7 @@ QgsFeatureIterator QgsVectorLayer::getFeatures( const QgsFeatureRequest& request
   if ( !mDataProvider )
     return QgsFeatureIterator();
 
-  if ( mSimplifyDrawing && request.flags() & QgsFeatureRequest::SimplifyGeometries )
+  if ( mSimplifyDrawing && (request.flags() & QgsFeatureRequest::SimplifyGeometries) && !(request.flags() & QgsFeatureRequest::NoGeometry) )
     return QgsFeatureIterator( new QgsSimplifiedVectorLayerFeatureIterator( this, request ) );
 
   return QgsFeatureIterator( new QgsVectorLayerFeatureIterator( this, request ) );

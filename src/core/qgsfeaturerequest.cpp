@@ -564,7 +564,7 @@ bool QgsFeatureRequest::simplifyGeometry( QgsGeometry* geometry, const QgsCoordi
     unsigned char* targetWkb = (unsigned char*)malloc( targetWkbSize );
     memcpy( targetWkb, wkb, targetWkbSize );
     geometry->fromWkb( targetWkb, targetWkbSize );
-	return true;
+    return true;
   }
   return false;
 }
