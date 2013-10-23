@@ -1,4 +1,5 @@
 #include "qgsdatumtransformdialog.h"
+#include "qgscoordinatetransform.h"
 
 QgsDatumTransformDialog::QgsDatumTransformDialog( const QList< QList< int > >& dt, QWidget* parent, Qt::WindowFlags f ): QDialog( parent, f )
 {
@@ -10,10 +11,11 @@ QgsDatumTransformDialog::QgsDatumTransformDialog( const QList< QList< int > >& d
     QString itemText;
     for ( int i = 0; i < 2; ++i )
     {
-      itemText = QString::number( it->at( i ) );
-      if ( itemText.compare( "-1" ) != 0 )
+      int nr = it->at( i );
+      if ( nr != -1 )
       {
-        item->setText( i, itemText );
+        item->setData( i, Qt::UserRole, nr );
+        item->setText( i, QgsCoordinateTransform::datumTransformString( nr ) );
       }
     }
     mDatumTransformTreeWidget->addTopLevelItem( item );
@@ -37,15 +39,12 @@ QList< int > QgsDatumTransformDialog::selectedDatumTransform()
   {
     for ( int i = 0; i < 2; ++i )
     {
-      bool conversionOk = false;
-      QString itemText = item->text( i );
-      int transformNr = itemText.toInt( &conversionOk );
-      if ( !itemText.isEmpty() && conversionOk )
+      int transformNr = item->data( i, Qt::UserRole ).toInt();
+      if ( transformNr != -1 )
       {
         list << transformNr;
       }
     }
   }
-
   return list;
 }

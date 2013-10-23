@@ -213,6 +213,7 @@ class CORE_EXPORT QgsCoordinateTransform : public QObject
 
     /**Returns list of datum transformations for the given src and dest CRS*/
     static QList< QList< int > > datumTransformations( const QgsCoordinateReferenceSystem& srcCRS, const QgsCoordinateReferenceSystem& destCRS );
+    static QString datumTransformString( int datumTransform );
 
     int sourceDatumTransform() const { return mSourceDatumTransform; }
     void setSourceDatumTransform( int dt ) { mSourceDatumTransform = dt; }
@@ -284,7 +285,6 @@ class CORE_EXPORT QgsCoordinateTransform : public QObject
     /**Removes +nadgrids and +towgs84 from proj4 string*/
     static QString stripDatumTransform( const QString& proj4 );
     static void searchDatumTransform( const QString& sql, QList< int >& transforms );
-    static QString datumTransformString( int datumTransform );
 };
 
 //! Output stream operator

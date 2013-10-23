@@ -11,14 +11,19 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Select datum transformations</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
     <widget class="QTreeWidget" name="mDatumTransformTreeWidget">
      <column>
       <property name="text">
-       <string/>
+       <string>src transform</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>dst transform</string>
       </property>
      </column>
      <column>
