@@ -8902,7 +8902,7 @@ void QgisApp::keyReleaseEvent( QKeyEvent *event )
       case QMessageBox::No:
         break;
     }
-    event->setAccepted( accepted ); // dont't close my Top Level Widget !
+    event->setAccepted( accepted ); // don't close my Top Level Widget !
     accepted = false;// close the app next time when the user press back button
   }
 }

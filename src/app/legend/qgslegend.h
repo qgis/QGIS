@@ -591,9 +591,9 @@ class QgsLegend : public QTreeWidget
     bool verifyDrawingOrder();
 
     /*!
-     * Check if current LegendItem belogs to a WMS layer 
+     * Check if current LegendItem belongs to a WMS layer
      * @param item LegendItem to check if belongs to a WMS layer
-     * @return QImage A valid Legend image if belogs to WMS otherwise QImage()
+     * @return QImage A valid Legend image if belongs to WMS otherwise QImage()
      */
     QImage getWmsLegendPixmap( QTreeWidgetItem *item );
 

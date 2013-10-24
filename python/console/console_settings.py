@@ -206,7 +206,7 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
         settings.setValue("pythonConsole/caretLineColor", self.caretLineColor.color())
         settings.setValue("pythonConsole/caretLineColorEditor", self.caretLineColorEditor.color())
         settings.setValue("pythonConsole/stderrFontColor", self.stderrFontColor.color())
-        
+
         settings.setValue("pythonConsole/singleQuoteFontColor", self.singleQuoteFontColor.color())
         settings.setValue("pythonConsole/singleQuoteFontColorEditor", self.singleQuoteFontColorEditor.color())
         settings.setValue("pythonConsole/doubleQuoteFontColor", self.doubleQuoteFontColor.color())
@@ -215,7 +215,7 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
         settings.setValue("pythonConsole/tripleSingleQuoteFontColorEditor", self.tripleSingleQuoteFontColorEditor.color())
         settings.setValue("pythonConsole/tripleDoubleQuoteFontColor", self.tripleDoubleQuoteFontColor.color())
         settings.setValue("pythonConsole/tripleDoubleQuoteFontColorEditor", self.tripleDoubleQuoteFontColorEditor.color())
-        
+
     def restoreSettings(self):
         settings = QSettings()
         self.spinBox.setValue(settings.value("pythonConsole/fontsize", 10, type=int))
@@ -285,7 +285,7 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
         self.cursorColor.setColor(QColor(settings.value("pythonConsole/cursorColor", QColor(Qt.black))))
         self.cursorColorEditor.setColor(QColor(settings.value("pythonConsole/cursorColorEditor", QColor(Qt.black))))
         self.stderrFontColor.setColor(QColor(settings.value("pythonConsole/stderrFontColor", QColor(Qt.red))))
-        
+
         self.singleQuoteFontColor.setColor(settings.value("pythonConsole/singleQuoteFontColor", QColor(Qt.blue)))
         self.singleQuoteFontColorEditor.setColor(settings.value("pythonConsole/singleQuoteFontColorEditor", QColor(Qt.blue)))
         self.doubleQuoteFontColor.setColor(settings.value("pythonConsole/doubleQuoteFontColor", QColor(Qt.blue)))
@@ -311,7 +311,7 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
         self.doubleQuoteFontColor.setColor(QColor(Qt.blue))
         self.tripleSingleQuoteFontColor.setColor(QColor(Qt.blue))
         self.tripleDoubleQuoteFontColor.setColor(QColor(Qt.blue))
-        
+
 
     def _resetFontColorEditor(self):
         self.defaultFontColorEditor.setColor(QColor(Qt.black))

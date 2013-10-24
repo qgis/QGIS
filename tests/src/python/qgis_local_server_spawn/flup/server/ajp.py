@@ -95,7 +95,7 @@ __all__ = ['WSGIServer']
 
 class WSGIServer(BaseAJPServer, ThreadedServer):
     """
-    AJP1.3/WSGI server. Runs your WSGI application as a persistant program
+    AJP1.3/WSGI server. Runs your WSGI application as a persistent program
     that understands AJP1.3. Opens up a TCP socket, binds it, and then
     waits for forwarded requests from your webserver.
 

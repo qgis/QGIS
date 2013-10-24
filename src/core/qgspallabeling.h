@@ -687,7 +687,7 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
 
     bool isShowingPartialsLabels() const { return mShowingPartialsLabels; }
     void setShowingPartialsLabels( bool showing ) { mShowingPartialsLabels = showing; }
-    
+
     // implemented methods from labeling engine interface
 
     //! called when we're going to start with rendering

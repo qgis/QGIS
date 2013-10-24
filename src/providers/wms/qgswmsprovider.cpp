@@ -4001,7 +4001,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
   if ( !myExtent.isEmpty() )
   {
     // we cannot reliably identify WMS if theExtent is specified but theWidth or theHeight
-    // are not, because we dont know original resolution
+    // are not, because we don't know original resolution
     if ( theWidth == 0 || theHeight == 0 )
     {
       return QgsRasterIdentifyResult( ERROR( tr( "Context not fully specified (extent was defined but width and/or height was not)." ) ) );
@@ -4600,7 +4600,7 @@ QImage QgsWmsProvider::getLegendGraphic( double scale, bool forceRefresh )
   // the layer tags inside capabilities
   QgsDebugMsg( "entering." );
 
-  if ( !scale && !mGetLegendGraphicScale)
+  if ( !scale && !mGetLegendGraphicScale )
   {
     QgsDebugMsg( QString( "No scale factor set" ) );
     return QImage();
@@ -4611,7 +4611,7 @@ QImage QgsWmsProvider::getLegendGraphic( double scale, bool forceRefresh )
     forceRefresh = true;
     QgsDebugMsg( QString( "Download again due to scale change from: %1 to: %2" ).arg( mGetLegendGraphicScale ).arg( scale ) );
   }
-  
+
   if ( forceRefresh )
   {
     if ( scale )
@@ -4620,42 +4620,45 @@ QImage QgsWmsProvider::getLegendGraphic( double scale, bool forceRefresh )
     }
 
     // if style is not defined, set as "default"
-    QString currentStyle("default");
+    QString currentStyle( "default" );
     if ( mActiveSubStyles[0] != "" )
     {
       currentStyle = mActiveSubStyles[0];
     }
 
+#if 0
     // add WMS GetGraphicLegend request
     // TODO set sld version using instance var something like mSldVersion
     // TODO at this moment LSD version can be get from LegendURL in getCapability,but parsing of
-    // this tag is not complete. Below the code that should work if pasing whould correct
-    //     if ( mActiveSubLayers[0] == mCapabilities.capability.layer.name )
-    //     {
-    //       foreach( QgsWmsStyleProperty style,  mCapabilities.capability.layer.style )
-    //       {
-    //         if ( currentStyle == style.name )
-    //         {
-    //           url.setUrl( style.legendUrl[0].onlineResource.xlinkHref, QUrl::StrictMode );
-    //         }
-    //       }
-    //     } // is a sublayer
-    //     else if ( mActiveSubLayers[0].contains( mCapabilities.capability.layer.name ) )
-    //     {
-    //       foreach( QgsWmsLayerProperty layerProperty, mCapabilities.capability.layer.layer )
-    //       {
-    //         if ( mActiveSubLayers[0] == layerProperty.name )
-    //         {
-    //           foreach( QgsWmsStyleProperty style, layerProperty.style )
-    //           {
-    //             if ( currentStyle == style.name )
-    //             {
-    //               url.setUrl( style.legendUrl[0].onlineResource.xlinkHref, QUrl::StrictMode );
-    //             }
-    //           }
-    //         }
-    //       }
-    //     }
+    // this tag is not complete. Below the code that should work if parsing would correct
+
+    if ( mActiveSubLayers[0] == mCapabilities.capability.layer.name )
+    {
+      foreach ( QgsWmsStyleProperty style,  mCapabilities.capability.layer.style )
+      {
+        if ( currentStyle == style.name )
+        {
+          url.setUrl( style.legendUrl[0].onlineResource.xlinkHref, QUrl::StrictMode );
+        }
+      }
+    } // is a sublayer
+    else if ( mActiveSubLayers[0].contains( mCapabilities.capability.layer.name ) )
+    {
+      foreach ( QgsWmsLayerProperty layerProperty, mCapabilities.capability.layer.layer )
+      {
+        if ( mActiveSubLayers[0] == layerProperty.name )
+        {
+          foreach ( QgsWmsStyleProperty style, layerProperty.style )
+          {
+            if ( currentStyle == style.name )
+            {
+              url.setUrl( style.legendUrl[0].onlineResource.xlinkHref, QUrl::StrictMode );
+            }
+          }
+        }
+      }
+    }
+#endif
     QUrl url( mIgnoreGetMapUrl ? mBaseUrl : getMapUrl(), QUrl::StrictMode );
     setQueryItem( url, "SERVICE", "WMS" );
     setQueryItem( url, "VERSION", mCapabilities.version );
@@ -4663,24 +4666,26 @@ QImage QgsWmsProvider::getLegendGraphic( double scale, bool forceRefresh )
     setQueryItem( url, "REQUEST", "GetLegendGraphic" );
     setQueryItem( url, "LAYER", mActiveSubLayers[0] );
     setQueryItem( url, "STYLE", currentStyle );
-    setQueryItem( url, "SCALE", QString::number( scale, 'f') );
+    setQueryItem( url, "SCALE", QString::number( scale, 'f' ) );
     setQueryItem( url, "FORMAT", mImageMimeType );
 
     // add config parameter related to resolution
     QSettings s;
     int defaultLegendGraphicResolution = s.value( "/qgis/defaultLegendGraphicResolution", 0 ).toInt();
     QgsDebugMsg( QString( "defaultLegendGraphicResolution: %1" ).arg( defaultLegendGraphicResolution ) );
-    if ( defaultLegendGraphicResolution ) {
-      if (url.queryItemValue("map_resolution") != "")
+    if ( defaultLegendGraphicResolution )
+    {
+      if ( url.queryItemValue( "map_resolution" ) != "" )
       {
-        setQueryItem( url, "map_resolution", QString::number(defaultLegendGraphicResolution) );
+        setQueryItem( url, "map_resolution", QString::number( defaultLegendGraphicResolution ) );
       }
-      else if (url.queryItemValue("dpi") != "")
+      else if ( url.queryItemValue( "dpi" ) != "" )
       {
-        setQueryItem( url, "dpi", QString::number(defaultLegendGraphicResolution) );
+        setQueryItem( url, "dpi", QString::number( defaultLegendGraphicResolution ) );
       }
-      else{
-        QgsLogger::warning(tr("getLegendGraphic: Can not determine resolution uri parameter [map_resolution | dpi]. No resolution parameter will be used"));
+      else
+      {
+        QgsLogger::warning( tr( "getLegendGraphic: Can not determine resolution uri parameter [map_resolution | dpi]. No resolution parameter will be used" ) );
       }
     }
 
@@ -4709,7 +4714,7 @@ QImage QgsWmsProvider::getLegendGraphic( double scale, bool forceRefresh )
 
   QgsDebugMsg( "exiting." );
 
-  return mGetLegendGraphicImage; 
+  return mGetLegendGraphicImage;
 }
 
 void QgsWmsProvider::getLegendGraphicReplyFinished()
@@ -4761,7 +4766,7 @@ void QgsWmsProvider::getLegendGraphicReplyFinished()
       if ( myLocalImage.isNull() )
       {
         QgsMessageLog::logMessage( tr( "Returned legend image is flawed [URL: %2]" )
-                                    .arg( mGetLegendGraphicReply->url().toString() ), tr( "WMS" ) );
+                                   .arg( mGetLegendGraphicReply->url().toString() ), tr( "WMS" ) );
       }
       else
       {
@@ -4769,8 +4774,8 @@ void QgsWmsProvider::getLegendGraphicReplyFinished()
 
 #ifdef QGISDEBUG
         QString filename = QDir::tempPath() + "/GetLegendGraphic.png";
-        mGetLegendGraphicImage.save(filename);
-        QgsDebugMsg( "saved GetLegendGraphic result in debug ile: "+filename );
+        mGetLegendGraphicImage.save( filename );
+        QgsDebugMsg( "saved GetLegendGraphic result in debug ile: " + filename );
 #endif
       }
     }

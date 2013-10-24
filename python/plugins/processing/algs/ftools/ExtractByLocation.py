@@ -36,10 +36,10 @@ from processing.tools import dataobjects, vector
 class ExtractByLocation(GeoAlgorithm):
 
     INPUT = 'INPUT'
-    INTERSECT = 'INTERSECT'    
+    INTERSECT = 'INTERSECT'
     OUTPUT = 'OUTPUT'
 
-    def defineCharacteristics(self):        
+    def defineCharacteristics(self):
         self.name = 'Extract by location'
         self.group = 'Vector selection tools'
         self.addParameter(ParameterVector(self.INPUT, 'Layer to select from',
@@ -55,7 +55,7 @@ class ExtractByLocation(GeoAlgorithm):
         filename = self.getParameterValue(self.INTERSECT)
         selectLayer = dataobjects.getObjectFromUri(filename)
         index = vector.spatialindex(layer)
-        
+
         geom = QgsGeometry()
         selectedSet = []
         current = 0
@@ -70,15 +70,15 @@ class ExtractByLocation(GeoAlgorithm):
                 feat = layer.getFeatures(request).next()
                 tmpGeom = QgsGeometry(feat.geometry())
                 if geom.intersects(tmpGeom):
-                    selectedSet.append(feat.id())            
+                    selectedSet.append(feat.id())
             progress.setPercentage(int(current * total))
 
-        output = self.getOutputFromName(self.OUTPUT)        
+        output = self.getOutputFromName(self.OUTPUT)
         writer = output.getVectorWriter(layer.fields(),
                 layer.geometryType(), layer.crs())
-        
+
         for (i, feat) in enumerate(features):
             if feat.id() in selectedSet:
-                writer.addFeature(feat)            
-            progress.setPercentage(100 * i / float(featureCount))            
+                writer.addFeature(feat)
+            progress.setPercentage(100 * i / float(featureCount))
         del writer

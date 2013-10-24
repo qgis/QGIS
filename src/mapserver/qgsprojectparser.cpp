@@ -3661,7 +3661,7 @@ void QgsProjectParser::loadLabelSettings( QgsLabelingEngineInterface* lbl )
     {
       pal->setShowingAllLabels( showAllLabelsElem.text().compare( "true", Qt::CaseInsensitive ) == 0 );
     }
-    
+
     //mShowingPartialsLabels
     QDomElement showPartialsLabelsElem = palElem.firstChildElement( "ShowingPartialsLabels" );
     if ( !showPartialsLabelsElem.isNull() )

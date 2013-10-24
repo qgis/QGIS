@@ -121,7 +121,7 @@ namespace pal
        *\param bbox the bounding-box double[4] = {xmin, ymin, xmax, ymax}
        */
       bool isIntersect( double *bbox );
-      
+
       /**
        * \brief Is the labelposition inside the bounding-box ?
        *

@@ -546,7 +546,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   cmbLegendDoubleClickAction->setCurrentIndex( settings.value( "/qgis/legendDoubleClickAction", 0 ).toInt() );
 
   // WMS getLegendGraphic setting
-  mLegendGraphicResolutionSpinBox->setValue( settings.value("/qgis/defaultLegendGraphicResolution", 0).toInt() );
+  mLegendGraphicResolutionSpinBox->setValue( settings.value( "/qgis/defaultLegendGraphicResolution", 0 ).toInt() );
 
   //
   // Raster properties

@@ -97,7 +97,7 @@ class CORE_EXPORT QgsLegendModel: public QStandardItemModel
 
   public slots:
     void removeLayer( const QString& layerId );
-    void addLayer( QgsMapLayer* theMapLayer, double scaleDenominator = -1, QString rule="" );
+    void addLayer( QgsMapLayer* theMapLayer, double scaleDenominator = -1, QString rule = "" );
 
   signals:
     void layersChanged();

@@ -142,7 +142,7 @@ class APP_EXPORT QgsClipboard : public QObject
     const QgsFields &fields() { return mFeatureFields; }
 
   signals:
-    /** Emited when content changed */
+    /** Emitted when content changed */
     void changed();
 
   private:

@@ -67,7 +67,7 @@ class SelectByLocation(GeoAlgorithm):
 
         oldSelection = set(inputLayer.selectedFeaturesIds())
         index = vector.spatialindex(inputLayer)
-        
+
         geom = QgsGeometry()
         selectedSet = []
         current = 0

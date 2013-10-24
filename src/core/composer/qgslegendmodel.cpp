@@ -233,29 +233,29 @@ int QgsLegendModel::addRasterLayerItems( QStandardItem* layerItem, QgsMapLayer* 
   if ( rasterLayer->providerType() == "wms" )
   {
     QgsComposerRasterSymbolItem* currentSymbolItem = new QgsComposerRasterSymbolItem( "" );
-    // GetLegendGraphics in case of WMS service... image can return null if GetLegendGraphics 
-    // is not supported by server
+    // GetLegendGraphics in case of WMS service... image can return null if GetLegendGraphics
+    // is not supported by the server
     // double currentScale = legend()->canvas()->scale();
-    // BEAWARE getLegendGraphic() COULD BE USED WITHOUT SCALE PARAMETER IF IT WAS ALREADY CALLED WITH 
-    // THIS PARAMER FROM A COMPONENT THAT CAN RECOVER CURRENT SCALE => LEGEND IN THE DESKTOP
+    // BEWARE getLegendGraphic() COULD BE USED WITHOUT SCALE PARAMETER IF IT WAS ALREADY CALLED WITH
+    // THIS PARAMETER FROM A COMPONENT THAT CAN RECOVER CURRENT SCALE => LEGEND IN THE DESKTOP
     // OTHERWISE IT RETURN A INVALID PIXMAP (QPixmap().isNull() == False)
     QImage legendGraphic = rasterLayer->dataProvider()->getLegendGraphic();
     if ( !legendGraphic.isNull() )
     {
-      QgsDebugMsg( QString( "downloaded legend with dimension Width:" )+QString::number(legendGraphic.width())+QString(" and Height:")+QString::number(legendGraphic.height()) );
+      QgsDebugMsg( QString( "downloaded legend with dimension width:" ) + QString::number( legendGraphic.width() ) + QString( " and Height:" ) + QString::number( legendGraphic.height() ) );
       if ( mHasTopLevelWindow )
       {
-        currentSymbolItem->setIcon( QIcon( QPixmap::fromImage(legendGraphic) ) );
+        currentSymbolItem->setIcon( QIcon( QPixmap::fromImage( legendGraphic ) ) );
       }
     }
     else
     {
-      currentSymbolItem->setText(tr("No Legend Available"));
+      currentSymbolItem->setText( tr( "No Legend Available" ) );
     }
 
     currentSymbolItem->setLayerID( rasterLayer->id() );
     currentSymbolItem->setColor( QColor() );
-    layerItem->removeRows(0, layerItem->rowCount());
+    layerItem->removeRows( 0, layerItem->rowCount() );
     layerItem->setChild( layerItem->rowCount(), 0, currentSymbolItem );
   }
   else

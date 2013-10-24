@@ -404,15 +404,15 @@ void QgsLegend::mousePressEvent( QMouseEvent * e )
     if ( !legend.isNull() )
     {
       mGetLegendGraphicPopup = new QFrame();
-      mGetLegendGraphicPopup->setFrameStyle(QFrame::Box | QFrame::Raised);
-      mGetLegendGraphicPopup->setLineWidth(2);
-      mGetLegendGraphicPopup->setAutoFillBackground(true);
+      mGetLegendGraphicPopup->setFrameStyle( QFrame::Box | QFrame::Raised );
+      mGetLegendGraphicPopup->setLineWidth( 2 );
+      mGetLegendGraphicPopup->setAutoFillBackground( true );
       QVBoxLayout *layout = new QVBoxLayout;
-      QLabel *label = new QLabel(mGetLegendGraphicPopup);
-      label->setPixmap( QPixmap::fromImage(legend) );
-      layout->addWidget(label);
-      mGetLegendGraphicPopup->setLayout(layout);
-      mGetLegendGraphicPopup->move(e->globalX(), e->globalY());
+      QLabel *label = new QLabel( mGetLegendGraphicPopup );
+      label->setPixmap( QPixmap::fromImage( legend ) );
+      layout->addWidget( label );
+      mGetLegendGraphicPopup->setLayout( layout );
+      mGetLegendGraphicPopup->move( e->globalX(), e->globalY() );
       mGetLegendGraphicPopup->show();
     }
 
@@ -645,11 +645,12 @@ void QgsLegend::updateGroupCheckStates( QTreeWidgetItem *item )
 
 void QgsLegend::mouseReleaseEvent( QMouseEvent * e )
 {
-  if (mGetLegendGraphicPopup) {
+  if ( mGetLegendGraphicPopup )
+  {
     delete mGetLegendGraphicPopup;
     mGetLegendGraphicPopup = 0;
   }
-  
+
   QStringList layersPriorToEvent = layerIDs();
   QTreeWidget::mouseReleaseEvent( e );
   mMousePressedFlag = false;
@@ -3243,7 +3244,7 @@ QImage QgsLegend::getWmsLegendPixmap( QTreeWidgetItem *item )
   }
 
   QTreeWidgetItem *parent = item->parent();
-  if ( !parent ) 
+  if ( !parent )
   {
     return QImage();
   }
@@ -3270,7 +3271,7 @@ QImage QgsLegend::getWmsLegendPixmap( QTreeWidgetItem *item )
   {
     return QImage();
   }
-  
+
   return rasterLayer->dataProvider()->getLegendGraphic( canvas()->scale() );
 }
 

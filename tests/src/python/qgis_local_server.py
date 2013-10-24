@@ -206,7 +206,7 @@ class ServerConfigNotAccessibleError(Exception):
     port = 80 or a user-defined port above 1024
     fcgipath = path to working qgis_mapserv.fcgi as known by server
     sourceurl = DO NOT ADJUST
-    projdir = path WRITEABLE by this user and READABLE by www server
+    projdir = path WRITABLE by this user and READABLE by www server
 
     Sample configuration (default):
     sourceurl (built) = http://localhost:80/cgi-bin/qgis_mapserv.fcgi
@@ -340,7 +340,7 @@ def _checkItemReadable(item, path):
 
 
 def _checkItemWriteable(item, path):
-    msg = ('Server configuration {0} is not writeable from:\n'
+    msg = ('Server configuration {0} is not writable from:\n'
            '  {1}'.format(item, path))
     assert os.access(path, os.W_OK), msg
 

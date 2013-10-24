@@ -382,7 +382,7 @@ class GrassAlgorithm(GeoAlgorithm):
                 else:
                     command = 'r.out.gdal -c createopt="TFW=YES,COMPRESS=LZW"'
                     command += ' input='
-                    
+
                 if self.grassName == 'r.horizon':
                     command += out.name + uniqueSufix + '_0'
                 else:

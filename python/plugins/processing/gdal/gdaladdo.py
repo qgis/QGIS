@@ -64,7 +64,7 @@ class gdaladdo(GeoAlgorithm):
     def getIcon(self):
         filepath = os.path.dirname(__file__) + '/icons/raster-overview.png'
         return QtGui.QIcon(filepath)
-    
+
     def commandLineName(self):
         return "gdalogr:overviews"
 

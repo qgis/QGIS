@@ -363,10 +363,10 @@ QgsComposerLegend::Nucleon QgsComposerLegend::drawSymbolItem( QgsComposerLegendI
         if ( maxWidth < size.width() ) maxWidth = size.width();
         if ( maxHeight < size.height() ) maxHeight = size.height();
       }
-      QSize maxSize(maxWidth, maxHeight);
+      QSize maxSize( maxWidth, maxHeight );
 
       // get and print legend
-      QImage legend = symbolIcon.pixmap(maxWidth, maxHeight).toImage();
+      QImage legend = symbolIcon.pixmap( maxWidth, maxHeight ).toImage();
       if ( painter )
       {
         painter->drawImage( QRectF( point.x(), point.y(), mWmsLegendWidth, mWmsLegendHeight ), legend, QRectF( 0, 0, maxWidth, maxHeight ) );

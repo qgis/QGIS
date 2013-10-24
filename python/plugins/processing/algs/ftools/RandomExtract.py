@@ -49,7 +49,7 @@ class RandomExtract(GeoAlgorithm):
 
     METHODS = ['Number of selected features',
                'Percentage of selected features']
-    def defineCharacteristics(self):        
+    def defineCharacteristics(self):
         self.name = 'Random extract'
         self.group = 'Vector selection tools'
 
@@ -69,7 +69,7 @@ class RandomExtract(GeoAlgorithm):
 
         features = vector.features(layer)
         featureCount = len(features)
-        value = int(self.getParameterValue(self.NUMBER))        
+        value = int(self.getParameterValue(self.NUMBER))
 
         if method == 0:
             if value > featureCount:
@@ -85,12 +85,12 @@ class RandomExtract(GeoAlgorithm):
 
         selran = random.sample(xrange(0, featureCount), value)
 
-        output = self.getOutputFromName(self.OUTPUT)        
+        output = self.getOutputFromName(self.OUTPUT)
         writer = output.getVectorWriter(layer.fields(),
                 layer.geometryType(), layer.crs())
-                    
+
         for (i, feat) in enumerate(features):
             if i in selran:
-                writer.addFeature(feat)            
-            progress.setPercentage(100 * i / float(featureCount))            
+                writer.addFeature(feat)
+            progress.setPercentage(100 * i / float(featureCount))
         del writer

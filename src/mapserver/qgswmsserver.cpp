@@ -390,7 +390,8 @@ QImage* QgsWMSServer::getLegendGraphics()
     return 0;
   }
 
-  if ( !rule.isEmpty() ) {
+  if ( !rule.isEmpty() )
+  {
     //create second image with the right dimensions
     QImage* paintImage = createImage( symbolWidth, symbolHeight );
 
@@ -399,7 +400,8 @@ QImage* QgsWMSServer::getLegendGraphics()
     p.setRenderHint( QPainter::Antialiasing, true );
 
     QgsComposerLegendItem* currentComposerItem = dynamic_cast<QgsComposerLegendItem*>( rootItem->child( 0 )->child( 0 ) );
-    if ( currentComposerItem != NULL ) {
+    if ( currentComposerItem != NULL )
+    {
       QgsComposerLegendItem::ItemType type = currentComposerItem->itemType();
       switch ( type )
       {

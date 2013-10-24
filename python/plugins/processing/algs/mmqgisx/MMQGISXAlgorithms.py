@@ -1098,7 +1098,7 @@ class mmqgisx_select_algorithm(GeoAlgorithm):
 
         layer.setSelectedFeatures(selected)
         self.setOutputValue(self.RESULT, filename)
-        
+
 class mmqgisx_extract_algorithm(GeoAlgorithm):
 
     LAYERNAME = 'LAYERNAME'
@@ -1107,7 +1107,7 @@ class mmqgisx_extract_algorithm(GeoAlgorithm):
     COMPARISON = 'COMPARISON'
     RESULT = 'RESULT'
 
-    def defineCharacteristics(self):        
+    def defineCharacteristics(self):
         self.name = 'Extract by attribute'
         self.group = 'Vector selection tools'
 
@@ -1142,19 +1142,19 @@ class mmqgisx_extract_algorithm(GeoAlgorithm):
         comparisonvalue = self.getParameterValue(self.COMPARISONVALUE)
 
         selected = select(layer, attribute, comparison, comparisonvalue, progress)
-        
+
         features = vector.features(layer)
         featureCount = len(features)
-        output = self.getOutputFromName(self.OUTPUT)        
+        output = self.getOutputFromName(self.OUTPUT)
         writer = output.getVectorWriter(layer.fields(),
                 layer.geometryType(), layer.crs())
         for (i, feat) in enumerate(features):
             if feat.id() in selected:
-                writer.addFeature(feat)            
-            progress.setPercentage(100 * i / float(featureCount))            
-        del writer       
+                writer.addFeature(feat)
+            progress.setPercentage(100 * i / float(featureCount))
+        del writer
 
-def select(layer, attribute, comparison, comparisonvalue, progress):    
+def select(layer, attribute, comparison, comparisonvalue, progress):
     selectindex = layer.dataProvider().fieldNameIndex(attribute)
     selectType = layer.dataProvider().fields()[selectindex].type()
     selectionError = False
@@ -1263,7 +1263,7 @@ def select(layer, attribute, comparison, comparisonvalue, progress):
             selected.append(feature.id())
 
         progress.setPercentage(float(readcount) / totalcount * 100)
-            
+
     return selected
 
 class mmqgisx_text_to_float_algorithm(GeoAlgorithm):

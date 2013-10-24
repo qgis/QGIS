@@ -650,15 +650,15 @@ class QgsWmsProvider : public QgsRasterDataProvider
 
 
     /**
-     * \brief Get GetLegendGraphic if service available otherwise QImage() 
-     * BEAWARE call it the first time specifying scale parameter otherwise it always return QImage()
-     * \todo some services dowsn't expose getLegendGraphic in capabilities but adding LegendURL in 
+     * \brief Get GetLegendGraphic if service available otherwise QImage()
+     * BEWARE call it the first time specifying scale parameter otherwise it always return QImage()
+     * \todo some services doesn't expose getLegendGraphic in capabilities but adds LegendURL in
      * the layer tags inside capabilities, but LegendURL parsing is still not developed => getLegendGraphic is
-     * always called assuming that error means service is not available. Other drowback is that SLD_VERSION
+     * always called assuming that error means service is not available. Other drawback is that SLD_VERSION
      * is inside LegendURL, so at this moment it is fixed to 1.1.0 waiting a correct parsing of LegendURL
      * in getCapability
      * \param scale Optional parameter that is the Scale of the wms layer
-     * \param forceRefresh Optional bool parameter to force refresh getLegendGraphic call 
+     * \param forceRefresh Optional bool parameter to force refresh getLegendGraphic call
      */
     QImage getLegendGraphic( double scale = 0, bool forceRefresh = false );
 

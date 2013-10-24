@@ -184,7 +184,7 @@ namespace pal
       return false;
 
   }
-  
+
   bool LabelPosition::isIntersect( double *bbox )
   {
     int i;
@@ -201,13 +201,13 @@ namespace pal
     else
       return false;
   }
-  
+
   bool LabelPosition::isInside( double *bbox )
   {
-    for (int i = 0; i < 4; i++ )
+    for ( int i = 0; i < 4; i++ )
     {
       if ( !( x[i] >= bbox[0] && x[i] <= bbox[2] &&
-           y[i] >= bbox[1] && y[i] <= bbox[3] ) )
+              y[i] >= bbox[1] && y[i] <= bbox[3] ) )
         return false;
     }
 

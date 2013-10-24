@@ -189,7 +189,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
 
     /** \brief Returns the legend rendered as pixmap
      *  useful for that layer that need to get legend layer remotly as WMS */
-    virtual QImage getLegendGraphic( double scale=0, bool forceRefresh = false )
+    virtual QImage getLegendGraphic( double scale = 0, bool forceRefresh = false )
     {
       Q_UNUSED( scale );
       Q_UNUSED( forceRefresh );

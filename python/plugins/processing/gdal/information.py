@@ -44,7 +44,7 @@ class information(GeoAlgorithm):
     def getIcon(self):
         filepath = os.path.dirname(__file__) + '/icons/raster-info.png'
         return QtGui.QIcon(filepath)
-    
+
     def commandLineName(self):
         return "gdalorg:rasterinfo"
 

@@ -43,7 +43,7 @@ QgsLabelEngineConfigDialog::QgsLabelEngineConfigDialog( QgsPalLabeling* lbl, QWi
   mShadowDebugRectChkBox->setChecked( mLBL->isShowingShadowRectangles() );
 
   mSaveWithProjectChkBox->setChecked( mLBL->isStoredWithProject() );
-  
+
   chkShowPartialsLabels->setChecked( mLBL-> isShowingPartialsLabels() );
 }
 

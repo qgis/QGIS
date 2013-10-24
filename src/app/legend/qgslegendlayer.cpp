@@ -209,8 +209,8 @@ void QgsLegendLayer::rasterLayerSymbology( QgsRasterLayer* layer )
   itemList.reserve( rasterItemList.size() );
 #endif
 
-  // GetLegendGraphics in case of WMS service... pixmap can return null if GetLegendGraphics 
-  // is not supported by server
+  // GetLegendGraphics in case of WMS service... pixmap can return null if GetLegendGraphics
+  // is not supported by the server
   QgsDebugMsg( QString( "layer providertype:: %1" ).arg( layer->providerType() ) );
   if ( layer->providerType() == "wms" )
   {
@@ -219,12 +219,12 @@ void QgsLegendLayer::rasterLayerSymbology( QgsRasterLayer* layer )
     QImage legendGraphic = layer->dataProvider()->getLegendGraphic( currentScale );
     if ( !legendGraphic.isNull() )
     {
-      QgsDebugMsg( QString( "downloaded legend with dimension Width:" )+QString::number(legendGraphic.width())+QString(" and Height:")+QString::number(legendGraphic.height()) );
-      
+      QgsDebugMsg( QString( "downloaded legend with dimension width:" ) + QString::number( legendGraphic.width() ) + QString( " and Height:" ) + QString::number( legendGraphic.height() ) );
+
 #if QT_VERSION >= 0x40700
-      if ( rasterItemList.size() == 0) itemList.reserve( 1 );
+      if ( rasterItemList.size() == 0 ) itemList.reserve( 1 );
 #endif
-      itemList.append( qMakePair( QString(""), QPixmap::fromImage(legendGraphic) ) );
+      itemList.append( qMakePair( QString( "" ), QPixmap::fromImage( legendGraphic ) ) );
     }
   }
 

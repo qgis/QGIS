@@ -106,9 +106,9 @@ namespace pal
     point_p = 8;
     line_p = 8;
     poly_p = 8;
-    
+
     showPartial = true;
-    
+
     this->map_unit = pal::METER;
 
     std::cout.precision( 12 );
@@ -901,8 +901,8 @@ namespace pal
     if ( dpi > 0 )
       this->dpi = dpi;
   }
-  
-  void Pal::setShowPartial(bool show)
+
+  void Pal::setShowPartial( bool show )
   {
     this->showPartial = show;
   }
@@ -936,7 +936,7 @@ namespace pal
   {
     return dpi;
   }
-  
+
   bool Pal::getShowPartial()
   {
     return showPartial;
