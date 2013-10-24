@@ -1466,10 +1466,14 @@ QGraphicsLineItem* QgsComposition::nearestSnapLine( bool horizontal, double x, d
       currentYCoord = ( *it )->line().y1();
       currentSqrDist = ( y - currentYCoord ) * ( y - currentYCoord );
     }
-    else if ( !itemHorizontal )
+    else if ( !horizontal && !itemHorizontal )
     {
       currentXCoord = ( *it )->line().x1();
       currentSqrDist = ( x - currentXCoord ) * ( x - currentXCoord );
+    }
+    else
+    {
+      continue;
     }
 
     if ( currentSqrDist < minSqrDist && currentSqrDist < sqrTolerance )
