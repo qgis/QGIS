@@ -52,6 +52,11 @@ class QgsComposition : QGraphicsScene
 
     void setGridVisible( bool b );
     bool gridVisible() const;
+
+    /**Toggles state of smart guides*/
+    void setSmartGuidesEnabled( bool b );
+    /**Returns true if smart guides are enabled*/
+    bool smartGuidesEnabled() const;   
     
     /**Removes all snap lines*/
     void clearSnapLines();    
@@ -229,6 +234,8 @@ class QgsComposition : QGraphicsScene
     // QGraphicsLineItem* nearestSnapLine( bool horizontal, double x, double y, double tolerance, QList< QPair< QgsComposerItem*, QgsComposerItem::ItemPositionMode > >& snappedItems );
     /**Hides / shows custom snap lines*/
     void setSnapLinesVisible( bool visible );
+    /**Returns visibility of custom snap lines*/    
+    bool snapLinesVisible() const;    
 
     /**Allocates new item command and saves initial state in it
       @param item target item
