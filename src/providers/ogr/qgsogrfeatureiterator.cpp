@@ -236,10 +236,12 @@ bool QgsOgrFeatureIterator::readFeature( OGRFeatureH fet, QgsFeature& feature )
       notifyReadedFeature( fet, geom, feature );
 
       // get the wkb representation
-      unsigned char *wkb = new unsigned char[OGR_G_WkbSize( geom )];
+      int memorySize = OGR_G_WkbSize( geom );
+      unsigned char *wkb = new unsigned char[memorySize];
       OGR_G_ExportToWkb( geom, ( OGRwkbByteOrder ) QgsApplication::endian(), wkb );
 
-      feature.setGeometryAndOwnership( wkb, OGR_G_WkbSize( geom ) );
+      QgsGeometry* geometry = feature.geometry();
+      if ( !geometry ) feature.setGeometryAndOwnership( wkb, memorySize ); else geometry->fromWkb( wkb, memorySize );
 
       notifyLoadedFeature( fet, feature );
     }
