@@ -164,17 +164,16 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
 //! protected constructor
     QgsMapLayerRegistry( QObject * parent = 0 );
 
-  private:
-
-    static QgsMapLayerRegistry* mInstance;
-
-    QMap<QString, QgsMapLayer*> mMapLayers;
-
     /** debugging member
         invoked when a connect() is made to this object
     */
     void connectNotify( const char * signal );
 
+  private:
+
+    static QgsMapLayerRegistry* mInstance;
+
+    QMap<QString, QgsMapLayer*> mMapLayers;
 
 }; // class QgsMapLayerRegistry
 
