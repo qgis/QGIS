@@ -629,6 +629,8 @@ class HistoryDialog(QDialog, Ui_HistoryDialogPythonConsole):
 
         self._reloadHistory()
 
+        self.deleteScut = QShortcut(QKeySequence(Qt.Key_Delete), self)
+        self.deleteScut.activated.connect(self._deleteItem)
         self.listView.doubleClicked.connect(self._runHistory)
         self.reloadHistory.clicked.connect(self._reloadHistory)
 
@@ -646,3 +648,12 @@ class HistoryDialog(QDialog, Ui_HistoryDialogPythonConsole):
 
         self.listView.setModel(self.model)
         self.listView.scrollToBottom()
+
+    def _deleteItem(self):
+        itemsSelected = self.listView.selectionModel().selectedIndexes()
+        item = itemsSelected[0].row()
+        ## Remove item from the command history (just for the current session)
+        self.parent.history.pop(item)
+        self.parent.historyIndex -= 1
+        ## Remove row from the command history dialog
+        self.model.removeRow(item)
