@@ -206,38 +206,32 @@ class ShellOutputScintilla(QsciScintilla):
         iconHideTool = QgsApplication.getThemeIcon("console/iconHideToolConsole.png")
         iconSettings = QgsApplication.getThemeIcon("console/iconSettingsConsole.png")
         hideToolBar = menu.addAction(iconHideTool,
-                                     QCoreApplication.translate("PythonConsole",
-                                                                "Hide/Show Toolbar"),
-                                     self.hideToolBar)
+                      QCoreApplication.translate("PythonConsole", "Hide/Show Toolbar"),
+                      self.hideToolBar)
         menu.addSeparator()
-        showEditorAction = menu.addAction(QCoreApplication.translate("PythonConsole",
-                                                                     "Show Editor"),
-                                          self.showEditor)
+        showEditorAction = menu.addAction(
+                           QCoreApplication.translate("PythonConsole", "Show Editor"),
+                           self.showEditor)
         menu.addSeparator()
         runAction = menu.addAction(iconRun,
-                                   QCoreApplication.translate("PythonConsole",
-                                                              "Enter Selected"),
-                                   self.enteredSelected,
-                                   QKeySequence(Qt.CTRL + Qt.Key_E))
+                    QCoreApplication.translate("PythonConsole", "Enter Selected"),
+                    self.enteredSelected,
+                    QKeySequence(Qt.CTRL + Qt.Key_E))
         clearAction = menu.addAction(iconClear,
-                                     QCoreApplication.translate("PythonConsole",
-                                                                "Clear console"),
-                                     self.clearConsole)
+                      QCoreApplication.translate("PythonConsole", "Clear console"),
+                      self.clearConsole)
         menu.addSeparator()
-        copyAction = menu.addAction(QCoreApplication.translate("PythonConsole",
-                                                               "Copy"),
-                                    self.copy,
-                                    QKeySequence.Copy)
+        copyAction = menu.addAction(
+                     QCoreApplication.translate("PythonConsole", "Copy"),
+                     self.copy, QKeySequence.Copy)
         menu.addSeparator()
-        selectAllAction = menu.addAction(QCoreApplication.translate("PythonConsole",
-                                                                    "Select All"),
-                                         self.selectAll,
-                                         QKeySequence.SelectAll)
+        selectAllAction = menu.addAction(
+                          QCoreApplication.translate("PythonConsole", "Select All"),
+                          self.selectAll, QKeySequence.SelectAll)
         menu.addSeparator()
         settingsDialog = menu.addAction(iconSettings,
-                                        QCoreApplication.translate("PythonConsole",
-                                                                   "Settings"),
-                                        self.parent.openSettings)
+                         QCoreApplication.translate("PythonConsole", "Settings"),
+                         self.parent.openSettings)
         runAction.setEnabled(False)
         clearAction.setEnabled(False)
         copyAction.setEnabled(False)

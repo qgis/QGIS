@@ -297,79 +297,64 @@ class Editor(QsciScintilla):
         iconCut = QgsApplication.getThemeIcon("console/iconCutEditorConsole.png")
         iconCopy = QgsApplication.getThemeIcon("console/iconCopyEditorConsole.png")
         iconPaste = QgsApplication.getThemeIcon("console/iconPasteEditorConsole.png")
-        hideEditorAction = menu.addAction(QCoreApplication.translate("PythonConsole", "Hide Editor"),
-                                          self.hideEditor)
-        menu.addSeparator()
+        hideEditorAction = menu.addAction(
+                           QCoreApplication.translate("PythonConsole", "Hide Editor"),
+                           self.hideEditor)
+        menu.addSeparator() # ------------------------------
         syntaxCheck = menu.addAction(iconSyntaxCk,
-                                     QCoreApplication.translate("PythonConsole",
-                                                                "Check Syntax"),
-                                     self.syntaxCheck, 'Ctrl+4')
+                      QCoreApplication.translate("PythonConsole", "Check Syntax"),
+                      self.syntaxCheck, 'Ctrl+4')
         menu.addSeparator()
         runSelected = menu.addAction(iconRun,
-                                     QCoreApplication.translate("PythonConsole",
-                                                                "Run selected"),
-                                     self.runSelectedCode, 'Ctrl+E')
+                      QCoreApplication.translate("PythonConsole", "Run selected"),
+                      self.runSelectedCode, 'Ctrl+E')
         runScript = menu.addAction(iconRunScript,
-                                   QCoreApplication.translate("PythonConsole",
-                                                              "Run Script"),
-                                   self.runScriptCode, 'Shift+Ctrl+E')
+                    QCoreApplication.translate("PythonConsole", "Run Script"),
+                    self.runScriptCode, 'Shift+Ctrl+E')
         menu.addSeparator()
-        undoAction = menu.addAction(QCoreApplication.translate("PythonConsole",
-                                                               "Undo"),
-                                    self.undo, QKeySequence.Undo)
-        redoAction = menu.addAction(QCoreApplication.translate("PythonConsole",
-                                                               "Redo"),
-                                    self.redo, 'Ctrl+Shift+Z')
+        undoAction = menu.addAction(
+                     QCoreApplication.translate("PythonConsole", "Undo"),
+                     self.undo, QKeySequence.Undo)
+        redoAction = menu.addAction(
+                     QCoreApplication.translate("PythonConsole", "Redo"),
+                      self.redo, 'Ctrl+Shift+Z')
         menu.addSeparator()
         findAction = menu.addAction(iconFind,
-                                    QCoreApplication.translate("PythonConsole",
-                                                               "Find Text"),
-                                    self.showFindWidget)
+                     QCoreApplication.translate("PythonConsole", "Find Text"),
+                     self.showFindWidget)
         menu.addSeparator()
         cutAction = menu.addAction(iconCut,
-                                   QCoreApplication.translate("PythonConsole",
-                                                              "Cut"),
-                                    self.cut,
-                                    QKeySequence.Cut)
+                    QCoreApplication.translate("PythonConsole", "Cut"),
+                    self.cut, QKeySequence.Cut)
         copyAction = menu.addAction(iconCopy,
-                                    QCoreApplication.translate("PythonConsole",
-                                                               "Copy"),
-                                    self.copy,
-                                    QKeySequence.Copy)
+                     QCoreApplication.translate("PythonConsole", "Copy"),
+                     self.copy, QKeySequence.Copy)
         pasteAction = menu.addAction(iconPaste,
-                                     QCoreApplication.translate("PythonConsole",
-                                                                "Paste"),
-                                     self.paste, QKeySequence.Paste)
+                      QCoreApplication.translate("PythonConsole", "Paste"),
+                      self.paste, QKeySequence.Paste)
         menu.addSeparator()
         commentCodeAction = menu.addAction(iconCommentEditor,
-                                           QCoreApplication.translate("PythonConsole",
-                                                                      "Comment"),
-                                           self.parent.pc.commentCode, 'Ctrl+3')
+                            QCoreApplication.translate("PythonConsole", "Comment"),
+                            self.parent.pc.commentCode, 'Ctrl+3')
         uncommentCodeAction = menu.addAction(iconUncommentEditor,
-                                             QCoreApplication.translate("PythonConsole",
-                                                                        "Uncomment"),
-                                             self.parent.pc.uncommentCode,
-                                             'Shift+Ctrl+3')
+                              QCoreApplication.translate("PythonConsole", "Uncomment"),
+                              self.parent.pc.uncommentCode, 'Shift+Ctrl+3')
         menu.addSeparator()
         codePadAction = menu.addAction(iconCodePad,
-                                       QCoreApplication.translate("PythonConsole",
-                                                                  "Share on codepad"),
-                                       self.codepad)
+                        QCoreApplication.translate("PythonConsole", "Share on codepad"),
+                        self.codepad)
         menu.addSeparator()
         showCodeInspection = menu.addAction(iconObjInsp,
-                                            QCoreApplication.translate("PythonConsole",
-                                                                       "Hide/Show Object Inspector"),
-                                            self.objectListEditor)
+                             QCoreApplication.translate("PythonConsole", "Hide/Show Object Inspector"),
+                             self.objectListEditor)
         menu.addSeparator()
-        selectAllAction = menu.addAction(QCoreApplication.translate("PythonConsole",
-                                                                    "Select All"),
-                                         self.selectAll,
-                                         QKeySequence.SelectAll)
+        selectAllAction = menu.addAction(
+                          QCoreApplication.translate("PythonConsole", "Select All"),
+                          self.selectAll, QKeySequence.SelectAll)
         menu.addSeparator()
         settingsDialog = menu.addAction(iconSettings,
-                                        QCoreApplication.translate("PythonConsole",
-                                                                   "Settings"),
-                                        self.parent.pc.openSettings)
+                         QCoreApplication.translate("PythonConsole", "Settings"),
+                         self.parent.pc.openSettings)
         syntaxCheck.setEnabled(False)
         pasteAction.setEnabled(False)
         codePadAction.setEnabled(False)
@@ -977,20 +962,26 @@ class EditorTabWidget(QTabWidget):
             cW = self.widget(self.idx)
             menu = QMenu(self)
             menu.addSeparator()
-            newTabAction = menu.addAction("New Editor",
-                                          self.newTabEditor)
+            newTabAction = menu.addAction(
+                           QCoreApplication.translate("PythonConsole", "New Editor"),
+                           self.newTabEditor)
             menu.addSeparator()
-            closeTabAction = menu.addAction("Close Tab",
-                                            cW.close)
-            closeAllTabAction = menu.addAction("Close All",
-                                               self.closeAll)
-            closeOthersTabAction = menu.addAction("Close Others",
-                                                  self.closeOthers)
+            closeTabAction = menu.addAction(
+                             QCoreApplication.translate("PythonConsole", "Close Tab"),
+                             cW.close)
+            closeAllTabAction = menu.addAction(
+                                QCoreApplication.translate("PythonConsole", "Close All"),
+                                self.closeAll)
+            closeOthersTabAction = menu.addAction(
+                                   QCoreApplication.translate("PythonConsole", "Close Others"),
+                                   self.closeOthers)
             menu.addSeparator()
-            saveAction = menu.addAction("Save",
-                                        cW.save)
-            saveAsAction = menu.addAction("Save As",
-                                          self.saveAs)
+            saveAction = menu.addAction(
+                         QCoreApplication.translate("PythonConsole", "Save"),
+                         cW.save)
+            saveAsAction = menu.addAction(
+                           QCoreApplication.translate("PythonConsole", "Save As"),
+                           self.saveAs)
             closeTabAction.setEnabled(False)
             closeAllTabAction.setEnabled(False)
             closeOthersTabAction.setEnabled(False)

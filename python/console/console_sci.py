@@ -476,28 +476,28 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         subMenu = QMenu(menu)
         titleHistoryMenu = QCoreApplication.translate("PythonConsole", "Command History")
         subMenu.setTitle(titleHistoryMenu)
-        showHistoryAction = subMenu.addAction(QCoreApplication.translate("PythonConsole",
-                                                                         "Show"),
-                                    self.showHistory, 'Ctrl+Shift+SPACE')
+        showHistoryAction = subMenu.addAction(
+                            QCoreApplication.translate("PythonConsole", "Show"),
+                            self.showHistory, 'Ctrl+Shift+SPACE')
         subMenu.addSeparator()
-        saveHistoryAction = subMenu.addAction(QCoreApplication.translate("PythonConsole",
-                                                                          "Save"),
-                                              self.writeHistoryFile)
+        saveHistoryAction = subMenu.addAction(
+                            QCoreApplication.translate("PythonConsole", "Save"),
+                            self.writeHistoryFile)
         subMenu.addSeparator()
-        clearHistoryAction = subMenu.addAction(QCoreApplication.translate("PythonConsole",
-                                                                          "Clear File"),
-                                               self.clearHistory)
-        clearSessHistoryAction = subMenu.addAction(QCoreApplication.translate("PythonConsole",
-                                                                              "Clear Session"),
-                                                  self.clearHistorySession)
+        clearHistoryAction = subMenu.addAction(
+                             QCoreApplication.translate("PythonConsole", "Clear File"),
+                             self.clearHistory)
+        clearSessHistoryAction = subMenu.addAction(
+                                 QCoreApplication.translate("PythonConsole", "Clear Session"),
+                                 self.clearHistorySession)
         menu.addMenu(subMenu)
         menu.addSeparator()
-        copyAction = menu.addAction(QCoreApplication.translate("PythonConsole",
-                                                               "Copy"),
-                                    self.copy, QKeySequence.Copy)
-        pasteAction = menu.addAction(QCoreApplication.translate("PythonConsole",
-                                                                "Paste"),
-                                     self.paste, QKeySequence.Paste)
+        copyAction = menu.addAction(
+                     QCoreApplication.translate("PythonConsole", "Copy"),
+                     self.copy, QKeySequence.Copy)
+        pasteAction = menu.addAction(
+                      QCoreApplication.translate("PythonConsole", "Paste"),
+                      self.paste, QKeySequence.Paste)
         copyAction.setEnabled(False)
         pasteAction.setEnabled(False)
         if self.hasSelectedText():
