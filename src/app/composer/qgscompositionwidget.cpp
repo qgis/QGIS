@@ -73,8 +73,6 @@ QgsCompositionWidget::QgsCompositionWidget( QWidget* parent, QgsComposition* c )
     connect( mComposition, SIGNAL( composerMapAdded( QgsComposerMap* ) ), this, SLOT( onComposerMapAdded( QgsComposerMap* ) ) );
     connect( mComposition, SIGNAL( itemRemoved( QgsComposerItem* ) ), this, SLOT( onItemRemoved( QgsComposerItem* ) ) );
 
-
-    mAlignmentSnapGroupCheckBox->setChecked( mComposition->alignmentSnap() );
     mAlignmentToleranceSpinBox->setValue( mComposition->alignmentSnapTolerance() );
 
     //snap grid
@@ -570,14 +568,6 @@ void QgsCompositionWidget::on_mSelectionToleranceSpinBox_valueChanged( double d 
   }
 }
 
-void QgsCompositionWidget::on_mAlignmentSnapGroupCheckBox_toggled( bool state )
-{
-  if ( mComposition )
-  {
-    mComposition->setAlignmentSnap( state );
-  }
-}
-
 void QgsCompositionWidget::on_mAlignmentToleranceSpinBox_valueChanged( double d )
 {
   if ( mComposition )
@@ -603,6 +593,5 @@ void QgsCompositionWidget::blockSignals( bool block )
   mGridStyleComboBox->blockSignals( block );
   mGridToleranceSpinBox->blockSignals( block );
   mSelectionToleranceSpinBox->blockSignals( block );
-  mAlignmentSnapGroupCheckBox->blockSignals( block );
   mAlignmentToleranceSpinBox->blockSignals( block );
 }

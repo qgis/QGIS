@@ -307,6 +307,39 @@
     <string>Ctrl+&quot;</string>
    </property>
   </action>
+  <action name="mActionShowGuides">
+   <property name="text">
+    <string>Show Guides</string>
+   </property>
+   <property name="toolTip">
+    <string>Show guides</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+;</string>
+   </property>
+  </action>
+  <action name="mActionSnapGuides">
+   <property name="text">
+    <string>Snap to Guides</string>
+   </property>
+   <property name="toolTip">
+    <string>Snap to guides</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+:</string>
+   </property>
+  </action>
+  <action name="mActionSmartGuides">
+   <property name="text">
+    <string>Smart Guides</string>
+   </property>
+   <property name="toolTip">
+    <string>Smart guides</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Alt+;</string>
+   </property>
+  </action>     
   <action name="mActionAddImage">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
