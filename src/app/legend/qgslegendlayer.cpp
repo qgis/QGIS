@@ -208,6 +208,26 @@ void QgsLegendLayer::rasterLayerSymbology( QgsRasterLayer* layer )
 #if QT_VERSION >= 0x40700
   itemList.reserve( rasterItemList.size() );
 #endif
+
+  // GetLegendGraphics in case of WMS service... pixmap can return null if GetLegendGraphics 
+  // is not supported by server
+  QgsDebugMsg( QString( "layer providertype:: %1" ).arg( layer->providerType() ) );
+  if ( layer->providerType() == "wms" )
+  {
+    double currentScale = legend()->canvas()->scale();
+
+    QImage legendGraphic = layer->dataProvider()->getLegendGraphic( currentScale );
+    if ( !legendGraphic.isNull() )
+    {
+      QgsDebugMsg( QString( "downloaded legend with dimension Width:" )+QString::number(legendGraphic.width())+QString(" and Height:")+QString::number(legendGraphic.height()) );
+      
+#if QT_VERSION >= 0x40700
+      if ( rasterItemList.size() == 0) itemList.reserve( 1 );
+#endif
+      itemList.append( qMakePair( QString(""), QPixmap::fromImage(legendGraphic) ) );
+    }
+  }
+
   // Paletted raster may have many colors, for example UInt16 may have 65536 colors
   // and it is very slow, so we limit max count
   QSize iconSize = treeWidget()->iconSize();

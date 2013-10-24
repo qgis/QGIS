@@ -229,37 +229,69 @@ int QgsLegendModel::addRasterLayerItems( QStandardItem* layerItem, QgsMapLayer* 
     return 2;
   }
 
-  QList< QPair< QString, QColor > > rasterItemList = rasterLayer->legendSymbologyItems();
-  QList< QPair< QString, QColor > >::const_iterator itemIt = rasterItemList.constBegin();
-  int row = 0;
-  for ( ; itemIt != rasterItemList.constEnd(); ++itemIt )
+  QgsDebugMsg( QString( "layer providertype:: %1" ).arg( rasterLayer->providerType() ) );
+  if ( rasterLayer->providerType() == "wms" )
   {
-    QgsComposerRasterSymbolItem* currentSymbolItem = new QgsComposerRasterSymbolItem( itemIt->first );
-
-    QgsComposerRasterSymbolItem* oldSymbolItem = dynamic_cast<QgsComposerRasterSymbolItem*>( layerItem->child( row, 0 ) );
-    if ( oldSymbolItem )
+    QgsComposerRasterSymbolItem* currentSymbolItem = new QgsComposerRasterSymbolItem( "" );
+    // GetLegendGraphics in case of WMS service... image can return null if GetLegendGraphics 
+    // is not supported by server
+    // double currentScale = legend()->canvas()->scale();
+    // BEAWARE getLegendGraphic() COULD BE USED WITHOUT SCALE PARAMETER IF IT WAS ALREADY CALLED WITH 
+    // THIS PARAMER FROM A COMPONENT THAT CAN RECOVER CURRENT SCALE => LEGEND IN THE DESKTOP
+    // OTHERWISE IT RETURN A INVALID PIXMAP (QPixmap().isNull() == False)
+    QImage legendGraphic = rasterLayer->dataProvider()->getLegendGraphic();
+    if ( !legendGraphic.isNull() )
     {
-      currentSymbolItem->setUserText( oldSymbolItem->userText() );
-      currentSymbolItem->setText( currentSymbolItem->userText() );
+      QgsDebugMsg( QString( "downloaded legend with dimension Width:" )+QString::number(legendGraphic.width())+QString(" and Height:")+QString::number(legendGraphic.height()) );
+      if ( mHasTopLevelWindow )
+      {
+        currentSymbolItem->setIcon( QIcon( QPixmap::fromImage(legendGraphic) ) );
+      }
+    }
+    else
+    {
+      currentSymbolItem->setText(tr("No Legend Available"));
     }
 
-    if ( mHasTopLevelWindow )
-    {
-      QPixmap itemPixmap( 20, 20 );
-      itemPixmap.fill( itemIt->second );
-      currentSymbolItem->setIcon( QIcon( itemPixmap ) );
-    }
     currentSymbolItem->setLayerID( rasterLayer->id() );
-    currentSymbolItem->setColor( itemIt->second );
-    int currentRowCount = layerItem->rowCount();
-    layerItem->setChild( currentRowCount, 0, currentSymbolItem );
-    row++;
+    currentSymbolItem->setColor( QColor() );
+    layerItem->removeRows(0, layerItem->rowCount());
+    layerItem->setChild( layerItem->rowCount(), 0, currentSymbolItem );
   }
-
-  // Delete following old items (if current number of items decreased)
-  for ( int i = layerItem->rowCount() - 1; i >= row; --i )
+  else
   {
-    layerItem->removeRow( i );
+    QList< QPair< QString, QColor > > rasterItemList = rasterLayer->legendSymbologyItems();
+    QList< QPair< QString, QColor > >::const_iterator itemIt = rasterItemList.constBegin();
+    int row = 0;
+    for ( ; itemIt != rasterItemList.constEnd(); ++itemIt )
+    {
+      QgsComposerRasterSymbolItem* currentSymbolItem = new QgsComposerRasterSymbolItem( itemIt->first );
+
+      QgsComposerRasterSymbolItem* oldSymbolItem = dynamic_cast<QgsComposerRasterSymbolItem*>( layerItem->child( row, 0 ) );
+      if ( oldSymbolItem )
+      {
+        currentSymbolItem->setUserText( oldSymbolItem->userText() );
+        currentSymbolItem->setText( currentSymbolItem->userText() );
+      }
+
+      if ( mHasTopLevelWindow )
+      {
+        QPixmap itemPixmap( 20, 20 );
+        itemPixmap.fill( itemIt->second );
+        currentSymbolItem->setIcon( QIcon( itemPixmap ) );
+      }
+      currentSymbolItem->setLayerID( rasterLayer->id() );
+      currentSymbolItem->setColor( itemIt->second );
+      int currentRowCount = layerItem->rowCount();
+      layerItem->setChild( currentRowCount, 0, currentSymbolItem );
+      row++;
+    }
+
+    // Delete following old items (if current number of items decreased)
+    for ( int i = layerItem->rowCount() - 1; i >= row; --i )
+    {
+      layerItem->removeRow( i );
+    }
   }
 
   return 0;
