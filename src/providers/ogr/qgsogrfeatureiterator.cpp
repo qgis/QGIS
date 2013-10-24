@@ -345,6 +345,9 @@ bool QgsOgrSimplifiedFeatureIterator::simplifyOgrGeometry( const QgsFeatureReque
   {
     OGRLineString* lineString = (OGRLineString*)geometry;
 
+    int numPoints = lineString->getNumPoints();
+    if ( (isaLinearRing && numPoints<=5) || (!isaLinearRing && numPoints<=2) ) return false;
+
     OGREnvelope env;
     geometry->getEnvelope(&env );
     QgsRectangle envelope( env.MinX, env.MinY, env.MaxX, env.MaxY );
@@ -384,8 +387,6 @@ bool QgsOgrSimplifiedFeatureIterator::simplifyOgrGeometry( const QgsFeatureReque
     else
     {
       QGis::GeometryType geometryType = isaLinearRing ? QGis::Polygon : QGis::Line;
-
-      int numPoints = lineString->getNumPoints();
       int numSimplifiedPoints = 0;
 
       OGRRawPoint* points = mallocPoints( numPoints );

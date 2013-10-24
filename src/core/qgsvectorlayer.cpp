@@ -696,10 +696,13 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
   // Enable the simplification of the geometries before fetch the features using the current map2pixel context.
   if ( mSimplifyDrawing && !(featureRequest.flags() & QgsFeatureRequest::NoGeometry) )
   {
+    QPainter* p = rendererContext.painter();
+    float dpi = ( p->device()->logicalDpiX() + p->device()->logicalDpiY() ) / 2;
+
     featureRequest.setFlags( featureRequest.flags() | QgsFeatureRequest::SimplifyGeometries );
     featureRequest.setCoordinateTransform( rendererContext.coordinateTransform() );
     featureRequest.setMapToPixel( &rendererContext.mapToPixel() );
-    featureRequest.setMapToPixelTol( mSimplifyDrawingTol );
+    featureRequest.setMapToPixelTol( mSimplifyDrawingTol * 72.0f/dpi );
   }
 
   QgsFeatureIterator fit = getFeatures( featureRequest );
