@@ -171,7 +171,6 @@ void QgsSimpleFillSymbolLayerV2::renderPolygon( const QPolygonF& points, QList<Q
   applyDataDefinedSymbology( context, mBrush, mPen, mSelPen );
 
   p->setBrush( context.selected() ? mSelBrush : mBrush );
-  p->setPen( mPen );
   p->setPen( context.selected() ? mSelPen : mPen );
 
   QPointF offset;
