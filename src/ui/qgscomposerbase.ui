@@ -339,7 +339,15 @@
    <property name="shortcut">
     <string>Ctrl+Alt+;</string>
    </property>
-  </action>     
+  </action>
+  <action name="mActionClearGuides">
+   <property name="text">
+    <string>Clear Guides</string>
+   </property>
+   <property name="toolTip">
+    <string>Clear guides</string>
+   </property>
+  </action>       
   <action name="mActionAddImage">
    <property name="icon">
     <iconset resource="../../images/images.qrc">

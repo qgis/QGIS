@@ -124,6 +124,9 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     void setSmartGuidesEnabled( bool b ) { mSmartGuides = b; };
     bool smartGuidesEnabled() const {return mSmartGuides;}
 
+    /**Removes all snap lines*/
+    void clearSnapLines();
+
     void setSnapGridResolution( double r );
     double snapGridResolution() const {return mSnapGridResolution;}
 

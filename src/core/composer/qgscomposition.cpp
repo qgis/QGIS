@@ -1428,6 +1428,17 @@ void QgsComposition::removeSnapLine( QGraphicsLineItem* line )
   delete line;
 }
 
+void QgsComposition::clearSnapLines()
+{
+  QList< QGraphicsLineItem* >::iterator it = mSnapLines.begin();
+  for ( ; it != mSnapLines.end(); ++it )
+  {
+    removeItem(( *it ) );
+    delete( *it );
+  }
+  mSnapLines.clear();
+}
+
 void QgsComposition::setSnapLinesVisible( bool visible )
 {
   mGuidesVisible = visible;

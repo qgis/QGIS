@@ -265,6 +265,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   viewMenu->addAction( mActionShowGuides );
   viewMenu->addAction( mActionSnapGuides );
   viewMenu->addAction( mActionSmartGuides );
+  viewMenu->addAction( mActionClearGuides );
 
   // Panel and toolbar submenus
   mPanelMenu = new QMenu( tr( "Panels" ), this );
@@ -724,6 +725,15 @@ void QgsComposer::on_mActionSmartGuides_triggered( bool checked )
   if ( mComposition )
   {
     mComposition->setSmartGuidesEnabled( checked );
+  }
+}
+
+void QgsComposer::on_mActionClearGuides_triggered()
+{
+  //clear guide lines
+  if ( mComposition )
+  {
+    mComposition->clearSnapLines();
   }
 }
 
