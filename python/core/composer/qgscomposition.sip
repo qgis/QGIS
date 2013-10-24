@@ -52,6 +52,9 @@ class QgsComposition : QGraphicsScene
 
     void setGridVisible( bool b );
     bool gridVisible() const;
+    
+    /**Removes all snap lines*/
+    void clearSnapLines();    
 
     void setSnapGridResolution( double r );
     double snapGridResolution() const;

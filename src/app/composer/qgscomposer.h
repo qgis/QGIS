@@ -300,6 +300,9 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //!Enable or disable smart guides
     void on_mActionSmartGuides_triggered( bool checked );
 
+    //!Clear guides
+    void on_mActionClearGuides_triggered();
+
     //! Save window state
     void saveWindowState();
 
