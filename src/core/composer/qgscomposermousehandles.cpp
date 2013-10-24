@@ -805,7 +805,7 @@ QPointF QgsComposerMouseHandles::snapPoint( const QPointF& point, QgsComposerMou
   }
 
   //align item
-  if ( !mComposition->alignmentSnap() )
+  if ( !mComposition->alignmentSnap() && !mComposition->smartGuidesEnabled() )
   {
     return point;
   }
@@ -985,38 +985,43 @@ void QgsComposerMouseHandles::collectAlignCoordinates( QMap< double, const QgsCo
   alignCoordsX.clear();
   alignCoordsY.clear();
 
-  QList<QGraphicsItem *> itemList = mComposition->items();
-  QList<QGraphicsItem *>::iterator itemIt = itemList.begin();
-  for ( ; itemIt != itemList.end(); ++itemIt )
+  if ( mComposition->smartGuidesEnabled() )
   {
-    const QgsComposerItem* currentItem = dynamic_cast<const QgsComposerItem *>( *itemIt );
-    //don't snap to selected items, since they're the ones that will be snapping to something else
-    if ( !currentItem || currentItem->selected() )
+    QList<QGraphicsItem *> itemList = mComposition->items();
+    QList<QGraphicsItem *>::iterator itemIt = itemList.begin();
+    for ( ; itemIt != itemList.end(); ++itemIt )
     {
-      continue;
+      const QgsComposerItem* currentItem = dynamic_cast<const QgsComposerItem *>( *itemIt );
+      //don't snap to selected items, since they're the ones that will be snapping to something else
+      if ( !currentItem || currentItem->selected() )
+      {
+        continue;
+      }
+      alignCoordsX.insert( currentItem->transform().dx(), currentItem );
+      alignCoordsX.insert( currentItem->transform().dx() + currentItem->rect().width(), currentItem );
+      alignCoordsX.insert( currentItem->transform().dx() + currentItem->rect().center().x(), currentItem );
+      alignCoordsY.insert( currentItem->transform().dy() + currentItem->rect().top(), currentItem );
+      alignCoordsY.insert( currentItem->transform().dy() + currentItem->rect().center().y(), currentItem );
+      alignCoordsY.insert( currentItem->transform().dy() + currentItem->rect().bottom(), currentItem );
     }
-    alignCoordsX.insert( currentItem->transform().dx(), currentItem );
-    alignCoordsX.insert( currentItem->transform().dx() + currentItem->rect().width(), currentItem );
-    alignCoordsX.insert( currentItem->transform().dx() + currentItem->rect().center().x(), currentItem );
-    alignCoordsY.insert( currentItem->transform().dy() + currentItem->rect().top(), currentItem );
-    alignCoordsY.insert( currentItem->transform().dy() + currentItem->rect().center().y(), currentItem );
-    alignCoordsY.insert( currentItem->transform().dy() + currentItem->rect().bottom(), currentItem );
-
   }
 
   //arbitrary snap lines
-  QList< QGraphicsLineItem* >::const_iterator sIt = mComposition->snapLines()->constBegin();
-  for ( ; sIt != mComposition->snapLines()->constEnd(); ++sIt )
+  if ( mComposition->alignmentSnap() )
   {
-    double x = ( *sIt )->line().x1();
-    double y = ( *sIt )->line().y1();
-    if ( qgsDoubleNear( y, 0.0 ) )
+    QList< QGraphicsLineItem* >::const_iterator sIt = mComposition->snapLines()->constBegin();
+    for ( ; sIt != mComposition->snapLines()->constEnd(); ++sIt )
     {
-      alignCoordsX.insert( x, 0 );
-    }
-    else
-    {
-      alignCoordsY.insert( y, 0 );
+      double x = ( *sIt )->line().x1();
+      double y = ( *sIt )->line().y1();
+      if ( qgsDoubleNear( y, 0.0 ) )
+      {
+        alignCoordsX.insert( x, 0 );
+      }
+      else
+      {
+        alignCoordsY.insert( y, 0 );
+      }
     }
   }
 }

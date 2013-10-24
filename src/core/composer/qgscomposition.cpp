@@ -66,6 +66,8 @@ QgsComposition::QgsComposition( QgsMapRenderer* mapRenderer )
     , mSnapGridOffsetX( 0.0 )
     , mSnapGridOffsetY( 0.0 )
     , mAlignmentSnap( true )
+    , mGuidesVisible( true )
+    , mSmartGuides( true )
     , mAlignmentSnapTolerance( 2 )
     , mSelectionHandles( 0 )
     , mActiveItemCommand( 0 )
@@ -105,6 +107,8 @@ QgsComposition::QgsComposition()
     mSnapGridOffsetX( 0.0 ),
     mSnapGridOffsetY( 0.0 ),
     mAlignmentSnap( true ),
+    mGuidesVisible( true ),
+    mSmartGuides( true ),
     mAlignmentSnapTolerance( 2 ),
     mSelectionHandles( 0 ),
     mActiveItemCommand( 0 ),
@@ -475,6 +479,8 @@ bool QgsComposition::writeXML( QDomElement& composerElem, QDomDocument& doc )
   }
 
   compositionElem.setAttribute( "alignmentSnap", mAlignmentSnap ? 1 : 0 );
+  compositionElem.setAttribute( "guidesVisible", mGuidesVisible ? 1 : 0 );
+  compositionElem.setAttribute( "smartGuides", mSmartGuides ? 1 : 0 );
   compositionElem.setAttribute( "alignmentSnapTolerance", mAlignmentSnapTolerance );
 
   //save items except paper items and frame items (they are saved with the corresponding multiframe)
@@ -549,6 +555,11 @@ bool QgsComposition::readXML( const QDomElement& compositionElem, const QDomDocu
   mSnapGridOffsetX = compositionElem.attribute( "snapGridOffsetX" ).toDouble();
   mSnapGridOffsetY = compositionElem.attribute( "snapGridOffsetY" ).toDouble();
 
+  mAlignmentSnap = compositionElem.attribute( "alignmentSnap", "1" ).toInt() == 0 ? false : true;
+  mGuidesVisible = compositionElem.attribute( "guidesVisible", "1" ).toInt() == 0 ? false : true;
+  mSmartGuides = compositionElem.attribute( "smartGuides", "1" ).toInt() == 0 ? false : true;
+  mAlignmentSnapTolerance = compositionElem.attribute( "alignmentSnapTolerance", "2.0" ).toDouble();
+
   //custom snap lines
   QDomNodeList snapLineNodes = compositionElem.elementsByTagName( "SnapLine" );
   for ( int i = 0; i < snapLineNodes.size(); ++i )
@@ -561,9 +572,6 @@ bool QgsComposition::readXML( const QDomElement& compositionElem, const QDomDocu
     double y2 = snapLineElem.attribute( "y2" ).toDouble();
     snapItem->setLine( x1, y1, x2, y2 );
   }
-
-  mAlignmentSnap = compositionElem.attribute( "alignmentSnap", "1" ).toInt() == 0 ? false : true;
-  mAlignmentSnapTolerance = compositionElem.attribute( "alignmentSnapTolerance", "2.0" ).toDouble();
 
   mPrintAsRaster = compositionElem.attribute( "printAsRaster" ).toInt();
   mPrintResolution = compositionElem.attribute( "printResolution", "300" ).toInt();
@@ -1407,6 +1415,7 @@ QGraphicsLineItem* QgsComposition::addSnapLine()
   linePen.setWidthF( 0 );
   item->setPen( linePen );
   item->setZValue( 100 );
+  item->setVisible( mGuidesVisible );
   addItem( item );
   mSnapLines.push_back( item );
   return item;
@@ -1421,6 +1430,7 @@ void QgsComposition::removeSnapLine( QGraphicsLineItem* line )
 
 void QgsComposition::setSnapLinesVisible( bool visible )
 {
+  mGuidesVisible = visible;
   QList< QGraphicsLineItem* >::iterator it = mSnapLines.begin();
   for ( ; it != mSnapLines.end(); ++it )
   {

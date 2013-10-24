@@ -291,6 +291,15 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //!Enable or disable snap items to grid
     void on_mActionSnapGrid_triggered( bool checked );
 
+    //!Show/hide guides
+    void on_mActionShowGuides_triggered( bool checked );
+
+    //!Enable or disable snap items to guides
+    void on_mActionSnapGuides_triggered( bool checked );
+
+    //!Enable or disable smart guides
+    void on_mActionSmartGuides_triggered( bool checked );
+
     //! Save window state
     void saveWindowState();
 
@@ -381,6 +390,9 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     //! Write a world file
     void writeWorldFile( QString fileName, double a, double b, double c, double d, double e, double f ) const;
+
+    //! Updates the grid/guide action status based on compositions grid/guide settings
+    void restoreGridSettings();
 
     /**Composer title*/
     QString mTitle;

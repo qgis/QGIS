@@ -114,6 +114,16 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     void setGridVisible( bool b );
     bool gridVisible() const {return mGridVisible;}
 
+    /**Hides / shows custom snap lines*/
+    void setSnapLinesVisible( bool visible );
+    bool snapLinesVisible() const {return mGuidesVisible;}
+
+    void setAlignmentSnap( bool s ) { mAlignmentSnap = s; }
+    bool alignmentSnap() const { return mAlignmentSnap; }
+
+    void setSmartGuidesEnabled( bool b ) { mSmartGuides = b; };
+    bool smartGuidesEnabled() const {return mSmartGuides;}
+
     void setSnapGridResolution( double r );
     double snapGridResolution() const {return mSnapGridResolution;}
 
@@ -131,9 +141,6 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
 
     void setGridStyle( GridStyle s );
     GridStyle gridStyle() const {return mGridStyle;}
-
-    void setAlignmentSnap( bool s ) { mAlignmentSnap = s; }
-    bool alignmentSnap() const { return mAlignmentSnap; }
 
     void setAlignmentSnapTolerance( double t ) { mAlignmentSnapTolerance = t; }
     double alignmentSnapTolerance() const { return mAlignmentSnapTolerance; }
@@ -310,8 +317,6 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
      * @note not available in python bindings
      */
     QGraphicsLineItem* nearestSnapLine( bool horizontal, double x, double y, double tolerance, QList< QPair< QgsComposerItem*, QgsComposerItem::ItemPositionMode > >& snappedItems );
-    /**Hides / shows custom snap lines*/
-    void setSnapLinesVisible( bool visible );
 
     /**Allocates new item command and saves initial state in it
       @param item target item
@@ -438,6 +443,8 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
 
     /**Parameters for alignment snap*/
     bool mAlignmentSnap;
+    bool mGuidesVisible;
+    bool mSmartGuides;
     double mAlignmentSnapTolerance;
 
     /**Arbitraty snap lines (horizontal and vertical)*/

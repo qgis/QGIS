@@ -172,6 +172,9 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
 
   mActionShowGrid->setCheckable( true );
   mActionSnapGrid->setCheckable( true );
+  mActionShowGuides->setCheckable( true );
+  mActionSnapGuides->setCheckable( true );
+  mActionSmartGuides->setCheckable( true );
 
 #ifdef Q_WS_MAC
   mActionQuit->setText( tr( "Close" ) );
@@ -258,6 +261,10 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   viewMenu->addSeparator();
   viewMenu->addAction( mActionShowGrid );
   viewMenu->addAction( mActionSnapGrid );
+  viewMenu->addSeparator();
+  viewMenu->addAction( mActionShowGuides );
+  viewMenu->addAction( mActionSnapGuides );
+  viewMenu->addAction( mActionSmartGuides );
 
   // Panel and toolbar submenus
   mPanelMenu = new QMenu( tr( "Panels" ), this );
@@ -348,8 +355,8 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
     connect( mComposition->undoStack(), SIGNAL( canRedoChanged( bool ) ), mActionRedo, SLOT( setEnabled( bool ) ) );
   }
 
+  restoreGridSettings();
   connectSlots();
-
 
   mComposition->setParent( mView );
   mView->setComposition( mComposition );
@@ -677,7 +684,7 @@ void QgsComposer::on_mActionRefreshView_triggered()
 
 void QgsComposer::on_mActionShowGrid_triggered( bool checked )
 {
-  //enable or disable snap items to grid
+  //show or hide grid
   if ( mComposition )
   {
     mComposition->setGridVisible( checked );
@@ -690,6 +697,33 @@ void QgsComposer::on_mActionSnapGrid_triggered( bool checked )
   if ( mComposition )
   {
     mComposition->setSnapToGridEnabled( checked );
+  }
+}
+
+void QgsComposer::on_mActionShowGuides_triggered( bool checked )
+{
+  //show or hide guide lines
+  if ( mComposition )
+  {
+    mComposition->setSnapLinesVisible( checked );
+  }
+}
+
+void QgsComposer::on_mActionSnapGuides_triggered( bool checked )
+{
+  //enable or disable snap items to guides
+  if ( mComposition )
+  {
+    mComposition->setAlignmentSnap( checked );
+  }
+}
+
+void QgsComposer::on_mActionSmartGuides_triggered( bool checked )
+{
+  //enable or disable smart snapping guides
+  if ( mComposition )
+  {
+    mComposition->setSmartGuidesEnabled( checked );
   }
 }
 
@@ -2102,8 +2136,7 @@ void QgsComposer::readXML( const QDomElement& composerElem, const QDomDocument& 
   }
 
   //restore grid settings
-  mActionSnapGrid->setChecked( mComposition->snapToGridEnabled() );
-  mActionShowGrid->setChecked( mComposition->gridVisible() );
+  restoreGridSettings();
 
   // look for world file composer map, if needed
   // Note: this must be done after maps have been added by addItemsFromXML
@@ -2150,6 +2183,17 @@ void QgsComposer::readXML( const QDomElement& composerElem, const QDomDocument& 
   mComposition->atlasComposition().readXML( atlasNodeList.at( 0 ).toElement(), doc );
 
   setSelectionTool();
+}
+
+void QgsComposer::restoreGridSettings()
+{
+  //restore grid settings
+  mActionSnapGrid->setChecked( mComposition->snapToGridEnabled() );
+  mActionShowGrid->setChecked( mComposition->gridVisible() );
+  //restore guide settings
+  mActionShowGuides->setChecked( mComposition->snapLinesVisible() );
+  mActionSnapGuides->setChecked( mComposition->alignmentSnap() );
+  mActionSmartGuides->setChecked( mComposition->smartGuidesEnabled() );
 }
 
 void QgsComposer::deleteItemWidgets()

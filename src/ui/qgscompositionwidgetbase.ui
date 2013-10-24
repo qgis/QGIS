@@ -447,7 +447,7 @@
           <string>Snap to alignments</string>
          </property>
          <property name="checkable">
-          <bool>true</bool>
+          <bool>false</bool>
          </property>
          <property name="syncGroup" stdset="0">
           <string notr="true">composeritem</string>
