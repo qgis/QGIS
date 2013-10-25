@@ -66,7 +66,8 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
       AddTriangle,
       AddTable, //add attribute table
       MoveItemContent, //move content of item (e.g. content of map)
-      Pan
+      Pan,
+      Zoom
     };
 
     enum ClipboardMode
@@ -163,6 +164,8 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
 
     /**True if user is currently selecting by marquee*/
     bool mMarqueeSelect;
+    /**True if user is currently zooming by marquee*/
+    bool mMarqueeZoom;
 
     bool mPaintingEnabled;
 
@@ -187,6 +190,10 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     void startMarqueeSelect( QPointF & scenePoint );
     /**Finalises a marquee selection*/
     void endMarqueeSelect( QMouseEvent* e );
+    /**Starts a zoom in marquee*/
+    void startMarqueeZoom( QPointF & scenePoint );
+    /**Finalises a marquee zoom*/
+    void endMarqueeZoom( QMouseEvent* e );
 
     //void connectAddRemoveCommandSignals( QgsAddRemoveItemCommand* c );
 

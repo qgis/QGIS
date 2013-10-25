@@ -145,6 +145,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   QActionGroup* toggleActionGroup = new QActionGroup( this );
   toggleActionGroup->addAction( mActionMoveItemContent );
   toggleActionGroup->addAction( mActionPan );
+  toggleActionGroup->addAction( mActionMouseZoom );
   toggleActionGroup->addAction( mActionAddNewMap );
   toggleActionGroup->addAction( mActionAddNewLabel );
   toggleActionGroup->addAction( mActionAddNewLegend );
@@ -159,7 +160,6 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   toggleActionGroup->addAction( mActionAddHtml );
   toggleActionGroup->setExclusive( true );
 
-
   mActionAddNewMap->setCheckable( true );
   mActionAddNewLabel->setCheckable( true );
   mActionAddNewLegend->setCheckable( true );
@@ -168,6 +168,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   mActionAddImage->setCheckable( true );
   mActionMoveItemContent->setCheckable( true );
   mActionPan->setCheckable( true );
+  mActionMouseZoom->setCheckable( true );
   mActionAddArrow->setCheckable( true );
 
 #ifdef Q_WS_MAC
@@ -447,6 +448,7 @@ void QgsComposer::setupTheme()
   mActionZoomAll->setIcon( QgsApplication::getThemeIcon( "/mActionZoomFullExtent.svg" ) );
   mActionZoomIn->setIcon( QgsApplication::getThemeIcon( "/mActionZoomIn.svg" ) );
   mActionZoomOut->setIcon( QgsApplication::getThemeIcon( "/mActionZoomOut.svg" ) );
+  mActionMouseZoom->setIcon( QgsApplication::getThemeIcon( "/mActionZoomToSelected.svg" ) );
   mActionRefreshView->setIcon( QgsApplication::getThemeIcon( "/mActionDraw.svg" ) );
   mActionUndo->setIcon( QgsApplication::getThemeIcon( "/mActionUndo.png" ) );
   mActionRedo->setIcon( QgsApplication::getThemeIcon( "/mActionRedo.png" ) );
@@ -645,6 +647,14 @@ void QgsComposer::on_mActionZoomOut_triggered()
   mView->updateRulers();
   mView->update();
   emit zoomLevelChanged();
+}
+
+void QgsComposer::on_mActionMouseZoom_triggered()
+{
+  if ( mView )
+  {
+    mView->setCurrentTool( QgsComposerView::Zoom );
+  }
 }
 
 void QgsComposer::on_mActionRefreshView_triggered()
