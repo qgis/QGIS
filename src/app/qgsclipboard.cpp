@@ -38,6 +38,7 @@ QgsClipboard::QgsClipboard()
     , mFeatureClipboard()
     , mFeatureFields()
 {
+  connect( QApplication::clipboard(), SIGNAL( dataChanged() ), this, SIGNAL( changed() ) );
 }
 
 QgsClipboard::~QgsClipboard()
@@ -139,13 +140,43 @@ void QgsClipboard::setSystemClipboard()
   QgsDebugMsg( QString( "replaced system clipboard with: %1." ).arg( textCopy ) );
 }
 
-QgsFeatureList QgsClipboard::copyOf()
+QgsFeatureList QgsClipboard::copyOf( const QgsFields &fields )
 {
   QgsDebugMsg( "returning clipboard." );
+  QClipboard *cb = QApplication::clipboard();
 
-  //TODO: Slurp from the system clipboard as well.
+#ifndef Q_OS_WIN
+  QString text = cb->text( QClipboard::Selection );
+#endif
+  QString text = cb->text( QClipboard::Clipboard );
 
-  return mFeatureClipboard;
+  QStringList values = text.split("\n");
+  if ( values.isEmpty() || text.isEmpty() )
+      return mFeatureClipboard;
+
+  QgsFeatureList features;
+  foreach ( QString row, values )
+  {
+      // Assume that it's just WKT for now.
+      QgsGeometry* geometry = QgsGeometry::fromWkt( row );
+      if ( !geometry )
+          continue;
+
+      QgsFeature* feature = new QgsFeature();
+      if ( !fields.isEmpty() )
+          feature->setFields( &fields , true );
+
+      feature->setGeometry( geometry );
+      features.append( QgsFeature( *feature ));
+  }
+
+  if ( features.isEmpty() )
+      return mFeatureClipboard;
+
+  if ( !fields.isEmpty() )
+      mFeatureFields = fields;
+
+  return features;
 }
 
 void QgsClipboard::clear()
@@ -166,12 +197,17 @@ void QgsClipboard::insert( QgsFeature& feature )
 
 bool QgsClipboard::empty()
 {
-  return mFeatureClipboard.empty();
+  QClipboard *cb = QApplication::clipboard();
+#ifndef Q_OS_WIN
+  QString text = cb->text( QClipboard::Selection );
+#endif
+  QString text = cb->text( QClipboard::Clipboard );
+  return text.isEmpty() && mFeatureClipboard.empty();
 }
 
-QgsFeatureList QgsClipboard::transformedCopyOf( QgsCoordinateReferenceSystem destCRS )
+QgsFeatureList QgsClipboard::transformedCopyOf(QgsCoordinateReferenceSystem destCRS , const QgsFields &fields)
 {
-  QgsFeatureList featureList = copyOf();
+  QgsFeatureList featureList = copyOf( fields );
   QgsCoordinateTransform ct( crs(), destCRS );
 
   QgsDebugMsg( "transforming clipboard." );
