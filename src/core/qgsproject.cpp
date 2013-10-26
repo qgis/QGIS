@@ -1653,10 +1653,10 @@ bool QgsProject::createEmbeddedLayer( const QString& layerId, const QString& pro
   return false;
 }
 
-void QgsProject::setSnapSettingsForLayer( const QString& layerId, bool enabled, QgsSnapper::SnappingType  type, QgsTolerance::UnitType unit, double tolerance, bool avoidIntersection )
+void QgsProject::setSnapSettingsForLayer( const QString& layerId, bool enabled, QgsSnapper::SnappingType  type, QgsTolerance::UnitType unit, double tolerance, bool avoidIntersection, QString topologyGroup )
 {
-  QStringList layerIdList, enabledList, snapTypeList, toleranceUnitList, toleranceList, avoidIntersectionList;
-  snapSettings( layerIdList, enabledList, snapTypeList, toleranceUnitList, toleranceList, avoidIntersectionList );
+  QStringList layerIdList, enabledList, snapTypeList, toleranceUnitList, toleranceList, avoidIntersectionList, topologyGroupList;
+  snapSettings( layerIdList, enabledList, snapTypeList, toleranceUnitList, toleranceList, avoidIntersectionList, topologyGroupList );
   int idx = layerIdList.indexOf( layerId );
   if ( idx != -1 )
   {
@@ -1666,6 +1666,7 @@ void QgsProject::setSnapSettingsForLayer( const QString& layerId, bool enabled, 
     toleranceUnitList.removeAt( idx );
     toleranceList.removeAt( idx );
     avoidIntersectionList.removeOne( layerId );
+    topologyGroupList.removeAt( idx );
   }
 
   layerIdList.append( layerId );
@@ -1701,20 +1702,24 @@ void QgsProject::setSnapSettingsForLayer( const QString& layerId, bool enabled, 
     avoidIntersectionList.append( layerId );
   }
 
+  //topology group
+  topologyGroupList.append(topologyGroup);
+
   writeEntry( "Digitizing", "/LayerSnappingList", layerIdList );
   writeEntry( "Digitizing", "/LayerSnappingEnabledList", enabledList );
   writeEntry( "Digitizing", "/LayerSnappingToleranceList", toleranceList );
   writeEntry( "Digitizing", "/LayerSnappingToleranceUnitList", toleranceUnitList );
   writeEntry( "Digitizing", "/LayerSnapToList", snapTypeList );
   writeEntry( "Digitizing", "/AvoidIntersectionsList", avoidIntersectionList );
+  writeEntry( "Digitizing", "/TopologyGroupList", topologyGroupList );
   emit snapSettingsChanged();
 }
 
 bool QgsProject::snapSettingsForLayer( const QString& layerId, bool& enabled, QgsSnapper::SnappingType &type, QgsTolerance::UnitType& units, double& tolerance,
-                                       bool& avoidIntersection ) const
+                                       bool& avoidIntersection, QString& topologyGroup ) const
 {
-  QStringList layerIdList, enabledList, snapTypeList, toleranceUnitList, toleranceList, avoidIntersectionList;
-  snapSettings( layerIdList, enabledList, snapTypeList, toleranceUnitList, toleranceList, avoidIntersectionList );
+  QStringList layerIdList, enabledList, snapTypeList, toleranceUnitList, toleranceList, avoidIntersectionList, topologyGroupList;
+  snapSettings( layerIdList, enabledList, snapTypeList, toleranceUnitList, toleranceList, avoidIntersectionList, topologyGroupList );
   int idx = layerIdList.indexOf( layerId );
   if ( idx == -1 )
   {
@@ -1763,11 +1768,13 @@ bool QgsProject::snapSettingsForLayer( const QString& layerId, bool& enabled, Qg
   //avoid intersection
   avoidIntersection = ( avoidIntersectionList.indexOf( layerId ) != -1 );
 
+  topologyGroup = topologyGroupList.at( idx );
+
   return true;
 }
 
 void QgsProject::snapSettings( QStringList& layerIdList, QStringList& enabledList, QStringList& snapTypeList, QStringList& toleranceUnitList, QStringList& toleranceList,
-                               QStringList& avoidIntersectionList ) const
+                               QStringList& avoidIntersectionList, QStringList& topologyGroupList ) const
 {
   layerIdList = readListEntry( "Digitizing", "/LayerSnappingList" );
   enabledList = readListEntry( "Digitizing", "/LayerSnappingEnabledList" );
@@ -1775,6 +1782,7 @@ void QgsProject::snapSettings( QStringList& layerIdList, QStringList& enabledLis
   toleranceUnitList = readListEntry( "Digitizing", "/LayerSnappingToleranceUnitList" );
   snapTypeList = readListEntry( "Digitizing", "/LayerSnapToList" );
   avoidIntersectionList = readListEntry( "Digitizing", "/AvoidIntersectionsList" );
+  topologyGroupList = readListEntry( "Digitizing", "/TopologyGroupList" );
 }
 
 void QgsProject::setTopologicalEditing( bool enabled )

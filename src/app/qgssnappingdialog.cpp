@@ -148,6 +148,7 @@ void QgsSnappingDialog::apply()
   QStringList enabledList;
   QStringList toleranceUnitList;
   QStringList avoidIntersectionList;
+  QStringList topologyGroupList;
 
   for ( int i = 0; i < mLayerTreeWidget->topLevelItemCount(); ++i )
   {
@@ -182,6 +183,8 @@ void QgsSnappingDialog::apply()
     {
       avoidIntersectionList << currentItem->data( 0, Qt::UserRole ).toString();
     }
+
+    topologyGroupList << QString( qobject_cast<QLineEdit*>( mLayerTreeWidget->itemWidget( currentItem, 6 ) )->text());
   }
 
   QgsProject::instance()->writeEntry( "Digitizing", "/LayerSnappingList", layerIdList );
@@ -190,6 +193,7 @@ void QgsSnappingDialog::apply()
   QgsProject::instance()->writeEntry( "Digitizing", "/LayerSnappingToleranceUnitList", toleranceUnitList );
   QgsProject::instance()->writeEntry( "Digitizing", "/LayerSnappingEnabledList", enabledList );
   QgsProject::instance()->writeEntry( "Digitizing", "/AvoidIntersectionsList", avoidIntersectionList );
+  QgsProject::instance()->writeEntry( "Digitizing", "/TopologyGroupList", topologyGroupList );
 }
 
 void QgsSnappingDialog::show()
@@ -237,13 +241,14 @@ void QgsSnappingDialog::addLayer( QgsMapLayer *theMapLayer )
     defaultSnappingStringIdx = 2;
   }
 
-  bool layerIdListOk, enabledListOk, toleranceListOk, toleranceUnitListOk, snapToListOk, avoidIntersectionListOk;
+  bool layerIdListOk, enabledListOk, toleranceListOk, toleranceUnitListOk, snapToListOk, avoidIntersectionListOk, topologyGroupOk;
   QStringList layerIdList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingList", QStringList(), &layerIdListOk );
   QStringList enabledList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingEnabledList", QStringList(), &enabledListOk );
   QStringList toleranceList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingToleranceList", QStringList(), & toleranceListOk );
   QStringList toleranceUnitList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingToleranceUnitList", QStringList(), &toleranceUnitListOk );
   QStringList snapToList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnapToList", QStringList(), &snapToListOk );
   QStringList avoidIntersectionsList = QgsProject::instance()->readListEntry( "Digitizing", "/AvoidIntersectionsList", QStringList(), &avoidIntersectionListOk );
+  QStringList topologyGroupList = QgsProject::instance()->readListEntry( "Digitizing", "/TopologyGroupList", QStringList(), &topologyGroupOk );
 
   //snap to layer yes/no
   QTreeWidgetItem *item = new QTreeWidgetItem( mLayerTreeWidget );
@@ -283,6 +288,10 @@ void QgsSnappingDialog::addLayer( QgsMapLayer *theMapLayer )
     mLayerTreeWidget->setItemWidget( item, 5, cbxAvoidIntersection );
   }
 
+  //line edit to specify topology group
+  QLineEdit *leTopologyGroup= new QLineEdit( mLayerTreeWidget );
+  mLayerTreeWidget->setItemWidget( item, 6, leTopologyGroup );
+
   int idx = layerIdList.indexOf( currentVectorLayer->id() );
   if ( idx < 0 )
   {
@@ -297,6 +306,9 @@ void QgsSnappingDialog::addLayer( QgsMapLayer *theMapLayer )
       {
         connect( cbxAvoidIntersection, SIGNAL( stateChanged( int ) ), this, SLOT( apply() ) );
       }
+
+      connect( leTopologyGroup, SIGNAL( textEdited( const QString ) ), this, SLOT( apply() ) );
+
       setTopologicalEditingState();
       setIntersectionSnappingState();
     }
@@ -330,6 +342,7 @@ void QgsSnappingDialog::addLayer( QgsMapLayer *theMapLayer )
   {
     cbxAvoidIntersection->setChecked( avoidIntersectionsList.contains( currentVectorLayer->id() ) );
   }
+  leTopologyGroup->setText( topologyGroupList[idx] );
 
   if ( myDockFlag )
   {
@@ -342,6 +355,8 @@ void QgsSnappingDialog::addLayer( QgsMapLayer *theMapLayer )
     {
       connect( cbxAvoidIntersection, SIGNAL( stateChanged( int ) ), this, SLOT( apply() ) );
     }
+
+    connect( leTopologyGroup, SIGNAL( textEdited( const QString ) ), this, SLOT( apply() ) );
 
     setTopologicalEditingState();
     setIntersectionSnappingState();
