@@ -392,6 +392,10 @@ void QgsVectorLayerProperties::syncToLayer( void )
   cbMinimumScale->setScale( 1.0 / layer->minimumScale() );
   cbMaximumScale->setScale( 1.0 / layer->maximumScale() );
 
+  // get simplify drawing configuration
+  mSimplifyDrawingGroupBox->setChecked( layer->simplifyDrawing() );
+  mSimplifyDrawingSlider->setValue( (int)(10.0f * (layer->simplifyDrawingTol()-1)) );
+
   // load appropriate symbology page (V1 or V2)
   updateSymbologyPage();
 
@@ -528,6 +532,10 @@ void QgsVectorLayerProperties::apply()
   layer->setMetadataUrl( mLayerMetadataUrlLineEdit->text() );
   layer->setMetadataUrlType( mLayerMetadataUrlTypeComboBox->currentText() );
   layer->setMetadataUrlFormat( mLayerMetadataUrlFormatComboBox->currentText() );
+
+  //layer simplify drawing configuration
+  layer->setSimplifyDrawing( mSimplifyDrawingGroupBox->isChecked() );
+  layer->setSimplifyDrawingTol( 1.0f + 0.1f*mSimplifyDrawingSlider->value() );
 
   // update symbology
   emit refreshLegend( layer->id(), QgsLegendItem::DontChange );

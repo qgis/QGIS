@@ -1833,6 +1833,10 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
     mLabel->setMinScale( e.attribute( "minLabelScale", "1" ).toFloat() );
     mLabel->setMaxScale( e.attribute( "maxLabelScale", "100000000" ).toFloat() );
 
+    // get the simplification drawing configuration
+    setSimplifyDrawing( e.attribute( "simplifyDrawingFlag", "1" ) == "1" );
+    setSimplifyDrawingTol( e.attribute( "simplifyDrawingTol", "1" ).toFloat() );
+
     //also restore custom properties (for labeling-ng)
     readCustomProperties( node, "labeling" );
 
@@ -2165,6 +2169,10 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
     mapLayerNode.setAttribute( "scaleBasedLabelVisibilityFlag", mLabel->scaleBasedVisibility() ? 1 : 0 );
     mapLayerNode.setAttribute( "minLabelScale", QString::number( mLabel->minScale() ) );
     mapLayerNode.setAttribute( "maxLabelScale", QString::number( mLabel->maxScale() ) );
+
+    // save the simplification drawing configuration
+    mapLayerNode.setAttribute( "simplifyDrawingFlag", mSimplifyDrawing ? 1 : 0 );
+    mapLayerNode.setAttribute( "simplifyDrawingTol", QString::number( mSimplifyDrawingTol ) );
 
     //save customproperties (for labeling ng)
     writeCustomProperties( node, doc );
