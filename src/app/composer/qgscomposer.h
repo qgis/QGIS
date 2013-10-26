@@ -126,6 +126,9 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Zoom out
     void on_mActionZoomOut_triggered();
 
+    //! Zoom actual
+    void on_mActionZoomActual_triggered();
+
     //! Refresh view
     void on_mActionRefreshView_triggered();
 
@@ -365,6 +368,13 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Updates cursor position in status bar
     void updateStatusCursorPos( QPointF position );
 
+    //! Updates zoom level in status bar
+    void updateStatusZoom();
+
+    void on_mStatusZoomCombo_currentIndexChanged( int index );
+
+    void on_mStatusZoomCombo_zoomEntered();
+
     //! Updates status bar composition message
     void updateStatusCompositionMsg( QString message );
 
@@ -414,6 +424,9 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     QLabel* mStatusCursorXLabel;
     QLabel* mStatusCursorYLabel;
     QLabel* mStatusCursorPageLabel;
+    /**Combobox in status bar which shows/adjusts current zoom level*/
+    QComboBox* mStatusZoomCombo;
+    QList<double> mStatusZoomLevelsList;
     /**Label in status bar which shows messages from the composition*/
     QLabel* mStatusCompositionLabel;
 

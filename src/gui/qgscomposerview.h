@@ -136,6 +136,9 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     void setHorizontalRuler( QgsComposerRuler* r ) { mHorizontalRuler = r; }
     void setVerticalRuler( QgsComposerRuler* r ) { mVerticalRuler = r; }
 
+    /**Set zoom level, where a zoom level of 1.0 corresponds to 100%*/
+    void setZoomLevel( double zoomLevel );
+
   protected:
     void mousePressEvent( QMouseEvent* );
     void mouseReleaseEvent( QMouseEvent* );
@@ -220,6 +223,8 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     void actionFinished();
     /**Is emitted when mouse cursor coordinates change*/
     void cursorPosChanged( QPointF );
+    /**Is emitted when the view zoom changes*/
+    void zoomLevelChanged();
 
     /**Emitted before composerview is shown*/
     void composerViewShow( QgsComposerView* );
