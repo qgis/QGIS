@@ -37,8 +37,9 @@ QgsClipboard::QgsClipboard()
     : QObject()
     , mFeatureClipboard()
     , mFeatureFields()
+    , mUseSystemClipboard( false )
 {
-  connect( QApplication::clipboard(), SIGNAL( dataChanged() ), this, SIGNAL( changed() ) );
+  connect( QApplication::clipboard(), SIGNAL( dataChanged() ), this, SLOT( systemClipboardChanged() ) );
 }
 
 QgsClipboard::~QgsClipboard()
@@ -58,6 +59,7 @@ void QgsClipboard::replaceWithCopyOf( QgsVectorLayer *src )
   QgsDebugMsg( "replaced QGis clipboard." );
 
   setSystemClipboard();
+  mUseSystemClipboard = false;
   emit changed();
 }
 
@@ -68,6 +70,7 @@ void QgsClipboard::replaceWithCopyOf( QgsFeatureStore & featureStore )
   mFeatureClipboard = featureStore.features();
   mCRS = featureStore.crs();
   setSystemClipboard();
+  mUseSystemClipboard = false;
   emit changed();
 }
 
@@ -143,6 +146,9 @@ void QgsClipboard::setSystemClipboard()
 QgsFeatureList QgsClipboard::copyOf( const QgsFields &fields )
 {
   QgsDebugMsg( "returning clipboard." );
+  if ( !mUseSystemClipboard )
+      return mFeatureClipboard;
+
   QClipboard *cb = QApplication::clipboard();
 
 #ifndef Q_OS_WIN
@@ -193,6 +199,7 @@ void QgsClipboard::insert( QgsFeature& feature )
   mFeatureClipboard.push_back( feature );
 
   QgsDebugMsg( "inserted " + feature.geometry()->exportToWkt() );
+  mUseSystemClipboard = false;
   emit changed();
 }
 
@@ -259,4 +266,10 @@ bool QgsClipboard::hasFormat( const QString& mimeType )
 QByteArray QgsClipboard::data( const QString& mimeType )
 {
   return QApplication::clipboard()->mimeData()->data( mimeType );
+}
+
+void QgsClipboard::systemClipboardChanged()
+{
+  mUseSystemClipboard = true;
+  emit changed();
 }

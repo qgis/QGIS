@@ -141,6 +141,10 @@ class APP_EXPORT QgsClipboard : public QObject
      */
     const QgsFields &fields() { return mFeatureFields; }
 
+  private slots:
+
+    void systemClipboardChanged();
+
   signals:
     /** Emitted when content changed */
     void changed();
@@ -158,6 +162,9 @@ class APP_EXPORT QgsClipboard : public QObject
     QgsFeatureList mFeatureClipboard;
     QgsFields mFeatureFields;
     QgsCoordinateReferenceSystem mCRS;
+
+    /** True when the data from the system clipboard should be read */
+    bool mUseSystemClipboard;
 };
 
 #endif
