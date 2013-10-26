@@ -147,34 +147,35 @@ QgsFeatureList QgsClipboard::copyOf( const QgsFields &fields )
 
 #ifndef Q_OS_WIN
   QString text = cb->text( QClipboard::Selection );
-#endif
+#else
   QString text = cb->text( QClipboard::Clipboard );
+#endif
 
-  QStringList values = text.split("\n");
+  QStringList values = text.split( "\n" );
   if ( values.isEmpty() || text.isEmpty() )
-      return mFeatureClipboard;
+    return mFeatureClipboard;
 
   QgsFeatureList features;
   foreach ( QString row, values )
   {
-      // Assume that it's just WKT for now.
-      QgsGeometry* geometry = QgsGeometry::fromWkt( row );
-      if ( !geometry )
-          continue;
+    // Assume that it's just WKT for now.
+    QgsGeometry* geometry = QgsGeometry::fromWkt( row );
+    if ( !geometry )
+      continue;
 
-      QgsFeature* feature = new QgsFeature();
-      if ( !fields.isEmpty() )
-          feature->setFields( &fields , true );
+    QgsFeature* feature = new QgsFeature();
+    if ( !fields.isEmpty() )
+      feature->setFields( &fields , true );
 
-      feature->setGeometry( geometry );
-      features.append( QgsFeature( *feature ));
+    feature->setGeometry( geometry );
+    features.append( QgsFeature( *feature ) );
   }
 
   if ( features.isEmpty() )
-      return mFeatureClipboard;
+    return mFeatureClipboard;
 
   if ( !fields.isEmpty() )
-      mFeatureFields = fields;
+    mFeatureFields = fields;
 
   return features;
 }
@@ -200,12 +201,13 @@ bool QgsClipboard::empty()
   QClipboard *cb = QApplication::clipboard();
 #ifndef Q_OS_WIN
   QString text = cb->text( QClipboard::Selection );
-#endif
+#else
   QString text = cb->text( QClipboard::Clipboard );
+#endif
   return text.isEmpty() && mFeatureClipboard.empty();
 }
 
-QgsFeatureList QgsClipboard::transformedCopyOf(QgsCoordinateReferenceSystem destCRS , const QgsFields &fields)
+QgsFeatureList QgsClipboard::transformedCopyOf( QgsCoordinateReferenceSystem destCRS , const QgsFields &fields )
 {
   QgsFeatureList featureList = copyOf( fields );
   QgsCoordinateTransform ct( crs(), destCRS );
