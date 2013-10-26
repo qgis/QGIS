@@ -53,19 +53,9 @@ def myself(L):
             medianVal = L[ (nVal + 1) / 2 - 1]
     return medianVal
 
-# translate single part to multi part geometry type
-multipart = {
-    QGis.WKBPoint: QGis.WKBMultiPoint,
-    QGis.WKBLineString: QGis.WKBMultiLineString,
-    QGis.WKBPolygon: QGis.WKBMultiPolygon,
-    QGis.WKBPoint25D: QGis.WKBMultiPoint25D,
-    QGis.WKBLineString25D: QGis.WKBMultiLineString25D,
-    QGis.WKBPolygon25D: QGis.WKBMultiPolygon25D,
-}
-
 class SpatialJoin(GeoAlgorithm):
     '''
-    Join attributes by location
+    Join by location
     
     Port of the spatial join algorithm from fTools to the Processing Toolbox.
     '''
@@ -99,7 +89,7 @@ class SpatialJoin(GeoAlgorithm):
     #===========================================================================
     
     def defineCharacteristics(self):
-        self.name = "Join attributes by location"
+        self.name = "Join by location"
         self.group = "Vector general tools"
         self.addParameter(ParameterVector(SpatialJoin.INPUT1, "Target vector layer", [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterVector(SpatialJoin.INPUT2, "Join vector layer", [ParameterVector.VECTOR_TYPE_ANY]))
@@ -162,7 +152,7 @@ class SpatialJoin(GeoAlgorithm):
             # from joined layer
             crs = provider2.crs()
             if summary:
-                geometry_type = multipart[provider2.geometryType()]
+                geometry_type = self.singleToMultiGeom(provider2.geometryType())
             else:
                 geometry_type = provider2.geometryType()
 
@@ -198,6 +188,7 @@ class SpatialJoin(GeoAlgorithm):
                 else: check = 1
             if check == 0:
                 count = 0
+                multi_feature = []
                 for i in joinList:
                     provider2.getFeatures( QgsFeatureRequest().setFilterFid( int(i) ) ).nextFeature( inFeatB )
                     if inGeom.intersects(inFeatB.geometry()):
@@ -216,15 +207,12 @@ class SpatialJoin(GeoAlgorithm):
                         else:
                             for j in numFields.keys():
                                 numFields[j].append(atMap2[j])
-                            if none:
-                                # first located feature in summary
-                                outFeat.setGeometry(inFeatB.geometry())
+                            if use_geom == 0:
+                                if none:
+                                    outFeat.setGeometry(inGeom)
                             else:
-                                # combine (union) with existing geometry
-                                existing = outFeat.geometry()
-                                additional = inFeatB.geometry()
-                                union = existing.combine(additional)
-                                outFeat.setGeometry(union)
+                                feature_list = self.extractAsMulti(inFeatB.geometry())
+                                multi_feature.extend(feature_list)
                             none = False
                 if summary and not none:
                     atMap = atMap1
@@ -238,6 +226,9 @@ class SpatialJoin(GeoAlgorithm):
                         numFields[j] = []
                     atMap.append(count)
                     atMap = dict(zip(seq, atMap))
+                    if use_geom == 1:
+                        outGeom = QgsGeometry(self.convertGeometry(multi_feature, geometry_type))
+                        outFeat.setGeometry(outGeom)
             if none:
                 outFeat.setAttributes(atMap1)
             else:
@@ -251,3 +242,47 @@ class SpatialJoin(GeoAlgorithm):
             progress.setPercentage(start)
             
         del writer
+
+    def singleToMultiGeom(self, wkbType):
+        try:
+            if wkbType in (QGis.WKBPoint, QGis.WKBMultiPoint,
+                           QGis.WKBPoint25D, QGis.WKBMultiPoint25D):
+                return QGis.WKBMultiPoint
+            elif wkbType in (QGis.WKBLineString, QGis.WKBMultiLineString,
+                             QGis.WKBMultiLineString25D,
+                             QGis.WKBLineString25D):
+
+                return QGis.WKBMultiLineString
+            elif wkbType in (QGis.WKBPolygon, QGis.WKBMultiPolygon,
+                             QGis.WKBMultiPolygon25D, QGis.WKBPolygon25D):
+
+                return QGis.WKBMultiPolygon
+            else:
+                return QGis.WKBUnknown
+        except Exception, err:
+            print unicode(err)
+
+    def extractAsMulti(self, geom):
+        if geom.type() == QGis.Point:
+            if geom.isMultipart():
+                return geom.asMultiPoint()
+            else:
+                return [geom.asPoint()]
+        elif geom.type() == QGis.Line:
+            if geom.isMultipart():
+                return geom.asMultiPolyline()
+            else:
+                return [geom.asPolyline()]
+        else:
+            if geom.isMultipart():
+                return geom.asMultiPolygon()
+            else:
+                return [geom.asPolygon()]
+
+    def convertGeometry(self, geom_list, vType):
+        if vType == QGis.Point:
+            return QgsGeometry().fromMultiPoint(geom_list)
+        elif vType == QGis.Line:
+            return QgsGeometry().fromMultiPolyline(geom_list)
+        else:
+            return QgsGeometry().fromMultiPolygon(geom_list)
