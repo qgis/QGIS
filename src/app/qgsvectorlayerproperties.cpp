@@ -394,7 +394,7 @@ void QgsVectorLayerProperties::syncToLayer( void )
 
   // get simplify drawing configuration
   mSimplifyDrawingGroupBox->setChecked( layer->simplifyDrawing() );
-  mSimplifyDrawingSlider->setValue( (int)(10.0f * (layer->simplifyDrawingTol()-1)) );
+  mSimplifyDrawingSlider->setValue( (int)(5.0f * (layer->simplifyDrawingTol()-1)) );
 
   // load appropriate symbology page (V1 or V2)
   updateSymbologyPage();
@@ -535,7 +535,7 @@ void QgsVectorLayerProperties::apply()
 
   //layer simplify drawing configuration
   layer->setSimplifyDrawing( mSimplifyDrawingGroupBox->isChecked() );
-  layer->setSimplifyDrawingTol( 1.0f + 0.1f*mSimplifyDrawingSlider->value() );
+  layer->setSimplifyDrawingTol( 1.0f + 0.2f*mSimplifyDrawingSlider->value() );
 
   // update symbology
   emit refreshLegend( layer->id(), QgsLegendItem::DontChange );
