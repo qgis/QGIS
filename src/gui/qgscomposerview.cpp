@@ -50,6 +50,7 @@ QgsComposerView::QgsComposerView( QWidget* parent, const char* name, Qt::WFlags 
     , mMoveContentItem( 0 )
     , mMarqueeSelect( false )
     , mMarqueeZoom( false )
+    , mTemporaryZoomStatus( QgsComposerView::Inactive )
     , mPaintingEnabled( true )
     , mHorizontalRuler( 0 )
     , mVerticalRuler( 0 )
@@ -558,6 +559,14 @@ void QgsComposerView::endMarqueeZoom( QMouseEvent* e )
   removeRubberBand();
   //zoom view to fit desired bounds
   fitInView( boundsRect, Qt::KeepAspectRatio );
+
+  if ( mTemporaryZoomStatus == QgsComposerView::ActiveUntilMouseRelease )
+  {
+    //user was using the temporary keyboard activated zoom tool
+    //and the control or space key was released before mouse button, so end temporary zoom
+    mTemporaryZoomStatus = QgsComposerView::Inactive;
+    setCurrentTool( mPreviousTool );
+  }
 }
 
 void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
@@ -1013,11 +1022,43 @@ void QgsComposerView::keyPressEvent( QKeyEvent * e )
   if ( mPanning )
     return;
 
-  if ( e->key() == Qt::Key_Space )
+  if ( mTemporaryZoomStatus != QgsComposerView::Inactive )
   {
-    // Pan composer with space bar
-    if ( ! e->isAutoRepeat() )
+    //temporary keyboard based zoom is active
+    if ( e->isAutoRepeat() )
     {
+      return;
+    }
+
+    //respond to changes in ctrl key status
+    if ( !( e->modifiers() & Qt::ControlModifier ) && !mMarqueeZoom )
+    {
+      //space pressed, but control key was released, end of temporary zoom tool
+      mTemporaryZoomStatus = QgsComposerView::Inactive;
+      setCurrentTool( mPreviousTool );
+    }
+    else if ( !( e->modifiers() & Qt::ControlModifier ) && mMarqueeZoom )
+    {
+      //control key released, but user is mid-way through a marquee zoom
+      //so end temporary zoom when user releases the mouse button
+      mTemporaryZoomStatus = QgsComposerView::ActiveUntilMouseRelease;
+    }
+    else
+    {
+      //both control and space pressed
+      //set cursor to zoom in/out depending on shift key status
+      QPixmap myZoomQPixmap = QPixmap(( const char ** )( e->modifiers() & Qt::ShiftModifier ? zoom_out : zoom_in ) );
+      QCursor zoomCursor = QCursor( myZoomQPixmap, 7, 7 );
+      viewport()->setCursor( zoomCursor );
+    }
+    return;
+  }
+
+  if ( e->key() == Qt::Key_Space && ! e->isAutoRepeat() )
+  {
+    if ( !( e->modifiers() & Qt::ControlModifier ) )
+    {
+      // Pan composer with space bar
       mPanning = true;
       mMouseLastXY = mMouseCurrentXY;
       if ( composition() )
@@ -1026,12 +1067,25 @@ void QgsComposerView::keyPressEvent( QKeyEvent * e )
         composition()->setPreventCursorChange( true );
       }
       viewport()->setCursor( Qt::ClosedHandCursor );
+      return;
     }
-    return;
+    else
+    {
+      //ctrl+space pressed, so switch to temporary keyboard based zoom tool
+      mTemporaryZoomStatus = QgsComposerView::Active;
+      mPreviousTool = mCurrentTool;
+      setCurrentTool( Zoom );
+      //set cursor to zoom in/out depending on shift key status
+      QPixmap myZoomQPixmap = QPixmap(( const char ** )( e->modifiers() & Qt::ShiftModifier ? zoom_out : zoom_in ) );
+      QCursor zoomCursor = QCursor( myZoomQPixmap, 7, 7 );
+      viewport()->setCursor( zoomCursor );
+      return;
+    }
   }
 
   if ( mCurrentTool == QgsComposerView::Zoom )
   {
+    //using the zoom tool, respond to changes in shift key status and update mouse cursor accordingly
     if ( ! e->isAutoRepeat() )
     {
       QPixmap myZoomQPixmap = QPixmap(( const char ** )( e->modifiers() & Qt::ShiftModifier ? zoom_out : zoom_in ) );
@@ -1113,9 +1167,25 @@ void QgsComposerView::keyReleaseEvent( QKeyEvent * e )
     }
     return;
   }
-
-  if ( mCurrentTool == QgsComposerView::Zoom )
+  else if ( e->key() == Qt::Key_Space && !e->isAutoRepeat() && mTemporaryZoomStatus != QgsComposerView::Inactive )
   {
+    //temporary keyboard-based zoom tool is active and space key has been released
+    if ( mMarqueeZoom )
+    {
+      //currently in the middle of a marquee operation, so don't switch tool back immediately
+      //instead, wait until mouse button has been released before switching tool back
+      mTemporaryZoomStatus = QgsComposerView::ActiveUntilMouseRelease;
+    }
+    else
+    {
+      //switch tool back
+      mTemporaryZoomStatus = QgsComposerView::Inactive;
+      setCurrentTool( mPreviousTool );
+    }
+  }
+  else if ( mCurrentTool == QgsComposerView::Zoom )
+  {
+    //if zoom tool is active, respond to changes in the shift key status and update cursor accordingly
     if ( ! e->isAutoRepeat() )
     {
       QPixmap myZoomQPixmap = QPixmap(( const char ** )( e->modifiers() & Qt::ShiftModifier ? zoom_out : zoom_in ) );
