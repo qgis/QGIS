@@ -192,6 +192,7 @@ void QgsComposerMouseHandles::selectionChanged()
     }
   }
 
+  resetStatusBar();
   updateHandles();
 }
 
@@ -515,6 +516,29 @@ void QgsComposerMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent* event
   //redraw handles
   resetTransform();
   updateHandles();
+  //reset status bar message
+  resetStatusBar();
+}
+
+void QgsComposerMouseHandles::resetStatusBar()
+{
+  QList<QgsComposerItem*> selectedItems = mComposition->selectedComposerItems();
+  int selectedCount = selectedItems.size();
+  if ( selectedCount > 1 )
+  {
+    //set status bar message to count of selected items
+    mComposition->setStatusMessage( QString( tr( "%1 items selected" ) ).arg( selectedCount ) );
+  }
+  else if ( selectedCount == 1 )
+  {
+    //set status bar message to count of selected items
+    mComposition->setStatusMessage( tr( "1 item selected" ) );
+  }
+  else
+  {
+    //clear status bar message
+    mComposition->setStatusMessage( QString( "" ) );
+  }
 }
 
 void QgsComposerMouseHandles::mousePressEvent( QGraphicsSceneMouseEvent* event )
@@ -594,6 +618,8 @@ void QgsComposerMouseHandles::dragMouseMove( const QPointF& currentPosition, boo
   QTransform moveTransform;
   moveTransform.translate( moveRectX, moveRectY );
   setTransform( moveTransform );
+  //show current displacement of selection in status bar
+  mComposition->setStatusMessage( QString( tr( "dx: %1 mm dy: %2 mm" ) ).arg( moveRectX ).arg( moveRectY ) );
 }
 
 void QgsComposerMouseHandles::resizeMouseMove( const QPointF& currentPosition, bool lockRatio, bool fromCenter )
@@ -770,6 +796,9 @@ void QgsComposerMouseHandles::resizeMouseMove( const QPointF& currentPosition, b
   setTransform( itemTransform );
   mResizeRect = QRectF( mBeginHandlePos.x() + mx, mBeginHandlePos.y() + my, mBeginHandleWidth + rx, mBeginHandleHeight + ry );
   setRect( 0, 0, fabs( mBeginHandleWidth + rx ), fabs( mBeginHandleHeight + ry ) );
+
+  //show current size of selection in status bar
+  mComposition->setStatusMessage( QString( tr( "width: %1 mm height: %2 mm" ) ).arg( rect().width() ).arg( rect().height() ) );
 }
 
 void QgsComposerMouseHandles::relativeResizeRect( QRectF& rectToResize, const QRectF& boundsBefore, const QRectF& boundsAfter )

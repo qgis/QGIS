@@ -181,6 +181,36 @@ int QgsComposition::numPages() const
   return mPages.size();
 }
 
+QPointF QgsComposition::positionOnPage( const QPointF & position ) const
+{
+  double y;
+  if ( position.y() > ( mPages.size() - 1 ) * ( paperHeight() + spaceBetweenPages() ) )
+  {
+    //y coordinate is greater then the end of the last page, so return distance between
+    //top of last page and y coordinate
+    y = position.y() - ( mPages.size() - 1 ) * ( paperHeight() + spaceBetweenPages() );
+  }
+  else
+  {
+    //y coordinate is less then the end of the last page
+    y = fmod( position.y(), ( paperHeight() + spaceBetweenPages() ) );
+  }
+  return QPointF( position.x(), y );
+}
+
+int QgsComposition::pageNumberForPoint( const QPointF & position ) const
+{
+  int pageNumber = qFloor( position.y() / ( paperHeight() + spaceBetweenPages() ) ) + 1;
+  pageNumber = pageNumber < 1 ? 1 : pageNumber;
+  pageNumber = pageNumber > mPages.size() ? mPages.size() : pageNumber;
+  return pageNumber;
+}
+
+void QgsComposition::setStatusMessage( const QString & message )
+{
+  emit statusMsgChanged( message );
+}
+
 QgsComposerItem* QgsComposition::composerItemAt( const QPointF & position )
 {
   return composerItemAt( position, 0 );

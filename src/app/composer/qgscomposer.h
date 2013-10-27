@@ -338,6 +338,12 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Raise, unminimize and activate this window
     void activate();
 
+    //! Updates cursor position in status bar
+    void updateStatusCursorPos( QPointF position );
+
+    //! Updates status bar composition message
+    void updateStatusCompositionMsg( QString message );
+
   private:
 
     /**Establishes the signal slot connection for the class*/
@@ -376,6 +382,13 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     /**Composer title*/
     QString mTitle;
+
+    /**Labels in status bar which shows current mouse position*/
+    QLabel* mStatusCursorXLabel;
+    QLabel* mStatusCursorYLabel;
+    QLabel* mStatusCursorPageLabel;
+    /**Label in status bar which shows messages from the composition*/
+    QLabel* mStatusCompositionLabel;
 
     //! Pointer to composer view
     QgsComposerView *mView;
@@ -464,3 +477,4 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 };
 
 #endif
+

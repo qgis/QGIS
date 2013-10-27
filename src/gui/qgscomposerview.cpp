@@ -603,6 +603,8 @@ void QgsComposerView::mouseMoveEvent( QMouseEvent* e )
   }
 
   mMouseCurrentXY = e->pos();
+  //update cursor position in composer status bar
+  emit cursorPosChanged( mapToScene( e->pos() ) );
 
   updateRulers();
   if ( mHorizontalRuler )

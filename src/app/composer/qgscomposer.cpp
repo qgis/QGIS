@@ -313,6 +313,19 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   setMouseTracking( true );
   mViewFrame->setMouseTracking( true );
 
+  //create status bar labels
+  mStatusCursorXLabel = new QLabel( mStatusBar );
+  mStatusCursorXLabel->setMinimumWidth( 100 );
+  mStatusCursorYLabel = new QLabel( mStatusBar );
+  mStatusCursorYLabel->setMinimumWidth( 100 );
+  mStatusCursorPageLabel = new QLabel( mStatusBar );
+  mStatusCursorPageLabel->setMinimumWidth( 100 );
+  mStatusCompositionLabel = new QLabel( mStatusBar );
+  mStatusBar->addWidget( mStatusCursorXLabel );
+  mStatusBar->addWidget( mStatusCursorYLabel );
+  mStatusBar->addWidget( mStatusCursorPageLabel );
+  mStatusBar->addWidget( mStatusCompositionLabel );
+
   //create composer view and layout with rulers
   mView = 0;
   mViewLayout = new QGridLayout();
@@ -342,7 +355,6 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   }
 
   connectSlots();
-
 
   mComposition->setParent( mView );
   mView->setComposition( mComposition );
@@ -400,9 +412,12 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   mGeneralDock->raise();
 
   // Create size grip (needed by Mac OS X for QMainWindow if QStatusBar is not visible)
+  //should not be needed now that composer has a status bar?
+#if 0
   mSizeGrip = new QSizeGrip( this );
   mSizeGrip->resize( mSizeGrip->sizeHint() );
   mSizeGrip->move( rect().bottomRight() - mSizeGrip->rect().bottomRight() );
+#endif
 
   restoreWindowState();
   setSelectionTool();
@@ -506,6 +521,14 @@ void QgsComposer::connectSlots()
   connect( mComposition, SIGNAL( composerShapeAdded( QgsComposerShape* ) ), this, SLOT( addComposerShape( QgsComposerShape* ) ) );
   connect( mComposition, SIGNAL( composerTableAdded( QgsComposerAttributeTable* ) ), this, SLOT( addComposerTable( QgsComposerAttributeTable* ) ) );
   connect( mComposition, SIGNAL( itemRemoved( QgsComposerItem* ) ), this, SLOT( deleteItem( QgsComposerItem* ) ) );
+
+  //listen out for position updates from the QgsComposerView
+  connect( mView, SIGNAL( cursorPosChanged( QPointF ) ), this, SLOT( updateStatusCursorPos( QPointF ) ) );
+  //also listen out for position updates from the horizontal/vertical rulers
+  connect( mHorizontalRuler, SIGNAL( cursorPosChanged( QPointF ) ), this, SLOT( updateStatusCursorPos( QPointF ) ) );
+  connect( mVerticalRuler, SIGNAL( cursorPosChanged( QPointF ) ), this, SLOT( updateStatusCursorPos( QPointF ) ) );
+  //listen out to status bar updates from the composition
+  connect( mComposition, SIGNAL( statusMsgChanged( QString ) ), this, SLOT( updateStatusCompositionMsg( QString ) ) );
 }
 
 void QgsComposer::open( void )
@@ -570,6 +593,27 @@ void QgsComposer::setTitle( const QString& title )
   {
     mWindowAction->setText( title );
   }
+}
+
+void QgsComposer::updateStatusCursorPos( QPointF cursorPosition )
+{
+  if ( !mComposition )
+  {
+    return;
+  }
+
+  //convert cursor position to position on current page
+  QPointF pagePosition = mComposition->positionOnPage( cursorPosition );
+  int currentPage = mComposition->pageNumberForPoint( cursorPosition );
+
+  mStatusCursorXLabel->setText( QString( tr( "x: %1 mm" ) ).arg( pagePosition.x() ) );
+  mStatusCursorYLabel->setText( QString( tr( "y: %1 mm" ) ).arg( pagePosition.y() ) );
+  mStatusCursorPageLabel->setText( QString( tr( "page: %3" ) ).arg( currentPage ) );
+}
+
+void QgsComposer::updateStatusCompositionMsg( QString message )
+{
+  mStatusCompositionLabel->setText( message );
 }
 
 void QgsComposer::showItemOptions( QgsComposerItem* item )
@@ -1922,7 +1966,9 @@ void QgsComposer::resizeEvent( QResizeEvent *e )
   Q_UNUSED( e );
 
   // Move size grip when window is resized
+#if 0
   mSizeGrip->move( rect().bottomRight() - mSizeGrip->rect().bottomRight() );
+#endif
 
   saveWindowState();
 }

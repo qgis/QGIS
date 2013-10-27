@@ -132,6 +132,20 @@ void QgsComposerRuler::mouseMoveEvent( QMouseEvent* event )
   //qWarning( "QgsComposerRuler::mouseMoveEvent" );
   updateMarker( event->posF() );
   setSnapLinePosition( event->posF() );
+
+  //update cursor position in status bar
+  QPointF displayPos = mTransform.inverted().map( event->posF() );
+  if ( mDirection == Horizontal )
+  {
+    //mouse is over a horizontal ruler, so don't show a y coordinate
+    displayPos.setY( 0 );
+  }
+  else
+  {
+    //mouse is over a vertical ruler, so don't show an x coordinate
+    displayPos.setX( 0 );
+  }
+  emit cursorPosChanged( displayPos );
 }
 
 void QgsComposerRuler::mouseReleaseEvent( QMouseEvent* event )

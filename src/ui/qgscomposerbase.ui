@@ -39,6 +39,7 @@
     </item>
    </layout>
   </widget>
+  <widget class="QStatusBar" name="mStatusBar"/>  
   <widget class="QToolBar" name="mComposerToolbar">
    <property name="windowTitle">
     <string>Composer</string>

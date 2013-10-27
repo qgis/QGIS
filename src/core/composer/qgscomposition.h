@@ -108,6 +108,21 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     /**Note: added in version 1.9*/
     int numPages() const;
 
+    /**Returns the position within a page of a point in the composition
+      @note Added in QGIS 2.1
+    */
+    QPointF positionOnPage( const QPointF & position ) const;
+
+    /**Returns the page number corresponding to a point in the composition
+      @note Added in QGIS 2.1
+    */
+    int pageNumberForPoint( const QPointF & position ) const;
+
+    /**Sets the status bar message for the composer window
+      @note Added in QGIS 2.1
+    */
+    void setStatusMessage( const QString & message );
+
     void setSnapToGridEnabled( bool b );
     bool snapToGridEnabled() const {return mSnapToGrid;}
 
@@ -498,6 +513,9 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     void composerTableAdded( QgsComposerAttributeTable* table );
     /**Is emitted when a composer item has been removed from the scene*/
     void itemRemoved( QgsComposerItem* );
+
+    /**Is emitted when the composition has an updated status bar message for the composer window*/
+    void statusMsgChanged( QString message );
 };
 
 template<class T> void QgsComposition::composerItems( QList<T*>& itemList )
