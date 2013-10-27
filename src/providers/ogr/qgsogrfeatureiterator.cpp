@@ -343,7 +343,7 @@ bool QgsOgrSimplifiedFeatureIterator::simplifyOgrGeometry( const QgsFeatureReque
   OGRwkbGeometryType wkbGeometryType = wkbFlatten( geometry->getGeometryType() );
 
   // Simplify the geometry rewriting temporally its WKB-stream for saving calloc's.
-  if (wkbGeometryType==wkbLineString)
+  if ( wkbGeometryType == wkbLineString )
   {
     OGRLineString* lineString = (OGRLineString*)geometry;
 
@@ -351,7 +351,7 @@ bool QgsOgrSimplifiedFeatureIterator::simplifyOgrGeometry( const QgsFeatureReque
     if ( (isaLinearRing && numPoints<=5) || (!isaLinearRing && numPoints<=2) ) return false;
 
     OGREnvelope env;
-    geometry->getEnvelope(&env );
+    geometry->getEnvelope( &env );
     QgsRectangle envelope( env.MinX, env.MinY, env.MaxX, env.MaxY );
 
     // Can replace the geometry by its BBOX ?
@@ -398,19 +398,19 @@ bool QgsOgrSimplifiedFeatureIterator::simplifyOgrGeometry( const QgsFeatureReque
 
       if ( request.simplifyGeometry( geometryType, envelope, xptr, 16, yptr, 16, numPoints, numSimplifiedPoints ) )
       {
-        lineString->setPoints(numSimplifiedPoints, points);
+        lineString->setPoints( numSimplifiedPoints, points );
         lineString->flattenTo2D();
       }
       return numSimplifiedPoints!=numPoints;
     }
   }
   else
-  if (wkbGeometryType==wkbPolygon)
+  if ( wkbGeometryType == wkbPolygon )
   {
     OGRPolygon* polygon = (OGRPolygon*)geometry;
     bool result = simplifyOgrGeometry( request, polygon->getExteriorRing(), true );
 
-    for (int i = 0, numInteriorRings = polygon->getNumInteriorRings(); i < numInteriorRings; ++i)
+    for ( int i = 0, numInteriorRings = polygon->getNumInteriorRings(); i < numInteriorRings; ++i )
     {
       result |= simplifyOgrGeometry( request, polygon->getInteriorRing(i), true );
     }
@@ -418,12 +418,12 @@ bool QgsOgrSimplifiedFeatureIterator::simplifyOgrGeometry( const QgsFeatureReque
     return result;
   }
   else
-  if (wkbGeometryType==wkbMultiLineString || wkbGeometryType==wkbMultiPolygon)
+  if ( wkbGeometryType == wkbMultiLineString || wkbGeometryType == wkbMultiPolygon )
   {
     OGRGeometryCollection* collection = (OGRGeometryCollection*)geometry;
     bool result = false;
 
-    for (int i = 0, numGeometries = collection->getNumGeometries(); i < numGeometries; ++i)
+    for ( int i = 0, numGeometries = collection->getNumGeometries(); i < numGeometries; ++i )
     {
       result |= simplifyOgrGeometry( request, collection->getGeometryRef(i), wkbGeometryType==wkbMultiPolygon );
     }
@@ -440,7 +440,7 @@ void QgsOgrSimplifiedFeatureIterator::notifyReadedFeature( OGRFeatureH fet, OGRG
   {
     OGRwkbGeometryType wkbType = QgsOgrProvider::ogrWkbSingleFlatten( OGR_G_GetGeometryType(geom) );
 
-    if (wkbType==wkbLineString || wkbType==wkbPolygon)
+    if ( wkbType == wkbLineString || wkbType == wkbPolygon )
     {
       simplifyOgrGeometry( mRequest, (OGRGeometry*)geom, wkbType==wkbPolygon );
     }

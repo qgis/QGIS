@@ -90,8 +90,8 @@ const unsigned char* QgsFeatureRendererV2::_getLineString( QPolygonF& pts, QgsRe
     QPointF* ptr = pts.data();
     for ( unsigned int i = 0; i < nPoints; ++i, ++ptr )
     {
-      x = *(( double * ) wkb ); wkb += sizeOfDoubleX;
-      y = *(( double * ) wkb ); wkb += sizeOfDoubleY;
+      memcpy( &x, wkb, sizeof( double ) ); wkb += sizeOfDoubleX;
+      memcpy( &y, wkb, sizeof( double ) ); wkb += sizeOfDoubleY;
 
       *ptr = QPointF( x, y );
     }
@@ -149,8 +149,8 @@ const unsigned char* QgsFeatureRendererV2::_getPolygon( QPolygonF& pts, QList<QP
     QPointF* ptr = poly.data();
     for ( unsigned int jdx = 0; jdx < nPoints; ++jdx, ++ptr )
     {
-      x = *(( double * ) wkb ); wkb += sizeOfDoubleX;
-      y = *(( double * ) wkb ); wkb += sizeOfDoubleY;
+      memcpy( &x, wkb, sizeof( double ) ); wkb += sizeOfDoubleX;
+      memcpy( &y, wkb, sizeof( double ) ); wkb += sizeOfDoubleY;
 
       *ptr = QPointF( x, y );
     }
