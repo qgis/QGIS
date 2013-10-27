@@ -361,7 +361,7 @@ void QgsFillSymbolLayerV2::_renderPolygon( QPainter* p, const QPolygonF& points,
   if ( points.size()<=5 && QgsFeatureRequest::canbeGeneralizedByWndBoundingBox( points, context.layer() ? context.layer()->simplifyDrawingTol() : QgsFeatureRequest::MAPTOPIXEL_THRESHOLD_DEFAULT ) && p->renderHints() & QPainter::Antialiasing )
   {
     p->setRenderHint( QPainter::Antialiasing, false );
-    p->drawPolygon( points );
+    p->drawConvexPolygon( points );
     p->setRenderHint( QPainter::Antialiasing, true );
     return;
   }
