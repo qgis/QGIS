@@ -338,8 +338,6 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Raise, unminimize and activate this window
     void activate();
 
-    void on_mButtonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
-
   private:
 
     /**Establishes the signal slot connection for the class*/

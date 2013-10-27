@@ -98,7 +98,6 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   setupUi( this );
   setWindowTitle( mTitle );
   setupTheme();
-  connect( mButtonBox, SIGNAL( rejected() ), this, SLOT( close() ) );
 
   QSettings settings;
   setStyleSheet( mQgis->styleSheet() );

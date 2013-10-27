@@ -37,13 +37,6 @@
       </property>
      </widget>
     </item>
-    <item row="1" column="0">
-     <widget class="QDialogButtonBox" name="mButtonBox">
-      <property name="standardButtons">
-       <set>QDialogButtonBox::Close|QDialogButtonBox::Help</set>
-      </property>
-     </widget>
-    </item>
    </layout>
   </widget>
   <widget class="QToolBar" name="mComposerToolbar">
@@ -688,7 +681,7 @@
    <property name="shortcut">
     <string>Ctrl+Alt+]</string>
    </property>
-  </action>  
+  </action>
   <action name="mActionPan">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
@@ -697,7 +690,7 @@
    <property name="text">
     <string>Pan Composer</string>
    </property>
-  </action>     
+  </action>
  </widget>
  <resources>
   <include location="../../images/images.qrc"/>
