@@ -112,11 +112,11 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, i
       QgsMapLayer *layer = it->mLayer;
       if ( mLayerIdResults.contains( layer ) )
       {
-        mLayerIdResults[layer].append( idResult );
+        mLayerIdResults[layer].append( *it );
       }
       else
       {
-        mLayerIdResults.insert( layer, idResult );
+        mLayerIdResults.insert( layer, QList<IdentifyResult>() << *it );
       }
     }
 
@@ -670,8 +670,3 @@ void QgsMapToolIdentify::deleteRubberBands()
   }
   mRubberBands.clear();
 }
-
-
-
-
-
