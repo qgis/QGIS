@@ -31,6 +31,7 @@ class QgsRasterLayer;
 class QgsVectorLayer;
 class QgsMapLayer;
 class QgsMapCanvas;
+class QgsHighlight;
 
 /**
   \brief Map tool for identifying features in layers
@@ -120,6 +121,10 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     @return a list of IdentifyResult*/
     QList<IdentifyResult> identify( int x, int y, IdentifyMode mode, LayerType layerType = AllLayers );
 
+  protected:
+    //! rubber bands for layer select mode
+    void deleteRubberBands();
+
   public slots:
     void formatChanged( QgsRasterLayer *layer );
 
@@ -154,12 +159,22 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
 
     QMap< QString, QString > featureDerivedAttributes( QgsFeature *feature, QgsMapLayer *layer );
 
+    // specific to layer selection mode
+    //! layer id map for layer select mode
+    QMap< QgsMapLayer*, QList<IdentifyResult> > mLayerIdResults;
+    //! rubber bands for layer select mode
+    QList<QgsHighlight*> mRubberBands;
+
     // Last point in canvas CRS
     QgsPoint mLastPoint;
 
     double mLastMapUnitsPerPixel;
 
     QgsRectangle mLastExtent;
+
+  private slots:
+    //! menu for layer selection
+    void handleMenuHover();
 };
 
 #endif
