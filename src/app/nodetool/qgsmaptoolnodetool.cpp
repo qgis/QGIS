@@ -187,7 +187,7 @@ void QgsMapToolNodeTool::createTopologyRubberBands( QgsVectorLayer* vlayer, cons
       }
       else
       {
-        trb->addPoint( topolGeometry->vertexAt( tVertex ) );
+        trb->addPoint( toMapCoordinates( vlayer, topolGeometry->vertexAt( tVertex ) ) );
         if ( tVertex == tVertexFirst ) // cycle first vertex need to be added also
         {
           movingPoints->insert( movingPointIndex );
@@ -206,14 +206,14 @@ void QgsMapToolNodeTool::createTopologyRubberBands( QgsVectorLayer* vlayer, cons
         // find first no matching vertex
         if ( dist > ZERO_TOLERANCE || !vertexMap[at]->isSelected() ) // problem with double precision
         {
-          trb->addPoint( topolGeometry->vertexAt( tVertex ) );
+          trb->addPoint( toMapCoordinates( vlayer, topolGeometry->vertexAt( tVertex ) ) );
           break; // found first vertex
         }
         else // add moving point to rubberband
         {
           if ( addedPoints->contains( tVertex ) )
             break; // just preventing to circle
-          trb->addPoint( topolGeometry->vertexAt( tVertex ) );
+          trb->addPoint( toMapCoordinates( vlayer, topolGeometry->vertexAt( tVertex ) ) );
           movingPoints->insert( movingPointIndex );
           movingPointIndex++;
           addedPoints->insert( tVertex );
