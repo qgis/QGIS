@@ -669,7 +669,7 @@ Cette table est essentielle pour les applications SIG pour énumérer les tables
     </message>
     <message>
         <source>Unable to load the layer %s</source>
-        <translation>Impossobme de charger la couche %s</translation>
+        <translation>Impossible de charger la couche %s</translation>
     </message>
 </context>
 <context>
@@ -2499,7 +2499,7 @@ Les noms de champs suivant font plus de 10 caractères de longueur :
         <source>There were %d vertices in original dataset which
 were reduced to %d vertices after simplification</source>
         <translation>Il y avait %d vertices dans les données originelles,
-il n&apos;y en aura plus que %d après simplification.</translation>
+il n&apos;y en aura plus que %d après simplification</translation>
     </message>
     <message>
         <source>Random Points</source>
@@ -7415,7 +7415,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2128"/>
         <source>Paste features in clipboard into a new OGR vector layer.</source>
-        <translation type="unfinished"></translation>
+        <translation>Colle les objects dans une nouvelle couche OGR.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2133"/>
@@ -7425,7 +7425,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2136"/>
         <source>Paste features in clipboard into a new memory vector layer.</source>
-        <translation type="unfinished"></translation>
+        <translation>Colle les objets dans une nouvelle couche en mémoire.</translation>
     </message>
     <message>
         <source>Save Edits</source>
@@ -8074,7 +8074,7 @@ Agit sur toutes les couches actives courantes</translation>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1650"/>
         <source>&amp;Copyright Label</source>
-        <translation>Étiquette de Copyright</translation>
+        <translation>Étiquette de &amp;Copyright</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1653"/>
@@ -9870,7 +9870,7 @@ Veuillez rectifier cette situation si vous voulez que l&apos;extension OSM sache
     </message>
     <message>
         <source>Import Processing class</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Import de la classe Processing</translation>
     </message>
     <message>
         <source>Syntax ok</source>
@@ -9932,7 +9932,8 @@ Veuillez rectifier cette situation si vous voulez que l&apos;extension OSM sache
         <source>Python {0} on {1}
 ## Type help(iface) for more info and list of methods.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Python {0} sur {1}
+## tapez help(iface) pour plus d&apos;infos et la liste des méthodes.</translation>
     </message>
     <message>
         <source>Hide/Show Toolbar</source>
@@ -10529,12 +10530,12 @@ Voulez-vous renseigner le chemin (GISBASE) vers votre installation de GRASS ?</t
     <message>
         <location filename="../src/core/qgsdistancearea.cpp" line="960"/>
         <source> sq. NM</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">MN carré</translation>
     </message>
     <message>
         <location filename="../src/core/qgsdistancearea.cpp" line="964"/>
         <source> NM</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"> MN</translation>
     </message>
     <message>
         <location filename="../src/core/qgsdistancearea.cpp" line="970"/>
@@ -10918,7 +10919,7 @@ Voulez-vous renseigner le chemin (GISBASE) vers votre installation de GRASS ?</t
     <message>
         <location filename="../src/python/qgspythonutilsimpl.cpp" line="92"/>
         <source>The extra plugin path &apos;%1&apos; does not exist !</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Le chemin %1 pour les modules supplémentaires n&apos;existe pas !</translation>
     </message>
     <message>
         <location filename="../src/python/qgspythonutilsimpl.cpp" line="113"/>
@@ -11588,7 +11589,7 @@ Erreur(%2): %3</translation>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="400"/>
         <source>Reserved attribute name ogc_fid replaced with %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nom d&apos;attribut ogc_fid réservé remplacé par %1</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="423"/>
@@ -12253,7 +12254,7 @@ Vous visualisez ce message car vous n&apos;avez aucun affichage (DISPLAY) param�
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2103"/>
         <source>field %1 with unsupported type %2 skipped</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">champ %1 avec le type %2 non supporté ignoré</translation>
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2109"/>
@@ -12630,7 +12631,7 @@ Vous visualisez ce message car vous n&apos;avez aucun affichage (DISPLAY) param�
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="1893"/>
         <source>Can&apos;t preform /, *, or % on DateTime and Interval</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ne peut pas appliquer /, *, ou % sur un DateTime ou Interval</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="2234"/>
@@ -12819,27 +12820,27 @@ Vous visualisez ce message car vous n&apos;avez aucun affichage (DISPLAY) param�
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3471"/>
         <source>Error executing the select query for related styles. The query was logged</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Erreur d&apos;exécution de la requête pour les styles liés. La requête a été enregistrée</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3496"/>
         <source>Error executing the select query for unrelated styles. The query was logged</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Erreur d&apos;exécution de la requête pour les styles non liés. La requête a été enregistrée</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3525"/>
         <source>Error executing the select query. The query was logged</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Erreur d&apos;exécution de la requête. La requête a été enregistrée</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3535"/>
         <source>Consistency error in table &apos;%1&apos;. Style id should be unique</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Erreur dans la table &apos;%1&apos;. L&apos;id de style devrait être unique</translation>
     </message>
     <message>
         <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="1697"/>
         <source>Loading of the MSSQL provider failed</source>
-        <translation>Échec du chargement de la couche MSSQL %1</translation>
+        <translation type="unfinished">Échec du chargement de la couche MSSQL %1</translation>
     </message>
     <message>
         <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="1731"/>
@@ -13285,7 +13286,7 @@ SQL: %1</translation>
     <message>
         <location filename="../src/core/qgsfeature.cpp" line="195"/>
         <source>Attribute index %1 out of bounds [0;%2]</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Attribut de l&apos;index %1 en dehors des limites |0;%2]</translation>
     </message>
     <message>
         <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="1652"/>
@@ -13295,7 +13296,7 @@ SQL: %1</translation>
     <message>
         <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="1658"/>
         <source>WFS service exception:%1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Exeption du service WFS : %1</translation>
     </message>
     <message>
         <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="1664"/>
@@ -13305,7 +13306,7 @@ SQL: %1</translation>
     <message>
         <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="1671"/>
         <source>WFS exception report (code=%1 text=%2)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Rapport d&apos;exception WFS (code=%1 texte=%2)</translation>
     </message>
     <message>
         <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="1672"/>
@@ -13315,7 +13316,7 @@ SQL: %1</translation>
     <message>
         <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="1678"/>
         <source>unhandled response: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>réponse non gérée : %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/dockModel.cpp" line="24"/>
@@ -14143,7 +14144,7 @@ Veuillez contacter les développeurs.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="8893"/>
         <source>Exit QGIS</source>
-        <translation type="unfinished">Sortir de QGIS</translation>
+        <translation>Quitter QGIS</translation>
     </message>
     <message>
         <source>Add a Vector Layer</source>
@@ -14688,17 +14689,17 @@ Veuillez contacter les développeurs.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="588"/>
         <source>Relation Reference</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Référence de la relation</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2399"/>
         <source>Compiled against GEOS</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Compilé avec GEOS</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2400"/>
         <source>Running against GEOS</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Utilisé avec GEOS</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4305"/>
@@ -14792,42 +14793,42 @@ Veuillez contacter les développeurs.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5626"/>
         <source>Pasted</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Collés</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5627"/>
         <source>New memory layer name</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nom de la nouvelle couche en mémoire</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5628"/>
         <source>Layer name</source>
-        <translation type="unfinished">Nom de la couche</translation>
+        <translation>Nom de la couche</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5700"/>
         <source>No features in clipboard.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Pas d&apos;ojets dans le presse-papier.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5704"/>
         <source>No features with geometry found, point type layer will be created.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Pas d&apos;objets avec une géométrie trouvés, une couche de type point va être créée.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5708"/>
         <source>Multiple geometry types found, features with geometry different from %1 will be created without geometry.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Plusieurs types de géométries trouvées, les objets avec une géométrie de type différent de %1 seront créées sans géométrie.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5721"/>
         <source>Cannot create new layer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ne peut pas créer de nouvelle couche</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5734"/>
         <source>Cannot create field %1 (%2,%3)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ne peut pas créer le champ %1 (%2,%3)</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6038"/>
@@ -15781,7 +15782,7 @@ Erreur : %1</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="7097"/>
         <source>The layer %1 is not a valid layer and can not be added to the map</source>
-        <translation>La couche n&apos;est pas une couche valide et ne peut pas être ajoutée à la carte </translation>
+        <translation>La couche %1 n&apos;est pas une couche valide et ne peut pas être ajoutée à la carte</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="7926"/>
@@ -15796,7 +15797,7 @@ Erreur : %1</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="8894"/>
         <source>Do you really want to quit QGIS?</source>
-        <translation type="unfinished"></translation>
+        <translation>Voulez-vous vraiment quitter QGIS ?</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="9222"/>
@@ -23830,7 +23831,7 @@ Essayez une résolution ou une taille de papier inférieur.</translation>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="291"/>
         <source>General settings</source>
-        <translation type="unfinished">Paramètres généraux</translation>
+        <translation>Paramètres généraux</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="373"/>
@@ -26604,7 +26605,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="476"/>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="479"/>
         <source>Field names are read from the first record.  If not selected then fields are numbered</source>
-        <translation>Les noms de champ sont tirés du premier enregsitrement.</translation>
+        <translation>Les noms de champ sont tirés du premier enregsitrement, sinon ils sont numérotés</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="482"/>
@@ -28399,12 +28400,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsfieldsproperties.cpp" line="108"/>
         <source>Layer</source>
-        <translation type="unfinished">Couche</translation>
+        <translation>Couche</translation>
     </message>
     <message>
         <location filename="../src/app/qgsfieldsproperties.cpp" line="109"/>
         <source>Field</source>
-        <translation type="unfinished">Champ</translation>
+        <translation>Champ</translation>
     </message>
     <message>
         <location filename="../src/app/qgsfieldsproperties.cpp" line="536"/>
@@ -31339,7 +31340,8 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/gui/symbology-ng/qgsgraduatedsymbolrendererv2widget.cpp" line="514"/>
         <source>Natural break classification (Jenks) is O(n2) complexity, your classification may take a long time.
 Press cancel to abort breaks calculation or OK to continue.</source>
-        <translation type="unfinished"></translation>
+        <translation>La classification suivant les ruptures naturelles (Jenks) est de complexitéO(n2), et risque de prendre du temps.
+Appuyez sur Échap pour annuler le calcul ou OK pour continuer.</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsgraduatedsymbolrendererv2widget.cpp" line="524"/>
@@ -31363,7 +31365,7 @@ Press cancel to abort breaks calculation or OK to continue.</source>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="93"/>
         <source>Change...</source>
-        <translation>Modifier..</translation>
+        <translation>Modifier...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="119"/>
@@ -38289,7 +38291,7 @@ ne sont pas affichés</translation>
     <message>
         <location filename="../src/gui/qgsmaptoolidentify.cpp" line="528"/>
         <source>Identify error</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Identification de l&apos;erreur</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsmaptoolidentify.cpp" line="266"/>
@@ -42939,7 +42941,7 @@ Toujours le réseau : toujours charger depuis le réseau sans vérifier si le ca
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="508"/>
         <source> s</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"> s</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="571"/>
@@ -43221,7 +43223,7 @@ Toujours le réseau : toujours charger depuis le réseau sans vérifier si le ca
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2506"/>
         <source>Nautical Miles</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Mile nautique</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2622"/>
@@ -43484,7 +43486,7 @@ Toujours le réseau : toujours charger depuis le réseau sans vérifier si le ca
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2846"/>
         <source>Suppress attribute form pop-up after feature creation</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"> </translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3095"/>
@@ -43549,7 +43551,7 @@ Toujours le réseau : toujours charger depuis le réseau sans vérifier si le ca
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3580"/>
         <source>Don&apos;t enable &apos;on the fly&apos; reprojection</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ne pas activer la reprojection à la volée</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3804"/>
@@ -45830,11 +45832,11 @@ Veuillez vérifier si vous avez le droit d&apos;effectuer une commande SELECT su
     </message>
     <message>
         <source>Missing metadata file</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ficher de métadonnées manquant</translation>
     </message>
     <message>
         <source>Error reading metadata</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Erreur de lecture des métadonnées</translation>
     </message>
     <message>
         <source>Uninstall (recommended)</source>
@@ -45850,7 +45852,7 @@ Veuillez vérifier si vous avez le droit d&apos;effectuer une commande SELECT su
     </message>
     <message>
         <source>QGIS has detected an obsolete plugin that masks its more recent version shipped with this copy of QGIS. This is likely due to files associated with a previous installation of QGIS. Do you want to remove the old plugin right now and unmask the more recent version?</source>
-        <translation>L&apos;installateur d&apos;extension a détecté une extension obsolète qui cache la version plus récente embarquée par QGIS. Il s&apos;agit probablement du reste d&apos;une installation antérieure de QGIS. Veuillez utiliser l&apos;interface de récupération des extensions pour pouvoir effacer l&apos;extension la plus ancienne afin de permettre l&apos;affichage de la version plus récente.</translation>
+        <translation type="unfinished">QGIS a détecté une extension obsolète qui cache la version plus récente embarquée par QGIS. Il s&apos;agit probablement du reste d&apos;une installation antérieure de QGIS. Voulez-vous supprimer l&apos;ancienne version de l&apos;extention et afficher la version la plus récente?</translation>
     </message>
     <message>
         <source>Error reading repository:</source>
@@ -48104,7 +48106,7 @@ Erreur dans la base de données : %2</translation>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1063"/>
         <source>The table has no column suitable for use as a key. QGIS requires a primary key, a PostgreSQL oid column or a ctid for tables.</source>
-        <translation type="unfinished">La table n&apos;a pas de colonne utilisable comme clé. QGis a besoin d&apos;un clé primaire, une colonne OID PostgreSQL ou un ctid pour une table.</translation>
+        <translation>La table n&apos;a pas de colonne utilisable comme clé. QGis a besoin d&apos;un clé primaire, une colonne OID PostgreSQL ou un ctid pour une table.</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1091"/>
@@ -48201,7 +48203,9 @@ Erreur dans la base de données : %2</translation>
         <source>PostgreSQL/PostGIS provider
 %1
 PostGIS %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Prestataire PostgreSQL/PostGIS
+%1
+PostGIS %2</translation>
     </message>
     <message>
         <source>Connection to database failed</source>
@@ -51568,22 +51572,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="391"/>
         <source>Minimum scale, i.e. maximum scale denominator. This limit is exclusive, that means the layer will not be displayed on this scale.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Échelle minimum, i.e. dénominateur d&apos;échelle maximum. Cette limite est exclusive, c&apos;est à dire que la couche ne sera pas affichée à cette échelle.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="397"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:0.75em;&quot;&gt;Minimum&lt;br&gt;(exclusive)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:0.75em;&quot;&gt;Minimum&lt;br&gt;(excluant)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="444"/>
         <source>Maximum scale, i.e. minimum scale denominator. This limit is inclusive, that means the layer will be displayed on this scale.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Échelle maximum, i.e. dénominateur d&apos;échelle minimum. Cette limite est inclusive, c&apos;est à dire que la couche sera affichée à cette échelle.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="447"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:0.75em;&quot;&gt;Maximum&lt;br&gt;(inclusive)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:0.75em;&quot;&gt;Maximum&lt;br&gt;(incluant)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1479"/>
@@ -52217,7 +52221,7 @@ jeux de données avec une largeur/longueur maximale spécifiée ci-dessous.</tra
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="639"/>
         <source>Additional no data values. The specified values will be set to no data in output raster.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Valeurs sans données supplémentaires. Les valeurs spécifiées seront définies sans données dans le raster en sortie.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="642"/>
@@ -52240,7 +52244,7 @@ jeux de données avec une largeur/longueur maximale spécifiée ci-dessous.</tra
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="686"/>
         <source>Load user defined fully transparent (100%) values </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Chargement des valeurs totalement transparentes (100%) définies par l&apos;utilisateur</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="700"/>
@@ -52265,7 +52269,7 @@ jeux de données avec une largeur/longueur maximale spécifiée ci-dessous.</tra
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="602"/>
         <source>Pyramid resolutions corresponding to levels given</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Les résolutions de pyramides correspondent aux niveaux donnés</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="623"/>
@@ -54486,7 +54490,7 @@ du contraste</translation>
     <message>
         <location filename="../src/gui/raster/qgssinglebandpseudocolorrendererwidget.cpp" line="384"/>
         <source>The color map for band %1 has no entries</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">La table de couleur de la bande %1 n&apos;a pas d&apos;entrées</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgssinglebandpseudocolorrendererwidget.cpp" line="395"/>
@@ -55225,7 +55229,7 @@ SQL: %1</translation>
 
 This could take a long time (depending on the DB size),
 but implies better performance thereafter.</source>
-        <translation type="unfinished">Êtes-vous sûr de vouloir mettre à jour les statistiques internes pour la base de données : %1 ?
+        <translation>Êtes-vous sûr de vouloir mettre à jour les statistiques internes pour la base de données : %1 ?
 
 Cette opération peut prendre du temps (dépend de la taille de la base de données),
 mais amélioreras les performances.</translation>
@@ -57899,7 +57903,7 @@ There was a problem with your symbol database.</source>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="67"/>
         <source>Both used to be correct, but we recently decided to just use &apos;QGIS&apos;.  For articles we suggest you write &apos;QGIS is ....&apos;</source>
-        <translation>Les deux sont corrects mais nous préférons &apos;QGIS&apos;.</translation>
+        <translation type="unfinished">Les deux sont corrects mais nous avons décidé récemment d&apos;utiliser juste &apos;QGIS&apos;. Pour des articles, nous vous suggérons d&apos;écrire &apos;QGIS est ...&quot;</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="70"/>
@@ -60558,7 +60562,7 @@ Les classes existantes doivent-elles être effacées avant la classification ?</
         <location filename="../src/ui/qgswfssourceselectbase.ui" line="96"/>
         <location filename="../src/ui/qgswfssourceselectbase.ui" line="99"/>
         <source>Display WFS FeatureTypes containing this word in the title, name or abstract</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Affiche les types d&apos;ojets WFS qui contiennent ce mot dans le titre, nom ou résumé</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswfssourceselectbase.ui" line="122"/>
@@ -71420,7 +71424,7 @@ L&apos;extension ne sera pas activée.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="442"/>
         <source>Which column for the Z coordinate? If 0, z coordinate is not used</source>
-        <translation>Quelle colonne contient les coordonnées en Z ? Si 0, l&apos;élévation ne sera pas utilisée.</translation>
+        <translation>Quelle colonne contient les coordonnées en Z ? Si 0, la coordonnée E ne sera pas utilisée</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="443"/>
