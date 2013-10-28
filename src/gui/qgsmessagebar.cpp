@@ -320,4 +320,8 @@ void QgsMessageBar::resetCountdown()
 void QgsMessageBar::updateItemCount()
 {
   mItemCount->setText( mItems.count() > 0 ? tr( "%n more", "unread messages", mItems.count() ) : QString( "" ) );
+
+  // do not show the down arrow for opening menu with "close all" if there is just one message
+  mCloseBtn->setMenu( mItems.count() > 0 ? mCloseMenu : 0 );
+  mCloseBtn->setPopupMode( mItems.count() > 0 ? QToolButton::MenuButtonPopup : QToolButton::DelayedPopup );
 }
