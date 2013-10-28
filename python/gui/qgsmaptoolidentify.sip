@@ -1,4 +1,3 @@
-
 class QgsMapToolIdentify : QgsMapTool
 {
 %TypeHeaderCode
@@ -12,7 +11,8 @@ class QgsMapToolIdentify : QgsMapTool
       DefaultQgsSetting = -1,
       ActiveLayer,
       TopDownStopAtFirst,
-      TopDownAll
+      TopDownAll,
+      LayerSelection
     };
 
     enum LayerType
