@@ -4765,7 +4765,7 @@ void QgsWmsProvider::getLegendGraphicReplyFinished()
       QImage myLocalImage = QImage::fromData( mGetLegendGraphicReply->readAll() ) ;
       if ( myLocalImage.isNull() )
       {
-        QgsMessageLog::logMessage( tr( "Returned legend image is flawed [URL: %2]" )
+        QgsMessageLog::logMessage( tr( "Returned legend image is flawed [URL: %1]" )
                                    .arg( mGetLegendGraphicReply->url().toString() ), tr( "WMS" ) );
       }
       else
