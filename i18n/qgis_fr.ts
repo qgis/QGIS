@@ -10530,12 +10530,12 @@ Voulez-vous renseigner le chemin (GISBASE) vers votre installation de GRASS ?</t
     <message>
         <location filename="../src/core/qgsdistancearea.cpp" line="960"/>
         <source> sq. NM</source>
-        <translation type="unfinished">NM carré</translation>
+        <translation type="unfinished">MN carré</translation>
     </message>
     <message>
         <location filename="../src/core/qgsdistancearea.cpp" line="964"/>
         <source> NM</source>
-        <translation type="unfinished"> NM</translation>
+        <translation type="unfinished"> MN</translation>
     </message>
     <message>
         <location filename="../src/core/qgsdistancearea.cpp" line="970"/>
@@ -14808,7 +14808,7 @@ Veuillez contacter les développeurs.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5700"/>
         <source>No features in clipboard.</source>
-        <translation type="unfinished">Pas d&apos;ojets dans le rpess-papier.</translation>
+        <translation type="unfinished">Pas d&apos;ojets dans le presse-papier.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5704"/>
@@ -52221,7 +52221,7 @@ jeux de données avec une largeur/longueur maximale spécifiée ci-dessous.</tra
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="639"/>
         <source>Additional no data values. The specified values will be set to no data in output raster.</source>
-        <translation type="unfinished">Valeurs no data supplémentaires. Les valeurs spécifiées seront définies en no data dans le raster en sortie.</translation>
+        <translation type="unfinished">Valeurs sans données supplémentaires. Les valeurs spécifiées seront définies sans données dans le raster en sortie.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="642"/>
@@ -52269,7 +52269,7 @@ jeux de données avec une largeur/longueur maximale spécifiée ci-dessous.</tra
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="602"/>
         <source>Pyramid resolutions corresponding to levels given</source>
-        <translation type="unfinished">Les résolutions de pyramides correpsondent aux niveau données</translation>
+        <translation type="unfinished">Les résolutions de pyramides correspondent aux niveaux donnés</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="623"/>
