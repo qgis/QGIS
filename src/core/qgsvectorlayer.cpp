@@ -694,7 +694,7 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
                                      .setSubsetOfAttributes( attributes );
 
   // Enable the simplification of the geometries before fetch the features using the current map2pixel context.
-  if ( mSimplifyDrawing && !(featureRequest.flags() & QgsFeatureRequest::NoGeometry) )
+  if ( mSimplifyDrawing && !mEditBuffer && !(featureRequest.flags() & QgsFeatureRequest::NoGeometry) )
   {
     QPainter* p = rendererContext.painter();
     float dpi = ( p->device()->logicalDpiX() + p->device()->logicalDpiY() ) / 2;
