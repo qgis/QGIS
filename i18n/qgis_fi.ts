@@ -3347,12 +3347,12 @@ yksinkertaistettaessa vähennettiin %2 kulmapisteeseen</translation>
     <message>
         <location filename="../python/plugins/processing/ui/DlgNumberInput.ui" line="35"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enter expression in the text field. Double click on elements in the tree to add their values to the expression.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Anna lauseke tekstikenttään. Kaksoisklikkaa jäsentä rakenteessa lisätäksesi niiden arvot lausekkeeseen.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgNumberInput.ui" line="45"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Warning&lt;/span&gt;: if expression result is float value, but integer required, result will be rounded to integer.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Varoitus&lt;/span&gt;: jos lausekkeen tulos on murtoluku, mutta kokonaislukua tarvitaan, tulos pyöristetään kokonaislukuun.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Enter expression in the text field.
@@ -6441,11 +6441,11 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <source>Confirmation</source>
-        <translation type="unfinished"></translation>
+        <translation>Vahvistus</translation>
     </message>
     <message>
         <source>Are you sure you want to clear log?</source>
-        <translation type="unfinished"></translation>
+        <translation>Oletko varma että haluat tyhjentää lokin?</translation>
     </message>
     <message>
         <source>Create test</source>
@@ -7882,7 +7882,7 @@ Ctl (Cmd) lisää 15 asteella.</translation>
     </message>
     <message>
         <source>The are unchanged changes in model. Close modeler without saving?</source>
-        <translation type="unfinished"></translation>
+        <translation>Mallissa ei ole muutoksia. Suljetko mallin tallentamatta?</translation>
     </message>
     <message>
         <source>Empty model</source>
@@ -8007,15 +8007,15 @@ Virheellinen rivi: %1</translation>
     </message>
     <message>
         <source>Select all</source>
-        <translation type="unfinished">Valitse kaikki</translation>
+        <translation>Valitse kaikki</translation>
     </message>
     <message>
         <source>Clear selection</source>
-        <translation type="unfinished">Poista valinta</translation>
+        <translation>Poista valinta</translation>
     </message>
     <message>
         <source>Toggle selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Vaihda valinta</translation>
     </message>
 </context>
 <context>
@@ -9657,7 +9657,7 @@ käytä qgis.utils.iface objektia (tapaus QgisInterface luokassa).
     <message>
         <location filename="../src/core/qgis.cpp" line="87"/>
         <source>nautical miles</source>
-        <translation type="unfinished"></translation>
+        <translation>meripenikulmat</translation>
     </message>
 </context>
 <context>
@@ -9994,12 +9994,12 @@ Virhe(%2): %3</translation>
     <message>
         <location filename="../src/core/qgsdistancearea.cpp" line="960"/>
         <source> sq. NM</source>
-        <translation type="unfinished"></translation>
+        <translation>neliö mpk</translation>
     </message>
     <message>
         <location filename="../src/core/qgsdistancearea.cpp" line="964"/>
         <source> NM</source>
-        <translation type="unfinished"></translation>
+        <translation>mpk</translation>
     </message>
     <message>
         <location filename="../src/core/qgsdistancearea.cpp" line="970"/>
@@ -18657,7 +18657,7 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="153"/>
         <source>Ctrl+0</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+0</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="165"/>
@@ -18667,7 +18667,7 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="168"/>
         <source>Ctrl++</source>
-        <translation type="unfinished">Ctrl++</translation>
+        <translation>Ctrl++</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="180"/>
@@ -18677,7 +18677,7 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="183"/>
         <source>Ctrl+-</source>
-        <translation type="unfinished">Ctrl+-</translation>
+        <translation>Ctrl+-</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="216"/>
@@ -18772,7 +18772,7 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="316"/>
         <source>Ctrl+G</source>
-        <translation type="unfinished">Ctrl+G</translation>
+        <translation>Ctrl+G</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="321"/>
@@ -18787,7 +18787,7 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="327"/>
         <source>Ctrl+Shift+G</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+G</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="332"/>
@@ -19082,7 +19082,7 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="698"/>
         <source>Pan Composer</source>
-        <translation type="unfinished"></translation>
+        <translation>Siirrä muodostajaa</translation>
     </message>
     <message>
         <source>Load From template</source>
@@ -19779,12 +19779,12 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="289"/>
         <source>Wms Legend width</source>
-        <translation type="unfinished"></translation>
+        <translation>Wms selitteen leveys</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="301"/>
         <source>Wms Legend height</source>
-        <translation type="unfinished"></translation>
+        <translation>Wms selitteen korkeus</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="313"/>
@@ -20003,17 +20003,17 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="543"/>
         <source>WMS LegendGraphic</source>
-        <translation type="unfinished"></translation>
+        <translation>WMS LegendGraphic</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="561"/>
         <source>Legend width</source>
-        <translation type="unfinished"></translation>
+        <translation>Selitteen leveys</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="584"/>
         <source>Legend height</source>
-        <translation type="unfinished"></translation>
+        <translation>Selitteen korkeus</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="610"/>
@@ -22318,7 +22318,7 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="291"/>
         <source>General settings</source>
-        <translation type="unfinished">Yleiset asetukset</translation>
+        <translation>Yleiset asetukset</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="347"/>
@@ -29378,7 +29378,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/core/qgsgmlschema.cpp" line="348"/>
         <source>Cannot guess schema</source>
-        <translation type="unfinished"></translation>
+        <translation>Ei voida arvata skemaa</translation>
     </message>
 </context>
 <context>
@@ -32953,7 +32953,7 @@ Tämä voi johtua ongelmasta verkkoyhteydessä, tai WMS palvelimesta. </numerusf
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="752"/>
         <source>Activate layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktiivinen taso</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="753"/>
@@ -35266,7 +35266,7 @@ not displayed</source>
     <message>
         <location filename="../src/core/composer/qgslegendmodel.cpp" line="253"/>
         <source>No Legend Available</source>
-        <translation type="unfinished"></translation>
+        <translation>Selitettä ei käytettävissä</translation>
     </message>
 </context>
 <context>
@@ -36254,7 +36254,7 @@ not displayed</source>
     <message>
         <location filename="../src/gui/qgsmaptoolidentify.cpp" line="599"/>
         <source>Identify error</source>
-        <translation type="unfinished"></translation>
+        <translation>Tunnista virhe</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsmaptoolidentify.cpp" line="337"/>
@@ -37831,27 +37831,27 @@ lisäys</translation>
     <message>
         <location filename="../src/gui/qgsnewhttpconnection.cpp" line="61"/>
         <source>all</source>
-        <translation type="unfinished">kaikki</translation>
+        <translation>kaikki</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsnewhttpconnection.cpp" line="62"/>
         <source>off</source>
-        <translation type="unfinished"></translation>
+        <translation>Pois</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsnewhttpconnection.cpp" line="63"/>
         <source>QGIS</source>
-        <translation type="unfinished">QGIS</translation>
+        <translation>QGIS</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsnewhttpconnection.cpp" line="64"/>
         <source>UMN</source>
-        <translation type="unfinished"></translation>
+        <translation>UMN</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsnewhttpconnection.cpp" line="65"/>
         <source>GeoServer</source>
-        <translation type="unfinished"></translation>
+        <translation>GeoServer</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsnewhttpconnection.cpp" line="97"/>
@@ -37901,7 +37901,7 @@ Huomautus: salasanan antaminen on valinnaista. Sitä pyydetään interaktiivises
     <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="39"/>
         <source>DPI-Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>DPI-tila</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="101"/>
@@ -40566,12 +40566,12 @@ Aina verkosta: lataa aina verkosta äläkä tarkista onko välimuistin merkintä
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2353"/>
         <source>WMS getLegendGraphic Resolution</source>
-        <translation type="unfinished"></translation>
+        <translation>WMS getLegendGraphic resolutio</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2549"/>
         <source>Nautical Miles</source>
-        <translation type="unfinished"></translation>
+        <translation>meripenikulmat</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2889"/>
@@ -40671,7 +40671,7 @@ Aina verkosta: lataa aina verkosta äläkä tarkista onko välimuistin merkintä
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3623"/>
         <source>Don&apos;t enable &apos;on the fly&apos; reprojection</source>
-        <translation type="unfinished"></translation>
+        <translation>Älä mahdollista &apos;lennossa&apos; uudelleen projektointia</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3829"/>
@@ -40681,12 +40681,12 @@ Aina verkosta: lataa aina verkosta äläkä tarkista onko välimuistin merkintä
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3847"/>
         <source>Max retry in case of tile request errors</source>
-        <translation type="unfinished"></translation>
+        <translation>Laattojen uusintapyyntöjen maksimimäärä</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3865"/>
         <source>User-Agent</source>
-        <translation type="unfinished"></translation>
+        <translation>Käyttäjän toimija</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3913"/>
@@ -46291,7 +46291,7 @@ Proceed?</source>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="507"/>
         <source>Nautical miles</source>
-        <translation type="unfinished"></translation>
+        <translation>meripenikulmat</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="546"/>
@@ -58553,32 +58553,32 @@ Yritettiin URL: %1</translation>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4688"/>
         <source>getLegendGraphic: Can not determine resolution uri parameter [map_resolution | dpi]. No resolution parameter will be used</source>
-        <translation type="unfinished"></translation>
+        <translation>getLegendGraphic: Ei voida päätellä resoluution uri parameteria [map_resolution | dpi]. Resolutio parameteria ei käytetä</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4729"/>
         <source>GetLegendGraphic request redirected.</source>
-        <translation type="unfinished"></translation>
+        <translation>GetLegendGraphic pyyntö ohhjattu uudelleen.</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4761"/>
         <source>GetLegendGraphic request error</source>
-        <translation type="unfinished"></translation>
+        <translation>GetLegendGraphic pyyntö virhe</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4768"/>
         <source>Returned legend image is flawed [URL: %2]</source>
-        <translation type="unfinished"></translation>
+        <translation>Palautettu selitteen kuva on virheellinen [URL: %2]</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4786"/>
         <source>Download of GetLegendGraphic failed: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>GetLegendGraphic lataus epäonnistui: %1</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4797"/>
         <source>%1 of %2 bytes of GetLegendGraphic downloaded.</source>
-        <translation type="unfinished"></translation>
+        <translation>GetLegendGraphic:ista %1 tavua yhteensä %2 tavusta ladattu.</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3462"/>
@@ -58879,12 +58879,12 @@ Vastaus oli:
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1069"/>
         <source>Tile request max retry error. Failed %1 requests for tile %2 of tileRequest %3 (url: %4)</source>
-        <translation type="unfinished"></translation>
+        <translation>Laattapyyntöjen max uudelleenyritysten virhe. Epäonnistuminen %1 pyynnössä laatalle %2 laattapyynnössä %3 (url: %4) </translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1078"/>
         <source>repeat tileRequest %1 tile %2(retry %3)</source>
-        <translation type="unfinished"></translation>
+        <translation>toista laattapyyntö %1 laatta %2 (uudelleenyritys %3)</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1319"/>
@@ -58975,12 +58975,12 @@ Vastaus oli:
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4007"/>
         <source>Context not fully specified (extent was defined but width and/or height was not).</source>
-        <translation type="unfinished"></translation>
+        <translation>Sisältö ei ole täysin määritelty (laajuus oli määritelty mutta leveys ja/tai korkeus ei).</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4328"/>
         <source>Cannot identify</source>
-        <translation type="unfinished"></translation>
+        <translation>Ei voida tunnistaa</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4447"/>
@@ -69400,17 +69400,17 @@ Palauttaa kulman sinin.
     <message>
         <location filename="../python/plugins/processing/ui/widgetNumberInput.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished">Lomake</translation>
+        <translation>Lomake</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/widgetNumberInput.ui" line="50"/>
         <source>Open number input dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Avaa numerosyötön ikkuna</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/widgetNumberInput.ui" line="53"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
 </context>
 </TS>
