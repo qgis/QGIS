@@ -54,13 +54,13 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
        */
       ICON_BOX,
       /**
-       * A full box is used to highlight points (■)
-       */
-      ICON_FULL_BOX,
-      /**
        * A circle is used to highlight points (○)
        */
-      ICON_CIRCLE
+      ICON_CIRCLE,
+      /**
+       * A full box is used to highlight points (■)
+       */
+      ICON_FULL_BOX
     };
 
     /**
