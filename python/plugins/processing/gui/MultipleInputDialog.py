@@ -64,7 +64,7 @@ class MultipleInputDialog(QDialog, Ui_DlgMultipleSelection):
         self.lstLayers.blockSignals(True)
         for i in xrange(self.lstLayers.count()):
             item = self.lstLayers.item(i)
-            if item.text() in self.selectedoptions:
+            if self.lstLayers.indexFromItem(item).row() in self.selectedoptions:
                 selModel.select(self.lstLayers.indexFromItem(item),
                                 QItemSelectionModel.Select)
         self.lstLayers.blockSignals(False)
@@ -72,7 +72,7 @@ class MultipleInputDialog(QDialog, Ui_DlgMultipleSelection):
     def accept(self):
         self.selectedoptions = []
         for i in self.lstLayers.selectedItems():
-            self.selectedoptions.append(i.text())
+            self.selectedoptions.append(self.lstLayers.indexFromItem(i).row())
         QDialog.accept(self)
 
     def reject(self):
