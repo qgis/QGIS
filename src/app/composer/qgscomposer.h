@@ -207,6 +207,9 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Set tool to move item content
     void on_mActionPan_triggered();
 
+    //! Set tool to mouse zoom
+    void on_mActionMouseZoom_triggered();
+
     //! Group selected items
     void on_mActionGroupItems_triggered();
 

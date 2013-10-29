@@ -91,6 +91,7 @@
     <bool>true</bool>
    </attribute>
    <addaction name="mActionPan"/>
+   <addaction name="mActionMouseZoom"/>
    <addaction name="mActionSelectMoveItem"/>
    <addaction name="mActionMoveItemContent"/>
    <addaction name="mActionGroupItems"/>
@@ -175,6 +176,18 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+-</string>
+   </property>
+  </action>
+  <action name="mActionMouseZoom">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionZoomToSelected.svg</normaloff>:/images/themes/default/mActionZoomToSelected.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Zoom</string>
+   </property>
+   <property name="toolTip">
+    <string>Zoom</string>
    </property>
   </action>
   <action name="mActionAddNewMap">

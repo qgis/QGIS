@@ -41,6 +41,7 @@
 #include "qgsaddremovemultiframecommand.h"
 #include "qgspaperitem.h"
 #include "qgsmapcanvas.h" //for QgsMapCanvas::WheelAction
+#include "qgscursors.h"
 
 QgsComposerView::QgsComposerView( QWidget* parent, const char* name, Qt::WFlags f )
     : QGraphicsView( parent )
@@ -48,6 +49,8 @@ QgsComposerView::QgsComposerView( QWidget* parent, const char* name, Qt::WFlags 
     , mRubberBandLineItem( 0 )
     , mMoveContentItem( 0 )
     , mMarqueeSelect( false )
+    , mMarqueeZoom( false )
+    , mTemporaryZoomStatus( QgsComposerView::Inactive )
     , mPaintingEnabled( true )
     , mHorizontalRuler( 0 )
     , mVerticalRuler( 0 )
@@ -76,6 +79,15 @@ void QgsComposerView::setCurrentTool( QgsComposerView::Tool t )
     //lock cursor to prevent composer items changing it
     composition()->setPreventCursorChange( true );
     viewport()->setCursor( Qt::OpenHandCursor );
+  }
+  else if ( t == QgsComposerView::Zoom )
+  {
+    //lock cursor to prevent composer items changing it
+    composition()->setPreventCursorChange( true );
+    //set the cursor to zoom in
+    QPixmap myZoomQPixmap = QPixmap(( const char ** )( zoom_in ) );
+    QCursor zoomCursor = QCursor( myZoomQPixmap, 7, 7 );
+    viewport()->setCursor( zoomCursor );
   }
   else
   {
@@ -202,6 +214,33 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
         selectedItem->setSelected( true );
         QGraphicsView::mousePressEvent( e );
         emit selectedItemChanged( selectedItem );
+      }
+      break;
+    }
+
+    case Zoom:
+    {
+      if ( !( e->modifiers() & Qt::ShiftModifier ) )
+      {
+        //zoom in action
+        startMarqueeZoom( scenePoint );
+      }
+      else
+      {
+        //zoom out action, so zoom out and recenter on clicked point
+        double scaleFactor = 2;
+        //get current visible part of scene
+        QRect viewportRect( 0, 0, viewport()->width(), viewport()->height() );
+        QgsRectangle visibleRect = QgsRectangle( mapToScene( viewportRect ).boundingRect() );
+
+        //transform the mouse pos to scene coordinates
+        QPointF scenePoint = mapToScene( e->pos() );
+
+        visibleRect.scale( scaleFactor, scenePoint.x(), scenePoint.y() );
+        QRectF boundsRect = visibleRect.toRectF();
+
+        //zoom view to fit desired bounds
+        fitInView( boundsRect, Qt::KeepAspectRatio );
       }
       break;
     }
@@ -473,6 +512,63 @@ void QgsComposerView::endMarqueeSelect( QMouseEvent* e )
   }
 }
 
+void QgsComposerView::startMarqueeZoom( QPointF & scenePoint )
+{
+  mMarqueeZoom = true;
+
+  QTransform t;
+  mRubberBandItem = new QGraphicsRectItem( 0, 0, 0, 0 );
+  mRubberBandItem->setBrush( QBrush( QColor( 70, 50, 255, 25 ) ) );
+  mRubberBandItem->setPen( QPen( QColor( 70, 50, 255, 100 ) ) );
+  mRubberBandStartPos = QPointF( scenePoint.x(), scenePoint.y() );
+  t.translate( scenePoint.x(), scenePoint.y() );
+  mRubberBandItem->setTransform( t );
+  mRubberBandItem->setZValue( 1000 );
+  scene()->addItem( mRubberBandItem );
+  scene()->update();
+}
+
+void QgsComposerView::endMarqueeZoom( QMouseEvent* e )
+{
+  mMarqueeZoom = false;
+
+  QRectF boundsRect;
+
+  if ( !mRubberBandItem || ( mRubberBandItem->rect().width() < 0.1 && mRubberBandItem->rect().height() < 0.1 ) )
+  {
+    //just a click, so zoom to clicked point and recenter
+    double scaleFactor = 0.5;
+    //get current visible part of scene
+    QRect viewportRect( 0, 0, viewport()->width(), viewport()->height() );
+    QgsRectangle visibleRect = QgsRectangle( mapToScene( viewportRect ).boundingRect() );
+
+    //transform the mouse pos to scene coordinates
+    QPointF scenePoint = mapToScene( e->pos() );
+
+    visibleRect.scale( scaleFactor, scenePoint.x(), scenePoint.y() );
+    boundsRect = visibleRect.toRectF();
+  }
+  else
+  {
+    //marquee zoom
+    //zoom bounds are size marquee object
+    boundsRect = QRectF( mRubberBandItem->transform().dx(), mRubberBandItem->transform().dy(),
+                         mRubberBandItem->rect().width(), mRubberBandItem->rect().height() );
+  }
+
+  removeRubberBand();
+  //zoom view to fit desired bounds
+  fitInView( boundsRect, Qt::KeepAspectRatio );
+
+  if ( mTemporaryZoomStatus == QgsComposerView::ActiveUntilMouseRelease )
+  {
+    //user was using the temporary keyboard activated zoom tool
+    //and the control or space key was released before mouse button, so end temporary zoom
+    mTemporaryZoomStatus = QgsComposerView::Inactive;
+    setCurrentTool( mPreviousTool );
+  }
+}
+
 void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
 {
   if ( !composition() )
@@ -513,6 +609,15 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
     case Select:
     {
       QGraphicsView::mouseReleaseEvent( e );
+      break;
+    }
+
+    case Zoom:
+    {
+      if ( mMarqueeZoom )
+      {
+        endMarqueeZoom( e );
+      }
       break;
     }
 
@@ -635,7 +740,7 @@ void QgsComposerView::mouseMoveEvent( QMouseEvent* e )
   {
     QPointF scenePoint = mapToScene( e->pos() );
 
-    if ( mMarqueeSelect )
+    if ( mMarqueeSelect || mMarqueeZoom )
     {
       updateRubberBand( scenePoint );
       return;
@@ -919,11 +1024,43 @@ void QgsComposerView::keyPressEvent( QKeyEvent * e )
   if ( mPanning )
     return;
 
-  if ( e->key() == Qt::Key_Space )
+  if ( mTemporaryZoomStatus != QgsComposerView::Inactive )
   {
-    // Pan composer with space bar
-    if ( ! e->isAutoRepeat() )
+    //temporary keyboard based zoom is active
+    if ( e->isAutoRepeat() )
     {
+      return;
+    }
+
+    //respond to changes in ctrl key status
+    if ( !( e->modifiers() & Qt::ControlModifier ) && !mMarqueeZoom )
+    {
+      //space pressed, but control key was released, end of temporary zoom tool
+      mTemporaryZoomStatus = QgsComposerView::Inactive;
+      setCurrentTool( mPreviousTool );
+    }
+    else if ( !( e->modifiers() & Qt::ControlModifier ) && mMarqueeZoom )
+    {
+      //control key released, but user is mid-way through a marquee zoom
+      //so end temporary zoom when user releases the mouse button
+      mTemporaryZoomStatus = QgsComposerView::ActiveUntilMouseRelease;
+    }
+    else
+    {
+      //both control and space pressed
+      //set cursor to zoom in/out depending on shift key status
+      QPixmap myZoomQPixmap = QPixmap(( const char ** )( e->modifiers() & Qt::ShiftModifier ? zoom_out : zoom_in ) );
+      QCursor zoomCursor = QCursor( myZoomQPixmap, 7, 7 );
+      viewport()->setCursor( zoomCursor );
+    }
+    return;
+  }
+
+  if ( e->key() == Qt::Key_Space && ! e->isAutoRepeat() )
+  {
+    if ( !( e->modifiers() & Qt::ControlModifier ) )
+    {
+      // Pan composer with space bar
       mPanning = true;
       mMouseLastXY = mMouseCurrentXY;
       if ( composition() )
@@ -932,6 +1069,30 @@ void QgsComposerView::keyPressEvent( QKeyEvent * e )
         composition()->setPreventCursorChange( true );
       }
       viewport()->setCursor( Qt::ClosedHandCursor );
+      return;
+    }
+    else
+    {
+      //ctrl+space pressed, so switch to temporary keyboard based zoom tool
+      mTemporaryZoomStatus = QgsComposerView::Active;
+      mPreviousTool = mCurrentTool;
+      setCurrentTool( Zoom );
+      //set cursor to zoom in/out depending on shift key status
+      QPixmap myZoomQPixmap = QPixmap(( const char ** )( e->modifiers() & Qt::ShiftModifier ? zoom_out : zoom_in ) );
+      QCursor zoomCursor = QCursor( myZoomQPixmap, 7, 7 );
+      viewport()->setCursor( zoomCursor );
+      return;
+    }
+  }
+
+  if ( mCurrentTool == QgsComposerView::Zoom )
+  {
+    //using the zoom tool, respond to changes in shift key status and update mouse cursor accordingly
+    if ( ! e->isAutoRepeat() )
+    {
+      QPixmap myZoomQPixmap = QPixmap(( const char ** )( e->modifiers() & Qt::ShiftModifier ? zoom_out : zoom_in ) );
+      QCursor zoomCursor = QCursor( myZoomQPixmap, 7, 7 );
+      viewport()->setCursor( zoomCursor );
     }
     return;
   }
@@ -1005,6 +1166,33 @@ void QgsComposerView::keyReleaseEvent( QKeyEvent * e )
         composition()->setPreventCursorChange( false );
       }
       viewport()->setCursor( Qt::ArrowCursor );
+    }
+    return;
+  }
+  else if ( e->key() == Qt::Key_Space && !e->isAutoRepeat() && mTemporaryZoomStatus != QgsComposerView::Inactive )
+  {
+    //temporary keyboard-based zoom tool is active and space key has been released
+    if ( mMarqueeZoom )
+    {
+      //currently in the middle of a marquee operation, so don't switch tool back immediately
+      //instead, wait until mouse button has been released before switching tool back
+      mTemporaryZoomStatus = QgsComposerView::ActiveUntilMouseRelease;
+    }
+    else
+    {
+      //switch tool back
+      mTemporaryZoomStatus = QgsComposerView::Inactive;
+      setCurrentTool( mPreviousTool );
+    }
+  }
+  else if ( mCurrentTool == QgsComposerView::Zoom )
+  {
+    //if zoom tool is active, respond to changes in the shift key status and update cursor accordingly
+    if ( ! e->isAutoRepeat() )
+    {
+      QPixmap myZoomQPixmap = QPixmap(( const char ** )( e->modifiers() & Qt::ShiftModifier ? zoom_out : zoom_in ) );
+      QCursor zoomCursor = QCursor( myZoomQPixmap, 7, 7 );
+      viewport()->setCursor( zoomCursor );
     }
     return;
   }
