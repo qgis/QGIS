@@ -799,10 +799,10 @@ bool QgsComposerMap::writeXML( QDomElement& elem, QDomDocument & doc ) const
 
   //extent
   QDomElement extentElem = doc.createElement( "Extent" );
-  extentElem.setAttribute( "xmin", QString::number( mExtent.xMinimum() ) );
-  extentElem.setAttribute( "xmax", QString::number( mExtent.xMaximum() ) );
-  extentElem.setAttribute( "ymin", QString::number( mExtent.yMinimum() ) );
-  extentElem.setAttribute( "ymax", QString::number( mExtent.yMaximum() ) );
+  extentElem.setAttribute( "xmin", qgsDoubleToString( mExtent.xMinimum() ) );
+  extentElem.setAttribute( "xmax", qgsDoubleToString( mExtent.xMaximum() ) );
+  extentElem.setAttribute( "ymin", qgsDoubleToString( mExtent.yMinimum() ) );
+  extentElem.setAttribute( "ymax", qgsDoubleToString( mExtent.yMaximum() ) );
   composerMapElem.appendChild( extentElem );
 
   //layer set
@@ -824,13 +824,13 @@ bool QgsComposerMap::writeXML( QDomElement& elem, QDomDocument & doc ) const
   QDomElement gridElem = doc.createElement( "Grid" );
   gridElem.setAttribute( "show", mGridEnabled );
   gridElem.setAttribute( "gridStyle", mGridStyle );
-  gridElem.setAttribute( "intervalX", QString::number( mGridIntervalX ) );
-  gridElem.setAttribute( "intervalY", QString::number( mGridIntervalY ) );
-  gridElem.setAttribute( "offsetX", QString::number( mGridOffsetX ) );
-  gridElem.setAttribute( "offsetY", QString::number( mGridOffsetY ) );
-  gridElem.setAttribute( "crossLength",  QString::number( mCrossLength ) );
+  gridElem.setAttribute( "intervalX", qgsDoubleToString( mGridIntervalX ) );
+  gridElem.setAttribute( "intervalY", qgsDoubleToString( mGridIntervalY ) );
+  gridElem.setAttribute( "offsetX", qgsDoubleToString( mGridOffsetX ) );
+  gridElem.setAttribute( "offsetY", qgsDoubleToString( mGridOffsetY ) );
+  gridElem.setAttribute( "crossLength",  qgsDoubleToString( mCrossLength ) );
   gridElem.setAttribute( "gridFrameStyle", mGridFrameStyle );
-  gridElem.setAttribute( "gridFrameWidth", QString::number( mGridFrameWidth ) );
+  gridElem.setAttribute( "gridFrameWidth", qgsDoubleToString( mGridFrameWidth ) );
   gridElem.setAttribute( "gridBlendMode", QgsMapRenderer::getBlendModeEnum( mGridBlendMode ) );
   QDomElement gridLineStyleElem = QgsSymbolLayerV2Utils::saveSymbol( QString(), mGridLineSymbol, doc );
   gridElem.appendChild( gridLineStyleElem );
