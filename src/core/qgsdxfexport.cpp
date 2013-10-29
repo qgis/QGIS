@@ -119,6 +119,10 @@ void QgsDxfExport::writeTables( QTextStream& stream )
   //LTYPE
   stream << "  0\n";
   stream << "TABLE\n";
+  stream << "  2\n";
+  stream << "LTYPE\n";
+  stream << " 70\n";
+  stream << "  1\n"; //number of linetypes
   stream << "  0\n";
   stream << "LTYPE\n";
   stream << "  2\n";
@@ -139,8 +143,10 @@ void QgsDxfExport::writeTables( QTextStream& stream )
   //LAYER
   stream << "  0\n";
   stream << "TABLE\n";
-  stream << "  0\n";
+  stream << "  2\n";
   stream << "LAYER\n";
+  stream << " 70\n";
+  stream << mLayers.count() << "\n";
   QList< QgsMapLayer* >::iterator layerIt = mLayers.begin();
   for ( ; layerIt != mLayers.end(); ++layerIt )
   {
@@ -237,7 +243,8 @@ void QgsDxfExport::writeEntitiesSymbolLevels( QTextStream& stream )
 
 void QgsDxfExport::writeEndFile( QTextStream& stream )
 {
-  endSection( stream );
+  stream << "  0\n";
+  stream << "EOF\n";
 }
 
 void QgsDxfExport::startSection( QTextStream& stream )
@@ -278,6 +285,8 @@ void QgsDxfExport::writePolyline( QTextStream& stream, const QgsPolyline& line, 
   {
     writeVertex( stream, *lineIt, layer );
   }
+  stream << "  0\n";
+  stream << "SEQEND\n";
 }
 
 void QgsDxfExport::writeVertex( QTextStream& stream, const QgsPoint& pt, const QString& layer )
