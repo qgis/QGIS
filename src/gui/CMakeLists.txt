@@ -212,6 +212,7 @@ qgsbusyindicatordialog.h
 qgscharacterselectdialog.h
 qgscollapsiblegroupbox.h
 qgscolordialog.h
+qgscomposerruler.h
 qgscomposerview.h
 qgscredentialdialog.h
 qgsdatadefinedbutton.h

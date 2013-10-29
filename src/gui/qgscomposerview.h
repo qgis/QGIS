@@ -198,6 +198,8 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     /**Current action (e.g. adding composer map) has been finished. The purpose of this signal is that
      QgsComposer may set the selection tool again*/
     void actionFinished();
+    /**Is emitted when mouse cursor coordinates change*/
+    void cursorPosChanged( QPointF );
 
     /**Emitted before composerview is shown*/
     void composerViewShow( QgsComposerView* );

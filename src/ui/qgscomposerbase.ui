@@ -37,15 +37,9 @@
       </property>
      </widget>
     </item>
-    <item row="1" column="0">
-     <widget class="QDialogButtonBox" name="mButtonBox">
-      <property name="standardButtons">
-       <set>QDialogButtonBox::Close|QDialogButtonBox::Help</set>
-      </property>
-     </widget>
-    </item>
    </layout>
   </widget>
+  <widget class="QStatusBar" name="mStatusBar"/>  
   <widget class="QToolBar" name="mComposerToolbar">
    <property name="windowTitle">
     <string>Composer</string>

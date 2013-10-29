@@ -179,6 +179,9 @@ class CORE_EXPORT QgsComposerMouseHandles: public QObject, public QGraphicsRectI
 
     //sets the mouse cursor for the QGraphicsView attached to the composition (workaround qt bug #3732)
     void setViewportCursor( Qt::CursorShape cursor );
+
+    //resets the composer window status bar to the default message
+    void resetStatusBar();
 };
 
 #endif // QGSCOMPOSERMOUSEHANDLES_H
