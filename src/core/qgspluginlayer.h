@@ -17,6 +17,8 @@
 
 #include "qgsmaplayer.h"
 
+typedef QList< QPair<QString, QPixmap> > QgsLegendSymbologyList;
+
 /** \ingroup core
   Base class for plugin layers. These can be implemented by plugins
   and registered in QgsPluginLayerRegistry.
@@ -38,6 +40,11 @@ class CORE_EXPORT QgsPluginLayer : public QgsMapLayer
     QString pluginLayerType();
 
     void setExtent( const QgsRectangle &extent );
+
+    //! return a list of symbology items for the legend
+    //! (defult implementation returns nothing)
+    //! @note Added in v2.1
+    virtual QgsLegendSymbologyList legendSymbologyItems( const QSize& iconSize );
 
   protected:
     QString mPluginLayerType;

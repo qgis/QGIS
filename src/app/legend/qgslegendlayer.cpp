@@ -22,6 +22,7 @@
 #include "qgsfield.h"
 #include "qgsmapcanvasmap.h"
 #include "qgsmaplayerregistry.h"
+#include "qgspluginlayer.h"
 #include "qgsrasterlayer.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
@@ -141,6 +142,15 @@ void QgsLegendLayer::refreshSymbology( const QString& key )
   {
     QgsRasterLayer* rlayer = qobject_cast<QgsRasterLayer *>( theMapLayer );
     rasterLayerSymbology( rlayer ); // get and change symbology
+  }
+  else if ( theMapLayer->type() == QgsMapLayer::PluginLayer )
+  {
+    QgsPluginLayer* player = qobject_cast<QgsPluginLayer *>( theMapLayer );
+
+    QSize iconSize( 16, 16 );
+    SymbologyList itemList = player->legendSymbologyItems( iconSize );
+
+    changeSymbologySettings( theMapLayer, itemList );
   }
 
   updateIcon();
