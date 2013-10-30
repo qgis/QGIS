@@ -39,7 +39,7 @@
     </item>
    </layout>
   </widget>
-  <widget class="QStatusBar" name="mStatusBar"/>  
+  <widget class="QStatusBar" name="mStatusBar"/>
   <widget class="QToolBar" name="mComposerToolbar">
    <property name="windowTitle">
     <string>Composer</string>
@@ -311,7 +311,7 @@
     <string>Snap to grid</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+&quot;</string>
+    <string>Ctrl+Shift+'</string>
    </property>
   </action>
   <action name="mActionShowGuides">
@@ -333,7 +333,7 @@
     <string>Snap to guides</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+:</string>
+    <string>Ctrl+Shift+;</string>
    </property>
   </action>
   <action name="mActionSmartGuides">
@@ -354,7 +354,7 @@
    <property name="toolTip">
     <string>Clear guides</string>
    </property>
-  </action>       
+  </action>
   <action name="mActionAddImage">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
@@ -404,6 +404,9 @@
    <property name="toolTip">
     <string>Raise selected items</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+]</string>
+   </property>
   </action>
   <action name="mActionLowerItems">
    <property name="text">
@@ -411,6 +414,9 @@
    </property>
    <property name="toolTip">
     <string>Lower selected items</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+[</string>
    </property>
   </action>
   <action name="mActionMoveItemsToTop">
@@ -420,6 +426,9 @@
    <property name="toolTip">
     <string>Move selected items to top</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+]</string>
+   </property>
   </action>
   <action name="mActionMoveItemsToBottom">
    <property name="text">
@@ -427,6 +436,9 @@
    </property>
    <property name="toolTip">
     <string>Move selected items to bottom</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+[</string>
    </property>
   </action>
   <action name="mActionLoadFromTemplate">
