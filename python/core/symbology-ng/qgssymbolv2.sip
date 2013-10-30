@@ -214,7 +214,7 @@ class QgsLineSymbolV2 : QgsSymbolV2
     void setWidth( double width );
     double width();
 
-    void renderPolyline( const QPolygonF& points, const QgsFeature* f, QgsRenderContext& context, int layer = -1, bool selected = false );
+    void renderPolyline( const QPolygonF& points, const QgsFeature* f, QgsRenderContext& context, int layer = -1, bool selected = false, bool generalizedByBoundingBox = false );
 
     virtual QgsSymbolV2* clone() const /Factory/;
 };
@@ -237,7 +237,7 @@ class QgsFillSymbolV2 : QgsSymbolV2
     QgsFillSymbolV2( QgsSymbolLayerV2List layers /Transfer/ = QgsSymbolLayerV2List() );
 
     void setAngle( double angle );
-    void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, const QgsFeature* f, QgsRenderContext& context, int layer = -1, bool selected = false );
+    void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, const QgsFeature* f, QgsRenderContext& context, int layer = -1, bool selected = false, bool generalizedByBoundingBox = false );
 
     virtual QgsSymbolV2* clone() const /Factory/;
 };

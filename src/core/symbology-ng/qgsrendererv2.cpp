@@ -27,6 +27,7 @@
 #include "qgsfeature.h"
 #include "qgslogger.h"
 #include "qgsvectorlayer.h"
+#include "qgsrendererv2geometrysimplifier.h" // Provides geometry simplification methods for optimize the drawing of features.
 
 #include <QDomElement>
 #include <QDomDocument>
@@ -60,6 +61,16 @@ const unsigned char* QgsFeatureRendererV2::_getPoint( QPointF& pt, QgsRenderCont
 
 const unsigned char* QgsFeatureRendererV2::_getLineString( QPolygonF& pts, QgsRenderContext& context, const unsigned char* wkb )
 {
+	bool generalizedByBoundingBox = false;
+	return _getLineString( pts, context, wkb, generalizedByBoundingBox );
+}
+const unsigned char* QgsFeatureRendererV2::_getLineString( QPolygonF& pts, QgsRenderContext& context, const unsigned char* wkb, bool& generalizedByBoundingBox )
+{
+  // Indicates whether the geometry can be generalized.
+  generalizedByBoundingBox = false;
+  // Threshold of the map2pixel value in the current RenderContext. //TODO: Find optimum value
+  float map2pixelTol = 1.0f;
+
   wkb++; // jump over endian info
   unsigned int wkbType = *(( int* ) wkb );
   wkb += sizeof( unsigned int );
@@ -67,35 +78,25 @@ const unsigned char* QgsFeatureRendererV2::_getLineString( QPolygonF& pts, QgsRe
   wkb += sizeof( unsigned int );
 
   bool hasZValue = ( wkbType == QGis::WKBLineString25D );
-  double x, y;
+
   const QgsCoordinateTransform* ct = context.coordinateTransform();
   const QgsMapToPixel& mtp = context.mapToPixel();
+  const QgsRectangle& e = context.extent();
+  double cw = e.width() / 10; double ch = e.height() / 10;
+  QgsRectangle clipRect( e.xMinimum() - cw, e.yMinimum() - ch, e.xMaximum() + cw, e.yMaximum() + ch );
+
+  // Extract the points from the WKB and store in a pair of vectors, validating view precision. 
+  QgsFeatureRendererSimplifier::simplifyGeometry(context, map2pixelTol, (QGis::WkbType)wkbType, wkb, nPoints, pts, generalizedByBoundingBox);
+  wkb += hasZValue ? 3*nPoints*sizeof(double) : 2*nPoints*sizeof(double);
+  nPoints = pts.size();
 
   //apply clipping for large lines to achieve a better rendering performance
-  if ( nPoints > 1 )
+  if ( nPoints > 1 && !generalizedByBoundingBox && !context.extent().contains( pts.boundingRect() ))
   {
-    const QgsRectangle& e = context.extent();
-    double cw = e.width() / 10; double ch = e.height() / 10;
-    QgsRectangle clipRect( e.xMinimum() - cw, e.yMinimum() - ch, e.xMaximum() + cw, e.yMaximum() + ch );
-    wkb = QgsClipper::clippedLineWKB( wkb - ( 2 * sizeof( unsigned int ) + 1 ), clipRect, pts );
-  }
-  else
-  {
-    pts.resize( nPoints );
-
-    QPointF* ptr = pts.data();
-    for ( unsigned int i = 0; i < nPoints; ++i, ++ptr )
-    {
-      x = *(( double * ) wkb );
-      wkb += sizeof( double );
-      y = *(( double * ) wkb );
-      wkb += sizeof( double );
-
-      if ( hasZValue ) // ignore Z value
-        wkb += sizeof( double );
-
-      *ptr = QPointF( x, y );
-    }
+    QPolygonF line;
+    QgsClipper::clippedLine( pts, clipRect, line );
+    pts = line;
+    nPoints = pts.size();
   }
 
   //transform the QPolygonF to screen coordinates
@@ -116,6 +117,16 @@ const unsigned char* QgsFeatureRendererV2::_getLineString( QPolygonF& pts, QgsRe
 
 const unsigned char* QgsFeatureRendererV2::_getPolygon( QPolygonF& pts, QList<QPolygonF>& holes, QgsRenderContext& context, const unsigned char* wkb )
 {
+	bool generalizedByBoundingBox = false;
+	return _getPolygon( pts, holes, context, wkb, generalizedByBoundingBox );
+}
+const unsigned char* QgsFeatureRendererV2::_getPolygon( QPolygonF& pts, QList<QPolygonF>& holes, QgsRenderContext& context, const unsigned char* wkb, bool& generalizedByBoundingBox )
+{
+  // Indicates whether the geometry can be generalized.
+  generalizedByBoundingBox = true;
+  // Threshold of the map2pixel value in the current RenderContext. //TODO: Find optimum value
+  float map2pixelTol = 1.0f;
+
   wkb++; // jump over endian info
   unsigned int wkbType = *(( int* ) wkb );
   wkb += sizeof( unsigned int ); // jump over wkb type
@@ -126,7 +137,6 @@ const unsigned char* QgsFeatureRendererV2::_getPolygon( QPolygonF& pts, QList<QP
     return wkb;
 
   bool hasZValue = ( wkbType == QGis::WKBPolygon25D );
-  double x, y;
   holes.clear();
 
   const QgsCoordinateTransform* ct = context.coordinateTransform();
@@ -137,29 +147,25 @@ const unsigned char* QgsFeatureRendererV2::_getPolygon( QPolygonF& pts, QList<QP
 
   for ( unsigned int idx = 0; idx < numRings; idx++ )
   {
+    bool ringGeneralizedByBoundingBox = false;
+
     unsigned int nPoints = *(( int* )wkb );
     wkb += sizeof( unsigned int );
 
-    QPolygonF poly( nPoints );
-
-    // Extract the points from the WKB and store in a pair of vectors.
+    // Extract the points from the WKB and store in a pair of vectors, validating view precision. 
+    QPolygonF poly;
+    QgsFeatureRendererSimplifier::simplifyGeometry(context, map2pixelTol, (QGis::WkbType)wkbType, wkb, nPoints, poly, ringGeneralizedByBoundingBox);
+    wkb += hasZValue ? 3*nPoints*sizeof(double) : 2*nPoints*sizeof(double);
     QPointF* ptr = poly.data();
-    for ( unsigned int jdx = 0; jdx < nPoints; ++jdx, ++ptr )
-    {
-      x = *(( double * ) wkb ); wkb += sizeof( double );
-      y = *(( double * ) wkb ); wkb += sizeof( double );
-
-      *ptr = QPointF( x, y );
-
-      if ( hasZValue )
-        wkb += sizeof( double );
-    }
-
+    nPoints = poly.size();
+    if (!ringGeneralizedByBoundingBox) generalizedByBoundingBox = false;
+	
     if ( nPoints < 1 )
       continue;
 
-    //clip close to view extent
-    QgsClipper::trimPolygon( poly, clipRect );
+    // Clip close to view extent validating if needed.
+    QRectF ptsRect = poly.boundingRect();
+    if (!context.extent().contains( ptsRect )) QgsClipper::trimPolygon( poly, clipRect );
 
     //transform the QPolygonF to screen coordinates
     if ( ct )
@@ -226,6 +232,9 @@ void QgsFeatureRendererV2::renderFeatureWithSymbol( QgsFeature& feature, QgsSymb
 {
   QgsSymbolV2::SymbolType symbolType = symbol->type();
 
+  // Indicates whether the geometry can be generalized.
+  bool generalizedByBoundingBox = false;
+
   QgsGeometry* geom = feature.geometry();
   switch ( geom->wkbType() )
   {
@@ -255,8 +264,8 @@ void QgsFeatureRendererV2::renderFeatureWithSymbol( QgsFeature& feature, QgsSymb
         break;
       }
       QPolygonF pts;
-      _getLineString( pts, context, geom->asWkb() );
-      (( QgsLineSymbolV2* )symbol )->renderPolyline( pts, &feature, context, layer, selected );
+      _getLineString( pts, context, geom->asWkb(), generalizedByBoundingBox );
+      (( QgsLineSymbolV2* )symbol )->renderPolyline( pts, &feature, context, layer, selected, generalizedByBoundingBox );
 
       if ( drawVertexMarker )
         renderVertexMarkerPolyline( pts, context );
@@ -273,8 +282,8 @@ void QgsFeatureRendererV2::renderFeatureWithSymbol( QgsFeature& feature, QgsSymb
       }
       QPolygonF pts;
       QList<QPolygonF> holes;
-      _getPolygon( pts, holes, context, geom->asWkb() );
-      (( QgsFillSymbolV2* )symbol )->renderPolygon( pts, ( holes.count() ? &holes : NULL ), &feature, context, layer, selected );
+      _getPolygon( pts, holes, context, geom->asWkb(), generalizedByBoundingBox );
+      (( QgsFillSymbolV2* )symbol )->renderPolygon( pts, ( holes.count() ? &holes : NULL ), &feature, context, layer, selected, generalizedByBoundingBox );
 
       if ( drawVertexMarker )
         renderVertexMarkerPolygon( pts, ( holes.count() ? &holes : NULL ), context );
@@ -322,8 +331,8 @@ void QgsFeatureRendererV2::renderFeatureWithSymbol( QgsFeature& feature, QgsSymb
 
       for ( unsigned int i = 0; i < num; ++i )
       {
-        ptr = _getLineString( pts, context, ptr );
-        (( QgsLineSymbolV2* )symbol )->renderPolyline( pts, &feature, context, layer, selected );
+        ptr = _getLineString( pts, context, ptr, generalizedByBoundingBox );
+        (( QgsLineSymbolV2* )symbol )->renderPolyline( pts, &feature, context, layer, selected, generalizedByBoundingBox );
 
         if ( drawVertexMarker )
           renderVertexMarkerPolyline( pts, context );
@@ -348,8 +357,8 @@ void QgsFeatureRendererV2::renderFeatureWithSymbol( QgsFeature& feature, QgsSymb
 
       for ( unsigned int i = 0; i < num; ++i )
       {
-        ptr = _getPolygon( pts, holes, context, ptr );
-        (( QgsFillSymbolV2* )symbol )->renderPolygon( pts, ( holes.count() ? &holes : NULL ), &feature, context, layer, selected );
+        ptr = _getPolygon( pts, holes, context, ptr, generalizedByBoundingBox );
+        (( QgsFillSymbolV2* )symbol )->renderPolygon( pts, ( holes.count() ? &holes : NULL ), &feature, context, layer, selected, generalizedByBoundingBox );
 
         if ( drawVertexMarker )
           renderVertexMarkerPolygon( pts, ( holes.count() ? &holes : NULL ), context );

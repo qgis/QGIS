@@ -84,6 +84,12 @@ class CORE_EXPORT QgsClipper
       @param line out: clipped line coordinates*/
     static const unsigned char* clippedLineWKB( const unsigned char* wkb, const QgsRectangle& clipExtent, QPolygonF& line );
 
+    /**Clips a polyline to clipExtent
+      @param points of the input line
+      @param clipExtent clipping bounds
+      @param line out: clipped line coordinates*/
+    static void clippedLine( const QVector<QPointF>& points, const QgsRectangle& clipExtent, QPolygonF& line );
+
   private:
 
     // Used when testing for equivalance to 0.0
