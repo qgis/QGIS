@@ -485,6 +485,10 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
      @return 0 in case of success*/
     int boundingRectOfSelectedItems( QRectF& bRect );
 
+    /**Loads default composer settings*/
+    void loadDefaults();
+
+    /**Loads composer settings which may change, eg grid color*/
     void loadSettings();
 
     void connectAddRemoveCommandSignals( QgsAddRemoveItemCommand* c );

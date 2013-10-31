@@ -60,14 +60,14 @@ QgsComposition::QgsComposition( QgsMapRenderer* mapRenderer )
     , mUseAdvancedEffects( true )
     , mSnapToGrid( false )
     , mGridVisible( false )
-    , mSnapGridResolution( 10.0 )
-    , mSnapGridTolerance( 2 )
-    , mSnapGridOffsetX( 0.0 )
-    , mSnapGridOffsetY( 0.0 )
+    , mSnapGridResolution( 0 )
+    , mSnapGridTolerance( 0 )
+    , mSnapGridOffsetX( 0 )
+    , mSnapGridOffsetY( 0 )
     , mAlignmentSnap( true )
     , mGuidesVisible( true )
     , mSmartGuides( true )
-    , mAlignmentSnapTolerance( 2 )
+    , mAlignmentSnapTolerance( 0 )
     , mSelectionHandles( 0 )
     , mActiveItemCommand( 0 )
     , mActiveMultiFrameCommand( 0 )
@@ -84,6 +84,9 @@ QgsComposition::QgsComposition( QgsMapRenderer* mapRenderer )
   mSelectionHandles->setZValue( 500 );
 
   mPrintResolution = 300; //hardcoded default
+
+  //load default composition settings
+  loadDefaults();
   loadSettings();
 }
 
@@ -100,22 +103,23 @@ QgsComposition::QgsComposition()
     mUseAdvancedEffects( true ),
     mSnapToGrid( false ),
     mGridVisible( false ),
-    mSnapGridResolution( 10.0 ),
-    mSnapGridTolerance( 2 ),
-    mSnapGridOffsetX( 0.0 ),
-    mSnapGridOffsetY( 0.0 ),
+    mSnapGridResolution( 0 ),
+    mSnapGridTolerance( 0 ),
+    mSnapGridOffsetX( 0 ),
+    mSnapGridOffsetY( 0 ),
     mAlignmentSnap( true ),
     mGuidesVisible( true ),
     mSmartGuides( true ),
-    mAlignmentSnapTolerance( 2 ),
+    mAlignmentSnapTolerance( 0 ),
     mSelectionHandles( 0 ),
     mActiveItemCommand( 0 ),
     mActiveMultiFrameCommand( 0 ),
     mAtlasComposition( this ),
     mPreventCursorChange( false )
 {
+  //load default composition settings
+  loadDefaults();
   loadSettings();
-
 }
 
 QgsComposition::~QgsComposition()
@@ -129,6 +133,16 @@ QgsComposition::~QgsComposition()
   clear();
   delete mActiveItemCommand;
   delete mActiveMultiFrameCommand;
+}
+
+void QgsComposition::loadDefaults()
+{
+  QSettings settings;
+  mSnapGridResolution = settings.value( "/Composer/defaultSnapGridResolution", 10.0 ).toDouble();
+  mSnapGridTolerance = settings.value( "/Composer/defaultSnapGridTolerance", 2 ).toDouble();
+  mSnapGridOffsetX = settings.value( "/Composer/defaultSnapGridOffsetX", 0 ).toDouble();
+  mSnapGridOffsetY = settings.value( "/Composer/defaultSnapGridOffsetY", 0 ).toDouble();
+  mAlignmentSnapTolerance = settings.value( "/Composer/defaultSnapGuideTolerance", 2 ).toDouble();
 }
 
 void QgsComposition::setPaperSize( double width, double height )
