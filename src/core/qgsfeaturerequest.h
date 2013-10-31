@@ -80,6 +80,8 @@ class CORE_EXPORT QgsFeatureRequest
     explicit QgsFeatureRequest( QgsFeatureId fid );
     //! construct a request with rectangle filter
     explicit QgsFeatureRequest( const QgsRectangle& rect );
+    //! construct a request with a filter expression
+    explicit QgsFeatureRequest( const QgsExpression& expr );
     //! copy constructor
     QgsFeatureRequest( const QgsFeatureRequest& rh );
 

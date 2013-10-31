@@ -42,6 +42,13 @@ QgsFeatureRequest::QgsFeatureRequest( const QgsRectangle& rect )
 {
 }
 
+QgsFeatureRequest::QgsFeatureRequest( const QgsExpression& expr )
+    : mFilter( FilterExpression )
+    , mFilterExpression( new QgsExpression( expr.dump() ) )
+    , mFlags( 0 )
+{
+}
+
 QgsFeatureRequest::QgsFeatureRequest( const QgsFeatureRequest &rh )
 {
   operator=( rh );
