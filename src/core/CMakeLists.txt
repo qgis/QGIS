@@ -3,7 +3,7 @@
 
 SET(QGIS_CORE_SRCS
 
-  qgsmaprendererv2.cpp
+  qgsmapsettings.cpp
   qgsmaprendererjob.cpp
 
   gps/qgsgpsconnection.cpp
@@ -297,7 +297,7 @@ ADD_BISON_FILES(QGIS_CORE_SRCS qgsexpressionparser.yy)
 
 SET(QGIS_CORE_MOC_HDRS
 
-  qgsmaprendererv2.h
+  qgsmapsettings.h
   qgsmaprendererjob.h
 
   qgsapplication.h

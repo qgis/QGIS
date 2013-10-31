@@ -94,10 +94,10 @@ void QgsMapToolLabel::createRubberBands( )
     {
       if ( mCanvas )
       {
-        QgsMapRenderer* r = mCanvas->mapRenderer();
-        if ( r && r->hasCrsTransformEnabled() )
+        const QgsMapSettings& s = mCanvas->mapSettings();
+        if ( s.hasCrsTransformEnabled() )
         {
-          fixPoint = r->mapToLayerCoordinates( vlayer, fixPoint );
+          fixPoint = s.mapToLayerCoordinates( vlayer, fixPoint );
         }
       }
 

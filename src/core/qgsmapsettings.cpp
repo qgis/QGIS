@@ -1,10 +1,14 @@
 
-#include "qgsmaprendererv2.h"
+#include "qgsmapsettings.h"
 
 #include "qgsscalecalculator.h"
 #include "qgsmaprendererjob.h"
 #include "qgsmaptopixel.h"
 #include "qgslogger.h"
+
+#include "qgscrscache.h"
+#include "qgsmessagelog.h"
+#include "qgsmaplayer.h"
 
 /*
 
@@ -155,6 +159,16 @@ void QgsMapSettings::setLayers(const QStringList& layers)
   mLayers = layers;
 }
 
+void QgsMapSettings::setProjectionsEnabled( bool enabled )
+{
+  mProjectionsEnabled = enabled;
+}
+
+bool QgsMapSettings::hasCrsTransformEnabled() const
+{
+  return mProjectionsEnabled;
+}
+
 
 bool QgsMapSettings::hasValidSettings() const
 {
@@ -174,4 +188,144 @@ double QgsMapSettings::mapUnitsPerPixel() const
 double QgsMapSettings::scale() const
 {
   return mScale;
+}
+
+
+
+
+
+const QgsCoordinateTransform* QgsMapSettings::coordTransform( QgsMapLayer *layer )
+{
+  if ( !layer )
+  {
+    return 0;
+  }
+  return QgsCoordinateTransformCache::instance()->transform( layer->crs().authid(), mDestCRS.authid() );
+}
+
+
+
+QgsRectangle QgsMapSettings::layerExtentToOutputExtent( QgsMapLayer* theLayer, QgsRectangle extent )
+{
+  QgsDebugMsg( QString( "sourceCrs = " + coordTransform( theLayer )->sourceCrs().authid() ) );
+  QgsDebugMsg( QString( "destCRS = " + coordTransform( theLayer )->destCRS().authid() ) );
+  QgsDebugMsg( QString( "extent = " + extent.toString() ) );
+  if ( hasCrsTransformEnabled() )
+  {
+    try
+    {
+      extent = coordTransform( theLayer )->transformBoundingBox( extent );
+    }
+    catch ( QgsCsException &cse )
+    {
+      QgsMessageLog::logMessage( QString( "Transform error caught: %1" ).arg( cse.what() ), "CRS" );
+    }
+  }
+
+  QgsDebugMsg( QString( "proj extent = " + extent.toString() ) );
+
+  return extent;
+}
+
+
+QgsRectangle QgsMapSettings::outputExtentToLayerExtent( QgsMapLayer* theLayer, QgsRectangle extent )
+{
+  QgsDebugMsg( QString( "layer sourceCrs = " + coordTransform( theLayer )->sourceCrs().authid() ) );
+  QgsDebugMsg( QString( "layer destCRS = " + coordTransform( theLayer )->destCRS().authid() ) );
+  QgsDebugMsg( QString( "extent = " + extent.toString() ) );
+  if ( hasCrsTransformEnabled() )
+  {
+    try
+    {
+      extent = coordTransform( theLayer )->transformBoundingBox( extent, QgsCoordinateTransform::ReverseTransform );
+    }
+    catch ( QgsCsException &cse )
+    {
+      QgsMessageLog::logMessage( QString( "Transform error caught: %1" ).arg( cse.what() ), "CRS" );
+    }
+  }
+
+  QgsDebugMsg( QString( "proj extent = " + extent.toString() ) );
+
+  return extent;
+}
+
+
+QgsPoint QgsMapSettings::layerToMapCoordinates( QgsMapLayer* theLayer, QgsPoint point )
+{
+  if ( hasCrsTransformEnabled() )
+  {
+    try
+    {
+      point = coordTransform( theLayer )->transform( point, QgsCoordinateTransform::ForwardTransform );
+    }
+    catch ( QgsCsException &cse )
+    {
+      QgsMessageLog::logMessage( QString( "Transform error caught: %1" ).arg( cse.what() ), "CRS" );
+    }
+  }
+  else
+  {
+    // leave point without transformation
+  }
+  return point;
+}
+
+
+QgsRectangle QgsMapSettings::layerToMapCoordinates( QgsMapLayer* theLayer, QgsRectangle rect )
+{
+  if ( hasCrsTransformEnabled() )
+  {
+    try
+    {
+      rect = coordTransform( theLayer )->transform( rect, QgsCoordinateTransform::ForwardTransform );
+    }
+    catch ( QgsCsException &cse )
+    {
+      QgsMessageLog::logMessage( QString( "Transform error caught: %1" ).arg( cse.what() ), "CRS" );
+    }
+  }
+  else
+  {
+    // leave point without transformation
+  }
+  return rect;
+}
+
+
+QgsPoint QgsMapSettings::mapToLayerCoordinates( QgsMapLayer* theLayer, QgsPoint point )
+{
+  if ( hasCrsTransformEnabled() )
+  {
+    try
+    {
+      point = coordTransform( theLayer )->transform( point, QgsCoordinateTransform::ReverseTransform );
+    }
+    catch ( QgsCsException &cse )
+    {
+      QgsMessageLog::logMessage( QString( "Transform error caught: %1" ).arg( cse.what() ), "CRS" );
+    }
+  }
+  else
+  {
+    // leave point without transformation
+  }
+  return point;
+}
+
+
+QgsRectangle QgsMapSettings::mapToLayerCoordinates( QgsMapLayer* theLayer, QgsRectangle rect )
+{
+  if ( hasCrsTransformEnabled() )
+  {
+    try
+    {
+      rect = coordTransform( theLayer )->transform( rect, QgsCoordinateTransform::ReverseTransform );
+    }
+    catch ( QgsCsException &cse )
+    {
+      QgsMessageLog::logMessage( QString( "Transform error caught: %1" ).arg( cse.what() ), "CRS" );
+    }
+  }
+  return rect;
 }

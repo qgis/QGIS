@@ -17,7 +17,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsmapcanvasmap.h"
 #include "qgsmaprenderer.h"
-#include "qgsmaprendererv2.h"
+#include "qgsmapsettings.h"
 #include "qgsmaplayer.h"
 
 #include <QPainter>

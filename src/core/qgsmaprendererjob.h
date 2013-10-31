@@ -6,7 +6,7 @@
 
 #include "qgsrendercontext.h"
 
-#include "qgsmaprendererv2.h"
+#include "qgsmapsettings.h"
 
 /** abstract base class renderer jobs that asynchronously start map rendering */
 class QgsMapRendererJob : public QObject
@@ -109,7 +109,6 @@ public:
 
   virtual void start();
   virtual void cancel();
-  //virtual QImage renderedImage();
 
 protected slots:
   void futureFinished();
