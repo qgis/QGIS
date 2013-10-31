@@ -58,6 +58,8 @@ class QgsDxfExport
     double mSymbologyScaleDenominator;
     SymbologyExport mSymbologyExport;
 
+    QVector<QRgb> mDxfColorPalette;
+
     void writeHeader( QTextStream& stream );
     void writeTables( QTextStream& stream );
     void writeEntities( QTextStream& stream );
@@ -81,6 +83,7 @@ class QgsDxfExport
     double widthFromSymbolLayer( const QgsSymbolLayerV2* symbolLayer );
 
     //functions for dxf palette
+    void initColorPalette();
     static int closestMatch( QRgb pixel, const QVector<QRgb>& palette );
     static int pixel_distance( QRgb p1, QRgb p2 );
 

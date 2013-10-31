@@ -25,6 +25,7 @@
 
 QgsDxfExport::QgsDxfExport(): mSymbologyScaleDenominator( 1.0 ), mSymbologyExport( NoSymbology )
 {
+    initColorPalette();
 }
 
 QgsDxfExport::~QgsDxfExport()
@@ -366,7 +367,7 @@ int QgsDxfExport::colorFromSymbolLayer( const QgsSymbolLayerV2* symbolLayer )
   }
 
 
-  return 5; //todo...
+  return 1; //todo...
 }
 
 double QgsDxfExport::widthFromSymbolLayer( const QgsSymbolLayerV2* symbolLayer )
@@ -403,4 +404,18 @@ int QgsDxfExport::pixel_distance( QRgb p1, QRgb p2 )
   int a2 = qAlpha( p2 );
 
   return abs( r1 - r2 ) + abs( g1 - g2 ) + abs( b1 - b2 ) + abs( a1 - a2 );
+}
+
+void QgsDxfExport::initColorPalette()
+{
+    mDxfColorPalette.resize( 256 );
+    mDxfColorPalette[1] = qRgb( 255, 0, 0 );
+    mDxfColorPalette[2] = qRgb( 255, 255, 0 );
+    mDxfColorPalette[3] = qRgb( 0, 255, 0 );
+    mDxfColorPalette[4] = qRgb( 0, 255, 255 );
+    mDxfColorPalette[5] = qRgb( 0, 0, 255 );
+    mDxfColorPalette[6] = qRgb( 255, 0, 255 );
+    mDxfColorPalette[7] = qRgb( 255, 255, 255 );
+    mDxfColorPalette[8] = qRgb( 255, 255, 255 );
+    mDxfColorPalette[9] = qRgb( 255, 255, 255 );
 }
