@@ -860,7 +860,9 @@ void QgsCoordinateTransform::searchDatumTransform( const QString& sql, QList< in
   }
   sqlite3_finalize( stmt );
   sqlite3_close( db );
-  QgsMessageLog::logMessage( QString( "Fount %1 datum transforms" ).arg( transforms.size() ) );
+  QgsMessageLog::logMessage( QgsApplication::srsDbFilePath() );
+  QgsMessageLog::logMessage( QString( "Found %1 datum transforms" ).arg( transforms.size() ) );
+  QgsMessageLog::logMessage( sql );
 }
 
 QString QgsCoordinateTransform::datumTransformString( int datumTransform )
