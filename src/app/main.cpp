@@ -68,6 +68,9 @@ int _fmode = _O_BINARY;
 #if MAC_OS_X_VERSION_MAX_ALLOWED < 1050
 typedef SInt32 SRefCon;
 #endif
+// For setting the maximum open files limit higher
+#include <sys/resource.h>
+#include <limits.h>
 #endif
 
 #include "qgisapp.h"
@@ -359,6 +362,41 @@ void myMessageOutput( QtMsgType type, const char *msg )
 
 int main( int argc, char *argv[] )
 {
+#ifdef Q_OS_MACX
+  // Increase file resource limits (i.e., number of allowed open files)
+  // (from code provided by Larry Biehl, Purdue University, USA, from 'MultiSpec' project)
+  // This is generally 256 for the soft limit on Mac
+  // NOTE: setrlimit() must come *before* initialization of stdio strings,
+  //       e.g. before any debug messages, or setrlimit() gets ignored
+  // see: http://stackoverflow.com/a/17726104/2865523
+  struct rlimit rescLimit;
+  if ( getrlimit( RLIMIT_NOFILE, &rescLimit ) == 0 )
+  {
+    rlim_t oldSoft( rescLimit.rlim_cur );
+    rlim_t oldHard( rescLimit.rlim_max );
+#ifdef OPEN_MAX
+    rlim_t newSoft( OPEN_MAX );
+    rlim_t newHard( std::min( oldHard, newSoft ) );
+#else
+    rlim_t newSoft( 4096 );
+    rlim_t newHard( std::min(( rlim_t )8192, oldHard ) );
+#endif
+    if ( rescLimit.rlim_cur < newSoft )
+    {
+      rescLimit.rlim_cur = newSoft;
+      rescLimit.rlim_max = newHard;
+
+      if ( setrlimit( RLIMIT_NOFILE, &rescLimit ) == 0 )
+      {
+        QgsDebugMsg( QString( "Mac RLIMIT_NOFILE Soft/Hard NEW: %1 / %2" )
+                     .arg( rescLimit.rlim_cur ).arg( rescLimit.rlim_max ) );
+      }
+    }
+    QgsDebugMsg( QString( "Mac RLIMIT_NOFILE Soft/Hard ORIG: %1 / %2" )
+                 .arg( oldSoft ).arg( oldHard ) );
+  }
+#endif
+
   QgsDebugMsg( QString( "Starting qgis main" ) );
 #ifdef WIN32  // Windows
 #ifdef _MSC_VER
