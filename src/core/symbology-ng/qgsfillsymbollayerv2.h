@@ -102,6 +102,141 @@ class CORE_EXPORT QgsSimpleFillSymbolLayerV2 : public QgsFillSymbolLayerV2
     void applyDataDefinedSymbology( QgsSymbolV2RenderContext& context, QBrush& brush, QPen& pen, QPen& selPen );
 };
 
+class QgsVectorColorRampV2;
+
+class CORE_EXPORT QgsGradientFillSymbolLayerV2 : public QgsFillSymbolLayerV2
+{
+  public:
+
+    enum GradientColorType
+    {
+      SimpleTwoColor,
+      ColorRamp
+    };
+
+    enum GradientType
+    {
+      Linear,
+      Radial,
+      Conical
+    };
+
+    enum GradientCoordinateMode
+    {
+      Feature,
+      Viewport
+    };
+
+    enum GradientSpread
+    {
+      Pad,
+      Reflect,
+      Repeat
+    };
+
+    QgsGradientFillSymbolLayerV2( QColor color = DEFAULT_SIMPLEFILL_COLOR, QColor color2 = Qt::white,
+                                  GradientColorType gradientColorType = SimpleTwoColor, GradientType gradientType = Linear,
+                                  GradientCoordinateMode coordinateMode = Feature,
+                                  GradientSpread gradientSpread = Pad
+                                );
+
+    virtual ~QgsGradientFillSymbolLayerV2();
+
+    // static stuff
+
+    static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() );
+
+    // implemented from base classes
+
+    QString layerType() const;
+
+    void startRender( QgsSymbolV2RenderContext& context );
+
+    void stopRender( QgsSymbolV2RenderContext& context );
+
+    void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context );
+
+    QgsStringMap properties() const;
+
+    QgsSymbolLayerV2* clone() const;
+
+    /**Type of gradient, eg linear or radial*/
+    GradientType gradientType() const { return mGradientType; };
+    void setGradientType( GradientType gradientType ) { mGradientType = gradientType; };
+
+    /**Gradient color mode, controls how gradient color stops are created*/
+    GradientColorType gradientColorType() const { return mGradientColorType; };
+    void setGradientColorType( GradientColorType gradientColorType ) { mGradientColorType = gradientColorType; };
+
+    /**Color ramp used for the gradient fill, only used if the gradient color type is set to ColorRamp*/
+    QgsVectorColorRampV2* colorRamp() { return mGradientRamp; };
+    void setColorRamp( QgsVectorColorRampV2* ramp );
+
+    /**Color for endpoint of gradient, only used if the gradient color type is set to SimpleTwoColor*/
+    QColor color2() const { return mColor2; };
+    void setColor2( QColor color2 ) { mColor2 = color2; };
+
+    /**Coordinate mode for gradient. Controls how the gradient stops are positioned.*/
+    GradientCoordinateMode coordinateMode() const { return mCoordinateMode; };
+    void setCoordinateMode( GradientCoordinateMode coordinateMode ) { mCoordinateMode = coordinateMode; };
+
+    /**Gradient spread mode. Controls how the gradient behaves outside of the predefined stops*/
+    GradientSpread gradientSpread() const { return mGradientSpread; };
+    void setGradientSpread( GradientSpread gradientSpread ) { mGradientSpread = gradientSpread; };
+
+    /**Starting point of gradient fill, in the range [0,0] - [1,1]*/
+    void setReferencePoint1( QPointF referencePoint ) { mReferencePoint1 = referencePoint; };
+    QPointF referencePoint1() const { return mReferencePoint1; };
+
+    /**End point of gradient fill, in the range [0,0] - [1,1]*/
+    void setReferencePoint2( QPointF referencePoint ) { mReferencePoint2 = referencePoint; };
+    QPointF referencePoint2() const { return mReferencePoint2; };
+
+    /**Rotation angle for gradient fill. Can be used to rotate a gradient around its centre point*/
+    void setAngle( double angle ) { mAngle = angle; };
+    double angle() const { return mAngle; };
+
+    /**Offset for gradient fill*/
+    void setOffset( QPointF offset ) { mOffset = offset; };
+    QPointF offset() const { return mOffset; };
+
+    /**Units for gradient fill offset*/
+    void setOffsetUnit( QgsSymbolV2::OutputUnit unit ) { mOffsetUnit = unit; };
+    QgsSymbolV2::OutputUnit offsetUnit() const { return mOffsetUnit; };
+
+  protected:
+    QBrush mBrush;
+    QBrush mSelBrush;
+
+    GradientColorType mGradientColorType;
+    QColor mColor2;
+    QgsVectorColorRampV2* mGradientRamp;
+    GradientType mGradientType;
+    GradientCoordinateMode mCoordinateMode;
+    GradientSpread mGradientSpread;
+
+    QPointF mReferencePoint1;
+    QPointF mReferencePoint2;
+    double mAngle;
+
+    QPointF mOffset;
+    QgsSymbolV2::OutputUnit mOffsetUnit;
+
+  private:
+
+    //helper functions for data defined symbology
+    void applyDataDefinedSymbology( QgsSymbolV2RenderContext& context );
+
+    /**Applies the gradient to a brush*/
+    void applyGradient( const QgsSymbolV2RenderContext& context, QBrush& brush, const QColor& color, const QColor& color2,
+                        const GradientColorType gradientColorType, QgsVectorColorRampV2 * gradientRamp, const GradientType gradientType,
+                        const GradientCoordinateMode coordinateMode, const GradientSpread gradientSpread, const QPointF referencePoint1,
+                        const QPointF referencePoint2, const double angle );
+
+    /**rotates a reference point by a specified angle around the point (0.5, 0.5)*/
+    QPointF rotateReferencePoint( const QPointF & refPoint, double angle );
+};
+
 /**Base class for polygon renderers generating texture images*/
 class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayerV2
 {
