@@ -238,9 +238,6 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
       @note: added in version 1.9*/
     void setUseAdvancedEffects( bool effectsEnabled );
 
-    double selectionTolerance() const { return mSelectionTolerance; }
-    void setSelectionTolerance( double tol );
-
     /**Returns pointer to map renderer of qgis map canvas*/
     QgsMapRenderer* mapRenderer() {return mMapRenderer;}
 
@@ -445,9 +442,6 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
 
     /**Flag if advanced visual effects such as blend modes should be used. True by default*/
     bool mUseAdvancedEffects;
-
-    /**Distance tolerance for item selection (in mm)*/
-    double mSelectionTolerance;
 
     /**Parameters for snap to grid function*/
     bool mSnapToGrid;

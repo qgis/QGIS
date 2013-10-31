@@ -58,7 +58,6 @@ QgsComposition::QgsComposition( QgsMapRenderer* mapRenderer )
     , mGenerateWorldFile( false )
     , mWorldFileMap( 0 )
     , mUseAdvancedEffects( true )
-    , mSelectionTolerance( 0.0 )
     , mSnapToGrid( false )
     , mGridVisible( false )
     , mSnapGridResolution( 10.0 )
@@ -99,7 +98,6 @@ QgsComposition::QgsComposition()
     mGenerateWorldFile( false ),
     mWorldFileMap( 0 ),
     mUseAdvancedEffects( true ),
-    mSelectionTolerance( 0.0 ),
     mSnapToGrid( false ),
     mGridVisible( false ),
     mSnapGridResolution( 10.0 ),
@@ -226,15 +224,7 @@ QgsComposerItem* QgsComposition::composerItemAt( const QPointF & position, const
 {
   //get a list of items which intersect the specified position, in descending z order
   QList<QGraphicsItem*> itemList;
-  if ( mSelectionTolerance <= 0.0 )
-  {
-    itemList = items( position, Qt::IntersectsItemShape, Qt::DescendingOrder );
-  }
-  else
-  {
-    itemList = items( QRectF( position.x() - mSelectionTolerance, position.y() - mSelectionTolerance, 2 * mSelectionTolerance, 2 * mSelectionTolerance ),
-                      Qt::IntersectsItemShape, Qt::DescendingOrder );
-  }
+  itemList = items( position, Qt::IntersectsItemShape, Qt::DescendingOrder );
   QList<QGraphicsItem *>::iterator itemIt = itemList.begin();
 
   bool foundBelowItem = false;
@@ -1671,12 +1661,6 @@ void QgsComposition::setGridStyle( GridStyle s )
   saveSettings();
 }
 
-void QgsComposition::setSelectionTolerance( double tol )
-{
-  mSelectionTolerance = tol;
-  saveSettings();
-}
-
 void QgsComposition::loadSettings()
 {
   //read grid style, grid color and pen width from settings
@@ -1705,8 +1689,6 @@ void QgsComposition::loadSettings()
   {
     mGridStyle = Solid;
   }
-
-  mSelectionTolerance = s.value( "/qgis/composerSelectionTolerance", 0.0 ).toDouble();
 }
 
 void QgsComposition::saveSettings()
@@ -1729,9 +1711,6 @@ void QgsComposition::saveSettings()
   {
     s.setValue( "/qgis/composerGridStyle", "Crosses" );
   }
-
-  //store also selection tolerance
-  s.setValue( "/qgis/composerSelectionTolerance", mSelectionTolerance );
 }
 
 void QgsComposition::beginCommand( QgsComposerItem* item, const QString& commandText, QgsComposerMergeCommand::Context c )

@@ -150,9 +150,6 @@ class QgsComposition : QGraphicsScene
     QgsComposerMap* worldFileMap();
     void setWorldFileMap( QgsComposerMap* map );
 
-    double selectionTolerance() const;
-    void setSelectionTolerance( double tol );
-
     /**Returns pointer to map renderer of qgis map canvas*/
     QgsMapRenderer* mapRenderer();
 
