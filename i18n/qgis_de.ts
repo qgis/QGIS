@@ -31570,8 +31570,8 @@ Note: giving the password is optional. It will be requested interactivly, when n
     </message>
     <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="157"/>
-        <source>Ignore GetMap URI reported in capabilities</source>
-        <translation>Gemeldete GetMap-URI aus Diensteigenschaften ignorieren</translation>
+        <source>Ignore GetMap/GetTile URI reported in capabilities</source>
+        <translation>Gemeldete GetMap/GetTile-URI aus Diensteigenschaften ignorieren</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="164"/>

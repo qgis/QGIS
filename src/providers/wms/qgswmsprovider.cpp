@@ -889,7 +889,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
         if ( !getTileUrl().isNull() )
         {
           // KVP
-          QUrl url( getTileUrl() );
+          QUrl url( mIgnoreGetMapUrl ? mBaseUrl : getTileUrl() );
 
           // compose static request arguments.
           setQueryItem( url, "SERVICE", "WMTS" );
