@@ -57,7 +57,7 @@ class QgsHighlight;
 class QgsVectorLayer;
 
 class QgsMapRenderer;
-class QgsMapRendererSettings;
+class QgsMapSettings;
 class QgsMapCanvasMap;
 class QgsMapOverviewCanvas;
 class QgsMapTool;
@@ -119,13 +119,13 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     void enableOverviewMode( QgsMapOverviewCanvas* overview );
 
-    const QgsMapRendererSettings& mapRendererSettings() const;
+    const QgsMapSettings& mapSettings() const;
 
     //! @deprecated since 2.1 - there could be more than just one "map" items
     QgsMapCanvasMap* map();
 
     //! @deprecated since 2.1 - use mapRendererSettings() for anything related to current renderer settings
-    // temporarily disabled QgsMapRenderer* mapRenderer();
+    Q_DECL_DEPRECATED QgsMapRenderer* mapRenderer();
 
     //! Accessor for the canvas paint device
     //! @deprecated since 2.1

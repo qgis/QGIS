@@ -186,10 +186,10 @@ QgsMapCanvasMap* QgsMapCanvas::map()
   return mMap;
 }
 
-/*QgsMapRenderer* QgsMapCanvas::mapRenderer()
+QgsMapRenderer* QgsMapCanvas::mapRenderer()
 {
   return mMapRenderer;
-}*/
+}
 
 
 QgsMapLayer* QgsMapCanvas::layer( int index )
@@ -350,7 +350,7 @@ void QgsMapCanvas::enableOverviewMode( QgsMapOverviewCanvas* overview )
   }
 }
 
-const QgsMapRendererSettings &QgsMapCanvas::mapRendererSettings() const
+const QgsMapSettings &QgsMapCanvas::mapSettings() const
 {
   return mMap->settings();
 }

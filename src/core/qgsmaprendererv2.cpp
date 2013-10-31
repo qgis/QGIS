@@ -24,99 +24,24 @@ usage in QgsComposer
 
 
 
-
-QgsMapRendererV2::QgsMapRendererV2()
-  : mActiveJob(0)
-  , mScaleCalculator(new QgsScaleCalculator())
+QgsRectangle QgsMapSettings::extent() const
 {
+  return mExtent;
 }
 
-QgsMapRendererV2::~QgsMapRendererV2()
+void QgsMapSettings::setExtent(const QgsRectangle& extent)
 {
-  // make sure there is no job running
-  cancel();
-
-}
-
-bool QgsMapRendererV2::start(bool parallel)
-{
-  if (mActiveJob)
-    return false;
-
-  if (parallel)
-  {
-    Q_ASSERT(false && "parallel job not implemented yet");
-    return false;
-  }
-  else
-  {
-    mActiveJob = new QgsMapRendererSequentialJob(mSettings);
-  }
-
-  connect(mActiveJob, SIGNAL(finished()), this, SLOT(onJobFinished()));
-
-  mActiveJob->start();
-  return true;
+  mExtent = extent;
 }
 
 
-bool QgsMapRendererV2::startWithCustomPainter(QPainter *painter)
+void QgsMapSettings::updateDerived()
 {
-  if (mActiveJob)
-    return false;
-
-  mActiveJob = new QgsMapRendererCustomPainterJob(mSettings, painter);
-
-  connect(mActiveJob, SIGNAL(finished()), this, SLOT(onJobFinished()));
-
-  mActiveJob->start();
-  return true;
-}
-
-bool QgsMapRendererV2::cancel()
-{
-  if (!mActiveJob)
-    return false;
-
-  mActiveJob->cancel();
-  return true;
-}
-
-
-void QgsMapRendererV2::onJobFinished()
-{
-  qDebug("onJobFinished");
-  Q_ASSERT(mActiveJob);
-
-  emit finished();
-
-  mActiveJob->deleteLater();
-  mActiveJob = 0;
-}
-
-
-
-
-
-
-QgsRectangle QgsMapRendererV2::extent() const
-{
-  return mSettings.extent;
-}
-
-void QgsMapRendererV2::setExtent(const QgsRectangle& extent)
-{
-  mSettings.extent = extent;
-}
-
-
-void QgsMapRendererV2::updateDerived()
-{
-  QgsRectangle extent = mSettings.extent;
+  QgsRectangle extent = mExtent;
 
   if ( extent.isEmpty() )
   {
-    mSettings.valid = false;
+    mValid = false;
     return;
   }
 
@@ -147,106 +72,106 @@ void QgsMapRendererV2::updateDerived()
     static const double minProportion = 1e-12;
     if ( xRange < minProportion || yRange < minProportion )
     {
-      mSettings.valid = false;
+      mValid = false;
       return;
     }
   }
 
-  double myHeight = mSettings.size.height();
-  double myWidth = mSettings.size.width();
+  double myHeight = mSize.height();
+  double myWidth = mSize.width();
 
   if ( !myWidth || !myHeight )
   {
-    mSettings.valid = false;
+    mValid = false;
     return;
   }
 
   // calculate the translation and scaling parameters
-  double mapUnitsPerPixelY = mSettings.extent.height() / myHeight;
-  double mapUnitsPerPixelX = mSettings.extent.width() / myWidth;
-  mSettings.mapUnitsPerPixel = mapUnitsPerPixelY > mapUnitsPerPixelX ? mapUnitsPerPixelY : mapUnitsPerPixelX;
+  double mapUnitsPerPixelY = mExtent.height() / myHeight;
+  double mapUnitsPerPixelX = mExtent.width() / myWidth;
+  mMapUnitsPerPixel = mapUnitsPerPixelY > mapUnitsPerPixelX ? mapUnitsPerPixelY : mapUnitsPerPixelX;
 
   // calculate the actual extent of the mapCanvas
-  double dxmin = mSettings.extent.xMinimum(), dxmax = mSettings.extent.xMaximum(),
-         dymin = mSettings.extent.yMinimum(), dymax = mSettings.extent.yMaximum(), whitespace;
+  double dxmin = mExtent.xMinimum(), dxmax = mExtent.xMaximum(),
+         dymin = mExtent.yMinimum(), dymax = mExtent.yMaximum(), whitespace;
 
   if ( mapUnitsPerPixelY > mapUnitsPerPixelX )
   {
-    whitespace = (( myWidth * mSettings.mapUnitsPerPixel ) - mSettings.extent.width() ) * 0.5;
+    whitespace = (( myWidth * mMapUnitsPerPixel ) - mExtent.width() ) * 0.5;
     dxmin -= whitespace;
     dxmax += whitespace;
   }
   else
   {
-    whitespace = (( myHeight * mSettings.mapUnitsPerPixel ) - mSettings.extent.height() ) * 0.5;
+    whitespace = (( myHeight * mMapUnitsPerPixel ) - mExtent.height() ) * 0.5;
     dymin -= whitespace;
     dymax += whitespace;
   }
 
-  mSettings.visibleExtent.set( dxmin, dymin, dxmax, dymax );
+  mVisibleExtent.set( dxmin, dymin, dxmax, dymax );
 
   // update the scale
-  mSettings.scale = mScaleCalculator->calculate( mSettings.extent, mSettings.size.width() );
+  mScale = mScaleCalculator.calculate( mExtent, mSize.width() );
 
   QgsDebugMsg( QString( "Map units per pixel (x,y) : %1, %2" ).arg( qgsDoubleToString( mapUnitsPerPixelX ) ).arg( qgsDoubleToString( mapUnitsPerPixelY ) ) );
   QgsDebugMsg( QString( "Pixmap dimensions (x,y) : %1, %2" ).arg( qgsDoubleToString( myWidth ) ).arg( qgsDoubleToString( myHeight ) ) );
-  QgsDebugMsg( QString( "Extent dimensions (x,y) : %1, %2" ).arg( qgsDoubleToString( mSettings.extent.width() ) ).arg( qgsDoubleToString( mSettings.extent.height() ) ) );
-  QgsDebugMsg( mSettings.extent.toString() );
-  QgsDebugMsg( QString( "Adjusted map units per pixel (x,y) : %1, %2" ).arg( qgsDoubleToString( mSettings.visibleExtent.width() / myWidth ) ).arg( qgsDoubleToString( mSettings.visibleExtent.height() / myHeight ) ) );
-  QgsDebugMsg( QString( "Recalced pixmap dimensions (x,y) : %1, %2" ).arg( qgsDoubleToString( mSettings.visibleExtent.width() / mSettings.mapUnitsPerPixel ) ).arg( qgsDoubleToString( mSettings.visibleExtent.height() / mSettings.mapUnitsPerPixel ) ) );
-  QgsDebugMsg( QString( "Scale (assuming meters as map units) = 1:%1" ).arg( qgsDoubleToString( mSettings.scale ) ) );
+  QgsDebugMsg( QString( "Extent dimensions (x,y) : %1, %2" ).arg( qgsDoubleToString( mExtent.width() ) ).arg( qgsDoubleToString( mExtent.height() ) ) );
+  QgsDebugMsg( mExtent.toString() );
+  QgsDebugMsg( QString( "Adjusted map units per pixel (x,y) : %1, %2" ).arg( qgsDoubleToString( mVisibleExtent.width() / myWidth ) ).arg( qgsDoubleToString( mVisibleExtent.height() / myHeight ) ) );
+  QgsDebugMsg( QString( "Recalced pixmap dimensions (x,y) : %1, %2" ).arg( qgsDoubleToString( mVisibleExtent.width() / mMapUnitsPerPixel ) ).arg( qgsDoubleToString( mVisibleExtent.height() / mMapUnitsPerPixel ) ) );
+  QgsDebugMsg( QString( "Scale (assuming meters as map units) = 1:%1" ).arg( qgsDoubleToString( mScale ) ) );
 
 }
 
 
-QSize QgsMapRendererV2::outputSize() const
+QSize QgsMapSettings::outputSize() const
 {
-  return mSettings.size;
+  return mSize;
 }
 
-void QgsMapRendererV2::setOutputSize(const QSize& size)
+void QgsMapSettings::setOutputSize(const QSize& size)
 {
-  mSettings.size = size;
+  mSize = size;
 }
 
-double QgsMapRendererV2::outputDpi() const
+double QgsMapSettings::outputDpi() const
 {
-  return mSettings.dpi;
+  return mDpi;
 }
 
-void QgsMapRendererV2::setOutputDpi(double dpi)
+void QgsMapSettings::setOutputDpi(double dpi)
 {
-  mSettings.dpi = dpi;
-}
-
-
-QStringList QgsMapRendererV2::layers() const
-{
-  return mSettings.layers;
-}
-
-void QgsMapRendererV2::setLayers(const QStringList& layers)
-{
-  mSettings.layers = layers;
+  mDpi = dpi;
 }
 
 
-bool QgsMapRendererV2::hasValidSettings() const
+QStringList QgsMapSettings::layers() const
 {
-  return mSettings.valid;
+  return mLayers;
 }
 
-QgsRectangle QgsMapRendererV2::visibleExtent() const
+void QgsMapSettings::setLayers(const QStringList& layers)
 {
-  return mSettings.visibleExtent;
+  mLayers = layers;
 }
 
-double QgsMapRendererV2::mapUnitsPerPixel() const
+
+bool QgsMapSettings::hasValidSettings() const
 {
-  return mSettings.mapUnitsPerPixel;
+  return mValid;
 }
 
-double QgsMapRendererV2::scale() const
+QgsRectangle QgsMapSettings::visibleExtent() const
 {
-  return mSettings.scale;
+  return mVisibleExtent;
+}
+
+double QgsMapSettings::mapUnitsPerPixel() const
+{
+  return mMapUnitsPerPixel;
+}
+
+double QgsMapSettings::scale() const
+{
+  return mScale;
 }

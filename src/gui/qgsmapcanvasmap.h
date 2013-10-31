@@ -23,9 +23,10 @@
 #include <qgis.h>
 #include <qgsmaptopixel.h>
 
+#include <qgsmaprendererjob.h>
+
 class QgsMapRenderer;
-class QgsMapRendererSettings;
-class QgsMapRendererV2;
+class QgsMapSettings;
 class QgsMapCanvas;
 
 /** \ingroup gui
@@ -65,7 +66,7 @@ class GUI_EXPORT QgsMapCanvasMap : public QObject, public QGraphicsRectItem
     //! @deprecated in 2.1 - does nothing. Kept for API compatibility
     void updateContents() {}
 
-    const QgsMapRendererSettings& settings() const;
+    const QgsMapSettings& settings() const;
 
     QgsMapToPixel* coordinateTransform(); // TODO: rename!
 
@@ -90,7 +91,9 @@ public slots:
 
     bool mDirty; //!< whether a new rendering job should be started upon next paint() call
 
-    QgsMapRendererV2* mRend;
+    QgsMapSettings mSettings;
+
+    QgsMapRendererCustomPainterJob* mJob;
 
     QPainter* mPainter;
 

@@ -25,14 +25,11 @@
 QgsMapCanvasMap::QgsMapCanvasMap( QgsMapCanvas* canvas )
     : mCanvas( canvas )
     , mDirty(true)
+    , mJob(0)
 {
-  mRend = new QgsMapRendererV2();
-
   setZValue( -10 );
   setPos( 0, 0 );
   resize( QSize( 1, 1 ) );
-
-  connect(mRend, SIGNAL(finished()), SLOT(finish()));
 
   connect(&mTimer, SIGNAL(timeout()), SLOT(onMapUpdateTimeout()));
   mTimer.setInterval(400);
@@ -41,16 +38,17 @@ QgsMapCanvasMap::QgsMapCanvasMap( QgsMapCanvas* canvas )
 
 QgsMapCanvasMap::~QgsMapCanvasMap()
 {
-  delete mRend;
-  mRend = 0;
+  delete mJob;
 }
 
 void QgsMapCanvasMap::refresh()
 {
-  if (mRend->isRendering())
+  if (mJob)
   {
     qDebug("need to cancel first!");
-    mRend->cancel();
+    mJob->cancel();
+    mJob->deleteLater();
+    mJob = 0;
   }
 
   mDirty = true;
@@ -61,9 +59,11 @@ void QgsMapCanvasMap::paint( QPainter* p, const QStyleOptionGraphicsItem*, QWidg
 {
   qDebug("paint()");
 
+  bool paintedAlready = false;
+
   if (mDirty)
   {
-    if (mRend->isRendering())
+    if (mJob)
     {
       qDebug("already rendering");
     }
@@ -71,20 +71,25 @@ void QgsMapCanvasMap::paint( QPainter* p, const QStyleOptionGraphicsItem*, QWidg
     {
       qDebug("need to render");
 
+      // draw the image before it will be wiped out
+      // TODO: does not work correctly with panning by dragging
+      p->drawImage( 0, 0, mImage );
+      paintedAlready = true;
+
       QStringList layerIds;
       foreach (QgsMapLayer* l, mCanvas->layers())
         layerIds.append(l->id());
 
-      mRend->setLayers(layerIds);
-      mRend->setExtent(mCanvas->extent());
-      mRend->setOutputSize(mImage.size());
-      mRend->setOutputDpi(120);
-      mRend->updateDerived();
+      mSettings.setLayers(layerIds);
+      mSettings.setExtent(mCanvas->extent());
+      mSettings.setOutputSize(mImage.size());
+      mSettings.setOutputDpi(120);
+      mSettings.updateDerived();
 
-      const QgsMapRendererSettings& s = mRend->settings();
-      mMapToPixel = QgsMapToPixel( s.mapUnitsPerPixel, s.size.height(), s.visibleExtent.yMinimum(), s.visibleExtent.xMinimum() );
+      const QgsMapSettings& s = mSettings;
+      mMapToPixel = QgsMapToPixel( s.mapUnitsPerPixel(), s.outputSize().height(), s.visibleExtent().yMinimum(), s.visibleExtent().xMinimum() );
 
-      qDebug("----------> EXTENT %f,%f", mRend->extent().xMinimum(), mRend->extent().yMinimum());
+      qDebug("----------> EXTENT %f,%f", mSettings.extent().xMinimum(), mSettings.extent().yMinimum());
 
       mImage.fill(mBgColor.rgb());
 
@@ -97,15 +102,18 @@ void QgsMapCanvasMap::paint( QPainter* p, const QStyleOptionGraphicsItem*, QWidg
       if ( mAntiAliasing )
         mPainter->setRenderHint( QPainter::Antialiasing );
 
-      mRend->startWithCustomPainter(mPainter);
+      // create the renderer job
+      Q_ASSERT(mJob == 0);
+      mJob = new QgsMapRendererCustomPainterJob(mSettings, mPainter);
+      connect(mJob, SIGNAL(finished()), SLOT(finish()));
+      mJob->start();
 
       mTimer.start();
-
-      //p->drawImage(0,0, mLastImage);
-      //return; // do not redraw the image
     }
   }
 
+  if (!paintedAlready)
+  {
 #ifdef EGA_MODE
   QImage i2( mImage.size()/3, mImage.format() );
   QPainter p2(&i2);
@@ -115,7 +123,7 @@ void QgsMapCanvasMap::paint( QPainter* p, const QStyleOptionGraphicsItem*, QWidg
 #else
   p->drawImage( 0, 0, mImage );
 #endif
-
+  }
 }
 
 QRectF QgsMapCanvasMap::boundingRect() const
@@ -123,9 +131,9 @@ QRectF QgsMapCanvasMap::boundingRect() const
   return QRectF( 0, 0, mImage.width(), mImage.height() );
 }
 
-const QgsMapRendererSettings &QgsMapCanvasMap::settings() const
+const QgsMapSettings &QgsMapCanvasMap::settings() const
 {
-  return mRend->settings();
+  return mSettings;
 }
 
 QgsMapToPixel *QgsMapCanvasMap::coordinateTransform()
@@ -136,10 +144,12 @@ QgsMapToPixel *QgsMapCanvasMap::coordinateTransform()
 
 void QgsMapCanvasMap::resize( QSize size )
 {
-  if (mRend->isRendering())
+  if (mJob)
   {
     qDebug("need to cancel first!");
-    mRend->cancel();
+    mJob->cancel();
+    mJob->deleteLater();
+    mJob = 0;
   }
 
   QgsDebugMsg( QString( "resizing to %1x%2" ).arg( size.width() ).arg( size.height() ) );

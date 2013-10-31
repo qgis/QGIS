@@ -13,47 +13,11 @@ class QgsScaleCalculator;
 class QgsMapRendererJob;
 
 
+#include "qgsscalecalculator.h"
 
-
-struct QgsMapRendererSettings
+struct QgsMapSettings
 {
   // TODO
-
-  double dpi;
-
-  QSize size;
-
-  QgsRectangle extent;
-
-  QStringList layers;
-
-  bool projectionsEnabled;
-  QgsCoordinateReferenceSystem destCRS;
-
-  // derived properties
-  bool valid; //!< whether the actual settings are valid (set in updateDerived())
-  QgsRectangle visibleExtent; //!< extent with some additional white space that matches the output aspect ratio
-  double mapUnitsPerPixel;
-  double scale;
-
-
-  // TODO: utility functions
-
-
-};
-
-
-class QgsMapRendererV2 : public QObject
-{
-  Q_OBJECT
-public:
-
-  QgsMapRendererV2();
-  ~QgsMapRendererV2();
-
-  //
-  // getters/setters for rendering settings
-  //
 
   QgsRectangle extent() const;
   void setExtent(const QgsRectangle& rect);
@@ -74,47 +38,31 @@ public:
   double mapUnitsPerPixel() const;
   double scale() const;
 
-  //! Access all map renderer settings at once
-  const QgsMapRendererSettings& settings() const { return mSettings; }
+  // TODO: utility functions
 
-  //
-  // rendering control
-  //
-
-  //! start rendering to a QImage with the current settings
-  bool start(bool parallel = false);
-
-  //! start rendering with a custom painter (
-  bool startWithCustomPainter(QPainter* painter);
-
-  //! cancel the rendering job and wait until it stops
-  bool cancel();
-
-  //! block until the rendering is done
-  void waitForFinished();
-
-  bool isRendering() const { return mActiveJob != 0; }
-
-  const QgsMapRendererJob* activeJob() const { return mActiveJob; }
-
-signals:
-  void finished();
-
-protected slots:
-  void onJobFinished();
-
-protected:
-  void updateScale();
-  void adjustExtentToSize();
 
 protected:
 
-  QgsMapRendererSettings mSettings;
+  double mDpi;
 
-  QgsScaleCalculator* mScaleCalculator;
+  QSize mSize;
 
-  //! currently running renderer job (null if there is none)
-  QgsMapRendererJob* mActiveJob;
+  QgsRectangle mExtent;
+
+  QStringList mLayers;
+
+  bool mProjectionsEnabled;
+  QgsCoordinateReferenceSystem mDestCRS;
+
+  // derived properties
+  bool mValid; //!< whether the actual settings are valid (set in updateDerived())
+  QgsRectangle mVisibleExtent; //!< extent with some additional white space that matches the output aspect ratio
+  double mMapUnitsPerPixel;
+  double mScale;
+
+
+  // utiity stuff
+  QgsScaleCalculator mScaleCalculator;
 };
 
 

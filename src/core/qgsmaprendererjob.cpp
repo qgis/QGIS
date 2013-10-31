@@ -8,8 +8,15 @@
 #include "qgsmaplayer.h"
 #include "qgsmaplayerregistry.h"
 
-QgsMapRendererSequentialJob::QgsMapRendererSequentialJob(const QgsMapRendererSettings& settings)
-  : QgsMapRendererJob(SequentialJob, settings)
+
+QgsMapRendererQImageJob::QgsMapRendererQImageJob(QgsMapRendererJob::Type type, const QgsMapSettings& settings)
+  : QgsMapRendererJob(type, settings)
+{
+}
+
+
+QgsMapRendererSequentialJob::QgsMapRendererSequentialJob(const QgsMapSettings& settings)
+  : QgsMapRendererQImageJob(SequentialJob, settings)
   , mInternalJob(0)
 {
 }
@@ -57,7 +64,7 @@ void QgsMapRendererSequentialJob::internalFinished()
 
 
 
-QgsMapRendererCustomPainterJob::QgsMapRendererCustomPainterJob(const QgsMapRendererSettings& settings, QPainter* painter)
+QgsMapRendererCustomPainterJob::QgsMapRendererCustomPainterJob(const QgsMapSettings& settings, QPainter* painter)
   : QgsMapRendererJob(CustomPainterJob, settings)
   , mPainter(painter)
 {
@@ -122,8 +129,8 @@ void QgsMapRendererCustomPainterJob::startRender()
   renderTime.start();
 #endif
 
-  mRenderContext.setMapToPixel( QgsMapToPixel( mSettings.mapUnitsPerPixel, mSettings.size.height(), mSettings.visibleExtent.yMinimum(), mSettings.visibleExtent.xMinimum() ) );
-  mRenderContext.setExtent( mSettings.visibleExtent );
+  mRenderContext.setMapToPixel( QgsMapToPixel( mSettings.mapUnitsPerPixel(), mSettings.outputSize().height(), mSettings.visibleExtent().yMinimum(), mSettings.visibleExtent().xMinimum() ) );
+  mRenderContext.setExtent( mSettings.visibleExtent() );
 
   mRenderContext.setDrawEditingInformation( false );
   mRenderContext.setPainter( mPainter );
@@ -196,7 +203,7 @@ void QgsMapRendererCustomPainterJob::startRender()
   }*/
 
   // render all layers in the stack, starting at the base
-  QListIterator<QString> li( mSettings.layers );
+  QListIterator<QString> li( mSettings.layers() );
   li.toBack();
 
   QgsRectangle r1, r2;
@@ -251,7 +258,7 @@ void QgsMapRendererCustomPainterJob::startRender()
       mypContextPainter->setCompositionMode( ml->blendMode() );
     }
 
-    if ( !ml->hasScaleBasedVisibility() || ( ml->minimumScale() <= mSettings.scale && mSettings.scale < ml->maximumScale() ) ) //|| mOverview )
+    if ( !ml->hasScaleBasedVisibility() || ( ml->minimumScale() <= mSettings.scale() && mSettings.scale() < ml->maximumScale() ) ) //|| mOverview )
     {
       connect( ml, SIGNAL( drawingProgress( int, int ) ), this, SLOT( onDrawingProgress( int, int ) ) );
 
@@ -546,5 +553,4 @@ void QgsMapRendererCustomPainterJob::startRender()
   QgsDebugMsg( "Rendering completed in (seconds): " + QString( "%1" ).arg( renderTime.elapsed() / 1000.0 ) );
 
 }
-
 

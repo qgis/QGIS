@@ -22,7 +22,7 @@ public:
   };
 
 
-  QgsMapRendererJob(Type type, const QgsMapRendererSettings& settings) : mType(type), mSettings(settings) { }
+  QgsMapRendererJob(Type type, const QgsMapSettings& settings) : mType(type), mSettings(settings) { }
 
   virtual ~QgsMapRendererJob() {}
 
@@ -34,6 +34,8 @@ public:
   //! Stop the rendering job - does not return until the job has terminated.
   virtual void cancel() = 0;
 
+  // TODO: isActive() ?
+
 signals:
 
   //! emitted when asynchronous rendering is finished (or canceled).
@@ -43,14 +45,14 @@ protected:
 
   Type mType;
 
-  QgsMapRendererSettings mSettings;
+  QgsMapSettings mSettings;
 };
 
 
-class QgsMapRendererJobWithPreview : public QgsMapRendererJob
+class QgsMapRendererQImageJob : public QgsMapRendererJob
 {
-
 public:
+  QgsMapRendererQImageJob(Type type, const QgsMapSettings& settings);
 
   //! Get a preview/resulting image - in case QPainter has not been provided.
   //! With QPainter specified, it will return invalid QImage (there's no way to provide it).
@@ -62,11 +64,11 @@ class QgsMapRendererCustomPainterJob;
 
 
 /** job implementation that renders everything sequentially in one thread */
-class QgsMapRendererSequentialJob : public QgsMapRendererJobWithPreview
+class QgsMapRendererSequentialJob : public QgsMapRendererQImageJob
 {
   Q_OBJECT
 public:
-  QgsMapRendererSequentialJob(const QgsMapRendererSettings& settings);
+  QgsMapRendererSequentialJob(const QgsMapSettings& settings);
 
   virtual void start();
   virtual void cancel();
@@ -103,7 +105,7 @@ class QgsMapRendererCustomPainterJob : public QgsMapRendererJob
 {
   Q_OBJECT
 public:
-  QgsMapRendererCustomPainterJob(const QgsMapRendererSettings& settings, QPainter* painter);
+  QgsMapRendererCustomPainterJob(const QgsMapSettings& settings, QPainter* painter);
 
   virtual void start();
   virtual void cancel();

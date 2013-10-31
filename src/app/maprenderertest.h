@@ -9,6 +9,8 @@
 #include "qgsmaprendererv2.h"
 #include "qgsmaplayer.h"
 
+#include "qgsmaprendererjob.h"
+
 class TestWidget : public QLabel
 {
   Q_OBJECT
@@ -21,17 +23,17 @@ public:
     i = QImage(size(), QImage::Format_ARGB32_Premultiplied);
     i.fill(Qt::gray);
 
+    job = 0;
+
     // init renderer
-    rend.setLayers(QStringList(layer->id()));
-    rend.setExtent(layer->extent());
-    rend.setOutputSize(i.size());
-    rend.setOutputDpi(120);
-    rend.updateDerived();
+    ms.setLayers(QStringList(layer->id()));
+    ms.setExtent(layer->extent());
+    ms.setOutputSize(i.size());
+    ms.setOutputDpi(120);
+    ms.updateDerived();
 
-    if (rend.hasValidSettings())
+    if (ms.hasValidSettings())
       qDebug("map renderer settings valid");
-
-    connect(&rend, SIGNAL(finished()), SLOT(f()));
 
     setPixmap(QPixmap::fromImage(i));
 
@@ -45,24 +47,32 @@ public:
     {
       qDebug("cancelling!");
 
-      rend.cancel();
+      if (job)
+      {
+        job->cancel();
+        delete job;
+        job = 0;
+      }
     }
     else
     {
       qDebug("starting!");
 
-      if (rend.isRendering())
+      if (job)
       {
         qDebug("need to cancel first!");
-        rend.cancel();
-
-        // TODO: need to ensure that finished slot has been called
+        job->cancel();
+        delete job;
+        job = 0;
       }
 
       i.fill(Qt::gray);
 
       painter = new QPainter(&i);
-      rend.startWithCustomPainter(painter);
+
+      job = new QgsMapRendererCustomPainterJob(ms, painter);
+      connect(job, SIGNAL(finished()), SLOT(f()));
+
       timer.start();
     }
   }
@@ -93,7 +103,8 @@ protected:
   //QPixmap p;
   QImage i;
   QPainter* painter;
-  QgsMapRendererV2 rend;
+  QgsMapSettings ms;
+  QgsMapRendererJob* job;
   QTimer timer;
 };
 
