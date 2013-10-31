@@ -838,7 +838,6 @@ QString QgsCoordinateTransform::stripDatumTransform( const QString& proj4 )
 void QgsCoordinateTransform::searchDatumTransform( const QString& sql, QList< int >& transforms )
 {
   sqlite3* db;
-  QgsMessageLog::logMessage( "QgsCoordinateTransform::searchDatumTransform" );
   int openResult = sqlite3_open( QgsApplication::srsDbFilePath().toUtf8().constData(), &db );
   if ( openResult != SQLITE_OK )
   {
@@ -860,9 +859,6 @@ void QgsCoordinateTransform::searchDatumTransform( const QString& sql, QList< in
   }
   sqlite3_finalize( stmt );
   sqlite3_close( db );
-  QgsMessageLog::logMessage( QgsApplication::srsDbFilePath() );
-  QgsMessageLog::logMessage( QString( "Found %1 datum transforms" ).arg( transforms.size() ) );
-  QgsMessageLog::logMessage( sql );
 }
 
 QString QgsCoordinateTransform::datumTransformString( int datumTransform )

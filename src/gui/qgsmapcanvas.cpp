@@ -1555,8 +1555,6 @@ void QgsMapCanvas::getDatumTransformInfo( QgsMapLayer* ml, const QString& srcAut
     return;
   }
 
-  QgsMessageLog::logMessage( "QgsMapCanvas::getDatumTransformInfo" );
-
   //create two crs
   const QgsCoordinateReferenceSystem& srcCRS = QgsCRSCache::instance()->crsByAuthId( srcAuthId );
   const QgsCoordinateReferenceSystem& destCRS = QgsCRSCache::instance()->crsByAuthId( destAuthId );
