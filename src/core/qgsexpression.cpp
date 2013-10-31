@@ -1616,12 +1616,11 @@ int QgsExpression::functionCount()
 
 
 QgsExpression::QgsExpression( const QString& expr )
-    : mExpression( expr )
-    , mRowNumber( 0 )
+    : mRowNumber( 0 )
     , mScale( 0 )
     , mCalc( 0 )
 {
-  mRootNode = ::parseExpression( mExpression, mParserErrorString );
+  mRootNode = ::parseExpression( expr, mParserErrorString );
 
   if ( mParserErrorString.isNull() )
     Q_ASSERT( mRootNode );
