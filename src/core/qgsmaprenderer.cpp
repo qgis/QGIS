@@ -1043,27 +1043,6 @@ void QgsMapRenderer::setLayerSet( const QStringList& layers )
 {
   QgsDebugMsg( QString( "Entering: %1" ).arg( layers.join( ", " ) ) );
   mLayerSet = layers;
-
-  //remove all entries in mLayerCoordinateTransformInfo which are not part of the layer set
-  /*if ( mLayerCoordinateTransformInfo.size() > 0 )
-  {
-    QSet<QString> layerSet = layers.toSet();
-    QStringList removeEntries;
-    QHash< QString, QgsLayerCoordinateTransform >::const_iterator lctIt = mLayerCoordinateTransformInfo.constBegin();
-    for ( ; lctIt != mLayerCoordinateTransformInfo.constEnd(); ++lctIt )
-    {
-      if ( !layerSet.contains( lctIt.key() ) )
-      {
-        removeEntries.push_back( lctIt.key() );
-      }
-    }
-
-    QStringList::const_iterator rIt = removeEntries.constBegin();
-    for ( ; rIt != removeEntries.constEnd(); ++rIt )
-    {
-      mLayerCoordinateTransformInfo.remove( *rIt );
-    }
-  }*/
   updateFullExtent();
 }
 
