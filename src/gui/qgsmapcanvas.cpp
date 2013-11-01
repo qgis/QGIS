@@ -96,7 +96,6 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
   mMapTool = NULL;
   mLastNonZoomMapTool = NULL;
 
-  mDrawing = false;
   mFrozen = false;
   mDirty = true;
 
@@ -230,7 +229,7 @@ bool QgsMapCanvas::isDirty() const
 
 bool QgsMapCanvas::isDrawing()
 {
-  return mDrawing;
+  return false;
 } // isDrawing
 
 
@@ -243,12 +242,6 @@ const QgsMapToPixel * QgsMapCanvas::getCoordinateTransform()
 
 void QgsMapCanvas::setLayerSet( QList<QgsMapCanvasLayer> &layers )
 {
-  if ( mDrawing )
-  {
-    QgsDebugMsg( "NOT updating layer set while drawing" );
-    return;
-  }
-
   // create layer set
   QStringList layerSet, layerSetOverview;
 
@@ -564,11 +557,6 @@ void QgsMapCanvas::updateFullExtent()
 
 void QgsMapCanvas::setExtent( QgsRectangle const & r )
 {
-  if ( mDrawing )
-  {
-    return;
-  }
-
   QgsRectangle current = extent();
 
   if ( r.isEmpty() )
@@ -634,11 +622,6 @@ void QgsMapCanvas::clear()
 
 void QgsMapCanvas::zoomToFullExtent()
 {
-  if ( mDrawing )
-  {
-    return;
-  }
-
   QgsRectangle extent = fullExtent();
   // If the full extent is an empty set, don't do the zoom
   if ( !extent.isEmpty() )
@@ -655,11 +638,6 @@ void QgsMapCanvas::zoomToFullExtent()
 
 void QgsMapCanvas::zoomToPreviousExtent()
 {
-  if ( mDrawing )
-  {
-    return;
-  }
-
   if ( mLastExtentIndex > 0 )
   {
     mLastExtentIndex--;
@@ -681,10 +659,6 @@ void QgsMapCanvas::zoomToPreviousExtent()
 
 void QgsMapCanvas::zoomToNextExtent()
 {
-  if ( mDrawing )
-  {
-    return;
-  }
   if ( mLastExtentIndex < mLastExtent.size() - 1 )
   {
     mLastExtentIndex++;
@@ -739,11 +713,6 @@ void QgsMapCanvas::mapUnitsChanged()
 
 void QgsMapCanvas::zoomToSelected( QgsVectorLayer* layer )
 {
-  if ( mDrawing )
-  {
-    return;
-  }
-
   if ( layer == NULL )
   {
     // use current layer by default
@@ -786,11 +755,6 @@ void QgsMapCanvas::zoomToSelected( QgsVectorLayer* layer )
 
 void QgsMapCanvas::panToSelected( QgsVectorLayer* layer )
 {
-  if ( mDrawing )
-  {
-    return;
-  }
-
   if ( layer == NULL )
   {
     // use current layer by default
@@ -814,12 +778,6 @@ void QgsMapCanvas::panToSelected( QgsVectorLayer* layer )
 
 void QgsMapCanvas::keyPressEvent( QKeyEvent * e )
 {
-
-  if ( mDrawing )
-  {
-    e->ignore();
-  }
-
   emit keyPressed( e );
 
   if ( mCanvasProperties->mouseButtonDown || mCanvasProperties->panSelectorDown )
@@ -916,11 +874,6 @@ void QgsMapCanvas::keyReleaseEvent( QKeyEvent * e )
 {
   QgsDebugMsg( "keyRelease event" );
 
-  if ( mDrawing )
-  {
-    return;
-  }
-
   switch ( e->key() )
   {
     case Qt::Key_Space:
@@ -952,11 +905,6 @@ void QgsMapCanvas::keyReleaseEvent( QKeyEvent * e )
 
 void QgsMapCanvas::mouseDoubleClickEvent( QMouseEvent * e )
 {
-  if ( mDrawing )
-  {
-    return;
-  }
-
   // call handler of current map tool
   if ( mMapTool )
     mMapTool->canvasDoubleClickEvent( e );
@@ -965,11 +913,6 @@ void QgsMapCanvas::mouseDoubleClickEvent( QMouseEvent * e )
 
 void QgsMapCanvas::mousePressEvent( QMouseEvent * e )
 {
-  if ( mDrawing )
-  {
-    return;
-  }
-
   //use middle mouse button for panning, map tools won't receive any events in that case
   if ( e->button() == Qt::MidButton )
   {
@@ -997,11 +940,6 @@ void QgsMapCanvas::mousePressEvent( QMouseEvent * e )
 
 void QgsMapCanvas::mouseReleaseEvent( QMouseEvent * e )
 {
-  if ( mDrawing )
-  {
-    return;
-  }
-
   //use middle mouse button for panning, map tools won't receive any events in that case
   if ( e->button() == Qt::MidButton )
   {
@@ -1112,11 +1050,6 @@ void QgsMapCanvas::wheelEvent( QWheelEvent *e )
 
   QgsDebugMsg( "Wheel event delta " + QString::number( e->delta() ) );
 
-  if ( mDrawing )
-  {
-    return;
-  }
-
   if ( mMapTool )
   {
     mMapTool->wheelEvent( e );
@@ -1190,11 +1123,6 @@ void QgsMapCanvas::zoomScale( double newScale )
 
 void QgsMapCanvas::zoomWithCenter( int x, int y, bool zoomIn )
 {
-  if ( mDrawing )
-  {
-    return;
-  }
-
   double scaleFactor = ( zoomIn ? 1 / mWheelZoomFactor : mWheelZoomFactor );
 
   // transform the mouse pos to map coordinates
@@ -1207,11 +1135,6 @@ void QgsMapCanvas::zoomWithCenter( int x, int y, bool zoomIn )
 
 void QgsMapCanvas::mouseMoveEvent( QMouseEvent * e )
 {
-  if ( mDrawing )
-  {
-    return;
-  }
-
   mCanvasProperties->mouseLastXY = e->pos();
 
   if ( mCanvasProperties->panSelectorDown )
@@ -1406,11 +1329,6 @@ QgsMapTool* QgsMapCanvas::mapTool()
 
 void QgsMapCanvas::panActionEnd( QPoint releasePoint )
 {
-  if ( mDrawing )
-  {
-    return;
-  }
-
   // move map image and other items to standard position
   moveCanvasContents( true ); // true means reset
 
@@ -1467,11 +1385,6 @@ void QgsMapCanvas::panAction( QMouseEvent * e )
 {
   Q_UNUSED( e );
 
-  if ( mDrawing )
-  {
-    return;
-  }
-
   // move all map canvas items
   moveCanvasContents();
 
@@ -1481,11 +1394,6 @@ void QgsMapCanvas::panAction( QMouseEvent * e )
 
 void QgsMapCanvas::moveCanvasContents( bool reset )
 {
-  if ( mDrawing )
-  {
-    return;
-  }
-
   QPoint pnt( 0, 0 );
   if ( !reset )
     pnt += mCanvasProperties->mouseLastXY - mCanvasProperties->rubberStartPoint;
@@ -1573,11 +1481,6 @@ void QgsMapCanvas::writeProject( QDomDocument & doc )
 
 void QgsMapCanvas::zoomByFactor( double scaleFactor )
 {
-  if ( mDrawing )
-  {
-    return;
-  }
-
   QgsRectangle r = mapSettings().visibleExtent();
   r.scale( scaleFactor );
   setExtent( r );

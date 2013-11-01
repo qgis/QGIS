@@ -237,7 +237,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Get the current coordinate transform
     const QgsMapToPixel* getCoordinateTransform();
 
-    //! true if canvas currently drawing
+    //! @deprecated in 2.1 - always returns false
     bool isDrawing();
 
     //! returns current layer (set by legend widget)
@@ -459,9 +459,6 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     //! map overview widget - it's controlled by QgsMapCanvas
     QgsMapOverviewCanvas* mMapOverview;
-
-    //! Flag indicating a map refresh is in progress
-    bool mDrawing;
 
     //! Flag indicating if the map canvas is frozen.
     bool mFrozen;
