@@ -76,20 +76,9 @@ void QgsMapCanvasMap::paint( QPainter* p, const QStyleOptionGraphicsItem*, QWidg
       p->drawImage( 0, 0, mImage );
       paintedAlready = true;
 
-      QStringList layerIds;
-      foreach (QgsMapLayer* l, mCanvas->layers())
-        layerIds.append(l->id());
+      const QgsMapSettings& s = mCanvas->mapSettings();
 
-      mSettings.setLayers(layerIds);
-      mSettings.setExtent(mCanvas->extent());
-      mSettings.setOutputSize(mImage.size());
-      mSettings.setOutputDpi(120);
-      mSettings.updateDerived();
-
-      const QgsMapSettings& s = mSettings;
-      mMapToPixel = QgsMapToPixel( s.mapUnitsPerPixel(), s.outputSize().height(), s.visibleExtent().yMinimum(), s.visibleExtent().xMinimum() );
-
-      qDebug("----------> EXTENT %f,%f", mSettings.extent().xMinimum(), mSettings.extent().yMinimum());
+      qDebug("----------> EXTENT %f,%f", s.extent().xMinimum(), s.extent().yMinimum());
 
       mImage.fill(mBgColor.rgb());
 
@@ -104,7 +93,7 @@ void QgsMapCanvasMap::paint( QPainter* p, const QStyleOptionGraphicsItem*, QWidg
 
       // create the renderer job
       Q_ASSERT(mJob == 0);
-      mJob = new QgsMapRendererCustomPainterJob(mSettings, mPainter);
+      mJob = new QgsMapRendererCustomPainterJob(s, mPainter);
       connect(mJob, SIGNAL(finished()), SLOT(finish()));
       mJob->start();
 
@@ -129,16 +118,6 @@ void QgsMapCanvasMap::paint( QPainter* p, const QStyleOptionGraphicsItem*, QWidg
 QRectF QgsMapCanvasMap::boundingRect() const
 {
   return QRectF( 0, 0, mImage.width(), mImage.height() );
-}
-
-const QgsMapSettings &QgsMapCanvasMap::settings() const
-{
-  return mSettings;
-}
-
-QgsMapToPixel *QgsMapCanvasMap::coordinateTransform()
-{
-  return &mMapToPixel;
 }
 
 

@@ -91,7 +91,7 @@ QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPoint &mapPosition, QgsM
   r.setXMaximum( mapPosition.x() + searchRadius );
   r.setYMaximum( mapPosition.y() + searchRadius );
 
-  r = mpMapCanvas->mapRenderer()->mapToLayerCoordinates( layer, r );
+  r = mpMapCanvas->mapSettings().mapToLayerCoordinates( layer, r );
 
   QgsFeature feature;
 

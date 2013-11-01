@@ -68,8 +68,6 @@ class GUI_EXPORT QgsMapCanvasMap : public QObject, public QGraphicsRectItem
 
     const QgsMapSettings& settings() const;
 
-    QgsMapToPixel* coordinateTransform(); // TODO: rename!
-
 public slots:
     void finish();
     void onMapUpdateTimeout();
@@ -91,15 +89,11 @@ public slots:
 
     bool mDirty; //!< whether a new rendering job should be started upon next paint() call
 
-    QgsMapSettings mSettings;
-
     QgsMapRendererCustomPainterJob* mJob;
 
     QPainter* mPainter;
 
     QTimer mTimer;
-
-    QgsMapToPixel mMapToPixel;
 };
 
 #endif

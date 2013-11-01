@@ -43,7 +43,7 @@ QgsVertexEntry::~QgsVertexEntry()
 void QgsVertexEntry::setCenter( QgsPoint p )
 {
   mPoint = p;
-  p = mCanvas->mapRenderer()->layerToMapCoordinates( mLayer, p );
+  p = mCanvas->mapSettings().layerToMapCoordinates( mLayer, p );
 
   if ( mCanvas->extent().contains( p ) )
   {

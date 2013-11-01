@@ -219,7 +219,7 @@ void QgsMapRendererCustomPainterJob::startRender()
     // cache painter
     QPainter * mypContextPainter = mRenderContext.painter();
     // Flattened image for drawing when a blending mode is set
-    QImage * mypFlattenedImage = 0;
+    //QImage * mypFlattenedImage = 0;
 
     QString layerId = li.previous();
 

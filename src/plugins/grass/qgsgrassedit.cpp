@@ -1163,8 +1163,8 @@ double QgsGrassEdit::threshold( void )
   {
     try
     {
-      p1 = mCanvas->mapRenderer()->mapToLayerCoordinates( mLayer, p1 );
-      p2 = mCanvas->mapRenderer()->mapToLayerCoordinates( mLayer, p2 );
+      p1 = mCanvas->mapSettings().mapToLayerCoordinates( mLayer, p1 );
+      p2 = mCanvas->mapSettings().mapToLayerCoordinates( mLayer, p2 );
     }
     catch ( QgsCsException& cse )
     {
@@ -1819,13 +1819,13 @@ void QgsGrassEdit::displayNode( int node, const QPen & pen, int size, QPainter *
 
 QgsPoint QgsGrassEdit::transformLayerToCanvas( QgsPoint point )
 {
-  point = mCanvas->mapRenderer()->layerToMapCoordinates( mLayer, point );
+  point = mCanvas->mapSettings().layerToMapCoordinates( mLayer, point );
   return mTransform->transform( point );
 }
 
 QgsPoint QgsGrassEdit::transformLayerToMap( QgsPoint point )
 {
-  return mCanvas->mapRenderer()->layerToMapCoordinates( mLayer, point );
+  return mCanvas->mapSettings().layerToMapCoordinates( mLayer, point );
 }
 
 void QgsGrassEdit::displayIcon( double x, double y, const QPen & pen,

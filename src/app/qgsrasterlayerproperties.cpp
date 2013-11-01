@@ -520,7 +520,7 @@ void QgsRasterLayerProperties::setRendererWidget( const QString& rendererName )
     {
       QgsDebugMsg( "renderer has widgetCreateFunction" );
       // Current canvas extent (used to calc min/max) in layer CRS
-      QgsRectangle myExtent = mMapCanvas->mapRenderer()->outputExtentToLayerExtent( mRasterLayer, mMapCanvas->extent() );
+      QgsRectangle myExtent = mMapCanvas->mapSettings().outputExtentToLayerExtent( mRasterLayer, mMapCanvas->extent() );
       mRendererWidget = ( *rendererEntry.widgetCreateFunction )( mRasterLayer, myExtent );
       mRendererStackedWidget->addWidget( mRendererWidget );
       if ( oldWidget )
@@ -1461,9 +1461,10 @@ void QgsRasterLayerProperties::pixelSelected( const QgsPoint& canvasPoint )
   {
     mMapCanvas->unsetMapTool( mPixelSelectorTool );
 
-    QgsPoint myPoint = mMapCanvas->mapRenderer()->mapToLayerCoordinates( mRasterLayer, canvasPoint );
+    const QgsMapSettings& ms = mMapCanvas->mapSettings();
+    QgsPoint myPoint = ms.mapToLayerCoordinates( mRasterLayer, canvasPoint );
 
-    QgsRectangle myExtent = mMapCanvas->mapRenderer()->mapToLayerCoordinates( mRasterLayer, mMapCanvas->extent() );
+    QgsRectangle myExtent = ms.mapToLayerCoordinates( mRasterLayer, mMapCanvas->extent() );
     double mapUnitsPerPixel = mMapCanvas->mapUnitsPerPixel();
     int myWidth = mMapCanvas->extent().width() / mapUnitsPerPixel;
     int myHeight = mMapCanvas->extent().height() / mapUnitsPerPixel;

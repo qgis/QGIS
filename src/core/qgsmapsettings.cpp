@@ -9,6 +9,7 @@
 #include "qgscrscache.h"
 #include "qgsmessagelog.h"
 #include "qgsmaplayer.h"
+#include "qgsmaplayerregistry.h"
 
 /*
 
@@ -26,6 +27,12 @@ usage in QgsComposer
 
 */
 
+QgsMapSettings::QgsMapSettings()
+{
+  // TODO: more init stuff!
+
+  mOutputUnits = QgsMapSettings::Millimeters;
+}
 
 
 QgsRectangle QgsMapSettings::extent() const
@@ -36,6 +43,8 @@ QgsRectangle QgsMapSettings::extent() const
 void QgsMapSettings::setExtent(const QgsRectangle& extent)
 {
   mExtent = extent;
+
+  updateDerived();
 }
 
 
@@ -117,6 +126,8 @@ void QgsMapSettings::updateDerived()
   // update the scale
   mScale = mScaleCalculator.calculate( mExtent, mSize.width() );
 
+  mMapToPixel = QgsMapToPixel( mapUnitsPerPixel(), outputSize().height(), visibleExtent().yMinimum(), visibleExtent().xMinimum() );
+
   QgsDebugMsg( QString( "Map units per pixel (x,y) : %1, %2" ).arg( qgsDoubleToString( mapUnitsPerPixelX ) ).arg( qgsDoubleToString( mapUnitsPerPixelY ) ) );
   QgsDebugMsg( QString( "Pixmap dimensions (x,y) : %1, %2" ).arg( qgsDoubleToString( myWidth ) ).arg( qgsDoubleToString( myHeight ) ) );
   QgsDebugMsg( QString( "Extent dimensions (x,y) : %1, %2" ).arg( qgsDoubleToString( mExtent.width() ) ).arg( qgsDoubleToString( mExtent.height() ) ) );
@@ -136,6 +147,8 @@ QSize QgsMapSettings::outputSize() const
 void QgsMapSettings::setOutputSize(const QSize& size)
 {
   mSize = size;
+
+  updateDerived();
 }
 
 double QgsMapSettings::outputDpi() const
@@ -146,6 +159,8 @@ double QgsMapSettings::outputDpi() const
 void QgsMapSettings::setOutputDpi(double dpi)
 {
   mDpi = dpi;
+
+  updateDerived();
 }
 
 
@@ -167,6 +182,49 @@ void QgsMapSettings::setProjectionsEnabled( bool enabled )
 bool QgsMapSettings::hasCrsTransformEnabled() const
 {
   return mProjectionsEnabled;
+}
+
+
+void QgsMapSettings::setDestinationCrs( const QgsCoordinateReferenceSystem& crs )
+{
+  mDestCRS = crs;
+
+  /* TODO: reproject extent
+    QgsRectangle rect;
+    if ( !mExtent.isEmpty() )
+    {
+      QgsCoordinateTransform transform( *mDestCRS, crs );
+      rect = transform.transformBoundingBox( mExtent );
+    }
+
+    updateFullExtent();
+
+    if ( !rect.isEmpty() )
+    {
+      setExtent( rect );
+    }
+
+    emit destinationSrsChanged();
+  */
+}
+
+const QgsCoordinateReferenceSystem& QgsMapSettings::destinationCrs() const
+{
+  return mDestCRS;
+}
+
+
+void QgsMapSettings::setMapUnits( QGis::UnitType u )
+{
+  mScaleCalculator.setMapUnits( u );
+
+  // Since the map units have changed, force a recalculation of the scale.
+  updateDerived();
+}
+
+QGis::UnitType QgsMapSettings::mapUnits() const
+{
+  return mScaleCalculator.mapUnits();
 }
 
 
@@ -194,7 +252,7 @@ double QgsMapSettings::scale() const
 
 
 
-const QgsCoordinateTransform* QgsMapSettings::coordTransform( QgsMapLayer *layer )
+const QgsCoordinateTransform* QgsMapSettings::coordTransform( QgsMapLayer *layer ) const
 {
   if ( !layer )
   {
@@ -205,7 +263,7 @@ const QgsCoordinateTransform* QgsMapSettings::coordTransform( QgsMapLayer *layer
 
 
 
-QgsRectangle QgsMapSettings::layerExtentToOutputExtent( QgsMapLayer* theLayer, QgsRectangle extent )
+QgsRectangle QgsMapSettings::layerExtentToOutputExtent( QgsMapLayer* theLayer, QgsRectangle extent ) const
 {
   QgsDebugMsg( QString( "sourceCrs = " + coordTransform( theLayer )->sourceCrs().authid() ) );
   QgsDebugMsg( QString( "destCRS = " + coordTransform( theLayer )->destCRS().authid() ) );
@@ -228,7 +286,7 @@ QgsRectangle QgsMapSettings::layerExtentToOutputExtent( QgsMapLayer* theLayer, Q
 }
 
 
-QgsRectangle QgsMapSettings::outputExtentToLayerExtent( QgsMapLayer* theLayer, QgsRectangle extent )
+QgsRectangle QgsMapSettings::outputExtentToLayerExtent( QgsMapLayer* theLayer, QgsRectangle extent ) const
 {
   QgsDebugMsg( QString( "layer sourceCrs = " + coordTransform( theLayer )->sourceCrs().authid() ) );
   QgsDebugMsg( QString( "layer destCRS = " + coordTransform( theLayer )->destCRS().authid() ) );
@@ -251,7 +309,7 @@ QgsRectangle QgsMapSettings::outputExtentToLayerExtent( QgsMapLayer* theLayer, Q
 }
 
 
-QgsPoint QgsMapSettings::layerToMapCoordinates( QgsMapLayer* theLayer, QgsPoint point )
+QgsPoint QgsMapSettings::layerToMapCoordinates( QgsMapLayer* theLayer, QgsPoint point ) const
 {
   if ( hasCrsTransformEnabled() )
   {
@@ -272,7 +330,7 @@ QgsPoint QgsMapSettings::layerToMapCoordinates( QgsMapLayer* theLayer, QgsPoint 
 }
 
 
-QgsRectangle QgsMapSettings::layerToMapCoordinates( QgsMapLayer* theLayer, QgsRectangle rect )
+QgsRectangle QgsMapSettings::layerToMapCoordinates( QgsMapLayer* theLayer, QgsRectangle rect ) const
 {
   if ( hasCrsTransformEnabled() )
   {
@@ -293,7 +351,7 @@ QgsRectangle QgsMapSettings::layerToMapCoordinates( QgsMapLayer* theLayer, QgsRe
 }
 
 
-QgsPoint QgsMapSettings::mapToLayerCoordinates( QgsMapLayer* theLayer, QgsPoint point )
+QgsPoint QgsMapSettings::mapToLayerCoordinates( QgsMapLayer* theLayer, QgsPoint point ) const
 {
   if ( hasCrsTransformEnabled() )
   {
@@ -314,7 +372,7 @@ QgsPoint QgsMapSettings::mapToLayerCoordinates( QgsMapLayer* theLayer, QgsPoint 
 }
 
 
-QgsRectangle QgsMapSettings::mapToLayerCoordinates( QgsMapLayer* theLayer, QgsRectangle rect )
+QgsRectangle QgsMapSettings::mapToLayerCoordinates( QgsMapLayer* theLayer, QgsRectangle rect ) const
 {
   if ( hasCrsTransformEnabled() )
   {
@@ -328,4 +386,77 @@ QgsRectangle QgsMapSettings::mapToLayerCoordinates( QgsMapLayer* theLayer, QgsRe
     }
   }
   return rect;
+}
+
+
+
+QgsRectangle QgsMapSettings::fullExtent() const
+{
+  QgsDebugMsg( "called." );
+  QgsMapLayerRegistry* registry = QgsMapLayerRegistry::instance();
+
+  // reset the map canvas extent since the extent may now be smaller
+  // We can't use a constructor since QgsRectangle normalizes the rectangle upon construction
+  QgsRectangle fullExtent;
+  fullExtent.setMinimal();
+
+  // iterate through the map layers and test each layers extent
+  // against the current min and max values
+  QStringList::const_iterator it = mLayers.begin();
+  QgsDebugMsg( QString( "Layer count: %1" ).arg( mLayers.count() ) );
+  while ( it != mLayers.end() )
+  {
+    QgsMapLayer * lyr = registry->mapLayer( *it );
+    if ( lyr == NULL )
+    {
+      QgsDebugMsg( QString( "WARNING: layer '%1' not found in map layer registry!" ).arg( *it ) );
+    }
+    else
+    {
+      QgsDebugMsg( "Updating extent using " + lyr->name() );
+      QgsDebugMsg( "Input extent: " + lyr->extent().toString() );
+
+      if ( lyr->extent().isEmpty() )
+      {
+        it++;
+        continue;
+      }
+
+      // Layer extents are stored in the coordinate system (CS) of the
+      // layer. The extent must be projected to the canvas CS
+      QgsRectangle extent = layerExtentToOutputExtent( lyr, lyr->extent() );
+
+      QgsDebugMsg( "Output extent: " + extent.toString() );
+      fullExtent.unionRect( extent );
+
+    }
+    it++;
+  }
+
+  if ( fullExtent.width() == 0.0 || fullExtent.height() == 0.0 )
+  {
+    // If all of the features are at the one point, buffer the
+    // rectangle a bit. If they are all at zero, do something a bit
+    // more crude.
+
+    if ( fullExtent.xMinimum() == 0.0 && fullExtent.xMaximum() == 0.0 &&
+         fullExtent.yMinimum() == 0.0 && fullExtent.yMaximum() == 0.0 )
+    {
+      fullExtent.set( -1.0, -1.0, 1.0, 1.0 );
+    }
+    else
+    {
+      const double padFactor = 1e-8;
+      double widthPad = fullExtent.xMinimum() * padFactor;
+      double heightPad = fullExtent.yMinimum() * padFactor;
+      double xmin = fullExtent.xMinimum() - widthPad;
+      double xmax = fullExtent.xMaximum() + widthPad;
+      double ymin = fullExtent.yMinimum() - heightPad;
+      double ymax = fullExtent.yMaximum() + heightPad;
+      fullExtent.set( xmin, ymin, xmax, ymax );
+    }
+  }
+
+  QgsDebugMsg( "Full extent: " + fullExtent.toString() );
+  return fullExtent;
 }

@@ -2736,11 +2736,7 @@ void QgsLegend::legendLayerZoom()
     //transform extent if otf-projection is on
     if ( mMapCanvas->hasCrsTransformEnabled() )
     {
-      QgsMapRenderer* renderer = mMapCanvas->mapRenderer();
-      if ( renderer )
-      {
-        extent = renderer->layerExtentToOutputExtent( theLayer, extent );
-      }
+      extent = mMapCanvas->mapSettings().layerExtentToOutputExtent( theLayer, extent );
     }
   }
   else if ( li->type() == QgsLegendItem::LEGEND_GROUP )
@@ -2766,11 +2762,7 @@ void QgsLegend::legendLayerZoom()
       //transform extent if otf-projection is on
       if ( mMapCanvas->hasCrsTransformEnabled() )
       {
-        QgsMapRenderer* renderer = mMapCanvas->mapRenderer();
-        if ( renderer )
-        {
-          layerExtent = renderer->layerExtentToOutputExtent( theLayer, layerExtent );
-        }
+        layerExtent = mMapCanvas->mapSettings().layerExtentToOutputExtent( theLayer, layerExtent );
       }
 
       if ( i == 0 )
@@ -2847,7 +2839,7 @@ void QgsLegend::legendLayerStretchUsingCurrentExtent()
     QgsContrastEnhancement::ContrastEnhancementAlgorithm contrastEnhancementAlgorithm = QgsContrastEnhancement::StretchToMinimumMaximum;
 
     QgsRectangle myRectangle;
-    myRectangle = mMapCanvas->mapRenderer()->outputExtentToLayerExtent( layer, mMapCanvas->extent() );
+    myRectangle = mMapCanvas->mapSettings().outputExtentToLayerExtent( layer, mMapCanvas->extent() );
     layer->setContrastEnhancement( contrastEnhancementAlgorithm, QgsRaster::ContrastEnhancementMinMax, myRectangle );
 
     layer->setCacheImage( NULL );

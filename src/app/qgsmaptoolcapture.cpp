@@ -387,7 +387,7 @@ void QgsMapToolCapture::addError( QgsGeometry::Error e )
   if ( e.hasWhere() )
   {
     QgsVertexMarker *vm =  new QgsVertexMarker( mCanvas );
-    vm->setCenter( mCanvas->mapRenderer()->layerToMapCoordinates( vlayer, e.where() ) );
+    vm->setCenter( mCanvas->mapSettings().layerToMapCoordinates( vlayer, e.where() ) );
     vm->setIconType( QgsVertexMarker::ICON_X );
     vm->setPenWidth( 2 );
     vm->setToolTip( e.what() );

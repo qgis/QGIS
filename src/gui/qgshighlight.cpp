@@ -44,9 +44,9 @@ QgsHighlight::QgsHighlight( QgsMapCanvas* mapCanvas, QgsGeometry *geom, QgsVecto
 
 void QgsHighlight::init()
 {
-  if ( mMapCanvas->mapRenderer()->hasCrsTransformEnabled() )
+  if ( mMapCanvas->mapSettings().hasCrsTransformEnabled() )
   {
-    QgsCoordinateTransform transform( mLayer->crs(), mMapCanvas->mapRenderer()->destinationCrs() );
+    QgsCoordinateTransform transform( mLayer->crs(), mMapCanvas->mapSettings().destinationCrs() );
     mGeometry->transform( transform );
   }
   updateRect();

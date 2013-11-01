@@ -112,16 +112,12 @@ bool QgsMapCanvasItem::setRenderContextVariables( QPainter* p, QgsRenderContext&
   {
     return false;
   }
-  QgsMapRenderer* mapRenderer = mMapCanvas->mapRenderer();
-  if ( !mapRenderer )
-  {
-    return false;
-  }
+  const QgsMapSettings& ms = mMapCanvas->mapSettings();
 
   context.setPainter( p );
   context.setRendererScale( mMapCanvas->scale() );
 
-  int dpi = mapRenderer->outputDpi();
+  int dpi = ms.outputDpi();
   int painterDpi = p->device()->logicalDpiX();
   double scaleFactor = 1.0;
   double rasterScaleFactor = 1.0;
@@ -134,7 +130,7 @@ bool QgsMapCanvasItem::setRenderContextVariables( QPainter* p, QgsRenderContext&
   }
   else
   {
-    if ( mapRenderer->outputUnits() == QgsMapRenderer::Millimeters )
+    if ( ms.outputUnits() == QgsMapSettings::Millimeters )
     {
       scaleFactor = dpi / 25.4;
     }

@@ -30,7 +30,6 @@ public:
     ms.setExtent(layer->extent());
     ms.setOutputSize(i.size());
     ms.setOutputDpi(120);
-    ms.updateDerived();
 
     if (ms.hasValidSettings())
       qDebug("map renderer settings valid");

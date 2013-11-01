@@ -32,6 +32,8 @@
 #include <QGraphicsView>
 #include <QtCore>
 
+#include "qgsmapsettings.h" // TEMPORARY
+
 #ifdef HAVE_TOUCH
 #include <QGestureEvent>
 #endif
@@ -433,6 +435,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
        copy like a hot potato leaving the copyer in a weird state.
      */
     QgsMapCanvas( QgsMapCanvas const & );
+
+    QgsMapSettings mSettings;
 
     //! all map rendering is done in this class
     QgsMapRenderer* mMapRenderer;

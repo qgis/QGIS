@@ -79,9 +79,6 @@ class APP_EXPORT QgsMapToolPinLabels: public QgsMapToolLabel
 
   private:
 
-    //! Pointer to map renderer
-    QgsMapRenderer* mRender;
-
     //! Highlights a given label relative to whether its pinned and editable
     void highlightLabel( QgsVectorLayer* vlayer,
                          const QgsLabelPosition& labelpos,

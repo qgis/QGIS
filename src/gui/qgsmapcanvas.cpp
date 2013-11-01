@@ -127,6 +127,9 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
            this, SLOT( readProject( const QDomDocument & ) ) );
   connect( QgsProject::instance(), SIGNAL( writeProject( QDomDocument & ) ),
            this, SLOT( writeProject( QDomDocument & ) ) );
+
+  mSettings.setOutputDpi(120);  // TODO: what to set ???
+  mSettings.setOutputSize( size() );
   mMap->resize( size() );
 
 #ifdef Q_OS_WIN
@@ -177,6 +180,7 @@ void QgsMapCanvas::enableAntiAliasing( bool theFlag )
 
 void QgsMapCanvas::useImageToRender( bool theFlag )
 {
+  Q_UNUSED(theFlag);
   //mMap->useImageToRender( theFlag );
   //refresh(); // redraw the map on change - prevents black map view
 }
@@ -194,7 +198,7 @@ QgsMapRenderer* QgsMapCanvas::mapRenderer()
 
 QgsMapLayer* QgsMapCanvas::layer( int index )
 {
-  QStringList& layers = mMapRenderer->layerSet();
+  const QStringList& layers = mapSettings().layers();
   if ( index >= 0 && index < ( int ) layers.size() )
     return QgsMapLayerRegistry::instance()->mapLayer( layers[index] );
   else
@@ -209,7 +213,7 @@ void QgsMapCanvas::setCurrentLayer( QgsMapLayer* layer )
 
 double QgsMapCanvas::scale()
 {
-  return mMapRenderer->scale();
+  return mapSettings().scale();
 } // scale
 
 void QgsMapCanvas::setDirty( bool dirty )
@@ -234,7 +238,7 @@ bool QgsMapCanvas::isDrawing()
 // device size
 const QgsMapToPixel * QgsMapCanvas::getCoordinateTransform()
 {
-  return mMap->coordinateTransform();
+  return &mapSettings().mapToPixel();
 }
 
 void QgsMapCanvas::setLayerSet( QList<QgsMapCanvasLayer> &layers )
@@ -268,7 +272,7 @@ void QgsMapCanvas::setLayerSet( QList<QgsMapCanvasLayer> &layers )
     }
   }
 
-  QStringList& layerSetOld = mMapRenderer->layerSet();
+  const QStringList& layerSetOld = mapSettings().layers();
 
   bool layerSetChanged = layerSetOld != layerSet;
 
@@ -290,7 +294,8 @@ void QgsMapCanvas::setLayerSet( QList<QgsMapCanvasLayer> &layers )
       }
     }
 
-    mMapRenderer->setLayerSet( layerSet );
+    mSettings.setLayers( layerSet );
+    //mMapRenderer->setLayerSet( layerSet );
 
     for ( i = 0; i < layerCount(); i++ )
     {
@@ -352,7 +357,7 @@ void QgsMapCanvas::enableOverviewMode( QgsMapOverviewCanvas* overview )
 
 const QgsMapSettings &QgsMapCanvas::mapSettings() const
 {
-  return mMap->settings();
+  return mSettings;
 }
 
 
@@ -468,7 +473,7 @@ void QgsMapCanvas::saveAsImage( QString theFileName, QPixmap * theQPixmap, QStri
     pixmap->save( theFileName, theFormat.toLocal8Bit().data() );
   }
   //create a world file to go with the image...
-  QgsRectangle myRect = mMapRenderer->extent();
+  QgsRectangle myRect = mapSettings().visibleExtent();
   QString myHeader;
   // note: use 17 places of precision for all numbers output
   //Pixel XDim
@@ -500,22 +505,23 @@ void QgsMapCanvas::saveAsImage( QString theFileName, QPixmap * theQPixmap, QStri
 
 QgsRectangle QgsMapCanvas::extent() const
 {
-  return mMapRenderer->extent();
+  return mapSettings().visibleExtent();
 } // extent
 
 QgsRectangle QgsMapCanvas::fullExtent() const
 {
-  return mMapRenderer->fullExtent();
+  return mapSettings().fullExtent(); //mMapRenderer->fullExtent();
 } // extent
 
 void QgsMapCanvas::updateFullExtent()
 {
   // projection settings have changed
-
+/*
   QgsDebugMsg( "updating full extent" );
 
   mMapRenderer->updateFullExtent();
   refresh();
+*/
 }
 
 void QgsMapCanvas::setExtent( QgsRectangle const & r )
@@ -532,11 +538,13 @@ void QgsMapCanvas::setExtent( QgsRectangle const & r )
     QgsDebugMsg( "Empty extent - keeping old extent with new center!" );
     QgsRectangle e( QgsPoint( r.center().x() - current.width() / 2.0, r.center().y() - current.height() / 2.0 ),
                     QgsPoint( r.center().x() + current.width() / 2.0, r.center().y() + current.height() / 2.0 ) );
-    mMapRenderer->setExtent( e );
+    mSettings.setExtent( e );
+    //mMapRenderer->setExtent( e );
   }
   else
   {
-    mMapRenderer->setExtent( r );
+    mSettings.setExtent( r );
+    //mMapRenderer->setExtent( r );
   }
   emit extentsChanged();
   updateScale();
@@ -573,7 +581,7 @@ void QgsMapCanvas::setExtent( QgsRectangle const & r )
 
 void QgsMapCanvas::updateScale()
 {
-  double scale = mMapRenderer->scale();
+  double scale = mapSettings().scale();
 
   emit scaleChanged( scale );
 }
@@ -619,7 +627,8 @@ void QgsMapCanvas::zoomToPreviousExtent()
   if ( mLastExtentIndex > 0 )
   {
     mLastExtentIndex--;
-    mMapRenderer->setExtent( mLastExtent[mLastExtentIndex] );
+    mSettings.setExtent( mLastExtent[mLastExtentIndex] );
+    //mMapRenderer->setExtent( mLastExtent[mLastExtentIndex] );
     emit extentsChanged();
     updateScale();
     if ( mMapOverview )
@@ -643,7 +652,8 @@ void QgsMapCanvas::zoomToNextExtent()
   if ( mLastExtentIndex < mLastExtent.size() - 1 )
   {
     mLastExtentIndex++;
-    mMapRenderer->setExtent( mLastExtent[mLastExtentIndex] );
+    mSettings.setExtent( mLastExtent[mLastExtentIndex] );
+    //mMapRenderer->setExtent( mLastExtent[mLastExtentIndex] );
     emit extentsChanged();
     updateScale();
     if ( mMapOverview )
@@ -670,7 +680,7 @@ void QgsMapCanvas::clearExtentHistory()
 
 bool QgsMapCanvas::hasCrsTransformEnabled()
 {
-  return mMapRenderer->hasCrsTransformEnabled();
+  return mapSettings().hasCrsTransformEnabled();
 }
 
 void QgsMapCanvas::mapUnitsChanged()
@@ -714,7 +724,7 @@ void QgsMapCanvas::zoomToSelected( QgsVectorLayer* layer )
     return;
   }
 
-  QgsRectangle rect = mMapRenderer->layerExtentToOutputExtent( layer, layer->boundingBoxOfSelected() );
+  QgsRectangle rect = mapSettings().layerExtentToOutputExtent( layer, layer->boundingBoxOfSelected() );
 
   // no selected features, only one selected point feature
   //or two point features with the same x- or y-coordinates
@@ -761,7 +771,7 @@ void QgsMapCanvas::panToSelected( QgsVectorLayer* layer )
     return;
   }
 
-  QgsRectangle rect = mMapRenderer->layerExtentToOutputExtent( layer, layer->boundingBoxOfSelected() );
+  QgsRectangle rect = mapSettings().layerExtentToOutputExtent( layer, layer->boundingBoxOfSelected() );
   setExtent( QgsRectangle( rect.center(), rect.center() ) );
   refresh();
 } // panToSelected
@@ -787,7 +797,7 @@ void QgsMapCanvas::keyPressEvent( QKeyEvent * e )
   {
     // Don't want to interfer with mouse events
 
-    QgsRectangle currentExtent = mMapRenderer->extent();
+    QgsRectangle currentExtent = mapSettings().visibleExtent();
     double dx = qAbs(( currentExtent.xMaximum() - currentExtent.xMinimum() ) / 4 );
     double dy = qAbs(( currentExtent.yMaximum() - currentExtent.yMinimum() ) / 4 );
 
@@ -1003,6 +1013,8 @@ void QgsMapCanvas::resizeEvent( QResizeEvent * e )
 
   QSize lastSize = size();
 
+  mSettings.setOutputSize( lastSize );
+
   //set map size before scene size helps keep scene indexes updated properly
   // this was the cause of rubberband artifacts
   mMap->resize( lastSize );
@@ -1100,13 +1112,13 @@ void QgsMapCanvas::wheelEvent( QWheelEvent *e )
       // zoom map to mouse cursor
       double scaleFactor = e->delta() > 0 ? 1 / mWheelZoomFactor : mWheelZoomFactor;
 
-      QgsPoint oldCenter( mMapRenderer->extent().center() );
+      QgsPoint oldCenter( mapSettings().visibleExtent().center() );
       QgsPoint mousePos( getCoordinateTransform()->toMapPoint( e->x(), e->y() ) );
       QgsPoint newCenter( mousePos.x() + (( oldCenter.x() - mousePos.x() ) * scaleFactor ),
                           mousePos.y() + (( oldCenter.y() - mousePos.y() ) * scaleFactor ) );
 
       // same as zoomWithCenter (no coordinate transformations are needed)
-      QgsRectangle extent = mMapRenderer->extent();
+      QgsRectangle extent = mapSettings().visibleExtent();
       extent.scale( scaleFactor, &newCenter );
       setExtent( extent );
       refresh();
@@ -1151,7 +1163,7 @@ void QgsMapCanvas::zoomWithCenter( int x, int y, bool zoomIn )
 
   // transform the mouse pos to map coordinates
   QgsPoint center  = getCoordinateTransform()->toMapPoint( x, y );
-  QgsRectangle r = mMapRenderer->extent();
+  QgsRectangle r = mapSettings().visibleExtent();
   r.scale( scaleFactor, &center );
   setExtent( r );
   refresh();
@@ -1262,14 +1274,14 @@ QColor QgsMapCanvas::canvasColor() const
 
 int QgsMapCanvas::layerCount() const
 {
-  return mMapRenderer->layerSet().size();
+  return mapSettings().layers().size();
 } // layerCount
 
 
 QList<QgsMapLayer*> QgsMapCanvas::layers() const
 {
   QList<QgsMapLayer*> lst;
-  foreach ( QString layerID, mMapRenderer->layerSet() )
+  foreach ( QString layerID, mapSettings().layers() )
   {
     QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( layerID );
     if ( layer )
@@ -1307,20 +1319,21 @@ QPaintDevice &QgsMapCanvas::canvasPaintDevice()
 
 double QgsMapCanvas::mapUnitsPerPixel() const
 {
-  return mMapRenderer->mapUnitsPerPixel();
+  return mapSettings().mapUnitsPerPixel();
 } // mapUnitsPerPixel
 
 
 void QgsMapCanvas::setMapUnits( QGis::UnitType u )
 {
   QgsDebugMsg( "Setting map units to " + QString::number( static_cast<int>( u ) ) );
-  mMapRenderer->setMapUnits( u );
+  //mMapRenderer->setMapUnits( u );
+  mSettings.setMapUnits( u );
 }
 
 
 QGis::UnitType QgsMapCanvas::mapUnits() const
 {
-  return mMapRenderer->mapUnits();
+  return mapSettings().mapUnits();
 }
 
 
@@ -1377,7 +1390,7 @@ void QgsMapCanvas::panActionEnd( QPoint releasePoint )
 
 
   // modify the extent
-  QgsRectangle r = mMapRenderer->extent();
+  QgsRectangle r = mapSettings().visibleExtent();
 
   qDebug(" -------------XXX diff: %f,%f", dx, dy);
   qDebug(" ------------oldR: %f,%f", r.xMinimum(), r.yMinimum());
@@ -1408,7 +1421,7 @@ void QgsMapCanvas::panActionEnd( QPoint releasePoint )
 
   setExtent( r );
 
-  r = mMapRenderer->extent();
+  r = mapSettings().visibleExtent();
   qDebug(" ------------newR: %f,%f", r.xMinimum(), r.yMinimum());
 
   refresh();
@@ -1529,7 +1542,7 @@ void QgsMapCanvas::zoomByFactor( double scaleFactor )
     return;
   }
 
-  QgsRectangle r = mMapRenderer->extent();
+  QgsRectangle r = mapSettings().visibleExtent();
   r.scale( scaleFactor );
   setExtent( r );
   refresh();
