@@ -90,10 +90,6 @@
    <attribute name="toolBarBreak">
     <bool>true</bool>
    </attribute>
-   <addaction name="mActionPan"/>
-   <addaction name="mActionMouseZoom"/>
-   <addaction name="mActionSelectMoveItem"/>
-   <addaction name="mActionMoveItemContent"/>
    <addaction name="mActionGroupItems"/>
    <addaction name="mActionUngroupItems"/>
    <addaction name="mActionLockItems"/>
@@ -109,6 +105,11 @@
    <attribute name="toolBarBreak">
     <bool>true</bool>
    </attribute>
+   <addaction name="mActionPan"/>
+   <addaction name="mActionMouseZoom"/>
+   <addaction name="mActionSelectMoveItem"/>
+   <addaction name="mActionMoveItemContent"/>
+   <addaction name="separator"/>
    <addaction name="mActionAddNewMap"/>
    <addaction name="mActionAddImage"/>
    <addaction name="mActionAddNewLabel"/>
