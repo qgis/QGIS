@@ -291,12 +291,14 @@ class CORE_EXPORT QgsMapRenderer : public QObject
 
   signals:
 
+    //! @deprecated in 2.1 - not emitted anymore
     void drawingProgress( int current, int total );
 
     void hasCrsTransformEnabled( bool flag );
 
     void destinationSrsChanged();
 
+    //! @deprecated in 2.1 - not emitted anymore
     void updateMap();
 
     void mapUnitsChanged();
@@ -306,7 +308,7 @@ class CORE_EXPORT QgsMapRenderer : public QObject
 
   public slots:
 
-    //! called by signal from layer current being drawn
+    //! @deprecated in 2.1 - does nothing
     Q_DECL_DEPRECATED void onDrawingProgress( int current, int total );
 
   protected:

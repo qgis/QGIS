@@ -299,8 +299,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     /** The map units may have changed, so cope with that */
     void mapUnitsChanged();
 
-    //! \note Deprecated in 2.1 - does nothing - kept for API compatibility
-    void updateMap();
+    //! @deprecated in 2.1 - does nothing - kept for API compatibility
+    Q_DECL_DEPRECATED void updateMap();
 
     //! show whatever error is exposed by the QgsMapLayer.
     void showError( QgsMapLayer * mapLayer );

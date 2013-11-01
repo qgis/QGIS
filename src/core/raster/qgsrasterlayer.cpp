@@ -1277,8 +1277,8 @@ void QgsRasterLayer::triggerRepaint()
 
 void QgsRasterLayer::updateProgress( int theProgress, int theMax )
 {
-  //simply propogate it on!
-  emit drawingProgress( theProgress, theMax );
+  Q_UNUSED( theProgress );
+  Q_UNUSED( theMax );
 }
 
 void QgsRasterLayer::onProgress( int theType, double theProgress, QString theMessage )

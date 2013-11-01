@@ -1898,8 +1898,6 @@ void QgisApp::setupConnections()
            mMapCanvas, SLOT( setRenderFlag( bool ) ) );
 
   // connect renderer
-  connect( mMapCanvas->mapRenderer(), SIGNAL( drawingProgress( int, int ) ),
-           this, SLOT( showProgress( int, int ) ) );
   connect( mMapCanvas->mapRenderer(), SIGNAL( hasCrsTransformEnabled( bool ) ),
            this, SLOT( hasCrsTransformEnabled( bool ) ) );
   connect( mMapCanvas->mapRenderer(), SIGNAL( destinationSrsChanged() ),

@@ -372,8 +372,8 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
   public slots:
     void showStatusMessage( const QString & theMessage );
 
-    /** \brief Propagate progress updates from GDAL up to the parent app */
-    void updateProgress( int, int );
+    //! @deprecated in 2.1 - does nothing
+    Q_DECL_DEPRECATED void updateProgress( int, int );
 
     /** \brief receive progress signal from provider */
     void onProgress( int, double, QString );

@@ -713,9 +713,6 @@ void QgsMapRenderer::onDrawingProgress( int current, int total )
 {
   Q_UNUSED( current );
   Q_UNUSED( total );
-  // TODO: emit signal with progress
-// QgsDebugMsg(QString("onDrawingProgress: %1 / %2").arg(current).arg(total));
-  emit updateMap();
 }
 
 void QgsMapRenderer::setProjectionsEnabled( bool enabled )
