@@ -170,17 +170,6 @@ void QgsCoordinateTransform::initialise()
   bool useDefaultDatumTransform = ( mSourceDatumTransform == - 1 && mDestinationDatumTransform == -1 );
 
   // init the projections (destination and source)
-  pj_free( mDestinationProjection );
-  QString destProjString = mDestCRS.toProj4();
-  if ( !useDefaultDatumTransform )
-  {
-    destProjString = stripDatumTransform( destProjString );
-  }
-  if ( mDestinationDatumTransform != -1 )
-  {
-    destProjString += ( " " +  datumTransformString( mDestinationDatumTransform ) );
-  }
-  mDestinationProjection = pj_init_plus( destProjString.toUtf8() );
 
   pj_free( mSourceProjection );
   QString sourceProjString = mSourceCRS.toProj4();
@@ -193,6 +182,22 @@ void QgsCoordinateTransform::initialise()
     sourceProjString += ( " " + datumTransformString( mSourceDatumTransform ) );
   }
   mSourceProjection = pj_init_plus( sourceProjString.toUtf8() );
+
+  pj_free( mDestinationProjection );
+  QString destProjString = mDestCRS.toProj4();
+  if ( !useDefaultDatumTransform )
+  {
+    destProjString = stripDatumTransform( destProjString );
+  }
+  if ( mDestinationDatumTransform != -1 )
+  {
+    destProjString += ( " " +  datumTransformString( mDestinationDatumTransform ) );
+  }
+  else if ( sourceProjString.contains( "+nadgrids" ) ) //add null grid if source transformation is ntv2
+  {
+    destProjString += " +nadgrids=@null";
+  }
+  mDestinationProjection = pj_init_plus( destProjString.toUtf8() );
 
 #ifdef COORDINATE_TRANSFORM_VERBOSE
   QgsDebugMsg( "From proj : " + mSourceCRS.toProj4() );
