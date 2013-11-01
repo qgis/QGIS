@@ -127,7 +127,7 @@ void QgsMapToolMoveLabel::canvasReleaseEvent( QMouseEvent * e )
   {
     //transform to map crs first, because xdiff,ydiff are in map coordinates
     const QgsMapSettings& ms = mCanvas->mapSettings();
-    if ( ms->hasCrsTransformEnabled() )
+    if ( ms.hasCrsTransformEnabled() )
     {
       QgsPoint transformedPoint = ms.layerToMapCoordinates( vlayer, QgsPoint( xPosOrig, yPosOrig ) );
       xPosOrig = transformedPoint.x();

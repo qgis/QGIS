@@ -28,10 +28,17 @@ usage in QgsComposer
 */
 
 QgsMapSettings::QgsMapSettings()
+  : mDpi( 120 ) // what to set?
+  , mSize( QSize( 0, 0 ) )
+  , mExtent()
+  , mProjectionsEnabled( false )
+  , mDestCRS( GEOCRS_ID, QgsCoordinateReferenceSystem::InternalCrsId )  // WGS 84
+  , mOutputUnits( QgsMapSettings::Millimeters )
 {
-  // TODO: more init stuff!
+  updateDerived();
 
-  mOutputUnits = QgsMapSettings::Millimeters;
+  // set default map units - we use WGS 84 thus use degrees
+  setMapUnits( QGis::Degrees );
 }
 
 
@@ -124,7 +131,8 @@ void QgsMapSettings::updateDerived()
   mVisibleExtent.set( dxmin, dymin, dxmax, dymax );
 
   // update the scale
-  mScale = mScaleCalculator.calculate( mExtent, mSize.width() );
+  mScaleCalculator.setDpi( mDpi );
+  mScale = mScaleCalculator.calculate( mVisibleExtent, mSize.width() );
 
   mMapToPixel = QgsMapToPixel( mapUnitsPerPixel(), outputSize().height(), visibleExtent().yMinimum(), visibleExtent().xMinimum() );
 
@@ -188,24 +196,6 @@ bool QgsMapSettings::hasCrsTransformEnabled() const
 void QgsMapSettings::setDestinationCrs( const QgsCoordinateReferenceSystem& crs )
 {
   mDestCRS = crs;
-
-  /* TODO: reproject extent
-    QgsRectangle rect;
-    if ( !mExtent.isEmpty() )
-    {
-      QgsCoordinateTransform transform( *mDestCRS, crs );
-      rect = transform.transformBoundingBox( mExtent );
-    }
-
-    updateFullExtent();
-
-    if ( !rect.isEmpty() )
-    {
-      setExtent( rect );
-    }
-
-    emit destinationSrsChanged();
-  */
 }
 
 const QgsCoordinateReferenceSystem& QgsMapSettings::destinationCrs() const

@@ -60,10 +60,10 @@ void QgsMeasureDialog::updateSettings()
   mCanvasUnits = mTool->canvas()->mapUnits();
   mDisplayUnits = QGis::fromLiteral( settings.value( "/qgis/measure/displayunits", QGis::toLiteral( QGis::Meters ) ).toString() );
   // Configure QgsDistanceArea
-  mDa.setSourceCrs( mTool->canvas()->mapRenderer()->destinationCrs().srsid() );
+  mDa.setSourceCrs( mTool->canvas()->mapSettings().destinationCrs().srsid() );
   mDa.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
   // Only use ellipsoidal calculation when project wide transformation is enabled.
-  if ( mTool->canvas()->mapRenderer()->hasCrsTransformEnabled() )
+  if ( mTool->canvas()->mapSettings().hasCrsTransformEnabled() )
   {
     mDa.setEllipsoidalMode( true );
   }

@@ -123,6 +123,14 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     const QgsMapSettings& mapSettings() const;
 
+    //! sets whether to use projections for this layer set
+    //! @note added in 2.1
+    void setCrsTransformEnabled( bool enabled );
+
+    //! sets destination coordinate reference system
+    //! @note added in 2.1
+    void setDestinationCrs( const QgsCoordinateReferenceSystem& crs );
+
     //! @deprecated since 2.1 - there could be more than just one "map" items
     QgsMapCanvasMap* map();
 
@@ -370,6 +378,14 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! @note: this signal was added in version 1.4
     void zoomNextStatusChanged( bool );
 
+    //! Emitted when on-the-fly projection has been turned on/off
+    //! @note added in 2.1
+    void hasCrsTransformEnabled( bool flag );
+
+    //! Emitted when map CRS has changed
+    //! @note added in 2.1
+    void destinationSrsChanged();
+
   protected:
 #ifdef HAVE_TOUCH
     //! Overridden standard event to be gestures aware
@@ -422,9 +438,6 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
        invoked when a connect() is made to this object
     */
     void connectNotify( const char * signal );
-
-  private slots:
-    void crsTransformEnabled( bool );
 
   private:
     /// this class is non-copyable

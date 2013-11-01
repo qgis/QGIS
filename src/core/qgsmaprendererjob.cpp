@@ -3,6 +3,7 @@
 
 #include <QPainter>
 
+#include "qgscrscache.h"
 #include "qgslogger.h"
 #include "qgsrendercontext.h"
 #include "qgsmaplayer.h"
@@ -207,6 +208,7 @@ void QgsMapRendererCustomPainterJob::startRender()
   li.toBack();
 
   QgsRectangle r1, r2;
+  const QgsCoordinateTransform* ct;
 
   while ( li.hasPrevious() )
   {
@@ -233,7 +235,6 @@ void QgsMapRendererCustomPainterJob::startRender()
     // added these comments and debug statement to help others...
     QgsDebugMsg( "If there is a QPaintEngine error here, it is caused by an emit call" );
 
-    //emit drawingProgress(myRenderCounter++, mLayerSet.size());
     QgsMapLayer *ml = QgsMapLayerRegistry::instance()->mapLayer( layerId );
 
     if ( !ml )
@@ -260,8 +261,6 @@ void QgsMapRendererCustomPainterJob::startRender()
 
     if ( !ml->hasScaleBasedVisibility() || ( ml->minimumScale() <= mSettings.scale() && mSettings.scale() < ml->maximumScale() ) ) //|| mOverview )
     {
-      connect( ml, SIGNAL( drawingProgress( int, int ) ), this, SLOT( onDrawingProgress( int, int ) ) );
-
       //
       // Now do the call to the layer that actually does
       // the rendering work!
@@ -269,11 +268,11 @@ void QgsMapRendererCustomPainterJob::startRender()
 
       bool split = false;
 
-      /*if ( hasCrsTransformEnabled() )
+      if ( mSettings.hasCrsTransformEnabled() )
       {
-        r1 = mExtent;
-        split = splitLayersExtent( ml, r1, r2 );
-        ct = QgsCoordinateTransformCache::instance()->transform( ml->crs().authid(), mDestCRS->authid() );
+        r1 = mSettings.visibleExtent();
+        ct = QgsCoordinateTransformCache::instance()->transform( ml->crs().authid(), mSettings.destinationCrs().authid() );
+        split = reprojectToLayerExtent( ct, ml->crs().geographicFlag(), r1, r2 );
         mRenderContext.setExtent( r1 );
         QgsDebugMsg( "  extent 1: " + r1.toString() );
         QgsDebugMsg( "  extent 2: " + r2.toString() );
@@ -285,9 +284,9 @@ void QgsMapRendererCustomPainterJob::startRender()
       else
       {
         ct = NULL;
-      }*/
+      }
 
-      mRenderContext.setCoordinateTransform( 0 );
+      mRenderContext.setCoordinateTransform( ct );
 
       //decide if we have to scale the raster
       //this is necessary in case QGraphicsScene is used
@@ -346,7 +345,6 @@ void QgsMapRendererCustomPainterJob::startRender()
             //draw from cached image
             QgsDebugMsg( "Caching enabled --- drawing layer from cached image" );
             mypContextPainter->drawImage( 0, 0, *( ml->cacheImage() ) );
-            disconnect( ml, SIGNAL( drawingProgress( int, int ) ), this, SLOT( onDrawingProgress( int, int ) ) );
             //short circuit as there is nothing else to do...
             continue;
           }
@@ -473,7 +471,6 @@ void QgsMapRendererCustomPainterJob::startRender()
         mypFlattenedImage = 0;
       }*/
 
-      disconnect( ml, SIGNAL( drawingProgress( int, int ) ), this, SLOT( onDrawingProgress( int, int ) ) );
     }
     else // layer not visible due to scale
     {
@@ -501,7 +498,6 @@ void QgsMapRendererCustomPainterJob::startRender()
 
       QString layerId = li.previous();
 
-      // TODO: emit drawingProgress((myRenderCounter++),zOrder.size());
       QgsMapLayer *ml = QgsMapLayerRegistry::instance()->mapLayer( layerId );
 
       if ( ml && ( ml->type() != QgsMapLayer::RasterLayer ) )
@@ -537,9 +533,6 @@ void QgsMapRendererCustomPainterJob::startRender()
     }
   } // if (!mOverview)*/
 
-  // make sure progress bar arrives at 100%!
-  // TODO emit drawingProgress( 1, 1 );
-
   /*if ( mLabelingEngine )
   {
     // set correct extent
@@ -554,3 +547,57 @@ void QgsMapRendererCustomPainterJob::startRender()
 
 }
 
+
+
+
+bool QgsMapRendererJob::reprojectToLayerExtent( const QgsCoordinateTransform* ct, bool layerCrsGeographic, QgsRectangle& extent, QgsRectangle& r2 )
+{
+  bool split = false;
+
+  try
+  {
+#ifdef QGISDEBUG
+    // QgsLogger::debug<QgsRectangle>("Getting extent of canvas in layers CS. Canvas is ", extent, __FILE__, __FUNCTION__, __LINE__);
+#endif
+    // Split the extent into two if the source CRS is
+    // geographic and the extent crosses the split in
+    // geographic coordinates (usually +/- 180 degrees,
+    // and is assumed to be so here), and draw each
+    // extent separately.
+    static const double splitCoord = 180.0;
+
+    if ( layerCrsGeographic )
+    {
+      // Note: ll = lower left point
+      //   and ur = upper right point
+      QgsPoint ll = ct->transform( extent.xMinimum(), extent.yMinimum(),
+                                   QgsCoordinateTransform::ReverseTransform );
+
+      QgsPoint ur = ct->transform( extent.xMaximum(), extent.yMaximum(),
+                                   QgsCoordinateTransform::ReverseTransform );
+
+      extent = ct->transformBoundingBox( extent, QgsCoordinateTransform::ReverseTransform );
+
+      if ( ll.x() > ur.x() )
+      {
+        r2 = extent;
+        extent.setXMinimum( splitCoord );
+        r2.setXMaximum( splitCoord );
+        split = true;
+      }
+    }
+    else // can't cross 180
+    {
+      extent = ct->transformBoundingBox( extent, QgsCoordinateTransform::ReverseTransform );
+    }
+  }
+  catch ( QgsCsException &cse )
+  {
+    Q_UNUSED( cse );
+    QgsDebugMsg( "Transform error caught" );
+    extent = QgsRectangle( -DBL_MAX, -DBL_MAX, DBL_MAX, DBL_MAX );
+    r2     = QgsRectangle( -DBL_MAX, -DBL_MAX, DBL_MAX, DBL_MAX );
+  }
+
+  return split;
+}

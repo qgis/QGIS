@@ -43,6 +43,15 @@ signals:
 
 protected:
 
+  /** Convenience function to project an extent into the layer source
+   * CRS, but also split it into two extents if it crosses
+   * the +/- 180 degree line. Modifies the given extent to be in the
+   * source CRS coordinates, and if it was split, returns true, and
+   * also sets the contents of the r2 parameter
+   */
+  static bool reprojectToLayerExtent(const QgsCoordinateTransform* ct, bool layerCrsGeographic, QgsRectangle& extent, QgsRectangle& r2 );
+
+
   Type mType;
 
   QgsMapSettings mSettings;

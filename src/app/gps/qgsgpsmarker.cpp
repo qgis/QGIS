@@ -41,9 +41,9 @@ void QgsGpsMarker::setSize( int theSize )
 void QgsGpsMarker::setCenter( const QgsPoint& point )
 {
   //transform to map crs
-  if ( mMapCanvas && mMapCanvas->mapRenderer() )
+  if ( mMapCanvas )
   {
-    QgsCoordinateTransform t( mWgs84CRS, mMapCanvas->mapRenderer()->destinationCrs() );
+    QgsCoordinateTransform t( mWgs84CRS, mMapCanvas->mapSettings().destinationCrs() );
     try
     {
       mCenter = t.transform( point );

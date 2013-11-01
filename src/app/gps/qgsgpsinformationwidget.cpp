@@ -679,7 +679,7 @@ void QgsGPSInformationWidget::displayGPSInformation( const QgsGPSInformation& in
     // Pan based on user specified behaviour
     if ( radRecenterMap->isChecked() || radRecenterWhenNeeded->isChecked() )
     {
-      QgsCoordinateReferenceSystem mypSRS = mpCanvas->mapRenderer()->destinationCrs();
+      QgsCoordinateReferenceSystem mypSRS = mpCanvas->mapSettings().destinationCrs();
       QgsCoordinateTransform myTransform( mWgs84CRS, mypSRS ); // use existing WGS84 CRS
 
       QgsPoint myPoint = myTransform.transform( myNewCenter );
@@ -751,9 +751,9 @@ void QgsGPSInformationWidget::addVertex()
   // potential problem with transform errors and wrong coordinates if map CRS is changed after points are stored - SLM
   // should catch map CRS change and transform the points
   QgsPoint myPoint;
-  if ( mpCanvas && mpCanvas->mapRenderer() )
+  if ( mpCanvas )
   {
-    QgsCoordinateTransform t( mWgs84CRS, mpCanvas->mapRenderer()->destinationCrs() );
+    QgsCoordinateTransform t( mWgs84CRS, mpCanvas->mapSettings().destinationCrs() );
     myPoint = t.transform( mLastGpsPosition );
   }
   else

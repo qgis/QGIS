@@ -1160,10 +1160,10 @@ void QgsLegend::addLayers( QList<QgsMapLayer *> theLayerList )
   if ( myFirstLayerFlag )
   {
     QgsMapLayer * myFirstLayer = theLayerList.at( 0 );
-    if ( !mMapCanvas->mapRenderer()->hasCrsTransformEnabled() )
+    if ( !mMapCanvas->mapSettings().hasCrsTransformEnabled() )
     {
-      mMapCanvas->mapRenderer()->setDestinationCrs( myFirstLayer->crs() );
-      mMapCanvas->mapRenderer()->setMapUnits( myFirstLayer->crs().mapUnits() );
+      mMapCanvas->setDestinationCrs( myFirstLayer->crs() );
+      mMapCanvas->setMapUnits( myFirstLayer->crs().mapUnits() );
     }
     mMapCanvas->zoomToFullExtent();
     mMapCanvas->clearExtentHistory();
@@ -1171,7 +1171,7 @@ void QgsLegend::addLayers( QList<QgsMapLayer *> theLayerList )
   else
   {
     if ( settings.value( "/Projections/otfTransformAutoEnable", true ).toBool() &&
-         !mMapCanvas->mapRenderer()->hasCrsTransformEnabled() )
+         !mMapCanvas->mapSettings().hasCrsTransformEnabled() )
     {
       // Verify if all layers have the same CRS
       foreach ( QgsMapLayer *l, layers() )
@@ -1179,8 +1179,8 @@ void QgsLegend::addLayers( QList<QgsMapLayer *> theLayerList )
         if ( myPreviousCrs != l->crs() )
         {
           // Set to the previous de facto used so that extent does not change
-          mMapCanvas->mapRenderer()->setDestinationCrs( myPreviousCrs );
-          mMapCanvas->mapRenderer()->setProjectionsEnabled( true );
+          mMapCanvas->setDestinationCrs( myPreviousCrs );
+          mMapCanvas->setCrsTransformEnabled( true );
           break;
         }
       }
@@ -2807,10 +2807,10 @@ void QgsLegend::legendLayerZoomNative()
     {
       // get legth of central canvas pixel width in source raster crs
       QgsRectangle e = mMapCanvas->extent();
-      QgsMapRenderer* r = mMapCanvas->mapRenderer();
+      QSize s = mMapCanvas->mapSettings().outputSize();
       QgsPoint p1( e.center().x(), e.center().y() );
-      QgsPoint p2( e.center().x() + e.width() / r->width(), e.center().y() + e.height() / r->height() );
-      QgsCoordinateTransform ct( r->destinationCrs(), layer->crs() );
+      QgsPoint p2( e.center().x() + e.width() / s.width(), e.center().y() + e.height() / s.height() );
+      QgsCoordinateTransform ct( mMapCanvas->mapSettings().destinationCrs(), layer->crs() );
       p1 = ct.transform( p1 );
       p2 = ct.transform( p2 );
       double width = sqrt( p1.sqrDist( p2 ) ); // width of reprojected pixel

@@ -89,13 +89,12 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   // Properties stored in map canvas's QgsMapRenderer
   // these ones are propagated to QgsProject by a signal
 
-  QgsMapRenderer* myRenderer = mMapCanvas->mapRenderer();
-  QGis::UnitType myUnit = myRenderer->mapUnits();
+  QGis::UnitType myUnit = mMapCanvas->mapSettings().mapUnits();
   setMapUnits( myUnit );
 
   // we need to initialize it, since the on_cbxProjectionEnabled_toggled()
   // slot triggered by setChecked() might use it.
-  mProjectSrsId = myRenderer->destinationCrs().srsid();
+  mProjectSrsId = mMapCanvas->mapSettings().destinationCrs().srsid();
 
   QgsDebugMsg( "Read project CRSID: " + QString::number( mProjectSrsId ) );
   projectionSelector->setSelectedCrsId( mProjectSrsId );
@@ -461,7 +460,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   mRelationManagerDlg->setLayers( vectorLayers );
 
   // Update projection selector (after mLayerSrsId is set)
-  bool myProjectionEnabled = myRenderer->hasCrsTransformEnabled();
+  bool myProjectionEnabled = mMapCanvas->mapSettings().hasCrsTransformEnabled();
   bool onFlyChecked = cbxProjectionEnabled->isChecked();
   cbxProjectionEnabled->setChecked( myProjectionEnabled );
 
@@ -483,7 +482,7 @@ QgsProjectProperties::~QgsProjectProperties()
 // return the map units
 QGis::UnitType QgsProjectProperties::mapUnits() const
 {
-  return mMapCanvas->mapRenderer()->mapUnits();
+  return mMapCanvas->mapSettings().mapUnits();
 }
 
 void QgsProjectProperties::setMapUnits( QGis::UnitType unit )
@@ -499,7 +498,7 @@ void QgsProjectProperties::setMapUnits( QGis::UnitType unit )
   radNMiles->setChecked( unit == QGis::NauticalMiles );
   radDegrees->setChecked( unit == QGis::Degrees );
 
-  mMapCanvas->mapRenderer()->setMapUnits( unit );
+  mMapCanvas->setMapUnits( unit );
 }
 
 QString QgsProjectProperties::title() const
@@ -533,9 +532,8 @@ void QgsProjectProperties::apply()
     mapUnit = QGis::Meters;
   }
 
-  QgsMapRenderer* myRenderer = mMapCanvas->mapRenderer();
-  myRenderer->setMapUnits( mapUnit );
-  myRenderer->setProjectionsEnabled( cbxProjectionEnabled->isChecked() );
+  mMapCanvas->setMapUnits( mapUnit );
+  mMapCanvas->setCrsTransformEnabled( cbxProjectionEnabled->isChecked() );
 
   // Only change the projection if there is a node in the tree
   // selected that has an srid. This prevents error if the user
@@ -545,7 +543,7 @@ void QgsProjectProperties::apply()
   if ( myCRSID )
   {
     QgsCoordinateReferenceSystem srs( myCRSID, QgsCoordinateReferenceSystem::InternalCrsId );
-    myRenderer->setDestinationCrs( srs );
+    mMapCanvas->setDestinationCrs( srs );
     QgsDebugMsg( QString( "Selected CRS " ) + srs.description() );
     // write the currently selected projections _proj string_ to project settings
     QgsDebugMsg( QString( "SpatialRefSys/ProjectCRSProj4String: %1" ).arg( projectionSelector->selectedProj4String() ) );
@@ -557,7 +555,7 @@ void QgsProjectProperties::apply()
       // If we couldn't get the map units, default to the value in the
       // projectproperties dialog box (set above)
       if ( srs.mapUnits() != QGis::UnknownUnit )
-        myRenderer->setMapUnits( srs.mapUnits() );
+        mMapCanvas->setMapUnits( srs.mapUnits() );
     }
   }
 

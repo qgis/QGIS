@@ -386,7 +386,7 @@ void QgisApp::validateSrs( QgsCoordinateReferenceSystem &srs )
     QgsGenericProjectionSelector *mySelector = new QgsGenericProjectionSelector();
     mySelector->setMessage( srs.validationHint() ); //shows a generic message, if not specified
     if ( authid.isNull() )
-      authid = QgisApp::instance()->mapCanvas()->mapRenderer()->destinationCrs().authid();
+      authid = QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs().authid();
 
     QgsCoordinateReferenceSystem defaultCrs;
     if ( defaultCrs.createFromOgcWmsCrs( authid ) )
@@ -413,7 +413,7 @@ void QgisApp::validateSrs( QgsCoordinateReferenceSystem &srs )
   else if ( myDefaultProjectionOption == "useProject" )
   {
     // XXX TODO: Change project to store selected CS as 'projectCRS' not 'selectedWkt'
-    authid = QgisApp::instance()->mapCanvas()->mapRenderer()->destinationCrs().authid();
+    authid = QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs().authid();
     QgsDebugMsg( "Layer srs set from project: " + authid );
     QgisApp::instance()->statusBar()->showMessage( tr( "CRS undefined - defaulting to project CRS" ) );
     srs.createFromOgcWmsCrs( authid );
@@ -1658,7 +1658,6 @@ void QgisApp::createStatusBar()
   mOnTheFlyProjectionStatusLabel->setMargin( 3 );
   mOnTheFlyProjectionStatusLabel->setAlignment( Qt::AlignCenter );
   mOnTheFlyProjectionStatusLabel->setFrameStyle( QFrame::NoFrame );
-  QString myCrs = mMapCanvas->mapRenderer()->destinationCrs().authid();
   statusBar()->addPermanentWidget( mOnTheFlyProjectionStatusLabel, 0 );
   // On the fly projection status bar icon
   // Changed this to a tool button since a QPushButton is
@@ -1898,9 +1897,9 @@ void QgisApp::setupConnections()
            mMapCanvas, SLOT( setRenderFlag( bool ) ) );
 
   // connect renderer
-  connect( mMapCanvas->mapRenderer(), SIGNAL( hasCrsTransformEnabled( bool ) ),
+  connect( mMapCanvas, SIGNAL( hasCrsTransformEnabled( bool ) ),
            this, SLOT( hasCrsTransformEnabled( bool ) ) );
-  connect( mMapCanvas->mapRenderer(), SIGNAL( destinationSrsChanged() ),
+  connect( mMapCanvas, SIGNAL( destinationSrsChanged() ),
            this, SLOT( destinationSrsChanged() ) );
 
   // connect legend signals
@@ -3161,9 +3160,9 @@ void QgisApp::addWfsLayer()
 
   //re-enable wfs with extent setting: pass canvas info to source select
   wfss->setProperty( "MapExtent", mMapCanvas->extent().toString() );
-  if ( mMapCanvas->mapRenderer()->hasCrsTransformEnabled() )
+  if ( mMapCanvas->mapSettings().hasCrsTransformEnabled() )
   { //if "on the fly" reprojection is active, pass canvas CRS
-    wfss->setProperty( "MapCRS", mMapCanvas->mapRenderer()->destinationCrs().authid() );
+    wfss->setProperty( "MapCRS", mMapCanvas->mapSettings().destinationCrs().authid() );
   }
 
   bool bkRenderFlag = mMapCanvas->renderFlag();
@@ -3271,21 +3270,20 @@ void QgisApp::fileNew( bool thePromptToSaveFlag, bool forceBlank )
   mScaleEdit->updateScales();
 
   // set project CRS
-  QgsMapRenderer* myRenderer = mMapCanvas->mapRenderer();
   QString defCrs = settings.value( "/Projections/projectDefaultCrs", GEO_EPSG_CRS_AUTHID ).toString();
   QgsCoordinateReferenceSystem srs;
   srs.createFromOgcWmsCrs( defCrs );
-  myRenderer->setDestinationCrs( srs );
+  mMapCanvas->setDestinationCrs( srs );
   // write the projections _proj string_ to project settings
   prj->writeEntry( "SpatialRefSys", "/ProjectCrs", defCrs );
   prj->dirty( false );
   if ( srs.mapUnits() != QGis::UnknownUnit )
   {
-    myRenderer->setMapUnits( srs.mapUnits() );
+    mMapCanvas->setMapUnits( srs.mapUnits() );
   }
 
   // enable OTF CRS transformation if necessary
-  myRenderer->setProjectionsEnabled( settings.value( "/Projections/otfTransformEnabled", 0 ).toBool() );
+  mMapCanvas->setCrsTransformEnabled( settings.value( "/Projections/otfTransformEnabled", 0 ).toBool() );
 
   updateCRSStatusBar();
 
@@ -3826,7 +3824,7 @@ void QgisApp::openProject( QAction *action )
   //set the projections enabled icon in the status bar
   int myProjectionEnabledFlag =
     QgsProject::instance()->readNumEntry( "SpatialRefSys", "/ProjectionsEnabled", 0 );
-  mMapCanvas->mapRenderer()->setProjectionsEnabled( myProjectionEnabledFlag );
+  mMapCanvas->setCrsTransformEnabled( myProjectionEnabledFlag );
 } // QgisApp::openProject
 
 
@@ -4457,7 +4455,7 @@ void QgisApp::saveAsRasterFile()
 
   QgsRasterLayerSaveAsDialog d( rasterLayer, rasterLayer->dataProvider(),
                                 mMapCanvas->extent(), rasterLayer->crs(),
-                                mMapCanvas->mapRenderer()->destinationCrs(),
+                                mMapCanvas->mapSettings().destinationCrs(),
                                 this );
   if ( d.exec() == QDialog::Accepted )
   {
@@ -4612,7 +4610,7 @@ void QgisApp::saveAsVectorFileGeneral( bool saveOnlySelection, QgsVectorLayer* v
     switch ( dialog->crs() )
     {
       case -2: // Project CRS
-        destCRS = mMapCanvas->mapRenderer()->destinationCrs();
+        destCRS = mMapCanvas->mapSettings().destinationCrs();
         break;
       case -1: // Layer CRS
         destCRS = vlayer->crs();
@@ -5547,7 +5545,7 @@ void QgisApp::editPaste( QgsMapLayer *destinationLayer )
 
   pasteVectorLayer->beginEditCommand( tr( "Features pasted" ) );
   QgsFeatureList features;
-  if ( mMapCanvas->mapRenderer()->hasCrsTransformEnabled() )
+  if ( mMapCanvas->mapSettings().hasCrsTransformEnabled() )
   {
     features = clipboard()->transformedCopyOf( pasteVectorLayer->crs(), pasteVectorLayer->pendingFields() );
   }
@@ -6581,12 +6579,11 @@ void QgisApp::setProjectCRSFromLayer()
   }
 
   QgsCoordinateReferenceSystem crs = mMapLegend->currentLayer()->crs();
-  QgsMapRenderer* myRenderer = mMapCanvas->mapRenderer();
   mMapCanvas->freeze();
-  myRenderer->setDestinationCrs( crs );
+  mMapCanvas->setDestinationCrs( crs );
   if ( crs.mapUnits() != QGis::UnknownUnit )
   {
-    myRenderer->setMapUnits( crs.mapUnits() );
+    mMapCanvas->setMapUnits( crs.mapUnits() );
   }
   mMapCanvas->freeze( false );
   mMapCanvas->refresh();
@@ -7855,20 +7852,20 @@ void QgisApp::removeWebToolBarIcon( QAction *qAction )
 
 void QgisApp::updateCRSStatusBar()
 {
-  mOnTheFlyProjectionStatusLabel->setText( mMapCanvas->mapRenderer()->destinationCrs().authid() );
+  mOnTheFlyProjectionStatusLabel->setText( mMapCanvas->mapSettings().destinationCrs().authid() );
 
-  if ( mMapCanvas->mapRenderer()->hasCrsTransformEnabled() )
+  if ( mMapCanvas->mapSettings().hasCrsTransformEnabled() )
   {
     mOnTheFlyProjectionStatusLabel->setEnabled( true );
     mOnTheFlyProjectionStatusLabel->setToolTip(
-      tr( "Current CRS: %1 (OTFR enabled)" ).arg( mMapCanvas->mapRenderer()->destinationCrs().description() ) );
+      tr( "Current CRS: %1 (OTFR enabled)" ).arg( mMapCanvas->mapSettings().destinationCrs().description() ) );
     mOnTheFlyProjectionStatusButton->setIcon( QgsApplication::getThemeIcon( "mIconProjectionEnabled.png" ) );
   }
   else
   {
     mOnTheFlyProjectionStatusLabel->setEnabled( false );
     mOnTheFlyProjectionStatusLabel->setToolTip(
-      tr( "Current CRS: %1 (OTFR disabled)" ).arg( mMapCanvas->mapRenderer()->destinationCrs().description() ) );
+      tr( "Current CRS: %1 (OTFR disabled)" ).arg( mMapCanvas->mapSettings().destinationCrs().description() ) );
     mOnTheFlyProjectionStatusButton->setIcon( QgsApplication::getThemeIcon( "mIconProjectionDisabled.png" ) );
   }
 }
@@ -7876,7 +7873,7 @@ void QgisApp::updateCRSStatusBar()
 void QgisApp::destinationSrsChanged()
 {
   // save this information to project
-  long srsid = mMapCanvas->mapRenderer()->destinationCrs().srsid();
+  long srsid = mMapCanvas->mapSettings().destinationCrs().srsid();
   QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCRSID", ( int )srsid );
   updateCRSStatusBar();
 }
@@ -8113,15 +8110,15 @@ void QgisApp::projectProperties()
   // It is needed to refresh scale bar after changing display units.
   connect( pp, SIGNAL( refresh() ), mMapCanvas, SLOT( refresh() ) );
 
-  QgsMapRenderer* myRender = mMapCanvas->mapRenderer();
-  bool wasProjected = myRender->hasCrsTransformEnabled();
-  long oldCRSID = myRender->destinationCrs().srsid();
+  const QgsMapSettings& ms = mMapCanvas->mapSettings();
+  bool wasProjected = ms.hasCrsTransformEnabled();
+  long oldCRSID = ms.destinationCrs().srsid();
 
   // Display the modal dialog box.
   pp->exec();
 
-  long newCRSID = myRender->destinationCrs().srsid();
-  bool isProjected = myRender->hasCrsTransformEnabled();
+  long newCRSID = ms.destinationCrs().srsid();
+  bool isProjected = ms.hasCrsTransformEnabled();
 
   // projections have been turned on/off or dest CRS has changed while projections are on
   if ( wasProjected != isProjected || ( isProjected && oldCRSID != newCRSID ) )

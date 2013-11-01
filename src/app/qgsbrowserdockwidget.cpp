@@ -565,7 +565,7 @@ void QgsBrowserDockWidget::showProperties( )
       if ( defaultProjectionOption == "prompt" )
       {
         QgsCoordinateReferenceSystem defaultCrs =
-          QgisApp::instance()->mapCanvas()->mapRenderer()->destinationCrs();
+          QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs();
         if ( layerCrs == defaultCrs )
           ui.lblNotice->setText( "NOTICE: Layer srs set from project (" + defaultCrs.authid() + ")" );
       }

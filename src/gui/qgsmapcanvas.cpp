@@ -118,9 +118,9 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
   moveCanvasContents( true );
 
   connect( mMapRenderer, SIGNAL( drawError( QgsMapLayer* ) ), this, SLOT( showError( QgsMapLayer* ) ) );
-  connect( mMapRenderer, SIGNAL( hasCrsTransformEnabled( bool ) ), this, SLOT( crsTransformEnabled( bool ) ) );
 
-  crsTransformEnabled( hasCrsTransformEnabled() );
+  // TODO: propagate signals to map renderer?
+  //connect( mMapRenderer, SIGNAL( hasCrsTransformEnabled( bool ) ), this, SLOT( crsTransformEnabled( bool ) ) );
 
   // project handling
   connect( QgsProject::instance(), SIGNAL( readProject( const QDomDocument & ) ),
@@ -360,6 +360,44 @@ const QgsMapSettings &QgsMapCanvas::mapSettings() const
   return mSettings;
 }
 
+void QgsMapCanvas::setCrsTransformEnabled(bool enabled)
+{
+  mSettings.setProjectionsEnabled( enabled );
+
+  if ( enabled )
+  {
+    QgsDebugMsg( "refreshing after reprojection was enabled" );
+    refresh();
+  }
+
+  emit hasCrsTransformEnabled( enabled );
+}
+
+void QgsMapCanvas::setDestinationCrs(const QgsCoordinateReferenceSystem &crs)
+{
+  if ( mSettings.hasCrsTransformEnabled() )
+  {
+    // try to reproject current extent to the new one
+    QgsRectangle rect;
+    if ( !mSettings.visibleExtent().isEmpty() )
+    {
+      QgsCoordinateTransform transform( mSettings.destinationCrs(), crs );
+      rect = transform.transformBoundingBox( mSettings.visibleExtent() );
+    }
+    if ( !rect.isEmpty() )
+    {
+      setExtent( rect );
+    }
+
+    QgsDebugMsg( "refreshing after destination CRS changed" );
+    refresh();
+  }
+
+  mSettings.setDestinationCrs( crs );
+
+  emit destinationSrsChanged();
+}
+
 
 void QgsMapCanvas::updateOverview()
 {
@@ -581,9 +619,7 @@ void QgsMapCanvas::setExtent( QgsRectangle const & r )
 
 void QgsMapCanvas::updateScale()
 {
-  double scale = mapSettings().scale();
-
-  emit scaleChanged( scale );
+  emit scaleChanged( mapSettings().scale() );
 }
 
 
@@ -1562,18 +1598,6 @@ void QgsMapCanvas::dragEnterEvent( QDragEnterEvent * e )
   // But we do not want that and by ignoring the drag enter we let the
   // parent (e.g. QgisApp) to handle drops of map layers etc.
   e->ignore();
-}
-
-void QgsMapCanvas::crsTransformEnabled( bool enabled )
-{
-  if ( enabled )
-  {
-    QgsDebugMsg( "refreshing after reprojection was enabled" );
-    refresh();
-    connect( mMapRenderer, SIGNAL( destinationSrsChanged() ), this, SLOT( refresh() ) );
-  }
-  else
-    disconnect( mMapRenderer, SIGNAL( destinationSrsChanged() ), this, SLOT( refresh() ) );
 }
 
 void QgsMapCanvas::mapToolDestroyed()

@@ -106,11 +106,11 @@ void QgsMapToolSelectUtils::setSelectFeatures( QgsMapCanvas* canvas,
   // and then click somewhere off the globe, an exception will be thrown.
   QgsGeometry selectGeomTrans( *selectGeometry );
 
-  if ( canvas->mapRenderer()->hasCrsTransformEnabled() )
+  if ( canvas->mapSettings().hasCrsTransformEnabled() )
   {
     try
     {
-      QgsCoordinateTransform ct( canvas->mapRenderer()->destinationCrs(), vlayer->crs() );
+      QgsCoordinateTransform ct( canvas->mapSettings().destinationCrs(), vlayer->crs() );
       selectGeomTrans.transform( ct );
     }
     catch ( QgsCsException &cse )
