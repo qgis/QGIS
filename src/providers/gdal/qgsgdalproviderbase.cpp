@@ -59,6 +59,11 @@ QList<QgsColorRampShader::ColorRampItem> QgsGdalProviderBase::colorTable( GDALDa
   if ( myGdalColorTable )
   {
     QgsDebugMsg( "Color table found" );
+
+    // TODO: load category labels and use them for ColorRampItem.label once
+    // GDALGetCategoryNames C function is added to GDAL, see #8886
+    //char ** categoryNames = GDALGetCategoryNames( myGdalBand );
+
     int myEntryCount = GDALGetColorEntryCount( myGdalColorTable );
     GDALColorInterp myColorInterpretation =  GDALGetRasterColorInterpretation( myGdalBand );
     QgsDebugMsg( "Color Interpretation: " + QString::number(( int )myColorInterpretation ) );
