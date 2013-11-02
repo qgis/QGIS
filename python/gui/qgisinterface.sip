@@ -414,6 +414,7 @@ class QgisInterface : QObject
     virtual QAction *actionZoomToLayer() = 0;
     virtual QAction *actionZoomToSelected() = 0;
     virtual QAction *actionZoomLast() = 0;
+    virtual QAction *actionZoomNext() = 0;
     virtual QAction *actionZoomActualSize() = 0;
     virtual QAction *actionMapTips() = 0;
     virtual QAction *actionNewBookmark() = 0;

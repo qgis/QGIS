@@ -485,6 +485,8 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QAction *actionZoomToSelected() = 0;
     //! Get access to the native zoom last action. Call trigger() on it to zoom to last.
     virtual QAction *actionZoomLast() = 0;
+    //! Get access to the native zoom next action. Call trigger() on it to zoom to next.
+    virtual QAction *actionZoomNext() = 0;
     //! Get access to the native zoom actual size action. Call trigger() on it to zoom to actual size.
     virtual QAction *actionZoomActualSize() = 0;
     //! Get access to the native map tips action. Call trigger() on it to toggle map tips.
