@@ -185,8 +185,8 @@ QgsRasterBlock * QgsPalettedRasterRenderer::block( int bandNo, QgsRectangle  con
   //because of performance
   unsigned int* outputData = ( unsigned int* )( outputBlock->bits() );
 
-  size_t rasterSize = ( size_t )width * height;
-  for ( size_t i = 0; i < rasterSize; ++i )
+  qgssize rasterSize = ( qgssize )width * height;
+  for ( qgssize i = 0; i < rasterSize; ++i )
   {
     if ( inputBlock->isNoData( i ) )
     {

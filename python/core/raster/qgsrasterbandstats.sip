@@ -32,7 +32,7 @@ class QgsRasterBandStats
 
     /** \brief The number of not no data cells in the band. */
     // TODO: check if no data are excluded in stats calculation
-    size_t elementCount;
+    qgssize elementCount;
 
     /** \brief The maximum cell value in the raster band. NO_DATA values
      * are ignored. This does not use the gdal GetMaximmum function. */

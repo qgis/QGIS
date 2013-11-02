@@ -388,6 +388,14 @@ const double DEFAULT_SEGMENT_EPSILON = 1e-8;
 
 typedef QMap<QString, QString> QgsStringMap;
 
+/** qgssize is used instead of size_t, because size_t is stdlib type, unknown
+ *  by SIP, and it would be hard to define size_t correctly in SIP.
+ *  Currently used "unsigned long long" was introduced in C++11 (2011)
+ *  but it was supported already before C++11 on common platforms.
+ *  "unsigned long long int" gives syntax error in SIP.
+ *  KEEP IN SYNC WITH qgssize defined in SIP! */
+typedef unsigned long long qgssize;
+
 // FIXME: also in qgisinterface.h
 #ifndef QGISEXTERN
 #ifdef WIN32

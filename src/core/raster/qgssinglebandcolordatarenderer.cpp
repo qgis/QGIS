@@ -86,7 +86,7 @@ QgsRasterBlock* QgsSingleBandColorDataRenderer::block( int bandNo, QgsRectangle 
     return outputBlock;
   }
 
-  for ( size_t i = 0; i < ( size_t )width*height; i++ )
+  for ( qgssize i = 0; i < ( qgssize )width*height; i++ )
   {
     QRgb pixelColor;
     double alpha = 255.0;

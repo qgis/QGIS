@@ -157,7 +157,7 @@ QgsRasterBlock * QgsHueSaturationFilter::block( int bandNo, QgsRectangle  const 
   int r, g, b, alpha;
   double alphaFactor = 1.0;
 
-  for ( size_t i = 0; i < ( size_t )width*height; i++ )
+  for ( qgssize i = 0; i < ( qgssize )width*height; i++ )
   {
     if ( inputBlock->color( i ) == myNoDataColor )
     {

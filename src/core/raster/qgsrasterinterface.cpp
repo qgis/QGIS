@@ -186,7 +186,7 @@ QgsRasterBandStats QgsRasterInterface::bandStatistics( int theBandNo,
       QgsRasterBlock* blk = block( theBandNo, myPartExtent, myBlockWidth, myBlockHeight );
 
       // Collect the histogram counts.
-      for ( size_t i = 0; i < (( size_t ) myBlockHeight ) * myBlockWidth; i++ )
+      for ( qgssize i = 0; i < (( qgssize ) myBlockHeight ) * myBlockWidth; i++ )
       {
         if ( blk->isNoData( i ) ) continue; // NULL
 
@@ -458,7 +458,7 @@ QgsRasterHistogram QgsRasterInterface::histogram( int theBandNo,
       QgsRasterBlock* blk = block( theBandNo, myPartExtent, myBlockWidth, myBlockHeight );
 
       // Collect the histogram counts.
-      for ( size_t i = 0; i < (( size_t ) myBlockHeight ) * myBlockWidth; i++ )
+      for ( qgssize i = 0; i < (( qgssize ) myBlockHeight ) * myBlockWidth; i++ )
       {
         if ( blk->isNoData( i ) )
         {

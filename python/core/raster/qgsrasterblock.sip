@@ -87,7 +87,7 @@ class QgsRasterBlock
      *  returned value is undefined.
      *  @param index data matrix index
      *  @return value */
-    double value( size_t index ) const;
+    double value( qgssize index ) const;
 
     /** \brief Read a single color
      *  @param row row index
@@ -98,7 +98,7 @@ class QgsRasterBlock
     /** \brief Read a single value
      *  @param index data matrix index
      *  @return color */
-    QRgb color( size_t index ) const;
+    QRgb color( qgssize index ) const;
 
     /** \brief Check if value at position is no data
      *  @param row row index
@@ -109,7 +109,7 @@ class QgsRasterBlock
     /** \brief Check if value at position is no data
      *  @param index data matrix index
      *  @return true if value is no data */
-    bool isNoData( size_t index );
+    bool isNoData( qgssize index );
 
     /** \brief Set value on position
      *  @param row row index
@@ -122,7 +122,7 @@ class QgsRasterBlock
      *  @param index data matrix index
      *  @param value the value to be set
      *  @return true on success */
-    bool setValue( size_t index, double value );
+    bool setValue( qgssize index, double value );
 
     /** \brief Set color on position
      *  @param row row index
@@ -135,7 +135,7 @@ class QgsRasterBlock
      *  @param index data matrix index
      *  @param color the color to be set, QRgb value
      *  @return true on success */
-    bool setColor( size_t index, QRgb color );
+    bool setColor( qgssize index, QRgb color );
 
     /** \brief Set no data on pixel
      *  @param row row index
@@ -146,7 +146,7 @@ class QgsRasterBlock
     /** \brief Set no data on pixel
      *  @param index data matrix index
      *  @return true on success */
-    bool setIsNoData( size_t index );
+    bool setIsNoData( qgssize index );
 
     /** \brief Set the whole block to no data
      *  @return true on success */
@@ -169,7 +169,7 @@ class QgsRasterBlock
      *  @return pointer to data
      *  @note not available in python bindings
      */
-    // char * bits( size_t index );
+    // char * bits( qgssize index );
 
     /** \brief Get pointer to data
      *  @return pointer to data

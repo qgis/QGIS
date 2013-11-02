@@ -171,9 +171,9 @@ class CORE_EXPORT QgsRasterBlock
 
     /** \brief Read a single value if type of block is numeric. If type is color,
      *  returned value is undefined.
-     *  @param index data matrix index
+     *  @param index data matrix index (long type in Python)
      *  @return value */
-    double value( size_t index ) const;
+    double value( qgssize index ) const;
 
     /** \brief Read a single color
      *  @param row row index
@@ -182,9 +182,9 @@ class CORE_EXPORT QgsRasterBlock
     QRgb color( int row, int column ) const;
 
     /** \brief Read a single value
-     *  @param index data matrix index
+     *  @param index data matrix index (long type in Python)
      *  @return color */
-    QRgb color( size_t index ) const;
+    QRgb color( qgssize index ) const;
 
     /** \brief Check if value at position is no data
      *  @param row row index
@@ -193,9 +193,9 @@ class CORE_EXPORT QgsRasterBlock
     bool isNoData( int row, int column );
 
     /** \brief Check if value at position is no data
-     *  @param index data matrix index
+     *  @param index data matrix index (long type in Python)
      *  @return true if value is no data */
-    bool isNoData( size_t index );
+    bool isNoData( qgssize index );
 
     /** \brief Set value on position
      *  @param row row index
@@ -205,10 +205,10 @@ class CORE_EXPORT QgsRasterBlock
     bool setValue( int row, int column, double value );
 
     /** \brief Set value on index (indexed line by line)
-     *  @param index data matrix index
+     *  @param index data matrix index (long type in Python)
      *  @param value the value to be set
      *  @return true on success */
-    bool setValue( size_t index, double value );
+    bool setValue( qgssize index, double value );
 
     /** \brief Set color on position
      *  @param row row index
@@ -218,10 +218,10 @@ class CORE_EXPORT QgsRasterBlock
     bool setColor( int row, int column, QRgb color );
 
     /** \brief Set color on index (indexed line by line)
-     *  @param index data matrix index
+     *  @param index data matrix index (long type in Python)
      *  @param color the color to be set, QRgb value
      *  @return true on success */
-    bool setColor( size_t index, QRgb color );
+    bool setColor( qgssize index, QRgb color );
 
     /** \brief Set no data on pixel
      *  @param row row index
@@ -230,9 +230,9 @@ class CORE_EXPORT QgsRasterBlock
     bool setIsNoData( int row, int column );
 
     /** \brief Set no data on pixel
-     *  @param index data matrix index
+     *  @param index data matrix index (long type in Python)
      *  @return true on success */
-    bool setIsNoData( size_t index );
+    bool setIsNoData( qgssize index );
 
     /** \brief Set the whole block to no data
      *  @return true on success */
@@ -251,11 +251,11 @@ class CORE_EXPORT QgsRasterBlock
     char * bits( int row, int column );
 
     /** \brief Get pointer to data
-     *  @param index data matrix index
+     *  @param index data matrix index (long type in Python)
      *  @return pointer to data
      *  @note not available in python bindings
      */
-    char * bits( size_t index );
+    char * bits( qgssize index );
 
     /** \brief Get pointer to data
      *  @return pointer to data
@@ -284,10 +284,10 @@ class CORE_EXPORT QgsRasterBlock
     bool setImage( const QImage * image );
 
     // @note not available in python bindings
-    inline static double readValue( void *data, QGis::DataType type, size_t index );
+    inline static double readValue( void *data, QGis::DataType type, qgssize index );
 
     // @note not available in python bindings
-    inline static void writeValue( void *data, QGis::DataType type, size_t index, double value );
+    inline static void writeValue( void *data, QGis::DataType type, qgssize index, double value );
 
     void applyNoDataValues( const QgsRasterRangeList & rangeList );
 
@@ -334,7 +334,7 @@ class CORE_EXPORT QgsRasterBlock
      *  @param destDataType dest data type
      *  @param size block size (width * height)
      *  @return block of data in destDataType */
-    static void * convert( void *srcData, QGis::DataType srcDataType, QGis::DataType destDataType, size_t size );
+    static void * convert( void *srcData, QGis::DataType srcDataType, QGis::DataType destDataType, qgssize size );
 
     // Valid
     bool mValid;
@@ -373,13 +373,13 @@ class CORE_EXPORT QgsRasterBlock
     int mNoDataBitmapWidth;
 
     // total size in bytes of mNoDataBitmap
-    size_t mNoDataBitmapSize;
+    qgssize mNoDataBitmapSize;
 
     // Error
     QgsError mError;
 };
 
-inline double QgsRasterBlock::readValue( void *data, QGis::DataType type, size_t index )
+inline double QgsRasterBlock::readValue( void *data, QGis::DataType type, qgssize index )
 {
   if ( !data )
   {
@@ -417,7 +417,7 @@ inline double QgsRasterBlock::readValue( void *data, QGis::DataType type, size_t
   return std::numeric_limits<double>::quiet_NaN();
 }
 
-inline void QgsRasterBlock::writeValue( void *data, QGis::DataType type, size_t index, double value )
+inline void QgsRasterBlock::writeValue( void *data, QGis::DataType type, qgssize index, double value )
 {
   if ( !data ) return;
 
@@ -450,7 +450,7 @@ inline void QgsRasterBlock::writeValue( void *data, QGis::DataType type, size_t 
   }
 }
 
-inline double QgsRasterBlock::value( size_t index ) const
+inline double QgsRasterBlock::value( qgssize index ) const
 {
   if ( !mData )
   {
