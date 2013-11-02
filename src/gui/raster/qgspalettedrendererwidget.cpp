@@ -52,23 +52,35 @@ QgsRasterRenderer* QgsPalettedRendererWidget::renderer()
 {
   int nColors = mTreeWidget->topLevelItemCount();
   QColor* colorArray = new QColor[nColors];
+  QVector<QString> labels;
   for ( int i = 0; i < nColors; ++i )
   {
     colorArray[i] = mTreeWidget->topLevelItem( i )->background( 1 ).color();
+    QString label = mTreeWidget->topLevelItem( i )->text( 2 );
+    if ( !label.isEmpty() )
+    {
+      if ( i >= labels.size() ) labels.resize( i + 1 );
+      labels[i] = label;
+    }
   }
   int bandNumber = mBandComboBox->itemData( mBandComboBox->currentIndex() ).toInt();
-  return new QgsPalettedRasterRenderer( mRasterLayer->dataProvider(), bandNumber, colorArray, nColors );
+  return new QgsPalettedRasterRenderer( mRasterLayer->dataProvider(), bandNumber, colorArray, nColors, labels );
 }
 
 void QgsPalettedRendererWidget::on_mTreeWidget_itemDoubleClicked( QTreeWidgetItem * item, int column )
 {
   if ( column == 1 && item ) //change item color
   {
+    item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
     QColor c = QColorDialog::getColor( item->background( column ).color() );
     if ( c.isValid() )
     {
       item->setBackground( column, QBrush( c ) );
     }
+  }
+  else if ( column == 2 && item )
+  {
+    item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable );
   }
 }
 
@@ -85,6 +97,7 @@ void QgsPalettedRendererWidget::setFromRenderer( const QgsRasterRenderer* r )
       QTreeWidgetItem* item = new QTreeWidgetItem( mTreeWidget );
       item->setText( 0, QString::number( i ) );
       item->setBackground( 1, QBrush( colors[i] ) );
+      item->setText( 2, pr->label( i ) );
     }
     delete[] colors;
   }
@@ -102,6 +115,7 @@ void QgsPalettedRendererWidget::setFromRenderer( const QgsRasterRenderer* r )
         QTreeWidgetItem* item = new QTreeWidgetItem( mTreeWidget );
         item->setText( 0, QString::number( index ) );
         item->setBackground( 1, QBrush( itemIt->color ) );
+        item->setText( 2, itemIt->label );
         ++index;
       }
     }
