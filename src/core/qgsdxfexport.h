@@ -83,9 +83,11 @@ class QgsDxfExport
     double widthFromSymbolLayer( const QgsSymbolLayerV2* symbolLayer );
 
     //functions for dxf palette
-    void initColorPalette();
-    static int closestMatch( QRgb pixel, const QVector<QRgb>& palette );
-    static int pixel_distance( QRgb p1, QRgb p2 );
+    static int closestColorMatch( QRgb pixel );
+    static int color_distance( QRgb p1, int index );
+    static QRgb createRgbEntry( qreal r, qreal g, qreal b );
+
+    static double mDxfColors[][3];
 
 };
 
