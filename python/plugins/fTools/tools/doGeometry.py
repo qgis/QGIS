@@ -181,9 +181,11 @@ class GeometryDialog( QDialog, Ui_Dialog ):
     if self.chkWriteShapefile.isChecked():
       self.lineEdit.setEnabled( True )
       self.toolOut.setEnabled( True )
+      self.addToCanvasCheck.setEnabled( True )
     else:
       self.lineEdit.setEnabled( False )
       self.toolOut.setEnabled( False )
+      self.addToCanvasCheck.setEnabled( False )
 
   def populateLayers( self ):
     self.inShape.clear()
@@ -567,7 +569,7 @@ class geometryThread( QThread ):
         atMap = inFeat.attributes()
         maxIndex = index1 if index1>index2 else index2
         if maxIndex>len(atMap):
-                atMap += [ "" ] * ( index2+1 - len(atMap) )
+            atMap += [ "" ] * ( index2+1 - len(atMap) )
         atMap[ index1 ] = attr1
         if index1!=index2:
           atMap[ index2 ] = attr2
