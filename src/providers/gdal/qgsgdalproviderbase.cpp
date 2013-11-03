@@ -60,9 +60,15 @@ QList<QgsColorRampShader::ColorRampItem> QgsGdalProviderBase::colorTable( GDALDa
   {
     QgsDebugMsg( "Color table found" );
 
-    // TODO: load category labels and use them for ColorRampItem.label once
-    // GDALGetCategoryNames C function is added to GDAL, see #8886
-    //char ** categoryNames = GDALGetCategoryNames( myGdalBand );
+    // load category labels
+    char ** categoryNames = GDALGetRasterCategoryNames( myGdalBand );
+    QVector<QString> labels;
+    int i = 0;
+    while ( categoryNames[i] )
+    {
+      labels.append( QString( categoryNames[i] ) );
+      i++;
+    }
 
     int myEntryCount = GDALGetColorEntryCount( myGdalColorTable );
     GDALColorInterp myColorInterpretation =  GDALGetRasterColorInterpretation( myGdalBand );
@@ -81,12 +87,17 @@ QList<QgsColorRampShader::ColorRampItem> QgsGdalProviderBase::colorTable( GDALDa
       }
       else
       {
+        QString label = labels.value( myIterator );
+        if ( label.isEmpty() )
+        {
+          label = QString::number( myIterator );
+        }
         //Branch on the color interpretation type
         if ( myColorInterpretation == GCI_GrayIndex )
         {
           QgsColorRampShader::ColorRampItem myColorRampItem;
-          myColorRampItem.label = "";
           myColorRampItem.value = ( double )myIterator;
+          myColorRampItem.label = label;
           myColorRampItem.color = QColor::fromRgb( myColorEntry->c1, myColorEntry->c1, myColorEntry->c1, myColorEntry->c4 );
           ct.append( myColorRampItem );
         }
@@ -94,7 +105,7 @@ QList<QgsColorRampShader::ColorRampItem> QgsGdalProviderBase::colorTable( GDALDa
         {
           QgsColorRampShader::ColorRampItem myColorRampItem;
           myColorRampItem.value = ( double )myIterator;
-          myColorRampItem.label = QString::number( myColorRampItem.value );
+          myColorRampItem.label = label;
           //Branch on palette interpretation
           if ( myPaletteInterpretation  == GPI_RGB )
           {
