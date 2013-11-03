@@ -813,12 +813,26 @@ void QgsGradientFillSymbolLayerV2Widget::setGradientType( int index )
   {
     case 0:
       mLayer->setGradientType( QgsGradientFillSymbolLayerV2::Linear );
+      //set sensible default reference points
+      spinRefPoint1X->setValue( 0.5 );
+      spinRefPoint1Y->setValue( 0 );
+      spinRefPoint2X->setValue( 0.5 );
+      spinRefPoint2Y->setValue( 1 );
       break;
     case 1:
       mLayer->setGradientType( QgsGradientFillSymbolLayerV2::Radial );
+      //set sensible default reference points
+      spinRefPoint1X->setValue( 0 );
+      spinRefPoint1Y->setValue( 0 );
+      spinRefPoint2X->setValue( 1 );
+      spinRefPoint2Y->setValue( 1 );
       break;
     case 2:
       mLayer->setGradientType( QgsGradientFillSymbolLayerV2::Conical );
+      spinRefPoint1X->setValue( 0.5 );
+      spinRefPoint1Y->setValue( 0.5 );
+      spinRefPoint2X->setValue( 1 );
+      spinRefPoint2Y->setValue( 1 );
       break;
   }
   emit changed();

@@ -293,9 +293,9 @@ QgsGradientFillSymbolLayerV2::QgsGradientFillSymbolLayerV2( QColor color, QColor
     mGradientType( gradientType ),
     mCoordinateMode( coordinateMode ),
     mGradientSpread( spread ),
-    mReferencePoint1( QPointF( 0, 0 ) ),
+    mReferencePoint1( QPointF( 0.5, 0 ) ),
     mReferencePoint1IsCentroid( false ),
-    mReferencePoint2( QPointF( 1, 1 ) ),
+    mReferencePoint2( QPointF( 0.5, 1 ) ),
     mReferencePoint2IsCentroid( false ),
     mAngle( 0 ),
     mOffsetUnit( QgsSymbolV2::MM )
@@ -318,9 +318,9 @@ QgsSymbolLayerV2* QgsGradientFillSymbolLayerV2::create( const QgsStringMap& prop
   GradientSpread gradientSpread = QgsGradientFillSymbolLayerV2::Pad;
   //default to gradient from the default fill color to white
   QColor color = DEFAULT_SIMPLEFILL_COLOR, color2 = Qt::white;
-  QPointF referencePoint1 = QPointF( 0, 0 );
+  QPointF referencePoint1 = QPointF( 0.5, 0 );
   bool refPoint1IsCentroid = false;
-  QPointF referencePoint2 = QPointF( 1, 1 );
+  QPointF referencePoint2 = QPointF( 0.5, 1 );
   bool refPoint2IsCentroid = false;
   double angle = 0;
   QPointF offset;
