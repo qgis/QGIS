@@ -106,6 +106,7 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
 
   QPointF scenePoint = mapToScene( e->pos() );
   QPointF snappedScenePoint = composition()->snapPointToGrid( scenePoint );
+  mMousePressStartPos = e->pos();
 
   //lock/unlock position of item with right click
   if ( e->button() == Qt::RightButton )
@@ -576,11 +577,36 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
     return;
   }
 
+  QPoint mousePressStopPoint = e->pos();
+  int diffX = mousePressStopPoint.x() - mMousePressStartPos.x();
+  int diffY = mousePressStopPoint.y() - mMousePressStartPos.y();
+
+  //was this just a click? or a click and drag?
+  bool clickOnly = false;
+  if ( qAbs( diffX ) < 2 && qAbs( diffY ) < 2 )
+  {
+    clickOnly = true;
+  }
+
   QPointF scenePoint = mapToScene( e->pos() );
 
   if ( mPanning )
   {
     mPanning = false;
+
+    if ( clickOnly && e->button() == Qt::MidButton )
+    {
+      //middle mouse button click = recenter on point
+
+      //get current visible part of scene
+      QRect viewportRect( 0, 0, viewport()->width(), viewport()->height() );
+      QgsRectangle visibleRect = QgsRectangle( mapToScene( viewportRect ).boundingRect() );
+      visibleRect.scale( 1, scenePoint.x(), scenePoint.y() );
+      QRectF boundsRect = visibleRect.toRectF();
+
+      //zoom view to fit desired bounds
+      fitInView( boundsRect, Qt::KeepAspectRatio );
+    }
 
     //set new cursor
     if ( mCurrentTool == Pan )
@@ -1231,6 +1257,12 @@ void QgsComposerView::wheelZoom( QWheelEvent * event )
   QSettings mySettings;
   int wheelAction = mySettings.value( "/qgis/wheel_action", 2 ).toInt();
   double zoomFactor = mySettings.value( "/qgis/zoom_factor", 2 ).toDouble();
+
+  if ( event->modifiers() & Qt::ControlModifier )
+  {
+    //holding ctrl while wheel zooming results in a finer zoom
+    zoomFactor = 1.0 + ( zoomFactor - 1.0 ) / 10.0;
+  }
 
   //caculate zoom scale factor
   bool zoomIn = event->delta() > 0;

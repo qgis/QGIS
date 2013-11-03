@@ -190,6 +190,7 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     bool mPanning;
     QPoint mMouseLastXY;
     QPoint mMouseCurrentXY;
+    QPoint mMousePressStartPos;
 
     /**Zoom composition from a mouse wheel event*/
     void wheelZoom( QWheelEvent * event );
