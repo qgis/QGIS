@@ -188,9 +188,17 @@ class CORE_EXPORT QgsGradientFillSymbolLayerV2 : public QgsFillSymbolLayerV2
     void setReferencePoint1( QPointF referencePoint ) { mReferencePoint1 = referencePoint; };
     QPointF referencePoint1() const { return mReferencePoint1; };
 
+    /**Sets the starting point of the gradient to be the feature centroid*/
+    void setReferencePoint1IsCentroid( bool isCentroid ) { mReferencePoint1IsCentroid = isCentroid; };
+    bool referencePoint1IsCentroid() const { return mReferencePoint1IsCentroid; };
+
     /**End point of gradient fill, in the range [0,0] - [1,1]*/
     void setReferencePoint2( QPointF referencePoint ) { mReferencePoint2 = referencePoint; };
     QPointF referencePoint2() const { return mReferencePoint2; };
+
+    /**Sets the end point of the gradient to be the feature centroid*/
+    void setReferencePoint2IsCentroid( bool isCentroid ) { mReferencePoint2IsCentroid = isCentroid; };
+    bool referencePoint2IsCentroid() const { return mReferencePoint2IsCentroid; };
 
     /**Rotation angle for gradient fill. Can be used to rotate a gradient around its centre point*/
     void setAngle( double angle ) { mAngle = angle; };
@@ -216,7 +224,9 @@ class CORE_EXPORT QgsGradientFillSymbolLayerV2 : public QgsFillSymbolLayerV2
     GradientSpread mGradientSpread;
 
     QPointF mReferencePoint1;
+    bool mReferencePoint1IsCentroid;
     QPointF mReferencePoint2;
+    bool mReferencePoint2IsCentroid;
     double mAngle;
 
     QPointF mOffset;
@@ -225,7 +235,7 @@ class CORE_EXPORT QgsGradientFillSymbolLayerV2 : public QgsFillSymbolLayerV2
   private:
 
     //helper functions for data defined symbology
-    void applyDataDefinedSymbology( QgsSymbolV2RenderContext& context );
+    void applyDataDefinedSymbology( QgsSymbolV2RenderContext& context, const QPolygonF& points );
 
     /**Applies the gradient to a brush*/
     void applyGradient( const QgsSymbolV2RenderContext& context, QBrush& brush, const QColor& color, const QColor& color2,

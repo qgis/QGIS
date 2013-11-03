@@ -38,6 +38,7 @@ class GUI_EXPORT QgsDataDefinedSymbolDialog: public QDialog, private Ui::QgsData
     static QString gradientTypeHelpText();
     static QString gradientCoordModeHelpText();
     static QString gradientSpreadHelpText();
+    static QString boolHelpText();
 
   private slots:
     void expressionButtonClicked();

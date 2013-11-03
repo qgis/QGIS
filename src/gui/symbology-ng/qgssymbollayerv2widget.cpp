@@ -638,8 +638,10 @@ QgsGradientFillSymbolLayerV2Widget::QgsGradientFillSymbolLayerV2Widget( const Qg
   connect( spinOffsetY, SIGNAL( valueChanged( double ) ), this, SLOT( offsetChanged() ) );
   connect( spinRefPoint1X, SIGNAL( valueChanged( double ) ), this, SLOT( referencePointChanged() ) );
   connect( spinRefPoint1Y, SIGNAL( valueChanged( double ) ), this, SLOT( referencePointChanged() ) );
+  connect( checkRefPoint1Centroid, SIGNAL( toggled( bool ) ), this, SLOT( referencePointChanged() ) );
   connect( spinRefPoint2X, SIGNAL( valueChanged( double ) ), this, SLOT( referencePointChanged() ) );
   connect( spinRefPoint2Y, SIGNAL( valueChanged( double ) ), this, SLOT( referencePointChanged() ) );
+  connect( checkRefPoint2Centroid, SIGNAL( toggled( bool ) ), this, SLOT( referencePointChanged() ) );
 }
 
 void QgsGradientFillSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
@@ -696,6 +698,8 @@ void QgsGradientFillSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer
   {
     case QgsGradientFillSymbolLayerV2::Viewport:
       cboCoordinateMode->setCurrentIndex( 1 );
+      checkRefPoint1Centroid->setEnabled( false );
+      checkRefPoint2Centroid->setEnabled( false );
       break;
     case QgsGradientFillSymbolLayerV2::Feature:
     default:
@@ -725,12 +729,28 @@ void QgsGradientFillSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer
   spinRefPoint1Y->blockSignals( true );
   spinRefPoint1Y->setValue( mLayer->referencePoint1().y() );
   spinRefPoint1Y->blockSignals( false );
+  checkRefPoint1Centroid->blockSignals( true );
+  checkRefPoint1Centroid->setChecked( mLayer->referencePoint1IsCentroid() );
+  if ( mLayer->referencePoint1IsCentroid() )
+  {
+    spinRefPoint1X->setEnabled( false );
+    spinRefPoint1Y->setEnabled( false );
+  }
+  checkRefPoint1Centroid->blockSignals( false );
   spinRefPoint2X->blockSignals( true );
   spinRefPoint2X->setValue( mLayer->referencePoint2().x() );
   spinRefPoint2X->blockSignals( false );
   spinRefPoint2Y->blockSignals( true );
   spinRefPoint2Y->setValue( mLayer->referencePoint2().y() );
   spinRefPoint2Y->blockSignals( false );
+  checkRefPoint2Centroid->blockSignals( true );
+  checkRefPoint2Centroid->setChecked( mLayer->referencePoint2IsCentroid() );
+  if ( mLayer->referencePoint2IsCentroid() )
+  {
+    spinRefPoint2X->setEnabled( false );
+    spinRefPoint2Y->setEnabled( false );
+  }
+  checkRefPoint2Centroid->blockSignals( false );
 
   spinOffsetX->blockSignals( true );
   spinOffsetX->setValue( mLayer->offset().x() );
@@ -810,10 +830,20 @@ void QgsGradientFillSymbolLayerV2Widget::setCoordinateMode( int index )
   switch ( index )
   {
     case 0:
+      //feature coordinate mode
       mLayer->setCoordinateMode( QgsGradientFillSymbolLayerV2::Feature );
+      //allow choice of centroid reference positions
+      checkRefPoint1Centroid->setEnabled( true );
+      checkRefPoint2Centroid->setEnabled( true );
       break;
     case 1:
+      //viewport coordinate mode
       mLayer->setCoordinateMode( QgsGradientFillSymbolLayerV2::Viewport );
+      //disable choice of centroid reference positions
+      checkRefPoint1Centroid->setChecked( Qt::Unchecked );
+      checkRefPoint1Centroid->setEnabled( false );
+      checkRefPoint2Centroid->setChecked( Qt::Unchecked );
+      checkRefPoint2Centroid->setEnabled( false );
       break;
   }
 
@@ -847,7 +877,9 @@ void QgsGradientFillSymbolLayerV2Widget::offsetChanged()
 void QgsGradientFillSymbolLayerV2Widget::referencePointChanged()
 {
   mLayer->setReferencePoint1( QPointF( spinRefPoint1X->value(), spinRefPoint1Y->value() ) );
+  mLayer->setReferencePoint1IsCentroid( checkRefPoint1Centroid->isChecked() );
   mLayer->setReferencePoint2( QPointF( spinRefPoint2X->value(), spinRefPoint2Y->value() ) );
+  mLayer->setReferencePoint2IsCentroid( checkRefPoint2Centroid->isChecked() );
   emit changed();
 }
 
@@ -886,10 +918,14 @@ void QgsGradientFillSymbolLayerV2Widget::on_mDataDefinedPropertiesButton_clicked
       QgsDataDefinedSymbolDialog::doubleHelpText() );
   dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "reference1_y", tr( "Reference Point 1 (y)" ), mLayer->dataDefinedPropertyString( "reference1_y" ),
       QgsDataDefinedSymbolDialog::doubleHelpText() );
+  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "reference1_iscentroid", tr( "Reference Point 1 (is centroid)" ), mLayer->dataDefinedPropertyString( "reference1_iscentroid" ),
+      QgsDataDefinedSymbolDialog::boolHelpText() );
   dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "reference2_x", tr( "Reference Point 2 (x)" ), mLayer->dataDefinedPropertyString( "reference2_x" ),
       QgsDataDefinedSymbolDialog::doubleHelpText() );
   dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "reference2_y", tr( "Reference Point 2 (y)" ), mLayer->dataDefinedPropertyString( "reference2_y" ),
       QgsDataDefinedSymbolDialog::doubleHelpText() );
+  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "reference2_iscentroid", tr( "Reference Point 2 (is centroid)" ), mLayer->dataDefinedPropertyString( "reference2_iscentroid" ),
+      QgsDataDefinedSymbolDialog::boolHelpText() );
 
   QgsDataDefinedSymbolDialog d( dataDefinedProperties, mVectorLayer );
   if ( d.exec() == QDialog::Accepted )

@@ -56,6 +56,7 @@ class TestQgsGradients: public QObject
     void gradientSymbolConical();
     void gradientSymbolViewport();
     void gradientSymbolReferencePoints();
+    void gradientSymbolCentroid();
     void gradientSymbolReflectSpread();
     void gradientSymbolRepeatSpread();
     void gradientSymbolRotate();
@@ -198,6 +199,17 @@ void TestQgsGradients::gradientSymbolReferencePoints()
   QVERIFY( imageCheck( "gradient_refpoints" ) );
   mGradientFill->setReferencePoint1( QPointF( 0, 0 ) );
   mGradientFill->setReferencePoint2( QPointF( 1, 1 ) );
+}
+
+void TestQgsGradients::gradientSymbolCentroid()
+{
+  mReport += "<h2>Gradient symbol renderer centroid reference point test</h2>\n";
+  mGradientFill->setReferencePoint1IsCentroid( true );
+  QVERIFY( imageCheck( "gradient_ref1centroid" ) );
+  mGradientFill->setReferencePoint1IsCentroid( false );
+  mGradientFill->setReferencePoint2IsCentroid( true );
+  QVERIFY( imageCheck( "gradient_ref2centroid" ) );
+  mGradientFill->setReferencePoint2IsCentroid( false );
 }
 
 void TestQgsGradients::gradientSymbolReflectSpread()

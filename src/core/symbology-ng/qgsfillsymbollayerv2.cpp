@@ -294,7 +294,9 @@ QgsGradientFillSymbolLayerV2::QgsGradientFillSymbolLayerV2( QColor color, QColor
     mCoordinateMode( coordinateMode ),
     mGradientSpread( spread ),
     mReferencePoint1( QPointF( 0, 0 ) ),
+    mReferencePoint1IsCentroid( false ),
     mReferencePoint2( QPointF( 1, 1 ) ),
+    mReferencePoint2IsCentroid( false ),
     mAngle( 0 ),
     mOffsetUnit( QgsSymbolV2::MM )
 {
@@ -317,7 +319,9 @@ QgsSymbolLayerV2* QgsGradientFillSymbolLayerV2::create( const QgsStringMap& prop
   //default to gradient from the default fill color to white
   QColor color = DEFAULT_SIMPLEFILL_COLOR, color2 = Qt::white;
   QPointF referencePoint1 = QPointF( 0, 0 );
+  bool refPoint1IsCentroid = false;
   QPointF referencePoint2 = QPointF( 1, 1 );
+  bool refPoint2IsCentroid = false;
   double angle = 0;
   QPointF offset;
 
@@ -336,8 +340,12 @@ QgsSymbolLayerV2* QgsGradientFillSymbolLayerV2::create( const QgsStringMap& prop
     color2 = QgsSymbolLayerV2Utils::decodeColor( props["gradient_color2"] );
   if ( props.contains( "reference_point1" ) )
     referencePoint1 = QgsSymbolLayerV2Utils::decodePoint( props["reference_point1"] );
+  if ( props.contains( "reference_point1_iscentroid" ) )
+    refPoint1IsCentroid = props["reference_point1_iscentroid"].toInt();
   if ( props.contains( "reference_point2" ) )
     referencePoint2 = QgsSymbolLayerV2Utils::decodePoint( props["reference_point2"] );
+  if ( props.contains( "reference_point2_iscentroid" ) )
+    refPoint2IsCentroid = props["reference_point2_iscentroid"].toInt();
   if ( props.contains( "angle" ) )
     angle = props["angle"].toDouble();
   if ( props.contains( "offset" ) )
@@ -352,7 +360,9 @@ QgsSymbolLayerV2* QgsGradientFillSymbolLayerV2::create( const QgsStringMap& prop
   if ( props.contains( "offset_unit" ) )
     sl->setOffsetUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["offset_unit"] ) );
   sl->setReferencePoint1( referencePoint1 );
+  sl->setReferencePoint1IsCentroid( refPoint1IsCentroid );
   sl->setReferencePoint2( referencePoint2 );
+  sl->setReferencePoint2IsCentroid( refPoint2IsCentroid );
   sl->setAngle( angle );
   if ( gradientRamp )
     sl->setColorRamp( gradientRamp );
@@ -374,10 +384,14 @@ QgsSymbolLayerV2* QgsGradientFillSymbolLayerV2::create( const QgsStringMap& prop
     sl->setDataDefinedProperty( "reference1_x", props["reference1_x_expression"] );
   if ( props.contains( "reference1_y_expression" ) )
     sl->setDataDefinedProperty( "reference1_y", props["reference1_y_expression"] );
+  if ( props.contains( "reference1_iscentroid_expression" ) )
+    sl->setDataDefinedProperty( "reference1_iscentroid", props["reference1_iscentroid_expression"] );
   if ( props.contains( "reference2_x_expression" ) )
     sl->setDataDefinedProperty( "reference2_x", props["reference2_x_expression"] );
   if ( props.contains( "reference2_y_expression" ) )
     sl->setDataDefinedProperty( "reference2_y", props["reference2_y_expression"] );
+  if ( props.contains( "reference2_iscentroid_expression" ) )
+    sl->setDataDefinedProperty( "reference2_iscentroid", props["reference2_iscentroid_expression"] );
 
   return sl;
 }
@@ -393,7 +407,7 @@ QString QgsGradientFillSymbolLayerV2::layerType() const
   return "GradientFill";
 }
 
-void QgsGradientFillSymbolLayerV2::applyDataDefinedSymbology( QgsSymbolV2RenderContext& context )
+void QgsGradientFillSymbolLayerV2::applyDataDefinedSymbology( QgsSymbolV2RenderContext& context, const QPolygonF& points )
 {
   //first gradient color
   QgsExpression* colorExpression = expression( "color" );
@@ -493,6 +507,10 @@ void QgsGradientFillSymbolLayerV2::applyDataDefinedSymbology( QgsSymbolV2RenderC
   double refPoint1Y = mReferencePoint1.y();
   if ( ref1YExpression )
     refPoint1Y = ref1YExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble();
+  QgsExpression* ref1IsCentroidExpression = expression( "reference1_iscentroid" );
+  bool refPoint1IsCentroid = mReferencePoint1IsCentroid;
+  if ( ref1IsCentroidExpression )
+    refPoint1IsCentroid = ref1IsCentroidExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toBool();
 
   //reference point 2 x & y
   QgsExpression* ref2XExpression = expression( "reference2_x" );
@@ -503,6 +521,31 @@ void QgsGradientFillSymbolLayerV2::applyDataDefinedSymbology( QgsSymbolV2RenderC
   double refPoint2Y = mReferencePoint2.y();
   if ( ref2YExpression )
     refPoint2Y = ref2YExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble();
+  QgsExpression* ref2IsCentroidExpression = expression( "reference2_iscentroid" );
+  bool refPoint2IsCentroid = mReferencePoint2IsCentroid;
+  if ( ref2IsCentroidExpression )
+    refPoint2IsCentroid = ref2IsCentroidExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toBool();
+
+  if ( refPoint1IsCentroid || refPoint2IsCentroid )
+  {
+    //either the gradient is starting or ending at a centroid, so calculate it
+    QPointF centroid = QgsSymbolLayerV2Utils::polygonCentroid( points );
+    //centroid coordinates need to be scaled to a range [0, 1] relative to polygon bounds
+    QRectF bbox = points.boundingRect();
+    double centroidX = ( centroid.x() - bbox.left() ) / bbox.width();
+    double centroidY = ( centroid.y() - bbox.top() ) / bbox.height();
+
+    if ( refPoint1IsCentroid )
+    {
+      refPoint1X = centroidX;
+      refPoint1Y = centroidY;
+    }
+    if ( refPoint2IsCentroid )
+    {
+      refPoint2X = centroidX;
+      refPoint2Y = centroidY;
+    }
+  }
 
   //update gradient with data defined values
   applyGradient( context, mBrush, color, color2,  mGradientColorType, mGradientRamp, gradientType, coordinateMode,
@@ -545,8 +588,8 @@ void QgsGradientFillSymbolLayerV2::applyGradient( const QgsSymbolV2RenderContext
   fillColor2.setAlphaF( context.alpha() * fillColor2.alphaF() );
 
   //rotate reference points
-  QPointF rotatedReferencePoint1 = rotateReferencePoint( referencePoint1, angle );
-  QPointF rotatedReferencePoint2 = rotateReferencePoint( referencePoint2, angle );
+  QPointF rotatedReferencePoint1 = angle != 0 ? rotateReferencePoint( referencePoint1, angle ) : referencePoint1;
+  QPointF rotatedReferencePoint2 = angle != 0 ? rotateReferencePoint( referencePoint2, angle ) : referencePoint2;
 
   //create a QGradient with the desired properties
   QGradient gradient;
@@ -604,14 +647,11 @@ void QgsGradientFillSymbolLayerV2::applyGradient( const QgsSymbolV2RenderContext
 
 void QgsGradientFillSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context )
 {
-  //update mBrush to use a gradient fill with specified properties
-  applyGradient( context, mBrush, mColor, mColor2,  mGradientColorType, mGradientRamp, mGradientType, mCoordinateMode,
-                 mGradientSpread, mReferencePoint1, mReferencePoint2, mAngle );
-
   QColor selColor = context.renderContext().selectionColor();
   if ( ! selectionIsOpaque ) selColor.setAlphaF( context.alpha() );
   mSelBrush = QBrush( selColor );
 
+  //update mBrush to use a gradient fill with specified properties
   prepareExpressions( context.layer() );
 }
 
@@ -629,7 +669,7 @@ void QgsGradientFillSymbolLayerV2::renderPolygon( const QPolygonF& points, QList
   }
 
   QPen mSelPen;
-  applyDataDefinedSymbology( context );
+  applyDataDefinedSymbology( context, points );
 
   p->setBrush( context.selected() ? mSelBrush : mBrush );
   p->setPen( QPen( Qt::NoPen ) );
@@ -660,7 +700,9 @@ QgsStringMap QgsGradientFillSymbolLayerV2::properties() const
   map["coordinate_mode"] = QString::number( mCoordinateMode );
   map["spread"] = QString::number( mGradientSpread );
   map["reference_point1"] = QgsSymbolLayerV2Utils::encodePoint( mReferencePoint1 );
+  map["reference_point1_iscentroid"] = QString::number( mReferencePoint1IsCentroid );
   map["reference_point2"] = QgsSymbolLayerV2Utils::encodePoint( mReferencePoint2 );
+  map["reference_point2_iscentroid"] = QString::number( mReferencePoint2IsCentroid );
   map["angle"] = QString::number( mAngle );
   map["offset"] = QgsSymbolLayerV2Utils::encodePoint( mOffset );
   map["offset_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mOffsetUnit );
@@ -678,7 +720,9 @@ QgsSymbolLayerV2* QgsGradientFillSymbolLayerV2::clone() const
   if ( mGradientRamp )
     sl->setColorRamp( mGradientRamp->clone() );
   sl->setReferencePoint1( mReferencePoint1 );
+  sl->setReferencePoint1IsCentroid( mReferencePoint1IsCentroid );
   sl->setReferencePoint2( mReferencePoint2 );
+  sl->setReferencePoint2IsCentroid( mReferencePoint2IsCentroid );
   sl->setAngle( mAngle );
   sl->setOffset( mOffset );
   sl->setOffsetUnit( mOffsetUnit );
@@ -2045,23 +2089,8 @@ void QgsCentroidFillSymbolLayerV2::renderPolygon( const QPolygonF& points, QList
 {
   Q_UNUSED( rings );
 
-  // calculate centroid
-  double cx = 0, cy = 0;
-  double area, sum = 0;
-  for ( int i = points.count() - 1, j = 0; j < points.count(); i = j++ )
-  {
-    const QPointF& p1 = points[i];
-    const QPointF& p2 = points[j];
-    area = p1.x() * p2.y() - p1.y() * p2.x();
-    sum += area;
-    cx += ( p1.x() + p2.x() ) * area;
-    cy += ( p1.y() + p2.y() ) * area;
-  }
-  sum *= 3.0;
-  cx /= sum;
-  cy /= sum;
-
-  mMarker->renderPoint( QPointF( cx, cy ), context.feature(), context.renderContext(), -1, context.selected() );
+  QPointF centroid = QgsSymbolLayerV2Utils::polygonCentroid( points );
+  mMarker->renderPoint( centroid, context.feature(), context.renderContext(), -1, context.selected() );
 }
 
 QgsStringMap QgsCentroidFillSymbolLayerV2::properties() const

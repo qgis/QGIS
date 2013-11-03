@@ -295,9 +295,21 @@ class TestQgsSymbolLayerV2(TestCase):
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
         assert mExpectedValue == mValue, mMessage
 
+        mExpectedValue = True
+        mGradientLayer.setReferencePoint1IsCentroid( mExpectedValue )
+        mValue = mGradientLayer.referencePoint1IsCentroid()
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        assert mExpectedValue == mValue, mMessage
+
         mExpectedValue = QPointF(0.2, 0.4)
         mGradientLayer.setReferencePoint2( mExpectedValue )
         mValue = mGradientLayer.referencePoint2()
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        assert mExpectedValue == mValue, mMessage
+
+        mExpectedValue = True
+        mGradientLayer.setReferencePoint2IsCentroid( mExpectedValue )
+        mValue = mGradientLayer.referencePoint2IsCentroid()
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
         assert mExpectedValue == mValue, mMessage
 

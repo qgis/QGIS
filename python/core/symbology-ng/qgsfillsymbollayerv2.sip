@@ -118,8 +118,6 @@ class QgsGradientFillSymbolLayerV2 : QgsFillSymbolLayerV2
 
     QgsSymbolLayerV2* clone() const /Factory/;
 
-//up to here
-
     GradientType gradientType() const;
     void setGradientType( GradientType gradientType );
 
@@ -140,9 +138,15 @@ class QgsGradientFillSymbolLayerV2 : QgsFillSymbolLayerV2
 
     void setReferencePoint1( QPointF referencePoint );
     QPointF referencePoint1() const;
+    
+    void setReferencePoint1IsCentroid( bool isCentroid );
+    bool referencePoint1IsCentroid() const;
 
     void setReferencePoint2( QPointF referencePoint );
     QPointF referencePoint2() const;
+    
+    void setReferencePoint2IsCentroid( bool isCentroid );
+    bool referencePoint2IsCentroid() const;    
 
     void setAngle( double angle );
     double angle() const;

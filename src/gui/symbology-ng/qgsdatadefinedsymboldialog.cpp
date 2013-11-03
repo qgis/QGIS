@@ -208,4 +208,9 @@ QString QgsDataDefinedSymbolDialog::gradientSpreadHelpText()
   return tr( "'pad'|'repeat'|'reflect'" );
 }
 
+QString QgsDataDefinedSymbolDialog::boolHelpText()
+{
+  return tr( "0 (false)|1 (true)" );
+}
+
 
