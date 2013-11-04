@@ -63,11 +63,14 @@ QList<QgsColorRampShader::ColorRampItem> QgsGdalProviderBase::colorTable( GDALDa
     // load category labels
     char ** categoryNames = GDALGetRasterCategoryNames( myGdalBand );
     QVector<QString> labels;
-    int i = 0;
-    while ( categoryNames[i] )
+    if ( categoryNames )
     {
-      labels.append( QString( categoryNames[i] ) );
-      i++;
+      int i = 0;
+      while ( categoryNames[i] )
+      {
+        labels.append( QString( categoryNames[i] ) );
+        i++;
+      }
     }
 
     int myEntryCount = GDALGetColorEntryCount( myGdalColorTable );
