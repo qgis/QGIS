@@ -694,7 +694,7 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
                                      .setSubsetOfAttributes( attributes );
 
   // Enable the simplification of the geometries before fetch the features using the current map2pixel context.
-  if ( simplifyDrawingCanbeApplied() && !(featureRequest.flags() & QgsFeatureRequest::NoGeometry) )
+  if ( simplifyDrawingCanbeApplied() && !(featureRequest.flags() & QgsFeatureRequest::NoGeometry) && !rendererContext.renderingPrintComposition() )
   {
     QPainter* p = rendererContext.painter();
     float dpi = ( p->device()->logicalDpiX() + p->device()->logicalDpiY() ) / 2;
@@ -702,7 +702,7 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
     featureRequest.setFlags( featureRequest.flags() | QgsFeatureRequest::SimplifyGeometries );
     featureRequest.setCoordinateTransform( rendererContext.coordinateTransform() );
     featureRequest.setMapToPixel( &rendererContext.mapToPixel() );
-    featureRequest.setMapToPixelTol( mSimplifyDrawingTol * 72.0f/dpi );
+    featureRequest.setMapToPixelTol( mSimplifyDrawingTol * 96.0f/dpi );
   }
 
   QgsFeatureIterator fit = getFeatures( featureRequest );

@@ -191,13 +191,14 @@ void QgsComposerMap::draw( QPainter *painter, const QgsRectangle& extent, const 
   {
     theRendererContext->setDrawEditingInformation( false );
     theRendererContext->setRenderingStopped( false );
+    theRendererContext->setRenderingPrintComposition( true );
+
+    // force vector output (no caching of marker images etc.)
+    theRendererContext->setForceVectorOutput( true );
+
+    // make the renderer respect the composition's useAdvancedEffects flag
+    theRendererContext->setUseAdvancedEffects( mComposition->useAdvancedEffects() );
   }
-
-  // force vector output (no caching of marker images etc.)
-  theRendererContext->setForceVectorOutput( true );
-
-  // make the renderer respect the composition's useAdvancedEffects flag
-  theRendererContext->setUseAdvancedEffects( mComposition->useAdvancedEffects() );
 
   //force composer map scale for scale dependent visibility
   double bk_scale = theMapRenderer.scale();
