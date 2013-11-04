@@ -95,6 +95,10 @@ class CORE_EXPORT QgsRenderContext
     //! Added in QGIS v2.0
     void setSelectionColor( const QColor& color ) { mSelectionColor = color; }
 
+    /**True if the rendering request comes from a print composition, false it comes from a normal window request */
+    void setRenderingPrintComposition( bool renderingPrintComposition ) { mRenderingPrintComposition = renderingPrintComposition; }
+    bool renderingPrintComposition( ) const { return mRenderingPrintComposition; }
+
   private:
 
     /**Painter for rendering operations*/
@@ -133,6 +137,9 @@ class CORE_EXPORT QgsRenderContext
 
     /** Color used for features that are marked as selected */
     QColor mSelectionColor;
+
+    /**True if the rendering request comes from a print composition, false it comes from a normal window request */
+    bool mRenderingPrintComposition;
 };
 
 #endif

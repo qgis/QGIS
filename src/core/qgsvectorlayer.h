@@ -1375,7 +1375,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     bool simplifyDrawing() const { return mSimplifyDrawing; }
 
     /** Returns whether the VectorLayer can apply geometry simplification in FeatureRequests */
-    bool simplifyDrawingCanbeApplied() const { return mSimplifyDrawing && !mEditBuffer; }
+    bool simplifyDrawingCanbeApplied() const { return mSimplifyDrawing && !mEditBuffer && ( !mCurrentRendererContext || !mCurrentRendererContext->renderingPrintComposition() ); }
 
   public slots:
     /**
