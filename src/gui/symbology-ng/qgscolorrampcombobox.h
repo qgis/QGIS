@@ -39,12 +39,18 @@ class GUI_EXPORT QgsColorRampComboBox : public QComboBox
 
     static QSize rampIconSize;
 
+    void setShowGradientOnly( bool gradientOnly ) { mShowGradientOnly = gradientOnly; };
+
   public slots:
     void colorRampChanged( int index );
 
   protected:
     QgsStyleV2* mStyle;
     QgsVectorColorRampV2* mSourceColorRamp; // owns the copy
+
+  private:
+    bool mShowGradientOnly;
+
 };
 
 #endif // QGSCOLORRAMPCOMBOBOX_H

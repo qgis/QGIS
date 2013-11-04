@@ -116,8 +116,8 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
     def closeEvent(self, evt):
         if self.hasChanged:
             ret = QMessageBox.question(self, self.tr('Message'),
-                    self.tr('The are unchanged changes in model. Close \
-                             modeler without saving?'),
+                    self.tr('The are unchanged changes in model. Close '
+                            'modeler without saving?'),
                     QMessageBox.Yes | QMessageBox.No,
                     QMessageBox.No)
 

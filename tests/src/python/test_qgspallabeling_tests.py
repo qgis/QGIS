@@ -51,7 +51,7 @@ class TestPointBase(object):
         # Label color change
         self.lyr.textColor = Qt.blue
         self.checkTest()
-        
+
     def test_partials_labels_enabled(self):
         # Set Big font size
         font = QFont(self._TestFont)

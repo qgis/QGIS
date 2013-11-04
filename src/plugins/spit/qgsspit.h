@@ -110,7 +110,7 @@ class QgsSpit : public QDialog, private Ui::QgsSpitBase
     QStringList schema_list;
     QStringList geometry_list;
     int total_features;
-    std::vector <QgsShapeFile *> fileList;
+    QVector<QgsShapeFile *> fileList;
     int defSrid;
     QString defGeom;
     int defaultSridValue;

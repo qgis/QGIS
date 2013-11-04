@@ -89,17 +89,17 @@ class TestQgsRasterLayer: public QObject
 class TestSignalReceiver : public QObject
 {
     Q_OBJECT;
-    
-public:
-  TestSignalReceiver() : QObject( 0 ),
-                         rendererChanged( false )
-  {}
-  bool rendererChanged;
-public slots:
-  void onRendererChanged()
-  {
-    rendererChanged = true;
-  }
+
+  public:
+    TestSignalReceiver() : QObject( 0 ),
+        rendererChanged( false )
+    {}
+    bool rendererChanged;
+  public slots:
+    void onRendererChanged()
+    {
+      rendererChanged = true;
+    }
 };
 
 //runs before all tests
@@ -502,7 +502,7 @@ void TestQgsRasterLayer::setRenderer()
   TestSignalReceiver receiver;
   QObject::connect( mpRasterLayer, SIGNAL( rendererChanged() ),
                     &receiver, SLOT( onRendererChanged() ) );
-  QgsRasterRenderer* renderer = (QgsRasterRenderer*) mpRasterLayer->renderer()->clone();
+  QgsRasterRenderer* renderer = ( QgsRasterRenderer* ) mpRasterLayer->renderer()->clone();
   QCOMPARE( receiver.rendererChanged, false );
   mpRasterLayer->setRenderer( renderer );
   QCOMPARE( receiver.rendererChanged, true );

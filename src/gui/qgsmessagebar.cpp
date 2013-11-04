@@ -76,13 +76,14 @@ QgsMessageBar::QgsMessageBar( QWidget *parent )
   mCloseBtn->setToolTip( tr( "Close" ) );
   mCloseBtn->setMinimumWidth( 40 );
   mCloseBtn->setStyleSheet(
-    "QToolButton { background-color: rgba(255, 255, 255, 0); } "
-    "QToolButton::menu-indicator { subcontrol-position: right bottom; subcontrol-origin: padding; bottom: 2px; }" );
+    "QToolButton { background-color: rgba(0, 0, 0, 0); } "
+    "QToolButton::menu-button { background-color: rgba(0, 0, 0, 0); " );
   mCloseBtn->setCursor( Qt::PointingHandCursor );
   mCloseBtn->setIcon( QgsApplication::getThemeIcon( "/mIconClose.png" ) );
   mCloseBtn->setIconSize( QSize( 18, 18 ) );
   mCloseBtn->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Maximum );
   mCloseBtn->setMenu( mCloseMenu );
+  mCloseBtn->setPopupMode( QToolButton::MenuButtonPopup );
   connect( mCloseBtn, SIGNAL( clicked() ), this, SLOT( popWidget() ) );
   mLayout->addWidget( mCloseBtn, 0, 3, 1, 1 );
 
@@ -319,4 +320,8 @@ void QgsMessageBar::resetCountdown()
 void QgsMessageBar::updateItemCount()
 {
   mItemCount->setText( mItems.count() > 0 ? tr( "%n more", "unread messages", mItems.count() ) : QString( "" ) );
+
+  // do not show the down arrow for opening menu with "close all" if there is just one message
+  mCloseBtn->setMenu( mItems.count() > 0 ? mCloseMenu : 0 );
+  mCloseBtn->setPopupMode( mItems.count() > 0 ? QToolButton::MenuButtonPopup : QToolButton::DelayedPopup );
 }

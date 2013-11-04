@@ -204,6 +204,12 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Set tool to move item content
     void on_mActionMoveItemContent_triggered();
 
+    //! Set tool to move item content
+    void on_mActionPan_triggered();
+
+    //! Set tool to mouse zoom
+    void on_mActionMouseZoom_triggered();
+
     //! Group selected items
     void on_mActionGroupItems_triggered();
 
@@ -242,7 +248,7 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     //! Select next item below
     void on_mActionSelectNextAbove_triggered();
-    
+
     //! Select next item above
     void on_mActionSelectNextBelow_triggered();
 
@@ -281,6 +287,24 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     //!Redo last composer change
     void on_mActionRedo_triggered();
+
+    //!Show/hide grid
+    void on_mActionShowGrid_triggered( bool checked );
+
+    //!Enable or disable snap items to grid
+    void on_mActionSnapGrid_triggered( bool checked );
+
+    //!Show/hide guides
+    void on_mActionShowGuides_triggered( bool checked );
+
+    //!Enable or disable snap items to guides
+    void on_mActionSnapGuides_triggered( bool checked );
+
+    //!Enable or disable smart guides
+    void on_mActionSmartGuides_triggered( bool checked );
+
+    //!Clear guides
+    void on_mActionClearGuides_triggered();
 
     //! Save window state
     void saveWindowState();
@@ -335,7 +359,11 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Raise, unminimize and activate this window
     void activate();
 
-    void on_mButtonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    //! Updates cursor position in status bar
+    void updateStatusCursorPos( QPointF position );
+
+    //! Updates status bar composition message
+    void updateStatusCompositionMsg( QString message );
 
   private:
 
@@ -373,8 +401,18 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Write a world file
     void writeWorldFile( QString fileName, double a, double b, double c, double d, double e, double f ) const;
 
+    //! Updates the grid/guide action status based on compositions grid/guide settings
+    void restoreGridSettings();
+
     /**Composer title*/
     QString mTitle;
+
+    /**Labels in status bar which shows current mouse position*/
+    QLabel* mStatusCursorXLabel;
+    QLabel* mStatusCursorYLabel;
+    QLabel* mStatusCursorPageLabel;
+    /**Label in status bar which shows messages from the composition*/
+    QLabel* mStatusCompositionLabel;
 
     //! Pointer to composer view
     QgsComposerView *mView;
@@ -463,3 +501,4 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 };
 
 #endif
+

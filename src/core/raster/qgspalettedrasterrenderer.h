@@ -18,6 +18,8 @@
 #ifndef QGSPALETTEDRASTERRENDERER_H
 #define QGSPALETTEDRASTERRENDERER_H
 
+#include <QVector>
+
 #include "qgsrasterrenderer.h"
 
 class QColor;
@@ -30,8 +32,8 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
 {
   public:
     /**Renderer owns color array*/
-    QgsPalettedRasterRenderer( QgsRasterInterface* input, int bandNumber, QColor* colorArray, int nColors );
-    QgsPalettedRasterRenderer( QgsRasterInterface* input, int bandNumber, QRgb* colorArray, int nColors );
+    QgsPalettedRasterRenderer( QgsRasterInterface* input, int bandNumber, QColor* colorArray, int nColors, const QVector<QString> labels = QVector<QString>() );
+    QgsPalettedRasterRenderer( QgsRasterInterface* input, int bandNumber, QRgb* colorArray, int nColors, const QVector<QString> labels = QVector<QString>() );
     ~QgsPalettedRasterRenderer();
     QgsRasterInterface * clone() const;
     static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterInterface* input );
@@ -48,6 +50,14 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
      */
     QRgb* rgbArray() const;
 
+    /** Return optional category label
+     *  @note added in 2.1 */
+    QString label( int idx ) const { return mLabels.value( idx ); }
+
+    /** Set category label
+     *  @note added in 2.1 */
+    void setLabel( int idx, QString label );
+
     void writeXML( QDomDocument& doc, QDomElement& parentElem ) const;
 
     void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const;
@@ -60,6 +70,8 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
     QRgb* mColors;
     /**Number of colors*/
     int mNColors;
+    /** Optional category labels, size of vector may be < mNColors */
+    QVector<QString> mLabels;
 };
 
 #endif // QGSPALETTEDRASTERRENDERER_H

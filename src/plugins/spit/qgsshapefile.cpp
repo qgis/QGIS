@@ -272,7 +272,7 @@ bool QgsShapeFile::insertLayer( QString dbname, QString schema, QString primary_
                   .arg( QgsPgUtil::quotedIdentifier( table_name ) )
                   .arg( QgsPgUtil::quotedIdentifier( primary_key ) );
 
-  for ( uint n = 0; n < column_names.size() && result; n++ )
+  for ( int n = 0; n < column_names.size() && result; n++ )
   {
     query += QString( ",%1 %2" )
              .arg( QgsPgUtil::quotedIdentifier( column_names[n] ) )
@@ -387,7 +387,7 @@ bool QgsShapeFile::insertLayer( QString dbname, QString schema, QString primary_
         QString geometry( geo_temp );
         CPLFree( geo_temp );
 
-        for ( uint n = 0; n < column_types.size(); n++ )
+        for ( int n = 0; n < column_types.size(); n++ )
         {
           QString val;
 

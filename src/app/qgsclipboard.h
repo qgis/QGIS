@@ -79,7 +79,7 @@ class APP_EXPORT QgsClipboard : public QObject
      *  the caller assumes responsibility for destroying the contents
      *  when it's done with it.
      */
-    QgsFeatureList copyOf();
+    QgsFeatureList copyOf( const QgsFields &fields = QgsFields() );
 
     /*
      *  Clears the internal clipboard.
@@ -102,7 +102,7 @@ class APP_EXPORT QgsClipboard : public QObject
      *  The caller assumes responsibility for destroying the contents
      *  when it's done with it.
      */
-    QgsFeatureList transformedCopyOf( QgsCoordinateReferenceSystem destCRS );
+    QgsFeatureList transformedCopyOf( QgsCoordinateReferenceSystem destCRS, const QgsFields &fields = QgsFields() );
 
     /*
      *  Get the clipboard CRS
@@ -141,8 +141,12 @@ class APP_EXPORT QgsClipboard : public QObject
      */
     const QgsFields &fields() { return mFeatureFields; }
 
+  private slots:
+
+    void systemClipboardChanged();
+
   signals:
-    /** Emited when content changed */
+    /** Emitted when content changed */
     void changed();
 
   private:
@@ -158,6 +162,9 @@ class APP_EXPORT QgsClipboard : public QObject
     QgsFeatureList mFeatureClipboard;
     QgsFields mFeatureFields;
     QgsCoordinateReferenceSystem mCRS;
+
+    /** True when the data from the system clipboard should be read */
+    bool mUseSystemClipboard;
 };
 
 #endif

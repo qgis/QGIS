@@ -40,7 +40,7 @@ class QgsGuiVectorLayerTools : public QgsVectorLayerTools, public QObject
     bool addFeature( QgsVectorLayer *layer, QgsAttributeMap defaultValues, const QgsGeometry &defaultGeometry );
 
     /**
-     * This should be called, whenever a vector layer should be switched to edit mode. If succesful
+     * This should be called, whenever a vector layer should be switched to edit mode. If successful
      * the layer is switched to editable and an edit sessions started.
      *
      * @param layer  The layer on which to start an edit session

@@ -184,3 +184,6 @@ const double DEFAULT_LINE_WIDTH;
 /** default snapping tolerance for segments (@note added in 1.8) */
 const double DEFAULT_SEGMENT_EPSILON;
 
+/** KEEP IN SYNC WITH qgssize defined in qgis.h! */
+typedef unsigned long long qgssize;
+

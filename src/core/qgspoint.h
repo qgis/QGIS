@@ -193,6 +193,7 @@ class CORE_EXPORT QgsPoint
     //! y coordinate
     double m_y;
 
+    friend uint qHash( const QgsPoint& pnt );
 
 }; // class QgsPoint
 
@@ -210,6 +211,15 @@ inline std::ostream& operator << ( std::ostream& os, const QgsPoint &p )
   // Use Local8Bit for printouts
   os << p.toString().toLocal8Bit().data();
   return os;
+}
+
+inline uint qHash( const QgsPoint& p )
+{
+  uint hash;
+  uint h1 = qHash(( quint64 )p.m_x );
+  uint h2 = qHash(( quint64 )p.m_y );
+  hash = h1 ^( h2 << 1 );
+  return hash;
 }
 
 #endif //QGSPOINT_H

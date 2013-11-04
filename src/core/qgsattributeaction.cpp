@@ -77,7 +77,7 @@ void QgsAttributeAction::doAction( int index, QgsFeature &feat,
     return;
 
   // search for expressions while expanding actions
-  QString expandedAction = QgsExpression::replaceExpressionText( action.action(), feat, mLayer , substitutionMap );
+  QString expandedAction = QgsExpression::replaceExpressionText( action.action(), &feat, mLayer , substitutionMap );
   if ( expandedAction.isEmpty() )
     return;
 

@@ -34,7 +34,6 @@ from processing.parameters.ParameterExtent import ParameterExtent
 from processing.parameters.ParameterNumber import ParameterNumber
 from processing.parameters.ParameterRaster import ParameterRaster
 from processing.grass.GrassUtils import GrassUtils
-
 from processing.tools.system import *
 from processing.tools import dataobjects
 
@@ -43,6 +42,7 @@ class nviz(GeoAlgorithm):
 
     ELEVATION = 'ELEVATION'
     VECTOR = 'VECTOR'
+    COLOR = 'COLOR'
     GRASS_REGION_EXTENT_PARAMETER = 'GRASS_REGION_PARAMETER'
     GRASS_REGION_CELLSIZE_PARAMETER = 'GRASS_REGION_CELLSIZE_PARAMETER'
 
@@ -53,10 +53,12 @@ class nviz(GeoAlgorithm):
         self.name = 'nviz'
         self.group = 'Visualization(NVIZ)'
         self.addParameter(ParameterMultipleInput(nviz.ELEVATION,
-                          'Elevation layers',
+                          'Raster file(s) for elevation',
                           ParameterMultipleInput.TYPE_RASTER, True))
-        self.addParameter(ParameterMultipleInput(nviz.VECTOR, 'Vector layers',
+        self.addParameter(ParameterMultipleInput(nviz.VECTOR, 'Vector lines/areas overlay file(s)',
                           ParameterMultipleInput.TYPE_VECTOR_ANY, True))
+        self.addParameter(ParameterMultipleInput(nviz.COLOR, 'Raster file(s) for color',
+                          ParameterMultipleInput.TYPE_RASTER, True))
         self.addParameter(ParameterExtent(nviz.GRASS_REGION_EXTENT_PARAMETER,
                           'GRASS region extent'))
         self.addParameter(ParameterNumber(self.GRASS_REGION_CELLSIZE_PARAMETER,
@@ -67,6 +69,7 @@ class nviz(GeoAlgorithm):
         commands = []
         vector = self.getParameterValue(self.VECTOR)
         elevation = self.getParameterValue(self.ELEVATION)
+        color = self.getParameterValue(self.COLOR)
 
         region = \
             str(self.getParameterValue(self.GRASS_REGION_EXTENT_PARAMETER))
@@ -91,6 +94,13 @@ class nviz(GeoAlgorithm):
                 commands.append(cmd)
                 vector = vector.replace(layer, newfilename)
             command += ' vector=' + vector.replace(';', ',')
+        if color:
+            layers = color.split(';')
+            for layer in layers:
+                (cmd, newfilename) = self.exportRasterLayer(layer)
+                commands.append(cmd)
+                color = color.replace(layer, newfilename)
+            command += ' color=' + color.replace(';', ',')
         if elevation:
             layers = elevation.split(';')
             for layer in layers:

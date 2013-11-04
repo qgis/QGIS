@@ -1235,13 +1235,13 @@ colonne</translation>
     <message>
         <location filename="../python/plugins/fTools/tools/frmEliminate.ui" line="20"/>
         <source>common boundary</source>
-        <translation>Contorno in comune</translation>
+        <translation>contorno in comune</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmEliminate.ui" line="27"/>
         <source>Merge selection with the neighbouring polygon with the largest</source>
         <translatorcomment>La frase resta in sospeso perchè presumo vada completata con un&apos;altro blocco di traduzione (rospus)</translatorcomment>
-        <translation>Fondi la selezione con il poligono adiacente con il più largo</translation>
+        <translation>Fondi la selezione con il poligono adiacente con maggiore</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmEliminate.ui" line="43"/>
@@ -5389,7 +5389,7 @@ Il valore &apos;grigio&apos; (a partire da GDAL 1.7.0) consente di espandere un 
     </message>
     <message>
         <source>Buffer region</source>
-        <translation>Regione del buffer</translation>
+        <translation>Buffer della regione</translation>
     </message>
     <message>
         <source>Lines to polygons</source>
@@ -7412,7 +7412,7 @@ Agisce su tutti i vettori editabili attivi al momento
     </message>
     <message>
         <source>Processing models (*.model)</source>
-        <translation>Elaborazione modelli (*.model)</translation>
+        <translation>Modelli di analisi (*.model)</translation>
     </message>
     <message>
         <source>SEXTANTE models (*.model)</source>
@@ -8859,7 +8859,7 @@ Cambiare questa situazione prima, perché il plugin OSM non quale layer è la de
     </message>
     <message>
         <source>URL copied to clipboard.</source>
-        <translation>URL copiata nella clipboard.</translation>
+        <translation>URL copiata nel blocco appunti.</translation>
     </message>
     <message>
         <source>Connection error: </source>
@@ -11688,7 +11688,7 @@ anche per me (rospus)</translatorcomment>
         <location filename="../src/core/raster/qgsrasterrendererregistry.cpp" line="57"/>
         <source>Singleband pseudocolor</source>
         <translatorcomment>? ght</translatorcomment>
-        <translation>Falso colore banda singola</translation>
+        <translation>Banda singola falso colore </translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterrendererregistry.cpp" line="59"/>
@@ -13539,7 +13539,7 @@ Secondo me si (rospus ;-)</translatorcomment>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5614"/>
         <source>New memory layer name</source>
-        <translation type="unfinished"></translation>
+        <translation>Nome del nuovo layer in memoria</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5615"/>
@@ -13549,7 +13549,7 @@ Secondo me si (rospus ;-)</translatorcomment>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5687"/>
         <source>No features in clipboard.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nessun elemento nel blocco appunti.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5691"/>
@@ -13564,12 +13564,12 @@ Secondo me si (rospus ;-)</translatorcomment>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5708"/>
         <source>Cannot create new layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile creare nuovo layer</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5721"/>
         <source>Cannot create field %1 (%2,%3)</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile creare il campo %1 (%2,%3)</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5776"/>
@@ -13849,6 +13849,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsaddattrdialogbase.ui" line="72"/>
         <source>Width</source>
+        <translatorcomment>Il campo ha una lunghezza, non una larghezza</translatorcomment>
         <translation>Lunghezza</translation>
     </message>
     <message>
@@ -17085,17 +17086,17 @@ Prova una risoluzione minore o una minor dimensione di stampa</translation>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="581"/>
         <source>Lock Selected Items</source>
-        <translation type="unfinished"></translation>
+        <translation>Blocca gli oggetti selezionati</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="590"/>
         <source>Unlock All</source>
-        <translation type="unfinished"></translation>
+        <translation>Sblocca tutto</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="593"/>
         <source>Unlock All Items</source>
-        <translation type="unfinished"></translation>
+        <translation>Sblocca tutti gli elementi</translation>
     </message>
     <message>
         <source>Load From template</source>
@@ -18755,7 +18756,7 @@ Per me buona la prima (rospus)</translatorcomment>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="703"/>
         <source>Center on overview</source>
-        <translation type="unfinished"></translation>
+        <translation>Centra sulla panoramica</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="168"/>
@@ -49623,7 +49624,7 @@ p, li { white-space: pre-wrap; }
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;Se selezionato, l&apos;operazione considererà solo le entità selezionate del layer di output/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;Se selezionato, l&apos;operazione considererà solo le entità selezionate del layer di output&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="74"/>
@@ -53606,7 +53607,7 @@ Seguiamo la maggioranza delle traduzioni (rospus)</translatorcomment>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="373"/>
         <source>Coordinate reference system</source>
-        <translation>Sistema di riferimento delle coodinate</translation>
+        <translation>Sistema di riferimento delle coordinate</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="406"/>
@@ -61134,7 +61135,7 @@ Selezionando un plugin vengono visualizzati tutti i dettagli nel pannello inform
 &lt;/p&gt;
 &lt;p&gt;
 È disponibile un menu contestuale (click con il tasto destro), che permette di ordinare i plugin in base a:
-nome, numero di download, votazione e stato..
+nome, numero di download, votazione e stato.
 &lt;/p&gt;
 
 
@@ -61169,8 +61170,7 @@ dai repositories remoti.
 &lt;h4&gt;Scheda Non valido&lt;/h4&gt;
 &lt;/a&gt;
 &lt;p&gt;
-Questa scheda è disponibile solamente quando un plugin non è più valido. Il più delle volte il problema è causato da un errore
-durante il caricamento del plugin.
+Questa scheda è disponibile solamente quando un plugin non è più valido. Il più delle volte il problema è causato da un errore durante il caricamento del plugin.
 &lt;/p&gt;
 
 &lt;a name=&quot;settingstab&quot;&gt;

@@ -35,15 +35,10 @@ QgsRasterRendererRegistryEntry::QgsRasterRendererRegistryEntry(): rendererCreate
 {
 }
 
-QgsRasterRendererRegistry* QgsRasterRendererRegistry::mInstance = 0;
-
 QgsRasterRendererRegistry* QgsRasterRendererRegistry::instance()
 {
-  if ( !mInstance )
-  {
-    mInstance = new QgsRasterRendererRegistry();
-  }
-  return mInstance;
+  static QgsRasterRendererRegistry mInstance;
+  return &mInstance;
 }
 
 QgsRasterRendererRegistry::QgsRasterRendererRegistry()
@@ -137,15 +132,23 @@ QgsRasterRenderer* QgsRasterRendererRegistry::defaultRendererForDrawingStyle( co
       colorArraySize += 1; //usually starts at 0
       QColor* colorArray = new QColor[ colorArraySize ];
       colorIt = colorEntries.constBegin();
+      QVector<QString> labels;
       for ( ; colorIt != colorEntries.constEnd(); ++colorIt )
       {
-        colorArray[( int )( colorIt->value )] = colorIt->color;
+        int idx = ( int )( colorIt->value );
+        colorArray[idx] = colorIt->color;
+        if ( !colorIt->label.isEmpty() )
+        {
+          if ( labels.size() <= idx ) labels.resize( idx + 1 );
+          labels[idx] = colorIt->label;
+        }
       }
 
       renderer = new QgsPalettedRasterRenderer( provider,
           grayBand,
           colorArray,
-          colorArraySize );
+          colorArraySize,
+          labels );
     }
     break;
     case QgsRaster::MultiBandSingleBandGray:

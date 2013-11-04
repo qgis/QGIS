@@ -1049,6 +1049,10 @@ bool QgsMapRenderer::readXML( QDomNode & theNode )
   {
     units = QGis::Feet;
   }
+  else if ( "nautical miles" == element.text() )
+  {
+    units = QGis::NauticalMiles;
+  }
   else if ( "degrees" == element.text() )
   {
     units = QGis::Degrees;
@@ -1120,6 +1124,9 @@ bool QgsMapRenderer::writeXML( QDomNode & theNode, QDomDocument & theDoc )
       break;
     case QGis::Feet:
       unitsString = "feet";
+      break;
+    case QGis::NauticalMiles:
+      unitsString = "nautical miles";
       break;
     case QGis::Degrees:
       unitsString = "degrees";

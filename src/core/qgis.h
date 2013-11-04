@@ -236,6 +236,7 @@ class CORE_EXPORT QGis
       DecimalDegrees = 2,         // was 2
       DegreesMinutesSeconds = 2,  // was 4
       DegreesDecimalMinutes = 2,  // was 5
+      NauticalMiles = 7
     };
 
     //! Provides the canonical name of the type value
@@ -386,6 +387,14 @@ const double DEFAULT_LINE_WIDTH = 0.26;
 const double DEFAULT_SEGMENT_EPSILON = 1e-8;
 
 typedef QMap<QString, QString> QgsStringMap;
+
+/** qgssize is used instead of size_t, because size_t is stdlib type, unknown
+ *  by SIP, and it would be hard to define size_t correctly in SIP.
+ *  Currently used "unsigned long long" was introduced in C++11 (2011)
+ *  but it was supported already before C++11 on common platforms.
+ *  "unsigned long long int" gives syntax error in SIP.
+ *  KEEP IN SYNC WITH qgssize defined in SIP! */
+typedef unsigned long long qgssize;
 
 // FIXME: also in qgisinterface.h
 #ifndef QGISEXTERN

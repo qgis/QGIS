@@ -126,9 +126,9 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
         self.buttonBox.rejected.connect(self.close)
         self.buttonBox.button(
                 QtGui.QDialogButtonBox.Cancel).clicked.connect(self.cancel)
-                
+
         self.showDebug = ProcessingConfig.getSetting(
-                ProcessingConfig.SHOW_DEBUG_IN_DIALOG)                
+                ProcessingConfig.SHOW_DEBUG_IN_DIALOG)
 
     def setParamValues(self):
         params = self.alg.parameters

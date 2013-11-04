@@ -103,6 +103,8 @@ class CORE_EXPORT QgsRendererV2Metadata : public QgsRendererV2AbstractMetadata
         , mCreateFromSldFunc( pfCreateFromSld )
     {}
 
+    virtual ~QgsRendererV2Metadata();
+
     virtual QgsFeatureRendererV2* createRenderer( QDomElement& elem ) { return mCreateFunc ? mCreateFunc( elem ) : NULL; }
     virtual QgsRendererV2Widget* createRendererWidget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
     { return mWidgetFunc ? mWidgetFunc( layer, style, renderer ) : NULL; }
@@ -155,8 +157,6 @@ class CORE_EXPORT QgsRendererV2Registry
     //! protected constructor
     QgsRendererV2Registry();
     ~QgsRendererV2Registry();
-
-    static QgsRendererV2Registry* mInstance;
 
     QMap<QString, QgsRendererV2AbstractMetadata*> mRenderers;
 

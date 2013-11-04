@@ -110,6 +110,7 @@ void QgsRelationManagerDialog::on_mBtnAddRelation_clicked()
     }
     relation.setRelationId( relationId );
     relation.addFieldPair( addDlg.references().first().first, addDlg.references().first().second );
+    relation.setRelationName( addDlg.relationName() );
 
     addRelation( relation );
   }
@@ -135,20 +136,3 @@ QList< QgsRelation > QgsRelationManagerDialog::relations()
   return relations;
 }
 
-#if 0
-QTreeWidgetItem* QgsRelationManagerDialog::findLayerItem( QString id )
-{
-  int count = mRelationsTreeWdg->topLevelItemCount();
-
-  for ( int i = 0; i < count; ++i )
-  {
-    QTreeWidgetItem* item = mRelationsTreeWdg->topLevelItem( i );
-    if ( item->data( 0, Qt::UserRole ).toString() == id )
-    {
-      return item;
-    }
-  }
-
-  return NULL;
-}
-#endif

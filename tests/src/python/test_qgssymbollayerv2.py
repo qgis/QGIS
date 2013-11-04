@@ -28,12 +28,14 @@ import os
 import qgis
 from PyQt4.QtCore import *
 from PyQt4.QtXml import QDomDocument
+from PyQt4.QtGui import QColor
 
 from qgis.core import (
                        QgsCentroidFillSymbolLayerV2,
                        QgsEllipseSymbolLayerV2,
                        QgsFillSymbolLayerV2,
                        QgsFontMarkerSymbolLayerV2,
+                       QgsGradientFillSymbolLayerV2,
                        QgsImageFillSymbolLayer,
                        QgsLinePatternFillSymbolLayer,
                        QgsLineSymbolLayerV2,
@@ -47,6 +49,8 @@ from qgis.core import (
                        QgsSvgMarkerSymbolLayerV2,
                        QgsSymbolLayerV2,
                        QgsVectorFieldSymbolLayer,
+                       QgsSymbolV2,
+                       QgsVectorGradientColorRampV2
                       )
 from utilities import (unitTestDataPath,
                        getQgisTestApp,
@@ -80,6 +84,14 @@ class TestQgsSymbolLayerV2(TestCase):
 
         try:
             mType = type(QgsFillSymbolLayerV2)
+        except:
+            mType = None
+        mExpectedType = pyqtWrapperType
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedType, mType)
+        assert mExpectedType == mType, mMessage
+
+        try:
+            mType = type(QgsGradientFillSymbolLayerV2)
         except:
             mType = None
         mExpectedType = pyqtWrapperType
@@ -234,6 +246,88 @@ class TestQgsSymbolLayerV2(TestCase):
 
         mExpectedValue = 0.26
         mValue = mSymbolLayer.borderWidth()
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        assert mExpectedValue == mValue, mMessage
+
+    def testQgsGradientFillSymbolLayerV2(self):
+        '''Test setting and getting QgsGradientFillSymbolLayerV2 properties.
+        '''
+        mGradientLayer = QgsGradientFillSymbolLayerV2()
+
+        mExpectedValue = type(QgsGradientFillSymbolLayerV2())
+        mValue = type(mGradientLayer)
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        assert mExpectedValue == mValue, mMessage
+
+        mExpectedValue = QgsGradientFillSymbolLayerV2.Radial
+        mGradientLayer.setGradientType( mExpectedValue )
+        mValue = mGradientLayer.gradientType()
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        assert mExpectedValue == mValue, mMessage
+
+        mExpectedValue = QgsGradientFillSymbolLayerV2.ColorRamp
+        mGradientLayer.setGradientColorType( mExpectedValue )
+        mValue = mGradientLayer.gradientColorType()
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        assert mExpectedValue == mValue, mMessage
+
+        mExpectedValue = QColor('#55aaff')
+        mGradientLayer.setColor2( mExpectedValue )
+        mValue = mGradientLayer.color2()
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        assert mExpectedValue == mValue, mMessage
+
+        mExpectedValue = QgsGradientFillSymbolLayerV2.Viewport
+        mGradientLayer.setCoordinateMode( mExpectedValue )
+        mValue = mGradientLayer.coordinateMode()
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        assert mExpectedValue == mValue, mMessage
+
+        mExpectedValue = QgsGradientFillSymbolLayerV2.Reflect
+        mGradientLayer.setGradientSpread( mExpectedValue )
+        mValue = mGradientLayer.gradientSpread()
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        assert mExpectedValue == mValue, mMessage
+
+        mExpectedValue = QPointF(0.5, 0.8)
+        mGradientLayer.setReferencePoint1( mExpectedValue )
+        mValue = mGradientLayer.referencePoint1()
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        assert mExpectedValue == mValue, mMessage
+
+        mExpectedValue = True
+        mGradientLayer.setReferencePoint1IsCentroid( mExpectedValue )
+        mValue = mGradientLayer.referencePoint1IsCentroid()
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        assert mExpectedValue == mValue, mMessage
+
+        mExpectedValue = QPointF(0.2, 0.4)
+        mGradientLayer.setReferencePoint2( mExpectedValue )
+        mValue = mGradientLayer.referencePoint2()
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        assert mExpectedValue == mValue, mMessage
+
+        mExpectedValue = True
+        mGradientLayer.setReferencePoint2IsCentroid( mExpectedValue )
+        mValue = mGradientLayer.referencePoint2IsCentroid()
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        assert mExpectedValue == mValue, mMessage
+
+        mExpectedValue = 90
+        mGradientLayer.setAngle( mExpectedValue )
+        mValue = mGradientLayer.angle()
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        assert mExpectedValue == mValue, mMessage
+
+        mExpectedValue = QPointF(10, 20)
+        mGradientLayer.setOffset( mExpectedValue )
+        mValue = mGradientLayer.offset()
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        assert mExpectedValue == mValue, mMessage
+
+        mExpectedValue = QgsSymbolV2.MapUnit
+        mGradientLayer.setOffsetUnit( mExpectedValue )
+        mValue = mGradientLayer.offsetUnit()
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
         assert mExpectedValue == mValue, mMessage
 

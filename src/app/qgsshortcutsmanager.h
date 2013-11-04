@@ -26,7 +26,7 @@
   */
 class APP_EXPORT QgsShortcutsManager : public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
   public:
 
     //! return instance of the manager
@@ -55,6 +55,8 @@ class APP_EXPORT QgsShortcutsManager : public QObject
 
     // return action by it's name. NULL if nothing found
     QAction* actionByName( QString name );
+
+    ~QgsShortcutsManager();
 
   public slots:
     void actionDestroyed();

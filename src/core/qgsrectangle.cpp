@@ -109,6 +109,11 @@ void QgsRectangle::scale( double scaleFactor, const QgsPoint * cp )
     centerX = xmin + width() / 2;
     centerY = ymin + height() / 2;
   }
+  scale( scaleFactor, centerX, centerY );
+}
+
+void QgsRectangle::scale( double scaleFactor, double centerX, double centerY )
+{
   double newWidth = width() * scaleFactor;
   double newHeight = height() * scaleFactor;
   xmin = centerX - newWidth / 2.0;

@@ -53,15 +53,12 @@ class QgsCompositionWidget: public QWidget, private Ui::QgsCompositionWidgetBase
     void on_mGenerateWorldFileCheckBox_toggled( bool state );
     void on_mWorldFileMapComboBox_currentIndexChanged( int index );
 
-    void on_mSnapToGridGroupCheckBox_toggled( bool state );
     void on_mGridResolutionSpinBox_valueChanged( double d );
     void on_mOffsetXSpinBox_valueChanged( double d );
     void on_mOffsetYSpinBox_valueChanged( double d );
     void on_mGridColorButton_colorChanged( const QColor &newColor );
     void on_mGridStyleComboBox_currentIndexChanged( const QString& text );
-    void on_mPenWidthSpinBox_valueChanged( double d );
-    void on_mSelectionToleranceSpinBox_valueChanged( double d );
-    void on_mAlignmentSnapGroupCheckBox_toggled( bool state );
+    void on_mGridToleranceSpinBox_valueChanged( double d );
     void on_mAlignmentToleranceSpinBox_valueChanged( double d );
 
     /**Sets GUI elements to width/height from composition*/

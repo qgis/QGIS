@@ -40,15 +40,21 @@
 #include "qgslogger.h"
 #include "qgsaddremovemultiframecommand.h"
 #include "qgspaperitem.h"
+#include "qgsmapcanvas.h" //for QgsMapCanvas::WheelAction
+#include "qgscursors.h"
 
 QgsComposerView::QgsComposerView( QWidget* parent, const char* name, Qt::WFlags f )
     : QGraphicsView( parent )
     , mRubberBandItem( 0 )
     , mRubberBandLineItem( 0 )
     , mMoveContentItem( 0 )
+    , mMarqueeSelect( false )
+    , mMarqueeZoom( false )
+    , mTemporaryZoomStatus( QgsComposerView::Inactive )
     , mPaintingEnabled( true )
     , mHorizontalRuler( 0 )
     , mVerticalRuler( 0 )
+    , mPanning( false )
 {
   Q_UNUSED( f );
   Q_UNUSED( name );
@@ -57,6 +63,38 @@ QgsComposerView::QgsComposerView( QWidget* parent, const char* name, Qt::WFlags 
   setMouseTracking( true );
   viewport()->setMouseTracking( true );
   setFrameShape( QFrame::NoFrame );
+}
+
+void QgsComposerView::setCurrentTool( QgsComposerView::Tool t )
+{
+  mCurrentTool = t;
+
+  //update mouse cursor for current tool
+  if ( !composition() )
+  {
+    return;
+  }
+  if ( t == QgsComposerView::Pan )
+  {
+    //lock cursor to prevent composer items changing it
+    composition()->setPreventCursorChange( true );
+    viewport()->setCursor( Qt::OpenHandCursor );
+  }
+  else if ( t == QgsComposerView::Zoom )
+  {
+    //lock cursor to prevent composer items changing it
+    composition()->setPreventCursorChange( true );
+    //set the cursor to zoom in
+    QPixmap myZoomQPixmap = QPixmap(( const char ** )( zoom_in ) );
+    QCursor zoomCursor = QCursor( myZoomQPixmap, 7, 7 );
+    viewport()->setCursor( zoomCursor );
+  }
+  else
+  {
+    //not using pan tool, composer items can change cursor
+    composition()->setPreventCursorChange( false );
+    viewport()->setCursor( Qt::ArrowCursor );
+  }
 }
 
 void QgsComposerView::mousePressEvent( QMouseEvent* e )
@@ -68,6 +106,7 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
 
   QPointF scenePoint = mapToScene( e->pos() );
   QPointF snappedScenePoint = composition()->snapPointToGrid( scenePoint );
+  mMousePressStartPos = e->pos();
 
   //lock/unlock position of item with right click
   if ( e->button() == Qt::RightButton )
@@ -79,6 +118,19 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
       selectedItem->setPositionLock( lock );
       selectedItem->update();
     }
+    return;
+  }
+  else if ( e->button() == Qt::MidButton )
+  {
+    //pan composer with middle button
+    mPanning = true;
+    mMouseLastXY = e->pos();
+    if ( composition() )
+    {
+      //lock cursor to closed hand cursor
+      composition()->setPreventCursorChange( true );
+    }
+    viewport()->setCursor( Qt::ClosedHandCursor );
     return;
   }
 
@@ -135,7 +187,8 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
 
       if ( !selectedItem )
       {
-        composition()->clearSelection();
+        //not clicking over an item, so start marquee selection
+        startMarqueeSelect( scenePoint );
         break;
       }
 
@@ -163,6 +216,42 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
         QGraphicsView::mousePressEvent( e );
         emit selectedItemChanged( selectedItem );
       }
+      break;
+    }
+
+    case Zoom:
+    {
+      if ( !( e->modifiers() & Qt::ShiftModifier ) )
+      {
+        //zoom in action
+        startMarqueeZoom( scenePoint );
+      }
+      else
+      {
+        //zoom out action, so zoom out and recenter on clicked point
+        double scaleFactor = 2;
+        //get current visible part of scene
+        QRect viewportRect( 0, 0, viewport()->width(), viewport()->height() );
+        QgsRectangle visibleRect = QgsRectangle( mapToScene( viewportRect ).boundingRect() );
+
+        //transform the mouse pos to scene coordinates
+        QPointF scenePoint = mapToScene( e->pos() );
+
+        visibleRect.scale( scaleFactor, scenePoint.x(), scenePoint.y() );
+        QRectF boundsRect = visibleRect.toRectF();
+
+        //zoom view to fit desired bounds
+        fitInView( boundsRect, Qt::KeepAspectRatio );
+      }
+      break;
+    }
+
+    case Pan:
+    {
+      //pan action
+      mPanning = true;
+      mMouseLastXY = e->pos();
+      viewport()->setCursor( Qt::ClosedHandCursor );
       break;
     }
 
@@ -199,7 +288,7 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
     {
       mRubberBandStartPos = QPointF( snappedScenePoint.x(), snappedScenePoint.y() );
       mRubberBandLineItem = new QGraphicsLineItem( snappedScenePoint.x(), snappedScenePoint.y(), snappedScenePoint.x(), snappedScenePoint.y() );
-      mRubberBandLineItem->setZValue( 100 );
+      mRubberBandLineItem->setZValue( 1000 );
       scene()->addItem( mRubberBandLineItem );
       scene()->update();
       break;
@@ -217,7 +306,7 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
       mRubberBandStartPos = QPointF( snappedScenePoint.x(), snappedScenePoint.y() );
       t.translate( snappedScenePoint.x(), snappedScenePoint.y() );
       mRubberBandItem->setTransform( t );
-      mRubberBandItem->setZValue( 100 );
+      mRubberBandItem->setZValue( 1000 );
       scene()->addItem( mRubberBandItem );
       scene()->update();
     }
@@ -302,9 +391,7 @@ void QgsComposerView::addShape( Tool currentTool )
 
   if ( !mRubberBandItem || mRubberBandItem->rect().width() < 0.1 || mRubberBandItem->rect().width() < 0.1 )
   {
-    scene()->removeItem( mRubberBandItem );
-    delete mRubberBandItem;
-    mRubberBandItem = 0;
+    removeRubberBand();
     return;
   }
   if ( composition() )
@@ -312,9 +399,7 @@ void QgsComposerView::addShape( Tool currentTool )
     QgsComposerShape* composerShape = new QgsComposerShape( mRubberBandItem->transform().dx(), mRubberBandItem->transform().dy(), mRubberBandItem->rect().width(), mRubberBandItem->rect().height(), composition() );
     composerShape->setShapeType( shape );
     composition()->addComposerShape( composerShape );
-    scene()->removeItem( mRubberBandItem );
-    delete mRubberBandItem;
-    mRubberBandItem = 0;
+    removeRubberBand();
     emit actionFinished();
     composition()->pushAddRemoveCommand( composerShape, tr( "Shape added" ) );
   }
@@ -332,6 +417,159 @@ void QgsComposerView::updateRulers()
   }
 }
 
+void QgsComposerView::removeRubberBand()
+{
+  if ( mRubberBandItem )
+  {
+    scene()->removeItem( mRubberBandItem );
+    delete mRubberBandItem;
+    mRubberBandItem = 0;
+  }
+}
+
+void QgsComposerView::startMarqueeSelect( QPointF & scenePoint )
+{
+  mMarqueeSelect = true;
+
+  QTransform t;
+  mRubberBandItem = new QGraphicsRectItem( 0, 0, 0, 0 );
+  mRubberBandItem->setBrush( QBrush( QColor( 225, 50, 70, 25 ) ) );
+  mRubberBandItem->setPen( QPen( Qt::DotLine ) );
+  mRubberBandStartPos = QPointF( scenePoint.x(), scenePoint.y() );
+  t.translate( scenePoint.x(), scenePoint.y() );
+  mRubberBandItem->setTransform( t );
+  mRubberBandItem->setZValue( 1000 );
+  scene()->addItem( mRubberBandItem );
+  scene()->update();
+}
+
+void QgsComposerView::endMarqueeSelect( QMouseEvent* e )
+{
+  mMarqueeSelect = false;
+
+  bool subtractingSelection = false;
+  if ( e->modifiers() & Qt::ShiftModifier )
+  {
+    //shift modifer means adding to selection, nothing required here
+  }
+  else if ( e->modifiers() & Qt::ControlModifier )
+  {
+    //control modifier means subtract from current selection
+    subtractingSelection = true;
+  }
+  else
+  {
+    //not adding to or removing from selection, so clear current selection
+    composition()->clearSelection();
+  }
+
+  if ( !mRubberBandItem || ( mRubberBandItem->rect().width() < 0.1 && mRubberBandItem->rect().height() < 0.1 ) )
+  {
+    //just a click, do nothing
+    removeRubberBand();
+    return;
+  }
+
+  QRectF boundsRect = QRectF( mRubberBandItem->transform().dx(), mRubberBandItem->transform().dy(),
+                              mRubberBandItem->rect().width(), mRubberBandItem->rect().height() );
+
+  //determine item selection mode, default to intersection
+  Qt::ItemSelectionMode selectionMode = Qt::IntersectsItemShape;
+  if ( e->modifiers() & Qt::AltModifier )
+  {
+    //alt modifier switches to contains selection mode
+    selectionMode = Qt::ContainsItemShape;
+  }
+
+  //find all items in rubber band
+  QList<QGraphicsItem *> itemList = composition()->items( boundsRect, selectionMode );
+  QList<QGraphicsItem *>::iterator itemIt = itemList.begin();
+  for ( ; itemIt != itemList.end(); ++itemIt )
+  {
+    QgsComposerItem* mypItem = dynamic_cast<QgsComposerItem *>( *itemIt );
+    QgsPaperItem* paperItem = dynamic_cast<QgsPaperItem*>( *itemIt );
+    if ( mypItem && !paperItem )
+    {
+      if ( !mypItem->positionLock() )
+      {
+        if ( subtractingSelection )
+        {
+          mypItem->setSelected( false );
+        }
+        else
+        {
+          mypItem->setSelected( true );
+        }
+      }
+    }
+  }
+  removeRubberBand();
+
+  //update item panel
+  QList<QgsComposerItem*> selectedItemList = composition()->selectedComposerItems();
+  if ( selectedItemList.size() > 0 )
+  {
+    emit selectedItemChanged( selectedItemList[0] );
+  }
+}
+
+void QgsComposerView::startMarqueeZoom( QPointF & scenePoint )
+{
+  mMarqueeZoom = true;
+
+  QTransform t;
+  mRubberBandItem = new QGraphicsRectItem( 0, 0, 0, 0 );
+  mRubberBandItem->setBrush( QBrush( QColor( 70, 50, 255, 25 ) ) );
+  mRubberBandItem->setPen( QPen( QColor( 70, 50, 255, 100 ) ) );
+  mRubberBandStartPos = QPointF( scenePoint.x(), scenePoint.y() );
+  t.translate( scenePoint.x(), scenePoint.y() );
+  mRubberBandItem->setTransform( t );
+  mRubberBandItem->setZValue( 1000 );
+  scene()->addItem( mRubberBandItem );
+  scene()->update();
+}
+
+void QgsComposerView::endMarqueeZoom( QMouseEvent* e )
+{
+  mMarqueeZoom = false;
+
+  QRectF boundsRect;
+
+  if ( !mRubberBandItem || ( mRubberBandItem->rect().width() < 0.1 && mRubberBandItem->rect().height() < 0.1 ) )
+  {
+    //just a click, so zoom to clicked point and recenter
+    double scaleFactor = 0.5;
+    //get current visible part of scene
+    QRect viewportRect( 0, 0, viewport()->width(), viewport()->height() );
+    QgsRectangle visibleRect = QgsRectangle( mapToScene( viewportRect ).boundingRect() );
+
+    //transform the mouse pos to scene coordinates
+    QPointF scenePoint = mapToScene( e->pos() );
+
+    visibleRect.scale( scaleFactor, scenePoint.x(), scenePoint.y() );
+    boundsRect = visibleRect.toRectF();
+  }
+  else
+  {
+    //marquee zoom
+    //zoom bounds are size marquee object
+    boundsRect = QRectF( mRubberBandItem->transform().dx(), mRubberBandItem->transform().dy(),
+                         mRubberBandItem->rect().width(), mRubberBandItem->rect().height() );
+  }
+
+  removeRubberBand();
+  //zoom view to fit desired bounds
+  fitInView( boundsRect, Qt::KeepAspectRatio );
+
+  if ( mTemporaryZoomStatus == QgsComposerView::ActiveUntilMouseRelease )
+  {
+    //user was using the temporary keyboard activated zoom tool
+    //and the control or space key was released before mouse button, so end temporary zoom
+    mTemporaryZoomStatus = QgsComposerView::Inactive;
+    setCurrentTool( mPreviousTool );
+  }
+}
+
 void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
 {
   if ( !composition() )
@@ -339,13 +577,73 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
     return;
   }
 
+  QPoint mousePressStopPoint = e->pos();
+  int diffX = mousePressStopPoint.x() - mMousePressStartPos.x();
+  int diffY = mousePressStopPoint.y() - mMousePressStartPos.y();
+
+  //was this just a click? or a click and drag?
+  bool clickOnly = false;
+  if ( qAbs( diffX ) < 2 && qAbs( diffY ) < 2 )
+  {
+    clickOnly = true;
+  }
+
   QPointF scenePoint = mapToScene( e->pos() );
+
+  if ( mPanning )
+  {
+    mPanning = false;
+
+    if ( clickOnly && e->button() == Qt::MidButton )
+    {
+      //middle mouse button click = recenter on point
+
+      //get current visible part of scene
+      QRect viewportRect( 0, 0, viewport()->width(), viewport()->height() );
+      QgsRectangle visibleRect = QgsRectangle( mapToScene( viewportRect ).boundingRect() );
+      visibleRect.scale( 1, scenePoint.x(), scenePoint.y() );
+      QRectF boundsRect = visibleRect.toRectF();
+
+      //zoom view to fit desired bounds
+      fitInView( boundsRect, Qt::KeepAspectRatio );
+    }
+
+    //set new cursor
+    if ( mCurrentTool == Pan )
+    {
+      viewport()->setCursor( Qt::OpenHandCursor );
+    }
+    else
+    {
+      if ( composition() )
+      {
+        //allow composer items to change cursor
+        composition()->setPreventCursorChange( false );
+      }
+      viewport()->setCursor( Qt::ArrowCursor );
+    }
+  }
+
+  if ( mMarqueeSelect )
+  {
+    endMarqueeSelect( e );
+    return;
+  }
 
   switch ( mCurrentTool )
   {
     case Select:
     {
       QGraphicsView::mouseReleaseEvent( e );
+      break;
+    }
+
+    case Zoom:
+    {
+      if ( mMarqueeZoom )
+      {
+        endMarqueeZoom( e );
+      }
       break;
     }
 
@@ -394,21 +692,14 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
     case AddMap:
       if ( !mRubberBandItem || mRubberBandItem->rect().width() < 0.1 || mRubberBandItem->rect().width() < 0.1 )
       {
-        if ( mRubberBandItem )
-        {
-          scene()->removeItem( mRubberBandItem );
-          delete mRubberBandItem;
-          mRubberBandItem = 0;
-        }
+        removeRubberBand();
         return;
       }
       if ( composition() )
       {
         QgsComposerMap* composerMap = new QgsComposerMap( composition(), mRubberBandItem->transform().dx(), mRubberBandItem->transform().dy(), mRubberBandItem->rect().width(), mRubberBandItem->rect().height() );
         composition()->addComposerMap( composerMap );
-        scene()->removeItem( mRubberBandItem );
-        delete mRubberBandItem;
-        mRubberBandItem = 0;
+        removeRubberBand();
         emit actionFinished();
         composition()->pushAddRemoveCommand( composerMap, tr( "Map added" ) );
       }
@@ -427,9 +718,7 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
         composition()->beginMultiFrameCommand( composerHtml, tr( "Html frame added" ) );
         composerHtml->addFrame( frame );
         composition()->endMultiFrameCommand();
-        scene()->removeItem( mRubberBandItem );
-        delete mRubberBandItem;
-        mRubberBandItem = 0;
+        removeRubberBand();
         emit actionFinished();
       }
     default:
@@ -444,6 +733,10 @@ void QgsComposerView::mouseMoveEvent( QMouseEvent* e )
     return;
   }
 
+  mMouseCurrentXY = e->pos();
+  //update cursor position in composer status bar
+  emit cursorPosChanged( mapToScene( e->pos() ) );
+
   updateRulers();
   if ( mHorizontalRuler )
   {
@@ -454,7 +747,15 @@ void QgsComposerView::mouseMoveEvent( QMouseEvent* e )
     mVerticalRuler->updateMarker( e->posF() );
   }
 
-  if ( e->buttons() == Qt::NoButton )
+  if ( mPanning )
+  {
+    //panning, so scroll view
+    horizontalScrollBar()->setValue( horizontalScrollBar()->value() - ( e->x() - mMouseLastXY.x() ) );
+    verticalScrollBar()->setValue( verticalScrollBar()->value() - ( e->y() - mMouseLastXY.y() ) );
+    mMouseLastXY = e->pos();
+    return;
+  }
+  else if ( e->buttons() == Qt::NoButton )
   {
     if ( mCurrentTool == Select )
     {
@@ -464,6 +765,12 @@ void QgsComposerView::mouseMoveEvent( QMouseEvent* e )
   else
   {
     QPointF scenePoint = mapToScene( e->pos() );
+
+    if ( mMarqueeSelect || mMarqueeZoom )
+    {
+      updateRubberBand( scenePoint );
+      return;
+    }
 
     switch ( mCurrentTool )
     {
@@ -487,43 +794,7 @@ void QgsComposerView::mouseMoveEvent( QMouseEvent* e )
       case AddHtml:
         //adjust rubber band item
       {
-        double x = 0;
-        double y = 0;
-        double width = 0;
-        double height = 0;
-
-        double dx = scenePoint.x() - mRubberBandStartPos.x();
-        double dy = scenePoint.y() - mRubberBandStartPos.y();
-
-        if ( dx < 0 )
-        {
-          x = scenePoint.x();
-          width = -dx;
-        }
-        else
-        {
-          x = mRubberBandStartPos.x();
-          width = dx;
-        }
-
-        if ( dy < 0 )
-        {
-          y = scenePoint.y();
-          height = -dy;
-        }
-        else
-        {
-          y = mRubberBandStartPos.y();
-          height = dy;
-        }
-
-        if ( mRubberBandItem )
-        {
-          mRubberBandItem->setRect( 0, 0, width, height );
-          QTransform t;
-          t.translate( x, y );
-          mRubberBandItem->setTransform( t );
-        }
+        updateRubberBand( scenePoint );
         break;
       }
 
@@ -541,6 +812,47 @@ void QgsComposerView::mouseMoveEvent( QMouseEvent* e )
       default:
         break;
     }
+  }
+}
+
+void QgsComposerView::updateRubberBand( QPointF & pos )
+{
+  double x = 0;
+  double y = 0;
+  double width = 0;
+  double height = 0;
+
+  double dx = pos.x() - mRubberBandStartPos.x();
+  double dy = pos.y() - mRubberBandStartPos.y();
+
+  if ( dx < 0 )
+  {
+    x = pos.x();
+    width = -dx;
+  }
+  else
+  {
+    x = mRubberBandStartPos.x();
+    width = dx;
+  }
+
+  if ( dy < 0 )
+  {
+    y = pos.y();
+    height = -dy;
+  }
+  else
+  {
+    y = mRubberBandStartPos.y();
+    height = dy;
+  }
+
+  if ( mRubberBandItem )
+  {
+    mRubberBandItem->setRect( 0, 0, width, height );
+    QTransform t;
+    t.translate( x, y );
+    mRubberBandItem->setTransform( t );
   }
 }
 
@@ -735,6 +1047,82 @@ void QgsComposerView::keyPressEvent( QKeyEvent * e )
     return;
   }
 
+  if ( mPanning )
+    return;
+
+  if ( mTemporaryZoomStatus != QgsComposerView::Inactive )
+  {
+    //temporary keyboard based zoom is active
+    if ( e->isAutoRepeat() )
+    {
+      return;
+    }
+
+    //respond to changes in ctrl key status
+    if ( !( e->modifiers() & Qt::ControlModifier ) && !mMarqueeZoom )
+    {
+      //space pressed, but control key was released, end of temporary zoom tool
+      mTemporaryZoomStatus = QgsComposerView::Inactive;
+      setCurrentTool( mPreviousTool );
+    }
+    else if ( !( e->modifiers() & Qt::ControlModifier ) && mMarqueeZoom )
+    {
+      //control key released, but user is mid-way through a marquee zoom
+      //so end temporary zoom when user releases the mouse button
+      mTemporaryZoomStatus = QgsComposerView::ActiveUntilMouseRelease;
+    }
+    else
+    {
+      //both control and space pressed
+      //set cursor to zoom in/out depending on shift key status
+      QPixmap myZoomQPixmap = QPixmap(( const char ** )( e->modifiers() & Qt::ShiftModifier ? zoom_out : zoom_in ) );
+      QCursor zoomCursor = QCursor( myZoomQPixmap, 7, 7 );
+      viewport()->setCursor( zoomCursor );
+    }
+    return;
+  }
+
+  if ( e->key() == Qt::Key_Space && ! e->isAutoRepeat() )
+  {
+    if ( !( e->modifiers() & Qt::ControlModifier ) )
+    {
+      // Pan composer with space bar
+      mPanning = true;
+      mMouseLastXY = mMouseCurrentXY;
+      if ( composition() )
+      {
+        //prevent cursor changes while panning
+        composition()->setPreventCursorChange( true );
+      }
+      viewport()->setCursor( Qt::ClosedHandCursor );
+      return;
+    }
+    else
+    {
+      //ctrl+space pressed, so switch to temporary keyboard based zoom tool
+      mTemporaryZoomStatus = QgsComposerView::Active;
+      mPreviousTool = mCurrentTool;
+      setCurrentTool( Zoom );
+      //set cursor to zoom in/out depending on shift key status
+      QPixmap myZoomQPixmap = QPixmap(( const char ** )( e->modifiers() & Qt::ShiftModifier ? zoom_out : zoom_in ) );
+      QCursor zoomCursor = QCursor( myZoomQPixmap, 7, 7 );
+      viewport()->setCursor( zoomCursor );
+      return;
+    }
+  }
+
+  if ( mCurrentTool == QgsComposerView::Zoom )
+  {
+    //using the zoom tool, respond to changes in shift key status and update mouse cursor accordingly
+    if ( ! e->isAutoRepeat() )
+    {
+      QPixmap myZoomQPixmap = QPixmap(( const char ** )( e->modifiers() & Qt::ShiftModifier ? zoom_out : zoom_in ) );
+      QCursor zoomCursor = QCursor( myZoomQPixmap, 7, 7 );
+      viewport()->setCursor( zoomCursor );
+    }
+    return;
+  }
+
   QList<QgsComposerItem*> composerItemList = composition()->selectedComposerItems();
   QList<QgsComposerItem*>::iterator itemIt = composerItemList.begin();
 
@@ -784,20 +1172,158 @@ void QgsComposerView::keyPressEvent( QKeyEvent * e )
   }
 }
 
+void QgsComposerView::keyReleaseEvent( QKeyEvent * e )
+{
+  if ( e->key() == Qt::Key_Space && !e->isAutoRepeat() && mPanning )
+  {
+    //end of panning with space key
+    mPanning = false;
+
+    //reset cursor
+    if ( mCurrentTool == Pan )
+    {
+      viewport()->setCursor( Qt::OpenHandCursor );
+    }
+    else
+    {
+      if ( composition() )
+      {
+        //allow cursor changes again
+        composition()->setPreventCursorChange( false );
+      }
+      viewport()->setCursor( Qt::ArrowCursor );
+    }
+    return;
+  }
+  else if ( e->key() == Qt::Key_Space && !e->isAutoRepeat() && mTemporaryZoomStatus != QgsComposerView::Inactive )
+  {
+    //temporary keyboard-based zoom tool is active and space key has been released
+    if ( mMarqueeZoom )
+    {
+      //currently in the middle of a marquee operation, so don't switch tool back immediately
+      //instead, wait until mouse button has been released before switching tool back
+      mTemporaryZoomStatus = QgsComposerView::ActiveUntilMouseRelease;
+    }
+    else
+    {
+      //switch tool back
+      mTemporaryZoomStatus = QgsComposerView::Inactive;
+      setCurrentTool( mPreviousTool );
+    }
+  }
+  else if ( mCurrentTool == QgsComposerView::Zoom )
+  {
+    //if zoom tool is active, respond to changes in the shift key status and update cursor accordingly
+    if ( ! e->isAutoRepeat() )
+    {
+      QPixmap myZoomQPixmap = QPixmap(( const char ** )( e->modifiers() & Qt::ShiftModifier ? zoom_out : zoom_in ) );
+      QCursor zoomCursor = QCursor( myZoomQPixmap, 7, 7 );
+      viewport()->setCursor( zoomCursor );
+    }
+    return;
+  }
+}
+
 void QgsComposerView::wheelEvent( QWheelEvent* event )
 {
+  if ( currentTool() == MoveItemContent )
+  {
+    //move item content tool, so scroll events get handled by the selected composer item
+
+    QPointF scenePoint = mapToScene( event->pos() );
+    //select topmost item at position of event
+    QgsComposerItem* theItem = composition()->composerItemAt( scenePoint );
+    if ( theItem )
+    {
+      if ( theItem->isSelected() )
+      {
+        QPointF itemPoint = theItem->mapFromScene( scenePoint );
+        theItem->beginCommand( tr( "Zoom item content" ) );
+        theItem->zoomContent( event->delta(), itemPoint.x(), itemPoint.y() );
+        theItem->endCommand();
+      }
+    }
+  }
+  else
+  {
+    //not using move item content tool, so zoom whole composition
+    wheelZoom( event );
+  }
+}
+
+void QgsComposerView::wheelZoom( QWheelEvent * event )
+{
+  //get mouse wheel zoom behaviour settings
+  QSettings mySettings;
+  int wheelAction = mySettings.value( "/qgis/wheel_action", 2 ).toInt();
+  double zoomFactor = mySettings.value( "/qgis/zoom_factor", 2 ).toDouble();
+
+  if ( event->modifiers() & Qt::ControlModifier )
+  {
+    //holding ctrl while wheel zooming results in a finer zoom
+    zoomFactor = 1.0 + ( zoomFactor - 1.0 ) / 10.0;
+  }
+
+  //caculate zoom scale factor
+  bool zoomIn = event->delta() > 0;
+  double scaleFactor = ( zoomIn ? 1 / zoomFactor : zoomFactor );
+
+  //get current visible part of scene
+  QRect viewportRect( 0, 0, viewport()->width(), viewport()->height() );
+  QgsRectangle visibleRect = QgsRectangle( mapToScene( viewportRect ).boundingRect() );
+
+  //transform the mouse pos to scene coordinates
   QPointF scenePoint = mapToScene( event->pos() );
 
-  //select topmost item at position of event
-  QgsComposerItem* theItem = composition()->composerItemAt( scenePoint );
-  if ( theItem )
+  //zoom composition, respecting wheel action setting
+  switch (( QgsMapCanvas::WheelAction )wheelAction )
   {
-    if ( theItem->isSelected() )
+    case QgsMapCanvas::WheelZoom:
+      // zoom without changing extent
+      if ( zoomIn )
+      {
+        scale( zoomFactor, zoomFactor );
+      }
+      else
+      {
+        scale( 1 / zoomFactor, 1 / zoomFactor );
+      }
+      break;
+
+    case QgsMapCanvas::WheelZoomAndRecenter:
     {
-      QPointF itemPoint = theItem->mapFromScene( scenePoint );
-      theItem->beginCommand( tr( "Zoom item content" ) );
-      theItem->zoomContent( event->delta(), itemPoint.x(), itemPoint.y() );
-      theItem->endCommand();
+      visibleRect.scale( scaleFactor, scenePoint.x(), scenePoint.y() );
+      fitInView( visibleRect.toRectF(), Qt::KeepAspectRatio );
+      break;
+    }
+
+    case QgsMapCanvas::WheelZoomToMouseCursor:
+    {
+      QgsPoint oldCenter( visibleRect.center() );
+      QgsPoint newCenter( scenePoint.x() + (( oldCenter.x() - scenePoint.x() ) * scaleFactor ),
+                          scenePoint.y() + (( oldCenter.y() - scenePoint.y() ) * scaleFactor ) );
+
+      visibleRect.scale( scaleFactor, newCenter.x(), newCenter.y() );
+      fitInView( visibleRect.toRectF(), Qt::KeepAspectRatio );
+      break;
+    }
+
+    case QgsMapCanvas::WheelNothing:
+      return;
+  }
+
+  //update composition for new zoom
+  updateRulers();
+  update();
+  //redraw cached map items
+  QList<QGraphicsItem *> itemList = composition()->items();
+  QList<QGraphicsItem *>::iterator itemIt = itemList.begin();
+  for ( ; itemIt != itemList.end(); ++itemIt )
+  {
+    QgsComposerMap* mypItem = dynamic_cast<QgsComposerMap *>( *itemIt );
+    if (( mypItem ) && ( mypItem->previewMode() == QgsComposerMap::Render ) )
+    {
+      mypItem->updateCachedImage();
     }
   }
 }

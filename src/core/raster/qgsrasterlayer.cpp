@@ -255,10 +255,6 @@ bool QgsRasterLayer::draw( QgsRenderContext& rendererContext )
 {
   QgsDebugMsg( "entered. (renderContext)" );
 
-  // Don't waste time drawing if transparency is at 0 (completely transparent)
-  if ( mTransparencyLevel == 0 )
-    return true;
-
   QgsDebugMsg( "checking timestamp." );
 
   // Check timestamp

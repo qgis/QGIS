@@ -21,6 +21,7 @@ email                : lorenxo86@gmail.com
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
+import qgis.utils
 
 # Initialize Qt resources from file resources_rc.py
 import resources_rc
@@ -39,7 +40,7 @@ except ImportError, e:
   # if the plugin is shipped with QGis catch the exception and
   # display an error message
   import os.path
-  qgisUserPluginPath = os.path.abspath( os.path.join( unicode( QgsApplication.qgisSettingsDirPath() ), "python") )
+  qgisUserPluginPath = qgis.utils.home_plugin_path
   if not os.path.dirname(__file__).startswith( qgisUserPluginPath ):
     title = QCoreApplication.translate( "GdalTools", "Plugin error" )
     message = QCoreApplication.translate( "GdalTools", u'Unable to load {0} plugin. \nThe required "{1}" module is missing. \nInstall it and try again.' )
@@ -68,8 +69,8 @@ class GdalTools:
 
     if QGis.QGIS_VERSION[0:3] < "1.5":
       # For i18n support
-      userPluginPath = QFileInfo( QgsApplication.qgisUserDbFilePath() ).path() + "/python/plugins/GdalTools"
-      systemPluginPath = QgsApplication.prefixPath() + "/python/plugins/GdalTools"
+      userPluginPath = qgis.utils.home_plugin_path + "/GdalTools"
+      systemPluginPath = qgis.utils.sys_plugin_path + "/GdalTools"
 
       overrideLocale = QSettings().value( "locale/overrideFlag", False, type=bool )
       if not overrideLocale:

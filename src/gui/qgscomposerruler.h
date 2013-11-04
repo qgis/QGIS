@@ -9,6 +9,8 @@ class QGraphicsLineItem;
 /**A class to show paper scale and the current cursor position*/
 class GUI_EXPORT QgsComposerRuler: public QWidget
 {
+    Q_OBJECT
+
   public:
     enum Direction
     {
@@ -43,6 +45,11 @@ class GUI_EXPORT QgsComposerRuler: public QWidget
     QList< QPair< QgsComposerItem*, QgsComposerItem::ItemPositionMode > > mSnappedItems;
 
     void setSnapLinePosition( const QPointF& pos );
+
+  signals:
+    /**Is emitted when mouse cursor coordinates change*/
+    void cursorPosChanged( QPointF );
+
 };
 
 #endif // QGSCOMPOSERRULER_H

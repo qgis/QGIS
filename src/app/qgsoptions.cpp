@@ -247,9 +247,13 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
 
   //Network timeout
   mNetworkTimeoutSpinBox->setValue( settings.value( "/qgis/networkAndProxy/networkTimeout", "60000" ).toInt() );
+  leUserAgent->setText( settings.value( "/qgis/networkAndProxy/userAgent", "Mozilla/5.0" ).toString() );
 
   // WMS/WMS-C tile expiry time
   mDefaultTileExpirySpinBox->setValue( settings.value( "/qgis/defaultTileExpiry", "24" ).toInt() );
+
+  // WMS/WMS-C default max retry in case of tile request errors
+  mDefaultTileMaxRetrySpinBox->setValue( settings.value( "/qgis/defaultTileMaxRetry", "3" ).toInt() );
 
   //Web proxy settings
   grpProxy->setChecked( settings.value( "proxy/proxyEnabled", "0" ).toBool() );
@@ -387,8 +391,19 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   leLayerGlobalCrs->setText( mLayerDefaultCrs.authid() + " - " + mLayerDefaultCrs.description() );
 
   //on the fly CRS transformation settings
-  chkOtfAuto->setChecked( settings.value( "/Projections/otfTransformAutoEnable", true ).toBool() );
-  chkOtfTransform->setChecked( settings.value( "/Projections/otfTransformEnabled", 0 ).toBool() );
+  //it would be logical to have single settings value but originaly the radio buttons were checkboxes
+  if ( settings.value( "/Projections/otfTransformAutoEnable", true ).toBool() )
+  {
+    radOtfAuto->setChecked( true );
+  }
+  else if ( settings.value( "/Projections/otfTransformEnabled", false ).toBool() )
+  {
+    radOtfTransform->setChecked( true );
+  }
+  else
+  {
+    radOtfNone->setChecked( true ); // default
+  }
 
   QString myDefaultCrs = settings.value( "/Projections/projectDefaultCrs", GEO_EPSG_CRS_AUTHID ).toString();
   mDefaultCrs.createFromOgcWmsCrs( myDefaultCrs );
@@ -401,6 +416,10 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   if ( myDisplayUnits == QGis::Feet )
   {
     radFeet->setChecked( true );
+  }
+  else if ( myDisplayUnits == QGis::NauticalMiles )
+  {
+    radNautical->setChecked( true );
   }
   else
   {
@@ -525,6 +544,9 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   cbxIgnoreShapeEncoding->setChecked( settings.value( "/qgis/ignoreShapeEncoding", true ).toBool() );
 
   cmbLegendDoubleClickAction->setCurrentIndex( settings.value( "/qgis/legendDoubleClickAction", 0 ).toInt() );
+
+  // WMS getLegendGraphic setting
+  mLegendGraphicResolutionSpinBox->setValue( settings.value( "/qgis/defaultLegendGraphicResolution", 0 ).toInt() );
 
   //
   // Raster properties
@@ -884,9 +906,13 @@ void QgsOptions::saveOptions()
 
   //Network timeout
   settings.setValue( "/qgis/networkAndProxy/networkTimeout", mNetworkTimeoutSpinBox->value() );
+  settings.setValue( "/qgis/networkAndProxy/userAgent", leUserAgent->text() );
 
   // WMS/WMS-C tile expiry time
   settings.setValue( "/qgis/defaultTileExpiry", mDefaultTileExpirySpinBox->value() );
+
+  // WMS/WMS-C default max retry in case of tile request errors
+  settings.setValue( "/qgis/defaultTileMaxRetry", mDefaultTileMaxRetrySpinBox->value() );
 
   //Web proxy settings
   settings.setValue( "proxy/proxyEnabled", grpProxy->isChecked() );
@@ -942,6 +968,7 @@ void QgsOptions::saveOptions()
   settings.setValue( "/qgis/addPostgisDC", cbxAddPostgisDC->isChecked() );
   settings.setValue( "/qgis/addOracleDC", cbxAddOracleDC->isChecked() );
   settings.setValue( "/qgis/addNewLayersToCurrentGroup", cbxAddNewLayersToCurrentGroup->isChecked() );
+  settings.setValue( "/qgis/defaultLegendGraphicResolution", mLegendGraphicResolutionSpinBox->value() );
   bool createRasterLegendIcons = settings.value( "/qgis/createRasterLegendIcons", false ).toBool();
   settings.setValue( "/qgis/createRasterLegendIcons", cbxCreateRasterLegendIcons->isChecked() );
   settings.setValue( "/qgis/copyGeometryAsWKT", cbxCopyWKTGeomFromTable->isChecked() );
@@ -1028,13 +1055,17 @@ void QgsOptions::saveOptions()
   settings.setValue( "/Projections/layerDefaultCrs", mLayerDefaultCrs.authid() );
 
   // save 'on the fly' CRS transformation settings
-  settings.setValue( "/Projections/otfTransformAutoEnable", chkOtfAuto->isChecked() );
-  settings.setValue( "/Projections/otfTransformEnabled", chkOtfTransform->isChecked() );
+  settings.setValue( "/Projections/otfTransformAutoEnable", radOtfAuto->isChecked() );
+  settings.setValue( "/Projections/otfTransformEnabled", radOtfTransform->isChecked() );
   settings.setValue( "/Projections/projectDefaultCrs", mDefaultCrs.authid() );
 
   if ( radFeet->isChecked() )
   {
     settings.setValue( "/qgis/measure/displayunits", QGis::toLiteral( QGis::Feet ) );
+  }
+  else if ( radNautical->isChecked() )
+  {
+    settings.setValue( "/qgis/measure/displayunits", QGis::toLiteral( QGis::NauticalMiles ) );
   }
   else
   {
@@ -1341,6 +1372,10 @@ QStringList QgsOptions::i18nList()
   while ( myIterator.hasNext() )
   {
     QString myFileName = myIterator.next();
+
+    // Ignore the 'en' translation file, already added as 'en_US'.
+    if ( myFileName.compare( "qgis_en.qm" ) == 0 ) continue;
+
     myList << myFileName.replace( "qgis_", "" ).replace( ".qm", "" );
   }
   return myList;

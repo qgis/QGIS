@@ -21,8 +21,6 @@
 #include "qgsrulebasedrendererv2.h"
 #include "qgspointdisplacementrenderer.h"
 
-QgsRendererV2Registry* QgsRendererV2Registry::mInstance = NULL;
-
 QgsRendererV2Registry::QgsRendererV2Registry()
 {
   // add default renderers
@@ -59,10 +57,8 @@ QgsRendererV2Registry::~QgsRendererV2Registry()
 
 QgsRendererV2Registry* QgsRendererV2Registry::instance()
 {
-  if ( !mInstance )
-    mInstance = new QgsRendererV2Registry();
-
-  return mInstance;
+  static QgsRendererV2Registry mInstance;
+  return &mInstance;
 }
 
 
@@ -91,6 +87,8 @@ QgsRendererV2AbstractMetadata* QgsRendererV2Registry::rendererMetadata( QString 
 {
   return mRenderers.value( rendererName );
 }
+
+QgsRendererV2Metadata::~QgsRendererV2Metadata(){}
 
 QStringList QgsRendererV2Registry::renderersList()
 {

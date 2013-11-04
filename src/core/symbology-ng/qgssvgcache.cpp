@@ -79,15 +79,10 @@ double rasterScaleFactor;
 QColor fill;
 QColor outline;
 
-QgsSvgCache* QgsSvgCache::mInstance = 0;
-
 QgsSvgCache* QgsSvgCache::instance()
 {
-  if ( !mInstance )
-  {
-    mInstance = new QgsSvgCache();
-  }
-  return mInstance;
+  static QgsSvgCache mInstance;
+  return &mInstance;
 }
 
 QgsSvgCache::QgsSvgCache( QObject *parent )

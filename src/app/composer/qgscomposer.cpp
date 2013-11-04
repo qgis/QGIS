@@ -98,7 +98,6 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   setupUi( this );
   setWindowTitle( mTitle );
   setupTheme();
-  connect( mButtonBox, SIGNAL( rejected() ), this, SLOT( close() ) );
 
   QSettings settings;
   setStyleSheet( mQgis->styleSheet() );
@@ -144,6 +143,8 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
 
   QActionGroup* toggleActionGroup = new QActionGroup( this );
   toggleActionGroup->addAction( mActionMoveItemContent );
+  toggleActionGroup->addAction( mActionPan );
+  toggleActionGroup->addAction( mActionMouseZoom );
   toggleActionGroup->addAction( mActionAddNewMap );
   toggleActionGroup->addAction( mActionAddNewLabel );
   toggleActionGroup->addAction( mActionAddNewLegend );
@@ -158,7 +159,6 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   toggleActionGroup->addAction( mActionAddHtml );
   toggleActionGroup->setExclusive( true );
 
-
   mActionAddNewMap->setCheckable( true );
   mActionAddNewLabel->setCheckable( true );
   mActionAddNewLegend->setCheckable( true );
@@ -166,7 +166,15 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   mActionAddNewScalebar->setCheckable( true );
   mActionAddImage->setCheckable( true );
   mActionMoveItemContent->setCheckable( true );
+  mActionPan->setCheckable( true );
+  mActionMouseZoom->setCheckable( true );
   mActionAddArrow->setCheckable( true );
+
+  mActionShowGrid->setCheckable( true );
+  mActionSnapGrid->setCheckable( true );
+  mActionShowGuides->setCheckable( true );
+  mActionSnapGuides->setCheckable( true );
+  mActionSmartGuides->setCheckable( true );
 
 #ifdef Q_WS_MAC
   mActionQuit->setText( tr( "Close" ) );
@@ -242,11 +250,22 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   editMenu->addAction( mActionSelectNextAbove );
 
   QMenu *viewMenu = menuBar()->addMenu( tr( "View" ) );
+  //Ctrl+= should also trigger zoom in
+  QShortcut* ctrlEquals = new QShortcut( QKeySequence( "Ctrl+=" ), this );
+  connect( ctrlEquals, SIGNAL( activated() ), mActionZoomIn, SLOT( trigger() ) );
   viewMenu->addAction( mActionZoomIn );
   viewMenu->addAction( mActionZoomOut );
   viewMenu->addAction( mActionZoomAll );
   viewMenu->addSeparator();
   viewMenu->addAction( mActionRefreshView );
+  viewMenu->addSeparator();
+  viewMenu->addAction( mActionShowGrid );
+  viewMenu->addAction( mActionSnapGrid );
+  viewMenu->addSeparator();
+  viewMenu->addAction( mActionShowGuides );
+  viewMenu->addAction( mActionSnapGuides );
+  viewMenu->addAction( mActionSmartGuides );
+  viewMenu->addAction( mActionClearGuides );
 
   // Panel and toolbar submenus
   mPanelMenu = new QMenu( tr( "Panels" ), this );
@@ -309,6 +328,19 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   setMouseTracking( true );
   mViewFrame->setMouseTracking( true );
 
+  //create status bar labels
+  mStatusCursorXLabel = new QLabel( mStatusBar );
+  mStatusCursorXLabel->setMinimumWidth( 100 );
+  mStatusCursorYLabel = new QLabel( mStatusBar );
+  mStatusCursorYLabel->setMinimumWidth( 100 );
+  mStatusCursorPageLabel = new QLabel( mStatusBar );
+  mStatusCursorPageLabel->setMinimumWidth( 100 );
+  mStatusCompositionLabel = new QLabel( mStatusBar );
+  mStatusBar->addWidget( mStatusCursorXLabel );
+  mStatusBar->addWidget( mStatusCursorYLabel );
+  mStatusBar->addWidget( mStatusCursorPageLabel );
+  mStatusBar->addWidget( mStatusCompositionLabel );
+
   //create composer view and layout with rulers
   mView = 0;
   mViewLayout = new QGridLayout();
@@ -337,8 +369,8 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
     connect( mComposition->undoStack(), SIGNAL( canRedoChanged( bool ) ), mActionRedo, SLOT( setEnabled( bool ) ) );
   }
 
+  restoreGridSettings();
   connectSlots();
-
 
   mComposition->setParent( mView );
   mView->setComposition( mComposition );
@@ -396,9 +428,12 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   mGeneralDock->raise();
 
   // Create size grip (needed by Mac OS X for QMainWindow if QStatusBar is not visible)
+  //should not be needed now that composer has a status bar?
+#if 0
   mSizeGrip = new QSizeGrip( this );
   mSizeGrip->resize( mSizeGrip->sizeHint() );
   mSizeGrip->move( rect().bottomRight() - mSizeGrip->rect().bottomRight() );
+#endif
 
   restoreWindowState();
   setSelectionTool();
@@ -442,6 +477,7 @@ void QgsComposer::setupTheme()
   mActionZoomAll->setIcon( QgsApplication::getThemeIcon( "/mActionZoomFullExtent.svg" ) );
   mActionZoomIn->setIcon( QgsApplication::getThemeIcon( "/mActionZoomIn.svg" ) );
   mActionZoomOut->setIcon( QgsApplication::getThemeIcon( "/mActionZoomOut.svg" ) );
+  mActionMouseZoom->setIcon( QgsApplication::getThemeIcon( "/mActionZoomToSelected.svg" ) );
   mActionRefreshView->setIcon( QgsApplication::getThemeIcon( "/mActionDraw.svg" ) );
   mActionUndo->setIcon( QgsApplication::getThemeIcon( "/mActionUndo.png" ) );
   mActionRedo->setIcon( QgsApplication::getThemeIcon( "/mActionRedo.png" ) );
@@ -456,7 +492,7 @@ void QgsComposer::setupTheme()
   mActionAddArrow->setIcon( QgsApplication::getThemeIcon( "/mActionAddArrow.png" ) );
   mActionAddTable->setIcon( QgsApplication::getThemeIcon( "/mActionOpenTable.png" ) );
   mActionAddHtml->setIcon( QgsApplication::getThemeIcon( "/mActionAddHtml.png" ) );
-  mActionSelectMoveItem->setIcon( QgsApplication::getThemeIcon( "/mActionSelectPan.png" ) );
+  mActionSelectMoveItem->setIcon( QgsApplication::getThemeIcon( "/mActionSelect.svg" ) );
   mActionMoveItemContent->setIcon( QgsApplication::getThemeIcon( "/mActionMoveItemContent.png" ) );
   mActionGroupItems->setIcon( QgsApplication::getThemeIcon( "/mActionGroupItems.png" ) );
   mActionUngroupItems->setIcon( QgsApplication::getThemeIcon( "/mActionUngroupItems.png" ) );
@@ -502,6 +538,14 @@ void QgsComposer::connectSlots()
   connect( mComposition, SIGNAL( composerShapeAdded( QgsComposerShape* ) ), this, SLOT( addComposerShape( QgsComposerShape* ) ) );
   connect( mComposition, SIGNAL( composerTableAdded( QgsComposerAttributeTable* ) ), this, SLOT( addComposerTable( QgsComposerAttributeTable* ) ) );
   connect( mComposition, SIGNAL( itemRemoved( QgsComposerItem* ) ), this, SLOT( deleteItem( QgsComposerItem* ) ) );
+
+  //listen out for position updates from the QgsComposerView
+  connect( mView, SIGNAL( cursorPosChanged( QPointF ) ), this, SLOT( updateStatusCursorPos( QPointF ) ) );
+  //also listen out for position updates from the horizontal/vertical rulers
+  connect( mHorizontalRuler, SIGNAL( cursorPosChanged( QPointF ) ), this, SLOT( updateStatusCursorPos( QPointF ) ) );
+  connect( mVerticalRuler, SIGNAL( cursorPosChanged( QPointF ) ), this, SLOT( updateStatusCursorPos( QPointF ) ) );
+  //listen out to status bar updates from the composition
+  connect( mComposition, SIGNAL( statusMsgChanged( QString ) ), this, SLOT( updateStatusCompositionMsg( QString ) ) );
 }
 
 void QgsComposer::open( void )
@@ -566,6 +610,27 @@ void QgsComposer::setTitle( const QString& title )
   {
     mWindowAction->setText( title );
   }
+}
+
+void QgsComposer::updateStatusCursorPos( QPointF cursorPosition )
+{
+  if ( !mComposition )
+  {
+    return;
+  }
+
+  //convert cursor position to position on current page
+  QPointF pagePosition = mComposition->positionOnPage( cursorPosition );
+  int currentPage = mComposition->pageNumberForPoint( cursorPosition );
+
+  mStatusCursorXLabel->setText( QString( tr( "x: %1 mm" ) ).arg( pagePosition.x() ) );
+  mStatusCursorYLabel->setText( QString( tr( "y: %1 mm" ) ).arg( pagePosition.y() ) );
+  mStatusCursorPageLabel->setText( QString( tr( "page: %3" ) ).arg( currentPage ) );
+}
+
+void QgsComposer::updateStatusCompositionMsg( QString message )
+{
+  mStatusCompositionLabel->setText( message );
 }
 
 void QgsComposer::showItemOptions( QgsComposerItem* item )
@@ -642,6 +707,14 @@ void QgsComposer::on_mActionZoomOut_triggered()
   emit zoomLevelChanged();
 }
 
+void QgsComposer::on_mActionMouseZoom_triggered()
+{
+  if ( mView )
+  {
+    mView->setCurrentTool( QgsComposerView::Zoom );
+  }
+}
+
 void QgsComposer::on_mActionRefreshView_triggered()
 {
   if ( !mComposition )
@@ -662,6 +735,60 @@ void QgsComposer::on_mActionRefreshView_triggered()
   }
 
   mComposition->update();
+}
+
+void QgsComposer::on_mActionShowGrid_triggered( bool checked )
+{
+  //show or hide grid
+  if ( mComposition )
+  {
+    mComposition->setGridVisible( checked );
+  }
+}
+
+void QgsComposer::on_mActionSnapGrid_triggered( bool checked )
+{
+  //enable or disable snap items to grid
+  if ( mComposition )
+  {
+    mComposition->setSnapToGridEnabled( checked );
+  }
+}
+
+void QgsComposer::on_mActionShowGuides_triggered( bool checked )
+{
+  //show or hide guide lines
+  if ( mComposition )
+  {
+    mComposition->setSnapLinesVisible( checked );
+  }
+}
+
+void QgsComposer::on_mActionSnapGuides_triggered( bool checked )
+{
+  //enable or disable snap items to guides
+  if ( mComposition )
+  {
+    mComposition->setAlignmentSnap( checked );
+  }
+}
+
+void QgsComposer::on_mActionSmartGuides_triggered( bool checked )
+{
+  //enable or disable smart snapping guides
+  if ( mComposition )
+  {
+    mComposition->setSmartGuidesEnabled( checked );
+  }
+}
+
+void QgsComposer::on_mActionClearGuides_triggered()
+{
+  //clear guide lines
+  if ( mComposition )
+  {
+    mComposition->clearSnapLines();
+  }
 }
 
 void QgsComposer::on_mActionExportAsPDF_triggered()
@@ -1673,6 +1800,14 @@ void QgsComposer::on_mActionMoveItemContent_triggered()
   }
 }
 
+void QgsComposer::on_mActionPan_triggered()
+{
+  if ( mView )
+  {
+    mView->setCurrentTool( QgsComposerView::Pan );
+  }
+}
+
 void QgsComposer::on_mActionGroupItems_triggered()
 {
   if ( mView )
@@ -1910,7 +2045,9 @@ void QgsComposer::resizeEvent( QResizeEvent *e )
   Q_UNUSED( e );
 
   // Move size grip when window is resized
+#if 0
   mSizeGrip->move( rect().bottomRight() - mSizeGrip->rect().bottomRight() );
+#endif
 
   saveWindowState();
 }
@@ -2064,6 +2201,9 @@ void QgsComposer::readXML( const QDomElement& composerElem, const QDomDocument& 
     mComposition->addItemsFromXML( composerElem, doc, &mMapsToRestore );
   }
 
+  //restore grid settings
+  restoreGridSettings();
+
   // look for world file composer map, if needed
   // Note: this must be done after maps have been added by addItemsFromXML
   if ( mComposition->generateWorldFile() )
@@ -2109,6 +2249,17 @@ void QgsComposer::readXML( const QDomElement& composerElem, const QDomDocument& 
   mComposition->atlasComposition().readXML( atlasNodeList.at( 0 ).toElement(), doc );
 
   setSelectionTool();
+}
+
+void QgsComposer::restoreGridSettings()
+{
+  //restore grid settings
+  mActionSnapGrid->setChecked( mComposition->snapToGridEnabled() );
+  mActionShowGrid->setChecked( mComposition->gridVisible() );
+  //restore guide settings
+  mActionShowGuides->setChecked( mComposition->snapLinesVisible() );
+  mActionSnapGuides->setChecked( mComposition->alignmentSnap() );
+  mActionSmartGuides->setChecked( mComposition->smartGuidesEnabled() );
 }
 
 void QgsComposer::deleteItemWidgets()

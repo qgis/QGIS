@@ -108,11 +108,45 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     /**Note: added in version 1.9*/
     int numPages() const;
 
+    /**Returns the position within a page of a point in the composition
+      @note Added in QGIS 2.1
+    */
+    QPointF positionOnPage( const QPointF & position ) const;
+
+    /**Returns the page number corresponding to a point in the composition
+      @note Added in QGIS 2.1
+    */
+    int pageNumberForPoint( const QPointF & position ) const;
+
+    /**Sets the status bar message for the composer window
+      @note Added in QGIS 2.1
+    */
+    void setStatusMessage( const QString & message );
+
     void setSnapToGridEnabled( bool b );
     bool snapToGridEnabled() const {return mSnapToGrid;}
 
+    void setGridVisible( bool b );
+    bool gridVisible() const {return mGridVisible;}
+
+    /**Hides / shows custom snap lines*/
+    void setSnapLinesVisible( bool visible );
+    bool snapLinesVisible() const {return mGuidesVisible;}
+
+    void setAlignmentSnap( bool s ) { mAlignmentSnap = s; }
+    bool alignmentSnap() const { return mAlignmentSnap; }
+
+    void setSmartGuidesEnabled( bool b ) { mSmartGuides = b; };
+    bool smartGuidesEnabled() const {return mSmartGuides;}
+
+    /**Removes all snap lines*/
+    void clearSnapLines();
+
     void setSnapGridResolution( double r );
     double snapGridResolution() const {return mSnapGridResolution;}
+
+    void setSnapGridTolerance( double tolerance );
+    double snapGridTolerance() const {return mSnapGridTolerance;}
 
     void setSnapGridOffsetX( double offset );
     double snapGridOffsetX() const {return mSnapGridOffsetX;}
@@ -125,9 +159,6 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
 
     void setGridStyle( GridStyle s );
     GridStyle gridStyle() const {return mGridStyle;}
-
-    void setAlignmentSnap( bool s ) { mAlignmentSnap = s; }
-    bool alignmentSnap() const { return mAlignmentSnap; }
 
     void setAlignmentSnapTolerance( double t ) { mAlignmentSnapTolerance = t; }
     double alignmentSnapTolerance() const { return mAlignmentSnapTolerance; }
@@ -206,9 +237,6 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     /**Used to enable or disable advanced effects such as blend modes in a composition
       @note: added in version 1.9*/
     void setUseAdvancedEffects( bool effectsEnabled );
-
-    double selectionTolerance() const { return mSelectionTolerance; }
-    void setSelectionTolerance( double tol );
 
     /**Returns pointer to map renderer of qgis map canvas*/
     QgsMapRenderer* mapRenderer() {return mMapRenderer;}
@@ -304,8 +332,6 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
      * @note not available in python bindings
      */
     QGraphicsLineItem* nearestSnapLine( bool horizontal, double x, double y, double tolerance, QList< QPair< QgsComposerItem*, QgsComposerItem::ItemPositionMode > >& snappedItems );
-    /**Hides / shows custom snap lines*/
-    void setSnapLinesVisible( bool visible );
 
     /**Allocates new item command and saves initial state in it
       @param item target item
@@ -351,6 +377,10 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     /**Convenience function to create a QgsAddRemoveItemCommand, connect its signals and push it to the undo stack*/
     void pushAddRemoveCommand( QgsComposerItem* item, const QString& text, QgsAddRemoveItemCommand::State state = QgsAddRemoveItemCommand::Added );
 
+    /**If true, prevents any mouse cursor changes by the composition or by any composer items
+      Used by QgsComposer and QgsComposerView to prevent unwanted cursor changes*/
+    void setPreventCursorChange( bool preventChange ) { mPreventCursorChange = preventChange; };
+    bool preventCursorChange() { return mPreventCursorChange; };
 
     //printing
 
@@ -413,12 +443,11 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     /**Flag if advanced visual effects such as blend modes should be used. True by default*/
     bool mUseAdvancedEffects;
 
-    /**Distance tolerance for item selection (in mm)*/
-    double mSelectionTolerance;
-
     /**Parameters for snap to grid function*/
     bool mSnapToGrid;
+    bool mGridVisible;
     double mSnapGridResolution;
+    double mSnapGridTolerance;
     double mSnapGridOffsetX;
     double mSnapGridOffsetY;
     QPen mGridPen;
@@ -426,6 +455,8 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
 
     /**Parameters for alignment snap*/
     bool mAlignmentSnap;
+    bool mGuidesVisible;
+    bool mSmartGuides;
     double mAlignmentSnapTolerance;
 
     /**Arbitraty snap lines (horizontal and vertical)*/
@@ -462,6 +493,8 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
 
     static QString encodeStringForXML( const QString& str );
 
+    bool mPreventCursorChange;
+
   signals:
     void paperSizeChanged();
     void nPagesChanged();
@@ -488,6 +521,9 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     void composerTableAdded( QgsComposerAttributeTable* table );
     /**Is emitted when a composer item has been removed from the scene*/
     void itemRemoved( QgsComposerItem* );
+
+    /**Is emitted when the composition has an updated status bar message for the composer window*/
+    void statusMsgChanged( QString message );
 };
 
 template<class T> void QgsComposition::composerItems( QList<T*>& itemList )

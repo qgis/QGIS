@@ -139,8 +139,8 @@ void TestOpenStreetMap::importAndQueries()
   // list nodes
 
   QgsOSMNodeIterator nodes = db.listNodes();
-  QCOMPARE( nodes.next().id(), 11111 );
-  QCOMPARE( nodes.next().id(), 360769661 );
+  QCOMPARE( nodes.next().id(), ( qint64 )11111 );
+  QCOMPARE( nodes.next().id(), ( qint64 )360769661 );
   nodes.close();
 
   // query way
@@ -166,7 +166,7 @@ void TestOpenStreetMap::importAndQueries()
   // list ways
 
   QgsOSMWayIterator ways = db.listWays();
-  QCOMPARE( ways.next().id(), 32137532 );
+  QCOMPARE( ways.next().id(), ( qint64 )32137532 );
   QCOMPARE( ways.next().isValid(), false );
   ways.close();
 

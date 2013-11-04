@@ -122,6 +122,10 @@ my @lic;
 my @desc;
 foreach my $p ( keys %pkgs ) {
 	my @f;
+	unless( exists $file{$p} ) {
+		print "No file for package $p found found.\n" if $verbose;
+		next;
+	}
 	push @f, "$root/$file{$p}";
 
 	if( exists $lic{$p} ) {
@@ -164,16 +168,37 @@ if( -d $unpacked ) {
 my $taropt = "v" x $verbose;
 
 unless(-d $unpacked ) {
-	mkdir $unpacked, 0755;
+	mkdir "$unpacked", 0755;
+	mkdir "$unpacked/bin", 0755;
+	mkdir "$unpacked/etc", 0755;
+	mkdir "$unpacked/etc/setup", 0755;
 
-	foreach my $p ( keys %pkgs ) {
-		$p = $file{$p};
+	# Create package database
+	open O, ">$unpacked/etc/setup/installed.db";
+	print O "INSTALLED.DB 2\n";
+
+	foreach my $pn ( keys %pkgs ) {
+		my $p = $file{$pn};
+		unless( defined $p ) {
+			print "No package found for $pn\n" if $verbose;
+			next;
+		}
+
 		$p =~ s#^.*/#$packages/#;
 
+		unless( -r $p ) {
+			print "Package $p not found.\n" if $verbose;
+			next;
+		}
+
+		print O "$pn $p 0\n";
+
 		print "Unpacking $p...\n" if $verbose;
-		system "tar $taropt -C $unpacked -xjf $p";
+		system "tar $taropt -C $unpacked -xjvf $p | gzip -c >$unpacked/etc/setup/$pn.lst.gz";
 		die "unpacking of $p failed" if $?;
 	}
+
+	close O;
 
 	chdir $unpacked;
 
@@ -277,8 +302,8 @@ close F;
 $version = "$major.$minor.$patch" unless defined $version;
 
 unless( defined $binary ) {
-	if( -f "binary-$archpostfix$version" ) {
-		open P, "binary-$archpostfix$version";
+	if( -f "binary$archpostfix-$version" ) {
+		open P, "binary$archpostfix-$version";
 		$binary = <P>;
 		close P;
 		$binary++;
@@ -375,7 +400,7 @@ $cmd .= " QGIS-Installer.nsi";
 system $cmd;
 die "running nsis failed" if $?;
 
-open P, ">osgeo4w/binary-$archpostfix$version";
+open P, ">osgeo4w/binary$archpostfix-$version";
 print P $binary;
 close P;
 

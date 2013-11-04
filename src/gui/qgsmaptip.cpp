@@ -100,7 +100,7 @@ QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPoint &mapPosition, QgsM
 
   int idx = vlayer->fieldNameIndex( vlayer->displayField() );
   if ( idx < 0 )
-    return QgsExpression::replaceExpressionText( vlayer->displayField(), feature, vlayer );
+    return QgsExpression::replaceExpressionText( vlayer->displayField(), &feature, vlayer );
   else
     return feature.attribute( idx ).toString();
 }

@@ -30,7 +30,7 @@ class SilentProgress:
 
     def error(self, msg):
         print msg
-    
+
     def setText(self, text):
         pass
 

@@ -635,7 +635,7 @@ QgsLegendSymbologyList QgsCategorizedSymbolRendererV2::legendSymbologyItems( QSi
   return lst;
 }
 
-QgsLegendSymbolList QgsCategorizedSymbolRendererV2::legendSymbolItems( double scaleDenominator )
+QgsLegendSymbolList QgsCategorizedSymbolRendererV2::legendSymbolItems( double scaleDenominator, QString rule )
 {
   Q_UNUSED( scaleDenominator );
   QSettings settings;
@@ -649,7 +649,10 @@ QgsLegendSymbolList QgsCategorizedSymbolRendererV2::legendSymbolItems( double sc
 
   foreach ( const QgsRendererCategoryV2& cat, mCategories )
   {
-    lst << qMakePair( cat.label(), cat.symbol() );
+    if ( rule.isEmpty() || cat.label() == rule )
+    {
+      lst << qMakePair( cat.label(), cat.symbol() );
+    }
   }
   return lst;
 }

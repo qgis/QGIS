@@ -32,6 +32,8 @@ class QgsEditorWidgetWrapper : QObject
   protected:
     virtual QWidget* createWidget( QWidget* parent ) = 0 /Factory/;
 
+    virtual void initWidget( QWidget* editor );
+
   signals:
     void valueChanged( const QVariant& value );
 

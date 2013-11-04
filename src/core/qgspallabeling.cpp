@@ -4816,7 +4816,7 @@ void QgsPalLabeling::loadEngineSettings()
   mShowingAllLabels = QgsProject::instance()->readBoolEntry(
                         "PAL", "/ShowingAllLabels", false, &saved );
   mShowingPartialsLabels = QgsProject::instance()->readBoolEntry(
-                        "PAL", "/ShowingPartialsLabels", p.getShowPartial(), &saved );
+                             "PAL", "/ShowingPartialsLabels", p.getShowPartial(), &saved );
   mSavedWithProject = saved;
 }
 
@@ -4852,6 +4852,6 @@ QgsLabelingEngineInterface* QgsPalLabeling::clone()
   lbl->mShowingAllLabels = mShowingAllLabels;
   lbl->mShowingCandidates = mShowingCandidates;
   lbl->mShowingShadowRects = mShowingShadowRects;
-  lbl->mShowingPartialsLabels = mShowingPartialsLabels;  
+  lbl->mShowingPartialsLabels = mShowingPartialsLabels;
   return lbl;
 }

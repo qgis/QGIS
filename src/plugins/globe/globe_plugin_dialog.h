@@ -59,6 +59,8 @@ class QgsGlobePluginDialog: public QDialog, private Ui::QgsGlobePluginDialogGuiB
     void saveStereoConfig();
     //! Handle stereoMode
     void setStereoMode();
+    void loadVideoSettings();
+    void saveVideoSettings();
 
   private slots:
     void on_buttonBox_accepted();

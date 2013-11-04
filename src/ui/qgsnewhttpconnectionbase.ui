@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>475</width>
-    <height>415</height>
+    <height>463</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -33,6 +33,16 @@
       <string>Connection details</string>
      </property>
      <layout class="QGridLayout">
+      <item row="8" column="0">
+       <widget class="QLabel" name="lblDpiMode">
+        <property name="text">
+         <string>DPI-Mode</string>
+        </property>
+        <property name="buddy">
+         <cstring>cmbDpiMode</cstring>
+        </property>
+       </widget>
+      </item>
       <item row="1" column="0">
        <widget class="QLabel" name="TextLabel1">
         <property name="text">
@@ -134,35 +144,35 @@
         </property>
        </widget>
       </item>
-      <item row="9" column="0" colspan="2">
+      <item row="13" column="0" colspan="2">
        <widget class="QCheckBox" name="cbxIgnoreGetFeatureInfoURI">
         <property name="text">
          <string>Ignore GetFeatureInfo URI reported in capabilities</string>
         </property>
        </widget>
       </item>
-      <item row="8" column="0" colspan="2">
+      <item row="12" column="0" colspan="2">
        <widget class="QCheckBox" name="cbxIgnoreGetMapURI">
         <property name="text">
-         <string>Ignore GetMap URI reported in capabilities</string>
+         <string>Ignore GetMap/GetTile URI reported in capabilities</string>
         </property>
        </widget>
       </item>
-      <item row="10" column="0" colspan="2">
+      <item row="14" column="0" colspan="2">
        <widget class="QCheckBox" name="cbxIgnoreAxisOrientation">
         <property name="text">
          <string>Ignore axis orientation (WMS 1.3/WMTS)</string>
         </property>
        </widget>
       </item>
-      <item row="11" column="0" colspan="2">
+      <item row="15" column="0" colspan="2">
        <widget class="QCheckBox" name="cbxInvertAxisOrientation">
         <property name="text">
          <string>Invert axis orientation</string>
         </property>
        </widget>
       </item>
-      <item row="12" column="0" colspan="2">
+      <item row="16" column="0" colspan="2">
        <widget class="QCheckBox" name="cbxSmoothPixmapTransform">
         <property name="text">
          <string>Smooth pixmap transform</string>
@@ -177,7 +187,13 @@
         <property name="text">
          <string>Referer</string>
         </property>
+        <property name="buddy">
+         <cstring>txtReferer</cstring>
+        </property>
        </widget>
+      </item>
+      <item row="8" column="1">
+       <widget class="QComboBox" name="cmbDpiMode"/>
       </item>
      </layout>
     </widget>
@@ -197,8 +213,8 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>412</x>
-     <y>244</y>
+     <x>421</x>
+     <y>453</y>
     </hint>
     <hint type="destinationlabel">
      <x>430</x>
@@ -213,8 +229,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>321</x>
-     <y>244</y>
+     <x>330</x>
+     <y>453</y>
     </hint>
     <hint type="destinationlabel">
      <x>426</x>

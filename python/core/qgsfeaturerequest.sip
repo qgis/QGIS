@@ -30,6 +30,8 @@ class QgsFeatureRequest
     explicit QgsFeatureRequest( QgsFeatureId fid );
     //! construct a request with rectangle filter
     explicit QgsFeatureRequest( const QgsRectangle& rect );
+    //! construct a request with a filter expression
+    explicit QgsFeatureRequest( const QgsExpression& expression );
 
     FilterType filterType() const;
 

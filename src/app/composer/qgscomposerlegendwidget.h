@@ -59,6 +59,8 @@ class QgsComposerLegendWidget: public QWidget, private Ui::QgsComposerLegendWidg
     void on_mEqualColumnWidthCheckBox_toggled( bool checked );
     void on_mSymbolWidthSpinBox_valueChanged( double d );
     void on_mSymbolHeightSpinBox_valueChanged( double d );
+    void on_mWmsLegendWidthSpinBox_valueChanged( double d );
+    void on_mWmsLegendHeightSpinBox_valueChanged( double d );
     void on_mTitleSpaceBottomSpinBox_valueChanged( double d );
     void on_mGroupSpaceSpinBox_valueChanged( double d );
     void on_mLayerSpaceSpinBox_valueChanged( double d );

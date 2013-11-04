@@ -50,7 +50,7 @@ class RandomExtractWithinSubsets(GeoAlgorithm):
     METHODS = ['Number of selected features',
                'Percentage of selected features']
 
-    def defineCharacteristics(self):        
+    def defineCharacteristics(self):
         self.name = 'Random extract within subsets'
         self.group = 'Vector selection tools'
 
@@ -72,12 +72,12 @@ class RandomExtractWithinSubsets(GeoAlgorithm):
         layer = dataobjects.getObjectFromUri(filename)
         field = self.getParameterValue(self.FIELD)
         method = self.getParameterValue(self.METHOD)
-        
+
         index = layer.fieldNameIndex(field)
-        
+
         features = vector.features(layer)
         featureCount = len(features)
-        unique = vector.getUniqueValues(layer, index)        
+        unique = vector.getUniqueValues(layer, index)
         value = int(self.getParameterValue(self.NUMBER))
         if method == 0:
             if value > featureCount:
@@ -92,11 +92,11 @@ class RandomExtractWithinSubsets(GeoAlgorithm):
             value = value / 100.0
 
 
-        output = self.getOutputFromName(self.OUTPUT)        
+        output = self.getOutputFromName(self.OUTPUT)
         writer = output.getVectorWriter(layer.fields(),
                 layer.geometryType(), layer.crs())
-        
-        selran = []        
+
+        selran = []
         current = 0
         total = 100.0 / float(featureCount * len(unique))
         features = vector.features(layer)
@@ -129,6 +129,6 @@ class RandomExtractWithinSubsets(GeoAlgorithm):
         features = vector.features(layer)
         for (i, feat) in enumerate(features):
             if i in selran:
-                writer.addFeature(feat)            
-            progress.setPercentage(100 * i / float(featureCount))            
+                writer.addFeature(feat)
+            progress.setPercentage(100 * i / float(featureCount))
         del writer

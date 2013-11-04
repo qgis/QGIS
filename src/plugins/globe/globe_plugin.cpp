@@ -60,6 +60,7 @@
 #include <osgEarthUtil/AutoClipPlaneHandler>
 #include <osgEarthDrivers/gdal/GDALOptions>
 #include <osgEarthDrivers/tms/TMSOptions>
+#include <osgEarth/Version>
 
 using namespace osgEarth::Drivers;
 using namespace osgEarth::Util;
@@ -233,6 +234,8 @@ void GlobePlugin::run()
 {
   if ( mViewerWidget == 0 )
   {
+    QSettings settings;
+
 #ifdef QGISDEBUG
     if ( !getenv( "OSGNOTIFYLEVEL" ) ) osgEarth::setNotifyLevel( osg::DEBUG_INFO );
 #endif
@@ -287,8 +290,13 @@ void GlobePlugin::run()
     mOsgViewer->addEventHandler( new osgViewer::ThreadingHandler() );
     mOsgViewer->addEventHandler( new osgViewer::LODScaleHandler() );
     mOsgViewer->addEventHandler( new osgGA::StateSetManipulator( mOsgViewer->getCamera()->getOrCreateStateSet() ) );
+#if OSGEARTH_VERSION_LESS_THAN( 2, 2, 0 )
     // add a handler that will automatically calculate good clipping planes
-    //mOsgViewer->addEventHandler( new osgEarth::Util::AutoClipPlaneHandler() );
+    mOsgViewer->addEventHandler( new osgEarth::Util::AutoClipPlaneHandler() );
+#else
+    mOsgViewer->getCamera()->addCullCallback( new AutoClipPlaneCullCallback( mMapNode ) );
+#endif
+
     // osgEarth benefits from pre-compilation of GL objects in the pager. In newer versions of
     // OSG, this activates OSG's IncrementalCompileOpeartion in order to avoid frame breaks.
     mOsgViewer->getDatabasePager()->setDoPreCompile( true );
@@ -302,6 +310,21 @@ void GlobePlugin::run()
     mViewerWidget = new osgEarth::QtGui::ViewerWidget( mOsgViewer );
     mViewerWidget->setGeometry( 100, 100, 1024, 800 );
     mViewerWidget->show();
+
+    if ( settings.value( "/Plugin-Globe/anti-aliasing", true ).toBool() )
+    {
+      QGLFormat glf = QGLFormat::defaultFormat();
+      glf.setSampleBuffers( true );
+      bool aaLevelIsInt;
+      int aaLevel;
+      QString aaLevelStr = settings.value( "/Plugin-Globe/anti-aliasing-level", "" ).toString();
+      aaLevel = aaLevelStr.toInt( &aaLevelIsInt );
+      if ( aaLevelIsInt )
+      {
+        glf.setSamples( aaLevel );
+      }
+      mViewerWidget->setFormat( glf );
+    }
 
     // Set a home viewpoint
     manip->setHomeViewpoint(

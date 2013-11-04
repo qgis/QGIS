@@ -42,6 +42,9 @@
        <height>280</height>
       </size>
      </property>
+     <property name="columnCount">
+      <number>3</number>
+     </property>
      <column>
       <property name="text">
        <string>Value</string>
@@ -50,6 +53,11 @@
      <column>
       <property name="text">
        <string>Color</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Label</string>
       </property>
      </column>
     </widget>

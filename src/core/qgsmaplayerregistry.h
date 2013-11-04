@@ -245,14 +245,9 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
     void connectNotify( const char * signal );
 
   private:
-
-    static QgsMapLayerRegistry* mInstance;
-
+    static QgsMapLayerRegistry *mInstance;
     QMap<QString, QgsMapLayer*> mMapLayers;
     QSet<QgsMapLayer*> mOwnedLayers;
-
-
-
 }; // class QgsMapLayerRegistry
 
 #endif //QgsMapLayerRegistry_H

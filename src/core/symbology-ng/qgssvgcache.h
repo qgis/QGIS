@@ -111,8 +111,6 @@ class CORE_EXPORT QgsSvgCache : public QObject
     void downloadProgress( qint64, qint64 );
 
   private:
-    static QgsSvgCache* mInstance;
-
     /**Entry pointers accessible by file name*/
     QMultiHash< QString, QgsSvgCacheEntry* > mEntryLookup;
     /**Estimated total size of all images, pictures and svgContent*/

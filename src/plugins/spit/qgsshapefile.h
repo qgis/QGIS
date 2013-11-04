@@ -53,8 +53,8 @@ class QgsShapeFile : public QObject
     QString getTable();
     void setTable( QString new_table );
     void setDefaultTable();
-    std::vector <QString> column_names;
-    std::vector <QString> column_types;
+    QStringList column_names;
+    QStringList column_types;
     void setColumnNames( QStringList );
     bool scanGeometries();
 

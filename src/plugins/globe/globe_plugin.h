@@ -50,6 +50,7 @@ class QAction;
 class QToolBar;
 class QgisInterface;
 
+namespace osgEarth { namespace QtGui { class ViewerWidget; } }
 
 class GlobePlugin : public QObject, public QgisPlugin
 {
@@ -129,7 +130,7 @@ class GlobePlugin : public QObject, public QgisPlugin
     //! OSG Viewer
     osgViewer::Viewer* mOsgViewer;
     //! QT viewer widget
-    QWidget* mViewerWidget;
+    osgEarth::QtGui::ViewerWidget* mViewerWidget;
     //! Settings Dialog
     QgsGlobePluginDialog *mSettingsDialog;
     //! OSG root node

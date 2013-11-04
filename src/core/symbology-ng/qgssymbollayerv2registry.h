@@ -140,7 +140,6 @@ class CORE_EXPORT QgsSymbolLayerV2Registry
     QgsSymbolLayerV2Registry();
     ~QgsSymbolLayerV2Registry();
 
-    static QgsSymbolLayerV2Registry* mInstance;
     QMap<QString, QgsSymbolLayerV2AbstractMetadata*> mMetadata;
 
 };

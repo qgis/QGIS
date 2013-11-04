@@ -58,17 +58,21 @@ QgsComposition::QgsComposition( QgsMapRenderer* mapRenderer )
     , mGenerateWorldFile( false )
     , mWorldFileMap( 0 )
     , mUseAdvancedEffects( true )
-    , mSelectionTolerance( 0.0 )
     , mSnapToGrid( false )
+    , mGridVisible( false )
     , mSnapGridResolution( 10.0 )
+    , mSnapGridTolerance( 2 )
     , mSnapGridOffsetX( 0.0 )
     , mSnapGridOffsetY( 0.0 )
     , mAlignmentSnap( true )
+    , mGuidesVisible( true )
+    , mSmartGuides( true )
     , mAlignmentSnapTolerance( 2 )
     , mSelectionHandles( 0 )
     , mActiveItemCommand( 0 )
     , mActiveMultiFrameCommand( 0 )
     , mAtlasComposition( this )
+    , mPreventCursorChange( false )
 {
   setBackgroundBrush( Qt::gray );
   addPaperItem();
@@ -94,17 +98,21 @@ QgsComposition::QgsComposition()
     mGenerateWorldFile( false ),
     mWorldFileMap( 0 ),
     mUseAdvancedEffects( true ),
-    mSelectionTolerance( 0.0 ),
     mSnapToGrid( false ),
+    mGridVisible( false ),
     mSnapGridResolution( 10.0 ),
+    mSnapGridTolerance( 2 ),
     mSnapGridOffsetX( 0.0 ),
     mSnapGridOffsetY( 0.0 ),
     mAlignmentSnap( true ),
+    mGuidesVisible( true ),
+    mSmartGuides( true ),
     mAlignmentSnapTolerance( 2 ),
     mSelectionHandles( 0 ),
     mActiveItemCommand( 0 ),
     mActiveMultiFrameCommand( 0 ),
-    mAtlasComposition( this )
+    mAtlasComposition( this ),
+    mPreventCursorChange( false )
 {
   loadSettings();
 
@@ -177,6 +185,36 @@ int QgsComposition::numPages() const
   return mPages.size();
 }
 
+QPointF QgsComposition::positionOnPage( const QPointF & position ) const
+{
+  double y;
+  if ( position.y() > ( mPages.size() - 1 ) * ( paperHeight() + spaceBetweenPages() ) )
+  {
+    //y coordinate is greater then the end of the last page, so return distance between
+    //top of last page and y coordinate
+    y = position.y() - ( mPages.size() - 1 ) * ( paperHeight() + spaceBetweenPages() );
+  }
+  else
+  {
+    //y coordinate is less then the end of the last page
+    y = fmod( position.y(), ( paperHeight() + spaceBetweenPages() ) );
+  }
+  return QPointF( position.x(), y );
+}
+
+int QgsComposition::pageNumberForPoint( const QPointF & position ) const
+{
+  int pageNumber = qFloor( position.y() / ( paperHeight() + spaceBetweenPages() ) ) + 1;
+  pageNumber = pageNumber < 1 ? 1 : pageNumber;
+  pageNumber = pageNumber > mPages.size() ? mPages.size() : pageNumber;
+  return pageNumber;
+}
+
+void QgsComposition::setStatusMessage( const QString & message )
+{
+  emit statusMsgChanged( message );
+}
+
 QgsComposerItem* QgsComposition::composerItemAt( const QPointF & position )
 {
   return composerItemAt( position, 0 );
@@ -186,15 +224,7 @@ QgsComposerItem* QgsComposition::composerItemAt( const QPointF & position, const
 {
   //get a list of items which intersect the specified position, in descending z order
   QList<QGraphicsItem*> itemList;
-  if ( mSelectionTolerance <= 0.0 )
-  {
-    itemList = items( position, Qt::IntersectsItemShape, Qt::DescendingOrder );
-  }
-  else
-  {
-    itemList = items( QRectF( position.x() - mSelectionTolerance, position.y() - mSelectionTolerance, 2 * mSelectionTolerance, 2 * mSelectionTolerance ),
-                      Qt::IntersectsItemShape, Qt::DescendingOrder );
-  }
+  itemList = items( position, Qt::IntersectsItemShape, Qt::DescendingOrder );
   QList<QGraphicsItem *>::iterator itemIt = itemList.begin();
 
   bool foundBelowItem = false;
@@ -433,7 +463,16 @@ bool QgsComposition::writeXML( QDomElement& composerElem, QDomDocument& doc )
   {
     compositionElem.setAttribute( "snapping", "0" );
   }
+  if ( mGridVisible )
+  {
+    compositionElem.setAttribute( "gridVisible", "1" );
+  }
+  else
+  {
+    compositionElem.setAttribute( "gridVisible", "0" );
+  }
   compositionElem.setAttribute( "snapGridResolution", QString::number( mSnapGridResolution ) );
+  compositionElem.setAttribute( "snapGridTolerance", QString::number( mSnapGridTolerance ) );
   compositionElem.setAttribute( "snapGridOffsetX", QString::number( mSnapGridOffsetX ) );
   compositionElem.setAttribute( "snapGridOffsetY", QString::number( mSnapGridOffsetY ) );
 
@@ -460,6 +499,8 @@ bool QgsComposition::writeXML( QDomElement& composerElem, QDomDocument& doc )
   }
 
   compositionElem.setAttribute( "alignmentSnap", mAlignmentSnap ? 1 : 0 );
+  compositionElem.setAttribute( "guidesVisible", mGuidesVisible ? 1 : 0 );
+  compositionElem.setAttribute( "smartGuides", mSmartGuides ? 1 : 0 );
   compositionElem.setAttribute( "alignmentSnapTolerance", mAlignmentSnapTolerance );
 
   //save items except paper items and frame items (they are saved with the corresponding multiframe)
@@ -521,9 +562,23 @@ bool QgsComposition::readXML( const QDomElement& compositionElem, const QDomDocu
   {
     mSnapToGrid = true;
   }
+  if ( compositionElem.attribute( "gridVisible" ) == "0" )
+  {
+    mGridVisible = false;
+  }
+  else
+  {
+    mGridVisible = true;
+  }
   mSnapGridResolution = compositionElem.attribute( "snapGridResolution" ).toDouble();
+  mSnapGridTolerance = compositionElem.attribute( "snapGridTolerance", "2.0" ).toDouble();
   mSnapGridOffsetX = compositionElem.attribute( "snapGridOffsetX" ).toDouble();
   mSnapGridOffsetY = compositionElem.attribute( "snapGridOffsetY" ).toDouble();
+
+  mAlignmentSnap = compositionElem.attribute( "alignmentSnap", "1" ).toInt() == 0 ? false : true;
+  mGuidesVisible = compositionElem.attribute( "guidesVisible", "1" ).toInt() == 0 ? false : true;
+  mSmartGuides = compositionElem.attribute( "smartGuides", "1" ).toInt() == 0 ? false : true;
+  mAlignmentSnapTolerance = compositionElem.attribute( "alignmentSnapTolerance", "2.0" ).toDouble();
 
   //custom snap lines
   QDomNodeList snapLineNodes = compositionElem.elementsByTagName( "SnapLine" );
@@ -537,9 +592,6 @@ bool QgsComposition::readXML( const QDomElement& compositionElem, const QDomDocu
     double y2 = snapLineElem.attribute( "y2" ).toDouble();
     snapItem->setLine( x1, y1, x2, y2 );
   }
-
-  mAlignmentSnap = compositionElem.attribute( "alignmentSnap", "1" ).toInt() == 0 ? false : true;
-  mAlignmentSnapTolerance = compositionElem.attribute( "alignmentSnapTolerance", "2.0" ).toDouble();
 
   mPrintAsRaster = compositionElem.attribute( "printAsRaster" ).toInt();
   mPrintResolution = compositionElem.attribute( "printResolution", "300" ).toInt();
@@ -1356,7 +1408,21 @@ QPointF QgsComposition::snapPointToGrid( const QPointF& scenePoint ) const
   int xRatio = ( int )(( scenePoint.x() - mSnapGridOffsetX ) / mSnapGridResolution + 0.5 );
   int yRatio = ( int )(( yPage - mSnapGridOffsetY ) / mSnapGridResolution + 0.5 );
 
-  return QPointF( xRatio * mSnapGridResolution + mSnapGridOffsetX, yRatio * mSnapGridResolution + mSnapGridOffsetY + yOffset );
+  double xSnapped = xRatio * mSnapGridResolution + mSnapGridOffsetX;
+  double ySnapped = yRatio * mSnapGridResolution + mSnapGridOffsetY + yOffset;
+
+  if ( abs( xSnapped - scenePoint.x() ) > mSnapGridTolerance )
+  {
+    //snap distance is outside of tolerance
+    xSnapped = scenePoint.x();
+  }
+  if ( abs( ySnapped - scenePoint.y() ) > mSnapGridTolerance )
+  {
+    //snap distance is outside of tolerance
+    ySnapped = scenePoint.y();
+  }
+
+  return QPointF( xSnapped, ySnapped );
 }
 
 QGraphicsLineItem* QgsComposition::addSnapLine()
@@ -1369,6 +1435,7 @@ QGraphicsLineItem* QgsComposition::addSnapLine()
   linePen.setWidthF( 0 );
   item->setPen( linePen );
   item->setZValue( 100 );
+  item->setVisible( mGuidesVisible );
   addItem( item );
   mSnapLines.push_back( item );
   return item;
@@ -1381,8 +1448,20 @@ void QgsComposition::removeSnapLine( QGraphicsLineItem* line )
   delete line;
 }
 
+void QgsComposition::clearSnapLines()
+{
+  QList< QGraphicsLineItem* >::iterator it = mSnapLines.begin();
+  for ( ; it != mSnapLines.end(); ++it )
+  {
+    removeItem(( *it ) );
+    delete( *it );
+  }
+  mSnapLines.clear();
+}
+
 void QgsComposition::setSnapLinesVisible( bool visible )
 {
+  mGuidesVisible = visible;
   QList< QGraphicsLineItem* >::iterator it = mSnapLines.begin();
   for ( ; it != mSnapLines.end(); ++it )
   {
@@ -1418,10 +1497,14 @@ QGraphicsLineItem* QgsComposition::nearestSnapLine( bool horizontal, double x, d
       currentYCoord = ( *it )->line().y1();
       currentSqrDist = ( y - currentYCoord ) * ( y - currentYCoord );
     }
-    else if ( !itemHorizontal )
+    else if ( !horizontal && !itemHorizontal )
     {
       currentXCoord = ( *it )->line().x1();
       currentSqrDist = ( x - currentXCoord ) * ( x - currentXCoord );
+    }
+    else
+    {
+      continue;
     }
 
     if ( currentSqrDist < minSqrDist && currentSqrDist < sqrTolerance )
@@ -1528,10 +1611,23 @@ void QgsComposition::setSnapToGridEnabled( bool b )
   saveSettings();
 }
 
+void QgsComposition::setGridVisible( bool b )
+{
+  mGridVisible = b;
+  updatePaperItems();
+  saveSettings();
+}
+
 void QgsComposition::setSnapGridResolution( double r )
 {
   mSnapGridResolution = r;
   updatePaperItems();
+  saveSettings();
+}
+
+void QgsComposition::setSnapGridTolerance( double tolerance )
+{
+  mSnapGridTolerance = tolerance;
   saveSettings();
 }
 
@@ -1552,6 +1648,8 @@ void QgsComposition::setSnapGridOffsetY( double offset )
 void QgsComposition::setGridPen( const QPen& p )
 {
   mGridPen = p;
+  //make sure grid is drawn using a zero-width cosmetic pen
+  mGridPen.setWidthF( 0 );
   updatePaperItems();
   saveSettings();
 }
@@ -1563,12 +1661,6 @@ void QgsComposition::setGridStyle( GridStyle s )
   saveSettings();
 }
 
-void QgsComposition::setSelectionTolerance( double tol )
-{
-  mSelectionTolerance = tol;
-  saveSettings();
-}
-
 void QgsComposition::loadSettings()
 {
   //read grid style, grid color and pen width from settings
@@ -1576,16 +1668,14 @@ void QgsComposition::loadSettings()
 
   QString gridStyleString;
   int red, green, blue;
-  double penWidth;
 
   gridStyleString = s.value( "/qgis/composerGridStyle", "Dots" ).toString();
-  penWidth = s.value( "/qgis/composerGridWidth", 0.5 ).toDouble();
   red = s.value( "/qgis/composerGridRed", 0 ).toInt();
   green = s.value( "/qgis/composerGridGreen", 0 ).toInt();
   blue = s.value( "/qgis/composerGridBlue", 0 ).toInt();
 
   mGridPen.setColor( QColor( red, green, blue ) );
-  mGridPen.setWidthF( penWidth );
+  mGridPen.setWidthF( 0 );
 
   if ( gridStyleString == "Dots" )
   {
@@ -1599,15 +1689,12 @@ void QgsComposition::loadSettings()
   {
     mGridStyle = Solid;
   }
-
-  mSelectionTolerance = s.value( "/qgis/composerSelectionTolerance", 0.0 ).toDouble();
 }
 
 void QgsComposition::saveSettings()
 {
   //store grid appearance settings
   QSettings s;
-  s.setValue( "/qgis/composerGridWidth", mGridPen.widthF() );
   s.setValue( "/qgis/composerGridRed", mGridPen.color().red() );
   s.setValue( "/qgis/composerGridGreen", mGridPen.color().green() );
   s.setValue( "/qgis/composerGridBlue", mGridPen.color().blue() );
@@ -1624,9 +1711,6 @@ void QgsComposition::saveSettings()
   {
     s.setValue( "/qgis/composerGridStyle", "Crosses" );
   }
-
-  //store also selection tolerance
-  s.setValue( "/qgis/composerSelectionTolerance", mSelectionTolerance );
 }
 
 void QgsComposition::beginCommand( QgsComposerItem* item, const QString& commandText, QgsComposerMergeCommand::Context c )

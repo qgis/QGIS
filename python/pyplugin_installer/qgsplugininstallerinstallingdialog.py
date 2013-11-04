@@ -96,7 +96,7 @@ class QgsPluginInstallerInstallingDialog(QDialog, Ui_QgsPluginInstallerInstallin
     self.file.close()
     self.stateChanged(0)
     reply.deleteLater()
-    pluginDir = QFileInfo(QgsApplication.qgisUserDbFilePath()).path() + "/python/plugins"
+    pluginDir = qgis.utils.home_plugin_path
     tmpPath = self.file.fileName()
     # make sure that the parent directory exists
     if not QDir(pluginDir).exists():

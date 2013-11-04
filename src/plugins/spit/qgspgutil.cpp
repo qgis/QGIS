@@ -14,14 +14,10 @@
  ***************************************************************************/
 #include "qgspgutil.h"
 
-QgsPgUtil *QgsPgUtil::mInstance = 0;
-QgsPgUtil * QgsPgUtil::instance()
+QgsPgUtil *QgsPgUtil::instance()
 {
-  if ( mInstance == 0 )
-  {
-    mInstance = new QgsPgUtil();
-  }
-  return mInstance;
+  static QgsPgUtil mInstance;
+  return &mInstance;
 }
 
 QgsPgUtil::QgsPgUtil()
@@ -36,6 +32,7 @@ void QgsPgUtil::setConnection( PGconn *con )
 {
   mPgConnection = con;
 }
+
 PGconn *QgsPgUtil::connection()
 {
   return mPgConnection;

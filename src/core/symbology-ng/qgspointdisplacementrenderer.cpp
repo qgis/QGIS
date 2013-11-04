@@ -330,11 +330,11 @@ QgsLegendSymbologyList QgsPointDisplacementRenderer::legendSymbologyItems( QSize
   return QgsLegendSymbologyList();
 }
 
-QgsLegendSymbolList QgsPointDisplacementRenderer::legendSymbolItems()
+QgsLegendSymbolList QgsPointDisplacementRenderer::legendSymbolItems( double scaleDenominator, QString rule )
 {
   if ( mRenderer )
   {
-    return mRenderer->legendSymbolItems();
+    return mRenderer->legendSymbolItems( scaleDenominator, rule );
   }
   return QgsLegendSymbolList();
 }

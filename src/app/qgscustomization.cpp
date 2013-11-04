@@ -477,6 +477,10 @@ void QgsCustomization::addTreeItemActions( QTreeWidgetItem* parentItem, const QL
 {
   foreach ( QAction* action, actions )
   {
+    if ( action->isSeparator() )
+    {
+      continue;
+    }
     if ( action->menu() )
     {
       // it is a submenu

@@ -179,15 +179,19 @@ void QgsComposerMapWidget::on_mSetToMapCanvasExtentButton_clicked()
 
       if ( currentWidthHeightRatio < newWidthHeightRatio )
       {
-        //enlarge height of new extent
+        //enlarge height of new extent, ensuring the map center stays the same
         double newHeight = newExtent.width() / currentWidthHeightRatio;
-        newExtent.setYMinimum( newExtent.yMaximum() - newHeight );
+        double deltaHeight = newHeight - newExtent.height();
+        newExtent.setYMinimum( newExtent.yMinimum() - deltaHeight / 2 );
+        newExtent.setYMaximum( newExtent.yMaximum() + deltaHeight / 2 );
       }
       else if ( currentWidthHeightRatio > newWidthHeightRatio )
       {
-        //enlarge width of new extent
+        //enlarge width of new extent, ensuring the map center stays the same
         double newWidth = currentWidthHeightRatio * newExtent.height();
-        newExtent.setXMaximum( newExtent.xMinimum() + newWidth );
+        double deltaWidth = newWidth - newExtent.width();
+        newExtent.setXMinimum( newExtent.xMinimum() - deltaWidth / 2 );
+        newExtent.setXMaximum( newExtent.xMaximum() + deltaWidth / 2 );
       }
 
       //fill text into line edits

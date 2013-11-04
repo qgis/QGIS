@@ -124,7 +124,7 @@ QgsRasterBlock* QgsSingleBandGrayRenderer::block( int bandNo, QgsRectangle  cons
   }
 
   QRgb myDefaultColor = NODATA_COLOR;
-  for ( size_t i = 0; i < ( size_t )width*height; i++ )
+  for ( qgssize i = 0; i < ( qgssize )width*height; i++ )
   {
     if ( inputBlock->isNoData( i ) )
     {

@@ -278,11 +278,11 @@ void QgsSpit::addFile()
 
 void QgsSpit::removeFile()
 {
-  std::vector <int> temp;
+  QVector<int> temp;
   for ( int n = 0; n < tblShapefiles->rowCount(); n++ )
     if ( tblShapefiles->isItemSelected( tblShapefiles->item( n, 0 ) ) )
     {
-      for ( std::vector<QgsShapeFile *>::iterator vit = fileList.begin(); vit != fileList.end(); vit++ )
+      for ( QVector<QgsShapeFile *>::iterator vit = fileList.begin(); vit != fileList.end(); vit++ )
       {
         if (( *vit ) ->getName() == tblShapefiles->item( n, 0 )->text() )
         {
@@ -531,7 +531,7 @@ void QgsSpit::import()
 
     int count = fileList.size(), successes = 0;
 
-    for ( std::vector<QgsShapeFile*>::size_type i = 0; i < fileList.size() ; i++ )
+    for ( QVector<QgsShapeFile*>::size_type i = 0; i < fileList.size() ; i++ )
     {
       QString error = tr( "Problem inserting features from file:" ) + "\n" +
                       tblShapefiles->item( i, ColFILENAME )->text();
@@ -557,14 +557,14 @@ void QgsSpit::import()
       }
 
       // duplicate field check
-      std::vector<QString> names_copy = fileList[ i ] ->column_names;
+      QStringList names_copy = fileList[ i ] ->column_names;
       names_copy.push_back( txtPrimaryKeyName->text() );
       names_copy.push_back( txtGeomName->text() );
 
       QString dupl = "";
-      std::sort( names_copy.begin(), names_copy.end() );
+      qSort( names_copy.begin(), names_copy.end() );
 
-      for ( std::vector<QString>::size_type k = 1; k < names_copy.size(); k++ )
+      for ( int k = 1; k < names_copy.size(); k++ )
       {
         QgsDebugMsg( QString( "Checking to see if %1 == %2" ).arg( names_copy[ k ] ).arg( names_copy[ k - 1 ] ) );
         if ( names_copy[ k ] == names_copy[ k - 1 ] )

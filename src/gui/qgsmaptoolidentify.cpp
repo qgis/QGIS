@@ -13,12 +13,14 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsapplication.h"
 #include "qgscursors.h"
 #include "qgsdistancearea.h"
 #include "qgsfeature.h"
 #include "qgsfeaturestore.h"
 #include "qgsfield.h"
 #include "qgsgeometry.h"
+#include "qgshighlight.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaptoolidentify.h"
@@ -41,6 +43,7 @@
 #include <QPixmap>
 #include <QStatusBar>
 #include <QVariant>
+#include <QMenu>
 
 QgsMapToolIdentify::QgsMapToolIdentify( QgsMapCanvas* canvas )
     : QgsMapTool( canvas )
@@ -98,7 +101,75 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, i
     mode = static_cast<IdentifyMode>( settings.value( "/Map/identifyMode", 0 ).toInt() );
   }
 
-  if ( mode == ActiveLayer && layerList.isEmpty() )
+  if ( mode == LayerSelection )
+  {
+    // fill map of layer / identify results
+    mLayerIdResults.clear();
+    QList<IdentifyResult> idResult = identify( x, y, TopDownAll );
+    QList<IdentifyResult>::const_iterator it = idResult.constBegin();
+    for ( ; it != idResult.constEnd(); it++ )
+    {
+      QgsMapLayer *layer = it->mLayer;
+      if ( mLayerIdResults.contains( layer ) )
+      {
+        mLayerIdResults[layer].append( *it );
+      }
+      else
+      {
+        mLayerIdResults.insert( layer, QList<IdentifyResult>() << *it );
+      }
+    }
+
+    //fill selection menu with entries from mmLayerIdResults
+    QMenu layerSelectionMenu;
+    QMap< QgsMapLayer*, QList<IdentifyResult> >::const_iterator resultIt = mLayerIdResults.constBegin();
+    for ( ; resultIt != mLayerIdResults.constEnd(); ++resultIt )
+    {
+      QAction* action = new QAction( resultIt.key()->name(), 0 );
+      action->setData( resultIt.key()->id() );
+      //add point/line/polygon icon
+      QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( resultIt.key() );
+      if ( vl )
+      {
+        switch ( vl->geometryType() )
+        {
+          case QGis::Point:
+            action->setIcon( QgsApplication::getThemeIcon( "/mIconPointLayer.png" ) );
+            break;
+          case QGis::Line:
+            action->setIcon( QgsApplication::getThemeIcon( "/mIconLineLayer.png" ) );
+            break;
+          case QGis::Polygon:
+            action->setIcon( QgsApplication::getThemeIcon( "/mIconPolygonLayer.png" ) );
+            break;
+          default:
+            break;
+        }
+      }
+      else if ( resultIt.key()->type() == QgsMapLayer::RasterLayer )
+      {
+        action->setIcon( QgsApplication::getThemeIcon( "/mIconRaster.png" ) );
+      }
+      QObject::connect( action, SIGNAL( hovered() ), this, SLOT( handleMenuHover() ) );
+      layerSelectionMenu.addAction( action );
+    }
+
+    // exec layer selection menu
+    QPoint globalPos = mCanvas->mapToGlobal( QPoint( x + 5, y + 5 ) );
+    QAction* selectedAction = layerSelectionMenu.exec( globalPos );
+    if ( selectedAction )
+    {
+      QgsMapLayer* selectedLayer = QgsMapLayerRegistry::instance()->mapLayer( selectedAction->data().toString() );
+      QMap< QgsMapLayer*, QList<IdentifyResult> >::const_iterator sIt = mLayerIdResults.find( selectedLayer );
+      if ( sIt != mLayerIdResults.constEnd() )
+      {
+        results = sIt.value();
+      }
+    }
+
+    deleteRubberBands();
+  }
+  else if ( mode == ActiveLayer && layerList.isEmpty() )
   {
     QgsMapLayer *layer = mCanvas->currentLayer();
 
@@ -376,8 +447,6 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
 
   QMap< QString, QString > attributes, derivedAttributes;
 
-  QMap<int, QVariant> values;
-
   QgsRaster::IdentifyFormat format = QgsRasterDataProvider::identifyFormatFromName( layer->customProperty( "identify/format" ).toString() );
 
   // check if the format is really supported otherwise use first supported format
@@ -390,12 +459,13 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
     else return false;
   }
 
+  QgsRasterIdentifyResult identifyResult;
   // We can only use context (extent, width, height) if layer is not reprojected,
   // otherwise we don't know source resolution (size).
   if ( mCanvas->hasCrsTransformEnabled() && dprovider->crs() != mCanvas->mapRenderer()->destinationCrs() )
   {
     viewExtent = toLayerCoordinates( layer, viewExtent );
-    values = dprovider->identify( point, format ).results();
+    identifyResult = dprovider->identify( point, format );
   }
   else
   {
@@ -418,105 +488,116 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
     QgsDebugMsg( QString( "width = %1 height = %2" ).arg( width ).arg( height ) );
     QgsDebugMsg( QString( "xRes = %1 yRes = %2 mapUnitsPerPixel = %3" ).arg( viewExtent.width() / width ).arg( viewExtent.height() / height ).arg( mapUnitsPerPixel ) );
 
-    values = dprovider->identify( point, format, viewExtent, width, height ).results();
+    identifyResult = dprovider->identify( point, format, viewExtent, width, height );
   }
 
   derivedAttributes.insert( tr( "(clicked coordinate)" ), point.toString() );
 
-  //QString type = tr( "Raster" );
-  QgsGeometry geometry;
-  if ( format == QgsRaster::IdentifyFormatValue )
+  if ( identifyResult.isValid() )
   {
-    foreach ( int bandNo, values.keys() )
+    QMap<int, QVariant> values = identifyResult.results();
+    QgsGeometry geometry;
+    if ( format == QgsRaster::IdentifyFormatValue )
     {
-      QString valueString;
-      if ( values.value( bandNo ).isNull() )
+      foreach ( int bandNo, values.keys() )
       {
-        valueString = tr( "no data" );
-      }
-      else
-      {
-        double value = values.value( bandNo ).toDouble();
-        valueString = QgsRasterBlock::printValue( value );
-      }
-      attributes.insert( dprovider->generateBandName( bandNo ), valueString );
-    }
-    QString label = layer->name();
-    results->append( IdentifyResult( qobject_cast<QgsMapLayer *>( layer ), label, attributes, derivedAttributes ) );
-  }
-  else if ( format == QgsRaster::IdentifyFormatFeature )
-  {
-    foreach ( int i, values.keys() )
-    {
-      QVariant value = values.value( i );
-      if ( value.type() == QVariant::Bool && !value.toBool() )
-      {
-        // sublayer not visible or not queryable
-        continue;
-      }
-
-      if ( value.type() == QVariant::String )
-      {
-        // error
-        // TODO: better error reporting
-        QString label = layer->subLayers().value( i );
-        attributes.clear();
-        attributes.insert( tr( "Error" ), value.toString() );
-
-        results->append( IdentifyResult( qobject_cast<QgsMapLayer *>( layer ), label, attributes, derivedAttributes ) );
-        continue;
-      }
-
-      // list of feature stores for a single sublayer
-      QgsFeatureStoreList featureStoreList = values.value( i ).value<QgsFeatureStoreList>();
-
-      foreach ( QgsFeatureStore featureStore, featureStoreList )
-      {
-        foreach ( QgsFeature feature, featureStore.features() )
+        QString valueString;
+        if ( values.value( bandNo ).isNull() )
         {
+          valueString = tr( "no data" );
+        }
+        else
+        {
+          double value = values.value( bandNo ).toDouble();
+          valueString = QgsRasterBlock::printValue( value );
+        }
+        attributes.insert( dprovider->generateBandName( bandNo ), valueString );
+      }
+      QString label = layer->name();
+      results->append( IdentifyResult( qobject_cast<QgsMapLayer *>( layer ), label, attributes, derivedAttributes ) );
+    }
+    else if ( format == QgsRaster::IdentifyFormatFeature )
+    {
+      foreach ( int i, values.keys() )
+      {
+        QVariant value = values.value( i );
+        if ( value.type() == QVariant::Bool && !value.toBool() )
+        {
+          // sublayer not visible or not queryable
+          continue;
+        }
+
+        if ( value.type() == QVariant::String )
+        {
+          // error
+          // TODO: better error reporting
+          QString label = layer->subLayers().value( i );
           attributes.clear();
-          // WMS sublayer and feature type, a sublayer may contain multiple feature types.
-          // Sublayer name may be the same as layer name and feature type name
-          // may be the same as sublayer. We try to avoid duplicities in label.
-          QString sublayer = featureStore.params().value( "sublayer" ).toString();
-          QString featureType = featureStore.params().value( "featureType" ).toString();
-          // Strip UMN MapServer '_feature'
-          featureType.remove( "_feature" );
-          QStringList labels;
-          if ( sublayer.compare( layer->name(), Qt::CaseInsensitive ) != 0 )
+          attributes.insert( tr( "Error" ), value.toString() );
+
+          results->append( IdentifyResult( qobject_cast<QgsMapLayer *>( layer ), label, attributes, derivedAttributes ) );
+          continue;
+        }
+
+        // list of feature stores for a single sublayer
+        QgsFeatureStoreList featureStoreList = values.value( i ).value<QgsFeatureStoreList>();
+
+        foreach ( QgsFeatureStore featureStore, featureStoreList )
+        {
+          foreach ( QgsFeature feature, featureStore.features() )
           {
-            labels << sublayer;
+            attributes.clear();
+            // WMS sublayer and feature type, a sublayer may contain multiple feature types.
+            // Sublayer name may be the same as layer name and feature type name
+            // may be the same as sublayer. We try to avoid duplicities in label.
+            QString sublayer = featureStore.params().value( "sublayer" ).toString();
+            QString featureType = featureStore.params().value( "featureType" ).toString();
+            // Strip UMN MapServer '_feature'
+            featureType.remove( "_feature" );
+            QStringList labels;
+            if ( sublayer.compare( layer->name(), Qt::CaseInsensitive ) != 0 )
+            {
+              labels << sublayer;
+            }
+            if ( featureType.compare( sublayer, Qt::CaseInsensitive ) != 0 || labels.isEmpty() )
+            {
+              labels << featureType;
+
+
+            }
+
+            QMap< QString, QString > derAttributes = derivedAttributes;
+            derAttributes.unite( featureDerivedAttributes( &feature, layer ) );
+
+            IdentifyResult identifyResult( qobject_cast<QgsMapLayer *>( layer ), labels.join( " / " ), featureStore.fields(), feature, derAttributes );
+
+            identifyResult.mParams.insert( "getFeatureInfoUrl", featureStore.params().value( "getFeatureInfoUrl" ) );
+            results->append( identifyResult );
           }
-          if ( featureType.compare( sublayer, Qt::CaseInsensitive ) != 0 || labels.isEmpty() )
-          {
-            labels << featureType;
-
-
-          }
-
-          QMap< QString, QString > derAttributes = derivedAttributes;
-          derAttributes.unite( featureDerivedAttributes( &feature, layer ) );
-
-          IdentifyResult identifyResult( qobject_cast<QgsMapLayer *>( layer ), labels.join( " / " ), featureStore.fields(), feature, derAttributes );
-
-          identifyResult.mParams.insert( "getFeatureInfoUrl", featureStore.params().value( "getFeatureInfoUrl" ) );
-          results->append( identifyResult );
         }
       }
     }
-  }
-  else // text or html
-  {
-    QgsDebugMsg( QString( "%1 html or text values" ).arg( values.size() ) );
-    foreach ( int bandNo, values.keys() )
+    else // text or html
     {
-      QString value = values.value( bandNo ).toString();
-      attributes.clear();
-      attributes.insert( "", value );
+      QgsDebugMsg( QString( "%1 html or text values" ).arg( values.size() ) );
+      foreach ( int bandNo, values.keys() )
+      {
+        QString value = values.value( bandNo ).toString();
+        attributes.clear();
+        attributes.insert( "", value );
 
-      QString label = layer->subLayers().value( bandNo );
-      results->append( IdentifyResult( qobject_cast<QgsMapLayer *>( layer ), label, attributes, derivedAttributes ) );
+        QString label = layer->subLayers().value( bandNo );
+        results->append( IdentifyResult( qobject_cast<QgsMapLayer *>( layer ), label, attributes, derivedAttributes ) );
+      }
     }
+  }
+  else
+  {
+    attributes.clear();
+    QString value = identifyResult.error().message( QgsErrorMessage::Text );
+    attributes.insert( tr( "Error" ), value );
+    QString label = tr( "Identify error" );
+    results->append( IdentifyResult( qobject_cast<QgsMapLayer *>( layer ), label, attributes, derivedAttributes ) );
   }
 
   return true;
@@ -549,3 +630,43 @@ void QgsMapToolIdentify::formatChanged( QgsRasterLayer *layer )
   }
 }
 
+void QgsMapToolIdentify::handleMenuHover()
+{
+  if ( !mCanvas )
+  {
+    return;
+  }
+
+  deleteRubberBands();
+  QAction* senderAction = qobject_cast<QAction*>( sender() );
+  if ( senderAction )
+  {
+    QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( senderAction->data().toString() ) );
+    if ( vl )
+    {
+      QMap< QgsMapLayer*, QList<IdentifyResult> >::const_iterator lIt = mLayerIdResults.find( vl );
+      if ( lIt != mLayerIdResults.constEnd() )
+      {
+        const QList<IdentifyResult>& idList = lIt.value();
+        QList<IdentifyResult>::const_iterator idListIt = idList.constBegin();
+        for ( ; idListIt != idList.constEnd(); ++idListIt )
+        {
+          QgsHighlight* hl = new QgsHighlight( mCanvas, idListIt->mFeature.geometry(), vl );
+          hl->setColor( QColor( 255, 0, 0 ) );
+          hl->setWidth( 2 );
+          mRubberBands.append( hl );
+        }
+      }
+    }
+  }
+}
+
+void QgsMapToolIdentify::deleteRubberBands()
+{
+  QList<QgsHighlight*>::const_iterator it = mRubberBands.constBegin();
+  for ( ; it != mRubberBands.constEnd(); ++it )
+  {
+    delete *it;
+  }
+  mRubberBands.clear();
+}

@@ -134,6 +134,8 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
 
     void copyToClipboard( QgsFeatureStore& featureStore );
 
+    void activateLayer( QgsMapLayer * );
+
   public slots:
     /** Remove results */
     void clear();
@@ -156,6 +158,7 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
     void copyGetFeatureInfoUrl();
     void highlightAll();
     void highlightLayer();
+    void activateLayer();
     void layerProperties();
     void clearHighlights();
     void expandAll();
@@ -196,6 +199,7 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
     QgsMapCanvas *mCanvas;
     QList<QgsFeature> mFeatures;
 
+    QgsMapLayer *layer( QTreeWidgetItem *item );
     QgsVectorLayer *vectorLayer( QTreeWidgetItem *item );
     QgsRasterLayer *rasterLayer( QTreeWidgetItem *item );
     QTreeWidgetItem *featureItem( QTreeWidgetItem *item );

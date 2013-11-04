@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'python/plugins/processing/ui/DlgNumberInput.ui'
 #
-# Created: Thu Oct  3 10:29:20 2013
+# Created: Tue Oct 15 17:27:23 2013
 #      by: PyQt4 UI code generator 4.9.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -23,8 +23,13 @@ class Ui_DlgNumberInput(object):
         self.verticalLayout.setContentsMargins(0, 5, 0, 0)
         self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
         self.label = QtGui.QLabel(DlgNumberInput)
+        self.label.setWordWrap(True)
         self.label.setObjectName(_fromUtf8("label"))
         self.verticalLayout.addWidget(self.label)
+        self.lblWarning = QtGui.QLabel(DlgNumberInput)
+        self.lblWarning.setWordWrap(True)
+        self.lblWarning.setObjectName(_fromUtf8("lblWarning"))
+        self.verticalLayout.addWidget(self.lblWarning)
         self.treeValues = QtGui.QTreeWidget(DlgNumberInput)
         self.treeValues.setObjectName(_fromUtf8("treeValues"))
         self.treeValues.headerItem().setText(0, _fromUtf8("1"))
@@ -46,6 +51,6 @@ class Ui_DlgNumberInput(object):
 
     def retranslateUi(self, DlgNumberInput):
         DlgNumberInput.setWindowTitle(QtGui.QApplication.translate("DlgNumberInput", "Enter number or expression", None, QtGui.QApplication.UnicodeUTF8))
-        self.label.setText(QtGui.QApplication.translate("DlgNumberInput", "Enter expression in the text field.\n"
-"Double click on elements in the tree to add their values to the expression.", None, QtGui.QApplication.UnicodeUTF8))
+        self.label.setText(QtGui.QApplication.translate("DlgNumberInput", "<html><head/><body><p>Enter expression in the text field. Double click on elements in the tree to add their values to the expression.</p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
+        self.lblWarning.setText(QtGui.QApplication.translate("DlgNumberInput", "<html><head/><body><p><span style=\" font-weight:600;\">Warning</span>: if expression result is float value, but integer required, result will be rounded to integer.</p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
 

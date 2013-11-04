@@ -17,44 +17,33 @@
 
 #include "qgspaperitem.h"
 #include "qgscomposition.h"
+#include "qgslogger.h"
+#include <QGraphicsRectItem>
 #include <QPainter>
 
-QgsPaperItem::QgsPaperItem( QgsComposition* c ): QgsComposerItem( c, false )
+//QgsPaperGrid
+
+QgsPaperGrid::QgsPaperGrid( double x, double y, double width, double height, QgsComposition* composition ): QGraphicsRectItem( 0, 0, width, height ), mComposition( composition )
 {
-  initialize();
+  setFlag( QGraphicsItem::ItemIsSelectable, false );
+  setFlag( QGraphicsItem::ItemIsMovable, false );
+  setZValue( 1000 );
+  setPos( x, y );
 }
 
-QgsPaperItem::QgsPaperItem( qreal x, qreal y, qreal width, qreal height, QgsComposition* composition ): QgsComposerItem( x, y, width, height, composition, false )
+QgsPaperGrid::~QgsPaperGrid()
 {
-  initialize();
 }
 
-QgsPaperItem::QgsPaperItem(): QgsComposerItem( 0, false )
-{
-  initialize();
-}
-
-QgsPaperItem::~QgsPaperItem()
-{
-
-}
-
-void QgsPaperItem::paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget )
+void QgsPaperGrid::paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget )
 {
   Q_UNUSED( itemStyle );
   Q_UNUSED( pWidget );
-  if ( !painter )
-  {
-    return;
-  }
-
-  drawBackground( painter );
 
   //draw grid
-
   if ( mComposition )
   {
-    if ( mComposition->snapToGridEnabled() && mComposition->plotStyle() ==  QgsComposition::Preview
+    if ( mComposition->gridVisible() && mComposition->plotStyle() ==  QgsComposition::Preview
          && mComposition->snapGridResolution() > 0 )
     {
       int gridMultiplyX = ( int )( mComposition->snapGridOffsetX() / mComposition->snapGridResolution() );
@@ -63,13 +52,15 @@ void QgsPaperItem::paint( QPainter* painter, const QStyleOptionGraphicsItem* ite
       double currentYCoord;
       double minYCoord = mComposition->snapGridOffsetY() - gridMultiplyY * mComposition->snapGridResolution();
 
+      painter->save();
+      //turn of antialiasing so grid is nice and sharp
+      painter->setRenderHint( QPainter::Antialiasing, false );
+
       if ( mComposition->gridStyle() == QgsComposition::Solid )
       {
         painter->setPen( mComposition->gridPen() );
 
         //draw vertical lines
-
-
         for ( ; currentXCoord <= rect().width(); currentXCoord += mComposition->snapGridResolution() )
         {
           painter->drawLine( QPointF( currentXCoord, 0 ), QPointF( currentXCoord, rect().height() ) );
@@ -87,28 +78,81 @@ void QgsPaperItem::paint( QPainter* painter, const QStyleOptionGraphicsItem* ite
         QPen gridPen = mComposition->gridPen();
         painter->setPen( gridPen );
         painter->setBrush( QBrush( gridPen.color() ) );
-        double halfCrossLength = mComposition->snapGridResolution() / 6;
+        double halfCrossLength = 1;
+        if ( mComposition->gridStyle() == QgsComposition::Dots )
+        {
+          //dots are actually drawn as tiny crosses a few pixels across
+          //check QGraphicsView to get current transform
+          if ( scene() )
+          {
+            QList<QGraphicsView*> viewList = scene()->views();
+            if ( viewList.size() > 0 )
+            {
+              QGraphicsView* currentView = viewList.at( 0 );
+              if ( currentView->isVisible() )
+              {
+                //set halfCrossLength to equivalent of 1 pixel
+                halfCrossLength = 1 / currentView->transform().m11();
+              }
+            }
+          }
+        }
+        else if ( mComposition->gridStyle() == QgsComposition::Crosses )
+        {
+          halfCrossLength = mComposition->snapGridResolution() / 6;
+        }
 
         for ( ; currentXCoord <= rect().width(); currentXCoord += mComposition->snapGridResolution() )
         {
           currentYCoord = minYCoord;
           for ( ; currentYCoord <= rect().height(); currentYCoord += mComposition->snapGridResolution() )
           {
-            if ( mComposition->gridStyle() == QgsComposition::Dots )
-            {
-              QRectF pieRect( currentXCoord - gridPen.widthF() / 2, currentYCoord - gridPen.widthF() / 2, gridPen.widthF(), gridPen.widthF() );
-              painter->drawChord( pieRect, 0, 5760 );
-            }
-            else if ( mComposition->gridStyle() == QgsComposition::Crosses )
-            {
-              painter->drawLine( QPointF( currentXCoord - halfCrossLength, currentYCoord ), QPointF( currentXCoord + halfCrossLength, currentYCoord ) );
-              painter->drawLine( QPointF( currentXCoord, currentYCoord - halfCrossLength ), QPointF( currentXCoord, currentYCoord + halfCrossLength ) );
-            }
+            painter->drawLine( QPointF( currentXCoord - halfCrossLength, currentYCoord ), QPointF( currentXCoord + halfCrossLength, currentYCoord ) );
+            painter->drawLine( QPointF( currentXCoord, currentYCoord - halfCrossLength ), QPointF( currentXCoord, currentYCoord + halfCrossLength ) );
           }
         }
       }
+      painter->restore();
     }
   }
+}
+
+
+//QgsPaperItem
+
+QgsPaperItem::QgsPaperItem( QgsComposition* c ): QgsComposerItem( c, false ),
+    mPageGrid( 0 )
+{
+  initialize();
+}
+
+QgsPaperItem::QgsPaperItem( qreal x, qreal y, qreal width, qreal height, QgsComposition* composition ): QgsComposerItem( x, y, width, height, composition, false ),
+    mPageGrid( 0 )
+{
+  initialize();
+}
+
+QgsPaperItem::QgsPaperItem(): QgsComposerItem( 0, false ),
+    mPageGrid( 0 )
+{
+  initialize();
+}
+
+QgsPaperItem::~QgsPaperItem()
+{
+  delete mPageGrid;
+}
+
+void QgsPaperItem::paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget )
+{
+  Q_UNUSED( itemStyle );
+  Q_UNUSED( pWidget );
+  if ( !painter )
+  {
+    return;
+  }
+
+  drawBackground( painter );
 }
 
 bool QgsPaperItem::writeXML( QDomElement& elem, QDomDocument & doc ) const
@@ -125,9 +169,21 @@ bool QgsPaperItem::readXML( const QDomElement& itemElem, const QDomDocument& doc
   return true;
 }
 
+void QgsPaperItem::setSceneRect( const QRectF& rectangle )
+{
+  QgsComposerItem::setSceneRect( rectangle );
+  //update size and position of attached QgsPaperGrid to reflect new page size and position
+  mPageGrid->setRect( 0, 0, rect().width(), rect().height() );
+  mPageGrid->setPos( transform().dx(), transform().dy() );
+}
+
 void QgsPaperItem::initialize()
 {
   setFlag( QGraphicsItem::ItemIsSelectable, false );
   setFlag( QGraphicsItem::ItemIsMovable, false );
   setZValue( 0 );
+
+  //create a new QgsPaperGrid for this page, and add it to the composition
+  mPageGrid = new QgsPaperGrid( transform().dx(), transform().dy(), rect().width(), rect().height(), mComposition );
+  mComposition->addItem( mPageGrid );
 }

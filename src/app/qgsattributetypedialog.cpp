@@ -251,7 +251,7 @@ void QgsAttributeTypeDialog::loadFromLayerButtonPushed()
   if ( !layerDialog.exec() )
     return;
 
-  updateMap( layerDialog.valueMap() );
+  updateMap( layerDialog.valueMap(), layerDialog.insertNull() );
 }
 
 void QgsAttributeTypeDialog::loadFromCSVButtonPushed()
@@ -318,7 +318,7 @@ void QgsAttributeTypeDialog::loadFromCSVButtonPushed()
   updateMap( map );
 }
 
-void QgsAttributeTypeDialog::updateMap( const QMap<QString, QVariant> &map )
+void QgsAttributeTypeDialog::updateMap( const QMap<QString, QVariant> &map, bool insertNull )
 {
   tableWidget->clearContents();
   for ( int i = tableWidget->rowCount() - 1; i > 0; i-- )
@@ -326,6 +326,15 @@ void QgsAttributeTypeDialog::updateMap( const QMap<QString, QVariant> &map )
     tableWidget->removeRow( i );
   }
   int row = 0;
+
+  if ( insertNull )
+  {
+    QSettings settings;
+    tableWidget->setItem( row, 0, new QTableWidgetItem( settings.value( "qgis/nullValue", "NULL" ).toString() ) );
+    tableWidget->setItem( row, 1, new QTableWidgetItem( "<NULL>" ) );
+    ++row;
+  }
+
   for ( QMap<QString, QVariant>::const_iterator mit = map.begin(); mit != map.end(); mit++, row++ )
   {
     tableWidget->insertRow( row );
@@ -687,6 +696,12 @@ void QgsAttributeTypeDialog::setStackPage( int index )
         // Set to (empty) editor widget page
         stackedWidget->setCurrentIndex( 16 );
 
+        // hide any other config widget
+        Q_FOREACH( QgsEditorConfigWidget* wdg, mEditorConfigWidgets.values() )
+        {
+          wdg->hide();
+        }
+
         if ( mEditorConfigWidgets.contains( factoryId ) )
         {
           mEditorConfigWidgets[factoryId]->show();
@@ -694,12 +709,6 @@ void QgsAttributeTypeDialog::setStackPage( int index )
         else
         {
           QgsEditorConfigWidget* cfgWdg = QgsEditorWidgetRegistry::instance()->createConfigWidget( factoryId, mLayer, mIndex, this );
-          QgsEditorConfigWidget* oldWdg = pageEditorWidget->findChild<QgsEditorConfigWidget*>();
-
-          if ( oldWdg )
-          {
-            oldWdg->hide();
-          }
 
           if ( cfgWdg )
           {

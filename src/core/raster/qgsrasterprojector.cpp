@@ -746,7 +746,7 @@ QgsRasterBlock * QgsRasterProjector::block( int bandNo, QgsRectangle  const & ex
     return new QgsRasterBlock();
   }
 
-  size_t pixelSize = QgsRasterBlock::typeSize( mInput->dataType( bandNo ) );
+  qgssize pixelSize = QgsRasterBlock::typeSize( mInput->dataType( bandNo ) );
 
   QgsRasterBlock *outputBlock;
   if ( inputBlock->hasNoDataValue() )
@@ -781,7 +781,7 @@ QgsRasterBlock * QgsRasterProjector::block( int bandNo, QgsRectangle  const & ex
     for ( int j = 0; j < width; ++j )
     {
       srcRowCol( i, j, &srcRow, &srcCol );
-      size_t srcIndex = ( size_t )srcRow * mSrcCols + srcCol;
+      qgssize srcIndex = ( qgssize )srcRow * mSrcCols + srcCol;
       QgsDebugMsgLevel( QString( "row = %1 col = %2 srcRow = %3 srcCol = %4" ).arg( i ).arg( j ).arg( srcRow ).arg( srcCol ), 5 );
 
       // isNoData() may be slow so we check doNoData first
@@ -791,7 +791,7 @@ QgsRasterBlock * QgsRasterProjector::block( int bandNo, QgsRectangle  const & ex
         continue ;
       }
 
-      size_t destIndex = ( size_t )i * width + j;
+      qgssize destIndex = ( qgssize )i * width + j;
       char *srcBits = inputBlock->bits( srcIndex );
       char *destBits = outputBlock->bits( destIndex );
       if ( !srcBits )

@@ -20,11 +20,9 @@
 #include "qgsvectorlayer.h"
 #include "qgsmessagelog.h"
 
-
-QgsEditorWidgetRegistry  QgsEditorWidgetRegistry::sInstance;
-
 QgsEditorWidgetRegistry* QgsEditorWidgetRegistry::instance()
 {
+  static QgsEditorWidgetRegistry sInstance;
   return &sInstance;
 }
 

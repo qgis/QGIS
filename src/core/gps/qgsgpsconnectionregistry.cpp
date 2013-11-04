@@ -18,11 +18,8 @@
 #include "qgsgpsconnectionregistry.h"
 #include "qgsgpsconnection.h"
 
-QgsGPSConnectionRegistry* QgsGPSConnectionRegistry::mInstance = 0;
-
 QgsGPSConnectionRegistry::QgsGPSConnectionRegistry()
 {
-
 }
 
 QgsGPSConnectionRegistry::~QgsGPSConnectionRegistry()
@@ -36,11 +33,8 @@ QgsGPSConnectionRegistry::~QgsGPSConnectionRegistry()
 
 QgsGPSConnectionRegistry* QgsGPSConnectionRegistry::instance()
 {
-  if ( !mInstance )
-  {
-    mInstance = new QgsGPSConnectionRegistry();
-  }
-  return mInstance;
+  static QgsGPSConnectionRegistry mInstance;
+  return &mInstance;
 }
 
 void QgsGPSConnectionRegistry::registerConnection( QgsGPSConnection* c )

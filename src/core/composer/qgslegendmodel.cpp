@@ -98,7 +98,7 @@ void QgsLegendModel::setLayerSetAndGroups( const QStringList& layerIds, const QL
   }
 }
 
-void QgsLegendModel::setLayerSet( const QStringList& layerIds, double scaleDenominator )
+void QgsLegendModel::setLayerSet( const QStringList& layerIds, double scaleDenominator, QString rule )
 {
   mLayerIds = layerIds;
 
@@ -111,7 +111,7 @@ void QgsLegendModel::setLayerSet( const QStringList& layerIds, double scaleDenom
   for ( ; idIter != mLayerIds.constEnd(); ++idIter )
   {
     currentLayer = QgsMapLayerRegistry::instance()->mapLayer( *idIter );
-    addLayer( currentLayer, scaleDenominator );
+    addLayer( currentLayer, scaleDenominator, rule );
   }
 }
 
@@ -135,7 +135,7 @@ QStandardItem* QgsLegendModel::addGroup( QString text, int position )
   return groupItem;
 }
 
-int QgsLegendModel::addVectorLayerItemsV2( QStandardItem* layerItem, QgsVectorLayer* vlayer, double scaleDenominator )
+int QgsLegendModel::addVectorLayerItemsV2( QStandardItem* layerItem, QgsVectorLayer* vlayer, double scaleDenominator, QString rule )
 {
   QgsComposerLayerItem* lItem = dynamic_cast<QgsComposerLayerItem*>( layerItem );
 
@@ -158,12 +158,12 @@ int QgsLegendModel::addVectorLayerItemsV2( QStandardItem* layerItem, QgsVectorLa
     }
   }
 
-  QgsLegendSymbolList lst = renderer->legendSymbolItems( scaleDenominator );
+  QgsLegendSymbolList lst = renderer->legendSymbolItems( scaleDenominator, rule );
   QgsLegendSymbolList::const_iterator symbolIt = lst.constBegin();
   int row = 0;
   for ( ; symbolIt != lst.constEnd(); ++symbolIt )
   {
-    if ( scaleDenominator == -1 )
+    if ( scaleDenominator == -1 && rule.isEmpty() )
     {
       QgsComposerSymbolV2Item* currentSymbolItem = new QgsComposerSymbolV2Item( "" );
 
@@ -187,20 +187,24 @@ int QgsLegendModel::addVectorLayerItemsV2( QStandardItem* layerItem, QgsVectorLa
 
       // updateSymbolV2ItemText needs layer set
       updateSymbolV2ItemText( currentSymbolItem );
-
-      row++;
     }
     else
     {
       QgsComposerSymbolV2Item* currentSymbolItem = new QgsComposerSymbolV2Item( "" );
-      currentSymbolItem->setIcon( QgsSymbolLayerV2Utils::symbolPreviewIcon( symbolIt->second, QSize( 30, 30 ) ) );
+      if ( mHasTopLevelWindow ) //only use QIcon / QPixmap if we have a running x-server
+      {
+        currentSymbolItem->setIcon( QgsSymbolLayerV2Utils::symbolPreviewIcon( symbolIt->second, QSize( 30, 30 ) ) );
+      }
       currentSymbolItem->setSymbolV2( symbolIt->second );
-      layerItem->setChild( 0, 0, currentSymbolItem );
+      layerItem->setChild( row, 0, currentSymbolItem );
       currentSymbolItem->setText( symbolIt->first );
     }
+
+    row++;
   }
 
-  if ( scaleDenominator == -1 )
+  // Don't remove row on getLegendGraphic (read only with filter)
+  if ( scaleDenominator == -1 && rule.isEmpty() )
   {
     // Delete following old items (if current number of items decreased)
     for ( int i = layerItem->rowCount() - 1; i >= row; --i )
@@ -225,37 +229,69 @@ int QgsLegendModel::addRasterLayerItems( QStandardItem* layerItem, QgsMapLayer* 
     return 2;
   }
 
-  QList< QPair< QString, QColor > > rasterItemList = rasterLayer->legendSymbologyItems();
-  QList< QPair< QString, QColor > >::const_iterator itemIt = rasterItemList.constBegin();
-  int row = 0;
-  for ( ; itemIt != rasterItemList.constEnd(); ++itemIt )
+  QgsDebugMsg( QString( "layer providertype:: %1" ).arg( rasterLayer->providerType() ) );
+  if ( rasterLayer->providerType() == "wms" )
   {
-    QgsComposerRasterSymbolItem* currentSymbolItem = new QgsComposerRasterSymbolItem( itemIt->first );
-
-    QgsComposerRasterSymbolItem* oldSymbolItem = dynamic_cast<QgsComposerRasterSymbolItem*>( layerItem->child( row, 0 ) );
-    if ( oldSymbolItem )
+    QgsComposerRasterSymbolItem* currentSymbolItem = new QgsComposerRasterSymbolItem( "" );
+    // GetLegendGraphics in case of WMS service... image can return null if GetLegendGraphics
+    // is not supported by the server
+    // double currentScale = legend()->canvas()->scale();
+    // BEWARE getLegendGraphic() COULD BE USED WITHOUT SCALE PARAMETER IF IT WAS ALREADY CALLED WITH
+    // THIS PARAMETER FROM A COMPONENT THAT CAN RECOVER CURRENT SCALE => LEGEND IN THE DESKTOP
+    // OTHERWISE IT RETURN A INVALID PIXMAP (QPixmap().isNull() == False)
+    QImage legendGraphic = rasterLayer->dataProvider()->getLegendGraphic();
+    if ( !legendGraphic.isNull() )
     {
-      currentSymbolItem->setUserText( oldSymbolItem->userText() );
-      currentSymbolItem->setText( currentSymbolItem->userText() );
+      QgsDebugMsg( QString( "downloaded legend with dimension width:" ) + QString::number( legendGraphic.width() ) + QString( " and Height:" ) + QString::number( legendGraphic.height() ) );
+      if ( mHasTopLevelWindow )
+      {
+        currentSymbolItem->setIcon( QIcon( QPixmap::fromImage( legendGraphic ) ) );
+      }
+    }
+    else
+    {
+      currentSymbolItem->setText( tr( "No Legend Available" ) );
     }
 
-    if ( mHasTopLevelWindow )
-    {
-      QPixmap itemPixmap( 20, 20 );
-      itemPixmap.fill( itemIt->second );
-      currentSymbolItem->setIcon( QIcon( itemPixmap ) );
-    }
     currentSymbolItem->setLayerID( rasterLayer->id() );
-    currentSymbolItem->setColor( itemIt->second );
-    int currentRowCount = layerItem->rowCount();
-    layerItem->setChild( currentRowCount, 0, currentSymbolItem );
-    row++;
+    currentSymbolItem->setColor( QColor() );
+    layerItem->removeRows( 0, layerItem->rowCount() );
+    layerItem->setChild( layerItem->rowCount(), 0, currentSymbolItem );
   }
-
-  // Delete following old items (if current number of items decreased)
-  for ( int i = layerItem->rowCount() - 1; i >= row; --i )
+  else
   {
-    layerItem->removeRow( i );
+    QList< QPair< QString, QColor > > rasterItemList = rasterLayer->legendSymbologyItems();
+    QList< QPair< QString, QColor > >::const_iterator itemIt = rasterItemList.constBegin();
+    int row = 0;
+    for ( ; itemIt != rasterItemList.constEnd(); ++itemIt )
+    {
+      QgsComposerRasterSymbolItem* currentSymbolItem = new QgsComposerRasterSymbolItem( itemIt->first );
+
+      QgsComposerRasterSymbolItem* oldSymbolItem = dynamic_cast<QgsComposerRasterSymbolItem*>( layerItem->child( row, 0 ) );
+      if ( oldSymbolItem )
+      {
+        currentSymbolItem->setUserText( oldSymbolItem->userText() );
+        currentSymbolItem->setText( currentSymbolItem->userText() );
+      }
+
+      if ( mHasTopLevelWindow )
+      {
+        QPixmap itemPixmap( 20, 20 );
+        itemPixmap.fill( itemIt->second );
+        currentSymbolItem->setIcon( QIcon( itemPixmap ) );
+      }
+      currentSymbolItem->setLayerID( rasterLayer->id() );
+      currentSymbolItem->setColor( itemIt->second );
+      int currentRowCount = layerItem->rowCount();
+      layerItem->setChild( currentRowCount, 0, currentSymbolItem );
+      row++;
+    }
+
+    // Delete following old items (if current number of items decreased)
+    for ( int i = layerItem->rowCount() - 1; i >= row; --i )
+    {
+      layerItem->removeRow( i );
+    }
   }
 
   return 0;
@@ -467,7 +503,7 @@ void QgsLegendModel::removeLayer( const QString& layerId )
   }
 }
 
-void QgsLegendModel::addLayer( QgsMapLayer* theMapLayer, double scaleDenominator )
+void QgsLegendModel::addLayer( QgsMapLayer* theMapLayer, double scaleDenominator, QString rule )
 {
   if ( !theMapLayer )
   {
@@ -481,7 +517,7 @@ void QgsLegendModel::addLayer( QgsMapLayer* theMapLayer, double scaleDenominator
     layerItem->setUserText( theMapLayer->title() );
   }
   layerItem->setLayerID( theMapLayer->id() );
-  layerItem->setDefaultStyle( scaleDenominator );
+  layerItem->setDefaultStyle( scaleDenominator, rule );
   layerItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
 
   QList<QStandardItem *> itemsList;
@@ -495,7 +531,7 @@ void QgsLegendModel::addLayer( QgsMapLayer* theMapLayer, double scaleDenominator
       QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( theMapLayer );
       if ( vl )
       {
-        addVectorLayerItemsV2( layerItem, vl, scaleDenominator );
+        addVectorLayerItemsV2( layerItem, vl, scaleDenominator, rule );
       }
       break;
     }

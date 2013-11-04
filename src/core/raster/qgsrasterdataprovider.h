@@ -24,6 +24,7 @@
 
 #include <QDateTime>
 #include <QVariant>
+#include <QImage>
 
 #include "qgscolorrampshader.h"
 #include "qgscoordinatereferencesystem.h"
@@ -184,6 +185,15 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     virtual QStringList subLayers() const
     {
       return QStringList();
+    }
+
+    /** \brief Returns the legend rendered as pixmap
+     *  useful for that layer that need to get legend layer remotly as WMS */
+    virtual QImage getLegendGraphic( double scale = 0, bool forceRefresh = false )
+    {
+      Q_UNUSED( scale );
+      Q_UNUSED( forceRefresh );
+      return QImage();
     }
 
     /** \brief Create pyramid overviews */

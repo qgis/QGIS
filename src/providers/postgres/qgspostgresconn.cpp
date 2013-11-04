@@ -392,6 +392,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       QString type = result.PQgetvalue( idx, 3 );
       QString ssrid = result.PQgetvalue( idx, 4 );
       QString relkind = result.PQgetvalue( idx, 5 );
+      bool isView = relkind == "v" || relkind == "m";
 
       int srid = ssrid.isEmpty() ? INT_MIN : ssrid.toInt();
       if ( majorVersion() >= 2 && srid == 0 )
@@ -415,9 +416,9 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       layerProperty.types = QList<QGis::WkbType>() << ( QgsPostgresConn::wkbTypeFromPostgis( type ) );
       layerProperty.srids = QList<int>() << srid;
       layerProperty.sql = "";
-      addColumnInfo( layerProperty, schemaName, tableName, relkind == "v" );
+      addColumnInfo( layerProperty, schemaName, tableName, isView );
 
-      if ( relkind == "v" && layerProperty.pkCols.empty() )
+      if ( isView && layerProperty.pkCols.empty() )
       {
         QgsDebugMsg( "no key columns found." );
         continue;
@@ -450,7 +451,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
                   " JOIN pg_namespace n ON n.oid=c.relnamespace"
                   " JOIN pg_type t ON t.oid=a.atttypid"
                   " LEFT JOIN pg_type b ON b.oid=t.typbasetype"
-                  " WHERE c.relkind IN ('v','r')"
+                  " WHERE c.relkind IN ('v','r','m')"
                   " AND has_schema_privilege( n.nspname, 'usage' )"
                   " AND has_table_privilege( '\"' || n.nspname || '\".\"' || c.relname || '\"', 'select' )"
                   " AND (t.typname IN ('geometry','geography','topogeometry') OR b.typname IN ('geometry','geography','topogeometry'))";
@@ -505,6 +506,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       QString column     = result.PQgetvalue( i, 2 ); // attname
       QString relkind    = result.PQgetvalue( i, 3 ); // relation kind
       QString coltype    = result.PQgetvalue( i, 4 ); // column type
+      bool isView = relkind == "v" || relkind == "m";
 
       QgsDebugMsg( QString( "%1.%2.%3: %4" ).arg( schemaName ).arg( tableName ).arg( column ).arg( relkind ) );
 
@@ -530,8 +532,8 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
         Q_ASSERT( !"Unknown geometry type" );
       }
 
-      addColumnInfo( layerProperty, schemaName, tableName, relkind == "v" );
-      if ( relkind == "v" && layerProperty.pkCols.empty() )
+      addColumnInfo( layerProperty, schemaName, tableName, isView );
+      if ( isView && layerProperty.pkCols.empty() )
       {
         QgsDebugMsg( "no key columns found." );
         continue;
@@ -556,7 +558,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
                   " WHERE pg_namespace.oid=pg_class.relnamespace"
                   " AND has_schema_privilege(pg_namespace.nspname,'usage')"
                   " AND has_table_privilege('\"' || pg_namespace.nspname || '\".\"' || pg_class.relname || '\"','select')"
-                  " AND pg_class.relkind IN ('v','r')";
+                  " AND pg_class.relkind IN ('v','r','m')";
 
     // user has select privilege
     if ( searchPublicOnly )
@@ -579,6 +581,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       QString table   = result.PQgetvalue( i, 0 ); // relname
       QString schema  = result.PQgetvalue( i, 1 ); // nspname
       QString relkind = result.PQgetvalue( i, 2 ); // relation kind
+      bool isView = relkind == "v" || relkind == "m";
 
       QgsDebugMsg( QString( "%1.%2: %3" ).arg( schema ).arg( table ).arg( relkind ) );
 
@@ -588,7 +591,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       layerProperty.tableName = table;
       layerProperty.geometryColName = QString::null;
       layerProperty.geometryColType = sctNone;
-      addColumnInfo( layerProperty, schema, table, relkind == "v" );
+      addColumnInfo( layerProperty, schema, table, isView );
       layerProperty.sql = "";
 
       mLayersSupported << layerProperty;

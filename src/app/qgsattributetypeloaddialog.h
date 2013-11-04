@@ -54,6 +54,13 @@ class APP_EXPORT QgsAttributeTypeLoadDialog: public QDialog, private Ui::QgsAttr
      */
     QMap<QString, QVariant> &valueMap();
 
+    /**
+     * Returns true if the "Add NULL value" checkbox has been checked.
+     *
+     * @return true if the "Add NULL value" checkbox has been checked.
+     */
+    bool insertNull();
+
   private slots:
     /**
      * Slot which reacts to change of selected layer to fill other two comboboxes with correct data

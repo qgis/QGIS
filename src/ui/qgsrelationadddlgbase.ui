@@ -80,9 +80,6 @@
    </item>
    <item row="8" column="1">
     <widget class="QLineEdit" name="mTxtRelationId">
-     <property name="placeholderText">
-      <string>[Generated automatically]</string>
-     </property>
     </widget>
    </item>
    <item row="1" column="1">

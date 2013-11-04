@@ -68,12 +68,20 @@ QgsMimeDataUtils::Uri::Uri( QString& encData )
     parts << part;
   }
 
-  if ( parts.size() == 4 )
+  if ( parts.size() <= 5 ) // PostGISTRaster layers yields five parts
   {
     layerType = parts[0];
     providerKey = parts[1];
     name = parts[2];
-    uri = parts[3];
+    // fetchs PostGISRaster layers
+    if ( parts[3] == "PG" )
+    {
+      uri = parts[3] + ":" + parts[4];
+    }
+    else
+    {
+      uri = parts[3];
+    }
     QgsDebugMsg( "type: " + layerType + " key: " + providerKey + " name: " + name + " uri: " + uri );
   }
 }

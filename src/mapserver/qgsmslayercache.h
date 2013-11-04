@@ -73,8 +73,6 @@ class QgsMSLayerCache: public QObject
     void freeEntryRessources( QgsMSLayerCacheEntry& entry );
 
   private:
-    static QgsMSLayerCache* mInstance;
-
     /**Cash entries with pair url/layer name as a key. The layer name is necessary for cases where the same
       url is used several time in a request. It ensures that different layer instances are created for different
       layer names*/

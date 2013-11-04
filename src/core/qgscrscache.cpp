@@ -18,15 +18,11 @@
 #include "qgscrscache.h"
 #include "qgscoordinatetransform.h"
 
-QgsCoordinateTransformCache* QgsCoordinateTransformCache::mInstance = 0;
 
 QgsCoordinateTransformCache* QgsCoordinateTransformCache::instance()
 {
-  if ( !mInstance )
-  {
-    mInstance = new QgsCoordinateTransformCache();
-  }
-  return mInstance;
+  static QgsCoordinateTransformCache mInstance;
+  return &mInstance;
 }
 
 QgsCoordinateTransformCache::~QgsCoordinateTransformCache()
@@ -36,7 +32,6 @@ QgsCoordinateTransformCache::~QgsCoordinateTransformCache()
   {
     delete tIt.value();
   }
-  delete mInstance;
 }
 
 const QgsCoordinateTransform* QgsCoordinateTransformCache::transform( const QString& srcAuthId, const QString& destAuthId )
@@ -79,15 +74,11 @@ void QgsCoordinateTransformCache::invalidateCrs( const QString& crsAuthId )
   }
 }
 
-QgsCRSCache* QgsCRSCache::mInstance = 0;
 
 QgsCRSCache* QgsCRSCache::instance()
 {
-  if ( !mInstance )
-  {
-    mInstance = new QgsCRSCache();
-  }
-  return mInstance;
+  static QgsCRSCache mInstance;
+  return &mInstance;
 }
 
 QgsCRSCache::QgsCRSCache()
@@ -96,7 +87,6 @@ QgsCRSCache::QgsCRSCache()
 
 QgsCRSCache::~QgsCRSCache()
 {
-  delete mInstance;
 }
 
 void QgsCRSCache::updateCRSCache( const QString& authid )

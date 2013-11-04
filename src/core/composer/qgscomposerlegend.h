@@ -87,6 +87,12 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     double symbolHeight() const {return mSymbolHeight;}
     void setSymbolHeight( double h ) {mSymbolHeight = h;}
 
+    double wmsLegendWidth() const {return mWmsLegendWidth;}
+    void setWmsLegendWidth( double w ) {mWmsLegendWidth = w;}
+
+    double wmsLegendHeight() const {return mWmsLegendHeight;}
+    void setWmsLegendHeight( double h ) {mWmsLegendHeight = h;}
+
     void setWrapChar( const QString& t ) {mWrapChar = t;}
     QString wrapChar() const {return mWrapChar;}
 
@@ -138,6 +144,11 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     double mSymbolWidth;
     /**Height of symbol icon*/
     double mSymbolHeight;
+
+    /**Width of WMS legendGraphic pixmap*/
+    double mWmsLegendWidth;
+    /**Height of WMS legendGraphic pixmap*/
+    double mWmsLegendHeight;
 
     /** Spacing between lines when wrapped */
     double mlineSpacing;

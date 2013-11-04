@@ -37,7 +37,7 @@ from processing.ui.ui_DlgNumberInput import Ui_DlgNumberInput
 
 class NumberInputDialog(QDialog, Ui_DlgNumberInput):
 
-    def __init__(self):
+    def __init__(self, isInteger):
         QDialog.__init__(self)
         self.setupUi(self)
 
@@ -48,6 +48,10 @@ class NumberInputDialog(QDialog, Ui_DlgNumberInput):
         self.treeValues.doubleClicked.connect(self.addValue)
 
         self.value = None
+        self.isInteger = isInteger
+
+        if not self.isInteger:
+            self.lblWarning.hide()
 
         self.fillTree()
 
@@ -123,6 +127,8 @@ class NumberInputDialog(QDialog, Ui_DlgNumberInput):
     def accept(self):
         try:
             self.value = float(eval(str(self.leFormula.text())))
+            if self.isInteger:
+                self.value = int(round(self.value))
             QDialog.accept(self)
         except:
             QMessageBox.critical(self, self.tr('Wrong expression'),

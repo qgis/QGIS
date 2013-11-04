@@ -78,9 +78,8 @@ void QgsComposerItemWidget::on_mFrameColorButton_colorChanged( const QColor& new
     return;
   }
   mItem->beginCommand( tr( "Frame color changed" ) );
-  QPen thePen;
+  QPen thePen = mItem->pen();
   thePen.setColor( newFrameColor );
-  thePen.setWidthF( mOutlineWidthSpinBox->value() );
 
   mItem->setPen( thePen );
   mItem->update();
@@ -332,6 +331,8 @@ void QgsComposerItemWidget::setValuesForGuiElements()
   mBlendModeCombo->blockSignals( true );
   mTransparencySlider->blockSignals( true );
   mTransparencySpnBx->blockSignals( true );
+  mFrameColorButton->blockSignals( true );
+  mBackgroundColorButton->blockSignals( true );
 
   mBackgroundColorButton->setColor( mItem->brush().color() );
   mBackgroundColorButton->setColorDialogTitle( tr( "Select background color" ) );
@@ -348,6 +349,8 @@ void QgsComposerItemWidget::setValuesForGuiElements()
   mTransparencySlider->setValue( mItem->transparency() );
   mTransparencySpnBx->setValue( mItem->transparency() );
 
+  mBackgroundColorButton->blockSignals( false );
+  mFrameColorButton->blockSignals( false );
   mOutlineWidthSpinBox->blockSignals( false );
   mFrameGroupBox->blockSignals( false );
   mBackgroundGroupBox->blockSignals( false );

@@ -46,6 +46,7 @@ QgsGlobePluginDialog::QgsGlobePluginDialog( QWidget* parent, Qt::WFlags fl )
   loadStereoConfig();  //values from settings, default values from OSG
   setStereoConfig(); //overwrite with values from QSettings
   updateStereoDialog(); //update the dialog gui
+  loadVideoSettings();
 
   elevationPath->setText( QDir::homePath() );
 }
@@ -126,6 +127,7 @@ void QgsGlobePluginDialog::on_buttonBox_accepted()
   saveStereoConfig();
 
   saveElevationDatasources();
+  saveVideoSettings();
   accept();
 }
 
@@ -520,6 +522,19 @@ void QgsGlobePluginDialog::setStereoMode()
       msgBox.exec();
     }
   }
+}
+
+void QgsGlobePluginDialog::loadVideoSettings()
+{
+  mAntiAliasingGroupBox->setChecked( settings.value( "/Plugin-Globe/anti-aliasing", true ).toBool() );
+  mAANumSamples->setValidator( new QIntValidator( mAANumSamples ) );
+  mAANumSamples->setText( settings.value( "/Plugin-Globe/anti-aliasing-level", "" ).toString() );
+}
+
+void QgsGlobePluginDialog::saveVideoSettings()
+{
+  settings.setValue( "/Plugin-Globe/anti-aliasing", mAntiAliasingGroupBox->isChecked() );
+  settings.setValue( "/Plugin-Globe/anti-aliasing-level", mAANumSamples->text() );
 }
 
 void QgsGlobePluginDialog::setStereoConfig()

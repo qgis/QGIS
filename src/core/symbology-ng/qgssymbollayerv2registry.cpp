@@ -21,8 +21,6 @@
 #include "qgsfillsymbollayerv2.h"
 #include "qgsvectorfieldsymbollayer.h"
 
-QgsSymbolLayerV2Registry* QgsSymbolLayerV2Registry::mInstance = NULL;
-
 QgsSymbolLayerV2Registry::QgsSymbolLayerV2Registry()
 {
   // init registry with known symbol layers
@@ -44,6 +42,8 @@ QgsSymbolLayerV2Registry::QgsSymbolLayerV2Registry()
 
   addSymbolLayerType( new QgsSymbolLayerV2Metadata( "SimpleFill", QObject::tr( "Simple fill" ), QgsSymbolV2::Fill,
                       QgsSimpleFillSymbolLayerV2::create, QgsSimpleFillSymbolLayerV2::createFromSld ) );
+  addSymbolLayerType( new QgsSymbolLayerV2Metadata( "GradientFill", QObject::tr( "Gradient fill" ), QgsSymbolV2::Fill,
+                      QgsGradientFillSymbolLayerV2::create ) );
   addSymbolLayerType( new QgsSymbolLayerV2Metadata( "SVGFill", QObject::tr( "SVG fill" ), QgsSymbolV2::Fill,
                       QgsSVGFillSymbolLayer::create, QgsSVGFillSymbolLayer::createFromSld ) );
   addSymbolLayerType( new QgsSymbolLayerV2Metadata( "CentroidFill", QObject::tr( "Centroid fill" ), QgsSymbolV2::Fill,
@@ -83,9 +83,8 @@ QgsSymbolLayerV2AbstractMetadata* QgsSymbolLayerV2Registry::symbolLayerMetadata(
 
 QgsSymbolLayerV2Registry* QgsSymbolLayerV2Registry::instance()
 {
-  if ( !mInstance )
-    mInstance = new QgsSymbolLayerV2Registry();
-  return mInstance;
+  static QgsSymbolLayerV2Registry mInstance;
+  return &mInstance;
 }
 
 QgsSymbolLayerV2* QgsSymbolLayerV2Registry::defaultSymbolLayer( QgsSymbolV2::SymbolType type )

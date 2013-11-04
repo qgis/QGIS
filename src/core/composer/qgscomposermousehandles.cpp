@@ -28,6 +28,7 @@
 QgsComposerMouseHandles::QgsComposerMouseHandles( QgsComposition *composition ) : QObject( 0 ),
     QGraphicsRectItem( 0 ),
     mComposition( composition ),
+    mGraphicsView( 0 ),
     mBeginHandleWidth( 0 ),
     mBeginHandleHeight( 0 ),
     mIsDragging( false ),
@@ -47,10 +48,39 @@ QgsComposerMouseHandles::~QgsComposerMouseHandles()
 
 }
 
+QGraphicsView* QgsComposerMouseHandles::graphicsView()
+{
+  //have we already found the current view?
+  if ( mGraphicsView )
+  {
+    return mGraphicsView;
+  }
+
+  //otherwise, try and find current view attached to composition
+  if ( scene() )
+  {
+    QList<QGraphicsView*> viewList = scene()->views();
+    if ( viewList.size() > 0 )
+    {
+      mGraphicsView = viewList.at( 0 );
+      return mGraphicsView;
+    }
+  }
+
+  //no view attached to composition
+  return 0;
+}
+
 void QgsComposerMouseHandles::paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget )
 {
   Q_UNUSED( itemStyle );
   Q_UNUSED( pWidget );
+
+  if ( mComposition->plotStyle() != QgsComposition::Preview )
+  {
+    //don't draw selection handles in composition outputs
+    return;
+  }
 
   //draw resize handles around bounds of entire selection
   double rectHandlerSize = rectHandlerBorderTolerance();
@@ -128,7 +158,7 @@ void QgsComposerMouseHandles::drawSelectedItemBounds( QPainter* painter )
     {
       //if currently resizing, calculate relative resize of this item
       itemBounds = itemSceneBounds;
-      relativeResizeRect( itemBounds, QRectF( mBeginHandlePos.x(), mBeginHandlePos.y(), mBeginHandleWidth, mBeginHandleHeight ), sceneBoundingRect() );
+      relativeResizeRect( itemBounds, QRectF( mBeginHandlePos.x(), mBeginHandlePos.y(), mBeginHandleWidth, mBeginHandleHeight ), mResizeRect );
       itemBounds = mapRectFromScene( itemBounds );
     }
     else
@@ -162,6 +192,7 @@ void QgsComposerMouseHandles::selectionChanged()
     }
   }
 
+  resetStatusBar();
   updateHandles();
 }
 
@@ -216,13 +247,11 @@ QRectF QgsComposerMouseHandles::selectionBounds() const
   return bounds;
 }
 
-double QgsComposerMouseHandles::rectHandlerBorderTolerance() const
+double QgsComposerMouseHandles::rectHandlerBorderTolerance()
 {
   //calculate size for resize handles
   //get view scale factor
-  QList<QGraphicsView*> viewList = mComposition->views();
-  QGraphicsView* currentView = viewList.at( 0 );
-  double viewScaleFactor = currentView->transform().m11();
+  double viewScaleFactor = graphicsView()->transform().m11();
 
   //size of handle boxes depends on zoom level in composer view
   double rectHandlerSize = 10.0 / viewScaleFactor;
@@ -357,7 +386,24 @@ QgsComposerMouseHandles::MouseAction QgsComposerMouseHandles::mouseActionForScen
 
 void QgsComposerMouseHandles::hoverMoveEvent( QGraphicsSceneHoverEvent * event )
 {
-  setCursor( cursorForPosition( event->pos() ) );
+  setViewportCursor( cursorForPosition( event->pos() ) );
+}
+
+void QgsComposerMouseHandles::hoverLeaveEvent( QGraphicsSceneHoverEvent * event )
+{
+  Q_UNUSED( event );
+  setViewportCursor( Qt::ArrowCursor );
+}
+
+void QgsComposerMouseHandles::setViewportCursor( Qt::CursorShape cursor )
+{
+  //workaround qt bug #3732 by setting cursor for QGraphicsView viewport,
+  //rather then setting it directly here
+
+  if ( !mComposition->preventCursorChange() )
+  {
+    graphicsView()->viewport()->setCursor( cursor );
+  }
 }
 
 void QgsComposerMouseHandles::mouseMoveEvent( QGraphicsSceneMouseEvent* event )
@@ -446,7 +492,7 @@ void QgsComposerMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent* event
       QgsComposerItemCommand* subcommand = new QgsComposerItemCommand( *itemIter, "", parentCommand );
       subcommand->savePreviousState();
       QRectF itemBounds = ( *itemIter )->sceneBoundingRect();
-      relativeResizeRect( itemBounds, QRectF( mBeginHandlePos.x(), mBeginHandlePos.y(), mBeginHandleWidth, mBeginHandleHeight ), sceneBoundingRect() );
+      relativeResizeRect( itemBounds, QRectF( mBeginHandlePos.x(), mBeginHandlePos.y(), mBeginHandleWidth, mBeginHandleHeight ), mResizeRect );
       ( *itemIter )->setSceneRect( itemBounds );
       subcommand->saveAfterState();
     }
@@ -466,10 +512,33 @@ void QgsComposerMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent* event
 
   //reset default action
   mCurrentMouseMoveAction = QgsComposerMouseHandles::MoveItem;
-  setCursor( Qt::ArrowCursor );
+  setViewportCursor( Qt::ArrowCursor );
   //redraw handles
   resetTransform();
   updateHandles();
+  //reset status bar message
+  resetStatusBar();
+}
+
+void QgsComposerMouseHandles::resetStatusBar()
+{
+  QList<QgsComposerItem*> selectedItems = mComposition->selectedComposerItems();
+  int selectedCount = selectedItems.size();
+  if ( selectedCount > 1 )
+  {
+    //set status bar message to count of selected items
+    mComposition->setStatusMessage( QString( tr( "%1 items selected" ) ).arg( selectedCount ) );
+  }
+  else if ( selectedCount == 1 )
+  {
+    //set status bar message to count of selected items
+    mComposition->setStatusMessage( tr( "1 item selected" ) );
+  }
+  else
+  {
+    //clear status bar message
+    mComposition->setStatusMessage( QString( "" ) );
+  }
 }
 
 void QgsComposerMouseHandles::mousePressEvent( QGraphicsSceneMouseEvent* event )
@@ -495,6 +564,7 @@ void QgsComposerMouseHandles::mousePressEvent( QGraphicsSceneMouseEvent* event )
             mCurrentMouseMoveAction != QgsComposerMouseHandles::NoAction )
   {
     mIsResizing = true;
+    mResizeRect = QRectF( mBeginHandlePos.x(), mBeginHandlePos.y(), mBeginHandleWidth, mBeginHandleHeight );
   }
 
 }
@@ -548,6 +618,8 @@ void QgsComposerMouseHandles::dragMouseMove( const QPointF& currentPosition, boo
   QTransform moveTransform;
   moveTransform.translate( moveRectX, moveRectY );
   setTransform( moveTransform );
+  //show current displacement of selection in status bar
+  mComposition->setStatusMessage( QString( tr( "dx: %1 mm dy: %2 mm" ) ).arg( moveRectX ).arg( moveRectY ) );
 }
 
 void QgsComposerMouseHandles::resizeMouseMove( const QPointF& currentPosition, bool lockRatio, bool fromCenter )
@@ -570,7 +642,6 @@ void QgsComposerMouseHandles::resizeMouseMove( const QPointF& currentPosition, b
     ratio = mBeginHandleWidth / mBeginHandleHeight;
   }
 
-  //TODO: resizing eg from top handle to below bottom handle
   switch ( mCurrentMouseMoveAction )
   {
       //vertical resize
@@ -717,10 +788,17 @@ void QgsComposerMouseHandles::resizeMouseMove( const QPointF& currentPosition, b
 
   //update selection handle rectangle
   QTransform itemTransform;
-  itemTransform.translate( mx, my );
+  //make sure selection handle size rectangle is normalized (ie, left coord < right coord)
+  double translateX = mBeginHandleWidth + rx > 0 ? mx : mx + mBeginHandleWidth + rx;
+  double translateY = mBeginHandleHeight + ry > 0 ? my : my + mBeginHandleHeight + ry;
+  itemTransform.translate( translateX, translateY );
+
   setTransform( itemTransform );
-  QRectF itemRect( 0, 0, mBeginHandleWidth + rx, mBeginHandleHeight + ry );
-  setRect( itemRect );
+  mResizeRect = QRectF( mBeginHandlePos.x() + mx, mBeginHandlePos.y() + my, mBeginHandleWidth + rx, mBeginHandleHeight + ry );
+  setRect( 0, 0, fabs( mBeginHandleWidth + rx ), fabs( mBeginHandleHeight + ry ) );
+
+  //show current size of selection in status bar
+  mComposition->setStatusMessage( QString( tr( "width: %1 mm height: %2 mm" ) ).arg( rect().width() ).arg( rect().height() ) );
 }
 
 void QgsComposerMouseHandles::relativeResizeRect( QRectF& rectToResize, const QRectF& boundsBefore, const QRectF& boundsAfter )
@@ -756,7 +834,7 @@ QPointF QgsComposerMouseHandles::snapPoint( const QPointF& point, QgsComposerMou
   }
 
   //align item
-  if ( !mComposition->alignmentSnap() )
+  if ( !mComposition->alignmentSnap() && !mComposition->smartGuidesEnabled() )
   {
     return point;
   }
@@ -936,38 +1014,43 @@ void QgsComposerMouseHandles::collectAlignCoordinates( QMap< double, const QgsCo
   alignCoordsX.clear();
   alignCoordsY.clear();
 
-  QList<QGraphicsItem *> itemList = mComposition->items();
-  QList<QGraphicsItem *>::iterator itemIt = itemList.begin();
-  for ( ; itemIt != itemList.end(); ++itemIt )
+  if ( mComposition->smartGuidesEnabled() )
   {
-    const QgsComposerItem* currentItem = dynamic_cast<const QgsComposerItem *>( *itemIt );
-    //don't snap to selected items, since they're the ones that will be snapping to something else
-    if ( !currentItem || currentItem->selected() )
+    QList<QGraphicsItem *> itemList = mComposition->items();
+    QList<QGraphicsItem *>::iterator itemIt = itemList.begin();
+    for ( ; itemIt != itemList.end(); ++itemIt )
     {
-      continue;
+      const QgsComposerItem* currentItem = dynamic_cast<const QgsComposerItem *>( *itemIt );
+      //don't snap to selected items, since they're the ones that will be snapping to something else
+      if ( !currentItem || currentItem->selected() )
+      {
+        continue;
+      }
+      alignCoordsX.insert( currentItem->transform().dx(), currentItem );
+      alignCoordsX.insert( currentItem->transform().dx() + currentItem->rect().width(), currentItem );
+      alignCoordsX.insert( currentItem->transform().dx() + currentItem->rect().center().x(), currentItem );
+      alignCoordsY.insert( currentItem->transform().dy() + currentItem->rect().top(), currentItem );
+      alignCoordsY.insert( currentItem->transform().dy() + currentItem->rect().center().y(), currentItem );
+      alignCoordsY.insert( currentItem->transform().dy() + currentItem->rect().bottom(), currentItem );
     }
-    alignCoordsX.insert( currentItem->transform().dx(), currentItem );
-    alignCoordsX.insert( currentItem->transform().dx() + currentItem->rect().width(), currentItem );
-    alignCoordsX.insert( currentItem->transform().dx() + currentItem->rect().center().x(), currentItem );
-    alignCoordsY.insert( currentItem->transform().dy() + currentItem->rect().top(), currentItem );
-    alignCoordsY.insert( currentItem->transform().dy() + currentItem->rect().center().y(), currentItem );
-    alignCoordsY.insert( currentItem->transform().dy() + currentItem->rect().bottom(), currentItem );
-
   }
 
   //arbitrary snap lines
-  QList< QGraphicsLineItem* >::const_iterator sIt = mComposition->snapLines()->constBegin();
-  for ( ; sIt != mComposition->snapLines()->constEnd(); ++sIt )
+  if ( mComposition->alignmentSnap() )
   {
-    double x = ( *sIt )->line().x1();
-    double y = ( *sIt )->line().y1();
-    if ( qgsDoubleNear( y, 0.0 ) )
+    QList< QGraphicsLineItem* >::const_iterator sIt = mComposition->snapLines()->constBegin();
+    for ( ; sIt != mComposition->snapLines()->constEnd(); ++sIt )
     {
-      alignCoordsX.insert( x, 0 );
-    }
-    else
-    {
-      alignCoordsY.insert( y, 0 );
+      double x = ( *sIt )->line().x1();
+      double y = ( *sIt )->line().y1();
+      if ( qgsDoubleNear( y, 0.0 ) )
+      {
+        alignCoordsX.insert( x, 0 );
+      }
+      else
+      {
+        alignCoordsY.insert( y, 0 );
+      }
     }
   }
 }

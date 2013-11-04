@@ -19,6 +19,7 @@
 #include "qgis.h"
 #include "qgsapplication.h"
 #include "qgsdataprovider.h"
+#include "qgserror.h"
 #include "qgsfeature.h"
 #include "qgsfield.h"
 #include "qgslogger.h"
@@ -96,6 +97,9 @@ class CORE_EXPORT QgsGmlSchema: public QObject
 
     /** Get list of geometry attributes for type/class name */
     QStringList geometryAttributes( const QString & typeName );
+
+    /** Get error if parseXSD() or guessSchema() failed */
+    QgsError error() const { return mError; }
 
   private:
 
@@ -199,6 +203,9 @@ class CORE_EXPORT QgsGmlSchema: public QObject
 
     /* Feature classes map with element paths as keys */
     QMap<QString, QgsGmlFeatureClass> mFeatureClassMap;
+
+    /* Error set if something failed */
+    QgsError mError;
 };
 
 #endif

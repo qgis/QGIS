@@ -138,8 +138,10 @@ void QgsMessageBarItem::writeContent()
       mTextEdit->setFrameShape( QFrame::NoFrame );
       // stylesheet set here so Qt-style substitued scrollbar arrows can show within limited height
       // adjusts to height of font set in app options
-      mTextEdit->setStyleSheet( "* { background-color: rgba(0,0,0,0); margin-top: 0.25em; max-height: 1.75em; min-height: 1.75em; } "
-                                "QScrollBar::add-page,QScrollBar::sub-page,QScrollBar::handle { background-color: rgba(0,0,0,0); color: rgba(0,0,0,0); }" );
+      mTextEdit->setStyleSheet( "QTextEdit { background-color: rgba(0,0,0,0); margin-top: 0.25em; max-height: 1.75em; min-height: 1.75em; } "
+                                "QScrollBar { background-color: rgba(0,0,0,0); } "
+                                "QScrollBar::add-page,QScrollBar::sub-page,QScrollBar::handle { background-color: rgba(0,0,0,0); color: rgba(0,0,0,0); } "
+                                "QScrollBar::up-arrow,QScrollBar::down-arrow { color: rgb(0,0,0); } " );
       mLayout->addWidget( mTextEdit );
     }
     QString content = mText;

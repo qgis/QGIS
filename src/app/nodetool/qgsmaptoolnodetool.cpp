@@ -187,7 +187,7 @@ void QgsMapToolNodeTool::createTopologyRubberBands( QgsVectorLayer* vlayer, cons
       }
       else
       {
-        trb->addPoint( topolGeometry->vertexAt( tVertex ) );
+        trb->addPoint( toMapCoordinates( vlayer, topolGeometry->vertexAt( tVertex ) ) );
         if ( tVertex == tVertexFirst ) // cycle first vertex need to be added also
         {
           movingPoints->insert( movingPointIndex );
@@ -206,14 +206,14 @@ void QgsMapToolNodeTool::createTopologyRubberBands( QgsVectorLayer* vlayer, cons
         // find first no matching vertex
         if ( dist > ZERO_TOLERANCE || !vertexMap[at]->isSelected() ) // problem with double precision
         {
-          trb->addPoint( topolGeometry->vertexAt( tVertex ) );
+          trb->addPoint( toMapCoordinates( vlayer, topolGeometry->vertexAt( tVertex ) ) );
           break; // found first vertex
         }
         else // add moving point to rubberband
         {
           if ( addedPoints->contains( tVertex ) )
             break; // just preventing to circle
-          trb->addPoint( topolGeometry->vertexAt( tVertex ) );
+          trb->addPoint( toMapCoordinates( vlayer, topolGeometry->vertexAt( tVertex ) ) );
           movingPoints->insert( movingPointIndex );
           movingPointIndex++;
           addedPoints->insert( tVertex );
@@ -311,7 +311,7 @@ void QgsMapToolNodeTool::canvasMoveEvent( QMouseEvent * e )
       offset = posMapCoord - mPosMapCoordBackup;
       for ( int i = 0; i < mTopologyRubberBand.size(); i++ )
       {
-        for ( int pointIndex = 0; pointIndex < mTopologyRubberBand[i]->numberOfVertices() - 1; pointIndex++ )
+        for ( int pointIndex = 0; pointIndex < mTopologyRubberBand[i]->numberOfVertices(); pointIndex++ )
         {
           if ( mTopologyRubberBandVertexes[i]->contains( pointIndex ) )
           {
@@ -321,10 +321,6 @@ void QgsMapToolNodeTool::canvasMoveEvent( QMouseEvent * e )
               break;
             }
             mTopologyRubberBand[i]->movePoint( pointIndex, *point + offset );
-            if ( pointIndex == 0 )
-            {
-              mTopologyRubberBand[i]->movePoint( pointIndex, *point + offset );
-            }
           }
         }
       }
@@ -724,23 +720,14 @@ void QgsMapToolNodeTool::keyReleaseEvent( QKeyEvent* e )
 
 QgsRubberBand* QgsMapToolNodeTool::createRubberBandMarker( QgsPoint center, QgsVectorLayer* vlayer )
 {
+
   // create rubberband marker for moving points
-  QgsRubberBand* marker = new QgsRubberBand( mCanvas, QGis::Polygon );
+  QgsRubberBand* marker = new QgsRubberBand( mCanvas, QGis::Point );
   marker->setColor( Qt::red );
   marker->setWidth( 2 );
-  double movement = 4;
-  double s = QgsTolerance::toleranceInMapUnits( movement, vlayer, mCanvas->mapRenderer(), QgsTolerance::Pixels );
+  marker->setIcon( QgsRubberBand::ICON_FULL_BOX );
+  marker->setIconSize( 8 );
   QgsPoint pom = toMapCoordinates( vlayer, center );
-  pom.setX( pom.x() - s );
-  pom.setY( pom.y() - s );
-  marker->addPoint( pom );
-  pom.setX( pom.x() + 2*s );
-  marker->addPoint( pom );
-  pom.setY( pom.y() + 2*s );
-  marker->addPoint( pom );
-  pom.setX( pom.x() - 2*s );
-  marker->addPoint( pom );
-  pom.setY( pom.y() - 2*s );
   marker->addPoint( pom );
   return marker;
 }

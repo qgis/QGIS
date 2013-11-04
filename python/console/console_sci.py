@@ -476,28 +476,28 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         subMenu = QMenu(menu)
         titleHistoryMenu = QCoreApplication.translate("PythonConsole", "Command History")
         subMenu.setTitle(titleHistoryMenu)
-        showHistoryAction = subMenu.addAction(QCoreApplication.translate("PythonConsole",
-                                                                         "Show"),
-                                    self.showHistory, 'Ctrl+Shift+SPACE')
+        showHistoryAction = subMenu.addAction(
+                            QCoreApplication.translate("PythonConsole", "Show"),
+                            self.showHistory, 'Ctrl+Shift+SPACE')
         subMenu.addSeparator()
-        saveHistoryAction = subMenu.addAction(QCoreApplication.translate("PythonConsole",
-                                                                          "Save"),
-                                              self.writeHistoryFile)
+        saveHistoryAction = subMenu.addAction(
+                            QCoreApplication.translate("PythonConsole", "Save"),
+                            self.writeHistoryFile)
         subMenu.addSeparator()
-        clearHistoryAction = subMenu.addAction(QCoreApplication.translate("PythonConsole",
-                                                                          "Clear File"),
-                                               self.clearHistory)
-        clearSessHistoryAction = subMenu.addAction(QCoreApplication.translate("PythonConsole",
-                                                                              "Clear Session"),
-                                                  self.clearHistorySession)
+        clearHistoryAction = subMenu.addAction(
+                             QCoreApplication.translate("PythonConsole", "Clear File"),
+                             self.clearHistory)
+        clearSessHistoryAction = subMenu.addAction(
+                                 QCoreApplication.translate("PythonConsole", "Clear Session"),
+                                 self.clearHistorySession)
         menu.addMenu(subMenu)
         menu.addSeparator()
-        copyAction = menu.addAction(QCoreApplication.translate("PythonConsole",
-                                                               "Copy"),
-                                    self.copy, QKeySequence.Copy)
-        pasteAction = menu.addAction(QCoreApplication.translate("PythonConsole",
-                                                                "Paste"),
-                                     self.paste, QKeySequence.Paste)
+        copyAction = menu.addAction(
+                     QCoreApplication.translate("PythonConsole", "Copy"),
+                     self.copy, QKeySequence.Copy)
+        pasteAction = menu.addAction(
+                      QCoreApplication.translate("PythonConsole", "Paste"),
+                      self.paste, QKeySequence.Paste)
         copyAction.setEnabled(False)
         pasteAction.setEnabled(False)
         if self.hasSelectedText():
@@ -629,12 +629,18 @@ class HistoryDialog(QDialog, Ui_HistoryDialogPythonConsole):
 
         self._reloadHistory()
 
+        self.deleteScut = QShortcut(QKeySequence(Qt.Key_Delete), self)
+        self.deleteScut.activated.connect(self._deleteItem)
         self.listView.doubleClicked.connect(self._runHistory)
         self.reloadHistory.clicked.connect(self._reloadHistory)
+        self.saveHistory.clicked.connect(self._saveHistory)
 
     def _runHistory(self, item):
         cmd = item.data(Qt.DisplayRole)
         self.parent.runCommand(unicode(cmd))
+
+    def _saveHistory(self):
+        self.parent.writeHistoryFile(True)
 
     def _reloadHistory(self):
         self.model.clear()
@@ -646,3 +652,13 @@ class HistoryDialog(QDialog, Ui_HistoryDialogPythonConsole):
 
         self.listView.setModel(self.model)
         self.listView.scrollToBottom()
+
+    def _deleteItem(self):
+        itemsSelected = self.listView.selectionModel().selectedIndexes()
+        if itemsSelected:
+            item = itemsSelected[0].row()
+            ## Remove item from the command history (just for the current session)
+            self.parent.history.pop(item)
+            self.parent.historyIndex -= 1
+            ## Remove row from the command history dialog
+            self.model.removeRow(item)

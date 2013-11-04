@@ -21,6 +21,7 @@
 #include <QDate>
 #include <QRegExp>
 #include <QColor>
+#include <QUuid>
 
 #include <math.h>
 #include <limits>
@@ -694,6 +695,11 @@ static QVariant fcnRegexpSubstr( const QVariantList& values, const QgsFeature* ,
   {
     return QVariant( "" );
   }
+}
+
+static QVariant fcnUuid( const QVariantList&, const QgsFeature* , QgsExpression* )
+{
+  return QUuid::createUuid().toString();
 }
 
 static QVariant fcnSubstr( const QVariantList& values, const QgsFeature* , QgsExpression* parent )
@@ -1532,6 +1538,7 @@ const QList<QgsExpression::Function*> &QgsExpression::Functions()
     << new StaticFunction( "$rownum", 0, fcnRowNumber, "Record" )
     << new StaticFunction( "$id", 0, fcnFeatureId, "Record" )
     << new StaticFunction( "$scale", 0, fcnScale, "Record" )
+    << new StaticFunction( "$uuid", 0, fcnUuid, "Record" )
     << new StaticFunction( "_specialcol_", 1, fcnSpecialColumn, "Special" )
     ;
   }
@@ -1609,12 +1616,11 @@ int QgsExpression::functionCount()
 
 
 QgsExpression::QgsExpression( const QString& expr )
-    : mExpression( expr )
-    , mRowNumber( 0 )
+    : mRowNumber( 0 )
     , mScale( 0 )
     , mCalc( 0 )
 {
-  mRootNode = ::parseExpression( mExpression, mParserErrorString );
+  mRootNode = ::parseExpression( expr, mParserErrorString );
 
   if ( mParserErrorString.isNull() )
     Q_ASSERT( mRootNode );
@@ -1721,7 +1727,7 @@ void QgsExpression::acceptVisitor( QgsExpression::Visitor& v ) const
     mRootNode->accept( v );
 }
 
-QString QgsExpression::replaceExpressionText( QString action, QgsFeature* feat,
+QString QgsExpression::replaceExpressionText( QString action, const QgsFeature* feat,
     QgsVectorLayer* layer,
     const QMap<QString, QVariant> *substitutionMap )
 {
@@ -1793,14 +1799,6 @@ QString QgsExpression::replaceExpressionText( QString action, QgsFeature* feat,
   }
 
   return expr_action;
-}
-
-
-QString QgsExpression::replaceExpressionText( QString action, QgsFeature& feat,
-    QgsVectorLayer* layer,
-    const QMap<QString, QVariant> *substitutionMap )
-{
-  return replaceExpressionText( action, &feat, layer, substitutionMap );
 }
 
 

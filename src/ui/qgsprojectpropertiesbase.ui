@@ -482,7 +482,7 @@
                       </property>
                      </spacer>
                     </item>
-                    <item row="0" column="2">
+                    <item row="0" column="3">
                      <widget class="QRadioButton" name="radDegrees">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
@@ -492,6 +492,19 @@
                       </property>
                       <property name="text">
                        <string>Degree</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="0" column="2">
+                     <widget class="QRadioButton" name="radNMiles">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="text">
+                       <string>Nautical miles</string>
                       </property>
                      </widget>
                     </item>
@@ -524,7 +537,7 @@
                       </property>
                      </widget>
                     </item>
-                    <item row="0" column="3" rowspan="2">
+                    <item row="0" column="4" rowspan="2">
                      <widget class="QGroupBox" name="btnGrpDegreeDisplay">
                       <property name="enabled">
                        <bool>false</bool>

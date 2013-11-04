@@ -837,7 +837,6 @@ QgisApp::~QgisApp()
   // cancel request for FileOpen events
   QgsApplication::setFileOpenEventReceiver( 0 );
 
-  // delete map layer registry and provider registry
   QgsApplication::exitQgis();
 
   delete QgsProject::instance();
@@ -5552,11 +5551,11 @@ void QgisApp::editPaste( QgsMapLayer *destinationLayer )
   QgsFeatureList features;
   if ( mMapCanvas->mapRenderer()->hasCrsTransformEnabled() )
   {
-    features = clipboard()->transformedCopyOf( pasteVectorLayer->crs() );
+    features = clipboard()->transformedCopyOf( pasteVectorLayer->crs(), pasteVectorLayer->pendingFields() );
   }
   else
   {
-    features = clipboard()->copyOf();
+    features = clipboard()->copyOf( pasteVectorLayer->pendingFields() );
   }
 
   QHash<int, int> remap;
@@ -8268,7 +8267,6 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionCutFeatures->setEnabled( false );
     mActionCopyFeatures->setEnabled( false );
     mActionPasteFeatures->setEnabled( false );
-    mMenuPasteAs->setEnabled( false );
     mActionCopyStyle->setEnabled( false );
     mActionPasteStyle->setEnabled( false );
 
@@ -8903,7 +8901,7 @@ void QgisApp::keyReleaseEvent( QKeyEvent *event )
       case QMessageBox::No:
         break;
     }
-    event->setAccepted( accepted ); // dont't close my Top Level Widget !
+    event->setAccepted( accepted ); // don't close my Top Level Widget !
     accepted = false;// close the app next time when the user press back button
   }
 }

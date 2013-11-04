@@ -49,6 +49,17 @@ class TestQgsPoint(TestCase):
         myMessage = 'Expected: %s Got: %s' % (myExpectedValue, myActualValue)
         assert myExpectedValue == myActualValue, myMessage
 
+    def test_hash(self):
+        a = QgsPoint( 2.0, 1.0 )
+        b = QgsPoint( 2.0, 2.0 )
+        c = QgsPoint( 1.0, 2.0 )
+        d = QgsPoint( 1.0, 1.0 )
+        e = QgsPoint( 2.0, 1.0 )
+        assert a.__hash__() != b.__hash__()
+        assert e.__hash__() == a.__hash__()
+
+        mySet = set( [ a, b, c, d, e ] )
+        assert len( mySet ) == 4
 
 if __name__ == '__main__':
     unittest.main()

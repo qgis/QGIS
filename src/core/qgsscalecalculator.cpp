@@ -66,6 +66,11 @@ double QgsScaleCalculator::calculate( const QgsRectangle &mapExtent, int canvasW
       conversionFactor = 12.0;
       delta = mapExtent.xMaximum() - mapExtent.xMinimum();
       break;
+    case QGis::NauticalMiles:
+      // convert nautical miles to inches
+      conversionFactor = 72913.4;
+      delta = mapExtent.xMaximum() - mapExtent.xMinimum();
+      break;
 
     default:
     case QGis::Degrees:

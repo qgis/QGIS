@@ -52,7 +52,7 @@ class proximity(GeoAlgorithm):
     def getIcon(self):
         filepath = os.path.dirname(__file__) + '/icons/proximity.png'
         return QtGui.QIcon(filepath)
-    
+
     def commandLineName(self):
         return "gdalogr:proximity"
 

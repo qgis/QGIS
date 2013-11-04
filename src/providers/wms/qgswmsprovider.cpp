@@ -8,6 +8,9 @@
 
     wms-c/wmts support   : Jürgen E. Fischer < jef at norbit dot de >, norBIT GmbH
 
+    tile retry support   : Luigi Pirelli < luipir at gmail dot com >
+                           (funded by Regione Toscana-SITA)
+
  ***************************************************************************/
 
 /***************************************************************************
@@ -59,7 +62,6 @@
 #include <QImage>
 #include <QImageReader>
 #include <QPainter>
-#include <QPixmap>
 #include <QSet>
 #include <QSettings>
 #include <QEventLoop>
@@ -80,11 +82,13 @@ static QString WMS_DESCRIPTION = "OGC Web Map Service version 1.3 data provider"
 
 static QString DEFAULT_LATLON_CRS = "CRS:84";
 
-
 QgsWmsProvider::QgsWmsProvider( QString const &uri )
     : QgsRasterDataProvider( uri )
     , mHttpUri( uri )
     , mHttpCapabilitiesResponse( 0 )
+    , mHttpGetLegendGraphicResponse( 0 )
+    , mGetLegendGraphicImage()
+    , mGetLegendGraphicScale( 0 )
     , mImageCrs( DEFAULT_LATLON_CRS )
     , mCachedImage( 0 )
     , mCacheReply( 0 )
@@ -159,6 +163,8 @@ bool QgsWmsProvider::parseUri( QString uriString )
   mIgnoreAxisOrientation = uri.hasParam( "IgnoreAxisOrientation" ); // must be before parsing!
   mInvertAxisOrientation = uri.hasParam( "InvertAxisOrientation" ); // must be before parsing!
   mSmoothPixmapTransform = uri.hasParam( "SmoothPixmapTransform" );
+
+  mDpiMode = uri.hasParam( "dpiMode" ) ? ( QgsWmsDpiMode ) uri.param( "dpiMode" ).toInt() : dpiAll;
 
   mUserName = uri.param( "username" );
   QgsDebugMsg( "set username to " + mUserName );
@@ -646,15 +652,14 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
     setQueryItem( url, "STYLES", styles );
     setQueryItem( url, "FORMAT", mImageMimeType );
 
-    //DPI parameter is accepted by QGIS mapserver (and ignored by the other WMS servers)
-    //map_resolution parameter works for UMN mapserver
-
-    //Different WMS servers have DPI parameters:
     if ( mDpi != -1 )
     {
-      setQueryItem( url, "DPI", QString::number( mDpi ) ); //QGIS server
-      setQueryItem( url, "MAP_RESOLUTION", QString::number( mDpi ) ); //UMN mapserver
-      setQueryItem( url, "FORMAT_OPTIONS", QString( "dpi:%1" ).arg( mDpi ) ); //geoserver
+      if ( mDpiMode & dpiQGIS )
+        setQueryItem( url, "DPI", QString::number( mDpi ) );
+      if ( mDpiMode & dpiUMN )
+        setQueryItem( url, "MAP_RESOLUTION", QString::number( mDpi ) );
+      if ( mDpiMode & dpiGeoServer )
+        setQueryItem( url, "FORMAT_OPTIONS", QString( "dpi:%1" ).arg( mDpi ) );
     }
 
     //MH: jpeg does not support transparency and some servers complain if jpg and transparent=true
@@ -831,9 +836,12 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
 
         if ( mDpi != -1 )
         {
-          setQueryItem( url, "DPI", QString::number( mDpi ) ); //QGIS server
-          setQueryItem( url, "MAP_RESOLUTION", QString::number( mDpi ) ); //UMN mapserver
-          setQueryItem( url, "FORMAT_OPTIONS", QString( "dpi:%1" ).arg( mDpi ) ); //geoserver
+          if ( mDpiMode & dpiQGIS )
+            setQueryItem( url, "DPI", QString::number( mDpi ) );
+          if ( mDpiMode & dpiUMN )
+            setQueryItem( url, "MAP_RESOLUTION", QString::number( mDpi ) );
+          if ( mDpiMode & dpiGeoServer )
+            setQueryItem( url, "FORMAT_OPTIONS", QString( "dpi:%1" ).arg( mDpi ) );
         }
 
         if ( mImageMimeType == "image/x-jpegorpng" ||
@@ -861,10 +869,11 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
             QgsDebugMsg( QString( "tileRequest %1 %2/%3 (%4,%5): %6" ).arg( mTileReqNo ).arg( i++ ).arg( n ).arg( row ).arg( col ).arg( turl ) );
             request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
             request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
-            request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 0 ), mTileReqNo );
-            request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 1 ), i );
-            request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 2 ),
+            request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileReqNo ), mTileReqNo );
+            request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileIndex ), i );
+            request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileRect ),
                                   QRectF( tm->topLeft.x() + col * twMap, tm->topLeft.y() - ( row + 1 ) * thMap, twMap, thMap ) );
+            request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileRetry ), 0 );
 
             QgsDebugMsg( QString( "gettile: %1" ).arg( turl ) );
             QNetworkReply *reply = QgsNetworkAccessManager::instance()->get( request );
@@ -880,7 +889,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
         if ( !getTileUrl().isNull() )
         {
           // KVP
-          QUrl url( getTileUrl() );
+          QUrl url( mIgnoreGetMapUrl ? mBaseUrl : getTileUrl() );
 
           // compose static request arguments.
           setQueryItem( url, "SERVICE", "WMTS" );
@@ -914,10 +923,11 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
               QgsDebugMsg( QString( "tileRequest %1 %2/%3 (%4,%5): %6" ).arg( mTileReqNo ).arg( i++ ).arg( n ).arg( row ).arg( col ).arg( turl ) );
               request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
               request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
-              request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 0 ), mTileReqNo );
-              request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 1 ), i );
-              request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 2 ),
+              request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileReqNo ), mTileReqNo );
+              request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileIndex ), i );
+              request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileRect ),
                                     QRectF( tm->topLeft.x() + col * twMap, tm->topLeft.y() - ( row + 1 ) * thMap, twMap, thMap ) );
+              request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileRetry ), 0 );
 
               QgsDebugMsg( QString( "gettile: %1" ).arg( turl ) );
               QNetworkReply *reply = QgsNetworkAccessManager::instance()->get( request );
@@ -954,10 +964,11 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
               QgsDebugMsg( QString( "tileRequest %1 %2/%3 (%4,%5): %6" ).arg( mTileReqNo ).arg( i++ ).arg( n ).arg( row ).arg( col ).arg( turl ) );
               request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
               request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
-              request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 0 ), mTileReqNo );
-              request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 1 ), i );
-              request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 2 ),
+              request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileReqNo ), mTileReqNo );
+              request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileIndex ), i );
+              request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileRect ),
                                     QRectF( tm->topLeft.x() + col * twMap, tm->topLeft.y() - ( row + 1 ) * thMap, twMap, thMap ) );
+              request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileRetry ), 0 );
 
               QgsDebugMsg( QString( "gettile: %1" ).arg( turl ) );
               QNetworkReply *reply = QgsNetworkAccessManager::instance()->get( request );
@@ -1034,6 +1045,47 @@ void QgsWmsProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, in
   //delete image;
 }
 
+void QgsWmsProvider::repeatTileRequest( QNetworkRequest const &oldRequest )
+{
+  if ( mErrors == 100 )
+  {
+    QgsMessageLog::logMessage( tr( "Not logging more than 100 request errors." ), tr( "WMS" ) );
+  }
+
+  QNetworkRequest request( oldRequest );
+
+  QString url = request.url().toString();
+  int tileReqNo = request.attribute( static_cast<QNetworkRequest::Attribute>( TileReqNo ) ).toInt();
+  int tileNo = request.attribute( static_cast<QNetworkRequest::Attribute>( TileIndex ) ).toInt();
+  int retry = request.attribute( static_cast<QNetworkRequest::Attribute>( TileRetry ) ).toInt();
+  retry++;
+
+  QSettings s;
+  int maxRetry = s.value( "/qgis/defaultTileMaxRetry", "3" ).toInt();
+  if ( retry > maxRetry )
+  {
+    if ( mErrors < 100 )
+    {
+      QgsMessageLog::logMessage( tr( "Tile request max retry error. Failed %1 requests for tile %2 of tileRequest %3 (url: %4)" )
+                                 .arg( maxRetry ).arg( tileNo ).arg( tileReqNo ).arg( url ), tr( "WMS" ) );
+    }
+    return;
+  }
+
+  setAuthorization( request );
+  if ( mErrors < 100 )
+  {
+    QgsMessageLog::logMessage( tr( "repeat tileRequest %1 tile %2(retry %3)" )
+                               .arg( tileReqNo ).arg( tileNo ).arg( retry ), tr( "WMS" ), QgsMessageLog::INFO );
+  }
+  QgsDebugMsg( QString( "repeat tileRequest %1 %2(retry %3) for url: %4" ).arg( tileReqNo ).arg( tileNo ).arg( retry ).arg( url ) );
+  request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileRetry ), retry );
+
+  QNetworkReply *reply = QgsNetworkAccessManager::instance()->get( request );
+  mTileReplies << reply;
+  connect( reply, SIGNAL( finished() ), this, SLOT( tileReplyFinished() ) );
+}
+
 void QgsWmsProvider::tileReplyFinished()
 {
   QNetworkReply *reply = qobject_cast<QNetworkReply*>( sender() );
@@ -1077,21 +1129,22 @@ void QgsWmsProvider::tileReplyFinished()
     QgsNetworkAccessManager::instance()->cache()->updateMetaData( cmd );
   }
 
-  int tileReqNo = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 0 ) ).toInt();
-  int tileNo = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 1 ) ).toInt();
-  QRectF r = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 2 ) ).toRectF();
+  int tileReqNo = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( TileReqNo ) ).toInt();
+  int tileNo = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( TileIndex ) ).toInt();
+  QRectF r = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( TileRect ) ).toRectF();
+  int retry = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( TileRetry ) ).toInt();
 
 #if QT_VERSION >= 0x40500
-  QgsDebugMsg( QString( "tile reply %1 (%2) tile:%3 rect:%4,%5 %6,%7) fromcache:%8 error:%9 url:%10" )
-               .arg( tileReqNo ).arg( mTileReqNo ).arg( tileNo )
+  QgsDebugMsg( QString( "tile reply %1 (%2) tile:%3(retry %4) rect:%5,%6 %7,%8) fromcache:%9 error:%10 url:%11" )
+               .arg( tileReqNo ).arg( mTileReqNo ).arg( tileNo ).arg( retry )
                .arg( r.left(), 0, 'f' ).arg( r.bottom(), 0, 'f' ).arg( r.right(), 0, 'f' ).arg( r.top(), 0, 'f' )
                .arg( fromCache )
                .arg( reply->errorString() )
                .arg( reply->url().toString() )
              );
 #else
-  QgsDebugMsg( QString( "tile reply %1 (%2) tile:%3 rect:%4,%5 %6,%7) error:%8 url:%9" )
-               .arg( tileReqNo ).arg( mTileReqNo ).arg( tileNo )
+  QgsDebugMsg( QString( "tile reply %1 (%2) tile:%3(retry %4) rect:%5,%6 %7,%8) error:%9 url:%10" )
+               .arg( tileReqNo ).arg( mTileReqNo ).arg( tileNo ).arg( retry )
                .arg( r.left(), 0, 'f' ).arg( r.bottom(), 0, 'f' ).arg( r.right(), 0, 'f' ).arg( r.top(), 0, 'f' )
                .arg( reply->errorString() )
                .arg( reply->url().toString() )
@@ -1107,9 +1160,10 @@ void QgsWmsProvider::tileReplyFinished()
       setAuthorization( request );
       request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
       request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
-      request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 0 ), tileReqNo );
-      request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 1 ), tileNo );
-      request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 2 ), r );
+      request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileReqNo ), tileReqNo );
+      request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileIndex ), tileNo );
+      request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileRect ), r );
+      request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileRetry ), 0 );
 
       mTileReplies.removeOne( reply );
       reply->deleteLater();
@@ -1205,6 +1259,8 @@ void QgsWmsProvider::tileReplyFinished()
       {
         QgsMessageLog::logMessage( tr( "Returned image is flawed [Content-Type:%1; URL: %2]" )
                                    .arg( contentType ).arg( reply->url().toString() ), tr( "WMS" ) );
+
+        repeatTileRequest( reply->request() );
       }
     }
     else
@@ -1224,14 +1280,8 @@ void QgsWmsProvider::tileReplyFinished()
   else
   {
     mErrors++;
-    if ( mErrors < 100 )
-    {
-      QgsMessageLog::logMessage( tr( "Tile request failed [error:%1 url:%2]" ).arg( reply->errorString() ).arg( reply->url().toString() ), tr( "WMS" ) );
-    }
-    else if ( mErrors == 100 )
-    {
-      QgsMessageLog::logMessage( tr( "Not logging more than 100 request errors." ), tr( "WMS" ) );
-    }
+
+    repeatTileRequest( reply->request() );
 
     mTileReplies.removeOne( reply );
     reply->deleteLater();
@@ -1451,7 +1501,7 @@ bool QgsWmsProvider::retrieveServerCapabilities( bool forceRefresh )
 
   QgsDebugMsg( "exiting." );
 
-  return true;
+  return mError.isEmpty();
 }
 
 void QgsWmsProvider::capabilitiesReplyFinished()
@@ -3947,20 +3997,54 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
   }
 
   QgsRectangle myExtent = theExtent;
-  if ( myExtent.isEmpty() )
-  {
-    // use full extent
-    myExtent = extent();
-  }
 
-  // We don't know highest resolution, so it is difficult to guess any
-  // but that is why theExtent, theWidth, theHeight params are here
-  // Keep resolution in both axis equal! Otherwise silly server (like QGIS mapserver)
-  // fail to calculate coordinate because it is using single resolution average!!!
-  if ( theWidth == 0 ) theWidth = 1000; // just some number
-  if ( theHeight == 0 )
+  if ( !myExtent.isEmpty() )
   {
-    theHeight =  myExtent.height() / ( myExtent.width() / theWidth );
+    // we cannot reliably identify WMS if theExtent is specified but theWidth or theHeight
+    // are not, because we don't know original resolution
+    if ( theWidth == 0 || theHeight == 0 )
+    {
+      return QgsRasterIdentifyResult( ERROR( tr( "Context not fully specified (extent was defined but width and/or height was not)." ) ) );
+    }
+  }
+  else // context (theExtent, theWidth, theHeight) not defined
+  {
+    // We don't know original source resolution, so we take some small extent around the point.
+
+    double xRes = 0.001; // expecting meters
+
+    // TODO: add CRS as class member
+    QgsCoordinateReferenceSystem crs;
+    if ( crs.createFromOgcWmsCrs( mImageCrs ) )
+    {
+      // set resolution approximately to 1mm
+      switch ( crs.mapUnits() )
+      {
+        case QGis::Meters:
+          xRes = 0.001;
+          break;
+        case QGis::Feet:
+          xRes = 0.003;
+          break;
+        case QGis::Degrees:
+          // max length of degree of latitude on pole is 111694 m
+          xRes = 1e-8;
+          break;
+        default:
+          xRes = 0.001; // expecting meters
+      }
+    }
+
+    // Keep resolution in both axis equal! Otherwise silly server (like QGIS mapserver)
+    // fail to calculate coordinate because it is using single resolution average!!!
+    double yRes = xRes;
+
+    // 1x1 should be sufficient but at least we know that GDAL ECW was very unefficient
+    // so we use 2x2 (until we find that it is too small for some server)
+    theWidth = theHeight = 2;
+
+    myExtent = QgsRectangle( thePoint.x() - xRes, thePoint.y() - yRes,
+                             thePoint.x() + xRes, thePoint.y() + yRes );
   }
 
   // Point in BBOX/WIDTH/HEIGHT coordinates
@@ -4237,7 +4321,14 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
       else
       {
         // guess from GML
-        gmlSchema.guessSchema( mIdentifyResultBodies.value( gmlPart ) );
+        bool ok = gmlSchema.guessSchema( mIdentifyResultBodies.value( gmlPart ) );
+        if ( ! ok )
+        {
+          QgsError err = gmlSchema.error();
+          err.append( tr( "Cannot identify" ) );
+          QgsDebugMsg( "guess schema error: " +  err.message() );
+          return QgsRasterIdentifyResult( err );
+        }
       }
 
       QStringList featureTypeNames = gmlSchema.typeNames();
@@ -4500,6 +4591,212 @@ void QgsWmsProvider::showMessageBox( const QString& title, const QString& text )
   message->setTitle( title );
   message->setMessage( text, QgsMessageOutput::MessageText );
   message->showMessage();
+}
+
+QImage QgsWmsProvider::getLegendGraphic( double scale, bool forceRefresh )
+{
+  // TODO manage return basing of getCapablity => avoid call if service is not available
+  // some services dowsn't expose getLegendGraphic in capabilities but adding LegendURL in
+  // the layer tags inside capabilities
+  QgsDebugMsg( "entering." );
+
+  if ( !scale && !mGetLegendGraphicScale )
+  {
+    QgsDebugMsg( QString( "No scale factor set" ) );
+    return QImage();
+  }
+
+  if ( scale && scale != mGetLegendGraphicScale )
+  {
+    forceRefresh = true;
+    QgsDebugMsg( QString( "Download again due to scale change from: %1 to: %2" ).arg( mGetLegendGraphicScale ).arg( scale ) );
+  }
+
+  if ( forceRefresh )
+  {
+    if ( scale )
+    {
+      mGetLegendGraphicScale = scale;
+    }
+
+    // if style is not defined, set as "default"
+    QString currentStyle( "default" );
+    if ( mActiveSubStyles[0] != "" )
+    {
+      currentStyle = mActiveSubStyles[0];
+    }
+
+#if 0
+    // add WMS GetGraphicLegend request
+    // TODO set sld version using instance var something like mSldVersion
+    // TODO at this moment LSD version can be get from LegendURL in getCapability,but parsing of
+    // this tag is not complete. Below the code that should work if parsing would correct
+
+    if ( mActiveSubLayers[0] == mCapabilities.capability.layer.name )
+    {
+      foreach ( QgsWmsStyleProperty style,  mCapabilities.capability.layer.style )
+      {
+        if ( currentStyle == style.name )
+        {
+          url.setUrl( style.legendUrl[0].onlineResource.xlinkHref, QUrl::StrictMode );
+        }
+      }
+    } // is a sublayer
+    else if ( mActiveSubLayers[0].contains( mCapabilities.capability.layer.name ) )
+    {
+      foreach ( QgsWmsLayerProperty layerProperty, mCapabilities.capability.layer.layer )
+      {
+        if ( mActiveSubLayers[0] == layerProperty.name )
+        {
+          foreach ( QgsWmsStyleProperty style, layerProperty.style )
+          {
+            if ( currentStyle == style.name )
+            {
+              url.setUrl( style.legendUrl[0].onlineResource.xlinkHref, QUrl::StrictMode );
+            }
+          }
+        }
+      }
+    }
+#endif
+    QUrl url( mIgnoreGetMapUrl ? mBaseUrl : getMapUrl(), QUrl::StrictMode );
+    setQueryItem( url, "SERVICE", "WMS" );
+    setQueryItem( url, "VERSION", mCapabilities.version );
+    setQueryItem( url, "SLD_VERSION", "1.1.0" ); // can not determine SLD_VERSION
+    setQueryItem( url, "REQUEST", "GetLegendGraphic" );
+    setQueryItem( url, "LAYER", mActiveSubLayers[0] );
+    setQueryItem( url, "STYLE", currentStyle );
+    setQueryItem( url, "SCALE", QString::number( scale, 'f' ) );
+    setQueryItem( url, "FORMAT", mImageMimeType );
+
+    // add config parameter related to resolution
+    QSettings s;
+    int defaultLegendGraphicResolution = s.value( "/qgis/defaultLegendGraphicResolution", 0 ).toInt();
+    QgsDebugMsg( QString( "defaultLegendGraphicResolution: %1" ).arg( defaultLegendGraphicResolution ) );
+    if ( defaultLegendGraphicResolution )
+    {
+      if ( url.queryItemValue( "map_resolution" ) != "" )
+      {
+        setQueryItem( url, "map_resolution", QString::number( defaultLegendGraphicResolution ) );
+      }
+      else if ( url.queryItemValue( "dpi" ) != "" )
+      {
+        setQueryItem( url, "dpi", QString::number( defaultLegendGraphicResolution ) );
+      }
+      else
+      {
+        QgsLogger::warning( tr( "getLegendGraphic: Can not determine resolution uri parameter [map_resolution | dpi]. No resolution parameter will be used" ) );
+      }
+    }
+
+    mError = "";
+
+    QNetworkRequest request( url );
+    setAuthorization( request );
+    request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferNetwork );
+    request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
+
+    QgsDebugMsg( QString( "getlegendgraphics: %1" ).arg( url.toString() ) );
+    mGetLegendGraphicReply = QgsNetworkAccessManager::instance()->get( request );
+
+    connect( mGetLegendGraphicReply, SIGNAL( finished() ), this, SLOT( getLegendGraphicReplyFinished() ) );
+    connect( mGetLegendGraphicReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( getLegendGraphicReplyProgress( qint64, qint64 ) ) );
+
+    while ( mGetLegendGraphicReply )
+    {
+      QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, WMS_THRESHOLD );
+    }
+  }
+  else
+  {
+    QgsDebugMsg( "get cached pixmap." );
+  }
+
+  QgsDebugMsg( "exiting." );
+
+  return mGetLegendGraphicImage;
+}
+
+void QgsWmsProvider::getLegendGraphicReplyFinished()
+{
+  QgsDebugMsg( "entering." );
+  if ( mGetLegendGraphicReply->error() == QNetworkReply::NoError )
+  {
+    QgsDebugMsg( "reply ok" );
+    QVariant redirect = mGetLegendGraphicReply->attribute( QNetworkRequest::RedirectionTargetAttribute );
+    if ( !redirect.isNull() )
+    {
+      emit statusChanged( tr( "GetLegendGraphic request redirected." ) );
+
+      const QUrl& toUrl = redirect.toUrl();
+      mGetLegendGraphicReply->request();
+      if ( toUrl == mGetLegendGraphicReply->url() )
+      {
+        mErrorFormat = "text/plain";
+        mError = tr( "Redirect loop detected: %1" ).arg( toUrl.toString() );
+        QgsMessageLog::logMessage( mError, tr( "WMS" ) );
+        mHttpGetLegendGraphicResponse.clear();
+      }
+      else
+      {
+        QNetworkRequest request( toUrl );
+        setAuthorization( request );
+        request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferNetwork );
+        request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
+
+        mGetLegendGraphicReply->deleteLater();
+        QgsDebugMsg( QString( "redirected GetLegendGraphic: %1" ).arg( redirect.toString() ) );
+        mGetLegendGraphicReply = QgsNetworkAccessManager::instance()->get( request );
+
+        connect( mGetLegendGraphicReply, SIGNAL( finished() ), this, SLOT( getLegendGraphicReplyFinished() ) );
+        connect( mGetLegendGraphicReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( getLegendGraphicReplyProgress( qint64, qint64 ) ) );
+        return;
+      }
+    }
+
+    QVariant status = mGetLegendGraphicReply->attribute( QNetworkRequest::HttpStatusCodeAttribute );
+    if ( !status.isNull() && status.toInt() >= 400 )
+    {
+      QVariant phrase = mGetLegendGraphicReply->attribute( QNetworkRequest::HttpReasonPhraseAttribute );
+      showMessageBox( tr( "GetLegendGraphic request error" ), tr( "Status: %1\nReason phrase: %2" ).arg( status.toInt() ).arg( phrase.toString() ) );
+    }
+    else
+    {
+      QImage myLocalImage = QImage::fromData( mGetLegendGraphicReply->readAll() ) ;
+      if ( myLocalImage.isNull() )
+      {
+        QgsMessageLog::logMessage( tr( "Returned legend image is flawed [URL: %1]" )
+                                   .arg( mGetLegendGraphicReply->url().toString() ), tr( "WMS" ) );
+      }
+      else
+      {
+        mGetLegendGraphicImage = myLocalImage;
+
+#ifdef QGISDEBUG
+        QString filename = QDir::tempPath() + "/GetLegendGraphic.png";
+        mGetLegendGraphicImage.save( filename );
+        QgsDebugMsg( "saved GetLegendGraphic result in debug ile: " + filename );
+#endif
+      }
+    }
+  }
+  else
+  {
+    mErrorFormat = "text/plain";
+    mError = tr( "Download of GetLegendGraphic failed: %1" ).arg( mGetLegendGraphicReply->errorString() );
+    QgsMessageLog::logMessage( mError, tr( "WMS" ) );
+    mHttpGetLegendGraphicResponse.clear();
+  }
+
+  mGetLegendGraphicReply->deleteLater();
+  mGetLegendGraphicReply = 0;
+}
+
+void QgsWmsProvider::getLegendGraphicReplyProgress( qint64 bytesReceived, qint64 bytesTotal )
+{
+  QString msg = tr( "%1 of %2 bytes of GetLegendGraphic downloaded." ).arg( bytesReceived ).arg( bytesTotal < 0 ? QString( "unknown number of" ) : QString::number( bytesTotal ) );
+  QgsDebugMsg( msg );
+  emit statusChanged( msg );
 }
 
 /**

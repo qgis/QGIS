@@ -44,7 +44,6 @@
 QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
                           QString lyrname,
                           QString source ) :
-    mTransparencyLevel( 255 ), // 0 is completely transparent
     mValid( false ), // assume the layer is invalid
     mDataSource( source ),
     mLayerOrigName( lyrname ), // store the original name
@@ -692,18 +691,6 @@ void QgsMapLayer::setCrs( const QgsCoordinateReferenceSystem& srs, bool emitSign
   if ( emitSignal )
     emit layerCrsChanged();
 }
-
-#if 0
-unsigned int QgsMapLayer::getTransparency()
-{
-  return mTransparencyLevel;
-}
-
-void QgsMapLayer::setTransparency( unsigned int theInt )
-{
-  mTransparencyLevel = theInt;
-}
-#endif
 
 QString QgsMapLayer::capitaliseLayerName( const QString& name )
 {

@@ -243,6 +243,9 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
 
     //! Get symbols's name from its path
     static QString symbolPathToName( QString path );
+
+    //! Calculate the centroid point of a QPolygonF
+    static QPointF polygonCentroid( const QPolygonF& points );
 };
 
 class QPolygonF;

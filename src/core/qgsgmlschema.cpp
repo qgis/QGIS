@@ -15,6 +15,7 @@
 #include "qgsgmlschema.h"
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgserror.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
 #include "qgsnetworkaccessmanager.h"
@@ -337,8 +338,17 @@ bool QgsGmlSchema::guessSchema( const QByteArray &data )
   XML_SetElementHandler( p, QgsGmlSchema::start, QgsGmlSchema::end );
   XML_SetCharacterDataHandler( p, QgsGmlSchema::chars );
   int atEnd = 1;
-  XML_Parse( p, data.constData(), data.size(), atEnd );
-  return 0;
+  int res = XML_Parse( p, data.constData(), data.size(), atEnd );
+
+  if ( res == 0 )
+  {
+    QString err = QString( XML_ErrorString( XML_GetErrorCode( p ) ) );
+    QgsDebugMsg( QString( "XML_Parse returned %1 error %2" ).arg( res ).arg( err ) );
+    mError = QgsError( err, "GML schema" );
+    mError.append( tr( "Cannot guess schema" ) );
+  }
+
+  return res != 0;
 }
 
 void QgsGmlSchema::startElement( const XML_Char* el, const XML_Char** attr )

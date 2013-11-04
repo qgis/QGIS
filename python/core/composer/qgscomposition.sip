@@ -50,6 +50,17 @@ class QgsComposition : QGraphicsScene
     void setSnapToGridEnabled( bool b );
     bool snapToGridEnabled() const;
 
+    void setGridVisible( bool b );
+    bool gridVisible() const;
+
+    /**Toggles state of smart guides*/
+    void setSmartGuidesEnabled( bool b );
+    /**Returns true if smart guides are enabled*/
+    bool smartGuidesEnabled() const;   
+    
+    /**Removes all snap lines*/
+    void clearSnapLines();    
+
     void setSnapGridResolution( double r );
     double snapGridResolution() const;
 
@@ -139,9 +150,6 @@ class QgsComposition : QGraphicsScene
     QgsComposerMap* worldFileMap();
     void setWorldFileMap( QgsComposerMap* map );
 
-    double selectionTolerance() const;
-    void setSelectionTolerance( double tol );
-
     /**Returns pointer to map renderer of qgis map canvas*/
     QgsMapRenderer* mapRenderer();
 
@@ -223,6 +231,8 @@ class QgsComposition : QGraphicsScene
     // QGraphicsLineItem* nearestSnapLine( bool horizontal, double x, double y, double tolerance, QList< QPair< QgsComposerItem*, QgsComposerItem::ItemPositionMode > >& snappedItems );
     /**Hides / shows custom snap lines*/
     void setSnapLinesVisible( bool visible );
+    /**Returns visibility of custom snap lines*/    
+    bool snapLinesVisible() const;    
 
     /**Allocates new item command and saves initial state in it
       @param item target item

@@ -39,7 +39,8 @@
         <file>flags/sk.png</file>
         <file>flags/sl_SI.png</file>
         <file>flags/sq_AL.png</file>
-        <file>flags/sr.png</file>
+        <file>flags/sr_Cyrl.png</file>
+        <file>flags/sr_Latn.png</file>
         <file>flags/sv.png</file>
         <file>flags/sw.png</file>
         <file>flags/ta.png</file>
@@ -442,6 +443,7 @@
         <file>themes/default/mActionLink.svg</file>
         <file>themes/default/mActionUnlink.svg</file>
         <file>themes/default/mActionRemove.svg</file>
+        <file>flags/mr.png</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

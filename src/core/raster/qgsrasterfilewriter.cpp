@@ -495,9 +495,8 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeImageRaster( QgsRaste
   QgsRasterBlock *inputBlock = 0;
   while ( iter->readNextRasterPart( 1, iterCols, iterRows, &inputBlock, iterLeft, iterTop ) )
   {
-    if ( iterCols <= 5 || iterRows <= 5 ) //some wms servers don't like small values
+    if ( !inputBlock )
     {
-      delete &inputBlock;
       continue;
     }
 
@@ -514,13 +513,13 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeImageRaster( QgsRaste
     }
 
     //fill into red/green/blue/alpha channels
-    size_t nPixels = ( size_t )iterCols * iterRows;
+    qgssize nPixels = ( qgssize )iterCols * iterRows;
     // TODO: should be char not int? we are then copying 1 byte
     int red = 0;
     int green = 0;
     int blue = 0;
     int alpha = 255;
-    for ( size_t i = 0; i < nPixels; ++i )
+    for ( qgssize i = 0; i < nPixels; ++i )
     {
       QRgb c = inputBlock->color( i );
       alpha = qAlpha( c );

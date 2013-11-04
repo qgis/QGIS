@@ -73,19 +73,13 @@ QgsCompositionWidget::QgsCompositionWidget( QWidget* parent, QgsComposition* c )
     connect( mComposition, SIGNAL( composerMapAdded( QgsComposerMap* ) ), this, SLOT( onComposerMapAdded( QgsComposerMap* ) ) );
     connect( mComposition, SIGNAL( itemRemoved( QgsComposerItem* ) ), this, SLOT( onItemRemoved( QgsComposerItem* ) ) );
 
-
-    mAlignmentSnapGroupCheckBox->setChecked( mComposition->alignmentSnap() );
     mAlignmentToleranceSpinBox->setValue( mComposition->alignmentSnapTolerance() );
 
     //snap grid
-    mSnapToGridGroupCheckBox->setChecked( mComposition->snapToGridEnabled() );
     mGridResolutionSpinBox->setValue( mComposition->snapGridResolution() );
     mOffsetXSpinBox->setValue( mComposition->snapGridOffsetX() );
     mOffsetYSpinBox->setValue( mComposition->snapGridOffsetY() );
 
-
-    //grid pen width
-    mPenWidthSpinBox->setValue( mComposition->gridPen().widthF() );
 
     //grid pen color
     mGridColorButton->setColor( mComposition->gridPen().color() );
@@ -110,7 +104,7 @@ QgsCompositionWidget::QgsCompositionWidget( QWidget* parent, QgsComposition* c )
       mGridStyleComboBox->setCurrentIndex( 2 );
     }
 
-    mSelectionToleranceSpinBox->setValue( mComposition->selectionTolerance() );
+    mGridToleranceSpinBox->setValue( mComposition->snapGridTolerance() );
   }
   blockSignals( false );
 }
@@ -418,7 +412,6 @@ void QgsCompositionWidget::displaySnapingSettings()
     return;
   }
 
-  mSnapToGridGroupCheckBox->setChecked( mComposition->snapToGridEnabled() );
   mGridResolutionSpinBox->setValue( mComposition->snapGridResolution() );
   mOffsetXSpinBox->setValue( mComposition->snapGridOffsetX() );
   mOffsetYSpinBox->setValue( mComposition->snapGridOffsetY() );
@@ -503,14 +496,6 @@ void QgsCompositionWidget::on_mWorldFileMapComboBox_currentIndexChanged( int ind
   }
 }
 
-void QgsCompositionWidget::on_mSnapToGridGroupCheckBox_toggled( bool state )
-{
-  if ( mComposition )
-  {
-    mComposition->setSnapToGridEnabled( state );
-  }
-}
-
 void QgsCompositionWidget::on_mGridResolutionSpinBox_valueChanged( double d )
 {
   if ( mComposition )
@@ -566,29 +551,11 @@ void QgsCompositionWidget::on_mGridStyleComboBox_currentIndexChanged( const QStr
   }
 }
 
-void QgsCompositionWidget::on_mPenWidthSpinBox_valueChanged( double d )
+void QgsCompositionWidget::on_mGridToleranceSpinBox_valueChanged( double d )
 {
   if ( mComposition )
   {
-    QPen pen = mComposition->gridPen();
-    pen.setWidthF( d );
-    mComposition->setGridPen( pen );
-  }
-}
-
-void QgsCompositionWidget::on_mSelectionToleranceSpinBox_valueChanged( double d )
-{
-  if ( mComposition )
-  {
-    mComposition->setSelectionTolerance( d );
-  }
-}
-
-void QgsCompositionWidget::on_mAlignmentSnapGroupCheckBox_toggled( bool state )
-{
-  if ( mComposition )
-  {
-    mComposition->setAlignmentSnap( state );
+    mComposition->setSnapGridTolerance( d );
   }
 }
 
@@ -610,14 +577,11 @@ void QgsCompositionWidget::blockSignals( bool block )
   mPaperOrientationComboBox->blockSignals( block );
   mResolutionSpinBox->blockSignals( block );
   mPrintAsRasterCheckBox->blockSignals( block );
-  mSnapToGridGroupCheckBox->blockSignals( block );
   mGridResolutionSpinBox->blockSignals( block );
   mOffsetXSpinBox->blockSignals( block );
   mOffsetYSpinBox->blockSignals( block );
-  mPenWidthSpinBox->blockSignals( block );
   mGridColorButton->blockSignals( block );
   mGridStyleComboBox->blockSignals( block );
-  mSelectionToleranceSpinBox->blockSignals( block );
-  mAlignmentSnapGroupCheckBox->blockSignals( block );
+  mGridToleranceSpinBox->blockSignals( block );
   mAlignmentToleranceSpinBox->blockSignals( block );
 }

@@ -87,7 +87,7 @@ bool QgsFeatureListView::setDisplayExpression( const QString expression )
   }
 }
 
-const QString& QgsFeatureListView::displayExpression() const
+const QString QgsFeatureListView::displayExpression() const
 {
   return mModel->displayExpression();
 }
