@@ -1374,6 +1374,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Returns whether is enabled the map2pixel simplification of geometries for fast rendering of features */
     bool simplifyDrawing() const { return mSimplifyDrawing; }
 
+    /** Returns whether the VectorLayer can apply geometry simplification in FeatureRequests */
+    bool simplifyDrawingCanbeApplied() const { return mSimplifyDrawing && !mEditBuffer; }
+
   public slots:
     /**
      * Select feature by its ID

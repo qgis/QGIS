@@ -128,6 +128,9 @@ class CORE_EXPORT QgsSymbolV2
 
     QSet<QString> usedAttributes() const;
 
+    void setLayer( const QgsVectorLayer* layer ) { mLayer = layer; }
+    const QgsVectorLayer* layer() const { return mLayer; }
+
   protected:
     QgsSymbolV2( SymbolType type, QgsSymbolLayerV2List layers ); // can't be instantiated
 
@@ -145,6 +148,8 @@ class CORE_EXPORT QgsSymbolV2
     qreal mAlpha;
 
     int mRenderHints;
+
+    const QgsVectorLayer* mLayer; //current vectorlayer
 };
 
 ///////////////////////
