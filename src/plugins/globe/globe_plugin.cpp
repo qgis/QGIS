@@ -234,6 +234,8 @@ void GlobePlugin::run()
 {
   if ( mViewerWidget == 0 )
   {
+    QSettings settings;
+
 #ifdef QGISDEBUG
     if ( !getenv( "OSGNOTIFYLEVEL" ) ) osgEarth::setNotifyLevel( osg::DEBUG_INFO );
 #endif
@@ -308,6 +310,21 @@ void GlobePlugin::run()
     mViewerWidget = new osgEarth::QtGui::ViewerWidget( mOsgViewer );
     mViewerWidget->setGeometry( 100, 100, 1024, 800 );
     mViewerWidget->show();
+
+    if ( settings.value( "/Plugin-Globe/anti-aliasing", true ).toBool() )
+    {
+      QGLFormat glf = QGLFormat::defaultFormat();
+      glf.setSampleBuffers( true );
+      bool aaLevelIsInt;
+      int aaLevel;
+      QString aaLevelStr = settings.value( "/Plugin-Globe/anti-aliasing-level", "" ).toString();
+      aaLevel = aaLevelStr.toInt( &aaLevelIsInt );
+      if ( aaLevelIsInt )
+      {
+        glf.setSamples( aaLevel );
+      }
+      mViewerWidget->setFormat( glf );
+    }
 
     // Set a home viewpoint
     manip->setHomeViewpoint(
