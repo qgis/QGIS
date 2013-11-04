@@ -681,7 +681,7 @@ void QgsGradientFillSymbolLayerV2::renderPolygon( const QPolygonF& points, QList
     p->translate( offset );
   }
 
-  _renderPolygon( p, points, rings );
+  _renderPolygon( p, points, rings, context );
 
   if ( !mOffset.isNull() )
   {

@@ -56,6 +56,9 @@ QgsFeatureRequest::QgsFeatureRequest( const QgsExpression& expr )
     : mFilter( FilterExpression )
     , mFilterExpression( new QgsExpression( expr.dump() ) )
     , mFlags( 0 )
+    , mMapCoordTransform( NULL )
+    , mMapToPixel( NULL )
+    , mMapToPixelTol( QgsFeatureRequest::MAPTOPIXEL_THRESHOLD_DEFAULT )
 {
 }
 
