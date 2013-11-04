@@ -34,7 +34,7 @@
 #include <cmath>
 
 QgsSymbolV2::QgsSymbolV2( SymbolType type, QgsSymbolLayerV2List layers )
-    : mType( type ), mLayers( layers ), mAlpha( 1.0 ), mRenderHints( 0 )
+    : mType( type ), mLayers( layers ), mAlpha( 1.0 ), mRenderHints( 0 ), mLayer( NULL )
 {
 
   // check they're all correct symbol layers
@@ -215,8 +215,11 @@ bool QgsSymbolV2::changeSymbolLayer( int index, QgsSymbolLayerV2* layer )
 
 void QgsSymbolV2::startRender( QgsRenderContext& context, const QgsVectorLayer* layer )
 {
+  mLayer = layer;
+
   QgsSymbolV2RenderContext symbolContext( context, outputUnit(), mAlpha, false, mRenderHints );
-  symbolContext.setLayer( layer );
+  symbolContext.setLayer( mLayer );
+
   for ( QgsSymbolLayerV2List::iterator it = mLayers.begin(); it != mLayers.end(); ++it )
     ( *it )->startRender( symbolContext );
 }
@@ -224,8 +227,12 @@ void QgsSymbolV2::startRender( QgsRenderContext& context, const QgsVectorLayer* 
 void QgsSymbolV2::stopRender( QgsRenderContext& context )
 {
   QgsSymbolV2RenderContext symbolContext( context, outputUnit(), mAlpha, false, mRenderHints );
+  symbolContext.setLayer( mLayer );
+
   for ( QgsSymbolLayerV2List::iterator it = mLayers.begin(); it != mLayers.end(); ++it )
     ( *it )->stopRender( symbolContext );
+
+  mLayer = NULL;
 }
 
 void QgsSymbolV2::setColor( const QColor& color )
@@ -252,6 +259,8 @@ void QgsSymbolV2::drawPreviewIcon( QPainter* painter, QSize size )
 {
   QgsRenderContext context = QgsSymbolLayerV2Utils::createRenderContext( painter );
   QgsSymbolV2RenderContext symbolContext( context, outputUnit(), mAlpha, false, mRenderHints );
+  symbolContext.setLayer( mLayer );
+
   for ( QgsSymbolLayerV2List::iterator it = mLayers.begin(); it != mLayers.end(); ++it )
   {
     if ( mType == Fill && ( *it )->type() == Line )
@@ -532,6 +541,8 @@ QgsSymbolV2::ScaleMethod QgsMarkerSymbolV2::scaleMethod()
 void QgsMarkerSymbolV2::renderPoint( const QPointF& point, const QgsFeature* f, QgsRenderContext& context, int layer, bool selected )
 {
   QgsSymbolV2RenderContext symbolContext( context, outputUnit(), mAlpha, selected, mRenderHints, f );
+  symbolContext.setLayer( mLayer );
+
   if ( layer != -1 )
   {
     if ( layer >= 0 && layer < mLayers.count() )
@@ -600,6 +611,8 @@ double QgsLineSymbolV2::width()
 void QgsLineSymbolV2::renderPolyline( const QPolygonF& points, const QgsFeature* f, QgsRenderContext& context, int layer, bool selected )
 {
   QgsSymbolV2RenderContext symbolContext( context, outputUnit(), mAlpha, selected, mRenderHints, f );
+  symbolContext.setLayer( mLayer );
+
   if ( layer != -1 )
   {
     if ( layer >= 0 && layer < mLayers.count() )
@@ -635,6 +648,8 @@ QgsFillSymbolV2::QgsFillSymbolV2( QgsSymbolLayerV2List layers )
 void QgsFillSymbolV2::renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, const QgsFeature* f, QgsRenderContext& context, int layer, bool selected )
 {
   QgsSymbolV2RenderContext symbolContext( context, outputUnit(), mAlpha, selected, mRenderHints, f );
+  symbolContext.setLayer( mLayer );
+
   if ( layer != -1 )
   {
     if ( layer >= 0 && layer < mLayers.count() )
