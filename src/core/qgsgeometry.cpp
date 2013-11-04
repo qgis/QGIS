@@ -2890,9 +2890,12 @@ int QgsGeometry::addRing( const QList<QgsPoint>& ring )
   return 0;
 }
 
-int QgsGeometry::addPart( const QList<QgsPoint> &points )
+int QgsGeometry::addPart( const QList<QgsPoint> &points, QGis::GeometryType geomType )
 {
-  QGis::GeometryType geomType = type();
+  if ( geomType == QGis::UnknownGeometry )
+  {
+    geomType = type();
+  }
 
   switch ( geomType )
   {
@@ -2977,6 +2980,11 @@ int QgsGeometry::addPart( const QList<QgsPoint> &points )
       return 2;
   }
 
+  if ( type() == QGis::UnknownGeometry )
+  {
+    fromGeos( newPart );
+    return 0;
+  }
   return addPart( newPart );
 }
 
