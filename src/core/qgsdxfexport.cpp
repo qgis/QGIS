@@ -459,7 +459,7 @@ void QgsDxfExport::writeEntities( QTextStream& stream )
     QgsFeature fet;
     while ( featureIt.nextFeature( fet ) )
     {
-      if ( mSymbologyExport == NoSymbology )
+      if ( 0 /*mSymbologyExport == NoSymbology*/ )
       {
         addFeature( fet, stream, vl->name(), 0 ); //no symbology at all
       }
@@ -522,7 +522,7 @@ void QgsDxfExport::endSection( QTextStream& stream )
 }
 
 void QgsDxfExport::writePolyline( QTextStream& stream, const QgsPolyline& line, const QString& layer, int color,
-                                  double width, bool closed )
+                                  double width, bool polygon )
 {
   stream << "  0\n";
   stream << "POLYLINE\n";
@@ -535,7 +535,7 @@ void QgsDxfExport::writePolyline( QTextStream& stream, const QgsPolyline& line, 
   stream << " 66\n";
   stream << "1\n";
   stream << " 70\n";
-  int type = closed ? 32 : 0;
+  int type = polygon ? 49 : 0;
   stream << type << "\n";
   stream << " 40\n";
   stream << width << "\n";
@@ -592,11 +592,54 @@ void QgsDxfExport::addFeature( const QgsFeature& fet, QTextStream& stream, const
   QgsGeometry* geom = fet.geometry();
   if ( geom )
   {
-    //get color from symbollayer
     int c = colorFromSymbolLayer( symbolLayer );
-    //get width from symbollayer
     double width = widthFromSymbolLayer( symbolLayer );
-    writePolyline( stream, geom->asPolyline(), layer, c, width );
+
+    //todo: write point symbols as blocks
+
+    QGis::WkbType geometryType = geom->wkbType();
+    //single line
+    if ( geometryType == QGis::WKBLineString || geometryType == QGis::WKBLineString25D )
+    {
+      writePolyline( stream, geom->asPolyline(), layer, c, width, false );
+    }
+
+    //multiline
+    if ( geometryType == QGis::WKBMultiLineString || geometryType == QGis::WKBMultiLineString25D )
+    {
+      QgsMultiPolyline multiLine = geom->asMultiPolyline();
+      QgsMultiPolyline::const_iterator lIt = multiLine.constBegin();
+      for ( ; lIt != multiLine.constEnd(); ++lIt )
+      {
+        writePolyline( stream, *lIt, layer, c, width, false );
+      }
+    }
+
+    //polygon
+    if ( geometryType == QGis::WKBPolygon || geometryType == QGis::WKBPolygon25D )
+    {
+      QgsPolygon polygon = geom->asPolygon();
+      QgsPolygon::const_iterator polyIt = polygon.constBegin();
+      for ( ; polyIt != polygon.constEnd(); ++polyIt ) //iterate over rings
+      {
+        writePolyline( stream, *polyIt, layer, c, width, true );
+      }
+    }
+
+    //multipolygon or polygon
+    if ( geometryType == QGis::WKBMultiPolygon || geometryType == QGis::WKBMultiPolygon25D )
+    {
+      QgsMultiPolygon mp = geom->asMultiPolygon();
+      QgsMultiPolygon::const_iterator mpIt = mp.constBegin();
+      for ( ; mpIt != mp.constEnd(); ++mpIt )
+      {
+        QgsPolygon::const_iterator polyIt = mpIt->constBegin();
+        for ( ; polyIt != mpIt->constEnd(); ++polyIt )
+        {
+          writePolyline( stream, *polyIt, layer, c, width, true );
+        }
+      }
+    }
   }
 }
 
