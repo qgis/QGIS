@@ -387,6 +387,7 @@ bool QgsWMSSourceSelect::populateLayerList( QgsWmsProvider *wmsProvider )
             item->setData( Qt::UserRole + 2, style.identifier );
             item->setData( Qt::UserRole + 3, setLink.tileMatrixSet );
             item->setData( Qt::UserRole + 4, tileMatrixSets[ setLink.tileMatrixSet ].crs );
+            item->setData( Qt::UserRole + 5, l.title );
 
             lstTilesets->setItem( row, 0, item );
             lstTilesets->setItem( row, 1, new QTableWidgetItem( format ) );
@@ -571,7 +572,6 @@ void QgsWMSSourceSelect::addClicked()
   emit addRasterLayer( uri.encodedUri(),
                        leLayerName->text().isEmpty() ? layers.join( "/" ) : leLayerName->text(),
                        "wms" );
-
 }
 
 void QgsWMSSourceSelect::enableLayersForCrs( QTreeWidgetItem *item )
@@ -950,10 +950,21 @@ void QgsWMSSourceSelect::updateButtons()
   {
     if ( mAddButton->isEnabled() )
     {
-      QStringList layers, styles;
-      collectSelectedLayers( layers, styles );
-      mLastLayerName = layers.join( "/" );
-      leLayerName->setText( mLastLayerName );
+      if ( !lstTilesets->selectedItems().isEmpty() )
+      {
+        QTableWidgetItem *item = lstTilesets->selectedItems().first();
+        mLastLayerName = item->data( Qt::UserRole + 5 ).toString();
+        if ( mLastLayerName.isEmpty() )
+          mLastLayerName = item->data( Qt::UserRole + 0 ).toString();
+        leLayerName->setText( mLastLayerName );
+      }
+      else
+      {
+        QStringList layers, styles;
+        collectSelectedLayers( layers, styles );
+        mLastLayerName = layers.join( "/" );
+        leLayerName->setText( mLastLayerName );
+      }
     }
     else
     {
