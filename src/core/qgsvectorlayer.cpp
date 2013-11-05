@@ -136,7 +136,7 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
     , mSymbolFeatureCounted( false )
     , mCurrentRendererContext( 0 )
     , mSimplifyDrawingTol( QgsFeatureRequest::MAPTOPIXEL_THRESHOLD_DEFAULT )
-    , mSimplifyDrawing( true )
+    , mSimplifyDrawingHints( QgsVectorLayer::FullSimplification )
 
 {
   mActions = new QgsAttributeAction( this );
@@ -693,13 +693,17 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
                                      .setFilterRect( rendererContext.extent() )
                                      .setSubsetOfAttributes( attributes );
 
-  // Enable the simplification of the geometries before fetch the features using the current map2pixel context.
-  if ( simplifyDrawingCanbeApplied() && !(featureRequest.flags() & QgsFeatureRequest::NoGeometry) && !rendererContext.renderingPrintComposition() )
+  // Enable the simplification of the geometries (Using the current map2pixel context) before fetch the features.
+  if ( simplifyDrawingCanbeApplied( QgsVectorLayer::GeometrySimplification | QgsVectorLayer::EnvelopeSimplification ) && !(featureRequest.flags() & QgsFeatureRequest::NoGeometry) && !rendererContext.renderingPrintComposition() )
   {
+    QgsFeatureRequest::Flags simplificationHints = QgsFeatureRequest::NoFlags;
+    if ( mSimplifyDrawingHints & QgsVectorLayer::GeometrySimplification ) simplificationHints |= QgsFeatureRequest::SimplifyGeometry;
+    if ( mSimplifyDrawingHints & QgsVectorLayer::EnvelopeSimplification ) simplificationHints |= QgsFeatureRequest::SimplifyEnvelope;
+
     QPainter* p = rendererContext.painter();
     float dpi = ( p->device()->logicalDpiX() + p->device()->logicalDpiY() ) / 2;
 
-    featureRequest.setFlags( featureRequest.flags() | QgsFeatureRequest::SimplifyGeometries );
+    featureRequest.setFlags( featureRequest.flags() | simplificationHints );
     featureRequest.setCoordinateTransform( rendererContext.coordinateTransform() );
     featureRequest.setMapToPixel( &rendererContext.mapToPixel() );
     featureRequest.setMapToPixelTol( mSimplifyDrawingTol * 96.0f/dpi );
@@ -1221,13 +1225,17 @@ bool QgsVectorLayer::setSubsetString( QString subset )
   return res;
 }
 
+bool QgsVectorLayer::simplifyDrawingCanbeApplied( int simplifyHint ) const 
+{
+  return ( mSimplifyDrawingHints & simplifyHint ) && !mEditBuffer && ( !mCurrentRendererContext || !mCurrentRendererContext->renderingPrintComposition() ); 
+}
 
 QgsFeatureIterator QgsVectorLayer::getFeatures( const QgsFeatureRequest& request )
 {
   if ( !mDataProvider )
     return QgsFeatureIterator();
 
-  if ( mSimplifyDrawing && (request.flags() & QgsFeatureRequest::SimplifyGeometries) && !(request.flags() & QgsFeatureRequest::NoGeometry) )
+  if ( request.flags() & ( QgsFeatureRequest::SimplifyGeometry | QgsFeatureRequest::SimplifyEnvelope ) && !( request.flags() & QgsFeatureRequest::NoGeometry ) )
     return QgsFeatureIterator( new QgsSimplifiedVectorLayerFeatureIterator( this, request ) );
 
   return QgsFeatureIterator( new QgsVectorLayerFeatureIterator( this, request ) );
@@ -1834,7 +1842,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
     mLabel->setMaxScale( e.attribute( "maxLabelScale", "100000000" ).toFloat() );
 
     // get the simplification drawing configuration
-    setSimplifyDrawing( e.attribute( "simplifyDrawingFlag", "1" ) == "1" );
+    setSimplifyDrawingHints( e.attribute( "simplifyDrawingHints", "7" ).toInt() );
     setSimplifyDrawingTol( e.attribute( "simplifyDrawingTol", "1" ).toFloat() );
 
     //also restore custom properties (for labeling-ng)
@@ -2171,7 +2179,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
     mapLayerNode.setAttribute( "maxLabelScale", QString::number( mLabel->maxScale() ) );
 
     // save the simplification drawing configuration
-    mapLayerNode.setAttribute( "simplifyDrawingFlag", mSimplifyDrawing ? 1 : 0 );
+    mapLayerNode.setAttribute( "simplifyDrawingHints", QString::number( mSimplifyDrawingHints ) );
     mapLayerNode.setAttribute( "simplifyDrawingTol", QString::number( mSimplifyDrawingTol ) );
 
     //save customproperties (for labeling ng)

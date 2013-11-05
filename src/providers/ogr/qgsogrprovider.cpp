@@ -749,7 +749,7 @@ void QgsOgrProvider::setRelevantFields( bool fetchGeometry, const QgsAttributeLi
 
 QgsFeatureIterator QgsOgrProvider::getFeatures( const QgsFeatureRequest& request )
 {
-  if ( request.flags() & QgsFeatureRequest::SimplifyGeometries )
+  if ( request.flags() & ( QgsFeatureRequest::SimplifyGeometry | QgsFeatureRequest::SimplifyEnvelope ) )
     return QgsFeatureIterator( new QgsOgrSimplifiedFeatureIterator( this, request ) );
 
   return QgsFeatureIterator( new QgsOgrFeatureIterator( this, request ) );

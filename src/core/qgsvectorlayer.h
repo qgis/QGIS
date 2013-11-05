@@ -1367,13 +1367,22 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Returns the Map2pixel simplification threshold for fast rendering of features */
     float simplifyDrawingTol() const { return mSimplifyDrawingTol; }
 
-    /** Enable the Map2pixel simplification for fast rendering of features */
-    void setSimplifyDrawing( bool simplifyDrawing ) { mSimplifyDrawing = simplifyDrawing; }
-    /** Returns whether is enabled the map2pixel simplification of geometries for fast rendering of features */
-    bool simplifyDrawing() const { return mSimplifyDrawing; }
+    /** Simplification flags for fast rendering of features */
+    enum SimplifyHint
+    {
+      NoSimplification           = 0, //!< No simplification can be applied
+      GeometrySimplification     = 1, //!< The geometries can be simplified using the current map2pixel context state
+      EnvelopeSimplification     = 2, //!< The geometries can be fully simplified by its BoundingBox using the current map2pixel context state
+      AntialiasingSimplification = 4, //!< The geometries can be rendered with 'AntiAliasing' disabled because of it is '1-pixel size'
+      FullSimplification         = 7, //!< All simplification hints can be applied
+    };
+    /** Set the Map2pixel simplification hints for fast rendering of features */
+    void setSimplifyDrawingHints( int simplifyDrawingHints ) { mSimplifyDrawingHints = simplifyDrawingHints; }
+    /** Returns the Map2pixel simplification hints for fast rendering of features */
+    int simplifyDrawingHints() const { return mSimplifyDrawingHints; }
 
-    /** Returns whether the VectorLayer can apply geometry simplification in FeatureRequests */
-    bool simplifyDrawingCanbeApplied() const { return mSimplifyDrawing && !mEditBuffer && ( !mCurrentRendererContext || !mCurrentRendererContext->renderingPrintComposition() ); }
+    /** Returns whether the VectorLayer can apply the specified simplification hint */
+    bool simplifyDrawingCanbeApplied( int simplifyHint ) const;
 
   public slots:
     /**
@@ -1644,10 +1653,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Renderer object which holds the information about how to display the features */
     QgsFeatureRendererV2 *mRendererV2;
 
-    /** Map2pixel simplification threshold for fast rendering of features */
+    /** Map2pixel geometry simplification threshold for fast rendering of features */
     float mSimplifyDrawingTol;
-    /** Enable map2pixel simplification of geometries for fast rendering of features */
-    bool mSimplifyDrawing;
+    /** Map2pixel geometry simplification hints for fast rendering of features */
+    int mSimplifyDrawingHints;
 
     /** Label */
     QgsLabel *mLabel;

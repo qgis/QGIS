@@ -355,7 +355,7 @@ bool QgsOgrSimplifiedFeatureIterator::simplifyOgrGeometry( const QgsFeatureReque
     QgsRectangle envelope( env.MinX, env.MinY, env.MaxX, env.MaxY );
 
     // Can replace the geometry by its BBOX ?
-    if ( request.canbeGeneralizedByMapBoundingBox( envelope ) )
+    if ( request.flags() & QgsFeatureRequest::SimplifyEnvelope && request.canbeGeneralizedByMapBoundingBox( envelope ) )
     {
       OGRRawPoint* points = NULL;
       int numPoints = 0;
@@ -387,6 +387,7 @@ bool QgsOgrSimplifiedFeatureIterator::simplifyOgrGeometry( const QgsFeatureReque
       return true;
     }
     else
+    if ( request.flags() & QgsFeatureRequest::SimplifyGeometry )
     {
       QGis::GeometryType geometryType = isaLinearRing ? QGis::Polygon : QGis::Line;
       int numSimplifiedPoints = 0;
@@ -396,7 +397,7 @@ bool QgsOgrSimplifiedFeatureIterator::simplifyOgrGeometry( const QgsFeatureReque
       double* yptr = xptr+1; 
       lineString->getPoints( points );
 
-      if ( request.simplifyGeometry( geometryType, envelope, xptr, 16, yptr, 16, numPoints, numSimplifiedPoints ) )
+      if ( request.simplifyGeometry( request.flags(), geometryType, envelope, xptr, 16, yptr, 16, numPoints, numSimplifiedPoints ) )
       {
         lineString->setPoints( numSimplifiedPoints, points );
         lineString->flattenTo2D();
@@ -436,7 +437,7 @@ bool QgsOgrSimplifiedFeatureIterator::simplifyOgrGeometry( const QgsFeatureReque
 //! notify the OGRFeatureH was readed of the data provider
 void QgsOgrSimplifiedFeatureIterator::notifyReadedFeature( OGRFeatureH fet, OGRGeometryH geom, QgsFeature& feature )
 {
-  if ( mRequest.flags() & QgsFeatureRequest::SimplifyGeometries )
+  if ( mRequest.flags() & ( QgsFeatureRequest::SimplifyGeometry | QgsFeatureRequest::SimplifyEnvelope ) )
   {
     OGRwkbGeometryType wkbType = QgsOgrProvider::ogrWkbSingleFlatten( OGR_G_GetGeometryType(geom) );
 
