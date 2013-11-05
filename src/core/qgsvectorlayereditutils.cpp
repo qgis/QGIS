@@ -130,7 +130,7 @@ int QgsVectorLayerEditUtils::addPart( const QList<QgsPoint> &points, QgsFeatureI
     geometry = *f.geometry();
   }
 
-  int errorCode = geometry.addPart( points );
+  int errorCode = geometry.addPart( points, L->geometryType() );
   if ( errorCode == 0 )
   {
     L->editBuffer()->changeGeometry( featureId, &geometry );
