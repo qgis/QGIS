@@ -379,18 +379,19 @@ inline static bool generalizeGeometry( QGis::WkbType wkbType, unsigned char* sou
 }
 
 //! Simplify the WKB-geometry using the specified tolerance
-inline static bool simplifyWkbGeometry( QGis::WkbType wkbType, unsigned char* sourceWkb, size_t sourceWkbSize, unsigned char* targetWkb, size_t& targetWkbSize, const QgsRectangle& envelope, float map2pixelTol, bool writeHeader = true, bool isaLinearRing = false )
+inline static bool simplifyWkbGeometry( const QgsFeatureRequest::Flags& requestFlags, QGis::WkbType wkbType, unsigned char* sourceWkb, size_t sourceWkbSize, unsigned char* targetWkb, size_t& targetWkbSize, const QgsRectangle& envelope, float map2pixelTol, bool writeHeader = true, bool isaLinearRing = false )
 {
   bool canbeGeneralizable = true;
   bool hasZValue = QGis::wkbDimensions(wkbType)==3;
   bool result = false;
 
   // Can replace the geometry by its BBOX ?
-  if ( (envelope.xMaximum()-envelope.xMinimum()) < map2pixelTol && (envelope.yMaximum()-envelope.yMinimum()) < map2pixelTol )
+  if ( ( requestFlags & QgsFeatureRequest::SimplifyEnvelope ) && (envelope.xMaximum()-envelope.xMinimum()) < map2pixelTol && (envelope.yMaximum()-envelope.yMinimum()) < map2pixelTol )
   {
     canbeGeneralizable = generalizeGeometry( wkbType, sourceWkb, sourceWkbSize, targetWkb, targetWkbSize, envelope, writeHeader );
     if (canbeGeneralizable) return true;
   }
+  if (!( requestFlags & QgsFeatureRequest::SimplifyGeometry ) ) canbeGeneralizable = false;
 
   // Write the main header of the geometry
   if ( writeHeader )
@@ -484,7 +485,7 @@ inline static bool simplifyWkbGeometry( QGis::WkbType wkbType, unsigned char* so
       size_t sourceWkbSize_i = 4 + numPoints_i * (hasZValue ? 3 : 2) * sizeof(double);
       size_t targetWkbSize_i = 0;
 
-      result |= simplifyWkbGeometry( wkbType, sourceWkb, sourceWkbSize_i, targetWkb, targetWkbSize_i, envelope_i, map2pixelTol, false, true );
+      result |= simplifyWkbGeometry( requestFlags, wkbType, sourceWkb, sourceWkbSize_i, targetWkb, targetWkbSize_i, envelope_i, map2pixelTol, false, true );
       sourceWkb += sourceWkbSize_i;
       targetWkb += targetWkbSize_i;
 
@@ -535,7 +536,7 @@ inline static bool simplifyWkbGeometry( QGis::WkbType wkbType, unsigned char* so
           wkb1 += wkbSize_i;
         }
       }
-      result |= simplifyWkbGeometry( QGis::singleType(wkbType), sourceWkb, sourceWkbSize_i, targetWkb, targetWkbSize_i, envelope, map2pixelTol, true, false );
+      result |= simplifyWkbGeometry( requestFlags, QGis::singleType(wkbType), sourceWkb, sourceWkbSize_i, targetWkb, targetWkbSize_i, envelope, map2pixelTol, true, false );
       sourceWkb += sourceWkbSize_i;
       targetWkb += targetWkbSize_i;
 
@@ -573,7 +574,7 @@ bool QgsFeatureRequest::canbeGeneralizedByMapBoundingBox( const QgsRectangle& en
 }
 
 //! Simplify the specified geometry (Removing duplicated points) when is applied the map2pixel context
-bool QgsFeatureRequest::simplifyGeometry( QgsGeometry* geometry, const QgsCoordinateTransform* coordinateTransform, const QgsMapToPixel* mtp, float mapToPixelTol )
+bool QgsFeatureRequest::simplifyGeometry( const QgsFeatureRequest::Flags& requestFlags, QgsGeometry* geometry, const QgsCoordinateTransform* coordinateTransform, const QgsMapToPixel* mtp, float mapToPixelTol )
 {
   size_t targetWkbSize = 0;
 
@@ -589,7 +590,7 @@ bool QgsFeatureRequest::simplifyGeometry( QgsGeometry* geometry, const QgsCoordi
   size_t wkbSize = geometry->wkbSize( );
 
   // Simplify the geometry rewriting temporally its WKB-stream for saving calloc's.
-  if ( simplifyWkbGeometry( wkbType, wkb, wkbSize, wkb, targetWkbSize, envelope, map2pixelTol ) )
+  if ( simplifyWkbGeometry( requestFlags, wkbType, wkb, wkbSize, wkb, targetWkbSize, envelope, map2pixelTol ) )
   {
     unsigned char* targetWkb = (unsigned char*)malloc( targetWkbSize );
     memcpy( targetWkb, wkb, targetWkbSize );
@@ -600,8 +601,10 @@ bool QgsFeatureRequest::simplifyGeometry( QgsGeometry* geometry, const QgsCoordi
 }
 
 //! Simplify the specified point stream (Removing duplicated points) when is applied the map2pixel context
-bool QgsFeatureRequest::simplifyGeometry( QGis::GeometryType geometryType, const QgsRectangle& envelope, double* xptr, int xStride, double* yptr, int yStride, int pointCount, int& pointSimplifiedCount, const QgsCoordinateTransform* coordinateTransform, const QgsMapToPixel* mtp, float mapToPixelTol )
+bool QgsFeatureRequest::simplifyGeometry( const QgsFeatureRequest::Flags& requestFlags, QGis::GeometryType geometryType, const QgsRectangle& envelope, double* xptr, int xStride, double* yptr, int yStride, int pointCount, int& pointSimplifiedCount, const QgsCoordinateTransform* coordinateTransform, const QgsMapToPixel* mtp, float mapToPixelTol )
 {
+  bool canbeGeneralizable = ( requestFlags & QgsFeatureRequest::SimplifyGeometry );
+
   pointSimplifiedCount = pointCount;
   if ( geometryType == QGis::Point || geometryType == QGis::UnknownGeometry ) return false;
   pointSimplifiedCount = 0;
@@ -620,7 +623,7 @@ bool QgsFeatureRequest::simplifyGeometry( QGis::GeometryType geometryType, const
     memcpy( &x, xsourcePtr, sizeof( double ) ); xsourcePtr += xStride;
     memcpy( &y, ysourcePtr, sizeof( double ) ); ysourcePtr += yStride;
 
-    if ( i==0 || calculateLengthSquared2D(x,y,lastX,lastY)>map2pixelTol )
+    if ( i==0 || !canbeGeneralizable || calculateLengthSquared2D(x,y,lastX,lastY)>map2pixelTol )
     {
       memcpy( xtargetPtr, &x, sizeof( double ) ); lastX = x; xtargetPtr += xStride;
       memcpy( ytargetPtr, &y, sizeof( double ) ); lastY = y; ytargetPtr += yStride;

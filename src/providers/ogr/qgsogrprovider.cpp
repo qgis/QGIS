@@ -808,7 +808,7 @@ void QgsOgrProvider::setRelevantFields( OGRLayerH ogrLayer, bool fetchGeometry, 
 
 QgsFeatureIterator QgsOgrProvider::getFeatures( const QgsFeatureRequest& request )
 {
-  if ( request.flags() & QgsFeatureRequest::SimplifyGeometries )
+  if ( request.flags() & ( QgsFeatureRequest::SimplifyGeometry | QgsFeatureRequest::SimplifyEnvelope ) )
     return QgsFeatureIterator( new QgsOgrSimplifiedFeatureIterator( this, request ) );
 
   return QgsFeatureIterator( new QgsOgrFeatureIterator( this, request ) );

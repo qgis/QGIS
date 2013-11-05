@@ -358,7 +358,7 @@ void QgsFillSymbolLayerV2::_renderPolygon( QPainter* p, const QPolygonF& points,
   }
 
   // Disable 'Antialiasing' if the geometry was generalized in the current RenderContext (We known that it must have least #5 points).
-  if ( points.size()<=5 && context.layer() && context.layer()->simplifyDrawingCanbeApplied() && QgsFeatureRequest::canbeGeneralizedByWndBoundingBox( points, context.layer()->simplifyDrawingTol() ) && p->renderHints() & QPainter::Antialiasing )
+  if ( points.size()<=5 && context.layer() && context.layer()->simplifyDrawingCanbeApplied( QgsVectorLayer::AntialiasingSimplification ) && QgsFeatureRequest::canbeGeneralizedByWndBoundingBox( points, context.layer()->simplifyDrawingTol() ) && p->renderHints() & QPainter::Antialiasing )
   {
     p->setRenderHint( QPainter::Antialiasing, false );
     p->drawConvexPolygon( points );

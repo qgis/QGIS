@@ -393,7 +393,7 @@ void QgsVectorLayerProperties::syncToLayer( void )
   cbMaximumScale->setScale( 1.0 / layer->maximumScale() );
 
   // get simplify drawing configuration
-  mSimplifyDrawingGroupBox->setChecked( layer->simplifyDrawing() );
+  mSimplifyDrawingGroupBox->setChecked( layer->simplifyDrawingHints() != QgsVectorLayer::NoSimplification );
   mSimplifyDrawingSlider->setValue( (int)(5.0f * (layer->simplifyDrawingTol()-1)) );
 
   // load appropriate symbology page (V1 or V2)
@@ -534,7 +534,7 @@ void QgsVectorLayerProperties::apply()
   layer->setMetadataUrlFormat( mLayerMetadataUrlFormatComboBox->currentText() );
 
   //layer simplify drawing configuration
-  layer->setSimplifyDrawing( mSimplifyDrawingGroupBox->isChecked() );
+  layer->setSimplifyDrawingHints( mSimplifyDrawingGroupBox->isChecked() ? QgsVectorLayer::FullSimplification : QgsVectorLayer::NoSimplification );
   layer->setSimplifyDrawingTol( 1.0f + 0.2f*mSimplifyDrawingSlider->value() );
 
   // update symbology
