@@ -52,7 +52,6 @@ from processing.outputs.OutputFile import OutputFile
 from processing.outputs.OutputFactory import OutputFactory
 from processing.script.WrongScriptException import WrongScriptException
 
-
 class ScriptAlgorithm(GeoAlgorithm):
 
     def __init__(self, descriptionFile, script=None):
@@ -141,6 +140,15 @@ class ScriptAlgorithm(GeoAlgorithm):
         elif tokens[1].lower().strip() == 'vector':
             param = ParameterVector(tokens[0], desc,
                                     [ParameterVector.VECTOR_TYPE_ANY])
+        elif tokens[1].lower().strip() == 'vector point':
+            param = ParameterVector(tokens[0], desc,
+                                    [ParameterVector.VECTOR_TYPE_POINT])
+        elif tokens[1].lower().strip() == 'vector line':
+            param = ParameterVector(tokens[0], desc,
+                                    [ParameterVector.VECTOR_TYPE_LINE])
+        elif tokens[1].lower().strip() == 'vector polygon':
+            param = ParameterVector(tokens[0], desc,
+                                    [ParameterVector.VECTOR_TYPE_POLYGON])
         elif tokens[1].lower().strip() == 'table':
             param = ParameterTable(tokens[0], desc, False)
         elif tokens[1].lower().strip() == 'multiple raster':
