@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1050</width>
-     <height>31</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="mProjectMenu">
@@ -47,6 +47,7 @@
     <addaction name="mActionSaveProject"/>
     <addaction name="mActionSaveProjectAs"/>
     <addaction name="mActionSaveMapAsImage"/>
+    <addaction name="mActionDxfExport"/>
     <addaction name="separator"/>
     <addaction name="mActionNewPrintComposer"/>
     <addaction name="mActionShowComposerManager"/>
@@ -2134,6 +2135,11 @@ Acts on currently active editable layer</string>
    </property>
    <property name="toolTip">
     <string>Paste features in clipboard into a new memory vector layer.</string>
+   </property>
+  </action>
+  <action name="mActionDxfExport">
+   <property name="text">
+    <string>DXF Export...</string>
    </property>
   </action>
  </widget>

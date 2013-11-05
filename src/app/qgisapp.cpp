@@ -118,6 +118,8 @@
 #include "qgscustomization.h"
 #include "qgscustomprojectiondialog.h"
 #include "qgsdatasourceuri.h"
+#include "qgsdxfexport.h"
+#include "qgsdxfexportdialog.h"
 #include "qgsdecorationcopyright.h"
 #include "qgsdecorationnortharrow.h"
 #include "qgsdecorationscalebar.h"
@@ -947,6 +949,7 @@ void QgisApp::createActions()
   connect( mActionNewPrintComposer, SIGNAL( triggered() ), this, SLOT( newPrintComposer() ) );
   connect( mActionShowComposerManager, SIGNAL( triggered() ), this, SLOT( showComposerManager() ) );
   connect( mActionExit, SIGNAL( triggered() ), this, SLOT( fileExit() ) );
+  connect( mActionDxfExport, SIGNAL( triggered() ), this, SLOT( dxfExport() ) );
 
   // Edit Menu Items
 
@@ -1778,7 +1781,7 @@ void QgisApp::setTheme( QString theThemeName )
   mActionRotateFeature->setIcon( QgsApplication::getThemeIcon( "/mActionRotateFeature.png" ) );
   mActionReshapeFeatures->setIcon( QgsApplication::getThemeIcon( "/mActionReshape.png" ) );
   mActionSplitFeatures->setIcon( QgsApplication::getThemeIcon( "/mActionSplitFeatures.svg" ) );
-  mActionSplitParts->setIcon( QgsApplication::getThemeIcon( "/mActionSplitParts.svg" ) );  
+  mActionSplitParts->setIcon( QgsApplication::getThemeIcon( "/mActionSplitParts.svg" ) );
   mActionDeleteSelected->setIcon( QgsApplication::getThemeIcon( "/mActionDeleteSelected.svg" ) );
   mActionNodeTool->setIcon( QgsApplication::getThemeIcon( "/mActionNodeTool.png" ) );
   mActionSimplifyFeature->setIcon( QgsApplication::getThemeIcon( "/mActionSimplify.png" ) );
@@ -3796,6 +3799,33 @@ void QgisApp::fileSaveAs()
                            Qt::NoButton );
   }
 } // QgisApp::fileSaveAs
+
+void QgisApp::dxfExport()
+{
+  QgsDxfExportDialog d( QgsMapLayerRegistry::instance()->mapLayers().keys() );
+  if ( d.exec() == QDialog::Accepted )
+  {
+    QgsDxfExport dxfExport;
+
+    QList<QgsMapLayer*> layerList;
+    QList<QString> layerIdList = d.layers();
+    QList<QString>::const_iterator layerIt = layerIdList.constBegin();
+    for ( ; layerIt != layerIdList.constEnd(); ++layerIt )
+    {
+      QgsMapLayer* l = QgsMapLayerRegistry::instance()->mapLayer( *layerIt );
+      if ( l )
+      {
+        layerList.append( l );
+      }
+    }
+
+    dxfExport.addLayers( layerList );
+    dxfExport.setSymbologyScaleDenominator( d.symbologyScale() );
+    dxfExport.setSymbologyExport( d.symbologyMode() );
+    QFile dxfFile( d.saveFile() );
+    dxfExport.writeToFile( &dxfFile );
+  }
+}
 
 // Open the project file corresponding to the
 // path at the given index in mRecentProjectPaths
@@ -8873,27 +8903,27 @@ bool QgisApp::addRasterLayers( QStringList const &theFileNameQStringList, bool g
 ///////////////////////////////////////////////////////////////////
 
 #ifdef ANDROID
-void QgisApp::keyReleaseEvent(QKeyEvent *event)
+void QgisApp::keyReleaseEvent( QKeyEvent *event )
 {
-static bool accepted=true;
-    if (event->key()==Qt::Key_Close)
+  static bool accepted = true;
+  if ( event->key() == Qt::Key_Close )
+  {
+    // do something useful here
+    int ret = QMessageBox::question( this, tr( "Exit QGIS" ),
+                                     tr( "Do you really want to quit QGIS?" ),
+                                     QMessageBox::Yes | QMessageBox::No );
+    switch ( ret )
     {
-        // do something useful here
-        int ret = QMessageBox::question(this, tr("Exit QGIS"),
-                                        tr("Do you really want to quit QGIS?"),
-                                        QMessageBox::Yes | QMessageBox::No);
-        switch(ret)
-        {
-        case QMessageBox::Yes:
-          this->close();
-          break;
+      case QMessageBox::Yes:
+        this->close();
+        break;
 
-        case QMessageBox::No:
-          break;
-        }
-        event->setAccepted(accepted); // dont't close my Top Level Widget !
-        accepted=false;// close the app next time when the user press back button
+      case QMessageBox::No:
+        break;
     }
+    event->setAccepted( accepted ); // dont't close my Top Level Widget !
+    accepted = false;// close the app next time when the user press back button
+  }
 }
 #endif
 

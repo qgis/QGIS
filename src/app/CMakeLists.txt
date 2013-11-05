@@ -27,6 +27,7 @@ SET(QGIS_APP_SRCS
   qgsdecorationscalebardialog.cpp
   qgsdecorationgrid.cpp
   qgsdecorationgriddialog.cpp
+  qgsdxfexportdialog.cpp
   qgsformannotationdialog.cpp
   qgshtmlannotationdialog.cpp
   qgsdelattrdialog.cpp
@@ -187,6 +188,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsdelattrdialog.h
   qgsdiagramproperties.h
   qgsdisplayangle.h
+  qgsdxfexportdialog.h
   qgsfeatureaction.h
   qgsfieldcalculator.h
   qgsfieldsproperties.h
