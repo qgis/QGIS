@@ -8120,13 +8120,6 @@ void QgisApp::projectProperties()
   long newCRSID = ms.destinationCrs().srsid();
   bool isProjected = ms.hasCrsTransformEnabled();
 
-  // projections have been turned on/off or dest CRS has changed while projections are on
-  if ( wasProjected != isProjected || ( isProjected && oldCRSID != newCRSID ) )
-  {
-    // TODO: would be better to try to reproject current extent to the new one
-    mMapCanvas->updateFullExtent();
-  }
-
   int  myRedInt = QgsProject::instance()->readNumEntry( "Gui", "/CanvasColorRedPart", 255 );
   int  myGreenInt = QgsProject::instance()->readNumEntry( "Gui", "/CanvasColorGreenPart", 255 );
   int  myBlueInt = QgsProject::instance()->readNumEntry( "Gui", "/CanvasColorBluePart", 255 );

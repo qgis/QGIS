@@ -113,8 +113,6 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
   mScene->addItem( mMap );
   mScene->update(); // porting??
 
-  moveCanvasContents( true );
-
   connect( mMapRenderer, SIGNAL( drawError( QgsMapLayer* ) ), this, SLOT( showError( QgsMapLayer* ) ) );
 
   // TODO: propagate signals to map renderer?
@@ -126,9 +124,12 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
   connect( QgsProject::instance(), SIGNAL( writeProject( QDomDocument & ) ),
            this, SLOT( writeProject( QDomDocument & ) ) );
 
-  mSettings.setOutputDpi(120);  // TODO: what to set ???
   mSettings.setOutputSize( size() );
   mMap->resize( size() );
+  setSceneRect( 0, 0, size().width(), size().height() );
+  mScene->setSceneRect( QRectF( 0, 0, size().width(), size().height() ) );
+
+  moveCanvasContents( true );
 
 #ifdef Q_OS_WIN
   // Enable touch event on Windows.
@@ -287,7 +288,6 @@ void QgsMapCanvas::setLayerSet( QList<QgsMapCanvasLayer> &layers )
     }
 
     mSettings.setLayers( layerSet );
-    //mMapRenderer->setLayerSet( layerSet );
 
     for ( i = 0; i < layerCount(); i++ )
     {
@@ -540,19 +540,9 @@ QgsRectangle QgsMapCanvas::extent() const
 
 QgsRectangle QgsMapCanvas::fullExtent() const
 {
-  return mapSettings().fullExtent(); //mMapRenderer->fullExtent();
+  return mapSettings().fullExtent();
 } // extent
 
-void QgsMapCanvas::updateFullExtent()
-{
-  // projection settings have changed
-/*
-  QgsDebugMsg( "updating full extent" );
-
-  mMapRenderer->updateFullExtent();
-  refresh();
-*/
-}
 
 void QgsMapCanvas::setExtent( QgsRectangle const & r )
 {
@@ -564,12 +554,10 @@ void QgsMapCanvas::setExtent( QgsRectangle const & r )
     QgsRectangle e( QgsPoint( r.center().x() - current.width() / 2.0, r.center().y() - current.height() / 2.0 ),
                     QgsPoint( r.center().x() + current.width() / 2.0, r.center().y() + current.height() / 2.0 ) );
     mSettings.setExtent( e );
-    //mMapRenderer->setExtent( e );
   }
   else
   {
     mSettings.setExtent( r );
-    //mMapRenderer->setExtent( r );
   }
   emit extentsChanged();
   updateScale();
@@ -641,7 +629,6 @@ void QgsMapCanvas::zoomToPreviousExtent()
   {
     mLastExtentIndex--;
     mSettings.setExtent( mLastExtent[mLastExtentIndex] );
-    //mMapRenderer->setExtent( mLastExtent[mLastExtentIndex] );
     emit extentsChanged();
     updateScale();
     if ( mMapOverview )
@@ -662,7 +649,6 @@ void QgsMapCanvas::zoomToNextExtent()
   {
     mLastExtentIndex++;
     mSettings.setExtent( mLastExtent[mLastExtentIndex] );
-    //mMapRenderer->setExtent( mLastExtent[mLastExtentIndex] );
     emit extentsChanged();
     updateScale();
     if ( mMapOverview )
@@ -993,6 +979,8 @@ void QgsMapCanvas::resizeEvent( QResizeEvent * e )
   mMap->resize( lastSize );
   mScene->setSceneRect( QRectF( 0, 0, lastSize.width(), lastSize.height() ) );
 
+  moveCanvasContents( true );
+
   // notify canvas items of change
   updateCanvasItemPositions();
 
@@ -1005,22 +993,6 @@ void QgsMapCanvas::resizeEvent( QResizeEvent * e )
 
 void QgsMapCanvas::paintEvent( QPaintEvent *e )
 {
-  /*
-    if ( mPainting || mDrawing )
-    {
-      //cancel current render progress
-      if ( mMapRenderer )
-      {
-        QgsRenderContext* theRenderContext = mMapRenderer->rendererContext();
-        if ( theRenderContext )
-        {
-          theRenderContext->setRenderingStopped( true );
-        }
-      }
-      return;
-    }
-  */
-
   QGraphicsView::paintEvent( e );
 } // paintEvent
 
@@ -1284,7 +1256,6 @@ double QgsMapCanvas::mapUnitsPerPixel() const
 void QgsMapCanvas::setMapUnits( QGis::UnitType u )
 {
   QgsDebugMsg( "Setting map units to " + QString::number( static_cast<int>( u ) ) );
-  //mMapRenderer->setMapUnits( u );
   mSettings.setMapUnits( u );
 }
 
@@ -1331,6 +1302,8 @@ void QgsMapCanvas::panActionEnd( QPoint releasePoint )
   // move map image and other items to standard position
   moveCanvasContents( true ); // true means reset
 
+  mMap->mapDragged( releasePoint - mCanvasProperties->rubberStartPoint );
+
   // use start and end box points to calculate the extent
   QgsPoint start = getCoordinateTransform()->toMapCoordinates( mCanvasProperties->rubberStartPoint );
   QgsPoint end = getCoordinateTransform()->toMapCoordinates( releasePoint );
@@ -1340,7 +1313,6 @@ void QgsMapCanvas::panActionEnd( QPoint releasePoint )
 
   double dx = qAbs( end.x() - start.x() );
   double dy = qAbs( end.y() - start.y() );
-
 
   // modify the extent
   QgsRectangle r = mapSettings().visibleExtent();
@@ -1386,9 +1358,6 @@ void QgsMapCanvas::panAction( QMouseEvent * e )
 
   // move all map canvas items
   moveCanvasContents();
-
-  // update canvas
-  //updateContents(); // TODO: need to update?
 }
 
 void QgsMapCanvas::moveCanvasContents( bool reset )
@@ -1397,28 +1366,7 @@ void QgsMapCanvas::moveCanvasContents( bool reset )
   if ( !reset )
     pnt += mCanvasProperties->mouseLastXY - mCanvasProperties->rubberStartPoint;
 
-  mMap->setPanningOffset( pnt );
-
-  QList<QGraphicsItem*> list = mScene->items();
-  QList<QGraphicsItem*>::iterator it = list.begin();
-  while ( it != list.end() )
-  {
-    QGraphicsItem* item = *it;
-
-    if ( item != mMap )
-    {
-      // this tells map canvas item to draw with offset
-      QgsMapCanvasItem* canvasItem = dynamic_cast<QgsMapCanvasItem *>( item );
-      if ( canvasItem )
-        canvasItem->setPanningOffset( pnt );
-    }
-
-    it++;
-  }
-
-  // show items
-  updateCanvasItemPositions();
-
+  setSceneRect( -pnt.x(), -pnt.y(), size().width(), size().height() );
 }
 
 void QgsMapCanvas::showError( QgsMapLayer * mapLayer )

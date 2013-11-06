@@ -201,6 +201,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void updateScale();
 
     /** Updates the full extent */
+    //! @deprecated since v2.1 - does nothing
     void updateFullExtent();
 
     //! return the map layer at position index in the layer stack

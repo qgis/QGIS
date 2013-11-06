@@ -112,7 +112,7 @@ void QgsMapOverviewCanvas::drawExtentRect()
   const QgsRectangle& extent = mMapCanvas->extent();
 
   // show only when valid extent is set
-  if ( extent.isEmpty() || mSettings.extent().isEmpty() )
+  if ( extent.isEmpty() || mSettings.visibleExtent().isEmpty() )
   {
     mPanningWidget->hide();
     return;

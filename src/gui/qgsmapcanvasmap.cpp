@@ -26,6 +26,7 @@ QgsMapCanvasMap::QgsMapCanvasMap( QgsMapCanvas* canvas )
     : mCanvas( canvas )
     , mDirty(true)
     , mJob(0)
+    , mOffset()
 {
   setZValue( -10 );
   setPos( 0, 0 );
@@ -59,8 +60,6 @@ void QgsMapCanvasMap::paint( QPainter* p, const QStyleOptionGraphicsItem*, QWidg
 {
   qDebug("paint()");
 
-  bool paintedAlready = false;
-
   if (mDirty)
   {
     if (mJob)
@@ -72,31 +71,24 @@ void QgsMapCanvasMap::paint( QPainter* p, const QStyleOptionGraphicsItem*, QWidg
       qDebug("need to render");
 
       // draw the image before it will be wiped out
-      // TODO: does not work correctly with panning by dragging
-      p->drawImage( 0, 0, mImage );
-      paintedAlready = true;
-
-      const QgsMapSettings& s = mCanvas->mapSettings();
-
-      qDebug("----------> EXTENT %f,%f", s.extent().xMinimum(), s.extent().yMinimum());
-
-      mPainter = new QPainter(&mImage);
+      p->drawImage( mOffset, mImage );
 
       // TODO[MD]: need to setup clipping?
       //paint.setClipRect( mImage.rect() );
 
       // create the renderer job
       Q_ASSERT(mJob == 0);
-      mJob = new QgsMapRendererCustomPainterJob(s, mPainter);
+      mJob = new QgsMapRendererSequentialJob( mCanvas->mapSettings() );
       connect(mJob, SIGNAL(finished()), SLOT(finish()));
       mJob->start();
 
       mTimer.start();
+
+      mOffset = QPoint();
+      return;
     }
   }
 
-  if (!paintedAlready)
-  {
 #ifdef EGA_MODE
   QImage i2( mImage.size()/3, mImage.format() );
   QPainter p2(&i2);
@@ -106,12 +98,12 @@ void QgsMapCanvasMap::paint( QPainter* p, const QStyleOptionGraphicsItem*, QWidg
 #else
   p->drawImage( 0, 0, mImage );
 #endif
-  }
 }
 
 QRectF QgsMapCanvasMap::boundingRect() const
 {
-  return QRectF( 0, 0, mImage.width(), mImage.height() );
+  QSize s = mCanvas->mapSettings().outputSize();
+  return QRectF( 0, 0, s.width(), s.height() ); // mImage.width(), mImage.height() );
 }
 
 
@@ -127,15 +119,6 @@ void QgsMapCanvasMap::resize( QSize size )
 
   QgsDebugMsg( QString( "resizing to %1x%2" ).arg( size.width() ).arg( size.height() ) );
   prepareGeometryChange(); // to keep QGraphicsScene indexes up to date on size change
-
-  mImage = QImage( size, QImage::Format_ARGB32_Premultiplied );
-  //mCanvas->mapRenderer()->setOutputSize( size, mImage.logicalDpiX() );
-}
-
-void QgsMapCanvasMap::setPanningOffset( const QPoint& point )
-{
-  mOffset = point;
-  setPos( mOffset );
 }
 
 QPaintDevice& QgsMapCanvasMap::paintDevice()
@@ -152,10 +135,7 @@ void QgsMapCanvasMap::finish()
 
   mDirty = false;
 
-  delete mPainter;
-  mPainter = 0;
-
-  //mLastImage = mImage;
+  mImage = mJob->renderedImage();
 
   update();
 }
@@ -165,5 +145,14 @@ void QgsMapCanvasMap::onMapUpdateTimeout()
 {
   qDebug("update timer!");
 
+  mImage = mJob->renderedImage();
+
+  update();
+}
+
+
+void QgsMapCanvasMap::mapDragged(const QPoint &diff)
+{
+  mOffset = diff;
   update();
 }

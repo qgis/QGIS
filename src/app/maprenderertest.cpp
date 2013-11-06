@@ -57,7 +57,7 @@ int main(int argc, char* argv[])
   overview.show();
 
   QList<QgsMapCanvasLayer> layers;
-  layers.append(QgsMapCanvasLayer(layer2, false, true));
+  layers.append(QgsMapCanvasLayer(layer2, true, true));
   layers.append(QgsMapCanvasLayer(layer));
   canvas.setLayerSet(layers);
 

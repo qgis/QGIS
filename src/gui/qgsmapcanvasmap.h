@@ -56,7 +56,8 @@ class GUI_EXPORT QgsMapCanvasMap : public QObject, public QGraphicsRectItem
     //! @deprecated in 2.1 - does nothing. Kept for API compatibility
     void setBackgroundColor( const QColor& color ) {}
 
-    void setPanningOffset( const QPoint& point );
+    //! @deprecated in 2.1 - not called by QgsMapCanvas anymore
+    Q_DECL_DEPRECATED void setPanningOffset( const QPoint& point ) {}
 
     //! @deprecated in 2.1
     QPaintDevice& paintDevice();
@@ -70,6 +71,10 @@ class GUI_EXPORT QgsMapCanvasMap : public QObject, public QGraphicsRectItem
 
     const QgsMapSettings& settings() const;
 
+    //! called by map canvas to handle panning with mouse (kind of)
+    //! @note added in 2.1
+    void mapDragged( const QPoint& diff);
+
 public slots:
     void finish();
     void onMapUpdateTimeout();
@@ -77,18 +82,14 @@ public slots:
   private:
 
     QImage mImage;
-    QImage mLastImage;
 
-    //QgsMapRenderer* mRender;
     QgsMapCanvas* mCanvas;
 
     QPoint mOffset;
 
     bool mDirty; //!< whether a new rendering job should be started upon next paint() call
 
-    QgsMapRendererCustomPainterJob* mJob;
-
-    QPainter* mPainter;
+    QgsMapRendererSequentialJob* mJob;
 
     QTimer mTimer;
 };
