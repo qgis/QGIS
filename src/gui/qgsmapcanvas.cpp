@@ -83,7 +83,6 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
     , mCanvasProperties( new CanvasProperties )
     //, mNewSize( QSize() )
     //, mPainting( false )
-    , mAntiAliasing( false )
 {
   setObjectName( name );
   mScene = new QGraphicsScene();
@@ -171,8 +170,8 @@ QgsMapCanvas::~QgsMapCanvas()
 
 void QgsMapCanvas::enableAntiAliasing( bool theFlag )
 {
-  mAntiAliasing = theFlag;
-  mMap->enableAntiAliasing( theFlag );
+  mSettings.setAntiAliasingEnabled( theFlag );
+
   if ( mMapOverview )
     mMapOverview->enableAntiAliasing( theFlag );
 } // anti aliasing
@@ -311,7 +310,7 @@ void QgsMapCanvas::setLayerSet( QList<QgsMapCanvasLayer> &layers )
 
   if ( mMapOverview )
   {
-    QStringList& layerSetOvOld = mMapOverview->layerSet();
+    const QStringList& layerSetOvOld = mMapOverview->layerSet();
     if ( layerSetOvOld != layerSetOverview )
     {
       mMapOverview->setLayerSet( layerSetOverview );
@@ -1211,7 +1210,7 @@ void QgsMapCanvas::unsetMapTool( QgsMapTool* tool )
 void QgsMapCanvas::setCanvasColor( const QColor & theColor )
 {
   // background of map's pixmap
-  mMap->setBackgroundColor( theColor );
+  mSettings.setBackgroundColor( theColor );
 
   // background of the QGraphicsView
   QBrush bgBrush( theColor );

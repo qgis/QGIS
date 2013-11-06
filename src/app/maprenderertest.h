@@ -23,7 +23,6 @@ public:
     ms.setLayers(QStringList(layer->id()));
     ms.setExtent(layer->extent());
     ms.setOutputSize(size());
-    ms.setOutputDpi(120);
 
     if (ms.hasValidSettings())
       qDebug("map renderer settings valid");

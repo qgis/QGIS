@@ -1,6 +1,7 @@
 #ifndef QGSMAPSETTINGS_H
 #define QGSMAPSETTINGS_H
 
+#include <QColor>
 #include <QSize>
 #include <QStringList>
 
@@ -58,6 +59,15 @@ public:
   // TODO: maybe used just for something local... and not necessary here!
   void setOutputUnits( OutputUnits u ) { mOutputUnits = u; }
   OutputUnits outputUnits() const { return mOutputUnits; }
+
+  void setBackgroundColor( const QColor& color ) { mBackgroundColor = color; }
+  QColor backgroundColor() const { return mBackgroundColor; }
+
+  void setSelectionColor( const QColor& color ) { mSelectionColor = color; }
+  QColor selectionColor() const { return mSelectionColor; }
+
+  void setAntiAliasingEnabled( bool enabled ) { mAntiAliasing = enabled; }
+  bool isAntiAliasingEnabled() const { return mAntiAliasing; }
 
   bool hasValidSettings() const;
   QgsRectangle visibleExtent() const;
@@ -128,6 +138,10 @@ protected:
 
   bool mProjectionsEnabled;
   QgsCoordinateReferenceSystem mDestCRS;
+
+  QColor mBackgroundColor;
+  QColor mSelectionColor;
+  bool mAntiAliasing;
 
   //! Output units
   OutputUnits mOutputUnits;

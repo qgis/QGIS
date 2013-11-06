@@ -266,7 +266,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void enableAntiAliasing( bool theFlag );
 
     //! true if antialising is enabled
-    bool antiAliasingEnabled() const { return mAntiAliasing; }
+    bool antiAliasingEnabled() const { return mSettings.isAntiAliasingEnabled(); }
 
     //! Select which Qt class to render with
     void useImageToRender( bool theFlag );
@@ -509,9 +509,6 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     //! currently in paint event
     //bool mPainting;
-
-    //! indicates whether antialiasing will be used for rendering
-    bool mAntiAliasing;
 }; // class QgsMapCanvas
 
 

@@ -20,18 +20,23 @@ QgsMapRendererSequentialJob::QgsMapRendererSequentialJob(const QgsMapSettings& s
   : QgsMapRendererQImageJob(SequentialJob, settings)
   , mInternalJob(0)
 {
+  qDebug("SEQUENTIAL construct");
 }
 
 QgsMapRendererSequentialJob::~QgsMapRendererSequentialJob()
 {
-  delete mInternalJob;
+  qDebug("SEQUENTIAL destruct");
+  //delete mInternalJob;
+  Q_ASSERT(mInternalJob == 0);
 }
 
 
 void QgsMapRendererSequentialJob::start()
 {
+  qDebug("SEQUENTIAL START");
+  qDebug("%d,%d", mSettings.outputSize().width(), mSettings.outputSize().height());
+
   mImage = QImage(mSettings.outputSize(), QImage::Format_ARGB32_Premultiplied);
-  mImage.fill(Qt::blue);
 
   // 1. create an image where we will output all rendering
   mPainter = new QPainter(&mImage);
@@ -47,7 +52,11 @@ void QgsMapRendererSequentialJob::start()
 void QgsMapRendererSequentialJob::cancel()
 {
   if (mInternalJob)
+  {
     mInternalJob->cancel();
+    delete mInternalJob;
+    mInternalJob = 0;
+  }
 }
 
 
@@ -59,6 +68,8 @@ QImage QgsMapRendererSequentialJob::renderedImage()
 
 void QgsMapRendererSequentialJob::internalFinished()
 {
+  qDebug("SEQUENTIAL finished");
+
   mPainter->end();
   delete mPainter;
   mPainter = 0;
@@ -78,17 +89,22 @@ QgsMapRendererCustomPainterJob::QgsMapRendererCustomPainterJob(const QgsMapSetti
   : QgsMapRendererJob(CustomPainterJob, settings)
   , mPainter(painter)
 {
-  connect(&mFutureWatcher, SIGNAL(finished()), SLOT(futureFinished()));
+  qDebug("QPAINTER construct");
 }
 
 QgsMapRendererCustomPainterJob::~QgsMapRendererCustomPainterJob()
 {
-  cancel();
+  qDebug("QPAINTER destruct");
+  Q_ASSERT(!mFutureWatcher.isRunning());
+  //cancel();
 }
 
 void QgsMapRendererCustomPainterJob::start()
 {
-  qDebug("run!");
+  qDebug("QPAINTER run!");
+
+  connect(&mFutureWatcher, SIGNAL(finished()), SLOT(futureFinished()));
+
   mFuture = QtConcurrent::run(staticRender, this);
   mFutureWatcher.setFuture(mFuture);
 }
@@ -99,47 +115,46 @@ void QgsMapRendererCustomPainterJob::cancel()
 {
   if (mFuture.isRunning())
   {
+    qDebug("QPAINTER cancelling");
+    disconnect(&mFutureWatcher, SIGNAL(finished()), this, SLOT(futureFinished()));
+
     mRenderContext.setRenderingStopped(true);
 
+    QTime t;
+    t.start();
+
     mFutureWatcher.waitForFinished();
-    qApp->processEvents( QEventLoop::ExcludeUserInputEvents | QEventLoop::ExcludeSocketNotifiers ); // TODO: necessary?
+
+    qDebug("QPAINER cancel waited %f ms", t.elapsed() / 1000.0);
+
+    futureFinished();
+
+    qDebug("QPAINTER cancelled");
   }
 }
 
 
 void QgsMapRendererCustomPainterJob::futureFinished()
 {
-  qDebug("futureFinished");
+  qDebug("QPAINTER futureFinished");
   emit finished();
 }
 
 
 void QgsMapRendererCustomPainterJob::staticRender(QgsMapRendererCustomPainterJob* self)
 {
-  qDebug("staticRender");
   self->startRender();
 }
 
 
 void QgsMapRendererCustomPainterJob::startRender()
 {
-  qDebug("startRender");
-  /*
-  for (int i = 0; i < 50; ++i)
-  {
-    if (mStopped)
-      return;
+  qDebug("QPAINTER startRender");
 
-    mPainter->drawLine(rand() % 360, rand() % 360, rand() % 360, rand() % 360);
-    //QThread::msleep(100);
-    int x = 0;
-    for (int i = 0; i < 1000; i++)
-    {
-      for (int j = 0; j < 10000; j++)
-        x *= x+5;
-    }
-    qDebug("drawn line");
-  }*/
+  // clear the background
+  mPainter->fillRect( 0, 0, mSettings.outputSize().width(), mSettings.outputSize().height(), mSettings.backgroundColor() );
+
+  mPainter->setRenderHint( QPainter::Antialiasing, mSettings.isAntiAliasingEnabled() );
 
 #ifdef QGISDEBUG
   QgsDebugMsg( "Starting to render layer stack." );
@@ -163,7 +178,7 @@ void QgsMapRendererCustomPainterJob::startRender()
   int myGreen = prj->readNumEntry( "Gui", "/SelectionColorGreenPart", 255 );
   int myBlue = prj->readNumEntry( "Gui", "/SelectionColorBluePart", 0 );
   int myAlpha = prj->readNumEntry( "Gui", "/SelectionColorAlphaPart", 255 );*/
-  mRenderContext.setSelectionColor( Qt::red ); // TODO QColor( myRed, myGreen, myBlue, myAlpha ) );
+  mRenderContext.setSelectionColor( mSettings.selectionColor() ); // TODO QColor( myRed, myGreen, myBlue, myAlpha ) );
 
   //calculate scale factor
   //use the specified dpi and not those from the paint device

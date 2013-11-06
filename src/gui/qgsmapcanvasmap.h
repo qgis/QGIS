@@ -47,12 +47,14 @@ class GUI_EXPORT QgsMapCanvasMap : public QObject, public QGraphicsRectItem
     //! resize canvas item and pixmap
     void resize( QSize size );
 
-    void enableAntiAliasing( bool flag ) { mAntiAliasing = flag; }
+    //! @deprecated in 2.1 - does nothing. Kept for API compatibility
+    void enableAntiAliasing( bool flag );
 
     //! @deprecated in 2.1 - does nothing. Kept for API compatibility
     void render() {}
 
-    void setBackgroundColor( const QColor& color ) { mBgColor = color; }
+    //! @deprecated in 2.1 - does nothing. Kept for API compatibility
+    void setBackgroundColor( const QColor& color ) {}
 
     void setPanningOffset( const QPoint& point );
 
@@ -74,16 +76,11 @@ public slots:
 
   private:
 
-    //! indicates whether antialiasing will be used for rendering
-    bool mAntiAliasing;
-
     QImage mImage;
     QImage mLastImage;
 
     //QgsMapRenderer* mRender;
     QgsMapCanvas* mCanvas;
-
-    QColor mBgColor;
 
     QPoint mOffset;
 

@@ -80,16 +80,10 @@ void QgsMapCanvasMap::paint( QPainter* p, const QStyleOptionGraphicsItem*, QWidg
 
       qDebug("----------> EXTENT %f,%f", s.extent().xMinimum(), s.extent().yMinimum());
 
-      mImage.fill(mBgColor.rgb());
-
       mPainter = new QPainter(&mImage);
 
       // TODO[MD]: need to setup clipping?
       //paint.setClipRect( mImage.rect() );
-
-      // antialiasing
-      if ( mAntiAliasing )
-        mPainter->setRenderHint( QPainter::Antialiasing );
 
       // create the renderer job
       Q_ASSERT(mJob == 0);

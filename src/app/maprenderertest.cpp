@@ -40,11 +40,11 @@ int main(int argc, char* argv[])
   QgsMapLayerRegistry::instance()->addMapLayer(layer2);
 
   // open a window and do the rendering!
-  TestWidget l(layer);
+  /*TestWidget l(layer);
   l.resize(360,360);
-  l.show();
+  l.show();*/
 
-/*
+
   QgsMapCanvas canvas;
   canvas.setCanvasColor(Qt::white);
   canvas.setExtent(layer->extent());
@@ -63,7 +63,6 @@ int main(int argc, char* argv[])
 
   QgsMapTool* pan = new QgsMapToolPan(&canvas);
   canvas.setMapTool(pan);
-*/
 
   return app.exec();
 }

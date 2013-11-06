@@ -33,6 +33,9 @@ QgsMapSettings::QgsMapSettings()
   , mExtent()
   , mProjectionsEnabled( false )
   , mDestCRS( GEOCRS_ID, QgsCoordinateReferenceSystem::InternalCrsId )  // WGS 84
+  , mBackgroundColor( Qt::white )
+  , mSelectionColor( Qt::yellow )
+  , mAntiAliasing( true )
   , mOutputUnits( QgsMapSettings::Millimeters )
 {
   updateDerived();
