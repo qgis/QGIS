@@ -234,7 +234,7 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>9</number>
          </property>
          <widget class="QWidget" name="mOptsPage_General">
           <layout class="QVBoxLayout" name="verticalLayout_14">
@@ -264,8 +264,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>793</width>
-                <height>784</height>
+                <width>401</width>
+                <height>525</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -703,8 +703,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>793</width>
-                <height>784</height>
+                <width>100</width>
+                <height>30</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_18">
@@ -797,8 +797,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>793</width>
-                <height>784</height>
+                <width>121</width>
+                <height>38</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -871,8 +871,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>793</width>
-                <height>784</height>
+                <width>100</width>
+                <height>30</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_20">
@@ -923,8 +923,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>793</width>
-                <height>784</height>
+                <width>476</width>
+                <height>182</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_26">
@@ -1094,8 +1094,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>793</width>
-                <height>784</height>
+                <width>100</width>
+                <height>30</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_21">
@@ -1152,8 +1152,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>793</width>
-                <height>784</height>
+                <width>116</width>
+                <height>149</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_23">
@@ -1264,8 +1264,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>793</width>
-                <height>784</height>
+                <width>100</width>
+                <height>30</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_24">
@@ -1316,8 +1316,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>793</width>
-                <height>784</height>
+                <width>792</width>
+                <height>772</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -1397,6 +1397,12 @@
                     </item>
                     <item>
                      <widget class="QComboBox" name="mLayerDataUrlFormatComboBox">
+                      <property name="minimumSize">
+                       <size>
+                        <width>137</width>
+                        <height>0</height>
+                       </size>
+                      </property>
                       <item>
                        <property name="text">
                         <string notr="true">text/html</string>
@@ -1483,7 +1489,7 @@
                      <widget class="QComboBox" name="mLayerMetadataUrlTypeComboBox">
                       <item>
                        <property name="text">
-                        <string notr="true"></string>
+                        <string notr="true"/>
                        </property>
                       </item>
                       <item>
@@ -1509,7 +1515,7 @@
                      <widget class="QComboBox" name="mLayerMetadataUrlFormatComboBox">
                       <item>
                        <property name="text">
-                        <string notr="true"></string>
+                        <string notr="true"/>
                        </property>
                       </item>
                       <item>
@@ -1543,6 +1549,64 @@
                 </widget>
                </item>
                <item>
+                <widget class="QgsCollapsibleGroupBox" name="mMetaLegendGrpBx">
+                 <property name="title">
+                  <string>LegendUrl</string>
+                 </property>
+                 <layout class="QGridLayout" name="gridLayout_2">
+                  <item row="0" column="0">
+                   <layout class="QHBoxLayout" name="horizontalLayout_2">
+                    <item>
+                     <widget class="QLabel" name="mLayerLegendUrlLabel">
+                      <property name="text">
+                       <string>Url</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QLineEdit" name="mLayerLegendUrlLineEdit"/>
+                    </item>
+                    <item>
+                     <widget class="QLabel" name="mLayerLegendUrlFormatLabel">
+                      <property name="text">
+                       <string>Format</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QComboBox" name="mLayerLegendUrlFormatComboBox">
+                      <property name="minimumSize">
+                       <size>
+                        <width>137</width>
+                        <height>0</height>
+                       </size>
+                      </property>
+                      <property name="currentIndex">
+                       <number>0</number>
+                      </property>
+                      <item>
+                       <property name="text">
+                        <string>image/png</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>image/jpeg</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>image/jpg</string>
+                       </property>
+                      </item>
+                     </widget>
+                    </item>
+                   </layout>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
                 <widget class="QgsCollapsibleGroupBox" name="mMetaPropertiesGrpBx">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -1559,6 +1623,12 @@
                  <layout class="QVBoxLayout" name="verticalLayout_9">
                   <item>
                    <widget class="QTextEdit" name="teMetadata">
+                    <property name="minimumSize">
+                     <size>
+                      <width>0</width>
+                      <height>250</height>
+                     </size>
+                    </property>
                     <property name="lineWidth">
                      <number>2</number>
                     </property>

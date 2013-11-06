@@ -119,6 +119,12 @@ class CORE_EXPORT QgsMapLayer : public QObject
     void setMetadataUrlFormat( const QString& metaUrlFormat ) { mMetadataUrlFormat = metaUrlFormat; }
     const QString& metadataUrlFormat() const { return mMetadataUrlFormat; }
 
+    /* Layer legendUrl information */
+    void setLegendUrl( const QString& legendUrl ) { mLegendUrl = legendUrl; }
+    const QString& legendUrl() const { return mLegendUrl; }
+    void setLegendUrlFormat( const QString& legendUrlFormat ) { mLegendUrlFormat = legendUrlFormat; }
+    const QString& legendUrlFormat() const { return mLegendUrlFormat; }
+
     /* Set the blending mode used for rendering a layer */
     void setBlendMode( const QPainter::CompositionMode blendMode );
     /* Returns the current blending mode for a layer */
@@ -397,6 +403,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /** \brief Obtain Metadata for this layer */
     virtual QString metadata();
 
+    /** \brief Obtain Legend for this layer */
+    virtual QString legend();
+
     /** Time stamp of data source in the moment when data/metadata were loaded by provider */
     virtual QDateTime timestamp() const { return QDateTime() ; }
 
@@ -505,6 +514,10 @@ class CORE_EXPORT QgsMapLayer : public QObject
     QString mMetadataUrl;
     QString mMetadataUrlType;
     QString mMetadataUrlFormat;
+
+    /**MetadataUrl of the layer*/
+    QString mLegendUrl;
+    QString mLegendUrlFormat;
 
     /** \brief Error */
     QgsError mError;
