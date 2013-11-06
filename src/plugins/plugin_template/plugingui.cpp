@@ -26,7 +26,7 @@
   // pieces of text. One-liners can be added in the .ui file
 
   // Note: Format does not relate to translation.
-  QString format( "<html><body><h3>%1</h3>%2<h3>%3</h3>%4<p><a href=http://svn.qgis.org/api_doc/html>"
+  QString format( "<html><body><h3>%1</h3>%2<h3>%3</h3>%4<p><a href=http://qgis.org/api>"
                   "http://qgis.org/api</a><p>"
                   "%5<p>%6<p>%7<p>%8<p><h3>%9</h3>"
                   "<h4>CMakeLists.txt</h4>%11"
