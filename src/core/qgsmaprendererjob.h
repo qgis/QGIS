@@ -78,6 +78,7 @@ class QgsMapRendererSequentialJob : public QgsMapRendererQImageJob
   Q_OBJECT
 public:
   QgsMapRendererSequentialJob(const QgsMapSettings& settings);
+  ~QgsMapRendererSequentialJob();
 
   virtual void start();
   virtual void cancel();
@@ -115,6 +116,7 @@ class QgsMapRendererCustomPainterJob : public QgsMapRendererJob
   Q_OBJECT
 public:
   QgsMapRendererCustomPainterJob(const QgsMapSettings& settings, QPainter* painter);
+  ~QgsMapRendererCustomPainterJob();
 
   virtual void start();
   virtual void cancel();

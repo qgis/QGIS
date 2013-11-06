@@ -328,9 +328,9 @@ void QgsMapCanvas::enableOverviewMode( QgsMapOverviewCanvas* overview )
   if ( mMapOverview )
   {
     // disconnect old map overview if exists
-    disconnect( mMapRenderer, SIGNAL( hasCrsTransformEnabled( bool ) ),
+    disconnect( this,       SIGNAL( hasCrsTransformEnabled( bool ) ),
                 mMapOverview, SLOT( hasCrsTransformEnabled( bool ) ) );
-    disconnect( mMapRenderer, SIGNAL( destinationSrsChanged() ),
+    disconnect( this,       SIGNAL( destinationSrsChanged() ),
                 mMapOverview, SLOT( destinationSrsChanged() ) );
 
     // map overview is not owned by map canvas so don't delete it...
@@ -341,9 +341,9 @@ void QgsMapCanvas::enableOverviewMode( QgsMapOverviewCanvas* overview )
   if ( overview )
   {
     // connect to the map render to copy its projection settings
-    connect( mMapRenderer, SIGNAL( hasCrsTransformEnabled( bool ) ),
+    connect( this,       SIGNAL( hasCrsTransformEnabled( bool ) ),
              overview,     SLOT( hasCrsTransformEnabled( bool ) ) );
-    connect( mMapRenderer, SIGNAL( destinationSrsChanged() ),
+    connect( this,       SIGNAL( destinationSrsChanged() ),
              overview,     SLOT( destinationSrsChanged() ) );
   }
 }

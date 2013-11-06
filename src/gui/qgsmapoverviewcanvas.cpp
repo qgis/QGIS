@@ -107,7 +107,7 @@ void QgsMapOverviewCanvas::paintEvent( QPaintEvent* pe )
 
 void QgsMapOverviewCanvas::drawExtentRect()
 {
-  if ( !mMapCanvas || !mMapRenderer ) return;
+  if ( !mMapCanvas ) return;
 
   const QgsRectangle& extent = mMapCanvas->extent();
 
@@ -294,22 +294,18 @@ void QgsMapOverviewCanvas::setBackgroundColor( const QColor& color )
 void QgsMapOverviewCanvas::setLayerSet( const QStringList& layerSet )
 {
   QgsDebugMsg( "layerSet: " + layerSet.join( ", " ) );
-  if ( !mMapRenderer ) return;
   mMapRenderer->setLayerSet( layerSet );
-  mMapRenderer->updateFullExtent();
   updateFullExtent();
 }
 
 void QgsMapOverviewCanvas::updateFullExtent()
 {
-  if ( !mMapRenderer ) return;
   QgsRectangle rect;
-  if ( !mMapRenderer->layerSet().isEmpty() )
-  {
-    rect = mMapRenderer->fullExtent();
-    // expand a bit to keep features on margin
-    rect.scale( 1.1 );
-  }
+
+  rect = mMapCanvas->fullExtent();
+  // expand a bit to keep features on margin
+  rect.scale( 1.1 );
+
   mMapRenderer->setExtent( rect );
   drawExtentRect();
 }
@@ -321,7 +317,7 @@ void QgsMapOverviewCanvas::hasCrsTransformEnabled( bool flag )
 
 void QgsMapOverviewCanvas::destinationSrsChanged()
 {
-  const QgsCoordinateReferenceSystem& srs = mMapCanvas->mapRenderer()->destinationCrs();
+  const QgsCoordinateReferenceSystem& srs = mMapCanvas->mapSettings().destinationCrs();
   mMapRenderer->setDestinationCrs( srs );
 }
 

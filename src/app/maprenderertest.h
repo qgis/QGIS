@@ -17,24 +17,16 @@ class TestWidget : public QLabel
 public:
   TestWidget(QgsMapLayer* layer)
   {
-    //p = QPixmap(200,200);
-    //p.fill(Qt::red);
-
-    i = QImage(size(), QImage::Format_ARGB32_Premultiplied);
-    i.fill(Qt::gray);
-
     job = 0;
 
     // init renderer
     ms.setLayers(QStringList(layer->id()));
     ms.setExtent(layer->extent());
-    ms.setOutputSize(i.size());
+    ms.setOutputSize(size());
     ms.setOutputDpi(120);
 
     if (ms.hasValidSettings())
       qDebug("map renderer settings valid");
-
-    setPixmap(QPixmap::fromImage(i));
 
     connect(&timer, SIGNAL(timeout()), SLOT(onMapUpdateTimeout()));
     timer.setInterval(100);
@@ -65,12 +57,10 @@ public:
         job = 0;
       }
 
-      i.fill(Qt::gray);
-
-      painter = new QPainter(&i);
-
-      job = new QgsMapRendererCustomPainterJob(ms, painter);
+      job = new QgsMapRendererSequentialJob(ms);
       connect(job, SIGNAL(finished()), SLOT(f()));
+
+      job->start();
 
       timer.start();
     }
@@ -81,29 +71,23 @@ protected slots:
   {
     qDebug("finished!");
 
-    painter->end();
-    delete painter;
-
     timer.stop();
 
-    //update();
-
-    setPixmap(QPixmap::fromImage(i));
+    if (job)
+      setPixmap(QPixmap::fromImage( job->renderedImage() ));
   }
 
   void onMapUpdateTimeout()
   {
     qDebug("update timer!");
 
-    setPixmap(QPixmap::fromImage(i));
+    if (job)
+      setPixmap(QPixmap::fromImage( job->renderedImage() ));
   }
 
 protected:
-  //QPixmap p;
-  QImage i;
-  QPainter* painter;
   QgsMapSettings ms;
-  QgsMapRendererJob* job;
+  QgsMapRendererQImageJob* job;
   QTimer timer;
 };
 

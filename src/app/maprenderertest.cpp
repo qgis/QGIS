@@ -10,6 +10,7 @@
 #include "qgsmaplayerregistry.h"
 
 #include "qgsmapcanvas.h"
+#include "qgsmapoverviewcanvas.h"
 #include "qgsmaptoolpan.h"
 
 int main(int argc, char* argv[])
@@ -39,23 +40,30 @@ int main(int argc, char* argv[])
   QgsMapLayerRegistry::instance()->addMapLayer(layer2);
 
   // open a window and do the rendering!
-  /*TestWidget l(layer);
+  TestWidget l(layer);
   l.resize(360,360);
-  l.show();*/
+  l.show();
 
+/*
   QgsMapCanvas canvas;
   canvas.setCanvasColor(Qt::white);
   canvas.setExtent(layer->extent());
+  canvas.show();
+
+  // test overview
+  QgsMapOverviewCanvas overview( 0, &canvas );
+  overview.resize(200,200);
+  canvas.enableOverviewMode( &overview );
+  overview.show();
 
   QList<QgsMapCanvasLayer> layers;
-  layers.append(QgsMapCanvasLayer(layer2));
+  layers.append(QgsMapCanvasLayer(layer2, false, true));
   layers.append(QgsMapCanvasLayer(layer));
   canvas.setLayerSet(layers);
 
   QgsMapTool* pan = new QgsMapToolPan(&canvas);
   canvas.setMapTool(pan);
-
-  canvas.show();
+*/
 
   return app.exec();
 }

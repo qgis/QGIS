@@ -22,9 +22,15 @@ QgsMapRendererSequentialJob::QgsMapRendererSequentialJob(const QgsMapSettings& s
 {
 }
 
+QgsMapRendererSequentialJob::~QgsMapRendererSequentialJob()
+{
+  delete mInternalJob;
+}
+
 
 void QgsMapRendererSequentialJob::start()
 {
+  mImage = QImage(mSettings.outputSize(), QImage::Format_ARGB32_Premultiplied);
   mImage.fill(Qt::blue);
 
   // 1. create an image where we will output all rendering
@@ -40,7 +46,8 @@ void QgsMapRendererSequentialJob::start()
 
 void QgsMapRendererSequentialJob::cancel()
 {
-  mInternalJob->cancel();
+  if (mInternalJob)
+    mInternalJob->cancel();
 }
 
 
@@ -58,6 +65,8 @@ void QgsMapRendererSequentialJob::internalFinished()
 
   delete mInternalJob;
   mInternalJob = 0;
+
+  emit finished();
 }
 
 
@@ -72,6 +81,11 @@ QgsMapRendererCustomPainterJob::QgsMapRendererCustomPainterJob(const QgsMapSetti
   connect(&mFutureWatcher, SIGNAL(finished()), SLOT(futureFinished()));
 }
 
+QgsMapRendererCustomPainterJob::~QgsMapRendererCustomPainterJob()
+{
+  cancel();
+}
+
 void QgsMapRendererCustomPainterJob::start()
 {
   qDebug("run!");
@@ -83,10 +97,13 @@ void QgsMapRendererCustomPainterJob::start()
 
 void QgsMapRendererCustomPainterJob::cancel()
 {
-  mRenderContext.setRenderingStopped(true);
+  if (mFuture.isRunning())
+  {
+    mRenderContext.setRenderingStopped(true);
 
-  mFutureWatcher.waitForFinished();
-  qApp->processEvents( QEventLoop::ExcludeUserInputEvents | QEventLoop::ExcludeSocketNotifiers ); // TODO: necessary?
+    mFutureWatcher.waitForFinished();
+    qApp->processEvents( QEventLoop::ExcludeUserInputEvents | QEventLoop::ExcludeSocketNotifiers ); // TODO: necessary?
+  }
 }
 
 
