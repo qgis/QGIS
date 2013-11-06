@@ -3822,6 +3822,14 @@ void QgisApp::dxfExport()
     dxfExport.addLayers( layerList );
     dxfExport.setSymbologyScaleDenominator( d.symbologyScale() );
     dxfExport.setSymbologyExport( d.symbologyMode() );
+    if ( mapCanvas() )
+    {
+      QgsMapRenderer* r = mapCanvas()->mapRenderer();
+      if ( r )
+      {
+        dxfExport.setMapUnits( r->mapUnits() );
+      }
+    }
     QFile dxfFile( d.saveFile() );
     dxfExport.writeToFile( &dxfFile );
   }

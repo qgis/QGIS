@@ -35,7 +35,7 @@ class QgsDxfExport
     enum SymbologyExport
     {
       NoSymbology = 0, //export only data
-      FeatureSymbology, //Keeps the number of features and export symbology per feature
+      FeatureSymbology, //Keeps the number of features and export symbology per feature (using the first symbol level)
       SymbolLayerSymbology //Exports one feature per symbol layer (considering symbol levels)
     };
 
@@ -43,10 +43,13 @@ class QgsDxfExport
     ~QgsDxfExport();
 
     void addLayers( QList< QgsMapLayer* >& layers ) { mLayers = layers; }
-    int writeToFile( QIODevice* d, SymbologyExport s = SymbolLayerSymbology );  //maybe add progress dialog? //other parameters (e.g. scale, dpi)?
+    int writeToFile( QIODevice* d );  //maybe add progress dialog? //other parameters (e.g. scale, dpi)?
 
     void setSymbologyScaleDenominator( double d ) { mSymbologyScaleDenominator = d; }
     double symbologyScaleDenominator() const { return mSymbologyScaleDenominator; }
+
+    void setMapUnits( QGis::UnitType u ) { mMapUnits = u; }
+    QGis::UnitType mapUnits() const { return mMapUnits; }
 
     void setSymbologyExport( SymbologyExport e ) { mSymbologyExport = e; }
     SymbologyExport symbologyExport() const { return mSymbologyExport; }
@@ -57,13 +60,16 @@ class QgsDxfExport
     /**Scale for symbology export (used if symbols units are mm)*/
     double mSymbologyScaleDenominator;
     SymbologyExport mSymbologyExport;
+    QGis::UnitType mMapUnits;
 
     QVector<QRgb> mDxfColorPalette;
+
+    static double mDxfColors[][3];
 
     void writeHeader( QTextStream& stream );
     void writeTables( QTextStream& stream );
     void writeEntities( QTextStream& stream );
-    void writeEntitiesSymbolLevels( QTextStream& stream );
+    void writeEntitiesSymbolLevels( QTextStream& stream, QgsVectorLayer* layer );
     void writeEndFile( QTextStream& stream );
 
     void startSection( QTextStream& stream );
@@ -87,8 +93,11 @@ class QgsDxfExport
     static int color_distance( QRgb p1, int index );
     static QRgb createRgbEntry( qreal r, qreal g, qreal b );
 
-    static double mDxfColors[][3];
-
+    //helper functions for symbology export
+    QgsRenderContext renderContext() const;
+    void startRender( QgsVectorLayer* vl ) const;
+    void stopRender( QgsVectorLayer* vl ) const;
+    static double mapUnitScaleFactor( double scaleDenominator, QgsSymbolV2::OutputUnit symbolUnits, QGis::UnitType mapUnits );
 };
 
 #endif // QGSDXFEXPORT_H

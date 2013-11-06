@@ -285,7 +285,7 @@ double QgsDxfExport::mDxfColors[][3] =
   {1, 1, 1}               // 255
 };
 
-QgsDxfExport::QgsDxfExport(): mSymbologyScaleDenominator( 1.0 ), mSymbologyExport( NoSymbology )
+QgsDxfExport::QgsDxfExport(): mSymbologyScaleDenominator( 1.0 ), mSymbologyExport( NoSymbology ), mMapUnits( QGis::Meters )
 {
 }
 
@@ -294,7 +294,7 @@ QgsDxfExport::~QgsDxfExport()
 
 }
 
-int QgsDxfExport::writeToFile( QIODevice* d, SymbologyExport s )
+int QgsDxfExport::writeToFile( QIODevice* d )
 {
   if ( !d )
   {
@@ -447,19 +447,27 @@ void QgsDxfExport::writeEntities( QTextStream& stream )
     {
       continue;
     }
+
+    QgsFeatureRendererV2* renderer = vl->rendererV2();
+    if ( mSymbologyExport == QgsDxfExport::SymbolLayerSymbology && renderer->usingSymbolLevels() )
+    {
+      writeEntitiesSymbolLevels( stream, vl );
+      continue;
+    }
+
     QgsVectorDataProvider* dp = vl->dataProvider();
     if ( !dp )
     {
       continue;
     }
 
-    QgsFeatureRendererV2* renderer = vl->rendererV2();
+
     QgsFeatureIterator featureIt = vl->getFeatures( QgsFeatureRequest().setSubsetOfAttributes(
                                      renderer->usedAttributes(), dp->fields() ) );
     QgsFeature fet;
     while ( featureIt.nextFeature( fet ) )
     {
-      if ( 0 /*mSymbologyExport == NoSymbology*/ )
+      if ( mSymbologyExport == NoSymbology )
       {
         addFeature( fet, stream, vl->name(), 0 ); //no symbology at all
       }
@@ -483,24 +491,93 @@ void QgsDxfExport::writeEntities( QTextStream& stream )
         }
         addFeature( fet, stream, vl->name(), s->symbolLayer( 0 ) );
       }
-#if 0
-      //get geometry and write it. Todo: consider symbolisation
-      QgsGeometry* geom = fet.geometry();
-      if ( geom )
-      {
-        //try with line first
-        writePolyline( stream, geom->asPolyline(), vl->name() );
-      }
-#endif //0
     }
   }
 
   endSection( stream );
 }
 
-void QgsDxfExport::writeEntitiesSymbolLevels( QTextStream& stream )
+void QgsDxfExport::writeEntitiesSymbolLevels( QTextStream& stream, QgsVectorLayer* layer )
 {
-  //todo....
+  if ( !layer )
+  {
+    return;
+  }
+
+  QgsFeatureRendererV2* renderer = layer->rendererV2();
+  if ( !renderer )
+  {
+    //return error
+  }
+  QHash< QgsSymbolV2*, QList<QgsFeature> > features;
+
+  startRender( layer );
+
+  //get iterator
+  QgsFeatureRequest req;
+  if ( layer->wkbType() == QGis::WKBNoGeometry )
+  {
+    req.setFlags( QgsFeatureRequest::NoGeometry );
+  }
+  req.setSubsetOfAttributes( QStringList( renderer->usedAttributes() ), layer->pendingFields() );
+  QgsFeatureIterator fit = layer->getFeatures( req );
+
+  //fetch features
+  QgsFeature fet;
+  QgsSymbolV2* featureSymbol = 0;
+  while ( fit.nextFeature( fet ) )
+  {
+    featureSymbol = renderer->symbolForFeature( fet );
+    if ( !featureSymbol )
+    {
+      continue;
+    }
+
+    QHash< QgsSymbolV2*, QList<QgsFeature> >::iterator it = features.find( featureSymbol );
+    if ( it == features.end() )
+    {
+      it = features.insert( featureSymbol, QList<QgsFeature>() );
+    }
+    it.value().append( fet );
+  }
+
+  //find out order
+  QgsSymbolV2LevelOrder levels;
+  QgsSymbolV2List symbols = renderer->symbols();
+  for ( int i = 0; i < symbols.count(); i++ )
+  {
+    QgsSymbolV2* sym = symbols[i];
+    for ( int j = 0; j < sym->symbolLayerCount(); j++ )
+    {
+      int level = sym->symbolLayer( j )->renderingPass();
+      if ( level < 0 || level >= 1000 ) // ignore invalid levels
+        continue;
+      QgsSymbolV2LevelItem item( sym, j );
+      while ( level >= levels.count() ) // append new empty levels
+        levels.append( QgsSymbolV2Level() );
+      levels[level].append( item );
+    }
+  }
+
+  //export symbol layers and symbology
+  for ( int l = 0; l < levels.count(); l++ )
+  {
+    QgsSymbolV2Level& level = levels[l];
+    for ( int i = 0; i < level.count(); i++ )
+    {
+      QgsSymbolV2LevelItem& item = level[i];
+      QHash< QgsSymbolV2*, QList<QgsFeature> >::iterator levelIt = features.find( item.symbol() );
+
+      int llayer = item.layer();
+      QList<QgsFeature>& featureList = levelIt.value();
+      QList<QgsFeature>::iterator featureIt = featureList.begin();
+      for ( ; featureIt != featureList.end(); ++featureIt )
+      {
+        addFeature( *featureIt, stream, layer->name(), levelIt.key()->symbolLayer( llayer ) );
+      }
+    }
+  }
+  stopRender( layer );
 }
 
 void QgsDxfExport::writeEndFile( QTextStream& stream )
@@ -676,7 +753,18 @@ int QgsDxfExport::colorFromSymbolLayer( const QgsSymbolLayerV2* symbolLayer )
 
 double QgsDxfExport::widthFromSymbolLayer( const QgsSymbolLayerV2* symbolLayer )
 {
-  return 50; //todo...
+  //line symbol layer has width and width units
+  if ( symbolLayer && symbolLayer->type() == QgsSymbolV2::Line )
+  {
+    const QgsLineSymbolLayerV2* lineSymbolLayer = static_cast<const QgsLineSymbolLayerV2*>( symbolLayer );
+    return ( lineSymbolLayer->width() * mapUnitScaleFactor( mSymbologyScaleDenominator, lineSymbolLayer->widthUnit(), mMapUnits ) );
+  }
+
+  return 1.0;
+
+  //marker symbol layer: check for embedded line layers?
+
+  //mapUnitScaleFactor( double scaleDenominator, QgsSymbolV2::OutputUnit symbolUnits, QGis::UnitType mapUnits )
 }
 
 int QgsDxfExport::closestColorMatch( QRgb pixel )
@@ -711,4 +799,61 @@ int QgsDxfExport::color_distance( QRgb p1, int index )
 QRgb QgsDxfExport::createRgbEntry( qreal r, qreal g, qreal b )
 {
   return QColor::fromRgbF( r, g, b ).rgb();
+}
+
+QgsRenderContext QgsDxfExport::renderContext() const
+{
+  QgsRenderContext context;
+  context.setRendererScale( mSymbologyScaleDenominator );
+  return context;
+}
+
+void QgsDxfExport::startRender( QgsVectorLayer* vl ) const
+{
+  if ( !vl )
+  {
+    return;
+  }
+
+  QgsFeatureRendererV2* renderer = vl->rendererV2();
+  if ( !renderer )
+  {
+    return;
+  }
+
+  QgsRenderContext ctx = renderContext();
+  renderer->startRender( ctx, vl );
+}
+
+void QgsDxfExport::stopRender( QgsVectorLayer* vl ) const
+{
+  if ( !vl )
+  {
+    return;
+  }
+
+  QgsFeatureRendererV2* renderer = vl->rendererV2();
+  if ( !renderer )
+  {
+    return;
+  }
+
+  QgsRenderContext ctx = renderContext();
+  renderer->stopRender( ctx );
+}
+
+double QgsDxfExport::mapUnitScaleFactor( double scaleDenominator, QgsSymbolV2::OutputUnit symbolUnits, QGis::UnitType mapUnits )
+{
+  if ( symbolUnits == QgsSymbolV2::MapUnit )
+  {
+    return 1.0;
+  }
+  else
+  {
+    if ( symbolUnits == QgsSymbolV2::MM && mapUnits == QGis::Meters )
+    {
+      return scaleDenominator / 1000;
+    }
+  }
+  return 1.0;
 }
