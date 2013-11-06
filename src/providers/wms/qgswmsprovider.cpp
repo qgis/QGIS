@@ -1132,6 +1132,8 @@ void QgsWmsProvider::tileReplyFinished()
   int tileReqNo = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( TileReqNo ) ).toInt();
   int tileNo = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( TileIndex ) ).toInt();
   QRectF r = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( TileRect ) ).toRectF();
+
+#ifdef QGISDEBUG
   int retry = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( TileRetry ) ).toInt();
 
 #if QT_VERSION >= 0x40500
@@ -1149,6 +1151,7 @@ void QgsWmsProvider::tileReplyFinished()
                .arg( reply->errorString() )
                .arg( reply->url().toString() )
              );
+#endif
 #endif
 
   if ( reply->error() == QNetworkReply::NoError )
