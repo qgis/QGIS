@@ -1136,7 +1136,8 @@ class mmqgisx_extract_algorithm(GeoAlgorithm):
 
         filename = self.getParameterValue(self.LAYERNAME)
         layer = dataobjects.getObjectFromUri(filename)
-
+        provider = layer.dataProvider()
+        fields = provider.fields()
         attribute = self.getParameterValue(self.ATTRIBUTE)
         comparison = self.comparisons[self.getParameterValue(self.COMPARISON)]
         comparisonvalue = self.getParameterValue(self.COMPARISONVALUE)
@@ -1146,8 +1147,8 @@ class mmqgisx_extract_algorithm(GeoAlgorithm):
         features = vector.features(layer)
         featureCount = len(features)
         output = self.getOutputFromName(self.OUTPUT)
-        writer = output.getVectorWriter(layer.fields(),
-                layer.geometryType(), layer.crs())
+        writer = output.getVectorWriter(fields,
+                provider.geometryType(), layer.crs())
         for (i, feat) in enumerate(features):
             if feat.id() in selected:
                 writer.addFeature(feat)

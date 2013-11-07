@@ -1993,6 +1993,28 @@ QgsRectangle QgsOracleProvider::extent()
     QString sql;
     QSqlQuery qry( *mConnection );
 
+    if ( mUseEstimatedMetadata )
+    {
+      if ( exec( qry, QString( "SELECT sdo_lb,sdo_ub FROM mdsys.all_sdo_geom_metadata m, table(m.diminfo) WHERE owner=%1 AND table_name=%2 AND column_name=%3 AND sdo_dimname='X'" )
+                 .arg( quotedValue( mOwnerName ) )
+                 .arg( quotedValue( mTableName ) )
+                 .arg( quotedValue( mGeometryColumn ) ) ) && qry.next() )
+      {
+        mLayerExtent.setXMinimum( qry.value( 0 ).toDouble() );
+        mLayerExtent.setXMaximum( qry.value( 1 ).toDouble() );
+
+        if ( exec( qry, QString( "SELECT sdo_lb,sdo_ub FROM mdsys.all_sdo_geom_metadata m, table(m.diminfo) WHERE owner=%1 AND table_name=%2 AND column_name=%3 AND sdo_dimname='Y'" )
+                   .arg( quotedValue( mOwnerName ) )
+                   .arg( quotedValue( mTableName ) )
+                   .arg( quotedValue( mGeometryColumn ) ) )  && qry.next() )
+        {
+          mLayerExtent.setYMinimum( qry.value( 0 ).toDouble() );
+          mLayerExtent.setYMaximum( qry.value( 1 ).toDouble() );
+          return mLayerExtent;
+        }
+      }
+    }
+
     bool ok = false;
 
     if ( !mSpatialIndex.isNull() && ( mUseEstimatedMetadata || mSqlWhereClause.isEmpty() ) )

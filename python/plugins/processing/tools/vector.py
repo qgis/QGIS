@@ -43,34 +43,16 @@ def features(layer):
 
         def __init__(self, layer):
             self.layer = layer
-            self.iter = layer.getFeatures()
             self.selection = False
+            self.iter = layer.getFeatures()            
             if ProcessingConfig.getSetting(ProcessingConfig.USE_SELECTED):
-                self.selected = layer.selectedFeatures()
-                if len(self.selected) > 0:
+                selected = layer.selectedFeatures()
+                if len(selected) > 0:
                     self.selection = True
-                    self.idx = 0
+                    self.iter = iter(selected)
 
         def __iter__(self):
-            return self
-
-        def next(self):
-            if self.selection:
-                if self.idx < len(self.selected):
-                    feature = self.selected[self.idx]
-                    self.idx += 1
-                    return feature
-                else:
-                    raise StopIteration()
-            else:
-                if self.iter.isClosed():
-                    raise StopIteration()
-                f = QgsFeature()
-                if self.iter.nextFeature(f):
-                    return f
-                else:
-                    self.iter.close()
-                    raise StopIteration()
+            return self.iter
 
         def __len__(self):
             if self.selection:

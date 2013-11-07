@@ -114,6 +114,8 @@ QgsNewHttpConnection::QgsNewHttpConnection(
 
     cmbDpiMode->setVisible( false );
     mGroupBox->layout()->removeWidget( cmbDpiMode );
+    lblDpiMode->setVisible( false );
+    mGroupBox->layout()->removeWidget( lblDpiMode );
 
     txtReferer->setVisible( false );
     mGroupBox->layout()->removeWidget( txtReferer );
