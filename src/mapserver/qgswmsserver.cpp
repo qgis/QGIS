@@ -1136,6 +1136,7 @@ int QgsWMSServer::configureMapRender( const QPaintDevice* paintDevice ) const
     return 1; //paint device is needed for height, width, dpi
   }
 
+  mMapRenderer->clearLayerCoordinateTransforms();
   mMapRenderer->setOutputSize( QSize( paintDevice->width(), paintDevice->height() ), paintDevice->logicalDpiX() );
 
   //map extent
@@ -1193,6 +1194,18 @@ int QgsWMSServer::configureMapRender( const QPaintDevice* paintDevice ) const
     mMapRenderer->setDestinationCrs( outputCRS );
     mMapRenderer->setProjectionsEnabled( true );
     mapUnits = outputCRS.mapUnits();
+
+    //read layer coordinate transforms from project file (e.g. ct with special datum shift)
+    if ( mConfigParser )
+    {
+      QList< QPair< QString, QgsLayerCoordinateTransform > > lt = mConfigParser->layerCoordinateTransforms();
+      QList< QPair< QString, QgsLayerCoordinateTransform > >::const_iterator ltIt = lt.constBegin();
+      for ( ; ltIt != lt.constEnd(); ++ltIt )
+      {
+        QgsLayerCoordinateTransform t = ltIt->second;
+        mMapRenderer->addLayerCoordinateTransform( ltIt->first, t.srcAuthId, t.destAuthId, t.srcDatumTransform, t.destDatumTransform );
+      }
+    }
   }
   mMapRenderer->setMapUnits( mapUnits );
 

@@ -164,6 +164,8 @@ class QgsConfigParser
     /**Applies configuration specific label settings*/
     virtual void loadLabelSettings( QgsLabelingEngineInterface* lbl ) { Q_UNUSED( lbl ); }
 
+    virtual QList< QPair< QString, QgsLayerCoordinateTransform > > layerCoordinateTransforms() const;
+
   protected:
     /**Parser to forward not resolved requests (e.g. SLD parser based on user request might have a fallback parser with admin configuration)*/
     QgsConfigParser* mFallbackParser;

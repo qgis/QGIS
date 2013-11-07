@@ -599,3 +599,8 @@ void QgsConfigParser::serviceCapabilities( QDomElement& parentElement, QDomDocum
     }
   }
 }
+
+QList< QPair< QString, QgsLayerCoordinateTransform > > QgsConfigParser::layerCoordinateTransforms() const
+{
+  return QList< QPair< QString, QgsLayerCoordinateTransform > >();
+}

@@ -1251,7 +1251,9 @@ const QgsCoordinateTransform* QgsMapRenderer::tr( const QgsMapLayer *layer ) con
   }
 
   QHash< QString, QgsLayerCoordinateTransform >::const_iterator ctIt = mLayerCoordinateTransformInfo.find( layer->id() );
-  if ( ctIt != mLayerCoordinateTransformInfo.constEnd() )
+  if ( ctIt != mLayerCoordinateTransformInfo.constEnd()
+       && ctIt->srcAuthId == layer->crs().authid()
+       && ctIt->destAuthId == mDestCRS->authid() )
   {
     return QgsCoordinateTransformCache::instance()->transform( ctIt->srcAuthId, ctIt->destAuthId, ctIt->srcDatumTransform, ctIt->destDatumTransform );
   }
@@ -1262,7 +1264,10 @@ const QgsCoordinateTransform* QgsMapRenderer::tr( const QgsMapLayer *layer ) con
 
   //still not present? get coordinate transformation with -1/-1 datum transform as default
   ctIt = mLayerCoordinateTransformInfo.find( layer->id() );
-  if ( ctIt == mLayerCoordinateTransformInfo.constEnd() )
+  if ( ctIt == mLayerCoordinateTransformInfo.constEnd()
+       || ctIt->srcAuthId == layer->crs().authid()
+       || ctIt->destAuthId == mDestCRS->authid()
+     )
   {
     return QgsCoordinateTransformCache::instance()->transform( layer->crs().authid(), mDestCRS->authid(), -1, -1 );
   }
@@ -1351,6 +1356,11 @@ void QgsMapRenderer::addLayerCoordinateTransform( const QString& layerId, const 
   lt.srcDatumTransform = srcDatumTransform;
   lt.destDatumTransform = destDatumTransform;
   mLayerCoordinateTransformInfo.insert( layerId, lt );
+}
+
+void QgsMapRenderer::clearLayerCoordinateTransforms()
+{
+  mLayerCoordinateTransformInfo.clear();
 }
 
 bool QgsMapRenderer::mDrawing = false;

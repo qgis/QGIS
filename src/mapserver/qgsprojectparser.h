@@ -140,6 +140,8 @@ class QgsProjectParser: public QgsConfigParser
 
     void loadLabelSettings( QgsLabelingEngineInterface* lbl );
 
+    QList< QPair< QString, QgsLayerCoordinateTransform > > layerCoordinateTransforms() const;
+
   private:
 
     //forbidden
