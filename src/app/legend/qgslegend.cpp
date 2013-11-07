@@ -292,6 +292,9 @@ void QgsLegend::removeAll()
   updateMapCanvasLayerSet();
   setIconSize( mMinimumIconSize );
   mDropTarget = 0;
+  mUpdateDrawingOrder = true;
+  emit updateDrawingOrderChecked( true );
+  emit updateDrawingOrderUnchecked( false );
 }
 
 void QgsLegend::setLayersVisible( bool visible )
