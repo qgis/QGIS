@@ -1238,7 +1238,7 @@ void QgsMapRenderer::setLabelingEngine( QgsLabelingEngineInterface* iface )
   mLabelingEngine = iface;
 }
 
-const QgsCoordinateTransform* QgsMapRenderer::tr( QgsMapLayer *layer )
+const QgsCoordinateTransform* QgsMapRenderer::tr( const QgsMapLayer *layer ) const
 {
   if ( !layer || !mDestCRS )
   {

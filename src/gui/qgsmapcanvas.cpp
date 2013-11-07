@@ -112,8 +112,8 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
   setFocusPolicy( Qt::StrongFocus );
 
   mMapRenderer = new QgsMapRenderer;
-  connect( mMapRenderer, SIGNAL( datumTransformInfoRequested( QgsMapLayer*, const QString&, const QString& ) ),
-           this, SLOT( getDatumTransformInfo( QgsMapLayer*, const QString& , const QString& ) ) );
+  connect( mMapRenderer, SIGNAL( datumTransformInfoRequested( const QgsMapLayer*, const QString&, const QString& ) ),
+           this, SLOT( getDatumTransformInfo( const QgsMapLayer*, const QString& , const QString& ) ) );
 
   // create map canvas item which will show the map
   mMap = new QgsMapCanvasMap( this );
@@ -1548,7 +1548,7 @@ void QgsMapCanvas::writeProject( QDomDocument & doc )
 }
 
 /**Ask user which datum transform to use*/
-void QgsMapCanvas::getDatumTransformInfo( QgsMapLayer* ml, const QString& srcAuthId, const QString& destAuthId )
+void QgsMapCanvas::getDatumTransformInfo( const QgsMapLayer* ml, const QString& srcAuthId, const QString& destAuthId )
 {
   if ( !ml )
   {

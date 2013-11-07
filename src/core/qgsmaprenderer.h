@@ -297,6 +297,8 @@ class CORE_EXPORT QgsMapRenderer : public QObject
 
     void addLayerCoordinateTransform( const QString& layerId, const QString& srcAuthId, const QString& destAuthId, int srcDatumTransform = -1, int destDatumTransform = -1 );
 
+    const QgsCoordinateTransform* tr( const QgsMapLayer *layer ) const;
+
   signals:
 
     void drawingProgress( int current, int total );
@@ -313,7 +315,7 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     void drawError( QgsMapLayer* );
 
     //! Notifies higher level components to show the datum transform dialog and add a QgsLayerCoordinateTransformInfo for that layer
-    void datumTransformInfoRequested( QgsMapLayer* ml, const QString& srcAuthId, const QString& destAuthId );
+    void datumTransformInfoRequested( const QgsMapLayer* ml, const QString& srcAuthId, const QString& destAuthId ) const;
 
   public slots:
 
@@ -389,8 +391,6 @@ class CORE_EXPORT QgsMapRenderer : public QObject
 
     QHash< QString, QgsLayerCoordinateTransform > mLayerCoordinateTransformInfo;
 
-  private:
-    const QgsCoordinateTransform* tr( QgsMapLayer *layer );
 };
 
 #endif
