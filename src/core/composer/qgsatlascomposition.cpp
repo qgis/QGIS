@@ -41,6 +41,7 @@ QgsAtlasComposition::QgsAtlasComposition( QgsComposition* composition ) :
   QgsExpression::setSpecialColumn( "$feature", QVariant(( int )0 ) );
   QgsExpression::setSpecialColumn( "$numpages", QVariant(( int )1 ) );
   QgsExpression::setSpecialColumn( "$numfeatures", QVariant(( int )0 ) );
+  QgsExpression::setSpecialColumn( "$currentfeature", QVariant(( int )0 ) );
 }
 
 QgsAtlasComposition::~QgsAtlasComposition()
@@ -225,6 +226,7 @@ void QgsAtlasComposition::prepareForFeature( int featureI )
 
   // retrieve the next feature, based on its id
   mCoverageLayer->getFeatures( QgsFeatureRequest().setFilterFid( mFeatureIds[ featureI ] ) ).nextFeature( mCurrentFeature );
+  QgsExpression::setSpecialColumn( "$currentfeature", mCurrentFeature.id() );
 
   if ( !mSingleFile && mFilenamePattern.size() > 0 )
   {
