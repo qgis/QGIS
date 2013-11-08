@@ -301,7 +301,7 @@ int QgsDxfExport::writeToFile( QIODevice* d )
     return 1;
   }
 
-  if ( !d->open( QIODevice::WriteOnly ) )
+  if ( !d->isOpen() && !d->open( QIODevice::WriteOnly ) )
   {
     return 2;
   }
@@ -409,8 +409,8 @@ void QgsDxfExport::writeTables( QTextStream& stream )
   stream << "LAYER\n";
   stream << " 70\n";
   stream << mLayers.count() << "\n";
-  QList< QgsMapLayer* >::iterator layerIt = mLayers.begin();
-  for ( ; layerIt != mLayers.end(); ++layerIt )
+  QList< QgsMapLayer* >::const_iterator layerIt = mLayers.constBegin();
+  for ( ; layerIt != mLayers.constEnd(); ++layerIt )
   {
     stream << "  0\n";
     stream << "LAYER\n";
@@ -612,7 +612,7 @@ void QgsDxfExport::writePolyline( QTextStream& stream, const QgsPolyline& line, 
   stream << " 66\n";
   stream << "1\n";
   stream << " 70\n";
-  int type = polygon ? 49 : 0;
+  int type = polygon ? 1 : 0;
   stream << type << "\n";
   stream << " 40\n";
   stream << width << "\n";
