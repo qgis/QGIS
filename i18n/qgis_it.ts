@@ -16004,7 +16004,7 @@ Database:%2</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgsbrushstylecombobox.cpp" line="30"/>
         <source>No Brush</source>
-        <translation>Nessun pennello</translation>
+        <translation>Vuoto</translation>
     </message>
 </context>
 <context>
@@ -24601,7 +24601,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="359"/>
         <source>Suppress attribute form pop-up after feature creation</source>
-        <translation type="unfinished"></translation>
+        <translation>Non aprire la finestra degli attributi dopo la creazione di ogni geometria</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="379"/>
