@@ -66,6 +66,9 @@ class QgsDxfExport
 
     static double mDxfColors[][3];
 
+    int mSymbolLayerCounter; //internal counter
+    QHash< const QgsSymbolLayerV2*, QString > mLineStyles; //symbol layer name types
+
     void writeHeader( QTextStream& stream );
     void writeTables( QTextStream& stream );
     void writeEntities( QTextStream& stream );
@@ -75,7 +78,7 @@ class QgsDxfExport
     void startSection( QTextStream& stream );
     void endSection( QTextStream& stream );
 
-    void writePolyline( QTextStream& stream, const QgsPolyline& line, const QString& layer, int color,
+    void writePolyline( QTextStream& stream, const QgsPolyline& line, const QString& layer, const QString& lineStyleName, int color,
                         double width = -1, bool polygon = false );
     void writeVertex( QTextStream& stream, const QgsPoint& pt, const QString& layer );
 
@@ -98,6 +101,10 @@ class QgsDxfExport
     void startRender( QgsVectorLayer* vl ) const;
     void stopRender( QgsVectorLayer* vl ) const;
     static double mapUnitScaleFactor( double scaleDenominator, QgsSymbolV2::OutputUnit symbolUnits, QGis::UnitType mapUnits );
+    QList<QgsSymbolLayerV2*> symbolLayers();
+    static int nLineTypes( const QList<QgsSymbolLayerV2*>& symbolLayers );
+
+    void writeSymbolLayerLinestyle( QTextStream& stream, const QgsSymbolLayerV2* symbolLayer );
 };
 
 #endif // QGSDXFEXPORT_H

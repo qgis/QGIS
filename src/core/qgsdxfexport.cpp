@@ -20,6 +20,7 @@
 #include "qgspoint.h"
 #include "qgsrendererv2.h"
 #include "qgssymbollayerv2.h"
+#include "qgslinesymbollayerv2.h"
 #include "qgsvectorlayer.h"
 #include <QIODevice>
 #include <QTextStream>
@@ -285,7 +286,7 @@ double QgsDxfExport::mDxfColors[][3] =
   {1, 1, 1}               // 255
 };
 
-QgsDxfExport::QgsDxfExport(): mSymbologyScaleDenominator( 1.0 ), mSymbologyExport( NoSymbology ), mMapUnits( QGis::Meters )
+QgsDxfExport::QgsDxfExport(): mSymbologyScaleDenominator( 1.0 ), mSymbologyExport( NoSymbology ), mMapUnits( QGis::Meters ), mSymbolLayerCounter( 0 )
 {
 }
 
@@ -378,14 +379,24 @@ void QgsDxfExport::writeTables( QTextStream& stream )
   stream << "  2\n";
   stream << "TABLES\n";
 
+  //iterate through all layers and get symbol layer pointers
+  QList<QgsSymbolLayerV2*> slList;
+  if ( mSymbologyExport != NoSymbology )
+  {
+    slList = symbolLayers();
+  }
+
   //LTYPE
+  mLineStyles.clear();
   stream << "  0\n";
   stream << "TABLE\n";
   stream << "  2\n";
   stream << "LTYPE\n";
   stream << " 70\n";
-  stream << "  1\n"; //number of linetypes
+  stream << QString( "%1\n" ).arg( nLineTypes( slList ) ); //number of linetypes
   stream << "  0\n";
+
+  //add continuous style as default
   stream << "LTYPE\n";
   stream << "  2\n";
   stream << "CONTINUOUS\n";
@@ -399,6 +410,14 @@ void QgsDxfExport::writeTables( QTextStream& stream )
   stream << "0\n";
   stream << " 40\n"; //todo: add segments in group 49
   stream << "0\n";
+
+  //add symbol layer linestyles
+  QList<QgsSymbolLayerV2*>::const_iterator slIt = slList.constBegin();
+  for ( ; slIt != slList.constEnd(); ++slIt )
+  {
+    writeSymbolLayerLinestyle( stream, *slIt );
+  }
+
   stream << "  0\n";
   stream << "ENDTAB\n";
 
@@ -598,7 +617,7 @@ void QgsDxfExport::endSection( QTextStream& stream )
   stream << "ENDSEC\n";
 }
 
-void QgsDxfExport::writePolyline( QTextStream& stream, const QgsPolyline& line, const QString& layer, int color,
+void QgsDxfExport::writePolyline( QTextStream& stream, const QgsPolyline& line, const QString& layer, const QString& lineStyleName, int color,
                                   double width, bool polygon )
 {
   stream << "  0\n";
@@ -606,7 +625,7 @@ void QgsDxfExport::writePolyline( QTextStream& stream, const QgsPolyline& line, 
   stream << "  8\n";
   stream << layer << "\n";
   stream << "  6\n";
-  stream << "CONTINUOUS\n"; //todo: reference to linetype here
+  stream << QString( "%1\n" ).arg( lineStyleName );
   stream << " 62\n";
   stream << color << "\n";
   stream << " 66\n";
@@ -671,6 +690,12 @@ void QgsDxfExport::addFeature( const QgsFeature& fet, QTextStream& stream, const
   {
     int c = colorFromSymbolLayer( symbolLayer );
     double width = widthFromSymbolLayer( symbolLayer );
+    QString lineStyleName = "CONTINUOUS";
+    QHash< const QgsSymbolLayerV2*, QString >::const_iterator lineTypeIt = mLineStyles.find( symbolLayer );
+    if ( lineTypeIt != mLineStyles.constEnd() )
+    {
+      lineStyleName = lineTypeIt.value();
+    }
 
     //todo: write point symbols as blocks
 
@@ -678,7 +703,7 @@ void QgsDxfExport::addFeature( const QgsFeature& fet, QTextStream& stream, const
     //single line
     if ( geometryType == QGis::WKBLineString || geometryType == QGis::WKBLineString25D )
     {
-      writePolyline( stream, geom->asPolyline(), layer, c, width, false );
+      writePolyline( stream, geom->asPolyline(), layer, lineStyleName, c, width, false );
     }
 
     //multiline
@@ -688,7 +713,7 @@ void QgsDxfExport::addFeature( const QgsFeature& fet, QTextStream& stream, const
       QgsMultiPolyline::const_iterator lIt = multiLine.constBegin();
       for ( ; lIt != multiLine.constEnd(); ++lIt )
       {
-        writePolyline( stream, *lIt, layer, c, width, false );
+        writePolyline( stream, *lIt, layer, lineStyleName, c, width, false );
       }
     }
 
@@ -699,7 +724,7 @@ void QgsDxfExport::addFeature( const QgsFeature& fet, QTextStream& stream, const
       QgsPolygon::const_iterator polyIt = polygon.constBegin();
       for ( ; polyIt != polygon.constEnd(); ++polyIt ) //iterate over rings
       {
-        writePolyline( stream, *polyIt, layer, c, width, true );
+        writePolyline( stream, *polyIt, layer, lineStyleName, c, width, true );
       }
     }
 
@@ -713,7 +738,7 @@ void QgsDxfExport::addFeature( const QgsFeature& fet, QTextStream& stream, const
         QgsPolygon::const_iterator polyIt = mpIt->constBegin();
         for ( ; polyIt != mpIt->constEnd(); ++polyIt )
         {
-          writePolyline( stream, *polyIt, layer, c, width, true );
+          writePolyline( stream, *polyIt, layer, lineStyleName, c, width, true );
         }
       }
     }
@@ -856,4 +881,119 @@ double QgsDxfExport::mapUnitScaleFactor( double scaleDenominator, QgsSymbolV2::O
     }
   }
   return 1.0;
+}
+
+QList<QgsSymbolLayerV2*> QgsDxfExport::symbolLayers()
+{
+  QList<QgsSymbolLayerV2*> symbolLayers;
+
+  QList< QgsMapLayer* >::iterator lIt = mLayers.begin();
+  for ( ; lIt != mLayers.end(); ++lIt )
+  {
+    //cast to vector layer
+    QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( *lIt );
+    if ( !vl )
+    {
+      continue;
+    }
+
+    //get rendererv2
+    QgsFeatureRendererV2* r = vl->rendererV2();
+    if ( !r )
+    {
+      continue;
+    }
+
+    //get all symbols
+    QgsSymbolV2List symbols = r->symbols();
+    QgsSymbolV2List::iterator symbolIt = symbols.begin();
+    for ( ; symbolIt != symbols.end(); ++symbolIt )
+    {
+      int maxSymbolLayers = ( *symbolIt )->symbolLayerCount();
+      if ( mSymbologyExport != SymbolLayerSymbology )
+      {
+        maxSymbolLayers = 1;
+      }
+      for ( int i = 0; i < maxSymbolLayers; ++i )
+      {
+        symbolLayers.append(( *symbolIt )->symbolLayer( i ) );
+      }
+    }
+  }
+
+  return symbolLayers;
+}
+
+void QgsDxfExport::writeSymbolLayerLinestyle( QTextStream& stream, const QgsSymbolLayerV2* symbolLayer )
+{
+  if ( !symbolLayer )
+  {
+    return;
+  }
+
+  //QgsSimpleLineSymbolLayer can have customDashVector() / customDashPatternUnit()
+  const QgsSimpleLineSymbolLayerV2* simpleLine = dynamic_cast< const QgsSimpleLineSymbolLayerV2* >( symbolLayer );
+  if ( simpleLine )
+  {
+    if ( simpleLine->useCustomDashPattern() )
+    {
+      ++mSymbolLayerCounter;
+      QString name = QString( "symbolLayer%1" ).arg( mSymbolLayerCounter );
+
+      QVector<qreal> dashPattern = simpleLine->customDashVector();
+      double length = 0;
+      QVector<qreal>::const_iterator dashIt = dashPattern.constBegin();
+      for ( ; dashIt != dashPattern.constEnd(); ++dashIt )
+      {
+        length += *dashIt;
+      }
+
+      stream << "LTYPE\n";
+      stream << "  2\n";
+
+      stream << QString( "%1\n" ).arg( name );
+      stream << "  70\n";
+      stream << "64\n";
+      stream << "  3\n";
+      stream << "\n";
+      stream << " 72\n";
+      stream << "65\n";
+      stream << " 73\n";
+      stream << QString( "%1\n" ).arg( dashPattern.size() ); //number of segments
+      stream << " 40\n"; //todo: add segments in group 49
+      stream << QString( "%1\n" ).arg( length );
+
+      dashIt = dashPattern.constBegin();
+      bool isSpace = false;
+      for ( ; dashIt != dashPattern.constEnd(); ++dashIt )
+      {
+        stream << "49\n";
+
+        //map units or mm?
+        double segmentLength = ( isSpace ? -*dashIt : *dashIt );
+        segmentLength *= mapUnitScaleFactor( mSymbologyScaleDenominator, simpleLine->customDashPatternUnit(), mMapUnits );
+        stream << QString( "%1\n" ).arg( segmentLength );
+        isSpace = !isSpace;
+      }
+      mLineStyles.insert( symbolLayer, name );
+    }
+  }
+}
+
+int QgsDxfExport::nLineTypes( const QList<QgsSymbolLayerV2*>& symbolLayers )
+{
+  int nLineTypes = 0;
+  QList<QgsSymbolLayerV2*>::const_iterator slIt = symbolLayers.constBegin();
+  for ( ; slIt != symbolLayers.constEnd(); ++slIt )
+  {
+    const QgsSimpleLineSymbolLayerV2* simpleLine = dynamic_cast< const QgsSimpleLineSymbolLayerV2* >( *slIt );
+    if ( simpleLine )
+    {
+      if ( simpleLine->useCustomDashPattern() )
+      {
+        ++nLineTypes;
+      }
+    }
+  }
+  return nLineTypes;
 }
