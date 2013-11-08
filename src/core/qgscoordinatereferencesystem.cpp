@@ -1954,6 +1954,12 @@ bool QgsCoordinateReferenceSystem::syncDatumTransform( const QString& dbPath )
     return false;
   }
 
+  if ( sqlite3_exec( db, "BEGIN TRANSACTION", 0, 0, 0 ) != SQLITE_OK )
+  {
+    qCritical( "Could not begin transaction: %s [%s]\n", QgsApplication::srsDbFilePath().toLocal8Bit().constData(), sqlite3_errmsg( db ) );
+    return false;
+  }
+
 
   QTextStream textStream( &f );
   textStream.readLine();
@@ -2027,8 +2033,14 @@ bool QgsCoordinateReferenceSystem::syncDatumTransform( const QString& dbPath )
     }
   }
 
+  if ( sqlite3_exec( db, "COMMIT", 0, 0, 0 ) != SQLITE_OK )
+  {
+    qCritical( "Could not commit transaction: %s [%s]\n", QgsApplication::srsDbFilePath().toLocal8Bit().constData(), sqlite3_errmsg( db ) );
+    return false;
+  }
+
   sqlite3_close( db );
-  return true; //soon...
+  return true;
 }
 
 QString QgsCoordinateReferenceSystem::geographicCRSAuthId() const

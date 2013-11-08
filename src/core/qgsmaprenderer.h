@@ -298,7 +298,7 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     void addLayerCoordinateTransform( const QString& layerId, const QString& srcAuthId, const QString& destAuthId, int srcDatumTransform = -1, int destDatumTransform = -1 );
     void clearLayerCoordinateTransforms();
 
-    const QgsCoordinateTransform* tr( const QgsMapLayer *layer ) const;
+    const QgsCoordinateTransform* transformation( const QgsMapLayer *layer ) const;
 
   signals:
 
