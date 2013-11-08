@@ -118,6 +118,7 @@
 #include "qgscustomization.h"
 #include "qgscustomprojectiondialog.h"
 #include "qgsdatasourceuri.h"
+#include "qgsdatumtransformdialog.h"
 #include "qgsdecorationcopyright.h"
 #include "qgsdecorationnortharrow.h"
 #include "qgsdecorationscalebar.h"
@@ -4611,10 +4612,13 @@ void QgisApp::saveAsVectorFileGeneral( bool saveOnlySelection, QgsVectorLayer* v
     QString format = dialog->format();
     QStringList datasourceOptions = dialog->datasourceOptions();
 
+    QgsCoordinateTransform* ct = 0;
+
     switch ( dialog->crs() )
     {
       case -2: // Project CRS
         destCRS = mMapCanvas->mapRenderer()->destinationCrs();
+
         break;
       case -1: // Layer CRS
         destCRS = vlayer->crs();
@@ -4625,6 +4629,31 @@ void QgisApp::saveAsVectorFileGeneral( bool saveOnlySelection, QgsVectorLayer* v
         break;
     }
 
+    if ( destCRS.isValid() && destCRS != vlayer->crs() )
+    {
+      ct = new QgsCoordinateTransform( vlayer->crs(), destCRS );
+
+      //ask user about datum transformation
+      QList< QList< int > > dt = QgsCoordinateTransform::datumTransformations( vlayer->crs(), destCRS );
+      if ( dt.size() > 1 )
+      {
+        QgsDatumTransformDialog d( vlayer->name(), dt );
+        if ( d.exec() == QDialog::Accepted )
+        {
+          QList< int > sdt = d.selectedDatumTransform();
+          if ( sdt.size() > 0 )
+          {
+            ct->setSourceDatumTransform( sdt.at( 0 ) );
+          }
+          if ( sdt.size() > 1 )
+          {
+            ct->setDestinationDatumTransform( sdt.at( 1 ) );
+          }
+          ct->initialise();
+        }
+      }
+    }
+
     // ok if the file existed it should be deleted now so we can continue...
     QApplication::setOverrideCursor( Qt::WaitCursor );
 
@@ -4632,7 +4661,7 @@ void QgisApp::saveAsVectorFileGeneral( bool saveOnlySelection, QgsVectorLayer* v
     QString errorMessage;
     QString newFilename;
     error = QgsVectorFileWriter::writeAsVectorFormat(
-              vlayer, vectorFilename, encoding, &destCRS, format,
+              vlayer, vectorFilename, encoding, ct, format,
               saveOnlySelection,
               &errorMessage,
               datasourceOptions, dialog->layerOptions(),
@@ -4640,6 +4669,8 @@ void QgisApp::saveAsVectorFileGeneral( bool saveOnlySelection, QgsVectorLayer* v
               &newFilename,
               ( QgsVectorFileWriter::SymbologyExport )( dialog->symbologyExport() ),
               dialog->scaleDenominator() );
+
+    delete ct;
 
     QApplication::restoreOverrideCursor();
 

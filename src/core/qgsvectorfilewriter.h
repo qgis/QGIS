@@ -95,6 +95,21 @@ class CORE_EXPORT QgsVectorFileWriter
                                             double symbologyScale = 1.0 // added in 2.0
                                           );
 
+    static WriterError writeAsVectorFormat( QgsVectorLayer* layer,
+                                            const QString& fileName,
+                                            const QString& fileEncoding,
+                                            const QgsCoordinateTransform* ct,
+                                            const QString& driverName = "ESRI Shapefile",
+                                            bool onlySelected = false,
+                                            QString *errorMessage = 0,
+                                            const QStringList &datasourceOptions = QStringList(),  // added in 1.6
+                                            const QStringList &layerOptions = QStringList(),  // added in 1.6
+                                            bool skipAttributeCreation = false, // added in 1.6
+                                            QString *newFilename = 0, // added in 1.9
+                                            SymbologyExport symbologyExport = NoSymbology, //added in 2.0
+                                            double symbologyScale = 1.0 // added in 2.0
+                                          );
+
     /** create shapefile and initialize it */
     QgsVectorFileWriter( const QString& vectorFileName,
                          const QString& fileEncoding,

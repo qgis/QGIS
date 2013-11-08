@@ -744,26 +744,50 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
     SymbologyExport symbologyExport,
     double symbologyScale )
 {
-  QgsDebugMsg( "fileName = " + fileName );
-  const QgsCoordinateReferenceSystem* outputCRS;
   QgsCoordinateTransform* ct = 0;
-  int shallTransform = false;
+  if ( destCRS && layer )
+  {
+    ct = new QgsCoordinateTransform( layer->crs(), *destCRS );
+  }
 
+  QgsVectorFileWriter::WriterError error = writeAsVectorFormat( layer, fileName, fileEncoding, ct, driverName, onlySelected,
+      errorMessage, datasourceOptions, layerOptions, skipAttributeCreation, newFilename, symbologyExport, symbologyScale );
+  delete ct;
+  return error;
+}
+
+QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
+    const QString& fileName,
+    const QString& fileEncoding,
+    const QgsCoordinateTransform* ct,
+    const QString& driverName,
+    bool onlySelected,
+    QString *errorMessage,
+    const QStringList &datasourceOptions,  // added in 1.6
+    const QStringList &layerOptions,  // added in 1.6
+    bool skipAttributeCreation, // added in 1.6
+    QString *newFilename, // added in 1.9
+    SymbologyExport symbologyExport, //added in 2.0
+    double symbologyScale // added in 2.0
+                                                                         )
+{
   if ( !layer )
   {
     return ErrInvalidLayer;
   }
 
-  if ( destCRS && destCRS->isValid() )
+  bool shallTransform = false;
+  const QgsCoordinateReferenceSystem* outputCRS = 0;
+  if ( ct )
   {
     // This means we should transform
-    outputCRS = destCRS;
+    outputCRS = &( ct->destCRS() );
     shallTransform = true;
   }
   else
   {
     // This means we shouldn't transform, use source CRS as output (if defined)
-    outputCRS = &layer->crs();
+    outputCRS = &( layer->crs() );
   }
   QgsVectorFileWriter* writer =
     new QgsVectorFileWriter( fileName, fileEncoding, skipAttributeCreation ? QgsFields() : layer->pendingFields(), layer->wkbType(), outputCRS, driverName, datasourceOptions, layerOptions, newFilename, symbologyExport );
@@ -804,18 +828,6 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
   QgsFeatureIterator fit = layer->getFeatures( req );
 
   const QgsFeatureIds& ids = layer->selectedFeaturesIds();
-
-  // Create our transform
-  if ( destCRS )
-  {
-    ct = new QgsCoordinateTransform( layer->crs(), *destCRS );
-  }
-
-  // Check for failure
-  if ( ct == NULL )
-  {
-    shallTransform = false;
-  }
 
   //create symbol table if needed
   if ( writer->symbologyExport() != NoSymbology )
@@ -927,11 +939,6 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
 
   writer->stopRender( layer );
   delete writer;
-
-  if ( shallTransform )
-  {
-    delete ct;
-  }
 
   if ( errors > 0 && errorMessage && n > 0 )
   {

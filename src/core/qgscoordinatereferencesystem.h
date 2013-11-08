@@ -354,6 +354,9 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      */
     bool saveAsUserCRS( QString name );
 
+    /**Returns auth id of related geographic CRS*/
+    QString geographicCRSAuthId() const;
+
     // Mutators -----------------------------------
     // We don't want to expose these to the public api since they wont create
     // a fully valid crs. Programmers should use the createFrom* methods rather
@@ -465,6 +468,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     static bool loadIDs( QHash<int, QString> &wkts );
     static bool loadWkts( QHash<int, QString> &wkts, const char *filename );
+    static bool syncDatumTransform( const QString& dbPath );
 
     //!Whether this is a coordinate system has inverted axis
     mutable int mAxisInverted;

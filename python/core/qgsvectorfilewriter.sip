@@ -28,6 +28,29 @@ class QgsVectorFileWriter
       ErrInvalidLayer, // added in 2.0
     };
 
+    //added in 2.0
+    enum SymbologyExport
+    {
+      NoSymbology = 0, //export only data
+      FeatureSymbology, //Keeps the number of features and export symbology per feature
+      SymbolLayerSymbology //Exports one feature per symbol layer (considering symbol levels)
+    };
+
+    static WriterError writeAsVectorFormat( QgsVectorLayer* layer,
+                                            const QString& fileName,
+                                            const QString& fileEncoding,
+                                            const QgsCoordinateTransform* ct,
+                                            const QString& driverName = "ESRI Shapefile",
+                                            bool onlySelected = false,
+                                            QString *errorMessage = 0,
+                                            const QStringList &datasourceOptions = QStringList(),  // added in 1.6
+                                            const QStringList &layerOptions = QStringList(),  // added in 1.6
+                                            bool skipAttributeCreation = false, // added in 1.6
+                                            QString *newFilename = 0, // added in 1.9
+                                            SymbologyExport symbologyExport = NoSymbology, //added in 2.0
+                                            double symbologyScale = 1.0 // added in 2.0
+                                          );
+
     /** Write contents of vector layer to an (OGR supported) vector formt
         @note: this method was added in version 1.5*/
     static WriterError writeAsVectorFormat( QgsVectorLayer* layer,
@@ -40,7 +63,9 @@ class QgsVectorFileWriter
                                             const QStringList &datasourceOptions = QStringList(),  // added in 1.6
                                             const QStringList &layerOptions = QStringList(),  // added in 1.6
                                             bool skipAttributeCreation = false, // added in 1.6
-                                            QString *newFilename = 0 // added in 1.9
+                                            QString *newFilename = 0, // added in 1.9
+                                            SymbologyExport symbologyExport = NoSymbology, //added in 2.0
+                                            double symbologyScale = 1.0 // added in 2.0
                                           );
 
     /** create shapefile and initialize it */

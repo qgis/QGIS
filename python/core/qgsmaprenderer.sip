@@ -245,6 +245,8 @@ class QgsMapRenderer : QObject
     //! Added in QGIS v1.4
     void setLabelingEngine( QgsLabelingEngineInterface* iface /Transfer/ );
 
+    const QgsCoordinateTransform* transformation( const QgsMapLayer *layer ) const;
+
   signals:
 
     void drawingProgress( int current, int total );
