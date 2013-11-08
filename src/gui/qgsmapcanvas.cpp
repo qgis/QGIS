@@ -1555,15 +1555,14 @@ void QgsMapCanvas::getDatumTransformInfo( const QgsMapLayer* ml, const QString& 
     return;
   }
 
-  //create two crs
   const QgsCoordinateReferenceSystem& srcCRS = QgsCRSCache::instance()->crsByAuthId( srcAuthId );
   const QgsCoordinateReferenceSystem& destCRS = QgsCRSCache::instance()->crsByAuthId( destAuthId );
 
-  //get list of datum transforms (QgsCoordinateTransform::datumTransformations
+  //get list of datum transforms
   QList< QList< int > > dt = QgsCoordinateTransform::datumTransformations( srcCRS, destCRS );
   if ( dt.size() < 2 )
   {
-    return; //skip?
+    return;
   }
 
   //if several possibilities:  present dialog
@@ -1576,6 +1575,10 @@ void QgsMapCanvas::getDatumTransformInfo( const QgsMapLayer* ml, const QString& 
     if ( t.size() > 0 )
     {
       srcTransform = t.at( 0 );
+    }
+    if ( t.size() > 1 )
+    {
+      destTransform = t.at( 1 );
     }
     mMapRenderer->addLayerCoordinateTransform( ml->id(), srcAuthId, destAuthId, srcTransform, destTransform );
   }

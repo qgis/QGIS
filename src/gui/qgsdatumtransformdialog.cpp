@@ -9,13 +9,17 @@ QgsDatumTransformDialog::QgsDatumTransformDialog( const QString& layerName, cons
   for ( ; it != dt.constEnd(); ++it )
   {
     QTreeWidgetItem* item = new QTreeWidgetItem();
-    QString itemText;
     for ( int i = 0; i < 2; ++i )
     {
+      if ( i >= it->size() )
+      {
+        break;
+      }
+
       int nr = it->at( i );
+      item->setData( i, Qt::UserRole, nr );
       if ( nr != -1 )
       {
-        item->setData( i, Qt::UserRole, nr );
         item->setText( i, QgsCoordinateTransform::datumTransformString( nr ) );
       }
     }
