@@ -328,7 +328,7 @@ void GlobePlugin::run()
 
     // Set a home viewpoint
     manip->setHomeViewpoint(
-      osgEarth::Util::Viewpoint( osg::Vec3d( -90, 0, 0 ), 0.0, -90.0, 4e7 ),
+      osgEarth::Util::Viewpoint( osg::Vec3d( -90, 0, 0 ), 0.0, -90.0, 2e7 ),
       1.0 );
 
     setupControls();
