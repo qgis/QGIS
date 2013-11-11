@@ -393,10 +393,10 @@ void QgsDxfExport::writeTables( QTextStream& stream )
   stream << "  2\n";
   stream << "LTYPE\n";
   stream << " 70\n";
-  stream << QString( "%1\n" ).arg( nLineTypes( slList ) ); //number of linetypes
-  stream << "  0\n";
+  stream << QString( "%1\n" ).arg( nLineTypes( slList ) + 1 ); //number of linetypes
 
   //add continuous style as default
+  stream << "  0\n";
   stream << "LTYPE\n";
   stream << "  2\n";
   stream << "CONTINUOUS\n";
@@ -409,7 +409,7 @@ void QgsDxfExport::writeTables( QTextStream& stream )
   stream << " 73\n";
   stream << "0\n";
   stream << " 40\n"; //todo: add segments in group 49
-  stream << "0\n";
+  stream << "0.0\n";
 
   //add symbol layer linestyles
   QList<QgsSymbolLayerV2*>::const_iterator slIt = slList.constBegin();
@@ -948,9 +948,9 @@ void QgsDxfExport::writeSymbolLayerLinestyle( QTextStream& stream, const QgsSymb
         length += *dashIt;
       }
 
+      stream << "  0\n";
       stream << "LTYPE\n";
       stream << "  2\n";
-
       stream << QString( "%1\n" ).arg( name );
       stream << "  70\n";
       stream << "64\n";
@@ -960,14 +960,14 @@ void QgsDxfExport::writeSymbolLayerLinestyle( QTextStream& stream, const QgsSymb
       stream << "65\n";
       stream << " 73\n";
       stream << QString( "%1\n" ).arg( dashPattern.size() ); //number of segments
-      stream << " 40\n"; //todo: add segments in group 49
+      stream << " 40\n"; //total length of segments
       stream << QString( "%1\n" ).arg( length );
 
       dashIt = dashPattern.constBegin();
       bool isSpace = false;
       for ( ; dashIt != dashPattern.constEnd(); ++dashIt )
       {
-        stream << "49\n";
+        stream << " 49\n";
 
         //map units or mm?
         double segmentLength = ( isSpace ? -*dashIt : *dashIt );
