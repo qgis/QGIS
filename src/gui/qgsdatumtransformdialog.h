@@ -10,6 +10,9 @@ class GUI_EXPORT QgsDatumTransformDialog: public QDialog, private Ui::QgsDatumTr
     ~QgsDatumTransformDialog();
 
     QList< int > selectedDatumTransform();
+
+    bool rememberSelection() const;
+
   private:
     QgsDatumTransformDialog();
 };

@@ -30,6 +30,7 @@ email                : sherman at mrcc.com
 #include <QPaintEvent>
 #include <QPixmap>
 #include <QRect>
+#include <QSettings>
 #include <QTextStream>
 #include <QResizeEvent>
 #include <QString>
@@ -1555,6 +1556,17 @@ void QgsMapCanvas::getDatumTransformInfo( const QgsMapLayer* ml, const QString& 
     return;
   }
 
+  //check if default datum transformation available
+  QSettings s;
+  QString settingsString = "/Projections/" + srcAuthId + "//" + destAuthId;
+  QVariant defaultSrcTransform = s.value( settingsString + "_srcTransform" );
+  QVariant defaultDestTransform = s.value( settingsString + "_destTransform" );
+  if ( defaultSrcTransform.isValid() && defaultDestTransform.isValid() )
+  {
+    mMapRenderer->addLayerCoordinateTransform( ml->id(), srcAuthId, destAuthId, defaultSrcTransform.toInt(), defaultDestTransform.toInt() );
+    return;
+  }
+
   const QgsCoordinateReferenceSystem& srcCRS = QgsCRSCache::instance()->crsByAuthId( srcAuthId );
   const QgsCoordinateReferenceSystem& destCRS = QgsCRSCache::instance()->crsByAuthId( destAuthId );
 
@@ -1581,6 +1593,11 @@ void QgsMapCanvas::getDatumTransformInfo( const QgsMapLayer* ml, const QString& 
       destTransform = t.at( 1 );
     }
     mMapRenderer->addLayerCoordinateTransform( ml->id(), srcAuthId, destAuthId, srcTransform, destTransform );
+    if ( d.rememberSelection() )
+    {
+      s.setValue( settingsString + "_srcTransform", srcTransform );
+      s.setValue( settingsString + "_destTransform", destTransform );
+    }
   }
   else
   {

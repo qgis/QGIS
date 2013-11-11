@@ -53,3 +53,8 @@ QList< int > QgsDatumTransformDialog::selectedDatumTransform()
   }
   return list;
 }
+
+bool QgsDatumTransformDialog::rememberSelection() const
+{
+  return mRememberSelectionCheckBox->isChecked();
+}
