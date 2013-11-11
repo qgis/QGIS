@@ -50,6 +50,7 @@ email                : sherman at mrcc.com
 #include "qgsmaprenderer.h"
 #include "qgsmessagelog.h"
 #include "qgsmessageviewer.h"
+#include "qgspallabeling.h"
 #include "qgsproject.h"
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
@@ -81,6 +82,7 @@ class QgsMapCanvas::CanvasProperties
 QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
     : QGraphicsView( parent )
     , mCanvasProperties( new CanvasProperties )
+    , mLabeling( new QgsPalLabeling )
     //, mNewSize( QSize() )
     //, mPainting( false )
 {
@@ -160,6 +162,8 @@ QgsMapCanvas::~QgsMapCanvas()
     delete item;
     it++;
   }
+
+  delete mLabeling;
 
   mScene->deleteLater();  // crashes in python tests on windows
 
@@ -388,6 +392,11 @@ void QgsMapCanvas::setDestinationCrs(const QgsCoordinateReferenceSystem &crs)
   mSettings.setDestinationCrs( crs );
 
   emit destinationSrsChanged();
+}
+
+QgsPalLabeling *QgsMapCanvas::labelingEngine()
+{
+  return mLabeling;
 }
 
 

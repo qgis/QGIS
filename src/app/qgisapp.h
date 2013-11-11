@@ -179,9 +179,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     /** Return the messageBar object which allows to display unobtrusive messages to the user.*/
     QgsMessageBar* messageBar();
 
-    /** Get the mapcanvas object from the app */
-    QgsPalLabeling *palLabeling();
-
     //! Set theme (icons)
     void setTheme( QString themeName = "default" );
 

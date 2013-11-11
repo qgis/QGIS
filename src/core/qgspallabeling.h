@@ -30,6 +30,8 @@ class QgsRectangle;
 class QgsCoordinateTransform;
 class QgsLabelSearchTree;
 
+class QgsMapSettings;
+
 #include <QString>
 #include <QFont>
 #include <QFontDatabase>
@@ -691,7 +693,10 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
     // implemented methods from labeling engine interface
 
     //! called when we're going to start with rendering
-    virtual void init( QgsMapRenderer* mr );
+    //! @deprecated since 2.1 - use override with QgsMapSettings
+    Q_DECL_DEPRECATED virtual void init( QgsMapRenderer* mr );
+    //! called when we're going to start with rendering
+    virtual void init( const QgsMapSettings& mapSettings );
     //! called to find out whether the layer is used for labeling
     virtual bool willUseLayer( QgsVectorLayer* layer );
     //! clears all PAL layer settings for registered layers
@@ -772,7 +777,7 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
     QHash<QgsVectorLayer*, QgsDiagramLayerSettings> mActiveDiagramLayers;
     QgsPalLayerSettings mInvalidLayerSettings;
 
-    QgsMapRenderer* mMapRenderer;
+    const QgsMapSettings* mMapSettings;
     int mCandPoint, mCandLine, mCandPolygon;
     Search mSearch;
 

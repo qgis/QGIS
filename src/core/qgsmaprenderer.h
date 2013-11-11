@@ -73,7 +73,10 @@ class CORE_EXPORT QgsLabelingEngineInterface
     virtual ~QgsLabelingEngineInterface() {}
 
     //! called when we're going to start with rendering
-    virtual void init( QgsMapRenderer* mp ) = 0;
+    //! @deprecated since 2.1 - use override with QgsMapSettings
+    Q_DECL_DEPRECATED virtual void init( QgsMapRenderer* mp ) = 0;
+    //! called when we're going to start with rendering
+    virtual void init( const QgsMapSettings& mapSettings ) = 0;
     //! called to find out whether the layer is used for labeling
     virtual bool willUseLayer( QgsVectorLayer* layer ) = 0;
     //! clears all PAL layer settings for registered layers

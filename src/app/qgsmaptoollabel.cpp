@@ -39,7 +39,7 @@ QgsMapToolLabel::~QgsMapToolLabel()
 bool QgsMapToolLabel::labelAtPosition( QMouseEvent* e, QgsLabelPosition& p )
 {
   QgsPoint pt = toMapCoordinates( e->pos() );
-  QgsLabelingEngineInterface* labelingEngine = mCanvas->mapRenderer()->labelingEngine();
+  QgsLabelingEngineInterface* labelingEngine = mCanvas->labelingEngine();
   if ( labelingEngine )
   {
     QList<QgsLabelPosition> labelPosList = labelingEngine->labelsAtPosition( pt );
@@ -131,7 +131,7 @@ QgsPalLayerSettings& QgsMapToolLabel::currentLabelSettings( bool* ok )
   if ( vlayer )
   {
     //QgsDebugMsg( "has vlayer" );
-    QgsPalLabeling* labelEngine = dynamic_cast<QgsPalLabeling*>( mCanvas->mapRenderer()->labelingEngine() );
+    QgsPalLabeling* labelEngine = mCanvas->labelingEngine();
     if ( labelEngine )
     {
       //QgsDebugMsg( "has labelEngine" );
@@ -433,7 +433,7 @@ bool QgsMapToolLabel::rotationPoint( QgsPoint& pos, bool ignoreUpsideDown, bool 
 int QgsMapToolLabel::dataDefinedColumnIndex( QgsPalLayerSettings::DataDefinedProperties p, const QgsVectorLayer* vlayer ) const
 {
 
-  QgsPalLabeling* labelEngine = dynamic_cast<QgsPalLabeling*>( mCanvas->mapRenderer()->labelingEngine() );
+  QgsPalLabeling* labelEngine = mCanvas->labelingEngine();
   if ( !labelEngine )
   {
     return -1;

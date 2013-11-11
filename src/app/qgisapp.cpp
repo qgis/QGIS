@@ -715,8 +715,6 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   mMapCanvas->freeze( false );
   mMapCanvas->clearExtentHistory(); // reset zoomnext/zoomlast
   mLastComposerId = 0;
-  mLBL = new QgsPalLabeling();
-  mMapCanvas->mapRenderer()->setLabelingEngine( mLBL );
 
   // Show a nice tip of the day
   if ( settings.value( "/qgis/showTips", 1 ).toBool() )
@@ -2120,12 +2118,6 @@ QgsMapCanvas *QgisApp::mapCanvas()
 {
   Q_ASSERT( mMapCanvas );
   return mMapCanvas;
-}
-
-QgsPalLabeling *QgisApp::palLabeling()
-{
-  Q_ASSERT( mLBL );
-  return mLBL;
 }
 
 QgsMessageBar* QgisApp::messageBar()
@@ -3653,7 +3645,7 @@ bool QgisApp::addProject( QString projectFile )
   }
 
   // load PAL engine settings
-  mLBL->loadEngineSettings();
+  mMapCanvas->labelingEngine()->loadEngineSettings();
 
   emit projectRead(); // let plug-ins know that we've read in a new
   // project so that they can check any project
@@ -4345,7 +4337,7 @@ void QgisApp::labeling()
 
   QDialog *dlg = new QDialog( this );
   dlg->setWindowTitle( tr( "Layer labeling settings" ) );
-  QgsLabelingGui *labelingGui = new QgsLabelingGui( mLBL, vlayer, mMapCanvas, dlg );
+  QgsLabelingGui *labelingGui = new QgsLabelingGui( mMapCanvas->labelingEngine(), vlayer, mMapCanvas, dlg );
   labelingGui->init(); // load QgsPalLayerSettings for layer
   labelingGui->layout()->setContentsMargins( 0, 0, 0, 0 );
   QVBoxLayout *layout = new QVBoxLayout( dlg );

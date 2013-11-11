@@ -30,7 +30,6 @@
 
 QgsMapToolShowHideLabels::QgsMapToolShowHideLabels( QgsMapCanvas* canvas ): QgsMapToolLabel( canvas )
 {
-  mRender = 0;
   mRubberBand = 0;
 }
 
@@ -107,13 +106,6 @@ void QgsMapToolShowHideLabels::showHideLabels( QMouseEvent * e )
   if ( !mCanvas || mCanvas->isDrawing() )
   {
     QgsDebugMsg( "Canvas not ready" );
-    return;
-  }
-
-  mRender = mCanvas->mapRenderer();
-  if ( !mRender )
-  {
-    QgsDebugMsg( "Failed to acquire map renderer" );
     return;
   }
 
@@ -198,11 +190,11 @@ bool QgsMapToolShowHideLabels::selectedFeatures( QgsVectorLayer* vlayer,
   // and then click somewhere off the globe, an exception will be thrown.
   QgsGeometry selectGeomTrans( *selectGeometry );
 
-  if ( mRender->hasCrsTransformEnabled() )
+  if ( mCanvas->hasCrsTransformEnabled() )
   {
     try
     {
-      QgsCoordinateTransform ct( mRender->destinationCrs(), vlayer->crs() );
+      QgsCoordinateTransform ct( mCanvas->mapSettings().destinationCrs(), vlayer->crs() );
       selectGeomTrans.transform( ct );
     }
     catch ( QgsCsException &cse )
@@ -242,7 +234,7 @@ bool QgsMapToolShowHideLabels::selectedLabelFeatures( QgsVectorLayer* vlayer,
 {
   // get list of all drawn labels from current layer that intersect rubberband
 
-  QgsPalLabeling* labelEngine = dynamic_cast<QgsPalLabeling*>( mRender->labelingEngine() );
+  QgsPalLabeling* labelEngine = mCanvas->labelingEngine();
   if ( !labelEngine )
   {
     QgsDebugMsg( "No labeling engine" );

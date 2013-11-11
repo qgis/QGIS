@@ -8,6 +8,7 @@
 #include "qgsrendercontext.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerregistry.h"
+#include "qgspallabeling.h"
 
 
 QgsMapRendererQImageJob::QgsMapRendererQImageJob(QgsMapRendererJob::Type type, const QgsMapSettings& settings)
@@ -21,6 +22,14 @@ QgsMapRendererSequentialJob::QgsMapRendererSequentialJob(const QgsMapSettings& s
   , mInternalJob(0)
 {
   qDebug("SEQUENTIAL construct");
+
+  mImage = QImage(mSettings.outputSize(), QImage::Format_ARGB32_Premultiplied);
+
+  mPainter = new QPainter(&mImage);
+
+  mInternalJob = new QgsMapRendererCustomPainterJob(mSettings, mPainter);
+
+  connect(mInternalJob, SIGNAL(finished()), SLOT(internalFinished()));
 }
 
 QgsMapRendererSequentialJob::~QgsMapRendererSequentialJob()
@@ -36,16 +45,7 @@ void QgsMapRendererSequentialJob::start()
   qDebug("SEQUENTIAL START");
   qDebug("%d,%d", mSettings.outputSize().width(), mSettings.outputSize().height());
 
-  mImage = QImage(mSettings.outputSize(), QImage::Format_ARGB32_Premultiplied);
-
-  // 1. create an image where we will output all rendering
-  mPainter = new QPainter(&mImage);
-
-  // 2. start rendering the layers in a thread (using custom painter)
-  mInternalJob = new QgsMapRendererCustomPainterJob(mSettings, mPainter);
   mInternalJob->start();
-
-  connect(mInternalJob, SIGNAL(finished()), SLOT(internalFinished()));
 }
 
 
@@ -57,6 +57,11 @@ void QgsMapRendererSequentialJob::cancel()
     delete mInternalJob;
     mInternalJob = 0;
   }
+}
+
+void QgsMapRendererSequentialJob::setLabelingEngine( QgsPalLabeling *labeling )
+{
+  mInternalJob->setLabelingEngine( labeling );
 }
 
 
@@ -88,6 +93,7 @@ void QgsMapRendererSequentialJob::internalFinished()
 QgsMapRendererCustomPainterJob::QgsMapRendererCustomPainterJob(const QgsMapSettings& settings, QPainter* painter)
   : QgsMapRendererJob(CustomPainterJob, settings)
   , mPainter(painter)
+  , mLabelingEngine( 0 )
 {
   qDebug("QPAINTER construct");
 }
@@ -131,6 +137,12 @@ void QgsMapRendererCustomPainterJob::cancel()
 
     qDebug("QPAINTER cancelled");
   }
+}
+
+
+void QgsMapRendererCustomPainterJob::setLabelingEngine( QgsPalLabeling *labeling )
+{
+  mLabelingEngine = labeling;
 }
 
 
@@ -199,9 +211,9 @@ void QgsMapRendererCustomPainterJob::startRender()
   mRenderContext.setScaleFactor( scaleFactor );
   mRenderContext.setRendererScale( mSettings.scale() );
 
-  /*mRenderContext.setLabelingEngine( mLabelingEngine );
+  mRenderContext.setLabelingEngine( mLabelingEngine );
   if ( mLabelingEngine )
-    mLabelingEngine->init( this );*/
+    mLabelingEngine->init( mSettings );
 
   // render all layers in the stack, starting at the base
   QListIterator<QString> li( mSettings.layers() );
@@ -513,15 +525,15 @@ void QgsMapRendererCustomPainterJob::startRender()
     }
   } // if (!mOverview)*/
 
-  /*if ( mLabelingEngine )
+  if ( mLabelingEngine )
   {
     // set correct extent
-    mRenderContext.setExtent( mExtent );
+    mRenderContext.setExtent( mSettings.visibleExtent() );
     mRenderContext.setCoordinateTransform( NULL );
 
     mLabelingEngine->drawLabeling( mRenderContext );
     mLabelingEngine->exit();
-  }*/
+  }
 
   QgsDebugMsg( "Rendering completed in (seconds): " + QString( "%1" ).arg( renderTime.elapsed() / 1000.0 ) );
 

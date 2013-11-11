@@ -3028,7 +3028,7 @@ double QgsPalLayerSettings::scaleToPixelContext( double size, const QgsRenderCon
 // -------------
 
 QgsPalLabeling::QgsPalLabeling()
-    : mMapRenderer( NULL ), mPal( NULL )
+    : mMapSettings( NULL ), mPal( NULL )
 {
 
   // find out engine defaults
@@ -3101,7 +3101,7 @@ void QgsPalLabeling::clearActiveLayer( QgsVectorLayer* layer )
 
 int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QSet<int>& attrIndices, QgsRenderContext& ctx )
 {
-  Q_ASSERT( mMapRenderer != NULL );
+  Q_ASSERT( mMapSettings != NULL );
 
   if ( !willUseLayer( layer ) )
   {
@@ -3287,16 +3287,16 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QSet<int>& attrIndices,
   lyr.palLayer = l;
   lyr.fieldIndex = fldIndex;
 
-  lyr.xform = mMapRenderer->coordinateTransform();
-  if ( mMapRenderer->hasCrsTransformEnabled() )
-    lyr.ct = new QgsCoordinateTransform( layer->crs(), mMapRenderer->destinationCrs() );
+  lyr.xform = &mMapSettings->mapToPixel();
+  if ( mMapSettings->hasCrsTransformEnabled() )
+    lyr.ct = new QgsCoordinateTransform( layer->crs(), mMapSettings->destinationCrs() );
   else
     lyr.ct = NULL;
   lyr.ptZero = lyr.xform->toMapCoordinates( 0, 0 );
   lyr.ptOne = lyr.xform->toMapCoordinates( 1, 0 );
 
   // rect for clipping
-  lyr.extentGeom = QgsGeometry::fromRect( mMapRenderer->extent() );
+  lyr.extentGeom = QgsGeometry::fromRect( mMapSettings->visibleExtent() );
 
   lyr.mFeatsSendingToPal = 0;
 
@@ -3309,11 +3309,11 @@ int QgsPalLabeling::addDiagramLayer( QgsVectorLayer* layer, QgsDiagramLayerSetti
   l->setArrangementFlags( s->placementFlags );
 
   s->palLayer = l;
-  if ( mMapRenderer->hasCrsTransformEnabled() )
-    s->ct = new QgsCoordinateTransform( layer->crs(), mMapRenderer->destinationCrs() );
+  if ( mMapSettings->hasCrsTransformEnabled() )
+    s->ct = new QgsCoordinateTransform( layer->crs(), mMapSettings->destinationCrs() );
   else
     s->ct = NULL;
-  s->xform = mMapRenderer->coordinateTransform();
+  s->xform = &mMapSettings->mapToPixel();
   mActiveDiagramLayers.insert( layer, *s );
   return 1;
 }
@@ -3420,7 +3420,12 @@ void QgsPalLabeling::registerDiagramFeature( QgsVectorLayer* layer, QgsFeature& 
 
 void QgsPalLabeling::init( QgsMapRenderer* mr )
 {
-  mMapRenderer = mr;
+  init( mr->mapSettings() );
+}
+
+void QgsPalLabeling::init( const QgsMapSettings& mapSettings )
+{
+  mMapSettings = &mapSettings;
 
   // delete if exists already
   if ( mPal )
@@ -3455,7 +3460,7 @@ void QgsPalLabeling::exit()
 {
   delete mPal;
   mPal = NULL;
-  mMapRenderer = NULL;
+  mMapSettings = NULL;
 }
 
 QgsPalLayerSettings& QgsPalLabeling::layer( const QString& layerName )
@@ -3785,7 +3790,7 @@ void QgsPalLabeling::dataDefinedDropShadow( QgsPalLayerSettings& tmpLyr,
 
 void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
 {
-  Q_ASSERT( mMapRenderer != NULL );
+  Q_ASSERT( mMapSettings != NULL );
   QPainter* painter = context.painter();
   QgsRectangle extent = context.extent();
 
@@ -3798,7 +3803,7 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
   t.start();
 
   // do the labeling itself
-  double scale = mMapRenderer->scale(); // scale denominator
+  double scale = mMapSettings->scale(); // scale denominator
   QgsRectangle r = extent;
   double bbox[] = { r.xMinimum(), r.yMinimum(), r.xMaximum(), r.yMaximum() };
 
@@ -3816,7 +3821,7 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
     return;
   }
 
-  const QgsMapToPixel* xform = mMapRenderer->coordinateTransform();
+  const QgsMapToPixel& xform = mMapSettings->mapToPixel();
 
   // draw rectangles with all candidates
   // this is done before actual solution of the problem
@@ -3832,7 +3837,7 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
       {
         pal::LabelPosition* lp = problem->getFeatureCandidate( i, j );
 
-        drawLabelCandidateRect( lp, painter, xform );
+        drawLabelCandidateRect( lp, painter, &xform );
       }
     }
   }
@@ -3865,7 +3870,7 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
       {
         if ( dit.key() && dit.key()->id().append( "d" ) == layerName )
         {
-          QgsPoint outPt = xform->transform(( *it )->getX(), ( *it )->getY() );
+          QgsPoint outPt = xform.transform(( *it )->getX(), ( *it )->getY() );
           dit.value().renderer->renderDiagram( palGeometry->diagramAttributes(), context, QPointF( outPt.x(), outPt.y() ) );
         }
       }

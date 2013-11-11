@@ -469,7 +469,7 @@ void QgsDiagramProperties::on_mDiagramAttributesTreeWidget_itemDoubleClicked( QT
 
 void QgsDiagramProperties::on_mEngineSettingsButton_clicked()
 {
-  QgsLabelEngineConfigDialog dlg( QgisApp::instance()->palLabeling(), this );
+  QgsLabelEngineConfigDialog dlg( QgisApp::instance()->mapCanvas()->labelingEngine(), this );
   dlg.exec();
 }
 

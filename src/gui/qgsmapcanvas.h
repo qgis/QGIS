@@ -63,6 +63,7 @@ class QgsMapSettings;
 class QgsMapCanvasMap;
 class QgsMapOverviewCanvas;
 class QgsMapTool;
+class QgsPalLabeling;
 
 /** \ingroup gui
   * A class that stores visibility and presence in overview flags together
@@ -130,6 +131,10 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! sets destination coordinate reference system
     //! @note added in 2.1
     void setDestinationCrs( const QgsCoordinateReferenceSystem& crs );
+
+    //! Get access to the labeling engine
+    //! @note added in 2.1
+    QgsPalLabeling* labelingEngine();
 
     //! @deprecated since 2.1 - there could be more than just one "map" items
     QgsMapCanvasMap* map();
@@ -516,6 +521,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     //! Mouse wheel action
     WheelAction mWheelAction;
+
+    QgsPalLabeling* mLabeling;
 
     //! resize canvas size
     //QSize mNewSize;

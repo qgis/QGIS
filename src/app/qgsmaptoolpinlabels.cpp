@@ -181,7 +181,7 @@ void QgsMapToolPinLabels::highlightPinnedLabels()
   QgsDebugMsg( QString( "Highlighting pinned labels" ) );
 
   // get list of all drawn labels from all layers within given extent
-  QgsPalLabeling* labelEngine = dynamic_cast<QgsPalLabeling*>( mCanvas->mapRenderer()->labelingEngine() );
+  QgsPalLabeling* labelEngine = mCanvas->labelingEngine();
   if ( !labelEngine )
   {
     QgsDebugMsg( QString( "No labeling engine" ) );
@@ -252,7 +252,7 @@ void QgsMapToolPinLabels::pinUnpinLabels( const QgsRectangle& ext, QMouseEvent *
   // get list of all drawn labels from all layers within, or touching, chosen extent
   bool labelChanged = false;
 
-  QgsPalLabeling* labelEngine = dynamic_cast<QgsPalLabeling*>( mCanvas->mapRenderer()->labelingEngine() );
+  QgsPalLabeling* labelEngine = mCanvas->labelingEngine();
   if ( !labelEngine )
   {
     QgsDebugMsg( QString( "No labeling engine" ) );

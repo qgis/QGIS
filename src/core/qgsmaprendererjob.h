@@ -8,6 +8,9 @@
 
 #include "qgsmapsettings.h"
 
+class QgsPalLabeling;
+
+
 /** abstract base class renderer jobs that asynchronously start map rendering */
 class QgsMapRendererJob : public QObject
 {
@@ -35,6 +38,10 @@ public:
   virtual void cancel() = 0;
 
   // TODO: isActive() ?
+
+  //! Assign an existing labeling engine with the rendering job
+  //! TODO: handle concurrency - one labeling instance cannot be shared by multiple active rendering jobs!
+  virtual void setLabelingEngine( QgsPalLabeling* labeling ) = 0;
 
 signals:
 
@@ -83,6 +90,8 @@ public:
   virtual void start();
   virtual void cancel();
 
+  virtual void setLabelingEngine( QgsPalLabeling* labeling );
+
   // from QgsMapRendererJobWithPreview
   virtual QImage renderedImage();
 
@@ -121,6 +130,8 @@ public:
   virtual void start();
   virtual void cancel();
 
+  virtual void setLabelingEngine( QgsPalLabeling* labeling );
+
 protected slots:
   void futureFinished();
 
@@ -134,6 +145,7 @@ private:
   QFuture<void> mFuture;
   QFutureWatcher<void> mFutureWatcher;
   QgsRenderContext mRenderContext;
+  QgsPalLabeling* mLabelingEngine;
 };
 
 
