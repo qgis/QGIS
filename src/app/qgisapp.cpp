@@ -3243,6 +3243,7 @@ void QgisApp::fileNew( bool thePromptToSaveFlag, bool forceBlank )
   prj->writeEntry( "Gui", "/SelectionColorGreenPart", myGreen );
   prj->writeEntry( "Gui", "/SelectionColorBluePart", myBlue );
   prj->writeEntry( "Gui", "/SelectionColorAlphaPart", myAlpha );
+  mMapCanvas->setSelectionColor( QColor( myRed, myGreen, myBlue ) );
 
   //set the canvas to the default background color
   //the default can be set in qgisoptions

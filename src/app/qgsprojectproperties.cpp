@@ -602,6 +602,7 @@ void QgsProjectProperties::apply()
   QgsProject::instance()->writeEntry( "Gui", "/SelectionColorGreenPart", myColor.green() );
   QgsProject::instance()->writeEntry( "Gui", "/SelectionColorBluePart", myColor.blue() );
   QgsProject::instance()->writeEntry( "Gui", "/SelectionColorAlphaPart", myColor.alpha() );
+  mMapCanvas->setSelectionColor( myColor );
 
   //set the color for canvas
   myColor = pbnCanvasColor->color();

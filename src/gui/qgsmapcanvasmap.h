@@ -48,26 +48,26 @@ class GUI_EXPORT QgsMapCanvasMap : public QObject, public QGraphicsRectItem
     void resize( QSize size );
 
     //! @deprecated in 2.1 - does nothing. Kept for API compatibility
-    void enableAntiAliasing( bool flag );
+    Q_DECL_DEPRECATED void enableAntiAliasing( bool flag );
 
     //! @deprecated in 2.1 - does nothing. Kept for API compatibility
-    void render() {}
+    Q_DECL_DEPRECATED void render() {}
 
     //! @deprecated in 2.1 - does nothing. Kept for API compatibility
-    void setBackgroundColor( const QColor& color ) {}
+    Q_DECL_DEPRECATED void setBackgroundColor( const QColor& color ) { Q_UNUSED( color ); }
 
     //! @deprecated in 2.1 - not called by QgsMapCanvas anymore
-    Q_DECL_DEPRECATED void setPanningOffset( const QPoint& point ) {}
+    Q_DECL_DEPRECATED void setPanningOffset( const QPoint& point ) { Q_UNUSED( point ); }
 
     //! @deprecated in 2.1
-    QPaintDevice& paintDevice();
+    Q_DECL_DEPRECATED QPaintDevice& paintDevice();
 
     void paint( QPainter* p, const QStyleOptionGraphicsItem*, QWidget* );
 
     QRectF boundingRect() const;
 
     //! @deprecated in 2.1 - does nothing. Kept for API compatibility
-    void updateContents() {}
+    Q_DECL_DEPRECATED void updateContents() {}
 
     const QgsMapSettings& settings() const;
 

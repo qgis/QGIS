@@ -197,6 +197,9 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     /** Read property of QColor bgColor. */
     virtual QColor canvasColor() const;
 
+    /** Set color of selected vector features */
+    void setSelectionColor( const QColor& color );
+
     /** Emits signal scaleChanged to update scale in main window */
     void updateScale();
 

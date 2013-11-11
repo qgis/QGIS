@@ -1202,6 +1202,11 @@ QColor QgsMapCanvas::canvasColor() const
   return mScene->backgroundBrush().color();
 }
 
+void QgsMapCanvas::setSelectionColor( const QColor& color )
+{
+  mSettings.setSelectionColor( color );
+}
+
 int QgsMapCanvas::layerCount() const
 {
   return mapSettings().layers().size();

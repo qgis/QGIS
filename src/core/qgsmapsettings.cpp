@@ -28,7 +28,7 @@ usage in QgsComposer
 */
 
 QgsMapSettings::QgsMapSettings()
-  : mDpi( 120 ) // what to set?
+  : mDpi( 96 ) // what to set?
   , mSize( QSize( 0, 0 ) )
   , mExtent()
   , mProjectionsEnabled( false )

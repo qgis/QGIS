@@ -156,13 +156,15 @@ void QgsMapRendererCustomPainterJob::startRender()
 
   mPainter->setRenderHint( QPainter::Antialiasing, mSettings.isAntiAliasingEnabled() );
 
+  QPaintDevice* thePaintDevice = mPainter->device();
+
 #ifdef QGISDEBUG
   QgsDebugMsg( "Starting to render layer stack." );
   QTime renderTime;
   renderTime.start();
 #endif
 
-  mRenderContext.setMapToPixel( QgsMapToPixel( mSettings.mapUnitsPerPixel(), mSettings.outputSize().height(), mSettings.visibleExtent().yMinimum(), mSettings.visibleExtent().xMinimum() ) );
+  mRenderContext.setMapToPixel( mSettings.mapToPixel() ); //  QgsMapToPixel( mSettings.mapUnitsPerPixel(), mSettings.outputSize().height(), mSettings.visibleExtent().yMinimum(), mSettings.visibleExtent().xMinimum() ) );
   mRenderContext.setExtent( mSettings.visibleExtent() );
 
   mRenderContext.setDrawEditingInformation( false );
@@ -173,19 +175,15 @@ void QgsMapRendererCustomPainterJob::startRender()
   mRenderContext.setRenderingStopped( false );
 
   // set selection color
-  /* TODO QgsProject* prj = QgsProject::instance();
-  int myRed = prj->readNumEntry( "Gui", "/SelectionColorRedPart", 255 );
-  int myGreen = prj->readNumEntry( "Gui", "/SelectionColorGreenPart", 255 );
-  int myBlue = prj->readNumEntry( "Gui", "/SelectionColorBluePart", 0 );
-  int myAlpha = prj->readNumEntry( "Gui", "/SelectionColorAlphaPart", 255 );*/
-  mRenderContext.setSelectionColor( mSettings.selectionColor() ); // TODO QColor( myRed, myGreen, myBlue, myAlpha ) );
+  mRenderContext.setSelectionColor( mSettings.selectionColor() );
 
   //calculate scale factor
   //use the specified dpi and not those from the paint device
   //because sometimes QPainter units are in a local coord sys (e.g. in case of QGraphicsScene)
-  /* TODO double sceneDpi = mScaleCalculator->dpi();
+  double* forceWidthScale = 0; // TODO: may point to a value (composer)
+  double sceneDpi = mSettings.outputDpi();
   double scaleFactor = 1.0;
-  if ( mOutputUnits == QgsMapRenderer::Millimeters )
+  if ( mSettings.outputUnits() == QgsMapSettings::Millimeters )
   {
     if ( forceWidthScale )
     {
@@ -197,43 +195,13 @@ void QgsMapRendererCustomPainterJob::startRender()
     }
   }
   double rasterScaleFactor = ( thePaintDevice->logicalDpiX() + thePaintDevice->logicalDpiY() ) / 2.0 / sceneDpi;
-  if ( mRenderContext.rasterScaleFactor() != rasterScaleFactor )
-  {
-    mRenderContext.setRasterScaleFactor( rasterScaleFactor );
-    mySameAsLastFlag = false;
-  }
-  if ( mRenderContext.scaleFactor() != scaleFactor )
-  {
-    mRenderContext.setScaleFactor( scaleFactor );
-    mySameAsLastFlag = false;
-  }
-  if ( mRenderContext.rendererScale() != mScale )
-  {
-    //add map scale to render context
-    mRenderContext.setRendererScale( mScale );
-    mySameAsLastFlag = false;
-  }
-  if ( mLastExtent != mExtent )
-  {
-    mLastExtent = mExtent;
-    mySameAsLastFlag = false;
-  }
+  mRenderContext.setRasterScaleFactor( rasterScaleFactor );
+  mRenderContext.setScaleFactor( scaleFactor );
+  mRenderContext.setRendererScale( mSettings.scale() );
 
-  mRenderContext.setLabelingEngine( mLabelingEngine );
+  /*mRenderContext.setLabelingEngine( mLabelingEngine );
   if ( mLabelingEngine )
     mLabelingEngine->init( this );*/
-
-  // know we know if this render is just a repeat of the last time, we
-  // can clear caches if it has changed
-  /*if ( !mySameAsLastFlag )
-  {
-    //clear the cache pixmap if we changed resolution / extent
-    QSettings mySettings;
-    if ( mySettings.value( "/qgis/enable_render_caching", false ).toBool() )
-    {
-      QgsMapLayerRegistry::instance()->clearAllLayerCaches();
-    }
-  }*/
 
   // render all layers in the stack, starting at the base
   QListIterator<QString> li( mSettings.layers() );
@@ -251,21 +219,13 @@ void QgsMapRendererCustomPainterJob::startRender()
 
     // Store the painter in case we need to swap it out for the
     // cache painter
-    QPainter * mypContextPainter = mRenderContext.painter();
+    //QPainter * mypContextPainter = mRenderContext.painter();
     // Flattened image for drawing when a blending mode is set
     //QImage * mypFlattenedImage = 0;
 
     QString layerId = li.previous();
 
     QgsDebugMsg( "Rendering at layer item " + layerId );
-
-    // This call is supposed to cause the progress bar to
-    // advance. However, it seems that updating the progress bar is
-    // incompatible with having a QPainter active (the one that is
-    // passed into this function), as Qt produces a number of errors
-    // when try to do so. I'm (Gavin) not sure how to fix this, but
-    // added these comments and debug statement to help others...
-    QgsDebugMsg( "If there is a QPaintEngine error here, it is caused by an emit call" );
 
     QgsMapLayer *ml = QgsMapLayerRegistry::instance()->mapLayer( layerId );
 
@@ -284,12 +244,12 @@ void QgsMapRendererCustomPainterJob::startRender()
                  .arg( ml->blendMode() )
                );
 
-    if ( mRenderContext.useAdvancedEffects() )
+    /*if ( mRenderContext.useAdvancedEffects() )
     {
       // Set the QPainter composition mode so that this layer is rendered using
       // the desired blending mode
       mypContextPainter->setCompositionMode( ml->blendMode() );
-    }
+    }*/
 
     if ( !ml->hasScaleBasedVisibility() || ( ml->minimumScale() <= mSettings.scale() && mSettings.scale() < ml->maximumScale() ) ) //|| mOverview )
     {
@@ -322,26 +282,14 @@ void QgsMapRendererCustomPainterJob::startRender()
 
       //decide if we have to scale the raster
       //this is necessary in case QGraphicsScene is used
-      /*bool scaleRaster = false;
+      bool scaleRaster = false;
       QgsMapToPixel rasterMapToPixel;
       QgsMapToPixel bk_mapToPixel;
 
       if ( ml->type() == QgsMapLayer::RasterLayer && qAbs( rasterScaleFactor - 1.0 ) > 0.000001 )
       {
         scaleRaster = true;
-      }*/
-
-      // Force render of layers that are being edited
-      // or if there's a labeling engine that needs the layer to register features
-      /*if ( ml->type() == QgsMapLayer::VectorLayer )
-      {
-        QgsVectorLayer* vl = qobject_cast<QgsVectorLayer *>( ml );
-        if ( vl->isEditable() ||
-             ( mRenderContext.labelingEngine() && mRenderContext.labelingEngine()->willUseLayer( vl ) ) )
-        {
-          ml->setCacheImage( 0 );
-        }
-      }*/
+      }
 
       /*QSettings mySettings;
       bool useRenderCaching = false;
@@ -429,16 +377,16 @@ void QgsMapRendererCustomPainterJob::startRender()
         }
       }*/
 
-      /*if ( scaleRaster )
+      if ( scaleRaster )
       {
         bk_mapToPixel = mRenderContext.mapToPixel();
         rasterMapToPixel = mRenderContext.mapToPixel();
         rasterMapToPixel.setMapUnitsPerPixel( mRenderContext.mapToPixel().mapUnitsPerPixel() / rasterScaleFactor );
-        rasterMapToPixel.setYMaximum( mSize.height() * rasterScaleFactor );
+        rasterMapToPixel.setYMaximum( mSettings.outputSize().height() * rasterScaleFactor );
         mRenderContext.setMapToPixel( rasterMapToPixel );
         mRenderContext.painter()->save();
         mRenderContext.painter()->scale( 1.0 / rasterScaleFactor, 1.0 / rasterScaleFactor );
-      }*/
+      }
 
       if ( !ml->draw( mRenderContext ) )
       {
@@ -458,11 +406,11 @@ void QgsMapRendererCustomPainterJob::startRender()
         }
       }
 
-      /*if ( scaleRaster )
+      if ( scaleRaster )
       {
         mRenderContext.setMapToPixel( bk_mapToPixel );
         mRenderContext.painter()->restore();
-      }*/
+      }
 
       //apply layer transparency for vector layers
       /*if (( mRenderContext.useAdvancedEffects() ) && ( ml->type() == QgsMapLayer::VectorLayer ) )
