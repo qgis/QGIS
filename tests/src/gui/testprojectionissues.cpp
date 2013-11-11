@@ -73,8 +73,8 @@ void TestProjectionIssues::initTestCase()
   //reproject to SWEDREF 99 TM
   QgsCoordinateReferenceSystem destCRS;
   destCRS.createFromId( 3006, QgsCoordinateReferenceSystem::EpsgCrsId );
-  mMapCanvas->mapRenderer()->setDestinationCrs( destCRS );
-  mMapCanvas->mapRenderer()->setProjectionsEnabled( true );
+  mMapCanvas->setDestinationCrs( destCRS );
+  mMapCanvas->setCrsTransformEnabled( true );
 
 };
 

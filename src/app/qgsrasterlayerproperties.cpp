@@ -1718,12 +1718,12 @@ void QgsRasterLayerProperties::toggleBuildPyramidsButton()
 
 void QgsRasterLayerProperties::on_mMinimumScaleSetCurrentPushButton_clicked()
 {
-  cbMinimumScale->setScale( 1.0 / QgisApp::instance()->mapCanvas()->mapRenderer()->scale() );
+  cbMinimumScale->setScale( 1.0 / QgisApp::instance()->mapCanvas()->mapSettings().scale() );
 }
 
 void QgsRasterLayerProperties::on_mMaximumScaleSetCurrentPushButton_clicked()
 {
-  cbMaximumScale->setScale( 1.0 / QgisApp::instance()->mapCanvas()->mapRenderer()->scale() );
+  cbMaximumScale->setScale( 1.0 / QgisApp::instance()->mapCanvas()->mapSettings().scale() );
 }
 
 void QgsRasterLayerProperties::on_mResetColorRenderingBtn_clicked()

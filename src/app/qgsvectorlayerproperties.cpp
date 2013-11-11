@@ -1060,10 +1060,10 @@ void QgsVectorLayerProperties::enableLabelOptions( bool theFlag )
 
 void QgsVectorLayerProperties::on_mMinimumScaleSetCurrentPushButton_clicked()
 {
-  cbMinimumScale->setScale( 1.0 / QgisApp::instance()->mapCanvas()->mapRenderer()->scale() );
+  cbMinimumScale->setScale( 1.0 / QgisApp::instance()->mapCanvas()->mapSettings().scale() );
 }
 
 void QgsVectorLayerProperties::on_mMaximumScaleSetCurrentPushButton_clicked()
 {
-  cbMaximumScale->setScale( 1.0 / QgisApp::instance()->mapCanvas()->mapRenderer()->scale() );
+  cbMaximumScale->setScale( 1.0 / QgisApp::instance()->mapCanvas()->mapSettings().scale() );
 }

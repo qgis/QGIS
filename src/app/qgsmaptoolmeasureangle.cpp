@@ -29,7 +29,7 @@ QgsMapToolMeasureAngle::QgsMapToolMeasureAngle( QgsMapCanvas* canvas ): QgsMapTo
 {
   mSnapper.setMapCanvas( canvas );
 
-  connect( canvas->mapRenderer(), SIGNAL( destinationSrsChanged() ),
+  connect( canvas, SIGNAL( destinationSrsChanged() ),
            this, SLOT( updateSettings() ) );
 }
 

@@ -122,7 +122,7 @@ void QgsGrassPlugin::initGui()
   mCanvas = qGisInterface->mapCanvas();
   QWidget* qgis = qGisInterface->mainWindow();
 
-  connect( mCanvas->mapRenderer(), SIGNAL( destinationSrsChanged() ), this, SLOT( setTransform() ) );
+  connect( mCanvas, SIGNAL( destinationSrsChanged() ), this, SLOT( setTransform() ) );
 
   // Connect project
   connect( qgis, SIGNAL( projectRead() ), this, SLOT( projectRead() ) );
@@ -924,12 +924,12 @@ QIcon QgsGrassPlugin::getThemeIcon( const QString theName )
 
 void QgsGrassPlugin::setTransform()
 {
-  if ( mCrs.isValid() && mCanvas->mapRenderer()->destinationCrs().isValid() )
+  if ( mCrs.isValid() && mCanvas->mapSettings().destinationCrs().isValid() )
   {
     QgsDebugMsg( "srcCrs: " + mCrs.toWkt() );
-    QgsDebugMsg( "destCrs " + mCanvas->mapRenderer()->destinationCrs().toWkt() );
+    QgsDebugMsg( "destCrs " + mCanvas->mapSettings().destinationCrs().toWkt() );
     mCoordinateTransform.setSourceCrs( mCrs );
-    mCoordinateTransform.setDestCRS( mCanvas->mapRenderer()->destinationCrs() );
+    mCoordinateTransform.setDestCRS( mCanvas->mapSettings().destinationCrs() );
   }
 }
 

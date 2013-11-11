@@ -891,11 +891,7 @@ void QgsComposerLegendWidget::updateLegend()
     QgsMapCanvas* canvas = app->mapCanvas();
     if ( canvas )
     {
-      QgsMapRenderer* renderer = canvas->mapRenderer();
-      if ( renderer )
-      {
-        layerIdList = renderer->layerSet();
-      }
+      layerIdList = canvas->mapSettings().layers();
     }
 
     //and also group info

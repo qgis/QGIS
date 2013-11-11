@@ -47,7 +47,7 @@ QgsMeasureTool::QgsMeasureTool( QgsMapCanvas* canvas, bool measureArea )
   mDialog = new QgsMeasureDialog( this, Qt::WindowStaysOnTopHint );
   mSnapper.setMapCanvas( canvas );
 
-  connect( canvas->mapRenderer(), SIGNAL( destinationSrsChanged() ),
+  connect( canvas, SIGNAL( destinationSrsChanged() ),
            this, SLOT( updateSettings() ) );
 }
 

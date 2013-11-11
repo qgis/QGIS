@@ -1443,12 +1443,6 @@ bool QgsGeorefPluginGui::writePDFMapFile( const QString& fileName, const QgsGeor
     return false;
   }
 
-  QgsMapRenderer* canvasRenderer = mCanvas->mapRenderer();
-  if ( !canvasRenderer )
-  {
-    return false;
-  }
-
   QgsRasterLayer *rlayer = ( QgsRasterLayer* ) mCanvas->layer( 0 );
   if ( !rlayer )
   {
@@ -1487,7 +1481,7 @@ bool QgsGeorefPluginGui::writePDFMapFile( const QString& fileName, const QgsGeor
   QgsComposerMap* composerMap = new QgsComposerMap( composition, leftMargin, topMargin, contentWidth, contentHeight );
   composerMap->setKeepLayerSet( true );
   QStringList list;
-  list.append( canvasRenderer->layerSet()[0] );
+  list.append( mCanvas->mapSettings().layers()[0] );
   composerMap->setLayerSet( list );
 
   double xcenter = rlayer->extent().center().x();
@@ -1547,12 +1541,6 @@ bool QgsGeorefPluginGui::writePDFReportFile( const QString& fileName, const QgsG
     return false;
   }
 
-  QgsMapRenderer* canvasRenderer = mCanvas->mapRenderer();
-  if ( !canvasRenderer )
-  {
-    return false;
-  }
-
   QPrinter printer;
   printer.setOutputFormat( QPrinter::PdfFormat );
   printer.setOutputFileName( fileName );
@@ -1605,7 +1593,7 @@ bool QgsGeorefPluginGui::writePDFReportFile( const QString& fileName, const QgsG
   }
 
   QgsComposerMap* composerMap = new QgsComposerMap( composition, leftMargin, titleLabel->rect().bottom() + titleLabel->transform().dy(), mapWidthMM, mapHeightMM );
-  composerMap->setLayerSet( canvasRenderer->layerSet() );
+  composerMap->setLayerSet( mCanvas->mapSettings().layers() );
   composerMap->setNewExtent( mCanvas->extent() );
   composerMap->setMapCanvas( mCanvas );
   composition->addItem( composerMap );

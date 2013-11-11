@@ -45,7 +45,7 @@ QgsGrassRegionEdit::QgsGrassRegionEdit( QgsMapCanvas* canvas )
   mCrs = QgsGrass::crs( gisdbase, location );
   QgsDebugMsg( "mCrs: " + mCrs.toWkt() );
   setTransform();
-  connect( canvas->mapRenderer(), SIGNAL( destinationSrsChanged() ), this, SLOT( setTransform() ) );
+  connect( canvas, SIGNAL( destinationSrsChanged() ), this, SLOT( setTransform() ) );
 }
 
 QgsGrassRegionEdit::~QgsGrassRegionEdit()
@@ -111,10 +111,10 @@ void QgsGrassRegionEdit::calcSrcRegion()
 {
   mSrcRectangle.set( mStartPoint, mEndPoint );
 
-  if ( mCanvas->mapRenderer()->hasCrsTransformEnabled() && mCrs.isValid() && mCanvas->mapRenderer()->destinationCrs().isValid() )
+  if ( mCanvas->hasCrsTransformEnabled() && mCrs.isValid() && mCanvas->mapSettings().destinationCrs().isValid() )
   {
     QgsCoordinateTransform coordinateTransform;
-    coordinateTransform.setSourceCrs( mCanvas->mapRenderer()->destinationCrs() );
+    coordinateTransform.setSourceCrs( mCanvas->mapSettings().destinationCrs() );
     coordinateTransform.setDestCRS( mCrs );
     mSrcRectangle = coordinateTransform.transformBoundingBox( mSrcRectangle );
   }
@@ -122,10 +122,10 @@ void QgsGrassRegionEdit::calcSrcRegion()
 
 void QgsGrassRegionEdit::setTransform()
 {
-  if ( mCrs.isValid() && canvas()->mapRenderer()->destinationCrs().isValid() )
+  if ( mCrs.isValid() && canvas()->mapSettings().destinationCrs().isValid() )
   {
     mCoordinateTransform.setSourceCrs( mCrs );
-    mCoordinateTransform.setDestCRS( canvas()->mapRenderer()->destinationCrs() );
+    mCoordinateTransform.setDestCRS( canvas()->mapSettings().destinationCrs() );
   }
 }
 
@@ -134,7 +134,7 @@ void QgsGrassRegionEdit::transform( QgsMapCanvas *canvas, QVector<QgsPoint> &poi
   QgsDebugMsg( "Entered" );
 
   /** Coordinate transform */
-  if ( canvas->mapRenderer()->hasCrsTransformEnabled() )
+  if ( canvas->hasCrsTransformEnabled() )
   {
     //QgsDebugMsg ( "srcCrs = " +  coordinateTransform->sourceCrs().toWkt() );
     //QgsDebugMsg ( "destCrs = " +  coordinateTransform->destCRS().toWkt() );

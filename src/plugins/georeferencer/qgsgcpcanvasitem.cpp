@@ -186,9 +186,7 @@ double QgsGCPCanvasItem::residualToScreenFactor() const
   double mapUnitsPerScreenPixel = mMapCanvas->mapUnitsPerPixel();
   double mapUnitsPerRasterPixel = 1.0;
 
-  if ( mMapCanvas->mapRenderer() )
-  {
-    QStringList canvasLayers = mMapCanvas->mapRenderer()->layerSet();
+    QStringList canvasLayers = mMapCanvas->mapSettings().layers();
     if ( canvasLayers.size() > 0 )
     {
       QString layerId = canvasLayers.at( 0 );
@@ -202,7 +200,6 @@ double QgsGCPCanvasItem::residualToScreenFactor() const
         }
       }
     }
-  }
 
   return 1.0 / ( mapUnitsPerScreenPixel * mapUnitsPerRasterPixel );
 }

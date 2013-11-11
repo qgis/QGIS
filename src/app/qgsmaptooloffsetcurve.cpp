@@ -57,8 +57,7 @@ void QgsMapToolOffsetCurve::canvasPressEvent( QMouseEvent* e )
   }
 
 
-  QgsMapRenderer* renderer = mCanvas->mapRenderer();
-  QgsSnapper snapper( renderer );
+  QgsSnapper snapper( mCanvas->mapSettings() );
   configureSnapper( snapper );
   QList<QgsSnappingResult> snapResults;
   snapper.snapPoint( e->pos(), snapResults );
