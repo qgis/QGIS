@@ -1756,8 +1756,8 @@ void QgsComposition::removeComposerItem( QgsComposerItem* item, bool createComma
       }
 
       undoStack()->push( parentCommand );
-      delete itemGroup;
       emit itemRemoved( itemGroup );
+      delete itemGroup;
     }
     else
     {
