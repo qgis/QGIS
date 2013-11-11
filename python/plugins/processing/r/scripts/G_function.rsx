@@ -1,10 +1,8 @@
 ##Point pattern analysis=group
 ##Layer=vector
+##Nsim=number 10
 ##showplots
 library("maptools")
 library("spatstat")
 ppp=as(as(Layer, "SpatialPoints"),"ppp")
-qc=quadratcount(ppp)
-plot(Layer)
-plot(qc, add=TRUE)
->quadrat.test(ppp);
+plot(envelope(ppp, Gest, nsim=Nsim))
