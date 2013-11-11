@@ -433,8 +433,6 @@ void QgsMapCanvas::refresh()
     // Tell the user we're going to be a while
     QApplication::setOverrideCursor( Qt::WaitCursor );
 
-    emit renderStarting();
-
     mMap->render();
 
     mDirty = false;
@@ -445,18 +443,11 @@ void QgsMapCanvas::refresh()
     emit renderComplete( &p );
     p.end();
 
-    // notifies current map tool
-    if ( mMapTool )
-      mMapTool->renderComplete();
-
     // Tell the user we've finished going to be a while
     QApplication::restoreOverrideCursor();
   }
 
   mDrawing = false;
-
-  // Done refreshing
-  emit mapCanvasRefreshed();
 
   if ( logRefresh )
   {

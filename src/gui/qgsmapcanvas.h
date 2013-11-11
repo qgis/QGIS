@@ -333,7 +333,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
   signals:
     /** Let the owner know how far we are with render operations */
-    void setProgress( int, int );
+    //! @deprecated since 2.1 - already unused in 2.0 anyway
+    Q_DECL_DEPRECATED void setProgress( int, int );
 
     /** emits current mouse position
         \note changed in 1.3 */
@@ -353,15 +354,19 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      being rendered onto a pixmap other than the mapCanvas own pixmap member.
 
     */
-    void renderComplete( QPainter * );
+    //! @deprecated since 2.1 - anything related to rendering progress is not visible outside of map canvas
+    //! - additional drawing shall be done directly within the renderer job or independently as a map canvas item
+    Q_DECL_DEPRECATED void renderComplete( QPainter * );
 
     /** Emitted when canvas finished a refresh request.
     \note Added in 2.0 */
-    void mapCanvasRefreshed();
+    //! @deprecated since 2.1 - anything related to rendering progress is not visible outside of map canvas
+    Q_DECL_DEPRECATED void mapCanvasRefreshed();
 
     /** Emitted when the canvas is about to be rendered.
       \note Added in 1.5 */
-    void renderStarting();
+    //! @deprecated since 2.1 - anything related to rendering progress is not visible outside of map canvas
+    Q_DECL_DEPRECATED void renderStarting();
 
     //! Emitted when a new set of layers has been received
     void layersChanged();

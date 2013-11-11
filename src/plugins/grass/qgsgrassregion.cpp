@@ -258,8 +258,6 @@ QgsGrassRegion::QgsGrassRegion( QgsGrassPlugin *plugin,  QgisInterface *iface,
 
   refreshGui();
 
-  connect( mCanvas, SIGNAL( renderComplete( QPainter * ) ), this, SLOT( postRender( QPainter * ) ) );
-
   // Connect entries
   connect( mNorth, SIGNAL( editingFinished() ), this, SLOT( northChanged() ) );
   connect( mSouth, SIGNAL( editingFinished() ), this, SLOT( southChanged() ) );
