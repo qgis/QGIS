@@ -1268,4 +1268,10 @@ QgsMapRenderer::BlendMode QgsMapRenderer::getBlendModeEnum( const QPainter::Comp
   }
 }
 
+const QgsMapSettings& QgsMapRenderer::mapSettings() const
+{
+  // TODO: keep up-to-date with real settings
+  return mMapSettings;
+}
+
 bool QgsMapRenderer::mDrawing = false;

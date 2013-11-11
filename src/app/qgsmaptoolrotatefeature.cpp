@@ -100,7 +100,7 @@ void QgsMapToolRotateFeature::canvasPressEvent( QMouseEvent * e )
   }
 
   QgsPoint layerCoords = toLayerCoordinates( vlayer, e->pos() );
-  double searchRadius = QgsTolerance::vertexSearchRadius( mCanvas->currentLayer(), mCanvas->mapRenderer() );
+  double searchRadius = QgsTolerance::vertexSearchRadius( mCanvas->currentLayer(), mCanvas->mapSettings() );
   QgsRectangle selectRect( layerCoords.x() - searchRadius, layerCoords.y() - searchRadius,
                            layerCoords.x() + searchRadius, layerCoords.y() + searchRadius );
 

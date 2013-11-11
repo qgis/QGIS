@@ -26,6 +26,7 @@
 #include "qgsrectangle.h"
 #include "qgsrendercontext.h"
 #include "qgsfeature.h"
+#include "qgsmapsettings.h"
 
 class QDomDocument;
 class QDomNode;
@@ -289,6 +290,9 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     //! Added in 1.9
     static QgsMapRenderer::BlendMode getBlendModeEnum( const QPainter::CompositionMode blendMode );
 
+    //! bridge to QgsMapSettings
+    const QgsMapSettings& mapSettings() const;
+
   signals:
 
     //! @deprecated in 2.1 - not emitted anymore
@@ -377,6 +381,8 @@ class CORE_EXPORT QgsMapRenderer : public QObject
 
     //! Locks rendering loop for concurrent draws
     QMutex mRenderMutex;
+
+    QgsMapSettings mMapSettings;
 
   private:
     const QgsCoordinateTransform* tr( QgsMapLayer *layer );

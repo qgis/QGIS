@@ -33,11 +33,7 @@ QgsMapCanvasSnapper::QgsMapCanvasSnapper( QgsMapCanvas* canvas )
   if ( !canvas )
     return;
 
-  QgsMapRenderer *canvasRender = canvas->mapRenderer();
-  if ( !canvasRender )
-    return;
-
-  mSnapper = new QgsSnapper( canvasRender );
+  mSnapper = new QgsSnapper( canvas->mapSettings() );
 }
 
 QgsMapCanvasSnapper::QgsMapCanvasSnapper(): mMapCanvas( 0 ), mSnapper( 0 )
@@ -55,7 +51,7 @@ void QgsMapCanvasSnapper::setMapCanvas( QgsMapCanvas* canvas )
   delete mSnapper;
   if ( mMapCanvas )
   {
-    mSnapper = new QgsSnapper( canvas->mapRenderer() );
+    mSnapper = new QgsSnapper( canvas->mapSettings() );
   }
   else
   {
@@ -101,7 +97,7 @@ int QgsMapCanvasSnapper::snapToCurrentLayer( const QPoint& p, QList<QgsSnappingR
   if ( snappingTol < 0 )
   {
     //use search tolerance for vertex editing
-    snapLayer.mTolerance = QgsTolerance::vertexSearchRadius( vlayer, mMapCanvas->mapRenderer() );
+    snapLayer.mTolerance = QgsTolerance::vertexSearchRadius( vlayer, mMapCanvas->mapSettings() );
   }
   else
   {
@@ -247,7 +243,7 @@ int QgsMapCanvasSnapper::snapToBackgroundLayers( const QPoint& p, QList<QgsSnapp
     }
 
     //default snapping tolerance (returned in map units)
-    snapLayer.mTolerance = QgsTolerance::defaultTolerance( currentVectorLayer, mMapCanvas->mapRenderer() );
+    snapLayer.mTolerance = QgsTolerance::defaultTolerance( currentVectorLayer, mMapCanvas->mapSettings() );
     snapLayer.mUnitType = QgsTolerance::MapUnits;
 
     snapLayers.append( snapLayer );
