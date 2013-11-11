@@ -139,7 +139,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     //! Accessor for the canvas paint device
     //! @deprecated since 2.1
-    QPaintDevice &canvasPaintDevice();
+    Q_DECL_DEPRECATED QPaintDevice &canvasPaintDevice();
 
     //! Get the last reported scale of the canvas
     double scale();
@@ -313,6 +313,10 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     //! @deprecated in 2.1 - does nothing - kept for API compatibility
     Q_DECL_DEPRECATED void updateMap();
+
+    //! added in 2.1
+    //! @note probably it is not necessary to allow any client to stop rendering - should be handled just be canvas
+    Q_DECL_DEPRECATED void stopRendering();
 
     //! show whatever error is exposed by the QgsMapLayer.
     void showError( QgsMapLayer * mapLayer );

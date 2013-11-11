@@ -1392,8 +1392,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QCheckBox * mRenderSuppressionCBox;
     //! A toggle to switch between mouse coords and view extents display
     QToolButton * mToggleExtentsViewButton;
-    //! Button used to stop rendering
-    QToolButton* mStopRenderButton;
     //! Widget in status bar used to show current project CRS
     QLabel * mOnTheFlyProjectionStatusLabel;
     //! Widget in status bar used to show status of on the fly projection

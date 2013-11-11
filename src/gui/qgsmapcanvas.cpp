@@ -472,6 +472,15 @@ void QgsMapCanvas::refresh()
 
 } // refresh
 
+void QgsMapCanvas::stopRendering()
+{
+  QgsRenderContext* mypRenderContext = mMapRenderer->rendererContext();
+  if ( mypRenderContext )
+  {
+    mypRenderContext->setRenderingStopped( true );
+  }
+}
+
 void QgsMapCanvas::updateMap()
 {
 }
@@ -1274,19 +1283,13 @@ QGis::UnitType QgsMapCanvas::mapUnits() const
 void QgsMapCanvas::setRenderFlag( bool theFlag )
 {
   mRenderFlag = theFlag;
-  if ( mMapRenderer )
-  {
-    QgsRenderContext* rc = mMapRenderer->rendererContext();
-    if ( rc )
-    {
-      rc->setRenderingStopped( !theFlag );
-    }
-  }
 
   if ( mRenderFlag )
   {
     refresh();
   }
+  else
+    stopRendering();
 }
 
 void QgsMapCanvas::connectNotify( const char * signal )

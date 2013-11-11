@@ -25,7 +25,6 @@
 
 #include <qgsmaprendererjob.h>
 
-class QgsMapRenderer;
 class QgsMapSettings;
 class QgsMapCanvas;
 

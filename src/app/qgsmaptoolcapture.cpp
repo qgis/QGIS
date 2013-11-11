@@ -136,10 +136,6 @@ void QgsMapToolCapture::canvasPressEvent( QMouseEvent *e )
 }
 
 
-void QgsMapToolCapture::renderComplete()
-{
-}
-
 int QgsMapToolCapture::nextPoint( const QPoint &p, QgsPoint &layerPoint, QgsPoint &mapPoint )
 {
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );

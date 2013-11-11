@@ -1630,14 +1630,6 @@ void QgisApp::createStatusBar()
   statusBar()->addPermanentWidget( mScaleEdit, 0 );
   connect( mScaleEdit, SIGNAL( scaleChanged() ), this, SLOT( userScale() ) );
 
-  //stop rendering status bar widget
-  mStopRenderButton = new QToolButton( statusBar() );
-  mStopRenderButton->setObjectName( "mStopRenderButton" );
-  mStopRenderButton->setMaximumWidth( 20 );
-  mStopRenderButton->setMaximumHeight( 20 );
-  mStopRenderButton->setIcon( QgsApplication::getThemeIcon( "mIconStopRendering.png" ) );
-  mStopRenderButton->setToolTip( tr( "Stop map rendering" ) );
-  statusBar()->addPermanentWidget( mStopRenderButton, 0 );
   // render suppression status bar widget
   mRenderSuppressionCBox = new QCheckBox( tr( "Render" ), statusBar() );
   mRenderSuppressionCBox->setObjectName( "mRenderSuppressionCBox" );
@@ -1946,12 +1938,6 @@ void QgisApp::setupConnections()
            this, SLOT( checkForDeprecatedLabelsInProject() ) );
   connect( this, SIGNAL( projectRead() ),
            this, SLOT( checkForDeprecatedLabelsInProject() ) );
-
-  //
-  // Do we really need this ??? - its already connected to the esc key...TS
-  //
-  connect( mStopRenderButton, SIGNAL( clicked() ),
-           this, SLOT( stopRendering() ) );
 
   // setup undo/redo actions
   connect( mUndoWidget, SIGNAL( undoStackChanged() ), this, SLOT( updateUndoActions() ) );
@@ -4096,17 +4082,7 @@ void QgisApp::removeWindow( QAction *action )
 void QgisApp::stopRendering()
 {
   if ( mMapCanvas )
-  {
-    QgsMapRenderer* mypMapRenderer = mMapCanvas->mapRenderer();
-    if ( mypMapRenderer )
-    {
-      QgsRenderContext* mypRenderContext = mypMapRenderer->rendererContext();
-      if ( mypRenderContext )
-      {
-        mypRenderContext->setRenderingStopped( true );
-      }
-    }
-  }
+    mMapCanvas->stopRendering();
 }
 
 //reimplements method from base (gui) class
