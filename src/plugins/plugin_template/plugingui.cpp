@@ -26,8 +26,8 @@
   // pieces of text. One-liners can be added in the .ui file
 
   // Note: Format does not relate to translation.
-  QString format( "<html><body><h3>%1</h3>%2<h3>%3</h3>%4<p><a href=http://svn.qgis.org/api_doc/html>"
-                  "http://svn.qgis.org/api_doc/html</a><p>"
+  QString format( "<html><body><h3>%1</h3>%2<h3>%3</h3>%4<p><a href=http://qgis.org/api>"
+                  "http://qgis.org/api</a><p>"
                   "%5<p>%6<p>%7<p>%8<p><h3>%9</h3>"
                   "<h4>CMakeLists.txt</h4>%11"
                   "<h4>[pluginlcasename].h, [pluginlcasename].cpp</h4>%12"
@@ -37,18 +37,18 @@
                   "<h4>[pluginlcasename].png</h4>%16"
                   "<h4>README</h4>%17"
                   "<h3>%18</h3>%19<ul>%20</ul>%21<p>%22"
-                  "<p><b>The QGIS Team<br>2007</b>"
+                  "<p><b>The QGIS Team</b>"
                   "</body></html>" );
 
   // Note: Table does not translate
-  QString table( "<table><tr><td>QGisInterface<td><a href=http://svn.qgis.org/api_doc/html/classQgisInterface.html>"
-                 "http://svn.qgis.org/api_doc/html/classQgisInterface.htm</a>"
-                 "<tr><td>QgsMapCanvas<td><a href=http://svn.qgis.org/api_doc/html/classQgsMapCanvas.html>"
-                 "http://svn.qgis.org/api_doc/html/classQgsMapCanvas.html</a>"
-                 "<tr><td>QgsMapTool<td><a href=http://svn.qgis.org/api_doc/html/classQgsMapTool.html>"
-                 "http://svn.qgis.org/api_doc/html/classQgsMapTool.html</a>"
-                 "<tr><td>QgsPlugin<td><a href=http://svn.qgis.org/api_doc/html/classQgisPlugin.html>"
-                 "http://svn.qgis.org/api_doc/html/classQgisPlugin.html</a></table>" );
+  QString table( "<table><tr><td>QGisInterface<td><a href=http://qgis.org/api/classQgisInterface.html>"
+                 "http://qgis.org/api/classQgisInterface.html</a>"
+                 "<tr><td>QgsMapCanvas<td><a href=http://qgis.org/api/classQgsMapCanvas.html>"
+                 "http://qgis.org/api/classQgsMapCanvas.html</a>"
+                 "<tr><td>QgsMapTool<td><a href=http://qgis.org/api/classQgsMapTool.html>"
+                 "http://qgis.org/api/classQgsMapTool.html</a>"
+                 "<tr><td>QgsPlugin<td><a href=http://qgis.org/api/classQgisPlugin.html>"
+                 "http://qgis.org/api/classQgisPlugin.html</a></table>" );
 
   // Note: Translatable strings below
   QString text = format

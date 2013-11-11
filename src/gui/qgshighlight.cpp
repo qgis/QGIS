@@ -46,8 +46,11 @@ void QgsHighlight::init()
 {
   if ( mMapCanvas->mapRenderer()->hasCrsTransformEnabled() )
   {
-    QgsCoordinateTransform transform( mLayer->crs(), mMapCanvas->mapRenderer()->destinationCrs() );
-    mGeometry->transform( transform );
+    const QgsCoordinateTransform* ct = mMapCanvas->mapRenderer()->transformation( mLayer );
+    if ( ct )
+    {
+      mGeometry->transform( *ct );
+    }
   }
   updateRect();
   update();

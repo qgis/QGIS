@@ -223,7 +223,7 @@ QString QgsSpatiaLiteFeatureIterator::whereClauseRect()
   }
   else
   {
-    if ( P->spatialIndexRTree )
+    if ( P->spatialIndexRTree && rect.isFinite() )
     {
       // using the RTree spatial index
       QString mbrFilter = QString( "xmin <= %1 AND " ).arg( qgsDoubleToString( rect.xMaximum() ) );

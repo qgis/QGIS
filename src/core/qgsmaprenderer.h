@@ -110,7 +110,13 @@ class CORE_EXPORT QgsLabelingEngineInterface
     virtual QgsLabelingEngineInterface* clone() = 0;
 };
 
-
+struct CORE_EXPORT QgsLayerCoordinateTransform
+{
+  QString srcAuthId;
+  QString destAuthId;
+  int srcDatumTransform; //-1 if unknown or not specified
+  int destDatumTransform;
+};
 
 /** \ingroup core
  * A non GUI class for rendering a map layer set onto a QPainter.
@@ -243,7 +249,7 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     bool hasCrsTransformEnabled() const;
 
     //! sets destination coordinate reference system
-    void setDestinationCrs( const QgsCoordinateReferenceSystem& crs );
+    void setDestinationCrs( const QgsCoordinateReferenceSystem& crs, bool refreshCoordinateTransformInfo = true );
 
     //! returns CRS of destination coordinate reference system
     const QgsCoordinateReferenceSystem& destinationCrs() const;
@@ -289,6 +295,11 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     //! Added in 1.9
     static QgsMapRenderer::BlendMode getBlendModeEnum( const QPainter::CompositionMode blendMode );
 
+    void addLayerCoordinateTransform( const QString& layerId, const QString& srcAuthId, const QString& destAuthId, int srcDatumTransform = -1, int destDatumTransform = -1 );
+    void clearLayerCoordinateTransforms();
+
+    const QgsCoordinateTransform* transformation( const QgsMapLayer *layer ) const;
+
   signals:
 
     void drawingProgress( int current, int total );
@@ -303,6 +314,9 @@ class CORE_EXPORT QgsMapRenderer : public QObject
 
     //! emitted when layer's draw() returned false
     void drawError( QgsMapLayer* );
+
+    //! Notifies higher level components to show the datum transform dialog and add a QgsLayerCoordinateTransformInfo for that layer
+    void datumTransformInfoRequested( const QgsMapLayer* ml, const QString& srcAuthId, const QString& destAuthId ) const;
 
   public slots:
 
@@ -376,8 +390,8 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     //! Locks rendering loop for concurrent draws
     QMutex mRenderMutex;
 
-  private:
-    const QgsCoordinateTransform* tr( QgsMapLayer *layer );
+    QHash< QString, QgsLayerCoordinateTransform > mLayerCoordinateTransformInfo;
+
 };
 
 #endif

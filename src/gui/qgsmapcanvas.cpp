@@ -30,6 +30,7 @@ email                : sherman at mrcc.com
 #include <QPaintEvent>
 #include <QPixmap>
 #include <QRect>
+#include <QSettings>
 #include <QTextStream>
 #include <QResizeEvent>
 #include <QString>
@@ -38,6 +39,8 @@ email                : sherman at mrcc.com
 
 #include "qgis.h"
 #include "qgsapplication.h"
+#include "qgscrscache.h"
+#include "qgsdatumtransformdialog.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapcanvasmap.h"
@@ -110,6 +113,8 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
   setFocusPolicy( Qt::StrongFocus );
 
   mMapRenderer = new QgsMapRenderer;
+  connect( mMapRenderer, SIGNAL( datumTransformInfoRequested( const QgsMapLayer*, const QString&, const QString& ) ),
+           this, SLOT( getDatumTransformInfo( const QgsMapLayer*, const QString& , const QString& ) ) );
 
   // create map canvas item which will show the map
   mMap = new QgsMapCanvasMap( this );
@@ -1541,6 +1546,63 @@ void QgsMapCanvas::writeProject( QDomDocument & doc )
   QDomElement mapcanvasNode = doc.createElement( "mapcanvas" );
   qgisNode.appendChild( mapcanvasNode );
   mMapRenderer->writeXML( mapcanvasNode, doc );
+}
+
+/**Ask user which datum transform to use*/
+void QgsMapCanvas::getDatumTransformInfo( const QgsMapLayer* ml, const QString& srcAuthId, const QString& destAuthId )
+{
+  if ( !ml )
+  {
+    return;
+  }
+
+  //check if default datum transformation available
+  QSettings s;
+  QString settingsString = "/Projections/" + srcAuthId + "//" + destAuthId;
+  QVariant defaultSrcTransform = s.value( settingsString + "_srcTransform" );
+  QVariant defaultDestTransform = s.value( settingsString + "_destTransform" );
+  if ( defaultSrcTransform.isValid() && defaultDestTransform.isValid() )
+  {
+    mMapRenderer->addLayerCoordinateTransform( ml->id(), srcAuthId, destAuthId, defaultSrcTransform.toInt(), defaultDestTransform.toInt() );
+    return;
+  }
+
+  const QgsCoordinateReferenceSystem& srcCRS = QgsCRSCache::instance()->crsByAuthId( srcAuthId );
+  const QgsCoordinateReferenceSystem& destCRS = QgsCRSCache::instance()->crsByAuthId( destAuthId );
+
+  //get list of datum transforms
+  QList< QList< int > > dt = QgsCoordinateTransform::datumTransformations( srcCRS, destCRS );
+  if ( dt.size() < 2 )
+  {
+    return;
+  }
+
+  //if several possibilities:  present dialog
+  QgsDatumTransformDialog d( ml->name(), dt );
+  if ( mMapRenderer && ( d.exec() == QDialog::Accepted ) )
+  {
+    int srcTransform = -1;
+    int destTransform = -1;
+    QList<int> t = d.selectedDatumTransform();
+    if ( t.size() > 0 )
+    {
+      srcTransform = t.at( 0 );
+    }
+    if ( t.size() > 1 )
+    {
+      destTransform = t.at( 1 );
+    }
+    mMapRenderer->addLayerCoordinateTransform( ml->id(), srcAuthId, destAuthId, srcTransform, destTransform );
+    if ( d.rememberSelection() )
+    {
+      s.setValue( settingsString + "_srcTransform", srcTransform );
+      s.setValue( settingsString + "_destTransform", destTransform );
+    }
+  }
+  else
+  {
+    mMapRenderer->addLayerCoordinateTransform( ml->id(), srcAuthId, destAuthId, -1, -1 );
+  }
 }
 
 void QgsMapCanvas::zoomByFactor( double scaleFactor )

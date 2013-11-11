@@ -76,6 +76,7 @@ qgscredentialdialog.cpp
 qgscursors.cpp
 qgsdatadefinedbutton.cpp
 qgsdetaileditemdata.cpp
+qgsdatumtransformdialog.cpp
 qgsdetaileditemdelegate.cpp
 qgsdetaileditemwidget.cpp
 qgsdialog.cpp

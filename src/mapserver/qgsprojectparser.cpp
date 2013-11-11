@@ -3670,3 +3670,30 @@ void QgsProjectParser::loadLabelSettings( QgsLabelingEngineInterface* lbl )
     }
   }
 }
+
+QList< QPair< QString, QgsLayerCoordinateTransform > > QgsProjectParser::layerCoordinateTransforms() const
+{
+  QList< QPair< QString, QgsLayerCoordinateTransform > > layerTransformList;
+
+  QDomElement coordTransformInfoElem = mXMLDoc->documentElement().firstChildElement( "mapcanvas" ).firstChildElement( "layer_coordinate_transform_info" );
+  if ( coordTransformInfoElem.isNull() )
+  {
+    return layerTransformList;
+  }
+
+  QDomNodeList layerTransformNodeList = coordTransformInfoElem.elementsByTagName( "layer_coordinate_transform" );
+  for ( int i = 0; i < layerTransformNodeList.size(); ++i )
+  {
+    QPair< QString, QgsLayerCoordinateTransform > layerEntry;
+    QDomElement layerTransformElem = layerTransformNodeList.at( i ).toElement();
+    layerEntry.first = layerTransformElem.attribute( "layerid" );
+    QgsLayerCoordinateTransform t;
+    t.srcAuthId = layerTransformElem.attribute( "srcAuthId" );
+    t.destAuthId = layerTransformElem.attribute( "destAuthId" );
+    t.srcDatumTransform = layerTransformElem.attribute( "srcDatumTransform", "-1" ).toInt();
+    t.destDatumTransform = layerTransformElem.attribute( "destDatumTransform", "-1" ).toInt();
+    layerEntry.second = t;
+    layerTransformList.push_back( layerEntry );
+  }
+  return layerTransformList;
+}
