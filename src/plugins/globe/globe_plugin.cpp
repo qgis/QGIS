@@ -663,26 +663,29 @@ void GlobePlugin::setupControls()
   mControlCanvas->addControl( backgroundGrp2 );
 
   //Zoom Reset
+#if ENABLE_HOME_BUTTON
   osg::Image* homeImg = osgDB::readImageFile( imgDir + "/zoom-home.png" );
   ImageControl* home = new NavigationControl( homeImg );
   home->setPosition( imgLeft + 12 + 3, imgTop + 2 );
+  imgTop = imgTop + 23 + 2;
   home->addEventHandler( new HomeControlHandler( manip ) );
   mControlCanvas->addControl( home );
+#endif
 
   //refresh layers
   osg::Image* refreshImg = osgDB::readImageFile( imgDir + "/refresh-view.png" );
   ImageControl* refresh = new NavigationControl( refreshImg );
-  refresh->setPosition( imgLeft + 12 + 3, imgTop + 2 + 23 + 2 );
+  refresh->setPosition( imgLeft + 12 + 3, imgTop + 3 );
+  imgTop = imgTop + 23 + 2;
   refresh->addEventHandler( new RefreshControlHandler( this ) );
   mControlCanvas->addControl( refresh );
 
   //Sync Extent
-#if ENABLE_SYNC_BUTTON
   osg::Image* syncImg = osgDB::readImageFile( imgDir + "/sync-extent.png" );
   ImageControl* sync = new NavigationControl( syncImg );
+  sync->setPosition( imgLeft + 12 + 3, imgTop + 2 );
   sync->addEventHandler( new SyncExtentControlHandler( this ) );
   mControlCanvas->addControl( sync );
-#endif
 }
 
 void GlobePlugin::setupProxy()
