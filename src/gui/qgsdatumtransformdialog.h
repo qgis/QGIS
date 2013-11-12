@@ -32,6 +32,9 @@ class GUI_EXPORT QgsDatumTransformDialog: public QDialog, private Ui::QgsDatumTr
 
   private:
     QgsDatumTransformDialog();
+    bool gridShiftTransformation( const QString& itemText ) const;
+    /**Returns false if the location of the grid shift files is known (PROJ_LIB) and the shift file is not there*/
+    bool testGridShiftFileAvailability( QTreeWidgetItem* item, int col ) const;
 };
 
 #endif // QGSDATUMTRANSFORMDIALOG_H

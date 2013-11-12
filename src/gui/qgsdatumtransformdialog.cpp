@@ -17,6 +17,7 @@
 
 #include "qgsdatumtransformdialog.h"
 #include "qgscoordinatetransform.h"
+#include <QDir>
 
 QgsDatumTransformDialog::QgsDatumTransformDialog( const QString& layerName, const QList< QList< int > >& dt, QWidget* parent, Qt::WindowFlags f ): QDialog( parent, f )
 {
@@ -26,6 +27,8 @@ QgsDatumTransformDialog::QgsDatumTransformDialog( const QString& layerName, cons
   for ( ; it != dt.constEnd(); ++it )
   {
     QTreeWidgetItem* item = new QTreeWidgetItem();
+    bool itemDisabled = false;
+
     for ( int i = 0; i < 2; ++i )
     {
       if ( i >= it->size() )
@@ -39,7 +42,13 @@ QgsDatumTransformDialog::QgsDatumTransformDialog( const QString& layerName, cons
       {
         item->setText( i, QgsCoordinateTransform::datumTransformString( nr ) );
       }
+
+      if ( gridShiftTransformation( item->text( i ) ) && !testGridShiftFileAvailability( item, i ) )
+      {
+        itemDisabled = true;
+      }
     }
+    item->setDisabled( itemDisabled );
     mDatumTransformTreeWidget->addTopLevelItem( item );
   }
 }
@@ -74,4 +83,58 @@ QList< int > QgsDatumTransformDialog::selectedDatumTransform()
 bool QgsDatumTransformDialog::rememberSelection() const
 {
   return mRememberSelectionCheckBox->isChecked();
+}
+
+bool QgsDatumTransformDialog::gridShiftTransformation( const QString& itemText ) const
+{
+  return ( !itemText.isEmpty() && !itemText.contains( "towgs84", Qt::CaseInsensitive ) );
+}
+
+bool QgsDatumTransformDialog::testGridShiftFileAvailability( QTreeWidgetItem* item, int col ) const
+{
+  if ( !item )
+  {
+    return true;
+  }
+
+  QString itemText = item->text( col );
+  if ( itemText.isEmpty() )
+  {
+    return true;
+  }
+
+  char* projLib = getenv( "PROJ_LIB" );
+  if ( !projLib ) //no information about installation directory
+  {
+    return true;
+  }
+
+  QStringList itemEqualSplit = itemText.split( "=" );
+  QString filename;
+  for ( int i = 1; i < itemEqualSplit.size(); ++i )
+  {
+    if ( i > 1 )
+    {
+      filename.append( "=" );
+    }
+    filename.append( itemEqualSplit.at( i ) );
+  }
+
+  QDir projDir( projLib );
+  if ( projDir.exists() )
+  {
+    //look if filename in directory
+    QStringList fileList = projDir.entryList();
+    QStringList::const_iterator fileIt = fileList.constBegin();
+    for ( ; fileIt != fileList.constEnd(); ++fileIt )
+    {
+      if ( *fileIt == filename )
+      {
+        return true;
+      }
+    }
+    item->setToolTip( col, tr( "File '%1' not found in directory '%2'" ).arg( filename ).arg( projDir.absolutePath() ) );
+    return false; //not found in PROJ_LIB directory
+  }
+  return true;
 }
