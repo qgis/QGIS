@@ -35,6 +35,7 @@ from processing.parameters.ParameterTable import ParameterTable
 from processing.parameters.ParameterVector import ParameterVector
 from processing.parameters.ParameterMultipleInput import ParameterMultipleInput
 from processing.parameters.ParameterString import ParameterString
+from processing.parameters.ParameterCrs import ParameterCrs
 from processing.parameters.ParameterNumber import ParameterNumber
 from processing.parameters.ParameterBoolean import ParameterBoolean
 from processing.parameters.ParameterSelection import ParameterSelection
@@ -127,7 +128,7 @@ class ScriptAlgorithm(GeoAlgorithm):
         if '|' in line:
             self.processDescriptionParameterLine(line)
             return
-        tokens = line.split('=')
+        tokens = line.split('=', 1)
         desc = self.createDescriptiveName(tokens[0])
         if tokens[1].lower().strip() == 'group':
             self.group = tokens[0]
@@ -186,6 +187,11 @@ class ScriptAlgorithm(GeoAlgorithm):
         elif tokens[1].lower().strip().startswith('string'):
             default = tokens[1].strip()[len('string') + 1:]
             param = ParameterString(tokens[0], desc, default)
+        elif tokens[1].lower().strip().startswith('crs'):
+            default = tokens[1].strip()[len('crs') + 1:]
+            if not default:
+                default = 'EPSG:4326'
+            param = ParameterCrs(tokens[0], desc, default)
         elif tokens[1].lower().strip().startswith('output raster'):
             out = OutputRaster()
         elif tokens[1].lower().strip().startswith('output vector'):
