@@ -2019,6 +2019,7 @@ bool QgsCoordinateReferenceSystem::syncDatumTransform( const QString& dbPath )
       sql = QString( "UPDATE tbl_datum_transform SET source_crs = %2, target_crs = %3, coord_op_method = %4, p1 = %5, p2 = %6, p3 = %7, p4 = %8, p5 = %9, p6 = %10, p7 = %11 WHERE coord_op = %1" )
             .arg( coord_op ).arg( source_crs ).arg( target_crs ).arg( coord_op_method ).arg( p1 ).arg( p2 ).arg( p3 ).arg( p4 ).arg( p5 ).arg( p6 ).arg( p7 );
     }
+    else
     {
       //not yet in database, do insert
       QgsDebugMsg( "Trying datum transform insert" );
