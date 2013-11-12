@@ -38,6 +38,7 @@
 #include <qgsdistancearea.h>
 
 #include <QAction>
+#include <QDir>
 #include <QToolBar>
 #include <QMessageBox>
 
@@ -96,11 +97,23 @@ GlobePlugin::GlobePlugin( QgisInterface* theQgisInterface )
   setObjectName( "globePlugin" );
   setParent( theQgisInterface->mainWindow() );
 
-// add internal osg plugin path if bundled osg on OS X
-#ifdef HAVE_MACAPP_BUNDLED_OSG
-  if ( !QgsApplication::isRunningFromBuildDir() )
+// update path to osg plugins on Mac OS X
+#ifdef Q_OS_MACX
+  if ( !getenv( "OSG_LIBRARY_PATH" ) )
   {
-    osgDB::Registry::instance()->setLibraryFilePathList( QDir::cleanPath( QgsApplication::pluginPath() + "/../osgPlugins" ).toStdString() );
+    // OSG_PLUGINS_PATH value set by CMake option
+    QString ogsPlugins( OSG_PLUGINS_PATH );
+#ifdef HAVE_MACAPP_BUNDLED_OSG
+    if ( !QgsApplication::isRunningFromBuildDir() )
+    {
+      // add internal osg plugin path if bundled osg
+      ogsPlugins = QgsApplication::pluginPath() + "/../osgPlugins";
+    }
+#endif
+    if ( QFile::exists( ogsPlugins ) )
+    {
+      osgDB::Registry::instance()->setLibraryFilePathList( QDir::cleanPath( ogsPlugins ).toStdString() );
+    }
   }
 #endif
 
