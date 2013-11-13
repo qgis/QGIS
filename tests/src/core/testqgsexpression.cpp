@@ -100,7 +100,7 @@ class TestQgsExpression: public QObject
       if ( exp.hasParserError() )
         qDebug() << "Parser error: " << exp.parserErrorString();
       else
-        qDebug() << "Parsed string: " << exp.dump();
+        qDebug() << "Parsed string: " << exp.expression();
 
       QCOMPARE( !exp.hasParserError(), valid );
     }
