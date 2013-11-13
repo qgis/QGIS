@@ -310,7 +310,7 @@ void QgsOgrFeatureIterator::notifyLoadedFeature( OGRFeatureH fet, QgsFeature& fe
 QgsOgrSimplifiedFeatureIterator::QgsOgrSimplifiedFeatureIterator( QgsOgrProvider* p, const QgsFeatureRequest& request ) : QgsOgrFeatureIterator( p, request )
 {
   mPointBufferCount = 512;
-  mPointBufferPtr = (OGRRawPoint*)malloc( mPointBufferCount * sizeof(OGRRawPoint) );
+  mPointBufferPtr = (OGRRawPoint*)OGRMalloc( mPointBufferCount * sizeof(OGRRawPoint) );
 }
 QgsOgrSimplifiedFeatureIterator::~QgsOgrSimplifiedFeatureIterator( )
 {
@@ -332,7 +332,7 @@ OGRRawPoint* QgsOgrSimplifiedFeatureIterator::mallocPoints( int numPoints )
   if ( mPointBufferPtr==NULL )
   {
     mPointBufferCount = numPoints;
-    mPointBufferPtr = (OGRRawPoint*)malloc( mPointBufferCount * sizeof(OGRRawPoint) );
+    mPointBufferPtr = (OGRRawPoint*)OGRMalloc( mPointBufferCount * sizeof(OGRRawPoint) );
   }
   return mPointBufferPtr;
 }
