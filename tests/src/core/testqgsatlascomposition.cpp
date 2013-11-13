@@ -57,7 +57,8 @@ class TestQgsAtlasComposition: public QObject
     QgsComposerLabel* mLabel2;
     QgsComposerMap* mAtlasMap;
     QgsComposerMap* mOverview;
-    QgsMapRenderer* mMapRenderer;
+    //QgsMapRenderer* mMapRenderer;
+    QgsMapSettings mMapSettings;
     QgsVectorLayer* mVectorLayer;
     QgsAtlasComposition* mAtlas;
 };
@@ -76,15 +77,14 @@ void TestQgsAtlasComposition::initTestCase()
   QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer*>() << mVectorLayer );
 
   //create composition with composer map
-  mMapRenderer = new QgsMapRenderer();
-  mMapRenderer->setLayerSet( QStringList() << mVectorLayer->id() );
-  mMapRenderer->setProjectionsEnabled( true );
+  mMapSettings.setLayers( QStringList() << mVectorLayer->id() );
+  mMapSettings.setProjectionsEnabled( true );
 
   // select epsg:2154
   QgsCoordinateReferenceSystem crs;
   crs.createFromSrid( 2154 );
-  mMapRenderer->setDestinationCrs( crs );
-  mComposition = new QgsComposition( mMapRenderer );
+  mMapSettings.setDestinationCrs( crs );
+  mComposition = new QgsComposition( mMapSettings );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
 
   // fix the renderer, fill with green
@@ -137,7 +137,6 @@ void TestQgsAtlasComposition::initTestCase()
 void TestQgsAtlasComposition::cleanupTestCase()
 {
   delete mComposition;
-  delete mMapRenderer;
   delete mVectorLayer;
 }
 

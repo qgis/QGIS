@@ -50,30 +50,47 @@
 QgsComposition::QgsComposition( QgsMapRenderer* mapRenderer )
     : QGraphicsScene( 0 )
     , mMapRenderer( mapRenderer )
-    , mPlotStyle( QgsComposition::Preview )
-    , mPageWidth( 297 )
-    , mPageHeight( 210 )
-    , mSpaceBetweenPages( 10 )
-    , mPrintAsRaster( false )
-    , mGenerateWorldFile( false )
-    , mWorldFileMap( 0 )
-    , mUseAdvancedEffects( true )
-    , mSnapToGrid( false )
-    , mGridVisible( false )
-    , mSnapGridResolution( 10.0 )
-    , mSnapGridTolerance( 2 )
-    , mSnapGridOffsetX( 0.0 )
-    , mSnapGridOffsetY( 0.0 )
-    , mAlignmentSnap( true )
-    , mGuidesVisible( true )
-    , mSmartGuides( true )
-    , mAlignmentSnapTolerance( 2 )
-    , mSelectionHandles( 0 )
-    , mActiveItemCommand( 0 )
-    , mActiveMultiFrameCommand( 0 )
+    , mMapSettings( mapRenderer->mapSettings() )
     , mAtlasComposition( this )
-    , mPreventCursorChange( false )
 {
+  init();
+}
+
+QgsComposition::QgsComposition( const QgsMapSettings& mapSettings )
+  : QGraphicsScene( 0 )
+  , mMapRenderer( 0 )
+  , mMapSettings( mapSettings )
+  , mAtlasComposition( this )
+{
+  init();
+}
+
+void QgsComposition::init()
+{
+  // these members should be ideally in constructor's initialization list, but now we have two constructors...
+  mPlotStyle = QgsComposition::Preview;
+  mPageWidth = 297;
+  mPageHeight = 210;
+  mSpaceBetweenPages = 10;
+  mPrintAsRaster = false;
+  mGenerateWorldFile = false;
+  mWorldFileMap = 0;
+  mUseAdvancedEffects = true;
+  mSnapToGrid = false;
+  mGridVisible = false;
+  mSnapGridResolution = 10.0;
+  mSnapGridTolerance = 2;
+  mSnapGridOffsetX = 0.0;
+  mSnapGridOffsetY = 0.0;
+  mAlignmentSnap = true;
+  mGuidesVisible = true;
+  mSmartGuides = true;
+  mAlignmentSnapTolerance = 2;
+  mSelectionHandles = 0;
+  mActiveItemCommand = 0;
+  mActiveMultiFrameCommand = 0;
+  mPreventCursorChange = false;
+
   setBackgroundBrush( Qt::gray );
   addPaperItem();
 
@@ -87,6 +104,8 @@ QgsComposition::QgsComposition( QgsMapRenderer* mapRenderer )
   loadSettings();
 }
 
+
+/*
 QgsComposition::QgsComposition()
     : QGraphicsScene( 0 ),
     mMapRenderer( 0 ),
@@ -116,7 +135,7 @@ QgsComposition::QgsComposition()
 {
   loadSettings();
 
-}
+}*/
 
 QgsComposition::~QgsComposition()
 {

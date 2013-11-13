@@ -50,7 +50,6 @@
 #include "qgslogger.h"
 #include "qgsproject.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaprenderer.h"
 #include "qgsmessageviewer.h"
 #include "qgscontexthelp.h"
 #include "qgscursors.h"
@@ -359,7 +358,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   mViewFrame->setLayout( mViewLayout );
 
   //init undo/redo buttons
-  mComposition  = new QgsComposition( mQgis->mapCanvas()->mapRenderer() );
+  mComposition  = new QgsComposition( mQgis->mapCanvas()->mapSettings() );
 
   mActionUndo->setEnabled( false );
   mActionRedo->setEnabled( false );
@@ -2179,7 +2178,7 @@ void QgsComposer::readXML( const QDomElement& composerElem, const QDomDocument& 
   createComposerView();
 
   //read composition settings
-  mComposition = new QgsComposition( mQgis->mapCanvas()->mapRenderer() );
+  mComposition = new QgsComposition( mQgis->mapCanvas()->mapSettings() );
   QDomNodeList compositionNodeList = composerElem.elementsByTagName( "Composition" );
   if ( compositionNodeList.size() > 0 )
   {
@@ -2550,7 +2549,7 @@ void QgsComposer::cleanupAfterTemplateRead()
         double currentHeight = mapItem->rect().height();
         if ( currentWidth - 0 > 0.0 ) //don't divide through zero
         {
-          QgsRectangle canvasExtent = mapItem->mapRenderer()->extent();
+          QgsRectangle canvasExtent = mComposition->mapSettings().visibleExtent();
           //adapt min y of extent such that the size of the map item stays the same
           double newCanvasExtentHeight = currentHeight / currentWidth * canvasExtent.width();
           canvasExtent.setYMinimum( canvasExtent.yMaximum() - newCanvasExtentHeight );

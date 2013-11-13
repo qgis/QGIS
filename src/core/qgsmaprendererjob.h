@@ -37,6 +37,9 @@ public:
   //! Stop the rendering job - does not return until the job has terminated.
   virtual void cancel() = 0;
 
+  //! Block until the job has finished.
+  virtual void waitForFinished() = 0;
+
   // TODO: isActive() ?
 
   //! Assign an existing labeling engine with the rendering job
@@ -89,6 +92,7 @@ public:
 
   virtual void start();
   virtual void cancel();
+  virtual void waitForFinished();
 
   virtual void setLabelingEngine( QgsPalLabeling* labeling );
 
@@ -129,6 +133,7 @@ public:
 
   virtual void start();
   virtual void cancel();
+  virtual void waitForFinished();
 
   virtual void setLabelingEngine( QgsPalLabeling* labeling );
 

@@ -45,7 +45,7 @@ class TestQgsComposerScaleBar: public QObject
     QgsComposerMap* mComposerMap;
     QgsComposerScaleBar* mComposerScaleBar;
     QgsRasterLayer* mRasterLayer;
-    QgsMapRenderer* mMapRenderer;
+    QgsMapSettings mMapSettings;
 };
 
 void TestQgsComposerScaleBar::initTestCase()
@@ -63,16 +63,15 @@ void TestQgsComposerScaleBar::initTestCase()
   QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer*>() << mRasterLayer );
 
   //create composition with composer map
-  mMapRenderer = new QgsMapRenderer();
-  mMapRenderer->setLayerSet( QStringList() << mRasterLayer->id() );
+  mMapSettings.setLayers( QStringList() << mRasterLayer->id() );
 
   //reproject to WGS84
   QgsCoordinateReferenceSystem destCRS;
   destCRS.createFromId( 4326, QgsCoordinateReferenceSystem::EpsgCrsId );
-  mMapRenderer->setDestinationCrs( destCRS );
-  mMapRenderer->setProjectionsEnabled( true );
+  mMapSettings.setDestinationCrs( destCRS );
+  mMapSettings.setProjectionsEnabled( true );
 
-  mComposition = new QgsComposition( mMapRenderer );
+  mComposition = new QgsComposition( mMapSettings );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
   mComposerMap = new QgsComposerMap( mComposition, 20, 20, 150, 150 );
   mComposerMap->setFrameEnabled( true );
@@ -95,7 +94,6 @@ void TestQgsComposerScaleBar::initTestCase()
 void TestQgsComposerScaleBar::cleanupTestCase()
 {
   delete mComposition;
-  delete mMapRenderer;
   delete mRasterLayer;
 };
 

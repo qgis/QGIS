@@ -166,10 +166,7 @@ void QgsComposerMapWidget::on_mSetToMapCanvasExtentButton_clicked()
 {
   if ( mComposerMap )
   {
-    const QgsMapRenderer* renderer = mComposerMap->mapRenderer();
-    if ( renderer )
-    {
-      QgsRectangle newExtent = renderer->extent();
+      QgsRectangle newExtent = mComposerMap->composition()->mapSettings().visibleExtent();
 
       //Make sure the width/height ratio is the same as in current composer map extent.
       //This is to keep the map item frame and the page layout fixed
@@ -204,7 +201,6 @@ void QgsComposerMapWidget::on_mSetToMapCanvasExtentButton_clicked()
       mComposerMap->setNewExtent( newExtent );
       mComposerMap->endCommand();
     }
-  }
 }
 
 void QgsComposerMapWidget::on_mXMinLineEdit_editingFinished()

@@ -47,7 +47,7 @@ class TestQgsComposerMap: public QObject
   private:
     QgsComposition* mComposition;
     QgsComposerMap* mComposerMap;
-    QgsMapRenderer* mMapRenderer;
+    QgsMapSettings mMapSettings;
     QgsRasterLayer* mRasterLayer;
 };
 
@@ -66,10 +66,9 @@ void TestQgsComposerMap::initTestCase()
   QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer*>() << mRasterLayer );
 
   //create composition with composer map
-  mMapRenderer = new QgsMapRenderer();
-  mMapRenderer->setLayerSet( QStringList() << mRasterLayer->id() );
-  mMapRenderer->setProjectionsEnabled( false );
-  mComposition = new QgsComposition( mMapRenderer );
+  mMapSettings.setLayers( QStringList() << mRasterLayer->id() );
+  mMapSettings.setProjectionsEnabled( false );
+  mComposition = new QgsComposition( mMapSettings );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
   mComposerMap = new QgsComposerMap( mComposition, 20, 20, 200, 100 );
   mComposerMap->setFrameEnabled( true );
@@ -79,7 +78,6 @@ void TestQgsComposerMap::initTestCase()
 void TestQgsComposerMap::cleanupTestCase()
 {
   delete mComposition;
-  delete mMapRenderer;
   delete mRasterLayer;
 }
 

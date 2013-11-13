@@ -526,11 +526,7 @@ QStringList QgsComposerLegend::layerIdList() const
   //take layer list from map renderer (to have legend order)
   if ( mComposition )
   {
-    QgsMapRenderer* r = mComposition->mapRenderer();
-    if ( r )
-    {
-      return r->layerSet();
-    }
+    return mComposition->mapSettings().layers();
   }
   return QStringList();
 }

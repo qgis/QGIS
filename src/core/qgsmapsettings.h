@@ -69,6 +69,11 @@ public:
   void setAntiAliasingEnabled( bool enabled ) { mAntiAliasing = enabled; }
   bool isAntiAliasingEnabled() const { return mAntiAliasing; }
 
+  // TODO: implement
+  void setDrawEditingInformation( bool enabled ) { Q_UNUSED(enabled); }
+  void setForceVectorOutput( bool enabled ) { Q_UNUSED(enabled); }
+  void setUseAdvancedEffects( bool enabled ) { Q_UNUSED(enabled); }
+
   bool hasValidSettings() const;
   QgsRectangle visibleExtent() const;
   double mapUnitsPerPixel() const;

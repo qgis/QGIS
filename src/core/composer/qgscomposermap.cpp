@@ -20,6 +20,7 @@
 #include "qgscoordinatetransform.h"
 #include "qgslogger.h"
 #include "qgsmaprenderer.h"
+#include "qgsmaprendererjob.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmaptopixel.h"
 #include "qgsproject.h"
@@ -60,7 +61,6 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int w
   mId = 0;
   assignFreeId();
 
-  mMapRenderer = mComposition->mapRenderer();
   mPreviewMode = QgsComposerMap::Rectangle;
   mCurrentRectangle = rect();
 
@@ -75,10 +75,8 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int w
   connectUpdateSlot();
 
   //calculate mExtent based on width/height ratio and map canvas extent
-  if ( mMapRenderer )
-  {
-    mExtent = mMapRenderer->extent();
-  }
+  mExtent = mComposition->mapSettings().visibleExtent();
+
   setSceneRect( QRectF( x, y, width, height ) );
   setToolTip( tr( "Map %1" ).arg( mId ) );
 
@@ -108,7 +106,6 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition )
   connectUpdateSlot();
 
   mComposition = composition;
-  mMapRenderer = mComposition->mapRenderer();
   mId = mComposition->composerMapItems().size();
   mPreviewMode = QgsComposerMap::Rectangle;
   mCurrentRectangle = rect();
@@ -155,59 +152,33 @@ void QgsComposerMap::draw( QPainter *painter, const QgsRectangle& extent, const 
     return;
   }
 
-  if ( !mMapRenderer )
-  {
-    return;
-  }
+  const QgsMapSettings& ms = mComposition->mapSettings();
 
-  QgsMapRenderer theMapRenderer;
-  theMapRenderer.setExtent( extent );
-  theMapRenderer.setOutputSize( size, dpi );
-  if ( mMapRenderer->labelingEngine() )
-    theMapRenderer.setLabelingEngine( mMapRenderer->labelingEngine()->clone() );
+  QgsMapSettings jobMapSettings;
+  jobMapSettings.setExtent( extent );
+  jobMapSettings.setOutputSize( size.toSize() ); // TODO: sizeF
+  jobMapSettings.setOutputDpi( dpi );
+  /* TODO: if ( mMapRenderer->labelingEngine() )
+    theMapRenderer.setLabelingEngine( mMapRenderer->labelingEngine()->clone() );*/
 
   //use stored layer set or read current set from main canvas
-  if ( mKeepLayerSet )
-  {
-    theMapRenderer.setLayerSet( mLayerSet );
-  }
-  else
-  {
-    theMapRenderer.setLayerSet( mMapRenderer->layerSet() );
-  }
-  theMapRenderer.setDestinationCrs( mMapRenderer->destinationCrs() );
-  theMapRenderer.setProjectionsEnabled( mMapRenderer->hasCrsTransformEnabled() );
-
-  //set antialiasing if enabled in options
-  QSettings settings;
-  // Changed to enable anti aliased rendering by default as of QGIS 1.7
-  if ( settings.value( "/qgis/enable_anti_aliasing", true ).toBool() )
-  {
-    painter->setRenderHint( QPainter::Antialiasing );
-  }
-
-  QgsRenderContext* theRendererContext = theMapRenderer.rendererContext();
-  if ( theRendererContext )
-  {
-    theRendererContext->setDrawEditingInformation( false );
-    theRendererContext->setRenderingStopped( false );
-  }
+  jobMapSettings.setLayers( mKeepLayerSet ? mLayerSet : ms.layers() );
+  jobMapSettings.setDestinationCrs( ms.destinationCrs() );
+  jobMapSettings.setProjectionsEnabled( ms.hasCrsTransformEnabled() );
+  jobMapSettings.setAntiAliasingEnabled( ms.isAntiAliasingEnabled() );
+  jobMapSettings.setDrawEditingInformation( false );
 
   // force vector output (no caching of marker images etc.)
-  theRendererContext->setForceVectorOutput( true );
+  jobMapSettings.setForceVectorOutput( true );
 
   // make the renderer respect the composition's useAdvancedEffects flag
-  theRendererContext->setUseAdvancedEffects( mComposition->useAdvancedEffects() );
+  jobMapSettings.setUseAdvancedEffects( mComposition->useAdvancedEffects() );
 
-  //force composer map scale for scale dependent visibility
-  double bk_scale = theMapRenderer.scale();
-  theMapRenderer.setScale( scale() );
+  // force composer map scale for scale dependent visibility
+  // TODO: custom scale jobMapSettings.setScale( scale() );
 
-  //layer caching (as QImages) cannot be done for composer prints
-  QSettings s;
-  bool bkLayerCaching = s.value( "/qgis/enable_render_caching", false ).toBool();
-  s.setValue( "/qgis/enable_render_caching", false );
-
+  Q_UNUSED(forceWidthScale);
+  /*
   if ( forceWidthScale ) //force wysiwyg line widths / marker sizes
   {
     theMapRenderer.render( painter, forceWidthScale );
@@ -215,10 +186,13 @@ void QgsComposerMap::draw( QPainter *painter, const QgsRectangle& extent, const 
   else
   {
     theMapRenderer.render( painter );
-  }
-  s.setValue( "/qgis/enable_render_caching", bkLayerCaching );
+  }*/
 
-  theMapRenderer.setScale( bk_scale );
+  // render
+  QgsMapRendererCustomPainterJob job( jobMapSettings, painter );
+  job.start();
+  job.waitForFinished();
+
 }
 
 void QgsComposerMap::cache( void )
@@ -450,10 +424,15 @@ void QgsComposerMap::setCacheUpdated( bool u )
   mCacheUpdated = u;
 }
 
+const QgsMapRenderer *QgsComposerMap::mapRenderer() const
+{
+  return mComposition->mapRenderer();
+}
+
 double QgsComposerMap::scale() const
 {
   QgsScaleCalculator calculator;
-  calculator.setMapUnits( mMapRenderer->mapUnits() );
+  calculator.setMapUnits( mComposition->mapSettings().mapUnits() );
   calculator.setDpi( 25.4 );  //QGraphicsView units are mm
   return calculator.calculate( mExtent, rect().width() );
 }
@@ -635,12 +614,7 @@ void QgsComposerMap::updateItem()
 
 bool QgsComposerMap::containsWMSLayer() const
 {
-  if ( !mMapRenderer )
-  {
-    return false;
-  }
-
-  QStringList layers = mMapRenderer->layerSet();
+  QStringList layers = mComposition->mapSettings().layers();
 
   QStringList::const_iterator layer_it = layers.constBegin();
   QgsMapLayer* currentLayer = 0;
@@ -670,15 +644,11 @@ bool QgsComposerMap::containsWMSLayer() const
 bool QgsComposerMap::containsAdvancedEffects() const
 {
   // check if map contains advanced effects like blend modes, or flattened layers for transparency
-  if ( !mMapRenderer )
-  {
-    return false;
-  }
 
-  QStringList layers = mMapRenderer->layerSet();
+  QStringList layers = mComposition->mapSettings().layers();
 
   //Also need to check PAL labeling for blend modes
-  QgsPalLabeling* lbl = dynamic_cast<QgsPalLabeling*>( mMapRenderer->labelingEngine() );
+  QgsPalLabeling* lbl = 0; // TODO: dynamic_cast<QgsPalLabeling*>( mMapRenderer->labelingEngine() );
 
   QStringList::const_iterator layer_it = layers.constBegin();
   QgsMapLayer* currentLayer = 0;
@@ -705,7 +675,7 @@ bool QgsComposerMap::containsAdvancedEffects() const
           return true;
         }
         // check label blend modes
-        if ( lbl->willUseLayer( currentVectorLayer ) )
+        if ( lbl && lbl->willUseLayer( currentVectorLayer ) )
         {
           // Check all label blending properties
           QgsPalLayerSettings& layerSettings = lbl->layer( currentVectorLayer->id() );
@@ -1062,15 +1032,12 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
 
 void QgsComposerMap::storeCurrentLayerSet()
 {
-  if ( mMapRenderer )
-  {
-    mLayerSet = mMapRenderer->layerSet();
-  }
+  mLayerSet = mComposition->mapSettings().layers();
 }
 
 void QgsComposerMap::syncLayerSet()
 {
-  if ( mLayerSet.size() < 1 && !mMapRenderer )
+  if ( mLayerSet.size() < 1 )
   {
     return;
   }
@@ -1083,7 +1050,7 @@ void QgsComposerMap::syncLayerSet()
   }
   else //only consider layers visible in the map
   {
-    currentLayerSet = mMapRenderer->layerSet();
+    currentLayerSet = mComposition->mapSettings().layers();
   }
 
   for ( int i = mLayerSet.size() - 1; i >= 0; --i )
@@ -2017,15 +1984,12 @@ void QgsComposerMap::drawCanvasItems( QPainter* painter, const QStyleOptionGraph
 
 void QgsComposerMap::drawCanvasItem( QGraphicsItem* item, QPainter* painter, const QStyleOptionGraphicsItem* itemStyle )
 {
-  if ( !item || !mMapCanvas || !mMapRenderer  || !item->isVisible() )
+  if ( !item || !mMapCanvas || !item->isVisible() )
   {
     return;
   }
 
   painter->save();
-
-  QgsRectangle rendererExtent = mMapRenderer->extent();
-  QgsRectangle composerMapExtent = mExtent;
 
   //determine scale factor according to graphics view dpi
   double scaleFactor = 1.0 / mMapCanvas->logicalDpiX() * 25.4;
@@ -2062,7 +2026,7 @@ void QgsComposerMap::drawCanvasItem( QGraphicsItem* item, QPainter* painter, con
 
 QPointF QgsComposerMap::composerMapPosForItem( const QGraphicsItem* item ) const
 {
-  if ( !item || !mMapCanvas || !mMapRenderer )
+  if ( !item || !mMapCanvas )
   {
     return QPointF( 0, 0 );
   }
@@ -2074,7 +2038,7 @@ QPointF QgsComposerMap::composerMapPosForItem( const QGraphicsItem* item ) const
 
   QRectF graphicsSceneRect = mMapCanvas->sceneRect();
   QPointF itemScenePos = item->scenePos();
-  QgsRectangle mapRendererExtent = mMapRenderer->extent();
+  QgsRectangle mapRendererExtent = mComposition->mapSettings().visibleExtent();
 
   double mapX = itemScenePos.x() / graphicsSceneRect.width() * mapRendererExtent.width() + mapRendererExtent.xMinimum();
   double mapY = mapRendererExtent.yMaximum() - itemScenePos.y() / graphicsSceneRect.height() * mapRendererExtent.height();
@@ -2297,11 +2261,7 @@ void QgsComposerMap::initGridAnnotationFormatFromProject()
 {
   QString format = QgsProject::instance()->readEntry( "PositionPrecision", "/DegreeFormat", "D" );
 
-  bool degreeUnits = true;
-  if ( mMapRenderer )
-  {
-    degreeUnits = ( mMapRenderer->mapUnits() == QGis::Degrees );
-  }
+  bool degreeUnits = ( mComposition->mapSettings().mapUnits() == QGis::Degrees );
 
   if ( format == "DM" && degreeUnits )
   {

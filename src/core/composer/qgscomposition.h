@@ -89,7 +89,9 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
       ZValueAbove
     };
 
-    QgsComposition( QgsMapRenderer* mapRenderer );
+    //! @deprecated since 2.1 - use the constructor with QgsMapSettings
+    Q_DECL_DEPRECATED QgsComposition( QgsMapRenderer* mapRenderer );
+    explicit QgsComposition( const QgsMapSettings& mapSettings );
     ~QgsComposition();
 
     /**Changes size of paper item*/
@@ -239,7 +241,11 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     void setUseAdvancedEffects( bool effectsEnabled );
 
     /**Returns pointer to map renderer of qgis map canvas*/
-    QgsMapRenderer* mapRenderer() {return mMapRenderer;}
+    //! @deprecated since 2.1 - use mapSettings() instead. May return null if not initialized with QgsMapRenderer
+    Q_DECL_DEPRECATED QgsMapRenderer* mapRenderer() {return mMapRenderer;}
+
+    //! Return setting of QGIS map canvas
+    const QgsMapSettings& mapSettings() const { return mMapSettings; }
 
     QgsComposition::PlotStyle plotStyle() const {return mPlotStyle;}
     void setPlotStyle( QgsComposition::PlotStyle style ) {mPlotStyle = style;}
@@ -414,9 +420,14 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     /**Casts object to the proper subclass type and calls corresponding itemAdded signal*/
     void sendItemAddedSignal( QgsComposerItem* item );
 
+  protected:
+    void init();
+
   private:
     /**Pointer to map renderer of QGIS main map*/
     QgsMapRenderer* mMapRenderer;
+    const QgsMapSettings& mMapSettings;
+
     QgsComposition::PlotStyle mPlotStyle;
     double mPageWidth;
     double mPageHeight;

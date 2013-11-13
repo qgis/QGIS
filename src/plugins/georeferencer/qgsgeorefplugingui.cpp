@@ -1459,7 +1459,7 @@ bool QgsGeorefPluginGui::writePDFMapFile( const QString& fileName, const QgsGeor
   double paperHeight = s.value( "/Plugin-GeoReferencer/Config/HeightPDFMap" ).toDouble();
 
   //create composition
-  QgsComposition* composition = new QgsComposition( mCanvas->mapRenderer() );
+  QgsComposition* composition = new QgsComposition( mCanvas->mapSettings() );
   if ( mapRatio >= 1 )
   {
     composition->setPaperSize( paperHeight, paperWidth );
@@ -1546,7 +1546,7 @@ bool QgsGeorefPluginGui::writePDFReportFile( const QString& fileName, const QgsG
   printer.setOutputFileName( fileName );
 
   //create composition A4 with 300 dpi
-  QgsComposition* composition = new QgsComposition( mCanvas->mapRenderer() );
+  QgsComposition* composition = new QgsComposition( mCanvas->mapSettings() );
   composition->setPaperSize( 210, 297 ); //A4
   composition->setPrintResolution( 300 );
   printer.setPaperSize( QSizeF( composition->paperWidth(), composition->paperHeight() ), QPrinter::Millimeter );

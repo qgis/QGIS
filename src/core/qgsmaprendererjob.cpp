@@ -59,6 +59,12 @@ void QgsMapRendererSequentialJob::cancel()
   }
 }
 
+void QgsMapRendererSequentialJob::waitForFinished()
+{
+  if (mInternalJob)
+    mInternalJob->cancel();
+}
+
 void QgsMapRendererSequentialJob::setLabelingEngine( QgsPalLabeling *labeling )
 {
   mInternalJob->setLabelingEngine( labeling );
@@ -137,6 +143,23 @@ void QgsMapRendererCustomPainterJob::cancel()
 
     qDebug("QPAINTER cancelled");
   }
+}
+
+void QgsMapRendererCustomPainterJob::waitForFinished()
+{
+  if (!mFuture.isRunning())
+    return;
+
+  disconnect(&mFutureWatcher, SIGNAL(finished()), this, SLOT(futureFinished()));
+
+  QTime t;
+  t.start();
+
+  mFutureWatcher.waitForFinished();
+
+  qDebug("waitForFinished: %f ms", t.elapsed() / 1000.0);
+
+  futureFinished();
 }
 
 

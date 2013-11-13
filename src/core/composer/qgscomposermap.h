@@ -175,7 +175,8 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
     QgsRectangle extent() const {return mExtent;}
 
-    const QgsMapRenderer* mapRenderer() const {return mMapRenderer;}
+    //! @deprecated since 2.1 - use mapSettings() - may return 0 if not initialized with QgsMapRenderer
+    Q_DECL_DEPRECATED const QgsMapRenderer* mapRenderer() const;
 
     /**Sets offset values to shift image (useful for live updates when moving item content)*/
     void setOffset( double xOffset, double yOffset );
@@ -366,10 +367,6 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
       Longitude = 0,
       Latitude
     };
-
-    // Pointer to map renderer of the QGIS main map. Note that QgsComposerMap uses a different map renderer,
-    //it just copies some properties from the main map renderer.
-    QgsMapRenderer *mMapRenderer;
 
     /**Unique identifier*/
     int mId;

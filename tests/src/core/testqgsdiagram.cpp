@@ -51,7 +51,7 @@ class TestQgsDiagram: public QObject
     Q_OBJECT;
   private:
     bool mTestHasError;
-    QgsMapRenderer * mMapRenderer;
+    QgsMapSettings mMapSettings;
     QgsVectorLayer * mPointsLayer;
     QgsComposition * mComposition;
     QString mTestDataDir;
@@ -94,10 +94,9 @@ class TestQgsDiagram: public QObject
       mPieDiagram = new QgsPieDiagram();
 
       // Create map composition to draw on
-      mMapRenderer = new QgsMapRenderer();
-      mMapRenderer->setLayerSet( QStringList() << mPointsLayer->id() );
-      mMapRenderer->setLabelingEngine( new QgsPalLabeling() );
-      mComposition = new QgsComposition( mMapRenderer );
+      mMapSettings.setLayers( QStringList() << mPointsLayer->id() );
+      // TODO mMapSettings.setLabelingEngine( new QgsPalLabeling() );
+      mComposition = new QgsComposition( mMapSettings );
       mComposition->setPaperSize( 297, 210 ); // A4 landscape
       mComposerMap = new QgsComposerMap( mComposition, 20, 20, 200, 100 );
       mComposerMap->setFrameEnabled( true );
@@ -121,7 +120,6 @@ class TestQgsDiagram: public QObject
 
       delete mComposerMap;
       delete mComposition;
-      delete mMapRenderer;
       delete mPointsLayer;
     }
     void init() {};// will be called before each testfunction is executed.
@@ -161,7 +159,7 @@ class TestQgsDiagram: public QObject
       dls.placement = QgsDiagramLayerSettings::OverPoint;
       dls.renderer = dr;
 
-      dynamic_cast<QgsPalLabeling*>( mMapRenderer->labelingEngine() )->setShowingAllLabels( true );
+      // TODO dynamic_cast<QgsPalLabeling*>( mMapRenderer->labelingEngine() )->setShowingAllLabels( true );
 
       mPointsLayer->setDiagramLayerSettings( dls );
 

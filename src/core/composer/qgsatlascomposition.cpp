@@ -94,7 +94,7 @@ void QgsAtlasComposition::beginRender()
   }
 
   const QgsCoordinateReferenceSystem& coverage_crs = mCoverageLayer->crs();
-  const QgsCoordinateReferenceSystem& destination_crs = mComposerMap->mapRenderer()->destinationCrs();
+  const QgsCoordinateReferenceSystem& destination_crs = mComposition->mapSettings().destinationCrs();
   // transformation needed for feature geometries
   mTransform.setSourceCrs( coverage_crs );
   mTransform.setDestCRS( destination_crs );
@@ -167,6 +167,7 @@ void QgsAtlasComposition::beginRender()
   mOrigExtent = mComposerMap->extent();
 
   mRestoreLayer = false;
+  /* TODO: make working again. btw. Atlas must not change layers of map canvas at any time!
   QStringList& layerSet = mComposition->mapRenderer()->layerSet();
   if ( mHideCoverage )
   {
@@ -177,7 +178,7 @@ void QgsAtlasComposition::beginRender()
       mRestoreLayer = true;
       layerSet.removeAt( removeAt );
     }
-  }
+  }*/
 
   // special columns for expressions
   QgsExpression::setSpecialColumn( "$numpages", QVariant( mComposition->numPages() ) );
@@ -200,6 +201,7 @@ void QgsAtlasComposition::endRender()
   }
 
   // restore the coverage visibility
+  /* TODO: make working again. btw. Atlas must not change layers of map canvas at any time!
   if ( mRestoreLayer )
   {
     QStringList& layerSet = mComposition->mapRenderer()->layerSet();
@@ -207,7 +209,7 @@ void QgsAtlasComposition::endRender()
     layerSet.push_back( mCoverageLayer->id() );
     mComposerMap->cache();
     mComposerMap->update();
-  }
+  }*/
   mComposerMap->setNewExtent( mOrigExtent );
 }
 
