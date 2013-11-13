@@ -91,6 +91,31 @@ void QgsOgrFeatureIterator::ensureRelevantFields()
 {
   mFetchGeometry = ( mRequest.filterType() == QgsFeatureRequest::FilterRect ) || !( mRequest.flags() & QgsFeatureRequest::NoGeometry );
   QgsAttributeList attrs = ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes ) ? mRequest.subsetOfAttributes() : P->attributeIndexes();
+
+  // Assigns to Layer managed the relevant fields of the current FeatureRequest.
+#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
+  if ( OGR_L_TestCapability( ogrLayer, OLCIgnoreFields ) )
+  {
+    QVector<const char*> ignoredFields;
+    OGRFeatureDefnH featDefn = OGR_L_GetLayerDefn( ogrLayer );
+
+    for ( int i = 0, fieldCount = OGR_FD_GetFieldCount( featDefn ); i < fieldCount; i++ )
+    {
+      if ( !attrs.contains( i ) )
+      {
+        // add to ignored fields
+        ignoredFields.append( OGR_Fld_GetNameRef( OGR_FD_GetFieldDefn( featDefn, i ) ) );
+      }
+    }
+
+    if ( !mFetchGeometry ) ignoredFields.append( "OGR_GEOMETRY" );
+    ignoredFields.append( "OGR_STYLE" ); // not used by QGIS
+    ignoredFields.append( NULL );
+
+    OGR_L_SetIgnoredFields( ogrLayer, ignoredFields.data() );
+  }
+#endif
+
   P->setRelevantFields( mFetchGeometry, attrs );
   P->mRelevantFieldsForNextFeature = true;
 }
