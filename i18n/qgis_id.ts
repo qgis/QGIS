@@ -650,7 +650,7 @@ Kueri:
     </message>
     <message>
         <source>Unable to load the layer %s</source>
-        <translation>Tidak dapat memuat lapisan %s</translation>
+        <translation>Tidak dapat memuat layer %s</translation>
     </message>
 </context>
 <context>
@@ -924,7 +924,7 @@ Kueri:
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="14"/>
         <source>Import vector layer</source>
-        <translation>Impor lapisan vektor</translation>
+        <translation>Impor layer vektor</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="29"/>
@@ -1062,7 +1062,7 @@ Kueri:
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="180"/>
         <source>Load as new layer</source>
-        <translation>Muat sebagai lapisan baru</translation>
+        <translation>Muat sebagai layer baru</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="200"/>
@@ -1086,7 +1086,7 @@ kolom</translation>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="278"/>
         <source>Layer name (prefix)</source>
-        <translation>Nama lapisan (awalan)</translation>
+        <translation>Nama layer (awalan)</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="301"/>
@@ -1271,7 +1271,7 @@ kolom</translation>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="28"/>
         <source>Input line or polygon vector layer</source>
-        <translation>Input lapisan vektor garis atau poligon</translation>
+        <translation>Input layer vektor garis atau poligon</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="68"/>
@@ -1318,12 +1318,12 @@ kolom</translation>
         <location filename="../python/plugins/fTools/tools/frmReProject.ui" line="25"/>
         <location filename="../python/plugins/fTools/tools/frmVectorSplit.ui" line="64"/>
         <source>Input vector layer</source>
-        <translation>Masukan lapisan vektor</translation>
+        <translation>Masukan layer vektor</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="60"/>
         <source>Intersect layer</source>
-        <translation>Lapisan perpotongan</translation>
+        <translation>Layer perpotongan</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="94"/>
@@ -1366,7 +1366,7 @@ kolom</translation>
     <message>
         <location filename="../python/plugins/fTools/tools/frmIntersectLines.ui" line="27"/>
         <source>Input line layer</source>
-        <translation>Masukan lapisan garis</translation>
+        <translation>Masukan layer garis</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmIntersectLines.ui" line="41"/>
@@ -1377,7 +1377,7 @@ kolom</translation>
     <message>
         <location filename="../python/plugins/fTools/tools/frmIntersectLines.ui" line="55"/>
         <source>Intersect line layer</source>
-        <translation>Lapisan garis yang berpotongan</translation>
+        <translation>Layer garis yang berpotongan</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmIntersectLines.ui" line="69"/>
@@ -1398,12 +1398,12 @@ kolom</translation>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="28"/>
         <source>Target vector layer</source>
-        <translation>Lapisan vektor target</translation>
+        <translation>Layer vektor target</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="42"/>
         <source>Join vector layer</source>
-        <translation>Lapisan vektor yang digabungkan</translation>
+        <translation>Layer vektor yang digabungkan</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="188"/>
@@ -1459,7 +1459,7 @@ kolom</translation>
     </message>
     <message>
         <source>Please specify input layer</source>
-        <translation>Silahkan tentukan lapisan input</translation>
+        <translation>Silahkan tentukan layer input</translation>
     </message>
     <message>
         <source>Finished</source>
@@ -1471,7 +1471,7 @@ kolom</translation>
     </message>
     <message>
         <source>Please specify select layer</source>
-        <translation>Silahkan tentukan lapisan yang dipilih</translation>
+        <translation>Silahkan tentukan layer yang dipilih</translation>
     </message>
     <message>
         <source>Incorrect field names</source>
@@ -1536,11 +1536,11 @@ Nama filednya lebih dari 10 karakter
     </message>
     <message>
         <source>Please specify input polygon vector layer</source>
-        <translation>Silahkan menentukan masukan lapisan vektor poligon</translation>
+        <translation>Silahkan menentukan masukan layer vektor poligon</translation>
     </message>
     <message>
         <source>Please specify input line vector layer</source>
-        <translation>Silahkan menentukan masukan lapisan vektor garis</translation>
+        <translation>Silahkan menentukan masukan layer vektor garis</translation>
     </message>
     <message>
         <source>Please specify output length field</source>
@@ -1592,11 +1592,11 @@ Would you like to add the new layer to the TOC?</source>
         <translation>Shapefile keluaran berhasil dibuat:
 %s
 
-Apakah anda ingin menambahkan lapisan baru ke TOC?</translation>
+Apakah anda ingin menambahkan layer baru ke TOC?</translation>
     </message>
     <message>
         <source>Please specify input vector layer</source>
-        <translation>Silahkan tentukan input lapisan vektor</translation>
+        <translation>Silahkan tentukan input layer vektor</translation>
     </message>
     <message>
         <source>Please specify an input field</source>
@@ -1630,7 +1630,7 @@ Apakah anda ingin menambahkan lapisan baru ke TOC?</translation>
     </message>
     <message>
         <source>Unknown layer type...</source>
-        <translation>Tipe lapisan tidak diketahui...</translation>
+        <translation>Tipe layer tidak diketahui...</translation>
     </message>
     <message>
         <source>Created output shapefiles in folder:
@@ -1669,12 +1669,12 @@ Apakah anda ingin menambahkan lapisan baru ke TOC?</translation>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="27"/>
         <source>Input point layer</source>
-        <translation>Masukan lapisan titik</translation>
+        <translation>Masukan layer titik</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="55"/>
         <source>Target point layer</source>
-        <translation>Lapisan titik target</translation>
+        <translation>Layer titik target</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="69"/>
@@ -1726,7 +1726,7 @@ Apakah anda ingin menambahkan lapisan baru ke TOC?</translation>
     </message>
     <message>
         <source>Please specify input line layer</source>
-        <translation>Silahkan tentukan masukan lapisan garis</translation>
+        <translation>Silahkan tentukan masukan layer garis</translation>
     </message>
     <message>
         <source>Please specify output shapefile</source>
@@ -1734,7 +1734,7 @@ Apakah anda ingin menambahkan lapisan baru ke TOC?</translation>
     </message>
     <message>
         <source>Please specify line intersect layer</source>
-        <translation>Silahkan tentukan lapisan garis yang berpotongan</translation>
+        <translation>Silahkan tentukan layer garis yang berpotongan</translation>
     </message>
     <message>
         <source>Please specify input unique ID field</source>
@@ -1752,7 +1752,7 @@ Would you like to add the new layer to the TOC?</source>
         <translation type="obsolete">Membuat keluaran shapefile titik
 %1
 
-Apakah anda ingin menambahkan lapisan baru ke TOC?</translation>
+Apakah anda ingin menambahkan layer baru ke TOC?</translation>
     </message>
     <message>
         <source>Export to new projection</source>
@@ -1760,7 +1760,7 @@ Apakah anda ingin menambahkan lapisan baru ke TOC?</translation>
     </message>
     <message>
         <source>No input layer specified</source>
-        <translation>Tidak ada lapisan input yang ditentukan</translation>
+        <translation>Tidak ada layer input yang ditentukan</translation>
     </message>
     <message>
         <source>Define current projection</source>
@@ -1780,11 +1780,11 @@ Apakah anda ingin menambahkan lapisan baru ke TOC?</translation>
     </message>
     <message>
         <source>Please specify target vector layer</source>
-        <translation>Silahkan menetukan lapisan vektor target</translation>
+        <translation>Silahkan menetukan layer vektor target</translation>
     </message>
     <message>
         <source>Please specify join vector layer</source>
-        <translation>Silahkan menentukan lapisan vektor yang digabungkan</translation>
+        <translation>Silahkan menentukan layer vektor yang digabungkan</translation>
     </message>
     <message>
         <source>Created output shapefile:
@@ -1794,7 +1794,7 @@ Would you like to add the new layer to the TOC?</source>
         <translation type="obsolete">Membuat shapefile keluaran:
 %1
 
-Apakah anda ingin untuk menambahkan lapisan baru ke TOC?</translation>
+Apakah anda ingin untuk menambahkan layer baru ke TOC?</translation>
     </message>
     <message>
         <source>Mean coordinates</source>
@@ -1818,7 +1818,7 @@ Apakah anda ingin untuk menambahkan lapisan baru ke TOC?</translation>
     </message>
     <message>
         <source>No input vector layer specified</source>
-        <translation>Tidak input lapisan vektor yang ditentukan</translation>
+        <translation>Tidak input layer vektor yang ditentukan</translation>
     </message>
     <message>
         <source>Eliminate</source>
@@ -1826,7 +1826,7 @@ Apakah anda ingin untuk menambahkan lapisan baru ke TOC?</translation>
     </message>
     <message>
         <source>No selection in input layer</source>
-        <translation>Tidak ada pilihan pada lapisan masukan</translation>
+        <translation>Tidak ada pilihan pada layer masukan</translation>
     </message>
     <message>
         <source>Error creating output file</source>
@@ -1861,7 +1861,7 @@ Apakah anda ingin untuk menambahkan lapisan baru ke TOC?</translation>
     <message>
         <source>Warning: Input layers have non-matching CRS.
 This may cause unexpected results.</source>
-        <translation>Peringatan: Lapisan input tidak memiliki CRS yang cocok
+        <translation>Peringatan: Layer input tidak memiliki CRS yang cocok
 Hai ini mungkin mengakibatkan hasil yang tidak diinginkan.</translation>
     </message>
     <message>
@@ -1899,7 +1899,7 @@ penyederhanaan</translation>
     </message>
     <message>
         <source>Processing of the following layers/files ended with error:&lt;br&gt;&lt;br&gt;</source>
-        <translation>Pemrosesan lapisan/berkas berikut diakhiri dengan kesalahan:&lt;br&gt;&lt;br&gt;</translation>
+        <translation>Pemrosesan layer/berkas berikut diakhiri dengan kesalahan:&lt;br&gt;&lt;br&gt;</translation>
     </message>
     <message>
         <source>Summary field</source>
@@ -1937,12 +1937,12 @@ penyederhanaan</translation>
         <location filename="../python/plugins/fTools/tools/frmPointsInPolygon.ui" line="22"/>
         <location filename="../python/plugins/fTools/tools/frmSumLines.ui" line="90"/>
         <source>Input polygon vector layer</source>
-        <translation>Masukkan lapisan vektor poligon</translation>
+        <translation>Masukkan layer vektor poligon</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointsInPolygon.ui" line="36"/>
         <source>Input point vector layer</source>
-        <translation>Masukan lapisan vektor titik</translation>
+        <translation>Masukan layer vektor titik</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointsInPolygon.ui" line="50"/>
@@ -1963,7 +1963,7 @@ penyederhanaan</translation>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="32"/>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="32"/>
         <source>Input Boundary Layer</source>
-        <translation>Masukkan lapisan batas</translation>
+        <translation>Masukkan layer batas</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="42"/>
@@ -1973,7 +1973,7 @@ penyederhanaan</translation>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="55"/>
         <source>Unstratified Sampling Design (Entire layer)</source>
-        <translation>Desain sampel yang tidak dipilah-pilah (Semua lapisan)</translation>
+        <translation>Desain sampel yang tidak dipilah-pilah (Semua layer)</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="64"/>
@@ -2021,15 +2021,15 @@ Apakah anda yakin akan melanjutkan?</translation>
     </message>
     <message>
         <source>Please select the projection system that defines the current layer.</source>
-        <translation>Silahkan pilih sistem proyeksi yang ditentukan pada lapisan ini.</translation>
+        <translation>Silahkan pilih sistem proyeksi yang ditentukan pada layer ini.</translation>
     </message>
     <message>
         <source>Layer CRS information will be updated to the selected CRS.</source>
-        <translation>Informasi lapisan CRS akan diperbarui sesuai dengan CRS yang dipilih.</translation>
+        <translation>Informasi layer CRS akan diperbarui sesuai dengan CRS yang dipilih.</translation>
     </message>
     <message>
         <source>Split vector layer</source>
-        <translation>Membagi lapisan vektor</translation>
+        <translation>Membagi layer vektor</translation>
     </message>
     <message>
         <source>Created output shapefiles in folder:
@@ -2056,7 +2056,7 @@ Apakah anda yakin akan melanjutkan?</translation>
     </message>
     <message>
         <source>Please specify input point vector layer</source>
-        <translation>Silahkan menentukan input lapisan vektor berupa titik</translation>
+        <translation>Silahkan menentukan input layer vektor berupa titik</translation>
     </message>
     <message>
         <source>Please specify output count field</source>
@@ -2068,11 +2068,11 @@ Apakah anda yakin akan melanjutkan?</translation>
     </message>
     <message>
         <source>Please select a raster layer</source>
-        <translation>Silahkan pilih sebuah lapisan raster</translation>
+        <translation>Silahkan pilih sebuah layer raster</translation>
     </message>
     <message>
         <source>Unable to compute extents aligned on selected raster layer</source>
-        <translation>Tidak dapat menghitung cakupan yang diselaraskan dari lapisan raster terpilih</translation>
+        <translation>Tidak dapat menghitung cakupan yang diselaraskan dari layer raster terpilih</translation>
     </message>
     <message>
         <source>Densify geometries</source>
@@ -2092,7 +2092,7 @@ Apakah anda yakin akan melanjutkan?</translation>
                                  attribute tables are closed. Continue?</source>
         <translation>Saat ini QGIS tidak mengijinkan akses secara simultan dari 
                                  threads yang berbeda pada sumber data yang sama. Pastikan bahwa 
-                                 Tabel Attribut lapisan anda telah tertutup. Lanjutkan?</translation>
+                                 Tabel Attribut layer anda telah tertutup. Lanjutkan?</translation>
     </message>
     <message>
         <source>Simplify results</source>
@@ -2120,7 +2120,7 @@ Would you like to add the new layer to the TOC?</source>
         <translation>Keluaran shapefile titik berhasil dibuat:
 %s
 
-Apakah anda ingin menambahkan lapisan yang baru ke TOC?</translation>
+Apakah anda ingin menambahkan layer yang baru ke TOC?</translation>
     </message>
     <message>
         <source>Create Point Distance Matrix</source>
@@ -2128,7 +2128,7 @@ Apakah anda ingin menambahkan lapisan yang baru ke TOC?</translation>
     </message>
     <message>
         <source>Please specify input point layer</source>
-        <translation>Silahkan menentukan masukan lapisan titik</translation>
+        <translation>Silahkan menentukan masukan layer titik</translation>
     </message>
     <message>
         <source>Please specify output file</source>
@@ -2136,7 +2136,7 @@ Apakah anda ingin menambahkan lapisan yang baru ke TOC?</translation>
     </message>
     <message>
         <source>Please specify target point layer</source>
-        <translation>Silahkan menentukan target lapisan titik</translation>
+        <translation>Silahkan menentukan target layer titik</translation>
     </message>
     <message>
         <source>Please specify target unique ID field</source>
@@ -2158,7 +2158,7 @@ Apakah anda ingin menambahkan lapisan yang baru ke TOC?</translation>
         <location filename="../python/plugins/fTools/tools/frmSubsetSelect.ui" line="25"/>
         <location filename="../python/plugins/fTools/tools/frmVisual.ui" line="28"/>
         <source>Input Vector Layer</source>
-        <translation>Masukan Lapisan Vektor</translation>
+        <translation>Masukan Layer Vektor</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandom.ui" line="33"/>
@@ -2212,7 +2212,7 @@ Apakah anda ingin menambahkan lapisan yang baru ke TOC?</translation>
     <message>
         <location filename="../python/plugins/fTools/tools/frmReProject.ui" line="83"/>
         <source>Import spatial reference system from existing layer</source>
-        <translation>Impor sistem referensi spasial dari lapisan yang sudah ada</translation>
+        <translation>Impor sistem referensi spasial dari layer yang sudah ada</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmReProject.ui" line="100"/>
@@ -2351,7 +2351,7 @@ Apakah anda ingin menambahkan lapisan yang baru ke TOC?</translation>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSumLines.ui" line="127"/>
         <source>Input line vector layer</source>
-        <translation>Masukan lapisan vektor garis</translation>
+        <translation>Masukan layer vektor garis</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="26"/>
@@ -2361,7 +2361,7 @@ Apakah anda ingin menambahkan lapisan yang baru ke TOC?</translation>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="41"/>
         <source>Update extents from layer</source>
-        <translation>Perbarui extent dari lapisan</translation>
+        <translation>Perbarui extent dari layer</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="54"/>
@@ -2371,7 +2371,7 @@ Apakah anda ingin menambahkan lapisan yang baru ke TOC?</translation>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="169"/>
         <source>Align extents and resolution to selected raster layer</source>
-        <translation>Sejajarkan cakupan dan resolusi pada lapisan raster terpilih</translation>
+        <translation>Sejajarkan cakupan dan resolusi pada layer raster terpilih</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="179"/>
@@ -2491,7 +2491,7 @@ Apakah anda ingin menambahkan lapisan yang baru ke TOC?</translation>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSimplify.ui" line="20"/>
         <source>Input line or polygon layer</source>
-        <translation>Masukan lapisan garis atau poligon</translation>
+        <translation>Masukan layer garis atau poligon</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSimplify.ui" line="46"/>
@@ -2824,7 +2824,7 @@ Apakah anda ingin menambahkan lapisan yang baru ke TOC?</translation>
     </message>
     <message>
         <source>Input layer missing or not valid</source>
-        <translation>Lapisan masukan tidak ada atau tidak valid</translation>
+        <translation>Layer masukan tidak ada atau tidak valid</translation>
     </message>
     <message>
         <source>Output table name is required</source>
@@ -2932,11 +2932,11 @@ kolom geometri - kolom dengan nilai integer unik</translation>
     </message>
     <message>
         <source>Symbol layer properties</source>
-        <translation type="obsolete">Properti simbol lapisan</translation>
+        <translation type="obsolete">Properti simbol layer</translation>
     </message>
     <message>
         <source>This symbol layer doesn&apos;t have GUI for settings.</source>
-        <translation type="obsolete">Simbol lapisan ini tidak memiliki GUI untuk pengaturan.</translation>
+        <translation type="obsolete">Simbol layer ini tidak memiliki GUI untuk pengaturan.</translation>
     </message>
     <message>
         <source>Symbol preview</source>
@@ -2944,23 +2944,23 @@ kolom geometri - kolom dengan nilai integer unik</translation>
     </message>
     <message>
         <source>Symbol layer type</source>
-        <translation type="obsolete">Tipe lapisan simbol</translation>
+        <translation type="obsolete">Tipe layer simbol</translation>
     </message>
     <message>
         <source>Symbol layers</source>
-        <translation type="obsolete">Lapisan simbol</translation>
+        <translation type="obsolete">Layer simbol</translation>
     </message>
     <message>
         <source>Add symbol layer</source>
-        <translation type="obsolete">Tambahkan lapisan simbol</translation>
+        <translation type="obsolete">Tambahkan layer simbol</translation>
     </message>
     <message>
         <source>Remove symbol layer</source>
-        <translation type="obsolete">Hapus lapisan simbol</translation>
+        <translation type="obsolete">Hapus layer simbol</translation>
     </message>
     <message>
         <source>Lock layer&apos;s color</source>
-        <translation type="obsolete">Kunci warna lapisan</translation>
+        <translation type="obsolete">Kunci warna layer</translation>
     </message>
     <message>
         <source>Move up</source>
@@ -3162,7 +3162,7 @@ Plugin akan dinonaktifkan.</translation>
     </message>
     <message>
         <source>Produces a polygon feature layer from a raster</source>
-        <translation>Buat lapisan fitur poligon dari sebuah raster</translation>
+        <translation>Buat layer fitur poligon dari sebuah raster</translation>
     </message>
     <message>
         <source>Merge</source>
@@ -3986,7 +3986,7 @@ when pressing on the tool dialog&apos;s Help button.</source>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="31"/>
         <source>Use visible raster layers for input</source>
-        <translation>Gunakan lapisan raster yang tampil sebagai masukan</translation>
+        <translation>Gunakan layer raster yang tampil sebagai masukan</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="38"/>
@@ -4072,7 +4072,7 @@ when pressing on the tool dialog&apos;s Help button.</source>
         <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="129"/>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="181"/>
         <source>Mask layer</source>
-        <translation>Lapisan masking</translation>
+        <translation>Layer masking</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="139"/>
@@ -4315,7 +4315,7 @@ when pressing on the tool dialog&apos;s Help button.</source>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="87"/>
         <source>Layer stack</source>
-        <translation>Susun lapisan</translation>
+        <translation>Susun layer</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="97"/>
@@ -4773,7 +4773,7 @@ Nilai &apos;abu-abu&apos; (dari GDAL 1.7.0) memungkikan untuk memperluas dataset
         <location filename="../python/plugins/GdalTools/tools/widgetFillNodata.ui" line="33"/>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="35"/>
         <source>&amp;Input Layer</source>
-        <translation>&amp;Lapisan Masukan</translation>
+        <translation>&amp;Layer Masukan</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetFillNodata.ui" line="79"/>
@@ -4988,7 +4988,7 @@ Nilai &apos;abu-abu&apos; (dari GDAL 1.7.0) memungkikan untuk memperluas dataset
     </message>
     <message>
         <source>Please specify input vector layer</source>
-        <translation>Silahkan untuk menentukan input lapisan vektor</translation>
+        <translation>Silahkan untuk menentukan input layer vektor</translation>
     </message>
     <message>
         <source>Please specify output shapefile</source>
@@ -5024,7 +5024,7 @@ Nilai &apos;abu-abu&apos; (dari GDAL 1.7.0) memungkikan untuk memperluas dataset
     </message>
     <message>
         <source>Input polygon vector layer</source>
-        <translation>Masukan lapisan vektor poligon</translation>
+        <translation>Masukan layer vektor poligon</translation>
     </message>
     <message>
         <source>Export/Add geometry columns</source>
@@ -5032,11 +5032,11 @@ Nilai &apos;abu-abu&apos; (dari GDAL 1.7.0) memungkikan untuk memperluas dataset
     </message>
     <message>
         <source>Input vector layer</source>
-        <translation>Masukan lapisan vektor</translation>
+        <translation>Masukan layer vektor</translation>
     </message>
     <message>
         <source>Layer CRS</source>
-        <translation>CRS Lapisan</translation>
+        <translation>CRS Layer</translation>
     </message>
     <message>
         <source>Project CRS</source>
@@ -5052,7 +5052,7 @@ Nilai &apos;abu-abu&apos; (dari GDAL 1.7.0) memungkikan untuk memperluas dataset
     </message>
     <message>
         <source>Input line vector layer</source>
-        <translation>Masukan lapisan vektor garis</translation>
+        <translation>Masukan layer vektor garis</translation>
     </message>
     <message>
         <source>Currently QGIS doesn&apos;t allow simultaneous access from 
@@ -5060,12 +5060,12 @@ Nilai &apos;abu-abu&apos; (dari GDAL 1.7.0) memungkikan untuk memperluas dataset
                                  attribute tables are closed. Continue?</source>
         <translation>Saat ini QGIS tidak mengijinkan akses secara simultan dari 
                                  threads yang berbeda pada sumber data yang sama. Pastikan bahwa 
-                                 Tabel Attribut lapisan anda telah tertutup. Lanjutkan?</translation>
+                                 Tabel Attribut layer anda telah tertutup. Lanjutkan?</translation>
     </message>
     <message>
         <source>One or more features in the output layer may have invalid geometry, please check using the check validity tool
 </source>
-        <translation>Satu atau lebih fitur dalam lapisan output mungkin memiliki geometri yang salah, silahkan periksa dengan menggunakan alat pemeriksa keabsahan</translation>
+        <translation>Satu atau lebih fitur dalam layer output mungkin memiliki geometri yang salah, silahkan periksa dengan menggunakan alat pemeriksa keabsahan</translation>
     </message>
     <message>
         <source>Created output shapefile:
@@ -5077,7 +5077,7 @@ Would you like to add the new layer to the TOC?</source>
 {0}
 {1}
 
-Apakah anda ingin menambahkan lapisan baru ke TOC?</translation>
+Apakah anda ingin menambahkan layer baru ke TOC?</translation>
     </message>
     <message>
         <source>Error loading output shapefile:
@@ -5087,7 +5087,7 @@ Apakah anda ingin menambahkan lapisan baru ke TOC?</translation>
     </message>
     <message>
         <source>Layer &apos;{0}&apos; updated</source>
-        <translation>Lapisan &apos;{0}&apos; diperbarui</translation>
+        <translation>Layer &apos;{0}&apos; diperbarui</translation>
     </message>
     <message>
         <source>Created output shapefile:
@@ -5099,7 +5099,7 @@ Would you like to add the new layer to the TOC?</source>
 %1
 %2
 
-Apakah anda ingin untuk menambahkan lapisan bau init ke TOC?</translation>
+Apakah anda ingin untuk menambahkan layer bau init ke TOC?</translation>
     </message>
     <message>
         <source>Polygon centroids</source>
@@ -5115,7 +5115,7 @@ Apakah anda ingin untuk menambahkan lapisan bau init ke TOC?</translation>
     </message>
     <message>
         <source>Input point vector layer</source>
-        <translation>Masukan lapisan vektor titik</translation>
+        <translation>Masukan layer vektor titik</translation>
     </message>
     <message>
         <source>Voronoi polygon</source>
@@ -5131,7 +5131,7 @@ Apakah anda ingin untuk menambahkan lapisan bau init ke TOC?</translation>
     </message>
     <message>
         <source>Input layer</source>
-        <translation>Lapisan masukan</translation>
+        <translation>Layer masukan</translation>
     </message>
     <message>
         <source>Output polygon shapefile</source>
@@ -5188,11 +5188,11 @@ Silahkan pilih field yang lainnya...</translation>
     </message>
     <message>
         <source>Please specify an input layer</source>
-        <translation>Silahkan tentukan lapisan untuk masukan</translation>
+        <translation>Silahkan tentukan layer untuk masukan</translation>
     </message>
     <message>
         <source>Please specify a difference/intersect/union layer</source>
-        <translation>Silahkan tentukan lapisan perbedaan/perpotongan/union</translation>
+        <translation>Silahkan tentukan layer perbedaan/perpotongan/union</translation>
     </message>
     <message>
         <source>Please specify valid buffer value</source>
@@ -5232,7 +5232,7 @@ Silahkan pilih field yang lainnya...</translation>
     </message>
     <message>
         <source>Difference layer</source>
-        <translation>Lapisan Perbedaan</translation>
+        <translation>Layer Perbedaan</translation>
     </message>
     <message>
         <source>Difference</source>
@@ -5240,7 +5240,7 @@ Silahkan pilih field yang lainnya...</translation>
     </message>
     <message>
         <source>Intersect layer</source>
-        <translation>Lapisan perpotongan</translation>
+        <translation>Layer perpotongan</translation>
     </message>
     <message>
         <source>Intersect</source>
@@ -5256,7 +5256,7 @@ Silahkan pilih field yang lainnya...</translation>
     </message>
     <message>
         <source>Clip layer</source>
-        <translation>Lapisan pemotong</translation>
+        <translation>Layer pemotong</translation>
     </message>
     <message>
         <source>Clip</source>
@@ -5264,7 +5264,7 @@ Silahkan pilih field yang lainnya...</translation>
     </message>
     <message>
         <source>Union layer</source>
-        <translation>Lapisan penyatuan</translation>
+        <translation>Layer penyatuan</translation>
     </message>
     <message>
         <source>Union</source>
@@ -5318,7 +5318,7 @@ Would you like to add the new layer anyway?</source>
         <translation>
 Beberapa geometri output mungkin hilang atau tidak benar.
 
-Apakah anda tetap ingin untuk menambahkan lapisan baru?</translation>
+Apakah anda tetap ingin untuk menambahkan layer baru?</translation>
     </message>
     <message>
         <source>
@@ -5326,7 +5326,7 @@ Apakah anda tetap ingin untuk menambahkan lapisan baru?</translation>
 Would you like to add the new layer to the TOC?</source>
         <translation>
 
-Apakah anda ingin menambahkan lapisan baru pada TOC?</translation>
+Apakah anda ingin menambahkan layer baru pada TOC?</translation>
     </message>
     <message>
         <source>
@@ -5337,7 +5337,7 @@ Input CRS error: Different input coordinate reference systems detected, results 
         <source>
 Input CRS error: One or more input layers missing coordinate reference information, results may not be as expected.</source>
         <translation>
-Kesalahan input CRS: Satu atau lebih lapisan input tidak memiliki informasi koordinat referensi, hasilnya mungkin tidak seperti yang diinginkan.</translation>
+Kesalahan input CRS: Satu atau lebih layer input tidak memiliki informasi koordinat referensi, hasilnya mungkin tidak seperti yang diinginkan.</translation>
     </message>
     <message>
         <source>
@@ -5422,7 +5422,7 @@ Kesalahan GEOS geoprocessing: satu atau lebih input fitur mememiliki geometri ya
     <message>
         <location filename="../src/plugins/heatmap/heatmap.cpp" line="89"/>
         <source>Creates a heatmap raster for the input point vector.</source>
-        <translation>Buat lapisan heatmap untuk vektor titik masukan.</translation>
+        <translation>Buat layer heatmap untuk vektor titik masukan.</translation>
     </message>
     <message>
         <location filename="../src/plugins/heatmap/heatmap.cpp" line="94"/>
@@ -5476,7 +5476,7 @@ Kesalahan GEOS geoprocessing: satu atau lebih input fitur mememiliki geometri ya
     <message>
         <location filename="../src/plugins/heatmap/heatmapgui.cpp" line="276"/>
         <source>No valid layers found!</source>
-        <translation>Tidak ada lapisan valid yang ditemukan!</translation>
+        <translation>Tidak ada layer valid yang ditemukan!</translation>
     </message>
     <message>
         <location filename="../src/plugins/heatmap/heatmapgui.cpp" line="276"/>
@@ -5486,12 +5486,12 @@ Kesalahan GEOS geoprocessing: satu atau lebih input fitur mememiliki geometri ya
     <message>
         <location filename="../src/plugins/heatmap/heatmapgui.cpp" line="632"/>
         <source>Layer not found</source>
-        <translation>Lapisan tidak ditemukan</translation>
+        <translation>Layer tidak ditemukan</translation>
     </message>
     <message>
         <location filename="../src/plugins/heatmap/heatmapgui.cpp" line="632"/>
         <source>Layer %1 not found.</source>
-        <translation>Lapisan %1 tidak ditemukan.</translation>
+        <translation>Layer %1 tidak ditemukan.</translation>
     </message>
     <message>
         <location filename="../src/plugins/heatmap/heatmapgui.cpp" line="594"/>
@@ -5537,7 +5537,7 @@ Kesalahan GEOS geoprocessing: satu atau lebih input fitur mememiliki geometri ya
     <message>
         <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="29"/>
         <source>Input point layer</source>
-        <translation>Masukan lapisan titik</translation>
+        <translation>Masukan layer titik</translation>
     </message>
     <message>
         <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="39"/>
@@ -5709,12 +5709,12 @@ Kesalahan GEOS geoprocessing: satu atau lebih input fitur mememiliki geometri ya
     <message>
         <location filename="../src/ui/symbollayer/widget_layerproperties.ui" line="28"/>
         <source>Symbol layer type</source>
-        <translation>Tipe lapisan simbol</translation>
+        <translation>Tipe layer simbol</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_layerproperties.ui" line="51"/>
         <source>This layer doesn&apos;t have any editable properties</source>
-        <translation>Lapisan ini tidak memiliki properti yang dapat diedit</translation>
+        <translation>Layer ini tidak memiliki properti yang dapat diedit</translation>
     </message>
 </context>
 <context>
@@ -5755,7 +5755,7 @@ Kesalahan GEOS geoprocessing: satu atau lebih input fitur mememiliki geometri ya
     <message>
         <location filename="../src/ui/qgisapp.ui" line="143"/>
         <source>&amp;Layer</source>
-        <translation>&amp;Lapisan</translation>
+        <translation>&amp;Layer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="147"/>
@@ -5805,7 +5805,7 @@ Kesalahan GEOS geoprocessing: satu atau lebih input fitur mememiliki geometri ya
     <message>
         <location filename="../src/ui/qgisapp.ui" line="275"/>
         <source>Manage Layers</source>
-        <translation>Menyusun Lapisan</translation>
+        <translation>Menyusun Layer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="297"/>
@@ -5966,7 +5966,7 @@ Kesalahan GEOS geoprocessing: satu atau lebih input fitur mememiliki geometri ya
     <message>
         <location filename="../src/ui/qgisapp.ui" line="904"/>
         <source>Deselect Features from All Layers</source>
-        <translation>Hilangkan pemilihan fitur dari semua lapisan</translation>
+        <translation>Hilangkan pemilihan fitur dari semua layer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1099"/>
@@ -5976,22 +5976,22 @@ Kesalahan GEOS geoprocessing: satu atau lebih input fitur mememiliki geometri ya
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1123"/>
         <source>Layer Labeling Options</source>
-        <translation>Opsi pelabelan lapisan</translation>
+        <translation>Opsi pelabelan layer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1189"/>
         <source>Add PostGIS Layers...</source>
-        <translation>Tambahkan Lapisan PostGIS...</translation>
+        <translation>Tambahkan Layer PostGIS...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1225"/>
         <source>Add Oracle Spatial Layer...</source>
-        <translation>Tambahkan lapisan Oracle Spatial...</translation>
+        <translation>Tambahkan layer Oracle Spatial...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1237"/>
         <source>Add WMS/WMTS Layer...</source>
-        <translation>Tambah lapisan WMS/WMTS...</translation>
+        <translation>Tambah layer WMS/WMTS...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1261"/>
@@ -6018,25 +6018,25 @@ Kesalahan GEOS geoprocessing: satu atau lebih input fitur mememiliki geometri ya
         <location filename="../src/ui/qgisapp.ui" line="1898"/>
         <location filename="../src/ui/qgisapp.ui" line="1901"/>
         <source>Save for All Layers</source>
-        <translation>Simpan pengeditan untuk semua lapisan</translation>
+        <translation>Simpan pengeditan untuk semua layer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1913"/>
         <location filename="../src/ui/qgisapp.ui" line="1916"/>
         <source>Rollback for All Layers</source>
-        <translation>Kembalikan pengeditan semua lapisan</translation>
+        <translation>Kembalikan pengeditan semua layer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1928"/>
         <location filename="../src/ui/qgisapp.ui" line="1931"/>
         <source>Cancel for All Layers</source>
-        <translation>Batalkan pengeditan untuk semua lapisan</translation>
+        <translation>Batalkan pengeditan untuk semua layer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1943"/>
         <location filename="../src/ui/qgisapp.ui" line="1946"/>
         <source>Rollback for Selected Layer(s)</source>
-        <translation>Kembalikan pengeditan untuk lapisan terpilih</translation>
+        <translation>Kembalikan pengeditan untuk layer terpilih</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1958"/>
@@ -6048,13 +6048,13 @@ Kesalahan GEOS geoprocessing: satu atau lebih input fitur mememiliki geometri ya
         <location filename="../src/ui/qgisapp.ui" line="1973"/>
         <location filename="../src/ui/qgisapp.ui" line="1976"/>
         <source>Cancel for Selected Layer(s)</source>
-        <translation>Batalkan pengeditan untuk lapisan terpilih</translation>
+        <translation>Batalkan pengeditan untuk layer terpilih</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1988"/>
         <location filename="../src/ui/qgisapp.ui" line="1991"/>
         <source>Save Layer Edits</source>
-        <translation>Simpan pengeditan lapisan</translation>
+        <translation>Simpan pengeditan layer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2003"/>
@@ -6121,12 +6121,12 @@ Kesalahan GEOS geoprocessing: satu atau lebih input fitur mememiliki geometri ya
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2095"/>
         <source>Add Delimited Text Layer...</source>
-        <translation>Tambah lapisan teks dengan pembatasan (delimited)...</translation>
+        <translation>Tambah layer teks dengan pembatasan (delimited)...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2098"/>
         <source>Add Delimited Text Layer</source>
-        <translation>Tambah lapisan teks dengan pembatasan (delimited)</translation>
+        <translation>Tambah layer teks dengan pembatasan (delimited)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1281"/>
@@ -6146,7 +6146,7 @@ Kesalahan GEOS geoprocessing: satu atau lebih input fitur mememiliki geometri ya
     <message>
         <location filename="../src/ui/qgisapp.ui" line="68"/>
         <source>New From Template</source>
-        <translation>Lapisan baru dari Template</translation>
+        <translation>Layer baru dari Template</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="482"/>
@@ -6176,7 +6176,7 @@ Kesalahan GEOS geoprocessing: satu atau lebih input fitur mememiliki geometri ya
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1311"/>
         <source>Set Project CRS from Layer</source>
-        <translation>Atur proyek CRS dari lapisan</translation>
+        <translation>Atur proyek CRS dari layer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1348"/>
@@ -6234,7 +6234,7 @@ Ctl (Cmd) kenaikan tiap 15 derajat.</translation>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1748"/>
         <source>Add WCS Layer...</source>
-        <translation>Tambahkan Lapisan WCS...</translation>
+        <translation>Tambahkan Layer WCS...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1757"/>
@@ -6260,7 +6260,7 @@ Acts on all editable layers</source>
         <translation>Pin/Unpin Label
 Klik atau tandai label untuk pin
 Geser untuk unpin, Ctl (Cmd) mengaktifkan status
-Berlaku untuk semua lapisan yang dapat diedit</translation>
+Berlaku untuk semua layer yang dapat diedit</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1793"/>
@@ -6307,7 +6307,7 @@ Shift+click or marquee on label to hide it
 Acts on currently active editable layer</source>
         <translation>Munculkan/Sembunyikan Label
 Shift+Klik atau tandai fitur pada label untuk menyembunyikannya
-Berlaku pada lapisan aktif yang dapat diedit</translation>
+Berlaku pada layer aktif yang dapat diedit</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1862"/>
@@ -6518,7 +6518,7 @@ Berlaku pada lapisan aktif yang dapat diedit</translation>
     </message>
     <message>
         <source>Deselect features from all layers</source>
-        <translation type="obsolete">Hilangkan pemilihan fitur dari semua lapisan</translation>
+        <translation type="obsolete">Hilangkan pemilihan fitur dari semua layer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="916"/>
@@ -6569,7 +6569,7 @@ Berlaku pada lapisan aktif yang dapat diedit</translation>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="982"/>
         <source>Zoom to Layer</source>
-        <translation>Perbesar ke Lapisan</translation>
+        <translation>Perbesar ke Layer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="991"/>
@@ -6663,7 +6663,7 @@ Berlaku pada lapisan aktif yang dapat diedit</translation>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1132"/>
         <source>New Shapefile Layer...</source>
-        <translation>Lapisan shafile baru...</translation>
+        <translation>Layer shafile baru...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1135"/>
@@ -6673,7 +6673,7 @@ Berlaku pada lapisan aktif yang dapat diedit</translation>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1144"/>
         <source>New SpatiaLite Layer ...</source>
-        <translation>Lapisan SpatiaLite Baru...</translation>
+        <translation>Layer SpatiaLite Baru...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1147"/>
@@ -6688,7 +6688,7 @@ Berlaku pada lapisan aktif yang dapat diedit</translation>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1165"/>
         <source>Add Vector Layer...</source>
-        <translation>Tambahkan Lapisan Vektor...</translation>
+        <translation>Tambahkan Layer Vektor...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1168"/>
@@ -6698,7 +6698,7 @@ Berlaku pada lapisan aktif yang dapat diedit</translation>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1177"/>
         <source>Add Raster Layer...</source>
-        <translation>Tambahkan Lapisan Raster...</translation>
+        <translation>Tambahkan Layer Raster...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1180"/>
@@ -6708,7 +6708,7 @@ Berlaku pada lapisan aktif yang dapat diedit</translation>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1273"/>
         <source>Save for Selected Layer(s)</source>
-        <translation>Simpan pengeditan untuk lapisan terpilih</translation>
+        <translation>Simpan pengeditan untuk layer terpilih</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1600"/>
@@ -6764,12 +6764,12 @@ Berlaku pada lapisan aktif yang dapat diedit</translation>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1664"/>
         <source>Add WFS Layer...</source>
-        <translation>Tambahkan Lapisan WFS...</translation>
+        <translation>Tambahkan Layer WFS...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1667"/>
         <source>Add WFS Layer</source>
-        <translation>Tambahkan Lapisan WFS</translation>
+        <translation>Tambahkan Layer WFS</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1679"/>
@@ -6784,7 +6784,7 @@ Berlaku pada lapisan aktif yang dapat diedit</translation>
     </message>
     <message>
         <source>Add PostGIS Layer...</source>
-        <translation type="obsolete">Tambahkan Lapisan PostGIS...</translation>
+        <translation type="obsolete">Tambahkan Layer PostGIS...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1192"/>
@@ -6794,7 +6794,7 @@ Berlaku pada lapisan aktif yang dapat diedit</translation>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1201"/>
         <source>Add SpatiaLite Layer...</source>
-        <translation>Tambahkan Lapisan SpatiaLite...</translation>
+        <translation>Tambahkan Layer SpatiaLite...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1204"/>
@@ -6804,11 +6804,11 @@ Berlaku pada lapisan aktif yang dapat diedit</translation>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1213"/>
         <source>Add MSSQL Spatial Layer...</source>
-        <translation>Tambahkan Lapisan MSSQL...</translation>
+        <translation>Tambahkan Layer MSSQL...</translation>
     </message>
     <message>
         <source>Add WMS Layer...</source>
-        <translation type="obsolete">Tambahkan Lapisan WMS...</translation>
+        <translation type="obsolete">Tambahkan Layer WMS...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1240"/>
@@ -6827,7 +6827,7 @@ Berlaku pada lapisan aktif yang dapat diedit</translation>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1264"/>
         <source>Toggles the editing state of the current layer</source>
-        <translation>Toggle posisi pengeditan dari lapisan saat ini</translation>
+        <translation>Toggle posisi pengeditan dari layer saat ini</translation>
     </message>
     <message>
         <source>Save edits</source>
@@ -6836,7 +6836,7 @@ Berlaku pada lapisan aktif yang dapat diedit</translation>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1276"/>
         <source>Save edits to current layer, but continue editing</source>
-        <translation>Simpan hasil edit ke lapisan ini, tapi lanjutkan mengedit</translation>
+        <translation>Simpan hasil edit ke layer ini, tapi lanjutkan mengedit</translation>
     </message>
     <message>
         <source>Save as...</source>
@@ -6849,7 +6849,7 @@ Berlaku pada lapisan aktif yang dapat diedit</translation>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1295"/>
         <source>Remove Layer(s)</source>
-        <translation>Hapus Lapisan</translation>
+        <translation>Hapus Layer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1298"/>
@@ -6859,7 +6859,7 @@ Berlaku pada lapisan aktif yang dapat diedit</translation>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1303"/>
         <source>Set CRS of Layer(s)</source>
-        <translation>Atur lapisan CRS</translation>
+        <translation>Atur layer CRS</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1306"/>
@@ -6868,7 +6868,7 @@ Berlaku pada lapisan aktif yang dapat diedit</translation>
     </message>
     <message>
         <source>Set project CRS from layer</source>
-        <translation type="obsolete">Atur proyek CRS dari lapisan</translation>
+        <translation type="obsolete">Atur proyek CRS dari layer</translation>
     </message>
     <message>
         <source>Live GPS tracking</source>
@@ -6906,7 +6906,7 @@ Berlaku pada lapisan aktif yang dapat diedit</translation>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1357"/>
         <source>Show All Layers</source>
-        <translation>Tampilkan semua lapisan</translation>
+        <translation>Tampilkan semua layer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1360"/>
@@ -6916,7 +6916,7 @@ Berlaku pada lapisan aktif yang dapat diedit</translation>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1369"/>
         <source>Hide All Layers</source>
-        <translation>Sembunyikan Semua Lapisan</translation>
+        <translation>Sembunyikan Semua Layer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1372"/>
@@ -7186,7 +7186,7 @@ Baris yang mengandung kesalahan: %1</translation>
     </message>
     <message>
         <source>Layer</source>
-        <translation type="obsolete">Lapisan</translation>
+        <translation type="obsolete">Layer</translation>
     </message>
 </context>
 <context>
@@ -7346,7 +7346,7 @@ Baris yang mengandung kesalahan: %1</translation>
     </message>
     <message>
         <source>Replace current data (current layer will be removed)</source>
-        <translation type="obsolete">Gantikan data saat ini (Lapisan yang ada saat ini akan dihilangkan)</translation>
+        <translation type="obsolete">Gantikan data saat ini (Layer yang ada saat ini akan dihilangkan)</translation>
     </message>
     <message>
         <source>Use custom renderer</source>
@@ -7544,11 +7544,11 @@ Baris yang mengandung kesalahan: %1</translation>
     </message>
     <message>
         <source>In this dialog you can import a layer loaded in QGIS into active OSM data.</source>
-        <translation type="obsolete">Dalam dialog ini, anda dapat mengimpor lapisan yang dimuat di QGIS ke data OSM yang aktif.</translation>
+        <translation type="obsolete">Dalam dialog ini, anda dapat mengimpor layer yang dimuat di QGIS ke data OSM yang aktif.</translation>
     </message>
     <message>
         <source>Layer</source>
-        <translation type="obsolete">Lapisan</translation>
+        <translation type="obsolete">Layer</translation>
     </message>
     <message>
         <source>Import only current selection</source>
@@ -7587,7 +7587,7 @@ Baris yang mengandung kesalahan: %1</translation>
     </message>
     <message>
         <source>Replace current data (current layers will be removed)</source>
-        <translation type="obsolete">Gantikan data saat ini (Lapisan yang ada saat ini akan dihilangkan)</translation>
+        <translation type="obsolete">Gantikan data saat ini (Layer yang ada saat ini akan dihilangkan)</translation>
     </message>
 </context>
 <context>
@@ -8311,11 +8311,11 @@ gunakan objek qgis util iface (contoh QgisInterface class).
     <name>QFileDialog</name>
     <message>
         <source>Load layer properties from style file (.qml)</source>
-        <translation type="obsolete">Muat properti lapisan dari arsip style (.qml)</translation>
+        <translation type="obsolete">Muat properti layer dari arsip style (.qml)</translation>
     </message>
     <message>
         <source>Save layer properties as style file (.qml)</source>
-        <translation type="obsolete">Simpan properti lapisan sebagai arsip style (.qml)</translation>
+        <translation type="obsolete">Simpan properti layer sebagai arsip style (.qml)</translation>
     </message>
 </context>
 <context>
@@ -8428,12 +8428,12 @@ gunakan objek qgis util iface (contoh QgisInterface class).
     <message>
         <location filename="../src/core/qgsproviderregistry.cpp" line="92"/>
         <source>No vector layers can be loaded. Check your QGIS installation</source>
-        <translation>Tidak ada lapisan yang dapat dimuat. Periksa instalasi QGIS Anda</translation>
+        <translation>Tidak ada layer yang dapat dimuat. Periksa instalasi QGIS Anda</translation>
     </message>
     <message>
         <location filename="../src/core/qgsproviderregistry.cpp" line="254"/>
         <source>No data provider plugins are available. No vector layers can be loaded</source>
-        <translation>Tidak ada plugin penyedia data tersedia. Tidak ada lapisan vektor dapat dimuat</translation>
+        <translation>Tidak ada plugin penyedia data tersedia. Tidak ada layer vektor dapat dimuat</translation>
     </message>
     <message>
         <location filename="../src/core/qgsproviderregistry.cpp" line="353"/>
@@ -8580,7 +8580,7 @@ Apakah anda ingin menentukan jalur (GISBASE) ke instalasi GRASS anda?</translati
     </message>
     <message>
         <source>Add Delimited Text Layer</source>
-        <translation type="obsolete">Tambah lapisan teks dengan pembatasan (delimited)</translation>
+        <translation type="obsolete">Tambah layer teks dengan pembatasan (delimited)</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="51"/>
@@ -8600,7 +8600,7 @@ Apakah anda ingin menentukan jalur (GISBASE) ke instalasi GRASS anda?</translati
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="947"/>
         <source>GRASS layer</source>
-        <translation>Lapisan GRASS</translation>
+        <translation>Layer GRASS</translation>
     </message>
     <message>
         <source>NorthArrow</source>
@@ -8634,7 +8634,7 @@ Apakah anda ingin menentukan jalur (GISBASE) ke instalasi GRASS anda?</translati
     </message>
     <message>
         <source>Adds WFS layers to the QGIS canvas</source>
-        <translation type="obsolete">Tambahkan lapisan WFS ke kanvas QGIS</translation>
+        <translation type="obsolete">Tambahkan layer WFS ke kanvas QGIS</translation>
     </message>
     <message>
         <location filename="../src/python/qgspythonutilsimpl.cpp" line="223"/>
@@ -8923,7 +8923,7 @@ Apakah anda ingin menentukan jalur (GISBASE) ke instalasi GRASS anda?</translati
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="339"/>
         <source>&lt;b&gt;Layer&lt;/b&gt;</source>
-        <translation>&lt;b&gt;lapisan&lt;/b&gt;</translation>
+        <translation>&lt;b&gt;layer&lt;/b&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="360"/>
@@ -9067,7 +9067,7 @@ Apakah anda ingin menentukan jalur (GISBASE) ke instalasi GRASS anda?</translati
     <message>
         <location filename="../src/plugins/evis/idtool/eviseventidtool.cpp" line="80"/>
         <source>No active layers found</source>
-        <translation>Tidak ada lapisan aktif yang ditemukan</translation>
+        <translation>Tidak ada layer aktif yang ditemukan</translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="1133"/>
@@ -9187,7 +9187,7 @@ Apakah anda ingin menentukan jalur (GISBASE) ke instalasi GRASS anda?</translati
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationplugin.cpp" line="26"/>
         <source>A plugin for interpolation based on vertices of a vector layer</source>
-        <translation>Plugin untuk interpolasi berdasarkan pada verteks dari lapisan vektor</translation>
+        <translation>Plugin untuk interpolasi berdasarkan pada verteks dari layer vektor</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationplugin.cpp" line="28"/>
@@ -9563,7 +9563,7 @@ Error(%2): %3</source>
     </message>
     <message>
         <source>A plugin for placing diagrams on vector layers</source>
-        <translation type="obsolete">Sebuah plugin untuk menenpatkan diagram pada lapisan vektor</translation>
+        <translation type="obsolete">Sebuah plugin untuk menenpatkan diagram pada layer vektor</translation>
     </message>
     <message>
         <source>Version 0.0.1</source>
@@ -9717,7 +9717,7 @@ Error(%2): %3</source>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="313"/>
         <source>creation of layer failed (OGR error:%1)</source>
-        <translation>Gagal membuat lapisan (Kesalahan OGR:%1)</translation>
+        <translation>Gagal membuat layer (Kesalahan OGR:%1)</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="370"/>
@@ -9965,7 +9965,7 @@ Only %1 of %2 features written.</source>
     <message>
         <location filename="../src/app/qgsmaptoolselectutils.cpp" line="42"/>
         <source>To select features, choose a vector layer in the legend</source>
-        <translation>Untuk memilih fitur, pilih satu lapisan vektor pada legenda</translation>
+        <translation>Untuk memilih fitur, pilih satu layer vektor pada legenda</translation>
     </message>
     <message>
         <source>SQLite DB (*.sqlite *.db);;All files (*)</source>
@@ -10056,7 +10056,7 @@ Only %1 of %2 features written.</source>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialqueryplugin.cpp" line="49"/>
         <source>A plugin that makes spatial queries on vector layers</source>
-        <translation>Plugin yang membuat kueri spasial pada lapisan vektor</translation>
+        <translation>Plugin yang membuat kueri spasial pada layer vektor</translation>
     </message>
     <message>
         <location filename="../src/app/main.cpp" line="175"/>
@@ -10154,11 +10154,11 @@ Anda akan melihat pesan ini karena tidak memiliki variabel DISPLAY.
     <message>
         <location filename="../src/app/qgsmaptoolselectutils.cpp" line="41"/>
         <source>No active vector layer</source>
-        <translation>Tidak ada lapisan vektor yang aktif</translation>
+        <translation>Tidak ada layer vektor yang aktif</translation>
     </message>
     <message>
         <source>To select features, you must choose a vector layer by clicking on its name in the legend</source>
-        <translation type="obsolete">Untuk memilih fitur, anda harus memilih lapisan vektor dengan mengklik namanya pada legenda</translation>
+        <translation type="obsolete">Untuk memilih fitur, anda harus memilih layer vektor dengan mengklik namanya pada legenda</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolselectutils.cpp" line="121"/>
@@ -10170,7 +10170,7 @@ Anda akan melihat pesan ini karena tidak memiliki variabel DISPLAY.
         <location filename="../src/app/qgsmaptoolselectutils.cpp" line="122"/>
         <location filename="../src/app/qgsmaptoolshowhidelabels.cpp" line="214"/>
         <source>Selection extends beyond layer&apos;s coordinate system.</source>
-        <translation>Extend yang dipilih melebihi sistem koordinat lapisan.</translation>
+        <translation>Extend yang dipilih melebihi sistem koordinat layer.</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterhistogramwidget.cpp" line="319"/>
@@ -10219,7 +10219,7 @@ Anda akan melihat pesan ini karena tidak memiliki variabel DISPLAY.
     <message>
         <location filename="../src/plugins/sqlanywhere/sqlanywhere.cpp" line="49"/>
         <source>Store vector layers within a SQL Anywhere database</source>
-        <translation>Menyimpan lapisan vektor dengan basisdata SQL Anywhere</translation>
+        <translation>Menyimpan layer vektor dengan basisdata SQL Anywhere</translation>
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="64"/>
@@ -10430,7 +10430,7 @@ Anda akan melihat pesan ini karena tidak memiliki variabel DISPLAY.
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="2046"/>
         <source>This raster file has no bands and is invalid as a raster layer.</source>
-        <translation>Raster ini tidak memiliki pita dan merupakan lapisan raster yang tidak benar.</translation>
+        <translation>Raster ini tidak memiliki pita dan merupakan layer raster yang tidak benar.</translation>
     </message>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="2760"/>
@@ -11376,7 +11376,7 @@ SQL: %1</translation>
     <message>
         <location filename="../src/plugins/topology/dockModel.cpp" line="24"/>
         <source>Layer</source>
-        <translation>Lapisan</translation>
+        <translation>Layer</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/dockModel.cpp" line="24"/>
@@ -11540,7 +11540,7 @@ SQL: %1</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2110"/>
         <source>Layers</source>
-        <translation>Lapisan-lapisan</translation>
+        <translation>Layer-layer</translation>
     </message>
     <message>
         <source>Version</source>
@@ -11555,7 +11555,7 @@ SQL: %1</translation>
     </message>
     <message>
         <source>Please select a vector layer first.</source>
-        <translation type="obsolete">Siahkan pilih satu lapisan layer terlebih dahulu.</translation>
+        <translation type="obsolete">Siahkan pilih satu layer layer terlebih dahulu.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4667"/>
@@ -11564,7 +11564,7 @@ SQL: %1</translation>
         <location filename="../src/app/qgisapp.cpp" line="6701"/>
         <location filename="../src/app/qgisapp.cpp" line="6710"/>
         <source>No Layer Selected</source>
-        <translation>Tidak ada Lapisan Dipilih</translation>
+        <translation>Tidak ada Layer Dipilih</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5161"/>
@@ -11584,7 +11584,7 @@ SQL: %1</translation>
 
 Errors: %3
 </source>
-        <translation>Tidak dapat %1 perubahan ke lapisan %2
+        <translation>Tidak dapat %1 perubahan ke layer %2
 
 Kesalahan: %3</translation>
     </message>
@@ -11628,7 +11628,7 @@ Kesalahan: %3</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5926"/>
         <source>%1 current changes for %2 layer(s)?</source>
-        <translation>%1 perubahan ini untuk %2 lapisan)?</translation>
+        <translation>%1 perubahan ini untuk %2 layer)?</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6198"/>
@@ -11638,23 +11638,23 @@ Kesalahan: %3</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6202"/>
         <source>Plugin layer</source>
-        <translation>Lapisan Plugin</translation>
+        <translation>Layer Plugin</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6214"/>
         <source>Memory layer</source>
-        <translation>Memori lapisan</translation>
+        <translation>Memori layer</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6234"/>
         <location filename="../src/app/qgisapp.cpp" line="6245"/>
         <source>Duplicate layer: </source>
-        <translation>Duplikasi lapisan: </translation>
+        <translation>Duplikasi layer: </translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6235"/>
         <source>%1 (duplication resulted in invalid layer)</source>
-        <translation>%1 (duplikasi menghasilkan lapisan yang tidak valid)</translation>
+        <translation>%1 (duplikasi menghasilkan layer yang tidak valid)</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6509"/>
@@ -11718,11 +11718,11 @@ Kesalahan: %3</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="8448"/>
         <source>Invalid Layer</source>
-        <translation>Lapisan tidak benar</translation>
+        <translation>Layer tidak benar</translation>
     </message>
     <message>
         <source>%1 is an invalid layer and cannot be loaded.</source>
-        <translation type="obsolete">%1 adalah lapisan yang tidak benar dan tidak bisa dimuat.</translation>
+        <translation type="obsolete">%1 adalah layer yang tidak benar dan tidak bisa dimuat.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4708"/>
@@ -11737,32 +11737,32 @@ Kesalahan: %3</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4676"/>
         <source>No Vector Layer Selected</source>
-        <translation>Tidak ada Lapisan Vektor yang Dipilih</translation>
+        <translation>Tidak ada Layer Vektor yang Dipilih</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4677"/>
         <source>Deleting features only works on vector layers</source>
-        <translation>Penghapusan fitur-fitur hanya berfungsi pada lapisan vektor</translation>
+        <translation>Penghapusan fitur-fitur hanya berfungsi pada layer vektor</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4668"/>
         <source>To delete features, you must select a vector layer in the legend</source>
-        <translation>Untuk menghapus fitur, Anda harus memilih lapisan vektor pada legenda</translation>
+        <translation>Untuk menghapus fitur, Anda harus memilih layer vektor pada legenda</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2109"/>
         <source>Map legend that displays all the layers currently on the map canvas. Click on the check box to turn a layer on or off. Double click on a layer in the legend to customize its appearance and set other properties.</source>
-        <translation>Legenda Peta melampilkan semua lapisan-lapisan yang ada pada kanvas. Klik pada pada kotak untuk mengaktifkan atau menonaktifkan lapisan. Klik dua kali pada lapisan di legenda untuk menyesuaikan tampilan dan mengatur properti lainnya.</translation>
+        <translation>Legenda Peta melampilkan semua layer-layer yang ada pada kanvas. Klik pada pada kotak untuk mengaktifkan atau menonaktifkan layer. Klik dua kali pada layer di legenda untuk menyesuaikan tampilan dan mengatur properti lainnya.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2015"/>
         <source>Map overview canvas. This canvas can be used to display a locator map that shows the current extent of the map canvas. The current extent is shown as a red rectangle. Any layer on the map can be added to the overview canvas.</source>
-        <translation>Kanvas previsualisasi peta. Kanvas ini dapat digunakan untuk menampilkan pelokasi peta yang akan memperlihatkan eksten aktual dari kanvas peta. Eksten aktual diperlihatkan sebagai kotak merah. Lapisan mana saja dapat ditambahkan pada kanvas previsualisasi.</translation>
+        <translation>Kanvas previsualisasi peta. Kanvas ini dapat digunakan untuk menampilkan pelokasi peta yang akan memperlihatkan eksten aktual dari kanvas peta. Eksten aktual diperlihatkan sebagai kotak merah. Layer mana saja dapat ditambahkan pada kanvas previsualisasi.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="489"/>
         <source>Map canvas. This is where raster and vector layers are displayed when added to the map</source>
-        <translation>Kanvas peta. Disini lapisan vektor maupun raster ditampilkan ketika ditambahkan pada peta</translation>
+        <translation>Kanvas peta. Disini layer vektor maupun raster ditampilkan ketika ditambahkan pada peta</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="544"/>
@@ -11777,7 +11777,7 @@ Kesalahan: %3</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1507"/>
         <source>Progress bar that displays the status of rendering layers and other time-intensive operations</source>
-        <translation>Kotak progres yang memperlihatkan status lapisan perenderan dan operasi yang sangat membutuhkan waktu lainnya</translation>
+        <translation>Kotak progres yang memperlihatkan status layer perenderan dan operasi yang sangat membutuhkan waktu lainnya</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1583"/>
@@ -11792,7 +11792,7 @@ Kesalahan: %3</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1602"/>
         <source>When checked, the map layers are rendered in response to map navigation commands and other events. When not checked, no rendering is done. This allows you to add a large number of layers and symbolize them before rendering.</source>
-        <translation>Saat ditandai, lapisan peta dirender sbg respon terhadap perintah navigasi peta dan event lainnya. Saat tidak ditandai, tidak ada proses render dilakukan. Ini mengijinkan Anda untuk menambahkan lapisan yang banyak dan mensimbolisasikannya sebelum proses render.</translation>
+        <translation>Saat ditandai, layer peta dirender sbg respon terhadap perintah navigasi peta dan event lainnya. Saat tidak ditandai, tidak ada proses render dilakukan. Ini mengijinkan Anda untuk menambahkan layer yang banyak dan mensimbolisasikannya sebelum proses render.</translation>
     </message>
     <message>
         <source>QGis files (*.qgs)</source>
@@ -11879,15 +11879,15 @@ Kesalahan: %3</translation>
     </message>
     <message>
         <source>Add a Raster Layer</source>
-        <translation type="obsolete">Tambah sebuah Lapisan Raster</translation>
+        <translation type="obsolete">Tambah sebuah Layer Raster</translation>
     </message>
     <message>
         <source>Add a PostGIS Layer</source>
-        <translation type="obsolete">Tambah sebuah Lapisan QGIS</translation>
+        <translation type="obsolete">Tambah sebuah Layer QGIS</translation>
     </message>
     <message>
         <source>Remove Layer</source>
-        <translation type="obsolete">Hapus Lapisan</translation>
+        <translation type="obsolete">Hapus Layer</translation>
     </message>
     <message>
         <source>Remove All From Overview</source>
@@ -11895,15 +11895,15 @@ Kesalahan: %3</translation>
     </message>
     <message>
         <source>Show All Layers</source>
-        <translation type="obsolete">Perlihatkan Semua Lapisan-lapisan</translation>
+        <translation type="obsolete">Perlihatkan Semua Layer-layer</translation>
     </message>
     <message>
         <source>Show all layers</source>
-        <translation type="obsolete">Perlihatkan semua lapisan-lapisan</translation>
+        <translation type="obsolete">Perlihatkan semua layer-layer</translation>
     </message>
     <message>
         <source>Hide All Layers</source>
-        <translation type="obsolete">Sembunyikan Semua Lapisan-lapisan</translation>
+        <translation type="obsolete">Sembunyikan Semua Layer-layer</translation>
     </message>
     <message>
         <source>QGIS Home Page</source>
@@ -11939,7 +11939,7 @@ Kesalahan: %3</translation>
     </message>
     <message>
         <source>&amp;Layer</source>
-        <translation type="obsolete">&amp;Lapisan</translation>
+        <translation type="obsolete">&amp;Layer</translation>
     </message>
     <message>
         <source>&amp;Settings</source>
@@ -11983,7 +11983,7 @@ Kesalahan: %3</translation>
         <location filename="../src/app/qgisapp.cpp" line="5153"/>
         <location filename="../src/app/qgisapp.cpp" line="5212"/>
         <source>Layer not editable</source>
-        <translation>Lapisan tidak dapat diedit</translation>
+        <translation>Layer tidak dapat diedit</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1569"/>
@@ -12046,7 +12046,7 @@ Kesalahan: %3</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4693"/>
         <source>The current layer is not editable. Choose &apos;Start editing&apos; in the digitizing toolbar.</source>
-        <translation>Lapisan ini tidak dapat diedit. Pilih &apos;Memulai mengedit&apos; pada panel mendigitasi.</translation>
+        <translation>Layer ini tidak dapat diedit. Pilih &apos;Memulai mengedit&apos; pada panel mendigitasi.</translation>
     </message>
     <message>
         <source>Invalid scale</source>
@@ -12064,34 +12064,34 @@ Kesalahan: %3</translation>
         <location filename="../src/app/qgisapp.cpp" line="6650"/>
         <location filename="../src/app/qgisapp.cpp" line="6659"/>
         <source>To perform a full histogram stretch, you need to have a raster layer selected.</source>
-        <translation>Untuk merentangkan histogram penuh, anda harus memilih lapisan raster.</translation>
+        <translation>Untuk merentangkan histogram penuh, anda harus memilih layer raster.</translation>
     </message>
     <message>
         <source>To perform a local histogram stretch, you need to have a grayscale or multiband (multiband single layer, singleband grayscale or multiband color)  raster layer selected.</source>
-        <translation type="obsolete">Untuk melakukan peregangan histogram lokal, anda harus memiliki raster dengan skala abu-abu atau multi-band (multi band satu lapisan, band-tunggal skala abu-abu atau multi-band warna) yang terpilih.</translation>
+        <translation type="obsolete">Untuk melakukan peregangan histogram lokal, anda harus memiliki raster dengan skala abu-abu atau multi-band (multi band satu layer, band-tunggal skala abu-abu atau multi-band warna) yang terpilih.</translation>
     </message>
     <message>
         <source>To perform a local histogram stretch, you need to have a raster layer selected.</source>
-        <translation type="obsolete">Untuk melakukan peregangan histogram lokal, anda perlu untuk memilih lapisan raster.</translation>
+        <translation type="obsolete">Untuk melakukan peregangan histogram lokal, anda perlu untuk memilih layer raster.</translation>
     </message>
     <message>
         <source>No Raster Layer Selected</source>
-        <translation type="obsolete">Tidak ada lapisan raster yang dipilih</translation>
+        <translation type="obsolete">Tidak ada layer raster yang dipilih</translation>
     </message>
     <message>
         <source>No Valid Raster Layer Selected</source>
-        <translation type="obsolete">Tidak ada lapisan raster yang benar yang dipilih</translation>
+        <translation type="obsolete">Tidak ada layer raster yang benar yang dipilih</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6866"/>
         <location filename="../src/app/qgisapp.cpp" line="6914"/>
         <source>Layer is not valid</source>
-        <translation>Lapisan tidak benar</translation>
+        <translation>Layer tidak benar</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6915"/>
         <source>The layer is not a valid layer and can not be added to the map</source>
-        <translation>Lapisan ini bukan lapisan yang benar dan tidak dapat ditambahkan pada peta</translation>
+        <translation>Layer ini bukan layer yang benar dan tidak dapat ditambahkan pada peta</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="7027"/>
@@ -12374,11 +12374,11 @@ This copy of QGIS writes debugging output.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2503"/>
         <source>%1 doesn&apos;t have any layers</source>
-        <translation>%1 tidak memiliki lapisan apapun</translation>
+        <translation>%1 tidak memiliki layer apapun</translation>
     </message>
     <message>
         <source>Select raster layers to add...</source>
-        <translation type="obsolete">Pilih lapisan raster untuk ditambahkan...</translation>
+        <translation type="obsolete">Pilih layer raster untuk ditambahkan...</translation>
     </message>
     <message>
         <source>Raster</source>
@@ -12462,7 +12462,7 @@ QWT Version: %1.</source>
     </message>
     <message>
         <source>Allow the line symbol layers to be used for outline of polygon (fill) symbols.</source>
-        <translation type="obsolete">Memungkinkan lapisan simbol garis untuk digunakan sebagai garis tepi dari simbol poligon.</translation>
+        <translation type="obsolete">Memungkinkan layer simbol garis untuk digunakan sebagai garis tepi dari simbol poligon.</translation>
     </message>
     <message>
         <source>Option to put marker on the central point of a line.</source>
@@ -12474,11 +12474,11 @@ QWT Version: %1.</source>
     </message>
     <message>
         <source>Added &quot;centroid fill&quot; symbol layer which draws a marker on polygon&apos;s centroid.</source>
-        <translation type="obsolete">Menambahkan lapisan simbol &quot;pengisian sentroid&quot;yang menggambar sebuah penanda pada sentroid sebuah poligon.</translation>
+        <translation type="obsolete">Menambahkan layer simbol &quot;pengisian sentroid&quot;yang menggambar sebuah penanda pada sentroid sebuah poligon.</translation>
     </message>
     <message>
         <source>Allow the marker line symbol layer to draw markers on each vertex.</source>
-        <translation type="obsolete">Memungkinkan penanda lapisan simbol garis untuk menggambar penanda pada setiap verteks.</translation>
+        <translation type="obsolete">Memungkinkan penanda layer simbol garis untuk menggambar penanda pada setiap verteks.</translation>
     </message>
     <message>
         <source>Move/rotate/change label edit tools to interactively change data defined label properties.</source>
@@ -12510,11 +12510,11 @@ QWT Version: %1.</source>
     </message>
     <message>
         <source>Allow managing missing layers in a list.</source>
-        <translation type="obsolete">Memungkinkan untuk mengelola lapisan yang hilang di dalam daftar.</translation>
+        <translation type="obsolete">Memungkinkan untuk mengelola layer yang hilang di dalam daftar.</translation>
     </message>
     <message>
         <source>Zoom to group of layers.</source>
-        <translation type="obsolete">Perbesar ke grup lapisan tertentu.</translation>
+        <translation type="obsolete">Perbesar ke grup layer tertentu.</translation>
     </message>
     <message>
         <source>&apos;Tip of the day&apos; on startup. You can en/disable tips in the options panel.</source>
@@ -12542,7 +12542,7 @@ QWT Version: %1.</source>
     </message>
     <message>
         <source>Assign layer CRS to project (in the legend context menu).</source>
-        <translation type="obsolete">Menentukan lapisan CRS pada proyek (dalam menu legenda).</translation>
+        <translation type="obsolete">Menentukan layer CRS pada proyek (dalam menu legenda).</translation>
     </message>
     <message>
         <source>Select default CRS for new projects.</source>
@@ -12550,7 +12550,7 @@ QWT Version: %1.</source>
     </message>
     <message>
         <source>Allow setting CRS for multiple layers at once.</source>
-        <translation type="obsolete">Memungkinkan pengaturan CRS sekali untuk beberapa lapisan.</translation>
+        <translation type="obsolete">Memungkinkan pengaturan CRS sekali untuk beberapa layer.</translation>
     </message>
     <message>
         <source>Default to last selection when prompting for CRS.</source>
@@ -12606,7 +12606,7 @@ QWT Version: %1.</source>
     </message>
     <message>
         <source>Use layer names instead of ids in drop down list when loading value maps from layers.</source>
-        <translation type="obsolete">Menggunakanan nama lapisan bukan id dalam daftar drop down menu ketika memuat nilai peta dari lapisan tersebut.</translation>
+        <translation type="obsolete">Menggunakanan nama layer bukan id dalam daftar drop down menu ketika memuat nilai peta dari layer tersebut.</translation>
     </message>
     <message>
         <source>Support feature form expression fields: line edits on the form which name prefix &quot;expr_&quot; are evaluated. Their value is interpreted as field calculator string and replaced with the calculated value.</source>
@@ -12662,7 +12662,7 @@ QWT Version: %1.</source>
     </message>
     <message>
         <source>Layer menu function added.</source>
-        <translation type="obsolete">Penambahan fungsi menu lapisan.</translation>
+        <translation type="obsolete">Penambahan fungsi menu layer.</translation>
     </message>
     <message>
         <source>Added option to load c++ plugins from user  specified directories. Requires application restart to activate.</source>
@@ -12710,7 +12710,7 @@ QWT Version: %1.</source>
     </message>
     <message>
         <source>Select vector layers to add...</source>
-        <translation type="obsolete">Pilih lapisan vektor untuk menambahkan...</translation>
+        <translation type="obsolete">Pilih layer vektor untuk menambahkan...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3014"/>
@@ -12742,7 +12742,7 @@ QWT Version: %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4247"/>
         <source>Font for layer &lt;b&gt;&lt;u&gt;%1&lt;/u&gt;&lt;/b&gt; was not found (&lt;i&gt;%2&lt;/i&gt;). %3</source>
-        <translation>Font untuk lapisan &lt;b&gt;&lt;u&gt;%1&lt;/u&gt;&lt;/b&gt; tidak ditemukan (&lt;i&gt;%2&lt;/i&gt;). %3</translation>
+        <translation>Font untuk layer &lt;b&gt;&lt;u&gt;%1&lt;/u&gt;&lt;/b&gt; tidak ditemukan (&lt;i&gt;%2&lt;/i&gt;). %3</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4238"/>
@@ -12811,31 +12811,31 @@ Kesalahan: %1</translation>
         <location filename="../src/app/qgisapp.cpp" line="5138"/>
         <location filename="../src/app/qgisapp.cpp" line="5201"/>
         <source>No active layer</source>
-        <translation>Tidak ada lapisan yang aktif</translation>
+        <translation>Tidak ada layer yang aktif</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5139"/>
         <location filename="../src/app/qgisapp.cpp" line="5201"/>
         <source>No active layer found. Please select a layer in the layer list</source>
-        <translation>Tidak ada lapisan yang aktif yang ditemukan. Silahkan untuk memilih lapisan pada daftar lapisan</translation>
+        <translation>Tidak ada layer yang aktif yang ditemukan. Silahkan untuk memilih layer pada daftar layer</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5147"/>
         <location filename="../src/app/qgisapp.cpp" line="5207"/>
         <source>Active layer is not vector</source>
-        <translation>Lapisan yang aktif bukan vector</translation>
+        <translation>Layer yang aktif bukan vector</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5147"/>
         <location filename="../src/app/qgisapp.cpp" line="5207"/>
         <source>The merge features tool only works on vector layers. Please select a vector layer from the layer list</source>
-        <translation>Alat untuk menggabung fitur hanya berfungsi pada lapisan vektor. Silahkan untuk memilih lapisan vektor dari daftar lapisan</translation>
+        <translation>Alat untuk menggabung fitur hanya berfungsi pada layer vektor. Silahkan untuk memilih layer vektor dari daftar layer</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5153"/>
         <location filename="../src/app/qgisapp.cpp" line="5212"/>
         <source>Merging features can only be done for layers in editing mode. To use the merge tool, go to  Layer-&gt;Toggle editing</source>
-        <translation>Penggabungan fitur hanya dapat dilakukan pada lapisan dalam modus edit. Untuk menggunakan alat penggabung, silahkan ke Lapisan-&gt;Toggle Edit</translation>
+        <translation>Penggabungan fitur hanya dapat dilakukan pada layer dalam modus edit. Untuk menggunakan alat penggabung, silahkan ke Layer-&gt;Toggle Edit</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5161"/>
@@ -12865,7 +12865,7 @@ Kesalahan: %1</translation>
         <location filename="../src/app/qgisapp.cpp" line="5247"/>
         <location filename="../src/app/qgisapp.cpp" line="5286"/>
         <source>The union operation would result in a geometry type that is not compatible with the current layer and therefore is canceled</source>
-        <translation>Proses union mungkin akan menghasilkan tipe geometri yang tidak kompatibel dengan lapisan saat ini dan oleh karena itu dibatalkan</translation>
+        <translation>Proses union mungkin akan menghasilkan tipe geometri yang tidak kompatibel dengan layer saat ini dan oleh karena itu dibatalkan</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5292"/>
@@ -12875,12 +12875,12 @@ Kesalahan: %1</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5407"/>
         <source>No active vector layer</source>
-        <translation>Tidak ada lapisan vektor yang aktif</translation>
+        <translation>Tidak ada layer vektor yang aktif</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5408"/>
         <source>To select features, choose a vector layer in the legend</source>
-        <translation>Untuk memilih fitur, pilih satu lapisan vektor pada legenda</translation>
+        <translation>Untuk memilih fitur, pilih satu layer vektor pada legenda</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5452"/>
@@ -12910,7 +12910,7 @@ Kesalahan: %1</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5705"/>
         <source>Do you want to save the changes to layer %1?</source>
-        <translation>Apakah anda ingin menyimpan perubahan pada lapisan %1?</translation>
+        <translation>Apakah anda ingin menyimpan perubahan pada layer %1?</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5730"/>
@@ -12964,12 +12964,12 @@ Kesalahan: %1</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2131"/>
         <source>Map layer list that displays all layers in drawing order.</source>
-        <translation>Petakan daftar lapisan yang menampilkan semua lapisan pada urutan penggambaran.</translation>
+        <translation>Petakan daftar layer yang menampilkan semua layer pada urutan penggambaran.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2132"/>
         <source>Layer order</source>
-        <translation>Urutan Lapisan</translation>
+        <translation>Urutan Layer</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2282"/>
@@ -13054,12 +13054,12 @@ Kesalahan: %1</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2932"/>
         <source>%1 is an invalid layer - not loaded</source>
-        <translation>%1 adalah lapisan yang tidak valid - tidak dimuat</translation>
+        <translation>%1 adalah layer yang tidak valid - tidak dimuat</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2933"/>
         <source>%1 is an invalid layer and cannot be loaded. Please check the &lt;a href=&quot;#messageLog&quot;&gt;message log&lt;/a&gt; for further info.</source>
-        <translation>%1 adalah lapisan yang tidak valid dan tidak dapat dimuat. Silahkan periksa &lt;a href=&quot;#messageLog&quot;&gt;Catatan pesan&lt;/a&gt; untuk informasi lebih lanjut.</translation>
+        <translation>%1 adalah layer yang tidak valid dan tidak dapat dimuat. Silahkan periksa &lt;a href=&quot;#messageLog&quot;&gt;Catatan pesan&lt;/a&gt; untuk informasi lebih lanjut.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2968"/>
@@ -13211,7 +13211,7 @@ Kesalahan: %1</translation>
         <location filename="../src/app/qgisapp.cpp" line="4259"/>
         <location filename="../src/app/qgisapp.cpp" line="4280"/>
         <source>Could not commit changes to layer %1</source>
-        <translation>Tidak dapat menerapkan perubahan ke lapisan %1</translation>
+        <translation>Tidak dapat menerapkan perubahan ke layer %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4261"/>
@@ -13232,12 +13232,12 @@ Kesalahan: %1</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4319"/>
         <source>Please select a vector layer first</source>
-        <translation>Silahkan pilih lapisan vektor terlebih dahulu</translation>
+        <translation>Silahkan pilih layer vektor terlebih dahulu</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4327"/>
         <source>Layer labeling settings</source>
-        <translation>Pengaturan pelabelan lapisan</translation>
+        <translation>Pengaturan pelabelan layer</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4504"/>
@@ -13322,12 +13322,12 @@ Kesalahan: %1</translation>
         <location filename="../src/app/qgisapp.cpp" line="6702"/>
         <location filename="../src/app/qgisapp.cpp" line="6711"/>
         <source>To change brightness or contrast, you need to have a raster layer selected.</source>
-        <translation>Untuk merubah kecerahan atau kontras, anda harus lebih dulu menyeleksi lapisan raster.</translation>
+        <translation>Untuk merubah kecerahan atau kontras, anda harus lebih dulu menyeleksi layer raster.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6867"/>
         <source>The layer %1 is not a valid layer and can not be added to the map</source>
-        <translation>Lapisan %1 merupakan lapisan yang tidak cocok dan tidak dapat di tambahkan dalam peta</translation>
+        <translation>Layer %1 merupakan layer yang tidak cocok dan tidak dapat di tambahkan dalam peta</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="7003"/>
@@ -13347,14 +13347,14 @@ Kesalahan: %1</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="7841"/>
         <source>Maptips require an active layer</source>
-        <translation>SaranPeta: membutuhkan lapisan yang aktif</translation>
+        <translation>SaranPeta: membutuhkan layer yang aktif</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/app/qgisapp.cpp" line="7933"/>
         <source>%n feature(s) selected on layer %1.</source>
         <comment>number of selected features</comment>
         <translation>
-            <numerusform>%n fiitur yang dipilih pada lapisan %1.</numerusform>
+            <numerusform>%n fiitur yang dipilih pada layer %1.</numerusform>
         </translation>
     </message>
     <message>
@@ -13366,7 +13366,7 @@ Kesalahan: %1</translation>
         <location filename="../src/app/qgisapp.cpp" line="8467"/>
         <location filename="../src/app/qgisapp.cpp" line="8614"/>
         <source>Raster layer</source>
-        <translation>Lapisan Raster</translation>
+        <translation>Layer Raster</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="8763"/>
@@ -13381,7 +13381,7 @@ Kesalahan: %1</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="8905"/>
         <source>This layer doesn&apos;t have a properties dialog.</source>
-        <translation>Lapisan ini tidak memiliki dialog properti.</translation>
+        <translation>Layer ini tidak memiliki dialog properti.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="8937"/>
@@ -13430,7 +13430,7 @@ Kesalahan: %1</translation>
 
 Errors: %2
 </source>
-        <translation type="obsolete">Tidak bisa melakukan perubahan pada lapisan %1
+        <translation type="obsolete">Tidak bisa melakukan perubahan pada layer %1
 
 Kesalahan:%2</translation>
     </message>
@@ -13683,7 +13683,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsaddjoindialogbase.ui" line="20"/>
         <source>Join layer</source>
-        <translation>Lapisan digabung</translation>
+        <translation>Layer digabung</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsaddjoindialogbase.ui" line="30"/>
@@ -13703,7 +13703,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsaddjoindialogbase.ui" line="67"/>
         <source>Cache join layer in virtual memory</source>
-        <translation>Cache lapisan yang digabung dalam memori virtual</translation>
+        <translation>Cache layer yang digabung dalam memori virtual</translation>
     </message>
 </context>
 <context>
@@ -13927,7 +13927,7 @@ User DB Path:	%9
     <message>
         <location filename="../src/ui/qgsatlascompositionwidgetbase.ui" line="142"/>
         <source>Coverage layer</source>
-        <translation>Lapisan penutup</translation>
+        <translation>Layer penutup</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsatlascompositionwidgetbase.ui" line="162"/>
@@ -13937,7 +13937,7 @@ User DB Path:	%9
     <message>
         <location filename="../src/ui/qgsatlascompositionwidgetbase.ui" line="177"/>
         <source>Hidden coverage layer</source>
-        <translation>Lapisan penutup tersembunyi</translation>
+        <translation>Layer penutup tersembunyi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsatlascompositionwidgetbase.ui" line="190"/>
@@ -14082,7 +14082,7 @@ User DB Path:	%9
     </message>
     <message>
         <source>This list contains all actions that have been defined for the current layer. Add actions by entering the details in the controls below and then pressing the Insert action button. Actions can be edited here by double clicking on the item.</source>
-        <translation type="obsolete">Daftar ini mengandung semua aksi-aksi yang telah terdefinisi pada lapisan aktual. Penambahan aksi-aksi dilakukan dengan memasukkan detil-detil pada kontrol-kontrol di bawah dan dilanjutkan dengan menekan tombol aksi Sisipkan. Aksi-aksi dapat diedit di sini dengan mengklik-gandanya.</translation>
+        <translation type="obsolete">Daftar ini mengandung semua aksi-aksi yang telah terdefinisi pada layer aktual. Penambahan aksi-aksi dilakukan dengan memasukkan detil-detil pada kontrol-kontrol di bawah dan dilanjutkan dengan menekan tombol aksi Sisipkan. Aksi-aksi dapat diedit di sini dengan mengklik-gandanya.</translation>
     </message>
     <message>
         <source>Move up</source>
@@ -14157,7 +14157,7 @@ User DB Path:	%9
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="396"/>
         <source>The valid attribute names for this layer</source>
-        <translation>Nama atribut yang valid untuk lapisan ini</translation>
+        <translation>Nama atribut yang valid untuk layer ini</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="264"/>
@@ -14187,7 +14187,7 @@ User DB Path:	%9
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="67"/>
         <source>This list contains all actions that have been defined for the current layer. Add actions by entering the details in the controls below and then pressing the Add to action list button. Actions can be edited here by double clicking on the item.</source>
-        <translation>Daftar ini mengandung semua aksi-aksi yang telah terdefinisi pada lapisan aktual. Penambahan aksi-aksi dilakukan dengan memasukkan detil-detil pada kontrol-kontrol di bawah dan dilanjutkan dengan menekan tombol Tambah ke daftar aksi. Aksi-aksi dapat diedit di sini dengan mengklik-gandan item tersebut.</translation>
+        <translation>Daftar ini mengandung semua aksi-aksi yang telah terdefinisi pada layer aktual. Penambahan aksi-aksi dilakukan dengan memasukkan detil-detil pada kontrol-kontrol di bawah dan dilanjutkan dengan menekan tombol Tambah ke daftar aksi. Aksi-aksi dapat diedit di sini dengan mengklik-gandan item tersebut.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="80"/>
@@ -14373,12 +14373,12 @@ User DB Path:	%9
     <message>
         <location filename="../src/ui/qgsattributeloadfrommap.ui" line="14"/>
         <source>Load values from layer</source>
-        <translation>Memuat nilai dari lapisan</translation>
+        <translation>Memuat nilai dari layer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeloadfrommap.ui" line="45"/>
         <source>Layer</source>
-        <translation>Lapisan</translation>
+        <translation>Layer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeloadfrommap.ui" line="52"/>
@@ -14395,7 +14395,7 @@ User DB Path:	%9
     <message>
         <location filename="../src/ui/qgsattributeloadfrommap.ui" line="76"/>
         <source>Select data from attributes in selected layer.</source>
-        <translation>Pilih data dari atribut pada lapisan yang dipilih.</translation>
+        <translation>Pilih data dari atribut pada layer yang dipilih.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeloadfrommap.ui" line="93"/>
@@ -14551,7 +14551,7 @@ User DB Path:	%9
     <message>
         <location filename="../src/app/qgsattributetabledialog.cpp" line="482"/>
         <source>The attribute could not be added to the layer</source>
-        <translation>Atribut tidak dapat ditambahkan pada lapisan</translation>
+        <translation>Atribut tidak dapat ditambahkan pada layer</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributetabledialog.cpp" line="509"/>
@@ -15085,7 +15085,7 @@ Kesalahan pada:%2</translation>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="664"/>
         <source>Layer</source>
-        <translation type="unfinished">Lapisan</translation>
+        <translation type="unfinished">Layer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="677"/>
@@ -15189,7 +15189,7 @@ Kesalahan pada:%2</translation>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="393"/>
         <source>Load Data from layer</source>
-        <translation>Memuat data dari lapisan</translation>
+        <translation>Memuat data dari layer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="414"/>
@@ -15475,7 +15475,7 @@ Database:%2</source>
     <message>
         <location filename="../src/browser/qgsbrowser.cpp" line="342"/>
         <source>Cannot set layer CRS</source>
-        <translation>Tidak dapat mengatur CRS lapisan</translation>
+        <translation>Tidak dapat mengatur CRS layer</translation>
     </message>
 </context>
 <context>
@@ -15539,7 +15539,7 @@ Database:%2</source>
         <location filename="../src/browser/qgsbrowserbase.ui" line="220"/>
         <location filename="../src/browser/qgsbrowserbase.ui" line="223"/>
         <source>Set layer CRS</source>
-        <translation>Atur CRS Lapisan</translation>
+        <translation>Atur CRS Layer</translation>
     </message>
     <message>
         <location filename="../src/browser/qgsbrowserbase.ui" line="232"/>
@@ -15583,7 +15583,7 @@ Database:%2</source>
     <message>
         <location filename="../src/app/qgsbrowserdockwidget.cpp" line="330"/>
         <source>Add Selected Layers</source>
-        <translation>Tambah lapisan terpilih</translation>
+        <translation>Tambah layer terpilih</translation>
     </message>
     <message>
         <location filename="../src/app/qgsbrowserdockwidget.cpp" line="314"/>
@@ -15598,7 +15598,7 @@ Database:%2</source>
     <message>
         <location filename="../src/app/qgsbrowserdockwidget.cpp" line="329"/>
         <source>Add Layer</source>
-        <translation>Tambah lapisan</translation>
+        <translation>Tambah layer</translation>
     </message>
     <message>
         <location filename="../src/app/qgsbrowserdockwidget.cpp" line="321"/>
@@ -15644,7 +15644,7 @@ Database:%2</source>
     <message>
         <location filename="../src/app/qgsbrowserdockwidget.cpp" line="556"/>
         <source>Layer Properties</source>
-        <translation>Properti Lapisan</translation>
+        <translation>Properti Layer</translation>
     </message>
     <message>
         <location filename="../src/app/qgsbrowserdockwidget.cpp" line="583"/>
@@ -15668,7 +15668,7 @@ Database:%2</source>
     <message>
         <location filename="../src/ui/qgsbrowserdockwidgetbase.ui" line="74"/>
         <source>Add Selected Layers</source>
-        <translation>Tambah lapisan terpilih</translation>
+        <translation>Tambah layer terpilih</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsbrowserdockwidgetbase.ui" line="77"/>
@@ -15717,7 +15717,7 @@ Database:%2</source>
     <message>
         <location filename="../src/ui/qgsbrowserlayerpropertiesbase.ui" line="32"/>
         <source>Layer Source</source>
-        <translation>Sumber Lapisan</translation>
+        <translation>Sumber Layer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsbrowserlayerpropertiesbase.ui" line="59"/>
@@ -16294,7 +16294,7 @@ Apakah kelas yang sudah ada sebelumnya akan dihapus sebelum pengklasifikasian?</
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="2139"/>
         <source>Advanced composition effects such as blend modes or vector layer transparency are enabled in this project, which cannot be printed as vectors. Printing as a raster is recommended.</source>
-        <translation>Efek komposisi lanjut, seperti modus pencampuran dan transparansi lapisan, diaktifkan pada proyek ini, yang mana tidk dapat dicetak sebagai sebuah vektor. Disarankan untuk mencetak sebagai raster.</translation>
+        <translation>Efek komposisi lanjut, seperti modus pencampuran dan transparansi layer, diaktifkan pada proyek ini, yang mana tidk dapat dicetak sebagai sebuah vektor. Disarankan untuk mencetak sebagai raster.</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="2140"/>
@@ -16339,12 +16339,12 @@ Silahkan coba turunkan resolusi atau gunakan ukuran kertas yang lebih kecil</tra
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="2123"/>
         <source>Project contains WMS layers</source>
-        <translation>Proyek berisikan lapisan WMS</translation>
+        <translation>Proyek berisikan layer WMS</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="2124"/>
         <source>Some WMS servers (e.g. UMN mapserver) have a limit for the WIDTH and HEIGHT parameter. Printing layers from such servers may exceed this limit. If this is the case, the WMS layer will not be printed</source>
-        <translation>Beberapa server WMS (seperti UMN mapserver) memiliki batas parameter LEBAR dan TINGGI. Mencetak lapisan dari server seperti itu mungkin melebihi batas. Jika seperti itu, lapisan WMS tidak akan di cetak</translation>
+        <translation>Beberapa server WMS (seperti UMN mapserver) memiliki batas parameter LEBAR dan TINGGI. Mencetak layer dari server seperti itu mungkin melebihi batas. Jika seperti itu, layer WMS tidak akan di cetak</translation>
     </message>
     <message>
         <source>&lt;p&gt;The SVG export function in Qgis has several problems due to bugs and deficiencies in the </source>
@@ -16362,7 +16362,7 @@ Silahkan coba turunkan resolusi atau gunakan ukuran kertas yang lebih kecil</tra
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="1170"/>
         <source>Qt4 svg code. In particular, there are problems with layers not being clipped to the map bounding box.&lt;/p&gt;</source>
-        <translation>Kode svg Qt4. Dalam kondisi tertentu, terdapat masalah dengan lapisan yang tidak di potong (di klip) terhadap kotak batas luasan peta.&lt;p&gt;</translation>
+        <translation>Kode svg Qt4. Dalam kondisi tertentu, terdapat masalah dengan layer yang tidak di potong (di klip) terhadap kotak batas luasan peta.&lt;p&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="1173"/>
@@ -17565,7 +17565,7 @@ Silahkan coba turunkan resolusi atau gunakan ukuran kertas yang lebih kecil</tra
     <message>
         <location filename="../src/ui/qgscomposerlegendlayersdialogbase.ui" line="14"/>
         <source>Add layer to legend</source>
-        <translation>Tambahkan lapisan ke legenda</translation>
+        <translation>Tambahkan layer ke legenda</translation>
     </message>
 </context>
 <context>
@@ -17632,7 +17632,7 @@ Silahkan coba turunkan resolusi atau gunakan ukuran kertas yang lebih kecil</tra
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="311"/>
         <source>Legend layer space</source>
-        <translation>Jarak legenda lapisan</translation>
+        <translation>Jarak legenda layer</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="323"/>
@@ -17657,7 +17657,7 @@ Silahkan coba turunkan resolusi atau gunakan ukuran kertas yang lebih kecil</tra
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="402"/>
         <source>Legend layer font changed</source>
-        <translation>Huruf legenda lapisan berubah</translation>
+        <translation>Huruf legenda layer berubah</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="424"/>
@@ -17736,7 +17736,7 @@ Silahkan coba turunkan resolusi atau gunakan ukuran kertas yang lebih kecil</tra
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="163"/>
         <source>Update whole legend. Layers are added/removed according to main application legend. User defined labels will be deleted.</source>
-        <translation>Perbarui seluruh legenda. Lapisan ditambah/dihapus sesuai dengan legenda aplikasi utama. Label didefinisikan pengguna akan dihapus.</translation>
+        <translation>Perbarui seluruh legenda. Layer ditambah/dihapus sesuai dengan legenda aplikasi utama. Label didefinisikan pengguna akan dihapus.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="166"/>
@@ -17751,7 +17751,7 @@ Silahkan coba turunkan resolusi atau gunakan ukuran kertas yang lebih kecil</tra
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="320"/>
         <source>Show feature count for each class of vector layer.</source>
-        <translation>Tampilkan jumlah fitur untuk tiap kelas lapisan vektor.</translation>
+        <translation>Tampilkan jumlah fitur untuk tiap kelas layer vektor.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="371"/>
@@ -17796,12 +17796,12 @@ Silahkan coba turunkan resolusi atau gunakan ukuran kertas yang lebih kecil</tra
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="472"/>
         <source>Allow to split layer items into multiple columns.</source>
-        <translation>Izinkan pemisahan lapisan menjadi beberapa kolom.</translation>
+        <translation>Izinkan pemisahan layer menjadi beberapa kolom.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="475"/>
         <source>Split layers</source>
-        <translation>Pisahkan lapisan</translation>
+        <translation>Pisahkan layer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="485"/>
@@ -17891,7 +17891,7 @@ Silahkan coba turunkan resolusi atau gunakan ukuran kertas yang lebih kecil</tra
     </message>
     <message>
         <source>Layer Font...</source>
-        <translation type="obsolete">Huruf lapisan...</translation>
+        <translation type="obsolete">Huruf layer...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="410"/>
@@ -17920,7 +17920,7 @@ Silahkan coba turunkan resolusi atau gunakan ukuran kertas yang lebih kecil</tra
     </message>
     <message>
         <source>Layer space </source>
-        <translation type="obsolete">Jarak antar lapisan </translation>
+        <translation type="obsolete">Jarak antar layer </translation>
     </message>
     <message>
         <source>Symbol space </source>
@@ -18648,7 +18648,7 @@ Silahkan coba turunkan resolusi atau gunakan ukuran kertas yang lebih kecil</tra
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="158"/>
         <source>Lock layers for map item</source>
-        <translation>Kunci lapisan untuk item peta</translation>
+        <translation>Kunci layer untuk item peta</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="398"/>
@@ -19305,7 +19305,7 @@ Silahkan coba turunkan resolusi atau gunakan ukuran kertas yang lebih kecil</tra
     <message>
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="128"/>
         <source>Table layer changed</source>
-        <translation>Tabel lapisan berubah</translation>
+        <translation>Tabel layer berubah</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="147"/>
@@ -19380,7 +19380,7 @@ Silahkan coba turunkan resolusi atau gunakan ukuran kertas yang lebih kecil</tra
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="75"/>
         <source>Layer</source>
-        <translation>Lapisan</translation>
+        <translation>Layer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="91"/>
@@ -19496,7 +19496,7 @@ Silahkan coba turunkan resolusi atau gunakan ukuran kertas yang lebih kecil</tra
     <message>
         <location filename="../src/ui/qgscomposervectorlegendbase.ui" line="138"/>
         <source>Layers</source>
-        <translation>Lapisan</translation>
+        <translation>Layer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposervectorlegendbase.ui" line="143"/>
@@ -21209,7 +21209,7 @@ Dan berkas saat ini adalah [%3]</translation>
     <message>
         <location filename="../src/ui/qgsdbsourceselectbase.ui" line="14"/>
         <source>Add PostGIS layers</source>
-        <translation>Tambahkan Lapisan PostGIS</translation>
+        <translation>Tambahkan Layer PostGIS</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdbsourceselectbase.ui" line="31"/>
@@ -21441,22 +21441,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsdecorationgrid.cpp" line="824"/>
         <source>No active layer</source>
-        <translation>Tidak ada lapisan yang aktif</translation>
+        <translation>Tidak ada layer yang aktif</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdecorationgrid.cpp" line="829"/>
         <source>Please select a raster layer</source>
-        <translation>Silahkan pilih sebuah lapisan raster</translation>
+        <translation>Silahkan pilih sebuah layer raster</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdecorationgrid.cpp" line="835"/>
         <source>Invalid raster layer</source>
-        <translation>Lapisan raster tidak valid</translation>
+        <translation>Layer raster tidak valid</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdecorationgrid.cpp" line="845"/>
         <source>Layer CRS must be equal to project CRS</source>
-        <translation>CRS Lapisan harus sama untuk melakukan proyeksi CRS</translation>
+        <translation>CRS Layer harus sama untuk melakukan proyeksi CRS</translation>
     </message>
 </context>
 <context>
@@ -21544,7 +21544,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsdecorationgriddialog.ui" line="287"/>
         <source>Active Raster Layer</source>
-        <translation>Lapisan Raster Aktif</translation>
+        <translation>Layer Raster Aktif</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdecorationgriddialog.cpp" line="45"/>
@@ -21886,18 +21886,18 @@ p, li { white-space: pre-wrap; }
     <name>QgsDelimitedTextPlugin</name>
     <message>
         <source>&amp;Add Delimited Text Layer</source>
-        <translation type="obsolete">Tambahkan Lapisan Teks Delimited</translation>
+        <translation type="obsolete">Tambahkan Layer Teks Delimited</translation>
     </message>
 </context>
 <context>
     <name>QgsDelimitedTextPluginGui</name>
     <message>
         <source>No layer name</source>
-        <translation type="obsolete">Nama lapisan kosong</translation>
+        <translation type="obsolete">Nama layer kosong</translation>
     </message>
     <message>
         <source>Please enter a layer name before adding the layer to the map</source>
-        <translation type="obsolete">Silahkan memasukkan sebuah nama lapisan sebelum menambahkan lapisan tsb ke peta</translation>
+        <translation type="obsolete">Silahkan memasukkan sebuah nama layer sebelum menambahkan layer tsb ke peta</translation>
     </message>
     <message>
         <source>All files</source>
@@ -21920,7 +21920,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsDelimitedTextPluginGuiBase</name>
     <message>
         <source>Create a Layer from a Delimited Text File</source>
-        <translation type="obsolete">Ciptakan sebuah Lapisan dari Arsip Teks Delimited</translation>
+        <translation type="obsolete">Ciptakan sebuah Layer dari Arsip Teks Delimited</translation>
     </message>
     <message>
         <source>The file contains X and Y coordinate columns</source>
@@ -21960,7 +21960,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Layer name</source>
-        <translation type="obsolete">Nama Lapisan</translation>
+        <translation type="obsolete">Nama Layer</translation>
     </message>
     <message>
         <source>File Name</source>
@@ -22173,12 +22173,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="121"/>
         <source>No layer name</source>
-        <translation type="unfinished">Nama lapisan kosong</translation>
+        <translation type="unfinished">Nama layer kosong</translation>
     </message>
     <message>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="121"/>
         <source>Please enter a layer name before adding the layer to the map</source>
-        <translation type="unfinished">Silahkan memasukkan sebuah nama lapisan sebelum menambahkan lapisan tsb ke peta</translation>
+        <translation type="unfinished">Silahkan memasukkan sebuah nama layer sebelum menambahkan layer tsb ke peta</translation>
     </message>
     <message>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="129"/>
@@ -22296,7 +22296,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="14"/>
         <source>Create a Layer from a Delimited Text File</source>
-        <translation type="unfinished">Ciptakan sebuah Lapisan dari Arsip Teks Delimited</translation>
+        <translation type="unfinished">Ciptakan sebuah Layer dari Arsip Teks Delimited</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="54"/>
@@ -22316,7 +22316,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="115"/>
         <source>Layer name</source>
-        <translation type="unfinished">Nama Lapisan</translation>
+        <translation type="unfinished">Nama Layer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="122"/>
@@ -23396,7 +23396,7 @@ Biarkan kosong untuk menerapkan nilai maksimum secara otomatis.</translation>
     </message>
     <message>
         <source>Table name for the buffered layer:</source>
-        <translation type="obsolete">Nama tabel untuk lapisan berbufer:</translation>
+        <translation type="obsolete">Nama tabel untuk layer berbufer:</translation>
     </message>
     <message>
         <source>Create unique object id</source>
@@ -23424,11 +23424,11 @@ Biarkan kosong untuk menerapkan nilai maksimum secara otomatis.</translation>
     </message>
     <message>
         <source>Add the buffered layer to the map?</source>
-        <translation type="obsolete">Tambah lapisan berbufer ke peta?</translation>
+        <translation type="obsolete">Tambah layer berbufer ke peta?</translation>
     </message>
     <message>
         <source>&lt;h2&gt;Buffer the features in layer: &lt;/h2&gt;</source>
-        <translation type="obsolete">&lt;h2&gt;Bufer fitur-fitur pada lapisan: &lt;/h2&gt;</translation>
+        <translation type="obsolete">&lt;h2&gt;Bufer fitur-fitur pada layer: &lt;/h2&gt;</translation>
     </message>
 </context>
 <context>
@@ -24051,7 +24051,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/qgsfieldcalculator.cpp" line="66"/>
         <location filename="../src/app/qgsfieldcalculator.cpp" line="77"/>
         <source>Not available for layer</source>
-        <translation>Tidak tersedia untuk lapisan</translation>
+        <translation>Tidak tersedia untuk layer</translation>
     </message>
     <message>
         <location filename="../src/app/qgsfieldcalculator.cpp" line="109"/>
@@ -24829,11 +24829,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Not a vector layer</source>
-        <translation type="obsolete">Bukan lapisan vektor</translation>
+        <translation type="obsolete">Bukan layer vektor</translation>
     </message>
     <message>
         <source>The current layer is not a vector layer</source>
-        <translation type="obsolete">Lapisan ini bukan lapisan vektor</translation>
+        <translation type="obsolete">Layer ini bukan layer vektor</translation>
     </message>
     <message>
         <source>2.5D shape type not supported</source>
@@ -24841,7 +24841,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Adding features to 2.5D shapetypes is not supported yet. Please select a different editable, non 2.5D layer and try again.</source>
-        <translation type="obsolete">Belum mendukung penambahan fitur ke tipe shape 2.5D. Silahkan untuk memilih yang diedit, bukan lapisan 2.5D kemudian coba lagi.</translation>
+        <translation type="obsolete">Belum mendukung penambahan fitur ke tipe shape 2.5D. Silahkan untuk memilih yang diedit, bukan layer 2.5D kemudian coba lagi.</translation>
     </message>
     <message>
         <source>Multipart shape type not supported</source>
@@ -24849,23 +24849,23 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Adding features to multipart shapetypes is not supported yet. Please select a different editable, non 2.5D layer and try again.</source>
-        <translation type="obsolete">Belum mendukung penambahan fitur ke tipe shape multipart. Silahkan untuk memilih yang diedit, bukan lapisan 2.5D kemudian coba lagi.</translation>
+        <translation type="obsolete">Belum mendukung penambahan fitur ke tipe shape multipart. Silahkan untuk memilih yang diedit, bukan layer 2.5D kemudian coba lagi.</translation>
     </message>
     <message>
         <source>Layer cannot be added to</source>
-        <translation type="obsolete">Lapisan tidak bisa ditamhakna ke</translation>
+        <translation type="obsolete">Layer tidak bisa ditamhakna ke</translation>
     </message>
     <message>
         <source>The data provider for this layer does not support the addition of features.</source>
-        <translation type="obsolete">Penyedia data pada lapisan ini tidak mendukung penambahan fitur.</translation>
+        <translation type="obsolete">Penyedia data pada layer ini tidak mendukung penambahan fitur.</translation>
     </message>
     <message>
         <source>Layer not editable</source>
-        <translation type="obsolete">Lapisan tidak dapat diedit</translation>
+        <translation type="obsolete">Layer tidak dapat diedit</translation>
     </message>
     <message>
         <source>Cannot edit the vector layer. Use &apos;Toggle Editing&apos; to make it editable.</source>
-        <translation type="obsolete">TIdak dapat mengedit lapisan vektor. Gunakan &apos;Toggle mengedit&apos; untuk membuatnya bisa diedit.</translation>
+        <translation type="obsolete">TIdak dapat mengedit layer vektor. Gunakan &apos;Toggle mengedit&apos; untuk membuatnya bisa diedit.</translation>
     </message>
     <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="488"/>
@@ -24975,7 +24975,7 @@ p, li { white-space: pre-wrap; }
 
 Errors: %2
 </source>
-        <translation>Tidak dapat menerapkan perubahan pada lapisan %1
+        <translation>Tidak dapat menerapkan perubahan pada layer %1
 
 Kesalahan:%2</translation>
     </message>
@@ -24992,7 +24992,7 @@ Kesalahan:%2</translation>
     <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="950"/>
         <source>Cannot add feature. Unknown WKB type. Choose a different layer and try again.</source>
-        <translation>Tidak dapat menambahkan fitur. TIpe WKB tidak diketahui. Pilih lapisan yang lain dan coba lagi.</translation>
+        <translation>Tidak dapat menambahkan fitur. TIpe WKB tidak diketahui. Pilih layer yang lain dan coba lagi.</translation>
     </message>
     <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="1041"/>
@@ -25485,7 +25485,7 @@ gray = no data
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="90"/>
         <source>&amp;Create new GPX layer</source>
-        <translation>&amp;Buat lapisan GPX baru</translation>
+        <translation>&amp;Buat layer GPX baru</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="93"/>
@@ -25812,7 +25812,7 @@ Silahkan pilih kembali arsip yang tepat.</translation>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="350"/>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="596"/>
         <source>Layer name</source>
-        <translation>Nama Lapisan</translation>
+        <translation>Nama Layer</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="202"/>
@@ -25852,7 +25852,7 @@ Silahkan pilih kembali arsip yang tepat.</translation>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="409"/>
         <source>Data layer</source>
-        <translation>Lapisan data</translation>
+        <translation>Layer data</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="533"/>
@@ -25991,17 +25991,17 @@ Silahkan pilih kembali arsip yang tepat.</translation>
     <message>
         <location filename="../src/gui/qgsgenericprojectionselector.cpp" line="50"/>
         <source>This layer appears to have no projection specification.</source>
-        <translation>Lapisan ini sepertinya tidak memiliki spesifikasi proyeksi.</translation>
+        <translation>Layer ini sepertinya tidak memiliki spesifikasi proyeksi.</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsgenericprojectionselector.cpp" line="51"/>
         <source>By default, this layer will now have its projection set to that of the project, but you may override this by selecting a different projection below.</source>
-        <translation>Standarnya, lapisan ini sekarang akan memiliki proyeksinya sendiri untuk diatur untuk proyek tersebut, tetapi anda mungkin harus membatalkannya dengan memilih proyeksi lain berikut ini.</translation>
+        <translation>Standarnya, layer ini sekarang akan memiliki proyeksinya sendiri untuk diatur untuk proyek tersebut, tetapi anda mungkin harus membatalkannya dengan memilih proyeksi lain berikut ini.</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsgenericprojectionselector.cpp" line="49"/>
         <source>Define this layer&apos;s coordinate reference system:</source>
-        <translation>Tentukan sistem koordinat referensi lapisan ini:</translation>
+        <translation>Tentukan sistem koordinat referensi layer ini:</translation>
     </message>
 </context>
 <context>
@@ -26668,7 +26668,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="215"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="218"/>
         <source>Zoom to Layer</source>
-        <translation>Perbesar ke lapisan</translation>
+        <translation>Perbesar ke layer</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="221"/>
@@ -27270,7 +27270,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassattributes.cpp" line="159"/>
         <source>Layer</source>
-        <translation>Lapisan</translation>
+        <translation>Layer</translation>
     </message>
 </context>
 <context>
@@ -27362,7 +27362,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="274"/>
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="349"/>
         <source>New name for layer &quot;%1&quot;</source>
-        <translation>Nama baru untuk lapisan &quot;%1&quot;</translation>
+        <translation>Nama baru untuk layer &quot;%1&quot;</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="290"/>
@@ -27387,7 +27387,7 @@ p, li { white-space: pre-wrap; }
         <source>Are you sure you want to delete %n selected layer(s)?</source>
         <comment>number of layers to delete</comment>
         <translation>
-            <numerusform>Apakah anda yakin akan menghapus %n lapisan yang dipilih?</numerusform>
+            <numerusform>Apakah anda yakin akan menghapus %n layer yang dipilih?</numerusform>
         </translation>
     </message>
     <message>
@@ -27421,7 +27421,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="422"/>
         <source>Remove the selected layer(s) from canvas before continue.</source>
-        <translation>Hapus lapisan terpilih dari kanvas sebelum melanjutkan.</translation>
+        <translation>Hapus layer terpilih dari kanvas sebelum melanjutkan.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="475"/>
@@ -27755,7 +27755,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/grass/qgsgrasseditbase.ui" line="107"/>
         <location filename="../src/plugins/grass/qgsgrasseditbase.ui" line="335"/>
         <source>Layer</source>
-        <translation>Lapisan</translation>
+        <translation>Layer</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasseditbase.ui" line="295"/>
@@ -28577,7 +28577,7 @@ pada baris %2 kolom %3</translation>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="3582"/>
         <source>&apos;layer&apos; attribute in field tag with key= %1 is missing.</source>
-        <translation>&apos;lapisan&apos; atribut dalam field yang ditandai dengan kode=%1 hilang.</translation>
+        <translation>&apos;layer&apos; atribut dalam field yang ditandai dengan kode=%1 hilang.</translation>
     </message>
 </context>
 <context>
@@ -28615,7 +28615,7 @@ pada baris %2 kolom %3</translation>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="3310"/>
         <source>Cannot find layeroption %1</source>
-        <translation>Tidak dapat menemukan opsi lapisan %1</translation>
+        <translation>Tidak dapat menemukan opsi layer %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="3290"/>
@@ -28635,7 +28635,7 @@ pada baris %2 kolom %3</translation>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="3373"/>
         <source>Select a layer</source>
-        <translation>Pilih lapisan</translation>
+        <translation>Pilih layer</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="3544"/>
@@ -28673,7 +28673,7 @@ pada baris %2 kolom %3</translation>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2660"/>
         <source>Cannot find layeroption %1</source>
-        <translation>Tidak dapat menemukan opsi lapisan %1</translation>
+        <translation>Tidak dapat menemukan opsi layer %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2677"/>
@@ -28683,7 +28683,7 @@ pada baris %2 kolom %3</translation>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2773"/>
         <source>Select a layer</source>
-        <translation>Pilih lapisan</translation>
+        <translation>Pilih layer</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2925"/>
@@ -29380,12 +29380,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="140"/>
         <source>Add GRASS vector layer</source>
-        <translation>Tambah lapisan vektor GRASS</translation>
+        <translation>Tambah layer vektor GRASS</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="141"/>
         <source>Add GRASS raster layer</source>
-        <translation>Tambah lapisan raster GRASS</translation>
+        <translation>Tambah layer raster GRASS</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="142"/>
@@ -29406,17 +29406,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="148"/>
         <source>Edit Grass Vector layer</source>
-        <translation>Edit lapisan Vektor GRASS</translation>
+        <translation>Edit layer Vektor GRASS</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="151"/>
         <source>Adds a GRASS vector layer to the map canvas</source>
-        <translation>Tambah lapisan vektor GRASS ke kanvas peta</translation>
+        <translation>Tambah layer vektor GRASS ke kanvas peta</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="152"/>
         <source>Adds a GRASS raster layer to the map canvas</source>
-        <translation>Tambah lapisan raster GRASS ke kanvas peta</translation>
+        <translation>Tambah layer raster GRASS ke kanvas peta</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="154"/>
@@ -29431,7 +29431,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="156"/>
         <source>Edit the currently selected GRASS vector layer.</source>
-        <translation>Edit lapisan vektor GRASS yang dipilih saat ini.</translation>
+        <translation>Edit layer vektor GRASS yang dipilih saat ini.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="64"/>
@@ -29446,7 +29446,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="66"/>
         <source>GRASS layer</source>
-        <translation>Lapisan GRASS</translation>
+        <translation>Layer GRASS</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="149"/>
@@ -29721,12 +29721,12 @@ atau dengan merubah nilai berikut ini</translation>
     <message>
         <location filename="../src/plugins/grass/qgsgrassselect.cpp" line="67"/>
         <source>Select GRASS Vector Layer</source>
-        <translation>Pilih lapisan Vektor GRASS</translation>
+        <translation>Pilih layer Vektor GRASS</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassselect.cpp" line="74"/>
         <source>Select GRASS Raster Layer</source>
-        <translation>Pilih lapisan Raster GRASS</translation>
+        <translation>Pilih layer Raster GRASS</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassselect.cpp" line="81"/>
@@ -29778,12 +29778,12 @@ atau dengan merubah nilai berikut ini</translation>
     <message>
         <location filename="../src/plugins/grass/qgsgrassselect.cpp" line="435"/>
         <source>No layer</source>
-        <translation>Tidak ada lapisan</translation>
+        <translation>Tidak ada layer</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassselect.cpp" line="436"/>
         <source>No layers available in this map</source>
-        <translation>Tidak ada lapisan yang tersedia pada peta ini</translation>
+        <translation>Tidak ada layer yang tersedia pada peta ini</translation>
     </message>
 </context>
 <context>
@@ -29815,7 +29815,7 @@ atau dengan merubah nilai berikut ini</translation>
     <message>
         <location filename="../src/plugins/grass/qgsgrassselectbase.ui" line="77"/>
         <source>Layer</source>
-        <translation>Lapisan</translation>
+        <translation>Layer</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassselectbase.ui" line="97"/>
@@ -29834,7 +29834,7 @@ atau dengan merubah nilai berikut ini</translation>
     <message>
         <location filename="../src/plugins/grass/qgsgrassselectbase.ui" line="14"/>
         <source>Add GRASS Layer</source>
-        <translation>Tambah Lapisan GRASS</translation>
+        <translation>Tambah Layer GRASS</translation>
     </message>
     <message>
         <source>Cancel</source>
@@ -30002,7 +30002,7 @@ pada baris %2 kolom %3</translation>
     <message>
         <location filename="../src/app/qgshandlebadlayers.cpp" line="83"/>
         <source>Layer name</source>
-        <translation>Nama Lapisan</translation>
+        <translation>Nama Layer</translation>
     </message>
     <message>
         <location filename="../src/app/qgshandlebadlayers.cpp" line="84"/>
@@ -30053,7 +30053,7 @@ pada baris %2 kolom %3</translation>
         <location filename="../src/app/qgshandlebadlayers.cpp" line="341"/>
         <location filename="../src/app/qgshandlebadlayers.cpp" line="360"/>
         <source>Unhandled layer will be lost.</source>
-        <translation>Lapisan yang tidak dapat ditangani akan hilang.</translation>
+        <translation>Layer yang tidak dapat ditangani akan hilang.</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/app/qgshandlebadlayers.cpp" line="342"/>
@@ -30061,7 +30061,7 @@ pada baris %2 kolom %3</translation>
         <source>There are still %n unhandled layer(s), that will be lost if you closed now.</source>
         <comment>unhandled layers</comment>
         <translation>
-            <numerusform>Masih ada %n lapisan yang tidak dapat ditangani, yang akan hilang jika anda menutupnya sekarang.</numerusform>
+            <numerusform>Masih ada %n layer yang tidak dapat ditangani, yang akan hilang jika anda menutupnya sekarang.</numerusform>
         </translation>
     </message>
 </context>
@@ -30070,12 +30070,12 @@ pada baris %2 kolom %3</translation>
     <message>
         <location filename="../src/ui/qgshandlebadlayersbase.ui" line="14"/>
         <source>Handle bad layers</source>
-        <translation>Tangani lapisan yang jelek</translation>
+        <translation>Tangani layer yang jelek</translation>
     </message>
     <message>
         <location filename="../src/ui/qgshandlebadlayersbase.ui" line="21"/>
         <source>Layer name</source>
-        <translation>Nama Lapisan</translation>
+        <translation>Nama Layer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgshandlebadlayersbase.ui" line="26"/>
@@ -30113,7 +30113,7 @@ pada baris %2 kolom %3</translation>
     <message>
         <location filename="../src/app/qgshandlebadlayers.cpp" line="44"/>
         <source>Handle Bad layers</source>
-        <translation>Tangani lapisan yang jelek</translation>
+        <translation>Tangani layer yang jelek</translation>
     </message>
     <message>
         <location filename="../src/app/qgshandlebadlayers.cpp" line="45"/>
@@ -30360,7 +30360,7 @@ Ini mungkin masalah dalam koneksi jaringan anda atau pada server WMS.</numerusfo
     </message>
     <message>
         <source>Highlight layer</source>
-        <translation type="obsolete">Sorot lapisan</translation>
+        <translation type="obsolete">Sorot layer</translation>
     </message>
 </context>
 <context>
@@ -30495,12 +30495,12 @@ Ini mungkin masalah dalam koneksi jaringan anda atau pada server WMS.</numerusfo
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="749"/>
         <source>Highlight layer</source>
-        <translation>Sorot lapisan</translation>
+        <translation>Sorot layer</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="751"/>
         <source>Layer properties...</source>
-        <translation>Properti lapisan...</translation>
+        <translation>Properti layer...</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="753"/>
@@ -30574,7 +30574,7 @@ Ini mungkin masalah dalam koneksi jaringan anda atau pada server WMS.</numerusfo
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialog.cpp" line="112"/>
         <source>Please add one or more input layers</source>
-        <translation>Silahkan menambahkan satu atau lebih lapisan</translation>
+        <translation>Silahkan menambahkan satu atau lebih layer</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialog.cpp" line="121"/>
@@ -30630,7 +30630,7 @@ Ini mungkin masalah dalam koneksi jaringan anda atau pada server WMS.</numerusfo
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="38"/>
         <source>Vector layers</source>
-        <translation>Lapisan vektor</translation>
+        <translation>Layer vektor</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="58"/>
@@ -30655,7 +30655,7 @@ Ini mungkin masalah dalam koneksi jaringan anda atau pada server WMS.</numerusfo
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="100"/>
         <source>Vector layer</source>
-        <translation>Lapisan vektor</translation>
+        <translation>Layer vektor</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="105"/>
@@ -31418,7 +31418,7 @@ Ini mungkin masalah dalam koneksi jaringan anda atau pada server WMS.</numerusfo
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="14"/>
         <source>Layer labeling settings</source>
-        <translation>Pengaturan pelabelan lapisan</translation>
+        <translation>Pengaturan pelabelan layer</translation>
     </message>
     <message>
         <source>Label settings</source>
@@ -31426,7 +31426,7 @@ Ini mungkin masalah dalam koneksi jaringan anda atau pada server WMS.</numerusfo
     </message>
     <message>
         <source>Label this layer</source>
-        <translation type="obsolete">Buat label pada lapisan ini</translation>
+        <translation type="obsolete">Buat label pada layer ini</translation>
     </message>
     <message>
         <source>Field with labels</source>
@@ -31737,7 +31737,7 @@ Ini mungkin masalah dalam koneksi jaringan anda atau pada server WMS.</numerusfo
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="32"/>
         <source>Label this layer with</source>
-        <translation>Labeli lapisan ini dengan</translation>
+        <translation>Labeli layer ini dengan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="285"/>
@@ -32163,7 +32163,7 @@ Ini mungkin masalah dalam koneksi jaringan anda atau pada server WMS.</numerusfo
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="110"/>
         <source>Automated placement settings (apply to all layers)</source>
-        <translation>Pengaturan penempatan otomatis (berlaku untuk semua lapisan)</translation>
+        <translation>Pengaturan penempatan otomatis (berlaku untuk semua layer)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="167"/>
@@ -32522,7 +32522,7 @@ Ini mungkin masalah dalam koneksi jaringan anda atau pada server WMS.</numerusfo
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="5231"/>
         <source>Show all labels for this layer (including colliding labels)</source>
-        <translation>Munculkan semua label untuk lapisan ini (termasuk label yang bertumpuk)</translation>
+        <translation>Munculkan semua label untuk layer ini (termasuk label yang bertumpuk)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="5403"/>
@@ -32733,7 +32733,7 @@ Ini mungkin masalah dalam koneksi jaringan anda atau pada server WMS.</numerusfo
     <name>QgsLegendLayer</name>
     <message>
         <source>&amp;Zoom to layer extent</source>
-        <translation type="obsolete">&amp;Perbesar ke luasan lapisan</translation>
+        <translation type="obsolete">&amp;Perbesar ke luasan layer</translation>
     </message>
     <message>
         <source>&amp;Zoom to best scale (100%)</source>
@@ -32754,11 +32754,11 @@ Ini mungkin masalah dalam koneksi jaringan anda atau pada server WMS.</numerusfo
     </message>
     <message>
         <source>&amp;Set layer CRS</source>
-        <translation type="obsolete">&amp;Atur lapisan CRS</translation>
+        <translation type="obsolete">&amp;Atur layer CRS</translation>
     </message>
     <message>
         <source>Set &amp;project CRS from layer</source>
-        <translation type="obsolete">Atur &amp;proyek CRS dari lapisan</translation>
+        <translation type="obsolete">Atur &amp;proyek CRS dari layer</translation>
     </message>
     <message>
         <source>&amp;Open attribute table</source>
@@ -32853,7 +32853,7 @@ not displayed</source>
     </message>
     <message>
         <source>Updating feature count for layer </source>
-        <translation type="obsolete">Memperbarui jumlah fitur untuk lapisan </translation>
+        <translation type="obsolete">Memperbarui jumlah fitur untuk layer </translation>
     </message>
     <message>
         <source>Abort</source>
@@ -32934,7 +32934,7 @@ not displayed</source>
     <message>
         <location filename="../src/ui/qgsloadstylefromdbdialog.ui" line="31"/>
         <source>Styles related to the layer</source>
-        <translation>Style terkait lapisan</translation>
+        <translation>Style terkait layer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsloadstylefromdbdialog.ui" line="45"/>
@@ -33191,7 +33191,7 @@ not displayed</source>
     <message>
         <location filename="../src/plugins/georeferencer/qgsmapcoordsdialogbase.ui" line="61"/>
         <source>Snap to background layers</source>
-        <translation>Kunci (snap)ke lapisan dasar (background)</translation>
+        <translation>Kunci (snap)ke layer dasar (background)</translation>
     </message>
 </context>
 <context>
@@ -33257,7 +33257,7 @@ not displayed</source>
         <location filename="../src/core/qgsmaplayer.cpp" line="298"/>
         <location filename="../src/core/qgsmaplayer.cpp" line="687"/>
         <source>Specify CRS for layer %1</source>
-        <translation>Tentukan CRS untuk lapisan %1</translation>
+        <translation>Tentukan CRS untuk layer %1</translation>
     </message>
     <message>
         <location filename="../src/core/qgsmaplayer.cpp" line="921"/>
@@ -33316,29 +33316,29 @@ not displayed</source>
     </message>
     <message>
         <source>Not a vector layer</source>
-        <translation type="obsolete">Bukan lapisan vektor</translation>
+        <translation type="obsolete">Bukan layer vektor</translation>
     </message>
     <message>
         <source>The current layer is not a vector layer</source>
-        <translation type="obsolete">Lapisan saat ini bukan lapisan vektor</translation>
+        <translation type="obsolete">Layer saat ini bukan layer vektor</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="66"/>
         <source>Layer cannot be added to</source>
-        <translation>Lapisan tidak bisa ditambahkan</translation>
+        <translation>Layer tidak bisa ditambahkan</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="67"/>
         <source>The data provider for this layer does not support the addition of features.</source>
-        <translation>Penyedia data untuk lapisan ini tidak mendukung penambahan fitur.</translation>
+        <translation>Penyedia data untuk layer ini tidak mendukung penambahan fitur.</translation>
     </message>
     <message>
         <source>Layer not editable</source>
-        <translation type="obsolete">Lapisan tidak dapat diedit</translation>
+        <translation type="obsolete">Layer tidak dapat diedit</translation>
     </message>
     <message>
         <source>Cannot edit the vector layer. Use &apos;Toggle Editing&apos; to make it editable.</source>
-        <translation type="obsolete">Tidak bisa mengedit lapisan vektor. Gunakan &apos;Toggle Mengedit&apos; untuk membuatnya bisa di edit.</translation>
+        <translation type="obsolete">Tidak bisa mengedit layer vektor. Gunakan &apos;Toggle Mengedit&apos; untuk membuatnya bisa di edit.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="83"/>
@@ -33350,7 +33350,7 @@ not displayed</source>
     <message>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="84"/>
         <source>Cannot apply the &apos;capture point&apos; tool on this vector layer</source>
-        <translation>Tidak bisa menerapkan peralatan &apos;rekam titik&apos; pada lapisan vektor ini</translation>
+        <translation>Tidak bisa menerapkan peralatan &apos;rekam titik&apos; pada layer vektor ini</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="104"/>
@@ -33362,7 +33362,7 @@ not displayed</source>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="105"/>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="177"/>
         <source>Cannot transform the point to the layers coordinate system</source>
-        <translation>Tidak bisa mentransformasi titik pada lapisan sistem koordinat</translation>
+        <translation>Tidak bisa mentransformasi titik pada layer sistem koordinat</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="129"/>
@@ -33373,12 +33373,12 @@ not displayed</source>
     <message>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="152"/>
         <source>Cannot apply the &apos;capture line&apos; tool on this vector layer</source>
-        <translation>Tidak bisa menerapkan peralatan &apos;rekam garis&apos; pada lapisan vektor ini</translation>
+        <translation>Tidak bisa menerapkan peralatan &apos;rekam garis&apos; pada layer vektor ini</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="160"/>
         <source>Cannot apply the &apos;capture polygon&apos; tool on this vector layer</source>
-        <translation>Tidak bisa menerapkan peralatan &apos;tangkap poligon, pada lapisan vektor ini</translation>
+        <translation>Tidak bisa menerapkan peralatan &apos;tangkap poligon, pada layer vektor ini</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="219"/>
@@ -33420,19 +33420,19 @@ not displayed</source>
     <name>QgsMapToolAddIsland</name>
     <message>
         <source>Not a vector layer</source>
-        <translation type="obsolete">Bukan lapisan vektor</translation>
+        <translation type="obsolete">Bukan layer vektor</translation>
     </message>
     <message>
         <source>The current layer is not a vector layer</source>
-        <translation type="obsolete">Lapisan ini bukan merupakan lapisan vektor</translation>
+        <translation type="obsolete">Layer ini bukan merupakan layer vektor</translation>
     </message>
     <message>
         <source>Layer not editable</source>
-        <translation type="obsolete">Lapisan tidak dapat diedit</translation>
+        <translation type="obsolete">Layer tidak dapat diedit</translation>
     </message>
     <message>
         <source>Cannot edit the vector layer. Use &apos;Toggle Editing&apos; to make it editable.</source>
-        <translation type="obsolete">Tidak bisa mengedit lapisan vektor ini. Gunakan &apos;Toggle Mengedit, untuk membuatnya bisa diedit.</translation>
+        <translation type="obsolete">Tidak bisa mengedit layer vektor ini. Gunakan &apos;Toggle Mengedit, untuk membuatnya bisa diedit.</translation>
     </message>
     <message>
         <source>No feature selected. Please select a feature with the selection tool or in the attribute table</source>
@@ -33452,7 +33452,7 @@ not displayed</source>
     </message>
     <message>
         <source>Cannot transform the point to the layers coordinate system</source>
-        <translation type="obsolete">Tidak dapat mentransformasi titik ke sistem koordinat lapisan</translation>
+        <translation type="obsolete">Tidak dapat mentransformasi titik ke sistem koordinat layer</translation>
     </message>
     <message>
         <source>Part added</source>
@@ -33479,11 +33479,11 @@ not displayed</source>
     <name>QgsMapToolAddPart</name>
     <message>
         <source>Not a vector layer</source>
-        <translation type="obsolete">Bukan lapisan vektor</translation>
+        <translation type="obsolete">Bukan layer vektor</translation>
     </message>
     <message>
         <source>Layer not editable</source>
-        <translation type="obsolete">Lapisan tidak dapat diedit</translation>
+        <translation type="obsolete">Layer tidak dapat diedit</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdpart.cpp" line="56"/>
@@ -33515,7 +33515,7 @@ not displayed</source>
     <message>
         <location filename="../src/app/qgsmaptooladdpart.cpp" line="106"/>
         <source>Cannot transform the point to the layers coordinate system</source>
-        <translation>Tidak dapat mentransformasi titik pada sistem koordinat lapisan</translation>
+        <translation>Tidak dapat mentransformasi titik pada sistem koordinat layer</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdpart.cpp" line="173"/>
@@ -33552,19 +33552,19 @@ not displayed</source>
     <name>QgsMapToolAddRing</name>
     <message>
         <source>Not a vector layer</source>
-        <translation type="obsolete">Bukan lapisan vektor</translation>
+        <translation type="obsolete">Bukan layer vektor</translation>
     </message>
     <message>
         <source>The current layer is not a vector layer</source>
-        <translation type="obsolete">Lapisan ini bukan lapisan vektor</translation>
+        <translation type="obsolete">Layer ini bukan layer vektor</translation>
     </message>
     <message>
         <source>Layer not editable</source>
-        <translation type="obsolete">Lapisan tidak dapat diedit</translation>
+        <translation type="obsolete">Layer tidak dapat diedit</translation>
     </message>
     <message>
         <source>Cannot edit the vector layer. Use &apos;Toggle Editing&apos; to make it editable.</source>
-        <translation type="obsolete">Tidak bisa mengedit lapisan vektor. Guanakan &apos;Toggle Mengedit&apos; untuk membuatnya bisa diedit.</translation>
+        <translation type="obsolete">Tidak bisa mengedit layer vektor. Guanakan &apos;Toggle Mengedit&apos; untuk membuatnya bisa diedit.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdring.cpp" line="63"/>
@@ -33574,7 +33574,7 @@ not displayed</source>
     <message>
         <location filename="../src/app/qgsmaptooladdring.cpp" line="64"/>
         <source>Cannot transform the point to the layers coordinate system</source>
-        <translation>Tidak bisa mentransformasi titik ke sistem koordinat lapisan</translation>
+        <translation>Tidak bisa mentransformasi titik ke sistem koordinat layer</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdring.cpp" line="76"/>
@@ -33693,17 +33693,17 @@ not displayed</source>
     <message>
         <location filename="../src/app/qgsmaptooledit.cpp" line="138"/>
         <source>No active vector layer</source>
-        <translation>Tidak ada lapisan vektor yang aktif</translation>
+        <translation>Tidak ada layer vektor yang aktif</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooledit.cpp" line="139"/>
         <source>Choose a vector layer in the legend</source>
-        <translation>Pilih lapisan vektor pada legenda</translation>
+        <translation>Pilih layer vektor pada legenda</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooledit.cpp" line="147"/>
         <source>Layer not editable</source>
-        <translation>Lapisan tidak dapat diedit</translation>
+        <translation>Layer tidak dapat diedit</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooledit.cpp" line="148"/>
@@ -33716,12 +33716,12 @@ not displayed</source>
     <message>
         <location filename="../src/app/qgsmaptoolfeatureaction.cpp" line="69"/>
         <source>No active vector layer</source>
-        <translation>Tidak ada lapisan vektor yang aktif</translation>
+        <translation>Tidak ada layer vektor yang aktif</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolfeatureaction.cpp" line="70"/>
         <source>To run an action, you must choose a vector layer by clicking on its name in the legend</source>
-        <translation>Untuk menjalankan sebuah aksi, anda harus memilih sebuah lapisan vektor dengan mengklik namanya pada legenda</translation>
+        <translation>Untuk menjalankan sebuah aksi, anda harus memilih sebuah layer vektor dengan mengklik namanya pada legenda</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolfeatureaction.cpp" line="84"/>
@@ -33731,7 +33731,7 @@ not displayed</source>
     <message>
         <location filename="../src/app/qgsmaptoolfeatureaction.cpp" line="85"/>
         <source>The active vector layer has no defined actions</source>
-        <translation>Lapisan vektor yang sedang aktif tidak memiliki aksi yang terdefinisi</translation>
+        <translation>Layer vektor yang sedang aktif tidak memiliki aksi yang terdefinisi</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolfeatureaction.cpp" line="90"/>
@@ -33749,11 +33749,11 @@ not displayed</source>
     </message>
     <message>
         <source>No active layer</source>
-        <translation type="obsolete">Tidak ada lapisan aktif</translation>
+        <translation type="obsolete">Tidak ada layer aktif</translation>
     </message>
     <message>
         <source>To identify features, you must choose an active layer by clicking on its name in the legend</source>
-        <translation type="obsolete">Untuk mengidentifikasi fitur, anda harus memilih lapisan yang aktif dengan mengklik pada nama lapisan yang ada pada legenda</translation>
+        <translation type="obsolete">Untuk mengidentifikasi fitur, anda harus memilih layer yang aktif dengan mengklik pada nama layer yang ada pada legenda</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsmaptoolidentify.cpp" line="138"/>
@@ -33824,7 +33824,7 @@ not displayed</source>
     <message>
         <location filename="../src/gui/qgsmaptoolidentify.cpp" line="107"/>
         <source>No active layer. To identify features, you must choose an active layer.</source>
-        <translation>Tidak ada lapisan yang aktif. Untuk mengidentifikasi fitur, anda harus memilih lapisan yang aktif.</translation>
+        <translation>Tidak ada layer yang aktif. Untuk mengidentifikasi fitur, anda harus memilih layer yang aktif.</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsmaptoolidentify.cpp" line="266"/>
@@ -33833,7 +33833,7 @@ not displayed</source>
     </message>
     <message>
         <source>WMS layer</source>
-        <translation type="obsolete">Lapisan WMS</translation>
+        <translation type="obsolete">Layer WMS</translation>
     </message>
     <message>
         <source>Feature info</source>
@@ -33856,11 +33856,11 @@ not displayed</source>
     <name>QgsMapToolMoveFeature</name>
     <message>
         <source>Layer not editable</source>
-        <translation type="obsolete">Lapisan tidak dapat diedit</translation>
+        <translation type="obsolete">Layer tidak dapat diedit</translation>
     </message>
     <message>
         <source>Cannot edit the vector layer. Use &apos;Toggle Editing&apos; to make it editable.</source>
-        <translation type="obsolete">Tidak dapat mengedit lapisan vektor. Gunakan &apos;Toggle mengedit&apos; untuk membuatnya dapat di edit.</translation>
+        <translation type="obsolete">Tidak dapat mengedit layer vektor. Gunakan &apos;Toggle mengedit&apos; untuk membuatnya dapat di edit.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolmovefeature.cpp" line="155"/>
@@ -33945,19 +33945,19 @@ not displayed</source>
     <name>QgsMapToolReshape</name>
     <message>
         <source>Not a vector layer</source>
-        <translation type="obsolete">Bukan lapisan vektor</translation>
+        <translation type="obsolete">Bukan layer vektor</translation>
     </message>
     <message>
         <source>The current layer is not a vector layer</source>
-        <translation type="obsolete">Lapisan saat ini bukan merupakan lapisan vektor</translation>
+        <translation type="obsolete">Layer saat ini bukan merupakan layer vektor</translation>
     </message>
     <message>
         <source>Layer not editable</source>
-        <translation type="obsolete">Lapisan tidak dapat diedit</translation>
+        <translation type="obsolete">Layer tidak dapat diedit</translation>
     </message>
     <message>
         <source>Cannot edit the vector layer. Use &apos;Toggle Editing&apos; to make it editable.</source>
-        <translation type="obsolete">Tidak bisa mengedit lapisan vektor. Gunakan &apos;Toggle Mengedit&apos; untuk membuatnya bisa di edit.</translation>
+        <translation type="obsolete">Tidak bisa mengedit layer vektor. Gunakan &apos;Toggle Mengedit&apos; untuk membuatnya bisa di edit.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolreshape.cpp" line="62"/>
@@ -33967,7 +33967,7 @@ not displayed</source>
     <message>
         <location filename="../src/app/qgsmaptoolreshape.cpp" line="63"/>
         <source>Cannot transform the point to the layers coordinate system</source>
-        <translation>Tidak bisa mentransformasi titik pada lapisan sistem koordinat</translation>
+        <translation>Tidak bisa mentransformasi titik pada layer sistem koordinat</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolreshape.cpp" line="92"/>
@@ -34015,7 +34015,7 @@ not displayed</source>
     <message>
         <location filename="../src/app/qgsmaptoolrotatepointsymbols.cpp" line="113"/>
         <source>The active point layer does not have a rotation attribute</source>
-        <translation>Lapisan titik yang aktif tidak memiliki atribut rotasi</translation>
+        <translation>Layer titik yang aktif tidak memiliki atribut rotasi</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolrotatepointsymbols.cpp" line="193"/>
@@ -34027,7 +34027,7 @@ not displayed</source>
     <name>QgsMapToolSelect</name>
     <message>
         <source>No active layer</source>
-        <translation type="obsolete">Tidak ada lapisan aktif</translation>
+        <translation type="obsolete">Tidak ada layer aktif</translation>
     </message>
 </context>
 <context>
@@ -34088,7 +34088,7 @@ not displayed</source>
     </message>
     <message>
         <source>Cannot edit the vector layer. Use &apos;Toggle Editing&apos; to make it editable.</source>
-        <translation type="obsolete">Tidak bisa mengedit lapisan vektor. Gunakan &apos;Toggle Mengedit&apos; untuk membuatnya bisa di edit.</translation>
+        <translation type="obsolete">Tidak bisa mengedit layer vektor. Gunakan &apos;Toggle Mengedit&apos; untuk membuatnya bisa di edit.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="81"/>
@@ -34102,15 +34102,15 @@ not displayed</source>
     </message>
     <message>
         <source>Not a vector layer</source>
-        <translation type="obsolete">Bukan lapisan vektor</translation>
+        <translation type="obsolete">Bukan layer vektor</translation>
     </message>
     <message>
         <source>The current layer is not a vector layer</source>
-        <translation type="obsolete">Lapisan ini bukan lapisan vektor</translation>
+        <translation type="obsolete">Layer ini bukan layer vektor</translation>
     </message>
     <message>
         <source>Layer not editable</source>
-        <translation type="obsolete">Lapisan tidak dapat diedit</translation>
+        <translation type="obsolete">Layer tidak dapat diedit</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="66"/>
@@ -34120,7 +34120,7 @@ not displayed</source>
     <message>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="67"/>
         <source>Cannot transform the point to the layers coordinate system</source>
-        <translation>Tidak dapat mentransformasi titik ke sistem koordinat lapisan</translation>
+        <translation>Tidak dapat mentransformasi titik ke sistem koordinat layer</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="96"/>
@@ -34228,7 +34228,7 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     </message>
     <message>
         <source>The file name of the fonts file.</source>
-        <translation type="obsolete">Nama dari arsip dari lapisan huruf.</translation>
+        <translation type="obsolete">Nama dari arsip dari layer huruf.</translation>
     </message>
     <message>
         <source>The file name of the symbols file.</source>
@@ -34236,7 +34236,7 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     </message>
     <message>
         <source>Layer/label options</source>
-        <translation type="obsolete">Opsi lapisan /label</translation>
+        <translation type="obsolete">Opsi layer /label</translation>
     </message>
     <message>
         <source>Partials</source>
@@ -34268,7 +34268,7 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     </message>
     <message>
         <source>If checked, only the layer information will be processed</source>
-        <translation type="obsolete">Jika dicentang, hanya inpormasi lapisan yang akan diproses</translation>
+        <translation type="obsolete">Jika dicentang, hanya inpormasi layer yang akan diproses</translation>
     </message>
     <message>
         <source>Path to the MapServer template file</source>
@@ -34659,7 +34659,7 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     <message>
         <location filename="../src/providers/mssql/qgsmssqldataitems.cpp" line="348"/>
         <source>%1: Not a vector layer!</source>
-        <translation>%1: Bukan lapisan vektor!</translation>
+        <translation>%1: Bukan layer vektor!</translation>
     </message>
     <message>
         <location filename="../src/providers/mssql/qgsmssqldataitems.cpp" line="364"/>
@@ -34678,7 +34678,7 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
         <source>Failed to import some layers!
 
 </source>
-        <translation>Gagal mengimpor beberapa lapisan!
+        <translation>Gagal mengimpor beberapa layer!
 
 </translation>
     </message>
@@ -35624,12 +35624,12 @@ Informasi kesalahan yang diperpanjang:
     <message>
         <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="445"/>
         <source>Invalid Layer</source>
-        <translation>Lapisan tidak benar</translation>
+        <translation>Layer tidak benar</translation>
     </message>
     <message>
         <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="445"/>
         <source>%1 is an invalid layer and cannot be loaded.</source>
-        <translation>%1 merupakan lapisan yang tidak benar dan tidak dapat dimuat.</translation>
+        <translation>%1 merupakan layer yang tidak benar dan tidak dapat dimuat.</translation>
     </message>
 </context>
 <context>
@@ -35637,7 +35637,7 @@ Informasi kesalahan yang diperpanjang:
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="32"/>
         <source>New Spatialite Layer</source>
-        <translation>Lapisan SpatiaLite Baru</translation>
+        <translation>Layer SpatiaLite Baru</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="61"/>
@@ -35657,13 +35657,13 @@ Informasi kesalahan yang diperpanjang:
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="98"/>
         <source>Layer name</source>
-        <translation>Nama Lapisan</translation>
+        <translation>Nama Layer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="114"/>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="141"/>
         <source>Name for the new layer</source>
-        <translation>Nama untuk lapisan yang baru</translation>
+        <translation>Nama untuk layer yang baru</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="125"/>
@@ -35730,7 +35730,7 @@ Informasi kesalahan yang diperpanjang:
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="228"/>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="231"/>
         <source>Specify the coordinate reference system of the layer&apos;s geometry.</source>
-        <translation>Tentukan sistem koordinat referensi dari geometri lapisan.</translation>
+        <translation>Tentukan sistem koordinat referensi dari geometri layer.</translation>
     </message>
     <message>
         <source>Find SRID</source>
@@ -35739,7 +35739,7 @@ Informasi kesalahan yang diperpanjang:
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="243"/>
         <source>Add an integer id field as the primary key for the new layer</source>
-        <translation>Tambah field id bilangan bulat sebagai primary key untuk lapisan baru</translation>
+        <translation>Tambah field id bilangan bulat sebagai primary key untuk layer baru</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="246"/>
@@ -35845,7 +35845,7 @@ Informasi kesalahan yang diperpanjang:
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="14"/>
         <source>New Vector Layer</source>
-        <translation>Lapisan Vektor Baru</translation>
+        <translation>Layer Vektor Baru</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="26"/>
@@ -35924,7 +35924,7 @@ Informasi kesalahan yang diperpanjang:
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="254"/>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="257"/>
         <source>Specify the coordinate reference system of the layer&apos;s geometry.</source>
-        <translation>Tentukan sistem koordinat referensi dari geometri lapisan.</translation>
+        <translation>Tentukan sistem koordinat referensi dari geometri layer.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="260"/>
@@ -36035,11 +36035,11 @@ Informasi kesalahan yang diperpanjang:
     <name>QgsOGRSublayersDialog</name>
     <message>
         <source>Layer ID</source>
-        <translation type="obsolete">ID lapisan</translation>
+        <translation type="obsolete">ID layer</translation>
     </message>
     <message>
         <source>Layer name</source>
-        <translation type="obsolete">Nama Lapisan</translation>
+        <translation type="obsolete">Nama Layer</translation>
     </message>
     <message>
         <source>Nb of features</source>
@@ -36054,7 +36054,7 @@ Informasi kesalahan yang diperpanjang:
     <name>QgsOGRSublayersDialogBase</name>
     <message>
         <source>Select layers to load</source>
-        <translation type="obsolete">Pilih lapisan untuk dimuat</translation>
+        <translation type="obsolete">Pilih layer untuk dimuat</translation>
     </message>
     <message>
         <source>1</source>
@@ -36106,7 +36106,7 @@ Informasi kesalahan yang diperpanjang:
     <message>
         <location filename="../src/ui/qgsosmdownloaddialog.ui" line="38"/>
         <source>From layer</source>
-        <translation>Dari lapisan</translation>
+        <translation>Dari layer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsosmdownloaddialog.ui" line="50"/>
@@ -36198,7 +36198,7 @@ Informasi kesalahan yang diperpanjang:
     <message>
         <location filename="../src/ui/qgsosmexportdialog.ui" line="72"/>
         <source>Output layer name</source>
-        <translation>Nama lapisan keluaran</translation>
+        <translation>Nama layer keluaran</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsosmexportdialog.ui" line="84"/>
@@ -36372,7 +36372,7 @@ Informasi kesalahan yang diperpanjang:
     <message>
         <location filename="../src/gui/qgsowssourceselect.cpp" line="73"/>
         <source>Add selected layers to map</source>
-        <translation>Tambah lapisan yang dipilih ke peta</translation>
+        <translation>Tambah layer yang dipilih ke peta</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsowssourceselect.cpp" line="82"/>
@@ -36468,7 +36468,7 @@ Informasi kesalahan yang diperpanjang:
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="14"/>
         <source>Add Layer(s) from a Server</source>
-        <translation>Tambah Lapisan dari Server</translation>
+        <translation>Tambah Layer dari Server</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="43"/>
@@ -36479,7 +36479,7 @@ Informasi kesalahan yang diperpanjang:
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="60"/>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="461"/>
         <source>Layers</source>
-        <translation>Lapisan</translation>
+        <translation>Layer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="74"/>
@@ -36586,7 +36586,7 @@ Informasi kesalahan yang diperpanjang:
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="295"/>
         <source>Layer name</source>
-        <translation>Nama Lapisan</translation>
+        <translation>Nama Layer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="311"/>
@@ -36620,12 +36620,12 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="379"/>
         <source>Layer Order</source>
-        <translation>Susunan Lapisan</translation>
+        <translation>Susunan Layer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="385"/>
         <source>Move selected layer UP</source>
-        <translation>Pindahkan lapisan terpilih ke ATAS</translation>
+        <translation>Pindahkan layer terpilih ke ATAS</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="388"/>
@@ -36635,7 +36635,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="395"/>
         <source>Move selected layer DOWN</source>
-        <translation>Pindahkan lapisan terpilih ke BAWAH</translation>
+        <translation>Pindahkan layer terpilih ke BAWAH</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="398"/>
@@ -36645,7 +36645,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="422"/>
         <source>Layer</source>
-        <translation>Lapisan</translation>
+        <translation>Layer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="427"/>
@@ -36783,7 +36783,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin.cpp" line="57"/>
         <source>Create offline copies of selected layers and save as offline project</source>
-        <translation>Buat salinan offline dari lapisan yang dipilih dan simpan sebagai proyek offline</translation>
+        <translation>Buat salinan offline dari layer yang dipilih dan simpan sebagai proyek offline</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin.cpp" line="62"/>
@@ -36801,7 +36801,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin.cpp" line="66"/>
         <source>Synchronize offline project with remote layers</source>
-        <translation>Sinkronkan proyek offline dengan lapisan yang jauh (online)</translation>
+        <translation>Sinkronkan proyek offline dengan layer yang jauh (online)</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin.cpp" line="104"/>
@@ -36906,12 +36906,12 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin_guibase.ui" line="52"/>
         <source>Select remote layers</source>
-        <translation>Pilih lapisan yang diremot</translation>
+        <translation>Pilih layer yang diremot</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin_guibase.ui" line="70"/>
         <source>Show only editable layers</source>
-        <translation>Tampilkan hanya lapisan yang dapat di edit</translation>
+        <translation>Tampilkan hanya layer yang dapat di edit</translation>
     </message>
 </context>
 <context>
@@ -36919,7 +36919,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_progress_dialog.cpp" line="38"/>
         <source>Layer %1 of %2..</source>
-        <translation>Lapisan %1 dari %2..</translation>
+        <translation>Layer %1 dari %2..</translation>
     </message>
 </context>
 <context>
@@ -37184,7 +37184,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="107"/>
         <source>Open an OGR Supported Vector Layer</source>
-        <translation>Buka lapisan Vektor yang didukung OGR</translation>
+        <translation>Buka layer Vektor yang didukung OGR</translation>
     </message>
     <message>
         <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="123"/>
@@ -37207,7 +37207,7 @@ Always network: always load from network and do not check if the cache has a val
         <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="358"/>
         <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="370"/>
         <source>Add vector layer</source>
-        <translation>Tambahkan lapisan vektor</translation>
+        <translation>Tambahkan layer vektor</translation>
     </message>
     <message>
         <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="304"/>
@@ -37232,7 +37232,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="359"/>
         <source>No layers selected.</source>
-        <translation>Tidak ada lapisan yang dipilih.</translation>
+        <translation>Tidak ada layer yang dipilih.</translation>
     </message>
     <message>
         <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="371"/>
@@ -37245,7 +37245,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsopenvectorlayerdialogbase.ui" line="29"/>
         <source>Add vector layer</source>
-        <translation>Menambahkan lapisan vektor</translation>
+        <translation>Menambahkan layer vektor</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsopenvectorlayerdialogbase.ui" line="46"/>
@@ -37374,7 +37374,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="109"/>
         <source>Current layer</source>
-        <translation>Lapisan saat ini</translation>
+        <translation>Layer saat ini</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="110"/>
@@ -37716,7 +37716,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1604"/>
         <source>By default new la&amp;yers added to the map should be displayed</source>
-        <translation>Standarnya &amp;lapisan baru yang ditambahkan pada peta akan di tampilkan</translation>
+        <translation>Standarnya &amp;layer baru yang ditambahkan pada peta akan di tampilkan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2472"/>
@@ -37907,7 +37907,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2236"/>
         <source>Open layer properties</source>
-        <translation>Buka properti lapisan</translation>
+        <translation>Buka properti layer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2241"/>
@@ -37916,7 +37916,7 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <source>Capitalise layer names in legend</source>
-        <translation type="obsolete">Gunakan huruf kapital pada nama lapisan pada legenda</translation>
+        <translation type="obsolete">Gunakan huruf kapital pada nama layer pada legenda</translation>
     </message>
     <message>
         <source>Display classification attribute names in legend</source>
@@ -37948,11 +37948,11 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1519"/>
         <source>Add PostGIS layers with double click and select in extended mode</source>
-        <translation>Tambahkan lapisan PostGIS dengan mengklik dua kali dan memilih modus yang diperluas</translation>
+        <translation>Tambahkan layer PostGIS dengan mengklik dua kali dan memilih modus yang diperluas</translation>
     </message>
     <message>
         <source>Add new layers to selected group</source>
-        <translation type="obsolete">Tambahkan lapisan baru pada kolompok yang dipilih</translation>
+        <translation type="obsolete">Tambahkan layer baru pada kolompok yang dipilih</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1293"/>
@@ -38186,11 +38186,11 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <source>Coordinate Reference System for new layers</source>
-        <translation type="obsolete">Sistem referensi koordinat untuk lapisan baru</translation>
+        <translation type="obsolete">Sistem referensi koordinat untuk layer baru</translation>
     </message>
     <message>
         <source>When a new layer is created, or when a layer is loaded that has no Coordinate Reference System (CRS)</source>
-        <translation type="obsolete">Ketika lapisan baru dibuat, atau ketika sebuah lapisan dimuat tidak memiliki Sistem Referensi Koordinat (CRS)</translation>
+        <translation type="obsolete">Ketika layer baru dibuat, atau ketika sebuah layer dimuat tidak memiliki Sistem Referensi Koordinat (CRS)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="205"/>
@@ -39039,12 +39039,12 @@ error:%2
     <message>
         <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="211"/>
         <source>Import layer</source>
-        <translation>Impor lapisan</translation>
+        <translation>Impor layer</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="222"/>
         <source>%1: Not a vector layer!</source>
-        <translation>%1: Bukan lapisan vektor!</translation>
+        <translation>%1: Bukan layer vektor!</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="244"/>
@@ -39063,7 +39063,7 @@ error:%2
         <source>Failed to import some layers!
 
 </source>
-        <translation>Gagal mengimpor beberapa lapisan!
+        <translation>Gagal mengimpor beberapa layer!
 
 </translation>
     </message>
@@ -39080,12 +39080,12 @@ error:%2
         <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="310"/>
         <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="314"/>
         <source>Delete layer</source>
-        <translation>Hapus lapisan</translation>
+        <translation>Hapus layer</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="314"/>
         <source>Layer deleted successfully.</source>
-        <translation>Lapisan sukses dihapus.</translation>
+        <translation>Layer sukses dihapus.</translation>
     </message>
 </context>
 <context>
@@ -39256,7 +39256,7 @@ error:%2
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="51"/>
         <source>Use estimated table statistics for the layer metadata.</source>
-        <translation>Gunakan perkiraan tabel statistik untuk metadata lapisan.</translation>
+        <translation>Gunakan perkiraan tabel statistik untuk metadata layer.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="54"/>
@@ -39288,7 +39288,7 @@ error:%2
     <message>
         <location filename="../src/plugins/oracle_raster/qgsoracle_plugin.cpp" line="57"/>
         <source>Add Oracle GeoRaster Layer...</source>
-        <translation>Tambah lapisan Oracle GeoRaster...</translation>
+        <translation>Tambah layer Oracle GeoRaster...</translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsoracle_plugin.cpp" line="59"/>
@@ -40070,12 +40070,12 @@ Error: %2</source>
     <message>
         <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="205"/>
         <source>Import layer</source>
-        <translation>Impor lapisan</translation>
+        <translation>Impor layer</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="216"/>
         <source>%1: Not a vector layer!</source>
-        <translation>%1: Bukan lapisan vektor!</translation>
+        <translation>%1: Bukan layer vektor!</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="232"/>
@@ -40094,7 +40094,7 @@ Error: %2</source>
         <source>Failed to import some layers!
 
 </source>
-        <translation>Gagal mengimpor beberapa lapisan!
+        <translation>Gagal mengimpor beberapa layer!
 
 </translation>
     </message>
@@ -40111,12 +40111,12 @@ Error: %2</source>
         <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="299"/>
         <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="303"/>
         <source>Delete layer</source>
-        <translation>Hapus lapisan</translation>
+        <translation>Hapus layer</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="303"/>
         <source>Layer deleted successfully.</source>
-        <translation>Lapisan sukses dihapus.</translation>
+        <translation>Layer sukses dihapus.</translation>
     </message>
 </context>
 <context>
@@ -40267,7 +40267,7 @@ Error: %2</source>
     <name>QgsPgGeoprocessing</name>
     <message>
         <source>Buffer features in layer %1</source>
-        <translation type="obsolete">Fitur-fitur bufer dalam lapisan %1</translation>
+        <translation type="obsolete">Fitur-fitur bufer dalam layer %1</translation>
     </message>
     <message>
         <source>Error connecting to the database</source>
@@ -40395,23 +40395,23 @@ Informasi kesalahan yang diperpanjang:
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="202"/>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="287"/>
         <source>Restrict the displayed tables to those that are in the layer registries.</source>
-        <translation>Batasi tabel yang ditampilkan hanya pada yang ada di register lapisan.</translation>
+        <translation>Batasi tabel yang ditampilkan hanya pada yang ada di register layer.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="205"/>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="290"/>
         <source>Restricts the displayed tables to those that are found in the layer registries (geometry_columns, geography_columns, topology.layer). This can speed up the initial display of spatial tables.</source>
-        <translation>Batasi tabel yang ditampilkan hanya pada yang ada di register lapisan (geometry_columns, geography_columns, topology.layer). Ini dapat mempercepat tampilan awal dari tabel spasial.</translation>
+        <translation>Batasi tabel yang ditampilkan hanya pada yang ada di register layer (geometry_columns, geography_columns, topology.layer). Ini dapat mempercepat tampilan awal dari tabel spasial.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="208"/>
         <source>Only look in the layer registries</source>
-        <translation>Hanya lihat pada register lapisan</translation>
+        <translation>Hanya lihat pada register layer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="256"/>
         <source>Use estimated table statistics for the layer metadata.</source>
-        <translation>Gunakan perkiraan tabel statistik untuk metadata lapisan.</translation>
+        <translation>Gunakan perkiraan tabel statistik untuk metadata layer.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="259"/>
@@ -40426,10 +40426,10 @@ Informasi kesalahan yang diperpanjang:
 &lt;/html&gt;</source>
         <translation>&lt;html&gt;
 &lt;body&gt;
-&lt;p&gt;Ketika lapisan mengatur beberapa metadata dibutuhkan untuk tabel PostGIS. Ini termasuk informasi seperti jumlah baris pada tabel, tipe geometri dan extent spasial dari data dalam kolom geometri. Jika tabel berisikan baris dalam jumlah yang banyak, penentuan metadatanya akan memakan waktu.&lt;/p&gt;
+&lt;p&gt;Ketika layer mengatur beberapa metadata dibutuhkan untuk tabel PostGIS. Ini termasuk informasi seperti jumlah baris pada tabel, tipe geometri dan extent spasial dari data dalam kolom geometri. Jika tabel berisikan baris dalam jumlah yang banyak, penentuan metadatanya akan memakan waktu.&lt;/p&gt;
 &lt;p&gt; Dengan mengaktifkan opsi ini, berikut beberapa operasi tabel metadata cepat telah dilakukan:&lt;/p&gt;
 &lt;p&gt;1) Perhitungan baris ditentukan dari statistik tabel yang diperoleh dari fungsi analisis tabel PostgreSQL yang berjalan.&lt;/p&gt;
-&lt;p&gt;2) Extent tabel selalu ditentukan dengan fungsi estimasi extent PostGIS jika filter lapisan diterapkan.&lt;/p&gt;
+&lt;p&gt;2) Extent tabel selalu ditentukan dengan fungsi estimasi extent PostGIS jika filter layer diterapkan.&lt;/p&gt;
 &lt;p&gt;3) Jika tipe geometri tabel tidak diketahui dan tidak secara khusus diambil dari tabel geometri_kolom, maka itu ditentukan dari baris 100 pertama yang bukan memiliki nilai geometri NULL.&lt;/p&gt;
 &lt;/body&gt;
 &lt;/html&gt;</translation>
@@ -40630,7 +40630,7 @@ Informasi kesalahan yang diperpanjang:
     <message>
         <location filename="../src/providers/postgres/qgspgsourceselect.cpp" line="450"/>
         <source>You must select a table in order to add a layer.</source>
-        <translation>Anda harus memilih sebuah tabel untuk menambah lapisan.</translation>
+        <translation>Anda harus memilih sebuah tabel untuk menambah layer.</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspgsourceselect.cpp" line="493"/>
@@ -42981,7 +42981,7 @@ SQL: %2</source>
     <message>
         <location filename="../src/core/qgsproject.cpp" line="690"/>
         <source>Loading layer %1</source>
-        <translation>Memuat lapisan %1</translation>
+        <translation>Memuat layer %1</translation>
     </message>
     <message>
         <location filename="../src/core/qgsproject.cpp" line="802"/>
@@ -43040,8 +43040,8 @@ SQL: %2</source>
         <location filename="../src/gui/qgsprojectbadlayerguihandler.cpp" line="53"/>
         <source>Unable to open one or more project layers.
 Choose ignore to continue loading without the missing layers. Choose cancel to return to your pre-project load state. Choose OK to try to find the missing layers.</source>
-        <translation>Tidak bisa membuka satu atau lebih lapisan proyek.
-Pilih abaikan untuk melanjutkan memuat tanpa lapisan yang hilang. Pilih batal untuk kembali ke kondisi sebelum anda memuat proyek tersebut. Pilih OK untuk mencoba menemukan lapisan yang hilang.</translation>
+        <translation>Tidak bisa membuka satu atau lebih layer proyek.
+Pilih abaikan untuk melanjutkan memuat tanpa layer yang hilang. Pilih batal untuk kembali ke kondisi sebelum anda memuat proyek tersebut. Pilih OK untuk mencoba menemukan layer yang hilang.</translation>
     </message>
 </context>
 <context>
@@ -43064,7 +43064,7 @@ Pilih abaikan untuk melanjutkan memuat tanpa lapisan yang hilang. Pilih batal un
     <message>
         <location filename="../src/app/qgsprojectlayergroupdialog.cpp" line="143"/>
         <source>It is not possible to embed layers / groups from the current project.</source>
-        <translation>Tidak dapat meng-embed lapisan/grup dari proyek ini.</translation>
+        <translation>Tidak dapat meng-embed layer/grup dari proyek ini.</translation>
     </message>
 </context>
 <context>
@@ -43090,7 +43090,7 @@ Pilih abaikan untuk melanjutkan memuat tanpa lapisan yang hilang. Pilih batal un
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="216"/>
         <source>Layer</source>
-        <translation>Lapisan</translation>
+        <translation>Layer</translation>
     </message>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="217"/>
@@ -43292,7 +43292,7 @@ Proceed?</source>
     </message>
     <message>
         <source>Layer units (only used when CRS transformation is disabled)</source>
-        <translation type="obsolete">Satuan lapisan (Hanya digunakan ketika transformasi CRS dinonaktifkan)</translation>
+        <translation type="obsolete">Satuan layer (Hanya digunakan ketika transformasi CRS dinonaktifkan)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="544"/>
@@ -43591,7 +43591,7 @@ Proceed?</source>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="112"/>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="822"/>
         <source>Identifiable layers</source>
-        <translation>Lapisan yang dapat diidentifikasi</translation>
+        <translation>Layer yang dapat diidentifikasi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="859"/>
@@ -43602,7 +43602,7 @@ Proceed?</source>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="869"/>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1828"/>
         <source>Layer</source>
-        <translation>Lapisan</translation>
+        <translation>Layer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="874"/>
@@ -44015,7 +44015,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="134"/>
         <source>Use unfiltered layer</source>
-        <translation>Gunakan lapisan tanpa penyaring</translation>
+        <translation>Gunakan layer tanpa penyaring</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="144"/>
@@ -44191,12 +44191,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="32"/>
         <source>Result layer</source>
-        <translation>Lapisan hasil</translation>
+        <translation>Layer hasil</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="38"/>
         <source>Output layer</source>
-        <translation>Lapisan output</translation>
+        <translation>Layer output</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="63"/>
@@ -44206,7 +44206,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="70"/>
         <source>Current layer extent</source>
-        <translation>Extent lapisan saat ini</translation>
+        <translation>Extent layer saat ini</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="92"/>
@@ -44812,7 +44812,7 @@ Klik pada tombol bantuan untuk mendapat opsi pembuata yang valid untuk format in
     </message>
     <message>
         <source>Layer Extent (layer original source projection): </source>
-        <translation type="obsolete">Extent lapisan (proyeksi sumber lapisan asal): </translation>
+        <translation type="obsolete">Extent layer (proyeksi sumber layer asal): </translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="465"/>
@@ -44976,7 +44976,7 @@ Klik pada tombol bantuan untuk mendapat opsi pembuata yang valid untuk format in
     </message>
     <message>
         <source>Specify CRS for layer %1</source>
-        <translation type="obsolete">Tentukan CRS untuk lapisan %1</translation>
+        <translation type="obsolete">Tentukan CRS untuk layer %1</translation>
     </message>
     <message>
         <source>Data Type:</source>
@@ -45041,7 +45041,7 @@ Klik pada tombol bantuan untuk mendapat opsi pembuata yang valid untuk format in
     </message>
     <message>
         <source>Layer Spatial Reference System: </source>
-        <translation type="obsolete">Sistem Referensi Spasial Lapisan: </translation>
+        <translation type="obsolete">Sistem Referensi Spasial Layer: </translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="475"/>
@@ -45081,7 +45081,7 @@ Klik pada tombol bantuan untuk mendapat opsi pembuata yang valid untuk format in
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="150"/>
         <source>QgsRasterLayer created</source>
-        <translation>Lapisan Raster Qgs telah dibuat</translation>
+        <translation>Layer Raster Qgs telah dibuat</translation>
     </message>
     <message>
         <source>Retrieving stats for %1</source>
@@ -45218,7 +45218,7 @@ Klik pada tombol bantuan untuk mendapat opsi pembuata yang valid untuk format in
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="228"/>
         <source>Layer Properties - %1</source>
-        <translation>Properti Lapisan - %1</translation>
+        <translation>Properti Layer - %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="236"/>
@@ -45306,7 +45306,7 @@ Klik pada tombol bantuan untuk mendapat opsi pembuata yang valid untuk format in
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1682"/>
         <source>Save layer properties as style file</source>
-        <translation type="unfinished">Simpan properti lapisan sebagai berkas style</translation>
+        <translation type="unfinished">Simpan properti layer sebagai berkas style</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1239"/>
@@ -45373,13 +45373,13 @@ Klik pada tombol bantuan untuk mendapat opsi pembuata yang valid untuk format in
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1646"/>
         <source>Load layer properties from style file</source>
-        <translation type="unfinished">Muat properti lapisan dari berkas style</translation>
+        <translation type="unfinished">Muat properti layer dari berkas style</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1648"/>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1684"/>
         <source>QGIS Layer Style File</source>
-        <translation type="unfinished">Berkas Style Lapisan QGIS</translation>
+        <translation type="unfinished">Berkas Style Layer QGIS</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1670"/>
@@ -45441,7 +45441,7 @@ Klik pada tombol bantuan untuk mendapat opsi pembuata yang valid untuk format in
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="20"/>
         <source>Raster Layer Properties</source>
-        <translation>Properti Lapisan Raster</translation>
+        <translation>Properti Layer Raster</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="85"/>
@@ -45477,7 +45477,7 @@ Klik pada tombol bantuan untuk mendapat opsi pembuata yang valid untuk format in
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="252"/>
         <source>Layer name</source>
-        <translation type="unfinished">Nama Lapisan</translation>
+        <translation type="unfinished">Nama Layer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="391"/>
@@ -46022,7 +46022,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="262"/>
         <source>Layer source</source>
-        <translation>Sumber lapisan</translation>
+        <translation>Sumber layer</translation>
     </message>
     <message>
         <source>Display name</source>
@@ -46032,7 +46032,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="347"/>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="350"/>
         <source>Specify the coordinate reference system of the layer&apos;s geometry.</source>
-        <translation>Tentukan sistem koordinat referensi dari geometri lapisan.</translation>
+        <translation>Tentukan sistem koordinat referensi dari geometri layer.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="353"/>
@@ -46201,7 +46201,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="440"/>
         <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="469"/>
         <source>layer</source>
-        <translation>lapisan</translation>
+        <translation>layer</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="443"/>
@@ -46227,7 +46227,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="553"/>
         <source>Layer (%1, %2)</source>
-        <translation>Lapisan (%1, %2)</translation>
+        <translation>Layer (%1, %2)</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="556"/>
@@ -46736,7 +46736,7 @@ standar deviasi ×</translation>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialogbase.ui" line="30"/>
         <source>Output layer</source>
-        <translation>Lapisan keluaran</translation>
+        <translation>Layer keluaran</translation>
     </message>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialogbase.ui" line="47"/>
@@ -46756,7 +46756,7 @@ standar deviasi ×</translation>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialogbase.ui" line="20"/>
         <source>Elevation layer</source>
-        <translation>Lapisan ketinggian</translation>
+        <translation>Layer ketinggian</translation>
     </message>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialogbase.ui" line="57"/>
@@ -47047,12 +47047,12 @@ standar deviasi ×</translation>
     <message>
         <location filename="../src/ui/qgsrendererv2propsdialogbase.ui" line="20"/>
         <source>Layer rendering</source>
-        <translation>Proses Render Lapisan</translation>
+        <translation>Proses Render Layer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrendererv2propsdialogbase.ui" line="53"/>
         <source>Layer transparency</source>
-        <translation>Transparansi Lapisan</translation>
+        <translation>Transparansi Layer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrendererv2propsdialogbase.ui" line="63"/>
@@ -47062,7 +47062,7 @@ standar deviasi ×</translation>
     <message>
         <location filename="../src/ui/qgsrendererv2propsdialogbase.ui" line="70"/>
         <source>Layer blending mode</source>
-        <translation>Modul pencampuran lapisan</translation>
+        <translation>Modul pencampuran layer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrendererv2propsdialogbase.ui" line="122"/>
@@ -47378,7 +47378,7 @@ standar deviasi ×</translation>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitedataitems.cpp" line="194"/>
         <source>%1: Not a vector layer!</source>
-        <translation>%1: Bukan lapisan vektor!</translation>
+        <translation>%1: Bukan layer vektor!</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitedataitems.cpp" line="210"/>
@@ -47397,7 +47397,7 @@ standar deviasi ×</translation>
         <source>Failed to import some layers!
 
 </source>
-        <translation>Gagal mengimpor beberapa lapisan!
+        <translation>Gagal mengimpor beberapa layer!
 
 </translation>
     </message>
@@ -47414,12 +47414,12 @@ standar deviasi ×</translation>
         <location filename="../src/providers/spatialite/qgsspatialitedataitems.cpp" line="56"/>
         <location filename="../src/providers/spatialite/qgsspatialitedataitems.cpp" line="60"/>
         <source>Delete layer</source>
-        <translation>Hapus lapisan</translation>
+        <translation>Hapus layer</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitedataitems.cpp" line="60"/>
         <source>Layer deleted successfully.</source>
-        <translation>Lapisan sukses dihapus.</translation>
+        <translation>Layer sukses dihapus.</translation>
     </message>
 </context>
 <context>
@@ -47597,7 +47597,7 @@ standar deviasi ×</translation>
     <message>
         <location filename="../src/ui/qgssavetodbdialog.ui" line="66"/>
         <source>Use as default style for this layer</source>
-        <translation>Gunakan sebagai style standar untuk lapisan ini</translation>
+        <translation>Gunakan sebagai style standar untuk layer ini</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssavetodbdialog.ui" line="88"/>
@@ -47848,7 +47848,7 @@ standar deviasi ×</translation>
     <message>
         <location filename="../src/gui/qgssearchquerybuilder.cpp" line="461"/>
         <source>There is no attribute &apos;%1&apos; in the current vector layer. Please select an existing attribute</source>
-        <translation>Tidak ada attribut&apos;%1&apos; pada lapisan vektor ini. Silahkan pilih attribut yang sudah ada</translation>
+        <translation>Tidak ada attribut&apos;%1&apos; pada layer vektor ini. Silahkan pilih attribut yang sudah ada</translation>
     </message>
 </context>
 <context>
@@ -48540,7 +48540,7 @@ kontras</translation>
     <message>
         <location filename="../src/ui/qgssnappingdialogbase.ui" line="38"/>
         <source>Layer</source>
-        <translation>Lapisan</translation>
+        <translation>Layer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssnappingdialogbase.ui" line="43"/>
@@ -48919,7 +48919,7 @@ but implies better performance thereafter.</source>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitesourceselect.cpp" line="391"/>
         <source>You must select a table in order to add a Layer.</source>
-        <translation type="unfinished">Anda harus memilih sebuah tabel jika hendak menambah sebuah Lapisan.</translation>
+        <translation type="unfinished">Anda harus memilih sebuah tabel jika hendak menambah sebuah Layer.</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitesourceselect.cpp" line="434"/>
@@ -50588,21 +50588,21 @@ There was a problem with your symbol database.</source>
     <message>
         <location filename="../src/gui/qgssublayersdialog.cpp" line="33"/>
         <source>Select vector layers to add...</source>
-        <translation>Pilih lapisan vektor untuk ditambahkan...</translation>
+        <translation>Pilih layer vektor untuk ditambahkan...</translation>
     </message>
     <message>
         <location filename="../src/gui/qgssublayersdialog.cpp" line="34"/>
         <location filename="../src/gui/qgssublayersdialog.cpp" line="40"/>
         <location filename="../src/gui/qgssublayersdialog.cpp" line="45"/>
         <source>Layer ID</source>
-        <translation>ID lapisan</translation>
+        <translation>ID layer</translation>
     </message>
     <message>
         <location filename="../src/gui/qgssublayersdialog.cpp" line="34"/>
         <location filename="../src/gui/qgssublayersdialog.cpp" line="40"/>
         <location filename="../src/gui/qgssublayersdialog.cpp" line="45"/>
         <source>Layer name</source>
-        <translation>Nama Lapisan</translation>
+        <translation>Nama Layer</translation>
     </message>
     <message>
         <location filename="../src/gui/qgssublayersdialog.cpp" line="35"/>
@@ -50617,12 +50617,12 @@ There was a problem with your symbol database.</source>
     <message>
         <location filename="../src/gui/qgssublayersdialog.cpp" line="39"/>
         <source>Select raster layers to add...</source>
-        <translation>Pilih lapisan raster untuk ditambahkan...</translation>
+        <translation>Pilih layer raster untuk ditambahkan...</translation>
     </message>
     <message>
         <location filename="../src/gui/qgssublayersdialog.cpp" line="44"/>
         <source>Select layers to add...</source>
-        <translation>Pilih lapisan untuk ditambahkan...</translation>
+        <translation>Pilih layer untuk ditambahkan...</translation>
     </message>
     <message>
         <location filename="../src/gui/qgssublayersdialog.cpp" line="46"/>
@@ -50640,7 +50640,7 @@ There was a problem with your symbol database.</source>
     <message>
         <location filename="../src/ui/qgssublayersdialogbase.ui" line="14"/>
         <source>Select layers to load</source>
-        <translation>Pilih lapisan untuk dimuat</translation>
+        <translation>Pilih layer untuk dimuat</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssublayersdialogbase.ui" line="33"/>
@@ -50797,7 +50797,7 @@ There was a problem with your symbol database.</source>
     <message>
         <location filename="../src/ui/qgssymbollevelsv2dialogbase.ui" line="27"/>
         <source>Define the order in which the symbol layers are rendered. The numbers in the cells define in which rendering pass the layer will be drawn.</source>
-        <translation>Definisikan urutan simbol lapisan untuk dirender. Angka pada sel mendefinisikan rendering yang dilewatkan ke lapisan akan digambar.</translation>
+        <translation>Definisikan urutan simbol layer untuk dirender. Angka pada sel mendefinisikan rendering yang dilewatkan ke layer akan digambar.</translation>
     </message>
 </context>
 <context>
@@ -50810,7 +50810,7 @@ There was a problem with your symbol database.</source>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbolv2selectordialog.cpp" line="404"/>
         <source>Kindly select a symbol to add layer.</source>
-        <translation>Silahkan pilih sebuah simbol untuk menambahkan lapisan.</translation>
+        <translation>Silahkan pilih sebuah simbol untuk menambahkan layer.</translation>
     </message>
 </context>
 <context>
@@ -50823,22 +50823,22 @@ There was a problem with your symbol database.</source>
     <message>
         <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="50"/>
         <source>Symbol layers</source>
-        <translation>Lapisan simbol</translation>
+        <translation>Layer simbol</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="81"/>
         <source>Add symbol layer</source>
-        <translation>Tambahkan lapisan simbol</translation>
+        <translation>Tambahkan layer simbol</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="94"/>
         <source>Remove symbol layer</source>
-        <translation>Hapus lapisan simbol</translation>
+        <translation>Hapus layer simbol</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="107"/>
         <source>Lock layer&apos;s color</source>
-        <translation>Kunci warna lapisan</translation>
+        <translation>Kunci warna layer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="123"/>
@@ -51743,7 +51743,7 @@ Apakah kelas yang telah ada sebelumnya akan di hapus sebelum klasifikasi?</trans
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="2578"/>
         <source>ERROR: layer not editable</source>
-        <translation>Kesalahan: Lapisan tidak dapat di edit</translation>
+        <translation>Kesalahan: Layer tidak dapat di edit</translation>
     </message>
     <message>
         <source>SUCCESS: attribute %1 was added.</source>
@@ -51875,15 +51875,15 @@ Apakah kelas yang telah ada sebelumnya akan di hapus sebelum klasifikasi?</trans
     </message>
     <message>
         <source>Layer comment: %1</source>
-        <translation type="obsolete">Koterangan lapisan: %1</translation>
+        <translation type="obsolete">Koterangan layer: %1</translation>
     </message>
     <message>
         <source>Storage type of this layer: %1</source>
-        <translation type="obsolete">Tipe penyimpanan lapisan ini: %1</translation>
+        <translation type="obsolete">Tipe penyimpanan layer ini: %1</translation>
     </message>
     <message>
         <source>Source for this layer: %1</source>
-        <translation type="obsolete">Sumber untuk lapisan ini: %1</translation>
+        <translation type="obsolete">Sumber untuk layer ini: %1</translation>
     </message>
     <message>
         <source>Geometry type of the features in this layer: %1</source>
@@ -51891,11 +51891,11 @@ Apakah kelas yang telah ada sebelumnya akan di hapus sebelum klasifikasi?</trans
     </message>
     <message>
         <source>The number of features in this layer: %1</source>
-        <translation type="obsolete">Jumlah fitur pada lapisan ini: %1</translation>
+        <translation type="obsolete">Jumlah fitur pada layer ini: %1</translation>
     </message>
     <message>
         <source>Editing capabilities of this layer: %1</source>
-        <translation type="obsolete">Kapabilitas mengedit dari lapisan ini: %1</translation>
+        <translation type="obsolete">Kapabilitas mengedit dari layer ini: %1</translation>
     </message>
     <message>
         <source>Extents:</source>
@@ -51903,7 +51903,7 @@ Apakah kelas yang telah ada sebelumnya akan di hapus sebelum klasifikasi?</trans
     </message>
     <message>
         <source>In layer spatial reference system units : </source>
-        <translation type="obsolete">Dalam satuan sistem referensi spasial lapisan : </translation>
+        <translation type="obsolete">Dalam satuan sistem referensi spasial layer : </translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="3654"/>
@@ -51922,7 +51922,7 @@ Apakah kelas yang telah ada sebelumnya akan di hapus sebelum klasifikasi?</trans
     </message>
     <message>
         <source>Layer Spatial Reference System:</source>
-        <translation type="obsolete">Sistem Seferensi Spasial Lapisan:</translation>
+        <translation type="obsolete">Sistem Seferensi Spasial Layer:</translation>
     </message>
     <message>
         <source>Project (Output) Spatial Reference System:</source>
@@ -51931,7 +51931,7 @@ Apakah kelas yang telah ada sebelumnya akan di hapus sebelum klasifikasi?</trans
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="3708"/>
         <source>(Invalid transformation of layer extents)</source>
-        <translation type="unfinished">(Transformasi exten lapisan tidak cocok)</translation>
+        <translation type="unfinished">(Transformasi exten layer tidak cocok)</translation>
     </message>
     <message>
         <source>Attribute field info:</source>
@@ -52045,7 +52045,7 @@ Apakah kelas yang telah ada sebelumnya akan di hapus sebelum klasifikasi?</trans
     </message>
     <message>
         <source>Specify CRS for layer %1</source>
-        <translation type="obsolete">Tentukan CRS untuk lapisan %1</translation>
+        <translation type="obsolete">Tentukan CRS untuk layer %1</translation>
     </message>
     <message>
         <source>Unknown renderer</source>
@@ -52289,7 +52289,7 @@ Apakah kelas yang telah ada sebelumnya akan di hapus sebelum klasifikasi?</trans
     </message>
     <message>
         <source>In layer spatial reference system units : </source>
-        <translation type="obsolete">Dalam satuan sistem referensi spasial lapisan : </translation>
+        <translation type="obsolete">Dalam satuan sistem referensi spasial layer : </translation>
     </message>
     <message>
         <source>In project spatial reference system units : </source>
@@ -52297,7 +52297,7 @@ Apakah kelas yang telah ada sebelumnya akan di hapus sebelum klasifikasi?</trans
     </message>
     <message>
         <source>Layer Spatial Reference System:</source>
-        <translation type="obsolete">Sistem Seferensi Spasial Lapisan:</translation>
+        <translation type="obsolete">Sistem Seferensi Spasial Layer:</translation>
     </message>
     <message>
         <source>Attribute field info:</source>
@@ -52385,7 +52385,7 @@ Apakah kelas yang telah ada sebelumnya akan di hapus sebelum klasifikasi?</trans
     </message>
     <message>
         <source>QGIS Layer Style File (*.qml)</source>
-        <translation type="obsolete">arsip style lapisan QGIS (*.qml)</translation>
+        <translation type="obsolete">arsip style layer QGIS (*.qml)</translation>
     </message>
     <message>
         <source>Select edit form</source>
@@ -52402,7 +52402,7 @@ Apakah kelas yang telah ada sebelumnya akan di hapus sebelum klasifikasi?</trans
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="253"/>
         <source>Layer Properties - %1</source>
-        <translation>Properti Lapisan - %1</translation>
+        <translation>Properti Layer - %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="284"/>
@@ -52429,12 +52429,12 @@ Apakah kelas yang telah ada sebelumnya akan di hapus sebelum klasifikasi?</trans
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="351"/>
         <source>This button opens the query builder and allows you to create a subset of features to display on the map canvas rather than displaying all features in the layer</source>
-        <translation>Tombol ini membuka pembangun kueri dan memungkinkan anda untuk membuat subset dari fitur untuk ditampilkan pada kanvas peta daripda menampilkan semua fitur dalam lapisan</translation>
+        <translation>Tombol ini membuka pembangun kueri dan memungkinkan anda untuk membuat subset dari fitur untuk ditampilkan pada kanvas peta daripda menampilkan semua fitur dalam layer</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="354"/>
         <source>The query used to limit the features in the layer is shown here. To enter or modify the query, click on the Query Builder button</source>
-        <translation>Kueri digunakan untuk membatasifitur dalam sebuah lapisan untuk ditampilkan disini. Untuk memasukan atau mengubah kueri, silahkan klik tombol pembangun kueri</translation>
+        <translation>Kueri digunakan untuk membatasifitur dalam sebuah layer untuk ditampilkan disini. Untuk memasukan atau mengubah kueri, silahkan klik tombol pembangun kueri</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="576"/>
@@ -52444,14 +52444,14 @@ Apakah kelas yang telah ada sebelumnya akan di hapus sebelum klasifikasi?</trans
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="718"/>
         <source>Load layer properties from style file</source>
-        <translation>Muat properti lapisan dari berkas style</translation>
+        <translation>Muat properti layer dari berkas style</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="141"/>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="719"/>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="824"/>
         <source>QGIS Layer Style File</source>
-        <translation>Berkas Style Lapisan QGIS</translation>
+        <translation>Berkas Style Layer QGIS</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="142"/>
@@ -52506,7 +52506,7 @@ Apakah kelas yang telah ada sebelumnya akan di hapus sebelum klasifikasi?</trans
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="645"/>
         <source>No default style was found for this layer</source>
-        <translation>Tidak ada style standar yang ditemukan untuk lapisan ini</translation>
+        <translation>Tidak ada style standar yang ditemukan untuk layer ini</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="681"/>
@@ -52526,7 +52526,7 @@ Apakah kelas yang telah ada sebelumnya akan di hapus sebelum klasifikasi?</trans
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="828"/>
         <source>Save layer properties as style file</source>
-        <translation>Simpan properti lapisan sebagai berkas style</translation>
+        <translation>Simpan properti layer sebagai berkas style</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="864"/>
@@ -52579,15 +52579,15 @@ Apakah kelas yang telah ada sebelumnya akan di hapus sebelum klasifikasi?</trans
     </message>
     <message>
         <source>Layer comment: %1</source>
-        <translation type="obsolete">Koterangan lapisan: %1</translation>
+        <translation type="obsolete">Koterangan layer: %1</translation>
     </message>
     <message>
         <source>Storage type of this layer: %1</source>
-        <translation type="obsolete">Tipe penyimpanan lapisan ini: %1</translation>
+        <translation type="obsolete">Tipe penyimpanan layer ini: %1</translation>
     </message>
     <message>
         <source>Source for this layer: %1</source>
-        <translation type="obsolete">Sumber untuk lapisan ini: %1</translation>
+        <translation type="obsolete">Sumber untuk layer ini: %1</translation>
     </message>
     <message>
         <source>Geometry type of the features in this layer: %1</source>
@@ -52595,11 +52595,11 @@ Apakah kelas yang telah ada sebelumnya akan di hapus sebelum klasifikasi?</trans
     </message>
     <message>
         <source>The number of features in this layer: %1</source>
-        <translation type="obsolete">Jumlah fitur pada lapisan ini: %1</translation>
+        <translation type="obsolete">Jumlah fitur pada layer ini: %1</translation>
     </message>
     <message>
         <source>Editing capabilities of this layer: %1</source>
-        <translation type="obsolete">Kapabilitas mengedit dari lapisan ini: %1</translation>
+        <translation type="obsolete">Kapabilitas mengedit dari layer ini: %1</translation>
     </message>
     <message>
         <source>xMin,yMin %1,%2 : xMax,yMax %3,%4</source>
@@ -52611,19 +52611,19 @@ Apakah kelas yang telah ada sebelumnya akan di hapus sebelum klasifikasi?</trans
     </message>
     <message>
         <source>(Invalid transformation of layer extents)</source>
-        <translation type="obsolete">(Transformasi exten lapisan tidak cocok)</translation>
+        <translation type="obsolete">(Transformasi exten layer tidak cocok)</translation>
     </message>
     <message>
         <source>Load layer properties from style file (.qml)</source>
-        <translation type="obsolete">Muat properti lapisan dari arsip style (.qml)</translation>
+        <translation type="obsolete">Muat properti layer dari arsip style (.qml)</translation>
     </message>
     <message>
         <source>Save layer properties as style file (.qml)</source>
-        <translation type="obsolete">Simpan properti lapisan sebagai arsip style (.qml)</translation>
+        <translation type="obsolete">Simpan properti layer sebagai arsip style (.qml)</translation>
     </message>
     <message>
         <source>Do you wish to use the new symbology implementation for this layer?</source>
-        <translation type="obsolete">Apakah anda ingin untuk menggunakan simbologi baru untuk lapisan ini?</translation>
+        <translation type="obsolete">Apakah anda ingin untuk menggunakan simbologi baru untuk layer ini?</translation>
     </message>
 </context>
 <context>
@@ -52631,7 +52631,7 @@ Apakah kelas yang telah ada sebelumnya akan di hapus sebelum klasifikasi?</trans
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="20"/>
         <source>Layer Properties</source>
-        <translation>Properti Lapisan</translation>
+        <translation>Properti Layer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="89"/>
@@ -52722,7 +52722,7 @@ Apakah kelas yang telah ada sebelumnya akan di hapus sebelum klasifikasi?</trans
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="320"/>
         <source>Layer source</source>
-        <translation>Sumber lapisan</translation>
+        <translation>Sumber layer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="345"/>
@@ -52782,7 +52782,7 @@ Apakah kelas yang telah ada sebelumnya akan di hapus sebelum klasifikasi?</trans
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="986"/>
         <source>The valid attribute names for this layer</source>
-        <translation>Nama atribut yang valid untuk lapisan ini</translation>
+        <translation>Nama atribut yang valid untuk layer ini</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1002"/>
@@ -52807,7 +52807,7 @@ Apakah kelas yang telah ada sebelumnya akan di hapus sebelum klasifikasi?</trans
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="287"/>
         <source>Layer name</source>
-        <translation>Nama Lapisan</translation>
+        <translation>Nama Layer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="313"/>
@@ -52840,7 +52840,7 @@ Apakah kelas yang telah ada sebelumnya akan di hapus sebelum klasifikasi?</trans
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1176"/>
         <source>Join layer</source>
-        <translation>Lapisan yang digabungkan</translation>
+        <translation>Layer yang digabungkan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1181"/>
@@ -53076,7 +53076,7 @@ Apakah kelas yang telah ada sebelumnya akan di hapus sebelum klasifikasi?</trans
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="400"/>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="403"/>
         <source>Specify the coordinate reference system of the layer&apos;s geometry.</source>
-        <translation>Tentukan sistem koordinat referensi dari geometri lapisan.</translation>
+        <translation>Tentukan sistem koordinat referensi dari geometri layer.</translation>
     </message>
     <message>
         <source>Specify CRS</source>
@@ -53151,7 +53151,7 @@ Apakah kelas yang telah ada sebelumnya akan di hapus sebelum klasifikasi?</trans
     <message>
         <location filename="../src/app/ogr/qgsvectorlayersaveasdialog.cpp" line="58"/>
         <source>Layer CRS</source>
-        <translation>CRS Lapisan</translation>
+        <translation>CRS Layer</translation>
     </message>
     <message>
         <location filename="../src/app/ogr/qgsvectorlayersaveasdialog.cpp" line="58"/>
@@ -53177,12 +53177,12 @@ Apakah kelas yang telah ada sebelumnya akan di hapus sebelum klasifikasi?</trans
     <message>
         <location filename="../src/app/ogr/qgsvectorlayersaveasdialog.cpp" line="69"/>
         <source>Symbol layer symbology</source>
-        <translation>Simbologi lapisan simbol</translation>
+        <translation>Simbologi layer simbol</translation>
     </message>
     <message>
         <location filename="../src/app/ogr/qgsvectorlayersaveasdialog.cpp" line="123"/>
         <source>Save layer as...</source>
-        <translation>Simpan lapisan sebagai...</translation>
+        <translation>Simpan layer sebagai...</translation>
     </message>
     <message>
         <location filename="../src/app/ogr/qgsvectorlayersaveasdialog.cpp" line="135"/>
@@ -53195,7 +53195,7 @@ Apakah kelas yang telah ada sebelumnya akan di hapus sebelum klasifikasi?</trans
     <message>
         <location filename="../src/ui/qgsvectorlayersaveasdialogbase.ui" line="14"/>
         <source>Save vector layer as...</source>
-        <translation>Simpan lapisan vektor sebagai...</translation>
+        <translation>Simpan layer vektor sebagai...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayersaveasdialogbase.ui" line="165"/>
@@ -53246,7 +53246,7 @@ Apakah kelas yang telah ada sebelumnya akan di hapus sebelum klasifikasi?</trans
     <message>
         <location filename="../src/ui/qgsvectorlayersaveasdialogbase.ui" line="145"/>
         <source>Layer</source>
-        <translation>Lapisan</translation>
+        <translation>Layer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayersaveasdialogbase.ui" line="155"/>
@@ -53342,7 +53342,7 @@ Apakah kelas yang telah ada sebelumnya akan di hapus sebelum klasifikasi?</trans
     <message>
         <location filename="../src/providers/wcs/qgswcssourceselect.cpp" line="182"/>
         <source>Select a layer</source>
-        <translation>Pilih lapisan</translation>
+        <translation>Pilih layer</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcssourceselect.cpp" line="188"/>
@@ -53391,7 +53391,7 @@ Apakah kelas yang telah ada sebelumnya akan di hapus sebelum klasifikasi?</trans
     <name>QgsWFSPlugin</name>
     <message>
         <source>Add W&amp;FS layer...</source>
-        <translation type="obsolete">Tambah lapisan W&amp;FS...</translation>
+        <translation type="obsolete">Tambah layer W&amp;FS...</translation>
     </message>
 </context>
 <context>
@@ -53444,12 +53444,12 @@ Apakah kelas yang telah ada sebelumnya akan di hapus sebelum klasifikasi?</trans
     <message>
         <location filename="../src/providers/wfs/qgswfssourceselect.cpp" line="266"/>
         <source>No Layers</source>
-        <translation>Tidak ada lapisan</translation>
+        <translation>Tidak ada layer</translation>
     </message>
     <message>
         <location filename="../src/providers/wfs/qgswfssourceselect.cpp" line="266"/>
         <source>capabilities document contained no layers.</source>
-        <translation>Kapabilitas dokumen tidak memiliki lapisan.</translation>
+        <translation>Kapabilitas dokumen tidak memiliki layer.</translation>
     </message>
     <message>
         <location filename="../src/providers/wfs/qgswfssourceselect.cpp" line="204"/>
@@ -53612,7 +53612,7 @@ Apakah kelas yang telah ada sebelumnya akan di hapus sebelum klasifikasi?</trans
     <message>
         <location filename="../src/ui/qgswfssourceselectbase.ui" line="14"/>
         <source>Add WFS Layer from a Server</source>
-        <translation>Tambah lapisan WFS dari server</translation>
+        <translation>Tambah layer WFS dari server</translation>
     </message>
 </context>
 <context>
@@ -53705,7 +53705,7 @@ Apakah kelas yang telah ada sebelumnya akan di hapus sebelum klasifikasi?</trans
     <message>
         <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="72"/>
         <source>Add selected layers to map</source>
-        <translation>Tambah lapisan yang dipilih ke peta</translation>
+        <translation>Tambah layer yang dipilih ke peta</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="231"/>
@@ -53733,7 +53733,7 @@ Apakah kelas yang telah ada sebelumnya akan di hapus sebelum klasifikasi?</trans
     <message>
         <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="904"/>
         <source>Select layer(s)</source>
-        <translation>Pilih lapisan</translation>
+        <translation>Pilih layer</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="814"/>
@@ -53746,17 +53746,17 @@ Apakah kelas yang telah ada sebelumnya akan di hapus sebelum klasifikasi?</trans
     <message>
         <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="906"/>
         <source>Select layer(s) or a tileset</source>
-        <translation>Pilih lapisan atau tileset</translation>
+        <translation>Pilih layer atau tileset</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="911"/>
         <source>Select either layer(s) or a tileset</source>
-        <translation>Pilih salah satu lapisan atau tileset</translation>
+        <translation>Pilih salah satu layer atau tileset</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="923"/>
         <source>No common CRS for selected layers.</source>
-        <translation>Tidak ada CRS umum untuk lapisan yang dipilih.</translation>
+        <translation>Tidak ada CRS umum untuk layer yang dipilih.</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="928"/>
@@ -53773,7 +53773,7 @@ Apakah kelas yang telah ada sebelumnya akan di hapus sebelum klasifikasi?</trans
         <source>%n Layer(s) selected</source>
         <comment>selected layer count</comment>
         <translation>
-            <numerusform>%n lapisan yang dipilih</numerusform>
+            <numerusform>%n layer yang dipilih</numerusform>
         </translation>
     </message>
     <message>
@@ -53824,7 +53824,7 @@ Apakah kelas yang telah ada sebelumnya akan di hapus sebelum klasifikasi?</trans
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="14"/>
         <source>Add Layer(s) from a Server</source>
-        <translation>Tambah Lapisan dari Server</translation>
+        <translation>Tambah Layer dari Server</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="187"/>
@@ -53916,12 +53916,12 @@ Apakah kelas yang telah ada sebelumnya akan di hapus sebelum klasifikasi?</trans
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="283"/>
         <source>Layer Order</source>
-        <translation>Susunan Lapisan</translation>
+        <translation>Susunan Layer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="289"/>
         <source>Move selected layer UP</source>
-        <translation>Pindahkan lapisan terpilih ke ATAS</translation>
+        <translation>Pindahkan layer terpilih ke ATAS</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="292"/>
@@ -53931,7 +53931,7 @@ Apakah kelas yang telah ada sebelumnya akan di hapus sebelum klasifikasi?</trans
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="299"/>
         <source>Move selected layer DOWN</source>
-        <translation>Pindahkan lapisan terpilih ke BAWAH</translation>
+        <translation>Pindahkan layer terpilih ke BAWAH</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="302"/>
@@ -53942,7 +53942,7 @@ Apakah kelas yang telah ada sebelumnya akan di hapus sebelum klasifikasi?</trans
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="326"/>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="362"/>
         <source>Layer</source>
-        <translation>Lapisan</translation>
+        <translation>Layer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="331"/>
@@ -54011,7 +54011,7 @@ Apakah kelas yang telah ada sebelumnya akan di hapus sebelum klasifikasi?</trans
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="60"/>
         <source>Layers</source>
-        <translation>Lapisan</translation>
+        <translation>Layer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="207"/>
@@ -54021,7 +54021,7 @@ Apakah kelas yang telah ada sebelumnya akan di hapus sebelum klasifikasi?</trans
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="213"/>
         <source>Layer name</source>
-        <translation>Nama Lapisan</translation>
+        <translation>Nama Layer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="226"/>
@@ -54520,27 +54520,27 @@ Response was:
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3106"/>
         <source>Request contains a CRS not offered by the server for one or more of the Layers in the request.</source>
-        <translation>Permintaan berisikan CRS yang tidak ditawarkan oleh server untuk satu atau lebih lapisan yang diminta.</translation>
+        <translation>Permintaan berisikan CRS yang tidak ditawarkan oleh server untuk satu atau lebih layer yang diminta.</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3110"/>
         <source>Request contains a SRS not offered by the server for one or more of the Layers in the request.</source>
-        <translation>permintaan berisikan SRS yang tidak ditawarkan oleh server untuk satu atau lebih lapisan yang diminta.</translation>
+        <translation>permintaan berisikan SRS yang tidak ditawarkan oleh server untuk satu atau lebih layer yang diminta.</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3114"/>
         <source>GetMap request is for a Layer not offered by the server, or GetFeatureInfo request is for a Layer not shown on the map.</source>
-        <translation>Permintaan GetMap adalah untuk lapisan yang tidak ditawarkan oleh server, atau permintaan GetFeatureInfo adalah untuk lapisan yang tidak ditampilkan pada peta.</translation>
+        <translation>Permintaan GetMap adalah untuk layer yang tidak ditawarkan oleh server, atau permintaan GetFeatureInfo adalah untuk layer yang tidak ditampilkan pada peta.</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3119"/>
         <source>Request is for a Layer in a Style not offered by the server.</source>
-        <translation>Permintaan untuk lapisan dalam style yang tidak ditawarkan oleh server.</translation>
+        <translation>Permintaan untuk layer dalam style yang tidak ditawarkan oleh server.</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3123"/>
         <source>GetFeatureInfo request is applied to a Layer which is not declared queryable.</source>
-        <translation>Permintaan GetFeatureInfo dilakukan untuk lapisan yang tidak dinyatakan dapat dilakukan perintah kueri.</translation>
+        <translation>Permintaan GetFeatureInfo dilakukan untuk layer yang tidak dinyatakan dapat dilakukan perintah kueri.</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3127"/>
@@ -54665,7 +54665,7 @@ Response was:
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3684"/>
         <source>Layer Count</source>
-        <translation>Jumlah Lapisan</translation>
+        <translation>Jumlah Layer</translation>
     </message>
     <message>
         <source>Tileset Count</source>
@@ -54673,11 +54673,11 @@ Response was:
     </message>
     <message>
         <source>Selected Layers:</source>
-        <translation type="obsolete">Lapisan yang Dipilih:</translation>
+        <translation type="obsolete">Layer yang Dipilih:</translation>
     </message>
     <message>
         <source>Other layers:</source>
-        <translation type="obsolete">Lapisan Lain:</translation>
+        <translation type="obsolete">Layer Lain:</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3831"/>
@@ -54875,11 +54875,11 @@ Responnya:
     </message>
     <message>
         <source>Layer cannot be queried in plain text.</source>
-        <translation type="obsolete">Lapisan tidak dapat dikueri dalam teks biasa.</translation>
+        <translation type="obsolete">Layer tidak dapat dikueri dalam teks biasa.</translation>
     </message>
     <message>
         <source>Layer cannot be queried.</source>
-        <translation type="obsolete">Lapisan tidak dapat di kueri.</translation>
+        <translation type="obsolete">Layer tidak dapat di kueri.</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4328"/>
@@ -55070,13 +55070,13 @@ Mencoba URL: %1</translation>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3561"/>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3766"/>
         <source>Selected Layers</source>
-        <translation>Lapisan yang dipilih</translation>
+        <translation>Layer yang dipilih</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3563"/>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3779"/>
         <source>Other Layers</source>
-        <translation>Lapisan lainnya</translation>
+        <translation>Layer lainnya</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3794"/>
@@ -55289,12 +55289,12 @@ Mencoba URL: %1</translation>
     <message>
         <location filename="../src/plugins/zonal_statistics/qgszonalstatisticsdialogbase.ui" line="19"/>
         <source>Raster layer:</source>
-        <translation>Lapisan raster:</translation>
+        <translation>Layer raster:</translation>
     </message>
     <message>
         <location filename="../src/plugins/zonal_statistics/qgszonalstatisticsdialogbase.ui" line="29"/>
         <source>Polygon layer containing the zones:</source>
-        <translation>Lapisan poligon mengandung zona:</translation>
+        <translation>Layer poligon mengandung zona:</translation>
     </message>
     <message>
         <location filename="../src/plugins/zonal_statistics/qgszonalstatisticsdialogbase.ui" line="39"/>
@@ -55339,12 +55339,12 @@ Mencoba URL: %1</translation>
     <message>
         <location filename="../src/plugins/roadgraph/exportdlg.cpp" line="38"/>
         <source>Select destination layer</source>
-        <translation>Pilih lapisan tujuan</translation>
+        <translation>Pilih layer tujuan</translation>
     </message>
     <message>
         <location filename="../src/plugins/roadgraph/exportdlg.cpp" line="50"/>
         <source>New temporary layer</source>
-        <translation>Lapisan sementara baru</translation>
+        <translation>Layer sementara baru</translation>
     </message>
 </context>
 <context>
@@ -55352,12 +55352,12 @@ Mencoba URL: %1</translation>
     <message>
         <location filename="../src/plugins/roadgraph/linevectorlayerwidget.cpp" line="46"/>
         <source>Transportation layer</source>
-        <translation>Lapisan transportasi</translation>
+        <translation>Layer transportasi</translation>
     </message>
     <message>
         <location filename="../src/plugins/roadgraph/linevectorlayerwidget.cpp" line="48"/>
         <source>Layer</source>
-        <translation>Lapisan</translation>
+        <translation>Layer</translation>
     </message>
     <message>
         <location filename="../src/plugins/roadgraph/linevectorlayerwidget.cpp" line="57"/>
@@ -55875,7 +55875,7 @@ Deskripsi: %2</translation>
     <message>
         <location filename="../src/plugins/sqlanywhere/sanewconnectionbase.ui" line="261"/>
         <source>Use estimates for certain layer properties such as cardinality, extent, etc. (improves performance)</source>
-        <translation>Gunakan estimasi untuk properti lapisan tertentu seperti kardinalitas, extent, dll. (meningkatkan performa)</translation>
+        <translation>Gunakan estimasi untuk properti layer tertentu seperti kardinalitas, extent, dll. (meningkatkan performa)</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sanewconnectionbase.ui" line="274"/>
@@ -56036,7 +56036,7 @@ Deskripsi: %2</translation>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="330"/>
         <source>You must select a table in order to add a layer.</source>
-        <translation>Anda harus memilih tabel untuk menambahkan lapisan.</translation>
+        <translation>Anda harus memilih tabel untuk menambahkan layer.</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="356"/>
@@ -56085,7 +56085,7 @@ Deskripsi: %3</translation>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselectbase.ui" line="13"/>
         <source>Add SQL Anywhere layer</source>
-        <translation>Tambahkan lapisan SQL Anywhere</translation>
+        <translation>Tambahkan layer SQL Anywhere</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselectbase.ui" line="30"/>
@@ -56396,22 +56396,22 @@ Deskripsi: %3</translation>
     <message>
         <location filename="../src/plugins/sqlanywhere/sqlanywhere.cpp" line="82"/>
         <source>Add SQL Anywhere Layer...</source>
-        <translation>Tambahkan lapisan SQL Anywhere...</translation>
+        <translation>Tambahkan layer SQL Anywhere...</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sqlanywhere.cpp" line="83"/>
         <source>Store vector layers within a SQL Anywhere database</source>
-        <translation>Simpan lapisan vektor dengan database SQL Anywhere</translation>
+        <translation>Simpan layer vektor dengan database SQL Anywhere</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sqlanywhere.cpp" line="162"/>
         <source>Invalid Layer</source>
-        <translation>Lapisan tidak benar</translation>
+        <translation>Layer tidak benar</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sqlanywhere.cpp" line="162"/>
         <source>%1 is an invalid layer and cannot be loaded.</source>
-        <translation>%1 adalah lapisan tidak valid dan tidak dapat dimuat.</translation>
+        <translation>%1 adalah layer tidak valid dan tidak dapat dimuat.</translation>
     </message>
 </context>
 <context>
@@ -56501,7 +56501,7 @@ Deskripsi: %3</translation>
     <message>
         <location filename="../src/plugins/topology/topol.cpp" line="77"/>
         <source>Topology Checker for vector layer</source>
-        <translation>TopologyChecker untuk lapisan vektor</translation>
+        <translation>TopologyChecker untuk layer vektor</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topol.cpp" line="82"/>
@@ -56548,7 +56548,7 @@ Deskripsi: %3</translation>
     </message>
     <message>
         <source>Please specify input vector layer</source>
-        <translation>Silahkan tentukan lapisan vektor input</translation>
+        <translation>Silahkan tentukan layer vektor input</translation>
     </message>
     <message>
         <source>Please specify input field</source>
@@ -56576,7 +56576,7 @@ Would you like to add the new layer to the TOC?</source>
 %s
 %s
 
-Apakah anda ingin menambahkan lapisan baru ke TOC?</translation>
+Apakah anda ingin menambahkan layer baru ke TOC?</translation>
     </message>
     <message>
         <source>Error loading output shapefile:
@@ -56594,7 +56594,7 @@ Would you like to add the new layer to the TOC?</source>
 %1
 %2
 
-Apakah anda ingin untuk menambahkan lapisan bau init ke TOC?</translation>
+Apakah anda ingin untuk menambahkan layer bau init ke TOC?</translation>
     </message>
     <message>
         <source>Feature</source>
@@ -56613,7 +56613,7 @@ Apakah anda ingin untuk menambahkan lapisan bau init ke TOC?</translation>
     </message>
     <message>
         <source>Please specify input vector layer</source>
-        <translation>Silahkan tentukan input lapisan vektor</translation>
+        <translation>Silahkan tentukan input layer vektor</translation>
     </message>
     <message>
         <source>Please specify input field</source>
@@ -57609,7 +57609,7 @@ Apakah anda ingin untuk menambahkan lapisan bau init ke TOC?</translation>
     <message>
         <location filename="../src/plugins/topology/checkDock.cpp" line="222"/>
         <source>Invalid first layer</source>
-        <translation>Lapisan pertama tidak valid</translation>
+        <translation>Layer pertama tidak valid</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/checkDock.cpp" line="222"/>
@@ -57638,14 +57638,14 @@ Apakah anda ingin untuk menambahkan lapisan bau init ke TOC?</translation>
         <source>Feature not found in the layer.
 The layer has probably changed.
 Run topology check again.</source>
-        <translation>Fitur tidak ditemukan pada lapisan.
-Lapisan ini mungkin telah berubah.
+        <translation>Fitur tidak ditemukan pada layer.
+Layer ini mungkin telah berubah.
 Jalankan kembali pengujian topologi.</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/checkDock.cpp" line="256"/>
         <source>Invalid second layer</source>
-        <translation>Lapisan kedua tidak valid</translation>
+        <translation>Layer kedua tidak valid</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/checkDock.cpp" line="265"/>
@@ -57676,7 +57676,7 @@ Jalankan kembali pengujian topologi.</translation>
     <message>
         <location filename="../src/plugins/topology/checkDock.cpp" line="339"/>
         <source>Layer %1 not found in registry.</source>
-        <translation>Lapisan %1 tidak ditemukan pada registry.</translation>
+        <translation>Layer %1 tidak ditemukan pada registry.</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/checkDock.cpp" line="349"/>
@@ -59438,7 +59438,7 @@ For support send a mail to scala@itc.cnr.it
         <translation>Deskripsi field:
 * Input arsip DXF: jalur ke arsip DXF yang akan dikonversi
 * Output arsip Shp: nama yang diinginkan dari shapefile yang akan dibuat
-* Kotak centang ekspor label teks: jika dicentang , lapisan titik shp tambahan akan dibuat.    dan tabel dbf yang berhubungannya akan berisikan informasi tentang field &quot;TEXT&quot; yang terdapat pada arsip dxf, dan string teksnya sendiri.
+* Kotak centang ekspor label teks: jika dicentang , layer titik shp tambahan akan dibuat.    dan tabel dbf yang berhubungannya akan berisikan informasi tentang field &quot;TEXT&quot; yang terdapat pada arsip dxf, dan string teksnya sendiri.
 
 ---
 Dibuat oleh Paolo L. Scala, Barbara Rita Barricelli, Marco Padula
@@ -59495,7 +59495,7 @@ Untuk bantuan kirim email ke scala@itc.cnr.it
     <message>
         <location filename="../src/plugins/evis/evis.cpp" line="111"/>
         <source>Create layer from a database query</source>
-        <translation>Buat lapisan dari kueri basisdata</translation>
+        <translation>Buat layer dari kueri basisdata</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/evis.cpp" line="112"/>
@@ -59505,7 +59505,7 @@ Untuk bantuan kirim email ke scala@itc.cnr.it
     <message>
         <location filename="../src/plugins/evis/evis.cpp" line="113"/>
         <source>Open an Event Browser to explore the current layer&apos;s features</source>
-        <translation>Buka navigator kejadian untuk mengeksplorasi fitur lapisan saat ini</translation>
+        <translation>Buka navigator kejadian untuk mengeksplorasi fitur layer saat ini</translation>
     </message>
 </context>
 <context>
@@ -59766,7 +59766,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaselayerfieldselectionguibase.ui" line="68"/>
         <source>Enter the name for the new layer that will be created and displayed in QGIS.</source>
-        <translation>Masukan nama untuk lapisan baru yang akan dibuat dan ditampilkan pada QGIS.</translation>
+        <translation>Masukan nama untuk layer baru yang akan dibuat dan ditampilkan pada QGIS.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaselayerfieldselectionguibase.ui" line="75"/>
@@ -59781,7 +59781,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaselayerfieldselectionguibase.ui" line="89"/>
         <source>Name of New Layer</source>
-        <translation>Nama lapisan baru</translation>
+        <translation>Nama layer baru</translation>
     </message>
 </context>
 <context>
@@ -59819,7 +59819,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="221"/>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="244"/>
         <source>No active layers found</source>
-        <translation>Tidak ada lapisan yang aktif yang ditemukan</translation>
+        <translation>Tidak ada layer yang aktif yang ditemukan</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="250"/>
@@ -59970,7 +59970,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="481"/>
         <source>Define the compass offset using a field from the vector layer attribute table.</source>
-        <translation>Tentukan ofset kompas menggunakan field dari tabel atribut lapisan vektor.</translation>
+        <translation>Tentukan ofset kompas menggunakan field dari tabel atribut layer vektor.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="484"/>
@@ -60016,7 +60016,7 @@ p, li { white-space: pre-wrap; }
     <message utf8="true">
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="661"/>
         <source>Enters the default “Base Path” which is the path to the directory of the vector layer containing the image information.</source>
-        <translation>Masukan &quot;Jalur Dasar&quot; standar yang mana merupakan jalur ke direktori dari lapisan vektor yang berisikan informasi gambar.</translation>
+        <translation>Masukan &quot;Jalur Dasar&quot; standar yang mana merupakan jalur ke direktori dari layer vektor yang berisikan informasi gambar.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="755"/>
@@ -60296,7 +60296,7 @@ Plugin akan dinonaktifkan.</translation>
     </message>
     <message>
         <source>Polygon from layer extent</source>
-        <translation>Poligon dari extent lapisan</translation>
+        <translation>Poligon dari extent layer</translation>
     </message>
     <message>
         <source>&amp;Geoprocessing Tools</source>
@@ -60404,7 +60404,7 @@ Plugin akan dinonaktifkan.</translation>
     </message>
     <message>
         <source>Split vector layer</source>
-        <translation>Membagi lapisan vektor</translation>
+        <translation>Membagi layer vektor</translation>
     </message>
     <message>
         <source>Merge shapefiles to one</source>
@@ -62446,7 +62446,7 @@ Returns a string representation of a color based on its hue, saturation, value a
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="12"/>
         <source>Add elements to layer (ALL elements of the selected layer type!)</source>
-        <translation>Tambah elemen ka lapisan (semua elemen dari tipe lapisan yang dipilih!)</translation>
+        <translation>Tambah elemen ka layer (semua elemen dari tipe layer yang dipilih!)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="13"/>
@@ -64662,12 +64662,12 @@ Returns a string representation of a color based on its hue, saturation, value a
     <message>
         <location filename="../src/plugins/topology/rulesDialog.ui" line="117"/>
         <source>Layer #1</source>
-        <translation>Lapisan #1</translation>
+        <translation>Layer #1</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/rulesDialog.ui" line="122"/>
         <source>Layer #2</source>
-        <translation>Lapisan #2</translation>
+        <translation>Layer #2</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/rulesDialog.ui" line="66"/>
@@ -64678,18 +64678,18 @@ Returns a string representation of a color based on its hue, saturation, value a
     <message>
         <location filename="../src/plugins/topology/rulesDialog.ui" line="132"/>
         <source>Layer1ID</source>
-        <translation>Lapisan1ID</translation>
+        <translation>Layer1ID</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/rulesDialog.ui" line="137"/>
         <source>Layer2ID</source>
-        <translation>Lapisan2ID</translation>
+        <translation>Layer2ID</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/rulesDialog.ui" line="33"/>
         <location filename="../src/plugins/topology/rulesDialog.ui" line="52"/>
         <source>No layer</source>
-        <translation>Tidak ada lapisan</translation>
+        <translation>Tidak ada layer</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/rulesDialog.ui" line="93"/>
@@ -64810,12 +64810,12 @@ Returns a string representation of a color based on its hue, saturation, value a
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="1677"/>
         <source>First layer not found in registry.</source>
-        <translation>Lapisan pertama tidak ditemukan pada registry.</translation>
+        <translation>Layer pertama tidak ditemukan pada registry.</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="1683"/>
         <source>Second layer not found in registry.</source>
-        <translation>lapisan kedua tidak ditemukan pada registry.</translation>
+        <translation>layer kedua tidak ditemukan pada registry.</translation>
     </message>
 </context>
 <context>
