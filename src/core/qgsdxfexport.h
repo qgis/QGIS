@@ -67,8 +67,10 @@ class QgsDxfExport
     static double mDxfColors[][3];
 
     int mSymbolLayerCounter; //internal counter
+    int mNextHandleId;
     QHash< const QgsSymbolLayerV2*, QString > mLineStyles; //symbol layer name types
 
+    //AC1009
     void writeHeader( QTextStream& stream );
     void writeTables( QTextStream& stream );
     void writeEntities( QTextStream& stream );
@@ -81,6 +83,20 @@ class QgsDxfExport
     void writePolyline( QTextStream& stream, const QgsPolyline& line, const QString& layer, const QString& lineStyleName, int color,
                         double width = -1, bool polygon = false );
     void writeVertex( QTextStream& stream, const QgsPoint& pt, const QString& layer );
+    void writeSymbolLayerLinestyle( QTextStream& stream, const QgsSymbolLayerV2* symbolLayer );
+    void writeLinestyle( QTextStream& stream, const QString& styleName, const QVector<qreal>& pattern, QgsSymbolV2::OutputUnit u );
+
+    //AC1018
+    void writeHeaderAC1018( QTextStream& stream );
+    void writeTablesAC1018( QTextStream& stream );
+    void writeEntitiesAC1018( QTextStream& stream );
+    void writeEntitiesSymbolLevelsAC1018( QTextStream& stream, QgsVectorLayer* layer );
+    void writeSymbolLayerLinestyleAC1018( QTextStream& stream, const QgsSymbolLayerV2* symbolLayer );
+    void writeLinestyleAC1018( QTextStream& stream, const QString& styleName, const QVector<qreal>& pattern, QgsSymbolV2::OutputUnit u );
+    void writeVertexAC1018( QTextStream& stream, const QgsPoint& pt );
+    void writePolylineAC1018( QTextStream& stream, const QgsPolyline& line, const QString& layer, const QString& lineStyleName, int color,
+                              double width = -1, bool polygon = false );
+
 
     QgsRectangle dxfExtent() const;
 
@@ -104,8 +120,8 @@ class QgsDxfExport
     QList<QgsSymbolLayerV2*> symbolLayers();
     static int nLineTypes( const QList<QgsSymbolLayerV2*>& symbolLayers );
 
-    void writeSymbolLayerLinestyle( QTextStream& stream, const QgsSymbolLayerV2* symbolLayer );
-    void writeLinestyle( QTextStream& stream, const QString& styleName, const QVector<qreal>& pattern, QgsSymbolV2::OutputUnit u );
+
+
 };
 
 #endif // QGSDXFEXPORT_H

@@ -286,7 +286,7 @@ double QgsDxfExport::mDxfColors[][3] =
   {1, 1, 1}               // 255
 };
 
-QgsDxfExport::QgsDxfExport(): mSymbologyScaleDenominator( 1.0 ), mSymbologyExport( NoSymbology ), mMapUnits( QGis::Meters ), mSymbolLayerCounter( 0 )
+QgsDxfExport::QgsDxfExport(): mSymbologyScaleDenominator( 1.0 ), mSymbologyExport( NoSymbology ), mMapUnits( QGis::Meters ), mSymbolLayerCounter( 0 ), mNextHandleId( 10 )
 {
 }
 
@@ -308,8 +308,8 @@ int QgsDxfExport::writeToFile( QIODevice* d )
   }
 
   QTextStream outStream( d );
-  writeHeader( outStream );
-  writeTables( outStream );
+  writeHeaderAC1018( outStream );
+  writeTablesAC1018( outStream );
   writeEntities( outStream );
   writeEndFile( outStream );
   return 0;
@@ -703,7 +703,7 @@ void QgsDxfExport::addFeature( const QgsFeature& fet, QTextStream& stream, const
     //single line
     if ( geometryType == QGis::WKBLineString || geometryType == QGis::WKBLineString25D )
     {
-      writePolyline( stream, geom->asPolyline(), layer, lineStyleName, c, width, false );
+      writePolylineAC1018( stream, geom->asPolyline(), layer, lineStyleName, c, width, false );
     }
 
     //multiline
@@ -713,7 +713,7 @@ void QgsDxfExport::addFeature( const QgsFeature& fet, QTextStream& stream, const
       QgsMultiPolyline::const_iterator lIt = multiLine.constBegin();
       for ( ; lIt != multiLine.constEnd(); ++lIt )
       {
-        writePolyline( stream, *lIt, layer, lineStyleName, c, width, false );
+        writePolylineAC1018( stream, *lIt, layer, lineStyleName, c, width, false );
       }
     }
 
@@ -724,7 +724,7 @@ void QgsDxfExport::addFeature( const QgsFeature& fet, QTextStream& stream, const
       QgsPolygon::const_iterator polyIt = polygon.constBegin();
       for ( ; polyIt != polygon.constEnd(); ++polyIt ) //iterate over rings
       {
-        writePolyline( stream, *polyIt, layer, lineStyleName, c, width, true );
+        writePolylineAC1018( stream, *polyIt, layer, lineStyleName, c, width, true );
       }
     }
 
@@ -738,7 +738,7 @@ void QgsDxfExport::addFeature( const QgsFeature& fet, QTextStream& stream, const
         QgsPolygon::const_iterator polyIt = mpIt->constBegin();
         for ( ; polyIt != mpIt->constEnd(); ++polyIt )
         {
-          writePolyline( stream, *polyIt, layer, lineStyleName, c, width, true );
+          writePolylineAC1018( stream, *polyIt, layer, lineStyleName, c, width, true );
         }
       }
     }
@@ -1000,4 +1000,318 @@ void QgsDxfExport::writeLinestyle( QTextStream& stream, const QString& styleName
     stream << QString( "%1\n" ).arg( segmentLength );
     isSpace = !isSpace;
   }
+}
+
+/******************************************************AC_1018 methods***************************************************************/
+
+void QgsDxfExport::writeHeaderAC1018( QTextStream& stream )
+{
+  stream << "999\n";
+  stream << "DXF created from QGIS\n";
+  startSection( stream );
+  stream << "  2\n";
+  stream << "HEADER\n";
+  //ACADVER
+  stream << "  9\n";
+  stream << "$ACADVER\n";
+  stream << "  1\n";
+  stream << "AC1018\n";
+
+  QgsRectangle ext = dxfExtent();
+  if ( !ext.isEmpty() )
+  {
+    //EXTMIN
+    stream << "  9\n";
+    stream << "$EXTMIN\n";
+    stream << " 10\n";
+    stream << ext.xMinimum() << "\n";
+    stream << " 20\n";
+    stream << ext.yMinimum() << "\n";
+    stream << " 30\n";
+    stream << "0\n";
+    //EXTMAX
+    stream << "  9\n";
+    stream << "$EXTMAX\n";
+    stream << " 10\n";
+    stream << ext.xMaximum() << "\n";
+    stream << " 20\n";
+    stream << ext.yMaximum() << "\n";
+    stream << " 30\n";
+    stream << "0\n";
+  }
+  //LTSCALE
+  stream << "  9\n";
+  stream << "$LTSCALE\n";
+  stream << " 40\n";
+  stream << "1.0\n";
+  //PDMODE
+  stream << "  9\n";
+  stream << "$PDMODE\n";
+  stream << " 70\n";
+  stream << "33\n";
+  //PDSIZE
+  stream << "  9\n";
+  stream << "$PDSIZE\n";
+  stream << " 40\n";
+  stream << "1\n";
+  endSection( stream );
+  //PSLTSCALE
+  stream << "  9\n";
+  stream << "$PSLTSCALE\n";
+  stream << " 70\n";
+  stream << "0\n";
+}
+
+void QgsDxfExport::writeTablesAC1018( QTextStream& stream )
+{
+  startSection( stream );
+  stream << "  2\n";
+  stream << "TABLES\n";
+
+  //todo: VPORT table
+
+  //iterate through all layers and get symbol layer pointers
+  QList<QgsSymbolLayerV2*> slList;
+  if ( mSymbologyExport != NoSymbology )
+  {
+    slList = symbolLayers();
+  }
+
+  //LTYPE
+  mLineStyles.clear();
+  stream << "  0\n";
+  stream << "TABLE\n";
+  stream << "  2\n";
+  stream << "LTYPE\n";
+  stream << "  5\n";
+  stream << QString( "%1\n" ).arg( mNextHandleId++ );
+  stream << "100\n";
+  stream << "AcDbSymbolTable\n";
+  stream << " 70\n";
+  stream << QString( "%1\n" ).arg( nLineTypes( slList ) + 1 ); //number of linetypes
+
+  //add continuous style as default
+  stream << "  0\n";
+  stream << "LTYPE\n";
+  stream << "  5\n";
+  stream << QString( "%1\n" ).arg( mNextHandleId++ );
+  stream << "100\n";
+  stream << "AcDbSymbolTableRecord\n";
+  stream << "100\n";
+  stream << "AcDbLinetypeTableRecord\n";
+  stream << "  2\n";
+  stream << "CONTINUOUS\n";
+  stream << "  70\n";
+  stream << "64\n";
+  stream << "  3\n";
+  stream << "Defaultstyle\n";
+  stream << " 72\n";
+  stream << "65\n";
+  stream << " 73\n";
+  stream << "0\n";
+  stream << " 40\n"; //todo: add segments in group 49
+  stream << "0.0\n";
+
+  //add symbol layer linestyles
+  QList<QgsSymbolLayerV2*>::const_iterator slIt = slList.constBegin();
+  for ( ; slIt != slList.constEnd(); ++slIt )
+  {
+    writeSymbolLayerLinestyleAC1018( stream, *slIt );
+  }
+
+  stream << "  0\n";
+  stream << "ENDTAB\n";
+
+  //LAYER
+  stream << "  0\n";
+  stream << "TABLE\n";
+  stream << "  2\n";
+  stream << "LAYER\n";
+  stream << "  5\n";
+  stream << QString( "%1\n" ).arg( mNextHandleId++ );
+  stream << "100\n";
+  stream << "AcDbSymbolTable\n";
+  stream << " 70\n";
+  stream << mLayers.count() << "\n";
+  QList< QgsMapLayer* >::const_iterator layerIt = mLayers.constBegin();
+  for ( ; layerIt != mLayers.constEnd(); ++layerIt )
+  {
+    stream << "  0\n";
+    stream << "LAYER\n";
+    stream << "100\n";
+    stream << "AcDbSymbolTableRecord\n";
+    stream << "100\n";
+    stream << "AcDbLayerTableRecord\n";
+    stream << "  2\n";
+    if ( *layerIt )
+    {
+      stream << ( *layerIt )->name() << "\n";
+    }
+    stream << " 70\n"; //layer property
+    stream << "64\n";
+    stream << " 62\n"; //layer color
+    stream << "1\n";
+    stream << "  6\n"; //layer line type
+    stream << "CONTINUOUS\n";
+  }
+  stream << "  0\n";
+  stream << "ENDTAB\n";
+
+  //todo: VIEW table
+
+  //todo: UCS table
+
+  //APPID
+  stream << "  0\n";
+  stream << "TABLE\n";
+  stream << "  2\n";
+  stream << "APPID\n";
+  stream << "  5\n";
+  stream << QString( "%1\n" ).arg( mNextHandleId++ );
+  stream << "100\n";
+  stream << "AcDbSymbolTable\n";
+  stream << " 70\n";
+  stream << "  1\n";
+
+  stream << "  0\n";
+  stream << "APPID\n";
+  stream << "  5\n";
+  stream << QString( "%1\n" ).arg( mNextHandleId++ );
+  stream << "100\n";
+  stream << "AcDbSymbolTableRecord\n";
+  stream << "100\n";
+  stream << "AcDbRegAppTableRecord\n";
+  stream << "  2\n";
+  stream << "ACAD\n";
+  stream << " 70\n";
+  stream << "  0\n";
+  stream << "  0\n";
+  stream << "ENDTAB\n";
+
+  //todo: DIMSTYLE table
+
+  //todo: BLOCK_RECORD table
+
+  endSection( stream );
+}
+
+void QgsDxfExport::writeSymbolLayerLinestyleAC1018( QTextStream& stream, const QgsSymbolLayerV2* symbolLayer )
+{
+  if ( !symbolLayer )
+  {
+    return;
+  }
+
+  //QgsSimpleLineSymbolLayer can have customDashVector() / customDashPatternUnit()
+  const QgsSimpleLineSymbolLayerV2* simpleLine = dynamic_cast< const QgsSimpleLineSymbolLayerV2* >( symbolLayer );
+  if ( simpleLine )
+  {
+    if ( simpleLine->useCustomDashPattern() )
+    {
+      ++mSymbolLayerCounter;
+      QString name = QString( "symbolLayer%1" ).arg( mSymbolLayerCounter );
+      QVector<qreal> dashPattern = simpleLine->customDashVector();
+      writeLinestyleAC1018( stream, name, dashPattern, simpleLine->customDashPatternUnit() );
+      mLineStyles.insert( symbolLayer, name );
+    }
+  }
+}
+
+void QgsDxfExport::writeLinestyleAC1018( QTextStream& stream, const QString& styleName, const QVector<qreal>& pattern, QgsSymbolV2::OutputUnit u )
+{
+  double length = 0;
+  QVector<qreal>::const_iterator dashIt = pattern.constBegin();
+  for ( ; dashIt != pattern.constEnd(); ++dashIt )
+  {
+    length += *dashIt;
+  }
+
+  stream << "  0\n";
+  stream << "LTYPE\n";
+  stream << "  5\n";
+  stream << QString( "%1\n" ).arg( mNextHandleId++ );
+  stream << "100\n";
+  stream << "AcDbSymbolTableRecord\n";
+  stream << "100\n";
+  stream << "AcDbLinetypeTableRecord\n";
+  stream << "  2\n";
+  stream << QString( "%1\n" ).arg( styleName );
+  stream << "  70\n";
+  stream << "64\n";
+  stream << "  3\n";
+  stream << "\n";
+  stream << " 72\n";
+  stream << "65\n";
+  stream << " 73\n";
+  stream << QString( "%1\n" ).arg( pattern.size() ); //number of segments
+  stream << " 40\n"; //total length of segments
+  stream << QString( "%1\n" ).arg( length );
+
+  dashIt = pattern.constBegin();
+  bool isSpace = false;
+  for ( ; dashIt != pattern.constEnd(); ++dashIt )
+  {
+    stream << " 49\n";
+
+    //map units or mm?
+    double segmentLength = ( isSpace ? -*dashIt : *dashIt );
+    segmentLength *= mapUnitScaleFactor( mSymbologyScaleDenominator, u, mMapUnits );
+    stream << QString( "%1\n" ).arg( segmentLength );
+    isSpace = !isSpace;
+  }
+}
+
+void QgsDxfExport::writeEntitiesAC1018( QTextStream& stream )
+{
+  //todo...
+}
+
+void QgsDxfExport::writeEntitiesSymbolLevelsAC1018( QTextStream& stream, QgsVectorLayer* layer )
+{
+  //todo...
+}
+
+void QgsDxfExport::writePolylineAC1018( QTextStream& stream, const QgsPolyline& line, const QString& layer, const QString& lineStyleName, int color,
+                                        double width, bool polygon )
+{
+  stream << "  0\n";
+  stream << "LWPOLYLINE\n";
+  stream << "  5\n";
+  stream << QString( "%1\n" ).arg( mNextHandleId++ );
+  stream << "  8\n";
+  stream << layer << "\n";
+  stream << "100\n";
+  stream << "AcDbEntity\n";
+  stream << "100\n";
+  stream << "AcDbPolyline\n";
+
+  stream << "  6\n";
+  stream << QString( "%1\n" ).arg( lineStyleName );
+
+  stream << " 62\n";
+  stream << color << "\n";
+
+  stream << " 90\n";
+  stream << QString( "%1\n" ).arg( line.size() );
+
+  stream << " 70\n";
+  int type = polygon ? 1 : 0;
+  stream << type << "\n";
+
+  stream << " 43\n";
+  stream << width << "\n";
+
+  QgsPolyline::const_iterator lineIt = line.constBegin();
+  for ( ; lineIt != line.constEnd(); ++lineIt )
+  {
+    writeVertexAC1018( stream, *lineIt );
+  }
+}
+
+void QgsDxfExport::writeVertexAC1018( QTextStream& stream, const QgsPoint& pt )
+{
+  stream << " 10\n";
+  stream << pt.x() << "\n";
+  stream << " 20\n";
+  stream << pt.y() << "\n";
 }
