@@ -105,6 +105,7 @@ class QgsDxfExport
     static int nLineTypes( const QList<QgsSymbolLayerV2*>& symbolLayers );
 
     void writeSymbolLayerLinestyle( QTextStream& stream, const QgsSymbolLayerV2* symbolLayer );
+    void writeLinestyle( QTextStream& stream, const QString& styleName, const QVector<qreal>& pattern, QgsSymbolV2::OutputUnit u );
 };
 
 #endif // QGSDXFEXPORT_H

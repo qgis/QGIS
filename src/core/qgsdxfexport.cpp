@@ -939,42 +939,8 @@ void QgsDxfExport::writeSymbolLayerLinestyle( QTextStream& stream, const QgsSymb
     {
       ++mSymbolLayerCounter;
       QString name = QString( "symbolLayer%1" ).arg( mSymbolLayerCounter );
-
       QVector<qreal> dashPattern = simpleLine->customDashVector();
-      double length = 0;
-      QVector<qreal>::const_iterator dashIt = dashPattern.constBegin();
-      for ( ; dashIt != dashPattern.constEnd(); ++dashIt )
-      {
-        length += *dashIt;
-      }
-
-      stream << "  0\n";
-      stream << "LTYPE\n";
-      stream << "  2\n";
-      stream << QString( "%1\n" ).arg( name );
-      stream << "  70\n";
-      stream << "64\n";
-      stream << "  3\n";
-      stream << "\n";
-      stream << " 72\n";
-      stream << "65\n";
-      stream << " 73\n";
-      stream << QString( "%1\n" ).arg( dashPattern.size() ); //number of segments
-      stream << " 40\n"; //total length of segments
-      stream << QString( "%1\n" ).arg( length );
-
-      dashIt = dashPattern.constBegin();
-      bool isSpace = false;
-      for ( ; dashIt != dashPattern.constEnd(); ++dashIt )
-      {
-        stream << " 49\n";
-
-        //map units or mm?
-        double segmentLength = ( isSpace ? -*dashIt : *dashIt );
-        segmentLength *= mapUnitScaleFactor( mSymbologyScaleDenominator, simpleLine->customDashPatternUnit(), mMapUnits );
-        stream << QString( "%1\n" ).arg( segmentLength );
-        isSpace = !isSpace;
-      }
+      writeLinestyle( stream, name, dashPattern, simpleLine->customDashPatternUnit() );
       mLineStyles.insert( symbolLayer, name );
     }
   }
@@ -996,4 +962,42 @@ int QgsDxfExport::nLineTypes( const QList<QgsSymbolLayerV2*>& symbolLayers )
     }
   }
   return nLineTypes;
+}
+
+void QgsDxfExport::writeLinestyle( QTextStream& stream, const QString& styleName, const QVector<qreal>& pattern, QgsSymbolV2::OutputUnit u )
+{
+  double length = 0;
+  QVector<qreal>::const_iterator dashIt = pattern.constBegin();
+  for ( ; dashIt != pattern.constEnd(); ++dashIt )
+  {
+    length += *dashIt;
+  }
+
+  stream << "  0\n";
+  stream << "LTYPE\n";
+  stream << "  2\n";
+  stream << QString( "%1\n" ).arg( styleName );
+  stream << "  70\n";
+  stream << "64\n";
+  stream << "  3\n";
+  stream << "\n";
+  stream << " 72\n";
+  stream << "65\n";
+  stream << " 73\n";
+  stream << QString( "%1\n" ).arg( pattern.size() ); //number of segments
+  stream << " 40\n"; //total length of segments
+  stream << QString( "%1\n" ).arg( length );
+
+  dashIt = pattern.constBegin();
+  bool isSpace = false;
+  for ( ; dashIt != pattern.constEnd(); ++dashIt )
+  {
+    stream << " 49\n";
+
+    //map units or mm?
+    double segmentLength = ( isSpace ? -*dashIt : *dashIt );
+    segmentLength *= mapUnitScaleFactor( mSymbologyScaleDenominator, u, mMapUnits );
+    stream << QString( "%1\n" ).arg( segmentLength );
+    isSpace = !isSpace;
+  }
 }
