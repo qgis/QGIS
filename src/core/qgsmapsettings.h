@@ -23,22 +23,14 @@ class QgsMapSettings
 public:
   QgsMapSettings();
 
-  /**Output units for pen width and point marker width/height*/
-  enum OutputUnits   // TODO[MD]: sync with QgsMapRenderer
-  {
-    Millimeters,
-    Pixels
-    //MAP_UNITS probably supported in future versions
-  };
-
   QgsRectangle extent() const;
   void setExtent(const QgsRectangle& rect);
 
   QSize outputSize() const;
   void setOutputSize(const QSize& size);
 
-  double outputDpi() const;
-  void setOutputDpi(double dpi);
+  int outputDpi() const;
+  void setOutputDpi(int dpi);
 
   QStringList layers() const;
   void setLayers(const QStringList& layers);
@@ -55,10 +47,6 @@ public:
 
   QGis::UnitType mapUnits() const;
   void setMapUnits( QGis::UnitType u );
-
-  // TODO: maybe used just for something local... and not necessary here!
-  void setOutputUnits( OutputUnits u ) { mOutputUnits = u; }
-  OutputUnits outputUnits() const { return mOutputUnits; }
 
   void setBackgroundColor( const QColor& color ) { mBackgroundColor = color; }
   QColor backgroundColor() const { return mBackgroundColor; }
@@ -133,7 +121,7 @@ public:
 
 protected:
 
-  double mDpi;
+  int mDpi;
 
   QSize mSize;
 
@@ -147,9 +135,6 @@ protected:
   QColor mBackgroundColor;
   QColor mSelectionColor;
   bool mAntiAliasing;
-
-  //! Output units
-  OutputUnits mOutputUnits;
 
   // derived properties
   bool mValid; //!< whether the actual settings are valid (set in updateDerived())

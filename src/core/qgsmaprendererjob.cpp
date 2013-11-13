@@ -181,7 +181,6 @@ void QgsMapRendererCustomPainterJob::staticRender(QgsMapRendererCustomPainterJob
   self->startRender();
 }
 
-
 void QgsMapRendererCustomPainterJob::startRender()
 {
   qDebug("QPAINTER startRender");
@@ -193,46 +192,27 @@ void QgsMapRendererCustomPainterJob::startRender()
 
   QPaintDevice* thePaintDevice = mPainter->device();
 
+  Q_ASSERT_X( thePaintDevice->logicalDpiX() == mSettings.outputDpi(), "Job::startRender()", "pre-set DPI not equal to painter's DPI" );
+
 #ifdef QGISDEBUG
   QgsDebugMsg( "Starting to render layer stack." );
   QTime renderTime;
   renderTime.start();
 #endif
 
-  mRenderContext.setMapToPixel( mSettings.mapToPixel() ); //  QgsMapToPixel( mSettings.mapUnitsPerPixel(), mSettings.outputSize().height(), mSettings.visibleExtent().yMinimum(), mSettings.visibleExtent().xMinimum() ) );
+  mRenderContext.setMapToPixel( mSettings.mapToPixel() );
   mRenderContext.setExtent( mSettings.visibleExtent() );
-
   mRenderContext.setDrawEditingInformation( false );
   mRenderContext.setPainter( mPainter );
   mRenderContext.setCoordinateTransform( 0 );
+  mRenderContext.setSelectionColor( mSettings.selectionColor() );
+  mRenderContext.setRasterScaleFactor( 1.0 );
+  mRenderContext.setScaleFactor( mSettings.outputDpi() / 25.4 ); // = pixels per mm
+  mRenderContext.setRendererScale( mSettings.scale() );
+
   //this flag is only for stopping during the current rendering progress,
   //so must be false at every new render operation
   mRenderContext.setRenderingStopped( false );
-
-  // set selection color
-  mRenderContext.setSelectionColor( mSettings.selectionColor() );
-
-  //calculate scale factor
-  //use the specified dpi and not those from the paint device
-  //because sometimes QPainter units are in a local coord sys (e.g. in case of QGraphicsScene)
-  double* forceWidthScale = 0; // TODO: may point to a value (composer)
-  double sceneDpi = mSettings.outputDpi();
-  double scaleFactor = 1.0;
-  if ( mSettings.outputUnits() == QgsMapSettings::Millimeters )
-  {
-    if ( forceWidthScale )
-    {
-      scaleFactor = *forceWidthScale;
-    }
-    else
-    {
-      scaleFactor = sceneDpi / 25.4;
-    }
-  }
-  double rasterScaleFactor = ( thePaintDevice->logicalDpiX() + thePaintDevice->logicalDpiY() ) / 2.0 / sceneDpi;
-  mRenderContext.setRasterScaleFactor( rasterScaleFactor );
-  mRenderContext.setScaleFactor( scaleFactor );
-  mRenderContext.setRendererScale( mSettings.scale() );
 
   mRenderContext.setLabelingEngine( mLabelingEngine );
   if ( mLabelingEngine )
@@ -314,17 +294,6 @@ void QgsMapRendererCustomPainterJob::startRender()
       }
 
       mRenderContext.setCoordinateTransform( ct );
-
-      //decide if we have to scale the raster
-      //this is necessary in case QGraphicsScene is used
-      bool scaleRaster = false;
-      QgsMapToPixel rasterMapToPixel;
-      QgsMapToPixel bk_mapToPixel;
-
-      if ( ml->type() == QgsMapLayer::RasterLayer && qAbs( rasterScaleFactor - 1.0 ) > 0.000001 )
-      {
-        scaleRaster = true;
-      }
 
       /*QSettings mySettings;
       bool useRenderCaching = false;
@@ -412,17 +381,6 @@ void QgsMapRendererCustomPainterJob::startRender()
         }
       }*/
 
-      if ( scaleRaster )
-      {
-        bk_mapToPixel = mRenderContext.mapToPixel();
-        rasterMapToPixel = mRenderContext.mapToPixel();
-        rasterMapToPixel.setMapUnitsPerPixel( mRenderContext.mapToPixel().mapUnitsPerPixel() / rasterScaleFactor );
-        rasterMapToPixel.setYMaximum( mSettings.outputSize().height() * rasterScaleFactor );
-        mRenderContext.setMapToPixel( rasterMapToPixel );
-        mRenderContext.painter()->save();
-        mRenderContext.painter()->scale( 1.0 / rasterScaleFactor, 1.0 / rasterScaleFactor );
-      }
-
       if ( !ml->draw( mRenderContext ) )
       {
         // TODO emit drawError( ml );
@@ -439,12 +397,6 @@ void QgsMapRendererCustomPainterJob::startRender()
         {
           // TODO emit drawError( ml );
         }
-      }
-
-      if ( scaleRaster )
-      {
-        mRenderContext.setMapToPixel( bk_mapToPixel );
-        mRenderContext.painter()->restore();
       }
 
       //apply layer transparency for vector layers

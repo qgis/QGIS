@@ -36,7 +36,6 @@ QgsMapSettings::QgsMapSettings()
   , mBackgroundColor( Qt::white )
   , mSelectionColor( Qt::yellow )
   , mAntiAliasing( true )
-  , mOutputUnits( QgsMapSettings::Millimeters )
 {
   updateDerived();
 
@@ -162,12 +161,12 @@ void QgsMapSettings::setOutputSize(const QSize& size)
   updateDerived();
 }
 
-double QgsMapSettings::outputDpi() const
+int QgsMapSettings::outputDpi() const
 {
   return mDpi;
 }
 
-void QgsMapSettings::setOutputDpi(double dpi)
+void QgsMapSettings::setOutputDpi(int dpi)
 {
   mDpi = dpi;
 

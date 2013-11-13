@@ -147,6 +147,8 @@ QgsComposerMap::~QgsComposerMap()
 from QGraphicsItem. */
 void QgsComposerMap::draw( QPainter *painter, const QgsRectangle& extent, const QSizeF& size, double dpi, double* forceWidthScale )
 {
+  Q_UNUSED( forceWidthScale );
+
   if ( !painter )
   {
     return;
@@ -156,7 +158,7 @@ void QgsComposerMap::draw( QPainter *painter, const QgsRectangle& extent, const 
 
   QgsMapSettings jobMapSettings;
   jobMapSettings.setExtent( extent );
-  jobMapSettings.setOutputSize( size.toSize() ); // TODO: sizeF
+  jobMapSettings.setOutputSize( size.toSize() );
   jobMapSettings.setOutputDpi( dpi );
   /* TODO: if ( mMapRenderer->labelingEngine() )
     theMapRenderer.setLabelingEngine( mMapRenderer->labelingEngine()->clone() );*/
@@ -173,20 +175,6 @@ void QgsComposerMap::draw( QPainter *painter, const QgsRectangle& extent, const 
 
   // make the renderer respect the composition's useAdvancedEffects flag
   jobMapSettings.setUseAdvancedEffects( mComposition->useAdvancedEffects() );
-
-  // force composer map scale for scale dependent visibility
-  // TODO: custom scale jobMapSettings.setScale( scale() );
-
-  Q_UNUSED(forceWidthScale);
-  /*
-  if ( forceWidthScale ) //force wysiwyg line widths / marker sizes
-  {
-    theMapRenderer.render( painter, forceWidthScale );
-  }
-  else
-  {
-    theMapRenderer.render( painter );
-  }*/
 
   // render
   QgsMapRendererCustomPainterJob job( jobMapSettings, painter );
@@ -219,8 +207,11 @@ void QgsComposerMap::cache( void )
     horizontalVScaleFactor = mLastValidViewScaleFactor;
   }
 
-  int w = requestExtent.width() * mapUnitsToMM() * horizontalVScaleFactor;
-  int h = requestExtent.height() * mapUnitsToMM() * horizontalVScaleFactor;
+  double widthMM = requestExtent.width() * mapUnitsToMM();
+  double heightMM = requestExtent.height() * mapUnitsToMM();
+
+  int w = widthMM * horizontalVScaleFactor;
+  int h = heightMM * horizontalVScaleFactor;
 
   if ( w > 5000 ) //limit size of image for better performance
   {
@@ -232,9 +223,11 @@ void QgsComposerMap::cache( void )
     h = 5000;
   }
 
-  double forcedWidthScaleFactor = w / requestExtent.width() / mapUnitsToMM();
-
   mCacheImage = QImage( w, h,  QImage::Format_ARGB32 );
+
+  // set DPI of the image
+  mCacheImage.setDotsPerMeterX( 1000 * w / widthMM );
+  mCacheImage.setDotsPerMeterX( 1000 * h / heightMM );
 
   if ( hasBackground() )
   {
@@ -248,14 +241,9 @@ void QgsComposerMap::cache( void )
     mCacheImage.fill( QColor( 255, 255, 255, 0 ).rgba() );
   }
 
-  double mapUnitsPerPixel = mExtent.width() / w;
-
-  // WARNING: ymax in QgsMapToPixel is device height!!!
-  QgsMapToPixel transform( mapUnitsPerPixel, h, requestExtent.yMinimum(), requestExtent.xMinimum() );
-
   QPainter p( &mCacheImage );
 
-  draw( &p, requestExtent, QSizeF( w, h ), mCacheImage.logicalDpiX(), &forcedWidthScaleFactor );
+  draw( &p, requestExtent, QSizeF( w, h ), mCacheImage.logicalDpiX() );
   p.end();
   mCacheUpdated = true;
 
@@ -372,7 +360,11 @@ void QgsComposerMap::paint( QPainter* painter, const QStyleOptionGraphicsItem* i
     painter->translate( xTopLeftShift, yTopLeftShift );
     painter->rotate( mRotation );
     painter->translate( xShiftMM, -yShiftMM );
-    draw( painter, requestRectangle, theSize, 25.4 ); //scene coordinates seem to be in mm
+
+    double dotsPerMM = thePaintDevice->logicalDpiX() / 25.4;
+    theSize *= dotsPerMM; // output size will be in dots (pixels)
+    painter->scale( 1 / dotsPerMM, 1 / dotsPerMM ); // scale painter from mm to dots
+    draw( painter, requestRectangle, theSize, thePaintDevice->logicalDpiX() );
 
     //restore rotation
     painter->restore();
