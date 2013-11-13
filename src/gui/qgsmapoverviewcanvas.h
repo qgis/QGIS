@@ -60,7 +60,7 @@ class GUI_EXPORT QgsMapOverviewCanvas : public QWidget
 
     QStringList layerSet() const;
 
-    void enableAntiAliasing( bool flag ) { mSettings.setAntiAliasingEnabled( flag ); }
+    void enableAntiAliasing( bool flag ) { mSettings.setFlag( QgsMapSettings::Antialiasing, flag ); }
 
     void updateFullExtent();
 

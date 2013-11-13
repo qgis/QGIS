@@ -188,7 +188,7 @@ void QgsMapRendererCustomPainterJob::startRender()
   // clear the background
   mPainter->fillRect( 0, 0, mSettings.outputSize().width(), mSettings.outputSize().height(), mSettings.backgroundColor() );
 
-  mPainter->setRenderHint( QPainter::Antialiasing, mSettings.isAntiAliasingEnabled() );
+  mPainter->setRenderHint( QPainter::Antialiasing, mSettings.testFlag( QgsMapSettings::Antialiasing ) );
 
   QPaintDevice* thePaintDevice = mPainter->device();
 
@@ -202,7 +202,9 @@ void QgsMapRendererCustomPainterJob::startRender()
 
   mRenderContext.setMapToPixel( mSettings.mapToPixel() );
   mRenderContext.setExtent( mSettings.visibleExtent() );
-  mRenderContext.setDrawEditingInformation( false );
+  mRenderContext.setDrawEditingInformation( mSettings.testFlag( QgsMapSettings::DrawEditingInfo ) );
+  mRenderContext.setForceVectorOutput( mSettings.testFlag( QgsMapSettings::ForceVectorOutput ) );
+  mRenderContext.setUseAdvancedEffects( mSettings.testFlag( QgsMapSettings::UseAdvancedEffects ) );
   mRenderContext.setPainter( mPainter );
   mRenderContext.setCoordinateTransform( 0 );
   mRenderContext.setSelectionColor( mSettings.selectionColor() );

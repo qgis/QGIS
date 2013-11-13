@@ -167,14 +167,12 @@ void QgsComposerMap::draw( QPainter *painter, const QgsRectangle& extent, const 
   jobMapSettings.setLayers( mKeepLayerSet ? mLayerSet : ms.layers() );
   jobMapSettings.setDestinationCrs( ms.destinationCrs() );
   jobMapSettings.setProjectionsEnabled( ms.hasCrsTransformEnabled() );
-  jobMapSettings.setAntiAliasingEnabled( ms.isAntiAliasingEnabled() );
-  jobMapSettings.setDrawEditingInformation( false );
+  jobMapSettings.setFlags( ms.flags() );
 
-  // force vector output (no caching of marker images etc.)
-  jobMapSettings.setForceVectorOutput( true );
-
-  // make the renderer respect the composition's useAdvancedEffects flag
-  jobMapSettings.setUseAdvancedEffects( mComposition->useAdvancedEffects() );
+  // composer-specific overrides of flags
+  jobMapSettings.setFlag( QgsMapSettings::ForceVectorOutput ); // force vector output (no caching of marker images etc.)
+  jobMapSettings.setFlag( QgsMapSettings::DrawEditingInfo, false );
+  jobMapSettings.setFlag( QgsMapSettings::UseAdvancedEffects, mComposition->useAdvancedEffects() ); // respect the composition's useAdvancedEffects flag
 
   // render
   QgsMapRendererCustomPainterJob job( jobMapSettings, painter );

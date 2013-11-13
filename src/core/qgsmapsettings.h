@@ -54,13 +54,20 @@ public:
   void setSelectionColor( const QColor& color ) { mSelectionColor = color; }
   QColor selectionColor() const { return mSelectionColor; }
 
-  void setAntiAliasingEnabled( bool enabled ) { mAntiAliasing = enabled; }
-  bool isAntiAliasingEnabled() const { return mAntiAliasing; }
+  enum Flag
+  {
+    Antialiasing       = 0x01,
+    DrawEditingInfo    = 0x02,
+    ForceVectorOutput  = 0x04,
+    UseAdvancedEffects = 0x08
+    // TODO: no labeling, ignore scale-based visibiity (overview)
+  };
+  Q_DECLARE_FLAGS(Flags, Flag)
 
-  // TODO: implement
-  void setDrawEditingInformation( bool enabled ) { Q_UNUSED(enabled); }
-  void setForceVectorOutput( bool enabled ) { Q_UNUSED(enabled); }
-  void setUseAdvancedEffects( bool enabled ) { Q_UNUSED(enabled); }
+  void setFlags( Flags flags );
+  void setFlag( Flag flag, bool on = true );
+  Flags flags() const;
+  bool testFlag( Flag flag ) const;
 
   bool hasValidSettings() const;
   QgsRectangle visibleExtent() const;
@@ -134,7 +141,8 @@ protected:
 
   QColor mBackgroundColor;
   QColor mSelectionColor;
-  bool mAntiAliasing;
+
+  Flags mFlags;
 
   // derived properties
   bool mValid; //!< whether the actual settings are valid (set in updateDerived())
@@ -152,6 +160,8 @@ protected:
 
   const QgsCoordinateTransform* coordTransform( QgsMapLayer *layer ) const;
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMapSettings::Flags )
 
 
 #endif // QGSMAPSETTINGS_H

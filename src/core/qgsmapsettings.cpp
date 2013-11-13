@@ -11,21 +11,6 @@
 #include "qgsmaplayer.h"
 #include "qgsmaplayerregistry.h"
 
-/*
-
-usage in QgsMapCanvas - upon pan / zoom - in QgsMapCanvasMap:
-- stop rendering if active
-- update QgsMapRendererV2 settings
-- start rendering
-- start update timer
-- [on timeout/finished] show rendered image
-
-usage in QgsComposer
-- create QgsMapRendererV2
-- setup, start with QPainter
-- wait until it finishes
-
-*/
 
 QgsMapSettings::QgsMapSettings()
   : mDpi( 96 ) // what to set?
@@ -35,7 +20,7 @@ QgsMapSettings::QgsMapSettings()
   , mDestCRS( GEOCRS_ID, QgsCoordinateReferenceSystem::InternalCrsId )  // WGS 84
   , mBackgroundColor( Qt::white )
   , mSelectionColor( Qt::yellow )
-  , mAntiAliasing( true )
+  , mFlags( Antialiasing )
 {
   updateDerived();
 
@@ -212,6 +197,29 @@ void QgsMapSettings::setMapUnits( QGis::UnitType u )
 
   // Since the map units have changed, force a recalculation of the scale.
   updateDerived();
+}
+
+void QgsMapSettings::setFlags( QgsMapSettings::Flags flags )
+{
+  mFlags = flags;
+}
+
+void QgsMapSettings::setFlag( QgsMapSettings::Flag flag, bool on )
+{
+  if ( on )
+    mFlags |= flag;
+  else
+    mFlags &= ~flag;
+}
+
+QgsMapSettings::Flags QgsMapSettings::flags() const
+{
+  return mFlags;
+}
+
+bool QgsMapSettings::testFlag( QgsMapSettings::Flag flag ) const
+{
+  return mFlags.testFlag( flag );
 }
 
 QGis::UnitType QgsMapSettings::mapUnits() const

@@ -126,6 +126,8 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
   connect( QgsProject::instance(), SIGNAL( writeProject( QDomDocument & ) ),
            this, SLOT( writeProject( QDomDocument & ) ) );
 
+  mSettings.setFlag( QgsMapSettings::DrawEditingInfo );
+
   mSettings.setOutputSize( size() );
   mMap->resize( size() );
   setSceneRect( 0, 0, size().width(), size().height() );
@@ -175,7 +177,7 @@ QgsMapCanvas::~QgsMapCanvas()
 
 void QgsMapCanvas::enableAntiAliasing( bool theFlag )
 {
-  mSettings.setAntiAliasingEnabled( theFlag );
+  mSettings.setFlag( QgsMapSettings::Antialiasing, theFlag );
 
   if ( mMapOverview )
     mMapOverview->enableAntiAliasing( theFlag );
