@@ -27,6 +27,7 @@
 class QPainter;
 
 class QgsLabelingEngineInterface;
+class QgsMapSettings;
 
 /** \ingroup core
  * Contains information about the context of a rendering operation.
@@ -39,6 +40,9 @@ class CORE_EXPORT QgsRenderContext
   public:
     QgsRenderContext();
     ~QgsRenderContext();
+
+    //! create initialized QgsRenderContext instance from given QgsMapSettings
+    static QgsRenderContext fromMapSettings( const QgsMapSettings& mapSettings );
 
     //getters
 

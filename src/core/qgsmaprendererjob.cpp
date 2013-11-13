@@ -200,21 +200,8 @@ void QgsMapRendererCustomPainterJob::startRender()
   renderTime.start();
 #endif
 
-  mRenderContext.setMapToPixel( mSettings.mapToPixel() );
-  mRenderContext.setExtent( mSettings.visibleExtent() );
-  mRenderContext.setDrawEditingInformation( mSettings.testFlag( QgsMapSettings::DrawEditingInfo ) );
-  mRenderContext.setForceVectorOutput( mSettings.testFlag( QgsMapSettings::ForceVectorOutput ) );
-  mRenderContext.setUseAdvancedEffects( mSettings.testFlag( QgsMapSettings::UseAdvancedEffects ) );
+  mRenderContext = QgsRenderContext::fromMapSettings( mSettings );
   mRenderContext.setPainter( mPainter );
-  mRenderContext.setCoordinateTransform( 0 );
-  mRenderContext.setSelectionColor( mSettings.selectionColor() );
-  mRenderContext.setRasterScaleFactor( 1.0 );
-  mRenderContext.setScaleFactor( mSettings.outputDpi() / 25.4 ); // = pixels per mm
-  mRenderContext.setRendererScale( mSettings.scale() );
-
-  //this flag is only for stopping during the current rendering progress,
-  //so must be false at every new render operation
-  mRenderContext.setRenderingStopped( false );
 
   mRenderContext.setLabelingEngine( mLabelingEngine );
   if ( mLabelingEngine )

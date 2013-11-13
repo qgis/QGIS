@@ -313,11 +313,12 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, Qg
 
   bool filter = false;
 
+  QgsRenderContext context( QgsRenderContext::fromMapSettings( mCanvas->mapSettings() ) );
   QgsFeatureRendererV2* renderer = layer->rendererV2();
   if ( renderer && renderer->capabilities() & QgsFeatureRendererV2::ScaleDependent )
   {
     // setup scale for scale dependent visibility (rule based)
-    renderer->startRender( *( mCanvas->mapRenderer()->rendererContext() ), layer );
+    renderer->startRender( context, layer );
     filter = renderer->capabilities() & QgsFeatureRendererV2::Filter;
   }
 
@@ -341,7 +342,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, Qg
 
   if ( renderer && renderer->capabilities() & QgsFeatureRendererV2::ScaleDependent )
   {
-    renderer->stopRender( *( mCanvas->mapRenderer()->rendererContext() ) );
+    renderer->stopRender( context );
   }
 
   QgsDebugMsg( "Feature count on identify: " + QString::number( featureCount ) );

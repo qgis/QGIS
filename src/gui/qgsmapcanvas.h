@@ -278,7 +278,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     bool antiAliasingEnabled() const { return mSettings.testFlag( QgsMapSettings::Antialiasing ); }
 
     //! Select which Qt class to render with
-    void useImageToRender( bool theFlag );
+    //! @deprecated since 2.1 - does nothing because now we always render to QImage
+    Q_DECL_DEPRECATED void useImageToRender( bool theFlag );
 
     // following 2 methods should be moved elsewhere or changed to private
     // currently used by pan map tool

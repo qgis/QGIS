@@ -186,8 +186,6 @@ void QgsMapCanvas::enableAntiAliasing( bool theFlag )
 void QgsMapCanvas::useImageToRender( bool theFlag )
 {
   Q_UNUSED(theFlag);
-  //mMap->useImageToRender( theFlag );
-  //refresh(); // redraw the map on change - prevents black map view
 }
 
 QgsMapCanvasMap* QgsMapCanvas::map()
@@ -476,11 +474,7 @@ void QgsMapCanvas::refresh()
 
 void QgsMapCanvas::stopRendering()
 {
-  QgsRenderContext* mypRenderContext = mMapRenderer->rendererContext();
-  if ( mypRenderContext )
-  {
-    mypRenderContext->setRenderingStopped( true );
-  }
+  // TODO: implement stopping (?)
 }
 
 void QgsMapCanvas::updateMap()
