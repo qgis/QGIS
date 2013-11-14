@@ -584,13 +584,17 @@ void QgsGlobePluginDialog::saveMapSettings()
   settings.setValue( "/Plugin-Globe/baseLayerEnabled", mBaseLayerGroupBox->isChecked() );
   settings.setValue( "/Plugin-Globe/baseLayerURL", mBaseLayerURL->text() );
 
-  if ( mBaseLayerGroupBox->isChecked() )
+  // If there is a viewer instance already, apply it on this instance
+  if ( mGlobe->osgViewer() )
   {
-    mGlobe->setBaseMap( mBaseLayerURL->text() );
-  }
-  else
-  {
-    mGlobe->setBaseMap( QString::null );
+    if ( mBaseLayerGroupBox->isChecked() )
+    {
+      mGlobe->setBaseMap( mBaseLayerURL->text() );
+    }
+    else
+    {
+      mGlobe->setBaseMap( QString::null );
+    }
   }
 }
 

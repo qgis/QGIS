@@ -62,6 +62,7 @@
 #include <osgEarthDrivers/gdal/GDALOptions>
 #include <osgEarthDrivers/tms/TMSOptions>
 #include <osgEarth/Version>
+#include <osgEarthDrivers/cache_filesystem/FileSystemCache>
 
 using namespace osgEarth::Drivers;
 using namespace osgEarth::Util;
@@ -373,14 +374,13 @@ void GlobePlugin::settings()
 void GlobePlugin::setupMap()
 {
   QSettings settings;
-  /*
+
   QString cacheDirectory = settings.value( "cache/directory", QgsApplication::qgisSettingsDirPath() + "cache" ).toString();
-  TMSCacheOptions cacheOptions;
-  cacheOptions.setPath( cacheDirectory.toStdString() );
-  */
+  FileSystemCacheOptions cacheOptions;
+  cacheOptions.rootPath() = cacheDirectory.toStdString();
 
   MapOptions mapOptions;
-  //mapOptions.cache() = cacheOptions;
+  mapOptions.cache() = cacheOptions;
   osgEarth::Map *map = new osgEarth::Map( mapOptions );
 
   //Default image layer
@@ -742,9 +742,9 @@ void GlobePlugin::imageLayersChanged()
     mTileSource = new QgsOsgEarthTileSource( mQGisIface );
     mTileSource->initialize( "", 0 );
     ImageLayerOptions options( "QGIS" );
+    options.cachePolicy() = CachePolicy::NO_CACHE;
     mQgisMapLayer = new ImageLayer( options, mTileSource );
     map->addImageLayer( mQgisMapLayer );
-    //[layer->setCache is private in 1.3.0] mQgisMapLayer->setCache( 0 ); //disable caching
   }
   else
   {
