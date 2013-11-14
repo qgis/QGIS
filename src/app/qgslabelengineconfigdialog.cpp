@@ -19,8 +19,8 @@
 
 #include <QPushButton>
 
-QgsLabelEngineConfigDialog::QgsLabelEngineConfigDialog( QgsPalLabeling* lbl, QWidget* parent )
-    : QDialog( parent ), mLBL( lbl )
+QgsLabelEngineConfigDialog::QgsLabelEngineConfigDialog( QWidget* parent )
+    : QDialog( parent )
 {
   setupUi( this );
 
@@ -28,39 +28,44 @@ QgsLabelEngineConfigDialog::QgsLabelEngineConfigDialog( QgsPalLabeling* lbl, QWi
   connect( buttonBox->button( QDialogButtonBox::RestoreDefaults ), SIGNAL( clicked() ),
            this, SLOT( setDefaults() ) );
 
+  QgsPalLabeling lbl;
+  lbl.loadEngineSettings();
+
   // search method
-  cboSearchMethod->setCurrentIndex( mLBL->searchMethod() );
+  cboSearchMethod->setCurrentIndex( lbl.searchMethod() );
 
   // candidate numbers
   int candPoint, candLine, candPolygon;
-  mLBL->numCandidatePositions( candPoint, candLine, candPolygon );
+  lbl.numCandidatePositions( candPoint, candLine, candPolygon );
   spinCandPoint->setValue( candPoint );
   spinCandLine->setValue( candLine );
   spinCandPolygon->setValue( candPolygon );
 
-  chkShowCandidates->setChecked( mLBL->isShowingCandidates() );
-  chkShowAllLabels->setChecked( mLBL->isShowingAllLabels() );
-  mShadowDebugRectChkBox->setChecked( mLBL->isShowingShadowRectangles() );
+  chkShowCandidates->setChecked( lbl.isShowingCandidates() );
+  chkShowAllLabels->setChecked( lbl.isShowingAllLabels() );
+  mShadowDebugRectChkBox->setChecked( lbl.isShowingShadowRectangles() );
 
-  chkShowPartialsLabels->setChecked( mLBL-> isShowingPartialsLabels() );
+  chkShowPartialsLabels->setChecked( lbl.isShowingPartialsLabels() );
 }
 
 
 void QgsLabelEngineConfigDialog::onOK()
 {
-  // save
-  mLBL->setSearchMethod(( QgsPalLabeling::Search ) cboSearchMethod->currentIndex() );
+  QgsPalLabeling lbl;
 
-  mLBL->setNumCandidatePositions( spinCandPoint->value(),
+  // save
+  lbl.setSearchMethod(( QgsPalLabeling::Search ) cboSearchMethod->currentIndex() );
+
+  lbl.setNumCandidatePositions( spinCandPoint->value(),
                                   spinCandLine->value(),
                                   spinCandPolygon->value() );
 
-  mLBL->setShowingCandidates( chkShowCandidates->isChecked() );
-  mLBL->setShowingShadowRectangles( mShadowDebugRectChkBox->isChecked() );
-  mLBL->setShowingAllLabels( chkShowAllLabels->isChecked() );
-  mLBL->setShowingPartialsLabels( chkShowPartialsLabels->isChecked() );
+  lbl.setShowingCandidates( chkShowCandidates->isChecked() );
+  lbl.setShowingShadowRectangles( mShadowDebugRectChkBox->isChecked() );
+  lbl.setShowingAllLabels( chkShowAllLabels->isChecked() );
+  lbl.setShowingPartialsLabels( chkShowPartialsLabels->isChecked() );
 
-  mLBL->saveEngineSettings();
+  lbl.saveEngineSettings();
 
   accept();
 }

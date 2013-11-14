@@ -45,8 +45,8 @@
 #include <QSettings>
 
 
-QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, QWidget* parent )
-    : QWidget( parent ), mLBL( lbl ), mLayer( layer ), mMapCanvas( mapCanvas )
+QgsLabelingGui::QgsLabelingGui( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, QWidget* parent )
+    : QWidget( parent ), mLayer( layer ), mMapCanvas( mapCanvas )
 {
   if ( !layer )
     return;
@@ -1171,7 +1171,7 @@ void QgsLabelingGui::setPreviewBackground( QColor color )
 
 void QgsLabelingGui::showEngineConfigDialog()
 {
-  QgsLabelEngineConfigDialog dlg( mLBL, this );
+  QgsLabelEngineConfigDialog dlg( this );
   dlg.exec();
 }
 

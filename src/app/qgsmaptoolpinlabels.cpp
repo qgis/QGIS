@@ -181,8 +181,8 @@ void QgsMapToolPinLabels::highlightPinnedLabels()
   QgsDebugMsg( QString( "Highlighting pinned labels" ) );
 
   // get list of all drawn labels from all layers within given extent
-  QgsPalLabeling* labelEngine = mCanvas->labelingEngine();
-  if ( !labelEngine )
+  const QgsLabelingResults* labelingResults = mCanvas->labelingResults();
+  if ( !labelingResults )
   {
     QgsDebugMsg( QString( "No labeling engine" ) );
     return;
@@ -191,7 +191,7 @@ void QgsMapToolPinLabels::highlightPinnedLabels()
   QgsRectangle ext = mCanvas->extent();
   QgsDebugMsg( QString( "Getting labels from canvas extent" ) );
 
-  QList<QgsLabelPosition> labelPosList = labelEngine->labelsWithinRect( ext );
+  QList<QgsLabelPosition> labelPosList = labelingResults->labelsWithinRect( ext );
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
   QList<QgsLabelPosition>::const_iterator it;
@@ -252,14 +252,14 @@ void QgsMapToolPinLabels::pinUnpinLabels( const QgsRectangle& ext, QMouseEvent *
   // get list of all drawn labels from all layers within, or touching, chosen extent
   bool labelChanged = false;
 
-  QgsPalLabeling* labelEngine = mCanvas->labelingEngine();
-  if ( !labelEngine )
+  const QgsLabelingResults* labelingResults = mCanvas->labelingResults();
+  if ( !labelingResults )
   {
     QgsDebugMsg( QString( "No labeling engine" ) );
     return;
   }
 
-  QList<QgsLabelPosition> labelPosList = labelEngine->labelsWithinRect( ext );
+  QList<QgsLabelPosition> labelPosList = labelingResults->labelsWithinRect( ext );
 
   QList<QgsLabelPosition>::const_iterator it;
   for ( it = labelPosList.constBegin() ; it != labelPosList.constEnd(); ++it )

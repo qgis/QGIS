@@ -82,7 +82,7 @@ class QgsMapCanvas::CanvasProperties
 QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
     : QGraphicsView( parent )
     , mCanvasProperties( new CanvasProperties )
-    , mLabeling( new QgsPalLabeling )
+    , mLabelingResults( 0 )
     //, mNewSize( QSize() )
     //, mPainting( false )
 {
@@ -165,13 +165,13 @@ QgsMapCanvas::~QgsMapCanvas()
     it++;
   }
 
-  delete mLabeling;
-
   mScene->deleteLater();  // crashes in python tests on windows
 
   delete mMapRenderer;
   // mCanvasProperties auto-deleted via std::auto_ptr
   // CanvasProperties struct has its own dtor for freeing resources
+
+  delete mLabelingResults;
 
 } // dtor
 
@@ -394,9 +394,15 @@ void QgsMapCanvas::setDestinationCrs(const QgsCoordinateReferenceSystem &crs)
   emit destinationSrsChanged();
 }
 
-QgsPalLabeling *QgsMapCanvas::labelingEngine()
+const QgsLabelingResults *QgsMapCanvas::labelingResults() const
 {
-  return mLabeling;
+  return mLabelingResults;
+}
+
+void QgsMapCanvas::assignLabelingResults( QgsLabelingResults* results )
+{
+  delete mLabelingResults;
+  mLabelingResults = results;
 }
 
 

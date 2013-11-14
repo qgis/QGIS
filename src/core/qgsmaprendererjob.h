@@ -8,7 +8,7 @@
 
 #include "qgsmapsettings.h"
 
-class QgsPalLabeling;
+class QgsLabelingResults;
 
 
 /** abstract base class renderer jobs that asynchronously start map rendering */
@@ -42,9 +42,8 @@ public:
 
   // TODO: isActive() ?
 
-  //! Assign an existing labeling engine with the rendering job
-  //! TODO: handle concurrency - one labeling instance cannot be shared by multiple active rendering jobs!
-  virtual void setLabelingEngine( QgsPalLabeling* labeling ) = 0;
+  //! Get pointer to internal labeling engine (in order to get access to the results)
+  virtual QgsLabelingResults* takeLabelingResults() = 0;
 
 signals:
 
@@ -94,7 +93,7 @@ public:
   virtual void cancel();
   virtual void waitForFinished();
 
-  virtual void setLabelingEngine( QgsPalLabeling* labeling );
+  virtual QgsLabelingResults* takeLabelingResults();
 
   // from QgsMapRendererJobWithPreview
   virtual QImage renderedImage();
@@ -108,6 +107,7 @@ protected:
   QgsMapRendererCustomPainterJob* mInternalJob;
   QImage mImage;
   QPainter* mPainter;
+  QgsLabelingResults* mLabelingResults;
 };
 
 
@@ -120,6 +120,8 @@ protected:
 
 #include <QtConcurrentRun>
 #include <QFutureWatcher>
+
+class QgsPalLabeling;
 
 /** job implementation that renders everything sequentially using a custom painter.
  *  The returned image is always invalid (because there is none available).
@@ -134,8 +136,7 @@ public:
   virtual void start();
   virtual void cancel();
   virtual void waitForFinished();
-
-  virtual void setLabelingEngine( QgsPalLabeling* labeling );
+  virtual QgsLabelingResults* takeLabelingResults();
 
 protected slots:
   void futureFinished();
@@ -143,7 +144,7 @@ protected slots:
 protected:
   static void staticRender(QgsMapRendererCustomPainterJob* self); // function to be used within the thread
 
-  void startRender();
+  void doRender();
 
 private:
   QPainter* mPainter;

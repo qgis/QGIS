@@ -161,9 +161,6 @@ void QgsComposerMap::draw( QPainter *painter, const QgsRectangle& extent, const 
   jobMapSettings.setOutputSize( size.toSize() );
   jobMapSettings.setOutputDpi( dpi );
 
-  QgsPalLabeling labeling;
-  labeling.loadEngineSettings();
-
   //use stored layer set or read current set from main canvas
   jobMapSettings.setLayers( mKeepLayerSet ? mLayerSet : ms.layers() );
   jobMapSettings.setDestinationCrs( ms.destinationCrs() );
@@ -177,7 +174,6 @@ void QgsComposerMap::draw( QPainter *painter, const QgsRectangle& extent, const 
 
   // render
   QgsMapRendererCustomPainterJob job( jobMapSettings, painter );
-  job.setLabelingEngine( &labeling );
   job.start();
   job.waitForFinished();
 
@@ -639,9 +635,6 @@ bool QgsComposerMap::containsAdvancedEffects() const
 
   QStringList layers = mComposition->mapSettings().layers();
 
-  //Also need to check PAL labeling for blend modes
-  QgsPalLabeling* lbl = 0; // TODO: dynamic_cast<QgsPalLabeling*>( mMapRenderer->labelingEngine() );
-
   QStringList::const_iterator layer_it = layers.constBegin();
   QgsMapLayer* currentLayer = 0;
 
@@ -667,10 +660,10 @@ bool QgsComposerMap::containsAdvancedEffects() const
           return true;
         }
         // check label blend modes
-        if ( lbl && lbl->willUseLayer( currentVectorLayer ) )
+        if ( QgsPalLabeling::staticWillUseLayer( currentVectorLayer ) )
         {
           // Check all label blending properties
-          QgsPalLayerSettings& layerSettings = lbl->layer( currentVectorLayer->id() );
+          QgsPalLayerSettings layerSettings = QgsPalLayerSettings::fromLayer( currentVectorLayer );
           if (( layerSettings.blendMode != QPainter::CompositionMode_SourceOver ) ||
               ( layerSettings.bufferSize != 0 && layerSettings.bufferBlendMode != QPainter::CompositionMode_SourceOver ) ||
               ( layerSettings.shadowDraw && layerSettings.shadowBlendMode != QPainter::CompositionMode_SourceOver ) ||

@@ -58,12 +58,12 @@ class QgsLegendView;
 class QgsHighlight;
 class QgsVectorLayer;
 
+class QgsLabelingResults;
 class QgsMapRenderer;
 class QgsMapSettings;
 class QgsMapCanvasMap;
 class QgsMapOverviewCanvas;
 class QgsMapTool;
-class QgsPalLabeling;
 
 /** \ingroup gui
   * A class that stores visibility and presence in overview flags together
@@ -132,9 +132,14 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! @note added in 2.1
     void setDestinationCrs( const QgsCoordinateReferenceSystem& crs );
 
-    //! Get access to the labeling engine
+    //! Get access to the labeling results (may be null)
     //! @note added in 2.1
-    QgsPalLabeling* labelingEngine();
+    const QgsLabelingResults* labelingResults() const;
+
+    //! Store newly generated labeling results (may be null) and take ownership of the object.
+    //! Only meant for communication with QgsMapCanvasMap
+    //! @note added in 2.1
+    void assignLabelingResults( QgsLabelingResults* results );
 
     //! @deprecated since 2.1 - there could be more than just one "map" items
     QgsMapCanvasMap* map();
@@ -523,7 +528,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Mouse wheel action
     WheelAction mWheelAction;
 
-    QgsPalLabeling* mLabeling;
+    QgsLabelingResults* mLabelingResults;
 
     //! resize canvas size
     //QSize mNewSize;

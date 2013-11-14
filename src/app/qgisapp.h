@@ -52,7 +52,6 @@ class QgsMapCanvas;
 class QgsMapLayer;
 class QgsMapTip;
 class QgsMapTool;
-class QgsPalLabeling;
 class QgsPoint;
 class QgsProviderRegistry;
 class QgsPythonUtils;
@@ -1505,8 +1504,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsGPSInformationWidget * mpGpsWidget;
 
     QgsMessageLogViewer *mLogViewer;
-
-    QgsPalLabeling* mLBL;
 
     //! project changed
     void projectChanged( const QDomDocument & );

@@ -35,23 +35,23 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapTool
         @param xCol out: index of the attribute for data defined x coordinate
         @param yCol out: index of the attribute for data defined y coordinate
         @return true if labels of layer can be moved*/
-    bool labelMoveable( const QgsMapLayer* ml, int& xCol, int& yCol ) const;
+    bool labelMoveable( QgsMapLayer* ml, int& xCol, int& yCol ) const;
     /**Returns true if diagram move can be applied to a layer
         @param xCol out: index of the attribute for data defined x coordinate
         @param yCol out: index of the attribute for data defined y coordinate
         @return true if labels of layer can be moved*/
-    bool diagramMoveable( const QgsMapLayer* ml, int& xCol, int& yCol ) const;
+    bool diagramMoveable( QgsMapLayer* ml, int& xCol, int& yCol ) const;
     /**Returns true if layer has attribute fields set up
         @param xCol out: index of the attribute for data defined x coordinate
         @param yCol out: index of the attribute for data defined y coordinate
         @return true if layer fields set up and exist*/
-    bool layerCanPin( const QgsMapLayer* ml, int& xCol, int& yCol ) const;
+    bool layerCanPin( QgsMapLayer* ml, int& xCol, int& yCol ) const;
     /**Returns true if layer has attribute field set up
       @param showCol out: attribute column for data defined label showing*/
-    bool layerCanShowHide( const QgsMapLayer* layer, int& showCol ) const;
+    bool layerCanShowHide( QgsMapLayer* layer, int& showCol ) const;
     /**Checks if labels in a layer can be rotated
       @param rotationCol out: attribute column for data defined label rotation*/
-    bool layerIsRotatable( const QgsMapLayer* layer, int& rotationCol ) const;
+    bool layerIsRotatable( QgsMapLayer *layer, int& rotationCol ) const;
 
   protected:
     QgsRubberBand* mLabelRubberBand;
@@ -111,7 +111,7 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapTool
       @return -1 if column does not exist or an expression is used instead */
 //    int dataDefinedColumnIndex( QgsPalLayerSettings::DataDefinedProperties p, const QgsPalLayerSettings& labelSettings, const QgsVectorLayer* vlayer ) const;
 
-    int dataDefinedColumnIndex( QgsPalLayerSettings::DataDefinedProperties p, const QgsVectorLayer* vlayer ) const;
+    int dataDefinedColumnIndex( QgsPalLayerSettings::DataDefinedProperties p, QgsVectorLayer* vlayer ) const;
 
     /**Returns whether to preserve predefined rotation data during label pin/unpin operations*/
     bool preserveRotation();
@@ -150,6 +150,9 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapTool
 
   private:
     QgsPalLayerSettings mInvalidLabelSettings;
+
+    QgsVectorLayer* mCurrentLayer;
+    QgsPalLayerSettings mCurrentSettings;
 };
 
 #endif // QGSMAPTOOLLABEL_H

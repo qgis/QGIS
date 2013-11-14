@@ -28,8 +28,8 @@
 #include <QSettings>
 
 
-QgsLabelPropertyDialog::QgsLabelPropertyDialog( const QString& layerId, int featureId, const QFont& labelFont, const QString& labelText, QgsPalLabeling* labeling, QWidget * parent, Qt::WindowFlags f ):
-    QDialog( parent, f ), mLabeling( labeling ), mLabelFont( labelFont ), mCurLabelField( -1 )
+QgsLabelPropertyDialog::QgsLabelPropertyDialog( const QString& layerId, int featureId, const QFont& labelFont, const QString& labelText, QWidget * parent, Qt::WindowFlags f ):
+    QDialog( parent, f ), mLabelFont( labelFont ), mCurLabelField( -1 )
 {
   setupUi( this );
   fillHaliComboBox();
@@ -65,7 +65,7 @@ void QgsLabelPropertyDialog::init( const QString& layerId, int featureId, const 
 
   blockElementSignals( true );
 
-  QgsPalLayerSettings& layerSettings = mLabeling->layer( layerId );
+  QgsPalLayerSettings layerSettings = QgsPalLayerSettings::fromLayer( vlayer );
 
   //get label field and fill line edit
   if ( layerSettings.isExpression && !labelText.isNull() )

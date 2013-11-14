@@ -3643,9 +3643,6 @@ bool QgisApp::addProject( QString projectFile )
     }
   }
 
-  // load PAL engine settings
-  mMapCanvas->labelingEngine()->loadEngineSettings();
-
   emit projectRead(); // let plug-ins know that we've read in a new
   // project so that they can check any project
   // specific plug-in state
@@ -4336,7 +4333,7 @@ void QgisApp::labeling()
 
   QDialog *dlg = new QDialog( this );
   dlg->setWindowTitle( tr( "Layer labeling settings" ) );
-  QgsLabelingGui *labelingGui = new QgsLabelingGui( mMapCanvas->labelingEngine(), vlayer, mMapCanvas, dlg );
+  QgsLabelingGui *labelingGui = new QgsLabelingGui( vlayer, mMapCanvas, dlg );
   labelingGui->init(); // load QgsPalLayerSettings for layer
   labelingGui->layout()->setContentsMargins( 0, 0, 0, 0 );
   QVBoxLayout *layout = new QVBoxLayout( dlg );

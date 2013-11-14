@@ -30,7 +30,7 @@ class APP_EXPORT QgsLabelPropertyDialog: public QDialog, private Ui::QgsLabelPro
 {
     Q_OBJECT
   public:
-    QgsLabelPropertyDialog( const QString& layerId, int featureId, const QFont& labelFont, const QString& labelText, QgsPalLabeling* labeling, QWidget * parent = 0, Qt::WindowFlags f = 0 );
+    QgsLabelPropertyDialog( const QString& layerId, int featureId, const QFont& labelFont, const QString& labelText, QWidget * parent = 0, Qt::WindowFlags f = 0 );
     ~QgsLabelPropertyDialog();
 
     /**Returns properties changed by the user*/
@@ -85,8 +85,6 @@ class APP_EXPORT QgsLabelPropertyDialog: public QDialog, private Ui::QgsLabelPro
 
     /**Insert changed value into mChangedProperties*/
     void insertChangedValue( QgsPalLayerSettings::DataDefinedProperties p, QVariant value );
-
-    QgsPalLabeling* mLabeling;
 
     QgsAttributeMap mChangedProperties;
     QMap< QgsPalLayerSettings::DataDefinedProperties, QgsDataDefined* > mDataDefinedProperties;

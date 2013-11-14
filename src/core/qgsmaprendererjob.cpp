@@ -20,6 +20,7 @@ QgsMapRendererQImageJob::QgsMapRendererQImageJob(QgsMapRendererJob::Type type, c
 QgsMapRendererSequentialJob::QgsMapRendererSequentialJob(const QgsMapSettings& settings)
   : QgsMapRendererQImageJob(SequentialJob, settings)
   , mInternalJob(0)
+  , mLabelingResults( 0 )
 {
   qDebug("SEQUENTIAL construct");
 
@@ -37,6 +38,9 @@ QgsMapRendererSequentialJob::~QgsMapRendererSequentialJob()
   qDebug("SEQUENTIAL destruct");
   //delete mInternalJob;
   Q_ASSERT(mInternalJob == 0);
+
+  delete mLabelingResults;
+  mLabelingResults = 0;
 }
 
 
@@ -65,9 +69,11 @@ void QgsMapRendererSequentialJob::waitForFinished()
     mInternalJob->cancel();
 }
 
-void QgsMapRendererSequentialJob::setLabelingEngine( QgsPalLabeling *labeling )
+QgsLabelingResults* QgsMapRendererSequentialJob::takeLabelingResults()
 {
-  mInternalJob->setLabelingEngine( labeling );
+  QgsLabelingResults* tmp = mLabelingResults;
+  mLabelingResults = 0;
+  return tmp;
 }
 
 
@@ -84,6 +90,8 @@ void QgsMapRendererSequentialJob::internalFinished()
   mPainter->end();
   delete mPainter;
   mPainter = 0;
+
+  mLabelingResults = mInternalJob->takeLabelingResults();
 
   delete mInternalJob;
   mInternalJob = 0;
@@ -109,6 +117,9 @@ QgsMapRendererCustomPainterJob::~QgsMapRendererCustomPainterJob()
   qDebug("QPAINTER destruct");
   Q_ASSERT(!mFutureWatcher.isRunning());
   //cancel();
+
+  delete mLabelingEngine;
+  mLabelingEngine = 0;
 }
 
 void QgsMapRendererCustomPainterJob::start()
@@ -163,9 +174,9 @@ void QgsMapRendererCustomPainterJob::waitForFinished()
 }
 
 
-void QgsMapRendererCustomPainterJob::setLabelingEngine( QgsPalLabeling *labeling )
+QgsLabelingResults* QgsMapRendererCustomPainterJob::takeLabelingResults()
 {
-  mLabelingEngine = labeling;
+  return mLabelingEngine ? mLabelingEngine->takeResults() : 0;
 }
 
 
@@ -178,12 +189,12 @@ void QgsMapRendererCustomPainterJob::futureFinished()
 
 void QgsMapRendererCustomPainterJob::staticRender(QgsMapRendererCustomPainterJob* self)
 {
-  self->startRender();
+  self->doRender();
 }
 
-void QgsMapRendererCustomPainterJob::startRender()
+void QgsMapRendererCustomPainterJob::doRender()
 {
-  qDebug("QPAINTER startRender");
+  qDebug("QPAINTER doRender");
 
   // clear the background
   mPainter->fillRect( 0, 0, mSettings.outputSize().width(), mSettings.outputSize().height(), mSettings.backgroundColor() );
@@ -200,12 +211,19 @@ void QgsMapRendererCustomPainterJob::startRender()
   renderTime.start();
 #endif
 
+  delete mLabelingEngine;
+  mLabelingEngine = 0;
+
+  if ( mSettings.testFlag( QgsMapSettings::DrawLabeling ) )
+  {
+    mLabelingEngine = new QgsPalLabeling;
+    mLabelingEngine->loadEngineSettings();
+    mLabelingEngine->init( mSettings );
+  }
+
   mRenderContext = QgsRenderContext::fromMapSettings( mSettings );
   mRenderContext.setPainter( mPainter );
-
   mRenderContext.setLabelingEngine( mLabelingEngine );
-  if ( mLabelingEngine )
-    mLabelingEngine->init( mSettings );
 
   // render all layers in the stack, starting at the base
   QListIterator<QString> li( mSettings.layers() );
@@ -434,7 +452,7 @@ void QgsMapRendererCustomPainterJob::startRender()
     }
   }
 
-  if ( mSettings.testFlag( QgsMapSettings::DrawLabeling ) && mLabelingEngine )
+  if ( mLabelingEngine )
   {
     // set correct extent
     mRenderContext.setExtent( mSettings.visibleExtent() );

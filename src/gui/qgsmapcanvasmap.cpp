@@ -79,7 +79,6 @@ void QgsMapCanvasMap::paint( QPainter* p, const QStyleOptionGraphicsItem*, QWidg
       // create the renderer job
       Q_ASSERT(mJob == 0);
       mJob = new QgsMapRendererSequentialJob( mCanvas->mapSettings() );
-      mJob->setLabelingEngine( mCanvas->labelingEngine() );
       connect(mJob, SIGNAL(finished()), SLOT(finish()));
       mJob->start();
 
@@ -137,6 +136,8 @@ void QgsMapCanvasMap::finish()
   mDirty = false;
 
   mImage = mJob->renderedImage();
+
+  mCanvas->assignLabelingResults( mJob->takeLabelingResults() );
 
   update();
 }

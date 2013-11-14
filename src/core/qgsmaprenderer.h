@@ -105,10 +105,12 @@ class CORE_EXPORT QgsLabelingEngineInterface
     virtual void exit() = 0;
     //! return infos about labels at a given (map) position
     //! @note: this method was added in version 1.7
-    virtual QList<QgsLabelPosition> labelsAtPosition( const QgsPoint& p ) = 0;
+    //! @deprecated since 2.1 - use takeResults() and methods of QgsLabelingResults
+    Q_DECL_DEPRECATED virtual QList<QgsLabelPosition> labelsAtPosition( const QgsPoint& p ) = 0;
     //! return infos about labels within a given (map) rectangle
     //! @note: this method was added in version 1.9
-    virtual QList<QgsLabelPosition> labelsWithinRect( const QgsRectangle& r ) = 0;
+    //! @deprecated since 2.1 - use takeResults() and methods of QgsLabelingResults
+    Q_DECL_DEPRECATED virtual QList<QgsLabelPosition> labelsWithinRect( const QgsRectangle& r ) = 0;
 
     //! called when passing engine among map renderers
     virtual QgsLabelingEngineInterface* clone() = 0;

@@ -67,6 +67,9 @@ class CORE_EXPORT QgsPalLayerSettings
     QgsPalLayerSettings( const QgsPalLayerSettings& s );
     ~QgsPalLayerSettings();
 
+    //! @note added in 2.1
+    static QgsPalLayerSettings fromLayer( QgsVectorLayer* layer );
+
     enum Placement
     {
       AroundPoint, // Point / Polygon
@@ -652,6 +655,32 @@ class CORE_EXPORT QgsLabelComponent
     double mDpiRatio;
 };
 
+
+
+/**
+ * Class that stores computed placement from labeling engine.
+ * @note added in 2.1
+ */
+class QgsLabelingResults
+{
+public:
+  QgsLabelingResults();
+  ~QgsLabelingResults();
+
+  //! return infos about labels at a given (map) position
+  QList<QgsLabelPosition> labelsAtPosition( const QgsPoint& p ) const;
+  //! return infos about labels within a given (map) rectangle
+  QList<QgsLabelPosition> labelsWithinRect( const QgsRectangle& r ) const;
+
+protected:
+  QgsLabelingResults( const QgsLabelingResults& ) {} // no copying allowed
+
+  QgsLabelSearchTree* mLabelSearchTree;
+
+  friend class QgsPalLabeling;
+};
+
+
 class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
 {
   public:
@@ -699,6 +728,11 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
     virtual void init( const QgsMapSettings& mapSettings );
     //! called to find out whether the layer is used for labeling
     virtual bool willUseLayer( QgsVectorLayer* layer );
+
+    //! called to find out whether the layer is used for labeling
+    //! @note added in 2.1
+    static bool staticWillUseLayer( QgsVectorLayer* layer );
+
     //! clears all PAL layer settings for registered layers
     //! @note: this method was added in version 1.9
     virtual void clearActiveLayers();
@@ -717,9 +751,15 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
     //! called when we're done with rendering
     virtual void exit();
     //! return infos about labels at a given (map) position
-    virtual QList<QgsLabelPosition> labelsAtPosition( const QgsPoint& p );
+    //! @deprecated since 2.1 - use takeResults() and methods of QgsLabelingResults
+    Q_DECL_DEPRECATED virtual QList<QgsLabelPosition> labelsAtPosition( const QgsPoint& p );
     //! return infos about labels within a given (map) rectangle
-    virtual QList<QgsLabelPosition> labelsWithinRect( const QgsRectangle& r );
+    //! @deprecated since 2.1 - use takeResults() and methods of QgsLabelingResults
+    Q_DECL_DEPRECATED virtual QList<QgsLabelPosition> labelsWithinRect( const QgsRectangle& r );
+
+    //! Return pointer to recently computed results (in drawLabeling()) and pass the ownership of results to the caller
+    //! @note added in 2.1
+    QgsLabelingResults* takeResults();
 
     //! called when passing engine among map renderers
     virtual QgsLabelingEngineInterface* clone();
@@ -792,7 +832,7 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
     bool mShowingShadowRects; // whether to show debugging rectangles for drop shadows
     bool mShowingPartialsLabels; // whether to avoid partials labels or not
 
-    QgsLabelSearchTree* mLabelSearchTree;
+    QgsLabelingResults* mResults;
 };
 
 #endif // QGSPALLABELING_H

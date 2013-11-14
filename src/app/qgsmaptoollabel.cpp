@@ -26,6 +26,7 @@
 #include <QMouseEvent>
 
 QgsMapToolLabel::QgsMapToolLabel( QgsMapCanvas* canvas ): QgsMapTool( canvas ), mLabelRubberBand( 0 ), mFeatureRubberBand( 0 ), mFixPointRubberBand( 0 )
+  , mCurrentLayer( 0 )
 {
 }
 
@@ -39,10 +40,10 @@ QgsMapToolLabel::~QgsMapToolLabel()
 bool QgsMapToolLabel::labelAtPosition( QMouseEvent* e, QgsLabelPosition& p )
 {
   QgsPoint pt = toMapCoordinates( e->pos() );
-  QgsLabelingEngineInterface* labelingEngine = mCanvas->labelingEngine();
-  if ( labelingEngine )
+  const QgsLabelingResults* labelingResults = mCanvas->labelingResults();
+  if ( labelingResults )
   {
-    QList<QgsLabelPosition> labelPosList = labelingEngine->labelsAtPosition( pt );
+    QList<QgsLabelPosition> labelPosList = labelingResults->labelsAtPosition( pt );
     QList<QgsLabelPosition>::const_iterator posIt = labelPosList.constBegin();
     if ( posIt != labelPosList.constEnd() )
     {
@@ -120,7 +121,7 @@ void QgsMapToolLabel::deleteRubberBands()
 
 QgsVectorLayer* QgsMapToolLabel::currentLayer()
 {
-  QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( mCurrentLabelPos.layerID ) );
+  QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( mCurrentLabelPos.layerID ) );
   return vlayer;
 }
 
@@ -130,17 +131,16 @@ QgsPalLayerSettings& QgsMapToolLabel::currentLabelSettings( bool* ok )
   QgsVectorLayer* vlayer = currentLayer();
   if ( vlayer )
   {
-    //QgsDebugMsg( "has vlayer" );
-    QgsPalLabeling* labelEngine = mCanvas->labelingEngine();
-    if ( labelEngine )
-    {
-      //QgsDebugMsg( "has labelEngine" );
-      if ( ok )
-      {
+    if ( vlayer == mCurrentLayer )
+      return mCurrentSettings;
+
+    mCurrentLayer = vlayer;
+    mCurrentSettings = QgsPalLayerSettings::fromLayer( vlayer );
+
+    if ( ok )
         *ok = true;
-      }
-      return labelEngine->layer( mCurrentLabelPos.layerID );
-    }
+
+    return mCurrentSettings;
   }
 
   if ( ok )
@@ -430,16 +430,10 @@ bool QgsMapToolLabel::rotationPoint( QgsPoint& pos, bool ignoreUpsideDown, bool 
   return true;
 }
 
-int QgsMapToolLabel::dataDefinedColumnIndex( QgsPalLayerSettings::DataDefinedProperties p, const QgsVectorLayer* vlayer ) const
+int QgsMapToolLabel::dataDefinedColumnIndex( QgsPalLayerSettings::DataDefinedProperties p, QgsVectorLayer* vlayer ) const
 {
-
-  QgsPalLabeling* labelEngine = mCanvas->labelingEngine();
-  if ( !labelEngine )
-  {
-    return -1;
-  }
   QgsDebugMsg( QString( "dataDefinedProperties layer id:%1" ).arg( vlayer->id() ) );
-  QgsPalLayerSettings& labelSettings = labelEngine->layer( vlayer->id() );
+  QgsPalLayerSettings labelSettings( QgsPalLayerSettings::fromLayer( vlayer ) );
 
   QgsDebugMsg( QString( "dataDefinedProperties count:%1" ).arg( labelSettings.dataDefinedProperties.size() ) );
 
@@ -498,9 +492,9 @@ bool QgsMapToolLabel::dataDefinedPosition( QgsVectorLayer* vlayer, int featureId
   return true;
 }
 
-bool QgsMapToolLabel::layerIsRotatable( const QgsMapLayer* layer, int& rotationCol ) const
+bool QgsMapToolLabel::layerIsRotatable( QgsMapLayer* layer, int& rotationCol ) const
 {
-  const QgsVectorLayer* vlayer = dynamic_cast<const QgsVectorLayer*>( layer );
+  QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( layer );
   if ( !vlayer || !vlayer->isEditable() )
   {
     return false;
@@ -575,9 +569,9 @@ bool QgsMapToolLabel::dataDefinedShowHide( QgsVectorLayer* vlayer, int featureId
   return true;
 }
 
-bool QgsMapToolLabel::diagramMoveable( const QgsMapLayer* ml, int& xCol, int& yCol ) const
+bool QgsMapToolLabel::diagramMoveable( QgsMapLayer* ml, int& xCol, int& yCol ) const
 {
-  const QgsVectorLayer* vlayer = dynamic_cast<const QgsVectorLayer*>( ml );
+  QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( ml );
   if ( vlayer && vlayer->diagramRenderer() )
   {
     const QgsDiagramLayerSettings *dls = vlayer->diagramLayerSettings();
@@ -591,9 +585,9 @@ bool QgsMapToolLabel::diagramMoveable( const QgsMapLayer* ml, int& xCol, int& yC
   return false;
 }
 
-bool QgsMapToolLabel::labelMoveable( const QgsMapLayer* ml, int& xCol, int& yCol ) const
+bool QgsMapToolLabel::labelMoveable( QgsMapLayer *ml, int& xCol, int& yCol ) const
 {
-  const QgsVectorLayer* vlayer = dynamic_cast<const QgsVectorLayer*>( ml );
+  QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( ml );
   if ( !vlayer || !vlayer->isEditable() )
   {
     return false;
@@ -624,17 +618,17 @@ bool QgsMapToolLabel::labelMoveable( const QgsMapLayer* ml, int& xCol, int& yCol
   return false;
 }
 
-bool QgsMapToolLabel::layerCanPin( const QgsMapLayer* ml, int& xCol, int& yCol ) const
+bool QgsMapToolLabel::layerCanPin( QgsMapLayer* ml, int& xCol, int& yCol ) const
 {
   // currently same as QgsMapToolLabel::labelMoveable, but may change
   bool canPin = labelMoveable( ml, xCol, yCol );
   return canPin;
 }
 
-bool QgsMapToolLabel::layerCanShowHide( const QgsMapLayer* ml, int& showCol ) const
+bool QgsMapToolLabel::layerCanShowHide( QgsMapLayer* ml, int& showCol ) const
 {
   //QgsDebugMsg( "entered" );
-  const QgsVectorLayer* vlayer = dynamic_cast<const QgsVectorLayer*>( ml );
+  QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( ml );
   if ( !vlayer || !vlayer->isEditable() )
   {
     return false;

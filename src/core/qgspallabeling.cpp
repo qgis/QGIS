@@ -578,6 +578,15 @@ QgsPalLayerSettings::~QgsPalLayerSettings()
   dataDefinedProperties.clear();
 }
 
+
+QgsPalLayerSettings QgsPalLayerSettings::fromLayer( QgsVectorLayer* layer )
+{
+  QgsPalLayerSettings settings;
+  settings.readFromLayer( layer );
+  return settings;
+}
+
+
 QgsExpression* QgsPalLayerSettings::getLabelExpression()
 {
   if ( expression == NULL )
@@ -3044,6 +3053,7 @@ double QgsPalLayerSettings::scaleToPixelContext( double size, const QgsRenderCon
 
 QgsPalLabeling::QgsPalLabeling()
     : mMapSettings( NULL ), mPal( NULL )
+    , mResults( 0 )
 {
 
   // find out engine defaults
@@ -3065,8 +3075,6 @@ QgsPalLabeling::QgsPalLabeling()
   mShowingShadowRects = false;
   mShowingAllLabels = false;
   mShowingPartialsLabels = p.getShowPartial();
-
-  mLabelSearchTree = new QgsLabelSearchTree();
 }
 
 QgsPalLabeling::~QgsPalLabeling()
@@ -3076,11 +3084,17 @@ QgsPalLabeling::~QgsPalLabeling()
 
   clearActiveLayers();
 
-  delete mLabelSearchTree;
-  mLabelSearchTree = NULL;
+  delete mResults;
+  mResults = 0;
 }
 
 bool QgsPalLabeling::willUseLayer( QgsVectorLayer* layer )
+{
+  return staticWillUseLayer( layer );
+}
+
+
+bool QgsPalLabeling::staticWillUseLayer( QgsVectorLayer* layer )
 {
   // don't do QgsPalLayerSettings::readFromLayer( layer ) if not needed
   bool enabled = false;
@@ -3089,6 +3103,7 @@ bool QgsPalLabeling::willUseLayer( QgsVectorLayer* layer )
 
   return enabled;
 }
+
 
 void QgsPalLabeling::clearActiveLayers()
 {
@@ -3809,10 +3824,8 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
   QPainter* painter = context.painter();
   QgsRectangle extent = context.extent();
 
-  if ( mLabelSearchTree )
-  {
-    mLabelSearchTree->clear();
-  }
+  delete mResults;
+  mResults = new QgsLabelingResults;
 
   QTime t;
   t.start();
@@ -3891,12 +3904,12 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
       }
 
       //insert into label search tree to manipulate position interactively
-      if ( mLabelSearchTree )
+      if ( mResults->mLabelSearchTree )
       {
         //for diagrams, remove the additional 'd' at the end of the layer id
         QString layerId = layerName;
         layerId.chop( 1 );
-        mLabelSearchTree->insertLabel( *it,  QString( palGeometry->strId() ).toInt(), QString( "" ), layerId, QFont(), true, false );
+        mResults->mLabelSearchTree->insertLabel( *it,  QString( palGeometry->strId() ).toInt(), QString( "" ), layerId, QFont(), true, false );
       }
       continue;
     }
@@ -3969,10 +3982,10 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
 
     drawLabel( *it, context, tmpLyr, LabelText );
 
-    if ( mLabelSearchTree )
+    if ( mResults->mLabelSearchTree )
     {
       QString labeltext = (( QgsPalGeometry* )( *it )->getFeaturePart()->getUserGeometry() )->text();
-      mLabelSearchTree->insertLabel( *it,  QString( palGeometry->strId() ).toInt(), layerName, labeltext, dFont, false, palGeometry->isPinned() );
+      mResults->mLabelSearchTree->insertLabel( *it,  QString( palGeometry->strId() ).toInt(), layerName, labeltext, dFont, false, palGeometry->isPinned() );
     }
   }
 
@@ -4016,38 +4029,24 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
 
 QList<QgsLabelPosition> QgsPalLabeling::labelsAtPosition( const QgsPoint& p )
 {
-  QList<QgsLabelPosition> positions;
-
-  QList<QgsLabelPosition*> positionPointers;
-  if ( mLabelSearchTree )
-  {
-    mLabelSearchTree->label( p, positionPointers );
-    QList<QgsLabelPosition*>::const_iterator pointerIt = positionPointers.constBegin();
-    for ( ; pointerIt != positionPointers.constEnd(); ++pointerIt )
-    {
-      positions.push_back( QgsLabelPosition( **pointerIt ) );
-    }
-  }
-
-  return positions;
+  return mResults ? mResults->labelsAtPosition( p ) : QList<QgsLabelPosition>();
 }
 
 QList<QgsLabelPosition> QgsPalLabeling::labelsWithinRect( const QgsRectangle& r )
 {
-  QList<QgsLabelPosition> positions;
+  return mResults ? mResults->labelsWithinRect( r ) : QList<QgsLabelPosition>();
+}
 
-  QList<QgsLabelPosition*> positionPointers;
-  if ( mLabelSearchTree )
+QgsLabelingResults *QgsPalLabeling::takeResults()
+{
+  if ( mResults )
   {
-    mLabelSearchTree->labelsInRect( r, positionPointers );
-    QList<QgsLabelPosition*>::const_iterator pointerIt = positionPointers.constBegin();
-    for ( ; pointerIt != positionPointers.constEnd(); ++pointerIt )
-    {
-      positions.push_back( QgsLabelPosition( **pointerIt ) );
-    }
+    QgsLabelingResults* tmp = mResults;
+    mResults = 0;
+    return tmp; // ownership passed to the caller
   }
-
-  return positions;
+  else
+    return 0;
 }
 
 void QgsPalLabeling::numCandidatePositions( int& candPoint, int& candLine, int& candPolygon )
@@ -4874,4 +4873,52 @@ QgsLabelingEngineInterface* QgsPalLabeling::clone()
   lbl->mShowingShadowRects = mShowingShadowRects;
   lbl->mShowingPartialsLabels = mShowingPartialsLabels;
   return lbl;
+}
+
+
+QgsLabelingResults::QgsLabelingResults()
+{
+  mLabelSearchTree = new QgsLabelSearchTree();
+}
+
+QgsLabelingResults::~QgsLabelingResults()
+{
+  delete mLabelSearchTree;
+  mLabelSearchTree = NULL;
+}
+
+QList<QgsLabelPosition> QgsLabelingResults::labelsAtPosition( const QgsPoint& p ) const
+{
+  QList<QgsLabelPosition> positions;
+
+  QList<QgsLabelPosition*> positionPointers;
+  if ( mLabelSearchTree )
+  {
+    mLabelSearchTree->label( p, positionPointers );
+    QList<QgsLabelPosition*>::const_iterator pointerIt = positionPointers.constBegin();
+    for ( ; pointerIt != positionPointers.constEnd(); ++pointerIt )
+    {
+      positions.push_back( QgsLabelPosition( **pointerIt ) );
+    }
+  }
+
+  return positions;
+}
+
+QList<QgsLabelPosition> QgsLabelingResults::labelsWithinRect( const QgsRectangle& r ) const
+{
+  QList<QgsLabelPosition> positions;
+
+  QList<QgsLabelPosition*> positionPointers;
+  if ( mLabelSearchTree )
+  {
+    mLabelSearchTree->labelsInRect( r, positionPointers );
+    QList<QgsLabelPosition*>::const_iterator pointerIt = positionPointers.constBegin();
+    for ( ; pointerIt != positionPointers.constEnd(); ++pointerIt )
+    {
+      positions.push_back( QgsLabelPosition( **pointerIt ) );
+    }
+  }
+
+  return positions;
 }

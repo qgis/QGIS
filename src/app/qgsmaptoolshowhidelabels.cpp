@@ -234,8 +234,8 @@ bool QgsMapToolShowHideLabels::selectedLabelFeatures( QgsVectorLayer* vlayer,
 {
   // get list of all drawn labels from current layer that intersect rubberband
 
-  QgsPalLabeling* labelEngine = mCanvas->labelingEngine();
-  if ( !labelEngine )
+  const QgsLabelingResults* labelingResults = mCanvas->labelingResults();
+  if ( !labelingResults )
   {
     QgsDebugMsg( "No labeling engine" );
     return false;
@@ -245,7 +245,7 @@ bool QgsMapToolShowHideLabels::selectedLabelFeatures( QgsVectorLayer* vlayer,
 
   QgsRectangle ext = mRubberBand->asGeometry()->boundingBox();
 
-  QList<QgsLabelPosition> labelPosList = labelEngine->labelsWithinRect( ext );
+  QList<QgsLabelPosition> labelPosList = labelingResults->labelsWithinRect( ext );
 
   QList<QgsLabelPosition>::const_iterator it;
   for ( it = labelPosList.constBegin() ; it != labelPosList.constEnd(); ++it )

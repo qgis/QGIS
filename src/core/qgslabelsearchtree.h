@@ -43,13 +43,13 @@ class CORE_EXPORT QgsLabelSearchTree
      * @note not available in python bindings
      * TODO: why does this break bindings with QList<QgsLabelPosition>?
      */
-    void label( const QgsPoint& p, QList<QgsLabelPosition*>& posList );
+    void label( const QgsPoint& p, QList<QgsLabelPosition*>& posList ) const;
 
     /**Returns label position(s) in given rectangle. QgsLabelSearchTree keeps ownership, don't delete the LabelPositions
      * @note not available in python bindings
      * TODO: why does this break bindings with QList<QgsLabelPosition>?
      */
-    void labelsInRect( const QgsRectangle& r, QList<QgsLabelPosition*>& posList );
+    void labelsInRect( const QgsRectangle& r, QList<QgsLabelPosition*>& posList ) const;
 
     /**Inserts label position. Does not take ownership of labelPos
      * @return true in case of success
@@ -58,7 +58,8 @@ class CORE_EXPORT QgsLabelSearchTree
     bool insertLabel( LabelPosition* labelPos, int featureId, const QString& layerName, const QString& labeltext, const QFont& labelfont, bool diagram = false, bool pinned = false );
 
   private:
-    RTree<QgsLabelPosition*, double, 2, double> mSpatialIndex;
+    // set as mutable because RTree template is not const-correct
+    mutable RTree<QgsLabelPosition*, double, 2, double> mSpatialIndex;
 };
 
 #endif // QGSLABELTREE_H
