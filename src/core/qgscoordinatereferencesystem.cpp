@@ -2030,7 +2030,7 @@ bool QgsCoordinateReferenceSystem::syncDatumTransform( const QString& dbPath )
 
     if ( sqlite3_exec( db, sql.toUtf8(), 0, 0, 0 ) != SQLITE_OK )
     {
-      QgsDebugMsg( "Error" );
+      QgsDebugMsg( QString( "Error [%1]" ).arg( sqlite3_errmsg( db ) ) );
     }
   }
 
