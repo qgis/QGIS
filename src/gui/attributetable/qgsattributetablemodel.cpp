@@ -77,7 +77,7 @@ bool QgsAttributeTableModel::loadFeatureAtId( QgsFeatureId fid ) const
 
 void QgsAttributeTableModel::featureDeleted( QgsFeatureId fid )
 {
-  QgsDebugMsg( QString( "(%2) fid: %1" ).arg( fid ).arg( mFeatureRequest.filterType() ) );
+  QgsDebugMsgLevel( QString( "(%2) fid: %1" ).arg( fid ).arg( mFeatureRequest.filterType() ), 4 );
   mFieldCache.remove( fid );
 
   int row = idToRow( fid );
@@ -132,7 +132,7 @@ bool QgsAttributeTableModel::removeRows( int row, int count, const QModelIndex &
 
 void QgsAttributeTableModel::featureAdded( QgsFeatureId fid )
 {
-  QgsDebugMsg( QString( "(%2) fid: %1" ).arg( fid ).arg( mFeatureRequest.filterType() ) );
+  QgsDebugMsgLevel( QString( "(%2) fid: %1" ).arg( fid ).arg( mFeatureRequest.filterType() ), 4 );
   if ( loadFeatureAtId( fid ) && mFeatureRequest.acceptFeature( mFeat ) )
   {
     mFieldCache[ fid ] = mFeat.attribute( mCachedField );
