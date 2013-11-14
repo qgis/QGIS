@@ -62,8 +62,9 @@
 #include <osgEarthDrivers/gdal/GDALOptions>
 #include <osgEarthDrivers/tms/TMSOptions>
 #include <osgEarth/Version>
+#if OSGEARTH_VERSION_GREATER_OR_EQUAL( 2, 2, 0 )
 #include <osgEarthDrivers/cache_filesystem/FileSystemCache>
-
+#endif
 using namespace osgEarth::Drivers;
 using namespace osgEarth::Util;
 
@@ -289,7 +290,12 @@ void GlobePlugin::run()
                 , settings.value( "/Plugin-Globe/skyAutoAmbient", false ).toBool() );
 
     // create a surface to house the controls
+#if OSGEARTH_VERSION_GREATER_OR_EQUAL( 2, 1, 1 )
     mControlCanvas = ControlCanvas::get( mOsgViewer );
+#else
+    mControlCanvas = new ControlCanvas( mOsgViewer );
+#endif
+
     mRootNode->addChild( mControlCanvas );
 
     mOsgViewer->setSceneData( mRootNode );
@@ -370,10 +376,15 @@ void GlobePlugin::settings()
 void GlobePlugin::setupMap()
 {
   QSettings settings;
-
   QString cacheDirectory = settings.value( "cache/directory", QgsApplication::qgisSettingsDirPath() + "cache" ).toString();
+
+#if OSGEARTH_VERSION_GREATER_OR_EQUAL( 2, 2, 0 )
   FileSystemCacheOptions cacheOptions;
   cacheOptions.rootPath() = cacheDirectory.toStdString();
+#else
+  TMSCacheOptions cacheOptions;
+  cacheOptions.setPath( cacheDirectory.toStdString() );
+#endif
 
   MapOptions mapOptions;
   mapOptions.cache() = cacheOptions;
@@ -738,7 +749,9 @@ void GlobePlugin::imageLayersChanged()
     mTileSource = new QgsOsgEarthTileSource( mQGisIface );
     mTileSource->initialize( "", 0 );
     ImageLayerOptions options( "QGIS" );
+#if OSGEARTH_VERSION_GREATER_OR_EQUAL( 2, 2, 0 )
     options.cachePolicy() = CachePolicy::NO_CACHE;
+#endif
     mQgisMapLayer = new ImageLayer( options, mTileSource );
     map->addImageLayer( mQgisMapLayer );
   }
