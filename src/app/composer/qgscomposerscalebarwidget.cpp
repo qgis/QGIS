@@ -51,7 +51,7 @@ QgsComposerScaleBarWidget::QgsComposerScaleBarWidget( QgsComposerScaleBar* scale
   mUnitsComboBox->insertItem( 0, tr( "Map units" ), 0 );
   mUnitsComboBox->insertItem( 1, tr( "Meters" ), 1 );
   mUnitsComboBox->insertItem( 2, tr( "Feet" ), 2 );
-
+  mUnitsComboBox->insertItem( 3, tr( "Nautical Miles" ), 3 );
   blockMemberSignals( false );
   setGuiElements(); //set the GUI elements to the state of scaleBar
 }
@@ -532,9 +532,37 @@ void QgsComposerScaleBarWidget::on_mUnitsComboBox_currentIndexChanged( int index
     return;
   }
 
-  mComposerScaleBar->beginCommand( tr( "Scalebar unit changed" ) );
   disconnectUpdateSignal();
   mComposerScaleBar->setUnits(( QgsComposerScaleBar::ScaleBarUnits )unitData.toInt() );
+  switch ( mUnitsComboBox->currentIndex() )
+  {
+    case 0:
+    {
+      mComposerScaleBar->beginCommand( tr( "Scalebar changed to map units" ) );
+      mComposerScaleBar->applyDefaultSize( QgsComposerScaleBar::MapUnits );
+      break;
+    }
+    case 2:
+    {
+      mComposerScaleBar->beginCommand( tr( "Scalebar changed to feet" ) );
+      mComposerScaleBar->applyDefaultSize( QgsComposerScaleBar::Feet );
+      break;
+    }
+    case 3:
+    {
+      mComposerScaleBar->beginCommand( tr( "Scalebar changed to nautical miles" ) );
+      mComposerScaleBar->applyDefaultSize( QgsComposerScaleBar::NauticalMiles );
+      break;
+    }
+    case 1:
+    default:
+    {
+      mComposerScaleBar->beginCommand( tr( "Scalebar changed to meters" ) );
+      mComposerScaleBar->applyDefaultSize( QgsComposerScaleBar::Meters );
+      break;
+    }
+  }
+
   mComposerScaleBar->update();
   connectUpdateSignal();
   mComposerScaleBar->endCommand();

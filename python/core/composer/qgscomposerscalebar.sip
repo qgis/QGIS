@@ -23,7 +23,8 @@ class QgsComposerScaleBar: QgsComposerItem
     {
       MapUnits = 0,
       Meters,
-      Feet
+      Feet,
+      NauticalMiles
     };
 
     QgsComposerScaleBar( QgsComposition* composition /TransferThis/ );
@@ -95,7 +96,7 @@ class QgsComposerScaleBar: QgsComposerItem
     void applyDefaultSettings();
     /**Apply default size (scale bar 1/5 of map item width)
       @note this method was added in version 1.7*/
-    void applyDefaultSize();
+    void applyDefaultSize( ScaleBarUnits u = Meters );
 
     /**Sets style by name
      @param styleName (untranslated) style name. Possibilities are: 'Single Box', 'Double Box', 'Line Ticks Middle', 'Line Ticks Down', 'Line Ticks Up', 'Numeric'*/
