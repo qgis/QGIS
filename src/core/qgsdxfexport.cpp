@@ -308,8 +308,8 @@ int QgsDxfExport::writeToFile( QIODevice* d )
   }
 
   QTextStream outStream( d );
-  writeHeaderAC1018( outStream );
-  writeTablesAC1018( outStream );
+  writeHeader( outStream );
+  writeTables( outStream );
   writeEntities( outStream );
   writeEndFile( outStream );
   return 0;
@@ -703,7 +703,7 @@ void QgsDxfExport::addFeature( const QgsFeature& fet, QTextStream& stream, const
     //single line
     if ( geometryType == QGis::WKBLineString || geometryType == QGis::WKBLineString25D )
     {
-      writePolylineAC1018( stream, geom->asPolyline(), layer, lineStyleName, c, width, false );
+      writePolyline( stream, geom->asPolyline(), layer, lineStyleName, c, width, false );
     }
 
     //multiline
@@ -713,7 +713,7 @@ void QgsDxfExport::addFeature( const QgsFeature& fet, QTextStream& stream, const
       QgsMultiPolyline::const_iterator lIt = multiLine.constBegin();
       for ( ; lIt != multiLine.constEnd(); ++lIt )
       {
-        writePolylineAC1018( stream, *lIt, layer, lineStyleName, c, width, false );
+        writePolyline( stream, *lIt, layer, lineStyleName, c, width, false );
       }
     }
 
@@ -724,7 +724,7 @@ void QgsDxfExport::addFeature( const QgsFeature& fet, QTextStream& stream, const
       QgsPolygon::const_iterator polyIt = polygon.constBegin();
       for ( ; polyIt != polygon.constEnd(); ++polyIt ) //iterate over rings
       {
-        writePolylineAC1018( stream, *polyIt, layer, lineStyleName, c, width, true );
+        writePolyline( stream, *polyIt, layer, lineStyleName, c, width, true );
       }
     }
 
@@ -738,7 +738,7 @@ void QgsDxfExport::addFeature( const QgsFeature& fet, QTextStream& stream, const
         QgsPolygon::const_iterator polyIt = mpIt->constBegin();
         for ( ; polyIt != mpIt->constEnd(); ++polyIt )
         {
-          writePolylineAC1018( stream, *polyIt, layer, lineStyleName, c, width, true );
+          writePolyline( stream, *polyIt, layer, lineStyleName, c, width, true );
         }
       }
     }
@@ -1002,7 +1002,7 @@ void QgsDxfExport::writeLinestyle( QTextStream& stream, const QString& styleName
   }
 }
 
-/******************************************************AC_1018 methods***************************************************************/
+/******************************************************Test with AC_1018 methods***************************************************************/
 
 void QgsDxfExport::writeHeaderAC1018( QTextStream& stream )
 {
@@ -1068,7 +1068,75 @@ void QgsDxfExport::writeTablesAC1018( QTextStream& stream )
   stream << "  2\n";
   stream << "TABLES\n";
 
-  //todo: VPORT table
+  //APPID
+  stream << "  0\n";
+  stream << "TABLE\n";
+  stream << "  2\n";
+  stream << "APPID\n";
+  stream << "  5\n";
+  stream << QString( "%1\n" ).arg( mNextHandleId++ );
+  stream << "100\n";
+  stream << "AcDbSymbolTable\n";
+  stream << " 70\n";
+  stream << "  1\n";
+  stream << "  0\n";
+  stream << "APPID\n";
+  stream << "  5\n";
+  stream << QString( "%1\n" ).arg( mNextHandleId++ );
+  stream << "100\n";
+  stream << "AcDbSymbolTableRecord\n";
+  stream << "100\n";
+  stream << "AcDbRegAppTableRecord\n";
+  stream << "  2\n";
+  stream << "ACAD\n";
+  stream << " 70\n";
+  stream << "  0\n";
+  stream << "  0\n";
+  stream << "ENDTAB\n";
+
+  //VPORT table
+  stream << "  0\n";
+  stream << "TABLE\n";
+  stream << "  2\n";
+  stream << "VPORT\n";
+  stream << "  5\n";
+  stream << QString( "%1\n" ).arg( mNextHandleId++ );
+  stream << "100\n";
+  stream << "AcDbSymbolTable\n";
+  stream << " 70\n";
+  stream << "1\n";
+  stream << "  0\n";
+  stream << "VPORT\n";
+  stream << "  5\n";
+  stream << QString( "%1\n" ).arg( mNextHandleId++ );
+  stream << "100\n";
+  stream << "AcDbSymbolTableRecord\n";
+  stream << "100\n";
+  stream << "AcDbViewportTableRecord\n";
+  stream << "  2\n";
+  stream << "*Active\n";
+  stream << " 70\n";
+  stream << "  0\n";
+  stream << " 10\n";
+  stream << " 0.0\n";
+  stream << " 20\n";
+  stream << "0.0\n";
+  stream << " 11\n";
+  stream << " 1.0\n";
+  stream << " 21\n";
+  stream << "1.0\n";
+  stream << " 12\n";
+  stream << "80.25\n";
+  stream << " 22\n";
+  stream << "106.4409457059851\n";
+  stream << " 40\n";
+  stream << "113.3818914119703\n";
+  stream << " 41\n";
+  stream << "0.8863849310366128\n";
+  stream << " 42\n";
+  stream << "50.0\n";
+  stream << "  0\n";
+  stream << "ENDTAB\n";
 
   //iterate through all layers and get symbol layer pointers
   QList<QgsSymbolLayerV2*> slList;
@@ -1112,6 +1180,48 @@ void QgsDxfExport::writeTablesAC1018( QTextStream& stream )
   stream << " 40\n"; //todo: add segments in group 49
   stream << "0.0\n";
 
+  stream << "  0\n";
+  stream << "LTYPE\n";
+  stream << "  5\n";
+  stream << QString( "%1\n" ).arg( mNextHandleId++ );
+  stream << "100\n";
+  stream << "AcDbSymbolTableRecord\n";
+  stream << "100\n";
+  stream << "AcDbLinetypeTableRecord\n";
+  stream << "  2\n";
+  stream << "BYBLOCK\n";
+  stream << "  70\n";
+  stream << "64\n";
+  stream << "  3\n";
+  stream << "Defaultstyle\n";
+  stream << " 72\n";
+  stream << "65\n";
+  stream << " 73\n";
+  stream << "0\n";
+  stream << " 40\n"; //todo: add segments in group 49
+  stream << "0.0\n";
+
+  stream << "  0\n";
+  stream << "LTYPE\n";
+  stream << "  5\n";
+  stream << QString( "%1\n" ).arg( mNextHandleId++ );
+  stream << "100\n";
+  stream << "AcDbSymbolTableRecord\n";
+  stream << "100\n";
+  stream << "AcDbLinetypeTableRecord\n";
+  stream << "  2\n";
+  stream << "BYLAYER\n";
+  stream << "  70\n";
+  stream << "64\n";
+  stream << "  3\n";
+  stream << "Defaultstyle\n";
+  stream << " 72\n";
+  stream << "65\n";
+  stream << " 73\n";
+  stream << "0\n";
+  stream << " 40\n"; //todo: add segments in group 49
+  stream << "0.0\n";
+
   //add symbol layer linestyles
   QList<QgsSymbolLayerV2*>::const_iterator slIt = slList.constBegin();
   for ( ; slIt != slList.constEnd(); ++slIt )
@@ -1138,6 +1248,8 @@ void QgsDxfExport::writeTablesAC1018( QTextStream& stream )
   {
     stream << "  0\n";
     stream << "LAYER\n";
+    stream << "  5\n";
+    stream << QString( "%1\n" ).arg( mNextHandleId++ );
     stream << "100\n";
     stream << "AcDbSymbolTableRecord\n";
     stream << "100\n";
@@ -1160,33 +1272,6 @@ void QgsDxfExport::writeTablesAC1018( QTextStream& stream )
   //todo: VIEW table
 
   //todo: UCS table
-
-  //APPID
-  stream << "  0\n";
-  stream << "TABLE\n";
-  stream << "  2\n";
-  stream << "APPID\n";
-  stream << "  5\n";
-  stream << QString( "%1\n" ).arg( mNextHandleId++ );
-  stream << "100\n";
-  stream << "AcDbSymbolTable\n";
-  stream << " 70\n";
-  stream << "  1\n";
-
-  stream << "  0\n";
-  stream << "APPID\n";
-  stream << "  5\n";
-  stream << QString( "%1\n" ).arg( mNextHandleId++ );
-  stream << "100\n";
-  stream << "AcDbSymbolTableRecord\n";
-  stream << "100\n";
-  stream << "AcDbRegAppTableRecord\n";
-  stream << "  2\n";
-  stream << "ACAD\n";
-  stream << " 70\n";
-  stream << "  0\n";
-  stream << "  0\n";
-  stream << "ENDTAB\n";
 
   //todo: DIMSTYLE table
 
