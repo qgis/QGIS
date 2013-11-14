@@ -577,6 +577,10 @@ void QgsGlobePluginDialog::loadMapSettings()
   }
 
   mBaseLayerURL->setText( mapUrl );
+
+  mSkyGroupBox->setChecked( settings.value( "/Plugin-Globe/skyEnabled", false ).toBool() );
+  mSkyAutoAmbient->setChecked( settings.value( "/Plugin-Globe/skyAutoAmbient", false ).toBool() );
+  mSkyDateTime->setDateTime( settings.value( "/Plugin-Globe/skyDateTime", QDateTime() ).toDateTime() );
 }
 
 void QgsGlobePluginDialog::saveMapSettings()
@@ -584,18 +588,22 @@ void QgsGlobePluginDialog::saveMapSettings()
   settings.setValue( "/Plugin-Globe/baseLayerEnabled", mBaseLayerGroupBox->isChecked() );
   settings.setValue( "/Plugin-Globe/baseLayerURL", mBaseLayerURL->text() );
 
-  // If there is a viewer instance already, apply it on this instance
-  if ( mGlobe->osgViewer() )
+  // Let globe update the current view
+  if ( mBaseLayerGroupBox->isChecked() )
   {
-    if ( mBaseLayerGroupBox->isChecked() )
-    {
-      mGlobe->setBaseMap( mBaseLayerURL->text() );
-    }
-    else
-    {
-      mGlobe->setBaseMap( QString::null );
-    }
+    mGlobe->setBaseMap( mBaseLayerURL->text() );
   }
+  else
+  {
+    mGlobe->setBaseMap( QString::null );
+  }
+
+  settings.setValue( "/Plugin-Globe/skyEnabled", mSkyGroupBox->isChecked() );
+  settings.setValue( "/Plugin-Globe/skyAutoAmbient", mSkyAutoAmbient->isChecked() );
+  settings.setValue( "/Plugin-Globe/skyDateTime", mSkyDateTime->dateTime() );
+
+  // Adjust sky of a running globe viewer
+  mGlobe->setSkyParameters( mSkyGroupBox->isChecked(), mSkyDateTime->dateTime(), mSkyAutoAmbient->isChecked() );
 }
 
 void QgsGlobePluginDialog::setStereoConfig()

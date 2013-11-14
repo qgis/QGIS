@@ -51,6 +51,7 @@ class QToolBar;
 class QgisInterface;
 
 namespace osgEarth { namespace QtGui { class ViewerWidget; } }
+namespace osgEarth { namespace Util { class SkyNode; } }
 
 class GlobePlugin : public QObject, public QgisPlugin
 {
@@ -80,6 +81,8 @@ class GlobePlugin : public QObject, public QgisPlugin
     void elevationLayersChanged();
     //! Set a different base map (QString::NULL will disable the base map)
     void setBaseMap( QString url );
+    //! Called when the extents of the map change
+    void setSkyParameters( bool enabled, const QDateTime& dateTime, bool autoAmbience );
     //! Called when the extents of the map change
     void extentsChanged();
     //! Sync globe extent to mapCanavas
@@ -143,6 +146,8 @@ class GlobePlugin : public QObject, public QgisPlugin
     osgEarth::MapNode* mMapNode;
     //! Base layer
     osg::ref_ptr<osgEarth::ImageLayer> mBaseLayer;
+    //! Sky node
+    osg::ref_ptr<osgEarth::Util::SkyNode> mSkyNode;
     //! QGIS maplayer
     osgEarth::ImageLayer* mQgisMapLayer;
     //! Tile source

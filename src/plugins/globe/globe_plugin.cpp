@@ -283,14 +283,10 @@ void GlobePlugin::run()
       setupMap();
     }
 
-    if ( getenv( "GLOBE_SKY" ) )
-    {
-      SkyNode* sky = new SkyNode( mMapNode->getMap() );
-      sky->setDateTime( 2011, 1, 6, 17.0 );
-      //sky->setSunPosition( osg::Vec3(0,-1,0) );
-      sky->attach( mOsgViewer );
-      mRootNode->addChild( sky );
-    }
+    // Initialize the sky node if required
+    setSkyParameters( settings.value( "/Plugin-Globe/skyEnabled", false ).toBool()
+                , settings.value( "/Plugin-Globe/skyDateTime", QDateTime() ).toDateTime()
+                , settings.value( "/Plugin-Globe/skyAutoAmbient", false ).toBool() );
 
     // create a surface to house the controls
     mControlCanvas = ControlCanvas::get( mOsgViewer );
@@ -811,17 +807,48 @@ void GlobePlugin::elevationLayersChanged()
 
 void GlobePlugin::setBaseMap( QString url )
 {
-  mMapNode->getMap()->removeImageLayer( mBaseLayer );
-  if ( url.isNull() )
+  if ( mMapNode )
   {
-    mBaseLayer = 0;
+    mMapNode->getMap()->removeImageLayer( mBaseLayer );
+    if ( url.isNull() )
+    {
+      mBaseLayer = 0;
+    }
+    else
+    {
+      TMSOptions imagery;
+      imagery.url() = url.toStdString();
+      mBaseLayer = new ImageLayer( "Imagery", imagery );
+      mMapNode->getMap()->insertImageLayer( mBaseLayer, 0 );
+    }
   }
-  else
+}
+
+void GlobePlugin::setSkyParameters( bool enabled, const QDateTime& dateTime, bool autoAmbience )
+{
+  if ( mRootNode )
   {
-    TMSOptions imagery;
-    imagery.url() = url.toStdString();
-    mBaseLayer = new ImageLayer( "Imagery", imagery );
-    mMapNode->getMap()->insertImageLayer( mBaseLayer, 0 );
+    if ( enabled )
+    {
+      // Create if not yet done
+      if ( !mSkyNode.get() )
+        mSkyNode = new SkyNode( mMapNode->getMap() );
+
+  #if OSGEARTH_VERSION_GREATER_OR_EQUAL( 2, 4, 0 )
+      mSkyNode->setAutoAmbience( autoAmbience );
+  #endif
+      mSkyNode->setDateTime( dateTime.date().year()
+                             , dateTime.date().month()
+                             , dateTime.date().day()
+                             , dateTime.time().hour() + dateTime.time().minute() / 60.0 );
+      //sky->setSunPosition( osg::Vec3(0,-1,0) );
+      mSkyNode->attach( mOsgViewer );
+      mRootNode->addChild( mSkyNode );
+    }
+    else
+    {
+      mRootNode->removeChild( mSkyNode );
+    }
   }
 }
 
