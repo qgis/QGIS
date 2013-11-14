@@ -1,3 +1,20 @@
+/***************************************************************************
+                         qgsdatumtransformdialog.h
+                         -------------------------
+    begin                : November 2013
+    copyright            : (C) 2013 by Marco Hugentobler
+    email                : marco.hugentobler at sourcepole dot ch
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
 #ifndef QGSDATUMTRANSFORMDIALOG_H
 #define QGSDATUMTRANSFORMDIALOG_H
 
@@ -15,6 +32,9 @@ class GUI_EXPORT QgsDatumTransformDialog: public QDialog, private Ui::QgsDatumTr
 
   private:
     QgsDatumTransformDialog();
+    bool gridShiftTransformation( const QString& itemText ) const;
+    /**Returns false if the location of the grid shift files is known (PROJ_LIB) and the shift file is not there*/
+    bool testGridShiftFileAvailability( QTreeWidgetItem* item, int col ) const;
 };
 
 #endif // QGSDATUMTRANSFORMDIALOG_H

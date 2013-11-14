@@ -1,4 +1,4 @@
-##[Example scripts]=group
-##layer = raster
+##Raster processing=group
+##Layer = raster
 ##showplots
-hist(as.matrix(layer))
+hist(as.matrix(Layer),main="Histogram",xlab="Layer")

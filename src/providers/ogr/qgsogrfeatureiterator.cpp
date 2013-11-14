@@ -91,7 +91,7 @@ void QgsOgrFeatureIterator::ensureRelevantFields()
 {
   mFetchGeometry = ( mRequest.filterType() == QgsFeatureRequest::FilterRect ) || !( mRequest.flags() & QgsFeatureRequest::NoGeometry );
   QgsAttributeList attrs = ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes ) ? mRequest.subsetOfAttributes() : P->attributeIndexes();
-  P->setRelevantFields( mFetchGeometry, attrs );
+  P->setRelevantFields( ogrLayer, mFetchGeometry, attrs );
   P->mRelevantFieldsForNextFeature = true;
 }
 

@@ -800,7 +800,7 @@ void QgsGeorefPluginGui::layerWillBeRemoved( QString theLayerId )
 void QgsGeorefPluginGui::createActions()
 {
   // File actions
-  mActionOpenRaster->setIcon( getThemeIcon( "/mActionOpenRaster.png" ) );
+  mActionOpenRaster->setIcon( getThemeIcon( "/mActionAddRasterLayer.svg" ) );
   connect( mActionOpenRaster, SIGNAL( triggered() ), this, SLOT( openRaster() ) );
 
   mActionStartGeoref->setIcon( getThemeIcon( "/mActionStartGeoref.png" ) );
@@ -1076,7 +1076,7 @@ void QgsGeorefPluginGui::updateIconTheme( QString theme )
 {
   Q_UNUSED( theme );
   // File actions
-  mActionOpenRaster->setIcon( getThemeIcon( "/mActionOpenRaster.png" ) );
+  mActionOpenRaster->setIcon( getThemeIcon( "/mActionAddRasterLayer.svg" ) );
   mActionStartGeoref->setIcon( getThemeIcon( "/mActionStartGeoref.png" ) );
   mActionGDALScript->setIcon( getThemeIcon( "/mActionGDALScript.png" ) );
   mActionLoadGCPpoints->setIcon( getThemeIcon( "/mActionLoadGCPpoints.png" ) );

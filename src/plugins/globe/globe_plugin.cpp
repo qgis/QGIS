@@ -38,6 +38,7 @@
 #include <qgsdistancearea.h>
 
 #include <QAction>
+#include <QDir>
 #include <QToolBar>
 #include <QMessageBox>
 
@@ -96,11 +97,23 @@ GlobePlugin::GlobePlugin( QgisInterface* theQgisInterface )
   setObjectName( "globePlugin" );
   setParent( theQgisInterface->mainWindow() );
 
-// add internal osg plugin path if bundled osg on OS X
-#ifdef HAVE_MACAPP_BUNDLED_OSG
-  if ( !QgsApplication::isRunningFromBuildDir() )
+// update path to osg plugins on Mac OS X
+#ifdef Q_OS_MACX
+  if ( !getenv( "OSG_LIBRARY_PATH" ) )
   {
-    osgDB::Registry::instance()->setLibraryFilePathList( QDir::cleanPath( QgsApplication::pluginPath() + "/../osgPlugins" ).toStdString() );
+    // OSG_PLUGINS_PATH value set by CMake option
+    QString ogsPlugins( OSG_PLUGINS_PATH );
+#ifdef HAVE_MACAPP_BUNDLED_OSG
+    if ( !QgsApplication::isRunningFromBuildDir() )
+    {
+      // add internal osg plugin path if bundled osg
+      ogsPlugins = QgsApplication::pluginPath() + "/../osgPlugins";
+    }
+#endif
+    if ( QFile::exists( ogsPlugins ) )
+    {
+      osgDB::Registry::instance()->setLibraryFilePathList( QDir::cleanPath( ogsPlugins ).toStdString() );
+    }
   }
 #endif
 
@@ -494,15 +507,20 @@ double GlobePlugin::getSelectedElevation()
 
 void GlobePlugin::syncExtent()
 {
+  QgsMapCanvas* mapCanvas = mQGisIface->mapCanvas();
+  QgsMapRenderer* mapRenderer = mapCanvas->mapRenderer();
+  QgsRectangle extent = mapCanvas->extent();
+
   osgEarth::Util::EarthManipulator* manip = dynamic_cast<osgEarth::Util::EarthManipulator*>( mOsgViewer->getCameraManipulator() );
   //rotate earth to north and perpendicular to camera
   manip->setRotation( osg::Quat() );
 
-  //get mapCanvas->extent().height() in meters
-  QgsRectangle extent = mQGisIface->mapCanvas()->extent();
   QgsDistanceArea dist;
-  dist.setEllipsoidalMode( true );
-  //dist.setProjectionsEnabled( true );
+
+  dist.setSourceCrs( mapRenderer->destinationCrs().srsid() );
+  dist.setEllipsoidalMode( mapRenderer->hasCrsTransformEnabled() );
+  dist.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
+
   QgsPoint ll = QgsPoint( extent.xMinimum(), extent.yMinimum() );
   QgsPoint ul = QgsPoint( extent.xMinimum(), extent.yMaximum() );
   double height = dist.measureLine( ll, ul );
@@ -645,26 +663,29 @@ void GlobePlugin::setupControls()
   mControlCanvas->addControl( backgroundGrp2 );
 
   //Zoom Reset
+#if ENABLE_HOME_BUTTON
   osg::Image* homeImg = osgDB::readImageFile( imgDir + "/zoom-home.png" );
   ImageControl* home = new NavigationControl( homeImg );
   home->setPosition( imgLeft + 12 + 3, imgTop + 2 );
+  imgTop = imgTop + 23 + 2;
   home->addEventHandler( new HomeControlHandler( manip ) );
   mControlCanvas->addControl( home );
+#endif
 
   //refresh layers
   osg::Image* refreshImg = osgDB::readImageFile( imgDir + "/refresh-view.png" );
   ImageControl* refresh = new NavigationControl( refreshImg );
-  refresh->setPosition( imgLeft + 12 + 3, imgTop + 2 + 23 + 2 );
+  refresh->setPosition( imgLeft + 12 + 3, imgTop + 3 );
+  imgTop = imgTop + 23 + 2;
   refresh->addEventHandler( new RefreshControlHandler( this ) );
   mControlCanvas->addControl( refresh );
 
   //Sync Extent
-#if ENABLE_SYNC_BUTTON
   osg::Image* syncImg = osgDB::readImageFile( imgDir + "/sync-extent.png" );
   ImageControl* sync = new NavigationControl( syncImg );
+  sync->setPosition( imgLeft + 12 + 3, imgTop + 2 );
   sync->addEventHandler( new SyncExtentControlHandler( this ) );
   mControlCanvas->addControl( sync );
-#endif
 }
 
 void GlobePlugin::setupProxy()

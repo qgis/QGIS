@@ -204,13 +204,13 @@ void TestQgsOgcUtils::testExpressionFromOgcFilter()
   QVERIFY( expr );
 
   qDebug( "OGC XML  : %s", xmlText.toAscii().data() );
-  qDebug( "EXPR-DUMP: %s", expr->dump().toAscii().data() );
+  qDebug( "EXPR-DUMP: %s", expr->expression().toAscii().data() );
 
   if ( expr->hasParserError() )
     qDebug( "ERROR: %s ", expr->parserErrorString().toAscii().data() );
   QVERIFY( !expr->hasParserError() );
 
-  QCOMPARE( dumpText, expr->dump() );
+  QCOMPARE( dumpText, expr->expression() );
 
   delete expr;
 }
@@ -234,7 +234,7 @@ void TestQgsOgcUtils::testExpressionToOgcFilter()
 
   doc.appendChild( filterElem );
 
-  qDebug( "EXPR: %s", exp.dump().toAscii().data() );
+  qDebug( "EXPR: %s", exp.expression().toAscii().data() );
   qDebug( "OGC : %s", doc.toString( -1 ).toAscii().data() );
 
   QCOMPARE( xmlText, doc.toString( -1 ) );

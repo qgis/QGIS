@@ -473,6 +473,8 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QAction *actionSelectRadius() = 0;
     //! Get access to the native identify action. Call trigger() on it to set the default identify map tool.
     virtual QAction *actionIdentify() = 0;
+    //! Get access to the native run action feature action. Call trigger() on it to set the default run feature action map tool.
+    virtual QAction *actionFeatureAction() = 0;
     //! Get access to the native measure action. Call trigger() on it to set the default measure map tool.
     virtual QAction *actionMeasure() = 0;
     //! Get access to the native measure area action. Call trigger() on it to set the default measure area map tool.

@@ -627,7 +627,7 @@ QgsRuleBasedRendererV2::Rule* QgsRuleBasedRendererV2::Rule::createFromSld( QDomE
         }
         else
         {
-          filterExp = filter->dump();
+          filterExp = filter->expression();
         }
         delete filter;
       }

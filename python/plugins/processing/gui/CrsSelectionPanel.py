@@ -27,13 +27,13 @@ __revision__ = '$Format:%H$'
 
 from PyQt4 import QtGui, QtCore
 from processing.gui.CrsSelectionDialog import CrsSelectionDialog
-
+from qgis.core import QgsCoordinateReferenceSystem
 
 class CrsSelectionPanel(QtGui.QWidget):
 
     def __init__(self, default):
         super(CrsSelectionPanel, self).__init__(None)
-        self.authid = default
+        self.authid = QgsCoordinateReferenceSystem(default).authid()
         self.horizontalLayout = QtGui.QHBoxLayout(self)
         self.horizontalLayout.setSpacing(2)
         self.horizontalLayout.setMargin(0)

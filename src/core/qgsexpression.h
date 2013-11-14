@@ -151,10 +151,12 @@ class CORE_EXPORT QgsExpression
 
     int scale() {return mScale; }
 
-    //! Alias for {@link dump()}
-    const QString expression() const { return dump(); }
+    //! Return the expression string that was given when created.
+    const QString expression() const { return mExp; }
 
-    //! Return the parsed expression as a string - useful for debugging
+    //! Return the a debugging string of the expression.
+    //! This can be used for debugging. Use {@link expression()}
+    //! if you need the full expression string.
     QString dump() const;
 
     //! Return calculator used for distance and area calculations
@@ -608,6 +610,7 @@ class CORE_EXPORT QgsExpression
 
     int mRowNumber;
     double mScale;
+    QString mExp;
 
     static QMap<QString, QVariant> gmSpecialColumns;
     QgsDistanceArea *mCalc;

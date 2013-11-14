@@ -408,6 +408,7 @@ class QgisInterface : QObject
     virtual QAction *actionSelectFreehand() = 0;
     virtual QAction *actionSelectRadius() = 0;
     virtual QAction *actionIdentify() = 0;
+    virtual QAction *actionFeatureAction() = 0;
     virtual QAction *actionMeasure() = 0;
     virtual QAction *actionMeasureArea() = 0;
     virtual QAction *actionZoomFullExtent() = 0;

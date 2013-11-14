@@ -1619,6 +1619,7 @@ QgsExpression::QgsExpression( const QString& expr )
     : mRowNumber( 0 )
     , mScale( 0 )
     , mCalc( 0 )
+    , mExp( expr )
 {
   mRootNode = ::parseExpression( expr, mParserErrorString );
 

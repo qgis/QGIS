@@ -936,6 +936,15 @@ bool QgsProject::write()
 {
   clearError();
 
+  // Create backup file
+  if ( QFile::exists( fileName() ) )
+  {
+    QString backup = fileName() + "~";
+    if ( QFile::exists( backup ) )
+      QFile::remove( backup );
+    QFile::rename( fileName(), backup );
+  }
+
   // if we have problems creating or otherwise writing to the project file,
   // let's find out up front before we go through all the hand-waving
   // necessary to create all the Dom objects

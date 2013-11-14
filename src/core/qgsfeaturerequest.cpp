@@ -54,7 +54,7 @@ QgsFeatureRequest::QgsFeatureRequest( const QgsRectangle& rect )
 
 QgsFeatureRequest::QgsFeatureRequest( const QgsExpression& expr )
     : mFilter( FilterExpression )
-    , mFilterExpression( new QgsExpression( expr.dump() ) )
+    , mFilterExpression( new QgsExpression( expr.expression() ) )
     , mFlags( 0 )
     , mMapCoordTransform( NULL )
     , mMapToPixel( NULL )
@@ -76,7 +76,7 @@ QgsFeatureRequest& QgsFeatureRequest::operator=( const QgsFeatureRequest & rh )
   mFilterFids = rh.mFilterFids;
   if ( rh.mFilterExpression )
   {
-    mFilterExpression = new QgsExpression( rh.mFilterExpression->dump() );
+    mFilterExpression = new QgsExpression( rh.mFilterExpression->expression() );
   }
   else
   {
