@@ -85,6 +85,7 @@ GlobePlugin::GlobePlugin( QgisInterface* theQgisInterface )
     , mQActionSettingsPointer( NULL )
     , mOsgViewer( 0 )
     , mViewerWidget( 0 )
+    , mBaseLayer( 0 )
     , mQgisMapLayer( 0 )
     , mTileSource( 0 )
     , mElevationManager( NULL )
@@ -117,7 +118,7 @@ GlobePlugin::GlobePlugin( QgisInterface* theQgisInterface )
   }
 #endif
 
-  mSettingsDialog = new QgsGlobePluginDialog( theQgisInterface->mainWindow(), QgisGui::ModalDialogFlags );
+  mSettingsDialog = new QgsGlobePluginDialog( theQgisInterface->mainWindow(), this, QgisGui::ModalDialogFlags );
 }
 
 //destructor
@@ -314,8 +315,6 @@ void GlobePlugin::run()
     // OSG, this activates OSG's IncrementalCompileOpeartion in order to avoid frame breaks.
     mOsgViewer->getDatabasePager()->setDoPreCompile( true );
 
-    mSettingsDialog->setViewer( mOsgViewer );
-
 #ifdef GLOBE_OSG_STANDALONE_VIEWER
     mOsgViewer->run();
 #endif
@@ -391,9 +390,6 @@ void GlobePlugin::setupMap()
   ImageLayerOptions layerOptions( "world", driverOptions );
   map->addImageLayer( new osgEarth::ImageLayer( layerOptions ) );
   */
-  TMSOptions imagery;
-  imagery.url() = "http://readymap.org/readymap/tiles/1.0.0/7/";
-  map->addImageLayer( new ImageLayer( "Imagery", imagery ) );
 
   MapNodeOptions nodeOptions;
   //nodeOptions.proxySettings() =
@@ -408,6 +404,11 @@ void GlobePlugin::setupMap()
 
   // The MapNode will render the Map object in the scene graph.
   mMapNode = new osgEarth::MapNode( map, nodeOptions );
+
+  if ( settings.value( "/Plugin-Globe/baseLayerEnabled", true ).toBool() )
+  {
+    setBaseMap( settings.value( "/Plugin-Globe/baseLayerURL", "http://readymap.org/readymap/tiles/1.0.0/7/" ).toString() );
+  }
 
   mRootNode = new osg::Group();
   mRootNode->addChild( mMapNode );
@@ -805,6 +806,22 @@ void GlobePlugin::elevationLayersChanged()
   {
     QgsDebugMsg( "layersChanged: Globe NOT running, skipping" );
     return;
+  }
+}
+
+void GlobePlugin::setBaseMap( QString url )
+{
+  mMapNode->getMap()->removeImageLayer( mBaseLayer );
+  if ( url.isNull() )
+  {
+    mBaseLayer = 0;
+  }
+  else
+  {
+    TMSOptions imagery;
+    imagery.url() = url.toStdString();
+    mBaseLayer = new ImageLayer( "Imagery", imagery );
+    mMapNode->getMap()->insertImageLayer( mBaseLayer, 0 );
   }
 }
 
