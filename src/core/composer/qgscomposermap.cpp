@@ -160,8 +160,9 @@ void QgsComposerMap::draw( QPainter *painter, const QgsRectangle& extent, const 
   jobMapSettings.setExtent( extent );
   jobMapSettings.setOutputSize( size.toSize() );
   jobMapSettings.setOutputDpi( dpi );
-  /* TODO: if ( mMapRenderer->labelingEngine() )
-    theMapRenderer.setLabelingEngine( mMapRenderer->labelingEngine()->clone() );*/
+
+  QgsPalLabeling labeling;
+  labeling.loadEngineSettings();
 
   //use stored layer set or read current set from main canvas
   jobMapSettings.setLayers( mKeepLayerSet ? mLayerSet : ms.layers() );
@@ -176,6 +177,7 @@ void QgsComposerMap::draw( QPainter *painter, const QgsRectangle& extent, const 
 
   // render
   QgsMapRendererCustomPainterJob job( jobMapSettings, painter );
+  job.setLabelingEngine( &labeling );
   job.start();
   job.waitForFinished();
 
@@ -225,7 +227,7 @@ void QgsComposerMap::cache( void )
 
   // set DPI of the image
   mCacheImage.setDotsPerMeterX( 1000 * w / widthMM );
-  mCacheImage.setDotsPerMeterX( 1000 * h / heightMM );
+  mCacheImage.setDotsPerMeterY( 1000 * h / heightMM );
 
   if ( hasBackground() )
   {

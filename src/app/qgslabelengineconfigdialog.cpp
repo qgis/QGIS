@@ -42,8 +42,6 @@ QgsLabelEngineConfigDialog::QgsLabelEngineConfigDialog( QgsPalLabeling* lbl, QWi
   chkShowAllLabels->setChecked( mLBL->isShowingAllLabels() );
   mShadowDebugRectChkBox->setChecked( mLBL->isShowingShadowRectangles() );
 
-  mSaveWithProjectChkBox->setChecked( mLBL->isStoredWithProject() );
-
   chkShowPartialsLabels->setChecked( mLBL-> isShowingPartialsLabels() );
 }
 
@@ -62,14 +60,8 @@ void QgsLabelEngineConfigDialog::onOK()
   mLBL->setShowingAllLabels( chkShowAllLabels->isChecked() );
   mLBL->setShowingPartialsLabels( chkShowPartialsLabels->isChecked() );
 
-  if ( mSaveWithProjectChkBox->isChecked() )
-  {
-    mLBL->saveEngineSettings();
-  }
-  else if ( mLBL->isStoredWithProject() )
-  {
-    mLBL->clearEngineSettings();
-  }
+  mLBL->saveEngineSettings();
+
   accept();
 }
 

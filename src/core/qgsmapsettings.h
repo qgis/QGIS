@@ -59,8 +59,9 @@ public:
     Antialiasing       = 0x01,
     DrawEditingInfo    = 0x02,
     ForceVectorOutput  = 0x04,
-    UseAdvancedEffects = 0x08
-    // TODO: no labeling, ignore scale-based visibiity (overview)
+    UseAdvancedEffects = 0x08,
+    DrawLabeling       = 0x10
+    // TODO: ignore scale-based visibiity (overview)
   };
   Q_DECLARE_FLAGS(Flags, Flag)
 

@@ -42,6 +42,7 @@
 //qgis test includes
 #include "qgsrenderchecker.h"
 #include "qgspallabeling.h"
+#include "qgsproject.h"
 
 /** \ingroup UnitTests
  * This is a unit test for the vector layer class.
@@ -159,7 +160,7 @@ class TestQgsDiagram: public QObject
       dls.placement = QgsDiagramLayerSettings::OverPoint;
       dls.renderer = dr;
 
-      // TODO dynamic_cast<QgsPalLabeling*>( mMapRenderer->labelingEngine() )->setShowingAllLabels( true );
+      QgsProject::instance()->writeEntry( "PAL", "/ShowingAllLabels", true );
 
       mPointsLayer->setDiagramLayerSettings( dls );
 

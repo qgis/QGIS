@@ -20,7 +20,7 @@ QgsMapSettings::QgsMapSettings()
   , mDestCRS( GEOCRS_ID, QgsCoordinateReferenceSystem::InternalCrsId )  // WGS 84
   , mBackgroundColor( Qt::white )
   , mSelectionColor( Qt::yellow )
-  , mFlags( Antialiasing )
+  , mFlags( Antialiasing | UseAdvancedEffects | DrawLabeling )
 {
   updateDerived();
 

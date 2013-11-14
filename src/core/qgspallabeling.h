@@ -747,8 +747,10 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
     void loadEngineSettings();
     void saveEngineSettings();
     void clearEngineSettings();
-    bool isStoredWithProject() const { return mSavedWithProject; }
-    void setStoredWithProject( bool store ) { mSavedWithProject = store; }
+    //! @deprecated since 2.1 - settings are always stored in project
+    Q_DECL_DEPRECATED bool isStoredWithProject() const { return true; }
+    //! @deprecated since 2.1 - settings are always stored in project
+    Q_DECL_DEPRECATED void setStoredWithProject( bool store ) { Q_UNUSED( store ); }
 
   protected:
     // update temporary QgsPalLayerSettings with any data defined text style values
@@ -787,7 +789,6 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
     QList<QgsLabelCandidate> mCandidates;
     bool mShowingCandidates;
     bool mShowingAllLabels; // whether to avoid collisions or not
-    bool mSavedWithProject; // whether engine settings have been read from project file
     bool mShowingShadowRects; // whether to show debugging rectangles for drop shadows
     bool mShowingPartialsLabels; // whether to avoid partials labels or not
 

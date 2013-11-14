@@ -76,6 +76,8 @@ QgsMapOverviewCanvas::QgsMapOverviewCanvas( QWidget * parent, QgsMapCanvas* mapC
   mPanningWidget = new QgsPanningWidget( this );
 
   setBackgroundColor( palette().window().color() );
+
+  mSettings.setFlag( QgsMapSettings::DrawLabeling, false );
 }
 
 QgsMapOverviewCanvas::~QgsMapOverviewCanvas()

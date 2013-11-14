@@ -223,9 +223,9 @@ void QgsMapRendererCustomPainterJob::startRender()
 
     // Store the painter in case we need to swap it out for the
     // cache painter
-    //QPainter * mypContextPainter = mRenderContext.painter();
+    QPainter * mypContextPainter = mRenderContext.painter();
     // Flattened image for drawing when a blending mode is set
-    //QImage * mypFlattenedImage = 0;
+    QImage * mypFlattenedImage = 0;
 
     QString layerId = li.previous();
 
@@ -248,12 +248,12 @@ void QgsMapRendererCustomPainterJob::startRender()
                  .arg( ml->blendMode() )
                );
 
-    /*if ( mRenderContext.useAdvancedEffects() )
+    if ( mRenderContext.useAdvancedEffects() )
     {
       // Set the QPainter composition mode so that this layer is rendered using
       // the desired blending mode
       mypContextPainter->setCompositionMode( ml->blendMode() );
-    }*/
+    }
 
     if ( !ml->hasScaleBasedVisibility() || ( ml->minimumScale() <= mSettings.scale() && mSettings.scale() < ml->maximumScale() ) ) //|| mOverview )
     {
@@ -284,56 +284,14 @@ void QgsMapRendererCustomPainterJob::startRender()
 
       mRenderContext.setCoordinateTransform( ct );
 
-      /*QSettings mySettings;
-      bool useRenderCaching = false;
-      if ( ! split )//render caching does not yet cater for split extents
-      {
-        if ( mySettings.value( "/qgis/enable_render_caching", false ).toBool() )
-        {
-          useRenderCaching = true;
-          if ( !mySameAsLastFlag || ml->cacheImage() == 0 )
-          {
-            QgsDebugMsg( "Caching enabled but layer redraw forced by extent change or empty cache" );
-            QImage * mypImage = new QImage( mRenderContext.painter()->device()->width(),
-                                            mRenderContext.painter()->device()->height(), QImage::Format_ARGB32 );
-            if ( mypImage->isNull() )
-            {
-              QgsDebugMsg( "insufficient memory for image " + QString::number( mRenderContext.painter()->device()->width() ) + "x" + QString::number( mRenderContext.painter()->device()->height() ) );
-              emit drawError( ml );
-              painter->end(); // drawError is not caught by anyone, so we end painting to notify caller
-              return;
-            }
-            mypImage->fill( 0 );
-            ml->setCacheImage( mypImage ); //no need to delete the old one, maplayer does it for you
-            QPainter * mypPainter = new QPainter( ml->cacheImage() );
-            // Changed to enable anti aliasing by default in QGIS 1.7
-            if ( mySettings.value( "/qgis/enable_anti_aliasing", true ).toBool() )
-            {
-              mypPainter->setRenderHint( QPainter::Antialiasing );
-            }
-            mRenderContext.setPainter( mypPainter );
-          }
-          else if ( mySameAsLastFlag )
-          {
-            //draw from cached image
-            QgsDebugMsg( "Caching enabled --- drawing layer from cached image" );
-            mypContextPainter->drawImage( 0, 0, *( ml->cacheImage() ) );
-            //short circuit as there is nothing else to do...
-            continue;
-          }
-        }
-      }*/
-
       // If we are drawing with an alternative blending mode then we need to render to a separate image
       // before compositing this on the map. This effectively flattens the layer and prevents
       // blending occuring between objects on the layer
-      // (this is not required for raster layers or when layer caching is enabled, since that has the same effect)
-      /*bool flattenedLayer = false;
+      bool flattenedLayer = false;
       if (( mRenderContext.useAdvancedEffects() ) && ( ml->type() == QgsMapLayer::VectorLayer ) )
       {
         QgsVectorLayer* vl = qobject_cast<QgsVectorLayer *>( ml );
-        if (( !useRenderCaching )
-            && (( vl->blendMode() != QPainter::CompositionMode_SourceOver )
+        if ( (( vl->blendMode() != QPainter::CompositionMode_SourceOver )
                 || ( vl->featureBlendMode() != QPainter::CompositionMode_SourceOver )
                 || ( vl->layerTransparency() != 0 ) ) )
         {
@@ -343,23 +301,22 @@ void QgsMapRendererCustomPainterJob::startRender()
           if ( mypFlattenedImage->isNull() )
           {
             QgsDebugMsg( "insufficient memory for image " + QString::number( mRenderContext.painter()->device()->width() ) + "x" + QString::number( mRenderContext.painter()->device()->height() ) );
-            emit drawError( ml );
-            painter->end(); // drawError is not caught by anyone, so we end painting to notify caller
+            // TODO emit drawError( ml );
+            mPainter->end(); // drawError is not caught by anyone, so we end painting to notify caller
             return;
           }
           mypFlattenedImage->fill( 0 );
           QPainter * mypPainter = new QPainter( mypFlattenedImage );
-          if ( mySettings.value( "/qgis/enable_anti_aliasing", true ).toBool() )
+          if ( mSettings.testFlag( QgsMapSettings::Antialiasing ) )
           {
             mypPainter->setRenderHint( QPainter::Antialiasing );
           }
-          mypPainter->scale( rasterScaleFactor,  rasterScaleFactor );
           mRenderContext.setPainter( mypPainter );
         }
-      }*/
+      }
 
       // Per feature blending mode
-      /*if (( mRenderContext.useAdvancedEffects() ) && ( ml->type() == QgsMapLayer::VectorLayer ) )
+      if (( mRenderContext.useAdvancedEffects() ) && ( ml->type() == QgsMapLayer::VectorLayer ) )
       {
         QgsVectorLayer* vl = qobject_cast<QgsVectorLayer *>( ml );
         if ( vl->featureBlendMode() != QPainter::CompositionMode_SourceOver )
@@ -368,7 +325,7 @@ void QgsMapRendererCustomPainterJob::startRender()
           // on this layer will interact and blend with each other
           mRenderContext.painter()->setCompositionMode( vl->featureBlendMode() );
         }
-      }*/
+      }
 
       if ( !ml->draw( mRenderContext ) )
       {
@@ -389,7 +346,7 @@ void QgsMapRendererCustomPainterJob::startRender()
       }
 
       //apply layer transparency for vector layers
-      /*if (( mRenderContext.useAdvancedEffects() ) && ( ml->type() == QgsMapLayer::VectorLayer ) )
+      if (( mRenderContext.useAdvancedEffects() ) && ( ml->type() == QgsMapLayer::VectorLayer ) )
       {
         QgsVectorLayer* vl = qobject_cast<QgsVectorLayer *>( ml );
         if ( vl->layerTransparency() != 0 )
@@ -402,30 +359,17 @@ void QgsMapRendererCustomPainterJob::startRender()
           mRenderContext.painter()->fillRect( 0, 0, mRenderContext.painter()->device()->width(),
                                               mRenderContext.painter()->device()->height(), transparentFillColor );
         }
-      }*/
-
-      /*if ( useRenderCaching )
-      {
-        // composite the cached image into our view and then clean up from caching
-        // by reinstating the painter as it was swapped out for caching renders
-        delete mRenderContext.painter();
-        mRenderContext.setPainter( mypContextPainter );
-        //draw from cached image that we created further up
-        if ( ml->cacheImage() )
-          mypContextPainter->drawImage( 0, 0, *( ml->cacheImage() ) );
       }
-      else if ( flattenedLayer )
+
+      if ( flattenedLayer )
       {
         // If we flattened this layer for alternate blend modes, composite it now
         delete mRenderContext.painter();
         mRenderContext.setPainter( mypContextPainter );
-        mypContextPainter->save();
-        mypContextPainter->scale( 1.0 / rasterScaleFactor, 1.0 / rasterScaleFactor );
         mypContextPainter->drawImage( 0, 0, *( mypFlattenedImage ) );
-        mypContextPainter->restore();
         delete mypFlattenedImage;
         mypFlattenedImage = 0;
-      }*/
+      }
 
     }
     else // layer not visible due to scale
@@ -441,7 +385,8 @@ void QgsMapRendererCustomPainterJob::startRender()
   // Reset the composition mode before rendering the labels
   mRenderContext.painter()->setCompositionMode( QPainter::CompositionMode_SourceOver );
 
-  /*if ( !mOverview )
+  // old labeling - to be removed at some point...
+  if ( mSettings.testFlag( QgsMapSettings::DrawLabeling ) )
   {
     // render all labels for vector layers in the stack, starting at the base
     li.toBack();
@@ -456,40 +401,40 @@ void QgsMapRendererCustomPainterJob::startRender()
 
       QgsMapLayer *ml = QgsMapLayerRegistry::instance()->mapLayer( layerId );
 
-      if ( ml && ( ml->type() != QgsMapLayer::RasterLayer ) )
+      if ( !ml || ( ml->type() != QgsMapLayer::VectorLayer ) )
+        continue;
+
+      // only make labels if the layer is visible
+      // after scale dep viewing settings are checked
+      if ( ml->hasScaleBasedVisibility() && ( mSettings.scale() < ml->minimumScale() || mSettings.scale() > ml->maximumScale() ) )
+        continue;
+
+      bool split = false;
+
+      if ( mSettings.hasCrsTransformEnabled() )
       {
-        // only make labels if the layer is visible
-        // after scale dep viewing settings are checked
-        if ( !ml->hasScaleBasedVisibility() || ( ml->minimumScale() < mScale && mScale < ml->maximumScale() ) )
-        {
-          bool split = false;
+        QgsRectangle r1 = mSettings.visibleExtent();
+        ct = QgsCoordinateTransformCache::instance()->transform( ml->crs().authid(), mSettings.destinationCrs().authid() );
+        split = reprojectToLayerExtent( ct, ml->crs().geographicFlag(), r1, r2 );
+        mRenderContext.setExtent( r1 );
+      }
+      else
+      {
+        ct = NULL;
+      }
 
-          if ( hasCrsTransformEnabled() )
-          {
-            QgsRectangle r1 = mExtent;
-            split = splitLayersExtent( ml, r1, r2 );
-            ct = new QgsCoordinateTransform( ml->crs(), *mDestCRS );
-            mRenderContext.setExtent( r1 );
-          }
-          else
-          {
-            ct = NULL;
-          }
+      mRenderContext.setCoordinateTransform( ct );
 
-          mRenderContext.setCoordinateTransform( ct );
-
-          ml->drawLabels( mRenderContext );
-          if ( split )
-          {
-            mRenderContext.setExtent( r2 );
-            ml->drawLabels( mRenderContext );
-          }
-        }
+      ml->drawLabels( mRenderContext );
+      if ( split )
+      {
+        mRenderContext.setExtent( r2 );
+        ml->drawLabels( mRenderContext );
       }
     }
-  } // if (!mOverview)*/
+  }
 
-  if ( mLabelingEngine )
+  if ( mSettings.testFlag( QgsMapSettings::DrawLabeling ) && mLabelingEngine )
   {
     // set correct extent
     mRenderContext.setExtent( mSettings.visibleExtent() );

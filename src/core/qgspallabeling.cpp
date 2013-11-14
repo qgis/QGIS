@@ -57,6 +57,21 @@
 #include "qgssymbollayerv2utils.h"
 #include <QMessageBox>
 
+
+Q_GUI_EXPORT extern int qt_defaultDpiX();
+Q_GUI_EXPORT extern int qt_defaultDpiY();
+
+static void _fixQPictureDPI( QPainter* p )
+{
+  // QPicture makes an assumption that we drawing to it with system DPI.
+  // Then when being drawn, it scales the painter. The following call
+  // negates the effect. There is no way of setting QPicture's DPI.
+  // See QTBUG-20361
+  p->scale( (double)qt_defaultDpiX() / p->device()->logicalDpiX(),
+            (double)qt_defaultDpiY() / p->device()->logicalDpiY() );
+}
+
+
 using namespace pal;
 
 
@@ -4286,6 +4301,7 @@ void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& con
 
         // scale for any print output or image saving @ specific dpi
         painter->scale( component.dpiRatio(), component.dpiRatio() );
+        _fixQPictureDPI( painter );
         painter->drawPicture( 0, 0, textPict );
 
         // regular text draw, for testing optimization
@@ -4353,6 +4369,7 @@ void QgsPalLabeling::drawLabelBuffer( QgsRenderContext& context,
 
   // scale for any print output or image saving @ specific dpi
   p->scale( component.dpiRatio(), component.dpiRatio() );
+  _fixQPictureDPI( p );
   p->drawPicture( 0, 0, buffPict );
   p->restore();
 }
@@ -4648,6 +4665,7 @@ void QgsPalLabeling::drawLabelBackground( QgsRenderContext& context,
 
     // scale for any print output or image saving @ specific dpi
     p->scale( component.dpiRatio(), component.dpiRatio() );
+    _fixQPictureDPI( p );
     p->drawPicture( 0, 0, shapePict );
     p->restore();
   }
@@ -4822,7 +4840,6 @@ void QgsPalLabeling::loadEngineSettings()
                         "PAL", "/ShowingAllLabels", false, &saved );
   mShowingPartialsLabels = QgsProject::instance()->readBoolEntry(
                              "PAL", "/ShowingPartialsLabels", p.getShowPartial(), &saved );
-  mSavedWithProject = saved;
 }
 
 void QgsPalLabeling::saveEngineSettings()
@@ -4835,7 +4852,6 @@ void QgsPalLabeling::saveEngineSettings()
   QgsProject::instance()->writeEntry( "PAL", "/ShowingShadowRects", mShowingShadowRects );
   QgsProject::instance()->writeEntry( "PAL", "/ShowingAllLabels", mShowingAllLabels );
   QgsProject::instance()->writeEntry( "PAL", "/ShowingPartialsLabels", mShowingPartialsLabels );
-  mSavedWithProject = true;
 }
 
 void QgsPalLabeling::clearEngineSettings()
@@ -4848,7 +4864,6 @@ void QgsPalLabeling::clearEngineSettings()
   QgsProject::instance()->removeEntry( "PAL", "/ShowingShadowRects" );
   QgsProject::instance()->removeEntry( "PAL", "/ShowingAllLabels" );
   QgsProject::instance()->removeEntry( "PAL", "/ShowingPartialsLabels" );
-  mSavedWithProject = false;
 }
 
 QgsLabelingEngineInterface* QgsPalLabeling::clone()
