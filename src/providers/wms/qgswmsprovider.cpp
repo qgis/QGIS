@@ -1019,13 +1019,13 @@ void QgsWmsProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, in
   Q_UNUSED( bandNo );
   QgsDebugMsg( "Entered" );
   // TODO: optimize to avoid writing to QImage
-  QImage* image = draw( viewExtent, pixelWidth, pixelHeight );
-
-  if ( ! image )   // should not happen
+  QImage *image = draw( viewExtent, pixelWidth, pixelHeight );
+  if ( !image )   // should not happen
   {
     QgsMessageLog::logMessage( tr( "image is NULL" ), tr( "WMS" ) );
     return;
   }
+
   QgsDebugMsg( QString( "image height = %1 bytesPerLine = %2" ).arg( image->height() ) . arg( image->bytesPerLine() ) ) ;
   size_t myExpectedSize = pixelWidth * pixelHeight * 4;
   size_t myImageSize = image->height() *  image->bytesPerLine();
@@ -4785,9 +4785,7 @@ void QgsWmsProvider::getLegendGraphicReplyFinished()
   }
   else
   {
-    mErrorFormat = "text/plain";
-    mError = tr( "Download of GetLegendGraphic failed: %1" ).arg( mGetLegendGraphicReply->errorString() );
-    QgsMessageLog::logMessage( mError, tr( "WMS" ) );
+    QgsMessageLog::logMessage( tr( "Download of GetLegendGraphic failed: %1" ).arg( mGetLegendGraphicReply->errorString() ), tr( "WMS" ) );
     mHttpGetLegendGraphicResponse.clear();
   }
 
