@@ -57,6 +57,7 @@ void QgsMapRendererSequentialJob::cancel()
 {
   if (mInternalJob)
   {
+    qDebug("sequential - cancel internal");
     mInternalJob->cancel();
     delete mInternalJob;
     mInternalJob = 0;
@@ -132,7 +133,6 @@ void QgsMapRendererCustomPainterJob::start()
   mFutureWatcher.setFuture(mFuture);
 }
 
-#include <QApplication>
 
 void QgsMapRendererCustomPainterJob::cancel()
 {
@@ -154,6 +154,8 @@ void QgsMapRendererCustomPainterJob::cancel()
 
     qDebug("QPAINTER cancelled");
   }
+  else
+    qDebug("QPAINTER not running!");
 }
 
 void QgsMapRendererCustomPainterJob::waitForFinished()

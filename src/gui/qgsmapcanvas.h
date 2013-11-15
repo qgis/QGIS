@@ -60,6 +60,7 @@ class QgsVectorLayer;
 
 class QgsLabelingResults;
 class QgsMapRenderer;
+class QgsMapRendererSequentialJob;
 class QgsMapSettings;
 class QgsMapCanvasMap;
 class QgsMapOverviewCanvas;
@@ -136,11 +137,6 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! @note added in 2.1
     const QgsLabelingResults* labelingResults() const;
 
-    //! Store newly generated labeling results (may be null) and take ownership of the object.
-    //! Only meant for communication with QgsMapCanvasMap
-    //! @note added in 2.1
-    void assignLabelingResults( QgsLabelingResults* results );
-
     //! @deprecated since 2.1 - there could be more than just one "map" items
     QgsMapCanvasMap* map();
 
@@ -155,7 +151,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     double scale();
 
     //! Clear the map canvas
-    void clear();
+    //! @deprecated since 2.1 - use refresh() - clear does the same thing
+    Q_DECL_DEPRECATED void clear();
 
     //! Returns the mapUnitsPerPixel (map units per pixel) for the canvas
     double mapUnitsPerPixel() const;
@@ -237,7 +234,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     bool isFrozen();
 
     //! Flag the canvas as dirty and needed a refresh
-    void setDirty( bool _dirty );
+    //! @deprecated since 2.1 - use refresh() to trigger a refresh (clients should not decide explicitly whether canvas is dirty or not)
+    Q_DECL_DEPRECATED void setDirty( bool _dirty );
 
     //! Return the state of the canvas (dirty or not)
     bool isDirty() const;
@@ -251,7 +249,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Get the current coordinate transform
     const QgsMapToPixel* getCoordinateTransform();
 
-    //! @deprecated in 2.1 - always returns false
+    //! Find out whether rendering is in progress
     bool isDrawing();
 
     //! returns current layer (set by legend widget)
@@ -325,9 +323,9 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! @deprecated in 2.1 - does nothing - kept for API compatibility
     Q_DECL_DEPRECATED void updateMap();
 
-    //! added in 2.1
-    //! @note probably it is not necessary to allow any client to stop rendering - should be handled just be canvas
-    Q_DECL_DEPRECATED void stopRendering();
+    //! stop rendering (if there is any right now)
+    //! @note added in 2.1
+    void stopRendering();
 
     //! show whatever error is exposed by the QgsMapLayer.
     void showError( QgsMapLayer * mapLayer );
@@ -341,6 +339,11 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
   private slots:
     //! called when current maptool is destroyed
     void mapToolDestroyed();
+
+    //! called when a renderer job has finished successfully or when it was cancelled
+    void rendererJobFinished();
+
+    void mapUpdateTimeout();
 
   signals:
     /** Let the owner know how far we are with render operations */
@@ -365,9 +368,10 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      being rendered onto a pixmap other than the mapCanvas own pixmap member.
 
     */
-    //! @deprecated since 2.1 - anything related to rendering progress is not visible outside of map canvas
+    //! TODO: deprecate when decorations are reimplemented as map canvas items
+    //! - anything related to rendering progress is not visible outside of map canvas
     //! - additional drawing shall be done directly within the renderer job or independently as a map canvas item
-    Q_DECL_DEPRECATED void renderComplete( QPainter * );
+    void renderComplete( QPainter * );
 
     /** Emitted when canvas finished a refresh request.
     \note Added in 2.0 */
@@ -501,11 +505,6 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! determines whether user has requested to suppress rendering
     bool mRenderFlag;
 
-    /**Resize events that have been ignored because the canvas is busy with
-       rendering may put their sizes into this list. The canvas then picks up
-       the last entry in case a lot of resize events arrive in short time*/
-    QList< QPair<int, int> > mResizeQueue;
-
     //! current layer in legend
     QgsMapLayer* mCurrentLayer;
 
@@ -528,13 +527,18 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Mouse wheel action
     WheelAction mWheelAction;
 
+    //! Timer that periodically fires while map rendering is in progress to update the visible map
+    QTimer mMapUpdateTimer;
+
+    //! Job that takes care of map rendering in background
+    QgsMapRendererSequentialJob* mJob;
+
+    //! Flag determining whether the active job has been cancelled
+    bool mJobCancelled;
+
+    //! Labeling results from the recently rendered map
     QgsLabelingResults* mLabelingResults;
 
-    //! resize canvas size
-    //QSize mNewSize;
-
-    //! currently in paint event
-    //bool mPainting;
 }; // class QgsMapCanvas
 
 

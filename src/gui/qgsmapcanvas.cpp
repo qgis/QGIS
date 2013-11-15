@@ -48,6 +48,7 @@ email                : sherman at mrcc.com
 #include "qgsmaptopixel.h"
 #include "qgsmapoverviewcanvas.h"
 #include "qgsmaprenderer.h"
+#include "qgsmaprendererjob.h"
 #include "qgsmessagelog.h"
 #include "qgsmessageviewer.h"
 #include "qgspallabeling.h"
@@ -55,6 +56,7 @@ email                : sherman at mrcc.com
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
 #include <math.h>
+
 
 /**  @deprecated to be deleted, stuff from here should be moved elsewhere */
 class QgsMapCanvas::CanvasProperties
@@ -82,9 +84,9 @@ class QgsMapCanvas::CanvasProperties
 QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
     : QGraphicsView( parent )
     , mCanvasProperties( new CanvasProperties )
+    , mJob( 0 )
+    , mJobCancelled( false )
     , mLabelingResults( 0 )
-    //, mNewSize( QSize() )
-    //, mPainting( false )
 {
   setObjectName( name );
   mScene = new QGraphicsScene();
@@ -113,7 +115,6 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
   // create map canvas item which will show the map
   mMap = new QgsMapCanvasMap( this );
   mScene->addItem( mMap );
-  mScene->update(); // porting??
 
   connect( mMapRenderer, SIGNAL( drawError( QgsMapLayer* ) ), this, SLOT( showError( QgsMapLayer* ) ) );
 
@@ -129,11 +130,13 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
   mSettings.setFlag( QgsMapSettings::DrawEditingInfo );
 
   mSettings.setOutputSize( size() );
-  mMap->resize( size() );
   setSceneRect( 0, 0, size().width(), size().height() );
   mScene->setSceneRect( QRectF( 0, 0, size().width(), size().height() ) );
 
   moveCanvasContents( true );
+
+  connect(&mMapUpdateTimer, SIGNAL( timeout() ), SLOT( mapUpdateTimeout() ) );
+  mMapUpdateTimer.setInterval( 400 );
 
 #ifdef Q_OS_WIN
   // Enable touch event on Windows.
@@ -170,6 +173,12 @@ QgsMapCanvas::~QgsMapCanvas()
   delete mMapRenderer;
   // mCanvasProperties auto-deleted via std::auto_ptr
   // CanvasProperties struct has its own dtor for freeing resources
+
+  if ( mJob )
+  {
+    mJob->cancel();
+    Q_ASSERT( mJob == 0 );
+  }
 
   delete mLabelingResults;
 
@@ -221,7 +230,8 @@ double QgsMapCanvas::scale()
 
 void QgsMapCanvas::setDirty( bool dirty )
 {
-  mDirty = dirty;
+  if ( dirty )
+    refresh();
 }
 
 bool QgsMapCanvas::isDirty() const
@@ -233,7 +243,7 @@ bool QgsMapCanvas::isDirty() const
 
 bool QgsMapCanvas::isDrawing()
 {
-  return false;
+  return mJob != 0;
 } // isDrawing
 
 
@@ -399,12 +409,6 @@ const QgsLabelingResults *QgsMapCanvas::labelingResults() const
   return mLabelingResults;
 }
 
-void QgsMapCanvas::assignLabelingResults( QgsLabelingResults* results )
-{
-  delete mLabelingResults;
-  mLabelingResults = results;
-}
-
 
 void QgsMapCanvas::updateOverview()
 {
@@ -424,7 +428,11 @@ QgsMapLayer* QgsMapCanvas::currentLayer()
 
 void QgsMapCanvas::refresh()
 {
-  mMap->refresh();
+  stopRendering(); // if any...
+
+  qDebug("CANVAS calling update");
+  mDirty = true;
+  update();
 
   /*
   // we can't draw again if already drawing...
@@ -478,9 +486,51 @@ void QgsMapCanvas::refresh()
 
 } // refresh
 
+
+void QgsMapCanvas::rendererJobFinished()
+{
+  qDebug("CANVAS finish! %d", !mJobCancelled );
+
+  mMapUpdateTimer.stop();
+
+  mDirty = false;
+
+  if ( !mJobCancelled )
+  {
+    QImage img = mJob->renderedImage();
+
+    // emit renderComplete to get our decorations drawn
+    QPainter p( &img );
+    emit renderComplete( &p );
+    p.end();
+
+    mMap->setContent( img, mSettings.visibleExtent() );
+
+    delete mLabelingResults;
+    mLabelingResults = mJob->takeLabelingResults();
+  }
+
+  delete mJob;
+  mJob = 0;
+}
+
+void QgsMapCanvas::mapUpdateTimeout()
+{
+  qDebug("CANVAS update timer!");
+
+  mMap->setContent( mJob->renderedImage(), mSettings.visibleExtent() );
+}
+
+
 void QgsMapCanvas::stopRendering()
 {
-  // TODO: implement stopping (?)
+  if ( mJob )
+  {
+    qDebug("CANVAS stop rendering!");
+    mJobCancelled = true;
+    mJob->cancel();
+    Q_ASSERT( mJob == 0 ); // no need to delete here: already deleted in finished()
+  }
 }
 
 void QgsMapCanvas::updateMap()
@@ -507,11 +557,11 @@ void QgsMapCanvas::saveAsImage( QString theFileName, QPixmap * theQPixmap, QStri
   else //use the map view
   {
     // TODO[MD]: fix
-    QPixmap *pixmap = dynamic_cast<QPixmap *>( &mMap->paintDevice() );
-    if ( !pixmap )
+    QImage *img = dynamic_cast<QImage *>( &mMap->paintDevice() );
+    if ( !img)
       return;
 
-    pixmap->save( theFileName, theFormat.toLocal8Bit().data() );
+    img->save( theFileName, theFormat.toLocal8Bit().data() );
   }
   //create a world file to go with the image...
   QgsRectangle myRect = mapSettings().visibleExtent();
@@ -611,9 +661,7 @@ void QgsMapCanvas::updateScale()
 
 void QgsMapCanvas::clear()
 {
-  // Indicate to the next paint event that we need to rebuild the canvas contents
-  setDirty( true );
-
+  refresh();
 } // clear
 
 
@@ -985,9 +1033,6 @@ void QgsMapCanvas::resizeEvent( QResizeEvent * e )
 
   mSettings.setOutputSize( lastSize );
 
-  //set map size before scene size helps keep scene indexes updated properly
-  // this was the cause of rubberband artifacts
-  mMap->resize( lastSize );
   mScene->setSceneRect( QRectF( 0, 0, lastSize.width(), lastSize.height() ) );
 
   moveCanvasContents( true );
@@ -1004,6 +1049,30 @@ void QgsMapCanvas::resizeEvent( QResizeEvent * e )
 
 void QgsMapCanvas::paintEvent( QPaintEvent *e )
 {
+  qDebug("CANVAS paint()");
+
+  if ( mDirty )
+  {
+    if ( mJob )
+    {
+      qDebug("CANVAS already rendering");
+    }
+    else
+    {
+      qDebug("CANVAS need to render");
+
+      // create the renderer job
+      Q_ASSERT( mJob == 0 );
+      mJobCancelled = false;
+      mJob = new QgsMapRendererSequentialJob( mSettings );
+      connect(mJob, SIGNAL( finished() ), SLOT( rendererJobFinished() ) );
+      mJob->start();
+
+      mMapUpdateTimer.start();
+    }
+  }
+
+
   QGraphicsView::paintEvent( e );
 } // paintEvent
 
@@ -1311,8 +1380,6 @@ void QgsMapCanvas::panActionEnd( QPoint releasePoint )
 {
   // move map image and other items to standard position
   moveCanvasContents( true ); // true means reset
-
-  mMap->mapDragged( releasePoint - mCanvasProperties->rubberStartPoint );
 
   // use start and end box points to calculate the extent
   QgsPoint start = getCoordinateTransform()->toMapCoordinates( mCanvasProperties->rubberStartPoint );

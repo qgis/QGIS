@@ -23,138 +23,30 @@
 #include <QPainter>
 
 QgsMapCanvasMap::QgsMapCanvasMap( QgsMapCanvas* canvas )
-    : mCanvas( canvas )
-    , mDirty(true)
-    , mJob(0)
-    , mOffset()
+    : QgsMapCanvasItem( canvas )
 {
   setZValue( -10 );
-  setPos( 0, 0 );
-  resize( QSize( 1, 1 ) );
-
-  connect(&mTimer, SIGNAL(timeout()), SLOT(onMapUpdateTimeout()));
-  mTimer.setInterval(400);
-
 }
 
 QgsMapCanvasMap::~QgsMapCanvasMap()
 {
-  delete mJob;
 }
 
-void QgsMapCanvasMap::refresh()
+void QgsMapCanvasMap::setContent( const QImage& image, const QgsRectangle& rect )
 {
-  if (mJob)
-  {
-    qDebug("need to cancel first!");
-    mJob->cancel();
-    mJob->deleteLater();
-    mJob = 0;
-  }
-
-  mDirty = true;
-  update();
+  mImage = image;
+  setRect( rect );
 }
 
-void QgsMapCanvasMap::paint( QPainter* p, const QStyleOptionGraphicsItem*, QWidget* )
+void QgsMapCanvasMap::paint( QPainter* painter )
 {
-  qDebug("paint()");
-
-  if (mDirty)
-  {
-    if (mJob)
-    {
-      qDebug("already rendering");
-    }
-    else
-    {
-      qDebug("need to render");
-
-      // draw the image before it will be wiped out
-      p->drawImage( mOffset, mImage );
-
-      // TODO[MD]: need to setup clipping?
-      //paint.setClipRect( mImage.rect() );
-
-      // create the renderer job
-      Q_ASSERT(mJob == 0);
-      mJob = new QgsMapRendererSequentialJob( mCanvas->mapSettings() );
-      connect(mJob, SIGNAL(finished()), SLOT(finish()));
-      mJob->start();
-
-      mTimer.start();
-
-      mOffset = QPoint();
-      return;
-    }
-  }
-
-#ifdef EGA_MODE
-  QImage i2( mImage.size()/3, mImage.format() );
-  QPainter p2(&i2);
-  p2.drawImage( QRect(0,0, mImage.width()/3, mImage.height()/3), mImage ); //, 0,0, mImage.width()/3, mImage.height()/3);
-  p2.end();
-  p->drawImage( QRect( 0, 0, mImage.width(), mImage.height()), i2 ) ;//, 0, 0, i2.width()*3, i2.height()*3 );
-#else
-  p->drawImage( 0, 0, mImage );
-#endif
-}
-
-QRectF QgsMapCanvasMap::boundingRect() const
-{
-  QSize s = mCanvas->mapSettings().outputSize();
-  return QRectF( 0, 0, s.width(), s.height() ); // mImage.width(), mImage.height() );
-}
-
-
-void QgsMapCanvasMap::resize( QSize size )
-{
-  if (mJob)
-  {
-    qDebug("need to cancel first!");
-    mJob->cancel();
-    mJob->deleteLater();
-    mJob = 0;
-  }
-
-  QgsDebugMsg( QString( "resizing to %1x%2" ).arg( size.width() ).arg( size.height() ) );
-  prepareGeometryChange(); // to keep QGraphicsScene indexes up to date on size change
+  int w = qRound(boundingRect().width()) - 2, h = qRound(boundingRect().height()) - 2; // setRect() makes the size +2 :-(
+  if (mImage.size() != QSize(w,h))
+    qDebug("map paint DIFFERENT SIZE: img %d,%d  item %d,%d", mImage.width(), mImage.height(), w, h);
+  painter->drawImage( QRect(0, 0, w, h), mImage );
 }
 
 QPaintDevice& QgsMapCanvasMap::paintDevice()
 {
   return mImage;
-}
-
-
-void QgsMapCanvasMap::finish()
-{
-  qDebug("finish!");
-
-  mTimer.stop();
-
-  mDirty = false;
-
-  mImage = mJob->renderedImage();
-
-  mCanvas->assignLabelingResults( mJob->takeLabelingResults() );
-
-  update();
-}
-
-
-void QgsMapCanvasMap::onMapUpdateTimeout()
-{
-  qDebug("update timer!");
-
-  mImage = mJob->renderedImage();
-
-  update();
-}
-
-
-void QgsMapCanvasMap::mapDragged(const QPoint &diff)
-{
-  mOffset = diff;
-  update();
 }

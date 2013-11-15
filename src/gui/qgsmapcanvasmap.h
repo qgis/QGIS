@@ -23,7 +23,7 @@
 #include <qgis.h>
 #include <qgsmaptopixel.h>
 
-#include <qgsmaprendererjob.h>
+#include <qgsmapcanvasitem.h>
 
 class QgsMapSettings;
 class QgsMapCanvas;
@@ -31,9 +31,8 @@ class QgsMapCanvas;
 /** \ingroup gui
  * A rectangular graphics item representing the map on the canvas.
  */
-class GUI_EXPORT QgsMapCanvasMap : public QObject, public QGraphicsRectItem
+class GUI_EXPORT QgsMapCanvasMap : public QgsMapCanvasItem  // public QObject, public QGraphicsRectItem
 {
-  Q_OBJECT
   public:
 
     //! constructor
@@ -41,10 +40,15 @@ class GUI_EXPORT QgsMapCanvasMap : public QObject, public QGraphicsRectItem
 
     ~QgsMapCanvasMap();
 
-    void refresh();
+    void setContent( const QImage& image, const QgsRectangle& rect );
 
-    //! resize canvas item and pixmap
-    void resize( QSize size );
+    virtual void paint( QPainter * painter );
+
+    //! @deprecated in 2.1 - does nothing. Kept for API compatibility
+    Q_DECL_DEPRECATED void refresh() {}
+
+    //! @deprecated in 2.1 - does nothing. Kept for API compatibility
+    Q_DECL_DEPRECATED void resize( QSize size ) { Q_UNUSED( size ); }
 
     //! @deprecated in 2.1 - does nothing. Kept for API compatibility
     Q_DECL_DEPRECATED void enableAntiAliasing( bool flag );
@@ -61,36 +65,12 @@ class GUI_EXPORT QgsMapCanvasMap : public QObject, public QGraphicsRectItem
     //! @deprecated in 2.1
     Q_DECL_DEPRECATED QPaintDevice& paintDevice();
 
-    void paint( QPainter* p, const QStyleOptionGraphicsItem*, QWidget* );
-
-    QRectF boundingRect() const;
-
     //! @deprecated in 2.1 - does nothing. Kept for API compatibility
     Q_DECL_DEPRECATED void updateContents() {}
-
-    const QgsMapSettings& settings() const;
-
-    //! called by map canvas to handle panning with mouse (kind of)
-    //! @note added in 2.1
-    void mapDragged( const QPoint& diff);
-
-public slots:
-    void finish();
-    void onMapUpdateTimeout();
 
   private:
 
     QImage mImage;
-
-    QgsMapCanvas* mCanvas;
-
-    QPoint mOffset;
-
-    bool mDirty; //!< whether a new rendering job should be started upon next paint() call
-
-    QgsMapRendererSequentialJob* mJob;
-
-    QTimer mTimer;
 };
 
 #endif
