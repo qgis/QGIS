@@ -1392,40 +1392,47 @@ QWidget* QgsAttributeEditor::createWidgetFromDef( const QgsAttributeEditorElemen
     {
       const QgsAttributeEditorField* fieldDef = dynamic_cast<const QgsAttributeEditorField*>( widgetDef );
       int fldIdx = fieldDef->idx();
-      newWidget = createAttributeEditor( parent, 0, vl, fldIdx, feat.attributes().value( fldIdx, QVariant() ), context );
-
-      if ( newWidget )
+      if ( fldIdx < vl->pendingFields().count() && fldIdx >= 0 )
       {
-        if ( vl->editType( fldIdx ) != QgsVectorLayer::Immutable )
+        newWidget = createAttributeEditor( parent, 0, vl, fldIdx, feat.attributes().value( fldIdx, QVariant() ), context );
+
+        if ( newWidget )
         {
-          if ( newWidget->isEnabled() && vl->isEditable() && vl->fieldEditable( fldIdx ) )
+          if ( vl->editType( fldIdx ) != QgsVectorLayer::Immutable )
           {
-            newWidget->setEnabled( true );
-          }
-          else if ( vl->editType( fldIdx ) == QgsVectorLayer::Photo )
-          {
-            foreach ( QWidget *w, newWidget->findChildren<QWidget *>() )
+            if ( newWidget->isEnabled() && vl->isEditable() && vl->fieldEditable( fldIdx ) )
             {
-              w->setEnabled( qobject_cast<QLabel *>( w ) ? true : false );
+              newWidget->setEnabled( true );
             }
-          }
-          else if ( vl->editType( fldIdx ) == QgsVectorLayer::WebView )
-          {
-            foreach ( QWidget *w, newWidget->findChildren<QWidget *>() )
+            else if ( vl->editType( fldIdx ) == QgsVectorLayer::Photo )
             {
-              if ( qobject_cast<QWebView *>( w ) )
-                w->setEnabled( true );
-              else if ( qobject_cast<QPushButton *>( w ) && w->objectName() == "openUrl" )
-                w->setEnabled( true );
-              else
-                w->setEnabled( false );
+              foreach ( QWidget *w, newWidget->findChildren<QWidget *>() )
+              {
+                w->setEnabled( qobject_cast<QLabel *>( w ) ? true : false );
+              }
             }
-          }
-          else
-          {
-            newWidget->setEnabled( false );
+            else if ( vl->editType( fldIdx ) == QgsVectorLayer::WebView )
+            {
+              foreach ( QWidget *w, newWidget->findChildren<QWidget *>() )
+              {
+                if ( qobject_cast<QWebView *>( w ) )
+                  w->setEnabled( true );
+                else if ( qobject_cast<QPushButton *>( w ) && w->objectName() == "openUrl" )
+                  w->setEnabled( true );
+                else
+                  w->setEnabled( false );
+              }
+            }
+            else
+            {
+              newWidget->setEnabled( false );
+            }
           }
         }
+      }
+      else
+      {
+        newWidget = new QLabel( tr( "<i>Error: Field does not exist in datasource</i>" ), parent );
       }
       labelOnTop = vl->labelOnTop( fieldDef->idx() );
       labelText = vl->attributeDisplayName( fieldDef->idx() );

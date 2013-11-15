@@ -2016,7 +2016,7 @@ bool QgsCoordinateReferenceSystem::syncDatumTransform( const QString& dbPath )
     {
       //already in database, do update
       QgsDebugMsg( "Trying datum transform update" );
-      sql = QString( "UPDATE tbl_datum_transform SET source_crs = %2, target_crs = %3, coord_op_method = %4, p1 = %5, p2 = %6, p3 = %7, p4 = %8, p5 = %9, p6 = %10, p7 = %11 WHERE coord_op = %1" )
+      sql = QString( "UPDATE tbl_datum_transform SET source_crs_code = %2, target_crs_code = %3, coord_op_method_code = %4, p1 = %5, p2 = %6, p3 = %7, p4 = %8, p5 = %9, p6 = %10, p7 = %11 WHERE coord_op_code = %1" )
             .arg( coord_op ).arg( source_crs ).arg( target_crs ).arg( coord_op_method ).arg( p1 ).arg( p2 ).arg( p3 ).arg( p4 ).arg( p5 ).arg( p6 ).arg( p7 );
     }
     else
@@ -2030,7 +2030,7 @@ bool QgsCoordinateReferenceSystem::syncDatumTransform( const QString& dbPath )
 
     if ( sqlite3_exec( db, sql.toUtf8(), 0, 0, 0 ) != SQLITE_OK )
     {
-      QgsDebugMsg( "Error" );
+      QgsDebugMsg( QString( "Error [%1]" ).arg( sqlite3_errmsg( db ) ) );
     }
   }
 

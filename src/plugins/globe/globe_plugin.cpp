@@ -62,7 +62,9 @@
 #include <osgEarthDrivers/gdal/GDALOptions>
 #include <osgEarthDrivers/tms/TMSOptions>
 #include <osgEarth/Version>
-
+#if OSGEARTH_VERSION_GREATER_OR_EQUAL( 2, 2, 0 )
+#include <osgEarthDrivers/cache_filesystem/FileSystemCache>
+#endif
 using namespace osgEarth::Drivers;
 using namespace osgEarth::Util;
 
@@ -85,6 +87,7 @@ GlobePlugin::GlobePlugin( QgisInterface* theQgisInterface )
     , mQActionSettingsPointer( NULL )
     , mOsgViewer( 0 )
     , mViewerWidget( 0 )
+    , mBaseLayer( 0 )
     , mQgisMapLayer( 0 )
     , mTileSource( 0 )
     , mElevationManager( NULL )
@@ -117,7 +120,7 @@ GlobePlugin::GlobePlugin( QgisInterface* theQgisInterface )
   }
 #endif
 
-  mSettingsDialog = new QgsGlobePluginDialog( theQgisInterface->mainWindow(), QgisGui::ModalDialogFlags );
+  mSettingsDialog = new QgsGlobePluginDialog( theQgisInterface->mainWindow(), this, QgisGui::ModalDialogFlags );
 }
 
 //destructor
@@ -281,17 +284,18 @@ void GlobePlugin::run()
       setupMap();
     }
 
-    if ( getenv( "GLOBE_SKY" ) )
-    {
-      SkyNode* sky = new SkyNode( mMapNode->getMap() );
-      sky->setDateTime( 2011, 1, 6, 17.0 );
-      //sky->setSunPosition( osg::Vec3(0,-1,0) );
-      sky->attach( mOsgViewer );
-      mRootNode->addChild( sky );
-    }
+    // Initialize the sky node if required
+    setSkyParameters( settings.value( "/Plugin-Globe/skyEnabled", false ).toBool()
+                , settings.value( "/Plugin-Globe/skyDateTime", QDateTime() ).toDateTime()
+                , settings.value( "/Plugin-Globe/skyAutoAmbient", false ).toBool() );
 
     // create a surface to house the controls
+#if OSGEARTH_VERSION_GREATER_OR_EQUAL( 2, 1, 1 )
     mControlCanvas = ControlCanvas::get( mOsgViewer );
+#else
+    mControlCanvas = new ControlCanvas( mOsgViewer );
+#endif
+
     mRootNode->addChild( mControlCanvas );
 
     mOsgViewer->setSceneData( mRootNode );
@@ -313,8 +317,6 @@ void GlobePlugin::run()
     // osgEarth benefits from pre-compilation of GL objects in the pager. In newer versions of
     // OSG, this activates OSG's IncrementalCompileOpeartion in order to avoid frame breaks.
     mOsgViewer->getDatabasePager()->setDoPreCompile( true );
-
-    mSettingsDialog->setViewer( mOsgViewer );
 
 #ifdef GLOBE_OSG_STANDALONE_VIEWER
     mOsgViewer->run();
@@ -374,14 +376,18 @@ void GlobePlugin::settings()
 void GlobePlugin::setupMap()
 {
   QSettings settings;
-  /*
   QString cacheDirectory = settings.value( "cache/directory", QgsApplication::qgisSettingsDirPath() + "cache" ).toString();
+
+#if OSGEARTH_VERSION_GREATER_OR_EQUAL( 2, 2, 0 )
+  FileSystemCacheOptions cacheOptions;
+  cacheOptions.rootPath() = cacheDirectory.toStdString();
+#else
   TMSCacheOptions cacheOptions;
   cacheOptions.setPath( cacheDirectory.toStdString() );
-  */
+#endif
 
   MapOptions mapOptions;
-  //mapOptions.cache() = cacheOptions;
+  mapOptions.cache() = cacheOptions;
   osgEarth::Map *map = new osgEarth::Map( mapOptions );
 
   //Default image layer
@@ -391,9 +397,6 @@ void GlobePlugin::setupMap()
   ImageLayerOptions layerOptions( "world", driverOptions );
   map->addImageLayer( new osgEarth::ImageLayer( layerOptions ) );
   */
-  TMSOptions imagery;
-  imagery.url() = "http://readymap.org/readymap/tiles/1.0.0/7/";
-  map->addImageLayer( new ImageLayer( "Imagery", imagery ) );
 
   MapNodeOptions nodeOptions;
   //nodeOptions.proxySettings() =
@@ -408,6 +411,11 @@ void GlobePlugin::setupMap()
 
   // The MapNode will render the Map object in the scene graph.
   mMapNode = new osgEarth::MapNode( map, nodeOptions );
+
+  if ( settings.value( "/Plugin-Globe/baseLayerEnabled", true ).toBool() )
+  {
+    setBaseMap( settings.value( "/Plugin-Globe/baseLayerURL", "http://readymap.org/readymap/tiles/1.0.0/7/" ).toString() );
+  }
 
   mRootNode = new osg::Group();
   mRootNode->addChild( mMapNode );
@@ -741,9 +749,11 @@ void GlobePlugin::imageLayersChanged()
     mTileSource = new QgsOsgEarthTileSource( mQGisIface );
     mTileSource->initialize( "", 0 );
     ImageLayerOptions options( "QGIS" );
+#if OSGEARTH_VERSION_GREATER_OR_EQUAL( 2, 2, 0 )
+    options.cachePolicy() = CachePolicy::NO_CACHE;
+#endif
     mQgisMapLayer = new ImageLayer( options, mTileSource );
     map->addImageLayer( mQgisMapLayer );
-    //[layer->setCache is private in 1.3.0] mQgisMapLayer->setCache( 0 ); //disable caching
   }
   else
   {
@@ -805,6 +815,53 @@ void GlobePlugin::elevationLayersChanged()
   {
     QgsDebugMsg( "layersChanged: Globe NOT running, skipping" );
     return;
+  }
+}
+
+void GlobePlugin::setBaseMap( QString url )
+{
+  if ( mMapNode )
+  {
+    mMapNode->getMap()->removeImageLayer( mBaseLayer );
+    if ( url.isNull() )
+    {
+      mBaseLayer = 0;
+    }
+    else
+    {
+      TMSOptions imagery;
+      imagery.url() = url.toStdString();
+      mBaseLayer = new ImageLayer( "Imagery", imagery );
+      mMapNode->getMap()->insertImageLayer( mBaseLayer, 0 );
+    }
+  }
+}
+
+void GlobePlugin::setSkyParameters( bool enabled, const QDateTime& dateTime, bool autoAmbience )
+{
+  if ( mRootNode )
+  {
+    if ( enabled )
+    {
+      // Create if not yet done
+      if ( !mSkyNode.get() )
+        mSkyNode = new SkyNode( mMapNode->getMap() );
+
+  #if OSGEARTH_VERSION_GREATER_OR_EQUAL( 2, 4, 0 )
+      mSkyNode->setAutoAmbience( autoAmbience );
+  #endif
+      mSkyNode->setDateTime( dateTime.date().year()
+                             , dateTime.date().month()
+                             , dateTime.date().day()
+                             , dateTime.time().hour() + dateTime.time().minute() / 60.0 );
+      //sky->setSunPosition( osg::Vec3(0,-1,0) );
+      mSkyNode->attach( mOsgViewer );
+      mRootNode->addChild( mSkyNode );
+    }
+    else
+    {
+      mRootNode->removeChild( mSkyNode );
+    }
   }
 }
 
