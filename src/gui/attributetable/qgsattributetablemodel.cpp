@@ -133,7 +133,12 @@ bool QgsAttributeTableModel::removeRows( int row, int count, const QModelIndex &
 void QgsAttributeTableModel::featureAdded( QgsFeatureId fid )
 {
   QgsDebugMsgLevel( QString( "(%2) fid: %1" ).arg( fid ).arg( mFeatureRequest.filterType() ), 4 );
-  if ( loadFeatureAtId( fid ) && mFeatureRequest.acceptFeature( mFeat ) )
+  bool featOk = true;
+
+  if ( mFeat.id() != fid )
+    featOk = loadFeatureAtId( fid );
+
+  if ( featOk && mFeatureRequest.acceptFeature( mFeat ) )
   {
     mFieldCache[ fid ] = mFeat.attribute( mCachedField );
 
@@ -351,6 +356,7 @@ void QgsAttributeTableModel::loadLayer()
 
       t.restart();
     }
+    mFeat = feat;
     featureAdded( feat.id() );
   }
 
