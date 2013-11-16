@@ -333,11 +333,15 @@ bool QgsRasterLayer::draw( QgsRenderContext& rendererContext )
   {
     myRasterViewPort->mSrcCRS = crs();
     myRasterViewPort->mDestCRS = rendererContext.coordinateTransform()->destCRS();
+    myRasterViewPort->mSrcDatumTransform = rendererContext.coordinateTransform()->sourceDatumTransform();
+    myRasterViewPort->mDestDatumTransform = rendererContext.coordinateTransform()->destinationDatumTransform();
   }
   else
   {
     myRasterViewPort->mSrcCRS = QgsCoordinateReferenceSystem(); // will be invalid
     myRasterViewPort->mDestCRS = QgsCoordinateReferenceSystem(); // will be invalid
+    myRasterViewPort->mSrcDatumTransform = -1;
+    myRasterViewPort->mDestDatumTransform = -1;
   }
 
   // get dimensions of clipped raster image in device coordinate space (this is the size of the viewport)
@@ -423,7 +427,7 @@ void QgsRasterLayer::draw( QPainter * theQPainter,
   // params in QgsRasterProjector
   if ( projector )
   {
-    projector->setCRS( theRasterViewPort->mSrcCRS, theRasterViewPort->mDestCRS );
+    projector->setCRS( theRasterViewPort->mSrcCRS, theRasterViewPort->mDestCRS, theRasterViewPort->mSrcDatumTransform, theRasterViewPort->mDestDatumTransform );
   }
 
   // Drawer to pipe?
@@ -1257,6 +1261,8 @@ QPixmap QgsRasterLayer::previewAsPixmap( QSize size, QColor bgColor )
   myRasterViewPort->mDrawnExtent = myExtent;
   myRasterViewPort->mSrcCRS = QgsCoordinateReferenceSystem(); // will be invalid
   myRasterViewPort->mDestCRS = QgsCoordinateReferenceSystem(); // will be invalid
+  myRasterViewPort->mSrcDatumTransform = -1;
+  myRasterViewPort->mDestDatumTransform = -1;
 
   QgsMapToPixel *myMapToPixel = new QgsMapToPixel( myMapUnitsPerPixel );
 

@@ -16,9 +16,36 @@
  ***************************************************************************/
 
 #include "qgsrasterdataprovider.h"
+#include "qgscrscache.h"
 #include "qgslogger.h"
 #include "qgsrasterprojector.h"
 #include "qgscoordinatetransform.h"
+
+QgsRasterProjector::QgsRasterProjector(
+  QgsCoordinateReferenceSystem theSrcCRS,
+  QgsCoordinateReferenceSystem theDestCRS,
+  int theSrcDatumTransform,
+  int theDestDatumTransform,
+  QgsRectangle theDestExtent,
+  int theDestRows, int theDestCols,
+  double theMaxSrcXRes, double theMaxSrcYRes,
+  QgsRectangle theExtent )
+    : QgsRasterInterface( 0 )
+    , mSrcCRS( theSrcCRS )
+    , mDestCRS( theDestCRS )
+    , mSrcDatumTransform( theSrcDatumTransform )
+    , mDestDatumTransform( theDestDatumTransform )
+    , mDestExtent( theDestExtent )
+    , mExtent( theExtent )
+    , mDestRows( theDestRows ), mDestCols( theDestCols )
+    , pHelperTop( 0 ), pHelperBottom( 0 )
+    , mMaxSrcXRes( theMaxSrcXRes ), mMaxSrcYRes( theMaxSrcYRes )
+{
+  QgsDebugMsg( "Entered" );
+  QgsDebugMsg( "theDestExtent = " + theDestExtent.toString() );
+
+  calc();
+}
 
 QgsRasterProjector::QgsRasterProjector(
   QgsCoordinateReferenceSystem theSrcCRS,
@@ -30,7 +57,8 @@ QgsRasterProjector::QgsRasterProjector(
     : QgsRasterInterface( 0 )
     , mSrcCRS( theSrcCRS )
     , mDestCRS( theDestCRS )
-    , mCoordinateTransform( theDestCRS, theSrcCRS )
+    , mSrcDatumTransform( -1 )
+    , mDestDatumTransform( -1 )
     , mDestExtent( theDestExtent )
     , mExtent( theExtent )
     , mDestRows( theDestRows ), mDestCols( theDestCols )
@@ -51,7 +79,8 @@ QgsRasterProjector::QgsRasterProjector(
     : QgsRasterInterface( 0 )
     , mSrcCRS( theSrcCRS )
     , mDestCRS( theDestCRS )
-    , mCoordinateTransform( theDestCRS, theSrcCRS )
+    , mSrcDatumTransform( -1 )
+    , mDestDatumTransform( -1 )
     , mExtent( theExtent )
     , pHelperTop( 0 ), pHelperBottom( 0 )
     , mMaxSrcXRes( theMaxSrcXRes ), mMaxSrcYRes( theMaxSrcYRes )
@@ -60,8 +89,7 @@ QgsRasterProjector::QgsRasterProjector(
 }
 
 QgsRasterProjector::QgsRasterProjector()
-    : QgsRasterInterface( 0 )
-    , pHelperTop( 0 ), pHelperBottom( 0 )
+    : QgsRasterInterface( 0 ), mSrcDatumTransform( -1 ), mDestDatumTransform( -1 ) , pHelperTop( 0 ), pHelperBottom( 0 )
 {
   QgsDebugMsg( "Entered" );
 }
@@ -71,11 +99,11 @@ QgsRasterProjector::QgsRasterProjector( const QgsRasterProjector &projector )
 {
   mSrcCRS = projector.mSrcCRS;
   mDestCRS = projector.mDestCRS;
+  mSrcDatumTransform = projector.mSrcDatumTransform;
+  mDestDatumTransform = projector.mDestDatumTransform;
   mMaxSrcXRes = projector.mMaxSrcXRes;
   mMaxSrcYRes = projector.mMaxSrcYRes;
   mExtent = projector.mExtent;
-  mCoordinateTransform.setSourceCrs( mSrcCRS );
-  mCoordinateTransform.setDestCRS( mDestCRS );
 }
 
 QgsRasterProjector & QgsRasterProjector::operator=( const QgsRasterProjector & projector )
@@ -84,11 +112,11 @@ QgsRasterProjector & QgsRasterProjector::operator=( const QgsRasterProjector & p
   {
     mSrcCRS = projector.mSrcCRS;
     mDestCRS = projector.mDestCRS;
+    mSrcDatumTransform = projector.mSrcDatumTransform;
+    mDestDatumTransform = projector.mDestDatumTransform;
     mMaxSrcXRes = projector.mMaxSrcXRes;
     mMaxSrcYRes = projector.mMaxSrcYRes;
     mExtent = projector.mExtent;
-    mCoordinateTransform.setSourceCrs( mSrcCRS );
-    mCoordinateTransform.setDestCRS( mDestCRS );
   }
   return *this;
 }
@@ -97,6 +125,8 @@ QgsRasterInterface * QgsRasterProjector::clone() const
 {
   QgsDebugMsg( "Entered" );
   QgsRasterProjector * projector = new QgsRasterProjector( mSrcCRS, mDestCRS, mMaxSrcXRes, mMaxSrcYRes, mExtent );
+  projector->mSrcDatumTransform = mSrcDatumTransform;
+  projector->mDestDatumTransform = mDestDatumTransform;
   return projector;
 }
 
@@ -120,12 +150,12 @@ QGis::DataType QgsRasterProjector::dataType( int bandNo ) const
   return QGis::UnknownDataType;
 }
 
-void QgsRasterProjector::setCRS( const QgsCoordinateReferenceSystem & theSrcCRS, const QgsCoordinateReferenceSystem & theDestCRS )
+void QgsRasterProjector::setCRS( const QgsCoordinateReferenceSystem & theSrcCRS, const QgsCoordinateReferenceSystem & theDestCRS, int srcDatumTransform, int destDatumTransform )
 {
   mSrcCRS = theSrcCRS;
   mDestCRS = theDestCRS;
-  mCoordinateTransform.setSourceCrs( theDestCRS );
-  mCoordinateTransform.setDestCRS( theSrcCRS );
+  mSrcDatumTransform = srcDatumTransform;
+  mDestDatumTransform = destDatumTransform;
 }
 
 void QgsRasterProjector::calc()
@@ -166,6 +196,8 @@ void QgsRasterProjector::calc()
   double myDestRes = mDestXRes < mDestYRes ? mDestXRes : mDestYRes;
   mSqrTolerance = myDestRes * myDestRes;
 
+  const QgsCoordinateTransform* ct = QgsCoordinateTransformCache::instance()->transform( mDestCRS.authid(), mSrcCRS.authid(), mDestDatumTransform, mSrcDatumTransform );
+
   // Initialize the matrix by corners and middle points
   mCPCols = mCPRows = 3;
   for ( int i = 0; i < mCPRows; i++ )
@@ -184,20 +216,20 @@ void QgsRasterProjector::calc()
   }
   for ( int i = 0; i < mCPRows; i++ )
   {
-    calcRow( i );
+    calcRow( i, ct );
   }
 
   while ( true )
   {
-    bool myColsOK = checkCols();
+    bool myColsOK = checkCols( ct );
     if ( !myColsOK )
     {
-      insertRows();
+      insertRows( ct );
     }
-    bool myRowsOK = checkRows();
+    bool myRowsOK = checkRows( ct );
     if ( !myRowsOK )
     {
-      insertCols();
+      insertCols( ct );
     }
     if ( myColsOK && myRowsOK )
     {
@@ -432,7 +464,7 @@ void QgsRasterProjector::nextHelper()
   mHelperTopRow++;
 }
 
-void QgsRasterProjector::srcRowCol( int theDestRow, int theDestCol, int *theSrcRow, int *theSrcCol )
+void QgsRasterProjector::srcRowCol( int theDestRow, int theDestCol, int *theSrcRow, int *theSrcCol, const QgsCoordinateTransform* ct )
 {
   if ( mApproximate )
   {
@@ -440,11 +472,11 @@ void QgsRasterProjector::srcRowCol( int theDestRow, int theDestCol, int *theSrcR
   }
   else
   {
-    preciseSrcRowCol( theDestRow, theDestCol, theSrcRow, theSrcCol );
+    preciseSrcRowCol( theDestRow, theDestCol, theSrcRow, theSrcCol, ct );
   }
 }
 
-void QgsRasterProjector::preciseSrcRowCol( int theDestRow, int theDestCol, int *theSrcRow, int *theSrcCol )
+void QgsRasterProjector::preciseSrcRowCol( int theDestRow, int theDestCol, int *theSrcRow, int *theSrcCol, const QgsCoordinateTransform* ct )
 {
 #ifdef QGISDEBUG
   QgsDebugMsgLevel( QString( "theDestRow = %1" ).arg( theDestRow ), 5 );
@@ -460,7 +492,10 @@ void QgsRasterProjector::preciseSrcRowCol( int theDestRow, int theDestCol, int *
   QgsDebugMsgLevel( QString( "x = %1 y = %2" ).arg( x ).arg( y ), 5 );
 #endif
 
-  mCoordinateTransform.transformInPlace( x, y, z );
+  if ( ct )
+  {
+    ct->transformInPlace( x, y, z );
+  }
 
 #ifdef QGISDEBUG
   QgsDebugMsgLevel( QString( "x = %1 y = %2" ).arg( x ).arg( y ), 5 );
@@ -545,7 +580,7 @@ void QgsRasterProjector::approximateSrcRowCol( int theDestRow, int theDestCol, i
   Q_ASSERT( *theSrcCol < mSrcCols );
 }
 
-void QgsRasterProjector::insertRows()
+void QgsRasterProjector::insertRows( const QgsCoordinateTransform* ct )
 {
   for ( int r = 0; r < mCPRows - 1; r++ )
   {
@@ -563,11 +598,11 @@ void QgsRasterProjector::insertRows()
   mCPRows += mCPRows - 1;
   for ( int r = 1; r < mCPRows - 1; r += 2 )
   {
-    calcRow( r );
+    calcRow( r, ct );
   }
 }
 
-void QgsRasterProjector::insertCols()
+void QgsRasterProjector::insertCols( const QgsCoordinateTransform* ct )
 {
   for ( int r = 0; r < mCPRows; r++ )
   {
@@ -582,20 +617,27 @@ void QgsRasterProjector::insertCols()
   mCPCols += mCPCols - 1;
   for ( int c = 1; c < mCPCols - 1; c += 2 )
   {
-    calcCol( c );
+    calcCol( c, ct );
   }
 
 }
 
-void QgsRasterProjector::calcCP( int theRow, int theCol )
+void QgsRasterProjector::calcCP( int theRow, int theCol, const QgsCoordinateTransform* ct )
 {
   double myDestX, myDestY;
   destPointOnCPMatrix( theRow, theCol, &myDestX, &myDestY );
   QgsPoint myDestPoint( myDestX, myDestY );
   try
   {
-    mCPMatrix[theRow][theCol] = mCoordinateTransform.transform( myDestPoint );
-    mCPLegalMatrix[theRow][theCol] = true;
+    if ( ct )
+    {
+      mCPMatrix[theRow][theCol] = ct->transform( myDestPoint );
+      mCPLegalMatrix[theRow][theCol] = true;
+    }
+    else
+    {
+      mCPLegalMatrix[theRow][theCol] = false;
+    }
   }
   catch ( QgsCsException &e )
   {
@@ -605,30 +647,35 @@ void QgsRasterProjector::calcCP( int theRow, int theCol )
   }
 }
 
-bool QgsRasterProjector::calcRow( int theRow )
+bool QgsRasterProjector::calcRow( int theRow, const QgsCoordinateTransform* ct )
 {
   QgsDebugMsgLevel( QString( "theRow = %1" ).arg( theRow ), 3 );
   for ( int i = 0; i < mCPCols; i++ )
   {
-    calcCP( theRow, i );
+    calcCP( theRow, i, ct );
   }
 
   return true;
 }
 
-bool QgsRasterProjector::calcCol( int theCol )
+bool QgsRasterProjector::calcCol( int theCol, const QgsCoordinateTransform* ct )
 {
   QgsDebugMsgLevel( QString( "theCol = %1" ).arg( theCol ), 3 );
   for ( int i = 0; i < mCPRows; i++ )
   {
-    calcCP( i, theCol );
+    calcCP( i, theCol, ct );
   }
 
   return true;
 }
 
-bool QgsRasterProjector::checkCols()
+bool QgsRasterProjector::checkCols( const QgsCoordinateTransform* ct )
 {
+  if ( !ct )
+  {
+    return false;
+  }
+
   for ( int c = 0; c < mCPCols; c++ )
   {
     for ( int r = 1; r < mCPRows - 1; r += 2 )
@@ -649,7 +696,7 @@ bool QgsRasterProjector::checkCols()
       }
       try
       {
-        QgsPoint myDestApprox = mCoordinateTransform.transform( mySrcApprox, QgsCoordinateTransform::ReverseTransform );
+        QgsPoint myDestApprox = ct->transform( mySrcApprox, QgsCoordinateTransform::ReverseTransform );
         double mySqrDist = myDestApprox.sqrDist( myDestPoint );
         if ( mySqrDist > mSqrTolerance )
         {
@@ -667,8 +714,13 @@ bool QgsRasterProjector::checkCols()
   return true;
 }
 
-bool QgsRasterProjector::checkRows()
+bool QgsRasterProjector::checkRows( const QgsCoordinateTransform* ct )
 {
+  if ( !ct )
+  {
+    return false;
+  }
+
   for ( int r = 0; r < mCPRows; r++ )
   {
     for ( int c = 1; c < mCPCols - 1; c += 2 )
@@ -689,7 +741,7 @@ bool QgsRasterProjector::checkRows()
       }
       try
       {
-        QgsPoint myDestApprox = mCoordinateTransform.transform( mySrcApprox, QgsCoordinateTransform::ReverseTransform );
+        QgsPoint myDestApprox = ct->transform( mySrcApprox, QgsCoordinateTransform::ReverseTransform );
         double mySqrDist = myDestApprox.sqrDist( myDestPoint );
         if ( mySqrDist > mSqrTolerance )
         {
@@ -775,12 +827,18 @@ QgsRasterBlock * QgsRasterProjector::block( int bandNo, QgsRectangle  const & ex
   // we cannot fill output block with no data because we use memcpy for data, not setValue().
   bool doNoData = inputBlock->hasNoData() && !inputBlock->hasNoDataValue();
 
+  const QgsCoordinateTransform* ct = 0;
+  if ( !mApproximate )
+  {
+    ct = QgsCoordinateTransformCache::instance()->transform( mDestCRS.authid(), mSrcCRS.authid(), mDestDatumTransform, mSrcDatumTransform );
+  }
+
   int srcRow, srcCol;
   for ( int i = 0; i < height; ++i )
   {
     for ( int j = 0; j < width; ++j )
     {
-      srcRowCol( i, j, &srcRow, &srcCol );
+      srcRowCol( i, j, &srcRow, &srcCol, ct );
       qgssize srcIndex = ( qgssize )srcRow * mSrcCols + srcCol;
       QgsDebugMsgLevel( QString( "row = %1 col = %2 srcRow = %3 srcCol = %4" ).arg( i ).arg( j ).arg( srcRow ).arg( srcCol ), 5 );
 

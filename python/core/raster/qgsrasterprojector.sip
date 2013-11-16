@@ -13,6 +13,18 @@ class QgsRasterProjector : QgsRasterInterface
      * it calculates grid of points in source CRS for target CRS + extent
      * which are used to calculate affine transformation matrices.
      */
+
+    QgsRasterProjector(
+          QgsCoordinateReferenceSystem theSrcCRS,
+          QgsCoordinateReferenceSystem theDestCRS,
+          int theSrcDatumTransform,
+          int theDestDatumTransform,
+          QgsRectangle theDestExtent,
+          int theDestRows, int theDestCols,
+          double theMaxSrcXRes, double theMaxSrcYRes,
+          QgsRectangle theExtent
+        );
+
     QgsRasterProjector(
       QgsCoordinateReferenceSystem theSrcCRS,
       QgsCoordinateReferenceSystem theDestCRS,
@@ -39,7 +51,7 @@ class QgsRasterProjector : QgsRasterInterface
     int dataType( int bandNo ) const;
 
     /** \brief set source and destination CRS */
-    void setCRS( const QgsCoordinateReferenceSystem & theSrcCRS, const QgsCoordinateReferenceSystem & theDestCRS );
+    void setCRS( const QgsCoordinateReferenceSystem & theSrcCRS, const QgsCoordinateReferenceSystem & theDestCRS, int srcDatumTransform = -1, int destDatumTransform = -1 );
 
     /** \brief Get source CRS */
     QgsCoordinateReferenceSystem srcCrs() const;
