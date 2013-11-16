@@ -260,6 +260,12 @@ void QgsComposerScaleBar::applyDefaultSize( ScaleBarUnits u)
     double widthInSelectedUnits = mapWidth();
     double initialUnitsPerSegment =  widthInSelectedUnits / 10.0; //default scalebar width equals half the map width
     setNumUnitsPerSegment( initialUnitsPerSegment );
+
+    if (mUnits == MapUnits)
+    {
+        upperMagnitudeMultiplier = 1.0;
+        setUnitLabeling( tr ("MU") );
+    }
     
     // METERS
     if (mUnits == Meters)
