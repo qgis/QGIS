@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>848</width>
-    <height>578</height>
+    <height>705</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -267,7 +267,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>687</width>
-                <height>523</height>
+                <height>650</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -1249,7 +1249,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>687</width>
-                <height>523</height>
+                <height>650</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -1577,8 +1577,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>572</width>
-                <height>611</height>
+                <width>687</width>
+                <height>650</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_29">
@@ -2092,8 +2092,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>441</width>
-                <height>281</height>
+                <width>687</width>
+                <height>650</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -2438,8 +2438,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>494</width>
-                <height>619</height>
+                <width>687</width>
+                <height>650</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_30">
@@ -2852,8 +2852,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>670</width>
-                <height>551</height>
+                <width>687</width>
+                <height>650</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -3354,7 +3354,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>687</width>
-                <height>523</height>
+                <height>650</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -3494,10 +3494,23 @@
                 <x>0</x>
                 <y>0</y>
                 <width>687</width>
-                <height>523</height>
+                <height>650</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_15">
+               <item row="5" column="0">
+                <spacer name="verticalSpacer">
+                 <property name="orientation">
+                  <enum>Qt::Vertical</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>40</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
                <item row="2" column="0">
                 <widget class="QGroupBox" name="grpProjectionBehaviour">
                  <property name="title">
@@ -3574,19 +3587,6 @@
                  </layout>
                 </widget>
                </item>
-               <item row="3" column="0">
-                <spacer name="verticalSpacer">
-                 <property name="orientation">
-                  <enum>Qt::Vertical</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>20</width>
-                   <height>40</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
                <item row="1" column="0">
                 <widget class="QGroupBox" name="grpOtfTransform">
                  <property name="title">
@@ -3644,6 +3644,78 @@
                  </layout>
                 </widget>
                </item>
+               <item row="3" column="0">
+                <widget class="QGroupBox" name="mDefaultDatumTransformGroupBox">
+                 <property name="title">
+                  <string>Default datum transformations</string>
+                 </property>
+                 <layout class="QGridLayout" name="gridLayout_8">
+                  <item row="0" column="0">
+                   <layout class="QHBoxLayout" name="horizontalLayout_4">
+                    <item>
+                     <widget class="QPushButton" name="mAddDefaultTransformButton">
+                      <property name="text">
+                       <string/>
+                      </property>
+                      <property name="icon">
+                       <iconset resource="../../images/images.qrc">
+                        <normaloff>:/images/themes/default/symbologyAdd.png</normaloff>:/images/themes/default/symbologyAdd.png</iconset>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QPushButton" name="mRemoveDefaultTransformButton">
+                      <property name="text">
+                       <string/>
+                      </property>
+                      <property name="icon">
+                       <iconset resource="../../images/images.qrc">
+                        <normaloff>:/images/themes/default/symbologyRemove.png</normaloff>:/images/themes/default/symbologyRemove.png</iconset>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <spacer name="horizontalSpacer_38">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>568</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                   </layout>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item row="4" column="0">
+                <widget class="QTreeWidget" name="mDefaultDatumTransformTreeWidget">
+                 <column>
+                  <property name="text">
+                   <string>Source CRS</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Destination CRS</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Source datum transform</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Destination datum transform</string>
+                  </property>
+                 </column>
+                </widget>
+               </item>
               </layout>
              </widget>
             </widget>
@@ -3678,7 +3750,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>265</width>
+                <width>216</width>
                 <height>197</height>
                </rect>
               </property>
@@ -3778,8 +3850,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>469</width>
-                <height>556</height>
+                <width>687</width>
+                <height>650</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_33">

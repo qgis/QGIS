@@ -227,6 +227,9 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
      */
     void saveGdalDriverList();
 
+    void on_mRemoveDefaultTransformButton_clicked();
+    void on_mAddDefaultTransformButton_clicked();
+
   private:
     QStringList i18nList();
     void initContrastEnhancement( QComboBox *cbox, QString name, QString defaultVal );
@@ -239,6 +242,8 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
      * @note added in QGIS 1.9
      */
     void addCustomEnvVarRow( QString varName, QString varVal, QString varApply = QString() );
+
+    void saveDefaultDatumTransformations();
 
   protected:
     QgisAppStyleSheet* mStyleSheetBuilder;
