@@ -1068,14 +1068,6 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
   datasetOptions.clear();
   layerOptions.clear();
 
-  datasetOptions.insert( "FORMAT", new SetOption(
-                            QObject::tr( "To create MIF/MID instead of TAB files." ),
-                            QStringList()
-                            << "MIF/MID"
-                            << "TAB"
-                            , "TAB" // Default value
-                             ) );
-
   layerOptions.insert( "SPATIAL_INDEX_MODE", new SetOption(
                             QObject::tr( "Use this to turn on 'quick spatial index mode'. "
                                          "In this mode writing files can be about 5 times faster, "
@@ -1083,15 +1075,27 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                             QStringList()
                             << "QUICK"
                             , "" // Default value
-                         , true // Allow None
+                            , true // Allow None
                              ) );
 
   driverMetadata.insert( "MapInfo File",
                          MetaData(
                            "Mapinfo",
-                           QObject::tr( "Mapinfo" ),
-                           "*.tab *.mif",
+                           QObject::tr( "Mapinfo TAB" ),
+                           "*.tab",
                            "tab",
+                           datasetOptions,
+                           layerOptions
+                         )
+                       );
+
+  // QGIS internal alias for MIF files
+  driverMetadata.insert( "MapInfo MIF",
+                         MetaData(
+                           "Mapinfo",
+                           QObject::tr( "Mapinfo MIF" ),
+                           "*.mif",
+                           "mif",
                            datasetOptions,
                            layerOptions
                          )
@@ -1277,12 +1281,15 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                             , true  // Default value
                             ) );
 
+  // Will be handled with the SpatiaLite driver alias
+#if 0
   datasetOptions.insert( "SPATIALITE", new BoolOption(
                             QObject::tr( "Create the SpatiaLite flavour of the metadata tables, which are a bit "
                                          "differ from the metadata used by this OGR driver and from OGC "
                                          "specifications. Implies METADATA=yes" )
                             , true  // Default value
                             ) );
+#endif
 
   datasetOptions.insert( "INIT_WITH_EPSG", new BoolOption(
                             QObject::tr( "Insert the content of the EPSG CSV files into the spatial_ref_sys table. "
@@ -1351,8 +1358,8 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
 
   driverMetadata.insert( "SQLite",
                          MetaData(
-                           "SQLite/SpatiaLite",
-                           QObject::tr( "SQLite/SpatiaLite" ),
+                           "SQLite",
+                           QObject::tr( "SQLite" ),
                            "*.sqlite",
                            "sqlite",
                            datasetOptions,
@@ -1360,6 +1367,16 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                          )
                        );
 
+  driverMetadata.insert( "SpatiaLite",
+                         MetaData(
+                           "SpatiaLite",
+                           QObject::tr( "SpatiaLite" ),
+                           "*.sqlite",
+                           "sqlite",
+                           datasetOptions,
+                           layerOptions
+                         )
+                       );
   // AutoCAD DXF
   datasetOptions.clear();
   layerOptions.clear();
