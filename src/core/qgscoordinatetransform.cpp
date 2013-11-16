@@ -792,6 +792,8 @@ QList< QList< int > > QgsCoordinateTransform::datumTransformations( const QgsCoo
   QList<int> directTransforms;
   searchDatumTransform( QString( "SELECT coord_op_code FROM tbl_datum_transform WHERE source_crs_code = %1 AND target_crs_code = %2" ).arg( srcAuthCode ).arg( destAuthCode ),
                         directTransforms );
+  searchDatumTransform( QString( "SELECT coord_op_code FROM tbl_datum_transform WHERE source_crs_code = %1 AND target_crs_code = %2" ).arg( destAuthCode ).arg( srcAuthCode ),
+                        directTransforms );
   QList<int> srcToWgs84;
   searchDatumTransform( QString( "SELECT coord_op_code FROM tbl_datum_transform WHERE ( source_crs_code = %1 AND target_crs_code = %2 ) OR ( source_crs_code = %2 AND target_crs_code = %1 )" ).arg( srcAuthCode ).arg( 4326 ),
                         srcToWgs84 );
