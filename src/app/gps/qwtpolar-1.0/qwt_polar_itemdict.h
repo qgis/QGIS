@@ -43,11 +43,11 @@ public:
     void detachItems( int rtti = QwtPolarItem::Rtti_PolarItem,
         bool autoDelete = true );
 
+protected:
+    void insertItem( QwtPolarItem * );
+    void removeItem( QwtPolarItem * );
+
 private:
-    friend class QwtPolarItem;
-
-    void attachItem( QwtPolarItem *, bool );
-
     class PrivateData;
     PrivateData *d_data;
 };
