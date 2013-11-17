@@ -286,8 +286,8 @@ void GlobePlugin::run()
 
     // Initialize the sky node if required
     setSkyParameters( settings.value( "/Plugin-Globe/skyEnabled", false ).toBool()
-                , settings.value( "/Plugin-Globe/skyDateTime", QDateTime() ).toDateTime()
-                , settings.value( "/Plugin-Globe/skyAutoAmbient", false ).toBool() );
+                      , settings.value( "/Plugin-Globe/skyDateTime", QDateTime() ).toDateTime()
+                      , settings.value( "/Plugin-Globe/skyAutoAmbient", false ).toBool() );
 
     // create a surface to house the controls
 #if OSGEARTH_VERSION_GREATER_OR_EQUAL( 2, 1, 1 )
@@ -847,9 +847,9 @@ void GlobePlugin::setSkyParameters( bool enabled, const QDateTime& dateTime, boo
       if ( !mSkyNode.get() )
         mSkyNode = new SkyNode( mMapNode->getMap() );
 
-  #if OSGEARTH_VERSION_GREATER_OR_EQUAL( 2, 4, 0 )
+#if OSGEARTH_VERSION_GREATER_OR_EQUAL( 2, 4, 0 )
       mSkyNode->setAutoAmbience( autoAmbience );
-  #endif
+#endif
       mSkyNode->setDateTime( dateTime.date().year()
                              , dateTime.date().month()
                              , dateTime.date().day()
@@ -902,6 +902,10 @@ void GlobePlugin::help()
 void GlobePlugin::placeNode( osg::Node* node, double lat, double lon, double alt /*= 0.0*/ )
 {
 #ifdef HAVE_OSGEARTH_ELEVATION_QUERY
+  Q_UNUSED( node );
+  Q_UNUSED( lat );
+  Q_UNUSED( lon );
+  Q_UNUSED( alt );
 #else
   // get elevation
   double elevation = 0.0;

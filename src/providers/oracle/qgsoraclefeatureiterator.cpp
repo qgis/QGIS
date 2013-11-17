@@ -44,6 +44,9 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleProvider *p, const 
 
   switch ( request.filterType() )
   {
+    case QgsFeatureRequest::FilterExpression:
+      break;
+
     case QgsFeatureRequest::FilterRect:
       if ( !P->mGeometryColumn.isNull() )
       {
