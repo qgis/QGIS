@@ -2408,7 +2408,8 @@ QgsRectangle QgsPostgresProvider::extent()
                && result.PQgetvalue( 0, 0 ).toLong() > 0 )
           {
             sql = QString( "SELECT %1(%2,%3,%4)" )
-                  .arg( mConnectionRO->majorVersion() < 2 ? "estimated_extent" : "st_estimated_extent" )
+                  .arg( mConnectionRO->majorVersion() < 2 ? "estimated_extent" :
+                        (mConnectionRO->majorVersion() == 2 && mConnectionRO->minorVersion() < 1 ? "st_estimated_extent" : "st_estimatedextent" ) )
                   .arg( quotedValue( mSchemaName ) )
                   .arg( quotedValue( mTableName ) )
                   .arg( quotedValue( mGeometryColumn ) );
