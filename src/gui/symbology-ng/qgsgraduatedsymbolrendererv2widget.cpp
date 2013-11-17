@@ -89,8 +89,16 @@ QVariant QgsGraduatedSymbolRendererV2Model::data( const QModelIndex &index, int 
 {
   if ( !index.isValid() || !mRenderer ) return QVariant();
 
-  const QgsRendererRangeV2 range = mRenderer->ranges().value( index.row() );
-  QString rangeStr = QString::number( range.lowerValue(), 'f', 4 ) + " - " + QString::number( range.upperValue(), 'f', 4 );
+  const QgsRendererRangeV2 range =  mRenderer->ranges().value( index.row() );
+  
+  QString firstBdr = "[ ";
+
+  if ( index.row() > 0)
+  {
+    firstBdr = "] ";
+  }
+
+  QString rangeStr = firstBdr + QString::number( range.lowerValue(), 'f', 4 ) + " - " + QString::number( range.upperValue(), 'f', 4 ) + " ]";
 
   if ( role == Qt::DisplayRole || role == Qt::ToolTipRole )
   {
@@ -133,7 +141,7 @@ bool QgsGraduatedSymbolRendererV2Model::setData( const QModelIndex & index, cons
       return false; // range is edited in popup dialog
       break;
     case 2: // label
-      mRenderer->updateRangeLabel( index.row(), value.toString() );
+      mRenderer->updateRangeLabel( index.row(), value.toString());
       break;
     default:
       return false;

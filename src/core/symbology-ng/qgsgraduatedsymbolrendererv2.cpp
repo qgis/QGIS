@@ -888,7 +888,12 @@ QgsGraduatedSymbolRendererV2* QgsGraduatedSymbolRendererV2::createRenderer(
     }
     else
     {
-      label = QString::number( lower, 'f', 4 ) + " - " + QString::number( upper, 'f', 4 );
+	  QString firstBdr = "[ ";
+	  if ( i > 0)
+	  {
+	    firstBdr = "] ";
+	  }
+      label = firstBdr + QString::number( lower, 'f', 4 ) + " - " + QString::number( upper, 'f', 4 ) + " ]" ;
     }
 
     QgsSymbolV2* newSymbol = symbol->clone();
