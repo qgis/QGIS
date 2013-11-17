@@ -88,7 +88,7 @@ QgsWmsProvider::QgsWmsProvider( QString const &uri )
     , mHttpCapabilitiesResponse( 0 )
     , mHttpGetLegendGraphicResponse( 0 )
     , mGetLegendGraphicImage()
-    , mGetLegendGraphicScale( 0 )
+    , mGetLegendGraphicScale( 0.0 )
     , mImageCrs( DEFAULT_LATLON_CRS )
     , mCachedImage( 0 )
     , mCacheReply( 0 )
@@ -370,6 +370,44 @@ QString QgsWmsProvider::getTileUrl() const
   }
 }
 
+QString QgsWmsProvider::getLegendGraphicUrl() const
+{
+  QString url;
+
+  for ( int i = 0; i < mLayersSupported.size() && url.isEmpty(); i++ )
+  {
+    const QgsWmsLayerProperty &l = mLayersSupported[i];
+
+    if ( l.name != mActiveSubLayers[0] )
+      continue;
+
+    for ( int j = 0; j < l.style.size() && url.isEmpty(); j++ )
+    {
+      const QgsWmsStyleProperty &s = l.style[j];
+
+      if ( s.name != mActiveSubStyles[0] )
+        continue;
+
+      for ( int k = 0; k < s.legendUrl.size() && url.isEmpty(); k++ )
+      {
+        const QgsWmsLegendUrlProperty &l = s.legendUrl[k];
+
+        if ( l.format != mImageMimeType )
+          continue;
+
+        url = l.onlineResource.xlinkHref;
+      }
+    }
+  }
+
+  if ( url.isEmpty() && mCapabilities.capability.request.getLegendGraphic.dcpType.size() > 0 )
+  {
+    url = mCapabilities.capability.request.getLegendGraphic.dcpType.front().http.get.onlineResource.xlinkHref;
+  }
+
+  return url.isEmpty() ? url : prepareUri( url );
+}
+
 void QgsWmsProvider::addLayers( QStringList const &layers,
                                 QStringList const &styles )
 {
@@ -411,7 +449,33 @@ void QgsWmsProvider::setLayerOrder( QStringList const &layers )
 {
   QgsDebugMsg( "Entering." );
 
+  if ( layers.size() != mActiveSubLayers.size() )
+  {
+    QgsDebugMsg( "Invalid layer list length" );
+    return;
+  }
+
+  QMap<QString, QString> styleMap;
+  for ( int i = 0; i < mActiveSubLayers.size(); i++ )
+  {
+    styleMap.insert( mActiveSubLayers[i], mActiveSubStyles[i] );
+  }
+
+  for ( int i = 0; i < layers.size(); i++ )
+  {
+    if ( !styleMap.contains( layers[i] ) )
+    {
+      QgsDebugMsg( QString( "Layer %1 not found" ).arg( layers[i] ) );
+      return;
+    }
+  }
+
   mActiveSubLayers = layers;
+  mActiveSubStyles.clear();
+  for ( int i = 0; i < layers.size(); i++ )
+  {
+    mActiveSubStyles.append( styleMap[ layers[i] ] );
+  }
 
   QgsDebugMsg( "Exiting." );
 }
@@ -419,6 +483,12 @@ void QgsWmsProvider::setLayerOrder( QStringList const &layers )
 
 void QgsWmsProvider::setSubLayerVisibility( QString const & name, bool vis )
 {
+  if ( !mActiveSubLayerVisibility.contains( name ) )
+  {
+    QgsDebugMsg( QString( "Layer %1 not found." ).arg( name ) );
+    return;
+  }
+
   mActiveSubLayerVisibility[name] = vis;
 }
 
@@ -1822,6 +1892,10 @@ void QgsWmsProvider::parseCapability( QDomElement const & e, QgsWmsCapabilityPro
       {
         ot = &capabilityProperty.request.getFeatureInfo;
       }
+      else if ( name == "GetLegendGraphic" || name == "sld:GetLegendGraphic" )
+      {
+        ot = &capabilityProperty.request.getLegendGraphic;
+      }
       else
       {
         QgsDebugMsg( QString( "ows:Operation %1 ignored" ).arg( name ) );
@@ -2197,6 +2271,11 @@ void QgsWmsProvider::parseRequest( QDomElement const & e, QgsWmsRequestProperty&
         QgsDebugMsg( "      GetFeatureInfo." );
         parseOperationType( e1, requestProperty.getFeatureInfo );
       }
+      else if ( operation == "GetLegendGraphic" || operation == "sld:GetLegendGraphic" )
+      {
+        QgsDebugMsg( "      GetLegendGraphic." );
+        parseOperationType( e1, requestProperty.getLegendGraphic );
+      }
     }
     n1 = n1.nextSibling();
   }
@@ -2266,7 +2345,8 @@ void QgsWmsProvider::parseStyle( QDomElement const & e, QgsWmsStyleProperty& sty
       }
       else if ( tagName == "LegendURL" )
       {
-        // TODO
+        styleProperty.legendUrl << QgsWmsLegendUrlProperty();
+        parseLegendUrl( e1, styleProperty.legendUrl.last() );
       }
       else if ( tagName == "StyleSheetURL" )
       {
@@ -3556,6 +3636,8 @@ QString QgsWmsProvider::layerMetadata( QgsWmsLayerProperty &layer )
   // Layer Styles
   for ( int j = 0; j < layer.style.size(); j++ )
   {
+    const QgsWmsStyleProperty &style = layer.style[j];
+
     metadata += "<tr><td>";
     metadata += tr( "Available in style" );
     metadata += "</td>";
@@ -3569,7 +3651,7 @@ QString QgsWmsProvider::layerMetadata( QgsWmsLayerProperty &layer )
     metadata += tr( "Name" );
     metadata += "</th>";
     metadata += "<td>";
-    metadata += layer.style[j].name;
+    metadata += style.name;
     metadata += "</td></tr>";
 
     // Layer Style Title
@@ -3577,7 +3659,7 @@ QString QgsWmsProvider::layerMetadata( QgsWmsLayerProperty &layer )
     metadata += tr( "Title" );
     metadata += "</th>";
     metadata += "<td>";
-    metadata += layer.style[j].title;
+    metadata += style.title;
     metadata += "</td></tr>";
 
     // Layer Style Abstract
@@ -3585,8 +3667,24 @@ QString QgsWmsProvider::layerMetadata( QgsWmsLayerProperty &layer )
     metadata += tr( "Abstract" );
     metadata += "</th>";
     metadata += "<td>";
-    metadata += layer.style[j].abstract;
+    metadata += style.abstract;
     metadata += "</td></tr>";
+
+    // LegendURLs
+    if ( !style.legendUrl.isEmpty() )
+    {
+      metadata += "<tr><th class=\"glossy\">";
+      metadata += tr( "LegendURLs" );
+      metadata += "</th>";
+      metadata += "<td><table>";
+      metadata += "<tr><th>Format</th><th>URL</th></tr>";
+      for ( int k = 0; k < style.legendUrl.size(); k++ )
+      {
+        const QgsWmsLegendUrlProperty &l = style.legendUrl[k];
+        metadata += "<tr><td>" + l.format + "</td><td>" + l.onlineResource.xlinkHref + "</td></tr>";
+      }
+      metadata += "</table></td></tr>";
+    }
 
     // Close the nested table
     metadata += "</table>";
@@ -3773,6 +3871,13 @@ QString QgsWmsProvider::metadata()
   metadata += getFeatureInfoUrl() + ( mIgnoreGetFeatureInfoUrl ? tr( "&nbsp;<font color=\"red\">(advertised but ignored)</font>" ) : "" );
   metadata += "</td></tr>";
 
+  metadata += "<tr><td>";
+  metadata += tr( "GetLegendGraphic" );
+  metadata += "</td>";
+  metadata += "<td>";
+  metadata += getLegendGraphicUrl() + ( mIgnoreGetMapUrl ? tr( "&nbsp;<font color=\"red\">(advertised but ignored)</font>" ) : "" );
+  metadata += "</td></tr>";
+
   if ( mTiled )
   {
     metadata += "<tr><td>";
@@ -3821,7 +3926,7 @@ QString QgsWmsProvider::metadata()
 
   for ( int i = 0; i < mLayersSupported.size(); i++ )
   {
-    if ( !mTiled && mActiveSubLayers.indexOf( mLayersSupported[i].name ) >= 0 )
+    if ( !mTiled && mActiveSubLayers.contains( mLayersSupported[i].name ) )
     {
       metadata += layerMetadata( mLayersSupported[i] );
     }
@@ -3834,7 +3939,7 @@ QString QgsWmsProvider::metadata()
 
   for ( int i = 0; i < mLayersSupported.size(); i++ )
   {
-    if ( mActiveSubLayers.indexOf( mLayersSupported[i].name ) < 0 )
+    if ( !mActiveSubLayers.contains( mLayersSupported[i].name ) )
     {
       metadata += layerMetadata( mLayersSupported[i] );
     }
@@ -4102,7 +4207,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
   int count = -1;
   // Test for which layers are suitable for querying with
   for ( QStringList::const_iterator
-        layers  = mActiveSubLayers.begin(),
+        layers = mActiveSubLayers.begin(),
         styles = mActiveSubStyles.begin();
         layers != mActiveSubLayers.end();
         ++layers, ++styles )
@@ -4603,116 +4708,70 @@ QImage QgsWmsProvider::getLegendGraphic( double scale, bool forceRefresh )
   // the layer tags inside capabilities
   QgsDebugMsg( "entering." );
 
-  if ( !scale && !mGetLegendGraphicScale )
+  QString lurl = getLegendGraphicUrl();
+
+  if ( lurl.isEmpty() )
   {
-    QgsDebugMsg( QString( "No scale factor set" ) );
+    QgsDebugMsg( "getLegendGraphic url is empty" );
     return QImage();
   }
 
-  if ( scale && scale != mGetLegendGraphicScale )
-  {
-    forceRefresh = true;
-    QgsDebugMsg( QString( "Download again due to scale change from: %1 to: %2" ).arg( mGetLegendGraphicScale ).arg( scale ) );
-  }
+  forceRefresh |= mGetLegendGraphicImage.isNull() || mGetLegendGraphicScale != scale;
+  if ( !forceRefresh )
+    return mGetLegendGraphicImage;
 
-  if ( forceRefresh )
-  {
-    if ( scale )
-    {
-      mGetLegendGraphicScale = scale;
-    }
+  QUrl url( lurl );
 
-    // if style is not defined, set as "default"
-    QString currentStyle( "default" );
-    if ( mActiveSubStyles[0] != "" )
-    {
-      currentStyle = mActiveSubStyles[0];
-    }
-
-#if 0
-    // add WMS GetGraphicLegend request
-    // TODO set sld version using instance var something like mSldVersion
-    // TODO at this moment LSD version can be get from LegendURL in getCapability,but parsing of
-    // this tag is not complete. Below the code that should work if parsing would correct
-
-    if ( mActiveSubLayers[0] == mCapabilities.capability.layer.name )
-    {
-      foreach ( QgsWmsStyleProperty style,  mCapabilities.capability.layer.style )
-      {
-        if ( currentStyle == style.name )
-        {
-          url.setUrl( style.legendUrl[0].onlineResource.xlinkHref, QUrl::StrictMode );
-        }
-      }
-    } // is a sublayer
-    else if ( mActiveSubLayers[0].contains( mCapabilities.capability.layer.name ) )
-    {
-      foreach ( QgsWmsLayerProperty layerProperty, mCapabilities.capability.layer.layer )
-      {
-        if ( mActiveSubLayers[0] == layerProperty.name )
-        {
-          foreach ( QgsWmsStyleProperty style, layerProperty.style )
-          {
-            if ( currentStyle == style.name )
-            {
-              url.setUrl( style.legendUrl[0].onlineResource.xlinkHref, QUrl::StrictMode );
-            }
-          }
-        }
-      }
-    }
-#endif
-    QUrl url( mIgnoreGetMapUrl ? mBaseUrl : getMapUrl(), QUrl::StrictMode );
+  if ( !url.hasQueryItem( "SERVICE" ) )
     setQueryItem( url, "SERVICE", "WMS" );
+  if ( !url.hasQueryItem( "VERSION" ) )
     setQueryItem( url, "VERSION", mCapabilities.version );
+  if ( !url.hasQueryItem( "SLD_VERSION" ) )
     setQueryItem( url, "SLD_VERSION", "1.1.0" ); // can not determine SLD_VERSION
+  if ( !url.hasQueryItem( "REQUEST" ) )
     setQueryItem( url, "REQUEST", "GetLegendGraphic" );
-    setQueryItem( url, "LAYER", mActiveSubLayers[0] );
-    setQueryItem( url, "STYLE", currentStyle );
-    setQueryItem( url, "SCALE", QString::number( scale, 'f' ) );
+  if ( !url.hasQueryItem( "FORMAT" ) )
     setQueryItem( url, "FORMAT", mImageMimeType );
+  if ( !url.hasQueryItem( "LAYER" ) )
+    setQueryItem( url, "LAYER", mActiveSubLayers[0] );
+  if ( !url.hasQueryItem( "STYLE" ) )
+    setQueryItem( url, "STYLE", mActiveSubStyles[0] );
 
-    // add config parameter related to resolution
-    QSettings s;
-    int defaultLegendGraphicResolution = s.value( "/qgis/defaultLegendGraphicResolution", 0 ).toInt();
-    QgsDebugMsg( QString( "defaultLegendGraphicResolution: %1" ).arg( defaultLegendGraphicResolution ) );
-    if ( defaultLegendGraphicResolution )
+  // add config parameter related to resolution
+  QSettings s;
+  int defaultLegendGraphicResolution = s.value( "/qgis/defaultLegendGraphicResolution", 0 ).toInt();
+  QgsDebugMsg( QString( "defaultLegendGraphicResolution: %1" ).arg( defaultLegendGraphicResolution ) );
+  if ( defaultLegendGraphicResolution )
+  {
+    if ( mDpiMode & dpiQGIS )
+      setQueryItem( url, "DPI", QString::number( defaultLegendGraphicResolution ) );
+    if ( mDpiMode & dpiUMN )
+      setQueryItem( url, "MAP_RESOLUTION", QString::number( defaultLegendGraphicResolution ) );
+    if ( mDpiMode & dpiGeoServer )
     {
-      if ( url.queryItemValue( "map_resolution" ) != "" )
-      {
-        setQueryItem( url, "map_resolution", QString::number( defaultLegendGraphicResolution ) );
-      }
-      else if ( url.queryItemValue( "dpi" ) != "" )
-      {
-        setQueryItem( url, "dpi", QString::number( defaultLegendGraphicResolution ) );
-      }
-      else
-      {
-        QgsLogger::warning( tr( "getLegendGraphic: Can not determine resolution uri parameter [map_resolution | dpi]. No resolution parameter will be used" ) );
-      }
-    }
-
-    mError = "";
-
-    QNetworkRequest request( url );
-    setAuthorization( request );
-    request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferNetwork );
-    request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
-
-    QgsDebugMsg( QString( "getlegendgraphics: %1" ).arg( url.toString() ) );
-    mGetLegendGraphicReply = QgsNetworkAccessManager::instance()->get( request );
-
-    connect( mGetLegendGraphicReply, SIGNAL( finished() ), this, SLOT( getLegendGraphicReplyFinished() ) );
-    connect( mGetLegendGraphicReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( getLegendGraphicReplyProgress( qint64, qint64 ) ) );
-
-    while ( mGetLegendGraphicReply )
-    {
-      QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, WMS_THRESHOLD );
+      setQueryItem( url, "FORMAT_OPTIONS", QString( "dpi:%1" ).arg( defaultLegendGraphicResolution ) );
+      setQueryItem( url, "SCALE", QString::number( scale, 'f' ) );
     }
   }
-  else
+
+  mGetLegendGraphicScale = scale;
+
+  mError = "";
+
+  QNetworkRequest request( url );
+  setAuthorization( request );
+  request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferNetwork );
+  request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
+
+  QgsDebugMsg( QString( "getlegendgraphics: %1" ).arg( url.toString() ) );
+  mGetLegendGraphicReply = QgsNetworkAccessManager::instance()->get( request );
+
+  connect( mGetLegendGraphicReply, SIGNAL( finished() ), this, SLOT( getLegendGraphicReplyFinished() ) );
+  connect( mGetLegendGraphicReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( getLegendGraphicReplyProgress( qint64, qint64 ) ) );
+
+  while ( mGetLegendGraphicReply )
   {
-    QgsDebugMsg( "get cached pixmap." );
+    QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, WMS_THRESHOLD );
   }
 
   QgsDebugMsg( "exiting." );
@@ -4723,6 +4782,7 @@ QImage QgsWmsProvider::getLegendGraphic( double scale, bool forceRefresh )
 void QgsWmsProvider::getLegendGraphicReplyFinished()
 {
   QgsDebugMsg( "entering." );
+
   if ( mGetLegendGraphicReply->error() == QNetworkReply::NoError )
   {
     QgsDebugMsg( "reply ok" );

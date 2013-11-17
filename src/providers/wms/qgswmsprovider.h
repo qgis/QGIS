@@ -97,6 +97,7 @@ struct QgsWmsRequestProperty
   QgsWmsOperationType     getMap;
   QgsWmsOperationType     getFeatureInfo;
   QgsWmsOperationType     getTile;
+  QgsWmsOperationType     getLegendGraphic;
 };
 
 /** Exception Property structure */
@@ -623,6 +624,11 @@ class QgsWmsProvider : public QgsRasterDataProvider
      */
     virtual QString getTileUrl() const;
 
+    /**Return the GetLegendGraphic url
+     * @added in 2.1
+     */
+    virtual QString getLegendGraphicUrl() const;
+
     //! get WMS version string
     QString wmsVersion();
 
@@ -650,17 +656,17 @@ class QgsWmsProvider : public QgsRasterDataProvider
 
 
     /**
-     * \brief Get GetLegendGraphic if service available otherwise QImage()
-     * BEWARE call it the first time specifying scale parameter otherwise it always return QImage()
-     * \todo some services doesn't expose getLegendGraphic in capabilities but adds LegendURL in
-     * the layer tags inside capabilities, but LegendURL parsing is still not developed => getLegendGraphic is
-     * always called assuming that error means service is not available. Other drawback is that SLD_VERSION
+     * \brief Get GetLegendGraphic if service is available otherwise QImage()
+     * \note the first call needs to specify a scale parameter otherwise it always return QImage()
+     * \todo some services don't expose GetLegendGraphic in capabilities, but add a LegendURL in
+     * the layer element inside capabilities. Parsing for this is not implemented => getLegendGraphic is
+     * only called if GetCapabilities expose it. Other drawback is that SLD_VERSION
      * is inside LegendURL, so at this moment it is fixed to 1.1.0 waiting a correct parsing of LegendURL
      * in getCapability
      * \param scale Optional parameter that is the Scale of the wms layer
      * \param forceRefresh Optional bool parameter to force refresh getLegendGraphic call
      */
-    QImage getLegendGraphic( double scale = 0, bool forceRefresh = false );
+    QImage getLegendGraphic( double scale = 0.0, bool forceRefresh = false );
 
     // TODO: Get the WMS connection
 
