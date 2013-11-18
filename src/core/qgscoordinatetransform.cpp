@@ -193,14 +193,10 @@ void QgsCoordinateTransform::initialise()
   {
     destProjString += ( " " +  datumTransformString( mDestinationDatumTransform ) );
   }
-  else if ( !useDefaultDatumTransform && sourceProjString.contains( "+nadgrids" ) ) //add null grid if source transformation is ntv2
-  {
-    destProjString += " +nadgrids=@null";
-  }
 
-  if ( mSourceDatumTransform == -1 && !useDefaultDatumTransform && destProjString.contains( "+nadgrids" ) )
+  if ( !useDefaultDatumTransform )
   {
-    sourceProjString += " +nadgrids=@null";
+    addNullGridShifts( sourceProjString, destProjString );
   }
 
   mDestinationProjection = pj_init_plus( destProjString.toUtf8() );
@@ -930,4 +926,30 @@ QString QgsCoordinateTransform::datumTransformString( int datumTransform )
   }
 
   return transformString;
+}
+
+void QgsCoordinateTransform::addNullGridShifts( QString& srcProjString, QString& destProjString )
+{
+  //if one transformation uses ntv2, the other one needs to be null grid shift
+  if ( mDestinationDatumTransform == -1 && srcProjString.contains( "+nadgrids" ) ) //add null grid if source transformation is ntv2
+  {
+    destProjString += " +nadgrids=@null";
+    return;
+  }
+  if ( mSourceDatumTransform == -1 && destProjString.contains( "+nadgrids" ) )
+  {
+    srcProjString += " +nadgrids=@null";
+    return;
+  }
+
+  //add null shift grid for google mercator
+  //(see e.g. http://trac.osgeo.org/proj/wiki/FAQ#ChangingEllipsoidWhycantIconvertfromWGS84toGoogleEarthVirtualGlobeMercator)
+  if ( mSourceCRS.authid().compare( "EPSG:3857", Qt::CaseInsensitive ) == 0 && mSourceDatumTransform == -1 )
+  {
+    srcProjString += " +nadgrids=@null";
+  }
+  if ( mDestCRS.authid().compare( "EPSG:3857", Qt::CaseInsensitive ) == 0 && mDestinationDatumTransform == -1 )
+  {
+    destProjString += " +nadgrids=@null";
+  }
 }

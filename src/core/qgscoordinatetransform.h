@@ -285,6 +285,8 @@ class CORE_EXPORT QgsCoordinateTransform : public QObject
     /**Removes +nadgrids and +towgs84 from proj4 string*/
     static QString stripDatumTransform( const QString& proj4 );
     static void searchDatumTransform( const QString& sql, QList< int >& transforms );
+    /**In certain situations, null grid shifts have to be added to src / dst proj string*/
+    void addNullGridShifts( QString& srcProjString, QString& destProjString );
 };
 
 //! Output stream operator
