@@ -16955,7 +16955,7 @@ Prova una risoluzione minore o una minor dimensione di stampa</translation>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="332"/>
         <source>Bring to Front</source>
-        <translation>Porta in cima</translation>
+        <translation>Sposta in cima</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="335"/>
@@ -17977,7 +17977,7 @@ Secondo me si (rospus)</translatorcomment>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="445"/>
         <source>Count</source>
-        <translation>Conteggio</translation>
+        <translation>Numero di colonne</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="465"/>
@@ -18560,7 +18560,7 @@ Per me buona la prima (rospus)</translatorcomment>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="904"/>
         <source>Changed grid frame width</source>
-        <translation>Larghezza cornice reticolo modificata</translation>
+        <translation>Spessore cornice reticolo modificata</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="929"/>
@@ -18821,7 +18821,7 @@ Per me buona la prima (rospus)</translatorcomment>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="378"/>
         <source>Cross width</source>
-        <translation>Larghezza della croce</translation>
+        <translation>Spessore della croce</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="186"/>
@@ -19139,7 +19139,7 @@ Per me buona la prima (rospus)</translatorcomment>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="207"/>
         <source>Scalebar line width</source>
-        <translation>Larghezza della linea barra di scala</translation>
+        <translation>Spessore della linea barra di scala</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="224"/>
@@ -19649,7 +19649,7 @@ Per me buona la prima (rospus)</translatorcomment>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="177"/>
         <source>Stroke width</source>
-        <translation>Larghezza tratto</translation>
+        <translation>Spessore tratto</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="193"/>
@@ -20263,7 +20263,7 @@ Di solito ha a che fare con regolazioni, in questo caso Preimpostazioni mi sembr
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="366"/>
         <source>Pen width</source>
-        <translation>Larghezza tratto</translation>
+        <translation>Spessore tratto</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="402"/>
@@ -23287,7 +23287,7 @@ Fatto, così potrebbe andare (rospus)</translatorcomment>
     <message>
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui" line="176"/>
         <source>Bar width</source>
-        <translation>Larghezza barra </translation>
+        <translation>Larghezza barra</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui" line="189"/>
@@ -24325,12 +24325,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="92"/>
         <source>Output field width</source>
-        <translation>Larghezza campo in output</translation>
+        <translation>Lunghezza campo in output</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="102"/>
         <source>Width of complete output. For example 123,456 means 6 as field width.</source>
-        <translation>Larghezza dell&apos;output completo. Ad es. 123,456 equivale ad una larghezza di 6.</translation>
+        <translation>Lunghezza dell&apos;output completo. Ad es. 123,456 equivale ad una lunghezza di 6.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="115"/>
@@ -25412,7 +25412,7 @@ grigio = nessun dato
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="879"/>
         <source>Track width in pixels</source>
-        <translation>Larghezza traccia in pixel</translation>
+        <translation>Spessore traccia in pixel</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="892"/>
@@ -32435,7 +32435,7 @@ In 1.8 è tradotto &quot;Form vista geometria&quot;. Forse è meglio &quot;Vedi 
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="2794"/>
         <source>Border width</source>
-        <translation>Larghezza bordo</translation>
+        <translation>Spessore bordo</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="2963"/>
@@ -35821,7 +35821,7 @@ Ulteriori informazioni sull&apos;errore:
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="105"/>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="192"/>
         <source>Width</source>
-        <translation>Larghezza</translation>
+        <translation>Lunghezza</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="118"/>
@@ -36043,7 +36043,7 @@ Ulteriori informazioni sull&apos;errore:
         <location filename="../src/ui/qgsosmexportdialog.ui" line="84"/>
         <source>Exported tags</source>
         <translatorcomment>#dubbio#</translatorcomment>
-        <translation>Tag esportati</translation>
+        <translation>Etichette esportate</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsosmexportdialog.ui" line="92"/>
@@ -36060,7 +36060,7 @@ Ulteriori informazioni sull&apos;errore:
         <source>Tag</source>
         <translatorcomment>Etichetta?
 #dubbio#</translatorcomment>
-        <translation>Tag</translation>
+        <translation>Etichetta</translation>
     </message>
     <message>
         <location filename="../src/app/openstreetmap/qgsosmexportdialog.cpp" line="45"/>
@@ -41883,7 +41883,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="713"/>
         <source>Tags</source>
         <translatorcomment>#dubbio#</translatorcomment>
-        <translation>Tags</translation>
+        <translation>Etichette</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="736"/>
@@ -42343,7 +42343,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="821"/>
         <source>Reload repository</source>
-        <translation>Ricarica depository</translation>
+        <translation>Ricarica repository</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="841"/>
@@ -42445,7 +42445,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgspointdisplacementrendererwidgetbase.ui" line="70"/>
         <source>Circle pen width:</source>
-        <translation>Larghezza del bordo del cerchio:</translation>
+        <translation>Spessore del bordo del cerchio:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspointdisplacementrendererwidgetbase.ui" line="84"/>
@@ -47900,7 +47900,7 @@ deviazione standard ×</translation>
         <source>Texture width</source>
         <translatorcomment>&quot;    del tratteggio&quot;? (gc)
 #dubbio#</translatorcomment>
-        <translation>Larghezza della texture</translation>
+        <translation>Larghezza del tratteggio</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1403"/>
@@ -47925,7 +47925,7 @@ deviazione standard ×</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1411"/>
         <source>Border width</source>
-        <translation>Larghezza bordo</translation>
+        <translation>Spessore bordo</translation>
     </message>
 </context>
 <context>
@@ -48245,7 +48245,7 @@ L´errore era:
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="563"/>
         <source>Border width</source>
-        <translation>Larghezza bordo</translation>
+        <translation>Spessore bordo</translation>
     </message>
 </context>
 <context>
@@ -48260,7 +48260,7 @@ L´errore era:
         <source>Pen width</source>
         <translatorcomment>&quot;Spessore tratto&quot; (gc)
 #dubbio#</translatorcomment>
-        <translation>Larghezza tratto</translation>
+        <translation>Spessore tratto</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="204"/>
@@ -51105,7 +51105,7 @@ C&apos;è stato un problema con il tuo database dei simboli.</translation>
     <message>
         <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="287"/>
         <source>Tags</source>
-        <translation>Tag</translation>
+        <translation>Etichette</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="328"/>
@@ -51282,7 +51282,7 @@ C&apos;è stato un problema con il tuo database dei simboli.</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1141"/>
         <source>Border width</source>
-        <translation>Larghezza bordo</translation>
+        <translation>Spessore bordo</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1143"/>
@@ -54836,7 +54836,7 @@ Response was:
         <translatorcomment>&apos;Tag&apos; da tradurre (gc)</translatorcomment>
         <translation>Impossibile ottenere le capabilities WCS nel formato atteso (DTD): %1 non trovato.
 Potrebbe essere dovuto a un URL sbagliato del server WCS.
-Tag:%3
+Etichetta:%3
 Risposta ricevuta:
 %4</translation>
     </message>
@@ -55610,7 +55610,7 @@ Response was:
 %4</source>
         <translation>Impossibile ottenere le WMS capabilities nel formato atteso (DTD): non trovato %1 nè %2.
 Questo è probabilmente dovuto ad un URL non corretto per il server WMS.
-Tag:%3
+Etichetta:%3
 La risposta è stata:
 %4</translation>
     </message>
@@ -57776,7 +57776,7 @@ Vuoi aggiungerlo alla legenda?</translation>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="98"/>
         <source>Texture width</source>
-        <translation>Larghezza della texture</translation>
+        <translation>Spessore del tratteggio</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="124"/>
@@ -57826,7 +57826,7 @@ Vuoi aggiungerlo alla legenda?</translation>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="241"/>
         <source>Border width</source>
-        <translation>Larghezza bordo</translation>
+        <translation>Spessore bordo</translation>
     </message>
     <message>
         <source>Outline</source>
@@ -57885,7 +57885,7 @@ Vuoi aggiungerlo alla legenda?</translation>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="59"/>
         <source>Border width</source>
-        <translation>Larghezza bordo</translation>
+        <translation>Spessore bordo</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="85"/>
@@ -57940,7 +57940,7 @@ Vuoi aggiungerlo alla legenda?</translation>
     <message>
         <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="64"/>
         <source>Pen width</source>
-        <translation>Larghezza tratto</translation>
+        <translation>Spessore tratto</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="102"/>
@@ -58146,7 +58146,7 @@ Vuoi aggiungerlo alla legenda?</translation>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="276"/>
         <source>Border width</source>
-        <translation>Larghezza bordo</translation>
+        <translation>Spessore bordo</translation>
     </message>
     <message>
         <source>Border color</source>
