@@ -193,10 +193,16 @@ void QgsCoordinateTransform::initialise()
   {
     destProjString += ( " " +  datumTransformString( mDestinationDatumTransform ) );
   }
-  else if ( sourceProjString.contains( "+nadgrids" ) ) //add null grid if source transformation is ntv2
+  else if ( !useDefaultDatumTransform && sourceProjString.contains( "+nadgrids" ) ) //add null grid if source transformation is ntv2
   {
     destProjString += " +nadgrids=@null";
   }
+
+  if ( mSourceDatumTransform == -1 && !useDefaultDatumTransform && destProjString.contains( "+nadgrids" ) )
+  {
+    sourceProjString += " +nadgrids=@null";
+  }
+
   mDestinationProjection = pj_init_plus( destProjString.toUtf8() );
 
 #ifdef COORDINATE_TRANSFORM_VERBOSE
@@ -792,8 +798,9 @@ QList< QList< int > > QgsCoordinateTransform::datumTransformations( const QgsCoo
   QList<int> directTransforms;
   searchDatumTransform( QString( "SELECT coord_op_code FROM tbl_datum_transform WHERE source_crs_code = %1 AND target_crs_code = %2" ).arg( srcAuthCode ).arg( destAuthCode ),
                         directTransforms );
+  QList<int> reverseDirectTransforms;
   searchDatumTransform( QString( "SELECT coord_op_code FROM tbl_datum_transform WHERE source_crs_code = %1 AND target_crs_code = %2" ).arg( destAuthCode ).arg( srcAuthCode ),
-                        directTransforms );
+                        reverseDirectTransforms );
   QList<int> srcToWgs84;
   searchDatumTransform( QString( "SELECT coord_op_code FROM tbl_datum_transform WHERE ( source_crs_code = %1 AND target_crs_code = %2 ) OR ( source_crs_code = %2 AND target_crs_code = %1 )" ).arg( srcAuthCode ).arg( 4326 ),
                         srcToWgs84 );
@@ -808,6 +815,12 @@ QList< QList< int > > QgsCoordinateTransform::datumTransformations( const QgsCoo
     transformations.push_back( QList<int>() << *directIt << -1 );
   }
 
+  //add direct datum transformations
+  directIt = reverseDirectTransforms.constBegin();
+  for ( ; directIt != reverseDirectTransforms.constEnd(); ++directIt )
+  {
+    transformations.push_back( QList<int>() << -1 << *directIt );
+  }
 
   QList<int>::const_iterator srcWgsIt = srcToWgs84.constBegin();
   for ( ; srcWgsIt != srcToWgs84.constEnd(); ++srcWgsIt )

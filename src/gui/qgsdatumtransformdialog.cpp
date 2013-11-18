@@ -71,10 +71,7 @@ QList< int > QgsDatumTransformDialog::selectedDatumTransform()
     for ( int i = 0; i < 2; ++i )
     {
       int transformNr = item->data( i, Qt::UserRole ).toInt();
-      if ( transformNr != -1 )
-      {
-        list << transformNr;
-      }
+      list << transformNr;
     }
   }
   return list;
