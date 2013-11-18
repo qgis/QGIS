@@ -141,7 +141,7 @@ bool QgsGraduatedSymbolRendererV2Model::setData( const QModelIndex & index, cons
       return false; // range is edited in popup dialog
       break;
     case 2: // label
-      mRenderer->updateRangeLabel( index.row(), value.toString());
+      mRenderer->updateRangeLabel( index.row(), value.toString() );
       break;
     default:
       return false;
