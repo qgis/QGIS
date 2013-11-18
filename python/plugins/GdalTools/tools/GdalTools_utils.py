@@ -112,6 +112,10 @@ def setLastUsedEncoding(encoding):
     settings = QSettings()
     settings.setValue( "/UI/encoding", encoding)
 
+# Decodes standard output/error
+def decodeLocal8Bit( byteArray ):
+  return QTextCodec.codecForLocale().toUnicode( byteArray )
+
 def getRasterExtensions():
   formats = FileFilter.allRastersFilter().split( ";;" )
   extensions = []
@@ -291,7 +295,7 @@ def getRasterSRS( parent, fileName ):
     processSRS.start( "gdalinfo", [fileName], QIODevice.ReadOnly )
     arr = ''
     if processSRS.waitForFinished():
-      arr = str(processSRS.readAllStandardOutput())
+      arr = decodeLocal8Bit( processSRS.readAllStandardOutput() )
       processSRS.close()
 
     if arr == '':
@@ -313,7 +317,7 @@ def getRasterExtent(parent, fileName):
     processSRS.start( "gdalinfo", [fileName], QIODevice.ReadOnly )
     arr = ''
     if processSRS.waitForFinished():
-      arr = str(processSRS.readAllStandardOutput())
+      arr = decodeLocal8Bit( processSRS.readAllStandardOutput() )
       processSRS.close()
 
     if arr == '':
