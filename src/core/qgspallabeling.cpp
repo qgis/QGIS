@@ -3818,11 +3818,20 @@ void QgsPalLabeling::dataDefinedDropShadow( QgsPalLayerSettings& tmpLyr,
   }
 }
 
+
+// helper function for checking for job cancellation within PAL
+static bool _palIsCancelled( void* ctx )
+{
+  return ( ( QgsRenderContext* ) ctx )->renderingStopped();
+}
+
 void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
 {
   Q_ASSERT( mMapSettings != NULL );
   QPainter* painter = context.painter();
   QgsRectangle extent = context.extent();
+
+  mPal->registerCancellationCallback( &_palIsCancelled, &context );
 
   delete mResults;
   mResults = new QgsLabelingResults;
@@ -3848,6 +3857,9 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
     //mActiveLayers.clear(); // clean up
     return;
   }
+
+  if ( context.renderingStopped() )
+    return; // it has been cancelled
 
   const QgsMapToPixel& xform = mMapSettings->mapToPixel();
 
@@ -3876,12 +3888,23 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
   QgsDebugMsgLevel( QString( "LABELING work:  %1 ms ... labels# %2" ).arg( t.elapsed() ).arg( labels->size() ), 4 );
   t.restart();
 
+  if ( context.renderingStopped() )
+  {
+    delete problem;
+    delete labels;
+    deleteTemporaryData();
+    return;
+  }
+
   painter->setRenderHint( QPainter::Antialiasing );
 
   // draw the labels
   std::list<LabelPosition*>::iterator it = labels->begin();
   for ( ; it != labels->end(); ++it )
   {
+    if ( context.renderingStopped() )
+      break;
+
     QgsPalGeometry* palGeometry = dynamic_cast< QgsPalGeometry* >(( *it )->getFeaturePart()->getUserGeometry() );
     if ( !palGeometry )
     {
@@ -3996,7 +4019,11 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
 
   delete problem;
   delete labels;
+  deleteTemporaryData();
+}
 
+void QgsPalLabeling::deleteTemporaryData()
+{
   // delete all allocated geometries for features
   QHash<QgsVectorLayer*, QgsPalLayerSettings>::iterator lit;
   for ( lit = mActiveLayers.begin(); lit != mActiveLayers.end(); ++lit )

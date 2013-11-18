@@ -349,6 +349,13 @@ namespace pal
 
     while ( list->getSize() > 0 ) // O (log size)
     {
+      if ( pal->isCancelled() )
+      {
+        delete context;
+        delete list;
+        return;
+      }
+
       label = list->getBest();   // O (log size)
 
 

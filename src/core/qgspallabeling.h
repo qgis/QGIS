@@ -813,6 +813,8 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
     void dataDefinedDropShadow( QgsPalLayerSettings& tmpLyr,
                                 const QMap< QgsPalLayerSettings::DataDefinedProperties, QVariant >& ddValues );
 
+    void deleteTemporaryData();
+
     // hashtable of layer settings, being filled during labeling
     QHash<QgsVectorLayer*, QgsPalLayerSettings> mActiveLayers;
     // hashtable of active diagram layers
