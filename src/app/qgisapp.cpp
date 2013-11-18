@@ -5815,8 +5815,6 @@ void QgisApp::copyFeatures( QgsFeatureStore & featureStore )
 
 void QgisApp::refreshMapCanvas()
 {
-  //clear all caches first
-  QgsMapLayerRegistry::instance()->clearAllLayerCaches();
   //reload cached provider data
   QgsMapLayerRegistry::instance()->reloadAllLayers();
   //then refresh
@@ -6856,7 +6854,6 @@ void QgisApp::histogramStretch( bool visibleAreaOnly, QgsRaster::ContrastEnhance
 
   myRasterLayer->setContrastEnhancement( QgsContrastEnhancement::StretchToMinimumMaximum, theLimits, myRectangle );
 
-  myRasterLayer->setCacheImage( NULL );
   mMapCanvas->refresh();
 }
 
@@ -6913,7 +6910,6 @@ void QgisApp::adjustBrightnessContrast( int delta, bool updateBrightness )
     brightnessFilter->setContrast( brightnessFilter->contrast() + delta );
   }
 
-  myRasterLayer->setCacheImage( NULL );
   mMapCanvas->refresh();
 }
 

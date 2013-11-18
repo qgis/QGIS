@@ -1418,12 +1418,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
       @note added in 1.7 */
     void checkJoinLayerRemove( QString theLayerId );
 
-    /**
-     * @brief Is called when the cache image is being deleted. Overwrite and use to clean up.
-     * @note added in 2.0
-     */
-    virtual void onCacheImageDelete();
-
   protected slots:
     void invalidateSymbolCountedFlag();
 
@@ -1575,8 +1569,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Pointer to data provider derived from the abastract base class QgsDataProvider */
     QgsVectorDataProvider *mDataProvider;
 
-    QgsFeatureIterator mProviderIterator;
-
     /** index of the primary label field */
     QString mDisplayField;
 
@@ -1695,8 +1687,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     // Feature counts for each renderer symbol
     QMap<QgsSymbolV2*, long> mSymbolFeatureCountMap;
-
-    QgsRenderContext* mCurrentRendererContext;
 
     friend class QgsVectorLayerFeatureIterator;
 };

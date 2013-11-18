@@ -360,12 +360,12 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /** Return pointer to layer's undo stack */
     QUndoStack* undoStack();
 
-    /** \note Deprecated from 2.1 - returns NULL */
-    QImage *cacheImage() { return 0; }
-    /** \note Deprecated from 2.1 - does nothing */
-    void setCacheImage( QImage * ) {}
-    /** @note Deprecated from 2.1 - does nothing */
-    virtual void onCacheImageDelete() {}
+    /** @deprecated since 2.1 - returns NULL */
+    Q_DECL_DEPRECATED QImage *cacheImage() { return 0; }
+    /** @deprecated since 2.1 - does nothing */
+    Q_DECL_DEPRECATED void setCacheImage( QImage * ) {}
+    /** @deprecated since 2.1 - does nothing */
+    Q_DECL_DEPRECATED virtual void onCacheImageDelete() {}
 
   public slots:
 
@@ -386,7 +386,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /** Clear cached image
      * added in 1.5 */
-    void clearCacheImage();
+    //! @deprecated in 2.1 - does nothing
+    Q_DECL_DEPRECATED void clearCacheImage();
 
     /** \brief Obtain Metadata for this layer */
     virtual QString metadata();

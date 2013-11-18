@@ -930,9 +930,6 @@ void QgsRasterLayerProperties::apply()
   // update symbology
   emit refreshLegend( mRasterLayer->id(), false );
 
-  //no need to delete the old one, maplayer will do it if needed
-  mRasterLayer->setCacheImage( 0 );
-
   //make sure the layer is redrawn
   mRasterLayer->triggerRepaint();
 

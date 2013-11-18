@@ -2802,7 +2802,6 @@ void QgsLegend::legendLayerZoomNative()
     QgsDebugMsg( "Raster units per pixel  : " + QString::number( layer->rasterUnitsPerPixelX() ) );
     QgsDebugMsg( "MapUnitsPerPixel before : " + QString::number( mMapCanvas->mapUnitsPerPixel() ) );
 
-    layer->setCacheImage( NULL );
     if ( mMapCanvas->hasCrsTransformEnabled() )
     {
       // get legth of central canvas pixel width in source raster crs
@@ -2842,7 +2841,6 @@ void QgsLegend::legendLayerStretchUsingCurrentExtent()
     myRectangle = mMapCanvas->mapSettings().outputExtentToLayerExtent( layer, mMapCanvas->extent() );
     layer->setContrastEnhancement( contrastEnhancementAlgorithm, QgsRaster::ContrastEnhancementMinMax, myRectangle );
 
-    layer->setCacheImage( NULL );
     refreshLayerSymbology( layer->id() );
     mMapCanvas->refresh();
   }

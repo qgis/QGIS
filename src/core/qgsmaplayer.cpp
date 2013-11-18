@@ -1341,7 +1341,6 @@ void QgsMapLayer::setValid( bool valid )
 
 void QgsMapLayer::clearCacheImage()
 {
-  setCacheImage( 0 );
 }
 
 QString QgsMapLayer::metadata()

@@ -133,7 +133,6 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
     , mDiagramLayerSettings( 0 )
     , mValidExtent( false )
     , mSymbolFeatureCounted( false )
-    , mCurrentRendererContext( 0 )
 
 {
   mActions = new QgsAttributeAction( this );
@@ -388,8 +387,6 @@ void QgsVectorLayer::drawRendererV2( QgsFeatureIterator &fit, QgsRenderContext& 
   if ( !hasGeometryType() )
     return;
 
-  mCurrentRendererContext = &rendererContext;
-
   QSettings settings;
   bool vertexMarkerOnlyForSelection = settings.value( "/qgis/digitizing/marker_only_for_selected", false ).toBool();
 
@@ -441,8 +438,6 @@ void QgsVectorLayer::drawRendererV2( QgsFeatureIterator &fit, QgsRenderContext& 
   }
 
   stopRendererV2( rendererContext, NULL );
-
-  mCurrentRendererContext = NULL;
 }
 
 void QgsVectorLayer::drawRendererV2Levels( QgsFeatureIterator &fit, QgsRenderContext& rendererContext, bool labeling )
@@ -647,7 +642,6 @@ void QgsVectorLayer::select( const QgsFeatureId& fid )
 {
   mSelectedFeatureIds.insert( fid );
 
-  setCacheImage( 0 );
   emit selectionChanged( QgsFeatureIds() << fid, QgsFeatureIds(), false );
 }
 
@@ -655,7 +649,6 @@ void QgsVectorLayer::select( const QgsFeatureIds& featureIds )
 {
   mSelectedFeatureIds.unite( featureIds );
 
-  setCacheImage( 0 );
   emit selectionChanged( featureIds, QgsFeatureIds(), false );
 }
 
@@ -663,7 +656,6 @@ void QgsVectorLayer::deselect( const QgsFeatureId fid )
 {
   mSelectedFeatureIds.remove( fid );
 
-  setCacheImage( 0 );
   emit selectionChanged( QgsFeatureIds(), QgsFeatureIds() << fid, false );
 }
 
@@ -671,7 +663,6 @@ void QgsVectorLayer::deselect( const QgsFeatureIds& featureIds )
 {
   mSelectedFeatureIds.subtract( featureIds );
 
-  setCacheImage( 0 );
   emit selectionChanged( QgsFeatureIds(), featureIds, false );
 }
 
@@ -714,8 +705,6 @@ void QgsVectorLayer::modifySelection( QgsFeatureIds selectIds, QgsFeatureIds des
 
   mSelectedFeatureIds -= deselectIds;
   mSelectedFeatureIds += selectIds;
-
-  setCacheImage( 0 );
 
   emit selectionChanged( selectIds, deselectIds - intersectingIds, false );
 }
@@ -1127,9 +1116,6 @@ bool QgsVectorLayer::setSubsetString( QString subset )
   mDataSource = mDataProvider->dataSourceUri();
   updateExtents();
 
-  if ( res )
-    setCacheImage( 0 );
-
   return res;
 }
 
@@ -1252,8 +1238,6 @@ bool QgsVectorLayer::deleteSelectedFeatures()
     deleteFeature( fid );  // removes from selection
   }
 
-  // invalidate cache
-  setCacheImage( 0 );
   triggerRepaint();
   updateExtents();
 
@@ -2572,9 +2556,6 @@ bool QgsVectorLayer::commitChanges()
   updateFields();
   mDataProvider->updateExtents();
 
-  //clear the cache image so markers don't appear anymore on next draw
-  setCacheImage( 0 );
-
   return success;
 }
 
@@ -2616,9 +2597,6 @@ bool QgsVectorLayer::rollBack( bool deleteBuffer )
     mCache->deleteCachedGeometries();
   }
 
-  // invalidate the cache so the layer updates properly to show its original
-  // after the rollback
-  setCacheImage( 0 );
   return true;
 }
 
@@ -2641,9 +2619,6 @@ void QgsVectorLayer::setSelectedFeatures( const QgsFeatureIds& ids )
       ++id;
     }
   }
-
-  // invalidate cache
-  setCacheImage( 0 );
 
   emit selectionChanged( ids, deselectedFeatures, true );
 }
@@ -3761,12 +3736,6 @@ QString QgsVectorLayer::metadata()
 
   myMetadata += "</body></html>";
   return myMetadata;
-}
-
-void QgsVectorLayer::onCacheImageDelete()
-{
-  if ( mCurrentRendererContext )
-    mCurrentRendererContext->setRenderingStopped( true );
 }
 
 void QgsVectorLayer::invalidateSymbolCountedFlag()

@@ -329,18 +329,6 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
   if ( mLabelingEngine )
     mLabelingEngine->init( this );
 
-  // know we know if this render is just a repeat of the last time, we
-  // can clear caches if it has changed
-  if ( !mySameAsLastFlag )
-  {
-    //clear the cache pixmap if we changed resolution / extent
-    QSettings mySettings;
-    if ( mySettings.value( "/qgis/enable_render_caching", false ).toBool() )
-    {
-      QgsMapLayerRegistry::instance()->clearAllLayerCaches();
-    }
-  }
-
   // render all layers in the stack, starting at the base
   QListIterator<QString> li( mLayerSet );
   li.toBack();
@@ -439,58 +427,7 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
         scaleRaster = true;
       }
 
-      // Force render of layers that are being edited
-      // or if there's a labeling engine that needs the layer to register features
-      if ( ml->type() == QgsMapLayer::VectorLayer )
-      {
-        QgsVectorLayer* vl = qobject_cast<QgsVectorLayer *>( ml );
-        if ( vl->isEditable() ||
-             ( mRenderContext.labelingEngine() && mRenderContext.labelingEngine()->willUseLayer( vl ) ) )
-        {
-          ml->setCacheImage( 0 );
-        }
-      }
-
       QSettings mySettings;
-      bool useRenderCaching = false;
-      if ( ! split )//render caching does not yet cater for split extents
-      {
-        if ( mySettings.value( "/qgis/enable_render_caching", false ).toBool() )
-        {
-          useRenderCaching = true;
-          if ( !mySameAsLastFlag || ml->cacheImage() == 0 )
-          {
-            QgsDebugMsg( "Caching enabled but layer redraw forced by extent change or empty cache" );
-            QImage * mypImage = new QImage( mRenderContext.painter()->device()->width(),
-                                            mRenderContext.painter()->device()->height(), QImage::Format_ARGB32 );
-            if ( mypImage->isNull() )
-            {
-              QgsDebugMsg( "insufficient memory for image " + QString::number( mRenderContext.painter()->device()->width() ) + "x" + QString::number( mRenderContext.painter()->device()->height() ) );
-              emit drawError( ml );
-              painter->end(); // drawError is not caught by anyone, so we end painting to notify caller
-              return;
-            }
-            mypImage->fill( 0 );
-            ml->setCacheImage( mypImage ); //no need to delete the old one, maplayer does it for you
-            QPainter * mypPainter = new QPainter( ml->cacheImage() );
-            // Changed to enable anti aliasing by default in QGIS 1.7
-            if ( mySettings.value( "/qgis/enable_anti_aliasing", true ).toBool() )
-            {
-              mypPainter->setRenderHint( QPainter::Antialiasing );
-            }
-            mRenderContext.setPainter( mypPainter );
-          }
-          else if ( mySameAsLastFlag )
-          {
-            //draw from cached image
-            QgsDebugMsg( "Caching enabled --- drawing layer from cached image" );
-            mypContextPainter->drawImage( 0, 0, *( ml->cacheImage() ) );
-            disconnect( ml, SIGNAL( drawingProgress( int, int ) ), this, SLOT( onDrawingProgress( int, int ) ) );
-            //short circuit as there is nothing else to do...
-            continue;
-          }
-        }
-      }
 
       // If we are drawing with an alternative blending mode then we need to render to a separate image
       // before compositing this on the map. This effectively flattens the layer and prevents
@@ -500,8 +437,7 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
       if (( mRenderContext.useAdvancedEffects() ) && ( ml->type() == QgsMapLayer::VectorLayer ) )
       {
         QgsVectorLayer* vl = qobject_cast<QgsVectorLayer *>( ml );
-        if (( !useRenderCaching )
-            && (( vl->blendMode() != QPainter::CompositionMode_SourceOver )
+        if ( (( vl->blendMode() != QPainter::CompositionMode_SourceOver )
                 || ( vl->featureBlendMode() != QPainter::CompositionMode_SourceOver )
                 || ( vl->layerTransparency() != 0 ) ) )
         {
@@ -589,17 +525,7 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
         }
       }
 
-      if ( useRenderCaching )
-      {
-        // composite the cached image into our view and then clean up from caching
-        // by reinstating the painter as it was swapped out for caching renders
-        delete mRenderContext.painter();
-        mRenderContext.setPainter( mypContextPainter );
-        //draw from cached image that we created further up
-        if ( ml->cacheImage() )
-          mypContextPainter->drawImage( 0, 0, *( ml->cacheImage() ) );
-      }
-      else if ( flattenedLayer )
+      if ( flattenedLayer )
       {
         // If we flattened this layer for alternate blend modes, composite it now
         delete mRenderContext.painter();

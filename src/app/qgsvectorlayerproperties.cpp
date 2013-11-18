@@ -532,9 +532,6 @@ void QgsVectorLayerProperties::apply()
   // update symbology
   emit refreshLegend( layer->id(), QgsLegendItem::DontChange );
 
-  //no need to delete the old one, maplayer will do it if needed
-  layer->setCacheImage( 0 );
-
   layer->triggerRepaint();
   // notify the project we've made a change
   QgsProject::instance()->dirty( true );
