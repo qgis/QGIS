@@ -47893,14 +47893,14 @@ deviazione standard ×</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1223"/>
         <source>Select svg texture file</source>
-        <translation>Scegli un file di texture SVG</translation>
+        <translation>Scegli un file di riempimento SVG</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1401"/>
         <source>Texture width</source>
         <translatorcomment>&quot;    del tratteggio&quot;? (gc)
 #dubbio#</translatorcomment>
-        <translation>Larghezza del tratteggio</translation>
+        <translation>Larghezza del riempimento</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1403"/>
