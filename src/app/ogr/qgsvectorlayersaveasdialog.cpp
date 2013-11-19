@@ -139,14 +139,20 @@ QList<QPair<QLabel*, QWidget*> > QgsVectorLayerSaveAsDialog::createControls( con
         control = le;
         break;
       }
+
+      case QgsVectorFileWriter::Hidden:
+        control = 0;
+        break;
     }
 
-    // Pack the tooltip in some html element, so it gets linebreaks.
-    label->setToolTip( QString( "<p>%1</p>" ).arg( option->docString ) );
-    control->setToolTip( QString( "<p>%1</p>" ).arg( option->docString ) );
+    if ( control )
+    {
+      // Pack the tooltip in some html element, so it gets linebreaks.
+      label->setToolTip( QString( "<p>%1</p>" ).arg( option->docString ) );
+      control->setToolTip( QString( "<p>%1</p>" ).arg( option->docString ) );
 
-    controls << QPair<QLabel*, QWidget*>( label, control );
-
+      controls << QPair<QLabel*, QWidget*>( label, control );
+    }
   }
 
   return controls;
@@ -353,6 +359,14 @@ QStringList QgsVectorLayerSaveAsDialog::datasourceOptions() const
             options << QString( "%1=%2" ).arg( it.key() ).arg( le->text() );
           break;
         }
+
+        case QgsVectorFileWriter::Hidden:
+        {
+          QgsVectorFileWriter::HiddenOption* opt
+              = dynamic_cast<QgsVectorFileWriter::HiddenOption*>( it.value() );
+          options << QString( "%1=%2" ).arg( it.key() ).arg( opt->mValue );
+          break;
+        }
       }
     }
   }
@@ -392,6 +406,14 @@ QStringList QgsVectorLayerSaveAsDialog::layerOptions() const
         {
           QLineEdit* le = mLayerOptionsGroupBox->findChild<QLineEdit*>( it.key() );
           options << QString( "%1=%2" ).arg( it.key() ).arg( le->text() );
+          break;
+        }
+
+        case QgsVectorFileWriter::Hidden:
+        {
+          QgsVectorFileWriter::HiddenOption* opt
+              = dynamic_cast<QgsVectorFileWriter::HiddenOption*>( it.value() );
+          options << QString( "%1=%2" ).arg( it.key() ).arg( opt->mValue );
           break;
         }
       }

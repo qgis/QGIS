@@ -1271,6 +1271,7 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                        );
 
   // SQLite
+  // SQLite
   datasetOptions.clear();
   layerOptions.clear();
 
@@ -1281,15 +1282,77 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                             , true  // Default value
                             ) );
 
-  // Will be handled with the SpatiaLite driver alias
-#if 0
-  datasetOptions.insert( "SPATIALITE", new BoolOption(
-                            QObject::tr( "Create the SpatiaLite flavour of the metadata tables, which are a bit "
-                                         "differ from the metadata used by this OGR driver and from OGC "
-                                         "specifications. Implies METADATA=yes" )
+  // Will handle the spatialite alias
+  datasetOptions.insert( "SPATIALITE", new HiddenOption(
+                           "NO"
+                            ) );
+
+
+  datasetOptions.insert( "INIT_WITH_EPSG", new HiddenOption(
+                           "NO"
+                            ) );
+
+  layerOptions.insert( "FORMAT", new HiddenOption(
+                         "WKT"
+                         ) );
+
+  layerOptions.insert( "LAUNDER", new BoolOption(
+                            QObject::tr( "Controls whether layer and field names will be laundered for easier use "
+                                         "in SQLite. Laundered names will be convered to lower case and some special "
+                                         "characters(' - #) will be changed to underscores." )
                             , true  // Default value
                             ) );
-#endif
+
+  layerOptions.insert( "SPATIAL_INDEX", new HiddenOption(
+                         "NO"
+                            ) );
+
+  layerOptions.insert( "COMPRESS_GEOM", new HiddenOption(
+                         "NO"
+                            ) );
+
+  layerOptions.insert( "SRID", new HiddenOption(
+                          ""
+                          ) );
+
+  layerOptions.insert( "COMPRESS_COLUMNS", new StringOption(
+                           QObject::tr( "column_name1[,column_name2, ...] A list of (String) columns that "
+                                        "must be compressed with ZLib DEFLATE algorithm. This might be beneficial "
+                                        "for databases that have big string blobs. However, use with care, since "
+                                        "the value of such columns will be seen as compressed binary content with "
+                                        "other SQLite utilities (or previous OGR versions). With OGR, when inserting, "
+                                        "modifying or queryings compressed columns, compression/decompression is "
+                                        "done transparently. However, such columns cannot be (easily) queried with "
+                                        "an attribute filter or WHERE clause. Note: in table definition, such columns "
+                                        "have the 'VARCHAR_deflate' declaration type." )
+                          , ""  // Default value
+                          ) );
+
+  driverMetadata.insert( "SQLite",
+                         MetaData(
+                           "SQLite",
+                           QObject::tr( "SQLite" ),
+                           "*.sqlite",
+                           "sqlite",
+                           datasetOptions,
+                           layerOptions
+                         )
+                       );
+  // SpatiaLite
+
+  datasetOptions.clear();
+  layerOptions.clear();
+
+  datasetOptions.insert( "METADATA", new BoolOption(
+                            QObject::tr( "Can be used to avoid creating the geometry_columns and spatial_ref_sys "
+                                         "tables in a new database. By default these metadata tables are created "
+                                         "when a new database is created." )
+                            , true  // Default value
+                            ) );
+
+  datasetOptions.insert( "SPATIALITE", new HiddenOption(
+                           "YES"
+                            ) );
 
   datasetOptions.insert( "INIT_WITH_EPSG", new BoolOption(
                             QObject::tr( "Insert the content of the EPSG CSV files into the spatial_ref_sys table. "
@@ -1355,17 +1418,6 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                                         "have the 'VARCHAR_deflate' declaration type." )
                           , ""  // Default value
                           ) );
-
-  driverMetadata.insert( "SQLite",
-                         MetaData(
-                           "SQLite",
-                           QObject::tr( "SQLite" ),
-                           "*.sqlite",
-                           "sqlite",
-                           datasetOptions,
-                           layerOptions
-                         )
-                       );
 
   driverMetadata.insert( "SpatiaLite",
                          MetaData(

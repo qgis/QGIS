@@ -46,7 +46,8 @@ class CORE_EXPORT QgsVectorFileWriter
     {
       Set,
       String,
-      Int
+      Int,
+      Hidden
     };
 
     class Option
@@ -108,6 +109,16 @@ class CORE_EXPORT QgsVectorFileWriter
       {}
     };
 
+    class HiddenOption: public Option
+    {
+      public:
+        HiddenOption( const QString& value )
+          : Option( "", Hidden )
+          , mValue( value )
+        {}
+
+        QString mValue;
+    };
 
     struct MetaData
     {
