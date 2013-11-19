@@ -119,6 +119,8 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     void on_mMinimumScaleSetCurrentPushButton_clicked();
     void on_mMaximumScaleSetCurrentPushButton_clicked();
 
+    void on_mSimplifyDrawingSlider_valueChanged( int value );
+
   signals:
 
     /** emitted when changes to layer were saved to update legend */
