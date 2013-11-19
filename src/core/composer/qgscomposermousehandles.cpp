@@ -1026,12 +1026,12 @@ void QgsComposerMouseHandles::collectAlignCoordinates( QMap< double, const QgsCo
       {
         continue;
       }
-      alignCoordsX.insert( currentItem->transform().dx(), currentItem );
-      alignCoordsX.insert( currentItem->transform().dx() + currentItem->rect().width(), currentItem );
-      alignCoordsX.insert( currentItem->transform().dx() + currentItem->rect().center().x(), currentItem );
-      alignCoordsY.insert( currentItem->transform().dy() + currentItem->rect().top(), currentItem );
-      alignCoordsY.insert( currentItem->transform().dy() + currentItem->rect().center().y(), currentItem );
-      alignCoordsY.insert( currentItem->transform().dy() + currentItem->rect().bottom(), currentItem );
+      alignCoordsX.insert( currentItem->pos().x(), currentItem );
+      alignCoordsX.insert( currentItem->pos().x() + currentItem->rect().width(), currentItem );
+      alignCoordsX.insert( currentItem->pos().x() + currentItem->rect().center().x(), currentItem );
+      alignCoordsY.insert( currentItem->pos().y() + currentItem->rect().top(), currentItem );
+      alignCoordsY.insert( currentItem->pos().y() + currentItem->rect().center().y(), currentItem );
+      alignCoordsY.insert( currentItem->pos().y() + currentItem->rect().bottom(), currentItem );
     }
   }
 

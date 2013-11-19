@@ -274,7 +274,7 @@ int QgsComposition::pageNumberAt( const QPointF& position ) const
 
 int QgsComposition::itemPageNumber( const QgsComposerItem* item ) const
 {
-  return pageNumberAt( QPointF( item->transform().dx(), item->transform().dy() ) );
+  return pageNumberAt( QPointF( item->pos().x(), item->pos().y() ) );
 }
 
 QList<QgsComposerItem*> QgsComposition::selectedComposerItems()
@@ -713,7 +713,7 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
     {
       if ( pasteInPlacePt )
       {
-        newLabel->setItemPosition( newLabel->transform().dx(), fmod( newLabel->transform().dy(), ( paperHeight() + spaceBetweenPages() ) ) );
+        newLabel->setItemPosition( newLabel->pos().x(), fmod( newLabel->pos().y(), ( paperHeight() + spaceBetweenPages() ) ) );
         newLabel->move( pasteInPlacePt->x(), pasteInPlacePt->y() );
       }
       else
@@ -747,7 +747,7 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
     {
       if ( pasteInPlace )
       {
-        newMap->setItemPosition( newMap->transform().dx(), fmod( newMap->transform().dy(), ( paperHeight() + spaceBetweenPages() ) ) );
+        newMap->setItemPosition( newMap->pos().x(), fmod( newMap->pos().y(), ( paperHeight() + spaceBetweenPages() ) ) );
         newMap->move( pasteInPlacePt->x(), pasteInPlacePt->y() );
       }
       else
@@ -772,7 +772,7 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
     {
       if ( pasteInPlace )
       {
-        newArrow->setItemPosition( newArrow->transform().dx(), fmod( newArrow->transform().dy(), ( paperHeight() + spaceBetweenPages() ) ) );
+        newArrow->setItemPosition( newArrow->pos().x(), fmod( newArrow->pos().y(), ( paperHeight() + spaceBetweenPages() ) ) );
         newArrow->move( pasteInPlacePt->x(), pasteInPlacePt->y() );
       }
       else
@@ -797,7 +797,7 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
     {
       if ( pasteInPlace )
       {
-        newScaleBar->setItemPosition( newScaleBar->transform().dx(), fmod( newScaleBar->transform().dy(), ( paperHeight() + spaceBetweenPages() ) ) );
+        newScaleBar->setItemPosition( newScaleBar->pos().x(), fmod( newScaleBar->pos().y(), ( paperHeight() + spaceBetweenPages() ) ) );
         newScaleBar->move( pasteInPlacePt->x(), pasteInPlacePt->y() );
       }
       else
@@ -822,7 +822,7 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
     {
       if ( pasteInPlace )
       {
-        newShape->setItemPosition( newShape->transform().dx(), fmod( newShape->transform().dy(), ( paperHeight() + spaceBetweenPages() ) ) );
+        newShape->setItemPosition( newShape->pos().x(), fmod( newShape->pos().y(), ( paperHeight() + spaceBetweenPages() ) ) );
         newShape->move( pasteInPlacePt->x(), pasteInPlacePt->y() );
       }
       else
@@ -847,7 +847,7 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
     {
       if ( pasteInPlace )
       {
-        newPicture->setItemPosition( newPicture->transform().dx(), fmod( newPicture->transform().dy(), ( paperHeight() + spaceBetweenPages() ) ) );
+        newPicture->setItemPosition( newPicture->pos().x(), fmod( newPicture->pos().y(), ( paperHeight() + spaceBetweenPages() ) ) );
         newPicture->move( pasteInPlacePt->x(), pasteInPlacePt->y() );
       }
       else
@@ -872,7 +872,7 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
     {
       if ( pasteInPlace )
       {
-        newLegend->setItemPosition( newLegend->transform().dx(), fmod( newLegend->transform().dy(), ( paperHeight() + spaceBetweenPages() ) ) );
+        newLegend->setItemPosition( newLegend->pos().x(), fmod( newLegend->pos().y(), ( paperHeight() + spaceBetweenPages() ) ) );
         newLegend->move( pasteInPlacePt->x(), pasteInPlacePt->y() );
       }
       else
@@ -897,7 +897,7 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
     {
       if ( pasteInPlace )
       {
-        newTable->setItemPosition( newTable->transform().dx(), fmod( newTable->transform().dy(), ( paperHeight() + spaceBetweenPages() ) ) );
+        newTable->setItemPosition( newTable->pos().x(), fmod( newTable->pos().y(), ( paperHeight() + spaceBetweenPages() ) ) );
         newTable->move( pasteInPlacePt->x(), pasteInPlacePt->y() );
       }
       else
@@ -1155,9 +1155,7 @@ void QgsComposition::alignSelectedItemsLeft()
   {
     QgsComposerItemCommand* subcommand = new QgsComposerItemCommand( *align_it, "", parentCommand );
     subcommand->savePreviousState();
-    QTransform itemTransform = ( *align_it )->transform();
-    itemTransform.translate( minXCoordinate - itemTransform.dx(), 0 );
-    ( *align_it )->setTransform( itemTransform );
+    ( *align_it )->setPos( minXCoordinate, ( *align_it )->pos().y() );
     subcommand->saveAfterState();
   }
   mUndoStack.push( parentCommand );
@@ -1186,9 +1184,7 @@ void QgsComposition::alignSelectedItemsHCenter()
   {
     QgsComposerItemCommand* subcommand = new QgsComposerItemCommand( *align_it, "", parentCommand );
     subcommand->savePreviousState();
-    QTransform itemTransform = ( *align_it )->transform();
-    itemTransform.translate( averageXCoord - itemTransform.dx() - ( *align_it )->rect().width() / 2.0, 0 );
-    ( *align_it )->setTransform( itemTransform );
+    ( *align_it )->setPos( averageXCoord - ( *align_it )->rect().width() / 2.0, ( *align_it )->pos().y() );
     subcommand->saveAfterState();
   }
   mUndoStack.push( parentCommand );
@@ -1217,9 +1213,7 @@ void QgsComposition::alignSelectedItemsRight()
   {
     QgsComposerItemCommand* subcommand = new QgsComposerItemCommand( *align_it, "", parentCommand );
     subcommand->savePreviousState();
-    QTransform itemTransform = ( *align_it )->transform();
-    itemTransform.translate( maxXCoordinate - itemTransform.dx() - ( *align_it )->rect().width(), 0 );
-    ( *align_it )->setTransform( itemTransform );
+    ( *align_it )->setPos( maxXCoordinate - ( *align_it )->rect().width(), ( *align_it )->pos().y() );
     subcommand->saveAfterState();
   }
   mUndoStack.push( parentCommand );
@@ -1247,9 +1241,7 @@ void QgsComposition::alignSelectedItemsTop()
   {
     QgsComposerItemCommand* subcommand = new QgsComposerItemCommand( *align_it, "", parentCommand );
     subcommand->savePreviousState();
-    QTransform itemTransform = ( *align_it )->transform();
-    itemTransform.translate( 0, minYCoordinate - itemTransform.dy() );
-    ( *align_it )->setTransform( itemTransform );
+    ( *align_it )->setPos(( *align_it )->pos().x(), minYCoordinate );
     subcommand->saveAfterState();
   }
   mUndoStack.push( parentCommand );
@@ -1276,9 +1268,7 @@ void QgsComposition::alignSelectedItemsVCenter()
   {
     QgsComposerItemCommand* subcommand = new QgsComposerItemCommand( *align_it, "", parentCommand );
     subcommand->savePreviousState();
-    QTransform itemTransform = ( *align_it )->transform();
-    itemTransform.translate( 0, averageYCoord - itemTransform.dy() - ( *align_it )->rect().height() / 2 );
-    ( *align_it )->setTransform( itemTransform );
+    ( *align_it )->setPos(( *align_it )->pos().x(), averageYCoord - ( *align_it )->rect().height() / 2 );
     subcommand->saveAfterState();
   }
   mUndoStack.push( parentCommand );
@@ -1305,9 +1295,7 @@ void QgsComposition::alignSelectedItemsBottom()
   {
     QgsComposerItemCommand* subcommand = new QgsComposerItemCommand( *align_it, "", parentCommand );
     subcommand->savePreviousState();
-    QTransform itemTransform = ( *align_it )->transform();
-    itemTransform.translate( 0, maxYCoord - itemTransform.dy() - ( *align_it )->rect().height() );
-    ( *align_it )->setTransform( itemTransform );
+    ( *align_it )->setPos(( *align_it )->pos().x(), maxYCoord - ( *align_it )->rect().height() );
     subcommand->saveAfterState();
   }
   mUndoStack.push( parentCommand );
@@ -1544,30 +1532,30 @@ QGraphicsLineItem* QgsComposition::nearestSnapLine( bool horizontal, double x, d
 
       if ( horizontal )
       {
-        if ( qgsDoubleNear( currentYCoord, currentItem->transform().dy() + currentItem->rect().top(), itemTolerance ) )
+        if ( qgsDoubleNear( currentYCoord, currentItem->pos().y() + currentItem->rect().top(), itemTolerance ) )
         {
           snappedItems.append( qMakePair( currentItem, QgsComposerItem::UpperMiddle ) );
         }
-        else if ( qgsDoubleNear( currentYCoord, currentItem->transform().dy() + currentItem->rect().center().y(), itemTolerance ) )
+        else if ( qgsDoubleNear( currentYCoord, currentItem->pos().y() + currentItem->rect().center().y(), itemTolerance ) )
         {
           snappedItems.append( qMakePair( currentItem, QgsComposerItem::Middle ) );
         }
-        else if ( qgsDoubleNear( currentYCoord, currentItem->transform().dy() + currentItem->rect().bottom(), itemTolerance ) )
+        else if ( qgsDoubleNear( currentYCoord, currentItem->pos().y() + currentItem->rect().bottom(), itemTolerance ) )
         {
           snappedItems.append( qMakePair( currentItem, QgsComposerItem::LowerMiddle ) );
         }
       }
       else
       {
-        if ( qgsDoubleNear( currentXCoord, currentItem->transform().dx(), itemTolerance ) )
+        if ( qgsDoubleNear( currentXCoord, currentItem->pos().x(), itemTolerance ) )
         {
           snappedItems.append( qMakePair( currentItem, QgsComposerItem::MiddleLeft ) );
         }
-        else if ( qgsDoubleNear( currentXCoord, currentItem->transform().dx() + currentItem->rect().center().x(), itemTolerance ) )
+        else if ( qgsDoubleNear( currentXCoord, currentItem->pos().x() + currentItem->rect().center().x(), itemTolerance ) )
         {
           snappedItems.append( qMakePair( currentItem, QgsComposerItem::Middle ) );
         }
-        else if ( qgsDoubleNear( currentXCoord, currentItem->transform().dx() + currentItem->rect().width(), itemTolerance ) )
+        else if ( qgsDoubleNear( currentXCoord, currentItem->pos().x() + currentItem->rect().width(), itemTolerance ) )
         {
           snappedItems.append( qMakePair( currentItem, QgsComposerItem::MiddleRight ) );
         }
@@ -1588,8 +1576,8 @@ int QgsComposition::boundingRectOfSelectedItems( QRectF& bRect )
 
   //set the box to the first item
   QgsComposerItem* currentItem = selectedItems.at( 0 );
-  double minX = currentItem->transform().dx();
-  double minY = currentItem->transform().dy();
+  double minX = currentItem->pos().x();
+  double minY = currentItem->pos().y();
   double maxX = minX + currentItem->rect().width();
   double maxY = minY + currentItem->rect().height();
 
@@ -1598,8 +1586,8 @@ int QgsComposition::boundingRectOfSelectedItems( QRectF& bRect )
   for ( int i = 1; i < selectedItems.size(); ++i )
   {
     currentItem = selectedItems.at( i );
-    currentMinX = currentItem->transform().dx();
-    currentMinY = currentItem->transform().dy();
+    currentMinX = currentItem->pos().x();
+    currentMinY = currentItem->pos().y();
     currentMaxX = currentMinX + currentItem->rect().width();
     currentMaxY = currentMinY + currentItem->rect().height();
 
@@ -2200,7 +2188,7 @@ void QgsComposition::renderPage( QPainter* p, int page )
     return;
   }
 
-  QRectF paperRect = QRectF( paperItem->transform().dx(), paperItem->transform().dy(), paperItem->rect().width(), paperItem->rect().height() );
+  QRectF paperRect = QRectF( paperItem->pos().x(), paperItem->pos().y(), paperItem->rect().width(), paperItem->rect().height() );
 
   QgsComposition::PlotStyle savedPlotStyle = mPlotStyle;
   mPlotStyle = QgsComposition::Print;
@@ -2245,8 +2233,8 @@ void QgsComposition::computeWorldFileParameters( double& a, double& b, double& c
   double YC = extent.center().y();
 
   // get the extent for the page
-  double xmin = extent.xMinimum() - mWorldFileMap->transform().dx() * xr;
-  double ymax = extent.yMaximum() + mWorldFileMap->transform().dy() * yr;
+  double xmin = extent.xMinimum() - mWorldFileMap->pos().x() * xr;
+  double ymax = extent.yMaximum() + mWorldFileMap->pos().y() * yr;
   QgsRectangle paperExtent( xmin, ymax - paperHeight() * yr, xmin + paperWidth() * xr, ymax );
 
   double X0 = paperExtent.xMinimum();

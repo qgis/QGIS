@@ -94,7 +94,7 @@ QRectF QgsNumericScaleBarStyle::calculateBoxSize() const
   double textWidth = mScaleBar->textWidthMillimeters( mScaleBar->font(), scaleText() );
   double textHeight = mScaleBar->fontAscentMillimeters( mScaleBar->font() );
 
-  rect = QRectF( mScaleBar->transform().dx(), mScaleBar->transform().dy(), 2 * mScaleBar->boxContentSpace()
+  rect = QRectF( mScaleBar->pos().x(), mScaleBar->pos().y(), 2 * mScaleBar->boxContentSpace()
                  + 2 * mScaleBar->pen().width() + textWidth,
                  textHeight + 2 * mScaleBar->boxContentSpace() );
 

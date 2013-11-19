@@ -470,7 +470,7 @@ void QgsComposerMap::resize( double dx, double dy )
 {
   //setRect
   QRectF currentRect = rect();
-  QRectF newSceneRect = QRectF( transform().dx(), transform().dy(), currentRect.width() + dx, currentRect.height() + dy );
+  QRectF newSceneRect = QRectF( pos().x(), pos().y(), currentRect.width() + dx, currentRect.height() + dy );
   setSceneRect( newSceneRect );
   updateItem();
 }
@@ -591,7 +591,7 @@ void QgsComposerMap::setNewExtent( const QgsRectangle& extent )
 
   double newHeight = currentRect.width() * extent.height() / extent.width();
 
-  setSceneRect( QRectF( transform().dx(), transform().dy(), currentRect.width(), newHeight ) );
+  setSceneRect( QRectF( pos().x(), pos().y(), currentRect.width(), newHeight ) );
   updateItem();
 }
 

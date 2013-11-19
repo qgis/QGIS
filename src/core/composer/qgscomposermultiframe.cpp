@@ -95,7 +95,7 @@ void QgsComposerMultiFrame::recalculateFrameSizes()
     while (( mResizeMode == RepeatOnEveryPage ) || currentY < totalHeight )
     {
       //find out on which page the lower left point of the last frame is
-      int page = currentItem->transform().dy() / ( mComposition->paperHeight() + mComposition->spaceBetweenPages() );
+      int page = currentItem->pos().y() / ( mComposition->paperHeight() + mComposition->spaceBetweenPages() );
       if ( mResizeMode == RepeatOnEveryPage )
       {
         if ( page > mComposition->numPages() - 2 )
@@ -124,9 +124,9 @@ void QgsComposerMultiFrame::recalculateFrameSizes()
       double newFrameY = ( page + 1 ) * ( mComposition->paperHeight() + mComposition->spaceBetweenPages() );
       if ( mResizeMode == RepeatUntilFinished || mResizeMode == RepeatOnEveryPage )
       {
-        newFrameY += currentItem->transform().dy() - page * ( mComposition->paperHeight() + mComposition->spaceBetweenPages() );
+        newFrameY += currentItem->pos().y() - page * ( mComposition->paperHeight() + mComposition->spaceBetweenPages() );
       }
-      QgsComposerFrame* newFrame = new QgsComposerFrame( mComposition, this, currentItem->transform().dx(),
+      QgsComposerFrame* newFrame = new QgsComposerFrame( mComposition, this, currentItem->pos().x(),
           newFrameY,
           currentItem->rect().width(), frameHeight );
       if ( mResizeMode == RepeatOnEveryPage )
@@ -179,7 +179,7 @@ void QgsComposerMultiFrame::handlePageChange()
   for ( int i = mFrameItems.size() - 1; i >= 0; --i )
   {
     QgsComposerFrame* frame = mFrameItems[i];
-    int page = frame->transform().dy() / ( mComposition->paperHeight() + mComposition->spaceBetweenPages() );
+    int page = frame->pos().y() / ( mComposition->paperHeight() + mComposition->spaceBetweenPages() );
     if ( page > ( mComposition->numPages() - 1 ) )
     {
       removeFrame( i );
@@ -188,13 +188,13 @@ void QgsComposerMultiFrame::handlePageChange()
 
   //page number of the last item
   QgsComposerFrame* lastFrame = mFrameItems.last();
-  int lastItemPage = lastFrame->transform().dy() / ( mComposition->paperHeight() + mComposition->spaceBetweenPages() );
+  int lastItemPage = lastFrame->pos().y() / ( mComposition->paperHeight() + mComposition->spaceBetweenPages() );
 
   for ( int i = lastItemPage + 1; i < mComposition->numPages(); ++i )
   {
     //copy last frame to current page
-    QgsComposerFrame* newFrame = new QgsComposerFrame( mComposition, this, lastFrame->transform().dx(),
-        lastFrame->transform().dy() + mComposition->paperHeight() + mComposition->spaceBetweenPages(),
+    QgsComposerFrame* newFrame = new QgsComposerFrame( mComposition, this, lastFrame->pos().x(),
+        lastFrame->pos().y() + mComposition->paperHeight() + mComposition->spaceBetweenPages(),
         lastFrame->rect().width(), lastFrame->rect().height() );
     addFrame( newFrame, false );
     lastFrame = newFrame;

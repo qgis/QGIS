@@ -244,64 +244,64 @@ void QgsComposerItemWidget::setValuesForGuiPositionElements()
   if ( mItem->lastUsedPositionMode() == QgsComposerItem::UpperLeft )
   {
     mUpperLeftCheckBox->setChecked( true );
-    mXLineEdit->setText( QString::number( mItem->transform().dx() ) );
-    mYLineEdit->setText( QString::number( mItem->transform().dy() ) );
+    mXLineEdit->setText( QString::number( mItem->pos().x() ) );
+    mYLineEdit->setText( QString::number( mItem->pos().y() ) );
   }
 
   if ( mItem->lastUsedPositionMode() == QgsComposerItem::UpperMiddle )
   {
     mUpperMiddleCheckBox->setChecked( true );
-    mXLineEdit->setText( QString::number( mItem->transform().dx() + mItem->rect().width() / 2.0 ) );
-    mYLineEdit->setText( QString::number( mItem->transform().dy() ) );
+    mXLineEdit->setText( QString::number( mItem->pos().x() + mItem->rect().width() / 2.0 ) );
+    mYLineEdit->setText( QString::number( mItem->pos().y() ) );
   }
 
   if ( mItem->lastUsedPositionMode() == QgsComposerItem::UpperRight )
   {
     mUpperRightCheckBox->setChecked( true );
-    mXLineEdit->setText( QString::number( mItem->transform().dx() + mItem->rect().width() ) );
-    mYLineEdit->setText( QString::number( mItem->transform().dy() ) );
+    mXLineEdit->setText( QString::number( mItem->pos().x() + mItem->rect().width() ) );
+    mYLineEdit->setText( QString::number( mItem->pos().y() ) );
   }
 
   if ( mItem->lastUsedPositionMode() == QgsComposerItem::MiddleLeft )
   {
     mMiddleLeftCheckBox->setChecked( true );
-    mXLineEdit->setText( QString::number( mItem->transform().dx() ) );
-    mYLineEdit->setText( QString::number( mItem->transform().dy() + mItem->rect().height() / 2.0 ) );
+    mXLineEdit->setText( QString::number( mItem->pos().x() ) );
+    mYLineEdit->setText( QString::number( mItem->pos().y() + mItem->rect().height() / 2.0 ) );
   }
 
   if ( mItem->lastUsedPositionMode() == QgsComposerItem::Middle )
   {
     mMiddleCheckBox->setChecked( true );
-    mXLineEdit->setText( QString::number( mItem->transform().dx() + mItem->rect().width() / 2.0 ) );
-    mYLineEdit->setText( QString::number( mItem->transform().dy() + mItem->rect().height() / 2.0 ) );
+    mXLineEdit->setText( QString::number( mItem->pos().x() + mItem->rect().width() / 2.0 ) );
+    mYLineEdit->setText( QString::number( mItem->pos().y() + mItem->rect().height() / 2.0 ) );
   }
 
   if ( mItem->lastUsedPositionMode() == QgsComposerItem::MiddleRight )
   {
     mMiddleRightCheckBox->setChecked( true );
-    mXLineEdit->setText( QString::number( mItem->transform().dx() + mItem->rect().width() ) );
-    mYLineEdit->setText( QString::number( mItem->transform().dy() + mItem->rect().height() / 2.0 ) );
+    mXLineEdit->setText( QString::number( mItem->pos().x() + mItem->rect().width() ) );
+    mYLineEdit->setText( QString::number( mItem->pos().y() + mItem->rect().height() / 2.0 ) );
   }
 
   if ( mItem->lastUsedPositionMode() == QgsComposerItem::LowerLeft )
   {
     mLowerLeftCheckBox->setChecked( true );
-    mXLineEdit->setText( QString::number( mItem->transform().dx() ) );
-    mYLineEdit->setText( QString::number( mItem->transform().dy() + mItem->rect().height() ) );
+    mXLineEdit->setText( QString::number( mItem->pos().x() ) );
+    mYLineEdit->setText( QString::number( mItem->pos().y() + mItem->rect().height() ) );
   }
 
   if ( mItem->lastUsedPositionMode() == QgsComposerItem::LowerMiddle )
   {
     mLowerMiddleCheckBox->setChecked( true );
-    mXLineEdit->setText( QString::number( mItem->transform().dx() + mItem->rect().width() / 2.0 ) );
-    mYLineEdit->setText( QString::number( mItem->transform().dy() + mItem->rect().height() ) );
+    mXLineEdit->setText( QString::number( mItem->pos().x() + mItem->rect().width() / 2.0 ) );
+    mYLineEdit->setText( QString::number( mItem->pos().y() + mItem->rect().height() ) );
   }
 
   if ( mItem->lastUsedPositionMode() == QgsComposerItem::LowerRight )
   {
     mLowerRightCheckBox->setChecked( true );
-    mXLineEdit->setText( QString::number( mItem->transform().dx() + mItem->rect().width() ) );
-    mYLineEdit->setText( QString::number( mItem->transform().dy() + mItem->rect().height() ) );
+    mXLineEdit->setText( QString::number( mItem->pos().x() + mItem->rect().width() ) );
+    mYLineEdit->setText( QString::number( mItem->pos().y() + mItem->rect().height() ) );
   }
 
   mWidthLineEdit->setText( QString::number( mItem->rect().width() ) );
@@ -395,7 +395,7 @@ void QgsComposerItemWidget::on_mUpperLeftCheckBox_stateChanged( int state )
     return;
   if ( mItem )
   {
-    mItem->setItemPosition( mItem->transform().dx(), mItem->transform().dy(), QgsComposerItem::UpperLeft );
+    mItem->setItemPosition( mItem->pos().x(), mItem->pos().y(), QgsComposerItem::UpperLeft );
   }
   setValuesForGuiPositionElements();
 }
@@ -406,8 +406,8 @@ void QgsComposerItemWidget::on_mUpperMiddleCheckBox_stateChanged( int state )
     return;
   if ( mItem )
   {
-    mItem->setItemPosition( mItem->transform().dx() + mItem->rect().width() / 2.0,
-                            mItem->transform().dy(), QgsComposerItem::UpperMiddle );
+    mItem->setItemPosition( mItem->pos().x() + mItem->rect().width() / 2.0,
+                            mItem->pos().y(), QgsComposerItem::UpperMiddle );
   }
   setValuesForGuiPositionElements();
 }
@@ -418,8 +418,8 @@ void QgsComposerItemWidget::on_mUpperRightCheckBox_stateChanged( int state )
     return;
   if ( mItem )
   {
-    mItem->setItemPosition( mItem->transform().dx() + mItem->rect().width(),
-                            mItem->transform().dy(), QgsComposerItem::UpperRight );
+    mItem->setItemPosition( mItem->pos().x() + mItem->rect().width(),
+                            mItem->pos().y(), QgsComposerItem::UpperRight );
   }
   setValuesForGuiPositionElements();
 }
@@ -430,8 +430,8 @@ void QgsComposerItemWidget::on_mMiddleLeftCheckBox_stateChanged( int state )
     return;
   if ( mItem )
   {
-    mItem->setItemPosition( mItem->transform().dx(),
-                            mItem->transform().dy() + mItem->rect().height() / 2.0, QgsComposerItem::MiddleLeft );
+    mItem->setItemPosition( mItem->pos().x(),
+                            mItem->pos().y() + mItem->rect().height() / 2.0, QgsComposerItem::MiddleLeft );
   }
   setValuesForGuiPositionElements();
 }
@@ -442,8 +442,8 @@ void QgsComposerItemWidget::on_mMiddleCheckBox_stateChanged( int state )
     return;
   if ( mItem )
   {
-    mItem->setItemPosition( mItem->transform().dx() + mItem->rect().width() / 2.0,
-                            mItem->transform().dy() + mItem->rect().height() / 2.0, QgsComposerItem::Middle );
+    mItem->setItemPosition( mItem->pos().x() + mItem->rect().width() / 2.0,
+                            mItem->pos().y() + mItem->rect().height() / 2.0, QgsComposerItem::Middle );
   }
   setValuesForGuiPositionElements();
 }
@@ -454,8 +454,8 @@ void QgsComposerItemWidget::on_mMiddleRightCheckBox_stateChanged( int state )
     return;
   if ( mItem )
   {
-    mItem->setItemPosition( mItem->transform().dx() + mItem->rect().width(),
-                            mItem->transform().dy() + mItem->rect().height() / 2.0, QgsComposerItem::MiddleRight );
+    mItem->setItemPosition( mItem->pos().x() + mItem->rect().width(),
+                            mItem->pos().y() + mItem->rect().height() / 2.0, QgsComposerItem::MiddleRight );
   }
   setValuesForGuiPositionElements();
 }
@@ -466,8 +466,8 @@ void QgsComposerItemWidget::on_mLowerLeftCheckBox_stateChanged( int state )
     return;
   if ( mItem )
   {
-    mItem->setItemPosition( mItem->transform().dx(),
-                            mItem->transform().dy() + mItem->rect().height(), QgsComposerItem::LowerLeft );
+    mItem->setItemPosition( mItem->pos().x(),
+                            mItem->pos().y() + mItem->rect().height(), QgsComposerItem::LowerLeft );
   }
   setValuesForGuiPositionElements();
 }
@@ -478,8 +478,8 @@ void QgsComposerItemWidget::on_mLowerMiddleCheckBox_stateChanged( int state )
     return;
   if ( mItem )
   {
-    mItem->setItemPosition( mItem->transform().dx() + mItem->rect().width() / 2.0,
-                            mItem->transform().dy() + mItem->rect().height(), QgsComposerItem::LowerMiddle );
+    mItem->setItemPosition( mItem->pos().x() + mItem->rect().width() / 2.0,
+                            mItem->pos().y() + mItem->rect().height(), QgsComposerItem::LowerMiddle );
   }
   setValuesForGuiPositionElements();
 }
@@ -490,8 +490,8 @@ void QgsComposerItemWidget::on_mLowerRightCheckBox_stateChanged( int state )
     return;
   if ( mItem )
   {
-    mItem->setItemPosition( mItem->transform().dx() + mItem->rect().width(),
-                            mItem->transform().dy() + mItem->rect().height(), QgsComposerItem::LowerRight );
+    mItem->setItemPosition( mItem->pos().x() + mItem->rect().width(),
+                            mItem->pos().y() + mItem->rect().height(), QgsComposerItem::LowerRight );
   }
   setValuesForGuiPositionElements();
 }

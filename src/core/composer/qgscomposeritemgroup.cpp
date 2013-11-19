@@ -60,8 +60,8 @@ void QgsComposerItemGroup::addItem( QgsComposerItem* item )
   item->setFlag( QGraphicsItem::ItemIsSelectable, false ); //item in groups cannot be selected
 
   //update extent (which is in scene coordinates)
-  double minXItem = item->transform().dx();
-  double minYItem = item->transform().dy();
+  double minXItem = item->pos().x();
+  double minYItem = item->pos().y();
   double maxXItem = minXItem + item->rect().width();
   double maxYItem = minYItem + item->rect().height();
 
@@ -126,9 +126,9 @@ void QgsComposerItemGroup::setSceneRect( const QRectF& rectangle )
 {
   //calculate values between 0 and 1 for boundaries of all contained items, depending on their positions in the item group rectangle.
   //then position the item boundaries in the new item group rect such that these values are the same
-  double xLeftCurrent = transform().dx();
+  double xLeftCurrent = pos().x();
   double xRightCurrent = xLeftCurrent + rect().width();
-  double yTopCurrent = transform().dy();
+  double yTopCurrent = pos().y();
   double yBottomCurrent = yTopCurrent + rect().height();
 
   double xItemLeft, xItemRight, yItemTop, yItemBottom;
@@ -139,9 +139,9 @@ void QgsComposerItemGroup::setSceneRect( const QRectF& rectangle )
   QSet<QgsComposerItem*>::iterator item_it = mItems.begin();
   for ( ; item_it != mItems.end(); ++item_it )
   {
-    xItemLeft = ( *item_it )->transform().dx();
+    xItemLeft = ( *item_it )->pos().x();
     xItemRight = xItemLeft + ( *item_it )->rect().width();
-    yItemTop = ( *item_it )->transform().dy();
+    yItemTop = ( *item_it )->pos().y();
     yItemBottom = yItemTop + ( *item_it )->rect().height();
 
     xParamLeft = ( xItemLeft - xLeftCurrent ) / ( xRightCurrent - xLeftCurrent );

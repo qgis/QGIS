@@ -174,7 +174,7 @@ void QgsPaperItem::setSceneRect( const QRectF& rectangle )
   QgsComposerItem::setSceneRect( rectangle );
   //update size and position of attached QgsPaperGrid to reflect new page size and position
   mPageGrid->setRect( 0, 0, rect().width(), rect().height() );
-  mPageGrid->setPos( transform().dx(), transform().dy() );
+  mPageGrid->setPos( pos().x(), pos().y() );
 }
 
 void QgsPaperItem::initialize()
@@ -184,6 +184,6 @@ void QgsPaperItem::initialize()
   setZValue( 0 );
 
   //create a new QgsPaperGrid for this page, and add it to the composition
-  mPageGrid = new QgsPaperGrid( transform().dx(), transform().dy(), rect().width(), rect().height(), mComposition );
+  mPageGrid = new QgsPaperGrid( pos().x(), pos().y(), rect().width(), rect().height(), mComposition );
   mComposition->addItem( mPageGrid );
 }
