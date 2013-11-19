@@ -60,14 +60,14 @@ QgsComposition::QgsComposition( QgsMapRenderer* mapRenderer )
     , mUseAdvancedEffects( true )
     , mSnapToGrid( false )
     , mGridVisible( false )
-    , mSnapGridResolution( 10.0 )
-    , mSnapGridTolerance( 2 )
-    , mSnapGridOffsetX( 0.0 )
-    , mSnapGridOffsetY( 0.0 )
+    , mSnapGridResolution( 0 )
+    , mSnapGridTolerance( 0 )
+    , mSnapGridOffsetX( 0 )
+    , mSnapGridOffsetY( 0 )
     , mAlignmentSnap( true )
     , mGuidesVisible( true )
     , mSmartGuides( true )
-    , mAlignmentSnapTolerance( 2 )
+    , mAlignmentSnapTolerance( 0 )
     , mSelectionHandles( 0 )
     , mActiveItemCommand( 0 )
     , mActiveMultiFrameCommand( 0 )
@@ -84,6 +84,9 @@ QgsComposition::QgsComposition( QgsMapRenderer* mapRenderer )
   mSelectionHandles->setZValue( 500 );
 
   mPrintResolution = 300; //hardcoded default
+
+  //load default composition settings
+  loadDefaults();
   loadSettings();
 }
 
@@ -100,22 +103,23 @@ QgsComposition::QgsComposition()
     mUseAdvancedEffects( true ),
     mSnapToGrid( false ),
     mGridVisible( false ),
-    mSnapGridResolution( 10.0 ),
-    mSnapGridTolerance( 2 ),
-    mSnapGridOffsetX( 0.0 ),
-    mSnapGridOffsetY( 0.0 ),
+    mSnapGridResolution( 0 ),
+    mSnapGridTolerance( 0 ),
+    mSnapGridOffsetX( 0 ),
+    mSnapGridOffsetY( 0 ),
     mAlignmentSnap( true ),
     mGuidesVisible( true ),
     mSmartGuides( true ),
-    mAlignmentSnapTolerance( 2 ),
+    mAlignmentSnapTolerance( 0 ),
     mSelectionHandles( 0 ),
     mActiveItemCommand( 0 ),
     mActiveMultiFrameCommand( 0 ),
     mAtlasComposition( this ),
     mPreventCursorChange( false )
 {
+  //load default composition settings
+  loadDefaults();
   loadSettings();
-
 }
 
 QgsComposition::~QgsComposition()
@@ -129,6 +133,16 @@ QgsComposition::~QgsComposition()
   clear();
   delete mActiveItemCommand;
   delete mActiveMultiFrameCommand;
+}
+
+void QgsComposition::loadDefaults()
+{
+  QSettings settings;
+  mSnapGridResolution = settings.value( "/Composer/defaultSnapGridResolution", 10.0 ).toDouble();
+  mSnapGridTolerance = settings.value( "/Composer/defaultSnapGridTolerance", 2 ).toDouble();
+  mSnapGridOffsetX = settings.value( "/Composer/defaultSnapGridOffsetX", 0 ).toDouble();
+  mSnapGridOffsetY = settings.value( "/Composer/defaultSnapGridOffsetY", 0 ).toDouble();
+  mAlignmentSnapTolerance = settings.value( "/Composer/defaultSnapGuideTolerance", 2 ).toDouble();
 }
 
 void QgsComposition::setPaperSize( double width, double height )
@@ -1608,41 +1622,35 @@ void QgsComposition::setSnapToGridEnabled( bool b )
 {
   mSnapToGrid = b;
   updatePaperItems();
-  saveSettings();
 }
 
 void QgsComposition::setGridVisible( bool b )
 {
   mGridVisible = b;
   updatePaperItems();
-  saveSettings();
 }
 
 void QgsComposition::setSnapGridResolution( double r )
 {
   mSnapGridResolution = r;
   updatePaperItems();
-  saveSettings();
 }
 
 void QgsComposition::setSnapGridTolerance( double tolerance )
 {
   mSnapGridTolerance = tolerance;
-  saveSettings();
 }
 
 void QgsComposition::setSnapGridOffsetX( double offset )
 {
   mSnapGridOffsetX = offset;
   updatePaperItems();
-  saveSettings();
 }
 
 void QgsComposition::setSnapGridOffsetY( double offset )
 {
   mSnapGridOffsetY = offset;
   updatePaperItems();
-  saveSettings();
 }
 
 void QgsComposition::setGridPen( const QPen& p )
@@ -1651,14 +1659,20 @@ void QgsComposition::setGridPen( const QPen& p )
   //make sure grid is drawn using a zero-width cosmetic pen
   mGridPen.setWidthF( 0 );
   updatePaperItems();
-  saveSettings();
 }
 
 void QgsComposition::setGridStyle( GridStyle s )
 {
   mGridStyle = s;
   updatePaperItems();
-  saveSettings();
+}
+
+void QgsComposition::updateSettings()
+{
+  //load new composer setting values
+  loadSettings();
+  //update any paper items to reflect new settings
+  updatePaperItems();
 }
 
 void QgsComposition::loadSettings()
@@ -1667,14 +1681,16 @@ void QgsComposition::loadSettings()
   QSettings s;
 
   QString gridStyleString;
-  int red, green, blue;
+  gridStyleString = s.value( "/Composer/gridStyle", "Dots" ).toString();
 
-  gridStyleString = s.value( "/qgis/composerGridStyle", "Dots" ).toString();
-  red = s.value( "/qgis/composerGridRed", 0 ).toInt();
-  green = s.value( "/qgis/composerGridGreen", 0 ).toInt();
-  blue = s.value( "/qgis/composerGridBlue", 0 ).toInt();
+  int gridRed, gridGreen, gridBlue, gridAlpha;
+  gridRed = s.value( "/Composer/gridRed", 190 ).toInt();
+  gridGreen = s.value( "/Composer/gridGreen", 190 ).toInt();
+  gridBlue = s.value( "/Composer/gridBlue", 190 ).toInt();
+  gridAlpha = s.value( "/Composer/gridAlpha", 100 ).toInt();
+  QColor gridColor = QColor( gridRed, gridGreen, gridBlue, gridAlpha );
 
-  mGridPen.setColor( QColor( red, green, blue ) );
+  mGridPen.setColor( gridColor );
   mGridPen.setWidthF( 0 );
 
   if ( gridStyleString == "Dots" )
@@ -1688,28 +1704,6 @@ void QgsComposition::loadSettings()
   else
   {
     mGridStyle = Solid;
-  }
-}
-
-void QgsComposition::saveSettings()
-{
-  //store grid appearance settings
-  QSettings s;
-  s.setValue( "/qgis/composerGridRed", mGridPen.color().red() );
-  s.setValue( "/qgis/composerGridGreen", mGridPen.color().green() );
-  s.setValue( "/qgis/composerGridBlue", mGridPen.color().blue() );
-
-  if ( mGridStyle == Solid )
-  {
-    s.setValue( "/qgis/composerGridStyle", "Solid" );
-  }
-  else if ( mGridStyle == Dots )
-  {
-    s.setValue( "/qgis/composerGridStyle", "Dots" );
-  }
-  else if ( mGridStyle == Crosses )
-  {
-    s.setValue( "/qgis/composerGridStyle", "Crosses" );
   }
 }
 

@@ -682,6 +682,65 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   }
 
   //
+  // Composer settings
+  //
+
+  //default composer font
+  mComposerFontComboBox->blockSignals( true );
+
+  QString composerFontFamily = settings.value( "/Composer/defaultFont" ).toString();
+
+  QFont *tempComposerFont = new QFont( composerFontFamily );
+  // is exact family match returned from system?
+  if ( tempComposerFont->family() == composerFontFamily )
+  {
+    mComposerFontComboBox->setCurrentFont( *tempComposerFont );
+  }
+  delete tempComposerFont;
+
+  mComposerFontComboBox->blockSignals( false );
+
+  //default composer grid color
+  int gridRed, gridGreen, gridBlue, gridAlpha;
+  gridRed = settings.value( "/Composer/gridRed", 190 ).toInt();
+  gridGreen = settings.value( "/Composer/gridGreen", 190 ).toInt();
+  gridBlue = settings.value( "/Composer/gridBlue", 190 ).toInt();
+  gridAlpha = settings.value( "/Composer/gridAlpha", 100 ).toInt();
+  QColor gridColor = QColor( gridRed, gridGreen, gridBlue, gridAlpha );
+  mGridColorButton->setColor( gridColor );
+  mGridColorButton->setColorDialogTitle( tr( "Select grid color" ) );
+  mGridColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+
+  //default composer grid style
+  QString gridStyleString;
+  gridStyleString = settings.value( "/Composer/gridStyle", "Dots" ).toString();
+  mGridStyleComboBox->insertItem( 0, tr( "Solid" ) );
+  mGridStyleComboBox->insertItem( 1, tr( "Dots" ) );
+  mGridStyleComboBox->insertItem( 2, tr( "Crosses" ) );
+  if ( gridStyleString == "Solid" )
+  {
+    mGridStyleComboBox->setCurrentIndex( 0 );
+  }
+  else if ( gridStyleString == "Crosses" )
+  {
+    mGridStyleComboBox->setCurrentIndex( 2 );
+  }
+  else
+  {
+    //default grid is dots
+    mGridStyleComboBox->setCurrentIndex( 1 );
+  }
+
+  //grid defaults
+  mGridResolutionSpinBox->setValue( settings.value( "/Composer/defaultSnapGridResolution", 10.0 ).toDouble() );
+  mGridToleranceSpinBox->setValue( settings.value( "/Composer/defaultSnapGridTolerance", 2 ).toDouble() );
+  mOffsetXSpinBox->setValue( settings.value( "/Composer/defaultSnapGridOffsetX", 0 ).toDouble() );
+  mOffsetYSpinBox->setValue( settings.value( "/Composer/defaultSnapGridOffsetY", 0 ).toDouble() );
+
+  //guide defaults
+  mGuideToleranceSpinBox->setValue( settings.value( "/Composer/defaultSnapGuideTolerance", 2 ).toDouble() );
+
+  //
   // Locale settings
   //
   QString mySystemLocale = QLocale::system().name();
@@ -794,6 +853,21 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
 //! Destructor
 QgsOptions::~QgsOptions()
 {
+}
+
+void QgsOptions::setCurrentPage( QString pageWidgetName )
+{
+  //find the page with a matching widget name
+  for ( int idx = 0; idx < mOptionsStackedWidget->count(); ++idx )
+  {
+    QWidget * currentPage = mOptionsStackedWidget->widget( idx );
+    if ( currentPage->objectName() == pageWidgetName )
+    {
+      //found the page, set it as current
+      mOptionsStackedWidget->setCurrentIndex( idx );
+      return;
+    }
+  }
 }
 
 void QgsOptions::on_cbxProjectDefaultNew_toggled( bool checked )
@@ -1212,6 +1286,43 @@ void QgsOptions::saveOptions()
   settings.setValue( "Map/scales", myPaths );
 
   //
+  // Composer settings
+  //
+
+  //default font
+  QString composerFont = mComposerFontComboBox->currentFont().family();
+  settings.setValue( "/Composer/defaultFont", composerFont );
+
+  //grid color
+  settings.setValue( "/Composer/gridRed", mGridColorButton->color().red() );
+  settings.setValue( "/Composer/gridGreen", mGridColorButton->color().green() );
+  settings.setValue( "/Composer/gridBlue", mGridColorButton->color().blue() );
+  settings.setValue( "/Composer/gridAlpha", mGridColorButton->color().alpha() );
+
+  //grid style
+  if ( mGridStyleComboBox->currentText() == tr( "Solid" ) )
+  {
+    settings.setValue( "/Composer/gridStyle", "Solid" );
+  }
+  else if ( mGridStyleComboBox->currentText() == tr( "Dots" ) )
+  {
+    settings.setValue( "/Composer/gridStyle", "Dots" );
+  }
+  else if ( mGridStyleComboBox->currentText() == tr( "Crosses" ) )
+  {
+    settings.setValue( "/Composer/gridStyle", "Crosses" );
+  }
+
+  //grid defaults
+  settings.setValue( "/Composer/defaultSnapGridResolution", mGridResolutionSpinBox->value() );
+  settings.setValue( "/Composer/defaultSnapGridTolerance", mGridToleranceSpinBox->value() );
+  settings.setValue( "/Composer/defaultSnapGridOffsetX", mOffsetXSpinBox->value() );
+  settings.setValue( "/Composer/defaultSnapGridOffsetY", mOffsetYSpinBox->value() );
+
+  //guide defaults
+  settings.setValue( "/Composer/defaultSnapGuideTolerance", mGuideToleranceSpinBox->value() );
+
+  //
   // Locale settings
   //
   settings.setValue( "locale/userLocale", cboLocale->itemData( cboLocale->currentIndex() ).toString() );
@@ -1598,7 +1709,7 @@ void QgsOptions::on_mOptionsStackedWidget_currentChanged( int theIndx )
 {
   Q_UNUSED( theIndx );
   // load gdal driver list when gdal tab is first opened
-  if ( mOptionsStackedWidget->currentWidget()->objectName() == QString( "mOptionsPage_02" )
+  if ( mOptionsStackedWidget->currentWidget()->objectName() == QString( "mOptionsPageGDAL" )
        && ! mLoadedGdalDriverList )
   {
     loadGdalDriverList();

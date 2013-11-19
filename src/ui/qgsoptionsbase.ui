@@ -154,6 +154,18 @@
          </item>
          <item>
           <property name="text">
+           <string>Composer</string>
+          </property>
+          <property name="toolTip">
+           <string>Composer</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../images/images.qrc">
+            <normaloff>:/images/themes/default/mActionNewComposer.svg</normaloff>:/images/themes/default/mActionNewComposer.svg</iconset>
+          </property>
+         </item>
+         <item>
+          <property name="text">
            <string>Digitizing</string>
           </property>
           <property name="toolTip">
@@ -238,7 +250,7 @@
          <property name="currentIndex">
           <number>0</number>
          </property>
-         <widget class="QWidget" name="mOptionsPage_01">
+         <widget class="QWidget" name="mOptionsPageGeneral">
           <layout class="QVBoxLayout" name="verticalLayout_3">
            <property name="margin">
             <number>0</number>
@@ -884,7 +896,7 @@
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="mOptionsPage_03">
+         <widget class="QWidget" name="mOptionsPageSystem">
           <layout class="QVBoxLayout" name="verticalLayout_7">
            <property name="margin">
             <number>0</number>
@@ -1220,7 +1232,7 @@
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="mOptionsPage_11">
+         <widget class="QWidget" name="mOptionsPageDataSources">
           <layout class="QVBoxLayout" name="verticalLayout_26">
            <property name="margin">
             <number>0</number>
@@ -1549,7 +1561,7 @@
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="mOptionsPage_04">
+         <widget class="QWidget" name="mOptionsPageRendering">
           <layout class="QVBoxLayout" name="verticalLayout_12">
            <property name="margin">
             <number>0</number>
@@ -2064,7 +2076,7 @@
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="mOptionsPage_06">
+         <widget class="QWidget" name="mOptionsPageMapCanvas">
           <layout class="QVBoxLayout" name="verticalLayout_16">
            <property name="margin">
             <number>0</number>
@@ -2410,7 +2422,7 @@
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="mOptionsPage_05">
+         <widget class="QWidget" name="mOptionsPageMapTools">
           <layout class="QVBoxLayout" name="verticalLayout_14">
            <property name="margin">
             <number>0</number>
@@ -2824,7 +2836,228 @@
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="mOptionsPage_07">
+         <widget class="QWidget" name="mOptionsPageComposer">
+          <layout class="QVBoxLayout" name="verticalLayout_9">
+           <property name="margin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QLabel" name="label_56">
+             <property name="styleSheet">
+              <string notr="true">font-weight:bold;</string>
+             </property>
+             <property name="text">
+              <string>Composer</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QScrollArea" name="mOptionsScrollArea_12">
+             <property name="frameShape">
+              <enum>QFrame::NoFrame</enum>
+             </property>
+             <property name="widgetResizable">
+              <bool>true</bool>
+             </property>
+             <widget class="QWidget" name="mOptionsScrollAreaContents_12">
+              <property name="geometry">
+               <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>674</width>
+                <height>505</height>
+               </rect>
+              </property>
+              <layout class="QVBoxLayout" name="verticalLayout_39">
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <item>
+                <widget class="QGroupBox" name="groupBox_3">
+                 <property name="title">
+                  <string>Composition defaults</string>
+                 </property>
+                 <layout class="QGridLayout" name="gridLayout_8">
+                  <item row="1" column="0">
+                   <layout class="QHBoxLayout" name="horizontalLayout_4">
+                    <item>
+                     <widget class="QLabel" name="label_60">
+                      <property name="text">
+                       <string>Default font</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QFontComboBox" name="mComposerFontComboBox"/>
+                    </item>
+                   </layout>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
+                <widget class="QGroupBox" name="groupBox_23">
+                 <property name="title">
+                  <string>Grid appearance</string>
+                 </property>
+                 <layout class="QGridLayout" name="gridLayout_9">
+                  <item row="0" column="0">
+                   <layout class="QHBoxLayout" name="horizontalLayout_32">
+                    <item>
+                     <widget class="QLabel" name="label_59">
+                      <property name="text">
+                       <string>Grid style</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QComboBox" name="mGridStyleComboBox"/>
+                    </item>
+                    <item>
+                     <widget class="QgsColorButton" name="mGridColorButton">
+                      <property name="text">
+                       <string>Color...</string>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
+                <widget class="QGroupBox" name="groupBox_24">
+                 <property name="title">
+                  <string>Grid defaults</string>
+                 </property>
+                 <layout class="QGridLayout" name="gridLayout_11">
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="label_61">
+                    <property name="text">
+                     <string>Spacing</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="1">
+                   <widget class="QDoubleSpinBox" name="mGridResolutionSpinBox">
+                    <property name="suffix">
+                     <string> mm</string>
+                    </property>
+                    <property name="minimum">
+                     <double>0.500000000000000</double>
+                    </property>
+                    <property name="maximum">
+                     <double>9999.000000000000000</double>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="2">
+                   <widget class="QLabel" name="label_63">
+                    <property name="text">
+                     <string>Grid offset</string>
+                    </property>
+                    <property name="wordWrap">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="3">
+                   <layout class="QHBoxLayout" name="horizontalLayout_36">
+                    <item>
+                     <widget class="QDoubleSpinBox" name="mOffsetXSpinBox">
+                      <property name="prefix">
+                       <string>x: </string>
+                      </property>
+                      <property name="maximum">
+                       <double>9999.000000000000000</double>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QDoubleSpinBox" name="mOffsetYSpinBox">
+                      <property name="prefix">
+                       <string>y: </string>
+                      </property>
+                      <property name="suffix">
+                       <string/>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </item>
+                  <item row="1" column="0">
+                   <widget class="QLabel" name="label_62">
+                    <property name="text">
+                     <string>Snap tolerance</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="1">
+                   <widget class="QDoubleSpinBox" name="mGridToleranceSpinBox">
+                    <property name="prefix">
+                     <string/>
+                    </property>
+                    <property name="suffix">
+                     <string> mm</string>
+                    </property>
+                    <property name="value">
+                     <double>2.000000000000000</double>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
+                <widget class="QGroupBox" name="groupBox_25">
+                 <property name="title">
+                  <string>Guide defaults</string>
+                 </property>
+                 <layout class="QGridLayout" name="gridLayout_12">
+                  <item row="0" column="0">
+                   <layout class="QHBoxLayout" name="horizontalLayout_37">
+                    <item>
+                     <widget class="QLabel" name="label_64">
+                      <property name="text">
+                       <string>Snap tolerance</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QDoubleSpinBox" name="mGuideToleranceSpinBox">
+                      <property name="prefix">
+                       <string/>
+                      </property>
+                      <property name="suffix">
+                       <string> mm</string>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
+                <spacer name="verticalSpacer_10">
+                 <property name="orientation">
+                  <enum>Qt::Vertical</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>40</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </widget>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="mOptionsPageDigitizing">
           <layout class="QVBoxLayout" name="verticalLayout_17">
            <property name="margin">
             <number>0</number>
@@ -3325,7 +3558,7 @@
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="mOptionsPage_02">
+         <widget class="QWidget" name="mOptionsPageGDAL">
           <layout class="QVBoxLayout" name="verticalLayout_4">
            <property name="margin">
             <number>0</number>
@@ -3465,7 +3698,7 @@
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="mOptionsPage_08">
+         <widget class="QWidget" name="mOptionsPageCRS">
           <layout class="QVBoxLayout" name="verticalLayout_18">
            <property name="margin">
             <number>0</number>
@@ -3722,7 +3955,7 @@
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="mOptionsPage_09">
+         <widget class="QWidget" name="mOptionsPageLocale">
           <layout class="QVBoxLayout" name="verticalLayout_19">
            <property name="margin">
             <number>0</number>
@@ -3822,7 +4055,7 @@
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="mOptionsPage_10">
+         <widget class="QWidget" name="mOptionsPageNetwork">
           <layout class="QVBoxLayout" name="verticalLayout_20">
            <property name="margin">
             <number>0</number>
@@ -3930,7 +4163,7 @@
                    </layout>
                   </item>
                   <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_34">
+                   <layout class="QHBoxLayout" name="horizontalLayout_35">
                     <item>
                      <widget class="QLabel" name="lblUserAgent">
                       <property name="text">

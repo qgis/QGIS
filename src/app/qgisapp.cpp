@@ -6839,8 +6839,12 @@ void QgisApp::customize()
   QgsCustomization::instance()->openDialog( this );
 }
 
-
 void QgisApp::options()
+{
+  showOptionsDialog( this );
+}
+
+void QgisApp::showOptionsDialog( QWidget *parent, QString currentPage )
 {
   if ( mMapCanvas && mMapCanvas->isDrawing() )
   {
@@ -6850,7 +6854,12 @@ void QgisApp::options()
   QSettings mySettings;
   QString oldScales = mySettings.value( "Map/scales", PROJECT_SCALES ).toString();
 
-  QgsOptions *optionsDialog = new QgsOptions( this );
+  QgsOptions *optionsDialog = new QgsOptions( parent );
+  if ( !currentPage.isEmpty() )
+  {
+    optionsDialog->setCurrentPage( currentPage );
+  }
+
   if ( optionsDialog->exec() )
   {
     // set the theme if it changed
@@ -6862,6 +6871,17 @@ void QgisApp::options()
     int action = mySettings.value( "/qgis/wheel_action", 2 ).toInt();
     double zoomFactor = mySettings.value( "/qgis/zoom_factor", 2 ).toDouble();
     mMapCanvas->setWheelAction(( QgsMapCanvas::WheelAction ) action, zoomFactor );
+
+    //update any open compositions so they reflect new composer settings
+    //we have to push the changes to the compositions here, because compositions
+    //have no access to qgisapp and accordingly can't listen in to changes
+    QSet<QgsComposer*> composers = instance()->printComposers();
+    QSet<QgsComposer*>::iterator composer_it = composers.begin();
+    for ( ; composer_it != composers.end(); ++composer_it )
+    {
+      QgsComposition* composition = ( *composer_it )->composition();
+      composition->updateSettings();
+    }
 
     //do we need this? TS
     mMapCanvas->refresh();

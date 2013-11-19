@@ -303,6 +303,9 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   layoutMenu->addAction( mActionLockItems );
   layoutMenu->addAction( mActionUnlockAll );
 
+  QMenu *settingsMenu = menuBar()->addMenu( tr( "Settings" ) );
+  settingsMenu->addAction( mActionOptions );
+
 #ifdef Q_WS_MAC
   // this doesn't work on Mac anymore: menuBar()->addMenu( mQgis->windowMenu() );
   // QgsComposer::populateWithOtherMenu should work recursively with submenus and regardless of Qt version
@@ -657,6 +660,11 @@ void QgsComposer::showItemOptions( QgsComposerItem* item )
   }
 
   mItemDock->setWidget( newWidget );
+}
+
+void QgsComposer::on_mActionOptions_triggered()
+{
+  mQgis->showOptionsDialog( this, QString("mOptionsPageComposer") );
 }
 
 QgsMapCanvas *QgsComposer::mapCanvas( void )

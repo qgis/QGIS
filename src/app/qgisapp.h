@@ -618,6 +618,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Update project menu with the project templates
     void updateProjectFromTemplates();
 
+    //! Opens the options dialog
+    void showOptionsDialog( QWidget *parent = 0, QString currentPage = QString() );
+
   protected:
 
     //! Handle state changes (WindowTitleChange)

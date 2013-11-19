@@ -306,6 +306,9 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //!Clear guides
     void on_mActionClearGuides_triggered();
 
+    //!Show options dialog
+    void on_mActionOptions_triggered();
+
     //! Save window state
     void saveWindowState();
 
