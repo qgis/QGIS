@@ -24,6 +24,7 @@ typedef QMap<QgsFeatureId, QgsFeature> QgsFeatureMap;
 class QgsVectorLayer;
 class QgsVectorLayerEditBuffer;
 struct QgsVectorJoinInfo;
+class QgsVectorLayerJoinBuffer;
 
 class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureIterator
 {
@@ -46,7 +47,11 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
     //! while for others filtering is left to the provider implementation.
     inline virtual bool nextFeatureFilterExpression( QgsFeature &f ) { return fetchFeature( f ); }
 
-    QgsVectorLayer* L;
+    QgsVectorDataProvider* mProvider;
+    QgsFields mFields;
+    QgsAttributeList mAllAttributesList;
+
+    QgsVectorLayerJoinBuffer* mJoinBuffer;
 
     QgsFeatureRequest mProviderRequest;
     QgsFeatureIterator mProviderIterator;
