@@ -37,6 +37,8 @@ class CORE_EXPORT QgsHistogramDiagram: public QgsDiagram
     QgsHistogramDiagram();
     ~QgsHistogramDiagram();
 
+    virtual QgsDiagram* clone() const;
+
     void renderDiagram( const QgsAttributes& att, QgsRenderContext& c, const QgsDiagramSettings& s, const QPointF& position );
     QSizeF diagramSize( const QgsAttributes& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s );
     QSizeF diagramSize( const QgsAttributes& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is );

@@ -122,7 +122,7 @@ QgsFeatureRequest& QgsFeatureRequest::setSubsetOfAttributes( const QStringList& 
   foreach ( const QString& attrName, attrNames )
   {
     int attrNum = fields.fieldNameIndex( attrName );
-    if ( attrNum != -1 )
+    if ( attrNum != -1 && !mAttrs.contains( attrNum ) )
       mAttrs.append( attrNum );
   }
 

@@ -33,6 +33,9 @@ class CORE_EXPORT QgsDiagram
 {
   public:
     virtual ~QgsDiagram() {}
+    /** Returns an instance that is equivalent to this one
+     * @note added in 2.1 */
+    virtual QgsDiagram* clone() const = 0;
     /**Draws the diagram at the given position (in pixel coordinates)*/
     virtual void renderDiagram( const QgsAttributes& att, QgsRenderContext& c, const QgsDiagramSettings& s, const QPointF& position ) = 0;
     virtual QString diagramName() const = 0;

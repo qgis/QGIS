@@ -3091,6 +3091,14 @@ bool QgsPalLabeling::willUseLayer( QgsVectorLayer* layer )
   return staticWillUseLayer( layer );
 }
 
+bool QgsPalLabeling::staticWillUseLayer( const QString& layerID )
+{
+  QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerID ) );
+  if ( !layer )
+    return false;
+  return staticWillUseLayer( layer );
+}
+
 
 bool QgsPalLabeling::staticWillUseLayer( QgsVectorLayer* layer )
 {
@@ -3105,7 +3113,7 @@ bool QgsPalLabeling::staticWillUseLayer( QgsVectorLayer* layer )
 
 void QgsPalLabeling::clearActiveLayers()
 {
-  QHash<QgsVectorLayer*, QgsPalLayerSettings>::iterator lit;
+  QHash<QString, QgsPalLayerSettings>::iterator lit;
   for ( lit = mActiveLayers.begin(); lit != mActiveLayers.end(); ++lit )
   {
     clearActiveLayer( lit.key() );
@@ -3113,9 +3121,9 @@ void QgsPalLabeling::clearActiveLayers()
   mActiveLayers.clear();
 }
 
-void QgsPalLabeling::clearActiveLayer( QgsVectorLayer* layer )
+void QgsPalLabeling::clearActiveLayer( const QString &layerID )
 {
-  QgsPalLayerSettings& lyr = mActiveLayers[layer];
+  QgsPalLayerSettings& lyr = mActiveLayers[layerID];
 
   // delete all QgsDataDefined objects (which also deletes their QgsExpression object)
   QMap< QgsPalLayerSettings::DataDefinedProperties, QgsDataDefined* >::iterator it = lyr.dataDefinedProperties.begin();
@@ -3127,7 +3135,7 @@ void QgsPalLabeling::clearActiveLayer( QgsVectorLayer* layer )
   lyr.dataDefinedProperties.clear();
 }
 
-int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QSet<int>& attrIndices, QgsRenderContext& ctx )
+int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QStringList& attrNames, QgsRenderContext& ctx )
 {
   Q_ASSERT( mMapSettings != NULL );
 
@@ -3147,7 +3155,6 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QSet<int>& attrIndices,
     return 0;
   }
 
-  int fldIndex = -1;
   if ( lyrTmp.isExpression )
   {
     QgsExpression exp( lyrTmp.fieldName );
@@ -3160,17 +3167,16 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QSet<int>& attrIndices,
   else
   {
     // If we aren't an expression, we check to see if we can find the column.
-    fldIndex = layer->fieldNameIndex( lyrTmp.fieldName );
-    if ( fldIndex == -1 )
+    if ( layer->fieldNameIndex( lyrTmp.fieldName ) == -1 )
     {
       return 0;
     }
   }
 
   // add layer settings to the pallabeling hashtable: <QgsVectorLayer*, QgsPalLayerSettings>
-  mActiveLayers.insert( layer, lyrTmp );
+  mActiveLayers.insert( layer->id(), lyrTmp );
   // start using the reference to the layer in hashtable instead of local instance
-  QgsPalLayerSettings& lyr = mActiveLayers[layer];
+  QgsPalLayerSettings& lyr = mActiveLayers[layer->id()];
 
   lyr.mCurFields = &( layer->pendingFields() );
 
@@ -3187,15 +3193,12 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QSet<int>& attrIndices,
     foreach ( QString name, exp->referencedColumns() )
     {
       QgsDebugMsgLevel( "REFERENCED COLUMN = " + name, 4 );
-      attrIndices.insert( layer->fieldNameIndex( name ) );
+      attrNames.append( name );
     }
   }
   else
   {
-    if ( fldIndex != -1 )
-    {
-      attrIndices.insert( fldIndex );
-    }
+    attrNames.append( lyr.fieldName );
   }
 
   // add field indices of data defined expression or field
@@ -3222,7 +3225,7 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QSet<int>& attrIndices,
     //QgsDebugMsgLevel( QString( "Data defined referenced columns:" ) + cols.join( "," ), 4 );
     foreach ( QString name, cols )
     {
-      attrIndices.insert( layer->fieldNameIndex( name ) );
+      attrNames.append( name );
     }
   }
 
@@ -3313,7 +3316,7 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QSet<int>& attrIndices,
 
   // save the pal layer to our layer context (with some additional info)
   lyr.palLayer = l;
-  lyr.fieldIndex = fldIndex;
+  lyr.fieldIndex = layer->fieldNameIndex( lyr.fieldName );
 
   lyr.xform = &mMapSettings->mapToPixel();
   if ( mMapSettings->hasCrsTransformEnabled() )
@@ -3342,20 +3345,23 @@ int QgsPalLabeling::addDiagramLayer( QgsVectorLayer* layer, QgsDiagramLayerSetti
   else
     s->ct = NULL;
   s->xform = &mMapSettings->mapToPixel();
-  mActiveDiagramLayers.insert( layer, *s );
+  mActiveDiagramLayers.insert( layer->id(), *s );
+
+  mActiveDiagramLayers[ layer->id() ].renderer = layer->diagramRenderer()->clone();
+
   return 1;
 }
 
-void QgsPalLabeling::registerFeature( QgsVectorLayer* layer, QgsFeature& f, const QgsRenderContext& context )
+void QgsPalLabeling::registerFeature( const QString& layerID, QgsFeature& f, const QgsRenderContext& context )
 {
-  QgsPalLayerSettings& lyr = mActiveLayers[layer];
+  QgsPalLayerSettings& lyr = mActiveLayers[layerID];
   lyr.registerFeature( f, context );
 }
 
-void QgsPalLabeling::registerDiagramFeature( QgsVectorLayer* layer, QgsFeature& feat, const QgsRenderContext& context )
+void QgsPalLabeling::registerDiagramFeature( const QString& layerID, QgsFeature& feat, const QgsRenderContext& context )
 {
   //get diagram layer settings, diagram renderer
-  QHash<QgsVectorLayer*, QgsDiagramLayerSettings>::iterator layerIt = mActiveDiagramLayers.find( layer );
+  QHash<QString, QgsDiagramLayerSettings>::iterator layerIt = mActiveDiagramLayers.find( layerID );
   if ( layerIt == mActiveDiagramLayers.constEnd() )
   {
     return;
@@ -3364,7 +3370,7 @@ void QgsPalLabeling::registerDiagramFeature( QgsVectorLayer* layer, QgsFeature& 
   //convert geom to geos
   QgsGeometry* geom = feat.geometry();
 
-  if ( layerIt.value().ct && !willUseLayer( layer ) ) // reproject the geometry if feature not already transformed for labeling
+  if ( layerIt.value().ct && staticWillUseLayer( layerID ) ) // reproject the geometry if feature not already transformed for labeling
   {
     geom->transform( *( layerIt.value().ct ) );
   }
@@ -3493,10 +3499,10 @@ void QgsPalLabeling::exit()
 
 QgsPalLayerSettings& QgsPalLabeling::layer( const QString& layerName )
 {
-  QHash<QgsVectorLayer*, QgsPalLayerSettings>::iterator lit;
+  QHash<QString, QgsPalLayerSettings>::iterator lit;
   for ( lit = mActiveLayers.begin(); lit != mActiveLayers.end(); ++lit )
   {
-    if ( lit.key() && lit.key()->id() == layerName )
+    if ( lit.key() == layerName )
     {
       return lit.value();
     }
@@ -3914,10 +3920,10 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
     if ( palGeometry->isDiagram() )
     {
       //render diagram
-      QHash<QgsVectorLayer*, QgsDiagramLayerSettings>::iterator dit = mActiveDiagramLayers.begin();
+      QHash<QString, QgsDiagramLayerSettings>::iterator dit = mActiveDiagramLayers.begin();
       for ( dit = mActiveDiagramLayers.begin(); dit != mActiveDiagramLayers.end(); ++dit )
       {
-        if ( dit.key() && dit.key()->id().append( "d" ) == layerName )
+        if ( QString( dit.key() + "d" ) == layerName )
         {
           QgsPoint outPt = xform.transform(( *it )->getX(), ( *it )->getY() );
           dit.value().renderer->renderDiagram( palGeometry->diagramAttributes(), context, QPointF( outPt.x(), outPt.y() ) );
@@ -4023,7 +4029,7 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
 void QgsPalLabeling::deleteTemporaryData()
 {
   // delete all allocated geometries for features
-  QHash<QgsVectorLayer*, QgsPalLayerSettings>::iterator lit;
+  QHash<QString, QgsPalLayerSettings>::iterator lit;
   for ( lit = mActiveLayers.begin(); lit != mActiveLayers.end(); ++lit )
   {
     QgsPalLayerSettings& lyr = lit.value();
@@ -4040,7 +4046,7 @@ void QgsPalLabeling::deleteTemporaryData()
   }
 
   //delete all allocated geometries for diagrams
-  QHash<QgsVectorLayer*, QgsDiagramLayerSettings>::iterator dIt = mActiveDiagramLayers.begin();
+  QHash<QString, QgsDiagramLayerSettings>::iterator dIt = mActiveDiagramLayers.begin();
   for ( ; dIt != mActiveDiagramLayers.end(); ++dIt )
   {
     QgsDiagramLayerSettings& dls = dIt.value();

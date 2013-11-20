@@ -84,10 +84,10 @@ class CORE_EXPORT QgsLabelingEngineInterface
     virtual void clearActiveLayers() = 0;
     //! clears data defined objects from PAL layer settings for a registered layer
     //! @note: this method was added in version 1.9
-    virtual void clearActiveLayer( QgsVectorLayer* layer ) = 0;
+    virtual void clearActiveLayer( const QString& layerID ) = 0;
     //! called when starting rendering of a layer
     //! @note: this method was added in version 1.6
-    virtual int prepareLayer( QgsVectorLayer* layer, QSet<int>& attrIndices, QgsRenderContext& ctx ) = 0;
+    virtual int prepareLayer( QgsVectorLayer* layer, QStringList& attrNames, QgsRenderContext& ctx ) = 0;
     //! returns PAL layer settings for a registered layer
     //! @note: this method was added in version 1.9
     virtual QgsPalLayerSettings& layer( const QString& layerName ) = 0;
@@ -95,10 +95,10 @@ class CORE_EXPORT QgsLabelingEngineInterface
     virtual int addDiagramLayer( QgsVectorLayer* layer, QgsDiagramLayerSettings* s )
     { Q_UNUSED( layer ); Q_UNUSED( s ); return 0; }
     //! called for every feature
-    virtual void registerFeature( QgsVectorLayer* layer, QgsFeature& feat, const QgsRenderContext& context = QgsRenderContext() ) = 0;
+    virtual void registerFeature( const QString& layerID, QgsFeature& feat, const QgsRenderContext& context = QgsRenderContext() ) = 0;
     //! called for every diagram feature
-    virtual void registerDiagramFeature( QgsVectorLayer* layer, QgsFeature& feat, const QgsRenderContext& context = QgsRenderContext() )
-    { Q_UNUSED( layer ); Q_UNUSED( feat ); Q_UNUSED( context ); }
+    virtual void registerDiagramFeature( const QString& layerID, QgsFeature& feat, const QgsRenderContext& context = QgsRenderContext() )
+    { Q_UNUSED( layerID ); Q_UNUSED( feat ); Q_UNUSED( context ); }
     //! called when the map is drawn and labels should be placed
     virtual void drawLabeling( QgsRenderContext& context ) = 0;
     //! called when we're done with rendering

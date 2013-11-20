@@ -30,6 +30,11 @@ QgsTextDiagram::~QgsTextDiagram()
 {
 }
 
+QgsDiagram* QgsTextDiagram::clone() const
+{
+  return new QgsTextDiagram( *this );
+}
+
 QSizeF QgsTextDiagram::diagramSize( const QgsAttributes& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is )
 {
   Q_UNUSED( c );

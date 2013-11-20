@@ -732,20 +732,21 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
     //! called to find out whether the layer is used for labeling
     //! @note added in 2.1
     static bool staticWillUseLayer( QgsVectorLayer* layer );
+    static bool staticWillUseLayer( const QString& layerID );
 
     //! clears all PAL layer settings for registered layers
     //! @note: this method was added in version 1.9
     virtual void clearActiveLayers();
     //! clears data defined objects from PAL layer settings for a registered layer
     //! @note: this method was added in version 1.9
-    virtual void clearActiveLayer( QgsVectorLayer* layer );
+    virtual void clearActiveLayer( const QString& layerID );
     //! hook called when drawing layer before issuing select()
-    virtual int prepareLayer( QgsVectorLayer* layer, QSet<int>& attrIndices, QgsRenderContext& ctx );
+    virtual int prepareLayer( QgsVectorLayer* layer, QStringList &attrNames, QgsRenderContext& ctx );
     //! adds a diagram layer to the labeling engine
     virtual int addDiagramLayer( QgsVectorLayer* layer, QgsDiagramLayerSettings *s );
     //! hook called when drawing for every feature in a layer
-    virtual void registerFeature( QgsVectorLayer* layer, QgsFeature& feat, const QgsRenderContext& context = QgsRenderContext() );
-    virtual void registerDiagramFeature( QgsVectorLayer* layer, QgsFeature& feat, const QgsRenderContext& context = QgsRenderContext() );
+    virtual void registerFeature( const QString& layerID, QgsFeature& feat, const QgsRenderContext& context = QgsRenderContext() );
+    virtual void registerDiagramFeature( const QString& layerID, QgsFeature& feat, const QgsRenderContext& context = QgsRenderContext() );
     //! called when the map is drawn and labels should be placed
     virtual void drawLabeling( QgsRenderContext& context );
     //! called when we're done with rendering
@@ -815,10 +816,10 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
 
     void deleteTemporaryData();
 
-    // hashtable of layer settings, being filled during labeling
-    QHash<QgsVectorLayer*, QgsPalLayerSettings> mActiveLayers;
-    // hashtable of active diagram layers
-    QHash<QgsVectorLayer*, QgsDiagramLayerSettings> mActiveDiagramLayers;
+    // hashtable of layer settings, being filled during labeling (key = layer ID)
+    QHash<QString, QgsPalLayerSettings> mActiveLayers;
+    // hashtable of active diagram layers (key = layer ID)
+    QHash<QString, QgsDiagramLayerSettings> mActiveDiagramLayers;
     QgsPalLayerSettings mInvalidLayerSettings;
 
     const QgsMapSettings* mMapSettings;

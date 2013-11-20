@@ -15,8 +15,6 @@
 #include <QSettings>
 
 // TODO:
-// - labeling
-// - diagrams
 // - passing of cache to QgsVectorLayer
 
 
@@ -25,10 +23,9 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer* layer, QgsRender
   , mFields( layer->pendingFields() )
   , mLayerID( layer->id() )
   , mRendererV2( 0 )
-  , mDiagramRenderer( 0 )
-  , mDiagramLayerSettings( 0 )
   , mCache( 0 )
   , mLabeling( false )
+  , mDiagrams( false )
   , mLayerTransparency( 0 )
 {
   mRendererV2 = layer->rendererV2()->clone();
@@ -45,9 +42,6 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer* layer, QgsRender
 
   mLayerTransparency = layer->layerTransparency();
   mFeatureBlendMode = layer->featureBlendMode();
-
-  // TODO: cloning mDiagramRenderer = layer->diagramRenderer()->clone();
-  // TODO: cloning mDiagramLayerSettings = layer->diagramLayerSettings()->clone();
 
   QSettings settings;
   mVertexMarkerOnlyForSelection = settings.value( "/qgis/digitizing/marker_only_for_selected", false ).toBool();
@@ -85,7 +79,8 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer* layer, QgsRender
   QStringList attrNames = mRendererV2->usedAttributes();
 
   //register label and diagram layer to the labeling engine
-  prepareLabelingAndDiagrams( attrNames );
+  prepareLabeling( layer, attrNames );
+  prepareDiagrams( layer, attrNames );
 
   mFit = layer->getFeatures( QgsFeatureRequest()
                              .setFilterRect( mContext.extent() )
@@ -96,8 +91,6 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer* layer, QgsRender
 QgsVectorLayerRenderer::~QgsVectorLayerRenderer()
 {
   delete mRendererV2;
-  delete mDiagramRenderer;
-  delete mDiagramLayerSettings;
   delete mCache;
 }
 
@@ -173,19 +166,17 @@ void QgsVectorLayerRenderer::drawRendererV2()
 
       // labeling - register feature
       Q_UNUSED( rendered );
-#if 0
       if ( rendered && mContext.labelingEngine() )
       {
         if ( mLabeling )
         {
-          mContext.labelingEngine()->registerFeature( this, fet, mContext );
+          mContext.labelingEngine()->registerFeature( mLayerID, fet, mContext );
         }
-        if ( mDiagramRenderer )
+        if ( mDiagrams )
         {
-          mContext.labelingEngine()->registerDiagramFeature( this, fet, mContext );
+          mContext.labelingEngine()->registerDiagramFeature( mLayerID, fet, mContext );
         }
       }
-#endif
     }
     catch ( const QgsCsException &cse )
     {
@@ -243,19 +234,17 @@ void QgsVectorLayerRenderer::drawRendererV2Levels()
       mCache->cacheGeometry( fet.id(), *fet.geometry() );
     }
 
-#if 0
     if ( sym && mContext.labelingEngine() )
     {
       if ( mLabeling )
       {
-        mContext.labelingEngine()->registerFeature( this, fet, mContext );
+        mContext.labelingEngine()->registerFeature( mLayerID, fet, mContext );
       }
-      if ( mDiagramRenderer )
+      if ( mDiagrams )
       {
-        mContext.labelingEngine()->registerDiagramFeature( this, fet, mContext );
+        mContext.labelingEngine()->registerDiagramFeature( mLayerID, fet, mContext );
       }
     }
-#endif
   }
 
   // find out the order
@@ -334,31 +323,19 @@ void QgsVectorLayerRenderer::stopRendererV2( QgsSingleSymbolRendererV2* selRende
 
 
 
-void QgsVectorLayerRenderer::prepareLabelingAndDiagrams( QStringList& attributeNames )
+void QgsVectorLayerRenderer::prepareLabeling( QgsVectorLayer* layer, QStringList& attributeNames )
 {
-  Q_UNUSED( attributeNames );
-#if 0
   if ( !mContext.labelingEngine() )
     return;
 
-  QSet<int> attrIndex;
-  if ( mContext.labelingEngine()->prepareLayer( this, attrIndex, mContext ) )
+  if ( mContext.labelingEngine()->prepareLayer( layer, attributeNames, mContext ) )
   {
-    QSet<int>::const_iterator attIt = attrIndex.constBegin();
-    for ( ; attIt != attrIndex.constEnd(); ++attIt )
-    {
-      if ( !attributes.contains( *attIt ) )
-      {
-        attributes << *attIt;
-      }
-    }
     mLabeling = true;
-  }
 
-  if ( mLabeling )
-  {
     QgsPalLayerSettings& palyr = mContext.labelingEngine()->layer( mLayerID );
+    Q_UNUSED( palyr );
 
+#if 0 // TODO: limit of labels, font not found
     // see if feature count limit is set for labeling
     if ( palyr.limitNumLabels && palyr.maxNumLabels > 0 )
     {
@@ -382,32 +359,35 @@ void QgsVectorLayerRenderer::prepareLabelingAndDiagrams( QStringList& attributeN
       emit labelingFontNotFound( this, palyr.mTextFontFamily );
       mLabelFontNotFoundNotified = true;
     }
+#endif
+  }
+}
+
+void QgsVectorLayerRenderer::prepareDiagrams( QgsVectorLayer* layer, QStringList& attributeNames )
+{
+  if ( !mContext.labelingEngine() )
+    return;
+
+  if ( !layer->diagramRenderer() || !layer->diagramLayerSettings() )
+    return;
+
+  mDiagrams = true;
+
+  QgsDiagramLayerSettings diagSettings = *layer->diagramLayerSettings();
+
+  mContext.labelingEngine()->addDiagramLayer( layer, &diagSettings );
+
+  //add attributes needed by the diagram renderer
+  QList<int> att = layer->diagramRenderer()->diagramAttributes();
+  QList<int>::const_iterator attIt = att.constBegin();
+  for ( ; attIt != att.constEnd(); ++attIt )
+  {
+    attributeNames << mFields.at( *attIt ).name();
   }
 
-  //register diagram layers
-  if ( mDiagramRenderer && mDiagramLayerSettings )
-  {
-    mDiagramLayerSettings->renderer = mDiagramRenderer;
-    mContext.labelingEngine()->addDiagramLayer( this, mDiagramLayerSettings );
-    //add attributes needed by the diagram renderer
-    QList<int> att = mDiagramRenderer->diagramAttributes();
-    QList<int>::const_iterator attIt = att.constBegin();
-    for ( ; attIt != att.constEnd(); ++attIt )
-    {
-      if ( !attributes.contains( *attIt ) )
-      {
-        attributes << *attIt;
-      }
-    }
-    //and the ones needed for data defined diagram positions
-    if ( mDiagramLayerSettings->xPosColumn >= 0 && !attributes.contains( mDiagramLayerSettings->xPosColumn ) )
-    {
-      attributes << mDiagramLayerSettings->xPosColumn;
-    }
-    if ( mDiagramLayerSettings->yPosColumn >= 0 && !attributes.contains( mDiagramLayerSettings->yPosColumn ) )
-    {
-      attributes << mDiagramLayerSettings->yPosColumn;
-    }
-  }
-#endif
+  //and the ones needed for data defined diagram positions
+  if ( diagSettings.xPosColumn != -1 )
+    attributeNames << mFields.at( diagSettings.xPosColumn ).name();
+  if ( diagSettings.yPosColumn != -1 )
+    attributeNames << mFields.at( diagSettings.yPosColumn ).name();
 }

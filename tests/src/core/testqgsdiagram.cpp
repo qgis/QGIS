@@ -158,7 +158,6 @@ class TestQgsDiagram: public QObject
 
       QgsDiagramLayerSettings dls = QgsDiagramLayerSettings();
       dls.placement = QgsDiagramLayerSettings::OverPoint;
-      dls.renderer = dr;
 
       QgsProject::instance()->writeEntry( "PAL", "/ShowingAllLabels", true );
 

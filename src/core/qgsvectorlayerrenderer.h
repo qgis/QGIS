@@ -37,7 +37,8 @@ private:
   /**Registers label and diagram layer
     @param attributes attributes needed for labeling and diagrams will be added to the list
    */
-  void prepareLabelingAndDiagrams( QStringList& attributeNames );
+  void prepareLabeling( QgsVectorLayer* layer, QStringList& attributeNames );
+  void prepareDiagrams( QgsVectorLayer* layer, QStringList& attributeNames );
 
   /** Draw layer with renderer V2. QgsFeatureRenderer::startRender() needs to be called before using this method
    */
@@ -65,12 +66,6 @@ protected:
 
   QgsFeatureRendererV2 *mRendererV2;
 
-  //diagram rendering object. 0 if diagram drawing is disabled
-  QgsDiagramRendererV2* mDiagramRenderer;
-
-  //stores infos about diagram placement (placement type, priority, position distance)
-  QgsDiagramLayerSettings* mDiagramLayerSettings;
-
   bool mCacheFeatures;
   QgsGeometryCache* mCache;
 
@@ -81,6 +76,7 @@ protected:
   QGis::GeometryType mGeometryType;
 
   bool mLabeling;
+  bool mDiagrams;
 
   int mLayerTransparency;
   QPainter::CompositionMode mFeatureBlendMode;
