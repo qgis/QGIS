@@ -37893,7 +37893,7 @@ Sempre rete: carica sempre dalle rete e non controllare se la cache ha geometrie
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1441"/>
         <source>Scan for contents of compressed files (.zip) in browser dock</source>
-        <translation>Ricerca contenuto dei files compressi (.zip) nella finestra del browser</translation>
+        <translation>Ricerca contenuto dei file compressi (.zip) nella finestra del browser</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="169"/>
@@ -38435,7 +38435,7 @@ Sempre rete: carica sempre dalle rete e non controllare se la cache ha geometrie
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3177"/>
         <source>Curve offset tool</source>
-        <translation>Strumento per la curva di offeset</translation>
+        <translation>Strumento per la curva di offset</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3186"/>
@@ -38496,7 +38496,7 @@ Sempre rete: carica sempre dalle rete e non controllare se la cache ha geometrie
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3356"/>
         <source>Edit Create Options</source>
-        <translation>Edita le opzioni di creazione</translation>
+        <translation>Modifica le opzioni di creazione</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1777"/>
