@@ -24,19 +24,39 @@ QgsCachedFeatureIterator::QgsCachedFeatureIterator( QgsVectorLayerCache *vlCache
   mFeatureIdIterator = featureIds.begin();
 }
 
+QgsCachedFeatureIterator::QgsCachedFeatureIterator( QgsVectorLayerCache *vlCache, QgsFeatureRequest featureRequest )
+    : QgsAbstractFeatureIterator( featureRequest )
+    , mVectorLayerCache( vlCache )
+{
+  switch ( featureRequest.filterType() )
+  {
+    case QgsFeatureRequest::FilterFids:
+      mFeatureIds = featureRequest.filterFids();
+      break;
+
+    case QgsFeatureRequest::FilterFid:
+      mFeatureIds = QgsFeatureIds() << featureRequest.filterFid();
+      break;
+
+    default:
+      mFeatureIds = mVectorLayerCache->mCache.keys().toSet();
+      break;
+  }
+
+  mFeatureIdIterator = mFeatureIds.begin();
+}
+
 bool QgsCachedFeatureIterator::fetchFeature( QgsFeature& f )
 {
   mFeatureIdIterator++;
 
-  if ( mFeatureIdIterator == mFeatureIds.end() )
-  {
-    return false;
-  }
-  else
+  while ( mFeatureIdIterator != mFeatureIds.end() )
   {
     f = QgsFeature( *mVectorLayerCache->mCache[*mFeatureIdIterator]->feature() );
-    return true;
+    if ( mRequest.acceptFeature( f ) )
+      return true;
   }
+  return false;
 }
 
 bool QgsCachedFeatureIterator::rewind()

@@ -39,21 +39,51 @@ class CORE_EXPORT QgsAbstractFeatureIterator
     //! end of iterating: free the resources / lock
     virtual bool close() = 0;
 
-  protected:
-    virtual bool nextFeatureFilterExpression( QgsFeature &f );
-
-    virtual bool nextFeatureFilterFids( QgsFeature & f );
-
+  protected:    
+    /**
+     * If you write a feature iterator for your provider, this is the method you
+     * need to implement!!
+     *
+     * @param f The feature to write to
+     * @return  true if a feature was written to f
+     */
     virtual bool fetchFeature( QgsFeature& f ) = 0;
 
+    /**
+     * By default, the iterator will fetch all features and check if the feature
+     * matches the expression.
+     * If you have a more sophisticated metodology (SQL request for the features...)
+     * and you check for the expression in your fetchFeature method, you can just
+     * redirect this call to fetchFeature so the default check will be omitted.
+     *
+     * @param f The feature to write to
+     * @return  true if a feature was written to f
+     */
+    virtual bool nextFeatureFilterExpression( QgsFeature &f );
+
+    /**
+     * By default, the iterator will fetch all features and check if the id
+     * is in the request.
+     * If you have a more sophisticated metodology (SQL request for the features...)
+     * and you are sure, that any feature you return from fetchFeature will match
+     * if the request was FilterFids you can just redirect this call to fetchFeature
+     * so the default check will be omitted.
+     *
+     * @param f The feature to write to
+     * @return  true if a feature was written to f
+     */
+    virtual bool nextFeatureFilterFids( QgsFeature & f );
+
+    /** A copy of the feature request. */
     QgsFeatureRequest mRequest;
 
+    /** Set to true, as soon as the iterator is closed. */
     bool mClosed;
 
-    // reference counting (to allow seamless copying of QgsFeatureIterator instances)
+    //! reference counting (to allow seamless copying of QgsFeatureIterator instances)
     int refs;
-    void ref(); // add reference
-    void deref(); // remove reference, delete if refs == 0
+    void ref(); //!< add reference
+    void deref(); //!< remove reference, delete if refs == 0
     friend class QgsFeatureIterator;
 };
 
