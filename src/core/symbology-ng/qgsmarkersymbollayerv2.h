@@ -76,6 +76,8 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
     QgsSymbolV2::OutputUnit outlineWidthUnit() const { return mOutlineWidthUnit; }
     void setOutlineWidthUnit( QgsSymbolV2::OutputUnit u ) { mOutlineWidthUnit = u; }
 
+    void writeDxf( QTextStream& str, double mmMapUnitScaleFactor ) const;
+
   protected:
 
     void drawMarker( QPainter* p, QgsSymbolV2RenderContext& context );

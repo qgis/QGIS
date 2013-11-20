@@ -54,6 +54,9 @@ class QgsDxfExport
     void setSymbologyExport( SymbologyExport e ) { mSymbologyExport = e; }
     SymbologyExport symbologyExport() const { return mSymbologyExport; }
 
+    //get closest entry in dxf palette
+    static int closestColorMatch( QRgb pixel );
+
   private:
 
     QList< QgsMapLayer* > mLayers;
@@ -68,11 +71,15 @@ class QgsDxfExport
 
     int mSymbolLayerCounter; //internal counter
     int mNextHandleId;
+    int mBlockCounter;
+
     QHash< const QgsSymbolLayerV2*, QString > mLineStyles; //symbol layer name types
+    QHash< const QgsSymbolLayerV2*, QString > mPointSymbolBlocks; //reference to point symbol blocks
 
     //AC1009
     void writeHeader( QTextStream& stream );
     void writeTables( QTextStream& stream );
+    void writeBlocks( QTextStream& stream );
     void writeEntities( QTextStream& stream );
     void writeEntitiesSymbolLevels( QTextStream& stream, QgsVectorLayer* layer );
     void writeEndFile( QTextStream& stream );
@@ -80,6 +87,7 @@ class QgsDxfExport
     void startSection( QTextStream& stream );
     void endSection( QTextStream& stream );
 
+    void writePoint( QTextStream& stream, const QgsPoint& pt, const QString& layer, const QgsSymbolLayerV2* symbolLayer );
     void writePolyline( QTextStream& stream, const QgsPolyline& line, const QString& layer, const QString& lineStyleName, int color,
                         double width = -1, bool polygon = false );
     void writeVertex( QTextStream& stream, const QgsPoint& pt, const QString& layer );
@@ -108,7 +116,6 @@ class QgsDxfExport
     double widthFromSymbolLayer( const QgsSymbolLayerV2* symbolLayer );
 
     //functions for dxf palette
-    static int closestColorMatch( QRgb pixel );
     static int color_distance( QRgb p1, int index );
     static QRgb createRgbEntry( qreal r, qreal g, qreal b );
 

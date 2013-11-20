@@ -16,6 +16,7 @@
 #include "qgsmarkersymbollayerv2.h"
 #include "qgssymbollayerv2utils.h"
 
+#include "qgsdxfexport.h"
 #include "qgsexpression.h"
 #include "qgsrendercontext.h"
 #include "qgslogger.h"
@@ -697,6 +698,40 @@ void QgsSimpleMarkerSymbolLayerV2::drawMarker( QPainter* p, QgsSymbolV2RenderCon
   else
   {
     p->drawPath( mPath );
+  }
+}
+
+void QgsSimpleMarkerSymbolLayerV2::writeDxf( QTextStream& str, double mmMapUnitScaleFactor ) const
+{
+  double size = mSize;
+  if ( mSizeUnit == QgsSymbolV2::MM )
+  {
+    size *= mmMapUnitScaleFactor;
+  }
+  double halfSize = size / 2.0;
+
+  if ( mName == "circle" )
+  {
+    str << "  0\n";
+    str << "CIRCLE\n";
+    str << "  8\n";
+    str << "0\n";
+    //todo: linetype in group 6. Needs to be inserted into line table first
+
+    //color in group 62
+    str << " 62\n";
+    int colorIndex = QgsDxfExport::closestColorMatch( mBrush.color().rgb() );
+    str << QString( "%1\n" ).arg( colorIndex );
+
+    //x/y/z center
+    str << " 10\n";
+    str << QString( "%1\n" ).arg( halfSize );
+    str << " 20\n";
+    str << QString( "%1\n" ).arg( halfSize );
+    str << " 30\n";
+    str << QString( "%1\n" ).arg( halfSize );
+    str << " 40\n";
+    str << QString( "%1\n" ).arg( halfSize );
   }
 }
 

@@ -286,7 +286,7 @@ double QgsDxfExport::mDxfColors[][3] =
   {1, 1, 1}               // 255
 };
 
-QgsDxfExport::QgsDxfExport(): mSymbologyScaleDenominator( 1.0 ), mSymbologyExport( NoSymbology ), mMapUnits( QGis::Meters ), mSymbolLayerCounter( 0 ), mNextHandleId( 10 )
+QgsDxfExport::QgsDxfExport(): mSymbologyScaleDenominator( 1.0 ), mSymbologyExport( NoSymbology ), mMapUnits( QGis::Meters ), mSymbolLayerCounter( 0 ), mNextHandleId( 10 ), mBlockCounter( 0 )
 {
 }
 
@@ -310,6 +310,7 @@ int QgsDxfExport::writeToFile( QIODevice* d )
   QTextStream outStream( d );
   writeHeader( outStream );
   writeTables( outStream );
+  writeBlocks( outStream );
   writeEntities( outStream );
   writeEndFile( outStream );
   return 0;
@@ -448,6 +449,63 @@ void QgsDxfExport::writeTables( QTextStream& stream )
   stream << "  0\n";
   stream << "ENDTAB\n";
 
+  endSection( stream );
+}
+
+void QgsDxfExport::writeBlocks( QTextStream& stream )
+{
+  startSection( stream );
+  stream << "  2\n";
+  stream << "BLOCKS\n";
+
+  //iterate through all layers and get symbol layer pointers
+  QList<QgsSymbolLayerV2*> slList;
+  if ( mSymbologyExport != NoSymbology )
+  {
+    slList = symbolLayers();
+  }
+
+  QList<QgsSymbolLayerV2*>::const_iterator slIt = slList.constBegin();
+  for ( ; slIt != slList.constEnd(); ++slIt )
+  {
+    //if point symbol layer and no data defined properties: write block
+    QgsMarkerSymbolLayerV2* ml = dynamic_cast< QgsMarkerSymbolLayerV2*>( *slIt );
+    if ( ml )
+    {
+      //todo: find out if the marker symbol layer has data defined properties
+      stream << "  0\n";
+      stream << "BLOCK\n";
+      stream << "  8\n"; //Layer (0 to take layer where INSERT happens)
+      stream << "0\n";
+      QString blockName = QString( "symbolLayer%1" ).arg( mBlockCounter );
+      stream << "  2\n";
+      stream << QString( "%1\n" ).arg( blockName );
+      stream << " 70\n";
+      stream << "64\n";
+
+      //x/y/z coordinates of reference point
+      //todo: consider anchor point
+      double size = ml->size();
+      size *= mapUnitScaleFactor( mSymbologyScaleDenominator, ml->sizeUnit(), mMapUnits );
+      stream << "10\n";
+      stream << QString( "%1\n" ).arg( size / 2.0 );
+      stream << "20\n";
+      stream << QString( "%1\n" ).arg( size / 2.0 );
+      stream << "30\n";
+      stream << "0\n";
+      stream << "  3\n";
+      stream << QString( "%1\n" ).arg( blockName );
+
+      ml->writeDxf( stream, mapUnitScaleFactor( mSymbologyScaleDenominator, ml->sizeUnit(), mMapUnits ) );
+
+      stream << "  0\n";
+      stream << "ENDBLK\n";
+      stream << "  8\n";
+      stream << "0\n";
+
+      mPointSymbolBlocks.insert( ml, blockName );
+    }
+  }
   endSection( stream );
 }
 
@@ -617,6 +675,32 @@ void QgsDxfExport::endSection( QTextStream& stream )
   stream << "ENDSEC\n";
 }
 
+void QgsDxfExport::writePoint( QTextStream& stream, const QgsPoint& pt, const QString& layer, const QgsSymbolLayerV2* symbolLayer )
+{
+  //insert block or write point directly?
+  QHash< const QgsSymbolLayerV2*, QString >::const_iterator blockIt = mPointSymbolBlocks.find( symbolLayer );
+  if ( !symbolLayer || blockIt == mPointSymbolBlocks.constEnd() )
+  {
+    //write symbol directly here
+  }
+  else
+  {
+    //insert block
+    stream << "  0\n";
+    stream << "INSERT\n";
+    stream << "  8\n";
+    stream << layer << "\n";
+    stream << "  2\n";
+    stream << blockIt.value() << "\n";
+    stream << " 10\n";
+    stream << QString( "%1\n" ).arg( pt.x() );
+    stream << " 20\n";
+    stream << QString( "%1\n" ).arg( pt.y() );
+    stream << " 30\n";
+    stream << "0\n";
+  }
+}
+
 void QgsDxfExport::writePolyline( QTextStream& stream, const QgsPolyline& line, const QString& layer, const QString& lineStyleName, int color,
                                   double width, bool polygon )
 {
@@ -700,6 +784,13 @@ void QgsDxfExport::addFeature( const QgsFeature& fet, QTextStream& stream, const
     //todo: write point symbols as blocks
 
     QGis::WkbType geometryType = geom->wkbType();
+
+    //single point
+    if ( geometryType == QGis::WKBPoint || geometryType == QGis::WKBPoint25D )
+    {
+      writePoint( stream, geom->asPoint(), layer, symbolLayer );
+    }
+
     //single line
     if ( geometryType == QGis::WKBLineString || geometryType == QGis::WKBLineString25D )
     {
