@@ -80,16 +80,16 @@ QgsSymbolV2* QgsSingleSymbolRendererV2::symbolForFeature( QgsFeature& feature )
   return mTempSymbol;
 }
 
-void QgsSingleSymbolRendererV2::startRender( QgsRenderContext& context, const QgsVectorLayer *vlayer )
+void QgsSingleSymbolRendererV2::startRender( QgsRenderContext& context, const QgsFields& fields )
 {
   if ( !mSymbol )
   {
     return;
   }
-  mRotationFieldIdx  = mRotationField.isEmpty()  ? -1 : vlayer->fieldNameIndex( mRotationField );
-  mSizeScaleFieldIdx = mSizeScaleField.isEmpty() ? -1 : vlayer->fieldNameIndex( mSizeScaleField );
+  mRotationFieldIdx  = mRotationField.isEmpty()  ? -1 : fields.fieldNameIndex( mRotationField );
+  mSizeScaleFieldIdx = mSizeScaleField.isEmpty() ? -1 : fields.fieldNameIndex( mSizeScaleField );
 
-  mSymbol->startRender( context, vlayer );
+  mSymbol->startRender( context, &fields );
 
   if ( mRotationFieldIdx != -1 || mSizeScaleFieldIdx != -1 )
   {
@@ -103,7 +103,7 @@ void QgsSingleSymbolRendererV2::startRender( QgsRenderContext& context, const Qg
       hints |= QgsSymbolV2::DataDefinedSizeScale;
     mTempSymbol->setRenderHints( hints );
 
-    mTempSymbol->startRender( context, vlayer );
+    mTempSymbol->startRender( context, &fields );
 
     if ( mSymbol->type() == QgsSymbolV2::Marker )
     {

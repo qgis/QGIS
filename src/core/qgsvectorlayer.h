@@ -726,16 +726,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     void setRendererV2( QgsFeatureRendererV2* r );
 
-    /** Draw layer with renderer V2. QgsFeatureRenderer::startRender() needs to be called before using this method
-     * @note added in 1.4
-     */
-    void drawRendererV2( QgsFeatureIterator &fit, QgsRenderContext& rendererContext, bool labeling );
-
-    /** Draw layer with renderer V2 using symbol levels. QgsFeatureRenderer::startRender() needs to be called before using this method
-     * @note added in 1.4
-     */
-    void drawRendererV2Levels( QgsFeatureIterator &fit, QgsRenderContext& rendererContext, bool labeling );
-
     /** Returns point, line or polygon */
     QGis::GeometryType geometryType() const;
 
@@ -1026,6 +1016,11 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /**Synchronises with changes in the datasource
       @note added in version 1.6*/
     virtual void reload();
+
+    /** Return new instance of QgsMapLayerRenderer that will be used for rendering of given context
+     * @note added in 2.1
+     */
+    virtual QgsMapLayerRenderer* createMapRenderer( QgsRenderContext& rendererContext );
 
     /** Draws the layer
      *  @return false if an error occurred during drawing
@@ -1546,23 +1541,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
                          QMultiMap<double, QgsSnappingResult>& snappingResults,
                          QgsSnapper::SnappingType snap_to ) const;
 
-    /**Reads vertex marker type from settings*/
-    static QgsVectorLayer::VertexMarkerType currentVertexMarkerType();
-
-    /**Reads vertex marker size from settings*/
-    static int currentVertexMarkerSize();
-
     /** Add joined attributes to a feature */
     //void addJoinedAttributes( QgsFeature& f, bool all = false );
-
-    /** Stop version 2 renderer and selected renderer (if required) */
-    void stopRendererV2( QgsRenderContext& rendererContext, QgsSingleSymbolRendererV2* selRenderer );
-
-    /**Registers label and diagram layer
-      @param rendererContext render context
-      @param attributes attributes needed for labeling and diagrams will be added to the list
-      @param labeling out: true if there will be labeling (ng) for this layer*/
-    void prepareLabelingAndDiagrams( QgsRenderContext& rendererContext, QgsAttributeList& attributes, bool& labeling );
 
   private:                       // Private attributes
 

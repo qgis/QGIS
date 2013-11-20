@@ -2,8 +2,7 @@
 
 #include "qgsvectorlayereditbuffer.h"
 
-QgsGeometryCache::QgsGeometryCache( QgsVectorLayer* layer )
-    : L( layer )
+QgsGeometryCache::QgsGeometryCache()
 {
 }
 

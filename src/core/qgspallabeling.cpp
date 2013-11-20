@@ -1499,10 +1499,8 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF* fm, QString t
   labelY = qAbs( ptSize.y() - ptZero.y() );
 }
 
-void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f, const QgsRenderContext& context )
+void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext& context )
 {
-  Q_UNUSED( layer );
-
   QVariant exprVal; // value() is repeatedly nulled on data defined evaluation and replaced when successful
   mCurFeat = &f;
 //  mCurFields = &layer->pendingFields();
@@ -3351,7 +3349,7 @@ int QgsPalLabeling::addDiagramLayer( QgsVectorLayer* layer, QgsDiagramLayerSetti
 void QgsPalLabeling::registerFeature( QgsVectorLayer* layer, QgsFeature& f, const QgsRenderContext& context )
 {
   QgsPalLayerSettings& lyr = mActiveLayers[layer];
-  lyr.registerFeature( layer, f, context );
+  lyr.registerFeature( f, context );
 }
 
 void QgsPalLabeling::registerDiagramFeature( QgsVectorLayer* layer, QgsFeature& feat, const QgsRenderContext& context )

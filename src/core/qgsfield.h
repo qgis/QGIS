@@ -216,6 +216,11 @@ class CORE_EXPORT QgsFields
     //! Look up field's index from name. Returns -1 on error
     int indexFromName( const QString& name ) const { return mNameToIndex.value( name, -1 ); }
 
+    //! Look up field's index from name - case insensitive
+    //! TODO: sort out case sensitive (indexFromName()) vs insensitive (fieldNameIndex()) calls
+    //! @note added in 2.1
+    int fieldNameIndex( const QString& fieldName ) const;
+
     //! Utility function to return a list of QgsField instances
     QList<QgsField> toList() const;
 

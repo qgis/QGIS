@@ -412,7 +412,7 @@ class CORE_EXPORT QgsPalLayerSettings
     void calculateLabelSize( const QFontMetricsF* fm, QString text, double& labelX, double& labelY, QgsFeature* f = 0 );
 
     // implementation of register feature hook
-    void registerFeature( QgsVectorLayer* layer, QgsFeature& f, const QgsRenderContext& context );
+    void registerFeature( QgsFeature& f, const QgsRenderContext& context );
 
     void readFromLayer( QgsVectorLayer* layer );
     void writeToLayer( QgsVectorLayer* layer );

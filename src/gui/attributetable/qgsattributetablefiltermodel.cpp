@@ -258,7 +258,7 @@ void QgsAttributeTableFilterModel::generateListOfVisibleFeatures()
     filter = renderer && renderer->capabilities() & QgsFeatureRendererV2::Filter;
   }
 
-  renderer->startRender( renderContext, layer() );
+  renderer->startRender( renderContext, layer()->pendingFields() );
 
   QgsFeatureIterator features = masterModel()->layerCache()->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setFilterRect( rect ) );
 

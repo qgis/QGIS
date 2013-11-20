@@ -29,6 +29,7 @@
 class QgsSymbolV2;
 class QgsRenderContext;
 class QgsFeature;
+class QgsFields;
 class QgsVectorLayer;
 
 typedef QMap<QString, QString> QgsStringMap;
@@ -81,7 +82,10 @@ class CORE_EXPORT QgsFeatureRendererV2
      */
     virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature ) = 0;
 
-    virtual void startRender( QgsRenderContext& context, const QgsVectorLayer *vlayer ) = 0;
+    virtual void startRender( QgsRenderContext& context, const QgsFields& fields ) = 0;
+
+    //! @deprecated since 2.1 - not using QgsVectorLayer directly anymore
+    Q_DECL_DEPRECATED virtual void startRender( QgsRenderContext& context, const QgsVectorLayer* vlayer );
 
     virtual void stopRender( QgsRenderContext& context ) = 0;
 

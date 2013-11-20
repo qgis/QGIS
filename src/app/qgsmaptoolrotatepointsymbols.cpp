@@ -279,7 +279,7 @@ void QgsMapToolRotatePointSymbols::createPixmapItem( QgsFeature& f )
   {
     QgsFeatureRendererV2* rv2 = mActiveLayer->rendererV2()->clone();
     rv2->setRotationField( "" );
-    rv2->startRender( renderContext, mActiveLayer );
+    rv2->startRender( renderContext, mActiveLayer->pendingFields() );
 
     QgsSymbolV2* symbolV2 = rv2->symbolForFeature( f );
     if ( symbolV2 )

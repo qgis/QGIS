@@ -71,7 +71,7 @@ class CORE_EXPORT QgsCategorizedSymbolRendererV2 : public QgsFeatureRendererV2
 
     virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature );
 
-    virtual void startRender( QgsRenderContext& context, const QgsVectorLayer *vlayer );
+    virtual void startRender( QgsRenderContext& context, const QgsFields& fields );
 
     virtual void stopRender( QgsRenderContext& context );
 

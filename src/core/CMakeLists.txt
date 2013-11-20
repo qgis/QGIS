@@ -5,6 +5,7 @@ SET(QGIS_CORE_SRCS
 
   qgsmapsettings.cpp
   qgsmaprendererjob.cpp
+  qgsvectorlayerrenderer.cpp
 
   gps/qgsgpsconnection.cpp
   gps/qgsgpsconnectionregistry.cpp

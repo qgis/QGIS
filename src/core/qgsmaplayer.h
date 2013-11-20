@@ -33,6 +33,7 @@
 
 class QgsRenderContext;
 class QgsCoordinateReferenceSystem;
+class QgsMapLayerRenderer;
 
 class QDomDocument;
 class QKeyEvent;
@@ -127,6 +128,11 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /**Synchronises with changes in the datasource
         @note added in version 1.6*/
     virtual void reload() {}
+
+    /** Return new instance of QgsMapLayerRenderer that will be used for rendering of given context
+     * @note added in 2.1
+     */
+    virtual QgsMapLayerRenderer* createMapRenderer( QgsRenderContext& rendererContext ) { Q_UNUSED( rendererContext ); return 0; }
 
     /** This is the method that does the actual work of
      * drawing the layer onto a paint device.

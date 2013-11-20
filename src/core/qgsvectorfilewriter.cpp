@@ -1527,7 +1527,7 @@ void QgsVectorFileWriter::startRender( QgsVectorLayer* vl ) const
   }
 
   QgsRenderContext ctx = renderContext();
-  renderer->startRender( ctx, vl );
+  renderer->startRender( ctx, vl->pendingFields() );
 }
 
 void QgsVectorFileWriter::stopRender( QgsVectorLayer* vl ) const

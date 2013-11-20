@@ -358,33 +358,33 @@ void QgsCategorizedSymbolRendererV2::sortByLabel( Qt::SortOrder order )
   }
 }
 
-void QgsCategorizedSymbolRendererV2::startRender( QgsRenderContext& context, const QgsVectorLayer *vlayer )
+void QgsCategorizedSymbolRendererV2::startRender( QgsRenderContext& context, const QgsFields& fields )
 {
   // make sure that the hash table is up to date
   rebuildHash();
 
   // find out classification attribute index from name
-  mAttrNum = vlayer ? vlayer->fieldNameIndex( mAttrName ) : -1;
+  mAttrNum = fields.fieldNameIndex( mAttrName );
   if ( mAttrNum == -1 )
   {
     mExpression = new QgsExpression( mAttrName );
-    mExpression->prepare( vlayer->pendingFields() );
+    mExpression->prepare( fields );
   }
 
-  mRotationFieldIdx  = ( mRotationField.isEmpty()  ? -1 : vlayer->fieldNameIndex( mRotationField ) );
-  mSizeScaleFieldIdx = ( mSizeScaleField.isEmpty() ? -1 : vlayer->fieldNameIndex( mSizeScaleField ) );
+  mRotationFieldIdx  = ( mRotationField.isEmpty()  ? -1 : fields.fieldNameIndex( mRotationField ) );
+  mSizeScaleFieldIdx = ( mSizeScaleField.isEmpty() ? -1 : fields.fieldNameIndex( mSizeScaleField ) );
 
   QgsCategoryList::iterator it = mCategories.begin();
   for ( ; it != mCategories.end(); ++it )
   {
-    it->symbol()->startRender( context, vlayer );
+    it->symbol()->startRender( context, &fields );
 
     if ( mRotationFieldIdx != -1 || mSizeScaleFieldIdx != -1 )
     {
       QgsSymbolV2* tempSymbol = it->symbol()->clone();
       tempSymbol->setRenderHints(( mRotationFieldIdx != -1 ? QgsSymbolV2::DataDefinedRotation : 0 ) |
                                  ( mSizeScaleFieldIdx != -1 ? QgsSymbolV2::DataDefinedSizeScale : 0 ) );
-      tempSymbol->startRender( context, vlayer );
+      tempSymbol->startRender( context, &fields );
       mTempSymbols[ it->value().toString()] = tempSymbol;
     }
   }

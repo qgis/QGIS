@@ -176,7 +176,6 @@ void QgsComposerMap::draw( QPainter *painter, const QgsRectangle& extent, const 
   QgsMapRendererCustomPainterJob job( jobMapSettings, painter );
   job.start();
   job.waitForFinished();
-
 }
 
 void QgsComposerMap::cache( void )

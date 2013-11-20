@@ -159,7 +159,7 @@ void QgsSimpleLineSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context 
   mSelPen.setColor( selColor );
 
   //prepare expressions for data defined properties
-  prepareExpressions( context.layer(), context.renderContext().rendererScale() );
+  prepareExpressions( context.fields(), context.renderContext().rendererScale() );
 }
 
 void QgsSimpleLineSymbolLayerV2::stopRender( QgsSymbolV2RenderContext& context )
@@ -535,10 +535,10 @@ void QgsMarkerLineSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context 
     hints |= QgsSymbolV2::DataDefinedSizeScale;
   mMarker->setRenderHints( hints );
 
-  mMarker->startRender( context.renderContext(), context.layer() );
+  mMarker->startRender( context.renderContext(), context.fields() );
 
   //prepare expressions for data defined properties
-  prepareExpressions( context.layer(), context.renderContext().rendererScale() );
+  prepareExpressions( context.fields(), context.renderContext().rendererScale() );
 }
 
 void QgsMarkerLineSymbolLayerV2::stopRender( QgsSymbolV2RenderContext& context )

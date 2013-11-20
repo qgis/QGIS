@@ -1,0 +1,90 @@
+#ifndef QGSVECTORLAYERRENDERER_H
+#define QGSVECTORLAYERRENDERER_H
+
+class QgsFeatureRendererV2;
+class QgsRenderContext;
+class QgsVectorLayer;
+
+class QgsDiagramRendererV2;
+class QgsDiagramLayerSettings;
+
+class QgsGeometryCache;
+class QgsFeatureIterator;
+class QgsSingleSymbolRendererV2;
+
+#include <QList>
+#include <QPainter>
+
+typedef QList<int> QgsAttributeList;
+
+#include "qgis.h"
+#include "qgsfield.h"  // QgsFields
+#include "qgsfeature.h"  // QgsFeatureIds
+#include "qgsfeatureiterator.h"
+
+#include "qgsmaplayerrenderer.h"
+
+class QgsVectorLayerRenderer : public QgsMapLayerRenderer
+{
+public:
+  QgsVectorLayerRenderer( QgsVectorLayer* layer, QgsRenderContext& context );
+  ~QgsVectorLayerRenderer();
+
+  virtual bool render();
+
+private:
+
+  /**Registers label and diagram layer
+    @param attributes attributes needed for labeling and diagrams will be added to the list
+   */
+  void prepareLabelingAndDiagrams( QStringList& attributeNames );
+
+  /** Draw layer with renderer V2. QgsFeatureRenderer::startRender() needs to be called before using this method
+   */
+  void drawRendererV2();
+
+  /** Draw layer with renderer V2 using symbol levels. QgsFeatureRenderer::startRender() needs to be called before using this method
+   */
+  void drawRendererV2Levels();
+
+  /** Stop version 2 renderer and selected renderer (if required) */
+  void stopRendererV2( QgsSingleSymbolRendererV2* selRenderer );
+
+
+protected:
+
+  QgsRenderContext& mContext;
+
+  QgsFields mFields;
+
+  QString mLayerID;
+
+  QgsFeatureIds mSelectedFeatureIds;
+
+  QgsFeatureIterator mFit;
+
+  QgsFeatureRendererV2 *mRendererV2;
+
+  //diagram rendering object. 0 if diagram drawing is disabled
+  QgsDiagramRendererV2* mDiagramRenderer;
+
+  //stores infos about diagram placement (placement type, priority, position distance)
+  QgsDiagramLayerSettings* mDiagramLayerSettings;
+
+  bool mCacheFeatures;
+  QgsGeometryCache* mCache;
+
+  bool mDrawVertexMarkers;
+  bool mVertexMarkerOnlyForSelection;
+  int mVertexMarkerStyle, mVertexMarkerSize;
+
+  QGis::GeometryType mGeometryType;
+
+  bool mLabeling;
+
+  int mLayerTransparency;
+  QPainter::CompositionMode mFeatureBlendMode;
+};
+
+
+#endif // QGSVECTORLAYERRENDERER_H

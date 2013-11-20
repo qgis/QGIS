@@ -199,12 +199,12 @@ QgsSymbolV2* QgsPointDisplacementRenderer::symbolForFeature( QgsFeature& feature
   return 0; //not used any more
 }
 
-void QgsPointDisplacementRenderer::startRender( QgsRenderContext& context, const QgsVectorLayer *vlayer )
+void QgsPointDisplacementRenderer::startRender( QgsRenderContext& context, const QgsFields& fields )
 {
-  mRenderer->startRender( context, vlayer );
+  mRenderer->startRender( context, fields );
 
   //create groups with features that have the same position
-  createDisplacementGroups( const_cast<QgsVectorLayer*>( vlayer ), context.extent() );
+  createDisplacementGroups( 0, context.extent() );
   printInfoDisplacementGroups(); //just for debugging
 
   if ( mLabelAttributeName.isEmpty() )
@@ -213,7 +213,7 @@ void QgsPointDisplacementRenderer::startRender( QgsRenderContext& context, const
   }
   else
   {
-    mLabelIndex = vlayer->fieldNameIndex( mLabelAttributeName );
+    mLabelIndex = fields.fieldNameIndex( mLabelAttributeName );
   }
 
   if ( mMaxLabelScaleDenominator > 0 && context.rendererScale() > mMaxLabelScaleDenominator )
@@ -227,7 +227,7 @@ void QgsPointDisplacementRenderer::startRender( QgsRenderContext& context, const
 
   if ( mCenterSymbol )
   {
-    mCenterSymbol->startRender( context, vlayer );
+    mCenterSymbol->startRender( context, &fields );
   }
 }
 
@@ -341,6 +341,9 @@ QgsLegendSymbolList QgsPointDisplacementRenderer::legendSymbolItems( double scal
 
 void QgsPointDisplacementRenderer::createDisplacementGroups( QgsVectorLayer* vlayer, const QgsRectangle& viewExtent )
 {
+  Q_ASSERT( 0 && "Point Displacement Renderer is currently not working - it is now illegal to interact with QgsVectorLayer"
+            " in any way. The renderer should build groups in the renderFeature() calls and then do all rendering in stopRender()");
+
   if ( !vlayer || ( vlayer->wkbType() != QGis::WKBPoint && vlayer->wkbType() != QGis::WKBPoint25D ) )
   {
     return;

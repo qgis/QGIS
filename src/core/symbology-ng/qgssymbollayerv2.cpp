@@ -76,20 +76,19 @@ void QgsSymbolLayerV2::removeDataDefinedProperties()
   mDataDefinedProperties.clear();
 }
 
-void QgsSymbolLayerV2::prepareExpressions( const QgsVectorLayer* vl, double scale )
+void QgsSymbolLayerV2::prepareExpressions( const QgsFields* fields, double scale )
 {
-  if ( !vl )
+  if ( !fields )
   {
     return;
   }
 
-  const QgsFields& fields = vl->pendingFields();
   QMap< QString, QgsExpression* >::iterator it = mDataDefinedProperties.begin();
   for ( ; it != mDataDefinedProperties.end(); ++it )
   {
     if ( it.value() )
     {
-      it.value()->prepare( fields );
+      it.value()->prepare( *fields );
       if ( scale > 0 )
       {
         it.value()->setScale( scale );

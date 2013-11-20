@@ -120,8 +120,21 @@ protected:
 
 #include <QtConcurrentRun>
 #include <QFutureWatcher>
+#include <QPainter>
 
+class QgsMapLayerRenderer;
 class QgsPalLabeling;
+
+
+
+struct LayerRenderJob
+{
+  QgsRenderContext context;
+  QImage* img; // may be null if it is not necessary to draw to separate image (e.g. sequential rendering)
+  QgsMapLayerRenderer* renderer; // must be deleted
+  QPainter::CompositionMode blendMode;
+};
+
 
 /** job implementation that renders everything sequentially using a custom painter.
  *  The returned image is always invalid (because there is none available).
@@ -146,12 +159,18 @@ protected:
 
   void doRender();
 
+  bool needTemporaryImage( QgsMapLayer* ml );
+
 private:
   QPainter* mPainter;
   QFuture<void> mFuture;
   QFutureWatcher<void> mFutureWatcher;
-  QgsRenderContext mRenderContext;
+  QgsRenderContext mRenderContext;  // used just for labeling!
   QgsPalLabeling* mLabelingEngine;
+
+  typedef QList<LayerRenderJob> LayerRenderJobs;
+
+  LayerRenderJobs mLayerJobs;
 };
 
 

@@ -318,7 +318,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, Qg
   if ( renderer && renderer->capabilities() & QgsFeatureRendererV2::ScaleDependent )
   {
     // setup scale for scale dependent visibility (rule based)
-    renderer->startRender( context, layer );
+    renderer->startRender( context, layer->pendingFields() );
     filter = renderer->capabilities() & QgsFeatureRendererV2::Filter;
   }
 

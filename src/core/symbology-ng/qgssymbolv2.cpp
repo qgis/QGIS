@@ -213,10 +213,9 @@ bool QgsSymbolV2::changeSymbolLayer( int index, QgsSymbolLayerV2* layer )
 }
 
 
-void QgsSymbolV2::startRender( QgsRenderContext& context, const QgsVectorLayer* layer )
+void QgsSymbolV2::startRender( QgsRenderContext& context, const QgsFields* fields )
 {
-  QgsSymbolV2RenderContext symbolContext( context, outputUnit(), mAlpha, false, mRenderHints );
-  symbolContext.setLayer( layer );
+  QgsSymbolV2RenderContext symbolContext( context, outputUnit(), mAlpha, false, mRenderHints, 0, fields );
   for ( QgsSymbolLayerV2List::iterator it = mLayers.begin(); it != mLayers.end(); ++it )
     ( *it )->startRender( symbolContext );
 }
@@ -375,8 +374,8 @@ QSet<QString> QgsSymbolV2::usedAttributes() const
 ////////////////////
 
 
-QgsSymbolV2RenderContext::QgsSymbolV2RenderContext( QgsRenderContext& c, QgsSymbolV2::OutputUnit u, qreal alpha, bool selected, int renderHints, const QgsFeature* f )
-    : mRenderContext( c ), mOutputUnit( u ), mAlpha( alpha ), mSelected( selected ), mRenderHints( renderHints ), mFeature( f ), mLayer( 0 )
+QgsSymbolV2RenderContext::QgsSymbolV2RenderContext( QgsRenderContext& c, QgsSymbolV2::OutputUnit u, qreal alpha, bool selected, int renderHints, const QgsFeature* f, const QgsFields* fields )
+    : mRenderContext( c ), mOutputUnit( u ), mAlpha( alpha ), mSelected( selected ), mRenderHints( renderHints ), mFeature( f ), mFields( fields )
 {
 
 }

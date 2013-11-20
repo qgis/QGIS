@@ -263,7 +263,7 @@ void QgsEllipseSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context )
   mPen.setColor( mOutlineColor );
   mPen.setWidthF( mOutlineWidth * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOutlineWidthUnit ) );
   mBrush.setColor( mFillColor );
-  prepareExpressions( context.layer(), context.renderContext().rendererScale() );
+  prepareExpressions( context.fields(), context.renderContext().rendererScale() );
 }
 
 void QgsEllipseSymbolLayerV2::stopRender( QgsSymbolV2RenderContext & )

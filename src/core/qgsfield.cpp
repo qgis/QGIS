@@ -168,3 +168,15 @@ QList<QgsField> QgsFields::toList() const
     lst.append( mFields[i].field );
   return lst;
 }
+
+int QgsFields::fieldNameIndex( const QString& fieldName ) const
+{
+  for ( int idx = 0; idx < count(); ++idx )
+  {
+    if ( QString::compare( mFields[idx].field.name(), fieldName, Qt::CaseInsensitive ) == 0 )
+    {
+      return idx;
+    }
+  }
+  return -1;
+}

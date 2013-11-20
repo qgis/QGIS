@@ -1,0 +1,413 @@
+
+#include "qgsvectorlayerrenderer.h"
+
+//#include "qgsfeatureiterator.h"
+#include "qgsdiagramrendererv2.h"
+#include "qgsgeometrycache.h"
+#include "qgspallabeling.h"
+#include "qgsrendererv2.h"
+#include "qgsrendercontext.h"
+#include "qgssinglesymbolrendererv2.h"
+#include "qgssymbollayerv2.h"
+#include "qgssymbolv2.h"
+#include "qgsvectorlayer.h"
+
+#include <QSettings>
+
+// TODO:
+// - labeling
+// - diagrams
+// - passing of cache to QgsVectorLayer
+
+
+QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer* layer, QgsRenderContext& context )
+  : mContext( context )
+  , mFields( layer->pendingFields() )
+  , mLayerID( layer->id() )
+  , mRendererV2( 0 )
+  , mDiagramRenderer( 0 )
+  , mDiagramLayerSettings( 0 )
+  , mCache( 0 )
+  , mLabeling( false )
+  , mLayerTransparency( 0 )
+{
+  mRendererV2 = layer->rendererV2()->clone();
+  mSelectedFeatureIds = layer->selectedFeaturesIds();
+
+  mDrawVertexMarkers = ( layer->editBuffer() != 0 );
+  mCacheFeatures = ( layer->editBuffer() != 0 );
+  if ( mCacheFeatures )
+  {
+    mCache = new QgsGeometryCache();
+  }
+
+  mGeometryType = layer->geometryType();
+
+  mLayerTransparency = layer->layerTransparency();
+  mFeatureBlendMode = layer->featureBlendMode();
+
+  // TODO: cloning mDiagramRenderer = layer->diagramRenderer()->clone();
+  // TODO: cloning mDiagramLayerSettings = layer->diagramLayerSettings()->clone();
+
+  QSettings settings;
+  mVertexMarkerOnlyForSelection = settings.value( "/qgis/digitizing/marker_only_for_selected", false ).toBool();
+
+  QString markerTypeString = settings.value( "/qgis/digitizing/marker_style", "Cross" ).toString();
+  if ( markerTypeString == "Cross" )
+  {
+    mVertexMarkerStyle = QgsVectorLayer::Cross;
+  }
+  else if ( markerTypeString == "SemiTransparentCircle" )
+  {
+    mVertexMarkerStyle = QgsVectorLayer::SemiTransparentCircle;
+  }
+  else
+  {
+    mVertexMarkerStyle = QgsVectorLayer::NoMarker;
+  }
+
+  mVertexMarkerSize = settings.value( "/qgis/digitizing/marker_size", 3 ).toInt();
+
+  if ( !mRendererV2 )
+    return;
+
+  QgsDebugMsg( "rendering v2:\n" + mRendererV2->dump() );
+
+  if ( mCacheFeatures )
+  {
+    // Destroy all cached geometries and clear the references to them
+    mCache->setCachedGeometriesRect( mContext.extent() );
+
+    // set editing vertex markers style
+    mRendererV2->setVertexMarkerAppearance( mVertexMarkerStyle, mVertexMarkerSize );
+  }
+
+  QStringList attrNames = mRendererV2->usedAttributes();
+
+  //register label and diagram layer to the labeling engine
+  prepareLabelingAndDiagrams( attrNames );
+
+  mFit = layer->getFeatures( QgsFeatureRequest()
+                             .setFilterRect( mContext.extent() )
+                             .setSubsetOfAttributes( attrNames, mFields ) );
+}
+
+
+QgsVectorLayerRenderer::~QgsVectorLayerRenderer()
+{
+  delete mRendererV2;
+  delete mDiagramRenderer;
+  delete mDiagramLayerSettings;
+  delete mCache;
+}
+
+
+bool QgsVectorLayerRenderer::render()
+{
+  if ( mGeometryType == QGis::NoGeometry || mGeometryType == QGis::UnknownGeometry )
+    return true;
+
+  if ( !mRendererV2 )
+    return false;
+
+  // Per feature blending mode
+  if ( mContext.useAdvancedEffects() && mFeatureBlendMode != QPainter::CompositionMode_SourceOver )
+  {
+    // set the painter to the feature blend mode, so that features drawn
+    // on this layer will interact and blend with each other
+    mContext.painter()->setCompositionMode( mFeatureBlendMode );
+  }
+
+  mRendererV2->startRender( mContext, mFields );
+
+  if (( mRendererV2->capabilities() & QgsFeatureRendererV2::SymbolLevels )
+      && mRendererV2->usingSymbolLevels() )
+    drawRendererV2Levels();
+  else
+    drawRendererV2();
+
+  //apply layer transparency for vector layers
+  if ( mContext.useAdvancedEffects() && mLayerTransparency != 0 )
+  {
+    // a layer transparency has been set, so update the alpha for the flattened layer
+    // by combining it with the layer transparency
+    QColor transparentFillColor = QColor( 0, 0, 0, 255 - ( 255 * mLayerTransparency / 100 ) );
+    // use destination in composition mode to merge source's alpha with destination
+    mContext.painter()->setCompositionMode( QPainter::CompositionMode_DestinationIn );
+    mContext.painter()->fillRect( 0, 0, mContext.painter()->device()->width(),
+                                        mContext.painter()->device()->height(), transparentFillColor );
+  }
+
+  return true;
+}
+
+
+
+void QgsVectorLayerRenderer::drawRendererV2()
+{
+  QgsFeature fet;
+  while ( mFit.nextFeature( fet ) )
+  {
+    try
+    {
+      if ( !fet.geometry() )
+        continue; // skip features without geometry
+
+      if ( mContext.renderingStopped() )
+      {
+        qDebug("breaking!");
+        break;
+      }
+
+      bool sel = mSelectedFeatureIds.contains( fet.id() );
+      bool drawMarker = ( mDrawVertexMarkers && mContext.drawEditingInformation() && ( !mVertexMarkerOnlyForSelection || sel ) );
+
+      // render feature
+      bool rendered = mRendererV2->renderFeature( fet, mContext, -1, sel, drawMarker );
+
+      if ( mCacheFeatures )
+      {
+        // Cache this for the use of (e.g.) modifying the feature's uncommitted geometry.
+        mCache->cacheGeometry( fet.id(), *fet.geometry() );
+      }
+
+      // labeling - register feature
+      Q_UNUSED( rendered );
+#if 0
+      if ( rendered && mContext.labelingEngine() )
+      {
+        if ( mLabeling )
+        {
+          mContext.labelingEngine()->registerFeature( this, fet, mContext );
+        }
+        if ( mDiagramRenderer )
+        {
+          mContext.labelingEngine()->registerDiagramFeature( this, fet, mContext );
+        }
+      }
+#endif
+    }
+    catch ( const QgsCsException &cse )
+    {
+      Q_UNUSED( cse );
+      QgsDebugMsg( QString( "Failed to transform a point while drawing a feature with ID '%1'. Ignoring this feature. %2" )
+                   .arg( fet.id() ).arg( cse.what() ) );
+    }
+  }
+
+  stopRendererV2( NULL );
+}
+
+void QgsVectorLayerRenderer::drawRendererV2Levels()
+{
+  QHash< QgsSymbolV2*, QList<QgsFeature> > features; // key = symbol, value = array of features
+
+  QgsSingleSymbolRendererV2* selRenderer = NULL;
+  if ( !mSelectedFeatureIds.isEmpty() )
+  {
+    selRenderer = new QgsSingleSymbolRendererV2( QgsSymbolV2::defaultSymbol( mGeometryType ) );
+    selRenderer->symbol()->setColor( mContext.selectionColor() );
+    selRenderer->setVertexMarkerAppearance( mVertexMarkerStyle, mVertexMarkerSize );
+    selRenderer->startRender( mContext, mFields );
+  }
+
+  // 1. fetch features
+  QgsFeature fet;
+  while ( mFit.nextFeature( fet ) )
+  {
+    if ( !fet.geometry() )
+      continue; // skip features without geometry
+
+    if ( mContext.renderingStopped() )
+    {
+      qDebug("rendering stop!");
+      stopRendererV2( selRenderer );
+      return;
+    }
+
+    QgsSymbolV2* sym = mRendererV2->symbolForFeature( fet );
+    if ( !sym )
+    {
+      continue;
+    }
+
+    if ( !features.contains( sym ) )
+    {
+      features.insert( sym, QList<QgsFeature>() );
+    }
+    features[sym].append( fet );
+
+    if ( mCacheFeatures )
+    {
+      // Cache this for the use of (e.g.) modifying the feature's uncommitted geometry.
+      mCache->cacheGeometry( fet.id(), *fet.geometry() );
+    }
+
+#if 0
+    if ( sym && mContext.labelingEngine() )
+    {
+      if ( mLabeling )
+      {
+        mContext.labelingEngine()->registerFeature( this, fet, mContext );
+      }
+      if ( mDiagramRenderer )
+      {
+        mContext.labelingEngine()->registerDiagramFeature( this, fet, mContext );
+      }
+    }
+#endif
+  }
+
+  // find out the order
+  QgsSymbolV2LevelOrder levels;
+  QgsSymbolV2List symbols = mRendererV2->symbols();
+  for ( int i = 0; i < symbols.count(); i++ )
+  {
+    QgsSymbolV2* sym = symbols[i];
+    for ( int j = 0; j < sym->symbolLayerCount(); j++ )
+    {
+      int level = sym->symbolLayer( j )->renderingPass();
+      if ( level < 0 || level >= 1000 ) // ignore invalid levels
+        continue;
+      QgsSymbolV2LevelItem item( sym, j );
+      while ( level >= levels.count() ) // append new empty levels
+        levels.append( QgsSymbolV2Level() );
+      levels[level].append( item );
+    }
+  }
+
+  // 2. draw features in correct order
+  for ( int l = 0; l < levels.count(); l++ )
+  {
+    QgsSymbolV2Level& level = levels[l];
+    for ( int i = 0; i < level.count(); i++ )
+    {
+      QgsSymbolV2LevelItem& item = level[i];
+      if ( !features.contains( item.symbol() ) )
+      {
+        QgsDebugMsg( "level item's symbol not found!" );
+        continue;
+      }
+      int layer = item.layer();
+      QList<QgsFeature>& lst = features[item.symbol()];
+      QList<QgsFeature>::iterator fit;
+      for ( fit = lst.begin(); fit != lst.end(); ++fit )
+      {
+        if ( mContext.renderingStopped() )
+        {
+          stopRendererV2( selRenderer );
+          return;
+        }
+
+        bool sel = mSelectedFeatureIds.contains( fit->id() );
+        // maybe vertex markers should be drawn only during the last pass...
+        bool drawMarker = ( mDrawVertexMarkers && mContext.drawEditingInformation() && ( !mVertexMarkerOnlyForSelection || sel ) );
+
+        try
+        {
+          mRendererV2->renderFeature( *fit, mContext, layer, sel, drawMarker );
+        }
+        catch ( const QgsCsException &cse )
+        {
+          Q_UNUSED( cse );
+          QgsDebugMsg( QString( "Failed to transform a point while drawing a feature with ID '%1'. Ignoring this feature. %2" )
+                       .arg( fet.id() ).arg( cse.what() ) );
+        }
+      }
+    }
+  }
+
+  stopRendererV2( selRenderer );
+}
+
+
+void QgsVectorLayerRenderer::stopRendererV2( QgsSingleSymbolRendererV2* selRenderer )
+{
+  mRendererV2->stopRender( mContext );
+  if ( selRenderer )
+  {
+    selRenderer->stopRender( mContext );
+    delete selRenderer;
+  }
+}
+
+
+
+
+void QgsVectorLayerRenderer::prepareLabelingAndDiagrams( QStringList& attributeNames )
+{
+  Q_UNUSED( attributeNames );
+#if 0
+  if ( !mContext.labelingEngine() )
+    return;
+
+  QSet<int> attrIndex;
+  if ( mContext.labelingEngine()->prepareLayer( this, attrIndex, mContext ) )
+  {
+    QSet<int>::const_iterator attIt = attrIndex.constBegin();
+    for ( ; attIt != attrIndex.constEnd(); ++attIt )
+    {
+      if ( !attributes.contains( *attIt ) )
+      {
+        attributes << *attIt;
+      }
+    }
+    mLabeling = true;
+  }
+
+  if ( mLabeling )
+  {
+    QgsPalLayerSettings& palyr = mContext.labelingEngine()->layer( mLayerID );
+
+    // see if feature count limit is set for labeling
+    if ( palyr.limitNumLabels && palyr.maxNumLabels > 0 )
+    {
+      QgsFeatureIterator fit = getFeatures( QgsFeatureRequest()
+                                            .setFilterRect( mContext.extent() )
+                                            .setSubsetOfAttributes( QgsAttributeList() ) );
+
+      // total number of features that may be labeled
+      QgsFeature f;
+      int nFeatsToLabel = 0;
+      while ( fit.nextFeature( f ) )
+      {
+        nFeatsToLabel++;
+      }
+      palyr.mFeaturesToLabel = nFeatsToLabel;
+    }
+
+    // notify user about any font substitution
+    if ( !palyr.mTextFontFound && !mLabelFontNotFoundNotified )
+    {
+      emit labelingFontNotFound( this, palyr.mTextFontFamily );
+      mLabelFontNotFoundNotified = true;
+    }
+  }
+
+  //register diagram layers
+  if ( mDiagramRenderer && mDiagramLayerSettings )
+  {
+    mDiagramLayerSettings->renderer = mDiagramRenderer;
+    mContext.labelingEngine()->addDiagramLayer( this, mDiagramLayerSettings );
+    //add attributes needed by the diagram renderer
+    QList<int> att = mDiagramRenderer->diagramAttributes();
+    QList<int>::const_iterator attIt = att.constBegin();
+    for ( ; attIt != att.constEnd(); ++attIt )
+    {
+      if ( !attributes.contains( *attIt ) )
+      {
+        attributes << *attIt;
+      }
+    }
+    //and the ones needed for data defined diagram positions
+    if ( mDiagramLayerSettings->xPosColumn >= 0 && !attributes.contains( mDiagramLayerSettings->xPosColumn ) )
+    {
+      attributes << mDiagramLayerSettings->xPosColumn;
+    }
+    if ( mDiagramLayerSettings->yPosColumn >= 0 && !attributes.contains( mDiagramLayerSettings->yPosColumn ) )
+    {
+      attributes << mDiagramLayerSettings->yPosColumn;
+    }
+  }
+#endif
+}

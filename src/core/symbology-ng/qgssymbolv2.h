@@ -32,6 +32,7 @@ class QDomElement;
 //class
 
 class QgsFeature;
+class QgsFields;
 class QgsSymbolLayerV2;
 class QgsRenderContext;
 class QgsVectorLayer;
@@ -97,7 +98,7 @@ class CORE_EXPORT QgsSymbolV2
     //! delete layer at specified index and set a new one
     bool changeSymbolLayer( int index, QgsSymbolLayerV2* layer );
 
-    void startRender( QgsRenderContext& context, const QgsVectorLayer* layer = 0 );
+    void startRender( QgsRenderContext& context, const QgsFields* fields = 0 );
     void stopRender( QgsRenderContext& context );
 
     void setColor( const QColor& color );
@@ -152,7 +153,7 @@ class CORE_EXPORT QgsSymbolV2
 class CORE_EXPORT QgsSymbolV2RenderContext
 {
   public:
-    QgsSymbolV2RenderContext( QgsRenderContext& c, QgsSymbolV2::OutputUnit u , qreal alpha = 1.0, bool selected = false, int renderHints = 0, const QgsFeature* f = 0 );
+    QgsSymbolV2RenderContext( QgsRenderContext& c, QgsSymbolV2::OutputUnit u , qreal alpha = 1.0, bool selected = false, int renderHints = 0, const QgsFeature* f = 0, const QgsFields* = 0 );
     ~QgsSymbolV2RenderContext();
 
     QgsRenderContext& renderContext() { return mRenderContext; }
@@ -176,10 +177,14 @@ class CORE_EXPORT QgsSymbolV2RenderContext
     void setRenderHints( int hints ) { mRenderHints = hints; }
 
     void setFeature( const QgsFeature* f ) { mFeature = f; }
+    //! Current feature being rendered - may be null
     const QgsFeature* feature() const { return mFeature; }
 
-    void setLayer( const QgsVectorLayer* layer ) { mLayer = layer; }
-    const QgsVectorLayer* layer() const { return mLayer; }
+    //! Fields of the layer. Currently only available in startRender() calls
+    //! to allow symbols with data-defined properties prepare the expressions
+    //! (other times fields() returns null)
+    //! @note added in 2.1
+    const QgsFields* fields() const { return mFields; }
 
     double outputLineWidth( double width ) const;
     double outputPixelSize( double size ) const;
@@ -194,7 +199,7 @@ class CORE_EXPORT QgsSymbolV2RenderContext
     bool mSelected;
     int mRenderHints;
     const QgsFeature* mFeature; //current feature
-    const QgsVectorLayer* mLayer; //current vectorlayer
+    const QgsFields* mFields;
 };
 
 
