@@ -91,12 +91,7 @@ QVariant QgsGraduatedSymbolRendererV2Model::data( const QModelIndex &index, int 
 
   const QgsRendererRangeV2 range =  mRenderer->ranges().value( index.row() );
   
-  QString firstBdr = "[ ";
-
-  if ( index.row() > 0)
-  {
-    firstBdr = "] ";
-  }
+  QString firstBdr = ( index.row() > 0 ) ? "] " : "[ ";
 
   QString rangeStr = firstBdr + QString::number( range.lowerValue(), 'f', 4 ) + " - " + QString::number( range.upperValue(), 'f', 4 ) + " ]";
 

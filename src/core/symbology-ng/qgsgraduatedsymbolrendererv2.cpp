@@ -888,11 +888,7 @@ QgsGraduatedSymbolRendererV2* QgsGraduatedSymbolRendererV2::createRenderer(
     }
     else
     {
-	  QString firstBdr = "[ ";
-	  if ( i > 0)
-	  {
-	    firstBdr = "] ";
-	  }
+	  QString firstBdr = ( i > 0 ) ? "] ": "[ ";
       label = firstBdr + QString::number( lower, 'f', 4 ) + " - " + QString::number( upper, 'f', 4 ) + " ]" ;
     }
 
