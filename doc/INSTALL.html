@@ -77,13 +77,13 @@ label{  background-color: #FFFFCC;
 <DIV CLASS="header" ID="header">
 <H1>QGIS</H1>
 <H2>Building QGIS from source - step by step</H2>
-<H3>Sunday September 22, 2013</H3>
+<H3>Thursday November 21, 2013</H3>
 </DIV>
 
 <DIV CLASS="body" ID="body">
 <P>
-Last Updated: Sunday September 22, 2013
-Last Change : Sunday September 22, 2013
+Last Updated: Thursday November 21, 2013
+Last Change : Thursday November 21, 2013
 </P>
 <DIV CLASS="toc">
 
@@ -158,7 +158,7 @@ always welcome for indicating possible mistakes.
 You can download this document as part of the QGIS 'User and 
 Installation Guide' in HTML and PDF format via <A HREF="http://www.qgis.org">http://www.qgis.org</A>. A current 
 version is also available at:
-<A HREF="http://www.qgis.org/api/INSTALL.html">http://www.qgis.org/api/INSTALL.html</A>
+<A HREF="http://htmlpreview.github.io/?https://raw.github.com/qgis/QGIS/master/doc/INSTALL.html">http://htmlpreview.github.io/?https://raw.github.com/qgis/QGIS/master/doc/INSTALL.html</A>
 </P>
 <P>
 Translations of this document can also be downloaded at the documentation area 
@@ -224,7 +224,7 @@ Optional dependencies:
 <LI>for postgis support and SPIT plugin - PostgreSQL &gt;= 8.0.x
 <LI>for gps plugin - gpsbabel
 <LI>for mapserver export and PyQGIS - Python &gt;= 2.3 (2.5+ preferred)
-<LI>for python support - SIP &gt;= 4.8, PyQt &gt;= must match Qt version, Qscintilla2
+<LI>for python support - SIP &gt;= 4.12, PyQt &gt;= 4.8.3 must match Qt version, Qscintilla2
 <LI>for qgis mapserver - FastCGI
 </UL>
 
@@ -372,9 +372,10 @@ Use the simple command line dialog that appears after running each of the
 above commands to select the Qt4 version of the relevant applications.
 </P>
 <P>
-/!\ <B>Note:</B> For python language bindings SIP &gt;= 4.5 and PyQt4 &gt;= 4.1 is required! Some stable GNU/Linux
-distributions (e.g. Debian or SuSE) only provide SIP &lt; 4.5 and PyQt4 &lt; 4.1. To include support for python 
-language bindings you may need to build and install those packages from source.
+/!\ Note: For python language bindings. If your distributions ships with older
+versions of SIP or PyQt4 than specified in Section 2: Overview, you will need
+to build and install those packages from source if you want to include support 
+for python language bindings.
 </P>
 
 <A NAME="toc7"></A>
@@ -1074,7 +1075,7 @@ in 'qgis/ms-windows/osgeo4w'.  It downloads all required packages from OSGeo4W
 and repackages them into an installer using NSIS.
 </P>
 <P>
-The script can either be run on Windows, but also can be run on Linux.
+The script can be run on both Windows and Linux.
 </P>
 <P>
 On Debian/Ubuntu you can just install the 'nsis' package.
@@ -2079,10 +2080,10 @@ python configure.py -n -d /Library/Python/2.5/site-packages -b /usr/local/bin \
 </P>
 <P>
 Similar to Leopard, you should install outside the system Python path.
-Also, you need to specify the architecture you want (requires at least SIP
-4.9), and make sure to run the versioned python binary (this one responds to
-the 'arch' command, 'python' does not).
-Substitute '2.7' for python version and 10.7 for SDK version below for Lion.
+Also, you need to specify the architecture you want and make sure to run the
+versioned python binary (this one responds to the 'arch' command, 'python' does
+not).  Substitute '2.7' for python version and 10.7 for SDK version below for
+Lion.
 </P>
 <P>
 If you are using 32-bit Qt (Qt Carbon):

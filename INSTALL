@@ -1,10 +1,10 @@
 QGIS
 Building QGIS from source - step by step
-Sunday September 22, 2013
+Thursday November 21, 2013
 
 
-Last Updated: Sunday September 22, 2013
-Last Change : Sunday September 22, 2013
+Last Updated: Thursday November 21, 2013
+Last Change : Thursday November 21, 2013
 
 
   1. Introduction
@@ -64,7 +64,7 @@ always welcome for indicating possible mistakes.
 You can download this document as part of the QGIS 'User and 
 Installation Guide' in HTML and PDF format via http://www.qgis.org. A current 
 version is also available at:
-http://www.qgis.org/api/INSTALL.html
+http://htmlpreview.github.io/?https://raw.github.com/qgis/QGIS/master/doc/INSTALL.html
 
 Translations of this document can also be downloaded at the documentation area 
 of the QGIS project at http://www.qgis.org. More information is 
@@ -694,7 +694,7 @@ To create a standalone installer there is a perl script named 'creatensis.pl'
 in 'qgis/ms-windows/osgeo4w'.  It downloads all required packages from OSGeo4W
 and repackages them into an installer using NSIS.
 
-The script can either be run on Windows or on Linux.
+The script can be run on both Windows and Linux.
 
 On Debian/Ubuntu you can just install the 'nsis' package.
 
@@ -1480,9 +1480,10 @@ More configuration is needed to install outside the system path:
 Snow Leopard system Python
 
 Similar to Leopard, you should install outside the system Python path.
-Also, you need to specify the architecture you want, and make sure to run the versioned python binary (this one responds to
-the 'arch' command, 'python' does not).
-Substitute '2.7' for python version and 10.7 for SDK version below for Lion.
+Also, you need to specify the architecture you want and make sure to run the
+versioned python binary (this one responds to the 'arch' command, 'python' does
+not).  Substitute '2.7' for python version and 10.7 for SDK version below for
+Lion.
 
 If you are using 32-bit Qt (Qt Carbon):
 
