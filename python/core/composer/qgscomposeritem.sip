@@ -332,6 +332,14 @@ class QgsComposerItem: QObject, QGraphicsRectItem
     @note this method was added in version 1.2*/
     bool positionLock() const;
 
+    /**Returns the rotation for the composer item
+    @note this method was added in version 2.1*/
+    double itemRotation() const;
+
+    /**Returns the rotation for the composer item
+     * @deprecated Use itemRotation()
+     *             instead
+     */    
     double rotation() const;
 
     /**Updates item, with the possibility to do custom update for subclasses*/
@@ -351,7 +359,15 @@ class QgsComposerItem: QObject, QGraphicsRectItem
     QString uuid() const;
 
   public slots:
+    /**Sets the item rotation
+     * @deprecated Use setItemRotation( double rotation ) instead
+     */   
     virtual void setRotation( double r );
+
+    /**Sets the item rotation
+      @note this method was added in version 2.1
+    */
+    virtual void setItemRotation( double r );
     void repaint();
 
   protected:
@@ -394,11 +410,27 @@ class QgsComposerItem: QObject, QGraphicsRectItem
     //some utility functions
 
     /**Calculates width and hight of the picture (in mm) such that it fits into the item frame with the given rotation*/
+    bool imageSizeConsideringRotation( double& width, double& height, double rotation ) const;
+    /**Calculates width and hight of the picture (in mm) such that it fits into the item frame with the given rotation
+     * @deprecated Use bool imageSizeConsideringRotation( double& width, double& height, double rotation )
+     * instead
+     */
     bool imageSizeConsideringRotation( double& width, double& height ) const;
+    
     /**Calculates corner point after rotation and scaling*/
+    bool cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height, double rotation ) const;
+    /**Calculates corner point after rotation and scaling
+     * @deprecated Use bool cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height, double rotation )
+     * instead
+     */    
     bool cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height ) const;
 
-    /**Calculates width / height of the bounding box of a rotated rectangle (mRotation)*/
+    /**Calculates width / height of the bounding box of a rotated rectangle*/
+    void sizeChangedByRotation( double& width, double& height, double rotation );
+     /**Calculates width / height of the bounding box of a rotated rectangle
+     * @deprecated Use void sizeChangedByRotation( double& width, double& height, double rotation )
+     * instead
+     */      
     void sizeChangedByRotation( double& width, double& height );
     /**Rotates a point / vector
         @param angle rotation angle in degrees, counterclockwise
@@ -416,7 +448,7 @@ class QgsComposerItem: QObject, QGraphicsRectItem
 
   signals:
     /**Is emitted on rotation change to notify north arrow pictures*/
-    void rotationChanged( double newRotation );
+    void itemRotationChanged( double newRotation );
     /**Used e.g. by the item widgets to update the gui elements*/
     void itemChanged();
     /**Emitted if the rectangle changes*/

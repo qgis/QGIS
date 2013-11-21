@@ -287,7 +287,15 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     @note this method was added in version 1.2*/
     bool positionLock() const {return mItemPositionLocked;}
 
-    double rotation() const {return mRotation;}
+    /**Returns the rotation for the composer item
+    @note this method was added in version 2.1*/
+    double itemRotation() const {return mItemRotation;}
+
+    /**Returns the rotation for the composer item
+     * @deprecated Use itemRotation()
+     *             instead
+     */
+    double rotation() const {return mItemRotation;}
 
     /**Updates item, with the possibility to do custom update for subclasses*/
     virtual void updateItem() { QGraphicsRectItem::update(); }
@@ -306,7 +314,16 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     QString uuid() const { return mUuid; }
 
   public slots:
+    /**Sets the item rotation
+     * @deprecated Use setItemRotation( double rotation ) instead
+     */
     virtual void setRotation( double r );
+
+    /**Sets the item rotation
+      @note this method was added in version 2.1
+    */
+    virtual void setItemRotation( double r );
+
     void repaint();
 
   protected:
@@ -339,7 +356,7 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     mutable double mLastValidViewScaleFactor;
 
     /**Item rotation in degrees, clockwise*/
-    double mRotation;
+    double mItemRotation;
 
     /**Composition blend mode for item*/
     QPainter::CompositionMode mBlendMode;
@@ -384,12 +401,29 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     //some utility functions
 
     /**Calculates width and hight of the picture (in mm) such that it fits into the item frame with the given rotation*/
+    bool imageSizeConsideringRotation( double& width, double& height, double rotation ) const;
+    /**Calculates width and hight of the picture (in mm) such that it fits into the item frame with the given rotation
+     * @deprecated Use bool imageSizeConsideringRotation( double& width, double& height, double rotation )
+     * instead
+     */
     bool imageSizeConsideringRotation( double& width, double& height ) const;
+
     /**Calculates corner point after rotation and scaling*/
+    bool cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height, double rotation ) const;
+    /**Calculates corner point after rotation and scaling
+     * @deprecated Use bool cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height, double rotation )
+     * instead
+     */
     bool cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height ) const;
 
-    /**Calculates width / height of the bounding box of a rotated rectangle (mRotation)*/
+    /**Calculates width / height of the bounding box of a rotated rectangle*/
+    void sizeChangedByRotation( double& width, double& height, double rotation );
+    /**Calculates width / height of the bounding box of a rotated rectangle
+    * @deprecated Use void sizeChangedByRotation( double& width, double& height, double rotation )
+    * instead
+    */
     void sizeChangedByRotation( double& width, double& height );
+
     /**Rotates a point / vector
         @param angle rotation angle in degrees, counterclockwise
         @param x in/out: x coordinate before / after the rotation
@@ -405,8 +439,8 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     void deleteAlignItems();
 
   signals:
-    /**Is emitted on rotation change to notify north arrow pictures*/
-    void rotationChanged( double newRotation );
+    /**Is emitted on item rotation change*/
+    void itemRotationChanged( double newRotation );
     /**Used e.g. by the item widgets to update the gui elements*/
     void itemChanged();
     /**Emitted if the rectangle changes*/

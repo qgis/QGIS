@@ -40,7 +40,7 @@
 #include <cmath>
 
 QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int width, int height )
-    : QgsComposerItem( x, y, width, height, composition ), mKeepLayerSet( false ),
+    : QgsComposerItem( x, y, width, height, composition ), mMapRotation( 0 ), mKeepLayerSet( false ),
     mOverviewFrameMapId( -1 ), mOverviewBlendMode( QPainter::CompositionMode_SourceOver ), mOverviewInverted( false ), mOverviewCentered( false ),
     mGridEnabled( false ), mGridStyle( Solid ),
     mGridIntervalX( 0.0 ), mGridIntervalY( 0.0 ), mGridOffsetX( 0.0 ), mGridOffsetY( 0.0 ), mGridAnnotationFontColor( QColor( 0, 0, 0 ) ),
@@ -94,7 +94,7 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int w
 }
 
 QgsComposerMap::QgsComposerMap( QgsComposition *composition )
-    : QgsComposerItem( 0, 0, 10, 10, composition ), mKeepLayerSet( false ), mOverviewFrameMapId( -1 ),
+    : QgsComposerItem( 0, 0, 10, 10, composition ), mMapRotation( 0 ), mKeepLayerSet( false ), mOverviewFrameMapId( -1 ),
     mOverviewBlendMode( QPainter::CompositionMode_SourceOver ), mOverviewInverted( false ), mOverviewCentered( false ),
     mGridEnabled( false ), mGridStyle( Solid ),
     mGridIntervalX( 0.0 ), mGridIntervalY( 0.0 ), mGridOffsetX( 0.0 ), mGridOffsetY( 0.0 ), mGridAnnotationFontColor( QColor( 0, 0, 0 ) ),
@@ -355,7 +355,7 @@ void QgsComposerMap::paint( QPainter* painter, const QStyleOptionGraphicsItem* i
 
     painter->translate( mXOffset, mYOffset );
     painter->translate( xTopLeftShift, yTopLeftShift );
-    painter->rotate( mRotation );
+    painter->rotate( mMapRotation );
     painter->translate( xShiftMM, -yShiftMM );
     painter->scale( scale, scale );
     painter->drawImage( 0, 0, mCacheImage );
@@ -404,7 +404,7 @@ void QgsComposerMap::paint( QPainter* painter, const QStyleOptionGraphicsItem* i
     painter->save();
     painter->translate( mXOffset, mYOffset );
     painter->translate( xTopLeftShift, yTopLeftShift );
-    painter->rotate( mRotation );
+    painter->rotate( mMapRotation );
     painter->translate( xShiftMM, -yShiftMM );
     draw( painter, requestRectangle, theSize, 25.4 ); //scene coordinates seem to be in mm
 
@@ -625,11 +625,18 @@ void QgsComposerMap::setOffset( double xOffset, double yOffset )
   mYOffset = yOffset;
 }
 
+void QgsComposerMap::setRotation( double r )
+{
+  //kept for api compatibility with QGIS 2.0
+  setMapRotation( r );
+}
+
 void QgsComposerMap::setMapRotation( double r )
 {
-  setRotation( r );
-  emit rotationChanged( r );
+  mMapRotation = r;
+  emit mapRotationChanged( r );
   emit itemChanged();
+  update();
 }
 
 void QgsComposerMap::updateItem()
@@ -813,6 +820,9 @@ bool QgsComposerMap::writeXML( QDomElement& elem, QDomDocument & doc ) const
   extentElem.setAttribute( "ymax", qgsDoubleToString( mExtent.yMaximum() ) );
   composerMapElem.appendChild( extentElem );
 
+  //map rotation
+  composerMapElem.setAttribute( "mapRotation",  QString::number( mMapRotation ) );
+
   //layer set
   QDomElement layerSetElem = doc.createElement( "LayerSet" );
   QStringList::const_iterator layerIt = mLayerSet.constBegin();
@@ -948,6 +958,12 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
     mExtent = QgsRectangle( xmin, ymin, xmax, ymax );
   }
 
+  //map rotation
+  if ( itemElem.attribute( "mapRotation", "0" ).toDouble() != 0 )
+  {
+    mMapRotation = itemElem.attribute( "mapRotation", "0" ).toDouble();
+  }
+
   //mKeepLayerSet flag
   QString keepLayerSetFlag = itemElem.attribute( "keepLayerSet" );
   if ( keepLayerSetFlag.compare( "true", Qt::CaseInsensitive ) == 0 )
@@ -1060,6 +1076,13 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
   if ( composerItemList.size() > 0 )
   {
     QDomElement composerItemElem = composerItemList.at( 0 ).toElement();
+
+    if ( composerItemElem.attribute( "rotation", "0" ).toDouble() != 0 )
+    {
+      //in versions prior to 2.1 map rotation was stored in the rotation attribute
+      mMapRotation = composerItemElem.attribute( "rotation", "0" ).toDouble();
+    }
+
     _readXML( composerItemElem, doc );
   }
 
@@ -1531,7 +1554,7 @@ int QgsComposerMap::xGridLines( QList< QPair< double, QLineF > >& lines ) const
   double roundCorrection = mapBoundingRect.top() > 0 ? 1.0 : 0.0;
   double currentLevel = ( int )(( mapBoundingRect.top() - mGridOffsetY ) / mGridIntervalY + roundCorrection ) * mGridIntervalY + mGridOffsetY;
 
-  if ( qgsDoubleNear( mRotation, 0.0 ) )
+  if ( qgsDoubleNear( mMapRotation, 0.0 ) )
   {
     //no rotation. Do it 'the easy way'
 
@@ -1599,7 +1622,7 @@ int QgsComposerMap::yGridLines( QList< QPair< double, QLineF > >& lines ) const
   double roundCorrection = mapBoundingRect.left() > 0 ? 1.0 : 0.0;
   double currentLevel = ( int )(( mapBoundingRect.left() - mGridOffsetX ) / mGridIntervalX + roundCorrection ) * mGridIntervalX + mGridOffsetX;
 
-  if ( qgsDoubleNear( mRotation, 0.0 ) )
+  if ( qgsDoubleNear( mMapRotation, 0.0 ) )
   {
     //no rotation. Do it 'the easy way'
     double xCanvasCoord;
@@ -1782,7 +1805,7 @@ double QgsComposerMap::maxExtension() const
 void QgsComposerMap::mapPolygon( const QgsRectangle& extent, QPolygonF& poly ) const
 {
   poly.clear();
-  if ( mRotation == 0 )
+  if ( mMapRotation == 0 )
   {
     poly << QPointF( extent.xMinimum(), extent.yMaximum() );
     poly << QPointF( extent.xMaximum(), extent.yMaximum() );
@@ -1798,25 +1821,25 @@ void QgsComposerMap::mapPolygon( const QgsRectangle& extent, QPolygonF& poly ) c
   //top left point
   dx = rotationPoint.x() - extent.xMinimum();
   dy = rotationPoint.y() - extent.yMaximum();
-  rotate( mRotation, dx, dy );
+  rotate( mMapRotation, dx, dy );
   poly << QPointF( rotationPoint.x() + dx, rotationPoint.y() + dy );
 
   //top right point
   dx = rotationPoint.x() - extent.xMaximum();
   dy = rotationPoint.y() - extent.yMaximum();
-  rotate( mRotation, dx, dy );
+  rotate( mMapRotation, dx, dy );
   poly << QPointF( rotationPoint.x() + dx, rotationPoint.y() + dy );
 
   //bottom right point
   dx = rotationPoint.x() - extent.xMaximum();
   dy = rotationPoint.y() - extent.yMinimum();
-  rotate( mRotation, dx, dy );
+  rotate( mMapRotation, dx, dy );
   poly << QPointF( rotationPoint.x() + dx, rotationPoint.y() + dy );
 
   //bottom left point
   dx = rotationPoint.x() - extent.xMinimum();
   dy = rotationPoint.y() - extent.yMinimum();
-  rotate( mRotation, dx, dy );
+  rotate( mMapRotation, dx, dy );
   poly << QPointF( rotationPoint.x() + dx, rotationPoint.y() + dy );
 }
 
@@ -1829,7 +1852,7 @@ void QgsComposerMap::requestedExtent( QgsRectangle& extent ) const
 {
   QgsRectangle newExtent;
   extentCenteredOnOverview( newExtent );
-  if ( mRotation == 0 )
+  if ( mMapRotation == 0 )
   {
     extent = newExtent;
   }
@@ -1913,7 +1936,7 @@ void QgsComposerMap::transformShift( double& xShift, double& yShift ) const
   double dxScaled = xShift * mmToMapUnits;
   double dyScaled = - yShift * mmToMapUnits;
 
-  rotate( mRotation, dxScaled, dyScaled );
+  rotate( mMapRotation, dxScaled, dyScaled );
 
   xShift = dxScaled;
   yShift = dyScaled;
@@ -1931,7 +1954,7 @@ QPointF QgsComposerMap::mapToItemCoords( const QPointF& mapCoords ) const
   QgsPoint rotationPoint(( tExtent.xMaximum() + tExtent.xMinimum() ) / 2.0, ( tExtent.yMaximum() + tExtent.yMinimum() ) / 2.0 );
   double dx = mapCoords.x() - rotationPoint.x();
   double dy = mapCoords.y() - rotationPoint.y();
-  rotate( -mRotation, dx, dy );
+  rotate( -mMapRotation, dx, dy );
   QgsPoint backRotatedCoords( rotationPoint.x() + dx, rotationPoint.y() + dy );
 
   QgsRectangle unrotatedExtent = transformedExtent();
@@ -2349,4 +2372,22 @@ void QgsComposerMap::assignFreeId()
     }
   }
   mId = maxId + 1;
+}
+
+bool QgsComposerMap::imageSizeConsideringRotation( double& width, double& height ) const
+{
+  //kept for api compatibility with QGIS 2.0 - use mMapRotation
+  return QgsComposerItem::imageSizeConsideringRotation( width, height, mMapRotation );
+}
+
+bool QgsComposerMap::cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height ) const
+{
+  //kept for api compatibility with QGIS 2.0 - use mMapRotation
+  return QgsComposerItem::cornerPointOnRotatedAndScaledRect( x, y, width, height, mMapRotation );
+}
+
+void QgsComposerMap::sizeChangedByRotation( double& width, double& height )
+{
+  //kept for api compatibility with QGIS 2.0 - use mMapRotation
+  return QgsComposerItem::sizeChangedByRotation( width, height, mMapRotation );
 }
