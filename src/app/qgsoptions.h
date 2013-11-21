@@ -227,6 +227,8 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
      */
     void saveGdalDriverList();
 
+    void on_mSimplifyDrawingSlider_valueChanged( int value );
+
   private:
     QStringList i18nList();
     void initContrastEnhancement( QComboBox *cbox, QString name, QString defaultVal );

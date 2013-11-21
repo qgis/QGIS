@@ -523,6 +523,11 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   chkAntiAliasing->setChecked( settings.value( "/qgis/enable_anti_aliasing", true ).toBool() );
   chkUseRenderCaching->setChecked( settings.value( "/qgis/enable_render_caching", false ).toBool() );
 
+  // Default simplify drawing configuration
+  mSimplifyDrawingGroupBox->setChecked( settings.value( "/qgis/simplifyDrawingHints", (int)QgsVectorLayer::FullSimplification ).toInt() != QgsVectorLayer::NoSimplification );
+  mSimplifyDrawingSlider->setValue( (int)(5.0f * (settings.value( "/qgis/simplifyDrawingTol", 1.0F ).toFloat()-1)) );
+  mSimplifyDrawingPanel->setVisible( mSimplifyDrawingSlider->value()>0 );
+
   // Slightly awkard here at the settings value is true to use QImage,
   // but the checkbox is true to use QPixmap
   chkUseQPixmap->setChecked( !( settings.value( "/qgis/use_qimage_to_render", true ).toBool() ) );
@@ -979,6 +984,10 @@ void QgsOptions::saveOptions()
   settings.setValue( "/qgis/legendDoubleClickAction", cmbLegendDoubleClickAction->currentIndex() );
   bool legendLayersCapitalise = settings.value( "/qgis/capitaliseLayerName", false ).toBool();
   settings.setValue( "/qgis/capitaliseLayerName", capitaliseCheckBox->isChecked() );
+
+  // Default simplify drawing configuration
+  settings.setValue( "/qgis/simplifyDrawingHints", (int)(mSimplifyDrawingGroupBox->isChecked() ? QgsVectorLayer::FullSimplification : QgsVectorLayer::NoSimplification) );
+  settings.setValue( "/qgis/simplifyDrawingTol", (float)(1.0f + 0.2f*mSimplifyDrawingSlider->value()) );
 
   // project
   settings.setValue( "/qgis/projOpenAtLaunch", mProjectOnLaunchCmbBx->currentIndex() );
@@ -1850,3 +1859,7 @@ void QgsOptions::saveContrastEnhancement( QComboBox *cbox, QString name )
   settings.setValue( "/Raster/defaultContrastEnhancementAlgorithm/" + name, value );
 }
 
+void QgsOptions::on_mSimplifyDrawingSlider_valueChanged( int value )
+{
+  mSimplifyDrawingPanel->setVisible( value>0 );
+}
