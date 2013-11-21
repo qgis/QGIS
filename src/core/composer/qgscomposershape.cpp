@@ -61,7 +61,7 @@ void QgsComposerShape::drawShape( QPainter* p )
   p->setRenderHint( QPainter::Antialiasing );
 
   p->translate( rect().width() / 2.0, rect().height() / 2.0 );
-  p->rotate( mRotation );
+  p->rotate( mItemRotation );
   p->translate( -rect().width() / 2.0, -rect().height() / 2.0 );
 
   switch ( mShape )
@@ -135,6 +135,14 @@ bool QgsComposerShape::readXML( const QDomElement& itemElem, const QDomDocument&
   if ( composerItemList.size() > 0 )
   {
     QDomElement composerItemElem = composerItemList.at( 0 ).toElement();
+
+    //rotation
+    if ( composerItemElem.attribute( "rotation", "0" ).toDouble() != 0 )
+    {
+      //check for old (pre 2.1) rotation attribute
+      mItemRotation = composerItemElem.attribute( "rotation", "0" ).toDouble();
+    }
+
     _readXML( composerItemElem, doc );
   }
   emit itemChanged();
@@ -142,7 +150,7 @@ bool QgsComposerShape::readXML( const QDomElement& itemElem, const QDomDocument&
 }
 
 
-void QgsComposerShape::setRotation( double r )
+void QgsComposerShape::setItemRotation( double r )
 {
   //adapt rectangle size
   double width = rect().width();
@@ -154,7 +162,7 @@ void QgsComposerShape::setRotation( double r )
   double y = pos().y() + rect().height() / 2.0 - height / 2.0;
   QgsComposerItem::setSceneRect( QRectF( x, y, width, height ) );
 
-  QgsComposerItem::setRotation( r );
+  QgsComposerItem::setItemRotation( r );
 }
 
 void QgsComposerShape::setCornerRadius( double radius )
