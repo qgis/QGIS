@@ -53,7 +53,6 @@ QgsComposerShapeWidget::~QgsComposerShapeWidget()
 void QgsComposerShapeWidget::blockAllSignals( bool block )
 {
   mShapeComboBox->blockSignals( block );
-  mRotationSpinBox->blockSignals( block );
   mCornerRadiusSpinBox->blockSignals( block );
 }
 
@@ -66,7 +65,6 @@ void QgsComposerShapeWidget::setGuiElementValues()
 
   blockAllSignals( true );
 
-  mRotationSpinBox->setValue( mComposerShape->itemRotation() );
   mCornerRadiusSpinBox->setValue( mComposerShape->cornerRadius() );
   if ( mComposerShape->shapeType() == QgsComposerShape::Ellipse )
   {
@@ -85,17 +83,6 @@ void QgsComposerShapeWidget::setGuiElementValues()
   }
 
   blockAllSignals( false );
-}
-
-void QgsComposerShapeWidget::on_mRotationSpinBox_valueChanged( int val )
-{
-  if ( mComposerShape )
-  {
-    mComposerShape->beginCommand( tr( "Shape rotation changed" ), QgsComposerMergeCommand::ItemRotation );
-    mComposerShape->setItemRotation( val );
-    mComposerShape->update();
-    mComposerShape->endCommand();
-  }
 }
 
 void QgsComposerShapeWidget::on_mCornerRadiusSpinBox_valueChanged( double val )
