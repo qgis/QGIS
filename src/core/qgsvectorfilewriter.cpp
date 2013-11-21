@@ -1292,9 +1292,15 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                            "NO"
                             ) );
 
-  layerOptions.insert( "FORMAT", new HiddenOption(
-                         "WKT"
-                         ) );
+  layerOptions.insert( "FORMAT", new SetOption(
+                            QObject::tr( "Controls the format used for the geometry column. Defaults to WKB."
+                                         "This is generally more space and processing efficient, but harder "
+                                         "to inspect or use in simple applications than WKT (Well Known Text)."),
+                            QStringList()
+                            << "WKB"
+                            << "WKT"
+                            , "WKB" // Default value
+                             ) );
 
   layerOptions.insert( "LAUNDER", new BoolOption(
                             QObject::tr( "Controls whether layer and field names will be laundered for easier use "
@@ -1360,19 +1366,9 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                             , true  // Default value
                             ) );
 
-  layerOptions.insert( "FORMAT", new SetOption(
-                            QObject::tr( "Controls the format used for the geometry column. By default we assume "
-                                         "that an SpatiaLite database will be created. SpatiaLite extension uses "
-                                         "its own binary format to store geometries. Set to WKB (Well Known Binary) "
-                                         "if you only want to export a SQlite database. This is generally more space "
-                                         "and processing efficient, but harder to inspect or use in simple applications "
-                                         "than WKT (Well Known Text)."),
-                            QStringList()
-                            << "WKB"
-                            << "WKT"
-                            << "SPATIALITE"
-                            , "SPATIALITE" // Default value
-                             ) );
+  layerOptions.insert( "FORMAT", new HiddenOption(
+                         "SPATIALITE"
+                         ) );
 
   layerOptions.insert( "LAUNDER", new BoolOption(
                             QObject::tr( "Controls whether layer and field names will be laundered for easier use "
