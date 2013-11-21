@@ -226,7 +226,7 @@ bool QgsComposerItem::_readXML( const QDomElement& itemElem, const QDomDocument&
   //rotation
   if ( itemElem.attribute( "itemRotation", "0" ).toDouble() != 0 )
   {
-    mItemRotation = itemElem.attribute( "itemRotation", "0" ).toDouble();
+    setItemRotation( itemElem.attribute( "itemRotation", "0" ).toDouble() );
   }
 
   //uuid
@@ -482,6 +482,8 @@ void QgsComposerItem::setSceneRect( const QRectF& rectangle )
 
   QRectF newRect( 0, 0, newWidth, newHeight );
   QGraphicsRectItem::setRect( newRect );
+  //rotate item around its centre point
+  setTransformOriginPoint( QPointF( rect().width() / 2.0, rect().height() / 2.0 ) );
   setPos( xTranslation, yTranslation );
 
   emit sizeChanged();
@@ -716,6 +718,11 @@ void QgsComposerItem::setItemRotation( double r )
   {
     mItemRotation = r;
   }
+
+  //rotate item around its centre point
+  setTransformOriginPoint( QPointF( rect().width() / 2.0, rect().height() / 2.0 ) );
+  QGraphicsItem::setRotation( mItemRotation );
+
   emit itemRotationChanged( r );
   update();
 }
