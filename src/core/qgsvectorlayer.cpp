@@ -181,6 +181,12 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
   connect( this, SIGNAL( selectionChanged( QgsFeatureIds, QgsFeatureIds, bool ) ), this, SIGNAL( selectionChanged() ) );
 
   connect( QgsProject::instance()->relationManager(), SIGNAL( relationsLoaded() ), this, SLOT( onRelationsLoaded() ) );
+
+  // Default simplify drawing configuration
+  QSettings settings;
+  setSimplifyDrawingHints( settings.value( "/qgis/simplifyDrawingHints", (int)mSimplifyDrawingHints ).toInt() );
+  setSimplifyDrawingTol( settings.value( "/qgis/simplifyDrawingTol", mSimplifyDrawingTol ).toFloat() );
+
 } // QgsVectorLayer ctor
 
 
