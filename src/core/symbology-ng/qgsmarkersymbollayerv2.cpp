@@ -740,6 +740,24 @@ void QgsSimpleMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitSc
     e.writeGroup( 23, size );
     e.writeGroup( 33, 0.0 );
   }
+  else if ( mName == "diamond" )
+  {
+    e.writeGroup( 0, "SOLID" );
+    e.writeGroup( 8, "0" );
+    e.writeGroup( 62, colorIndex );
+    e.writeGroup( 10, 0.0 );
+    e.writeGroup( 20, halfSize );
+    e.writeGroup( 30, 0.0 );
+    e.writeGroup( 11, halfSize );
+    e.writeGroup( 21, 0.0 );
+    e.writeGroup( 31, 0.0 );
+    e.writeGroup( 12, halfSize );
+    e.writeGroup( 22, size );
+    e.writeGroup( 32, 0.0 );
+    e.writeGroup( 13, size );
+    e.writeGroup( 23, halfSize );
+    e.writeGroup( 33, 0.0 );
+  }
 }
 
 //////////
