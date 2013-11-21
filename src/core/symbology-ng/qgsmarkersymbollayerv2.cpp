@@ -701,7 +701,7 @@ void QgsSimpleMarkerSymbolLayerV2::drawMarker( QPainter* p, QgsSymbolV2RenderCon
   }
 }
 
-void QgsSimpleMarkerSymbolLayerV2::writeDxf( QTextStream& str, double mmMapUnitScaleFactor ) const
+void QgsSimpleMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitScaleFactor ) const
 {
   double size = mSize;
   if ( mSizeUnit == QgsSymbolV2::MM )
@@ -712,26 +712,14 @@ void QgsSimpleMarkerSymbolLayerV2::writeDxf( QTextStream& str, double mmMapUnitS
 
   if ( mName == "circle" )
   {
-    str << "  0\n";
-    str << "CIRCLE\n";
-    str << "  8\n";
-    str << "0\n";
-    //todo: linetype in group 6. Needs to be inserted into line table first
-
-    //color in group 62
-    str << " 62\n";
+    e.writeGroup( 0, "CIRCLE" );
+    e.writeGroup( 8, 0 );
     int colorIndex = QgsDxfExport::closestColorMatch( mBrush.color().rgb() );
-    str << QString( "%1\n" ).arg( colorIndex );
-
-    //x/y/z center
-    str << " 10\n";
-    str << QString( "%1\n" ).arg( halfSize );
-    str << " 20\n";
-    str << QString( "%1\n" ).arg( halfSize );
-    str << " 30\n";
-    str << QString( "%1\n" ).arg( halfSize );
-    str << " 40\n";
-    str << QString( "%1\n" ).arg( halfSize );
+    e.writeGroup( 62, colorIndex );
+    e.writeGroup( 10, halfSize );
+    e.writeGroup( 20, halfSize );
+    e.writeGroup( 30, 0.0 );
+    e.writeGroup( 40, halfSize );
   }
 }
 

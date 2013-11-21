@@ -22,12 +22,12 @@
 #include "qgssymbolv2.h"
 #include <QColor>
 #include <QList>
+#include <QTextStream>
 
 class QgsMapLayer;
 class QgsPoint;
 class QgsSymbolLayerV2;
 class QIODevice;
-class QTextStream;
 
 class QgsDxfExport
 {
@@ -57,6 +57,14 @@ class QgsDxfExport
     //get closest entry in dxf palette
     static int closestColorMatch( QRgb pixel );
 
+    void writeGroup( int code, int i );
+    void writeGroup( int code, double d );
+    void writeGroup( int code, const QString& s );
+    void writeGroupCode( int code );
+    void writeInt( int i );
+    void writeDouble( double d );
+    void writeString( const QString& s );
+
   private:
 
     QList< QgsMapLayer* > mLayers;
@@ -64,6 +72,8 @@ class QgsDxfExport
     double mSymbologyScaleDenominator;
     SymbologyExport mSymbologyExport;
     QGis::UnitType mMapUnits;
+
+    QTextStream mTextStream;
 
     QVector<QRgb> mDxfColorPalette;
 
@@ -77,22 +87,22 @@ class QgsDxfExport
     QHash< const QgsSymbolLayerV2*, QString > mPointSymbolBlocks; //reference to point symbol blocks
 
     //AC1009
-    void writeHeader( QTextStream& stream );
-    void writeTables( QTextStream& stream );
-    void writeBlocks( QTextStream& stream );
-    void writeEntities( QTextStream& stream );
-    void writeEntitiesSymbolLevels( QTextStream& stream, QgsVectorLayer* layer );
-    void writeEndFile( QTextStream& stream );
+    void writeHeader();
+    void writeTables();
+    void writeBlocks();
+    void writeEntities();
+    void writeEntitiesSymbolLevels( QgsVectorLayer* layer );
+    void writeEndFile();
 
-    void startSection( QTextStream& stream );
-    void endSection( QTextStream& stream );
+    void startSection();
+    void endSection();
 
-    void writePoint( QTextStream& stream, const QgsPoint& pt, const QString& layer, const QgsSymbolLayerV2* symbolLayer );
-    void writePolyline( QTextStream& stream, const QgsPolyline& line, const QString& layer, const QString& lineStyleName, int color,
+    void writePoint( const QgsPoint& pt, const QString& layer, const QgsSymbolLayerV2* symbolLayer );
+    void writePolyline( const QgsPolyline& line, const QString& layer, const QString& lineStyleName, int color,
                         double width = -1, bool polygon = false );
-    void writeVertex( QTextStream& stream, const QgsPoint& pt, const QString& layer );
-    void writeSymbolLayerLinestyle( QTextStream& stream, const QgsSymbolLayerV2* symbolLayer );
-    void writeLinestyle( QTextStream& stream, const QString& styleName, const QVector<qreal>& pattern, QgsSymbolV2::OutputUnit u );
+    void writeVertex( const QgsPoint& pt, const QString& layer );
+    void writeSymbolLayerLinestyle( const QgsSymbolLayerV2* symbolLayer );
+    void writeLinestyle( const QString& styleName, const QVector<qreal>& pattern, QgsSymbolV2::OutputUnit u );
 
     //AC1018
     void writeHeaderAC1018( QTextStream& stream );
@@ -108,7 +118,7 @@ class QgsDxfExport
 
     QgsRectangle dxfExtent() const;
 
-    void addFeature( const QgsFeature& fet, QTextStream& stream, const QString& layer, const QgsSymbolLayerV2* symbolLayer );
+    void addFeature( const QgsFeature& fet, const QString& layer, const QgsSymbolLayerV2* symbolLayer );
     double scaleToMapUnits( double value, QgsSymbolV2::OutputUnit symbolUnits, QGis::UnitType mapUnits ) const;
 
     //returns dxf palette index from symbol layer color
@@ -126,9 +136,6 @@ class QgsDxfExport
     static double mapUnitScaleFactor( double scaleDenominator, QgsSymbolV2::OutputUnit symbolUnits, QGis::UnitType mapUnits );
     QList<QgsSymbolLayerV2*> symbolLayers();
     static int nLineTypes( const QList<QgsSymbolLayerV2*>& symbolLayers );
-
-
-
 };
 
 #endif // QGSDXFEXPORT_H
