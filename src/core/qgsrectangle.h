@@ -40,17 +40,17 @@ class CORE_EXPORT QgsRectangle
     //! Construct a rectangle from two points. The rectangle is normalized after construction.
     QgsRectangle( const QgsPoint & p1, const QgsPoint & p2 );
     //! Construct a rectangle from a QRectF. The rectangle is normalized after construction.
-    //@note added in 2.0
+    //! @note added in 2.0
     QgsRectangle( const QRectF & qRectF );
     //! Copy constructor
     QgsRectangle( const QgsRectangle &other );
     //! Destructor
     ~QgsRectangle();
     //! Set the rectangle from two QgsPoints. The rectangle is
-    //normalised after construction.
+    //! normalised after construction.
     void set( const QgsPoint& p1, const QgsPoint& p2 );
     //! Set the rectangle from four points. The rectangle is
-    //  normalised after construction.
+    //! normalised after construction.
     void set( double xmin, double ymin, double xmax, double ymax );
     //! Set the minimum x value
     void setXMinimum( double x );
@@ -61,7 +61,7 @@ class CORE_EXPORT QgsRectangle
     //! Set the maximum y value
     void setYMaximum( double y );
     //! Set a rectangle so that min corner is at max
-    // and max corner is at min. It is NOT normalized.
+    //! and max corner is at min. It is NOT normalized.
     void setMinimal();
     //! Get the x maximum value (right side of rectangle)
     double xMaximum() const;
@@ -101,10 +101,10 @@ class CORE_EXPORT QgsRectangle
     //! returns string representation in Wkt form
     QString asWktCoordinates() const;
     //! returns string representation as WKT Polygon
-    //@note added in 2.0
+    //! @note added in 2.0
     QString asWktPolygon() const;
     //! returns a QRectF with same coordinates.
-    //@note added in 2.0
+    //! @note added in 2.0
     QRectF toRectF() const;
     //! returns string representation of form xmin,ymin xmax,ymax
     QString toString( bool automaticPrecision = false ) const;
