@@ -17,6 +17,7 @@
 #include "qgssymbollayerv2utils.h"
 
 #include "qgsdxfexport.h"
+#include "qgsdxfpaintdevice.h"
 #include "qgsexpression.h"
 #include "qgsrendercontext.h"
 #include "qgslogger.h"
@@ -1163,6 +1164,25 @@ QgsSymbolLayerV2* QgsSvgMarkerSymbolLayerV2::createFromSld( QDomElement &element
   m->setAngle( angle );
   m->setOffset( offset );
   return m;
+}
+
+void QgsSvgMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitScaleFactor ) const
+{
+  QSvgRenderer r( mPath );
+  if ( !r.isValid() )
+  {
+    return;
+  }
+
+  QgsDxfPaintDevice pd( &e );
+  pd.setDrawingSize( QSizeF( r.defaultSize() ) );
+  double size = mSize * mmMapUnitScaleFactor ;
+  pd.setOutputSize( QRectF( 0, 0, size, size ) );
+  QPainter p;
+
+  p.begin( &pd );
+  r.render( &p );
+  p.end();
 }
 
 //////////

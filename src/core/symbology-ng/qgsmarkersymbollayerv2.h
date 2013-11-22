@@ -159,6 +159,8 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
     void setOutputUnit( QgsSymbolV2::OutputUnit unit );
     QgsSymbolV2::OutputUnit outputUnit() const;
 
+    void writeDxf( QgsDxfExport& e, double mmMapUnitScaleFactor ) const;
+
   protected:
     QString mPath;
 

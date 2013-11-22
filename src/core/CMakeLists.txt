@@ -160,6 +160,9 @@ SET(QGIS_CORE_SRCS
   composer/qgscomposerhtml.cpp
   composer/qgscomposermultiframe.cpp
   composer/qgscomposition.cpp
+  
+  dxf/qgsdxfpaintdevice.cpp
+  dxf/qgsdxfpaintengine.cpp
 
   pal/costcalculator.cpp
   pal/feature.cpp
@@ -549,6 +552,7 @@ ENDIF (QT_MOBILITY_LOCATION_FOUND)
 INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}
   composer
+  dxf
   pal
   raster
   renderer
