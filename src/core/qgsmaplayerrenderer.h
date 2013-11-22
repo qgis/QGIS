@@ -2,6 +2,7 @@
 #define QGSMAPLAYERRENDERER_H
 
 #include <QList>
+#include <QString>
 
 /**
  * Base class for utility classes that encapsulate information necessary

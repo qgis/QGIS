@@ -288,6 +288,11 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     @note added in version 1.6*/
     virtual void reload();
 
+    /** Return new instance of QgsMapLayerRenderer that will be used for rendering of given context
+     * @note added in 2.1
+     */
+    virtual QgsMapLayerRenderer* createMapRenderer( QgsRenderContext& rendererContext );
+
     /** \brief This is called when the view on the raster layer needs to be redrawn */
     bool draw( QgsRenderContext& rendererContext );
 

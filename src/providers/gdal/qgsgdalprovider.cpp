@@ -2363,7 +2363,6 @@ void QgsGdalProvider::initBaseDataset()
        !crsFromWkt( GDALGetGCPProjection( mGdalDataset ) ) )
   {
     QgsDebugMsg( "No valid CRS identified" );
-    mCrs.validate();
   }
 
   //set up the coordinat transform - in the case of raster this is mainly used to convert
