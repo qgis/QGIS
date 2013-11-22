@@ -48,7 +48,7 @@ QgsCachedFeatureIterator::QgsCachedFeatureIterator( QgsVectorLayerCache *vlCache
 
   mFeatureIdIterator = mFeatureIds.constBegin();
 
-  if ( mFeatureIdIterator == featureIds.constEnd() )
+  if ( mFeatureIdIterator == mFeatureIds.constEnd() )
     close();
 }
 
