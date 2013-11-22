@@ -684,7 +684,7 @@ Cette table est essentielle pour les applications SIG pour énumérer les tables
     </message>
     <message>
         <source>Add to canvas</source>
-        <translation>Ajouter à la carte</translation>
+        <translation>Ajouter au canevas</translation>
     </message>
     <message>
         <source>Re-connect</source>
@@ -1971,7 +1971,7 @@ Colonnes</translation>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="54"/>
         <source>Update extents from canvas</source>
-        <translation>Mettre à jour l&apos;emprise depuis l&apos;emprise courante de la carte</translation>
+        <translation>Mettre à jour l&apos;emprise depuis l&apos;emprise courante du canevas</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="169"/>
@@ -4354,7 +4354,7 @@ Voulez-vous quand même la stopper ?</translation>
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogBase.ui" line="29"/>
         <source>&amp;Load into canvas when finished</source>
-        <translation>&amp;Charger dans la carte une fois terminé</translation>
+        <translation>&amp;Charger dans le canevas une fois terminé</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogBase.ui" line="66"/>
@@ -4650,7 +4650,7 @@ Désactivez l&apos;option &quot;Utiliser l&apos;emprise intersectée&quot; pour 
     <message>
         <location filename="../python/plugins/GdalTools/tools/extentSelector.ui" line="20"/>
         <source>Select the extent by drag on canvas</source>
-        <translation>Sélectionner l'étendue par </translation>
+        <translation>Sélectionner l'étendue par sur le canevas</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/extentSelector.ui" line="27"/>
@@ -4974,7 +4974,7 @@ when pressing on the tool dialog&apos;s Help button.</source>
     </message>
     <message>
         <source>Select the extent by drag &amp; drop on canvas</source>
-        <translation type="obsolete">Sélectionner l&apos;emprise avec un glisser/déposer sur la carte</translation>
+        <translation type="obsolete">Sélectionner l&apos;emprise avec un glisser/déposer sur le canevas</translation>
     </message>
     <message>
         <source>or change the extent coordinates</source>
@@ -8079,7 +8079,7 @@ Agit sur toutes les couches actives courantes</translation>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1653"/>
         <source>Creates a copyright label that is displayed on the map canvas.</source>
-        <translation>Ajoute un copyright qui sera disposé dans la carte.</translation>
+        <translation>Ajoute un copyright qui sera affiché sur le canevas de la carte.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1662"/>
@@ -8089,7 +8089,7 @@ Agit sur toutes les couches actives courantes</translation>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1665"/>
         <source>&quot;Creates a north arrow that is displayed on the map canvas&quot;</source>
-        <translation>&quot;Ajoute sur la carte une flèche qui indique le Nord cartographique&quot;</translation>
+        <translation>&quot;Ajoute sur le canevas de la carte une flèche qui indique le Nord cartographique&quot;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1674"/>
@@ -8100,7 +8100,7 @@ Agit sur toutes les couches actives courantes</translation>
         <location filename="../src/ui/qgisapp.ui" line="1677"/>
         <location filename="../src/ui/qgisapp.ui" line="1785"/>
         <source>Creates a scale bar that is displayed on the map canvas</source>
-        <translation>Crée une échelle graphique qui est montrée sur la carte</translation>
+        <translation>Crée une échelle graphique qui est affichée sur le canevas de la carte</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1686"/>
@@ -8424,7 +8424,7 @@ Agit sur toutes les couches actives courantes</translation>
     </message>
     <message>
         <source>Save Model As Image</source>
-        <translation>Enregistrer le modèle en temps qu'image</translation>
+        <translation>Enregistrer le modèle en tant qu'image</translation>
     </message>
     <message>
         <source>PNG files (*.png *.PNG)</source>
@@ -8546,7 +8546,7 @@ Ligne erronée : %1
     <name>NumberInputDialog</name>
     <message>
         <source>[Enter your formula here]</source>
-        <translation>[Entrer votre formlule ici]</translation>
+        <translation>[Entrez votre formule ici]</translation>
     </message>
     <message>
         <source>Values from data layers extents</source>
@@ -22372,7 +22372,7 @@ Essayez une résolution ou une taille de papier inférieur.</translation>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="231"/>
         <source>Set to map canvas extent</source>
-        <translation>Fixer sur l&apos;emprise courante de la carte</translation>
+        <translation>Fixer sur l&apos;emprise courante du canevas de la carte</translation>
     </message>
     <message>
         <source>Grid</source>
@@ -24224,7 +24224,7 @@ erreur : %3
     </message>
     <message>
         <source>Creates a copyright label that is displayed on the map canvas.</source>
-        <translation type="obsolete">Créer un copyright qui sera disposé dans la carte.</translation>
+        <translation type="obsolete">Créer un copyright qui sera affiché sur le canevas de la carte.</translation>
     </message>
     <message>
         <source>Bottom Right</source>
@@ -29660,7 +29660,7 @@ La 2D/3D dépend de la disponibilité de l&apos;information</translation>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="93"/>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="94"/>
         <source>Creates a new GPX layer and displays it on the map canvas</source>
-        <translation>Crée une nouvelle couche GPS et l&apos;ajoute à la carte</translation>
+        <translation>Crée une nouvelle couche GPS et l&apos;ajoute au canevas de la carte</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="100"/>
@@ -31544,7 +31544,7 @@ Appuyez sur Échap pour annuler le calcul ou OK pour continuer.</translation>
     <message>
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="53"/>
         <source>Add selected map to canvas</source>
-        <translation>Ajoute la carte sélectionné à la carte</translation>
+        <translation>Ajoute la carte sélectionné au canevas de la carte</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="61"/>
@@ -33616,17 +33616,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="151"/>
         <source>Adds a GRASS vector layer to the map canvas</source>
-        <translation>Ajouter une couche vectorielle GRASS à la zone d&apos;affichage cartographique</translation>
+        <translation>Ajouter une couche vectorielle GRASS au canevas de la carte</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="152"/>
         <source>Adds a GRASS raster layer to the map canvas</source>
-        <translation>Ajouter une couche GRASS matricielle au canvas</translation>
+        <translation>Ajouter une couche GRASS matricielle au canevas dela carte</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="154"/>
         <source>Displays the current GRASS region as a rectangle on the map canvas</source>
-        <translation>Afficher la région courante GRASS sous forme de rectangle sur le canvas</translation>
+        <translation>Afficher la région courante GRASS sous forme de rectangle sur le canevas de la carte</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="155"/>
@@ -37637,7 +37637,7 @@ ne sont pas affichés</translation>
     <message>
         <location filename="../src/plugins/georeferencer/qgsmapcoordsdialogbase.ui" line="23"/>
         <source>Enter X and Y coordinates (DMS (dd mm ss.ss), DD (dd.dd) or projected coordinates (mmmm.mm)) which correspond with the selected point on the image. Alternatively, click the button with icon of a pencil and then click a corresponding point on map canvas of QGIS to fill in coordinates of that point.</source>
-        <translation>Entrez les coordonnnées X et Y (DMS (dd mm ss.ss), DD (dd.dd ou projetées (mmmm.mm)) qui correspondent au point sélectionné sur l&apos;image. Vous pouvez aussi cliquer sur le bouton avec un icône de crayon puis cliquer sur l&apos;emplacement correspondant sur la carte affiché dans QGIS pour remplir les champs de coordonnées du point.</translation>
+        <translation>Entrez les coordonnnées X et Y (DMS (dd mm ss.ss), DD (dd.dd ou projetées (mmmm.mm)) qui correspondent au point sélectionné sur l&apos;image. Vous pouvez aussi cliquer sur le bouton avec une icône de crayon puis cliquer sur l&apos;emplacement correspondant sur le canevas de la carte affiché dans QGIS pour remplir les champs de coordonnées du point.</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsmapcoordsdialogbase.ui" line="35"/>
@@ -40564,7 +40564,7 @@ Complément d&apos;information sur l&apos;erreur :
     </message>
     <message>
         <source>Creates a north arrow that is displayed on the map canvas</source>
-        <translation type="obsolete">Crée une rose des vents qui est affichée sur la carte </translation>
+        <translation type="obsolete">Crée une flèche nord qui est affichée sur le canevas de la carte </translation>
     </message>
     <message>
         <source>Top Left</source>
@@ -40841,7 +40841,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsosmexportdialog.ui" line="124"/>
         <source>&amp;Load into canvas when finished</source>
-        <translation>&amp;Charger dans la carte une fois terminé</translation>
+        <translation>&amp;Charger dans le canevas une fois terminé</translation>
     </message>
     <message>
         <location filename="../src/app/openstreetmap/qgsosmexportdialog.cpp" line="45"/>
@@ -42928,12 +42928,12 @@ Toujours le réseau : toujours charger depuis le réseau sans vérifier si le ca
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="133"/>
         <source>Canvas &amp; Legend</source>
-        <translation>Carte et légende</translation>
+        <translation>Canevas et légende</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="136"/>
         <source>Canvas and legend</source>
-        <translation>Carte et légende</translation>
+        <translation>Canevas et légende</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="145"/>
@@ -43180,12 +43180,12 @@ Toujours le réseau : toujours charger depuis le réseau sans vérifier si le ca
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2039"/>
         <source>Map canvas refresh</source>
-        <translation>Actualisations de la carte</translation>
+        <translation>Actualisations du canevas</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2078"/>
         <source>Map canvas &amp; legend</source>
-        <translation>Carte et légende</translation>
+        <translation>Canevas de la carte et légende</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2103"/>
@@ -45859,7 +45859,7 @@ Veuillez vérifier si vous avez le droit d&apos;effectuer une commande SELECT su
     </message>
     <message>
         <source>QGIS has detected an obsolete plugin that masks its more recent version shipped with this copy of QGIS. This is likely due to files associated with a previous installation of QGIS. Do you want to remove the old plugin right now and unmask the more recent version?</source>
-        <translation type="unfinished">QGIS a détecté une extension obsolète qui cache la version plus récente embarquée par QGIS. Il s&apos;agit probablement du reste d&apos;une installation antérieure de QGIS. Voulez-vous supprimer l&apos;ancienne version de l&apos;extention et afficher la version la plus récente?</translation>
+        <translation type="unfinished">QGIS a détecté une extension obsolète qui cache la version plus récente embarquée par QGIS. Il s&apos;agit probablement du reste d&apos;une installation antérieure de QGIS. Voulez-vous supprimer l&apos;ancienne version de l&apos;extension et afficher la version la plus récente?</translation>
     </message>
     <message>
         <source>Error reading repository:</source>
@@ -53937,7 +53937,7 @@ standard deviation ×</source>
     </message>
     <message>
         <source>Creates a scale bar that is displayed on the map canvas</source>
-        <translation type="obsolete">Crée une échelle graphique qui est montrée sur la carte </translation>
+        <translation type="obsolete">Crée une échelle graphique qui est affichée sur le canevas de la carte</translation>
     </message>
     <message>
         <source>&amp;Scale Bar</source>
@@ -59383,7 +59383,7 @@ Les classes existantes doivent-elles être effacées avant la classification ?</
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="351"/>
         <source>This button opens the query builder and allows you to create a subset of features to display on the map canvas rather than displaying all features in the layer</source>
-        <translation>Ce bouton ouvre le constructeur de requête et vous permet de créer un sous-ensemble de entités à afficher dans la carte au lieu d&apos;afficher toutes les entités dans la couche</translation>
+        <translation>Ce bouton ouvre le constructeur de requête et vous permet de créer un sous-ensemble de entités à afficher sur le canevas de la carte au lieu d&apos;afficher toutes les entités dans la couche</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="354"/>
