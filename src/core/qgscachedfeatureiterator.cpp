@@ -21,7 +21,10 @@ QgsCachedFeatureIterator::QgsCachedFeatureIterator( QgsVectorLayerCache *vlCache
     , mFeatureIds( featureIds )
     , mVectorLayerCache( vlCache )
 {
-  mFeatureIdIterator = featureIds.begin();
+  mFeatureIdIterator = featureIds.constBegin();
+
+  if ( mFeatureIdIterator == featureIds.constEnd() )
+    close();
 }
 
 QgsCachedFeatureIterator::QgsCachedFeatureIterator( QgsVectorLayerCache *vlCache, QgsFeatureRequest featureRequest )
@@ -43,31 +46,37 @@ QgsCachedFeatureIterator::QgsCachedFeatureIterator( QgsVectorLayerCache *vlCache
       break;
   }
 
-  mFeatureIdIterator = mFeatureIds.begin();
+  mFeatureIdIterator = mFeatureIds.constBegin();
+
+  if ( mFeatureIdIterator == featureIds.constEnd() )
+    close();
 }
 
 bool QgsCachedFeatureIterator::fetchFeature( QgsFeature& f )
 {
-  mFeatureIdIterator++;
+  if ( mClosed )
+    return false;
 
-  while ( mFeatureIdIterator != mFeatureIds.end() )
+  while ( mFeatureIdIterator++ != mFeatureIds.constEnd() )
   {
     f = QgsFeature( *mVectorLayerCache->mCache[*mFeatureIdIterator]->feature() );
     if ( mRequest.acceptFeature( f ) )
       return true;
   }
+  close();
   return false;
 }
 
 bool QgsCachedFeatureIterator::rewind()
 {
-  mFeatureIdIterator = mFeatureIds.begin();
+  mFeatureIdIterator = mFeatureIds.constBegin();
   return true;
 }
 
 bool QgsCachedFeatureIterator::close()
 {
-  // Nothing to clean...
+  mClosed = true;
+  mFeatureIds.clear();
   return true;
 }
 
