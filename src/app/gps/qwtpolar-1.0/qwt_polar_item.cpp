@@ -9,7 +9,7 @@
 #include "qwt_polar_plot.h"
 #include "qwt_polar_item.h"
 #include <qwt_legend.h>
-#include <qwt_legend_item.h>
+#include <qwt_scale_div.h>
 #include <qpainter.h>
 
 class QwtPolarItem::PrivateData
@@ -20,7 +20,9 @@ public:
         isVisible( true ),
         attributes( 0 ),
         renderHints( 0 ),
-        z( 0.0 )
+        renderThreadCount( 1 ),
+        z( 0.0 ),
+        legendIconSize( 8, 8 )
     {
     }
 
@@ -29,9 +31,12 @@ public:
     bool isVisible;
     QwtPolarItem::ItemAttributes attributes;
     QwtPolarItem::RenderHints renderHints;
+    uint renderThreadCount;
+
     double z;
 
     QwtText title;
+    QSize legendIconSize;
 };
 
 /*!
@@ -72,28 +77,25 @@ void QwtPolarItem::attach( QwtPolarPlot *plot )
     if ( plot == d_data->plot )
         return;
 
-    // remove the item from the previous plot
-
     if ( d_data->plot )
-    {
-        if ( d_data->plot->legend() )
-            d_data->plot->legend()->remove( this );
-
         d_data->plot->attachItem( this, false );
-
-        if ( d_data->plot->autoReplot() )
-            d_data->plot->update();
-    }
 
     d_data->plot = plot;
 
     if ( d_data->plot )
-    {
-        // insert the item into the current plot
-
         d_data->plot->attachItem( this, true );
-        itemChanged();
-    }
+}
+
+/*!
+   \brief This method detaches a QwtPolarItem from the QwtPolarPlot it
+          has been associated with.
+
+   detach() is equivalent to calling attach( NULL )
+   \sa attach()
+*/
+void QwtPolarItem::detach() 
+{ 
+    attach( NULL ); 
 }
 
 /*!
@@ -255,6 +257,60 @@ bool QwtPolarItem::testRenderHint( RenderHint hint ) const
     return ( d_data->renderHints & hint );
 }
 
+/*!
+   On multi core systems rendering of certain plot item 
+   ( f.e QwtPolarSpectrogram ) can be done in parallel in 
+   several threads.
+
+   The default setting is set to 1.
+
+   \param numThreads Number of threads to be used for rendering.
+                     If numThreads is set to 0, the system specific
+                     ideal thread count is used.
+
+   The default thread count is 1 ( = no additional threads )
+*/
+void QwtPolarItem::setRenderThreadCount( uint numThreads )
+{
+    d_data->renderThreadCount = numThreads;
+}
+
+/*!
+   \return Number of threads to be used for rendering.
+           If numThreads() is set to 0, the system specific
+           ideal thread count is used.
+*/
+uint QwtPolarItem::renderThreadCount() const
+{
+    return d_data->renderThreadCount;
+}
+
+/*!
+   Set the size of the legend icon
+
+   The default setting is 8x8 pixels
+
+   \param size Size
+   \sa legendIconSize(), legendIcon()
+*/
+void QwtPolarItem::setLegendIconSize( const QSize &size )
+{
+    if ( d_data->legendIconSize != size )
+    {
+        d_data->legendIconSize = size;
+        legendChanged();
+    }
+}
+
+/*!
+   \return Legend icon size
+   \sa setLegendIconSize(), legendIcon()
+*/
+QSize QwtPolarItem::legendIconSize() const
+{
+    return d_data->legendIconSize;
+}
+
 //! Show the item
 void QwtPolarItem::show()
 {
@@ -300,12 +356,17 @@ bool QwtPolarItem::isVisible() const
 void QwtPolarItem::itemChanged()
 {
     if ( d_data->plot )
-    {
-        if ( d_data->plot->legend() )
-            updateLegend( d_data->plot->legend() );
-
         d_data->plot->autoRefresh();
-    }
+}
+
+/*!
+   Update the legend of the parent plot.
+   \sa QwtPolarPlot::updateLegend(), itemChanged()
+*/
+void QwtPolarItem::legendChanged()
+{
+    if ( testItemAttribute( QwtPolarItem::Legend ) && d_data->plot )
+        d_data->plot->updateLegend( this );
 }
 
 /*!
@@ -349,86 +410,65 @@ void QwtPolarItem::updateScaleDiv( const QwtScaleDiv &azimuthScaleDiv,
 }
 
 /*!
-   \brief Update the widget that represents the item on the legend
+   \brief Return all information, that is needed to represent
+          the item on the legend
 
-   updateLegend() is called from itemChanged() to adopt the widget
-   representing the item on the legend to its new configuration.
+   Most items are represented by one entry on the legend
+   showing an icon and a text.
 
-   The default implementation is made for QwtPolarCurve and updates a
-   QwtLegendItem(), but an item could be represented by any type of widget,
-   by overloading legendItem() and updateLegend().
+   QwtLegendData is basically a list of QVariants that makes it
+   possible to overload and reimplement legendData() to 
+   return almost any type of information, that is understood
+   by the receiver that acts as the legend.
 
-   \sa legendItem(), itemChanged(), QwtLegend()
-*/
-void QwtPolarItem::updateLegend( QwtLegend *legend ) const
+   The default implementation returns one entry with 
+   the title() of the item and the legendIcon().
+
+   \sa title(), legendIcon(), QwtLegend
+ */
+QList<QwtLegendData> QwtPolarItem::legendData() const
 {
-    if ( legend == NULL )
-        return;
+    QwtLegendData data;
 
-    QWidget *lgdItem = legend->find( this );
-    if ( testItemAttribute( QwtPolarItem::Legend ) )
+    QwtText label = title();
+    label.setRenderFlags( label.renderFlags() & Qt::AlignLeft );
+
+    QVariant titleValue;
+    qVariantSetValue( titleValue, label );
+    data.setValue( QwtLegendData::TitleRole, titleValue );
+
+    const QwtGraphic graphic = legendIcon( 0, legendIconSize() );
+    if ( !graphic.isNull() )
     {
-        if ( lgdItem == NULL )
-        {
-            lgdItem = legendItem();
-            if ( lgdItem )
-                legend->insert( this, lgdItem );
-        }
-
-        QwtLegendItem* label = qobject_cast<QwtLegendItem *>( lgdItem );
-        if ( label )
-        {
-            // paint the identifier
-            const QSize sz = label->identifierSize();
-
-            QPixmap identifier( sz.width(), sz.height() );
-            identifier.fill( Qt::transparent );
-
-            QPainter painter( &identifier );
-            painter.setRenderHint( QPainter::Antialiasing,
-                testRenderHint( QwtPolarItem::RenderAntialiased ) );
-
-            drawLegendIdentifier( &painter,
-                QRect( 0, 0, sz.width(), sz.height() ) );
-
-            painter.end();
-
-            const bool doUpdate = label->updatesEnabled();
-            if ( doUpdate )
-                label->setUpdatesEnabled( false );
-
-            label->setText( title() );
-            label->setIdentifier( identifier );
-            label->setItemMode( legend->itemMode() );
-
-            if ( doUpdate )
-                label->setUpdatesEnabled( true );
-
-            label->update();
-        }
+        QVariant iconValue;
+        qVariantSetValue( iconValue, graphic );
+        data.setValue( QwtLegendData::IconRole, iconValue );
     }
-    else
-    {
-        if ( lgdItem )
-        {
-            lgdItem->hide();
-            lgdItem->deleteLater();
-        }
-    }
+
+    QList<QwtLegendData> list;
+    list += data;
+
+    return list;
 }
+
 /*!
-   \brief Allocate the widget that represents the item on the legend
+   \return Icon representing the item on the legend
 
-   The default implementation is made for QwtPolarCurve and returns a
-   QwtLegendItem(), but an item could be represented by any type of widget,
-   by overloading legendItem() and updateLegend().
+   The default implementation returns an invalid icon
 
-   \return QwtLegendItem()
-   \sa updateLegend() QwtLegend()
-*/
-QWidget *QwtPolarItem::legendItem() const
+   \param index Index of the legend entry 
+                ( usually there is only one )
+   \param size Icon size
+
+   \sa setLegendIconSize(), legendData()
+ */
+QwtGraphic QwtPolarItem::legendIcon(
+    int index, const QSizeF &size ) const
 {
-    return new QwtLegendItem;
+    Q_UNUSED( index )
+    Q_UNUSED( size )
+
+    return QwtGraphic();
 }
 
 /*!

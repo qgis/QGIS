@@ -59,9 +59,6 @@ public:
     void setPaintAttribute( PaintAttribute, bool on = true );
     bool testPaintAttribute( PaintAttribute ) const;
 
-    void setRenderThreadCount( uint numThreads );
-    uint renderThreadCount() const;
-
     virtual int rtti() const;
 
     virtual void draw( QPainter *painter,

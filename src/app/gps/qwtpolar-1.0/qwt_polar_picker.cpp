@@ -98,7 +98,8 @@ const QwtPolarPlot *QwtPolarPicker::plot() const
 */
 QwtText QwtPolarPicker::trackerText( const QPoint &pos ) const
 {
-    return trackerTextPolar( invTransform( pos ) );
+    const QwtPointPolar polarPoint = invTransform( pos );
+    return trackerTextPolar( polarPoint );
 }
 
 /*!

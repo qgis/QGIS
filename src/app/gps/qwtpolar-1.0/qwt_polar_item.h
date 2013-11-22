@@ -11,7 +11,8 @@
 
 #include "qwt_polar_global.h"
 #include <qwt_text.h>
-#include <qwt_legend_itemmanager.h>
+#include <qwt_legend_data.h>
+#include <qwt_graphic.h>
 #include <qwt_interval.h>
 
 class QString;
@@ -33,7 +34,7 @@ class QwtScaleDiv;
   but deriving from QwtPolarItem makes it easy to implement additional
   types of items.
 */
-class QWT_POLAR_EXPORT QwtPolarItem: public QwtLegendItemManager
+class QWT_POLAR_EXPORT QwtPolarItem
 {
 public:
     /*!
@@ -102,15 +103,7 @@ public:
     virtual ~QwtPolarItem();
 
     void attach( QwtPolarPlot *plot );
-
-    /*!
-       \brief This method detaches a QwtPolarItem from any QwtPolarPlot it
-              has been associated with.
-
-       detach() is equivalent to calling attach( NULL )
-       \sa attach( QwtPolarPlot* plot )
-    */
-    void detach() { attach( NULL ); }
+    void detach();
 
     QwtPolarPlot *plot() const;
 
@@ -126,6 +119,9 @@ public:
     void setRenderHint( RenderHint, bool on = true );
     bool testRenderHint( RenderHint ) const;
 
+    void setRenderThreadCount( uint numThreads );
+    uint renderThreadCount() const;
+
     double z() const;
     void setZ( double z );
 
@@ -135,6 +131,7 @@ public:
     bool isVisible () const;
 
     virtual void itemChanged();
+    virtual void legendChanged();
 
     /*!
       \brief Draw the item
@@ -153,13 +150,16 @@ public:
 
     virtual QwtInterval boundingInterval( int scaleId ) const;
 
-    virtual QWidget *legendItem() const;
-
-    virtual void updateLegend( QwtLegend * ) const;
     virtual void updateScaleDiv( const QwtScaleDiv &,
         const QwtScaleDiv &, const QwtInterval & );
 
     virtual int marginHint() const;
+
+    void setLegendIconSize( const QSize & );
+    QSize legendIconSize() const;
+
+    virtual QList<QwtLegendData> legendData() const;
+    virtual QwtGraphic legendIcon( int index, const QSizeF  & ) const;
 
 private:
     // Disabled copy constructor and operator=
@@ -172,5 +172,7 @@ private:
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QwtPolarItem::ItemAttributes )
 Q_DECLARE_OPERATORS_FOR_FLAGS( QwtPolarItem::RenderHints )
+
+Q_DECLARE_METATYPE( QwtPolarItem * )
 
 #endif
