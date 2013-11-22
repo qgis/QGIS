@@ -4650,7 +4650,7 @@ Désactivez l&apos;option &quot;Utiliser l&apos;emprise intersectée&quot; pour 
     <message>
         <location filename="../python/plugins/GdalTools/tools/extentSelector.ui" line="20"/>
         <source>Select the extent by drag on canvas</source>
-        <translation>Sélectionner l'étendue par sur le canevas</translation>
+        <translation>Sélectionner l'étendue sur le canevas</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/extentSelector.ui" line="27"/>
