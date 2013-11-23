@@ -17,6 +17,7 @@
 
 #include "qgsdxfpaintengine.h"
 #include "qgsdxfexport.h"
+#include "qgsdxfpaintdevice.h"
 #include "qgslogger.h"
 
 QgsDxfPaintEngine::QgsDxfPaintEngine( const QgsDxfPaintDevice* dxfDevice, QgsDxfExport* dxf ): QPaintEngine( QPaintEngine::AllFeatures /*QPaintEngine::PainterPaths | QPaintEngine::PaintOutsidePaintEvent*/ )
@@ -65,7 +66,21 @@ void QgsDxfPaintEngine::updateState( const QPaintEngineState& state )
 
 void QgsDxfPaintEngine::drawPolygon( const QPointF* points, int pointCount, PolygonDrawMode mode )
 {
-  QgsDebugMsg( "***********************Dxf paint engine: drawing polygon*********************" );
+  if ( !mDxf || !mPaintDevice )
+  {
+    return;
+  }
+
+  QgsPolyline polyline( pointCount );
+  for ( int i = 0; i < pointCount; ++i )
+  {
+    QPointF dxfCoord = mPaintDevice->dxfCoordinates( points[i] );
+    polyline[i] = QgsPoint( dxfCoord.x(), dxfCoord.y() );
+  }
+
+  int color = mDxf->closestColorMatch( mPen.color().rgb() );
+  double width = mPen.widthF() * mPaintDevice->widthScaleFactor();
+  mDxf->writePolyline( polyline, "0", "CONTINUOUS", color, width, mode != QPaintEngine::PolylineMode );
 }
 
 void QgsDxfPaintEngine::drawRects( const QRectF * rects, int rectCount )
@@ -81,6 +96,12 @@ void QgsDxfPaintEngine::drawEllipse( const QRectF& rect )
 void QgsDxfPaintEngine::drawPath( const QPainterPath& path )
 {
   QgsDebugMsg( "***********************Dxf paint engine: drawing path*********************" );
+  QList<QPolygonF> polygonList = path.toFillPolygons();
+  QList<QPolygonF>::const_iterator pIt = polygonList.constBegin();
+  for ( ; pIt != polygonList.constEnd(); ++pIt )
+  {
+    drawPolygon( pIt->constData(), pIt->size(), pIt->isClosed() ? QPaintEngine::OddEvenMode : QPaintEngine::PolylineMode );
+  }
 }
 
 void QgsDxfPaintEngine::drawLines( const QLineF* lines, int lineCount )

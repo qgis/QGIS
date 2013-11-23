@@ -41,7 +41,7 @@ class QgsDxfPaintDevice: public QPaintDevice
     double widthScaleFactor() const;
 
     /**Converts a point from device coordinates to dxf coordinates*/
-    QPointF dxfCoordinates( const QPointF& pt );
+    QPointF dxfCoordinates( const QPointF& pt ) const;
 
     /*int height() const { return mDrawingSize.height(); }
     int width() const { return mDrawingSize.width(); }*/

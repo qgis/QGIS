@@ -69,7 +69,7 @@ double QgsDxfPaintDevice::widthScaleFactor() const
   return ( widthFactor + heightFactor ) / 2.0;
 }
 
-QPointF QgsDxfPaintDevice::dxfCoordinates( const QPointF& pt )
+QPointF QgsDxfPaintDevice::dxfCoordinates( const QPointF& pt ) const
 {
   if ( !mDrawingSize.isValid() || mRectangle.isEmpty() )
   {

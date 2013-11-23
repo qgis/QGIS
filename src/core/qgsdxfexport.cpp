@@ -676,6 +676,29 @@ void QgsDxfExport::endSection()
 
 void QgsDxfExport::writePoint( const QgsPoint& pt, const QString& layer, const QgsSymbolLayerV2* symbolLayer )
 {
+  //debug: draw rectangle for debugging
+  const QgsMarkerSymbolLayerV2* msl = dynamic_cast< const QgsMarkerSymbolLayerV2* >( symbolLayer );
+  if ( msl )
+  {
+    double halfSize = msl->size() * mapUnitScaleFactor( mSymbologyScaleDenominator,
+                      msl->sizeUnit(), mMapUnits ) / 2.0;
+    writeGroup( 0, "SOLID" );
+    writeGroup( 8, layer );
+    writeGroup( 62, 1 );
+    writeGroup( 10, pt.x() - halfSize );
+    writeGroup( 20, pt.y() - halfSize );
+    writeGroup( 30, 0.0 );
+    writeGroup( 11, pt.x() + halfSize );
+    writeGroup( 21, pt.y() - halfSize );
+    writeGroup( 31, 0.0 );
+    writeGroup( 12, pt.x() - halfSize );
+    writeGroup( 22, pt.y() + halfSize );
+    writeGroup( 32, 0.0 );
+    writeGroup( 13, pt.x() + halfSize );
+    writeGroup( 23, pt.y() + halfSize );
+    writeGroup( 33, 0.0 );
+  }
+
   //insert block or write point directly?
   QHash< const QgsSymbolLayerV2*, QString >::const_iterator blockIt = mPointSymbolBlocks.find( symbolLayer );
   if ( !symbolLayer || blockIt == mPointSymbolBlocks.constEnd() )
