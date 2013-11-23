@@ -62,7 +62,6 @@ SET(QGIS_CORE_SRCS
   qgsdbfilterproxymodel.cpp
   qgsdiagramrendererv2.cpp
   qgsdistancearea.cpp
-  qgsdxfexport.cpp
   qgserror.cpp
   qgsexpression.cpp
   qgsexpression_texts.cpp
@@ -161,6 +160,7 @@ SET(QGIS_CORE_SRCS
   composer/qgscomposermultiframe.cpp
   composer/qgscomposition.cpp
   
+  dxf/qgsdxfexport.cpp
   dxf/qgsdxfpaintdevice.cpp
   dxf/qgsdxfpaintengine.cpp
 
