@@ -421,7 +421,7 @@ INCLUDE_DIRECTORIES(
   ../analysis/raster ../analysis/openstreetmap
   ../core
   ../core/gps
-  ../core/composer ../core/raster ../core/symbology-ng
+  ../core/composer ../core/dxf ../core/raster ../core/symbology-ng
   ../gui ../gui/symbology-ng ../gui/attributetable ../gui/raster
   ../plugins
   ../python
