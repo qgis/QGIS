@@ -63627,25 +63627,25 @@ Description : %3</translation>
         <location filename="../python/console/console_settings.ui" line="481"/>
         <location filename="../python/console/console_settings.ui" line="1013"/>
         <source>Single quote:</source>
-        <translation>Guillement simple :</translation>
+        <translation>Guillemet simple :</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="495"/>
         <location filename="../python/console/console_settings.ui" line="1027"/>
         <source>Double quote:</source>
-        <translation>Guillement double :</translation>
+        <translation>Guillemet double :</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="509"/>
         <location filename="../python/console/console_settings.ui" line="1041"/>
         <source>Triple single quote:</source>
-        <translation>Guillement simple triplé :</translation>
+        <translation>Guillemet simple triplé :</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="523"/>
         <location filename="../python/console/console_settings.ui" line="1055"/>
         <source>Triple double quote:</source>
-        <translation>Guillement double triplé :</translation>
+        <translation>Guillemet double triplé :</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="537"/>
