@@ -39,7 +39,7 @@ class CORE_EXPORT QgsAbstractFeatureIterator
     //! end of iterating: free the resources / lock
     virtual bool close() = 0;
 
-  protected:    
+  protected:
     /**
      * If you write a feature iterator for your provider, this is the method you
      * need to implement!!

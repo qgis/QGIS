@@ -664,7 +664,7 @@ void QgsComposer::showItemOptions( QgsComposerItem* item )
 
 void QgsComposer::on_mActionOptions_triggered()
 {
-  mQgis->showOptionsDialog( this, QString("mOptionsPageComposer") );
+  mQgis->showOptionsDialog( this, QString( "mOptionsPageComposer" ) );
 }
 
 QgsMapCanvas *QgsComposer::mapCanvas( void )

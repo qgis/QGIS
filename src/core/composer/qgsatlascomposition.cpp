@@ -42,7 +42,7 @@ QgsAtlasComposition::QgsAtlasComposition( QgsComposition* composition ) :
   QgsExpression::setSpecialColumn( "$numpages", QVariant(( int )1 ) );
   QgsExpression::setSpecialColumn( "$numfeatures", QVariant(( int )0 ) );
   QgsExpression::setSpecialColumn( "$atlasfeatureid", QVariant(( int )0 ) );
-  QgsExpression::setSpecialColumn( "$atlasgeometry", QVariant::fromValue(QgsGeometry()));
+  QgsExpression::setSpecialColumn( "$atlasgeometry", QVariant::fromValue( QgsGeometry() ) );
 }
 
 QgsAtlasComposition::~QgsAtlasComposition()
@@ -58,9 +58,9 @@ void QgsAtlasComposition::setCoverageLayer( QgsVectorLayer* layer )
 
   // Grab the first feature so that user can use it to test the style in rules.
   QgsFeature fet;
-  layer->getFeatures().nextFeature(fet);
+  layer->getFeatures().nextFeature( fet );
   QgsExpression::setSpecialColumn( "$atlasfeatureid", fet.id() );
-  QgsExpression::setSpecialColumn( "$atlasgeometry", QVariant::fromValue(*fet.geometry()));
+  QgsExpression::setSpecialColumn( "$atlasgeometry", QVariant::fromValue( *fet.geometry() ) );
 }
 
 //
@@ -234,7 +234,7 @@ void QgsAtlasComposition::prepareForFeature( int featureI )
   // retrieve the next feature, based on its id
   mCoverageLayer->getFeatures( QgsFeatureRequest().setFilterFid( mFeatureIds[ featureI ] ) ).nextFeature( mCurrentFeature );
   QgsExpression::setSpecialColumn( "$atlasfeatureid", mCurrentFeature.id() );
-  QgsExpression::setSpecialColumn( "$atlasgeometry", QVariant::fromValue(*mCurrentFeature.geometry()));
+  QgsExpression::setSpecialColumn( "$atlasgeometry", QVariant::fromValue( *mCurrentFeature.geometry() ) );
 
   if ( !mSingleFile && mFilenamePattern.size() > 0 )
   {

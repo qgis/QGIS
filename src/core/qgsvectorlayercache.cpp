@@ -76,9 +76,9 @@ void QgsVectorLayerCache::setFullCache( bool fullCache )
     setCacheSize( mLayer->featureCount() + 100 );
 
     // Initialize the cache...
-    QgsFeatureIterator it ( new QgsCachedFeatureWriterIterator( this, QgsFeatureRequest()
-                                                            .setSubsetOfAttributes( mCachedAttributes )
-                                                            .setFlags( !mCacheGeometry ? QgsFeatureRequest::NoGeometry : QgsFeatureRequest::Flags( 0 ) ) ) );
+    QgsFeatureIterator it( new QgsCachedFeatureWriterIterator( this, QgsFeatureRequest()
+                           .setSubsetOfAttributes( mCachedAttributes )
+                           .setFlags( !mCacheGeometry ? QgsFeatureRequest::NoGeometry : QgsFeatureRequest::Flags( 0 ) ) ) );
 
     int i = 0;
 

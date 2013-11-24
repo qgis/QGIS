@@ -44,7 +44,7 @@ def features(layer):
         def __init__(self, layer):
             self.layer = layer
             self.selection = False
-            self.iter = layer.getFeatures()            
+            self.iter = layer.getFeatures()
             if ProcessingConfig.getSetting(ProcessingConfig.USE_SELECTED):
                 selected = layer.selectedFeatures()
                 if len(selected) > 0:
