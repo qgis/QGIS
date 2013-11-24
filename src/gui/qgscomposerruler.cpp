@@ -229,30 +229,30 @@ void QgsComposerRuler::setSnapLinePosition( const QPointF& pos )
     {
       if ( itemIt->second == QgsComposerItem::MiddleLeft )
       {
-        itemIt->first->setItemPosition( transformedPt.x(), itemIt->first->transform().dy(), QgsComposerItem::UpperLeft );
+        itemIt->first->setItemPosition( transformedPt.x(), itemIt->first->pos().y(), QgsComposerItem::UpperLeft );
       }
       else if ( itemIt->second == QgsComposerItem::Middle )
       {
-        itemIt->first->setItemPosition( transformedPt.x(), itemIt->first->transform().dy(), QgsComposerItem::UpperMiddle );
+        itemIt->first->setItemPosition( transformedPt.x(), itemIt->first->pos().y(), QgsComposerItem::UpperMiddle );
       }
       else
       {
-        itemIt->first->setItemPosition( transformedPt.x(), itemIt->first->transform().dy(), QgsComposerItem::UpperRight );
+        itemIt->first->setItemPosition( transformedPt.x(), itemIt->first->pos().y(), QgsComposerItem::UpperRight );
       }
     }
     else
     {
       if ( itemIt->second == QgsComposerItem::UpperMiddle )
       {
-        itemIt->first->setItemPosition( itemIt->first->transform().dx(), transformedPt.y(), QgsComposerItem::UpperLeft );
+        itemIt->first->setItemPosition( itemIt->first->pos().x(), transformedPt.y(), QgsComposerItem::UpperLeft );
       }
       else if ( itemIt->second == QgsComposerItem::Middle )
       {
-        itemIt->first->setItemPosition( itemIt->first->transform().dx(), transformedPt.y(), QgsComposerItem::MiddleLeft );
+        itemIt->first->setItemPosition( itemIt->first->pos().x(), transformedPt.y(), QgsComposerItem::MiddleLeft );
       }
       else
       {
-        itemIt->first->setItemPosition( itemIt->first->transform().dx(), transformedPt.y(), QgsComposerItem::LowerLeft );
+        itemIt->first->setItemPosition( itemIt->first->pos().x(), transformedPt.y(), QgsComposerItem::LowerLeft );
       }
     }
   }

@@ -86,9 +86,7 @@ QgsComposerItem::QgsComposerItem( qreal x, qreal y, qreal width, qreal height, Q
     , mUuid( QUuid::createUuid().toString() )
 {
   init( manageZValue );
-  QTransform t;
-  t.translate( x, y );
-  setTransform( t );
+  setPos( x, y );
 }
 
 void QgsComposerItem::init( bool manageZValue )
@@ -165,8 +163,8 @@ bool QgsComposerItem::_writeXML( QDomElement& itemElem, QDomDocument& doc ) cons
   }
 
   //scene rect
-  composerItemElem.setAttribute( "x", QString::number( transform().dx() ) );
-  composerItemElem.setAttribute( "y", QString::number( transform().dy() ) );
+  composerItemElem.setAttribute( "x", QString::number( pos().x() ) );
+  composerItemElem.setAttribute( "y", QString::number( pos().y() ) );
   composerItemElem.setAttribute( "width", QString::number( rect().width() ) );
   composerItemElem.setAttribute( "height", QString::number( rect().height() ) );
   composerItemElem.setAttribute( "positionMode", QString::number(( int ) mLastUsedPositionMode ) );
@@ -416,8 +414,7 @@ void QgsComposerItem::setPositionLock( bool lock )
 
 void QgsComposerItem::move( double dx, double dy )
 {
-  QTransform t = transform();
-  QRectF newSceneRect( t.dx() + dx, t.dy() + dy, rect().width(), rect().height() );
+  QRectF newSceneRect( pos().x() + dx, pos().y() + dy, rect().width(), rect().height() );
   setSceneRect( newSceneRect );
 }
 
@@ -482,11 +479,7 @@ void QgsComposerItem::setSceneRect( const QRectF& rectangle )
 
   QRectF newRect( 0, 0, newWidth, newHeight );
   QGraphicsRectItem::setRect( newRect );
-
-  //set up transformation matrix for item coordinates
-  QTransform t;
-  t.translate( xTranslation, yTranslation );
-  setTransform( t );
+  setPos( xTranslation, yTranslation );
 
   emit sizeChanged();
 }

@@ -237,7 +237,7 @@ void QgsComposerLabel::adjustSizeToText()
   double yShift = 0;
   itemShiftAdjustSize( width, height, xShift, yShift );
 
-  QgsComposerItem::setSceneRect( QRectF( transform().dx() + xShift, transform().dy() + yShift, width, height ) );
+  QgsComposerItem::setSceneRect( QRectF( pos().x() + xShift, pos().y() + yShift, width, height ) );
 }
 
 QFont QgsComposerLabel::font() const
@@ -252,8 +252,8 @@ void QgsComposerLabel::setRotation( double r )
   QgsComposerItem::setRotation( r );
   sizeChangedByRotation( width, height );
 
-  double x = transform().dx() + rect().width() / 2.0 - width / 2.0;
-  double y = transform().dy() + rect().height() / 2.0 - height / 2.0;
+  double x = pos().x() + rect().width() / 2.0 - width / 2.0;
+  double y = pos().y() + rect().height() / 2.0 - height / 2.0;
   QgsComposerItem::setSceneRect( QRectF( x, y, width, height ) );
 }
 

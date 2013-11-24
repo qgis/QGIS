@@ -150,8 +150,8 @@ void QgsComposerShape::setRotation( double r )
   sizeChangedByRotation( width, height );
 
   //adapt scene rect to have the same center and the new width / height
-  double x = transform().dx() + rect().width() / 2.0 - width / 2.0;
-  double y = transform().dy() + rect().height() / 2.0 - height / 2.0;
+  double x = pos().x() + rect().width() / 2.0 - width / 2.0;
+  double y = pos().y() + rect().height() / 2.0 - height / 2.0;
   QgsComposerItem::setSceneRect( QRectF( x, y, width, height ) );
 
   QgsComposerItem::setRotation( r );

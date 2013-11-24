@@ -141,7 +141,7 @@ void QgsComposerPicture::setPictureFile( const QString& path )
 
   if ( mMode != Unknown ) //make sure we start with a new QImage
   {
-    setSceneRect( QRectF( transform().dx(), transform().dy(), rect().width(), rect().height() ) );
+    setSceneRect( QRectF( pos().x(), pos().y(), rect().width(), rect().height() ) );
   }
   emit itemChanged();
 }
@@ -221,8 +221,8 @@ void QgsComposerPicture::setRotation( double r )
   sizeChangedByRotation( width, height );
 
   //adapt scene rect to have the same center and the new width / height
-  double x = transform().dx() + rect().width() / 2.0 - width / 2.0;
-  double y = transform().dy() + rect().height() / 2.0 - height / 2.0;
+  double x = pos().x() + rect().width() / 2.0 - width / 2.0;
+  double y = pos().y() + rect().height() / 2.0 - height / 2.0;
   QgsComposerItem::setSceneRect( QRectF( x, y, width, height ) );
 
   QgsComposerItem::setRotation( r );
