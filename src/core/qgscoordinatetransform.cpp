@@ -857,6 +857,7 @@ void QgsCoordinateTransform::searchDatumTransform( const QString& sql, QList< in
   int openResult = sqlite3_open( QgsApplication::srsDbFilePath().toUtf8().constData(), &db );
   if ( openResult != SQLITE_OK )
   {
+    sqlite3_close( db );
     return;
   }
 
@@ -864,6 +865,7 @@ void QgsCoordinateTransform::searchDatumTransform( const QString& sql, QList< in
   int prepareRes = sqlite3_prepare( db, sql.toAscii(), sql.size(), &stmt, NULL );
   if ( prepareRes != SQLITE_OK )
   {
+    sqlite3_close( db );
     return;
   }
 
@@ -885,6 +887,7 @@ QString QgsCoordinateTransform::datumTransformString( int datumTransform )
   int openResult = sqlite3_open( QgsApplication::srsDbFilePath().toUtf8().constData(), &db );
   if ( openResult != SQLITE_OK )
   {
+    sqlite3_close( db );
     return transformString;
   }
 
@@ -893,6 +896,7 @@ QString QgsCoordinateTransform::datumTransformString( int datumTransform )
   int prepareRes = sqlite3_prepare( db, sql.toAscii(), sql.size(), &stmt, NULL );
   if ( prepareRes != SQLITE_OK )
   {
+    sqlite3_close( db );
     return transformString;
   }
 
@@ -925,6 +929,8 @@ QString QgsCoordinateTransform::datumTransformString( int datumTransform )
     }
   }
 
+  sqlite3_finalize( stmt );
+  sqlite3_close( db );
   return transformString;
 }
 
