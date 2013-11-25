@@ -81,4 +81,12 @@ QPointF QgsDxfPaintDevice::dxfCoordinates( const QPointF& pt ) const
   return QPointF( x, y );
 }
 
+void QgsDxfPaintDevice::setLayer( const QString& layer )
+{
+  if ( mPaintEngine )
+  {
+    mPaintEngine->setLayer( layer );
+  }
+}
+
 

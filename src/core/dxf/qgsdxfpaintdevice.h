@@ -48,6 +48,8 @@ class QgsDxfPaintDevice: public QPaintDevice
 
     int metric( PaintDeviceMetric metric ) const;
 
+    void setLayer( const QString& layer );
+
 
   private:
     QgsDxfPaintEngine* mPaintEngine;

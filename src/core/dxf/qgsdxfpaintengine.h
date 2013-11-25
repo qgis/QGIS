@@ -22,6 +22,7 @@
 
 class QgsDxfExport;
 class QgsDxfPaintDevice;
+class QgsPoint;
 
 class QgsDxfPaintEngine: public QPaintEngine
 {
@@ -42,6 +43,9 @@ class QgsDxfPaintEngine: public QPaintEngine
     void drawPath( const QPainterPath& path );
     void drawLines( const QLineF* lines, int lineCount );
 
+    void setLayer( const QString& layer ) { mLayer = layer; }
+    QString layer() const { return mLayer; }
+
   private:
     const QgsDxfPaintDevice* mPaintDevice;
     QgsDxfExport* mDxf;
@@ -49,6 +53,10 @@ class QgsDxfPaintEngine: public QPaintEngine
     //painter state information
     QTransform mTransform;
     QPen mPen;
+    QString mLayer;
+
+    QgsPoint toDxfCoordinates( const QPointF& pt ) const;
+    int currentPenColor() const;
 };
 
 #endif // QGSDXFPAINTENGINE_H

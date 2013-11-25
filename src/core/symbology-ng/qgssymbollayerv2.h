@@ -93,7 +93,7 @@ class CORE_EXPORT QgsSymbolLayerV2
     virtual void removeDataDefinedProperty( const QString& property );
     virtual void removeDataDefinedProperties();
 
-    virtual void writeDxf( QgsDxfExport& e, double mmMapUnitScaleFactor ) const { Q_UNUSED( e ); Q_UNUSED( mmMapUnitScaleFactor ); }
+    virtual void writeDxf( QgsDxfExport& e, double mmMapUnitScaleFactor, const QString& layerName ) const { Q_UNUSED( e ); Q_UNUSED( mmMapUnitScaleFactor ); Q_UNUSED( layerName ); }
 
   protected:
     QgsSymbolLayerV2( QgsSymbolV2::SymbolType type, bool locked = false )

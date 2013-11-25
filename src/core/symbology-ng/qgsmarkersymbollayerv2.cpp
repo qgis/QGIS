@@ -702,7 +702,7 @@ void QgsSimpleMarkerSymbolLayerV2::drawMarker( QPainter* p, QgsSymbolV2RenderCon
   }
 }
 
-void QgsSimpleMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitScaleFactor ) const
+void QgsSimpleMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitScaleFactor, const QString& layerName ) const
 {
   double size = mSize;
   if ( mSizeUnit == QgsSymbolV2::MM )
@@ -715,7 +715,7 @@ void QgsSimpleMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitSc
   if ( mName == "circle" )
   {
     e.writeGroup( 0, "CIRCLE" );
-    e.writeGroup( 8, "0" );
+    e.writeGroup( 8, layerName );
 
     e.writeGroup( 62, colorIndex );
     e.writeGroup( 10, halfSize );
@@ -725,39 +725,19 @@ void QgsSimpleMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitSc
   }
   else if ( mName == "square" || mName == "rectangle" )
   {
-    e.writeGroup( 0, "SOLID" );
-    e.writeGroup( 8, "0" );
-    e.writeGroup( 62, colorIndex );
-    e.writeGroup( 10, 0.0 );
-    e.writeGroup( 20, 0.0 );
-    e.writeGroup( 30, 0.0 );
-    e.writeGroup( 11, size );
-    e.writeGroup( 21, 0.0 );
-    e.writeGroup( 31, 0.0 );
-    e.writeGroup( 12, 0 );
-    e.writeGroup( 22, size );
-    e.writeGroup( 32, 0.0 );
-    e.writeGroup( 13, size );
-    e.writeGroup( 23, size );
-    e.writeGroup( 33, 0.0 );
+    QgsPoint pt1( 0.0, 0.0 );
+    QgsPoint pt2( size, 0.0 );
+    QgsPoint pt3( 0.0, size );
+    QgsPoint pt4( size, size );
+    e.writeSolid( layerName, colorIndex, pt1, pt2, pt3, pt4 );
   }
   else if ( mName == "diamond" )
   {
-    e.writeGroup( 0, "SOLID" );
-    e.writeGroup( 8, "0" );
-    e.writeGroup( 62, colorIndex );
-    e.writeGroup( 10, 0.0 );
-    e.writeGroup( 20, halfSize );
-    e.writeGroup( 30, 0.0 );
-    e.writeGroup( 11, halfSize );
-    e.writeGroup( 21, 0.0 );
-    e.writeGroup( 31, 0.0 );
-    e.writeGroup( 12, halfSize );
-    e.writeGroup( 22, size );
-    e.writeGroup( 32, 0.0 );
-    e.writeGroup( 13, size );
-    e.writeGroup( 23, halfSize );
-    e.writeGroup( 33, 0.0 );
+    QgsPoint pt1( 0.0, halfSize );
+    QgsPoint pt2( halfSize, 0.0 );
+    QgsPoint pt3( halfSize, size );
+    QgsPoint pt4( size, halfSize );
+    e.writeSolid( layerName, colorIndex, pt1, pt2, pt3, pt4 );
   }
 }
 
@@ -1166,8 +1146,10 @@ QgsSymbolLayerV2* QgsSvgMarkerSymbolLayerV2::createFromSld( QDomElement &element
   return m;
 }
 
-void QgsSvgMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitScaleFactor ) const
+void QgsSvgMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitScaleFactor, const QString& layerName ) const
 {
+  Q_UNUSED( layerName );
+
   QSvgRenderer r( mPath );
   if ( !r.isValid() )
   {
@@ -1178,6 +1160,7 @@ void QgsSvgMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitScale
   pd.setDrawingSize( QSizeF( r.defaultSize() ) );
   double size = mSize * mmMapUnitScaleFactor ;
   pd.setOutputSize( QRectF( 0, 0, size, size ) );
+  pd.setLayer( layerName );
   QPainter p;
 
   p.begin( &pd );

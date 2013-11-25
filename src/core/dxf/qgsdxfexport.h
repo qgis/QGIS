@@ -68,6 +68,8 @@ class QgsDxfExport
     void writePolyline( const QgsPolyline& line, const QString& layer, const QString& lineStyleName, int color,
                         double width = -1, bool polygon = false );
 
+    void writeSolid( const QString& layer, int color, const QgsPoint& pt1, const QgsPoint& pt2, const QgsPoint& pt3, const QgsPoint& pt4 );
+
   private:
 
     QList< QgsMapLayer* > mLayers;

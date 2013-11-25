@@ -501,7 +501,7 @@ void QgsDxfExport::writeBlocks()
       writeGroup( 30, 0 );
       writeGroup( 3, blockName );
 
-      ml->writeDxf( *this, mapUnitScaleFactor( mSymbologyScaleDenominator, ml->sizeUnit(), mMapUnits ) );
+      ml->writeDxf( *this, mapUnitScaleFactor( mSymbologyScaleDenominator, ml->sizeUnit(), mMapUnits ), "0" ); //maplayer 0 -> block receives layer from INSERT statement
 
       writeGroup( 0, "ENDBLK" );
       writeGroup( 8, 0 );
@@ -676,6 +676,7 @@ void QgsDxfExport::endSection()
 
 void QgsDxfExport::writePoint( const QgsPoint& pt, const QString& layer, const QgsSymbolLayerV2* symbolLayer )
 {
+#if 0
   //debug: draw rectangle for debugging
   const QgsMarkerSymbolLayerV2* msl = dynamic_cast< const QgsMarkerSymbolLayerV2* >( symbolLayer );
   if ( msl )
@@ -698,6 +699,7 @@ void QgsDxfExport::writePoint( const QgsPoint& pt, const QString& layer, const Q
     writeGroup( 23, pt.y() + halfSize );
     writeGroup( 33, 0.0 );
   }
+#endif //0
 
   //insert block or write point directly?
   QHash< const QgsSymbolLayerV2*, QString >::const_iterator blockIt = mPointSymbolBlocks.find( symbolLayer );
@@ -737,6 +739,25 @@ void QgsDxfExport::writePolyline( const QgsPolyline& line, const QString& layer,
   }
 
   writeGroup( 0, "SEQEND" );
+}
+
+void QgsDxfExport::writeSolid( const QString& layer, int color, const QgsPoint& pt1, const QgsPoint& pt2, const QgsPoint& pt3, const QgsPoint& pt4 )
+{
+  writeGroup( 0, "SOLID" );
+  writeGroup( 8, layer );
+  writeGroup( 62, color );
+  writeGroup( 10, pt1.x() );
+  writeGroup( 20, pt1.y() );
+  writeGroup( 30, 0.0 );
+  writeGroup( 11, pt2.x() );
+  writeGroup( 21, pt2.y() );
+  writeGroup( 31, 0.0 );
+  writeGroup( 12, pt3.x() );
+  writeGroup( 22, pt3.y() );
+  writeGroup( 32, 0.0 );
+  writeGroup( 13, pt4.x() );
+  writeGroup( 23, pt4.y() );
+  writeGroup( 33, 0.0 );
 }
 
 void QgsDxfExport::writeVertex( const QgsPoint& pt, const QString& layer )

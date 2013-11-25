@@ -74,18 +74,32 @@ void QgsDxfPaintEngine::drawPolygon( const QPointF* points, int pointCount, Poly
   QgsPolyline polyline( pointCount );
   for ( int i = 0; i < pointCount; ++i )
   {
-    QPointF dxfCoord = mPaintDevice->dxfCoordinates( points[i] );
-    polyline[i] = QgsPoint( dxfCoord.x(), dxfCoord.y() );
+    polyline[i] = toDxfCoordinates( points[i] );
   }
 
-  int color = mDxf->closestColorMatch( mPen.color().rgb() );
   double width = mPen.widthF() * mPaintDevice->widthScaleFactor();
-  mDxf->writePolyline( polyline, "0", "CONTINUOUS", color, width, mode != QPaintEngine::PolylineMode );
+  mDxf->writePolyline( polyline, mLayer, "CONTINUOUS", currentPenColor(), width, mode != QPaintEngine::PolylineMode );
 }
 
-void QgsDxfPaintEngine::drawRects( const QRectF * rects, int rectCount )
+void QgsDxfPaintEngine::drawRects( const QRectF* rects, int rectCount )
 {
-  QgsDebugMsg( "***********************Dxf paint engine: drawing rects*********************" );
+  if ( !mDxf || !mPaintDevice )
+  {
+    return;
+  }
+
+  for ( int i = 0; i < rectCount; ++i )
+  {
+    double left = rects[i].left();
+    double right = rects[i].right();
+    double top = rects[i].top();
+    double bottom = rects[i].bottom();
+    QgsPoint pt1 = toDxfCoordinates( QPointF( left, bottom ) );
+    QgsPoint pt2 = toDxfCoordinates( QPointF( right, bottom ) );
+    QgsPoint pt3 = toDxfCoordinates( QPointF( left, top ) );
+    QgsPoint pt4 = toDxfCoordinates( QPointF( right, top ) );
+    mDxf->writeSolid( mLayer, currentPenColor(), pt1, pt2, pt3, pt4 );
+  }
 }
 
 void QgsDxfPaintEngine::drawEllipse( const QRectF& rect )
@@ -95,7 +109,6 @@ void QgsDxfPaintEngine::drawEllipse( const QRectF& rect )
 
 void QgsDxfPaintEngine::drawPath( const QPainterPath& path )
 {
-  QgsDebugMsg( "***********************Dxf paint engine: drawing path*********************" );
   QList<QPolygonF> polygonList = path.toFillPolygons();
   QList<QPolygonF>::const_iterator pIt = polygonList.constBegin();
   for ( ; pIt != polygonList.constEnd(); ++pIt )
@@ -107,4 +120,25 @@ void QgsDxfPaintEngine::drawPath( const QPainterPath& path )
 void QgsDxfPaintEngine::drawLines( const QLineF* lines, int lineCount )
 {
   QgsDebugMsg( "***********************Dxf paint engine: drawing path*********************" );
+}
+
+QgsPoint QgsDxfPaintEngine::toDxfCoordinates( const QPointF& pt ) const
+{
+  if ( !mPaintDevice || !mDxf )
+  {
+    return QgsPoint( pt.x(), pt.y() );
+  }
+
+  QPointF dxfPt = mPaintDevice->dxfCoordinates( mTransform.map( pt ) );
+  return QgsPoint( dxfPt.x(), dxfPt.y() );
+}
+
+int QgsDxfPaintEngine::currentPenColor() const
+{
+  if ( !mDxf )
+  {
+    return 0;
+  }
+
+  return mDxf->closestColorMatch( mPen.color().rgb() );
 }
