@@ -1996,6 +1996,15 @@ bool QgsCoordinateReferenceSystem::syncDatumTransform( const QString& dbPath )
     p7 = csList[csSize - 2];
     p7 = p7.isEmpty() ? "NULL" : p7;
 
+    //switch sign of rotation parameters. See http://trac.osgeo.org/proj/wiki/GenParms#towgs84-DatumtransformationtoWGS84
+    if ( coord_op_method == "9607" )
+    {
+      p4 = qgsDoubleToString( -( p4.toDouble() ) );
+      p5 = qgsDoubleToString( -( p5.toDouble() ) );
+      p6 = qgsDoubleToString( -( p6.toDouble() ) );
+      coord_op_method = "9606";
+    }
+
     //entry already in db?
     sqlite3_stmt* stmt;
     QString cOpCode;
