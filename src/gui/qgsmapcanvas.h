@@ -60,7 +60,7 @@ class QgsVectorLayer;
 
 class QgsLabelingResults;
 class QgsMapRenderer;
-class QgsMapRendererSequentialJob;
+class QgsMapRendererQImageJob;
 class QgsMapSettings;
 class QgsMapCanvasMap;
 class QgsMapOverviewCanvas;
@@ -531,13 +531,16 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     QTimer mMapUpdateTimer;
 
     //! Job that takes care of map rendering in background
-    QgsMapRendererSequentialJob* mJob;
+    QgsMapRendererQImageJob* mJob;
 
     //! Flag determining whether the active job has been cancelled
     bool mJobCancelled;
 
     //! Labeling results from the recently rendered map
     QgsLabelingResults* mLabelingResults;
+
+    //! Whether layers are rendered sequentially or in parallel
+    bool mUseParallelRendering;
 
 }; // class QgsMapCanvas
 

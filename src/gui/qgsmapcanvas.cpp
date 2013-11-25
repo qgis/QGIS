@@ -87,6 +87,7 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
     , mJob( 0 )
     , mJobCancelled( false )
     , mLabelingResults( 0 )
+    , mUseParallelRendering( false )
 {
   setObjectName( name );
   mScene = new QGraphicsScene();
@@ -432,7 +433,7 @@ void QgsMapCanvas::refresh()
 
   qDebug("CANVAS calling update");
   mDirty = true;
-  update();
+  mMap->update();
 
   /*
   // we can't draw again if already drawing...
@@ -900,6 +901,11 @@ void QgsMapCanvas::keyPressEvent( QKeyEvent * e )
         zoomOut();
         break;
 
+      case Qt::Key_P:
+        mUseParallelRendering = !mUseParallelRendering;
+        refresh();
+        break;
+
       default:
         // Pass it on
         if ( mMapTool )
@@ -1064,7 +1070,10 @@ void QgsMapCanvas::paintEvent( QPaintEvent *e )
       // create the renderer job
       Q_ASSERT( mJob == 0 );
       mJobCancelled = false;
-      mJob = new QgsMapRendererSequentialJob( mSettings );
+      if ( mUseParallelRendering )
+        mJob = new QgsMapRendererParallelJob( mSettings );
+      else
+        mJob = new QgsMapRendererSequentialJob( mSettings );
       connect(mJob, SIGNAL( finished() ), SLOT( rendererJobFinished() ) );
       mJob->start();
 

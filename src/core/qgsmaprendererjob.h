@@ -1,14 +1,31 @@
 #ifndef QGSMAPRENDERERJOB_H
 #define QGSMAPRENDERERJOB_H
 
-#include <QObject>
+#include <QtConcurrentRun>
+#include <QFutureWatcher>
 #include <QImage>
+#include <QPainter>
+#include <QObject>
 
 #include "qgsrendercontext.h"
 
 #include "qgsmapsettings.h"
 
+
 class QgsLabelingResults;
+class QgsMapLayerRenderer;
+class QgsPalLabeling;
+
+
+struct LayerRenderJob
+{
+  QgsRenderContext context;
+  QImage* img; // may be null if it is not necessary to draw to separate image (e.g. sequential rendering)
+  QgsMapLayerRenderer* renderer; // must be deleted
+  QPainter::CompositionMode blendMode;
+};
+
+typedef QList<LayerRenderJob> LayerRenderJobs;
 
 
 /** abstract base class renderer jobs that asynchronously start map rendering */
@@ -17,30 +34,23 @@ class QgsMapRendererJob : public QObject
   Q_OBJECT
 public:
 
-  enum Type
-  {
-    SequentialJob,
-    CustomPainterJob
-    //ParallelJob
-  };
-
-
-  QgsMapRendererJob(Type type, const QgsMapSettings& settings) : mType(type), mSettings(settings) { }
+  QgsMapRendererJob( const QgsMapSettings& settings );
 
   virtual ~QgsMapRendererJob() {}
 
-  Type type() const { return mType; }
-
   //! Start the rendering job and immediately return.
+  //! Does nothing if the rendering is already in progress.
   virtual void start() = 0;
 
   //! Stop the rendering job - does not return until the job has terminated.
+  //! Does nothing if the rendering is not active.
   virtual void cancel() = 0;
 
   //! Block until the job has finished.
   virtual void waitForFinished() = 0;
 
-  // TODO: isActive() ?
+  //! Tell whether the rendering job is currently running in background.
+  virtual bool isActive() const = 0;
 
   //! Get pointer to internal labeling engine (in order to get access to the results)
   virtual QgsLabelingResults* takeLabelingResults() = 0;
@@ -60,20 +70,26 @@ protected:
    */
   static bool reprojectToLayerExtent(const QgsCoordinateTransform* ct, bool layerCrsGeographic, QgsRectangle& extent, QgsRectangle& r2 );
 
+  LayerRenderJobs prepareJobs( QPainter* painter, QgsPalLabeling* labelingEngine );
 
-  Type mType;
+  static void cleanupJobs( LayerRenderJobs& jobs );
+
+  bool needTemporaryImage( QgsMapLayer* ml );
+
 
   QgsMapSettings mSettings;
 };
 
 
+/** Intermediate base class adding functionality that allows client to query the rendered image.
+ *  The image can be queried even while the rendering is still in progress to get intermediate result
+ */
 class QgsMapRendererQImageJob : public QgsMapRendererJob
 {
 public:
-  QgsMapRendererQImageJob(Type type, const QgsMapSettings& settings);
+  QgsMapRendererQImageJob( const QgsMapSettings& settings );
 
-  //! Get a preview/resulting image - in case QPainter has not been provided.
-  //! With QPainter specified, it will return invalid QImage (there's no way to provide it).
+  //! Get a preview/resulting image
   virtual QImage renderedImage() = 0;
 };
 
@@ -86,12 +102,13 @@ class QgsMapRendererSequentialJob : public QgsMapRendererQImageJob
 {
   Q_OBJECT
 public:
-  QgsMapRendererSequentialJob(const QgsMapSettings& settings);
+  QgsMapRendererSequentialJob( const QgsMapSettings& settings );
   ~QgsMapRendererSequentialJob();
 
   virtual void start();
   virtual void cancel();
   virtual void waitForFinished();
+  virtual bool isActive() const;
 
   virtual QgsLabelingResults* takeLabelingResults();
 
@@ -112,28 +129,44 @@ protected:
 
 
 
-/** job implementation that renders all layers in parallel - the implication is that rendering is done to QImage */
-//class QgsMapRendererParallelJob : public QgsMapRendererJobWithPreview
-//{
-//};
 
-
-#include <QtConcurrentRun>
-#include <QFutureWatcher>
-#include <QPainter>
-
-class QgsMapLayerRenderer;
-class QgsPalLabeling;
-
-
-
-struct LayerRenderJob
+/** job implementation that renders all layers in parallel */
+class QgsMapRendererParallelJob : public QgsMapRendererQImageJob
 {
-  QgsRenderContext context;
-  QImage* img; // may be null if it is not necessary to draw to separate image (e.g. sequential rendering)
-  QgsMapLayerRenderer* renderer; // must be deleted
-  QPainter::CompositionMode blendMode;
+  Q_OBJECT
+public:
+  QgsMapRendererParallelJob(const QgsMapSettings& settings);
+  ~QgsMapRendererParallelJob();
+
+  virtual void start();
+  virtual void cancel();
+  virtual void waitForFinished();
+  virtual bool isActive() const;
+
+  virtual QgsLabelingResults* takeLabelingResults();
+
+  // from QgsMapRendererJobWithPreview
+  virtual QImage renderedImage();
+
+protected slots:
+  void renderLayersFinished();
+
+protected:
+
+  static void renderLayerStatic(LayerRenderJob& job);
+
+  QImage composeImage();
+
+protected:
+
+  QImage mFinalImage;
+
+  QFuture<void> mFuture;
+  QFutureWatcher<void> mFutureWatcher;
+
+  LayerRenderJobs mLayerJobs;
 };
+
 
 
 /** job implementation that renders everything sequentially using a custom painter.
@@ -149,6 +182,7 @@ public:
   virtual void start();
   virtual void cancel();
   virtual void waitForFinished();
+  virtual bool isActive() const;
   virtual QgsLabelingResults* takeLabelingResults();
 
 protected slots:
@@ -157,9 +191,10 @@ protected slots:
 protected:
   static void staticRender(QgsMapRendererCustomPainterJob* self); // function to be used within the thread
 
+  // these methods are called within worker thread
   void doRender();
-
-  bool needTemporaryImage( QgsMapLayer* ml );
+  void drawOldLabeling();
+  void drawNewLabeling();
 
 private:
   QPainter* mPainter;
@@ -167,8 +202,6 @@ private:
   QFutureWatcher<void> mFutureWatcher;
   QgsRenderContext mRenderContext;  // used just for labeling!
   QgsPalLabeling* mLabelingEngine;
-
-  typedef QList<LayerRenderJob> LayerRenderJobs;
 
   LayerRenderJobs mLayerJobs;
 };

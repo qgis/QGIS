@@ -137,8 +137,6 @@ bool QgsOgrFeatureIterator::fetchFeature( QgsFeature& feature )
 
   } // while
 
-  QgsDebugMsg( "Feature is null" );
-
   close();
   return false;
 }
