@@ -65,10 +65,14 @@ class QgsDxfExport
     void writeDouble( double d );
     void writeString( const QString& s );
 
+    //draw dxf primitives
     void writePolyline( const QgsPolyline& line, const QString& layer, const QString& lineStyleName, int color,
                         double width = -1, bool polygon = false );
 
     void writeSolid( const QString& layer, int color, const QgsPoint& pt1, const QgsPoint& pt2, const QgsPoint& pt3, const QgsPoint& pt4 );
+
+    //write line (as a polyline)
+    void writeLine( const QgsPoint& pt1, const QgsPoint& pt2, const QString& layer, const QString& lineStyleName, int color, double width = -1 );
 
   private:
 

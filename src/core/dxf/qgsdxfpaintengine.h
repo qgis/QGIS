@@ -57,6 +57,7 @@ class QgsDxfPaintEngine: public QPaintEngine
 
     QgsPoint toDxfCoordinates( const QPointF& pt ) const;
     int currentPenColor() const;
+    double currentWidth() const;
 };
 
 #endif // QGSDXFPAINTENGINE_H

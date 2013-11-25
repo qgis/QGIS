@@ -741,6 +741,14 @@ void QgsDxfExport::writePolyline( const QgsPolyline& line, const QString& layer,
   writeGroup( 0, "SEQEND" );
 }
 
+void QgsDxfExport::writeLine( const QgsPoint& pt1, const QgsPoint& pt2, const QString& layer, const QString& lineStyleName, int color, double width )
+{
+  QgsPolyline line( 2 );
+  line[0] = pt1;
+  line[1] = pt2;
+  writePolyline( line, layer, lineStyleName, color, width, false );
+}
+
 void QgsDxfExport::writeSolid( const QString& layer, int color, const QgsPoint& pt1, const QgsPoint& pt2, const QgsPoint& pt3, const QgsPoint& pt4 )
 {
   writeGroup( 0, "SOLID" );

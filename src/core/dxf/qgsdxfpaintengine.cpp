@@ -77,13 +77,12 @@ void QgsDxfPaintEngine::drawPolygon( const QPointF* points, int pointCount, Poly
     polyline[i] = toDxfCoordinates( points[i] );
   }
 
-  double width = mPen.widthF() * mPaintDevice->widthScaleFactor();
-  mDxf->writePolyline( polyline, mLayer, "CONTINUOUS", currentPenColor(), width, mode != QPaintEngine::PolylineMode );
+  mDxf->writePolyline( polyline, mLayer, "CONTINUOUS", currentPenColor(), currentWidth(), mode != QPaintEngine::PolylineMode );
 }
 
 void QgsDxfPaintEngine::drawRects( const QRectF* rects, int rectCount )
 {
-  if ( !mDxf || !mPaintDevice )
+  if ( !mDxf || !mPaintDevice || !rects )
   {
     return;
   }
@@ -104,7 +103,9 @@ void QgsDxfPaintEngine::drawRects( const QRectF* rects, int rectCount )
 
 void QgsDxfPaintEngine::drawEllipse( const QRectF& rect )
 {
-  QgsDebugMsg( "***********************Dxf paint engine: drawing ellipse*********************" );
+  //map to circle in case of square?
+
+  //todo: create polyline for real ellises
 }
 
 void QgsDxfPaintEngine::drawPath( const QPainterPath& path )
@@ -119,7 +120,17 @@ void QgsDxfPaintEngine::drawPath( const QPainterPath& path )
 
 void QgsDxfPaintEngine::drawLines( const QLineF* lines, int lineCount )
 {
-  QgsDebugMsg( "***********************Dxf paint engine: drawing path*********************" );
+  if ( !mDxf || !mPaintDevice || !lines )
+  {
+    return;
+  }
+
+  for ( int i = 0; i < lineCount; ++i )
+  {
+    QgsPoint pt1 = toDxfCoordinates( lines[i].p1() );
+    QgsPoint pt2 = toDxfCoordinates( lines[i].p2() );
+    mDxf->writeLine( pt1, pt2, mLayer, "CONTINUOUS", currentPenColor(), currentWidth() );
+  }
 }
 
 QgsPoint QgsDxfPaintEngine::toDxfCoordinates( const QPointF& pt ) const
@@ -141,4 +152,14 @@ int QgsDxfPaintEngine::currentPenColor() const
   }
 
   return mDxf->closestColorMatch( mPen.color().rgb() );
+}
+
+double QgsDxfPaintEngine::currentWidth() const
+{
+  if ( !mPaintDevice )
+  {
+    return 1;
+  }
+
+  return mPen.widthF() * mPaintDevice->widthScaleFactor();
 }
