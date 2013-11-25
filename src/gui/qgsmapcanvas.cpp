@@ -852,7 +852,11 @@ void QgsMapCanvas::keyPressEvent( QKeyEvent * e )
         refresh();
         break;
 
+      case Qt::Key_F5:
+        QgsDebugMsg( "Pressing F5 for refresh" );
 
+        refresh();
+        break;
 
       case Qt::Key_Space:
         QgsDebugMsg( "Pressing pan selector" );
