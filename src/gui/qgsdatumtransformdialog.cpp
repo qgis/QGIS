@@ -41,6 +41,14 @@ QgsDatumTransformDialog::QgsDatumTransformDialog( const QString& layerName, cons
       if ( nr != -1 )
       {
         item->setText( i, QgsCoordinateTransform::datumTransformString( nr ) );
+
+        //Describe datums in a tooltip
+        QString srcGeoProj, destGeoProj;
+        if ( QgsCoordinateTransform::datumTransformCrsInfo( nr, srcGeoProj, destGeoProj ) )
+        {
+          QString toolTipString = QString( "EPSG Transformations Code: %1\nSource CRS: %2\nDestination CRS: %3" ).arg( nr ).arg( srcGeoProj ).arg( destGeoProj );
+          item->setToolTip( i, toolTipString );
+        }
       }
 
       if ( gridShiftTransformation( item->text( i ) ) && !testGridShiftFileAvailability( item, i ) )

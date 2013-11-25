@@ -932,6 +932,43 @@ QString QgsCoordinateTransform::datumTransformString( int datumTransform )
   return transformString;
 }
 
+bool QgsCoordinateTransform::datumTransformCrsInfo( int datumTransform, QString& srcProjection, QString& dstProjection )
+{
+  sqlite3* db;
+  int openResult = sqlite3_open( QgsApplication::srsDbFilePath().toUtf8().constData(), &db );
+  if ( openResult != SQLITE_OK )
+  {
+    sqlite3_close( db );
+    return false;
+  }
+
+  sqlite3_stmt* stmt;
+  QString sql = QString( "SELECT source_crs_code, target_crs_code FROM tbl_datum_transform WHERE coord_op_code = %1" ).arg( datumTransform );
+  int prepareRes = sqlite3_prepare( db, sql.toAscii(), sql.size(), &stmt, NULL );
+  if ( prepareRes != SQLITE_OK )
+  {
+    sqlite3_finalize( stmt ); sqlite3_close( db );
+    return false;
+  }
+
+  int srcCrsId, destCrsId;
+  if ( sqlite3_step( stmt ) == SQLITE_ROW )
+  {
+    srcCrsId = sqlite3_column_int( stmt, 0 );
+    destCrsId = sqlite3_column_int( stmt, 1 );
+  }
+
+  QgsCoordinateReferenceSystem srcCrs;
+  srcCrs.createFromOgcWmsCrs( QString( "EPSG:%1" ).arg( srcCrsId ) );
+  srcProjection = srcCrs.description();
+  QgsCoordinateReferenceSystem destCrs;
+  destCrs.createFromOgcWmsCrs( QString( "EPSG:%1" ).arg( destCrsId ) );
+  dstProjection = destCrs.description();
+
+  sqlite3_finalize( stmt ); sqlite3_close( db );
+  return true;
+}
+
 void QgsCoordinateTransform::addNullGridShifts( QString& srcProjString, QString& destProjString )
 {
   //if one transformation uses ntv2, the other one needs to be null grid shift
