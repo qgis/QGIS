@@ -113,5 +113,6 @@ bool QgsCachedFeatureWriterIterator::rewind()
 
 bool QgsCachedFeatureWriterIterator::close()
 {
+  mClosed = true;
   return mFeatIt.close();
 }
