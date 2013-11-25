@@ -442,7 +442,7 @@ Requête&amp;nbsp;:
     </message>
     <message>
         <source>Delete selected item</source>
-        <translation>Efface l&apos;icône sélectionnée</translation>
+        <translation>Efface l&apos;objet sélectionné</translation>
     </message>
     <message>
         <source>&amp;Create table</source>
@@ -2879,32 +2879,32 @@ Are you sure you want to proceed?</source>
     <message>
         <location filename="../python/plugins/processing/ui/DlgAutofill.ui" line="14"/>
         <source>Autofill settings</source>
-        <translation></translation>
+        <translation>Paramètres de remplissage automatique</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgAutofill.ui" line="20"/>
         <source>Autofill mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Mode de remplissage automatique</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgAutofill.ui" line="28"/>
         <source>Do not autofill</source>
-        <translation type="unfinished"></translation>
+        <translation>Ne pas remplir automatiquement</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgAutofill.ui" line="33"/>
         <source>Fill with numbers</source>
-        <translation type="unfinished"></translation>
+        <translation>Remplir avec des nombres</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgAutofill.ui" line="38"/>
         <source>Fill with parameter values</source>
-        <translation type="unfinished"></translation>
+        <translation>Remplir avec les valeurs du paramètre</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgAutofill.ui" line="49"/>
         <source>Parameter to use</source>
-        <translation type="unfinished"></translation>
+        <translation>Paramètre à utiliser</translation>
     </message>
 </context>
 <context>
@@ -20790,7 +20790,7 @@ Essayez une résolution ou une taille de papier inférieur.</translation>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="717"/>
         <source>Delete selected items</source>
-        <translation type="unfinished"></translation>
+        <translation>Efface l&apos;objet sélectionné</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="720"/>
@@ -22718,12 +22718,12 @@ Essayez une résolution ou une taille de papier inférieur.</translation>
     <message>
         <location filename="../src/core/composer/qgscomposermousehandles.cpp" line="455"/>
         <source>Change item position</source>
-        <translation type="unfinished">Changer la position des objets</translation>
+        <translation>Changer la position des objets</translation>
     </message>
     <message>
         <location filename="../src/core/composer/qgscomposermousehandles.cpp" line="480"/>
         <source>Change item size</source>
-        <translation type="unfinished"></translation>
+        <translation>Changer la taille des objets</translation>
     </message>
     <message>
         <location filename="../src/core/composer/qgscomposermousehandles.cpp" line="530"/>
@@ -28457,7 +28457,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsfeatureselectiondlg.ui" line="14"/>
         <source>Dialog</source>
-        <translation type="unfinished">Dialogue</translation>
+        <translation>Dialogue</translation>
     </message>
 </context>
 <context>
@@ -32658,12 +32658,12 @@ Appuyez sur Échap pour annuler le calcul ou OK pour continuer.</translation>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="112"/>
         <source>Select item</source>
-        <translation>Sélectionne l&apos;icône</translation>
+        <translation>Sélectionne l&apos;objet</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="119"/>
         <source>Delete selected item</source>
-        <translation>Efface l&apos;icône sélectionnée</translation>
+        <translation>Efface l&apos;objet sélectionné</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="129"/>
@@ -50536,17 +50536,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/core/raster/qgsrasterdataprovider.cpp" line="472"/>
         <source>Text</source>
-        <translation type="unfinished">Texte</translation>
+        <translation>Texte</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterdataprovider.cpp" line="474"/>
         <source>Html</source>
-        <translation type="unfinished"></translation>
+        <translation>Html</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterdataprovider.cpp" line="476"/>
         <source>Feature</source>
-        <translation type="unfinished"></translation>
+        <translation>Entité</translation>
     </message>
 </context>
 <context>
@@ -50718,37 +50718,37 @@ Click on help button to get valid creation options for this format.</source>
     <message>
         <location filename="../src/gui/raster/qgsrasterhistogramwidget.cpp" line="108"/>
         <source>Min/Max options</source>
-        <translation type="unfinished"></translation>
+        <translation>Options de min/max</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterhistogramwidget.cpp" line="111"/>
         <source>Always show min/max markers</source>
-        <translation type="unfinished"></translation>
+        <translation>Toujours afficher les marqueurs min/max</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterhistogramwidget.cpp" line="116"/>
         <source>Zoom to min/max</source>
-        <translation type="unfinished"></translation>
+        <translation>Zoomer sur les min/max</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterhistogramwidget.cpp" line="121"/>
         <source>Update style to min/max</source>
-        <translation type="unfinished"></translation>
+        <translation>Mettre à jour le style des min/max</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterhistogramwidget.cpp" line="137"/>
         <source>Show all bands</source>
-        <translation type="unfinished"></translation>
+        <translation>Afficher toutes les bandes</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterhistogramwidget.cpp" line="142"/>
         <source>Show RGB/Gray band(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Afficher les bandes RVB/Grises</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterhistogramwidget.cpp" line="147"/>
         <source>Show selected band</source>
-        <translation type="unfinished"></translation>
+        <translation>Afficher la bande sélectionnée</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterhistogramwidget.cpp" line="154"/>
@@ -50763,7 +50763,7 @@ Click on help button to get valid creation options for this format.</source>
     <message>
         <location filename="../src/gui/raster/qgsrasterhistogramwidget.cpp" line="169"/>
         <source>Load min/max</source>
-        <translation type="unfinished"></translation>
+        <translation>Charger les min/max</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterhistogramwidget.cpp" line="172"/>
@@ -50783,22 +50783,22 @@ Click on help button to get valid creation options for this format.</source>
     <message>
         <location filename="../src/gui/raster/qgsrasterhistogramwidget.cpp" line="181"/>
         <source>Use stddev (1.0)</source>
-        <translation type="unfinished"></translation>
+        <translation>Utiliser l&apos;écart-type (1.0)</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterhistogramwidget.cpp" line="184"/>
         <source>Use stddev (custom)</source>
-        <translation type="unfinished"></translation>
+        <translation>Utiliser l&apos;écart-type (personnalisé)</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterhistogramwidget.cpp" line="187"/>
         <source>Load for each band</source>
-        <translation type="unfinished"></translation>
+        <translation>Charger toutes les bandes</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterhistogramwidget.cpp" line="195"/>
         <source>Recompute Histogram</source>
-        <translation type="unfinished"></translation>
+        <translation>Recalculer l&apos;histogramme</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterhistogramwidget.cpp" line="449"/>
@@ -50808,7 +50808,7 @@ Click on help button to get valid creation options for this format.</source>
     <message>
         <location filename="../src/gui/raster/qgsrasterhistogramwidget.cpp" line="565"/>
         <source>Choose a file name to save the map image as</source>
-        <translation type="unfinished"></translation>
+        <translation>Choisir un nom de fichier pour enregistrer l&apos;image sous</translation>
     </message>
 </context>
 <context>
@@ -50825,7 +50825,7 @@ Click on help button to get valid creation options for this format.</source>
     <message>
         <location filename="../src/ui/qgsrasterhistogramwidgetbase.ui" line="101"/>
         <source>Set min/max style for</source>
-        <translation type="unfinished"></translation>
+        <translation>Definir le style min/max pour</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterhistogramwidgetbase.ui" line="145"/>
@@ -50835,7 +50835,7 @@ Click on help button to get valid creation options for this format.</source>
     <message>
         <location filename="../src/ui/qgsrasterhistogramwidgetbase.ui" line="171"/>
         <source>Pick Min value on graph</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Récupérer la valeur min sur le graphique</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterhistogramwidgetbase.ui" line="174"/>
@@ -50851,7 +50851,7 @@ Click on help button to get valid creation options for this format.</source>
     <message>
         <location filename="../src/ui/qgsrasterhistogramwidgetbase.ui" line="246"/>
         <source>Pick Max value on graph</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Récupérer la valeur max sur le graphique</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterhistogramwidgetbase.ui" line="300"/>
@@ -50871,7 +50871,7 @@ Click on help button to get valid creation options for this format.</source>
     <message>
         <location filename="../src/ui/qgsrasterhistogramwidgetbase.ui" line="406"/>
         <source>Compute Histogram</source>
-        <translation type="unfinished"></translation>
+        <translation>Calculer l&apos;histogramme</translation>
     </message>
 </context>
 <context>
@@ -53415,22 +53415,22 @@ standard deviation ×</source>
     <message>
         <location filename="../src/ui/editorwidgets/qgsrelreferenceconfigdlgbase.ui" line="20"/>
         <source>Display expression</source>
-        <translation type="unfinished"></translation>
+        <translation>Afficher l&apos;expression</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsrelreferenceconfigdlgbase.ui" line="27"/>
         <source>Allow NULL value</source>
-        <translation type="unfinished"></translation>
+        <translation>Autoriser la valeur NULL</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsrelreferenceconfigdlgbase.ui" line="34"/>
         <source>Show embedded form</source>
-        <translation type="unfinished"></translation>
+        <translation>Montrer le formulaire embarqué</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsrelreferenceconfigdlgbase.ui" line="41"/>
         <source>Relation</source>
-        <translation type="unfinished"></translation>
+        <translation>Relation</translation>
     </message>
 </context>
 <context>
@@ -53438,19 +53438,19 @@ standard deviation ×</source>
     <message>
         <location filename="../src/core/qgsrelation.cpp" line="36"/>
         <source>Cannot create relation. Unexpected tag &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Impossibe de créer la relation. Tag %1 inattendu</translation>
     </message>
     <message>
         <location filename="../src/core/qgsrelation.cpp" line="53"/>
         <location filename="../src/core/qgsrelation.cpp" line="62"/>
         <source>Relation defined for layer &apos;%1&apos; which does not exist.</source>
-        <translation type="unfinished"></translation>
+        <translation>Relation définie pour la couche &apos;%1&apos; qui n&apos;existe pas.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsrelation.cpp" line="57"/>
         <location filename="../src/core/qgsrelation.cpp" line="66"/>
         <source>Relation defined for layer &apos;%1&apos; which is not of type VectorLayer.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Relation définie pour la couche &apos;%1&apos;qui n&apos;est pas du type vectoriel.</translation>
     </message>
 </context>
 <context>
@@ -53459,7 +53459,7 @@ standard deviation ×</source>
         <location filename="../src/gui/qgsrelationadddlg.cpp" line="10"/>
         <location filename="../src/gui/qgsrelationadddlg.cpp" line="12"/>
         <source>[Generated automatically]</source>
-        <translation type="unfinished"></translation>
+        <translation>[Généré automatiquement]</translation>
     </message>
 </context>
 <context>
@@ -53472,22 +53472,22 @@ standard deviation ×</source>
     <message>
         <location filename="../src/ui/qgsrelationadddlgbase.ui" line="26"/>
         <source>Referencing Field</source>
-        <translation type="unfinished"></translation>
+        <translation>Champ référençant</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrelationadddlgbase.ui" line="33"/>
         <source>Referenced Layer (Parent)</source>
-        <translation type="unfinished"></translation>
+        <translation>Couche de référence (parent)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrelationadddlgbase.ui" line="40"/>
         <source>Referenced Field</source>
-        <translation type="unfinished"></translation>
+        <translation>Champ de référence</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrelationadddlgbase.ui" line="53"/>
         <source>Referencing Layer (Child)</source>
-        <translation type="unfinished"></translation>
+        <translation>Couche référençante (enfant)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrelationadddlgbase.ui" line="60"/>
@@ -53559,22 +53559,22 @@ standard deviation ×</source>
     <message>
         <location filename="../src/ui/qgsrelationmanagerdialogbase.ui" line="26"/>
         <source>Referencing Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Couche référençante</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrelationmanagerdialogbase.ui" line="31"/>
         <source>Referencing Field</source>
-        <translation type="unfinished"></translation>
+        <translation>Champ référençant</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrelationmanagerdialogbase.ui" line="36"/>
         <source>Referenced Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Couche de référence</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrelationmanagerdialogbase.ui" line="41"/>
         <source>Referenced Field</source>
-        <translation type="unfinished"></translation>
+        <translation>Champ de référence</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrelationmanagerdialogbase.ui" line="46"/>
@@ -53584,12 +53584,12 @@ standard deviation ×</source>
     <message>
         <location filename="../src/ui/qgsrelationmanagerdialogbase.ui" line="69"/>
         <source>Add Relation</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajouter une relation</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrelationmanagerdialogbase.ui" line="80"/>
         <source>Remove Relation</source>
-        <translation type="unfinished"></translation>
+        <translation>Supprimer la relation</translation>
     </message>
 </context>
 <context>
@@ -53597,12 +53597,12 @@ standard deviation ×</source>
     <message>
         <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="67"/>
         <source>Open Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Ouvrir le formulaire</translation>
     </message>
     <message>
         <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="108"/>
         <source>The relation is not valid. Please make sure your relation definitions are ok.</source>
-        <translation type="unfinished"></translation>
+        <translation>La relation n&apos;est pas valide. Merci de vérifier que les définitions de la relation sont bonnes.</translation>
     </message>
 </context>
 <context>
@@ -55461,12 +55461,12 @@ du contraste</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgssmartgroupeditordialog.cpp" line="86"/>
         <source>ALL the constraints</source>
-        <translation type="unfinished"></translation>
+        <translation>Toutes les contraintes</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssmartgroupeditordialog.cpp" line="87"/>
         <source>any ONE of the constraints</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">n&apos;importe laquelle des contraintes</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssmartgroupeditordialog.cpp" line="204"/>
@@ -58033,7 +58033,7 @@ There was a problem with your symbol database.</source>
     <message>
         <location filename="../src/core/symbology-ng/qgssvgcache.cpp" line="303"/>
         <source>SVG request failed [error: %1 - url: %2]</source>
-        <translation type="unfinished"></translation>
+        <translation>Requête SVG échouée [erreur : %1 - url : %2]</translation>
     </message>
     <message>
         <location filename="../src/core/symbology-ng/qgssvgcache.cpp" line="303"/>
@@ -58044,12 +58044,12 @@ There was a problem with your symbol database.</source>
     <message>
         <location filename="../src/core/symbology-ng/qgssvgcache.cpp" line="326"/>
         <source>SVG request error [status: %1 - reason phrase: %2]</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur de requête SVG [status : %1 - raison : %2]</translation>
     </message>
     <message>
         <location filename="../src/core/symbology-ng/qgssvgcache.cpp" line="739"/>
         <source>%1 of %2 bytes of svg image downloaded.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 sur %2 octets de l&apos;image svg téléchargés.</translation>
     </message>
 </context>
 <context>
@@ -61872,12 +61872,12 @@ Response was:
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="201"/>
         <source>Cannot calculate extent</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de calculer l&apos;emprise</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="259"/>
         <source>Cannot get test dataset.</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible d&apos;obtenir le jeux de données test.</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="583"/>
@@ -61887,12 +61887,12 @@ Response was:
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="602"/>
         <source>Rotating raster</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Rotation du raster</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="627"/>
         <source>Block read OK</source>
-        <translation type="unfinished"></translation>
+        <translation>Lecture du bloc OK</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="633"/>
@@ -61902,47 +61902,47 @@ Response was:
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="798"/>
         <source>Getting map via WCS.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Obtention de la carte via WCS.</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="865"/>
         <source>Map request error (Status: %1; Reason phrase: %2; URL:%3)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Erreur de requête de carte (Status : %1; Raison : %2; URL : %3)</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="896"/>
         <source>Map request error:&lt;br&gt;Title: %1&lt;br&gt;Error: %2&lt;br&gt;URL: &lt;a href=&apos;%3&apos;&gt;%3&lt;/a&gt;)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Erreur de requête de carte : &lt;br&gt;Titre : %1&lt;br&gt;Erreur : %2&lt;br&gt;URL : &lt;a href=&apos;%3&apos;&gt;%3&lt;/a&gt;)</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="922"/>
         <source>Cannot parse multipart response: %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Impossible d&apos;analyser la réponse multi-parties : %1</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="954"/>
         <source>Map request error (Title:%1; Error:%2; URL: %3)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Erreur de requête de carte (Titre : %1; Erreur : %2; URL : %3)</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="902"/>
         <source>Map request error (Status: %1; Response: %2; URL:%3)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Erreur de requête de carte (Status : %1; Réponse : %2; URL : %3)</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="931"/>
         <source>Expected 2 parts, %1 received</source>
-        <translation type="unfinished"></translation>
+        <translation>2 parties attendues, %1 reçues</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="940"/>
         <source>More than 2 parts (%1) received</source>
-        <translation type="unfinished"></translation>
+        <translation>Plus de 2 parties (%1) reçues</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="960"/>
         <source>Map request error (Response: %1; URL:%2)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Erreur de requête de carte (Réponse : %1, URL : %2)</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="980"/>
@@ -61952,17 +61952,17 @@ Response was:
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1000"/>
         <source>No data received</source>
-        <translation type="unfinished"></translation>
+        <translation>Pas de données reçues</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1024"/>
         <source>Cannot create memory file</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de créer le fichier en mémoire</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1073"/>
         <source>Map request failed [error:%1 url:%2]</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Requête de carte échouée [erreur : %1 url : %2]</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1077"/>
@@ -62011,12 +62011,12 @@ Response was:
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1234"/>
         <source>Request does not include a parameter value, and the server instance did not declare a default value for that dimension.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">La requête ne contient pas une valeur de paramètre, pour laquelle le serveur n&apos;a pas déclaré de valeur par défaut.</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1235"/>
         <source>Request contains an invalid parameter value.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">La requête contient une valeur de paramètre invalide.</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1237"/>
@@ -62026,12 +62026,12 @@ Response was:
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1238"/>
         <source>Operation request contains an output CRS that can not be used within the output format.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">La requête contient un SCR de sortie qui ne peut pas être utilisé avec le format de sortie.</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1239"/>
         <source>Operation request specifies to &quot;store&quot; the result, but not enough storage is available to do this.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">La requête indique « d&apos;enregistrer » le résultat, mais il n&apos;y a pas suffisament d&apos;espace disponible.</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1268"/>
@@ -62073,7 +62073,7 @@ Response was:
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1463"/>
         <source>Name (identifier)</source>
-        <translation type="unfinished"></translation>
+        <translation>Nom (identifiant)</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1464"/>
@@ -62085,7 +62085,7 @@ Response was:
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1465"/>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1548"/>
         <source>Abstract</source>
-        <translation type="unfinished"></translation>
+        <translation>Résumé</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1468"/>
@@ -62100,12 +62100,12 @@ Response was:
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1470"/>
         <source>Native CRS</source>
-        <translation type="unfinished"></translation>
+        <translation>SCR natif</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1471"/>
         <source>Native Bounding Box</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Emprise de la carte native</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1474"/>
@@ -62123,16 +62123,16 @@ Response was:
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1497"/>
         <source>(and %n more)</source>
         <comment>crs</comment>
-        <translation type="unfinished">
-            <numerusform>(et %N de plus)</numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>(et %n de plus)</numerusform>
+            <numerusform>(et %n de plus)</numerusform>
         </translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1492"/>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1497"/>
         <source>Available in format</source>
-        <translation type="unfinished"></translation>
+        <translation>Disponible au format</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1515"/>
@@ -62211,7 +62211,7 @@ Response was:
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1695"/>
         <source>Read data error</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Erreur de lecture des données</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1722"/>
@@ -64079,15 +64079,15 @@ Description : %3</translation>
     <name>ScriptEditorDialog</name>
     <message>
         <source>Python scripts (*.py)</source>
-        <translation type="unfinished"></translation>
+        <translation>Scripts Python (*.py)</translation>
     </message>
     <message>
         <source>Processing R script (*.rsx)</source>
-        <translation type="unfinished"></translation>
+        <translation>Traitement du script R (*.rsx)</translation>
     </message>
     <message>
         <source>Save script</source>
-        <translation type="unfinished"></translation>
+        <translation>Enregistrer le script</translation>
     </message>
     <message>
         <source>I/O error</source>
@@ -64101,7 +64101,7 @@ Description : %3</translation>
     </message>
     <message>
         <source>Script saving</source>
-        <translation type="unfinished"></translation>
+        <translation>Enregistrement du script</translation>
     </message>
     <message>
         <source>Script was correctly saved.</source>
@@ -64227,7 +64227,7 @@ Description : %3</translation>
         <location filename="../python/console/console_settings.ui" line="285"/>
         <location filename="../python/console/console_settings.ui" line="817"/>
         <source>Font and Colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Police et couleurs</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="319"/>
@@ -64239,25 +64239,25 @@ Description : %3</translation>
         <location filename="../python/console/console_settings.ui" line="355"/>
         <location filename="../python/console/console_settings.ui" line="887"/>
         <source>Default:</source>
-        <translation type="unfinished"></translation>
+        <translation>Par défaut :</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="369"/>
         <location filename="../python/console/console_settings.ui" line="901"/>
         <source>Keyword:</source>
-        <translation type="unfinished"></translation>
+        <translation>Mot-clé :</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="383"/>
         <location filename="../python/console/console_settings.ui" line="915"/>
         <source>Class name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nom de classe :</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="397"/>
         <location filename="../python/console/console_settings.ui" line="929"/>
         <source>Function:</source>
-        <translation type="unfinished"></translation>
+        <translation>Fonction :</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="411"/>
@@ -64275,13 +64275,13 @@ Description : %3</translation>
         <location filename="../python/console/console_settings.ui" line="439"/>
         <location filename="../python/console/console_settings.ui" line="971"/>
         <source>Comment block:</source>
-        <translation type="unfinished"></translation>
+        <translation>Bloc de commentaire :</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="453"/>
         <location filename="../python/console/console_settings.ui" line="985"/>
         <source>Cursor:</source>
-        <translation type="unfinished"></translation>
+        <translation>Curseur :</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="467"/>
@@ -64293,37 +64293,37 @@ Description : %3</translation>
         <location filename="../python/console/console_settings.ui" line="481"/>
         <location filename="../python/console/console_settings.ui" line="1013"/>
         <source>Single quote:</source>
-        <translation type="unfinished"></translation>
+        <translation>Guillemet simple :</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="495"/>
         <location filename="../python/console/console_settings.ui" line="1027"/>
         <source>Double quote:</source>
-        <translation type="unfinished"></translation>
+        <translation>Guillemet double :</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="509"/>
         <location filename="../python/console/console_settings.ui" line="1041"/>
         <source>Triple single quote:</source>
-        <translation type="unfinished"></translation>
+        <translation>Guillemet simple triplé :</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="523"/>
         <location filename="../python/console/console_settings.ui" line="1055"/>
         <source>Triple double quote:</source>
-        <translation type="unfinished"></translation>
+        <translation>Guillemet double triplé :</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="537"/>
         <location filename="../python/console/console_settings.ui" line="1069"/>
         <source>Background:</source>
-        <translation type="unfinished"></translation>
+        <translation>Fond :</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="555"/>
         <location filename="../python/console/console_settings.ui" line="1101"/>
         <source>Reset to default colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Réinitialiser les couleurs par défaut</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="586"/>
@@ -64335,7 +64335,8 @@ Description : %3</translation>
         <location filename="../python/console/console_settings.ui" line="607"/>
         <location filename="../python/console/console_settings.ui" line="727"/>
         <source>Automatic insertion of the &apos;import&apos; string on &apos;from xxx&apos;</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>« from xxx import ...» est du code python</translatorcomment>
+        <translation>Insertion automatique de la chaîne « import » dans « from xxx »</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="619"/>
@@ -64347,52 +64348,52 @@ Description : %3</translation>
         <location filename="../python/console/console_settings.ui" line="642"/>
         <location filename="../python/console/console_settings.ui" line="802"/>
         <source>Get autocompletion from current document</source>
-        <translation type="unfinished"></translation>
+        <translation>Autocomplétion depuis le document actuel</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="645"/>
         <location filename="../python/console/console_settings.ui" line="805"/>
         <source>from Document</source>
-        <translation type="unfinished"></translation>
+        <translation>depuis le document</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="662"/>
         <location filename="../python/console/console_settings.ui" line="789"/>
         <source>Get autocompletion from installed APIs</source>
-        <translation type="unfinished"></translation>
+        <translation>Autocomplétion depuis les APIs installées</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="665"/>
         <location filename="../python/console/console_settings.ui" line="792"/>
         <source>from APIs files</source>
-        <translation type="unfinished"></translation>
+        <translation>depuis les fichiers d&apos;API</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="1083"/>
         <source>Error:</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur :</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="218"/>
         <source>Using prepared APIs file</source>
-        <translation type="unfinished"></translation>
+        <translation>Utilisation du fichier d&apos;APIs préparé</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="239"/>
         <source>Compile APIs...</source>
-        <translation type="unfinished"></translation>
+        <translation>Compilation des APIs ...</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="652"/>
         <location filename="../python/console/console_settings.ui" line="779"/>
         <source>Get autocompletion from current document and installed APIs</source>
-        <translation type="unfinished"></translation>
+        <translation>Autocomplétion depuis le document actuel et les APIs installées</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="655"/>
         <location filename="../python/console/console_settings.ui" line="782"/>
         <source>from Doc and APIs</source>
-        <translation type="unfinished"></translation>
+        <translation>Depuis document et APIs</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="262"/>
@@ -64402,35 +64403,35 @@ Description : %3</translation>
     <message>
         <location filename="../python/console/console_settings.ui" line="268"/>
         <source>Auto-save script before running</source>
-        <translation type="unfinished"></translation>
+        <translation>Enregistrement automatique du script avant exécution</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="677"/>
         <location filename="../python/console/console_settings.ui" line="760"/>
         <source>Autocompletion threshold</source>
-        <translation type="unfinished"></translation>
+        <translation>Seuil d&apos;autocomplétion</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="75"/>
         <source>Using preloaded APIs file</source>
-        <translation type="unfinished"></translation>
+        <translation>Utilisation du fichier d&apos;APIs préchargé</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="69"/>
         <location filename="../python/console/console_settings.ui" line="203"/>
         <source>APIs</source>
-        <translation type="unfinished"></translation>
+        <translation>APIs</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="275"/>
         <source>Enable Object Inspector (switching between tabs may be slow)</source>
-        <translation type="unfinished"></translation>
+        <translation>Activer l&apos;inspecteur d&apos;objets (les changements d&apos;onglets peuvent être lents)</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="600"/>
         <location filename="../python/console/console_settings.ui" line="720"/>
         <source>Automatic parentheses insertion</source>
-        <translation type="unfinished"></translation>
+        <translation>Insertion automatique des parenthèses</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="208"/>
@@ -64443,7 +64444,7 @@ Description : %3</translation>
     </message>
     <message>
         <source>Settings Python Console</source>
-        <translation type="unfinished"></translation>
+        <translation>Paramètres de la console Python</translation>
     </message>
 </context>
 <context>
@@ -72256,15 +72257,15 @@ L&apos;extension ne sera pas activée.</translation>
     </message>
     <message>
         <source>You need to add some APIs file in order to compile</source>
-        <translation type="unfinished"></translation>
+        <translation>Vous devez ajouter des fichiers d&apos;APIs pour pouvoir compiler</translation>
     </message>
     <message>
         <source>Please specify API file or check &quot;Use preloaded API files&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Merci de spécifier un fichier d&apos;API ou de vérifier &amp;quot; Utiliser les fichiers d&apos;API préchargés &amp;quot;</translation>
     </message>
     <message>
         <source>The APIs file was not compiled, click on &quot;Compile APIs...&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Le fichier d&apos;APIs n&apos;a pas été compilé, cliquez sur &amp;quot; Compiler les APIs ...&amp;quot;</translation>
     </message>
 </context>
 <context>
