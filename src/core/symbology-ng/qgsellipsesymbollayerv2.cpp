@@ -195,12 +195,12 @@ void QgsEllipseSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Rend
   if ( fillColorExpression )
   {
     QString colorString = fillColorExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString();
-    mBrush.setColor( QColor( colorString ) );
+    mBrush.setColor( QColor( QgsSymbolLayerV2Utils::decodeColor( colorString ) ) );
   }
   if ( outlineColorExpression )
   {
     QString colorString = outlineColorExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString();
-    mPen.setColor( QColor( colorString ) );
+    mPen.setColor( QColor( QgsSymbolLayerV2Utils::decodeColor( colorString ) ) );
   }
   if ( widthExpression || heightExpression || symbolNameExpression )
   {
