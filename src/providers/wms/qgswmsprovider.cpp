@@ -2985,6 +2985,15 @@ void QgsWmsProvider::parseWMTSContents( QDomElement const &e )
         l.defaultStyle = s.identifier;
     }
 
+    if ( l.styles.isEmpty() )
+    {
+      QgsWmtsStyle s;
+      s.identifier = "default";
+      s.title      = tr( "Generated default style" );
+      s.abstract   = tr( "Style was missing in capabilities" );
+      l.styles.insert( s.identifier, s );
+    }
+
     for ( QDomElement e1 = e0.firstChildElement( "Format" ); !e1.isNull(); e1 = e1.nextSiblingElement( "Format" ) )
     {
       l.formats << e1.text();
