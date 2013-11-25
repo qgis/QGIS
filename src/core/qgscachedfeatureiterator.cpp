@@ -57,9 +57,10 @@ bool QgsCachedFeatureIterator::fetchFeature( QgsFeature& f )
   if ( mClosed )
     return false;
 
-  while ( mFeatureIdIterator++ != mFeatureIds.constEnd() )
+  while ( mFeatureIdIterator != mFeatureIds.constEnd() )
   {
     f = QgsFeature( *mVectorLayerCache->mCache[*mFeatureIdIterator]->feature() );
+    ++mFeatureIdIterator;
     if ( mRequest.acceptFeature( f ) )
       return true;
   }
