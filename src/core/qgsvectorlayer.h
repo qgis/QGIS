@@ -879,10 +879,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     bool addFeature( QgsFeature& f, bool alsoUpdateExtent = true );
 
-    /** Updates an existing feature
-        @param f feature to update
-        @return                    True in case of success and False in case of error
-        @note added in 1.8
+    /** Updates an existing feature. This method needs to query the datasource
+        on every call. Consider using {@link changeAttributeValue()} or
+        {@link changeGeometry()} instead.
+        @param f  Feature to update
+        @return   True in case of success and False in case of error
+        @note     Added in 1.8
      */
     bool updateFeature( QgsFeature &f );
 
