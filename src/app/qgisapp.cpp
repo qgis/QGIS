@@ -7200,7 +7200,7 @@ bool QgisApp::saveDirty()
   QSettings settings;
   bool askThem = settings.value( "qgis/askToSaveProjectChanges", true ).toBool();
 
-  if ( askThem && ( QgsProject::instance()->isDirty() || mMapCanvas->isDirty() ) && QgsMapLayerRegistry::instance()->count() > 0 )
+  if ( askThem && QgsProject::instance()->isDirty() && QgsMapLayerRegistry::instance()->count() > 0 )
   {
     // flag project as dirty since dirty state of canvas is reset if "dirty"
     // is based on a zoom or pan

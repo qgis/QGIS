@@ -101,7 +101,7 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
   mLastNonZoomMapTool = NULL;
 
   mFrozen = false;
-  mDirty = true;
+  mRefreshScheduled = false;
 
   setWheelAction( WheelZoom );
 
@@ -145,6 +145,9 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
   grabGesture( Qt::PinchGesture );
   viewport()->setAttribute( Qt::WA_AcceptTouchEvents );
 #endif
+
+  refresh();
+
 } // QgsMapCanvas ctor
 
 
@@ -237,7 +240,7 @@ void QgsMapCanvas::setDirty( bool dirty )
 
 bool QgsMapCanvas::isDirty() const
 {
-  return mDirty;
+  return false;
 }
 
 
@@ -429,11 +432,18 @@ QgsMapLayer* QgsMapCanvas::currentLayer()
 
 void QgsMapCanvas::refresh()
 {
-  stopRendering(); // if any...
+  if ( mRefreshScheduled )
+  {
+    qDebug("CANVAS refresh already scheduled");
+    return;
+  }
 
-  qDebug("CANVAS calling update");
-  mDirty = true;
-  mMap->update();
+  mRefreshScheduled = true;
+
+  qDebug("CANVAS refresh scheduling");
+
+  // schedule a refresh
+  QTimer::singleShot( 1, this, SLOT(refreshMap()));
 
   /*
   // we can't draw again if already drawing...
@@ -487,14 +497,35 @@ void QgsMapCanvas::refresh()
 
 } // refresh
 
+void QgsMapCanvas::refreshMap()
+{
+  Q_ASSERT( mRefreshScheduled );
+
+  qDebug("CANVAS refresh!");
+
+  stopRendering(); // if any...
+
+  // from now on we can accept refresh requests again
+  mRefreshScheduled = false;
+
+  // create the renderer job
+  Q_ASSERT( mJob == 0 );
+  mJobCancelled = false;
+  if ( mUseParallelRendering )
+    mJob = new QgsMapRendererParallelJob( mSettings );
+  else
+    mJob = new QgsMapRendererSequentialJob( mSettings );
+  connect(mJob, SIGNAL( finished() ), SLOT( rendererJobFinished() ) );
+  mJob->start();
+
+  mMapUpdateTimer.start();
+}
 
 void QgsMapCanvas::rendererJobFinished()
 {
   qDebug("CANVAS finish! %d", !mJobCancelled );
 
   mMapUpdateTimer.stop();
-
-  mDirty = false;
 
   // TODO: would be better to show the errors in message bar
   foreach ( const QgsMapRendererJob::Error& error, mJob->errors() )
@@ -1061,32 +1092,7 @@ void QgsMapCanvas::resizeEvent( QResizeEvent * e )
 
 void QgsMapCanvas::paintEvent( QPaintEvent *e )
 {
-  qDebug("CANVAS paint()");
-
-  if ( mDirty )
-  {
-    if ( mJob )
-    {
-      qDebug("CANVAS already rendering");
-    }
-    else
-    {
-      qDebug("CANVAS need to render");
-
-      // create the renderer job
-      Q_ASSERT( mJob == 0 );
-      mJobCancelled = false;
-      if ( mUseParallelRendering )
-        mJob = new QgsMapRendererParallelJob( mSettings );
-      else
-        mJob = new QgsMapRendererSequentialJob( mSettings );
-      connect(mJob, SIGNAL( finished() ), SLOT( rendererJobFinished() ) );
-      mJob->start();
-
-      mMapUpdateTimer.start();
-    }
-  }
-
+  // no custom event handling anymore
 
   QGraphicsView::paintEvent( e );
 } // paintEvent

@@ -238,7 +238,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     Q_DECL_DEPRECATED void setDirty( bool _dirty );
 
     //! Return the state of the canvas (dirty or not)
-    bool isDirty() const;
+    //! @deprecated since 2.1 - dirty flag is not kept anymore - always returns false
+    Q_DECL_DEPRECATED bool isDirty() const;
 
     //! Set map units (needed by project properties dialog)
     void setMapUnits( QGis::UnitType mapUnits );
@@ -344,6 +345,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void rendererJobFinished();
 
     void mapUpdateTimeout();
+
+    void refreshMap();
 
   signals:
     /** Let the owner know how far we are with render operations */
@@ -491,16 +494,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Flag indicating if the map canvas is frozen.
     bool mFrozen;
 
-    /*! \brief Flag to track the state of the Map canvas.
-     *
-     * The canvas is
-     * flagged as dirty by any operation that changes the state of
-     * the layers or the view extent. If the canvas is not dirty, paint
-     * events are handled by bit-blitting the stored canvas bitmap to
-     * the canvas. This improves performance by not reading the data source
-     * when no real change has occurred
-     */
-    bool mDirty;
+    //! Flag that allows squashing multiple refresh() calls into just one delayed rendering job
+    bool mRefreshScheduled;
 
     //! determines whether user has requested to suppress rendering
     bool mRenderFlag;
