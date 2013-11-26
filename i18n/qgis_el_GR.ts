@@ -21,23 +21,24 @@
     <name>ConfigDialog</name>
     <message>
         <source>Search...</source>
-        <translation type="unfinished"></translation>
+        <translation>Αναζήτηση...</translation>
     </message>
     <message>
         <source>Wrong value</source>
-        <translation type="unfinished"></translation>
+        <translation>Λανθασμένη τιμή</translation>
     </message>
     <message>
         <source>Wrong parameter value:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Λανθασμένη τιμή της παραμέτρου: 
+%1</translation>
     </message>
 </context>
 <context>
     <name>ConnectionItem</name>
     <message>
         <source>Unable to connect</source>
-        <translation type="unfinished"></translation>
+        <translation>Η σύνδεση δεν ήταν εφικτή</translation>
     </message>
 </context>
 <context>
@@ -69,12 +70,12 @@
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="132"/>
         <source>Coordinate in your selected CRS (lat,lon or east,north)</source>
-        <translation type="unfinished"></translation>
+        <translation>Συντεταγμένες στο επιλεγμένο Σύστημα Αναφοράς Συντεταγμένων (γεωγραφικό πλάτος, μήκος ή τετμημένη, τεταγμένη)</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="136"/>
         <source>Coordinate in map canvas coordinate reference system (lat,lon or east,north)</source>
-        <translation type="unfinished"></translation>
+        <translation>Συντεταγμένες στο Σύστημα Αναφοράς Συντεταγμένων (γεωγραφικό πλάτος, μήκος ή τετμημένη, τεταγμένη) του χάρτη </translation>
     </message>
     <message>
         <source>Coordinate in your selected CRS</source>
@@ -109,179 +110,179 @@
     <name>DBManager</name>
     <message>
         <source>Sorry</source>
-        <translation type="unfinished"></translation>
+        <translation>Λυπούμαστε</translation>
     </message>
     <message>
         <source>No database selected or you are not connected to it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Δεν έχει επιλεγεί βάση δεδομένων ή δεν έχετε συνδεθεί.</translation>
     </message>
     <message>
         <source>Select the table you want export to file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Επιλέξτε τον πίνκακα που θα εξάγετε σε αρχείο.</translation>
     </message>
     <message>
         <source>DB Manager</source>
-        <translation type="unfinished"></translation>
+        <translation>Διαχείριση Βάσεων Δεδομένων</translation>
     </message>
     <message>
         <source>Info</source>
-        <translation type="unfinished">Πληροφορίες</translation>
+        <translation>Πληροφορίες</translation>
     </message>
     <message>
         <source>Table</source>
-        <translation type="unfinished">Πίνακας</translation>
+        <translation>Πίνακας</translation>
     </message>
     <message>
         <source>Preview</source>
-        <translation type="unfinished">Προεπισκόπηση</translation>
+        <translation>Προεπισκόπηση</translation>
     </message>
     <message>
         <source>&amp;Database</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Βάση Δεδομένων</translation>
     </message>
     <message>
         <source>&amp;Schema</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Σχήμα ΒΔ</translation>
     </message>
     <message>
         <source>&amp;Table</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Πίνακας</translation>
     </message>
     <message>
         <source>&amp;Refresh</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ανανέωση</translation>
     </message>
     <message>
         <source>&amp;SQL window</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Παράθυρο SQL</translation>
     </message>
     <message>
         <source>&amp;Exit</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Έξοδος</translation>
     </message>
     <message>
         <source>&amp;Import layer/file</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Εισαγωγή θεματικού επιπέδου/αρχείου</translation>
     </message>
     <message>
         <source>&amp;Export to file</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Εξαγωγή σε αρχείο</translation>
     </message>
 </context>
 <context>
     <name>DBManagerPlugin</name>
     <message>
         <source>Sorry</source>
-        <translation type="unfinished"></translation>
+        <translation>Λυπούμαστε</translation>
     </message>
     <message>
         <source>Unable to find a valid unique field</source>
-        <translation type="unfinished"></translation>
+        <translation>Αδυναμία εύρεσης πεδίου με μοναδικές τιμές</translation>
     </message>
     <message>
         <source>Copy</source>
-        <translation type="unfinished">Αντιγραφή</translation>
+        <translation>Αντιγραφή</translation>
     </message>
     <message>
         <source>DB Manager</source>
-        <translation type="unfinished"></translation>
+        <translation>Διαχείριση Βάσεων Δεδομένων</translation>
     </message>
     <message>
         <source>Server version: </source>
-        <translation type="unfinished"></translation>
+        <translation>Έκδοση εξυπηρετητή ΒΔ:</translation>
     </message>
     <message>
         <source>Host:</source>
-        <translation type="unfinished"></translation>
+        <translation>Κεντρικός υπολογιστής:</translation>
     </message>
     <message>
         <source>User:</source>
-        <translation type="unfinished"></translation>
+        <translation>Χρήστης:</translation>
     </message>
     <message>
         <source>Library:</source>
-        <translation type="unfinished"></translation>
+        <translation>Βιβλιοθήκη:</translation>
     </message>
     <message>
         <source>&lt;warning&gt; geometry_columns table doesn&apos;t exist!
 This table is essential for many GIS applications for enumeration of tables.</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;warning&gt; δεν υπάρχει ο πίνακας geometry_columns! Ο πίνακας είναι απαραίτητος για την απαρίθμηση πινάκων σε πλήθος εφαρμογών GIS. </translation>
     </message>
     <message>
         <source>create new schemas</source>
-        <translation type="unfinished"></translation>
+        <translation>δημιουργία νέων σχημάτων</translation>
     </message>
     <message>
         <source>create temporary tables</source>
-        <translation type="unfinished"></translation>
+        <translation>δημιουργία προσωρινών πινάκων</translation>
     </message>
     <message>
         <source>Not connected</source>
-        <translation type="unfinished"></translation>
+        <translation>Δεν υπάρχει σύνδεση</translation>
     </message>
     <message>
         <source>Connection details</source>
-        <translation type="unfinished"></translation>
+        <translation>Λεπτομέρειες σύνδεσης</translation>
     </message>
     <message>
         <source>General info</source>
-        <translation type="unfinished"></translation>
+        <translation>Γενικές πληροφορίες</translation>
     </message>
     <message>
         <source>&lt;warning&gt; %s support not enabled!</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;warning&gt; δεν έχει ενεργοποιηθεί η υποστηριξη %s!</translation>
     </message>
     <message>
         <source>&lt;warning&gt; This user has no privileges!</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;warning&gt; Ο χρήστης δεν έχει δικαιώματα!</translation>
     </message>
     <message>
         <source>User has privileges:</source>
-        <translation type="unfinished"></translation>
+        <translation>Δικαιώματα χρήστη:</translation>
     </message>
     <message>
         <source>Privileges</source>
-        <translation type="unfinished"></translation>
+        <translation>Δικαιώματα</translation>
     </message>
     <message>
         <source>Owner:</source>
-        <translation type="unfinished"></translation>
+        <translation>Κάτοχος:</translation>
     </message>
     <message>
         <source>Comment:</source>
-        <translation type="unfinished"></translation>
+        <translation>Σχόλιο:</translation>
     </message>
     <message>
         <source>create new objects</source>
-        <translation type="unfinished"></translation>
+        <translation>δημιουργία νέων αντικειμένων</translation>
     </message>
     <message>
         <source>access objects</source>
-        <translation type="unfinished"></translation>
+        <translation>πρόσβαση αντικειμένων</translation>
     </message>
     <message>
         <source>Schema details</source>
-        <translation type="unfinished"></translation>
+        <translation>Λεπτομέρειες σχήματος</translation>
     </message>
     <message>
         <source>&lt;warning&gt; This user has no privileges to access this schema!</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;warning&gt; Ο χρήστης δεν έχει δικαιώματα πρόσβασης σε αυτό το σχήμα!</translation>
     </message>
     <message>
         <source>Relation type:</source>
-        <translation type="unfinished">Τύπος συσχέτισης:</translation>
+        <translation>Τύπος σχέσης:</translation>
     </message>
     <message>
         <source>View</source>
-        <translation type="unfinished">Προβολή</translation>
+        <translation>Όψη</translation>
     </message>
     <message>
         <source>Table</source>
-        <translation type="unfinished">Πίνακας</translation>
+        <translation>Πίνακας</translation>
     </message>
     <message>
         <source>Rows:</source>
-        <translation type="unfinished"></translation>
+        <translation>Γραμμές:</translation>
     </message>
     <message>
         <source>Unknown (&lt;a href=&quot;action:rows/count&quot;&gt;find out&lt;/a&gt;)</source>
@@ -289,75 +290,75 @@ This table is essential for many GIS applications for enumeration of tables.</so
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished">Όνομα</translation>
+        <translation>Όνομα</translation>
     </message>
     <message>
         <source>Type</source>
-        <translation type="unfinished">Τύπος</translation>
+        <translation>Τύπος</translation>
     </message>
     <message>
         <source>Null</source>
-        <translation type="unfinished"></translation>
+        <translation>Null</translation>
     </message>
     <message>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation>Προεπιλογη</translation>
     </message>
     <message>
         <source>Column(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Στήλη(ες)</translation>
     </message>
     <message>
         <source>Function</source>
-        <translation type="unfinished"></translation>
+        <translation>Συνάρτηση</translation>
     </message>
     <message>
         <source>&lt;warning&gt; This is not a spatial table.</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;warning&gt; Δεν είναι χωρικός πίνακας.</translation>
     </message>
     <message>
         <source>Fields</source>
-        <translation type="unfinished">Πεδία</translation>
+        <translation>Πεδία</translation>
     </message>
     <message>
         <source>Constraints</source>
-        <translation type="unfinished"></translation>
+        <translation>Περιορισμοί</translation>
     </message>
     <message>
         <source>Indexes</source>
-        <translation type="unfinished"></translation>
+        <translation>Ευρετήρια</translation>
     </message>
     <message>
         <source>Triggers</source>
-        <translation type="unfinished"></translation>
+        <translation>Σκανδαλιστές (triggers)</translation>
     </message>
     <message>
         <source>View definition</source>
-        <translation type="unfinished"></translation>
+        <translation>Προβολή ορισμού</translation>
     </message>
     <message>
         <source>Column:</source>
-        <translation type="unfinished"></translation>
+        <translation>Στήλη:</translation>
     </message>
     <message>
         <source>Geometry:</source>
-        <translation type="unfinished"></translation>
+        <translation>Γεωμετρία:</translation>
     </message>
     <message>
         <source>Dimension:</source>
-        <translation type="unfinished"></translation>
+        <translation>Διάσταση:</translation>
     </message>
     <message>
         <source>Undefined</source>
-        <translation type="unfinished">Απροσδιόριστος</translation>
+        <translation>Απροσδιόριστος</translation>
     </message>
     <message>
         <source>Spatial ref:</source>
-        <translation type="unfinished"></translation>
+        <translation>Χωρική αναφορά:</translation>
     </message>
     <message>
         <source>Estimated extent:</source>
-        <translation type="unfinished"></translation>
+        <translation>Εκτιμώμενη έκταση:</translation>
     </message>
     <message>
         <source>(unknown) (&lt;a href=&quot;action:extent/get&quot;&gt;find out&lt;/a&gt;)</source>
@@ -365,51 +366,51 @@ This table is essential for many GIS applications for enumeration of tables.</so
     </message>
     <message>
         <source>Extent:</source>
-        <translation type="unfinished"></translation>
+        <translation>Έκταση:</translation>
     </message>
     <message>
         <source>&lt;warning&gt; There isn&apos;t entry in geometry_columns!</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;warning&gt; Δεν υπάρχει καταχώρηση σον πίνακα/όψη geometry_columns!</translation>
     </message>
     <message>
         <source>&lt;warning&gt; No spatial index defined (&lt;a href=&quot;action:spatialindex/create&quot;&gt;create it&lt;/a&gt;)</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;warning&gt; Δεν έχει ορισθεί χωρικό ευετήριο (&lt;a href=&quot;action:spatialindex/create&quot;&gt;δημιουργία&lt;/a&gt;)</translation>
     </message>
     <message>
         <source>Pages:</source>
-        <translation type="unfinished"></translation>
+        <translation>Σελίδες:</translation>
     </message>
     <message>
         <source>Rows (estimation):</source>
-        <translation type="unfinished"></translation>
+        <translation>Πλήθος γραμμών (εκτιμώμενο): </translation>
     </message>
     <message>
         <source>Privileges:</source>
-        <translation type="unfinished"></translation>
+        <translation>Δικαιώματα:</translation>
     </message>
     <message>
         <source>&lt;warning&gt; This user doesn&apos;t have usage privileges for this schema!</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;warning&gt; Ο χρήστης δεν έχει δικαιώματα χρήσης σε αυτό το σχήμα!</translation>
     </message>
     <message>
         <source>Rows (counted):</source>
-        <translation type="unfinished"></translation>
+        <translation>Πλήθος γραμμών (πραμγατικό): </translation>
     </message>
     <message>
         <source>&lt;warning&gt; This user has read-only privileges.</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;warning&gt; Ο χρήστης έχει μόνο δικαιώματα ανάγνωσης.</translation>
     </message>
     <message>
         <source>&lt;warning&gt; There&apos;s a significant difference between estimated and real row count. Consider running &lt;a href=&quot;action:vacuumanalyze/run&quot;&gt;VACUUM ANALYZE&lt;/a&gt;.</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;warning&gt; Υπάρχει σημαντική διαφορά μεταξύ του πραγματικού και του εκτιμώμενου πλήθους εγγραφών. Εξετάστε τη δυνατότητα εκτέλεσης &lt;a href=&quot;action:vacuumanalyze/run&quot;&gt; Εργασιών Συντήρησης (VACUUM ANALYZE)&lt;/a&gt;.</translation>
     </message>
     <message>
         <source>&lt;warning&gt; No primary key defined for this table!</source>
-        <translation type="unfinished"></translation>
+        <translation>Δεν έχει ορισθεί πρωτεύον κλειδι για τον πίνακα!</translation>
     </message>
     <message>
         <source>Scripts:</source>
-        <translation type="unfinished"></translation>
+        <translation>Δέσμη ενεργειών εντολών (Scripts):</translation>
     </message>
     <message>
         <source>&lt;warning&gt; Version of installed scripts doesn&apos;t match version of released scripts!
@@ -419,245 +420,245 @@ This is probably a result of incorrect PostGIS upgrade.</source>
     <message>
         <source>&lt;warning&gt; This user doesn&apos;t have privileges to read contents of geometry_columns table!
 This table is essential for many GIS applications for enumeration of tables.</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;warning&gt; Ο χρήστης δεν έχει δικαιώματα ανάγνωσης των περιεχομένων του πίνακα geometry_columns! Ο πίνακας είναι απαραίτητος για την απαρίθμηση πινάκων σε πλήθος εφαρμογών GIS. </translation>
     </message>
     <message>
         <source>Length</source>
-        <translation type="unfinished"></translation>
+        <translation>Μήκος</translation>
     </message>
     <message>
         <source>Enabled</source>
-        <translation type="unfinished">Ενεργοποιήθηκε</translation>
+        <translation>Ενεργοποιήθηκε</translation>
     </message>
     <message>
         <source>Yes</source>
-        <translation type="unfinished"></translation>
+        <translation>Ναι</translation>
     </message>
     <message>
         <source>No</source>
-        <translation type="unfinished"></translation>
+        <translation>Όχι</translation>
     </message>
     <message>
         <source>&lt;a href=&quot;action:triggers/enable&quot;&gt;Enable all triggers&lt;/a&gt; / &lt;a href=&quot;action:triggers/disable&quot;&gt;Disable all triggers&lt;/a&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;a href=&quot;action:triggers/enable&quot;&gt;Ενεργοποίηση όλων των σκανδαλιστών (triggers)&lt;/a&gt; / &lt;a href=&quot;action:triggers/disable&quot;&gt;Απενεργοποίηση όλων των σκανδαλιστών (triggers)&lt;/a&gt;</translation>
     </message>
     <message>
         <source>Definition</source>
-        <translation type="unfinished"></translation>
+        <translation>Ορισμός</translation>
     </message>
     <message>
         <source>Rules</source>
-        <translation type="unfinished"></translation>
+        <translation>Κανόνες</translation>
     </message>
     <message>
         <source>&amp;Versioning</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Διαχείριση εκδόσεων</translation>
     </message>
     <message>
         <source>&amp;Table</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Πίνακας</translation>
     </message>
     <message>
         <source>&quot;{0}&quot; not found</source>
-        <translation type="unfinished"></translation>
+        <translation>Δε βρέθηκε το &quot;{0}&apos;</translation>
     </message>
     <message>
         <source>Filename:</source>
-        <translation type="unfinished"></translation>
+        <translation>Όνομα αρχείου:</translation>
     </message>
     <message>
         <source>SQLite version:</source>
-        <translation type="unfinished"></translation>
+        <translation>Έκδοση SQLite:</translation>
     </message>
     <message>
         <source>Error:
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Σφάλμα: %s</translation>
     </message>
     <message>
         <source>
 
 Query:
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Ερώτημα: %s</translation>
     </message>
     <message>
         <source>&amp;Re-connect</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Επανασύνδεση</translation>
     </message>
     <message>
         <source>&amp;Database</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Βάση Δεδομένων</translation>
     </message>
     <message>
         <source>&amp;Create schema</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Δημιουργία σχήματος</translation>
     </message>
     <message>
         <source>&amp;Schema</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Σχήμα</translation>
     </message>
     <message>
         <source>&amp;Delete (empty) schema</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Διαγραφή (άδειασμα) σχήματος</translation>
     </message>
     <message>
         <source>Delete selected item</source>
-        <translation type="unfinished"></translation>
+        <translation>Διαγραφή επιλεγμένου αντικειμένου</translation>
     </message>
     <message>
         <source>&amp;Create table</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Δημιουργία Πίνακα</translation>
     </message>
     <message>
         <source>&amp;Edit table</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Επεξεργασία πίνακα</translation>
     </message>
     <message>
         <source>&amp;Delete table/view</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Διαγραφή πίνακα/όψης</translation>
     </message>
     <message>
         <source>&amp;Empty table</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Διαγραφή πίνακα</translation>
     </message>
     <message>
         <source>&amp;Move to schema</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Μετακίνηση στο σχήμα</translation>
     </message>
     <message>
         <source>Cannot delete the selected item.</source>
-        <translation type="unfinished"></translation>
+        <translation>Δεν ήταν δυνατή η διαγραφή του επιλεγμένου αντικειμένου.</translation>
     </message>
     <message>
         <source>No database selected or you are not connected to it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Δεν έχει επιλεγεί βάση δεδομένων ή δεν έχετε συνδεθεί.</translation>
     </message>
     <message>
         <source>New schema</source>
-        <translation type="unfinished"></translation>
+        <translation>Νέο σχήμα</translation>
     </message>
     <message>
         <source>Enter new schema name</source>
-        <translation type="unfinished"></translation>
+        <translation>Εισάγετε το νέο όνομα σχήματος</translation>
     </message>
     <message>
         <source>Select an empty SCHEMA for deletion.</source>
-        <translation type="unfinished"></translation>
+        <translation>Επιλέξτε κενό σχήμα για διαγραφή.</translation>
     </message>
     <message>
         <source>hey!</source>
-        <translation type="unfinished"></translation>
+        <translation>Προειδοποίηση!</translation>
     </message>
     <message>
         <source>Really delete schema %s?</source>
-        <translation type="unfinished"></translation>
+        <translation>Είστε βέβαιοι ότι επιθυμείτε τη διαγραφή του σχήματος %s?</translation>
     </message>
     <message>
         <source>Select a TABLE for editation.</source>
-        <translation type="unfinished"></translation>
+        <translation>Επιλογή ΠΙΝΑΚΑ για επεξεργασία.</translation>
     </message>
     <message>
         <source>Select a TABLE/VIEW for deletion.</source>
-        <translation type="unfinished"></translation>
+        <translation>Επιλογή ΠΙΝΑΚΑ/ΟΨΗΣ για διαγραφή.</translation>
     </message>
     <message>
         <source>Really delete table/view %s?</source>
-        <translation type="unfinished"></translation>
+        <translation>Είστε βέβαιοι ότι επιθυμείτε τη διαγραφή του πίνακα/όψης %s?</translation>
     </message>
     <message>
         <source>Select a TABLE to empty it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Επιλογή ΠΙΝΑΚΑ για διαγραφή περιεχομένων.</translation>
     </message>
     <message>
         <source>Really delete all items from table %s?</source>
-        <translation type="unfinished"></translation>
+        <translation>Είστε βέβαιοι ότι επιθυμείτε τη διαγραφή όλων των εγγραφών του πίνακα %s?</translation>
     </message>
     <message>
         <source>Select a TABLE/VIEW.</source>
-        <translation type="unfinished"></translation>
+        <translation>Επιλογή ΠΙΝΑΚΑ/ΟΨΗΣ.</translation>
     </message>
     <message>
         <source>Do you want to %s all triggers?</source>
-        <translation type="unfinished"></translation>
+        <translation>Επιθυμείτε να %s όλους τους σκανδαλιστές (triggers)?</translation>
     </message>
     <message>
         <source>Table triggers</source>
-        <translation type="unfinished"></translation>
+        <translation>Σκανδαλιστές (triggers) πίνακα</translation>
     </message>
     <message>
         <source>Do you want to %s trigger %s?</source>
-        <translation type="unfinished"></translation>
+        <translation>Επιθυμείτε να %s το σκανδαλιστή %s?</translation>
     </message>
     <message>
         <source>Table trigger</source>
-        <translation type="unfinished"></translation>
+        <translation>Σκανδαλιστής (trigger) πίνακα</translation>
     </message>
     <message>
         <source>Do you want to %s spatial index for field %s?</source>
-        <translation type="unfinished"></translation>
+        <translation>Επιθυμείτε να %s το χωρικό ευρετήριο για το πεδίο %S?</translation>
     </message>
     <message>
         <source>Spatial Index</source>
-        <translation type="unfinished"></translation>
+        <translation>Χωρικό ευρετήριο</translation>
     </message>
     <message>
         <source>Check</source>
-        <translation type="unfinished"></translation>
+        <translation>Έλεγχος</translation>
     </message>
     <message>
         <source>Primary key</source>
-        <translation type="unfinished"></translation>
+        <translation>Πρωτεύον κλειδί</translation>
     </message>
     <message>
         <source>Foreign key</source>
-        <translation type="unfinished"></translation>
+        <translation>Ξένο κλειδί</translation>
     </message>
     <message>
         <source>Unique</source>
-        <translation type="unfinished"></translation>
+        <translation>Μοναδικό</translation>
     </message>
     <message>
         <source>Exclusion</source>
-        <translation type="unfinished"></translation>
+        <translation>Εξαίρεση</translation>
     </message>
     <message>
         <source>Unknown</source>
-        <translation type="unfinished"></translation>
+        <translation>Άγνωστο</translation>
     </message>
 </context>
 <context>
     <name>DBModel</name>
     <message>
         <source>Databases</source>
-        <translation type="unfinished"></translation>
+        <translation>Βάσεις Δεδομένων</translation>
     </message>
     <message>
         <source>Invalid layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Μη έγκυρο θεματικό επίπεδο</translation>
     </message>
     <message>
         <source>Unable to load the layer %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Αδυναμία φόρτωσης του θεματικου επιπέδου %s</translation>
     </message>
 </context>
 <context>
     <name>DBTree</name>
     <message>
         <source>Rename</source>
-        <translation type="unfinished"></translation>
+        <translation>Μετονομασία</translation>
     </message>
     <message>
         <source>Delete</source>
-        <translation type="unfinished">Διαγραφή</translation>
+        <translation>Διαγραφή</translation>
     </message>
     <message>
         <source>Add to canvas</source>
-        <translation type="unfinished"></translation>
+        <translation>Προσθήκη στο παράθυρο χάρτη</translation>
     </message>
     <message>
         <source>Re-connect</source>
-        <translation type="unfinished"></translation>
+        <translation>Επανασύνδεση</translation>
     </message>
 </context>
 <context>
@@ -665,27 +666,27 @@ Query:
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgAddGeometryColumn.ui" line="14"/>
         <source>Add geometry column</source>
-        <translation type="unfinished"></translation>
+        <translation>Προσθήκη στήλης γεωμετρίας</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgAddGeometryColumn.ui" line="20"/>
         <source>Name</source>
-        <translation type="unfinished">Όνομα</translation>
+        <translation>Όνομα</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgAddGeometryColumn.ui" line="37"/>
         <source>Type</source>
-        <translation type="unfinished">Τύπος</translation>
+        <translation>Τύπος</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgAddGeometryColumn.ui" line="86"/>
         <source>Dimensions</source>
-        <translation type="unfinished"></translation>
+        <translation>Διαστάσεις</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgAddGeometryColumn.ui" line="119"/>
         <source>SRID</source>
-        <translation type="unfinished"></translation>
+        <translation>Κωδικός Συστήματος Συν/νων</translation>
     </message>
 </context>
 <context>
@@ -693,22 +694,22 @@ Query:
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateConstraint.ui" line="14"/>
         <source>Add constraint</source>
-        <translation type="unfinished"></translation>
+        <translation>Προσθήκη περιορισμού</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateConstraint.ui" line="20"/>
         <source>Column</source>
-        <translation type="unfinished">Στήλη</translation>
+        <translation>Στήλη</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateConstraint.ui" line="37"/>
         <source>Primary key</source>
-        <translation type="unfinished"></translation>
+        <translation>Πρωτεύον κλειδί</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateConstraint.ui" line="47"/>
         <source>Unique</source>
-        <translation type="unfinished"></translation>
+        <translation>Μοναδικές τιμές</translation>
     </message>
 </context>
 <context>
@@ -716,17 +717,17 @@ Query:
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateIndex.ui" line="14"/>
         <source>Create index</source>
-        <translation type="unfinished"></translation>
+        <translation>Δημιουργία ευρετηρίου</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateIndex.ui" line="20"/>
         <source>Column</source>
-        <translation type="unfinished">Στήλη</translation>
+        <translation>Στήλη</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateIndex.ui" line="30"/>
         <source>Name</source>
-        <translation type="unfinished">Όνομα</translation>
+        <translation>Όνομα</translation>
     </message>
 </context>
 <context>
@@ -734,63 +735,63 @@ Query:
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="14"/>
         <source>Create Table</source>
-        <translation type="unfinished"></translation>
+        <translation>Δημιουργία Πίνακα</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="22"/>
         <source>Schema</source>
-        <translation type="unfinished"></translation>
+        <translation>Σχήμα ΒΔ</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="35"/>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="171"/>
         <source>Name</source>
-        <translation type="unfinished">Όνομα</translation>
+        <translation>Όνομα</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="56"/>
         <source>Add field</source>
-        <translation type="unfinished"></translation>
+        <translation>Προσθήκη πεδίου</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="63"/>
         <source>Delete field</source>
-        <translation type="unfinished"></translation>
+        <translation>Διαγραφή πεδίου</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="83"/>
         <source>Up</source>
-        <translation type="unfinished"></translation>
+        <translation>Μετακίνηση επάνω</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="90"/>
         <source>Down</source>
-        <translation type="unfinished"></translation>
+        <translation>Μετακίνηση κάτω</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="104"/>
         <source>Primary key</source>
-        <translation type="unfinished"></translation>
+        <translation>Πρωτεύον κλειδί</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="125"/>
         <source>Create geometry column</source>
-        <translation type="unfinished"></translation>
+        <translation>Δημιουργία στήλης γεωμετρίας</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="188"/>
         <source>Dimensions</source>
-        <translation type="unfinished"></translation>
+        <translation>Διαστάσεις</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="221"/>
         <source>SRID</source>
-        <translation type="unfinished"></translation>
+        <translation>Κωδικός Συστήματος Συν/νων</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="238"/>
         <source>Create spatial index</source>
-        <translation type="unfinished"></translation>
+        <translation>Δημιουργία χωρικού ευρετηρίου</translation>
     </message>
 </context>
 <context>
@@ -798,22 +799,22 @@ Query:
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgDbError.ui" line="14"/>
         <source>Database Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Σφάλμα Βάσης Δεδομενων</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgDbError.ui" line="30"/>
         <source>An error occured:</source>
-        <translation type="unfinished"></translation>
+        <translation>Παρουσιάστηκε σφάλμα:</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgDbError.ui" line="54"/>
         <source>An error occured when executing a query:</source>
-        <translation type="unfinished"></translation>
+        <translation>Παρουσιάστηκε σφάλμα κατά την εκτέλεση του ερωτήματος:</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgDbError.ui" line="71"/>
         <source>Query:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ερώτημα:</translation>
     </message>
 </context>
 <context>
@@ -821,57 +822,57 @@ Query:
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgExportVector.ui" line="14"/>
         <source>Export to vector file</source>
-        <translation type="unfinished"></translation>
+        <translation>Εξαγωγή σε διανυσματικό αρχείο</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgExportVector.ui" line="26"/>
         <source>Output file</source>
-        <translation type="unfinished">Αρχείο προορισμού</translation>
+        <translation>Αρχείο προορισμού</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgExportVector.ui" line="40"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgExportVector.ui" line="47"/>
         <source>Action</source>
-        <translation type="unfinished"></translation>
+        <translation>Ενέργεια</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgExportVector.ui" line="53"/>
         <source>Create new file</source>
-        <translation type="unfinished"></translation>
+        <translation>Δημιουργία νέου αρχείου</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgExportVector.ui" line="81"/>
         <source>Drop existing one</source>
-        <translation type="unfinished"></translation>
+        <translation>Διαγραφή υπάρχοντος αρχείου</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgExportVector.ui" line="93"/>
         <source>Append data to file</source>
-        <translation type="unfinished"></translation>
+        <translation>Προσάρτηση δεδομένων σε αρχείο (append)</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgExportVector.ui" line="103"/>
         <source>Options</source>
-        <translation type="unfinished">Επιλογές</translation>
+        <translation>Επιλογές</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgExportVector.ui" line="111"/>
         <source>Source SRID</source>
-        <translation type="unfinished"></translation>
+        <translation>Κωδικός Συστήματος Συν/νων προέλευσης</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgExportVector.ui" line="144"/>
         <source>Target SRID</source>
-        <translation type="unfinished"></translation>
+        <translation>Κωδικός Συστήματος Συν/νων προορισμού</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgExportVector.ui" line="163"/>
         <source>Encoding</source>
-        <translation type="unfinished"></translation>
+        <translation>Κωδικοποίηση</translation>
     </message>
 </context>
 <context>
@@ -879,32 +880,32 @@ Query:
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgFieldProperties.ui" line="14"/>
         <source>Field properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Ιδιότητες πεδίου</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgFieldProperties.ui" line="22"/>
         <source>Name</source>
-        <translation type="unfinished">Όνομα</translation>
+        <translation>Όνομα</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgFieldProperties.ui" line="36"/>
         <source>Type</source>
-        <translation type="unfinished">Τύπος</translation>
+        <translation>Τύπος</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgFieldProperties.ui" line="53"/>
         <source>Can be NULL</source>
-        <translation type="unfinished"></translation>
+        <translation>Λαμβάνει τιμές NULL</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgFieldProperties.ui" line="70"/>
         <source>Default value</source>
-        <translation type="unfinished"></translation>
+        <translation>Προεπιλεγμένη τιμή</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgFieldProperties.ui" line="84"/>
         <source>Length</source>
-        <translation type="unfinished"></translation>
+        <translation>Μήκος</translation>
     </message>
 </context>
 <context>
@@ -912,97 +913,97 @@ Query:
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="14"/>
         <source>Import vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Εισαγωγή διανυσματικού επιπέδου</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="29"/>
         <source>Input</source>
-        <translation type="unfinished">Εισαγωγή</translation>
+        <translation>Δεδομένα εισόδου</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="36"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="81"/>
         <source>Update options</source>
-        <translation type="unfinished"></translation>
+        <translation>Επιλογές ενημέρωσης</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="93"/>
         <source>Output table</source>
-        <translation type="unfinished">Πίνακας προς δημιουργία</translation>
+        <translation>Πίνακας προς δημιουργία</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="99"/>
         <source>Schema</source>
-        <translation type="unfinished"></translation>
+        <translation>Σχήμα</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="116"/>
         <source>Table</source>
-        <translation type="unfinished">Πίνακας</translation>
+        <translation>Πίνακας</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="146"/>
         <source>Action</source>
-        <translation type="unfinished"></translation>
+        <translation>Ενέργεια</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="152"/>
         <source>Create new table</source>
-        <translation type="unfinished"></translation>
+        <translation>Δημιουργία νέου πίνακα</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="180"/>
         <source>Drop existing one</source>
-        <translation type="unfinished"></translation>
+        <translation>Διαγραφή υπάρχοντος πίνακα</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="192"/>
         <source>Append data to table</source>
-        <translation type="unfinished"></translation>
+        <translation>Προσάρτηση δεδομένων στον πίνακα (append)</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="202"/>
         <source>Options</source>
-        <translation type="unfinished">Επιλογές</translation>
+        <translation>Επιλογές</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="208"/>
         <source>Primary key</source>
-        <translation type="unfinished"></translation>
+        <translation>Πρωτεύον κλειδί</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="222"/>
         <source>Geometry column</source>
-        <translation type="unfinished"></translation>
+        <translation>Στήλη γεωμετρίας</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="238"/>
         <source>Source SRID</source>
-        <translation type="unfinished"></translation>
+        <translation>Κωδικός Συστήματος Συν/νων προέλευσης</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="268"/>
         <source>Target SRID</source>
-        <translation type="unfinished"></translation>
+        <translation>Κωδικός Συστήματος Συν/νων προορισμού</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="284"/>
         <source>Encoding</source>
-        <translation type="unfinished"></translation>
+        <translation>Κωδικοποίηση</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="301"/>
         <source>Create single-part geometries instead of multi-part</source>
-        <translation type="unfinished"></translation>
+        <translation>Δημιουργία απλών γεωμετριών αντί για πολυ-γεωμετρίες</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="308"/>
         <source>Create spatial index</source>
-        <translation type="unfinished"></translation>
+        <translation>Δημιουργία χωρικού ευρετηρίου</translation>
     </message>
 </context>
 <context>
@@ -1010,99 +1011,99 @@ Query:
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="14"/>
         <source>SQL window</source>
-        <translation type="unfinished"></translation>
+        <translation>Παράθυρο SQL</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="29"/>
         <source>SQL query:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ερώτημα SQL:</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="59"/>
         <source>Store</source>
-        <translation type="unfinished"></translation>
+        <translation>Αποθήκευση</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="66"/>
         <source>Delete</source>
-        <translation type="unfinished">Διαγραφή</translation>
+        <translation>Διαγραφή</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="94"/>
         <source>&amp;Execute (F5)</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Εκτέλεση (F5)</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="97"/>
         <source>F5</source>
-        <translation type="unfinished">F5</translation>
+        <translation>F5</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="124"/>
         <source>&amp;Clear</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Καθαρισμός</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="137"/>
         <source>Result:</source>
-        <translation type="unfinished"></translation>
+        <translation>Αποτέλεσμα:</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="180"/>
         <source>Load as new layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Προσθήκη ως νέου επιπέδου</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="200"/>
         <source>Column with unique 
 integer values</source>
-        <translation type="unfinished"></translation>
+        <translation>Στήλη με μοναδικές ακέραιες τιμές</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="224"/>
         <source>Geometry column</source>
-        <translation type="unfinished"></translation>
+        <translation>Στήλη γεωμετρίας</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="266"/>
         <source>Retrieve 
 columns</source>
-        <translation type="unfinished"></translation>
+        <translation>Ανάκτηση στηλών</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="278"/>
         <source>Layer name (prefix)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ονομασία επιπέδου</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="301"/>
         <source>Type</source>
-        <translation type="unfinished">Τύπος</translation>
+        <translation>Τύπος</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="311"/>
         <source>Vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Διανυσματικό</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="321"/>
         <source>Raster</source>
-        <translation type="unfinished">Raster</translation>
+        <translation>Εικονιστικό</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="347"/>
         <source>Load now!</source>
-        <translation type="unfinished"></translation>
+        <translation>Φόρτωση στο χάρτη!</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="359"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Avoid selecting feature by id.  Sometimes - especially when running expensive queries/views - fetching the data sequentially instead of fetching features by id can be much quicker.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Αποφύγετε την επιλογη αντικειμένων βάσει μοναδικού αναγνωριστικου (feature id). Μερικές φορές - ειδικά κατά την εκτέλεση ακριβών ερωτημάτων - η σειριακή ανάκτηση των δεδομένων (αντί βάσει id) μπορεί να είναι πολύ πιο σύντομη.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="362"/>
         <source>Avoid selecting by feature id</source>
-        <translation type="unfinished"></translation>
+        <translation>Αποφύγετε την επιλογή βάσει μοναδικού αναγνωριστικου (feature id)</translation>
     </message>
 </context>
 <context>
@@ -1110,82 +1111,82 @@ columns</source>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="14"/>
         <source>Table properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Ιδιότητες πίνακα</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="24"/>
         <source>Columns</source>
-        <translation type="unfinished">Στήλες</translation>
+        <translation>Στήλες</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="30"/>
         <source>Table columns:</source>
-        <translation type="unfinished"></translation>
+        <translation>Στήλες πίνακα:</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="46"/>
         <source>Add column</source>
-        <translation type="unfinished">Προσθήκη στήλης</translation>
+        <translation>Προσθήκη στήλης</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="53"/>
         <source>Add geometry column</source>
-        <translation type="unfinished"></translation>
+        <translation>Προσθήκη στήλης γεωμετρίας</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="60"/>
         <source>Edit column</source>
-        <translation type="unfinished"></translation>
+        <translation>Επεξεργασία στήλης</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="80"/>
         <source>Delete column</source>
-        <translation type="unfinished">Διαγραφή στήλης</translation>
+        <translation>Διαγραφή στήλης</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="90"/>
         <source>Constraints</source>
-        <translation type="unfinished"></translation>
+        <translation>Περιορισμοί</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="96"/>
         <source>Primary, foreign keys, unique and check constraints:</source>
-        <translation type="unfinished"></translation>
+        <translation>Πρωτεύον, ξένο κλειδί, περιορισμοί μοναδικότητας και ελέγχου:</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="112"/>
         <source>Add primary key / unique</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Προσθήκη πρωτεύοντος κλειδιού/μοναδικού</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="132"/>
         <source>Delete constraint</source>
-        <translation type="unfinished"></translation>
+        <translation>Διαγραφή περιορισμού</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="142"/>
         <source>Indexes</source>
-        <translation type="unfinished"></translation>
+        <translation>Ευρετήρια</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="148"/>
         <source>Indexes defined for this table:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ευρετήρια πίνακα:</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="164"/>
         <source>Add index</source>
-        <translation type="unfinished"></translation>
+        <translation>Προσθήκη ευρετηρίου</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="171"/>
         <source>Add spatial index</source>
-        <translation type="unfinished"></translation>
+        <translation>Προσθήκη χωρικού ευρετηρίου</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="191"/>
         <source>Delete index</source>
-        <translation type="unfinished"></translation>
+        <translation>Διαγραφή ευρετηρίου</translation>
     </message>
 </context>
 <context>
@@ -1358,12 +1359,12 @@ p, li { white-space: pre-wrap; }\n
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="183"/>
         <source>Calculate using</source>
-        <translation type="unfinished"></translation>
+        <translation>Υπολογισμός βάσει</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="195"/>
         <source>Calculate extent for each feature separately</source>
-        <translation type="unfinished"></translation>
+        <translation>Υπολογισμός έκτασης για κάθε αντικείμενο</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="44"/>
@@ -2785,11 +2786,11 @@ Are you sure you want to proceed?</source>
     </message>
     <message>
         <source>Sorry</source>
-        <translation type="unfinished"></translation>
+        <translation>Λυπούμαστε</translation>
     </message>
     <message>
         <source>field name must not be empty</source>
-        <translation type="unfinished"></translation>
+        <translation>το όνομα πεδίου δε μπορεί να είναι κενό</translation>
     </message>
 </context>
 <context>
@@ -2797,7 +2798,7 @@ Are you sure you want to proceed?</source>
     <message>
         <location filename="../python/plugins/processing/ui/DlgConfig.ui" line="14"/>
         <source>Processing options</source>
-        <translation type="unfinished"></translation>
+        <translation>Επιλογές επεξεργασίας</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgConfig.ui" line="26"/>
@@ -2807,12 +2808,12 @@ Are you sure you want to proceed?</source>
     <message>
         <location filename="../python/plugins/processing/ui/DlgConfig.ui" line="37"/>
         <source>Setting</source>
-        <translation type="unfinished"></translation>
+        <translation>Ρυθμίσεις</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgConfig.ui" line="42"/>
         <source>Value</source>
-        <translation type="unfinished">Τιμή</translation>
+        <translation>Τιμή</translation>
     </message>
 </context>
 <context>
@@ -2834,11 +2835,11 @@ Are you sure you want to proceed?</source>
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished">Σφάλμα</translation>
+        <translation>Σφάλμα</translation>
     </message>
     <message>
         <source>Please enter some name for the index</source>
-        <translation type="unfinished"></translation>
+        <translation>Παρακαλώ εισάγετε όνομα για το ευρετήριο</translation>
     </message>
 </context>
 <context>
@@ -2849,70 +2850,70 @@ Are you sure you want to proceed?</source>
     </message>
     <message>
         <source>&amp;Create</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Δημιουργία</translation>
     </message>
     <message>
         <source>Sorry</source>
-        <translation type="unfinished"></translation>
+        <translation>Λυπούμαστε</translation>
     </message>
     <message>
         <source>no field selected</source>
-        <translation type="unfinished"></translation>
+        <translation>δεν επιλέχθηκε πεδίο</translation>
     </message>
     <message>
         <source>field is at top already</source>
-        <translation type="unfinished"></translation>
+        <translation>το πεδίο είναι ήδη στην κορυφή της λίστας</translation>
     </message>
     <message>
         <source>No field selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Δεν επιλέχθηκε πεδίο</translation>
     </message>
     <message>
         <source>field is at bottom already</source>
-        <translation type="unfinished"></translation>
+        <translation>το πεδίο είναι ήδη στο τέλος της λίστας</translation>
     </message>
     <message>
         <source>select schema!</source>
-        <translation type="unfinished"></translation>
+        <translation>επιλέξτε σχήμα!</translation>
     </message>
     <message>
         <source>enter table name!</source>
-        <translation type="unfinished"></translation>
+        <translation>εισάγετετο όνομα του πίνακα!</translation>
     </message>
     <message>
         <source>add some fields!</source>
-        <translation type="unfinished"></translation>
+        <translation>προσθέστε πεδία!</translation>
     </message>
     <message>
         <source>set geometry column name</source>
-        <translation type="unfinished"></translation>
+        <translation>ορισμός στήλης γεωμετρίας</translation>
     </message>
     <message>
         <source>Good</source>
-        <translation type="unfinished"></translation>
+        <translation>Επιτυχία</translation>
     </message>
     <message>
         <source>everything went fine</source>
-        <translation type="unfinished"></translation>
+        <translation>επιτυχής ολοκλήρωση</translation>
     </message>
 </context>
 <context>
     <name>DlgExportVector</name>
     <message>
         <source>Choose where to save the file</source>
-        <translation type="unfinished"></translation>
+        <translation>Επιλέξτε τη θέση αποθήκευσης του αρχείου</translation>
     </message>
     <message>
         <source>Shapefiles</source>
-        <translation type="unfinished"></translation>
+        <translation>Αρχεία τύπου Shapefile</translation>
     </message>
     <message>
         <source>Export to file</source>
-        <translation type="unfinished"></translation>
+        <translation>Εξαγωγή σε αρχείο</translation>
     </message>
     <message>
         <source>Output table name is required</source>
-        <translation type="unfinished"></translation>
+        <translation>Απαιτείται το όνομα πίνακα προορισμού</translation>
     </message>
     <message>
         <source>Invalid source srid: must be an integer</source>
@@ -2925,11 +2926,11 @@ Are you sure you want to proceed?</source>
     <message>
         <source>Error %d
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Σφάλμα: %s</translation>
     </message>
     <message>
         <source>Export finished.</source>
-        <translation type="unfinished"></translation>
+        <translation>Η εξαγωγή ολοκληρώθηκε.</translation>
     </message>
 </context>
 <context>
@@ -2944,15 +2945,15 @@ Are you sure you want to proceed?</source>
     </message>
     <message>
         <source>Sorry</source>
-        <translation type="unfinished"></translation>
+        <translation>Λυπούμαστε</translation>
     </message>
     <message>
         <source>field name must not be empty</source>
-        <translation type="unfinished"></translation>
+        <translation>το όνομα πεδίου δε μπορεί να είναι κενό</translation>
     </message>
     <message>
         <source>field type must not be empty</source>
-        <translation type="unfinished"></translation>
+        <translation>ο τύπος πεδίου δε μπορεί να είναι κενό</translation>
     </message>
 </context>
 <context>
@@ -2960,22 +2961,22 @@ Are you sure you want to proceed?</source>
     <message>
         <location filename="../python/plugins/processing/ui/DlgHelpEdition.ui" line="14"/>
         <source>Help editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Επεξεργασία βοήθειας</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgHelpEdition.ui" line="31"/>
         <source>about:blank</source>
-        <translation type="unfinished"></translation>
+        <translation>σχετικά: κενό</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgHelpEdition.ui" line="47"/>
         <source>Select element to edit</source>
-        <translation type="unfinished"></translation>
+        <translation>Επιλογή στοιχειου προς επεξεργασία</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgHelpEdition.ui" line="82"/>
         <source>Element description</source>
-        <translation type="unfinished"></translation>
+        <translation>Περιγραφή στοιχείου</translation>
     </message>
 </context>
 <context>
@@ -2983,7 +2984,7 @@ Are you sure you want to proceed?</source>
     <message>
         <location filename="../python/plugins/processing/ui/DlgHistory.ui" line="14"/>
         <source>History and log</source>
-        <translation type="unfinished"></translation>
+        <translation>Ιστορικό και αρχείο καταγραφής</translation>
     </message>
 </context>
 <context>
@@ -3010,7 +3011,7 @@ Are you sure you want to proceed?</source>
     </message>
     <message>
         <source>Import to database</source>
-        <translation type="unfinished"></translation>
+        <translation>Εισαγωγή στη Βάση Δεδομένων</translation>
     </message>
     <message>
         <source>Input layer missing or not valid</source>
@@ -3031,11 +3032,12 @@ Are you sure you want to proceed?</source>
     <message>
         <source>Error %d
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Σφάλμα:%d 
+%s</translation>
     </message>
     <message>
         <source>Import was successful.</source>
-        <translation type="unfinished"></translation>
+        <translation>Η εισαγωγή ολοκληρώθηκε με επιτυχία.</translation>
     </message>
 </context>
 <context>
@@ -3076,12 +3078,12 @@ Are you sure you want to proceed?</source>
     <message>
         <location filename="../python/plugins/processing/ui/DlgResults.ui" line="14"/>
         <source>Results</source>
-        <translation type="unfinished"></translation>
+        <translation>Αποτελέσματα</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgResults.ui" line="53"/>
         <source>about:blank</source>
-        <translation type="unfinished"></translation>
+        <translation>σχετικά: κενό</translation>
     </message>
 </context>
 <context>
@@ -3100,11 +3102,11 @@ Are you sure you want to proceed?</source>
     </message>
     <message>
         <source>%d rows, %.1f seconds</source>
-        <translation type="unfinished"></translation>
+        <translation>%d εγγραφές, %.1f δευτερόλεπτα</translation>
     </message>
     <message>
         <source>Sorry</source>
-        <translation type="unfinished"></translation>
+        <translation>Λυπούμαστε</translation>
     </message>
     <message>
         <source>You must fill the required fields: 
@@ -3175,23 +3177,23 @@ geometry column - column with unique integer values</source>
     </message>
     <message>
         <source>Sorry</source>
-        <translation type="unfinished"></translation>
+        <translation>Λυπούμαστε</translation>
     </message>
     <message>
         <source>nothing selected</source>
-        <translation type="unfinished"></translation>
+        <translation>δεν επιλέχθηκε τίποτα</translation>
     </message>
     <message>
         <source>Are you sure</source>
-        <translation type="unfinished"></translation>
+        <translation>Είστε βέβαιοι</translation>
     </message>
     <message>
         <source>really delete column &apos;%s&apos;?</source>
-        <translation type="unfinished"></translation>
+        <translation>Είστε βέβαιοι ότι επιθυμείτε τη διαγραφή της στήλης &apos;%s&apos;?</translation>
     </message>
     <message>
         <source>really delete constraint &apos;%s&apos;?</source>
-        <translation type="unfinished"></translation>
+        <translation>Είστε βέβαιοι ότι επιθυμείτε τη διαγραφή του περιορισμού &apos;%s&apos;?</translation>
     </message>
     <message>
         <source>The selected table has no geometry</source>
@@ -3199,19 +3201,19 @@ geometry column - column with unique integer values</source>
     </message>
     <message>
         <source>Create?</source>
-        <translation type="unfinished"></translation>
+        <translation>Δημιουργία?</translation>
     </message>
     <message>
         <source>Create spatial index for field %s?</source>
-        <translation type="unfinished"></translation>
+        <translation>Δημιουργία χωρικού ευρετηρίου για το πεδίο %s?</translation>
     </message>
     <message>
         <source>Nothing selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Δεν επιλέχθηκε τίποτα</translation>
     </message>
     <message>
         <source>really delete index &apos;%s&apos;?</source>
-        <translation type="unfinished"></translation>
+        <translation>Είστε βέβαιοι ότι επιθυμείτε τη διαγραφή του ευρετηρίου &apos;%s&apos;?</translation>
     </message>
 </context>
 <context>
@@ -3224,17 +3226,17 @@ geometry column - column with unique integer values</source>
     <message>
         <location filename="../python/plugins/db_manager/db_plugins/postgis/plugins/versioning/DlgVersioning.ui" line="22"/>
         <source>Table is expected to be empty, with a primary key.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ο πίνακας πρέπει να είναι κενός και να έχει ορισθεί πρωτευον κλειδί.</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/db_plugins/postgis/plugins/versioning/DlgVersioning.ui" line="31"/>
         <source>Schema</source>
-        <translation type="unfinished"></translation>
+        <translation>Σχήμα ΒΔ</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/db_plugins/postgis/plugins/versioning/DlgVersioning.ui" line="44"/>
         <source>Table</source>
-        <translation type="unfinished">Πίνακας</translation>
+        <translation>Πίνακας</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/db_plugins/postgis/plugins/versioning/DlgVersioning.ui" line="75"/>
@@ -3244,12 +3246,12 @@ geometry column - column with unique integer values</source>
     <message>
         <location filename="../python/plugins/db_manager/db_plugins/postgis/plugins/versioning/DlgVersioning.ui" line="85"/>
         <source>New columns</source>
-        <translation type="unfinished"></translation>
+        <translation>Νέες στήλες</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/db_plugins/postgis/plugins/versioning/DlgVersioning.ui" line="91"/>
         <source>Prim. key</source>
-        <translation type="unfinished"></translation>
+        <translation>Πρωτεύον κλειδί</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/db_plugins/postgis/plugins/versioning/DlgVersioning.ui" line="101"/>
@@ -3518,19 +3520,19 @@ Install it and try again.</source>
     </message>
     <message>
         <source>Plugin error</source>
-        <translation type="unfinished"></translation>
+        <translation>Σφάλμα προσθέτου</translation>
     </message>
     <message>
         <source>QGIS version detected: </source>
-        <translation type="unfinished"></translation>
+        <translation>Ανιχνεύτηκε η έκδοση του Quantum GIS:</translation>
     </message>
     <message>
         <source>Projections</source>
-        <translation type="unfinished"></translation>
+        <translation>Χαρτογραφικές προβολές</translation>
     </message>
     <message>
         <source>Extract projection</source>
-        <translation type="unfinished"></translation>
+        <translation>Εξαγωγή χαρτογραφικής προβολής</translation>
     </message>
     <message>
         <source>Extract projection information from raster(s)</source>
@@ -3538,15 +3540,15 @@ Install it and try again.</source>
     </message>
     <message>
         <source>Conversion</source>
-        <translation type="unfinished">Μετατροπή</translation>
+        <translation>Μετατροπή</translation>
     </message>
     <message>
         <source>Extraction</source>
-        <translation type="unfinished"></translation>
+        <translation>Εξαγωγή</translation>
     </message>
     <message>
         <source>Analysis</source>
-        <translation type="unfinished"></translation>
+        <translation>Ανάλυση</translation>
     </message>
     <message>
         <source>Fill nodata</source>
@@ -3562,7 +3564,7 @@ Install it and try again.</source>
     </message>
     <message>
         <source>Miscellaneous</source>
-        <translation type="unfinished"></translation>
+        <translation>Διάφορα</translation>
     </message>
     <message>
         <source>GdalTools settings</source>
@@ -3643,7 +3645,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>The following files were not created: 
 {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Τα ακόλουθα αρχεία δεν δημιουργήθηκαν: {0}</translation>
     </message>
     <message>
         <source>The following files were not created: 
@@ -3689,7 +3691,7 @@ Do you want terminate it anyway?</source>
     </message>
     <message>
         <source>%s not created.</source>
-        <translation type="unfinished"></translation>
+        <translation>Το %s δεν δημιουργήθηκε.</translation>
     </message>
     <message>
         <source>Elaboration completed.</source>
@@ -3716,13 +3718,13 @@ Do you want terminate it anyway?</source>
         <location filename="../python/plugins/GdalTools/tools/dialogBase.ui" line="66"/>
         <location filename="../python/plugins/GdalTools/tools/dialogBase.ui" line="69"/>
         <source>Edit</source>
-        <translation type="unfinished">Επεξεργασία</translation>
+        <translation>Επεξεργασία</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogBase.ui" line="82"/>
         <location filename="../python/plugins/GdalTools/tools/dialogBase.ui" line="85"/>
         <source>Reset</source>
-        <translation type="unfinished">Επαναφορά</translation>
+        <translation>Επαναφορά</translation>
     </message>
     <message>
         <source>Select the input file for Proximity</source>
@@ -3846,11 +3848,11 @@ Do you want terminate it anyway?</source>
     </message>
     <message>
         <source>Finished</source>
-        <translation type="unfinished">Τελείωσε</translation>
+        <translation>Ολοκληρώθηκε</translation>
     </message>
     <message>
         <source>Processing completed.</source>
-        <translation type="unfinished">Επεξεργασία ολοκληρώθηκε.</translation>
+        <translation>Η επεξεργασία ολοκληρώθηκε.</translation>
     </message>
     <message>
         <source>%1 not created.</source>
@@ -3973,7 +3975,7 @@ Disable the &quot;Use intersected extent&quot; option to have a nonempty output.
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogExtractProjection.ui" line="14"/>
         <source>Extract projection</source>
-        <translation type="unfinished"></translation>
+        <translation>Εξαγωγή χαρτογραφικής προβολής</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogExtractProjection.ui" line="20"/>
@@ -3983,7 +3985,7 @@ Disable the &quot;Use intersected extent&quot; option to have a nonempty output.
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogExtractProjection.ui" line="29"/>
         <source>&amp;Input file</source>
-        <translation type="unfinished">Αρχείo ε&amp;ισόδου</translation>
+        <translation>&amp;Αρχείo εισόδου</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogExtractProjection.ui" line="44"/>
@@ -3993,7 +3995,7 @@ Disable the &quot;Use intersected extent&quot; option to have a nonempty output.
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogExtractProjection.ui" line="51"/>
         <source>Create also prj file</source>
-        <translation type="unfinished"></translation>
+        <translation>Δημιουργία αρχείου prj</translation>
     </message>
 </context>
 <context>
@@ -4041,7 +4043,7 @@ Disable the &quot;Use intersected extent&quot; option to have a nonempty output.
     <message>
         <location filename="../python/plugins/GdalTools/tools/inOutSelector.ui" line="46"/>
         <source>Select...</source>
-        <translation type="unfinished">Επιλογή...</translation>
+        <translation>Επιλογή...</translation>
     </message>
 </context>
 <context>
@@ -5337,15 +5339,15 @@ The &apos;gray&apos; value (from GDAL 1.7.0) enables to expand a dataset with a 
     </message>
     <message>
         <source>Layer CRS</source>
-        <translation type="unfinished"></translation>
+        <translation>Σύστημα Αναφοράς Συντεταγμένων Επιπέδου</translation>
     </message>
     <message>
         <source>Project CRS</source>
-        <translation type="unfinished"></translation>
+        <translation>Σύστημα Αναφοράς Συντεταγμένων Έργου</translation>
     </message>
     <message>
         <source>Ellipsoid</source>
-        <translation type="unfinished"></translation>
+        <translation>Ελλειψοειδές</translation>
     </message>
     <message>
         <source>Created output shapefile:
@@ -5358,11 +5360,11 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <source>Error loading output shapefile:
 {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Σφάλμα κατά την φόρτωση του shapefile:{0}</translation>
     </message>
     <message>
         <source>Layer &apos;{0}&apos; updated</source>
-        <translation type="unfinished"></translation>
+        <translation>Το επίπεδο &apos;{0}&apos; ενημερώθηκε</translation>
     </message>
     <message>
         <source>Simplify geometries</source>
@@ -5951,22 +5953,22 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <name>HelpEditionDialog</name>
     <message>
         <source>Outputs</source>
-        <translation type="unfinished"></translation>
+        <translation>Αποτελέσματα</translation>
     </message>
 </context>
 <context>
     <name>HistoryDialog</name>
     <message>
         <source>Clear</source>
-        <translation type="unfinished">Καθαρισμός</translation>
+        <translation>Καθαρισμός</translation>
     </message>
     <message>
         <source>Clear history and log</source>
-        <translation type="unfinished"></translation>
+        <translation>Εκκαθάριση ιστορικού και αρχείού καταγραφής</translation>
     </message>
     <message>
         <source>Create test</source>
-        <translation type="unfinished"></translation>
+        <translation>Δημιουργία τεστ</translation>
     </message>
 </context>
 <context>
@@ -5979,14 +5981,14 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../python/console/console_history_dlg.ui" line="45"/>
         <source>Reload</source>
-        <translation type="unfinished"></translation>
+        <translation>Επαναφόρτωση</translation>
     </message>
 </context>
 <context>
     <name>InfoViewer</name>
     <message>
         <source>DB Manager</source>
-        <translation type="unfinished"></translation>
+        <translation>Διαχείριση Βάσεων Δεδομένων</translation>
     </message>
 </context>
 <context>
@@ -5994,7 +5996,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/symbollayer/widget_layerproperties.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Φόρμα</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_layerproperties.ui" line="28"/>
@@ -6004,7 +6006,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/symbollayer/widget_layerproperties.ui" line="51"/>
         <source>This layer doesn&apos;t have any editable properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Αυτό το επίπεδο δεν διαθέτει επεξεργάσιμές ιδιότητες.</translation>
     </message>
 </context>
 <context>
@@ -6280,7 +6282,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1211"/>
         <source>Add PostGIS Layers...</source>
-        <translation type="unfinished"></translation>
+        <translation>Προσθήκη επιπέδων POSTGIS...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1247"/>
@@ -6629,7 +6631,7 @@ Acts on currently active editable layer</source>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="585"/>
         <source>&amp;Undo</source>
-        <translation>Αναίρεση (&amp;Undo)</translation>
+        <translation>&amp;Αναίρεση</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="588"/>
@@ -6733,7 +6735,7 @@ Acts on currently active editable layer</source>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="732"/>
         <source>Add Part</source>
-        <translation>Προσθήκη Μέρους</translation>
+        <translation>Προσθήκη Τμήματος</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="744"/>
@@ -7108,7 +7110,7 @@ Acts on currently active editable layer</source>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1582"/>
         <source>Style Manager...</source>
-        <translation type="unfinished"></translation>
+        <translation>Διαχείριση Στυλ...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1599"/>
@@ -7378,118 +7380,118 @@ Acts on currently active editable layer</source>
     <name>ModelerDialog</name>
     <message>
         <source>Edit model help</source>
-        <translation type="unfinished"></translation>
+        <translation>Επεξεργασία βοήθειας μοντέλου</translation>
     </message>
     <message>
         <source>Run</source>
-        <translation type="unfinished">Εκτέλεση</translation>
+        <translation>Εκτέλεση</translation>
     </message>
     <message>
         <source>Execute current model</source>
-        <translation type="unfinished"></translation>
+        <translation>Εκτέλεση τρέχοντος μοντέλου</translation>
     </message>
     <message>
         <source>Open</source>
-        <translation type="unfinished"></translation>
+        <translation>Άνοιγμα</translation>
     </message>
     <message>
         <source>Open existing model</source>
-        <translation type="unfinished"></translation>
+        <translation>Άνοιγμα υπάρχοντος μοντέλου</translation>
     </message>
     <message>
         <source>Save</source>
-        <translation type="unfinished"></translation>
+        <translation>Αποθήκευση</translation>
     </message>
     <message>
         <source>Save current model</source>
-        <translation type="unfinished"></translation>
+        <translation>Αποθήκευση τρέχοντος μοντέλου</translation>
     </message>
     <message>
         <source>Save as ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Αποθήκευση ως...</translation>
     </message>
     <message>
         <source>Save current model as</source>
-        <translation type="unfinished"></translation>
+        <translation>Αποθήκευση τρέχοντος μοντέλου ως</translation>
     </message>
     <message>
         <source>Search...</source>
-        <translation type="unfinished"></translation>
+        <translation>Αναζήτηση...</translation>
     </message>
     <message>
         <source>Empty model</source>
-        <translation type="unfinished"></translation>
+        <translation>Καθαρισμός μοντέλου</translation>
     </message>
     <message>
         <source>Model doesn&apos;t contains any algorithms and/or parameters and can&apos;t be executed</source>
-        <translation type="unfinished"></translation>
+        <translation>Το μοντέλο δεν περιέχει αλγορίθμους ή/και παραμέτρους και δεν είναι δυνατή η εκτέλεσή του</translation>
     </message>
     <message>
         <source>Warning</source>
-        <translation type="unfinished">Προειδοποίηση</translation>
+        <translation>Προειδοποίηση</translation>
     </message>
     <message>
         <source>Please enter group and model names before saving</source>
-        <translation type="unfinished"></translation>
+        <translation>Παρακαλώ εισάγετε όνομα ομάδας και μοντέλου πριν την αποθήκευση</translation>
     </message>
     <message>
         <source>Save Model</source>
-        <translation type="unfinished"></translation>
+        <translation>Αποθήκευση Μοντέλου</translation>
     </message>
     <message>
         <source>Processing models (*.model)</source>
-        <translation type="unfinished"></translation>
+        <translation>Μοντέλα επεξεργασίας (*.model)</translation>
     </message>
     <message>
         <source>I/O error</source>
-        <translation type="unfinished"></translation>
+        <translation>Σφάλμα I/O</translation>
     </message>
     <message>
         <source>Unable to save edits. Reason:
  %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Δεν ήταν δυνατή η αποθήκευση των αλλαγών. Αίτιο: %1</translation>
     </message>
     <message>
         <source>Can&apos;t save model</source>
-        <translation type="unfinished"></translation>
+        <translation>Δεν είναι δυνατή η αποθήκευση του μοντέλου</translation>
     </message>
     <message>
         <source>This model can&apos;t be saved in its original location
 (probably you do not have permission to do it).
 Please, use the &apos;Save as...&apos; option.</source>
-        <translation type="unfinished"></translation>
+        <translation>Δεν ήταν δυνατή η αποθήκευση του μοντέλου στην αρχική του τοποθεσία (πιθανόν δεν έχετε δικαίωμα). Παρακαλώ, χρησιμοποιήστε την επιλογή &apos;Αποθήκευση ως&apos;.</translation>
     </message>
     <message>
         <source>Model saved</source>
-        <translation type="unfinished"></translation>
+        <translation>Το μοντέλο αποθηκεύτηκε</translation>
     </message>
     <message>
         <source>Model was correctly saved.</source>
-        <translation type="unfinished"></translation>
+        <translation>Το μοντέλο αποθηκεύτηκε σωστά.</translation>
     </message>
     <message>
         <source>Open Model</source>
-        <translation type="unfinished"></translation>
+        <translation>Άνοιγμα μοντέλου</translation>
     </message>
     <message>
         <source>Could not open model</source>
-        <translation type="unfinished"></translation>
+        <translation>Δεν ήταν δυνατό το άνοιγμα του μοντέλου</translation>
     </message>
     <message>
         <source>The selected model could not be loaded.
 Wrong line: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Δεν ήταν δυνατή η φόρτωση του επιλεγμένου μοντέλου. Εσφαλμένη γραμμή: %1</translation>
     </message>
     <message>
         <source>Parameters</source>
-        <translation type="unfinished">Παράμετροι</translation>
+        <translation>Παράμετροι</translation>
     </message>
 </context>
 <context>
     <name>NotSupportedDbType</name>
     <message>
         <source>%s is not supported yet</source>
-        <translation type="unfinished"></translation>
+        <translation>δεν υποστηρίζεται ακόμη το %s</translation>
     </message>
 </context>
 <context>
@@ -8127,62 +8129,62 @@ Wrong line: %1</source>
     <name>PGDatabase</name>
     <message>
         <source>&amp;Table</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Πίνακας</translation>
     </message>
     <message>
         <source>Run &amp;Vacuum Analyze</source>
-        <translation type="unfinished"></translation>
+        <translation>Eκτέλεση εργασιών συντήρησης (Vacuum Analyze)</translation>
     </message>
     <message>
         <source>Sorry</source>
-        <translation type="unfinished"></translation>
+        <translation>Λυπούμαστε</translation>
     </message>
     <message>
         <source>Select a TABLE for vacuum analyze.</source>
-        <translation type="unfinished"></translation>
+        <translation>Επιλογή πίνακα για εκτέλεση εργασιών συντήρησης (vacuum analyze).</translation>
     </message>
 </context>
 <context>
     <name>PGTable</name>
     <message>
         <source>Table rule</source>
-        <translation type="unfinished"></translation>
+        <translation>Κανόνας πίνακα</translation>
     </message>
 </context>
 <context>
     <name>PointsInPolygonThread</name>
     <message>
         <source>point count field</source>
-        <translation type="unfinished"></translation>
+        <translation>πεδίο αρίθμησης σημείων</translation>
     </message>
 </context>
 <context>
     <name>PostGisDBPlugin</name>
     <message>
         <source>There is no defined database connection &quot;%s&quot;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Δεν έχει ορισθεί σύνδεση σε Βάση Δεδομένων &quot;%s&quot;.</translation>
     </message>
 </context>
 <context>
     <name>PrepareAPIDialog</name>
     <message>
         <source>Error</source>
-        <translation type="unfinished">Σφάλμα</translation>
+        <translation>Σφάλμα</translation>
     </message>
     <message>
         <source>Done</source>
-        <translation type="unfinished"></translation>
+        <translation>Ολοκληρώθηκε</translation>
     </message>
 </context>
 <context>
     <name>Processing</name>
     <message>
         <source>Processing</source>
-        <translation type="unfinished"></translation>
+        <translation>Επεξεργασία</translation>
     </message>
     <message>
         <source>Toolbox</source>
-        <translation type="unfinished"></translation>
+        <translation>Εργαλειοθήκη</translation>
     </message>
     <message>
         <source>Graphical modeler</source>
@@ -8190,15 +8192,15 @@ Wrong line: %1</source>
     </message>
     <message>
         <source>History and log</source>
-        <translation type="unfinished"></translation>
+        <translation>Ιστορικό και αρχείο καταγραφής</translation>
     </message>
     <message>
         <source>Options and configuration</source>
-        <translation type="unfinished"></translation>
+        <translation>Επιλογές και παραμετροποίηση</translation>
     </message>
     <message>
         <source>&amp;Results viewer</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Θέαση αποτελεσμάτων</translation>
     </message>
     <message>
         <source>&amp;Commander</source>
@@ -8210,7 +8212,7 @@ Wrong line: %1</source>
     <message>
         <location filename="../python/plugins/processing/ui/ProcessingToolbox.ui" line="14"/>
         <source>Processing Toolbox</source>
-        <translation type="unfinished"></translation>
+        <translation>Εργαλειοθήκη Επεξεργασίας</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/ProcessingToolbox.ui" line="27"/>
@@ -8219,11 +8221,11 @@ Wrong line: %1</source>
     </message>
     <message>
         <source>Search...</source>
-        <translation type="unfinished"></translation>
+        <translation>Αναζήτηση...</translation>
     </message>
     <message>
         <source>Execute</source>
-        <translation type="unfinished"></translation>
+        <translation>Εκτέλεση</translation>
     </message>
     <message>
         <source>Execute as batch process</source>
@@ -8309,7 +8311,7 @@ Wrong line: %1</source>
     <name>PythonConsole</name>
     <message>
         <source>Clear console</source>
-        <translation type="unfinished"></translation>
+        <translation>Καθαρισμός κονσόλας</translation>
     </message>
     <message>
         <source>Settings</source>
@@ -8337,15 +8339,15 @@ Wrong line: %1</source>
     </message>
     <message>
         <source>Hide Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Απόκρυψη επεξεργασίας</translation>
     </message>
     <message>
         <source>Check Syntax</source>
-        <translation type="unfinished"></translation>
+        <translation>Έλεγχος σύνταξης</translation>
     </message>
     <message>
         <source>Run selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Εκτέλεση επιλεγμένων</translation>
     </message>
     <message>
         <source>Run Script</source>
@@ -8353,7 +8355,7 @@ Wrong line: %1</source>
     </message>
     <message>
         <source>Undo</source>
-        <translation type="unfinished">Αναίρεση</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Redo</source>
@@ -13579,7 +13581,6 @@ Always ignore these errors?</source>
         <comment>number of errors</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -14811,12 +14812,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsaddattrdialog.cpp" line="91"/>
         <source>Warning</source>
-        <translation type="unfinished">Προειδοποίηση</translation>
+        <translation>Προειδοποίηση</translation>
     </message>
     <message>
         <location filename="../src/app/qgsaddattrdialog.cpp" line="92"/>
         <source>Invalid field name. This field name is reserved and cannot be used.</source>
-        <translation type="unfinished"></translation>
+        <translation>Μη έγκυρο όνομα πεδιου. το όνομα πεδίου είναι δεσμευμένο και δε μπορει να χρησιμοποιηθεί.</translation>
     </message>
 </context>
 <context>
@@ -15252,7 +15253,7 @@ User DB Path:	%9
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="185"/>
         <source>Action properties</source>
-        <translation>Ιδιότητες Δράσης</translation>
+        <translation>Ιδιότητες Ενέργειας</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="273"/>
@@ -15290,17 +15291,17 @@ User DB Path:	%9
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="143"/>
         <source>Add default actions</source>
-        <translation type="unfinished"></translation>
+        <translation>Προσθήκη προεπιλεγμένων ενεργειών</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="234"/>
         <source>Open</source>
-        <translation type="unfinished"></translation>
+        <translation>Άνοιγμα</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="350"/>
         <source>Enter the action command here</source>
-        <translation>Εισάγετε την εντολή δράσης εδώ</translation>
+        <translation>Εισάγετε την εντολή για την ενέργεια εδώ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="353"/>
@@ -15310,7 +15311,7 @@ User DB Path:	%9
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="311"/>
         <source>Browse for action</source>
-        <translation>Αναζητήστε δράση</translation>
+        <translation>Αναζήτηση ενέργειας</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="314"/>
@@ -16127,7 +16128,7 @@ User DB Path:	%9
     <message>
         <location filename="../src/gui/attributetable/qgsattributetableview.cpp" line="225"/>
         <source>Select All</source>
-        <translation type="unfinished"></translation>
+        <translation>Επιλογή όλων</translation>
     </message>
 </context>
 <context>
@@ -16561,7 +16562,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="47"/>
         <source>&amp;Add</source>
-        <translation type="unfinished">Προσθ&amp;ήκη</translation>
+        <translation>&amp;Προσθήκη</translation>
     </message>
     <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="48"/>
@@ -16577,7 +16578,7 @@ Error was:%2</source>
         <location filename="../src/app/qgsbookmarks.cpp" line="64"/>
         <location filename="../src/app/qgsbookmarks.cpp" line="182"/>
         <source>Error</source>
-        <translation type="unfinished">Σφάλμα</translation>
+        <translation>Σφάλμα</translation>
     </message>
     <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="65"/>
@@ -16590,61 +16591,61 @@ Database: %3</source>
     <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="81"/>
         <source>ID</source>
-        <translation type="unfinished">ID</translation>
+        <translation>Αναγνωριστικό (ID)</translation>
     </message>
     <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="82"/>
         <source>Name</source>
-        <translation type="unfinished">Όνομα</translation>
+        <translation>Όνομα</translation>
     </message>
     <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="83"/>
         <source>Project</source>
-        <translation type="unfinished">Έργο - Project</translation>
+        <translation>Έργο (Project)</translation>
     </message>
     <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="84"/>
         <source>xMin</source>
-        <translation type="unfinished"></translation>
+        <translation>min X</translation>
     </message>
     <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="85"/>
         <source>yMin</source>
-        <translation type="unfinished"></translation>
+        <translation>min y</translation>
     </message>
     <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="86"/>
         <source>xMax</source>
-        <translation type="unfinished"></translation>
+        <translation>max x</translation>
     </message>
     <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="87"/>
         <source>yMax</source>
-        <translation type="unfinished"></translation>
+        <translation>max y</translation>
     </message>
     <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="88"/>
         <source>SRID</source>
-        <translation type="unfinished"></translation>
+        <translation>Κωδικός Συστήματος Συν/νων</translation>
     </message>
     <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="165"/>
         <source>New bookmark</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Νέος σελιδοδείκτης</translation>
     </message>
     <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="182"/>
         <source>Unable to create the bookmark.
 Driver:%1
 Database:%2</source>
-        <translation type="unfinished"></translation>
+        <translation>Αδύνατη η δημιουργία του σελιδοδείκτη. Οδηγός: %1 ΒΔ: %2</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/app/qgsbookmarks.cpp" line="204"/>
         <source>Are you sure you want to delete %n bookmark(s)?</source>
         <comment>number of rows</comment>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Είστε σίγουροι ότι επιθυμείτε τη διαγραφή του(ων) σελιδοδείκτη(ων);</numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -16814,7 +16815,7 @@ Database:%2</source>
     <message>
         <location filename="../src/ui/qgsbrowserdirectorypropertiesbase.ui" line="25"/>
         <source>Path</source>
-        <translation type="unfinished"></translation>
+        <translation>Διαδρομή</translation>
     </message>
 </context>
 <context>
@@ -16826,28 +16827,28 @@ Database:%2</source>
     <message>
         <location filename="../src/app/qgsbrowserdockwidget.cpp" line="330"/>
         <source>Add Selected Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Προσθήκη Επιλεγμένων Επιπέδων</translation>
     </message>
     <message>
         <location filename="../src/app/qgsbrowserdockwidget.cpp" line="314"/>
         <source>Add as a favourite</source>
-        <translation type="unfinished"></translation>
+        <translation>Προσθήκη στα αγαπημένα</translation>
     </message>
     <message>
         <location filename="../src/app/qgsbrowserdockwidget.cpp" line="319"/>
         <source>Remove favourite</source>
-        <translation type="unfinished"></translation>
+        <translation>Αφαίρεση αγαπημένου</translation>
     </message>
     <message>
         <location filename="../src/app/qgsbrowserdockwidget.cpp" line="329"/>
         <source>Add Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Προσθήκη επιπέδου</translation>
     </message>
     <message>
         <location filename="../src/app/qgsbrowserdockwidget.cpp" line="321"/>
         <location filename="../src/app/qgsbrowserdockwidget.cpp" line="331"/>
         <source>Properties</source>
-        <translation type="unfinished">Ιδιότητες</translation>
+        <translation>Ιδιότητες</translation>
     </message>
     <message>
         <location filename="../src/app/qgsbrowserdockwidget.cpp" line="239"/>
@@ -16857,7 +16858,7 @@ Database:%2</source>
     <message>
         <location filename="../src/app/qgsbrowserdockwidget.cpp" line="242"/>
         <source>Wildcard(s)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Χαρακτήρες </translation>
     </message>
     <message>
         <location filename="../src/app/qgsbrowserdockwidget.cpp" line="247"/>
@@ -16988,7 +16989,7 @@ Database:%2</source>
     <message>
         <location filename="../src/core/qgsbrowsermodel.cpp" line="92"/>
         <source>Favourites</source>
-        <translation type="unfinished"></translation>
+        <translation>Αγαπημένα</translation>
     </message>
 </context>
 <context>
@@ -17207,17 +17208,17 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgscharacterselectdialogbase.ui" line="20"/>
         <source>Character Selector</source>
-        <translation type="unfinished"></translation>
+        <translation>Επιλογή χαρακτήρων</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscharacterselectdialogbase.ui" line="34"/>
         <source>Font:</source>
-        <translation type="unfinished"></translation>
+        <translation>Γραμματοσειρά:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscharacterselectdialogbase.ui" line="41"/>
         <source>Current font family and style</source>
-        <translation type="unfinished"></translation>
+        <translation>Τρέχουσα γραμματοσειρά και στυλ</translation>
     </message>
 </context>
 <context>
@@ -17238,7 +17239,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/gui/qgscolorbutton.cpp" line="43"/>
         <source>Select Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Επιλογή χρώματος</translation>
     </message>
 </context>
 <context>
@@ -17246,7 +17247,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/gui/qgscolordialog.cpp" line="35"/>
         <source>Select Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Επιλογή χρώματος</translation>
     </message>
 </context>
 <context>
@@ -17757,7 +17758,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="115"/>
         <source>Color...</source>
-        <translation type="unfinished">Χρώμα ...</translation>
+        <translation>Χρώμα...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="145"/>
@@ -18515,53 +18516,53 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="23"/>
         <source>Position and size</source>
-        <translation type="unfinished"></translation>
+        <translation>Θέση και μέγεθος</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="167"/>
         <source>Reference point</source>
-        <translation type="unfinished"></translation>
+        <translation>Σημείο αναφοράς</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="176"/>
         <source>X</source>
-        <translation type="unfinished">Χ</translation>
+        <translation>Χ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="186"/>
         <source>Y</source>
-        <translation type="unfinished">Υ</translation>
+        <translation>Υ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="196"/>
         <source>Width</source>
-        <translation type="unfinished">Πλάτος</translation>
+        <translation>Πλάτος</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="206"/>
         <source>Height</source>
-        <translation type="unfinished">Ύψος</translation>
+        <translation>Ύψος</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="223"/>
         <source>Frame</source>
-        <translation type="unfinished"></translation>
+        <translation>Πλαίσιο</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="244"/>
         <source>Thickness</source>
-        <translation type="unfinished"></translation>
+        <translation>Πάχος</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="260"/>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="288"/>
         <source>Color...</source>
-        <translation type="unfinished">Χρώμα ...</translation>
+        <translation>Χρώμα...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="270"/>
         <source>Background</source>
-        <translation type="unfinished"></translation>
+        <translation>Φόντο</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="298"/>
@@ -18571,7 +18572,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="316"/>
         <source>Uuid (read-only)</source>
-        <translation type="unfinished"></translation>
+        <translation>Μοναδικό αναγνωριστικό (μόνο για ανάγνωση)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="333"/>
@@ -18591,7 +18592,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="371"/>
         <source>Transparency</source>
-        <translation type="unfinished"></translation>
+        <translation>Διαφάνεια</translation>
     </message>
     <message>
         <source>Position...</source>
@@ -18951,7 +18952,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="150"/>
         <source>Update item</source>
-        <translation type="unfinished"></translation>
+        <translation>Ενημέρωση αντικειμένου</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="163"/>
@@ -18961,7 +18962,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="166"/>
         <source>Update all</source>
-        <translation type="unfinished"></translation>
+        <translation>Ενημέρωση όλων</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="255"/>
@@ -18996,7 +18997,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="417"/>
         <source>Font color...</source>
-        <translation type="unfinished">Χρώμα γραμματοσειράς ...</translation>
+        <translation>Χρώμα γραμματοσειράς...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="427"/>
@@ -31001,7 +31002,6 @@ at line %2 column %3</source>
         <comment>unhandled layers</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
 </context>
@@ -31172,7 +31172,6 @@ at line %2 column %3</source>
 This may be a problem in your network connection or at the WMS server.</source>
         <comment>inactivity timeout</comment>
         <translation type="unfinished">
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -34372,7 +34371,7 @@ not displayed</source>
     <message>
         <location filename="../src/app/qgsmaptoolidentifyaction.cpp" line="123"/>
         <source>No features at this position found.</source>
-        <translation type="unfinished"></translation>
+        <translation>Δε εντοπίστηκαν αντικείμενα στην τοποθεσία.</translation>
     </message>
 </context>
 <context>
@@ -34384,7 +34383,7 @@ not displayed</source>
     <message>
         <location filename="../src/app/qgsmaptoolmovefeature.cpp" line="155"/>
         <source>Feature moved</source>
-        <translation type="unfinished"></translation>
+        <translation>Το αντικείμενο μετακινήθηκε</translation>
     </message>
 </context>
 <context>
@@ -34400,7 +34399,7 @@ not displayed</source>
     <message>
         <location filename="../src/app/nodetool/qgsmaptoolnodetool.cpp" line="679"/>
         <source>Inserted vertex</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Κόμβος εισήχθη</translation>
     </message>
 </context>
 <context>
@@ -34971,7 +34970,6 @@ not displayed</source>
         <source>%n more</source>
         <comment>unread messages</comment>
         <translation type="unfinished">
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -36677,7 +36675,6 @@ Extended error information:
         <source>Coordinate Reference System (%n available)</source>
         <comment>crs count</comment>
         <translation type="unfinished">
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -44134,7 +44131,6 @@ Because of this the projection selector will not work...</source>
         <comment>returned test rows</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -46874,7 +46870,6 @@ standard deviation ×</source>
         <comment>number of filtered features</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
 </context>
@@ -47198,7 +47193,7 @@ standard deviation ×</source>
     <message>
         <location filename="../src/core/qgsrunprocess.cpp" line="70"/>
         <source>Action</source>
-        <translation type="unfinished">Δράση</translation>
+        <translation>Ενέργεια</translation>
     </message>
     <message>
         <location filename="../src/core/qgsrunprocess.cpp" line="118"/>
@@ -47748,7 +47743,6 @@ standard deviation ×</source>
         <comment>test result</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
 </context>
@@ -47764,7 +47758,6 @@ standard deviation ×</source>
         <source>Validation finished (%n error(s) found).</source>
         <comment>number of geometry errors</comment>
         <translation type="unfinished">
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -48908,7 +48901,6 @@ but implies better performance thereafter.</source>
         <source>%n selected geometries</source>
         <comment>selected geometries</comment>
         <translation type="unfinished">
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -50800,32 +50792,32 @@ There was a problem with your symbol database.</source>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbolslistwidget.cpp" line="74"/>
         <source>Style Manager</source>
-        <translation type="unfinished"></translation>
+        <translation>Διαχείριση Στυλ</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbolslistwidget.cpp" line="76"/>
         <source>Save in symbol library...</source>
-        <translation type="unfinished"></translation>
+        <translation>Αποθήκευση στη βιβλιοθήκη συμβόλων</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbolslistwidget.cpp" line="223"/>
         <source>Symbol name</source>
-        <translation type="unfinished"></translation>
+        <translation>Όνομα Συμβόλου</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbolslistwidget.cpp" line="224"/>
         <source>Please enter name for the symbol:</source>
-        <translation type="unfinished"></translation>
+        <translation>Παρακαλώ εισάγετε όνομα για το σύμβολο:</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbolslistwidget.cpp" line="224"/>
         <source>New symbol</source>
-        <translation type="unfinished"></translation>
+        <translation>Νέο σύμβολο</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbolslistwidget.cpp" line="231"/>
         <source>Save symbol</source>
-        <translation type="unfinished"></translation>
+        <translation>Αποθήκευση συμβόλου</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbolslistwidget.cpp" line="232"/>
@@ -51774,7 +51766,6 @@ p, li { white-space: pre-wrap; }
         <comment>deleted attributes count</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -51782,7 +51773,6 @@ p, li { white-space: pre-wrap; }
         <source>ERROR: %n attribute(s) not deleted.</source>
         <comment>not deleted attributes count</comment>
         <translation type="unfinished">
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -51792,7 +51782,6 @@ p, li { white-space: pre-wrap; }
         <comment>added attributes count</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -51800,7 +51789,6 @@ p, li { white-space: pre-wrap; }
         <source>ERROR: %n new attribute(s) not added</source>
         <comment>not added attributes count</comment>
         <translation type="unfinished">
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -51820,7 +51808,6 @@ p, li { white-space: pre-wrap; }
         <comment>changed attribute values count</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -51828,7 +51815,6 @@ p, li { white-space: pre-wrap; }
         <source>ERROR: %n attribute value change(s) not applied.</source>
         <comment>not changed attribute values count</comment>
         <translation type="unfinished">
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -51838,7 +51824,6 @@ p, li { white-space: pre-wrap; }
         <comment>deleted features count</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -51846,7 +51831,6 @@ p, li { white-space: pre-wrap; }
         <source>ERROR: %n feature(s) not deleted.</source>
         <comment>not deleted features count</comment>
         <translation type="unfinished">
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -51856,7 +51840,6 @@ p, li { white-space: pre-wrap; }
         <comment>added features count</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -51864,7 +51847,6 @@ p, li { white-space: pre-wrap; }
         <source>ERROR: %n feature(s) not added.</source>
         <comment>not added features count</comment>
         <translation type="unfinished">
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -51874,7 +51856,6 @@ p, li { white-space: pre-wrap; }
         <comment>not added features count</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -51883,7 +51864,6 @@ p, li { white-space: pre-wrap; }
         <comment>changed geometries count</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -51891,7 +51871,6 @@ p, li { white-space: pre-wrap; }
         <source>ERROR: %n geometries not changed.</source>
         <comment>not changed geometries count</comment>
         <translation type="unfinished">
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -53112,7 +53091,6 @@ p, li { white-space: pre-wrap; }
         <comment>crs count</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -53125,7 +53103,6 @@ p, li { white-space: pre-wrap; }
         <source>Options (%n coordinate reference systems available)</source>
         <comment>crs count</comment>
         <translation type="unfinished">
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -53159,7 +53136,6 @@ p, li { white-space: pre-wrap; }
         <source>%n Layer(s) selected</source>
         <comment>selected layer count</comment>
         <translation type="unfinished">
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -53798,7 +53774,6 @@ Response was:
         <comment>crs</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -53979,7 +53954,6 @@ Response was:
         <source>(and %n more)</source>
         <comment>crs</comment>
         <translation type="unfinished">
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -54422,7 +54396,6 @@ Tried URL: %1</source>
         <comment>tile request count</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -54431,7 +54404,6 @@ Tried URL: %1</source>
         <source>, %n cache hits</source>
         <comment>tile cache hits</comment>
         <translation type="unfinished">
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -54442,7 +54414,6 @@ Tried URL: %1</source>
         <comment>tile cache missed</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -54451,7 +54422,6 @@ Tried URL: %1</source>
         <source>, %n errors.</source>
         <comment>errors</comment>
         <translation type="unfinished">
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -55579,12 +55549,12 @@ Description: %3</source>
     <message>
         <location filename="../src/plugins/sqlanywhere/sqlanywhere.cpp" line="82"/>
         <source>Add SQL Anywhere Layer...</source>
-        <translation type="unfinished"></translation>
+        <translation>Προσθήκη επιπέδου SQL Anywhere...</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sqlanywhere.cpp" line="83"/>
         <source>Store vector layers within a SQL Anywhere database</source>
-        <translation type="unfinished"></translation>
+        <translation>Αποθήκευση διανυσματικών επιπέδων σε βάσηδεδομένων  SQL Anywhere</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sqlanywhere.cpp" line="162"/>
@@ -55602,37 +55572,37 @@ Description: %3</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_symbolslist.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Φόρμα</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_symbolslist.ui" line="30"/>
         <source>Unit</source>
-        <translation type="unfinished"></translation>
+        <translation>Μονάδες</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_symbolslist.ui" line="41"/>
         <source>Millimeter</source>
-        <translation type="unfinished"></translation>
+        <translation>Χιλιοστά</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_symbolslist.ui" line="46"/>
         <source>Map unit</source>
-        <translation type="unfinished"></translation>
+        <translation>Μονάδες χάρτη</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_symbolslist.ui" line="54"/>
         <source>Opacity</source>
-        <translation type="unfinished">Διαφάνεια</translation>
+        <translation>Διαφάνεια</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_symbolslist.ui" line="80"/>
         <source>Color</source>
-        <translation type="unfinished">Χρώμα</translation>
+        <translation>Χρώμα</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_symbolslist.ui" line="312"/>
         <source>Symbol</source>
-        <translation type="unfinished">Σύμβολο</translation>
+        <translation>Σύμβολο</translation>
     </message>
     <message>
         <source>Change</source>
@@ -55641,32 +55611,32 @@ Description: %3</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_symbolslist.ui" line="124"/>
         <source>Size</source>
-        <translation type="unfinished">Μέγεθος</translation>
+        <translation>Μέγεθος</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_symbolslist.ui" line="144"/>
         <source>Rotation</source>
-        <translation type="unfinished">Περιστροφή</translation>
+        <translation>Περιστροφή</translation>
     </message>
     <message utf8="true">
         <location filename="../src/ui/symbollayer/widget_symbolslist.ui" line="151"/>
         <source>°</source>
-        <translation type="unfinished">°</translation>
+        <translation>°</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_symbolslist.ui" line="171"/>
         <source>Width</source>
-        <translation type="unfinished">Πλάτος</translation>
+        <translation>Πλάτος</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_symbolslist.ui" line="209"/>
         <source>Saved styles</source>
-        <translation type="unfinished"></translation>
+        <translation>Αποθηκευμένα στυλ</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_symbolslist.ui" line="292"/>
         <source>Symbol Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Όνομα Συμβόλου</translation>
     </message>
     <message>
         <source>Style</source>
@@ -55675,7 +55645,7 @@ Description: %3</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_symbolslist.ui" line="319"/>
         <source>Advanced</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Προχωρημένες</translation>
     </message>
 </context>
 <context>
@@ -55683,18 +55653,18 @@ Description: %3</source>
     <message>
         <location filename="../src/plugins/topology/topol.cpp" line="69"/>
         <source>TopologyChecker</source>
-        <translation type="unfinished"></translation>
+        <translation>Έλεγχος Τοπολογίας</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topol.cpp" line="77"/>
         <source>Topology Checker for vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Έλεγχος Τοπολογίας για διανυσματικό πεδίο</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topol.cpp" line="82"/>
         <location filename="../src/plugins/topology/topol.cpp" line="118"/>
         <source>&amp;Topology Checker</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Έλεγχος Τοπολογίας</translation>
     </message>
 </context>
 <context>
@@ -55735,7 +55705,7 @@ Description: %3</source>
     </message>
     <message>
         <source>Please specify input vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Παρακαλώ ορίστε το διανυσματικό επίπεδο εισόδου</translation>
     </message>
     <message>
         <source>Please specify input field</source>
@@ -55743,7 +55713,7 @@ Description: %3</source>
     </message>
     <message>
         <source>Please specify output shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>Παρακαλώ ορίστε το αρχείο shapefile προορισμού</translation>
     </message>
     <message>
         <source>Cancel</source>
@@ -55751,7 +55721,7 @@ Description: %3</source>
     </message>
     <message>
         <source>Geometry</source>
-        <translation type="unfinished">Γεωμετρια</translation>
+        <translation>Γεωμετρία</translation>
     </message>
     <message>
         <source>Created output shapefile:
@@ -55759,12 +55729,15 @@ Description: %3</source>
 %s
 
 Would you like to add the new layer to the TOC?</source>
-        <translation type="unfinished"></translation>
+        <translation>Δημιουργήθηκε το shapefile προορισμού:
+%s
+%s
+Θα θέλατε να προσθέσετε το νέο επίπεδο (layer) στον πίνακα περιεχομένων;</translation>
     </message>
     <message>
         <source>Error loading output shapefile:
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Σφάλμα κατά τη φόρτωση του αρχείου shapefile προορισμού: %s</translation>
     </message>
     <message>
         <source>Created output shapefile:
@@ -55780,11 +55753,11 @@ Would you like to add the new layer to the TOC?</source>
     </message>
     <message>
         <source>Feature</source>
-        <translation type="unfinished"></translation>
+        <translation>Αντικείμενο</translation>
     </message>
     <message>
         <source>Error(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Σφάλμα(τα)</translation>
     </message>
 </context>
 <context>
@@ -55851,7 +55824,7 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_centroidfill.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Φόρμα</translation>
     </message>
     <message>
         <source>Change</source>
@@ -55863,7 +55836,7 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Φόρμα</translation>
     </message>
     <message>
         <source>Settings</source>
@@ -55876,22 +55849,22 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="34"/>
         <source>Colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Χρώματα</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="49"/>
         <source>Fill</source>
-        <translation type="unfinished"></translation>
+        <translation>Γέμισμα</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="81"/>
         <source>Border</source>
-        <translation type="unfinished"></translation>
+        <translation>Περίγραμμα</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="122"/>
         <source>Symbol width</source>
-        <translation type="unfinished"></translation>
+        <translation>Πλάτος Συμβόλου</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="148"/>
@@ -55899,7 +55872,7 @@ Would you like to add the new layer to the TOC?</source>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="246"/>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="309"/>
         <source>Millimeter</source>
-        <translation type="unfinished"></translation>
+        <translation>Χιλιοστά</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="153"/>
@@ -55907,32 +55880,32 @@ Would you like to add the new layer to the TOC?</source>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="251"/>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="314"/>
         <source>Map unit</source>
-        <translation type="unfinished"></translation>
+        <translation>Μονάδες χάρτη</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="163"/>
         <source>Outline width</source>
-        <translation type="unfinished">Πλάτος περιγράμματος</translation>
+        <translation>Πλάτος περιγράμματος</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="214"/>
         <source>Symbol height</source>
-        <translation type="unfinished"></translation>
+        <translation>Ύψος Συμβόλου</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="267"/>
         <source>Data defined properties...</source>
-        <translation type="unfinished"></translation>
+        <translation>Καθορισμός ιδιοτήτων από τα δεδομένα...</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="324"/>
         <source>Offset X,Y</source>
-        <translation type="unfinished"></translation>
+        <translation>Μετατόπιση κατά Χ,Υ</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="204"/>
         <source>Rotation</source>
-        <translation type="unfinished">Περιστροφή</translation>
+        <translation>Περιστροφή</translation>
     </message>
     <message>
         <source>Shape</source>
@@ -55944,12 +55917,12 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_fontmarker.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Φόρμα</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_fontmarker.ui" line="43"/>
         <source>Font family</source>
-        <translation type="unfinished"></translation>
+        <translation>Γραμματοσειρά</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_fontmarker.ui" line="53"/>
@@ -55969,13 +55942,13 @@ Would you like to add the new layer to the TOC?</source>
         <location filename="../src/ui/symbollayer/widget_fontmarker.ui" line="108"/>
         <location filename="../src/ui/symbollayer/widget_fontmarker.ui" line="191"/>
         <source>Millimeter</source>
-        <translation type="unfinished"></translation>
+        <translation>Χιλιοστά</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_fontmarker.ui" line="113"/>
         <location filename="../src/ui/symbollayer/widget_fontmarker.ui" line="196"/>
         <source>Map unit</source>
-        <translation type="unfinished"></translation>
+        <translation>Μονάδες χάρτη</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_fontmarker.ui" line="123"/>
@@ -55990,7 +55963,7 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_fontmarker.ui" line="143"/>
         <source>Offset X,Y</source>
-        <translation type="unfinished"></translation>
+        <translation>Μετατόπιση κατά Χ,Υ</translation>
     </message>
 </context>
 <context>
@@ -56009,46 +55982,46 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_linepatternfill.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Φόρμα</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_linepatternfill.ui" line="32"/>
         <source>Angle</source>
-        <translation type="unfinished">Γωνία</translation>
+        <translation>Γωνία</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_linepatternfill.ui" line="46"/>
         <source>Distance</source>
-        <translation type="unfinished"></translation>
+        <translation>Απόσταση</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_linepatternfill.ui" line="69"/>
         <location filename="../src/ui/symbollayer/widget_linepatternfill.ui" line="110"/>
         <location filename="../src/ui/symbollayer/widget_linepatternfill.ui" line="154"/>
         <source>Millimeter</source>
-        <translation type="unfinished"></translation>
+        <translation>Χιλιοστά</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_linepatternfill.ui" line="74"/>
         <location filename="../src/ui/symbollayer/widget_linepatternfill.ui" line="115"/>
         <location filename="../src/ui/symbollayer/widget_linepatternfill.ui" line="159"/>
         <source>Map unit</source>
-        <translation type="unfinished"></translation>
+        <translation>Μονάδες χάρτη</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_linepatternfill.ui" line="84"/>
         <source>Line width</source>
-        <translation type="unfinished">Πάχος γραμμής</translation>
+        <translation>Πάχος γραμμής</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_linepatternfill.ui" line="169"/>
         <source>Color</source>
-        <translation type="unfinished">Χρώμα</translation>
+        <translation>Χρώμα</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_linepatternfill.ui" line="201"/>
         <source>Data defined properties...</source>
-        <translation type="unfinished"></translation>
+        <translation>Καθορισμός ιδιοτήτων από τα δεδομένα...</translation>
     </message>
     <message>
         <source>Change</source>
@@ -56057,7 +56030,7 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_linepatternfill.ui" line="125"/>
         <source>Offset</source>
-        <translation type="unfinished"></translation>
+        <translation>Μετατόπιση</translation>
     </message>
 </context>
 <context>
@@ -56065,7 +56038,7 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_markerline.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Φόρμα</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_markerline.ui" line="126"/>
@@ -56079,7 +56052,7 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_markerline.ui" line="35"/>
         <source>Marker placement</source>
-        <translation type="unfinished"></translation>
+        <translation>Τοποθέτηση σήμανσης</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_markerline.ui" line="43"/>
@@ -56090,43 +56063,43 @@ Would you like to add the new layer to the TOC?</source>
         <location filename="../src/ui/symbollayer/widget_markerline.ui" line="73"/>
         <location filename="../src/ui/symbollayer/widget_markerline.ui" line="172"/>
         <source>Millimeter</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_markerline.ui" line="78"/>
         <location filename="../src/ui/symbollayer/widget_markerline.ui" line="177"/>
         <source>Map unit</source>
-        <translation type="unfinished"></translation>
+        <translation>Μονάδες χάρτη</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_markerline.ui" line="88"/>
         <source>on every vertex</source>
-        <translation type="unfinished"></translation>
+        <translation>σε κάθε κόμβο</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_markerline.ui" line="95"/>
         <source>on last vertex only</source>
-        <translation type="unfinished"></translation>
+        <translation>μόνο στον τελευταίο κόμβο</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_markerline.ui" line="102"/>
         <source>on first vertex only</source>
-        <translation type="unfinished"></translation>
+        <translation>μόνο στον πρώτο κόμβο</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_markerline.ui" line="119"/>
         <source>Rotate marker</source>
-        <translation type="unfinished"></translation>
+        <translation>Περιστροφή σήμανσης</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_markerline.ui" line="141"/>
         <source>Data defined properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Καθορισμός ιδιοτήτων από τα δεδομένα...</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_markerline.ui" line="109"/>
         <source>on central point</source>
-        <translation type="unfinished"></translation>
+        <translation>στο κεντρικό σημείο</translation>
     </message>
 </context>
 <context>
@@ -56134,7 +56107,7 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_pointpatternfill.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Φόρμα</translation>
     </message>
     <message>
         <source>Change</source>
@@ -56159,7 +56132,7 @@ Would you like to add the new layer to the TOC?</source>
         <location filename="../src/ui/symbollayer/widget_pointpatternfill.ui" line="145"/>
         <location filename="../src/ui/symbollayer/widget_pointpatternfill.ui" line="186"/>
         <source>Map unit</source>
-        <translation type="unfinished"></translation>
+        <translation>Μονάδες χάρτη</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_pointpatternfill.ui" line="73"/>
@@ -56179,7 +56152,7 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_pointpatternfill.ui" line="202"/>
         <source>Data defined properties...</source>
-        <translation type="unfinished"></translation>
+        <translation>Καθορισμός ιδιοτήτων από τα δεδομένα...</translation>
     </message>
 </context>
 <context>
@@ -56187,7 +56160,7 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Φόρμα</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="98"/>
@@ -56219,7 +56192,7 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="168"/>
         <source>Fill</source>
-        <translation type="unfinished"></translation>
+        <translation>Γέμισμα</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="200"/>
@@ -56238,7 +56211,7 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="241"/>
         <source>Border width</source>
-        <translation type="unfinished"></translation>
+        <translation>Πάχος περιγράμματος</translation>
     </message>
     <message>
         <source>Change</source>
@@ -56247,17 +56220,17 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="25"/>
         <source>SVG Groups</source>
-        <translation type="unfinished"></translation>
+        <translation>Σύνολα SVG</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="32"/>
         <source>SVG Symbols</source>
-        <translation type="unfinished"></translation>
+        <translation>Σύμβολα SVG</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="78"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
 </context>
 <context>
@@ -56265,7 +56238,7 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Φόρμα</translation>
     </message>
     <message>
         <source>Color</source>
@@ -56274,12 +56247,12 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="39"/>
         <source>Fill style</source>
-        <translation type="unfinished"></translation>
+        <translation>Στυλ γεμίσματος</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="32"/>
         <source>Colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Χρώματα</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="49"/>
@@ -56316,12 +56289,12 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="184"/>
         <source>Fill</source>
-        <translation type="unfinished"></translation>
+        <translation>Γέμισμα</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="216"/>
         <source>Border</source>
-        <translation type="unfinished"></translation>
+        <translation>Περίγραμμα</translation>
     </message>
     <message>
         <source>Change</source>
@@ -59349,7 +59322,7 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <source>QGIS version detected: </source>
-        <translation type="unfinished"></translation>
+        <translation>Έκδοση του QGIS που εντοπίστηκε:</translation>
     </message>
     <message>
         <source>&amp;Analysis Tools</source>
@@ -59439,7 +59412,7 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <source>Union</source>
-        <translation>Ένωωση</translation>
+        <translation>Ένωση</translation>
     </message>
     <message>
         <source>Symetrical difference</source>
@@ -59459,7 +59432,7 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <source>Eliminate sliver polygons</source>
-        <translation type="unfinished"></translation>
+        <translation>Απαοιφη επιμηκών (sliver) πολυγώνων</translation>
     </message>
     <message>
         <source>G&amp;eometry Tools</source>
@@ -59483,7 +59456,7 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <source>Voronoi Polygons</source>
-        <translation type="unfinished"></translation>
+        <translation>Πολύγωνα Voronoi</translation>
     </message>
     <message>
         <source>Extract nodes</source>
@@ -59495,7 +59468,7 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <source>Densify geometries</source>
-        <translation type="unfinished"></translation>
+        <translation>Πύκνωση γεωμετριών με εισαγωγή ενδιάμεσων κόμβων</translation>
     </message>
     <message>
         <source>Multipart to singleparts</source>
@@ -59519,7 +59492,7 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <source>Create spatial index</source>
-        <translation type="unfinished"></translation>
+        <translation>Δημιουργία χωρικού ευρετηρίου</translation>
     </message>
     <message>
         <source>Export to new projection</source>
