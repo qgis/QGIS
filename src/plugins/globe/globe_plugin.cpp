@@ -61,9 +61,12 @@
 #include <osgEarthUtil/AutoClipPlaneHandler>
 #include <osgEarthDrivers/gdal/GDALOptions>
 #include <osgEarthDrivers/tms/TMSOptions>
-#include <osgEarth/Version>
+
 #if OSGEARTH_VERSION_GREATER_OR_EQUAL( 2, 2, 0 )
 #include <osgEarthDrivers/cache_filesystem/FileSystemCache>
+#endif
+#if OSGEARTH_VERSION_GREATER_OR_EQUAL( 2, 5, 0 )
+#include <osgEarthUtil/VerticalScale>
 #endif
 using namespace osgEarth::Drivers;
 using namespace osgEarth::Util;
@@ -87,6 +90,7 @@ GlobePlugin::GlobePlugin( QgisInterface* theQgisInterface )
     , mQActionSettingsPointer( NULL )
     , mOsgViewer( 0 )
     , mViewerWidget( 0 )
+    , mMapNode( 0 )
     , mBaseLayer( 0 )
     , mQgisMapLayer( 0 )
     , mTileSource( 0 )
@@ -544,6 +548,22 @@ void GlobePlugin::syncExtent()
   manip->setViewpoint( viewpoint, 4.0 );
 }
 
+#if OSGEARTH_VERSION_GREATER_OR_EQUAL( 2, 5, 0 )
+void GlobePlugin::setVerticalScale( double value )
+{
+  if ( mMapNode )
+  {
+    if ( !mVerticalScale.get() || mVerticalScale->getScale() != value )
+    {
+      mMapNode->getTerrainEngine()->removeEffect( mVerticalScale );
+      mVerticalScale = new osgEarth::Util::VerticalScale();
+      mVerticalScale->setScale( value );
+      mMapNode->getTerrainEngine()->addEffect( mVerticalScale );
+    }
+  }
+}
+#endif
+
 void GlobePlugin::setupControls()
 {
   std::string imgDir = QDir::cleanPath( QgsApplication::pkgDataPath() + "/globe/gui" ).toStdString();
@@ -810,6 +830,10 @@ void GlobePlugin::elevationLayersChanged()
 
       //if ( !cache || type == "Worldwind" ) layer->setCache( 0 ); //no tms cache for worldwind (use worldwind_cache)
     }
+#if OSGEARTH_VERSION_GREATER_OR_EQUAL( 2, 5, 0 )
+    double scale = QgsProject::instance()->readDoubleEntry( "Globe-Plugin", "/verticalScale", 1 );
+    setVerticalScale( scale );
+#endif
   }
   else
   {
