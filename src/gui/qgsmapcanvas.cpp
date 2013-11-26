@@ -496,6 +496,12 @@ void QgsMapCanvas::rendererJobFinished()
 
   mDirty = false;
 
+  // TODO: would be better to show the errors in message bar
+  foreach ( const QgsMapRendererJob::Error& error, mJob->errors() )
+  {
+    QgsMessageLog::logMessage( error.layerID + " :: " + error.message, tr( "Rendering" ) );
+  }
+
   if ( !mJobCancelled )
   {
     QImage img = mJob->renderedImage();

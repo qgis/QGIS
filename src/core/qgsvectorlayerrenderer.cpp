@@ -19,16 +19,16 @@
 
 
 QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer* layer, QgsRenderContext& context )
-  : mContext( context )
+  : QgsMapLayerRenderer( layer->id() )
+  , mContext( context )
   , mFields( layer->pendingFields() )
-  , mLayerID( layer->id() )
   , mRendererV2( 0 )
   , mCache( 0 )
   , mLabeling( false )
   , mDiagrams( false )
   , mLayerTransparency( 0 )
 {
-  mRendererV2 = layer->rendererV2()->clone();
+  mRendererV2 = layer->rendererV2() ? layer->rendererV2()->clone() : 0;
   mSelectedFeatureIds = layer->selectedFeaturesIds();
 
   mDrawVertexMarkers = ( layer->editBuffer() != 0 );
@@ -101,7 +101,10 @@ bool QgsVectorLayerRenderer::render()
     return true;
 
   if ( !mRendererV2 )
+  {
+    mErrors.append( "No renderer for drawing." );
     return false;
+  }
 
   // Per feature blending mode
   if ( mContext.useAdvancedEffects() && mFeatureBlendMode != QPainter::CompositionMode_SourceOver )

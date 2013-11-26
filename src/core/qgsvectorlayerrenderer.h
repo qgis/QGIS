@@ -58,8 +58,6 @@ protected:
 
   QgsFields mFields;
 
-  QString mLayerID;
-
   QgsFeatureIds mSelectedFeatureIds;
 
   QgsFeatureIterator mFit;

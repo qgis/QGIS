@@ -1,8 +1,7 @@
 #ifndef QGSMAPLAYERRENDERER_H
 #define QGSMAPLAYERRENDERER_H
 
-#include <QList>
-#include <QString>
+#include <QStringList>
 
 /**
  * Base class for utility classes that encapsulate information necessary
@@ -27,24 +26,21 @@
 class QgsMapLayerRenderer
 {
 public:
+  QgsMapLayerRenderer( const QString& layerID ) : mLayerID( layerID ) {}
   virtual ~QgsMapLayerRenderer() {}
 
   //! Do the rendering (based on data stored in the class)
   virtual bool render() = 0;
 
-  //! Container for errors (@todo instead of simple message could have error codes + custom data)
-  struct Error
-  {
-    QString message;
-  };
-
-  typedef QList<Error> ErrorList;
-
   //! Return list of errors (problems) that happened during the rendering
-  ErrorList errors() const { return mErrors; }
+  QStringList errors() const { return mErrors; }
+
+  //! Get access to the ID of the layer rendered by this class
+  QString layerID() const { return mLayerID; }
 
 protected:
-  ErrorList mErrors;
+  QStringList mErrors;
+  QString mLayerID;
 };
 
 #endif // QGSMAPLAYERRENDERER_H

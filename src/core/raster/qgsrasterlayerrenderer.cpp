@@ -7,7 +7,8 @@
 
 
 QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer* layer, QgsRenderContext& rendererContext )
-  : mRasterViewPort( 0 )
+  : QgsMapLayerRenderer( layer->id() )
+  , mRasterViewPort( 0 )
   , mPipe( 0 )
 {
 

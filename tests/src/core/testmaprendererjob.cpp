@@ -24,6 +24,8 @@ class TestQgsMapRendererJob : public QObject
     void testStartWhileRunning();
     void testDestructWhileRunning();
 
+    void testErrors();
+
   private:
     QStringList mLayerIds;
 };
@@ -200,6 +202,35 @@ void TestQgsMapRendererJob::testDestructWhileRunning()
 
   QgsMapRendererParallelJob jobP( settings );
   jobP.start();
+}
+
+void TestQgsMapRendererJob::testErrors()
+{
+  QgsVectorLayer* l = new QgsVectorLayer( "/data/gis/sas/trans-trail-l.dbf", "test", "ogr" );
+  QVERIFY( l->isValid() );
+  QgsMapLayerRegistry::instance()->addMapLayer( l );
+  QgsMapSettings settings( _mapSettings( QStringList( l->id() ) ) );
+
+  l->setRendererV2( 0 ); // this has to produce an error
+
+  QgsMapRendererSequentialJob job( settings );
+  job.start();
+  job.waitForFinished();
+
+  QCOMPARE( job.errors().count(), 1 );
+  QCOMPARE( job.errors()[0].layerID, l->id() );
+
+  QgsMapLayerRegistry::instance()->removeMapLayer( l->id() );
+
+  QString fakeLayerID = "non-existing layer ID";
+  QgsMapSettings settings2( _mapSettings( QStringList( fakeLayerID ) ) );
+
+  QgsMapRendererSequentialJob job2( settings2 );
+  job2.start();
+  job2.waitForFinished();
+
+  QCOMPARE( job2.errors().count(), 1 );
+  QCOMPARE( job2.errors()[0].layerID, fakeLayerID );
 }
 
 

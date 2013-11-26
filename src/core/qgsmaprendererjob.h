@@ -55,6 +55,19 @@ public:
   //! Get pointer to internal labeling engine (in order to get access to the results)
   virtual QgsLabelingResults* takeLabelingResults() = 0;
 
+  struct Error
+  {
+    Error( const QString& lid, const QString& msg ) : layerID( lid ), message( msg ) {}
+
+    QString layerID;
+    QString message;
+  };
+
+  typedef QList<Error> Errors;
+
+  //! List of errors that happened during the rendering job - available when the rendering has been finished
+  Errors errors() const;
+
 signals:
 
   //! emitted when asynchronous rendering is finished (or canceled).
@@ -72,12 +85,13 @@ protected:
 
   LayerRenderJobs prepareJobs( QPainter* painter, QgsPalLabeling* labelingEngine );
 
-  static void cleanupJobs( LayerRenderJobs& jobs );
+  void cleanupJobs( LayerRenderJobs& jobs );
 
   bool needTemporaryImage( QgsMapLayer* ml );
 
 
   QgsMapSettings mSettings;
+  Errors mErrors;
 };
 
 
@@ -203,6 +217,7 @@ private:
   QgsRenderContext mRenderContext;  // used just for labeling!
   QgsPalLabeling* mLabelingEngine;
 
+  bool mActive;
   LayerRenderJobs mLayerJobs;
 };
 

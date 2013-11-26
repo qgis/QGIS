@@ -19,6 +19,11 @@ QgsMapRendererJob::QgsMapRendererJob( const QgsMapSettings& settings )
 {
 }
 
+QgsMapRendererJob::Errors QgsMapRendererJob::errors() const
+{
+  return mErrors;
+}
+
 
 QgsMapRendererQImageJob::QgsMapRendererQImageJob( const QgsMapSettings& settings )
   : QgsMapRendererJob( settings )
@@ -58,6 +63,8 @@ void QgsMapRendererSequentialJob::start()
 {
   if ( isActive() )
     return; // do nothing if we are already running
+
+  mErrors.clear();
 
   qDebug("SEQUENTIAL START");
   qDebug("%d,%d", mSettings.outputSize().width(), mSettings.outputSize().height());
@@ -122,6 +129,8 @@ void QgsMapRendererSequentialJob::internalFinished()
 
   mLabelingResults = mInternalJob->takeLabelingResults();
 
+  mErrors = mInternalJob->errors();
+
   delete mInternalJob;
   mInternalJob = 0;
 
@@ -137,6 +146,7 @@ QgsMapRendererCustomPainterJob::QgsMapRendererCustomPainterJob(const QgsMapSetti
   : QgsMapRendererJob( settings )
   , mPainter(painter)
   , mLabelingEngine( 0 )
+  , mActive( false )
 {
   qDebug("QPAINTER construct");
 }
@@ -153,6 +163,13 @@ QgsMapRendererCustomPainterJob::~QgsMapRendererCustomPainterJob()
 
 void QgsMapRendererCustomPainterJob::start()
 {
+  if ( isActive() )
+    return;
+
+  mActive = true;
+
+  mErrors.clear();
+
   qDebug("QPAINTER run!");
 
   QgsDebugMsg( "Preparing list of layer jobs for rendering" );
@@ -200,9 +217,12 @@ void QgsMapRendererCustomPainterJob::start()
 
 void QgsMapRendererCustomPainterJob::cancel()
 {
-  // TODO: custom flag indicating that some rendering has started?
-  //if (mFuture.isRunning())
+  if ( !isActive() )
   {
+    qDebug("QPAINTER not running!");
+    return;
+  }
+
     qDebug("QPAINTER cancelling");
     disconnect(&mFutureWatcher, SIGNAL(finished()), this, SLOT(futureFinished()));
 
@@ -222,14 +242,11 @@ void QgsMapRendererCustomPainterJob::cancel()
     futureFinished();
 
     qDebug("QPAINTER cancelled");
-  }
-  //else
-  //  qDebug("QPAINTER not running!");
 }
 
 void QgsMapRendererCustomPainterJob::waitForFinished()
 {
-  if (!mFuture.isRunning())
+  if ( !isActive() )
     return;
 
   disconnect(&mFutureWatcher, SIGNAL(finished()), this, SLOT(futureFinished()));
@@ -246,7 +263,7 @@ void QgsMapRendererCustomPainterJob::waitForFinished()
 
 bool QgsMapRendererCustomPainterJob::isActive() const
 {
-  return mFutureWatcher.isRunning();
+  return mActive;
 }
 
 
@@ -258,6 +275,7 @@ QgsLabelingResults* QgsMapRendererCustomPainterJob::takeLabelingResults()
 
 void QgsMapRendererCustomPainterJob::futureFinished()
 {
+  mActive = false;
   qDebug("QPAINTER futureFinished");
   emit finished();
 }
@@ -473,7 +491,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsPalLabelin
 
     if ( !ml )
     {
-      QgsDebugMsg( "Layer not found in registry!" );
+      mErrors.append( Error( layerId, "Layer not found in registry." ) );
       continue;
     }
 
@@ -502,8 +520,11 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsPalLabelin
       split = reprojectToLayerExtent( ct, ml->crs().geographicFlag(), r1, r2 );
       QgsDebugMsg( "  extent 1: " + r1.toString() );
       QgsDebugMsg( "  extent 2: " + r2.toString() );
-      if ( !r1.isFinite() || !r2.isFinite() ) //there was a problem transforming the extent. Skip the layer
+      if ( !r1.isFinite() || !r2.isFinite() )
+      {
+        mErrors.append( Error( layerId, "There was a problem transforming layer's' extent. Layer skipped." ) );
         continue;
+      }
     }
 
     // Flattened image for drawing when a blending mode is set
@@ -518,8 +539,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsPalLabelin
                                       mSettings.outputSize().height(), QImage::Format_ARGB32 );
       if ( mypFlattenedImage->isNull() )
       {
-        QgsDebugMsg( "insufficient memory for image " + QString::number( mSettings.outputSize().width() ) + "x" + QString::number( mSettings.outputSize().height() ) );
-        // TODO: add to the list of errors!
+        mErrors.append( Error( layerId, "Insufficient memory for image " + QString::number( mSettings.outputSize().width() ) + "x" + QString::number( mSettings.outputSize().height() ) ) );
         delete mypFlattenedImage;
         continue;
       }
@@ -549,22 +569,10 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsPalLabelin
 
     /*
     // TODO: split extent
-    if ( !ml->draw( mRenderContext ) )
-    {
-      // TODO emit drawError( ml );
-    }
-    else
-    {
-      QgsDebugMsg( "Layer rendered without issues" );
-    }
-
     if ( split )
     {
       mRenderContext.setExtent( r2 );
-      if ( !ml->draw( mRenderContext ) )
-      {
-        // TODO emit drawError( ml );
-      }
+      ml->draw( mRenderContext );
     }*/
 
   } // while (li.hasPrevious())
@@ -586,6 +594,9 @@ void QgsMapRendererJob::cleanupJobs( LayerRenderJobs& jobs )
       delete job.img;
       job.img = 0;
     }
+
+    foreach ( QString message, job.renderer->errors() )
+      mErrors.append( Error( job.renderer->layerID(), message ) );
 
     delete job.renderer;
     job.renderer = 0;
