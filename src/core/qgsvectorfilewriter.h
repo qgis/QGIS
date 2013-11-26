@@ -42,6 +42,105 @@ class QTextCodec;
 class CORE_EXPORT QgsVectorFileWriter
 {
   public:
+    enum OptionType
+    {
+      Set,
+      String,
+      Int,
+      Hidden
+    };
+
+    class Option
+    {
+    public:
+      Option( const QString& docString, OptionType type )
+          : docString( docString )
+          , type( type )
+      {}
+
+      virtual ~Option() {}
+
+      QString docString;
+      OptionType type;
+    };
+
+    class SetOption : public Option
+    {
+      public:
+      SetOption( const QString& docString, QStringList values, const QString& defaultValue, bool allowNone = false )
+          : Option( docString, Set )
+          , values( values.toSet() )
+          , defaultValue( defaultValue )
+          , allowNone( allowNone )
+      {}
+
+      QSet<QString> values;
+      QString defaultValue;
+      bool allowNone;
+    };
+
+    class StringOption: public Option
+    {
+      public:
+      StringOption( const QString& docString, const QString& defaultValue = QString() )
+          : Option( docString, String )
+          , defaultValue( defaultValue )
+      {}
+
+      QString defaultValue;
+    };
+
+    class IntOption: public Option
+    {
+      public:
+      IntOption( const QString& docString, int defaultValue )
+          : Option( docString, Int )
+          , defaultValue( defaultValue )
+      {}
+
+      int defaultValue;
+    };
+
+    class BoolOption : public SetOption
+    {
+      public:
+      BoolOption( const QString& docString, bool defaultValue )
+          : SetOption( docString, QStringList() << "YES" << "NO", defaultValue ? "YES" : "NO" )
+      {}
+    };
+
+    class HiddenOption: public Option
+    {
+      public:
+        HiddenOption( const QString& value )
+          : Option( "", Hidden )
+          , mValue( value )
+        {}
+
+        QString mValue;
+    };
+
+    struct MetaData
+    {
+      MetaData()
+      {}
+
+      MetaData( QString longName, QString trLongName, QString glob, QString ext, QMap<QString, Option*> driverOptions, QMap<QString, Option*> layerOptions )
+          : longName( longName )
+          , trLongName( trLongName )
+          , glob( glob )
+          , ext( ext )
+          , driverOptions( driverOptions )
+          , layerOptions( layerOptions )
+      {}
+
+      QString longName;
+      QString trLongName;
+      QString glob;
+      QString ext;
+      QMap<QString, Option*> driverOptions;
+      QMap<QString, Option*> layerOptions;
+    };
 
     enum WriterError
     {
@@ -170,6 +269,8 @@ class CORE_EXPORT QgsVectorFileWriter
     double symbologyScaleDenominator() const { return mSymbologyScaleDenominator; }
     void setSymbologyScaleDenominator( double d ) { mSymbologyScaleDenominator = d; }
 
+    static bool driverMetadata( const QString& driverName, MetaData& driverMetadata );
+
   protected:
     //! @note not available in python bindings
     OGRGeometryH createEmptyGeometry( QGis::WkbType wkbType );
@@ -202,6 +303,10 @@ class CORE_EXPORT QgsVectorFileWriter
     double mSymbologyScaleDenominator;
 
   private:
+    static QMap<QString, MetaData> initMetaData();
+    /**
+     * @deprecated
+     */
     static bool driverMetadata( QString driverName, QString &longName, QString &trLongName, QString &glob, QString &ext );
     void createSymbolLayerTable( QgsVectorLayer* vl,  const QgsCoordinateTransform* ct, OGRDataSourceH ds );
     OGRFeatureH createFeature( QgsFeature& feature );
@@ -217,7 +322,7 @@ class CORE_EXPORT QgsVectorFileWriter
     QgsFeatureRendererV2* symbologyRenderer( QgsVectorLayer* vl ) const;
     /**Adds attributes needed for classification*/
     void addRendererAttributes( QgsVectorLayer* vl, QgsAttributeList& attList );
-
+    static QMap<QString, MetaData> sDriverMetadata;
 };
 
 #endif
