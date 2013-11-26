@@ -92,8 +92,10 @@ class CORE_EXPORT QgsSymbolLayerV2
     virtual void setDataDefinedProperty( const QString& property, const QString& expressionString );
     virtual void removeDataDefinedProperty( const QString& property );
     virtual void removeDataDefinedProperties();
+    bool hasDataDefinedProperties() const { return mDataDefinedProperties.size() > 0; }
 
-    virtual void writeDxf( QgsDxfExport& e, double mmMapUnitScaleFactor, const QString& layerName ) const { Q_UNUSED( e ); Q_UNUSED( mmMapUnitScaleFactor ); Q_UNUSED( layerName ); }
+    virtual void writeDxf( QgsDxfExport& e, double mmMapUnitScaleFactor, const QString& layerName, const QgsSymbolV2RenderContext* context, const QgsFeature* f, const QPointF& offset = QPointF( 0.0, 0.0 ) ) const
+    { Q_UNUSED( e ); Q_UNUSED( mmMapUnitScaleFactor ); Q_UNUSED( layerName ); Q_UNUSED( context ); Q_UNUSED( f ); Q_UNUSED( offset ); }
 
   protected:
     QgsSymbolLayerV2( QgsSymbolV2::SymbolType type, bool locked = false )
@@ -112,7 +114,7 @@ class CORE_EXPORT QgsSymbolLayerV2
     static const bool selectFillStyle = false;   // Fill symbol uses symbol layer style..
 
     virtual void prepareExpressions( const QgsVectorLayer* vl );
-    virtual QgsExpression* expression( const QString& property );
+    virtual QgsExpression* expression( const QString& property ) const;
     /**Saves data defined properties to string map*/
     void saveDataDefinedProperties( QgsStringMap& stringMap ) const;
     /**Copies data defined properties of this layer to another symbol layer*/

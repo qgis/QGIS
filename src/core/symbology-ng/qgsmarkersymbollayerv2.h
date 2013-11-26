@@ -76,7 +76,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
     QgsSymbolV2::OutputUnit outlineWidthUnit() const { return mOutlineWidthUnit; }
     void setOutlineWidthUnit( QgsSymbolV2::OutputUnit u ) { mOutlineWidthUnit = u; }
 
-    void writeDxf( QgsDxfExport& e, double mmMapUnitScaleFactor, const QString& layerName ) const;
+    void writeDxf( QgsDxfExport& e, double mmMapUnitScaleFactor, const QString& layerName, const QgsSymbolV2RenderContext* context, const QgsFeature* f, const QPointF& offset = QPointF( 0.0, 0.0 ) ) const;
 
   protected:
 
@@ -159,7 +159,7 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
     void setOutputUnit( QgsSymbolV2::OutputUnit unit );
     QgsSymbolV2::OutputUnit outputUnit() const;
 
-    void writeDxf( QgsDxfExport& e, double mmMapUnitScaleFactor, const QString& layerName ) const;
+    void writeDxf( QgsDxfExport& e, double mmMapUnitScaleFactor, const QString& layerName, const QgsSymbolV2RenderContext* context, const QgsFeature* f, const QPointF& offset = QPointF( 0.0, 0.0 ) ) const;
 
   protected:
     QString mPath;

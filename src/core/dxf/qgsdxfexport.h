@@ -106,7 +106,7 @@ class QgsDxfExport
     void startSection();
     void endSection();
 
-    void writePoint( const QgsPoint& pt, const QString& layer, const QgsSymbolLayerV2* symbolLayer );
+    void writePoint( const QgsPoint& pt, const QString& layer, const QgsFeature* f, const QgsSymbolLayerV2* symbolLayer, const QgsSymbolV2* symbol );
     void writeVertex( const QgsPoint& pt, const QString& layer );
     void writeSymbolLayerLinestyle( const QgsSymbolLayerV2* symbolLayer );
     void writeLinestyle( const QString& styleName, const QVector<qreal>& pattern, QgsSymbolV2::OutputUnit u );
@@ -125,7 +125,7 @@ class QgsDxfExport
 
     QgsRectangle dxfExtent() const;
 
-    void addFeature( const QgsFeature& fet, const QString& layer, const QgsSymbolLayerV2* symbolLayer );
+    void addFeature( const QgsFeature& fet, const QString& layer, const QgsSymbolLayerV2* symbolLayer, const QgsSymbolV2* symbol );
     double scaleToMapUnits( double value, QgsSymbolV2::OutputUnit symbolUnits, QGis::UnitType mapUnits ) const;
 
     //returns dxf palette index from symbol layer color
@@ -141,8 +141,9 @@ class QgsDxfExport
     void startRender( QgsVectorLayer* vl ) const;
     void stopRender( QgsVectorLayer* vl ) const;
     static double mapUnitScaleFactor( double scaleDenominator, QgsSymbolV2::OutputUnit symbolUnits, QGis::UnitType mapUnits );
-    QList<QgsSymbolLayerV2*> symbolLayers();
-    static int nLineTypes( const QList<QgsSymbolLayerV2*>& symbolLayers );
+    QList< QPair< QgsSymbolLayerV2*, QgsSymbolV2* > > symbolLayers();
+    static int nLineTypes( const QList< QPair< QgsSymbolLayerV2*, QgsSymbolV2*> >& symbolLayers );
+    static bool hasDataDefinedProperties( const QgsSymbolLayerV2* sl, const QgsSymbolV2* symbol );
 };
 
 #endif // QGSDXFEXPORT_H

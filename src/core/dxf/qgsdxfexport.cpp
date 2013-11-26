@@ -417,7 +417,7 @@ void QgsDxfExport::writeTables()
   writeGroup( 2, "TABLES" );
 
   //iterate through all layers and get symbol layer pointers
-  QList<QgsSymbolLayerV2*> slList;
+  QList< QPair<QgsSymbolLayerV2*, QgsSymbolV2*> > slList;
   if ( mSymbologyExport != NoSymbology )
   {
     slList = symbolLayers();
@@ -439,10 +439,10 @@ void QgsDxfExport::writeTables()
   writeGroup( 40, 0.0 );
 
   //add symbol layer linestyles
-  QList<QgsSymbolLayerV2*>::const_iterator slIt = slList.constBegin();
+  QList< QPair< QgsSymbolLayerV2*, QgsSymbolV2*> >::const_iterator slIt = slList.constBegin();
   for ( ; slIt != slList.constEnd(); ++slIt )
   {
-    writeSymbolLayerLinestyle( *slIt );
+    writeSymbolLayerLinestyle( slIt->first );
   }
 
   writeGroup( 0, "ENDTAB" );
@@ -472,20 +472,24 @@ void QgsDxfExport::writeBlocks()
   writeGroup( 2, "BLOCKS" );
 
   //iterate through all layers and get symbol layer pointers
-  QList<QgsSymbolLayerV2*> slList;
+  QList< QPair< QgsSymbolLayerV2*, QgsSymbolV2* > > slList;
   if ( mSymbologyExport != NoSymbology )
   {
     slList = symbolLayers();
   }
 
-  QList<QgsSymbolLayerV2*>::const_iterator slIt = slList.constBegin();
+  QList< QPair< QgsSymbolLayerV2*, QgsSymbolV2* > >::const_iterator slIt = slList.constBegin();
   for ( ; slIt != slList.constEnd(); ++slIt )
   {
     //if point symbol layer and no data defined properties: write block
-    QgsMarkerSymbolLayerV2* ml = dynamic_cast< QgsMarkerSymbolLayerV2*>( *slIt );
+    QgsMarkerSymbolLayerV2* ml = dynamic_cast< QgsMarkerSymbolLayerV2*>( slIt->first );
     if ( ml )
     {
-      //todo: find out if the marker symbol layer has data defined properties (in that case don't insert it)
+      //markers with data defined properties are inserted inline
+      if ( hasDataDefinedProperties( ml, slIt->second ) )
+      {
+        continue;
+      }
       writeGroup( 0, "BLOCK" );
       writeGroup( 8, 0 );
       QString blockName = QString( "symbolLayer%1" ).arg( mBlockCounter );
@@ -501,7 +505,7 @@ void QgsDxfExport::writeBlocks()
       writeGroup( 30, 0 );
       writeGroup( 3, blockName );
 
-      ml->writeDxf( *this, mapUnitScaleFactor( mSymbologyScaleDenominator, ml->sizeUnit(), mMapUnits ), "0" ); //maplayer 0 -> block receives layer from INSERT statement
+      ml->writeDxf( *this, mapUnitScaleFactor( mSymbologyScaleDenominator, ml->sizeUnit(), mMapUnits ), "0", 0, 0 ); //maplayer 0 -> block receives layer from INSERT statement
 
       writeGroup( 0, "ENDBLK" );
       writeGroup( 8, 0 );
@@ -548,7 +552,7 @@ void QgsDxfExport::writeEntities()
     {
       if ( mSymbologyExport == NoSymbology )
       {
-        addFeature( fet, vl->name(), 0 ); //no symbology at all
+        addFeature( fet, vl->name(), 0, 0 ); //no symbology at all
       }
       else
       {
@@ -568,7 +572,7 @@ void QgsDxfExport::writeEntities()
         {
           continue;
         }
-        addFeature( fet, vl->name(), s->symbolLayer( 0 ) );
+        addFeature( fet, vl->name(), s->symbolLayer( 0 ), s );
       }
     }
   }
@@ -652,7 +656,7 @@ void QgsDxfExport::writeEntitiesSymbolLevels( QgsVectorLayer* layer )
       QList<QgsFeature>::iterator featureIt = featureList.begin();
       for ( ; featureIt != featureList.end(); ++featureIt )
       {
-        addFeature( *featureIt, layer->name(), levelIt.key()->symbolLayer( llayer ) );
+        addFeature( *featureIt, layer->name(), levelIt.key()->symbolLayer( llayer ), levelIt.key() );
       }
     }
   }
@@ -674,7 +678,7 @@ void QgsDxfExport::endSection()
   writeGroup( 0, "ENDSEC" );
 }
 
-void QgsDxfExport::writePoint( const QgsPoint& pt, const QString& layer, const QgsSymbolLayerV2* symbolLayer )
+void QgsDxfExport::writePoint( const QgsPoint& pt, const QString& layer, const QgsFeature* f, const QgsSymbolLayerV2* symbolLayer, const QgsSymbolV2* symbol )
 {
 #if 0
   //debug: draw rectangle for debugging
@@ -706,10 +710,17 @@ void QgsDxfExport::writePoint( const QgsPoint& pt, const QString& layer, const Q
   if ( !symbolLayer || blockIt == mPointSymbolBlocks.constEnd() )
   {
     //write symbol directly here
+    const QgsMarkerSymbolLayerV2* msl = dynamic_cast< const QgsMarkerSymbolLayerV2* >( symbolLayer );
+    if ( symbolLayer && symbol )
+    {
+      QgsRenderContext ct;
+      QgsSymbolV2RenderContext ctx( ct, QgsSymbolV2::MapUnit, symbol->alpha(), false, symbol->renderHints(), f );
+      symbolLayer->writeDxf( *this, mapUnitScaleFactor( mSymbologyScaleDenominator, msl->sizeUnit(), mMapUnits ), layer, &ctx, f, QPointF( pt.x(), pt.y() ) );
+    }
   }
   else
   {
-    //insert block
+    //insert block reference
     writeGroup( 0, "INSERT" );
     writeGroup( 8, layer );
     writeGroup( 2, blockIt.value() );
@@ -799,7 +810,7 @@ QgsRectangle QgsDxfExport::dxfExtent() const
   return extent;
 }
 
-void QgsDxfExport::addFeature( const QgsFeature& fet, const QString& layer, const QgsSymbolLayerV2* symbolLayer )
+void QgsDxfExport::addFeature( const QgsFeature& fet, const QString& layer, const QgsSymbolLayerV2* symbolLayer, const QgsSymbolV2* symbol )
 {
   QgsGeometry* geom = fet.geometry();
   if ( geom )
@@ -820,7 +831,7 @@ void QgsDxfExport::addFeature( const QgsFeature& fet, const QString& layer, cons
     //single point
     if ( geometryType == QGis::WKBPoint || geometryType == QGis::WKBPoint25D )
     {
-      writePoint( geom->asPoint(), layer, symbolLayer );
+      writePoint( geom->asPoint(), layer, &fet, symbolLayer, symbol );
     }
 
     //single line
@@ -1006,9 +1017,9 @@ double QgsDxfExport::mapUnitScaleFactor( double scaleDenominator, QgsSymbolV2::O
   return 1.0;
 }
 
-QList<QgsSymbolLayerV2*> QgsDxfExport::symbolLayers()
+QList< QPair< QgsSymbolLayerV2*, QgsSymbolV2* > > QgsDxfExport::symbolLayers()
 {
-  QList<QgsSymbolLayerV2*> symbolLayers;
+  QList< QPair< QgsSymbolLayerV2*, QgsSymbolV2* > > symbolLayers;
 
   QList< QgsMapLayer* >::iterator lIt = mLayers.begin();
   for ( ; lIt != mLayers.end(); ++lIt )
@@ -1039,7 +1050,7 @@ QList<QgsSymbolLayerV2*> QgsDxfExport::symbolLayers()
       }
       for ( int i = 0; i < maxSymbolLayers; ++i )
       {
-        symbolLayers.append(( *symbolIt )->symbolLayer( i ) );
+        symbolLayers.append( qMakePair(( *symbolIt )->symbolLayer( i ), *symbolIt ) ) ;
       }
     }
   }
@@ -1069,13 +1080,13 @@ void QgsDxfExport::writeSymbolLayerLinestyle( const QgsSymbolLayerV2* symbolLaye
   }
 }
 
-int QgsDxfExport::nLineTypes( const QList<QgsSymbolLayerV2*>& symbolLayers )
+int QgsDxfExport::nLineTypes( const QList< QPair< QgsSymbolLayerV2*, QgsSymbolV2* > >& symbolLayers )
 {
   int nLineTypes = 0;
-  QList<QgsSymbolLayerV2*>::const_iterator slIt = symbolLayers.constBegin();
+  QList< QPair< QgsSymbolLayerV2*, QgsSymbolV2*> >::const_iterator slIt = symbolLayers.constBegin();
   for ( ; slIt != symbolLayers.constEnd(); ++slIt )
   {
-    const QgsSimpleLineSymbolLayerV2* simpleLine = dynamic_cast< const QgsSimpleLineSymbolLayerV2* >( *slIt );
+    const QgsSimpleLineSymbolLayerV2* simpleLine = dynamic_cast< const QgsSimpleLineSymbolLayerV2* >( slIt->first );
     if ( simpleLine )
     {
       if ( simpleLine->useCustomDashPattern() )
@@ -1114,6 +1125,22 @@ void QgsDxfExport::writeLinestyle( const QString& styleName, const QVector<qreal
     writeGroup( 49, segmentLength );
     isSpace = !isSpace;
   }
+}
+
+bool QgsDxfExport::hasDataDefinedProperties( const QgsSymbolLayerV2* sl, const QgsSymbolV2* symbol )
+{
+  if ( !sl || !symbol )
+  {
+    return false;
+  }
+
+  if ( symbol->renderHints() | QgsSymbolV2::DataDefinedSizeScale ||
+       symbol->renderHints() | QgsSymbolV2::DataDefinedRotation )
+  {
+    return true;
+  }
+
+  return sl->hasDataDefinedProperties();
 }
 
 /******************************************************Test with AC_1018 methods***************************************************************/
@@ -1256,7 +1283,7 @@ void QgsDxfExport::writeTablesAC1018( QTextStream& stream )
   QList<QgsSymbolLayerV2*> slList;
   if ( mSymbologyExport != NoSymbology )
   {
-    slList = symbolLayers();
+    //slList = symbolLayers(); //todo...
   }
 
   //LTYPE
@@ -1270,7 +1297,7 @@ void QgsDxfExport::writeTablesAC1018( QTextStream& stream )
   stream << "100\n";
   stream << "AcDbSymbolTable\n";
   stream << " 70\n";
-  stream << QString( "%1\n" ).arg( nLineTypes( slList ) + 1 ); //number of linetypes
+  //stream << QString( "%1\n" ).arg( nLineTypes( slList ) + 1 ); //number of linetypes
 
   //add continuous style as default
   stream << "  0\n";

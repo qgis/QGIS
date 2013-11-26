@@ -34,10 +34,10 @@ const QgsExpression* QgsSymbolLayerV2::dataDefinedProperty( const QString& prope
   return 0;
 }
 
-QgsExpression* QgsSymbolLayerV2::expression( const QString& property )
+QgsExpression* QgsSymbolLayerV2::expression( const QString& property ) const
 {
-  QMap< QString, QgsExpression* >::iterator it = mDataDefinedProperties.find( property );
-  if ( it != mDataDefinedProperties.end() )
+  QMap< QString, QgsExpression* >::const_iterator it = mDataDefinedProperties.find( property );
+  if ( it != mDataDefinedProperties.constEnd() )
   {
     return it.value();
   }
