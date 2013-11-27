@@ -44,9 +44,15 @@ QgsDatumTransformDialog::QgsDatumTransformDialog( const QString& layerName, cons
 
         //Describe datums in a tooltip
         QString srcGeoProj, destGeoProj;
-        if ( QgsCoordinateTransform::datumTransformCrsInfo( nr, srcGeoProj, destGeoProj ) )
+        int epsgNr;
+        if ( QgsCoordinateTransform::datumTransformCrsInfo( nr, epsgNr, srcGeoProj, destGeoProj ) )
         {
-          QString toolTipString = QString( "EPSG Transformations Code: %1\nSource CRS: %2\nDestination CRS: %3" ).arg( nr ).arg( srcGeoProj ).arg( destGeoProj );
+          QString toolTipString;
+          if ( epsgNr > 0 )
+          {
+            toolTipString.append( QString( "EPSG Transformations Code: %1\n" ).arg( epsgNr ) );
+          }
+          toolTipString.append( QString( "Source CRS: %1\nDestination CRS: %2" ).arg( srcGeoProj ).arg( destGeoProj ) );
           item->setToolTip( i, toolTipString );
         }
       }

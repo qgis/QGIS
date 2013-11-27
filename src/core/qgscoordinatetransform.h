@@ -214,8 +214,9 @@ class CORE_EXPORT QgsCoordinateTransform : public QObject
     /**Returns list of datum transformations for the given src and dest CRS*/
     static QList< QList< int > > datumTransformations( const QgsCoordinateReferenceSystem& srcCRS, const QgsCoordinateReferenceSystem& destCRS );
     static QString datumTransformString( int datumTransform );
-    /**Gets name of source and dest geographical CRS (to show in a tooltip)*/
-    static bool datumTransformCrsInfo( int datumTransform, QString& srcProjection, QString& dstProjection );
+    /**Gets name of source and dest geographical CRS (to show in a tooltip)
+        @return epsgNr epsg code of the transformation (or 0 if not in epsg db)*/
+    static bool datumTransformCrsInfo( int datumTransform, int& epsgNr, QString& srcProjection, QString& dstProjection );
 
     int sourceDatumTransform() const { return mSourceDatumTransform; }
     void setSourceDatumTransform( int dt ) { mSourceDatumTransform = dt; }
