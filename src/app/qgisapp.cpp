@@ -778,6 +778,8 @@ QgisApp::QgisApp( )
 
 QgisApp::~QgisApp()
 {
+  mMapCanvas->stopRendering();
+
   delete mInternalClipboard;
   delete mQgisInterface;
   delete mStyleSheetBuilder;
@@ -2416,10 +2418,6 @@ void QgisApp::about()
   */
 void QgisApp::addVectorLayer()
 {
-  if ( mMapCanvas && mMapCanvas->isDrawing() )
-  {
-    return;
-  }
   mMapCanvas->freeze();
   QgsOpenVectorLayerDialog *ovl = new QgsOpenVectorLayerDialog( this );
 
@@ -2874,10 +2872,6 @@ void QgisApp::loadOGRSublayers( QString layertype, QString uri, QStringList list
 void QgisApp::addDatabaseLayer()
 {
 #ifdef HAVE_POSTGRESQL
-  if ( mMapCanvas && mMapCanvas->isDrawing() )
-  {
-    return;
-  }
   // Fudge for now
   QgsDebugMsg( "about to addRasterLayer" );
 
@@ -2902,10 +2896,6 @@ void QgisApp::addDatabaseLayer()
 void QgisApp::addDatabaseLayers( QStringList const & layerPathList, QString const & providerKey )
 {
   QList<QgsMapLayer *> myList;
-  if ( mMapCanvas && mMapCanvas->isDrawing() )
-  {
-    return;
-  }
 
   if ( layerPathList.empty() )
   {
@@ -2969,11 +2959,6 @@ void QgisApp::addDatabaseLayers( QStringList const & layerPathList, QString cons
 
 void QgisApp::addSpatiaLiteLayer()
 {
-  if ( mMapCanvas && mMapCanvas->isDrawing() )
-  {
-    return;
-  }
-
   // show the SpatiaLite dialog
   QDialog *dbs = dynamic_cast<QDialog*>( QgsProviderRegistry::instance()->selectWidget( "spatialite", this ) );
   if ( !dbs )
@@ -2989,11 +2974,6 @@ void QgisApp::addSpatiaLiteLayer()
 
 void QgisApp::addDelimitedTextLayer()
 {
-  if ( mMapCanvas && mMapCanvas->isDrawing() )
-  {
-    return;
-  }
-
   // show the Delimited text dialog
   QDialog *dts = dynamic_cast<QDialog*>( QgsProviderRegistry::instance()->selectWidget( "delimitedtext", this ) );
   if ( !dts )
@@ -3015,11 +2995,6 @@ void QgisApp::addSelectedVectorLayer( QString uri, QString layerName, QString pr
 void QgisApp::addMssqlLayer()
 {
 #ifdef HAVE_MSSQL
-  if ( mMapCanvas && mMapCanvas->isDrawing() )
-  {
-    return;
-  }
-
   // show the MSSQL dialog
   QDialog *dbs = dynamic_cast<QDialog*>( QgsProviderRegistry::instance()->selectWidget( "mssql", this ) );
   if ( !dbs )
@@ -3062,10 +3037,6 @@ void QgisApp::addOracleLayer()
 
 void QgisApp::addWmsLayer()
 {
-  if ( mMapCanvas && mMapCanvas->isDrawing() )
-  {
-    return;
-  }
   // Fudge for now
   QgsDebugMsg( "about to addRasterLayer" );
 
@@ -3084,10 +3055,6 @@ void QgisApp::addWmsLayer()
 
 void QgisApp::addWcsLayer()
 {
-  if ( mMapCanvas && mMapCanvas->isDrawing() )
-  {
-    return;
-  }
   QgsDebugMsg( "about to addWcsLayer" );
 
   // TODO: QDialog for now, switch to QWidget in future
@@ -3106,11 +3073,6 @@ void QgisApp::addWcsLayer()
 void QgisApp::addWfsLayer()
 {
   if ( !mMapCanvas )
-  {
-    return;
-  }
-
-  if ( mMapCanvas && mMapCanvas->isDrawing() )
   {
     return;
   }
@@ -3150,11 +3112,6 @@ void QgisApp::addWfsLayer( QString uri, QString typeName )
 
 void QgisApp::fileExit()
 {
-  if ( mMapCanvas && mMapCanvas->isDrawing() )
-  {
-    return;
-  }
-
   if ( saveDirty() )
   {
     closeProject();
@@ -3178,11 +3135,6 @@ void QgisApp::fileNewBlank()
 //as file new but accepts flags to indicate whether we should prompt to save
 void QgisApp::fileNew( bool thePromptToSaveFlag, bool forceBlank )
 {
-  if ( mMapCanvas && mMapCanvas->isDrawing() )
-  {
-    return;
-  }
-
   if ( thePromptToSaveFlag )
   {
     if ( !saveDirty() )
@@ -3454,11 +3406,6 @@ void QgisApp::fileNewFromTemplateAction( QAction * qAction )
 
 void QgisApp::newVectorLayer()
 {
-  if ( mMapCanvas && mMapCanvas->isDrawing() )
-  {
-    return;
-  }
-
   QString enc;
   QString fileName = QgsNewVectorLayerDialog::runAndCreateLayer( this, &enc );
 
@@ -3474,10 +3421,6 @@ void QgisApp::newVectorLayer()
 
 void QgisApp::newSpatialiteLayer()
 {
-  if ( mMapCanvas && mMapCanvas->isDrawing() )
-  {
-    return;
-  }
   QgsNewSpatialiteLayerDialog spatialiteDialog( this );
   spatialiteDialog.exec();
 }
@@ -3505,11 +3448,6 @@ void QgisApp::showRasterCalculator()
 
 void QgisApp::fileOpen()
 {
-  if ( mMapCanvas && mMapCanvas->isDrawing() )
-  {
-    return;
-  }
-
   // possibly save any pending work before opening a new project
   if ( saveDirty() )
   {
@@ -3655,11 +3593,6 @@ bool QgisApp::addProject( QString projectFile )
 
 bool QgisApp::fileSave()
 {
-  if ( mMapCanvas && mMapCanvas->isDrawing() )
-  {
-    return false;
-  }
-
   // if we don't have a file name, then obviously we need to get one; note
   // that the project file name is reset to null in fileNew()
   QFileInfo fullPath;
@@ -3728,11 +3661,6 @@ bool QgisApp::fileSave()
 
 void QgisApp::fileSaveAs()
 {
-  if ( mMapCanvas && mMapCanvas->isDrawing() )
-  {
-    return;
-  }
-
   // Retrieve last used project dir from persistent settings
   QSettings settings;
   QString lastUsedDir = settings.value( "/UI/lastProjectDir", "." ).toString();
@@ -3891,11 +3819,6 @@ void QgisApp::openFile( const QString & fileName )
 
 void QgisApp::newPrintComposer()
 {
-  if ( mMapCanvas && mMapCanvas->isDrawing() )
-  {
-    return;
-  }
-
   QString title = uniqueComposerTitle( this, true );
   if ( title.isNull() )
   {
@@ -4366,11 +4289,6 @@ void QgisApp::labeling()
 
 void QgisApp::fieldCalculator()
 {
-  if ( mMapCanvas && mMapCanvas->isDrawing() )
-  {
-    return;
-  }
-
   QgsVectorLayer *myLayer = qobject_cast<QgsVectorLayer *>( activeLayer() );
   if ( !myLayer )
   {
@@ -4386,11 +4304,6 @@ void QgisApp::fieldCalculator()
 
 void QgisApp::attributeTable()
 {
-  if ( mMapCanvas && mMapCanvas->isDrawing() )
-  {
-    return;
-  }
-
   QgsVectorLayer *myLayer = qobject_cast<QgsVectorLayer *>( activeLayer() );
   if ( !myLayer )
   {
@@ -4533,9 +4446,6 @@ void QgisApp::saveSelectionAsVectorFile()
 
 void QgisApp::saveAsVectorFileGeneral( bool saveOnlySelection, QgsVectorLayer* vlayer, bool symbologyOption )
 {
-  if ( mMapCanvas && mMapCanvas->isDrawing() )
-    return;
-
   if ( !mMapLegend )
     return;
 
@@ -4654,9 +4564,6 @@ void QgisApp::checkForDeprecatedLabelsInProject()
 
 void QgisApp::layerProperties()
 {
-  if ( mMapCanvas && mMapCanvas->isDrawing() )
-    return;
-
   showLayerProperties( activeLayer() );
 }
 
@@ -5354,10 +5261,6 @@ void QgisApp::reshapeFeatures()
 
 void QgisApp::addFeature()
 {
-  if ( mMapCanvas && mMapCanvas->isDrawing() )
-  {
-    return;
-  }
   mMapCanvas->setMapTool( mMapTools.mAddFeature );
 }
 
@@ -5388,11 +5291,6 @@ void QgisApp::selectByRadius()
 
 void QgisApp::deselectAll()
 {
-  if ( !mMapCanvas || mMapCanvas->isDrawing() )
-  {
-    return;
-  }
-
   // Turn off rendering to improve speed.
   bool renderFlagState = mMapCanvas->renderFlag();
   if ( renderFlagState )
@@ -5433,30 +5331,17 @@ void QgisApp::selectByExpression()
 
 void QgisApp::addRing()
 {
-  if ( mMapCanvas && mMapCanvas->isDrawing() )
-  {
-    return;
-  }
   mMapCanvas->setMapTool( mMapTools.mAddRing );
 }
 
 void QgisApp::addPart()
 {
-  if ( mMapCanvas && mMapCanvas->isDrawing() )
-  {
-    return;
-  }
   mMapCanvas->setMapTool( mMapTools.mAddPart );
 }
 
 
 void QgisApp::editCut( QgsMapLayer * layerContainingSelection )
 {
-  if ( mMapCanvas && mMapCanvas->isDrawing() )
-  {
-    return;
-  }
-
   // Test for feature support in this layer
   QgsVectorLayer* selectionVectorLayer = qobject_cast<QgsVectorLayer *>( layerContainingSelection ? layerContainingSelection : activeLayer() );
   if ( !selectionVectorLayer )
@@ -5471,11 +5356,6 @@ void QgisApp::editCut( QgsMapLayer * layerContainingSelection )
 
 void QgisApp::editCopy( QgsMapLayer * layerContainingSelection )
 {
-  if ( mMapCanvas && mMapCanvas->isDrawing() )
-  {
-    return;
-  }
-
   QgsVectorLayer* selectionVectorLayer = qobject_cast<QgsVectorLayer *>( layerContainingSelection ? layerContainingSelection : activeLayer() );
   if ( !selectionVectorLayer )
     return;
@@ -5491,11 +5371,6 @@ void QgisApp::clipboardChanged()
 
 void QgisApp::editPaste( QgsMapLayer *destinationLayer )
 {
-  if ( mMapCanvas && mMapCanvas->isDrawing() )
-  {
-    return;
-  }
-
   QgsVectorLayer *pasteVectorLayer = qobject_cast<QgsVectorLayer *>( destinationLayer ? destinationLayer : activeLayer() );
   if ( !pasteVectorLayer )
     return;
@@ -5557,8 +5432,6 @@ void QgisApp::editPaste( QgsMapLayer *destinationLayer )
 
 void QgisApp::pasteAsNewVector()
 {
-  if ( mMapCanvas && mMapCanvas->isDrawing() ) return;
-
   QgsVectorLayer * layer = pasteToNewMemoryVector();
   if ( !layer ) return;
 
@@ -5569,8 +5442,6 @@ void QgisApp::pasteAsNewVector()
 
 QgsVectorLayer * QgisApp::pasteAsNewMemoryVector( const QString & theLayerName )
 {
-  if ( mMapCanvas && mMapCanvas->isDrawing() ) return 0;
-
   QString layerName = theLayerName;
 
   if ( layerName.isEmpty() )
@@ -5823,9 +5694,6 @@ void QgisApp::toggleMapTips()
 
 void QgisApp::toggleEditing()
 {
-  if ( mMapCanvas && mMapCanvas->isDrawing() )
-    return;
-
   QgsVectorLayer *currentLayer = qobject_cast<QgsVectorLayer*>( activeLayer() );
   if ( currentLayer )
   {
@@ -6003,9 +5871,6 @@ void QgisApp::cancelEdits( QgsMapLayer *layer, bool leaveEditable, bool triggerR
 
 void QgisApp::saveEdits()
 {
-  if ( mMapCanvas && mMapCanvas->isDrawing() )
-    return;
-
   foreach ( QgsMapLayer * layer, mMapLegend->selectedLayers() )
   {
     saveEdits( layer, true, false );
@@ -6016,9 +5881,6 @@ void QgisApp::saveEdits()
 
 void QgisApp::saveAllEdits( bool verifyAction )
 {
-  if ( mMapCanvas && mMapCanvas->isDrawing() )
-    return;
-
   if ( verifyAction )
   {
     if ( !verifyEditsActionDialog( tr( "Save" ), tr( "all" ) ) )
@@ -6035,9 +5897,6 @@ void QgisApp::saveAllEdits( bool verifyAction )
 
 void QgisApp::rollbackEdits()
 {
-  if ( mMapCanvas && mMapCanvas->isDrawing() )
-    return;
-
   foreach ( QgsMapLayer * layer, mMapLegend->selectedLayers() )
   {
     cancelEdits( layer, true, false );
@@ -6048,9 +5907,6 @@ void QgisApp::rollbackEdits()
 
 void QgisApp::rollbackAllEdits( bool verifyAction )
 {
-  if ( mMapCanvas && mMapCanvas->isDrawing() )
-    return;
-
   if ( verifyAction )
   {
     if ( !verifyEditsActionDialog( tr( "Rollback" ), tr( "all" ) ) )
@@ -6067,9 +5923,6 @@ void QgisApp::rollbackAllEdits( bool verifyAction )
 
 void QgisApp::cancelEdits()
 {
-  if ( mMapCanvas && mMapCanvas->isDrawing() )
-    return;
-
   foreach ( QgsMapLayer * layer, mMapLegend->selectedLayers() )
   {
     cancelEdits( layer, false, false );
@@ -6080,9 +5933,6 @@ void QgisApp::cancelEdits()
 
 void QgisApp::cancelAllEdits( bool verifyAction )
 {
-  if ( mMapCanvas && mMapCanvas->isDrawing() )
-    return;
-
   if ( verifyAction )
   {
     if ( !verifyEditsActionDialog( tr( "Cancel" ), tr( "all" ) ) )
@@ -6173,9 +6023,6 @@ QList<QgsMapLayer *> QgisApp::editableLayers( bool modified ) const
 
 void QgisApp::layerSubsetString()
 {
-  if ( mMapCanvas && mMapCanvas->isDrawing() )
-    return;
-
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( activeLayer() );
   if ( !vlayer )
     return;
@@ -6325,11 +6172,6 @@ void QgisApp::removeAllLayers()
 
 void QgisApp::removeLayer()
 {
-  if ( mMapCanvas && mMapCanvas->isDrawing() )
-  {
-    return;
-  }
-
   if ( !mMapLegend )
   {
     return;
@@ -6349,11 +6191,6 @@ void QgisApp::removeLayer()
 
 void QgisApp::duplicateLayers( QList<QgsMapLayer *> lyrList )
 {
-  if ( mMapCanvas && mMapCanvas->isDrawing() )
-  {
-    return;
-  }
-
   if ( !mMapLegend )
   {
     return;
@@ -6489,11 +6326,6 @@ void QgisApp::duplicateLayers( QList<QgsMapLayer *> lyrList )
 
 void QgisApp::setLayerCRS()
 {
-  if ( mMapCanvas && mMapCanvas->isDrawing() )
-  {
-    return;
-  }
-
   if ( !( mMapLegend && mMapLegend->currentLayer() ) )
   {
     return;
@@ -6518,11 +6350,6 @@ void QgisApp::setLayerCRS()
 
 void QgisApp::setProjectCRSFromLayer()
 {
-  if ( mMapCanvas && mMapCanvas->isDrawing() )
-  {
-    return;
-  }
-
   if ( !( mMapLegend && mMapLegend->currentLayer() ) )
   {
     return;
@@ -6756,11 +6583,6 @@ void QgisApp::customize()
 
 void QgisApp::options()
 {
-  if ( mMapCanvas && mMapCanvas->isDrawing() )
-  {
-    return;
-  }
-
   QSettings mySettings;
   QString oldScales = mySettings.value( "Map/scales", PROJECT_SCALES ).toString();
 
@@ -6985,11 +6807,6 @@ bool QgisApp::setActiveLayer( QgsMapLayer *layer )
   */
 QgsVectorLayer* QgisApp::addVectorLayer( QString vectorLayerPath, QString baseName, QString providerKey )
 {
-  if ( mMapCanvas && mMapCanvas->isDrawing() )
-  {
-    return NULL;
-  }
-
   bool wasfrozen = mMapCanvas->isFrozen();
 
   mMapCanvas->freeze();
@@ -8019,11 +7836,6 @@ void QgisApp::projectPropertiesProjections()
 
 void QgisApp::projectProperties()
 {
-  if ( mMapCanvas && mMapCanvas->isDrawing() )
-  {
-    return;
-  }
-
   /* Display the property sheet for the Project */
   // set wait cursor since construction of the project properties
   // dialog results in the construction of the spatial reference
@@ -8508,11 +8320,6 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
 // this is a slot for action from GUI to add raster layer
 void QgisApp::addRasterLayer()
 {
-  if ( mMapCanvas && mMapCanvas->isDrawing() )
-  {
-    return;
-  }
-
   QString fileFilters;
 
   QStringList selectedFiles;
@@ -8539,11 +8346,6 @@ void QgisApp::addRasterLayer()
 //
 bool QgisApp::addRasterLayer( QgsRasterLayer *theRasterLayer )
 {
-  if ( mMapCanvas && mMapCanvas->isDrawing() )
-  {
-    return false;
-  }
-
   Q_CHECK_PTR( theRasterLayer );
 
   if ( ! theRasterLayer )
@@ -8575,11 +8377,6 @@ QgsRasterLayer* QgisApp::addRasterLayerPrivate(
   const QString & uri, const QString & baseName, const QString & providerKey,
   bool guiWarning, bool guiUpdate )
 {
-  if ( mMapCanvas && mMapCanvas->isDrawing() )
-  {
-    return NULL;
-  }
-
   if ( guiUpdate )
   {
     // let the user know we're going to possibly be taking a while
@@ -8693,11 +8490,6 @@ QgsRasterLayer* QgisApp::addRasterLayer(
 //create a raster layer object and delegate to addRasterLayer(QgsRasterLayer *)
 bool QgisApp::addRasterLayers( QStringList const &theFileNameQStringList, bool guiWarning )
 {
-  if ( mMapCanvas && mMapCanvas->isDrawing() )
-  {
-    return false;
-  }
-
   if ( theFileNameQStringList.empty() )
   {
     // no files selected so bail out, but
@@ -8890,11 +8682,6 @@ QgsDebugMsg(mMapCanvas->extent());
 */
 void QgisApp::customProjection()
 {
-  if ( mMapCanvas && mMapCanvas->isDrawing() )
-  {
-    return;
-  }
-
   // Create an instance of the Custom Projection Designer modeless dialog.
   // Autodelete the dialog when closing since a pointer is not retained.
   QgsCustomProjectionDialog * myDialog = new QgsCustomProjectionDialog( this );

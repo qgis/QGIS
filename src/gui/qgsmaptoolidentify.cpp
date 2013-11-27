@@ -90,11 +90,6 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, i
   mLastExtent = mCanvas->extent();
   mLastMapUnitsPerPixel = mCanvas->mapUnitsPerPixel();
 
-  if ( !mCanvas || mCanvas->isDrawing() )
-  {
-    return results;
-  }
-
   if ( mode == DefaultQgsSetting )
   {
     QSettings settings;

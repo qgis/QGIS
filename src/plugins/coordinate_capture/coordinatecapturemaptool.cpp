@@ -58,11 +58,6 @@ void CoordinateCaptureMapTool::canvasPressEvent( QMouseEvent * thepEvent )
 
 void CoordinateCaptureMapTool::canvasReleaseEvent( QMouseEvent * thepEvent )
 {
-  if ( !mpMapCanvas || mpMapCanvas->isDrawing() )
-  {
-    return;
-  }
-
   QgsPoint myOriginalPoint =
     mCanvas->getCoordinateTransform()->toMapCoordinates( thepEvent->x(), thepEvent->y() );
   emit mouseClicked( myOriginalPoint );

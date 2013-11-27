@@ -102,13 +102,6 @@ void QgsMapToolShowHideLabels::canvasReleaseEvent( QMouseEvent * e )
 
 void QgsMapToolShowHideLabels::showHideLabels( QMouseEvent * e )
 {
-
-  if ( !mCanvas || mCanvas->isDrawing() )
-  {
-    QgsDebugMsg( "Canvas not ready" );
-    return;
-  }
-
   QgsMapLayer* layer = mCanvas->currentLayer();
 
   QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>( layer );

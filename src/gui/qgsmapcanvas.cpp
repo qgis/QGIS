@@ -432,6 +432,12 @@ QgsMapLayer* QgsMapCanvas::currentLayer()
 
 void QgsMapCanvas::refresh()
 {
+  if ( !mRenderFlag || mFrozen )  // do we really need two flags controlling rendering?
+  {
+    qDebug("CANVAS render flag off");
+    return;
+  }
+
   if ( mRefreshScheduled )
   {
     qDebug("CANVAS refresh already scheduled");

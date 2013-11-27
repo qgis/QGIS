@@ -99,10 +99,6 @@ void SqlAnywhere::help()
 void SqlAnywhere::addSqlAnywhereLayer()
 {
   QgsMapCanvas *mMapCanvas = mQGisIface->mapCanvas();
-  if ( mMapCanvas && mMapCanvas->isDrawing() )
-  {
-    return;
-  }
 
   // show the data source dialog
   SaSourceSelect *dbs = new SaSourceSelect( mQGisIface->mainWindow() );

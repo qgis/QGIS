@@ -296,7 +296,7 @@ void QgsLegend::removeAll()
 
 void QgsLegend::setLayersVisible( bool visible )
 {
-  if ( !mMapCanvas || mMapCanvas->isDrawing() )
+  if ( !mMapCanvas )
   {
     return;
   }
@@ -780,7 +780,7 @@ void QgsLegend::mouseDoubleClickEvent( QMouseEvent *e )
 
 void QgsLegend::handleRightClickEvent( QTreeWidgetItem* item, const QPoint& position )
 {
-  if ( !mMapCanvas || mMapCanvas->isDrawing() )
+  if ( !mMapCanvas )
   {
     return;
   }
@@ -1079,7 +1079,7 @@ int QgsLegend::getItemPos( QTreeWidgetItem* item )
 void QgsLegend::addLayers( QList<QgsMapLayer *> theLayerList )
 {
   QgsDebugMsg( "Entering." );
-  if ( !mMapCanvas || mMapCanvas->isDrawing() )
+  if ( !mMapCanvas )
   {
     return;
   }
@@ -1551,7 +1551,7 @@ bool QgsLegend::setCurrentLayer( QgsMapLayer *layer )
 
 void QgsLegend::legendGroupRemove()
 {
-  if ( !mMapCanvas || mMapCanvas->isDrawing() )
+  if ( !mMapCanvas )
   {
     return;
   }
@@ -1571,7 +1571,7 @@ void QgsLegend::legendGroupRemove()
 
 void QgsLegend::legendGroupSetCRS()
 {
-  if ( !mMapCanvas || mMapCanvas->isDrawing() )
+  if ( !mMapCanvas )
   {
     return;
   }
@@ -1595,7 +1595,7 @@ void QgsLegend::legendGroupSetCRS()
 
 void QgsLegend::removeGroup( QgsLegendGroup *lg )
 {
-  if ( !mMapCanvas || mMapCanvas->isDrawing() )
+  if ( !mMapCanvas )
   {
     return;
   }
@@ -1625,7 +1625,7 @@ void QgsLegend::removeGroup( QgsLegendGroup *lg )
 
 void QgsLegend::setGroupCRS( QgsLegendGroup *lg, const QgsCoordinateReferenceSystem &crs )
 {
-  if ( !mMapCanvas || mMapCanvas->isDrawing() )
+  if ( !mMapCanvas )
   {
     return;
   }
@@ -1680,7 +1680,7 @@ void QgsLegend::moveLayer( QgsMapLayer *ml, int groupIndex )
 
 void QgsLegend::legendLayerShowInOverview()
 {
-  if ( !mMapCanvas || mMapCanvas->isDrawing() )
+  if ( !mMapCanvas )
   {
     return;
   }

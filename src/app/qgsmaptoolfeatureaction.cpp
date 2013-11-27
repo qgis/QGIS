@@ -56,11 +56,6 @@ void QgsMapToolFeatureAction::canvasPressEvent( QMouseEvent *e )
 
 void QgsMapToolFeatureAction::canvasReleaseEvent( QMouseEvent *e )
 {
-  if ( !mCanvas || mCanvas->isDrawing() )
-  {
-    return;
-  }
-
   QgsMapLayer *layer = mCanvas->currentLayer();
 
   if ( !layer || layer->type() != QgsMapLayer::VectorLayer )

@@ -86,11 +86,6 @@ void QgsMapToolIdentifyAction::canvasPressEvent( QMouseEvent *e )
 
 void QgsMapToolIdentifyAction::canvasReleaseEvent( QMouseEvent *e )
 {
-  if ( !mCanvas || mCanvas->isDrawing() )
-  {
-    return;
-  }
-
   resultsDialog()->clear();
   connect( this, SIGNAL( identifyProgress( int, int ) ), QgisApp::instance(), SLOT( showProgress( int, int ) ) );
   connect( this, SIGNAL( identifyMessage( QString ) ), QgisApp::instance(), SLOT( showStatusMessage( QString ) ) );
