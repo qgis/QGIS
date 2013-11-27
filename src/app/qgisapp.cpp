@@ -2437,8 +2437,6 @@ void QgisApp::addVectorLayer()
   mMapCanvas->refresh();
 
   delete ovl;
-  // update UI
-  qApp->processEvents();
 }
 
 
@@ -2545,9 +2543,6 @@ bool QgisApp::addVectorLayers( QStringList const & theLayerQStringList, const QS
 
   // Register this layer with the layers registry
   QgsMapLayerRegistry::instance()->addMapLayers( myList );
-
-  // update UI
-  qApp->processEvents();
 
   // Only update the map if we frozen in this method
   // Let the caller do it otherwise
@@ -2963,9 +2958,6 @@ void QgisApp::addDatabaseLayers( QStringList const & layerPathList, QString cons
 
   QgsMapLayerRegistry::instance()->addMapLayers( myList );
   statusBar()->showMessage( mMapCanvas->extent().toString( 2 ) );
-
-  // update UI
-  qApp->processEvents();
 
   // draw the map
   mMapCanvas->freeze( false );
@@ -5608,8 +5600,6 @@ QgsVectorLayer * QgisApp::pasteAsNewMemoryVector( const QString & theLayerName )
   mMapCanvas->freeze( false );
   mMapCanvas->refresh();
 
-  qApp->processEvents();
-
   return layer;
 }
 
@@ -6488,9 +6478,6 @@ void QgisApp::duplicateLayers( QList<QgsMapLayer *> lyrList )
 
   dupLayer = 0;
 
-  // update UI
-  qApp->processEvents();
-
   mMapCanvas->freeze( false );
 
   // display errors in message bar after duplication of layers
@@ -7056,9 +7043,6 @@ QgsVectorLayer* QgisApp::addVectorLayer( QString vectorLayerPath, QString baseNa
     return NULL;
   }
 
-  // update UI
-  qApp->processEvents();
-
   // Only update the map if we frozen in this method
   // Let the caller do it otherwise
   if ( !wasfrozen )
@@ -7099,9 +7083,6 @@ void QgisApp::addMapLayer( QgsMapLayer *theMapLayer )
     QMessageBox::critical( this, tr( "Layer is not valid" ),
                            tr( "The layer is not a valid layer and can not be added to the map" ) );
   }
-
-  // update UI
-  qApp->processEvents();
 
   // draw the map
   mMapCanvas->freeze( false );
@@ -8671,8 +8652,6 @@ QgsRasterLayer* QgisApp::addRasterLayerPrivate(
 
   if ( guiUpdate )
   {
-    // update UI
-    qApp->processEvents();
     // draw the map
     mMapCanvas->freeze( false );
     mMapCanvas->refresh();
