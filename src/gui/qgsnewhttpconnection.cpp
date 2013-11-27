@@ -20,6 +20,7 @@
 #include <QMessageBox>
 #include <QUrl>
 #include <QPushButton>
+#include <QRegExpValidator>
 
 QgsNewHttpConnection::QgsNewHttpConnection(
   QWidget *parent, const QString& baseKey, const QString& connName, Qt::WFlags fl ):
@@ -38,6 +39,8 @@ QgsNewHttpConnection::QgsNewHttpConnection(
   // Only WMS and WFS providers are using QgsNewHttpConnection at this moment
   // using connection-wms and connection-wfs -> parse credential key fro it.
   mCredentialsBaseKey = mBaseKey.split( '-' ).last().toUpper();
+
+  txtName->setValidator( new QRegExpValidator( QRegExp( "[^/]+" ), txtName ) );
 
   if ( !connName.isEmpty() )
   {
