@@ -156,8 +156,11 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
 
     /**
      * @brief saveEditChanges
+     *
+     * @return true if the saving was ok. false is possible due to connected
+     *         validation logic.
      */
-    void saveEditChanges();
+    bool saveEditChanges();
 
     /**
      * Update the shown feature if an attribute changed

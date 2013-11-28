@@ -97,6 +97,16 @@ QString QgsFeatureListView::parserErrorString()
   return mModel->parserErrorString();
 }
 
+QgsFeatureIds QgsFeatureListView::currentEditSelection()
+{
+  QgsFeatureIds selection;
+  Q_FOREACH( QModelIndex idx, mCurrentEditSelectionModel->selectedIndexes() )
+  {
+    selection << idx.data( QgsAttributeTableModel::FeatureIdRole ).value<QgsFeatureId>();
+  }
+  return selection;
+}
+
 void QgsFeatureListView::mousePressEvent( QMouseEvent *event )
 {
   QPoint pos = event->pos();

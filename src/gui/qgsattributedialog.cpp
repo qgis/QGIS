@@ -418,6 +418,8 @@ void QgsAttributeDialog::init()
     }
   }
 
+  mEditable = mLayer->isEditable();
+
   if ( mDialog )
   {
     if ( mDialog->objectName().isEmpty() )
@@ -451,6 +453,16 @@ void QgsAttributeDialog::init()
   {
     if ( buttonBox )
     {
+      // Add dummy buttons
+      if ( mLayer->isEditable() )
+      {
+        buttonBox->clear();
+
+        buttonBox->setStandardButtons( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
+        connect( buttonBox, SIGNAL( accepted() ), mDialog, SLOT( accept() ) );
+        connect( buttonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
+      }
+
       buttonBox->setVisible( false );
     }
   }

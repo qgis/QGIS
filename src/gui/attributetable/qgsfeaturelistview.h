@@ -100,6 +100,13 @@ class GUI_EXPORT QgsFeatureListView : public QListView
      */
     QString parserErrorString();
 
+    /**
+     * Get the currentEditSelection
+     *
+     * @return A list of edited feature ids
+     */
+    QgsFeatureIds currentEditSelection();
+
   protected:
     virtual void mouseMoveEvent( QMouseEvent *event );
     virtual void mousePressEvent( QMouseEvent *event );
