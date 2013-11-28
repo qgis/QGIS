@@ -4845,13 +4845,6 @@ void QgisApp::deleteSelected( QgsMapLayer *layer, QWidget* parent )
     return;
   }
 
-  //display a warning
-  int numberOfDeletedFeatures = vlayer->selectedFeaturesIds().size();
-  if ( QMessageBox::warning( parent, tr( "Delete features" ), tr( "Delete %n feature(s)?", "number of features to delete", numberOfDeletedFeatures ), QMessageBox::Ok, QMessageBox::Cancel ) == QMessageBox::Cancel )
-  {
-    return;
-  }
-
   vlayer->beginEditCommand( tr( "Features deleted" ) );
   if ( !vlayer->deleteSelectedFeatures() )
   {
@@ -6479,6 +6472,8 @@ void QgisApp::removeAllLayers()
 
 void QgisApp::removeLayer()
 {
+  int numberOfRemovedLayers = 0;
+
   if ( mMapCanvas && mMapCanvas->isDrawing() )
   {
     return;
@@ -6494,6 +6489,14 @@ void QgisApp::removeLayer()
     QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer*>( layer );
     if ( vlayer && vlayer->isEditable() && !toggleEditing( vlayer, true ) )
       return;
+
+    numberOfRemovedLayers++;
+  }
+
+  //display a warning
+  if ( QMessageBox::warning( this, tr( "Remove layers" ), tr( "Remove %n layer(s)?", "number of layers to remove", numberOfRemovedLayers ), QMessageBox::Ok, QMessageBox::Cancel ) == QMessageBox::Cancel )
+  {
+    return;
   }
 
   mMapLegend->removeSelectedLayers();

@@ -711,7 +711,7 @@ void QgsMapToolNodeTool::keyReleaseEvent( QKeyEvent* e )
     return;
   }
 
-  if ( mSelectedFeature && e->key() == Qt::Key_Delete )
+  if ( mSelectedFeature && e->key() == Qt::Key_Backspace )
   {
     mSelectedFeature->deleteSelectedVertexes();
     mCanvas->refresh();

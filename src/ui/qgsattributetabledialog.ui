@@ -112,7 +112,7 @@
      <item>
       <widget class="QToolButton" name="mDeleteSelectedButton">
        <property name="toolTip">
-        <string>Delete selected features (Ctrl+D)</string>
+        <string>Delete selected features (DEL)</string>
        </property>
        <property name="text">
         <string>...</string>
@@ -128,7 +128,7 @@
         </size>
        </property>
        <property name="shortcut">
-        <string>Ctrl+D</string>
+        <string>Delete</string>
        </property>
       </widget>
      </item>
