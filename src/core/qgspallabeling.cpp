@@ -3845,6 +3845,15 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
 
   painter->setRenderHint( QPainter::Antialiasing );
 
+  //dpi ration for QPicture
+  QPicture localPict;
+  QPainter localp;
+  localp.begin( &localPict );
+  double localdpi = ( localp.device()->logicalDpiX() + localp.device()->logicalDpiY() ) / 2;
+  double contextdpi = ( painter->device()->logicalDpiX() + painter->device()->logicalDpiY() ) / 2;
+  double dpiRatio = localdpi / contextdpi;
+  localp.end();
+
   // draw the labels
   std::list<LabelPosition*>::iterator it = labels->begin();
   for ( ; it != labels->end(); ++it )
@@ -3939,15 +3948,15 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
 
     if ( tmpLyr.shapeDraw )
     {
-      drawLabel( *it, context, tmpLyr, LabelShape );
+      drawLabel( *it, context, tmpLyr, LabelShape, dpiRatio );
     }
 
     if ( tmpLyr.bufferDraw )
     {
-      drawLabel( *it, context, tmpLyr, LabelBuffer );
+      drawLabel( *it, context, tmpLyr, LabelBuffer, dpiRatio );
     }
 
-    drawLabel( *it, context, tmpLyr, LabelText );
+    drawLabel( *it, context, tmpLyr, LabelText, dpiRatio );
 
     if ( mLabelSearchTree )
     {
@@ -4075,28 +4084,14 @@ void QgsPalLabeling::drawLabelCandidateRect( pal::LabelPosition* lp, QPainter* p
     drawLabelCandidateRect( lp->getNextPart(), painter, xform );
 }
 
-void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& context, QgsPalLayerSettings& tmpLyr, DrawLabelType drawType )
+void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& context, QgsPalLayerSettings& tmpLyr, DrawLabelType drawType, double dpiRatio )
 {
   // NOTE: this is repeatedly called for multi-part labels
   QPainter* painter = context.painter();
   const QgsMapToPixel* xform = &context.mapToPixel();
 
   QgsLabelComponent component;
-
-  // account for print output or image saving @ specific dpi
-  if ( !qgsDoubleNear( context.rasterScaleFactor(), 1.0, 0.1 ) )
-  {
-    // find relative dpi scaling for local painter
-    QPicture localPict;
-    QPainter localp;
-    localp.begin( &localPict );
-
-    double localdpi = ( localp.device()->logicalDpiX() + localp.device()->logicalDpiY() ) / 2;
-    double contextdpi = ( painter->device()->logicalDpiX() + painter->device()->logicalDpiY() ) / 2;
-    component.setDpiRatio( localdpi / contextdpi );
-
-    localp.end();
-  }
+  component.setDpiRatio( dpiRatio );
 
   QgsPoint outPt = xform->transform( label->getX(), label->getY() );
 //  QgsPoint outPt2 = xform->transform( label->getX() + label->getWidth(), label->getY() + label->getHeight() );
