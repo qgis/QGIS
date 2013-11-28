@@ -4800,7 +4800,7 @@ void QgisApp::layerProperties()
   showLayerProperties( activeLayer() );
 }
 
-void QgisApp::deleteSelected( QgsMapLayer *layer, QWidget* parent )
+void QgisApp::deleteSelected( QgsMapLayer *layer, QWidget* parent, bool promptConfirmation )
 {
   if ( !layer )
   {
@@ -4842,6 +4842,13 @@ void QgisApp::deleteSelected( QgsMapLayer *layer, QWidget* parent )
     messageBar()->pushMessage( tr( "Layer not editable" ),
                                tr( "The current layer is not editable. Choose 'Start editing' in the digitizing toolbar." ),
                                QgsMessageBar::INFO, messageTimeout() );
+    return;
+  }
+
+  //display a warning
+  int numberOfDeletedFeatures = vlayer->selectedFeaturesIds().size();
+  if ( promptConfirmation && QMessageBox::warning( parent, tr( "Delete features" ), tr( "Delete %n feature(s)?", "number of features to delete", numberOfDeletedFeatures ), QMessageBox::Ok, QMessageBox::Cancel ) == QMessageBox::Cancel )
+  {
     return;
   }
 
@@ -6470,10 +6477,8 @@ void QgisApp::removeAllLayers()
   QgsMapLayerRegistry::instance()->removeAllMapLayers();
 }
 
-void QgisApp::removeLayer()
+void QgisApp::removeLayer( bool promptConfirmation )
 {
-  int numberOfRemovedLayers = 0;
-
   if ( mMapCanvas && mMapCanvas->isDrawing() )
   {
     return;
@@ -6489,12 +6494,11 @@ void QgisApp::removeLayer()
     QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer*>( layer );
     if ( vlayer && vlayer->isEditable() && !toggleEditing( vlayer, true ) )
       return;
-
-    numberOfRemovedLayers++;
   }
 
   //display a warning
-  if ( QMessageBox::warning( this, tr( "Remove layers" ), tr( "Remove %n layer(s)?", "number of layers to remove", numberOfRemovedLayers ), QMessageBox::Ok, QMessageBox::Cancel ) == QMessageBox::Cancel )
+  int numberOfRemovedLayers = mMapLegend->selectedLayers().size();
+  if ( promptConfirmation && QMessageBox::warning( this, tr( "Remove layers" ), tr( "Remove %n layer(s)?", "number of layers to remove", numberOfRemovedLayers ), QMessageBox::Ok, QMessageBox::Cancel ) == QMessageBox::Cancel )
   {
     return;
   }
@@ -9051,6 +9055,11 @@ void QgisApp::keyPressEvent( QKeyEvent * e )
   if ( e->key() == Qt::Key_Escape )
   {
     stopRendering();
+  }
+  //remove selected layers
+  else if ( e->key() == Qt::Key_D )
+  {
+    removeLayer( true );
   }
 #if defined(Q_OS_WIN)&& defined(QGISDEBUG)
   else if ( e->key() == Qt::Key_Backslash && e->modifiers() & Qt::ControlModifier )
