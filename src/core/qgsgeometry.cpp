@@ -5221,6 +5221,12 @@ bool QgsGeometry::exportGeosToWkb() const
 
 bool QgsGeometry::convertToMultiType()
 {
+  // TODO: implement with GEOS
+  if ( mDirtyWkb )
+  {
+    exportGeosToWkb();
+  }
+
   if ( !mGeometry )
   {
     return false;
