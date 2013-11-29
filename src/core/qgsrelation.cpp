@@ -84,7 +84,7 @@ QgsRelation QgsRelation::createFromXML( const QDomNode &node )
     relation.addFieldPair( referencingField, referencedField );
   }
 
-  relation.mValid = true;
+  relation.updateRelationStatus();
 
   return relation;
 }
