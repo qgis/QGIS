@@ -8,7 +8,7 @@ class QgsDxfExportDialog: public QDialog, private Ui::QgsDxfExportDialogBase
 {
     Q_OBJECT
   public:
-    QgsDxfExportDialog( const QList<QString>& layerKeys, QWidget * parent = 0, Qt::WindowFlags f = 0 );
+    QgsDxfExportDialog( const QList<QgsMapLayer*>& layerKeys, QWidget * parent = 0, Qt::WindowFlags f = 0 );
     ~QgsDxfExportDialog();
 
     QList<QString> layers() const;

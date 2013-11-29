@@ -3802,7 +3802,13 @@ void QgisApp::fileSaveAs()
 
 void QgisApp::dxfExport()
 {
-  QgsDxfExportDialog d( QgsMapLayerRegistry::instance()->mapLayers().keys() );
+  QgsLegend* mapLegend = legend();
+  if ( !mapLegend )
+  {
+    return;
+  }
+
+  QgsDxfExportDialog d( mapLegend->layers() );
   if ( d.exec() == QDialog::Accepted )
   {
     QgsDxfExport dxfExport;

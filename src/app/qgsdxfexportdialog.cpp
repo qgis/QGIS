@@ -6,22 +6,22 @@
 #include <QPushButton>
 #include <QSettings>
 
-QgsDxfExportDialog::QgsDxfExportDialog( const QList<QString>& layerKeys, QWidget* parent, Qt::WindowFlags f ): QDialog( parent, f )
+QgsDxfExportDialog::QgsDxfExportDialog( const QList<QgsMapLayer*>& layerKeys, QWidget* parent, Qt::WindowFlags f ): QDialog( parent, f )
 {
   setupUi( this );
   connect( mFileLineEdit, SIGNAL( textChanged( const QString& ) ), this, SLOT( setOkEnabled() ) );
   connect( this, SIGNAL( accepted() ), this, SLOT( saveSettings() ) );
 
-  QList<QString>::const_iterator layerIt = layerKeys.constBegin();
+  QList<QgsMapLayer*>::const_iterator layerIt = layerKeys.constBegin();
   for ( ; layerIt != layerKeys.constEnd(); ++layerIt )
   {
-    QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( *layerIt );
+    QgsMapLayer* layer = *layerIt;
     if ( layer )
     {
       if ( layer->type() == QgsMapLayer::VectorLayer )
       {
         QListWidgetItem* layerItem = new QListWidgetItem( layer->name() );
-        layerItem->setData( Qt::UserRole, *layerIt );
+        layerItem->setData( Qt::UserRole, layer->id() );
         layerItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsUserCheckable );
         layerItem->setCheckState( Qt::Checked );
         mLayersListWidget->addItem( layerItem );
@@ -52,7 +52,7 @@ QList<QString> QgsDxfExportDialog::layers() const
     QListWidgetItem* currentItem = mLayersListWidget->item( i );
     if ( currentItem->checkState() == Qt::Checked )
     {
-      layerKeyList.append( currentItem->data( Qt::UserRole ).toString() );
+      layerKeyList.prepend( currentItem->data( Qt::UserRole ).toString() );
     }
   }
   return layerKeyList;
