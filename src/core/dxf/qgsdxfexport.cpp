@@ -481,14 +481,19 @@ void QgsDxfExport::writeBlocks()
   QList< QPair< QgsSymbolLayerV2*, QgsSymbolV2* > >::const_iterator slIt = slList.constBegin();
   for ( ; slIt != slList.constEnd(); ++slIt )
   {
-    //if point symbol layer and no data defined properties: write block
     QgsMarkerSymbolLayerV2* ml = dynamic_cast< QgsMarkerSymbolLayerV2*>( slIt->first );
     if ( ml )
     {
+      //if point symbol layer and no data defined properties: write block
+      QgsRenderContext ct;
+      QgsSymbolV2RenderContext ctx( ct, QgsSymbolV2::MapUnit, slIt->second->alpha(), false, slIt->second->renderHints(), 0 );
+      ml->startRender( ctx );
+
       //markers with data defined properties are inserted inline
       if ( hasDataDefinedProperties( ml, slIt->second ) )
       {
         continue;
+        ml->stopRender( ctx );
       }
       writeGroup( 0, "BLOCK" );
       writeGroup( 8, 0 );
@@ -500,17 +505,18 @@ void QgsDxfExport::writeBlocks()
       //todo: consider anchor point
       double size = ml->size();
       size *= mapUnitScaleFactor( mSymbologyScaleDenominator, ml->sizeUnit(), mMapUnits );
-      writeGroup( 10, size / 2.0 );
-      writeGroup( 20, size / 2.0 );
+      writeGroup( 10, 0 );
+      writeGroup( 20, 0 );
       writeGroup( 30, 0 );
       writeGroup( 3, blockName );
 
-      ml->writeDxf( *this, mapUnitScaleFactor( mSymbologyScaleDenominator, ml->sizeUnit(), mMapUnits ), "0", 0, 0 ); //maplayer 0 -> block receives layer from INSERT statement
+      ml->writeDxf( *this, mapUnitScaleFactor( mSymbologyScaleDenominator, ml->sizeUnit(), mMapUnits ), "0", &ctx, 0 ); //maplayer 0 -> block receives layer from INSERT statement
 
       writeGroup( 0, "ENDBLK" );
       writeGroup( 8, 0 );
 
       mPointSymbolBlocks.insert( ml, blockName );
+      ml->stopRender( ctx );
     }
   }
   endSection();
@@ -531,10 +537,14 @@ void QgsDxfExport::writeEntities()
       continue;
     }
 
+    QgsRenderContext ctx;
     QgsFeatureRendererV2* renderer = vl->rendererV2();
+    renderer->startRender( ctx, vl );
+
     if ( mSymbologyExport == QgsDxfExport::SymbolLayerSymbology && renderer->usingSymbolLevels() )
     {
       writeEntitiesSymbolLevels( vl );
+      renderer->stopRender( ctx );
       continue;
     }
 
@@ -542,6 +552,7 @@ void QgsDxfExport::writeEntities()
     if ( !dp )
     {
       continue;
+      renderer->stopRender( ctx );
     }
 
 
@@ -575,6 +586,7 @@ void QgsDxfExport::writeEntities()
         addFeature( fet, vl->name(), s->symbolLayer( 0 ), s );
       }
     }
+    renderer->stopRender( ctx );
   }
 
   endSection();
@@ -1134,8 +1146,8 @@ bool QgsDxfExport::hasDataDefinedProperties( const QgsSymbolLayerV2* sl, const Q
     return false;
   }
 
-  if ( symbol->renderHints() | QgsSymbolV2::DataDefinedSizeScale ||
-       symbol->renderHints() | QgsSymbolV2::DataDefinedRotation )
+  if ( symbol->renderHints() & QgsSymbolV2::DataDefinedSizeScale ||
+       symbol->renderHints() & QgsSymbolV2::DataDefinedRotation )
   {
     return true;
   }

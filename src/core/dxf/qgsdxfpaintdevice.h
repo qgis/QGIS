@@ -50,6 +50,8 @@ class QgsDxfPaintDevice: public QPaintDevice
 
     void setLayer( const QString& layer );
 
+    void setShift( const QPointF& shift );
+
 
   private:
     QgsDxfPaintEngine* mPaintEngine;

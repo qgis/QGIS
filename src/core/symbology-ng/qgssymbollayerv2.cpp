@@ -175,7 +175,7 @@ void QgsMarkerSymbolLayerV2::setOutputUnit( QgsSymbolV2::OutputUnit unit )
   mOffsetUnit = unit;
 }
 
-void QgsMarkerSymbolLayerV2::markerOffset( QgsSymbolV2RenderContext& context, double& offsetX, double& offsetY )
+void QgsMarkerSymbolLayerV2::markerOffset( const QgsSymbolV2RenderContext& context, double& offsetX, double& offsetY ) const
 {
   offsetX = mOffset.x();
   offsetY = mOffset.y();

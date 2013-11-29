@@ -94,8 +94,8 @@ class CORE_EXPORT QgsSymbolLayerV2
     virtual void removeDataDefinedProperties();
     bool hasDataDefinedProperties() const { return mDataDefinedProperties.size() > 0; }
 
-    virtual void writeDxf( QgsDxfExport& e, double mmMapUnitScaleFactor, const QString& layerName, const QgsSymbolV2RenderContext* context, const QgsFeature* f, const QPointF& offset = QPointF( 0.0, 0.0 ) ) const
-    { Q_UNUSED( e ); Q_UNUSED( mmMapUnitScaleFactor ); Q_UNUSED( layerName ); Q_UNUSED( context ); Q_UNUSED( f ); Q_UNUSED( offset ); }
+    virtual void writeDxf( QgsDxfExport& e, double mmMapUnitScaleFactor, const QString& layerName, const QgsSymbolV2RenderContext* context, const QgsFeature* f, const QPointF& shift = QPointF( 0.0, 0.0 ) ) const
+    { Q_UNUSED( e ); Q_UNUSED( mmMapUnitScaleFactor ); Q_UNUSED( layerName ); Q_UNUSED( context ); Q_UNUSED( f ); Q_UNUSED( shift ); }
 
   protected:
     QgsSymbolLayerV2( QgsSymbolV2::SymbolType type, bool locked = false )
@@ -158,7 +158,7 @@ class CORE_EXPORT QgsMarkerSymbolLayerV2 : public QgsSymbolLayerV2
 
   protected:
     QgsMarkerSymbolLayerV2( bool locked = false );
-    void markerOffset( QgsSymbolV2RenderContext& context, double& offsetX, double& offsetY );
+    void markerOffset( const QgsSymbolV2RenderContext& context, double& offsetX, double& offsetY ) const;
     static QPointF _rotatedOffset( const QPointF& offset, double angle );
 
     double mAngle;

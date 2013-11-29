@@ -89,4 +89,12 @@ void QgsDxfPaintDevice::setLayer( const QString& layer )
   }
 }
 
+void QgsDxfPaintDevice::setShift( const QPointF& shift )
+{
+  if ( mPaintEngine )
+  {
+    mPaintEngine->setShift( shift );
+  }
+}
+
 

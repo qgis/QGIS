@@ -46,6 +46,8 @@ class QgsDxfPaintEngine: public QPaintEngine
     void setLayer( const QString& layer ) { mLayer = layer; }
     QString layer() const { return mLayer; }
 
+    void setShift( const QPointF& shift ) { mShift = shift; }
+
   private:
     const QgsDxfPaintDevice* mPaintDevice;
     QgsDxfExport* mDxf;
@@ -54,6 +56,7 @@ class QgsDxfPaintEngine: public QPaintEngine
     QTransform mTransform;
     QPen mPen;
     QString mLayer;
+    QPointF mShift;
 
     QgsPoint toDxfCoordinates( const QPointF& pt ) const;
     int currentPenColor() const;

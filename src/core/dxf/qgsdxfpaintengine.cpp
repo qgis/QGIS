@@ -54,11 +54,11 @@ void QgsDxfPaintEngine::drawPixmap( const QRectF& r, const QPixmap& pm, const QR
 
 void QgsDxfPaintEngine::updateState( const QPaintEngineState& state )
 {
-  if ( state.state() | QPaintEngine::DirtyTransform )
+  if ( state.state() & QPaintEngine::DirtyTransform )
   {
     mTransform = state.transform();
   }
-  if ( state.state() | QPaintEngine::DirtyPen )
+  if ( state.state() & QPaintEngine::DirtyPen )
   {
     mPen = state.pen();
   }
@@ -140,7 +140,7 @@ QgsPoint QgsDxfPaintEngine::toDxfCoordinates( const QPointF& pt ) const
     return QgsPoint( pt.x(), pt.y() );
   }
 
-  QPointF dxfPt = mPaintDevice->dxfCoordinates( mTransform.map( pt ) );
+  QPointF dxfPt = mPaintDevice->dxfCoordinates( mTransform.map( pt ) ) + mShift;
   return QgsPoint( dxfPt.x(), dxfPt.y() );
 }
 
