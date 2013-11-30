@@ -952,12 +952,16 @@ bool QgsCoordinateTransform::datumTransformCrsInfo( int datumTransform, int& eps
   }
 
   int srcCrsId, destCrsId;
-  if ( sqlite3_step( stmt ) == SQLITE_ROW )
+  if ( sqlite3_step( stmt ) != SQLITE_ROW )
   {
-    epsgNr = sqlite3_column_int( stmt, 0 );
-    srcCrsId = sqlite3_column_int( stmt, 1 );
-    destCrsId = sqlite3_column_int( stmt, 2 );
+    sqlite3_finalize( stmt );
+    sqlite3_close( db );
+    return false;
   }
+
+  epsgNr = sqlite3_column_int( stmt, 0 );
+  srcCrsId = sqlite3_column_int( stmt, 1 );
+  destCrsId = sqlite3_column_int( stmt, 2 );
 
   QgsCoordinateReferenceSystem srcCrs;
   srcCrs.createFromOgcWmsCrs( QString( "EPSG:%1" ).arg( srcCrsId ) );
@@ -966,7 +970,8 @@ bool QgsCoordinateTransform::datumTransformCrsInfo( int datumTransform, int& eps
   destCrs.createFromOgcWmsCrs( QString( "EPSG:%1" ).arg( destCrsId ) );
   dstProjection = destCrs.description();
 
-  sqlite3_finalize( stmt ); sqlite3_close( db );
+  sqlite3_finalize( stmt );
+  sqlite3_close( db );
   return true;
 }
 
