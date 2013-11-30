@@ -70,7 +70,6 @@ void QgsColorButton::onButtonClicked()
 {
   //QgsDebugMsg( "entered" );
   QColor newColor;
-#if QT_VERSION >= 0x040500
   QSettings settings;
   if ( mAcceptLiveUpdates && settings.value( "/qgis/live_color_dialogs", false ).toBool() )
   {
@@ -82,9 +81,6 @@ void QgsColorButton::onButtonClicked()
   {
     newColor = QColorDialog::getColor( color(), this->parentWidget(), mColorDialogTitle, mColorDialogOptions );
   }
-#else
-  newColor = QColorDialog::getColor( color(), this->parentWidget() );
-#endif
   setValidColor( newColor );
 
   // reactivate button's window

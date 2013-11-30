@@ -219,7 +219,7 @@ SET (HAVE_MSSQL TRUE)
 
 #############################################################
 # search for Qt4
-SET(QT_MIN_VERSION 4.5.0)
+SET(QT_MIN_VERSION 4.7.0)
 FIND_PACKAGE(Qt4 ${QT_MIN_VERSION} REQUIRED)
 MESSAGE(STATUS "Found Qt version: ${QTVERSION}")
 SET(QT_USE_QTXML 1)
@@ -242,12 +242,8 @@ ELSE (ANDROID)
   SET (DEFAULT_WITH_TOUCH FALSE)
 ENDIF (ANDROID)
 
-#Add a touch mode if Qt has Qt Gestures (starting from 4.6)
-IF ( (QT_VERSION_MAJOR EQUAL 4 AND QT_VERSION_MINOR GREATER 5) OR QT_VERSION_MAJOR GREATER 4 )
-  SET (WITH_TOUCH ${DEFAULT_WITH_TOUCH} CACHE BOOL "Determines if touch interface related code should be build")
-ELSE ( (QT_VERSION_MAJOR EQUAL 4 AND QT_VERSION_MINOR GREATER 5) OR QT_VERSION_MAJOR GREATER 4 )
-  SET (WITH_TOUCH FALSE)
-ENDIF ( (QT_VERSION_MAJOR EQUAL 4 AND QT_VERSION_MINOR GREATER 5) OR QT_VERSION_MAJOR GREATER 4 )
+#Add a touch mode if Qt has Qt Gestures
+SET (WITH_TOUCH ${DEFAULT_WITH_TOUCH} CACHE BOOL "Determines if touch interface related code should be build")
 
 IF (WITH_TOUCH)
   # following variable is used in qgsconfig.h

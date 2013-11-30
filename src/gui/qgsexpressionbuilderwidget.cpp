@@ -104,9 +104,7 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
     registerItem( specials[i]->group(), name, " " + name + " " );
   }
 
-#if QT_VERSION >= 0x040700
   txtSearchEdit->setPlaceholderText( tr( "Search" ) );
-#endif
 }
 
 

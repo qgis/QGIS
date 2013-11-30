@@ -40,10 +40,7 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QNetworkProxy>
-
-#if QT_VERSION >= 0x40500
 #include <QNetworkDiskCache>
-#endif
 
 #include <QUrl>
 #include <QRegExp>
@@ -1516,12 +1513,10 @@ QString QgsWcsProvider::metadata()
   metadata += "</a>";
 
 #if 0
-#if QT_VERSION >= 0x40500
   // TODO
   metadata += "<a href=\"#cachestats\">";
   metadata += tr( "Cache Stats" );
   metadata += "</a> ";
-#endif
 #endif
 
   metadata += "</td></tr>";

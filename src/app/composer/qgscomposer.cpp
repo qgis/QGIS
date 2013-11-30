@@ -1509,9 +1509,7 @@ void QgsComposer::on_mActionExportAsSVG_triggered()
     for ( int i = 0; i < mComposition->numPages(); ++i )
     {
       QSvgGenerator generator;
-#if QT_VERSION >= 0x040500
       generator.setTitle( QgsProject::instance()->title() );
-#endif
       if ( i == 0 )
       {
         generator.setFileName( outputFileName );
@@ -1527,9 +1525,7 @@ void QgsComposer::on_mActionExportAsSVG_triggered()
       //height in pixel
       int height = ( int )( mComposition->paperHeight() * mComposition->printResolution() / 25.4 );
       generator.setSize( QSize( width, height ) );
-#if QT_VERSION >= 0x040500
       generator.setViewBox( QRect( 0, 0, width, height ) );
-#endif
       generator.setResolution( mComposition->printResolution() ); //because the rendering is done in mm, convert the dpi
 
       QPainter p( &generator );

@@ -47,15 +47,10 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QNetworkProxy>
-
-#if QT_VERSION >= 0x40500
 #include <QNetworkDiskCache>
-#endif
 
-#if QT_VERSION >= 0x40600
 #include <QtXmlPatterns/QXmlSchema>
 #include <QtXmlPatterns/QXmlSchemaValidator>
-#endif
 
 #include <QUrl>
 #include <QIcon>
@@ -1160,14 +1155,14 @@ void QgsWmsProvider::tileReplyFinished()
 {
   QNetworkReply *reply = qobject_cast<QNetworkReply*>( sender() );
 
-#if defined(QGISDEBUG) && (QT_VERSION >= 0x40500)
+#if defined(QGISDEBUG)
   bool fromCache = reply->attribute( QNetworkRequest::SourceIsFromCacheAttribute ).toBool();
   if ( fromCache )
     mCacheHits++;
   else
     mCacheMisses++;
 #endif
-#if defined(QGISDEBUG) && (QT_VERSION >= 0x40700)
+#if defined(QGISDEBUG)
   QgsDebugMsgLevel( "raw headers:", 3 );
   foreach ( const QNetworkReply::RawHeaderPair &pair, reply->rawHeaderPairs() )
   {
@@ -1206,7 +1201,6 @@ void QgsWmsProvider::tileReplyFinished()
 #ifdef QGISDEBUG
   int retry = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( TileRetry ) ).toInt();
 
-#if QT_VERSION >= 0x40500
   QgsDebugMsg( QString( "tile reply %1 (%2) tile:%3(retry %4) rect:%5,%6 %7,%8) fromcache:%9 error:%10 url:%11" )
                .arg( tileReqNo ).arg( mTileReqNo ).arg( tileNo ).arg( retry )
                .arg( r.left(), 0, 'f' ).arg( r.bottom(), 0, 'f' ).arg( r.right(), 0, 'f' ).arg( r.top(), 0, 'f' )
@@ -1214,14 +1208,6 @@ void QgsWmsProvider::tileReplyFinished()
                .arg( reply->errorString() )
                .arg( reply->url().toString() )
              );
-#else
-  QgsDebugMsg( QString( "tile reply %1 (%2) tile:%3(retry %4) rect:%5,%6 %7,%8) error:%9 url:%10" )
-               .arg( tileReqNo ).arg( mTileReqNo ).arg( tileNo ).arg( retry )
-               .arg( r.left(), 0, 'f' ).arg( r.bottom(), 0, 'f' ).arg( r.right(), 0, 'f' ).arg( r.top(), 0, 'f' )
-               .arg( reply->errorString() )
-               .arg( reply->url().toString() )
-             );
-#endif
 #endif
 
   if ( reply->error() == QNetworkReply::NoError )
@@ -3729,11 +3715,9 @@ QString QgsWmsProvider::metadata()
     metadata += tr( "Tile Layer Properties" );
     metadata += "</a> ";
 
-#if QT_VERSION >= 0x40500
     metadata += "<a href=\"#cachestats\">";
     metadata += tr( "Cache Stats" );
     metadata += "</a> ";
-#endif
   }
 
   metadata += "</td></tr>";
@@ -4044,7 +4028,6 @@ QString QgsWmsProvider::metadata()
 
     metadata += "</table></td></tr>";
 
-#if QT_VERSION >= 0x40500
     if ( mTiled )
     {
       metadata += "<tr><th class=\"glossy\"><a name=\"cachestats\"></a>";
@@ -4082,7 +4065,6 @@ QString QgsWmsProvider::metadata()
 
       metadata += "</table></td></tr>";
     }
-#endif
   }
 
   metadata += "</table>";
@@ -4400,7 +4382,6 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
 
       if ( xsdPart >= 0 )  // XSD available
       {
-#if QT_VERSION >= 0x40600
 #if 0
         // Validate GML by schema
         // Loading schema takes ages! It needs to load all XSD referenced in the schema,
@@ -4430,7 +4411,6 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
           results.insert( count, tr( "GML is not valid" ) );
           continue;
         }
-#endif
 #endif
         QgsDebugMsg( "GML XSD (first 4000 bytes):\n" + QString::fromUtf8( mIdentifyResultBodies.value( xsdPart ).left( 4000 ) ) );
         gmlSchema.parseXSD( mIdentifyResultBodies.value( xsdPart ) );
