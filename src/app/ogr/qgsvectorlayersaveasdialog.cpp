@@ -362,8 +362,8 @@ QStringList QgsVectorLayerSaveAsDialog::datasourceOptions() const
 
         case QgsVectorFileWriter::Hidden:
         {
-          QgsVectorFileWriter::HiddenOption* opt
-              = dynamic_cast<QgsVectorFileWriter::HiddenOption*>( it.value() );
+          QgsVectorFileWriter::HiddenOption *opt =
+          dynamic_cast<QgsVectorFileWriter::HiddenOption*>( it.value() );
           options << QString( "%1=%2" ).arg( it.key() ).arg( opt->mValue );
           break;
         }
@@ -411,8 +411,8 @@ QStringList QgsVectorLayerSaveAsDialog::layerOptions() const
 
         case QgsVectorFileWriter::Hidden:
         {
-          QgsVectorFileWriter::HiddenOption* opt
-              = dynamic_cast<QgsVectorFileWriter::HiddenOption*>( it.value() );
+          QgsVectorFileWriter::HiddenOption *opt =
+		  dynamic_cast<QgsVectorFileWriter::HiddenOption*>( it.value() );
           options << QString( "%1=%2" ).arg( it.key() ).arg( opt->mValue );
           break;
         }

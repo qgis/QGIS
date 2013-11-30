@@ -52,69 +52,69 @@ class CORE_EXPORT QgsVectorFileWriter
 
     class Option
     {
-    public:
-      Option( const QString& docString, OptionType type )
-          : docString( docString )
-          , type( type )
-      {}
+      public:
+        Option( const QString& docString, OptionType type )
+            : docString( docString )
+            , type( type )
+        {}
 
-      virtual ~Option() {}
+        virtual ~Option() {}
 
-      QString docString;
-      OptionType type;
+        QString docString;
+        OptionType type;
     };
 
     class SetOption : public Option
     {
       public:
-      SetOption( const QString& docString, QStringList values, const QString& defaultValue, bool allowNone = false )
-          : Option( docString, Set )
-          , values( values.toSet() )
-          , defaultValue( defaultValue )
-          , allowNone( allowNone )
-      {}
+        SetOption( const QString& docString, QStringList values, const QString& defaultValue, bool allowNone = false )
+            : Option( docString, Set )
+            , values( values.toSet() )
+            , defaultValue( defaultValue )
+            , allowNone( allowNone )
+        {}
 
-      QSet<QString> values;
-      QString defaultValue;
-      bool allowNone;
+        QSet<QString> values;
+        QString defaultValue;
+        bool allowNone;
     };
 
     class StringOption: public Option
     {
       public:
-      StringOption( const QString& docString, const QString& defaultValue = QString() )
-          : Option( docString, String )
-          , defaultValue( defaultValue )
-      {}
+        StringOption( const QString& docString, const QString& defaultValue = QString() )
+            : Option( docString, String )
+            , defaultValue( defaultValue )
+        {}
 
-      QString defaultValue;
+        QString defaultValue;
     };
 
     class IntOption: public Option
     {
       public:
-      IntOption( const QString& docString, int defaultValue )
-          : Option( docString, Int )
-          , defaultValue( defaultValue )
-      {}
+        IntOption( const QString& docString, int defaultValue )
+            : Option( docString, Int )
+            , defaultValue( defaultValue )
+        {}
 
-      int defaultValue;
+        int defaultValue;
     };
 
     class BoolOption : public SetOption
     {
       public:
-      BoolOption( const QString& docString, bool defaultValue )
-          : SetOption( docString, QStringList() << "YES" << "NO", defaultValue ? "YES" : "NO" )
-      {}
+        BoolOption( const QString& docString, bool defaultValue )
+            : SetOption( docString, QStringList() << "YES" << "NO", defaultValue ? "YES" : "NO" )
+        {}
     };
 
     class HiddenOption: public Option
     {
       public:
         HiddenOption( const QString& value )
-          : Option( "", Hidden )
-          , mValue( value )
+            : Option( "", Hidden )
+            , mValue( value )
         {}
 
         QString mValue;
