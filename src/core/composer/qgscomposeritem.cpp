@@ -482,8 +482,6 @@ void QgsComposerItem::setSceneRect( const QRectF& rectangle )
 
   QRectF newRect( 0, 0, newWidth, newHeight );
   QGraphicsRectItem::setRect( newRect );
-  //rotate item around its centre point
-  setTransformOriginPoint( QPointF( rect().width() / 2.0, rect().height() / 2.0 ) );
   setPos( xTranslation, yTranslation );
 
   emit sizeChanged();
@@ -708,8 +706,21 @@ void QgsComposerItem::setRotation( double r )
   setItemRotation( r );
 }
 
-void QgsComposerItem::setItemRotation( double r )
+void QgsComposerItem::setItemRotation( double r, bool adjustPosition )
 {
+  if ( adjustPosition )
+  {
+    //adjustPosition set, so shift the position of the item so that rotation occurs around item center
+    //create a line from the centrepoint of the rect() to its origin, in scene coordinates
+    QLineF refLine = QLineF( mapToScene( QPointF( rect().width() / 2.0, rect().height() / 2.0 ) ) , mapToScene( QPointF( 0 , 0 ) ) );
+    //rotate this line by the current rotation angle
+    refLine.setAngle( refLine.angle() - r + mItemRotation );
+    //get new end point of line - this is the new item position
+    QPointF rotatedReferencePoint = refLine.p2();
+    setPos( rotatedReferencePoint );
+    emit sizeChanged();
+  }
+
   if ( r > 360 )
   {
     mItemRotation = (( int )r ) % 360;
@@ -719,8 +730,7 @@ void QgsComposerItem::setItemRotation( double r )
     mItemRotation = r;
   }
 
-  //rotate item around its centre point
-  setTransformOriginPoint( QPointF( rect().width() / 2.0, rect().height() / 2.0 ) );
+  setTransformOriginPoint( 0, 0 );
   QGraphicsItem::setRotation( mItemRotation );
 
   emit itemRotationChanged( r );
