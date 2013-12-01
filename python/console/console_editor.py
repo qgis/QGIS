@@ -581,7 +581,8 @@ class Editor(QsciScintilla):
                 tmpFile = self.createTempFile()
                 filename = tmpFile
 
-            self.parent.pc.shell.runCommand(u"execfile(r'{0}')".format(filename))
+            self.parent.pc.shell.runCommand(u"execfile(u'{0}'.encode('{1}'))"
+                                            .format(filename.replace("\\", "/"), sys.getfilesystemencoding()))
 
     def runSelectedCode(self):
         cmd = self.selectedText()
