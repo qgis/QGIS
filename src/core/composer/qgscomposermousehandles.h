@@ -157,11 +157,6 @@ class CORE_EXPORT QgsComposerMouseHandles: public QObject, public QGraphicsRectI
     /**Handles resizing of items during mouse move*/
     void resizeMouseMove( const QPointF& currentPosition, bool lockAspect, bool fromCenter );
 
-    /**Resizes a QRectF relative to the change from boundsBefore to boundsAfter*/
-    void relativeResizeRect( QRectF& rectToResize, const QRectF& boundsBefore, const QRectF& boundsAfter );
-    /**Returns a scaled position given a before and after range*/
-    double relativePosition( double position, double beforeMin, double beforeMax, double afterMin, double afterMax );
-
     /**Return horizontal align snap item. Creates a new graphics line if 0*/
     QGraphicsLineItem* hAlignSnapItem();
     void deleteHAlignSnapItem();
