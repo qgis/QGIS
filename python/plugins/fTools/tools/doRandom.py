@@ -60,6 +60,7 @@ class Dialog(QDialog, Ui_Dialog):
         self.buttonOk.setEnabled( False )
         if self.inShape.currentText() == "":
             QMessageBox.information(self, self.tr("Random Selection Tool"), self.tr("No input shapefile specified"))
+            return
         else:
             self.progressBar.setValue(10)
             inName = self.inShape.currentText()
