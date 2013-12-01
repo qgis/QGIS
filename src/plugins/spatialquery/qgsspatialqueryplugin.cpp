@@ -24,6 +24,7 @@
 #include "qgisinterface.h"
 #include "qgsapplication.h"
 #include "qgsmaplayerregistry.h"
+#include "qgsmessagebar.h"
 
 //
 // Required plugin includes
@@ -111,7 +112,7 @@ void QgsSpatialQueryPlugin::run()
     QString msg;
     if ( ! QgsSpatialQueryDialog::hasPossibleQuery( msg ) )
     {
-      QMessageBox::warning( mIface->mainWindow(), tr( "Query not executed" ), msg, QMessageBox::Ok );
+      mIface->messageBar()->pushMessage( tr( "Query not executed" ), msg, QgsMessageBar::INFO, mIface->messageTimeout() );
       return;
     }
     mDialog = new QgsSpatialQueryDialog( mIface->mainWindow(), mIface );
