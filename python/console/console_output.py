@@ -56,7 +56,9 @@ class writeOut:
             self.out.write(m)
 
         self.move_cursor_to_end()
-        QCoreApplication.processEvents()
+
+        if self.style != "_traceback":
+            QCoreApplication.processEvents()
 
     def move_cursor_to_end(self):
         """Move cursor to end of text"""
