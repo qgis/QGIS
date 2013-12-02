@@ -46,6 +46,7 @@ class GUI_EXPORT QgsCategorizedSymbolRendererV2Model : public QAbstractItemModel
     void setRenderer( QgsCategorizedSymbolRendererV2* renderer );
 
     void addCategory( const QgsRendererCategoryV2 &cat );
+    QgsRendererCategoryV2 category( const QModelIndex &index );
     void deleteRows( QList<int> rows );
     void removeAllRows( );
     void sort( int column, Qt::SortOrder order = Qt::AscendingOrder );
@@ -120,7 +121,9 @@ class GUI_EXPORT QgsCategorizedSymbolRendererV2Widget : public QgsRendererV2Widg
     void changeCategorySymbol();
 
     QList<QgsSymbolV2*> selectedSymbols();
+    QgsCategoryList selectedCategoryList();
     void refreshSymbolView() { populateCategories(); }
+    void keyPressEvent( QKeyEvent* event );
 
   protected:
     QgsCategorizedSymbolRendererV2* mRenderer;
@@ -133,6 +136,7 @@ class GUI_EXPORT QgsCategorizedSymbolRendererV2Widget : public QgsRendererV2Widg
 
   private:
     QString mOldClassificationAttribute;
+    QgsCategoryList mCopyBuffer;
 };
 
 #endif // QGSCATEGORIZEDSYMBOLRENDERERV2WIDGET_H

@@ -28,6 +28,7 @@
 
 #include "qgsproject.h"
 
+#include <QKeyEvent>
 #include <QMenu>
 #include <QMessageBox>
 #include <QStandardItemModel>
@@ -66,6 +67,28 @@ void QgsGraduatedSymbolRendererV2Model::addClass( QgsSymbolV2* symbol )
   beginInsertRows( QModelIndex(), idx, idx );
   mRenderer->addClass( symbol );
   endInsertRows();
+}
+
+void QgsGraduatedSymbolRendererV2Model::addClass( QgsRendererRangeV2 range )
+{
+  if ( !mRenderer )
+  {
+    return;
+  }
+  int idx = mRenderer->ranges().size();
+  beginInsertRows( QModelIndex(), idx, idx );
+  mRenderer->addClass( range );
+  endInsertRows();
+}
+
+QgsRendererRangeV2 QgsGraduatedSymbolRendererV2Model::rendererRange( const QModelIndex &index )
+{
+  if ( !index.isValid() || !mRenderer || mRenderer->ranges().size() <= index.row() )
+  {
+    return QgsRendererRangeV2();
+  }
+
+  return mRenderer->ranges().value( index.row() );
 }
 
 Qt::ItemFlags QgsGraduatedSymbolRendererV2Model::flags( const QModelIndex & index ) const
@@ -606,6 +629,20 @@ QList<int> QgsGraduatedSymbolRendererV2Widget::selectedClasses()
   return rows;
 }
 
+QgsRangeList QgsGraduatedSymbolRendererV2Widget::selectedRanges()
+{
+  QgsRangeList selectedRanges;
+  QModelIndexList selectedRows = viewGraduated->selectionModel()->selectedRows();
+  QModelIndexList::const_iterator sIt = selectedRows.constBegin();
+
+  const QgsRangeList& ranges = mRenderer->ranges();
+  for ( ; sIt != selectedRows.constEnd(); ++sIt )
+  {
+    selectedRanges.append( mModel->rendererRange( *sIt ) );
+  }
+  return selectedRanges;
+}
+
 void QgsGraduatedSymbolRendererV2Widget::rangesDoubleClicked( const QModelIndex & idx )
 {
   if ( idx.isValid() && idx.column() == 0 )
@@ -621,6 +658,8 @@ void QgsGraduatedSymbolRendererV2Widget::rangesClicked( const QModelIndex & idx 
   else
     mRowSelected = idx.row();
 }
+
+
 
 void QgsGraduatedSymbolRendererV2Widget::changeSelectedSymbols()
 {
@@ -777,4 +816,26 @@ void QgsGraduatedSymbolRendererV2Widget::showSymbolLevels()
 void QgsGraduatedSymbolRendererV2Widget::rowsMoved()
 {
   viewGraduated->selectionModel()->clear();
+}
+
+void QgsGraduatedSymbolRendererV2Widget::keyPressEvent( QKeyEvent* event )
+{
+  if ( !event )
+  {
+    return;
+  }
+
+  if ( event->key() == Qt::Key_C && event->modifiers() == Qt::ControlModifier )
+  {
+    mCopyBuffer.clear();
+    mCopyBuffer = selectedRanges();
+  }
+  else if ( event->key() == Qt::Key_V && event->modifiers() == Qt::ControlModifier )
+  {
+    QgsRangeList::const_iterator rIt = mCopyBuffer.constBegin();
+    for ( ; rIt != mCopyBuffer.constEnd(); ++rIt )
+    {
+      mModel->addClass( *rIt );
+    }
+  }
 }

@@ -95,6 +95,7 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
     bool updateRangeLowerValue( int rangeIndex, double value );
 
     void addClass( QgsSymbolV2* symbol );
+    void addClass( QgsRendererRangeV2 range );
     void deleteClass( int idx );
     void deleteAllClasses();
 
