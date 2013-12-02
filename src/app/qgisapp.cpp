@@ -4859,6 +4859,10 @@ void QgisApp::deleteSelected( QgsMapLayer *layer, QWidget* parent, bool promptCo
                                tr( "A problem occured during deletion of features" ),
                                QgsMessageBar::WARNING );
   }
+  else
+  {
+    showStatusMessage( tr( "%n feature(s) deleted.", "number of features deleted", numberOfDeletedFeatures ) );
+  }
 
   vlayer->endEditCommand();
 }
@@ -6504,6 +6508,8 @@ void QgisApp::removeLayer( bool promptConfirmation )
   }
 
   mMapLegend->removeSelectedLayers();
+
+  showStatusMessage( tr( "%n layer(s) removed.", "number of layers removed", numberOfRemovedLayers ) );
 
   mMapCanvas->refresh();
 }
@@ -9055,11 +9061,6 @@ void QgisApp::keyPressEvent( QKeyEvent * e )
   if ( e->key() == Qt::Key_Escape )
   {
     stopRendering();
-  }
-  //remove selected layers
-  else if ( e->key() == Qt::Key_D )
-  {
-    removeLayer( true );
   }
 #if defined(Q_OS_WIN)&& defined(QGISDEBUG)
   else if ( e->key() == Qt::Key_Backslash && e->modifiers() & Qt::ControlModifier )

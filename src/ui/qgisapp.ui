@@ -710,9 +710,6 @@
    <property name="text">
     <string>Delete Selected</string>
    </property>
-   <property name="shortcut">
-    <string>Delete</string>
-   </property>
   </action>
   <action name="mActionAddRing">
    <property name="checkable">

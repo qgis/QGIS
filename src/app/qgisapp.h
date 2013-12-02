@@ -686,7 +686,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Slot to handle user center input;
     void userCenter();
     //! Remove a layer from the map and legend
-    void removeLayer( bool promptConfirmation = false );
+    void removeLayer( bool promptConfirmation = true );
     /** Duplicate map layer(s) in legend
      * @note added in 1.9 */
     void duplicateLayers( const QList<QgsMapLayer *> lyrList = QList<QgsMapLayer *>() );

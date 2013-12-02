@@ -13,6 +13,7 @@ email                : jpalmer at linz dot govt dot nz
 *                                                                         *
 ***************************************************************************/
 
+#include "qgisapp.h"
 #include "qgsmaptoolselectpolygon.h"
 #include "qgsmaptoolselectutils.h"
 #include "qgsgeometry.h"
@@ -72,3 +73,10 @@ void QgsMapToolSelectPolygon::canvasMoveEvent( QMouseEvent * e )
   }
 }
 
+void QgsMapToolSelectPolygon::keyPressEvent( QKeyEvent* e )
+{
+  if ( e->key() == Qt::Key_Backspace || e->key() == Qt::Key_Delete )
+  {
+    QgisApp::instance()->deleteSelected( );
+  }
+}

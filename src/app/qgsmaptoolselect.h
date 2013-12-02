@@ -30,6 +30,9 @@ class APP_EXPORT QgsMapToolSelect : public QgsMapTool
     //! Overridden mouse release event
     virtual void canvasReleaseEvent( QMouseEvent * e );
 
+    //! Overridden key press event
+    virtual void keyPressEvent( QKeyEvent* e );
+
   private:
 };
 

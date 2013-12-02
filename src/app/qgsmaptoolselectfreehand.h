@@ -39,6 +39,9 @@ class APP_EXPORT QgsMapToolSelectFreehand : public QgsMapTool
     //! Overridden mouse release event
     virtual void canvasReleaseEvent( QMouseEvent * e );
 
+    //! Overridden key press event
+    virtual void keyPressEvent( QKeyEvent* e );
+
   private:
 
     //! used for storing all of the maps point for the freehand sketch
