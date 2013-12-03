@@ -635,7 +635,6 @@ QgsRangeList QgsGraduatedSymbolRendererV2Widget::selectedRanges()
   QModelIndexList selectedRows = viewGraduated->selectionModel()->selectedRows();
   QModelIndexList::const_iterator sIt = selectedRows.constBegin();
 
-  const QgsRangeList& ranges = mRenderer->ranges();
   for ( ; sIt != selectedRows.constEnd(); ++sIt )
   {
     selectedRanges.append( mModel->rendererRange( *sIt ) );

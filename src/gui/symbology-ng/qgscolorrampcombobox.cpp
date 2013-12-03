@@ -54,6 +54,7 @@ void QgsColorRampComboBox::populate( QgsStyleV2* style )
     delete ramp;
   }
 
+  addItem( tr( "Random colors" ) );
   addItem( tr( "New color ramp..." ) );
   connect( this, SIGNAL( activated( int ) ), SLOT( colorRampChanged( int ) ) );
 }
@@ -61,7 +62,12 @@ void QgsColorRampComboBox::populate( QgsStyleV2* style )
 QgsVectorColorRampV2* QgsColorRampComboBox::currentColorRamp()
 {
   QString rampName = currentText();
-  if ( rampName == "[source]" && mSourceColorRamp )
+
+  if ( rampName == tr( "Random colors" ) )
+  {
+    return new QgsRandomColorsV2();
+  }
+  else if ( rampName == "[source]" && mSourceColorRamp )
     return mSourceColorRamp->clone();
   else
     return mStyle->colorRamp( rampName );

@@ -371,6 +371,11 @@ QgsCategorizedSymbolRendererV2Widget::QgsCategorizedSymbolRendererV2Widget( QgsV
   populateColumns();
 
   cboCategorizedColorRamp->populate( mStyle );
+  int randomIndex = cboCategorizedColorRamp->findText( tr( "Random colors" ) );
+  if ( randomIndex != -1 )
+  {
+    cboCategorizedColorRamp->setCurrentIndex( randomIndex );
+  }
 
   // set project default color ramp
   QString defaultColorRamp = QgsProject::instance()->readEntry( "DefaultStyles", "/ColorRamp", "" );
