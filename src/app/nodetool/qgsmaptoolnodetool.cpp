@@ -713,7 +713,11 @@ void QgsMapToolNodeTool::keyReleaseEvent( QKeyEvent* e )
 
   if ( mSelectedFeature && ( e->key() == Qt::Key_Backspace || e->key() == Qt::Key_Delete ) )
   {
+    int firstSelectedIndex = firstSelectedVertex();
+    if ( firstSelectedIndex == -1) return;
+
     mSelectedFeature->deleteSelectedVertexes();
+    safeSelectVertex( firstSelectedIndex );
     mCanvas->refresh();
   }
 }
@@ -730,4 +734,38 @@ QgsRubberBand* QgsMapToolNodeTool::createRubberBandMarker( QgsPoint center, QgsV
   QgsPoint pom = toMapCoordinates( vlayer, center );
   marker->addPoint( pom );
   return marker;
+}
+
+int QgsMapToolNodeTool::firstSelectedVertex( )
+{
+  if ( mSelectedFeature )
+  {
+    QList<QgsVertexEntry*> &vertexMap = mSelectedFeature->vertexMap();
+    int vertexNr = 0;
+
+    foreach ( QgsVertexEntry *entry, vertexMap )
+    {
+      if ( entry->isSelected() )
+      {
+        return vertexNr;
+      }
+      vertexNr++;
+    }
+  }
+  return -1;
+}
+
+int QgsMapToolNodeTool::safeSelectVertex( int vertexNr )
+{
+  if ( mSelectedFeature )
+  {
+     QList<QgsVertexEntry*> &vertexMap = mSelectedFeature->vertexMap();
+
+     if ( vertexNr >= vertexMap.size() ) vertexNr -= vertexMap.size();
+     if ( vertexNr < 0 ) vertexNr = vertexMap.size() - 1 + vertexNr;
+
+     mSelectedFeature->selectVertex( vertexNr );
+     return vertexNr;
+  }
+  return -1;
 }

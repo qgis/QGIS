@@ -95,6 +95,16 @@ class QgsMapToolNodeTool: public QgsMapToolVertexEdit
      */
     void createTopologyRubberBands( QgsVectorLayer* vlayer, const QList<QgsVertexEntry*> &vertexMap, int vertex );
 
+    /**
+     * Returns the index of first selected vertex, -1 when all unselected
+     */
+    int firstSelectedVertex( );
+
+    /**
+     * Select the specified vertex bounded to current index range, returns the valid selected index
+     */
+    int safeSelectVertex( int vertexNr );
+
     /** The position of the vertex to move (in map coordinates) to exclude later from snapping*/
     QList<QgsPoint> mExcludePoint;
 
