@@ -33,6 +33,8 @@
 #include <netinet/in.h>
 #endif
 
+//#define POSTGRES_SHARED_CONNECTIONS
+
 QgsPostgresResult::~QgsPostgresResult()
 {
   if ( mRes )
@@ -128,6 +130,7 @@ const int QgsPostgresConn::sGeomTypeSelectLimit = 100;
 
 QgsPostgresConn *QgsPostgresConn::connectDb( QString conninfo, bool readonly )
 {
+#ifdef POSTGRES_SHARED_CONNECTIONS
   QMap<QString, QgsPostgresConn *> &connections =
     readonly ? QgsPostgresConn::sConnectionsRO : QgsPostgresConn::sConnectionsRW;
 
@@ -137,6 +140,7 @@ QgsPostgresConn *QgsPostgresConn::connectDb( QString conninfo, bool readonly )
     connections[conninfo]->mRef++;
     return connections[conninfo];
   }
+#endif
 
   QgsPostgresConn *conn = new QgsPostgresConn( conninfo, readonly );
 
@@ -146,7 +150,9 @@ QgsPostgresConn *QgsPostgresConn::connectDb( QString conninfo, bool readonly )
     return 0;
   }
 
+#ifdef POSTGRES_SHARED_CONNECTIONS
   connections.insert( conninfo, conn );
+#endif
 
   return conn;
 }
@@ -157,6 +163,7 @@ QgsPostgresConn::QgsPostgresConn( QString conninfo, bool readOnly )
     , mConnInfo( conninfo )
     , mGotPostgisVersion( false )
     , mReadOnly( readOnly )
+    , mNextCursorId( 0 )
 {
   QgsDebugMsg( QString( "New PostgreSQL connection for " ) + conninfo );
 
@@ -192,8 +199,9 @@ QgsPostgresConn::QgsPostgresConn( QString conninfo, bool readOnly )
 
   if ( PQstatus() != CONNECTION_OK )
   {
+    QString errorMsg = PQerrorMessage();
     PQfinish();
-    QgsMessageLog::logMessage( tr( "Connection to database failed" ), tr( "PostGIS" ) );
+    QgsMessageLog::logMessage( tr( "Connection to database failed" ) + "\n" + errorMsg, tr( "PostGIS" ) );
     mRef = 0;
     return;
   }
@@ -260,14 +268,16 @@ void QgsPostgresConn::disconnect()
   if ( --mRef > 0 )
     return;
 
+#ifdef POSTGRES_SHARED_CONNECTIONS
   QMap<QString, QgsPostgresConn *>& connections = mReadOnly ? sConnectionsRO : sConnectionsRW;
 
   QString key = connections.key( this, QString::null );
 
   Q_ASSERT( !key.isNull() );
   connections.remove( key );
+#endif
 
-  deleteLater();
+  delete this;
 }
 
 /* private */
@@ -835,6 +845,11 @@ bool QgsPostgresConn::closeCursor( QString cursorName )
   }
 
   return true;
+}
+
+QString QgsPostgresConn::uniqueCursorName()
+{
+  return QString( "qgis_%1" ).arg( ++mNextCursorId );
 }
 
 bool QgsPostgresConn::PQexecNR( QString query, bool retry )

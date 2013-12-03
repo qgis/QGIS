@@ -1668,7 +1668,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     // Feature counts for each renderer symbol
     QMap<QgsSymbolV2*, long> mSymbolFeatureCountMap;
 
-    friend class QgsVectorLayerFeatureIterator;
+    friend class QgsVectorLayerFeatureSource;
 };
 
 #endif

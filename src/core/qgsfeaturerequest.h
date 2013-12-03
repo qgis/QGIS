@@ -146,4 +146,24 @@ class CORE_EXPORT QgsFeatureRequest
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsFeatureRequest::Flags )
 
 
+class QgsFeatureIterator;
+class QgsAbstractFeatureIterator;
+
+/** base class that can be used for any class that is capable of returning features */
+class QgsAbstractFeatureSource
+{
+public:
+  virtual ~QgsAbstractFeatureSource();
+
+  virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) = 0;
+
+protected:
+  void iteratorOpened( QgsAbstractFeatureIterator* it );
+  void iteratorClosed( QgsAbstractFeatureIterator* it );
+
+  QSet< QgsAbstractFeatureIterator* > mActiveIterators;
+
+  template<typename> friend class QgsAbstractFeatureIteratorFromSource;
+};
+
 #endif // QGSFEATUREREQUEST_H

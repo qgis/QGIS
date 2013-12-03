@@ -41,6 +41,15 @@ enum QgsPostgresGeometryColumnType
   sctTopoGeometry
 };
 
+enum QgsPostgresPrimaryKeyType
+{
+  pktUnknown,
+  pktInt,
+  pktTid,
+  pktOid,
+  pktFidMap
+};
+
 /** Layer Property structure */
 // TODO: Fill to Postgres/PostGIS specifications
 struct QgsPostgresLayerProperty
@@ -187,6 +196,8 @@ class QgsPostgresConn : public QObject
     bool openCursor( QString cursorName, QString declare );
     bool closeCursor( QString cursorName );
 
+    QString uniqueCursorName();
+
 #if 0
     PGconn *pgConnection() { return mConn; }
 #endif
@@ -319,6 +330,8 @@ class QgsPostgresConn : public QObject
      */
     bool mSwapEndian;
     void deduceEndian();
+
+    int mNextCursorId;
 };
 
 #endif

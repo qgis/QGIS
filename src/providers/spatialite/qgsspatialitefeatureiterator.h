@@ -23,12 +23,41 @@ extern "C"
 #include <sqlite3.h>
 }
 
+#include "qgsspatialiteprovider.h"
+
 class QgsSpatiaLiteProvider;
 
-class QgsSpatiaLiteFeatureIterator : public QgsAbstractFeatureIterator
+class QgsSpatiaLiteFeatureSource : public QgsAbstractFeatureSource
+{
+public:
+  QgsSpatiaLiteFeatureSource( const QgsSpatiaLiteProvider* p );
+  ~QgsSpatiaLiteFeatureSource();
+
+  virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request );
+
+protected:
+  QString mGeometryColumn;
+  QString mSubsetString;
+  QgsFields mFields;
+  QString mQuery;
+  bool isQuery;
+  bool mVShapeBased;
+  QString mIndexTable;
+  QString mIndexGeometry;
+  QString mPrimaryKey;
+  bool spatialIndexRTree;
+  bool spatialIndexMbrCache;
+
+  QgsSpatiaLiteProvider::SqliteHandles* handle;
+  sqlite3 *sqliteHandle;
+
+  friend class QgsSpatiaLiteFeatureIterator;
+};
+
+class QgsSpatiaLiteFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsSpatiaLiteFeatureSource>
 {
   public:
-    QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteProvider* p, const QgsFeatureRequest& request );
+    QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeatureSource* source, bool ownSource, const QgsFeatureRequest& request );
 
     ~QgsSpatiaLiteFeatureIterator();
 
@@ -42,8 +71,6 @@ class QgsSpatiaLiteFeatureIterator : public QgsAbstractFeatureIterator
 
     //! fetch next feature, return true on success
     virtual bool fetchFeature( QgsFeature& feature );
-
-    QgsSpatiaLiteProvider* P;
 
     QString whereClauseRect();
     QString whereClauseFid();

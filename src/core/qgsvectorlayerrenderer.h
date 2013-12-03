@@ -4,6 +4,7 @@
 class QgsFeatureRendererV2;
 class QgsRenderContext;
 class QgsVectorLayer;
+class QgsVectorLayerFeatureSource;
 
 class QgsDiagramRendererV2;
 class QgsDiagramLayerSettings;
@@ -24,6 +25,7 @@ typedef QList<int> QgsAttributeList;
 
 #include "qgsmaplayerrenderer.h"
 
+
 class QgsVectorLayerRenderer : public QgsMapLayerRenderer
 {
 public:
@@ -42,11 +44,11 @@ private:
 
   /** Draw layer with renderer V2. QgsFeatureRenderer::startRender() needs to be called before using this method
    */
-  void drawRendererV2();
+  void drawRendererV2( QgsFeatureIterator& fit );
 
   /** Draw layer with renderer V2 using symbol levels. QgsFeatureRenderer::startRender() needs to be called before using this method
    */
-  void drawRendererV2Levels();
+  void drawRendererV2Levels( QgsFeatureIterator& fit );
 
   /** Stop version 2 renderer and selected renderer (if required) */
   void stopRendererV2( QgsSingleSymbolRendererV2* selRenderer );
@@ -56,11 +58,11 @@ protected:
 
   QgsRenderContext& mContext;
 
-  QgsFields mFields;
+  QgsFields mFields; // TODO: use fields from mSource
 
   QgsFeatureIds mSelectedFeatureIds;
 
-  QgsFeatureIterator mFit;
+  QgsVectorLayerFeatureSource* mSource;
 
   QgsFeatureRendererV2 *mRendererV2;
 

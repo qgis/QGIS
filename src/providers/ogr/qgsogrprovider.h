@@ -72,6 +72,8 @@ class QgsOgrProvider : public QgsVectorDataProvider
      */
     virtual ~QgsOgrProvider();
 
+    virtual QgsAbstractFeatureSource* featureSource() const;
+
     virtual QgsCoordinateReferenceSystem crs();
 
     /**
@@ -252,11 +254,11 @@ class QgsOgrProvider : public QgsVectorDataProvider
     /** Get single flatten geometry type */
     static OGRwkbGeometryType ogrWkbSingleFlatten( OGRwkbGeometryType type );
 
-    QString layerName() { return mLayerName; }
+    QString layerName() const { return mLayerName; }
 
-    QString filePath() { return mFilePath; }
+    QString filePath() const { return mFilePath; }
 
-    int layerIndex() { return mLayerIndex; }
+    int layerIndex() const { return mLayerIndex; }
 
     QTextCodec* textEncoding() { return mEncoding; }
 
@@ -326,13 +328,6 @@ class QgsOgrProvider : public QgsVectorDataProvider
 
     mutable QStringList mSubLayerList;
 
-    /** Flag whether OGR will return fields required by nextFeature() calls.
-        The relevant fields are first set in select(), however the setting may be
-        interferred by some other calls. This flag ensures they are set again
-        to correct values.
-     */
-    bool mRelevantFieldsForNextFeature;
-
     /**Adds one feature*/
     bool addFeature( QgsFeature& f );
     /**Deletes one feature*/
@@ -343,6 +338,14 @@ class QgsOgrProvider : public QgsVectorDataProvider
 
     OGRLayerH setSubsetString( OGRLayerH layer, OGRDataSourceH ds );
 
-    friend class QgsOgrFeatureIterator;
-    QSet< QgsOgrFeatureIterator* > mActiveIterators;
+    friend class QgsOgrFeatureSource;
+};
+
+
+class QgsOgrUtils
+{
+public:
+  static void setRelevantFields( OGRLayerH ogrLayer, int fieldCount,  bool fetchGeometry, const QgsAttributeList &fetchAttributes );
+  static OGRLayerH setSubsetString( OGRLayerH layer, OGRDataSourceH ds, QTextCodec* encoding, const QString& subsetString );
+  static QByteArray quotedIdentifier( QByteArray field, const QString& ogrDriverName );
 };

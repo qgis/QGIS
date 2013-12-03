@@ -370,13 +370,6 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
 
 QgsOgrProvider::~QgsOgrProvider()
 {
-  while ( !mActiveIterators.empty() )
-  {
-    QgsOgrFeatureIterator *it = *mActiveIterators.begin();
-    QgsDebugMsg( "closing active iterator" );
-    it->close();
-  }
-
   if ( ogrLayer != ogrOrigLayer )
   {
     OGR_DS_ReleaseResultSet( ogrDataSource, ogrLayer );
@@ -390,6 +383,11 @@ QgsOgrProvider::~QgsOgrProvider()
     free( extent_ );
     extent_ = 0;
   }
+}
+
+QgsAbstractFeatureSource* QgsOgrProvider::featureSource() const
+{
+  return new QgsOgrFeatureSource( this );
 }
 
 bool QgsOgrProvider::setSubsetString( QString theSQL, bool updateFeatureCount )
@@ -714,14 +712,21 @@ QString QgsOgrProvider::storageType() const
   return ogrDriverName;
 }
 
+
 void QgsOgrProvider::setRelevantFields( bool fetchGeometry, const QgsAttributeList &fetchAttributes )
+{
+  QgsOgrUtils::setRelevantFields( ogrLayer, mAttributeFields.count(), fetchGeometry, fetchAttributes );
+}
+
+
+void QgsOgrUtils::setRelevantFields( OGRLayerH ogrLayer, int fieldCount,  bool fetchGeometry, const QgsAttributeList &fetchAttributes )
 {
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
   if ( OGR_L_TestCapability( ogrLayer, OLCIgnoreFields ) )
   {
     QVector<const char*> ignoredFields;
     OGRFeatureDefnH featDefn = OGR_L_GetLayerDefn( ogrLayer );
-    for ( int i = 0; i < mAttributeFields.size(); i++ )
+    for ( int i = 0; i < fieldCount; i++ )
     {
       if ( !fetchAttributes.contains( i ) )
       {
@@ -737,10 +742,6 @@ void QgsOgrProvider::setRelevantFields( bool fetchGeometry, const QgsAttributeLi
 
     OGR_L_SetIgnoredFields( ogrLayer, ignoredFields.data() );
   }
-
-  // mark that relevant fields may not be set appropriately for nextFeature() calls
-  mRelevantFieldsForNextFeature = false;
-
 #else
   Q_UNUSED( fetchGeometry );
   Q_UNUSED( fetchAttributes );
@@ -749,7 +750,7 @@ void QgsOgrProvider::setRelevantFields( bool fetchGeometry, const QgsAttributeLi
 
 QgsFeatureIterator QgsOgrProvider::getFeatures( const QgsFeatureRequest& request )
 {
-  return QgsFeatureIterator( new QgsOgrFeatureIterator( this, request ) );
+  return QgsFeatureIterator( new QgsOgrFeatureIterator( static_cast<QgsOgrFeatureSource*>( featureSource() ), true, request ) );
 }
 
 
@@ -2317,6 +2318,11 @@ QVariant QgsOgrProvider::maximumValue( int index )
 
 QByteArray QgsOgrProvider::quotedIdentifier( QByteArray field )
 {
+  return QgsOgrUtils::quotedIdentifier( field, ogrDriverName );
+}
+
+QByteArray QgsOgrUtils::quotedIdentifier( QByteArray field, const QString& ogrDriverName )
+{
   if ( ogrDriverName == "MySQL" )
   {
     field.replace( '\\', "\\\\" );
@@ -2420,21 +2426,29 @@ OGRwkbGeometryType QgsOgrProvider::ogrWkbSingleFlatten( OGRwkbGeometryType type 
 
 OGRLayerH QgsOgrProvider::setSubsetString( OGRLayerH layer, OGRDataSourceH ds )
 {
+  return QgsOgrUtils::setSubsetString( layer, ds, mEncoding, mSubsetString );
+}
+
+OGRLayerH QgsOgrUtils::setSubsetString( OGRLayerH layer, OGRDataSourceH ds, QTextCodec* encoding, const QString& subsetString )
+{
   QByteArray layerName = OGR_FD_GetName( OGR_L_GetLayerDefn( layer ) );
+  OGRSFDriverH ogrDriver = OGR_DS_GetDriver( ds );
+  QString ogrDriverName = OGR_Dr_GetName( ogrDriver );
+
   if ( ogrDriverName == "ODBC" ) //the odbc driver does not like schema names for subset
   {
-    QString layerNameString = mEncoding->toUnicode( layerName );
+    QString layerNameString = encoding->toUnicode( layerName );
     int dotIndex = layerNameString.indexOf( "." );
     if ( dotIndex > 1 )
     {
       QString modifiedLayerName = layerNameString.right( layerNameString.size() - dotIndex - 1 );
-      layerName = mEncoding->fromUnicode( modifiedLayerName );
+      layerName = encoding->fromUnicode( modifiedLayerName );
     }
   }
-  QByteArray sql = "SELECT * FROM " + quotedIdentifier( layerName );
-  sql += " WHERE " + mEncoding->fromUnicode( mSubsetString );
+  QByteArray sql = "SELECT * FROM " + quotedIdentifier( layerName, ogrDriverName );
+  sql += " WHERE " + encoding->fromUnicode( subsetString );
 
-  QgsDebugMsg( QString( "SQL: %1" ).arg( mEncoding->toUnicode( sql ) ) );
+  QgsDebugMsg( QString( "SQL: %1" ).arg( encoding->toUnicode( sql ) ) );
   return OGR_DS_ExecuteSQL( ds, sql.constData(), NULL, NULL );
 }
 

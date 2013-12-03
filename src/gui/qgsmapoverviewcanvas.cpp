@@ -255,6 +255,9 @@ void QgsMapOverviewCanvas::updatePanningWidget( const QPoint& pos )
 
 void QgsMapOverviewCanvas::refresh()
 {
+  if ( !mSettings.hasValidSettings() )
+    return; // makes no sense to render anything
+
   if (mJob)
   {
     qDebug("oveview - cancelling old");

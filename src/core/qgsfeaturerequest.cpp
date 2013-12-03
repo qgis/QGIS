@@ -168,3 +168,28 @@ bool QgsFeatureRequest::acceptFeature( const QgsFeature& feature )
 
   return true;
 }
+
+#include "qgsfeatureiterator.h"
+#include "qgslogger.h"
+
+QgsAbstractFeatureSource::~QgsAbstractFeatureSource()
+{
+  while ( !mActiveIterators.empty() )
+  {
+    QgsAbstractFeatureIterator *it = *mActiveIterators.begin();
+    QgsDebugMsg( "closing active iterator" );
+    it->close();
+  }
+}
+
+void QgsAbstractFeatureSource::iteratorOpened( QgsAbstractFeatureIterator* it )
+{
+  mActiveIterators.insert( it );
+}
+
+void QgsAbstractFeatureSource::iteratorClosed( QgsAbstractFeatureIterator* it )
+{
+  mActiveIterators.remove( it );
+}
+
+

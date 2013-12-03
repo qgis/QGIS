@@ -180,3 +180,11 @@ int QgsFields::fieldNameIndex( const QString& fieldName ) const
   }
   return -1;
 }
+
+QgsAttributeList QgsFields::allAttributesList() const
+{
+  QgsAttributeList lst;
+  for ( int i = 0; i < mFields.count(); ++i )
+    lst.append( i );
+  return lst;
+}

@@ -39,7 +39,6 @@
 const QString POSTGRES_KEY = "postgres";
 const QString POSTGRES_DESCRIPTION = "PostgreSQL/PostGIS data provider";
 
-int QgsPostgresProvider::sProviderIds = 0;
 
 QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
     : QgsVectorDataProvider( uri )
@@ -48,14 +47,12 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
     , mSpatialColType( sctNone )
     , mDetectedGeomType( QGis::WKBUnknown )
     , mRequestedGeomType( QGis::WKBUnknown )
+    , mShared( new QgsPostgresSharedData )
     , mUseEstimatedMetadata( false )
     , mSelectAtIdDisabled( false )
     , mConnectionRO( 0 )
     , mConnectionRW( 0 )
-    , mFidCounter( 0 )
-    , mIteratorCounter( 0 )
 {
-  mProviderId = sProviderIds++;
 
   QgsDebugMsg( QString( "URI: %1 " ).arg( uri ) );
 
@@ -137,7 +134,6 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
   }
 
   mLayerExtent.setMinimal();
-  mFeaturesCounted = -1;
 
   // set the primary key
   if ( !determinePrimaryKey() )
@@ -219,17 +215,17 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
 
 QgsPostgresProvider::~QgsPostgresProvider()
 {
-  while ( !mActiveIterators.empty() )
-  {
-    QgsPostgresFeatureIterator *it = *mActiveIterators.begin();
-    QgsDebugMsg( "closing active iterator" );
-    it->close();
-  }
-
   disconnectDb();
 
   QgsDebugMsg( "deconstructing." );
 }
+
+
+QgsAbstractFeatureSource* QgsPostgresProvider::featureSource() const
+{
+  return new QgsPostgresFeatureSource( this );
+}
+
 
 void QgsPostgresProvider::disconnectDb()
 {
@@ -329,20 +325,6 @@ static bool operator<( const QVariant &a, const QVariant &b )
   return a.canConvert( QVariant::String ) && b.canConvert( QVariant::String ) && a.toString() < b.toString();
 }
 
-QgsFeatureId QgsPostgresProvider::lookupFid( const QVariant &v )
-{
-  QMap<QVariant, QgsFeatureId>::const_iterator it = mKeyToFid.find( v );
-
-  if ( it != mKeyToFid.constEnd() )
-  {
-    return it.value();
-  }
-
-  mFidToKey.insert( ++mFidCounter, v );
-  mKeyToFid.insert( v, mFidCounter );
-
-  return mFidCounter;
-}
 
 QgsFeatureIterator QgsPostgresProvider::getFeatures( const QgsFeatureRequest& request )
 {
@@ -352,7 +334,7 @@ QgsFeatureIterator QgsPostgresProvider::getFeatures( const QgsFeatureRequest& re
     return QgsFeatureIterator();
   }
 
-  return QgsFeatureIterator( new QgsPostgresFeatureIterator( this, request ) );
+  return QgsFeatureIterator( new QgsPostgresFeatureIterator( static_cast<QgsPostgresFeatureSource*>( featureSource() ), false, request ) );
 }
 
 
@@ -425,11 +407,11 @@ void QgsPostgresProvider::appendPkParams( QgsFeatureId featureId, QStringList &p
 
     case pktFidMap:
     {
+      QVariant pkValsVariant = mShared->lookupKey( featureId );
       QList<QVariant> pkVals;
-      QMap<QgsFeatureId, QVariant>::const_iterator it = mFidToKey.find( featureId );
-      if ( it != mFidToKey.constEnd() )
+      if ( !pkValsVariant.isNull() )
       {
-        pkVals = it.value().toList();
+        pkVals = pkValsVariant.toList();
         Q_ASSERT( pkVals.size() == mPrimaryKeyAttrs.size() );
       }
 
@@ -456,11 +438,18 @@ void QgsPostgresProvider::appendPkParams( QgsFeatureId featureId, QStringList &p
   }
 }
 
+
 QString QgsPostgresProvider::whereClause( QgsFeatureId featureId ) const
+{
+  return QgsPostgresUtils::whereClause( featureId, mAttributeFields, mConnectionRO, mPrimaryKeyType, mPrimaryKeyAttrs, mShared );
+}
+
+
+QString QgsPostgresUtils::whereClause( QgsFeatureId featureId, const QgsFields& fields, QgsPostgresConn* conn, QgsPostgresPrimaryKeyType pkType, const QList<int>& pkAttrs, QSharedPointer<QgsPostgresSharedData> sharedData )
 {
   QString whereClause;
 
-  switch ( mPrimaryKeyType )
+  switch ( pkType )
   {
     case pktTid:
       whereClause = QString( "ctid='(%1,%2)'" )
@@ -473,26 +462,26 @@ QString QgsPostgresProvider::whereClause( QgsFeatureId featureId ) const
       break;
 
     case pktInt:
-      Q_ASSERT( mPrimaryKeyAttrs.size() == 1 );
-      whereClause = QString( "%1=%2" ).arg( quotedIdentifier( field( mPrimaryKeyAttrs[0] ).name() ) ).arg( featureId );
+      Q_ASSERT( pkAttrs.size() == 1 );
+      whereClause = QString( "%1=%2" ).arg( QgsPostgresConn::quotedIdentifier( fields[ pkAttrs[0] ].name() ) ).arg( featureId );
       break;
 
     case pktFidMap:
     {
-      QMap<QgsFeatureId, QVariant>::const_iterator it = mFidToKey.find( featureId );
-      if ( it != mFidToKey.constEnd() )
+      QVariant pkValsVariant = sharedData->lookupKey( featureId );
+      if ( !pkValsVariant.isNull() )
       {
-        QList<QVariant> pkVals = it.value().toList();
+        QList<QVariant> pkVals = pkValsVariant.toList();
 
-        Q_ASSERT( pkVals.size() == mPrimaryKeyAttrs.size() );
+        Q_ASSERT( pkVals.size() == pkAttrs.size() );
 
         QString delim = "";
-        for ( int i = 0; i < mPrimaryKeyAttrs.size(); i++ )
+        for ( int i = 0; i < pkAttrs.size(); i++ )
         {
-          int idx = mPrimaryKeyAttrs[i];
-          const QgsField &fld = field( idx );
+          int idx = pkAttrs[i];
+          const QgsField &fld = fields[ idx ];
 
-          whereClause += delim + QString( "%1=%2" ).arg( mConnectionRO->fieldExpression( fld ) ).arg( quotedValue( pkVals[i].toString() ) );
+          whereClause += delim + QString( "%1=%2" ).arg( conn->fieldExpression( fld ) ).arg( QgsPostgresConn::quotedValue( pkVals[i].toString() ) );
           delim = " AND ";
         }
       }
@@ -513,12 +502,12 @@ QString QgsPostgresProvider::whereClause( QgsFeatureId featureId ) const
   return whereClause;
 }
 
-QString QgsPostgresProvider::whereClause( QgsFeatureIds featureIds ) const
+QString QgsPostgresUtils::whereClause( QgsFeatureIds featureIds,  const QgsFields& fields, QgsPostgresConn* conn, QgsPostgresPrimaryKeyType pkType, const QList<int>& pkAttrs, QSharedPointer<QgsPostgresSharedData> sharedData )
 {
   QStringList whereClauses;
   foreach ( const QgsFeatureId featureId, featureIds )
   {
-    whereClauses << whereClause( featureId );
+    whereClauses << whereClause( featureId, fields, conn, pkType, pkAttrs, sharedData );
   }
 
   return whereClauses.join( " AND " );
@@ -1773,7 +1762,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
             primaryKeyVals << attrs[ idx ];
           }
 
-          features->setFeatureId( lookupFid( QVariant( primaryKeyVals ) ) );
+          features->setFeatureId( mShared->lookupFid( QVariant( primaryKeyVals ) ) );
         }
         QgsDebugMsgLevel( QString( "new fid=%1" ).arg( features->id() ), 4 );
       }
@@ -1782,8 +1771,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
     mConnectionRW->PQexecNR( "DEALLOCATE addfeatures" );
     mConnectionRW->PQexecNR( "COMMIT" );
 
-    if ( mFeaturesCounted >= 0 )
-      mFeaturesCounted += flist.size();
+    mShared->addFeaturesCounted( flist.size() );
   }
   catch ( PGException &e )
   {
@@ -1821,9 +1809,7 @@ bool QgsPostgresProvider::deleteFeatures( const QgsFeatureIds & id )
       if ( result.PQresultStatus() != PGRES_COMMAND_OK )
         throw PGException( result );
 
-      QVariant v = mFidToKey[ *it ];
-      mFidToKey.remove( *it );
-      mKeyToFid.remove( v );
+      mShared->removeFid( *it );
     }
 
     mConnectionRW->PQexecNR( "COMMIT" );
@@ -1839,8 +1825,7 @@ bool QgsPostgresProvider::deleteFeatures( const QgsFeatureIds & id )
       dropOrphanedTopoGeoms();
     }
 
-    if ( mFeaturesCounted >= 0 )
-      mFeaturesCounted -= id.size();
+    mShared->addFeaturesCounted( id.size() );
   }
   catch ( PGException &e )
   {
@@ -2038,9 +2023,7 @@ bool QgsPostgresProvider::changeAttributeValues( const QgsChangedAttributesMap &
       // update feature id map if key was changed
       if ( pkChanged && mPrimaryKeyType == pktFidMap )
       {
-        QVariant v = mFidToKey[ fid ];
-        mFidToKey.remove( fid );
-        mKeyToFid.remove( v );
+        QVariant v = mShared->removeFid( fid );
 
         QList<QVariant> k = v.toList();
 
@@ -2053,8 +2036,7 @@ bool QgsPostgresProvider::changeAttributeValues( const QgsChangedAttributesMap &
           k[i] = attrs[ idx ];
         }
 
-        mFidToKey.insert( fid, k );
-        mKeyToFid.insert( k, fid );
+        mShared->insertFid( fid, k );
       }
     }
 
@@ -2333,7 +2315,7 @@ bool QgsPostgresProvider::setSubsetString( QString theSQL, bool updateFeatureCou
 
   if ( updateFeatureCount )
   {
-    mFeaturesCounted = -1;
+    mShared->setFeaturesCounted( -1 );
   }
   mLayerExtent.setMinimal();
 
@@ -2345,8 +2327,9 @@ bool QgsPostgresProvider::setSubsetString( QString theSQL, bool updateFeatureCou
  */
 long QgsPostgresProvider::featureCount() const
 {
-  if ( mFeaturesCounted >= 0 )
-    return mFeaturesCounted;
+  int featuresCounted = mShared->featuresCounted();
+  if ( featuresCounted >= 0 )
+    return featuresCounted;
 
   // get total number of features
   QString sql;
@@ -2367,11 +2350,12 @@ long QgsPostgresProvider::featureCount() const
 
   QgsDebugMsg( "number of features as text: " + result.PQgetvalue( 0, 0 ) );
 
-  mFeaturesCounted = result.PQgetvalue( 0, 0 ).toLong();
+  long num = result.PQgetvalue( 0, 0 ).toLong();
+  mShared->setFeaturesCounted( num );
 
-  QgsDebugMsg( "number of features: " + QString::number( mFeaturesCounted ) );
+  QgsDebugMsg( "number of features: " + QString::number( num ) );
 
-  return mFeaturesCounted;
+  return num;
 }
 
 QgsRectangle QgsPostgresProvider::extent()
@@ -3535,4 +3519,95 @@ QGISEXTERN QString getStyleById( const QString& uri, QString styleId, QString& e
     errCause = QObject::tr( "Consistency error in table '%1'. Style id should be unique" ).arg( "layer_styles" );
     return "";
   }
+}
+
+
+// ----------
+
+QgsPostgresSharedData::QgsPostgresSharedData()
+ : mFeaturesCounted( -1 )
+ , mFidCounter( 0 )
+{
+}
+
+void QgsPostgresSharedData::addFeaturesCounted( long diff )
+{
+  QMutexLocker locker( &mMutex );
+
+  if ( mFeaturesCounted >= 0 )
+    mFeaturesCounted += diff;
+}
+
+void QgsPostgresSharedData::ensureFeaturesCountedAtLeast( long fetched )
+{
+  QMutexLocker locker( &mMutex );
+
+  /* only updates the feature count if it was already once.
+   * Otherwise, this would lead to false feature count if
+   * an existing project is open at a restrictive extent.
+   */
+  if ( mFeaturesCounted > 0 && mFeaturesCounted < fetched )
+  {
+    QgsDebugMsg( QString( "feature count adjusted from %1 to %2" ).arg( mFeaturesCounted ).arg( fetched ) );
+    mFeaturesCounted = fetched;
+  }
+}
+
+long QgsPostgresSharedData::featuresCounted()
+{
+  QMutexLocker locker( &mMutex );
+  return mFeaturesCounted;
+}
+
+void QgsPostgresSharedData::setFeaturesCounted( long count )
+{
+  QMutexLocker locker( &mMutex );
+  mFeaturesCounted = count;
+}
+
+
+QgsFeatureId QgsPostgresSharedData::lookupFid( const QVariant &v )
+{
+  QMutexLocker locker( &mMutex );
+
+  QMap<QVariant, QgsFeatureId>::const_iterator it = mKeyToFid.find( v );
+
+  if ( it != mKeyToFid.constEnd() )
+  {
+    return it.value();
+  }
+
+  mFidToKey.insert( ++mFidCounter, v );
+  mKeyToFid.insert( v, mFidCounter );
+
+  return mFidCounter;
+}
+
+
+QVariant QgsPostgresSharedData::removeFid( QgsFeatureId fid )
+{
+  QMutexLocker locker( &mMutex );
+
+  QVariant v = mFidToKey[ fid ];
+  mFidToKey.remove( fid );
+  mKeyToFid.remove( v );
+  return v;
+}
+
+void QgsPostgresSharedData::insertFid( QgsFeatureId fid, const QVariant& k )
+{
+  QMutexLocker locker( &mMutex );
+
+  mFidToKey.insert( fid, k );
+  mKeyToFid.insert( k, fid );
+}
+
+QVariant QgsPostgresSharedData::lookupKey( QgsFeatureId featureId )
+{
+  QMutexLocker locker( &mMutex );
+
+  QMap<QgsFeatureId, QVariant>::const_iterator it = mFidToKey.find( featureId );
+  if ( it != mFidToKey.constEnd() )
+    return it.value();
+  return QVariant();
 }

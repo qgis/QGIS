@@ -19,12 +19,32 @@
 
 #include <ogr_api.h>
 
+class QgsOgrFeatureIterator;
 class QgsOgrProvider;
 
-class QgsOgrFeatureIterator : public QgsAbstractFeatureIterator
+class QgsOgrFeatureSource : public QgsAbstractFeatureSource
+{
+public:
+  QgsOgrFeatureSource( const QgsOgrProvider* p );
+
+  virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request );
+
+protected:
+  QString mFilePath;
+  QString mLayerName;
+  int mLayerIndex;
+  QString mSubsetString;
+  QTextCodec* mEncoding;
+  QgsFields mFields;
+  OGRwkbGeometryType mOgrGeometryTypeFilter;
+
+  friend class QgsOgrFeatureIterator;
+};
+
+class QgsOgrFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsOgrFeatureSource>
 {
   public:
-    QgsOgrFeatureIterator( QgsOgrProvider* p, const QgsFeatureRequest& request );
+    QgsOgrFeatureIterator( QgsOgrFeatureSource* source, bool ownSource, const QgsFeatureRequest& request );
 
     ~QgsOgrFeatureIterator();
 
@@ -38,9 +58,6 @@ class QgsOgrFeatureIterator : public QgsAbstractFeatureIterator
     //! fetch next feature, return true on success
     virtual bool fetchFeature( QgsFeature& feature );
 
-    QgsOgrProvider* P;
-
-    void ensureRelevantFields();
 
     bool readFeature( OGRFeatureH fet, QgsFeature& feature );
 

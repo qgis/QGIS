@@ -577,14 +577,12 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
 
 QgsSpatiaLiteProvider::~QgsSpatiaLiteProvider()
 {
-  while ( !mActiveIterators.empty() )
-  {
-    QgsSpatiaLiteFeatureIterator *it = *mActiveIterators.begin();
-    QgsDebugMsg( "closing active iterator" );
-    it->close();
-  }
-
   closeDb();
+}
+
+QgsAbstractFeatureSource* QgsSpatiaLiteProvider::featureSource() const
+{
+  return new QgsSpatiaLiteFeatureSource( this );
 }
 
 #ifdef SPATIALITE_VERSION_GE_4_0_0
@@ -889,7 +887,7 @@ QgsFeatureIterator QgsSpatiaLiteProvider::getFeatures( const QgsFeatureRequest& 
     QgsDebugMsg( "Read attempt on an invalid SpatiaLite data source" );
     return QgsFeatureIterator();
   }
-  return QgsFeatureIterator( new QgsSpatiaLiteFeatureIterator( this, request ) );
+  return QgsFeatureIterator( new QgsSpatiaLiteFeatureIterator( new QgsSpatiaLiteFeatureSource( this ), true, request ) );
 }
 
 

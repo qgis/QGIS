@@ -20,6 +20,8 @@
 #include <QVariant>
 #include <QVector>
 
+typedef QList<int> QgsAttributeList;
+
 /** \ingroup core
   * Encapsulate a field in an attribute table or data source.
   * QgsField stores metadata about an attribute field, including name, type
@@ -220,6 +222,10 @@ class CORE_EXPORT QgsFields
     //! TODO: sort out case sensitive (indexFromName()) vs insensitive (fieldNameIndex()) calls
     //! @note added in 2.1
     int fieldNameIndex( const QString& fieldName ) const;
+
+    //! Utility function to get list of attribute indexes
+    //! @note added in 2.1
+    QgsAttributeList allAttributesList() const;
 
     //! Utility function to return a list of QgsField instances
     QList<QgsField> toList() const;

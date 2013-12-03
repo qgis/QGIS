@@ -131,6 +131,7 @@ void QgsMapSettings::updateDerived()
   QgsDebugMsg( QString( "Recalced pixmap dimensions (x,y) : %1, %2" ).arg( qgsDoubleToString( mVisibleExtent.width() / mMapUnitsPerPixel ) ).arg( qgsDoubleToString( mVisibleExtent.height() / mMapUnitsPerPixel ) ) );
   QgsDebugMsg( QString( "Scale (assuming meters as map units) = 1:%1" ).arg( qgsDoubleToString( mScale ) ) );
 
+  mValid = true;
 }
 
 

@@ -26,10 +26,46 @@ class QgsVectorLayerEditBuffer;
 struct QgsVectorJoinInfo;
 class QgsVectorLayerJoinBuffer;
 
-class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureIterator
+
+class QgsVectorLayerFeatureIterator;
+
+/** Partial snapshot of vector layer's state (only the members necessary for access to features) */
+class QgsVectorLayerFeatureSource : public QgsAbstractFeatureSource
+{
+public:
+  QgsVectorLayerFeatureSource( QgsVectorLayer* layer );
+  ~QgsVectorLayerFeatureSource();
+
+  virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request );
+
+  friend class QgsVectorLayerFeatureIterator;
+
+protected:
+
+  QgsAbstractFeatureSource* mProviderFeatureSource;
+
+  QgsVectorLayerJoinBuffer* mJoinBuffer;
+
+  QgsFields mFields;
+
+  bool mHasEditBuffer;
+
+  // A deep-copy is only performed, if the original maps change
+  // see here https://github.com/qgis/Quantum-GIS/pull/673
+  // for explanation
+  QgsFeatureMap mAddedFeatures;
+  QgsGeometryMap mChangedGeometries;
+  QgsFeatureIds mDeletedFeatureIds;
+  QList<QgsField> mAddedAttributes;
+  QgsChangedAttributesMap mChangedAttributeValues;
+  QgsAttributeList mDeletedAttributeIds;
+};
+
+
+class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsVectorLayerFeatureSource>
 {
   public:
-    QgsVectorLayerFeatureIterator( QgsVectorLayer* layer, const QgsFeatureRequest& request );
+    QgsVectorLayerFeatureIterator( QgsVectorLayerFeatureSource* source, bool ownSource, const QgsFeatureRequest& request );
 
     ~QgsVectorLayerFeatureIterator();
 
@@ -47,25 +83,12 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
     //! while for others filtering is left to the provider implementation.
     inline virtual bool nextFeatureFilterExpression( QgsFeature &f ) { return fetchFeature( f ); }
 
-    QgsVectorDataProvider* mProvider;
-    QgsFields mFields;
-    QgsAttributeList mAllAttributesList;
-
-    QgsVectorLayerJoinBuffer* mJoinBuffer;
 
     QgsFeatureRequest mProviderRequest;
     QgsFeatureIterator mProviderIterator;
     QgsFeatureRequest mChangedFeaturesRequest;
     QgsFeatureIterator mChangedFeaturesIterator;
 
-#if 0
-    // general stuff
-    bool mFetching;
-    QgsRectangle mFetchRect;
-    QgsAttributeList mFetchAttributes;
-    QgsAttributeList mFetchProvAttributes;
-    bool mFetchGeometry;
-#endif
 
     // only related to editing
     QSet<QgsFeatureId> mFetchConsidered;
@@ -105,16 +128,6 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
       void addJoinedAttributesCached( QgsFeature& f, const QVariant& joinValue ) const;
       void addJoinedAttributesDirect( QgsFeature& f, const QVariant& joinValue ) const;
     };
-
-    // A deep-copy is only performed, if the original maps change
-    // see here https://github.com/qgis/Quantum-GIS/pull/673
-    // for explanation
-    QgsFeatureMap mAddedFeatures;
-    QgsGeometryMap mChangedGeometries;
-    QgsFeatureIds mDeletedFeatureIds;
-    QList<QgsField> mAddedAttributes;
-    QgsChangedAttributesMap mChangedAttributeValues;
-    QgsAttributeList mDeletedAttributeIds;
 
     /** Informations about joins used in the current select() statement.
       Allows faster mapping of attribute ids compared to mVectorJoins */

@@ -906,7 +906,7 @@ QgsFeatureIterator QgsVectorLayer::getFeatures( const QgsFeatureRequest& request
   if ( !mDataProvider )
     return QgsFeatureIterator();
 
-  return QgsFeatureIterator( new QgsVectorLayerFeatureIterator( this, request ) );
+  return QgsFeatureIterator( new QgsVectorLayerFeatureIterator( new QgsVectorLayerFeatureSource( this ), true, request ) );
 }
 
 
@@ -2270,10 +2270,7 @@ const QgsFields &QgsVectorLayer::pendingFields() const
 
 QgsAttributeList QgsVectorLayer::pendingAllAttributesList()
 {
-  QgsAttributeList lst;
-  for ( int i = 0; i < mUpdatedFields.count(); ++i )
-    lst.append( i );
-  return lst;
+  return mUpdatedFields.allAttributesList();
 }
 
 QgsAttributeList QgsVectorLayer::pendingPkAttributesList()

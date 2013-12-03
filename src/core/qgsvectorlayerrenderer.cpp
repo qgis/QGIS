@@ -11,6 +11,7 @@
 #include "qgssymbollayerv2.h"
 #include "qgssymbolv2.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectorlayerfeatureiterator.h"
 
 #include <QSettings>
 
@@ -28,6 +29,8 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer* layer, QgsRender
   , mDiagrams( false )
   , mLayerTransparency( 0 )
 {
+  mSource = new QgsVectorLayerFeatureSource( layer );
+
   mRendererV2 = layer->rendererV2() ? layer->rendererV2()->clone() : 0;
   mSelectedFeatureIds = layer->selectedFeaturesIds();
 
@@ -82,9 +85,6 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer* layer, QgsRender
   prepareLabeling( layer, attrNames );
   prepareDiagrams( layer, attrNames );
 
-  mFit = layer->getFeatures( QgsFeatureRequest()
-                             .setFilterRect( mContext.extent() )
-                             .setSubsetOfAttributes( attrNames, mFields ) );
 }
 
 
@@ -92,6 +92,7 @@ QgsVectorLayerRenderer::~QgsVectorLayerRenderer()
 {
   delete mRendererV2;
   delete mCache;
+  delete mSource;
 }
 
 
@@ -116,11 +117,15 @@ bool QgsVectorLayerRenderer::render()
 
   mRendererV2->startRender( mContext, mFields );
 
+  QgsFeatureIterator fit = mSource->getFeatures( QgsFeatureRequest()
+                             .setFilterRect( mContext.extent() )
+                             .setSubsetOfAttributes( mRendererV2->usedAttributes(), mFields ) );
+
   if (( mRendererV2->capabilities() & QgsFeatureRendererV2::SymbolLevels )
       && mRendererV2->usingSymbolLevels() )
-    drawRendererV2Levels();
+    drawRendererV2Levels( fit );
   else
-    drawRendererV2();
+    drawRendererV2( fit );
 
   //apply layer transparency for vector layers
   if ( mContext.useAdvancedEffects() && mLayerTransparency != 0 )
@@ -139,10 +144,10 @@ bool QgsVectorLayerRenderer::render()
 
 
 
-void QgsVectorLayerRenderer::drawRendererV2()
+void QgsVectorLayerRenderer::drawRendererV2( QgsFeatureIterator& fit )
 {
   QgsFeature fet;
-  while ( mFit.nextFeature( fet ) )
+  while ( fit.nextFeature( fet ) )
   {
     try
     {
@@ -192,7 +197,7 @@ void QgsVectorLayerRenderer::drawRendererV2()
   stopRendererV2( NULL );
 }
 
-void QgsVectorLayerRenderer::drawRendererV2Levels()
+void QgsVectorLayerRenderer::drawRendererV2Levels( QgsFeatureIterator& fit )
 {
   QHash< QgsSymbolV2*, QList<QgsFeature> > features; // key = symbol, value = array of features
 
@@ -207,7 +212,7 @@ void QgsVectorLayerRenderer::drawRendererV2Levels()
 
   // 1. fetch features
   QgsFeature fet;
-  while ( mFit.nextFeature( fet ) )
+  while ( fit.nextFeature( fet ) )
   {
     if ( !fet.geometry() )
       continue; // skip features without geometry
