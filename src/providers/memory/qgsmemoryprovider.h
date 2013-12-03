@@ -34,6 +34,8 @@ class QgsMemoryProvider : public QgsVectorDataProvider
 
     /* Implementation of functions from QgsVectorDataProvider */
 
+    virtual QgsAbstractFeatureSource* featureSource() const;
+
     /**
      * Returns the permanent storage type for this layer as a friendly name.
      */
@@ -168,6 +170,5 @@ class QgsMemoryProvider : public QgsVectorDataProvider
     // indexing
     QgsSpatialIndex* mSpatialIndex;
 
-    friend class QgsMemoryFeatureIterator;
-    QSet< QgsMemoryFeatureIterator *> mActiveIterators;
+    friend class QgsMemoryFeatureSource;
 };
