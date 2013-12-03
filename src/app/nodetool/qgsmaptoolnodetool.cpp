@@ -720,6 +720,16 @@ void QgsMapToolNodeTool::keyReleaseEvent( QKeyEvent* e )
     safeSelectVertex( firstSelectedIndex );
     mCanvas->refresh();
   }
+  else
+  if ( mSelectedFeature && ( e->key() == Qt::Key_Minus || e->key() == Qt::Key_Plus ) )
+  {
+    int firstSelectedIndex = firstSelectedVertex();
+    if ( firstSelectedIndex == -1) return;
+
+    mSelectedFeature->deselectAllVertexes();
+    safeSelectVertex( firstSelectedIndex + ( (e->key() == Qt::Key_Minus) ? -1 : +1 ) );
+    mCanvas->refresh();
+  }
 }
 
 QgsRubberBand* QgsMapToolNodeTool::createRubberBandMarker( QgsPoint center, QgsVectorLayer* vlayer )
