@@ -79,11 +79,11 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer* layer, QgsRender
     mRendererV2->setVertexMarkerAppearance( mVertexMarkerStyle, mVertexMarkerSize );
   }
 
-  QStringList attrNames = mRendererV2->usedAttributes();
+  mAttrNames = mRendererV2->usedAttributes();
 
   //register label and diagram layer to the labeling engine
-  prepareLabeling( layer, attrNames );
-  prepareDiagrams( layer, attrNames );
+  prepareLabeling( layer, mAttrNames );
+  prepareDiagrams( layer, mAttrNames );
 
 }
 
@@ -119,7 +119,7 @@ bool QgsVectorLayerRenderer::render()
 
   QgsFeatureIterator fit = mSource->getFeatures( QgsFeatureRequest()
                              .setFilterRect( mContext.extent() )
-                             .setSubsetOfAttributes( mRendererV2->usedAttributes(), mFields ) );
+                             .setSubsetOfAttributes( mAttrNames, mFields ) );
 
   if (( mRendererV2->capabilities() & QgsFeatureRendererV2::SymbolLevels )
       && mRendererV2->usingSymbolLevels() )

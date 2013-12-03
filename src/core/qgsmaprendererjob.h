@@ -89,6 +89,9 @@ protected:
 
   bool needTemporaryImage( QgsMapLayer* ml );
 
+  static void drawLabeling( const QgsMapSettings& settings, QgsRenderContext& renderContext, QgsPalLabeling* labelingEngine, QPainter* painter );
+  static void drawOldLabeling( const QgsMapSettings& settings, QgsRenderContext& renderContext );
+  static void drawNewLabeling( const QgsMapSettings& settings, QgsRenderContext& renderContext, QgsPalLabeling* labelingEngine );
 
   QgsMapSettings mSettings;
   Errors mErrors;
@@ -163,11 +166,15 @@ public:
   virtual QImage renderedImage();
 
 protected slots:
+  //! layers are rendered, labeling is still pending
   void renderLayersFinished();
+  //! all rendering is finished, including labeling
+  void renderingFinished();
 
 protected:
 
   static void renderLayerStatic(LayerRenderJob& job);
+  static void renderLabelsStatic( QgsMapRendererParallelJob* self );
 
   QImage composeImage();
 
@@ -175,10 +182,17 @@ protected:
 
   QImage mFinalImage;
 
+  enum { Idle, RenderingLayers, RenderingLabels } mStatus;
+
   QFuture<void> mFuture;
   QFutureWatcher<void> mFutureWatcher;
 
   LayerRenderJobs mLayerJobs;
+
+  QgsPalLabeling* mLabelingEngine;
+  QgsRenderContext mLabelingRenderContext;
+  QFuture<void> mLabelingFuture;
+  QFutureWatcher<void> mLabelingFutureWatcher;
 };
 
 
@@ -207,14 +221,12 @@ protected:
 
   // these methods are called within worker thread
   void doRender();
-  void drawOldLabeling();
-  void drawNewLabeling();
 
 private:
   QPainter* mPainter;
   QFuture<void> mFuture;
   QFutureWatcher<void> mFutureWatcher;
-  QgsRenderContext mRenderContext;  // used just for labeling!
+  QgsRenderContext mLabelingRenderContext;
   QgsPalLabeling* mLabelingEngine;
 
   bool mActive;

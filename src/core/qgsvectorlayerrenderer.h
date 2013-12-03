@@ -75,6 +75,8 @@ protected:
 
   QGis::GeometryType mGeometryType;
 
+  QStringList mAttrNames;
+
   bool mLabeling;
   bool mDiagrams;
 
