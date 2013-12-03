@@ -308,9 +308,9 @@ class TestQgsExpression: public QObject
       QTest::newRow( "strpos outside" ) << "strpos('Hello World','blah')" << false << QVariant( -1 );
       QTest::newRow( "left" ) << "left('Hello World',5)" << false << QVariant( "Hello" );
       QTest::newRow( "right" ) << "right('Hello World', 5)" << false << QVariant( "World" );
-      QTest::newRow( "rpad" ) << "rpad('Hello', 10, 'x')" << false << QVariant( "xxxxxHello" );
+      QTest::newRow( "rpad" ) << "rpad('Hello', 10, 'x')" << false << QVariant( "Helloxxxxx" );
       QTest::newRow( "rpad truncate" ) << "rpad('Hello', 4, 'x')" << false << QVariant( "Hell" );
-      QTest::newRow( "lpad" ) << "lpad('Hello', 10, 'x')" << false << QVariant( "Helloxxxxx" );
+      QTest::newRow( "lpad" ) << "lpad('Hello', 10, 'x')" << false << QVariant( "xxxxxHello" );
       QTest::newRow( "lpad truncate" ) << "rpad('Hello', 4, 'x')" << false << QVariant( "Hell" );
       QTest::newRow( "title" ) << "title(' HeLlO   WORLD ')" << false << QVariant( " Hello   World " );
       QTest::newRow( "trim" ) << "trim('   Test String ')" << false << QVariant( "Test String" );

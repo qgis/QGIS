@@ -756,7 +756,7 @@ static QVariant fcnRPad( const QVariantList& values, const QgsFeature* , QgsExpr
   QString string = getStringValue( values.at( 0 ), parent );
   int length = getIntValue( values.at( 1 ), parent );
   QString fill = getStringValue( values.at( 2 ), parent );
-  return string.rightJustified( length, fill.at( 0 ), true );
+  return string.leftJustified( length, fill.at( 0 ), true ); }
 }
 
 static QVariant fcnLPad( const QVariantList& values, const QgsFeature* , QgsExpression *parent )
@@ -764,7 +764,7 @@ static QVariant fcnLPad( const QVariantList& values, const QgsFeature* , QgsExpr
   QString string = getStringValue( values.at( 0 ), parent );
   int length = getIntValue( values.at( 1 ), parent );
   QString fill = getStringValue( values.at( 2 ), parent );
-  return string.leftJustified( length, fill.at( 0 ), true );
+  return string.rightJustified( length, fill.at( 0 ), true );
 }
 
 static QVariant fcnFormatString( const QVariantList& values, const QgsFeature* , QgsExpression *parent )
