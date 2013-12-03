@@ -4290,7 +4290,7 @@ void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& con
 
   // NOTE: this used to be within above multi-line loop block, at end. (a mistake since 2010? [LS])
   if ( label->getNextPart() )
-    drawLabel( label->getNextPart(), context, tmpLyr, drawType );
+    drawLabel( label->getNextPart(), context, tmpLyr, drawType, dpiRatio );
 }
 
 void QgsPalLabeling::drawLabelBuffer( QgsRenderContext& context,
