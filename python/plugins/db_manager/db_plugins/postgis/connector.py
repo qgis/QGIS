@@ -79,7 +79,7 @@ class PostGisDBConnector(DBConnector):
 		return self.has_raster
 
 	def _checkGeometryColumnsTable(self):
-		c = self._execute(None, u"SELECT relkind = 'v' FROM pg_class WHERE relname = 'geometry_columns' AND relkind IN ('v', 'r')")
+		c = self._execute(None, u"SELECT relkind = 'v' OR relkind = 'm' FROM pg_class WHERE relname = 'geometry_columns' AND relkind IN ('v', 'r', 'm')")
 		res = self._fetchone(c)
 		self._close_cursor(c)
 		self.has_geometry_columns = (res != None and len(res) != 0)
@@ -94,7 +94,7 @@ class PostGisDBConnector(DBConnector):
 		return self.has_geometry_columns
 
 	def _checkRasterColumnsTable(self):
-		c = self._execute(None, u"SELECT relkind = 'v' FROM pg_class WHERE relname = 'raster_columns' AND relkind IN ('v', 'r')")
+		c = self._execute(None, u"SELECT relkind = 'v' OR relkind = 'm' FROM pg_class WHERE relname = 'raster_columns' AND relkind IN ('v', 'r', 'm')")
 		res = self._fetchone(c)
 		self._close_cursor(c)
 		self.has_raster_columns = (res != None and len(res) != 0)
@@ -238,12 +238,12 @@ class PostGisDBConnector(DBConnector):
 
 		# get all tables and views
 		sql = u"""SELECT
-						cla.relname, nsp.nspname, cla.relkind = 'v',
+						cla.relname, nsp.nspname, cla.relkind = 'v' OR cla.relkind = 'm',
 						pg_get_userbyid(relowner), reltuples, relpages,
 						pg_catalog.obj_description(cla.oid)
 					FROM pg_class AS cla
 					JOIN pg_namespace AS nsp ON nsp.oid = cla.relnamespace
-					WHERE cla.relkind IN ('v', 'r') """ + schema_where + """
+					WHERE cla.relkind IN ('v', 'r', 'm') """ + schema_where + """
 					ORDER BY nsp.nspname, cla.relname"""
 
 		c = self._execute(None, sql)
@@ -296,7 +296,7 @@ class PostGisDBConnector(DBConnector):
 
 		# discovery of all tables and whether they contain a geometry column
 		sql = u"""SELECT
-						cla.relname, nsp.nspname, cla.relkind = 'v',
+						cla.relname, nsp.nspname, cla.relkind = 'v' OR cla.relkind = 'm',
 						pg_get_userbyid(relowner), cla.reltuples, cla.relpages,
 						pg_catalog.obj_description(cla.oid),
 						""" + geometry_fields_select + """
@@ -312,7 +312,7 @@ class PostGisDBConnector(DBConnector):
 
 					""" + geometry_column_from + """
 
-					WHERE cla.relkind IN ('v', 'r') """ + schema_where + """
+					WHERE cla.relkind IN ('v', 'r', 'm') """ + schema_where + """
 					ORDER BY nsp.nspname, cla.relname, att.attname"""
 
 		items = []
@@ -369,7 +369,7 @@ class PostGisDBConnector(DBConnector):
 
 		# discovery of all tables and whether they contain a raster column
 		sql = u"""SELECT
-						cla.relname, nsp.nspname, cla.relkind = 'v',
+						cla.relname, nsp.nspname, cla.relkind = 'v' OR cla.relkind = 'm',
 						pg_get_userbyid(relowner), cla.reltuples, cla.relpages,
 						pg_catalog.obj_description(cla.oid),
 						""" + raster_fields_select + """
@@ -385,7 +385,7 @@ class PostGisDBConnector(DBConnector):
 
 					""" + raster_column_from + """
 
-					WHERE cla.relkind IN ('v', 'r') """ + schema_where + """
+					WHERE cla.relkind IN ('v', 'r', 'm') """ + schema_where + """
 					ORDER BY nsp.nspname, cla.relname, att.attname"""
 
 		items = []
@@ -559,7 +559,7 @@ class PostGisDBConnector(DBConnector):
 
 		sql = u"""SELECT pg_get_viewdef(c.oid) FROM pg_class c
 						JOIN pg_namespace nsp ON c.relnamespace = nsp.oid
-		        WHERE relname=%s %s AND relkind='v' """ % (self.quoteString(tablename), schema_where)
+		        WHERE relname=%s %s AND (relkind='v' OR relkind='m') """ % (self.quoteString(tablename), schema_where)
 
 		c = self._execute(None, sql)
 		res = self._fetchone(c)
@@ -937,7 +937,7 @@ class PostGisDBConnector(DBConnector):
 		# get schemas, tables and field names
 		items = []
 		sql = u"""SELECT nspname FROM pg_namespace WHERE nspname !~ '^pg_' AND nspname != 'information_schema'
-UNION SELECT relname FROM pg_class WHERE relkind IN ('v', 'r')
+UNION SELECT relname FROM pg_class WHERE relkind IN ('v', 'r', 'm')
 UNION SELECT attname FROM pg_attribute WHERE attnum > 0"""
 		c = self._execute(None, sql)
 		for row in self._fetchall(c):
