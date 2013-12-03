@@ -61,6 +61,7 @@
 #include <QSettings>
 #include <QEventLoop>
 #include <QCoreApplication>
+#include <QTextCodec>
 #include <QTime>
 
 #ifdef QGISDEBUG
@@ -4376,7 +4377,18 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
         }
       }
 
-      QgsDebugMsg( "GML (first 2000 bytes):\n" + QString::fromUtf8( mIdentifyResultBodies.value( gmlPart ).left( 2000 ) ) );
+      QByteArray gmlByteArray = mIdentifyResultBodies.value( gmlPart );
+      QgsDebugMsg( "GML (first 2000 bytes):\n" + gmlByteArray.left( 2000 ) );
+
+      // QgsGmlSchema.guessSchema() and QgsGml::getFeatures() are using Expat
+      // which only accepts UTF-8, UTF-16, ISO-8859-1
+      // http://sourceforge.net/p/expat/bugs/498/
+      QDomDocument dom;
+      dom.setContent( gmlByteArray ); // gets XML encoding
+      QTextStream stream( &gmlByteArray );
+      stream.setCodec( QTextCodec::codecForName( "UTF-8" ) );
+      dom.save( stream, 4, QDomNode::EncodingFromTextStream );
+
       QGis::WkbType wkbType;
       QgsGmlSchema gmlSchema;
 
@@ -4418,7 +4430,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
       else
       {
         // guess from GML
-        bool ok = gmlSchema.guessSchema( mIdentifyResultBodies.value( gmlPart ) );
+        bool ok = gmlSchema.guessSchema( gmlByteArray );
         if ( ! ok )
         {
           QgsError err = gmlSchema.error();
@@ -4454,7 +4466,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
         }
         QgsGml gml( featureTypeName, geometryAttribute, fields );
         // TODO: avoid converting to string and back
-        int ret = gml.getFeatures( mIdentifyResultBodies.value( gmlPart ), &wkbType );
+        int ret = gml.getFeatures( gmlByteArray, &wkbType );
 #ifdef QGISDEBUG
         QgsDebugMsg( QString( "parsing result = %1" ).arg( ret ) );
 #else

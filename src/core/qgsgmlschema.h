@@ -85,6 +85,7 @@ class CORE_EXPORT QgsGmlSchema: public QObject
 
     /** Guess GML schema from data if XSD does not exist.
       * Currently only recognizes UMN Mapserver GetFeatureInfo GML response.
+      * Supports only UTF-8, UTF-16, ISO-8859-1, US-ASCII XML encodings.
       * @param data GML data
       * @return true in case of success */
     bool guessSchema( const QByteArray &data );
