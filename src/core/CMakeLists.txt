@@ -3,6 +3,7 @@
 
 SET(QGIS_CORE_SRCS
 
+  qgsxmlutils.cpp
   qgsmapsettings.cpp
   qgsmaprendererjob.cpp
   qgsvectorlayerrenderer.cpp

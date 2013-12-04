@@ -228,21 +228,11 @@ class CORE_EXPORT QgsMapLayer : public QObject
     void removeCustomProperty( const QString& key );
 
 
-    /**
-     * If an operation returns 0 (e.g. draw()), this function
-     * returns the text of the error associated with the failure.
-     * Interactive users of this provider can then, for example,
-     * call a QMessageBox to display the contents.
-     */
-    virtual QString lastErrorTitle();
+    //! @deprecated since 2.1 - returns empty string
+    Q_DECL_DEPRECATED virtual QString lastErrorTitle();
 
-    /**
-     * If an operation returns 0 (e.g. draw()), this function
-     * returns the text of the error associated with the failure.
-     * Interactive users of this provider can then, for example,
-     * call a QMessageBox to display the contents.
-     */
-    virtual QString lastError();
+    //! @deprecated since 2.1 - returns empty string
+    Q_DECL_DEPRECATED virtual QString lastError();
 
     /** Get current status error. This error describes some principal problem
      *  for which layer cannot work and thus is not valid. It is not last error

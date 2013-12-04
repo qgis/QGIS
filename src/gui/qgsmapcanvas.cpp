@@ -117,8 +117,6 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
   mMap = new QgsMapCanvasMap( this );
   mScene->addItem( mMap );
 
-  connect( mMapRenderer, SIGNAL( drawError( QgsMapLayer* ) ), this, SLOT( showError( QgsMapLayer* ) ) );
-
   // TODO: propagate signals to map renderer?
   //connect( mMapRenderer, SIGNAL( hasCrsTransformEnabled( bool ) ), this, SLOT( crsTransformEnabled( bool ) ) );
 
@@ -598,7 +596,9 @@ void QgsMapCanvas::saveAsImage( QString theFileName, QPixmap * theQPixmap, QStri
     // render
     QPainter painter;
     painter.begin( theQPixmap );
-    mMapRenderer->render( &painter );
+    QgsMapRendererCustomPainterJob job( mSettings, &painter );
+    job.start();
+    job.waitForFinished();
     emit renderComplete( &painter );
     painter.end();
 
@@ -606,12 +606,7 @@ void QgsMapCanvas::saveAsImage( QString theFileName, QPixmap * theQPixmap, QStri
   }
   else //use the map view
   {
-    // TODO[MD]: fix
-    QImage *img = dynamic_cast<QImage *>( &mMap->paintDevice() );
-    if ( !img)
-      return;
-
-    img->save( theFileName, theFormat.toLocal8Bit().data() );
+    mMap->contentImage().save( theFileName, theFormat.toLocal8Bit().data() );
   }
   //create a world file to go with the image...
   QgsRectangle myRect = mapSettings().visibleExtent();
@@ -672,8 +667,6 @@ void QgsMapCanvas::setExtent( QgsRectangle const & r )
   }
   emit extentsChanged();
   updateScale();
-  if ( mMapOverview )
-    mMapOverview->drawExtentRect();
   if ( mLastExtent.size() > 20 )
     mLastExtent.removeAt( 0 );
 
@@ -740,8 +733,6 @@ void QgsMapCanvas::zoomToPreviousExtent()
     mSettings.setExtent( mLastExtent[mLastExtentIndex] );
     emit extentsChanged();
     updateScale();
-    if ( mMapOverview )
-      mMapOverview->drawExtentRect();
     refresh();
     // update controls' enabled state
     emit zoomLastStatusChanged( mLastExtentIndex > 0 );
@@ -760,8 +751,6 @@ void QgsMapCanvas::zoomToNextExtent()
     mSettings.setExtent( mLastExtent[mLastExtentIndex] );
     emit extentsChanged();
     updateScale();
-    if ( mMapOverview )
-      mMapOverview->drawExtentRect();
     refresh();
     // update controls' enabled state
     emit zoomLastStatusChanged( mLastExtentIndex > 0 );
@@ -1481,22 +1470,7 @@ void QgsMapCanvas::moveCanvasContents( bool reset )
 
 void QgsMapCanvas::showError( QgsMapLayer * mapLayer )
 {
-#if 0
-  QMessageBox::warning(
-    this,
-    mapLayer->lastErrorTitle(),
-    tr( "Could not draw %1 because:\n%2", "COMMENTED OUT" ).arg( mapLayer->name() ).arg( mapLayer->lastError() )
-  );
-#endif
-
-  QgsMessageViewer * mv = new QgsMessageViewer( this );
-  mv->setWindowTitle( mapLayer->lastErrorTitle() );
-  mv->setMessageAsPlainText( tr( "Could not draw %1 because:\n%2" )
-                             .arg( mapLayer->name() ).arg( mapLayer->lastError() ) );
-  mv->exec();
-  //MH
-  //QgsMessageViewer automatically sets delete on close flag
-  //so deleting mv would lead to a segfault
+  Q_UNUSED( mapLayer );
 }
 
 QPoint QgsMapCanvas::mouseLastXY()
@@ -1510,7 +1484,15 @@ void QgsMapCanvas::readProject( const QDomDocument & doc )
   if ( nodes.count() )
   {
     QDomNode node = nodes.item( 0 );
-    mMapRenderer->readXML( node );
+
+    QgsMapSettings tmpSettings;
+    tmpSettings.readXML( node );
+    setMapUnits( tmpSettings.mapUnits() );
+    setExtent( tmpSettings.extent() );
+    setCrsTransformEnabled( tmpSettings.hasCrsTransformEnabled() );
+    setDestinationCrs( tmpSettings.destinationCrs() );
+    // TODO: read only units, extent, projections, dest CRS
+
     clearExtentHistory(); // clear the extent history on project load
   }
   else
@@ -1533,7 +1515,9 @@ void QgsMapCanvas::writeProject( QDomDocument & doc )
 
   QDomElement mapcanvasNode = doc.createElement( "mapcanvas" );
   qgisNode.appendChild( mapcanvasNode );
-  mMapRenderer->writeXML( mapcanvasNode, doc );
+
+  mSettings.writeXML( mapcanvasNode, doc );
+  // TODO: store only units, extent, projections, dest CRS
 }
 
 void QgsMapCanvas::zoomByFactor( double scaleFactor )

@@ -25,6 +25,7 @@
 #include "qgsmaptopixel.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerregistry.h"
+#include "qgsmapsettings.h"
 #include "qgsdistancearea.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
@@ -957,149 +958,31 @@ QStringList& QgsMapRenderer::layerSet()
   return mLayerSet;
 }
 
+
 bool QgsMapRenderer::readXML( QDomNode & theNode )
 {
-  QDomNode myNode = theNode.namedItem( "units" );
-  QDomElement element = myNode.toElement();
+  QgsMapSettings tmpSettings;
+  tmpSettings.readXML( theNode );
 
-  // set units
-  QGis::UnitType units;
-  if ( "meters" == element.text() )
-  {
-    units = QGis::Meters;
-  }
-  else if ( "feet" == element.text() )
-  {
-    units = QGis::Feet;
-  }
-  else if ( "nautical miles" == element.text() )
-  {
-    units = QGis::NauticalMiles;
-  }
-  else if ( "degrees" == element.text() )
-  {
-    units = QGis::Degrees;
-  }
-  else if ( "unknown" == element.text() )
-  {
-    units = QGis::UnknownUnit;
-  }
-  else
-  {
-    QgsDebugMsg( "Unknown map unit type " + element.text() );
-    units = QGis::Degrees;
-  }
-  setMapUnits( units );
+  setMapUnits( tmpSettings.mapUnits() );
+  setExtent( tmpSettings.extent() );
+  setProjectionsEnabled( tmpSettings.hasCrsTransformEnabled() );
+  setDestinationCrs( tmpSettings.destinationCrs() );
 
-  // set projections flag
-  QDomNode projNode = theNode.namedItem( "projections" );
-  element = projNode.toElement();
-  setProjectionsEnabled( element.text().toInt() );
-
-  // set destination CRS
-  QgsCoordinateReferenceSystem srs;
-  QDomNode srsNode = theNode.namedItem( "destinationsrs" );
-  srs.readXML( srsNode );
-  setDestinationCrs( srs );
-
-  // set extent
-  QgsRectangle aoi;
-  QDomNode extentNode = theNode.namedItem( "extent" );
-
-  QDomNode xminNode = extentNode.namedItem( "xmin" );
-  QDomNode yminNode = extentNode.namedItem( "ymin" );
-  QDomNode xmaxNode = extentNode.namedItem( "xmax" );
-  QDomNode ymaxNode = extentNode.namedItem( "ymax" );
-
-  QDomElement exElement = xminNode.toElement();
-  double xmin = exElement.text().toDouble();
-  aoi.setXMinimum( xmin );
-
-  exElement = yminNode.toElement();
-  double ymin = exElement.text().toDouble();
-  aoi.setYMinimum( ymin );
-
-  exElement = xmaxNode.toElement();
-  double xmax = exElement.text().toDouble();
-  aoi.setXMaximum( xmax );
-
-  exElement = ymaxNode.toElement();
-  double ymax = exElement.text().toDouble();
-  aoi.setYMaximum( ymax );
-
-  setExtent( aoi );
   return true;
 }
 
 bool QgsMapRenderer::writeXML( QDomNode & theNode, QDomDocument & theDoc )
 {
-  // units
+  QgsMapSettings tmpSettings;
+  tmpSettings.setOutputDpi( outputDpi() );
+  tmpSettings.setOutputSize( outputSize() );
+  tmpSettings.setMapUnits( mapUnits() );
+  tmpSettings.setExtent( extent() );
+  tmpSettings.setProjectionsEnabled( hasCrsTransformEnabled() );
+  tmpSettings.setDestinationCrs( destinationCrs() );
 
-  QDomElement unitsNode = theDoc.createElement( "units" );
-  theNode.appendChild( unitsNode );
-
-  QString unitsString;
-
-  switch ( mapUnits() )
-  {
-    case QGis::Meters:
-      unitsString = "meters";
-      break;
-    case QGis::Feet:
-      unitsString = "feet";
-      break;
-    case QGis::NauticalMiles:
-      unitsString = "nautical miles";
-      break;
-    case QGis::Degrees:
-      unitsString = "degrees";
-      break;
-    case QGis::UnknownUnit:
-    default:
-      unitsString = "unknown";
-      break;
-  }
-  QDomText unitsText = theDoc.createTextNode( unitsString );
-  unitsNode.appendChild( unitsText );
-
-
-  // Write current view extents
-  QDomElement extentNode = theDoc.createElement( "extent" );
-  theNode.appendChild( extentNode );
-
-  QDomElement xMin = theDoc.createElement( "xmin" );
-  QDomElement yMin = theDoc.createElement( "ymin" );
-  QDomElement xMax = theDoc.createElement( "xmax" );
-  QDomElement yMax = theDoc.createElement( "ymax" );
-
-  QgsRectangle r = extent();
-  QDomText xMinText = theDoc.createTextNode( qgsDoubleToString( r.xMinimum() ) );
-  QDomText yMinText = theDoc.createTextNode( qgsDoubleToString( r.yMinimum() ) );
-  QDomText xMaxText = theDoc.createTextNode( qgsDoubleToString( r.xMaximum() ) );
-  QDomText yMaxText = theDoc.createTextNode( qgsDoubleToString( r.yMaximum() ) );
-
-  xMin.appendChild( xMinText );
-  yMin.appendChild( yMinText );
-  xMax.appendChild( xMaxText );
-  yMax.appendChild( yMaxText );
-
-  extentNode.appendChild( xMin );
-  extentNode.appendChild( yMin );
-  extentNode.appendChild( xMax );
-  extentNode.appendChild( yMax );
-
-  // projections enabled
-  QDomElement projNode = theDoc.createElement( "projections" );
-  theNode.appendChild( projNode );
-
-  QDomText projText = theDoc.createTextNode( QString::number( hasCrsTransformEnabled() ) );
-  projNode.appendChild( projText );
-
-  // destination CRS
-  QDomElement srsNode = theDoc.createElement( "destinationsrs" );
-  theNode.appendChild( srsNode );
-  destinationCrs().writeXML( srsNode, theDoc );
-
+  tmpSettings.writeXML( theNode, theDoc );
   return true;
 }
 

@@ -126,6 +126,11 @@ public:
   //! returns current extent of layer set
   QgsRectangle fullExtent() const;
 
+  /* serialization */
+
+  void readXML( QDomNode& theNode );
+
+  void writeXML( QDomNode& theNode, QDomDocument& theDoc );
 
 protected:
 

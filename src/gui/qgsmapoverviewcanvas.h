@@ -46,9 +46,6 @@ class GUI_EXPORT QgsMapOverviewCanvas : public QWidget
 
     ~QgsMapOverviewCanvas();
 
-    //! used for overview canvas to reflect changed extent in main map canvas
-    void drawExtentRect();
-
     //! renders overview and updates panning widget
     void refresh();
 
@@ -65,6 +62,9 @@ class GUI_EXPORT QgsMapOverviewCanvas : public QWidget
     void updateFullExtent();
 
   public slots:
+
+    //! used for overview canvas to reflect changed extent in main map canvas
+    void drawExtentRect();
 
     void hasCrsTransformEnabled( bool flag );
 

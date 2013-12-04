@@ -40,7 +40,11 @@ class GUI_EXPORT QgsMapCanvasMap : public QgsMapCanvasItem  // public QObject, p
 
     ~QgsMapCanvasMap();
 
+    //! @note added in 2.1
     void setContent( const QImage& image, const QgsRectangle& rect );
+
+    //! @note added in 2.1
+    QImage contentImage() const { return mImage; }
 
     virtual void paint( QPainter * painter );
 

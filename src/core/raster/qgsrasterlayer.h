@@ -301,11 +301,11 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
                QgsRasterViewPort * myRasterViewPort,
                const QgsMapToPixel* theQgsMapToPixel = 0 );
 
-    /** \brief [ data provider interface ] If an operation returns 0 (e.g. draw()), this function returns the text of the error associated with the failure  */
-    QString lastError();
+    //! @deprecated since 2.1 - returns empty string
+    Q_DECL_DEPRECATED QString lastError();
 
-    /** \brief [ data provider interface ] If an operation returns 0 (e.g. draw()), this function returns the text of the error associated with the failure */
-    QString lastErrorTitle();
+    //! @deprecated since 2.1 - returns empty string
+    Q_DECL_DEPRECATED QString lastErrorTitle();
 
     /**Returns a list with classification items (Text and color)
       @note this method was added in version 1.8*/
@@ -430,12 +430,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     QgsRasterDataProvider* mDataProvider;
 
     //DrawingStyle mDrawingStyle;
-
-    /** [ data provider interface ]The error message associated with the last error */
-    QString mError;
-
-    /** [ data provider interface ] The error caption associated with the last error */
-    QString mErrorCaption;
 
     /**  [ data provider interface ] Timestamp, the last modified time of the data source when the layer was created */
     QDateTime mLastModified;

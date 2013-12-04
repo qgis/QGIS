@@ -10,6 +10,7 @@
 #include "qgsmessagelog.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerregistry.h"
+#include "qgsxmlutils.h"
 
 
 QgsMapSettings::QgsMapSettings()
@@ -460,4 +461,49 @@ QgsRectangle QgsMapSettings::fullExtent() const
 
   QgsDebugMsg( "Full extent: " + fullExtent.toString() );
   return fullExtent;
+}
+
+
+void QgsMapSettings::readXML( QDomNode& theNode )
+{
+  // set units
+  QDomNode mapUnitsNode = theNode.namedItem( "units" );
+  QGis::UnitType units = QgsXmlUtils::readMapUnits( mapUnitsNode.toElement() );
+  setMapUnits( units );
+
+  // set projections flag
+  QDomNode projNode = theNode.namedItem( "projections" );
+  setProjectionsEnabled( projNode.toElement().text().toInt() );
+
+  // set destination CRS
+  QgsCoordinateReferenceSystem srs;
+  QDomNode srsNode = theNode.namedItem( "destinationsrs" );
+  srs.readXML( srsNode );
+  setDestinationCrs( srs );
+
+  // set extent
+  QDomNode extentNode = theNode.namedItem( "extent" );
+  QgsRectangle aoi = QgsXmlUtils::readRectangle( extentNode.toElement() );
+  setExtent( aoi );
+}
+
+
+
+void QgsMapSettings::writeXML( QDomNode& theNode, QDomDocument& theDoc )
+{
+  // units
+  theNode.appendChild( QgsXmlUtils::writeMapUnits( mapUnits(), theDoc ) );
+
+  // Write current view extents
+  theNode.appendChild( QgsXmlUtils::writeRectangle( extent(), theDoc ) );
+
+  // projections enabled
+  QDomElement projNode = theDoc.createElement( "projections" );
+  projNode.appendChild( theDoc.createTextNode( QString::number( hasCrsTransformEnabled() ) ) );
+  theNode.appendChild( projNode );
+
+  // destination CRS
+  QDomElement srsNode = theDoc.createElement( "destinationsrs" );
+  theNode.appendChild( srsNode );
+  destinationCrs().writeXML( srsNode, theDoc );
 }

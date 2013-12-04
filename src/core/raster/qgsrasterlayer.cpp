@@ -306,12 +306,12 @@ void QgsRasterLayer::draw( QPainter * theQPainter,
 
 QString QgsRasterLayer::lastError()
 {
-  return mError;
+  return QString();
 }
 
 QString QgsRasterLayer::lastErrorTitle()
 {
-  return mErrorCaption;
+  return QString();
 }
 
 QList< QPair< QString, QColor > > QgsRasterLayer::legendSymbologyItems() const

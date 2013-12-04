@@ -328,8 +328,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! @note added in 2.1
     void stopRendering();
 
-    //! show whatever error is exposed by the QgsMapLayer.
-    void showError( QgsMapLayer * mapLayer );
+    //! @deprecated since 2.1 - does nothing - errors are reported by different means
+    Q_DECL_DEPRECATED void showError( QgsMapLayer * mapLayer );
 
     //! called to read map canvas settings from project
     void readProject( const QDomDocument & );

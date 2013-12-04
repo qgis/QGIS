@@ -78,6 +78,8 @@ QgsMapOverviewCanvas::QgsMapOverviewCanvas( QWidget * parent, QgsMapCanvas* mapC
   setBackgroundColor( palette().window().color() );
 
   mSettings.setFlag( QgsMapSettings::DrawLabeling, false );
+
+  connect( mMapCanvas, SIGNAL( extentsChanged() ), this, SLOT( drawExtentRect() ) );
 }
 
 QgsMapOverviewCanvas::~QgsMapOverviewCanvas()

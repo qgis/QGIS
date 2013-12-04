@@ -3146,7 +3146,6 @@ void QgisApp::fileNew( bool thePromptToSaveFlag, bool forceBlank )
   QSettings settings;
 
   closeProject();
-  mMapCanvas->clear();
 
   QgsProject* prj = QgsProject::instance();
   prj->title( QString::null );
@@ -7863,15 +7862,8 @@ void QgisApp::projectProperties()
   // It is needed to refresh scale bar after changing display units.
   connect( pp, SIGNAL( refresh() ), mMapCanvas, SLOT( refresh() ) );
 
-  const QgsMapSettings& ms = mMapCanvas->mapSettings();
-  bool wasProjected = ms.hasCrsTransformEnabled();
-  long oldCRSID = ms.destinationCrs().srsid();
-
   // Display the modal dialog box.
   pp->exec();
-
-  long newCRSID = ms.destinationCrs().srsid();
-  bool isProjected = ms.hasCrsTransformEnabled();
 
   int  myRedInt = QgsProject::instance()->readNumEntry( "Gui", "/CanvasColorRedPart", 255 );
   int  myGreenInt = QgsProject::instance()->readNumEntry( "Gui", "/CanvasColorGreenPart", 255 );
