@@ -7430,6 +7430,7 @@ QMenu* QgisApp::getPluginMenu( QString menuName )
   }
   // It doesn't exist, so create
   QMenu *menu = new QMenu( menuName, this );
+  menu->setObjectName( menuName.normalized(QString::NormalizationForm_KD).remove(QRegExp("[^a-zA-Z]")) );
   // Where to put it? - we worked that out above...
   mPluginMenu->insertMenu( before, menu );
 
