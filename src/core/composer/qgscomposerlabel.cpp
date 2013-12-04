@@ -64,7 +64,7 @@ void QgsComposerLabel::paint( QPainter* painter, const QStyleOptionGraphicsItem*
   painter->save();
 
   double penWidth = pen().widthF();
-  QRectF painterRect( penWidth + mMargin, penWidth + mMargin, mTextBoxWidth - 2 * penWidth - 2 * mMargin, mTextBoxHeight - 2 * penWidth - 2 * mMargin );
+  QRectF painterRect( penWidth + mMargin, penWidth + mMargin, rect().width() - 2 * penWidth - 2 * mMargin, rect().height() - 2 * penWidth - 2 * mMargin );
 
   if ( mHtmlState )
   {
@@ -221,20 +221,15 @@ void QgsComposerLabel::adjustSizeToText()
   double textWidth = textWidthMillimeters( mFont, displayText() );
   double fontAscent = fontAscentMillimeters( mFont );
 
-  mTextBoxWidth = textWidth + 2 * mMargin + 2 * pen().widthF() + 1;
-  mTextBoxHeight = fontAscent + 2 * mMargin + 2 * pen().widthF() + 1;
-
-  double width = mTextBoxWidth;
-  double height = mTextBoxHeight;
-
-  sizeChangedByRotation( width, height );
+  double width = textWidth + 2 * mMargin + 2 * pen().widthF() + 1;
+  double height = fontAscent + 2 * mMargin + 2 * pen().widthF() + 1;
 
   //keep alignment point constant
   double xShift = 0;
   double yShift = 0;
   itemShiftAdjustSize( width, height, xShift, yShift );
 
-  QgsComposerItem::setSceneRect( QRectF( pos().x() + xShift, pos().y() + yShift, width, height ) );
+  setSceneRect( QRectF( pos().x() + xShift, pos().y() + yShift, width, height ) );
 }
 
 QFont QgsComposerLabel::font() const
