@@ -122,7 +122,7 @@ void QgsGrassPlugin::initGui()
   mCanvas = qGisInterface->mapCanvas();
   QWidget* qgis = qGisInterface->mainWindow();
 
-  connect( mCanvas, SIGNAL( destinationSrsChanged() ), this, SLOT( setTransform() ) );
+  connect( mCanvas, SIGNAL( destinationCrsChanged() ), this, SLOT( setTransform() ) );
 
   // Connect project
   connect( qgis, SIGNAL( projectRead() ), this, SLOT( projectRead() ) );

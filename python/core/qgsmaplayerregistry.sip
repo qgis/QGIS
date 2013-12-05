@@ -119,7 +119,8 @@ class QgsMapLayerRegistry : QObject
      *
      * @note Added in QGIS 1.4
      */
-    void clearAllLayerCaches();
+    //! @deprecated since 2.1 - does nothing
+    void clearAllLayerCaches() /Deprecated/;
 
     /**
      * Reload all provider data caches (currently used for WFS and WMS providers)

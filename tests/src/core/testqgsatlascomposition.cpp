@@ -78,7 +78,7 @@ void TestQgsAtlasComposition::initTestCase()
 
   //create composition with composer map
   mMapSettings.setLayers( QStringList() << mVectorLayer->id() );
-  mMapSettings.setProjectionsEnabled( true );
+  mMapSettings.setCrsTransformEnabled( true );
 
   // select epsg:2154
   QgsCoordinateReferenceSystem crs;

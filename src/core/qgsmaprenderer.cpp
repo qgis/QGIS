@@ -224,11 +224,6 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
   //Lock render method for concurrent threads (e.g. from globe)
   QMutexLocker renderLock( &mRenderMutex );
 
-  //flag to see if the render context has changed
-  //since the last time we rendered. If it hasnt changed we can
-  //take some shortcuts with rendering
-  bool mySameAsLastFlag = true;
-
   QgsDebugMsg( "========== Rendering ==========" );
 
   if ( mExtent.isEmpty() )
@@ -309,28 +304,24 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
   if ( mRenderContext.rasterScaleFactor() != rasterScaleFactor )
   {
     mRenderContext.setRasterScaleFactor( rasterScaleFactor );
-    mySameAsLastFlag = false;
   }
   if ( mRenderContext.scaleFactor() != scaleFactor )
   {
     mRenderContext.setScaleFactor( scaleFactor );
-    mySameAsLastFlag = false;
   }
   if ( mRenderContext.rendererScale() != mScale )
   {
     //add map scale to render context
     mRenderContext.setRendererScale( mScale );
-    mySameAsLastFlag = false;
   }
   if ( mLastExtent != mExtent )
   {
     mLastExtent = mExtent;
-    mySameAsLastFlag = false;
   }
 
   mRenderContext.setLabelingEngine( mLabelingEngine );
   if ( mLabelingEngine )
-    mLabelingEngine->init( this );
+    mLabelingEngine->init( mapSettings() );
 
   // render all layers in the stack, starting at the base
   QListIterator<QString> li( mLayerSet );
@@ -981,7 +972,7 @@ bool QgsMapRenderer::writeXML( QDomNode & theNode, QDomDocument & theDoc )
   tmpSettings.setOutputSize( outputSize() );
   tmpSettings.setMapUnits( mapUnits() );
   tmpSettings.setExtent( extent() );
-  tmpSettings.setProjectionsEnabled( hasCrsTransformEnabled() );
+  tmpSettings.setCrsTransformEnabled( hasCrsTransformEnabled() );
   tmpSettings.setDestinationCrs( destinationCrs() );
 
   tmpSettings.writeXML( theNode, theDoc );
@@ -1079,9 +1070,16 @@ QgsMapRenderer::BlendMode QgsMapRenderer::getBlendModeEnum( const QPainter::Comp
   }
 }
 
-const QgsMapSettings& QgsMapRenderer::mapSettings() const
+const QgsMapSettings& QgsMapRenderer::mapSettings()
 {
-  // TODO: keep up-to-date with real settings
+  // make sure the settings object is up-to-date
+  mMapSettings.setExtent( extent() );
+  mMapSettings.setOutputSize( outputSize() );
+  mMapSettings.setOutputDpi( outputDpi() );
+  mMapSettings.setLayers( layerSet() );
+  mMapSettings.setCrsTransformEnabled( hasCrsTransformEnabled() );
+  mMapSettings.setDestinationCrs( destinationCrs() );
+  mMapSettings.setMapUnits( mapUnits() );
   return mMapSettings;
 }
 

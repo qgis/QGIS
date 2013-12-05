@@ -164,7 +164,7 @@ void QgsComposerMap::draw( QPainter *painter, const QgsRectangle& extent, const 
   //use stored layer set or read current set from main canvas
   jobMapSettings.setLayers( mKeepLayerSet ? mLayerSet : ms.layers() );
   jobMapSettings.setDestinationCrs( ms.destinationCrs() );
-  jobMapSettings.setProjectionsEnabled( ms.hasCrsTransformEnabled() );
+  jobMapSettings.setCrsTransformEnabled( ms.hasCrsTransformEnabled() );
   jobMapSettings.setFlags( ms.flags() );
 
   // composer-specific overrides of flags

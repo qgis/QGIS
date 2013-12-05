@@ -109,7 +109,7 @@ class QgsSymbolLayerV2
   protected:
     QgsSymbolLayerV2( QgsSymbolV2::SymbolType type, bool locked = false );
 
-    virtual void prepareExpressions( const QgsVectorLayer* vl );
+    virtual void prepareExpressions( const QgsFields* fields, double scale = -1 );
     virtual QgsExpression* expression( const QString& property );
     /**Saves data defined properties to string map*/
     void saveDataDefinedProperties( QgsStringMap& stringMap ) const;

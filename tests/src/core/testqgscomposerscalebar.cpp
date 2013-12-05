@@ -69,7 +69,7 @@ void TestQgsComposerScaleBar::initTestCase()
   QgsCoordinateReferenceSystem destCRS;
   destCRS.createFromId( 4326, QgsCoordinateReferenceSystem::EpsgCrsId );
   mMapSettings.setDestinationCrs( destCRS );
-  mMapSettings.setProjectionsEnabled( true );
+  mMapSettings.setCrsTransformEnabled( true );
 
   mComposition = new QgsComposition( mMapSettings );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape

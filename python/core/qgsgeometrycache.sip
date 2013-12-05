@@ -4,7 +4,7 @@ class QgsGeometryCache
 #include <qgsgeometrycache.h>
 %End
   public:
-    QgsGeometryCache( QgsVectorLayer* layer );
+    QgsGeometryCache();
     ~QgsGeometryCache();
 
     QgsGeometryMap& cachedGeometries();
@@ -25,6 +25,4 @@ class QgsGeometryCache
     void setCachedGeometriesRect( const QgsRectangle& extent );
     const QgsRectangle& cachedGeometriesRect();
 
-  protected:
-    QgsVectorLayerEditBuffer *editBuffer();
 };

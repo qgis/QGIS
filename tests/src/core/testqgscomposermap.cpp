@@ -67,7 +67,7 @@ void TestQgsComposerMap::initTestCase()
 
   //create composition with composer map
   mMapSettings.setLayers( QStringList() << mRasterLayer->id() );
-  mMapSettings.setProjectionsEnabled( false );
+  mMapSettings.setCrsTransformEnabled( false );
   mComposition = new QgsComposition( mMapSettings );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
   mComposerMap = new QgsComposerMap( mComposition, 20, 20, 200, 100 );

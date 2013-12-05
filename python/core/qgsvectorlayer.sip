@@ -350,16 +350,6 @@ class QgsVectorLayer : QgsMapLayer
      */
     void setRendererV2( QgsFeatureRendererV2* r /Transfer/ );
 
-    /** Draw layer with renderer V2. QgsFeatureRenderer::startRender() needs to be called before using this method
-     * @note added in 1.4
-     */
-    void drawRendererV2( QgsFeatureIterator &fit, QgsRenderContext& rendererContext, bool labeling );
-
-    /** Draw layer with renderer V2 using symbol levels. QgsFeatureRenderer::startRender() needs to be called before using this method
-     * @note added in 1.4
-     */
-    void drawRendererV2Levels( QgsFeatureIterator &fit, QgsRenderContext& rendererContext, bool labeling );
-
     /** Returns point, line or polygon */
     QGis::GeometryType geometryType() const;
 
@@ -641,6 +631,11 @@ class QgsVectorLayer : QgsMapLayer
     /**Synchronises with changes in the datasource
       @note added in version 1.6*/
     virtual void reload();
+
+    /** Return new instance of QgsMapLayerRenderer that will be used for rendering of given context
+     * @note added in 2.1
+     */
+    virtual QgsMapLayerRenderer* createMapRenderer( QgsRenderContext& rendererContext ) /Factory/;
 
     /** Draws the layer
      *  @return false if an error occurred during drawing

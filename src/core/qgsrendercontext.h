@@ -42,6 +42,7 @@ class CORE_EXPORT QgsRenderContext
     ~QgsRenderContext();
 
     //! create initialized QgsRenderContext instance from given QgsMapSettings
+    //! @note added in 2.1
     static QgsRenderContext fromMapSettings( const QgsMapSettings& mapSettings );
 
     //getters

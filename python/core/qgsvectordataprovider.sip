@@ -45,6 +45,24 @@ class QgsVectorDataProvider : QgsDataProvider
     virtual ~QgsVectorDataProvider();
 
     /**
+     * Return feature source object that can be used for querying provider's data. The returned feature source
+     * is independent from provider - any changes to provider's state (e.g. change of subset string) will not be
+     * reflected in the feature source, therefore it can be safely used for processing in background without
+     * having to care about possible changes within provider that may happen concurrently. Also, even in the case
+     * of provider being deleted, any feature source obtained from the provider will be kept alive and working
+     * (they are independent and owned by the caller).
+     *
+     * Sometimes there are cases when some data needs to be shared between vector data provider and its feature source.
+     * In such cases, the implementation must ensure that the data is not susceptible to run condition. For example,
+     * if it is possible that both feature source and provider may need reading/writing to some shared data at the
+     * same time, some synchronization mechanisms must be used (e.g. mutexes) to prevent data corruption.
+     *
+     * @note added in 2.1
+     * @return new instance of QgsAbstractFeatureSource (caller is responsible for deleting it)
+     */
+    virtual QgsAbstractFeatureSource* featureSource() const /Factory/;
+
+    /**
      * Returns the permanent storage type for this layer as a friendly name.
      */
     virtual QString storageType() const;
@@ -275,9 +293,9 @@ class QgsVectorDataProvider : QgsDataProvider
      */
     virtual bool isSaveAndLoadStyleToDBSupported();
 
-  protected:
-    QVariant convertValue( QVariant::Type type, QString value );
+    static QVariant convertValue( QVariant::Type type, QString value );
 
+protected:
     void clearMinMaxCache();
     void fillMinMaxCache();
 

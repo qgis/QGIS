@@ -245,6 +245,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     Q_DECL_DEPRECATED QgsMapRenderer* mapRenderer() {return mMapRenderer;}
 
     //! Return setting of QGIS map canvas
+    //! @note added in 2.1
     const QgsMapSettings& mapSettings() const { return mMapSettings; }
 
     QgsComposition::PlotStyle plotStyle() const {return mPlotStyle;}

@@ -85,7 +85,7 @@ void CoordinateCapture::initGui()
 {
   mCrs.createFromSrsId( GEOCRS_ID ); // initialize the CRS object
 
-  connect( mQGisIface->mapCanvas(), SIGNAL( destinationSrsChanged() ), this, SLOT( setSourceCrs() ) );
+  connect( mQGisIface->mapCanvas(), SIGNAL( destinationCrsChanged() ), this, SLOT( setSourceCrs() ) );
   connect( mQGisIface, SIGNAL( currentThemeChanged( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
 
   setSourceCrs(); //set up the source CRS

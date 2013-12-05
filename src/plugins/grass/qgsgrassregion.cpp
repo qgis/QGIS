@@ -45,7 +45,7 @@ QgsGrassRegionEdit::QgsGrassRegionEdit( QgsMapCanvas* canvas )
   mCrs = QgsGrass::crs( gisdbase, location );
   QgsDebugMsg( "mCrs: " + mCrs.toWkt() );
   setTransform();
-  connect( canvas, SIGNAL( destinationSrsChanged() ), this, SLOT( setTransform() ) );
+  connect( canvas, SIGNAL( destinationCrsChanged() ), this, SLOT( setTransform() ) );
 }
 
 QgsGrassRegionEdit::~QgsGrassRegionEdit()

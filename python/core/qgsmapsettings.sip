@@ -1,25 +1,10 @@
-#ifndef QGSMAPSETTINGS_H
-#define QGSMAPSETTINGS_H
-
-#include <QColor>
-#include <QSize>
-#include <QStringList>
-
-#include "qgscoordinatereferencesystem.h"
-#include "qgsmaptopixel.h"
-#include "qgsrectangle.h"
-#include "qgsscalecalculator.h"
-
-class QPainter;
-
-class QgsCoordinateTransform;
-class QgsScaleCalculator;
-class QgsMapRendererJob;
-class QgsMapLayer;
-
 
 class QgsMapSettings
 {
+%TypeHeaderCode
+#include <qgsmapsettings.h>
+%End
+
 public:
   QgsMapSettings();
 
@@ -48,11 +33,11 @@ public:
   QGis::UnitType mapUnits() const;
   void setMapUnits( QGis::UnitType u );
 
-  void setBackgroundColor( const QColor& color ) { mBackgroundColor = color; }
-  QColor backgroundColor() const { return mBackgroundColor; }
+  void setBackgroundColor( const QColor& color );
+  QColor backgroundColor() const;
 
-  void setSelectionColor( const QColor& color ) { mSelectionColor = color; }
-  QColor selectionColor() const { return mSelectionColor; }
+  void setSelectionColor( const QColor& color );
+  QColor selectionColor() const;
 
   enum Flag
   {
@@ -63,7 +48,8 @@ public:
     DrawLabeling       = 0x10
     // TODO: ignore scale-based visibiity (overview)
   };
-  Q_DECLARE_FLAGS(Flags, Flag)
+  //Q_DECLARE_FLAGS(Flags, Flag)
+  typedef QFlags<QgsMapSettings::Flag> Flags;
 
   void setFlags( Flags flags );
   void setFlag( Flag flag, bool on = true );
@@ -78,7 +64,7 @@ public:
 
   // -- utility functions --
 
-  const QgsMapToPixel& mapToPixel() const { return mMapToPixel; }
+  const QgsMapToPixel& mapToPixel() const;
 
   /**
    * @brief transform bounding box from layer's CRS to output CRS
@@ -130,42 +116,7 @@ public:
 
   void writeXML( QDomNode& theNode, QDomDocument& theDoc );
 
-protected:
-
-  int mDpi;
-
-  QSize mSize;
-
-  QgsRectangle mExtent;
-
-  QStringList mLayers;
-
-  bool mProjectionsEnabled;
-  QgsCoordinateReferenceSystem mDestCRS;
-
-  QColor mBackgroundColor;
-  QColor mSelectionColor;
-
-  Flags mFlags;
-
-  // derived properties
-  bool mValid; //!< whether the actual settings are valid (set in updateDerived())
-  QgsRectangle mVisibleExtent; //!< extent with some additional white space that matches the output aspect ratio
-  double mMapUnitsPerPixel;
-  double mScale;
-
-
-  // utiity stuff
-  QgsScaleCalculator mScaleCalculator;
-  QgsMapToPixel mMapToPixel;
-
-
-  void updateDerived();
-
-  const QgsCoordinateTransform* coordTransform( QgsMapLayer *layer ) const;
 };
 
-Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMapSettings::Flags )
-
-
-#endif // QGSMAPSETTINGS_H
+//Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMapSettings::Flags )
+QFlags<QgsMapSettings::Flag> operator|(QgsMapSettings::Flag f1, QFlags<QgsMapSettings::Flag> f2);

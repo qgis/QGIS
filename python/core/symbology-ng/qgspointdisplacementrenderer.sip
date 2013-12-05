@@ -16,7 +16,7 @@ class QgsPointDisplacementRenderer : QgsFeatureRendererV2
 
     QgsSymbolV2* symbolForFeature( QgsFeature& feature );
 
-    void startRender( QgsRenderContext& context, const QgsVectorLayer *vlayer );
+    void startRender( QgsRenderContext& context, const QgsFields& fields );
 
     void stopRender( QgsRenderContext& context );
 

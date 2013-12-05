@@ -119,10 +119,14 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     void setCurrentLayer( QgsMapLayer* layer );
 
+    // ### QGIS 3: make QgsMapCanvas independent from overview
     void updateOverview();
 
+    // ### QGIS 3: make QgsMapCanvas independent from overview
     void enableOverviewMode( QgsMapOverviewCanvas* overview );
 
+    //! Get access to properties used for map rendering
+    //! @note added in 2.1
     const QgsMapSettings& mapSettings() const;
 
     //! sets whether to use projections for this layer set
@@ -205,6 +209,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     virtual QColor canvasColor() const;
 
     /** Set color of selected vector features */
+    //! @note added in 2.1
     void setSelectionColor( const QColor& color );
 
     /** Emits signal scaleChanged to update scale in main window */
@@ -212,7 +217,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     /** Updates the full extent */
     //! @deprecated since v2.1 - does nothing
-    void updateFullExtent();
+    Q_DECL_DEPRECATED void updateFullExtent() {}
 
     //! return the map layer at position index in the layer stack
     QgsMapLayer *layer( int index );
@@ -395,6 +400,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Emit map tool changed event
     void mapToolSet( QgsMapTool *tool );
 
+    // ### QGIS 3: remove the signal
     //! Emitted when selection in any layer gets changed
     void selectionChanged( QgsMapLayer * layer );
 
@@ -408,11 +414,11 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     //! Emitted when on-the-fly projection has been turned on/off
     //! @note added in 2.1
-    void hasCrsTransformEnabled( bool flag );
+    void hasCrsTransformEnabledChanged( bool flag );
 
     //! Emitted when map CRS has changed
     //! @note added in 2.1
-    void destinationSrsChanged();
+    void destinationCrsChanged();
 
     //! Emmitted when map units are changed
     //! @note added in 2.1
@@ -481,6 +487,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      */
     QgsMapCanvas( QgsMapCanvas const & );
 
+    //! encompases all map settings necessary for map rendering
     QgsMapSettings mSettings;
 
     //! all map rendering is done in this class

@@ -143,6 +143,12 @@ QgsSpatialIndex:: ~QgsSpatialIndex()
 {
 }
 
+QgsSpatialIndex& QgsSpatialIndex::operator=( const QgsSpatialIndex& other )
+{
+  if ( this != &other )
+    d = other.d;
+  return *this;
+}
 
 Region QgsSpatialIndex::rectToRegion( QgsRectangle rect )
 {

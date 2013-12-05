@@ -57,6 +57,9 @@ class CORE_EXPORT QgsSpatialIndex
     /** destructor finalizes work with spatial index */
     ~QgsSpatialIndex();
 
+    /** implement assignment operator */
+    QgsSpatialIndex& operator=( const QgsSpatialIndex& other );
+
 
     /* operations */
 

@@ -324,7 +324,7 @@ void QgsMapOverviewCanvas::updateFullExtent()
 
 void QgsMapOverviewCanvas::hasCrsTransformEnabled( bool flag )
 {
-  mSettings.setProjectionsEnabled( flag );
+  mSettings.setCrsTransformEnabled( flag );
 }
 
 void QgsMapOverviewCanvas::destinationSrsChanged()

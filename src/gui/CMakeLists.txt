@@ -148,7 +148,6 @@ ENDIF (WITH_TOUCH)
 SET(QGIS_GUI_MOC_HDRS
 
 qgscolorbutton.h
-qgsmapcanvasmap.h
 
 raster/qgsrasterminmaxwidget.h
 raster/qgspalettedrendererwidget.h

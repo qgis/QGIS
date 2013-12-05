@@ -1001,7 +1001,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void showStatusMessage( QString theMessage );
     void updateMouseCoordinatePrecision();
     void hasCrsTransformEnabled( bool theFlag );
-    void destinationSrsChanged();
+    void destinationCrsChanged();
     //    void debugHook();
     //! Add a vector layer to the map
     void addVectorLayer();

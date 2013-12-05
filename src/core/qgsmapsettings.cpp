@@ -171,7 +171,7 @@ void QgsMapSettings::setLayers(const QStringList& layers)
   mLayers = layers;
 }
 
-void QgsMapSettings::setProjectionsEnabled( bool enabled )
+void QgsMapSettings::setCrsTransformEnabled( bool enabled )
 {
   mProjectionsEnabled = enabled;
 }
@@ -473,7 +473,7 @@ void QgsMapSettings::readXML( QDomNode& theNode )
 
   // set projections flag
   QDomNode projNode = theNode.namedItem( "projections" );
-  setProjectionsEnabled( projNode.toElement().text().toInt() );
+  setCrsTransformEnabled( projNode.toElement().text().toInt() );
 
   // set destination CRS
   QgsCoordinateReferenceSystem srs;

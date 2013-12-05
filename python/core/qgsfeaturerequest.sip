@@ -63,3 +63,23 @@ class QgsFeatureRequest
     QgsFeatureRequest& setSubsetOfAttributes( const QStringList& attrNames, const QgsFields& fields );
 
 };
+
+
+/** base class that can be used for any class that is capable of returning features
+ * @note added in 2.1
+ */
+class QgsAbstractFeatureSource
+{
+%TypeHeaderCode
+#include <qgsfeaturerequest.h>
+%End
+
+public:
+  virtual ~QgsAbstractFeatureSource();
+
+  virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) = 0;
+
+protected:
+  void iteratorOpened( QgsAbstractFeatureIterator* it );
+  void iteratorClosed( QgsAbstractFeatureIterator* it );
+};

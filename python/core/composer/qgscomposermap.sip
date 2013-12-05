@@ -141,7 +141,8 @@ class QgsComposerMap : QgsComposerItem
 
     QgsRectangle extent() const;
 
-    const QgsMapRenderer* mapRenderer() const;
+    //! @deprecated since 2.1 - use mapSettings() - may return 0 if not initialized with QgsMapRenderer
+    const QgsMapRenderer* mapRenderer() const /Deprecated/;
 
     /**Sets offset values to shift image (useful for live updates when moving item content)*/
     void setOffset( double xOffset, double yOffset );

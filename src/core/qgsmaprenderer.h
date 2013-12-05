@@ -117,6 +117,7 @@ class CORE_EXPORT QgsLabelingEngineInterface
 };
 
 
+// ### QGIS 3: remove QgsMapRenderer in favor of QgsMapRendererJob
 
 /** \ingroup core
  * A non GUI class for rendering a map layer set onto a QPainter.
@@ -296,7 +297,8 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     static QgsMapRenderer::BlendMode getBlendModeEnum( const QPainter::CompositionMode blendMode );
 
     //! bridge to QgsMapSettings
-    const QgsMapSettings& mapSettings() const;
+    //! @note added in 2.1
+    const QgsMapSettings& mapSettings();
 
   signals:
 
@@ -391,6 +393,7 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     //! Locks rendering loop for concurrent draws
     QMutex mRenderMutex;
 
+    //! map settings - used only for export in mapSettings() for use in classes that deal with QgsMapSettings
     QgsMapSettings mMapSettings;
 
   private:

@@ -146,6 +146,11 @@ class QgsRasterLayer : QgsMapLayer
     @note added in version 1.6*/
     virtual void reload();
 
+    /** Return new instance of QgsMapLayerRenderer that will be used for rendering of given context
+     * @note added in 2.1
+     */
+    virtual QgsMapLayerRenderer* createMapRenderer( QgsRenderContext& rendererContext ) /Factory/;
+
     /** \brief This is called when the view on the raster layer needs to be redrawn */
     bool draw( QgsRenderContext& rendererContext );
 
@@ -154,11 +159,11 @@ class QgsRasterLayer : QgsMapLayer
                QgsRasterViewPort * myRasterViewPort,
                const QgsMapToPixel* theQgsMapToPixel = 0 );
 
-    /** \brief [ data provider interface ] If an operation returns 0 (e.g. draw()), this function returns the text of the error associated with the failure  */
-    QString lastError();
+    //! @deprecated since 2.1 - returns empty string
+    QString lastError() /Deprecated/;
 
-    /** \brief [ data provider interface ] If an operation returns 0 (e.g. draw()), this function returns the text of the error associated with the failure */
-    QString lastErrorTitle();
+    //! @deprecated since 2.1 - returns empty string
+    QString lastErrorTitle() /Deprecated/;
 
     /**Returns a list with classification items (Text and color)
       @note this method was added in version 1.8*/
@@ -233,8 +238,8 @@ class QgsRasterLayer : QgsMapLayer
   public slots:
     void showStatusMessage( const QString & theMessage );
 
-    /** \brief Propagate progress updates from GDAL up to the parent app */
-    void updateProgress( int, int );
+    //! @deprecated since 2.1 - does nothing
+    void updateProgress( int, int ) /Deprecated/;
 
     /** \brief receive progress signal from provider */
     void onProgress( int, double, QString );

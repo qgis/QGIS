@@ -126,6 +126,7 @@ class QgsFields
     void clear();
     void append( const QgsField& field, FieldOrigin origin = OriginProvider, int originIndex = -1 );
     void remove( int fieldIdx );
+    void extend( const QgsFields& other );
 
     bool isEmpty() const;
     // __len__ annotation since sip 4.10.3
@@ -139,7 +140,6 @@ class QgsFields
     //const QgsField& operator[](int i) const;
     //QgsField& operator[](int i);
     const QgsField& at(int i) const;
-    QList<QgsField> toList() const;
 
     const QgsField& field( int fieldIdx ) const;
     const QgsField& field( const QString& name ) const;
@@ -147,8 +147,17 @@ class QgsFields
     int fieldOriginIndex( int fieldIdx ) const;
 
     int indexFromName( const QString& name ) const;
-    void extend( const QgsFields& other );
 
+    //! Look up field's index from name - case insensitive
+    //! TODO: sort out case sensitive (indexFromName()) vs insensitive (fieldNameIndex()) calls
+    //! @note added in 2.1
+    int fieldNameIndex( const QString& fieldName ) const;
+
+    //! Utility function to get list of attribute indexes
+    //! @note added in 2.1
+    QgsAttributeList allAttributesList() const;
+
+    QList<QgsField> toList() const;
 
     QgsField& operator[](int i) /Factory/;
 %MethodCode
@@ -180,6 +189,7 @@ void __setitem__(int key, const QgsField& field);
   else
     (*sipCpp)[idx] = *a1;
 %End
+
 
 };
 

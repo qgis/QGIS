@@ -1889,10 +1889,10 @@ void QgisApp::setupConnections()
            mMapCanvas, SLOT( setRenderFlag( bool ) ) );
 
   // connect renderer
-  connect( mMapCanvas, SIGNAL( hasCrsTransformEnabled( bool ) ),
+  connect( mMapCanvas, SIGNAL( hasCrsTransformEnabledChanged( bool ) ),
            this, SLOT( hasCrsTransformEnabled( bool ) ) );
-  connect( mMapCanvas, SIGNAL( destinationSrsChanged() ),
-           this, SLOT( destinationSrsChanged() ) );
+  connect( mMapCanvas, SIGNAL( destinationCrsChanged() ),
+           this, SLOT( destinationCrsChanged() ) );
 
   // connect legend signals
   connect( mMapLegend, SIGNAL( currentLayerChanged( QgsMapLayer * ) ),
@@ -7627,7 +7627,7 @@ void QgisApp::updateCRSStatusBar()
   }
 }
 
-void QgisApp::destinationSrsChanged()
+void QgisApp::destinationCrsChanged()
 {
   // save this information to project
   long srsid = mMapCanvas->mapSettings().destinationCrs().srsid();

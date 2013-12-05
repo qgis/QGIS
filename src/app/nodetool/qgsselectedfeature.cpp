@@ -116,7 +116,7 @@ void QgsSelectedFeature::setSelectedFeature( QgsFeatureId featureId, QgsVectorLa
   connect( mVlayer, SIGNAL( beforeRollBack() ), this, SLOT( beforeRollBack() ) );
 
   // projection or extents changed
-  connect( canvas, SIGNAL( destinationSrsChanged() ), this, SLOT( updateVertexMarkersPosition() ) );
+  connect( canvas, SIGNAL( destinationCrsChanged() ), this, SLOT( updateVertexMarkersPosition() ) );
   connect( canvas, SIGNAL( extentsChanged() ), this, SLOT( updateVertexMarkersPosition() ) );
 
   // geometry was changed

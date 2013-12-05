@@ -6,7 +6,7 @@
 #include <qgsmapcanvasmap.h>
 %End
 
-class QgsMapCanvasMap : QGraphicsRectItem
+class QgsMapCanvasMap : QgsMapCanvasItem
 {
 %TypeHeaderCode
 #include <qgsmapcanvasmap.h>
@@ -28,25 +28,32 @@ class QgsMapCanvasMap : QGraphicsRectItem
     //! constructor
     QgsMapCanvasMap( QgsMapCanvas* canvas /TransferThis/ );
 
-    //! resize canvas item and pixmap
-    void resize( QSize size );
+    //! @note added in 2.1
+    void setContent( const QImage& image, const QgsRectangle& rect );
 
-    void enableAntiAliasing( bool flag );
+    //! @note added in 2.1
+    QImage contentImage() const;
 
-    //! renders map using QgsMapRenderer to mPixmap
-    void render();
+    virtual void paint( QPainter * painter );
 
-    void setBackgroundColor( const QColor& color );
+    //! @deprecated in 2.1 - does nothing. Kept for API compatibility
+    void resize( QSize size ) /Deprecated/;
 
-    void setPanningOffset( const QPoint& point );
+    //! @deprecated in 2.1 - does nothing. Kept for API compatibility
+    void enableAntiAliasing( bool flag ) /Deprecated/;
 
-    QPaintDevice& paintDevice();
+    //! @deprecated in 2.1 - does nothing. Kept for API compatibility
+    void render() /Deprecated/;
 
-    void paint( QPainter* p, const QStyleOptionGraphicsItem*, QWidget* );
+    //! @deprecated in 2.1 - does nothing. Kept for API compatibility
+    void setBackgroundColor( const QColor& color ) /Deprecated/;
 
-    QRectF boundingRect() const;
+    //! @deprecated in 2.1 - does nothing. Kept for API compatibility
+    void setPanningOffset( const QPoint& point ) /Deprecated/;
 
-    //! Update contents - can be called while drawing to show the status.
-    //! Added in version 1.2
-    void updateContents();
+    //! @deprecated in 2.1
+    QPaintDevice& paintDevice() /Deprecated/;
+
+    //! @deprecated in 2.1 - does nothing. Kept for API compatibility
+    void updateContents() /Deprecated/;
 };

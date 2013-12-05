@@ -28,7 +28,9 @@ class QgsComposition : QGraphicsScene
       Crosses
     };
 
-    QgsComposition( QgsMapRenderer* mapRenderer );
+    //! @deprecated since 2.1 - use the constructor with QgsMapSettings
+    QgsComposition( QgsMapRenderer* mapRenderer ) /Deprecated/;
+    explicit QgsComposition( const QgsMapSettings& mapSettings );
     ~QgsComposition();
 
     /**Changes size of paper item*/
@@ -151,7 +153,12 @@ class QgsComposition : QGraphicsScene
     void setWorldFileMap( QgsComposerMap* map );
 
     /**Returns pointer to map renderer of qgis map canvas*/
-    QgsMapRenderer* mapRenderer();
+    //! @deprecated since 2.1 - use mapSettings() instead. May return null if not initialized with QgsMapRenderer
+    QgsMapRenderer* mapRenderer() /Deprecated/;
+
+    //! Return setting of QGIS map canvas
+    //! @note added in 2.1
+    const QgsMapSettings& mapSettings() const;
 
     QgsComposition::PlotStyle plotStyle() const;
     void setPlotStyle( QgsComposition::PlotStyle style );
@@ -310,6 +317,10 @@ class QgsComposition : QGraphicsScene
   public slots:
     /**Casts object to the proper subclass type and calls corresponding itemAdded signal*/
     void sendItemAddedSignal( QgsComposerItem* item );
+
+  protected:
+    void init();
+
   signals:
     void paperSizeChanged();
     void nPagesChanged();

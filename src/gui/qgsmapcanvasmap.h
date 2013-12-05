@@ -55,7 +55,7 @@ class GUI_EXPORT QgsMapCanvasMap : public QgsMapCanvasItem  // public QObject, p
     Q_DECL_DEPRECATED void resize( QSize size ) { Q_UNUSED( size ); }
 
     //! @deprecated in 2.1 - does nothing. Kept for API compatibility
-    Q_DECL_DEPRECATED void enableAntiAliasing( bool flag );
+    Q_DECL_DEPRECATED void enableAntiAliasing( bool flag ) { Q_UNUSED( flag ); }
 
     //! @deprecated in 2.1 - does nothing. Kept for API compatibility
     Q_DECL_DEPRECATED void render() {}
