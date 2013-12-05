@@ -1285,9 +1285,14 @@ void QgsSvgMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitScale
 
   QPainter p;
   p.begin( &pd );
-  p.rotate( angle );
-  pd.setShift( shift - QPointF( halfSize, halfSize ) );
-  pd.setOutputSize( QRectF( 0, 0, size, size ) );
+  if ( !qgsDoubleNear( angle, 0.0 ) )
+  {
+    p.translate( r.defaultSize().width() / 2.0, r.defaultSize().height() / 2.0 );
+    p.rotate( angle );
+    p.translate( -r.defaultSize().width() / 2.0, -r.defaultSize().height() / 2.0 );
+  }
+  pd.setShift( shift );
+  pd.setOutputSize( QRectF( -halfSize, -halfSize, size, size ) );
   pd.setLayer( layerName );
   r.render( &p );
   p.end();

@@ -490,7 +490,7 @@ void QgsDxfExport::writeBlocks()
       }
       writeGroup( 0, "BLOCK" );
       writeGroup( 8, 0 );
-      QString blockName = QString( "symbolLayer%1" ).arg( mBlockCounter );
+      QString blockName = QString( "symbolLayer%1" ).arg( mBlockCounter++ );
       writeGroup( 2, blockName );
       writeGroup( 70, 64 );
 
