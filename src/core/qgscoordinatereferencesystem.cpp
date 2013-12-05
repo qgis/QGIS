@@ -2024,14 +2024,14 @@ bool QgsCoordinateReferenceSystem::syncDatumTransform( const QString& dbPath )
     if ( !cOpCode.isEmpty() )
     {
       //already in database, do update
-      QgsDebugMsg( "Trying datum transform update" );
+      QgsDebugMsgLevel( "Trying datum transform update", 4 );
       sql = QString( "UPDATE tbl_datum_transform SET source_crs_code = %2, target_crs_code = %3, coord_op_method_code = %4, p1 = %5, p2 = %6, p3 = %7, p4 = %8, p5 = %9, p6 = %10, p7 = %11 WHERE coord_op_code = %1" )
             .arg( coord_op ).arg( source_crs ).arg( target_crs ).arg( coord_op_method ).arg( p1 ).arg( p2 ).arg( p3 ).arg( p4 ).arg( p5 ).arg( p6 ).arg( p7 );
     }
     else
     {
       //not yet in database, do insert
-      QgsDebugMsg( "Trying datum transform insert" );
+      QgsDebugMsgLevel( "Trying datum transform insert", 4 );
       sql = QString( "INSERT INTO tbl_datum_transform ( epsg_nr, coord_op_code, source_crs_code, target_crs_code, coord_op_method_code, p1, p2, p3, p4, p5, p6, p7 ) VALUES ( %1, %1, %2, %3, %4, %5, %6, %7, %8, %9, %10, %11 )" )
             .arg( coord_op ).arg( source_crs ).arg( target_crs ).arg( coord_op_method ).arg( p1 ).arg( p2 ).arg( p3 ).arg( p4 ).arg( p5 ).arg( p6 ).arg( p7 );
 
