@@ -2767,3 +2767,8 @@ QGISEXTERN QList<QPair<QString, QString> > *pyramidResamplingMethods()
 
   return &methods;
 }
+
+QGISEXTERN void cleanupProvider()
+{
+  GDALDestroyDriverManager();
+}

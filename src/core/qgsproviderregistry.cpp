@@ -199,8 +199,25 @@ QgsProviderRegistry::QgsProviderRegistry( QString pluginPath )
 } // QgsProviderRegistry ctor
 
 
+// typedef for the unload dataprovider function
+typedef void cleanupProviderFunction_t();
+
 QgsProviderRegistry::~QgsProviderRegistry()
 {
+  Providers::const_iterator it = mProviders.begin();
+
+  while ( it != mProviders.end() )
+  {
+    QString lib = it->second->library();
+    QLibrary myLib( lib );
+    if ( myLib.isLoaded() )
+    {
+      cleanupProviderFunction_t* cleanupFunc = ( cleanupProviderFunction_t* ) cast_to_fptr( myLib.resolve( "cleanupProvider" ) );
+      if ( cleanupFunc )
+        cleanupFunc();
+    }
+    it++;
+  }
 }
 
 
@@ -290,7 +307,6 @@ QDir const & QgsProviderRegistry::libraryDirectory() const
 
 // typedef for the QgsDataProvider class factory
 typedef QgsDataProvider * classFactoryFunction_t( const QString * );
-
 
 
 /** Copied from QgsVectorLayer::setDataProvider
