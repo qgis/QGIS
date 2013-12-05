@@ -181,6 +181,14 @@ void QgsSpatiaLiteSourceSelect::on_mTablesTreeView_doubleClicked( const QModelIn
   setSql( index );
 }
 
+void QgsSpatiaLiteSourceSelect::on_mSearchGroupBox_toggled( bool checked )
+{
+  if ( mSearchTableEdit->text().isEmpty() )
+    return;
+
+  on_mSearchTableEdit_textChanged( checked ? mSearchTableEdit->text() : "" );
+}
+
 void QgsSpatiaLiteSourceSelect::on_mSearchTableEdit_textChanged( const QString & text )
 {
   if ( mSearchModeComboBox->currentText() == tr( "Wildcard" ) )

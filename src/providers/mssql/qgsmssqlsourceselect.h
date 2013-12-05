@@ -130,6 +130,7 @@ class QgsMssqlSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     void on_btnSave_clicked();
     //! Loads the selected connections from file
     void on_btnLoad_clicked();
+    void on_mSearchGroupBox_toggled( bool );
     void on_mSearchTableEdit_textChanged( const QString & text );
     void on_mSearchColumnComboBox_currentIndexChanged( const QString & text );
     void on_mSearchModeComboBox_currentIndexChanged( const QString & text );
