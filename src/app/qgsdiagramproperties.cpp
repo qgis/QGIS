@@ -20,6 +20,7 @@
 #include "diagram/qgstextdiagram.h"
 
 #include "qgisapp.h"
+#include "qgsproject.h"
 #include "qgsapplication.h"
 #include "qgsdiagramproperties.h"
 #include "qgsdiagramrendererv2.h"
@@ -27,6 +28,7 @@
 #include "qgsmessagebar.h"
 #include "qgsvectorlayerproperties.h"
 #include "qgsvectordataprovider.h"
+#include "qgsfeatureiterator.h"
 
 #include <QColorDialog>
 #include <QFontDialog>
@@ -127,8 +129,9 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
   for ( int idx = 0; idx < layerFields.count(); ++idx )
   {
     QTreeWidgetItem *newItem = new QTreeWidgetItem( mAttributesTreeWidget );
-    newItem->setText( 0, layerFields[idx].name() );
-    newItem->setData( 0, Qt::UserRole, idx );
+    QString name = QString( "\"%1\"" ).arg( layerFields[idx].name() );
+    newItem->setText( 0,  name );
+    newItem->setData( 0, Qt::UserRole, name );
     newItem->setFlags( newItem->flags() & ~Qt::ItemIsDropEnabled );
     if ( layerFields[idx].type() != QVariant::String )
     {
@@ -138,6 +141,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
     mDataDefinedXComboBox->addItem( layerFields[idx].name(), idx );
     mDataDefinedYComboBox->addItem( layerFields[idx].name(), idx );
   }
+  mAvailableAttributes = mSizeAttributeComboBox->count();
 
   const QgsDiagramRendererV2* dr = layer->diagramRenderer();
   if ( !dr ) //no diagram renderer yet, insert reasonable default
@@ -250,13 +254,13 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
       }
 
       QList< QColor > categoryColors = settingList.at( 0 ).categoryColors;
-      QList< int > categoryIndices = settingList.at( 0 ).categoryIndices;
-      QList< int >::const_iterator catIt = categoryIndices.constBegin();
+      QList< QString > categoryAttributes = settingList.at( 0 ).categoryAttributes;
+      QList< QString >::const_iterator catIt = categoryAttributes.constBegin();
       QList< QColor >::const_iterator coIt = categoryColors.constBegin();
-      for ( ;catIt != categoryIndices.constEnd(); ++catIt, ++coIt )
+      for ( ; catIt != categoryAttributes.constEnd(); ++catIt, ++coIt )
       {
         QTreeWidgetItem *newItem = new QTreeWidgetItem( mDiagramAttributesTreeWidget );
-        newItem->setText( 0, layer->pendingFields()[*catIt].name() );
+        newItem->setText( 0, *catIt );
         newItem->setData( 0, Qt::UserRole, *catIt );
         newItem->setFlags( newItem->flags() & ~Qt::ItemIsDropEnabled );
         QColor col( *coIt );
@@ -273,7 +277,15 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
         mDiagramSizeSpinBox->setEnabled( false );
         mValueLineEdit->setText( QString::number( lidr->upperValue(), 'f' ) );
         mSizeSpinBox->setValue(( lidr->upperSize().width() + lidr->upperSize().height() ) / 2 );
-        mSizeAttributeComboBox->setCurrentIndex( mSizeAttributeComboBox->findData( lidr->classificationAttribute() ) );
+        if ( lidr->classificationAttributeIsExpression() )
+        {
+          mSizeAttributeComboBox->addItem( lidr->classificationAttributeExpression() );
+          mSizeAttributeComboBox->setCurrentIndex( mSizeAttributeComboBox->count() - 1 );
+        }
+        else
+        {
+          mSizeAttributeComboBox->setCurrentIndex( mSizeAttributeComboBox->findData( lidr->classificationAttribute() ) );
+        }
       }
     }
 
@@ -307,6 +319,9 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
 
   // Trigger a clicked event, so all the items get properly enabled and disabled
   on_mDisplayDiagramsGroupBox_toggled( mDisplayDiagramsGroupBox->isChecked() );
+
+  connect( mSizeAttributeExpression, SIGNAL( clicked() ), this, SLOT( showSizeAttributeExpressionDialog() ) );
+  connect( mAddAttributeExpression, SIGNAL( clicked() ), this, SLOT( showAddAttributeExpressionDialog() ) );
 }
 
 void QgsDiagramProperties::on_mDiagramTypeComboBox_currentIndexChanged( int index )
@@ -433,7 +448,30 @@ void QgsDiagramProperties::on_mFindMaximumValueButton_clicked()
     QgsVectorDataProvider* provider = mLayer->dataProvider();
     if ( provider )
     {
-      mValueLineEdit->setText( provider->maximumValue( mSizeAttributeComboBox->itemData( mSizeAttributeComboBox->currentIndex() ).toInt() ).toString() );
+      float maxValue = 0;
+      if ( mSizeAttributeComboBox->currentIndex() >= mAvailableAttributes )
+      {
+        QgsExpression exp( mSizeAttributeComboBox->currentText() );
+        exp.prepare( mLayer->pendingFields() );
+        if ( exp.hasEvalError() )
+        {
+          QgsDebugMsgLevel( "Prepare error:" + exp.evalErrorString(), 4 );
+        }
+        else
+        {
+          QgsFeature feature;
+          QgsFeatureIterator features = mLayer->getFeatures();
+          while ( features.nextFeature( *&feature ) )
+          {
+            maxValue = qMax( maxValue, exp.evaluate( &feature ).toFloat() );
+          }
+        }
+      }
+      else
+      {
+        maxValue = provider->maximumValue( mSizeAttributeComboBox->itemData( mSizeAttributeComboBox->currentIndex() ).toInt() ).toFloat();
+      }
+      mValueLineEdit->setText( QString( "%1" ).arg( maxValue ) );
     }
   }
 }
@@ -551,16 +589,16 @@ void QgsDiagramProperties::apply()
     ds.transparency = mTransparencySlider->value();
 
     QList<QColor> categoryColors;
-    QList<int> categoryAttributes;
+    QList<QString> categoryAttributes;
     for ( int i = 0; i < mDiagramAttributesTreeWidget->topLevelItemCount(); ++i )
     {
       QColor color = mDiagramAttributesTreeWidget->topLevelItem( i )->background( 1 ).color();
       color.setAlpha( 255 - ds.transparency );
       categoryColors.append( color );
-      categoryAttributes.append( mDiagramAttributesTreeWidget->topLevelItem( i )->data( 0, Qt::UserRole ).toInt() );
+      categoryAttributes.append( mDiagramAttributesTreeWidget->topLevelItem( i )->data( 0, Qt::UserRole ).toString() );
     }
     ds.categoryColors = categoryColors;
-    ds.categoryIndices = categoryAttributes;
+    ds.categoryAttributes = categoryAttributes;
     ds.size = QSizeF( mDiagramSizeSpinBox->value(), mDiagramSizeSpinBox->value() );
     ds.sizeType = static_cast<QgsDiagramSettings::SizeType>( mDiagramUnitComboBox->itemData( mDiagramUnitComboBox->currentIndex() ).toInt() );
     ds.labelPlacementMethod = static_cast<QgsDiagramSettings::LabelPlacementMethod>( mLabelPlacementComboBox->itemData( mLabelPlacementComboBox->currentIndex() ).toInt() );
@@ -611,7 +649,16 @@ void QgsDiagramProperties::apply()
       dr->setLowerSize( QSizeF( 0.0, 0.0 ) );
       dr->setUpperValue( mValueLineEdit->text().toDouble() );
       dr->setUpperSize( QSizeF( mSizeSpinBox->value(), mSizeSpinBox->value() ) );
-      dr->setClassificationAttribute( mSizeAttributeComboBox->itemData( mSizeAttributeComboBox->currentIndex() ).toInt() );
+      bool isExpression = mSizeAttributeComboBox->currentIndex() >= mAvailableAttributes;
+      dr->setClassificationAttributeIsExpression( isExpression );
+      if ( isExpression )
+      {
+        dr->setClassificationAttributeExpression( mSizeAttributeComboBox->currentText() );
+      }
+      else
+      {
+        dr->setClassificationAttribute( mSizeAttributeComboBox->itemData( mSizeAttributeComboBox->currentIndex() ).toInt() );
+      }
       dr->setDiagram( diagram );
       dr->setDiagramSettings( ds );
       mLayer->setDiagramRenderer( dr );
@@ -637,4 +684,75 @@ void QgsDiagramProperties::apply()
     }
     mLayer->setDiagramLayerSettings( dls );
   }
+}
+
+void QgsDiagramProperties::showSizeAttributeExpressionDialog()
+{
+  QString current = mSizeAttributeComboBox->currentText();
+  if ( mSizeAttributeComboBox->currentIndex() < mAvailableAttributes )
+  {
+    current = QString( "\"%1\"" ).arg( current );
+  }
+  QgsExpressionBuilderDialog dlg( mLayer, current, this );
+
+  dlg.setWindowTitle( tr( "Expression based attribute" ) );
+
+  QgsDistanceArea myDa;
+  myDa.setSourceCrs( mLayer->crs().srsid() );
+  myDa.setEllipsoidalMode( QgisApp::instance()->mapCanvas()->mapRenderer()->hasCrsTransformEnabled() );
+  myDa.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
+  dlg.setGeomCalculator( myDa );
+
+  if ( dlg.exec() == QDialog::Accepted )
+  {
+    QString expression =  dlg.expressionText();
+    //Only add the expression if the user has entered some text.
+    if ( !expression.isEmpty() )
+    {
+      mSizeAttributeComboBox->addItem( expression );
+      mSizeAttributeComboBox->setCurrentIndex( mSizeAttributeComboBox->count() - 1 );
+    }
+  }
+  activateWindow(); // set focus back parent
+}
+
+void QgsDiagramProperties::showAddAttributeExpressionDialog()
+{
+  QString expression;
+  QList<QTreeWidgetItem *> selections = mAttributesTreeWidget->selectedItems();
+  if ( !selections.empty() )
+  {
+    expression = selections[0]->text( 0 );
+  }
+  QgsExpressionBuilderDialog dlg( mLayer, expression, this );
+  dlg.setWindowTitle( tr( "Expression based attribute" ) );
+
+  QgsDistanceArea myDa;
+  myDa.setSourceCrs( mLayer->crs().srsid() );
+  myDa.setEllipsoidalMode( QgisApp::instance()->mapCanvas()->mapRenderer()->hasCrsTransformEnabled() );
+  myDa.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
+  dlg.setGeomCalculator( myDa );
+
+  if ( dlg.exec() == QDialog::Accepted )
+  {
+    QString expression =  dlg.expressionText();
+    //Only add the expression if the user has entered some text.
+    if ( !expression.isEmpty() )
+    {
+      QTreeWidgetItem *newItem = new QTreeWidgetItem( mDiagramAttributesTreeWidget );
+
+      newItem->setText( 0, expression );
+      newItem->setData( 0, Qt::UserRole, expression );
+      newItem->setFlags( newItem->flags() & ~Qt::ItemIsDropEnabled );
+
+      //set initial color for diagram category
+      int red = 1 + ( int )( 255.0 * rand() / ( RAND_MAX + 1.0 ) );
+      int green = 1 + ( int )( 255.0 * rand() / ( RAND_MAX + 1.0 ) );
+      int blue = 1 + ( int )( 255.0 * rand() / ( RAND_MAX + 1.0 ) );
+      QColor randomColor( red, green, blue );
+      newItem->setBackground( 1, QBrush( randomColor ) );
+      mDiagramAttributesTreeWidget->addTopLevelItem( newItem );
+    }
+  }
+  activateWindow(); // set focus back parent
 }
