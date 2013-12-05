@@ -66,7 +66,7 @@ void QgsComposerLabel::paint( QPainter* painter, const QStyleOptionGraphicsItem*
   double penWidth = pen().widthF();
   QRectF painterRect( penWidth + mMargin, penWidth + mMargin, mTextBoxWidth - 2 * penWidth - 2 * mMargin, mTextBoxHeight - 2 * penWidth - 2 * mMargin );
   painter->translate( rect().width() / 2.0, rect().height() / 2.0 );
-  painter->rotate( mRotation );
+  painter->rotate( mItemRotation );
   painter->translate( -mTextBoxWidth / 2.0, -mTextBoxHeight / 2.0 );
 
   if ( mHtmlState )
@@ -247,9 +247,15 @@ QFont QgsComposerLabel::font() const
 
 void QgsComposerLabel::setRotation( double r )
 {
+  //kept for api compatibility with QGIS 2.0
+  setItemRotation( r );
+}
+
+void QgsComposerLabel::setItemRotation( double r )
+{
   double width = mTextBoxWidth;
   double height = mTextBoxHeight;
-  QgsComposerItem::setRotation( r );
+  QgsComposerItem::setItemRotation( r );
   sizeChangedByRotation( width, height );
 
   double x = pos().x() + rect().width() / 2.0 - width / 2.0;
@@ -359,6 +365,14 @@ bool QgsComposerLabel::readXML( const QDomElement& itemElem, const QDomDocument&
   if ( composerItemList.size() > 0 )
   {
     QDomElement composerItemElem = composerItemList.at( 0 ).toElement();
+
+    //rotation
+    if ( composerItemElem.attribute( "rotation", "0" ).toDouble() != 0 )
+    {
+      //check for old (pre 2.1) rotation attribute
+      mItemRotation = composerItemElem.attribute( "rotation", "0" ).toDouble();
+    }
+
     _readXML( composerItemElem, doc );
   }
   emit itemChanged();
@@ -373,7 +387,7 @@ void QgsComposerLabel::itemShiftAdjustSize( double newWidth, double newHeight, d
   xShift = 0;
   yShift = 0;
 
-  if ( mRotation >= 0 && mRotation < 90 )
+  if ( mItemRotation >= 0 && mItemRotation < 90 )
   {
     if ( mHAlignment == Qt::AlignHCenter )
     {
@@ -392,7 +406,7 @@ void QgsComposerLabel::itemShiftAdjustSize( double newWidth, double newHeight, d
       yShift = - ( newHeight - currentHeight );
     }
   }
-  if ( mRotation >= 90 && mRotation < 180 )
+  if ( mItemRotation >= 90 && mItemRotation < 180 )
   {
     if ( mHAlignment == Qt::AlignHCenter )
     {
@@ -411,7 +425,7 @@ void QgsComposerLabel::itemShiftAdjustSize( double newWidth, double newHeight, d
       xShift = -( newWidth - currentWidth / 2.0 );
     }
   }
-  else if ( mRotation >= 180 && mRotation < 270 )
+  else if ( mItemRotation >= 180 && mItemRotation < 270 )
   {
     if ( mHAlignment == Qt::AlignHCenter )
     {
@@ -430,7 +444,7 @@ void QgsComposerLabel::itemShiftAdjustSize( double newWidth, double newHeight, d
       yShift = ( newHeight - currentHeight );
     }
   }
-  else if ( mRotation >= 270 && mRotation < 360 )
+  else if ( mItemRotation >= 270 && mItemRotation < 360 )
   {
     if ( mHAlignment == Qt::AlignHCenter )
     {

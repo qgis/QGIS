@@ -54,7 +54,7 @@ QgsComposerItem::QgsComposerItem( QgsComposition* composition, bool manageZValue
     , mBackgroundColor( QColor( 255, 255, 255, 255 ) )
     , mItemPositionLocked( false )
     , mLastValidViewScaleFactor( -1 )
-    , mRotation( 0 )
+    , mItemRotation( 0 )
     , mBlendMode( QPainter::CompositionMode_SourceOver )
     , mEffectsEnabled( true )
     , mTransparency( 0 )
@@ -77,7 +77,7 @@ QgsComposerItem::QgsComposerItem( qreal x, qreal y, qreal width, qreal height, Q
     , mBackgroundColor( QColor( 255, 255, 255, 255 ) )
     , mItemPositionLocked( false )
     , mLastValidViewScaleFactor( -1 )
-    , mRotation( 0 )
+    , mItemRotation( 0 )
     , mBlendMode( QPainter::CompositionMode_SourceOver )
     , mEffectsEnabled( true )
     , mTransparency( 0 )
@@ -170,7 +170,7 @@ bool QgsComposerItem::_writeXML( QDomElement& itemElem, QDomDocument& doc ) cons
   composerItemElem.setAttribute( "positionMode", QString::number(( int ) mLastUsedPositionMode ) );
   composerItemElem.setAttribute( "zValue", QString::number( zValue() ) );
   composerItemElem.setAttribute( "outlineWidth", QString::number( pen().widthF() ) );
-  composerItemElem.setAttribute( "rotation",  QString::number( mRotation ) );
+  composerItemElem.setAttribute( "itemRotation",  QString::number( mItemRotation ) );
   composerItemElem.setAttribute( "uuid", mUuid );
   composerItemElem.setAttribute( "id", mId );
   //position lock for mouse moves/resizes
@@ -224,7 +224,10 @@ bool QgsComposerItem::_readXML( const QDomElement& itemElem, const QDomDocument&
   }
 
   //rotation
-  mRotation = itemElem.attribute( "rotation", "0" ).toDouble();
+  if ( itemElem.attribute( "itemRotation", "0" ).toDouble() != 0 )
+  {
+    mItemRotation = itemElem.attribute( "itemRotation", "0" ).toDouble();
+  }
 
   //uuid
   mUuid = itemElem.attribute( "uuid", QUuid::createUuid().toString() );
@@ -698,26 +701,39 @@ double QgsComposerItem::lockSymbolSize() const
 
 void QgsComposerItem::setRotation( double r )
 {
+  //kept for api compatibility with QGIS 2.0
+  //remove after 2.0 series
+  setItemRotation( r );
+}
+
+void QgsComposerItem::setItemRotation( double r )
+{
   if ( r > 360 )
   {
-    mRotation = (( int )r ) % 360;
+    mItemRotation = (( int )r ) % 360;
   }
   else
   {
-    mRotation = r;
+    mItemRotation = r;
   }
-  emit rotationChanged( r );
+  emit itemRotationChanged( r );
   update();
 }
 
 bool QgsComposerItem::imageSizeConsideringRotation( double& width, double& height ) const
 {
-  if ( qAbs( mRotation ) <= 0.0 ) //width and height stays the same if there is no rotation
+  //kept for api compatibility with QGIS 2.0, use item rotation
+  return imageSizeConsideringRotation( width, height, mItemRotation );
+}
+
+bool QgsComposerItem::imageSizeConsideringRotation( double& width, double& height, double rotation ) const
+{
+  if ( qAbs( rotation ) <= 0.0 ) //width and height stays the same if there is no rotation
   {
     return true;
   }
 
-  if ( qgsDoubleNear( qAbs( mRotation ), 90 ) || qgsDoubleNear( qAbs( mRotation ), 270 ) )
+  if ( qgsDoubleNear( qAbs( rotation ), 90 ) || qgsDoubleNear( qAbs( rotation ), 270 ) )
   {
     double tmp = width;
     width = height;
@@ -776,8 +792,14 @@ bool QgsComposerItem::imageSizeConsideringRotation( double& width, double& heigh
 
 bool QgsComposerItem::cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height ) const
 {
+  //kept for api compatibility with QGIS 2.0, use item rotation
+  return cornerPointOnRotatedAndScaledRect( x, y, width, height, mItemRotation );
+}
+
+bool QgsComposerItem::cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height, double rotation ) const
+{
   //first rotate point clockwise
-  double rotToRad = mRotation * M_PI / 180.0;
+  double rotToRad = rotation * M_PI / 180.0;
   QPointF midpoint( width / 2.0, height / 2.0 );
   double xVector = x - midpoint.x();
   double yVector = y - midpoint.y();
@@ -813,7 +835,13 @@ bool QgsComposerItem::cornerPointOnRotatedAndScaledRect( double& x, double& y, d
 
 void QgsComposerItem::sizeChangedByRotation( double& width, double& height )
 {
-  if ( mRotation == 0.0 )
+  //kept for api compatibility with QGIS 2.0, use item rotation
+  return sizeChangedByRotation( width, height, mItemRotation );
+}
+
+void QgsComposerItem::sizeChangedByRotation( double& width, double& height, double rotation )
+{
+  if ( rotation == 0.0 )
   {
     return;
   }
@@ -821,19 +849,19 @@ void QgsComposerItem::sizeChangedByRotation( double& width, double& height )
   //vector to p1
   double x1 = -width / 2.0;
   double y1 = -height / 2.0;
-  rotate( mRotation, x1, y1 );
+  rotate( rotation, x1, y1 );
   //vector to p2
   double x2 = width / 2.0;
   double y2 = -height / 2.0;
-  rotate( mRotation, x2, y2 );
+  rotate( rotation, x2, y2 );
   //vector to p3
   double x3 = width / 2.0;
   double y3 = height / 2.0;
-  rotate( mRotation, x3, y3 );
+  rotate( rotation, x3, y3 );
   //vector to p4
   double x4 = -width / 2.0;
   double y4 = height / 2.0;
-  rotate( mRotation, x4, y4 );
+  rotate( rotation, x4, y4 );
 
   //double midpoint
   QPointF midpoint( width / 2.0, height / 2.0 );

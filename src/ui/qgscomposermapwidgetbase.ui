@@ -123,16 +123,16 @@
            </widget>
           </item>
           <item row="2" column="0">
-           <widget class="QLabel" name="mRotationLabel">
+           <widget class="QLabel" name="mMapRotationLabel">
             <property name="text">
-             <string>Rotation</string>
+             <string>Map Rotation</string>
             </property>
            </widget>
           </item>
           <item row="2" column="1">
-           <widget class="QDoubleSpinBox" name="mRotationSpinBox">
+           <widget class="QDoubleSpinBox" name="mMapRotationSpinBox">
             <property name="suffix">
-             <string> degrees</string>
+             <string> °</string>
             </property>
             <property name="maximum">
              <double>360.000000000000000</double>
