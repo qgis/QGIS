@@ -20,6 +20,7 @@
 #include "qgspoint.h"
 #include "qgsrendererv2.h"
 #include "qgssymbollayerv2.h"
+#include "qgsfillsymbollayerv2.h"
 #include "qgslinesymbollayerv2.h"
 #include "qgsvectorlayer.h"
 #include <QIODevice>
@@ -427,18 +428,10 @@ void QgsDxfExport::writeTables()
   mLineStyles.clear();
   writeGroup( 0, "TABLE" );
   writeGroup( 2, "LTYPE" );
-  writeGroup( 70, nLineTypes( slList ) + 1 );
+  writeGroup( 70, nLineTypes( slList ) + 5 );
 
-  //add continuous style as default
-  writeGroup( 0, "LTYPE" );
-  writeGroup( 2, "CONTINUOUS" );
-  writeGroup( 70, 64 );
-  writeGroup( 3, "Defaultstyle" );
-  writeGroup( 72, 65 );
-  writeGroup( 73, 0 );
-  writeGroup( 40, 0.0 );
-
-  //add symbol layer linestyles
+  writeDefaultLinestyles();
+  //add custom linestyles
   QList< QPair< QgsSymbolLayerV2*, QgsSymbolV2*> >::const_iterator slIt = slList.constBegin();
   for ( ; slIt != slList.constEnd(); ++slIt )
   {
@@ -829,15 +822,7 @@ void QgsDxfExport::addFeature( const QgsFeature& fet, const QString& layer, cons
   {
     int c = colorFromSymbolLayer( symbolLayer );
     double width = widthFromSymbolLayer( symbolLayer );
-    QString lineStyleName = "CONTINUOUS";
-    QHash< const QgsSymbolLayerV2*, QString >::const_iterator lineTypeIt = mLineStyles.find( symbolLayer );
-    if ( lineTypeIt != mLineStyles.constEnd() )
-    {
-      lineStyleName = lineTypeIt.value();
-    }
-
-    //todo: write point symbols as blocks
-
+    QString lineStyleName = lineStyleFromSymbolLayer( symbolLayer );
     QGis::WkbType geometryType = geom->wkbType();
 
     //single point
@@ -922,7 +907,7 @@ int QgsDxfExport::colorFromSymbolLayer( const QgsSymbolLayerV2* symbolLayer )
   return closestColorMatch( c.rgba() );
 }
 
-double QgsDxfExport::widthFromSymbolLayer( const QgsSymbolLayerV2* symbolLayer )
+double QgsDxfExport::widthFromSymbolLayer( const QgsSymbolLayerV2* symbolLayer ) const
 {
   //line symbol layer has width and width units
   if ( symbolLayer && symbolLayer->type() == QgsSymbolV2::Line )
@@ -936,6 +921,36 @@ double QgsDxfExport::widthFromSymbolLayer( const QgsSymbolLayerV2* symbolLayer )
   //marker symbol layer: check for embedded line layers?
 
   //mapUnitScaleFactor( double scaleDenominator, QgsSymbolV2::OutputUnit symbolUnits, QGis::UnitType mapUnits )
+}
+
+QString QgsDxfExport::lineStyleFromSymbolLayer( const QgsSymbolLayerV2* symbolLayer )
+{
+  QString lineStyleName = "CONTINUOUS";
+  if ( !symbolLayer )
+  {
+    return lineStyleName;
+  }
+
+  QHash< const QgsSymbolLayerV2*, QString >::const_iterator lineTypeIt = mLineStyles.find( symbolLayer );
+  if ( lineTypeIt != mLineStyles.constEnd() )
+  {
+    lineStyleName = lineTypeIt.value();
+  }
+  else
+  {
+    //simple line and simple fill have pen style member
+    if ( symbolLayer->layerType() == "SimpleLine" )
+    {
+      const QgsSimpleLineSymbolLayerV2* sl = static_cast< const QgsSimpleLineSymbolLayerV2* >( symbolLayer );
+      return lineNameFromPenStyle( sl->penStyle() );
+    }
+    else if ( symbolLayer->layerType() == "SimpleFill" )
+    {
+      const QgsSimpleFillSymbolLayerV2* sf = static_cast< const QgsSimpleFillSymbolLayerV2* >( symbolLayer );
+      return lineNameFromPenStyle( sf->borderStyle() );
+    }
+  }
+  return lineStyleName;
 }
 
 int QgsDxfExport::closestColorMatch( QRgb pixel )
@@ -1070,6 +1085,48 @@ QList< QPair< QgsSymbolLayerV2*, QgsSymbolV2* > > QgsDxfExport::symbolLayers()
   return symbolLayers;
 }
 
+void QgsDxfExport::writeDefaultLinestyles()
+{
+  double das = dashSize();
+  double dos = dotSize();
+  double dss = dashSeparatorSize();
+
+  //continuous (Qt solid line)
+  writeGroup( 0, "LTYPE" );
+  writeGroup( 2, "CONTINUOUS" );
+  writeGroup( 70, 64 );
+  writeGroup( 3, "Defaultstyle" );
+  writeGroup( 72, 65 );
+  writeGroup( 73, 0 );
+  writeGroup( 40, 0.0 );
+
+  QVector<qreal> dashVector( 2 );
+  dashVector[0] = das;
+  dashVector[1] = dss;
+  writeLinestyle( "DASH", dashVector, QgsSymbolV2::MapUnit );
+
+  QVector<qreal> dotVector( 2 );
+  dotVector[0] = dos;
+  dotVector[1] = dss;
+  writeLinestyle( "DOT", dotVector, QgsSymbolV2::MapUnit );
+
+  QVector<qreal> dashDotVector( 4 );
+  dashDotVector[0] = das;
+  dashDotVector[1] = dss;
+  dashDotVector[2] = dos;
+  dashDotVector[3] = dss;
+  writeLinestyle( "DASHDOT", dashDotVector, QgsSymbolV2::MapUnit );
+
+  QVector<qreal> dashDotDotVector( 6 );
+  dashDotDotVector[0] = das;
+  dashDotDotVector[1] = dss;
+  dashDotDotVector[2] = dos;
+  dashDotDotVector[3] = dss;
+  dashDotDotVector[4] = dos;
+  dashDotDotVector[5] = dss;
+  writeLinestyle( "DASHDOTDOT", dashDotDotVector, QgsSymbolV2::MapUnit );
+}
+
 void QgsDxfExport::writeSymbolLayerLinestyle( const QgsSymbolLayerV2* symbolLayer )
 {
   if ( !symbolLayer )
@@ -1153,6 +1210,56 @@ bool QgsDxfExport::hasDataDefinedProperties( const QgsSymbolLayerV2* sl, const Q
   }
 
   return sl->hasDataDefinedProperties();
+}
+
+double QgsDxfExport::dashSize() const
+{
+  double size = mSymbologyScaleDenominator * 0.002;
+  return sizeToMapUnits( size );
+}
+
+double QgsDxfExport::dotSize() const
+{
+  double size = mSymbologyScaleDenominator * 0.0006;
+  return sizeToMapUnits( size );
+}
+
+double QgsDxfExport::dashSeparatorSize() const
+{
+  double size = mSymbologyScaleDenominator * 0.0006;
+  return sizeToMapUnits( size );
+}
+
+double QgsDxfExport::sizeToMapUnits( double s ) const
+{
+  double size = s;
+  if ( mMapUnits == QGis::Feet )
+  {
+    size /= 0.3048;
+  }
+  else if ( mMapUnits == QGis::Degrees )
+  {
+    size /= 111120;
+  }
+  return size;
+}
+
+QString QgsDxfExport::lineNameFromPenStyle( Qt::PenStyle style )
+{
+  switch ( style )
+  {
+    case Qt::DashLine:
+      return "DASH";
+    case Qt::DotLine:
+      return "DOT";
+    case Qt::DashDotLine:
+      return "DASHDOT";
+    case Qt::DashDotDotLine:
+      return "DASHDOTDOT";
+    case Qt::SolidLine:
+    default:
+      return "CONTINUOUS";
+  }
 }
 
 /******************************************************Test with AC_1018 methods***************************************************************/

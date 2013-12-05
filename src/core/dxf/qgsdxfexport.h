@@ -108,6 +108,7 @@ class QgsDxfExport
 
     void writePoint( const QgsPoint& pt, const QString& layer, const QgsFeature* f, const QgsSymbolLayerV2* symbolLayer, const QgsSymbolV2* symbol );
     void writeVertex( const QgsPoint& pt, const QString& layer );
+    void writeDefaultLinestyles();
     void writeSymbolLayerLinestyle( const QgsSymbolLayerV2* symbolLayer );
     void writeLinestyle( const QString& styleName, const QVector<qreal>& pattern, QgsSymbolV2::OutputUnit u );
 
@@ -129,8 +130,9 @@ class QgsDxfExport
     double scaleToMapUnits( double value, QgsSymbolV2::OutputUnit symbolUnits, QGis::UnitType mapUnits ) const;
 
     //returns dxf palette index from symbol layer color
-    int colorFromSymbolLayer( const QgsSymbolLayerV2* symbolLayer );
-    double widthFromSymbolLayer( const QgsSymbolLayerV2* symbolLayer );
+    static int colorFromSymbolLayer( const QgsSymbolLayerV2* symbolLayer );
+    double widthFromSymbolLayer( const QgsSymbolLayerV2* symbolLayer ) const;
+    QString lineStyleFromSymbolLayer( const QgsSymbolLayerV2* symbolLayer );
 
     //functions for dxf palette
     static int color_distance( QRgb p1, int index );
@@ -144,6 +146,11 @@ class QgsDxfExport
     QList< QPair< QgsSymbolLayerV2*, QgsSymbolV2* > > symbolLayers();
     static int nLineTypes( const QList< QPair< QgsSymbolLayerV2*, QgsSymbolV2*> >& symbolLayers );
     static bool hasDataDefinedProperties( const QgsSymbolLayerV2* sl, const QgsSymbolV2* symbol );
+    double dashSize() const;
+    double dotSize() const;
+    double dashSeparatorSize() const;
+    double sizeToMapUnits( double s ) const;
+    static QString lineNameFromPenStyle( Qt::PenStyle style );
 };
 
 #endif // QGSDXFEXPORT_H
