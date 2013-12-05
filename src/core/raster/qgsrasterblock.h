@@ -357,6 +357,8 @@ class CORE_EXPORT QgsRasterBlock
     // No data value
     double mNoDataValue;
 
+    static const QRgb mNoDataColor;
+
     // Data block for numerical data types, not used with image data types
     // QByteArray does not seem to be intended for large data blocks, does it?
     void * mData;

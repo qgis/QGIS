@@ -290,6 +290,9 @@ void QgsRasterProjector::calcSrcExtent()
   }
   // Expand a bit to avoid possible approx coords falling out because of representation error?
 
+  // Combine with maximum source  extent
+  mSrcExtent = mSrcExtent.intersect( &mExtent );
+
   // If mMaxSrcXRes, mMaxSrcYRes are defined (fixed src resolution)
   // align extent to src resolution to avoid jumping of reprojected pixels
   // when shifting resampled grid.
@@ -464,19 +467,19 @@ void QgsRasterProjector::nextHelper()
   mHelperTopRow++;
 }
 
-void QgsRasterProjector::srcRowCol( int theDestRow, int theDestCol, int *theSrcRow, int *theSrcCol, const QgsCoordinateTransform* ct )
+bool QgsRasterProjector::srcRowCol( int theDestRow, int theDestCol, int *theSrcRow, int *theSrcCol, const QgsCoordinateTransform* ct )
 {
   if ( mApproximate )
   {
-    approximateSrcRowCol( theDestRow, theDestCol, theSrcRow, theSrcCol );
+    return approximateSrcRowCol( theDestRow, theDestCol, theSrcRow, theSrcCol );
   }
   else
   {
-    preciseSrcRowCol( theDestRow, theDestCol, theSrcRow, theSrcCol, ct );
+    return preciseSrcRowCol( theDestRow, theDestCol, theSrcRow, theSrcCol, ct );
   }
 }
 
-void QgsRasterProjector::preciseSrcRowCol( int theDestRow, int theDestCol, int *theSrcRow, int *theSrcCol, const QgsCoordinateTransform* ct )
+bool QgsRasterProjector::preciseSrcRowCol( int theDestRow, int theDestCol, int *theSrcRow, int *theSrcCol, const QgsCoordinateTransform* ct )
 {
 #ifdef QGISDEBUG
   QgsDebugMsgLevel( QString( "theDestRow = %1" ).arg( theDestRow ), 5 );
@@ -501,31 +504,31 @@ void QgsRasterProjector::preciseSrcRowCol( int theDestRow, int theDestCol, int *
   QgsDebugMsgLevel( QString( "x = %1 y = %2" ).arg( x ).arg( y ), 5 );
 #endif
 
+  if ( !mExtent.contains( QgsPoint( x, y ) ) )
+  {
+    return false;
+  }
   // Get source row col
   *theSrcRow = ( int ) floor(( mSrcExtent.yMaximum() - y ) / mSrcYRes );
   *theSrcCol = ( int ) floor(( x - mSrcExtent.xMinimum() ) / mSrcXRes );
 #ifdef QGISDEBUG
-  QgsDebugMsgLevel( QString( "mSrcExtent.yMaximum() = %1 mSrcYRes = %2" ).arg( mSrcExtent.yMaximum() ).arg( mSrcYRes ), 5 );
+  QgsDebugMsgLevel( QString( "mSrcExtent.yMinimum() = %1 mSrcExtent.yMaximum() = %2 mSrcYRes = %3" ).arg( mSrcExtent.yMinimum() ).arg( mSrcExtent.yMaximum() ).arg( mSrcYRes ), 5 );
   QgsDebugMsgLevel( QString( "theSrcRow = %1 theSrcCol = %2" ).arg( *theSrcRow ).arg( *theSrcCol ), 5 );
 #endif
 
   // With epsg 32661 (Polar Stereographic) it was happening that *theSrcCol == mSrcCols
   // For now silently correct limits to avoid crashes
   // TODO: review
-  if ( *theSrcRow >= mSrcRows )
-    *theSrcRow = mSrcRows - 1;
-  if ( *theSrcRow < 0 )
-    *theSrcRow = 0;
-  if ( *theSrcCol >= mSrcCols )
-    *theSrcCol = mSrcCols - 1;
-  if ( *theSrcCol < 0 )
-    *theSrcCol = 0;
+  // should not happen
+  if ( *theSrcRow >= mSrcRows ) return false;
+  if ( *theSrcRow < 0 ) return false;
+  if ( *theSrcCol >= mSrcCols ) return false;
+  if ( *theSrcCol < 0 ) return false;
 
-  Q_ASSERT( *theSrcRow < mSrcRows );
-  Q_ASSERT( *theSrcCol < mSrcCols );
+  return true;
 }
 
-void QgsRasterProjector::approximateSrcRowCol( int theDestRow, int theDestCol, int *theSrcRow, int *theSrcCol )
+bool QgsRasterProjector::approximateSrcRowCol( int theDestRow, int theDestCol, int *theSrcRow, int *theSrcCol )
 {
   int myMatrixRow = matrixRow( theDestRow );
   int myMatrixCol = matrixCol( theDestCol );
@@ -561,6 +564,11 @@ void QgsRasterProjector::approximateSrcRowCol( int theDestRow, int theDestCol, i
   double mySrcX = bx + ( tx - bx ) * yfrac;
   double mySrcY = by + ( ty - by ) * yfrac;
 
+  if ( !mExtent.contains( QgsPoint( mySrcX, mySrcY ) ) )
+  {
+    return false;
+  }
+
   // TODO: check again cell selection (coor is in the middle)
 
   *theSrcRow = ( int ) floor(( mSrcExtent.yMaximum() - mySrcY ) / mSrcYRes );
@@ -568,16 +576,13 @@ void QgsRasterProjector::approximateSrcRowCol( int theDestRow, int theDestCol, i
 
   // For now silently correct limits to avoid crashes
   // TODO: review
-  if ( *theSrcRow >= mSrcRows )
-    *theSrcRow = mSrcRows - 1;
-  if ( *theSrcRow < 0 )
-    *theSrcRow = 0;
-  if ( *theSrcCol >= mSrcCols )
-    *theSrcCol = mSrcCols - 1;
-  if ( *theSrcCol < 0 )
-    *theSrcCol = 0;
-  Q_ASSERT( *theSrcRow < mSrcRows );
-  Q_ASSERT( *theSrcCol < mSrcCols );
+  // should not happen
+  if ( *theSrcRow >= mSrcRows ) return false;
+  if ( *theSrcRow < 0 ) return false;
+  if ( *theSrcCol >= mSrcCols ) return false;
+  if ( *theSrcCol < 0 ) return false;
+
+  return true;
 }
 
 void QgsRasterProjector::insertRows( const QgsCoordinateTransform* ct )
@@ -816,7 +821,11 @@ QgsRasterBlock * QgsRasterProjector::block( int bandNo, QgsRectangle  const & ex
     return outputBlock;
   }
 
-  // No data:
+  // set output to no data, it should be fast
+  outputBlock->setIsNoData();
+
+  // No data: because isNoData()/setIsNoData() is slow with respect to simple memcpy,
+  // we use if only if necessary:
   // 1) no data value exists (numerical) -> memcpy, not necessary isNoData()/setIsNoData()
   // 2) no data value does not exist but it may contain no data (numerical no data bitmap)
   //    -> must use isNoData()/setIsNoData()
@@ -825,7 +834,7 @@ QgsRasterBlock * QgsRasterProjector::block( int bandNo, QgsRectangle  const & ex
 
   // To copy no data values stored in bitmaps we have to use isNoData()/setIsNoData(),
   // we cannot fill output block with no data because we use memcpy for data, not setValue().
-  bool doNoData = inputBlock->hasNoData() && !inputBlock->hasNoDataValue();
+  bool doNoData = !QgsRasterBlock::typeIsNumeric( inputBlock->dataType() ) && inputBlock->hasNoData() && !inputBlock->hasNoDataValue();
 
   const QgsCoordinateTransform* ct = 0;
   if ( !mApproximate )
@@ -833,19 +842,23 @@ QgsRasterBlock * QgsRasterProjector::block( int bandNo, QgsRectangle  const & ex
     ct = QgsCoordinateTransformCache::instance()->transform( mDestCRS.authid(), mSrcCRS.authid(), mDestDatumTransform, mSrcDatumTransform );
   }
 
+  outputBlock->setIsNoData();
+
   int srcRow, srcCol;
   for ( int i = 0; i < height; ++i )
   {
     for ( int j = 0; j < width; ++j )
     {
-      srcRowCol( i, j, &srcRow, &srcCol, ct );
+      bool inside = srcRowCol( i, j, &srcRow, &srcCol, ct );
+      if ( !inside ) continue; // we have everything set to no data
+
       qgssize srcIndex = ( qgssize )srcRow * mSrcCols + srcCol;
       QgsDebugMsgLevel( QString( "row = %1 col = %2 srcRow = %3 srcCol = %4" ).arg( i ).arg( j ).arg( srcRow ).arg( srcCol ), 5 );
 
       // isNoData() may be slow so we check doNoData first
       if ( doNoData && inputBlock->isNoData( srcRow, srcCol ) )
       {
-        outputBlock->setIsNoData( srcRow, srcCol );
+        outputBlock->setIsNoData( i, j );
         continue ;
       }
 

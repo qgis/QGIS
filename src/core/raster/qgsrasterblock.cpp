@@ -23,6 +23,8 @@
 #include "qgslogger.h"
 #include "qgsrasterblock.h"
 
+const QRgb QgsRasterBlock::mNoDataColor = qRgba( 255, 255, 255, 0 );
+
 QgsRasterBlock::QgsRasterBlock()
     : mValid( true )
     , mDataType( QGis::UnknownDataType )
@@ -464,7 +466,7 @@ bool QgsRasterBlock::setIsNoData()
       return false;
     }
     QgsDebugMsg( "Fill image" );
-    mImage->fill( qRgba( 0, 0, 0, 0 ) );
+    mImage->fill( mNoDataColor );
     return true;
   }
 }

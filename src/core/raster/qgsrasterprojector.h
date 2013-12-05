@@ -113,8 +113,11 @@ class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
     void setSrcRows( int theRows ) { mSrcRows = theRows; mSrcXRes = mSrcExtent.height() / mSrcRows; }
     void setSrcCols( int theCols ) { mSrcCols = theCols; mSrcYRes = mSrcExtent.width() / mSrcCols; }
 
-    /** \brief Get source row and column indexes for current source extent and resolution */
-    void srcRowCol( int theDestRow, int theDestCol, int *theSrcRow, int *theSrcCol, const QgsCoordinateTransform* ct );
+    /** \brief Get source row and column indexes for current source extent and resolution
+        If source pixel is outside source extent theSrcRow and theSrcCol are left unchanged.
+        @return true if inside source
+     */
+    bool srcRowCol( int theDestRow, int theDestCol, int *theSrcRow, int *theSrcCol, const QgsCoordinateTransform* ct );
 
     int dstRows() const { return mDestRows; }
     int dstCols() const { return mDestCols; }
@@ -130,10 +133,10 @@ class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
     QgsPoint srcPoint( int theRow, int theCol );
 
     /** \brief Get precise source row and column indexes for current source extent and resolution */
-    inline void preciseSrcRowCol( int theDestRow, int theDestCol, int *theSrcRow, int *theSrcCol, const QgsCoordinateTransform* ct );
+    inline bool preciseSrcRowCol( int theDestRow, int theDestCol, int *theSrcRow, int *theSrcCol, const QgsCoordinateTransform* ct );
 
     /** \brief Get approximate source row and column indexes for current source extent and resolution */
-    inline void approximateSrcRowCol( int theDestRow, int theDestCol, int *theSrcRow, int *theSrcCol );
+    inline bool approximateSrcRowCol( int theDestRow, int theDestCol, int *theSrcRow, int *theSrcCol );
 
     /** \brief Calculate matrix */
     void calc();
