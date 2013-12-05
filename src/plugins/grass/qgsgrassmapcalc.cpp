@@ -832,6 +832,9 @@ void QgsGrassMapcalc::keyPressEvent( QKeyEvent * e )
   if ( e->key() == Qt::Key_Delete )
   {
     deleteItem();
+
+    // Override default shortcut management in MapCanvas
+    e->ignore();
   }
 }
 

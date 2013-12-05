@@ -14,7 +14,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgisapp.h"
 #include "qgsmaptoolselectrectangle.h"
 #include "qgsmaptoolselectutils.h"
 #include "qgsrubberband.h"
@@ -111,12 +110,4 @@ void QgsMapToolSelectRectangle::canvasReleaseEvent( QMouseEvent *e )
   }
 
   mDragging = false;
-}
-
-void QgsMapToolSelectRectangle::keyPressEvent( QKeyEvent* e )
-{
-  if ( e->key() == Qt::Key_Backspace || e->key() == Qt::Key_Delete )
-  {
-    QgisApp::instance()->deleteSelected( );
-  }
 }

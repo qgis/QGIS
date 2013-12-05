@@ -1161,6 +1161,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     void clipboardChanged();
 
+    //! catch MapCanvas keyPress event so we can check if selected feature collection must be deleted
+    void mapCanvas_keyPressed( QKeyEvent *e );
+
   signals:
     /** emitted when a key is pressed and we want non widget sublasses to be able
       to pick up on this (e.g. maplayer) */

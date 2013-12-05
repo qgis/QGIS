@@ -13,7 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgisapp.h"
 #include "qgsmaptoolselect.h"
 #include "qgsmaptoolselectutils.h"
 #include "qgsrubberband.h"
@@ -49,12 +48,4 @@ void QgsMapToolSelect::canvasReleaseEvent( QMouseEvent * e )
   QgsMapToolSelectUtils::setSelectFeatures( mCanvas, selectGeom, false, doDifference, true );
   delete selectGeom;
   rubberBand.reset( QGis::Polygon );
-}
-
-void QgsMapToolSelect::keyPressEvent( QKeyEvent* e )
-{
-  if ( e->key() == Qt::Key_Backspace || e->key() == Qt::Key_Delete )
-  {
-    QgisApp::instance()->deleteSelected( );
-  }
 }

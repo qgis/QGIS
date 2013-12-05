@@ -36,9 +36,6 @@ class APP_EXPORT QgsMapToolSelectPolygon : public QgsMapTool
     //! Overridden mouse press event
     virtual void canvasPressEvent( QMouseEvent * e );
 
-    //! Overridden key press event
-    virtual void keyPressEvent( QKeyEvent* e );
-
   private:
 
     //! used for storing all of the maps point for the polygon

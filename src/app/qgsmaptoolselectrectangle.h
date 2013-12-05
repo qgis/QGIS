@@ -43,9 +43,6 @@ class APP_EXPORT QgsMapToolSelectRectangle : public QgsMapTool
     //! Overridden mouse release event
     virtual void canvasReleaseEvent( QMouseEvent * e );
 
-    //! Overridden key press event
-    virtual void keyPressEvent( QKeyEvent* e );
-
   private:
 
     //! Flag to indicate a map canvas drag operation is taking place

@@ -141,6 +141,9 @@ void QgsMapToolAnnotation::keyPressEvent( QKeyEvent* e )
         mCanvas->scene()->removeItem( sItem );
         delete sItem;
         mCanvas->setCursor( neutralCursor );
+
+        // Override default shortcut management in MapCanvas
+        e->ignore();
       }
     }
   }

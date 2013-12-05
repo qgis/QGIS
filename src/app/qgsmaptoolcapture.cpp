@@ -269,6 +269,9 @@ void QgsMapToolCapture::keyPressEvent( QKeyEvent* e )
   if ( e->key() == Qt::Key_Backspace || e->key() == Qt::Key_Delete )
   {
     undo();
+
+    // Override default shortcut management in MapCanvas
+    e->ignore();
   }
 }
 

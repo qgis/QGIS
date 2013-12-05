@@ -41,9 +41,6 @@ class APP_EXPORT QgsMapToolSelectRadius : public QgsMapTool
     //! Overridden mouse release event
     virtual void canvasReleaseEvent( QMouseEvent * e );
 
-    //! Overridden key press event
-    virtual void keyPressEvent( QKeyEvent* e );
-
   private:
 
     //! sets the rubber band to a circle approximated using 40 segments.

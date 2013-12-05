@@ -1903,6 +1903,10 @@ void QgisApp::setupConnections()
   connect( mRenderSuppressionCBox, SIGNAL( toggled( bool ) ),
            mMapCanvas, SLOT( setRenderFlag( bool ) ) );
 
+  // connect MapCanvas keyPress event so we can check if selected feature collection must be deleted
+  connect( mMapCanvas, SIGNAL( keyPressed( QKeyEvent * ) ), 
+           this, SLOT( mapCanvas_keyPressed( QKeyEvent * ) ) );
+
   // connect renderer
   connect( mMapCanvas->mapRenderer(), SIGNAL( drawingProgress( int, int ) ),
            this, SLOT( showProgress( int, int ) ) );
@@ -4845,9 +4849,17 @@ void QgisApp::deleteSelected( QgsMapLayer *layer, QWidget* parent, bool promptCo
     return;
   }
 
-  //display a warning
+  //validate selection
   int numberOfDeletedFeatures = vlayer->selectedFeaturesIds().size();
-  if ( promptConfirmation && QMessageBox::warning( parent, tr( "Delete features" ), tr( "Delete %n feature(s)?", "number of features to delete", numberOfDeletedFeatures ), QMessageBox::Ok, QMessageBox::Cancel ) == QMessageBox::Cancel )
+  if ( numberOfDeletedFeatures == 0 )
+  {
+    messageBar()->pushMessage( tr( "No Features Selected" ),
+                               tr( "The current layer has not selected features" ),
+                               QgsMessageBar::INFO, messageTimeout() );
+    return;
+  }
+  //display a warning
+  if ( promptConfirmation && QMessageBox::warning( parent, tr( "Delete features" ), tr( "Delete %n feature(s)?", "number of features to delete", numberOfDeletedFeatures ), QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
   {
     return;
   }
@@ -6500,9 +6512,17 @@ void QgisApp::removeLayer( bool promptConfirmation )
       return;
   }
 
-  //display a warning
+  //validate selection
   int numberOfRemovedLayers = mMapLegend->selectedLayers().size();
-  if ( promptConfirmation && QMessageBox::warning( this, tr( "Remove layers" ), tr( "Remove %n layer(s)?", "number of layers to remove", numberOfRemovedLayers ), QMessageBox::Ok, QMessageBox::Cancel ) == QMessageBox::Cancel )
+  if ( numberOfRemovedLayers == 0 )
+  {
+    messageBar()->pushMessage( tr( "No Layer Selected" ),
+                               tr( "To remove layers, you must select they in the legend" ),
+                               QgsMessageBar::INFO, messageTimeout() );
+    return;
+  }
+  //display a warning
+  if ( promptConfirmation && QMessageBox::warning( this, tr( "Remove layers" ), tr( "Remove %n layer(s)?", "number of layers to remove", numberOfRemovedLayers ), QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
   {
     return;
   }
@@ -9071,6 +9091,15 @@ void QgisApp::keyPressEvent( QKeyEvent * e )
   else
   {
     e->ignore();
+  }
+}
+
+void QgisApp::mapCanvas_keyPressed( QKeyEvent *e )
+{
+  // Delete selected features when it is possible and KeyEvent was not managed by current MapTool
+  if ( ( e->key() == Qt::Key_Backspace || e->key() == Qt::Key_Delete ) && e->isAccepted() && mActionDeleteSelected->isEnabled() )
+  {
+    deleteSelected();
   }
 }
 

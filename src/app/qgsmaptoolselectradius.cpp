@@ -13,7 +13,6 @@ email                : jpalmer at linz dot govt dot nz
 *                                                                         *
 ***************************************************************************/
 
-#include "qgisapp.h"
 #include "qgsmaptoolselectradius.h"
 #include "qgsmaptoolselectutils.h"
 #include "qgsgeometry.h"
@@ -111,10 +110,3 @@ void QgsMapToolSelectRadius::setRadiusRubberBand( QgsPoint & radiusEdge )
   }
 }
 
-void QgsMapToolSelectRadius::keyPressEvent( QKeyEvent* e )
-{
-  if ( e->key() == Qt::Key_Backspace || e->key() == Qt::Key_Delete )
-  {
-    QgisApp::instance()->deleteSelected( );
-  }
-}
