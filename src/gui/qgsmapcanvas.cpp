@@ -81,6 +81,83 @@ class QgsMapCanvas::CanvasProperties
 
 
 
+QgsMapCanvasRendererSync::QgsMapCanvasRendererSync( QgsMapCanvas* canvas, QgsMapRenderer* renderer )
+  : QObject( canvas )
+  , mCanvas( canvas )
+  , mRenderer( renderer )
+{
+  connect( mCanvas, SIGNAL(extentsChanged()), this, SLOT(onExtentC2R()) );
+  connect( mRenderer, SIGNAL(extentsChanged()), this, SLOT(onExtentR2C()) );
+
+  connect( mCanvas, SIGNAL(mapUnitsChanged()), this, SLOT(onMapUnitsC2R()) );
+  connect( mRenderer, SIGNAL(mapUnitsChanged()), this, SLOT(onMapUnitsR2C()) );
+
+  connect( mCanvas, SIGNAL(hasCrsTransformEnabled(bool)), this, SLOT(onCrsTransformC2R()) );
+  connect( mRenderer, SIGNAL(hasCrsTransformEnabled(bool)), this, SLOT(onCrsTransformR2C()) );
+
+  connect( mCanvas, SIGNAL(destinationSrsChanged()), this, SLOT(onDestCrsC2R()) );
+  connect( mRenderer, SIGNAL(destinationSrsChanged()), this, SLOT(onDestCrsR2C()) );
+
+  connect( mCanvas, SIGNAL(layersChanged()), this, SLOT(onLayersC2R()) );
+  // TODO: layers R2C ? (should not happen!)
+
+}
+
+void QgsMapCanvasRendererSync::onExtentC2R()
+{
+  mRenderer->blockSignals( true );
+  mRenderer->setExtent( mCanvas->mapSettings().extent() );
+  mRenderer->blockSignals( false );
+}
+
+void QgsMapCanvasRendererSync::onExtentR2C()
+{
+  mCanvas->setExtent( mRenderer->extent() );
+}
+
+void QgsMapCanvasRendererSync::onMapUnitsC2R()
+{
+  mRenderer->blockSignals( true );
+  mRenderer->setMapUnits( mCanvas->mapSettings().mapUnits() );
+  mRenderer->blockSignals( false );
+}
+
+void QgsMapCanvasRendererSync::onMapUnitsR2C()
+{
+  mCanvas->setMapUnits( mRenderer->mapUnits() );
+}
+
+void QgsMapCanvasRendererSync::onCrsTransformC2R()
+{
+  mRenderer->blockSignals( true );
+  mRenderer->setProjectionsEnabled( mCanvas->mapSettings().hasCrsTransformEnabled() );
+  mRenderer->blockSignals( false );
+}
+
+void QgsMapCanvasRendererSync::onCrsTransformR2C()
+{
+  mCanvas->setCrsTransformEnabled( mRenderer->hasCrsTransformEnabled() );
+}
+
+void QgsMapCanvasRendererSync::onDestCrsC2R()
+{
+  mRenderer->blockSignals( true );
+  mRenderer->setDestinationCrs( mCanvas->mapSettings().destinationCrs() );
+  mRenderer->blockSignals( false );
+}
+
+void QgsMapCanvasRendererSync::onDestCrsR2C()
+{
+  mCanvas->setDestinationCrs( mRenderer->destinationCrs() );
+}
+
+void QgsMapCanvasRendererSync::onLayersC2R()
+{
+  mRenderer->setLayerSet( mCanvas->mapSettings().layers() );
+}
+
+
+
 QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
     : QGraphicsView( parent )
     , mCanvasProperties( new CanvasProperties )
@@ -128,7 +205,12 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
 
   mSettings.setFlag( QgsMapSettings::DrawEditingInfo );
 
+  // class that will sync most of the changes between canvas and (legacy) map renderer
+  // it is parented to map canvas, will be deleted automatically
+  new QgsMapCanvasRendererSync( this, mMapRenderer );
+
   mSettings.setOutputSize( size() );
+  mMapRenderer->setOutputSize( size(), mSettings.outputDpi() );
   setSceneRect( 0, 0, size().width(), size().height() );
   mScene->setSceneRect( QRectF( 0, 0, size().width(), size().height() ) );
 
@@ -776,24 +858,6 @@ bool QgsMapCanvas::hasCrsTransformEnabled()
   return mapSettings().hasCrsTransformEnabled();
 }
 
-void QgsMapCanvas::mapUnitsChanged()
-{
-  // We assume that if the map units have changed, the changed value
-  // will be accessible from QgsMapRenderer
-
-  // And then force a redraw of the scale number in the status bar
-  updateScale();
-
-  // And then redraw the map to force the scale bar to update
-  // itself. This is less than ideal as the entire map gets redrawn
-  // just to get the scale bar to redraw itself. If we ask the scale
-  // bar to redraw itself without redrawing the map, the existing
-  // scale bar is not removed, and we end up with two scale bars in
-  // the same location. This can perhaps be fixed when/if the scale
-  // bar is done as a transparent layer on top of the map canvas.
-  refresh();
-}
-
 void QgsMapCanvas::zoomToSelected( QgsVectorLayer* layer )
 {
   if ( layer == NULL )
@@ -1076,6 +1140,7 @@ void QgsMapCanvas::resizeEvent( QResizeEvent * e )
   QSize lastSize = size();
 
   mSettings.setOutputSize( lastSize );
+  mMapRenderer->setOutputSize( lastSize, mSettings.outputDpi() );
 
   mScene->setSceneRect( QRectF( 0, 0, lastSize.width(), lastSize.height() ) );
 
@@ -1364,6 +1429,12 @@ void QgsMapCanvas::setMapUnits( QGis::UnitType u )
 {
   QgsDebugMsg( "Setting map units to " + QString::number( static_cast<int>( u ) ) );
   mSettings.setMapUnits( u );
+
+  updateScale();
+
+  refresh(); // this will force the scale bar to be updated
+
+  emit mapUnitsChanged();
 }
 
 

@@ -318,9 +318,6 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     /** A simple helper method to find out if on the fly projections are enabled or not */
     bool hasCrsTransformEnabled();
 
-    /** The map units may have changed, so cope with that */
-    void mapUnitsChanged();
-
     //! @deprecated in 2.1 - does nothing - kept for API compatibility
     Q_DECL_DEPRECATED void updateMap();
 
@@ -416,6 +413,10 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Emitted when map CRS has changed
     //! @note added in 2.1
     void destinationSrsChanged();
+
+    //! Emmitted when map units are changed
+    //! @note added in 2.1
+    void mapUnitsChanged();
 
   protected:
 #ifdef HAVE_TOUCH
@@ -538,6 +539,42 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     bool mUseParallelRendering;
 
 }; // class QgsMapCanvas
+
+
+
+
+/** Class that does synchronization between QgsMapCanvas and its associated QgsMapRenderer:
+ *   - changes done in map canvas settings are pushed to map renderer
+ *   - changes done in map renderer are pushed to map canvas settings
+ *
+ * This class can be removed within API cleanup when QgsMapRenderer will not be accessible from canvas API anymore.
+ * Added in 2.1. This class is not a part of public API!
+ */
+class QgsMapCanvasRendererSync : public QObject
+{
+  Q_OBJECT
+public:
+  QgsMapCanvasRendererSync( QgsMapCanvas* canvas, QgsMapRenderer* renderer );
+
+protected slots:
+  void onExtentC2R();
+  void onExtentR2C();
+
+  void onMapUnitsC2R();
+  void onMapUnitsR2C();
+
+  void onCrsTransformC2R();
+  void onCrsTransformR2C();
+
+  void onDestCrsC2R();
+  void onDestCrsR2C();
+
+  void onLayersC2R();
+
+protected:
+  QgsMapCanvas* mCanvas;
+  QgsMapRenderer* mRenderer;
+};
 
 
 #endif

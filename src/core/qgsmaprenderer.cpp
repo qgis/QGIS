@@ -117,6 +117,8 @@ bool QgsMapRenderer::setExtent( const QgsRectangle& extent )
   mExtent = extent;
   if ( !extent.isEmpty() )
     adjustExtentToSize();
+
+  emit extentsChanged();
   return true;
 }
 

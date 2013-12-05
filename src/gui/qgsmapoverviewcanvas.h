@@ -27,7 +27,6 @@
 #include <QPixmap>
 
 class QgsMapCanvas;
-class QgsMapRenderer;
 class QgsPanningWidget; // defined in .cpp
 class QgsRectangle;
 

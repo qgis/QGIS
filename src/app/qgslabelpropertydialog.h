@@ -23,7 +23,6 @@
 #include "qgspallabeling.h"
 #include <QDialog>
 
-class QgsMapRenderer;
 
 /**A dialog to enter data defined label attributes*/
 class APP_EXPORT QgsLabelPropertyDialog: public QDialog, private Ui::QgsLabelPropertyDialogBase
