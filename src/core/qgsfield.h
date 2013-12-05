@@ -196,6 +196,10 @@ class CORE_EXPORT QgsFields
     inline int count() const { return mFields.count(); }
     //! Return number of items
     inline int size() const { return mFields.count(); }
+    //! Return if a field index is valid
+    //! @param i  Index of the field which needs to be checked
+    //! @return   True if the field exists
+    inline bool exists( int i ) const { return i >= 0 && i < mFields.count(); }
 
     //! Get field at particular index (must be in range 0..N-1)
     inline const QgsField& operator[]( int i ) const { return mFields[i].field; }

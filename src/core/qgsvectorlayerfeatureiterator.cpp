@@ -351,6 +351,9 @@ void QgsVectorLayerFeatureIterator::prepareJoins()
 
   for ( QgsAttributeList::const_iterator attIt = fetchAttributes.constBegin(); attIt != fetchAttributes.constEnd(); ++attIt )
   {
+    if ( !fields.exists( *attIt ) )
+      continue;
+
     if ( fields.fieldOrigin( *attIt ) != QgsFields::OriginJoin )
       continue;
 
