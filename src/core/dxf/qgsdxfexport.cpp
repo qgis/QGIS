@@ -291,6 +291,23 @@ QgsDxfExport::QgsDxfExport(): mSymbologyScaleDenominator( 1.0 ), mSymbologyExpor
 {
 }
 
+QgsDxfExport::QgsDxfExport( const QgsDxfExport& dxfExport )
+{
+  *this = dxfExport;
+}
+
+QgsDxfExport& QgsDxfExport::operator=( const QgsDxfExport & dxfExport )
+{
+  mLayers = dxfExport.mLayers;
+  mSymbologyScaleDenominator = dxfExport.mSymbologyScaleDenominator;
+  mSymbologyExport = dxfExport.mSymbologyExport;
+  mMapUnits = dxfExport.mMapUnits;
+  mSymbolLayerCounter = 0; //internal counter
+  mNextHandleId = 0;
+  mBlockCounter = 0;
+  return *this;
+}
+
 QgsDxfExport::~QgsDxfExport()
 {
 }

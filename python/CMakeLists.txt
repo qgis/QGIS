@@ -38,6 +38,7 @@ INCLUDE_DIRECTORIES(
   ../src/core/pal
   ../src/core/composer
   ../src/core/diagram
+  ../src/core/dxf
   ../src/core/gps
   ../src/core/raster
   ../src/core/symbology-ng

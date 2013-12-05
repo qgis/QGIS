@@ -40,7 +40,9 @@ class QgsDxfExport
     };
 
     QgsDxfExport();
+    QgsDxfExport( const QgsDxfExport& dxfExport );
     ~QgsDxfExport();
+    QgsDxfExport& operator=( const QgsDxfExport& dxfExport );
 
     void addLayers( QList< QgsMapLayer* >& layers ) { mLayers = layers; }
     int writeToFile( QIODevice* d );  //maybe add progress dialog? //other parameters (e.g. scale, dpi)?
@@ -83,8 +85,6 @@ class QgsDxfExport
     QGis::UnitType mMapUnits;
 
     QTextStream mTextStream;
-
-    QVector<QRgb> mDxfColorPalette;
 
     static double mDxfColors[][3];
 
