@@ -60,6 +60,10 @@ class ScriptEditorDialog(QDialog, Ui_DlgScriptEditor):
         QDialog.__init__(self)
         self.setupUi(self)
 
+        self.setWindowFlags(Qt.WindowMinimizeButtonHint |
+                            Qt.WindowMaximizeButtonHint |
+                            Qt.WindowCloseButtonHint)
+
         # Set icons
         self.btnSave.setIcon(
                 QgsApplication.getThemeIcon('/mActionFileSave.svg'))
