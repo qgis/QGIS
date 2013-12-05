@@ -1186,6 +1186,11 @@ void QgsGraduatedSymbolRendererV2::addClass( QgsSymbolV2* symbol )
 
 }
 
+void QgsGraduatedSymbolRendererV2::addClass( QgsRendererRangeV2 range )
+{
+  mRanges.append( range );
+}
+
 void QgsGraduatedSymbolRendererV2::deleteClass( int idx )
 {
   mRanges.removeAt( idx );

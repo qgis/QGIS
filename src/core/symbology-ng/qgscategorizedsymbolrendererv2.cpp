@@ -49,7 +49,7 @@ QgsRendererCategoryV2::QgsRendererCategoryV2( const QgsRendererCategoryV2& cat )
 
 QgsRendererCategoryV2::~QgsRendererCategoryV2()
 {
-  if ( mSymbol ) delete mSymbol;
+  delete mSymbol;
 }
 
 QgsRendererCategoryV2& QgsRendererCategoryV2::operator=( const QgsRendererCategoryV2 & cat )

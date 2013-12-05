@@ -155,6 +155,25 @@ class CORE_EXPORT QgsVectorRandomColorRampV2 : public QgsVectorColorRampV2
     QList<QColor> mColors;
 };
 
+class CORE_EXPORT QgsRandomColorsV2: public QgsVectorColorRampV2
+{
+  public:
+    QgsRandomColorsV2();
+    ~QgsRandomColorsV2();
+
+    int count() const;
+
+    double value( int index ) const;
+
+    QColor color( double value ) const;
+
+    QString type() const;
+
+    QgsVectorColorRampV2* clone() const;
+
+    QgsStringMap properties() const;
+};
+
 
 #define DEFAULT_COLORBREWER_SCHEMENAME "Spectral"
 #define DEFAULT_COLORBREWER_COLORS     5

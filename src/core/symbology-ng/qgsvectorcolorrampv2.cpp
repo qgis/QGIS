@@ -319,6 +319,52 @@ void QgsVectorRandomColorRampV2::updateColors()
   }
 }
 
+/////////////
+
+QgsRandomColorsV2::QgsRandomColorsV2()
+{
+  srand( QTime::currentTime().msec() );
+}
+
+QgsRandomColorsV2::~QgsRandomColorsV2()
+{
+
+}
+
+int QgsRandomColorsV2::count() const
+{
+  return INT_MAX;
+}
+
+double QgsRandomColorsV2::value( int index ) const
+{
+  Q_UNUSED( index );
+  return 0.0;
+}
+
+QColor QgsRandomColorsV2::color( double value ) const
+{
+  Q_UNUSED( value );
+  int r = 1 + ( int )( 255.0 * rand() / ( RAND_MAX + 1.0 ) );
+  int g = 1 + ( int )( 255.0 * rand() / ( RAND_MAX + 1.0 ) );
+  int b = 1 + ( int )( 255.0 * rand() / ( RAND_MAX + 1.0 ) );
+  return QColor( r, g, b );
+}
+
+QString QgsRandomColorsV2::type() const
+{
+  return "randomcolors";
+}
+
+QgsVectorColorRampV2* QgsRandomColorsV2::clone() const
+{
+  return new QgsRandomColorsV2();
+}
+
+QgsStringMap QgsRandomColorsV2::properties() const
+{
+  return QgsStringMap();
+}
 
 ////////////
 

@@ -25,6 +25,7 @@
 #include "qgslogger.h"
 #include "qstring.h"
 
+#include <QKeyEvent>
 #include <QMenu>
 #include <QProgressDialog>
 #include <QSettings>
@@ -110,6 +111,7 @@ QgsRuleBasedRendererV2Widget::QgsRuleBasedRendererV2Widget( QgsVectorLayer* laye
 
 QgsRuleBasedRendererV2Widget::~QgsRuleBasedRendererV2Widget()
 {
+  qDeleteAll( mCopyBuffer );
   delete mRenderer;
 }
 
@@ -366,6 +368,23 @@ QList<QgsSymbolV2*> QgsRuleBasedRendererV2Widget::selectedSymbols()
   return symbolList;
 }
 
+QgsRuleBasedRendererV2::RuleList QgsRuleBasedRendererV2Widget::selectedRules()
+{
+  QgsRuleBasedRendererV2::RuleList rl;
+  QItemSelection sel = viewRules->selectionModel()->selection();
+  foreach ( QItemSelectionRange range, sel )
+  {
+    QModelIndex parent = range.parent();
+    QgsRuleBasedRendererV2::Rule* parentRule = mModel->ruleForIndex( parent );
+    QgsRuleBasedRendererV2::RuleList& children = parentRule->children();
+    for ( int row = range.top(); row <= range.bottom(); row++ )
+    {
+      rl.append( children[row]->clone() );
+    }
+  }
+  return rl;
+}
+
 void QgsRuleBasedRendererV2Widget::refreshSymbolView()
 {
   // TODO: model/view
@@ -375,6 +394,30 @@ void QgsRuleBasedRendererV2Widget::refreshSymbolView()
     treeRules->populateRules();
   }
   */
+}
+
+void QgsRuleBasedRendererV2Widget::keyPressEvent( QKeyEvent* event )
+{
+  if ( !event )
+  {
+    return;
+  }
+
+  if ( event->key() == Qt::Key_C && event->modifiers() == Qt::ControlModifier )
+  {
+    qDeleteAll( mCopyBuffer );
+    mCopyBuffer.clear();
+    mCopyBuffer = selectedRules();
+  }
+  else if ( event->key() == Qt::Key_V && event->modifiers() == Qt::ControlModifier )
+  {
+    QgsRuleBasedRendererV2::RuleList::const_iterator rIt = mCopyBuffer.constBegin();
+    for ( ; rIt != mCopyBuffer.constEnd(); ++rIt )
+    {
+      int rows = mModel->rowCount();
+      mModel->insertRule( QModelIndex(), rows, ( *rIt )->clone() );
+    }
+  }
 }
 
 #include "qgssymbollevelsv2dialog.h"
