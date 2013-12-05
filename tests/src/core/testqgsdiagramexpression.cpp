@@ -46,7 +46,7 @@
 /** \ingroup UnitTests
  * This is a unit test for the vector layer class.
  */
-class TestQgsDiagram: public QObject
+class TestQgsDiagramExpression: public QObject
 {
     Q_OBJECT;
   private:
@@ -116,7 +116,6 @@ class TestQgsDiagram: public QObject
         QTextStream myQTextStream( &myFile );
         myQTextStream << mReport;
         myFile.close();
-        //QDesktopServices::openUrl( "file:///" + myReportFile );
       }
 
       delete mComposerMap;
@@ -124,10 +123,12 @@ class TestQgsDiagram: public QObject
       delete mMapRenderer;
       delete mPointsLayer;
     }
+
     void init() {};// will be called before each testfunction is executed.
     void cleanup() {};// will be called after every testfunction.
 
-    void testPieDiagram()
+    // will be called after the last testfunction was executed.
+    void testPieDiagramExpression()
     {
       QgsDiagramSettings ds;
       QColor col1 = Qt::red;
@@ -135,7 +136,7 @@ class TestQgsDiagram: public QObject
       col1.setAlphaF( 0.5 );
       col2.setAlphaF( 0.5 );
       ds.categoryColors = QList<QColor>() << col1 << col2;
-      ds.categoryAttributes = QList<QString>() << "\"Pilots\"" << "\"Cabin Crew\"";
+      ds.categoryAttributes = QList<QString>() << "ln(Pilots + 1)" << "ln(\"Cabin Crew\" + 1)";
       ds.maxScaleDenominator = -1;
       ds.minScaleDenominator = -1;
       ds.minimumSize = 0;
@@ -152,7 +153,8 @@ class TestQgsDiagram: public QObject
       dr->setLowerSize( QSizeF( 0.0, 0.0 ) );
       dr->setUpperValue( 10 );
       dr->setUpperSize( QSizeF( 100, 100 ) );
-      dr->setClassificationAttribute( 5 ); // Staff
+      dr->setClassificationAttributeIsExpression( true );
+      dr->setClassificationAttributeExpression( "ln(Staff + 1)" );
       dr->setDiagram( mPieDiagram );
       dr->setDiagramSettings( ds );
       mPointsLayer->setDiagramRenderer( dr );
@@ -166,7 +168,7 @@ class TestQgsDiagram: public QObject
       mPointsLayer->setDiagramLayerSettings( dls );
 
       mComposerMap->setNewExtent( QgsRectangle( -122, -79, -70, 47 ) );
-      QgsCompositionChecker checker( "piediagram", mComposition );
+      QgsCompositionChecker checker( "piediagram_expression", mComposition );
 
       QVERIFY( checker.testComposition( mReport ) );
 
@@ -174,5 +176,5 @@ class TestQgsDiagram: public QObject
     }
 };
 
-QTEST_MAIN( TestQgsDiagram )
-#include "moc_testqgsdiagram.cxx"
+QTEST_MAIN( TestQgsDiagramExpression )
+#include "moc_testqgsdiagramexpression.cxx"

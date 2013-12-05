@@ -77,6 +77,8 @@
 
 #include "qgsmaptopixelgeometrysimplifier.h"
 
+#include "diagram/qgsdiagram.h"
+
 #ifdef TESTPROVIDERLIB
 #include <dlfcn.h>
 #endif
@@ -3611,15 +3613,49 @@ void QgsVectorLayer::prepareLabelingAndDiagrams( QgsRenderContext& rendererConte
     mDiagramLayerSettings->renderer = mDiagramRenderer;
     rendererContext.labelingEngine()->addDiagramLayer( this, mDiagramLayerSettings );
     //add attributes needed by the diagram renderer
-    QList<int> att = mDiagramRenderer->diagramAttributes();
-    QList<int>::const_iterator attIt = att.constBegin();
+    QList<QString> att = mDiagramRenderer->diagramAttributes();
+    QList<QString>::const_iterator attIt = att.constBegin();
     for ( ; attIt != att.constEnd(); ++attIt )
     {
-      if ( !attributes.contains( *attIt ) )
+      QgsExpression* expression = mDiagramRenderer->diagram()->getExpression( *attIt, &pendingFields() );
+      QStringList columns = expression->referencedColumns();
+      QStringList::const_iterator columnsIterator = columns.constBegin();
+      for ( ; columnsIterator != columns.constEnd(); ++columnsIterator )
       {
-        attributes << *attIt;
+        int index = fieldNameIndex( *columnsIterator );
+        if ( !attributes.contains( index ) )
+        {
+          attributes << index;
+        }
       }
     }
+
+    QgsLinearlyInterpolatedDiagramRenderer* mLinearlyInterpolatedDiagramRenderer = dynamic_cast<QgsLinearlyInterpolatedDiagramRenderer*>( mDiagramRenderer );
+    if ( mLinearlyInterpolatedDiagramRenderer != NULL )
+    {
+      if ( mLinearlyInterpolatedDiagramRenderer->classificationAttributeIsExpression() )
+      {
+        QgsExpression* expression = mDiagramRenderer->diagram()->getExpression( mLinearlyInterpolatedDiagramRenderer->classificationAttributeExpression(), &pendingFields() );
+        QStringList columns = expression->referencedColumns();
+        QStringList::const_iterator columnsIterator = columns.constBegin();
+        for ( ; columnsIterator != columns.constEnd(); ++columnsIterator )
+        {
+          int index = fieldNameIndex( *columnsIterator );
+          if ( !attributes.contains( index ) )
+          {
+            attributes << index;
+          }
+        }
+      }
+      else
+      {
+        if ( !attributes.contains( mLinearlyInterpolatedDiagramRenderer->classificationAttribute() ) )
+        {
+          attributes << mLinearlyInterpolatedDiagramRenderer->classificationAttribute();
+        }
+      }
+    }
+
     //and the ones needed for data defined diagram positions
     if ( mDiagramLayerSettings->xPosColumn >= 0 && !attributes.contains( mDiagramLayerSettings->xPosColumn ) )
     {

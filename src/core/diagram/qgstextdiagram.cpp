@@ -15,6 +15,7 @@
 #include "qgstextdiagram.h"
 #include "qgsdiagramrendererv2.h"
 #include "qgsrendercontext.h"
+#include "qgsexpression.h"
 
 #include <QPainter>
 
@@ -30,11 +31,20 @@ QgsTextDiagram::~QgsTextDiagram()
 {
 }
 
-QSizeF QgsTextDiagram::diagramSize( const QgsAttributes& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is )
+QSizeF QgsTextDiagram::diagramSize( const QgsFeature& feature, const QgsRenderContext& c, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is )
 {
   Q_UNUSED( c );
 
-  QVariant attrVal = attributes[is.classificationAttribute];
+  QVariant attrVal;
+  if ( is.classificationAttributeIsExpression )
+  {
+    QgsExpression* expression = getExpression( is.classificationAttributeExpression, feature.fields() );
+    attrVal = expression->evaluate( feature );
+  }
+  else
+  {
+    attrVal = feature.attributes()[is.classificationAttribute];
+  }
 
   if ( !attrVal.isValid() )
   {
@@ -84,8 +94,10 @@ QSizeF QgsTextDiagram::diagramSize( const QgsAttributes& attributes, const QgsRe
   return s.size;
 }
 
-void QgsTextDiagram::renderDiagram( const QgsAttributes& att, QgsRenderContext& c, const QgsDiagramSettings& s, const QPointF& position )
+void QgsTextDiagram::renderDiagram( const QgsFeature& feature, QgsRenderContext& c, const QgsDiagramSettings& s, const QPointF& position )
 {
+  Q_UNUSED( feature );
+
   QPainter* p = c.painter();
   if ( !p )
   {
@@ -108,7 +120,7 @@ void QgsTextDiagram::renderDiagram( const QgsAttributes& att, QgsRenderContext& 
   double baseY = position.y() - h;
 
   QList<QPointF> textPositions; //midpoints for text placement
-  int nCategories = s.categoryIndices.size();
+  int nCategories = s.categoryAttributes.size();
   for ( int i = 0; i < nCategories; ++i )
   {
     if ( mOrientation == Horizontal )
@@ -210,7 +222,9 @@ void QgsTextDiagram::renderDiagram( const QgsAttributes& att, QgsRenderContext& 
 
   for ( int i = 0; i < textPositions.size(); ++i )
   {
-    QString val = att[ s.categoryIndices.at( i )].toString();
+    QgsExpression* expression = getExpression( s.categoryAttributes.at( i ), feature.fields() );
+    QString val = expression->evaluate( feature ).toString();
+
     //find out dimesions
     double textWidth = fontMetrics.width( val );
     double textHeight = fontMetrics.height();
