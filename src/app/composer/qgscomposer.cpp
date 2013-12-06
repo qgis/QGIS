@@ -176,6 +176,8 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   mActionSnapGuides->setCheckable( true );
   mActionSmartGuides->setCheckable( true );
 
+  mActionAtlasPreview->setCheckable( true );
+
 #ifdef Q_WS_MAC
   mActionQuit->setText( tr( "Close" ) );
   mActionQuit->setShortcut( QKeySequence::Close );
@@ -430,6 +432,14 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
 
   mGeneralDock->raise();
 
+  //set initial state of atlas controls
+  mActionAtlasPreview->setEnabled( false );
+  mActionAtlasPreview->setChecked( false );
+  mActionAtlasFirst->setEnabled( false );
+  mActionAtlasLast->setEnabled( false );
+  mActionAtlasNext->setEnabled( false );
+  mActionAtlasPrev->setEnabled( false );
+
   // Create size grip (needed by Mac OS X for QMainWindow if QStatusBar is not visible)
   //should not be needed now that composer has a status bar?
 #if 0
@@ -665,6 +675,92 @@ void QgsComposer::showItemOptions( QgsComposerItem* item )
 void QgsComposer::on_mActionOptions_triggered()
 {
   mQgis->showOptionsDialog( this, QString( "mOptionsPageComposer" ) );
+}
+
+void QgsComposer::toggleAtlasControls( bool atlasEnabled )
+{
+  //preview defaults to unchecked
+  mActionAtlasPreview->setChecked( false );
+  mActionAtlasPreview->setEnabled( atlasEnabled );
+}
+
+void QgsComposer::on_mActionAtlasPreview_triggered( bool checked )
+{
+  QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
+
+  //check if composition has an atlas map enabled
+  if ( checked && !atlasMap->enabled() )
+  {
+    //no atlas current enabled
+    QMessageBox::warning( 0, tr( "Enable atlas preview" ),
+                          tr( "Atlas in not currently enabled for this composition!" ),
+                          QMessageBox::Ok,
+                          QMessageBox::Ok );
+    mActionAtlasPreview->blockSignals( true );
+    mActionAtlasPreview->setChecked( false );
+    mActionAtlasPreview->blockSignals( false );
+    return;
+  }
+
+  //toggle other controls depending on whether atlas preview is active
+  mActionAtlasFirst->setEnabled( checked );
+  mActionAtlasLast->setEnabled( checked );
+  mActionAtlasNext->setEnabled( checked );
+  mActionAtlasPrev->setEnabled( checked );
+
+  mComposition->setAtlasPreviewEnabled( checked );
+  if ( checked )
+  {
+    atlasMap->firstFeature();
+  }
+
+}
+
+
+void QgsComposer::on_mActionAtlasNext_triggered()
+{
+  QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
+  if ( !atlasMap->enabled() )
+  {
+    return;
+  }
+
+  atlasMap->nextFeature();
+
+}
+
+void QgsComposer::on_mActionAtlasPrev_triggered()
+{
+  QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
+  if ( !atlasMap->enabled() )
+  {
+    return;
+  }
+
+  atlasMap->prevFeature();
+
+}
+
+void QgsComposer::on_mActionAtlasFirst_triggered()
+{
+  QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
+  if ( !atlasMap->enabled() )
+  {
+    return;
+  }
+
+  atlasMap->firstFeature();
+}
+
+void QgsComposer::on_mActionAtlasLast_triggered()
+{
+  QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
+  if ( !atlasMap->enabled() )
+  {
+    return;
+  }
+
+  atlasMap->lastFeature();
 }
 
 QgsMapCanvas *QgsComposer::mapCanvas( void )
@@ -2251,6 +2347,16 @@ void QgsComposer::readXML( const QDomElement& composerElem, const QDomDocument& 
   mAtlasDock->setWidget( new QgsAtlasCompositionWidget( mAtlasDock, mComposition ) );
 
   mComposition->atlasComposition().readXML( atlasNodeList.at( 0 ).toElement(), doc );
+
+  //set state of atlas controls
+  QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
+  mActionAtlasPreview->setEnabled( atlasMap->enabled() );
+  mActionAtlasPreview->setChecked( false );
+  mActionAtlasFirst->setEnabled( false );
+  mActionAtlasLast->setEnabled( false );
+  mActionAtlasNext->setEnabled( false );
+  mActionAtlasPrev->setEnabled( false );
+  connect( atlasMap, SIGNAL( toggled( bool ) ), this, SLOT( toggleAtlasControls( bool ) ) );
 
   setSelectionTool();
 }

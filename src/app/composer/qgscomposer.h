@@ -309,6 +309,21 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //!Show options dialog
     void on_mActionOptions_triggered();
 
+    //!Toggle atlas preview
+    void on_mActionAtlasPreview_triggered( bool checked );
+
+    //!Next atlas feature
+    void on_mActionAtlasNext_triggered();
+
+    //!Previous atlas feature
+    void on_mActionAtlasPrev_triggered();
+
+    //!First atlas feature
+    void on_mActionAtlasFirst_triggered();
+
+    //!Last atlas feature
+    void on_mActionAtlasLast_triggered();
+
     //! Save window state
     void saveWindowState();
 
@@ -501,6 +516,10 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Create a duplicate of a menu (for Mac)
     //! @note added in 1.9
     QMenu* mirrorOtherMenu( QMenu* otherMenu );
+
+    //! Toggles the state of the atlas preview and navigation controls
+    //! @note added in 2.1
+    void toggleAtlasControls( bool atlasEnabled );
 };
 
 #endif

@@ -136,6 +136,7 @@ void QgsAtlasCompositionWidget::onLayerAdded( QgsMapLayer* map )
     if ( mAtlasCoverageLayerComboBox->count() == 1 )
     {
       atlasMap->setCoverageLayer( vectorLayer );
+      atlasMap->updateFeatures();
       checkLayerType( vectorLayer );
     }
   }
@@ -191,6 +192,7 @@ void QgsAtlasCompositionWidget::on_mAtlasCoverageLayerComboBox_currentIndexChang
     {
       checkLayerType( layer );
       atlasMap->setCoverageLayer( layer );
+      atlasMap->updateFeatures();
     }
 
     // update sorting columns
@@ -333,6 +335,7 @@ void QgsAtlasCompositionWidget::on_mAtlasSortFeatureCheckBox_stateChanged( int s
     mAtlasSortFeatureKeyComboBox->setEnabled( false );
   }
   atlasMap->setSortFeatures( state == Qt::Checked );
+  atlasMap->updateFeatures();
 }
 
 void QgsAtlasCompositionWidget::on_mAtlasSortFeatureKeyComboBox_currentIndexChanged( int index )
@@ -347,6 +350,7 @@ void QgsAtlasCompositionWidget::on_mAtlasSortFeatureKeyComboBox_currentIndexChan
   {
     atlasMap->setSortKeyAttributeIndex( index );
   }
+  atlasMap->updateFeatures();
 }
 
 void QgsAtlasCompositionWidget::on_mAtlasFeatureFilterCheckBox_stateChanged( int state )
@@ -368,6 +372,7 @@ void QgsAtlasCompositionWidget::on_mAtlasFeatureFilterCheckBox_stateChanged( int
     mAtlasFeatureFilterButton->setEnabled( false );
   }
   atlasMap->setFilterFeatures( state == Qt::Checked );
+  atlasMap->updateFeatures();
 }
 
 void QgsAtlasCompositionWidget::on_mAtlasFeatureFilterEdit_textChanged( const QString& text )
@@ -379,6 +384,7 @@ void QgsAtlasCompositionWidget::on_mAtlasFeatureFilterEdit_textChanged( const QS
   }
 
   atlasMap->setFeatureFilter( text );
+  atlasMap->updateFeatures();
 }
 
 void QgsAtlasCompositionWidget::on_mAtlasFeatureFilterButton_clicked()
@@ -415,6 +421,7 @@ void QgsAtlasCompositionWidget::on_mAtlasSortFeatureDirectionButton_clicked()
   }
 
   atlasMap->setSortAscending( at == Qt::UpArrow );
+  atlasMap->updateFeatures();
 }
 
 void QgsAtlasCompositionWidget::fillSortColumns()

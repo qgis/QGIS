@@ -32,7 +32,7 @@ QgsAtlasComposition::QgsAtlasComposition( QgsComposition* composition ) :
     mComposerMap( 0 ),
     mHideCoverage( false ), mFixedScale( false ), mMargin( 0.10 ), mFilenamePattern( "'output_'||$feature" ),
     mCoverageLayer( 0 ), mSingleFile( false ),
-    mSortFeatures( false ), mSortAscending( true ),
+    mSortFeatures( false ), mSortAscending( true ), mCurrentFeatureNo( 0 ),
     mFilterFeatures( false ), mFeatureFilter( "" )
 {
 
@@ -47,6 +47,12 @@ QgsAtlasComposition::QgsAtlasComposition( QgsComposition* composition ) :
 
 QgsAtlasComposition::~QgsAtlasComposition()
 {
+}
+
+void QgsAtlasComposition::setEnabled( bool e )
+{
+  mEnabled = e;
+  emit toggled( e );
 }
 
 void QgsAtlasComposition::setCoverageLayer( QgsVectorLayer* layer )
@@ -94,8 +100,10 @@ class FieldSorter
     bool mAscending;
 };
 
-void QgsAtlasComposition::beginRender()
+void QgsAtlasComposition::updateFeatures()
 {
+  //needs to be called when layer, filter, sort changes
+
   if ( !mComposerMap || !mCoverageLayer )
   {
     return;
@@ -172,7 +180,25 @@ void QgsAtlasComposition::beginRender()
     qSort( mFeatureIds.begin(), mFeatureIds.end(), sorter );
   }
 
-  mOrigExtent = mComposerMap->extent();
+  QgsExpression::setSpecialColumn( "$numfeatures", QVariant(( int )mFeatureIds.size() ) );
+  
+  //jump to first feature if currently using an atlas preview
+  //need to do this in case filtering/layer change has altered matching features
+  if ( mComposition->atlasPreviewEnabled() )
+  {
+    firstFeature();
+  }
+}
+
+
+void QgsAtlasComposition::beginRender()
+{
+  if ( !mComposerMap || !mCoverageLayer )
+  {
+    return;
+  }
+
+  updateFeatures();
 
   mRestoreLayer = false;
   QStringList& layerSet = mComposition->mapRenderer()->layerSet();
@@ -213,15 +239,48 @@ void QgsAtlasComposition::endRender()
     QStringList& layerSet = mComposition->mapRenderer()->layerSet();
 
     layerSet.push_back( mCoverageLayer->id() );
-    mComposerMap->cache();
-    mComposerMap->update();
   }
-  mComposerMap->setNewExtent( mOrigExtent );
+
+  mComposerMap->cache();
 }
 
 int QgsAtlasComposition::numFeatures() const
 {
   return mFeatureIds.size();
+}
+
+void QgsAtlasComposition::nextFeature()
+{
+  mCurrentFeatureNo++;
+  if ( mCurrentFeatureNo >= mFeatureIds.size() )
+  {
+    mCurrentFeatureNo = mFeatureIds.size() - 1;
+  }
+
+  prepareForFeature( mCurrentFeatureNo );
+}
+
+void QgsAtlasComposition::prevFeature()
+{
+  mCurrentFeatureNo--;
+  if ( mCurrentFeatureNo < 0 )
+  {
+    mCurrentFeatureNo = 0;
+  }
+
+  prepareForFeature( mCurrentFeatureNo );
+}
+
+void QgsAtlasComposition::firstFeature()
+{
+  mCurrentFeatureNo = 0;
+  prepareForFeature( mCurrentFeatureNo );
+}
+
+void QgsAtlasComposition::lastFeature()
+{
+  mCurrentFeatureNo = mFeatureIds.size() - 1;
+  prepareForFeature( mCurrentFeatureNo );
 }
 
 void QgsAtlasComposition::prepareForFeature( int featureI )
@@ -233,6 +292,7 @@ void QgsAtlasComposition::prepareForFeature( int featureI )
 
   // retrieve the next feature, based on its id
   mCoverageLayer->getFeatures( QgsFeatureRequest().setFilterFid( mFeatureIds[ featureI ] ) ).nextFeature( mCurrentFeature );
+
   QgsExpression::setSpecialColumn( "$atlasfeatureid", mCurrentFeature.id() );
   QgsExpression::setSpecialColumn( "$atlasgeometry", QVariant::fromValue( *mCurrentFeature.geometry() ) );
 
@@ -266,10 +326,7 @@ void QgsAtlasComposition::prepareForFeature( int featureI )
   double ya1 = geom_rect.yMinimum();
   double ya2 = geom_rect.yMaximum();
   QgsRectangle new_extent = geom_rect;
-
-  // restore the original extent
-  // (successive calls to setNewExtent tend to deform the original rectangle)
-  mComposerMap->setNewExtent( mOrigExtent );
+  QgsRectangle mOrigExtent = mComposerMap->extent();
 
   if ( mFixedScale )
   {
@@ -326,7 +383,7 @@ void QgsAtlasComposition::prepareForFeature( int featureI )
   }
 
   // set the new extent (and render)
-  mComposerMap->setNewExtent( new_extent );
+  mComposerMap->setNewAtlasFeatureExtent( new_extent );
 }
 
 const QString& QgsAtlasComposition::currentFilename() const
@@ -383,6 +440,7 @@ void QgsAtlasComposition::writeXML( QDomElement& elem, QDomDocument& doc ) const
 void QgsAtlasComposition::readXML( const QDomElement& atlasElem, const QDomDocument& )
 {
   mEnabled = atlasElem.attribute( "enabled", "false" ) == "true" ? true : false;
+  emit toggled( mEnabled );
   if ( !mEnabled )
   {
     emit parameterChanged();
@@ -431,3 +489,37 @@ void QgsAtlasComposition::readXML( const QDomElement& atlasElem, const QDomDocum
 
   emit parameterChanged();
 }
+
+void QgsAtlasComposition::setHideCoverage( bool hide )
+{
+  mHideCoverage = hide;
+
+  if ( mComposition->atlasPreviewEnabled() )
+  {
+    //an atlas preview is enabled, so reflect changes in coverage layer visibility immediately
+    QStringList& layerSet = mComposition->mapRenderer()->layerSet();
+    if ( hide )
+    {
+      // look for the layer in the renderer's set
+      int removeAt = layerSet.indexOf( mCoverageLayer->id() );
+      if ( removeAt != -1 )
+      {
+        mRestoreLayer = true;
+        layerSet.removeAt( removeAt );
+      }
+    }
+    else
+    {
+      if ( mRestoreLayer )
+      {
+        layerSet.push_back( mCoverageLayer->id() );
+        mRestoreLayer = false;
+      }
+    }
+    mComposerMap->cache();
+    mComposition->update();
+  }
+
+}
+
+

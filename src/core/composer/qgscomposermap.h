@@ -151,6 +151,16 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     /**Sets new Extent and changes width, height (and implicitely also scale)*/
     void setNewExtent( const QgsRectangle& extent );
 
+    /**Sets new Extent for the current atlas preview and changes width, height (and implicitely also scale).
+      Atlas preview extents are only temporary, and are regenerated whenever the atlas feature changes
+    */
+    void setNewAtlasFeatureExtent( const QgsRectangle& extent );
+
+    /**Returns a pointer to the current map extent, which is either the original user specified
+      extent or the temporary atlas-driven feature extent depending on the current atlas state of the composition*/
+    QgsRectangle* currentMapExtent();
+    const QgsRectangle* currentMapExtent() const;
+
     PreviewMode previewMode() const {return mPreviewMode;}
     void setPreviewMode( PreviewMode m );
 
@@ -359,6 +369,8 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     /**Call updateCachedImage if item is in render mode*/
     void renderModeUpdateCachedImage();
 
+    void overviewExtentChanged();
+
   private:
 
     enum AnnotationCoordinate
@@ -378,6 +390,11 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     // It can be the same as mUserExtent, but it can be bigger in on dimension if mCalculate==Scale,
     // so that full rectangle in paper is used.
     QgsRectangle mExtent;
+
+    // Current temporary map region in map units. This is overwritten when atlas feature changes. It's also
+    // used when the user changes the map extent and an atlas preview is enabled. This allows the user
+    // to manually tweak each atlas preview page without affecting the actual original map extent.
+    QgsRectangle mAtlasFeatureExtent;
 
     // Cache used in composer preview
     QImage mCacheImage;
@@ -536,10 +553,6 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     void createDefaultGridLineSymbol();
     void initGridAnnotationFormatFromProject();
 
-    /**
-     * Returns the extent, centered on the overview frame
-     */
-    void extentCenteredOnOverview( QgsRectangle& extent ) const;
 };
 
 #endif

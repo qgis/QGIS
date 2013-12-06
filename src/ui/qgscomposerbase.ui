@@ -21,7 +21,16 @@
     <bool>true</bool>
    </property>
    <layout class="QGridLayout" name="gridLayout">
-    <property name="margin">
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
      <number>0</number>
     </property>
     <item row="0" column="0">
@@ -118,6 +127,22 @@
    <addaction name="mActionAddArrow"/>
    <addaction name="mActionAddTable"/>
    <addaction name="mActionAddHtml"/>
+  </widget>
+  <widget class="QToolBar" name="mAtlasToolbar">
+   <property name="windowTitle">
+    <string>Atlas</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>true</bool>
+   </attribute>
+   <addaction name="mActionAtlasPreview"/>
+   <addaction name="mActionAtlasFirst"/>
+   <addaction name="mActionAtlasPrev"/>
+   <addaction name="mActionAtlasNext"/>
+   <addaction name="mActionAtlasLast"/>
   </widget>
   <action name="mActionPrint">
    <property name="checkable">
@@ -780,7 +805,7 @@
    <property name="text">
     <string>Pan Composer</string>
    </property>
-  </action> 
+  </action>
   <action name="mActionOptions">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
@@ -792,7 +817,52 @@
    <property name="menuRole">
     <enum>QAction::PreferencesRole</enum>
    </property>
-  </action>      
+  </action>
+  <action name="mActionAtlasFirst">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionArrowUp.png</normaloff>:/images/themes/default/mActionArrowUp.png</iconset>
+   </property>
+   <property name="text">
+    <string>First Feature</string>
+   </property>
+  </action>
+  <action name="mActionAtlasPrev">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionArrowLeft.png</normaloff>:/images/themes/default/mActionArrowLeft.png</iconset>
+   </property>
+   <property name="text">
+    <string>Previous Feature</string>
+   </property>
+  </action>
+  <action name="mActionAtlasNext">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionArrowRight.png</normaloff>:/images/themes/default/mActionArrowRight.png</iconset>
+   </property>
+   <property name="text">
+    <string>Next Feature</string>
+   </property>
+  </action>
+  <action name="mActionAtlasLast">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionArrowDown.png</normaloff>:/images/themes/default/mActionArrowDown.png</iconset>
+   </property>
+   <property name="text">
+    <string>Last Feature</string>
+   </property>
+  </action>
+  <action name="mActionAtlasPreview">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mIconWmsLayer.png</normaloff>:/images/themes/default/mIconWmsLayer.png</iconset>
+   </property>
+   <property name="text">
+    <string>Preview Atlas</string>
+   </property>
+  </action>
  </widget>
  <resources>
   <include location="../../images/images.qrc"/>
