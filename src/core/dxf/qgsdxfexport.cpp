@@ -700,7 +700,7 @@ void QgsDxfExport::endSection()
   writeGroup( 0, "ENDSEC" );
 }
 
-void QgsDxfExport::writePoint( const QgsPoint& pt, const QString& layer, const QgsFeature* f, const QgsSymbolLayerV2* symbolLayer, const QgsSymbolV2* symbol )
+void QgsDxfExport::writePoint( const QgsPoint& pt, const QString& layer, int color, const QgsFeature* f, const QgsSymbolLayerV2* symbolLayer, const QgsSymbolV2* symbol )
 {
 #if 0
   //debug: draw rectangle for debugging
@@ -737,8 +737,12 @@ void QgsDxfExport::writePoint( const QgsPoint& pt, const QString& layer, const Q
     {
       QgsRenderContext ct;
       QgsSymbolV2RenderContext ctx( ct, QgsSymbolV2::MapUnit, symbol->alpha(), false, symbol->renderHints(), f );
-      symbolLayer->writeDxf( *this, mapUnitScaleFactor( mSymbologyScaleDenominator, msl->sizeUnit(), mMapUnits ), layer, &ctx, f, QPointF( pt.x(), pt.y() ) );
+      if ( symbolLayer->writeDxf( *this, mapUnitScaleFactor( mSymbologyScaleDenominator, msl->sizeUnit(), mMapUnits ), layer, &ctx, f, QPointF( pt.x(), pt.y() ) ) )
+      {
+        return;
+      }
     }
+    writePoint( layer, color, pt ); //write default point symbol
   }
   else
   {
@@ -780,6 +784,16 @@ void QgsDxfExport::writeLine( const QgsPoint& pt1, const QgsPoint& pt2, const QS
   line[0] = pt1;
   line[1] = pt2;
   writePolyline( line, layer, lineStyleName, color, width, false );
+}
+
+void QgsDxfExport::writePoint( const QString& layer, int color, const QgsPoint& pt )
+{
+  writeGroup( 0, "POINT" );
+  writeGroup( 8, layer );
+  writeGroup( 62, color );
+  writeGroup( 10, pt.x() );
+  writeGroup( 20, pt.y() );
+  writeGroup( 30, 0.0 );
 }
 
 void QgsDxfExport::writeSolid( const QString& layer, int color, const QgsPoint& pt1, const QgsPoint& pt2, const QgsPoint& pt3, const QgsPoint& pt4 )
@@ -837,15 +851,34 @@ void QgsDxfExport::addFeature( const QgsFeature& fet, const QString& layer, cons
   QgsGeometry* geom = fet.geometry();
   if ( geom )
   {
-    int c = colorFromSymbolLayer( symbolLayer );
+    int c = 0;
+    if ( mSymbologyExport != NoSymbology )
+    {
+      c = colorFromSymbolLayer( symbolLayer );
+    }
     double width = widthFromSymbolLayer( symbolLayer );
-    QString lineStyleName = lineStyleFromSymbolLayer( symbolLayer );
+    QString lineStyleName = "CONTINUOUS";
+    if ( mSymbologyExport != NoSymbology )
+    {
+      lineStyleFromSymbolLayer( symbolLayer );
+    }
     QGis::WkbType geometryType = geom->wkbType();
 
     //single point
     if ( geometryType == QGis::WKBPoint || geometryType == QGis::WKBPoint25D )
     {
-      writePoint( geom->asPoint(), layer, &fet, symbolLayer, symbol );
+      writePoint( geom->asPoint(), layer, c, &fet, symbolLayer, symbol );
+    }
+
+    //multipoint
+    if ( geometryType == QGis::WKBMultiPoint || geometryType == QGis::WKBMultiPoint25D )
+    {
+      QgsMultiPoint multiPoint = geom->asMultiPoint();
+      QgsMultiPoint::const_iterator it = multiPoint.constBegin();
+      for ( ; it != multiPoint.constEnd(); ++it )
+      {
+        writePoint( *it, layer, c, &fet, symbolLayer, symbol );
+      }
     }
 
     //single line

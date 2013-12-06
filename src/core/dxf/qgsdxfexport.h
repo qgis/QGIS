@@ -76,6 +76,8 @@ class QgsDxfExport
     //write line (as a polyline)
     void writeLine( const QgsPoint& pt1, const QgsPoint& pt2, const QString& layer, const QString& lineStyleName, int color, double width = -1 );
 
+    void writePoint( const QString& layer, int color, const QgsPoint& pt );
+
   private:
 
     QList< QgsMapLayer* > mLayers;
@@ -106,7 +108,7 @@ class QgsDxfExport
     void startSection();
     void endSection();
 
-    void writePoint( const QgsPoint& pt, const QString& layer, const QgsFeature* f, const QgsSymbolLayerV2* symbolLayer, const QgsSymbolV2* symbol );
+    void writePoint( const QgsPoint& pt, const QString& layer, int color, const QgsFeature* f, const QgsSymbolLayerV2* symbolLayer, const QgsSymbolV2* symbol );
     void writeVertex( const QgsPoint& pt, const QString& layer );
     void writeDefaultLinestyles();
     void writeSymbolLayerLinestyle( const QgsSymbolLayerV2* symbolLayer );

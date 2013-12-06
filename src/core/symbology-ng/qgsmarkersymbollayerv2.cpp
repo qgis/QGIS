@@ -702,7 +702,7 @@ void QgsSimpleMarkerSymbolLayerV2::drawMarker( QPainter* p, QgsSymbolV2RenderCon
   }
 }
 
-void QgsSimpleMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitScaleFactor, const QString& layerName, const QgsSymbolV2RenderContext* context, const QgsFeature* f, const QPointF& shift ) const
+bool QgsSimpleMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitScaleFactor, const QString& layerName, const QgsSymbolV2RenderContext* context, const QgsFeature* f, const QPointF& shift ) const
 {
   //data defined size?
   double size = mSize;
@@ -805,6 +805,11 @@ void QgsSimpleMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitSc
     QPointF pt4 = t.map( QPointF( halfSize, 0 ) );
     e.writeSolid( layerName, colorIndex, QgsPoint( pt1.x(), pt1.y() ), QgsPoint( pt2.x(), pt2.y() ), QgsPoint( pt3.x(), pt3.y() ), QgsPoint( pt4.x(), pt4.y() ) );
   }
+  else
+  {
+    return false;
+  }
+  return true;
 }
 
 //////////
@@ -1212,7 +1217,7 @@ QgsSymbolLayerV2* QgsSvgMarkerSymbolLayerV2::createFromSld( QDomElement &element
   return m;
 }
 
-void QgsSvgMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitScaleFactor, const QString& layerName, const QgsSymbolV2RenderContext* context, const QgsFeature* f,
+bool QgsSvgMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitScaleFactor, const QString& layerName, const QgsSymbolV2RenderContext* context, const QgsFeature* f,
     const QPointF& shift ) const
 {
   Q_UNUSED( layerName );
@@ -1221,7 +1226,7 @@ void QgsSvgMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitScale
   QSvgRenderer r( mPath );
   if ( !r.isValid() )
   {
-    return;
+    return false;
   }
 
   QgsDxfPaintDevice pd( &e );
@@ -1296,6 +1301,7 @@ void QgsSvgMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitScale
   pd.setLayer( layerName );
   r.render( &p );
   p.end();
+  return true;
 }
 
 //////////

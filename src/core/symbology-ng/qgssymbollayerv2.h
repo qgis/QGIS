@@ -94,8 +94,8 @@ class CORE_EXPORT QgsSymbolLayerV2
     virtual void removeDataDefinedProperties();
     bool hasDataDefinedProperties() const { return mDataDefinedProperties.size() > 0; }
 
-    virtual void writeDxf( QgsDxfExport& e, double mmMapUnitScaleFactor, const QString& layerName, const QgsSymbolV2RenderContext* context, const QgsFeature* f, const QPointF& shift = QPointF( 0.0, 0.0 ) ) const
-    { Q_UNUSED( e ); Q_UNUSED( mmMapUnitScaleFactor ); Q_UNUSED( layerName ); Q_UNUSED( context ); Q_UNUSED( f ); Q_UNUSED( shift ); }
+    virtual bool writeDxf( QgsDxfExport& e, double mmMapUnitScaleFactor, const QString& layerName, const QgsSymbolV2RenderContext* context, const QgsFeature* f, const QPointF& shift = QPointF( 0.0, 0.0 ) ) const
+    { Q_UNUSED( e ); Q_UNUSED( mmMapUnitScaleFactor ); Q_UNUSED( layerName ); Q_UNUSED( context ); Q_UNUSED( f ); Q_UNUSED( shift ); return false; }
 
   protected:
     QgsSymbolLayerV2( QgsSymbolV2::SymbolType type, bool locked = false )
