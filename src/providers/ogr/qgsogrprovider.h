@@ -275,6 +275,9 @@ class QgsOgrProvider : public QgsVectorDataProvider
     /** convert a QgsField to work with OGR */
     static bool convertField( QgsField &field, const QTextCodec &encoding );
 
+    /** Clean shapefile from features which are marked as deleted */
+    void repack();
+
   private:
     unsigned char *getGeometryPointer( OGRFeatureH fet );
     QString ogrWkbGeometryTypeName( OGRwkbGeometryType type ) const;
