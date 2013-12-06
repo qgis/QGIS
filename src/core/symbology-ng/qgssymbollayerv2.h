@@ -31,14 +31,13 @@
 #include <QDomElement>
 
 #include "qgssymbolv2.h"
-
 #include "qgssymbollayerv2utils.h" // QgsStringMap
+#include "qgsdxfexport.h"
 
 class QPainter;
 class QSize;
 class QPolygonF;
 
-class QgsDxfExport;
 class QgsExpression;
 class QgsRenderContext;
 

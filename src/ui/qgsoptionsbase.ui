@@ -3882,9 +3882,9 @@
                  <property name="title">
                   <string>Default datum transformations</string>
                  </property>
-                 <layout class="QGridLayout" name="gridLayout_8">
+                 <layout class="QGridLayout" name="gridLayout_10">
                   <item row="0" column="0">
-                   <layout class="QHBoxLayout" name="horizontalLayout_4">
+                   <layout class="QHBoxLayout" name="horizontalLayout_38">
                     <item>
                      <widget class="QPushButton" name="mAddDefaultTransformButton">
                       <property name="text">

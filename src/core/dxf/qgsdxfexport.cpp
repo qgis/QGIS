@@ -1669,11 +1669,14 @@ void QgsDxfExport::writeLinestyleAC1018( QTextStream& stream, const QString& sty
 
 void QgsDxfExport::writeEntitiesAC1018( QTextStream& stream )
 {
+  Q_UNUSED( stream );
   //todo...
 }
 
 void QgsDxfExport::writeEntitiesSymbolLevelsAC1018( QTextStream& stream, QgsVectorLayer* layer )
 {
+  Q_UNUSED( stream );
+  Q_UNUSED( layer );
   //todo...
 }
 
