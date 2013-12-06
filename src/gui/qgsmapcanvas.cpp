@@ -105,9 +105,7 @@ QgsMapCanvasRendererSync::QgsMapCanvasRendererSync( QgsMapCanvas* canvas, QgsMap
 
 void QgsMapCanvasRendererSync::onExtentC2R()
 {
-  mRenderer->blockSignals( true );
   mRenderer->setExtent( mCanvas->mapSettings().extent() );
-  mRenderer->blockSignals( false );
 }
 
 void QgsMapCanvasRendererSync::onExtentR2C()
@@ -117,9 +115,7 @@ void QgsMapCanvasRendererSync::onExtentR2C()
 
 void QgsMapCanvasRendererSync::onMapUnitsC2R()
 {
-  mRenderer->blockSignals( true );
   mRenderer->setMapUnits( mCanvas->mapSettings().mapUnits() );
-  mRenderer->blockSignals( false );
 }
 
 void QgsMapCanvasRendererSync::onMapUnitsR2C()
@@ -129,9 +125,7 @@ void QgsMapCanvasRendererSync::onMapUnitsR2C()
 
 void QgsMapCanvasRendererSync::onCrsTransformC2R()
 {
-  mRenderer->blockSignals( true );
   mRenderer->setProjectionsEnabled( mCanvas->mapSettings().hasCrsTransformEnabled() );
-  mRenderer->blockSignals( false );
 }
 
 void QgsMapCanvasRendererSync::onCrsTransformR2C()
@@ -141,9 +135,7 @@ void QgsMapCanvasRendererSync::onCrsTransformR2C()
 
 void QgsMapCanvasRendererSync::onDestCrsC2R()
 {
-  mRenderer->blockSignals( true );
   mRenderer->setDestinationCrs( mCanvas->mapSettings().destinationCrs() );
-  mRenderer->blockSignals( false );
 }
 
 void QgsMapCanvasRendererSync::onDestCrsR2C()
@@ -461,6 +453,9 @@ void QgsMapCanvas::setCrsTransformEnabled(bool enabled)
 
 void QgsMapCanvas::setDestinationCrs(const QgsCoordinateReferenceSystem &crs)
 {
+  if ( mSettings.destinationCrs() == crs )
+    return;
+
   if ( mSettings.hasCrsTransformEnabled() )
   {
     // try to reproject current extent to the new one
@@ -733,6 +728,9 @@ QgsRectangle QgsMapCanvas::fullExtent() const
 void QgsMapCanvas::setExtent( QgsRectangle const & r )
 {
   QgsRectangle current = extent();
+
+  if ( r == current )
+    return;
 
   if ( r.isEmpty() )
   {
@@ -1425,6 +1423,9 @@ double QgsMapCanvas::mapUnitsPerPixel() const
 
 void QgsMapCanvas::setMapUnits( QGis::UnitType u )
 {
+  if ( mSettings.mapUnits() == u )
+    return;
+
   QgsDebugMsg( "Setting map units to " + QString::number( static_cast<int>( u ) ) );
   mSettings.setMapUnits( u );
 
