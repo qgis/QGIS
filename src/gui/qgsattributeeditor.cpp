@@ -510,7 +510,7 @@ QWidget* QgsAttributeEditor::createAttributeEditor( QWidget* parent, QWidget* ed
     case QgsVectorLayer::SliderRange:
     case QgsVectorLayer::EditRange:
     {
-      if ( myFieldType == QVariant::Int )
+      if ( myFieldType == QVariant::Int || myFieldType == QVariant::LongLong )
       {
         int min = vl->range( idx ).mMin.toInt();
         int max = vl->range( idx ).mMax.toInt();

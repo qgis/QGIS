@@ -472,7 +472,8 @@ void QgsAttributeTypeDialog::setIndex( int index, QgsVectorLayer::EditType editT
 
   QString text;
   //calculate min and max for range for this field
-  if ( mLayer->pendingFields()[index].type() == QVariant::Int )
+  if ( mLayer->pendingFields()[index].type() == QVariant::Int
+       || mLayer->pendingFields()[index].type() == QVariant::LongLong )
   {
     rangeWidget->clear();
     rangeWidget->addItems( QStringList() << tr( "Editable" ) << tr( "Slider" ) << tr( "Dial" ) );
@@ -553,7 +554,8 @@ void QgsAttributeTypeDialog::setIndex( int index, QgsVectorLayer::EditType editT
     case QgsVectorLayer::SliderRange:
     case QgsVectorLayer::DialRange:
     {
-      if ( mLayer->pendingFields()[mIndex].type() != QVariant::Int )
+      if ( mLayer->pendingFields()[mIndex].type() != QVariant::Int
+           || mLayer->pendingFields()[mIndex].type() != QVariant::LongLong )
       {
         minimumSpinBox->setValue( mRangeData.mMin.toInt() );
         maximumSpinBox->setValue( mRangeData.mMax.toInt() );
@@ -635,7 +637,8 @@ void QgsAttributeTypeDialog::setStackPage( int index )
   {
     case 2:
       if ( mLayer->pendingFields()[mIndex].type() != QVariant::Double &&
-           mLayer->pendingFields()[mIndex].type() != QVariant::Int )
+           mLayer->pendingFields()[mIndex].type() != QVariant::Int &&
+           mLayer->pendingFields()[mIndex].type() != QVariant::LongLong )
       {
         okDisabled = true;
       }
@@ -742,7 +745,8 @@ void QgsAttributeTypeDialog::accept()
       break;
     case 2:
       //store range data
-      if ( mLayer->pendingFields()[mIndex].type() == QVariant::Int )
+      if ( mLayer->pendingFields()[mIndex].type() == QVariant::Int
+           || mLayer->pendingFields()[mIndex].type() == QVariant::LongLong )
       {
         mRangeData = QgsVectorLayer::RangeData( minimumSpinBox->value(),
                                                 maximumSpinBox->value(),
