@@ -26,5 +26,5 @@ foreach my $pull ( sort { $a->{number} <=> $b->{number} } @{ JSON::from_json( $r
 print "\nASSIGNMENTS:\n";
 
 foreach my $assignee ( sort keys %assigned ) {
-	printf "%-22s %s\n", $assignee || "unassigned", join( ", ", sort @{ $assigned{$assignee} } );
+	printf "%-22s %s\n", $assignee || "unassigned", join( ", ", sort { $a <=> $b } @{ $assigned{$assignee} } );
 }
