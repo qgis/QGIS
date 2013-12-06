@@ -147,6 +147,8 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       if self.noDataCheck.isChecked():
         arguments.append("-n")
         arguments.append(str(self.noDataSpin.value()))
+        arguments.append("-a_nodata")
+        arguments.append(str(self.noDataSpin.value()))
       if self.separateCheck.isChecked():
         arguments.append("-separate")
       if self.pctCheck.isChecked():
