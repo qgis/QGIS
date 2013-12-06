@@ -116,6 +116,8 @@
 #include "qgscustomprojectiondialog.h"
 #include "qgsdatasourceuri.h"
 #include "qgsdatumtransformdialog.h"
+#include "qgsdxfexport.h"
+#include "qgsdxfexportdialog.h"
 #include "qgsdecorationcopyright.h"
 #include "qgsdecorationnortharrow.h"
 #include "qgsdecorationscalebar.h"
@@ -958,6 +960,7 @@ void QgisApp::createActions()
   connect( mActionNewPrintComposer, SIGNAL( triggered() ), this, SLOT( newPrintComposer() ) );
   connect( mActionShowComposerManager, SIGNAL( triggered() ), this, SLOT( showComposerManager() ) );
   connect( mActionExit, SIGNAL( triggered() ), this, SLOT( fileExit() ) );
+  connect( mActionDxfExport, SIGNAL( triggered() ), this, SLOT( dxfExport() ) );
 
   // Edit Menu Items
 
@@ -3807,6 +3810,54 @@ void QgisApp::fileSaveAs()
                            Qt::NoButton );
   }
 } // QgisApp::fileSaveAs
+
+void QgisApp::dxfExport()
+{
+  QgsLegend* mapLegend = legend();
+  if ( !mapLegend )
+  {
+    return;
+  }
+
+  QgsDxfExportDialog d( mapLegend->layers() );
+  if ( d.exec() == QDialog::Accepted )
+  {
+    QgsDxfExport dxfExport;
+
+    QList<QgsMapLayer*> layerList;
+    QList<QString> layerIdList = d.layers();
+    QList<QString>::const_iterator layerIt = layerIdList.constBegin();
+    for ( ; layerIt != layerIdList.constEnd(); ++layerIt )
+    {
+      QgsMapLayer* l = QgsMapLayerRegistry::instance()->mapLayer( *layerIt );
+      if ( l )
+      {
+        layerList.append( l );
+      }
+    }
+
+    dxfExport.addLayers( layerList );
+    dxfExport.setSymbologyScaleDenominator( d.symbologyScale() );
+    dxfExport.setSymbologyExport( d.symbologyMode() );
+    if ( mapCanvas() )
+    {
+      QgsMapRenderer* r = mapCanvas()->mapRenderer();
+      if ( r )
+      {
+        dxfExport.setMapUnits( r->mapUnits() );
+      }
+    }
+    QFile dxfFile( d.saveFile() );
+    if ( dxfExport.writeToFile( &dxfFile ) == 0 )
+    {
+      messageBar()->pushMessage( tr( "DXF export completed" ), QgsMessageBar::INFO, 4 );
+    }
+    else
+    {
+      messageBar()->pushMessage( tr( "DXF export failed" ), QgsMessageBar::CRITICAL, 4 );
+    }
+  }
+}
 
 // Open the project file corresponding to the
 // path at the given index in mRecentProjectPaths
@@ -7430,7 +7481,7 @@ QMenu* QgisApp::getPluginMenu( QString menuName )
   }
   // It doesn't exist, so create
   QMenu *menu = new QMenu( menuName, this );
-  menu->setObjectName( menuName.normalized(QString::NormalizationForm_KD).remove(QRegExp("[^a-zA-Z]")) );
+  menu->setObjectName( menuName.normalized( QString::NormalizationForm_KD ).remove( QRegExp( "[^a-zA-Z]" ) ) );
   // Where to put it? - we worked that out above...
   mPluginMenu->insertMenu( before, menu );
 

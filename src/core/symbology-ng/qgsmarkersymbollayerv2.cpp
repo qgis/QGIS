@@ -16,6 +16,8 @@
 #include "qgsmarkersymbollayerv2.h"
 #include "qgssymbollayerv2utils.h"
 
+#include "qgsdxfexport.h"
+#include "qgsdxfpaintdevice.h"
 #include "qgsexpression.h"
 #include "qgsrendercontext.h"
 #include "qgslogger.h"
@@ -721,6 +723,116 @@ void QgsSimpleMarkerSymbolLayerV2::drawMarker( QPainter* p, QgsSymbolV2RenderCon
   }
 }
 
+bool QgsSimpleMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitScaleFactor, const QString& layerName, const QgsSymbolV2RenderContext* context, const QgsFeature* f, const QPointF& shift ) const
+{
+  //data defined size?
+  double size = mSize;
+
+  QgsExpression *sizeExpression = expression( "size" );
+  bool hasDataDefinedSize = false;
+  if ( context )
+  {
+    hasDataDefinedSize = context->renderHints() & QgsSymbolV2::DataDefinedSizeScale || sizeExpression;
+  }
+
+  //data defined size
+  if ( hasDataDefinedSize )
+  {
+    if ( sizeExpression )
+    {
+      size = sizeExpression->evaluate( const_cast<QgsFeature*>( context->feature() ) ).toDouble();
+    }
+    size *= QgsSymbolLayerV2Utils::lineWidthScaleFactor( context->renderContext(), mSizeUnit );
+
+    switch ( mScaleMethod )
+    {
+      case QgsSymbolV2::ScaleArea:
+        size = sqrt( size );
+        break;
+      case QgsSymbolV2::ScaleDiameter:
+        break;
+    }
+  }
+
+  if ( mSizeUnit == QgsSymbolV2::MM )
+  {
+    size *= mmMapUnitScaleFactor;
+  }
+  double halfSize = size / 2.0;
+
+
+  QColor c = mBrush.color();
+  QgsExpression* colorExpression = expression( "color" );
+  if ( colorExpression )
+  {
+    c = QgsSymbolLayerV2Utils::decodeColor( colorExpression->evaluate( *f ).toString() );
+  }
+  int colorIndex = QgsDxfExport::closestColorMatch( c.rgb() );
+
+  //offset
+  double offsetX = 0;
+  double offsetY = 0;
+  markerOffset( *context, offsetX, offsetY );
+  QPointF off( offsetX, offsetY );
+
+  //angle
+  double angle = mAngle;
+  QgsExpression* angleExpression = expression( "angle" );
+  if ( angleExpression )
+  {
+    angle = angleExpression->evaluate( const_cast<QgsFeature*>( context->feature() ) ).toDouble();
+  }
+  angle = -angle; //rotation in Qt is counterclockwise
+  if ( angle )
+    off = _rotatedOffset( off, angle );
+
+  if ( mSizeUnit == QgsSymbolV2::MM )
+  {
+    off *= mmMapUnitScaleFactor;
+  }
+
+  QTransform t;
+  t.translate( shift.x() + offsetX, shift.y() + offsetY );
+
+  if ( angle != 0 )
+    t.rotate( angle );
+
+  //data defined symbol name
+
+  if ( mName == "circle" )
+  {
+    e.writeGroup( 0, "CIRCLE" );
+    e.writeGroup( 8, layerName );
+
+    e.writeGroup( 62, colorIndex );
+    e.writeGroup( 10, halfSize + shift.x() );
+    e.writeGroup( 20, halfSize + shift.y() );
+    e.writeGroup( 30, 0.0 );
+    e.writeGroup( 40, halfSize );
+  }
+  else if ( mName == "square" || mName == "rectangle" )
+  {
+    QPointF pt1 = t.map( QPointF( -halfSize, -halfSize ) );
+    QPointF pt2 = t.map( QPointF( halfSize, -halfSize ) );
+    QPointF pt3 = t.map( QPointF( -halfSize, halfSize ) );
+    QPointF pt4 = t.map( QPointF( halfSize, halfSize ) );
+    e.writeSolid( layerName, colorIndex, QgsPoint( pt1.x(), pt1.y() ), QgsPoint( pt2.x(), pt2.y() ), QgsPoint( pt3.x(), pt3.y() ), QgsPoint( pt4.x(), pt4.y() ) );
+  }
+  else if ( mName == "diamond" )
+  {
+    QPointF pt1 = t.map( QPointF( -halfSize, 0 ) );
+    QPointF pt2 = t.map( QPointF( 0, -halfSize ) );
+    QPointF pt3 = t.map( QPointF( 0, halfSize ) );
+    QPointF pt4 = t.map( QPointF( halfSize, 0 ) );
+    e.writeSolid( layerName, colorIndex, QgsPoint( pt1.x(), pt1.y() ), QgsPoint( pt2.x(), pt2.y() ), QgsPoint( pt3.x(), pt3.y() ), QgsPoint( pt4.x(), pt4.y() ) );
+  }
+  else
+  {
+    return false;
+  }
+  return true;
+}
+
 //////////
 
 
@@ -1141,6 +1253,93 @@ QgsSymbolLayerV2* QgsSvgMarkerSymbolLayerV2::createFromSld( QDomElement &element
   m->setAngle( angle );
   m->setOffset( offset );
   return m;
+}
+
+bool QgsSvgMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitScaleFactor, const QString& layerName, const QgsSymbolV2RenderContext* context, const QgsFeature* f,
+    const QPointF& shift ) const
+{
+  Q_UNUSED( layerName );
+  Q_UNUSED( shift ); //todo...
+
+  QSvgRenderer r( mPath );
+  if ( !r.isValid() )
+  {
+    return false;
+  }
+
+  QgsDxfPaintDevice pd( &e );
+  pd.setDrawingSize( QSizeF( r.defaultSize() ) );
+
+  //size
+  double size = mSize;
+  QgsExpression* sizeExpression = expression( "size" );
+  bool hasDataDefinedSize = context->renderHints() & QgsSymbolV2::DataDefinedSizeScale || sizeExpression;
+
+  if ( sizeExpression )
+  {
+    size = sizeExpression->evaluate( *f ).toDouble();
+  }
+  if ( mSizeUnit == QgsSymbolV2::MM )
+  {
+    size *= mmMapUnitScaleFactor;
+  }
+
+  if ( hasDataDefinedSize )
+  {
+    switch ( mScaleMethod )
+    {
+      case QgsSymbolV2::ScaleArea:
+        size = sqrt( size );
+        break;
+      case QgsSymbolV2::ScaleDiameter:
+        break;
+    }
+  }
+
+  double halfSize = size / 2.0;
+
+  //offset, angle
+  QPointF offset = mOffset;
+  QgsExpression* offsetExpression = expression( "offset" );
+  if ( offsetExpression )
+  {
+    QString offsetString =  offsetExpression->evaluate( *f ).toString();
+    offset = QgsSymbolLayerV2Utils::decodePoint( offsetString );
+  }
+  double offsetX = offset.x();
+  double offsetY = offset.y();
+  if ( mSizeUnit == QgsSymbolV2::MM )
+  {
+    offsetX *= mmMapUnitScaleFactor;
+    offsetY *= mmMapUnitScaleFactor;
+  }
+
+  QPointF outputOffset( offsetX, offsetY );
+
+  double angle = mAngle;
+  QgsExpression* angleExpression = expression( "angle" );
+  if ( angleExpression )
+  {
+    angle = angleExpression->evaluate( *f ).toDouble();
+  }
+  //angle = -angle; //rotation in Qt is counterclockwise
+  if ( angle )
+    outputOffset = _rotatedOffset( outputOffset, angle );
+
+  QPainter p;
+  p.begin( &pd );
+  if ( !qgsDoubleNear( angle, 0.0 ) )
+  {
+    p.translate( r.defaultSize().width() / 2.0, r.defaultSize().height() / 2.0 );
+    p.rotate( angle );
+    p.translate( -r.defaultSize().width() / 2.0, -r.defaultSize().height() / 2.0 );
+  }
+  pd.setShift( shift );
+  pd.setOutputSize( QRectF( -halfSize, -halfSize, size, size ) );
+  pd.setLayer( layerName );
+  r.render( &p );
+  p.end();
+  return true;
 }
 
 //////////

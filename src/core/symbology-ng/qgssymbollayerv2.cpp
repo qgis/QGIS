@@ -34,10 +34,10 @@ const QgsExpression* QgsSymbolLayerV2::dataDefinedProperty( const QString& prope
   return 0;
 }
 
-QgsExpression* QgsSymbolLayerV2::expression( const QString& property )
+QgsExpression* QgsSymbolLayerV2::expression( const QString& property ) const
 {
-  QMap< QString, QgsExpression* >::iterator it = mDataDefinedProperties.find( property );
-  if ( it != mDataDefinedProperties.end() )
+  QMap< QString, QgsExpression* >::const_iterator it = mDataDefinedProperties.find( property );
+  if ( it != mDataDefinedProperties.constEnd() )
   {
     return it.value();
   }
@@ -180,14 +180,14 @@ void QgsMarkerSymbolLayerV2::setOutputUnit( QgsSymbolV2::OutputUnit unit )
   mOffsetUnit = unit;
 }
 
-void QgsMarkerSymbolLayerV2::markerOffset( QgsSymbolV2RenderContext& context, double& offsetX, double& offsetY )
+void QgsMarkerSymbolLayerV2::markerOffset( const QgsSymbolV2RenderContext& context, double& offsetX, double& offsetY ) const
 {
   markerOffset( context, mSize, mSize, mSizeUnit, mSizeUnit, offsetX, offsetY );
 }
 
-void QgsMarkerSymbolLayerV2::markerOffset( QgsSymbolV2RenderContext& context, double width, double height,
+void QgsMarkerSymbolLayerV2::markerOffset( const QgsSymbolV2RenderContext& context, double width, double height,
     QgsSymbolV2::OutputUnit widthUnit, QgsSymbolV2::OutputUnit heightUnit,
-    double& offsetX, double& offsetY )
+    double& offsetX, double& offsetY ) const
 {
   offsetX = mOffset.x();
   offsetY = mOffset.y();

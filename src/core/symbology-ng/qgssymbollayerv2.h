@@ -38,6 +38,7 @@ class QPainter;
 class QSize;
 class QPolygonF;
 
+class QgsDxfExport;
 class QgsExpression;
 class QgsRenderContext;
 
@@ -91,6 +92,10 @@ class CORE_EXPORT QgsSymbolLayerV2
     virtual void setDataDefinedProperty( const QString& property, const QString& expressionString );
     virtual void removeDataDefinedProperty( const QString& property );
     virtual void removeDataDefinedProperties();
+    bool hasDataDefinedProperties() const { return mDataDefinedProperties.size() > 0; }
+
+    virtual bool writeDxf( QgsDxfExport& e, double mmMapUnitScaleFactor, const QString& layerName, const QgsSymbolV2RenderContext* context, const QgsFeature* f, const QPointF& shift = QPointF( 0.0, 0.0 ) ) const
+    { Q_UNUSED( e ); Q_UNUSED( mmMapUnitScaleFactor ); Q_UNUSED( layerName ); Q_UNUSED( context ); Q_UNUSED( f ); Q_UNUSED( shift ); return false; }
 
   protected:
     QgsSymbolLayerV2( QgsSymbolV2::SymbolType type, bool locked = false )
@@ -109,7 +114,8 @@ class CORE_EXPORT QgsSymbolLayerV2
     static const bool selectFillStyle = false;   // Fill symbol uses symbol layer style..
 
     virtual void prepareExpressions( const QgsVectorLayer* vl, double scale = -1 );
-    virtual QgsExpression* expression( const QString& property );
+    virtual QgsExpression* expression( const QString& property ) const;
+
     /**Saves data defined properties to string map*/
     void saveDataDefinedProperties( QgsStringMap& stringMap ) const;
     /**Copies data defined properties of this layer to another symbol layer*/
@@ -174,11 +180,13 @@ class CORE_EXPORT QgsMarkerSymbolLayerV2 : public QgsSymbolLayerV2
 
   protected:
     QgsMarkerSymbolLayerV2( bool locked = false );
+
     //handles marker offset and anchor point shift together
-    void markerOffset( QgsSymbolV2RenderContext& context, double& offsetX, double& offsetY );
-    void markerOffset( QgsSymbolV2RenderContext& context, double width, double height,
+    void markerOffset( const QgsSymbolV2RenderContext& context, double& offsetX, double& offsetY ) const;
+    void markerOffset( const QgsSymbolV2RenderContext& context, double width, double height,
                        QgsSymbolV2::OutputUnit widthUnit, QgsSymbolV2::OutputUnit heightUnit,
-                       double& offsetX, double& offsetY );
+                       double& offsetX, double& offsetY ) const;
+
     static QPointF _rotatedOffset( const QPointF& offset, double angle );
 
     double mAngle;

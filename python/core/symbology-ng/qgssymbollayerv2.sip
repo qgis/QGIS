@@ -157,7 +157,7 @@ class QgsMarkerSymbolLayerV2 : QgsSymbolLayerV2
 
   protected:
     QgsMarkerSymbolLayerV2( bool locked = false );
-    void markerOffset( QgsSymbolV2RenderContext& context, double& offsetX, double& offsetY );
+    void markerOffset( const QgsSymbolV2RenderContext& context, double& offsetX, double& offsetY ) const;
     static QPointF _rotatedOffset( const QPointF& offset, double angle );
 };
 
