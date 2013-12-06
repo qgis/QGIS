@@ -97,9 +97,9 @@ QList<QPair<QLabel*, QWidget*> > QgsVectorLayerSaveAsDialog::createControls( con
 
   for ( it = options.constBegin(); it != options.constEnd(); ++it )
   {
-    QgsVectorFileWriter::Option* option = it.value();
-    QLabel* label = new QLabel( it.key() );
-    QWidget* control;
+    QgsVectorFileWriter::Option *option = it.value();
+    QLabel *label = new QLabel( it.key() );
+    QWidget *control = 0;
     switch ( option->type )
     {
       case QgsVectorFileWriter::Int:
@@ -363,7 +363,7 @@ QStringList QgsVectorLayerSaveAsDialog::datasourceOptions() const
         case QgsVectorFileWriter::Hidden:
         {
           QgsVectorFileWriter::HiddenOption *opt =
-          dynamic_cast<QgsVectorFileWriter::HiddenOption*>( it.value() );
+            dynamic_cast<QgsVectorFileWriter::HiddenOption*>( it.value() );
           options << QString( "%1=%2" ).arg( it.key() ).arg( opt->mValue );
           break;
         }
@@ -412,7 +412,7 @@ QStringList QgsVectorLayerSaveAsDialog::layerOptions() const
         case QgsVectorFileWriter::Hidden:
         {
           QgsVectorFileWriter::HiddenOption *opt =
-		  dynamic_cast<QgsVectorFileWriter::HiddenOption*>( it.value() );
+            dynamic_cast<QgsVectorFileWriter::HiddenOption*>( it.value() );
           options << QString( "%1=%2" ).arg( it.key() ).arg( opt->mValue );
           break;
         }
