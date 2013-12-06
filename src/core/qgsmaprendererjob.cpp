@@ -131,7 +131,9 @@ void QgsMapRendererSequentialJob::internalFinished()
 
   mErrors = mInternalJob->errors();
 
-  delete mInternalJob;
+  // now we are in a slot called from mInternalJob - do not delete it immediately
+  // so the class is still valid when the execution returns to the class
+  mInternalJob->deleteLater();
   mInternalJob = 0;
 
   emit finished();
@@ -818,7 +820,7 @@ void QgsMapRendererParallelJob::renderLabelsStatic(QgsMapRendererParallelJob* se
 QImage QgsMapRendererParallelJob::composeImage()
 {
   QImage image( mSettings.outputSize(), QImage::Format_ARGB32_Premultiplied );
-  image.fill( mSettings.backgroundColor() );
+  image.fill( mSettings.backgroundColor().rgb() );
 
   QPainter painter(&image);
 

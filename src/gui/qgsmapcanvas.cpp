@@ -636,7 +636,9 @@ void QgsMapCanvas::rendererJobFinished()
     mLabelingResults = mJob->takeLabelingResults();
   }
 
-  delete mJob;
+  // now we are in a slot called from mJob - do not delete it immediately
+  // so the class is still valid when the execution returns to the class
+  mJob->deleteLater();
   mJob = 0;
 }
 

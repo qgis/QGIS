@@ -23,7 +23,7 @@
  * 3. renderer job (in worker thread) calls QgsMapLayerRenderer::render()
  * 4. renderer job (again in GUI thread) will check errors() and report them
  */
-class QgsMapLayerRenderer
+class CORE_EXPORT QgsMapLayerRenderer
 {
 public:
   QgsMapLayerRenderer( const QString& layerID ) : mLayerID( layerID ) {}

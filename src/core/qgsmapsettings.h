@@ -18,7 +18,7 @@ class QgsMapRendererJob;
 class QgsMapLayer;
 
 
-class QgsMapSettings
+class CORE_EXPORT QgsMapSettings
 {
 public:
   QgsMapSettings();

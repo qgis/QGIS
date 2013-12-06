@@ -29,7 +29,7 @@ typedef QList<LayerRenderJob> LayerRenderJobs;
 
 
 /** abstract base class renderer jobs that asynchronously start map rendering */
-class QgsMapRendererJob : public QObject
+class CORE_EXPORT QgsMapRendererJob : public QObject
 {
   Q_OBJECT
 public:
@@ -101,7 +101,7 @@ protected:
 /** Intermediate base class adding functionality that allows client to query the rendered image.
  *  The image can be queried even while the rendering is still in progress to get intermediate result
  */
-class QgsMapRendererQImageJob : public QgsMapRendererJob
+class CORE_EXPORT QgsMapRendererQImageJob : public QgsMapRendererJob
 {
 public:
   QgsMapRendererQImageJob( const QgsMapSettings& settings );
@@ -115,7 +115,7 @@ class QgsMapRendererCustomPainterJob;
 
 
 /** job implementation that renders everything sequentially in one thread */
-class QgsMapRendererSequentialJob : public QgsMapRendererQImageJob
+class CORE_EXPORT QgsMapRendererSequentialJob : public QgsMapRendererQImageJob
 {
   Q_OBJECT
 public:
@@ -148,7 +148,7 @@ protected:
 
 
 /** job implementation that renders all layers in parallel */
-class QgsMapRendererParallelJob : public QgsMapRendererQImageJob
+class CORE_EXPORT QgsMapRendererParallelJob : public QgsMapRendererQImageJob
 {
   Q_OBJECT
 public:
@@ -200,7 +200,7 @@ protected:
 /** job implementation that renders everything sequentially using a custom painter.
  *  The returned image is always invalid (because there is none available).
  */
-class QgsMapRendererCustomPainterJob : public QgsMapRendererJob
+class CORE_EXPORT QgsMapRendererCustomPainterJob : public QgsMapRendererJob
 {
   Q_OBJECT
 public:

@@ -13,8 +13,11 @@
 #include "qgsxmlutils.h"
 
 
+Q_GUI_EXPORT extern int qt_defaultDpiX();
+
+
 QgsMapSettings::QgsMapSettings()
-  : mDpi( 96 ) // what to set?
+  : mDpi( qt_defaultDpiX() ) // DPI that will be used by default for QImage instances
   , mSize( QSize( 0, 0 ) )
   , mExtent()
   , mProjectionsEnabled( false )

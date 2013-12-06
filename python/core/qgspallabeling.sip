@@ -597,6 +597,9 @@ public:
   QList<QgsLabelPosition> labelsAtPosition( const QgsPoint& p ) const;
   //! return infos about labels within a given (map) rectangle
   QList<QgsLabelPosition> labelsWithinRect( const QgsRectangle& r ) const;
+
+private:
+  QgsLabelingResults( const QgsLabelingResults& );
 };
 
 

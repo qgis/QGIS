@@ -661,7 +661,7 @@ class CORE_EXPORT QgsLabelComponent
  * Class that stores computed placement from labeling engine.
  * @note added in 2.1
  */
-class QgsLabelingResults
+class CORE_EXPORT QgsLabelingResults
 {
 public:
   QgsLabelingResults();
@@ -672,7 +672,7 @@ public:
   //! return infos about labels within a given (map) rectangle
   QList<QgsLabelPosition> labelsWithinRect( const QgsRectangle& r ) const;
 
-protected:
+private:
   QgsLabelingResults( const QgsLabelingResults& ) {} // no copying allowed
 
   QgsLabelSearchTree* mLabelSearchTree;
