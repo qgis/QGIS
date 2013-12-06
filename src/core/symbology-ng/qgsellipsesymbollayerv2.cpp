@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsellipsesymbollayerv2.h"
+#include "qgsdxfexport.h"
 #include "qgsexpression.h"
 #include "qgsfeature.h"
 #include "qgsrendercontext.h"
@@ -473,4 +474,140 @@ QgsSymbolV2::OutputUnit QgsEllipseSymbolLayerV2::outputUnit() const
     return QgsSymbolV2::Mixed;
   }
   return unit;
+}
+
+bool QgsEllipseSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitScaleFactor, const QString& layerName, const QgsSymbolV2RenderContext* context, const QgsFeature* f, const QPointF& shift ) const
+{
+  //width
+  double symbolWidth = mSymbolWidth;
+  QgsExpression* widthExpression = expression( "width" );
+  if ( widthExpression ) //1. priority: data defined setting on symbol layer level
+  {
+    symbolWidth = widthExpression->evaluate( const_cast<QgsFeature*>( f ) ).toDouble();
+  }
+  else if ( context->renderHints() & QgsSymbolV2::DataDefinedSizeScale ) //2. priority: is data defined size on symbol level
+  {
+    symbolWidth = mSize;
+  }
+  if ( mSymbolWidthUnit == QgsSymbolV2::MM )
+  {
+    symbolWidth *= mmMapUnitScaleFactor;
+  }
+
+  //height
+  double symbolHeight = mSymbolHeight;
+  QgsExpression* heightExpression = expression( "height" );
+  if ( heightExpression ) //1. priority: data defined setting on symbol layer level
+  {
+    symbolHeight =  heightExpression->evaluate( const_cast<QgsFeature*>( f ) ).toDouble();
+  }
+  else if ( context->renderHints() & QgsSymbolV2::DataDefinedSizeScale ) //2. priority: is data defined size on symbol level
+  {
+    symbolHeight = mSize;
+  }
+  if ( mSymbolHeightUnit == QgsSymbolV2::MM )
+  {
+    symbolHeight *= mmMapUnitScaleFactor;
+  }
+
+  //outline width
+  double outlineWidth = mOutlineWidth;
+  QgsExpression* outlineWidthExpression = expression( "outline_width" );
+  if ( outlineWidthExpression )
+  {
+    outlineWidth = outlineWidthExpression->evaluate( const_cast<QgsFeature*>( context->feature() ) ).toDouble();
+  }
+  if ( mOutlineWidthUnit == QgsSymbolV2::MM )
+  {
+    outlineWidth *= outlineWidth;
+  }
+
+  //color
+  QColor c = mFillColor;
+  QgsExpression* fillColorExpression = expression( "fill_color" );
+  if ( fillColorExpression )
+  {
+    c = QColor( fillColorExpression->evaluate( const_cast<QgsFeature*>( context->feature() ) ).toString() );
+  }
+  int colorIndex = e.closestColorMatch( c.rgb() );
+
+  //symbol name
+  QString symbolName =  mSymbolName;
+  QgsExpression* symbolNameExpression = expression( "symbol_name" );
+  if ( symbolNameExpression )
+  {
+    QgsExpression* symbolNameExpression = expression( "symbol_name" );
+    symbolName = symbolNameExpression->evaluate( const_cast<QgsFeature*>( context->feature() ) ).toString();
+  }
+
+  //offset
+  double offsetX = 0;
+  double offsetY = 0;
+  markerOffset( *context, offsetX, offsetY );
+  QPointF off( offsetX, offsetY );
+
+  //priority for rotation: 1. data defined symbol level, 2. symbol layer rotation (mAngle)
+  double rotation = 0.0;
+  QgsExpression* rotationExpression = expression( "rotation" );
+  if ( rotationExpression )
+  {
+    rotation = rotationExpression->evaluate( const_cast<QgsFeature*>( context->feature() ) ).toDouble();
+  }
+  else if ( !qgsDoubleNear( mAngle, 0.0 ) )
+  {
+    rotation = mAngle;
+  }
+  rotation = -rotation; //rotation in Qt is counterclockwise
+  if ( rotation )
+    off = _rotatedOffset( off, rotation );
+
+  QTransform t;
+  t.translate( shift.x() + offsetX, shift.y() + offsetY );
+
+  if ( rotation != 0 )
+    t.rotate( rotation );
+
+  double halfWidth = symbolWidth / 2.0;
+  double halfHeight = symbolHeight / 2.0;
+
+  if ( symbolName == "circle" )
+  {
+    //soon...
+  }
+  else if ( symbolName == "rectangle" )
+  {
+    QPointF pt1( t.map( QPointF( -halfWidth, -halfHeight ) ) );
+    QPointF pt2( t.map( QPointF( halfWidth, -halfHeight ) ) );
+    QPointF pt3( t.map( QPointF( -halfWidth, halfHeight ) ) );
+    QPointF pt4( t.map( QPointF( halfWidth, halfHeight ) ) );
+    e.writeSolid( layerName, colorIndex, QgsPoint( pt1.x(), pt1.y() ), QgsPoint( pt2.x(), pt2.y() ), QgsPoint( pt3.x(), pt3.y() ), QgsPoint( pt4.x(), pt4.y() ) );
+    return true;
+  }
+  else if ( symbolName == "cross" )
+  {
+    QgsPolyline line1( 2 );
+    QPointF pt1( t.map( QPointF( -halfWidth, 0 ) ) );
+    QPointF pt2( t.map( QPointF( halfWidth, 0 ) ) );
+    line1[0] = QgsPoint( pt1.x(), pt1.y() );
+    line1[1] = QgsPoint( pt2.x(), pt2.y() );
+    e.writePolyline( line1, layerName, "CONTINUOUS", colorIndex, outlineWidth, false );
+    QgsPolyline line2( 2 );
+    QPointF pt3( t.map( QPointF( 0, halfHeight ) ) );
+    QPointF pt4( t.map( QPointF( 0, -halfHeight ) ) );
+    line2[0] = QgsPoint( pt3.x(), pt3.y() );
+    line2[1] = QgsPoint( pt3.x(), pt3.y() );
+    e.writePolyline( line2, layerName, "CONTINUOUS", colorIndex, outlineWidth, false );
+    return true;
+  }
+  else if ( symbolName == "triangle" )
+  {
+    QPointF pt1( t.map( QPointF( -halfWidth, -halfHeight ) ) );
+    QPointF pt2( t.map( QPointF( halfWidth, -halfHeight ) ) );
+    QPointF pt3( t.map( QPointF( 0, halfHeight ) ) );
+    QPointF pt4( t.map( QPointF( 0, halfHeight ) ) );
+    e.writeSolid( layerName, colorIndex, QgsPoint( pt1.x(), pt1.y() ), QgsPoint( pt2.x(), pt2.y() ), QgsPoint( pt3.x(), pt3.y() ), QgsPoint( pt4.x(), pt4.y() ) );
+    return true;
+  }
+
+  return false; //soon...
 }
