@@ -3837,7 +3837,14 @@ void QgisApp::dxfExport()
       }
     }
     QFile dxfFile( d.saveFile() );
-    dxfExport.writeToFile( &dxfFile );
+    if ( dxfExport.writeToFile( &dxfFile ) == 0 )
+    {
+      messageBar()->pushMessage( tr( "DXF export completed" ), QgsMessageBar::INFO, 4 );
+    }
+    else
+    {
+      messageBar()->pushMessage( tr( "DXF export failed" ), QgsMessageBar::CRITICAL, 4 );
+    }
   }
 }
 
