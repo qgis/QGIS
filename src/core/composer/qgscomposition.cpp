@@ -75,6 +75,7 @@ QgsComposition::QgsComposition( QgsMapRenderer* mapRenderer )
     , mActiveItemCommand( 0 )
     , mActiveMultiFrameCommand( 0 )
     , mAtlasComposition( this )
+    , mAtlasPreviewEnabled( false )
     , mPreventCursorChange( false )
 {
   setBackgroundBrush( Qt::gray );
@@ -120,6 +121,7 @@ QgsComposition::QgsComposition()
     mActiveItemCommand( 0 ),
     mActiveMultiFrameCommand( 0 ),
     mAtlasComposition( this ),
+    mAtlasPreviewEnabled( false ),
     mPreventCursorChange( false )
 {
   //load default composition settings
@@ -2308,6 +2310,22 @@ void QgsComposition::computeWorldFileParameters( double& a, double& b, double& c
   d = r[3] * s[0] + r[4] * s[3];
   e = r[3] * s[1] + r[4] * s[4];
   f = r[3] * s[2] + r[4] * s[5] + r[5];
+}
+
+void QgsComposition::setAtlasPreviewEnabled( bool e )
+{
+  mAtlasPreviewEnabled = e;
+
+  if ( !mAtlasPreviewEnabled )
+  {
+    mAtlasComposition.endRender();
+  }
+  else
+  {
+    mAtlasComposition.beginRender();
+  }
+
+  update();
 }
 
 void QgsComposition::relativeResizeRect( QRectF& rectToResize, const QRectF& boundsBefore, const QRectF& boundsAfter )

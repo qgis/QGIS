@@ -61,9 +61,10 @@ class TestQgsAtlasComposition(unittest.TestCase):
         self.mComposition.addComposerMap( self.mAtlasMap )
 
         # the atlas
-        self.mAtlas = QgsAtlasComposition( self.mComposition )
+        self.mAtlas = self.mComposition.atlasComposition()
         self.mAtlas.setCoverageLayer( mVectorLayer )
         self.mAtlas.setComposerMap( self.mAtlasMap )
+        self.mAtlas.setEnabled( True )
 
         # an overview
         mOverview = QgsComposerMap( self.mComposition, 180, 20, 50, 50 )

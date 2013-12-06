@@ -43,13 +43,13 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
 
     /** Is the atlas generation enabled ? */
     bool enabled() const { return mEnabled; }
-    void setEnabled( bool e ) { mEnabled = e; }
+    void setEnabled( bool e );
 
     QgsComposerMap* composerMap() const { return mComposerMap; }
     void setComposerMap( QgsComposerMap* map ) { mComposerMap = map; }
 
     bool hideCoverage() const { return mHideCoverage; }
-    void setHideCoverage( bool hide ) { mHideCoverage = hide; }
+    void setHideCoverage( bool hide );
 
     bool fixedScale() const { return mFixedScale; }
     void setFixedScale( bool fixed ) { mFixedScale = fixed; }
@@ -100,9 +100,19 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
 
     QgsComposition* composition() { return mComposition; }
 
+    void updateFeatures();
+
+    void nextFeature();
+    void prevFeature();
+    void lastFeature();
+    void firstFeature();
+
   signals:
     /** emitted when one of the parameters changes */
     void parameterChanged();
+
+    /** emitted when atlas is enabled or disabled */
+    void toggled( bool );
 
   private:
     QgsComposition* mComposition;
@@ -122,6 +132,10 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     bool mSortFeatures;
     // sort direction
     bool mSortAscending;
+
+    // current atlas feature number
+    int mCurrentFeatureNo;
+
   public:
     typedef QMap< QgsFeatureId, QVariant > SorterKeys;
   private:
@@ -139,7 +153,6 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     QVector<QgsFeatureId> mFeatureIds;
 
     QgsFeature mCurrentFeature;
-    QgsRectangle mOrigExtent;
     bool mRestoreLayer;
     std::auto_ptr<QgsExpression> mFilenameExpr;
 };

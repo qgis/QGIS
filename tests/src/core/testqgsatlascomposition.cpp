@@ -102,9 +102,10 @@ void TestQgsAtlasComposition::initTestCase()
   mAtlasMap->setFrameEnabled( true );
   mComposition->addComposerMap( mAtlasMap );
 
-  mAtlas = new QgsAtlasComposition( mComposition );
+  mAtlas = &mComposition->atlasComposition();
   mAtlas->setCoverageLayer( mVectorLayer );
   mAtlas->setComposerMap( mAtlasMap );
+  mAtlas->setEnabled( true );
 
   // an overview
   mOverview = new QgsComposerMap( mComposition, 180, 20, 50, 50 );
