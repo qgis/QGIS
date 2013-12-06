@@ -345,10 +345,12 @@ double QgsRandomColorsV2::value( int index ) const
 QColor QgsRandomColorsV2::color( double value ) const
 {
   Q_UNUSED( value );
-  int r = 1 + ( int )( 255.0 * rand() / ( RAND_MAX + 1.0 ) );
-  int g = 1 + ( int )( 255.0 * rand() / ( RAND_MAX + 1.0 ) );
-  int b = 1 + ( int )( 255.0 * rand() / ( RAND_MAX + 1.0 ) );
-  return QColor( r, g, b );
+  int minVal = 130;
+  int maxVal = 255;
+  int h = 1 + ( int )( 360.0 * rand() / ( RAND_MAX + 1.0 ) );
+  int s = ( rand() % ( DEFAULT_RANDOM_SAT_MAX - DEFAULT_RANDOM_SAT_MIN + 1 ) ) + DEFAULT_RANDOM_SAT_MIN;
+  int v = ( rand() % ( maxVal - minVal + 1 ) ) + minVal;
+  return QColor::fromHsv( h, s, v );
 }
 
 QString QgsRandomColorsV2::type() const
