@@ -29,7 +29,7 @@ class QgsPoint;
 class QgsSymbolLayerV2;
 class QIODevice;
 
-class QgsDxfExport
+class CORE_EXPORT QgsDxfExport
 {
   public:
     enum SymbologyExport
@@ -77,6 +77,8 @@ class QgsDxfExport
     void writeLine( const QgsPoint& pt1, const QgsPoint& pt2, const QString& layer, const QString& lineStyleName, int color, double width = -1 );
 
     void writePoint( const QString& layer, int color, const QgsPoint& pt );
+
+    void writeCircle( const QString& layer, int color, const QgsPoint& pt, double radius );
 
   private:
 

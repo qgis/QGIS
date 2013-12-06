@@ -26,7 +26,7 @@ class QPaintEngine;
 
 /**A paint device for drawing into dxf files*/
 
-class QgsDxfPaintDevice: public QPaintDevice
+class CORE_EXPORT QgsDxfPaintDevice: public QPaintDevice
 {
   public:
     QgsDxfPaintDevice( QgsDxfExport* dxf );

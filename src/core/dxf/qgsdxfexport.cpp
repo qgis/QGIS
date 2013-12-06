@@ -796,6 +796,17 @@ void QgsDxfExport::writePoint( const QString& layer, int color, const QgsPoint& 
   writeGroup( 30, 0.0 );
 }
 
+void QgsDxfExport::writeCircle( const QString& layer, int color, const QgsPoint& pt, double radius )
+{
+  writeGroup( 0, "CIRCLE" );
+  writeGroup( 8, layer );
+  writeGroup( 62, color );
+  writeGroup( 10, pt.x() );
+  writeGroup( 20, pt.y() );
+  writeGroup( 30, 0 );
+  writeGroup( 40, radius );
+}
+
 void QgsDxfExport::writeSolid( const QString& layer, int color, const QgsPoint& pt1, const QgsPoint& pt2, const QgsPoint& pt3, const QgsPoint& pt4 )
 {
   writeGroup( 0, "SOLID" );

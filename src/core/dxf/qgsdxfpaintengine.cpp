@@ -103,7 +103,13 @@ void QgsDxfPaintEngine::drawRects( const QRectF* rects, int rectCount )
 
 void QgsDxfPaintEngine::drawEllipse( const QRectF& rect )
 {
-  //map to circle in case of square?
+  QPoint midPoint(( rect.left() + rect.right() ) / 2.0, ( rect.top() + rect.bottom() ) / 2.0 );
+
+  //a circle
+  if ( qgsDoubleNear( rect.width(), rect.height() ) )
+  {
+    mDxf->writeCircle( mLayer, currentPenColor(), toDxfCoordinates( midPoint ), rect.width() / 2.0 );
+  }
 
   //todo: create polyline for real ellises
 }

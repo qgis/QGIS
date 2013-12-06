@@ -24,7 +24,7 @@ class QgsDxfExport;
 class QgsDxfPaintDevice;
 class QgsPoint;
 
-class QgsDxfPaintEngine: public QPaintEngine
+class CORE_EXPORT QgsDxfPaintEngine: public QPaintEngine
 {
   public:
     QgsDxfPaintEngine( const QgsDxfPaintDevice* dxfDevice, QgsDxfExport* dxf );
