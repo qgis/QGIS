@@ -392,7 +392,6 @@ INCLUDE_DIRECTORIES(
   ../core/composer
   ../core/raster
   ../core/symbology-ng
-  ../core/dxf
   ${CMAKE_CURRENT_BINARY_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}/../ui
   ${QWT_INCLUDE_DIR}

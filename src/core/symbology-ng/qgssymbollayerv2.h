@@ -31,13 +31,14 @@
 #include <QDomElement>
 
 #include "qgssymbolv2.h"
+
 #include "qgssymbollayerv2utils.h" // QgsStringMap
-#include "qgsdxfexport.h"
 
 class QPainter;
 class QSize;
 class QPolygonF;
 
+class QgsDxfExport;
 class QgsExpression;
 class QgsRenderContext;
 
@@ -93,8 +94,12 @@ class CORE_EXPORT QgsSymbolLayerV2
     virtual void removeDataDefinedProperties();
     bool hasDataDefinedProperties() const { return mDataDefinedProperties.size() > 0; }
 
-    virtual bool writeDxf( QgsDxfExport& e, double mmMapUnitScaleFactor, const QString& layerName, const QgsSymbolV2RenderContext* context, const QgsFeature* f, const QPointF& shift = QPointF( 0.0, 0.0 ) ) const
-    { Q_UNUSED( e ); Q_UNUSED( mmMapUnitScaleFactor ); Q_UNUSED( layerName ); Q_UNUSED( context ); Q_UNUSED( f ); Q_UNUSED( shift ); return false; }
+    virtual bool writeDxf( QgsDxfExport& e,
+                           double mmMapUnitScaleFactor,
+                           const QString& layerName,
+                           const QgsSymbolV2RenderContext* context,
+                           const QgsFeature* f,
+                           const QPointF& shift = QPointF( 0.0, 0.0 ) ) const;
 
   protected:
     QgsSymbolLayerV2( QgsSymbolV2::SymbolType type, bool locked = false )

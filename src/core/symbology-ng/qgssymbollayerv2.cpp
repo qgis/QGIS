@@ -18,6 +18,7 @@
 #include "qgsexpression.h"
 #include "qgsrendercontext.h"
 #include "qgsvectorlayer.h"
+#include "qgsdxfexport.h"
 
 #include <QSize>
 #include <QPainter>
@@ -75,6 +76,23 @@ void QgsSymbolLayerV2::removeDataDefinedProperties()
   }
   mDataDefinedProperties.clear();
 }
+
+bool QgsSymbolLayerV2::writeDxf( QgsDxfExport& e,
+                                 double mmMapUnitScaleFactor,
+                                 const QString& layerName,
+                                 const QgsSymbolV2RenderContext* context,
+                                 const QgsFeature* f,
+                                 const QPointF& shift ) const
+{
+  Q_UNUSED( e );
+  Q_UNUSED( mmMapUnitScaleFactor );
+  Q_UNUSED( layerName );
+  Q_UNUSED( context );
+  Q_UNUSED( f );
+  Q_UNUSED( shift );
+  return false;
+}
+
 
 void QgsSymbolLayerV2::prepareExpressions( const QgsVectorLayer* vl, double scale )
 {
