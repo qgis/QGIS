@@ -632,14 +632,12 @@ void QgsCoordinateTransform::transformCoords( const int& numPoints, double *x, d
   if ( direction == ReverseTransform )
   {
     projResult = pj_transform( mDestinationProjection, mSourceProjection, numPoints, 0, x, y, z );
-    dir = tr( "inverse transform" );
   }
   else
   {
     Q_ASSERT( mSourceProjection != 0 );
     Q_ASSERT( mDestinationProjection != 0 );
     projResult = pj_transform( mSourceProjection, mDestinationProjection, numPoints, 0, x, y, z );
-    dir = tr( "forward transform" );
   }
 
   if ( projResult != 0 )
@@ -658,6 +656,8 @@ void QgsCoordinateTransform::transformCoords( const int& numPoints, double *x, d
         points += QString( "(%1, %2)\n" ).arg( x[i] * RAD_TO_DEG, 0, 'f' ).arg( y[i] * RAD_TO_DEG, 0, 'f' );
       }
     }
+
+    dir = (direction == ForwardTransform) ? tr( "forward transform" ) : tr( "inverse transform" );
 
     QString msg = tr( "%1 of\n"
                       "%2"
