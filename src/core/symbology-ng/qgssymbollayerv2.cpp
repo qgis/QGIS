@@ -173,6 +173,9 @@ QgsMarkerSymbolLayerV2::QgsMarkerSymbolLayerV2( bool locked )
     : QgsSymbolLayerV2( QgsSymbolV2::Marker, locked ), mSizeUnit( QgsSymbolV2::MM ),  mOffsetUnit( QgsSymbolV2::MM ),
     mHorizontalAnchorPoint( HCenter ), mVerticalAnchorPoint( VCenter )
 {
+    mOffsetExpression = NULL;
+    mHorizontalAnchorExpression = NULL;
+    mVerticalAnchorExpression = NULL;
 }
 
 QgsLineSymbolLayerV2::QgsLineSymbolLayerV2( bool locked )
@@ -183,6 +186,13 @@ QgsLineSymbolLayerV2::QgsLineSymbolLayerV2( bool locked )
 QgsFillSymbolLayerV2::QgsFillSymbolLayerV2( bool locked )
     : QgsSymbolLayerV2( QgsSymbolV2::Fill, locked ), mAngle( 0.0 )
 {
+}
+
+void QgsMarkerSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context )
+{
+  mOffsetExpression = expression( "offset" );
+  mHorizontalAnchorExpression = expression( "horizontal_anchor_point" );
+  mVerticalAnchorExpression = expression( "vertical_anchor_point" );
 }
 
 void QgsMarkerSymbolLayerV2::drawPreviewIcon( QgsSymbolV2RenderContext& context, QSize size )
@@ -210,10 +220,9 @@ void QgsMarkerSymbolLayerV2::markerOffset( const QgsSymbolV2RenderContext& conte
   offsetX = mOffset.x();
   offsetY = mOffset.y();
 
-  QgsExpression* offsetExpression = expression( "offset" );
-  if ( offsetExpression )
+  if ( mOffsetExpression )
   {
-    QPointF offset = QgsSymbolLayerV2Utils::decodePoint( offsetExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() );
+    QPointF offset = QgsSymbolLayerV2Utils::decodePoint( mOffsetExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() );
     offsetX = offset.x();
     offsetY = offset.y();
   }
@@ -223,15 +232,13 @@ void QgsMarkerSymbolLayerV2::markerOffset( const QgsSymbolV2RenderContext& conte
 
   HorizontalAnchorPoint horizontalAnchorPoint = mHorizontalAnchorPoint;
   VerticalAnchorPoint verticalAnchorPoint = mVerticalAnchorPoint;
-  QgsExpression* horizontalAnchorExpression = expression( "horizontal_anchor_point" );
-  if ( horizontalAnchorExpression )
+  if ( mHorizontalAnchorExpression )
   {
-    horizontalAnchorPoint = decodeHorizontalAnchorPoint( horizontalAnchorExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() );
+    horizontalAnchorPoint = decodeHorizontalAnchorPoint( mHorizontalAnchorExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() );
   }
-  QgsExpression* verticalAnchorExpression = expression( "vertical_anchor_point" );
-  if ( verticalAnchorExpression )
+  if ( mVerticalAnchorExpression )
   {
-    verticalAnchorPoint = decodeVerticalAnchorPoint( verticalAnchorExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() );
+    verticalAnchorPoint = decodeVerticalAnchorPoint( mVerticalAnchorExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() );
   }
 
   //correct horizontal position according to anchor point

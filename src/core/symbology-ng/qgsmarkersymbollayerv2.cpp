@@ -46,6 +46,8 @@ QgsSimpleMarkerSymbolLayerV2::QgsSimpleMarkerSymbolLayerV2( QString name, QColor
   mScaleMethod = scaleMethod;
   mSizeUnit = QgsSymbolV2::MM;
   mOffsetUnit = QgsSymbolV2::MM;
+  mAngleExpression = NULL;
+  mNameExpression = NULL;
 }
 
 QgsSymbolLayerV2* QgsSimpleMarkerSymbolLayerV2::create( const QgsStringMap& props )
@@ -231,6 +233,10 @@ void QgsSimpleMarkerSymbolLayerV2::startRender( QgsSymbolV2RenderContext& contex
   }
 
   prepareExpressions( context.layer(), context.renderContext().rendererScale() );
+  mAngleExpression = expression( "angle" );
+  mNameExpression = expression( "name" );
+
+  QgsMarkerSymbolLayerV2::startRender( context );
 }
 
 
@@ -456,19 +462,17 @@ void QgsSimpleMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV
 
   //angle
   double angle = mAngle;
-  QgsExpression* angleExpression = expression( "angle" );
-  if ( angleExpression )
+  if ( mAngleExpression )
   {
-    angle = angleExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble();
+    angle = mAngleExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble();
   }
   if ( angle )
     off = _rotatedOffset( off, angle );
 
   //data defined shape?
-  QgsExpression* nameExpression = expression( "name" );
-  if ( nameExpression )
+  if ( mNameExpression )
   {
-    QString name = nameExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString();
+    QString name = mNameExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString();
     if ( !prepareShape( name ) ) // drawing as a polygon
     {
       preparePath( name ); // drawing as a painter path
@@ -517,7 +521,7 @@ void QgsSimpleMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV
       transform.scale( half, half );
     }
 
-    bool hasDataDefinedRotation = context.renderHints() & QgsSymbolV2::DataDefinedRotation || angleExpression;
+    bool hasDataDefinedRotation = context.renderHints() & QgsSymbolV2::DataDefinedRotation || mAngleExpression;
     if ( angle != 0 && hasDataDefinedRotation )
       transform.rotate( angle );
 
