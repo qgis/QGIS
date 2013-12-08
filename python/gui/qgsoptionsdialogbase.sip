@@ -17,6 +17,9 @@ class QgsOptionsDialogBase : QDialog
      */
     void initOptionsBase( bool restoreUi = true );
 
+    // set custom QSettings pointer if dialog used outside QGIS (in plugin)
+    void setSettings( QSettings* settings );
+
     /** Restore the base ui.
      * Sometimes useful to do at end of subclass's constructor.
      */
