@@ -17,4 +17,7 @@ class QgsAttributeDialog : QObject
       int exec();
       void show();
       void dialogDestroyed();
+
+private:
+      bool eventFilter( QObject *obj, QEvent *event );
 };

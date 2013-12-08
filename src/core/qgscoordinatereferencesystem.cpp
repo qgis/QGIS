@@ -1682,6 +1682,8 @@ int QgsCoordinateReferenceSystem::syncDb()
 
   int inserted = 0, updated = 0, deleted = 0, errors = 0;
 
+  qDebug( "Load srs db from: %s", QgsApplication::srsDbFilePath().toLocal8Bit().constData());
+
   sqlite3 *database;
   if ( sqlite3_open( dbFilePath.toUtf8().constData(), &database ) != SQLITE_OK )
   {
@@ -1695,6 +1697,10 @@ int QgsCoordinateReferenceSystem::syncDb()
     return -1;
 
   }
+
+  // fix up database, if not done already //
+  if ( sqlite3_exec( database, "alter table tbl_srs add noupdate boolean", 0, 0, 0 ) == SQLITE_OK )
+    sqlite3_exec( database, "update tbl_srs set noupdate=(auth_name='EPSG' and auth_id in (5513,5514,5221,2065,102067,4156,4818))", 0, 0, 0 );
 
   sqlite3_exec( database, "UPDATE tbl_srs SET srid=141001 WHERE srid=41001 AND auth_name='OSGEO' AND auth_id='41001'", 0, 0, 0 );
 
