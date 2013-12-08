@@ -9097,7 +9097,7 @@ void QgisApp::keyPressEvent( QKeyEvent * e )
 void QgisApp::mapCanvas_keyPressed( QKeyEvent *e )
 {
   // Delete selected features when it is possible and KeyEvent was not managed by current MapTool
-  if ( ( e->key() == Qt::Key_Backspace || e->key() == Qt::Key_Delete ) && e->isAccepted() && mActionDeleteSelected->isEnabled() )
+  if ( ( e->key() == Qt::Key_Backspace || e->key() == Qt::Key_Delete ) && e->isAccepted() )
   {
     deleteSelected();
   }
