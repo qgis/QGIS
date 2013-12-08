@@ -105,6 +105,10 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
 
     //Maximum width/height of cache image
     static const int mMaximumCacheWidth = 3000;
+
+  private:
+    QgsExpression *mAngleExpression;
+    QgsExpression *mNameExpression;
 };
 
 //////////
