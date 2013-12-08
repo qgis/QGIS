@@ -49,8 +49,8 @@ const unsigned char* QgsClipper::clippedLineWKB( const unsigned char* wkb, const
   double p1x_c, p1y_c; //clipped end coordinates
   double lastClipX = 0.0, lastClipY = 0.0; //last successfully clipped coords
 
-  line.reserve( nPoints + 1 );
   line.clear();
+  line.reserve( nPoints + 1 );
 
   for ( unsigned int i = 0; i < nPoints; ++i )
   {

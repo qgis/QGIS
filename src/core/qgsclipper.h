@@ -179,11 +179,11 @@ inline void QgsClipper::trimPolygon( QPolygonF& pts, const QgsRectangle& clipRec
   tmpPts.reserve( pts.size() );
 
   trimPolygonToBoundary( pts, tmpPts, clipRect, XMax, clipRect.xMaximum() );
-  pts.clear();
+  pts.resize( 0 );
   trimPolygonToBoundary( tmpPts, pts, clipRect, YMax, clipRect.yMaximum() );
-  tmpPts.clear();
+  tmpPts.resize( 0 );
   trimPolygonToBoundary( pts, tmpPts, clipRect, XMin, clipRect.xMinimum() );
-  pts.clear();
+  pts.resize( 0 );
   trimPolygonToBoundary( tmpPts, pts, clipRect, YMin, clipRect.yMinimum() );
 }
 
