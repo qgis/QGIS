@@ -60,11 +60,21 @@ class QgsMapToolNodeTool: public QgsMapToolVertexEdit
      */
     void currentLayerChanged( QgsMapLayer *layer );
 
+    /*
+     * the current edition state changed
+     */
+    void editingToggled();
+
   private:
     /**
      * Deletes the rubber band pointers and clears mRubberBands
      */
     void removeRubberBands();
+
+    /**
+     * Disconnects signals and clears objects
+     */
+    void cleanTool( bool deleteSelectedFeature = true );
 
     /**
      * Creating rubber band marker for movin of point

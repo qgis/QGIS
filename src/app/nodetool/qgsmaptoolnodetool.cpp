@@ -44,7 +44,7 @@ QgsMapToolNodeTool::QgsMapToolNodeTool( QgsMapCanvas* canvas )
 
 QgsMapToolNodeTool::~QgsMapToolNodeTool()
 {
-  removeRubberBands();
+  cleanTool();
 }
 
 void QgsMapToolNodeTool::createMovingRubberBands()
@@ -369,6 +369,7 @@ void QgsMapToolNodeTool::canvasPressEvent( QMouseEvent * e )
     mSelectedFeature = new QgsSelectedFeature( snapResults[0].snappedAtGeometry, vlayer, mCanvas );
     connect( QgisApp::instance()->legend(), SIGNAL( currentLayerChanged( QgsMapLayer* ) ), this, SLOT( currentLayerChanged( QgsMapLayer* ) ) );
     connect( mSelectedFeature, SIGNAL( destroyed() ), this, SLOT( selectedFeatureDestroyed() ) );
+    connect( vlayer, SIGNAL( editingStopped() ), this, SLOT( editingToggled() ) );
     mIsPoint = vlayer->geometryType() == QGis::Point;
   }
   else
@@ -485,18 +486,20 @@ void QgsMapToolNodeTool::canvasPressEvent( QMouseEvent * e )
 void QgsMapToolNodeTool::selectedFeatureDestroyed()
 {
   QgsDebugCall;
-  mSelectedFeature = 0;
+  cleanTool( false );
 }
 
 void QgsMapToolNodeTool::currentLayerChanged( QgsMapLayer *layer )
 {
   if ( mSelectedFeature && layer != mSelectedFeature->vlayer() )
   {
-    delete mSelectedFeature;
-    mSelectedFeature = 0;
-
-    removeRubberBands();
+    cleanTool();
   }
+}
+
+void QgsMapToolNodeTool::editingToggled()
+{
+  cleanTool();
 }
 
 void QgsMapToolNodeTool::canvasReleaseEvent( QMouseEvent * e )
@@ -605,10 +608,7 @@ void QgsMapToolNodeTool::canvasReleaseEvent( QMouseEvent * e )
 
 void QgsMapToolNodeTool::deactivate()
 {
-  removeRubberBands();
-
-  delete mSelectedFeature;
-  mSelectedFeature = 0;
+  cleanTool();
 
   mSelectionRubberBand = 0;
   mSelectAnother = false;
@@ -642,6 +642,23 @@ void QgsMapToolNodeTool::removeRubberBands()
     mSelectedFeature->cleanRubberBandsData();
 }
 
+void QgsMapToolNodeTool::cleanTool( bool deleteSelectedFeature )
+{
+  removeRubberBands();
+
+  if ( mSelectedFeature )
+  {
+    QgsVectorLayer *vlayer = mSelectedFeature->vlayer();
+    Q_ASSERT( vlayer );
+
+    disconnect( QgisApp::instance()->legend(), SIGNAL( currentLayerChanged( QgsMapLayer* ) ), this, SLOT( currentLayerChanged( QgsMapLayer* ) ) );
+    disconnect( mSelectedFeature, SIGNAL( destroyed() ), this, SLOT( selectedFeatureDestroyed() ) );
+    disconnect( vlayer, SIGNAL( editingStopped() ), this, SLOT( editingToggled() ) );
+
+    if ( deleteSelectedFeature ) delete mSelectedFeature;
+    mSelectedFeature = 0;
+  }
+}
 
 void QgsMapToolNodeTool::canvasDoubleClickEvent( QMouseEvent * e )
 {
