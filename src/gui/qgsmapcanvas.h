@@ -150,6 +150,14 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! @note added in 2.1
     bool isCachingEnabled() const;
 
+    //! Set whether the layers are rendered in parallel or sequentially
+    //! @note added in 2.1
+    void setParallelRenderingEnabled( bool enabled );
+
+    //! Check whether the layers are rendered in parallel or sequentially
+    //! @note added in 2.1
+    bool isParallelRenderingEnabled() const;
+
     //! @deprecated since 2.1 - there could be more than just one "map" items
     QgsMapCanvasMap* map();
 

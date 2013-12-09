@@ -2071,6 +2071,8 @@ void QgisApp::createOverview()
   mMapCanvas->setWheelAction(( QgsMapCanvas::WheelAction ) action, zoomFactor );
 
   mMapCanvas->setCachingEnabled( mySettings.value( "/qgis/enable_render_caching", false ).toBool() );
+
+  mMapCanvas->setParallelRenderingEnabled( mySettings.value( "/qgis/parallel_rendering", false).toBool() );
 }
 
 void QgisApp::addDockWidget( Qt::DockWidgetArea theArea, QDockWidget * thepDockWidget )
@@ -6600,6 +6602,8 @@ void QgisApp::options()
     mMapCanvas->setWheelAction(( QgsMapCanvas::WheelAction ) action, zoomFactor );
 
     mMapCanvas->setCachingEnabled( mySettings.value( "/qgis/enable_render_caching", false ).toBool() );
+
+    mMapCanvas->setParallelRenderingEnabled( mySettings.value( "/qgis/parallel_rendering", false).toBool() );
 
     //do we need this? TS
     mMapCanvas->refresh();

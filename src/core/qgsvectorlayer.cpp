@@ -164,15 +164,6 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
     }
 
     connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( checkJoinLayerRemove( QString ) ) );
-
-    // Get the update threshold from user settings. We
-    // do this only on construction to avoid the penality of
-    // fetching this each time the layer is drawn. If the user
-    // changes the threshold from the preferences dialog, it will
-    // have no effect on existing layers
-    // TODO: load this setting somewhere else [MD]
-    //QSettings settings;
-    //mUpdateThreshold = settings.readNumEntry("Map/updateThreshold", 1000);
   }
 
   connect( this, SIGNAL( selectionChanged( QgsFeatureIds, QgsFeatureIds, bool ) ), this, SIGNAL( selectionChanged() ) );

@@ -509,6 +509,16 @@ bool QgsMapCanvas::isCachingEnabled() const
   return mCache != 0;
 }
 
+void QgsMapCanvas::setParallelRenderingEnabled( bool enabled )
+{
+  mUseParallelRendering = enabled;
+}
+
+bool QgsMapCanvas::isParallelRenderingEnabled() const
+{
+  return mUseParallelRendering;
+}
+
 
 void QgsMapCanvas::updateOverview()
 {

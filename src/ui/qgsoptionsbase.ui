@@ -266,8 +266,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>687</width>
-                <height>523</height>
+                <width>670</width>
+                <height>606</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -912,8 +912,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>670</width>
-                <height>750</height>
+                <width>674</width>
+                <height>799</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_22">
@@ -1249,7 +1249,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>687</width>
-                <height>523</height>
+                <height>511</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -1577,8 +1577,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>572</width>
-                <height>611</height>
+                <width>670</width>
+                <height>631</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_29">
@@ -1588,16 +1588,6 @@
                   <string>Rendering behavior</string>
                  </property>
                  <layout class="QGridLayout" name="_4">
-                  <item row="1" column="0">
-                   <widget class="QCheckBox" name="chkEnableBackbuffer">
-                    <property name="toolTip">
-                     <string>Better graphics performance at the cost of loosing the possibility to cancel rendering and incremental feature drawing</string>
-                    </property>
-                    <property name="text">
-                     <string>Enable back buffer</string>
-                    </property>
-                   </widget>
-                  </item>
                   <item row="0" column="0">
                    <widget class="QCheckBox" name="chkAddedVisibility">
                     <property name="text">
@@ -1605,47 +1595,17 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="4" column="0" colspan="2">
+                  <item row="1" column="0" colspan="2">
                    <widget class="QCheckBox" name="chkUseRenderCaching">
                     <property name="text">
                      <string>Use render caching where possible to speed up redraws</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="2" column="0">
-                   <layout class="QHBoxLayout" name="horizontalLayout_26">
-                    <item>
-                     <widget class="QLabel" name="labelUpdateThreshold">
-                      <property name="text">
-                       <string>Number of features to draw before updating the display</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QSpinBox" name="spinBoxUpdateThreshold">
-                      <property name="maximumSize">
-                       <size>
-                        <width>200</width>
-                        <height>16777215</height>
-                       </size>
-                      </property>
-                      <property name="toolTip">
-                       <string>Map display will be updated (drawn) after this many features have been read from the data source</string>
-                      </property>
-                      <property name="maximum">
-                       <number>1000000</number>
-                      </property>
-                      <property name="value">
-                       <number>1000</number>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
-                  <item row="3" column="0" colspan="2">
-                   <widget class="QLabel" name="textLabel3">
+                  <item row="2" column="0" colspan="2">
+                   <widget class="QCheckBox" name="chkParallelRendering">
                     <property name="text">
-                     <string>&lt;b&gt;Note:&lt;/b&gt; Set below 1000 to prevent display updates until all features have been rendered</string>
+                     <string>Render layers in parallel using all available CPU cores</string>
                     </property>
                    </widget>
                   </item>
@@ -1665,13 +1625,6 @@
                    <widget class="QCheckBox" name="chkAntiAliasing">
                     <property name="text">
                      <string>Make lines appear less jagged at the expense of some drawing performance</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QCheckBox" name="chkUseQPixmap">
-                    <property name="text">
-                     <string>Fix problems with incorrectly filled polygons</string>
                     </property>
                    </widget>
                   </item>
@@ -2092,8 +2045,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>441</width>
-                <height>281</height>
+                <width>495</width>
+                <height>351</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -2438,8 +2391,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>494</width>
-                <height>619</height>
+                <width>599</width>
+                <height>696</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_30">
@@ -2852,8 +2805,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>670</width>
-                <height>551</height>
+                <width>544</width>
+                <height>656</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -3353,8 +3306,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>687</width>
-                <height>523</height>
+                <width>513</width>
+                <height>385</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -3493,8 +3446,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>687</width>
-                <height>523</height>
+                <width>707</width>
+                <height>402</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_15">
@@ -3678,8 +3631,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>265</width>
-                <height>197</height>
+                <width>327</width>
+                <height>239</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -3778,8 +3731,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>469</width>
-                <height>556</height>
+                <width>582</width>
+                <height>703</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_33">

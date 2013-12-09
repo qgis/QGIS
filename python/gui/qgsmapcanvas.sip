@@ -71,6 +71,22 @@ class QgsMapCanvas : QGraphicsView
     //! @note added in 2.1
     const QgsLabelingResults* labelingResults() const;
 
+    //! Set whether to cache images of rendered layers
+    //! @note added in 2.1
+    void setCachingEnabled( bool enabled );
+
+    //! Check whether images of rendered layers are curerently being cached
+    //! @note added in 2.1
+    bool isCachingEnabled() const;
+
+    //! Set whether the layers are rendered in parallel or sequentially
+    //! @note added in 2.1
+    void setParallelRenderingEnabled( bool enabled );
+
+    //! Check whether the layers are rendered in parallel or sequentially
+    //! @note added in 2.1
+    bool isParallelRenderingEnabled() const;
+
     //! @deprecated since 2.1 - there could be more than just one "map" items
     QgsMapCanvasMap* map();
 
