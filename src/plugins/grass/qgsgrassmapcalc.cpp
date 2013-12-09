@@ -829,7 +829,7 @@ void QgsGrassMapcalc::deleteItem()
 
 void QgsGrassMapcalc::keyPressEvent( QKeyEvent * e )
 {
-  if ( e->key() == Qt::Key_Delete )
+  if ( e->key() == Qt::Key_Backspace || e->key() == Qt::Key_Delete )
   {
     deleteItem();
 

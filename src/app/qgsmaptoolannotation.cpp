@@ -133,7 +133,7 @@ void QgsMapToolAnnotation::keyPressEvent( QKeyEvent* e )
   QgsAnnotationItem* sItem = selectedItem();
   if ( sItem )
   {
-    if ( e->key() == Qt::Key_Delete )
+    if ( e->key() == Qt::Key_Backspace || e->key() == Qt::Key_Delete )
     {
       if ( mCanvas && mCanvas->scene() )
       {

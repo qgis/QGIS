@@ -98,7 +98,7 @@ class QgsMapToolNodeTool: public QgsMapToolVertexEdit
     /**
      * Returns the index of first selected vertex, -1 when all unselected
      */
-    int firstSelectedVertex( );
+    int firstSelectedVertex();
 
     /**
      * Select the specified vertex bounded to current index range, returns the valid selected index
