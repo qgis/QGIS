@@ -1,6 +1,7 @@
 #include "qgsdxfexportdialog.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerregistry.h"
+#include "qgsvectorlayer.h"
 #include "qgis.h"
 #include <QFileDialog>
 #include <QPushButton>
@@ -22,6 +23,9 @@ QgsDxfExportDialog::QgsDxfExportDialog( const QList<QgsMapLayer*>& layerKeys, QW
     {
       if ( layer->type() == QgsMapLayer::VectorLayer )
       {
+        QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( layer );
+        if ( !vl->hasGeometryType() )
+          continue;
         QListWidgetItem* layerItem = new QListWidgetItem( layer->name() );
         layerItem->setData( Qt::UserRole, layer->id() );
         layerItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsUserCheckable );
