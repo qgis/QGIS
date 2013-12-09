@@ -175,6 +175,29 @@ inline void QgsClipper::trimFeature( QVector<double>& x,
 
 inline void QgsClipper::trimPolygon( QPolygonF& pts, const QgsRectangle& clipRect )
 {
+  int is_inside = 1;
+  double x, y, xmin, ymin, xmax, ymax;
+
+  xmin = clipRect.xMinimum();
+  xmax = clipRect.xMaximum();
+  ymin = clipRect.yMinimum();
+  ymax = clipRect.yMaximum();
+
+  int s = pts.size();
+  QPointF *data = pts.data();
+
+  for ( int i = 0; ( i < s ) && is_inside; i++, data++ ) {
+          x = data->x();
+          y = data->y();
+
+          if (( x > xmax ) || ( x < xmin ) ||
+              ( y < ymin ) || ( y > ymax ))
+                  is_inside = 0;
+  }
+
+  if (is_inside)
+          return;
+
   QPolygonF tmpPts;
   tmpPts.reserve( pts.size() );
 
