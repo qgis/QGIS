@@ -11,6 +11,8 @@ QgsDxfExportDialog::QgsDxfExportDialog( const QList<QgsMapLayer*>& layerKeys, QW
   setupUi( this );
   connect( mFileLineEdit, SIGNAL( textChanged( const QString& ) ), this, SLOT( setOkEnabled() ) );
   connect( this, SIGNAL( accepted() ), this, SLOT( saveSettings() ) );
+  connect( mSelectAllButton, SIGNAL( clicked() ), this, SLOT( selectAll() ) );
+  connect( mUnSelectAllButton, SIGNAL( clicked() ), this, SLOT( unSelectAll() ) );
 
   QList<QgsMapLayer*>::const_iterator layerIt = layerKeys.constBegin();
   for ( ; layerIt != layerKeys.constEnd(); ++layerIt )
@@ -41,6 +43,18 @@ QgsDxfExportDialog::QgsDxfExportDialog( const QList<QgsMapLayer*>& layerKeys, QW
 QgsDxfExportDialog::~QgsDxfExportDialog()
 {
 
+}
+
+void QgsDxfExportDialog::selectAll()
+{
+  for ( int r = 0; r < mLayersListWidget->count(); r++ )
+    mLayersListWidget->item( r )->setCheckState( Qt::Checked );
+}
+
+void QgsDxfExportDialog::unSelectAll()
+{
+  for ( int r = 0; r < mLayersListWidget->count(); r++ )
+    mLayersListWidget->item( r )->setCheckState( Qt::Unchecked );
 }
 
 QList<QString> QgsDxfExportDialog::layers() const
