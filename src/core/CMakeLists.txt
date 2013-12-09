@@ -3,6 +3,7 @@
 
 SET(QGIS_CORE_SRCS
 
+  qgsmaprenderercache.cpp
   qgsxmlutils.cpp
   qgsmapsettings.cpp
   qgsmaprendererjob.cpp
@@ -300,6 +301,7 @@ ADD_BISON_FILES(QGIS_CORE_SRCS qgsexpressionparser.yy)
 
 SET(QGIS_CORE_MOC_HDRS
 
+  qgsmaprenderercache.h
   qgsmapsettings.h
   qgsmaprendererjob.h
 

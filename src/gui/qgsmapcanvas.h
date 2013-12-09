@@ -60,6 +60,7 @@ class QgsVectorLayer;
 
 class QgsLabelingResults;
 class QgsMapRenderer;
+class QgsMapRendererCache;
 class QgsMapRendererQImageJob;
 class QgsMapSettings;
 class QgsMapCanvasMap;
@@ -140,6 +141,14 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Get access to the labeling results (may be null)
     //! @note added in 2.1
     const QgsLabelingResults* labelingResults() const;
+
+    //! Set whether to cache images of rendered layers
+    //! @note added in 2.1
+    void setCachingEnabled( bool enabled );
+
+    //! Check whether images of rendered layers are curerently being cached
+    //! @note added in 2.1
+    bool isCachingEnabled() const;
 
     //! @deprecated since 2.1 - there could be more than just one "map" items
     QgsMapCanvasMap* map();
@@ -544,6 +553,9 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     //! Whether layers are rendered sequentially or in parallel
     bool mUseParallelRendering;
+
+    //! Optionally use cache with rendered map layers for the current map settings
+    QgsMapRendererCache* mCache;
 
 }; // class QgsMapCanvas
 

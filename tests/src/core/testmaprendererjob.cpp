@@ -4,6 +4,7 @@
 
 #include "qgsapplication.h"
 #include "qgsmaplayerregistry.h"
+#include "qgsmaprenderercache.h"
 #include "qgsmaprendererjob.h"
 #include "qgsvectorlayer.h"
 
@@ -25,6 +26,8 @@ class TestQgsMapRendererJob : public QObject
     void testDestructWhileRunning();
 
     void testErrors();
+
+    void testCache();
 
   private:
     QStringList mLayerIds;
@@ -231,6 +234,44 @@ void TestQgsMapRendererJob::testErrors()
 
   QCOMPARE( job2.errors().count(), 1 );
   QCOMPARE( job2.errors()[0].layerID, fakeLayerID );
+}
+
+void TestQgsMapRendererJob::testCache()
+{
+  QgsVectorLayer* l = new QgsVectorLayer( "/data/gis/sas/trans-trail-l.dbf", "test", "ogr" );
+  QVERIFY( l->isValid() );
+  QgsMapLayerRegistry::instance()->addMapLayer( l );
+  QgsMapSettings settings( _mapSettings( QStringList( l->id() ) ) );
+
+  QgsMapRendererCache cache;
+
+  QgsMapRendererSequentialJob job( settings );
+  job.setCache( &cache );
+
+  QTime t;
+  t.start();
+  job.start();
+  job.waitForFinished();
+  int timeNotCachedMS = t.elapsed();
+
+  QImage i1 = job.renderedImage();
+
+  QgsMapRendererSequentialJob job2( settings );
+  job2.setCache( &cache );
+
+  t.start();
+  job2.start();
+  job2.waitForFinished();
+  int timeCachedMS = t.elapsed();
+
+  QImage i2 = job2.renderedImage();
+
+  QCOMPARE( i1, i2 );
+  QVERIFY( timeNotCachedMS > 100 );
+  QVERIFY( timeCachedMS < 10 );
+  qDebug("CACHING %d vs %d (ms)", timeNotCachedMS, timeCachedMS );
+
+  QgsMapLayerRegistry::instance()->removeMapLayer( l->id() );
 }
 
 

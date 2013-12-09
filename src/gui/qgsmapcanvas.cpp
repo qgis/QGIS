@@ -48,6 +48,7 @@ email                : sherman at mrcc.com
 #include "qgsmaptopixel.h"
 #include "qgsmapoverviewcanvas.h"
 #include "qgsmaprenderer.h"
+#include "qgsmaprenderercache.h"
 #include "qgsmaprendererjob.h"
 #include "qgsmessagelog.h"
 #include "qgsmessageviewer.h"
@@ -157,6 +158,7 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
     , mJobCancelled( false )
     , mLabelingResults( 0 )
     , mUseParallelRendering( false )
+    , mCache( 0 )
 {
   setObjectName( name );
   mScene = new QGraphicsScene();
@@ -252,6 +254,8 @@ QgsMapCanvas::~QgsMapCanvas()
     mJob->cancel();
     Q_ASSERT( mJob == 0 );
   }
+
+  delete mCache;
 
   delete mLabelingResults;
 
@@ -484,6 +488,27 @@ const QgsLabelingResults *QgsMapCanvas::labelingResults() const
   return mLabelingResults;
 }
 
+void QgsMapCanvas::setCachingEnabled( bool enabled )
+{
+  if ( enabled == isCachingEnabled() )
+    return;
+
+  if ( enabled )
+  {
+    mCache = new QgsMapRendererCache;
+  }
+  else
+  {
+    delete mCache;
+    mCache = 0;
+  }
+}
+
+bool QgsMapCanvas::isCachingEnabled() const
+{
+  return mCache != 0;
+}
+
 
 void QgsMapCanvas::updateOverview()
 {
@@ -599,6 +624,7 @@ void QgsMapCanvas::refreshMap()
   else
     mJob = new QgsMapRendererSequentialJob( mSettings );
   connect(mJob, SIGNAL( finished() ), SLOT( rendererJobFinished() ) );
+  mJob->setCache( mCache );
   mJob->start();
 
   mMapUpdateTimer.start();

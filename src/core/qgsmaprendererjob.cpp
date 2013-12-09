@@ -11,17 +11,24 @@
 #include "qgsmaplayer.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmaplayerrenderer.h"
+#include "qgsmaprenderercache.h"
 #include "qgspallabeling.h"
 
 
 QgsMapRendererJob::QgsMapRendererJob( const QgsMapSettings& settings )
   : mSettings(settings)
+  , mCache( 0 )
 {
 }
 
 QgsMapRendererJob::Errors QgsMapRendererJob::errors() const
 {
   return mErrors;
+}
+
+void QgsMapRendererJob::setCache( QgsMapRendererCache* cache )
+{
+  mCache = cache;
 }
 
 
@@ -74,6 +81,7 @@ void QgsMapRendererSequentialJob::start()
   mPainter = new QPainter(&mImage);
 
   mInternalJob = new QgsMapRendererCustomPainterJob(mSettings, mPainter);
+  mInternalJob->setCache( mCache );
 
   connect(mInternalJob, SIGNAL(finished()), SLOT(internalFinished()));
 
@@ -115,7 +123,11 @@ QgsLabelingResults* QgsMapRendererSequentialJob::takeLabelingResults()
 
 QImage QgsMapRendererSequentialJob::renderedImage()
 {
-  return mImage;
+  if ( isActive() && mCache )
+    // this will allow immediate display of cached layers and at the same time updates of the layer being rendered
+    return composeImage( mSettings, mInternalJob->jobs() );
+  else
+    return mImage;
 }
 
 
@@ -309,7 +321,8 @@ void QgsMapRendererCustomPainterJob::doRender()
       mPainter->setCompositionMode( job.blendMode );
     }
 
-    job.renderer->render();
+    if ( !job.cached )
+      job.renderer->render();
 
     if ( job.img )
     {
@@ -496,6 +509,12 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsPalLabelin
   QListIterator<QString> li( mSettings.layers() );
   li.toBack();
 
+  if ( mCache )
+  {
+    bool cacheValid = mCache->init( mSettings.visibleExtent(), mSettings.scale() );
+    qDebug("CACHE VALID: %d", cacheValid);
+  }
+
   while ( li.hasPrevious() )
   {
     QString layerId = li.previous();
@@ -542,29 +561,21 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsPalLabelin
       }
     }
 
-    // Flattened image for drawing when a blending mode is set
-    QImage * mypFlattenedImage = 0;
-
-    // If we are drawing with an alternative blending mode then we need to render to a separate image
-    // before compositing this on the map. This effectively flattens the layer and prevents
-    // blending occuring between objects on the layer
-    if ( !painter || needTemporaryImage( ml ) )
+    // Force render of layers that are being edited
+    // or if there's a labeling engine that needs the layer to register features
+    if ( mCache && ml->type() == QgsMapLayer::VectorLayer )
     {
-      mypFlattenedImage = new QImage( mSettings.outputSize().width(),
-                                      mSettings.outputSize().height(), QImage::Format_ARGB32 );
-      if ( mypFlattenedImage->isNull() )
-      {
-        mErrors.append( Error( layerId, "Insufficient memory for image " + QString::number( mSettings.outputSize().width() ) + "x" + QString::number( mSettings.outputSize().height() ) ) );
-        delete mypFlattenedImage;
-        continue;
-      }
-      mypFlattenedImage->fill( 0 );
+      QgsVectorLayer* vl = qobject_cast<QgsVectorLayer *>( ml );
+      if ( vl->isEditable() || ( labelingEngine && labelingEngine->willUseLayer( vl ) ) )
+        mCache->setCacheImage( ml->id(), QImage() );
     }
 
     layerJobs.append( LayerRenderJob() );
     LayerRenderJob& job = layerJobs.last();
+    job.cached = false;
     job.img = 0;
     job.blendMode = ml->blendMode();
+    job.layerId = ml->id();
 
     job.context = QgsRenderContext::fromMapSettings( mSettings );
     job.context.setPainter( painter );
@@ -572,8 +583,34 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsPalLabelin
     job.context.setCoordinateTransform( ct );
     job.context.setExtent( r1 );
 
-    if ( mypFlattenedImage )
+    // if we can use the cache, let's do it and avoid rendering!
+    if ( mCache && !mCache->cacheImage( ml->id() ).isNull() )
     {
+      job.cached = true;
+      job.img = new QImage( mCache->cacheImage( ml->id() ) );
+      job.renderer = 0;
+      job.context.setPainter( 0 );
+      continue;
+    }
+
+    // If we are drawing with an alternative blending mode then we need to render to a separate image
+    // before compositing this on the map. This effectively flattens the layer and prevents
+    // blending occuring between objects on the layer
+    if ( mCache || !painter || needTemporaryImage( ml ) )
+    {
+      // Flattened image for drawing when a blending mode is set
+      QImage * mypFlattenedImage = 0;
+      mypFlattenedImage = new QImage( mSettings.outputSize().width(),
+                                      mSettings.outputSize().height(), QImage::Format_ARGB32_Premultiplied );
+      if ( mypFlattenedImage->isNull() )
+      {
+        mErrors.append( Error( layerId, "Insufficient memory for image " + QString::number( mSettings.outputSize().width() ) + "x" + QString::number( mSettings.outputSize().height() ) ) );
+        delete mypFlattenedImage;
+        layerJobs.removeLast();
+        continue;
+      }
+      mypFlattenedImage->fill( 0 );
+
       job.img = mypFlattenedImage;
       QPainter* mypPainter = new QPainter( job.img );
       mypPainter->setRenderHint( QPainter::Antialiasing, mSettings.testFlag( QgsMapSettings::Antialiasing ) );
@@ -603,18 +640,28 @@ void QgsMapRendererJob::cleanupJobs( LayerRenderJobs& jobs )
   {
     LayerRenderJob& job = *it;
     if ( job.img )
-    {
+    {      
       delete job.context.painter();
       job.context.setPainter( 0 );
+
+      if ( mCache && !job.cached && !job.context.renderingStopped() )
+      {
+        qDebug("caching image for %s", job.layerId.toAscii().data());
+        mCache->setCacheImage( job.layerId, *job.img );
+      }
+
       delete job.img;
       job.img = 0;
     }
 
-    foreach ( QString message, job.renderer->errors() )
-      mErrors.append( Error( job.renderer->layerID(), message ) );
+    if ( job.renderer )
+    {
+      foreach ( QString message, job.renderer->errors() )
+        mErrors.append( Error( job.renderer->layerID(), message ) );
 
-    delete job.renderer;
-    job.renderer = 0;
+      delete job.renderer;
+      job.renderer = 0;
+    }
   }
 
   jobs.clear();
@@ -752,7 +799,7 @@ QgsLabelingResults* QgsMapRendererParallelJob::takeLabelingResults()
 QImage QgsMapRendererParallelJob::renderedImage()
 {
   if ( mStatus == RenderingLayers )
-    return composeImage();
+    return composeImage( mSettings, mLayerJobs );
   else
     return mFinalImage; // when rendering labels or idle
 }
@@ -762,7 +809,7 @@ void QgsMapRendererParallelJob::renderLayersFinished()
   Q_ASSERT( mStatus == RenderingLayers );
 
   // compose final image
-  mFinalImage = composeImage();
+  mFinalImage = composeImage( mSettings, mLayerJobs );
 
   cleanupJobs( mLayerJobs );
 
@@ -798,6 +845,9 @@ void QgsMapRendererParallelJob::renderLayerStatic(LayerRenderJob& job)
   if ( job.context.renderingStopped() )
     return;
 
+  if ( job.cached )
+    return;
+
   QTime t;
   t.start();
   QgsDebugMsg( QString("job %1 start").arg( (ulong) &job, 0, 16 ) );
@@ -817,14 +867,14 @@ void QgsMapRendererParallelJob::renderLabelsStatic(QgsMapRendererParallelJob* se
 }
 
 
-QImage QgsMapRendererParallelJob::composeImage()
+QImage QgsMapRendererJob::composeImage( const QgsMapSettings& settings, const LayerRenderJobs& jobs )
 {
-  QImage image( mSettings.outputSize(), QImage::Format_ARGB32_Premultiplied );
-  image.fill( mSettings.backgroundColor().rgb() );
+  QImage image( settings.outputSize(), QImage::Format_ARGB32_Premultiplied );
+  image.fill( settings.backgroundColor().rgb() );
 
   QPainter painter(&image);
 
-  for (LayerRenderJobs::const_iterator it = mLayerJobs.begin(); it != mLayerJobs.end(); ++it)
+  for (LayerRenderJobs::const_iterator it = jobs.constBegin(); it != jobs.constEnd(); ++it)
   {
     const LayerRenderJob& job = *it;
 

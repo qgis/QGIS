@@ -2069,6 +2069,8 @@ void QgisApp::createOverview()
   int action = mySettings.value( "/qgis/wheel_action", 2 ).toInt();
   double zoomFactor = mySettings.value( "/qgis/zoom_factor", 2 ).toDouble();
   mMapCanvas->setWheelAction(( QgsMapCanvas::WheelAction ) action, zoomFactor );
+
+  mMapCanvas->setCachingEnabled( mySettings.value( "/qgis/enable_render_caching", false ).toBool() );
 }
 
 void QgisApp::addDockWidget( Qt::DockWidgetArea theArea, QDockWidget * thepDockWidget )
@@ -6596,6 +6598,8 @@ void QgisApp::options()
     int action = mySettings.value( "/qgis/wheel_action", 2 ).toInt();
     double zoomFactor = mySettings.value( "/qgis/zoom_factor", 2 ).toDouble();
     mMapCanvas->setWheelAction(( QgsMapCanvas::WheelAction ) action, zoomFactor );
+
+    mMapCanvas->setCachingEnabled( mySettings.value( "/qgis/enable_render_caching", false ).toBool() );
 
     //do we need this? TS
     mMapCanvas->refresh();

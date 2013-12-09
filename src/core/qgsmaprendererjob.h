@@ -14,6 +14,7 @@
 
 class QgsLabelingResults;
 class QgsMapLayerRenderer;
+class QgsMapRendererCache;
 class QgsPalLabeling;
 
 
@@ -23,6 +24,8 @@ struct LayerRenderJob
   QImage* img; // may be null if it is not necessary to draw to separate image (e.g. sequential rendering)
   QgsMapLayerRenderer* renderer; // must be deleted
   QPainter::CompositionMode blendMode;
+  bool cached; // if true, img already contains cached image from previous rendering
+  QString layerId;
 };
 
 typedef QList<LayerRenderJob> LayerRenderJobs;
@@ -68,6 +71,12 @@ public:
   //! List of errors that happened during the rendering job - available when the rendering has been finished
   Errors errors() const;
 
+
+  //! Assign a cache to be used for reading and storing rendered images of individual layers.
+  //! Does not take ownership of the object.
+  void setCache( QgsMapRendererCache* cache );
+
+
 signals:
 
   //! emitted when asynchronous rendering is finished (or canceled).
@@ -87,6 +96,8 @@ protected:
 
   void cleanupJobs( LayerRenderJobs& jobs );
 
+  static QImage composeImage( const QgsMapSettings& settings, const LayerRenderJobs& jobs );
+
   bool needTemporaryImage( QgsMapLayer* ml );
 
   static void drawLabeling( const QgsMapSettings& settings, QgsRenderContext& renderContext, QgsPalLabeling* labelingEngine, QPainter* painter );
@@ -95,6 +106,8 @@ protected:
 
   QgsMapSettings mSettings;
   Errors mErrors;
+
+  QgsMapRendererCache* mCache;
 };
 
 
@@ -176,8 +189,6 @@ protected:
   static void renderLayerStatic(LayerRenderJob& job);
   static void renderLabelsStatic( QgsMapRendererParallelJob* self );
 
-  QImage composeImage();
-
 protected:
 
   QImage mFinalImage;
@@ -212,6 +223,8 @@ public:
   virtual void waitForFinished();
   virtual bool isActive() const;
   virtual QgsLabelingResults* takeLabelingResults();
+
+  const LayerRenderJobs& jobs() const { return mLayerJobs; }
 
 protected slots:
   void futureFinished();
