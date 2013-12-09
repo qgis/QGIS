@@ -166,11 +166,9 @@ void QgsLineVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, c
   while ( fit.nextFeature( feature ) )
   {
     QgsMultiPolyline mpl;
-    if ( feature.geometry()->wkbType() == QGis::WKBMultiLineString
-         || feature.geometry()->wkbType() == QGis::WKBMultiLineString25D )
+    if ( feature.geometry()->wkbType() == QGis::WKBMultiLineString )
       mpl = feature.geometry()->asMultiPolyline();
-    else if ( feature.geometry()->wkbType() == QGis::WKBLineString
-              || feature.geometry()->wkbType() == QGis::WKBLineString25D )
+    else if ( feature.geometry()->wkbType() == QGis::WKBLineString )
       mpl.push_back( feature.geometry()->asPolyline() );
 
     QgsMultiPolyline::iterator mplIt;

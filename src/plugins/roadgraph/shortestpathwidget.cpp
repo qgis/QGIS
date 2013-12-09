@@ -289,7 +289,7 @@ QgsGraph* RgShortestPathWidget::getPath( QgsPoint& p1, QgsPoint& p2 )
   {
     mPlugin->iface()->messageBar()->pushMessage(
       tr( "Cannot calculate path" ),
-      tr( "The graph is empty. Does the layer have a supported geometry type?" ),
+      tr( "The created graph is empty. Please check your input data." ),
       QgsMessageBar::WARNING,
       mPlugin->iface()->messageTimeout()
     );
