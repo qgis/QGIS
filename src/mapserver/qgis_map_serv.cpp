@@ -27,6 +27,7 @@ map service syntax for SOAP/HTTP POST
 #include "qgslogger.h"
 #include "qgswmsserver.h"
 #include "qgswfsserver.h"
+#include "qgswcsserver.h"
 #include "qgsmaprenderer.h"
 #include "qgsmapserviceexception.h"
 #include "qgspallabeling.h"
@@ -346,7 +347,99 @@ int main( int argc, char * argv[] )
     }
 
     QgsWMSServer* theServer = 0;
-    if ( serviceString == "WFS" )
+    if ( serviceString == "WCS" )
+    {
+      delete theServer;
+      QgsWCSServer* theServer = 0;
+      try
+      {
+        theServer = new QgsWCSServer( parameterMap );
+      }
+      catch ( QgsMapServiceException e ) //admin.sld may be invalid
+      {
+        theRequestHandler->sendServiceException( e );
+        continue;
+      }
+
+      theServer->setAdminConfigParser( adminConfigParser );
+
+
+      //request type
+      QString request = parameterMap.value( "REQUEST" );
+      if ( request.isEmpty() )
+      {
+        //do some error handling
+        QgsDebugMsg( "unable to find 'REQUEST' parameter, exiting..." );
+        theRequestHandler->sendServiceException( QgsMapServiceException( "OperationNotSupported", "Please check the value of the REQUEST parameter" ) );
+        delete theRequestHandler;
+        delete theServer;
+        continue;
+      }
+
+      if ( request.compare( "GetCapabilities", Qt::CaseInsensitive ) == 0 )
+      {
+        QDomDocument capabilitiesDocument;
+        try
+        {
+          capabilitiesDocument = theServer->getCapabilities();
+        }
+        catch ( QgsMapServiceException& ex )
+        {
+          theRequestHandler->sendServiceException( ex );
+          delete theRequestHandler;
+          delete theServer;
+          continue;
+        }
+        QgsDebugMsg( "sending GetCapabilities response" );
+        theRequestHandler->sendGetCapabilitiesResponse( capabilitiesDocument );
+        delete theRequestHandler;
+        delete theServer;
+        continue;
+      }
+      else if ( request.compare( "DescribeCoverage", Qt::CaseInsensitive ) == 0 )
+      {
+        QDomDocument describeDocument;
+        try
+        {
+          describeDocument = theServer->describeCoverage();
+        }
+        catch ( QgsMapServiceException& ex )
+        {
+          theRequestHandler->sendServiceException( ex );
+          delete theRequestHandler;
+          delete theServer;
+          continue;
+        }
+        QgsDebugMsg( "sending GetCapabilities response" );
+        theRequestHandler->sendGetCapabilitiesResponse( describeDocument );
+        delete theRequestHandler;
+        delete theServer;
+        continue;
+      }
+      else if ( request.compare( "GetCoverage", Qt::CaseInsensitive ) == 0 )
+      {
+        QByteArray* coverageOutput;
+        try
+        {
+          coverageOutput = theServer->getCoverage();
+        }
+        catch ( QgsMapServiceException& ex )
+        {
+          theRequestHandler->sendServiceException( ex );
+          delete theRequestHandler;
+          delete theServer;
+          continue;
+        }
+        if ( coverageOutput )
+        {
+          theRequestHandler->sendGetCoverageResponse( coverageOutput );
+        }
+        delete theRequestHandler;
+        delete theServer;
+        continue;
+      }
+    } 
+    else if ( serviceString == "WFS" )
     {
       delete theServer;
       QgsWFSServer* theServer = 0;

@@ -49,11 +49,18 @@ class QgsConfigParser
 
     virtual void featureTypeList( QDomElement& parentElement, QDomDocument& doc ) const = 0;
 
+    virtual void wcsContentMetadata( QDomElement& parentElement, QDomDocument& doc ) const = 0;
+
     virtual void owsGeneralAndResourceList( QDomElement& parentElement, QDomDocument& doc, const QString& strHref ) const = 0;
 
     virtual void describeFeatureType( const QString& aTypeName, QDomElement& parentElement, QDomDocument& doc ) const = 0;
+
+    virtual void describeCoverage( const QString& aCoveName, QDomElement& parentElement, QDomDocument& doc ) const = 0;
     /**Returns one or possibly several maplayers for a given type name. If no layers are found, an empty list is returned*/
     virtual QList<QgsMapLayer*> mapLayerFromTypeName( const QString& tName, bool useCache = true ) const = 0;
+
+    /**Returns one or possibly several maplayers for a given type name. If no layers are found, an empty list is returned*/
+    virtual QList<QgsMapLayer*> mapLayerFromCoverage( const QString& cName, bool useCache = true ) const = 0;
 
     /**Returns one or possibly several maplayers for a given layer name and style. If there are several layers, the layers should be drawn in inverse list order.
        If no layers/style are found, an empty list is returned

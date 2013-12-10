@@ -42,6 +42,7 @@ class QgsHttpRequestHandler: public QgsRequestHandler
     virtual bool startGetFeatureResponse( QByteArray* ba, const QString& infoFormat ) const;
     virtual void sendGetFeatureResponse( QByteArray* ba ) const;
     virtual void endGetFeatureResponse( QByteArray* ba ) const;
+    virtual void sendGetCoverageResponse( QByteArray* ba ) const;
 
   protected:
     void sendHttpResponse( QByteArray* ba, const QString& format ) const;
