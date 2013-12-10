@@ -132,6 +132,7 @@
         <file>themes/default/mActionAddPart.png</file>
         <file>themes/default/mActionAddRasterLayer.svg</file>
         <file>themes/default/mActionAddRing.png</file>
+        <file>themes/default/mActionFillRing.png</file>
         <file>themes/default/mActionAddSpatiaLiteLayer.svg</file>
         <file>themes/default/mActionAddVertex.png</file>
         <file>themes/default/mActionAddWcsLayer.svg</file>
