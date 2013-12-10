@@ -32,6 +32,7 @@ class QgsDxfExportDialog: public QDialog, private Ui::QgsDxfExportDialogBase
     double symbologyScale() const;
     QgsDxfExport::SymbologyExport symbologyMode() const;
     QString saveFile() const;
+    bool exportMapExtent() const;
 
   public slots:
     /** change the selection of layers in the list */
