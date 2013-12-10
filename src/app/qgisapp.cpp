@@ -5681,6 +5681,8 @@ void QgisApp::refreshMapCanvas()
 {
   //reload cached provider data
   QgsMapLayerRegistry::instance()->reloadAllLayers();
+
+  mMapCanvas->clearCache();
   //then refresh
   mMapCanvas->refresh();
 }
@@ -6726,7 +6728,7 @@ void QgisApp::adjustBrightnessContrast( int delta, bool updateBrightness )
     brightnessFilter->setContrast( brightnessFilter->contrast() + delta );
   }
 
-  mMapCanvas->refresh();
+  myRasterLayer->triggerRepaint();
 }
 
 void QgisApp::helpContents()

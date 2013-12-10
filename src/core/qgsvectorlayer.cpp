@@ -168,6 +168,8 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
 
   connect( this, SIGNAL( selectionChanged( QgsFeatureIds, QgsFeatureIds, bool ) ), this, SIGNAL( selectionChanged() ) );
 
+  connect( this, SIGNAL( selectionChanged( QgsFeatureIds, QgsFeatureIds, bool ) ), this, SIGNAL( repaintRequested() ) );
+
   connect( QgsProject::instance()->relationManager(), SIGNAL( relationsLoaded() ), this, SLOT( onRelationsLoaded() ) );
 } // QgsVectorLayer ctor
 
@@ -887,6 +889,9 @@ bool QgsVectorLayer::setSubsetString( QString subset )
   // get the updated data source string from the provider
   mDataSource = mDataProvider->dataSourceUri();
   updateExtents();
+
+  if ( res )
+    emit repaintRequested();
 
   return res;
 }
@@ -2325,6 +2330,8 @@ bool QgsVectorLayer::commitChanges()
   updateFields();
   mDataProvider->updateExtents();
 
+  emit repaintRequested();
+
   return success;
 }
 
@@ -2366,6 +2373,7 @@ bool QgsVectorLayer::rollBack( bool deleteBuffer )
     mCache->deleteCachedGeometries();
   }
 
+  emit repaintRequested();
   return true;
 }
 

@@ -150,6 +150,10 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! @note added in 2.1
     bool isCachingEnabled() const;
 
+    //! Make sure to remove any rendered images from cache (does nothing if cache is not enabled)
+    //! @note added in 2.1
+    void clearCache();
+
     //! Set whether the layers are rendered in parallel or sequentially
     //! @note added in 2.1
     void setParallelRenderingEnabled( bool enabled );
@@ -366,6 +370,9 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void mapUpdateTimeout();
 
     void refreshMap();
+
+    //! Layer says something has changed that affects its appearance
+    void layerRequestedRepaint();
 
   signals:
     /** Let the owner know how far we are with render operations */

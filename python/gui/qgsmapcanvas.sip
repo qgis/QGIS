@@ -79,6 +79,10 @@ class QgsMapCanvas : QGraphicsView
     //! @note added in 2.1
     bool isCachingEnabled() const;
 
+    //! Make sure to remove any rendered images from cache (does nothing if cache is not enabled)
+    //! @note added in 2.1
+    void clearCache();
+
     //! Set whether the layers are rendered in parallel or sequentially
     //! @note added in 2.1
     void setParallelRenderingEnabled( bool enabled );

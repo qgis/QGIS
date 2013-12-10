@@ -407,8 +407,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     void layerCrsChanged();
 
-    /** This signal should be connected with the slot QgsMapCanvas::refresh()
-     * \todo to be removed - GUI dependency
+    /** By emitting this signal the layer tells that either appearance or content have been changed
+     * and any view showing the rendered layer should refresh itself.
      */
     void repaintRequested();
 
