@@ -16,6 +16,11 @@ class QgsDxfExportDialog: public QDialog, private Ui::QgsDxfExportDialogBase
     QgsDxfExport::SymbologyExport symbologyMode() const;
     QString saveFile() const;
 
+  public slots:
+    /** change the selection of layers in the list */
+    void selectAll();
+    void unSelectAll();
+
   private slots:
     void on_mFileSelectionButton_clicked();
     void setOkEnabled();
