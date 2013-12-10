@@ -56,6 +56,9 @@ class CORE_EXPORT QgsDxfExport
     void setSymbologyExport( SymbologyExport e ) { mSymbologyExport = e; }
     SymbologyExport symbologyExport() const { return mSymbologyExport; }
 
+    void setExtent( const QgsRectangle& r ) { mExtent = r; }
+    QgsRectangle extent() const { return mExtent; }
+
     //get closest entry in dxf palette
     static int closestColorMatch( QRgb pixel );
 
@@ -83,6 +86,8 @@ class CORE_EXPORT QgsDxfExport
   private:
 
     QList< QgsMapLayer* > mLayers;
+    /**Extent for export, only intersecting features are exported. If the extent is an empty rectangle, all features are exported*/
+    QgsRectangle mExtent;
     /**Scale for symbology export (used if symbols units are mm)*/
     double mSymbologyScaleDenominator;
     SymbologyExport mSymbologyExport;

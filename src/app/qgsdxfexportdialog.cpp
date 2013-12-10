@@ -140,6 +140,11 @@ void QgsDxfExportDialog::setOkEnabled()
   btn->setEnabled( fi.absoluteDir().exists() );
 }
 
+bool QgsDxfExportDialog::exportMapExtent() const
+{
+  return mMapExtentCheckBox->isChecked();
+}
+
 void QgsDxfExportDialog::saveSettings()
 {
   QSettings s;

@@ -565,9 +565,13 @@ void QgsDxfExport::writeEntities()
       renderer->stopRender( ctx );
     }
 
-
-    QgsFeatureIterator featureIt = vl->getFeatures( QgsFeatureRequest().setSubsetOfAttributes(
-                                     renderer->usedAttributes(), dp->fields() ) );
+    QgsFeatureRequest freq = QgsFeatureRequest().setSubsetOfAttributes(
+                               renderer->usedAttributes(), dp->fields() );
+    if ( !mExtent.isEmpty() )
+    {
+      freq.setFilterRect( mExtent );
+    }
+    QgsFeatureIterator featureIt = vl->getFeatures( freq );
     QgsFeature fet;
     while ( featureIt.nextFeature( fet ) )
     {
@@ -625,6 +629,10 @@ void QgsDxfExport::writeEntitiesSymbolLevels( QgsVectorLayer* layer )
     req.setFlags( QgsFeatureRequest::NoGeometry );
   }
   req.setSubsetOfAttributes( QStringList( renderer->usedAttributes() ), layer->pendingFields() );
+  if ( !mExtent.isEmpty() )
+  {
+    req.setFilterRect( mExtent );
+  }
   QgsFeatureIterator fit = layer->getFeatures( req );
 
   //fetch features

@@ -115,6 +115,13 @@
      </item>
     </layout>
    </item>
+   <item row="3" column="1">
+    <widget class="QCheckBox" name="mMapExtentCheckBox">
+     <property name="text">
+      <string>Export features intersecting the current map extent</string>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <resources/>

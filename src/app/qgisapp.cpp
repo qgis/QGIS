@@ -3846,7 +3846,14 @@ void QgisApp::dxfExport()
       {
         dxfExport.setMapUnits( r->mapUnits() );
       }
+
+      //extent
+      if ( d.exportMapExtent() )
+      {
+        dxfExport.setExtent( mapCanvas()->extent() );
+      }
     }
+
     QFile dxfFile( d.saveFile() );
     if ( dxfExport.writeToFile( &dxfFile ) == 0 )
     {
