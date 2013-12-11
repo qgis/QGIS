@@ -1389,24 +1389,22 @@ void QgsWmsProvider::cacheReplyFinished()
 
     QString contentType = mCacheReply->header( QNetworkRequest::ContentTypeHeader ).toString();
     QgsDebugMsg( "contentType: " + contentType );
-    if ( contentType.startsWith( "image/", Qt::CaseInsensitive ) ||
-         contentType.compare( "application/octet-stream", Qt::CaseInsensitive ) == 0 )
+    QByteArray text = mCacheReply->readAll();
+    QImage myLocalImage = QImage::fromData( text );
+
+    if ( !myLocalImage.isNull() )
     {
-      QImage myLocalImage = QImage::fromData( mCacheReply->readAll() );
-      if ( !myLocalImage.isNull() )
-      {
-        QPainter p( mCachedImage );
-        p.drawImage( 0, 0, myLocalImage );
-      }
-      else
-      {
-        QgsMessageLog::logMessage( tr( "Returned image is flawed [Content-Type:%1; URL:%2]" )
-                                   .arg( contentType ).arg( mCacheReply->url().toString() ), tr( "WMS" ) );
-      }
+      QPainter p( mCachedImage );
+      p.drawImage( 0, 0, myLocalImage );
+    }
+    else if ( contentType.startsWith( "image/", Qt::CaseInsensitive ) ||
+              contentType.compare( "application/octet-stream", Qt::CaseInsensitive ) == 0 )
+    {
+      QgsMessageLog::logMessage( tr( "Returned image is flawed [Content-Type:%1; URL:%2]" )
+                                 .arg( contentType ).arg( mCacheReply->url().toString() ), tr( "WMS" ) );
     }
     else
     {
-      QByteArray text = mCacheReply->readAll();
       if ( contentType.toLower() == "text/xml" && parseServiceExceptionReportDom( text ) )
       {
         QgsMessageLog::logMessage( tr( "Map request error (Title:%1; Error:%2; URL: %3)" )
@@ -1421,17 +1419,12 @@ void QgsWmsProvider::cacheReplyFinished()
                                    .arg( contentType )
                                    .arg( mCacheReply->url().toString() ), tr( "WMS" ) );
       }
-
-      mCacheReply->deleteLater();
-      mCacheReply = 0;
-
-      return;
     }
 
     mCacheReply->deleteLater();
     mCacheReply = 0;
 
-    if ( !mWaiting )
+    if ( !mWaiting && !myLocalImage.isNull() )
     {
       QgsDebugMsg( "emit dataChanged()" );
       emit dataChanged();
