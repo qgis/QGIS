@@ -207,7 +207,7 @@ void QgsNewHttpConnection::accept()
     settings.setValue( key + "/invertAxisOrientation", cbxInvertAxisOrientation->isChecked() );
     settings.setValue( key + "/smoothPixmapTransform", cbxSmoothPixmapTransform->isChecked() );
 
-    int dpiMode;
+    int dpiMode = 0;
     switch ( cmbDpiMode->currentIndex() )
     {
       case 0: // all => QGIS|UMN|GeoServer
