@@ -68,6 +68,8 @@ QgsOWSSourceSelect::QgsOWSSourceSelect( QString service, QWidget * parent, Qt::W
     mDialogButtonBox->button( QDialogButtonBox::Close )->hide();
   }
 
+  setWindowTitle( tr( "Add Layer(s) from a %1 Server" ).arg( service ) );
+
   mAddButton = mDialogButtonBox->button( QDialogButtonBox::Apply );
   mAddButton->setText( tr( "&Add" ) );
   mAddButton->setToolTip( tr( "Add selected layers to map" ) );
