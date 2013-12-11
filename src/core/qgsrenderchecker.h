@@ -24,6 +24,7 @@
 
 #include <qgsmaprenderer.h>
 #include <qgslogger.h>
+#include <qgsmapsettings.h>
 
 class QImage;
 
@@ -67,7 +68,12 @@ class CORE_EXPORT QgsRenderChecker
     QString imageToHash( QString theImageFile );
 
     void setRenderedImage( QString theImageFileName ) { mRenderedImageFile = theImageFileName; };
-    void setMapRenderer( QgsMapRenderer *  thepMapRenderer ) { mpMapRenderer = thepMapRenderer; };
+    //! @deprecated since 2.1 - use setMapSettings()
+    Q_DECL_DEPRECATED void setMapRenderer( QgsMapRenderer *  thepMapRenderer );
+
+    //! @note added in 2.1
+    void setMapSettings( const QgsMapSettings& mapSettings );
+
     /**
      * Test using renderer to generate the image to be compared.
      * @param theTestName - to be used as the basis for writing a file to
@@ -111,7 +117,7 @@ class CORE_EXPORT QgsRenderChecker
     unsigned int mMatchTarget;
     int mElapsedTime;
     int mElapsedTimeTarget;
-    QgsMapRenderer * mpMapRenderer;
+    QgsMapSettings mMapSettings;
     QString mControlPathPrefix;
 
 }; // class QgsRenderChecker

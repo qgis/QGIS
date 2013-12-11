@@ -1070,12 +1070,14 @@ QgsMapRenderer::BlendMode QgsMapRenderer::getBlendModeEnum( const QPainter::Comp
   }
 }
 
+Q_GUI_EXPORT extern int qt_defaultDpiX();
+
 const QgsMapSettings& QgsMapRenderer::mapSettings()
 {
   // make sure the settings object is up-to-date
   mMapSettings.setExtent( extent() );
   mMapSettings.setOutputSize( outputSize() );
-  mMapSettings.setOutputDpi( outputDpi() );
+  mMapSettings.setOutputDpi( outputDpi() != 0 ? outputDpi() : qt_defaultDpiX() );
   mMapSettings.setLayers( layerSet() );
   mMapSettings.setCrsTransformEnabled( hasCrsTransformEnabled() );
   mMapSettings.setDestinationCrs( destinationCrs() );

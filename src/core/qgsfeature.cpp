@@ -29,7 +29,6 @@ QgsFeature::QgsFeature( QgsFeatureId id )
     , mGeometry( 0 )
     , mOwnsGeometry( 0 )
     , mValid( false )
-    , mFields( 0 )
 {
   // NOOP
 }
@@ -39,7 +38,7 @@ QgsFeature::QgsFeature( const QgsFields &fields, QgsFeatureId id )
     , mGeometry( 0 )
     , mOwnsGeometry( 0 )
     , mValid( false )
-    , mFields( &fields )
+    , mFields( fields )
 {
   initAttributes( fields.count() );
 }
@@ -161,7 +160,7 @@ void QgsFeature::setGeometryAndOwnership( unsigned char *geom, size_t length )
 
 void QgsFeature::setFields( const QgsFields* fields, bool init )
 {
-  mFields = fields;
+  mFields = *fields;
   if ( init )
   {
     initAttributes( fields->count() );
@@ -239,12 +238,9 @@ QVariant QgsFeature::attribute( const QString& name ) const
 
 int QgsFeature::fieldNameIndex( const QString& fieldName ) const
 {
-  if ( !mFields )
-    return -1;
-
-  for ( int i = 0; i < mFields->count(); ++i )
+  for ( int i = 0; i < mFields.count(); ++i )
   {
-    if ( QString::compare( mFields->at( i ).name(), fieldName, Qt::CaseInsensitive ) == 0 )
+    if ( QString::compare( mFields.at( i ).name(), fieldName, Qt::CaseInsensitive ) == 0 )
     {
       return i;
     }

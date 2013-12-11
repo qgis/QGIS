@@ -34,11 +34,12 @@ class TestQgsComposerHtml: public QObject
     void tableMultiFrame(); //tests multiframe capabilities of composer html
   private:
     QgsComposition* mComposition;
+    QgsMapSettings mMapSettings;
 };
 
 void TestQgsComposerHtml::initTestCase()
 {
-  mComposition = new QgsComposition( 0 );
+  mComposition = new QgsComposition( mMapSettings );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
 }
 

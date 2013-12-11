@@ -32,7 +32,8 @@ class QgsRenderChecker
     QString imageToHash( QString theImageFile );
 
     void setRenderedImage( QString theImageFileName );
-    void setMapRenderer( QgsMapRenderer *  thepMapRenderer );
+    void setMapRenderer( QgsMapRenderer *  thepMapRenderer ) /Deprecated/;
+    void setMapSettings( const QgsMapSettings& mapSettings );
     bool runTest( QString theTestName, unsigned int theMismatchCount = 0 );
 
     bool compareImages( QString theTestName, unsigned int theMismatchCount = 0, QString theRenderedImageFile = "" );
