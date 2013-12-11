@@ -467,7 +467,7 @@ void QgsDxfExport::writeTables()
   {
     writeGroup( 0, "LAYER" );
     QString layerName = *layerIt ? ( *layerIt )->name() : "";
-    writeGroup( 2, layerName );
+    writeGroup( 2, dxfLayerName( layerName ) );
     writeGroup( 70, 64 );
     writeGroup( 62, 1 );
     writeGroup( 6, "CONTINUOUS" );
@@ -577,7 +577,7 @@ void QgsDxfExport::writeEntities()
     {
       if ( mSymbologyExport == NoSymbology )
       {
-        addFeature( fet, vl->name(), 0, 0 ); //no symbology at all
+        addFeature( fet, dxfLayerName( vl->name() ), 0, 0 ); //no symbology at all
       }
       else
       {
@@ -597,7 +597,7 @@ void QgsDxfExport::writeEntities()
         {
           continue;
         }
-        addFeature( fet, vl->name(), s->symbolLayer( 0 ), s );
+        addFeature( fet, dxfLayerName( vl->name() ), s->symbolLayer( 0 ), s );
       }
     }
     renderer->stopRender( ctx );
@@ -1329,6 +1329,38 @@ QString QgsDxfExport::lineNameFromPenStyle( Qt::PenStyle style )
     default:
       return "CONTINUOUS";
   }
+}
+
+QString QgsDxfExport::dxfLayerName( const QString& name )
+{
+  //dxf layers can be max 31 characters long
+  QString layerName = name.left( 31 );
+
+  //allowed characters are 0-9, A-Z, $, -, _
+  for ( int i = 0; i < layerName.size(); ++i )
+  {
+    QChar c = layerName.at( i );
+    if ( c > 122 )
+    {
+      layerName[i] = '_';
+      continue;
+    }
+
+    if ( c.isNumber() )
+    {
+      continue;
+    }
+    if ( c == '$' || c == '-' || c == '_' )
+    {
+      continue;
+    }
+
+    if ( !c.isLetter() )
+    {
+      layerName[i] = '_';
+    }
+  }
+  return layerName;
 }
 
 /******************************************************Test with AC_1018 methods***************************************************************/
