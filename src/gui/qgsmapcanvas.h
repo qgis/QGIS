@@ -577,6 +577,9 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Whether layers are rendered sequentially or in parallel
     bool mUseParallelRendering;
 
+    //! Whether to add rendering stats to the rendered image
+    bool mDrawRenderingStats;
+
     //! Optionally use cache with rendered map layers for the current map settings
     QgsMapRendererCache* mCache;
 

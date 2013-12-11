@@ -6,6 +6,7 @@
 #include <QImage>
 #include <QPainter>
 #include <QObject>
+#include <QTime>
 
 #include "qgsrendercontext.h"
 
@@ -77,6 +78,9 @@ public:
   void setCache( QgsMapRendererCache* cache );
 
 
+  //! Find out how log it took to finish the job (in miliseconds)
+  int renderingTime() const { return mRenderingTime; }
+
 signals:
 
   //! emitted when asynchronous rendering is finished (or canceled).
@@ -108,6 +112,9 @@ protected:
   Errors mErrors;
 
   QgsMapRendererCache* mCache;
+
+  QTime mRenderingStart;
+  int mRenderingTime;
 };
 
 

@@ -158,6 +158,7 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
     , mJobCancelled( false )
     , mLabelingResults( 0 )
     , mUseParallelRendering( false )
+    , mDrawRenderingStats( false )
     , mCache( 0 )
 {
   setObjectName( name );
@@ -688,6 +689,23 @@ void QgsMapCanvas::rendererJobFinished()
     // emit renderComplete to get our decorations drawn
     QPainter p( &img );
     emit renderComplete( &p );
+
+    if ( mDrawRenderingStats )
+    {
+      int w = img.width(), h = img.height();
+      QFont fnt = p.font();
+      fnt.setBold( true );
+      p.setFont( fnt );
+      int lh = p.fontMetrics().height()*2;
+      QRect r( 0, h - lh, w, lh );
+      p.setPen( Qt::NoPen );
+      p.setBrush( QColor( 0, 0, 0, 110 ) );
+      p.drawRect( r );
+      p.setPen( Qt::white );
+      QString msg = QString("%1 :: %2 ms").arg( mUseParallelRendering ? "PARALLEL" : "SEQUENTIAL" ).arg( mJob->renderingTime() );
+      p.drawText( r, msg, QTextOption( Qt::AlignCenter ) );
+    }
+
     p.end();
 
     mMap->setContent( img, mSettings.visibleExtent() );
@@ -1066,6 +1084,11 @@ void QgsMapCanvas::keyPressEvent( QKeyEvent * e )
 
       case Qt::Key_P:
         mUseParallelRendering = !mUseParallelRendering;
+        refresh();
+        break;
+
+    case Qt::Key_S:
+        mDrawRenderingStats = !mDrawRenderingStats;
         refresh();
         break;
 

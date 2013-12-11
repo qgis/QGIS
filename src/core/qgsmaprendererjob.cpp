@@ -2,6 +2,7 @@
 #include "qgsmaprendererjob.h"
 
 #include <QPainter>
+#include <QTime>
 #include <QTimer>
 #include <QtConcurrentMap>
 
@@ -18,6 +19,7 @@
 QgsMapRendererJob::QgsMapRendererJob( const QgsMapSettings& settings )
   : mSettings(settings)
   , mCache( 0 )
+  , mRenderingTime( 0 )
 {
 }
 
@@ -70,6 +72,8 @@ void QgsMapRendererSequentialJob::start()
 {
   if ( isActive() )
     return; // do nothing if we are already running
+
+  mRenderingStart.start();
 
   mErrors.clear();
 
@@ -148,6 +152,8 @@ void QgsMapRendererSequentialJob::internalFinished()
   mInternalJob->deleteLater();
   mInternalJob = 0;
 
+  mRenderingTime = mRenderingStart.elapsed();
+
   emit finished();
 }
 
@@ -179,6 +185,8 @@ void QgsMapRendererCustomPainterJob::start()
 {
   if ( isActive() )
     return;
+
+  mRenderingStart.start();
 
   mActive = true;
 
@@ -291,6 +299,7 @@ QgsLabelingResults* QgsMapRendererCustomPainterJob::takeLabelingResults()
 void QgsMapRendererCustomPainterJob::futureFinished()
 {
   mActive = false;
+  mRenderingTime = mRenderingStart.elapsed();
   qDebug("QPAINTER futureFinished");
   emit finished();
 }
@@ -693,6 +702,8 @@ void QgsMapRendererParallelJob::start()
   if ( isActive() )
     return;
 
+  mRenderingStart.start();
+
   mStatus = RenderingLayers;
 
   delete mLabelingEngine;
@@ -836,6 +847,8 @@ void QgsMapRendererParallelJob::renderingFinished()
   qDebug("PARALLEL finished");
 
   mStatus = Idle;
+
+  mRenderingTime = mRenderingStart.elapsed();
 
   emit finished();
 }
