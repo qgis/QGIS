@@ -42,6 +42,13 @@ QgsNewHttpConnection::QgsNewHttpConnection(
 
   txtName->setValidator( new QRegExpValidator( QRegExp( "[^/]+" ), txtName ) );
 
+  cmbDpiMode->clear();
+  cmbDpiMode->addItem( tr( "all" ) );
+  cmbDpiMode->addItem( tr( "off" ) );
+  cmbDpiMode->addItem( tr( "QGIS" ) );
+  cmbDpiMode->addItem( tr( "UMN" ) );
+  cmbDpiMode->addItem( tr( "GeoServer" ) );
+
   if ( !connName.isEmpty() )
   {
     // populate the dialog with the information stored for the connection
@@ -60,12 +67,6 @@ QgsNewHttpConnection::QgsNewHttpConnection(
     cbxIgnoreGetFeatureInfoURI->setChecked( settings.value( key + "/ignoreGetFeatureInfoURI", false ).toBool() );
     cbxSmoothPixmapTransform->setChecked( settings.value( key + "/smoothPixmapTransform", false ).toBool() );
 
-    cmbDpiMode->clear();
-    cmbDpiMode->addItem( tr( "all" ) );
-    cmbDpiMode->addItem( tr( "off" ) );
-    cmbDpiMode->addItem( tr( "QGIS" ) );
-    cmbDpiMode->addItem( tr( "UMN" ) );
-    cmbDpiMode->addItem( tr( "GeoServer" ) );
     int dpiIdx;
     switch ( settings.value( key + "/dpiMode", 7 ).toInt() )
     {
