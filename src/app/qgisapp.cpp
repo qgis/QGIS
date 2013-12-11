@@ -2073,6 +2073,8 @@ void QgisApp::createOverview()
   mMapCanvas->setCachingEnabled( mySettings.value( "/qgis/enable_render_caching", false ).toBool() );
 
   mMapCanvas->setParallelRenderingEnabled( mySettings.value( "/qgis/parallel_rendering", false).toBool() );
+
+  mMapCanvas->setMapUpdateInterval( mySettings.value( "/qgis/map_update_interval", 250 ).toInt() );
 }
 
 void QgisApp::addDockWidget( Qt::DockWidgetArea theArea, QDockWidget * thepDockWidget )
@@ -6606,6 +6608,8 @@ void QgisApp::options()
     mMapCanvas->setCachingEnabled( mySettings.value( "/qgis/enable_render_caching", false ).toBool() );
 
     mMapCanvas->setParallelRenderingEnabled( mySettings.value( "/qgis/parallel_rendering", false).toBool() );
+
+    mMapCanvas->setMapUpdateInterval( mySettings.value( "/qgis/map_update_interval", 250 ).toInt() );
 
     //do we need this? TS
     mMapCanvas->refresh();

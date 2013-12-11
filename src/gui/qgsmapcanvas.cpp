@@ -208,7 +208,7 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
   moveCanvasContents( true );
 
   connect(&mMapUpdateTimer, SIGNAL( timeout() ), SLOT( mapUpdateTimeout() ) );
-  mMapUpdateTimer.setInterval( 400 );
+  mMapUpdateTimer.setInterval( 250 );
 
 #ifdef Q_OS_WIN
   // Enable touch event on Windows.
@@ -523,6 +523,16 @@ void QgsMapCanvas::setParallelRenderingEnabled( bool enabled )
 bool QgsMapCanvas::isParallelRenderingEnabled() const
 {
   return mUseParallelRendering;
+}
+
+void QgsMapCanvas::setMapUpdateInterval( int timeMiliseconds )
+{
+  mMapUpdateTimer.setInterval( timeMiliseconds );
+}
+
+int QgsMapCanvas::mapUpdateInterval() const
+{
+  return mMapUpdateTimer.interval();
 }
 
 

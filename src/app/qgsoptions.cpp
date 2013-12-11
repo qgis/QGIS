@@ -499,6 +499,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   chkAntiAliasing->setChecked( settings.value( "/qgis/enable_anti_aliasing", true ).toBool() );
   chkUseRenderCaching->setChecked( settings.value( "/qgis/enable_render_caching", false ).toBool() );
   chkParallelRendering->setChecked( settings.value( "/qgis/parallel_rendering", false ).toBool() );
+  spinMapUpdateInterval->setValue( settings.value( "/qgis/map_update_interval", 250 ).toInt() );
 
   // Slightly awkard here at the settings value is true to use QImage,
   // but the checkbox is true to use QPixmap
@@ -934,6 +935,7 @@ void QgsOptions::saveOptions()
   settings.setValue( "/qgis/enable_anti_aliasing", chkAntiAliasing->isChecked() );
   settings.setValue( "/qgis/enable_render_caching", chkUseRenderCaching->isChecked() );
   settings.setValue( "/qgis/parallel_rendering", chkParallelRendering->isChecked() );
+  settings.setValue( "/qgis/map_update_interval", spinMapUpdateInterval->value() );
   settings.setValue( "/qgis/legendDoubleClickAction", cmbLegendDoubleClickAction->currentIndex() );
   bool legendLayersCapitalise = settings.value( "/qgis/capitaliseLayerName", false ).toBool();
   settings.setValue( "/qgis/capitaliseLayerName", capitaliseCheckBox->isChecked() );

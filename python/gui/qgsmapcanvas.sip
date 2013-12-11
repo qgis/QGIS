@@ -91,6 +91,14 @@ class QgsMapCanvas : QGraphicsView
     //! @note added in 2.1
     bool isParallelRenderingEnabled() const;
 
+    //! Set how often map preview should be updated while it is being rendered (in miliseconds)
+    //! @note added in 2.1
+    void setMapUpdateInterval( int timeMiliseconds );
+
+    //! Find out how often map preview should be updated while it is being rendered (in miliseconds)
+    //! @note added in 2.1
+    int mapUpdateInterval() const;
+
     //! @deprecated since 2.1 - there could be more than just one "map" items
     QgsMapCanvasMap* map();
 
