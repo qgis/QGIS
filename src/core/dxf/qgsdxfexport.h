@@ -160,6 +160,7 @@ class CORE_EXPORT QgsDxfExport
     double dashSeparatorSize() const;
     double sizeToMapUnits( double s ) const;
     static QString lineNameFromPenStyle( Qt::PenStyle style );
+    static QString dxfLayerName( const QString& name );
 };
 
 #endif // QGSDXFEXPORT_H
