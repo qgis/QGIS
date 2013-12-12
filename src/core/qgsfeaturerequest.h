@@ -164,40 +164,6 @@ class CORE_EXPORT QgsFeatureRequest
     const QgsMapToPixel* mMapToPixel;
     //! Factor tolterance to apply in transformation between map coordinates and device coordinates
     float mMapToPixelTol;
-
-  // Map2pixel simplification for fast rendering
-  public:
-    //! Default Threshold of map2pixel simplification between map coordinates and device coordinates for fast rendering
-    static float const MAPTOPIXEL_THRESHOLD_DEFAULT;
-
-    //! Returns whether the device-geometry can be replaced by its BBOX when is applied the specified map2pixel tolerance
-    static bool canbeGeneralizedByWndBoundingBox( const QgsRectangle&   envelope, float mapToPixelTol = 1.0f );
-    //! Returns whether the device-geometry can be replaced by its BBOX when is applied the specified map2pixel tolerance
-    static bool canbeGeneralizedByWndBoundingBox( const QVector<QPointF>& points, float mapToPixelTol = 1.0f );
-
-    //! Returns whether the envelope can be replaced by its BBOX when is applied the map2pixel context
-    static bool canbeGeneralizedByMapBoundingBox( const QgsRectangle& envelope,
-                                  const QgsCoordinateTransform* coordinateTransform, const QgsMapToPixel* mtp, float mapToPixelTol = 1.0f );
-
-    //! Returns whether the envelope can be replaced by its BBOX when is applied the map2pixel context
-    inline bool canbeGeneralizedByMapBoundingBox( const QgsRectangle& envelope ) const { return canbeGeneralizedByMapBoundingBox( envelope, mMapCoordTransform, mMapToPixel, mMapToPixelTol ); }
-
-    //! Simplify the specified geometry (Removing duplicated points) when is applied the map2pixel context
-    static bool simplifyGeometry( const QgsFeatureRequest::Flags& requestFlags, 
-                                  QgsGeometry* geometry, 
-                                  const QgsCoordinateTransform* coordinateTransform, const QgsMapToPixel* mtp, float mapToPixelTol = 1.0f );
-
-    //! Simplify the specified geometry (Removing duplicated points) when is applied the map2pixel context
-    inline bool simplifyGeometry( QgsGeometry* geometry ) const { return simplifyGeometry( mFlags, geometry, mMapCoordTransform, mMapToPixel, mMapToPixelTol ); }
-
-    //! Simplify the specified point stream (Removing duplicated points) when is applied a map2pixel context
-    static bool simplifyGeometry( const QgsFeatureRequest::Flags& requestFlags, 
-                                  QGis::GeometryType geometryType, const QgsRectangle& envelope, double* xptr, int xStride, double* yptr, int yStride, int pointCount, int& pointSimplifiedCount,
-                                  const QgsCoordinateTransform* coordinateTransform, const QgsMapToPixel* mtp, float mapToPixelTol = 1.0f );
-
-    //! Simplify the specified point stream (Removing duplicated points) when is applied the map2pixel context
-    inline bool simplifyGeometry( const QgsFeatureRequest::Flags& requestFlags, 
-                                  QGis::GeometryType geometryType, const QgsRectangle& envelope, double* xptr, int xStride, double* yptr, int yStride, int pointCount, int& pointSimplifiedCount ) const { return simplifyGeometry( requestFlags, geometryType, envelope, xptr, xStride, yptr, yStride, pointCount, pointSimplifiedCount, mMapCoordTransform, mMapToPixel, mMapToPixelTol ); }
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsFeatureRequest::Flags )

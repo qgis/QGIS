@@ -47,10 +47,8 @@ class QgsOgrFeatureIterator : public QgsAbstractFeatureIterator
     //! Get an attribute associated with a feature
     void getFeatureAttribute( OGRFeatureH ogrFet, QgsFeature & f, int attindex );
 
-    //! notify the OGRFeatureH was readed of the data provider
-    virtual void notifyReadedFeature( OGRFeatureH fet, OGRGeometryH geom, QgsFeature& feature );
-    //! notify the OGRFeatureH was loaded to the QgsFeature object
-    virtual void notifyLoadedFeature( OGRFeatureH fet, QgsFeature& feature );
+    //! Notified a new OGRFeatureH fecthed from data provider
+    virtual void fetchedFeature( OGRFeatureH feature, OGRGeometryH geometry );
 
     bool mFeatureFetched;
 
@@ -64,9 +62,9 @@ class QgsOgrFeatureIterator : public QgsAbstractFeatureIterator
 };
 
 /***************************************************************************
-    MapToPixel simplification classes
+    QgsOgrSimplifiedFeatureIterator class
     ----------------------
-    begin                : October 2013
+    begin                : December 2013
     copyright            : (C) 2013 by Alvaro Huarte
     email                : http://wiki.osgeo.org/wiki/Alvaro_Huarte
 
@@ -79,10 +77,12 @@ class QgsOgrFeatureIterator : public QgsAbstractFeatureIterator
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsogrmaptopixelgeometrysimplifier.h"
+
 class OGRRawPoint;
 class OGRGeometry;
 
-//! Provides a specialized FeatureIterator for enable map2pixel simplification of the geometries
+//! Provides a specialized FeatureIterator for enable simplification of the geometries fetched
 class QgsOgrSimplifiedFeatureIterator : public QgsOgrFeatureIterator
 {
   public:
@@ -90,22 +90,12 @@ class QgsOgrSimplifiedFeatureIterator : public QgsOgrFeatureIterator
    ~QgsOgrSimplifiedFeatureIterator( );
 
   protected:
-    //! notify the OGRFeatureH was readed of the data provider
-    virtual void notifyReadedFeature( OGRFeatureH fet, OGRGeometryH geom, QgsFeature& feature );
+    //! Notified a new OGRFeatureH fecthed from data provider
+    virtual void fetchedFeature( OGRFeatureH feature, OGRGeometryH geometry );
 
   private:
-    //! Point memory buffer for optimize the simplification process
-    OGRRawPoint* mPointBufferPtr;
-    //! Current Point memory buffer size
-    int mPointBufferCount;
-
-    //! Simplify the OGR-geometry using the specified tolerance
-    bool simplifyOgrGeometry ( const QgsFeatureRequest& request, OGRGeometry* geometry, bool isaLinearRing );
-
-    //! Returns a point buffer of the specified size
-    OGRRawPoint* mallocPoints( int numPoints );
+    //! Related geometry simplifier
+    QgsOgrMapToPixelSimplifier* mSimplifier;
 };
-
-/***************************************************************************/
 
 #endif // QGSOGRFEATUREITERATOR_H

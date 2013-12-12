@@ -117,9 +117,9 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
 };
 
 /***************************************************************************
-    MapToPixel simplification classes
+    QgsSimplifiedVectorLayerFeatureIterator class
     ----------------------
-    begin                : October 2013
+    begin                : December 2013
     copyright            : (C) 2013 by Alvaro Huarte
     email                : http://wiki.osgeo.org/wiki/Alvaro_Huarte
 
@@ -132,11 +132,13 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
  *                                                                         *
  ***************************************************************************/
 
-//! Provides a specialized VectorLayerFeatureIterator for enable map2pixel simplification of the geometries
+#include "qgsgeometrysimplifier.h"
+
+//! Provides a specialized VectorLayerFeatureIterator for enable simplification of the geometries fetched
 class CORE_EXPORT QgsSimplifiedVectorLayerFeatureIterator : public QgsVectorLayerFeatureIterator
 {
   public:
-    QgsSimplifiedVectorLayerFeatureIterator( QgsVectorLayer* layer, const QgsFeatureRequest& request );
+    QgsSimplifiedVectorLayerFeatureIterator( QgsVectorLayer* layer, const QgsFeatureRequest& request, QgsAbstractGeometrySimplifier* simplifier );
    ~QgsSimplifiedVectorLayerFeatureIterator( );
 
   protected:
@@ -144,6 +146,8 @@ class CORE_EXPORT QgsSimplifiedVectorLayerFeatureIterator : public QgsVectorLaye
     virtual bool fetchFeature( QgsFeature& feature );
 
   private:
+    //! Related geometry simplifier
+    QgsAbstractGeometrySimplifier* mSimplifier;
     //! Indicates the related vector provider supports simplify the geometries before fecth the feature
     bool  mSupportsPresimplify;
 };

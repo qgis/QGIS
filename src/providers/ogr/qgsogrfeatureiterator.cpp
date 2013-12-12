@@ -233,7 +233,7 @@ bool QgsOgrFeatureIterator::readFeature( OGRFeatureH fet, QgsFeature& feature )
 
     if ( geom )
     {
-      notifyReadedFeature( fet, geom, feature );
+      fetchedFeature( fet, geom );
 
       // get the wkb representation
       int memorySize = OGR_G_WkbSize( geom );
@@ -242,8 +242,6 @@ bool QgsOgrFeatureIterator::readFeature( OGRFeatureH fet, QgsFeature& feature )
 
       QgsGeometry* geometry = feature.geometry();
       if ( !geometry ) feature.setGeometryAndOwnership( wkb, memorySize ); else geometry->fromWkb( wkb, memorySize );
-
-      notifyLoadedFeature( fet, feature );
     }
     if (( useIntersect && ( !feature.geometry() || !feature.geometry()->intersects( mRequest.filterRect() ) ) )
         || ( geometryTypeFilter && ( !feature.geometry() || QgsOgrProvider::ogrWkbSingleFlatten(( OGRwkbGeometryType )feature.geometry()->wkbType() ) != P->mOgrGeometryTypeFilter ) ) )
@@ -279,19 +277,15 @@ bool QgsOgrFeatureIterator::readFeature( OGRFeatureH fet, QgsFeature& feature )
   return true;
 }
 
-//! notify the OGRFeatureH was readed of the data provider
-void QgsOgrFeatureIterator::notifyReadedFeature( OGRFeatureH fet, OGRGeometryH geom, QgsFeature& feature )
-{
-}
-//! notify the OGRFeatureH was loaded to the QgsFeature object
-void QgsOgrFeatureIterator::notifyLoadedFeature( OGRFeatureH fet, QgsFeature& feature )
+//! Notified a new OGRFeatureH fecthed from data provider
+void QgsOgrFeatureIterator::fetchedFeature( OGRFeatureH feature, OGRGeometryH geometry )
 {
 }
 
 /***************************************************************************
-    MapToPixel simplification classes
+    QgsOgrSimplifiedFeatureIterator class
     ----------------------
-    begin                : October 2013
+    begin                : December 2013
     copyright            : (C) 2013 by Alvaro Huarte
     email                : http://wiki.osgeo.org/wiki/Alvaro_Huarte
 
@@ -304,149 +298,37 @@ void QgsOgrFeatureIterator::notifyLoadedFeature( OGRFeatureH fet, QgsFeature& fe
  *                                                                         *
  ***************************************************************************/
 
-#include <ogr_geometry.h>
-
-//! Provides a specialized FeatureIterator for enable map2pixel simplification of the geometries
-QgsOgrSimplifiedFeatureIterator::QgsOgrSimplifiedFeatureIterator( QgsOgrProvider* p, const QgsFeatureRequest& request ) : QgsOgrFeatureIterator( p, request )
+//! Provides a specialized FeatureIterator for enable simplification of the geometries
+QgsOgrSimplifiedFeatureIterator::QgsOgrSimplifiedFeatureIterator( QgsOgrProvider* p, const QgsFeatureRequest& request ) 
+  : QgsOgrFeatureIterator( p, request )
+  , mSimplifier( NULL )
 {
-  mPointBufferCount = 512;
-  mPointBufferPtr = (OGRRawPoint*)OGRMalloc( mPointBufferCount * sizeof(OGRRawPoint) );
+  QgsFeatureRequest::Flags requestFlags = request.flags();
+
+  int simplifyFlags = QgsMapToPixelSimplifier::NoFlags;
+  if ( requestFlags & QgsFeatureRequest::SimplifyGeometry ) simplifyFlags |= QgsMapToPixelSimplifier::SimplifyGeometry;
+  if ( requestFlags & QgsFeatureRequest::SimplifyEnvelope ) simplifyFlags |= QgsMapToPixelSimplifier::SimplifyEnvelope;
+
+  if ( simplifyFlags != QgsMapToPixelSimplifier::NoFlags )
+  {
+    mSimplifier = new QgsOgrMapToPixelSimplifier( simplifyFlags, request.coordinateTransform(), request.mapToPixel(), request.mapToPixelTol() );
+  }
 }
 QgsOgrSimplifiedFeatureIterator::~QgsOgrSimplifiedFeatureIterator( )
 {
-  if ( mPointBufferPtr )
+  if ( mSimplifier )
   {
-    OGRFree( mPointBufferPtr );
-    mPointBufferPtr = NULL;
+    delete mSimplifier;
+    mSimplifier = NULL;
   }
 }
 
-//! Returns a point buffer of the specified size
-OGRRawPoint* QgsOgrSimplifiedFeatureIterator::mallocPoints( int numPoints )
+//! Notified a new OGRFeatureH fecthed from data provider
+void QgsOgrSimplifiedFeatureIterator::fetchedFeature( OGRFeatureH feature, OGRGeometryH geometry )
 {
-  if ( mPointBufferPtr && mPointBufferCount < numPoints )
+  if ( mSimplifier && (mSimplifier->simplifyFlags() & (QgsMapToPixelSimplifier::SimplifyGeometry | QgsMapToPixelSimplifier::SimplifyEnvelope) ) )
   {
-    OGRFree( mPointBufferPtr );
-    mPointBufferPtr = NULL;
+    mSimplifier->simplifyGeometry( (OGRGeometry*) geometry );
   }
-  if ( mPointBufferPtr==NULL )
-  {
-    mPointBufferCount = numPoints;
-    mPointBufferPtr = (OGRRawPoint*)OGRMalloc( mPointBufferCount * sizeof(OGRRawPoint) );
-  }
-  return mPointBufferPtr;
+  QgsOgrFeatureIterator::fetchedFeature( feature, geometry );
 }
-
-//! Simplify the OGR-geometry using the specified tolerance
-bool QgsOgrSimplifiedFeatureIterator::simplifyOgrGeometry( const QgsFeatureRequest& request, OGRGeometry* geometry, bool isaLinearRing )
-{
-  OGRwkbGeometryType wkbGeometryType = wkbFlatten( geometry->getGeometryType() );
-
-  // Simplify the geometry rewriting temporally its WKB-stream for saving calloc's.
-  if ( wkbGeometryType == wkbLineString )
-  {
-    OGRLineString* lineString = (OGRLineString*)geometry;
-
-    int numPoints = lineString->getNumPoints();
-    if ( (isaLinearRing && numPoints<=5) || (!isaLinearRing && numPoints<=2) ) return false;
-
-    OGREnvelope env;
-    geometry->getEnvelope( &env );
-    QgsRectangle envelope( env.MinX, env.MinY, env.MaxX, env.MaxY );
-
-    // Can replace the geometry by its BBOX ?
-    if ( request.flags() & QgsFeatureRequest::SimplifyEnvelope && request.canbeGeneralizedByMapBoundingBox( envelope ) )
-    {
-      OGRRawPoint* points = NULL;
-      int numPoints = 0;
-
-      double x1 = envelope.xMinimum();
-      double y1 = envelope.yMinimum();
-      double x2 = envelope.xMaximum();
-      double y2 = envelope.yMaximum();
-
-      if ( isaLinearRing )
-      {
-        numPoints = 5;
-        points = mallocPoints( numPoints );
-        points[0].x = x1; points[0].y = y1;
-        points[1].x = x2; points[1].y = y1;
-        points[2].x = x2; points[2].y = y2;
-        points[3].x = x1; points[3].y = y2;
-        points[4].x = x1; points[4].y = y1;
-      }
-      else
-      {
-        numPoints = 2;
-        points = mallocPoints( numPoints );
-        points[0].x = x1; points[0].y = y1;
-        points[1].x = x2; points[1].y = y2;
-      }
-      lineString->setPoints( numPoints, points );
-      lineString->flattenTo2D();
-      return true;
-    }
-    else
-    if ( request.flags() & QgsFeatureRequest::SimplifyGeometry )
-    {
-      QGis::GeometryType geometryType = isaLinearRing ? QGis::Polygon : QGis::Line;
-      int numSimplifiedPoints = 0;
-
-      OGRRawPoint* points = mallocPoints( numPoints );
-      double* xptr = (double*)points;
-      double* yptr = xptr+1; 
-      lineString->getPoints( points );
-
-      if ( request.simplifyGeometry( request.flags(), geometryType, envelope, xptr, 16, yptr, 16, numPoints, numSimplifiedPoints ) )
-      {
-        lineString->setPoints( numSimplifiedPoints, points );
-        lineString->flattenTo2D();
-      }
-      return numSimplifiedPoints!=numPoints;
-    }
-  }
-  else
-  if ( wkbGeometryType == wkbPolygon )
-  {
-    OGRPolygon* polygon = (OGRPolygon*)geometry;
-    bool result = simplifyOgrGeometry( request, polygon->getExteriorRing(), true );
-
-    for ( int i = 0, numInteriorRings = polygon->getNumInteriorRings(); i < numInteriorRings; ++i )
-    {
-      result |= simplifyOgrGeometry( request, polygon->getInteriorRing(i), true );
-    }
-    if ( result ) polygon->flattenTo2D();
-    return result;
-  }
-  else
-  if ( wkbGeometryType == wkbMultiLineString || wkbGeometryType == wkbMultiPolygon )
-  {
-    OGRGeometryCollection* collection = (OGRGeometryCollection*)geometry;
-    bool result = false;
-
-    for ( int i = 0, numGeometries = collection->getNumGeometries(); i < numGeometries; ++i )
-    {
-      result |= simplifyOgrGeometry( request, collection->getGeometryRef(i), wkbGeometryType==wkbMultiPolygon );
-    }
-    if ( result ) collection->flattenTo2D();
-    return result;
-  }
-  return false;
-}
-
-//! notify the OGRFeatureH was readed of the data provider
-void QgsOgrSimplifiedFeatureIterator::notifyReadedFeature( OGRFeatureH fet, OGRGeometryH geom, QgsFeature& feature )
-{
-  if ( mRequest.flags() & ( QgsFeatureRequest::SimplifyGeometry | QgsFeatureRequest::SimplifyEnvelope ) )
-  {
-    OGRwkbGeometryType wkbType = QgsOgrProvider::ogrWkbSingleFlatten( OGR_G_GetGeometryType(geom) );
-
-    if ( wkbType == wkbLineString || wkbType == wkbPolygon )
-    {
-      simplifyOgrGeometry( mRequest, (OGRGeometry*)geom, wkbType==wkbPolygon );
-    }
-  }
-  QgsOgrFeatureIterator::notifyReadedFeature( fet, geom, feature );
-}
-
-/***************************************************************************/

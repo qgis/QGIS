@@ -263,6 +263,9 @@ class CORE_EXPORT QGis
 
     static const double DEFAULT_IDENTIFY_RADIUS;
 
+    //! Default threshold between map coordinates and device coordinates for map2pixel simplification
+    static const float DEFAULT_MAPTOPIXEL_THRESHOLD;
+
   private:
     // String representation of unit types (set in qgis.cpp)
     static const char *qgisUnitTypes[];
