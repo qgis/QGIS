@@ -17,7 +17,6 @@
 #include "qgsfield.h"
 #include "qgsgeometry.h"
 
-#include <limits>
 #include <QStringList>
 
 QgsFeatureRequest::QgsFeatureRequest()
