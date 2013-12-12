@@ -137,7 +137,7 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
     , mValidExtent( false )
     , mSymbolFeatureCounted( false )
     , mCurrentRendererContext( 0 )
-    , mSimplifyDrawingHints( QgsVectorLayer::FullSimplification )
+    , mSimplifyDrawingHints( QGis::DEFAULT_MAPTOPIXEL_THRESHOLD > 1 ? QgsVectorLayer::FullSimplification : QgsVectorLayer::DefaultSimplification )
     , mSimplifyDrawingTol( QGis::DEFAULT_MAPTOPIXEL_THRESHOLD )
 
 {

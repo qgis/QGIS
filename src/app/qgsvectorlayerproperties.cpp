@@ -535,7 +535,13 @@ void QgsVectorLayerProperties::apply()
   layer->setMetadataUrlFormat( mLayerMetadataUrlFormatComboBox->currentText() );
 
   //layer simplify drawing configuration
-  layer->setSimplifyDrawingHints( mSimplifyDrawingGroupBox->isChecked() ? QgsVectorLayer::FullSimplification : QgsVectorLayer::NoSimplification );
+  int simplifyDrawingHints = QgsVectorLayer::NoSimplification;
+  if ( mSimplifyDrawingGroupBox->isChecked() )
+  {
+    simplifyDrawingHints |= QgsVectorLayer::DefaultSimplification;
+    if ( mSimplifyDrawingSlider->value() > 0 ) simplifyDrawingHints |= QgsVectorLayer::AntialiasingSimplification;
+  }
+  layer->setSimplifyDrawingHints( simplifyDrawingHints );
   layer->setSimplifyDrawingTol( 1.0f + 0.2f*mSimplifyDrawingSlider->value() );
 
   // update symbology

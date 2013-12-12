@@ -524,7 +524,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   chkUseRenderCaching->setChecked( settings.value( "/qgis/enable_render_caching", false ).toBool() );
 
   // Default simplify drawing configuration
-  mSimplifyDrawingGroupBox->setChecked( settings.value( "/qgis/simplifyDrawingHints", (int)QgsVectorLayer::FullSimplification ).toInt() != QgsVectorLayer::NoSimplification );
+  mSimplifyDrawingGroupBox->setChecked( settings.value( "/qgis/simplifyDrawingHints", (int)QgsVectorLayer::DefaultSimplification ).toInt() != QgsVectorLayer::NoSimplification );
   mSimplifyDrawingSlider->setValue( (int)(5.0f * (settings.value( "/qgis/simplifyDrawingTol", 1.0F ).toFloat()-1)) );
   mSimplifyDrawingPanel->setVisible( mSimplifyDrawingSlider->value()>0 );
 
@@ -986,8 +986,14 @@ void QgsOptions::saveOptions()
   settings.setValue( "/qgis/capitaliseLayerName", capitaliseCheckBox->isChecked() );
 
   // Default simplify drawing configuration
-  settings.setValue( "/qgis/simplifyDrawingHints", (int)(mSimplifyDrawingGroupBox->isChecked() ? QgsVectorLayer::FullSimplification : QgsVectorLayer::NoSimplification) );
-  settings.setValue( "/qgis/simplifyDrawingTol", (float)(1.0f + 0.2f*mSimplifyDrawingSlider->value()) );
+  int simplifyDrawingHints = QgsVectorLayer::NoSimplification;
+  if ( mSimplifyDrawingGroupBox->isChecked() )
+  {
+    simplifyDrawingHints |= QgsVectorLayer::DefaultSimplification;
+    if ( mSimplifyDrawingSlider->value() > 0 ) simplifyDrawingHints |= QgsVectorLayer::AntialiasingSimplification;
+  }
+  settings.setValue( "/qgis/simplifyDrawingHints", simplifyDrawingHints );
+  settings.setValue( "/qgis/simplifyDrawingTol", 1.0f + 0.2f*mSimplifyDrawingSlider->value() );
 
   // project
   settings.setValue( "/qgis/projOpenAtLaunch", mProjectOnLaunchCmbBx->currentIndex() );
