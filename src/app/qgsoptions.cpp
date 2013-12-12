@@ -525,7 +525,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
 
   // Default simplify drawing configuration
   mSimplifyDrawingGroupBox->setChecked( settings.value( "/qgis/simplifyDrawingHints", (int)QgsVectorLayer::DefaultSimplification ).toInt() != QgsVectorLayer::NoSimplification );
-  mSimplifyDrawingSlider->setValue( (int)(5.0f * (settings.value( "/qgis/simplifyDrawingTol", 1.0F ).toFloat()-1)) );
+  mSimplifyDrawingSlider->setValue( (int)(5.0f * (settings.value( "/qgis/simplifyDrawingTol", QGis::DEFAULT_MAPTOPIXEL_THRESHOLD ).toFloat()-1)) );
   mSimplifyDrawingPanel->setVisible( mSimplifyDrawingSlider->value()>0 );
 
   // Slightly awkard here at the settings value is true to use QImage,

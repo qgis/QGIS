@@ -85,10 +85,10 @@ inline static QgsRectangle calculateBoundingBox( QGis::WkbType wkbType, unsigned
     memcpy( &x, wkb, sizeof( double ) ); wkb += sizeOfDoubleX;
     memcpy( &y, wkb, sizeof( double ) ); wkb += sizeOfDoubleY;
 
-    if (xmin>x) xmin = x;
-    if (ymin>y) ymin = y;
-    if (xmax<x) xmax = x;
-    if (ymax<y) ymax = y;
+    if ( xmin > x ) xmin = x;
+    if ( ymin > y ) ymin = y;
+    if ( xmax < x ) xmax = x;
+    if ( ymax < y ) ymax = y;
   }
   wkb = wkb2;
 
@@ -96,7 +96,7 @@ inline static QgsRectangle calculateBoundingBox( QGis::WkbType wkbType, unsigned
 }
 
 //! Generalize the WKB-geometry using the BBOX of the original geometry
-inline static bool generalizeGeometry( QGis::WkbType wkbType, unsigned char* sourceWkb, size_t sourceWkbSize, unsigned char* targetWkb, size_t& targetWkbSize, const QgsRectangle& envelope, bool writeHeader )
+inline static bool generalizeWkbGeometry( QGis::WkbType wkbType, unsigned char* sourceWkb, size_t sourceWkbSize, unsigned char* targetWkb, size_t& targetWkbSize, const QgsRectangle& envelope, bool writeHeader )
 {
   unsigned char* wkb2 = targetWkb;
   unsigned int geometryType = QGis::singleType( QGis::flatType( wkbType ) );
@@ -180,7 +180,7 @@ bool QgsMapToPixelSimplifier::simplifyWkbGeometry( int simplifyFlags, QGis::WkbT
   // Can replace the geometry by its BBOX ?
   if ( ( simplifyFlags & QgsMapToPixelSimplifier::SimplifyEnvelope ) && (envelope.xMaximum()-envelope.xMinimum()) < map2pixelTol && (envelope.yMaximum()-envelope.yMinimum()) < map2pixelTol )
   {
-    canbeGeneralizable = generalizeGeometry( wkbType, sourceWkb, sourceWkbSize, targetWkb, targetWkbSize, envelope, writeHeader );
+    canbeGeneralizable = generalizeWkbGeometry( wkbType, sourceWkb, sourceWkbSize, targetWkb, targetWkbSize, envelope, writeHeader );
     if (canbeGeneralizable) return true;
   }
   if (!( simplifyFlags & QgsMapToPixelSimplifier::SimplifyGeometry ) ) canbeGeneralizable = false;
