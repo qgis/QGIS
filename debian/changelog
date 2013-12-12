@@ -4,8 +4,9 @@ qgis (2.1.0) UNRELEASED; urgency=low
   * drop qgis_icon.xpm and use "upstream" version
   * Update Qt dependency to 4.7
   * drop support for Debian squeeze and Ubuntu lucid, maverick, natty and oneiric
+  * disable globe support for jessie and unstable (because of #728318)
 
- -- Jürgen E. Fischer <jef@norbit.de>  Sat, 30 Nov 2013 11:26:34 +0100
+ -- Jürgen E. Fischer <jef@norbit.de>  Thu, 12 Dec 2013 14:02:28 +0100
 
 qgis (1.9.0) UNRELEASED; urgency=low
 
