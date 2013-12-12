@@ -74,6 +74,7 @@ SET(QGIS_CORE_SRCS
   qgsgeometry.cpp
   qgsgeometrycache.cpp
   qgsgeometryvalidator.cpp
+  qgsgeometrysimplifier.cpp
   qgsgml.cpp
   qgsgmlschema.cpp
   qgshttptransaction.cpp
@@ -85,6 +86,7 @@ SET(QGIS_CORE_SRCS
   qgsmaplayerregistry.cpp
   qgsmaprenderer.cpp
   qgsmaptopixel.cpp
+  qgsmaptopixelgeometrysimplifier.cpp
   qgsmessageoutput.cpp
   qgsmimedatautils.cpp
   qgsmessagelog.cpp

@@ -591,9 +591,9 @@ void QgsVectorLayerFeatureIterator::updateFeatureGeometry( QgsFeature &f )
 }
 
 /***************************************************************************
-    MapToPixel simplification classes
+    QgsSimplifiedVectorLayerFeatureIterator class
     ----------------------
-    begin                : October 2013
+    begin                : December 2013
     copyright            : (C) 2013 by Alvaro Huarte
     email                : http://wiki.osgeo.org/wiki/Alvaro_Huarte
 
@@ -606,13 +606,19 @@ void QgsVectorLayerFeatureIterator::updateFeatureGeometry( QgsFeature &f )
  *                                                                         *
  ***************************************************************************/
 
-QgsSimplifiedVectorLayerFeatureIterator::QgsSimplifiedVectorLayerFeatureIterator( QgsVectorLayer* layer, const QgsFeatureRequest& request )
+QgsSimplifiedVectorLayerFeatureIterator::QgsSimplifiedVectorLayerFeatureIterator( QgsVectorLayer* layer, const QgsFeatureRequest& request, QgsAbstractGeometrySimplifier* simplifier )
   : QgsVectorLayerFeatureIterator( layer, request )
+  , mSimplifier( simplifier )
 {
   mSupportsPresimplify = layer->dataProvider()->capabilities() & QgsVectorDataProvider::SimplifyGeometries;
 }
 QgsSimplifiedVectorLayerFeatureIterator::~QgsSimplifiedVectorLayerFeatureIterator()
 {
+  if ( mSimplifier )
+  {
+    delete mSimplifier;
+    mSimplifier = NULL;
+  }
 }
 
 //! fetch next feature, return true on success
@@ -621,10 +627,8 @@ bool QgsSimplifiedVectorLayerFeatureIterator::fetchFeature( QgsFeature& feature 
   if (QgsVectorLayerFeatureIterator::fetchFeature( feature ))
   {
     const QgsMapToPixel* mtp = mRequest.mapToPixel();
-    if ( mtp && !mSupportsPresimplify ) mRequest.simplifyGeometry( feature.geometry() );
+    if ( mtp && !mSupportsPresimplify && mSimplifier ) mSimplifier->simplifyGeometry( feature.geometry() );
     return true;
   }
   return false;
 }
-
-/***************************************************************************/
