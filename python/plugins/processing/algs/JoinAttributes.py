@@ -75,9 +75,7 @@ class JoinAttributes(GeoAlgorithm):
         joinField2Index = layer2.fieldNameIndex(field2)
 
         # Output
-        outFields = []
-        outFields.extend(provider.fields())
-        outFields.extend(provider2.fields())
+        outFields = vector.combineVectorFields(layer,layer2) 
 
         writer = output.getVectorWriter(outFields, provider.geometryType(),
                 layer.crs())
@@ -98,12 +96,10 @@ class JoinAttributes(GeoAlgorithm):
                 attrs2 = inFeat2.attributes()
                 joinValue2 = attrs2[joinField2Index]
                 if joinValue1 == joinValue2:
-
                     # Create the new feature
                     outFeat.setGeometry(inGeom)
                     attrs.extend(attrs2)
                     break
             outFeat.setAttributes(attrs)
             writer.addFeature(outFeat)
-
         del writer
