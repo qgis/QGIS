@@ -2415,6 +2415,7 @@ void QgsComposerMap::drawOverviewMapExtent( QPainter* p )
 
   p->save();
   p->setCompositionMode( mOverviewBlendMode );
+  p->translate( mXOffset, mYOffset );
   mOverviewFrameMapSymbol->startRender( context );
 
   //construct a polygon corresponding to the intersecting map extent
