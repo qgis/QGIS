@@ -2411,6 +2411,10 @@ void QgsGdalProvider::initBaseDataset()
     if ( isValid )
     {
       QgsDebugMsg( QString( "GDALGetRasterNoDataValue = %1" ).arg( myNoDataValue ) ) ;
+      // The no data value double may be non representable by data type, it can result
+      // in problems if that value is used to represent additional user defined no data
+      // see #3840
+      myNoDataValue = QgsRaster::representableValue( myNoDataValue, dataTypeFromGdal( myGdalDataType ) );
       mSrcNoDataValue.append( myNoDataValue );
       mSrcHasNoDataValue.append( true );
       mUseSrcNoDataValue.append( true );

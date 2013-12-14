@@ -53,4 +53,24 @@ QgsRaster::ContrastEnhancementLimits QgsRaster::contrastEnhancementLimitsFromStr
   return ContrastEnhancementNone;
 }
 
-
+double QgsRaster::representableValue( double value, QGis::DataType dataType )
+{
+  switch ( dataType )
+  {
+    case QGis::Byte:
+      return static_cast<quint8>( value );
+    case QGis::UInt16:
+      return static_cast<quint16>( value );
+    case QGis::Int16:
+      return static_cast<qint16>( value );
+    case QGis::UInt32:
+      return static_cast<quint32>( value );
+    case QGis::Int32:
+      return static_cast<qint32>( value );
+    case QGis::Float32:
+      return static_cast<float>( value );
+    default:
+      break;
+  }
+  return value;
+}
