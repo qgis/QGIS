@@ -1031,11 +1031,11 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
 
     if ( overviewFrameElem.attribute( "overviewCentered" ).compare( "true", Qt::CaseInsensitive ) == 0 )
     {
-      setOverviewCentered( true );
+      mOverviewCentered = true;
     }
     else
     {
-      setOverviewCentered( false );
+      mOverviewCentered = false;
     }
 
     QDomElement overviewFrameSymbolElem = overviewFrameElem.firstChildElement( "symbol" );
