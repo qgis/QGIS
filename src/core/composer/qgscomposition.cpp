@@ -796,6 +796,21 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
       pushAddRemoveCommand( newMap, tr( "Map added" ) );
     }
   }
+  //now that all map items have been created, re-connect overview map signals
+  QList<QgsComposerMap*> maps;
+  composerItems( maps );
+  for ( QList<QgsComposerMap*>::iterator mit = maps.begin(); mit != maps.end(); ++mit )
+  {
+    if (( *mit )->overviewFrameMapId() != -1 )
+    {
+      const QgsComposerMap* overviewMap = getComposerMapById(( *mit )->overviewFrameMapId() );
+      if ( overviewMap )
+      {
+        QObject::connect( overviewMap, SIGNAL( extentChanged() ), *mit, SLOT( overviewExtentChanged() ) );
+      }
+    }
+  }
+
   // arrow
   QDomNodeList composerArrowList = elem.elementsByTagName( "ComposerArrow" );
   for ( int i = 0; i < composerArrowList.size(); ++i )
