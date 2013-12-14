@@ -968,11 +968,11 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
 
     if ( overviewFrameElem.attribute( "overviewCentered" ).compare( "true", Qt::CaseInsensitive ) == 0 )
     {
-      setOverviewCentered( true );
+      mOverviewCentered = true;
     }
     else
     {
-      setOverviewCentered( false );
+      mOverviewCentered = false;
     }
 
     QDomElement overviewFrameSymbolElem = overviewFrameElem.firstChildElement( "symbol" );
@@ -1973,7 +1973,7 @@ void QgsComposerMap::setOverviewInverted( bool inverted )
 void QgsComposerMap::setOverviewCentered( bool centered )
 {
   mOverviewCentered = centered;
-  update();
+  overviewExtentChanged();
 }
 
 void QgsComposerMap::setGridLineSymbol( QgsLineSymbolV2* symbol )
