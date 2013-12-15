@@ -115,21 +115,7 @@ int QgsAtlasComposition::updateFeatures()
   mTransform.setSourceCrs( coverage_crs );
   mTransform.setDestCRS( destination_crs );
 
-  const QgsFields& fields = mCoverageLayer->pendingFields();
-
-  if ( !mSingleFile && mFilenamePattern.size() > 0 )
-  {
-    mFilenameExpr = std::auto_ptr<QgsExpression>( new QgsExpression( mFilenamePattern ) );
-    // expression used to evaluate each filename
-    // test for evaluation errors
-    if ( mFilenameExpr->hasParserError() )
-    {
-      throw std::runtime_error( tr( "Filename parsing error: %1" ).arg( mFilenameExpr->parserErrorString() ).toLocal8Bit().data() );
-    }
-
-    // prepare the filename expression
-    mFilenameExpr->prepare( fields );
-  }
+  updateFilenameExpression();
 
   // select all features with all attributes
   QgsFeatureIterator fit = mCoverageLayer->getFeatures();
@@ -537,6 +523,31 @@ void QgsAtlasComposition::setHideCoverage( bool hide )
     mComposition->update();
   }
 
+}
+
+void QgsAtlasComposition::setFilenamePattern( const QString& pattern )
+{
+  mFilenamePattern = pattern;
+  updateFilenameExpression();
+}
+
+void QgsAtlasComposition::updateFilenameExpression()
+{
+  const QgsFields& fields = mCoverageLayer->pendingFields();
+
+  if ( !mSingleFile && mFilenamePattern.size() > 0 )
+  {
+    mFilenameExpr = std::auto_ptr<QgsExpression>( new QgsExpression( mFilenamePattern ) );
+    // expression used to evaluate each filename
+    // test for evaluation errors
+    if ( mFilenameExpr->hasParserError() )
+    {
+      throw std::runtime_error( tr( "Filename parsing error: %1" ).arg( mFilenameExpr->parserErrorString() ).toLocal8Bit().data() );
+    }
+
+    // prepare the filename expression
+    mFilenameExpr->prepare( fields );
+  }
 }
 
 
