@@ -315,7 +315,7 @@ void QgsComposerMap::paint( QPainter* painter, const QStyleOptionGraphicsItem* i
     drawBackground( painter );
     QFont messageFont( "", 12 );
     painter->setFont( messageFont );
-    painter->setPen( QColor( 0, 0, 0 ) );
+    painter->setPen( QColor( 0, 0, 0, 125 ) );
     painter->drawText( thisPaintRect, tr( "Map will be printed here" ) );
   }
   else if ( mComposition->plotStyle() == QgsComposition::Preview )
