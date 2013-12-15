@@ -56,6 +56,13 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     Q_OBJECT
 
   public:
+
+    enum OutputMode
+    {
+      Single = 0,
+      Atlas
+    };
+
     QgsComposer( QgisApp *qgis, const QString& title );
     ~QgsComposer();
 
@@ -324,6 +331,18 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //!Last atlas feature
     void on_mActionAtlasLast_triggered();
 
+    //! Print the atlas
+    void on_mActionPrintAtlas_triggered();
+
+    //! Print atlas as image
+    void on_mActionExportAtlasAsImage_triggered();
+
+    //! Print atlas as SVG
+    void on_mActionExportAtlasAsSVG_triggered();
+
+    //! Print atlas as PDF
+    void on_mActionExportAtlasAsPDF_triggered();
+
     //! Save window state
     void saveWindowState();
 
@@ -424,6 +443,18 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     //! Updates the grid/guide action status based on compositions grid/guide settings
     void restoreGridSettings();
+
+    //! Prints either the whole atlas or just the current feature, depending on mode
+    void printComposition( QgsComposer::OutputMode mode );
+
+    //! Exports either either the whole atlas or just the current feature as an image, depending on mode
+    void exportCompositionAsImage( QgsComposer::OutputMode mode );
+
+    //! Exports either either the whole atlas or just the current feature as an SVG, depending on mode
+    void exportCompositionAsSVG( QgsComposer::OutputMode mode );
+
+    //! Exports either either the whole atlas or just the current feature as a PDF, depending on mode
+    void exportCompositionAsPDF( QgsComposer::OutputMode mode );
 
     /**Composer title*/
     QString mTitle;
