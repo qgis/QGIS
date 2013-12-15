@@ -365,12 +365,15 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   mStatusCursorPageLabel = new QLabel( mStatusBar );
   mStatusCursorPageLabel->setMinimumWidth( 100 );
   mStatusCompositionLabel = new QLabel( mStatusBar );
+  mStatusCompositionLabel->setMinimumWidth( 350 );
+  mStatusAtlasLabel = new QLabel( mStatusBar );
 
   mStatusBar->addWidget( mStatusCursorXLabel );
   mStatusBar->addWidget( mStatusCursorYLabel );
   mStatusBar->addWidget( mStatusCursorPageLabel );
   mStatusBar->addWidget( mStatusZoomCombo );
   mStatusBar->addWidget( mStatusCompositionLabel );
+  mStatusBar->addWidget( mStatusAtlasLabel );
 
   //create composer view and layout with rulers
   mView = 0;
@@ -604,6 +607,9 @@ void QgsComposer::connectSlots()
   connect( mView, SIGNAL( zoomLevelChanged() ), this, SLOT( updateStatusZoom() ) );
   //listen out to status bar updates from the composition
   connect( mComposition, SIGNAL( statusMsgChanged( QString ) ), this, SLOT( updateStatusCompositionMsg( QString ) ) );
+  //listen out to status bar updates from the atlas
+  QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
+  connect( atlasMap, SIGNAL( statusMsgChanged( QString ) ), this, SLOT( updateStatusAtlasMsg( QString ) ) );
 }
 
 void QgsComposer::open( void )
@@ -733,6 +739,11 @@ void QgsComposer::updateStatusCompositionMsg( QString message )
   mStatusCompositionLabel->setText( message );
 }
 
+void QgsComposer::updateStatusAtlasMsg( QString message )
+{
+  mStatusAtlasLabel->setText( message );
+}
+
 void QgsComposer::showItemOptions( QgsComposerItem* item )
 {
   QWidget* currentWidget = mItemDock->widget();
@@ -786,6 +797,7 @@ void QgsComposer::on_mActionAtlasPreview_triggered( bool checked )
     mActionAtlasPreview->blockSignals( true );
     mActionAtlasPreview->setChecked( false );
     mActionAtlasPreview->blockSignals( false );
+    mStatusAtlasLabel->setText( QString() );
     return;
   }
 
@@ -799,6 +811,10 @@ void QgsComposer::on_mActionAtlasPreview_triggered( bool checked )
   if ( checked )
   {
     atlasMap->firstFeature();
+  }
+  else
+  {
+    mStatusAtlasLabel->setText( QString() );
   }
 
 }
