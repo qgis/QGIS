@@ -58,7 +58,7 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     void setMargin( float margin ) { mMargin = margin; }
 
     QString filenamePattern() const { return mFilenamePattern; }
-    void setFilenamePattern( const QString& pattern ) { mFilenamePattern = pattern; }
+    void setFilenamePattern( const QString& pattern );
 
     QgsVectorLayer* coverageLayer() const { return mCoverageLayer; }
     void setCoverageLayer( QgsVectorLayer* lmap );
@@ -121,6 +121,9 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     void statusMsgChanged( QString message );
 
   private:
+    /**Updates the filename expression*/
+    void updateFilenameExpression();
+
     QgsComposition* mComposition;
 
     bool mEnabled;
