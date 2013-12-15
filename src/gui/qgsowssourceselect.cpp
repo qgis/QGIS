@@ -239,21 +239,6 @@ void QgsOWSSourceSelect::populateConnectionList()
   mConnectionsComboBox->addItems( QgsOWSConnection::connectionList( mService ) );
 
   setConnectionListPosition();
-
-  if ( mConnectionsComboBox->count() == 0 )
-  {
-    // No connections - disable various buttons
-    mConnectButton->setEnabled( false );
-    mEditButton->setEnabled( false );
-    mDeleteButton->setEnabled( false );
-  }
-  else
-  {
-    // Connections - enable various buttons
-    mConnectButton->setEnabled( true );
-    mEditButton->setEnabled( true );
-    mDeleteButton->setEnabled( true );
-  }
 }
 void QgsOWSSourceSelect::on_mNewButton_clicked()
 {
@@ -546,6 +531,22 @@ void QgsOWSSourceSelect::setConnectionListPosition()
     else
       mConnectionsComboBox->setCurrentIndex( mConnectionsComboBox->count() - 1 );
   }
+
+  if ( mConnectionsComboBox->count() == 0 )
+  {
+    // No connections - disable various buttons
+    mConnectButton->setEnabled( false );
+    mEditButton->setEnabled( false );
+    mDeleteButton->setEnabled( false );
+  }
+  else
+  {
+    // Connections - enable various buttons
+    mConnectButton->setEnabled( true );
+    mEditButton->setEnabled( true );
+    mDeleteButton->setEnabled( true );
+  }
+
   QgsOWSConnection::setSelectedConnection( mService, mConnectionsComboBox->currentText() );
 }
 
