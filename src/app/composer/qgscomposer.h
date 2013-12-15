@@ -383,6 +383,9 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Updates status bar composition message
     void updateStatusCompositionMsg( QString message );
 
+    //! Updates status bar atlas message
+    void updateStatusAtlasMsg( QString message );
+
   private:
 
     /**Establishes the signal slot connection for the class*/
@@ -431,6 +434,8 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     QLabel* mStatusCursorPageLabel;
     /**Label in status bar which shows messages from the composition*/
     QLabel* mStatusCompositionLabel;
+    /**Label in status bar which shows atlas details*/
+    QLabel* mStatusAtlasLabel;
 
     //! Pointer to composer view
     QgsComposerView *mView;

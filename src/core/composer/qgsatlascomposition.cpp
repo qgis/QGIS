@@ -181,7 +181,7 @@ void QgsAtlasComposition::updateFeatures()
   }
 
   QgsExpression::setSpecialColumn( "$numfeatures", QVariant(( int )mFeatureIds.size() ) );
-  
+
   //jump to first feature if currently using an atlas preview
   //need to do this in case filtering/layer change has altered matching features
   if ( mComposition->atlasPreviewEnabled() )
@@ -290,6 +290,12 @@ void QgsAtlasComposition::prepareForFeature( int featureI )
     return;
   }
 
+  if ( mFeatureIds.size() == 0 )
+  {
+    emit statusMsgChanged( tr( "No matching atlas features" ) );
+    return;
+  }
+
   // retrieve the next feature, based on its id
   mCoverageLayer->getFeatures( QgsFeatureRequest().setFilterFid( mFeatureIds[ featureI ] ) ).nextFeature( mCurrentFeature );
 
@@ -384,6 +390,8 @@ void QgsAtlasComposition::prepareForFeature( int featureI )
 
   // set the new extent (and render)
   mComposerMap->setNewAtlasFeatureExtent( new_extent );
+
+  emit statusMsgChanged( QString( tr( "Atlas feature %1 of %2" ) ).arg( featureI + 1 ).arg( mFeatureIds.size() ) );
 }
 
 const QString& QgsAtlasComposition::currentFilename() const
