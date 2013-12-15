@@ -423,15 +423,14 @@ void QgsComposerMap::paint( QPainter* painter, const QStyleOptionGraphicsItem* i
   {
     drawGrid( painter );
   }
+  if ( mOverviewFrameMapId != -1 )
+  {
+    drawOverviewMapExtent( painter );
+  }
   drawFrame( painter );
   if ( isSelected() )
   {
     drawSelectionBoxes( painter );
-  }
-
-  if ( mOverviewFrameMapId != -1 )
-  {
-    drawOverviewMapExtent( painter );
   }
 
   painter->restore();
@@ -2186,6 +2185,13 @@ void QgsComposerMap::drawOverviewMapExtent( QPainter* p )
     return;
   }
 
+  if ( mComposition->plotStyle() == QgsComposition::Preview && mPreviewMode == Rectangle )
+  {
+    //if map item is set to rectangle preview mode and we are not exporting the composition
+    //then don't draw an overview rectangle
+    return;
+  }
+
   const QgsComposerMap* overviewFrameMap = mComposition->getComposerMapById( mOverviewFrameMapId );
   if ( !overviewFrameMap )
   {
@@ -2199,15 +2205,8 @@ void QgsComposerMap::drawOverviewMapExtent( QPainter* p )
 
   QgsRenderContext context;
   context.setPainter( p );
-  if ( mPreviewMode == Rectangle )
-  {
-    return;
-  }
-  else
-  {
-    context.setScaleFactor( 1.0 );
-    context.setRasterScaleFactor( mComposition->printResolution() / 25.4 );
-  }
+  context.setScaleFactor( 1.0 );
+  context.setRasterScaleFactor( mComposition->printResolution() / 25.4 );
 
   p->save();
   p->setCompositionMode( mOverviewBlendMode );
