@@ -93,7 +93,7 @@ namespace QgisGui
       if ( format ==  "svg" )
         continue;
 
-      filterMap.insert( createFileFilter_( format + " format", "*." + format ), format );
+      filterMap.insert( createFileFilter_( format.toUpper() + " format", "*." + format ), format );
     }
 
 #ifdef QGISDEBUG
@@ -113,7 +113,7 @@ namespace QgisGui
     QString selectedFilter = lastUsedFilter;
     QString ext;
 
-#if defined(Q_OS_WIN) || defined(Q_OS_MAC)
+#if defined(Q_OS_WIN) || defined(Q_OS_MAC) || defined(Q_OS_LINUX)
     outputFileName = QFileDialog::getSaveFileName( theParent, theMessage, lastUsedDir, QStringList( filterMap.keys() ).join( ";;" ), &selectedFilter );
 
     if ( !outputFileName.isNull() )
