@@ -96,7 +96,7 @@
      <item row="0" column="1">
       <widget class="QPushButton" name="mUnSelectAllButton">
        <property name="text">
-        <string>Unselet all</string>
+        <string>Unselect all</string>
        </property>
       </widget>
      </item>
