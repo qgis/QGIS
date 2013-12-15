@@ -81,8 +81,9 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     int sortKeyAttributeIndex() const { return mSortKeyAttributeIdx; }
     void setSortKeyAttributeIndex( int idx ) { mSortKeyAttributeIdx = idx; }
 
-    /** Begins the rendering. */
-    void beginRender();
+    /** Begins the rendering. Returns true if successful, false if no matching atlas
+      features found.*/
+    bool beginRender();
     /** Ends the rendering. Restores original extent */
     void endRender();
 
@@ -100,7 +101,9 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
 
     QgsComposition* composition() { return mComposition; }
 
-    void updateFeatures();
+    /** Requeries the current atlas coverage layer and applies filtering and sorting. Returns
+      number of matching features. Must be called after prepareForFeature( i ) */
+    int updateFeatures();
 
     void nextFeature();
     void prevFeature();

@@ -807,7 +807,21 @@ void QgsComposer::on_mActionAtlasPreview_triggered( bool checked )
   mActionAtlasNext->setEnabled( checked );
   mActionAtlasPrev->setEnabled( checked );
 
-  mComposition->setAtlasPreviewEnabled( checked );
+  bool previewEnabled = mComposition->setAtlasPreviewEnabled( checked );
+  if ( !previewEnabled )
+  {
+    //something went wrong, eg, no matching features
+    QMessageBox::warning( 0, tr( "Enable atlas preview" ),
+                          tr( "No matching atlas features found!" ),
+                          QMessageBox::Ok,
+                          QMessageBox::Ok );
+    mActionAtlasPreview->blockSignals( true );
+    mActionAtlasPreview->setChecked( false );
+    mActionAtlasPreview->blockSignals( false );
+    mStatusAtlasLabel->setText( QString() );
+    return;
+  }
+
   if ( checked )
   {
     atlasMap->firstFeature();

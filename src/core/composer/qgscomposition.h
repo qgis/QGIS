@@ -427,7 +427,8 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
 
     /** Is the atlas preview enabled ? */
     bool atlasPreviewEnabled() const { return mAtlasPreviewEnabled; }
-    void setAtlasPreviewEnabled( bool e );
+    /** Set atlas preview enabled. Returns false if atlas preview could not be enabled */
+    bool setAtlasPreviewEnabled( bool e );
 
 
   public slots:

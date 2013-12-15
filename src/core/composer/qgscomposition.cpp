@@ -2327,7 +2327,7 @@ void QgsComposition::computeWorldFileParameters( double& a, double& b, double& c
   f = r[3] * s[2] + r[4] * s[5] + r[5];
 }
 
-void QgsComposition::setAtlasPreviewEnabled( bool e )
+bool QgsComposition::setAtlasPreviewEnabled( bool e )
 {
   mAtlasPreviewEnabled = e;
 
@@ -2337,10 +2337,16 @@ void QgsComposition::setAtlasPreviewEnabled( bool e )
   }
   else
   {
-    mAtlasComposition.beginRender();
+    bool atlasHasFeatures = mAtlasComposition.beginRender();
+    if ( ! atlasHasFeatures )
+    {
+      mAtlasPreviewEnabled = false;
+      return false;
+    }
   }
 
   update();
+  return true;
 }
 
 void QgsComposition::relativeResizeRect( QRectF& rectToResize, const QRectF& boundsBefore, const QRectF& boundsAfter )

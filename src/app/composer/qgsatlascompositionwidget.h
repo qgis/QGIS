@@ -62,6 +62,8 @@ class QgsAtlasCompositionWidget:
 
     void updateGuiElements();
 
+    void updateAtlasFeatures();
+
   private:
     QgsComposition* mComposition;
 
