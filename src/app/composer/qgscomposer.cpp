@@ -309,6 +309,13 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   layoutMenu->addAction( mActionLockItems );
   layoutMenu->addAction( mActionUnlockAll );
 
+  QMenu *atlasMenu = menuBar()->addMenu( tr( "Atlas" ) );
+  atlasMenu->addAction( mActionAtlasPreview );
+  atlasMenu->addAction( mActionAtlasFirst );
+  atlasMenu->addAction( mActionAtlasPrev );
+  atlasMenu->addAction( mActionAtlasNext );
+  atlasMenu->addAction( mActionAtlasLast );
+
   QMenu *settingsMenu = menuBar()->addMenu( tr( "Settings" ) );
   settingsMenu->addAction( mActionOptions );
 
