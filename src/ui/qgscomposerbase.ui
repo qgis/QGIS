@@ -144,6 +144,7 @@
    <addaction name="mActionAtlasPrev"/>
    <addaction name="mActionAtlasNext"/>
    <addaction name="mActionAtlasLast"/>
+   <addaction name="mActionPrintAtlas"/>
   </widget>
   <action name="mActionPrint">
    <property name="checkable">
@@ -888,6 +889,42 @@
    </property>
    <property name="text">
     <string>Preview Atlas</string>
+   </property>
+  </action>
+  <action name="mActionPrintAtlas">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionFilePrint.png</normaloff>:/images/themes/default/mActionFilePrint.png</iconset>
+   </property>
+   <property name="text">
+    <string>Print Atlas...</string>
+   </property>
+  </action>
+  <action name="mActionExportAtlasAsImage">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSaveMapAsImage.png</normaloff>:/images/themes/default/mActionSaveMapAsImage.png</iconset>
+   </property>
+   <property name="text">
+    <string>Export Atlas as Images...</string>
+   </property>
+  </action>
+  <action name="mActionExportAtlasAsSVG">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSaveAsSVG.png</normaloff>:/images/themes/default/mActionSaveAsSVG.png</iconset>
+   </property>
+   <property name="text">
+    <string>Export Atlas as SVG...</string>
+   </property>
+  </action>
+  <action name="mActionExportAtlasAsPDF">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSaveAsPDF.png</normaloff>:/images/themes/default/mActionSaveAsPDF.png</iconset>
+   </property>
+   <property name="text">
+    <string>Export Atlas As PDF...</string>
    </property>
   </action>
  </widget>

@@ -315,6 +315,21 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   atlasMenu->addAction( mActionAtlasPrev );
   atlasMenu->addAction( mActionAtlasNext );
   atlasMenu->addAction( mActionAtlasLast );
+  atlasMenu->addSeparator();
+  atlasMenu->addAction( mActionPrintAtlas );
+  atlasMenu->addAction( mActionExportAtlasAsImage );
+  atlasMenu->addAction( mActionExportAtlasAsSVG );
+  atlasMenu->addAction( mActionExportAtlasAsPDF );
+
+  QToolButton* atlasExportToolButton = new QToolButton( mAtlasToolbar );
+  atlasExportToolButton->setPopupMode( QToolButton::InstantPopup );
+  atlasExportToolButton->setAutoRaise( true );
+  atlasExportToolButton->setToolButtonStyle( Qt::ToolButtonIconOnly );
+  atlasExportToolButton->addAction( mActionExportAtlasAsImage );
+  atlasExportToolButton->addAction( mActionExportAtlasAsSVG );
+  atlasExportToolButton->addAction( mActionExportAtlasAsPDF );
+  atlasExportToolButton->setDefaultAction( mActionExportAtlasAsImage );
+  mAtlasToolbar->addWidget( atlasExportToolButton );
 
   QMenu *settingsMenu = menuBar()->addMenu( tr( "Settings" ) );
   settingsMenu->addAction( mActionOptions );
@@ -486,6 +501,10 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   mActionAtlasLast->setEnabled( false );
   mActionAtlasNext->setEnabled( false );
   mActionAtlasPrev->setEnabled( false );
+  mActionPrintAtlas->setEnabled( false );
+  mActionExportAtlasAsImage->setEnabled( false );
+  mActionExportAtlasAsSVG->setEnabled( false );
+  mActionExportAtlasAsPDF->setEnabled( false );
 
   // Create size grip (needed by Mac OS X for QMainWindow if QStatusBar is not visible)
   //should not be needed now that composer has a status bar?
@@ -787,6 +806,10 @@ void QgsComposer::toggleAtlasControls( bool atlasEnabled )
   //preview defaults to unchecked
   mActionAtlasPreview->setChecked( false );
   mActionAtlasPreview->setEnabled( atlasEnabled );
+  mActionPrintAtlas->setEnabled( atlasEnabled );
+  mActionExportAtlasAsImage->setEnabled( atlasEnabled );
+  mActionExportAtlasAsSVG->setEnabled( atlasEnabled );
+  mActionExportAtlasAsPDF->setEnabled( atlasEnabled );
 }
 
 void QgsComposer::on_mActionAtlasPreview_triggered( bool checked )
@@ -1036,7 +1059,24 @@ void QgsComposer::toggleRulers( bool checked )
   myQSettings.setValue( "/Composer/showRulers", checked );
 }
 
+void QgsComposer::on_mActionExportAtlasAsPDF_triggered()
+{
+  exportCompositionAsPDF( QgsComposer::Atlas );
+
+  if ( mComposition->atlasPreviewEnabled() )
+  {
+    //after atlas output, jump back to preview first feature
+    QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
+    atlasMap->firstFeature();
+  }
+}
+
 void QgsComposer::on_mActionExportAsPDF_triggered()
+{
+  exportCompositionAsPDF( QgsComposer::Single );
+}
+
+void QgsComposer::exportCompositionAsPDF( QgsComposer::OutputMode mode )
 {
   if ( !mComposition || !mView )
   {
@@ -1072,16 +1112,25 @@ void QgsComposer::on_mActionExportAsPDF_triggered()
   QString outputFileName;
   QString outputDir;
 
-  if ( !hasAnAtlas || atlasOnASingleFile )
+  if ( mode == QgsComposer::Single || ( mode == QgsComposer::Atlas && atlasOnASingleFile ) )
   {
     QSettings myQSettings;  // where we keep last used filter in persistent state
     QString lastUsedFile = myQSettings.value( "/UI/lastSaveAsPdfFile", "qgis.pdf" ).toString();
     QFileInfo file( lastUsedFile );
 
+    if ( hasAnAtlas && !atlasOnASingleFile && ( mode == QgsComposer::Atlas || mComposition->atlasPreviewEnabled() ) )
+    {
+      outputFileName = QDir( file.path() ).filePath( atlasMap->currentFilename() ) + ".pdf";
+    }
+    else
+    {
+      outputFileName = file.path();
+    }
+
     outputFileName = QFileDialog::getSaveFileName(
                        this,
                        tr( "Choose a file name to save the map as" ),
-                       file.path(),
+                       outputFileName,
                        tr( "PDF Format" ) + " (*.pdf *.PDF)" );
     if ( outputFileName.isEmpty() )
     {
@@ -1136,7 +1185,7 @@ void QgsComposer::on_mActionExportAsPDF_triggered()
 
   mView->setPaintingEnabled( false );
 
-  if ( hasAnAtlas )
+  if ( mode == QgsComposer::Atlas )
   {
     QPrinter printer;
 
@@ -1234,6 +1283,18 @@ void QgsComposer::on_mActionExportAsPDF_triggered()
 
 void QgsComposer::on_mActionPrint_triggered()
 {
+  //print only current feature
+  printComposition( QgsComposer::Single );
+}
+
+void QgsComposer::on_mActionPrintAtlas_triggered()
+{
+  //print whole atlas
+  printComposition( QgsComposer::Atlas );
+}
+
+void QgsComposer::printComposition( QgsComposer::OutputMode mode )
+{
   if ( !mComposition || !mView )
   {
     return;
@@ -1272,7 +1333,7 @@ void QgsComposer::on_mActionPrint_triggered()
   mView->setPaintingEnabled( false );
 
   QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
-  if ( !atlasMap->enabled() )
+  if ( mode == QgsComposer::Single )
   {
     mComposition->print( mPrinter );
   }
@@ -1341,7 +1402,24 @@ void QgsComposer::on_mActionPrint_triggered()
   QApplication::restoreOverrideCursor();
 }
 
+void QgsComposer::on_mActionExportAtlasAsImage_triggered()
+{
+  exportCompositionAsImage( QgsComposer::Atlas );
+
+  if ( mComposition->atlasPreviewEnabled() )
+  {
+    //after atlas output, jump back to preview first feature
+    QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
+    atlasMap->firstFeature();
+  }
+}
+
 void QgsComposer::on_mActionExportAsImage_triggered()
+{
+  exportCompositionAsImage( QgsComposer::Single );
+}
+
+void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
 {
   if ( !mComposition || !mView )
   {
@@ -1352,6 +1430,8 @@ void QgsComposer::on_mActionExportAsImage_triggered()
   {
     showWMSPrintingWarning();
   }
+
+  QSettings settings;
 
   // Image size
   int width = ( int )( mComposition->printResolution() * mComposition->paperWidth() / 25.4 );
@@ -1375,9 +1455,17 @@ void QgsComposer::on_mActionExportAsImage_triggered()
   }
 
   QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
-  if ( !atlasMap->enabled() )
+  if ( mode == QgsComposer::Single )
   {
-    QPair<QString, QString> fileNExt = QgisGui::getSaveAsImageName( this, tr( "Choose a file name to save the map image as" ) );
+    QString outputFileName = QString::null;
+
+    if ( atlasMap->enabled() && mComposition->atlasPreviewEnabled() )
+    {
+      QString lastUsedDir = settings.value( "/UI/lastSaveAsImageDir", "." ).toString();
+      outputFileName = QDir( lastUsedDir ).filePath( atlasMap->currentFilename() );
+    }
+
+    QPair<QString, QString> fileNExt = QgisGui::getSaveAsImageName( this, tr( "Choose a file name to save the map image as" ), outputFileName );
 
     if ( fileNExt.first.isEmpty() )
     {
@@ -1591,8 +1679,24 @@ void QgsComposer::on_mActionExportAsImage_triggered()
   }
 }
 
+void QgsComposer::on_mActionExportAtlasAsSVG_triggered()
+{
+  exportCompositionAsSVG( QgsComposer::Atlas );
+
+  if ( mComposition->atlasPreviewEnabled() )
+  {
+    //after atlas output, jump back to preview first feature
+    QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
+    atlasMap->firstFeature();
+  }
+}
 
 void QgsComposer::on_mActionExportAsSVG_triggered()
+{
+  exportCompositionAsSVG( QgsComposer::Single );
+}
+
+void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
 {
   if ( containsWMSLayer() )
   {
@@ -1626,20 +1730,28 @@ void QgsComposer::on_mActionExportAsSVG_triggered()
   }
 
   QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
-  bool hasAnAtlas = atlasMap->enabled();
 
   QString outputFileName;
   QString outputDir;
 
-  if ( !hasAnAtlas )
+  if ( mode == QgsComposer::Single )
   {
     QString lastUsedFile = settings.value( "/UI/lastSaveAsSvgFile", "qgis.svg" ).toString();
     QFileInfo file( lastUsedFile );
 
+    if ( atlasMap->enabled() )
+    {
+      outputFileName = QDir( file.path() ).filePath( atlasMap->currentFilename() ) + ".svg";
+    }
+    else
+    {
+      outputFileName = file.path();
+    }
+
     outputFileName = QFileDialog::getSaveFileName(
                        this,
                        tr( "Choose a file name to save the map as" ),
-                       file.path(),
+                       outputFileName,
                        tr( "SVG Format" ) + " (*.svg *.SVG)" );
     if ( outputFileName.isEmpty() )
       return;
@@ -1694,7 +1806,7 @@ void QgsComposer::on_mActionExportAsSVG_triggered()
   mView->setPaintingEnabled( false );
 
   int featureI = 0;
-  if ( hasAnAtlas )
+  if ( mode == QgsComposer::Atlas )
   {
     try
     {
@@ -1714,7 +1826,7 @@ void QgsComposer::on_mActionExportAsSVG_triggered()
 
   do
   {
-    if ( hasAnAtlas )
+    if ( mode == QgsComposer::Atlas )
     {
       if ( atlasMap->numFeatures() == 0 )
         break;
@@ -1772,9 +1884,9 @@ void QgsComposer::on_mActionExportAsSVG_triggered()
     }
     featureI++;
   }
-  while ( hasAnAtlas && featureI < atlasMap->numFeatures() );
+  while ( mode == QgsComposer::Atlas && featureI < atlasMap->numFeatures() );
 
-  if ( hasAnAtlas )
+  if ( mode == QgsComposer::Atlas )
     atlasMap->endRender();
 
   mView->setPaintingEnabled( true );
@@ -2497,6 +2609,10 @@ void QgsComposer::readXML( const QDomElement& composerElem, const QDomDocument& 
   mActionAtlasLast->setEnabled( false );
   mActionAtlasNext->setEnabled( false );
   mActionAtlasPrev->setEnabled( false );
+  mActionPrintAtlas->setEnabled( atlasMap->enabled() );
+  mActionExportAtlasAsImage->setEnabled( atlasMap->enabled() );
+  mActionExportAtlasAsSVG->setEnabled( atlasMap->enabled() );
+  mActionExportAtlasAsPDF->setEnabled( atlasMap->enabled() );
   connect( atlasMap, SIGNAL( toggled( bool ) ), this, SLOT( toggleAtlasControls( bool ) ) );
 
   setSelectionTool();
