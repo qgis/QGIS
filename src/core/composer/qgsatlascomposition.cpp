@@ -100,13 +100,13 @@ class FieldSorter
     bool mAscending;
 };
 
-void QgsAtlasComposition::updateFeatures()
+int QgsAtlasComposition::updateFeatures()
 {
   //needs to be called when layer, filter, sort changes
 
   if ( !mComposerMap || !mCoverageLayer )
   {
-    return;
+    return 0;
   }
 
   const QgsCoordinateReferenceSystem& coverage_crs = mCoverageLayer->crs();
@@ -135,7 +135,7 @@ void QgsAtlasComposition::updateFeatures()
   QgsFeatureIterator fit = mCoverageLayer->getFeatures();
 
   std::auto_ptr<QgsExpression> filterExpression;
-  if ( mFilterFeatures )
+  if ( mFilterFeatures && !mFeatureFilter.isEmpty() )
   {
     filterExpression = std::auto_ptr<QgsExpression>( new QgsExpression( mFeatureFilter ) );
     if ( filterExpression->hasParserError() )
@@ -151,7 +151,7 @@ void QgsAtlasComposition::updateFeatures()
   mFeatureKeys.clear();
   while ( fit.nextFeature( feat ) )
   {
-    if ( mFilterFeatures )
+    if ( mFilterFeatures && !mFeatureFilter.isEmpty() )
     {
       QVariant result = filterExpression->evaluate( &feat, mCoverageLayer->pendingFields() );
       if ( filterExpression->hasEvalError() )
@@ -188,17 +188,24 @@ void QgsAtlasComposition::updateFeatures()
   {
     firstFeature();
   }
+
+  return mFeatureIds.size();
 }
 
 
-void QgsAtlasComposition::beginRender()
+bool QgsAtlasComposition::beginRender()
 {
   if ( !mComposerMap || !mCoverageLayer )
   {
-    return;
+    return false;
   }
 
-  updateFeatures();
+  bool featuresUpdated = updateFeatures();
+  if ( !featuresUpdated )
+  {
+    //no matching features found
+    return false;
+  }
 
   mRestoreLayer = false;
   QStringList& layerSet = mComposition->mapRenderer()->layerSet();
@@ -216,6 +223,8 @@ void QgsAtlasComposition::beginRender()
   // special columns for expressions
   QgsExpression::setSpecialColumn( "$numpages", QVariant( mComposition->numPages() ) );
   QgsExpression::setSpecialColumn( "$numfeatures", QVariant(( int )mFeatureIds.size() ) );
+
+  return true;
 }
 
 void QgsAtlasComposition::endRender()
