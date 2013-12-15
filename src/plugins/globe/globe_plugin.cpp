@@ -873,6 +873,8 @@ void GlobePlugin::setSkyParameters( bool enabled, const QDateTime& dateTime, boo
 
 #if OSGEARTH_VERSION_GREATER_OR_EQUAL( 2, 4, 0 )
       mSkyNode->setAutoAmbience( autoAmbience );
+#else
+      Q_UNUSED( autoAmbience );
 #endif
       mSkyNode->setDateTime( dateTime.date().year()
                              , dateTime.date().month()

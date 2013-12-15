@@ -240,6 +240,7 @@ int main( int argc, char * argv[] )
   QgsMapRenderer* theMapRenderer = new QgsMapRenderer();
   theMapRenderer->setLabelingEngine( new QgsPalLabeling() );
 
+#ifdef QGSMSDEBUG
   // load standard test font from testdata.qrc (for unit tests)
   bool testFontLoaded = false;
   QFile testFont( ":/testdata/font/FreeSansQGIS.ttf" );
@@ -248,6 +249,7 @@ int main( int argc, char * argv[] )
     int fontID = QFontDatabase::addApplicationFontFromData( testFont.readAll() );
     testFontLoaded = ( fontID != -1 );
   } // else app wasn't built with ENABLE_TESTS or not GUI app
+#endif
 
   while ( fcgi_accept() >= 0 )
   {

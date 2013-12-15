@@ -190,6 +190,7 @@ QgsFillSymbolLayerV2::QgsFillSymbolLayerV2( bool locked )
 
 void QgsMarkerSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context )
 {
+  Q_UNUSED( context );
   mOffsetExpression = expression( "offset" );
   mHorizontalAnchorExpression = expression( "horizontal_anchor_point" );
   mVerticalAnchorExpression = expression( "vertical_anchor_point" );

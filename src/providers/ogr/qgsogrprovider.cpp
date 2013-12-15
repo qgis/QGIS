@@ -800,6 +800,7 @@ void QgsOgrProvider::setRelevantFields( OGRLayerH ogrLayer, bool fetchGeometry, 
   mRelevantFieldsForNextFeature = false;
 
 #else
+  Q_UNUSED( ogrLayer );
   Q_UNUSED( fetchGeometry );
   Q_UNUSED( fetchAttributes );
 #endif
