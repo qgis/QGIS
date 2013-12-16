@@ -1016,6 +1016,7 @@ void QgsWMSSourceSelect::setConnectionListPosition()
     btnConnect->setEnabled( false );
     btnEdit->setEnabled( false );
     btnDelete->setEnabled( false );
+    btnSave->setEnabled( false );
   }
   else
   {
@@ -1023,6 +1024,7 @@ void QgsWMSSourceSelect::setConnectionListPosition()
     btnConnect->setEnabled( true );
     btnEdit->setEnabled( true );
     btnDelete->setEnabled( true );
+    btnSave->setEnabled( true );
   }
 }
 

@@ -538,6 +538,7 @@ void QgsOWSSourceSelect::setConnectionListPosition()
     mConnectButton->setEnabled( false );
     mEditButton->setEnabled( false );
     mDeleteButton->setEnabled( false );
+    mSaveButton->setEnabled( false );
   }
   else
   {
@@ -545,6 +546,7 @@ void QgsOWSSourceSelect::setConnectionListPosition()
     mConnectButton->setEnabled( true );
     mEditButton->setEnabled( true );
     mDeleteButton->setEnabled( true );
+    mSaveButton->setEnabled( true );
   }
 
   QgsOWSConnection::setSelectedConnection( mService, mConnectionsComboBox->currentText() );

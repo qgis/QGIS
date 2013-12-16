@@ -132,14 +132,15 @@ void QgsWFSSourceSelect::populateConnectionList()
     btnConnect->setEnabled( true );
     btnEdit->setEnabled( true );
     btnDelete->setEnabled( true );
+    btnSave->setEnabled( true );
   }
-
   else
   {
     // No connections available - disable various buttons
     btnConnect->setEnabled( false );
     btnEdit->setEnabled( false );
     btnDelete->setEnabled( false );
+    btnSave->setEnabled( false );
   }
 
   //set last used connection
@@ -310,6 +311,7 @@ void QgsWFSSourceSelect::deleteEntryOfServerList()
       btnConnect->setEnabled( true );
       btnEdit->setEnabled( true );
       btnDelete->setEnabled( true );
+      btnSave->setEnabled( true );
     }
     else
     {
@@ -317,6 +319,7 @@ void QgsWFSSourceSelect::deleteEntryOfServerList()
       btnConnect->setEnabled( false );
       btnEdit->setEnabled( false );
       btnDelete->setEnabled( false );
+      btnSave->setEnabled( false );
     }
   }
 }
