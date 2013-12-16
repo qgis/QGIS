@@ -296,6 +296,7 @@ void QgsAtlasComposition::prepareForFeature( int featureI )
 
   QgsExpression::setSpecialColumn( "$atlasfeatureid", mCurrentFeature.id() );
   QgsExpression::setSpecialColumn( "$atlasgeometry", QVariant::fromValue( *mCurrentFeature.geometry() ) );
+  QgsExpression::setSpecialColumn( "$feature", QVariant(( int )featureI + 1 ) );
 
   // generate filename for current feature
   evalFeatureFilename();
@@ -367,7 +368,6 @@ void QgsAtlasComposition::prepareForFeature( int featureI )
   // evaluate label expressions
   QList<QgsComposerLabel*> labels;
   mComposition->composerItems( labels );
-  QgsExpression::setSpecialColumn( "$feature", QVariant(( int )featureI + 1 ) );
 
   for ( QList<QgsComposerLabel*>::iterator lit = labels.begin(); lit != labels.end(); ++lit )
   {
