@@ -2345,6 +2345,11 @@ bool QgsComposition::setAtlasPreviewEnabled( bool e )
     }
   }
 
+  if ( mAtlasComposition.composerMap() )
+  {
+    mAtlasComposition.composerMap()->toggleAtlasPreview();
+  }
+
   update();
   return true;
 }

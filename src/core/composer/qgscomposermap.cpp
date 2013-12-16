@@ -635,6 +635,15 @@ void QgsComposerMap::setNewAtlasFeatureExtent( const QgsRectangle& extent )
   emit extentChanged();
 }
 
+void QgsComposerMap::toggleAtlasPreview()
+{
+  //atlas preview has been toggled, so update item and extents
+  mCacheUpdated = false;
+  updateItem();
+  emit itemChanged();
+  emit extentChanged();
+}
+
 QgsRectangle* QgsComposerMap::currentMapExtent()
 {
   //non-const version
