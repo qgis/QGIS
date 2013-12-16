@@ -320,6 +320,8 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   atlasMenu->addAction( mActionExportAtlasAsImage );
   atlasMenu->addAction( mActionExportAtlasAsSVG );
   atlasMenu->addAction( mActionExportAtlasAsPDF );
+  atlasMenu->addSeparator();
+  atlasMenu->addAction( mActionAtlasSettings );
 
   QToolButton* atlasExportToolButton = new QToolButton( mAtlasToolbar );
   atlasExportToolButton->setPopupMode( QToolButton::InstantPopup );
@@ -329,7 +331,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   atlasExportToolButton->addAction( mActionExportAtlasAsSVG );
   atlasExportToolButton->addAction( mActionExportAtlasAsPDF );
   atlasExportToolButton->setDefaultAction( mActionExportAtlasAsImage );
-  mAtlasToolbar->addWidget( atlasExportToolButton );
+  mAtlasToolbar->insertWidget( mActionAtlasSettings, atlasExportToolButton );
 
   QMenu *settingsMenu = menuBar()->addMenu( tr( "Settings" ) );
   settingsMenu->addAction( mActionOptions );
@@ -1057,6 +1059,16 @@ void QgsComposer::toggleRulers( bool checked )
 
   QSettings myQSettings;
   myQSettings.setValue( "/Composer/showRulers", checked );
+}
+
+void QgsComposer::on_mActionAtlasSettings_triggered()
+{
+  if ( !mAtlasDock->isVisible() )
+  {
+    mAtlasDock->show();
+  }
+
+  mAtlasDock->raise();
 }
 
 void QgsComposer::on_mActionExportAtlasAsPDF_triggered()

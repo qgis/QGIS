@@ -349,6 +349,9 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Print atlas as PDF
     void on_mActionExportAtlasAsPDF_triggered();
 
+    //! Atlas settings
+    void on_mActionAtlasSettings_triggered();
+
     //! Save window state
     void saveWindowState();
 
