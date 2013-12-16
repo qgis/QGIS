@@ -471,6 +471,8 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   mActionExportAtlasAsImage->setEnabled( false );
   mActionExportAtlasAsSVG->setEnabled( false );
   mActionExportAtlasAsPDF->setEnabled( false );
+  QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
+  connect( atlasMap, SIGNAL( toggled( bool ) ), this, SLOT( toggleAtlasControls( bool ) ) );
 
   // Create size grip (needed by Mac OS X for QMainWindow if QStatusBar is not visible)
   //should not be needed now that composer has a status bar?
@@ -771,6 +773,7 @@ void QgsComposer::on_mActionAtlasPreview_triggered( bool checked )
   if ( checked )
   {
     atlasMap->firstFeature();
+    emit( atlasPreviewFeatureChanged() );
   }
   else
   {
@@ -789,7 +792,7 @@ void QgsComposer::on_mActionAtlasNext_triggered()
   }
 
   atlasMap->nextFeature();
-
+  emit( atlasPreviewFeatureChanged() );
 }
 
 void QgsComposer::on_mActionAtlasPrev_triggered()
@@ -801,7 +804,7 @@ void QgsComposer::on_mActionAtlasPrev_triggered()
   }
 
   atlasMap->prevFeature();
-
+  emit( atlasPreviewFeatureChanged() );
 }
 
 void QgsComposer::on_mActionAtlasFirst_triggered()
@@ -813,6 +816,7 @@ void QgsComposer::on_mActionAtlasFirst_triggered()
   }
 
   atlasMap->firstFeature();
+  emit( atlasPreviewFeatureChanged() );
 }
 
 void QgsComposer::on_mActionAtlasLast_triggered()
@@ -824,6 +828,7 @@ void QgsComposer::on_mActionAtlasLast_triggered()
   }
 
   atlasMap->lastFeature();
+  emit( atlasPreviewFeatureChanged() );
 }
 
 QgsMapCanvas *QgsComposer::mapCanvas( void )
