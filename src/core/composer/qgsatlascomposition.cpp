@@ -297,17 +297,8 @@ void QgsAtlasComposition::prepareForFeature( int featureI )
   QgsExpression::setSpecialColumn( "$atlasfeatureid", mCurrentFeature.id() );
   QgsExpression::setSpecialColumn( "$atlasgeometry", QVariant::fromValue( *mCurrentFeature.geometry() ) );
 
-  if ( !mSingleFile && mFilenamePattern.size() > 0 )
-  {
-    QgsExpression::setSpecialColumn( "$feature", QVariant(( int )featureI + 1 ) );
-    QVariant filenameRes = mFilenameExpr->evaluate( &mCurrentFeature, mCoverageLayer->pendingFields() );
-    if ( mFilenameExpr->hasEvalError() )
-    {
-      throw std::runtime_error( tr( "Filename eval error: %1" ).arg( mFilenameExpr->evalErrorString() ).toLocal8Bit().data() );
-    }
-
-    mCurrentFilename = filenameRes.toString();
-  }
+  // generate filename for current feature
+  evalFeatureFilename();
 
   //
   // compute the new extent
@@ -547,6 +538,28 @@ void QgsAtlasComposition::updateFilenameExpression()
 
     // prepare the filename expression
     mFilenameExpr->prepare( fields );
+  }
+
+  //if atlas preview is currently enabled, regenerate filename for current feature
+  if ( mComposition->atlasPreviewEnabled() )
+  {
+    evalFeatureFilename();
+  }
+
+}
+
+void QgsAtlasComposition::evalFeatureFilename()
+{
+  //generate filename for current atlas feature
+  if ( !mSingleFile && mFilenamePattern.size() > 0 )
+  {
+    QVariant filenameRes = mFilenameExpr->evaluate( &mCurrentFeature, mCoverageLayer->pendingFields() );
+    if ( mFilenameExpr->hasEvalError() )
+    {
+      throw std::runtime_error( tr( "Filename eval error: %1" ).arg( mFilenameExpr->evalErrorString() ).toLocal8Bit().data() );
+    }
+
+    mCurrentFilename = filenameRes.toString();
   }
 }
 
