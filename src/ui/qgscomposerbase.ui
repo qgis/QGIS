@@ -144,6 +144,7 @@
    <addaction name="mActionAtlasNext"/>
    <addaction name="mActionAtlasLast"/>
    <addaction name="mActionPrintAtlas"/>
+   <addaction name="mActionAtlasSettings"/>
   </widget>
   <action name="mActionPrint">
    <property name="checkable">
@@ -898,6 +899,15 @@
    </property>
    <property name="text">
     <string>Export Atlas As PDF...</string>
+   </property>
+  </action>
+  <action name="mActionAtlasSettings">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSetProjection.svg</normaloff>:/images/themes/default/mActionSetProjection.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Atlas Settings</string>
    </property>
   </action>
  </widget>
