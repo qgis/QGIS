@@ -124,6 +124,9 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     /**Updates the filename expression*/
     void updateFilenameExpression();
 
+    /**Evaluates filename for current feature*/
+    void evalFeatureFilename();
+
     QgsComposition* mComposition;
 
     bool mEnabled;
