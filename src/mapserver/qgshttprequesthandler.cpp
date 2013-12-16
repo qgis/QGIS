@@ -362,6 +362,11 @@ void QgsHttpRequestHandler::endGetFeatureResponse( QByteArray* ba ) const
   fwrite( ba->data(), ba->size(), 1, FCGI_stdout );
 }
 
+void QgsHttpRequestHandler::sendGetCoverageResponse( QByteArray* ba ) const
+{
+  sendHttpResponse( ba, "image/tiff" );
+}
+
 void QgsHttpRequestHandler::requestStringToParameterMap( const QString& request, QMap<QString, QString>& parameters )
 {
   parameters.clear();

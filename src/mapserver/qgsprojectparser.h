@@ -45,11 +45,18 @@ class QgsProjectParser: public QgsConfigParser
 
     virtual void featureTypeList( QDomElement& parentElement, QDomDocument& doc ) const;
 
+    virtual void wcsContentMetadata( QDomElement& parentElement, QDomDocument& doc ) const;
+
     virtual void owsGeneralAndResourceList( QDomElement& parentElement, QDomDocument& doc, const QString& strHref ) const;
 
     virtual void describeFeatureType( const QString& aTypeName, QDomElement& parentElement, QDomDocument& doc ) const;
+
+    virtual void describeCoverage( const QString& aCoveName, QDomElement& parentElement, QDomDocument& doc ) const;
     /**Returns one or possibly several maplayers for a given type name. If no layers/style are found, an empty list is returned*/
     virtual QList<QgsMapLayer*> mapLayerFromTypeName( const QString& tName, bool useCache = true ) const;
+
+    /**Returns one or possibly several maplayers for a given type name. If no layers/style are found, an empty list is returned*/
+    virtual QList<QgsMapLayer*> mapLayerFromCoverage( const QString& cName, bool useCache = true ) const;
 
     int numberOfLayers() const;
 
@@ -274,6 +281,10 @@ class QgsProjectParser: public QgsConfigParser
      * This is for WFS Services
      **/
     void serviceWFSCapabilities( QDomElement& parentElement, QDomDocument& doc ) const;
+    /**Reads service metadata from projectfile or falls back to parent class method if not there
+     * This is for WCS Services
+     **/
+    void serviceWCSCapabilities( QDomElement& parentElement, QDomDocument& doc ) const;
 };
 
 #endif // QGSPROJECTPARSER_H
