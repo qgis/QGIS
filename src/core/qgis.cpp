@@ -176,3 +176,19 @@ bool qgsVariantGreaterThan( const QVariant& lhs, const QVariant& rhs )
   return ! qgsVariantLessThan( lhs, rhs );
 }
 
+QString qgsVsiPrefix( QString path )
+{
+  if ( path.startsWith( "/vsizip/", Qt::CaseInsensitive ) ||
+       path.endsWith( ".zip", Qt::CaseInsensitive ) )
+    return "/vsizip/";
+  else if ( path.startsWith( "/vsitar/", Qt::CaseInsensitive ) ||
+            path.endsWith( ".tar", Qt::CaseInsensitive ) ||
+            path.endsWith( ".tar.gz", Qt::CaseInsensitive ) ||
+            path.endsWith( ".tgz", Qt::CaseInsensitive ) )
+    return "/vsitar/";
+  else if ( path.startsWith( "/vsigzip/", Qt::CaseInsensitive ) ||
+            path.endsWith( ".gz", Qt::CaseInsensitive ) )
+    return "/vsigzip/";
+  else
+    return "";
+}

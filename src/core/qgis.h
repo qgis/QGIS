@@ -324,6 +324,8 @@ bool qgsVariantLessThan( const QVariant& lhs, const QVariant& rhs );
 
 bool qgsVariantGreaterThan( const QVariant& lhs, const QVariant& rhs );
 
+QString qgsVsiPrefix( QString path );
+
 /** Allocates size bytes and returns a pointer to the allocated  memory.
     Works like C malloc() but prints debug message by QgsLogger if allocation fails.
     @param size size in bytes
