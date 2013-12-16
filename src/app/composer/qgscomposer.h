@@ -123,6 +123,9 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //!Composer deletes the old composerview when loading a template
     void composerWillBeRemoved( QgsComposerView* v );
 
+    //! Is emitted when the atlas preview feature changes
+    void atlasPreviewFeatureChanged();
+
   public slots:
     //! Zoom to full extent of the paper
     void on_mActionZoomAll_triggered();
