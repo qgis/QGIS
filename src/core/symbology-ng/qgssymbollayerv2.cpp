@@ -19,6 +19,7 @@
 #include "qgsrendercontext.h"
 #include "qgsvectorlayer.h"
 #include "qgsdxfexport.h"
+#include "qgsgeometrysimplifier.h"
 
 #include <QSize>
 #include <QPainter>
@@ -350,10 +351,19 @@ void QgsFillSymbolLayerV2::drawPreviewIcon( QgsSymbolV2RenderContext& context, Q
   stopRender( context );
 }
 
-void QgsFillSymbolLayerV2::_renderPolygon( QPainter* p, const QPolygonF& points, const QList<QPolygonF>* rings )
+void QgsFillSymbolLayerV2::_renderPolygon( QPainter* p, const QPolygonF& points, const QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context )
 {
   if ( !p )
   {
+    return;
+  }
+
+  // Disable 'Antialiasing' if the geometry was generalized in the current RenderContext (We known that it must have least #5 points).
+  if ( points.size()<=5 && context.layer() && context.layer()->simplifyDrawingCanbeApplied( QgsVectorLayer::AntialiasingSimplification ) && QgsAbstractGeometrySimplifier::canbeGeneralizedByDeviceBoundingBox( points, context.layer()->simplifyDrawingTol() ) && (p->renderHints() & QPainter::Antialiasing) )
+  {
+    p->setRenderHint( QPainter::Antialiasing, false );	
+    p->drawRect( points.boundingRect() );
+    p->setRenderHint( QPainter::Antialiasing, true );
     return;
   }
 

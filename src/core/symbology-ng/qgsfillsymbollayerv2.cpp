@@ -172,7 +172,6 @@ void QgsSimpleFillSymbolLayerV2::renderPolygon( const QPolygonF& points, QList<Q
   applyDataDefinedSymbology( context, mBrush, mPen, mSelPen );
 
   p->setBrush( context.selected() ? mSelBrush : mBrush );
-  p->setPen( mPen );
   p->setPen( context.selected() ? mSelPen : mPen );
 
   QPointF offset;
@@ -183,7 +182,7 @@ void QgsSimpleFillSymbolLayerV2::renderPolygon( const QPolygonF& points, QList<Q
     p->translate( offset );
   }
 
-  _renderPolygon( p, points, rings );
+  _renderPolygon( p, points, rings, context );
 
   if ( !mOffset.isNull() )
   {
@@ -682,7 +681,7 @@ void QgsGradientFillSymbolLayerV2::renderPolygon( const QPolygonF& points, QList
     p->translate( offset );
   }
 
-  _renderPolygon( p, points, rings );
+  _renderPolygon( p, points, rings, context );
 
   if ( !mOffset.isNull() )
   {
@@ -760,7 +759,7 @@ void QgsImageFillSymbolLayer::renderPolygon( const QPolygonF& points, QList<QPol
     //if ( ! selectionIsOpaque )
     //  selColor.setAlphaF( context.alpha() );
     p->setBrush( QBrush( selColor ) );
-    _renderPolygon( p, points, rings );
+    _renderPolygon( p, points, rings, context );
   }
 
   if ( qgsDoubleNear( mNextAngle, 0.0 ) )
@@ -775,7 +774,7 @@ void QgsImageFillSymbolLayer::renderPolygon( const QPolygonF& points, QList<QPol
     rotatedBrush.setTransform( t );
     p->setBrush( rotatedBrush );
   }
-  _renderPolygon( p, points, rings );
+  _renderPolygon( p, points, rings, context );
   if ( mOutline )
   {
     mOutline->renderPolyline( points, context.feature(), context.renderContext(), -1, selectFillBorder && context.selected() );

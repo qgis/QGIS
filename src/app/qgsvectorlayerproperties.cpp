@@ -392,6 +392,11 @@ void QgsVectorLayerProperties::syncToLayer( void )
   cbMinimumScale->setScale( 1.0 / layer->minimumScale() );
   cbMaximumScale->setScale( 1.0 / layer->maximumScale() );
 
+  // get simplify drawing configuration
+  mSimplifyDrawingGroupBox->setChecked( layer->simplifyDrawingHints() != QgsVectorLayer::NoSimplification );
+  mSimplifyDrawingSlider->setValue( (int)(5.0f * (layer->simplifyDrawingTol()-1)) );
+  mSimplifyDrawingPanel->setVisible( mSimplifyDrawingSlider->value()>0 );
+
   // load appropriate symbology page (V1 or V2)
   updateSymbologyPage();
 
@@ -528,6 +533,16 @@ void QgsVectorLayerProperties::apply()
   layer->setMetadataUrl( mLayerMetadataUrlLineEdit->text() );
   layer->setMetadataUrlType( mLayerMetadataUrlTypeComboBox->currentText() );
   layer->setMetadataUrlFormat( mLayerMetadataUrlFormatComboBox->currentText() );
+
+  //layer simplify drawing configuration
+  int simplifyDrawingHints = QgsVectorLayer::NoSimplification;
+  if ( mSimplifyDrawingGroupBox->isChecked() )
+  {
+    simplifyDrawingHints |= QgsVectorLayer::DefaultSimplification;
+    if ( mSimplifyDrawingSlider->value() > 0 ) simplifyDrawingHints |= QgsVectorLayer::AntialiasingSimplification;
+  }
+  layer->setSimplifyDrawingHints( simplifyDrawingHints );
+  layer->setSimplifyDrawingTol( 1.0f + 0.2f*mSimplifyDrawingSlider->value() );
 
   // update symbology
   emit refreshLegend( layer->id(), QgsLegendItem::DontChange );
@@ -1066,4 +1081,9 @@ void QgsVectorLayerProperties::on_mMinimumScaleSetCurrentPushButton_clicked()
 void QgsVectorLayerProperties::on_mMaximumScaleSetCurrentPushButton_clicked()
 {
   cbMaximumScale->setScale( 1.0 / QgisApp::instance()->mapCanvas()->mapRenderer()->scale() );
+}
+
+void QgsVectorLayerProperties::on_mSimplifyDrawingSlider_valueChanged( int value )
+{
+  mSimplifyDrawingPanel->setVisible( value>0 );
 }

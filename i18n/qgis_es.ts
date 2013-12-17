@@ -49497,6 +49497,10 @@ Should the existing classes be deleted before classification?</source>
         <translation>General</translation>
     </message>
     <message>
+        <source>Rendering</source>
+        <translation>Representación</translation>
+    </message>
+    <message>
         <source>Display name</source>
         <translation type="obsolete">Mostrar el nombre</translation>
     </message>
@@ -49943,6 +49947,22 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <source>Type</source>
         <translation>Tipo</translation>
+    </message>
+    <message>
+        <source>Fast drawing</source>
+        <translation>Pintado rápido</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Note:&lt;/b&gt; This option enables geometry simplification drawing for fast rendering of the layer.</source>
+        <translation>&lt;b&gt;Nota:&lt;/b&gt; Esta opción activa el pintado simplificado de las geometrías para acelerar la representación de la capa.</translation>
+    </message>
+    <message>
+        <source>Simplification factor (Higher value draws more simplified geometries):  </source>
+        <translation>Factor de simplificación (Cuanto mayor es el valor más se simplifica la geometría):  </translation>
+    </message>
+    <message>
+        <source>Higher value draws more simplified geometries</source>
+        <translation>Cuanto mayor es el valor más se simplifica la geometría</translation>
     </message>
 </context>
 <context>

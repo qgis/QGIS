@@ -73,6 +73,9 @@ const CORE_EXPORT QString GEO_NONE = "NONE";
 
 const double QGis::DEFAULT_IDENTIFY_RADIUS = 0.5;
 
+//! Default threshold between map coordinates and device coordinates for map2pixel simplification
+const float QGis::DEFAULT_MAPTOPIXEL_THRESHOLD = 1.0f;
+
 // description strings for units
 // Order must match enum indices
 const char* QGis::qgisUnitTypes[] =
