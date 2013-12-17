@@ -54,6 +54,7 @@ class QgsComposerMapWidget: public QWidget, private Ui::QgsComposerMapWidgetBase
     void on_mYMaxLineEdit_editingFinished();
 
     void on_mGridCheckBox_toggled( bool state );
+    void on_mGeodesicGridCheckBox_toggled( bool state );
     void on_mIntervalXSpinBox_editingFinished();
     void on_mIntervalYSpinBox_editingFinished();
     void on_mOffsetXSpinBox_editingFinished();

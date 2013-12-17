@@ -203,6 +203,11 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     void setGridEnabled( bool enabled ) {mGridEnabled = enabled;}
     bool gridEnabled() const { return mGridEnabled; }
 
+    /**Enables a coordinate grid that is shown on top of this composermap.
+        @note this function was added in version 1.4*/
+    void setGeodesicGrid( bool enabled ) {mGeodesicGrid = enabled;}
+    bool geodesicGrid() const { return mGeodesicGrid; }
+
     /**Sets coordinate grid style to solid or cross
         @note this function was added in version 1.4*/
     void setGridStyle( GridStyle style ) {mGridStyle = style;}
@@ -424,6 +429,8 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
     /**True if coordinate grid has to be displayed*/
     bool mGridEnabled;
+    /**True if geodesic coordinate has to be used*/
+    bool mGeodesicGrid;
     /**Solid or crosses*/
     GridStyle mGridStyle;
     /**Grid line interval in x-direction (map units)*/
@@ -502,16 +509,16 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
         @return 0 in case of success*/
     int yGridLines( QList< QPair< double, QLineF > >& lines ) const;
     /**Returns extent that considers mOffsetX / mOffsetY (during content move)*/
-    QgsRectangle transformedExtent() const;
+    QgsRectangle transformedExtent(bool lonlat) const;
     /**Returns extent that considers rotation and shift with mOffsetX / mOffsetY*/
-    QPolygonF transformedMapPolygon() const;
+    QPolygonF transformedMapPolygon(bool lonlat) const;
     double maxExtension() const;
     /**Returns the polygon of the map extent. If rotation == 0, the result is the same as mExtent
     @param poly out: the result polygon with the four corner points. The points are clockwise, starting at the top-left point
     @return true in case of success*/
-    void mapPolygon( QPolygonF& poly ) const;
+    void mapPolygon( QPolygonF& poly, bool lonlat ) const;
     /** mapPolygon variant using a given extent */
-    void mapPolygon( const QgsRectangle& extent, QPolygonF& poly ) const;
+    void mapPolygon( const QgsRectangle& extent, QPolygonF& poly, bool lonlat ) const;
 
     /**Calculates the extent to request and the yShift of the top-left point in case of rotation.*/
     void requestedExtent( QgsRectangle& extent ) const;
@@ -520,7 +527,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
         @param yShift in: shift in y direction (in item units), out: yShift in map units*/
     void transformShift( double& xShift, double& yShift ) const;
     /**Transforms map coordinates to item coordinates (considering rotation and move offset)*/
-    QPointF mapToItemCoords( const QPointF& mapCoords ) const;
+    QPointF mapToItemCoords( const QPointF& mapCoords, bool lonlat ) const;
     /**Returns the item border of a point (in item coordinates)*/
     Border borderForLineCoord( const QPointF& p ) const;
 

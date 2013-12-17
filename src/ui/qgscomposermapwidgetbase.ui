@@ -54,9 +54,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-376</y>
+        <y>-302</y>
         <width>439</width>
-        <height>1439</height>
+        <height>1519</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -280,7 +280,7 @@
             <property name="bottomMargin">
              <number>6</number>
             </property>
-            <item row="0" column="0">
+            <item row="2" column="0">
              <widget class="QLabel" name="mGridTypeLabel">
               <property name="accessibleName">
                <string extracomment="Hello translotor"/>
@@ -296,10 +296,10 @@
               </property>
              </widget>
             </item>
-            <item row="0" column="1">
+            <item row="2" column="1">
              <widget class="QComboBox" name="mGridTypeComboBox"/>
             </item>
-            <item row="1" column="1">
+            <item row="3" column="1">
              <layout class="QVBoxLayout" name="verticalLayout_7">
               <item>
                <widget class="QDoubleSpinBox" name="mIntervalXSpinBox">
@@ -329,7 +329,7 @@
               </item>
              </layout>
             </item>
-            <item row="2" column="0">
+            <item row="4" column="0">
              <widget class="QLabel" name="mOffsetXLabel">
               <property name="text">
                <string>Offset</string>
@@ -342,7 +342,7 @@
               </property>
              </widget>
             </item>
-            <item row="2" column="1">
+            <item row="4" column="1">
              <layout class="QVBoxLayout" name="verticalLayout_8">
               <item>
                <widget class="QDoubleSpinBox" name="mOffsetXSpinBox">
@@ -372,7 +372,7 @@
               </item>
              </layout>
             </item>
-            <item row="3" column="0">
+            <item row="5" column="0">
              <widget class="QLabel" name="mCrossWidthLabel">
               <property name="text">
                <string>Cross width</string>
@@ -385,14 +385,14 @@
               </property>
              </widget>
             </item>
-            <item row="3" column="1">
+            <item row="5" column="1">
              <widget class="QDoubleSpinBox" name="mCrossWidthSpinBox">
               <property name="decimals">
                <number>5</number>
               </property>
              </widget>
             </item>
-            <item row="4" column="0">
+            <item row="6" column="0">
              <widget class="QLabel" name="mFrameStyleLabel">
               <property name="text">
                <string>Frame style</string>
@@ -402,10 +402,10 @@
               </property>
              </widget>
             </item>
-            <item row="4" column="1">
+            <item row="6" column="1">
              <widget class="QComboBox" name="mFrameStyleComboBox"/>
             </item>
-            <item row="5" column="0">
+            <item row="7" column="0">
              <widget class="QLabel" name="mFrameWidthLabel">
               <property name="text">
                <string>Frame width</string>
@@ -415,10 +415,10 @@
               </property>
              </widget>
             </item>
-            <item row="5" column="1">
+            <item row="7" column="1">
              <widget class="QDoubleSpinBox" name="mFrameWidthSpinBox"/>
             </item>
-            <item row="6" column="0">
+            <item row="8" column="0">
              <widget class="QLabel" name="mLineStyleLabel">
               <property name="text">
                <string>Line style</string>
@@ -428,24 +428,24 @@
               </property>
              </widget>
             </item>
-            <item row="6" column="1">
+            <item row="8" column="1">
              <widget class="QPushButton" name="mGridLineStyleButton">
               <property name="text">
                <string>change...</string>
               </property>
              </widget>
             </item>
-            <item row="7" column="1">
+            <item row="9" column="1">
              <widget class="QgsBlendModeComboBox" name="mGridBlendComboBox"/>
             </item>
-            <item row="7" column="0">
+            <item row="9" column="0">
              <widget class="QLabel" name="mGridBlendLabel">
               <property name="text">
                <string>Blend mode</string>
               </property>
              </widget>
             </item>
-            <item row="1" column="0">
+            <item row="3" column="0">
              <widget class="QLabel" name="mIntervalXLabel">
               <property name="text">
                <string>Interval</string>
@@ -455,6 +455,13 @@
               </property>
               <property name="buddy">
                <cstring>mIntervalYSpinBox</cstring>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QCheckBox" name="mGeodesicGridCheckBox">
+              <property name="text">
+               <string>Geodesic grid</string>
               </property>
              </widget>
             </item>
