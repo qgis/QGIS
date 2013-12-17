@@ -186,7 +186,7 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
 
   // Default simplify drawing configuration
   QSettings settings;
-  setSimplifyDrawingHints( settings.value( "/qgis/simplifyDrawingHints", (int)mSimplifyDrawingHints ).toInt() );
+  setSimplifyDrawingHints( settings.value( "/qgis/simplifyDrawingHints", ( int )mSimplifyDrawingHints ).toInt() );
   setSimplifyDrawingTol( settings.value( "/qgis/simplifyDrawingTol", mSimplifyDrawingTol ).toFloat() );
 
 } // QgsVectorLayer ctor
@@ -698,17 +698,17 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
   mRendererV2->startRender( rendererContext, this );
 
   QgsFeatureRequest& featureRequest = QgsFeatureRequest()
-                                     .setFilterRect( rendererContext.extent() )
-                                     .setSubsetOfAttributes( attributes );
+                                      .setFilterRect( rendererContext.extent() )
+                                      .setSubsetOfAttributes( attributes );
 
   QgsFeatureIterator fit = QgsFeatureIterator();
 
   // Enable the simplification of the geometries (Using the current map2pixel context) before fetch the features.
-  if ( simplifyDrawingCanbeApplied( QgsVectorLayer::GeometrySimplification | QgsVectorLayer::EnvelopeSimplification ) && !(featureRequest.flags() & QgsFeatureRequest::NoGeometry) && !rendererContext.renderingPrintComposition() )
+  if ( simplifyDrawingCanbeApplied( QgsVectorLayer::GeometrySimplification | QgsVectorLayer::EnvelopeSimplification ) && !( featureRequest.flags() & QgsFeatureRequest::NoGeometry ) && !rendererContext.renderingPrintComposition() )
   {
     QPainter* p = rendererContext.painter();
     float dpi = ( p->device()->logicalDpiX() + p->device()->logicalDpiY() ) / 2;
-    float map2pixelTol = mSimplifyDrawingTol * 96.0f/dpi;
+    float map2pixelTol = mSimplifyDrawingTol * 96.0f / dpi;
 
     int simplifyFlags = QgsMapToPixelSimplifier::NoFlags;
     if ( mSimplifyDrawingHints & QgsVectorLayer::GeometrySimplification ) simplifyFlags |= QgsMapToPixelSimplifier::SimplifyGeometry;
@@ -723,7 +723,7 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
     featureRequest.setMapToPixel( &rendererContext.mapToPixel() );
     featureRequest.setMapToPixelTol( map2pixelTol );
 
-    QgsMapToPixelSimplifier* simplifier = 
+    QgsMapToPixelSimplifier* simplifier =
       new QgsMapToPixelSimplifier( simplifyFlags, rendererContext.coordinateTransform(), &rendererContext.mapToPixel(), map2pixelTol );
 
     fit = QgsFeatureIterator( new QgsSimplifiedVectorLayerFeatureIterator( this, featureRequest, simplifier ) );
@@ -1247,9 +1247,9 @@ bool QgsVectorLayer::setSubsetString( QString subset )
   return res;
 }
 
-bool QgsVectorLayer::simplifyDrawingCanbeApplied( int simplifyHint ) const 
+bool QgsVectorLayer::simplifyDrawingCanbeApplied( int simplifyHint ) const
 {
-  return mDataProvider && ( mSimplifyDrawingHints & simplifyHint ) && !mEditBuffer && ( !mCurrentRendererContext || !mCurrentRendererContext->renderingPrintComposition() ); 
+  return mDataProvider && ( mSimplifyDrawingHints & simplifyHint ) && !mEditBuffer && ( !mCurrentRendererContext || !mCurrentRendererContext->renderingPrintComposition() );
 }
 
 QgsFeatureIterator QgsVectorLayer::getFeatures( const QgsFeatureRequest& request )

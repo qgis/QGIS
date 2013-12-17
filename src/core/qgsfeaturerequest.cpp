@@ -190,19 +190,19 @@ bool QgsFeatureRequest::acceptFeature( const QgsFeature& feature )
   return true;
 }
 
-QgsFeatureRequest& QgsFeatureRequest::setCoordinateTransform( const QgsCoordinateTransform* ct ) 
+QgsFeatureRequest& QgsFeatureRequest::setCoordinateTransform( const QgsCoordinateTransform* ct )
 {
   mMapCoordTransform = ct;
   return *this;
 }
 
-QgsFeatureRequest& QgsFeatureRequest::setMapToPixel( const QgsMapToPixel* mtp ) 
+QgsFeatureRequest& QgsFeatureRequest::setMapToPixel( const QgsMapToPixel* mtp )
 {
   mMapToPixel = mtp;
   return *this;
 }
 
-QgsFeatureRequest& QgsFeatureRequest::setMapToPixelTol( float map2pixelTol ) 
+QgsFeatureRequest& QgsFeatureRequest::setMapToPixelTol( float map2pixelTol )
 {
   mMapToPixelTol = map2pixelTol;
   return *this;

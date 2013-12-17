@@ -142,7 +142,7 @@ class CORE_EXPORT QgsFeatureRequest
 
     const QgsCoordinateTransform* coordinateTransform() const { return mMapCoordTransform; }
     QgsFeatureRequest& setCoordinateTransform( const QgsCoordinateTransform* ct );
-	
+
     const QgsMapToPixel* mapToPixel() const { return mMapToPixel; }
     QgsFeatureRequest& setMapToPixel( const QgsMapToPixel* mtp );
 
@@ -159,7 +159,7 @@ class CORE_EXPORT QgsFeatureRequest
     QgsAttributeList mAttrs;
 
     //! For transformation between coordinate systems from current layer to map target. Can be 0 if on-the-fly reprojection is not used
-    const QgsCoordinateTransform* mMapCoordTransform;    
+    const QgsCoordinateTransform* mMapCoordTransform;
     //! For transformation between map coordinates and device coordinates
     const QgsMapToPixel* mMapToPixel;
     //! Factor tolterance to apply in transformation between map coordinates and device coordinates

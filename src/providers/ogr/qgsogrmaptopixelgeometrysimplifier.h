@@ -39,7 +39,7 @@ class QgsOgrMapToPixelSimplifier : public QgsMapToPixelSimplifier
     int mPointBufferCount;
 
     //! Simplifies the OGR-geometry (Removing duplicated points) when is applied the specified map2pixel context
-    bool simplifyOgrGeometry( QGis::GeometryType geometryType, const QgsRectangle& envelope, double* xptr, int xStride, double* yptr, int yStride, int pointCount, int& pointSimplifiedCount);
+    bool simplifyOgrGeometry( QGis::GeometryType geometryType, const QgsRectangle& envelope, double* xptr, int xStride, double* yptr, int yStride, int pointCount, int& pointSimplifiedCount );
     //! Simplifies the OGR-geometry (Removing duplicated points) when is applied the specified map2pixel context
     bool simplifyOgrGeometry( OGRGeometry* geometry, bool isaLinearRing );
 

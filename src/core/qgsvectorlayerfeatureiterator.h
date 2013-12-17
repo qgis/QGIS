@@ -139,7 +139,7 @@ class CORE_EXPORT QgsSimplifiedVectorLayerFeatureIterator : public QgsVectorLaye
 {
   public:
     QgsSimplifiedVectorLayerFeatureIterator( QgsVectorLayer* layer, const QgsFeatureRequest& request, QgsAbstractGeometrySimplifier* simplifier );
-   ~QgsSimplifiedVectorLayerFeatureIterator( );
+    ~QgsSimplifiedVectorLayerFeatureIterator( );
 
   protected:
     //! fetch next feature, return true on success

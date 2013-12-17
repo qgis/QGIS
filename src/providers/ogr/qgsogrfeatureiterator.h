@@ -87,7 +87,7 @@ class QgsOgrSimplifiedFeatureIterator : public QgsOgrFeatureIterator
 {
   public:
     QgsOgrSimplifiedFeatureIterator( QgsOgrProvider* p, const QgsFeatureRequest& request );
-   ~QgsOgrSimplifiedFeatureIterator( );
+    ~QgsOgrSimplifiedFeatureIterator( );
 
   protected:
     //! Notified a new OGRFeatureH fecthed from data provider

@@ -30,7 +30,7 @@ class CORE_EXPORT QgsAbstractGeometrySimplifier
     //! Simplifies the specified geometry
     virtual bool simplifyGeometry( QgsGeometry* geometry ) = 0;
 
-  // MapToPixel simplification helper methods
+    // MapToPixel simplification helper methods
   public:
     //! Returns whether the device-envelope can be replaced by its BBOX when is applied the specified tolerance
     static bool canbeGeneralizedByDeviceBoundingBox( const QgsRectangle&   envelope, float mapToPixelTol = 1.0f );
@@ -42,7 +42,7 @@ class CORE_EXPORT QgsAbstractGeometrySimplifier
 /**
  * Implementation of GeometrySimplifier using the Douglas-Peucker algorithm
  *
- * Simplifies a geometry, ensuring that the result is a valid geometry having the same dimension and number of components as the input. 
+ * Simplifies a geometry, ensuring that the result is a valid geometry having the same dimension and number of components as the input.
  * The simplification uses a maximum distance difference algorithm similar to the one used in the Douglas-Peucker algorithm.
  */
 class CORE_EXPORT QgsTopologyPreservingSimplifier : public QgsAbstractGeometrySimplifier

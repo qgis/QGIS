@@ -299,9 +299,9 @@ void QgsOgrFeatureIterator::fetchedFeature( OGRFeatureH feature, OGRGeometryH ge
  ***************************************************************************/
 
 //! Provides a specialized FeatureIterator for enable simplification of the geometries
-QgsOgrSimplifiedFeatureIterator::QgsOgrSimplifiedFeatureIterator( QgsOgrProvider* p, const QgsFeatureRequest& request ) 
-  : QgsOgrFeatureIterator( p, request )
-  , mSimplifier( NULL )
+QgsOgrSimplifiedFeatureIterator::QgsOgrSimplifiedFeatureIterator( QgsOgrProvider* p, const QgsFeatureRequest& request )
+    : QgsOgrFeatureIterator( p, request )
+    , mSimplifier( NULL )
 {
   QgsFeatureRequest::Flags requestFlags = request.flags();
 
@@ -326,9 +326,9 @@ QgsOgrSimplifiedFeatureIterator::~QgsOgrSimplifiedFeatureIterator( )
 //! Notified a new OGRFeatureH fecthed from data provider
 void QgsOgrSimplifiedFeatureIterator::fetchedFeature( OGRFeatureH feature, OGRGeometryH geometry )
 {
-  if ( mSimplifier && (mSimplifier->simplifyFlags() & (QgsMapToPixelSimplifier::SimplifyGeometry | QgsMapToPixelSimplifier::SimplifyEnvelope) ) )
+  if ( mSimplifier && ( mSimplifier->simplifyFlags() & ( QgsMapToPixelSimplifier::SimplifyGeometry | QgsMapToPixelSimplifier::SimplifyEnvelope ) ) )
   {
-    mSimplifier->simplifyGeometry( (OGRGeometry*) geometry );
+    mSimplifier->simplifyGeometry(( OGRGeometry* ) geometry );
   }
   QgsOgrFeatureIterator::fetchedFeature( feature, geometry );
 }

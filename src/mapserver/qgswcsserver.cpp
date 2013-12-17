@@ -69,7 +69,7 @@ QDomDocument QgsWCSServer::getCapabilities()
   {
     mConfigParser->serviceCapabilities( wcsCapabilitiesElement, doc );
   }
-  
+
   //INSERT Service
 
   //wcs:Capability element
@@ -149,7 +149,7 @@ QDomDocument QgsWCSServer::describeCoverage()
   coveDescElement.setAttribute( "version", "1.0.0" );
   coveDescElement.setAttribute( "updateSequence", "0" );
   doc.appendChild( coveDescElement );
-  
+
   //defining coverage name
   QString coveName = "";
   //read COVERAGE
@@ -158,7 +158,8 @@ QDomDocument QgsWCSServer::describeCoverage()
   {
     coveName = cove_name_it.value();
   }
-  if ( coveName == "" ) {
+  if ( coveName == "" )
+  {
     QMap<QString, QString>::const_iterator cove_name_it = mParameterMap.find( "IDENTIFIER" );
     if ( cove_name_it != mParameterMap.end() )
     {
@@ -183,7 +184,8 @@ QByteArray* QgsWCSServer::getCoverage()
   {
     coveName = cove_name_it.value();
   }
-  if ( coveName == "" ) {
+  if ( coveName == "" )
+  {
     QMap<QString, QString>::const_iterator cove_name_it = mParameterMap.find( "IDENTIFIER" );
     if ( cove_name_it != mParameterMap.end() )
     {
@@ -191,12 +193,13 @@ QByteArray* QgsWCSServer::getCoverage()
     }
   }
 
-  if ( coveName == "" ) {
+  if ( coveName == "" )
+  {
     mErrors << QString( "COVERAGE is mandatory" );
   }
 
   layerList = mConfigParser->mapLayerFromCoverage( coveName );
-  if ( layerList.size() < 1 ) 
+  if ( layerList.size() < 1 )
   {
     mErrors << QString( "The layer for the COVERAGE '%1' is not found" ).arg( coveName );
   }
@@ -229,7 +232,7 @@ QByteArray* QgsWCSServer::getCoverage()
     maxy = bbString.section( ",", 3, 3 ).toDouble( &conversionSuccess );
     if ( !conversionSuccess ) {bboxOk = false;}
   }
-  if ( !bboxOk ) 
+  if ( !bboxOk )
   {
     mErrors << QString( "The BBOX is mandatory and has to be xx.xxx,yy.yyy,xx.xxx,yy.yyy" );
   }
@@ -244,7 +247,7 @@ QByteArray* QgsWCSServer::getCoverage()
   {
     height = 0;
   }
-  
+
   if ( width < 0 || height < 0 )
   {
     mErrors << QString( "The WIDTH and HEIGHT are mandatory and have to be integer" );
@@ -260,7 +263,7 @@ QByteArray* QgsWCSServer::getCoverage()
   {
     mErrors << QString( "Could not create output CRS" );
   }
-  
+
   if ( mErrors.count() != 0 )
   {
     throw QgsMapServiceException( "RequestNotWellFormed", mErrors.join( ". " ) );
@@ -270,7 +273,8 @@ QByteArray* QgsWCSServer::getCoverage()
 
   QgsMapLayer* layer = layerList.at( 0 );
   QgsRasterLayer* rLayer = dynamic_cast<QgsRasterLayer*>( layer );
-  if ( rLayer ) {
+  if ( rLayer )
+  {
     QTemporaryFile tempFile;
     tempFile.open();
     QgsRasterFileWriter fileWriter( tempFile.fileName() );
@@ -294,7 +298,7 @@ QByteArray* QgsWCSServer::getCoverage()
         throw QgsMapServiceException( "RequestNotWellFormed", mErrors.join( ". " ) );
       }
     }
-    
+
     QgsRasterFileWriter::WriterError err = fileWriter.writeRaster( pipe, width, height, rect, outputCRS );
     if ( err != QgsRasterFileWriter::NoError )
     {

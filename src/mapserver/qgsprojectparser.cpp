@@ -331,7 +331,7 @@ void QgsProjectParser::wcsContentMetadata( QDomElement& parentElement, QDomDocum
 
         //lonLatEnvelope
         const QgsCoordinateReferenceSystem& layerCrs = layer->crs();
-        QgsCoordinateTransform t( layerCrs, QgsCoordinateReferenceSystem(4326) );
+        QgsCoordinateTransform t( layerCrs, QgsCoordinateReferenceSystem( 4326 ) );
         //transform
         QgsRectangle BBox = t.transformBoundingBox( layer->extent() );
         QDomElement lonLatElem = doc.createElement( "lonLatEnvelope" );
@@ -696,7 +696,7 @@ void QgsProjectParser::describeCoverage( const QString& aCoveName, QDomElement& 
 
         //lonLatEnvelope
         const QgsCoordinateReferenceSystem& layerCrs = layer->crs();
-        QgsCoordinateTransform t( layerCrs, QgsCoordinateReferenceSystem(4326) );
+        QgsCoordinateTransform t( layerCrs, QgsCoordinateReferenceSystem( 4326 ) );
         //transform
         QgsRectangle BBox = t.transformBoundingBox( layer->extent() );
         QDomElement lonLatElem = doc.createElement( "lonLatEnvelope" );
@@ -742,7 +742,7 @@ void QgsProjectParser::describeCoverage( const QString& aCoveName, QDomElement& 
         lowElem.appendChild( lowText );
         gridEnvElem.appendChild( lowElem );
         QDomElement highElem = doc.createElement( "gml:high" );
-        QDomText highText = doc.createTextNode( QString::number( rLayer->width() )+" "+QString::number( rLayer->height() ) );
+        QDomText highText = doc.createTextNode( QString::number( rLayer->width() ) + " " + QString::number( rLayer->height() ) );
         highElem.appendChild( highText );
         gridEnvElem.appendChild( highElem );
         spatialDomainElem.appendChild( rectGridElem );
@@ -764,12 +764,12 @@ void QgsProjectParser::describeCoverage( const QString& aCoveName, QDomElement& 
         spatialDomainElem.appendChild( originElem );
 
         QDomElement xOffsetElem = doc.createElement( "gml:offsetVector" );
-        QDomText xOffsetText = doc.createTextNode( QString::number( rLayer->rasterUnitsPerPixelX() )+" 0" );
+        QDomText xOffsetText = doc.createTextNode( QString::number( rLayer->rasterUnitsPerPixelX() ) + " 0" );
         xOffsetElem.appendChild( xOffsetText );
         spatialDomainElem.appendChild( xOffsetElem );
 
         QDomElement yOffsetElem = doc.createElement( "gml:offsetVector" );
-        QDomText yOffsetText = doc.createTextNode( "0 "+QString::number( rLayer->rasterUnitsPerPixelY() ) );
+        QDomText yOffsetText = doc.createTextNode( "0 " + QString::number( rLayer->rasterUnitsPerPixelY() ) );
         yOffsetElem.appendChild( yOffsetText );
         spatialDomainElem.appendChild( yOffsetElem );
 
@@ -3105,7 +3105,7 @@ void QgsProjectParser::serviceWCSCapabilities( QDomElement& parentElement, QDomD
       serviceElem.appendChild( wcsKeywordsElem );
     }
   }
-  
+
   //Fees
   QDomElement feesElem = propertiesElem.firstChildElement( "WMSFees" );
   if ( !feesElem.isNull() )

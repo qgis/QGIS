@@ -212,7 +212,7 @@ const QgsGraphDirector* RoadGraphPlugin::director() const
   if ( layer == NULL )
     return NULL;
   if ( layer->wkbType() == QGis::WKBLineString
-       || layer->wkbType() == QGis::WKBMultiLineString)
+       || layer->wkbType() == QGis::WKBMultiLineString )
   {
     QgsVectorDataProvider *provider = dynamic_cast< QgsVectorDataProvider* >( layer->dataProvider() );
     if ( provider == NULL )

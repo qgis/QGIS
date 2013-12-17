@@ -1370,7 +1370,7 @@ QString QgsProject::readPath( QString src ) const
   QString vsiPrefix = qgsVsiPrefix( src );
   if ( ! vsiPrefix.isEmpty() )
   {
-    src.remove(0, vsiPrefix.size());  
+    src.remove( 0, vsiPrefix.size() );
   }
 
   // relative path should always start with ./ or ../
@@ -1465,7 +1465,7 @@ QString QgsProject::readPath( QString src ) const
 // return the absolute or relative path to write it to the project file
 QString QgsProject::writePath( QString src ) const
 {
-   if ( readBoolEntry( "Paths", "/Absolute", false ) || src.isEmpty() )
+  if ( readBoolEntry( "Paths", "/Absolute", false ) || src.isEmpty() )
   {
     return src;
   }
@@ -1474,7 +1474,7 @@ QString QgsProject::writePath( QString src ) const
   QString projPath = fileName();
 
   if ( projPath.isEmpty() )
-  {  
+  {
     return src;
   }
 
@@ -1482,7 +1482,7 @@ QString QgsProject::writePath( QString src ) const
   QString vsiPrefix = qgsVsiPrefix( src );
   if ( ! vsiPrefix.isEmpty() )
   {
-    srcPath.remove(0, vsiPrefix.size());  
+    srcPath.remove( 0, vsiPrefix.size() );
   }
 
 #if defined( Q_OS_WIN )

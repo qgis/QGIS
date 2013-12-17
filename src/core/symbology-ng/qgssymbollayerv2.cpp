@@ -174,9 +174,9 @@ QgsMarkerSymbolLayerV2::QgsMarkerSymbolLayerV2( bool locked )
     : QgsSymbolLayerV2( QgsSymbolV2::Marker, locked ), mSizeUnit( QgsSymbolV2::MM ),  mOffsetUnit( QgsSymbolV2::MM ),
     mHorizontalAnchorPoint( HCenter ), mVerticalAnchorPoint( VCenter )
 {
-    mOffsetExpression = NULL;
-    mHorizontalAnchorExpression = NULL;
-    mVerticalAnchorExpression = NULL;
+  mOffsetExpression = NULL;
+  mHorizontalAnchorExpression = NULL;
+  mVerticalAnchorExpression = NULL;
 }
 
 QgsLineSymbolLayerV2::QgsLineSymbolLayerV2( bool locked )
@@ -359,9 +359,9 @@ void QgsFillSymbolLayerV2::_renderPolygon( QPainter* p, const QPolygonF& points,
   }
 
   // Disable 'Antialiasing' if the geometry was generalized in the current RenderContext (We known that it must have least #5 points).
-  if ( points.size()<=5 && context.layer() && context.layer()->simplifyDrawingCanbeApplied( QgsVectorLayer::AntialiasingSimplification ) && QgsAbstractGeometrySimplifier::canbeGeneralizedByDeviceBoundingBox( points, context.layer()->simplifyDrawingTol() ) && (p->renderHints() & QPainter::Antialiasing) )
+  if ( points.size() <= 5 && context.layer() && context.layer()->simplifyDrawingCanbeApplied( QgsVectorLayer::AntialiasingSimplification ) && QgsAbstractGeometrySimplifier::canbeGeneralizedByDeviceBoundingBox( points, context.layer()->simplifyDrawingTol() ) && ( p->renderHints() & QPainter::Antialiasing ) )
   {
-    p->setRenderHint( QPainter::Antialiasing, false );	
+    p->setRenderHint( QPainter::Antialiasing, false );
     p->drawRect( points.boundingRect() );
     p->setRenderHint( QPainter::Antialiasing, true );
     return;

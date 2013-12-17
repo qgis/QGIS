@@ -52,7 +52,7 @@ class CORE_EXPORT QgsMapToPixelSimplifier : public QgsAbstractGeometrySimplifier
     int mSimplifyFlags;
 
     //! For transformation between coordinate systems from current layer to map target. Can be 0 if on-the-fly reprojection is not used
-    const QgsCoordinateTransform* mMapCoordTransform;    
+    const QgsCoordinateTransform* mMapCoordTransform;
     //! For transformation between map coordinates and device coordinates
     const QgsMapToPixel* mMapToPixel;
     //! Factor tolterance to apply in transformation between map coordinates and device coordinates
@@ -81,18 +81,18 @@ class CORE_EXPORT QgsMapToPixelSimplifier : public QgsAbstractGeometrySimplifier
     //! Simplifies the specified geometry
     virtual bool simplifyGeometry( QgsGeometry* geometry );
 
-  // MapToPixel simplification helper methods
+    // MapToPixel simplification helper methods
   public:
 
     //! Returns whether the envelope can be replaced by its BBOX when is applied the specified map2pixel context
     static bool canbeGeneralizedByMapBoundingBox( const QgsRectangle& envelope,
-                                  const QgsCoordinateTransform* coordinateTransform, const QgsMapToPixel* mapToPixel, float mapToPixelTol = 1.0f );
+        const QgsCoordinateTransform* coordinateTransform, const QgsMapToPixel* mapToPixel, float mapToPixelTol = 1.0f );
 
     //! Returns whether the envelope can be replaced by its BBOX when is applied the specified map2pixel context
     inline bool canbeGeneralizedByMapBoundingBox( const QgsRectangle& envelope ) const { return canbeGeneralizedByMapBoundingBox( envelope, mMapCoordTransform, mMapToPixel, mMapToPixelTol ); }
 
     //! Simplifies the geometry when is applied the specified map2pixel context
-    static bool simplifyGeometry( QgsGeometry* geometry, 
+    static bool simplifyGeometry( QgsGeometry* geometry,
                                   int simplifyFlags, const QgsCoordinateTransform* coordinateTransform, const QgsMapToPixel* mapToPixel, float mapToPixelTol = 1.0f );
 
 };

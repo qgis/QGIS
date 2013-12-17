@@ -657,7 +657,7 @@ void QgsCoordinateTransform::transformCoords( const int& numPoints, double *x, d
       }
     }
 
-    dir = (direction == ForwardTransform) ? tr( "forward transform" ) : tr( "inverse transform" );
+    dir = ( direction == ForwardTransform ) ? tr( "forward transform" ) : tr( "inverse transform" );
 
     QString msg = tr( "%1 of\n"
                       "%2"

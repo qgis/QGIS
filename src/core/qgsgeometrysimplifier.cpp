@@ -20,13 +20,13 @@
 //! Returns whether the device-envelope can be replaced by its BBOX when is applied the specified tolerance
 bool QgsAbstractGeometrySimplifier::canbeGeneralizedByDeviceBoundingBox( const QgsRectangle& envelope, float mapToPixelTol )
 {
-  return (envelope.xMaximum()-envelope.xMinimum()) < mapToPixelTol && (envelope.yMaximum()-envelope.yMinimum()) < mapToPixelTol;
+  return ( envelope.xMaximum() - envelope.xMinimum() ) < mapToPixelTol && ( envelope.yMaximum() - envelope.yMinimum() ) < mapToPixelTol;
 }
 
 //! Returns whether the device-geometry can be replaced by its BBOX when is applied the specified tolerance
 bool QgsAbstractGeometrySimplifier::canbeGeneralizedByDeviceBoundingBox( const QVector<QPointF>& points, float mapToPixelTol )
 {
-  double xmin =  std::numeric_limits<double>::max(), x,y;
+  double xmin =  std::numeric_limits<double>::max(), x, y;
   double ymin =  std::numeric_limits<double>::max();
   double xmax = -std::numeric_limits<double>::max();
   double ymax = -std::numeric_limits<double>::max();
@@ -36,10 +36,10 @@ bool QgsAbstractGeometrySimplifier::canbeGeneralizedByDeviceBoundingBox( const Q
     x = points[i].x();
     y = points[i].y();
 
-    if (xmin>x) xmin = x;
-    if (ymin>y) ymin = y;
-    if (xmax<x) xmax = x;
-    if (ymax<y) ymax = y;
+    if ( xmin > x ) xmin = x;
+    if ( ymin > y ) ymin = y;
+    if ( xmax < x ) xmax = x;
+    if ( ymax < y ) ymax = y;
   }
   return canbeGeneralizedByDeviceBoundingBox( QgsRectangle( xmin, ymin, xmax, ymax ), mapToPixelTol );
 }
@@ -69,7 +69,7 @@ bool QgsTopologyPreservingSimplifier::simplifyGeometry( QgsGeometry* geometry )
   if ( g )
   {
     size_t wkbSize = g->wkbSize();
-    unsigned char* wkb = (unsigned char*)malloc( wkbSize );
+    unsigned char* wkb = ( unsigned char* )malloc( wkbSize );
     memcpy( wkb, g->asWkb(), wkbSize );
     geometry->fromWkb( wkb, wkbSize );
     delete g;

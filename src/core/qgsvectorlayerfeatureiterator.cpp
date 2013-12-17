@@ -607,8 +607,8 @@ void QgsVectorLayerFeatureIterator::updateFeatureGeometry( QgsFeature &f )
  ***************************************************************************/
 
 QgsSimplifiedVectorLayerFeatureIterator::QgsSimplifiedVectorLayerFeatureIterator( QgsVectorLayer* layer, const QgsFeatureRequest& request, QgsAbstractGeometrySimplifier* simplifier )
-  : QgsVectorLayerFeatureIterator( layer, request )
-  , mSimplifier( simplifier )
+    : QgsVectorLayerFeatureIterator( layer, request )
+    , mSimplifier( simplifier )
 {
   mSupportsPresimplify = layer->dataProvider()->capabilities() & QgsVectorDataProvider::SimplifyGeometries;
 }
@@ -624,7 +624,7 @@ QgsSimplifiedVectorLayerFeatureIterator::~QgsSimplifiedVectorLayerFeatureIterato
 //! fetch next feature, return true on success
 bool QgsSimplifiedVectorLayerFeatureIterator::fetchFeature( QgsFeature& feature )
 {
-  if (QgsVectorLayerFeatureIterator::fetchFeature( feature ))
+  if ( QgsVectorLayerFeatureIterator::fetchFeature( feature ) )
   {
     const QgsMapToPixel* mtp = mRequest.mapToPixel();
     if ( mtp && !mSupportsPresimplify && mSimplifier ) mSimplifier->simplifyGeometry( feature.geometry() );

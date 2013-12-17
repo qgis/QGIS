@@ -440,7 +440,7 @@ int main( int argc, char * argv[] )
         delete theServer;
         continue;
       }
-    } 
+    }
     else if ( serviceString == "WFS" )
     {
       delete theServer;

@@ -1682,7 +1682,7 @@ int QgsCoordinateReferenceSystem::syncDb()
 
   int inserted = 0, updated = 0, deleted = 0, errors = 0;
 
-  qDebug( "Load srs db from: %s", QgsApplication::srsDbFilePath().toLocal8Bit().constData());
+  qDebug( "Load srs db from: %s", QgsApplication::srsDbFilePath().toLocal8Bit().constData() );
 
   sqlite3 *database;
   if ( sqlite3_open( dbFilePath.toUtf8().constData(), &database ) != SQLITE_OK )

@@ -394,8 +394,8 @@ void QgsVectorLayerProperties::syncToLayer( void )
 
   // get simplify drawing configuration
   mSimplifyDrawingGroupBox->setChecked( layer->simplifyDrawingHints() != QgsVectorLayer::NoSimplification );
-  mSimplifyDrawingSlider->setValue( (int)(5.0f * (layer->simplifyDrawingTol()-1)) );
-  mSimplifyDrawingPanel->setVisible( mSimplifyDrawingSlider->value()>0 );
+  mSimplifyDrawingSlider->setValue(( int )( 5.0f * ( layer->simplifyDrawingTol() - 1 ) ) );
+  mSimplifyDrawingPanel->setVisible( mSimplifyDrawingSlider->value() > 0 );
 
   // load appropriate symbology page (V1 or V2)
   updateSymbologyPage();
@@ -1085,5 +1085,5 @@ void QgsVectorLayerProperties::on_mMaximumScaleSetCurrentPushButton_clicked()
 
 void QgsVectorLayerProperties::on_mSimplifyDrawingSlider_valueChanged( int value )
 {
-  mSimplifyDrawingPanel->setVisible( value>0 );
+  mSimplifyDrawingPanel->setVisible( value > 0 );
 }
