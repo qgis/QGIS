@@ -14,18 +14,9 @@ SET (QT_FWVER @QT_VERSION_MAJOR@)
 
 # build list of Qt frameworks to bundle
 
-# core list, includes dependencies
-SET (QTLISTQG QtCore QtGui phonon QtXml QtNetwork QtSvg QtSql QtWebKit QtXmlPatterns)
-SET (PYQTLIST Qt QtCore QtGui phonon QtXml QtNetwork QtSvg QtSql QtWebKit QtXmlPatterns)
-# see if QtWebKit links QtDBus
-EXECUTE_PROCESS (COMMAND otool -L @QT_QTWEBKIT_LIBRARY@/QtWebKit
-                 OUTPUT_VARIABLE QTWEBKIT_DBUS)
-IF (QTWEBKIT_DBUS MATCHES ".*QtDBus.framework.*")
-    SET (QTLISTQG ${QTLISTQG} QtDBus)
-ENDIF ()
-# additional Qt may be needed by plugins
-SET (QTLISTQG ${QTLISTQG} QtMultimedia QtOpenGL)
-SET (PYQTLIST ${PYQTLIST} QtMultimedia QtOpenGL)
+# core list, includes dependencies and used by extra plugins
+SET (QTLISTQG QtCore QtGui phonon QtXml QtNetwork QtSvg QtSql QtWebKit QtXmlPatterns QtDBus QtMultimedia QtOpenGL)
+SET (PYQTLIST Qt QtCore QtGui phonon QtXml QtNetwork QtSvg QtSql QtWebKit QtXmlPatterns QtDBus QtMultimedia QtOpenGL)
 
 # add Qsci.so, if available
 IF (@QSCI_FOUND@)
