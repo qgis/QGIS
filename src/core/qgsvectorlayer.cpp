@@ -111,7 +111,6 @@ typedef QString getStyleById_t(
   QString& errCause
 );
 
-
 QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
                                 QString baseName,
                                 QString providerKey,
@@ -122,6 +121,8 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
     , mProviderKey( providerKey )
     , mReadOnly( false )
     , mRendererV2( NULL )
+    , mSimplifyDrawingTol( QGis::DEFAULT_MAPTOPIXEL_THRESHOLD )
+    , mSimplifyDrawingHints( QGis::DEFAULT_MAPTOPIXEL_THRESHOLD > 1 ? QgsVectorLayer::FullSimplification : QgsVectorLayer::DefaultSimplification )
     , mLabel( 0 )
     , mLabelOn( false )
     , mLabelFontNotFoundNotified( false )
@@ -137,8 +138,6 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
     , mValidExtent( false )
     , mSymbolFeatureCounted( false )
     , mCurrentRendererContext( 0 )
-    , mSimplifyDrawingHints( QGis::DEFAULT_MAPTOPIXEL_THRESHOLD > 1 ? QgsVectorLayer::FullSimplification : QgsVectorLayer::DefaultSimplification )
-    , mSimplifyDrawingTol( QGis::DEFAULT_MAPTOPIXEL_THRESHOLD )
 
 {
   mActions = new QgsAttributeAction( this );

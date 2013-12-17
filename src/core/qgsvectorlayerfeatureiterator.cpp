@@ -612,6 +612,7 @@ QgsSimplifiedVectorLayerFeatureIterator::QgsSimplifiedVectorLayerFeatureIterator
 {
   mSupportsPresimplify = layer->dataProvider()->capabilities() & QgsVectorDataProvider::SimplifyGeometries;
 }
+
 QgsSimplifiedVectorLayerFeatureIterator::~QgsSimplifiedVectorLayerFeatureIterator()
 {
   if ( mSimplifier )

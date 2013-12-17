@@ -25,6 +25,8 @@
 class CORE_EXPORT QgsAbstractGeometrySimplifier
 {
   public:
+    virtual ~QgsAbstractGeometrySimplifier();
+
     //! Returns a simplified version the specified geometry
     virtual QgsGeometry* simplify( QgsGeometry* geometry ) = 0;
     //! Simplifies the specified geometry

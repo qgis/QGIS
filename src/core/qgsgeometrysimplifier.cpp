@@ -17,6 +17,10 @@
 #include <limits>
 #include "qgsgeometrysimplifier.h"
 
+QgsAbstractGeometrySimplifier::~QgsAbstractGeometrySimplifier()
+{
+}
+
 //! Returns whether the device-envelope can be replaced by its BBOX when is applied the specified tolerance
 bool QgsAbstractGeometrySimplifier::canbeGeneralizedByDeviceBoundingBox( const QgsRectangle& envelope, float mapToPixelTol )
 {

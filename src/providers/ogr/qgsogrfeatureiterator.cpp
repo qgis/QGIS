@@ -280,6 +280,8 @@ bool QgsOgrFeatureIterator::readFeature( OGRFeatureH fet, QgsFeature& feature )
 //! Notified a new OGRFeatureH fecthed from data provider
 void QgsOgrFeatureIterator::fetchedFeature( OGRFeatureH feature, OGRGeometryH geometry )
 {
+  Q_UNUSED( feature );
+  Q_UNUSED( geometry );
 }
 
 /***************************************************************************

@@ -98,6 +98,7 @@ inline static QgsRectangle calculateBoundingBox( QGis::WkbType wkbType, unsigned
 //! Generalize the WKB-geometry using the BBOX of the original geometry
 inline static bool generalizeWkbGeometry( QGis::WkbType wkbType, unsigned char* sourceWkb, size_t sourceWkbSize, unsigned char* targetWkb, size_t& targetWkbSize, const QgsRectangle& envelope, bool writeHeader )
 {
+  Q_UNUSED( sourceWkb );
   unsigned char* wkb2 = targetWkb;
   unsigned int geometryType = QGis::singleType( QGis::flatType( wkbType ) );
 
