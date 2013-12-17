@@ -3018,7 +3018,7 @@ p, li { white-space: pre-wrap; }
             <number>0</number>
            </property>
            <item>
-            <widget class="QLabel" name="label_56">
+            <widget class="QLabel" name="label_65">
              <property name="styleSheet">
               <string notr="true">font-weight:bold;</string>
              </property>
@@ -3080,7 +3080,7 @@ p, li { white-space: pre-wrap; }
                   <item row="0" column="0">
                    <layout class="QHBoxLayout" name="horizontalLayout_32">
                     <item>
-                     <widget class="QLabel" name="label_59">
+                     <widget class="QLabel" name="label_66">
                       <property name="text">
                        <string>Grid style</string>
                       </property>
