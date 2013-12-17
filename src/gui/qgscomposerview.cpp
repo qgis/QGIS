@@ -1259,6 +1259,11 @@ void QgsComposerView::wheelZoom( QWheelEvent * event )
   int wheelAction = mySettings.value( "/qgis/wheel_action", 2 ).toInt();
   double zoomFactor = mySettings.value( "/qgis/zoom_factor", 2 ).toDouble();
 
+  if (( QgsMapCanvas::WheelAction )wheelAction == QgsMapCanvas::WheelNothing )
+  {
+    return;
+  }
+
   if ( event->modifiers() & Qt::ControlModifier )
   {
     //holding ctrl while wheel zooming results in a finer zoom
@@ -1276,25 +1281,12 @@ void QgsComposerView::wheelZoom( QWheelEvent * event )
   //transform the mouse pos to scene coordinates
   QPointF scenePoint = mapToScene( event->pos() );
 
-  //zoom composition, respecting wheel action setting
+  //adjust view center according to wheel action setting
   switch (( QgsMapCanvas::WheelAction )wheelAction )
   {
-    case QgsMapCanvas::WheelZoom:
-      // zoom without changing extent
-      if ( zoomIn )
-      {
-        scale( zoomFactor, zoomFactor );
-      }
-      else
-      {
-        scale( 1 / zoomFactor, 1 / zoomFactor );
-      }
-      break;
-
     case QgsMapCanvas::WheelZoomAndRecenter:
     {
-      visibleRect.scale( scaleFactor, scenePoint.x(), scenePoint.y() );
-      fitInView( visibleRect.toRectF(), Qt::KeepAspectRatio );
+      centerOn( scenePoint.x(), scenePoint.y() );
       break;
     }
 
@@ -1303,14 +1295,22 @@ void QgsComposerView::wheelZoom( QWheelEvent * event )
       QgsPoint oldCenter( visibleRect.center() );
       QgsPoint newCenter( scenePoint.x() + (( oldCenter.x() - scenePoint.x() ) * scaleFactor ),
                           scenePoint.y() + (( oldCenter.y() - scenePoint.y() ) * scaleFactor ) );
-
-      visibleRect.scale( scaleFactor, newCenter.x(), newCenter.y() );
-      fitInView( visibleRect.toRectF(), Qt::KeepAspectRatio );
+      centerOn( newCenter.x(), newCenter.y() );
       break;
     }
 
-    case QgsMapCanvas::WheelNothing:
-      return;
+    default:
+      break;
+  }
+
+  //zoom composition
+  if ( zoomIn )
+  {
+    scale( zoomFactor, zoomFactor );
+  }
+  else
+  {
+    scale( 1 / zoomFactor, 1 / zoomFactor );
   }
 
   //update composition for new zoom
