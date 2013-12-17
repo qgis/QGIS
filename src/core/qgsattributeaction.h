@@ -48,6 +48,7 @@ class CORE_EXPORT QgsAction
       Windows,
       Unix,
       OpenUrl,
+      Atlas
     };
 
     QgsAction( ActionType type, QString name, QString action, bool capture ) :
@@ -66,20 +67,7 @@ class CORE_EXPORT QgsAction
     bool capture() const { return mCaptureOutput; }
 
     //! Whether the action is runable on the current platform
-    bool runable() const
-    {
-      return mType == Generic ||
-             mType == GenericPython ||
-             mType == OpenUrl ||
-#if defined(Q_OS_WIN)
-             mType == Windows
-#elif defined(Q_OS_MAC)
-             mType == Mac
-#else
-             mType == Unix
-#endif
-             ;
-    }
+    bool runable() const;
 
   private:
     ActionType mType;

@@ -1916,6 +1916,12 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
   // process the attribute actions
   mActions->readXML( node );
 
+  // add atlas action
+  mActions->addAction( QgsAction::Atlas,
+                       "Set as atlas feature",
+                       "",
+                       false );
+
   mEditTypes.clear();
   QDomNode editTypesNode = node.namedItem( "edittypes" );
   if ( !editTypesNode.isNull() )
@@ -3555,6 +3561,12 @@ void QgsVectorLayer::stopRendererV2( QgsRenderContext& rendererContext, QgsSingl
     selRenderer->stopRender( rendererContext );
     delete selRenderer;
   }
+}
+
+void QgsVectorLayer::setAtlasFeature( QgsFeature &feat )
+{
+  QgsExpression::setSpecialColumn( "$atlasfeatureid", feat.id() );
+  QgsExpression::setSpecialColumn( "$atlasgeometry", QVariant::fromValue( *feat.geometry() ) );
 }
 
 void QgsVectorLayer::prepareLabelingAndDiagrams( QgsRenderContext& rendererContext, QgsAttributeList& attributes, bool& labeling )

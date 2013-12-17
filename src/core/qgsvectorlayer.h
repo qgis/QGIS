@@ -1395,6 +1395,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Returns whether the VectorLayer can apply the specified simplification hint */
     bool simplifyDrawingCanbeApplied( int simplifyHint ) const;
 
+    /**Sets the feature with matching id as the current atlas feature */
+    void setAtlasFeature( QgsFeature &feat );
+
   public slots:
     /**
      * Select feature by its ID
