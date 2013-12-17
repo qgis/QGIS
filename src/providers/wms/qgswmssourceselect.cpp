@@ -164,21 +164,6 @@ void QgsWMSSourceSelect::populateConnectionList()
   cmbConnections->addItems( QgsWMSConnection::connectionList() );
 
   setConnectionListPosition();
-
-  if ( cmbConnections->count() == 0 )
-  {
-    // No connections - disable various buttons
-    btnConnect->setEnabled( false );
-    btnEdit->setEnabled( false );
-    btnDelete->setEnabled( false );
-  }
-  else
-  {
-    // Connections - enable various buttons
-    btnConnect->setEnabled( true );
-    btnEdit->setEnabled( true );
-    btnDelete->setEnabled( true );
-  }
 }
 void QgsWMSSourceSelect::on_btnNew_clicked()
 {
@@ -214,7 +199,7 @@ void QgsWMSSourceSelect::on_btnDelete_clicked()
   if ( result == QMessageBox::Ok )
   {
     QgsWMSConnection::deleteConnection( cmbConnections->currentText() );
-    cmbConnections->removeItem( cmbConnections->currentIndex() );  // populateConnectionList();
+    cmbConnections->removeItem( cmbConnections->currentIndex() );
     setConnectionListPosition();
     emit connectionsChanged();
   }
@@ -1023,6 +1008,23 @@ void QgsWMSSourceSelect::setConnectionListPosition()
       cmbConnections->setCurrentIndex( 0 );
     else
       cmbConnections->setCurrentIndex( cmbConnections->count() - 1 );
+  }
+
+  if ( cmbConnections->count() == 0 )
+  {
+    // No connections - disable various buttons
+    btnConnect->setEnabled( false );
+    btnEdit->setEnabled( false );
+    btnDelete->setEnabled( false );
+    btnSave->setEnabled( false );
+  }
+  else
+  {
+    // Connections - enable various buttons
+    btnConnect->setEnabled( true );
+    btnEdit->setEnabled( true );
+    btnDelete->setEnabled( true );
+    btnSave->setEnabled( true );
   }
 }
 

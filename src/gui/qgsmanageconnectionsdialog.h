@@ -52,6 +52,7 @@ class GUI_EXPORT QgsManageConnectionsDialog : public QDialog, private Ui::QgsMan
     void doExportImport();
     void selectAll();
     void clearSelection();
+    void selectionChanged();
 
   private:
     bool populateConnections();

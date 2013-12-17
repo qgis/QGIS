@@ -46,11 +46,13 @@ QgsManageConnectionsDialog::QgsManageConnectionsDialog( QWidget *parent, Mode mo
   {
     label->setText( tr( "Select connections to import" ) );
     buttonBox->button( QDialogButtonBox::Ok )->setText( tr( "Import" ) );
+    buttonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
   }
   else
   {
     //label->setText( tr( "Select connections to export" ) );
     buttonBox->button( QDialogButtonBox::Ok )->setText( tr( "Export" ) );
+    buttonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
   }
 
   if ( !populateConnections() )
@@ -61,6 +63,13 @@ QgsManageConnectionsDialog::QgsManageConnectionsDialog( QWidget *parent, Mode mo
   // use Ok button for starting import and export operations
   disconnect( buttonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
   connect( buttonBox, SIGNAL( accepted() ), this, SLOT( doExportImport() ) );
+
+  connect( listConnections, SIGNAL( itemSelectionChanged() ), this, SLOT( selectionChanged() ) );
+}
+
+void QgsManageConnectionsDialog::selectionChanged()
+{
+  buttonBox->button( QDialogButtonBox::Ok )->setEnabled( !listConnections->selectedItems().isEmpty() );
 }
 
 void QgsManageConnectionsDialog::doExportImport()
@@ -945,9 +954,11 @@ void QgsManageConnectionsDialog::loadOracleConnections( const QDomDocument &doc,
 void QgsManageConnectionsDialog::selectAll()
 {
   listConnections->selectAll();
+  buttonBox->button( QDialogButtonBox::Ok )->setEnabled( !listConnections->selectedItems().isEmpty() );
 }
 
 void QgsManageConnectionsDialog::clearSelection()
 {
   listConnections->clearSelection();
+  buttonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
 }
