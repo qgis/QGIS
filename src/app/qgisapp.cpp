@@ -225,6 +225,7 @@
 #include "qgsmaptooladdfeature.h"
 #include "qgsmaptooladdpart.h"
 #include "qgsmaptooladdring.h"
+#include "qgsmaptoolfillring.h"
 #include "qgsmaptoolannotation.h"
 #include "qgsmaptooldeletering.h"
 #include "qgsmaptooldeletepart.h"
@@ -793,6 +794,7 @@ QgisApp::~QgisApp()
   delete mMapTools.mAddFeature;
   delete mMapTools.mAddPart;
   delete mMapTools.mAddRing;
+  delete mMapTools.mFillRing;
   delete mMapTools.mAnnotation;
   delete mMapTools.mChangeLabelProperties;
   delete mMapTools.mDeletePart;
@@ -982,6 +984,7 @@ void QgisApp::createActions()
   connect( mActionSplitParts, SIGNAL( triggered() ), this, SLOT( splitParts() ) );
   connect( mActionDeleteSelected, SIGNAL( triggered() ), this, SLOT( deleteSelected() ) );
   connect( mActionAddRing, SIGNAL( triggered() ), this, SLOT( addRing() ) );
+  connect( mActionFillRing, SIGNAL( triggered() ), this, SLOT( fillRing() ) );
   connect( mActionAddPart, SIGNAL( triggered() ), this, SLOT( addPart() ) );
   connect( mActionSimplifyFeature, SIGNAL( triggered() ), this, SLOT( simplifyFeature() ) );
   connect( mActionDeleteRing, SIGNAL( triggered() ), this, SLOT( deleteRing() ) );
@@ -1253,6 +1256,7 @@ void QgisApp::createActionGroups()
   mMapToolGroup->addAction( mActionSplitParts );
   mMapToolGroup->addAction( mActionDeleteSelected );
   mMapToolGroup->addAction( mActionAddRing );
+  mMapToolGroup->addAction( mActionFillRing );
   mMapToolGroup->addAction( mActionAddPart );
   mMapToolGroup->addAction( mActionSimplifyFeature );
   mMapToolGroup->addAction( mActionDeleteRing );
@@ -1799,6 +1803,7 @@ void QgisApp::setTheme( QString theThemeName )
   mActionUndo->setIcon( QgsApplication::getThemeIcon( "/mActionUndo.png" ) );
   mActionRedo->setIcon( QgsApplication::getThemeIcon( "/mActionRedo.png" ) );
   mActionAddRing->setIcon( QgsApplication::getThemeIcon( "/mActionAddRing.png" ) );
+  mActionFillRing->setIcon( QgsApplication::getThemeIcon( "/mActionFillRing.png" ) );
   mActionAddPart->setIcon( QgsApplication::getThemeIcon( "/mActionAddPart.png" ) );
   mActionDeleteRing->setIcon( QgsApplication::getThemeIcon( "/mActionDeleteRing.png" ) );
   mActionDeletePart->setIcon( QgsApplication::getThemeIcon( "/mActionDeletePart.png" ) );
@@ -2030,6 +2035,8 @@ void QgisApp::createCanvasTools()
   mMapTools.mSelectRadius->setAction( mActionSelectRadius );
   mMapTools.mAddRing = new QgsMapToolAddRing( mMapCanvas );
   mMapTools.mAddRing->setAction( mActionAddRing );
+  mMapTools.mFillRing = new QgsMapToolFillRing( mMapCanvas );
+  mMapTools.mFillRing->setAction( mActionFillRing );
   mMapTools.mAddPart = new QgsMapToolAddPart( mMapCanvas );
   mMapTools.mSimplifyFeature = new QgsMapToolSimplify( mMapCanvas );
   mMapTools.mSimplifyFeature->setAction( mActionSimplifyFeature );
@@ -5573,6 +5580,16 @@ void QgisApp::addRing()
   mMapCanvas->setMapTool( mMapTools.mAddRing );
 }
 
+void QgisApp::fillRing()
+{
+  if ( mMapCanvas && mMapCanvas->isDrawing() )
+  {
+    return;
+  }
+  mMapCanvas->setMapTool( mMapTools.mFillRing );
+}
+
+
 void QgisApp::addPart()
 {
   if ( mMapCanvas && mMapCanvas->isDrawing() )
@@ -8382,6 +8399,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionRedo->setEnabled( false );
     mActionSimplifyFeature->setEnabled( false );
     mActionAddRing->setEnabled( false );
+    mActionFillRing->setEnabled( false );
     mActionAddPart->setEnabled( false );
     mActionDeleteRing->setEnabled( false );
     mActionDeletePart->setEnabled( false );
@@ -8514,6 +8532,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
         mActionAddFeature->setIcon( QgsApplication::getThemeIcon( "/mActionCapturePoint.png" ) );
 
         mActionAddRing->setEnabled( false );
+        mActionFillRing->setEnabled( false );
         mActionReshapeFeatures->setEnabled( false );
         mActionSplitFeatures->setEnabled( false );
         mActionSplitParts->setEnabled( false );
@@ -8541,6 +8560,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
         mActionOffsetCurve->setEnabled( isEditable && canAddFeatures && canChangeAttributes );
 
         mActionAddRing->setEnabled( false );
+        mActionFillRing->setEnabled( false );
         mActionDeleteRing->setEnabled( false );
       }
       else if ( vlayer->geometryType() == QGis::Polygon )
@@ -8548,6 +8568,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
         mActionAddFeature->setIcon( QgsApplication::getThemeIcon( "/mActionCapturePolygon.png" ) );
 
         mActionAddRing->setEnabled( isEditable && canAddFeatures );
+        mActionFillRing->setEnabled( isEditable && canAddFeatures );
         mActionReshapeFeatures->setEnabled( isEditable && canAddFeatures );
         mActionSplitFeatures->setEnabled( isEditable && canAddFeatures );
         mActionSplitParts->setEnabled( isEditable && canAddFeatures );
@@ -8621,6 +8642,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionAddFeature->setEnabled( false );
     mActionDeleteSelected->setEnabled( false );
     mActionAddRing->setEnabled( false );
+    mActionFillRing->setEnabled( false );
     mActionAddPart->setEnabled( false );
     mActionNodeTool->setEnabled( false );
     mActionMoveFeature->setEnabled( false );

@@ -49,6 +49,7 @@ SET(QGIS_APP_SRCS
   qgsmaptooladdfeature.cpp
   qgsmaptooladdpart.cpp
   qgsmaptooladdring.cpp
+  qgsmaptoolfillring.cpp
   qgsmaptoolannotation.cpp
   qgsmaptoolcapture.cpp
   qgsmaptoolchangelabelproperties.cpp
@@ -210,6 +211,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsmaptoolcapture.h
   qgsmaptooladdpart.h
   qgsmaptooladdring.h
+  qgsmaptoolfillring.h
   qgsmaptoolchangelabelproperties.h
   qgsmaptooldeletepart.h
   qgsmaptooldeletering.h

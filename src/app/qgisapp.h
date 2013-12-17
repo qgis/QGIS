@@ -272,6 +272,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionSplitFeatures() { return mActionSplitFeatures; }
     QAction *actionSplitParts() { return mActionSplitParts; }
     QAction *actionAddRing() { return mActionAddRing; }
+    QAction *actionFillRing() { return mActionFillRing; }
     QAction *actionAddPart() { return mActionAddPart; }
     QAction *actionSimplifyFeature() { return mActionSimplifyFeature; }
     QAction *actionDeleteRing() { return mActionDeleteRing; }
@@ -937,6 +938,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void splitParts();
     //! activates the add ring tool
     void addRing();
+    //! activates the fill ring tool
+    void fillRing();
     //! activates the add part tool
     void addPart();
     //! simplifies feature
@@ -1358,6 +1361,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
         QgsMapTool* mVertexMove;
         QgsMapTool* mVertexDelete;
         QgsMapTool* mAddRing;
+        QgsMapTool* mFillRing;
         QgsMapTool* mAddPart;
         QgsMapTool* mSimplifyFeature;
         QgsMapTool* mDeleteRing;
