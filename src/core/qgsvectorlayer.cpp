@@ -703,7 +703,7 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
   QgsFeatureIterator fit = QgsFeatureIterator();
 
   // Enable the simplification of the geometries (Using the current map2pixel context) before fetch the features.
-  if ( simplifyDrawingCanbeApplied( QgsVectorLayer::GeometrySimplification | QgsVectorLayer::EnvelopeSimplification ) && !( featureRequest.flags() & QgsFeatureRequest::NoGeometry ) && !rendererContext.renderingPrintComposition() )
+  if ( simplifyDrawingCanbeApplied( QgsVectorLayer::GeometrySimplification | QgsVectorLayer::EnvelopeSimplification ) && !( featureRequest.flags() & QgsFeatureRequest::NoGeometry ) )
   {
     QPainter* p = rendererContext.painter();
     float dpi = ( p->device()->logicalDpiX() + p->device()->logicalDpiY() ) / 2;
@@ -1248,7 +1248,7 @@ bool QgsVectorLayer::setSubsetString( QString subset )
 
 bool QgsVectorLayer::simplifyDrawingCanbeApplied( int simplifyHint ) const
 {
-  return mDataProvider && ( mSimplifyDrawingHints & simplifyHint ) && !mEditBuffer && ( !mCurrentRendererContext || !mCurrentRendererContext->renderingPrintComposition() );
+  return mDataProvider && ( mSimplifyDrawingHints & simplifyHint ) && !mEditBuffer && ( !mCurrentRendererContext || mCurrentRendererContext->useRenderingOptimization() );
 }
 
 QgsFeatureIterator QgsVectorLayer::getFeatures( const QgsFeatureRequest& request )

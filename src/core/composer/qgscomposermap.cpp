@@ -199,7 +199,9 @@ void QgsComposerMap::draw( QPainter *painter, const QgsRectangle& extent, const 
   {
     theRendererContext->setDrawEditingInformation( false );
     theRendererContext->setRenderingStopped( false );
-    theRendererContext->setRenderingPrintComposition( true );
+
+    // disable rendering optimization (geometry simplification) to preserve print quality
+    theRendererContext->setUseRenderingOptimization( false );
 
     // force vector output (no caching of marker images etc.)
     theRendererContext->setForceVectorOutput( true );
