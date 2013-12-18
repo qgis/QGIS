@@ -48,6 +48,11 @@ class CORE_EXPORT QgsDxfPaintEngine: public QPaintEngine
 
     void setShift( const QPointF& shift ) { mShift = shift; }
 
+    void moveTo( double dx, double dy );
+    void lineTo( double dx, double dy );
+    void curveTo( double dx, double dy );
+    void endPolygon();
+
   private:
     const QgsDxfPaintDevice* mPaintDevice;
     QgsDxfExport* mDxf;
@@ -57,6 +62,7 @@ class CORE_EXPORT QgsDxfPaintEngine: public QPaintEngine
     QPen mPen;
     QString mLayer;
     QPointF mShift;
+    QPolygonF mCurrentPolygon;
 
     QgsPoint toDxfCoordinates( const QPointF& pt ) const;
     int currentPenColor() const;

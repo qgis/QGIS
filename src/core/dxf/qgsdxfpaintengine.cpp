@@ -66,6 +66,7 @@ void QgsDxfPaintEngine::updateState( const QPaintEngineState& state )
 
 void QgsDxfPaintEngine::drawPolygon( const QPointF* points, int pointCount, PolygonDrawMode mode )
 {
+  Q_UNUSED( mode );
   if ( !mDxf || !mPaintDevice )
   {
     return;
@@ -77,7 +78,8 @@ void QgsDxfPaintEngine::drawPolygon( const QPointF* points, int pointCount, Poly
     polyline[i] = toDxfCoordinates( points[i] );
   }
 
-  mDxf->writePolyline( polyline, mLayer, "CONTINUOUS", currentPenColor(), currentWidth(), mode != QPaintEngine::PolylineMode );
+  bool closed = ( pointCount > 3 && points[0] == points[pointCount - 1] );
+  mDxf->writePolyline( polyline, mLayer, "CONTINUOUS", currentPenColor(), currentWidth(), closed );
 }
 
 void QgsDxfPaintEngine::drawRects( const QRectF* rects, int rectCount )
@@ -116,12 +118,59 @@ void QgsDxfPaintEngine::drawEllipse( const QRectF& rect )
 
 void QgsDxfPaintEngine::drawPath( const QPainterPath& path )
 {
-  QList<QPolygonF> polygonList = path.toFillPolygons();
+  /*QList<QPolygonF> polygonList = path.toFillPolygons();
   QList<QPolygonF>::const_iterator pIt = polygonList.constBegin();
   for ( ; pIt != polygonList.constEnd(); ++pIt )
   {
     drawPolygon( pIt->constData(), pIt->size(), pIt->isClosed() ? QPaintEngine::OddEvenMode : QPaintEngine::PolylineMode );
+  }*/
+
+  int pathLength = path.elementCount();
+  for ( int i = 0; i < pathLength; ++i )
+  {
+    const QPainterPath::Element& pathElem = path.elementAt( i );
+    if ( pathElem.isMoveTo() )
+    {
+      moveTo( pathElem.x, pathElem.y );
+    }
+    else if ( pathElem.isLineTo() )
+    {
+      lineTo( pathElem.x, pathElem.y );
+    }
+    else if ( pathElem.isCurveTo() )
+    {
+      curveTo( pathElem.x, pathElem.y );
+    }
   }
+  endPolygon();
+}
+
+void QgsDxfPaintEngine::moveTo( double dx, double dy )
+{
+  if ( mCurrentPolygon.size() < 0 )
+  {
+    endPolygon();
+  }
+  mCurrentPolygon.append( QPointF( dx, dy ) );
+}
+
+void QgsDxfPaintEngine::lineTo( double dx, double dy )
+{
+  mCurrentPolygon.append( QPointF( dx, dy ) );
+}
+
+void QgsDxfPaintEngine::curveTo( double dx, double dy )
+{
+  mCurrentPolygon.append( QPointF( dx, dy ) ); //todo...
+}
+
+void QgsDxfPaintEngine::endPolygon()
+{
+  if ( mCurrentPolygon.size() > 1 )
+  {
+    drawPolygon( mCurrentPolygon.constData(), mCurrentPolygon.size(), QPaintEngine::OddEvenMode );
+  }
+  mCurrentPolygon.clear();
 }
 
 void QgsDxfPaintEngine::drawLines( const QLineF* lines, int lineCount )
