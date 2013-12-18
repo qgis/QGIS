@@ -764,8 +764,11 @@ bool QgsSimpleMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitSc
   }
   double halfSize = size / 2.0;
 
-
-  QColor c = mBrush.color();
+  QColor c = mPen.color();
+  if ( mPen.style() == Qt::NoPen )
+  {
+    c = mBrush.color();
+  }
   QgsExpression* colorExpression = expression( "color" );
   if ( colorExpression )
   {
