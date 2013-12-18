@@ -85,6 +85,10 @@ EXECUTE_PROCESS (COMMAND mkdir -p "${QPLUGDIR}/../iconengines")
 IF (NOT EXISTS "${QPLUGDIR}/../iconengines/libqsvgicon.dylib")
     EXECUTE_PROCESS (COMMAND ditto ${QARCHS} "@QT_PLUGINS_DIR@/iconengines/libqsvgicon.dylib" "${QPLUGDIR}/../iconengines/libqsvgicon.dylib")
 ENDIF ()
+EXECUTE_PROCESS (COMMAND mkdir -p "${QPLUGDIR}/../phonon_backend")
+IF (NOT EXISTS "${QPLUGDIR}/../phonon_backend/libphonon_qt7.dylib")
+    EXECUTE_PROCESS (COMMAND ditto ${QARCHS} "@QT_PLUGINS_DIR@/phonon_backend/libphonon_qt7.dylib" "${QPLUGDIR}/../phonon_backend/libphonon_qt7.dylib")
+ENDIF ()
 
 # Qwt
 
