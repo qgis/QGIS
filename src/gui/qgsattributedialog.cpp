@@ -271,14 +271,14 @@ void QgsAttributeDialog::init()
 
     foreach ( const QgsRelation& relation, relations )
     {
-      QWidget *myWidget = new QWidget();
-      myWidget->setProperty( "qgisRelation", relation.id() );
-      myWidget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+      QgsRelationEditorWidget *myWidget = QgsRelationEditorWidget::createRelationEditor( relation, *mFeature, mContext, mDialog );
       if ( !myWidget )
         continue;
 
+      myWidget->setProperty( "qgisRelation", relation.id() );
+      myWidget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
       mypInnerLayout->addWidget( myWidget, index, 0, 1, 2 );
-      mypInnerLayout->setRowStretch( index, 1 );
+      mypInnerLayout->setRowStretch( index, 2 );
       ++index;
     }
 
