@@ -548,6 +548,7 @@ void QgsDxfExport::writeEntities()
     }
 
     QgsRenderContext ctx;
+    ctx.setRendererScale( mSymbologyScaleDenominator );
     QgsFeatureRendererV2* renderer = vl->rendererV2();
     renderer->startRender( ctx, vl );
 
@@ -558,15 +559,8 @@ void QgsDxfExport::writeEntities()
       continue;
     }
 
-    QgsVectorDataProvider* dp = vl->dataProvider();
-    if ( !dp )
-    {
-      continue;
-      renderer->stopRender( ctx );
-    }
-
     QgsFeatureRequest freq = QgsFeatureRequest().setSubsetOfAttributes(
-                               renderer->usedAttributes(), dp->fields() );
+                               renderer->usedAttributes(), vl->pendingFields() );
     if ( !mExtent.isEmpty() )
     {
       freq.setFilterRect( mExtent );
@@ -591,13 +585,28 @@ void QgsDxfExport::writeEntities()
           continue;
         }
 
-        //take first symbollayer from first symbol
-        QgsSymbolV2* s = symbolList.first();
-        if ( !s || s->symbolLayerCount() < 1 )
+        if ( mSymbologyExport == QgsDxfExport::SymbolLayerSymbology ) //symbol layer symbology, but layer does not use symbol levels
         {
-          continue;
+          QgsSymbolV2List::iterator symbolIt = symbolList.begin();
+          for ( ; symbolIt != symbolList.end(); ++symbolIt )
+          {
+            int nSymbolLayers = ( *symbolIt )->symbolLayerCount();
+            for ( int i = 0; i < nSymbolLayers; ++i )
+            {
+              addFeature( fet, dxfLayerName( vl->name() ), ( *symbolIt )->symbolLayer( i ), *symbolIt );
+            }
+          }
         }
-        addFeature( fet, dxfLayerName( vl->name() ), s->symbolLayer( 0 ), s );
+        else
+        {
+          //take first symbollayer from first symbol
+          QgsSymbolV2* s = symbolList.first();
+          if ( !s || s->symbolLayerCount() < 1 )
+          {
+            continue;
+          }
+          addFeature( fet, dxfLayerName( vl->name() ), s->symbolLayer( 0 ), s );
+        }
       }
     }
     renderer->stopRender( ctx );
@@ -879,7 +888,7 @@ void QgsDxfExport::addFeature( const QgsFeature& fet, const QString& layer, cons
     QString lineStyleName = "CONTINUOUS";
     if ( mSymbologyExport != NoSymbology )
     {
-      lineStyleFromSymbolLayer( symbolLayer );
+      lineStyleName = lineStyleFromSymbolLayer( symbolLayer );
     }
     QGis::WkbType geometryType = geom->wkbType();
 
