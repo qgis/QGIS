@@ -208,7 +208,7 @@ void QgsComposerMap::draw( QPainter *painter, const QgsRectangle& extent, const 
          mComposition->plotStyle() == QgsComposition::Postscript )
     {
       //if outputing composer, disable optimisations like layer simplification
-      theRendererContext->setRenderingPrintComposition( true );
+      theRendererContext->setUseRenderingOptimization( false );
     }
 
     // force vector output (no caching of marker images etc.)
