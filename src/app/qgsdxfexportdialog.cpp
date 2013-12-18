@@ -57,6 +57,7 @@ QgsDxfExportDialog::QgsDxfExportDialog( const QList<QgsMapLayer*>& layerKeys, QW
   mSymbologyModeComboBox->setCurrentIndex( s.value( "qgis/lastDxfSymbologyMode", "2" ).toInt() );
   //last symbol scale
   mSymbologyScaleLineEdit->setText( s.value( "qgis/lastSymbologyExportScale", "50000" ).toString() );
+  mMapExtentCheckBox->setChecked( s.value( "qgis/lastDxfMapRectangle", "false" ).toBool() );
 
   buttonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
 }
@@ -148,12 +149,9 @@ bool QgsDxfExportDialog::exportMapExtent() const
 void QgsDxfExportDialog::saveSettings()
 {
   QSettings s;
-
-  //last dxf dir
   QFileInfo dxfFileInfo( mFileLineEdit->text() );
   s.setValue( "qgis/lastDxfDir", dxfFileInfo.absolutePath() );
-
-  //last dxf symbology mode
   s.setValue( "qgis/lastDxfSymbologyMode", mSymbologyModeComboBox->currentIndex() );
   s.setValue( "qgis/lastSymbologyExportScale", mSymbologyScaleLineEdit->text() );
+  s.setValue( "qgis/lastDxfMapRectangle", mMapExtentCheckBox->isChecked() );
 }
