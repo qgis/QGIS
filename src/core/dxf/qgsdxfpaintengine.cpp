@@ -62,6 +62,10 @@ void QgsDxfPaintEngine::updateState( const QPaintEngineState& state )
   {
     mPen = state.pen();
   }
+  if ( state.state() & QPaintEngine::DirtyBrush )
+  {
+    mBrush = state.brush();
+  }
 }
 
 void QgsDxfPaintEngine::drawPolygon( const QPointF* points, int pointCount, PolygonDrawMode mode )
@@ -79,7 +83,7 @@ void QgsDxfPaintEngine::drawPolygon( const QPointF* points, int pointCount, Poly
   }
 
   bool closed = ( pointCount > 3 && points[0] == points[pointCount - 1] );
-  mDxf->writePolyline( polyline, mLayer, "CONTINUOUS", currentPenColor(), currentWidth(), closed );
+  mDxf->writePolyline( polyline, mLayer, "CONTINUOUS", currentColor(), currentWidth(), closed );
 }
 
 void QgsDxfPaintEngine::drawRects( const QRectF* rects, int rectCount )
@@ -99,7 +103,7 @@ void QgsDxfPaintEngine::drawRects( const QRectF* rects, int rectCount )
     QgsPoint pt2 = toDxfCoordinates( QPointF( right, bottom ) );
     QgsPoint pt3 = toDxfCoordinates( QPointF( left, top ) );
     QgsPoint pt4 = toDxfCoordinates( QPointF( right, top ) );
-    mDxf->writeSolid( mLayer, currentPenColor(), pt1, pt2, pt3, pt4 );
+    mDxf->writeSolid( mLayer, currentColor(), pt1, pt2, pt3, pt4 );
   }
 }
 
@@ -110,7 +114,7 @@ void QgsDxfPaintEngine::drawEllipse( const QRectF& rect )
   //a circle
   if ( qgsDoubleNear( rect.width(), rect.height() ) )
   {
-    mDxf->writeCircle( mLayer, currentPenColor(), toDxfCoordinates( midPoint ), rect.width() / 2.0 );
+    mDxf->writeCircle( mLayer, currentColor(), toDxfCoordinates( midPoint ), rect.width() / 2.0 );
   }
 
   //todo: create polyline for real ellises
@@ -118,50 +122,52 @@ void QgsDxfPaintEngine::drawEllipse( const QRectF& rect )
 
 void QgsDxfPaintEngine::drawPath( const QPainterPath& path )
 {
-  /*QList<QPolygonF> polygonList = path.toFillPolygons();
-  QList<QPolygonF>::const_iterator pIt = polygonList.constBegin();
-  for ( ; pIt != polygonList.constEnd(); ++pIt )
-  {
-    drawPolygon( pIt->constData(), pIt->size(), pIt->isClosed() ? QPaintEngine::OddEvenMode : QPaintEngine::PolylineMode );
-  }*/
-
   int pathLength = path.elementCount();
   for ( int i = 0; i < pathLength; ++i )
   {
     const QPainterPath::Element& pathElem = path.elementAt( i );
-    if ( pathElem.isMoveTo() )
+    if ( pathElem.type == QPainterPath::MoveToElement )
     {
       moveTo( pathElem.x, pathElem.y );
     }
-    else if ( pathElem.isLineTo() )
+    else if ( pathElem.type == QPainterPath::LineToElement )
     {
       lineTo( pathElem.x, pathElem.y );
     }
-    else if ( pathElem.isCurveTo() )
+    else if ( pathElem.type == QPainterPath::CurveToElement )
     {
       curveTo( pathElem.x, pathElem.y );
     }
+    else if ( pathElem.type == QPainterPath::CurveToDataElement )
+    {
+      mCurrentCurve.append( QPointF( pathElem.x, pathElem.y ) );
+    }
   }
+  endCurve();
   endPolygon();
 }
 
 void QgsDxfPaintEngine::moveTo( double dx, double dy )
 {
-  if ( mCurrentPolygon.size() < 0 )
-  {
-    endPolygon();
-  }
+  endCurve();
+  endPolygon();
   mCurrentPolygon.append( QPointF( dx, dy ) );
 }
 
 void QgsDxfPaintEngine::lineTo( double dx, double dy )
 {
+  endCurve();
   mCurrentPolygon.append( QPointF( dx, dy ) );
 }
 
 void QgsDxfPaintEngine::curveTo( double dx, double dy )
 {
-  mCurrentPolygon.append( QPointF( dx, dy ) ); //todo...
+  endCurve();
+  if ( mCurrentPolygon.size() > 0 )
+  {
+    mCurrentCurve.append( mCurrentPolygon.last() );
+  }
+  mCurrentCurve.append( QPointF( dx, dy ) );
 }
 
 void QgsDxfPaintEngine::endPolygon()
@@ -171,6 +177,35 @@ void QgsDxfPaintEngine::endPolygon()
     drawPolygon( mCurrentPolygon.constData(), mCurrentPolygon.size(), QPaintEngine::OddEvenMode );
   }
   mCurrentPolygon.clear();
+}
+
+void QgsDxfPaintEngine::endCurve()
+{
+  if ( mCurrentCurve.size() < 1 )
+  {
+    return;
+  }
+  if ( mCurrentPolygon.size() < 1 )
+  {
+    mCurrentCurve.clear();
+    return;
+  }
+  //mCurrentCurve.prepend( mCurrentPolygon.last() );
+
+  if ( mCurrentCurve.size() >= 3 )
+  {
+    double t = 0.05;
+    for ( int i = 1; i < 20; ++i ) //approximate curve with 20 segments
+    {
+      mCurrentPolygon.append( bezierPoint( mCurrentCurve, t ) );
+      t += 0.05;
+    }
+  }
+  else if ( mCurrentCurve.size() == 2 )
+  {
+    mCurrentPolygon.append( mCurrentCurve.at( 1 ) );
+  }
+  mCurrentCurve.clear();
 }
 
 void QgsDxfPaintEngine::drawLines( const QLineF* lines, int lineCount )
@@ -184,7 +219,7 @@ void QgsDxfPaintEngine::drawLines( const QLineF* lines, int lineCount )
   {
     QgsPoint pt1 = toDxfCoordinates( lines[i].p1() );
     QgsPoint pt2 = toDxfCoordinates( lines[i].p2() );
-    mDxf->writeLine( pt1, pt2, mLayer, "CONTINUOUS", currentPenColor(), currentWidth() );
+    mDxf->writeLine( pt1, pt2, mLayer, "CONTINUOUS", currentColor(), currentWidth() );
   }
 }
 
@@ -199,14 +234,19 @@ QgsPoint QgsDxfPaintEngine::toDxfCoordinates( const QPointF& pt ) const
   return QgsPoint( dxfPt.x(), dxfPt.y() );
 }
 
-int QgsDxfPaintEngine::currentPenColor() const
+int QgsDxfPaintEngine::currentColor() const
 {
   if ( !mDxf )
   {
     return 0;
   }
 
-  return mDxf->closestColorMatch( mPen.color().rgb() );
+  QColor c = mPen.color();
+  if ( mPen.style() == Qt::NoPen )
+  {
+    c = mBrush.color();
+  }
+  return mDxf->closestColorMatch( c.rgb() );
 }
 
 double QgsDxfPaintEngine::currentWidth() const
@@ -217,4 +257,109 @@ double QgsDxfPaintEngine::currentWidth() const
   }
 
   return mPen.widthF() * mPaintDevice->widthScaleFactor();
+}
+
+QPointF QgsDxfPaintEngine::bezierPoint( const QList<QPointF>& controlPolygon, double t )
+{
+  /*if ( p && mControlPoly )
+  {
+    p->setX( 0 );
+    p->setY( 0 );
+    p->setZ( 0 );
+
+    for ( int n = 1; n <= int( mControlPoly->count() ); n++ )
+    {
+      double bernst = MathUtils::calcBernsteinPoly( mControlPoly->count() - 1, n - 1, t );
+      p->setX( p->getX() + ( *mControlPoly )[n-1]->getX()*bernst );
+      p->setY( p->getY() + ( *mControlPoly )[n-1]->getY()*bernst );
+      p->setZ( p->getZ() + ( *mControlPoly )[n-1]->getZ()*bernst );
+    }
+  }
+
+  else
+  {
+    QgsDebugMsg( "warning: null pointer" );
+  }*/
+
+  double x = 0;
+  double y = 0;
+  int cPolySize = controlPolygon.size();
+  double bPoly  = 0;
+
+  QList<QPointF>::const_iterator it = controlPolygon.constBegin();
+  int i = 0;
+  for ( ; it != controlPolygon.constEnd(); ++it )
+  {
+    bPoly = bernsteinPoly( cPolySize - 1, i, t );
+    x += ( it->x() * bPoly );
+    y += ( it->y() * bPoly );
+    ++i;
+  }
+
+  return QPointF( x, y );
+}
+
+double QgsDxfPaintEngine::bernsteinPoly( int n, int i, double t )
+{
+  if ( i < 0 )
+  {
+    return 0;
+  }
+
+  return lower( n, i )*power( t, i )*power(( 1 - t ), ( n - i ) );
+}
+
+int QgsDxfPaintEngine::lower( int n, int i )
+{
+  if ( i >= 0 && i <= n )
+  {
+    return faculty( n ) / ( faculty( i )*faculty( n - i ) );
+  }
+  else
+  {
+    return 0;
+  }
+}
+
+double QgsDxfPaintEngine::power( double a, int b )
+{
+  if ( b == 0 )
+  {
+    return 1;
+  }
+  double tmp = a;
+  for ( int i = 2; i <= qAbs(( double )b ); i++ )
+  {
+
+    a *= tmp;
+  }
+  if ( b > 0 )
+  {
+    return a;
+  }
+  else
+  {
+    return ( 1.0 / a );
+  }
+}
+
+int QgsDxfPaintEngine::faculty( int n )
+{
+  if ( n < 0 )//Is faculty also defined for negative integers?
+  {
+    return 0;
+  }
+  int i;
+  int result = n;
+
+  if ( n == 0 || n == 1 )
+  {
+    return 1;
+  }//faculty of 0 is 1!
+
+  for ( i = n - 1; i >= 2; i-- )
+  {
+    result *= i;
+  }
+  return result;
 }

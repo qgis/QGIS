@@ -48,11 +48,6 @@ class CORE_EXPORT QgsDxfPaintEngine: public QPaintEngine
 
     void setShift( const QPointF& shift ) { mShift = shift; }
 
-    void moveTo( double dx, double dy );
-    void lineTo( double dx, double dy );
-    void curveTo( double dx, double dy );
-    void endPolygon();
-
   private:
     const QgsDxfPaintDevice* mPaintDevice;
     QgsDxfExport* mDxf;
@@ -60,13 +55,28 @@ class CORE_EXPORT QgsDxfPaintEngine: public QPaintEngine
     //painter state information
     QTransform mTransform;
     QPen mPen;
+    QBrush mBrush;
     QString mLayer;
     QPointF mShift;
     QPolygonF mCurrentPolygon;
+    QList<QPointF> mCurrentCurve;
 
     QgsPoint toDxfCoordinates( const QPointF& pt ) const;
-    int currentPenColor() const;
+    int currentColor() const;
     double currentWidth() const;
+
+    void moveTo( double dx, double dy );
+    void lineTo( double dx, double dy );
+    void curveTo( double dx, double dy );
+    void endPolygon();
+    void endCurve();
+
+    //utils for bezier curve calculation
+    static QPointF bezierPoint( const QList<QPointF>& controlPolygon, double t );
+    static double bernsteinPoly( int n, int i, double t );
+    static int lower( int n, int i );
+    static double power( double a, int b );
+    static int faculty( int n );
 };
 
 #endif // QGSDXFPAINTENGINE_H
