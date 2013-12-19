@@ -824,8 +824,8 @@ bool QgsSimpleMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitSc
     e.writeGroup( 8, layerName );
 
     e.writeGroup( 62, colorIndex );
-    e.writeGroup( 10, halfSize + shift.x() );
-    e.writeGroup( 20, halfSize + shift.y() );
+    e.writeGroup( 10, shift.x() );
+    e.writeGroup( 20, shift.y() );
     e.writeGroup( 30, 0.0 );
     e.writeGroup( 40, halfSize );
   }
