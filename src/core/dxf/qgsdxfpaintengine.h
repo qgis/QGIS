@@ -39,7 +39,6 @@ class CORE_EXPORT QgsDxfPaintEngine: public QPaintEngine
 
     void drawPolygon( const QPointF * points, int pointCount, PolygonDrawMode mode );
     void drawRects( const QRectF * rects, int rectCount );
-    void drawEllipse( const QRectF& rect );
     void drawPath( const QPainterPath& path );
     void drawLines( const QLineF* lines, int lineCount );
 

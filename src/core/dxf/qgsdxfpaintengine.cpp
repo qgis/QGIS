@@ -107,19 +107,6 @@ void QgsDxfPaintEngine::drawRects( const QRectF* rects, int rectCount )
   }
 }
 
-void QgsDxfPaintEngine::drawEllipse( const QRectF& rect )
-{
-  QPoint midPoint(( rect.left() + rect.right() ) / 2.0, ( rect.top() + rect.bottom() ) / 2.0 );
-
-  //a circle
-  if ( qgsDoubleNear( rect.width(), rect.height() ) )
-  {
-    mDxf->writeCircle( mLayer, currentColor(), toDxfCoordinates( midPoint ), rect.width() / 2.0 );
-  }
-
-  //todo: create polyline for real ellises
-}
-
 void QgsDxfPaintEngine::drawPath( const QPainterPath& path )
 {
   int pathLength = path.elementCount();
