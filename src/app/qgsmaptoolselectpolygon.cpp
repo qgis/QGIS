@@ -71,3 +71,4 @@ void QgsMapToolSelectPolygon::canvasMoveEvent( QMouseEvent * e )
     mRubberBand->addPoint( toMapCoordinates( e->pos() ) );
   }
 }
+

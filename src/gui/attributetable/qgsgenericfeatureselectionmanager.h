@@ -24,7 +24,7 @@
  * If you want to synchronize the attribute table selection with the map canvas selection, you
  * should use { @link QgsVectorLayerSelectionManager } instead.
  */
-class CORE_EXPORT QgsGenericFeatureSelectionManager : public QgsIFeatureSelectionManager
+class GUI_EXPORT QgsGenericFeatureSelectionManager : public QgsIFeatureSelectionManager
 {
     Q_OBJECT
 

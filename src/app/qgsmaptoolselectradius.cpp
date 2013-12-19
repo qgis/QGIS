@@ -109,4 +109,3 @@ void QgsMapToolSelectRadius::setRadiusRubberBand( QgsPoint & radiusEdge )
     mRubberBand->addPoint( radiusPoint );
   }
 }
-
