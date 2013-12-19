@@ -757,13 +757,25 @@ bool QgsSimpleMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitSc
         break;
     }
   }
-
   if ( mSizeUnit == QgsSymbolV2::MM )
   {
     size *= mmMapUnitScaleFactor;
   }
   double halfSize = size / 2.0;
 
+  //outlineWidth
+  double outlineWidth = mOutlineWidth;
+  QgsExpression* outlineWidthExpression = expression( "outline_width" );
+  if ( outlineWidthExpression )
+  {
+    outlineWidth = outlineWidthExpression->evaluate( const_cast<QgsFeature*>( context->feature() ) ).toDouble();
+  }
+  if ( mSizeUnit == QgsSymbolV2::MM )
+  {
+    outlineWidth *= mmMapUnitScaleFactor;
+  }
+
+  //color
   QColor c = mPen.color();
   if ( mPen.style() == Qt::NoPen )
   {
@@ -832,6 +844,56 @@ bool QgsSimpleMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitSc
     QPointF pt3 = t.map( QPointF( 0, halfSize ) );
     QPointF pt4 = t.map( QPointF( halfSize, 0 ) );
     e.writeSolid( layerName, colorIndex, QgsPoint( pt1.x(), pt1.y() ), QgsPoint( pt2.x(), pt2.y() ), QgsPoint( pt3.x(), pt3.y() ), QgsPoint( pt4.x(), pt4.y() ) );
+  }
+  else if ( mName == "triangle" )
+  {
+    QPointF pt1 = t.map( QPointF( -halfSize, -halfSize ) );
+    QPointF pt2 = t.map( QPointF( halfSize, -halfSize ) );
+    QPointF pt3 = t.map( QPointF( 0, halfSize ) );
+    e.writeSolid( layerName, colorIndex, QgsPoint( pt1.x(), pt1.y() ), QgsPoint( pt2.x(), pt2.y() ), QgsPoint( pt3.x(), pt3.y() ), QgsPoint( pt3.x(), pt3.y() ) );
+  }
+  /*else if( mName == "equilateral_triangle" )
+  {
+
+  }*/
+  else if ( mName == "line" )
+  {
+    QPointF pt1 = t.map( QPointF( 0, halfSize ) );
+    QPointF pt2 = t.map( QPointF( 0, -halfSize ) );
+    e.writeLine( QgsPoint( pt1.x(), pt1.y() ), QgsPoint( pt2.x(), pt2.y() ), layerName, "CONTINUOUS", colorIndex, outlineWidth );
+  }
+  else if ( mName == "coss" )
+  {
+    QPointF pt1 = t.map( QPointF( -halfSize, 0 ) );
+    QPointF pt2 = t.map( QPointF( halfSize, 0 ) );
+    QPointF pt3 = t.map( QPointF( 0, -halfSize ) );
+    QPointF pt4 = t.map( QPointF( 0, halfSize ) );
+    e.writeLine( QgsPoint( pt1.x(), pt1.y() ), QgsPoint( pt2.x(), pt2.y() ), layerName, "CONTINUOUS", colorIndex, outlineWidth );
+    e.writeLine( QgsPoint( pt3.x(), pt3.y() ), QgsPoint( pt4.x(), pt4.y() ), layerName, "CONTINUOUS", colorIndex, outlineWidth );
+  }
+  else if ( mName == "x" || mName == "cross2" )
+  {
+    QPointF pt1 = t.map( QPointF( -halfSize, -halfSize ) );
+    QPointF pt2 = t.map( QPointF( halfSize, halfSize ) );
+    QPointF pt3 = t.map( QPointF( -halfSize, halfSize ) );
+    QPointF pt4 = t.map( QPointF( halfSize, -halfSize ) );
+    e.writeLine( QgsPoint( pt1.x(), pt1.y() ), QgsPoint( pt2.x(), pt2.y() ), layerName, "CONTINUOUS", colorIndex, outlineWidth );
+    e.writeLine( QgsPoint( pt3.x(), pt3.y() ), QgsPoint( pt4.x(), pt4.y() ), layerName, "CONTINUOUS", colorIndex, outlineWidth );
+  }
+  else if ( mName == "arrowhead" )
+  {
+    QPointF pt1 = t.map( QPointF( -halfSize, halfSize ) );
+    QPointF pt2 = t.map( QPointF( 0, 0 ) );
+    QPointF pt3 = t.map( QPointF( -halfSize, -halfSize ) );
+    e.writeLine( QgsPoint( pt1.x(), pt1.y() ), QgsPoint( pt2.x(), pt2.y() ), layerName, "CONTINUOUS", colorIndex, outlineWidth );
+    e.writeLine( QgsPoint( pt3.x(), pt3.y() ), QgsPoint( pt2.x(), pt2.y() ), layerName, "CONTINUOUS", colorIndex, outlineWidth );
+  }
+  else if ( mName == "filled_arrowhead" )
+  {
+    QPointF pt1 = t.map( QPointF( -halfSize, halfSize ) );
+    QPointF pt2 = t.map( QPointF( 0, 0 ) );
+    QPointF pt3 = t.map( QPointF( -halfSize, -halfSize ) );
+    e.writeSolid( layerName, colorIndex, QgsPoint( pt1.x(), pt1.y() ), QgsPoint( pt2.x(), pt2.y() ), QgsPoint( pt3.x(), pt3.y() ), QgsPoint( pt3.x(), pt3.y() ) );
   }
   else
   {
