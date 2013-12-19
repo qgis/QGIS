@@ -261,26 +261,6 @@ double QgsDxfPaintEngine::currentWidth() const
 
 QPointF QgsDxfPaintEngine::bezierPoint( const QList<QPointF>& controlPolygon, double t )
 {
-  /*if ( p && mControlPoly )
-  {
-    p->setX( 0 );
-    p->setY( 0 );
-    p->setZ( 0 );
-
-    for ( int n = 1; n <= int( mControlPoly->count() ); n++ )
-    {
-      double bernst = MathUtils::calcBernsteinPoly( mControlPoly->count() - 1, n - 1, t );
-      p->setX( p->getX() + ( *mControlPoly )[n-1]->getX()*bernst );
-      p->setY( p->getY() + ( *mControlPoly )[n-1]->getY()*bernst );
-      p->setZ( p->getZ() + ( *mControlPoly )[n-1]->getZ()*bernst );
-    }
-  }
-
-  else
-  {
-    QgsDebugMsg( "warning: null pointer" );
-  }*/
-
   double x = 0;
   double y = 0;
   int cPolySize = controlPolygon.size();
