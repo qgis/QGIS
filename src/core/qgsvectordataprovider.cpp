@@ -194,12 +194,6 @@ QString QgsVectorDataProvider::capabilitiesString() const
     QgsDebugMsg( "Capability: Change Geometries" );
   }
 
-  if ( abilities & QgsVectorDataProvider::SimplifyGeometries )
-  {
-    abilitiesList += tr( "Simplify Geometries" );
-    QgsDebugMsg( "Capability: Simplify Geometries before fetch the feature" );
-  }
-
   return abilitiesList.join( ", " );
 
 }

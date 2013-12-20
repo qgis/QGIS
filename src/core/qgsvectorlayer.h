@@ -57,6 +57,7 @@ class QgsDiagramLayerSettings;
 class QgsGeometryCache;
 class QgsVectorLayerEditBuffer;
 class QgsSymbolV2;
+class QgsAbstractGeometrySimplifier;
 
 typedef QList<int> QgsAttributeList;
 typedef QSet<int> QgsAttributeIds;
@@ -729,12 +730,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Draw layer with renderer V2. QgsFeatureRenderer::startRender() needs to be called before using this method
      * @note added in 1.4
      */
-    void drawRendererV2( QgsFeatureIterator &fit, QgsRenderContext& rendererContext, bool labeling );
+    void drawRendererV2( QgsFeatureIterator &fit, QgsRenderContext& rendererContext, bool labeling, const QgsAbstractGeometrySimplifier* geometrySimplifier = NULL );
 
     /** Draw layer with renderer V2 using symbol levels. QgsFeatureRenderer::startRender() needs to be called before using this method
      * @note added in 1.4
      */
-    void drawRendererV2Levels( QgsFeatureIterator &fit, QgsRenderContext& rendererContext, bool labeling );
+    void drawRendererV2Levels( QgsFeatureIterator &fit, QgsRenderContext& rendererContext, bool labeling, const QgsAbstractGeometrySimplifier* geometrySimplifier = NULL );
 
     /** Returns point, line or polygon */
     QGis::GeometryType geometryType() const;

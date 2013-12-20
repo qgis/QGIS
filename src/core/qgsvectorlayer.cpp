@@ -400,7 +400,7 @@ void QgsVectorLayer::drawLabels( QgsRenderContext& rendererContext )
 
 
 
-void QgsVectorLayer::drawRendererV2( QgsFeatureIterator &fit, QgsRenderContext& rendererContext, bool labeling )
+void QgsVectorLayer::drawRendererV2( QgsFeatureIterator &fit, QgsRenderContext& rendererContext, bool labeling, const QgsAbstractGeometrySimplifier* geometrySimplifier )
 {
   if ( !hasGeometryType() )
     return;
@@ -451,6 +451,13 @@ void QgsVectorLayer::drawRendererV2( QgsFeatureIterator &fit, QgsRenderContext& 
       bool sel = mSelectedFeatureIds.contains( fet.id() );
       bool drawMarker = ( mEditBuffer && ( !vertexMarkerOnlyForSelection || sel ) );
 
+      // simplify the geometry using the current map2pixel context
+      if ( geometrySimplifier )
+      {
+        fet = QgsFeature( fet );
+        geometrySimplifier->simplifyGeometry( fet.geometry() );
+      }
+
       // render feature
       bool rendered = mRendererV2->renderFeature( fet, rendererContext, -1, sel, drawMarker );
 
@@ -493,7 +500,7 @@ void QgsVectorLayer::drawRendererV2( QgsFeatureIterator &fit, QgsRenderContext& 
 #endif
 }
 
-void QgsVectorLayer::drawRendererV2Levels( QgsFeatureIterator &fit, QgsRenderContext& rendererContext, bool labeling )
+void QgsVectorLayer::drawRendererV2Levels( QgsFeatureIterator &fit, QgsRenderContext& rendererContext, bool labeling, const QgsAbstractGeometrySimplifier* geometrySimplifier )
 {
   if ( !hasGeometryType() )
     return;
@@ -537,6 +544,13 @@ void QgsVectorLayer::drawRendererV2Levels( QgsFeatureIterator &fit, QgsRenderCon
     if ( !sym )
     {
       continue;
+    }
+
+    // simplify the geometry using the current map2pixel context
+    if ( geometrySimplifier )
+    {
+      fet = QgsFeature( fet );
+      geometrySimplifier->simplifyGeometry( fet.geometry() );
     }
 
     if ( !features.contains( sym ) )
@@ -698,14 +712,14 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
   //do startRender before getFeatures to give renderers the possibility of querying features in the startRender method
   mRendererV2->startRender( rendererContext, this );
 
-  QgsFeatureRequest& featureRequest = QgsFeatureRequest()
-                                      .setFilterRect( rendererContext.extent() )
-                                      .setSubsetOfAttributes( attributes );
+  QgsFeatureIterator fit = getFeatures( QgsFeatureRequest()
+                                        .setFilterRect( rendererContext.extent() )
+                                        .setSubsetOfAttributes( attributes ) );
 
-  QgsFeatureIterator fit = QgsFeatureIterator();
+  QgsAbstractGeometrySimplifier* geometrySimplifier = NULL;
 
-  // Enable the simplification of the geometries (Using the current map2pixel context) before fetch the features.
-  if ( simplifyDrawingCanbeApplied( QgsVectorLayer::GeometrySimplification | QgsVectorLayer::EnvelopeSimplification ) && !( featureRequest.flags() & QgsFeatureRequest::NoGeometry ) )
+  // enable the simplification of the geometries (Using the current map2pixel context) before send it to renderer engine.
+  if ( simplifyDrawingCanbeApplied( QgsVectorLayer::GeometrySimplification | QgsVectorLayer::EnvelopeSimplification ) )
   {
     QPainter* p = rendererContext.painter();
     float dpi = ( p->device()->logicalDpiX() + p->device()->logicalDpiY() ) / 2;
@@ -715,29 +729,21 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
     if ( mSimplifyDrawingHints & QgsVectorLayer::GeometrySimplification ) simplifyFlags |= QgsMapToPixelSimplifier::SimplifyGeometry;
     if ( mSimplifyDrawingHints & QgsVectorLayer::EnvelopeSimplification ) simplifyFlags |= QgsMapToPixelSimplifier::SimplifyEnvelope;
 
-    QgsFeatureRequest::Flags requestFlags = QgsFeatureRequest::NoFlags;
-    if ( mSimplifyDrawingHints & QgsVectorLayer::GeometrySimplification ) requestFlags |= QgsFeatureRequest::SimplifyGeometry;
-    if ( mSimplifyDrawingHints & QgsVectorLayer::EnvelopeSimplification ) requestFlags |= QgsFeatureRequest::SimplifyEnvelope;
-
-    featureRequest.setFlags( featureRequest.flags() | requestFlags );
-    featureRequest.setCoordinateTransform( rendererContext.coordinateTransform() );
-    featureRequest.setMapToPixel( &rendererContext.mapToPixel() );
-    featureRequest.setMapToPixelTol( map2pixelTol );
-
-    QgsMapToPixelSimplifier* simplifier =
+    geometrySimplifier =
       new QgsMapToPixelSimplifier( simplifyFlags, rendererContext.coordinateTransform(), &rendererContext.mapToPixel(), map2pixelTol );
-
-    fit = QgsFeatureIterator( new QgsSimplifiedVectorLayerFeatureIterator( this, featureRequest, simplifier ) );
-  }
-  else
-  {
-    fit = getFeatures( featureRequest );
   }
 
   if (( mRendererV2->capabilities() & QgsFeatureRendererV2::SymbolLevels ) && mRendererV2->usingSymbolLevels() )
-    drawRendererV2Levels( fit, rendererContext, labeling );
+    drawRendererV2Levels( fit, rendererContext, labeling, geometrySimplifier );
   else
-    drawRendererV2( fit, rendererContext, labeling );
+    drawRendererV2( fit, rendererContext, labeling, geometrySimplifier );
+
+  // release the optional geometry simplifier
+  if ( geometrySimplifier )
+  {
+    delete geometrySimplifier;
+    geometrySimplifier = NULL;
+  }
 
   return true;
 }
