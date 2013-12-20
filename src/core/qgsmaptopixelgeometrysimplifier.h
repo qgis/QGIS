@@ -77,9 +77,9 @@ class CORE_EXPORT QgsMapToPixelSimplifier : public QgsAbstractGeometrySimplifier
     void setMapToPixelTol( float map2pixelTol ) { mMapToPixelTol = map2pixelTol; }
 
     //! Returns a simplified version the specified geometry
-    virtual QgsGeometry* simplify( QgsGeometry* geometry );
+    virtual QgsGeometry* simplify( QgsGeometry* geometry ) const;
     //! Simplifies the specified geometry
-    virtual bool simplifyGeometry( QgsGeometry* geometry );
+    virtual bool simplifyGeometry( QgsGeometry* geometry ) const;
 
     // MapToPixel simplification helper methods
   public:
