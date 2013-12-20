@@ -69,6 +69,18 @@ void QgsComposerLabel::paint( QPainter* painter, const QStyleOptionGraphicsItem*
   painter->rotate( mRotation );
   painter->translate( -mTextBoxWidth / 2.0, -mTextBoxHeight / 2.0 );
 
+  QString textToDraw;
+  if ( mComposition->plotStyle() != QgsComposition::Preview || mComposition->atlasPreviewEnabled() )
+  {
+    //render text with expressions evaluated
+    textToDraw = displayText();
+  }
+  else
+  {
+    //not outputing or using an atlas preview, so render text without expressions evaluated
+    textToDraw = mText;
+  }
+
   if ( mHtmlState )
   {
     painter->scale( 1.0 / mHtmlUnitsToMM / 10.0, 1.0 / mHtmlUnitsToMM / 10.0 );
@@ -110,7 +122,7 @@ void QgsComposerLabel::paint( QPainter* painter, const QStyleOptionGraphicsItem*
     mHtmlLoaded = false;
     connect( webPage, SIGNAL( loadFinished( bool ) ), SLOT( loadingHtmlFinished( bool ) ) );
 
-    webPage->mainFrame()->setHtml( displayText() );
+    webPage->mainFrame()->setHtml( textToDraw );
 
     //For very basic html labels with no external assets, the html load will already be
     //complete before we even get a chance to start the QEventLoop. Make sure we check
@@ -135,7 +147,7 @@ void QgsComposerLabel::paint( QPainter* painter, const QStyleOptionGraphicsItem*
     //debug
     //painter->setPen( QColor( Qt::red ) );
     //painter->drawRect( painterRect );
-    drawText( painter, painterRect, displayText(), mFont, mHAlignment, mVAlignment );
+    drawText( painter, painterRect, textToDraw, mFont, mHAlignment, mVAlignment );
   }
 
   painter->restore();

@@ -32,7 +32,7 @@ QgsAtlasComposition::QgsAtlasComposition( QgsComposition* composition ) :
     mComposerMap( 0 ),
     mHideCoverage( false ), mFixedScale( false ), mMargin( 0.10 ), mFilenamePattern( "'output_'||$feature" ),
     mCoverageLayer( 0 ), mSingleFile( false ),
-    mSortFeatures( false ), mSortAscending( true ),
+    mSortFeatures( false ), mSortAscending( true ), mCurrentFeatureNo( 0 ),
     mFilterFeatures( false ), mFeatureFilter( "" )
 {
 
@@ -47,6 +47,12 @@ QgsAtlasComposition::QgsAtlasComposition( QgsComposition* composition ) :
 
 QgsAtlasComposition::~QgsAtlasComposition()
 {
+}
+
+void QgsAtlasComposition::setEnabled( bool e )
+{
+  mEnabled = e;
+  emit toggled( e );
 }
 
 void QgsAtlasComposition::setCoverageLayer( QgsVectorLayer* layer )
@@ -94,11 +100,13 @@ class FieldSorter
     bool mAscending;
 };
 
-void QgsAtlasComposition::beginRender()
+int QgsAtlasComposition::updateFeatures()
 {
+  //needs to be called when layer, filter, sort changes
+
   if ( !mComposerMap || !mCoverageLayer )
   {
-    return;
+    return 0;
   }
 
   const QgsCoordinateReferenceSystem& coverage_crs = mCoverageLayer->crs();
@@ -107,27 +115,13 @@ void QgsAtlasComposition::beginRender()
   mTransform.setSourceCrs( coverage_crs );
   mTransform.setDestCRS( destination_crs );
 
-  const QgsFields& fields = mCoverageLayer->pendingFields();
-
-  if ( !mSingleFile && mFilenamePattern.size() > 0 )
-  {
-    mFilenameExpr = std::auto_ptr<QgsExpression>( new QgsExpression( mFilenamePattern ) );
-    // expression used to evaluate each filename
-    // test for evaluation errors
-    if ( mFilenameExpr->hasParserError() )
-    {
-      throw std::runtime_error( tr( "Filename parsing error: %1" ).arg( mFilenameExpr->parserErrorString() ).toLocal8Bit().data() );
-    }
-
-    // prepare the filename expression
-    mFilenameExpr->prepare( fields );
-  }
+  updateFilenameExpression();
 
   // select all features with all attributes
   QgsFeatureIterator fit = mCoverageLayer->getFeatures();
 
   std::auto_ptr<QgsExpression> filterExpression;
-  if ( mFilterFeatures )
+  if ( mFilterFeatures && !mFeatureFilter.isEmpty() )
   {
     filterExpression = std::auto_ptr<QgsExpression>( new QgsExpression( mFeatureFilter ) );
     if ( filterExpression->hasParserError() )
@@ -143,7 +137,7 @@ void QgsAtlasComposition::beginRender()
   mFeatureKeys.clear();
   while ( fit.nextFeature( feat ) )
   {
-    if ( mFilterFeatures )
+    if ( mFilterFeatures && !mFeatureFilter.isEmpty() )
     {
       QVariant result = filterExpression->evaluate( &feat, mCoverageLayer->pendingFields() );
       if ( filterExpression->hasEvalError() )
@@ -172,7 +166,32 @@ void QgsAtlasComposition::beginRender()
     qSort( mFeatureIds.begin(), mFeatureIds.end(), sorter );
   }
 
-  mOrigExtent = mComposerMap->extent();
+  QgsExpression::setSpecialColumn( "$numfeatures", QVariant(( int )mFeatureIds.size() ) );
+
+  //jump to first feature if currently using an atlas preview
+  //need to do this in case filtering/layer change has altered matching features
+  if ( mComposition->atlasPreviewEnabled() )
+  {
+    firstFeature();
+  }
+
+  return mFeatureIds.size();
+}
+
+
+bool QgsAtlasComposition::beginRender()
+{
+  if ( !mComposerMap || !mCoverageLayer )
+  {
+    return false;
+  }
+
+  bool featuresUpdated = updateFeatures();
+  if ( !featuresUpdated )
+  {
+    //no matching features found
+    return false;
+  }
 
   mRestoreLayer = false;
   QStringList& layerSet = mComposition->mapRenderer()->layerSet();
@@ -190,6 +209,8 @@ void QgsAtlasComposition::beginRender()
   // special columns for expressions
   QgsExpression::setSpecialColumn( "$numpages", QVariant( mComposition->numPages() ) );
   QgsExpression::setSpecialColumn( "$numfeatures", QVariant(( int )mFeatureIds.size() ) );
+
+  return true;
 }
 
 void QgsAtlasComposition::endRender()
@@ -213,15 +234,48 @@ void QgsAtlasComposition::endRender()
     QStringList& layerSet = mComposition->mapRenderer()->layerSet();
 
     layerSet.push_back( mCoverageLayer->id() );
-    mComposerMap->cache();
-    mComposerMap->update();
   }
-  mComposerMap->setNewExtent( mOrigExtent );
+
+  mComposerMap->cache();
 }
 
 int QgsAtlasComposition::numFeatures() const
 {
   return mFeatureIds.size();
+}
+
+void QgsAtlasComposition::nextFeature()
+{
+  mCurrentFeatureNo++;
+  if ( mCurrentFeatureNo >= mFeatureIds.size() )
+  {
+    mCurrentFeatureNo = mFeatureIds.size() - 1;
+  }
+
+  prepareForFeature( mCurrentFeatureNo );
+}
+
+void QgsAtlasComposition::prevFeature()
+{
+  mCurrentFeatureNo--;
+  if ( mCurrentFeatureNo < 0 )
+  {
+    mCurrentFeatureNo = 0;
+  }
+
+  prepareForFeature( mCurrentFeatureNo );
+}
+
+void QgsAtlasComposition::firstFeature()
+{
+  mCurrentFeatureNo = 0;
+  prepareForFeature( mCurrentFeatureNo );
+}
+
+void QgsAtlasComposition::lastFeature()
+{
+  mCurrentFeatureNo = mFeatureIds.size() - 1;
+  prepareForFeature( mCurrentFeatureNo );
 }
 
 void QgsAtlasComposition::prepareForFeature( int featureI )
@@ -231,22 +285,21 @@ void QgsAtlasComposition::prepareForFeature( int featureI )
     return;
   }
 
+  if ( mFeatureIds.size() == 0 )
+  {
+    emit statusMsgChanged( tr( "No matching atlas features" ) );
+    return;
+  }
+
   // retrieve the next feature, based on its id
   mCoverageLayer->getFeatures( QgsFeatureRequest().setFilterFid( mFeatureIds[ featureI ] ) ).nextFeature( mCurrentFeature );
+
   QgsExpression::setSpecialColumn( "$atlasfeatureid", mCurrentFeature.id() );
   QgsExpression::setSpecialColumn( "$atlasgeometry", QVariant::fromValue( *mCurrentFeature.geometry() ) );
+  QgsExpression::setSpecialColumn( "$feature", QVariant(( int )featureI + 1 ) );
 
-  if ( !mSingleFile && mFilenamePattern.size() > 0 )
-  {
-    QgsExpression::setSpecialColumn( "$feature", QVariant(( int )featureI + 1 ) );
-    QVariant filenameRes = mFilenameExpr->evaluate( &mCurrentFeature, mCoverageLayer->pendingFields() );
-    if ( mFilenameExpr->hasEvalError() )
-    {
-      throw std::runtime_error( tr( "Filename eval error: %1" ).arg( mFilenameExpr->evalErrorString() ).toLocal8Bit().data() );
-    }
-
-    mCurrentFilename = filenameRes.toString();
-  }
+  // generate filename for current feature
+  evalFeatureFilename();
 
   //
   // compute the new extent
@@ -266,10 +319,7 @@ void QgsAtlasComposition::prepareForFeature( int featureI )
   double ya1 = geom_rect.yMinimum();
   double ya2 = geom_rect.yMaximum();
   QgsRectangle new_extent = geom_rect;
-
-  // restore the original extent
-  // (successive calls to setNewExtent tend to deform the original rectangle)
-  mComposerMap->setNewExtent( mOrigExtent );
+  QgsRectangle mOrigExtent = mComposerMap->extent();
 
   if ( mFixedScale )
   {
@@ -318,7 +368,6 @@ void QgsAtlasComposition::prepareForFeature( int featureI )
   // evaluate label expressions
   QList<QgsComposerLabel*> labels;
   mComposition->composerItems( labels );
-  QgsExpression::setSpecialColumn( "$feature", QVariant(( int )featureI + 1 ) );
 
   for ( QList<QgsComposerLabel*>::iterator lit = labels.begin(); lit != labels.end(); ++lit )
   {
@@ -326,7 +375,9 @@ void QgsAtlasComposition::prepareForFeature( int featureI )
   }
 
   // set the new extent (and render)
-  mComposerMap->setNewExtent( new_extent );
+  mComposerMap->setNewAtlasFeatureExtent( new_extent );
+
+  emit statusMsgChanged( QString( tr( "Atlas feature %1 of %2" ) ).arg( featureI + 1 ).arg( mFeatureIds.size() ) );
 }
 
 const QString& QgsAtlasComposition::currentFilename() const
@@ -383,6 +434,7 @@ void QgsAtlasComposition::writeXML( QDomElement& elem, QDomDocument& doc ) const
 void QgsAtlasComposition::readXML( const QDomElement& atlasElem, const QDomDocument& )
 {
   mEnabled = atlasElem.attribute( "enabled", "false" ) == "true" ? true : false;
+  emit toggled( mEnabled );
   if ( !mEnabled )
   {
     emit parameterChanged();
@@ -431,3 +483,84 @@ void QgsAtlasComposition::readXML( const QDomElement& atlasElem, const QDomDocum
 
   emit parameterChanged();
 }
+
+void QgsAtlasComposition::setHideCoverage( bool hide )
+{
+  mHideCoverage = hide;
+
+  if ( mComposition->atlasPreviewEnabled() )
+  {
+    //an atlas preview is enabled, so reflect changes in coverage layer visibility immediately
+    QStringList& layerSet = mComposition->mapRenderer()->layerSet();
+    if ( hide )
+    {
+      // look for the layer in the renderer's set
+      int removeAt = layerSet.indexOf( mCoverageLayer->id() );
+      if ( removeAt != -1 )
+      {
+        mRestoreLayer = true;
+        layerSet.removeAt( removeAt );
+      }
+    }
+    else
+    {
+      if ( mRestoreLayer )
+      {
+        layerSet.push_back( mCoverageLayer->id() );
+        mRestoreLayer = false;
+      }
+    }
+    mComposerMap->cache();
+    mComposition->update();
+  }
+
+}
+
+void QgsAtlasComposition::setFilenamePattern( const QString& pattern )
+{
+  mFilenamePattern = pattern;
+  updateFilenameExpression();
+}
+
+void QgsAtlasComposition::updateFilenameExpression()
+{
+  const QgsFields& fields = mCoverageLayer->pendingFields();
+
+  if ( !mSingleFile && mFilenamePattern.size() > 0 )
+  {
+    mFilenameExpr = std::auto_ptr<QgsExpression>( new QgsExpression( mFilenamePattern ) );
+    // expression used to evaluate each filename
+    // test for evaluation errors
+    if ( mFilenameExpr->hasParserError() )
+    {
+      throw std::runtime_error( tr( "Filename parsing error: %1" ).arg( mFilenameExpr->parserErrorString() ).toLocal8Bit().data() );
+    }
+
+    // prepare the filename expression
+    mFilenameExpr->prepare( fields );
+  }
+
+  //if atlas preview is currently enabled, regenerate filename for current feature
+  if ( mComposition->atlasPreviewEnabled() )
+  {
+    evalFeatureFilename();
+  }
+
+}
+
+void QgsAtlasComposition::evalFeatureFilename()
+{
+  //generate filename for current atlas feature
+  if ( !mSingleFile && mFilenamePattern.size() > 0 )
+  {
+    QVariant filenameRes = mFilenameExpr->evaluate( &mCurrentFeature, mCoverageLayer->pendingFields() );
+    if ( mFilenameExpr->hasEvalError() )
+    {
+      throw std::runtime_error( tr( "Filename eval error: %1" ).arg( mFilenameExpr->evalErrorString() ).toLocal8Bit().data() );
+    }
+
+    mCurrentFilename = filenameRes.toString();
+  }
+}
+
+

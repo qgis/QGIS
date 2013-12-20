@@ -43,13 +43,13 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
 
     /** Is the atlas generation enabled ? */
     bool enabled() const { return mEnabled; }
-    void setEnabled( bool e ) { mEnabled = e; }
+    void setEnabled( bool e );
 
     QgsComposerMap* composerMap() const { return mComposerMap; }
     void setComposerMap( QgsComposerMap* map ) { mComposerMap = map; }
 
     bool hideCoverage() const { return mHideCoverage; }
-    void setHideCoverage( bool hide ) { mHideCoverage = hide; }
+    void setHideCoverage( bool hide );
 
     bool fixedScale() const { return mFixedScale; }
     void setFixedScale( bool fixed ) { mFixedScale = fixed; }
@@ -58,7 +58,7 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     void setMargin( float margin ) { mMargin = margin; }
 
     QString filenamePattern() const { return mFilenamePattern; }
-    void setFilenamePattern( const QString& pattern ) { mFilenamePattern = pattern; }
+    void setFilenamePattern( const QString& pattern );
 
     QgsVectorLayer* coverageLayer() const { return mCoverageLayer; }
     void setCoverageLayer( QgsVectorLayer* lmap );
@@ -81,8 +81,9 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     int sortKeyAttributeIndex() const { return mSortKeyAttributeIdx; }
     void setSortKeyAttributeIndex( int idx ) { mSortKeyAttributeIdx = idx; }
 
-    /** Begins the rendering. */
-    void beginRender();
+    /** Begins the rendering. Returns true if successful, false if no matching atlas
+      features found.*/
+    bool beginRender();
     /** Ends the rendering. Restores original extent */
     void endRender();
 
@@ -100,11 +101,32 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
 
     QgsComposition* composition() { return mComposition; }
 
+    /** Requeries the current atlas coverage layer and applies filtering and sorting. Returns
+      number of matching features. Must be called after prepareForFeature( i ) */
+    int updateFeatures();
+
+    void nextFeature();
+    void prevFeature();
+    void lastFeature();
+    void firstFeature();
+
   signals:
     /** emitted when one of the parameters changes */
     void parameterChanged();
 
+    /** emitted when atlas is enabled or disabled */
+    void toggled( bool );
+
+    /**Is emitted when the atlas has an updated status bar message for the composer window*/
+    void statusMsgChanged( QString message );
+
   private:
+    /**Updates the filename expression*/
+    void updateFilenameExpression();
+
+    /**Evaluates filename for current feature*/
+    void evalFeatureFilename();
+
     QgsComposition* mComposition;
 
     bool mEnabled;
@@ -122,6 +144,10 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     bool mSortFeatures;
     // sort direction
     bool mSortAscending;
+
+    // current atlas feature number
+    int mCurrentFeatureNo;
+
   public:
     typedef QMap< QgsFeatureId, QVariant > SorterKeys;
   private:
@@ -139,7 +165,6 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     QVector<QgsFeatureId> mFeatureIds;
 
     QgsFeature mCurrentFeature;
-    QgsRectangle mOrigExtent;
     bool mRestoreLayer;
     std::auto_ptr<QgsExpression> mFilenameExpr;
 };

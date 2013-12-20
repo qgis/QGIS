@@ -72,6 +72,7 @@ QgsComposition::QgsComposition( QgsMapRenderer* mapRenderer )
     , mActiveItemCommand( 0 )
     , mActiveMultiFrameCommand( 0 )
     , mAtlasComposition( this )
+    , mAtlasPreviewEnabled( false )
     , mPreventCursorChange( false )
 {
   setBackgroundBrush( Qt::gray );
@@ -115,6 +116,7 @@ QgsComposition::QgsComposition()
     mActiveItemCommand( 0 ),
     mActiveMultiFrameCommand( 0 ),
     mAtlasComposition( this ),
+    mAtlasPreviewEnabled( false ),
     mPreventCursorChange( false )
 {
   //load default composition settings
@@ -761,6 +763,21 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
       pushAddRemoveCommand( newMap, tr( "Map added" ) );
     }
   }
+  //now that all map items have been created, re-connect overview map signals
+  QList<QgsComposerMap*> maps;
+  composerItems( maps );
+  for ( QList<QgsComposerMap*>::iterator mit = maps.begin(); mit != maps.end(); ++mit )
+  {
+    if (( *mit )->overviewFrameMapId() != -1 )
+    {
+      const QgsComposerMap* overviewMap = getComposerMapById(( *mit )->overviewFrameMapId() );
+      if ( overviewMap )
+      {
+        QObject::connect( overviewMap, SIGNAL( extentChanged() ), *mit, SLOT( overviewExtentChanged() ) );
+      }
+    }
+  }
+
   // arrow
   QDomNodeList composerArrowList = elem.elementsByTagName( "ComposerArrow" );
   for ( int i = 0; i < composerArrowList.size(); ++i )
@@ -2271,4 +2288,31 @@ void QgsComposition::computeWorldFileParameters( double& a, double& b, double& c
   d = r[3] * s[0] + r[4] * s[3];
   e = r[3] * s[1] + r[4] * s[4];
   f = r[3] * s[2] + r[4] * s[5] + r[5];
+}
+
+bool QgsComposition::setAtlasPreviewEnabled( bool e )
+{
+  mAtlasPreviewEnabled = e;
+
+  if ( !mAtlasPreviewEnabled )
+  {
+    mAtlasComposition.endRender();
+  }
+  else
+  {
+    bool atlasHasFeatures = mAtlasComposition.beginRender();
+    if ( ! atlasHasFeatures )
+    {
+      mAtlasPreviewEnabled = false;
+      return false;
+    }
+  }
+
+  if ( mAtlasComposition.composerMap() )
+  {
+    mAtlasComposition.composerMap()->toggleAtlasPreview();
+  }
+
+  update();
+  return true;
 }

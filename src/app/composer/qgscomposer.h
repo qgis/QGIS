@@ -56,6 +56,13 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     Q_OBJECT
 
   public:
+
+    enum OutputMode
+    {
+      Single = 0,
+      Atlas
+    };
+
     QgsComposer( QgisApp *qgis, const QString& title );
     ~QgsComposer();
 
@@ -115,6 +122,9 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     void composerAdded( QgsComposerView* v );
     //!Composer deletes the old composerview when loading a template
     void composerWillBeRemoved( QgsComposerView* v );
+
+    //! Is emitted when the atlas preview feature changes
+    void atlasPreviewFeatureChanged();
 
   public slots:
     //! Zoom to full extent of the paper
@@ -309,6 +319,36 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //!Show options dialog
     void on_mActionOptions_triggered();
 
+    //!Toggle atlas preview
+    void on_mActionAtlasPreview_triggered( bool checked );
+
+    //!Next atlas feature
+    void on_mActionAtlasNext_triggered();
+
+    //!Previous atlas feature
+    void on_mActionAtlasPrev_triggered();
+
+    //!First atlas feature
+    void on_mActionAtlasFirst_triggered();
+
+    //!Last atlas feature
+    void on_mActionAtlasLast_triggered();
+
+    //! Print the atlas
+    void on_mActionPrintAtlas_triggered();
+
+    //! Print atlas as image
+    void on_mActionExportAtlasAsImage_triggered();
+
+    //! Print atlas as SVG
+    void on_mActionExportAtlasAsSVG_triggered();
+
+    //! Print atlas as PDF
+    void on_mActionExportAtlasAsPDF_triggered();
+
+    //! Atlas settings
+    void on_mActionAtlasSettings_triggered();
+
     //! Save window state
     void saveWindowState();
 
@@ -368,6 +408,9 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Updates status bar composition message
     void updateStatusCompositionMsg( QString message );
 
+    //! Updates status bar atlas message
+    void updateStatusAtlasMsg( QString message );
+
   private:
 
     /**Establishes the signal slot connection for the class*/
@@ -407,6 +450,18 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Updates the grid/guide action status based on compositions grid/guide settings
     void restoreGridSettings();
 
+    //! Prints either the whole atlas or just the current feature, depending on mode
+    void printComposition( QgsComposer::OutputMode mode );
+
+    //! Exports either either the whole atlas or just the current feature as an image, depending on mode
+    void exportCompositionAsImage( QgsComposer::OutputMode mode );
+
+    //! Exports either either the whole atlas or just the current feature as an SVG, depending on mode
+    void exportCompositionAsSVG( QgsComposer::OutputMode mode );
+
+    //! Exports either either the whole atlas or just the current feature as a PDF, depending on mode
+    void exportCompositionAsPDF( QgsComposer::OutputMode mode );
+
     /**Composer title*/
     QString mTitle;
 
@@ -416,6 +471,8 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     QLabel* mStatusCursorPageLabel;
     /**Label in status bar which shows messages from the composition*/
     QLabel* mStatusCompositionLabel;
+    /**Label in status bar which shows atlas details*/
+    QLabel* mStatusAtlasLabel;
 
     //! Pointer to composer view
     QgsComposerView *mView;
@@ -501,6 +558,10 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Create a duplicate of a menu (for Mac)
     //! @note added in 1.9
     QMenu* mirrorOtherMenu( QMenu* otherMenu );
+
+    //! Toggles the state of the atlas preview and navigation controls
+    //! @note added in 2.1
+    void toggleAtlasControls( bool atlasEnabled );
 };
 
 #endif

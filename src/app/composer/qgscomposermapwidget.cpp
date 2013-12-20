@@ -173,7 +173,7 @@ void QgsComposerMapWidget::on_mSetToMapCanvasExtentButton_clicked()
 
       //Make sure the width/height ratio is the same as in current composer map extent.
       //This is to keep the map item frame and the page layout fixed
-      QgsRectangle currentMapExtent = mComposerMap->extent();
+      QgsRectangle currentMapExtent = *( mComposerMap->currentMapExtent() );
       double currentWidthHeightRatio = currentMapExtent.width() / currentMapExtent.height();
       double newWidthHeightRatio = newExtent.width() / newExtent.height();
 
@@ -272,7 +272,7 @@ void QgsComposerMapWidget::updateGuiElements()
     }
 
     //composer map extent
-    QgsRectangle composerMapExtent = mComposerMap->extent();
+    QgsRectangle composerMapExtent = *( mComposerMap->currentMapExtent() );
     mXMinLineEdit->setText( QString::number( composerMapExtent.xMinimum(), 'f', 3 ) );
     mXMaxLineEdit->setText( QString::number( composerMapExtent.xMaximum(), 'f', 3 ) );
     mYMinLineEdit->setText( QString::number( composerMapExtent.yMinimum(), 'f', 3 ) );

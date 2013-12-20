@@ -164,7 +164,7 @@ void QgsComposerScaleBar::refreshSegmentMillimeters()
   if ( mComposerMap )
   {
     //get extent of composer map
-    QgsRectangle composerMapRect = mComposerMap->extent();
+    QgsRectangle composerMapRect = *( mComposerMap->currentMapExtent() );
 
     //get mm dimension of composer map
     QRectF composerItemRect = mComposerMap->rect();
@@ -181,7 +181,7 @@ double QgsComposerScaleBar::mapWidth() const
     return 0.0;
   }
 
-  QgsRectangle composerMapRect = mComposerMap->extent();
+  QgsRectangle composerMapRect = *( mComposerMap->currentMapExtent() );
   if ( mUnits == MapUnits )
   {
     return composerMapRect.width();

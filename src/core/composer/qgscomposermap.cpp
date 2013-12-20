@@ -126,28 +126,6 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition )
   initGridAnnotationFormatFromProject();
 }
 
-void QgsComposerMap::extentCenteredOnOverview( QgsRectangle& extent ) const
-{
-  extent = mExtent;
-  if ( ! mOverviewCentered )
-  {
-    return;
-  }
-
-  if ( mOverviewFrameMapId != -1 )
-  {
-    const QgsComposerMap* overviewFrameMap = mComposition->getComposerMapById( mOverviewFrameMapId );
-    QgsRectangle otherExtent = overviewFrameMap->extent();
-
-    QgsPoint center = otherExtent.center();
-    QgsRectangle movedExtent( center.x() - mExtent.width() / 2,
-                              center.y() - mExtent.height() / 2,
-                              center.x() - mExtent.width() / 2 + mExtent.width(),
-                              center.y() - mExtent.height() / 2 + mExtent.height() );
-    extent = movedExtent;
-  }
-}
-
 QgsComposerMap::~QgsComposerMap()
 {
   delete mOverviewFrameMapSymbol;
@@ -283,7 +261,7 @@ void QgsComposerMap::cache( void )
     mCacheImage.fill( QColor( 255, 255, 255, 0 ).rgba() );
   }
 
-  double mapUnitsPerPixel = mExtent.width() / w;
+  double mapUnitsPerPixel = currentMapExtent()->width() / w;
 
   // WARNING: ymax in QgsMapToPixel is device height!!!
   QgsMapToPixel transform( mapUnitsPerPixel, h, requestExtent.yMinimum(), requestExtent.xMinimum() );
@@ -331,8 +309,7 @@ void QgsComposerMap::paint( QPainter* painter, const QStyleOptionGraphicsItem* i
     QgsRectangle requestRectangle;
     requestedExtent( requestRectangle );
 
-    QgsRectangle cExtent;
-    extentCenteredOnOverview( cExtent );
+    QgsRectangle cExtent = *currentMapExtent();
 
     double horizontalVScaleFactor = horizontalViewScaleFactor();
     if ( horizontalVScaleFactor < 0 )
@@ -340,7 +317,7 @@ void QgsComposerMap::paint( QPainter* painter, const QStyleOptionGraphicsItem* i
       horizontalVScaleFactor = mLastValidViewScaleFactor;
     }
 
-    double imagePixelWidth = mExtent.width() / requestRectangle.width() * mCacheImage.width() ; //how many pixels of the image are for the map extent?
+    double imagePixelWidth = cExtent.width() / requestRectangle.width() * mCacheImage.width() ; //how many pixels of the image are for the map extent?
     double scale = rect().width() / imagePixelWidth;
     QgsPoint rotationPoint = QgsPoint(( cExtent.xMaximum() + cExtent.xMinimum() ) / 2.0, ( cExtent.yMaximum() + cExtent.yMinimum() ) / 2.0 );
 
@@ -388,8 +365,7 @@ void QgsComposerMap::paint( QPainter* painter, const QStyleOptionGraphicsItem* i
     QgsRectangle requestRectangle;
     requestedExtent( requestRectangle );
 
-    QgsRectangle cExtent;
-    extentCenteredOnOverview( cExtent );
+    QgsRectangle cExtent = *currentMapExtent();
 
     QSizeF theSize( requestRectangle.width() * mapUnitsToMM(), requestRectangle.height() * mapUnitsToMM() );
 
@@ -463,7 +439,7 @@ double QgsComposerMap::scale() const
   QgsScaleCalculator calculator;
   calculator.setMapUnits( mMapRenderer->mapUnits() );
   calculator.setDpi( 25.4 );  //QGraphicsView units are mm
-  return calculator.calculate( mExtent, rect().width() );
+  return calculator.calculate( *currentMapExtent(), rect().width() );
 }
 
 void QgsComposerMap::resize( double dx, double dy )
@@ -480,10 +456,10 @@ void QgsComposerMap::moveContent( double dx, double dy )
   if ( !mDrawing )
   {
     transformShift( dx, dy );
-    mExtent.setXMinimum( mExtent.xMinimum() + dx );
-    mExtent.setXMaximum( mExtent.xMaximum() + dx );
-    mExtent.setYMinimum( mExtent.yMinimum() + dy );
-    mExtent.setYMaximum( mExtent.yMaximum() + dy );
+    currentMapExtent()->setXMinimum( currentMapExtent()->xMinimum() + dx );
+    currentMapExtent()->setXMaximum( currentMapExtent()->xMaximum() + dx );
+    currentMapExtent()->setYMinimum( currentMapExtent()->yMinimum() + dy );
+    currentMapExtent()->setYMaximum( currentMapExtent()->yMaximum() + dy );
     cache();
     update();
     emit itemChanged();
@@ -511,14 +487,14 @@ void QgsComposerMap::zoomContent( int delta, double x, double y )
   double zoomFactor = settings.value( "/qgis/zoom_factor", 2.0 ).toDouble();
 
   //find out new center point
-  double centerX = ( mExtent.xMaximum() + mExtent.xMinimum() ) / 2;
-  double centerY = ( mExtent.yMaximum() + mExtent.yMinimum() ) / 2;
+  double centerX = ( currentMapExtent()->xMaximum() + currentMapExtent()->xMinimum() ) / 2;
+  double centerY = ( currentMapExtent()->yMaximum() + currentMapExtent()->yMinimum() ) / 2;
 
   if ( zoomMode != 0 )
   {
     //find out map coordinates of mouse position
-    double mapMouseX = mExtent.xMinimum() + ( x / rect().width() ) * ( mExtent.xMaximum() - mExtent.xMinimum() );
-    double mapMouseY = mExtent.yMinimum() + ( 1 - ( y / rect().height() ) ) * ( mExtent.yMaximum() - mExtent.yMinimum() );
+    double mapMouseX = currentMapExtent()->xMinimum() + ( x / rect().width() ) * ( currentMapExtent()->xMaximum() - currentMapExtent()->xMinimum() );
+    double mapMouseY = currentMapExtent()->yMinimum() + ( 1 - ( y / rect().height() ) ) * ( currentMapExtent()->yMaximum() - currentMapExtent()->yMinimum() );
     if ( zoomMode == 1 ) //zoom and recenter
     {
       centerX = mapMouseX;
@@ -535,23 +511,23 @@ void QgsComposerMap::zoomContent( int delta, double x, double y )
 
   if ( delta > 0 )
   {
-    newIntervalX = ( mExtent.xMaximum() - mExtent.xMinimum() ) / zoomFactor;
-    newIntervalY = ( mExtent.yMaximum() - mExtent.yMinimum() ) / zoomFactor;
+    newIntervalX = ( currentMapExtent()->xMaximum() - currentMapExtent()->xMinimum() ) / zoomFactor;
+    newIntervalY = ( currentMapExtent()->yMaximum() - currentMapExtent()->yMinimum() ) / zoomFactor;
   }
   else if ( delta < 0 )
   {
-    newIntervalX = ( mExtent.xMaximum() - mExtent.xMinimum() ) * zoomFactor;
-    newIntervalY = ( mExtent.yMaximum() - mExtent.yMinimum() ) * zoomFactor;
+    newIntervalX = ( currentMapExtent()->xMaximum() - currentMapExtent()->xMinimum() ) * zoomFactor;
+    newIntervalY = ( currentMapExtent()->yMaximum() - currentMapExtent()->yMinimum() ) * zoomFactor;
   }
   else //no need to zoom
   {
     return;
   }
 
-  mExtent.setXMaximum( centerX + newIntervalX / 2 );
-  mExtent.setXMinimum( centerX - newIntervalX / 2 );
-  mExtent.setYMaximum( centerY + newIntervalY / 2 );
-  mExtent.setYMinimum( centerY - newIntervalY / 2 );
+  currentMapExtent()->setXMaximum( centerX + newIntervalX / 2 );
+  currentMapExtent()->setXMinimum( centerX - newIntervalX / 2 );
+  currentMapExtent()->setYMaximum( centerY + newIntervalY / 2 );
+  currentMapExtent()->setYMinimum( centerY - newIntervalY / 2 );
 
   cache();
   update();
@@ -595,6 +571,89 @@ void QgsComposerMap::setNewExtent( const QgsRectangle& extent )
   updateItem();
 }
 
+void QgsComposerMap::setNewAtlasFeatureExtent( const QgsRectangle& extent )
+{
+  if ( mAtlasFeatureExtent == extent )
+  {
+    return;
+  }
+
+  //don't adjust size of item, instead adjust size of bounds to fit
+  QgsRectangle newExtent = extent;
+
+  //Make sure the width/height ratio is the same as the map item size
+  double currentWidthHeightRatio = rect().width() / rect().height();
+  double newWidthHeightRatio = newExtent.width() / newExtent.height();
+
+  if ( currentWidthHeightRatio < newWidthHeightRatio )
+  {
+    //enlarge height of new extent, ensuring the map center stays the same
+    double newHeight = newExtent.width() / currentWidthHeightRatio;
+    double deltaHeight = newHeight - newExtent.height();
+    newExtent.setYMinimum( extent.yMinimum() - deltaHeight / 2 );
+    newExtent.setYMaximum( extent.yMaximum() + deltaHeight / 2 );
+  }
+  else if ( currentWidthHeightRatio > newWidthHeightRatio )
+  {
+    //enlarge width of new extent, ensuring the map center stays the same
+    double newWidth = currentWidthHeightRatio * newExtent.height();
+    double deltaWidth = newWidth - newExtent.width();
+    newExtent.setXMinimum( extent.xMinimum() - deltaWidth / 2 );
+    newExtent.setXMaximum( extent.xMaximum() + deltaWidth / 2 );
+  }
+
+  mAtlasFeatureExtent = newExtent;
+  mCacheUpdated = false;
+  updateItem();
+  emit itemChanged();
+  emit extentChanged();
+}
+
+void QgsComposerMap::toggleAtlasPreview()
+{
+  //atlas preview has been toggled, so update item and extents
+  mCacheUpdated = false;
+  updateItem();
+  emit itemChanged();
+  emit extentChanged();
+}
+
+QgsRectangle* QgsComposerMap::currentMapExtent()
+{
+  QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
+
+
+  if ( atlasMap->enabled() && atlasMap->composerMap() == this &&
+       ( mComposition->atlasPreviewEnabled() || mComposition->plotStyle() != QgsComposition::Preview ) )
+  {
+    //if atlas is enabled, and we are either exporting the composition or previewing the atlas, then
+    //return the current temporary atlas feature extent
+    return &mAtlasFeatureExtent;
+  }
+  else
+  {
+    //otherwise return permenant user set extent
+    return &mExtent;
+  }
+}
+
+const QgsRectangle* QgsComposerMap::currentMapExtent() const
+{
+  QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
+  if ( atlasMap->enabled() && atlasMap->composerMap() == this &&
+       ( mComposition->atlasPreviewEnabled() || mComposition->plotStyle() != QgsComposition::Preview ) )
+  {
+    //if atlas is enabled, and we are either exporting the composition or previewing the atlas, then
+    //return the current temporary atlas feature extent
+    return &mAtlasFeatureExtent;
+  }
+  else
+  {
+    //otherwise return permenant user set extent
+    return &mExtent;
+  }
+}
+
 void QgsComposerMap::setNewScale( double scaleDenominator )
 {
   double currentScaleDenominator = scale();
@@ -605,7 +664,7 @@ void QgsComposerMap::setNewScale( double scaleDenominator )
   }
 
   double scaleRatio = scaleDenominator / currentScaleDenominator;
-  mExtent.scale( scaleRatio );
+  currentMapExtent()->scale( scaleRatio );
   mCacheUpdated = false;
   cache();
   update();
@@ -919,11 +978,11 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
 
     if ( overviewFrameElem.attribute( "overviewCentered" ).compare( "true", Qt::CaseInsensitive ) == 0 )
     {
-      setOverviewCentered( true );
+      mOverviewCentered = true;
     }
     else
     {
-      setOverviewCentered( false );
+      mOverviewCentered = false;
     }
 
     QDomElement overviewFrameSymbolElem = overviewFrameElem.firstChildElement( "symbol" );
@@ -1715,7 +1774,7 @@ QgsRectangle QgsComposerMap::transformedExtent() const
   double dx = mXOffset;
   double dy = mYOffset;
   transformShift( dx, dy );
-  return QgsRectangle( mExtent.xMinimum() - dx, mExtent.yMinimum() - dy, mExtent.xMaximum() - dx, mExtent.yMaximum() - dy );
+  return QgsRectangle( currentMapExtent()->xMinimum() - dx, currentMapExtent()->yMinimum() - dy, currentMapExtent()->xMaximum() - dx, currentMapExtent()->yMaximum() - dy );
 }
 
 QPolygonF QgsComposerMap::transformedMapPolygon() const
@@ -1822,13 +1881,12 @@ void QgsComposerMap::mapPolygon( const QgsRectangle& extent, QPolygonF& poly ) c
 
 void QgsComposerMap::mapPolygon( QPolygonF& poly ) const
 {
-  return mapPolygon( mExtent, poly );
+  return mapPolygon( *currentMapExtent(), poly );
 }
 
 void QgsComposerMap::requestedExtent( QgsRectangle& extent ) const
 {
-  QgsRectangle newExtent;
-  extentCenteredOnOverview( newExtent );
+  QgsRectangle newExtent = *currentMapExtent();
   if ( mRotation == 0 )
   {
     extent = newExtent;
@@ -1847,7 +1905,7 @@ void QgsComposerMap::requestedExtent( QgsRectangle& extent ) const
 
 double QgsComposerMap::mapUnitsToMM() const
 {
-  double extentWidth = mExtent.width();
+  double extentWidth = currentMapExtent()->width();
   if ( extentWidth <= 0 )
   {
     return 1;
@@ -1862,7 +1920,7 @@ void QgsComposerMap::setOverviewFrameMap( int mapId )
     const QgsComposerMap* map = mComposition->getComposerMapById( mapId );
     if ( map )
     {
-      QObject::disconnect( map, SIGNAL( extentChanged() ), this, SLOT( repaint() ) );
+      QObject::disconnect( map, SIGNAL( extentChanged() ), this, SLOT( overviewExtentChanged() ) );
     }
   }
   mOverviewFrameMapId = mapId;
@@ -1871,11 +1929,38 @@ void QgsComposerMap::setOverviewFrameMap( int mapId )
     const QgsComposerMap* map = mComposition->getComposerMapById( mapId );
     if ( map )
     {
-      QObject::connect( map, SIGNAL( extentChanged() ), this, SLOT( repaint() ) );
+      QObject::connect( map, SIGNAL( extentChanged() ), this, SLOT( overviewExtentChanged() ) );
     }
   }
   update();
 }
+
+void QgsComposerMap::overviewExtentChanged()
+{
+  //if using overview centering, update the map's extent
+  if ( mOverviewCentered && mOverviewFrameMapId != -1 )
+  {
+    QgsRectangle extent = *currentMapExtent();
+
+    const QgsComposerMap* overviewFrameMap = mComposition->getComposerMapById( mOverviewFrameMapId );
+    QgsRectangle otherExtent = *overviewFrameMap->currentMapExtent();
+
+    QgsPoint center = otherExtent.center();
+    QgsRectangle movedExtent( center.x() - currentMapExtent()->width() / 2,
+                              center.y() - currentMapExtent()->height() / 2,
+                              center.x() - currentMapExtent()->width() / 2 + currentMapExtent()->width(),
+                              center.y() - currentMapExtent()->height() / 2 + currentMapExtent()->height() );
+    *currentMapExtent() = movedExtent;
+
+    emit itemChanged();
+    emit extentChanged();
+  }
+
+  //redraw so that overview gets updated
+  cache();
+  update();
+}
+
 
 void QgsComposerMap::setOverviewFrameMapSymbol( QgsFillSymbolV2* symbol )
 {
@@ -1898,7 +1983,7 @@ void QgsComposerMap::setOverviewInverted( bool inverted )
 void QgsComposerMap::setOverviewCentered( bool centered )
 {
   mOverviewCentered = centered;
-  update();
+  overviewExtentChanged();
 }
 
 void QgsComposerMap::setGridLineSymbol( QgsLineSymbolV2* symbol )
@@ -1996,7 +2081,7 @@ void QgsComposerMap::drawCanvasItem( QGraphicsItem* item, QPainter* painter, con
   painter->save();
 
   QgsRectangle rendererExtent = mMapRenderer->extent();
-  QgsRectangle composerMapExtent = mExtent;
+  QgsRectangle composerMapExtent = *currentMapExtent();
 
   //determine scale factor according to graphics view dpi
   double scaleFactor = 1.0 / mMapCanvas->logicalDpiX() * 25.4;
@@ -2038,7 +2123,7 @@ QPointF QgsComposerMap::composerMapPosForItem( const QGraphicsItem* item ) const
     return QPointF( 0, 0 );
   }
 
-  if ( mExtent.height() <= 0 || mExtent.width() <= 0 || mMapCanvas->width() <= 0 || mMapCanvas->height() <= 0 )
+  if ( currentMapExtent()->height() <= 0 || currentMapExtent()->width() <= 0 || mMapCanvas->width() <= 0 || mMapCanvas->height() <= 0 )
   {
     return QPointF( 0, 0 );
   }
@@ -2199,9 +2284,8 @@ void QgsComposerMap::drawOverviewMapExtent( QPainter* p )
     return;
   }
 
-  QgsRectangle otherExtent = overviewFrameMap->extent();
-  QgsRectangle thisExtent;
-  extentCenteredOnOverview( thisExtent );
+  QgsRectangle otherExtent = *overviewFrameMap->currentMapExtent();
+  QgsRectangle thisExtent = *currentMapExtent();
   QgsRectangle intersectRect = thisExtent.intersect( &otherExtent );
 
   QgsRenderContext context;
@@ -2211,6 +2295,7 @@ void QgsComposerMap::drawOverviewMapExtent( QPainter* p )
 
   p->save();
   p->setCompositionMode( mOverviewBlendMode );
+  p->translate( mXOffset, mYOffset );
   mOverviewFrameMapSymbol->startRender( context );
 
   //construct a polygon corresponding to the intersecting map extent

@@ -414,6 +414,12 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
 
     QgsAtlasComposition& atlasComposition() { return mAtlasComposition; }
 
+    /** Is the atlas preview enabled ? */
+    bool atlasPreviewEnabled() const { return mAtlasPreviewEnabled; }
+    /** Set atlas preview enabled. Returns false if atlas preview could not be enabled */
+    bool setAtlasPreviewEnabled( bool e );
+
+
   public slots:
     /**Casts object to the proper subclass type and calls corresponding itemAdded signal*/
     void sendItemAddedSignal( QgsComposerItem* item );
@@ -475,6 +481,8 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
 
     /** The atlas composition object. It is held by the QgsComposition */
     QgsAtlasComposition mAtlasComposition;
+
+    bool mAtlasPreviewEnabled;
 
     QgsComposition(); //default constructor is forbidden
 
