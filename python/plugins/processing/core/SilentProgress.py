@@ -48,3 +48,6 @@ class SilentProgress:
 
     def setConsoleInfo(self, _):
         pass
+
+    def close(self):
+        pass

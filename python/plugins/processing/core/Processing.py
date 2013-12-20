@@ -34,6 +34,7 @@ from processing import interface
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingLog import ProcessingLog
+from processing.core.SilentProgress import SilentProgress
 from processing.gui.AlgorithmClassification import AlgorithmDecorator
 from processing.gui.MessageBarProgress import MessageBarProgress
 from processing.gui.RenderingStyles import RenderingStyles
@@ -347,7 +348,9 @@ class Processing:
         elif cursor.shape() != Qt.WaitCursor:
             QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
 
-        progress = MessageBarProgress()
+        progress = SilentProgress()
+        if not interface.iface == None :
+          progress = MessageBarProgress()
         ret = UnthreadedAlgorithmExecutor.runalg(alg, progress)
         if onFinish is not None and ret:
             onFinish(alg, progress)
