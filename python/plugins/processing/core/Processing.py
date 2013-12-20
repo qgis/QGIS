@@ -349,7 +349,7 @@ class Processing:
             QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
 
         progress = SilentProgress()
-        if not interface.iface == None :
+        if interface.iface is not None :
           progress = MessageBarProgress()
         ret = UnthreadedAlgorithmExecutor.runalg(alg, progress)
         if onFinish is not None and ret:
