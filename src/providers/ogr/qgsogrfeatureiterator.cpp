@@ -233,8 +233,6 @@ bool QgsOgrFeatureIterator::readFeature( OGRFeatureH fet, QgsFeature& feature )
 
     if ( geom )
     {
-      fetchedFeature( fet, geom );
-
       // get the wkb representation
       int memorySize = OGR_G_WkbSize( geom );
       unsigned char *wkb = new unsigned char[memorySize];
@@ -275,62 +273,4 @@ bool QgsOgrFeatureIterator::readFeature( OGRFeatureH fet, QgsFeature& feature )
   }
 
   return true;
-}
-
-//! Notified a new OGRFeatureH fecthed from data provider
-void QgsOgrFeatureIterator::fetchedFeature( OGRFeatureH feature, OGRGeometryH geometry )
-{
-  Q_UNUSED( feature );
-  Q_UNUSED( geometry );
-}
-
-/***************************************************************************
-    QgsOgrSimplifiedFeatureIterator class
-    ----------------------
-    begin                : December 2013
-    copyright            : (C) 2013 by Alvaro Huarte
-    email                : http://wiki.osgeo.org/wiki/Alvaro_Huarte
-
- ***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
-
-//! Provides a specialized FeatureIterator for enable simplification of the geometries
-QgsOgrSimplifiedFeatureIterator::QgsOgrSimplifiedFeatureIterator( QgsOgrProvider* p, const QgsFeatureRequest& request )
-    : QgsOgrFeatureIterator( p, request )
-    , mSimplifier( NULL )
-{
-  QgsFeatureRequest::Flags requestFlags = request.flags();
-
-  int simplifyFlags = QgsMapToPixelSimplifier::NoFlags;
-  if ( requestFlags & QgsFeatureRequest::SimplifyGeometry ) simplifyFlags |= QgsMapToPixelSimplifier::SimplifyGeometry;
-  if ( requestFlags & QgsFeatureRequest::SimplifyEnvelope ) simplifyFlags |= QgsMapToPixelSimplifier::SimplifyEnvelope;
-
-  if ( simplifyFlags != QgsMapToPixelSimplifier::NoFlags )
-  {
-    mSimplifier = new QgsOgrMapToPixelSimplifier( simplifyFlags, request.coordinateTransform(), request.mapToPixel(), request.mapToPixelTol() );
-  }
-}
-QgsOgrSimplifiedFeatureIterator::~QgsOgrSimplifiedFeatureIterator( )
-{
-  if ( mSimplifier )
-  {
-    delete mSimplifier;
-    mSimplifier = NULL;
-  }
-}
-
-//! Notified a new OGRFeatureH fecthed from data provider
-void QgsOgrSimplifiedFeatureIterator::fetchedFeature( OGRFeatureH feature, OGRGeometryH geometry )
-{
-  if ( mSimplifier && ( mSimplifier->simplifyFlags() & ( QgsMapToPixelSimplifier::SimplifyGeometry | QgsMapToPixelSimplifier::SimplifyEnvelope ) ) )
-  {
-    mSimplifier->simplifyGeometry(( OGRGeometry* ) geometry );
-  }
-  QgsOgrFeatureIterator::fetchedFeature( feature, geometry );
 }

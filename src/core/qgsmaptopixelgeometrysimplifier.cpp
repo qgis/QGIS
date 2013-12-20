@@ -355,7 +355,7 @@ bool QgsMapToPixelSimplifier::canbeGeneralizedByMapBoundingBox( const QgsRectang
 }
 
 //! Returns a simplified version the specified geometry (Removing duplicated points) when is applied the specified map2pixel context
-QgsGeometry* QgsMapToPixelSimplifier::simplify( QgsGeometry* geometry )
+QgsGeometry* QgsMapToPixelSimplifier::simplify( QgsGeometry* geometry ) const
 {
   QgsGeometry* g = new QgsGeometry();
 
@@ -396,7 +396,7 @@ bool QgsMapToPixelSimplifier::simplifyGeometry( QgsGeometry* geometry, int simpl
 }
 
 //! Simplifies the geometry (Removing duplicated points) when is applied the specified map2pixel context
-bool QgsMapToPixelSimplifier::simplifyGeometry( QgsGeometry* geometry )
+bool QgsMapToPixelSimplifier::simplifyGeometry( QgsGeometry* geometry ) const
 {
   return simplifyGeometry( geometry, mSimplifyFlags, mMapCoordTransform, mMapToPixel, mMapToPixelTol );
 }
