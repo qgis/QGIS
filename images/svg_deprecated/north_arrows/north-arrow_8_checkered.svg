@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://www.w3.org/2000/svg" version="1.0" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" viewBox="0 0 450 500">
+	<title>North Arrow 8, Checkered Arrow and Ellipse</title>
+	<metadata>
+		<rdf:RDF>
+			<cc:Work rdf:about="">
+				<dc:format>image/svg+xml</dc:format>
+				<dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+				<dc:title>North Arrow 8, Checkered Arrow and Ellipse</dc:title>
+				<dc:date>2009-11-08</dc:date>
+				<dc:creator>
+					<cc:Agent>
+						<dc:title>Silvio Grosso</dc:title>
+					</cc:Agent>
+				</dc:creator>
+				<dc:description>North Arrow 8, Checkered Arrow and Ellipse</dc:description>
+				<cc:license rdf:resource="http://creativecommons.org/licenses/publicdomain/"/>
+			</cc:Work>
+			<cc:License rdf:about="http://creativecommons.org/licenses/publicdomain/">
+				<cc:permits rdf:resource="http://creativecommons.org/ns#Reproduction"/>
+				<cc:permits rdf:resource="http://creativecommons.org/ns#Distribution"/>
+				<cc:permits rdf:resource="http://creativecommons.org/ns#DerivativeWorks"/>
+			</cc:License>
+		</rdf:RDF>
+	</metadata>
+	<g transform="matrix(1.0247396,0,0,0.871256,-143.236,-191.78117)">
+		<path id="character_n" filled="black" d="M325.62,277.65h11.57l15.09,22.17v-22.17h11.68v40.08h-11.68l-15.01-22.01v22.01h-11.65v-40.08z" transform="matrix(1.371631,0,0,1.160507,-115.40596,-54.290579)"/>
+		<g id="checkered_ellipse_in_center" stroke="black" transform="translate(363.33754,28.284271)">
+			<path d="M-41.201,536.19h35.05v28.91c-23.477-1.19-33.984-11.67-35.05-28.91z" stroke-width="4.8" fill="black"/>
+			<path d="M-1.3248,501.25v30.46h33.95c-1.396-20.4-13.703-29.53-33.95-30.46z" stroke-width="4.85" fill="black"/>
+			<path d="M383.92,546.94a8.6179,8.6179,0,1,1,-17.23,0,8.6179,8.6179,0,1,1,17.23,0z" transform="matrix(-4.422077,0,0,3.914321,1655.451,-1607.255)" stroke-width="1.3" fill="none"/>
+		</g>
+		<g id="arrow_top_part" transform="matrix(5.626187,0,0,7.650437,-3962.7077,-2984.5997)" stroke="black" stroke-width="0.3">
+			<path style="stroke-dasharray:none;" d="M770.23,459.24h-2.3v-27.81l3.94,13.25-1.92-2.67,0.28,17.23z" fill="none"/>
+			<path style="stroke-dasharray:none;" d="M765.66,459.26h2.3v-27.81l-3.94,13.25,1.91-2.67-0.27,17.23z" fill="black"/>
+		</g>
+		<g id="arrow_bottom_part" transform="matrix(2.707384,0,-4.040588e-3,4.785058,-1765.5387,-1460.0187)" stroke="black" stroke-width="0.4">
+			<path style="stroke-dasharray:none;" d="M770,467.36h5v15l-13.09,7.98,8.09-17.98v-5z" transform="translate(10.87201,-37.55286)" fill="none"/>
+			<path style="stroke-dasharray:none;" d="M790.55,429.76h-5v15l13.09,7.97-8.09-17.97v-5z" fill="black"/>
+		</g>
+	</g>
+</svg>

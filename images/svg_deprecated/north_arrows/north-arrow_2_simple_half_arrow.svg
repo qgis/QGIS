@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://www.w3.org/2000/svg" version="1.0" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" viewBox="0 0 450 500">
+	<title>North Arrow 2, Simple Half Arrow</title>
+	<metadata>
+		<rdf:RDF>
+			<cc:Work rdf:about="">
+				<dc:format>image/svg+xml</dc:format>
+				<dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+				<dc:title>North Arrow 2, Simple Half Arrow</dc:title>
+				<dc:description>North Arrow 2, Simple Half Arrow with Letter N</dc:description>
+				<dc:date>2009-11-08</dc:date>
+				<dc:creator>
+					<cc:Agent>
+						<dc:title>Silvio Grosso</dc:title>
+					</cc:Agent>
+				</dc:creator>
+				<cc:license rdf:resource="http://creativecommons.org/licenses/publicdomain/"/>
+			</cc:Work>
+			<cc:License rdf:about="http://creativecommons.org/licenses/publicdomain/">
+				<cc:permits rdf:resource="http://creativecommons.org/ns#Reproduction"/>
+				<cc:permits rdf:resource="http://creativecommons.org/ns#Distribution"/>
+				<cc:permits rdf:resource="http://creativecommons.org/ns#DerivativeWorks"/>
+			</cc:License>
+		</rdf:RDF>
+	</metadata>
+	<g transform="translate(-184.28571,-258.57143)">
+		<path id="half_arrow" d="M391.35,395.97v253.79h21.2v-203.03l15.71,16.92-36.91-118.43v50.75" fill="black"/>
+		<path id="round-dot-at-bottom" d="m356.47,530.55c0,1.0479-0.84946,1.8973-1.8973,1.8973-1.0479,0-1.8973-0.84946-1.8973-1.8973,0-1.0479,0.84946-1.8973,1.8973-1.8973,1.0479,0,1.8973,0.84946,1.8973,1.8973z" transform="matrix(12.2222,0,0,15.88943,-3931.465,-7755.856)" fill="black"/>
+		<path id="character-n" transform="matrix(2.006144,0,0,2.033494,-291.9793,-277.2286)" fill="black" d="M325.62,277.65h11.57l15.09,22.17v-22.17h11.68v40.08h-11.68l-15.01-22.01v22.01h-11.65v-40.08z"/>
+	</g>
+</svg>

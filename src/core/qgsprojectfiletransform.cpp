@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 
+#include "qgsapplication.h"
 #include "qgsprojectfiletransform.h"
 #include "qgsprojectversion.h"
 #include "qgslogger.h"
@@ -458,6 +459,7 @@ void QgsProjectFileTransform::transform1400to1500()
 
 void QgsProjectFileTransform::transform1800to1900()
 {
+
   if ( mDom.isNull() )
   {
     return;
@@ -590,6 +592,51 @@ void QgsProjectFileTransform::transform1800to1900()
       }
     }
   }
+
+  //SVG : replace symbols paths to svg_deprecated/*
+  //1. Replace SVGS in the symbology layers
+
+  QDomNodeList rendererListAgain = mDom.elementsByTagName( "renderer-v2" );
+  for ( int i = 0; i < rendererListAgain.size(); ++i )
+  {
+    QDomNodeList layerList = rendererListAgain.at( i ).toElement().elementsByTagName( "layer" );
+    for ( int j = 0; j < layerList.size(); ++j )
+    {
+      QDomElement layerElem = layerList.at( j ).toElement();
+
+      //1a. For SVGMarkers
+      if ( layerElem.attribute( "class" ) == "SvgMarker" )
+      {
+        QDomNodeList propList = layerElem.elementsByTagName( "prop" );
+        for ( int k = 0; k < propList.size(); ++k )
+        {
+          QDomElement propElem = propList.at( k ).toElement();
+          if ( propElem.attribute( "k" ) == "name" && propElem.attribute( "v" ).at(0) == QChar('/') )//the path must start with a /, if it does not, it's an absolute path
+          {
+            propElem.setAttribute( "v", QgsApplication::prefixPath()+"/svg_deprecated" + propElem.attribute( "v" ) );
+          }
+        }
+      }
+      //1b. For SVGFills
+      else if ( layerElem.attribute( "class" ) == "SVGFill" )
+      {
+        QDomNodeList propList = layerElem.elementsByTagName( "prop" );
+        for ( int k = 0; k < propList.size(); ++k )
+        {
+          QDomElement propElem = propList.at( k ).toElement();
+          if ( propElem.attribute( "k" ) == "svgFile" && propElem.attribute( "v" ).at(0) == QChar('/') )//the path must start with a /, if it does not, it's an absolute path
+          {
+            propElem.setAttribute( "v", QgsApplication::prefixPath()+"/svg_deprecated" + propElem.attribute( "v" ) );
+          }
+        }
+      }
+
+    }
+  }
+
+  //TODO : are there other places where there can be svgs ?
+  //TODO : composer images
+
 
   QgsDebugMsg( mDom.toString() );
 }

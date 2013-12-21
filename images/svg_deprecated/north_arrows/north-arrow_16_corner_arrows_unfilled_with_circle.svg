@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://www.w3.org/2000/svg" version="1.0" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" viewBox="0 0 450 500">
+	<title>North Arrow, Corner Arrow, Unfilled with Circle</title>
+	<metadata>
+		<rdf:RDF>
+			<cc:Work rdf:about="">
+				<dc:format>image/svg+xml</dc:format>
+				<dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+				<dc:title>North Arrow, Corner Arrow, Unfilled with Circle</dc:title>
+				<dc:description>North Arrow, Corner Arrow, Unfilled with Circle</dc:description>
+				<dc:date>2009-11-08</dc:date>
+				<dc:creator>
+					<cc:Agent>
+						<dc:title>Silvio Grosso</dc:title>
+					</cc:Agent>
+				</dc:creator>
+				<cc:license rdf:resource="http://creativecommons.org/licenses/publicdomain/"/>
+			</cc:Work>
+			<cc:License rdf:about="http://creativecommons.org/licenses/publicdomain/">
+				<cc:permits rdf:resource="http://creativecommons.org/ns#Reproduction"/>
+				<cc:permits rdf:resource="http://creativecommons.org/ns#Distribution"/>
+				<cc:permits rdf:resource="http://creativecommons.org/ns#DerivativeWorks"/>
+			</cc:License>
+		</rdf:RDF>
+	</metadata>
+	<g transform="translate(-6.0609153,-299.00515)">
+		<path id="character_e" fill="black" d="M325.51,277.65h33.2v8.55h-20.78v6.38h19.27v8.17h-19.27v7.9h21.38v9.08h-33.8v-40.08z" transform="translate(73.02687,329.2014)"/>
+		<path id="character_n" fill="black" d="M325.62,277.65h11.57l15.09,22.17v-22.17h11.68v40.08h-11.68l-15.01-22.01v22.01h-11.65v-40.08z" transform="translate(-163.2756,98.48723)"/>
+		<g id="arrows" stroke="black" stroke-linecap="butt" stroke-width="5.25" fill="none">		
+			<path d="M167.02,489.46v90.58h27.4v-90.58l30.34,8.58-43.06-76.76-45.65,78.18,30.97-10z" />
+			<path d="M320.48,610.41h-90.58v27.4h90.58l-8.57,30.34,76.76-43.06-78.19-45.66z" />
+		</g>
+		<path id="center_circle" d="M73.571,526.29a50.357,50.357,0,1,1,-100.71,0,50.357,50.357,0,1,1,100.71,0z" transform="matrix(0.933215,0,0,0.883569,158.3361,161.9905)" stroke="black" stroke-linecap="square" stroke-width="12.3" fill="none"/>
+		<g id="center_cross" stroke="black" stroke-width="6.4" fill="none">		
+			<path d="M207.14,595.22l-56.43,61.43" />
+			<path d="M150.37,595.56l56.43,61.43" />
+		</g>
+	</g>
+</svg>

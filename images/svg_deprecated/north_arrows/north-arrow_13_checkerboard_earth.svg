@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.0" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" viewBox="0 0 450 500">
+	<title>North Arrow, Triangular Arrows and Checkboard Earth</title>
+	<metadata>
+		<rdf:RDF>
+			<cc:Work rdf:about="">
+				<dc:format>image/svg+xml</dc:format>
+				<dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+				<dc:title>North Arrow, Triangular Arrows and Checkboard Earth</dc:title>
+				<dc:description>North Arrow, Triangular Arrows and Checkboard Earth, North and East labeled with Letter</dc:description>
+				<dc:date>2009-11-08</dc:date>
+				<dc:creator>
+					<cc:Agent>
+						<dc:title>Silvio Grosso</dc:title>
+					</cc:Agent>
+				</dc:creator>
+				<cc:license rdf:resource="http://creativecommons.org/licenses/publicdomain/"/>
+			</cc:Work>
+			<cc:License rdf:about="http://creativecommons.org/licenses/publicdomain/">
+				<cc:permits rdf:resource="http://creativecommons.org/ns#Reproduction"/>
+				<cc:permits rdf:resource="http://creativecommons.org/ns#Distribution"/>
+				<cc:permits rdf:resource="http://creativecommons.org/ns#DerivativeWorks"/>
+			</cc:License>
+		</rdf:RDF>
+	</metadata>
+	<g transform="matrix(0.8259067,0,0,0.743329,49.011271,33.101891)">
+		<path fill="character_n" d="M329.83,76.088h11.36l14.82,21.78v-21.78h11.47v39.372h-11.47l-14.74-21.62v21.62h-11.44v-39.372z" transform="translate(-151.93179,-75.1349)"/>
+		<path id="big_arrow" d="M123.51,315.33l73.01-243.97,72.11,243.97-73.02,243.98-72.1-243.98z" stroke="black" stroke-width="18.78" fill="none"/>
+		<path id="center_ellipse" d="M495,441.29a62.5,32.5,0,1,1,-125,0,62.5,32.5,0,1,1,125,0z" transform="matrix(1.334562,0,0,1.792097,-382.27499,-474.3921)" stroke="black" stroke-width="8.14" fill="none"/>
+		<path id="inside_lower_arrow" d="M193.95,389.16l3.7,134.81-41.67-142.03c12.29,1.7,9.14,4.99,37.97,7.22z" stroke="black" stroke-width="1.66" fill="black"/>
+		<path id="inside_upper_arrow" d="M199.6,248.16l-4.35-138.44,42.66,146.15c-12.29-1.7-9.48-5.48-38.31-7.71z" stroke="black" stroke-width="1.66" fill="black"/>
+		<path id="character_e" fill="black" d="M325.51,277.65h33.2v8.55h-20.78v6.38h19.27v8.17h-19.27v7.9h21.38v9.08h-33.8v-40.08z" transform="translate(4.298733,10.8335)"/>
+		<g id="checkerboard" fill="black" transform="matrix(1,0,0,0.955357,7,-149)">
+			<path d="M190,547.36v5h5v-5h-5z"/>
+			<path d="M205,542.36v5h5v-5h-5z"/>
+			<path d="M190,537.36v5h5v-5h-5z"/>
+			<path d="M200,537.36v5h5v-5h-5z"/>
+			<path d="M195,542.36v5h5v-5h-5z"/>
+			<path d="M200,547.36v5h5v-5h-5z"/>
+			<path d="M210,547.36v5h5v-5h-5z"/>
+			<path d="M210,537.36v5h5v-5h-5z"/>
+			<path d="M205,532.36v5h5v-5h-5z"/>
+			<path d="M195,532.36v5h5v-5h-5z"/>
+			<path d="M215,542.36v5h5v-5h-5z"/>
+			<path d="M215,532.36v5h5v-5h-5z"/>
+		</g>
+		<!--left2-->
+		<use xlink:href="#checkerboard" transform="translate(-60,-91)" />
+		<use xlink:href="#checkerboard" transform="translate(-60,-71)" />
+		<use xlink:href="#checkerboard" transform="translate(-60,-51)" />
+		<use xlink:href="#checkerboard" transform="translate(-60,-31)" />
+		<use xlink:href="#checkerboard" transform="translate(-60,-11)" />
+		<!--left1-->
+		<use xlink:href="#checkerboard" transform="translate(-30,-100)" />
+		<use xlink:href="#checkerboard" transform="translate(-30,-80)" />
+		<use xlink:href="#checkerboard" transform="translate(-30,-60)" />
+		<use xlink:href="#checkerboard" transform="translate(-30,-40)" />
+		<use xlink:href="#checkerboard" transform="translate(-30,-20)" />
+		<use xlink:href="#checkerboard" transform="translate(-30,0)" />
+		<!--top-->
+		<use xlink:href="#checkerboard" transform="translate(0,-100)" />
+		<use xlink:href="#checkerboard" transform="translate(0,-80)" />
+		<use xlink:href="#checkerboard" transform="translate(0,-60)" />
+		<use xlink:href="#checkerboard" transform="translate(0,-40)" />
+		<use xlink:href="#checkerboard" transform="translate(0,-20)" />
+		<!--right1-->
+		<use xlink:href="#checkerboard" transform="translate(30,-91)" />
+		<use xlink:href="#checkerboard" transform="translate(30,-71)" />
+		<use xlink:href="#checkerboard" transform="translate(30,-51)" />
+		<use xlink:href="#checkerboard" transform="translate(30,-31)" />
+		<use xlink:href="#checkerboard" transform="translate(30,-11)" />
+		<g id="eastern_small_arrow" stroke="black" transform="translate(206.00461,-206.34937)">
+			<path d="M71.93,517.23l48.99-0.18-51.133-21.97,2.143,22.15z" stroke-width="1.36" fill="none"/>
+			<path d="M71.89,517.42l48.35-0.24-50.12,20.74,1.77-20.5z" stroke-width="1.6" fill="black"/>
+		</g>
+		<g id="western_small_arrow" stroke="black" transform="matrix(-1,0,0,-1,181.59751,829.975)">
+			<path d="M71.93,517.23l48.99-0.18-51.133-21.97,2.143,22.15z" stroke-width="1.36" fill="none"/>
+			<path d="M71.89,517.42l48.35-0.24-50.12,20.74,1.77-20.5z" stroke-width="1.6" fill="black"/>
+		</g>
+	</g>
+</svg>
