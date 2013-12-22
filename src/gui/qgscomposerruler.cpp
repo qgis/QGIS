@@ -124,7 +124,7 @@ void QgsComposerRuler::paintEvent( QPaintEvent* event )
 
     if ( startY < 0 )
     {
-      double beforePageCoord = 0;
+      double beforePageCoord = -mmDisplay;
       double firstPageY = mTransform.map( QPointF( 0, 0 ) ).y();
 
       //draw negative rulers which fall before first page
