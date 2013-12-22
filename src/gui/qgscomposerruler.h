@@ -29,6 +29,8 @@ class GUI_EXPORT QgsComposerRuler: public QWidget
     void setComposition( QgsComposition* c ) { mComposition = c; }
     QgsComposition* composition() { return mComposition; }
 
+    int rulerSize() { return mRulerMinSize; }
+
   protected:
     void paintEvent( QPaintEvent* event );
     void mouseMoveEvent( QMouseEvent* event );
