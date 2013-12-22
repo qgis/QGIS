@@ -47,6 +47,15 @@ class GUI_EXPORT QgsComposerRuler: public QWidget
     //items snapped to the current snap line
     QList< QPair< QgsComposerItem*, QgsComposerItem::ItemPositionMode > > mSnappedItems;
 
+    QFont * mRulerFont;
+    QFontMetrics * mRulerFontMetrics;
+    double mScaleMinPixelsWidth;
+    int mRulerMinSize;
+    int mMinPixelsPerDivision;
+    int mPixelsBetweenLineAndText;
+    int mTextBaseline;
+    int mMinSpacingVerticalLabels;
+
     void setSnapLinePosition( const QPointF& pos );
 
     //calculate optimum labeled units for ruler so that labels are a good distance apart
