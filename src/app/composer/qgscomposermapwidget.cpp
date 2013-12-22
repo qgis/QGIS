@@ -185,7 +185,7 @@ void QgsComposerMapWidget::on_mSetToMapCanvasExtentButton_clicked()
         newExtent.setYMinimum( newExtent.yMinimum() - deltaHeight / 2 );
         newExtent.setYMaximum( newExtent.yMaximum() + deltaHeight / 2 );
       }
-      else if ( currentWidthHeightRatio > newWidthHeightRatio )
+      else
       {
         //enlarge width of new extent, ensuring the map center stays the same
         double newWidth = currentWidthHeightRatio * newExtent.height();

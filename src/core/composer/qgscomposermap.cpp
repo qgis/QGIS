@@ -85,7 +85,10 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int w
   //calculate mExtent based on width/height ratio and map canvas extent
   if ( mMapRenderer )
   {
-    mExtent = mMapRenderer->extent();
+    QgsRectangle mapExtent = mMapRenderer->extent();
+    //make extent make item shape while keeping centre unchanged
+    adjustExtentToItemShape( width, height, mapExtent );
+    mExtent = mapExtent;
   }
   setSceneRect( QRectF( x, y, width, height ) );
   setToolTip( tr( "Map %1" ).arg( mId ) );
@@ -124,6 +127,29 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition )
   setToolTip( tr( "Map %1" ).arg( mId ) );
 
   initGridAnnotationFormatFromProject();
+}
+
+void QgsComposerMap::adjustExtentToItemShape( double itemWidth, double itemHeight, QgsRectangle& extent ) const
+{
+  double itemWidthHeightRatio = itemWidth / itemHeight;
+  double newWidthHeightRatio = extent.width() / extent.height();
+
+  if ( itemWidthHeightRatio <= newWidthHeightRatio )
+  {
+    //enlarge height of new extent, ensuring the map center stays the same
+    double newHeight = extent.width() / itemWidthHeightRatio;
+    double deltaHeight = newHeight - extent.height();
+    extent.setYMinimum( extent.yMinimum() - deltaHeight / 2 );
+    extent.setYMaximum( extent.yMaximum() + deltaHeight / 2 );
+  }
+  else
+  {
+    //enlarge width of new extent, ensuring the map center stays the same
+    double newWidth = itemWidthHeightRatio * extent.height();
+    double deltaWidth = newWidth - extent.width();
+    extent.setXMinimum( extent.xMinimum() - deltaWidth / 2 );
+    extent.setXMaximum( extent.xMaximum() + deltaWidth / 2 );
+  }
 }
 
 void QgsComposerMap::extentCenteredOnOverview( QgsRectangle& extent ) const

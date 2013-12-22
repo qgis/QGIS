@@ -479,6 +479,10 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     /**True if annotation items, rubber band, etc. from the main canvas should be displayed*/
     bool mDrawCanvasItems;
 
+    /**Adjusts an extent rectangle to match the provided item width and height, so that extent
+     * center of extent remains the same */
+    void adjustExtentToItemShape( double itemWidth, double itemHeight, QgsRectangle& extent ) const;
+
     /**Draws the map grid*/
     void drawGrid( QPainter* p );
     void drawGridFrame( QPainter* p, const QList< QPair< double, QLineF > >& hLines, const QList< QPair< double, QLineF > >& vLines );
