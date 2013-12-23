@@ -51,6 +51,12 @@ class CORE_EXPORT QgsAction
       Atlas
     };
 
+    enum ActionClass
+    {
+      UserDefinedAction,
+      StandardAction
+    };
+
     QgsAction( ActionType type, QString name, QString action, bool capture ) :
         mType( type ), mName( name ), mAction( action ), mCaptureOutput( capture ) {}
 

@@ -141,6 +141,8 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
 
 {
   mActions = new QgsAttributeAction( this );
+  mStandardActions = new QgsAttributeAction( this );
+  addStandardActions();
 
   // if we're given a provider type, try to create and bind one to this layer
   if ( ! mProviderKey.isEmpty() )
@@ -208,6 +210,7 @@ QgsVectorLayer::~QgsVectorLayer()
   delete mDiagramLayerSettings;
 
   delete mActions;
+  delete mStandardActions;
 
   delete mRendererV2;
 }
@@ -1915,12 +1918,6 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
 
   // process the attribute actions
   mActions->readXML( node );
-
-  // add atlas action
-  mActions->addAction( QgsAction::Atlas,
-                       "Set as atlas feature",
-                       "",
-                       false );
 
   mEditTypes.clear();
   QDomNode editTypesNode = node.namedItem( "edittypes" );
@@ -4160,6 +4157,15 @@ bool QgsVectorLayer::applyNamedStyle( QString namedStyle, QString errorMsg )
 #endif
 
   return readSymbology( myRoot, errorMsg );
+}
+
+void QgsVectorLayer::addStandardActions()
+{
+  // add atlas action
+  mStandardActions->addAction( QgsAction::Atlas,
+                               "Set as atlas feature",
+                               "",
+                               false );
 }
 
 

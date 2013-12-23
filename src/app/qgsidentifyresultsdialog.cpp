@@ -418,7 +418,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
     }
   }
 
-  if ( vlayer->pendingFields().size() > 0 || vlayer->actions()->size() )
+  if ( vlayer->pendingFields().size() > 0 || vlayer->actions()->size() || vlayer->standardActions()->size() )
   {
     QTreeWidgetItem *actionItem = new QTreeWidgetItem( QStringList() << tr( "(Actions)" ) );
     actionItem->setData( 0, Qt::UserRole, "actions" );
@@ -432,6 +432,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
       actionItem->addChild( editItem );
     }
 
+    //add user defined actions
     for ( int i = 0; i < vlayer->actions()->size(); i++ )
     {
       const QgsAction &action = vlayer->actions()->at( i );
@@ -442,6 +443,21 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
       QTreeWidgetItem *twi = new QTreeWidgetItem( QStringList() << "" << action.name() );
       twi->setIcon( 0, QgsApplication::getThemeIcon( "/mAction.svg" ) );
       twi->setData( 0, Qt::UserRole, "action" );
+      twi->setData( 0, Qt::UserRole + 1, QVariant::fromValue( i ) );
+      actionItem->addChild( twi );
+    }
+
+    //add standard actions
+    for ( int i = 0; i < vlayer->standardActions()->size(); i++ )
+    {
+      const QgsAction &action = vlayer->standardActions()->at( i );
+
+      if ( !action.runable() )
+        continue;
+
+      QTreeWidgetItem *twi = new QTreeWidgetItem( QStringList() << "" << action.name() );
+      twi->setIcon( 0, QgsApplication::getThemeIcon( "/mAction.svg" ) );
+      twi->setData( 0, Qt::UserRole, "standard_action" );
       twi->setData( 0, Qt::UserRole + 1, QVariant::fromValue( i ) );
       actionItem->addChild( twi );
     }
@@ -672,7 +688,11 @@ void QgsIdentifyResultsDialog::itemClicked( QTreeWidgetItem *item, int column )
   }
   else if ( item->data( 0, Qt::UserRole ).toString() == "action" )
   {
-    doAction( item, item->data( 0, Qt::UserRole + 1 ).toInt() );
+    doAction( item, item->data( 0, Qt::UserRole + 1 ).toInt(), QgsAction::UserDefinedAction );
+  }
+  else if ( item->data( 0, Qt::UserRole ).toString() == "standard_action" )
+  {
+    doAction( item, item->data( 0, Qt::UserRole + 1 ).toInt(), QgsAction::StandardAction );
   }
 }
 
@@ -779,6 +799,24 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent* event )
     }
   }
 
+  if ( featItem && vlayer && vlayer->standardActions()->size() > 0 )
+  {
+    mActionPopup->addSeparator();
+
+    int featIdx = featItem->data( 0, Qt::UserRole + 1 ).toInt();
+    for ( int i = 0; i < vlayer->standardActions()->size(); i++ )
+    {
+      const QgsAction &action = vlayer->standardActions()->at( i );
+
+      if ( !action.runable() )
+        continue;
+
+      QgsFeatureAction *a = new QgsFeatureAction( action.name(), mFeatures[ featIdx ], vlayer, i, idx,
+          this, QgsAction::StandardAction );
+      mActionPopup->addAction( QgsApplication::getThemeIcon( "/mAction.svg" ), action.name(), a, SLOT( execute() ) );
+    }
+  }
+
   mActionPopup->popup( event->globalPos() );
 }
 
@@ -854,7 +892,7 @@ void QgsIdentifyResultsDialog::deactivate()
 #endif
 }
 
-void QgsIdentifyResultsDialog::doAction( QTreeWidgetItem *item, int action )
+void QgsIdentifyResultsDialog::doAction( QTreeWidgetItem *item, int action, QgsAction::ActionClass actionClass )
 {
   QTreeWidgetItem *featItem = featureItem( item );
   if ( !featItem )
@@ -865,7 +903,7 @@ void QgsIdentifyResultsDialog::doAction( QTreeWidgetItem *item, int action )
     return;
 
   int idx = -1;
-  if ( item->parent() == featItem )
+  if ( item->parent() == featItem && actionClass == QgsAction::UserDefinedAction )
   {
     QString fieldName = item->data( 0, Qt::DisplayRole ).toString();
 
@@ -881,7 +919,15 @@ void QgsIdentifyResultsDialog::doAction( QTreeWidgetItem *item, int action )
   }
 
   int featIdx = featItem->data( 0, Qt::UserRole + 1 ).toInt();
-  layer->actions()->doAction( action, mFeatures[ featIdx ], idx );
+  switch ( actionClass )
+  {
+    case QgsAction::UserDefinedAction:
+      layer->actions()->doAction( action, mFeatures[ featIdx ], idx );
+      break;
+    case QgsAction::StandardAction:
+      layer->standardActions()->doAction( action, mFeatures[ featIdx ], idx );
+      break;
+  }
 }
 
 QTreeWidgetItem *QgsIdentifyResultsDialog::featureItem( QTreeWidgetItem *item )
