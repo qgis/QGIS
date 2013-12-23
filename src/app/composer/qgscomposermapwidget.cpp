@@ -631,6 +631,31 @@ void QgsComposerMapWidget::on_mGridCheckBox_toggled( bool state )
   mComposerMap->endCommand();
 }
 
+void QgsComposerMapWidget::on_mGeodesicGridCheckBox_toggled( bool state )
+{
+  if ( !mComposerMap )
+  {
+    return;
+  }
+
+  mComposerMap->beginCommand( tr( "Geodesic Grid checkbox toggled" ) );
+  if ( state )
+  {
+    mComposerMap->setGeodesicGrid( true );
+  }
+  else
+  {
+    mComposerMap->setGeodesicGrid( false );
+  }
+  mIntervalXSpinBox->setValue(0.0);
+  mComposerMap->setGridIntervalX(0.0);
+  mIntervalYSpinBox->setValue(0.0);
+  mComposerMap->setGridIntervalY(0.0);
+  mComposerMap->updateBoundingRect();
+  mComposerMap->update();
+  mComposerMap->endCommand();
+}
+
 void QgsComposerMapWidget::on_mIntervalXSpinBox_editingFinished()
 {
   if ( !mComposerMap )

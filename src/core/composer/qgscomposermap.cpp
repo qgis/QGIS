@@ -42,7 +42,7 @@
 QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int width, int height )
     : QgsComposerItem( x, y, width, height, composition ), mKeepLayerSet( false ),
     mOverviewFrameMapId( -1 ), mOverviewBlendMode( QPainter::CompositionMode_SourceOver ), mOverviewInverted( false ), mOverviewCentered( false ),
-    mGridEnabled( false ), mGridStyle( Solid ),
+    mGridEnabled( false ), mGeodesicGrid( false ), mGridStyle( Solid ),
     mGridIntervalX( 0.0 ), mGridIntervalY( 0.0 ), mGridOffsetX( 0.0 ), mGridOffsetY( 0.0 ), mGridAnnotationFontColor( QColor( 0, 0, 0 ) ),
     mGridAnnotationPrecision( 3 ), mShowGridAnnotation( false ), mGridBlendMode( QPainter::CompositionMode_SourceOver ),
     mLeftGridAnnotationPosition( OutsideMapFrame ), mRightGridAnnotationPosition( OutsideMapFrame ),
@@ -1550,7 +1550,7 @@ int QgsComposerMap::xGridLines( QList< QPair< double, QLineF > >& lines ) const
   }
 
 
-  QPolygonF mapPolygon = transformedMapPolygon();
+  QPolygonF mapPolygon = transformedMapPolygon( mGeodesicGrid );
   QRectF mapBoundingRect = mapPolygon.boundingRect();
 
   //consider to round up to the next step in case the left boundary is > 0
@@ -1601,7 +1601,7 @@ int QgsComposerMap::xGridLines( QList< QPair< double, QLineF > >& lines ) const
 
     if ( intersectionList.size() >= 2 )
     {
-      lines.push_back( qMakePair( currentLevel, QLineF( mapToItemCoords( intersectionList.at( 0 ) ), mapToItemCoords( intersectionList.at( 1 ) ) ) ) );
+      lines.push_back( qMakePair( currentLevel, QLineF( mapToItemCoords( intersectionList.at( 0 ), mGeodesicGrid ), mapToItemCoords( intersectionList.at( 1 ), mGeodesicGrid ) ) ) );
     }
     currentLevel += mGridIntervalY;
   }
@@ -1618,7 +1618,7 @@ int QgsComposerMap::yGridLines( QList< QPair< double, QLineF > >& lines ) const
     return 1;
   }
 
-  QPolygonF mapPolygon = transformedMapPolygon();
+  QPolygonF mapPolygon = transformedMapPolygon( mGeodesicGrid );
   QRectF mapBoundingRect = mapPolygon.boundingRect();
 
   //consider to round up to the next step in case the left boundary is > 0
@@ -1668,7 +1668,7 @@ int QgsComposerMap::yGridLines( QList< QPair< double, QLineF > >& lines ) const
 
     if ( intersectionList.size() >= 2 )
     {
-      lines.push_back( qMakePair( currentLevel, QLineF( mapToItemCoords( intersectionList.at( 0 ) ), mapToItemCoords( intersectionList.at( 1 ) ) ) ) );
+      lines.push_back( qMakePair( currentLevel, QLineF( mapToItemCoords( intersectionList.at( 0 ), mGeodesicGrid ), mapToItemCoords( intersectionList.at( 1 ), mGeodesicGrid ) ) ) );
     }
     currentLevel += mGridIntervalX;
   }
@@ -1736,15 +1736,21 @@ void QgsComposerMap::updateBoundingRect()
   }
 }
 
-QgsRectangle QgsComposerMap::transformedExtent() const
+QgsRectangle QgsComposerMap::transformedExtent(bool lonlat) const
 {
   double dx = mXOffset;
   double dy = mYOffset;
   transformShift( dx, dy );
-  return QgsRectangle( mExtent.xMinimum() - dx, mExtent.yMinimum() - dy, mExtent.xMaximum() - dx, mExtent.yMaximum() - dy );
+  QgsRectangle extent( mExtent );
+  if ( lonlat )
+  {
+    QgsCoordinateTransform t( mMapRenderer->destinationCrs(), QgsCoordinateReferenceSystem(4326) );
+    extent = t.transform( extent );
+  }
+  return QgsRectangle( extent.xMinimum() - dx, extent.yMinimum() - dy, extent.xMaximum() - dx, extent.yMaximum() - dy );
 }
 
-QPolygonF QgsComposerMap::transformedMapPolygon() const
+QPolygonF QgsComposerMap::transformedMapPolygon(bool lonlat) const
 {
   double dx = mXOffset;
   double dy = mYOffset;
@@ -1756,7 +1762,7 @@ QPolygonF QgsComposerMap::transformedMapPolygon() const
   //qWarning(QString::number(dx).toLocal8Bit().data());
   //qWarning(QString::number(dy).toLocal8Bit().data());
   QPolygonF poly;
-  mapPolygon( poly );
+  mapPolygon( poly, lonlat );
   poly.translate( -dx, -dy );
   return poly;
 }
@@ -1805,50 +1811,56 @@ double QgsComposerMap::maxExtension() const
   return maxExtension + mAnnotationFrameDistance + gridFrameDist;
 }
 
-void QgsComposerMap::mapPolygon( const QgsRectangle& extent, QPolygonF& poly ) const
+void QgsComposerMap::mapPolygon( const QgsRectangle& extent, QPolygonF& poly, bool lonlat ) const
 {
   poly.clear();
+  QgsRectangle nExtent( extent );
+  if ( lonlat )
+  {
+    QgsCoordinateTransform t( mMapRenderer->destinationCrs(), QgsCoordinateReferenceSystem(4326) );
+    nExtent = t.transform( nExtent );
+  }
   if ( mRotation == 0 )
   {
-    poly << QPointF( extent.xMinimum(), extent.yMaximum() );
-    poly << QPointF( extent.xMaximum(), extent.yMaximum() );
-    poly << QPointF( extent.xMaximum(), extent.yMinimum() );
-    poly << QPointF( extent.xMinimum(), extent.yMinimum() );
+    poly << QPointF( nExtent.xMinimum(), nExtent.yMaximum() );
+    poly << QPointF( nExtent.xMaximum(), nExtent.yMaximum() );
+    poly << QPointF( nExtent.xMaximum(), nExtent.yMinimum() );
+    poly << QPointF( nExtent.xMinimum(), nExtent.yMinimum() );
     return;
   }
 
   //there is rotation
-  QgsPoint rotationPoint(( extent.xMaximum() + extent.xMinimum() ) / 2.0, ( extent.yMaximum() + extent.yMinimum() ) / 2.0 );
+  QgsPoint rotationPoint(( nExtent.xMaximum() + nExtent.xMinimum() ) / 2.0, ( nExtent.yMaximum() + nExtent.yMinimum() ) / 2.0 );
   double dx, dy; //x-, y- shift from rotation point to corner point
 
   //top left point
-  dx = rotationPoint.x() - extent.xMinimum();
-  dy = rotationPoint.y() - extent.yMaximum();
+  dx = rotationPoint.x() - nExtent.xMinimum();
+  dy = rotationPoint.y() - nExtent.yMaximum();
   rotate( mRotation, dx, dy );
   poly << QPointF( rotationPoint.x() + dx, rotationPoint.y() + dy );
 
   //top right point
-  dx = rotationPoint.x() - extent.xMaximum();
-  dy = rotationPoint.y() - extent.yMaximum();
+  dx = rotationPoint.x() - nExtent.xMaximum();
+  dy = rotationPoint.y() - nExtent.yMaximum();
   rotate( mRotation, dx, dy );
   poly << QPointF( rotationPoint.x() + dx, rotationPoint.y() + dy );
 
   //bottom right point
-  dx = rotationPoint.x() - extent.xMaximum();
-  dy = rotationPoint.y() - extent.yMinimum();
+  dx = rotationPoint.x() - nExtent.xMaximum();
+  dy = rotationPoint.y() - nExtent.yMinimum();
   rotate( mRotation, dx, dy );
   poly << QPointF( rotationPoint.x() + dx, rotationPoint.y() + dy );
 
   //bottom left point
-  dx = rotationPoint.x() - extent.xMinimum();
-  dy = rotationPoint.y() - extent.yMinimum();
+  dx = rotationPoint.x() - nExtent.xMinimum();
+  dy = rotationPoint.y() - nExtent.yMinimum();
   rotate( mRotation, dx, dy );
   poly << QPointF( rotationPoint.x() + dx, rotationPoint.y() + dy );
 }
 
-void QgsComposerMap::mapPolygon( QPolygonF& poly ) const
+void QgsComposerMap::mapPolygon( QPolygonF& poly, bool lonlat ) const
 {
-  return mapPolygon( mExtent, poly );
+  return mapPolygon( mExtent, poly, lonlat );
 }
 
 void QgsComposerMap::requestedExtent( QgsRectangle& extent ) const
@@ -1862,7 +1874,7 @@ void QgsComposerMap::requestedExtent( QgsRectangle& extent ) const
   else
   {
     QPolygonF poly;
-    mapPolygon( newExtent, poly );
+    mapPolygon( newExtent, poly, false );
     QRectF bRect = poly.boundingRect();
     extent.setXMinimum( bRect.left() );
     extent.setXMaximum( bRect.right() );
@@ -1945,22 +1957,22 @@ void QgsComposerMap::transformShift( double& xShift, double& yShift ) const
   yShift = dyScaled;
 }
 
-QPointF QgsComposerMap::mapToItemCoords( const QPointF& mapCoords ) const
+QPointF QgsComposerMap::mapToItemCoords( const QPointF& mapCoords, bool lonlat ) const
 {
-  QPolygonF mapPoly = transformedMapPolygon();
+  QPolygonF mapPoly = transformedMapPolygon( lonlat );
   if ( mapPoly.size() < 1 )
   {
     return QPointF( 0, 0 );
   }
 
-  QgsRectangle tExtent = transformedExtent();
+  QgsRectangle tExtent = transformedExtent( lonlat );
   QgsPoint rotationPoint(( tExtent.xMaximum() + tExtent.xMinimum() ) / 2.0, ( tExtent.yMaximum() + tExtent.yMinimum() ) / 2.0 );
   double dx = mapCoords.x() - rotationPoint.x();
   double dy = mapCoords.y() - rotationPoint.y();
   rotate( -mRotation, dx, dy );
   QgsPoint backRotatedCoords( rotationPoint.x() + dx, rotationPoint.y() + dy );
 
-  QgsRectangle unrotatedExtent = transformedExtent();
+  QgsRectangle unrotatedExtent = transformedExtent( lonlat );
   double xItem = rect().width() * ( backRotatedCoords.x() - unrotatedExtent.xMinimum() ) / unrotatedExtent.width();
   double yItem = rect().height() * ( 1 - ( backRotatedCoords.y() - unrotatedExtent.yMinimum() ) / unrotatedExtent.height() );
   return QPointF( xItem, yItem );
@@ -2075,7 +2087,7 @@ QPointF QgsComposerMap::composerMapPosForItem( const QGraphicsItem* item ) const
 
   double mapX = itemScenePos.x() / graphicsSceneRect.width() * mapRendererExtent.width() + mapRendererExtent.xMinimum();
   double mapY = mapRendererExtent.yMaximum() - itemScenePos.y() / graphicsSceneRect.height() * mapRendererExtent.height();
-  return mapToItemCoords( QPointF( mapX, mapY ) );
+  return mapToItemCoords( QPointF( mapX, mapY ), false );
 }
 
 void QgsComposerMap::setGridAnnotationPosition( GridAnnotationPosition p, QgsComposerMap::Border border )
