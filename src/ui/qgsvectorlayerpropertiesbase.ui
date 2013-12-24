@@ -973,6 +973,13 @@ p, li { white-space: pre-wrap; }
                     </property>
                    </widget>
                   </item>
+                  <item row="1" column="2" colspan="3">
+                    <widget class="QCheckBox" name="mSimplifyDrawingAtProvider">
+                      <property name="text">
+                        <string>Simplification runs on provider side, otherwise it will execute once obtained the geometry from data source.</string>
+                      </property>
+                    </widget>
+                  </item>
                   <item row="5" column="2">
                    <widget class="QLabel" name="label_17">
                     <property name="text">
