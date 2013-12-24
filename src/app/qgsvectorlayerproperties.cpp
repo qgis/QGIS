@@ -393,8 +393,10 @@ void QgsVectorLayerProperties::syncToLayer( void )
   cbMaximumScale->setScale( 1.0 / layer->maximumScale() );
 
   // get simplify drawing configuration
-  mSimplifyDrawingGroupBox->setChecked( layer->simplifyDrawingHints() != QgsVectorLayer::NoSimplification );
-  mSimplifyDrawingSlider->setValue(( int )( 5.0f * ( layer->simplifyDrawingTol() - 1 ) ) );
+  const QgsVectorSimplifyMethod& simplifyMethod = layer->simplifyMethod();
+  mSimplifyDrawingGroupBox->setChecked( simplifyMethod.simplifyHints() != QgsVectorLayer::NoSimplification );
+  mSimplifyDrawingSlider->setValue(( int )( 5.0f * ( simplifyMethod.threshold() - 1 ) ) );
+  mSimplifyDrawingAtProvider->setChecked( !simplifyMethod.forceLocalOptimization() );
   mSimplifyDrawingPanel->setVisible( mSimplifyDrawingSlider->value() > 0 );
   mSimplifyDrawingPx->setText( QString( "(%1 px)" ).arg( 1.0f + 0.2f * mSimplifyDrawingSlider->value() ) );
 
@@ -536,14 +538,17 @@ void QgsVectorLayerProperties::apply()
   layer->setMetadataUrlFormat( mLayerMetadataUrlFormatComboBox->currentText() );
 
   //layer simplify drawing configuration
-  int simplifyDrawingHints = QgsVectorLayer::NoSimplification;
+  int simplifyHints = QgsVectorLayer::NoSimplification;
   if ( mSimplifyDrawingGroupBox->isChecked() )
   {
-    simplifyDrawingHints |= QgsVectorLayer::DefaultSimplification;
-    if ( mSimplifyDrawingSlider->value() > 0 ) simplifyDrawingHints |= QgsVectorLayer::AntialiasingSimplification;
+    simplifyHints |= QgsVectorLayer::GeometrySimplification;
+    if ( mSimplifyDrawingSlider->value() > 0 ) simplifyHints |= QgsVectorLayer::AntialiasingSimplification;
   }
-  layer->setSimplifyDrawingHints( simplifyDrawingHints );
-  layer->setSimplifyDrawingTol( 1.0f + 0.2f*mSimplifyDrawingSlider->value() );
+  QgsVectorSimplifyMethod simplifyMethod = layer->simplifyMethod();
+  simplifyMethod.setSimplifyHints( simplifyHints );
+  simplifyMethod.setThreshold( 1.0f + 0.2f*mSimplifyDrawingSlider->value() );
+  simplifyMethod.setForceLocalOptimization( !mSimplifyDrawingAtProvider->isChecked() );
+  layer->setSimplifyMethod( simplifyMethod );
 
   // update symbology
   emit refreshLegend( layer->id(), QgsLegendItem::DontChange );

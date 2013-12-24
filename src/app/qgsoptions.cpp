@@ -562,8 +562,9 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   chkUseRenderCaching->setChecked( settings.value( "/qgis/enable_render_caching", false ).toBool() );
 
   // Default simplify drawing configuration
-  mSimplifyDrawingGroupBox->setChecked( settings.value( "/qgis/simplifyDrawingHints", ( int )QgsVectorLayer::DefaultSimplification ).toInt() != QgsVectorLayer::NoSimplification );
+  mSimplifyDrawingGroupBox->setChecked( settings.value( "/qgis/simplifyDrawingHints", ( int )QgsVectorLayer::GeometrySimplification ).toInt() != QgsVectorLayer::NoSimplification );
   mSimplifyDrawingSlider->setValue(( int )( 5.0f * ( settings.value( "/qgis/simplifyDrawingTol", QGis::DEFAULT_MAPTOPIXEL_THRESHOLD ).toFloat() - 1 ) ) );
+  mSimplifyDrawingAtProvider->setChecked( !settings.value( "/qgis/simplifyLocal", true ).toBool() );
   mSimplifyDrawingPanel->setVisible( mSimplifyDrawingSlider->value() > 0 );
   mSimplifyDrawingPx->setText( QString( "(%1 px)" ).arg( 1.0f + 0.2f * mSimplifyDrawingSlider->value() ) );
 
@@ -1099,14 +1100,15 @@ void QgsOptions::saveOptions()
   settings.setValue( "/qgis/capitaliseLayerName", capitaliseCheckBox->isChecked() );
 
   // Default simplify drawing configuration
-  int simplifyDrawingHints = QgsVectorLayer::NoSimplification;
+  int simplifyHints = QgsVectorLayer::NoSimplification;
   if ( mSimplifyDrawingGroupBox->isChecked() )
   {
-    simplifyDrawingHints |= QgsVectorLayer::DefaultSimplification;
-    if ( mSimplifyDrawingSlider->value() > 0 ) simplifyDrawingHints |= QgsVectorLayer::AntialiasingSimplification;
+    simplifyHints |= QgsVectorLayer::GeometrySimplification;
+    if ( mSimplifyDrawingSlider->value() > 0 ) simplifyHints |= QgsVectorLayer::AntialiasingSimplification;
   }
-  settings.setValue( "/qgis/simplifyDrawingHints", simplifyDrawingHints );
+  settings.setValue( "/qgis/simplifyDrawingHints", simplifyHints );
   settings.setValue( "/qgis/simplifyDrawingTol", 1.0f + 0.2f*mSimplifyDrawingSlider->value() );
+  settings.setValue( "/qgis/simplifyLocal", !mSimplifyDrawingAtProvider->isChecked() );
 
   // project
   settings.setValue( "/qgis/projOpenAtLaunch", mProjectOnLaunchCmbBx->currentIndex() );

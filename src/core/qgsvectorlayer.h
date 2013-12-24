@@ -179,6 +179,40 @@ struct CORE_EXPORT QgsVectorJoinInfo
   int joinFieldIndex;
 };
 
+/** This class contains information how to simplify geometries fetched from a vector layer */
+class CORE_EXPORT QgsVectorSimplifyMethod
+{
+  public:
+    //! construct a default object
+    QgsVectorSimplifyMethod();
+    //! copy constructor
+    QgsVectorSimplifyMethod( const QgsVectorSimplifyMethod& rh );
+    //! assignment operator
+    QgsVectorSimplifyMethod& operator=( const QgsVectorSimplifyMethod& rh );
+
+    /** Sets the simplification hints of the vector layer managed */
+    void setSimplifyHints( int simplifyHints ) { mSimplifyHints = simplifyHints; }
+    /** Gets the simplification hints of the vector layer managed */
+    inline int simplifyHints() const { return mSimplifyHints; }
+
+    /** Sets the simplification threshold of the vector layer managed */
+    void setThreshold( float threshold ) { mThreshold = threshold; }
+    /** Gets the simplification threshold of the vector layer managed */
+    inline float threshold() const { return mThreshold; }
+
+    /** Sets where the simplification executes, after fetch the geometries from provider, or when supported, in provider before fetch the geometries */
+    void setForceLocalOptimization( bool localOptimization ) { mLocalOptimization = localOptimization; }
+    /** Gets where the simplification executes, after fetch the geometries from provider, or when supported, in provider before fetch the geometries */
+    inline bool forceLocalOptimization() const { return mLocalOptimization; }
+
+  private:
+    /** Simplification hints for fast rendering of features of the vector layer managed */
+    int mSimplifyHints;
+    /** Simplification threshold */
+    float mThreshold;
+    /** Simplification executes after fetch the geometries from provider, otherwise it executes, when supported, in provider before fetch the geometries */
+    bool mLocalOptimization;
+};
 
 /** \ingroup core
  * Represents a vector layer which manages a vector based data sets.
@@ -730,12 +764,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Draw layer with renderer V2. QgsFeatureRenderer::startRender() needs to be called before using this method
      * @note added in 1.4
      */
-    void drawRendererV2( QgsFeatureIterator &fit, QgsRenderContext& rendererContext, bool labeling, const QgsAbstractGeometrySimplifier* geometrySimplifier = NULL );
+    void drawRendererV2( QgsFeatureIterator &fit, QgsRenderContext& rendererContext, bool labeling );
 
     /** Draw layer with renderer V2 using symbol levels. QgsFeatureRenderer::startRender() needs to be called before using this method
      * @note added in 1.4
      */
-    void drawRendererV2Levels( QgsFeatureIterator &fit, QgsRenderContext& rendererContext, bool labeling, const QgsAbstractGeometrySimplifier* geometrySimplifier = NULL );
+    void drawRendererV2Levels( QgsFeatureIterator &fit, QgsRenderContext& rendererContext, bool labeling );
 
     /** Returns point, line or polygon */
     QGis::GeometryType geometryType() const;
@@ -1373,25 +1407,18 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** @note not available in python bindings */
     inline QgsGeometryCache* cache() { return mCache; }
 
-    /** Set the Map2pixel simplification threshold for fast rendering of features */
-    void setSimplifyDrawingTol( float simplifyDrawingTol ) { mSimplifyDrawingTol = simplifyDrawingTol; }
-    /** Returns the Map2pixel simplification threshold for fast rendering of features */
-    float simplifyDrawingTol() const { return mSimplifyDrawingTol; }
-
     /** Simplification flags for fast rendering of features */
     enum SimplifyHint
     {
       NoSimplification           = 0, //!< No simplification can be applied
       GeometrySimplification     = 1, //!< The geometries can be simplified using the current map2pixel context state
-      EnvelopeSimplification     = 2, //!< The geometries can be fully simplified by its BoundingBox using the current map2pixel context state
-      AntialiasingSimplification = 4, //!< The geometries can be rendered with 'AntiAliasing' disabled because of it is '1-pixel size'
-      DefaultSimplification      = 3, //!< Default simplification hints can be applied ( Geometry + Envelope )
-      FullSimplification         = 7, //!< All simplification hints can be applied ( Geometry + Envelope + AA-disabling )
+      AntialiasingSimplification = 2, //!< The geometries can be rendered with 'AntiAliasing' disabled because of it is '1-pixel size'
+      FullSimplification         = 3, //!< All simplification hints can be applied ( Geometry + AA-disabling )
     };
-    /** Set the Map2pixel simplification hints for fast rendering of features */
-    void setSimplifyDrawingHints( int simplifyDrawingHints ) { mSimplifyDrawingHints = simplifyDrawingHints; }
-    /** Returns the Map2pixel simplification hints for fast rendering of features */
-    int simplifyDrawingHints() const { return mSimplifyDrawingHints; }
+    /** Set the simplification settings for fast rendering of features  */
+    void setSimplifyMethod( const QgsVectorSimplifyMethod& simplifyMethod ) { mSimplifyMethod = simplifyMethod; }
+    /** Returns the simplification settings for fast rendering of features  */
+    inline const QgsVectorSimplifyMethod& simplifyMethod() const { return mSimplifyMethod; }
 
     /** Returns whether the VectorLayer can apply the specified simplification hint */
     bool simplifyDrawingCanbeApplied( int simplifyHint ) const;
@@ -1665,10 +1692,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Renderer object which holds the information about how to display the features */
     QgsFeatureRendererV2 *mRendererV2;
 
-    /** Map2pixel geometry simplification threshold for fast rendering of features */
-    float mSimplifyDrawingTol;
-    /** Map2pixel geometry simplification hints for fast rendering of features */
-    int mSimplifyDrawingHints;
+    /** Simplification object which holds the information about how to simplify the features for fast rendering */
+    QgsVectorSimplifyMethod mSimplifyMethod;
 
     /** Label */
     QgsLabel *mLabel;
