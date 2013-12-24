@@ -18,6 +18,7 @@
 #include "qgsfeaturerequest.h"
 #include "qgslogger.h"
 
+class QgsAbstractGeometrySimplifier;
 
 /** \ingroup core
  * Internal feature iterator to be implemented within data providers
@@ -85,6 +86,10 @@ class CORE_EXPORT QgsAbstractFeatureIterator
     void ref(); //!< add reference
     void deref(); //!< remove reference, delete if refs == 0
     friend class QgsFeatureIterator;
+
+  private:
+    //! optional object to locally simplify geometries fetched by this feature iterator
+    QgsAbstractGeometrySimplifier* mGeometrySimplifier;
 };
 
 
