@@ -130,6 +130,7 @@ SET(QGIS_CORE_SRCS
   qgsvectorlayerimport.cpp
   qgsvectorlayerjoinbuffer.cpp
   qgsvectorlayerundocommand.cpp
+  qgsvectorsimplifymethod.cpp
 
   qgsnetworkaccessmanager.cpp
 
