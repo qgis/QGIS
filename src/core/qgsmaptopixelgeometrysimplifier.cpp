@@ -18,11 +18,9 @@
 #include "qgsmaptopixelgeometrysimplifier.h"
 #include "qgsapplication.h"
 
-QgsMapToPixelSimplifier::QgsMapToPixelSimplifier( int simplifyFlags, const QgsCoordinateTransform* coordinateTransform, const QgsMapToPixel* mapTolPixel, float mapToPixelTol )
+QgsMapToPixelSimplifier::QgsMapToPixelSimplifier( int simplifyFlags, double map2pixelTol )
     : mSimplifyFlags( simplifyFlags )
-    , mMapCoordTransform( coordinateTransform )
-    , mMapToPixel( mapTolPixel )
-    , mMapToPixelTol( mapToPixelTol )
+    , mMapToPixelTol( map2pixelTol )
 {
 }
 QgsMapToPixelSimplifier::~QgsMapToPixelSimplifier()
@@ -39,32 +37,6 @@ float QgsMapToPixelSimplifier::calculateLengthSquared2D( double x1, double y1, d
   float vy = ( float )( y2 - y1 );
 
   return vx*vx + vy*vy;
-}
-
-//! Returns the MapTolerance for transform between map coordinates and device coordinates
-float QgsMapToPixelSimplifier::calculateViewPixelTolerance( const QgsRectangle& boundingRect, const QgsCoordinateTransform* ct, const QgsMapToPixel* mapToPixel )
-{
-  double mapUnitsPerPixel = mapToPixel ? mapToPixel->mapUnitsPerPixel() : 1.0;
-  double mapUnitsFactor = 1;
-
-  // Calculate one aprox factor of the size of the BBOX from the source CoordinateSystem to the target CoordinateSystem
-  if ( ct && !(( QgsCoordinateTransform* )ct )->isShortCircuited() )
-  {
-    QgsRectangle sourceRect = boundingRect;
-    QgsRectangle targetRect = ct->transform( sourceRect );
-
-    QgsPoint minimumSrcPoint( sourceRect.xMinimum(), sourceRect.yMinimum() );
-    QgsPoint maximumSrcPoint( sourceRect.xMaximum(), sourceRect.yMaximum() );
-    QgsPoint minimumDstPoint( targetRect.xMinimum(), targetRect.yMinimum() );
-    QgsPoint maximumDstPoint( targetRect.xMaximum(), targetRect.yMaximum() );
-
-    double sourceHypothenuse = sqrt( calculateLengthSquared2D( minimumSrcPoint.x(), minimumSrcPoint.y(), maximumSrcPoint.x(), maximumSrcPoint.y() ) );
-    double targetHypothenuse = sqrt( calculateLengthSquared2D( minimumDstPoint.x(), minimumDstPoint.y(), maximumDstPoint.x(), maximumDstPoint.y() ) );
-
-    if ( targetHypothenuse != 0 )
-      mapUnitsFactor = sourceHypothenuse / targetHypothenuse;
-  }
-  return ( float )( mapUnitsPerPixel * mapUnitsFactor );
 }
 
 //! Returns the BBOX of the specified WKB-point stream
@@ -169,7 +141,7 @@ inline static bool generalizeWkbGeometry( QGis::WkbType wkbType, unsigned char* 
 }
 
 //! Simplify the WKB-geometry using the specified tolerance
-bool QgsMapToPixelSimplifier::simplifyWkbGeometry( int simplifyFlags, QGis::WkbType wkbType, unsigned char* sourceWkb, size_t sourceWkbSize, unsigned char* targetWkb, size_t& targetWkbSize, const QgsRectangle& envelope, float map2pixelTol, bool writeHeader, bool isaLinearRing )
+bool QgsMapToPixelSimplifier::simplifyWkbGeometry( int simplifyFlags, QGis::WkbType wkbType, unsigned char* sourceWkb, size_t sourceWkbSize, unsigned char* targetWkb, size_t& targetWkbSize, const QgsRectangle& envelope, double map2pixelTol, bool writeHeader, bool isaLinearRing )
 {
   bool canbeGeneralizable = true;
   bool hasZValue = QGis::wkbDimensions( wkbType ) == 3;
@@ -339,10 +311,8 @@ bool QgsMapToPixelSimplifier::simplifyWkbGeometry( int simplifyFlags, QGis::WkbT
 //////////////////////////////////////////////////////////////////////////////////////////////
 
 //! Returns whether the envelope can be replaced by its BBOX when is applied the specified map2pixel context
-bool QgsMapToPixelSimplifier::canbeGeneralizedByMapBoundingBox( const QgsRectangle& envelope, const QgsCoordinateTransform* coordinateTransform, const QgsMapToPixel* mapToPixel, float mapToPixelTol )
+bool QgsMapToPixelSimplifier::canbeGeneralizedByMapBoundingBox( const QgsRectangle& envelope, double map2pixelTol )
 {
-  double map2pixelTol = mapToPixelTol * calculateViewPixelTolerance( envelope, coordinateTransform, mapToPixel );
-
   // Can replace the geometry by its BBOX ?
   if (( envelope.xMaximum() - envelope.xMinimum() ) < map2pixelTol && ( envelope.yMaximum() - envelope.yMinimum() ) < map2pixelTol )
   {
@@ -360,13 +330,13 @@ QgsGeometry* QgsMapToPixelSimplifier::simplify( QgsGeometry* geometry ) const
   unsigned char* wkb = ( unsigned char* )malloc( wkbSize );
   memcpy( wkb, geometry->asWkb(), wkbSize );
   g->fromWkb( wkb, wkbSize );
-  simplifyGeometry( g, mSimplifyFlags, mMapCoordTransform, mMapToPixel, mMapToPixelTol );
+  simplifyGeometry( g, mSimplifyFlags, mMapToPixelTol );
 
   return g;
 }
 
 //! Simplifies the geometry (Removing duplicated points) when is applied the specified map2pixel context
-bool QgsMapToPixelSimplifier::simplifyGeometry( QgsGeometry* geometry, int simplifyFlags, const QgsCoordinateTransform* coordinateTransform, const QgsMapToPixel* mapToPixel, float mapToPixelTol )
+bool QgsMapToPixelSimplifier::simplifyGeometry( QgsGeometry* geometry, int simplifyFlags, double map2pixelTol )
 {
   size_t targetWkbSize = 0;
 
@@ -376,7 +346,6 @@ bool QgsMapToPixelSimplifier::simplifyGeometry( QgsGeometry* geometry, int simpl
 
   QgsRectangle envelope = geometry->boundingBox();
   QGis::WkbType wkbType = geometry->wkbType();
-  double map2pixelTol = mapToPixelTol * calculateViewPixelTolerance( envelope, coordinateTransform, mapToPixel );
 
   unsigned char* wkb = ( unsigned char* )geometry->asWkb( );
   size_t wkbSize = geometry->wkbSize( );
@@ -395,5 +364,5 @@ bool QgsMapToPixelSimplifier::simplifyGeometry( QgsGeometry* geometry, int simpl
 //! Simplifies the geometry (Removing duplicated points) when is applied the specified map2pixel context
 bool QgsMapToPixelSimplifier::simplifyGeometry( QgsGeometry* geometry ) const
 {
-  return simplifyGeometry( geometry, mSimplifyFlags, mMapCoordTransform, mMapToPixel, mMapToPixelTol );
+  return simplifyGeometry( geometry, mSimplifyFlags, mMapToPixelTol );
 }

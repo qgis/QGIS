@@ -15,33 +15,79 @@
 #include "qgsfeatureiterator.h"
 #include "qgslogger.h"
 
+#include "qgsgeometrysimplifier.h"
+#include "qgsmaptopixelgeometrysimplifier.h"
+#include "qgssimplifymethod.h"
+
 QgsAbstractFeatureIterator::QgsAbstractFeatureIterator( const QgsFeatureRequest& request )
     : mRequest( request )
     , mClosed( false )
     , refs( 0 )
+    , mGeometrySimplifier( NULL )
 {
+  const QgsSimplifyMethod& simplifyMethod = request.simplifyMethod();
+
+  if ( simplifyMethod.methodType() != QgsSimplifyMethod::NoSimplification && simplifyMethod.forceLocalOptimization() )
+  {
+    QgsSimplifyMethod::MethodType methodType = simplifyMethod.methodType();
+
+    if ( methodType == QgsSimplifyMethod::OptimizeForRendering )
+    {
+      int simplifyFlags = QgsMapToPixelSimplifier::SimplifyGeometry | QgsMapToPixelSimplifier::SimplifyEnvelope;
+      mGeometrySimplifier = new QgsMapToPixelSimplifier( simplifyFlags, simplifyMethod.tolerance() );
+    }
+    else
+    if ( methodType == QgsSimplifyMethod::PreserveTopology )
+    {
+      mGeometrySimplifier = new QgsTopologyPreservingSimplifier( simplifyMethod.tolerance() );
+    }
+    else
+    {
+      QgsDebugMsg( QString( "Simplification method type (%1) is not recognised" ).arg( methodType ) );
+    }
+  }
 }
 
 QgsAbstractFeatureIterator::~QgsAbstractFeatureIterator()
 {
+  if ( mGeometrySimplifier )
+  {
+    delete mGeometrySimplifier;
+    mGeometrySimplifier = NULL;
+  }
 }
 
 bool QgsAbstractFeatureIterator::nextFeature( QgsFeature& f )
 {
+  bool dataOk = false;
+
   switch ( mRequest.filterType() )
   {
     case QgsFeatureRequest::FilterExpression:
-      return nextFeatureFilterExpression( f );
+      dataOk = nextFeatureFilterExpression( f );
       break;
 
     case QgsFeatureRequest::FilterFids:
-      return nextFeatureFilterFids( f );
+      dataOk = nextFeatureFilterFids( f );
       break;
 
     default:
-      return fetchFeature( f );
+      dataOk = fetchFeature( f );
       break;
   }
+
+  // simplify locally the geometry using the simplifier defined in constructor
+  if ( dataOk && mGeometrySimplifier )
+  {
+    QgsGeometry* geometry = f.geometry();
+
+    if ( geometry ) 
+    {
+      QGis::GeometryType geometryType = geometry->type();
+      if ( geometryType == QGis::Line || geometryType == QGis::Polygon ) mGeometrySimplifier->simplifyGeometry( geometry );
+    }
+  }
+  return dataOk;
 }
 
 bool QgsAbstractFeatureIterator::nextFeatureFilterExpression( QgsFeature& f )
