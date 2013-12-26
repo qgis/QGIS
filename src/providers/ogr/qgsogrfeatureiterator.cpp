@@ -15,6 +15,7 @@
 #include "qgsogrfeatureiterator.h"
 
 #include "qgsogrprovider.h"
+#include "qgsogrgeometrysimplifier.h"
 
 #include "qgsapplication.h"
 #include "qgsgeometry.h"
@@ -38,6 +39,7 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrProvider* p, const QgsFeatur
     , ogrDataSource( 0 )
     , ogrLayer( 0 )
     , mSubsetStringSet( false )
+    , mGeometrySimplifier( NULL )
 {
   mFeatureFetched = false;
 
@@ -78,12 +80,20 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrProvider* p, const QgsFeatur
     OGR_L_SetSpatialFilter( ogrLayer, 0 );
   }
 
+  //setup if required the simplification of OGR-geometries fetched
+  prepareProviderSimplification();
+
   //start with first feature
   rewind();
 }
 
 QgsOgrFeatureIterator::~QgsOgrFeatureIterator()
 {
+  if ( mGeometrySimplifier )
+  {
+    delete mGeometrySimplifier;
+    mGeometrySimplifier = NULL;
+  }
   close();
 }
 
@@ -95,6 +105,40 @@ void QgsOgrFeatureIterator::ensureRelevantFields()
   P->mRelevantFieldsForNextFeature = true;
 }
 
+bool QgsOgrFeatureIterator::prepareProviderSimplification()
+{
+  const QgsSimplifyMethod& simplifyMethod = mRequest.simplifyMethod();
+
+  if ( mGeometrySimplifier )
+  {
+    delete mGeometrySimplifier;
+    mGeometrySimplifier = NULL;
+  }
+
+  // setup if required the simplification of OGR-geometries fetched, it uses the settings of current FeatureRequest
+  if ( simplifyMethod.methodType() != QgsSimplifyMethod::NoSimplification && !simplifyMethod.forceLocalOptimization() && !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) )
+  {
+    QgsSimplifyMethod::MethodType methodType = simplifyMethod.methodType();
+
+    if ( methodType == QgsSimplifyMethod::OptimizeForRendering )
+    {
+      int simplifyFlags = QgsMapToPixelSimplifier::SimplifyGeometry | QgsMapToPixelSimplifier::SimplifyEnvelope;
+      mGeometrySimplifier = new QgsOgrMapToPixelSimplifier( simplifyFlags, simplifyMethod.tolerance() );
+      return true;
+    }
+    else
+    if ( methodType == QgsSimplifyMethod::PreserveTopology )
+    {
+      mGeometrySimplifier = new QgsOgrTopologyPreservingSimplifier( simplifyMethod.tolerance() );
+      return true;
+    }
+    else
+    {
+      QgsDebugMsg( QString( "Simplification method type (%1) is not recognised by OgrFeatureIterator class" ).arg( methodType ) );
+    }
+  }
+  return false;
+}
 
 bool QgsOgrFeatureIterator::fetchFeature( QgsFeature& feature )
 {
@@ -233,6 +277,9 @@ bool QgsOgrFeatureIterator::readFeature( OGRFeatureH fet, QgsFeature& feature )
 
     if ( geom )
     {
+      OGRGeometry* ogrGeometry = (OGRGeometry*)geom;
+      if ( mGeometrySimplifier ) mGeometrySimplifier->simplifyGeometry( ogrGeometry );
+
       // get the wkb representation
       int memorySize = OGR_G_WkbSize( geom );
       unsigned char *wkb = new unsigned char[memorySize];

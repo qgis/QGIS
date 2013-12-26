@@ -1493,6 +1493,9 @@ int QgsOgrProvider::capabilities() const
         ability &= ~( AddAttributes | DeleteFeatures );
       }
     }
+
+    // supports geometry simplification on provider side
+    ability |= QgsVectorDataProvider::SimplifyGeometries;
   }
 
   return ability;
