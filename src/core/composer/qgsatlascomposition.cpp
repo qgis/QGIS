@@ -279,6 +279,12 @@ void QgsAtlasComposition::lastFeature()
   prepareForFeature( mCurrentFeatureNo );
 }
 
+void QgsAtlasComposition::prepareForFeature( QgsFeature * feat )
+{
+  int featureI = mFeatureIds.indexOf( feat->id() );
+  prepareForFeature( featureI );
+}
+
 void QgsAtlasComposition::prepareForFeature( int featureI )
 {
   if ( !mComposerMap || !mCoverageLayer )

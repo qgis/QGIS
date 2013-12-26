@@ -637,11 +637,8 @@ void QgsAttributeTableModel::executeAction( int action, const QModelIndex &idx )
     //action is a standard action
     //so need to subtract size of user-defined actions
     int actionId = action - layer()->actions()->size();
-    if ( layer()->actions()->size() > 0 )
-    {
-      // also need to subtract 1 for the seperator item
-      actionId--;
-    }
+    // also need to subtract 1 for the seperator item
+    actionId--;
     layer()->standardActions()->doAction( actionId, f, fieldIdx( idx.column() ) );
   }
 

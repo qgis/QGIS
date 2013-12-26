@@ -45,6 +45,10 @@ bool QgsAction::runable() const
   if ( mType == QgsAction::Atlas )
   {
     //atlas dependant logic here
+    //possibly could set this action as runable only if a composition has this layer as the atlas layer
+    //but alternatively it may be more flexible to always allow this action (eg, for previewing
+    //atlas based symbology before a composition has been created)
+    //for now, always show this action
     return true;
   }
 

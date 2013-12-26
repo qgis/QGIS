@@ -8166,6 +8166,8 @@ void QgisApp::layersWereAdded( QList<QgsMapLayer *> theLayers )
         connect( vlayer, SIGNAL( editingStopped() ), this, SLOT( layerEditStateChanged() ) );
       }
       provider = vProvider;
+      //here
+      connect( vlayer, SIGNAL( actionAtlasFeatureCalled( QgsVectorLayer* , QgsFeature & ) ), this, SLOT( setAtlasFeature( QgsVectorLayer* , QgsFeature & ) ) );
     }
 
     QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( layer );
@@ -8186,6 +8188,50 @@ void QgisApp::layersWereAdded( QList<QgsMapLayer *> theLayers )
       connect( provider, SIGNAL( dataChanged() ), mMapCanvas, SLOT( refresh() ) );
     }
   }
+}
+
+void QgisApp::setAtlasFeature( QgsVectorLayer* layer, QgsFeature &feat )
+{
+  QgsExpression::setSpecialColumn( "$atlasfeatureid", feat.id() );
+  QgsExpression::setSpecialColumn( "$atlasgeometry", QVariant::fromValue( *feat.geometry() ) );
+  refreshMapCanvas();
+
+  //also need to:
+  //set feature in compositions with atlas previews
+
+  //loop through compositions
+  QSet<QgsComposer*> composers = instance()->printComposers();
+  QSet<QgsComposer*>::iterator composer_it = composers.begin();
+  for ( ; composer_it != composers.end(); ++composer_it )
+  {
+    QgsComposition* composition = ( *composer_it )->composition();
+
+    //check if composition has an atlas
+    QgsAtlasComposition& atlas = composition->atlasComposition();
+    if ( ! atlas.enabled() )
+      continue;
+
+    //check atlas coverage layer
+    //if not matching layer, continue
+    if ( atlas.coverageLayer() != layer )
+    {
+      //atlas is being driven by a different layer, skip it
+      continue;
+    }
+
+    //check if composition has preview enabled
+    if ( ! composition->atlasPreviewEnabled() )
+    {
+      //Composition is not in atlas preview mode
+      //so skip it. Possibly it would be better here to
+      //automatically enable atlas previews for this composition
+      continue;
+    }
+
+    //set current feature id
+    atlas.prepareForFeature( &feat );
+  }
+
 }
 
 void QgisApp::showExtents()

@@ -3562,8 +3562,7 @@ void QgsVectorLayer::stopRendererV2( QgsRenderContext& rendererContext, QgsSingl
 
 void QgsVectorLayer::setAtlasFeature( QgsFeature &feat )
 {
-  QgsExpression::setSpecialColumn( "$atlasfeatureid", feat.id() );
-  QgsExpression::setSpecialColumn( "$atlasgeometry", QVariant::fromValue( *feat.geometry() ) );
+  emit actionAtlasFeatureCalled( this, feat );
 }
 
 void QgsVectorLayer::prepareLabelingAndDiagrams( QgsRenderContext& rendererContext, QgsAttributeList& attributes, bool& labeling )

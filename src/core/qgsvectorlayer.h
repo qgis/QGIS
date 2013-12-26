@@ -1550,6 +1550,11 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Signal emitted when setLayerTransparency() is called */
     void layerTransparencyChanged( int layerTransparency );
 
+    /** Emitted when a feature from this layer is set as the current atlas feature via the layer action
+     * @note added in 2.1
+     */
+    void actionAtlasFeatureCalled( QgsVectorLayer* layer, QgsFeature &feat );
+
   private slots:
     void onRelationsLoaded();
 
