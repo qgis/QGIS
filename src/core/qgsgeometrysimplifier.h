@@ -53,7 +53,7 @@ class CORE_EXPORT QgsTopologyPreservingSimplifier : public QgsAbstractGeometrySi
     QgsTopologyPreservingSimplifier( double tolerance );
     virtual ~QgsTopologyPreservingSimplifier();
 
-  private:
+  protected:
     //! Distance tolerance for the simplification
     double mTolerance;
 

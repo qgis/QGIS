@@ -87,6 +87,9 @@ class CORE_EXPORT QgsAbstractFeatureIterator
     void deref(); //!< remove reference, delete if refs == 0
     friend class QgsFeatureIterator;
 
+    //! setup if required the local simplification of geometries to fetch, it uses the settings of current FeatureRequest
+    virtual bool prepareLocalSimplification();
+
   private:
     //! optional object to locally simplify geometries fetched by this feature iterator
     QgsAbstractGeometrySimplifier* mGeometrySimplifier;

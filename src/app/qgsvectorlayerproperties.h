@@ -120,6 +120,7 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     void on_mMaximumScaleSetCurrentPushButton_clicked();
 
     void on_mSimplifyDrawingSlider_valueChanged( int value );
+    void on_mSimplifyDrawingGroupBox_toggled( bool checked );
 
   signals:
 
