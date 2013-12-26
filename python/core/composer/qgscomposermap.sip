@@ -247,6 +247,32 @@ class QgsComposerMap : QgsComposerItem
         @note: this function was added in version 1.9*/
     void setGridFrameWidth( double w );
     double gridFrameWidth() const;
+    
+    /**Set grid frame pen thickness
+        @note: this function was added in version 2.1*/
+    void setGridFramePenSize( double w );
+    double gridFramePenSize() const;
+    
+    /**Sets pen color for grid frame
+        @note: this function was added in version 2.1*/
+    void setGridFramePenColor( const QColor& c );
+    /**Get pen color for grid frame
+        @note: this function was added in version 2.1*/
+    QColor gridFramePenColor() const;
+    
+    /**Sets first fill color for grid zebra frame
+        @note: this function was added in version 2.1*/
+    void setGridFrameFillColor1( const QColor& c );
+    /**Get first fill color for grid zebra frame
+        @note: this function was added in version 2.1*/
+    QColor gridFrameFillColor1() const;
+
+    /**Sets second fill color for grid zebra frame
+        @note: this function was added in version 2.1*/
+    void setGridFrameFillColor2( const QColor& c );
+    /**Get second fill color for grid zebra frame
+        @note: this function was added in version 2.1*/
+    QColor gridFrameFillColor2() const;          
 
     /** Returns the grid's blending mode
      @note added in version 2.0*/
