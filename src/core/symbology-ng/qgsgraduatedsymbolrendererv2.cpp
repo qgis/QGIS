@@ -419,7 +419,6 @@ static QList<double> _calcEqualIntervalBreaks( double minimum, double maximum, i
 
 static QList<double> _calcQuantileBreaks( QList<double> values, int classes )
 {
-
   // q-th quantile of a data set:
   // value where q fraction of data is below and (1-q) fraction is above this value
   // Xq = (1 - r) * X_NI1 + r * X_NI2
@@ -432,6 +431,10 @@ static QList<double> _calcQuantileBreaks( QList<double> values, int classes )
   qSort( values );
 
   QList<double> breaks;
+
+  // If there are no values to process: bail out
+  if ( !values.count() )
+    return breaks;
 
   int n = values.count();
   double Xq = n > 0 ? values[0] : 0.0;
@@ -615,6 +618,10 @@ static QList<double> _calcStdDevBreaks( QList<double> values, int classes, QList
 
   // Returns breaks based on '_calcPrettyBreaks' of the centred and scaled
   // values of 'values', and may have a number of classes different from 'classes'.
+
+  // If there are no values to process: bail out
+  if ( !values.count() )
+    return QList<double>();
 
   double mean = 0.0;
   double stdDev = 0.0;
