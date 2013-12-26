@@ -4276,8 +4276,25 @@ void QgisApp::updateDefaultFeatureAction( QAction *action )
   mFeatureActionMenu->setActiveAction( action );
 
   int index = mFeatureActionMenu->actions().indexOf( action );
-  vlayer->actions()->setDefaultAction( index );
 
+  if ( index < vlayer->actions()->size() )
+  {
+    vlayer->actions()->setDefaultAction( index );
+    vlayer->standardActions()->setDefaultAction( -1 );
+  }
+  else
+  {
+    //action is a standard action
+    vlayer->actions()->setDefaultAction( -1 );
+    //so need to subtract size of user-defined actions
+    int actionId = index - vlayer->actions()->size();
+    if ( vlayer->actions()->size() > 0 )
+    {
+      // also need to subtract 1 for the seperator item
+      actionId--;
+    }
+    vlayer->standardActions()->setDefaultAction( actionId );
+  }
   doFeatureAction();
 }
 
@@ -4294,6 +4311,22 @@ void QgisApp::refreshFeatureActions()
   {
     QAction *action = mFeatureActionMenu->addAction( actions->at( i ).name() );
     if ( i == actions->defaultAction() )
+    {
+      mFeatureActionMenu->setActiveAction( action );
+    }
+  }
+
+  QgsAttributeAction *standardActions = vlayer->standardActions();
+  if ( actions->size() > 0 && standardActions->size() > 0 )
+  {
+    //add a seperator between user defined and standard actions
+    mFeatureActionMenu->addSeparator();
+  }
+
+  for ( int i = 0; i < standardActions->size(); i++ )
+  {
+    QAction *action = mFeatureActionMenu->addAction( standardActions->at( i ).name() );
+    if ( i == standardActions->defaultAction() )
     {
       mFeatureActionMenu->setActiveAction( action );
     }
@@ -8489,7 +8522,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
 
     bool isEditable = vlayer->isEditable();
     bool layerHasSelection = vlayer->selectedFeatureCount() > 0;
-    bool layerHasActions = vlayer->actions()->size() > 0;
+    bool layerHasActions = vlayer->actions()->size() + vlayer->standardActions()->size() > 0;
 
     bool canChangeAttributes = dprovider->capabilities() & QgsVectorDataProvider::ChangeAttributeValues;
     bool canDeleteFeatures = dprovider->capabilities() & QgsVectorDataProvider::DeleteFeatures;
