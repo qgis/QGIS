@@ -20,6 +20,7 @@
 #include <ogr_api.h>
 
 class QgsOgrProvider;
+class QgsOgrAbstractGeometrySimplifier;
 
 class QgsOgrFeatureIterator : public QgsAbstractFeatureIterator
 {
@@ -37,6 +38,9 @@ class QgsOgrFeatureIterator : public QgsAbstractFeatureIterator
   protected:
     //! fetch next feature, return true on success
     virtual bool fetchFeature( QgsFeature& feature );
+
+    //! setup if required the simplification of OGR-geometries fetched, it uses the settings of current FeatureRequest
+    virtual bool prepareProviderSimplification();
 
     QgsOgrProvider* P;
 
@@ -56,6 +60,10 @@ class QgsOgrFeatureIterator : public QgsAbstractFeatureIterator
 
     //! Set to true, if geometry is in the requested columns
     bool mFetchGeometry;
+
+  private:
+    //! optional object to simplify OGR-geometries fecthed by this feature iterator
+    QgsOgrAbstractGeometrySimplifier* mGeometrySimplifier;
 };
 
 #endif // QGSOGRFEATUREITERATOR_H
