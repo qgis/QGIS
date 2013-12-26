@@ -38,4 +38,7 @@ class QgsRenderChecker
     bool compareImages( QString theTestName, unsigned int theMismatchCount = 0, QString theRenderedImageFile = "" );
 
     bool isKnownAnomaly( QString theDiffImageFile );
+    
+    QString expectedImageFile();
+
 };

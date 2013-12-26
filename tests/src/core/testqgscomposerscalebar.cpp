@@ -124,14 +124,14 @@ void TestQgsComposerScaleBar::cleanup()
 void TestQgsComposerScaleBar::singleBox()
 {
   mComposerScaleBar->setStyle( "Single Box" );
-  QgsCompositionChecker checker( "composerscalebar_singleBox", mComposition );
+  QgsCompositionChecker checker( "composerscalebar_singlebox", mComposition );
   QVERIFY( checker.testComposition( mReport ) );
 };
 
 void TestQgsComposerScaleBar::doubleBox()
 {
   mComposerScaleBar->setStyle( "Double Box" );
-  QgsCompositionChecker checker( "composerscalebar_doubleBox", mComposition );
+  QgsCompositionChecker checker( "composerscalebar_doublebox", mComposition );
   QVERIFY( checker.testComposition( mReport ) );
 };
 

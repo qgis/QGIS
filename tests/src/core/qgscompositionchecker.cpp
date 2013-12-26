@@ -22,8 +22,8 @@
 #include <QImage>
 #include <QPainter>
 
-QgsCompositionChecker::QgsCompositionChecker( const QString& testName, QgsComposition* composition, const QString& expectedImageFile )
- : QgsRenderChecker( ), 
+QgsCompositionChecker::QgsCompositionChecker( const QString& testName, QgsComposition* composition )
+    : QgsRenderChecker( ),
     mTestName( testName ),
     mComposition( composition )
 {
@@ -35,12 +35,6 @@ QgsCompositionChecker::QgsCompositionChecker()
 
 QgsCompositionChecker::~QgsCompositionChecker()
 {
-}
-
-bool QgsCompositionChecker::testComposition( int page )
-{
-  QString fake;
-  testComposition( fake, page );
 }
 
 bool QgsCompositionChecker::testComposition( QString &report, int page )
@@ -85,13 +79,11 @@ bool QgsCompositionChecker::testComposition( QString &report, int page )
   mComposition->renderPage( &p, page );
   p.end();
 
-  QString renderedFilePath = QDir::tempPath() + QDir::separator() + QFileInfo( mTestName ).baseName() + "_rendered.png"; 
+  QString renderedFilePath = QDir::tempPath() + QDir::separator() + QFileInfo( mTestName ).baseName() + "_rendered.png";
   outputImage.save( renderedFilePath, "PNG" );
 
-  QString diffFilePath = QDir::tempPath() + QDir::separator() + QFileInfo( mTestName ).baseName() + "_diff.png";
-  
-  
-  
+  QString diffFilePath = QDir::tempPath() + QDir::separator() + QFileInfo( mTestName ).baseName() + "_result_diff.png";
+
   bool testResult = compareImages( mTestName, 0, renderedFilePath );
 
   QString myDashMessage = "<DartMeasurementFile name=\"Rendered Image " + mTestName + "\""

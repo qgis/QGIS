@@ -121,13 +121,10 @@ class TestQgsAtlasComposition(unittest.TestCase):
             self.mAtlas.prepareForFeature( i )
             self.mLabel1.adjustSizeToText()
 
-            checker = QgsCompositionChecker()
-            res = checker.testComposition( "Atlas autoscale test", self.mComposition, \
-                                               self.TEST_DATA_DIR + QDir.separator() + \
-                                               "control_images" + QDir.separator() + \
-                                               "expected_composermapatlas" + QDir.separator() + \
-                                               "autoscale_%d.png" % i )
-            assert res[0] == True
+            checker = QgsCompositionChecker('atlas_autoscale%d' % (i + 1), self.mComposition)
+            myTestResult, myMessage = checker.testComposition()
+
+            assert myTestResult == True
         self.mAtlas.endRender()
 
     def fixedscale_render_test( self ):
@@ -140,13 +137,10 @@ class TestQgsAtlasComposition(unittest.TestCase):
             self.mAtlas.prepareForFeature( i )
             self.mLabel1.adjustSizeToText()
 
-            checker = QgsCompositionChecker()
-            res = checker.testComposition( "Atlas fixed scale test", self.mComposition, \
-                                               self.TEST_DATA_DIR + QDir.separator() + \
-                                               "control_images" + QDir.separator() + \
-                                               "expected_composermapatlas" + QDir.separator() + \
-                                               "fixedscale_%d.png" % i )
-            assert res[0] == True
+            checker = QgsCompositionChecker('atlas_fixedscale%d' % (i + 1), self.mComposition)
+            myTestResult, myMessage = checker.testComposition()
+
+            assert myTestResult == True
         self.mAtlas.endRender()
 
     def hidden_render_test( self ):
@@ -160,13 +154,10 @@ class TestQgsAtlasComposition(unittest.TestCase):
             self.mAtlas.prepareForFeature( i )
             self.mLabel1.adjustSizeToText()
 
-            checker = QgsCompositionChecker()
-            res = checker.testComposition( "Atlas hidden test", self.mComposition, \
-                                               self.TEST_DATA_DIR + QDir.separator() + \
-                                               "control_images" + QDir.separator() + \
-                                               "expected_composermapatlas" + QDir.separator() + \
-                                               "hiding_%d.png" % i )
-            assert res[0] == True
+            checker = QgsCompositionChecker('atlas_hiding%d' % (i + 1), self.mComposition)
+            myTestResult, myMessage = checker.testComposition()
+
+            assert myTestResult == True
         self.mAtlas.endRender()
 
     def sorting_render_test( self ):
@@ -184,13 +175,10 @@ class TestQgsAtlasComposition(unittest.TestCase):
             self.mAtlas.prepareForFeature( i )
             self.mLabel1.adjustSizeToText()
 
-            checker = QgsCompositionChecker()
-            res = checker.testComposition( "Atlas sorting test", self.mComposition, \
-                                               self.TEST_DATA_DIR + QDir.separator() + \
-                                               "control_images" + QDir.separator() + \
-                                               "expected_composermapatlas" + QDir.separator() + \
-                                               "sorting_%d.png" % i )
-            assert res[0] == True
+            checker = QgsCompositionChecker('atlas_sorting%d' % (i + 1), self.mComposition)
+            myTestResult, myMessage = checker.testComposition()
+
+            assert myTestResult == True
         self.mAtlas.endRender()
 
     def filtering_render_test( self ):
@@ -209,13 +197,10 @@ class TestQgsAtlasComposition(unittest.TestCase):
             self.mAtlas.prepareForFeature( i )
             self.mLabel1.adjustSizeToText()
 
-            checker = QgsCompositionChecker()
-            res = checker.testComposition( "Atlas filtering test", self.mComposition, \
-                                               self.TEST_DATA_DIR + QDir.separator() + \
-                                               "control_images" + QDir.separator() + \
-                                               "expected_composermapatlas" + QDir.separator() + \
-                                               "filtering_%d.png" % i )
-            assert res[0] == True
+            checker = QgsCompositionChecker('atlas_filtering%d' % (i + 1), self.mComposition)
+            myTestResult, myMessage = checker.testComposition()
+
+            assert myTestResult == True
         self.mAtlas.endRender()
 
 if __name__ == '__main__':

@@ -100,25 +100,27 @@ class CORE_EXPORT QgsRenderChecker
       * @return a bool indicating if the diff matched one of the anomaly files
     */
     bool isKnownAnomaly( QString theDiffImageFile );
-    
+
+    QString expectedImageFile() { return mExpectedImageFile; };
+
   protected:
-  
+
     QString mReport;
     unsigned int mMatchTarget;
     QgsMapRenderer * mpMapRenderer;
     int mElapsedTime;
     QString mRenderedImageFile;
     QString mExpectedImageFile;
-        
+
   private:
 
-    
+
     QString mControlName;
-    
+
     unsigned int mMismatchCount;
 
     int mElapsedTimeTarget;
-    
+
     QString mControlPathPrefix;
 
 }; // class QgsRenderChecker
