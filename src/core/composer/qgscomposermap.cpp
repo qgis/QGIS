@@ -277,7 +277,8 @@ void QgsComposerMap::cache( void )
   double horizontalVScaleFactor = horizontalViewScaleFactor();
   if ( horizontalVScaleFactor < 0 )
   {
-    horizontalVScaleFactor = mLastValidViewScaleFactor;
+    //make sure scale factor is positive
+    horizontalVScaleFactor = mLastValidViewScaleFactor > 0 ? mLastValidViewScaleFactor : 1;
   }
 
   int w = requestExtent.width() * mapUnitsToMM() * horizontalVScaleFactor;
