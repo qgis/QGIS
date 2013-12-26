@@ -77,6 +77,9 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayer* la
       mProviderIterator = L->dataProvider()->getFeatures( mProviderRequest );
     }
 
+    // setup if required the local simplification of geometries to fetch
+    prepareLocalSimplification();
+
     rewindEditBuffer();
   }
 

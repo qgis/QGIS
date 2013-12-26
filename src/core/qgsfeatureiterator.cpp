@@ -25,27 +25,6 @@ QgsAbstractFeatureIterator::QgsAbstractFeatureIterator( const QgsFeatureRequest&
     , refs( 0 )
     , mGeometrySimplifier( NULL )
 {
-  const QgsSimplifyMethod& simplifyMethod = request.simplifyMethod();
-
-  if ( simplifyMethod.methodType() != QgsSimplifyMethod::NoSimplification && simplifyMethod.forceLocalOptimization() )
-  {
-    QgsSimplifyMethod::MethodType methodType = simplifyMethod.methodType();
-
-    if ( methodType == QgsSimplifyMethod::OptimizeForRendering )
-    {
-      int simplifyFlags = QgsMapToPixelSimplifier::SimplifyGeometry | QgsMapToPixelSimplifier::SimplifyEnvelope;
-      mGeometrySimplifier = new QgsMapToPixelSimplifier( simplifyFlags, simplifyMethod.tolerance() );
-    }
-    else
-    if ( methodType == QgsSimplifyMethod::PreserveTopology )
-    {
-      mGeometrySimplifier = new QgsTopologyPreservingSimplifier( simplifyMethod.tolerance() );
-    }
-    else
-    {
-      QgsDebugMsg( QString( "Simplification method type (%1) is not recognised" ).arg( methodType ) );
-    }
-  }
 }
 
 QgsAbstractFeatureIterator::~QgsAbstractFeatureIterator()
@@ -120,6 +99,41 @@ void QgsAbstractFeatureIterator::deref()
   refs--;
   if ( !refs )
     delete this;
+}
+
+bool QgsAbstractFeatureIterator::prepareLocalSimplification()
+{
+  const QgsSimplifyMethod& simplifyMethod = mRequest.simplifyMethod();
+
+  if ( mGeometrySimplifier )
+  {
+    delete mGeometrySimplifier;
+    mGeometrySimplifier = NULL;
+  }
+
+  // setup the local simplification of geometries to fetch, it uses the settings of current FeatureRequest
+  if ( simplifyMethod.methodType() != QgsSimplifyMethod::NoSimplification && simplifyMethod.forceLocalOptimization() && !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) )
+  {
+    QgsSimplifyMethod::MethodType methodType = simplifyMethod.methodType();
+
+    if ( methodType == QgsSimplifyMethod::OptimizeForRendering )
+    {
+      int simplifyFlags = QgsMapToPixelSimplifier::SimplifyGeometry | QgsMapToPixelSimplifier::SimplifyEnvelope;
+      mGeometrySimplifier = new QgsMapToPixelSimplifier( simplifyFlags, simplifyMethod.tolerance() );
+      return true;
+    }
+    else
+    if ( methodType == QgsSimplifyMethod::PreserveTopology )
+    {
+      mGeometrySimplifier = new QgsTopologyPreservingSimplifier( simplifyMethod.tolerance() );
+      return true;
+    }
+    else
+    {
+      QgsDebugMsg( QString( "Simplification method type (%1) is not recognised" ).arg( methodType ) );
+    }
+  }
+  return false;
 }
 
 ///////
