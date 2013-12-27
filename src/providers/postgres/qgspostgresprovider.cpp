@@ -993,6 +993,9 @@ bool QgsPostgresProvider::hasSufficientPermsAndCapabilities()
     }
   }
 
+  // supports geometry simplification on provider side
+  mEnabledCapabilities |= QgsVectorDataProvider::SimplifyGeometries;
+
   return true;
 }
 

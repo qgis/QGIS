@@ -80,6 +80,9 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresProvider* p, 
     return;
   }
 
+  //setup if required the simplification of geometries to fetch
+  prepareProviderSimplification();
+
   mFetched = 0;
 }
 
@@ -170,6 +173,26 @@ bool QgsPostgresFeatureIterator::fetchFeature( QgsFeature& feature )
   return true;
 }
 
+bool QgsPostgresFeatureIterator::prepareProviderSimplification()
+{
+  const QgsSimplifyMethod& simplifyMethod = mRequest.simplifyMethod();
+
+  // validate settings of simplification of geometries to fetch
+  if ( simplifyMethod.methodType() != QgsSimplifyMethod::NoSimplification && !simplifyMethod.forceLocalOptimization() && !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) )
+  {
+    QgsSimplifyMethod::MethodType methodType = simplifyMethod.methodType();
+
+    if ( methodType == QgsSimplifyMethod::OptimizeForRendering || methodType == QgsSimplifyMethod::PreserveTopology )
+    {
+      return true;
+    }
+    else
+    {
+      QgsDebugMsg( QString( "Simplification method type (%1) is not recognised by PostgresFeatureIterator" ).arg( methodType ) );
+    }
+  }
+  return false;
+}
 
 bool QgsPostgresFeatureIterator::rewind()
 {
@@ -272,8 +295,34 @@ bool QgsPostgresFeatureIterator::declareCursor( const QString& whereClause )
 
   try
   {
+    const QgsSimplifyMethod& simplifyMethod = mRequest.simplifyMethod();
+
     QString query = "SELECT ", delim = "";
 
+    if ( mFetchGeometry && !simplifyMethod.forceLocalOptimization() && simplifyMethod.methodType() != QgsSimplifyMethod::NoSimplification )
+    {
+      QString simplifyFunctionName = simplifyMethod.methodType() == QgsSimplifyMethod::OptimizeForRendering 
+               ?
+              ( P->mConnectionRO->majorVersion() < 2 ? "simplify" : "st_simplify" )
+               :
+              ( P->mConnectionRO->majorVersion() < 2 ? "simplifypreservetopology" : "st_simplifypreservetopology" );
+
+      double tolerance = simplifyMethod.methodType() == QgsSimplifyMethod::OptimizeForRendering 
+               ?
+               simplifyMethod.tolerance() / 5.0f /* experimental */
+               :
+               simplifyMethod.tolerance();
+
+      query += QString( "%1(%5(%2%3,%6),'%4')" )
+               .arg( P->mConnectionRO->majorVersion() < 2 ? "asbinary" : "st_asbinary" )
+               .arg( P->quotedIdentifier( P->mGeometryColumn ) )
+               .arg( P->mSpatialColType == sctGeography ? "::geometry" : "" )
+               .arg( P->endianString() )
+               .arg( simplifyFunctionName )
+               .arg( tolerance );
+      delim = ",";
+    }
+    else
     if ( mFetchGeometry )
     {
       query += QString( "%1(%2%3,'%4')" )

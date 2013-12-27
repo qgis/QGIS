@@ -40,6 +40,9 @@ class QgsPostgresFeatureIterator : public QgsAbstractFeatureIterator
     //! fetch next feature, return true on success
     virtual bool fetchFeature( QgsFeature& feature );
 
+    //! setup if required the simplification of geometries to fetch, it uses the settings of current FeatureRequest
+    virtual bool prepareProviderSimplification();
+
     QgsPostgresProvider* P;
 
     QString whereClauseRect();
