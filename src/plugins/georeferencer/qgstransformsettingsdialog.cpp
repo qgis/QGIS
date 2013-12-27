@@ -303,6 +303,8 @@ void QgsTransformSettingsDialog::on_cmbTransformType_currentIndexChanged( const 
   else
   {
     mWorldFileCheckBox->setEnabled( false );
+    // reset world file checkbox when transformation differ from Linear
+    mWorldFileCheckBox->setChecked( false );
   }
 }
 
