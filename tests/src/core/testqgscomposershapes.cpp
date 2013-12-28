@@ -40,6 +40,7 @@ class TestQgsComposerShapes: public QObject
   private:
     QgsComposition* mComposition;
     QgsComposerShape* mComposerShape;
+    QString mReport;    
 };
 
 void TestQgsComposerShapes::initTestCase()
@@ -53,11 +54,22 @@ void TestQgsComposerShapes::initTestCase()
   mComposerShape = new QgsComposerShape( 20, 20, 150, 100, mComposition );
   mComposerShape->setBackgroundColor( QColor::fromRgb( 255, 150, 0 ) );
   mComposition->addComposerShape( mComposerShape );
+  
+  mReport = "<h1>Composer Shape Tests</h1>\n";  
 }
 
 void TestQgsComposerShapes::cleanupTestCase()
 {
   delete mComposition;
+  
+  QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
+  QFile myFile( myReportFile );
+  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
+  {
+    QTextStream myQTextStream( &myFile );
+    myQTextStream << mReport;
+    myFile.close();
+  }   
 }
 
 void TestQgsComposerShapes::init()
@@ -74,27 +86,24 @@ void TestQgsComposerShapes::rectangle()
 {
   mComposerShape->setShapeType( QgsComposerShape::Rectangle );
 
-  QgsCompositionChecker checker( "Composer shapes", mComposition, QString( QString( TEST_DATA_DIR ) + QDir::separator() +
-                                 "control_images" + QDir::separator() + "expected_composershapes" + QDir::separator() + "composershape_rectangle.png" ) );
-  QVERIFY( checker.testComposition() );
+  QgsCompositionChecker checker( "composershapes_rectangle", mComposition );
+  QVERIFY( checker.testComposition( mReport ) );
 }
 
 void TestQgsComposerShapes::triangle()
 {
   mComposerShape->setShapeType( QgsComposerShape::Triangle );
 
-  QgsCompositionChecker checker( "Composer shapes", mComposition, QString( QString( TEST_DATA_DIR ) + QDir::separator() +
-                                 "control_images" + QDir::separator() + "expected_composershapes" + QDir::separator() + "composershape_triangle.png" ) );
-  QVERIFY( checker.testComposition() );
+  QgsCompositionChecker checker( "composershapes_triangle", mComposition );
+  QVERIFY( checker.testComposition( mReport ) );
 }
 
 void TestQgsComposerShapes::ellipse()
 {
   mComposerShape->setShapeType( QgsComposerShape::Ellipse );
 
-  QgsCompositionChecker checker( "Composer shapes", mComposition, QString( QString( TEST_DATA_DIR ) + QDir::separator() +
-                                 "control_images" + QDir::separator() + "expected_composershapes" + QDir::separator() + "composershape_ellipse.png" ) );
-  QVERIFY( checker.testComposition() );
+  QgsCompositionChecker checker( "composershapes_ellipse", mComposition );
+  QVERIFY( checker.testComposition( mReport ) );
 }
 
 void TestQgsComposerShapes::roundedRectangle()
@@ -102,9 +111,8 @@ void TestQgsComposerShapes::roundedRectangle()
   mComposerShape->setShapeType( QgsComposerShape::Rectangle );
   mComposerShape->setCornerRadius( 30 );
 
-  QgsCompositionChecker checker( "Composer shapes", mComposition, QString( QString( TEST_DATA_DIR ) + QDir::separator() +
-                                 "control_images" + QDir::separator() + "expected_composershapes" + QDir::separator() + "composershape_roundedrectangle.png" ) );
-  QVERIFY( checker.testComposition() );
+  QgsCompositionChecker checker( "composershapes_roundedrect", mComposition );
+  QVERIFY( checker.testComposition( mReport ) );
   mComposerShape->setCornerRadius( 0 );
 }
 
