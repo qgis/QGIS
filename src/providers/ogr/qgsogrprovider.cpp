@@ -1495,7 +1495,7 @@ int QgsOgrProvider::capabilities() const
     }
 
     // supports geometry simplification on provider side
-    ability |= QgsVectorDataProvider::SimplifyGeometries;
+    ability |= ( QgsVectorDataProvider::SimplifyGeometries | QgsVectorDataProvider::SimplifyGeometriesWithTopologicalValidation );
   }
 
   return ability;
