@@ -49,6 +49,7 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int w
     mTopGridAnnotationPosition( OutsideMapFrame ), mBottomGridAnnotationPosition( OutsideMapFrame ), mAnnotationFrameDistance( 1.0 ),
     mLeftGridAnnotationDirection( Horizontal ), mRightGridAnnotationDirection( Horizontal ), mTopGridAnnotationDirection( Horizontal ),
     mBottomGridAnnotationDirection( Horizontal ), mGridFrameStyle( NoGridFrame ),  mGridFrameWidth( 2.0 ),
+    mGridFramePenThickness( 0.5 ), mGridFramePenColor( QColor( 0, 0, 0 ) ), mGridFrameFillColor1( Qt::white ), mGridFrameFillColor2( Qt::black ),
     mCrossLength( 3 ), mMapCanvas( 0 ), mDrawCanvasItems( true )
 {
   mComposition = composition;
@@ -105,8 +106,9 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition )
     mLeftGridAnnotationPosition( OutsideMapFrame ), mRightGridAnnotationPosition( OutsideMapFrame ),
     mTopGridAnnotationPosition( OutsideMapFrame ), mBottomGridAnnotationPosition( OutsideMapFrame ), mAnnotationFrameDistance( 1.0 ),
     mLeftGridAnnotationDirection( Horizontal ), mRightGridAnnotationDirection( Horizontal ), mTopGridAnnotationDirection( Horizontal ),
-    mBottomGridAnnotationDirection( Horizontal ), mGridFrameStyle( NoGridFrame ), mGridFrameWidth( 2.0 ), mCrossLength( 3 ),
-    mMapCanvas( 0 ), mDrawCanvasItems( true )
+    mBottomGridAnnotationDirection( Horizontal ), mGridFrameStyle( NoGridFrame ), mGridFrameWidth( 2.0 ), mGridFramePenThickness( 0.5 ),
+    mGridFramePenColor( QColor( 0, 0, 0 ) ), mGridFrameFillColor1( Qt::white ), mGridFrameFillColor2( Qt::black ),
+    mCrossLength( 3 ), mMapCanvas( 0 ), mDrawCanvasItems( true )
 {
   mOverviewFrameMapSymbol = 0;
   mGridLineSymbol = 0;
@@ -865,6 +867,28 @@ bool QgsComposerMap::writeXML( QDomElement& elem, QDomDocument & doc ) const
   gridElem.setAttribute( "crossLength",  qgsDoubleToString( mCrossLength ) );
   gridElem.setAttribute( "gridFrameStyle", mGridFrameStyle );
   gridElem.setAttribute( "gridFrameWidth", qgsDoubleToString( mGridFrameWidth ) );
+  gridElem.setAttribute( "gridFramePenThickness", qgsDoubleToString( mGridFramePenThickness ) );
+  //grid frame pen color
+  QDomElement framePenColorElem = doc.createElement( "framePenColor" );
+  framePenColorElem.setAttribute( "red", mGridFramePenColor.red() );
+  framePenColorElem.setAttribute( "green", mGridFramePenColor.green() );
+  framePenColorElem.setAttribute( "blue", mGridFramePenColor.blue() );
+  framePenColorElem.setAttribute( "alpha", mGridFramePenColor.alpha() );
+  gridElem.appendChild( framePenColorElem );
+  //grid frame fill colors
+  QDomElement frameFillColor1Elem = doc.createElement( "frameFillColor1" );
+  frameFillColor1Elem.setAttribute( "red", mGridFrameFillColor1.red() );
+  frameFillColor1Elem.setAttribute( "green", mGridFrameFillColor1.green() );
+  frameFillColor1Elem.setAttribute( "blue", mGridFrameFillColor1.blue() );
+  frameFillColor1Elem.setAttribute( "alpha", mGridFrameFillColor1.alpha() );
+  gridElem.appendChild( frameFillColor1Elem );
+  QDomElement frameFillColor2Elem = doc.createElement( "frameFillColor2" );
+  frameFillColor2Elem.setAttribute( "red", mGridFrameFillColor2.red() );
+  frameFillColor2Elem.setAttribute( "green", mGridFrameFillColor2.green() );
+  frameFillColor2Elem.setAttribute( "blue", mGridFrameFillColor2.blue() );
+  frameFillColor2Elem.setAttribute( "alpha", mGridFrameFillColor2.alpha() );
+  gridElem.appendChild( frameFillColor2Elem );
+
   gridElem.setAttribute( "gridBlendMode", QgsMapRenderer::getBlendModeEnum( mGridBlendMode ) );
   QDomElement gridLineStyleElem = QgsSymbolLayerV2Utils::saveSymbol( QString(), mGridLineSymbol, doc );
   gridElem.appendChild( gridLineStyleElem );
@@ -889,6 +913,7 @@ bool QgsComposerMap::writeXML( QDomElement& elem, QDomDocument & doc ) const
   annotationFontColorElem.setAttribute( "red", mGridAnnotationFontColor.red() );
   annotationFontColorElem.setAttribute( "green", mGridAnnotationFontColor.green() );
   annotationFontColorElem.setAttribute( "blue", mGridAnnotationFontColor.blue() );
+  annotationFontColorElem.setAttribute( "alpha", mGridAnnotationFontColor.alpha() );
   annotationElem.appendChild( annotationFontColorElem );
 
   gridElem.appendChild( annotationElem );
@@ -1027,6 +1052,54 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
     mCrossLength = gridElem.attribute( "crossLength", "3" ).toDouble();
     mGridFrameStyle = ( QgsComposerMap::GridFrameStyle )gridElem.attribute( "gridFrameStyle", "0" ).toInt();
     mGridFrameWidth = gridElem.attribute( "gridFrameWidth", "2.0" ).toDouble();
+    mGridFramePenThickness = gridElem.attribute( "gridFramePenThickness", "0.5" ).toDouble();
+
+    //grid frame pen color
+    QDomNodeList gridFramePenColorList = gridElem.elementsByTagName( "framePenColor" );
+    if ( gridFramePenColorList.size() > 0 )
+    {
+      QDomElement penColorElem = gridFramePenColorList.at( 0 ).toElement();
+      int red = penColorElem.attribute( "red", "0" ).toInt();
+      int green = penColorElem.attribute( "green", "0" ).toInt();
+      int blue = penColorElem.attribute( "blue", "0" ).toInt();
+      int alpha = penColorElem.attribute( "alpha", "255" ).toInt();
+      mGridFramePenColor = QColor( red, green, blue, alpha );
+    }
+    else
+    {
+      mGridFramePenColor = QColor( 0, 0, 0 );
+    }
+    //grid frame fill color 1
+    QDomNodeList gridFrameFillColor1List = gridElem.elementsByTagName( "frameFillColor1" );
+    if ( gridFrameFillColor1List.size() > 0 )
+    {
+      QDomElement fillColorElem = gridFrameFillColor1List.at( 0 ).toElement();
+      int red = fillColorElem.attribute( "red", "0" ).toInt();
+      int green = fillColorElem.attribute( "green", "0" ).toInt();
+      int blue = fillColorElem.attribute( "blue", "0" ).toInt();
+      int alpha = fillColorElem.attribute( "alpha", "255" ).toInt();
+      mGridFrameFillColor1 = QColor( red, green, blue, alpha );
+    }
+    else
+    {
+      mGridFrameFillColor1 = Qt::white;
+    }
+    //grid frame fill color 2
+    QDomNodeList gridFrameFillColor2List = gridElem.elementsByTagName( "frameFillColor2" );
+    if ( gridFrameFillColor2List.size() > 0 )
+    {
+      QDomElement fillColorElem = gridFrameFillColor2List.at( 0 ).toElement();
+      int red = fillColorElem.attribute( "red", "0" ).toInt();
+      int green = fillColorElem.attribute( "green", "0" ).toInt();
+      int blue = fillColorElem.attribute( "blue", "0" ).toInt();
+      int alpha = fillColorElem.attribute( "alpha", "255" ).toInt();
+      mGridFrameFillColor2 = QColor( red, green, blue, alpha );
+    }
+    else
+    {
+      mGridFrameFillColor2 = Qt::black;
+    }
+
     setGridBlendMode( QgsMapRenderer::getCompositionMode(( QgsMapRenderer::BlendMode ) gridElem.attribute( "gridBlendMode", "0" ).toUInt() ) );
 
     QDomElement gridSymbolElem = gridElem.firstChildElement( "symbol" );
@@ -1070,7 +1143,8 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
         int red = fontColorElem.attribute( "red", "0" ).toInt();
         int green = fontColorElem.attribute( "green", "0" ).toInt();
         int blue = fontColorElem.attribute( "blue", "0" ).toInt();
-        mGridAnnotationFontColor = QColor( red, green, blue );
+        int alpha = fontColorElem.attribute( "alpha", "255" ).toInt();
+        mGridAnnotationFontColor = QColor( red, green, blue, alpha );
       }
       else
       {
@@ -1268,7 +1342,7 @@ void QgsComposerMap::drawGridLine( const QLineF& line, QPainter* p )
 void QgsComposerMap::drawGridFrameBorder( QPainter* p, const QMap< double, double >& borderPos, Border border )
 {
   double currentCoord = - mGridFrameWidth;
-  bool white = true;
+  bool color1 = true;
   double x = 0;
   double y = 0;
   double width = 0;
@@ -1287,10 +1361,15 @@ void QgsComposerMap::drawGridFrameBorder( QPainter* p, const QMap< double, doubl
     pos.insert( rect().width() + mGridFrameWidth, rect().width() + mGridFrameWidth );
   }
 
+  //set pen to current frame pen
+  QPen framePen = QPen( mGridFramePenColor );
+  framePen.setWidthF( mGridFramePenThickness );
+  p->setPen( framePen );
+
   QMap< double, double >::const_iterator posIt = pos.constBegin();
   for ( ; posIt != pos.constEnd(); ++posIt )
   {
-    p->setBrush( QBrush( white ? Qt::white : Qt::black ) );
+    p->setBrush( QBrush( color1 ? mGridFrameFillColor1 : mGridFrameFillColor2 ) );
     if ( border == Left || border == Right )
     {
       height = posIt.key() - currentCoord;
@@ -1307,7 +1386,7 @@ void QgsComposerMap::drawGridFrameBorder( QPainter* p, const QMap< double, doubl
     }
     p->drawRect( QRectF( x, y, width, height ) );
     currentCoord = posIt.key();
-    white = !white;
+    color1 = !color1;
   }
 }
 
@@ -1347,7 +1426,7 @@ void QgsComposerMap::drawCoordinateAnnotation( QPainter* p, const QPointF& pos, 
   double ypos = pos.y();
   int rotation = 0;
 
-  double gridFrameDistance = ( mGridFrameStyle == NoGridFrame ) ? 0 : mGridFrameWidth;
+  double gridFrameDistance = ( mGridFrameStyle == NoGridFrame ) ? 0 : mGridFrameWidth + ( mGridFramePenThickness / 2.0 );
 
   if ( frameBorder == Left )
   {
@@ -1801,7 +1880,7 @@ double QgsComposerMap::maxExtension() const
   }
 
   //grid frame
-  double gridFrameDist = ( mGridFrameStyle == NoGridFrame ) ? 0 : mGridFrameWidth;
+  double gridFrameDist = ( mGridFrameStyle == NoGridFrame ) ? 0 : mGridFrameWidth + ( mGridFramePenThickness / 2.0 );
   return maxExtension + mAnnotationFrameDistance + gridFrameDist;
 }
 
