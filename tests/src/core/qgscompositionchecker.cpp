@@ -21,12 +21,11 @@
 #include <QImage>
 #include <QPainter>
 
-QgsCompositionChecker::QgsCompositionChecker( const QString& testName, QgsComposition* composition, const QString& expectedImageFile )
+QgsCompositionChecker::QgsCompositionChecker( const QString& testName, QgsComposition* composition )
     : QgsRenderChecker( ),
     mTestName( testName ),
     mComposition( composition )
 {
-  Q_UNUSED( expectedImageFile );
 }
 
 QgsCompositionChecker::QgsCompositionChecker()
@@ -35,12 +34,6 @@ QgsCompositionChecker::QgsCompositionChecker()
 
 QgsCompositionChecker::~QgsCompositionChecker()
 {
-}
-
-bool QgsCompositionChecker::testComposition( int page )
-{
-  QString fake;
-  return testComposition( fake, page );
 }
 
 bool QgsCompositionChecker::testComposition( QString &report, int page )

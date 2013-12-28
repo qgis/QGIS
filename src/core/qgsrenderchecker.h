@@ -101,6 +101,8 @@ class CORE_EXPORT QgsRenderChecker
     */
     bool isKnownAnomaly( QString theDiffImageFile );
 
+    QString expectedImageFile() { return mExpectedImageFile; };
+
   protected:
 
     QString mReport;

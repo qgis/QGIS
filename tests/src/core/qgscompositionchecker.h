@@ -26,11 +26,10 @@ class QImage;
 class QgsCompositionChecker : public QgsRenderChecker
 {
   public:
-    QgsCompositionChecker( const QString& testName, QgsComposition* composition, const QString& expectedImageFile = QString() );
+    QgsCompositionChecker( const QString& testName, QgsComposition* composition );
     ~QgsCompositionChecker();
 
     bool testComposition( QString &report, int page = 0 );
-    bool testComposition( int page = 0 );
 
   private:
     QgsCompositionChecker(); //forbidden

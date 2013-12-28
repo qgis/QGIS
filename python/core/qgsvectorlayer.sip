@@ -920,6 +920,29 @@ class QgsVectorLayer : QgsMapLayer
      * @note added in 2.0
      */
     int layerTransparency() const;
+    
+    /** Set the Map2pixel simplification threshold for fast rendering of features */
+    void setSimplifyDrawingTol( float simplifyDrawingTol );
+    /** Returns the Map2pixel simplification threshold for fast rendering of features */
+    float simplifyDrawingTol() const;
+
+    /** Simplification flags for fast rendering of features */
+    enum SimplifyHint
+    {
+      NoSimplification           = 0, //!< No simplification can be applied
+      GeometrySimplification     = 1, //!< The geometries can be simplified using the current map2pixel context state
+      EnvelopeSimplification     = 2, //!< The geometries can be fully simplified by its BoundingBox using the current map2pixel context state
+      AntialiasingSimplification = 4, //!< The geometries can be rendered with 'AntiAliasing' disabled because of it is '1-pixel size'
+      DefaultSimplification      = 3, //!< Default simplification hints can be applied ( Geometry + Envelope )
+      FullSimplification         = 7, //!< All simplification hints can be applied ( Geometry + Envelope + AA-disabling )
+    };
+    /** Set the Map2pixel simplification hints for fast rendering of features */
+    void setSimplifyDrawingHints( int simplifyDrawingHints );
+    /** Returns the Map2pixel simplification hints for fast rendering of features */
+    int simplifyDrawingHints() const;
+
+    /** Returns whether the VectorLayer can apply the specified simplification hint */
+    bool simplifyDrawingCanbeApplied( int simplifyHint ) const;    
 
   public slots:
     /**
