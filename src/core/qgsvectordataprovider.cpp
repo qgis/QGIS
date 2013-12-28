@@ -200,6 +200,12 @@ QString QgsVectorDataProvider::capabilitiesString() const
     QgsDebugMsg( "Capability: Simplify Geometries before fetch the feature" );
   }
 
+  if ( abilities & QgsVectorDataProvider::SimplifyGeometriesWithTopologicalValidation )
+  {
+    abilitiesList += tr( "Simplify Geometries with topological validation" );
+    QgsDebugMsg( "Capability: Simplify Geometries before fetch the feature ensuring that the result is a valid geometry" );
+  }
+
   return abilitiesList.join( ", " );
 
 }
