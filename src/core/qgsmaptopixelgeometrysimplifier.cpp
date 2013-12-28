@@ -203,7 +203,7 @@ bool QgsMapToPixelSimplifier::simplifyWkbGeometry( int simplifyFlags, QGis::WkbT
       memcpy( &x, sourceWkb, sizeof( double ) ); sourceWkb += sizeOfDoubleX;
       memcpy( &y, sourceWkb, sizeof( double ) ); sourceWkb += sizeOfDoubleY;
 
-      if ( i == 0 || !canbeGeneralizable || QgsMapToPixelSimplifier::calculateLengthSquared2D( x, y, lastX, lastY ) > map2pixelTol )
+      if ( i == 0 || !canbeGeneralizable || QgsMapToPixelSimplifier::calculateLengthSquared2D( x, y, lastX, lastY ) > map2pixelTol || ( !isaLinearRing && ( i == 1 || i >= numPoints - 2 ) ) )
       {
         memcpy( ptr, &x, sizeof( double ) ); lastX = x; ptr++;
         memcpy( ptr, &y, sizeof( double ) ); lastY = y; ptr++;
