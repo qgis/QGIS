@@ -166,11 +166,9 @@ class TestQgsDiagram: public QObject
       mPointsLayer->setDiagramLayerSettings( dls );
 
       mComposerMap->setNewExtent( QgsRectangle( -122, -79, -70, 47 ) );
-      QgsCompositionChecker checker( "Composer map render", mComposition, QString( QString( TEST_DATA_DIR )
-                                     + QDir::separator() + "control_images" + QDir::separator() + "expected_diagram" + QDir::separator()
-                                     + "expected_piediagram.png" ) );
+      QgsCompositionChecker checker( "piediagram", mComposition );
 
-      QVERIFY( checker.testComposition() );
+      QVERIFY( checker.testComposition( mReport ) );
 
       mPointsLayer->setDiagramRenderer( 0 );
     }
