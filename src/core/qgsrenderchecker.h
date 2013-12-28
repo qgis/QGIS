@@ -101,17 +101,20 @@ class CORE_EXPORT QgsRenderChecker
     */
     bool isKnownAnomaly( QString theDiffImageFile );
 
-  private:
+  protected:
 
     QString mReport;
-    QString mExpectedImageFile;
-    QString mControlName;
-    QString mRenderedImageFile;
-    unsigned int mMismatchCount;
     unsigned int mMatchTarget;
-    int mElapsedTime;
-    int mElapsedTimeTarget;
     QgsMapRenderer * mpMapRenderer;
+    int mElapsedTime;
+    QString mRenderedImageFile;
+    QString mExpectedImageFile;
+
+  private:
+
+    QString mControlName;
+    unsigned int mMismatchCount;
+    int mElapsedTimeTarget;
     QString mControlPathPrefix;
 
 }; // class QgsRenderChecker

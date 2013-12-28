@@ -27,13 +27,13 @@
 
 QgsRenderChecker::QgsRenderChecker( ) :
     mReport( "" ),
-    mExpectedImageFile( "" ),
-    mRenderedImageFile( "" ),
-    mMismatchCount( 0 ),
     mMatchTarget( 0 ),
-    mElapsedTime( 0 ),
-    mElapsedTimeTarget( 0 ),
     mpMapRenderer( NULL ),
+    mElapsedTime( 0 ),
+    mRenderedImageFile( "" ),
+    mExpectedImageFile( "" ),
+    mMismatchCount( 0 ),
+    mElapsedTimeTarget( 0 ),
     mControlPathPrefix( "" )
 {
 
@@ -78,7 +78,7 @@ bool QgsRenderChecker::isKnownAnomaly( QString theDiffImageFile )
                                   QDir::Files | QDir::NoSymLinks );
   //remove the control file from the list as the anomalies are
   //all files except the control file
-  myList.removeAt( myList.indexOf( mExpectedImageFile ) );
+  myList.removeAt( myList.indexOf( QFileInfo( mExpectedImageFile ).fileName() ) );
 
   QString myImageHash = imageToHash( theDiffImageFile );
 
@@ -204,7 +204,7 @@ bool QgsRenderChecker::compareImages( QString theTestName,
     qDebug( "QgsRenderChecker::runTest failed - Rendered Image File not set." );
     mReport = "<table>"
               "<tr><td>Test Result:</td><td>Expected Result:</td></tr>\n"
-              "<tr><td>Nothing rendered</td>\n<td>Failed because Expected "
+              "<tr><td>Nothing rendered</td>\n<td>Failed because Rendered "
               "Image File not set.</td></tr></table>\n";
     return false;
   }
