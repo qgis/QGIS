@@ -62,6 +62,9 @@ class TestQgsComposerHtml(TestCase):
         myTestResult, myMessage = checker.testComposition()
 
         qDebug(myMessage)
+        self.mComposition.removeMultiFrame( composerHtml )
+        composerHtml = None
+
         assert myTestResult, myMessage
 
     def testTableMultiFrame(self):
@@ -91,6 +94,10 @@ class TestQgsComposerHtml(TestCase):
         myPage = 2
         checker3 = QgsCompositionChecker('composerhtml_multiframe3', self.mComposition)
         myTestResult, myMessage = checker3.testComposition( myPage )
+
+        self.mComposition.removeMultiFrame( composerHtml )
+        composerHtml = None
+
         assert myTestResult, myMessage
 
     def testComposerHtmlAccessor(self):
