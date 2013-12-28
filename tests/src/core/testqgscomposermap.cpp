@@ -49,6 +49,7 @@ class TestQgsComposerMap: public QObject
     QgsComposerMap* mComposerMap;
     QgsMapRenderer* mMapRenderer;
     QgsRasterLayer* mRasterLayer;
+    QString mReport;
 };
 
 void TestQgsComposerMap::initTestCase()
@@ -74,6 +75,8 @@ void TestQgsComposerMap::initTestCase()
   mComposerMap = new QgsComposerMap( mComposition, 20, 20, 200, 100 );
   mComposerMap->setFrameEnabled( true );
   mComposition->addComposerMap( mComposerMap );
+
+  mReport = "<h1>Composer Map Tests</h1>\n";
 }
 
 void TestQgsComposerMap::cleanupTestCase()
@@ -81,6 +84,15 @@ void TestQgsComposerMap::cleanupTestCase()
   delete mComposition;
   delete mMapRenderer;
   delete mRasterLayer;
+
+  QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
+  QFile myFile( myReportFile );
+  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
+  {
+    QTextStream myQTextStream( &myFile );
+    myQTextStream << mReport;
+    myFile.close();
+  }
 }
 
 void TestQgsComposerMap::init()
@@ -95,9 +107,9 @@ void TestQgsComposerMap::cleanup()
 void TestQgsComposerMap::render()
 {
   mComposerMap->setNewExtent( QgsRectangle( 781662.375, 3339523.125, 793062.375, 3345223.125 ) );
-  QgsCompositionChecker checker( "Composer map render", mComposition, QString( QString( TEST_DATA_DIR ) + QDir::separator() +
-                                 "control_images" + QDir::separator() + "expected_composermap" + QDir::separator() + "composermap_landsat_render.png" ) );
-  QVERIFY( checker.testComposition() );
+  QgsCompositionChecker checker( "composermap_render", mComposition );
+
+  QVERIFY( checker.testComposition( mReport ) );
 }
 
 void TestQgsComposerMap::grid()
@@ -119,9 +131,9 @@ void TestQgsComposerMap::grid()
   mComposerMap->setAnnotationFontColor( QColor( 255, 0, 0, 150 ) );
   mComposerMap->setGridBlendMode( QPainter::CompositionMode_Overlay );
   qWarning() << "grid annotation font: " << mComposerMap->gridAnnotationFont().toString() << " exactMatch:" << mComposerMap->gridAnnotationFont().exactMatch();
-  QgsCompositionChecker checker( "Composer map grid", mComposition, QString( QString( TEST_DATA_DIR ) + QDir::separator() +
-                                 "control_images" + QDir::separator() + "expected_composermap" + QDir::separator() + "composermap_landsat_grid.png" ) );
-  bool testResult = checker.testComposition();
+  QgsCompositionChecker checker( "composermap_grid", mComposition );
+
+  bool testResult = checker.testComposition( mReport );
   mComposerMap->setGridEnabled( false );
   mComposerMap->setShowGridAnnotation( false );
   QVERIFY( testResult );
@@ -135,9 +147,9 @@ void TestQgsComposerMap::overviewMap()
   mComposerMap->setNewExtent( QgsRectangle( 785462.375, 3341423.125, 789262.375, 3343323.125 ) ); //zoom in
   overviewMap->setNewExtent( QgsRectangle( 781662.375, 3339523.125, 793062.375, 3350923.125 ) );
   overviewMap->setOverviewFrameMap( mComposerMap->id() );
-  QgsCompositionChecker checker( "Composer map overview", mComposition, QString( QString( TEST_DATA_DIR ) + QDir::separator() +
-                                 "control_images" + QDir::separator() + "expected_composermap" + QDir::separator() + "composermap_landsat_overview.png" ) );
-  bool testResult = checker.testComposition();
+  QgsCompositionChecker checker( "composermap_overview", mComposition );
+
+  bool testResult = checker.testComposition( mReport );
   mComposition->removeComposerItem( overviewMap );
   QVERIFY( testResult );
 }
@@ -152,9 +164,9 @@ void TestQgsComposerMap::overviewMapBlending()
   overviewMapBlend->setOverviewFrameMap( mComposerMap->id() );
   overviewMapBlend->setOverviewBlendMode( QPainter::CompositionMode_Multiply );
 
-  QgsCompositionChecker checker( "Composer map overview blending", mComposition, QString( QString( TEST_DATA_DIR ) + QDir::separator() +
-                                 "control_images" + QDir::separator() + "expected_composermap" + QDir::separator() + "composermap_landsat_overview_blend.png" ) );
-  bool testResult = checker.testComposition();
+  QgsCompositionChecker checker( "composermap_overview_blending", mComposition );
+
+  bool testResult = checker.testComposition( mReport );
   mComposition->removeComposerItem( overviewMapBlend );
   QVERIFY( testResult );
 }
@@ -169,9 +181,9 @@ void TestQgsComposerMap::overviewMapInvert()
   overviewMapInvert->setOverviewFrameMap( mComposerMap->id() );
   overviewMapInvert->setOverviewInverted( true );
 
-  QgsCompositionChecker checker( "Composer map overview invert", mComposition, QString( QString( TEST_DATA_DIR ) + QDir::separator() +
-                                 "control_images" + QDir::separator() + "expected_composermap" + QDir::separator() + "composermap_landsat_overview_invert.png" ) );
-  bool testResult = checker.testComposition();
+  QgsCompositionChecker checker( "composermap_overview_invert", mComposition );
+
+  bool testResult = checker.testComposition( mReport );
   mComposition->removeComposerItem( overviewMapInvert );
   QVERIFY( testResult );
 }
@@ -210,11 +222,16 @@ void TestQgsComposerMap::zebraStyle()
   mComposerMap->setGridBlendMode( QPainter::CompositionMode_SourceOver );
 
   mComposerMap->setGridFrameStyle( QgsComposerMap::Zebra );
+  mComposerMap->setGridFrameWidth( 10 );
+  mComposerMap->setGridFramePenSize( 1 );
+  mComposerMap->setGridFramePenColor( QColor( 255, 100, 0, 200 ) );
+  mComposerMap->setGridFrameFillColor1( QColor( 50, 90, 50, 100 ) );
+  mComposerMap->setGridFrameFillColor2( QColor( 200, 220, 100, 60 ) );
   mComposerMap->setGridEnabled( true );
 
-  QgsCompositionChecker checker( "Composer map zebra", mComposition, QString( QString( TEST_DATA_DIR ) + QDir::separator() +
-                                 "control_images" + QDir::separator() + "expected_composermap" + QDir::separator() + "composermap_zebra_style.png" ) );
-  bool testResult = checker.testComposition();
+  QgsCompositionChecker checker( "composermap_zebrastyle", mComposition );
+
+  bool testResult = checker.testComposition( mReport );
   QVERIFY( testResult );
 }
 
@@ -229,9 +246,9 @@ void TestQgsComposerMap::overviewMapCenter()
   overviewMapCenter->setOverviewFrameMap( mComposerMap->id() );
   overviewMapCenter->setOverviewCentered( true );
 
-  QgsCompositionChecker checker( "Composer map overview center", mComposition, QString( QString( TEST_DATA_DIR ) + QDir::separator() +
-                                 "control_images" + QDir::separator() + "expected_composermap" + QDir::separator() + "composermap_landsat_overview_center.png" ) );
-  bool testResult = checker.testComposition();
+  QgsCompositionChecker checker( "composermap_overview_center", mComposition );
+
+  bool testResult = checker.testComposition( mReport );
   mComposition->removeComposerItem( overviewMapCenter );
   QVERIFY( testResult );
 }

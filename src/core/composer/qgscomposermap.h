@@ -287,6 +287,32 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     void setGridFrameWidth( double w ) { mGridFrameWidth = w; }
     double gridFrameWidth() const { return mGridFrameWidth; }
 
+    /**Set grid frame pen thickness
+        @note: this function was added in version 2.1*/
+    void setGridFramePenSize( double w ) { mGridFramePenThickness = w; }
+    double gridFramePenSize() const { return mGridFramePenThickness; }
+
+    /**Sets pen color for grid frame
+        @note: this function was added in version 2.1*/
+    void setGridFramePenColor( const QColor& c ) { mGridFramePenColor = c;}
+    /**Get pen color for grid frame
+        @note: this function was added in version 2.1*/
+    QColor gridFramePenColor() const {return mGridFramePenColor;}
+
+    /**Sets first fill color for grid zebra frame
+        @note: this function was added in version 2.1*/
+    void setGridFrameFillColor1( const QColor& c ) { mGridFrameFillColor1 = c;}
+    /**Get first fill color for grid zebra frame
+        @note: this function was added in version 2.1*/
+    QColor gridFrameFillColor1() const {return mGridFrameFillColor1;}
+
+    /**Sets second fill color for grid zebra frame
+        @note: this function was added in version 2.1*/
+    void setGridFrameFillColor2( const QColor& c ) { mGridFrameFillColor2 = c;}
+    /**Get second fill color for grid zebra frame
+        @note: this function was added in version 2.1*/
+    QColor gridFrameFillColor2() const {return mGridFrameFillColor2;}
+
     /**In case of annotations, the bounding rectangle can be larger than the map item rectangle
     @note this function was added in version 1.4*/
     QRectF boundingRect() const;
@@ -470,6 +496,10 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
     GridFrameStyle mGridFrameStyle;
     double mGridFrameWidth;
+    double mGridFramePenThickness;
+    QColor mGridFramePenColor;
+    QColor mGridFrameFillColor1;
+    QColor mGridFrameFillColor2;
 
     /**Current bounding rectangle. This is used to check if notification to the graphics scene is necessary*/
     QRectF mCurrentRectangle;

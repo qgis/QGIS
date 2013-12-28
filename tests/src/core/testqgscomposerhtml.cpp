@@ -34,17 +34,29 @@ class TestQgsComposerHtml: public QObject
     void tableMultiFrame(); //tests multiframe capabilities of composer html
   private:
     QgsComposition* mComposition;
+    QString mReport;
 };
 
 void TestQgsComposerHtml::initTestCase()
 {
   mComposition = new QgsComposition( 0 );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
+
+  mReport = "<h1>Composer HTML Tests</h1>\n";
 }
 
 void TestQgsComposerHtml::cleanupTestCase()
 {
   delete mComposition;
+
+  QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
+  QFile myFile( myReportFile );
+  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
+  {
+    QTextStream myQTextStream( &myFile );
+    myQTextStream << mReport;
+    myFile.close();
+  }
 }
 
 void TestQgsComposerHtml::init()
@@ -64,9 +76,9 @@ void TestQgsComposerHtml::table()
   htmlFrame->setFrameEnabled( true );
   htmlItem->addFrame( htmlFrame );
   htmlItem->setUrl( QUrl( QString( "file:///%1" ).arg( QString( TEST_DATA_DIR ) + QDir::separator() +  "html_table.html" ) ) );
-  QgsCompositionChecker checker( "Composer html table", mComposition, QString( QString( TEST_DATA_DIR ) + QDir::separator() +
-                                 "control_images" + QDir::separator() + "expected_composerhtml" + QDir::separator() + "composerhtml_table.png" ) );
-  bool result = checker.testComposition();
+
+  QgsCompositionChecker checker( "composerhtml_table", mComposition );
+  bool result = checker.testComposition( mReport );
   mComposition->removeMultiFrame( htmlItem );
   delete htmlItem;
   QVERIFY( result );
@@ -79,30 +91,18 @@ void TestQgsComposerHtml::tableMultiFrame()
   htmlItem->addFrame( htmlFrame );
   htmlItem->setResizeMode( QgsComposerMultiFrame::RepeatUntilFinished );
 
-  bool result = true;
   //page1
   htmlItem->setUrl( QUrl( QString( "file:///%1" ).arg( QString( TEST_DATA_DIR ) + QDir::separator() +  "html_table.html" ) ) );
   htmlItem->frame( 0 )->setFrameEnabled( true );
-  QgsCompositionChecker checker1( "Composer html table", mComposition, QString( QString( TEST_DATA_DIR ) + QDir::separator() +
-                                  "control_images" + QDir::separator() + "expected_composerhtml" + QDir::separator() + "composerhtml_table_multiframe1.png" ) );
-  if ( !checker1.testComposition( 0 ) )
-  {
-    result = false;
-  }
+  QgsCompositionChecker checker1( "composerhtml_multiframe1", mComposition );
+  bool result = checker1.testComposition( mReport );
+
   //page2
-  QgsCompositionChecker checker2( "Composer html table", mComposition, QString( QString( TEST_DATA_DIR ) + QDir::separator() +
-                                  "control_images" + QDir::separator() + "expected_composerhtml" + QDir::separator() + "composerhtml_table_multiframe2.png" ) );
-  if ( !checker2.testComposition( 1 ) )
-  {
-    result = false;
-  }
+  QgsCompositionChecker checker2( "composerhtml_multiframe2", mComposition );
+  result = checker2.testComposition( mReport, 1 ) && result;
   //page 3
-  QgsCompositionChecker checker3( "Composer html table", mComposition, QString( QString( TEST_DATA_DIR ) + QDir::separator() +
-                                  "control_images" + QDir::separator() + "expected_composerhtml" + QDir::separator() + "composerhtml_table_multiframe3.png" ) );
-  if ( !checker3.testComposition( 2 ) )
-  {
-    result = false;
-  }
+  QgsCompositionChecker checker3( "composerhtml_multiframe3", mComposition );
+  result = checker3.testComposition( mReport, 2 ) && result;
 
   mComposition->removeMultiFrame( htmlItem );
   delete htmlItem;

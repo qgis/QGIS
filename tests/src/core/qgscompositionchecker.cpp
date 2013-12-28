@@ -15,14 +15,17 @@
 
 #include "qgscompositionchecker.h"
 #include "qgscomposition.h"
+#include "qgslogger.h"
 #include <QDebug>
 #include <QDir>
 #include <QFileInfo>
 #include <QImage>
 #include <QPainter>
 
-QgsCompositionChecker::QgsCompositionChecker( const QString& testName, QgsComposition* composition, const QString& expectedImageFile ): mTestName( testName ),
-    mComposition( composition ), mExpectedImageFile( expectedImageFile )
+QgsCompositionChecker::QgsCompositionChecker( const QString& testName, QgsComposition* composition )
+    : QgsRenderChecker( ),
+    mTestName( testName ),
+    mComposition( composition )
 {
 }
 
@@ -34,10 +37,11 @@ QgsCompositionChecker::~QgsCompositionChecker()
 {
 }
 
-bool QgsCompositionChecker::testComposition( int page )
+bool QgsCompositionChecker::testComposition( QString &report, int page )
 {
   if ( !mComposition )
   {
+    qDebug() << " \n\n\nno comp";
     return false;
   }
 
@@ -59,6 +63,7 @@ bool QgsCompositionChecker::testComposition( int page )
 #endif //0
 
   //load expected image
+  setControlName( "expected_" + mTestName );
   QImage expectedImage( mExpectedImageFile );
 
   //get width/height, create image and render the composition to it
@@ -74,11 +79,12 @@ bool QgsCompositionChecker::testComposition( int page )
   mComposition->renderPage( &p, page );
   p.end();
 
-  QString renderedFilePath = QDir::tempPath() + QDir::separator() + QFileInfo( mExpectedImageFile ).baseName() + "_rendered.png";
+  QString renderedFilePath = QDir::tempPath() + QDir::separator() + QFileInfo( mTestName ).baseName() + "_rendered.png";
   outputImage.save( renderedFilePath, "PNG" );
 
-  QString diffFilePath = QDir::tempPath() + QDir::separator() + QFileInfo( mExpectedImageFile ).baseName() + "_diff.png";
-  bool testResult = compareImages( expectedImage, outputImage, diffFilePath );
+  QString diffFilePath = QDir::tempPath() + QDir::separator() + QFileInfo( mTestName ).baseName() + "_result_diff.png";
+
+  bool testResult = compareImages( mTestName, 0, renderedFilePath );
 
   QString myDashMessage = "<DartMeasurementFile name=\"Rendered Image " + mTestName + "\""
                           " type=\"image/png\">" + renderedFilePath +
@@ -89,44 +95,6 @@ bool QgsCompositionChecker::testComposition( int page )
                           diffFilePath + "</DartMeasurementFile>";
   qDebug( ) << myDashMessage;
 
+  report += mReport;
   return testResult;
-}
-
-bool QgsCompositionChecker::compareImages( const QImage& imgExpected, const QImage& imgRendered, const QString& differenceImagePath ) const
-{
-  if ( imgExpected.width() != imgRendered.width() || imgExpected.height() != imgRendered.height() )
-  {
-    return false;
-  }
-
-  int imageWidth = imgExpected.width();
-  int imageHeight = imgExpected.height();
-  int mismatchCount = 0;
-
-  QImage differenceImage( imageWidth, imageHeight, QImage::Format_ARGB32_Premultiplied );
-  differenceImage.fill( qRgb( 152, 219, 249 ) );
-
-  QRgb pixel1, pixel2;
-  for ( int i = 0; i < imageHeight; ++i )
-  {
-    for ( int j = 0; j < imageWidth; ++j )
-    {
-      pixel1 = imgExpected.pixel( j, i );
-      pixel2 = imgRendered.pixel( j, i );
-      if ( pixel1 != pixel2 )
-      {
-        ++mismatchCount;
-        differenceImage.setPixel( j, i, qRgb( 255, 0, 0 ) );
-      }
-    }
-  }
-
-  if ( !differenceImagePath.isEmpty() )
-  {
-    differenceImage.save( differenceImagePath, "PNG" );
-  }
-
-  //allow pixel deviation of 1 per mille
-  int pixelCount = imageWidth * imageHeight;
-  return (( double )mismatchCount / ( double )pixelCount ) < 0.001;
 }

@@ -66,11 +66,13 @@ class TestQgsBlendModes(TestCase):
         # create polygon layer
         myShpFile = os.path.join(TEST_DATA_DIR, 'polys.shp')
         self.mPolygonLayer = QgsVectorLayer(myShpFile, 'Polygons', 'ogr')
+        self.mPolygonLayer.setSimplifyDrawingHints(QgsVectorLayer.NoSimplification)
         self.mMapRegistry.addMapLayer(self.mPolygonLayer)
 
         # create line layer
         myShpFile = os.path.join(TEST_DATA_DIR, 'lines.shp')
         self.mLineLayer = QgsVectorLayer(myShpFile, 'Lines', 'ogr')
+        self.mLineLayer.setSimplifyDrawingHints(QgsVectorLayer.NoSimplification)
         self.mMapRegistry.addMapLayer(self.mLineLayer)
 
         # create two raster layers
