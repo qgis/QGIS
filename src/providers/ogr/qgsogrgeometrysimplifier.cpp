@@ -113,7 +113,7 @@ bool QgsOgrMapToPixelSimplifier::simplifyOgrGeometry( QGis::GeometryType geometr
     memcpy( &x, xsourcePtr, sizeof( double ) ); xsourcePtr += xStride;
     memcpy( &y, ysourcePtr, sizeof( double ) ); ysourcePtr += yStride;
 
-    if ( i == 0 || !canbeGeneralizable || QgsMapToPixelSimplifier::calculateLengthSquared2D( x, y, lastX, lastY ) > map2pixelTol )
+    if ( i == 0 || !canbeGeneralizable || QgsMapToPixelSimplifier::calculateLengthSquared2D( x, y, lastX, lastY ) > map2pixelTol || ( geometryType == QGis::Line && ( i == 1 || i >= numPoints - 2 ) ) )
     {
       memcpy( xtargetPtr, &x, sizeof( double ) ); lastX = x; xtargetPtr += xStride;
       memcpy( ytargetPtr, &y, sizeof( double ) ); lastY = y; ytargetPtr += yStride;
@@ -140,7 +140,7 @@ bool QgsOgrMapToPixelSimplifier::simplifyOgrGeometry( OGRGeometry* geometry, boo
     OGRLineString* lineString = ( OGRLineString* )geometry;
 
     int numPoints = lineString->getNumPoints();
-    if (( isaLinearRing && numPoints <= 5 ) || ( !isaLinearRing && numPoints <= 2 ) ) return false;
+    if (( isaLinearRing && numPoints <= 5 ) || ( !isaLinearRing && numPoints <= 4 ) ) return false;
 
     OGREnvelope env;
     geometry->getEnvelope( &env );
