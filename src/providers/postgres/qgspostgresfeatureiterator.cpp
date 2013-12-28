@@ -299,7 +299,7 @@ bool QgsPostgresFeatureIterator::declareCursor( const QString& whereClause )
 
     QString query = "SELECT ", delim = "";
 
-    if ( mFetchGeometry && !simplifyMethod.forceLocalOptimization() && simplifyMethod.methodType() != QgsSimplifyMethod::NoSimplification )
+    if ( mFetchGeometry && !simplifyMethod.forceLocalOptimization() && simplifyMethod.methodType() != QgsSimplifyMethod::NoSimplification && QGis::flatType( QGis::singleType( P->geometryType() ) ) != QGis::WKBPoint )
     {
       QString simplifyFunctionName = simplifyMethod.methodType() == QgsSimplifyMethod::OptimizeForRendering 
                ?
