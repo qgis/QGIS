@@ -6,24 +6,51 @@
 #include <QPainter>
 #include <cmath>
 
-const int RULER_MIN_SIZE = 20;
+const int RULER_FONT_SIZE = 8;
 const int COUNT_VALID_MULTIPLES = 3;
 const int COUNT_VALID_MAGNITUDES = 5;
 const int QgsComposerRuler::validScaleMultiples[] = {1, 2, 5};
 const int QgsComposerRuler::validScaleMagnitudes[] = {1, 10, 100, 1000, 10000};
 
-QgsComposerRuler::QgsComposerRuler( QgsComposerRuler::Direction d ): QWidget( 0 ), mDirection( d ), mComposition( 0 ), mLineSnapItem( 0 )
+QgsComposerRuler::QgsComposerRuler( QgsComposerRuler::Direction d ) : QWidget( 0 ),
+    mDirection( d ),
+    mComposition( 0 ),
+    mLineSnapItem( 0 ),
+    mScaleMinPixelsWidth( 0 )
 {
   setMouseTracking( true );
+
+  //calculate minimum size required for ruler text
+  mRulerFont = new QFont();
+  mRulerFont->setPointSize( RULER_FONT_SIZE );
+  mRulerFontMetrics = new QFontMetrics( *mRulerFont );
+
+  //calculate ruler sizes and marker seperations
+
+  //minimum gap required between major ticks is 3 digits * 250%, based on appearance
+  mScaleMinPixelsWidth = mRulerFontMetrics->width( "000" ) * 2.5;
+  //minimum ruler height is twice the font height in pixels
+  mRulerMinSize = mRulerFontMetrics->height() * 1.5;
+
+  mMinPixelsPerDivision = mRulerMinSize / 4;
+  //each small division must be at least 2 pixels apart
+  if ( mMinPixelsPerDivision < 2 )
+    mMinPixelsPerDivision = 2;
+
+  mPixelsBetweenLineAndText = mRulerMinSize / 10;
+  mTextBaseline = mRulerMinSize / 1.667;
+  mMinSpacingVerticalLabels = mRulerMinSize / 5;
 }
 
 QgsComposerRuler::~QgsComposerRuler()
 {
+  delete mRulerFontMetrics;
+  delete mRulerFont;
 }
 
 QSize QgsComposerRuler::minimumSizeHint() const
 {
-  return QSize( RULER_MIN_SIZE, RULER_MIN_SIZE );
+  return QSize( mRulerMinSize, mRulerMinSize );
 }
 
 void QgsComposerRuler::paintEvent( QPaintEvent* event )
@@ -38,19 +65,13 @@ void QgsComposerRuler::paintEvent( QPaintEvent* event )
 
   QTransform t = mTransform.inverted();
 
-  //calculate minimum size required for ruler text
-  QFont rulerFont = p.font();
-  rulerFont.setPointSize( 8 );
-  QFontMetrics rulerFontMetrics( rulerFont );
-  //minimum gap required between major ticks is 3 digits * 250%
-  double minFontPixelsWidth = rulerFontMetrics.width( "000" ) * 2.5;
-  p.setFont( rulerFont );
+  p.setFont( *mRulerFont );
 
   //find optimum scale for ruler (size of numbered divisions)
   int magnitude = 1;
   int multiple = 1;
   int mmDisplay;
-  mmDisplay = optimumScale( minFontPixelsWidth, magnitude, multiple );
+  mmDisplay = optimumScale( mScaleMinPixelsWidth, magnitude, multiple );
 
   //find optimum number of small divisions
   int numSmallDivisions = optimumNumberDivisions( mmDisplay, multiple );
@@ -77,8 +98,8 @@ void QgsComposerRuler::paintEvent( QPaintEvent* event )
       double pixelCoord = mTransform.map( QPointF( markerPos, 0 ) ).x();
 
       //draw large division and text
-      p.drawLine( pixelCoord, 0, pixelCoord, RULER_MIN_SIZE );
-      p.drawText( QPointF( pixelCoord + 2, RULER_MIN_SIZE / 2.0 + 2 ), QString::number( markerPos ) );
+      p.drawLine( pixelCoord, 0, pixelCoord, mRulerMinSize );
+      p.drawText( QPointF( pixelCoord + mPixelsBetweenLineAndText, mTextBaseline ), QString::number( markerPos ) );
 
       //draw small divisions
       drawSmallDivisions( &p, markerPos, numSmallDivisions, mmDisplay, endX );
@@ -110,15 +131,15 @@ void QgsComposerRuler::paintEvent( QPaintEvent* event )
       while ( beforePageCoord > startY )
       {
         double pixelCoord = mTransform.map( QPointF( 0, beforePageCoord ) ).y();
-        p.drawLine( 0, pixelCoord, RULER_MIN_SIZE, pixelCoord );
+        p.drawLine( 0, pixelCoord, mRulerMinSize, pixelCoord );
         //calc size of label
         QString label = QString::number( beforePageCoord );
-        int labelSize = rulerFontMetrics.width( label );
+        int labelSize = mRulerFontMetrics->width( label );
 
         //draw label only if it fits in before start of next page
         if ( pixelCoord + labelSize + 8 < firstPageY )
         {
-          drawRotatedText( &p, QPointF( RULER_MIN_SIZE / 2.0 + 2.0, pixelCoord + 4.0 + labelSize ), label );
+          drawRotatedText( &p, QPointF( mTextBaseline, pixelCoord + mMinSpacingVerticalLabels + labelSize ), label );
         }
 
         //draw small divisions
@@ -163,16 +184,16 @@ void QgsComposerRuler::paintEvent( QPaintEvent* event )
       while (( totalCoord < nextPageStartPos ) || (( nextPageStartPos == 0 ) && ( totalCoord <= endY ) ) )
       {
         double pixelCoord = mTransform.map( QPointF( 0, totalCoord ) ).y();
-        p.drawLine( 0, pixelCoord, RULER_MIN_SIZE, pixelCoord );
+        p.drawLine( 0, pixelCoord, mRulerMinSize, pixelCoord );
         //calc size of label
         QString label = QString::number( pageCoord );
-        int labelSize = rulerFontMetrics.width( label );
+        int labelSize = mRulerFontMetrics->width( label );
 
         //draw label only if it fits in before start of next page
         if (( pixelCoord + labelSize + 8 < nextPageStartPixel )
             || ( nextPageStartPixel == 0 ) )
         {
-          drawRotatedText( &p, QPointF( RULER_MIN_SIZE / 2.0 + 2.0, pixelCoord + 4.0 + labelSize ), label );
+          drawRotatedText( &p, QPointF( mTextBaseline, pixelCoord + mMinSpacingVerticalLabels + labelSize ), label );
         }
 
         //draw small divisions
@@ -194,11 +215,11 @@ void QgsComposerRuler::drawMarkerPos( QPainter *painter )
   painter->setPen( QColor( Qt::red ) );
   if ( mDirection == Horizontal )
   {
-    painter->drawLine( mMarkerPos.x(), 0, mMarkerPos.x(), RULER_MIN_SIZE );
+    painter->drawLine( mMarkerPos.x(), 0, mMarkerPos.x(), mRulerMinSize );
   }
   else
   {
-    painter->drawLine( 0, mMarkerPos.y(), RULER_MIN_SIZE, mMarkerPos.y() );
+    painter->drawLine( 0, mMarkerPos.y(), mRulerMinSize, mMarkerPos.y() );
   }
 }
 
@@ -245,21 +266,21 @@ void QgsComposerRuler::drawSmallDivisions( QPainter *painter, double startPos, i
     if (( numDivisions == 10 && i == 4 ) || ( numDivisions == 4 && i == 1 ) )
     {
       //if drawing the 5th line of 10 or drawing the 2nd line of 4, then draw it slightly longer
-      lineSize = RULER_MIN_SIZE / 1.5;
+      lineSize = mRulerMinSize / 1.5;
     }
     else
     {
-      lineSize = RULER_MIN_SIZE / 1.25;
+      lineSize = mRulerMinSize / 1.25;
     }
 
     //draw either horizontal or vertical line depending on ruler direction
     if ( mDirection == Horizontal )
     {
-      painter->drawLine( pixelCoord, lineSize, pixelCoord, RULER_MIN_SIZE );
+      painter->drawLine( pixelCoord, lineSize, pixelCoord, mRulerMinSize );
     }
     else
     {
-      painter->drawLine( lineSize, pixelCoord, RULER_MIN_SIZE, pixelCoord );
+      painter->drawLine( lineSize, pixelCoord, mRulerMinSize, pixelCoord );
     }
   }
 }
@@ -321,8 +342,8 @@ int QgsComposerRuler::optimumNumberDivisions( double rulerScale, int scaleMultip
   {
     //find pixel size for this small division
     double candidateSize = largeDivisionSize / ( *divisions_it );
-    //small divisions must be seperated by at least 4 pixels
-    if ( candidateSize >= 4 )
+    //check if this seperation is more then allowed min seperation
+    if ( candidateSize >= mMinPixelsPerDivision )
     {
       //found a good candidate, return it
       return ( *divisions_it );
