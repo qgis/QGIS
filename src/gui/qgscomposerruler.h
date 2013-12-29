@@ -36,6 +36,9 @@ class GUI_EXPORT QgsComposerRuler: public QWidget
     void mousePressEvent( QMouseEvent* event );
 
   private:
+    static const int validScaleMultiples[];
+    static const int validScaleMagnitudes[];
+
     Direction mDirection;
     QTransform mTransform;
     QPointF mMarkerPos;
@@ -45,6 +48,24 @@ class GUI_EXPORT QgsComposerRuler: public QWidget
     QList< QPair< QgsComposerItem*, QgsComposerItem::ItemPositionMode > > mSnappedItems;
 
     void setSnapLinePosition( const QPointF& pos );
+
+    //calculate optimum labeled units for ruler so that labels are a good distance apart
+    int optimumScale( double minPixelDiff, int &magnitude, int &multiple );
+    //calculate number of small divisions for each ruler unit, ensuring that they
+    //are sufficiently spaced
+    int optimumNumberDivisions( double rulerScale, int scaleMultiple );
+
+    //draws vertical text on a painter
+    void drawRotatedText( QPainter *painter, QPointF pos, const QString &text );
+
+    /* Draws small ruler divisions
+     * Starting at startPos in mm, for numDivisions divisions, with major division spacing of rulerScale (in mm)
+     * Stop drawing if position exceeds maxPos
+     */
+    void drawSmallDivisions( QPainter *painter, double startPos, int numDivisions, double rulerScale, double maxPos = 0 );
+
+    //draw current marker pos on ruler
+    void drawMarkerPos( QPainter *painter );
 
   signals:
     /**Is emitted when mouse cursor coordinates change*/
