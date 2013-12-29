@@ -135,34 +135,27 @@ def spatialindex(layer):
 
 
 def createUniqueFieldName(fieldName, fieldList):
+    def nextname(name):
+        num = 1
+        while True:
+            returnname ='{name}_{num}'.format(name=name[:8], num=num)
+            yield returnname
+            num += 1
+
+    def found(name):
+        return any(f.name() == name for f in fieldList)
+
     shortName = fieldName[:10]
 
-    if len(fieldList) == 0:
+    if not fieldList:
         return shortName
 
-    fieldNames = [f.name() for f in fieldList]
-
-    if shortName not in fieldNames:
+    if not found(shortName):
         return shortName
 
-    shortName = fieldName[:8] + '_1'
-    changed = True
-    while changed:
-        changed = False
-        for n in fieldList:
-            if n == shortName:
-
-                # Create unique field name
-                num = int(shortName[-1:])
-                if num < 9:
-                    shortName = shortName[:8] + '_' + str(num + 1)
-                else:
-                    shortName = shortName[:7] + '_' + str(num + 1)
-
-                changed = True
-
-    return shortName
-
+    for newname in nextname(shortName):
+        if not found(newname):
+            return newname
 
 def findOrCreateField(layer, fieldList, fieldName, fieldLen=24, fieldPrec=15):
     idx = layer.fieldNameIndex(fieldName)
