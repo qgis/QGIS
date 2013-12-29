@@ -90,9 +90,6 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap ): QWidg
   connect( mGridCheckBox, SIGNAL( toggled( bool ) ),
            mDrawAnnotationCheckableGroupBox, SLOT( setEnabled( bool ) ) );
 
-  connect( mFrameStyleComboBox, SIGNAL( currentIndexChanged( QString ) ),
-           this, SLOT( frameStyleChanged( QString ) ) );
-
   if ( composerMap )
   {
     connect( composerMap, SIGNAL( itemChanged() ), this, SLOT( setGuiElementValues() ) );

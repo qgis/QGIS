@@ -352,8 +352,8 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   {
     mStatusZoomCombo->insertItem( 0, QString( tr( "%1\%" ) ).arg(( *zoom_it ) * 100 ) );
   }
-  connect( mStatusZoomCombo, SIGNAL( currentIndexChanged( int ) ), this, SLOT( on_mStatusZoomCombo_currentIndexChanged( int ) ) );
-  connect( mStatusZoomCombo->lineEdit(), SIGNAL( returnPressed() ), this, SLOT( on_mStatusZoomCombo_zoomEntered() ) );
+  connect( mStatusZoomCombo, SIGNAL( currentIndexChanged( int ) ), this, SLOT( statusZoomCombo_currentIndexChanged( int ) ) );
+  connect( mStatusZoomCombo->lineEdit(), SIGNAL( returnPressed() ), this, SLOT( statusZoomCombo_zoomEntered() ) );
 
   //create status bar labels
   mStatusCursorXLabel = new QLabel( mStatusBar );
@@ -693,7 +693,7 @@ void QgsComposer::updateStatusZoom()
   mStatusZoomCombo->blockSignals( false );
 }
 
-void QgsComposer::on_mStatusZoomCombo_currentIndexChanged( int index )
+void QgsComposer::statusZoomCombo_currentIndexChanged( int index )
 {
   double selectedZoom = mStatusZoomLevelsList[ mStatusZoomLevelsList.count() - index - 1 ];
   if ( mView )
@@ -706,7 +706,7 @@ void QgsComposer::on_mStatusZoomCombo_currentIndexChanged( int index )
   }
 }
 
-void QgsComposer::on_mStatusZoomCombo_zoomEntered()
+void QgsComposer::statusZoomCombo_zoomEntered()
 {
   if ( !mView )
   {

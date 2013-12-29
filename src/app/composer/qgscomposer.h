@@ -374,9 +374,9 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Updates zoom level in status bar
     void updateStatusZoom();
 
-    void on_mStatusZoomCombo_currentIndexChanged( int index );
+    void statusZoomCombo_currentIndexChanged( int index );
 
-    void on_mStatusZoomCombo_zoomEntered();
+    void statusZoomCombo_zoomEntered();
 
     //! Updates status bar composition message
     void updateStatusCompositionMsg( QString message );
