@@ -23,6 +23,7 @@
 #include <QMimeData>
 #include <QGridLayout>
 
+#include "qgsapplication.h"
 #include "qgscomposerview.h"
 #include "qgscomposerarrow.h"
 #include "qgscomposerframe.h"
@@ -1313,6 +1314,7 @@ void QgsComposerView::wheelZoom( QWheelEvent * event )
   }
 
   //update composition for new zoom
+  emit zoomLevelChanged();
   updateRulers();
   update();
   //redraw cached map items
@@ -1326,6 +1328,22 @@ void QgsComposerView::wheelZoom( QWheelEvent * event )
       mypItem->updateCachedImage();
     }
   }
+}
+
+void QgsComposerView::setZoomLevel( double zoomLevel )
+{
+  double dpi = QgsApplication::desktop()->logicalDpiX();
+  //monitor dpi is not always correct - so make sure the value is sane
+  if (( dpi < 60 ) || ( dpi > 250 ) )
+    dpi = 72;
+
+  //desired pixel width for 1mm on screen
+  double scale = zoomLevel * dpi / 25.4;
+  setTransform( QTransform::fromScale( scale , scale ) );
+
+  updateRulers();
+  update();
+  emit zoomLevelChanged();
 }
 
 void QgsComposerView::paintEvent( QPaintEvent* event )
@@ -1356,6 +1374,7 @@ void QgsComposerView::showEvent( QShowEvent* e )
 void QgsComposerView::resizeEvent( QResizeEvent* event )
 {
   QGraphicsView::resizeEvent( event );
+  emit zoomLevelChanged();
   updateRulers();
 }
 

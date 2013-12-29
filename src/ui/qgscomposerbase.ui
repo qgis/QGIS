@@ -76,6 +76,7 @@
     <bool>true</bool>
    </attribute>
    <addaction name="mActionZoomAll"/>
+   <addaction name="mActionZoomActual"/>
    <addaction name="mActionZoomIn"/>
    <addaction name="mActionZoomOut"/>
    <addaction name="mActionRefreshView"/>
@@ -177,6 +178,21 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+-</string>
+   </property>
+  </action>
+  <action name="mActionZoomActual">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionZoomActual.svg</normaloff>:/images/themes/default/mActionZoomActual.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Zoom to 100%</string>
+   </property>
+   <property name="toolTip">
+    <string>Zoom to 100%</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+1</string>
    </property>
   </action>
   <action name="mActionMouseZoom">

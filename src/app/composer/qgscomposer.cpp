@@ -256,6 +256,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   viewMenu->addAction( mActionZoomIn );
   viewMenu->addAction( mActionZoomOut );
   viewMenu->addAction( mActionZoomAll );
+  viewMenu->addAction( mActionZoomActual );
   viewMenu->addSeparator();
   viewMenu->addAction( mActionRefreshView );
   viewMenu->addSeparator();
@@ -331,6 +332,26 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   setMouseTracking( true );
   mViewFrame->setMouseTracking( true );
 
+  mStatusZoomCombo = new QComboBox( mStatusBar );
+  mStatusZoomCombo->setEditable( true );
+  mStatusZoomCombo->setInsertPolicy( QComboBox::NoInsert );
+  mStatusZoomCombo->setCompleter( 0 );
+  mStatusZoomCombo->setMinimumWidth( 100 );
+  //zoom combo box accepts decimals in the range 1-9999, with an optional decimal point and "%" sign
+  QRegExp zoomRx( "\\s*\\d{1,4}(\\.\\d?)?\\s*%?" );
+  QValidator *zoomValidator = new QRegExpValidator( zoomRx, mStatusZoomCombo );
+  mStatusZoomCombo->lineEdit()->setValidator( zoomValidator );
+
+  //add some nice zoom levels to the zoom combobox
+  mStatusZoomLevelsList << 0.125 << 0.25 << 0.5 << 1.0 << 2.0 << 4.0 << 8.0;
+  QList<double>::iterator zoom_it;
+  for ( zoom_it = mStatusZoomLevelsList.begin(); zoom_it != mStatusZoomLevelsList.end(); ++zoom_it )
+  {
+    mStatusZoomCombo->insertItem( 0, QString( tr( "%1\%" ) ).arg(( *zoom_it ) * 100 ) );
+  }
+  connect( mStatusZoomCombo, SIGNAL( currentIndexChanged( int ) ), this, SLOT( on_mStatusZoomCombo_currentIndexChanged( int ) ) );
+  connect( mStatusZoomCombo->lineEdit(), SIGNAL( returnPressed() ), this, SLOT( on_mStatusZoomCombo_zoomEntered() ) );
+
   //create status bar labels
   mStatusCursorXLabel = new QLabel( mStatusBar );
   mStatusCursorXLabel->setMinimumWidth( 100 );
@@ -339,9 +360,11 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   mStatusCursorPageLabel = new QLabel( mStatusBar );
   mStatusCursorPageLabel->setMinimumWidth( 100 );
   mStatusCompositionLabel = new QLabel( mStatusBar );
+
   mStatusBar->addWidget( mStatusCursorXLabel );
   mStatusBar->addWidget( mStatusCursorYLabel );
   mStatusBar->addWidget( mStatusCursorPageLabel );
+  mStatusBar->addWidget( mStatusZoomCombo );
   mStatusBar->addWidget( mStatusCompositionLabel );
 
   //create composer view and layout with rulers
@@ -480,6 +503,7 @@ void QgsComposer::setupTheme()
   mActionZoomAll->setIcon( QgsApplication::getThemeIcon( "/mActionZoomFullExtent.svg" ) );
   mActionZoomIn->setIcon( QgsApplication::getThemeIcon( "/mActionZoomIn.svg" ) );
   mActionZoomOut->setIcon( QgsApplication::getThemeIcon( "/mActionZoomOut.svg" ) );
+  mActionZoomActual->setIcon( QgsApplication::getThemeIcon( "/mActionZoomActual.svg" ) );
   mActionMouseZoom->setIcon( QgsApplication::getThemeIcon( "/mActionZoomToSelected.svg" ) );
   mActionRefreshView->setIcon( QgsApplication::getThemeIcon( "/mActionDraw.svg" ) );
   mActionUndo->setIcon( QgsApplication::getThemeIcon( "/mActionUndo.png" ) );
@@ -547,6 +571,9 @@ void QgsComposer::connectSlots()
   //also listen out for position updates from the horizontal/vertical rulers
   connect( mHorizontalRuler, SIGNAL( cursorPosChanged( QPointF ) ), this, SLOT( updateStatusCursorPos( QPointF ) ) );
   connect( mVerticalRuler, SIGNAL( cursorPosChanged( QPointF ) ), this, SLOT( updateStatusCursorPos( QPointF ) ) );
+  //listen out for zoom updates
+  connect( this, SIGNAL( zoomLevelChanged() ), this, SLOT( updateStatusZoom() ) );
+  connect( mView, SIGNAL( zoomLevelChanged() ), this, SLOT( updateStatusZoom() ) );
   //listen out to status bar updates from the composition
   connect( mComposition, SIGNAL( statusMsgChanged( QString ) ), this, SLOT( updateStatusCompositionMsg( QString ) ) );
 }
@@ -631,6 +658,48 @@ void QgsComposer::updateStatusCursorPos( QPointF cursorPosition )
   mStatusCursorPageLabel->setText( QString( tr( "page: %3" ) ).arg( currentPage ) );
 }
 
+void QgsComposer::updateStatusZoom()
+{
+  double dpi = QgsApplication::desktop()->logicalDpiX();
+  //monitor dpi is not always correct - so make sure the value is sane
+  if (( dpi < 60 ) || ( dpi > 250 ) )
+    dpi = 72;
+
+  //pixel width for 1mm on screen
+  double scale100 = dpi / 25.4;
+  //current zoomLevel
+  double zoomLevel = mView->transform().m11() * 100 / scale100;
+
+  mStatusZoomCombo->blockSignals( true );
+  mStatusZoomCombo->lineEdit()->setText( QString( tr( "%1\%" ) ).arg( QString::number( zoomLevel, 'f', 1 ) ) );
+  mStatusZoomCombo->blockSignals( false );
+}
+
+void QgsComposer::on_mStatusZoomCombo_currentIndexChanged( int index )
+{
+  double selectedZoom = mStatusZoomLevelsList[ mStatusZoomLevelsList.count() - index - 1 ];
+  if ( mView )
+  {
+    mView->setZoomLevel( selectedZoom );
+    //update zoom combobox text for correct format (one decimal place, trailing % sign)
+    mStatusZoomCombo->blockSignals( true );
+    mStatusZoomCombo->lineEdit()->setText( QString( tr( "%1\%" ) ).arg( QString::number( selectedZoom * 100, 'f', 1 ) ) );
+    mStatusZoomCombo->blockSignals( false );
+  }
+}
+
+void QgsComposer::on_mStatusZoomCombo_zoomEntered()
+{
+  if ( !mView )
+  {
+    return;
+  }
+
+  //need to remove spaces and "%" characters from input text
+  QString zoom = mStatusZoomCombo->currentText().remove( QChar( '%' ) ).trimmed();
+  mView->setZoomLevel( zoom.toDouble() / 100 );
+}
+
 void QgsComposer::updateStatusCompositionMsg( QString message )
 {
   mStatusCompositionLabel->setText( message );
@@ -713,6 +782,11 @@ void QgsComposer::on_mActionZoomOut_triggered()
   mView->updateRulers();
   mView->update();
   emit zoomLevelChanged();
+}
+
+void QgsComposer::on_mActionZoomActual_triggered()
+{
+  mView->setZoomLevel( 1.0 );
 }
 
 void QgsComposer::on_mActionMouseZoom_triggered()
