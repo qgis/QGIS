@@ -175,6 +175,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   mActionShowGuides->setCheckable( true );
   mActionSnapGuides->setCheckable( true );
   mActionSmartGuides->setCheckable( true );
+  mActionShowRulers->setCheckable( true );
 
 #ifdef Q_WS_MAC
   mActionQuit->setText( tr( "Close" ) );
@@ -267,6 +268,8 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   viewMenu->addAction( mActionSnapGuides );
   viewMenu->addAction( mActionSmartGuides );
   viewMenu->addAction( mActionClearGuides );
+  viewMenu->addSeparator();
+  viewMenu->addAction( mActionShowRulers );
 
   // Panel and toolbar submenus
   mPanelMenu = new QMenu( tr( "Panels" ), this );
@@ -374,15 +377,26 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   mViewLayout->setMargin( 0 );
   mHorizontalRuler = new QgsComposerRuler( QgsComposerRuler::Horizontal );
   mVerticalRuler = new QgsComposerRuler( QgsComposerRuler::Vertical );
-  QWidget* fake = new QWidget();
-  fake->setAttribute( Qt::WA_NoMousePropagation );
-  fake->setBackgroundRole( QPalette::Window );
-  fake->setFixedSize( 20, 20 );
-  mViewLayout->addWidget( fake, 0, 0 );
+  mRulerLayoutFix = new QWidget();
+  mRulerLayoutFix->setAttribute( Qt::WA_NoMousePropagation );
+  mRulerLayoutFix->setBackgroundRole( QPalette::Window );
+  mRulerLayoutFix->setFixedSize( mVerticalRuler->rulerSize(), mHorizontalRuler->rulerSize() );
+  mViewLayout->addWidget( mRulerLayoutFix, 0, 0 );
   mViewLayout->addWidget( mHorizontalRuler, 0, 1 );
   mViewLayout->addWidget( mVerticalRuler, 1, 0 );
   createComposerView();
   mViewFrame->setLayout( mViewLayout );
+
+  //initial state of rulers
+  QSettings myQSettings;
+  bool showRulers = myQSettings.value( "/Composer/showRulers", true ).toBool();
+  mActionShowRulers->blockSignals( true );
+  mActionShowRulers->setChecked( showRulers );
+  mHorizontalRuler->setVisible( showRulers );
+  mVerticalRuler->setVisible( showRulers );
+  mRulerLayoutFix->setVisible( showRulers );
+  mActionShowRulers->blockSignals( false );
+  connect( mActionShowRulers, SIGNAL( triggered( bool ) ), this, SLOT( toggleRulers( bool ) ) );
 
   //init undo/redo buttons
   mComposition  = new QgsComposition( mQgis->mapCanvas()->mapRenderer() );
@@ -876,6 +890,17 @@ void QgsComposer::on_mActionClearGuides_triggered()
   {
     mComposition->clearSnapLines();
   }
+}
+
+void QgsComposer::toggleRulers( bool checked )
+{
+  //show or hide rulers
+  mHorizontalRuler->setVisible( checked );
+  mVerticalRuler->setVisible( checked );
+  mRulerLayoutFix->setVisible( checked );
+
+  QSettings myQSettings;
+  myQSettings.setValue( "/Composer/showRulers", checked );
 }
 
 void QgsComposer::on_mActionExportAsPDF_triggered()

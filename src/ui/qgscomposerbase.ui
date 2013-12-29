@@ -21,7 +21,16 @@
     <bool>true</bool>
    </property>
    <layout class="QGridLayout" name="gridLayout">
-    <property name="margin">
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
      <number>0</number>
     </property>
     <item row="0" column="0">
@@ -796,7 +805,7 @@
    <property name="text">
     <string>Pan Composer</string>
    </property>
-  </action> 
+  </action>
   <action name="mActionOptions">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
@@ -808,7 +817,18 @@
    <property name="menuRole">
     <enum>QAction::PreferencesRole</enum>
    </property>
-  </action>      
+  </action>
+  <action name="mActionShowRulers">
+   <property name="text">
+    <string>Show Rulers</string>
+   </property>
+   <property name="toolTip">
+    <string>Show rulers</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+R</string>
+   </property>
+  </action>
  </widget>
  <resources>
   <include location="../../images/images.qrc"/>

@@ -306,6 +306,9 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //!Enable or disable smart guides
     void on_mActionSmartGuides_triggered( bool checked );
 
+    //!Show/hide rulers
+    void toggleRulers( bool checked );
+
     //!Clear guides
     void on_mActionClearGuides_triggered();
 
@@ -435,6 +438,7 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     QGridLayout* mViewLayout;
     QgsComposerRuler* mHorizontalRuler;
     QgsComposerRuler* mVerticalRuler;
+    QWidget* mRulerLayoutFix;
 
     //! Current composition
     QgsComposition *mComposition;
