@@ -155,6 +155,7 @@ void QgsComposition::setPaperSize( double width, double height )
     mPages.at( i )->setSceneRect( QRectF( 0, currentY, width, height ) );
     currentY += ( height + mSpaceBetweenPages );
   }
+  emit paperSizeChanged();
 }
 
 double QgsComposition::paperHeight() const
