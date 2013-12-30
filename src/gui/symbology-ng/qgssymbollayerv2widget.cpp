@@ -374,6 +374,8 @@ void QgsSimpleMarkerSymbolLayerV2Widget::setOffset()
 
 void QgsSimpleMarkerSymbolLayerV2Widget::on_mOutlineStyleComboBox_currentIndexChanged( int index )
 {
+  Q_UNUSED( index );
+
   if ( mLayer )
   {
     mLayer->setOutlineStyle( mOutlineStyleComboBox->penStyle() );

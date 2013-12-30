@@ -135,6 +135,8 @@ void QgsEllipseSymbolLayerV2Widget::on_mRotationSpinBox_valueChanged( double d )
 
 void QgsEllipseSymbolLayerV2Widget::on_mOutlineStyleComboBox_currentIndexChanged( int index )
 {
+  Q_UNUSED( index );
+
   if ( mLayer )
   {
     mLayer->setOutlineStyle( mOutlineStyleComboBox->penStyle() );
