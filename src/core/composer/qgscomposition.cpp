@@ -2227,7 +2227,11 @@ void QgsComposition::renderPage( QPainter* p, int page )
   mPlotStyle = QgsComposition::Print;
 
   setSnapLinesVisible( false );
+  //hide background before rendering
+  setBackgroundBrush( Qt::NoBrush );
   render( p, QRectF( 0, 0, paintDevice->width(), paintDevice->height() ), paperRect );
+  //show background after rendering
+  setBackgroundBrush( Qt::gray );
   setSnapLinesVisible( true );
 
   mPlotStyle = savedPlotStyle;
