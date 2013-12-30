@@ -412,7 +412,12 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     /** Compute world file parameters */
     void computeWorldFileParameters( double& a, double& b, double& c, double& d, double& e, double& f ) const;
 
-    QgsAtlasComposition& atlasComposition() { return mAtlasComposition; }
+    QgsAtlasComposition& atlasComposition() { return mAtlasComposition; };
+    
+    /**Resizes a QRectF relative to the change from boundsBefore to boundsAfter*/
+    static void relativeResizeRect( QRectF& rectToResize, const QRectF& boundsBefore, const QRectF& boundsAfter );
+    /**Returns a scaled position given a before and after range*/
+    static double relativePosition( double position, double beforeMin, double beforeMax, double afterMin, double afterMax );    
 
   public slots:
     /**Casts object to the proper subclass type and calls corresponding itemAdded signal*/

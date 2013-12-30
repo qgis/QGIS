@@ -2273,3 +2273,24 @@ void QgsComposition::computeWorldFileParameters( double& a, double& b, double& c
   e = r[3] * s[1] + r[4] * s[4];
   f = r[3] * s[2] + r[4] * s[5] + r[5];
 }
+
+void QgsComposition::relativeResizeRect( QRectF& rectToResize, const QRectF& boundsBefore, const QRectF& boundsAfter )
+{
+  //linearly scale rectToResize relative to the scaling from boundsBefore to boundsAfter
+  double left = relativePosition( rectToResize.left(), boundsBefore.left(), boundsBefore.right(), boundsAfter.left(), boundsAfter.right() );
+  double right = relativePosition( rectToResize.right(), boundsBefore.left(), boundsBefore.right(), boundsAfter.left(), boundsAfter.right() );
+  double top = relativePosition( rectToResize.top(), boundsBefore.top(), boundsBefore.bottom(), boundsAfter.top(), boundsAfter.bottom() );
+  double bottom = relativePosition( rectToResize.bottom(), boundsBefore.top(), boundsBefore.bottom(), boundsAfter.top(), boundsAfter.bottom() );
+
+  rectToResize.setRect( left, top, right - left, bottom - top );
+}
+
+double QgsComposition::relativePosition( double position, double beforeMin, double beforeMax, double afterMin, double afterMax )
+{
+  //calculate parameters for linear scale between before and after ranges
+  double m = ( afterMax - afterMin ) / ( beforeMax - beforeMin );
+  double c = afterMin - ( beforeMin * m );
+
+  //return linearly scaled position
+  return m * position + c;
+}

@@ -167,7 +167,7 @@ void QgsComposerMouseHandles::drawSelectedItemBounds( QPainter* painter )
         //get item bounds in mouse handle item's coordinate system
         QRectF itemRect = mapRectFromItem(( *itemIter ), ( *itemIter )->rect() );
         //now, resize it relative to the current resized dimensions of the mouse handles
-        relativeResizeRect( itemRect, QRectF( -mResizeMoveX, -mResizeMoveY, mBeginHandleWidth, mBeginHandleHeight ), mResizeRect );
+        QgsComposition::relativeResizeRect( itemRect, QRectF( -mResizeMoveX, -mResizeMoveY, mBeginHandleWidth, mBeginHandleHeight ), mResizeRect );
         itemBounds = QPolygonF( itemRect );
       }
       else
@@ -592,7 +592,7 @@ void QgsComposerMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent* event
     QList<QgsComposerItem*>::iterator itemIter = selectedItems.begin();
     for ( ; itemIter != selectedItems.end(); ++itemIter )
     {
-      if (( *itemIter )->positionLock() )
+      if (( *itemIter )->positionLock() || ( !( *itemIter )->flags() & QGraphicsItem::ItemIsSelectable ) )
       {
         //don't move locked items
         continue;
@@ -615,9 +615,9 @@ void QgsComposerMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent* event
     QList<QgsComposerItem*>::iterator itemIter = selectedItems.begin();
     for ( ; itemIter != selectedItems.end(); ++itemIter )
     {
-      if (( *itemIter )->positionLock() )
+      if (( *itemIter )->positionLock() || ( !( *itemIter )->flags() & QGraphicsItem::ItemIsSelectable ) )
       {
-        //don't resize locked items
+        //don't resize locked items or unselectable items (eg, items which make up an item group)
         continue;
       }
       QgsComposerItemCommand* subcommand = new QgsComposerItemCommand( *itemIter, "", parentCommand );
@@ -633,7 +633,7 @@ void QgsComposerMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent* event
       {
         //multiple items selected, so each needs to be scaled relatively to the final size of the mouse handles
         itemRect = mapRectFromItem(( *itemIter ), ( *itemIter )->rect() );
-        relativeResizeRect( itemRect, QRectF( -mResizeMoveX, -mResizeMoveY, mBeginHandleWidth, mBeginHandleHeight ), mResizeRect );
+        QgsComposition::relativeResizeRect( itemRect, QRectF( -mResizeMoveX, -mResizeMoveY, mBeginHandleWidth, mBeginHandleHeight ), mResizeRect );
       }
 
       itemRect = itemRect.normalized();
@@ -979,27 +979,6 @@ void QgsComposerMouseHandles::resizeMouseMove( const QPointF& currentPosition, b
 
   //show current size of selection in status bar
   mComposition->setStatusMessage( QString( tr( "width: %1 mm height: %2 mm" ) ).arg( rect().width() ).arg( rect().height() ) );
-}
-
-void QgsComposerMouseHandles::relativeResizeRect( QRectF& rectToResize, const QRectF& boundsBefore, const QRectF& boundsAfter )
-{
-  //linearly scale rectToResize relative to the scaling from boundsBefore to boundsAfter
-  double left = relativePosition( rectToResize.left(), boundsBefore.left(), boundsBefore.right(), boundsAfter.left(), boundsAfter.right() );
-  double right = relativePosition( rectToResize.right(), boundsBefore.left(), boundsBefore.right(), boundsAfter.left(), boundsAfter.right() );
-  double top = relativePosition( rectToResize.top(), boundsBefore.top(), boundsBefore.bottom(), boundsAfter.top(), boundsAfter.bottom() );
-  double bottom = relativePosition( rectToResize.bottom(), boundsBefore.top(), boundsBefore.bottom(), boundsAfter.top(), boundsAfter.bottom() );
-
-  rectToResize.setRect( left, top, right - left, bottom - top );
-}
-
-double QgsComposerMouseHandles::relativePosition( double position, double beforeMin, double beforeMax, double afterMin, double afterMax )
-{
-  //calculate parameters for linear scale between before and after ranges
-  double m = ( afterMax - afterMin ) / ( beforeMax - beforeMin );
-  double c = afterMin - ( beforeMin * m );
-
-  //return linearly scaled position
-  return m * position + c;
 }
 
 QPointF QgsComposerMouseHandles::snapPoint( const QPointF& point, QgsComposerMouseHandles::SnapGuideMode mode )
