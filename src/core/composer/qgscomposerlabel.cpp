@@ -64,10 +64,7 @@ void QgsComposerLabel::paint( QPainter* painter, const QStyleOptionGraphicsItem*
   painter->save();
 
   double penWidth = pen().widthF();
-  QRectF painterRect( penWidth + mMargin, penWidth + mMargin, mTextBoxWidth - 2 * penWidth - 2 * mMargin, mTextBoxHeight - 2 * penWidth - 2 * mMargin );
-  painter->translate( rect().width() / 2.0, rect().height() / 2.0 );
-  painter->rotate( mRotation );
-  painter->translate( -mTextBoxWidth / 2.0, -mTextBoxHeight / 2.0 );
+  QRectF painterRect( penWidth + mMargin, penWidth + mMargin, rect().width() - 2 * penWidth - 2 * mMargin, rect().height() - 2 * penWidth - 2 * mMargin );
 
   if ( mHtmlState )
   {
@@ -224,50 +221,20 @@ void QgsComposerLabel::adjustSizeToText()
   double textWidth = textWidthMillimeters( mFont, displayText() );
   double fontAscent = fontAscentMillimeters( mFont );
 
-  mTextBoxWidth = textWidth + 2 * mMargin + 2 * pen().widthF() + 1;
-  mTextBoxHeight = fontAscent + 2 * mMargin + 2 * pen().widthF() + 1;
-
-  double width = mTextBoxWidth;
-  double height = mTextBoxHeight;
-
-  sizeChangedByRotation( width, height );
+  double width = textWidth + 2 * mMargin + 2 * pen().widthF() + 1;
+  double height = fontAscent + 2 * mMargin + 2 * pen().widthF() + 1;
 
   //keep alignment point constant
   double xShift = 0;
   double yShift = 0;
   itemShiftAdjustSize( width, height, xShift, yShift );
 
-  QgsComposerItem::setSceneRect( QRectF( pos().x() + xShift, pos().y() + yShift, width, height ) );
+  setSceneRect( QRectF( pos().x() + xShift, pos().y() + yShift, width, height ) );
 }
 
 QFont QgsComposerLabel::font() const
 {
   return mFont;
-}
-
-void QgsComposerLabel::setRotation( double r )
-{
-  double width = mTextBoxWidth;
-  double height = mTextBoxHeight;
-  QgsComposerItem::setRotation( r );
-  sizeChangedByRotation( width, height );
-
-  double x = pos().x() + rect().width() / 2.0 - width / 2.0;
-  double y = pos().y() + rect().height() / 2.0 - height / 2.0;
-  QgsComposerItem::setSceneRect( QRectF( x, y, width, height ) );
-}
-
-void QgsComposerLabel::setSceneRect( const QRectF& rectangle )
-{
-  if ( rectangle.width() != rect().width() || rectangle.height() != rect().height() )
-  {
-    double textBoxWidth = rectangle.width();
-    double textBoxHeight = rectangle.height();
-    imageSizeConsideringRotation( textBoxWidth, textBoxHeight );
-    mTextBoxWidth = textBoxWidth;
-    mTextBoxHeight = textBoxHeight;
-  }
-  QgsComposerItem::setSceneRect( rectangle );
 }
 
 bool QgsComposerLabel::writeXML( QDomElement& elem, QDomDocument & doc ) const
@@ -359,6 +326,14 @@ bool QgsComposerLabel::readXML( const QDomElement& itemElem, const QDomDocument&
   if ( composerItemList.size() > 0 )
   {
     QDomElement composerItemElem = composerItemList.at( 0 ).toElement();
+
+    //rotation
+    if ( composerItemElem.attribute( "rotation", "0" ).toDouble() != 0 )
+    {
+      //check for old (pre 2.1) rotation attribute
+      setItemRotation( composerItemElem.attribute( "rotation", "0" ).toDouble() );
+    }
+
     _readXML( composerItemElem, doc );
   }
   emit itemChanged();
@@ -373,7 +348,7 @@ void QgsComposerLabel::itemShiftAdjustSize( double newWidth, double newHeight, d
   xShift = 0;
   yShift = 0;
 
-  if ( mRotation >= 0 && mRotation < 90 )
+  if ( mItemRotation >= 0 && mItemRotation < 90 )
   {
     if ( mHAlignment == Qt::AlignHCenter )
     {
@@ -392,7 +367,7 @@ void QgsComposerLabel::itemShiftAdjustSize( double newWidth, double newHeight, d
       yShift = - ( newHeight - currentHeight );
     }
   }
-  if ( mRotation >= 90 && mRotation < 180 )
+  if ( mItemRotation >= 90 && mItemRotation < 180 )
   {
     if ( mHAlignment == Qt::AlignHCenter )
     {
@@ -411,7 +386,7 @@ void QgsComposerLabel::itemShiftAdjustSize( double newWidth, double newHeight, d
       xShift = -( newWidth - currentWidth / 2.0 );
     }
   }
-  else if ( mRotation >= 180 && mRotation < 270 )
+  else if ( mItemRotation >= 180 && mItemRotation < 270 )
   {
     if ( mHAlignment == Qt::AlignHCenter )
     {
@@ -430,7 +405,7 @@ void QgsComposerLabel::itemShiftAdjustSize( double newWidth, double newHeight, d
       yShift = ( newHeight - currentHeight );
     }
   }
-  else if ( mRotation >= 270 && mRotation < 360 )
+  else if ( mItemRotation >= 270 && mItemRotation < 360 )
   {
     if ( mHAlignment == Qt::AlignHCenter )
     {

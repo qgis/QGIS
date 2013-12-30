@@ -73,6 +73,8 @@ class QgsComposerItemWidget: public QWidget, private Ui::QgsComposerItemWidgetBa
     void on_mBlendModeCombo_currentIndexChanged( int index );
     void on_mTransparencySlider_valueChanged( int value );
 
+    void on_mItemRotationSpinBox_valueChanged( double val );
+
     void setValuesForGuiElements();
     void setValuesForGuiPositionElements();
 

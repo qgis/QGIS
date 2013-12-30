@@ -161,7 +161,7 @@ void QgsComposerMapWidget::on_mScaleLineEdit_editingFinished()
   mComposerMap->endCommand();
 }
 
-void QgsComposerMapWidget::on_mRotationSpinBox_valueChanged( double value )
+void QgsComposerMapWidget::on_mMapRotationSpinBox_valueChanged( double value )
 {
   if ( !mComposerMap )
   {
@@ -291,7 +291,7 @@ void QgsComposerMapWidget::updateGuiElements()
     mYMinLineEdit->setText( QString::number( composerMapExtent.yMinimum(), 'f', 3 ) );
     mYMaxLineEdit->setText( QString::number( composerMapExtent.yMaximum(), 'f', 3 ) );
 
-    mRotationSpinBox->setValue( mComposerMap->rotation() );
+    mMapRotationSpinBox->setValue( mComposerMap->mapRotation() );
 
     //keep layer list check box
     if ( mComposerMap->keepLayerSet() )

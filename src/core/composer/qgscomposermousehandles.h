@@ -95,6 +95,9 @@ class CORE_EXPORT QgsComposerMouseHandles: public QObject, public QGraphicsRectI
     /**Redraws handles when selected item size changes*/
     void selectedItemSizeChanged();
 
+    /**Redraws handles when selected item rotation changes*/
+    void selectedItemRotationChanged();
+    
   private:
 
     QgsComposition* mComposition; //reference to composition
@@ -114,6 +117,8 @@ class CORE_EXPORT QgsComposerMouseHandles: public QObject, public QGraphicsRectI
     double mBeginHandleHeight;
 
     QRectF mResizeRect;
+    double mResizeMoveX;
+    double mResizeMoveY;
 
     /**True if user is currently dragging items*/
     bool mIsDragging;
@@ -124,8 +129,11 @@ class CORE_EXPORT QgsComposerMouseHandles: public QObject, public QGraphicsRectI
     QGraphicsLineItem* mHAlignSnapItem;
     QGraphicsLineItem* mVAlignSnapItem;
 
-    /**Returns the scene bounds of current selection*/
+    /**Returns the mouse handle bounds of current selection*/
     QRectF selectionBounds() const;
+    
+    /**Returns true if all selected items have same rotation, and if so, updates passed rotation variable*/    
+    bool selectionRotation( double & rotation ) const;
 
     /**Redraws or hides the handles based on the current selection*/
     void updateHandles();
@@ -148,11 +156,6 @@ class CORE_EXPORT QgsComposerMouseHandles: public QObject, public QGraphicsRectI
     void dragMouseMove( const QPointF& currentPosition, bool lockMovement, bool preventSnap );
     /**Handles resizing of items during mouse move*/
     void resizeMouseMove( const QPointF& currentPosition, bool lockAspect, bool fromCenter );
-
-    /**Resizes a QRectF relative to the change from boundsBefore to boundsAfter*/
-    void relativeResizeRect( QRectF& rectToResize, const QRectF& boundsBefore, const QRectF& boundsAfter );
-    /**Returns a scaled position given a before and after range*/
-    double relativePosition( double position, double beforeMin, double beforeMax, double afterMin, double afterMax );
 
     /**Return horizontal align snap item. Creates a new graphics line if 0*/
     QGraphicsLineItem* hAlignSnapItem();

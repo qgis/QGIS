@@ -256,7 +256,7 @@ void TestQgsComposerMap::overviewMapCenter()
 void TestQgsComposerMap::worldFileGeneration()
 {
   mComposerMap->setNewExtent( QgsRectangle( 781662.375, 3339523.125, 793062.375, 3345223.125 ) );
-  mComposerMap->setRotation( 30.0 );
+  mComposerMap->setMapRotation( 30.0 );
 
   mComposition->setGenerateWorldFile( true );
   mComposition->setWorldFileMap( mComposerMap );

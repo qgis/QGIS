@@ -79,5 +79,11 @@ class QgsComposerLabel : QgsComposerItem
     bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
 
   public slots:
+    /* Sets rotation for the label
+     * @deprecated Use setItemRotation( double rotation ) instead
+     */
     virtual void setRotation( double r );
+  
+    /* Sets rotation for the label */
+    virtual void setItemRotation( double r );
 };

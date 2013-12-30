@@ -325,7 +325,22 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     void setCrossLength( double l ) {mCrossLength = l;}
     double crossLength() {return mCrossLength;}
 
+    /**Sets rotation for the map - this does not affect the composer item shape, only the
+      way the map is drawn within the item
+     * @deprecated Use setMapRotation( double rotation ) instead
+     */
+    void setRotation( double r );
+    /**Returns the rotation used for drawing the map within the composer item
+     * @deprecated Use mapRotation() instead
+     */
+    double rotation() const { return mMapRotation;};
+
+    /**Sets rotation for the map - this does not affect the composer item shape, only the
+      way the map is drawn within the item
+      @note this function was added in version 2.1*/
     void setMapRotation( double r );
+    /**Returns the rotation used for drawing the map within the composer item*/
+    double mapRotation() const { return mMapRotation;};
 
     void updateItem();
 
@@ -375,8 +390,27 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
         Usually, this function is called before adding the composer map to the composition*/
     void assignFreeId();
 
+    /**Calculates width and hight of the picture (in mm) such that it fits into the item frame with the given rotation
+     * @deprecated Use bool QgsComposerItem::imageSizeConsideringRotation( double& width, double& height, double rotation )
+     * instead
+     */
+    bool imageSizeConsideringRotation( double& width, double& height ) const;
+    /**Calculates corner point after rotation and scaling
+     * @deprecated Use QgsComposerItem::cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height, double rotation )
+     * instead
+     */
+    bool cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height ) const;
+    /**Calculates width / height of the bounding box of a rotated rectangle
+    * @deprecated Use QgsComposerItem::sizeChangedByRotation( double& width, double& height, double rotation )
+    * instead
+    */
+    void sizeChangedByRotation( double& width, double& height );
+
   signals:
     void extentChanged();
+
+    /**Is emitted on rotation change to notify north arrow pictures*/
+    void mapRotationChanged( double newRotation );
 
   public slots:
 
@@ -424,6 +458,9 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     double mXOffset;
     /**Offset in y direction for showing map cache image*/
     double mYOffset;
+
+    /**Map rotation*/
+    double mMapRotation;
 
     /**Flag if layers to be displayed should be read from qgis canvas (true) or from stored list in mLayerSet (false)*/
     bool mKeepLayerSet;

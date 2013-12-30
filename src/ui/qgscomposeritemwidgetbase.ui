@@ -218,6 +218,38 @@
     </widget>
    </item>
    <item>
+    <widget class="QgsCollapsibleGroupBoxBasic" name="mTransformsGroupBox">
+     <property name="title">
+      <string>Rotation</string>
+     </property>
+     <property name="syncGroup" stdset="0">
+      <string notr="true">composeritem</string>
+     </property>
+     <property name="collapsed" stdset="0">
+      <bool>true</bool>
+     </property>
+     <layout class="QFormLayout" name="formLayout">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Rotation</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QDoubleSpinBox" name="mItemRotationSpinBox">
+        <property name="suffix">
+         <string> °</string>
+        </property>
+        <property name="maximum">
+         <double>360.000000000000000</double>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
     <widget class="QgsCollapsibleGroupBoxBasic" name="mFrameGroupBox">
      <property name="title">
       <string>Frame</string>

@@ -50,7 +50,7 @@ QgsComposerPictureWidget::QgsComposerPictureWidget( QgsComposerPicture* picture 
   connect( mSearchDirectoriesGroupBox, SIGNAL( collapsedStateChanged( bool ) ), this, SLOT( loadPicturePreviews( bool ) ) );
 
   connect( mPicture, SIGNAL( itemChanged() ), this, SLOT( setGuiElementValues() ) );
-  connect( mPicture, SIGNAL( rotationChanged( double ) ), this, SLOT( setGuiElementValues() ) );
+  connect( mPicture, SIGNAL( pictureRotationChanged( double ) ), this, SLOT( setPicRotationSpinValue( double ) ) );
 }
 
 QgsComposerPictureWidget::~QgsComposerPictureWidget()
@@ -121,13 +121,12 @@ void QgsComposerPictureWidget::on_mPictureLineEdit_editingFinished()
 }
 
 
-void QgsComposerPictureWidget::on_mRotationSpinBox_valueChanged( double d )
+void QgsComposerPictureWidget::on_mPictureRotationSpinBox_valueChanged( double d )
 {
   if ( mPicture )
   {
     mPicture->beginCommand( tr( "Picture rotation changed" ), QgsComposerMergeCommand::ComposerPictureRotation );
-    mPicture->setRotation( d );
-    mPicture->update();
+    mPicture->setPictureRotation( d );
     mPicture->endCommand();
   }
 }
@@ -210,8 +209,9 @@ void QgsComposerPictureWidget::on_mRotationFromComposerMapCheckBox_stateChanged(
   if ( state == Qt::Unchecked )
   {
     mPicture->setRotationMap( -1 );
-    mRotationSpinBox->setEnabled( true );
+    mPictureRotationSpinBox->setEnabled( true );
     mComposerMapComboBox->setEnabled( false );
+    mPicture->setPictureRotation( mPictureRotationSpinBox->value() );
   }
   else
   {
@@ -223,7 +223,7 @@ void QgsComposerPictureWidget::on_mRotationFromComposerMapCheckBox_stateChanged(
     int composerId = mComposerMapComboBox->itemData( currentItemIndex, Qt::UserRole ).toInt();
 
     mPicture->setRotationMap( composerId );
-    mRotationSpinBox->setEnabled( false );
+    mPictureRotationSpinBox->setEnabled( false );
     mComposerMapComboBox->setEnabled( true );
   }
   mPicture->endCommand();
@@ -310,26 +310,33 @@ void QgsComposerPictureWidget::refreshMapComboBox()
   mComposerMapComboBox->blockSignals( false );
 }
 
+void QgsComposerPictureWidget::setPicRotationSpinValue( double r )
+{
+  mPictureRotationSpinBox->blockSignals( true );
+  mPictureRotationSpinBox->setValue( r );
+  mPictureRotationSpinBox->blockSignals( false );
+}
+
 void QgsComposerPictureWidget::setGuiElementValues()
 {
   //set initial gui values
   if ( mPicture )
   {
-    mRotationSpinBox->blockSignals( true );
+    mPictureRotationSpinBox->blockSignals( true );
     mPictureLineEdit->blockSignals( true );
     mComposerMapComboBox->blockSignals( true );
     mRotationFromComposerMapCheckBox->blockSignals( true );
 
     mPictureLineEdit->setText( mPicture->pictureFile() );
 //    QRectF pictureRect = mPicture->rect();
-    mRotationSpinBox->setValue( mPicture->rotation() );
+    mPictureRotationSpinBox->setValue( mPicture->pictureRotation() );
 
     refreshMapComboBox();
 
     if ( mPicture->useRotationMap() )
     {
       mRotationFromComposerMapCheckBox->setCheckState( Qt::Checked );
-      mRotationSpinBox->setEnabled( false );
+      mPictureRotationSpinBox->setEnabled( false );
       mComposerMapComboBox->setEnabled( true );
       QString mapText = tr( "Map %1" ).arg( mPicture->rotationMap() );
       int itemId = mComposerMapComboBox->findText( mapText );
@@ -341,13 +348,13 @@ void QgsComposerPictureWidget::setGuiElementValues()
     else
     {
       mRotationFromComposerMapCheckBox->setCheckState( Qt::Unchecked );
-      mRotationSpinBox->setEnabled( true );
+      mPictureRotationSpinBox->setEnabled( true );
       mComposerMapComboBox->setEnabled( false );
     }
 
 
     mRotationFromComposerMapCheckBox->blockSignals( false );
-    mRotationSpinBox->blockSignals( false );
+    mPictureRotationSpinBox->blockSignals( false );
     mPictureLineEdit->blockSignals( false );
     mComposerMapComboBox->blockSignals( false );
   }

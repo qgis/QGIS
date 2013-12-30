@@ -333,6 +333,7 @@ void QgsComposerItemWidget::setValuesForGuiElements()
   mTransparencySpnBx->blockSignals( true );
   mFrameColorButton->blockSignals( true );
   mBackgroundColorButton->blockSignals( true );
+  mItemRotationSpinBox->blockSignals( true );
 
   mBackgroundColorButton->setColor( mItem->brush().color() );
   mBackgroundColorButton->setColorDialogTitle( tr( "Select background color" ) );
@@ -348,6 +349,7 @@ void QgsComposerItemWidget::setValuesForGuiElements()
   mBlendModeCombo->setBlendMode( mItem->blendMode() );
   mTransparencySlider->setValue( mItem->transparency() );
   mTransparencySpnBx->setValue( mItem->transparency() );
+  mItemRotationSpinBox->setValue( mItem->itemRotation() );
 
   mBackgroundColorButton->blockSignals( false );
   mFrameColorButton->blockSignals( false );
@@ -359,6 +361,7 @@ void QgsComposerItemWidget::setValuesForGuiElements()
   mBlendModeCombo->blockSignals( false );
   mTransparencySlider->blockSignals( false );
   mTransparencySpnBx->blockSignals( false );
+  mItemRotationSpinBox->blockSignals( false );
 }
 
 void QgsComposerItemWidget::on_mBlendModeCombo_currentIndexChanged( int index )
@@ -494,4 +497,15 @@ void QgsComposerItemWidget::on_mLowerRightCheckBox_stateChanged( int state )
                             mItem->pos().y() + mItem->rect().height(), QgsComposerItem::LowerRight );
   }
   setValuesForGuiPositionElements();
+}
+
+void QgsComposerItemWidget::on_mItemRotationSpinBox_valueChanged( double val )
+{
+  if ( mItem )
+  {
+    mItem->beginCommand( tr( "Item rotation changed" ), QgsComposerMergeCommand::ItemRotation );
+    mItem->setItemRotation( val, true );
+    mItem->update();
+    mItem->endCommand();
+  }
 }

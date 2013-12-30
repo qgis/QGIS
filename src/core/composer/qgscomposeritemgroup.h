@@ -67,5 +67,5 @@ class CORE_EXPORT QgsComposerItemGroup: public QgsComposerItem
 
   private:
     QSet<QgsComposerItem*> mItems;
-    QRectF mSceneBoundingRectangle;
+    QRectF mBoundingRectangle;
 };
