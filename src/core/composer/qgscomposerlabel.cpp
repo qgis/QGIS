@@ -65,9 +65,6 @@ void QgsComposerLabel::paint( QPainter* painter, const QStyleOptionGraphicsItem*
 
   double penWidth = pen().widthF();
   QRectF painterRect( penWidth + mMargin, penWidth + mMargin, mTextBoxWidth - 2 * penWidth - 2 * mMargin, mTextBoxHeight - 2 * penWidth - 2 * mMargin );
-  painter->translate( rect().width() / 2.0, rect().height() / 2.0 );
-  painter->rotate( mItemRotation );
-  painter->translate( -mTextBoxWidth / 2.0, -mTextBoxHeight / 2.0 );
 
   if ( mHtmlState )
   {
@@ -245,37 +242,6 @@ QFont QgsComposerLabel::font() const
   return mFont;
 }
 
-void QgsComposerLabel::setRotation( double r )
-{
-  //kept for api compatibility with QGIS 2.0
-  setItemRotation( r );
-}
-
-void QgsComposerLabel::setItemRotation( double r )
-{
-  double width = mTextBoxWidth;
-  double height = mTextBoxHeight;
-  QgsComposerItem::setItemRotation( r );
-  sizeChangedByRotation( width, height );
-
-  double x = pos().x() + rect().width() / 2.0 - width / 2.0;
-  double y = pos().y() + rect().height() / 2.0 - height / 2.0;
-  QgsComposerItem::setSceneRect( QRectF( x, y, width, height ) );
-}
-
-void QgsComposerLabel::setSceneRect( const QRectF& rectangle )
-{
-  if ( rectangle.width() != rect().width() || rectangle.height() != rect().height() )
-  {
-    double textBoxWidth = rectangle.width();
-    double textBoxHeight = rectangle.height();
-    imageSizeConsideringRotation( textBoxWidth, textBoxHeight );
-    mTextBoxWidth = textBoxWidth;
-    mTextBoxHeight = textBoxHeight;
-  }
-  QgsComposerItem::setSceneRect( rectangle );
-}
-
 bool QgsComposerLabel::writeXML( QDomElement& elem, QDomDocument & doc ) const
 {
   QString alignment;
@@ -370,7 +336,7 @@ bool QgsComposerLabel::readXML( const QDomElement& itemElem, const QDomDocument&
     if ( composerItemElem.attribute( "rotation", "0" ).toDouble() != 0 )
     {
       //check for old (pre 2.1) rotation attribute
-      mItemRotation = composerItemElem.attribute( "rotation", "0" ).toDouble();
+      setItemRotation( composerItemElem.attribute( "rotation", "0" ).toDouble() );
     }
 
     _readXML( composerItemElem, doc );

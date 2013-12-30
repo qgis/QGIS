@@ -60,10 +60,6 @@ void QgsComposerShape::drawShape( QPainter* p )
   p->save();
   p->setRenderHint( QPainter::Antialiasing );
 
-  p->translate( rect().width() / 2.0, rect().height() / 2.0 );
-  p->rotate( mItemRotation );
-  p->translate( -rect().width() / 2.0, -rect().height() / 2.0 );
-
   switch ( mShape )
   {
     case Ellipse:
@@ -140,7 +136,7 @@ bool QgsComposerShape::readXML( const QDomElement& itemElem, const QDomDocument&
     if ( composerItemElem.attribute( "rotation", "0" ).toDouble() != 0 )
     {
       //check for old (pre 2.1) rotation attribute
-      mItemRotation = composerItemElem.attribute( "rotation", "0" ).toDouble();
+      setItemRotation( composerItemElem.attribute( "rotation", "0" ).toDouble() );
     }
 
     _readXML( composerItemElem, doc );
@@ -149,36 +145,7 @@ bool QgsComposerShape::readXML( const QDomElement& itemElem, const QDomDocument&
   return true;
 }
 
-
-void QgsComposerShape::setItemRotation( double r )
-{
-  //adapt rectangle size
-  double width = rect().width();
-  double height = rect().height();
-  sizeChangedByRotation( width, height );
-
-  //adapt scene rect to have the same center and the new width / height
-  double x = pos().x() + rect().width() / 2.0 - width / 2.0;
-  double y = pos().y() + rect().height() / 2.0 - height / 2.0;
-  QgsComposerItem::setSceneRect( QRectF( x, y, width, height ) );
-
-  QgsComposerItem::setItemRotation( r );
-}
-
 void QgsComposerShape::setCornerRadius( double radius )
 {
   mCornerRadius = radius;
-}
-
-void QgsComposerShape::setSceneRect( const QRectF& rectangle )
-{
-  //consider to change size of the shape if the rectangle changes width and/or height
-  if ( rectangle.width() != rect().width() || rectangle.height() != rect().height() )
-  {
-    double newShapeWidth = rectangle.width();
-    double newShapeHeight = rectangle.height();
-    imageSizeConsideringRotation( newShapeWidth, newShapeHeight );
-  }
-
-  QgsComposerItem::setSceneRect( rectangle );
 }
