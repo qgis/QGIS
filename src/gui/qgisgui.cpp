@@ -83,7 +83,7 @@ namespace QgisGui
     return false;
   }
 
-  QPair<QString, QString> GUI_EXPORT getSaveAsImageName( QWidget *theParent, QString theMessage )
+  QPair<QString, QString> GUI_EXPORT getSaveAsImageName( QWidget *theParent, QString theMessage, QString defaultFilename )
   {
     // get a list of supported output image types
     QMap<QString, QString> filterMap;
@@ -93,7 +93,7 @@ namespace QgisGui
       if ( format ==  "svg" )
         continue;
 
-      filterMap.insert( createFileFilter_( format + " format", "*." + format ), format );
+      filterMap.insert( createFileFilter_( format.toUpper() + " format", "*." + format ), format );
     }
 
 #ifdef QGISDEBUG
@@ -113,8 +113,20 @@ namespace QgisGui
     QString selectedFilter = lastUsedFilter;
     QString ext;
 
-#if defined(Q_OS_WIN) || defined(Q_OS_MAC)
-    outputFileName = QFileDialog::getSaveFileName( theParent, theMessage, lastUsedDir, QStringList( filterMap.keys() ).join( ";;" ), &selectedFilter );
+    QString initialPath;
+    if ( defaultFilename.isNull() )
+    {
+      //no default filename provided, just use last directory
+      initialPath = lastUsedDir;
+    }
+    else
+    {
+      //a default filename was provided, so use it to build the initial path
+      initialPath = QDir( lastUsedDir ).filePath( defaultFilename );
+    }
+
+#if defined(Q_OS_WIN) || defined(Q_OS_MAC) || defined(Q_OS_LINUX)
+    outputFileName = QFileDialog::getSaveFileName( theParent, theMessage, initialPath, QStringList( filterMap.keys() ).join( ";;" ), &selectedFilter );
 
     if ( !outputFileName.isNull() )
     {
@@ -125,7 +137,7 @@ namespace QgisGui
     }
 #else
     //create a file dialog using the filter list generated above
-    std::auto_ptr<QFileDialog> fileDialog( new QFileDialog( theParent, theMessage, lastUsedDir, QStringList( filterMap.keys() ).join( ";;" ) ) );
+    std::auto_ptr<QFileDialog> fileDialog( new QFileDialog( theParent, theMessage, initialPath, QStringList( filterMap.keys() ).join( ";;" ) ) );
 
     // allow for selection of more than one file
     fileDialog->setFileMode( QFileDialog::AnyFile );
