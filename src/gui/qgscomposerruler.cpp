@@ -7,8 +7,8 @@
 #include <cmath>
 
 const int RULER_FONT_SIZE = 8;
-const int COUNT_VALID_MULTIPLES = 3;
-const int COUNT_VALID_MAGNITUDES = 5;
+const unsigned int COUNT_VALID_MULTIPLES = 3;
+const unsigned int COUNT_VALID_MAGNITUDES = 5;
 const int QgsComposerRuler::validScaleMultiples[] = {1, 2, 5};
 const int QgsComposerRuler::validScaleMagnitudes[] = {1, 10, 100, 1000, 10000};
 
