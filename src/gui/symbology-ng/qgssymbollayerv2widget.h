@@ -109,6 +109,7 @@ class GUI_EXPORT QgsSimpleMarkerSymbolLayerV2Widget : public QgsSymbolLayerV2Wid
     void on_mOffsetUnitComboBox_currentIndexChanged( int index );
     void on_mOutlineWidthUnitComboBox_currentIndexChanged( int index );
     void on_mDataDefinedPropertiesButton_clicked();
+    void on_mOutlineStyleComboBox_currentIndexChanged( int index );
     void on_mOutlineWidthSpinBox_valueChanged( double d );
     void on_mHorizontalAnchorComboBox_currentIndexChanged( int index );
     void on_mVerticalAnchorComboBox_currentIndexChanged( int index );

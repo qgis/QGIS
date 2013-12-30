@@ -35,7 +35,7 @@
 //////
 
 QgsSimpleMarkerSymbolLayerV2::QgsSimpleMarkerSymbolLayerV2( QString name, QColor color, QColor borderColor, double size, double angle, QgsSymbolV2::ScaleMethod scaleMethod )
-    : mOutlineWidth( 0 ), mOutlineWidthUnit( QgsSymbolV2::MM )
+    : mOutlineStyle( Qt::SolidLine ), mOutlineWidth( 0 ), mOutlineWidthUnit( QgsSymbolV2::MM )
 {
   mName = name;
   mColor = color;
@@ -80,6 +80,10 @@ QgsSymbolLayerV2* QgsSimpleMarkerSymbolLayerV2::create( const QgsStringMap& prop
   if ( props.contains( "size_unit" ) )
     m->setSizeUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["size_unit"] ) );
 
+  if ( props.contains( "outline_style" ) )
+  {
+    m->setOutlineStyle( QgsSymbolLayerV2Utils::decodePenStyle( props["outline_style"] ) );
+  }
   if ( props.contains( "outline_width" ) )
   {
     m->setOutlineWidth( props["outline_width"].toDouble() );
@@ -154,6 +158,7 @@ void QgsSimpleMarkerSymbolLayerV2::startRender( QgsSymbolV2RenderContext& contex
 
   mBrush = QBrush( brushColor );
   mPen = QPen( penColor );
+  mPen.setStyle( mOutlineStyle );
   mPen.setWidthF( mOutlineWidth * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOutlineWidthUnit ) );
 
   QColor selBrushColor = context.renderContext().selectionColor();
@@ -165,6 +170,7 @@ void QgsSimpleMarkerSymbolLayerV2::startRender( QgsSymbolV2RenderContext& contex
   }
   mSelBrush = QBrush( selBrushColor );
   mSelPen = QPen( selPenColor );
+  mSelPen.setStyle( mOutlineStyle );
   mSelPen.setWidthF( mOutlineWidth * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOutlineWidthUnit ) );
 
   bool hasDataDefinedRotation = context.renderHints() & QgsSymbolV2::DataDefinedRotation || dataDefinedProperty( "angle" );
@@ -567,6 +573,7 @@ QgsStringMap QgsSimpleMarkerSymbolLayerV2::properties() const
   map["offset"] = QgsSymbolLayerV2Utils::encodePoint( mOffset );
   map["offset_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mOffsetUnit );
   map["scale_method"] = QgsSymbolLayerV2Utils::encodeScaleMethod( mScaleMethod );
+  map["outline_style"] = QgsSymbolLayerV2Utils::encodePenStyle( mOutlineStyle );
   map["outline_width"] = QString::number( mOutlineWidth );
   map["outline_width_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mOutlineWidthUnit );
   map["horizontal_anchor_point"] = QString::number( mHorizontalAnchorPoint );
@@ -583,6 +590,7 @@ QgsSymbolLayerV2* QgsSimpleMarkerSymbolLayerV2::clone() const
   m->setOffset( mOffset );
   m->setSizeUnit( mSizeUnit );
   m->setOffsetUnit( mOffsetUnit );
+  m->setOutlineStyle( mOutlineStyle );
   m->setOutlineWidth( mOutlineWidth );
   m->setOutlineWidthUnit( mOutlineWidthUnit );
   m->setHorizontalAnchorPoint( mHorizontalAnchorPoint );
