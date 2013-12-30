@@ -707,7 +707,7 @@ void QgsComposerItem::setRotation( double r )
 {
   //kept for api compatibility with QGIS 2.0
   //remove after 2.0 series
-  setItemRotation( r );
+  setItemRotation( r, true );
 }
 
 void QgsComposerItem::setItemRotation( double r, bool adjustPosition )

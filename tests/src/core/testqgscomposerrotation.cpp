@@ -130,12 +130,13 @@ void TestQgsComposerRotation::shapeRotation()
 {
   mComposition->addComposerShape( mComposerRect );
 
-  mComposerRect->setItemRotation( 45 );
+  mComposerRect->setItemRotation( 45, true );
 
   QgsCompositionChecker checker( "composerrotation_shape", mComposition );
   QVERIFY( checker.testComposition( mReport ) );
 
   mComposition->removeItem( mComposerRect );
+  mComposerRect->setItemRotation( 0, true );
 }
 
 void TestQgsComposerRotation::oldShapeRotationApi()
@@ -155,12 +156,13 @@ void TestQgsComposerRotation::labelRotation()
 {
   mComposition->addComposerLabel( mComposerLabel );
 
-  mComposerLabel->setItemRotation( 135 );
+  mComposerLabel->setItemRotation( 135, true );
 
   QgsCompositionChecker checker( "composerrotation_label", mComposition );
   QVERIFY( checker.testComposition( mReport ) );
 
   mComposition->removeItem( mComposerLabel );
+  mComposerLabel->setItemRotation( 0, true );
 }
 
 void TestQgsComposerRotation::oldLabelRotationApi()
@@ -195,13 +197,13 @@ void TestQgsComposerRotation::mapItemRotation()
   //test map item rotation
   mComposition->addComposerMap( mComposerMap );
   mComposerMap->setNewExtent( QgsRectangle( 781662.375, 3339523.125, 793062.375, 3345223.125 ) );
-  mComposerMap->setItemRotation( 90 );
+  mComposerMap->setItemRotation( 90, true );
 
   QgsCompositionChecker checker( "composerrotation_mapitemrotation", mComposition );
   QVERIFY( checker.testComposition( mReport ) );
 
   mComposition->removeItem( mComposerMap );
-  mComposerMap->setItemRotation( 0 );
+  mComposerMap->setItemRotation( 0, true );
 }
 
 void TestQgsComposerRotation::oldMapRotationApi()
@@ -235,13 +237,13 @@ void TestQgsComposerRotation::pictureItemRotation()
 {
   //test picture item rotation
   mComposition->addComposerPicture( mComposerPicture );
-  mComposerPicture->setItemRotation( 45 );
+  mComposerPicture->setItemRotation( 45, true );
 
   QgsCompositionChecker checker( "composerrotation_pictureitemrotation", mComposition );
   QVERIFY( checker.testComposition( mReport ) );
 
   mComposition->removeItem( mComposerPicture );
-  mComposerPicture->setItemRotation( 0 );
+  mComposerPicture->setItemRotation( 0, true );
 }
 
 void TestQgsComposerRotation::oldPictureRotationApi()
