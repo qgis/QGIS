@@ -1905,6 +1905,13 @@ bool QgsSymbolLayerV2Utils::externalMarkerFromSld( QDomElement &element,
   return true;
 }
 
+void QgsSymbolLayerV2Utils::wellKnownMarkerToSld( QDomDocument &doc, QDomElement &element, 
+    QString name, QColor color, QColor borderColor, 
+    double borderWidth, double size )
+{
+  wellKnownMarkerToSld( doc, element, name, color, borderColor, Qt::SolidLine, borderWidth, size );
+}
+
 void QgsSymbolLayerV2Utils::wellKnownMarkerToSld( QDomDocument &doc, QDomElement &element,
     QString name, QColor color, QColor borderColor, Qt::PenStyle borderStyle,
     double borderWidth, double size )
@@ -1939,6 +1946,14 @@ void QgsSymbolLayerV2Utils::wellKnownMarkerToSld( QDomDocument &doc, QDomElement
     sizeElem.appendChild( doc.createTextNode( QString::number( size ) ) );
     element.appendChild( sizeElem );
   }
+}
+
+bool QgsSymbolLayerV2Utils::wellKnownMarkerFromSld( QDomElement &element, 
+    QString &name, QColor &color, QColor &borderColor, 
+    double &borderWidth, double &size )
+{
+  Qt::PenStyle borderStyle;
+  return wellKnownMarkerFromSld( element, name, color, borderColor, borderStyle, borderWidth, size );
 }
 
 bool QgsSymbolLayerV2Utils::wellKnownMarkerFromSld( QDomElement &element,

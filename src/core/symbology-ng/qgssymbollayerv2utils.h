@@ -146,9 +146,17 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
                                         QString &path, QString &mime,
                                         QColor &color, double &size );
 
+    /** @deprecated Use wellKnownMarkerToSld( QDomDocument &doc, QDomElement &element, QString name, QColor color, QColor borderColor, Qt::PenStyle borderStyle, double borderWidth, double size ) instead */
     static void wellKnownMarkerToSld( QDomDocument &doc, QDomElement &element,
-                                      QString name, QColor color, QColor borderColor = QColor(), Qt::PenStyle borderStyle = Qt::SolidLine,
+                                      QString name, QColor color, QColor borderColor = QColor(),
                                       double borderWidth = -1, double size = -1 );
+    static void wellKnownMarkerToSld( QDomDocument &doc, QDomElement &element,
+                                      QString name, QColor color, QColor borderColor, Qt::PenStyle borderStyle,
+                                      double borderWidth = -1, double size = -1 );
+    /** @deprecated Use wellKnownMarkerFromSld( QDomElement &element, QString &name, QColor &color, QColor &borderColor, Qt::PenStyle &borderStyle, double &borderWidth, double &size ) instead */
+    static bool wellKnownMarkerFromSld( QDomElement &element,
+                                        QString &name, QColor &color, QColor &borderColor,
+                                        double &borderWidth, double &size );
     static bool wellKnownMarkerFromSld( QDomElement &element,
                                         QString &name, QColor &color, QColor &borderColor, Qt::PenStyle &borderStyle,
                                         double &borderWidth, double &size );
