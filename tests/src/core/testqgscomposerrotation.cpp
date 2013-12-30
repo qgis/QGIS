@@ -46,7 +46,9 @@ class TestQgsComposerRotation: public QObject
     void mapRotation(); //test if composer map mapRotation is functioning
     void mapItemRotation(); //test if composer map item rotation is functioning
     void oldMapRotationApi(); //test if old deprectated composer map rotation api is functioning
-    void pictureRotation();
+    void pictureRotation(); //test if picture pictureRotation is functioning
+    void pictureItemRotation(); //test if composer picture item rotation is functioning
+    void oldPictureRotationApi(); //test if old deprectated composer picture rotation api is functioning
 
   private:
     QgsComposition* mComposition;
@@ -218,16 +220,41 @@ void TestQgsComposerRotation::oldMapRotationApi()
 
 void TestQgsComposerRotation::pictureRotation()
 {
-  //test map rotation
+  //test picture rotation
   mComposition->addComposerPicture( mComposerPicture );
   mComposerPicture->setPictureRotation( 45 );
-  //mComposerPicture->setSceneRect( QRectF( 70, 70, 100, 100 ) );
 
-  QgsCompositionChecker checker( "composerrotation_maprotation", mComposition );
+  QgsCompositionChecker checker( "composerrotation_picturerotation", mComposition );
   QVERIFY( checker.testComposition( mReport ) );
 
   mComposition->removeItem( mComposerPicture );
   mComposerPicture->setPictureRotation( 0 );
+}
+
+void TestQgsComposerRotation::pictureItemRotation()
+{
+  //test picture item rotation
+  mComposition->addComposerPicture( mComposerPicture );
+  mComposerPicture->setItemRotation( 45 );
+
+  QgsCompositionChecker checker( "composerrotation_pictureitemrotation", mComposition );
+  QVERIFY( checker.testComposition( mReport ) );
+
+  mComposition->removeItem( mComposerPicture );
+  mComposerPicture->setItemRotation( 0 );
+}
+
+void TestQgsComposerRotation::oldPictureRotationApi()
+{
+  //test old style deprecated rotation api - remove test after 2.0 series
+  mComposition->addComposerPicture( mComposerPicture );
+  mComposerPicture->setRotation( 45 );
+
+  QgsCompositionChecker checker( "composerrotation_picturerotation_oldapi", mComposition );
+  QVERIFY( checker.testComposition( mReport ) );
+
+  mComposition->removeItem( mComposerPicture );
+  mComposerPicture->setRotation( 0 );
 }
 
 QTEST_MAIN( TestQgsComposerRotation )

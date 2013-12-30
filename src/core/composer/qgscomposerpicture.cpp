@@ -54,7 +54,7 @@ void QgsComposerPicture::paint( QPainter* painter, const QStyleOptionGraphicsIte
 
   drawBackground( painter );
 
-  int newDpi = ( painter->device()->logicalDpiX() + painter->device()->logicalDpiY() ) / 2;
+  //int newDpi = ( painter->device()->logicalDpiX() + painter->device()->logicalDpiY() ) / 2;
 
   if ( mMode != Unknown )
   {
