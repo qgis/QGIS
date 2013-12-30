@@ -1597,7 +1597,7 @@ void QgsLinePatternFillSymbolLayer::toSld( QDomDocument &doc, QDomElement &eleme
   QDomElement graphicElem = doc.createElement( "se:Graphic" );
   graphicFillElem.appendChild( graphicElem );
 
-  QgsSymbolLayerV2Utils::wellKnownMarkerToSld( doc, graphicElem, "horline", QColor(), mColor, mLineWidth, mDistance );
+  QgsSymbolLayerV2Utils::wellKnownMarkerToSld( doc, graphicElem, "horline", QColor(), mColor, Qt::SolidLine, mLineWidth, mDistance );
 
   // <Rotation>
   QString angleFunc;
@@ -1682,6 +1682,7 @@ QgsSymbolLayerV2* QgsLinePatternFillSymbolLayer::createFromSld( QDomElement &ele
   QString name;
   QColor fillColor, lineColor;
   double size, lineWidth;
+  Qt::PenStyle lineStyle;
 
   QDomElement fillElem = element.firstChildElement( "Fill" );
   if ( fillElem.isNull() )
@@ -1695,7 +1696,7 @@ QgsSymbolLayerV2* QgsLinePatternFillSymbolLayer::createFromSld( QDomElement &ele
   if ( graphicElem.isNull() )
     return NULL;
 
-  if ( !QgsSymbolLayerV2Utils::wellKnownMarkerFromSld( graphicElem, name, fillColor, lineColor, lineWidth, size ) )
+  if ( !QgsSymbolLayerV2Utils::wellKnownMarkerFromSld( graphicElem, name, fillColor, lineColor, lineStyle, lineWidth, size ) )
     return NULL;
 
   if ( name != "horline" )

@@ -301,7 +301,7 @@ void QgsEllipseSymbolLayerV2::writeSldMarker( QDomDocument &doc, QDomElement &el
   QDomElement graphicElem = doc.createElement( "se:Graphic" );
   element.appendChild( graphicElem );
 
-  QgsSymbolLayerV2Utils::wellKnownMarkerToSld( doc, graphicElem, mSymbolName, mFillColor, mOutlineColor, mOutlineWidth, mSymbolWidth );
+  QgsSymbolLayerV2Utils::wellKnownMarkerToSld( doc, graphicElem, mSymbolName, mFillColor, mOutlineColor, mOutlineStyle, mOutlineWidth, mSymbolWidth );
 
   // store w/h factor in a <VendorOption>
   double widthHeightFactor = mSymbolWidth / mSymbolHeight;
@@ -356,6 +356,7 @@ QgsSymbolLayerV2* QgsEllipseSymbolLayerV2::createFromSld( QDomElement &element )
   QColor fillColor, borderColor;
   double borderWidth, size;
   double widthHeightFactor = 1.0;
+  Qt::PenStyle borderStyle;
 
   QgsStringMap vendorOptions = QgsSymbolLayerV2Utils::getVendorOptionList( graphicElem );
   for ( QgsStringMap::iterator it = vendorOptions.begin(); it != vendorOptions.end(); ++it )
@@ -369,7 +370,7 @@ QgsSymbolLayerV2* QgsEllipseSymbolLayerV2::createFromSld( QDomElement &element )
     }
   }
 
-  if ( !QgsSymbolLayerV2Utils::wellKnownMarkerFromSld( graphicElem, name, fillColor, borderColor, borderWidth, size ) )
+  if ( !QgsSymbolLayerV2Utils::wellKnownMarkerFromSld( graphicElem, name, fillColor, borderColor, borderStyle, borderWidth, size ) )
     return NULL;
 
   double angle = 0.0;
@@ -386,6 +387,7 @@ QgsSymbolLayerV2* QgsEllipseSymbolLayerV2::createFromSld( QDomElement &element )
   m->setSymbolName( name );
   m->setFillColor( fillColor );
   m->setOutlineColor( borderColor );
+  m->setOutlineStyle( borderStyle );
   m->setOutlineWidth( borderWidth );
   m->setSymbolWidth( size );
   m->setSymbolHeight( size / widthHeightFactor );
