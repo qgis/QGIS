@@ -220,7 +220,7 @@ class TestQgsComposerMap(TestCase):
     def testWorldFileGeneration( self ):
         myRectangle = QgsRectangle(781662.375, 3339523.125, 793062.375, 3345223.125)
         self.mComposerMap.setNewExtent( myRectangle )
-        self.mComposerMap.setRotation( 30.0 )
+        self.mComposerMap.setMapRotation( 30.0 )
 
         self.mComposition.setGenerateWorldFile( True )
         self.mComposition.setWorldFileMap( self.mComposerMap )

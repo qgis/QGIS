@@ -28,12 +28,12 @@
 
 
 QgsComposerPicture::QgsComposerPicture( QgsComposition *composition )
-    : QgsComposerItem( composition ), mMode( Unknown ), mRotationMap( 0 )
+    : QgsComposerItem( composition ), mMode( Unknown ), mPictureRotation( 0 ), mRotationMap( 0 )
 {
   mPictureWidth = rect().width();
 }
 
-QgsComposerPicture::QgsComposerPicture(): QgsComposerItem( 0 ), mMode( Unknown ), mRotationMap( 0 )
+QgsComposerPicture::QgsComposerPicture(): QgsComposerItem( 0 ), mMode( Unknown ), mPictureRotation( 0 ), mRotationMap( 0 )
 {
   mPictureHeight = rect().height();
 }
@@ -76,7 +76,7 @@ void QgsComposerPicture::paint( QPainter* painter, const QStyleOptionGraphicsIte
 
     painter->save();
     painter->translate( rect().width() / 2.0, rect().height() / 2.0 );
-    painter->rotate( mRotation );
+    painter->rotate( mPictureRotation );
     painter->translate( -boundRectWidthMM / 2.0, -boundRectHeightMM / 2.0 );
 
     if ( mMode == SVG )
@@ -215,6 +215,12 @@ void QgsComposerPicture::setSceneRect( const QRectF& rectangle )
 
 void QgsComposerPicture::setRotation( double r )
 {
+  //kept for compatibility for QGIS2.0 api
+  setPictureRotation( r );
+}
+
+void QgsComposerPicture::setPictureRotation( double r )
+{
   //adapt rectangle size
   double width = mPictureWidth;
   double height = mPictureHeight;
@@ -225,7 +231,9 @@ void QgsComposerPicture::setRotation( double r )
   double y = pos().y() + rect().height() / 2.0 - height / 2.0;
   QgsComposerItem::setSceneRect( QRectF( x, y, width, height ) );
 
-  QgsComposerItem::setRotation( r );
+  mPictureRotation = r;
+  update();
+  emit pictureRotationChanged( mPictureRotation );
 }
 
 void QgsComposerPicture::setRotationMap( int composerMapId )
@@ -237,7 +245,7 @@ void QgsComposerPicture::setRotationMap( int composerMapId )
 
   if ( composerMapId == -1 ) //disable rotation from map
   {
-    QObject::disconnect( mRotationMap, SIGNAL( rotationChanged( double ) ), this, SLOT( setRotation( double ) ) );
+    QObject::disconnect( mRotationMap, SIGNAL( mapRotationChanged( double ) ), this, SLOT( setPictureRotation( double ) ) );
     mRotationMap = 0;
   }
 
@@ -248,12 +256,13 @@ void QgsComposerPicture::setRotationMap( int composerMapId )
   }
   if ( mRotationMap )
   {
-    QObject::disconnect( mRotationMap, SIGNAL( rotationChanged( double ) ), this, SLOT( setRotation( double ) ) );
+    QObject::disconnect( mRotationMap, SIGNAL( mapRotationChanged( double ) ), this, SLOT( setPictureRotation( double ) ) );
   }
-  mRotation = map->rotation();
-  QObject::connect( map, SIGNAL( rotationChanged( double ) ), this, SLOT( setRotation( double ) ) );
+  mPictureRotation = map->mapRotation();
+  QObject::connect( map, SIGNAL( mapRotationChanged( double ) ), this, SLOT( setPictureRotation( double ) ) );
   mRotationMap = map;
-  setRotation( map->rotation() );
+  update();
+  emit pictureRotationChanged( mPictureRotation );
 }
 
 QString QgsComposerPicture::pictureFile() const
@@ -271,6 +280,9 @@ bool QgsComposerPicture::writeXML( QDomElement& elem, QDomDocument & doc ) const
   composerPictureElem.setAttribute( "file", QgsProject::instance()->writePath( mSourceFile.fileName() ) );
   composerPictureElem.setAttribute( "pictureWidth", QString::number( mPictureWidth ) );
   composerPictureElem.setAttribute( "pictureHeight", QString::number( mPictureHeight ) );
+
+  //rotation
+  composerPictureElem.setAttribute( "pictureRotation",  QString::number( mPictureRotation ) );
   if ( !mRotationMap )
   {
     composerPictureElem.setAttribute( "mapId", -1 );
@@ -298,14 +310,27 @@ bool QgsComposerPicture::readXML( const QDomElement& itemElem, const QDomDocumen
   QDomNodeList composerItemList = itemElem.elementsByTagName( "ComposerItem" );
   if ( composerItemList.size() > 0 )
   {
-    _readXML( composerItemList.at( 0 ).toElement(), doc );
-  }
+    QDomElement composerItemElem = composerItemList.at( 0 ).toElement();
 
+    if ( composerItemElem.attribute( "rotation", "0" ).toDouble() != 0 )
+    {
+      //in versions prior to 2.1 picture rotation was stored in the rotation attribute
+      mPictureRotation = composerItemElem.attribute( "rotation", "0" ).toDouble();
+    }
+
+    _readXML( composerItemElem, doc );
+  }
 
   mDefaultSvgSize = QSize( 0, 0 );
 
   QString fileName = QgsProject::instance()->readPath( itemElem.attribute( "file" ) );
   setPictureFile( fileName );
+
+  //picture rotation
+  if ( itemElem.attribute( "pictureRotation", "0" ).toDouble() != 0 )
+  {
+    mPictureRotation = itemElem.attribute( "pictureRotation", "0" ).toDouble();
+  }
 
   //rotation map
   int rotationMapId = itemElem.attribute( "mapId", "-1" ).toInt();
@@ -318,10 +343,10 @@ bool QgsComposerPicture::readXML( const QDomElement& itemElem, const QDomDocumen
 
     if ( mRotationMap )
     {
-      QObject::disconnect( mRotationMap, SIGNAL( rotationChanged( double ) ), this, SLOT( setRotation( double ) ) );
+      QObject::disconnect( mRotationMap, SIGNAL( mapRotationChanged( double ) ), this, SLOT( setRotation( double ) ) );
     }
     mRotationMap = mComposition->getComposerMapById( rotationMapId );
-    QObject::connect( mRotationMap, SIGNAL( rotationChanged( double ) ), this, SLOT( setRotation( double ) ) );
+    QObject::connect( mRotationMap, SIGNAL( mapRotationChanged( double ) ), this, SLOT( setRotation( double ) ) );
   }
 
   emit itemChanged();
@@ -338,4 +363,22 @@ int QgsComposerPicture::rotationMap() const
   {
     return mRotationMap->id();
   }
+}
+
+bool QgsComposerPicture::imageSizeConsideringRotation( double& width, double& height ) const
+{
+  //kept for api compatibility with QGIS 2.0 - use mPictureRotation
+  return QgsComposerItem::imageSizeConsideringRotation( width, height, mPictureRotation );
+}
+
+bool QgsComposerPicture::cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height ) const
+{
+  //kept for api compatibility with QGIS 2.0 - use mPictureRotation
+  return QgsComposerItem::cornerPointOnRotatedAndScaledRect( x, y, width, height, mPictureRotation );
+}
+
+void QgsComposerPicture::sizeChangedByRotation( double& width, double& height )
+{
+  //kept for api compatibility with QGIS 2.0 - use mPictureRotation
+  return QgsComposerItem::sizeChangedByRotation( width, height, mPictureRotation );
 }
