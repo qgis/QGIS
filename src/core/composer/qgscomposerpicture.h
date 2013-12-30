@@ -124,6 +124,8 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
     /**Calculates bounding rect for image such that aspect ratio is correct*/
     QRectF boundedImageRect( double deviceWidth, double deviceHeight );
 
+    /**Returns size of current raster or svg picture */
+    QSizeF pictureSize();
 
     QImage mImage;
     QSvgRenderer mSVG;

@@ -408,6 +408,14 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
      */
     bool imageSizeConsideringRotation( double& width, double& height ) const;
 
+    /**Calculates the largest scaled version of originalRect which fits within boundsRect, when it is rotated by
+     * a specified amount
+        @param originalRect QRectF to be rotated and scaled
+        @param boundsRect QRectF specifying the bounds which the rotated and scaled rectangle must fit within
+        @param rotation the rotation in degrees to be applied to the rectangle
+    */
+    QRectF largestRotatedRectWithinBounds( QRectF originalRect, QRectF boundsRect, double rotation ) const;
+
     /**Calculates corner point after rotation and scaling*/
     bool cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height, double rotation ) const;
     /**Calculates corner point after rotation and scaling

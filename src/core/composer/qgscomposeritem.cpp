@@ -42,6 +42,10 @@
 
 #define FONT_WORKAROUND_SCALE 10 //scale factor for upscaling fontsize and downscaling painter
 
+#ifndef M_DEG2RAD
+#define M_DEG2RAD 0.0174532925
+#endif
+
 QgsComposerItem::QgsComposerItem( QgsComposition* composition, bool manageZValue )
     : QObject( 0 )
     , QGraphicsRectItem( 0 )
@@ -733,6 +737,77 @@ bool QgsComposerItem::imageSizeConsideringRotation( double& width, double& heigh
   return imageSizeConsideringRotation( width, height, mItemRotation );
 }
 
+QRectF QgsComposerItem::largestRotatedRectWithinBounds( QRectF originalRect, QRectF boundsRect, double rotation ) const
+{
+  double originalWidth = originalRect.width();
+  double originalHeight = originalRect.height();
+  double boundsWidth = boundsRect.width();
+  double boundsHeight = boundsRect.height();
+  double ratioBoundsRect = boundsWidth / boundsHeight;
+
+  //shortcut for some rotation values
+  if ( rotation == 0 || rotation == 90 || rotation == 180 || rotation == 270 )
+  {
+    double originalRatio = originalWidth / originalHeight;
+    double rectScale = originalRatio > ratioBoundsRect ? boundsWidth / originalWidth : boundsHeight / originalHeight;
+    double rectScaledWidth = rectScale * originalWidth;
+    double rectScaledHeight = rectScale * originalHeight;
+
+    if ( rotation == 0 || rotation == 180 )
+    {
+      return QRectF(( boundsWidth - rectScaledWidth ) / 2.0, ( boundsHeight - rectScaledHeight ) / 2.0, rectScaledWidth, rectScaledHeight );
+    }
+    else if ( rotation == 0 || rotation == 180 )
+    {
+      return QRectF(( boundsWidth - rectScaledHeight ) / 2.0, ( boundsHeight - rectScaledWidth ) / 2.0, rectScaledHeight, rectScaledWidth );
+    }
+  }
+
+  //convert angle to radians and flip
+  double angleRad = -rotation * M_DEG2RAD;
+  double cosAngle = cos( angleRad );
+  double sinAngle = sin( angleRad );
+
+  //calculate size of bounds of rotated rectangle
+  double widthBoundsRotatedRect = originalWidth * fabs( cosAngle ) + originalHeight * fabs( sinAngle );
+  double heightBoundsRotatedRect = originalHeight * fabs( cosAngle ) + originalWidth * fabs( sinAngle );
+
+  //compare ratio of rotated rect with bounds rect and calculate scaling of rotated
+  //rect to fit within bounds
+  double ratioBoundsRotatedRect = widthBoundsRotatedRect / heightBoundsRotatedRect;
+  double rectScale = ratioBoundsRotatedRect > ratioBoundsRect ? boundsWidth / widthBoundsRotatedRect : boundsHeight / heightBoundsRotatedRect;
+  double rectScaledWidth = rectScale * originalWidth;
+  double rectScaledHeight = rectScale * originalHeight;
+
+  //now calculate offset so that rotated rectangle is centered within bounds
+  //first calculate min x and y coordinates
+  double currentCornerX = 0;
+  double minX = 0;
+  currentCornerX += rectScaledWidth * cosAngle;
+  minX = minX < currentCornerX ? minX : currentCornerX;
+  currentCornerX += rectScaledHeight * sinAngle;
+  minX = minX < currentCornerX ? minX : currentCornerX;
+  currentCornerX -= rectScaledWidth * cosAngle;
+  minX = minX < currentCornerX ? minX : currentCornerX;
+
+  double currentCornerY = 0;
+  double minY = 0;
+  currentCornerY -= rectScaledWidth * sinAngle;
+  minY = minY < currentCornerY ? minY : currentCornerY;
+  currentCornerY += rectScaledHeight * cosAngle;
+  minY = minY < currentCornerY ? minY : currentCornerY;
+  currentCornerY += rectScaledWidth * sinAngle;
+  minY = minY < currentCornerY ? minY : currentCornerY;
+
+  //now calculate offset position of rotated rectangle
+  double offsetX = ratioBoundsRotatedRect > ratioBoundsRect ? 0 : ( boundsWidth - rectScale * widthBoundsRotatedRect ) / 2.0;
+  offsetX += fabs( minX );
+  double offsetY = ratioBoundsRotatedRect > ratioBoundsRect ? ( boundsHeight - rectScale * heightBoundsRotatedRect ) / 2.0 : 0;
+  offsetY += fabs( minY );
+
+  return QRectF( offsetX, offsetY, rectScaledWidth, rectScaledHeight );
+}
+
 bool QgsComposerItem::imageSizeConsideringRotation( double& width, double& height, double rotation ) const
 {
   if ( qAbs( rotation ) <= 0.0 ) //width and height stays the same if there is no rotation
@@ -759,19 +834,19 @@ bool QgsComposerItem::imageSizeConsideringRotation( double& width, double& heigh
   double midX = width / 2.0;
   double midY = height / 2.0;
 
-  if ( !cornerPointOnRotatedAndScaledRect( x1, y1, width, height ) )
+  if ( !cornerPointOnRotatedAndScaledRect( x1, y1, width, height, rotation ) )
   {
     return false;
   }
-  if ( !cornerPointOnRotatedAndScaledRect( x2, y2, width, height ) )
+  if ( !cornerPointOnRotatedAndScaledRect( x2, y2, width, height, rotation ) )
   {
     return false;
   }
-  if ( !cornerPointOnRotatedAndScaledRect( x3, y3, width, height ) )
+  if ( !cornerPointOnRotatedAndScaledRect( x3, y3, width, height, rotation ) )
   {
     return false;
   }
-  if ( !cornerPointOnRotatedAndScaledRect( x4, y4, width, height ) )
+  if ( !cornerPointOnRotatedAndScaledRect( x4, y4, width, height, rotation ) )
   {
     return false;
   }

@@ -38,7 +38,6 @@ QgsComposerPicture::QgsComposerPicture(): QgsComposerItem( 0 ), mMode( Unknown )
   mPictureHeight = rect().height();
 }
 
-
 QgsComposerPicture::~QgsComposerPicture()
 {
 
@@ -59,20 +58,8 @@ void QgsComposerPicture::paint( QPainter* painter, const QStyleOptionGraphicsIte
 
   if ( mMode != Unknown )
   {
-    double rectPixelWidth = /*rect().width()*/mPictureWidth * newDpi / 25.4;
-    double rectPixelHeight = /*rect().height()*/ mPictureHeight * newDpi / 25.4;
-    QRectF boundRect;
-    if ( mMode == SVG )
-    {
-      boundRect = boundedSVGRect( rectPixelWidth, rectPixelHeight );
-    }
-    else if ( mMode == RASTER )
-    {
-      boundRect = boundedImageRect( rectPixelWidth, rectPixelHeight );
-    }
-
-    double boundRectWidthMM = boundRect.width() / newDpi * 25.4;
-    double boundRectHeightMM = boundRect.height() / newDpi * 25.4;
+    double boundRectWidthMM = mPictureWidth;
+    double boundRectHeightMM = mPictureHeight;
 
     painter->save();
     painter->translate( rect().width() / 2.0, rect().height() / 2.0 );
@@ -180,6 +167,22 @@ QRectF QgsComposerPicture::boundedSVGRect( double deviceWidth, double deviceHeig
   }
 }
 
+QSizeF QgsComposerPicture::pictureSize()
+{
+  if ( mMode == SVG )
+  {
+    return mDefaultSvgSize;
+  }
+  else if ( mMode == RASTER )
+  {
+    return QSizeF( mImage.width(), mImage.height() );
+  }
+  else
+  {
+    return QSizeF( 0, 0 );
+  }
+}
+
 #if 0
 QRectF QgsComposerPicture::boundedSVGRect( double deviceWidth, double deviceHeight )
 {
@@ -203,12 +206,11 @@ void QgsComposerPicture::setSceneRect( const QRectF& rectangle )
 {
   QgsComposerItem::setSceneRect( rectangle );
 
-  //consider to change size of the shape if the rectangle changes width and/or height
-  double newPictureWidth = rectangle.width();
-  double newPictureHeight = rectangle.height();
-  imageSizeConsideringRotation( newPictureWidth, newPictureHeight );
-  mPictureWidth = newPictureWidth;
-  mPictureHeight = newPictureHeight;
+  //find largest scaling of picture with this rotation which fits in item
+  QSizeF currentPictureSize = pictureSize();
+  QRectF rotatedImageRect = largestRotatedRectWithinBounds( QRectF( 0, 0, currentPictureSize.width(), currentPictureSize.height() ), rectangle, mPictureRotation );
+  mPictureWidth = rotatedImageRect.width();
+  mPictureHeight = rotatedImageRect.height();
 
   emit itemChanged();
 }
@@ -221,17 +223,14 @@ void QgsComposerPicture::setRotation( double r )
 
 void QgsComposerPicture::setPictureRotation( double r )
 {
-  //adapt rectangle size
-  double width = mPictureWidth;
-  double height = mPictureHeight;
-  sizeChangedByRotation( width, height );
-
-  //adapt scene rect to have the same center and the new width / height
-  double x = pos().x() + rect().width() / 2.0 - width / 2.0;
-  double y = pos().y() + rect().height() / 2.0 - height / 2.0;
-  QgsComposerItem::setSceneRect( QRectF( x, y, width, height ) );
-
   mPictureRotation = r;
+
+  //find largest scaling of picture with this rotation which fits in item
+  QSizeF currentPictureSize = pictureSize();
+  QRectF rotatedImageRect = largestRotatedRectWithinBounds( QRectF( 0, 0, currentPictureSize.width(), currentPictureSize.height() ), rect(), mPictureRotation );
+  mPictureWidth = rotatedImageRect.width();
+  mPictureHeight = rotatedImageRect.height();
+
   update();
   emit pictureRotationChanged( mPictureRotation );
 }

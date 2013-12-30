@@ -221,7 +221,7 @@ void TestQgsComposerRotation::pictureRotation()
   //test map rotation
   mComposition->addComposerPicture( mComposerPicture );
   mComposerPicture->setPictureRotation( 45 );
-  mComposerPicture->setSceneRect( QRectF( 70, 70, 100, 100 ) );
+  //mComposerPicture->setSceneRect( QRectF( 70, 70, 100, 100 ) );
 
   QgsCompositionChecker checker( "composerrotation_maprotation", mComposition );
   QVERIFY( checker.testComposition( mReport ) );
