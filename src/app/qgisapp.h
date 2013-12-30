@@ -577,7 +577,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void loadGDALSublayers( QString uri, QStringList list );
 
     /**Deletes the selected attributes for the currently selected vector layer*/
-    void deleteSelected( QgsMapLayer *layer = 0, QWidget* parent = 0 );
+    void deleteSelected( QgsMapLayer *layer = 0, QWidget* parent = 0, bool promptConfirmation = false );
 
     //! project was written
     void writeProject( QDomDocument & );
@@ -686,7 +686,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Slot to handle user center input;
     void userCenter();
     //! Remove a layer from the map and legend
-    void removeLayer();
+    void removeLayer( bool promptConfirmation = true );
     /** Duplicate map layer(s) in legend
      * @note added in 1.9 */
     void duplicateLayers( const QList<QgsMapLayer *> lyrList = QList<QgsMapLayer *>() );
@@ -1160,6 +1160,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void osmExportDialog();
 
     void clipboardChanged();
+
+    //! catch MapCanvas keyPress event so we can check if selected feature collection must be deleted
+    void mapCanvas_keyPressed( QKeyEvent *e );
 
   signals:
     /** emitted when a key is pressed and we want non widget sublasses to be able

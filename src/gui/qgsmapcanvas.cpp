@@ -802,10 +802,11 @@ void QgsMapCanvas::keyPressEvent( QKeyEvent * e )
     e->ignore();
   }
 
-  emit keyPressed( e );
-
   if ( mCanvasProperties->mouseButtonDown || mCanvasProperties->panSelectorDown )
+  {
+    emit keyPressed( e );
     return;
+  }
 
   QPainter paint;
   QPen     pen( Qt::gray );
@@ -886,12 +887,14 @@ void QgsMapCanvas::keyPressEvent( QKeyEvent * e )
         {
           mMapTool->keyPressEvent( e );
         }
-        e->ignore();
+        else e->ignore();
 
         QgsDebugMsg( "Ignoring key: " + QString::number( e->key() ) );
-
     }
   }
+
+  emit keyPressed( e );
+
 } //keyPressEvent()
 
 void QgsMapCanvas::keyReleaseEvent( QKeyEvent * e )
@@ -921,8 +924,7 @@ void QgsMapCanvas::keyReleaseEvent( QKeyEvent * e )
       {
         mMapTool->keyReleaseEvent( e );
       }
-
-      e->ignore();
+      else e->ignore();
 
       QgsDebugMsg( "Ignoring key release: " + QString::number( e->key() ) );
   }

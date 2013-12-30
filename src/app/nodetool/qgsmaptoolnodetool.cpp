@@ -717,6 +717,30 @@ void QgsMapToolNodeTool::keyPressEvent( QKeyEvent* e )
   if ( e->key() == Qt::Key_Control )
   {
     mCtrl = true;
+    return;
+  }
+
+  if ( mSelectedFeature && ( e->key() == Qt::Key_Backspace || e->key() == Qt::Key_Delete ) )
+  {
+    int firstSelectedIndex = firstSelectedVertex();
+    if ( firstSelectedIndex == -1) return;
+
+    mSelectedFeature->deleteSelectedVertexes();
+    safeSelectVertex( firstSelectedIndex );
+    mCanvas->refresh();
+
+    // Override default shortcut management in MapCanvas
+    e->ignore();
+  }
+  else
+  if ( mSelectedFeature && ( e->key() == Qt::Key_Less || e->key() == Qt::Key_Greater ) )
+  {
+    int firstSelectedIndex = firstSelectedVertex();
+    if ( firstSelectedIndex == -1) return;
+
+    mSelectedFeature->deselectAllVertexes();
+    safeSelectVertex( firstSelectedIndex + ( (e->key() == Qt::Key_Less) ? -1 : +1 ) );
+    mCanvas->refresh();
   }
 }
 
@@ -726,12 +750,6 @@ void QgsMapToolNodeTool::keyReleaseEvent( QKeyEvent* e )
   {
     mCtrl = false;
     return;
-  }
-
-  if ( mSelectedFeature && e->key() == Qt::Key_Delete )
-  {
-    mSelectedFeature->deleteSelectedVertexes();
-    mCanvas->refresh();
   }
 }
 
@@ -747,4 +765,38 @@ QgsRubberBand* QgsMapToolNodeTool::createRubberBandMarker( QgsPoint center, QgsV
   QgsPoint pom = toMapCoordinates( vlayer, center );
   marker->addPoint( pom );
   return marker;
+}
+
+int QgsMapToolNodeTool::firstSelectedVertex( )
+{
+  if ( mSelectedFeature )
+  {
+    QList<QgsVertexEntry*> &vertexMap = mSelectedFeature->vertexMap();
+    int vertexNr = 0;
+
+    foreach ( QgsVertexEntry *entry, vertexMap )
+    {
+      if ( entry->isSelected() )
+      {
+        return vertexNr;
+      }
+      vertexNr++;
+    }
+  }
+  return -1;
+}
+
+int QgsMapToolNodeTool::safeSelectVertex( int vertexNr )
+{
+  if ( mSelectedFeature )
+  {
+     QList<QgsVertexEntry*> &vertexMap = mSelectedFeature->vertexMap();
+
+     if ( vertexNr >= vertexMap.size() ) vertexNr -= vertexMap.size();
+     if ( vertexNr < 0 ) vertexNr = vertexMap.size() - 1 + vertexNr;
+
+     mSelectedFeature->selectVertex( vertexNr );
+     return vertexNr;
+  }
+  return -1;
 }
