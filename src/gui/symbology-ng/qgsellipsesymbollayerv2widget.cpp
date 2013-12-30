@@ -57,6 +57,7 @@ void QgsEllipseSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
   mWidthSpinBox->setValue( mLayer->symbolWidth() );
   mHeightSpinBox->setValue( mLayer->symbolHeight() );
   mRotationSpinBox->setValue( mLayer->angle() );
+  mOutlineStyleComboBox->setPenStyle( mLayer->outlineStyle() );
   mOutlineWidthSpinBox->setValue( mLayer->outlineWidth() );
 
   btnChangeColorBorder->setColor( mLayer->outlineColor() );
@@ -128,6 +129,15 @@ void QgsEllipseSymbolLayerV2Widget::on_mRotationSpinBox_valueChanged( double d )
   if ( mLayer )
   {
     mLayer->setAngle( d );
+    emit changed();
+  }
+}
+
+void QgsEllipseSymbolLayerV2Widget::on_mOutlineStyleComboBox_currentIndexChanged( int index )
+{
+  if ( mLayer )
+  {
+    mLayer->setOutlineStyle( mOutlineStyleComboBox->penStyle() );
     emit changed();
   }
 }
@@ -278,5 +288,3 @@ void QgsEllipseSymbolLayerV2Widget::setOffset()
   mLayer->setOffset( QPointF( spinOffsetX->value(), spinOffsetY->value() ) );
   emit changed();
 }
-
-
