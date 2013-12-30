@@ -504,7 +504,7 @@ void QgsComposerItemWidget::on_mItemRotationSpinBox_valueChanged( double val )
   if ( mItem )
   {
     mItem->beginCommand( tr( "Item rotation changed" ), QgsComposerMergeCommand::ItemRotation );
-    mItem->setItemRotation( val );
+    mItem->setItemRotation( val, true );
     mItem->update();
     mItem->endCommand();
   }

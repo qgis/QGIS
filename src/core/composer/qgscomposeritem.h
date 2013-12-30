@@ -320,9 +320,12 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     virtual void setRotation( double r );
 
     /**Sets the item rotation
+      @param r item rotation in degrees
+      @param adjustPosition set to true if item should be shifted so that rotation occurs
+       around item center. If false, rotation occurs around item origin
       @note this method was added in version 2.1
     */
-    virtual void setItemRotation( double r );
+    virtual void setItemRotation( double r, bool adjustPosition = false );
 
     void repaint();
 
