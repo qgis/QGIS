@@ -72,33 +72,13 @@
           <item row="2" column="0" colspan="2">
            <layout class="QGridLayout" name="gridLayout">
             <item row="1" column="0">
-             <widget class="QLabel" name="label">
-              <property name="text">
-               <string>Rotation</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="1">
-             <widget class="QSpinBox" name="mRotationSpinBox">
-              <property name="suffix">
-               <string> °</string>
-              </property>
-              <property name="prefix">
-               <string comment="Rotation" extracomment="Rotation"/>
-              </property>
-              <property name="maximum">
-               <number>359</number>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="0">
              <widget class="QLabel" name="label_3">
               <property name="text">
                <string>Corner radius</string>
               </property>
              </widget>
             </item>
-            <item row="2" column="1">
+            <item row="1" column="1">
              <widget class="QDoubleSpinBox" name="mCornerRadiusSpinBox">
               <property name="suffix">
                <string> mm</string>
