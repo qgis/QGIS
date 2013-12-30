@@ -133,11 +133,6 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
     /**Replaces replace '$CURRENT_DATE<(FORMAT)>' with the current date (e.g. $CURRENT_DATE(d 'June' yyyy)*/
     void replaceDateText( QString& text ) const;
 
-    /**Width of the text box. This is different to rectangle().width() in case there is rotation*/
-    double mTextBoxWidth;
-    /**Height of the text box. This is different to rectangle().height() in case there is rotation*/
-    double mTextBoxHeight;
-
     QgsFeature* mExpressionFeature;
     QgsVectorLayer* mExpressionLayer;
     QMap<QString, QVariant> mSubstitutions;
