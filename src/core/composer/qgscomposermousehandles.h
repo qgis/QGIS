@@ -97,7 +97,7 @@ class CORE_EXPORT QgsComposerMouseHandles: public QObject, public QGraphicsRectI
 
     /**Redraws handles when selected item rotation changes*/
     void selectedItemRotationChanged();
-    
+
   private:
 
     QgsComposition* mComposition; //reference to composition
@@ -131,8 +131,8 @@ class CORE_EXPORT QgsComposerMouseHandles: public QObject, public QGraphicsRectI
 
     /**Returns the mouse handle bounds of current selection*/
     QRectF selectionBounds() const;
-    
-    /**Returns true if all selected items have same rotation, and if so, updates passed rotation variable*/    
+
+    /**Returns true if all selected items have same rotation, and if so, updates passed rotation variable*/
     bool selectionRotation( double & rotation ) const;
 
     /**Redraws or hides the handles based on the current selection*/

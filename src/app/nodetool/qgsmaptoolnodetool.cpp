@@ -723,7 +723,7 @@ void QgsMapToolNodeTool::keyPressEvent( QKeyEvent* e )
   if ( mSelectedFeature && ( e->key() == Qt::Key_Backspace || e->key() == Qt::Key_Delete ) )
   {
     int firstSelectedIndex = firstSelectedVertex();
-    if ( firstSelectedIndex == -1) return;
+    if ( firstSelectedIndex == -1 ) return;
 
     mSelectedFeature->deleteSelectedVertexes();
     safeSelectVertex( firstSelectedIndex );
@@ -733,15 +733,15 @@ void QgsMapToolNodeTool::keyPressEvent( QKeyEvent* e )
     e->ignore();
   }
   else
-  if ( mSelectedFeature && ( e->key() == Qt::Key_Less || e->key() == Qt::Key_Greater ) )
-  {
-    int firstSelectedIndex = firstSelectedVertex();
-    if ( firstSelectedIndex == -1) return;
+    if ( mSelectedFeature && ( e->key() == Qt::Key_Less || e->key() == Qt::Key_Greater ) )
+    {
+      int firstSelectedIndex = firstSelectedVertex();
+      if ( firstSelectedIndex == -1 ) return;
 
-    mSelectedFeature->deselectAllVertexes();
-    safeSelectVertex( firstSelectedIndex + ( (e->key() == Qt::Key_Less) ? -1 : +1 ) );
-    mCanvas->refresh();
-  }
+      mSelectedFeature->deselectAllVertexes();
+      safeSelectVertex( firstSelectedIndex + (( e->key() == Qt::Key_Less ) ? -1 : + 1 ) );
+      mCanvas->refresh();
+    }
 }
 
 void QgsMapToolNodeTool::keyReleaseEvent( QKeyEvent* e )
@@ -790,13 +790,13 @@ int QgsMapToolNodeTool::safeSelectVertex( int vertexNr )
 {
   if ( mSelectedFeature )
   {
-     QList<QgsVertexEntry*> &vertexMap = mSelectedFeature->vertexMap();
+    QList<QgsVertexEntry*> &vertexMap = mSelectedFeature->vertexMap();
 
-     if ( vertexNr >= vertexMap.size() ) vertexNr -= vertexMap.size();
-     if ( vertexNr < 0 ) vertexNr = vertexMap.size() - 1 + vertexNr;
+    if ( vertexNr >= vertexMap.size() ) vertexNr -= vertexMap.size();
+    if ( vertexNr < 0 ) vertexNr = vertexMap.size() - 1 + vertexNr;
 
-     mSelectedFeature->selectVertex( vertexNr );
-     return vertexNr;
+    mSelectedFeature->selectVertex( vertexNr );
+    return vertexNr;
   }
   return -1;
 }

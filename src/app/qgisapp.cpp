@@ -1904,7 +1904,7 @@ void QgisApp::setupConnections()
            mMapCanvas, SLOT( setRenderFlag( bool ) ) );
 
   // connect MapCanvas keyPress event so we can check if selected feature collection must be deleted
-  connect( mMapCanvas, SIGNAL( keyPressed( QKeyEvent * ) ), 
+  connect( mMapCanvas, SIGNAL( keyPressed( QKeyEvent * ) ),
            this, SLOT( mapCanvas_keyPressed( QKeyEvent * ) ) );
 
   // connect renderer
@@ -9097,7 +9097,7 @@ void QgisApp::keyPressEvent( QKeyEvent * e )
 void QgisApp::mapCanvas_keyPressed( QKeyEvent *e )
 {
   // Delete selected features when it is possible and KeyEvent was not managed by current MapTool
-  if ( ( e->key() == Qt::Key_Backspace || e->key() == Qt::Key_Delete ) && e->isAccepted() )
+  if (( e->key() == Qt::Key_Backspace || e->key() == Qt::Key_Delete ) && e->isAccepted() )
   {
     deleteSelected();
   }

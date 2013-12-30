@@ -226,7 +226,7 @@ void QgsAttributeTableDialog::keyPressEvent( QKeyEvent* event )
 {
   QDialog::keyPressEvent( event );
 
-  if ( ( event->key() == Qt::Key_Backspace || event->key() == Qt::Key_Delete ) && mDeleteSelectedButton->isEnabled() )
+  if (( event->key() == Qt::Key_Backspace || event->key() == Qt::Key_Delete ) && mDeleteSelectedButton->isEnabled() )
   {
     QgisApp::instance()->deleteSelected( mLayer, this );
   }

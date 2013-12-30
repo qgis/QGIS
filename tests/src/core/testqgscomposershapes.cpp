@@ -40,7 +40,7 @@ class TestQgsComposerShapes: public QObject
   private:
     QgsComposition* mComposition;
     QgsComposerShape* mComposerShape;
-    QString mReport;    
+    QString mReport;
 };
 
 void TestQgsComposerShapes::initTestCase()
@@ -54,14 +54,14 @@ void TestQgsComposerShapes::initTestCase()
   mComposerShape = new QgsComposerShape( 20, 20, 150, 100, mComposition );
   mComposerShape->setBackgroundColor( QColor::fromRgb( 255, 150, 0 ) );
   mComposition->addComposerShape( mComposerShape );
-  
-  mReport = "<h1>Composer Shape Tests</h1>\n";  
+
+  mReport = "<h1>Composer Shape Tests</h1>\n";
 }
 
 void TestQgsComposerShapes::cleanupTestCase()
 {
   delete mComposition;
-  
+
   QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
@@ -69,7 +69,7 @@ void TestQgsComposerShapes::cleanupTestCase()
     QTextStream myQTextStream( &myFile );
     myQTextStream << mReport;
     myFile.close();
-  }   
+  }
 }
 
 void TestQgsComposerShapes::init()

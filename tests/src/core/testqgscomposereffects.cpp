@@ -69,7 +69,7 @@ void TestQgsComposerEffects::initTestCase()
 void TestQgsComposerEffects::cleanupTestCase()
 {
   delete mComposition;
-  
+
   QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
@@ -77,7 +77,7 @@ void TestQgsComposerEffects::cleanupTestCase()
     QTextStream myQTextStream( &myFile );
     myQTextStream << mReport;
     myFile.close();
-  }     
+  }
 }
 
 void TestQgsComposerEffects::init()
@@ -95,7 +95,7 @@ void TestQgsComposerEffects::blend_modes()
   mComposerRect2->setBlendMode( QPainter::CompositionMode_Multiply );
 
   QgsCompositionChecker checker( "composereffects_blend", mComposition );
-  QVERIFY( checker.testComposition( mReport) );
+  QVERIFY( checker.testComposition( mReport ) );
   // reset blending
   mComposerRect2->setBlendMode( QPainter::CompositionMode_SourceOver );
 }
