@@ -122,11 +122,9 @@ class QgsSymbolLayerV2Utils
     static bool wellKnownMarkerFromSld( QDomElement &element,
                                         QString &name, QColor &color, QColor &borderColor,
                                         double &borderWidth, double &size ) /Deprecated/ ;
-    /** TODO: Enable to override deprecated wellKnownMarkerFromSld function
     static bool wellKnownMarkerFromSld( QDomElement &element,
                                         QString &name, QColor &color, QColor &borderColor, Qt::PenStyle &borderStyle,
-                                        double &borderWidth, double &size );
-     */
+                                        double &borderWidth, double &size ) /PyName=wellKnownMarkerFromSld2/ ;
 
     static void externalMarkerToSld( QDomDocument &doc, QDomElement &element,
                                      QString path, QString format, int *markIndex = 0,
