@@ -320,18 +320,11 @@ class ParametersPanel(QtGui.QWidget):
         elif datatype == ParameterTableField.DATA_TYPE_NUMBER:
             fieldTypes = [QtCore.QVariant.Int, QtCore.QVariant.Double]
 
-        fieldNames = []
-        fields = layer.pendingFields()
-        if len(fieldTypes) == 0:
-            for field in fields:
-                if not field.name() in fieldNames:
-                    fieldNames.append(unicode(field.name()))
-        else:
-            for field in fields:
-                if field.type() in fieldTypes and not field.name() \
-                    in fieldNames:
-                    fieldNames.append(unicode(field.name()))
-        return sorted(fieldNames, cmp=locale.strcoll)
+        fieldNames = set()
+        for field in layer.pendingFields():
+            if not fieldTypes or field.type() in fieldTypes:
+                fieldNames.add(unicode(field.name()))
+        return sorted(list(fieldNames), cmp=locale.strcoll)
 
     def somethingDependsOnThisParameter(self, parent):
         for param in self.alg.parameters:
