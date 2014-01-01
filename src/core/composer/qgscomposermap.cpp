@@ -202,7 +202,13 @@ void QgsComposerMap::draw( QPainter *painter, const QgsRectangle& extent, const 
   {
     theRendererContext->setDrawEditingInformation( false );
     theRendererContext->setRenderingStopped( false );
-    theRendererContext->setRenderingPrintComposition( true );
+
+    if ( mComposition->plotStyle() == QgsComposition::Print ||
+         mComposition->plotStyle() == QgsComposition::Postscript )
+    {
+      //if outputing composer, disable optimisations like layer simplification
+      theRendererContext->setRenderingPrintComposition( true );
+    }
 
     // force vector output (no caching of marker images etc.)
     theRendererContext->setForceVectorOutput( true );
