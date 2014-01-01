@@ -336,14 +336,8 @@ class ParametersPanel(QtGui.QWidget):
     def setTableContent(self):
         params = self.alg.parameters
         outputs = self.alg.outputs
-        numParams = 0
-        for param in params:
-            if not param.hidden:
-                numParams += 1
-        numOutputs = 0
-        for output in outputs:
-            if not output.hidden:
-                numOutputs += 1
+        numParams = count(p for p in params if not p.hidden)
+        numParams = count(o for o in outputs if not o.hidden)
         self.tableWidget.setRowCount(numParams + numOutputs)
 
         i = 0
