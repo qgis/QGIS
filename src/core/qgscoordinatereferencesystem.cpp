@@ -42,6 +42,7 @@
 #include <ogr_srs_api.h>
 #include <cpl_error.h>
 #include <cpl_conv.h>
+#include <cpl_csv.h>
 
 CUSTOM_CRS_VALIDATION QgsCoordinateReferenceSystem::mCustomSrsValidation = NULL;
 
@@ -195,8 +196,8 @@ void QgsCoordinateReferenceSystem::setupESRIWktFix( )
   {
     CPLSetConfigOption( "GDAL_FIX_ESRI_WKT", configNew );
     if ( strcmp( configNew, CPLGetConfigOption( "GDAL_FIX_ESRI_WKT", "" ) ) != 0 )
-      QgsLogger::warning( QString( "GDAL_FIX_ESRI_WKT could not be set to %1 : %2"
-                                 ).arg( configNew ).arg( CPLGetConfigOption( "GDAL_FIX_ESRI_WKT", "" ) ) ) ;
+      QgsLogger::warning( QString( "GDAL_FIX_ESRI_WKT could not be set to %1 : %2" )
+                          .arg( configNew ).arg( CPLGetConfigOption( "GDAL_FIX_ESRI_WKT", "" ) ) ) ;
     QgsDebugMsg( QString( "set GDAL_FIX_ESRI_WKT : %1" ).arg( configNew ) );
   }
   else
@@ -1945,81 +1946,161 @@ int QgsCoordinateReferenceSystem::syncDb()
 
 bool QgsCoordinateReferenceSystem::syncDatumTransform( const QString& dbPath )
 {
-  QString filename = CPLFindFile( "gdal", "datum_shift.csv" );
-
-  QFile f( filename );
-  if ( !f.open( QIODevice::ReadOnly ) )
+  const char *filename = CSVFilename( "datum_shift.csv" );
+  FILE *fp = VSIFOpen( filename, "rb" );
+  if ( !fp )
   {
     return false;
   }
 
-  sqlite3* db;
+  char **fieldnames = CSVReadParseLine( fp );
+
+  // "SEQ_KEY","COORD_OP_CODE","SOURCE_CRS_CODE","TARGET_CRS_CODE","REMARKS","COORD_OP_SCOPE","AREA_OF_USE_CODE","AREA_SOUTH_BOUND_LAT","AREA_NORTH_BOUND_LAT","AREA_WEST_BOUND_LON","AREA_EAST_BOUND_LON","SHOW_OPERATION","DEPRECATED","COORD_OP_METHOD_CODE","DX","DY","DZ","RX","RY","RZ","DS","PREFERRED"
+
+  struct
+  {
+    const char *src;
+    const char *dst;
+    int idx;
+  } map[] =
+  {
+    // { "SEQ_KEY", "", -1 },
+    { "SOURCE_CRS_CODE", "source_crs_code", -1 },
+    { "TARGET_CRS_CODE", "target_crs_code", -1 },
+    { "REMARKS", "remarks", -1 },
+    { "COORD_OP_SCOPE", "scope", -1 },
+    { "AREA_OF_USE_CODE", "area_of_use_code", -1 },
+    // { "AREA_SOUTH_BOUND_LAT", "", -1 },
+    // { "AREA_NORTH_BOUND_LAT", "", -1 },
+    // { "AREA_WEST_BOUND_LON", "", -1 },
+    // { "AREA_EAST_BOUND_LON", "", -1 },
+    // { "SHOW_OPERATION", "", -1 },
+    { "DEPRECATED", "deprecated", -1 },
+    { "COORD_OP_METHOD_CODE", "coord_op_method_code", -1 },
+    { "DX", "p1", -1 },
+    { "DY", "p2", -1 },
+    { "DZ", "p3", -1 },
+    { "RX", "p4", -1 },
+    { "RY", "p5", -1 },
+    { "RZ", "p6", -1 },
+    { "DS", "p7", -1 },
+    { "PREFERRED", "preferred", -1 },
+    { "COORD_OP_CODE", "coord_op_code", -1 },
+  };
+
+  QString update = "UPDATE tbl_datum_transform SET ";
+  QString insert, values;
+
+  int n = CSLCount( fieldnames );
+
+  int idxid, idxrx, idxry, idxrz;
+  for ( unsigned int i = 0; i < sizeof( map ) / sizeof( *map ); i++ )
+  {
+    bool last = i == sizeof( map ) / sizeof( *map ) - 1;
+
+    map[i].idx = CSLFindString( fieldnames, map[i].src );
+    if ( map[i].idx < 0 )
+    {
+      qWarning( "field %s not found", map[i].src );
+      CSLDestroy( fieldnames );
+      fclose( fp );
+      return false;
+    }
+
+    if ( strcmp( map[i].src, "COORD_OP_CODE" ) == 0 )
+      idxid = i;
+    if ( strcmp( map[i].src, "RX" ) == 0 )
+      idxrx = i;
+    if ( strcmp( map[i].src, "RY" ) == 0 )
+      idxry = i;
+    if ( strcmp( map[i].src, "RZ" ) == 0 )
+      idxrz = i;
+
+    if ( i > 0 )
+    {
+      insert += ",";
+      values += ",";
+
+      if ( last )
+      {
+        update += " WHERE ";
+      }
+      else
+      {
+        update += ",";
+      }
+    }
+
+    update += QString( "%1=%%2" ).arg( map[i].dst ).arg( i + 1 );
+
+    insert += map[i].dst;
+    values += QString( "%%1" ).arg( i + 1 );
+
+    qWarning( "%d: src=%s dst=%s idx=%d", i, map[i].src, map[i].dst, map[i].idx );
+  }
+
+  insert = "INSERT INTO tbl_datum_transform(" + insert + ") VALUES (" + values + ")";
+
+  QgsDebugMsg( QString( "insert:%1" ).arg( insert ) );
+  QgsDebugMsg( QString( "update:%1" ).arg( update ) );
+
+  CSLDestroy( fieldnames );
+
+  sqlite3 *db;
   int openResult = sqlite3_open( dbPath.toUtf8().constData(), &db );
   if ( openResult != SQLITE_OK )
   {
+    fclose( fp );
     return false;
   }
 
   if ( sqlite3_exec( db, "BEGIN TRANSACTION", 0, 0, 0 ) != SQLITE_OK )
   {
     qCritical( "Could not begin transaction: %s [%s]\n", QgsApplication::srsDbFilePath().toLocal8Bit().constData(), sqlite3_errmsg( db ) );
+    sqlite3_close( db );
+    fclose( fp );
     return false;
   }
 
+  QStringList v;
+  v.reserve( sizeof( map ) / sizeof( *map ) );
 
-  QTextStream textStream( &f );
-  textStream.readLine();
-
-  QString line, coord_op, source_crs, target_crs, coord_op_method,
-  p1, p2, p3, p4, p5, p6, p7;
-
-  while ( !textStream.atEnd() )
+  while ( !feof( fp ) )
   {
-    line = textStream.readLine();
-    QStringList csList = line.split( "," );
-    int csSize = csList.size();
-    if ( csSize < 22 )
+    char **values = CSVReadParseLine( fp );
+
+    v.clear();
+
+    if ( CSLCount( values ) < n )
     {
+      qWarning( "Only %d columns", CSLCount( values ) );
       continue;
     }
 
-    coord_op = csList[1];
-    source_crs = csList[2];
-    target_crs = csList[3];
-    coord_op_method = csList[csSize - 9];
-    p1 = csList[csSize - 8];
-    p1 = p1.isEmpty() ? "NULL" : p1;
-    p2 = csList[csSize - 7];
-    p2 = p2.isEmpty() ? "NULL" : p2;
-    p3 = csList[csSize - 6];
-    p3 = p3.isEmpty() ? "NULL" : p3;
-    p4 = csList[csSize - 5];
-    p4 = p4.isEmpty() ? "NULL" : p4;
-    p5 = csList[csSize - 4];
-    p5 = p5.isEmpty() ? "NULL" : p5;
-    p6 = csList[csSize - 3];
-    p6 = p6.isEmpty() ? "NULL" : p6;
-    p7 = csList[csSize - 2];
-    p7 = p7.isEmpty() ? "NULL" : p7;
+    for ( unsigned int i = 0; i < sizeof( map ) / sizeof( *map ); i++ )
+    {
+      int idx = map[i].idx;
+      Q_ASSERT( idx != -1 );
+      Q_ASSERT( idx < n );
+      v.insert( i, *values[ idx ] ? quotedValue( values[idx] ) : "NULL" );
+    }
 
     //switch sign of rotation parameters. See http://trac.osgeo.org/proj/wiki/GenParms#towgs84-DatumtransformationtoWGS84
-    if ( coord_op_method == "9607" )
+    if ( v[ idxid ] == "9607" )
     {
-      p4 = qgsDoubleToString( -( p4.toDouble() ) );
-      p5 = qgsDoubleToString( -( p5.toDouble() ) );
-      p6 = qgsDoubleToString( -( p6.toDouble() ) );
-      coord_op_method = "9606";
+      v[ idxid ] = "9606";
+      v[ idxrx ] = qgsDoubleToString( -v[ idxrx ].toDouble() );
+      v[ idxry ] = qgsDoubleToString( -v[ idxry ].toDouble() );
+      v[ idxrz ] = qgsDoubleToString( -v[ idxrz ].toDouble() );
     }
 
     //entry already in db?
-    sqlite3_stmt* stmt;
+    sqlite3_stmt *stmt;
     QString cOpCode;
-    QString sql = QString( "SELECT coord_op_code FROM tbl_datum_transform WHERE coord_op_code=%1" ).arg( coord_op );
+    QString sql = QString( "SELECT coord_op_code FROM tbl_datum_transform WHERE coord_op_code=%1" ).arg( v[ idxid ] );
     int prepareRes = sqlite3_prepare( db, sql.toAscii(), sql.size(), &stmt, NULL );
     if ( prepareRes != SQLITE_OK )
-    {
       continue;
-    }
 
     if ( sqlite3_step( stmt ) == SQLITE_ROW )
     {
@@ -2027,25 +2108,16 @@ bool QgsCoordinateReferenceSystem::syncDatumTransform( const QString& dbPath )
     }
     sqlite3_finalize( stmt );
 
-    if ( !cOpCode.isEmpty() )
+    sql = cOpCode.isEmpty() ? insert : update;
+    for ( int i = 0; i < v.size(); i++ )
     {
-      //already in database, do update
-      QgsDebugMsgLevel( "Trying datum transform update", 4 );
-      sql = QString( "UPDATE tbl_datum_transform SET source_crs_code = %2, target_crs_code = %3, coord_op_method_code = %4, p1 = %5, p2 = %6, p3 = %7, p4 = %8, p5 = %9, p6 = %10, p7 = %11 WHERE coord_op_code = %1" )
-            .arg( coord_op ).arg( source_crs ).arg( target_crs ).arg( coord_op_method ).arg( p1 ).arg( p2 ).arg( p3 ).arg( p4 ).arg( p5 ).arg( p6 ).arg( p7 );
-    }
-    else
-    {
-      //not yet in database, do insert
-      QgsDebugMsgLevel( "Trying datum transform insert", 4 );
-      sql = QString( "INSERT INTO tbl_datum_transform ( epsg_nr, coord_op_code, source_crs_code, target_crs_code, coord_op_method_code, p1, p2, p3, p4, p5, p6, p7 ) VALUES ( %1, %1, %2, %3, %4, %5, %6, %7, %8, %9, %10, %11 )" )
-            .arg( coord_op ).arg( source_crs ).arg( target_crs ).arg( coord_op_method ).arg( p1 ).arg( p2 ).arg( p3 ).arg( p4 ).arg( p5 ).arg( p6 ).arg( p7 );
-
+      sql = sql.arg( v[i] );
     }
 
     if ( sqlite3_exec( db, sql.toUtf8(), 0, 0, 0 ) != SQLITE_OK )
     {
-      QgsDebugMsg( QString( "Error [%1]" ).arg( sqlite3_errmsg( db ) ) );
+      qCritical( "SQL: %s", sql.toUtf8().constData() );
+      qCritical( "Error: %s", sqlite3_errmsg( db ) );
     }
   }
 

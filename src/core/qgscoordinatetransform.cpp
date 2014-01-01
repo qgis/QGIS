@@ -792,16 +792,16 @@ QList< QList< int > > QgsCoordinateTransform::datumTransformations( const QgsCoo
   }
 
   QList<int> directTransforms;
-  searchDatumTransform( QString( "SELECT coord_op_code FROM tbl_datum_transform WHERE source_crs_code = %1 AND target_crs_code = %2" ).arg( srcAuthCode ).arg( destAuthCode ),
+  searchDatumTransform( QString( "SELECT coord_op_code FROM tbl_datum_transform WHERE source_crs_code=%1 AND target_crs_code=%2 ORDER BY deprecated ASC,preferred DESC" ).arg( srcAuthCode ).arg( destAuthCode ),
                         directTransforms );
   QList<int> reverseDirectTransforms;
-  searchDatumTransform( QString( "SELECT coord_op_code FROM tbl_datum_transform WHERE source_crs_code = %1 AND target_crs_code = %2" ).arg( destAuthCode ).arg( srcAuthCode ),
+  searchDatumTransform( QString( "SELECT coord_op_code FROM tbl_datum_transform WHERE source_crs_code = %1 AND target_crs_code=%2 ORDER BY deprecated ASC,preferred DESC" ).arg( destAuthCode ).arg( srcAuthCode ),
                         reverseDirectTransforms );
   QList<int> srcToWgs84;
-  searchDatumTransform( QString( "SELECT coord_op_code FROM tbl_datum_transform WHERE ( source_crs_code = %1 AND target_crs_code = %2 ) OR ( source_crs_code = %2 AND target_crs_code = %1 )" ).arg( srcAuthCode ).arg( 4326 ),
+  searchDatumTransform( QString( "SELECT coord_op_code FROM tbl_datum_transform WHERE (source_crs_code=%1 AND target_crs_code=%2) OR (source_crs_code=%2 AND target_crs_code=%1) ORDER BY deprecated ASC,preferred DESC" ).arg( srcAuthCode ).arg( 4326 ),
                         srcToWgs84 );
   QList<int> destToWgs84;
-  searchDatumTransform( QString( "SELECT coord_op_code FROM tbl_datum_transform WHERE ( source_crs_code = %1 AND target_crs_code = %2 ) OR ( source_crs_code = %2 AND target_crs_code = %1 )" ).arg( destAuthCode ).arg( 4326 ),
+  searchDatumTransform( QString( "SELECT coord_op_code FROM tbl_datum_transform WHERE (source_crs_code=%1 AND target_crs_code=%2) OR (source_crs_code=%2 AND target_crs_code=%1) ORDER BY deprecated ASC,preferred DESC" ).arg( destAuthCode ).arg( 4326 ),
                         destToWgs84 );
 
   //add direct datum transformations
@@ -891,7 +891,7 @@ QString QgsCoordinateTransform::datumTransformString( int datumTransform )
   }
 
   sqlite3_stmt* stmt;
-  QString sql = QString( "SELECT coord_op_method_code, p1, p2, p3, p4, p5, p6, p7 FROM tbl_datum_transform WHERE coord_op_code = %1" ).arg( datumTransform );
+  QString sql = QString( "SELECT coord_op_method_code,p1,p2,p3,p4,p5,p6,p7 FROM tbl_datum_transform WHERE coord_op_code=%1" ).arg( datumTransform );
   int prepareRes = sqlite3_prepare( db, sql.toAscii(), sql.size(), &stmt, NULL );
   if ( prepareRes != SQLITE_OK )
   {
@@ -932,7 +932,7 @@ QString QgsCoordinateTransform::datumTransformString( int datumTransform )
   return transformString;
 }
 
-bool QgsCoordinateTransform::datumTransformCrsInfo( int datumTransform, int& epsgNr, QString& srcProjection, QString& dstProjection )
+bool QgsCoordinateTransform::datumTransformCrsInfo( int datumTransform, int& epsgNr, QString& srcProjection, QString& dstProjection, QString &remarks, QString &scope, bool &preferred, bool &deprecated )
 {
   sqlite3* db;
   int openResult = sqlite3_open( QgsApplication::srsDbFilePath().toUtf8().constData(), &db );
@@ -943,7 +943,7 @@ bool QgsCoordinateTransform::datumTransformCrsInfo( int datumTransform, int& eps
   }
 
   sqlite3_stmt* stmt;
-  QString sql = QString( "SELECT epsg_nr, source_crs_code, target_crs_code FROM tbl_datum_transform WHERE coord_op_code = %1" ).arg( datumTransform );
+  QString sql = QString( "SELECT epsg_nr,source_crs_code,target_crs_code,remarks,scope,preferred,deprecated FROM tbl_datum_transform WHERE coord_op_code=%1" ).arg( datumTransform );
   int prepareRes = sqlite3_prepare( db, sql.toAscii(), sql.size(), &stmt, NULL );
   if ( prepareRes != SQLITE_OK )
   {
@@ -962,6 +962,10 @@ bool QgsCoordinateTransform::datumTransformCrsInfo( int datumTransform, int& eps
   epsgNr = sqlite3_column_int( stmt, 0 );
   srcCrsId = sqlite3_column_int( stmt, 1 );
   destCrsId = sqlite3_column_int( stmt, 2 );
+  remarks = QString::fromUtf8(( const char * ) sqlite3_column_text( stmt, 3 ) );
+  scope = QString::fromUtf8(( const char * ) sqlite3_column_text( stmt, 4 ) );
+  preferred = sqlite3_column_int( stmt, 5 ) != 0;
+  deprecated = sqlite3_column_int( stmt, 6 ) != 0;
 
   QgsCoordinateReferenceSystem srcCrs;
   srcCrs.createFromOgcWmsCrs( QString( "EPSG:%1" ).arg( srcCrsId ) );

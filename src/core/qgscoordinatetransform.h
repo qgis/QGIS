@@ -216,7 +216,7 @@ class CORE_EXPORT QgsCoordinateTransform : public QObject
     static QString datumTransformString( int datumTransform );
     /**Gets name of source and dest geographical CRS (to show in a tooltip)
         @return epsgNr epsg code of the transformation (or 0 if not in epsg db)*/
-    static bool datumTransformCrsInfo( int datumTransform, int& epsgNr, QString& srcProjection, QString& dstProjection );
+    static bool datumTransformCrsInfo( int datumTransform, int& epsgNr, QString& srcProjection, QString& dstProjection, QString &remarks, QString &scope, bool &preferred, bool &deprecated );
 
     int sourceDatumTransform() const { return mSourceDatumTransform; }
     void setSourceDatumTransform( int dt ) { mSourceDatumTransform = dt; }

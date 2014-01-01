@@ -15,16 +15,20 @@
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="2" column="0">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+    <widget class="QCheckBox" name="mRememberSelectionCheckBox">
+     <property name="text">
+      <string>Remember selection</string>
      </property>
     </widget>
    </item>
-   <item row="0" column="0">
+   <item row="2" column="1" alignment="Qt::AlignRight">
+    <widget class="QCheckBox" name="mHideDeprecatedCheckBox">
+     <property name="text">
+      <string>Hide deprecated</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0" colspan="2">
     <widget class="QTreeWidget" name="mDatumTransformTreeWidget">
      <column>
       <property name="text">
@@ -43,10 +47,13 @@
      </column>
     </widget>
    </item>
-   <item row="1" column="0">
-    <widget class="QCheckBox" name="mRememberSelectionCheckBox">
-     <property name="text">
-      <string>Remember selection</string>
+   <item row="4" column="0" colspan="2">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>
