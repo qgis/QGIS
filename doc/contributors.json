@@ -1,6 +1,6 @@
 {
   "type": "FeatureCollection",
-  "features": [
+    "features": [
     {
       "type": "Feature",
       "properties": {
@@ -532,6 +532,24 @@
           -23.199067
         ]
       }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Vincent Mora",
+        "Committer": "Yes",
+        "First Commit Message": "- test that fails because of issue7244 (split several polygons of a multipolygon at the same time)",
+        "First Commit Date": "11-07-2013",
+        "GIT Nickname": "vmora"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.76,
+          45.115
+        ]
+      }
     }
   ]
 }
+
