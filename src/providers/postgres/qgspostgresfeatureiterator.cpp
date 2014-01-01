@@ -210,8 +210,12 @@ QString QgsPostgresFeatureIterator::whereClauseRect()
   if ( P->mSpatialColType == sctGeography )
   {
     rect = QgsRectangle( -180.0, -90.0, 180.0, 90.0 ).intersect( &rect );
-    if ( !rect.isFinite() )
-      return "false";
+  }
+
+  if ( !rect.isFinite() )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Infinite filter rectangle specified" ), QObject::tr( "PostGIS" ) );
+    return "false";
   }
 
   QString qBox;
