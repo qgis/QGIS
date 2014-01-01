@@ -57,6 +57,10 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
         self.hasChanged = False
         self.setupUi(self)
 
+        self.setWindowFlags(Qt.WindowMinimizeButtonHint |
+                            Qt.WindowMaximizeButtonHint |
+                            Qt.WindowCloseButtonHint)
+
         self.tabWidget.setCurrentIndex(0)
         self.scene = ModelerScene(self)
         self.scene.setSceneRect(QRectF(0, 0, 4000, 4000))
