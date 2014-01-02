@@ -185,6 +185,8 @@ class ParametersPanel(QtGui.QWidget):
             return layer.name()
 
     def getWidgetFromParameter(self, param):
+        # TODO Create Parameter widget class that holds the logic 
+        # for creating a widget that belongs to the parameter.
         if isinstance(param, ParameterRaster):
             layers = dataobjects.getRasterLayers()
             items = []
@@ -334,16 +336,13 @@ class ParametersPanel(QtGui.QWidget):
         return False
 
     def setTableContent(self):
-        params = self.alg.parameters
-        outputs = self.alg.outputs
-        numParams = count(p for p in params if not p.hidden)
-        numParams = count(o for o in outputs if not o.hidden)
+        params = [parm for parm in self.alg.parameters if not parm.hidden]
+        outputs = [output for output in self.alg.outputs if not output.hidden]
+        numParams = len(parms)
+        numOutputs = len(outputs)
         self.tableWidget.setRowCount(numParams + numOutputs)
 
-        i = 0
-        for param in params:
-            if param.hidden:
-                continue
+        for i, param in enurmerate(params):
             item = QtGui.QTableWidgetItem(param.description)
             item.setFlags(QtCore.Qt.ItemIsEnabled)
             self.tableWidget.setItem(i, 0, item)
@@ -351,11 +350,8 @@ class ParametersPanel(QtGui.QWidget):
             self.valueItems[param.name] = item
             self.tableWidget.setCellWidget(i, 1, item)
             self.tableWidget.setRowHeight(i, 22)
-            i += 1
 
-        for output in outputs:
-            if output.hidden:
-                continue
+        for i, output in enurmerate(outputs):
             item = QtGui.QTableWidgetItem(output.description + '<'
                     + output.__module__.split('.')[-1] + '>')
             item.setFlags(QtCore.Qt.ItemIsEnabled)
@@ -364,4 +360,3 @@ class ParametersPanel(QtGui.QWidget):
             self.valueItems[output.name] = item
             self.tableWidget.setCellWidget(i, 1, item)
             self.tableWidget.setRowHeight(i, 22)
-            i += 1
