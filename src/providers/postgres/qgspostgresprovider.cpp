@@ -3360,6 +3360,7 @@ QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QS
                                 QMessageBox::Yes | QMessageBox::No ) == QMessageBox::No )
     {
       errCause = QObject::tr( "Operation aborted. No changes were made in the database" );
+      conn->disconnect();
       return false;
     }
 
@@ -3439,7 +3440,9 @@ QGISEXTERN QString loadStyle( const QString& uri, QString& errCause )
 
   QgsPostgresResult result = conn->PQexec( selectQmlQuery, false );
 
-  return result.PQntuples() == 1 ? result.PQgetvalue( 0, 0 ) : "";
+  QString style = result.PQntuples() == 1 ? result.PQgetvalue( 0, 0 ) : "";
+  conn->disconnect();
+  return style;
 }
 
 QGISEXTERN int listStyles( const QString &uri, QStringList &ids, QStringList &names,
@@ -3470,6 +3473,7 @@ QGISEXTERN int listStyles( const QString &uri, QStringList &ids, QStringList &na
   {
     QgsMessageLog::logMessage( QObject::tr( "Error executing query: %1" ).arg( selectRelatedQuery ) );
     errCause = QObject::tr( "Error executing the select query for related styles. The query was logged" );
+    conn->disconnect();
     return -1;
   }
 
@@ -3495,6 +3499,7 @@ QGISEXTERN int listStyles( const QString &uri, QStringList &ids, QStringList &na
   {
     QgsMessageLog::logMessage( QObject::tr( "Error executing query: %1" ).arg( selectOthersQuery ) );
     errCause = QObject::tr( "Error executing the select query for unrelated styles. The query was logged" );
+    conn->disconnect();
     return -1;
   }
   for ( int i = 0; i < result.PQntuples(); i++ )
@@ -3503,6 +3508,7 @@ QGISEXTERN int listStyles( const QString &uri, QStringList &ids, QStringList &na
     names.append( result.PQgetvalue( i, 1 ) );
     descriptions.append( result.PQgetvalue( i, 2 ) );
   }
+  conn->disconnect();
 
   return numberOfRelatedStyles;
 }
@@ -3524,16 +3530,20 @@ QGISEXTERN QString getStyleById( const QString& uri, QString styleId, QString& e
   {
     QgsMessageLog::logMessage( QObject::tr( "Error executing query: %1" ).arg( selectQmlQuery ) );
     errCause = QObject::tr( "Error executing the select query. The query was logged" );
+    conn->disconnect();
     return "";
   }
 
   if ( result.PQntuples() == 1 )
   {
-    return result.PQgetvalue( 0, 0 );
+    QString style = result.PQgetvalue( 0, 0 );
+    conn->disconnect();
+    return style;
   }
   else
   {
     errCause = QObject::tr( "Consistency error in table '%1'. Style id should be unique" ).arg( "layer_styles" );
+    conn->disconnect();
     return "";
   }
 }

@@ -257,10 +257,10 @@ class QgsPostgresConn : public QObject
     static bool allowGeometrylessTables( QString theConnName );
     static void deleteConnection( QString theConnName );
 
-  private:
+  public:
     QgsPostgresConn( QString conninfo, bool readOnly );
     ~QgsPostgresConn();
-
+  private:
     int mRef;
     int mOpenCursors;
     PGconn *mConn;
