@@ -1479,7 +1479,7 @@ void QgsGrassMapcalc::clear()
 }
 
 /******************** CANVAS ITEMS ******************************/
-QgsGrassMapcalcItem::QgsGrassMapcalcItem(): mSelected( false )
+QgsGrassMapcalcItem::QgsGrassMapcalcItem() : mSelected( false )
 {
   QgsDebugMsg( "entered." );
 }
@@ -1500,9 +1500,12 @@ bool QgsGrassMapcalcItem::selected()
 
 /**************************** OBJECT ************************/
 QgsGrassMapcalcObject::QgsGrassMapcalcObject( int type )
-    : QGraphicsRectItem( -1000, -1000, 50, 20, 0 ), QgsGrassMapcalcItem(),
-    mType( type ), mCenter( -1000, -1000 ), mSelectionBoxSize( 5 ),
-    mOutputConnector( 0 )
+    : QGraphicsRectItem( -1000, -1000, 50, 20, 0 )
+    , QgsGrassMapcalcItem()
+    , mType( type )
+    , mCenter( -1000, -1000 )
+    , mSelectionBoxSize( 5 )
+    , mOutputConnector( 0 )
 {
   QgsDebugMsg( "entered." );
 

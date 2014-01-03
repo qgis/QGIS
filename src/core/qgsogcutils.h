@@ -95,14 +95,14 @@ class CORE_EXPORT QgsOgcUtils
        @param coords list where the found coordinates are appended
        @param elem the \verbatim <gml:coordinates> \endverbatim element
        @return boolean for success*/
-    static bool readGMLCoordinates( QgsPolyline &coords, const QDomElement elem );
+    static bool readGMLCoordinates( QgsPolyline &coords, const QDomElement &elem );
     /** Reads the \verbatim <gml:pos> \endverbatim or \verbatim <gml:posList> \endverbatim
        and extracts the coordinates as points
        @param coords list where the found coordinates are appended
        @param elem the \verbatim <gml:pos> \endverbatim or
                     \verbatim <gml:posList> \endverbatim element
        @return boolean for success*/
-    static bool readGMLPositions( QgsPolyline &coords, const QDomElement elem );
+    static bool readGMLPositions( QgsPolyline &coords, const QDomElement &elem );
 
 
     /**Create a GML coordinates element from a point list.

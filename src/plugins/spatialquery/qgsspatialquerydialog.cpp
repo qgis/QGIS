@@ -1077,8 +1077,3 @@ void QgsSpatialQueryDialog::signal_layerReference_selectionFeaturesChanged()
 {
   evaluateCheckBoxLayer( false );
 } // void QgsSpatialQueryDialog::signal_layerReference_selectionFeaturesChanged()
-
-void QgsSpatialQueryDialog::MsgDEBUG( QString sMSg )
-{
-  QMessageBox::warning( 0, tr( "DEBUG" ), sMSg, QMessageBox::Ok );
-}

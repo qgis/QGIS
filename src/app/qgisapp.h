@@ -129,21 +129,21 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     @param dataSourceType type of ogr datasource
      @returns true if successfully added layer
      */
-    bool addVectorLayers( QStringList const & theLayerQStringList, const QString& enc, const QString dataSourceType );
+    bool addVectorLayers( const QStringList &theLayerQStringList, const QString &enc, const QString &dataSourceType );
 
     /** overloaded vesion of the private addRasterLayer()
       Method that takes a list of file names instead of prompting
       user with a dialog.
       @returns true if successfully added layer(s)
       */
-    bool addRasterLayers( QStringList const & theLayerQStringList, bool guiWarning = true );
+    bool addRasterLayers( const QStringList &theLayerQStringList, bool guiWarning = true );
 
     /** open a raster layer for the given file
       @returns false if unable to open a raster layer for rasterFile
       @note
       This is essentially a simplified version of the above
       */
-    QgsRasterLayer* addRasterLayer( QString const & rasterFile, QString const & baseName, bool guiWarning = true );
+    QgsRasterLayer *addRasterLayer( const QString &rasterFile, const QString &baseName, bool guiWarning = true );
 
     /** Add a 'pre-made' map layer to the project */
     void addMapLayer( QgsMapLayer *theMapLayer );

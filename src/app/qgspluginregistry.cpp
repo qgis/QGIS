@@ -127,7 +127,7 @@ void QgsPluginRegistry::dump()
   QgsDebugMsg( "PLUGINS IN REGISTRY: key -> (name, library)" );
   for ( QMap<QString, QgsPluginMetadata>::iterator it = mPlugins.begin();
         it != mPlugins.end();
-        it++ )
+        ++it )
   {
     QgsDebugMsg( QString( "PLUGIN: %1 -> (%2, %3)" )
                  .arg( it.key() )
@@ -162,7 +162,7 @@ void QgsPluginRegistry::unloadAll()
 {
   for ( QMap<QString, QgsPluginMetadata>::iterator it = mPlugins.begin();
         it != mPlugins.end();
-        it++ )
+        ++it )
   {
     if ( it->plugin() )
     {
@@ -236,15 +236,6 @@ bool QgsPluginRegistry::checkQgisVersion( QString minVersion, QString maxVersion
 
   // our qgis version - cut release name after version number
   QString qgisVersion = QString( QGis::QGIS_VERSION ).section( '-', 0, 0 );
-
-  // /////////////////////////////////////////////////////////////////////////////
-  // TEMPORARY WORKAROUND UNTIL VERSION NUMBER IS GLOBALY SWITCHED TO 2.0       //
-  // /////////////////////////////////////////////////////////////////////////////
-  //                                            //////////////////////////////////
-  qgisVersion = "2.0.0";                        //////////////////////////////////
-  //                                            //////////////////////////////////
-  // /////////////////////////////////////////////////////////////////////////////
-  // /////////////////////////////////////////////////////////////////////////////
 
   QStringList qgisVersionParts = qgisVersion.split( "." );
 

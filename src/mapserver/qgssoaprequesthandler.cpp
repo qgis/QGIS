@@ -145,11 +145,11 @@ QMap<QString, QString> QgsSOAPRequestHandler::parseInput()
     {
       formatString = "JPG";
     }
-    else if ( formatString == "image/png" || formatString == "PNG" || formatString == "PNG" )
+    else if ( formatString == "image/png" || formatString == "PNG" || formatString == "png" )
     {
       formatString = "PNG";
     }
-    else if ( formatString == "image/gif" || formatString == "GIF" || formatString == "GIF" )
+    else if ( formatString == "image/gif" || formatString == "GIF" || formatString == "gif" )
     {
       formatString = "GIF";
     }

@@ -1603,7 +1603,7 @@ bool QgsGeometry::deleteVertex( int atVertex )
       int* nPoints = ( int* )ptr;
       if (( *nPoints ) < 3 || vertexnr > ( *nPoints ) - 1 || vertexnr < 0 ) //line needs at least 2 vertices
       {
-        delete newbuffer;
+        delete [] newbuffer;
         return false;
       }
       int newNPoints = ( *nPoints ) - 1; //new number of points
@@ -1659,7 +1659,7 @@ bool QgsGeometry::deleteVertex( int atVertex )
         {
           if ( *nPoints < 3 ) //line needs at least 2 vertices
           {
-            delete newbuffer;
+            delete [] newbuffer;
             return false;
           }
           newNPoint = ( *nPoints ) - 1;
@@ -1717,7 +1717,7 @@ bool QgsGeometry::deleteVertex( int atVertex )
         {
           if ( *nPoints < 5 ) //a ring has at least 3 points
           {
-            delete newbuffer;
+            delete [] newbuffer;
             return false;
           }
           newNPoints = *nPoints - 1;
@@ -1795,7 +1795,7 @@ bool QgsGeometry::deleteVertex( int atVertex )
           {
             if ( *nPoints < 5 ) //a ring has at least 3 points
             {
-              delete newbuffer;
+              delete [] newbuffer;
               return false;
             }
             newNPoints = *nPoints - 1;
@@ -1917,7 +1917,7 @@ bool QgsGeometry::insertVertex( double x, double y, int beforeVertex )
     case QGis::WKBPoint25D:
     case QGis::WKBPoint://cannot insert a vertex before another one on point types
     {
-      delete newbuffer;
+      delete [] newbuffer;
       return false;
     }
     case QGis::WKBMultiPoint25D:
@@ -2167,7 +2167,7 @@ bool QgsGeometry::insertVertex( double x, double y, int beforeVertex )
   }
   else
   {
-    delete newbuffer;
+    delete [] newbuffer;
     return false;
   }
 }
@@ -4096,10 +4096,6 @@ QString QgsGeometry::exportToWkt() const
       {
         return QString();
       }
-      int *ringStart; // index of first point for each ring
-      int *ringNumPoints; // number of points in each ring
-      ringStart = new int[*numRings];
-      ringNumPoints = new int[*numRings];
       ptr = mGeometry + 1 + 2 * sizeof( int ); // set pointer to the first ring
       for ( idx = 0; idx < *numRings; idx++ )
       {
@@ -4110,7 +4106,6 @@ QString QgsGeometry::exportToWkt() const
         mWkt += "(";
         // get number of points in the ring
         nPoints = ( int * ) ptr;
-        ringNumPoints[idx] = *nPoints;
         ptr += 4;
 
         for ( jdx = 0; jdx < *nPoints; jdx++ )
@@ -4134,8 +4129,6 @@ QString QgsGeometry::exportToWkt() const
         mWkt += ")";
       }
       mWkt += ")";
-      delete [] ringStart;
-      delete [] ringNumPoints;
       return mWkt;
     }
 
@@ -4378,10 +4371,6 @@ QString QgsGeometry::exportToGeoJSON() const
       {
         return QString();
       }
-      int *ringStart; // index of first point for each ring
-      int *ringNumPoints; // number of points in each ring
-      ringStart = new int[*numRings];
-      ringNumPoints = new int[*numRings];
       ptr = mGeometry + 1 + 2 * sizeof( int ); // set pointer to the first ring
       for ( idx = 0; idx < *numRings; idx++ )
       {
@@ -4392,7 +4381,6 @@ QString QgsGeometry::exportToGeoJSON() const
         mWkt += "[ ";
         // get number of points in the ring
         nPoints = ( int * ) ptr;
-        ringNumPoints[idx] = *nPoints;
         ptr += 4;
 
         for ( jdx = 0; jdx < *nPoints; jdx++ )
@@ -4418,8 +4406,6 @@ QString QgsGeometry::exportToGeoJSON() const
         mWkt += " ]";
       }
       mWkt += " ] }";
-      delete [] ringStart;
-      delete [] ringNumPoints;
       return mWkt;
     }
 
@@ -5274,7 +5260,7 @@ bool QgsGeometry::convertToMultiType()
       newMultiType = QGis::WKBMultiPolygon25D;
       break;
     default:
-      delete newGeometry;
+      delete [] newGeometry;
       return false;
   }
   memcpy( &newGeometry[currentWkbPosition], &newMultiType, sizeof( int ) );

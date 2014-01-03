@@ -198,7 +198,7 @@ class CORE_EXPORT QgsPropertyValue : public QgsProperty
 class CORE_EXPORT QgsPropertyKey : public QgsProperty
 {
   public:
-    QgsPropertyKey( const QString name = "" );
+    QgsPropertyKey( const QString &name = "" );
     virtual ~ QgsPropertyKey();
 
     /// every key has a name

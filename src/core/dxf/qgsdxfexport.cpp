@@ -503,7 +503,7 @@ void QgsDxfExport::writeBlocks()
       if ( hasDataDefinedProperties( ml, slIt->second ) )
       {
         continue;
-        ml->stopRender( ctx );
+        // ml->stopRender( ctx );
       }
       writeGroup( 0, "BLOCK" );
       writeGroup( 8, 0 );
@@ -513,8 +513,8 @@ void QgsDxfExport::writeBlocks()
 
       //x/y/z coordinates of reference point
       //todo: consider anchor point
-      double size = ml->size();
-      size *= mapUnitScaleFactor( mSymbologyScaleDenominator, ml->sizeUnit(), mMapUnits );
+      // double size = ml->size();
+      // size *= mapUnitScaleFactor( mSymbologyScaleDenominator, ml->sizeUnit(), mMapUnits );
       writeGroup( 10, 0 );
       writeGroup( 20, 0 );
       writeGroup( 30, 0 );
@@ -1112,14 +1112,14 @@ double QgsDxfExport::mapUnitScaleFactor( double scaleDenominator, QgsSymbolV2::O
   {
     return 1.0;
   }
+  else if ( symbolUnits == QgsSymbolV2::MM && mapUnits == QGis::Meters )
+  {
+    return scaleDenominator / 1000;
+  }
   else
   {
-    if ( symbolUnits == QgsSymbolV2::MM && mapUnits == QGis::Meters )
-    {
-      return scaleDenominator / 1000;
-    }
+    return 1.0;
   }
-  return 1.0;
 }
 
 QList< QPair< QgsSymbolLayerV2*, QgsSymbolV2* > > QgsDxfExport::symbolLayers()

@@ -162,7 +162,7 @@ QgsMapCanvas::~QgsMapCanvas()
   {
     QGraphicsItem* item = *it;
     delete item;
-    it++;
+    ++it;
   }
 
   mScene->deleteLater();  // crashes in python tests on windows
@@ -1094,7 +1094,7 @@ void QgsMapCanvas::updateCanvasItemPositions()
       item->updatePosition();
     }
 
-    it++;
+    ++it;
   }
 }
 
@@ -1488,7 +1488,7 @@ void QgsMapCanvas::moveCanvasContents( bool reset )
         canvasItem->setPanningOffset( pnt );
     }
 
-    it++;
+    ++it;
   }
 
   // show items

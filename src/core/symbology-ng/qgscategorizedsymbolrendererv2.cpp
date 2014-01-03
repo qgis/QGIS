@@ -468,7 +468,7 @@ void QgsCategorizedSymbolRendererV2::toSld( QDomDocument &doc, QDomElement &elem
     props[ "scale" ] = QString( mSizeScaleField ).append( "\"" ).prepend( "\"" );
 
   // create a Rule for each range
-  for ( QgsCategoryList::const_iterator it = mCategories.constBegin(); it != mCategories.constEnd(); it++ )
+  for ( QgsCategoryList::const_iterator it = mCategories.constBegin(); it != mCategories.constEnd(); ++it )
   {
     QgsStringMap catProps( props );
     it->toSld( doc, element, catProps );
@@ -566,7 +566,7 @@ QDomElement QgsCategorizedSymbolRendererV2::save( QDomDocument& doc )
   QgsSymbolV2Map symbols;
   QDomElement catsElem = doc.createElement( "categories" );
   QgsCategoryList::const_iterator it = mCategories.constBegin();
-  for ( ; it != mCategories.end(); it++ )
+  for ( ; it != mCategories.end(); ++it )
   {
     const QgsRendererCategoryV2& cat = *it;
     QString symbolName = QString::number( i );

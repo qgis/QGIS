@@ -57,14 +57,15 @@ static const QString pluginIcon = ":/images/themes/default/grass/grass_tools.png
  * @param theQGisApp Pointer to the QGIS main window
  * @param theQgisInterFace Pointer to the QGIS interface object
  */
-QgsGrassPlugin::QgsGrassPlugin( QgisInterface * theQgisInterFace ):
-    qGisInterface( theQgisInterFace ), mTools( NULL ), mEdit( NULL )
+QgsGrassPlugin::QgsGrassPlugin( QgisInterface * theQgisInterFace )
+    : qGisInterface( theQgisInterFace )
+    , mTools( 0 )
+    , mEdit( 0 )
+    , pluginNameQString( tr( "GrassVector" ) )
+    , pluginVersionQString( tr( "0.1" ) )
+    , pluginDescriptionQString( tr( "GRASS layer" ) )
+    , pluginCategoryQString( tr( "Plugins" ) )
 {
-  /** Initialize the plugin and set the required attributes */
-  pluginNameQString = tr( "GrassVector" );
-  pluginVersionQString = tr( "0.1" );
-  pluginDescriptionQString = tr( "GRASS layer" );
-  pluginCategoryQString = tr( "Plugins" );
 }
 
 QgsGrassPlugin::~QgsGrassPlugin()
@@ -899,7 +900,7 @@ void QgsGrassPlugin::setCurrentTheme( QString theThemeName )
 // I didnt want to make plugins dependent on qgsapplication
 // and because it needs grass specific path into
 // the GRASS plugin resource bundle [TS]
-QIcon QgsGrassPlugin::getThemeIcon( const QString theName )
+QIcon QgsGrassPlugin::getThemeIcon( const QString &theName )
 {
   QString myCurThemePath = QgsApplication::activeThemePath() + "/grass/" + theName;
   QString myDefThemePath = QgsApplication::defaultThemePath() + "/grass/" + theName;

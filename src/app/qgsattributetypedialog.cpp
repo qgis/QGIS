@@ -335,7 +335,7 @@ void QgsAttributeTypeDialog::updateMap( const QMap<QString, QVariant> &map, bool
     ++row;
   }
 
-  for ( QMap<QString, QVariant>::const_iterator mit = map.begin(); mit != map.end(); mit++, row++ )
+  for ( QMap<QString, QVariant>::const_iterator mit = map.begin(); mit != map.end(); ++mit, row++ )
   {
     tableWidget->insertRow( row );
     if ( mit.value().isNull() )
@@ -533,7 +533,7 @@ void QgsAttributeTypeDialog::setIndex( int index, QgsVectorLayer::EditType editT
       }
 
       int row = 0;
-      for ( QMap<QString, QVariant>::iterator mit = mValueMap.begin(); mit != mValueMap.end(); mit++, row++ )
+      for ( QMap<QString, QVariant>::iterator mit = mValueMap.begin(); mit != mValueMap.end(); ++mit, row++ )
       {
         tableWidget->insertRow( row );
         if ( mit.value().isNull() )

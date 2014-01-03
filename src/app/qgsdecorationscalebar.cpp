@@ -465,8 +465,6 @@ void QgsDecorationScaleBar::render( QPainter * theQPainter )
     //Draw unit label
     //
     theQPainter->setPen( myBackColor );
-    myFontWidth = myFontMetrics.width( myScaleBarUnitLabel );
-    myFontHeight = myFontMetrics.height();
     //first the buffer
     for ( int i = 0 - myBufferSize; i <= myBufferSize; i++ )
     {

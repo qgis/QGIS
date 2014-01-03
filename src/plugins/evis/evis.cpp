@@ -88,20 +88,19 @@ static const QString sIcon = ":/evis/eVisEventBrowser.png";
 
 
 
-eVis::eVis( QgisInterface * theQgisInterface ):
-    QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType ),
-    mQGisIface( theQgisInterface )
+eVis::eVis( QgisInterface * theQgisInterface )
+    : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
+    , mQGisIface( theQgisInterface )
 {
   mIdTool = 0;
 }
 
-eVis::~eVis( )
+eVis::~eVis()
 {
 }
 
-void eVis::initGui( )
+void eVis::initGui()
 {
-
   // Create the action for tool
   mDatabaseConnectionActionPointer = new QAction( QIcon( ":/evis/eVisDatabaseConnection.png" ), tr( "eVis Database Connection" ), this );
   mEventIdToolActionPointer = new QAction( QIcon( ":/evis/eVisEventIdTool.png" ), tr( "eVis Event Id Tool" ), this );

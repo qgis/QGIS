@@ -74,8 +74,8 @@ QgsWcsCapabilities::QgsWcsCapabilities( QgsDataSourceURI const &theUri ):
   retrieveServerCapabilities();
 }
 
-QgsWcsCapabilities::QgsWcsCapabilities( ):
-    mCoverageCount( 0 )
+QgsWcsCapabilities::QgsWcsCapabilities() 
+    : mCoverageCount( 0 )
 {
 }
 
@@ -196,8 +196,7 @@ void QgsWcsCapabilities::clear()
   QgsDebugMsg( "Entered" );
   mCoverageCount = 0;
   mCoveragesSupported.clear();
-  QgsWcsCapabilitiesProperty c;
-  mCapabilities = c;
+  mCapabilities = QgsWcsCapabilitiesProperty();
 }
 
 QString QgsWcsCapabilities::getCapabilitiesUrl( const QString version ) const

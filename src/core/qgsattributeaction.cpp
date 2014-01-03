@@ -149,7 +149,7 @@ QString QgsAttributeAction::expandAction( QString action, const QgsAttributeMap 
 
   for ( int i = 0; i < 4; i++ )
   {
-    for ( QgsAttributeMap::const_iterator it = attributes.begin(); it != attributes.end(); it++ )
+    for ( QgsAttributeMap::const_iterator it = attributes.begin(); it != attributes.end(); ++it )
     {
       int attrIdx = it.key();
       if ( attrIdx < 0 || attrIdx >= fields.count() )

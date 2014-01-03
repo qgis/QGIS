@@ -787,7 +787,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
       {
         QgsDebugMsg( QString( "res:%1 >= %2" ).arg( it.key() ).arg( vres ) );
         prev = it;
-        it++;
+        ++it;
       }
 
       if ( it == m.constEnd() ||
@@ -2616,7 +2616,6 @@ void QgsWmsProvider::parseLayer( QDomElement const & e, QgsWmsLayerProperty& lay
 void QgsWmsProvider::parseTileSetProfile( QDomElement const &e )
 {
   QStringList resolutions, layers, styles;
-  QgsWmsBoundingBoxProperty boundingBox;
   QgsWmtsTileMatrixSet ms;
   QgsWmtsTileMatrix m;
   QgsWmtsTileLayer l;
@@ -3882,7 +3881,7 @@ QString QgsWmsProvider::metadata()
       metadata += "<td>";
       for ( QHash<QString, QString>::const_iterator it = mTileLayer->getTileURLs.constBegin();
             it != mTileLayer->getTileURLs.constEnd();
-            it++ )
+            ++it )
       {
         metadata += QString( "%1:%2<br>" ).arg( it.key() ).arg( it.value() );
       }
@@ -3894,7 +3893,7 @@ QString QgsWmsProvider::metadata()
       metadata += "<td>";
       for ( QHash<QString, QString>::const_iterator it = mTileLayer->getFeatureInfoURLs.constBegin();
             it != mTileLayer->getFeatureInfoURLs.constEnd();
-            it++ )
+            ++it )
       {
         metadata += QString( "%1:%2<br>" ).arg( it.key() ).arg( it.value() );
       }

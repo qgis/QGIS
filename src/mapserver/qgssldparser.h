@@ -123,7 +123,7 @@ class QgsSLDParser: public QgsConfigParser
        Delegates the work to specific methods for <SendedVDS>, <HostedVDS> or <RemoteOWS>*/
     QgsMapLayer* mapLayerFromUserLayer( const QDomElement& userLayerElem, const QString& layerName, bool allowCaching = true ) const;
     /**Writes a temporary file and creates a vector layer. The file is removed at destruction time*/
-    QgsVectorLayer* vectorLayerFromGML( const QDomElement gmlRootElement ) const;
+    QgsVectorLayer* vectorLayerFromGML( const QDomElement &gmlRootElement ) const;
     /**Creates a line layer (including renderer) from contour symboliser
      @return the layer or 0 if no layer could be created*/
     QgsVectorLayer* contourLayerFromRaster( const QDomElement& userStyleElem, QgsRasterLayer* rasterLayer ) const;
@@ -132,10 +132,10 @@ class QgsSLDParser: public QgsConfigParser
 #if 0
     /**Sets the opacity on layer level if the <Opacity> tag is present*/
     void setOpacityForLayer( const QDomElement& layerElem, QgsMapLayer* layer ) const;
-#endif
     /**Resets the former symbology of a raster layer. This is important for single band layers (e.g. dems)
      coming from the cash*/
-    void clearRasterSymbology( QgsRasterLayer* rl ) const;
+    void clearRasterSymbology( QgsRasterLayer *rl ) const;
+#endif
     /**Reads attributes "epsg" or "proj" from layer element and sets specified CRS if present*/
     void setCrsForLayer( const QDomElement& layerElem, QgsMapLayer* ml ) const;
 

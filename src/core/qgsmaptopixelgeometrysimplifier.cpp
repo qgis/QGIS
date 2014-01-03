@@ -70,8 +70,6 @@ float QgsMapToPixelSimplifier::calculateViewPixelTolerance( const QgsRectangle& 
 //! Returns the BBOX of the specified WKB-point stream
 inline static QgsRectangle calculateBoundingBox( QGis::WkbType wkbType, unsigned char* wkb, size_t numPoints )
 {
-  unsigned char* wkb2 = wkb;
-
   double xmin =  std::numeric_limits<double>::max(), x, y;
   double ymin =  std::numeric_limits<double>::max();
   double xmax = -std::numeric_limits<double>::max();
@@ -90,7 +88,6 @@ inline static QgsRectangle calculateBoundingBox( QGis::WkbType wkbType, unsigned
     if ( xmax < x ) xmax = x;
     if ( ymax < y ) ymax = y;
   }
-  wkb = wkb2;
 
   return QgsRectangle( xmin, ymin, xmax, ymax );
 }
@@ -167,7 +164,7 @@ inline static bool generalizeWkbGeometry( QGis::WkbType wkbType, unsigned char* 
     memcpy( targetWkb, &y1, sizeof( double ) ); targetWkb += sizeof( double );
   }
   targetWkbSize += targetWkb - wkb2;
-  targetWkb = wkb2;
+
   return true;
 }
 

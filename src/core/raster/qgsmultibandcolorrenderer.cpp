@@ -183,8 +183,8 @@ QgsRasterBlock* QgsMultiBandColorRenderer::block( int bandNo, QgsRectangle  cons
     {
       // We should free the alloced mem from block().
       QgsDebugMsg( "No input band" );
-      bandIt--;
-      for ( ; bandIt != bands.constBegin(); bandIt-- )
+      --bandIt;
+      for ( ; bandIt != bands.constBegin(); --bandIt )
       {
         delete bandBlocks[*bandIt];
       }

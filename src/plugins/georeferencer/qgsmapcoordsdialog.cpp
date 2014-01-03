@@ -21,7 +21,7 @@
 #include "qgsgeorefvalidators.h"
 #include "qgsmapcoordsdialog.h"
 
-QgsMapCoordsDialog::QgsMapCoordsDialog( QgsMapCanvas* qgisCanvas, QgsPoint pixelCoords, QWidget* parent )
+QgsMapCoordsDialog::QgsMapCoordsDialog( QgsMapCanvas* qgisCanvas, const QgsPoint &pixelCoords, QWidget* parent )
     : QDialog( parent, Qt::Dialog ), mQgisCanvas( qgisCanvas ), mPixelCoords( pixelCoords )
 {
   setupUi( this );

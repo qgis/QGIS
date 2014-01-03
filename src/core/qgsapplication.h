@@ -64,7 +64,7 @@ class CORE_EXPORT QgsApplication: public QApplication
      * based on the supplied theme name exists. If it does not the theme name will
      * be reverted to 'default'.
      */
-    static void setThemeName( const QString theThemeName );
+    static void setThemeName( const QString &theThemeName );
 
     /** Set the active theme to the specified theme.
      * The theme name should be a single word e.g. 'default','classic'.
@@ -157,12 +157,12 @@ class CORE_EXPORT QgsApplication: public QApplication
     //! Helper to get a theme icon. It will fall back to the
     //! default theme if the active theme does not have the required icon.
     //! @note Added in 2.0
-    static QIcon getThemeIcon( const QString theName );
+    static QIcon getThemeIcon( const QString &theName );
 
     //! Helper to get a theme icon as a pixmap. It will fall back to the
     //! default theme if the active theme does not have the required icon.
     //! @note Added in 2.0
-    static QPixmap getThemePixmap( const QString theName );
+    static QPixmap getThemePixmap( const QString &theName );
 
     //! Returns the path to user's style. Added in QGIS 1.4
     static const QString userStyleV2Path();
@@ -179,13 +179,13 @@ class CORE_EXPORT QgsApplication: public QApplication
     static const QString libexecPath();
 
     //! Alters prefix path - used by 3rd party apps
-    static void setPrefixPath( const QString thePrefixPath, bool useDefaultPaths = false );
+    static void setPrefixPath( const QString &thePrefixPath, bool useDefaultPaths = false );
 
     //! Alters plugin path - used by 3rd party apps
-    static void setPluginPath( const QString thePluginPath );
+    static void setPluginPath( const QString &thePluginPath );
 
     //! Alters pkg data path - used by 3rd party apps
-    static void setPkgDataPath( const QString thePkgDataPath );
+    static void setPkgDataPath( const QString &thePkgDataPath );
 
     //! Alters default svg paths - used by 3rd party apps. Added in QGIS 1.5
     static void setDefaultSvgPaths( const QStringList& pathList );

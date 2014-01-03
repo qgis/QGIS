@@ -1728,8 +1728,8 @@ void QgsExpression::acceptVisitor( QgsExpression::Visitor& v ) const
     mRootNode->accept( v );
 }
 
-QString QgsExpression::replaceExpressionText( QString action, const QgsFeature* feat,
-    QgsVectorLayer* layer,
+QString QgsExpression::replaceExpressionText( const QString &action, const QgsFeature *feat,
+    QgsVectorLayer *layer,
     const QMap<QString, QVariant> *substitutionMap )
 {
   QString expr_action;

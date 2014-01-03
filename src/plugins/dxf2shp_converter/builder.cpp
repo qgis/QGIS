@@ -32,20 +32,20 @@ Builder::Builder( std::string theFname,
                   double *theGrpXVals, double *theGrpYVals,
                   std::string *theGrpNames,
                   int theInsertCount,
-                  bool theConvertText ) :
-    fname( theFname ),
-    shapefileType( theShapefileType ),
-    grpXVals( theGrpXVals ),
-    grpYVals( theGrpYVals ),
-    grpNames( theGrpNames ),
-    insertCount( theInsertCount ),
-    convertText( theConvertText ),
-    fetchedprims( 0 ),
-    fetchedtexts( 0 ),
-    ignoringBlock( false ),
-    current_polyline_pointcount( 0 ),
-    currentBlockX( 0.0 ),
-    currentBlockY( 0.0 )
+                  bool theConvertText )
+    : fname( theFname )
+    , shapefileType( theShapefileType )
+    , grpXVals( theGrpXVals )
+    , grpYVals( theGrpYVals )
+    , grpNames( theGrpNames )
+    , insertCount( theInsertCount )
+    , convertText( theConvertText )
+    , fetchedprims( 0 )
+    , fetchedtexts( 0 )
+    , ignoringBlock( false )
+    , current_polyline_pointcount( 0 )
+    , currentBlockX( 0.0 )
+    , currentBlockY( 0.0 )
 {
 }
 
@@ -529,14 +529,8 @@ void Builder::print_shpObjects()
   }
   else
   {
-    outputdbf = fname;
-    outputdbf = outputdbf.append( ".dbf" );
-    outputshp = fname;
-    outputshp = outputdbf.append( ".shp" );
-    outputtdbf = fname;
-    outputtdbf = outputtdbf.append( ".dbf" );
-    outputtshp = fname;
-    outputtshp = outputtdbf.append( ".shp" );
+    outputdbf = outputtdbf = fname + ".dbf";
+    outputshp = outputtshp = fname + ".shp";
   }
 
   DBFHandle dbffile = DBFCreate( outputdbf.c_str() );

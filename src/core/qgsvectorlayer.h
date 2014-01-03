@@ -129,11 +129,11 @@ class CORE_EXPORT QgsAttributeEditorField : public QgsAttributeEditorElement
 class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
 {
   public:
-    QgsAttributeEditorRelation( QString name , const QString relationId, QObject *parent )
+    QgsAttributeEditorRelation( QString name, const QString &relationId, QObject *parent )
         : QgsAttributeEditorElement( AeTypeRelation, name, parent )
         , mRelationId( relationId ) {}
 
-    QgsAttributeEditorRelation( QString name , const QgsRelation& relation, QObject *parent )
+    QgsAttributeEditorRelation( QString name, const QgsRelation& relation, QObject *parent )
         : QgsAttributeEditorElement( AeTypeRelation, name, parent )
         , mRelationId( relation.id() )
         , mRelation( relation ) {}
@@ -589,7 +589,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      *                           for this layer
      *  @note added in 2.0
      */
-    void setDisplayExpression( const QString displayExpression );
+    void setDisplayExpression( const QString &displayExpression );
 
     /**
      *  Get the preview expression, used to create a human readable preview string.
@@ -794,13 +794,13 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @param theResultFlag will be set to true if a named style is correctly loaded
      * @param loadFromLocalDb if true forces to load from local db instead of datasource one
      */
-    virtual QString loadNamedStyle( const QString theURI, bool &theResultFlag, bool loadFromLocalDb );
+    virtual QString loadNamedStyle( const QString &theURI, bool &theResultFlag, bool loadFromLocalDb );
 
     /**
      * Calls loadNamedStyle( theURI, theResultFlag, false );
      * Retained for backward compatibility
      */
-    virtual QString loadNamedStyle( const QString theURI, bool &theResultFlag );
+    virtual QString loadNamedStyle( const QString &theURI, bool &theResultFlag );
 
     virtual bool applyNamedStyle( QString namedStyle , QString errorMsg );
 
@@ -1247,14 +1247,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     QList<QgsRelation> referencingRelations( int idx );
 
-    /**
-     * Get relations, where the foreign key is on another layer, referencing this layer
-     *
-     * @param idx Only get relations, where idx forms part of the referenced key
-     * @return A list of relations
-     */
-    QList<QgsRelation> referencedRelations( int idx );
-
     /**access date format
      * @note added in 1.9
      */
@@ -1344,7 +1336,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /* Set the blending mode used for rendering each feature
      * @note added in 2.0
      */
-    void setFeatureBlendMode( const QPainter::CompositionMode blendMode );
+    void setFeatureBlendMode( const QPainter::CompositionMode &blendMode );
     /* Returns the current blending mode for features
      * @note added in 2.0
      */
@@ -1532,7 +1524,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     void rendererChanged();
 
     /** Signal emitted when setFeatureBlendMode() is called */
-    void featureBlendModeChanged( const QPainter::CompositionMode blendMode );
+    void featureBlendModeChanged( const QPainter::CompositionMode &blendMode );
 
     /** Signal emitted when setLayerTransparency() is called */
     void layerTransparencyChanged( int layerTransparency );

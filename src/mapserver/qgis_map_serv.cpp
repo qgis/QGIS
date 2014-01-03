@@ -357,7 +357,7 @@ int main( int argc, char * argv[] )
       {
         theServer = new QgsWCSServer( parameterMap );
       }
-      catch ( QgsMapServiceException e ) //admin.sld may be invalid
+      catch ( const QgsMapServiceException &e ) //admin.sld may be invalid
       {
         theRequestHandler->sendServiceException( e );
         continue;
@@ -449,7 +449,7 @@ int main( int argc, char * argv[] )
       {
         theServer = new QgsWFSServer( parameterMap );
       }
-      catch ( QgsMapServiceException e ) //admin.sld may be invalid
+      catch ( const QgsMapServiceException &e ) //admin.sld may be invalid
       {
         theRequestHandler->sendServiceException( e );
         continue;
@@ -516,26 +516,16 @@ int main( int argc, char * argv[] )
         QString outputFormat = parameterMap.value( "OUTPUTFORMAT" );
         try
         {
-          if ( theServer->getFeature( *theRequestHandler, outputFormat ) != 0 )
-          {
-            delete theRequestHandler;
-            delete theServer;
-            continue;
-          }
-          else
-          {
-            delete theRequestHandler;
-            delete theServer;
-            continue;
-          }
+          theServer->getFeature( *theRequestHandler, outputFormat );
         }
         catch ( QgsMapServiceException& ex )
         {
           theRequestHandler->sendServiceException( ex );
-          delete theRequestHandler;
-          delete theServer;
-          continue;
         }
+
+        delete theRequestHandler;
+        delete theServer;
+        continue;
       }
       else if ( request.compare( "Transaction", Qt::CaseInsensitive ) == 0 )
       {
@@ -565,7 +555,7 @@ int main( int argc, char * argv[] )
     {
       theServer = new QgsWMSServer( parameterMap, theMapRenderer );
     }
-    catch ( QgsMapServiceException e ) //admin.sld may be invalid
+    catch ( const QgsMapServiceException &e ) //admin.sld may be invalid
     {
       theRequestHandler->sendServiceException( e );
       continue;

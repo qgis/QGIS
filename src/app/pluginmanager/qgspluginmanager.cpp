@@ -464,7 +464,7 @@ void QgsPluginManager::reloadModelData()
 
   for ( QMap<QString, QMap<QString, QString> >::iterator it = mPlugins.begin();
         it != mPlugins.end();
-        it++ )
+        ++it )
   {
     if ( ! it->value( "id" ).isEmpty() )
     {
@@ -1244,7 +1244,7 @@ bool QgsPluginManager::hasAvailablePlugins( )
 {
   for ( QMap<QString,  QMap<QString, QString> >::iterator it = mPlugins.begin();
         it != mPlugins.end();
-        it++ )
+        ++it )
   {
     if ( it->value( "status" ) == "not installed" || it->value( "status" ) == "new" )
     {
@@ -1261,7 +1261,7 @@ bool QgsPluginManager::hasReinstallablePlugins( )
 {
   for ( QMap<QString,  QMap<QString, QString> >::iterator it = mPlugins.begin();
         it != mPlugins.end();
-        it++ )
+        ++it )
   {
     // plugins marked as "installed" are available for download (otherwise they are marked "orphans")
     if ( it->value( "status" ) == "installed" )
@@ -1279,7 +1279,7 @@ bool QgsPluginManager::hasUpgradeablePlugins( )
 {
   for ( QMap<QString,  QMap<QString, QString> >::iterator it = mPlugins.begin();
         it != mPlugins.end();
-        it++ )
+        ++it )
   {
     if ( it->value( "status" ) == "upgradeable" )
     {
@@ -1296,7 +1296,7 @@ bool QgsPluginManager::hasNewPlugins( )
 {
   for ( QMap<QString,  QMap<QString, QString> >::iterator it = mPlugins.begin();
         it != mPlugins.end();
-        it++ )
+        ++it )
   {
     if ( it->value( "status" ) == "new" )
     {
@@ -1313,7 +1313,7 @@ bool QgsPluginManager::hasNewerPlugins( )
 {
   for ( QMap<QString,  QMap<QString, QString> >::iterator it = mPlugins.begin();
         it != mPlugins.end();
-        it++ )
+        ++it )
   {
     if ( it->value( "status" ) == "newer" )
     {
@@ -1330,7 +1330,7 @@ bool QgsPluginManager::hasInvalidPlugins( )
 {
   for ( QMap<QString,  QMap<QString, QString> >::iterator it = mPlugins.begin();
         it != mPlugins.end();
-        it++ )
+        ++it )
   {
     if ( ! it->value( "error" ).isEmpty() )
     {

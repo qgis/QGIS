@@ -1069,10 +1069,12 @@ bool QgsSymbolLayerV2Utils::hasExternalGraphic( QDomElement &element )
   {
     return true;
   }
+#if 0
   else if ( !inlineContentElem.isNull() )
   {
     return false; // not implemented yet
   }
+#endif
   else
   {
     return false;
@@ -1369,8 +1371,10 @@ bool QgsSymbolLayerV2Utils::convertPolygonSymbolizerToPointMarker( QDomElement &
               found = true;
               break;
             }
+#if 0
             else if ( !inlineContentElem.isNull() )
-              continue; // TODO: not implemeneted yet
+              continue; // TODO: not implemented yet
+#endif
             else
               continue;
           }

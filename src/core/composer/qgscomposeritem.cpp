@@ -767,7 +767,7 @@ QRectF QgsComposerItem::largestRotatedRectWithinBounds( QRectF originalRect, QRe
     {
       return QRectF(( boundsWidth - rectScaledWidth ) / 2.0, ( boundsHeight - rectScaledHeight ) / 2.0, rectScaledWidth, rectScaledHeight );
     }
-    else if ( rotation == 0 || rotation == 180 )
+    else
     {
       return QRectF(( boundsWidth - rectScaledHeight ) / 2.0, ( boundsHeight - rectScaledWidth ) / 2.0, rectScaledHeight, rectScaledWidth );
     }

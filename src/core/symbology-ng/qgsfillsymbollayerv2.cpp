@@ -581,11 +581,11 @@ QPointF QgsGradientFillSymbolLayerV2::rotateReferencePoint( const QPointF & refP
   return rotatedReferencePoint;
 }
 
-void QgsGradientFillSymbolLayerV2::applyGradient( const QgsSymbolV2RenderContext& context, QBrush& brush,
-    const QColor& color, const QColor& color2, const GradientColorType gradientColorType,
-    QgsVectorColorRampV2 * gradientRamp, const GradientType gradientType,
-    const GradientCoordinateMode coordinateMode, const GradientSpread gradientSpread,
-    const QPointF referencePoint1, const QPointF referencePoint2, const double angle )
+void QgsGradientFillSymbolLayerV2::applyGradient( const QgsSymbolV2RenderContext &context, QBrush &brush,
+    const QColor &color, const QColor &color2, const GradientColorType &gradientColorType,
+    QgsVectorColorRampV2 *gradientRamp, const GradientType &gradientType,
+    const GradientCoordinateMode &coordinateMode, const GradientSpread &gradientSpread,
+    const QPointF &referencePoint1, const QPointF &referencePoint2, const double angle )
 {
   //update alpha of gradient colors
   QColor fillColor = color;

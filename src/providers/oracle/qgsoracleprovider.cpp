@@ -1288,7 +1288,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist )
       throw OracleException( tr( "Could not prepare insert statement" ), qry );
     }
 
-    for ( QgsFeatureList::iterator features = flist.begin(); features != flist.end(); features++ )
+    for ( QgsFeatureList::iterator features = flist.begin(); features != flist.end(); ++features )
     {
       const QgsAttributes &attributevec = features->attributes();
 
@@ -1345,7 +1345,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist )
     // update feature ids
     if ( mPrimaryKeyType == pktInt || mPrimaryKeyType == pktFidMap )
     {
-      for ( QgsFeatureList::iterator features = flist.begin(); features != flist.end(); features++ )
+      for ( QgsFeatureList::iterator features = flist.begin(); features != flist.end(); ++features )
       {
         const QgsAttributes &attributevec = features->attributes();
 
@@ -1804,7 +1804,6 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry *geom, QSqlQuery &qry
           g.ordinates << *ptr.dPtr++;
           if ( dim == 3 )
             g.ordinates << *ptr.dPtr++;
-          iOrdinate  += dim;
         }
       }
       break;

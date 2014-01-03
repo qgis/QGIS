@@ -276,11 +276,11 @@ QgsPoint QgsCoordinateTransform::transform( const QgsPoint thePoint, TransformDi
   {
     transformCoords( 1, &x, &y, &z, direction );
   }
-  catch ( QgsCsException &cse )
+  catch ( const QgsCsException & )
   {
     // rethrow the exception
     QgsDebugMsg( "rethrowing exception" );
-    throw cse;
+    throw;
   }
 
   return QgsPoint( x, y );
@@ -293,11 +293,11 @@ QgsPoint QgsCoordinateTransform::transform( const double theX, const double theY
   {
     return transform( QgsPoint( theX, theY ), direction );
   }
-  catch ( QgsCsException &cse )
+  catch ( const QgsCsException & )
   {
     // rethrow the exception
     QgsDebugMsg( "rethrowing exception" );
-    throw cse;
+    throw;
   }
 }
 
@@ -320,11 +320,11 @@ QgsRectangle QgsCoordinateTransform::transform( const QgsRectangle theRect, Tran
     transformCoords( 1, &x1, &y1, &z, direction );
     transformCoords( 1, &x2, &y2, &z, direction );
   }
-  catch ( QgsCsException &cse )
+  catch ( const QgsCsException & )
   {
     // rethrow the exception
     QgsDebugMsg( "rethrowing exception" );
-    throw cse;
+    throw;
   }
 
 #ifdef COORDINATE_TRANSFORM_VERBOSE
@@ -354,11 +354,11 @@ void QgsCoordinateTransform::transformInPlace( double& x, double& y, double& z,
   {
     transformCoords( 1, &x, &y, &z, direction );
   }
-  catch ( QgsCsException &cse )
+  catch ( const QgsCsException & )
   {
     // rethrow the exception
     QgsDebugMsg( "rethrowing exception" );
-    throw cse;
+    throw;
   }
 }
 
@@ -388,11 +388,11 @@ void QgsCoordinateTransform::transformPolygon( QPolygonF& poly, TransformDirecti
   {
     transformCoords( nVertices, x.data(), y.data(), z.data(), direction );
   }
-  catch ( QgsCsException &cse )
+  catch ( const QgsCsException & )
   {
     // rethrow the exception
     QgsDebugMsg( "rethrowing exception" );
-    throw cse;
+    throw;
   }
 
   for ( int i = 0; i < nVertices; ++i )
@@ -421,11 +421,11 @@ void QgsCoordinateTransform::transformInPlace(
   {
     transformCoords( x.size(), &x[0], &y[0], &z[0], direction );
   }
-  catch ( QgsCsException &cse )
+  catch ( const QgsCsException & )
   {
     // rethrow the exception
     QgsDebugMsg( "rethrowing exception" );
-    throw cse;
+    throw;
   }
 }
 
@@ -449,11 +449,11 @@ void QgsCoordinateTransform::transformInPlace( float& x, float& y, float& z,
     y = yd;
     z = zd;
   }
-  catch ( QgsCsException &cse )
+  catch ( QgsCsException & )
   {
     // rethrow the exception
     QgsDebugMsg( "rethrowing exception" );
-    throw cse;
+    throw;
   }
 }
 
@@ -494,11 +494,11 @@ void QgsCoordinateTransform::transformInPlace(
       z[i] = zd[i];
     }
   }
-  catch ( QgsCsException &cse )
+  catch ( QgsCsException & )
   {
     // rethrow the exception
     QgsDebugMsg( "rethrowing exception" );
-    throw cse;
+    throw;
   }
 }
 #endif //ANDROID
@@ -565,11 +565,11 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle re
   {
     transformCoords( numP * numP, x, y, z, direction );
   }
-  catch ( QgsCsException &cse )
+  catch ( const QgsCsException & )
   {
     // rethrow the exception
     QgsDebugMsg( "rethrowing exception" );
-    throw cse;
+    throw;
   }
 
   // Calculate the bounding box and use that for the extent

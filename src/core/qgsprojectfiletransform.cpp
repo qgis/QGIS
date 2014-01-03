@@ -809,8 +809,8 @@ void QgsProjectFileTransform::convertRasterProperties( QDomDocument& doc, QDomNo
   }
 }
 
-int QgsProjectFileTransform::rasterBandNumber( const QDomElement& rasterPropertiesElem, const QString bandName,
-    QgsRasterLayer* rlayer )
+int QgsProjectFileTransform::rasterBandNumber( const QDomElement &rasterPropertiesElem, const QString &bandName,
+    QgsRasterLayer *rlayer )
 {
   if ( !rlayer )
   {

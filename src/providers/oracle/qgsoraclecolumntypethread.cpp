@@ -25,6 +25,7 @@ QgsOracleColumnTypeThread::QgsOracleColumnTypeThread( QString name, bool useEsti
     , mName( name )
     , mUseEstimatedMetadata( useEstimatedMetadata )
     , mAllowGeometrylessTables( allowGeometrylessTables )
+    , mStopped( false )
 {
   qRegisterMetaType<QgsOracleLayerProperty>( "QgsOracleLayerProperty" );
 }

@@ -348,7 +348,6 @@ QgsVectorLayer* QgsInterpolationDialog::vectorLayerFromName( const QString& name
     if ( layer_it.value()->name() == name )
     {
       return qobject_cast<QgsVectorLayer *>( layer_it.value() );
-      break;
     }
   }
 

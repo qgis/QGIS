@@ -1500,7 +1500,7 @@ QgsFeatureId QgsWFSProvider::findNewKey() const
 
   //else return highest key + 1
   QMap<QgsFeatureId, QgsFeature*>::const_iterator lastIt = mFeatures.end();
-  lastIt--;
+  --lastIt;
   QgsFeatureId id = lastIt.key();
   return ++id;
 }
@@ -1592,7 +1592,7 @@ void QgsWFSProvider::appendSupportedOperations( const QDomElement& operationsEle
 
 //initialization for getRenderedOnly option
 //(formerly "Only request features overlapping the current view extent")
-bool QgsWFSProvider::initGetRenderedOnly( const QgsRectangle rect )
+bool QgsWFSProvider::initGetRenderedOnly( const QgsRectangle &rect )
 {
   Q_UNUSED( rect );
 

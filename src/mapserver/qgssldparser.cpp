@@ -1176,7 +1176,7 @@ QgsMapLayer* QgsSLDParser::mapLayerFromUserLayer( const QDomElement& userLayerEl
   return theMapLayer;
 }
 
-QgsVectorLayer* QgsSLDParser::vectorLayerFromGML( const QDomElement gmlRootElement ) const
+QgsVectorLayer* QgsSLDParser::vectorLayerFromGML( const QDomElement &gmlRootElement ) const
 {
   QgsDebugMsg( "Entering." );
 
@@ -1367,7 +1367,7 @@ QgsVectorLayer* QgsSLDParser::contourLayerFromRaster( const QDomElement& userSty
                        hLayer, 0, nElevField,
                        GDALTermProgress, NULL );
 
-  delete adfFixedLevels;
+  delete [] adfFixedLevels;
 
   OGR_DS_Destroy( hDS );
   GDALClose( hSrcDS );
@@ -1474,9 +1474,8 @@ void QgsSLDParser::setOpacityForLayer( const QDomElement& layerElem, QgsMapLayer
   QgsDebugMsg( "Setting opacity value: " + QString::number( opacityValue ) );
   layer->setTransparency( opacityValue );
 }
-#endif
 
-void QgsSLDParser::clearRasterSymbology( QgsRasterLayer* rl ) const
+void QgsSLDParser::clearRasterSymbology( QgsRasterLayer *rl ) const
 {
   if ( rl )
   {
@@ -1487,6 +1486,7 @@ void QgsSLDParser::clearRasterSymbology( QgsRasterLayer* rl ) const
     }
   }
 }
+#endif
 
 void QgsSLDParser::setCrsForLayer( const QDomElement& layerElem, QgsMapLayer* ml ) const
 {

@@ -178,7 +178,7 @@ bool QgsPostgresFeatureIterator::rewind()
 
   // move cursor to first record
   P->mConnectionRO->PQexecNR( QString( "move absolute 0 in %1" ).arg( mCursorName ) );
-  mFeatureQueue.empty();
+  mFeatureQueue.clear();
   mFetched = 0;
 
   return true;
@@ -361,8 +361,8 @@ bool QgsPostgresFeatureIterator::getFeature( QgsPostgresResult &queryResult, int
       if ( returnedLength > 0 )
       {
         unsigned char *featureGeom = new unsigned char[returnedLength + 1];
-        memset( featureGeom, 0, returnedLength + 1 );
         memcpy( featureGeom, PQgetvalue( queryResult.result(), row, col ), returnedLength );
+        memset( featureGeom + returnedLength, 0, 1 );
 
         // modify 2.5D WKB types to make them compliant with OGR
         unsigned int wkbType;

@@ -74,7 +74,9 @@ class QgsGrassModelItem
 };
 
 QgsGrassModelItem::QgsGrassModelItem()
-    : mParent( 0 ), mType( QgsGrassModel::None ), mPopulated( false )
+    : mParent( 0 )
+    , mType( QgsGrassModel::None )
+    , mPopulated( false )
 {
 }
 

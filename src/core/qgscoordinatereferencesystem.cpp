@@ -113,7 +113,7 @@ bool QgsCoordinateReferenceSystem::createFromId( const long theId, CrsType theTy
   return result;
 }
 
-bool QgsCoordinateReferenceSystem::createFromString( const QString theDefinition )
+bool QgsCoordinateReferenceSystem::createFromString( const QString &theDefinition )
 {
   bool result = false;
   QRegExp reCrsId( "^(epsg|postgis|internal)\\:(\\d+)$", Qt::CaseInsensitive );
@@ -157,7 +157,7 @@ bool QgsCoordinateReferenceSystem::createFromString( const QString theDefinition
   return result;
 }
 
-bool QgsCoordinateReferenceSystem::createFromUserInput( const QString theDefinition )
+bool QgsCoordinateReferenceSystem::createFromUserInput( const QString &theDefinition )
 {
   QString theWkt;
   char *wkt = NULL;
@@ -416,7 +416,7 @@ bool QgsCoordinateReferenceSystem::axisInverted() const
   return mAxisInverted != 0;
 }
 
-bool QgsCoordinateReferenceSystem::createFromWkt( QString theWkt )
+bool QgsCoordinateReferenceSystem::createFromWkt( const QString &theWkt )
 {
   mIsValidFlag = false;
   mWkt.clear();
@@ -496,7 +496,7 @@ bool QgsCoordinateReferenceSystem::isValid() const
   return mIsValidFlag;
 }
 
-bool QgsCoordinateReferenceSystem::createFromProj4( const QString theProj4String )
+bool QgsCoordinateReferenceSystem::createFromProj4( const QString &theProj4String )
 {
   //
   // Examples:

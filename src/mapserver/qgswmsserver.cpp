@@ -703,6 +703,7 @@ QByteArray* QgsWMSServer::getPrint( const QString& formatString )
   return ba;
 }
 
+#if 0
 QImage* QgsWMSServer::printCompositionToImage( QgsComposition* c ) const
 {
   int width = ( int )( c->paperWidth() * c->printResolution() / 25.4 ); //width in pixel
@@ -718,6 +719,7 @@ QImage* QgsWMSServer::printCompositionToImage( QgsComposition* c ) const
   p.end();
   return image;
 }
+#endif
 
 QImage* QgsWMSServer::getMap()
 {
@@ -833,19 +835,15 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result, QString version )
   }
 
   //read I,J resp. X,Y
-  QString iString, jString;
-  int i = -1;
-  int j = -1;
-
-  iString = mParameterMap.value( "I", mParameterMap.value( "X" ) );
-  i = iString.toInt( &conversionSuccess );
+  QString iString = mParameterMap.value( "I", mParameterMap.value( "X" ) );
+  int i = iString.toInt( &conversionSuccess );
   if ( !conversionSuccess )
   {
     i = -1;
   }
 
-  jString = mParameterMap.value( "J", mParameterMap.value( "Y" ) );
-  j = jString.toInt( &conversionSuccess );
+  QString jString = mParameterMap.value( "J", mParameterMap.value( "Y" ) );
+  int j = jString.toInt( &conversionSuccess );
   if ( !conversionSuccess )
   {
     j = -1;
@@ -1647,9 +1645,9 @@ QStringList QgsWMSServer::layerSet( const QStringList &layersList,
     for ( listIndex = layerList.size() - 1; listIndex >= 0; listIndex-- )
     {
       theMapLayer = layerList.at( listIndex );
-      QgsDebugMsg( QString( "Checking layer: %1" ).arg( theMapLayer->name() ) );
       if ( theMapLayer )
       {
+        QgsDebugMsg( QString( "Checking layer: %1" ).arg( theMapLayer->name() ) );
         //test if layer is visible in requested scale
         bool useScaleConstraint = ( scaleDenominator > 0 && theMapLayer->hasScaleBasedVisibility() );
         if ( !useScaleConstraint ||

@@ -309,7 +309,7 @@ bool QgsWMSSourceSelect::populateLayerList( QgsWmsProvider *wmsProvider )
 
   for ( QVector<QgsWmsLayerProperty>::iterator layer = layers.begin();
         layer != layers.end();
-        layer++ )
+        ++layer )
   {
     QgsNumericSortTreeWidgetItem *lItem = createItem( layer->orderId, QStringList() << layer->name << layer->title << layer->abstract, items, layerAndStyleCount, layerParents, layerParentNames );
 
@@ -806,7 +806,7 @@ void QgsWMSSourceSelect::on_lstLayers_itemSelectionChanged()
     // if not, use one of the available CRS
     QString defaultCRS;
     QSet<QString>::const_iterator it = mCRSs.begin();
-    for ( ; it != mCRSs.end(); it++ )
+    for ( ; it != mCRSs.end(); ++it )
     {
       if ( it->compare( mCRS, Qt::CaseInsensitive ) == 0 )
         break;

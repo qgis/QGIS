@@ -798,7 +798,7 @@ void GlobePlugin::elevationLayersChanged()
     // Remove elevation layers
     ElevationLayerVector list;
     map->getElevationLayers( list );
-    for ( ElevationLayerVector::iterator i = list.begin(); i != list.end(); i++ )
+    for ( ElevationLayerVector::iterator i = list.begin(); i != list.end(); ++i )
     {
       map->removeElevationLayer( *i );
     }

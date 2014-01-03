@@ -46,7 +46,7 @@ class QgsMapCoordsDialog : public QDialog, private Ui::QgsMapCoordsDialogBase
     Q_OBJECT
 
   public:
-    QgsMapCoordsDialog( QgsMapCanvas* qgisCanvas, const QgsPoint pixelCoords, QWidget* parent = 0 );
+    QgsMapCoordsDialog( QgsMapCanvas *qgisCanvas, const QgsPoint &pixelCoords, QWidget *parent = 0 );
     ~QgsMapCoordsDialog();
 
   private slots:

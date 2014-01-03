@@ -377,7 +377,7 @@ void QgsGraduatedSymbolRendererV2::toSld( QDomDocument& doc, QDomElement &elemen
     props[ "scale" ] = QString( mSizeScaleField ).append( "\"" ).prepend( "\"" );
 
   // create a Rule for each range
-  for ( QgsRangeList::const_iterator it = mRanges.constBegin(); it != mRanges.constEnd(); it++ )
+  for ( QgsRangeList::const_iterator it = mRanges.constBegin(); it != mRanges.constEnd(); ++it )
   {
     QgsStringMap catProps( props );
     it->toSld( doc, element, catProps );
@@ -578,11 +578,6 @@ static QList<double> _calcPrettyBreaks( double minimum, double maximum, int clas
       start = start - k / 2;
       end = end + k / 2 + k % 2;
     }
-    divisions = minimumCount;
-  }
-  else
-  {
-    divisions = k;
   }
   double minimumBreak = start * unit;
   //double maximumBreak = end * unit;
@@ -1009,7 +1004,7 @@ QDomElement QgsGraduatedSymbolRendererV2::save( QDomDocument& doc )
   QgsSymbolV2Map symbols;
   QDomElement rangesElem = doc.createElement( "ranges" );
   QgsRangeList::const_iterator it = mRanges.constBegin();
-  for ( ; it != mRanges.constEnd(); it++ )
+  for ( ; it != mRanges.constEnd(); ++it )
   {
     const QgsRendererRangeV2& range = *it;
     QString symbolName = QString::number( i );

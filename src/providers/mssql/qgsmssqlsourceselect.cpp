@@ -725,6 +725,7 @@ QgsMssqlGeomColumnTypeThread::QgsMssqlGeomColumnTypeThread( QString connectionNa
     : QThread()
     , mConnectionName( connectionName )
     , mUseEstimatedMetadata( useEstimatedMetadata )
+    , mStopped( false )
 {
   qRegisterMetaType<QgsMssqlLayerProperty>( "QgsMssqlLayerProperty" );
 }

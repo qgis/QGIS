@@ -235,7 +235,7 @@ class QgsWFSProvider: public QgsVectorDataProvider
     /**records provider error*/
     void handleException( const QDomDocument& serverResponse );
     /**Initializes "Cache Features" inactive processing*/
-    bool initGetRenderedOnly( QgsRectangle );
+    bool initGetRenderedOnly( const QgsRectangle &rect );
     /**Converts DescribeFeatureType schema geometry property type to WKBType*/
     QGis::WkbType geomTypeFromPropertyType( QString attName, QString propType );
 

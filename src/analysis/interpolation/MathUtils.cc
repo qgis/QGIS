@@ -267,21 +267,8 @@ bool MathUtils::inCircle( Point3D* testp, Point3D* p1, Point3D* p2, Point3D* p3 
     aValue = aValue - (( bx * bx + by * by ) * triArea( p1, p3, testp ) );
     aValue = aValue + (( cx * cx + cy * cy ) * triArea( p1, p2, testp ) );
     aValue = aValue - (( px * px + py * py ) * triArea( p1, p2, p3 ) );
-    //return aValue>0.0;
-    if ( aValue > tolerance )
-    {
-      return true;
-    }
-    else if ( aValue < -tolerance )
-    {
-      return false;
-    }
-    else//point is approximately on the circle
-    {
-      //cout << "aValue " << aValue << endl << flush;
-      //return aValue>0.0;
-      return false;
-    }
+
+    return aValue > tolerance;
   }
   else
   {

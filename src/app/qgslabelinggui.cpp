@@ -1585,9 +1585,7 @@ void QgsLabelingGui::on_mPreviewBackgroundBtn_colorChanged( const QColor &color 
 void QgsLabelingGui::on_mDirectSymbLeftToolBtn_clicked()
 {
   bool gotChar = false;
-  QChar dirSymb = QChar();
-
-  dirSymb = mCharDlg->selectCharacter( &gotChar, mRefFont, mFontDB.styleString( mRefFont ) );
+  QChar dirSymb = mCharDlg->selectCharacter( &gotChar, mRefFont, mFontDB.styleString( mRefFont ) );
 
   if ( !gotChar )
     return;
@@ -1599,9 +1597,7 @@ void QgsLabelingGui::on_mDirectSymbLeftToolBtn_clicked()
 void QgsLabelingGui::on_mDirectSymbRightToolBtn_clicked()
 {
   bool gotChar = false;
-  QChar dirSymb = QChar();
-
-  dirSymb = mCharDlg->selectCharacter( &gotChar, mRefFont, mFontDB.styleString( mRefFont ) );
+  QChar dirSymb = mCharDlg->selectCharacter( &gotChar, mRefFont, mFontDB.styleString( mRefFont ) );
 
   if ( !gotChar )
     return;

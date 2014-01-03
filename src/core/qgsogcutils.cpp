@@ -780,7 +780,7 @@ QgsGeometry* QgsOgcUtils::geometryFromGMLMultiPolygon( const QDomElement& geomet
   return g;
 }
 
-bool QgsOgcUtils::readGMLCoordinates( QgsPolyline &coords, const QDomElement elem )
+bool QgsOgcUtils::readGMLCoordinates( QgsPolyline &coords, const QDomElement &elem )
 {
   QString coordSeparator = ",";
   QString tupelSeparator = " ";
@@ -861,7 +861,7 @@ QgsRectangle QgsOgcUtils::rectangleFromGMLBox( const QDomNode& boxNode )
   return rect;
 }
 
-bool QgsOgcUtils::readGMLPositions( QgsPolyline &coords, const QDomElement elem )
+bool QgsOgcUtils::readGMLPositions( QgsPolyline &coords, const QDomElement &elem )
 {
   //tupel and coord separator are the same
   QString coordSeparator = " ";
@@ -1243,10 +1243,7 @@ QDomElement QgsOgcUtils::geometryToGML( QgsGeometry* geometry, QDomDocument& doc
       {
         return QDomElement();
       }
-      int *ringStart; // index of first point for each ring
-      int *ringNumPoints; // number of points in each ring
-      ringStart = new int[*numRings];
-      ringNumPoints = new int[*numRings];
+      int *ringNumPoints = new int[*numRings]; // number of points in each ring
       ptr = wkb + 1 + 2 * sizeof( int ); // set pointer to the first ring
       for ( idx = 0; idx < *numRings; idx++ )
       {
@@ -1287,7 +1284,6 @@ QDomElement QgsOgcUtils::geometryToGML( QgsGeometry* geometry, QDomDocument& doc
         boundaryElem.appendChild( ringElem );
         polygonElem.appendChild( boundaryElem );
       }
-      delete [] ringStart;
       delete [] ringNumPoints;
       return polygonElem;
     }

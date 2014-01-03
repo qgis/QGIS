@@ -31,12 +31,10 @@ static const QString pluginIcon_ = ":/zonal_statistics/raster-stats.png";
 
 QgsZonalStatisticsPlugin::QgsZonalStatisticsPlugin( QgisInterface* iface ): mIface( iface ), mAction( 0 )
 {
-
 }
 
 QgsZonalStatisticsPlugin::~QgsZonalStatisticsPlugin()
 {
-
 }
 
 void QgsZonalStatisticsPlugin::initGui()

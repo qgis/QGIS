@@ -78,10 +78,10 @@ static const QString sPluginIcon = ":/icons/default/mGeorefRun.png";
  * @param theQGisApp - Pointer to the QGIS main window
  * @param theQGisInterface - Pointer to the QGIS interface object
  */
-QgsGeorefPlugin::QgsGeorefPlugin( QgisInterface * theQgisInterface ):
-    QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType ),
-    mQGisIface( theQgisInterface ),
-    mPluginGui( NULL )
+QgsGeorefPlugin::QgsGeorefPlugin( QgisInterface * theQgisInterface )
+    : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
+    , mQGisIface( theQgisInterface )
+    , mPluginGui( NULL )
 {
 }
 

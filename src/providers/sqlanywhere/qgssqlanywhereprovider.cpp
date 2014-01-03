@@ -184,9 +184,9 @@ void
 QgsSqlAnywhereProvider::setNativeTypes()
 {
   const SqlAnyTypeMap *map = mConnRO->typeMap();
-  for ( SqlAnyTypeMap::const_iterator it = map->constBegin()
-        ; it != map->constEnd()
-        ; it++ )
+  for ( SqlAnyTypeMap::const_iterator it = map->constBegin();
+        it != map->constEnd();
+        ++it )
   {
     if ( it.key() != DT_NOTYPE )
       mNativeTypes << it.value();
@@ -493,7 +493,6 @@ QgsSqlAnywhereProvider::findKeyColumn()
   // test suitability of given key
   if ( !mKeyColumn.isEmpty() )
   {
-    bool  keyIsValid = true;
     unsigned int colId = 0;
 
     // test whether key column is a member of table and appropriate type
@@ -505,7 +504,7 @@ QgsSqlAnywhereProvider::findKeyColumn()
           .arg( mTableId )
           .arg( quotedValue( mKeyColumn ) );
     stmt = mConnRO->execute_direct( sql );
-    keyIsValid = stmt->isValid() && stmt->fetchNext() && stmt->getUInt( 0, colId );
+    bool keyIsValid = stmt->isValid() && stmt->fetchNext() && stmt->getUInt( 0, colId );
     delete stmt;
 
     if ( keyIsValid )
@@ -791,9 +790,9 @@ QgsSqlAnywhereProvider::addFeatures( QgsFeatureList & flist )
   mConnRW->begin();
 
   // iterate features
-  for ( QgsFeatureList::iterator fit = flist.begin()
-                                       ; ok && fit != flist.end()
-        ; fit++ )
+  for ( QgsFeatureList::iterator fit = flist.begin();
+        ok && fit != flist.end();
+        ++fit )
   {
 
     SqlAnyStatement *stmt;
@@ -903,9 +902,9 @@ QgsSqlAnywhereProvider::deleteFeatures( const QgsFeatureIds & id )
         .arg( mQuotedTableName )
         .arg( getWhereClause() )
         .arg( mKeyColumn );
-  for ( QgsFeatureIds::const_iterator it = id.constBegin()
-        ; it != id.constEnd()
-        ; it++ )
+  for ( QgsFeatureIds::const_iterator it = id.constBegin();
+        it != id.constEnd();
+        ++it )
   {
     if ( it != id.constBegin() )
     {
@@ -962,9 +961,9 @@ QgsSqlAnywhereProvider::addAttributes( const QList<QgsField> &attributes )
   }
 
   sql = QString( "ALTER TABLE %1 " ).arg( mQuotedTableName );
-  for ( QList<QgsField>::const_iterator it = attributes.constBegin()
-        ; ok && it != attributes.constEnd()
-        ; it++ )
+  for ( QList<QgsField>::const_iterator it = attributes.constBegin();
+        ok && it != attributes.constEnd();
+        ++it )
   {
 
     QString datatype = it->typeName();
@@ -1001,9 +1000,9 @@ QgsSqlAnywhereProvider::addAttributes( const QList<QgsField> &attributes )
     // Add column comments.  The ALTER TABLE statement was
     // already committed, so treat this operation as best-effort.
     mConnRW->begin();
-    for ( QList<QgsField>::const_iterator it = attributes.constBegin()
-          ; ok && it != attributes.constEnd()
-          ; it++ )
+    for ( QList<QgsField>::const_iterator it = attributes.constBegin();
+          ok && it != attributes.constEnd();
+          ++it )
     {
 
       if ( !it->comment().isEmpty() )
@@ -1062,11 +1061,10 @@ QgsSqlAnywhereProvider::deleteAttributes( const QgsAttributeIds & ids )
 
   sql = QString( "ALTER TABLE %1 " ).arg( mQuotedTableName );
   int cnt = 0;
-  for ( QgsAttributeIds::const_iterator it = ids.constBegin()
-        ; it != ids.constEnd()
-        ; it++ )
+  for ( QgsAttributeIds::const_iterator it = ids.constBegin();
+        it != ids.constEnd();
+        ++it )
   {
-
     QString attr = field( *it ).name();
     if ( !attr.isEmpty() )
     {
@@ -1127,9 +1125,9 @@ QgsSqlAnywhereProvider::changeAttributeValues( const QgsChangedAttributesMap & a
   mConnRW->begin();
 
   // iterate each feature requiring update
-  for ( QgsChangedAttributesMap::const_iterator fit = attr_map.constBegin()
-        ; ok && fit != attr_map.constEnd()
-        ; fit++ )
+  for ( QgsChangedAttributesMap::const_iterator fit = attr_map.constBegin();
+        ok && fit != attr_map.constEnd();
+        ++fit )
   {
 
     // skip added features
@@ -1139,9 +1137,9 @@ QgsSqlAnywhereProvider::changeAttributeValues( const QgsChangedAttributesMap & a
     // iterate each attribute requiring update
     QString sql = QString( "UPDATE %1 SET " ).arg( mQuotedTableName );
     int cnt = 0;
-    for ( QgsAttributeMap::const_iterator ait = fit->constBegin()
-          ; ok && ait != fit->constEnd()
-          ; ait++ )
+    for ( QgsAttributeMap::const_iterator ait = fit->constBegin();
+          ok && ait != fit->constEnd();
+          ++ait )
     {
       QString attr;
       if ( ait.key() < mAttributeFields.size() )
@@ -1231,9 +1229,9 @@ QgsSqlAnywhereProvider::changeGeometryValues( QgsGeometryMap & gmap )
   stmt = mConnRW->prepare( sql );
   ok = stmt->isValid();
 
-  for ( QgsGeometryMap::const_iterator it = gmap.constBegin()
-        ; ok && it != gmap.constEnd()
-        ; it++ )
+  for ( QgsGeometryMap::const_iterator it = gmap.constBegin();
+        ok && it != gmap.constEnd();
+        ++it )
   {
     QgsFeatureId key = it.key();
     QgsGeometry geom = *it;

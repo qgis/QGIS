@@ -105,7 +105,7 @@ QgsRuleBasedRendererV2::Rule* QgsRuleBasedRendererV2::Rule::takeChildAt( int i )
   Rule* rule = mChildren.takeAt( i );
   rule->mParent = NULL;
   return rule;
-  updateElseRules();
+  // updateElseRules();
 }
 
 void QgsRuleBasedRendererV2::Rule::updateElseRules()
@@ -838,7 +838,7 @@ QgsLegendSymbologyList QgsRuleBasedRendererV2::legendSymbologyItems( QSize iconS
 {
   QgsLegendSymbologyList lst;
   QgsLegendSymbolList items = legendSymbolItems();
-  for ( QgsLegendSymbolList::iterator it = items.begin(); it != items.end(); it++ )
+  for ( QgsLegendSymbolList::iterator it = items.begin(); it != items.end(); ++it )
   {
     QPair<QString, QgsSymbolV2*> pair = *it;
     QPixmap pix = QgsSymbolLayerV2Utils::symbolPreviewPixmap( pair.second, iconSize );

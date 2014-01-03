@@ -1392,7 +1392,7 @@ bool QgsStyleV2::importXML( QString filename )
   }
 
   // save the symbols with proper name
-  for ( QMap<QString, QgsSymbolV2*>::iterator it = symbols.begin(); it != symbols.end(); it++ )
+  for ( QMap<QString, QgsSymbolV2*>::iterator it = symbols.begin(); it != symbols.end(); ++it )
   {
     addSymbol( it.key(), it.value() );
   }

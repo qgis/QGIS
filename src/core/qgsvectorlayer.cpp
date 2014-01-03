@@ -1177,7 +1177,7 @@ QgsRectangle QgsVectorLayer::extent()
       rect.combineExtentWith( &r );
     }
 
-    for ( QgsFeatureMap::iterator it = mEditBuffer->mAddedFeatures.begin(); it != mEditBuffer->mAddedFeatures.end(); it++ )
+    for ( QgsFeatureMap::iterator it = mEditBuffer->mAddedFeatures.begin(); it != mEditBuffer->mAddedFeatures.end(); ++it )
     {
       if ( it->geometry() )
       {
@@ -1701,7 +1701,7 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
           const QMap<QString, QgsMapLayer*> &layers = QgsMapLayerRegistry::instance()->mapLayers();
 
           QMap<QString, QgsMapLayer*>::const_iterator it;
-          for ( it = layers.constBegin(); it != layers.constEnd() && ( *it )->name() != lName; it++ )
+          for ( it = layers.constBegin(); it != layers.constEnd() && ( *it )->name() != lName; ++it )
             ;
 
           if ( it != layers.constEnd() && stuff.size() > 2 )
@@ -2284,7 +2284,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
           {
             const QMap<QString, QVariant> &map = mValueMaps[ it.key()];
 
-            for ( QMap<QString, QVariant>::const_iterator vmit = map.begin(); vmit != map.end(); vmit++ )
+            for ( QMap<QString, QVariant>::const_iterator vmit = map.begin(); vmit != map.end(); ++vmit )
             {
               QDomElement value = doc.createElement( "valuepair" );
               value.setAttribute( "key", vmit.key() );
@@ -2448,7 +2448,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
   {
     QDomElement tabsElem = doc.createElement( "attributeEditorForm" );
 
-    for ( QList< QgsAttributeEditorElement* >::const_iterator it = mAttributeEditorElements.begin(); it != mAttributeEditorElements.end(); it++ )
+    for ( QList< QgsAttributeEditorElement* >::const_iterator it = mAttributeEditorElements.begin(); it != mAttributeEditorElements.end(); ++it )
     {
       QDomElement attributeEditorWidgetElem = ( *it )->toDomElement( doc );
       tabsElem.appendChild( attributeEditorWidgetElem );
@@ -3023,7 +3023,7 @@ const QString QgsVectorLayer::displayField() const
   return mDisplayField;
 }
 
-void QgsVectorLayer::setDisplayExpression( const QString displayExpression )
+void QgsVectorLayer::setDisplayExpression( const QString &displayExpression )
 {
   mDisplayExpression = displayExpression;
 }
@@ -3517,7 +3517,7 @@ QVariant QgsVectorLayer::maximumValue( int index )
 }
 
 /** Write blend mode for features */
-void QgsVectorLayer::setFeatureBlendMode( const QPainter::CompositionMode featureBlendMode )
+void QgsVectorLayer::setFeatureBlendMode( const QPainter::CompositionMode &featureBlendMode )
 {
   mFeatureBlendMode = featureBlendMode;
   emit featureBlendModeChanged( featureBlendMode );
@@ -4083,12 +4083,12 @@ void QgsVectorLayer::saveStyleToDatabase( QString name, QString description,
 
 
 
-QString QgsVectorLayer::loadNamedStyle( const QString theURI, bool &theResultFlag )
+QString QgsVectorLayer::loadNamedStyle( const QString &theURI, bool &theResultFlag )
 {
   return loadNamedStyle( theURI, theResultFlag, false );
 }
 
-QString QgsVectorLayer::loadNamedStyle( const QString theURI, bool &theResultFlag , bool loadFromLocalDB )
+QString QgsVectorLayer::loadNamedStyle( const QString &theURI, bool &theResultFlag, bool loadFromLocalDB )
 {
   QgsDataSourceURI dsUri( theURI );
   if ( !loadFromLocalDB && !dsUri.database().isEmpty() )

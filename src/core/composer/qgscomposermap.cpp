@@ -347,12 +347,6 @@ void QgsComposerMap::paint( QPainter* painter, const QStyleOptionGraphicsItem* i
 
     QgsRectangle cExtent = *currentMapExtent();
 
-    double horizontalVScaleFactor = horizontalViewScaleFactor();
-    if ( horizontalVScaleFactor < 0 )
-    {
-      horizontalVScaleFactor = mLastValidViewScaleFactor;
-    }
-
     double imagePixelWidth = cExtent.width() / requestRectangle.width() * mCacheImage.width() ; //how many pixels of the image are for the map extent?
     double scale = rect().width() / imagePixelWidth;
     QgsPoint rotationPoint = QgsPoint(( cExtent.xMaximum() + cExtent.xMinimum() ) / 2.0, ( cExtent.yMaximum() + cExtent.yMinimum() ) / 2.0 );

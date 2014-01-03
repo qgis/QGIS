@@ -902,10 +902,9 @@ int QgsSpatiaLiteProvider::computeSizeFromGeosWKB2D( const unsigned char *blob,
   int rings;
   int points;
   int ib;
-  const unsigned char *p_in = blob;
+  const unsigned char *p_in = blob + 5;
   int gsize = 5;
 
-  p_in = blob + 5;
   switch ( type )
   {
       // compunting the required size
@@ -1075,10 +1074,9 @@ int QgsSpatiaLiteProvider::computeSizeFromGeosWKB3D( const unsigned char *blob,
   int rings;
   int points;
   int ib;
-  const unsigned char *p_in = blob;
+  const unsigned char *p_in = blob + 5;
   int gsize = 5;
 
-  p_in = blob + 5;
   switch ( type )
   {
       // compunting the required size
@@ -1278,8 +1276,8 @@ void QgsSpatiaLiteProvider::convertFromGeosWKB( const unsigned char *blob,
   {
     // already 2D: simply copying is required
     unsigned char *wkbGeom = new unsigned char[blob_size + 1];
-    memset( wkbGeom, '\0', blob_size + 1 );
     memcpy( wkbGeom, blob, blob_size );
+    memset( wkbGeom + blob_size, 0, 1 );
     *wkb = wkbGeom;
     *geom_size = blob_size + 1;
     return;
@@ -2472,8 +2470,8 @@ void QgsSpatiaLiteProvider::convertToGeosWKB( const unsigned char *blob,
   {
     // already 2D: simply copying is required
     unsigned char *wkbGeom = new unsigned char[blob_size + 1];
-    memset( wkbGeom, '\0', blob_size + 1 );
     memcpy( wkbGeom, blob, blob_size );
+    memset( wkbGeom + blob_size, 0, 1 );
     *wkb = wkbGeom;
     *geom_size = blob_size + 1;
     return;
@@ -3591,7 +3589,7 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
     ret = sqlite3_prepare_v2( sqliteHandle, sql.toUtf8().constData(), -1, &stmt, NULL );
     if ( ret == SQLITE_OK )
     {
-      for ( QgsFeatureList::iterator feature = flist.begin(); feature != flist.end(); feature++ )
+      for ( QgsFeatureList::iterator feature = flist.begin(); feature != flist.end(); ++feature )
       {
         // looping on each feature to insert
         const QgsAttributes& attributevec = feature->attributes();
@@ -4133,7 +4131,7 @@ void QgsSpatiaLiteProvider::SqliteHandles::closeDb( SqliteHandles * &handle )
 void QgsSpatiaLiteProvider::SqliteHandles::closeDb( QMap < QString, SqliteHandles * >&handles, SqliteHandles * &handle )
 {
   QMap < QString, SqliteHandles * >::iterator i;
-  for ( i = handles.begin(); i != handles.end() && i.value() != handle; i++ )
+  for ( i = handles.begin(); i != handles.end() && i.value() != handle; ++i )
     ;
 
   Q_ASSERT( i.value() == handle );

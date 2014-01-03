@@ -409,7 +409,6 @@ bool QgsMapToolLabel::rotationPoint( QgsPoint& pos, bool ignoreUpsideDown, bool 
     }
     else if ( valiString.compare( "Half", Qt::CaseInsensitive ) == 0 )
     {
-      ydiff = labelSizeY * descentRatio;
       ydiff = labelSizeY * 0.5 * ( 1 - descentRatio );
     }
   }

@@ -95,14 +95,14 @@ bool QgsMemoryFeatureIterator::nextFeatureUsingList( QgsFeature& feature )
     if ( hasFeature )
       break;
 
-    mFeatureIdListIterator++;
+    ++mFeatureIdListIterator;
   }
 
   // copy feature
   if ( hasFeature )
   {
     feature = P->mFeatures[*mFeatureIdListIterator];
-    mFeatureIdListIterator++;
+    ++mFeatureIdListIterator;
   }
   else
     close();
@@ -145,14 +145,14 @@ bool QgsMemoryFeatureIterator::nextFeatureTraverseAll( QgsFeature& feature )
     if ( hasFeature )
       break;
 
-    mSelectIterator++;
+    ++mSelectIterator;
   }
 
   // copy feature
   if ( hasFeature )
   {
     feature = mSelectIterator.value();
-    mSelectIterator++;
+    ++mSelectIterator;
     feature.setValid( true );
     feature.setFields( &P->mFields ); // allow name-based attribute lookups
   }

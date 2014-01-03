@@ -36,9 +36,9 @@ static const QString sPluginIcon = ":/oracleplugin/oracleraster.svg";
  * an interface object that provides access to exposed functions in QGIS.
  * @param theQGisInterface - Pointer to the QGIS interface object
  */
-QgsOraclePlugin::QgsOraclePlugin( QgisInterface * theQgisInterface ) :
-    QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType ),
-    mQGisIface( theQgisInterface )
+QgsOraclePlugin::QgsOraclePlugin( QgisInterface * theQgisInterface )
+    : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
+    , mQGisIface( theQgisInterface )
 {
 }
 

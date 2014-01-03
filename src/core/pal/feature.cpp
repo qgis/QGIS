@@ -483,7 +483,7 @@ namespace pal
       if ( nbp == 1 )
         cost = 0.0001;
       else
-        cost =  0.0001 + 0.0020 * double( icost ) / double( nbp - 1 );
+        cost = 0.0001 + 0.0020 * double( icost ) / double( nbp - 1 );
 
       ( *lPos )[i] = new LabelPosition( i, lx, ly, xrm, yrm, angle, cost,  this );
 
@@ -892,7 +892,6 @@ namespace pal
       {
         orientation = -orientation;
         delete slp;
-        slp = NULL;
         slp = curvedPlacementAtOffset( path_positions, path_distances, orientation, initial_index, initial_distance );
       }
       else

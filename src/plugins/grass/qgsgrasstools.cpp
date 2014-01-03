@@ -202,7 +202,7 @@ void QgsGrassTools::runModule( QString name, bool direct )
   if ( name.length() == 0 )
     return;  // Section
 
-#ifndef WIN32
+#ifdef HAVE_OPENPTY
   QgsGrassShell* sh = 0;
 #endif
 
@@ -262,7 +262,7 @@ void QgsGrassTools::runModule( QString name, bool direct )
   /* TODO: Implement something that resizes the terminal without
    *       crashes.
    */
-#ifndef WIN32
+#ifdef HAVE_OPENPTY
   if ( sh )
     sh->resizeTerminal();
 #endif

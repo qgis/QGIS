@@ -282,7 +282,7 @@ void QgsSpit::removeFile()
   for ( int n = 0; n < tblShapefiles->rowCount(); n++ )
     if ( tblShapefiles->isItemSelected( tblShapefiles->item( n, 0 ) ) )
     {
-      for ( QVector<QgsShapeFile *>::iterator vit = fileList.begin(); vit != fileList.end(); vit++ )
+      for ( QVector<QgsShapeFile *>::iterator vit = fileList.begin(); vit != fileList.end(); ++vit )
       {
         if (( *vit ) ->getName() == tblShapefiles->item( n, 0 )->text() )
         {
@@ -584,13 +584,11 @@ void QgsSpit::import()
       // Check and set destination table
       fileList[ i ] ->setTable( tblShapefiles->item( i, ColDBRELATIONNAME )->text() );
       pro.setLabelText( tr( "Importing files\n%1" ).arg( tblShapefiles->item( i, ColFILENAME )->text() ) );
-      bool rel_exists1 = false;
-      bool rel_exists2 = false;
       query = QString( "SELECT f_table_name FROM geometry_columns WHERE f_table_name=%1 AND f_table_schema=%2" )
               .arg( QgsPgUtil::quotedValue( tblShapefiles->item( i, ColDBRELATIONNAME )->text() ) )
               .arg( QgsPgUtil::quotedValue( tblShapefiles->item( i, ColDBSCHEMA )->text() ) );
       res = PQexec( conn, query.toUtf8() );
-      rel_exists1 = ( PQntuples( res ) > 0 );
+      bool rel_exists1 = ( PQntuples( res ) > 0 );
 
       if ( PQresultStatus( res ) != PGRES_TUPLES_OK )
       {
@@ -610,7 +608,7 @@ void QgsSpit::import()
               .arg( QgsPgUtil::quotedValue( tblShapefiles->item( i, ColDBSCHEMA )->text() ) );
       res = PQexec( conn, query.toUtf8() );
 
-      rel_exists2 = ( PQntuples( res ) > 0 );
+      bool rel_exists2 = ( PQntuples( res ) > 0 );
 
       if ( PQresultStatus( res ) != PGRES_TUPLES_OK )
       {
@@ -857,7 +855,6 @@ QWidget *ShapefileTableDelegate::createEditor( QWidget *parent,
       editor->setSizeAdjustPolicy( QComboBox::AdjustToContents );
       editor->installEventFilter( const_cast<ShapefileTableDelegate*>( this ) );
       return editor;
-      break;
     }
     case 1:
     case 3:
@@ -865,7 +862,6 @@ QWidget *ShapefileTableDelegate::createEditor( QWidget *parent,
       QLineEdit* editor = new QLineEdit( parent );
       editor->installEventFilter( const_cast<ShapefileTableDelegate*>( this ) );
       return editor;
-      break;
     }
   }
   return NULL;

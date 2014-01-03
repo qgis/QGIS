@@ -89,9 +89,8 @@ QgsRasterBlock* QgsSingleBandColorDataRenderer::block( int bandNo, QgsRectangle 
   for ( qgssize i = 0; i < ( qgssize )width*height; i++ )
   {
     QRgb pixelColor;
-    double alpha = 255.0;
     QRgb c = inputBlock->color( i );
-    alpha = qAlpha( c );
+    double alpha = qAlpha( c );
     pixelColor = qRgba( mOpacity * qRed( c ), mOpacity * qGreen( c ), mOpacity * qBlue( c ), mOpacity * alpha );
     outputBlock->setColor( i,  pixelColor );
   }
@@ -103,9 +102,7 @@ QgsRasterBlock* QgsSingleBandColorDataRenderer::block( int bandNo, QgsRectangle 
 void QgsSingleBandColorDataRenderer::writeXML( QDomDocument& doc, QDomElement& parentElem ) const
 {
   if ( parentElem.isNull() )
-  {
     return;
-  }
 
   QDomElement rasterRendererElem = doc.createElement( "rasterrenderer" );
   _writeXML( doc, rasterRendererElem );

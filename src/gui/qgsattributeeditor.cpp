@@ -312,7 +312,7 @@ QWidget* QgsAttributeEditor::createAttributeEditor( QWidget* parent, QWidget* ed
       {
         cb->setEditable( false );
 
-        for ( QList<QVariant>::iterator it = values.begin(); it != values.end(); it++ )
+        for ( QList<QVariant>::iterator it = values.begin(); it != values.end(); ++it )
           cb->addItem( it->toString(), it->toString() );
 
         myWidget = cb;
@@ -347,7 +347,7 @@ QWidget* QgsAttributeEditor::createAttributeEditor( QWidget* parent, QWidget* ed
       QComboBox *cb = comboBox( editor, parent );
       if ( cb )
       {
-        for ( QMap<QString, QVariant>::const_iterator it = map.begin(); it != map.end(); it++ )
+        for ( QMap<QString, QVariant>::const_iterator it = map.begin(); it != map.end(); ++it )
         {
           cb->addItem( it.key(), it.value() );
         }
@@ -421,7 +421,7 @@ QWidget* QgsAttributeEditor::createAttributeEditor( QWidget* parent, QWidget* ed
             cb->addItem( tr( "(no selection)" ), settings.value( "qgis/nullValue", "NULL" ).toString() );
           }
 
-          for ( QMap< QString, QString >::const_iterator it = map.begin(); it != map.end(); it++ )
+          for ( QMap< QString, QString >::const_iterator it = map.begin(); it != map.end(); ++it )
           {
             if ( data.mOrderByValue )
               cb->addItem( it.key(), it.value() );
@@ -439,7 +439,7 @@ QWidget* QgsAttributeEditor::createAttributeEditor( QWidget* parent, QWidget* ed
         {
           QStringList checkList = value.toString().remove( QChar( '{' ) ).remove( QChar( '}' ) ).split( "," );
 
-          for ( QMap< QString, QString >::const_iterator it = map.begin(); it != map.end(); it++ )
+          for ( QMap< QString, QString >::const_iterator it = map.begin(); it != map.end(); ++it )
           {
             QListWidgetItem *item;
             if ( data.mOrderByValue )
@@ -496,7 +496,7 @@ QWidget* QgsAttributeEditor::createAttributeEditor( QWidget* parent, QWidget* ed
       QComboBox *cb = comboBox( editor, parent );
       if ( cb )
       {
-        for ( QMap<QString, QString>::const_iterator it = classes.begin(); it != classes.end(); it++ )
+        for ( QMap<QString, QString>::const_iterator it = classes.begin(); it != classes.end(); ++it )
         {
           cb->addItem( it.value(), it.key() );
         }
@@ -644,7 +644,7 @@ QWidget* QgsAttributeEditor::createAttributeEditor( QWidget* parent, QWidget* ed
           vl->dataProvider()->uniqueValues( idx, values );
 
           QStringList svalues;
-          for ( QList<QVariant>::const_iterator it = values.begin(); it != values.end(); it++ )
+          for ( QList<QVariant>::const_iterator it = values.begin(); it != values.end(); ++it )
             svalues << it->toString();
 
           QCompleter *c = new QCompleter( svalues );

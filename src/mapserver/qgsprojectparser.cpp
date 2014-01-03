@@ -169,7 +169,7 @@ void QgsProjectParser::featureTypeList( QDomElement& parentElement, QDomDocument
         //We use the layer name even though it might not be unique.
         //Because the id sometimes contains user/pw information and the name is more descriptive
         QString typeName = layer->name();
-        typeName = typeName.replace( QString( " " ), QString( "_" ) );
+        typeName = typeName.replace( " ", "_" );
         QDomText nameText = doc.createTextNode( typeName );
         nameElem.appendChild( nameText );
         layerElem.appendChild( nameElem );
@@ -304,7 +304,7 @@ void QgsProjectParser::wcsContentMetadata( QDomElement& parentElement, QDomDocum
         //We use the layer name even though it might not be unique.
         //Because the id sometimes contains user/pw information and the name is more descriptive
         QString typeName = layer->name();
-        typeName = typeName.replace( QString( " " ), QString( "_" ) );
+        typeName = typeName.replace( " ", "_" );
         QDomText nameText = doc.createTextNode( typeName );
         nameElem.appendChild( nameText );
         layerElem.appendChild( nameElem );
@@ -492,11 +492,13 @@ void QgsProjectParser::describeFeatureType( const QString& aTypeName, QDomElemen
     {
       QgsMapLayer *mLayer = createLayerFromElement( elem );
       QgsVectorLayer* layer = dynamic_cast<QgsVectorLayer*>( mLayer );
+      if ( !layer )
+        continue;
 
       QString typeName = layer->name();
-      typeName = typeName.replace( QString( " " ), QString( "_" ) );
+      typeName = typeName.replace( " ", "_" );
 
-      if ( layer && wfsLayersId.contains( layer->id() ) && ( aTypeName == "" || typeNameList.contains( typeName ) ) )
+      if ( wfsLayersId.contains( layer->id() ) && ( aTypeName == "" || typeNameList.contains( typeName ) ) )
       {
         //do a select with searchRect and go through all the features
         QgsVectorDataProvider* provider = layer->dataProvider();
@@ -657,9 +659,11 @@ void QgsProjectParser::describeCoverage( const QString& aCoveName, QDomElement& 
     {
       //QgsMapLayer *layer = createLayerFromElement( *layerIt );
       QgsMapLayer *layer = createLayerFromElement( elem );
+      if ( !layer )
+        continue;
       QString coveName = layer->name();
-      coveName = coveName.replace( QString( " " ), QString( "_" ) );
-      if ( layer && ( aCoveName == "" || coveNameList.contains( coveName ) ) )
+      coveName = coveName.replace( " ", "_" );
+      if ( aCoveName == "" || coveNameList.contains( coveName ) )
       {
         QgsDebugMsg( QString( "add layer %1 to map" ).arg( layer->id() ) );
         layerMap.insert( layer->id(), layer );
@@ -669,7 +673,7 @@ void QgsProjectParser::describeCoverage( const QString& aCoveName, QDomElement& 
         //We use the layer name even though it might not be unique.
         //Because the id sometimes contains user/pw information and the name is more descriptive
         QString typeName = layer->name();
-        typeName = typeName.replace( QString( " " ), QString( "_" ) );
+        typeName = typeName.replace( " ", "_" );
         QDomText nameText = doc.createTextNode( typeName );
         nameElem.appendChild( nameText );
         layerElem.appendChild( nameElem );
@@ -850,7 +854,7 @@ QList<QgsMapLayer*> QgsProjectParser::mapLayerFromTypeName( const QString& tName
       QgsVectorLayer* layer = dynamic_cast<QgsVectorLayer*>( mLayer );
 
       QString typeName = layer->name();
-      typeName = typeName.replace( QString( " " ), QString( "_" ) );
+      typeName = typeName.replace( " ", "_" );
       if ( tName == typeName )
       {
         layerList.push_back( mLayer );
@@ -879,7 +883,7 @@ QList<QgsMapLayer*> QgsProjectParser::mapLayerFromCoverage( const QString& cName
       QgsRasterLayer* layer = dynamic_cast<QgsRasterLayer*>( mLayer );
 
       QString coveName = layer->name();
-      coveName = coveName.replace( QString( " " ), QString( "_" ) );
+      coveName = coveName.replace( " ", "_" );
       if ( cName == coveName )
       {
         layerList.push_back( mLayer );
@@ -934,9 +938,9 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
         QgsDebugMsg( QString( "Project path: %1" ).arg( project ) );
         QString embeddedGroupName = currentChildElem.attribute( "name" );
         QgsProjectParser* p = dynamic_cast<QgsProjectParser*>( QgsConfigCache::instance()->searchConfiguration( project ) );
-        QList<QDomElement> embeddedGroupElements = p->mLegendGroupElements;
         if ( p )
         {
+          QList<QDomElement> embeddedGroupElements = p->mLegendGroupElements;
           QStringList pIdDisabled = p->identifyDisabledLayers();
 
           QDomElement embeddedGroupElem;
@@ -1284,9 +1288,9 @@ void QgsProjectParser::addOWSLayers( QDomDocument &doc,
         QgsDebugMsg( QString( "Project path: %1" ).arg( project ) );
         QString embeddedGroupName = currentChildElem.attribute( "name" );
         QgsProjectParser* p = dynamic_cast<QgsProjectParser*>( QgsConfigCache::instance()->searchConfiguration( project ) );
-        QList<QDomElement> embeddedGroupElements = p->mLegendGroupElements;
         if ( p )
         {
+          QList<QDomElement> embeddedGroupElements = p->mLegendGroupElements;
           QStringList pIdDisabled = p->identifyDisabledLayers();
 
           QDomElement embeddedGroupElem;

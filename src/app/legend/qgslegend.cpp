@@ -2159,7 +2159,7 @@ QgsLegendGroup* QgsLegend::findLegendGroup( const QString& name, const QString& 
 
 void QgsLegend::adjustIconSize()
 {
-  if ( mPixmapWidthValues.size() > 0 && mPixmapHeightValues.size() > 0 )
+  if ( !mPixmapWidthValues.empty() && !mPixmapHeightValues.empty() )
   {
     std::multiset<int>::const_reverse_iterator width_it = mPixmapWidthValues.rbegin();
     std::multiset<int>::const_reverse_iterator height_it = mPixmapHeightValues.rbegin();

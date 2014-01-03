@@ -166,7 +166,7 @@ class QgsMapLayer : QObject
     virtual bool isEditable() const;
 
     /** sets state from Dom document
-       @param layer_node is Dom node corresponding to ``maplayer'' tag
+       @param layerElement The Dom element corresponding to ``maplayer'' tag
        @note
 
        The Dom node corresponds to a Dom document project file XML element read
@@ -276,9 +276,9 @@ class QgsMapLayer : QObject
      * @return a QString with any status messages
      * @see also loadDefaultStyle ();
      */
-    virtual QString loadNamedStyle( const QString theURI, bool & theResultFlag /Out/ );
+    virtual QString loadNamedStyle( const QString &theURI, bool &theResultFlag /Out/ );
 
-    virtual bool loadNamedStyleFromDb( const QString db, const QString theURI, QString &qml /Out/ );
+    virtual bool loadNamedStyleFromDb( const QString &db, const QString &theURI, QString &qml /Out/ );
 
     //TODO edit infos
     /**
@@ -321,12 +321,12 @@ class QgsMapLayer : QObject
      * @return a QString with any status messages
      * @sa saveDefaultStyle()
      */
-    virtual QString saveNamedStyle( const QString theURI, bool & theResultFlag /Out/ );
+    virtual QString saveNamedStyle( const QString &theURI, bool &theResultFlag /Out/ );
 
-    virtual QString saveSldStyle( const QString theURI, bool & theResultFlag );
-    virtual QString loadSldStyle( const QString theURI, bool &theResultFlag );
+    virtual QString saveSldStyle( const QString &theURI, bool &theResultFlag );
+    virtual QString loadSldStyle( const QString &theURI, bool &theResultFlag );
 
-    virtual bool readSld( const QDomNode& node, QString& errorMessage );
+    virtual bool readSld( const QDomNode &node, QString &errorMessage );
 
     /** Read the symbology for the current layer from the Dom node supplied.
      * @param node node that will contain the symbology definition for this layer.
@@ -344,7 +344,7 @@ class QgsMapLayer : QObject
     virtual bool writeSymbology( QDomNode &node, QDomDocument& doc, QString& errorMessage ) const = 0;
 
     /** Return pointer to layer's undo stack */
-    QUndoStack* undoStack();
+    QUndoStack *undoStack();
 
     /** Get the QImage used for caching render operations
      * @note This method was added in QGIS 1.4 **/

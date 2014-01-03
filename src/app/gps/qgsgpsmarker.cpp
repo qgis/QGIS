@@ -48,7 +48,7 @@ void QgsGpsMarker::setCenter( const QgsPoint& point )
     {
       mCenter = t.transform( point );
     }
-    catch ( QgsCsException e ) //silently ignore transformation exceptions
+    catch ( QgsCsException &e ) //silently ignore transformation exceptions
     {
       return;
     }

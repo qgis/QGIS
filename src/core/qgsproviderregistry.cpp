@@ -216,7 +216,7 @@ QgsProviderRegistry::~QgsProviderRegistry()
       if ( cleanupFunc )
         cleanupFunc();
     }
-    it++;
+    ++it;
   }
 }
 
@@ -282,7 +282,7 @@ QString QgsProviderRegistry::pluginList( bool asHTML ) const
     else
       list += "\n";
 
-    it++;
+    ++it;
   }
 
   if ( asHTML )
@@ -462,7 +462,7 @@ QString QgsProviderRegistry::protocolDrivers() const
 QStringList QgsProviderRegistry::providerList() const
 {
   QStringList lst;
-  for ( Providers::const_iterator it = mProviders.begin(); it != mProviders.end(); it++ )
+  for ( Providers::const_iterator it = mProviders.begin(); it != mProviders.end(); ++it )
   {
     lst.append( it->first );
   }

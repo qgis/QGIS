@@ -65,9 +65,9 @@ static const QString sPluginIcon = ":/heatmap/heatmap.png";
  * an interface object that provides access to exposed functions in QGIS.
  * @param theQGisInterface - Pointer to the QGIS interface object
  */
-Heatmap::Heatmap( QgisInterface * theQgisInterface ):
-    QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType ),
-    mQGisIface( theQgisInterface )
+Heatmap::Heatmap( QgisInterface * theQgisInterface )
+    : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
+    , mQGisIface( theQgisInterface )
 {
 }
 
@@ -82,7 +82,6 @@ Heatmap::~Heatmap()
  */
 void Heatmap::initGui()
 {
-
   // Create the action for tool
   mQActionPointer = new QAction( QIcon( ":/heatmap/heatmap.png" ), tr( "Heatmap" ), this );
   // Set the what's this text

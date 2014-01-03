@@ -107,7 +107,7 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, i
     mLayerIdResults.clear();
     QList<IdentifyResult> idResult = identify( x, y, TopDownAll );
     QList<IdentifyResult>::const_iterator it = idResult.constBegin();
-    for ( ; it != idResult.constEnd(); it++ )
+    for ( ; it != idResult.constEnd(); ++it )
     {
       QgsMapLayer *layer = it->mLayer;
       if ( mLayerIdResults.contains( layer ) )

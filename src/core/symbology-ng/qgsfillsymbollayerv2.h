@@ -136,8 +136,10 @@ class CORE_EXPORT QgsGradientFillSymbolLayerV2 : public QgsFillSymbolLayerV2
       Repeat
     };
 
-    QgsGradientFillSymbolLayerV2( QColor color = DEFAULT_SIMPLEFILL_COLOR, QColor color2 = Qt::white,
-                                  GradientColorType gradientColorType = SimpleTwoColor, GradientType gradientType = Linear,
+    QgsGradientFillSymbolLayerV2( QColor color = DEFAULT_SIMPLEFILL_COLOR,
+                                  QColor color2 = Qt::white,
+                                  GradientColorType gradientColorType = SimpleTwoColor,
+                                  GradientType gradientType = Linear,
                                   GradientCoordinateMode coordinateMode = Feature,
                                   GradientSpread gradientSpread = Pad
                                 );
@@ -243,9 +245,9 @@ class CORE_EXPORT QgsGradientFillSymbolLayerV2 : public QgsFillSymbolLayerV2
 
     /**Applies the gradient to a brush*/
     void applyGradient( const QgsSymbolV2RenderContext& context, QBrush& brush, const QColor& color, const QColor& color2,
-                        const GradientColorType gradientColorType, QgsVectorColorRampV2 * gradientRamp, const GradientType gradientType,
-                        const GradientCoordinateMode coordinateMode, const GradientSpread gradientSpread, const QPointF referencePoint1,
-                        const QPointF referencePoint2, const double angle );
+                        const GradientColorType &gradientColorType, QgsVectorColorRampV2 *gradientRamp, const GradientType &gradientType,
+                        const GradientCoordinateMode &coordinateMode, const GradientSpread &gradientSpread,
+                        const QPointF &referencePoint1, const QPointF &referencePoint2, const double angle );
 
     /**rotates a reference point by a specified angle around the point (0.5, 0.5)*/
     QPointF rotateReferencePoint( const QPointF & refPoint, double angle );

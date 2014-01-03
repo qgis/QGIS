@@ -175,7 +175,6 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest& request )
       mStatement += " where (" + mProvider->mSqlWhereClause + ")";
     else
       mStatement += " and (" + mProvider->mSqlWhereClause + ")";
-    filterAdded = true;
   }
 
   if ( fieldCount == 0 )

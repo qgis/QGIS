@@ -46,9 +46,9 @@ static const QString icon_ = ":/spit.png";
 * @parma _qI Pointer to the QGIS interface object
 */
 QgsSpitPlugin::QgsSpitPlugin( QgisInterface * _qI )
-    : QgisPlugin( name_, description_, category_, version_, type_ ),
-    qgisMainWindow( _qI->mainWindow() ),
-    qI( _qI )
+    : QgisPlugin( name_, description_, category_, version_, type_ )
+    , qgisMainWindow( _qI->mainWindow() )
+    , qI( _qI )
 {
 }
 

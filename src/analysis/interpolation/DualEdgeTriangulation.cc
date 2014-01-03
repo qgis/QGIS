@@ -458,7 +458,6 @@ int DualEdgeTriangulation::baseEdgeOfPoint( int point )
     {
       mEdgeInside = actedge;
       return actedge;
-      break;
     }
 
     else if ( leftofnumber <= 0 )
