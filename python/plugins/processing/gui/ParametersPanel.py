@@ -213,6 +213,10 @@ class ParametersPanel(QtGui.QWidget):
                     items.append((self.NOT_SELECTED, None))
                 for layer in layers:
                     items.append((self.getExtendedLayerName(layer), layer))
+                # if already set, put first in list
+                for i,(name,layer) in enumerate(items):
+                    if layer and layer.source() == param.value: 
+                        items.insert(0, items.pop(i))
                 item = InputLayerSelectorPanel(items)
         elif isinstance(param, ParameterTable):
             if self.somethingDependsOnThisParameter(param):
@@ -231,6 +235,10 @@ class ParametersPanel(QtGui.QWidget):
                     items.append((self.NOT_SELECTED, None))
                 for layer in layers:
                     items.append((layer.name(), layer))
+                # if already set, put first in list
+                for i,(name,layer) in enumerate(items):
+                    if layer and layer.source() == param.value: 
+                        items.insert(0, items.pop(i))
                 item = InputLayerSelectorPanel(items)
         elif isinstance(param, ParameterBoolean):
             item = QtGui.QComboBox()
