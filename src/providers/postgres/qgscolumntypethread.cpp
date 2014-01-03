@@ -43,7 +43,7 @@ void QgsGeomColumnTypeThread::stop()
 void QgsGeomColumnTypeThread::run()
 {
   QgsDataSourceURI uri = QgsPostgresConn::connUri( mName );
-  mConn = QgsPostgresConn::connectDb( uri.connectionInfo(), true );
+  mConn = new QgsPostgresConn( uri.connectionInfo(), true );
   if ( !mConn )
   {
     QgsDebugMsg( "Connection failed - " + uri.connectionInfo() );
@@ -63,6 +63,7 @@ void QgsGeomColumnTypeThread::run()
        layerProperties.isEmpty() )
   {
     mConn->disconnect();
+    delete mConn;
     mConn = 0;
     return;
   }
@@ -109,5 +110,6 @@ void QgsGeomColumnTypeThread::run()
   emit progressMessage( tr( "Table retrieval finished." ) );
 
   mConn->disconnect();
+  delete mConn;
   mConn = 0;
 }
