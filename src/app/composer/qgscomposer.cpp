@@ -376,7 +376,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   QList<double>::iterator zoom_it;
   for ( zoom_it = mStatusZoomLevelsList.begin(); zoom_it != mStatusZoomLevelsList.end(); ++zoom_it )
   {
-    mStatusZoomCombo->insertItem( 0, QString( tr( "%1\%" ) ).arg(( *zoom_it ) * 100 ) );
+    mStatusZoomCombo->insertItem( 0, tr( "%1%" ).arg( *zoom_it * 100.0, 0, 'f', 1 ) );
   }
   connect( mStatusZoomCombo, SIGNAL( currentIndexChanged( int ) ), this, SLOT( statusZoomCombo_currentIndexChanged( int ) ) );
   connect( mStatusZoomCombo->lineEdit(), SIGNAL( returnPressed() ), this, SLOT( statusZoomCombo_zoomEntered() ) );
@@ -735,7 +735,7 @@ void QgsComposer::updateStatusZoom()
   double zoomLevel = mView->transform().m11() * 100 / scale100;
 
   mStatusZoomCombo->blockSignals( true );
-  mStatusZoomCombo->lineEdit()->setText( QString( tr( "%1\%" ) ).arg( QString::number( zoomLevel, 'f', 1 ) ) );
+  mStatusZoomCombo->lineEdit()->setText( tr( "%1%" ).arg( zoomLevel, 0, 'f', 1 ) );
   mStatusZoomCombo->blockSignals( false );
 }
 
@@ -747,7 +747,7 @@ void QgsComposer::statusZoomCombo_currentIndexChanged( int index )
     mView->setZoomLevel( selectedZoom );
     //update zoom combobox text for correct format (one decimal place, trailing % sign)
     mStatusZoomCombo->blockSignals( true );
-    mStatusZoomCombo->lineEdit()->setText( QString( tr( "%1\%" ) ).arg( QString::number( selectedZoom * 100, 'f', 1 ) ) );
+    mStatusZoomCombo->lineEdit()->setText( tr( "%1%" ).arg( selectedZoom * 100.0, 0, 'f', 1 ) );
     mStatusZoomCombo->blockSignals( false );
   }
 }

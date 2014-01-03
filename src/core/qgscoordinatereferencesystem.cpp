@@ -1993,7 +1993,7 @@ bool QgsCoordinateReferenceSystem::syncDatumTransform( const QString& dbPath )
 
   int n = CSLCount( fieldnames );
 
-  int idxid, idxrx, idxry, idxrz;
+  int idxid = -1, idxrx = -1, idxry = -1, idxrz = -1;
   for ( unsigned int i = 0; i < sizeof( map ) / sizeof( *map ); i++ )
   {
     bool last = i == sizeof( map ) / sizeof( *map ) - 1;
@@ -2045,6 +2045,11 @@ bool QgsCoordinateReferenceSystem::syncDatumTransform( const QString& dbPath )
   QgsDebugMsg( QString( "update:%1" ).arg( update ) );
 
   CSLDestroy( fieldnames );
+
+  Q_ASSERT( idxid >= 0 );
+  Q_ASSERT( idxrx >= 0 );
+  Q_ASSERT( idxry >= 0 );
+  Q_ASSERT( idxrz >= 0 );
 
   sqlite3 *db;
   int openResult = sqlite3_open( dbPath.toUtf8().constData(), &db );

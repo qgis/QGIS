@@ -592,7 +592,7 @@ void QgsComposerMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent* event
     QList<QgsComposerItem*>::iterator itemIter = selectedItems.begin();
     for ( ; itemIter != selectedItems.end(); ++itemIter )
     {
-      if (( *itemIter )->positionLock() || ( !( *itemIter )->flags() & QGraphicsItem::ItemIsSelectable ) )
+      if (( *itemIter )->positionLock() || (( *itemIter )->flags() & QGraphicsItem::ItemIsSelectable ) == 0 )
       {
         //don't move locked items
         continue;
@@ -615,7 +615,7 @@ void QgsComposerMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent* event
     QList<QgsComposerItem*>::iterator itemIter = selectedItems.begin();
     for ( ; itemIter != selectedItems.end(); ++itemIter )
     {
-      if (( *itemIter )->positionLock() || ( !( *itemIter )->flags() & QGraphicsItem::ItemIsSelectable ) )
+      if (( *itemIter )->positionLock() || (( *itemIter )->flags() & QGraphicsItem::ItemIsSelectable ) == 0 )
       {
         //don't resize locked items or unselectable items (eg, items which make up an item group)
         continue;
