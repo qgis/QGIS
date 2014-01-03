@@ -23,7 +23,10 @@
 #include "qgsfield.h"
 #include "qgspgtablemodel.h"
 
+#include <QApplication>
 #include <QSettings>
+#include <QThread>
+
 #include <climits>
 
 // for htonl
@@ -267,7 +270,10 @@ void QgsPostgresConn::disconnect()
   Q_ASSERT( !key.isNull() );
   connections.remove( key );
 
-  deleteLater();
+  if ( QThread::currentThread() == QApplication::instance()->thread() )
+    deleteLater();
+  else
+    delete this;
 }
 
 /* private */
