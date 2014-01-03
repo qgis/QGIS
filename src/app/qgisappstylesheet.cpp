@@ -92,6 +92,8 @@ QMap<QString, QVariant> QgisAppStyleSheet::defaultOptions()
   bool gbxBoldTitle = false;
   opts.insert( "groupBoxBoldTitle", settings.value( "groupBoxBoldTitle", QVariant( gbxBoldTitle ) ) );
 
+  opts.insert( "sidebarStyle", settings.value( "sidebarStyle", true ) );
+
   settings.endGroup(); // "qgis/stylesheet"
 
   return opts;
@@ -118,6 +120,7 @@ void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant>& opts )
   QgsDebugMsg( QString( "groupBoxCustom: %1" ).arg( gbxCustom ) );
   bool gbxBoldTitle = opts.value( "groupBoxBoldTitle" ).toBool();
   QgsDebugMsg( QString( "groupBoxBoldTitle: %1" ).arg( gbxBoldTitle ) );
+  bool sidebar = opts.value( "sidebarStyle" ).toBool();
   if ( gbxCustom || gbxBoldTitle )
   {
     ss += "QGroupBox{";
@@ -154,6 +157,23 @@ void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant>& opts )
       }
       ss += "} ";
     }
+  }
+
+  if ( sidebar )
+  {
+     QString style = "QListWidget#mOptionsListWidget {"
+         "background-color: rgb(162, 170, 179);"
+          "}"
+          "QListWidget#mOptionsListWidget::item {"
+          "    color: white;"
+          "    padding: 3px;"
+          "}"
+          "QListWidget#mOptionsListWidget::item::selected {"
+          "    color: black;"
+          "    background-color:palette(Window);"
+          "    padding-right: 0px;              "
+          "}";
+     ss += style;
   }
 
   //fix background issue for gnome desktop

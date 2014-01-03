@@ -546,6 +546,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
 
   // custom group boxes
   mCustomGroupBoxChkBx->setChecked( mStyleSheetOldOpts.value( "groupBoxCustom" ).toBool() );
+  mCustomSideBarSide->setChecked( mStyleSheetOldOpts.value( "sidebarStyle" ).toBool() );
   mBoldGroupBoxTitleChkBx->setChecked( mStyleSheetOldOpts.value( "groupBoxBoldTitle" ).toBool() );
 
   mMessageTimeoutSpnBx->setValue( settings.value( "/qgis/messageTimeout", 5 ).toInt() );
@@ -1409,6 +1410,12 @@ void QgsOptions::on_mFontFamilyComboBox_currentFontChanged( const QFont& font )
 void QgsOptions::on_mCustomGroupBoxChkBx_clicked( bool chkd )
 {
   mStyleSheetNewOpts.insert( "groupBoxCustom", QVariant( chkd ) );
+  mStyleSheetBuilder->buildStyleSheet( mStyleSheetNewOpts );
+}
+
+void QgsOptions::on_mCustomSideBarSide_clicked( bool chkd )
+{
+  mStyleSheetNewOpts.insert( "sidebarStyle", chkd );
   mStyleSheetBuilder->buildStyleSheet( mStyleSheetNewOpts );
 }
 

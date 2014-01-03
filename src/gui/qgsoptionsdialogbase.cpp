@@ -49,17 +49,38 @@ void QgsOptionsDialogBase::initOptionsBase( bool restoreUi )
   // don't add to dialog margins
   // redefine now, or those in inherited .ui file will be added
   if ( layout() )
-    layout()->setContentsMargins( 12, 12, 12, 12 ); // Qt default spacing
+  {
+    layout()->setContentsMargins( 0, 0, 0, 0 ); // Qt default spacing
+  }
 
   // start with copy of qgsoptionsdialog_template.ui to ensure existence of these objects
   mOptListWidget = findChild<QListWidget*>( "mOptionsListWidget" );
+  QFrame* optionsFrame = findChild<QFrame*>("mOptionsFrame");
   mOptStackedWidget = findChild<QStackedWidget*>( "mOptionsStackedWidget" );
   mOptSplitter = findChild<QSplitter*>( "mOptionsSplitter" );
   mOptButtonBox = findChild<QDialogButtonBox*>( "buttonBox" );
+  QFrame* buttonBoxFrame = findChild<QFrame*>("mButtonBoxFrame");
 
-  if ( !mOptListWidget || !mOptStackedWidget || !mOptSplitter )
+  if ( !mOptListWidget || !mOptStackedWidget || !mOptSplitter || !optionsFrame )
   {
     return;
+  }
+
+  QSettings settings;
+  int size = settings.value( "/IconSize", 24 ).toInt();
+  mOptListWidget->setIconSize( QSize(size, size) );
+
+  optionsFrame->layout()->setContentsMargins(0,3,3,3);
+  QVBoxLayout* layout = static_cast<QVBoxLayout*>(optionsFrame->layout());
+
+  if ( buttonBoxFrame )
+  {
+      buttonBoxFrame->layout()->setContentsMargins(0,0,0,0);
+      layout->insertWidget(layout->count() + 1, buttonBoxFrame );
+  }
+  else
+  {
+      layout->insertWidget( layout->count() + 1, mOptButtonBox );
   }
 
   if ( mOptButtonBox )
