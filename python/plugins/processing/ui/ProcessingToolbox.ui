@@ -16,10 +16,10 @@
   <widget class="QWidget" name="dockWidgetContents">
    <layout class="QVBoxLayout" name="verticalLayout">
     <property name="spacing">
-     <number>6</number>
+     <number>3</number>
     </property>
     <property name="margin">
-     <number>9</number>
+     <number>0</number>
     </property>
     <item>
      <widget class="QgsFilterLineEdit" name="searchBox">
