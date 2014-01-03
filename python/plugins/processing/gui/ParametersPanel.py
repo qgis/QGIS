@@ -342,7 +342,7 @@ class ParametersPanel(QtGui.QWidget):
         numOutputs = len(outputs)
         self.tableWidget.setRowCount(numParams + numOutputs)
 
-        for i, param in enurmerate(params):
+        for i, param in enumerate(params):
             item = QtGui.QTableWidgetItem(param.description)
             item.setFlags(QtCore.Qt.ItemIsEnabled)
             self.tableWidget.setItem(i, 0, item)
@@ -351,7 +351,7 @@ class ParametersPanel(QtGui.QWidget):
             self.tableWidget.setCellWidget(i, 1, item)
             self.tableWidget.setRowHeight(i, 22)
 
-        for i, output in enurmerate(outputs):
+        for i, output in enumerate(outputs):
             item = QtGui.QTableWidgetItem(output.description + '<'
                     + output.__module__.split('.')[-1] + '>')
             item.setFlags(QtCore.Qt.ItemIsEnabled)
