@@ -489,12 +489,10 @@ development versions.
 
 If you're interested in checking out QGIS documentation sources:
 ```
-  svn co https://svn.osgeo.org/qgis/docs/trunk qgis_docs
+  git clone git@github.com:qgis/QGIS-Documentation.git
 ```
 
-/!\ **Note:** This url will change to a git URL in the near future.
-
-You can also take a look at DocumentationWritersCorner for more information.
+You can also take a look at the readme included with the documentation repo for more information.
  
 == GIT Documentation ==
 
@@ -507,6 +505,7 @@ http://gitready.com
 == Development in branches ==
 
 === Purpose ===
+
 The complexity of the QGIS source code has increased considerably during the
 last years. Therefore it is hard to anticipate the side effects that the
 addition of a feature will have. In the past, the QGIS project had very long
@@ -560,16 +559,49 @@ of the work on a wiki page.
 **Testing before merging back to master:** 
 When you are finished with the new feature and happy with the stability, make
 an announcement on the developer list.  Before merging back, the changes will
-be tested by developers and users. Binary packages (especially for OsX and
-Windows) will be generated to also involve non-developers. In trac, a new
-Component will be opened to file tickets against.  Once there are no remaining
-issues left, the technical advisor of the PSC merges the changes into master.
+be tested by developers and users.
 
 
-== Submitting Patches ==
+== Submitting Patches and Pull Requests ==
 
-There are a few guidelines that will help you to get your patches into QGIS
-easily, and help us deal with the patches that are sent to use easily.
+There are a few guidelines that will help you to get your patches and pull
+requests into QGIS easily, and help us deal with the patches that are sent to
+use easily. 
+
+
+=== Pull Requests ===
+
+In general it is easier for developers if you submit GitHub pull
+requests. We do not describe Pull Requests here, but rather refer you to the
+GitHub pull request documentation here:
+
+https://help.github.com/articles/using-pull-requests
+
+If you make a pull request we ask that you please merge master to your PR
+branch regularly so that your PR is always mergable to the upstream master
+branch.
+
+If you are a developer and wish to evaluate the pull request queue, there is a
+very nice tool that lets you do this from the command line described here:
+
+http://thechangelog.com/git-pulls-command-line-tool-for-github-pull-requests/
+
+Please see the section below on 'getting your patch noticed'. In general when
+you submit a PR you should take the responsibility to follow it through to
+completion - respond to queries posted by other developers, seek out a
+'champion' for your feature and give them a gentle reminder occasionally if you
+see that your PR is not being acted on. Please bear in mind that the QGIS
+project is driven by volunteer effort and people may not be able to attend to
+your PR instantaneously. If you feel the PR is not receiving the attention it
+deserves your options to accelerate it should be (in order of priority):
+
+* Send a message to the mailing list 'marketing' your PR and how wonderful it
+  will be to have it included in the code base.
+* Send a message to the person your PR has been assigned to in the PR queue.
+* Send a message to Marco Hugentobler (who manages the PR queue).
+* Send a message to the project steering committee asking them to help see your
+  PR incorporated into the code base.
+
 
 === Patch file naming ===
 
