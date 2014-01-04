@@ -196,11 +196,11 @@ double QgsComposerScaleBar::mapWidth() const
     double measure = da.measureLine( QgsPoint( composerMapRect.xMinimum(), composerMapRect.yMinimum() ), QgsPoint( composerMapRect.xMaximum(), composerMapRect.yMinimum() ) );
     if ( mUnits == QgsComposerScaleBar::Feet )
     {
-      measure /= 0.3048;
+      measure /= QGis::fromUnitToUnitFactor( QGis::Feet, QGis::Meters );
     }
     else if ( mUnits == QgsComposerScaleBar::NauticalMiles )
     {
-      measure /= 1852.0;
+      measure /= QGis::fromUnitToUnitFactor( QGis::NauticalMiles, QGis::Meters );
     }
     return measure;
   }
