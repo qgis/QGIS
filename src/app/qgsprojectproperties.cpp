@@ -567,6 +567,10 @@ void QgsProjectProperties::apply()
   {
     mapUnit = QGis::Feet;
   }
+  else if ( radNMiles->isChecked() )
+  {
+    mapUnit = QGis::NauticalMiles;
+  }
   else
   {
     mapUnit = QGis::Meters;
