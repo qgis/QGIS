@@ -21,9 +21,6 @@
 #include "qgsrectangle.h"
 #include "qgsexpression.h"
 
-#include "qgscoordinatetransform.h"
-#include "qgsmaptopixel.h"
-
 #include <QList>
 typedef QList<int> QgsAttributeList;
 
@@ -64,9 +61,7 @@ class CORE_EXPORT QgsFeatureRequest
       NoFlags            = 0,
       NoGeometry         = 1,  //!< Geometry is not required. It may still be returned if e.g. required for a filter condition.
       SubsetOfAttributes = 2,  //!< Fetch only a subset of attributes (setSubsetOfAttributes sets this flag)
-      ExactIntersect     = 4,  //!< Use exact geometry intersection (slower) instead of bounding boxes
-      SimplifyGeometry   = 8,  //!< The geometries can be simplified using the current map2pixel context state (e.g. for fast rendering...)
-      SimplifyEnvelope   = 16  //!< The geometries can be fully simplified by its BoundingBox (e.g. for fast rendering...)
+      ExactIntersect     = 4   //!< Use exact geometry intersection (slower) instead of bounding boxes
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
@@ -140,15 +135,6 @@ class CORE_EXPORT QgsFeatureRequest
     // void setFilterNativeExpression(con QString& expr);   // using provider's SQL (if supported)
     // void setLimit(int limit);
 
-    const QgsCoordinateTransform* coordinateTransform() const { return mMapCoordTransform; }
-    QgsFeatureRequest& setCoordinateTransform( const QgsCoordinateTransform* ct );
-
-    const QgsMapToPixel* mapToPixel() const { return mMapToPixel; }
-    QgsFeatureRequest& setMapToPixel( const QgsMapToPixel* mtp );
-
-    float mapToPixelTol() const { return mMapToPixelTol; }
-    QgsFeatureRequest& setMapToPixelTol( float map2pixelTol );
-
   protected:
     FilterType mFilter;
     QgsRectangle mFilterRect;
@@ -157,13 +143,6 @@ class CORE_EXPORT QgsFeatureRequest
     QgsExpression* mFilterExpression;
     Flags mFlags;
     QgsAttributeList mAttrs;
-
-    //! For transformation between coordinate systems from current layer to map target. Can be 0 if on-the-fly reprojection is not used
-    const QgsCoordinateTransform* mMapCoordTransform;
-    //! For transformation between map coordinates and device coordinates
-    const QgsMapToPixel* mMapToPixel;
-    //! Factor tolterance to apply in transformation between map coordinates and device coordinates
-    float mMapToPixelTol;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsFeatureRequest::Flags )

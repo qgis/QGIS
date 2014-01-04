@@ -60,13 +60,13 @@ QgsTopologyPreservingSimplifier::~QgsTopologyPreservingSimplifier()
 }
 
 //! Returns a simplified version the specified geometry
-QgsGeometry* QgsTopologyPreservingSimplifier::simplify( QgsGeometry* geometry )
+QgsGeometry* QgsTopologyPreservingSimplifier::simplify( QgsGeometry* geometry ) const
 {
   return geometry->simplify( mTolerance );
 }
 
 //! Simplifies the specified geometry
-bool QgsTopologyPreservingSimplifier::simplifyGeometry( QgsGeometry* geometry )
+bool QgsTopologyPreservingSimplifier::simplifyGeometry( QgsGeometry* geometry ) const
 {
   QgsGeometry* g = geometry->simplify( mTolerance );
 
