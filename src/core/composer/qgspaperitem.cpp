@@ -128,13 +128,13 @@ QgsPaperItem::QgsPaperItem( QgsComposition* c ): QgsComposerItem( c, false ),
 }
 
 QgsPaperItem::QgsPaperItem( qreal x, qreal y, qreal width, qreal height, QgsComposition* composition ): QgsComposerItem( x, y, width, height, composition, false ),
-    mPageGrid( 0 )
+    mPageGrid( 0 ), mPageMargin( 0 )
 {
   initialize();
 }
 
 QgsPaperItem::QgsPaperItem(): QgsComposerItem( 0, false ),
-    mPageGrid( 0 )
+    mPageGrid( 0 ), mPageMargin( 0 )
 {
   initialize();
 }
@@ -167,13 +167,26 @@ void QgsPaperItem::paint( QPainter* painter, const QStyleOptionGraphicsItem* ite
 
   painter->save();
   painter->setRenderHint( QPainter::Antialiasing );
-  QPolygonF pagePolygon = QPolygonF( QRectF( 0, 0, rect().width(), rect().height() ) );
   mComposition->pageStyleSymbol()->startRender( context );
+
+  calculatePageMargin();
+  QPolygonF pagePolygon = QPolygonF( QRectF( mPageMargin, mPageMargin, rect().width() - 2 * mPageMargin, rect().height() - 2 * mPageMargin ) );
   QList<QPolygonF> rings; //empty list
   mComposition->pageStyleSymbol()->renderPolygon( pagePolygon, &rings, 0, context );
   mComposition->pageStyleSymbol()->stopRender( context );
   painter->restore();
 
+}
+
+void QgsPaperItem::calculatePageMargin()
+{
+  //get max bleed from symbol
+  double maxBleed = QgsSymbolLayerV2Utils::estimateMaxSymbolBleed( mComposition->pageStyleSymbol() );
+
+  //Now subtract 1 pixel to prevent semi-transparent borders at edge of solid page caused by
+  //anti-aliased painting. This may cause a pixel to be cropped from certain edge lines/symbols,
+  //but that can be counteracted by adding a dummy transparent line symbol layer with a wider line width
+  mPageMargin = maxBleed - ( 25.4 / mComposition->printResolution() );
 }
 
 bool QgsPaperItem::writeXML( QDomElement& elem, QDomDocument & doc ) const

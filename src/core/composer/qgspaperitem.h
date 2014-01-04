@@ -69,7 +69,10 @@ class CORE_EXPORT QgsPaperItem: public QgsComposerItem
     /**Set flags and z-value*/
     void initialize();
 
+    void calculatePageMargin();
+
     QgsPaperGrid* mPageGrid;
+    double mPageMargin;
 };
 
 #endif
