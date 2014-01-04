@@ -77,6 +77,12 @@ class CORE_EXPORT QgsSymbolLayerV2
     void setLocked( bool locked ) { mLocked = locked; }
     bool isLocked() const { return mLocked; }
 
+    /**Returns the estimated maximum distance which the layer style will bleed outside
+      the drawn shape. Eg, polygons drawn with an outline will draw half the width
+      of the outline outside of the polygon. This amount is estimated, since it may
+      be affected by data defined symbology rules.*/
+    virtual double estimateMaxBleed() const { return 0; }
+
     virtual void setOutputUnit( QgsSymbolV2::OutputUnit unit ) { Q_UNUSED( unit ); } //= 0;
     virtual QgsSymbolV2::OutputUnit outputUnit() const { return QgsSymbolV2::Mixed; } //= 0;
 

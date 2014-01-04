@@ -83,6 +83,8 @@ class CORE_EXPORT QgsSimpleFillSymbolLayerV2 : public QgsFillSymbolLayerV2
     void setOutputUnit( QgsSymbolV2::OutputUnit unit );
     QgsSymbolV2::OutputUnit outputUnit() const;
 
+    double estimateMaxBleed() const;
+
   protected:
     QBrush mBrush;
     QBrush mSelBrush;
@@ -159,6 +161,8 @@ class CORE_EXPORT QgsGradientFillSymbolLayerV2 : public QgsFillSymbolLayerV2
     QgsStringMap properties() const;
 
     QgsSymbolLayerV2* clone() const;
+
+    double estimateMaxBleed() const;
 
     /**Type of gradient, eg linear or radial*/
     GradientType gradientType() const { return mGradientType; };
@@ -260,6 +264,8 @@ class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayerV2
 
     void setOutlineWidthUnit( QgsSymbolV2::OutputUnit unit ) { mOutlineWidthUnit = unit; }
     QgsSymbolV2::OutputUnit outlineWidthUnit() const { return mOutlineWidthUnit; }
+
+    double estimateMaxBleed() const;
 
   protected:
     QBrush mBrush;
@@ -444,6 +450,8 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
     QgsSymbolLayerV2* clone() const;
 
     void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
+
+    double estimateMaxBleed() const;
 
     //getters and setters
     double distanceX() const { return mDistanceX; }

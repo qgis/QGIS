@@ -102,6 +102,9 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
     static QPixmap symbolPreviewPixmap( QgsSymbolV2* symbol, QSize size );
     static QPixmap colorRampPreviewPixmap( QgsVectorColorRampV2* ramp, QSize size );
 
+    /**Returns the maximum estimated bleed for the symbol */
+    static double estimateMaxSymbolBleed( QgsSymbolV2* symbol );
+
     static QgsSymbolV2* loadSymbol( QDomElement& element );
     static QgsSymbolLayerV2* loadSymbolLayer( QDomElement& element );
     static QDomElement saveSymbol( QString symbolName, QgsSymbolV2* symbol, QDomDocument& doc );

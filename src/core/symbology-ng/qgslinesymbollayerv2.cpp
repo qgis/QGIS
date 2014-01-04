@@ -384,7 +384,10 @@ void QgsSimpleLineSymbolLayerV2::applyDataDefinedSymbology( QgsSymbolV2RenderCon
   }
 }
 
-
+double QgsSimpleLineSymbolLayerV2::estimateMaxBleed() const
+{
+  return ( mWidth / 2.0 ) + mOffset;
+}
 
 /////////
 
@@ -1096,3 +1099,9 @@ QgsSymbolV2::OutputUnit QgsMarkerLineSymbolLayerV2::outputUnit() const
   }
   return unit;
 }
+
+double QgsMarkerLineSymbolLayerV2::estimateMaxBleed() const
+{
+  return ( mMarker->size() / 2.0 ) + mOffset;
+}
+

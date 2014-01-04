@@ -505,6 +505,18 @@ QPixmap QgsSymbolLayerV2Utils::symbolPreviewPixmap( QgsSymbolV2* symbol, QSize s
   return pixmap;
 }
 
+double QgsSymbolLayerV2Utils::estimateMaxSymbolBleed( QgsSymbolV2* symbol )
+{
+  double maxBleed = 0;
+  for ( int i = 0; i < symbol->symbolLayerCount(); i++ )
+  {
+    QgsSymbolLayerV2* layer = symbol->symbolLayer( i );
+    double layerMaxBleed = layer->estimateMaxBleed();
+    maxBleed = layerMaxBleed > maxBleed ? layerMaxBleed : maxBleed;
+  }
+
+  return maxBleed;
+}
 
 QIcon QgsSymbolLayerV2Utils::symbolLayerPreviewIcon( QgsSymbolLayerV2* layer, QgsSymbolV2::OutputUnit u, QSize size )
 {

@@ -282,6 +282,13 @@ QgsSymbolLayerV2* QgsSimpleFillSymbolLayerV2::createFromSld( QDomElement &elemen
   return sl;
 }
 
+double QgsSimpleFillSymbolLayerV2::estimateMaxBleed() const
+{
+  double penBleed = mBorderStyle == Qt::NoPen ? 0 : ( mBorderWidth / 2.0 );
+  double offsetBleed = mOffset.x() > mOffset.y() ? mOffset.x() : mOffset.y();
+  return penBleed + offsetBleed;
+}
+
 //QgsGradientFillSymbolLayer
 
 QgsGradientFillSymbolLayerV2::QgsGradientFillSymbolLayerV2( QColor color, QColor color2,
@@ -729,6 +736,12 @@ QgsSymbolLayerV2* QgsGradientFillSymbolLayerV2::clone() const
   return sl;
 }
 
+double QgsGradientFillSymbolLayerV2::estimateMaxBleed() const
+{
+  double offsetBleed = mOffset.x() > mOffset.y() ? mOffset.x() : mOffset.y();
+  return offsetBleed;
+}
+
 //QgsImageFillSymbolLayer
 
 QgsImageFillSymbolLayer::QgsImageFillSymbolLayer(): mOutlineWidth( 0.0 ), mOutlineWidthUnit( QgsSymbolV2::MM ), mOutline( 0 )
@@ -815,6 +828,14 @@ bool QgsImageFillSymbolLayer::setSubSymbol( QgsSymbolV2* symbol )
   delete symbol;
   return false;
 }
+
+
+double QgsImageFillSymbolLayer::estimateMaxBleed() const
+{
+  double subLayerBleed = mOutline->symbolLayer( 0 )->estimateMaxBleed();
+  return subLayerBleed;
+}
+
 
 //QgsSVGFillSymbolLayer
 
@@ -1302,6 +1323,7 @@ void QgsSVGFillSymbolLayer::setDefaultSvgParams()
   }
 }
 
+
 QgsLinePatternFillSymbolLayer::QgsLinePatternFillSymbolLayer(): QgsImageFillSymbolLayer(), mDistanceUnit( QgsSymbolV2::MM ), mLineWidthUnit( QgsSymbolV2::MM ),
     mOffsetUnit( QgsSymbolV2::MM )
 {
@@ -1741,6 +1763,7 @@ QgsSymbolLayerV2* QgsLinePatternFillSymbolLayer::createFromSld( QDomElement &ele
   return sl;
 }
 
+
 ////////////////////////
 
 QgsPointPatternFillSymbolLayer::QgsPointPatternFillSymbolLayer(): QgsImageFillSymbolLayer(), mMarkerSymbol( 0 ), mDistanceX( 15 ),
@@ -2041,6 +2064,12 @@ void QgsPointPatternFillSymbolLayer::applyDataDefinedSettings( const QgsSymbolV2
     displacementY = displacementYExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble();
   }
   applyPattern( context, mBrush, distanceX, distanceY, displacementX, displacementY );
+}
+
+
+double QgsPointPatternFillSymbolLayer::estimateMaxBleed() const
+{
+  return 0;
 }
 
 //////////////

@@ -63,6 +63,8 @@ class CORE_EXPORT QgsSimpleLineSymbolLayerV2 : public QgsLineSymbolLayerV2
     void setOutputUnit( QgsSymbolV2::OutputUnit unit );
     QgsSymbolV2::OutputUnit outputUnit() const;
 
+    double estimateMaxBleed() const;
+
     // new stuff
 
     Qt::PenStyle penStyle() const { return mPenStyle; }
@@ -160,6 +162,8 @@ class CORE_EXPORT QgsMarkerLineSymbolLayerV2 : public QgsLineSymbolLayerV2
 
     virtual void setWidth( double width );
     virtual double width() const;
+
+    double estimateMaxBleed() const;
 
     // new stuff
 
