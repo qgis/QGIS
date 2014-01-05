@@ -2758,6 +2758,13 @@ p, li { white-space: pre-wrap; }
                     </property>
                    </widget>
                   </item>
+                  <item row="5" column="4">
+                   <widget class="QRadioButton" name="radDegrees">
+                    <property name="text">
+                     <string>Degrees</string>
+                    </property>
+                   </widget>
+                  </item>
                   <item row="6" column="0">
                    <widget class="QLabel" name="mAngleUnitsLabel">
                     <property name="text">

@@ -458,6 +458,10 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   {
     radNautical->setChecked( true );
   }
+  else if ( myDisplayUnits == QGis::Degrees )
+  {
+    radDegrees->setChecked( true );
+  }
   else
   {
     radMeters->setChecked( true );
@@ -1193,6 +1197,10 @@ void QgsOptions::saveOptions()
   else if ( radNautical->isChecked() )
   {
     settings.setValue( "/qgis/measure/displayunits", QGis::toLiteral( QGis::NauticalMiles ) );
+  }
+  else if ( radDegrees->isChecked() )
+  {
+    settings.setValue( "/qgis/measure/displayunits", QGis::toLiteral( QGis::Degrees ) );
   }
   else
   {
