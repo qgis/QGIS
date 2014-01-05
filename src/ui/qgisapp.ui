@@ -2099,7 +2099,7 @@ Acts on currently active editable layer</string>
   </action>
   <action name="mActionNeedSupport">
    <property name="text">
-    <string>Need Support?</string>
+    <string>Need commercial support?</string>
    </property>
   </action>
   <action name="mActionOpenFieldCalc">
