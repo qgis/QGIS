@@ -1,0 +1,16 @@
+<h3>$map function</h3>
+Returns the id of the current map item if the map is being drawn in a composition, or "canvas" if the map is being
+drawn within the main QGIS window.
+
+<h4>Syntax</h4>
+<pre>$map</pre>
+
+<h4>Arguments</h4>
+None
+
+<h4>Example</h4>
+<!-- Show example of function.-->
+<pre>$map &rarr; "overview_map" (within a composer item)<br />
+$map &rarr; "canvas" (within the main QGIS main canvas)</pre>
+
+

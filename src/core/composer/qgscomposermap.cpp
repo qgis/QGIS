@@ -28,6 +28,7 @@
 #include "qgsscalecalculator.h"
 #include "qgsvectorlayer.h"
 #include "qgspallabeling.h"
+#include "qgsexpression.h"
 
 #include "qgslabel.h"
 #include "qgslabelattributes.h"
@@ -225,6 +226,9 @@ void QgsComposerMap::draw( QPainter *painter, const QgsRectangle& extent, const 
   QSettings s;
   bool bkLayerCaching = s.value( "/qgis/enable_render_caching", false ).toBool();
   s.setValue( "/qgis/enable_render_caching", false );
+
+  //update $map variable. Use QgsComposerItem's id since that is user-definable
+  QgsExpression::setSpecialColumn( "$map", QgsComposerItem::id() );
 
   if ( forceWidthScale ) //force wysiwyg line widths / marker sizes
   {

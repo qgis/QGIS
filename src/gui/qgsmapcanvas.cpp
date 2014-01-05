@@ -417,6 +417,9 @@ void QgsMapCanvas::refresh()
 
   mDrawing = true;
 
+  //update $map variable to canvas
+  QgsExpression::setSpecialColumn( "$map", tr( "canvas" ) );
+
   if ( mRenderFlag && !mFrozen )
   {
     clear();
