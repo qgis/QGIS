@@ -124,11 +124,6 @@ class QgsDualView : QStackedWidget
      */
     bool saveEditChanges();
 
-    /**
-     * Update the shown feature if an attribute changed
-     */
-    void reloadAttribute( const int& attribute );
-
 
   signals:
     /**

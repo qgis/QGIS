@@ -27,7 +27,8 @@ class QgsEditorWidgetWrapper : QObject
     QVariant config( QString key );
 
     QgsVectorLayer* layer();
-    int field();
+    QgsField field();
+    int fieldIdx();
 
   protected:
     virtual QWidget* createWidget( QWidget* parent ) = 0 /Factory/;

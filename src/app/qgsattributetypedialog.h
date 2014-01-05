@@ -31,21 +31,15 @@ class APP_EXPORT QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttribut
     Q_OBJECT
 
   public:
-    QgsAttributeTypeDialog( QgsVectorLayer *vl );
+    QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx );
     ~QgsAttributeTypeDialog();
-
-    /**
-     * Overloaded accept method which will write the feature field
-     * values, then delegate to QDialog::accept()
-     */
-    void accept();
 
     /**
      * Setting index, which page should be selected
      * @param index of page to be selected
      * @param editTypeInt type of edit type which was selected before save
      */
-    void setIndex( int index, QgsVectorLayer::EditType editType );
+    void setIndex( int index, QgsVectorLayer::EditType type );
 
     /**
      * Setting page which is to be selected
@@ -57,64 +51,17 @@ class APP_EXPORT QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttribut
      * Getter to get selected edit type
      * @return selected edit type
      */
-    QgsVectorLayer::EditType editType();
+    QgsVectorLayer::EditType type();
 
     const QString editorWidgetV2Type();
 
     const QString editorWidgetV2Text();
 
-    const QMap<QString, QVariant> editorWidgetV2Config();
+    void setWidgetV2Type( const QString& type );
 
-    void setWidgetV2Config( const QMap<QString, QVariant>& config );
+    const QgsEditorWidgetConfig editorWidgetV2Config();
 
-    /**
-     * Setter to value map variable to display actual value
-     * @param valueMap map which is to be dispayed in this dialog
-     */
-    void setValueMap( QMap<QString, QVariant> valueMap );
-
-    /**
-     * Setter to range to be displayed and edited in this dialog
-     * @param rangeData range data which is to be displayed
-     */
-    void setRange( QgsVectorLayer::RangeData rangeData );
-
-    /**
-     * Setter to checked state to be displayed and edited in this dialog
-     * @param checked string that represents the checked state
-     */
-    void setCheckedState( QString checked, QString unchecked );
-
-    /**
-     * Setter to value relation to be displayed and edited in this dialog
-     * @param valueRelation value relation data which is to be displayed
-     */
-    void setValueRelation( QgsVectorLayer::ValueRelationData valueRelationData );
-
-    /**
-     * Setter to date format
-     * @param dateFormat date format
-     */
-    void setDateFormat( QString dateFormat );
-
-    /**
-     * Setter to widget size
-     * @param widgetSize size of widget
-     */
-    void setWidgetSize( QSize widgetSize );
-
-    /**
-     * Setter for checkbox for editable state of field
-     * @param bool editable
-     */
-    void setFieldEditable( bool editable );
-
-    /**
-     * Sets the enabled state of the "editable" checkbox
-     *
-     * @param enabled sets the enabled state of the checkbox
-     */
-    void setFieldEditableEnabled( bool enabled );
+    void setWidgetV2Config( const QgsEditorWidgetConfig& config );
 
     /**
      * Setter for checkbox to label on top
@@ -123,37 +70,9 @@ class APP_EXPORT QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttribut
     void setLabelOnTop( bool onTop );
 
     /**
-     * Getter for checked state after editing
-     * @return string representing the checked
+     * Setter for checkbox for editable state of field
      */
-    QPair<QString, QString> checkedState();
-
-    /**
-     * Getter for value map after editing
-     * @return map which is to be returned
-     */
-    QMap<QString, QVariant> &valueMap();
-
-    /**
-     * Getter for range data
-     * @return range data after editing
-     */
-    QgsVectorLayer::RangeData rangeData();
-
-    /**
-     * Getter for value relation data
-     */
-    QgsVectorLayer::ValueRelationData valueRelationData();
-
-    /**
-     * Getter for date format
-     */
-    QString dateFormat();
-
-    /**
-     * Getter for widget size
-     */
-    QSize widgetSize();
+    void setFieldEditable( bool editable );
 
     /**
      * Getter for checkbox for editable state of field
@@ -170,73 +89,18 @@ class APP_EXPORT QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttribut
      * Slot to handle change of index in combobox to select correct page
      * @param index index of value in combobox
      */
-    void setStackPage( int index );
-
-    /**
-     * Slot to handle button push to delete selected rows
-     */
-    void removeSelectedButtonPushed( );
-
-    /**
-     * Slot to handle load from layer button pushed to display dialog to load data
-     */
-    void loadFromLayerButtonPushed( );
-
-    /**
-     * Slot to handle load from CSV button pushed to display dialog to load data
-     */
-    void loadFromCSVButtonPushed( );
-
-    /**
-     * Slot to handle change of cell to have always empty row at end
-     * @param row index of row which was changed
-     * @param column index of column which was changed
-     */
-    void vCellChanged( int row, int column );
-
-    /**
-     * update columns list
-     */
-    void updateLayerColumns( int idx );
-
-    /**
-     * edit the filter expression
-     */
-    void editValueRelationExpression();
+    void on_selectionListWidget_currentRowChanged( int index );
 
   private:
-
-    QString defaultWindowTitle();
-
-    /**
-     * Function to set page according to edit type
-     * @param editType edit type to set page
-     */
-    void setPageForEditType( QgsVectorLayer::EditType editType );
-
-    /**
-     * Function to update the value map
-     * @param map new map
-     * @param insertNull Add a Null value on top
-     */
-    void updateMap( const QMap<QString, QVariant> &map, bool insertNull = false );
+    QgsVectorLayer *mLayer;
+    int mFieldIdx;
 
     bool mFieldEditable;
     bool mLabelOnTop;
 
-    QMap<QString, QVariant> mValueMap;
+    QgsEditorWidgetConfig mWidgetV2Config;
 
-    QgsVectorLayer *mLayer;
-    int mIndex;
-
-    QgsVectorLayer::RangeData mRangeData;
-    QgsVectorLayer::ValueRelationData mValueRelationData;
-    QgsVectorLayer::EditType mEditType;
-    QString mDateFormat;
-    QSize mWidgetSize;
-
-    QMap<QString, QVariant> mWidgetV2Config;
-
+    //! Cached configuration dialog (lazy loaded)
     QMap< QString, QgsEditorConfigWidget* > mEditorConfigWidgets;
 };
 

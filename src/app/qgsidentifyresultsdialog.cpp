@@ -16,22 +16,23 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsidentifyresultsdialog.h"
-#include "qgsapplication.h"
 #include "qgisapp.h"
-#include "qgsmaplayer.h"
-#include "qgsvectorlayer.h"
-#include "qgsrasterlayer.h"
-#include "qgshighlight.h"
-#include "qgsgeometry.h"
-#include "qgsattributedialog.h"
-#include "qgsmapcanvas.h"
+#include "qgsapplication.h"
 #include "qgsattributeaction.h"
+#include "qgsattributedialog.h"
+#include "qgseditorwidgetregistry.h"
 #include "qgsfeatureaction.h"
+#include "qgsgeometry.h"
+#include "qgshighlight.h"
+#include "qgsidentifyresultsdialog.h"
 #include "qgslogger.h"
+#include "qgsmapcanvas.h"
+#include "qgsmaplayeractionregistry.h"
+#include "qgsmaplayer.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsproject.h"
-#include "qgsmaplayeractionregistry.h"
+#include "qgsrasterlayer.h"
+#include "qgsvectorlayer.h"
 
 #include <QCloseEvent>
 #include <QLabel>
@@ -407,25 +408,14 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
 
     attrItem->setData( 1, Qt::UserRole, value );
 
-    switch ( vlayer->editType( i ) )
-    {
-      case QgsVectorLayer::Hidden:
-        // skip the item
-        delete attrItem;
+
+    const QString widgetType = vlayer->editorWidgetV2( i );
+
+    if ( widgetType == "Hidden" )
+      delete attrItem;
         continue;
 
-      case QgsVectorLayer::ValueMap:
-        value = vlayer->valueMap( i ).key( value, QString( "(%1)" ).arg( value ) );
-        break;
-
-      case QgsVectorLayer::Calendar:
-        if ( attrs[i].canConvert( QVariant::Date ) )
-          value = attrs[i].toDate().toString( vlayer->dateFormat( i ) );
-        break;
-
-      default:
-        break;
-    }
+    value = representValue( vlayer, fields[i].name(), attrs[i] );
 
     attrItem->setData( 1, Qt::DisplayRole, value );
 
@@ -512,25 +502,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
       continue;
 
     QString value = fields[i].displayString( attrs[i] );
-    QString value2 = value;
-    switch ( vlayer->editType( i ) )
-    {
-      case QgsVectorLayer::Hidden:
-        // skip the item
-        continue;
-
-      case QgsVectorLayer::ValueMap:
-        value2 = vlayer->valueMap( i ).key( value, QString( "(%1)" ).arg( value ) );
-        break;
-
-      case QgsVectorLayer::Calendar:
-        if ( attrs[i].canConvert( QVariant::Date ) )
-          value2 = attrs[i].toDate().toString( vlayer->dateFormat( i ) );
-        break;
-
-      default:
-        break;
-    }
+    QString value2 = representValue( vlayer, fields[i].name(), value );
 
     tblResults->setRowCount( j + 1 );
 
@@ -649,6 +621,32 @@ QgsIdentifyPlotCurve::~QgsIdentifyPlotCurve()
     mPlotCurve->detach();
     delete mPlotCurve;
   }
+}
+
+QString QgsIdentifyResultsDialog::representValue( QgsVectorLayer* vlayer, const QString& fieldName, const QVariant& value )
+{
+  QVariant cache;
+  QMap<QString, QVariant>& layerCaches = mWidgetCaches[vlayer->id()];
+
+  QString widgetType = vlayer->editorWidgetV2( fieldName );
+  QgsEditorWidgetFactory* factory = QgsEditorWidgetRegistry::instance()->factory( widgetType );
+
+  int idx = vlayer->fieldNameIndex( fieldName );
+
+  if ( !factory )
+    return value.toString();
+
+  if ( layerCaches.contains( fieldName ) )
+  {
+    cache = layerCaches[ fieldName ];
+  }
+  else
+  {
+    cache = factory->createCache( vlayer, idx, vlayer->editorWidgetV2Config( fieldName ) );
+    layerCaches.insert( fieldName, cache );
+  }
+
+  return factory->representValue( vlayer, idx, vlayer->editorWidgetV2Config( fieldName ), cache, value );
 }
 
 void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
@@ -1454,21 +1452,7 @@ void QgsIdentifyResultsDialog::attributeValueChanged( QgsFeatureId fid, int idx,
 
         if ( item->data( 0, Qt::UserRole + 1 ).toInt() == idx )
         {
-          switch ( vlayer->editType( idx ) )
-          {
-            case QgsVectorLayer::ValueMap:
-              value = vlayer->valueMap( idx ).key( val, QString( "(%1)" ).arg( value ) );
-              break;
-
-            case QgsVectorLayer::Calendar:
-              if ( val.canConvert( QVariant::Date ) )
-                value = val.toDate().toString( vlayer->dateFormat( idx ) );
-              break;
-
-            default:
-              break;
-          }
-
+          value = representValue( vlayer, fld.name(), val );
           item->setData( 1, Qt::DisplayRole, value );
           return;
         }

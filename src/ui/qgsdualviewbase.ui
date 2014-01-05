@@ -15,7 +15,16 @@
   </property>
   <widget class="QWidget" name="mPageTableView">
    <layout class="QGridLayout" name="gridLayout_3">
-    <property name="margin">
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
      <number>0</number>
     </property>
     <item row="0" column="0">
@@ -29,7 +38,16 @@
   </widget>
   <widget class="QWidget" name="mPageAttributeEditor">
    <layout class="QGridLayout" name="gridLayout_2">
-    <property name="margin">
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
      <number>0</number>
     </property>
     <item row="0" column="0">
@@ -39,7 +57,16 @@
       </property>
       <widget class="QWidget" name="listViewWdg" native="true">
        <layout class="QVBoxLayout" name="verticalLayout_2">
-        <property name="margin">
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
          <number>0</number>
         </property>
         <item>
@@ -92,32 +119,56 @@
        <property name="frameShadow">
         <enum>QFrame::Raised</enum>
        </property>
-       <layout class="QVBoxLayout" name="verticalLayout">
-        <property name="margin">
+       <layout class="QGridLayout" name="gridLayout">
+        <property name="leftMargin">
          <number>0</number>
         </property>
-        <item>
-         <layout class="QVBoxLayout" name="mAttributeEditorLayout"/>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <item row="0" column="0">
+         <widget class="QScrollArea" name="mAttributeEditorScrollArea">
+          <property name="widgetResizable">
+           <bool>true</bool>
+          </property>
+          <widget class="QWidget" name="mAttributeEditorLayout">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>0</y>
+             <width>229</width>
+             <height>503</height>
+            </rect>
+           </property>
+           <layout class="QGridLayout" name="gridLayout_4"/>
+          </widget>
+         </widget>
         </item>
        </layout>
       </widget>
      </widget>
     </item>
    </layout>
-     <action name="mActionExpressionPreview">
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionFilter.png</normaloff>:/images/themes/default/mActionFilter.png</iconset>
-   </property>
-   <property name="text">
-    <string>Expression</string>
-   </property>
-  </action>
-  <action name="mActionPreviewColumnsMenu">
-   <property name="text">
-    <string>Column Preview</string>
-   </property>
-  </action>
+   <action name="mActionExpressionPreview">
+    <property name="icon">
+     <iconset resource="../../images/images.qrc">
+      <normaloff>:/images/themes/default/mActionFilter.png</normaloff>:/images/themes/default/mActionFilter.png</iconset>
+    </property>
+    <property name="text">
+     <string>Expression</string>
+    </property>
+   </action>
+   <action name="mActionPreviewColumnsMenu">
+    <property name="text">
+     <string>Column Preview</string>
+    </property>
+   </action>
   </widget>
  </widget>
  <customwidgets>
@@ -132,6 +183,8 @@
    <header>attributetable/qgsfeaturelistview.h</header>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="../../images/images.qrc"/>
+ </resources>
  <connections/>
 </ui>

@@ -107,6 +107,12 @@ QgsFeatureIds QgsFeatureListView::currentEditSelection()
   return selection;
 }
 
+void QgsFeatureListView::setCurrentFeatureEdited( bool state )
+{
+  mItemDelegate->setCurrentFeatureEdited( state );
+  viewport()->update( visualRegionForSelection( mCurrentEditSelectionModel->selection() ) );
+}
+
 void QgsFeatureListView::mousePressEvent( QMouseEvent *event )
 {
   QPoint pos = event->pos();
@@ -116,7 +122,7 @@ void QgsFeatureListView::mousePressEvent( QMouseEvent *event )
   if ( QgsFeatureListViewDelegate::EditElement == mItemDelegate->positionToElement( event->pos() ) )
   {
     mEditSelectionDrag = true;
-    mCurrentEditSelectionModel->select( mModel->mapToMaster( index ), QItemSelectionModel::ClearAndSelect );
+    setEditSelection( mModel->mapToMaster( index ), QItemSelectionModel::ClearAndSelect );
   }
   else
   {
@@ -162,7 +168,20 @@ void QgsFeatureListView::setEditSelection( const QgsFeatureIds &fids )
     selection.append( QItemSelectionRange( mModel->mapToMaster( mModel->fidToIdx( fid ) ) ) );
   }
 
-  mCurrentEditSelectionModel->select( selection, QItemSelectionModel::ClearAndSelect );
+  bool ok = true;
+  emit aboutToChangeEditSelection( ok );
+
+  if ( ok )
+    mCurrentEditSelectionModel->select( selection, QItemSelectionModel::ClearAndSelect );
+}
+
+void QgsFeatureListView::setEditSelection(const QModelIndex& index, QItemSelectionModel::SelectionFlags command )
+{
+  bool ok = true;
+  emit aboutToChangeEditSelection( ok );
+
+  if ( ok )
+    mCurrentEditSelectionModel->select( index, command );
 }
 
 void QgsFeatureListView::repaintRequested( QModelIndexList indexes )
@@ -192,7 +211,7 @@ void QgsFeatureListView::mouseMoveEvent( QMouseEvent *event )
 
   if ( mEditSelectionDrag )
   {
-    mCurrentEditSelectionModel->select( mModel->mapToMaster( index ), QItemSelectionModel::ClearAndSelect );
+    setEditSelection( mModel->mapToMaster( index ), QItemSelectionModel::ClearAndSelect );
   }
   else
   {
@@ -242,7 +261,7 @@ void QgsFeatureListView::keyPressEvent( QKeyEvent *event )
         newIndex = mModel->mapToMaster( newLocalIndex );
         if ( newIndex.isValid() )
         {
-          mCurrentEditSelectionModel->select( newIndex, QItemSelectionModel::ClearAndSelect );
+          setEditSelection( newIndex, QItemSelectionModel::ClearAndSelect );
           scrollTo( newLocalIndex );
         }
         break;
@@ -252,7 +271,7 @@ void QgsFeatureListView::keyPressEvent( QKeyEvent *event )
         newIndex = mModel->mapToMaster( newLocalIndex );
         if ( newIndex.isValid() )
         {
-          mCurrentEditSelectionModel->select( newIndex, QItemSelectionModel::ClearAndSelect );
+          setEditSelection( newIndex, QItemSelectionModel::ClearAndSelect );
           scrollTo( newLocalIndex );
         }
         break;

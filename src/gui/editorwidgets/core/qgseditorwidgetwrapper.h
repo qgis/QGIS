@@ -21,8 +21,11 @@
 #include <QVariant>
 
 class QgsVectorLayer;
+class QgsField;
 
 #include "qgseditorwidgetconfig.h"
+#include "qgsattributeeditorcontext.h"
+#include "qgswidgetwrapper.h"
 
 /**
  * Manages an editor widget
@@ -31,10 +34,11 @@ class QgsVectorLayer;
  * A wrapper controls one attribute editor widget and is able to create a default
  * widget or use a pre-existent widget. It is able to set the widget to the value implied
  * by a field of a vector layer, or return the value it currently holds. Every time it is changed
- * it has to emit a valueChanged signal (this does not yet mean, that the value is accepted).
+ * it has to emit a valueChanged signal. If it fails to do so, there is no guarantee that the
+ * changed status of the widget will be saved.
  *
  */
-class GUI_EXPORT QgsEditorWidgetWrapper : public QObject
+class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
 {
     Q_OBJECT
   public:
@@ -52,58 +56,12 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QObject
      * Will be used to access the widget's value. Read the value from the widget and
      * return it properly formatted to be saved in the attribute.
      *
+     * If an invalid variant is returned this will be interpreted as no change.
+     * Be sure to return a NULL QVariant if it should be set to NULL.
+     *
      * @return The current value the widget represents
      */
     virtual QVariant value() = 0;
-
-    /**
-     * @brief Access the widget managed by this wrapper
-     *
-     * @return The widget
-     */
-    QWidget* widget();
-
-    /**
-     * @brief Access the widget managed by this wrapper and cast it to a given type
-     * Example: QPushButton* pb = wrapper->widget<QPushButton*>();
-     *
-     * @return The widget as template type or NULL, if it cannot be cast to this type.
-     */
-    template <class T>
-    T* widget() { return dynamic_cast<T>( mWidget ); }
-
-    /**
-     * Will set the config of this wrapper to the specified config.
-     *
-     * @param config The config for this wrapper
-     */
-    void setConfig( const QgsEditorWidgetConfig& config );
-
-    /**
-     * Use this inside your overriden classes to access the configuration.
-     *
-     * @param key         The configuration option you want to load
-     * @param defaultVal  Default value
-     *
-     * @return the value assigned to this configuration option
-     */
-    QVariant config( QString key, QVariant defaultVal = QVariant() );
-
-    /**
-     * Returns the whole config
-     *
-     * @return The configuration
-     */
-    const QgsEditorWidgetConfig config();
-
-    /**
-     * Access the QgsVectorLayer, you are working on
-     *
-     * @return The layer
-     *
-     * @see field()
-     */
-    QgsVectorLayer* layer();
 
     /**
      * Access the field index.
@@ -112,7 +70,16 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QObject
      *
      * @see layer()
      */
-    int field();
+    int fieldIdx();
+
+    /**
+     * Access the field.
+     *
+     * @return The field you are working on
+     *
+     * @see layer()
+     */
+    QgsField field();
 
     /**
      * Will return a wrapper for a given widget
@@ -120,27 +87,6 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QObject
      * @return The wrapper for the widget or NULL
      */
     static QgsEditorWidgetWrapper* fromWidget( QWidget* widget );
-
-  protected:
-    /**
-     * This method should create a new widget with the provided parent. This will only be called
-     * if the form did not already provide a widget, so it is not guaranteed to be called!
-     * You should not do initialisation stuff, which also has to be done for custom editor
-     * widgets inside this method. Things like filling comboboxes and assigning other data which
-     * will also be used to make widgets on forms created in the QtDesigner usable should be assigned
-     * in {@link initWidget(QWidget*)}.
-     *
-     * @param parent You should set this parent on the created widget.
-     * @return A new widget
-     */
-    virtual QWidget* createWidget( QWidget* parent ) = 0;
-
-    /**
-     * This method should initialize the editor widget with runtime data. Fill your comboboxes here.
-     *
-     * @param editor The widget which will represent this attribute editor in a form.
-     */
-    virtual void initWidget( QWidget* editor );
 
   signals:
     /**
@@ -152,6 +98,15 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QObject
 
   public slots:
     /**
+     * Will be called when the feature changes
+     *
+     * Is forwarded to the slot @link{setValue()}
+     *
+     * @param feature The new feature
+     */
+    void setFeature( const QgsFeature& feature );
+
+    /**
      * Is called, when the value of the widget needs to be changed. Update the widget representation
      * to reflect the new value.
      *
@@ -159,20 +114,54 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QObject
      */
     virtual void setValue( const QVariant& value ) = 0;
 
+  protected slots:
     /**
-     * Is used to enable or disable the edit functionality of the managed widget.
-     * By default this will enable or disable the whole widget
+     * If you emit to this slot in your implementation, an appropriate change notification
+     * will be broadcasted. Helper for string type widgets.
      *
-     * @param enabled  Enable or Disable?
+     * @param value The value
      */
-    virtual void setEnabled( bool enabled );
+    void valueChanged( const QString& value );
+
+    /**
+     * If you emit to this slot in your implementation, an appropriate change notification
+     * will be broadcasted. Helper for int type widgets.
+     *
+     * @param value The value
+     */
+    void valueChanged( int value );
+
+    /**
+     * If you emit to this slot in your implementation, an appropriate change notification
+     * will be broadcasted. Helper for double type widgets.
+     *
+     * @param value The value
+     */
+    void valueChanged( double value );
+
+    /**
+     * If you emit to this slot in your implementation, an appropriate change notification
+     * will be broadcasted. Helper for bool type widgets.
+     *
+     * @param value The value
+     */
+    void valueChanged( bool value );
+
+    /**
+     * If you emit to this slot in your implementation, an appropriate change notification
+     * will be broadcasted. Helper for longlong type widgets.
+     *
+     * @param value The value
+     */
+    void valueChanged( qlonglong value );
+
+    /**
+     * Will call the value() method to determine the emitted value
+     */
+    void valueChanged();
 
   private:
-    QgsEditorWidgetConfig mConfig;
-    QWidget* mWidget;
-    QWidget* mParent;
-    QgsVectorLayer* mLayer;
-    int mField;
+    int mFieldIdx;
 };
 
 // We'll use this class inside a QVariant in the widgets properties
