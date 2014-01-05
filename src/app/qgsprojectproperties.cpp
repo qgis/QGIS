@@ -996,7 +996,10 @@ void QgsProjectProperties::on_pbnWMSAddSRS_clicked()
 {
   QgsGenericProjectionSelector *mySelector = new QgsGenericProjectionSelector( this );
   mySelector->setMessage();
-  if ( mySelector->exec() )
+  if ( mWMSList->count() > 0 ) {
+    mySelector->setSelectedAuthId( mWMSList->item( mWMSList->count()-1 )->text() );
+  }
+  if ( mySelector->exec() && mySelector->selectedCrsId()!=0 )
   {
     QString authid = mySelector->selectedAuthId();
 
