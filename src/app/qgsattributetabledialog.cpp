@@ -261,7 +261,7 @@ void QgsAttributeTableDialog::columnBoxInit()
 
   foreach ( const QgsField field, fields )
   {
-    if ( mLayer->editType( mLayer->fieldNameIndex( field.name() ) ) != QgsVectorLayer::Hidden )
+    if ( mLayer->editorWidgetV2( mLayer->fieldNameIndex( field.name() ) ) != "Hidden" )
     {
       QIcon icon = QgsApplication::getThemeIcon( "/mActionNewAttribute.png" );
       QString text = field.name();
@@ -380,7 +380,6 @@ void QgsAttributeTableDialog::on_mOpenFieldCalculator_clicked()
     if ( col >= 0 )
     {
       masterModel->reload( masterModel->index( 0, col ), masterModel->index( masterModel->rowCount() - 1, col ) );
-      mMainView->reloadAttribute( col );
     }
   }
 }

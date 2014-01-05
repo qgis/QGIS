@@ -14,81 +14,63 @@
  ***************************************************************************/
 
 #include "qgseditorwidgetwrapper.h"
+#include "qgsvectorlayer.h"
+#include "qgsfield.h"
 
 #include <QWidget>
 
 QgsEditorWidgetWrapper::QgsEditorWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
-    : QObject( parent )
-    , mWidget( editor )
-    , mParent( parent )
-    , mLayer( vl )
+    : QgsWidgetWrapper( vl, editor, parent )
+    , mFieldIdx( fieldIdx )
 {
-  mField = fieldIdx;
 }
 
-QWidget* QgsEditorWidgetWrapper::widget()
+int QgsEditorWidgetWrapper::fieldIdx()
 {
-  if ( !mWidget )
-  {
-    mWidget = createWidget( mParent );
-    mWidget->setProperty( "EWV2Wrapper", QVariant::fromValue( this ) );
-    initWidget( mWidget );
-  }
-
-  return mWidget;
+  return mFieldIdx;
 }
 
-void QgsEditorWidgetWrapper::setConfig( const QgsEditorWidgetConfig& config )
+QgsField QgsEditorWidgetWrapper::field()
 {
-  mConfig = config;
-  // If an editor widget was supplied, we can initialize this now
-  if ( mWidget )
-  {
-    mWidget->setProperty( "EWV2Wrapper", QVariant::fromValue( this ) );
-    initWidget( mWidget );
-  }
-}
-
-QVariant QgsEditorWidgetWrapper::config( QString key, QVariant defaultVal )
-{
-  if ( mConfig.contains( key ) )
-  {
-    return mConfig[key];
-  }
-  return defaultVal;
-}
-
-QgsVectorLayer* QgsEditorWidgetWrapper::layer()
-{
-  return mLayer;
-}
-
-int QgsEditorWidgetWrapper::field()
-{
-  return mField;
+  return layer()->pendingFields()[mFieldIdx];
 }
 
 QgsEditorWidgetWrapper* QgsEditorWidgetWrapper::fromWidget( QWidget* widget )
 {
-  QVariant w = widget->property( "EWV2Wrapper" );
-
-  if ( w.isNull() )
-  {
-    return NULL;
-  }
-
-  return w.value<QgsEditorWidgetWrapper*>();
+  return widget->property( "EWV2Wrapper" ).value<QgsEditorWidgetWrapper*>();
 }
 
-void QgsEditorWidgetWrapper::initWidget( QWidget* editor )
+void QgsEditorWidgetWrapper::setFeature( const QgsFeature& feature )
 {
-  Q_UNUSED( editor )
+  setValue( feature.attribute( mFieldIdx ) );
 }
 
-void QgsEditorWidgetWrapper::setEnabled( bool enabled )
+void QgsEditorWidgetWrapper::valueChanged( const QString& value )
 {
-  if ( mWidget )
-  {
-    mWidget->setEnabled( enabled );
-  }
+  emit valueChanged( QVariant( value ) );
+}
+
+void QgsEditorWidgetWrapper::valueChanged( int value )
+{
+  emit valueChanged( QVariant( value ) );
+}
+
+void QgsEditorWidgetWrapper::valueChanged( double value )
+{
+  emit valueChanged( QVariant( value ) );
+}
+
+void QgsEditorWidgetWrapper::valueChanged( bool value )
+{
+  emit valueChanged( QVariant( value ) );
+}
+
+void QgsEditorWidgetWrapper::valueChanged( qlonglong value )
+{
+  emit valueChanged( QVariant( value ) );
+}
+
+void QgsEditorWidgetWrapper::valueChanged()
+{
+  emit valueChanged( value() );
 }

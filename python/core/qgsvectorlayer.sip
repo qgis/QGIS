@@ -860,12 +860,6 @@ class QgsVectorLayer : QgsMapLayer
     /** set string representing 'true' for a checkbox (added in 1.4) */
     void setCheckedState( int idx, QString checked, QString notChecked );
 
-    /** return string representing 'true' for a checkbox (added in 1.4)
-     * @note not available in python bindings
-     * FIXME: need SIP binding for QPair<QString, QString>
-     */
-    // QPair<QString, QString> checkedState( int idx );
-
     /** get edit form (added in 1.4) */
     QString editForm();
 
@@ -893,15 +887,15 @@ class QgsVectorLayer : QgsMapLayer
     void setEditFormInit( QString function );
 
     /**access value map*/
-    QMap<QString, QVariant> &valueMap( int idx );
+    QMap<QString, QVariant> valueMap( int idx );
 
     /**access range */
-    RangeData &range( int idx );
+    RangeData range( int idx ) /Deprecated/;
 
     /**access relations
      * @note added in 1.8
      **/
-    ValueRelationData &valueRelation( int idx );
+    ValueRelationData valueRelation( int idx ) /Deprecated/;
 
     /**
      * Get relations, where the foreign key is on this layer
@@ -914,12 +908,12 @@ class QgsVectorLayer : QgsMapLayer
     /**access date format
      * @note added in 1.9
      */
-    QString &dateFormat( int idx );
+    QString dateFormat( int idx ) /Deprecated/;
 
     /**access widget size for photo and webview widget
      * @note added in 1.9
      */
-    QSize &widgetSize( int idx );
+    QSize widgetSize( int idx ) /Deprecated/;
 
     /**is edit widget editable
      * @note added in 1.9

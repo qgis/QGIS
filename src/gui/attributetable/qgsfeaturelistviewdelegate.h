@@ -32,6 +32,8 @@ class GUI_EXPORT QgsFeatureListViewDelegate : public QItemDelegate
 
     void setFeatureSelectionModel( QgsFeatureSelectionModel* featureSelectionModel );
 
+    void setCurrentFeatureEdited( bool state );
+
   signals:
     void editButtonClicked( QModelIndex& index );
 
@@ -43,6 +45,8 @@ class GUI_EXPORT QgsFeatureListViewDelegate : public QItemDelegate
     QgsFeatureSelectionModel* mFeatureSelectionModel;
     QItemSelectionModel* mEditSelectionModel;
     QgsFeatureListModel* mListModel;
+    //! Set to true if the current edit selection has been edited
+    bool mCurrentFeatureEdited;
 };
 
 #endif // QGSATTRIBUTELISTVIEWDELEGATE_H

@@ -15,6 +15,8 @@
 %Include qgsattributeeditor.sip
 %Include qgsattributeeditorcontext.sip
 %Include qgsattributedialog.sip
+%Include qgsattributeform.sip
+%Include qgsattributeforminterface.sip
 %Include qgsbusyindicatordialog.sip
 %Include qgscollapsiblegroupbox.sip
 %Include qgscolorbutton.sip

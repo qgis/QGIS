@@ -14,72 +14,36 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #include "qgsattributedialog.h"
-#include "qgseditorwidgetwrapper.h"
-#include "qgsfield.h"
-#include "qgslogger.h"
-#include "qgsmapcanvas.h"
-#include "qgsproject.h"
-#include "qgsrelationeditor.h"
-#include "qgsvectordataprovider.h"
-#include "qgsvectorlayer.h"
-#include "qgsattributeeditor.h"
+
+#include "qgsattributeform.h"
 #include "qgshighlight.h"
-#include "qgsexpression.h"
-#include "qgspythonrunner.h"
 
-#include <QTableWidgetItem>
 #include <QSettings>
-#include <QLabel>
-#include <QFrame>
-#include <QScrollArea>
-#include <QFile>
-#include <QFileInfo>
-#include <QDir>
-#include <QDialogButtonBox>
-#include <QUiLoader>
-#include <QDialog>
-#include <QVBoxLayout>
-#include <QLineEdit>
-#include <QWebView>
-#include <QPushButton>
+#include <QGridLayout>
 
-int QgsAttributeDialog::sFormCounter = 0;
-QString QgsAttributeDialog::sSettingsPath = "/Windows/AttributeDialog/";
-
-QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer* vl, QgsFeature* thepFeature, bool featureOwner, QWidget* parent, bool showDialogButtons, QgsAttributeEditorContext context )
-    : QObject( parent )
-    , mDialog( 0 )
-    , mContext( context )
-    , mLayer( vl )
-    , mFeature( thepFeature )
-    , mFeatureOwner( featureOwner )
-    , mHighlight( 0 )
-    , mFormNr( sFormCounter++ )
-    , mShowDialogButtons( showDialogButtons )
-{
-  mContext.adjustForLayer( mLayer );
-  init();
-}
 
 QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer* vl, QgsFeature* thepFeature, bool featureOwner, QgsDistanceArea myDa, QWidget* parent, bool showDialogButtons )
     : QObject( parent )
-    , mDialog( 0 )
-    , mContext( )
-    , mLayer( vl )
-    , mFeature( thepFeature )
-    , mFeatureOwner( featureOwner )
     , mHighlight( 0 )
-    , mFormNr( sFormCounter++ )
-    , mShowDialogButtons( showDialogButtons )
 {
-  mContext.setDistanceArea( myDa );
-  mContext.adjustForLayer( mLayer );
-  init();
+  QgsAttributeEditorContext context;
+  context.setDistanceArea( myDa );
+  init( vl, thepFeature, context, parent );
+
+  if ( !showDialogButtons )
+    mAttributeForm->hideButtonBox();
+
+  if ( featureOwner )
+    delete thepFeature;
 }
 
-void QgsAttributeDialog::init()
+QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer* vl, QgsFeature* thepFeature, bool featureOwner, QWidget* parent, bool showDialogButtons, QgsAttributeEditorContext context )
+    : QObject( parent )
+    , mHighlight( 0 )
 {
+<<<<<<< HEAD
   if ( !mFeature || !mLayer->dataProvider() )
     return;
 
@@ -460,77 +424,16 @@ void QgsAttributeDialog::init()
         connect( buttonBox, SIGNAL( accepted() ), mDialog, SLOT( accept() ) );
         connect( buttonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
       }
+=======
+  init( vl, thepFeature, context, parent );
+>>>>>>> Port editor widgets to new API
 
-      buttonBox->setVisible( false );
-    }
-  }
+  if ( !showDialogButtons )
+    mAttributeForm->hideButtonBox();
 
-  QMetaObject::connectSlotsByName( mDialog );
-
-  connect( mDialog, SIGNAL( destroyed() ), this, SLOT( dialogDestroyed() ) );
-
-  if ( !mLayer->editFormInit().isEmpty() )
-  {
-#if 0
-    // would be nice if only PyQt's QVariant.toPyObject() wouldn't take ownership
-    vl->setProperty( "featureForm.dialog", QVariant::fromValue( qobject_cast<QObject*>( mDialog ) ) );
-    vl->setProperty( "featureForm.id", QVariant( mpFeature->id() ) );
-#endif
-
-    QString module = mLayer->editFormInit();
-    int pos = module.lastIndexOf( "." );
-    if ( pos >= 0 )
-    {
-      QgsPythonRunner::run( QString( "import %1" ).arg( module.left( pos ) ) );
-    }
-
-    /* Reload the module if the DEBUGMODE switch has been set in the module.
-     If set to False you have to reload QGIS to reset it to True due to Python
-     module caching */
-    QString reload = QString( "if hasattr(%1,'DEBUGMODE') and %1.DEBUGMODE:"
-                              "    reload(%1)" ).arg( module.left( pos ) );
-
-    QgsPythonRunner::run( reload );
-
-    QString form =  QString( "_qgis_featureform_%1 = sip.wrapinstance( %2, QtGui.QDialog )" )
-                    .arg( mFormNr )
-                    .arg(( unsigned long ) mDialog );
-
-    QString layer = QString( "_qgis_layer_%1 = sip.wrapinstance( %2, qgis.core.QgsVectorLayer )" )
-                    .arg( mLayer->id() )
-                    .arg(( unsigned long ) mLayer );
-
-    // Generate the unique ID of this feature.  We used to use feature ID but some providers
-    // return a ID that is an invalid python variable when we have new unsaved features.
-    QDateTime dt = QDateTime::currentDateTime();
-    QString featurevarname = QString( "_qgis_feature_%1" ).arg( dt.toString( "yyyyMMddhhmmsszzz" ) );
-    QString feature = QString( "%1 = sip.wrapinstance( %2, qgis.core.QgsFeature )" )
-                      .arg( featurevarname )
-                      .arg(( unsigned long ) mFeature );
-
-    QgsPythonRunner::run( form );
-    QgsPythonRunner::run( feature );
-    QgsPythonRunner::run( layer );
-
-    mReturnvarname = QString( "_qgis_feature_form_%1" ).arg( dt.toString( "yyyyMMddhhmmsszzz" ) );
-    QString expr = QString( "%5 = %1(_qgis_featureform_%2, _qgis_layer_%3, %4)" )
-                   .arg( mLayer->editFormInit() )
-                   .arg( mFormNr )
-                   .arg( mLayer->id() )
-                   .arg( featurevarname )
-                   .arg( mReturnvarname );
-
-    QgsDebugMsg( QString( "running featureForm init: %1" ).arg( expr ) );
-    QgsPythonRunner::run( expr );
-  }
-
-  // Only restore the geometry of the dialog if it's not a custom one.
-  if ( mLayer->editorLayout() != QgsVectorLayer::UiFileLayout )
-  {
-    restoreGeometry();
-  }
+  if ( featureOwner )
+    delete thepFeature;
 }
-
 
 QgsAttributeDialog::~QgsAttributeDialog()
 {
@@ -540,47 +443,47 @@ QgsAttributeDialog::~QgsAttributeDialog()
     delete mHighlight;
   }
 
-  if ( mFeatureOwner )
-  {
-    delete mFeature;
-  }
+  saveGeometry();
+  delete mDialog;
+}
 
-  // Only save the geometry of the dialog if it's not a custom one.
-  if ( mLayer->editorLayout() != QgsVectorLayer::UiFileLayout )
-  {
-    saveGeometry();
-  }
-
+void QgsAttributeDialog::saveGeometry()
+{
   if ( mDialog )
   {
-    delete mDialog;
+    QSettings settings;
+    settings.setValue( mSettingsPath + "geometry", mDialog->saveGeometry() );
   }
 }
 
-void QgsAttributeDialog::reject()
+void QgsAttributeDialog::restoreGeometry()
 {
-  // Only save the geometry of the dialog if it's not a custom one.
-  if ( mLayer->editorLayout() != QgsVectorLayer::UiFileLayout )
+  if ( mDialog )
   {
-    saveGeometry();
+    QSettings settings;
+    mDialog->restoreGeometry( settings.value( mSettingsPath + "geometry" ).toByteArray() );
   }
-  mDialog->reject();
+}
+
+void QgsAttributeDialog::restoreGeometry()
+{
+  if ( mDialog )
+  {
+    QSettings settings;
+    mDialog->restoreGeometry( settings.value( mSettingsPath + "geometry" ).toByteArray() );
+  }
+}
+
+void QgsAttributeDialog::setHighlight( QgsHighlight* h )
+{
+  delete mHighlight;
+
+  mHighlight = h;
 }
 
 void QgsAttributeDialog::accept()
 {
-  if ( !mLayer->isEditable() || !mFeature )
-    return;
-
-  //write the new values back to the feature
-  const QgsFields& fields = mLayer->pendingFields();
-  for ( int idx = 0; idx < fields.count(); ++idx )
-  {
-    QVariant value;
-
-    if ( QgsAttributeEditor::retrieveValue( mContext.proxyWidget( mLayer, idx ), mLayer, idx, value ) )
-      mFeature->setAttribute( idx, value );
-  }
+  mAttributeForm->save();
 }
 
 int QgsAttributeDialog::exec()
@@ -608,58 +511,7 @@ void QgsAttributeDialog::show()
   }
 }
 
-void QgsAttributeDialog::saveGeometry()
-{
-  if ( mDialog )
-  {
-    QSettings settings;
-    settings.setValue( mSettingsPath + "geometry", mDialog->saveGeometry() );
-  }
-}
-
-void QgsAttributeDialog::restoreGeometry()
-{
-  if ( mDialog )
-  {
-    QSettings settings;
-    mDialog->restoreGeometry( settings.value( mSettingsPath + "geometry" ).toByteArray() );
-  }
-}
-
-void QgsAttributeDialog::setHighlight( QgsHighlight *h )
-{
-  if ( mHighlight )
-  {
-    delete mHighlight;
-  }
-
-  mHighlight = h;
-}
-
-
-void QgsAttributeDialog::dialogDestroyed()
-{
-#if 0
-  mLayer->setProperty( "featureForm.dialog", QVariant() );
-  mLayer->setProperty( "featureForm.id", QVariant() );
-#endif
-  if ( -1 < mFormNr )
-  {
-    QString expr = QString( "if locals().has_key('_qgis_featureform_%1'): del _qgis_featureform_%1\n" ).arg( mFormNr );
-    QgsPythonRunner::run( expr );
-  }
-
-  if ( !mReturnvarname.isEmpty() )
-  {
-    QString expr = QString( "if locals().has_key('%1'): del %1\n" ).arg( mReturnvarname );
-    QgsPythonRunner::run( expr );
-  }
-
-  mDialog = NULL;
-  deleteLater();
-}
-
-bool QgsAttributeDialog::eventFilter( QObject *obj, QEvent *e )
+bool QgsAttributeDialog::eventFilter( QObject* obj, QEvent* e )
 {
   if ( mHighlight && obj == mDialog )
   {
@@ -668,13 +520,27 @@ bool QgsAttributeDialog::eventFilter( QObject *obj, QEvent *e )
       case QEvent::WindowActivate:
         mHighlight->show();
         break;
+
       case QEvent::WindowDeactivate:
         mHighlight->hide();
         break;
+
       default:
         break;
     }
   }
 
   return false;
+}
+
+void QgsAttributeDialog::init( QgsVectorLayer* layer, QgsFeature* feature, QgsAttributeEditorContext& context, QWidget* parent )
+{
+  mDialog = new QDialog( parent );
+  mDialog->setLayout( new QGridLayout() );
+  mDialog->layout()->setMargin( 0 );
+  mAttributeForm = new QgsAttributeForm( layer, *feature, context, parent );
+  mDialog->layout()->addWidget( mAttributeForm );
+  QDialogButtonBox* buttonBox = mAttributeForm->findChild<QDialogButtonBox*>();
+  connect( buttonBox, SIGNAL( rejected() ), mDialog, SLOT( close() ) );
+  connect( buttonBox, SIGNAL( accepted()), mDialog, SLOT(close()) );
 }

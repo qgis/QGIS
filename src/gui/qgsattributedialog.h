@@ -19,8 +19,10 @@
 
 #include "qgsfeature.h"
 #include "qgsattributeeditorcontext.h"
+#include "qgsattributeform.h"
 
-class QDialog;
+#include <QDialog>
+
 class QLayout;
 
 class QgsDistanceArea;
@@ -74,11 +76,15 @@ class GUI_EXPORT QgsAttributeDialog : public QObject
      */
     void restoreGeometry();
 
+    /**
+     * @brief setHighlight
+     * @param The highlight. Ownership is taken.
+     */
     void setHighlight( QgsHighlight *h );
 
-    QDialog *dialog() { return mDialog; }
+    QDialog* dialog() { return mDialog; }
 
-    QgsFeature* feature() { return mFeature; }
+    const QgsFeature* feature() { return &mAttributeForm->feature(); }
 
     /**
      * Is this dialog editable?
@@ -94,25 +100,20 @@ class GUI_EXPORT QgsAttributeDialog : public QObject
     int exec();
     void show();
 
-    void dialogDestroyed();
-
   protected:
-    bool eventFilter( QObject *obj, QEvent *event );
+    bool eventFilter( QObject *obj, QEvent *e );
 
   private:
-    void init();
+    void init( QgsVectorLayer* layer, QgsFeature* feature, QgsAttributeEditorContext& context, QWidget* parent );
 
     QDialog *mDialog;
     QString mSettingsPath;
     // Used to sync multiple widgets for the same field
-    QgsAttributeEditorContext mContext;
-    QgsVectorLayer *mLayer;
-    QgsFeature* mFeature;
-    bool mFeatureOwner;
     QgsHighlight *mHighlight;
     int mFormNr;
     bool mShowDialogButtons;
     QString mReturnvarname;
+    QgsAttributeForm* mAttributeForm;
 
     // true if this dialog is editable
     bool mEditable;

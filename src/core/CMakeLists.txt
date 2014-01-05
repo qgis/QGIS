@@ -87,19 +87,20 @@ SET(QGIS_CORE_SRCS
   qgsfontutils.cpp
   qgsgeometry.cpp
   qgsgeometrycache.cpp
-  qgsgeometryvalidator.cpp
   qgsgeometrysimplifier.cpp
-  qgssimplifymethod.cpp
+  qgsgeometryvalidator.cpp
   qgsgml.cpp
   qgsgmlschema.cpp
   qgshttptransaction.cpp
   qgslabel.cpp
   qgslabelattributes.cpp
   qgslabelsearchtree.cpp
+  qgslegacyhelpers.cpp
   qgslogger.cpp
   qgsmaplayer.cpp
   qgsmaplayerregistry.cpp
   qgsmaprenderer.cpp
+  qgssimplifymethod.cpp
   qgsmaptopixel.cpp
   qgsmaptopixelgeometrysimplifier.cpp
   qgsmessageoutput.cpp
@@ -502,6 +503,7 @@ SET(QGIS_CORE_HDRS
   qgsdbfilterproxymodel.h
   qgsvectorlayerjoinbuffer.h
   qgslabelsearchtree.h
+  qgslegacyhelpers.h
   qgssimplifymethod.h
   qgsvectorsimplifymethod.h
 

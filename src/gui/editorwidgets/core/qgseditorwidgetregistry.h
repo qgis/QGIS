@@ -54,7 +54,7 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
      *
      * @return A new widget wrapper
      */
-    QgsEditorWidgetWrapper* create( const QString& widgetId, QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config, QWidget* editor, QWidget* parent );
+    QgsEditorWidgetWrapper* create( const QString& widgetId, QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config, QWidget* editor, QWidget* parent, const QgsAttributeEditorContext context = QgsAttributeEditorContext() );
 
     /**
      * Creates a configuration widget
@@ -82,16 +82,14 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
      *
      * @return All ids and factories
      */
-    const QMap<QString, QgsEditorWidgetFactory*> factories();
+    const QMap<QString, QgsEditorWidgetFactory*>& factories();
 
     /**
-     * The other part which does the boring work for you
+     * Get a factory for the given widget type id.
+     *
+     * @return A factory or Null if not existent
      */
-    template <class W, class C>
-    void registerWidget( const QString& widgetType, const QString& name )
-    {
-      mWidgetFactories.insert( widgetType, new QgsEditWidgetFactoryHelper<W, C>( name ) );
-    }
+    QgsEditorWidgetFactory* factory( const QString& widgetId );
 
     /**
      * Register a new widget factory with the given id
@@ -107,12 +105,35 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
     QgsEditorWidgetRegistry();
 
   private slots:
+    /**
+     * Read all the editor widget information from a map layer XML node
+     * @param mapLayer
+     * @param layerElem
+     */
     void readMapLayer( QgsMapLayer* mapLayer , const QDomElement& layerElem );
+
+    /**
+     * Read all old-style editor widget configuration from a map node. Will update
+     * a project file to the new version on next save
+     * @param mapLayer   The layer in question
+     * @param layerElem  The layer element from the project file
+     * @param cfg        Writable config element
+     *
+     * @deprecated
+     */
+    Q_DECL_DEPRECATED const QString readLegacyConfig( QgsVectorLayer* vl, const QDomElement& editTypeElement , QgsEditorWidgetConfig& cfg );
+
+    /**
+     * Write all the widget config to a layer XML node
+     *
+     * @param mapLayer   The layer for which the config is being written
+     * @param layerElem  The XML element to which the config will be written
+     * @param doc        The document from which to create elements
+     */
     void writeMapLayer( QgsMapLayer* mapLayer , QDomElement& layerElem, QDomDocument& doc );
 
   private:
     QMap<QString, QgsEditorWidgetFactory*> mWidgetFactories;
 };
-
 
 #endif // QGSEDITORWIDGETREGISTRY_H
