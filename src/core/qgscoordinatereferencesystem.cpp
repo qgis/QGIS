@@ -2041,8 +2041,8 @@ bool QgsCoordinateReferenceSystem::syncDatumTransform( const QString& dbPath )
 
   insert = "INSERT INTO tbl_datum_transform(" + insert + ") VALUES (" + values + ")";
 
-  QgsDebugMsg( QString( "insert:%1" ).arg( insert ) );
-  QgsDebugMsg( QString( "update:%1" ).arg( update ) );
+  QgsDebugMsgLevel( QString( "insert:%1" ).arg( insert ), 4 );
+  QgsDebugMsgLevel( QString( "update:%1" ).arg( update ), 4 );
 
   CSLDestroy( fieldnames );
 
