@@ -18,8 +18,9 @@
 #define QGSABOUT_H
 
 #include "ui_qgsabout.h"
+#include "qgsoptionsdialogbase.h"
 
-class APP_EXPORT QgsAbout : public QDialog, private Ui::QgsAbout
+class APP_EXPORT QgsAbout : public QgsOptionsDialogBase , private Ui::QgsAbout
 {
     Q_OBJECT
   public:
