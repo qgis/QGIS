@@ -20,7 +20,7 @@
 #include <QCoreApplication>
 
 #define POSTGRES_MAX_CONCURRENT_CONNS      4
-#define POSTGRES_CONN_EXPIRATION          10    // in seconds
+#define POSTGRES_CONN_EXPIRATION          60    // in seconds
 
 
 
