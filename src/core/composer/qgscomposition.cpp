@@ -78,7 +78,7 @@ QgsComposition::QgsComposition( QgsMapRenderer* mapRenderer )
     , mAtlasPreviewEnabled( false )
     , mPreventCursorChange( false )
 {
-  setBackgroundBrush( Qt::gray );
+  setBackgroundBrush( QColor( 215, 215, 215 ) );
   createDefaultPageStyleSymbol();
   addPaperItem();
 
@@ -2248,7 +2248,7 @@ void QgsComposition::renderPage( QPainter* p, int page )
   setBackgroundBrush( Qt::NoBrush );
   render( p, QRectF( 0, 0, paintDevice->width(), paintDevice->height() ), paperRect );
   //show background after rendering
-  setBackgroundBrush( Qt::gray );
+  setBackgroundBrush( QColor( 215, 215, 215 ) );
   setSnapLinesVisible( true );
 
   mPlotStyle = savedPlotStyle;

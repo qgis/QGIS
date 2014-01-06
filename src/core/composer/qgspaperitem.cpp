@@ -166,6 +166,24 @@ void QgsPaperItem::paint( QPainter* painter, const QStyleOptionGraphicsItem* ite
   }
 
   painter->save();
+
+  if ( mComposition->plotStyle() ==  QgsComposition::Preview )
+  {
+    //if in preview mode, draw page border and shadow so that it's
+    //still possible to tell where pages with a transparent style begin and end
+    painter->setRenderHint( QPainter::Antialiasing, false );
+
+    //shadow
+    painter->setBrush( QBrush( QColor( 150, 150, 150 ) ) );
+    painter->setPen( Qt::NoPen );
+    painter->drawRect( QRectF( 1, 1, rect().width() + 1, rect().height() + 1 ) );
+
+    //page area
+    painter->setBrush( QColor( 215, 215, 215 ) );
+    painter->setPen( QPen( QColor( 100, 100, 100 ) ) );
+    painter->drawRect( QRectF( 0, 0, rect().width(), rect().height() ) );
+  }
+
   painter->setRenderHint( QPainter::Antialiasing );
   mComposition->pageStyleSymbol()->startRender( context );
 
@@ -216,6 +234,11 @@ void QgsPaperItem::initialize()
   setFlag( QGraphicsItem::ItemIsSelectable, false );
   setFlag( QGraphicsItem::ItemIsMovable, false );
   setZValue( 0 );
+
+  //even though we aren't going to use it to draw the page, set the pen width as 4
+  //so that the page border and shadow is fully rendered within its scene rect
+  //(QGraphicsRectItem considers the pen width when calculating an item's scene rect)
+  setPen( QPen( QBrush( Qt::NoBrush ), 4 ) );
 
   //create a new QgsPaperGrid for this page, and add it to the composition
   mPageGrid = new QgsPaperGrid( pos().x(), pos().y(), rect().width(), rect().height(), mComposition );
