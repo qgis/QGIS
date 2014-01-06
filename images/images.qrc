@@ -132,7 +132,6 @@
         <file>themes/default/mActionAddPart.png</file>
         <file>themes/default/mActionAddRasterLayer.svg</file>
         <file>themes/default/mActionAddRing.png</file>
-        <file>themes/default/mActionFillRing.png</file>
         <file>themes/default/mActionAddSpatiaLiteLayer.svg</file>
         <file>themes/default/mActionAddVertex.png</file>
         <file>themes/default/mActionAddWcsLayer.svg</file>
@@ -151,6 +150,11 @@
         <file>themes/default/mActionArrowLeft.png</file>
         <file>themes/default/mActionArrowRight.png</file>
         <file>themes/default/mActionArrowUp.png</file>
+        <file>themes/default/mActionAtlasFirst.svg</file>
+        <file>themes/default/mActionAtlasLast.svg</file>
+        <file>themes/default/mActionAtlasNext.svg</file>
+        <file>themes/default/mActionAtlasPrev.svg</file>
+        <file>themes/default/mActionAtlasSettings.svg</file>
         <file>themes/default/mActionCalculateField.png</file>
         <file>themes/default/mActionCancelAllEdits.svg</file>
         <file>themes/default/mActionCancelEdits.svg</file>
@@ -188,6 +192,7 @@
         <file>themes/default/mActionFileSave.svg</file>
         <file>themes/default/mActionFileSaveAs.svg</file>
         <file>themes/default/mActionFileSmall.png</file>
+        <file>themes/default/mActionFillRing.png</file>
         <file>themes/default/mActionFilter.png</file>
         <file>themes/default/mActionFilter.svg</file>
         <file>themes/default/mActionFolder.png</file>
@@ -296,6 +301,7 @@
         <file>themes/default/mActionZoomOut.svg</file>
         <file>themes/default/mActionZoomToLayer.svg</file>
         <file>themes/default/mActionZoomToSelected.svg</file>
+        <file>themes/default/mIconAtlas.svg</file>
         <file>themes/default/mIconAutoPlacementSettings.svg</file>
         <file>themes/default/mIconClear.svg</file>
         <file>themes/default/mIconClose.png</file>
@@ -364,7 +370,6 @@
         <file>themes/default/mIconWcs.svg</file>
         <file>themes/default/mIconWfs.svg</file>
         <file>themes/default/mIconWms.svg</file>
-        <file>themes/default/mIconWmsLayer.png</file>
         <file>themes/default/mIconZip.png</file>
         <file>themes/default/mIconZoom.svg</file>
         <file>themes/default/mMapserverExport.png</file>
