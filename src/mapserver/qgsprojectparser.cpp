@@ -1924,6 +1924,14 @@ QDomDocument QgsProjectParser::getStyle( const QString& styleName, const QString
   return myDocument;
 }
 
+QDomDocument QgsProjectParser::getStyles( QStringList& layerList ) const
+{
+  QDomDocument myDocument = QDomDocument();
+  return myDocument;
+}
+
+
+
 QgsMapRenderer::OutputUnits QgsProjectParser::outputUnits() const
 {
   return QgsMapRenderer::Millimeters;

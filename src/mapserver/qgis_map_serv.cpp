@@ -692,7 +692,7 @@ int main( int argc, char * argv[] )
       delete theServer;
       continue;
     }
-    else if ( request.compare( "GetStyles", Qt::CaseInsensitive ) == 0 || request.compare( "GetStyle", Qt::CaseInsensitive ) == 0 ) // GetStyle for compatibility with earlier QGIS versions
+    else if ( request.compare( "GetStyle", Qt::CaseInsensitive ) == 0 ) // GetStyle for compatibility with earlier QGIS versions
     {
       try
       {
@@ -702,6 +702,27 @@ int main( int argc, char * argv[] )
       catch ( QgsMapServiceException& ex )
       {
         theRequestHandler->sendServiceException( ex );
+      }
+
+      delete theRequestHandler;
+      delete theServer;
+      continue;
+    }
+    else if ( request.compare( "GetStyles", Qt::CaseInsensitive ) == 0 ) 
+    {
+      // GetStyles is only defined for WMS1.1.1/SLD1.0
+      if ( version != "1.1.1") {
+        theRequestHandler->sendServiceException( QgsMapServiceException( "OperationNotSupported", "GetStyles is only available in WMS version 1.1.1" ) );
+      } else {
+        try
+        {
+          QDomDocument doc = theServer->getStyles();
+          theRequestHandler->sendGetStyleResponse( doc );
+        }
+        catch ( QgsMapServiceException& ex )
+        {
+          theRequestHandler->sendServiceException( ex );
+        }
       }
 
       delete theRequestHandler;

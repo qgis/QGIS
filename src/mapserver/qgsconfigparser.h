@@ -78,6 +78,8 @@ class QgsConfigParser
 
     /**Returns the xml fragment of a style*/
     virtual QDomDocument getStyle( const QString& styleName, const QString& layerName ) const = 0;
+    /**Returns the xml fragment of layer styles*/
+    virtual QDomDocument getStyles( QStringList& layerList ) const = 0;
 
     /**Returns the names of the published wfs layers (not the ids as in wfsLayers() )*/
     virtual QStringList wfsLayerNames() const { return QStringList(); }
