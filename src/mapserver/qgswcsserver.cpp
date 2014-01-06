@@ -90,7 +90,7 @@ QDomDocument QgsWCSServer::getCapabilities()
   dcpTypeElement.appendChild( httpElement );
 
   //Prepare url
-  QString hrefString = mConfigParser->wfsServiceUrl();
+  QString hrefString = mConfigParser->wcsServiceUrl();
   if ( hrefString.isEmpty() )
   {
     hrefString = mConfigParser->serviceUrl();
@@ -172,6 +172,8 @@ QDomDocument QgsWCSServer::describeCoverage()
 
 QByteArray* QgsWCSServer::getCoverage()
 {
+  QStringList wcsLayersId = mConfigParser->wcsLayers();
+
   QList<QgsMapLayer*> layerList;
 
   QStringList mErrors = QStringList();
@@ -273,7 +275,7 @@ QByteArray* QgsWCSServer::getCoverage()
 
   QgsMapLayer* layer = layerList.at( 0 );
   QgsRasterLayer* rLayer = dynamic_cast<QgsRasterLayer*>( layer );
-  if ( rLayer )
+  if ( rLayer && wcsLayersId.contains( rLayer->id() ) )
   {
     QTemporaryFile tempFile;
     tempFile.open();

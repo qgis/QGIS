@@ -87,6 +87,9 @@ class QgsProjectParser: public QgsConfigParser
     virtual QStringList wfstInsertLayers() const;
     virtual QStringList wfstDeleteLayers() const;
 
+    /**Returns an ID-list of layers queryable for WCS service (comes from <properties> -> <WCSLayers> in the project file*/
+    virtual QStringList wcsLayers() const;
+
     /**Returns a set of supported epsg codes for the capabilities document. The list comes from the property <WMSEpsgList> in the project file.
        An empty set means that all possible CRS should be advertised (which could result in very long capabilities documents)
        Example:
@@ -127,8 +130,13 @@ class QgsProjectParser: public QgsConfigParser
 
     QString wfsServiceUrl() const;
 
+    QString wcsServiceUrl() const;
+
     /**Returns the names of the published wfs layers (not the ids as in wfsLayers() )*/
     QStringList wfsLayerNames() const;
+
+    /**Returns the names of the published wcs layers (not the ids as in wcsLayers() )*/
+    QStringList wcsLayerNames() const;
 
     /**Returns map with layer aliases for GetFeatureInfo (or 0 pointer if not supported). Key: layer name, Value: layer alias*/
     virtual QHash<QString, QString> featureInfoLayerAliasMap() const;

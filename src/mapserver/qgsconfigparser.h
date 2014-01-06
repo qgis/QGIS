@@ -82,6 +82,9 @@ class QgsConfigParser
     /**Returns the names of the published wfs layers (not the ids as in wfsLayers() )*/
     virtual QStringList wfsLayerNames() const { return QStringList(); }
 
+    /**Returns the names of the published wcs layers (not the ids as in wcsLayers() )*/
+    virtual QStringList wcsLayerNames() const { return QStringList(); }
+
     /**Possibility to add a parameter map to the config parser. This is used by the SLD parser. Default implementation does nothing*/
     virtual void setParameterMap( const QMap<QString, QString>& parameterMap )
     { Q_UNUSED( parameterMap ); }
@@ -120,6 +123,9 @@ class QgsConfigParser
     virtual QStringList wfstInsertLayers() const { return QStringList(); }
     virtual QStringList wfstDeleteLayers() const { return QStringList(); }
 
+    /**Returns an ID-list of layers which queryable in WCS service*/
+    virtual QStringList wcsLayers() const { return QStringList(); }
+
     /**Returns a set of supported epsg codes for the capabilities document. An empty list means
        that all possible CRS should be advertised (which could result in very long capabilities documents)*/
     virtual QStringList supportedOutputCrsList() const { return QStringList(); }
@@ -142,6 +148,7 @@ class QgsConfigParser
     /**Returns service address (or empty string if not defined in the configuration*/
     virtual QString serviceUrl() const { return QString(); }
     virtual QString wfsServiceUrl() const { return QString(); }
+    virtual QString wcsServiceUrl() const { return QString(); }
 
     QColor selectionColor() const { return mSelectionColor; }
     void setSelectionColor( const QColor& c ) { mSelectionColor = c; }

@@ -430,6 +430,43 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   twWFSLayers->setRowCount( j );
   twWFSLayers->verticalHeader()->setResizeMode( QHeaderView::ResizeToContents );
 
+  mWCSUrlLineEdit->setText( QgsProject::instance()->readEntry( "WCSUrl", "/", "" ) );
+  QStringList wcsLayerIdList = QgsProject::instance()->readListEntry( "WCSLayers", "/" );
+
+  QSignalMapper *smWcsPublied = new QSignalMapper( this );
+  connect( smWcsPublied, SIGNAL( mapped( int ) ), this, SLOT( cbxWCSPubliedStateChanged( int ) ) );
+
+  twWCSLayers->setColumnCount( 2 );
+  twWCSLayers->horizontalHeader()->setVisible( true );
+  twWCSLayers->setRowCount( mapLayers.size() );
+
+  i = 0;
+  j = 0;
+  for ( QMap<QString, QgsMapLayer*>::const_iterator it = mapLayers.constBegin(); it != mapLayers.constEnd(); it++, i++ )
+  {
+    currentLayer = it.value();
+    if ( currentLayer->type() == QgsMapLayer::RasterLayer )
+    {
+
+      QTableWidgetItem *twi = new QTableWidgetItem( QString::number( j ) );
+      twWCSLayers->setVerticalHeaderItem( j, twi );
+
+      twi = new QTableWidgetItem( currentLayer->name() );
+      twi->setData( Qt::UserRole, it.key() );
+      twi->setFlags( twi->flags() & ~Qt::ItemIsEditable );
+      twWCSLayers->setItem( j, 0, twi );
+
+      QCheckBox* cbp = new QCheckBox();
+      cbp->setChecked( wcsLayerIdList.contains( currentLayer->id() ) );
+      twWCSLayers->setCellWidget( j, 1, cbp );
+
+      smWcsPublied->setMapping( cbp, j );
+      connect( cbp, SIGNAL( stateChanged( int ) ), smWcsPublied, SLOT( map() ) );
+
+      j++;
+    }
+  }
+
   // Default Styles
   mStyle = QgsStyleV2::defaultStyle();
   populateStyles();
@@ -797,6 +834,20 @@ void QgsProjectProperties::apply()
   QgsProject::instance()->writeEntry( "WFSTLayers", "Insert", wfstInsertLayerList );
   QgsProject::instance()->writeEntry( "WFSTLayers", "Delete", wfstDeleteLayerList );
 
+  QgsProject::instance()->writeEntry( "WCSUrl", "/", mWCSUrlLineEdit->text() );
+  QStringList wcsLayerList;
+  for ( int i = 0; i < twWCSLayers->rowCount(); i++ )
+  {
+    QString id = twWCSLayers->item( i, 0 )->data( Qt::UserRole ).toString();
+    QCheckBox* cb;
+    cb = qobject_cast<QCheckBox *>( twWCSLayers->cellWidget( i, 1 ) );
+    if ( cb && cb->isChecked() )
+    {
+      wcsLayerList << id;
+    }
+  }
+  QgsProject::instance()->writeEntry( "WCSLayers", "/", wcsLayerList );
+
   // Default Styles
   QgsProject::instance()->writeEntry( "DefaultStyles", "/Marker", cboStyleMarker->currentText() );
   QgsProject::instance()->writeEntry( "DefaultStyles", "/Line", cboStyleLine->currentText() );
@@ -940,6 +991,17 @@ void QgsProjectProperties::cbxWFSDeleteStateChanged( int aIdx )
     QCheckBox* cbn = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( aIdx, 3 ) );
     if ( cbn )
       cbn->setChecked( true );
+  }
+}
+
+void QgsProjectProperties::cbxWCSPubliedStateChanged( int aIdx )
+{
+  QCheckBox* cb = qobject_cast<QCheckBox *>( twWCSLayers->cellWidget( aIdx, 1 ) );
+  if ( cb && !cb->isChecked() )
+  {
+    QCheckBox* cbn = qobject_cast<QCheckBox *>( twWCSLayers->cellWidget( aIdx, 2 ) );
+    if ( cbn )
+      cbn->setChecked( false );
   }
 }
 
@@ -1134,6 +1196,24 @@ void QgsProjectProperties::on_pbnWFSLayersUnselectAll_clicked()
   for ( int i = 0; i < twWFSLayers->rowCount(); i++ )
   {
     QCheckBox *cb = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( i, 1 ) );
+    cb->setChecked( false );
+  }
+}
+
+void QgsProjectProperties::on_pbnWCSLayersSelectAll_clicked()
+{
+  for ( int i = 0; i < twWCSLayers->rowCount(); i++ )
+  {
+    QCheckBox *cb = qobject_cast<QCheckBox *>( twWCSLayers->cellWidget( i, 1 ) );
+    cb->setChecked( true );
+  }
+}
+
+void QgsProjectProperties::on_pbnWCSLayersUnselectAll_clicked()
+{
+  for ( int i = 0; i < twWCSLayers->rowCount(); i++ )
+  {
+    QCheckBox *cb = qobject_cast<QCheckBox *>( twWCSLayers->cellWidget( i, 1 ) );
     cb->setChecked( false );
   }
 }

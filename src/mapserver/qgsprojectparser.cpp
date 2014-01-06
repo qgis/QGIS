@@ -140,15 +140,15 @@ void QgsProjectParser::layersAndStylesCapabilities( QDomElement& parentElement, 
 
 void QgsProjectParser::featureTypeList( QDomElement& parentElement, QDomDocument& doc ) const
 {
-  QStringList wfsLayersId = wfsLayers();
-  QStringList wfstUpdateLayersId = wfstUpdateLayers();
-  QStringList wfstInsertLayersId = wfstInsertLayers();
-  QStringList wfstDeleteLayersId = wfstDeleteLayers();
-
   if ( mProjectLayerElements.size() < 1 )
   {
     return;
   }
+
+  QStringList wfsLayersId = wfsLayers();
+  QStringList wfstUpdateLayersId = wfstUpdateLayers();
+  QStringList wfstInsertLayersId = wfstInsertLayers();
+  QStringList wfstDeleteLayersId = wfstDeleteLayers();
 
   QMap<QString, QgsMapLayer *> layerMap;
 
@@ -279,11 +279,12 @@ void QgsProjectParser::featureTypeList( QDomElement& parentElement, QDomDocument
 
 void QgsProjectParser::wcsContentMetadata( QDomElement& parentElement, QDomDocument& doc ) const
 {
-
   if ( mProjectLayerElements.size() < 1 )
   {
     return;
   }
+
+  QStringList wcsLayersId = wcsLayers();
 
   QMap<QString, QgsMapLayer *> layerMap;
 
@@ -294,7 +295,7 @@ void QgsProjectParser::wcsContentMetadata( QDomElement& parentElement, QDomDocum
     {
       //QgsMapLayer *layer = createLayerFromElement( *layerIt );
       QgsMapLayer *layer = createLayerFromElement( elem );
-      if ( layer )
+      if ( layer && wcsLayersId.contains( layer->id() ) )
       {
         QgsDebugMsg( QString( "add layer %1 to map" ).arg( layer->id() ) );
         layerMap.insert( layer->id(), layer );
@@ -640,6 +641,7 @@ void QgsProjectParser::describeCoverage( const QString& aCoveName, QDomElement& 
     return;
   }
 
+  QStringList wcsLayersId = wcsLayers();
   QStringList coveNameList;
   if ( aCoveName != "" )
   {
@@ -663,7 +665,7 @@ void QgsProjectParser::describeCoverage( const QString& aCoveName, QDomElement& 
         continue;
       QString coveName = layer->name();
       coveName = coveName.replace( " ", "_" );
-      if ( aCoveName == "" || coveNameList.contains( coveName ) )
+      if ( wcsLayersId.contains( layer->id() ) && ( aCoveName == "" || coveNameList.contains( coveName ) ) )
       {
         QgsDebugMsg( QString( "add layer %1 to map" ).arg( layer->id() ) );
         layerMap.insert( layer->id(), layer );
@@ -852,6 +854,8 @@ QList<QgsMapLayer*> QgsProjectParser::mapLayerFromTypeName( const QString& tName
     {
       QgsMapLayer *mLayer = createLayerFromElement( elem, useCache );
       QgsVectorLayer* layer = dynamic_cast<QgsVectorLayer*>( mLayer );
+      if ( !layer || !wfsLayersId.contains( layer->id() ) )
+        return layerList;
 
       QString typeName = layer->name();
       typeName = typeName.replace( " ", "_" );
@@ -874,6 +878,8 @@ QList<QgsMapLayer*> QgsProjectParser::mapLayerFromCoverage( const QString& cName
     return layerList;
   }
 
+  QStringList wcsLayersId = wcsLayers();
+
   foreach ( const QDomElement &elem, mProjectLayerElements )
   {
     QString type = elem.attribute( "type" );
@@ -881,6 +887,8 @@ QList<QgsMapLayer*> QgsProjectParser::mapLayerFromCoverage( const QString& cName
     {
       QgsMapLayer *mLayer = createLayerFromElement( elem, useCache );
       QgsRasterLayer* layer = dynamic_cast<QgsRasterLayer*>( mLayer );
+      if ( !layer || !wcsLayersId.contains( layer->id() ) )
+        return layerList;
 
       QString coveName = layer->name();
       coveName = coveName.replace( " ", "_" );
@@ -2113,6 +2121,37 @@ QStringList QgsProjectParser::wfstDeleteLayers() const
   return wfsList;
 }
 
+QStringList QgsProjectParser::wcsLayers() const
+{
+  QStringList wcsList;
+  if ( !mXMLDoc )
+  {
+    return wcsList;
+  }
+
+  QDomElement qgisElem = mXMLDoc->documentElement();
+  if ( qgisElem.isNull() )
+  {
+    return wcsList;
+  }
+  QDomElement propertiesElem = qgisElem.firstChildElement( "properties" );
+  if ( propertiesElem.isNull() )
+  {
+    return wcsList;
+  }
+  QDomElement wcsLayersElem = propertiesElem.firstChildElement( "WCSLayers" );
+  if ( wcsLayersElem.isNull() )
+  {
+    return wcsList;
+  }
+  QDomNodeList valueList = wcsLayersElem.elementsByTagName( "value" );
+  for ( int i = 0; i < valueList.size(); ++i )
+  {
+    wcsList << valueList.at( i ).toElement().text();
+  }
+  return wcsList;
+}
+
 QStringList QgsProjectParser::supportedOutputCrsList() const
 {
   QStringList crsList;
@@ -3188,6 +3227,53 @@ QStringList QgsProjectParser::wfsLayerNames() const
   for ( ; wfsIdIt != wfsIdList.constEnd(); ++wfsIdIt )
   {
     QMap<QString, QgsMapLayer*>::const_iterator layerMapIt = layerMap.find( *wfsIdIt );
+    if ( layerMapIt != layerMap.constEnd() )
+    {
+      currentLayer = layerMapIt.value();
+      if ( currentLayer )
+      {
+        layerNameList.append( currentLayer->name() );
+      }
+    }
+  }
+
+  return layerNameList;
+}
+
+QString QgsProjectParser::wcsServiceUrl() const
+{
+  QString url;
+
+  if ( !mXMLDoc )
+  {
+    return url;
+  }
+
+  QDomElement propertiesElem = mXMLDoc->documentElement().firstChildElement( "properties" );
+  if ( !propertiesElem.isNull() )
+  {
+    QDomElement wcsUrlElem = propertiesElem.firstChildElement( "WCSUrl" );
+    if ( !wcsUrlElem.isNull() )
+    {
+      url = wcsUrlElem.text();
+    }
+  }
+  return url;
+}
+
+QStringList QgsProjectParser::wcsLayerNames() const
+{
+  QStringList layerNameList;
+
+  QMap<QString, QgsMapLayer*> layerMap;
+  projectLayerMap( layerMap );
+
+  QgsMapLayer* currentLayer = 0;
+  QStringList wcsIdList = wcsLayers();
+  QStringList::const_iterator wcsIdIt = wcsIdList.constBegin();
+  for ( ; wcsIdIt != wcsIdList.constEnd(); ++wcsIdIt )
+  {
+    QMap<QString, QgsMapLayer*>::const_iterator layerMapIt = layerMap.find( *wcsIdIt );
     if ( layerMapIt != layerMap.constEnd() )
     {
       currentLayer = layerMapIt.value();
