@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>966</width>
-    <height>879</height>
+    <width>929</width>
+    <height>573</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -276,8 +276,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>793</width>
-                <height>784</height>
+                <width>756</width>
+                <height>476</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -715,8 +715,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>793</width>
-                <height>784</height>
+                <width>765</width>
+                <height>545</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_18">
@@ -809,8 +809,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>793</width>
-                <height>784</height>
+                <width>83</width>
+                <height>33</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -883,8 +883,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>793</width>
-                <height>784</height>
+                <width>83</width>
+                <height>16</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_20">
@@ -935,8 +935,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>794</width>
-                <height>780</height>
+                <width>374</width>
+                <height>255</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -1164,8 +1164,8 @@ p, li { white-space: pre-wrap; }
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>793</width>
-                <height>784</height>
+                <width>385</width>
+                <height>161</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_26">
@@ -1335,8 +1335,8 @@ p, li { white-space: pre-wrap; }
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>793</width>
-                <height>784</height>
+                <width>765</width>
+                <height>545</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_21">
@@ -1393,8 +1393,8 @@ p, li { white-space: pre-wrap; }
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>793</width>
-                <height>784</height>
+                <width>91</width>
+                <height>123</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_23">
@@ -1505,8 +1505,8 @@ p, li { white-space: pre-wrap; }
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>793</width>
-                <height>784</height>
+                <width>83</width>
+                <height>16</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_24">
@@ -1557,8 +1557,8 @@ p, li { white-space: pre-wrap; }
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>793</width>
-                <height>784</height>
+                <width>279</width>
+                <height>451</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -1724,7 +1724,7 @@ p, li { white-space: pre-wrap; }
                      <widget class="QComboBox" name="mLayerMetadataUrlTypeComboBox">
                       <item>
                        <property name="text">
-                        <string notr="true"></string>
+                        <string notr="true"/>
                        </property>
                       </item>
                       <item>
@@ -1750,7 +1750,7 @@ p, li { white-space: pre-wrap; }
                      <widget class="QComboBox" name="mLayerMetadataUrlFormatComboBox">
                       <item>
                        <property name="text">
-                        <string notr="true"></string>
+                        <string notr="true"/>
                        </property>
                       </item>
                       <item>
@@ -1832,6 +1832,38 @@ p, li { white-space: pre-wrap; }
          </widget>
         </widget>
        </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_9">
+         <item>
+          <widget class="QPushButton" name="pbnLoadStyle">
+           <property name="text">
+            <string>Load Style ...</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="pbnSaveDefaultStyle">
+           <property name="text">
+            <string>Save As Default</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="pbnLoadDefaultStyle">
+           <property name="text">
+            <string>Restore Default Style</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="pbnSaveStyleAs">
+           <property name="text">
+            <string>Save Style ...</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
       </layout>
      </widget>
     </widget>
@@ -1854,35 +1886,7 @@ p, li { white-space: pre-wrap; }
       <property name="margin">
        <number>0</number>
       </property>
-      <item row="0" column="2">
-       <widget class="QPushButton" name="pbnSaveDefaultStyle">
-        <property name="text">
-         <string>Save As Default</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="3">
-       <widget class="QPushButton" name="pbnLoadStyle">
-        <property name="text">
-         <string>Load Style ...</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QPushButton" name="pbnLoadDefaultStyle">
-        <property name="text">
-         <string>Restore Default Style</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="4">
-       <widget class="QPushButton" name="pbnSaveStyleAs">
-        <property name="text">
-         <string>Save Style ...</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1" colspan="4">
+      <item row="2" column="1" colspan="4">
        <widget class="QDialogButtonBox" name="buttonBox">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
@@ -1911,6 +1915,7 @@ p, li { white-space: pre-wrap; }
   </customwidget>
  </customwidgets>
  <resources>
+  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections>
