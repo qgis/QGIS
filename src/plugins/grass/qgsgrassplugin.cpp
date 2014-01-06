@@ -58,13 +58,13 @@ static const QString pluginIcon = ":/images/themes/default/grass/grass_tools.png
  * @param theQgisInterFace Pointer to the QGIS interface object
  */
 QgsGrassPlugin::QgsGrassPlugin( QgisInterface * theQgisInterFace )
-    : qGisInterface( theQgisInterFace )
-    , mTools( 0 )
-    , mEdit( 0 )
-    , pluginNameQString( tr( "GrassVector" ) )
+    : pluginNameQString( tr( "GrassVector" ) )
     , pluginVersionQString( tr( "0.1" ) )
     , pluginDescriptionQString( tr( "GRASS layer" ) )
     , pluginCategoryQString( tr( "Plugins" ) )
+    , qGisInterface( theQgisInterFace )
+    , mTools( 0 )
+    , mEdit( 0 )
 {
 }
 
