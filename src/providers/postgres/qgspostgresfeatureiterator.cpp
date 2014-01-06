@@ -14,6 +14,7 @@
  ***************************************************************************/
 #include "qgspostgresfeatureiterator.h"
 #include "qgspostgresprovider.h"
+#include "qgspostgresconnpool.h"
 
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
@@ -28,7 +29,7 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
     : QgsAbstractFeatureIteratorFromSource( source, ownSource, request )
     , mFeatureQueueSize( sFeatureQueueSize )
 {
-  mConn = QgsPostgresConn::connectDb( mSource->mConnInfo, true );
+  mConn = QgsPostgresConnPool::instance()->acquireConnection( mSource->mConnInfo );
 
   if ( !mConn )
   {
@@ -173,7 +174,7 @@ bool QgsPostgresFeatureIterator::close()
 
   mConn->closeCursor( mCursorName );
 
-  mConn->disconnect();
+  QgsPostgresConnPool::instance()->releaseConnection( mConn );
   mConn = 0;
 
   while ( !mFeatureQueue.empty() )

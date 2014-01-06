@@ -155,11 +155,12 @@ class QgsPostgresResult
     PGresult *mRes;
 };
 
+
 class QgsPostgresConn : public QObject
 {
     Q_OBJECT;
   public:
-    static QgsPostgresConn *connectDb( QString connInfo, bool readOnly );
+    static QgsPostgresConn *connectDb( QString connInfo, bool readOnly, bool shared = true );
     void disconnect();
 
     //! get postgis version string
@@ -269,7 +270,7 @@ class QgsPostgresConn : public QObject
     static void deleteConnection( QString theConnName );
 
   private:
-    QgsPostgresConn( QString conninfo, bool readOnly );
+    QgsPostgresConn( QString conninfo, bool readOnly, bool shared );
     ~QgsPostgresConn();
 
     int mRef;
@@ -332,6 +333,9 @@ class QgsPostgresConn : public QObject
     void deduceEndian();
 
     int mNextCursorId;
+
+    bool mShared; //! < whether the connection is shared by more providers (must not be if going to be used in worker threads)
 };
+
 
 #endif

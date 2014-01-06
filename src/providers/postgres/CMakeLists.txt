@@ -5,6 +5,7 @@
 SET(PG_SRCS
   qgspostgresprovider.cpp
   qgspostgresconn.cpp
+  qgspostgresconnpool.cpp
   qgspostgresdataitems.cpp
   qgspostgresfeatureiterator.cpp
   qgspgsourceselect.cpp
@@ -15,6 +16,7 @@ SET(PG_SRCS
 SET(PG_MOC_HDRS
   qgspostgresprovider.h
   qgspostgresconn.h
+  qgspostgresconnpool.h
   qgspostgresdataitems.h
   qgspgsourceselect.h
   qgspgnewconnection.h

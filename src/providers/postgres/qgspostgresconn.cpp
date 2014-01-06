@@ -33,7 +33,6 @@
 #include <netinet/in.h>
 #endif
 
-//#define POSTGRES_SHARED_CONNECTIONS
 
 QgsPostgresResult::~QgsPostgresResult()
 {
@@ -124,25 +123,27 @@ Oid QgsPostgresResult::PQoidValue()
   return ::PQoidValue( mRes );
 }
 
+
 QMap<QString, QgsPostgresConn *> QgsPostgresConn::sConnectionsRO;
 QMap<QString, QgsPostgresConn *> QgsPostgresConn::sConnectionsRW;
 const int QgsPostgresConn::sGeomTypeSelectLimit = 100;
 
-QgsPostgresConn *QgsPostgresConn::connectDb( QString conninfo, bool readonly )
+QgsPostgresConn *QgsPostgresConn::connectDb( QString conninfo, bool readonly, bool shared )
 {
-#ifdef POSTGRES_SHARED_CONNECTIONS
   QMap<QString, QgsPostgresConn *> &connections =
     readonly ? QgsPostgresConn::sConnectionsRO : QgsPostgresConn::sConnectionsRW;
 
-  if ( connections.contains( conninfo ) )
+  if ( shared )
   {
-    QgsDebugMsg( QString( "Using cached connection for %1" ).arg( conninfo ) );
-    connections[conninfo]->mRef++;
-    return connections[conninfo];
+    if ( connections.contains( conninfo ) )
+    {
+      QgsDebugMsg( QString( "Using cached connection for %1" ).arg( conninfo ) );
+      connections[conninfo]->mRef++;
+      return connections[conninfo];
+    }
   }
-#endif
 
-  QgsPostgresConn *conn = new QgsPostgresConn( conninfo, readonly );
+  QgsPostgresConn *conn = new QgsPostgresConn( conninfo, readonly, shared );
 
   if ( conn->mRef == 0 )
   {
@@ -150,20 +151,22 @@ QgsPostgresConn *QgsPostgresConn::connectDb( QString conninfo, bool readonly )
     return 0;
   }
 
-#ifdef POSTGRES_SHARED_CONNECTIONS
-  connections.insert( conninfo, conn );
-#endif
+  if ( shared )
+  {
+    connections.insert( conninfo, conn );
+  }
 
   return conn;
 }
 
-QgsPostgresConn::QgsPostgresConn( QString conninfo, bool readOnly )
+QgsPostgresConn::QgsPostgresConn( QString conninfo, bool readOnly, bool shared )
     : mRef( 1 )
     , mOpenCursors( 0 )
     , mConnInfo( conninfo )
     , mGotPostgisVersion( false )
     , mReadOnly( readOnly )
     , mNextCursorId( 0 )
+    , mShared( shared )
 {
   QgsDebugMsg( QString( "New PostgreSQL connection for " ) + conninfo );
 
@@ -268,14 +271,15 @@ void QgsPostgresConn::disconnect()
   if ( --mRef > 0 )
     return;
 
-#ifdef POSTGRES_SHARED_CONNECTIONS
-  QMap<QString, QgsPostgresConn *>& connections = mReadOnly ? sConnectionsRO : sConnectionsRW;
+  if ( mShared )
+  {
+    QMap<QString, QgsPostgresConn *>& connections = mReadOnly ? sConnectionsRO : sConnectionsRW;
 
-  QString key = connections.key( this, QString::null );
+    QString key = connections.key( this, QString::null );
 
-  Q_ASSERT( !key.isNull() );
-  connections.remove( key );
-#endif
+    Q_ASSERT( !key.isNull() );
+    connections.remove( key );
+  }
 
   delete this;
 }
