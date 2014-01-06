@@ -120,7 +120,8 @@ class FieldsCalculator(GeoAlgorithm):
         total = 100.0 / len(features)
 
         rownum = 1
-        for f in features:
+        for current, f in enumerate(features):
+            rownum = current + 1
             exp.setCurrentRowNumber(rownum)
             value = exp.evaluate(f)
             if exp.hasEvalError():
@@ -134,7 +135,6 @@ class FieldsCalculator(GeoAlgorithm):
                 outFeature[fieldName] = value
                 writer.addFeature(outFeature)
 
-            current += 1
             progress.setPercentage(int(current * total))
         del writer
 
