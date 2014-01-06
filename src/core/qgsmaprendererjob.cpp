@@ -301,6 +301,10 @@ void QgsMapRendererCustomPainterJob::futureFinished()
   mActive = false;
   mRenderingTime = mRenderingStart.elapsed();
   qDebug("QPAINTER futureFinished");
+
+  // final cleanup
+  cleanupJobs( mLayerJobs );
+
   emit finished();
 }
 
@@ -340,9 +344,6 @@ void QgsMapRendererCustomPainterJob::doRender()
     }
 
   }
-
-  // final cleanup
-  cleanupJobs( mLayerJobs );
 
   QgsDebugMsg( "Done rendering map layers" );
 
