@@ -851,6 +851,10 @@ void QgsComposer::on_mActionAtlasPreview_triggered( bool checked )
                           QMessageBox::Ok );
     mActionAtlasPreview->blockSignals( true );
     mActionAtlasPreview->setChecked( false );
+    mActionAtlasFirst->setEnabled( false );
+    mActionAtlasLast->setEnabled( false );
+    mActionAtlasNext->setEnabled( false );
+    mActionAtlasPrev->setEnabled( false );
     mActionAtlasPreview->blockSignals( false );
     mStatusAtlasLabel->setText( QString() );
     return;
