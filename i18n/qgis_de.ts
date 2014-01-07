@@ -11605,7 +11605,7 @@ Fehler: %3
         <comment>number of layers to remove</comment>
         <translation>
             <numerusform>Einen Layer entfernen?</numerusform>
-            <numerusform>%1 Layer entfernen?</numerusform>
+            <numerusform>%n Layer entfernen?</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -11614,7 +11614,7 @@ Fehler: %3
         <comment>number of layers removed</comment>
         <translation>
             <numerusform>Ein Layer entfernt</numerusform>
-            <numerusform>%1 Layer entfernt</numerusform>
+            <numerusform>%n Layer entfernt</numerusform>
         </translation>
     </message>
     <message>
