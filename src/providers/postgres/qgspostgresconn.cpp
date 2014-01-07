@@ -270,10 +270,11 @@ void QgsPostgresConn::disconnect()
   Q_ASSERT( !key.isNull() );
   connections.remove( key );
 
-  if ( QThread::currentThread() == QApplication::instance()->thread() )
-    deleteLater();
+  if ( !QApplication::instance() || QThread::currentThread() == QApplication::instance()->thread() )
+   deleteLater();
   else
-    delete this;
+   delete this;
+
 }
 
 /* private */
