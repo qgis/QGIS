@@ -464,6 +464,7 @@ void QgsCategorizedSymbolRendererV2Widget::updateUiFromRenderer()
   if ( mRenderer->sourceColorRamp() )
   {
     cboCategorizedColorRamp->setSourceColorRamp( mRenderer->sourceColorRamp() );
+    cbxInvertedColorRamp->setChecked( mRenderer->invertedColorRamp() );
   }
 
 }
@@ -582,7 +583,7 @@ void QgsCategorizedSymbolRendererV2Widget::changeCategorySymbol()
   mRenderer->updateCategorySymbol( catIdx, symbol );
 }
 
-static void _createCategories( QgsCategoryList& cats, QList<QVariant>& values, QgsSymbolV2* symbol, QgsVectorColorRampV2* ramp )
+static void _createCategories( QgsCategoryList& cats, QList<QVariant>& values, QgsSymbolV2* symbol, QgsVectorColorRampV2* ramp, bool invert )
 {
   // sort the categories first
   QgsSymbolLayerV2Utils::sortVariantList( values, Qt::AscendingOrder );
@@ -598,7 +599,7 @@ static void _createCategories( QgsCategoryList& cats, QList<QVariant>& values, Q
     {
       hasNull = true;
     }
-    double x = i / ( double ) num;
+    double x = ( invert ? num - i : i )  / ( double ) num;
     QgsSymbolV2* newSymbol = symbol->clone();
     newSymbol->setColor( ramp->color( x ) );
 
@@ -609,7 +610,7 @@ static void _createCategories( QgsCategoryList& cats, QList<QVariant>& values, Q
   if ( !hasNull )
   {
     QgsSymbolV2* newSymbol = symbol->clone();
-    newSymbol->setColor( ramp->color( 1 ) );
+    newSymbol->setColor( ramp->color( invert ? 0 : 1 ) );
     cats.append( QgsRendererCategoryV2( QVariant( "" ), newSymbol, QString() ) );
   }
 }
@@ -670,7 +671,7 @@ void QgsCategorizedSymbolRendererV2Widget::addCategories()
   }
 
   QgsCategoryList cats;
-  _createCategories( cats, unique_vals, mCategorizedSymbol, ramp );
+  _createCategories( cats, unique_vals, mCategorizedSymbol, ramp, cbxInvertedColorRamp->isChecked() );
 
   bool deleteExisting = false;
 
@@ -737,6 +738,7 @@ void QgsCategorizedSymbolRendererV2Widget::addCategories()
   r->setScaleMethod( mRenderer->scaleMethod() );
   r->setSizeScaleField( mRenderer->sizeScaleField() );
   r->setRotationField( mRenderer->rotationField() );
+  r->setInvertedColorRamp( cbxInvertedColorRamp->isChecked() );
 
   if ( mModel )
   {

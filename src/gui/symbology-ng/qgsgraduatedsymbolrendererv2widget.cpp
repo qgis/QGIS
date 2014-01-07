@@ -462,6 +462,7 @@ void QgsGraduatedSymbolRendererV2Widget::updateUiFromRenderer()
   if ( mRenderer->sourceColorRamp() )
   {
     cboGraduatedColorRamp->setSourceColorRamp( mRenderer->sourceColorRamp() );
+    cbxInvertedColorRamp->setChecked( mRenderer->invertedColorRamp() );
   }
 }
 
@@ -540,7 +541,7 @@ void QgsGraduatedSymbolRendererV2Widget::classifyGraduated()
   // create and set new renderer
   QApplication::setOverrideCursor( Qt::WaitCursor );
   QgsGraduatedSymbolRendererV2* r = QgsGraduatedSymbolRendererV2::createRenderer(
-                                      mLayer, attrName, classes, mode, mGraduatedSymbol, ramp );
+                                      mLayer, attrName, classes, mode, mGraduatedSymbol, ramp, cbxInvertedColorRamp->isChecked() );
   QApplication::restoreOverrideCursor();
   if ( !r )
   {
@@ -566,7 +567,7 @@ void QgsGraduatedSymbolRendererV2Widget::reapplyColorRamp()
   if ( ramp == NULL )
     return;
 
-  mRenderer->updateColorRamp( ramp );
+  mRenderer->updateColorRamp( ramp, cbxInvertedColorRamp->isChecked() );
   refreshSymbolView();
 }
 
