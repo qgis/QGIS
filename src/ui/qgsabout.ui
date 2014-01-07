@@ -17,7 +17,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>Options Dialog Template</string>
+   <string>About QGIS</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -150,7 +150,7 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>8</number>
+          <number>5</number>
          </property>
          <widget class="QWidget" name="mOptsPage_01">
           <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -438,44 +438,12 @@ p, li { white-space: pre-wrap; }
               <string notr="true">font-weight:bold;</string>
              </property>
              <property name="text">
-              <string>Contributors</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QWebView" name="txtTranslators">
-             <property name="url">
-              <url>
-               <string>about:blank</string>
-              </url>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-         <widget class="QWidget" name="page_6">
-          <layout class="QVBoxLayout" name="verticalLayout_9">
-           <property name="margin">
-            <number>0</number>
-           </property>
-           <item>
-            <widget class="QLabel" name="label_11">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="styleSheet">
-              <string notr="true">font-weight:bold;</string>
-             </property>
-             <property name="text">
               <string>Translators</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QWebView" name="txtTranslators_2">
+            <widget class="QWebView" name="txtTranslators">
              <property name="url">
               <url>
                <string>about:blank</string>
@@ -502,7 +470,7 @@ p, li { white-space: pre-wrap; }
               <string notr="true">font-weight:bold;</string>
              </property>
              <property name="text">
-              <string>Translators</string>
+              <string>Donors</string>
              </property>
             </widget>
            </item>
@@ -535,7 +503,7 @@ p, li { white-space: pre-wrap; }
               <string notr="true">font-weight:bold;</string>
              </property>
              <property name="text">
-              <string>Translators</string>
+              <string>License</string>
              </property>
             </widget>
            </item>
@@ -591,9 +559,7 @@ p, li { white-space: pre-wrap; }
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="../../../../Users/NATHAN~1.WOO/images/images.qrc"/>
   <include location="../../images/images.qrc"/>
-  <include location="C:/images/images.qrc"/>
  </resources>
  <connections>
   <connection>
