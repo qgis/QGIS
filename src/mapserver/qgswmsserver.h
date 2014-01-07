@@ -72,6 +72,8 @@ class QgsWMSServer
     QImage* getMap();
     /**Returns an SLD file with the style of the requested layer. Exception is raised in case of troubles :-)*/
     QDomDocument getStyle();
+    /**Returns an SLD file with the styles of the requested layers. Exception is raised in case of troubles :-)*/
+    QDomDocument getStyles();
 
     /**Returns printed page as binary
       @param formatString out: format of the print output (e.g. pdf, svg, png, ...)

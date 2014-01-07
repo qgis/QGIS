@@ -71,6 +71,9 @@ class QgsProjectParser: public QgsConfigParser
 
     /**Returns the xml fragment of a style*/
     virtual QDomDocument getStyle( const QString& styleName, const QString& layerName ) const;
+    /**Returns the xml fragment of layers styles*/
+    virtual QDomDocument getStyles( QStringList& layerList ) const;
+
 
     /**Returns if output are MM or PIXEL*/
     virtual QgsMapRenderer::OutputUnits outputUnits() const;

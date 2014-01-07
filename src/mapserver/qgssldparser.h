@@ -77,6 +77,8 @@ class QgsSLDParser: public QgsConfigParser
 
     /**Returns the xml fragment of a style*/
     QDomDocument getStyle( const QString& styleName, const QString& layerName ) const;
+    /**Returns the xml fragment of layers styles*/
+    QDomDocument getStyles( QStringList& layerList ) const;
 
     virtual void setParameterMap( const QMap<QString, QString>& parameterMap ) { mParameterMap = parameterMap; }
 
