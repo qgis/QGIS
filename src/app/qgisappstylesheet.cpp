@@ -177,7 +177,7 @@ void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant>& opts )
   }
 
   //fix background issue for gnome desktop
-  if ( mLinuxOS && mGtkStyle )
+  if ( mLinuxOS && mGtkStyle && !sidebar )
   {
     ss += "QListWidget#mOptionsListWidget{";
     ss += "background-color: white;";
