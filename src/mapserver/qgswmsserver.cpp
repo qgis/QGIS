@@ -2174,7 +2174,7 @@ void QgsWMSServer::applyOpacities( const QStringList& layerList, QList< QPair< Q
   QList< QPair< QgsMapLayer*, int > > layerOpacityList;
   QStringList::const_iterator oIt = opacityList.constBegin();
   QStringList::const_iterator lIt = layerList.constBegin();
-  for ( ; oIt != opacityList.constEnd(); ++oIt, ++lIt )
+  for ( ; oIt != opacityList.constEnd() && lIt != layerList.constEnd(); ++oIt, ++lIt )
   {
     //get layer list for
     int opacity = oIt->toInt();
