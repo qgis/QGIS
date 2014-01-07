@@ -75,7 +75,7 @@ QgsComposition::QgsComposition( QgsMapRenderer* mapRenderer )
     , mActiveItemCommand( 0 )
     , mActiveMultiFrameCommand( 0 )
     , mAtlasComposition( this )
-    , mAtlasPreviewEnabled( false )
+    , mAtlasMode( QgsComposition::AtlasOff )
     , mPreventCursorChange( false )
 {
   setBackgroundBrush( QColor( 215, 215, 215 ) );
@@ -121,7 +121,7 @@ QgsComposition::QgsComposition()
     mActiveItemCommand( 0 ),
     mActiveMultiFrameCommand( 0 ),
     mAtlasComposition( this ),
-    mAtlasPreviewEnabled( false ),
+    mAtlasMode( QgsComposition::AtlasOff ),
     mPreventCursorChange( false )
 {
   //load default composition settings
@@ -2327,11 +2327,11 @@ void QgsComposition::computeWorldFileParameters( double& a, double& b, double& c
   f = r[3] * s[2] + r[4] * s[5] + r[5];
 }
 
-bool QgsComposition::setAtlasPreviewEnabled( bool e )
+bool QgsComposition::setAtlasMode( QgsComposition::AtlasMode mode )
 {
-  mAtlasPreviewEnabled = e;
+  mAtlasMode = mode;
 
-  if ( !mAtlasPreviewEnabled )
+  if ( mode == QgsComposition::AtlasOff )
   {
     mAtlasComposition.endRender();
   }
@@ -2340,7 +2340,7 @@ bool QgsComposition::setAtlasPreviewEnabled( bool e )
     bool atlasHasFeatures = mAtlasComposition.beginRender();
     if ( ! atlasHasFeatures )
     {
-      mAtlasPreviewEnabled = false;
+      mAtlasMode = QgsComposition::AtlasOff;
       return false;
     }
   }

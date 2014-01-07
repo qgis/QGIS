@@ -90,6 +90,14 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
       ZValueAbove
     };
 
+    /**Composition atlas modes*/
+    enum AtlasMode
+    {
+      AtlasOff,     // Composition is not being controlled by an atlas
+      PreviewAtlas, // An atlas composition is being previewed in the app
+      ExportAtlas   // The composition is being exported as an atlas
+    };
+
     QgsComposition( QgsMapRenderer* mapRenderer );
     ~QgsComposition();
 
@@ -425,11 +433,10 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     /**Returns a scaled position given a before and after range*/
     static double relativePosition( double position, double beforeMin, double beforeMax, double afterMin, double afterMax );
 
-    /** Is the atlas preview enabled ? */
-    bool atlasPreviewEnabled() const { return mAtlasPreviewEnabled; }
-    /** Set atlas preview enabled. Returns false if atlas preview could not be enabled */
-    bool setAtlasPreviewEnabled( bool e );
-
+    /** Returns the current atlas mode of the composition */
+    QgsComposition::AtlasMode atlasMode() const { return mAtlasMode; }
+    /** Sets the current atlas mode of the composition. Returns false if the mode could not be changed. */
+    bool setAtlasMode( QgsComposition::AtlasMode mode );
 
   public slots:
     /**Casts object to the proper subclass type and calls corresponding itemAdded signal*/
@@ -497,7 +504,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     /** The atlas composition object. It is held by the QgsComposition */
     QgsAtlasComposition mAtlasComposition;
 
-    bool mAtlasPreviewEnabled;
+    QgsComposition::AtlasMode mAtlasMode;
 
     QgsComposition(); //default constructor is forbidden
 

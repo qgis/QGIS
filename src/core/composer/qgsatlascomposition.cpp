@@ -52,6 +52,7 @@ QgsAtlasComposition::~QgsAtlasComposition()
 void QgsAtlasComposition::setEnabled( bool e )
 {
   mEnabled = e;
+  mComposition->setAtlasMode( QgsComposition::AtlasOff );
   emit toggled( e );
 }
 
@@ -170,7 +171,7 @@ int QgsAtlasComposition::updateFeatures()
 
   //jump to first feature if currently using an atlas preview
   //need to do this in case filtering/layer change has altered matching features
-  if ( mComposition->atlasPreviewEnabled() )
+  if ( mComposition->atlasMode() == QgsComposition::PreviewAtlas )
   {
     firstFeature();
   }
@@ -488,7 +489,7 @@ void QgsAtlasComposition::setHideCoverage( bool hide )
 {
   mHideCoverage = hide;
 
-  if ( mComposition->atlasPreviewEnabled() )
+  if ( mComposition->atlasMode() == QgsComposition::PreviewAtlas )
   {
     //an atlas preview is enabled, so reflect changes in coverage layer visibility immediately
     QStringList& layerSet = mComposition->mapRenderer()->layerSet();
@@ -541,7 +542,7 @@ void QgsAtlasComposition::updateFilenameExpression()
   }
 
   //if atlas preview is currently enabled, regenerate filename for current feature
-  if ( mComposition->atlasPreviewEnabled() )
+  if ( mComposition->atlasMode() == QgsComposition::PreviewAtlas )
   {
     evalFeatureFilename();
   }

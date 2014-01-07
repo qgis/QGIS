@@ -808,7 +808,13 @@ void QgsComposer::on_mActionOptions_triggered()
 void QgsComposer::toggleAtlasControls( bool atlasEnabled )
 {
   //preview defaults to unchecked
+  mActionAtlasPreview->blockSignals( true );
   mActionAtlasPreview->setChecked( false );
+  mActionAtlasFirst->setEnabled( false );
+  mActionAtlasLast->setEnabled( false );
+  mActionAtlasNext->setEnabled( false );
+  mActionAtlasPrev->setEnabled( false );
+  mActionAtlasPreview->blockSignals( false );
   mActionAtlasPreview->setEnabled( atlasEnabled );
   mActionPrintAtlas->setEnabled( atlasEnabled );
   mActionExportAtlasAsImage->setEnabled( atlasEnabled );
@@ -841,7 +847,7 @@ void QgsComposer::on_mActionAtlasPreview_triggered( bool checked )
   mActionAtlasNext->setEnabled( checked );
   mActionAtlasPrev->setEnabled( checked );
 
-  bool previewEnabled = mComposition->setAtlasPreviewEnabled( checked );
+  bool previewEnabled = mComposition->setAtlasMode( checked ? QgsComposition::PreviewAtlas : QgsComposition::AtlasOff );
   if ( !previewEnabled )
   {
     //something went wrong, eg, no matching features
@@ -1082,9 +1088,12 @@ void QgsComposer::on_mActionAtlasSettings_triggered()
 
 void QgsComposer::on_mActionExportAtlasAsPDF_triggered()
 {
+  QgsComposition::AtlasMode previousMode = mComposition->atlasMode();
+  mComposition->setAtlasMode( QgsComposition::ExportAtlas );
   exportCompositionAsPDF( QgsComposer::Atlas );
+  mComposition->setAtlasMode( previousMode );
 
-  if ( mComposition->atlasPreviewEnabled() )
+  if ( mComposition->atlasMode() == QgsComposition::PreviewAtlas )
   {
     //after atlas output, jump back to preview first feature
     QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
@@ -1139,7 +1148,8 @@ void QgsComposer::exportCompositionAsPDF( QgsComposer::OutputMode mode )
     QString lastUsedFile = myQSettings.value( "/UI/lastSaveAsPdfFile", "qgis.pdf" ).toString();
     QFileInfo file( lastUsedFile );
 
-    if ( hasAnAtlas && !atlasOnASingleFile && ( mode == QgsComposer::Atlas || mComposition->atlasPreviewEnabled() ) )
+    if ( hasAnAtlas && !atlasOnASingleFile &&
+         ( mode == QgsComposer::Atlas || mComposition->atlasMode() == QgsComposition::PreviewAtlas ) )
     {
       outputFileName = QDir( file.path() ).filePath( atlasMap->currentFilename() ) + ".pdf";
     }
@@ -1311,7 +1321,10 @@ void QgsComposer::on_mActionPrint_triggered()
 void QgsComposer::on_mActionPrintAtlas_triggered()
 {
   //print whole atlas
+  QgsComposition::AtlasMode previousMode = mComposition->atlasMode();
+  mComposition->setAtlasMode( QgsComposition::ExportAtlas );
   printComposition( QgsComposer::Atlas );
+  mComposition->setAtlasMode( previousMode );
 }
 
 void QgsComposer::printComposition( QgsComposer::OutputMode mode )
@@ -1425,9 +1438,13 @@ void QgsComposer::printComposition( QgsComposer::OutputMode mode )
 
 void QgsComposer::on_mActionExportAtlasAsImage_triggered()
 {
+  //print whole atlas
+  QgsComposition::AtlasMode previousMode = mComposition->atlasMode();
+  mComposition->setAtlasMode( QgsComposition::ExportAtlas );
   exportCompositionAsImage( QgsComposer::Atlas );
+  mComposition->setAtlasMode( previousMode );
 
-  if ( mComposition->atlasPreviewEnabled() )
+  if ( mComposition->atlasMode() == QgsComposition::PreviewAtlas )
   {
     //after atlas output, jump back to preview first feature
     QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
@@ -1480,7 +1497,7 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
   {
     QString outputFileName = QString::null;
 
-    if ( atlasMap->enabled() && mComposition->atlasPreviewEnabled() )
+    if ( atlasMap->enabled() && mComposition->atlasMode() == QgsComposition::PreviewAtlas )
     {
       QString lastUsedDir = settings.value( "/UI/lastSaveAsImageDir", "." ).toString();
       outputFileName = QDir( lastUsedDir ).filePath( atlasMap->currentFilename() );
@@ -1702,9 +1719,12 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
 
 void QgsComposer::on_mActionExportAtlasAsSVG_triggered()
 {
+  QgsComposition::AtlasMode previousMode = mComposition->atlasMode();
+  mComposition->setAtlasMode( QgsComposition::ExportAtlas );
   exportCompositionAsSVG( QgsComposer::Atlas );
+  mComposition->setAtlasMode( previousMode );
 
-  if ( mComposition->atlasPreviewEnabled() )
+  if ( mComposition->atlasMode() == QgsComposition::PreviewAtlas )
   {
     //after atlas output, jump back to preview first feature
     QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();

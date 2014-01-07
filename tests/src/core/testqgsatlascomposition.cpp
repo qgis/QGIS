@@ -105,7 +105,7 @@ void TestQgsAtlasComposition::initTestCase()
   mAtlas = &mComposition->atlasComposition();
   mAtlas->setCoverageLayer( mVectorLayer );
   mAtlas->setComposerMap( mAtlasMap );
-  mAtlas->setEnabled( true );
+  mComposition->setAtlasMode( QgsComposition::ExportAtlas );
 
   // an overview
   mOverview = new QgsComposerMap( mComposition, 180, 20, 50, 50 );

@@ -654,8 +654,7 @@ QgsRectangle* QgsComposerMap::currentMapExtent()
 
   QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
 
-  if ( atlasMap->enabled() && atlasMap->composerMap() == this &&
-       ( mComposition->atlasPreviewEnabled() || mComposition->plotStyle() != QgsComposition::Preview ) )
+  if ( atlasMap->composerMap() == this && mComposition->atlasMode() != QgsComposition::AtlasOff )
   {
     //if atlas is enabled, and we are either exporting the composition or previewing the atlas, then
     //return the current temporary atlas feature extent
@@ -673,8 +672,7 @@ const QgsRectangle* QgsComposerMap::currentMapExtent() const
   //const version
 
   QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
-  if ( atlasMap->enabled() && atlasMap->composerMap() == this &&
-       ( mComposition->atlasPreviewEnabled() || mComposition->plotStyle() != QgsComposition::Preview ) )
+  if ( atlasMap->composerMap() == this && mComposition->atlasMode() != QgsComposition::AtlasOff )
   {
     //if atlas is enabled, and we are either exporting the composition or previewing the atlas, then
     //return the current temporary atlas feature extent

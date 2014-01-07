@@ -27,6 +27,14 @@ class QgsComposition : QGraphicsScene
       Dots,
       Crosses
     };
+    
+    /**Composition atlas modes*/
+    enum AtlasMode
+    {
+      AtlasOff,     // Composition is not being controlled by an atlas
+      PreviewAtlas, // An atlas composition is being previewed in the app
+      ExportAtlas   // The composition is being exported as an atlas
+    };    
 
     QgsComposition( QgsMapRenderer* mapRenderer );
     ~QgsComposition();
@@ -306,6 +314,11 @@ class QgsComposition : QGraphicsScene
     void computeWorldFileParameters( double& a, double& b, double& c, double& d, double& e, double& f ) const;
 
     QgsAtlasComposition& atlasComposition();
+    
+    /** Returns the current atlas mode of the composition */
+    QgsComposition::AtlasMode atlasMode() const;
+    /** Sets the current atlas mode of the composition. Returns false if the mode could not be changed. */
+    bool setAtlasMode( QgsComposition::AtlasMode mode );
 
   public slots:
     /**Casts object to the proper subclass type and calls corresponding itemAdded signal*/

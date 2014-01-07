@@ -67,7 +67,7 @@ void QgsComposerLabel::paint( QPainter* painter, const QStyleOptionGraphicsItem*
   QRectF painterRect( penWidth + mMargin, penWidth + mMargin, rect().width() - 2 * penWidth - 2 * mMargin, rect().height() - 2 * penWidth - 2 * mMargin );
 
   QString textToDraw;
-  if ( mComposition->plotStyle() != QgsComposition::Preview || mComposition->atlasPreviewEnabled() )
+  if ( mComposition->atlasMode() != QgsComposition::AtlasOff )
   {
     //render text with expressions evaluated
     textToDraw = displayText();
