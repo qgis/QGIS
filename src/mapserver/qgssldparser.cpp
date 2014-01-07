@@ -1412,33 +1412,26 @@ QDomDocument QgsSLDParser::getStyle( const QString& styleName, const QString& la
   return styleDoc;
 }
 
-// TODO: support multiple layers
 QDomDocument QgsSLDParser::getStyles( QStringList& layerList ) const
 {
-  if ( layerList.size() < 1)
-  {
-    throw QgsMapServiceException( "LayerNotDefined", "Layer list is empty." );
-  }
-
-  // TODO: loop
-  QString layerName = layerList.at(0);
-  
-  QDomElement userLayerElement = findUserLayerElement( layerName );
-
-  if ( userLayerElement.isNull() )
-  {
-    throw QgsMapServiceException( "LayerNotDefined", "Operation request is for a Layer not offered by the server." );
-  }
-
-  QDomElement userStyleElement = findUserStyleElement( userLayerElement, "" );
-
-  if ( userStyleElement.isNull() )
-  {
-    throw QgsMapServiceException( "StyleNotDefined", "Operation request references a Style not offered by the server." );
-  }
-
   QDomDocument styleDoc;
-  styleDoc.appendChild( styleDoc.importNode( userStyleElement, true ) );
+  for ( int i = 0; i < layerList.size(); i++)
+  {
+    QString layerName;
+    QString typeName;
+    layerName = layerList.at( i );
+    QDomElement userLayerElement = findUserLayerElement( layerName );
+    if ( userLayerElement.isNull() )
+    {
+      throw QgsMapServiceException( "LayerNotDefined", "Operation request is for a Layer not offered by the server." );
+    }
+    QDomNodeList userStyleList = userLayerElement.elementsByTagName( "UserStyle" );
+    for ( int j = 0; j < userStyleList.size(); j++)
+    {
+      QDomElement userStyleElement = userStyleList.item( i ).toElement();
+      styleDoc.appendChild( styleDoc.importNode( userStyleElement, true ) );
+    }
+  }
   return styleDoc;
 }
 

@@ -712,7 +712,7 @@ int main( int argc, char * argv[] )
     {
       // GetStyles is only defined for WMS1.1.1/SLD1.0
       if ( version != "1.1.1") {
-        theRequestHandler->sendServiceException( QgsMapServiceException( "OperationNotSupported", "GetStyles is only available in WMS version 1.1.1" ) );
+        theRequestHandler->sendServiceException( QgsMapServiceException( "OperationNotSupported", "GetStyles method is only available in WMS version 1.1.1" ) );
       } else {
         try
         {
@@ -795,3 +795,4 @@ int main( int argc, char * argv[] )
   QgsDebugMsg( "************* all done ***************" );
   return 0;
 }
+

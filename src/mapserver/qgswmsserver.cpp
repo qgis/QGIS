@@ -603,10 +603,8 @@ QDomDocument QgsWMSServer::getStyle()
 
 // GetStyles is only defined for WMS1.1.1/SLD1.0
 QDomDocument QgsWMSServer::getStyles()
-{
-  
-  QDomDocument doc;  
-
+{  
+  QDomDocument doc;
   if ( !mParameterMap.contains( "LAYERS" ) )
   {
     throw QgsMapServiceException( "LayerNotSpecified", "Layers is mandatory for GetStyles operation" );
@@ -2194,7 +2192,7 @@ void QgsWMSServer::applyOpacities( const QStringList& layerList, QList< QPair< Q
   QList< QPair< QgsMapLayer*, int > > layerOpacityList;
   QStringList::const_iterator oIt = opacityList.constBegin();
   QStringList::const_iterator lIt = layerList.constBegin();
-  for ( ; oIt != opacityList.constEnd(); ++oIt, ++lIt )
+  for ( ; oIt != opacityList.constEnd() && lIt != layerList.constEnd(); ++oIt, ++lIt )
   {
     //get layer list for
     int opacity = oIt->toInt();

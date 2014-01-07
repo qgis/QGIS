@@ -1926,8 +1926,52 @@ QDomDocument QgsProjectParser::getStyle( const QString& styleName, const QString
 
 QDomDocument QgsProjectParser::getStyles( QStringList& layerList ) const
 {
-  QDomDocument myDocument = QDomDocument();
-  return myDocument;
+    QDomDocument myDocument = QDomDocument();
+
+    QDomNode header = myDocument.createProcessingInstruction( "xml", "version=\"1.0\" encoding=\"UTF-8\"" );
+    myDocument.appendChild( header );
+
+    // Create the root element
+    QDomElement root = myDocument.createElementNS( "http://www.opengis.net/sld", "StyledLayerDescriptor" );
+    root.setAttribute( "version", "1.1.0" );
+    root.setAttribute( "xsi:schemaLocation", "http://www.opengis.net/sld http://schemas.opengis.net/sld/1.1.0/StyledLayerDescriptor.xsd" );
+    root.setAttribute( "xmlns:ogc", "http://www.opengis.net/ogc" );
+    root.setAttribute( "xmlns:se", "http://www.opengis.net/se" );
+    root.setAttribute( "xmlns:xlink", "http://www.w3.org/1999/xlink" );
+    root.setAttribute( "xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance" );
+    myDocument.appendChild( root );
+
+    for ( int i = 0; i < layerList.size(); i++)
+    {
+      QString layerName;
+      QString typeName;
+      layerName = layerList.at( i );
+      typeName = layerName.replace(" ", "_");
+      QList<QgsMapLayer*> currentLayerList = mapLayerFromTypeName( typeName );
+      if ( currentLayerList.size() < 1 )
+      {
+        throw QgsMapServiceException( "Error", QString( "The layer for the TypeName '%1' is not found" ).arg( layerName ) );
+      }
+      for ( int j = 0; j < currentLayerList.size(); j++)
+      {
+        QgsMapLayer* currentLayer = currentLayerList.at( j );
+        QgsVectorLayer* layer = dynamic_cast<QgsVectorLayer*>( currentLayer );
+        if ( !layer )
+        {
+          throw QgsMapServiceException( "Error", QString( "Could not get style because:\n%1" ).arg( "Non-vector layers not supported yet" ) );
+        }
+        // Create the NamedLayer element
+        QDomElement namedLayerNode = myDocument.createElement( "NamedLayer" );
+        root.appendChild( namedLayerNode );
+
+        QString errorMsg;
+        if ( !layer->writeSld( namedLayerNode, myDocument, errorMsg ) )
+        {
+          throw QgsMapServiceException( "Error", QString( "Could not get style because:\n%1" ).arg( errorMsg ) );
+        }
+      }
+    }
+    return myDocument;
 }
 
 
