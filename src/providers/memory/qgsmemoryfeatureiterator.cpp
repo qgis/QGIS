@@ -86,7 +86,7 @@ bool QgsMemoryFeatureIterator::nextFeatureUsingList( QgsFeature& feature )
     if ( mRequest.filterType() == QgsFeatureRequest::FilterRect && mRequest.flags() & QgsFeatureRequest::ExactIntersect )
     {
       // do exact check in case we're doing intersection
-      if ( P->mFeatures[*mFeatureIdListIterator].geometry()->intersects( mSelectRectGeom ) )
+      if ( P->mFeatures[*mFeatureIdListIterator].geometry() && P->mFeatures[*mFeatureIdListIterator].geometry()->intersects( mSelectRectGeom ) )
         hasFeature = true;
     }
     else
@@ -131,13 +131,13 @@ bool QgsMemoryFeatureIterator::nextFeatureTraverseAll( QgsFeature& feature )
       if ( mRequest.flags() & QgsFeatureRequest::ExactIntersect )
       {
         // using exact test when checking for intersection
-        if ( mSelectIterator->geometry()->intersects( mSelectRectGeom ) )
+        if ( mSelectIterator->geometry() && mSelectIterator->geometry()->intersects( mSelectRectGeom ) )
           hasFeature = true;
       }
       else
       {
         // check just bounding box against rect when not using intersection
-        if ( mSelectIterator->geometry()->boundingBox().intersects( mRequest.filterRect() ) )
+        if ( mSelectIterator->geometry() && mSelectIterator->geometry()->boundingBox().intersects( mRequest.filterRect() ) )
           hasFeature = true;
       }
     }
