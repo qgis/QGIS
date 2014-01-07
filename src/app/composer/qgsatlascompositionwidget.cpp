@@ -404,7 +404,7 @@ void QgsAtlasCompositionWidget::on_mAtlasFeatureFilterCheckBox_stateChanged( int
   updateAtlasFeatures();
 }
 
-void QgsAtlasCompositionWidget::on_mAtlasFeatureFilterEdit_textChanged( const QString& text )
+void QgsAtlasCompositionWidget::on_mAtlasFeatureFilterEdit_editingFinished()
 {
   QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
   if ( !atlasMap )
@@ -412,7 +412,7 @@ void QgsAtlasCompositionWidget::on_mAtlasFeatureFilterEdit_textChanged( const QS
     return;
   }
 
-  atlasMap->setFeatureFilter( text );
+  atlasMap->setFeatureFilter( mAtlasFeatureFilterEdit->text() );
   updateAtlasFeatures();
 }
 
@@ -431,8 +431,9 @@ void QgsAtlasCompositionWidget::on_mAtlasFeatureFilterButton_clicked()
     QString expression =  exprDlg.expressionText();
     if ( !expression.isEmpty() )
     {
-      // will emit a textChanged signal
       mAtlasFeatureFilterEdit->setText( expression );
+      atlasMap->setFeatureFilter( mAtlasFeatureFilterEdit->text() );
+      updateAtlasFeatures();
     }
   }
 }
