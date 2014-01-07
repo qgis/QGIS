@@ -354,7 +354,7 @@ void QgsDxfExport::writeInt( int i )
 
 void QgsDxfExport::writeDouble( double d )
 {
-  mTextStream << QString( "%1\n" ).arg( d );
+  mTextStream << qgsDoubleToString( d ) << "\n";
 }
 
 void QgsDxfExport::writeString( const QString& s )
