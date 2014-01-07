@@ -645,14 +645,11 @@ class PythonConsoleWidget(QWidget):
                                                                                                               error.strerror)
             self.callWidgetMessageBarEditor(msgText, 2, False)
 
-    def saveAsScriptFile(self, index=-1):
+    def saveAsScriptFile(self, index=None):
         tabWidget = self.tabEditorWidget.currentWidget()
-        if index != -1:
-            tabWidget = self.tabEditorWidget.widget(index)
-        index = self.tabEditorWidget.currentIndex()
-        if tabWidget is None:
-            return
-        if tabWidget.path is None:
+        if not index:
+            index = self.tabEditorWidget.currentIndex()
+        if not tabWidget.path:
             pathFileName = self.tabEditorWidget.tabText(index) + '.py'
             fileNone = True
         else:
