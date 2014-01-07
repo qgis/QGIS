@@ -689,7 +689,7 @@ void QgsOfflineEditing::applyAttributeValueChanges( QgsVectorLayer* offlineLayer
   {
     QgsFeatureId fid = remoteFid( db, layerId, values.at( i ).fid );
 
-    remoteLayer->changeAttributeValue( fid, attrLookup[ values.at( i ).attr ], values.at( i ).value, false );
+    remoteLayer->changeAttributeValue( fid, attrLookup[ values.at( i ).attr ], values.at( i ).value );
 
     emit progressUpdated( i + 1 );
   }

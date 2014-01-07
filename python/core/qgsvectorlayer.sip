@@ -694,8 +694,24 @@ class QgsVectorLayer : QgsMapLayer
       @note added in version 1.2 */
     bool changeGeometry( QgsFeatureId fid, QgsGeometry* geom );
 
-    /** changed an attribute value (but does not commit it) */
-    bool changeAttributeValue( QgsFeatureId fid, int field, QVariant value, bool emitSignal = true );
+    /**
+     * Changes an attribute value (but does not commit it)
+     *
+     * @deprecated The emitSignal parameter is obsolete and not considered at the moment. It will
+     *             be removed in future releases. Remove it to be prepared for the future. (Since 2.1)
+     */
+    bool changeAttributeValue( QgsFeatureId fid, int field, QVariant value, bool emitSignal ) /Deprecated/;
+
+    /**
+     * Changes an attribute value (but does not commit it)
+     *
+     * @param fid   The feature id of the feature to be changed
+     * @param field The index of the field to be updated
+     * @param value The value which will be assigned to the field
+     *
+     * @return true in case of success
+     */
+    bool changeAttributeValue( QgsFeatureId fid, int field, QVariant value );
 
     /** add an attribute field (but does not commit it)
         returns true if the field was added

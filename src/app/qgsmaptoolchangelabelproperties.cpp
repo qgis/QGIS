@@ -72,7 +72,7 @@ void QgsMapToolChangeLabelProperties::canvasReleaseEvent( QMouseEvent *e )
         QgsAttributeMap::const_iterator changeIt = changes.constBegin();
         for ( ; changeIt != changes.constEnd(); ++changeIt )
         {
-          vlayer->changeAttributeValue( mCurrentLabelPos.featureId, changeIt.key(), changeIt.value(), true );
+          vlayer->changeAttributeValue( mCurrentLabelPos.featureId, changeIt.key(), changeIt.value() );
         }
 
         vlayer->endEditCommand();

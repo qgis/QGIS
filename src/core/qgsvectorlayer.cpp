@@ -2516,7 +2516,12 @@ bool QgsVectorLayer::changeGeometry( QgsFeatureId fid, QgsGeometry* geom )
 
 bool QgsVectorLayer::changeAttributeValue( QgsFeatureId fid, int field, QVariant value, bool emitSignal )
 {
-  Q_UNUSED( emitSignal ); // TODO[MD] - see also QgsFieldCalculator and #7071
+  Q_UNUSED( emitSignal );
+  return changeAttributeValue ( fid, field, value );
+}
+
+bool QgsVectorLayer::changeAttributeValue( QgsFeatureId fid, int field, QVariant value )
+{
   if ( !mEditBuffer || !mDataProvider )
     return false;
 

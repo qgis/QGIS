@@ -207,7 +207,7 @@ void QgsMapToolRotatePointSymbols::canvasReleaseEvent( QMouseEvent *e )
     QList<int>::const_iterator it = mCurrentRotationAttributes.constBegin();
     for ( ; it != mCurrentRotationAttributes.constEnd(); ++it )
     {
-      if ( !mActiveLayer->changeAttributeValue( mFeatureNumber, *it, rotation, true ) )
+      if ( !mActiveLayer->changeAttributeValue( mFeatureNumber, *it, rotation ) )
       {
         rotateSuccess = false;
       }

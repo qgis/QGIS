@@ -93,7 +93,7 @@ void QgsAttributeTableDelegate::setModelData( QWidget *editor, QAbstractItemMode
     return;
 
   vl->beginEditCommand( tr( "Attribute changed" ) );
-  vl->changeAttributeValue( fid, fieldIdx, value, true );
+  vl->changeAttributeValue( fid, fieldIdx, value );
   vl->endEditCommand();
 }
 
