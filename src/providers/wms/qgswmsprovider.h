@@ -33,6 +33,8 @@
 #include <QUrl>
 
 class QgsCoordinateTransform;
+class QgsNetworkAccessManager;
+
 class QNetworkAccessManager;
 class QNetworkReply;
 class QNetworkRequest;
@@ -1113,9 +1115,6 @@ class QgsWmsProvider : public QgsRasterDataProvider
     QMap<int, int> mLayerParents;
     QMap<int, QStringList> mLayerParentNames;
 
-    //! flag set while provider is fetching tiles synchronously
-    bool mWaiting;
-
     //! tile request number, cache hits and misses
     int mTileReqNo;
     int mCacheHits;
@@ -1158,6 +1157,9 @@ class QgsWmsProvider : public QgsRasterDataProvider
 
     QgsCoordinateReferenceSystem mCrs;
 
+    QgsNetworkAccessManager* mNAM;
+
+    QgsNetworkAccessManager* nam();
 };
 
 

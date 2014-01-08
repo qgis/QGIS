@@ -24,9 +24,6 @@
 
 #include <typeinfo>
 
-// time to wait for an answer without emitting dataChanged()
-#define WMS_THRESHOLD 200
-
 #include "qgslogger.h"
 #include "qgswmsprovider.h"
 #include "qgswmsconnection.h"
@@ -67,6 +64,7 @@
 #include <QEventLoop>
 #include <QCoreApplication>
 #include <QTime>
+#include <QThread>
 
 #ifdef QGISDEBUG
 #include <QFile>
@@ -82,7 +80,7 @@ static QString WMS_DESCRIPTION = "OGC Web Map Service version 1.3 data provider"
 
 static QString DEFAULT_LATLON_CRS = "CRS:84";
 
-QgsWmsProvider::QgsWmsProvider( QString const &uri )
+QgsWmsProvider::QgsWmsProvider( QString const& uri )
     : QgsRasterDataProvider( uri )
     , mHttpUri( uri )
     , mHttpCapabilitiesResponse( 0 )
@@ -109,6 +107,7 @@ QgsWmsProvider::QgsWmsProvider( QString const &uri )
     , mTileMatrixSetId( QString::null )
     , mTileMatrixSet( 0 )
     , mFeatureCount( 0 )
+    , mNAM( 0 )
 {
   QgsDebugMsg( "constructing with uri '" + mHttpUri + "'." );
 
@@ -272,6 +271,8 @@ QgsWmsProvider::~QgsWmsProvider()
   {
     mTileReplies.takeFirst()->deleteLater();
   }
+
+  mNAM->deleteLater();
 }
 
 QgsRasterInterface * QgsWmsProvider::clone() const
@@ -607,9 +608,6 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
   mCachedViewWidth = pixelWidth;
   mCachedViewHeight = pixelHeight;
 
-  QSettings s;
-  bool bkLayerCaching = s.value( "/qgis/enable_render_caching", false ).toBool();
-
   if ( !mTiled && !mMaxWidth && !mMaxHeight )
   {
     // Calculate active layers that are also visible.
@@ -679,23 +677,24 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
     QNetworkRequest request( url );
     setAuthorization( request );
     request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
-    mCacheReply = QgsNetworkAccessManager::instance()->get( request );
-    connect( mCacheReply, SIGNAL( finished() ), this, SLOT( cacheReplyFinished() ) );
-    connect( mCacheReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( cacheReplyProgress( qint64, qint64 ) ) );
+    mCacheReply = nam()->get( request );
+    connect( mCacheReply, SIGNAL( finished() ), this, SLOT( cacheReplyFinished() ), Qt::DirectConnection );
+    connect( mCacheReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( cacheReplyProgress( qint64, qint64 ) ), Qt::DirectConnection );
 
     emit statusChanged( tr( "Getting map via WMS." ) );
 
-    mWaiting = true;
+    //QTime t;
+    //t.start();
 
-    QTime t;
-    t.start();
+    Q_ASSERT( mCacheReply->thread() == QThread::currentThread() );
 
-    while ( mCacheReply && ( !bkLayerCaching || t.elapsed() < WMS_THRESHOLD ) )
-    {
-      QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, WMS_THRESHOLD );
-    }
+    QEventLoop loop;
+    connect(mCacheReply, SIGNAL(finished()), &loop, SLOT(quit()));
+    loop.exec();
 
-    mWaiting = false;
+    qDebug("LOOP FINISHED");
+
+    Q_ASSERT( mCacheReply == 0 );
   }
   else
   {
@@ -876,7 +875,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
             request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileRetry ), 0 );
 
             QgsDebugMsg( QString( "gettile: %1" ).arg( turl ) );
-            QNetworkReply *reply = QgsNetworkAccessManager::instance()->get( request );
+            QNetworkReply *reply = nam()->get( request );
             mTileReplies << reply;
             connect( reply, SIGNAL( finished() ), this, SLOT( tileReplyFinished() ) );
           }
@@ -930,7 +929,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
               request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileRetry ), 0 );
 
               QgsDebugMsg( QString( "gettile: %1" ).arg( turl ) );
-              QNetworkReply *reply = QgsNetworkAccessManager::instance()->get( request );
+              QNetworkReply *reply = nam()->get( request );
               mTileReplies << reply;
               connect( reply, SIGNAL( finished() ), this, SLOT( tileReplyFinished() ) );
             }
@@ -971,7 +970,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
               request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileRetry ), 0 );
 
               QgsDebugMsg( QString( "gettile: %1" ).arg( turl ) );
-              QNetworkReply *reply = QgsNetworkAccessManager::instance()->get( request );
+              QNetworkReply *reply = nam()->get( request );
               mTileReplies << reply;
               connect( reply, SIGNAL( finished() ), this, SLOT( tileReplyFinished() ) );
             }
@@ -988,19 +987,15 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
 
     emit statusChanged( tr( "Getting tiles." ) );
 
-    mWaiting = true;
-
     QTime t;
     t.start();
 
     // draw everything that is retrieved within a second
     // and the rest asynchronously
-    while ( !mTileReplies.isEmpty() && ( !bkLayerCaching || t.elapsed() < WMS_THRESHOLD ) )
+    while ( !mTileReplies.isEmpty() )
     {
-      QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, WMS_THRESHOLD );
+      QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents );
     }
-
-    mWaiting = false;
 
 #ifdef QGISDEBUG
     emit statusChanged( tr( "%n tile requests in background", "tile request count", mTileReplies.count() )
@@ -1081,7 +1076,7 @@ void QgsWmsProvider::repeatTileRequest( QNetworkRequest const &oldRequest )
   QgsDebugMsg( QString( "repeat tileRequest %1 %2(retry %3) for url: %4" ).arg( tileReqNo ).arg( tileNo ).arg( retry ).arg( url ) );
   request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileRetry ), retry );
 
-  QNetworkReply *reply = QgsNetworkAccessManager::instance()->get( request );
+  QNetworkReply *reply = nam()->get( request );
   mTileReplies << reply;
   connect( reply, SIGNAL( finished() ), this, SLOT( tileReplyFinished() ) );
 }
@@ -1107,9 +1102,9 @@ void QgsWmsProvider::tileReplyFinished()
   }
 #endif
 
-  if ( QgsNetworkAccessManager::instance()->cache() )
+  if ( nam()->cache() )
   {
-    QNetworkCacheMetaData cmd = QgsNetworkAccessManager::instance()->cache()->metaData( reply->request().url() );
+    QNetworkCacheMetaData cmd = nam()->cache()->metaData( reply->request().url() );
 
     QNetworkCacheMetaData::RawHeaderList hl;
     foreach ( const QNetworkCacheMetaData::RawHeader &h, cmd.rawHeaders() )
@@ -1126,7 +1121,7 @@ void QgsWmsProvider::tileReplyFinished()
       cmd.setExpirationDate( QDateTime::currentDateTime().addSecs( s.value( "/qgis/defaultTileExpiry", "24" ).toInt() * 60 * 60 ) );
     }
 
-    QgsNetworkAccessManager::instance()->cache()->updateMetaData( cmd );
+    nam()->cache()->updateMetaData( cmd );
   }
 
   int tileReqNo = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( TileReqNo ) ).toInt();
@@ -1169,7 +1164,7 @@ void QgsWmsProvider::tileReplyFinished()
       reply->deleteLater();
 
       QgsDebugMsg( QString( "redirected gettile: %1" ).arg( redirect.toString() ) );
-      reply = QgsNetworkAccessManager::instance()->get( request );
+      reply = nam()->get( request );
       mTileReplies << reply;
 
       connect( reply, SIGNAL( finished() ), this, SLOT( tileReplyFinished() ) );
@@ -1270,12 +1265,6 @@ void QgsWmsProvider::tileReplyFinished()
 
     mTileReplies.removeOne( reply );
     reply->deleteLater();
-
-    if ( !mWaiting )
-    {
-      QgsDebugMsg( "emit dataChanged()" );
-      emit dataChanged();
-    }
   }
   else
   {
@@ -1306,7 +1295,7 @@ void QgsWmsProvider::cacheReplyFinished()
       mCacheReply->deleteLater();
 
       QgsDebugMsg( QString( "redirected getmap: %1" ).arg( redirect.toString() ) );
-      mCacheReply = QgsNetworkAccessManager::instance()->get( QNetworkRequest( redirect.toUrl() ) );
+      mCacheReply = nam()->get( QNetworkRequest( redirect.toUrl() ) );
       connect( mCacheReply, SIGNAL( finished() ), this, SLOT( cacheReplyFinished() ) );
       return;
     }
@@ -1332,6 +1321,7 @@ void QgsWmsProvider::cacheReplyFinished()
     if ( contentType.startsWith( "image/", Qt::CaseInsensitive ) ||
          contentType.compare( "application/octet-stream", Qt::CaseInsensitive ) == 0 )
     {
+      qDebug("GOT PICTURE!");
       QImage myLocalImage = QImage::fromData( mCacheReply->readAll() );
       if ( !myLocalImage.isNull() )
       {
@@ -1370,12 +1360,7 @@ void QgsWmsProvider::cacheReplyFinished()
 
     mCacheReply->deleteLater();
     mCacheReply = 0;
-
-    if ( !mWaiting )
-    {
-      QgsDebugMsg( "emit dataChanged()" );
-      emit dataChanged();
-    }
+    qDebug("DELETE REPLY");
   }
   else
   {
@@ -1416,15 +1401,16 @@ bool QgsWmsProvider::retrieveServerCapabilities( bool forceRefresh )
     request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
 
     QgsDebugMsg( QString( "getcapabilities: %1" ).arg( url ) );
-    mCapabilitiesReply = QgsNetworkAccessManager::instance()->get( request );
+    mCapabilitiesReply = nam()->get( request );
+    Q_ASSERT( nam()->thread() == QThread::currentThread() );
+    Q_ASSERT( mCapabilitiesReply->thread() == QThread::currentThread() );
 
-    connect( mCapabilitiesReply, SIGNAL( finished() ), this, SLOT( capabilitiesReplyFinished() ) );
-    connect( mCapabilitiesReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( capabilitiesReplyProgress( qint64, qint64 ) ) );
+    connect( mCapabilitiesReply, SIGNAL( finished() ), this, SLOT( capabilitiesReplyFinished() ), Qt::DirectConnection );
+    connect( mCapabilitiesReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( capabilitiesReplyProgress( qint64, qint64 ) ), Qt::DirectConnection );
 
-    while ( mCapabilitiesReply )
-    {
-      QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents );
-    }
+    QEventLoop loop;
+    connect(mCapabilitiesReply, SIGNAL(finished()), &loop, SLOT(quit()));
+    loop.exec();
 
     if ( mHttpCapabilitiesResponse.isEmpty() )
     {
@@ -1533,7 +1519,7 @@ void QgsWmsProvider::capabilitiesReplyFinished()
 
         mCapabilitiesReply->deleteLater();
         QgsDebugMsg( QString( "redirected getcapabilities: %1" ).arg( redirect.toString() ) );
-        mCapabilitiesReply = QgsNetworkAccessManager::instance()->get( request );
+        mCapabilitiesReply = nam()->get( request );
 
         connect( mCapabilitiesReply, SIGNAL( finished() ), this, SLOT( capabilitiesReplyFinished() ) );
         connect( mCapabilitiesReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( capabilitiesReplyProgress( qint64, qint64 ) ) );
@@ -4157,13 +4143,12 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
     QgsDebugMsg( QString( "getfeatureinfo: %1" ).arg( requestUrl.toString() ) );
     QNetworkRequest request( requestUrl );
     setAuthorization( request );
-    mIdentifyReply = QgsNetworkAccessManager::instance()->get( request );
+    mIdentifyReply = nam()->get( request );
     connect( mIdentifyReply, SIGNAL( finished() ), this, SLOT( identifyReplyFinished() ) );
 
-    while ( mIdentifyReply )
-    {
-      QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents );
-    }
+    QEventLoop loop;
+    connect(mIdentifyReply, SIGNAL(finished()), &loop, SLOT(quit()));
+    loop.exec();
 
     if ( mIdentifyResultBodies.size() == 0 ) // no result
     {
@@ -4422,7 +4407,7 @@ void QgsWmsProvider::identifyReplyFinished()
       mIdentifyReply->deleteLater();
 
       QgsDebugMsg( QString( "redirected getfeatureinfo: %1" ).arg( redirect.toString() ) );
-      mIdentifyReply = QgsNetworkAccessManager::instance()->get( QNetworkRequest( redirect.toUrl() ) );
+      mIdentifyReply = nam()->get( QNetworkRequest( redirect.toUrl() ) );
       connect( mIdentifyReply, SIGNAL( finished() ), this, SLOT( identifyReplyFinished() ) );
 
       return;
@@ -4522,6 +4507,21 @@ void QgsWmsProvider::setAuthorization( QNetworkRequest &request ) const
   }
 }
 
+QgsNetworkAccessManager *QgsWmsProvider::nam()
+{
+  if ( mNAM && mNAM->thread() != QThread::currentThread() )
+  {
+    // TODO: check that no network connections are handled by the NAM?
+    mNAM->deleteLater();
+    mNAM = 0;
+  }
+
+  if ( !mNAM )
+    mNAM = new QgsNetworkAccessManager();
+
+  return mNAM;
+}
+
 QVector<QgsWmsSupportedFormat> QgsWmsProvider::supportedFormats()
 {
   QVector<QgsWmsSupportedFormat> formats;
@@ -4599,6 +4599,7 @@ QImage QgsWmsProvider::getLegendGraphic( double scale, bool forceRefresh )
   // some services dowsn't expose getLegendGraphic in capabilities but adding LegendURL in
   // the layer tags inside capabilities
   QgsDebugMsg( "entering." );
+  return QImage(); // %%% TMP
 
   if ( !scale && !mGetLegendGraphicScale )
   {
@@ -4697,15 +4698,14 @@ QImage QgsWmsProvider::getLegendGraphic( double scale, bool forceRefresh )
     request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
 
     QgsDebugMsg( QString( "getlegendgraphics: %1" ).arg( url.toString() ) );
-    mGetLegendGraphicReply = QgsNetworkAccessManager::instance()->get( request );
+    mGetLegendGraphicReply = nam()->get( request );
 
-    connect( mGetLegendGraphicReply, SIGNAL( finished() ), this, SLOT( getLegendGraphicReplyFinished() ) );
-    connect( mGetLegendGraphicReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( getLegendGraphicReplyProgress( qint64, qint64 ) ) );
+    connect( mGetLegendGraphicReply, SIGNAL( finished() ), this, SLOT( getLegendGraphicReplyFinished() ), Qt::DirectConnection );
+    connect( mGetLegendGraphicReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( getLegendGraphicReplyProgress( qint64, qint64 ) ), Qt::DirectConnection );
 
-    while ( mGetLegendGraphicReply )
-    {
-      QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, WMS_THRESHOLD );
-    }
+    QEventLoop loop;
+    connect(mGetLegendGraphicReply, SIGNAL(finished()), &loop, SLOT(quit()));
+    loop.exec();
   }
   else
   {
@@ -4746,7 +4746,7 @@ void QgsWmsProvider::getLegendGraphicReplyFinished()
 
         mGetLegendGraphicReply->deleteLater();
         QgsDebugMsg( QString( "redirected GetLegendGraphic: %1" ).arg( redirect.toString() ) );
-        mGetLegendGraphicReply = QgsNetworkAccessManager::instance()->get( request );
+        mGetLegendGraphicReply = nam()->get( request );
 
         connect( mGetLegendGraphicReply, SIGNAL( finished() ), this, SLOT( getLegendGraphicReplyFinished() ) );
         connect( mGetLegendGraphicReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( getLegendGraphicReplyProgress( qint64, qint64 ) ) );
