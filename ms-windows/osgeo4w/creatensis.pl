@@ -28,7 +28,7 @@ my $version;
 my $binary;
 my $root = "http://download.osgeo.org/osgeo4w";
 my $ininame = "setup.ini";
-my $arch = "";
+my $arch = "x86_64";
 my $help;
 
 my $result = GetOptions(
@@ -425,7 +425,7 @@ creatensis.pl [options] [packages...]
     -packagename=s	name of package (defaults to 'QGIS')
     -shortname=s	shortname used for batch file (defaults to 'qgis')
     -mirror=s		default mirror (defaults to 'http://download.osgeo.org/osgeo4w')
-    -arch=s		architecture (x86 or x86_64; defaults to '')
+    -arch=s		architecture (x86 or x86_64; defaults to 'x86_64')
     -help		this help
 
   If no packages are given 'qgis-full' and it's dependencies will be retrieved
