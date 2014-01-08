@@ -68,6 +68,15 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayer* la
   }
   else // no filter or filter by rect
   {
+    QgsSimplifyMethod simplifyMethod = request.simplifyMethod();
+
+    // if required, local simplification will be configured for all providers, then avoid simplify twice (this iterator and provider iterator)
+    if ( simplifyMethod.methodType() != QgsSimplifyMethod::NoSimplification && simplifyMethod.forceLocalOptimization() )
+    {
+      simplifyMethod.setMethodType( QgsSimplifyMethod::NoSimplification );
+      if ( L->editBuffer() ) mChangedFeaturesRequest.setSimplifyMethod( simplifyMethod ); else mProviderRequest.setSimplifyMethod( simplifyMethod );
+    }
+
     if ( L->editBuffer() )
     {
       mChangedFeaturesIterator = L->dataProvider()->getFeatures( mChangedFeaturesRequest );
@@ -77,8 +86,8 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayer* la
       mProviderIterator = L->dataProvider()->getFeatures( mProviderRequest );
     }
 
-    // setup if required the local simplification of geometries to fetch
-    prepareLocalSimplification();
+    // prepare if required the local simplification of geometries to fetch
+    prepareSimplification( request.simplifyMethod() );
 
     rewindEditBuffer();
   }
