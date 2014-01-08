@@ -18,34 +18,23 @@
 #include "qgsmessagelog.h"
 #include "qgsgeometry.h"
 
-QgsWFSFeatureIterator::QgsWFSFeatureIterator( QgsWFSProvider* provider, const QgsFeatureRequest& request )
-    : QgsAbstractFeatureIterator( request )
-    , mProvider( provider )
+QgsWFSFeatureIterator::QgsWFSFeatureIterator( QgsWFSFeatureSource* source, bool ownSource, const QgsFeatureRequest& request )
+    : QgsAbstractFeatureIteratorFromSource( source, ownSource, request )
 {
-  //select ids
-  //get iterator
-  if ( !mProvider )
-  {
-    return;
-  }
-
-  mProvider->mActiveIterators << this;
-
   switch ( request.filterType() )
   {
     case QgsFeatureRequest::FilterRect:
-      if ( mProvider->mSpatialIndex )
+      if ( mSource->mSpatialIndex )
       {
-        mSelectedFeatures = mProvider->mSpatialIndex->intersects( request.filterRect() );
+        mSelectedFeatures = mSource->mSpatialIndex->intersects( request.filterRect() );
       }
       break;
     case QgsFeatureRequest::FilterFid:
       mSelectedFeatures.push_back( request.filterFid() );
       break;
     case QgsFeatureRequest::FilterNone:
-      mSelectedFeatures = mProvider->mFeatures.keys();
-    default: //QgsFeatureRequest::FilterNone
-      mSelectedFeatures = mProvider->mFeatures.keys();
+    default:
+      mSelectedFeatures = mSource->mFeatures.keys();
   }
 
   mFeatureIterator = mSelectedFeatures.constBegin();
@@ -58,22 +47,20 @@ QgsWFSFeatureIterator::~QgsWFSFeatureIterator()
 
 bool QgsWFSFeatureIterator::fetchFeature( QgsFeature& f )
 {
-  if ( !mProvider )
-  {
+  if ( mClosed )
     return false;
-  }
 
   if ( mFeatureIterator == mSelectedFeatures.constEnd() )
   {
     return false;
   }
 
-  QgsFeature *fet = 0;
+  const QgsFeature *fet = 0;
 
   for ( ;; )
   {
-    QMap<QgsFeatureId, QgsFeature* >::iterator it = mProvider->mFeatures.find( *mFeatureIterator );
-    if ( it == mProvider->mFeatures.end() )
+    QgsFeaturePtrMap::const_iterator it = mSource->mFeatures.constFind( *mFeatureIterator );
+    if ( it == mSource->mFeatures.constEnd() )
       return false;
 
     fet = it.value();
@@ -87,17 +74,15 @@ bool QgsWFSFeatureIterator::fetchFeature( QgsFeature& f )
   }
 
 
-  mProvider->copyFeature( fet, f, !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) );
+  copyFeature( fet, f, !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) );
   ++mFeatureIterator;
   return true;
 }
 
 bool QgsWFSFeatureIterator::rewind()
 {
-  if ( !mProvider )
-  {
+  if ( mClosed )
     return false;
-  }
 
   mFeatureIterator = mSelectedFeatures.constBegin();
 
@@ -106,11 +91,74 @@ bool QgsWFSFeatureIterator::rewind()
 
 bool QgsWFSFeatureIterator::close()
 {
-  if ( !mProvider )
+  if ( mClosed )
     return false;
 
-  mProvider->mActiveIterators.remove( this );
+  iteratorClosed();
 
-  mProvider = 0;
+  mClosed = true;
   return true;
+}
+
+
+
+void QgsWFSFeatureIterator::copyFeature( const QgsFeature* f, QgsFeature& feature, bool fetchGeometry )
+{
+  Q_UNUSED( fetchGeometry );
+
+  if ( !f )
+  {
+    return;
+  }
+
+  //copy the geometry
+  QgsGeometry* geometry = f->geometry();
+  if ( geometry && fetchGeometry )
+  {
+    const unsigned char *geom = geometry->asWkb();
+    int geomSize = geometry->wkbSize();
+    unsigned char* copiedGeom = new unsigned char[geomSize];
+    memcpy( copiedGeom, geom, geomSize );
+    feature.setGeometryAndOwnership( copiedGeom, geomSize );
+  }
+  else
+  {
+    feature.setGeometry( 0 );
+  }
+
+  //and the attributes
+  feature.initAttributes( mSource->mFields.size() );
+  for ( int i = 0; i < mSource->mFields.size(); i++ )
+  {
+    const QVariant &v = f->attributes().value( i );
+    if ( v.type() != mSource->mFields[i].type() )
+      feature.setAttribute( i, QgsVectorDataProvider::convertValue( mSource->mFields[i].type(), v.toString() ) );
+    else
+      feature.setAttribute( i, v );
+  }
+
+  //id and valid
+  feature.setValid( true );
+  feature.setFeatureId( f->id() );
+  feature.setFields( &mSource->mFields ); // allow name-based attribute lookups
+}
+
+
+// -------------------------
+
+QgsWFSFeatureSource::QgsWFSFeatureSource( const QgsWFSProvider* p )
+  : mFields( p->mFields )
+  , mFeatures( p->mFeatures )
+  , mSpatialIndex( p->mSpatialIndex ? new QgsSpatialIndex( *p->mSpatialIndex ) : 0 )  // just shallow copy
+{
+}
+
+QgsWFSFeatureSource::~QgsWFSFeatureSource()
+{
+  delete mSpatialIndex;
+}
+
+QgsFeatureIterator QgsWFSFeatureSource::getFeatures( const QgsFeatureRequest& request )
+{
+  return QgsFeatureIterator( new QgsWFSFeatureIterator( this, false, request ) );
 }

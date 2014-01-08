@@ -124,15 +124,13 @@ QgsWFSProvider::QgsWFSProvider( const QString& uri )
 
 QgsWFSProvider::~QgsWFSProvider()
 {
-  while ( !mActiveIterators.empty() )
-  {
-    QgsWFSFeatureIterator *it = *mActiveIterators.begin();
-    QgsDebugMsg( "closing active iterator" );
-    it->close();
-  }
-
   deleteData();
   delete mSpatialIndex;
+}
+
+QgsAbstractFeatureSource* QgsWFSProvider::featureSource() const
+{
+  return new QgsWFSFeatureSource( this );
 }
 
 void QgsWFSProvider::reloadData()
@@ -153,46 +151,6 @@ void QgsWFSProvider::deleteData()
   mFeatures.clear();
 }
 
-void QgsWFSProvider::copyFeature( QgsFeature* f, QgsFeature& feature, bool fetchGeometry )
-{
-  Q_UNUSED( fetchGeometry );
-
-  if ( !f )
-  {
-    return;
-  }
-
-  //copy the geometry
-  QgsGeometry* geometry = f->geometry();
-  if ( geometry && fetchGeometry )
-  {
-    const unsigned char *geom = geometry->asWkb();
-    int geomSize = geometry->wkbSize();
-    unsigned char* copiedGeom = new unsigned char[geomSize];
-    memcpy( copiedGeom, geom, geomSize );
-    feature.setGeometryAndOwnership( copiedGeom, geomSize );
-  }
-  else
-  {
-    feature.setGeometry( 0 );
-  }
-
-  //and the attributes
-  feature.initAttributes( mFields.size() );
-  for ( int i = 0; i < mFields.size(); i++ )
-  {
-    const QVariant &v = f->attributes().value( i );
-    if ( v.type() != mFields[i].type() )
-      feature.setAttribute( i, convertValue( mFields[i].type(), v.toString() ) );
-    else
-      feature.setAttribute( i, v );
-  }
-
-  //id and valid
-  feature.setValid( true );
-  feature.setFeatureId( f->id() );
-  feature.setFields( &mFields ); // allow name-based attribute lookups
-}
 
 QGis::WkbType QgsWFSProvider::geometryType() const
 {
@@ -299,7 +257,7 @@ QgsFeatureIterator QgsWFSProvider::getFeatures( const QgsFeatureRequest& request
     }
 
   }
-  return QgsFeatureIterator( new QgsWFSFeatureIterator( this, request ) );
+  return QgsFeatureIterator( new QgsWFSFeatureIterator( new QgsWFSFeatureSource( this ), true, request ) );
 }
 
 int QgsWFSProvider::getFeature( const QString& uri )
