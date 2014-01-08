@@ -51,7 +51,7 @@ QgsComposerScaleBarWidget::QgsComposerScaleBarWidget( QgsComposerScaleBar* scale
   mUnitsComboBox->insertItem( 0, tr( "Map units" ), 0 );
   mUnitsComboBox->insertItem( 1, tr( "Meters" ), 1 );
   mUnitsComboBox->insertItem( 2, tr( "Feet" ), 2 );
-
+  mUnitsComboBox->insertItem( 3, tr( "Nautical Miles" ), 3 );
   blockMemberSignals( false );
   setGuiElements(); //set the GUI elements to the state of scaleBar
 }
@@ -531,10 +531,52 @@ void QgsComposerScaleBarWidget::on_mUnitsComboBox_currentIndexChanged( int index
   {
     return;
   }
-
-  mComposerScaleBar->beginCommand( tr( "Scalebar unit changed" ) );
   disconnectUpdateSignal();
   mComposerScaleBar->setUnits(( QgsComposerScaleBar::ScaleBarUnits )unitData.toInt() );
+  /*####################################################################*/
+  
+  
+  
+  if ( mUnitsComboBox->currentIndex() == 0 )
+  {
+    mUnitLabelLineEdit -> setText( tr( "M. Un." ) );
+    mComposerScaleBar->beginCommand( tr( "Scalebar unit changed to map units" ) );
+//     mMapUnitsPerBarUnitSpinBox->setValue( 1000.0 );
+//     mSegmentSizeSpinBox->setValue( 10000.00 );
+    mComposerScaleBar->applyDefaultSize((QgsComposerScaleBar::ScaleBarUnits) 0);    
+    
+  }
+  
+  if ( mUnitsComboBox->currentIndex() == 1 )
+  {
+    mUnitLabelLineEdit -> setText( tr( "m" ) );
+    mComposerScaleBar->beginCommand( tr( "Scalebar unit changed to meters/Kilometers" ) );
+//     mMapUnitsPerBarUnitSpinBox->setValue( 1000.0 );
+//     mSegmentSizeSpinBox->setValue( 10000.00 );
+    mComposerScaleBar->applyDefaultSize((QgsComposerScaleBar::ScaleBarUnits) 1);    
+    
+  }
+  
+  if ( mUnitsComboBox->currentIndex() == 2 )
+  {
+    mUnitLabelLineEdit -> setText( tr( "ft" ) );
+    mComposerScaleBar->beginCommand( tr( "Scalebar unit changed to feet" ) );
+//     mMapUnitsPerBarUnitSpinBox->setValue( 1000.0 );
+//     mSegmentSizeSpinBox->setValue( 30000.00 );
+    mComposerScaleBar->applyDefaultSize((QgsComposerScaleBar::ScaleBarUnits) 2);
+
+  }
+  
+  else if ( mUnitsComboBox->currentIndex() == 3 )
+  {
+    mUnitLabelLineEdit -> setText( tr ( "Nm" ) );
+    mComposerScaleBar->beginCommand( tr( "Scalebar unit changed to nautical miles" ) );
+//     mMapUnitsPerBarUnitSpinBox->setValue( 1.0 );
+//     mSegmentSizeSpinBox->setValue( 10.00 );
+    mComposerScaleBar->applyDefaultSize((QgsComposerScaleBar::ScaleBarUnits) 3);
+  }
+  
+  /*####################################################################*/
   mComposerScaleBar->update();
   connectUpdateSignal();
   mComposerScaleBar->endCommand();

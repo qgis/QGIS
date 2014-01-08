@@ -198,6 +198,10 @@ double QgsComposerScaleBar::mapWidth() const
     {
       measure /= 0.3048;
     }
+    else if (mUnits == NauticalMiles)
+    {
+      measure /= 1852.0;
+    }
     return measure;
   }
 }
@@ -249,26 +253,75 @@ void QgsComposerScaleBar::applyDefaultSettings()
   mBoxContentSpace = 1.0;
   emit itemChanged();
 }
+//#########################################################################
+// NUEVO CODIGO DE PRUEBA
+//#########################################################################
 
-void QgsComposerScaleBar::applyDefaultSize()
+void QgsComposerScaleBar::applyDefaultSize( ScaleBarUnits u)
+
 {
   if ( mComposerMap )
   {
-    setUnits( Meters );
-    double widthMeter = mapWidth();
-    int nUnitsPerSegment =  widthMeter / 10.0; //default scalebar width equals half the map width
-    setNumUnitsPerSegment( nUnitsPerSegment );
+    setUnits( u );
+    double upperMagnitudeMultiplier;
+    double widthInSelectedUnits = mapWidth();
+    double initialUnitsPerSegment =  widthInSelectedUnits / 10.0; //default scalebar width equals half the map width
+    setNumUnitsPerSegment( initialUnitsPerSegment );
 
-    if ( nUnitsPerSegment > 1000 )
+    if (mUnits == MapUnits)
     {
-      setNumUnitsPerSegment(( int )( numUnitsPerSegment() / 1000.0 + 0.5 ) * 1000 );
-      setUnitLabeling( tr( "km" ) );
-      setNumMapUnitsPerScaleBarUnit( 1000 );
+        upperMagnitudeMultiplier = 1.0;
+        setUnitLabeling( tr ("MU") );
     }
-    else
+    
+    // METERS
+    if (mUnits == Meters)
     {
-      setUnitLabeling( tr( "m" ) );
+        if (initialUnitsPerSegment > 1000.0)
+        {
+        upperMagnitudeMultiplier = 1000.0;
+        setUnitLabeling( tr ("Km") );
+        }
+        else
+        {
+        upperMagnitudeMultiplier = 1.0;
+        setUnitLabeling( tr ("m") );
+        }
     }
+    // FEET
+    if (mUnits == Feet)
+    {
+        if (initialUnitsPerSegment > 5419.95)
+        {
+        upperMagnitudeMultiplier = 5419.95;
+        setUnitLabeling( tr ("Miles") );
+        }
+        else
+        {
+        upperMagnitudeMultiplier = 1.0;
+        setUnitLabeling( tr ("Ft") );
+        }
+    }
+
+    // NAUTICAL MILES
+    if (mUnits == NauticalMiles)
+    {
+        upperMagnitudeMultiplier = 1;
+        setUnitLabeling( tr ("Nm") );
+
+    }
+
+        double segmentWidth = initialUnitsPerSegment / upperMagnitudeMultiplier;
+        int segmentMagnitude = floor ( log10 ( segmentWidth ) );
+        double unitsPerSegment = upperMagnitudeMultiplier * ( pow ( 10, segmentMagnitude ) );
+        double multiplier = floor ( ( widthInSelectedUnits / ( unitsPerSegment * 10) ) / 2.5 ) * 2.5;
+        
+        if ( multiplier > 0 )
+        {
+            unitsPerSegment = unitsPerSegment * multiplier;
+        }
+        setNumUnitsPerSegment(unitsPerSegment );
+        setNumMapUnitsPerScaleBarUnit( upperMagnitudeMultiplier );
 
     setNumSegments( 4 );
     setNumSegmentsLeft( 2 );
