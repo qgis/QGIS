@@ -154,7 +154,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     void setAlignmentSnap( bool s ) { mAlignmentSnap = s; }
     bool alignmentSnap() const { return mAlignmentSnap; }
 
-    void setSmartGuidesEnabled( bool b ) { mSmartGuides = b; };
+    void setSmartGuidesEnabled( bool b ) { mSmartGuides = b; }
     bool smartGuidesEnabled() const {return mSmartGuides;}
 
     /**Removes all snap lines*/
@@ -337,10 +337,12 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     QPointF snapPointToGrid( const QPointF& scenePoint ) const;
 
     /**Returns pointer to snap lines collection*/
-    QList< QGraphicsLineItem* >* snapLines() {return &mSnapLines;};
+    QList< QGraphicsLineItem* >* snapLines() {return &mSnapLines;}
 
-    /**Returns pointer to selection handles*/
-    QgsComposerMouseHandles* selectionHandles() {return mSelectionHandles;};
+    /**Returns pointer to selection handles
+     * @note not available in python bindings
+     */
+    QgsComposerMouseHandles* selectionHandles() {return mSelectionHandles;}
 
     /**Add a custom snap line (can be horizontal or vertical)*/
     QGraphicsLineItem* addSnapLine();
@@ -397,8 +399,8 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
 
     /**If true, prevents any mouse cursor changes by the composition or by any composer items
       Used by QgsComposer and QgsComposerView to prevent unwanted cursor changes*/
-    void setPreventCursorChange( bool preventChange ) { mPreventCursorChange = preventChange; };
-    bool preventCursorChange() { return mPreventCursorChange; };
+    void setPreventCursorChange( bool preventChange ) { mPreventCursorChange = preventChange; }
+    bool preventCursorChange() { return mPreventCursorChange; }
 
     //printing
 
@@ -426,7 +428,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     /** Compute world file parameters */
     void computeWorldFileParameters( double& a, double& b, double& c, double& d, double& e, double& f ) const;
 
-    QgsAtlasComposition& atlasComposition() { return mAtlasComposition; };
+    QgsAtlasComposition& atlasComposition() { return mAtlasComposition; }
 
     /**Resizes a QRectF relative to the change from boundsBefore to boundsAfter*/
     static void relativeResizeRect( QRectF& rectToResize, const QRectF& boundsBefore, const QRectF& boundsAfter );

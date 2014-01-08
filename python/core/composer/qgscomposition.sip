@@ -27,14 +27,20 @@ class QgsComposition : QGraphicsScene
       Dots,
       Crosses
     };
-    
+
+    enum ZValueDirection
+    {
+      ZValueBelow,
+      ZValueAbove
+    };
+
     /**Composition atlas modes*/
     enum AtlasMode
     {
       AtlasOff,     // Composition is not being controlled by an atlas
       PreviewAtlas, // An atlas composition is being previewed in the app
       ExportAtlas   // The composition is being exported as an atlas
-    };    
+    };
 
     QgsComposition( QgsMapRenderer* mapRenderer );
     ~QgsComposition();
@@ -55,22 +61,54 @@ class QgsComposition : QGraphicsScene
     /**Note: added in version 1.9*/
     int numPages() const;
 
+    /**Note: added in version 2.1*/
+    void setPageStyleSymbol( QgsFillSymbolV2* symbol /Transfer/ );
+    /**Note: added in version 2.1*/
+    QgsFillSymbolV2* pageStyleSymbol();
+
+    /**Returns the position within a page of a point in the composition
+      @note Added in QGIS 2.1
+    */
+    QPointF positionOnPage( const QPointF & position ) const;
+
+    /**Returns the page number corresponding to a point in the composition
+      @note Added in QGIS 2.1
+    */
+    int pageNumberForPoint( const QPointF & position ) const;
+
+    /**Sets the status bar message for the composer window
+      @note Added in QGIS 2.1
+    */
+    void setStatusMessage( const QString & message );
+
+    /**Refreshes the composition when composer related options change
+     *Note: added in version 2.1*/
+    void updateSettings();
+
     void setSnapToGridEnabled( bool b );
     bool snapToGridEnabled() const;
 
     void setGridVisible( bool b );
     bool gridVisible() const;
 
-    /**Toggles state of smart guides*/
+    /**Hides / shows custom snap lines*/
+    void setSnapLinesVisible( bool visible );
+    bool snapLinesVisible() const;
+
+    void setAlignmentSnap( bool s );
+    bool alignmentSnap() const;
+
     void setSmartGuidesEnabled( bool b );
-    /**Returns true if smart guides are enabled*/
-    bool smartGuidesEnabled() const;   
-    
+    bool smartGuidesEnabled() const;
+
     /**Removes all snap lines*/
-    void clearSnapLines();    
+    void clearSnapLines();
 
     void setSnapGridResolution( double r );
     double snapGridResolution() const;
+
+    void setSnapGridTolerance( double tolerance );
+    double snapGridTolerance() const;
 
     void setSnapGridOffsetX( double offset );
     double snapGridOffsetX() const;
@@ -84,9 +122,6 @@ class QgsComposition : QGraphicsScene
     void setGridStyle( GridStyle s );
     GridStyle gridStyle() const;
 
-    void setAlignmentSnap( bool s );
-    bool alignmentSnap() const;
-
     void setAlignmentSnapTolerance( double t );
     double alignmentSnapTolerance() const;
 
@@ -95,6 +130,11 @@ class QgsComposition : QGraphicsScene
 
     /**Returns the topmost composer item. Ignores mPaperItem*/
     QgsComposerItem* composerItemAt( const QPointF & position );
+
+    /**Returns the highest composer item at a specified position which is below a specified item. Ignores mPaperItem
+      @note Added in QGIS 2.1
+    */
+    QgsComposerItem* composerItemAt( const QPointF & position, const QgsComposerItem* belowItem );
 
     /** Returns the page number (0-bsaed) given a coordinate */
     int pageNumberAt( const QPointF& position ) const;
@@ -145,18 +185,18 @@ class QgsComposition : QGraphicsScene
     bool printAsRaster() const;
     void setPrintAsRaster( bool enabled );
 
+    bool generateWorldFile() const;
+    void setGenerateWorldFile( bool enabled );
+
+    QgsComposerMap* worldFileMap();
+    void setWorldFileMap( QgsComposerMap* map );
+
     /**Returns true if a composition should use advanced effects such as blend modes
       @note added in 1.9*/
     bool useAdvancedEffects() const;
     /**Used to enable or disable advanced effects such as blend modes in a composition
       @note: added in version 1.9*/
     void setUseAdvancedEffects( bool effectsEnabled );
-
-    bool generateWorldFile() const;
-    void setGenerateWorldFile( bool enabled );
-
-    QgsComposerMap* worldFileMap();
-    void setWorldFileMap( QgsComposerMap* map );
 
     /**Returns pointer to map renderer of qgis map canvas*/
     QgsMapRenderer* mapRenderer();
@@ -214,6 +254,11 @@ class QgsComposition : QGraphicsScene
     void moveSelectedItemsToBottom();
     void moveItemToBottom( QgsComposerItem* item );
 
+    //functions to find items by their position in the z list
+    void selectNextByZOrder( ZValueDirection direction );
+    QgsComposerItem* getComposerItemBelow( QgsComposerItem* item );
+    QgsComposerItem* getComposerItemAbove( QgsComposerItem* item );
+
     //functions to align selected items
     void alignSelectedItemsLeft();
     void alignSelectedItemsHCenter();
@@ -222,12 +267,24 @@ class QgsComposition : QGraphicsScene
     void alignSelectedItemsVCenter();
     void alignSelectedItemsBottom();
 
+    //functions to lock and unlock items
+    /**Lock the selected items*/
+    void lockSelectedItems();
+    /**Unlock all items*/
+    void unlockAllItems();
+
     /**Sorts the zList. The only time where this function needs to be called is from QgsComposer
      after reading all the items from xml file*/
     void sortZList();
 
     /**Snaps a scene coordinate point to grid*/
     QPointF snapPointToGrid( const QPointF& scenePoint ) const;
+
+    /**Returns pointer to snap lines collection*/
+    QList< QGraphicsLineItem* >* snapLines();
+
+    /**Returns pointer to selection handles*/
+    // QgsComposerMouseHandles* selectionHandles();
 
     /**Add a custom snap line (can be horizontal or vertical)*/
     QGraphicsLineItem* addSnapLine();
@@ -237,10 +294,6 @@ class QgsComposition : QGraphicsScene
      * @note not available in python bindings
      */
     // QGraphicsLineItem* nearestSnapLine( bool horizontal, double x, double y, double tolerance, QList< QPair< QgsComposerItem*, QgsComposerItem::ItemPositionMode > >& snappedItems );
-    /**Hides / shows custom snap lines*/
-    void setSnapLinesVisible( bool visible );
-    /**Returns visibility of custom snap lines*/    
-    bool snapLinesVisible() const;    
 
     /**Allocates new item command and saves initial state in it
       @param item target item
@@ -286,6 +339,10 @@ class QgsComposition : QGraphicsScene
     /**Convenience function to create a QgsAddRemoveItemCommand, connect its signals and push it to the undo stack*/
     void pushAddRemoveCommand( QgsComposerItem* item, const QString& text, QgsAddRemoveItemCommand::State state = QgsAddRemoveItemCommand::Added );
 
+    /**If true, prevents any mouse cursor changes by the composition or by any composer items
+      Used by QgsComposer and QgsComposerView to prevent unwanted cursor changes*/
+    void setPreventCursorChange( bool preventChange );
+    bool preventCursorChange();
 
     //printing
 
@@ -314,7 +371,12 @@ class QgsComposition : QGraphicsScene
     void computeWorldFileParameters( double& a, double& b, double& c, double& d, double& e, double& f ) const;
 
     QgsAtlasComposition& atlasComposition();
-    
+
+    /**Resizes a QRectF relative to the change from boundsBefore to boundsAfter*/
+    static void relativeResizeRect( QRectF& rectToResize, const QRectF& boundsBefore, const QRectF& boundsAfter );
+    /**Returns a scaled position given a before and after range*/
+    static double relativePosition( double position, double beforeMin, double beforeMax, double afterMin, double afterMax );
+
     /** Returns the current atlas mode of the composition */
     QgsComposition::AtlasMode atlasMode() const;
     /** Sets the current atlas mode of the composition. Returns false if the mode could not be changed. */

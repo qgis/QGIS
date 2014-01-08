@@ -259,7 +259,7 @@ void QgsComposerScaleBar::applyDefaultSize( QgsComposerScaleBar::ScaleBarUnits u
   if ( mComposerMap )
   {
     setUnits( u );
-    double upperMagnitudeMultiplier;
+    double upperMagnitudeMultiplier = 1.0;
     double widthInSelectedUnits = mapWidth();
     double initialUnitsPerSegment =  widthInSelectedUnits / 10.0; //default scalebar width equals half the map width
     setNumUnitsPerSegment( initialUnitsPerSegment );
@@ -310,8 +310,8 @@ void QgsComposerScaleBar::applyDefaultSize( QgsComposerScaleBar::ScaleBarUnits u
 
     double segmentWidth = initialUnitsPerSegment / upperMagnitudeMultiplier;
     int segmentMagnitude = floor( log10( segmentWidth ) );
-    double unitsPerSegment = upperMagnitudeMultiplier * ( pow( 10, segmentMagnitude ) );
-    double multiplier = floor(( widthInSelectedUnits / ( unitsPerSegment * 10 ) ) / 2.5 ) * 2.5;
+    double unitsPerSegment = upperMagnitudeMultiplier * ( pow( 10.0, segmentMagnitude ) );
+    double multiplier = floor(( widthInSelectedUnits / ( unitsPerSegment * 10.0 ) ) / 2.5 ) * 2.5;
 
     if ( multiplier > 0 )
     {
