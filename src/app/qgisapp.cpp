@@ -6524,23 +6524,23 @@ void QgisApp::removeLayer( bool promptConfirmation )
   }
 
   //validate selection
-  int numberOfRemovedLayers = mMapLegend->selectedLayers().size();
-  if ( numberOfRemovedLayers == 0 )
+  int numberOfRemovedItems = mMapLegend->selectedItems().size();
+  if ( numberOfRemovedItems == 0 )
   {
-    messageBar()->pushMessage( tr( "No Layer Selected" ),
-                               tr( "To remove layers, you must select they in the legend" ),
+    messageBar()->pushMessage( tr( "No Object Selected" ),
+                               tr( "To remove objects, you must select them in the legend" ),
                                QgsMessageBar::INFO, messageTimeout() );
     return;
   }
   //display a warning
-  if ( promptConfirmation && QMessageBox::warning( this, tr( "Remove layers" ), tr( "Remove %n layer(s)?", "number of layers to remove", numberOfRemovedLayers ), QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
+  if ( promptConfirmation && QMessageBox::warning( this, tr( "Remove objects" ), tr( "Remove %n object(s)?", "number of objects to remove", numberOfRemovedItems ), QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
   {
     return;
   }
 
   mMapLegend->removeSelectedLayers();
 
-  showStatusMessage( tr( "%n layer(s) removed.", "number of layers removed", numberOfRemovedLayers ) );
+  showStatusMessage( tr( "%n object(s) removed.", "number of objects removed", numberOfRemovedItems ) );
 
   mMapCanvas->refresh();
 }
