@@ -69,6 +69,7 @@ void QgsOptionsDialogBase::initOptionsBase( bool restoreUi )
   QSettings settings;
   int size = settings.value( "/IconSize", 24 ).toInt();
   mOptListWidget->setIconSize( QSize(size, size) );
+  mOptListWidget->setFrameStyle( QFrame::NoFrame );
 
   optionsFrame->layout()->setContentsMargins(0,3,3,3);
   QVBoxLayout* layout = static_cast<QVBoxLayout*>(optionsFrame->layout());

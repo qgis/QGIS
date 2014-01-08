@@ -162,7 +162,7 @@ void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant>& opts )
   if ( sidebar )
   {
      QString style = "QListWidget#mOptionsListWidget {"
-         "background-color: rgb(162, 170, 179);"
+         "background-color: rgb(69, 69, 69, 220);"
           "}"
           "QListWidget#mOptionsListWidget::item {"
           "    color: white;"
