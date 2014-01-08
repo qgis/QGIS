@@ -40,8 +40,8 @@ class QgsPostgresFeatureIterator : public QgsAbstractFeatureIterator
     //! fetch next feature, return true on success
     virtual bool fetchFeature( QgsFeature& feature );
 
-    //! setup if required the simplification of geometries to fetch, it uses the settings of current FeatureRequest
-    virtual bool prepareProviderSimplification();
+    //! Setup the simplification of geometries to fetch using the specified simplify method
+    virtual bool prepareSimplification( const QgsSimplifyMethod& simplifyMethod );
 
     QgsPostgresProvider* P;
 

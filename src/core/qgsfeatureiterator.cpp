@@ -55,16 +55,11 @@ bool QgsAbstractFeatureIterator::nextFeature( QgsFeature& f )
       break;
   }
 
-  // simplify locally the geometry using the simplifier defined in constructor
-  if ( dataOk && mGeometrySimplifier )
+  // simplify the geometry using the simplifier configured
+  if ( dataOk )
   {
     QgsGeometry* geometry = f.geometry();
-
-    if ( geometry ) 
-    {
-      QGis::GeometryType geometryType = geometry->type();
-      if ( geometryType == QGis::Line || geometryType == QGis::Polygon ) mGeometrySimplifier->simplifyGeometry( geometry );
-    }
+    if ( geometry ) simplify( f );
   }
   return dataOk;
 }
@@ -101,10 +96,8 @@ void QgsAbstractFeatureIterator::deref()
     delete this;
 }
 
-bool QgsAbstractFeatureIterator::prepareLocalSimplification()
+bool QgsAbstractFeatureIterator::prepareSimplification( const QgsSimplifyMethod& simplifyMethod )
 {
-  const QgsSimplifyMethod& simplifyMethod = mRequest.simplifyMethod();
-
   if ( mGeometrySimplifier )
   {
     delete mGeometrySimplifier;
@@ -131,6 +124,22 @@ bool QgsAbstractFeatureIterator::prepareLocalSimplification()
     else
     {
       QgsDebugMsg( QString( "Simplification method type (%1) is not recognised" ).arg( methodType ) );
+    }
+  }
+  return false;
+}
+
+bool QgsAbstractFeatureIterator::simplify( QgsFeature& feature )
+{
+  // simplify locally the geometry using the configured simplifier
+  if ( mGeometrySimplifier )
+  {
+    QgsGeometry* geometry = feature.geometry();
+
+    if ( geometry ) 
+    {
+      QGis::GeometryType geometryType = geometry->type();
+      if ( geometryType == QGis::Line || geometryType == QGis::Polygon ) return mGeometrySimplifier->simplifyGeometry( geometry );
     }
   }
   return false;
