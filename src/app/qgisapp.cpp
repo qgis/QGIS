@@ -8220,7 +8220,7 @@ void QgisApp::setAtlasFeature( QgsVectorLayer* layer, QgsFeature &feat )
     }
 
     //check if composition has preview enabled
-    if ( ! composition->atlasPreviewEnabled() )
+    if ( ! composition->atlasMode() == QgsComposition::PreviewAtlas )
     {
       //Composition is not in atlas preview mode
       //so skip it. Possibly it would be better here to
