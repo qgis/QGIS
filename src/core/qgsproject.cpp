@@ -1331,8 +1331,7 @@ QStringList QgsProject::entryList( QString const &scope, QString const &key ) co
 } // QgsProject::entryList
 
 
-QStringList
-QgsProject::subkeyList( QString const &scope, QString const &key ) const
+QStringList QgsProject::subkeyList( QString const &scope, QString const &key ) const
 {
   QgsProperty * foundProperty = findKey_( scope, key, imp_->properties_ );
 
