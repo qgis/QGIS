@@ -1957,10 +1957,8 @@ QDomDocument QgsProjectParser::getStyles( QStringList& layerList ) const
     for ( int i = 0; i < layerList.size(); i++)
     {
       QString layerName;
-      QString typeName;
       layerName = layerList.at( i );
-      typeName = layerName.replace(" ", "_");
-      QList<QgsMapLayer*> currentLayerList = mapLayerFromTypeName( typeName );
+      QList<QgsMapLayer*> currentLayerList = mapLayerFromStyle( layerName, "", true );
       if ( currentLayerList.size() < 1 )
       {
         throw QgsMapServiceException( "Error", QString( "The layer for the TypeName '%1' is not found" ).arg( layerName ) );
