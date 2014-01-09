@@ -1412,6 +1412,29 @@ QDomDocument QgsSLDParser::getStyle( const QString& styleName, const QString& la
   return styleDoc;
 }
 
+QDomDocument QgsSLDParser::getStyles( QStringList& layerList ) const
+{
+  QDomDocument styleDoc;
+  for ( int i = 0; i < layerList.size(); i++)
+  {
+    QString layerName;
+    QString typeName;
+    layerName = layerList.at( i );
+    QDomElement userLayerElement = findUserLayerElement( layerName );
+    if ( userLayerElement.isNull() )
+    {
+      throw QgsMapServiceException( "LayerNotDefined", "Operation request is for a Layer not offered by the server." );
+    }
+    QDomNodeList userStyleList = userLayerElement.elementsByTagName( "UserStyle" );
+    for ( int j = 0; j < userStyleList.size(); j++)
+    {
+      QDomElement userStyleElement = userStyleList.item( i ).toElement();
+      styleDoc.appendChild( styleDoc.importNode( userStyleElement, true ) );
+    }
+  }
+  return styleDoc;
+}
+
 QString QgsSLDParser::layerNameFromUri( const QString& uri ) const
 {
   //file based?
