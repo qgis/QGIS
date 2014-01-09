@@ -55,7 +55,10 @@ class CORE_EXPORT QgsDistanceArea
     //! sets source spatial reference system (by QGIS CRS)
     void setSourceCrs( long srsid );
 
-    //! sets source spatial reference system (by QGIS CRS)
+    /**
+     * Sets source spatial reference system (by QGIS CRS)
+     * @note: missing in Python bindings in QGIS < 2.2
+     */
     void setSourceCrs( const QgsCoordinateReferenceSystem& srcCRS );
 
     //! sets source spatial reference system by authid
