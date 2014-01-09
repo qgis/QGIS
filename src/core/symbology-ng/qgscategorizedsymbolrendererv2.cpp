@@ -142,6 +142,7 @@ QgsCategorizedSymbolRendererV2::QgsCategorizedSymbolRendererV2( QString attrName
     mSourceColorRamp( NULL ),
     mInvertedColorRamp( false ),
     mScaleMethod( DEFAULT_SCALE_METHOD ),
+    mExpression( 0 ),
     mRotationFieldIdx( -1 ),
     mSizeScaleFieldIdx( -1 )
 {
@@ -199,8 +200,9 @@ QgsSymbolV2* QgsCategorizedSymbolRendererV2::symbolForFeature( QgsFeature& featu
 {
   const QgsAttributes& attrs = feature.attributes();
   QVariant value;
-  if ( mAttrNum < 0 || mAttrNum >= attrs.count() )
+  if ( mAttrNum == -1 )
   {
+    Q_ASSERT( mExpression );
     value = mExpression->evaluate( &feature );
   }
   else
@@ -406,6 +408,7 @@ void QgsCategorizedSymbolRendererV2::stopRender( QgsRenderContext& context )
     delete it2.value();
   }
   mTempSymbols.clear();
+  delete mExpression;
 }
 
 QList<QString> QgsCategorizedSymbolRendererV2::usedAttributes()
