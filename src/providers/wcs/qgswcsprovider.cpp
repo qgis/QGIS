@@ -21,9 +21,6 @@
 
 #include <typeinfo>
 
-// time to wait for an answer without emitting dataChanged()
-#define WCS_THRESHOLD 200
-
 #include "qgslogger.h"
 #include "qgswcsprovider.h"
 #include "qgscoordinatetransform.h"
@@ -108,6 +105,7 @@ QgsWcsProvider::QgsWcsProvider( QString const &uri )
     , mFixBox( false )
     , mFixRotate( false )
     , mCacheLoadControl( QNetworkRequest::PreferNetwork )
+    , mNAM( 0 )
 {
   QgsDebugMsg( "constructing with uri '" + mHttpUri + "'." );
 
@@ -467,6 +465,8 @@ QgsWcsProvider::~QgsWcsProvider()
     mCacheReply->deleteLater();
     mCacheReply = 0;
   }
+
+  delete mNAM;
 }
 
 QgsRasterInterface * QgsWcsProvider::clone() const
@@ -538,7 +538,7 @@ void QgsWcsProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, in
   if ( mCacheReply )
   {
     mCacheReply->abort();
-    delete mCacheReply;
+    mCacheReply->deleteLater();
     mCacheReply = 0;
   }
 
@@ -791,26 +791,18 @@ void QgsWcsProvider::getCache( int bandNo, QgsRectangle  const & viewExtent, int
   setAuthorization( request );
   request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
   request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, mCacheLoadControl );
-  mCacheReply = QgsNetworkAccessManager::instance()->get( request );
-  connect( mCacheReply, SIGNAL( finished() ), this, SLOT( cacheReplyFinished() ) );
-  connect( mCacheReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( cacheReplyProgress( qint64, qint64 ) ) );
+
+  mCacheReply = nam()->get( request );
+  connect( mCacheReply, SIGNAL( finished() ), this, SLOT( cacheReplyFinished() ), Qt::DirectConnection );
+  connect( mCacheReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( cacheReplyProgress( qint64, qint64 ) ), Qt::DirectConnection );
 
   emit statusChanged( tr( "Getting map via WCS." ) );
 
-  mWaiting = true;
+  QEventLoop loop;
+  connect( mCacheReply, SIGNAL( finished() ), &loop, SLOT( quit() ) );
+  loop.exec();
 
-  QTime t;
-  t.start();
-
-  QSettings s;
-  bool bkLayerCaching = s.value( "/qgis/enable_render_caching", false ).toBool();
-
-  while ( mCacheReply && ( !bkLayerCaching || t.elapsed() < WCS_THRESHOLD ) )
-  {
-    QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, WCS_THRESHOLD );
-  }
-  mWaiting = false;
-
+  Q_ASSERT( mCacheReply == 0 );
 }
 
 // For stats only, maybe change QgsRasterDataProvider::bandStatistics() to
@@ -850,9 +842,14 @@ void QgsWcsProvider::cacheReplyFinished()
       mCacheReply->deleteLater();
 
       QgsDebugMsg( QString( "redirected getmap: %1" ).arg( redirect.toString() ) );
-      mCacheReply = QgsNetworkAccessManager::instance()->get( QNetworkRequest( redirect.toUrl() ) );
-      connect( mCacheReply, SIGNAL( finished() ), this, SLOT( cacheReplyFinished() ) );
-      connect( mCacheReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( cacheReplyProgress( qint64, qint64 ) ) );
+      mCacheReply = nam()->get( QNetworkRequest( redirect.toUrl() ) );
+      connect( mCacheReply, SIGNAL( finished() ), this, SLOT( cacheReplyFinished() ), Qt::DirectConnection );
+      connect( mCacheReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( cacheReplyProgress( qint64, qint64 ) ), Qt::DirectConnection );
+
+      QEventLoop loop;
+      connect( mCacheReply, SIGNAL( finished() ), &loop, SLOT( quit() ) );
+      loop.exec();
+
       return;
     }
 
@@ -1043,12 +1040,6 @@ void QgsWcsProvider::cacheReplyFinished()
 
     mCacheReply->deleteLater();
     mCacheReply = 0;
-
-    if ( !mWaiting )
-    {
-      QgsDebugMsg( "emit dataChanged()" );
-      emit dataChanged();
-    }
   }
   else
   {
@@ -1061,9 +1052,14 @@ void QgsWcsProvider::cacheReplyFinished()
 
       mCacheReply->deleteLater();
 
-      mCacheReply = QgsNetworkAccessManager::instance()->get( request );
-      connect( mCacheReply, SIGNAL( finished() ), this, SLOT( cacheReplyFinished() ) );
-      connect( mCacheReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( cacheReplyProgress( qint64, qint64 ) ) );
+      mCacheReply = nam()->get( request );
+      connect( mCacheReply, SIGNAL( finished() ), this, SLOT( cacheReplyFinished() ), Qt::DirectConnection );
+      connect( mCacheReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( cacheReplyProgress( qint64, qint64 ) ), Qt::DirectConnection );
+
+      QEventLoop loop;
+      connect( mCacheReply, SIGNAL( finished() ), &loop, SLOT( quit() ) );
+      loop.exec();
+
       return;
     }
 
@@ -1871,4 +1867,20 @@ QGISEXTERN QString description()
 QGISEXTERN bool isProvider()
 {
   return true;
+}
+
+#include <QThread>
+QgsNetworkAccessManager *QgsWcsProvider::nam()
+{
+  if ( mNAM && mNAM->thread() != QThread::currentThread() )
+  {
+    // TODO: check that no network connections are handled by the NAM?
+    mNAM->deleteLater();
+    mNAM = 0;
+  }
+
+  if ( !mNAM )
+    mNAM = new QgsNetworkAccessManager();
+
+  return mNAM;
 }
