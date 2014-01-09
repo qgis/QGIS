@@ -188,7 +188,7 @@ void QgsAttributeTableModel::layerDeleted()
 
 void QgsAttributeTableModel::attributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value )
 {
-  QgsDebugMsg( QString( "(%4) fid: %1, idx: %2, value: %3" ).arg( fid ).arg( idx ).arg( value.toString() ).arg( mFeatureRequest.filterType() ) );
+  QgsDebugMsgLevel( QString( "(%4) fid: %1, idx: %2, value: %3" ).arg( fid ).arg( idx ).arg( value.toString() ).arg( mFeatureRequest.filterType() ), 3 );
   if ( loadFeatureAtId( fid ) )
   {
     if ( mFeatureRequest.acceptFeature( mFeat ) )

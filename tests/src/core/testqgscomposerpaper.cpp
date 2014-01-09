@@ -49,7 +49,7 @@ class TestQgsComposerPaper: public QObject
     QgsMarkerLineSymbolLayerV2* mMarkerLine;
     QgsFillSymbolV2* mFillSymbol;
     QgsFillSymbolV2* mMarkerLineSymbol;
-    QgsSingleSymbolRendererV2* mSymbolRenderer;
+    // QgsSingleSymbolRendererV2* mSymbolRenderer;
 
 };
 

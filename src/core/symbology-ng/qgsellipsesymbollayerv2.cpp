@@ -611,7 +611,7 @@ bool QgsEllipseSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitScaleFa
     e.writePolyline( line1, layerName, "CONTINUOUS", colorIndex, outlineWidth, false );
     QgsPolyline line2( 2 );
     QPointF pt3( t.map( QPointF( 0, halfHeight ) ) );
-    QPointF pt4( t.map( QPointF( 0, -halfHeight ) ) );
+    // QPointF pt4( t.map( QPointF( 0, -halfHeight ) ) );
     line2[0] = QgsPoint( pt3.x(), pt3.y() );
     line2[1] = QgsPoint( pt3.x(), pt3.y() );
     e.writePolyline( line2, layerName, "CONTINUOUS", colorIndex, outlineWidth, false );
