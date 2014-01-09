@@ -2055,7 +2055,7 @@ bool QgsWMSServer::testFilterStringSafety( const QString& filter ) const
 
 void QgsWMSServer::groupStringList( QStringList& list, const QString& groupString )
 {
-  //group contens within single quotes together
+  //group contents within single quotes together
   bool groupActive = false;
   int startGroup = -1;
   int endGroup = -1;
@@ -2090,7 +2090,7 @@ void QgsWMSServer::groupStringList( QStringList& list, const QString& groupStrin
         list[startGroup] = concatString;
         for ( int j = startGroup + 1; j <= endGroup; ++j )
         {
-          list.removeAt( j );
+          list.removeAt( startGroup + 1 );
           --i;
         }
       }
