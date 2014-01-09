@@ -708,12 +708,15 @@ int main( int argc, char * argv[] )
       delete theServer;
       continue;
     }
-    else if ( request.compare( "GetStyles", Qt::CaseInsensitive ) == 0 ) 
+    else if ( request.compare( "GetStyles", Qt::CaseInsensitive ) == 0 )
     {
       // GetStyles is only defined for WMS1.1.1/SLD1.0
-      if ( version != "1.1.1") {
+      if ( version != "1.1.1" )
+      {
         theRequestHandler->sendServiceException( QgsMapServiceException( "OperationNotSupported", "GetStyles method is only available in WMS version 1.1.1" ) );
-      } else {
+      }
+      else
+      {
         try
         {
           QDomDocument doc = theServer->getStyles();

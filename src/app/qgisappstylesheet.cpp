@@ -161,19 +161,19 @@ void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant>& opts )
 
   if ( sidebar )
   {
-     QString style = "QListWidget#mOptionsListWidget {"
-         "background-color: rgb(69, 69, 69, 220);"
-          "}"
-          "QListWidget#mOptionsListWidget::item {"
-          "    color: white;"
-          "    padding: 3px;"
-          "}"
-          "QListWidget#mOptionsListWidget::item::selected {"
-          "    color: black;"
-          "    background-color:palette(Window);"
-          "    padding-right: 0px;              "
-          "}";
-     ss += style;
+    QString style = "QListWidget#mOptionsListWidget {"
+                    "background-color: rgb(69, 69, 69, 220);"
+                    "}"
+                    "QListWidget#mOptionsListWidget::item {"
+                    "    color: white;"
+                    "    padding: 3px;"
+                    "}"
+                    "QListWidget#mOptionsListWidget::item::selected {"
+                    "    color: black;"
+                    "    background-color:palette(Window);"
+                    "    padding-right: 0px;              "
+                    "}";
+    ss += style;
   }
 
   //fix background issue for gnome desktop

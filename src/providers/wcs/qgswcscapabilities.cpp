@@ -74,7 +74,7 @@ QgsWcsCapabilities::QgsWcsCapabilities( QgsDataSourceURI const &theUri ):
   retrieveServerCapabilities();
 }
 
-QgsWcsCapabilities::QgsWcsCapabilities() 
+QgsWcsCapabilities::QgsWcsCapabilities()
     : mCoverageCount( 0 )
 {
 }

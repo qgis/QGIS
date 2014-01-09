@@ -723,7 +723,8 @@ void QgsMapToolNodeTool::keyPressEvent( QKeyEvent* e )
   if ( mSelectedFeature && ( e->key() == Qt::Key_Backspace || e->key() == Qt::Key_Delete ) )
   {
     int firstSelectedIndex = firstSelectedVertex();
-    if ( firstSelectedIndex == -1 ) return;
+    if ( firstSelectedIndex == -1 )
+      return;
 
     mSelectedFeature->deleteSelectedVertexes();
     safeSelectVertex( firstSelectedIndex );
@@ -732,21 +733,21 @@ void QgsMapToolNodeTool::keyPressEvent( QKeyEvent* e )
     // Override default shortcut management in MapCanvas
     e->ignore();
   }
-  else
-  if ( mSelectedFeature && ( e->key() == Qt::Key_Less || e->key() == Qt::Key_Comma ) )
+  else if ( mSelectedFeature && ( e->key() == Qt::Key_Less || e->key() == Qt::Key_Comma ) )
   {
     int firstSelectedIndex = firstSelectedVertex();
-    if ( firstSelectedIndex == -1) return;
+    if ( firstSelectedIndex == -1 )
+      return;
 
     mSelectedFeature->deselectAllVertexes();
     safeSelectVertex( firstSelectedIndex - 1 );
     mCanvas->refresh();
   }
-  else
-  if ( mSelectedFeature && ( e->key() == Qt::Key_Greater || e->key() == Qt::Key_Period ) )
+  else if ( mSelectedFeature && ( e->key() == Qt::Key_Greater || e->key() == Qt::Key_Period ) )
   {
     int firstSelectedIndex = firstSelectedVertex();
-    if ( firstSelectedIndex == -1) return;
+    if ( firstSelectedIndex == -1 )
+      return;
 
     mSelectedFeature->deselectAllVertexes();
     safeSelectVertex( firstSelectedIndex + 1 );
