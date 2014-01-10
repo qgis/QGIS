@@ -367,6 +367,13 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     virtual void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, void *data )
     { Q_UNUSED( bandNo ); Q_UNUSED( viewExtent ); Q_UNUSED( width ); Q_UNUSED( height ); Q_UNUSED( data ); }
 
+    /** Read band scale for raster value
+     * @@note added in 2.1 */
+    virtual double bandScale( int bandNo ) { Q_UNUSED( bandNo ); return 1.0; }
+    /** Read band offset for raster value
+     * @@note added in 2.1 */
+    virtual double bandOffset( int bandNo ) { Q_UNUSED( bandNo ); return 0.0; }
+
     /** Returns true if user no data contains value */
     bool userNoDataValuesContains( int bandNo, double value ) const;
 

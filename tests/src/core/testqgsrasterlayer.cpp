@@ -66,6 +66,7 @@ class TestQgsRasterLayer: public QObject
     void landsatBasic875Qml();
     void checkDimensions();
     void checkStats();
+    void checkStatsScaleOffset();
     void buildExternalOverviews();
     void registry();
     void transparency();
@@ -353,6 +354,46 @@ void TestQgsRasterLayer::checkStats()
   QVERIFY( fabs( myStatistics.stdDev - stdDev )
            < 0.0000000000000001 );
   mReport += "<p>Passed</p>";
+}
+
+// test scale_factor and offset - uses netcdf file which may not be supported
+// see http://hub.qgis.org/issues/8417
+void TestQgsRasterLayer::checkStatsScaleOffset()
+{
+  mReport += "<h2>Check Stats with scale/offset</h2>\n";
+
+  QFileInfo myRasterFileInfo(  mTestDataDir + "scaleoffset.tif" );
+  QgsRasterLayer * myRasterLayer;
+  myRasterLayer = new QgsRasterLayer( myRasterFileInfo.filePath(),
+                                      myRasterFileInfo.completeBaseName() );
+  QVERIFY ( myRasterLayer );
+  if ( ! myRasterLayer->isValid() )
+  {
+    qDebug() << QString( "raster layer %1 invalid" ).arg( myRasterFileInfo.filePath() ) ;
+    mReport += QString( "raster layer %1 invalid" ).arg( myRasterFileInfo.filePath() ) ;
+    delete mpRasterLayer;
+    QVERIFY ( false );
+  }
+
+  QFile::remove( myRasterFileInfo.filePath() + ".aux.xml" ); // remove cached stats
+  QgsRasterBandStats myStatistics = myRasterLayer->dataProvider()->bandStatistics( 1,
+                                    QgsRasterBandStats::Min | QgsRasterBandStats::Max |
+                                    QgsRasterBandStats::Mean | QgsRasterBandStats::StdDev );
+  qDebug() << QString( "raster min: %1 max: %2 mean: %3" ).arg( myStatistics.minimumValue ).arg( myStatistics.maximumValue ).arg( myStatistics.mean );
+  QVERIFY( myRasterLayer->width() == 10 );
+  QVERIFY( myRasterLayer->height() == 10 );
+  //QVERIFY( myStatistics.elementCount == 100 );
+  QVERIFY( myStatistics.minimumValue == 0 );
+  QVERIFY( myStatistics.maximumValue == 9 );
+  QVERIFY( myStatistics.mean == 4.5 );
+  double stdDev = 2.87228132326901431;
+  // TODO: verify why GDAL stdDev is so different from generic (2.88675)
+  mReport += QString( "stdDev = %1 expected = %2<br>\n" ).arg( myStatistics.stdDev ).arg( stdDev );
+  QVERIFY( fabs( myStatistics.stdDev - stdDev )
+           < 0.0000000000000001 );
+  mReport += "<p>Passed</p>";
+
+  delete myRasterLayer;
 }
 
 void TestQgsRasterLayer::buildExternalOverviews()
