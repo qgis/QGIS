@@ -466,6 +466,8 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
       j++;
     }
   }
+  twWCSLayers->setRowCount( j );
+  twWCSLayers->verticalHeader()->setResizeMode( QHeaderView::ResizeToContents );
 
   // Default Styles
   mStyle = QgsStyleV2::defaultStyle();
