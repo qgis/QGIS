@@ -150,7 +150,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
      * @param featureRequest  The request specifying filter and required data.
      * @return An iterator over the requested data.
      */
-    QgsFeatureIterator getFeatures( const QgsFeatureRequest& featureRequest );
+    QgsFeatureIterator getFeatures( const QgsFeatureRequest& featureRequest = QgsFeatureRequest() );
 
     /**
      * Check if a certain feature id is cached.
