@@ -15,7 +15,7 @@
 #include "qgsfillsymbollayerv2.h"
 #include "qgsmarkersymbollayerv2.h"
 #include "qgssymbollayerv2utils.h"
-
+#include "qgsdxfexport.h"
 #include "qgsexpression.h"
 #include "qgsrendercontext.h"
 #include "qgsproject.h"
@@ -287,6 +287,28 @@ double QgsSimpleFillSymbolLayerV2::estimateMaxBleed() const
   double penBleed = mBorderStyle == Qt::NoPen ? 0 : ( mBorderWidth / 2.0 );
   double offsetBleed = mOffset.x() > mOffset.y() ? mOffset.x() : mOffset.y();
   return penBleed + offsetBleed;
+}
+
+double QgsSimpleFillSymbolLayerV2::dxfWidth( const QgsDxfExport& e ) const
+{
+  return mBorderWidth * e.mapUnitScaleFactor( e.symbologyScaleDenominator(), mBorderWidthUnit, e.mapUnits() );
+}
+
+QColor QgsSimpleFillSymbolLayerV2::dxfColor() const
+{
+  if ( mBrushStyle == Qt::NoBrush )
+  {
+    return mBorderColor;
+  }
+  else
+  {
+    return mColor;
+  }
+}
+
+Qt::PenStyle QgsSimpleFillSymbolLayerV2::dxfPenStyle() const
+{
+  return mBorderStyle;
 }
 
 //QgsGradientFillSymbolLayer
@@ -834,6 +856,35 @@ double QgsImageFillSymbolLayer::estimateMaxBleed() const
 {
   double subLayerBleed = mOutline->symbolLayer( 0 )->estimateMaxBleed();
   return subLayerBleed;
+}
+
+double QgsImageFillSymbolLayer::dxfWidth( const QgsDxfExport& e ) const
+{
+  return mOutlineWidth * e.mapUnitScaleFactor( e.symbologyScaleDenominator(), mOutlineWidthUnit, e.mapUnits() );
+}
+
+QColor QgsImageFillSymbolLayer::dxfColor() const
+{
+  if ( !mOutline )
+  {
+    return QColor( Qt::black );
+  }
+  return mOutline->color();
+}
+
+Qt::PenStyle QgsImageFillSymbolLayer::dxfPenStyle() const
+{
+  return Qt::SolidLine;
+#if 0
+  if ( !mOutline )
+  {
+    return Qt::SolidLine;
+  }
+  else
+  {
+    return mOutline->dxfPenStyle();
+  }
+#endif //0
 }
 
 

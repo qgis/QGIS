@@ -884,7 +884,7 @@ void QgsDxfExport::addFeature( const QgsFeature& fet, const QString& layer, cons
     {
       c = colorFromSymbolLayer( symbolLayer );
     }
-    double width = widthFromSymbolLayer( symbolLayer );
+    double width = symbolLayer->dxfWidth( *this );;
     QString lineStyleName = "CONTINUOUS";
     if ( mSymbologyExport != NoSymbology )
     {
@@ -981,24 +981,8 @@ int QgsDxfExport::colorFromSymbolLayer( const QgsSymbolLayerV2* symbolLayer )
     return 0;
   }
 
-  QColor c = symbolLayer->color();
+  QColor c = symbolLayer->dxfColor();
   return closestColorMatch( c.rgba() );
-}
-
-double QgsDxfExport::widthFromSymbolLayer( const QgsSymbolLayerV2* symbolLayer ) const
-{
-  //line symbol layer has width and width units
-  if ( symbolLayer && symbolLayer->type() == QgsSymbolV2::Line )
-  {
-    const QgsLineSymbolLayerV2* lineSymbolLayer = static_cast<const QgsLineSymbolLayerV2*>( symbolLayer );
-    return ( lineSymbolLayer->width() * mapUnitScaleFactor( mSymbologyScaleDenominator, lineSymbolLayer->widthUnit(), mMapUnits ) );
-  }
-
-  return 1.0;
-
-  //marker symbol layer: check for embedded line layers?
-
-  //mapUnitScaleFactor( double scaleDenominator, QgsSymbolV2::OutputUnit symbolUnits, QGis::UnitType mapUnits )
 }
 
 QString QgsDxfExport::lineStyleFromSymbolLayer( const QgsSymbolLayerV2* symbolLayer )
@@ -1016,17 +1000,7 @@ QString QgsDxfExport::lineStyleFromSymbolLayer( const QgsSymbolLayerV2* symbolLa
   }
   else
   {
-    //simple line and simple fill have pen style member
-    if ( symbolLayer->layerType() == "SimpleLine" )
-    {
-      const QgsSimpleLineSymbolLayerV2* sl = static_cast< const QgsSimpleLineSymbolLayerV2* >( symbolLayer );
-      return lineNameFromPenStyle( sl->penStyle() );
-    }
-    else if ( symbolLayer->layerType() == "SimpleFill" )
-    {
-      const QgsSimpleFillSymbolLayerV2* sf = static_cast< const QgsSimpleFillSymbolLayerV2* >( symbolLayer );
-      return lineNameFromPenStyle( sf->borderStyle() );
-    }
+    return lineNameFromPenStyle( symbolLayer->dxfPenStyle() );
   }
   return lineStyleName;
 }
@@ -1212,18 +1186,13 @@ void QgsDxfExport::writeSymbolLayerLinestyle( const QgsSymbolLayerV2* symbolLaye
     return;
   }
 
-  //QgsSimpleLineSymbolLayer can have customDashVector() / customDashPatternUnit()
-  const QgsSimpleLineSymbolLayerV2* simpleLine = dynamic_cast< const QgsSimpleLineSymbolLayerV2* >( symbolLayer );
-  if ( simpleLine )
+  QgsSymbolV2::OutputUnit unit;
+  QVector<qreal> customLinestyle = symbolLayer->dxfCustomDashPattern( unit );
+  if ( customLinestyle.size() < 0 )
   {
-    if ( simpleLine->useCustomDashPattern() )
-    {
-      ++mSymbolLayerCounter;
-      QString name = QString( "symbolLayer%1" ).arg( mSymbolLayerCounter );
-      QVector<qreal> dashPattern = simpleLine->customDashVector();
-      writeLinestyle( name, dashPattern, simpleLine->customDashPatternUnit() );
-      mLineStyles.insert( symbolLayer, name );
-    }
+    QString name = QString( "symbolLayer%1" ).arg( mSymbolLayerCounter );
+    writeLinestyle( name, customLinestyle, unit );
+    mLineStyles.insert( symbolLayer, name );
   }
 }
 

@@ -85,6 +85,10 @@ class CORE_EXPORT QgsSimpleFillSymbolLayerV2 : public QgsFillSymbolLayerV2
 
     double estimateMaxBleed() const;
 
+    double dxfWidth( const QgsDxfExport& e ) const;
+    QColor dxfColor() const;
+    Qt::PenStyle dxfPenStyle() const;
+
   protected:
     QBrush mBrush;
     QBrush mSelBrush;
@@ -268,6 +272,10 @@ class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayerV2
     QgsSymbolV2::OutputUnit outlineWidthUnit() const { return mOutlineWidthUnit; }
 
     double estimateMaxBleed() const;
+
+    virtual double dxfWidth( const QgsDxfExport& e ) const;
+    virtual QColor dxfColor() const;
+    virtual Qt::PenStyle dxfPenStyle() const;
 
   protected:
     QBrush mBrush;

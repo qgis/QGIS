@@ -389,6 +389,12 @@ double QgsSimpleLineSymbolLayerV2::estimateMaxBleed() const
   return ( mWidth / 2.0 ) + mOffset;
 }
 
+QVector<qreal> QgsSimpleLineSymbolLayerV2::dxfCustomDashPattern( QgsSymbolV2::OutputUnit& unit ) const
+{
+  unit = mCustomDashPatternUnit;
+  return mUseCustomDashPattern ? mCustomDashVector : QVector<qreal>() ;
+}
+
 /////////
 
 

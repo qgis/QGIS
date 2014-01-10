@@ -94,6 +94,27 @@ bool QgsSymbolLayerV2::writeDxf( QgsDxfExport& e,
   return false;
 }
 
+double QgsSymbolLayerV2::dxfWidth( const QgsDxfExport& e ) const
+{
+  Q_UNUSED( e );
+  return 1.0;
+}
+
+QColor QgsSymbolLayerV2::dxfColor() const
+{
+  return color();
+}
+
+QVector<qreal> QgsSymbolLayerV2::dxfCustomDashPattern( QgsSymbolV2::OutputUnit& unit ) const
+{
+  Q_UNUSED( unit );
+  return QVector<qreal>();
+}
+
+Qt::PenStyle QgsSymbolLayerV2::dxfPenStyle() const
+{
+  return Qt::SolidLine;
+}
 
 void QgsSymbolLayerV2::prepareExpressions( const QgsVectorLayer* vl, double scale )
 {
@@ -340,6 +361,11 @@ void QgsLineSymbolLayerV2::renderPolygonOutline( const QPolygonF& points, QList<
     foreach ( const QPolygonF& ring, *rings )
       renderPolyline( ring, context );
   }
+}
+
+double QgsLineSymbolLayerV2::dxfWidth( const QgsDxfExport& e ) const
+{
+  return ( width() * e.mapUnitScaleFactor( e.symbologyScaleDenominator(), widthUnit(), e.mapUnits() ) );
 }
 
 
