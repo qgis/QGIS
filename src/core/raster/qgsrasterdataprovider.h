@@ -161,6 +161,13 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
       return colorName( colorInterpretation( theBandNo ) );
     }
 
+    /** Read band scale for raster value
+     * @@note added in 2.3 */
+    virtual double bandScale( int bandNo ) const { Q_UNUSED( bandNo ); return 1.0; }
+    /** Read band offset for raster value
+     * @@note added in 2.3 */
+    virtual double bandOffset( int bandNo ) const { Q_UNUSED( bandNo ); return 0.0; }
+
     // TODO: remove or make protected all readBlock working with void*
 
     /** Read block of data using given extent and size. */

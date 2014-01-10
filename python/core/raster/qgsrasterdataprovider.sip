@@ -56,6 +56,14 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
 
     virtual QString colorInterpretationName( int theBandNo ) const;
 
+    /** Read band scale for raster value
+     * @@note added in 2.3 */
+    virtual double bandScale( int bandNo ) const;
+
+    /** Read band offset for raster value
+     * @@note added in 2.3 */
+    virtual double bandOffset( int bandNo ) const;
+
     /** Get block size */
     virtual int xBlockSize() const;
     virtual int yBlockSize() const;
