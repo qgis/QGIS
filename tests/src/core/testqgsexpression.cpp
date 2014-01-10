@@ -105,6 +105,27 @@ class TestQgsExpression: public QObject
       QCOMPARE( !exp.hasParserError(), valid );
     }
 
+//  QgsExpression has been made non copyable because of a bug
+//  that can be tested by this commented block
+//
+//  void assigning()
+//  {
+//    QgsExpression src("my_col");
+//    QgsExpression cpy("m_dummy_col_because_default_ctor_is_protected");
+//    cpy = src;
+//    qDebug() << "copy : " << cpy.expression() << " = " << src.expression();
+//    QCOMPARE( cpy.expression(), src.expression() );
+//  }
+//
+//  void copying()
+//  {
+//    QgsExpression src("my_col");
+//    QgsExpression cpy( src );
+//    qDebug() << "copy : " << cpy.expression() << " = " << src.expression();
+//    QCOMPARE( cpy.expression(), src.expression() );
+//  }
+//
+
     void parsing_with_locale()
     {
       // check that parsing of numbers works correctly even when using some other locale
