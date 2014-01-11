@@ -26,6 +26,8 @@ __copyright__ = '(C) 2012, Alexander Bruy'
 __revision__ = '$Format:%H$'
 
 import pickle
+import codecs
+import sys
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -152,12 +154,11 @@ class ScriptEditorDialog(QDialog, Ui_DlgScriptEditor):
             if self.alg is not None:
                 self.alg.script = text
             try:
-                fout = open(self.filename, 'w')
-                fout.write(text)
-                fout.close()
+                with codecs.open(self.filename, 'w', encoding='utf-8') as fout:
+                    fout.write(text)
             except IOError:
                 QMessageBox.warning(self, self.tr('I/O error'),
-                        self.tr('Unable to save edits. Reason:\n %1')
+                        self.tr('Unable to save edits. Reason:\n %s')
                         % unicode(sys.exc_info()[1]))
                 return
             self.update = True
