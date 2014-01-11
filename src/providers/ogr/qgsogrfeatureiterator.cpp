@@ -115,7 +115,7 @@ bool QgsOgrFeatureIterator::prepareSimplification( const QgsSimplifyMethod& simp
     mGeometrySimplifier = NULL;
   }
 
-  // setup if required the simplification of OGR-geometries fetched, it uses the settings of current FeatureRequest
+  // setup if required the simplification of OGR-geometries fetched
   if ( simplifyMethod.methodType() != QgsSimplifyMethod::NoSimplification && !simplifyMethod.forceLocalOptimization() && !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) )
   {
     QgsSimplifyMethod::MethodType methodType = simplifyMethod.methodType();

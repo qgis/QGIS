@@ -16,6 +16,8 @@
 #ifndef QGSSIMPLIFYMETHOD_H
 #define QGSSIMPLIFYMETHOD_H
 
+class QgsAbstractGeometrySimplifier;
+
 /**
  * This class contains information about how to simplify geometries fetched from a QgsFeatureIterator
  */
@@ -50,6 +52,9 @@ class CORE_EXPORT QgsSimplifyMethod
     void setForceLocalOptimization( bool localOptimization );
     //! Gets whether the simplification executes after fetch the geometries from provider, otherwise it executes, when supported, in provider before fetch the geometries
     inline bool forceLocalOptimization() const { return mForceLocalOptimization; }
+
+    //! Creates a geometry simplifier according to specified method
+    static QgsAbstractGeometrySimplifier* createGeometrySimplifier( const QgsSimplifyMethod& simplifyMethod );
 
   protected:
     //! Simplification method
