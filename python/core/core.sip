@@ -37,6 +37,7 @@
 %Include qgsfield.sip
 %Include qgsgeometry.sip
 %Include qgsgeometryvalidator.sip
+%Include qgsgeometrysimplifier.sip
 %Include qgsgml.sip
 %Include qgsgmlschema.sip
 %Include qgshttptransaction.sip
@@ -75,6 +76,7 @@
 %Include qgsrunprocess.sip
 %Include qgsscalecalculator.sip
 %Include qgsscaleutils.sip
+%Include qgssimplifymethod.sip
 %Include qgssnapper.sip
 %Include qgsspatialindex.sip
 %Include qgstolerance.sip

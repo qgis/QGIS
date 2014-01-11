@@ -19,9 +19,11 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayereditbuffer.h"
 #include "qgsvectorlayerjoinbuffer.h"
+#include "qgsgeometrysimplifier.h"
+#include "qgssimplifymethod.h"
 
 QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayer* layer, const QgsFeatureRequest& request )
-    : QgsAbstractFeatureIterator( request ), L( layer )
+    : QgsAbstractFeatureIterator( request ), L( layer ), mEditGeometrySimplifier( NULL )
 {
   QgsVectorLayerJoinBuffer* joinBuffer = L->mJoinBuffer;
 
@@ -86,9 +88,6 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayer* la
       mProviderIterator = L->dataProvider()->getFeatures( mProviderRequest );
     }
 
-    // prepare if required the local simplification of geometries to fetch
-    prepareSimplification( request.simplifyMethod() );
-
     rewindEditBuffer();
   }
 
@@ -96,11 +95,20 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayer* la
   {
     mRequest.filterExpression()->prepare( L->pendingFields() );
   }
+
+  // prepare if required the local simplification of geometries to fetch
+  prepareSimplification( request.simplifyMethod() );
 }
 
 
 QgsVectorLayerFeatureIterator::~QgsVectorLayerFeatureIterator()
 {
+  if ( mEditGeometrySimplifier )
+  {
+    delete mEditGeometrySimplifier;
+    mEditGeometrySimplifier = NULL;
+  }
+
   close();
 }
 
@@ -242,7 +250,17 @@ void QgsVectorLayerFeatureIterator::useAddedFeature( const QgsFeature& src, QgsF
   f.setFields( &L->mUpdatedFields );
 
   if ( src.geometry() && !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) )
+  {
     f.setGeometry( *src.geometry() );
+
+    // simplify the edited geometry using its simplifier configured
+    if ( mEditGeometrySimplifier )
+    {
+      QgsGeometry* geometry = f.geometry();
+      QGis::GeometryType geometryType = geometry->type();
+      if ( geometryType == QGis::Line || geometryType == QGis::Polygon ) mEditGeometrySimplifier->simplifyGeometry( geometry );
+    }
+  }
 
   // TODO[MD]: if subset set just some attributes
 
@@ -313,7 +331,17 @@ void QgsVectorLayerFeatureIterator::useChangedAttributeFeature( QgsFeatureId fid
   f.setFields( &L->mUpdatedFields );
 
   if ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) )
+  {
     f.setGeometry( geom );
+
+    // simplify the edited geometry using its simplifier configured
+    if ( mEditGeometrySimplifier )
+    {
+      QgsGeometry* geometry = f.geometry();
+      QGis::GeometryType geometryType = geometry->type();
+      if ( geometryType == QGis::Line || geometryType == QGis::Polygon ) mEditGeometrySimplifier->simplifyGeometry( geometry );
+    }
+  }
 
   bool subsetAttrs = ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes );
   if ( !subsetAttrs || ( subsetAttrs && mRequest.subsetOfAttributes().count() > 0 ) )
@@ -436,6 +464,22 @@ void QgsVectorLayerFeatureIterator::addJoinedAttributes( QgsFeature &f )
   }
 }
 
+bool QgsVectorLayerFeatureIterator::prepareSimplification( const QgsSimplifyMethod& simplifyMethod )
+{
+  if ( mEditGeometrySimplifier )
+  {
+    delete mEditGeometrySimplifier;
+    mEditGeometrySimplifier = NULL;
+  }
+
+  // setup the simplification of edited geometries to fetch
+  if ( simplifyMethod.methodType() != QgsSimplifyMethod::NoSimplification && !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) )
+  {
+    mEditGeometrySimplifier = QgsSimplifyMethod::createGeometrySimplifier( simplifyMethod );
+  }
+
+  return QgsAbstractFeatureIterator::prepareSimplification( simplifyMethod );
+}
 
 
 void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesCached( QgsFeature& f, const QVariant& joinValue ) const

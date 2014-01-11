@@ -16,7 +16,6 @@
 #include "qgslogger.h"
 
 #include "qgsgeometrysimplifier.h"
-#include "qgsmaptopixelgeometrysimplifier.h"
 #include "qgssimplifymethod.h"
 
 QgsAbstractFeatureIterator::QgsAbstractFeatureIterator( const QgsFeatureRequest& request )
@@ -104,27 +103,11 @@ bool QgsAbstractFeatureIterator::prepareSimplification( const QgsSimplifyMethod&
     mGeometrySimplifier = NULL;
   }
 
-  // setup the local simplification of geometries to fetch, it uses the settings of current FeatureRequest
+  // setup the local simplification of geometries to fetch
   if ( simplifyMethod.methodType() != QgsSimplifyMethod::NoSimplification && simplifyMethod.forceLocalOptimization() && !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) )
   {
-    QgsSimplifyMethod::MethodType methodType = simplifyMethod.methodType();
-
-    if ( methodType == QgsSimplifyMethod::OptimizeForRendering )
-    {
-      int simplifyFlags = QgsMapToPixelSimplifier::SimplifyGeometry | QgsMapToPixelSimplifier::SimplifyEnvelope;
-      mGeometrySimplifier = new QgsMapToPixelSimplifier( simplifyFlags, simplifyMethod.tolerance() );
-      return true;
-    }
-    else
-    if ( methodType == QgsSimplifyMethod::PreserveTopology )
-    {
-      mGeometrySimplifier = new QgsTopologyPreservingSimplifier( simplifyMethod.tolerance() );
-      return true;
-    }
-    else
-    {
-      QgsDebugMsg( QString( "Simplification method type (%1) is not recognised" ).arg( methodType ) );
-    }
+    mGeometrySimplifier = QgsSimplifyMethod::createGeometrySimplifier( simplifyMethod );
+    return mGeometrySimplifier != NULL;
   }
   return false;
 }

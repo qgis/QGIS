@@ -46,6 +46,9 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
     //! while for others filtering is left to the provider implementation.
     inline virtual bool nextFeatureFilterExpression( QgsFeature &f ) { return fetchFeature( f ); }
 
+    //! Setup the simplification of geometries to fetch using the specified simplify method
+    virtual bool prepareSimplification( const QgsSimplifyMethod& simplifyMethod );
+
     QgsVectorLayer* L;
 
     QgsFeatureRequest mProviderRequest;
@@ -114,6 +117,10 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
     /** Informations about joins used in the current select() statement.
       Allows faster mapping of attribute ids compared to mVectorJoins */
     QMap<QgsVectorLayer*, FetchJoinInfo> mFetchJoinInfo;
+
+  private:
+    //! optional object to locally simplify edited (changed or added) geometries fetched by this feature iterator
+    QgsAbstractGeometrySimplifier* mEditGeometrySimplifier;
 };
 
 #endif // QGSVECTORLAYERFEATUREITERATOR_H
