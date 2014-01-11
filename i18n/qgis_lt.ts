@@ -327,7 +327,7 @@ This table is essential for many GIS applications for enumeration of tables.</so
     </message>
     <message>
         <source>View</source>
-        <translation>Rodynys</translation>
+        <translation>Rodinys</translation>
     </message>
     <message>
         <source>Table</source>
@@ -387,7 +387,7 @@ This table is essential for many GIS applications for enumeration of tables.</so
     </message>
     <message>
         <source>View definition</source>
-        <translation>Rodynio apibrėžimas</translation>
+        <translation>Rodinio apibrėžimas</translation>
     </message>
     <message>
         <source>Column:</source>
@@ -499,159 +499,163 @@ This table is essential for many GIS applications for enumeration of tables.</so
     </message>
     <message>
         <source>Definition</source>
-        <translation type="unfinished"></translation>
+        <translation>Apibrėžimas</translation>
     </message>
     <message>
         <source>Rules</source>
-        <translation type="unfinished"></translation>
+        <translation>Taisyklės</translation>
     </message>
     <message>
         <source>&amp;Versioning</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Versijos</translation>
     </message>
     <message>
         <source>&amp;Table</source>
-        <translation type="unfinished">&amp;Lentelė</translation>
+        <translation>&amp;Lentelė</translation>
     </message>
     <message>
         <source>&quot;{0}&quot; not found</source>
-        <translation type="unfinished"></translation>
+        <translation>&quot;{0}&quot; nerastas</translation>
     </message>
     <message>
         <source>Filename:</source>
-        <translation type="unfinished"></translation>
+        <translation>Failas:</translation>
     </message>
     <message>
         <source>SQLite version:</source>
-        <translation type="unfinished"></translation>
+        <translation>SQLite versija:</translation>
     </message>
     <message>
         <source>Error:
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida:
+%s</translation>
     </message>
     <message>
         <source>
 
 Query:
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation>
+
+Užklausa:
+%s</translation>
     </message>
     <message>
         <source>&amp;Re-connect</source>
-        <translation type="unfinished"></translation>
+        <translation>Jungtis iš &amp;naujo</translation>
     </message>
     <message>
         <source>&amp;Database</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Duombazė</translation>
     </message>
     <message>
         <source>&amp;Create schema</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Kurti schemą</translation>
     </message>
     <message>
         <source>&amp;Schema</source>
-        <translation type="unfinished">&amp;Schema</translation>
+        <translation>&amp;Schema</translation>
     </message>
     <message>
         <source>&amp;Delete (empty) schema</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Trinti (tuščią) schemą</translation>
     </message>
     <message>
         <source>Delete selected item</source>
-        <translation type="unfinished"></translation>
+        <translation>Naikinti parinktą elementą</translation>
     </message>
     <message>
         <source>&amp;Create table</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Kurti lentelę</translation>
     </message>
     <message>
         <source>&amp;Edit table</source>
-        <translation type="unfinished"></translation>
+        <translation>K&amp;Eisti lentelę</translation>
     </message>
     <message>
         <source>&amp;Delete table/view</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Naikinti lentelę/rodinį</translation>
     </message>
     <message>
         <source>&amp;Empty table</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Tuščia lentelė</translation>
     </message>
     <message>
         <source>&amp;Move to schema</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Perkelti į schemą</translation>
     </message>
     <message>
         <source>Cannot delete the selected item.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nepavyko panaikinti pažymėto elemento.</translation>
     </message>
     <message>
         <source>No database selected or you are not connected to it.</source>
-        <translation type="unfinished">Duomenų bazė neparinkta arba jūs prie jos neprisijungę.</translation>
+        <translation>Duomenų bazė neparinkta arba jūs prie jos neprisijungę.</translation>
     </message>
     <message>
         <source>New schema</source>
-        <translation type="unfinished"></translation>
+        <translation>Nauja schema</translation>
     </message>
     <message>
         <source>Enter new schema name</source>
-        <translation type="unfinished"></translation>
+        <translation>Įveskite naujos schemos pavadinimą</translation>
     </message>
     <message>
         <source>Select an empty SCHEMA for deletion.</source>
-        <translation type="unfinished"></translation>
+        <translation>Parinkite tuščią SCHEMĄ naikinimui.</translation>
     </message>
     <message>
         <source>hey!</source>
-        <translation type="unfinished"></translation>
+        <translation>ei!</translation>
     </message>
     <message>
         <source>Really delete schema %s?</source>
-        <translation type="unfinished"></translation>
+        <translation>Tikrai trinti schemą %s?</translation>
     </message>
     <message>
         <source>Select a TABLE for editation.</source>
-        <translation type="unfinished"></translation>
+        <translation>Parinkite LENTELĘ keitimui.</translation>
     </message>
     <message>
         <source>Select a TABLE/VIEW for deletion.</source>
-        <translation type="unfinished"></translation>
+        <translation>Parinkite LENTELĘ/RODINĮ naikinimui.</translation>
     </message>
     <message>
         <source>Really delete table/view %s?</source>
-        <translation type="unfinished"></translation>
+        <translation>Tikrai naikinti lentelę/rodinį %s?</translation>
     </message>
     <message>
         <source>Select a TABLE to empty it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Parinkite LENTELĘ ištuštinimui.</translation>
     </message>
     <message>
         <source>Really delete all items from table %s?</source>
-        <translation type="unfinished"></translation>
+        <translation>Tikrai naikinti visus elementus lentelėje %s?</translation>
     </message>
     <message>
         <source>Select a TABLE/VIEW.</source>
-        <translation type="unfinished"></translation>
+        <translation>Parinkite LENTELĘ/RODINĮ.</translation>
     </message>
     <message>
         <source>Do you want to %s all triggers?</source>
-        <translation type="unfinished"></translation>
+        <translation>Ar tikrai norite %s visus trigerius?</translation>
     </message>
     <message>
         <source>Table triggers</source>
-        <translation type="unfinished"></translation>
+        <translation>Lentelės trigeriai</translation>
     </message>
     <message>
         <source>Do you want to %s trigger %s?</source>
-        <translation type="unfinished"></translation>
+        <translation>Ar norite %s trigerius %s?</translation>
     </message>
     <message>
         <source>Table trigger</source>
-        <translation type="unfinished"></translation>
+        <translation>Lentelės trigeris</translation>
     </message>
     <message>
         <source>Do you want to %s spatial index for field %s?</source>
-        <translation type="unfinished"></translation>
+        <translation>Ar norite %s erdvinį indeksą laukui %s?</translation>
     </message>
     <message>
         <source>Spatial Index</source>
@@ -659,7 +663,7 @@ Query:
     </message>
     <message>
         <source>Check</source>
-        <translation type="unfinished"></translation>
+        <translation>Tikrinti</translation>
     </message>
     <message>
         <source>Primary key</source>
@@ -667,7 +671,7 @@ Query:
     </message>
     <message>
         <source>Foreign key</source>
-        <translation type="unfinished"></translation>
+        <translation>Išorinis raktas</translation>
     </message>
     <message>
         <source>Unique</source>
@@ -675,11 +679,11 @@ Query:
     </message>
     <message>
         <source>Exclusion</source>
-        <translation type="unfinished"></translation>
+        <translation>Išimtis</translation>
     </message>
     <message>
         <source>Unknown</source>
-        <translation type="unfinished"></translation>
+        <translation>Nežinoma</translation>
     </message>
 </context>
 <context>
@@ -8032,7 +8036,7 @@ Please change this situation first, because OSM Plugin doesn&apos;t know what la
     </message>
     <message>
         <source>Run &amp;Vacuum Analyze</source>
-        <translation type="unfinished"></translation>
+        <translation>Vykdyti &amp;siurbimą ir analizę</translation>
     </message>
     <message>
         <source>Sorry</source>
@@ -8040,7 +8044,7 @@ Please change this situation first, because OSM Plugin doesn&apos;t know what la
     </message>
     <message>
         <source>Select a TABLE for vacuum analyze.</source>
-        <translation type="unfinished"></translation>
+        <translation>Parinkite LENTELĘ siurbimui ir analizei.</translation>
     </message>
 </context>
 <context>
@@ -8079,15 +8083,15 @@ Please change this situation first, because OSM Plugin doesn&apos;t know what la
     <name>Processing</name>
     <message>
         <source>Processing</source>
-        <translation type="unfinished"></translation>
+        <translation>Apdorojimas</translation>
     </message>
     <message>
         <source>Toolbox</source>
-        <translation type="unfinished"></translation>
+        <translation>Įrankinė</translation>
     </message>
     <message>
         <source>Graphical modeler</source>
-        <translation type="unfinished"></translation>
+        <translation>Grafinis modeliuotojas</translation>
     </message>
     <message>
         <source>History and log</source>
@@ -8095,15 +8099,15 @@ Please change this situation first, because OSM Plugin doesn&apos;t know what la
     </message>
     <message>
         <source>Options and configuration</source>
-        <translation type="unfinished"></translation>
+        <translation>Parinktis ir konfigūracija</translation>
     </message>
     <message>
         <source>&amp;Results viewer</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Rezultatų žiūryklė</translation>
     </message>
     <message>
         <source>&amp;Commander</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Komandos</translation>
     </message>
 </context>
 <context>
@@ -8111,12 +8115,12 @@ Please change this situation first, because OSM Plugin doesn&apos;t know what la
     <message>
         <location filename="../python/plugins/processing/ui/ProcessingToolbox.ui" line="14"/>
         <source>Processing Toolbox</source>
-        <translation type="unfinished"></translation>
+        <translation>Apdorojimo įrankinė</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/ProcessingToolbox.ui" line="27"/>
         <source>Enter algorithm name to filter list</source>
-        <translation type="unfinished"></translation>
+        <translation>Įveskite algoritmo pavadinimą sąrašo filtravimui</translation>
     </message>
     <message>
         <source>Search...</source>
@@ -8124,19 +8128,19 @@ Please change this situation first, because OSM Plugin doesn&apos;t know what la
     </message>
     <message>
         <source>Execute</source>
-        <translation type="unfinished"></translation>
+        <translation>Vykdyti</translation>
     </message>
     <message>
         <source>Execute as batch process</source>
-        <translation type="unfinished"></translation>
+        <translation>Vykdyti kaip paketinį procesą</translation>
     </message>
     <message>
         <source>Edit rendering styles for outputs</source>
-        <translation type="unfinished"></translation>
+        <translation>Keisti braižymo stilius ir išvestį</translation>
     </message>
     <message>
         <source>Recently used algorithms</source>
-        <translation type="unfinished"></translation>
+        <translation>Neseniai naudoti algoritmai</translation>
     </message>
 </context>
 <context>
@@ -8167,23 +8171,23 @@ Please change this situation first, because OSM Plugin doesn&apos;t know what la
     </message>
     <message>
         <source>Couldn&apos;t load plugin &apos;%s&apos; from [&apos;%s&apos;]</source>
-        <translation type="unfinished"></translation>
+        <translation>Nepavyko įkelti priedo &apos;%s&apos; iš [&apos;%s&apos;]</translation>
     </message>
     <message>
         <source>Couldn&apos;t load plugin %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Nepavyko įkelti priedo %s</translation>
     </message>
     <message>
         <source>%s due an error when calling its classFactory() method</source>
-        <translation type="unfinished"></translation>
+        <translation>%s dėl klaidos kviečiant jo classFactory() metodą</translation>
     </message>
     <message>
         <source>%s due an error when calling its initGui() method</source>
-        <translation type="unfinished"></translation>
+        <translation>%s dėl klaidos kviečiant jo initGui() metodą</translation>
     </message>
     <message>
         <source>Error while unloading plugin %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida iškeliant priedą %s</translation>
     </message>
     <message>
         <source>Couldn&apos;t load plugin &apos;%1&apos; from [&apos;%2&apos;]</source>
@@ -10076,7 +10080,7 @@ Tik %1 iš %2 objektų įrašyta.</translation>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1209"/>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1667"/>
         <source>INTERLIS 2</source>
-        <translation type="unfinished">INTERLIS 2</translation>
+        <translation>INTERLIS 2</translation>
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1681"/>
@@ -10123,7 +10127,7 @@ Tik %1 iš %2 objektų įrašyta.</translation>
     <message>
         <location filename="../src/app/qgsmaptoolselectutils.cpp" line="42"/>
         <source>To select features, choose a vector layer in the legend</source>
-        <translation type="unfinished">Norint pažymėti geoobjektus, parinkite vektorinį sluoksnį</translation>
+        <translation>Norint pažymėti geoobjektus, parinkite vektorinį sluoksnį</translation>
     </message>
     <message>
         <location filename="../src/gui/qgstextannotationitem.cpp" line="22"/>
@@ -10148,7 +10152,7 @@ Tik %1 iš %2 objektų įrašyta.</translation>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="102"/>
         <source>Intersects</source>
-        <translation type="unfinished"></translation>
+        <translation>Susikerta</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="103"/>
@@ -10172,18 +10176,18 @@ Tik %1 iš %2 objektų įrašyta.</translation>
         <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="113"/>
         <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="133"/>
         <source>Within</source>
-        <translation type="unfinished"></translation>
+        <translation>Viduje</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="117"/>
         <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="134"/>
         <source>Contains</source>
-        <translation type="unfinished"></translation>
+        <translation>Įtraukia</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="121"/>
         <source>Equals</source>
-        <translation type="unfinished"></translation>
+        <translation>Lygus</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="122"/>
@@ -10198,7 +10202,7 @@ Tik %1 iš %2 objektų įrašyta.</translation>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialqueryplugin.cpp" line="49"/>
         <source>A plugin that makes spatial queries on vector layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Priedas, vykdantis erdvines vektorinių sluoksnių užklausas</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="9534"/>
@@ -38515,23 +38519,23 @@ Error: %2</source>
     <name>QgsPluginInstaller</name>
     <message>
         <source>Nothing to remove! Plugin directory doesn&apos;t exist:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nėra ko šalinti! Priedų aplanko nėra:</translation>
     </message>
     <message>
         <source>QGIS Official Plugin Repository</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS oficiali priedų saugykla</translation>
     </message>
     <message>
         <source>Failed to remove the directory:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nepavyko pašalinti aplanko:</translation>
     </message>
     <message>
         <source>Check permissions or remove it manually</source>
-        <translation type="unfinished"></translation>
+        <translation>Patikrinkite prieigos teises arba pašalinkite patys</translation>
     </message>
     <message>
         <source>Looking for new plugins...</source>
-        <translation type="unfinished"></translation>
+        <translation>Ieškoma naujų priedų...</translation>
     </message>
     <message>
         <source>QGIS Plugin Installer update</source>
@@ -38543,141 +38547,143 @@ Error: %2</source>
     </message>
     <message>
         <source>There is a new plugin available</source>
-        <translation type="unfinished"></translation>
+        <translation>Yra naujų priedų</translation>
     </message>
     <message>
         <source>There is a plugin update available</source>
-        <translation type="unfinished"></translation>
+        <translation>Yra priedų atnaujinimų</translation>
     </message>
     <message>
         <source>QGIS Python Plugin Installer</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS Python priedų diegiklis</translation>
     </message>
     <message>
         <source>If you haven&apos;t cancelled the download manually, it was most likely caused by a timeout. In this case consider increasing the connection timeout value in QGIS options window.</source>
-        <translation type="unfinished"></translation>
+        <translation>Jei jūs patys nenutraukėte atsiuntimo, reiškia siuntimo laikas baigėsi. Galite pabandyti padidinti siuntimo laiką QGIS parinkčių lange.</translation>
     </message>
     <message>
         <source>Server response is 200 OK, but doesn&apos;t contain plugin metatada. This is most likely caused by a proxy or a wrong repository URL. You can configure proxy settings in QGIS options.</source>
-        <translation type="unfinished"></translation>
+        <translation>Stoties atsakas yra 200 OK, bet atsake nėra priedo metaduomenų. Taip paprastai nutinka dėl šliuzo arba neteisingo saugyklos URL. Šliuzo nustatymus galite keisti QGIS parinktyse.</translation>
     </message>
     <message>
         <source>Status code:</source>
-        <translation type="unfinished"></translation>
+        <translation>Būsenos kodas:</translation>
     </message>
     <message>
         <source>The plugin exited with error status: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Priedas baigė darbą su būsenos kodu: {0}</translation>
     </message>
     <message>
         <source>Unknown error</source>
-        <translation type="unfinished">Nežinoma klaida</translation>
+        <translation>Nežinoma klaida</translation>
     </message>
     <message>
         <source>Missing metadata file</source>
-        <translation type="unfinished"></translation>
+        <translation>Trūksta metaduomenų failo</translation>
     </message>
     <message>
         <source>Error reading metadata</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida skaitant metaduomenis</translation>
     </message>
     <message>
         <source>Uninstall (recommended)</source>
-        <translation type="unfinished"></translation>
+        <translation>Pašalinti (rekomenduojama)</translation>
     </message>
     <message>
         <source>I will uninstall it later</source>
-        <translation type="unfinished"></translation>
+        <translation>Aš pašalinsiu jį vėliau</translation>
     </message>
     <message>
         <source>Obsolete plugin:</source>
-        <translation type="unfinished"></translation>
+        <translation>Pasenęs priedas:</translation>
     </message>
     <message>
         <source>QGIS has detected an obsolete plugin that masks its more recent version shipped with this copy of QGIS. This is likely due to files associated with a previous installation of QGIS. Do you want to remove the old plugin right now and unmask the more recent version?</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS aptiko pasenusį priedą, kuris dengia naujesnę priedo versiją, teikiamą kartu su QGIS. Tikriausiai taip yra dėl failų, susietų su praėjusia QGIS versija. Ar norite dabar pat pašalinti seną priedą ir atidengti naujesnę versiją?</translation>
     </message>
     <message>
         <source>Error reading repository:</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida skaitant saugyklą:</translation>
     </message>
     <message>
         <source>Are you sure you want to downgrade the plugin to the latest available version? The installed one is newer!</source>
-        <translation type="unfinished"></translation>
+        <translation>Ar tikrai norite pasendinti priedo iki paskutinės prieinamos versijos? Įdiegtas priedas naujesnis!</translation>
     </message>
     <message>
         <source>Plugin installation failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Priedo diegimas nepavyko</translation>
     </message>
     <message>
         <source>Plugin has disappeared</source>
-        <translation type="unfinished"></translation>
+        <translation>Priedas išnyko</translation>
     </message>
     <message>
         <source>The plugin seems to have been installed but I don&apos;t know where. Probably the plugin package contained a wrong named directory.
 Please search the list of installed plugins. I&apos;m nearly sure you&apos;ll find the plugin there, but I just can&apos;t determine which of them it is. It also means that I won&apos;t be able to determine if this plugin is installed and inform you about available updates. However the plugin may work. Please contact the plugin author and submit this issue.</source>
-        <translation type="unfinished"></translation>
+        <translation>Panašu, kad priedas buvo įdiegtas, bet naišku kur. Galbūt priedo pakete buvo neteisingai pavadintas aplankas.
+Prašome peržiūrėti įdiegtų priedų sąrašą. Aš beveik įsitikinęs, kad ten jūs rasite šį priedą, tik aš negaliu nustatyti, kuris iš jų. Tai taipogi reiškia, kad aš negalėsiu nustatyti ar priedas įdiegtas ir ar yra jo atnaujinimų. Kaip ten bebūtų, priedas gali veikti. Susisiekite su priedo autoriumi ir praneškite apie šią situaciją.</translation>
     </message>
     <message>
         <source>Plugin installed successfully</source>
-        <translation type="unfinished"></translation>
+        <translation>Priedas sėkmingai įdiegtas</translation>
     </message>
     <message>
         <source>Plugin reinstalled successfully</source>
-        <translation type="unfinished"></translation>
+        <translation>Priedas sėkmingai perdiegtas</translation>
     </message>
     <message>
         <source>Python plugin reinstalled.
 You need to restart QGIS in order to reload it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Python priedas perdiegtas.
+Turite iš naujo paleisti QGIS, kad jį įkeltumėte.</translation>
     </message>
     <message>
         <source>The plugin is not compatible with this version of QGIS. It&apos;s designed for QGIS versions:</source>
-        <translation type="unfinished"></translation>
+        <translation>Priedas nesuderinamas su šia QGIS versija. Jis skirtas QGIS versijoms:</translation>
     </message>
     <message>
         <source>The plugin depends on some components missing on your system. You need to install the following Python module in order to enable it:</source>
-        <translation type="unfinished"></translation>
+        <translation>Priedui reikia kelių komponentų, kurių nėra jūsų sistemoje. Turite įdiegti šiuos Python modulius, kad įjungtumėte priedą:</translation>
     </message>
     <message>
         <source>The plugin is broken. Python said:</source>
-        <translation type="unfinished"></translation>
+        <translation>Priedas yra sulūžęs. Python pasakė:</translation>
     </message>
     <message>
         <source>Plugin uninstall failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Nepavyko pašalinti priedo</translation>
     </message>
     <message>
         <source>Are you sure you want to uninstall the following plugin?</source>
-        <translation type="unfinished"></translation>
+        <translation>Ar tikrai norite pašalinti šį priedą?</translation>
     </message>
     <message>
         <source>Warning: this plugin isn&apos;t available in any accessible repository!</source>
-        <translation type="unfinished"></translation>
+        <translation>Įspėjimas: šio priedo nėra nei vienoje prieinamoje saugykloje!</translation>
     </message>
     <message>
         <source>Plugin uninstalled successfully</source>
-        <translation type="unfinished"></translation>
+        <translation>Priedas sėkmingai pašalintas</translation>
     </message>
     <message>
         <source>Unable to add another repository with the same URL!</source>
-        <translation type="unfinished"></translation>
+        <translation>Nepavyko pridėti dar vienos saugyklos su tokiu pačiu URL!</translation>
     </message>
     <message>
         <source>This repository is blocked due to incompatibility with your QGIS version</source>
-        <translation type="unfinished"></translation>
+        <translation>Ši saugykla užblokuota dėl nesuderinamumo su jūsų QGIS versija</translation>
     </message>
     <message>
         <source>You can&apos;t remove the official QGIS Plugin Repository. You can disable it if needed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Jūs negalite pašalinti oficialios QGIS priedų saugyklos. Jei reikia, galite ją išjungti.</translation>
     </message>
     <message>
         <source>Are you sure you want to remove the following repository?</source>
-        <translation type="unfinished"></translation>
+        <translation>Ar tikrai norite pašalinti šią saugyklą?</translation>
     </message>
     <message>
         <source>If you haven&apos;t cancelled the download manually, it might be caused by a timeout. In this case consider increasing the connection timeout value in QGIS options.</source>
-        <translation type="unfinished"></translation>
+        <translation>Jei rankiniu būdu nenutraukėte siuntimo, tikriausiai baigėsi siuntimo laikas. Tokiu atveju galite bandyti padidinti siuntimo laiką QGIS parinktyse.</translation>
     </message>
 </context>
 <context>
@@ -38719,35 +38725,35 @@ You need to restart QGIS in order to reload it.</source>
     <name>QgsPluginInstallerFetchingDialog</name>
     <message>
         <source>Success</source>
-        <translation type="unfinished"></translation>
+        <translation>Sėkmė</translation>
     </message>
     <message>
         <source>Resolving host name...</source>
-        <translation type="unfinished"></translation>
+        <translation>Tikrinamas saito pavadinimas...</translation>
     </message>
     <message>
         <source>Connecting...</source>
-        <translation type="unfinished"></translation>
+        <translation>Jungiamasi...</translation>
     </message>
     <message>
         <source>Host connected. Sending request...</source>
-        <translation type="unfinished"></translation>
+        <translation>Prisijungta. Siunčiama užklausa...</translation>
     </message>
     <message>
         <source>Downloading data...</source>
-        <translation type="unfinished"></translation>
+        <translation>Atsiunčiami duomenys...</translation>
     </message>
     <message>
         <source>Idle</source>
-        <translation type="unfinished"></translation>
+        <translation>Laisvas</translation>
     </message>
     <message>
         <source>Closing connection...</source>
-        <translation type="unfinished"></translation>
+        <translation>Uždaroma jungtis...</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished">Klaida</translation>
+        <translation>Klaida</translation>
     </message>
 </context>
 <context>
@@ -38755,70 +38761,70 @@ You need to restart QGIS in order to reload it.</source>
     <message>
         <location filename="../python/pyplugin_installer/qgsplugininstallerfetchingbase.ui" line="14"/>
         <source>Fetching repositories</source>
-        <translation type="unfinished"></translation>
+        <translation>Atsiunčiamos saugyklos</translation>
     </message>
     <message>
         <location filename="../python/pyplugin_installer/qgsplugininstallerfetchingbase.ui" line="36"/>
         <source>Overall progress:</source>
-        <translation type="unfinished"></translation>
+        <translation>Bendras progresas:</translation>
     </message>
     <message>
         <location filename="../python/pyplugin_installer/qgsplugininstallerfetchingbase.ui" line="108"/>
         <source>Abort fetching</source>
-        <translation type="unfinished"></translation>
+        <translation>Nutraukti atsiuntimą</translation>
     </message>
     <message>
         <location filename="../python/pyplugin_installer/qgsplugininstallerfetchingbase.ui" line="164"/>
         <source>Repository</source>
-        <translation type="unfinished"></translation>
+        <translation>Saugykla</translation>
     </message>
     <message>
         <location filename="../python/pyplugin_installer/qgsplugininstallerfetchingbase.ui" line="169"/>
         <source>State</source>
-        <translation type="unfinished"></translation>
+        <translation>Būsena</translation>
     </message>
 </context>
 <context>
     <name>QgsPluginInstallerInstallingDialog</name>
     <message>
         <source>Installing...</source>
-        <translation type="unfinished"></translation>
+        <translation>Diegiama...</translation>
     </message>
     <message>
         <source>Resolving host name...</source>
-        <translation type="unfinished"></translation>
+        <translation>Tikrinamas saito pavadinimas...</translation>
     </message>
     <message>
         <source>Connecting...</source>
-        <translation type="unfinished"></translation>
+        <translation>Jungiamasi...</translation>
     </message>
     <message>
         <source>Host connected. Sending request...</source>
-        <translation type="unfinished"></translation>
+        <translation>Prisijungta. Siunčiama užklausa...</translation>
     </message>
     <message>
         <source>Downloading data...</source>
-        <translation type="unfinished"></translation>
+        <translation>Atsiunčiami duomenys...</translation>
     </message>
     <message>
         <source>Idle</source>
-        <translation type="unfinished"></translation>
+        <translation>Laisvas</translation>
     </message>
     <message>
         <source>Closing connection...</source>
-        <translation type="unfinished"></translation>
+        <translation>Uždaroma jungtis...</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished">Klaida</translation>
+        <translation>Klaida</translation>
     </message>
     <message>
         <source>Failed to unzip the plugin package. Probably it&apos;s broken or missing from the repository. You may also want to make sure that you have write permission to the plugin directory:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nepavyko išpakuoti priedo paketo. Arba jis sugedęs, arba jo nėra saugyklose. Taipogi galite patikrinti, ar turite rašymo teises priedų aplanke:</translation>
     </message>
     <message>
         <source>Aborted by user</source>
-        <translation type="unfinished"></translation>
+        <translation>Nutraukta naudotojo</translation>
     </message>
 </context>
 <context>
@@ -38826,17 +38832,17 @@ You need to restart QGIS in order to reload it.</source>
     <message>
         <location filename="../python/pyplugin_installer/qgsplugininstallerinstallingbase.ui" line="14"/>
         <source>QGIS Python Plugin Installer</source>
-        <translation type="unfinished"></translation>
+        <translation>QGOS Python&apos;o priedų diegiklis</translation>
     </message>
     <message>
         <location filename="../python/pyplugin_installer/qgsplugininstallerinstallingbase.ui" line="38"/>
         <source>Installing plugin:</source>
-        <translation type="unfinished"></translation>
+        <translation>Diegiamas priedas:</translation>
     </message>
     <message>
         <location filename="../python/pyplugin_installer/qgsplugininstallerinstallingbase.ui" line="60"/>
         <source>Connecting...</source>
-        <translation type="unfinished"></translation>
+        <translation>Jungiamasi...</translation>
     </message>
 </context>
 <context>
@@ -38862,17 +38868,17 @@ You need to restart QGIS in order to reload it.</source>
     <message>
         <location filename="../python/pyplugin_installer/qgsplugininstallerpluginerrorbase.ui" line="20"/>
         <source>Error loading plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida įkeliant priedą</translation>
     </message>
     <message>
         <location filename="../python/pyplugin_installer/qgsplugininstallerpluginerrorbase.ui" line="32"/>
         <source>The plugin seems to be invalid or have unfulfilled dependencies. It has been installed, but can&apos;t be loaded. If you really need this plugin, you can contact its author or &lt;a href=&quot;http://lists.osgeo.org/mailman/listinfo/qgis-user&quot;&gt;QGIS users group&lt;/a&gt; and try to solve the problem. If not, you can just uninstall it. Here is the error message below:</source>
-        <translation type="unfinished"></translation>
+        <translation>Priedas netinkamas arba turi neįvykdytų priklausomybių. Jis buvo įdiegtas, bet negali būti įkeltas. Jei jums tikrai reikia šio priedo, galite susisiekti su autoriumi arba &lt;a href=&quot;http://lists.osgeo.org/mailman/listinfo/qgis-user&quot;&gt;QGIS naudotojų grupe&lt;/a&gt; ir pasistengti išspręsti problemą. Priešingu atveju galite pašalinti priedą. Štai klaidos pranešimas:</translation>
     </message>
     <message>
         <location filename="../python/pyplugin_installer/qgsplugininstallerpluginerrorbase.ui" line="80"/>
         <source>Do you want to uninstall this plugin now? If you&apos;re unsure, probably you would like to do this.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ar norite dabar pašalinti priedą? Jei nesate įsitikinę, tikriausiai norite tą padaryti.</translation>
     </message>
 </context>
 <context>
@@ -38880,50 +38886,50 @@ You need to restart QGIS in order to reload it.</source>
     <message>
         <location filename="../python/pyplugin_installer/qgsplugininstallerrepositorybase.ui" line="21"/>
         <source>Repository details</source>
-        <translation type="unfinished"></translation>
+        <translation>Saugyklos informacija</translation>
     </message>
     <message>
         <location filename="../python/pyplugin_installer/qgsplugininstallerrepositorybase.ui" line="192"/>
         <location filename="../python/pyplugin_installer/qgsplugininstallerrepositorybase.ui" line="195"/>
         <source>Enter a name for the repository</source>
-        <translation type="unfinished"></translation>
+        <translation>Įveskite saugyklos pavadinimą</translation>
     </message>
     <message>
         <location filename="../python/pyplugin_installer/qgsplugininstallerrepositorybase.ui" line="111"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Pavadinimas</translation>
     </message>
     <message>
         <location filename="../python/pyplugin_installer/qgsplugininstallerrepositorybase.ui" line="134"/>
         <location filename="../python/pyplugin_installer/qgsplugininstallerrepositorybase.ui" line="137"/>
         <source>Enter the repository URL, beginning with &quot;http://&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Įveskite saugyklos URL, pradedant „http://“</translation>
     </message>
     <message>
         <location filename="../python/pyplugin_installer/qgsplugininstallerrepositorybase.ui" line="156"/>
         <location filename="../python/pyplugin_installer/qgsplugininstallerrepositorybase.ui" line="159"/>
         <source>Enable or disable the repository (disabled repositories will be omitted)</source>
-        <translation type="unfinished"></translation>
+        <translation>Įjungti arba išjungti saugyklą (išjungtos saugyklos bus praleistos)</translation>
     </message>
     <message>
         <location filename="../python/pyplugin_installer/qgsplugininstallerrepositorybase.ui" line="172"/>
         <source>Parameters</source>
-        <translation type="unfinished">Parametrai</translation>
+        <translation>Parametrai</translation>
     </message>
     <message>
         <location filename="../python/pyplugin_installer/qgsplugininstallerrepositorybase.ui" line="185"/>
         <source>?qgis=</source>
-        <translation type="unfinished"></translation>
+        <translation>?qgis=</translation>
     </message>
     <message>
         <location filename="../python/pyplugin_installer/qgsplugininstallerrepositorybase.ui" line="202"/>
         <source>URL</source>
-        <translation type="unfinished">URL</translation>
+        <translation>URL</translation>
     </message>
     <message>
         <location filename="../python/pyplugin_installer/qgsplugininstallerrepositorybase.ui" line="228"/>
         <source>Enabled</source>
-        <translation type="unfinished"></translation>
+        <translation>Įjungta</translation>
     </message>
 </context>
 <context>
@@ -38931,22 +38937,22 @@ You need to restart QGIS in order to reload it.</source>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="144"/>
         <source>sort by name</source>
-        <translation type="unfinished"></translation>
+        <translation>rikiuoti pagal pavadinimą</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="145"/>
         <source>sort by downloads</source>
-        <translation type="unfinished"></translation>
+        <translation>rikiuoti pagal parsiuntimus</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="146"/>
         <source>sort by vote</source>
-        <translation type="unfinished"></translation>
+        <translation>rikiuoti pagal balsus</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="147"/>
         <source>sort by status</source>
-        <translation type="unfinished"></translation>
+        <translation>rikiuoti pagal būseną</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="311"/>
@@ -38957,208 +38963,208 @@ You need to restart QGIS in order to reload it.</source>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="534"/>
         <source>Only locally available</source>
         <comment>category: plugins that are only locally available</comment>
-        <translation type="unfinished"></translation>
+        <translation>Prieinami tik vietoje</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="535"/>
         <source>Reinstallable</source>
         <comment>category: plugins that are installed and available</comment>
-        <translation type="unfinished"></translation>
+        <translation>Įdiegiami</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="536"/>
         <source>Upgradeable</source>
         <comment>category: plugins that are installed and there is a newer version available</comment>
-        <translation type="unfinished"></translation>
+        <translation>Atnaujinami</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="537"/>
         <source>Downgradeable</source>
         <comment>category: plugins that are installed and there is an OLDER version available</comment>
-        <translation type="unfinished"></translation>
+        <translation>Pasendinami</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="612"/>
         <source>This plugin is incompatible with this version of QGIS</source>
-        <translation type="unfinished"></translation>
+        <translation>Šis priedas nesuderinamas su šia QGIS versija</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="612"/>
         <source>Plugin designed for QGIS %1</source>
         <comment>compatible QGIS version(s)</comment>
-        <translation type="unfinished"></translation>
+        <translation>Priedas sukurtas QGIS versijai %1</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="616"/>
         <source>This plugin requires a missing module</source>
-        <translation type="unfinished"></translation>
+        <translation>Šiam priedui reikia trūkstamo modulio</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="620"/>
         <source>This plugin is broken</source>
-        <translation type="unfinished"></translation>
+        <translation>Priedas yra sulūžęs</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="630"/>
         <source>There is a new version available</source>
-        <translation type="unfinished"></translation>
+        <translation>Yra naujesnė versija</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="636"/>
         <source>This is a new plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>Tai naujas priedas</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="642"/>
         <source>Installed version of this plugin is higher than any version found in repository</source>
-        <translation type="unfinished"></translation>
+        <translation>Įdiegta priedo versija yra aukštesnė nei bet kuri randama saugykloje</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="650"/>
         <source>This plugin is experimental</source>
-        <translation type="unfinished"></translation>
+        <translation>Šis priedas yra eksperimentinis</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="692"/>
         <source>&lt;br/&gt;%1 rating vote(s)&lt;br/&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;br/&gt;%1 vertinimo balsas(-ai)&lt;br/&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="707"/>
         <source>Category</source>
-        <translation type="unfinished"></translation>
+        <translation>Kategorija</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="711"/>
         <source>Tags</source>
-        <translation type="unfinished">Žymas</translation>
+        <translation>Žymos</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="734"/>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="739"/>
         <source>Author</source>
-        <translation type="unfinished"></translation>
+        <translation>Autorius</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="715"/>
         <source>More info</source>
-        <translation type="unfinished"></translation>
+        <translation>Daugiau informacijos</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="538"/>
         <source>Installable</source>
         <comment>category: plugins that are available for installation</comment>
-        <translation type="unfinished"></translation>
+        <translation>Įdiegiamas</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="658"/>
         <source>This plugin is deprecated</source>
-        <translation type="unfinished"></translation>
+        <translation>Šis priedas pasenęs</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="701"/>
         <source>%1 downloads</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 parsiuntimas</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="718"/>
         <source>homepage</source>
-        <translation type="unfinished"></translation>
+        <translation>svetainė</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="722"/>
         <source>tracker</source>
-        <translation type="unfinished"></translation>
+        <translation>sekiklis</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="726"/>
         <source>code_ repository</source>
-        <translation type="unfinished"></translation>
+        <translation>kodo_ saugykla</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="747"/>
         <source>Installed version: %1 (in %2)&lt;br/&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Įdiegta versija: %1 (%2)&lt;br/&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="751"/>
         <source>Available version: %1 (in %2)&lt;br/&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Galima versija: %1 (in %2)&lt;br/&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="757"/>
         <source>changelog:&lt;br/&gt;%1 &lt;br/&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>pakeitimai:&lt;br/&gt;%1 &lt;br/&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="769"/>
         <source>Upgrade plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>Atnaujinti priedą</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="774"/>
         <source>Downgrade plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>Pasendinti priedą</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="778"/>
         <source>Install plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>Įdiegti priedą</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="783"/>
         <source>Reinstall plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>Perdiegti priedą</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="863"/>
         <source>Reload all repositories</source>
-        <translation type="unfinished"></translation>
+        <translation>Atnaujinti saugyklas</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="864"/>
         <source>Only show plugins from selected repository</source>
-        <translation type="unfinished"></translation>
+        <translation>Rodyti tik priedus iš parinktos saugyklos</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="868"/>
         <source>Clear filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Valyti filtrą</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="884"/>
         <source>connected</source>
-        <translation type="unfinished"></translation>
+        <translation>prisijungta</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="886"/>
         <source>The repository is connected</source>
-        <translation type="unfinished"></translation>
+        <translation>Saugykla yra prijungta</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="890"/>
         <source>unavailable</source>
-        <translation type="unfinished"></translation>
+        <translation>nepasiekiama</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="892"/>
         <source>The repository is enabled, but unavailable</source>
-        <translation type="unfinished"></translation>
+        <translation>Saugykla įjungta, bet nepasiekiama</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="897"/>
         <source>disabled</source>
-        <translation type="unfinished"></translation>
+        <translation>išjungta</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="901"/>
         <source>The repository is disabled</source>
-        <translation type="unfinished"></translation>
+        <translation>Saugykla išjungta</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="905"/>
         <source>The repository is blocked due to incompatibility with your QGIS version</source>
-        <translation type="unfinished"></translation>
+        <translation>Saugykla užblokuota dėl nesuderinamumo su jūsų QGIS versija</translation>
     </message>
     <message>
         <source>&amp;Select All</source>
@@ -39198,32 +39204,32 @@ You need to restart QGIS in order to reload it.</source>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager_texts.cpp" line="49"/>
         <source>&lt;h3&gt;Upgradable plugins&lt;/h3&gt;&lt;p&gt;Here are &lt;b&gt;upgradeable plugins&lt;/b&gt;. It means more recent versions of installed plugins are available in the repositories.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Atnaujinami priedai&lt;/h3&gt;&lt;p&gt;Čia yra &lt;b&gt;atnaujinami priedai&lt;/b&gt;. Tai reiškia, kad saugyklose yra naujesnės įdiegtų priedų versijos.&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager_texts.cpp" line="11"/>
         <source>&lt;h3&gt;All Plugins&lt;/h3&gt;&lt;p&gt;On the left you see the list of all plugins available for your QGIS, both installed and available for download. Some plugins come with your QGIS installation while most of them are made available via the plugin repositories.&lt;/p&gt;&lt;p&gt;You can temporarily enable or disable a plugin. To &lt;i&gt;enable&lt;/i&gt; or &lt;i&gt;disable&lt;/i&gt; a plugin, click its checkbox or doubleclick its name...&lt;/p&gt;&lt;p&gt;Plugins showing in &lt;span style=&apos;color:red&apos;&gt;red&lt;/span&gt; are not loaded because there is a problem. They are also listed on the &apos;Invalid&apos; tab. Click on the plugin name to see more details, or to reinstall or uninstall this plugin.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Visi priedai&lt;/h3&gt;&lt;p&gt;Kairėje matote visus jums prieinamus QGIS priedus, tiek įdiegtus, tiek ir prieinamus. Kai kurie priedai įdiegti kartu su QGIS, dauguma kitų prieinami iš priedų saugyklų.&lt;/p&gt;&lt;p&gt;Galite laikinai įjungti arba išjungti priedą. Norėdami &lt;i&gt;įjungti&lt;/i&gt; arba &lt;i&gt;išjungti&lt;/i&gt; priedą, spauskite jo varnelę arba du kartus ant pavadinimo...&lt;/p&gt;&lt;p&gt;Priedai rodomi &lt;span style=&apos;color:red&apos;&gt;raudonai&lt;/span&gt; yra neįkelti dėl problemų. Jie taipogi rodomi kortelėje &apos;Netinkami&apos;. Spauskite ant priedo pavadinimo, kad pamatytumėte daugiau informacijos arba jei norite perdiegti ar pašalinti šį priedą.&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager_texts.cpp" line="31"/>
         <source>&lt;h3&gt;Installed Plugins&lt;/h3&gt;&lt;p&gt;Here you only see plugins &lt;b&gt;installed on your QGIS&lt;/b&gt;.&lt;/p&gt;&lt;p&gt;Click on the name to see details. &lt;/p&gt;&lt;p&gt;Click the checkbox or doubleclick the name to &lt;i&gt;activate&lt;/i&gt; or &lt;i&gt;deactivate&lt;/i&gt; the plugin.&lt;/p&gt;&lt;p&gt;You can change the sorting via the context menu (right click).&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Įdiegti priedai&lt;/h3&gt;&lt;p&gt;Čia matote tik tuos priedus, kurie yra &lt;b&gt;įdiegti jūsų QGIS&lt;/b&gt;.&lt;/p&gt;&lt;p&gt;Spauskite ant pavadinimo, kad pamatytumėte detalia informaciją. &lt;/p&gt;&lt;p&gt;Spauskite varnelę arba du kartus spragtelėkite ant pavadinimo, jei norite &lt;i&gt;įjungti&lt;/i&gt; arba &lt;i&gt;išjungti&lt;/i&gt; priedą.&lt;/p&gt;&lt;p&gt;Galite keisti rikiavimo tvarką naudodami kontekstinį meniu (dešinys paspaudimas).&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager_texts.cpp" line="60"/>
         <source>&lt;h3&gt;Not installed plugins&lt;/h3&gt;&lt;p&gt;Here you see the list of all plugins available in the repositories, but which are &lt;b&gt;not yet installed&lt;/b&gt;.&lt;/p&gt;&lt;p&gt;Click on the name to see details.&lt;/p&gt;&lt;p&gt;You can change the sorting via the context menu (right click).&lt;/p&gt;&lt;p&gt;A plugin can be downloaded and installed by clicking on it&apos;s name, and then click the &apos;Install plugin&apos; button.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Neįdiegti priedai&lt;/h3&gt;&lt;p&gt;Čia matote sąrašą priedų, kurie yra saugyklose, bet kurie &lt;b&gt;dar nėra įdiegti&lt;/b&gt;.&lt;/p&gt;&lt;p&gt;Spauskite pavadinimą, jei norite gauti daugiau informacijos.&lt;/p&gt;&lt;p&gt;Galite pakeisti rikiavimo tvarką naudodami kontekstinį meniu (dešinys paspaudimas)&lt;/p&gt;&lt;p&gt;Priedą galite įdiegti jį pažymėję ir tada paspaudę mygtuką „Įdiegti priedą“.&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager_texts.cpp" line="81"/>
         <source>&lt;h3&gt;New plugins&lt;/h3&gt;&lt;p&gt;Here you see brand &lt;b&gt;new&lt;/b&gt; plugins which can be installed.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Naujas priedas&lt;/h3&gt;&lt;p&gt;Čia matote labai &lt;b&gt;naujus&lt;/b&gt; priedus, kuriuos galite įdiegti.&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager_texts.cpp" line="92"/>
         <source>&lt;h3&gt;Invalid plugins&lt;/h3&gt;&lt;p&gt;Plugins in this list here are &lt;b&gt;broken or incompatible&lt;/b&gt; with your version of QGIS.&lt;/p&gt;&lt;p&gt;Click on an individual plugin; if possible QGIS shows you more information.&lt;/p&gt;&lt;p&gt;The main reasons to have invalid plugins is that this plugin is not build for this version of QGIS. Maybe you can download an other version from &lt;a href=&quot;http://plugins.qgis.org&quot;&gt;plugins.qgis.org&lt;/a&gt;.&lt;/p&gt;&lt;p&gt;Another common reason is that a python plugin needs some external python libraries (dependencies). You can install them yourself, depending on your operating system. After a correct install the plugin should work.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Netinkami priedai&lt;/h3&gt;&lt;p&gt;Šio sąrašo priedai yra &lt;b&gt;sulūžę arba netinkami&lt;/b&gt; jūsų QGIS versijai.&lt;/p&gt;&lt;p&gt;Spauskite ant konkretaus priedo. Jei įmanoma - QGIS parodys daugiau informacijos.&lt;/p&gt;&lt;p&gt;Dažniausiai priedas būna netinkamas, nes jis sukurtas kitai QGIS versijai. Galbūt galite atsisiųsti kitą versiją iš &lt;a href=&quot;http://plugins.qgis.org&quot;&gt;plugins.qgis.org&lt;/a&gt;.&lt;/p&gt;&lt;p&gt;Kita populiari priežastis - pythono priedui reikia kokių nors išorinių pythono bibliotekų (priklausomybių). Galite įdiegti jas patys, priklausomai nuo operacinės sistemos. Po teisingo įdiegimo priedas turėtų veikti.&lt;/p&gt;</translation>
     </message>
 </context>
 <context>
@@ -39255,149 +39261,149 @@ You need to restart QGIS in order to reload it.</source>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="20"/>
         <source>Plugin Manager</source>
-        <translation type="unfinished"></translation>
+        <translation>Priedų tvarkyklė</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="109"/>
         <source>All</source>
-        <translation type="unfinished"></translation>
+        <translation>Visi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="118"/>
         <source>Installed</source>
-        <translation type="unfinished"></translation>
+        <translation>Įdiegti</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="121"/>
         <source>Installed plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>Įdiegti priedai</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="136"/>
         <source>Not installed plugins available for download</source>
-        <translation type="unfinished"></translation>
+        <translation>Neįdiegti priedai, kuriuos galima atsisiųsti</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="148"/>
         <source>Upgradeable</source>
-        <translation type="unfinished"></translation>
+        <translation>Atnaujinami</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="151"/>
         <source>Installed plugins with more recent version available for download</source>
-        <translation type="unfinished"></translation>
+        <translation>Įdiegti priedai, kurių naujesnę versiją galima atsiųsti</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="163"/>
         <source>New</source>
-        <translation type="unfinished"></translation>
+        <translation>Nauji</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="166"/>
         <source>Not installed plugins seen for the first time</source>
-        <translation type="unfinished"></translation>
+        <translation>Nauji neįdiegti priedai, kurie matomi pirmą kartą</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="178"/>
         <source>Invalid</source>
-        <translation type="unfinished"></translation>
+        <translation>Netinkami</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="181"/>
         <source>Broken and incompatible installed plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>Sulūžę ir nesuderinami įdiegti priedai</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="193"/>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="196"/>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="498"/>
         <source>Settings</source>
-        <translation type="unfinished">Nustatymai</translation>
+        <translation>Nustatymai</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="276"/>
         <source>Plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>Priedai</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="291"/>
         <source>Search</source>
-        <translation type="unfinished">Paieška</translation>
+        <translation>Paieška</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="133"/>
         <source>Not installed</source>
-        <translation type="unfinished"></translation>
+        <translation>Neįdiegti</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="415"/>
         <source>Upgrade all upgradeable plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>Atnaujinti visus atnaujinamus priedus</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="418"/>
         <source>Upgrade all</source>
-        <translation type="unfinished"></translation>
+        <translation>Atnaujinti visus</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="441"/>
         <source>Uninstall the selected plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>Pašalinti pažymėtą priedą</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="444"/>
         <source>Uninstall plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>Pašalinti priedą</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="460"/>
         <source>Install, reinstall or upgrade the selected plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>Įdiegti, perdiegti arba atnaujinti pažymėtą priedą</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="463"/>
         <source>Reinstall plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>Perdiegti priedą</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="541"/>
         <source>The settings on this tab are only applicable for Python Plugins. No Python support detected, thus no settings available.</source>
-        <translation type="unfinished"></translation>
+        <translation>Šios kortelės nuostatos taikomos tik Python&apos;o priedams. Pythono palaikymo nėra, todėl nėra ir nustatymų.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="569"/>
         <source>Check for updates on startup</source>
-        <translation type="unfinished"></translation>
+        <translation>Paleidžiant ieškoti atnaujinimų</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="591"/>
         <source>every time QGIS starts</source>
-        <translation type="unfinished"></translation>
+        <translation>kiekvieną kartą paleidžiant QGIS</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="596"/>
         <source>once a day</source>
-        <translation type="unfinished"></translation>
+        <translation>kartą per dieną</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="601"/>
         <source>every 3 days</source>
-        <translation type="unfinished"></translation>
+        <translation>kartą per 3 dienas</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="606"/>
         <source>every week</source>
-        <translation type="unfinished"></translation>
+        <translation>kiekvieną savaitę</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="611"/>
         <source>every 2 weeks</source>
-        <translation type="unfinished"></translation>
+        <translation>kiekvienas 2 savaites</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="616"/>
         <source>every month</source>
-        <translation type="unfinished"></translation>
+        <translation>kiekvieną mėnesį</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="636"/>
@@ -39406,12 +39412,16 @@ You need to restart QGIS in order to reload it.</source>
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Note:&lt;/span&gt; If this function is enabled, QGIS will inform you whenever a new plugin or plugin update is available. Otherwise, fetching repositories will be performed during opening of the Plugin Manager window.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Pastaba:&lt;/span&gt; Įjungus šią funkciją QGIS jums praneš, kai ras naują priedą arba esamo atnaujinimą. Priešingu atveju saugyklų informacijos atsiuntimas bus vykdomas atidarant priedų tvarkyklę.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="669"/>
         <source>Show also experimental plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>Rodyti ir eksperimentinius priedus</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="702"/>
@@ -39420,12 +39430,16 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Note:&lt;/span&gt; Experimental plugins are generally unsuitable for production use. These plugins are in early stages of development, and should be considered &apos;incomplete&apos; or &apos;proof of concept&apos; tools. QGIS does not recommend installing these plugins unless you intend to use them for testing purposes.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Pastaba:&lt;/span&gt; Eksperimentiniai priedai paprastai būna netinkami gamybiniam darbui. Šie priedai yra ankstyvoje kūrimo stadijoje ir turėtų būti laikomi „nepilnais“ arba „bandomaisiais“ įrankiais. QGIS nerekomenduoja įdiegti šiuos priedus, nebent jūs norite juos naudoti testavimo tikslais.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="741"/>
         <source>Show also deprecated plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>Rodyti pasenusius priedus</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="774"/>
@@ -39434,75 +39448,80 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Droid Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:600;&quot;&gt;Note:&lt;/span&gt;&lt;span style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt;&quot;&gt; Deprecated plugins are generally unsuitable for production use. These plugins are unmaintained, and should be considered &apos;obsolete&apos; tools. QGIS does not recommend installing these plugins unless you still need it and there are no other alternatives available.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Droid Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:600;&quot;&gt;Pastaba:&lt;/span&gt;&lt;span style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt;&quot;&gt; Pasenę priedai paprastai būna netinkami gamybiniam darbui. Šie priedai neprižiūrimi ir turėtų būti laikomi „pasenusiais“ įrankiais. QGIS nerekomenduoja jų įdiegti, nebent jums tikrai jų reikia ir nėra naujesnių pakaitalų.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="813"/>
         <source>Plugin repositories</source>
-        <translation type="unfinished"></translation>
+        <translation>Priedų saugyklos</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="842"/>
         <source>Status</source>
-        <translation type="unfinished"></translation>
+        <translation>Būsena</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="847"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Pavadinimas</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="852"/>
         <source>URL</source>
-        <translation type="unfinished">URL</translation>
+        <translation>URL</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="878"/>
         <source>Reload repository contents
 (useful when you uploaded a plugin there)</source>
-        <translation type="unfinished"></translation>
+        <translation>Atnaujinti saugyklos turinį
+(naudinga, kai jūs įkėlėte priedą į saugyklą)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="882"/>
         <source>Reload repository</source>
-        <translation type="unfinished"></translation>
+        <translation>Atnaujinti saugyklą</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="902"/>
         <source>Configure an additional plugin repository</source>
-        <translation type="unfinished"></translation>
+        <translation>Konfigūruoti papildomą priedų saugyklą</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="905"/>
         <source>Add a new plugin repository</source>
-        <translation type="unfinished"></translation>
+        <translation>Pridėti naują priedų saugyklą</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="908"/>
         <source>Add...</source>
-        <translation type="unfinished">Pridėti...</translation>
+        <translation>Pridėti...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="921"/>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="924"/>
         <source>Edit the selected repository</source>
-        <translation type="unfinished"></translation>
+        <translation>Keisti pažymėtą saugyklą</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="927"/>
         <source>Edit...</source>
-        <translation type="unfinished">Keisti...</translation>
+        <translation>Keisti...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="934"/>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="937"/>
         <source>Remove the selected repository</source>
-        <translation type="unfinished"></translation>
+        <translation>Pašalinti pažymėtą saugyklą</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="940"/>
         <source>Delete</source>
-        <translation type="unfinished">Naikinti</translation>
+        <translation>Naikinti</translation>
     </message>
 </context>
 <context>
@@ -55746,12 +55765,12 @@ For support send a mail to scala@itc.cnr.it
     <message>
         <location filename="../src/plugins/evis/evis.cpp" line="112"/>
         <source>Open an Event Browers and display the selected feature</source>
-        <translation type="unfinished"></translation>
+        <translation>Atverti įvykių naršyklę ir parodyti pažymėtą geoobjektą</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/evis.cpp" line="113"/>
         <source>Open an Event Browser to explore the current layer&apos;s features</source>
-        <translation type="unfinished"></translation>
+        <translation>Atverti įvykio naršyklę ir tyrinėti dabartinio sluoksnio geoobjektus</translation>
     </message>
 </context>
 <context>
@@ -55760,12 +55779,12 @@ For support send a mail to scala@itc.cnr.it
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="75"/>
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="229"/>
         <source>Undefined</source>
-        <translation type="unfinished">Nenurodytas</translation>
+        <translation>Nenurodyta</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="77"/>
         <source>No predefined queries loaded</source>
-        <translation type="unfinished"></translation>
+        <translation>Nėra iš anksto apibrėžtų užklausų</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="82"/>
@@ -55774,72 +55793,72 @@ For support send a mail to scala@itc.cnr.it
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="456"/>
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="458"/>
         <source>Open File</source>
-        <translation type="unfinished"></translation>
+        <translation>Atverti failą</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="226"/>
         <source>New Database connection requested...</source>
-        <translation type="unfinished"></translation>
+        <translation>Prašoma naujos duombazės jungties...</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="231"/>
         <source>Error: You must select a database type</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: jūs privalote pasirinkti duombazės tipą</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="239"/>
         <source>Error: No host name entered</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: neįvestas stoties pavadinimas</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="246"/>
         <source>Error: No database name entered</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: neįvestas duombazės pavadinimas</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="288"/>
         <source>Connection to [%1.%2] established</source>
-        <translation type="unfinished"></translation>
+        <translation>Prisijungta prie [%1.%2]</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="301"/>
         <source>Connection to [%1.%2] failed: %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Nepavyko prisijungti prie [%1.%2]: %3</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="420"/>
         <source>Error: Unabled to open file [%1]</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Nepavyko atverti failo [%1]</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="476"/>
         <source>Error: Query failed: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Nepavyko užklausa: %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="530"/>
         <source>Error: Could not create temporary file, process halted</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Nepavyko sukurti laikino failo, procesas sustabdytas</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="289"/>
         <source>connected</source>
-        <translation type="unfinished"></translation>
+        <translation>prisijungta</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="292"/>
         <source>Tables</source>
-        <translation type="unfinished"></translation>
+        <translation>Lentelės</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="415"/>
         <source>Error: Parse error at line %1, column %2: %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Nagrinėjimo klaida eilutėje %1, stulpelyje %2: %3</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="537"/>
         <source>Error: A database connection is not currently established</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Šiuo metu neprisijungta prie duomenų bazės</translation>
     </message>
 </context>
 <context>
@@ -55848,37 +55867,37 @@ For support send a mail to scala@itc.cnr.it
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="13"/>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="153"/>
         <source>Database Connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Duomenų bazės jungtis</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="65"/>
         <source>Load predefined queries</source>
-        <translation type="unfinished"></translation>
+        <translation>Įkelti išankstines užklausas</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="68"/>
         <source>Loads an XML file with predefined queries. Use the Open File window to locate the XML file that contains one or more predefined queries using the format described in the user guide.</source>
-        <translation type="unfinished"></translation>
+        <translation>Įkelia XML failą su išankstinėmis užklausomis. Naudokite failo atvėrimo langą, kad nurodytumėte XML failą, kuriame yra viena arba daugiau išanksto apibrėžtų užklausų, nurodytų naudotojo vadove aprašytu formatu.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="98"/>
         <source>The description of the selected query.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pažymėtos užklausos aprašymas.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="47"/>
         <source>Predefined Queries</source>
-        <translation type="unfinished"></translation>
+        <translation>Išankstinės užklausos</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="108"/>
         <source>Select the predefined query you want to use from the drop-down list containing queries identified from the file loaded using the Open File icon above. To run the query you need to click on the SQL Query tab. The query will be automatically entered in the query window.</source>
-        <translation type="unfinished"></translation>
+        <translation>Parinkite išankstinę užklausą, kurią norite naudoti iškrentančiame sąraše užklausų iš failo, įkelto paspaudus aukščiau esančią „Atverti failą“ piktogramą. Norėdami vykdyti užklausą turite paspausti SQL užklausos kortelę. Užklausa bus automatiškai įvesta į užklausos langą.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="165"/>
         <source>not connected</source>
-        <translation type="unfinished"></translation>
+        <translation>neprisijungta</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="175"/>
@@ -55886,107 +55905,110 @@ For support send a mail to scala@itc.cnr.it
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;Connection Status: &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;Jungties būsena: &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="185"/>
         <source>Database Host</source>
-        <translation type="unfinished"></translation>
+        <translation>Duombazės stotis</translation>
     </message>
     <message utf8="true">
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="192"/>
         <source>Enter the database host. If the database resides on your desktop you should enter ¨localhost¨. If you selected ¨MSAccess¨ as the database type this option will not be available. </source>
-        <translation type="unfinished"></translation>
+        <translation>Įveskite duombazės stotį. Jei duombazė yra jūsų kompiuteryje, įveskite „localhost“. Jei parinkote duombazės tipą „MSAccess“, ši parinktis bus neaktyvi.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="202"/>
         <source>Password to access the database.</source>
-        <translation type="unfinished"></translation>
+        <translation>Priėjimo prie duombazės slaptažodis.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="212"/>
         <source>Enter the name of the database.</source>
-        <translation type="unfinished"></translation>
+        <translation>Įveskite duombazės pavadinimą.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="232"/>
         <source>Username</source>
-        <translation type="unfinished">Naudotojas</translation>
+        <translation>Naudotojas</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="239"/>
         <source>Enter the port through which the database must be accessed if a MYSQL database is used.</source>
-        <translation type="unfinished"></translation>
+        <translation>Įveskite prievadą, per kurį reikia jungtis prie duomenų bazės (jei naudojama MYSQL duombazė).</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="249"/>
         <source>Connect to the database using the parameters selected above. If the connection was successful a message will be displayed in the Output Console below saying the connection was established. </source>
-        <translation type="unfinished"></translation>
+        <translation>Jungtis prie duombazės naudojant aukščiau parinktus parametrus. Sėkmingai prisijungus, žemiau esančioje išvesties konsolėje bus parodytas atitinkamas pranešimas.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="252"/>
         <source>Connect</source>
-        <translation type="unfinished">Prisijungti</translation>
+        <translation>Prisijungti</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="262"/>
         <source>User name to access the database.</source>
-        <translation type="unfinished"></translation>
+        <translation>Prieigos prie duombazės naudotojas.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="269"/>
         <source>Select the type of database from the list of supported databases in the drop-down menu.</source>
-        <translation type="unfinished"></translation>
+        <translation>Iškrentančiame sąraše parinkite vieną iš palaikomų duombazių tipų.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="289"/>
         <source>Database Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Duombazės pavadinimas</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="296"/>
         <source>Password</source>
-        <translation type="unfinished">Slaptažodis</translation>
+        <translation>Slaptažodis</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="303"/>
         <source>Database Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Duombazės tipas</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="310"/>
         <source>Port</source>
-        <translation type="unfinished">Prievadas</translation>
+        <translation>Prievadas</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="350"/>
         <source>SQL Query</source>
-        <translation type="unfinished"></translation>
+        <translation>SQL užklausa</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="375"/>
         <source>Run the query entered above. The status of the query will be displayed in the Output  Console below.</source>
-        <translation type="unfinished"></translation>
+        <translation>Vykdyti aukščiau nurodytą užklausą. Užklausos būsena bus rodoma žemiau esančioje išvesties konsolėje.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="378"/>
         <source>Run Query</source>
-        <translation type="unfinished"></translation>
+        <translation>Vykdyti užklausą</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="388"/>
         <source>Enter the query you want to run in this window.</source>
-        <translation type="unfinished"></translation>
+        <translation>Šiame lange įveskite užklausą, kurią norite vykdyti.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="435"/>
         <source>A window for status messages to be displayed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Langas, kuriame rodomi būsenos pranešimai.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="458"/>
         <source>Output Console</source>
-        <translation type="unfinished"></translation>
+        <translation>Išvesties konsolė</translation>
     </message>
 </context>
 <context>
@@ -55994,37 +56016,37 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaselayerfieldselectionguibase.ui" line="16"/>
         <source>Database File Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Duombazės failo parinkimas</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaselayerfieldselectionguibase.ui" line="45"/>
         <source>The name of the field that contains the Y coordinate of the points.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pavadinimas lauko, kuriame yra taškų Y koordinatė.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaselayerfieldselectionguibase.ui" line="58"/>
         <source>The name of the field that contains the X coordinate of the points.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pavadinimas lauko, kuriame yra taškų X koordinatė.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaselayerfieldselectionguibase.ui" line="68"/>
         <source>Enter the name for the new layer that will be created and displayed in QGIS.</source>
-        <translation type="unfinished"></translation>
+        <translation>Įveskite pavadinimą naujo sluoksnio, kuris bus sukurtas ir rodomas QGIS.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaselayerfieldselectionguibase.ui" line="75"/>
         <source>Y Coordinate</source>
-        <translation type="unfinished">Y koordinatė</translation>
+        <translation>Y koordinatė</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaselayerfieldselectionguibase.ui" line="82"/>
         <source>X Coordinate</source>
-        <translation type="unfinished">X koordinatė</translation>
+        <translation>X koordinatė</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaselayerfieldselectionguibase.ui" line="89"/>
         <source>Name of New Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Naujo sluoksnio pavadinimas</translation>
     </message>
 </context>
 <context>
@@ -56032,7 +56054,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="140"/>
         <source>Generic Event Browser</source>
-        <translation type="unfinished"></translation>
+        <translation>Bendra įvykių naršyklė</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="164"/>
@@ -56056,13 +56078,13 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="215"/>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="238"/>
         <source>This tool only supports vector data</source>
-        <translation type="unfinished">Šis įrankis palaiko tik vektorinius duomenis</translation>
+        <translation>Šis įrankis palaiko tik vektorinius duomenis</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="221"/>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="244"/>
         <source>No active layers found</source>
-        <translation type="unfinished">Nerasta aktyvių sluoksnių</translation>
+        <translation>Nerasta aktyvių sluoksnių</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="250"/>
@@ -56073,38 +56095,38 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="250"/>
         <source>Unable to connect to either the map canvas or application interface</source>
-        <translation type="unfinished"></translation>
+        <translation>Nepavyko prisijungti nei prie žemėlapio drobės, nei prie programos sąsajos</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="281"/>
         <source>An invalid feature was received during initialization</source>
-        <translation type="unfinished"></translation>
+        <translation>Inicializuojant buvo gautas netinkamas geoobjektas</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="316"/>
         <source>Event Browser - Displaying records 01 of %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Įvykių naršyklė - rodomas įrašas 01 iš %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="1016"/>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="1038"/>
         <source>Event Browser - Displaying records %1 of %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Įvykių naršyklė - rodomi įrašai %1 iš %2</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="803"/>
         <source>Attribute Contents</source>
-        <translation type="unfinished"></translation>
+        <translation>Atributų turinys</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="1111"/>
         <source>Select Application</source>
-        <translation type="unfinished"></translation>
+        <translation>Parinkite programą</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="1111"/>
         <source>All ( * )</source>
-        <translation type="unfinished"></translation>
+        <translation>Viskas ( * )</translation>
     </message>
 </context>
 <context>
@@ -56117,27 +56139,27 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="63"/>
         <source>Use the Previous button to display the previous photo when more than one photo is available for display.</source>
-        <translation type="unfinished"></translation>
+        <translation>Jei galima rodyti daugiau nei vieną nuotrauką, naudokite mygtuką „ankstesnė“, prieš tai buvusios nuotraukos rodymui.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="66"/>
         <source>Previous</source>
-        <translation type="unfinished"></translation>
+        <translation>Ankstesnė</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="82"/>
         <source>Use the Next button to display the next photo when more than one photo is available for display.</source>
-        <translation type="unfinished"></translation>
+        <translation>Jei galima rodyti daugiau nuotraukų, naudokite mygtuką „Kita“ tolimesnės nuotraukos rodymui.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="85"/>
         <source>Next</source>
-        <translation type="unfinished"></translation>
+        <translation>Kita</translation>
     </message>
     <message utf8="true">
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="113"/>
         <source>All of the attribute information for the point associated with the photo being viewed is displayed here. If the file type being referenced in the displayed record is not an image but is of a file type defined in the “Configure External Applications” tab then when you double-click on the value of the field containing the path to the file the application to open the file will be launched to view or hear the contents of the file. If the file extension is recognized the attribute data will be displayed in green.</source>
-        <translation type="unfinished"></translation>
+        <translation>Čia rodoma visa atributų informacija, susieta su tašku, kurio nuotrauka yra rodoma. Jei su įrašu susijęs failas nėra nuotrauka, o failas, kurio tipas apibrėžtas kortelėje „Konfigūruoti išorines programas“, du kartus spragtelėjus ant aplanko reikšmės bus atverta nurodyta programa su parinktu failu. Jei failo praplėtimas bus atpažintas, atributų duomenys bus išskirti žalia spalva.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="117"/>
@@ -56147,12 +56169,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="131"/>
         <source>Image display area</source>
-        <translation type="unfinished"></translation>
+        <translation>Piešinio rodymo vieta</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="134"/>
         <source>Display area for the image.</source>
-        <translation type="unfinished"></translation>
+        <translation>Piešinio rodymo vieta.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="165"/>
@@ -56162,17 +56184,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="199"/>
         <source>Use the drop-down list to select the field containing a directory path to the image. This can be an absolute or relative path.</source>
-        <translation type="unfinished"></translation>
+        <translation>Naudokite iškrentantį sąrašą lauko, kuriame yra kelias iki piešinio, parinkimui. Tai gali būti absoliutus arba santykinis kelias.</translation>
     </message>
     <message utf8="true">
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="222"/>
         <source>If checked the path to the image will be defined appending the attribute in the field selected from the “Attribute Containing Path to Image” drop-down list to the “Base Path” defined below.</source>
-        <translation type="unfinished"></translation>
+        <translation>Įjungus šią parinktį, kelias iki nuotraukos bus nustatomas pridedant lauko, parinkto kaip „Kelio iki nuotraukos laukas“, atributą prie žemiau nurodyto „Pradinis kelias“.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="248"/>
         <source>If checked, the relative path values will be saved for the next session.</source>
-        <translation type="unfinished"></translation>
+        <translation>Įjungus šią parinktį, santykinio kelio reikšmės bus įrašytos kitai sesijai.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="267"/>
@@ -56182,109 +56204,109 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="723"/>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="787"/>
         <source>Reset to default</source>
-        <translation type="unfinished"></translation>
+        <translation>Atstatyti pradinius</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="273"/>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="395"/>
         <source>Resets the values on this line to the default setting.</source>
-        <translation type="unfinished"></translation>
+        <translation>Atstato numatytasias šios eilutės reikšmes.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="347"/>
         <source>If checked an arrow pointing in the direction defined by the attribute in the field selected from the drop-down list to the right will be displayed in the QGIS window on top of the point for this image.</source>
-        <translation type="unfinished"></translation>
+        <translation>Įjungus šią parinktį, prie šios nuotraukos taško bus pridėta rodyklė, kuri rodys kryptį, atitinkančią reikšmę lauke, nurodytame iškrentančiame sąraše dešiniau.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="324"/>
         <source>Use the drop-down list to select the field containing the compass bearing for the image. This bearing usually references the direction the camera was pointing when the image was acquired. </source>
-        <translation type="unfinished"></translation>
+        <translation>Naudokite iškrentantį sąrašą, kad parinktumėte lauką, kuriame yra nuotraukos kryptis. Ši kryptis paprastai rodo, kurlink buvo atsukta kamera darant nuotrauką.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="373"/>
         <source>If checked, the Display Compass Bearing values will be saved for the next session.</source>
-        <translation type="unfinished"></translation>
+        <translation>Įjungus šią parinktį kompaso krypties rodymo reikšmės bus įrašytos kitai sesijai.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="446"/>
         <source>A value to be added to the compass bearing. This allows you to compensate for declination (adjust bearings collected using magnetic bearings to true north bearings). East declinations should be entered using positive values and west declinations should use negative values. </source>
-        <translation type="unfinished"></translation>
+        <translation>Reikšmė, kuri bus pridėta prie kompaso krypties. Tai leidžia kompensuoti deklinaciją (koreguoti kryptį, nustatyta magnetiniu kompasu, į tikros šiaurės kryptį). Nukrypimas į rytus įvedamas teigiama reikšme, o nukrypimas į vakarus - neigiama.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="481"/>
         <source>Define the compass offset using a field from the vector layer attribute table.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nurodyti kompaso poslinkį naudojant reikšmę iš vektorinio sluoksnio atributų lentelės.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="484"/>
         <source> From Attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Iš atributo</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="506"/>
         <source>Use the drop-down list to select the field containing the compass bearing offset. This allows you to compensate for declination (adjust bearings collected using magnetic bearings to true north bearings). East declinations should be entered using positive values and west declinations should use negative values. </source>
-        <translation type="unfinished"></translation>
+        <translation>Naudodami iškrentantį sąrašą parinkite lauką, kuriame yra kompaso krypties poslinkio reikšmė. Tai leidžia kompensuoti deklinaciją (koreguoti kryptį, surinktą magnetiniu kompasu, į tikros šiaurės kryptį). Rytinis nuokrypis turėtų būti įvedamas teigiama reikšme, o vakarinis - neigiama.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="427"/>
         <source>Define the compass offset manually.</source>
-        <translation type="unfinished"></translation>
+        <translation>Rankiniu būdu nurodyti kompaso poslinkį.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="430"/>
         <source>Manual</source>
-        <translation type="unfinished">Rankinis</translation>
+        <translation>Rankinis</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="542"/>
         <source>If checked, the compass offset values will be saved for the next session.</source>
-        <translation type="unfinished"></translation>
+        <translation>Įjungus šią parinktį, kompaso poslinkio reikšmės bus įrašytos kitoms sesijoms.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="564"/>
         <source>Resets the compass offset values to the default settings.</source>
-        <translation type="unfinished"></translation>
+        <translation>Atstato kompaso poslinkio numatytasias reikšmes.</translation>
     </message>
     <message utf8="true">
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="593"/>
         <source>The base path or url from which images and documents can be “relative”</source>
-        <translation type="unfinished"></translation>
+        <translation>Pradinis kelias arba url, nuo kurio „santykinai“ ieškomos nuotraukos arba dokumentai</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="613"/>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="626"/>
         <source>Base Path</source>
-        <translation type="unfinished"></translation>
+        <translation>Pradinis kelias</translation>
     </message>
     <message utf8="true">
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="661"/>
         <source>Enters the default “Base Path” which is the path to the directory of the vector layer containing the image information.</source>
-        <translation type="unfinished"></translation>
+        <translation>Įveda numatytąjį „pradinį kelią“, kuris yra kelias iki aplanko, kuriame yra vektorinis sluoksnis su nuotraukų informacija.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="755"/>
         <source>If checked, the same path rules that are defined for images will be used for non-image documents such as movies, text documents, and sound files. If not checked the path rules will only apply to images and other documents will ignore the Base Path parameter.</source>
-        <translation type="unfinished"></translation>
+        <translation>Įjungus šią parinktį, tos pačios taisyklės, kurios nurodytos nuotraukoms, bus naudojamos ir ne nuotraukų dokumentams, tokiems kaip filmams, tekstiniams dokumentams ar garso failams. Neįjungus šios parinkties kelio taisyklės bus taikomos tik nuotraukoms, o kitiems dokumentams pradinio kelio parametro reikšmė bus ignoruojama.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="629"/>
         <source>The Base Path onto which the relative path defined above will be appended.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pradinis kelias, prie kurio bus pridedamas aukščiau nurodytas santykinis kelias.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="171"/>
         <source>File path</source>
-        <translation type="unfinished"></translation>
+        <translation>Failo kelias</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="177"/>
         <source>Attribute containing path to file</source>
-        <translation type="unfinished"></translation>
+        <translation>Atributas, kuriame yra kelias iki failo</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="225"/>
         <source>Path is relative</source>
-        <translation type="unfinished"></translation>
+        <translation>Kelias yra santykinis</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="254"/>
@@ -56294,7 +56316,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="710"/>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="774"/>
         <source>Remember this</source>
-        <translation type="unfinished"></translation>
+        <translation>Atsiminti tai</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="276"/>
@@ -56304,115 +56326,116 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="729"/>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="793"/>
         <source>Reset</source>
-        <translation type="unfinished">Atstatyti</translation>
+        <translation>Atstatyti</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="296"/>
         <source>Compass bearing</source>
-        <translation type="unfinished"></translation>
+        <translation>Kompaso kryptis</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="302"/>
         <source>Attribute containing compass bearing</source>
-        <translation type="unfinished"></translation>
+        <translation>Atribute yra kompaso kryptis</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="350"/>
         <source>Display compass bearing</source>
-        <translation type="unfinished"></translation>
+        <translation>Rodyti kompaso kryptį</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="418"/>
         <source>Compass offset</source>
-        <translation type="unfinished"></translation>
+        <translation>Kompaso poslinkis</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="587"/>
         <source>Relative paths</source>
-        <translation type="unfinished"></translation>
+        <translation>Santykiniai keliai</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="639"/>
         <source>If checked, the Base Path will be saved for the next session.</source>
-        <translation type="unfinished"></translation>
+        <translation>Įjungus šią parinktį, pradinis kelias bus įrašytas kitai sesijai.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="690"/>
         <source>If checked, the Base Path will append only the file name instead of the entire relative path (defined above) to create the full directory path to the file. </source>
-        <translation type="unfinished"></translation>
+        <translation>Įjungus šią parinktį, kuriant pilną kelią iki failo prie pradinio kelio bus pridedamas tik failo pavadinimas, o ne visas santykinis kelias (nurodytas aukščiau).</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="693"/>
         <source>Replace entire path/url stored in image path attribute with user defined
 Base Path (i.e. keep only filename from attribute)</source>
-        <translation type="unfinished"></translation>
+        <translation>Keisti visą kelią/url, įrašytą nuotraukos kelio atribute šiuo naudotojo nurodytu
+Pradiniu keliu (t.y. palikti tik atribute nurodytą failo pavadinimą)</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="704"/>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="768"/>
         <source>If checked, the  current check-box setting will be saved for the next session.</source>
-        <translation type="unfinished"></translation>
+        <translation>Įjungus šią parinktį, šios varnelės reikšmė bus įrašyta kitoms sesijoms.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="726"/>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="790"/>
         <source>Clears the check-box on this line.</source>
-        <translation type="unfinished"></translation>
+        <translation>Išvalo šios eilutės varnelę.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="758"/>
         <source>Apply Path to Image rules when loading docs in external applications</source>
-        <translation type="unfinished"></translation>
+        <translation>Taikyti kelio iki nuotraukos taisykles rodant dokumentos išorinėse programose</translation>
     </message>
     <message utf8="true">
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="823"/>
         <source>Clicking on Save will save the settings without closing the Options pane. Clicking on Restore Defaults will reset all of the fields to their default settings. It has the same effect as clicking all of the “Reset to default” buttons. </source>
-        <translation type="unfinished"></translation>
+        <translation>Paspaudus „Įrašyti“ visi nustatymai bus įrašyti neuždarant parinkčių skilties. Paspaudus „Atstatyti numatytas“ bus atstatytos numatytosios reikšmės. Rezultatas toks pat, kaip kad paspaudus visus „Atstatyti numatytas“ mygtukus.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="834"/>
         <source>Configure External Applications</source>
-        <translation type="unfinished"></translation>
+        <translation>Konfigūruoti išorines programas</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="855"/>
         <source>File extension and external application in which to load a document of that type</source>
-        <translation type="unfinished"></translation>
+        <translation>Failo išplėtimas ir išorinė programa, kurioje įkelti šio tipo dokumentus</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="880"/>
         <source>A table containing file types that can be opened using eVis. Each file type needs a file extension and the path to an application that can open that type of file. This provides the capability of opening a broad range of files such as movies, sound recording, and text documents instead of only images. </source>
-        <translation type="unfinished"></translation>
+        <translation>Lentelė, kurioje yra failų tipai, kurie gali būti atverti naudojant eVis. Kiekvienam failo tipui reikia nurodyti išplėtimą ir kelią iki programos, kuri moka atidaryti tokio tipo failą. Tai leidžia atverti įvairius failus, tokius kaip filmai, garso įrašai, teksto dokumentai ir pan., o ne vien nuotraukas.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="884"/>
         <source>Extension</source>
-        <translation type="unfinished"></translation>
+        <translation>Išplėtimas</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="889"/>
         <source>Application</source>
-        <translation type="unfinished">Programa</translation>
+        <translation>Programa</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="899"/>
         <source>Add new file type</source>
-        <translation type="unfinished"></translation>
+        <translation>Pridėti naują failo tipą</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="902"/>
         <source>Add a new file type with a unique extension and the path for the application that can open the file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pridėti naują failo tipą su unikaliu išplėtimu ir keliu iki programos, mokančios atverti tokį failą.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="916"/>
         <source>Delete current row</source>
-        <translation type="unfinished"></translation>
+        <translation>Pašalinti dabartinę eilutę</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="919"/>
         <source>Delete the file type highlighted in the table and defined by a file extension and a path to an associated application.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pašalinti failo tipą, pažymėta lentelėje ir apibrėžtą failo išplėtimu ir keliu iki susijusios programos.</translation>
     </message>
 </context>
 <context>
@@ -56425,7 +56448,7 @@ Base Path (i.e. keep only filename from attribute)</source>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisimagedisplaywidget.cpp" line="51"/>
         <source>Zoom in to see more detail.</source>
-        <translation type="unfinished"></translation>
+        <translation>Didinkite, kad matytumėte daugiau detalių.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisimagedisplaywidget.cpp" line="52"/>
@@ -56435,7 +56458,7 @@ Base Path (i.e. keep only filename from attribute)</source>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisimagedisplaywidget.cpp" line="53"/>
         <source>Zoom out to see more area.</source>
-        <translation type="unfinished"></translation>
+        <translation>Mažinkite, kad matytumėte didesnį plotą.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisimagedisplaywidget.cpp" line="54"/>
@@ -56445,7 +56468,7 @@ Base Path (i.e. keep only filename from attribute)</source>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisimagedisplaywidget.cpp" line="55"/>
         <source>Zoom to display the entire image.</source>
-        <translation type="unfinished"></translation>
+        <translation>Rodyti visą piešinį.</translation>
     </message>
 </context>
 <context>
