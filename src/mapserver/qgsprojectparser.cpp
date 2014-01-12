@@ -1898,6 +1898,7 @@ int QgsProjectParser::layersAndStyles( QStringList& layers, QStringList& styles 
 
 QDomDocument QgsProjectParser::getStyle( const QString& styleName, const QString& layerName ) const
 {
+  Q_UNUSED( styleName );
   QStringList layerList;
   layerList.append( layerName );
   return getStyles( layerList );

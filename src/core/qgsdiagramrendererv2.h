@@ -195,7 +195,7 @@ class CORE_EXPORT QgsDiagramRendererV2
      * @param c render context
      * @param s out: diagram settings for the feature
      */
-    virtual bool diagramSettings( const QgsFeature&, const QgsRenderContext& c, QgsDiagramSettings& s ) = 0;
+    virtual bool diagramSettings( const QgsFeature &feature, const QgsRenderContext& c, QgsDiagramSettings& s ) = 0;
 
     /**Returns size of the diagram (in painter units) or an invalid size in case of error*/
     virtual QSizeF diagramSize( const QgsFeature& features, const QgsRenderContext& c ) = 0;
@@ -233,7 +233,7 @@ class CORE_EXPORT QgsSingleCategoryDiagramRenderer : public QgsDiagramRendererV2
     void writeXML( QDomElement& layerElem, QDomDocument& doc, const QgsVectorLayer* layer ) const;
 
   protected:
-    bool diagramSettings( const QgsFeature&, const QgsRenderContext& c, QgsDiagramSettings& s );
+    bool diagramSettings( const QgsFeature &feature, const QgsRenderContext& c, QgsDiagramSettings& s );
 
     QSizeF diagramSize( const QgsFeature&, const QgsRenderContext& c );
 
@@ -281,7 +281,7 @@ class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer : public QgsDiagramRend
     void writeXML( QDomElement& layerElem, QDomDocument& doc, const QgsVectorLayer* layer ) const;
 
   protected:
-    bool diagramSettings( const QgsFeature&, const QgsRenderContext& c, QgsDiagramSettings& s );
+    bool diagramSettings( const QgsFeature &feature, const QgsRenderContext& c, QgsDiagramSettings& s );
 
     QSizeF diagramSize( const QgsFeature&, const QgsRenderContext& c );
 
