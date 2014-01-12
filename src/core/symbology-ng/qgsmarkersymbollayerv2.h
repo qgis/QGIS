@@ -48,6 +48,8 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
 
     // implemented from base classes
 
+
+
     QString layerType() const;
 
     void startRender( QgsSymbolV2RenderContext& context );
@@ -72,6 +74,20 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
 
     Qt::PenStyle outlineStyle() const { return mOutlineStyle; }
     void setOutlineStyle( Qt::PenStyle outlineStyle ) { mOutlineStyle = outlineStyle; }
+
+    /** Get outline color.
+     * @note added in 2.1 */
+    QColor outlineColor() const { return borderColor(); }
+    /** Set outline color.
+     * @note added in 2.1 */
+    void setOutlineColor( const QColor& color ) { setBorderColor( color ); }
+
+    /** Get fill color.
+     * @note added in 2.1 */
+    QColor fillColor() const { return color(); }
+    /** Set fill color.
+     * @note added in 2.1 */
+    void setFillColor( const QColor& color ) { setColor( color ); }
 
     double outlineWidth() const { return mOutlineWidth; }
     void setOutlineWidth( double w ) { mOutlineWidth = w; }

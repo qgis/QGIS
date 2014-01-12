@@ -58,6 +58,10 @@ class QgsRectangle
     QgsPoint center() const;
     //! Scale the rectangle around its center point
     void scale( double, const QgsPoint *c = 0 );
+    void scale( double scaleFactor, double centerX, double centerY );
+    /** Get rectangle enlarged by buffer.
+     * @note added in 2.1 */
+    QgsRectangle buffer( double width );
     //! Expand the rectangle to support zoom out scaling
     //! return the intersection with the given rectangle
     QgsRectangle intersect( const QgsRectangle *rect ) const;

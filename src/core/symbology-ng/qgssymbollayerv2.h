@@ -47,8 +47,20 @@ class CORE_EXPORT QgsSymbolLayerV2
   public:
 
     // not necessarily supported by all symbol layers...
-    virtual void setColor( const QColor& color ) { mColor = color; }
     virtual QColor color() const { return mColor; }
+    virtual void setColor( const QColor& color ) { mColor = color; }
+    /** Set outline color. Supported by marker and fill layers.
+     * @note added in 2.1 */
+    virtual void setOutlineColor( const QColor& color ) { Q_UNUSED( color ); }
+    /** Get outline color. Supported by marker and fill layers.
+     * @note added in 2.1 */
+    virtual QColor outlineColor() const { return QColor(); }
+    /** Set fill color. Supported by marker and fill layers.
+     * @note added in 2.1 */
+    virtual void setFillColor( const QColor& color ) { Q_UNUSED( color ); }
+    /** Get fill color. Supported by marker and fill layers.
+     * @note added in 2.1 */
+    virtual QColor fillColor() const { return QColor(); }
 
     virtual ~QgsSymbolLayerV2() { removeDataDefinedProperties(); }
 

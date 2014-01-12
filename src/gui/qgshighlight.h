@@ -16,7 +16,9 @@
 #define QGSHIGHLIGHT_H
 
 #include "qgsmapcanvasitem.h"
+#include "qgsfeaturestore.h"
 #include "qgsgeometry.h"
+#include "qgsrendererv2.h"
 #include <QBrush>
 #include <QList>
 #include <QPen>
@@ -25,6 +27,7 @@
 
 class QgsMapLayer;
 class QgsVectorLayer;
+class QgsSymbolV2;
 
 /** A class for highlight features on the map.
  */
@@ -33,9 +36,18 @@ class GUI_EXPORT QgsHighlight: public QgsMapCanvasItem
   public:
     QgsHighlight( QgsMapCanvas *mapCanvas, QgsGeometry *geom, QgsMapLayer *layer );
     QgsHighlight( QgsMapCanvas *mapCanvas, QgsGeometry *geom, QgsVectorLayer *layer );
+    /** Constructor for highlighting true feature shape using feature attributes
+     * and renderer.
+     * @param mapCanvas map canvas
+     * @param feature
+     * @param layer vector layer
+     */
+    QgsHighlight( QgsMapCanvas *mapCanvas, const QgsFeature& feature, QgsVectorLayer *layer );
     ~QgsHighlight();
 
     void setColor( const QColor & color );
+
+    /** Set width. Ignored in feature mode. */
     void setWidth( int width );
 
   protected:
@@ -46,9 +58,12 @@ class GUI_EXPORT QgsHighlight: public QgsMapCanvasItem
 
   private:
     void init();
+    void setSymbolColor( QgsSymbolV2* symbol, const QColor & color );
     void paintPoint( QPainter *p, QgsPoint point );
     void paintLine( QPainter *p, QgsPolyline line );
     void paintPolygon( QPainter *p, QgsPolygon polygon );
+
+    QgsVectorLayer *vectorLayer();
 
     QgsHighlight();
 
@@ -56,6 +71,8 @@ class GUI_EXPORT QgsHighlight: public QgsMapCanvasItem
     QPen mPen;
     QgsGeometry *mGeometry;
     QgsMapLayer *mLayer;
+    QgsFeature mFeature;
+    QgsFeatureRendererV2 *mRenderer;
 };
 
 #endif

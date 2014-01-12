@@ -37,3 +37,18 @@ QgsFeatureStore::~QgsFeatureStore( )
 {
 }
 
+void QgsFeatureStore::setFields( const QgsFields & fields )
+{
+  mFields = fields;
+  foreach ( QgsFeature feature, mFeatures )
+  {
+    feature.setFields( &mFields );
+  }
+}
+
+void QgsFeatureStore::addFeature( const QgsFeature& feature )
+{
+  QgsFeature f( feature );
+  f.setFields( &mFields );
+  mFeatures.append( f );
+}

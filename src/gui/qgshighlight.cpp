@@ -13,12 +13,19 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgshighlight.h"
+#include <typeinfo>
+#include "qgsmarkersymbollayerv2.h"
+#include "qgslinesymbollayerv2.h"
+
+#include "qgscoordinatetransform.h"
 #include "qgsgeometry.h"
+#include "qgshighlight.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
 #include "qgsmaprenderer.h"
-#include "qgscoordinatetransform.h"
+#include "qgsrendercontext.h"
+#include "qgssymbollayerv2.h"
+#include "qgssymbolv2.h"
 #include "qgsvectorlayer.h"
 
 /*!
@@ -29,6 +36,7 @@
 QgsHighlight::QgsHighlight( QgsMapCanvas* mapCanvas, QgsGeometry *geom, QgsMapLayer *layer )
     : QgsMapCanvasItem( mapCanvas )
     , mLayer( layer )
+    , mRenderer( 0 )
 {
   mGeometry = geom ? new QgsGeometry( *geom ) : 0;
   init();
@@ -37,8 +45,19 @@ QgsHighlight::QgsHighlight( QgsMapCanvas* mapCanvas, QgsGeometry *geom, QgsMapLa
 QgsHighlight::QgsHighlight( QgsMapCanvas* mapCanvas, QgsGeometry *geom, QgsVectorLayer *layer )
     : QgsMapCanvasItem( mapCanvas )
     , mLayer( static_cast<QgsMapLayer *>( layer ) )
+    , mRenderer( 0 )
 {
   mGeometry = geom ? new QgsGeometry( *geom ) : 0;
+  init();
+}
+
+QgsHighlight::QgsHighlight( QgsMapCanvas* mapCanvas, const QgsFeature& feature, QgsVectorLayer *layer )
+    : QgsMapCanvasItem( mapCanvas )
+    , mGeometry( 0 )
+    , mLayer( static_cast<QgsMapLayer *>( layer ) )
+    , mFeature( feature )
+    , mRenderer( 0 )
+{
   init();
 }
 
@@ -49,7 +68,14 @@ void QgsHighlight::init()
     const QgsCoordinateTransform* ct = mMapCanvas->mapRenderer()->transformation( mLayer );
     if ( ct )
     {
-      mGeometry->transform( *ct );
+      if ( mGeometry )
+      {
+        mGeometry->transform( *ct );
+      }
+      else if ( mFeature.geometry() )
+      {
+        mFeature.geometry()->transform( *ct );
+      }
     }
   }
   updateRect();
@@ -60,6 +86,7 @@ void QgsHighlight::init()
 QgsHighlight::~QgsHighlight()
 {
   delete mGeometry;
+  delete mRenderer;
 }
 
 /*!
@@ -71,6 +98,51 @@ void QgsHighlight::setColor( const QColor & color )
   QColor fillColor( color.red(), color.green(), color.blue(), 63 );
   mBrush.setColor( fillColor );
   mBrush.setStyle( Qt::SolidPattern );
+
+  delete mRenderer;
+  mRenderer = 0;
+  QgsVectorLayer *layer = vectorLayer();
+  if ( layer && layer->rendererV2() )
+  {
+    mRenderer = layer->rendererV2()->clone();
+  }
+  if ( mRenderer )
+  {
+    foreach ( QgsSymbolV2* symbol, mRenderer->symbols() )
+    {
+      if ( !symbol ) continue;
+      setSymbolColor( symbol, color );
+    }
+  }
+}
+
+void QgsHighlight::setSymbolColor( QgsSymbolV2* symbol, const QColor & color )
+{
+  if ( !symbol ) return;
+
+  QColor fillColor( color.red(), color.green(), color.blue(), 63 );
+
+  for ( int i = symbol->symbolLayerCount() - 1; i >= 0;  i-- )
+  {
+    QgsSymbolLayerV2* symbolLayer = symbol->symbolLayer( i );
+    if ( !symbolLayer ) continue;
+
+    if ( symbolLayer->subSymbol() )
+    {
+      setSymbolColor( symbolLayer->subSymbol(), color );
+    }
+    else
+    {
+      // We must insert additional highlight symbol layer above each original layer
+      // otherwise lower layers would become visible through transparent fill color.
+      QgsSymbolLayerV2* highlightLayer = symbolLayer->clone();
+
+      highlightLayer->setColor( color ); // line symbology layers
+      highlightLayer->setOutlineColor( color ); // marker and fill symbology layers
+      highlightLayer->setFillColor( fillColor ); // marker and fill symbology layers
+      symbol->insertSymbolLayer( i + 1, highlightLayer );
+    }
+  }
 }
 
 /*!
@@ -145,74 +217,96 @@ void QgsHighlight::paintPolygon( QPainter *p, QgsPolygon polygon )
   */
 void QgsHighlight::paint( QPainter* p )
 {
-  if ( !mGeometry )
+  if ( mGeometry )
   {
-    return;
+    p->setPen( mPen );
+    p->setBrush( mBrush );
+
+    switch ( mGeometry->wkbType() )
+    {
+      case QGis::WKBPoint:
+      case QGis::WKBPoint25D:
+      {
+        paintPoint( p, mGeometry->asPoint() );
+      }
+      break;
+
+      case QGis::WKBMultiPoint:
+      case QGis::WKBMultiPoint25D:
+      {
+        QgsMultiPoint m = mGeometry->asMultiPoint();
+        for ( int i = 0; i < m.size(); i++ )
+        {
+          paintPoint( p, m[i] );
+        }
+      }
+      break;
+
+      case QGis::WKBLineString:
+      case QGis::WKBLineString25D:
+      {
+        paintLine( p, mGeometry->asPolyline() );
+      }
+      break;
+
+      case QGis::WKBMultiLineString:
+      case QGis::WKBMultiLineString25D:
+      {
+        QgsMultiPolyline m = mGeometry->asMultiPolyline();
+
+        for ( int i = 0; i < m.size(); i++ )
+        {
+          paintLine( p, m[i] );
+        }
+      }
+      break;
+
+      case QGis::WKBPolygon:
+      case QGis::WKBPolygon25D:
+      {
+        paintPolygon( p, mGeometry->asPolygon() );
+      }
+      break;
+
+      case QGis::WKBMultiPolygon:
+      case QGis::WKBMultiPolygon25D:
+      {
+        QgsMultiPolygon m = mGeometry->asMultiPolygon();
+        for ( int i = 0; i < m.size(); i++ )
+        {
+          paintPolygon( p, m[i] );
+        }
+      }
+      break;
+
+      case QGis::WKBUnknown:
+      default:
+        return;
+    }
   }
-
-  p->setPen( mPen );
-  p->setBrush( mBrush );
-
-  switch ( mGeometry->wkbType() )
+  else if ( mFeature.geometry() && mRenderer )
   {
-    case QGis::WKBPoint:
-    case QGis::WKBPoint25D:
+    QgsVectorLayer *layer = vectorLayer();
+    if ( layer )
     {
-      paintPoint( p, mGeometry->asPoint() );
+      QgsRenderContext context = *( mMapCanvas->mapRenderer()->rendererContext() );
+
+      // The context is local rectangle of QgsHighlight we previously set.
+      // Because QgsMapCanvasItem::setRect() adds 1 pixel on border we cannot simply
+      // use boundingRect().height() for QgsMapToPixel height.
+      QgsRectangle extent = rect();
+      double height = toCanvasCoordinates( QgsPoint( extent.xMinimum(), extent.yMinimum() ) ).y() - toCanvasCoordinates( QgsPoint( extent.xMinimum(), extent.yMaximum() ) ).y();
+
+      QgsMapToPixel mapToPixel = QgsMapToPixel( mMapCanvas->mapUnitsPerPixel(),
+                                 height, extent.yMinimum(), extent.xMinimum() );
+      context.setMapToPixel( mapToPixel );
+      context.setExtent( extent );
+      context.setCoordinateTransform( 0 ); // we reprojected geometry in init()
+      context.setPainter( p );
+      mRenderer->startRender( context, layer );
+      mRenderer->renderFeature( mFeature, context );
+      mRenderer->stopRender( context );
     }
-    break;
-
-    case QGis::WKBMultiPoint:
-    case QGis::WKBMultiPoint25D:
-    {
-      QgsMultiPoint m = mGeometry->asMultiPoint();
-      for ( int i = 0; i < m.size(); i++ )
-      {
-        paintPoint( p, m[i] );
-      }
-    }
-    break;
-
-    case QGis::WKBLineString:
-    case QGis::WKBLineString25D:
-    {
-      paintLine( p, mGeometry->asPolyline() );
-    }
-    break;
-
-    case QGis::WKBMultiLineString:
-    case QGis::WKBMultiLineString25D:
-    {
-      QgsMultiPolyline m = mGeometry->asMultiPolyline();
-
-      for ( int i = 0; i < m.size(); i++ )
-      {
-        paintLine( p, m[i] );
-      }
-    }
-    break;
-
-    case QGis::WKBPolygon:
-    case QGis::WKBPolygon25D:
-    {
-      paintPolygon( p, mGeometry->asPolygon() );
-    }
-    break;
-
-    case QGis::WKBMultiPolygon:
-    case QGis::WKBMultiPolygon25D:
-    {
-      QgsMultiPolygon m = mGeometry->asMultiPolygon();
-      for ( int i = 0; i < m.size(); i++ )
-      {
-        paintPolygon( p, m[i] );
-      }
-    }
-    break;
-
-    case QGis::WKBUnknown:
-    default:
-      return;
   }
 }
 
@@ -234,8 +328,22 @@ void QgsHighlight::updateRect()
     setRect( r );
     setVisible( mGeometry );
   }
+  else if ( mFeature.geometry() )
+  {
+    // We are currently using full map canvas extent for two reasons:
+    // 1) currently there is no method in QgsFeatureRendererV2 to get rendered feature
+    //    bounding box
+    // 2) using different extent would result in shifted fill patterns
+    setRect( mMapCanvas->extent() );
+    setVisible( true );
+  }
   else
   {
     setRect( QgsRectangle() );
   }
+}
+
+QgsVectorLayer * QgsHighlight::vectorLayer()
+{
+  return dynamic_cast<QgsVectorLayer *>( mLayer );
 }

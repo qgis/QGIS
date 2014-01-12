@@ -1172,13 +1172,23 @@ void QgsIdentifyResultsDialog::highlightFeature( QTreeWidgetItem *item )
   if ( !featItem->feature().geometry() || featItem->feature().geometry()->wkbType() == QGis::WKBUnknown )
     return;
 
-  QgsHighlight *h = new QgsHighlight( mCanvas, featItem->feature().geometry(), layer );
-  if ( h )
+  if ( vlayer )
   {
-    h->setWidth( 2 );
+    QgsHighlight *h = new QgsHighlight( mCanvas, featItem->feature(), vlayer );
     h->setColor( Qt::red );
     h->show();
     mHighlights.insert( featItem, h );
+  }
+  else
+  {
+    QgsHighlight *h = new QgsHighlight( mCanvas, featItem->feature().geometry(), layer );
+    if ( h )
+    {
+      h->setWidth( 2 );
+      h->setColor( Qt::red );
+      h->show();
+      mHighlights.insert( featItem, h );
+    }
   }
 }
 
