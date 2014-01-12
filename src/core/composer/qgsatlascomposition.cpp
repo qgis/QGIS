@@ -24,6 +24,7 @@
 #include "qgsexpression.h"
 #include "qgsgeometry.h"
 #include "qgscomposerlabel.h"
+#include "qgspaperitem.h"
 #include "qgsmaplayerregistry.h"
 
 QgsAtlasComposition::QgsAtlasComposition( QgsComposition* composition ) :
@@ -369,10 +370,17 @@ void QgsAtlasComposition::prepareForFeature( int featureI )
   // evaluate label expressions
   QList<QgsComposerLabel*> labels;
   mComposition->composerItems( labels );
-
   for ( QList<QgsComposerLabel*>::iterator lit = labels.begin(); lit != labels.end(); ++lit )
   {
     ( *lit )->setExpressionContext( &mCurrentFeature, mCoverageLayer );
+  }
+
+  // update page background (in case it uses data defined symbology with atlas properties)
+  QList<QgsPaperItem*> pages;
+  mComposition->composerItems( pages );
+  for ( QList<QgsPaperItem*>::iterator pageIt = pages.begin(); pageIt != pages.end(); ++pageIt )
+  {
+    ( *pageIt )->update();
   }
 
   // set the new extent (and render)

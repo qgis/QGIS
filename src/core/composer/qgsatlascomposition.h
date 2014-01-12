@@ -110,6 +110,9 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     void lastFeature();
     void firstFeature();
 
+    /** Returns the current atlas feature. Must be called after prepareForFeature( i ). */
+    QgsFeature* currentFeature() { return &mCurrentFeature; }
+
   signals:
     /** emitted when one of the parameters changes */
     void parameterChanged();

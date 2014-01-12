@@ -386,7 +386,13 @@ void QgsCompositionWidget::on_mPageStyleButton_clicked()
     return;
   }
 
-  QgsSymbolV2SelectorDialog d( mComposition->pageStyleSymbol(), QgsStyleV2::defaultStyle(), 0 );
+  QgsVectorLayer* coverageLayer = 0;
+  // use the atlas coverage layer, if any
+  if ( mComposition->atlasComposition().enabled() )
+  {
+    coverageLayer = mComposition->atlasComposition().coverageLayer();
+  }
+  QgsSymbolV2SelectorDialog d( mComposition->pageStyleSymbol(), QgsStyleV2::defaultStyle(), coverageLayer );
 
   if ( d.exec() == QDialog::Accepted )
   {
