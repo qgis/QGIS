@@ -144,13 +144,23 @@
     </layout>
    </item>
    <item row="2" column="0">
+    <widget class="QLabel" name="mOutlineStyleLabel">
+     <property name="text">
+      <string>Outline style</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="QgsPenStyleComboBox" name="mOutlineStyleComboBox"/>
+   </item>
+   <item row="3" column="0">
     <widget class="QLabel" name="mOutlineWidthLabel">
      <property name="text">
       <string>Outline width</string>
      </property>
     </widget>
    </item>
-   <item row="2" column="1">
+   <item row="3" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_4">
      <item>
       <widget class="QDoubleSpinBox" name="mOutlineWidthSpinBox">
@@ -181,14 +191,14 @@
      </item>
     </layout>
    </item>
-   <item row="3" column="0">
+   <item row="4" column="0">
     <widget class="QLabel" name="label_4">
      <property name="text">
       <string>Angle</string>
      </property>
     </widget>
    </item>
-   <item row="3" column="1">
+   <item row="4" column="1">
     <widget class="QDoubleSpinBox" name="spinAngle">
      <property name="suffix">
       <string> °</string>
@@ -204,14 +214,14 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="0">
+   <item row="5" column="0">
     <widget class="QLabel" name="label_5">
      <property name="text">
       <string>Offset X,Y</string>
      </property>
     </widget>
    </item>
-   <item row="4" column="1">
+   <item row="5" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QDoubleSpinBox" name="spinOffsetX">
@@ -267,14 +277,14 @@
      </item>
     </layout>
    </item>
-   <item row="5" column="0">
+   <item row="6" column="0">
     <widget class="QLabel" name="mAnchorPointLabel">
      <property name="text">
       <string>Anchor point</string>
      </property>
     </widget>
    </item>
-   <item row="5" column="1">
+   <item row="6" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_5">
      <item>
       <widget class="QComboBox" name="mHorizontalAnchorComboBox">
@@ -316,7 +326,7 @@
      </item>
     </layout>
    </item>
-   <item row="6" column="0" colspan="2">
+   <item row="7" column="0" colspan="2">
     <widget class="QPushButton" name="mDataDefinedPropertiesButton">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -329,7 +339,7 @@
      </property>
     </widget>
    </item>
-   <item row="7" column="0" colspan="2">
+   <item row="8" column="0" colspan="2">
     <widget class="QListWidget" name="lstNames">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Expanding">

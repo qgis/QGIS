@@ -1194,7 +1194,8 @@ bool QgsSymbolLayerV2Utils::needLinePatternFill( QDomElement &element )
   QString name;
   QColor fillColor, borderColor;
   double size, borderWidth;
-  if ( !wellKnownMarkerFromSld( graphicElem, name, fillColor, borderColor, borderWidth, size ) )
+  Qt::PenStyle borderStyle;
+  if ( !wellKnownMarkerFromSld( graphicElem, name, fillColor, borderColor, borderStyle, borderWidth, size ) )
     return false;
 
   if ( name != "horline" )
@@ -1536,7 +1537,7 @@ void QgsSymbolLayerV2Utils::fillToSld( QDomDocument &doc, QDomElement &element, 
   QColor borderColor = !patternName.startsWith( "brush://" ) ? color : QColor();
 
   /* Use WellKnownName tag to handle QT brush styles. */
-  wellKnownMarkerToSld( doc, graphicElem, patternName, fillColor, borderColor );
+  wellKnownMarkerToSld( doc, graphicElem, patternName, fillColor, borderColor, Qt::SolidLine, -1, -1 );
 }
 
 bool QgsSymbolLayerV2Utils::fillFromSld( QDomElement &element, Qt::BrushStyle &brushStyle, QColor &color )
@@ -1577,7 +1578,8 @@ bool QgsSymbolLayerV2Utils::fillFromSld( QDomElement &element, Qt::BrushStyle &b
     QString patternName = "square";
     QColor fillColor, borderColor;
     double borderWidth, size;
-    if ( !wellKnownMarkerFromSld( graphicElem, patternName, fillColor, borderColor, borderWidth, size ) )
+    Qt::PenStyle borderStyle;
+    if ( !wellKnownMarkerFromSld( graphicElem, patternName, fillColor, borderColor, borderStyle, borderWidth, size ) )
       return false;
 
     brushStyle = decodeSldBrushStyle( patternName );
@@ -1919,8 +1921,15 @@ bool QgsSymbolLayerV2Utils::externalMarkerFromSld( QDomElement &element,
   return true;
 }
 
+void QgsSymbolLayerV2Utils::wellKnownMarkerToSld( QDomDocument &doc, QDomElement &element, 
+    QString name, QColor color, QColor borderColor, 
+    double borderWidth, double size )
+{
+  wellKnownMarkerToSld( doc, element, name, color, borderColor, Qt::SolidLine, borderWidth, size );
+}
+
 void QgsSymbolLayerV2Utils::wellKnownMarkerToSld( QDomDocument &doc, QDomElement &element,
-    QString name, QColor color, QColor borderColor,
+    QString name, QColor color, QColor borderColor, Qt::PenStyle borderStyle,
     double borderWidth, double size )
 {
   QDomElement markElem = doc.createElement( "se:Mark" );
@@ -1942,7 +1951,7 @@ void QgsSymbolLayerV2Utils::wellKnownMarkerToSld( QDomDocument &doc, QDomElement
   if ( borderColor.isValid() )
   {
     QDomElement strokeElem = doc.createElement( "se:Stroke" );
-    lineToSld( doc, strokeElem, Qt::SolidLine, borderColor, borderWidth );
+    lineToSld( doc, strokeElem, borderStyle, borderColor, borderWidth );
     markElem.appendChild( strokeElem );
   }
 
@@ -1955,8 +1964,16 @@ void QgsSymbolLayerV2Utils::wellKnownMarkerToSld( QDomDocument &doc, QDomElement
   }
 }
 
+bool QgsSymbolLayerV2Utils::wellKnownMarkerFromSld( QDomElement &element, 
+    QString &name, QColor &color, QColor &borderColor, 
+    double &borderWidth, double &size )
+{
+  Qt::PenStyle borderStyle;
+  return wellKnownMarkerFromSld( element, name, color, borderColor, borderStyle, borderWidth, size );
+}
+
 bool QgsSymbolLayerV2Utils::wellKnownMarkerFromSld( QDomElement &element,
-    QString &name, QColor &color, QColor &borderColor,
+    QString &name, QColor &color, QColor &borderColor, Qt::PenStyle &borderStyle,
     double &borderWidth, double &size )
 {
   QgsDebugMsg( "Entered." );
@@ -1986,8 +2003,7 @@ bool QgsSymbolLayerV2Utils::wellKnownMarkerFromSld( QDomElement &element,
 
   // <Stroke>
   QDomElement strokeElem = markElem.firstChildElement( "Stroke" );
-  Qt::PenStyle p = Qt::SolidLine;
-  lineFromSld( strokeElem, p, borderColor, borderWidth );
+  lineFromSld( strokeElem, borderStyle, borderColor, borderWidth );
   // ignore border style, solid expected
 
   // <Size>
