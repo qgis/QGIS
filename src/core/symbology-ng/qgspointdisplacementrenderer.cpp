@@ -53,7 +53,6 @@ QgsFeatureRendererV2* QgsPointDisplacementRenderer::clone()
 {
   QgsPointDisplacementRenderer* r = new QgsPointDisplacementRenderer( mLabelAttributeName );
   r->setEmbeddedRenderer( mRenderer->clone() );
-  r->setDisplacementGroups( mDisplacementGroups );
   r->setCircleWidth( mCircleWidth );
   r->setCircleColor( mCircleColor );
   r->setLabelFont( mLabelFont );
@@ -77,6 +76,13 @@ void QgsPointDisplacementRenderer::toSld( QDomDocument& doc, QDomElement &elemen
 bool QgsPointDisplacementRenderer::renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer, bool selected, bool drawVertexMarker )
 {
   Q_UNUSED( drawVertexMarker );
+  Q_UNUSED( context );
+  Q_UNUSED( layer );
+
+  //check, if there is already a point at that position
+  if ( !feature.geometry() )
+    return false;
+
   //point position in screen coords
   QgsGeometry* geom = feature.geometry();
   QGis::WkbType geomType = geom->wkbType();
@@ -85,57 +91,54 @@ bool QgsPointDisplacementRenderer::renderFeature( QgsFeature& feature, QgsRender
     //can only render point type
     return false;
   }
-  QPointF pt;
-  _getPoint( pt, context, geom->asWkb() );
 
+  if ( selected )
+    mSelectedFeatures.insert( feature.id() );
+
+  QList<QgsFeatureId> intersectList = mSpatialIndex->intersects( searchRect( feature.geometry()->asPoint() ) );
+  if ( intersectList.empty() )
+  {
+    mSpatialIndex->insertFeature( feature );
+    // create new group
+    DisplacementGroup newGroup;
+    newGroup.insert( feature.id(), feature );
+    mDisplacementGroups.push_back( newGroup );
+    // add to group index
+    mGroupIndex.insert( feature.id(), mDisplacementGroups.count() - 1 );
+    return true;
+  }
+
+  //go through all the displacement group maps and search an entry where the id equals the result of the spatial search
+  QgsFeatureId existingEntry = intersectList.at( 0 );
+
+  int groupIdx = mGroupIndex[ existingEntry ];
+  DisplacementGroup& group = mDisplacementGroups[groupIdx];
+
+  // add to a group
+  group.insert( feature.id(), feature );
+  // add to group index
+  mGroupIndex.insert( feature.id(), groupIdx );
+  return true;
+}
+
+void QgsPointDisplacementRenderer::drawGroup( const DisplacementGroup& group, QgsRenderContext& context )
+{
+  const QgsFeature& feature = group.begin().value();
+  bool selected = mSelectedFeatures.contains( feature.id() ); // maybe we should highlight individual features instead of the whole group?
+
+  QPointF pt;
+  _getPoint( pt, context, feature.geometry()->asWkb() );
 
   //get list of labels and symbols
   QStringList labelAttributeList;
   QList<QgsMarkerSymbolV2*> symbolList;
 
-  if ( mDisplacementIds.contains( feature.id() ) )
+  for ( DisplacementGroup::const_iterator attIt = group.constBegin(); attIt != group.constEnd(); ++attIt )
   {
-    //create the symbol for the whole display group if the id is the first entry in a display group
-    QList<QMap<QgsFeatureId, QgsFeature> >::iterator it = mDisplacementGroups.begin();
-    for ( ; it != mDisplacementGroups.end(); ++it )
-    {
-      //create the symbol for the whole display group if the id is the first entry in a display group
-      if ( feature.id() == it->begin().key() )
-      {
-        QMap<QgsFeatureId, QgsFeature>::iterator attIt = it->begin();
-        for ( ; attIt != it->end(); ++attIt )
-        {
-          if ( mDrawLabels )
-          {
-            labelAttributeList << getLabel( attIt.value() );
-          }
-          else
-          {
-            labelAttributeList << QString();
-          }
-          symbolList << dynamic_cast<QgsMarkerSymbolV2*>( firstSymbolForFeature( mRenderer, attIt.value() ) );
-        }
-      }
-    }
+    labelAttributeList << ( mDrawLabels ? getLabel( attIt.value() ) : QString() );
+    QgsFeature& f = const_cast<QgsFeature&>( attIt.value() ); // other parts of API use non-const ref to QgsFeature :-/
+    symbolList << dynamic_cast<QgsMarkerSymbolV2*>( firstSymbolForFeature( mRenderer, f ) );
   }
-  else //only one feature
-  {
-    symbolList << dynamic_cast<QgsMarkerSymbolV2*>( firstSymbolForFeature( mRenderer, feature ) );
-    if ( mDrawLabels )
-    {
-      labelAttributeList << getLabel( feature );
-    }
-    else
-    {
-      labelAttributeList << QString();
-    }
-  }
-
-  if ( symbolList.isEmpty() && labelAttributeList.isEmpty() )
-  {
-    return true; //display all point symbols for one posi
-  }
-
 
   //draw symbol
   double diagonal = 0;
@@ -172,7 +175,7 @@ bool QgsPointDisplacementRenderer::renderFeature( QgsFeature& feature, QgsRender
   {
     if ( mCenterSymbol )
     {
-      mCenterSymbol->renderPoint( pt, &feature, context, layer, selected );
+      mCenterSymbol->renderPoint( pt, &feature, context, -1, selected );
     }
     else
     {
@@ -184,7 +187,6 @@ bool QgsPointDisplacementRenderer::renderFeature( QgsFeature& feature, QgsRender
   drawSymbols( feature, context, symbolList, symbolPositions, selected );
   //and also the labels
   drawLabels( pt, symbolContext, labelPositions, labelAttributeList );
-  return true;
 }
 
 void QgsPointDisplacementRenderer::setEmbeddedRenderer( QgsFeatureRendererV2* r )
@@ -203,9 +205,10 @@ void QgsPointDisplacementRenderer::startRender( QgsRenderContext& context, const
 {
   mRenderer->startRender( context, fields );
 
-  //create groups with features that have the same position
-  createDisplacementGroups( 0, context.extent() );
-  printInfoDisplacementGroups(); //just for debugging
+  mDisplacementGroups.clear();
+  mGroupIndex.clear();
+  mSpatialIndex = new QgsSpatialIndex;
+  mSelectedFeatures.clear();
 
   if ( mLabelAttributeName.isEmpty() )
   {
@@ -234,6 +237,18 @@ void QgsPointDisplacementRenderer::startRender( QgsRenderContext& context, const
 void QgsPointDisplacementRenderer::stopRender( QgsRenderContext& context )
 {
   QgsDebugMsg( "QgsPointDisplacementRenderer::stopRender" );
+
+  //printInfoDisplacementGroups(); //just for debugging
+
+  for ( QList<DisplacementGroup>::const_iterator it = mDisplacementGroups.begin(); it != mDisplacementGroups.end(); ++it )
+    drawGroup( *it, context );
+
+  mDisplacementGroups.clear();
+  mGroupIndex.clear();
+  delete mSpatialIndex;
+  mSpatialIndex = 0;
+  mSelectedFeatures.clear();
+
   mRenderer->stopRender( context );
   if ( mCenterSymbol )
   {
@@ -339,95 +354,6 @@ QgsLegendSymbolList QgsPointDisplacementRenderer::legendSymbolItems( double scal
   return QgsLegendSymbolList();
 }
 
-void QgsPointDisplacementRenderer::createDisplacementGroups( QgsVectorLayer* vlayer, const QgsRectangle& viewExtent )
-{
-  Q_ASSERT( 0 && "Point Displacement Renderer is currently not working - it is now illegal to interact with QgsVectorLayer"
-            " in any way. The renderer should build groups in the renderFeature() calls and then do all rendering in stopRender()");
-
-  if ( !vlayer || ( vlayer->wkbType() != QGis::WKBPoint && vlayer->wkbType() != QGis::WKBPoint25D ) )
-  {
-    return;
-  }
-
-  mDisplacementGroups.clear();
-  mDisplacementIds.clear();
-
-  //use a spatial index to check if there is already a point at a position
-  QgsSpatialIndex spatialIndex;
-
-  //attributes
-  QgsAttributeList attList;
-  QList<QString> attributeStrings = usedAttributes();
-  QList<QString>::const_iterator attStringIt = attributeStrings.constBegin();
-  for ( ; attStringIt != attributeStrings.constEnd(); ++attStringIt )
-  {
-    attList.push_back( vlayer->fieldNameIndex( *attStringIt ) );
-  }
-
-  QgsFeature f;
-  QList<QgsFeatureId> intersectList;
-
-  //Because the new vector api does not allow querying features by id within a nextFeature loop, default constructed QgsFeature() is
-  //inserted first and the real features are created in a second loop
-
-  QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFilterRect( viewExtent ).setSubsetOfAttributes( attList ) );
-  while ( fit.nextFeature( f ) )
-  {
-    intersectList.clear();
-
-    //check, if there is already a point at that position
-    if ( f.geometry() )
-    {
-      intersectList = spatialIndex.intersects( searchRect( f.geometry()->asPoint() ) );
-      if ( intersectList.empty() )
-      {
-        spatialIndex.insertFeature( f );
-      }
-      else
-      {
-        //go through all the displacement group maps and search an entry where the id equals the result of the spatial search
-        QgsFeatureId existingEntry = intersectList.at( 0 );
-        bool found = false;
-        QList< QMap<QgsFeatureId, QgsFeature> >::iterator it = mDisplacementGroups.begin();
-        for ( ; it != mDisplacementGroups.end(); ++it )
-        {
-          if ( it->size() > 0 && it->contains( existingEntry ) )
-          {
-            found = true;
-            QgsFeature feature;
-            it->insert( f.id(), QgsFeature() );
-            mDisplacementIds.insert( f.id() );
-            break;
-          }
-        }
-
-        if ( !found )//insert the already existing feature and the new one into a map
-        {
-          QMap<QgsFeatureId, QgsFeature> newMap;
-          newMap.insert( existingEntry, QgsFeature() );
-          mDisplacementIds.insert( existingEntry );
-          newMap.insert( f.id(), QgsFeature() );
-          mDisplacementIds.insert( f.id() );
-          mDisplacementGroups.push_back( newMap );
-        }
-      }
-    }
-  }
-
-  //insert the real features into mDisplacementGroups
-  QList< QMap<QgsFeatureId, QgsFeature> >::iterator it = mDisplacementGroups.begin();
-  for ( ; it != mDisplacementGroups.end(); ++it )
-  {
-    QMap<QgsFeatureId, QgsFeature>::iterator mapIt = it->begin();
-    for ( ; mapIt != it->end(); ++mapIt )
-    {
-      QgsFeature fet;
-      vlayer->getFeatures( QgsFeatureRequest().setFilterFid( mapIt.key() ) ).nextFeature( fet );
-      mapIt.value() = fet;
-    }
-  }
-
-}
 
 QgsRectangle QgsPointDisplacementRenderer::searchRect( const QgsPoint& p ) const
 {
@@ -445,28 +371,6 @@ void QgsPointDisplacementRenderer::printInfoDisplacementGroups()
     for ( ; it != mDisplacementGroups.at( i ).constEnd(); ++it )
     {
       QgsDebugMsg( FID_TO_STRING( it.key() ) );
-    }
-  }
-  QgsDebugMsg( "********all displacement ids*********" );
-  QSet<QgsFeatureId>::const_iterator iIt = mDisplacementIds.constBegin();
-  for ( ; iIt != mDisplacementIds.constEnd(); ++iIt )
-  {
-    QgsDebugMsg( FID_TO_STRING( *iIt ) );
-  }
-}
-
-void QgsPointDisplacementRenderer::setDisplacementGroups( const QList< QMap<QgsFeatureId, QgsFeature> >& list )
-{
-  mDisplacementGroups = list;
-  mDisplacementIds.clear();
-
-  QList<QMap<QgsFeatureId, QgsFeature> >::const_iterator list_it = mDisplacementGroups.constBegin();
-  for ( ; list_it != mDisplacementGroups.constEnd(); ++list_it )
-  {
-    QMap<QgsFeatureId, QgsFeature>::const_iterator map_it = list_it->constBegin();
-    for ( ; map_it != list_it->constEnd(); ++map_it )
-    {
-      mDisplacementIds.insert( map_it.key() );
     }
   }
 }
@@ -537,7 +441,7 @@ void QgsPointDisplacementRenderer::drawCircle( double radiusPainterUnits, QgsSym
   p->drawArc( QRectF( centerPoint.x() - radiusPainterUnits, centerPoint.y() - radiusPainterUnits, 2 * radiusPainterUnits, 2 * radiusPainterUnits ), 0, 5760 );
 }
 
-void QgsPointDisplacementRenderer::drawSymbols( QgsFeature& f, QgsRenderContext& context, const QList<QgsMarkerSymbolV2*>& symbolList, const QList<QPointF>& symbolPositions, bool selected )
+void QgsPointDisplacementRenderer::drawSymbols( const QgsFeature& f, QgsRenderContext& context, const QList<QgsMarkerSymbolV2*>& symbolList, const QList<QPointF>& symbolPositions, bool selected )
 {
   QList<QPointF>::const_iterator symbolPosIt = symbolPositions.constBegin();
   QList<QgsMarkerSymbolV2*>::const_iterator symbolIt = symbolList.constBegin();
