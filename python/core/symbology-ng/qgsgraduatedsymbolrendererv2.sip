@@ -147,4 +147,8 @@ class QgsGraduatedSymbolRendererV2 : QgsFeatureRendererV2
 
   protected:
     QgsSymbolV2* symbolForValue( double value );
+
+  private:
+    QgsGraduatedSymbolRendererV2( const QgsGraduatedSymbolRendererV2 & );
+    QgsGraduatedSymbolRendererV2 & operator=( const QgsGraduatedSymbolRendererV2 & );
 };

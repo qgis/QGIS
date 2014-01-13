@@ -65,4 +65,8 @@ class QgsPointDisplacementRenderer : QgsFeatureRendererV2
 
     void setTolerance( double t );
     double tolerance() const;
+
+  private:
+    QgsPointDisplacementRenderer( const QgsPointDisplacementRenderer & );
+    QgsPointDisplacementRenderer & operator=( const QgsPointDisplacementRenderer & );
 };
