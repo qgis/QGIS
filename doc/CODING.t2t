@@ -605,8 +605,8 @@ deserves your options to accelerate it should be (in order of priority):
 ==== Best practice for creating a pull request ====
 
 * Always start a feature branch from current master.
-* If you are coding a feature branch, don't "merge" anything in other than
-  master (see below).
+* If you are coding a feature branch, don't "merge" anything in to that branch,
+  rather rebase as described in the next point to keep your history clean.
 * Before you create a pull request do "git fetch origin" and "git rebase
   origin/master" (given origin is the remote for upstream and not your own
   remote, check your .git/config or do "git remote -v | grep github.com/qgis").
