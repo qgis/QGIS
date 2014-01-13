@@ -184,6 +184,21 @@ void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant>& opts )
     ss += "} ";
   }
 
+  // Fix selection color on loosing focus (Windows)
+  QApplication* app = dynamic_cast<QApplication*>( QgsApplication::instance() );
+  if ( app )
+  {
+    const QPalette palette = app->palette();
+
+    ss += QString( "QTableView {"
+                   "selection-background-color: %1;"
+                   "selection-color: %2;"
+                   "}")
+          .arg( palette.highlight().color().name() )
+          .arg( palette.highlightedText().color().name() );
+  }
+
+
   QgsDebugMsg( QString( "Stylesheet built: %1" ).arg( ss ) );
 
   emit appStyleSheetChanged( ss );
