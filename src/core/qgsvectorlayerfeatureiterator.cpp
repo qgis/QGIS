@@ -55,12 +55,6 @@ QgsFeatureIterator QgsVectorLayerFeatureSource::getFeatures( const QgsFeatureReq
 QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator(QgsVectorLayerFeatureSource* source, bool ownSource, const QgsFeatureRequest& request )
   : QgsAbstractFeatureIteratorFromSource( source, ownSource, request )
 {
-  mChangedFeaturesRequest = mRequest;
-
-  if ( mSource->mHasEditBuffer )
-  {
-    mChangedFeaturesRequest.setFilterFids( mSource->mChangedAttributeValues.keys().toSet() );
-  }
 
   // prepare joins: may add more attributes to fetch (in order to allow join)
   if ( mSource->mJoinBuffer->containsJoins() )
@@ -83,6 +77,12 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator(QgsVectorLayerFeatu
         providerSubset << mSource->mFields.fieldOriginIndex( attrIndex );
     }
     mProviderRequest.setSubsetOfAttributes( providerSubset );
+  }
+
+  if ( mSource->mHasEditBuffer )
+  {
+    mChangedFeaturesRequest = mProviderRequest;
+    mChangedFeaturesRequest.setFilterFids( mSource->mChangedAttributeValues.keys().toSet() );
   }
 
   if ( request.filterType() == QgsFeatureRequest::FilterFid )
@@ -301,6 +301,9 @@ bool QgsVectorLayerFeatureIterator::fetchNextChangedAttributeFeature( QgsFeature
     mFetchConsidered << f.id();
 
     updateChangedAttributes( f );
+
+    if ( !mFetchJoinInfo.isEmpty() )
+      addJoinedAttributes( f );
 
     if ( mRequest.filterType() == QgsFeatureRequest::FilterExpression )
     {
