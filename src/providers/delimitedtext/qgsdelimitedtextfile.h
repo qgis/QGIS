@@ -125,7 +125,7 @@ class QgsDelimitedTextFile : public QObject
     /** Decode the parser settings from a url
      *  @param url  The url from which the delimiter and delimiterType items are read
      */
-    bool setFromUrl( QUrl &url );
+    bool setFromUrl( const QUrl &url );
 
     /** Encode the parser settings into a QUrl
      *  @return url  The url into which the delimiter and delimiterType items are set

@@ -168,13 +168,6 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
 
 QgsDelimitedTextProvider::~QgsDelimitedTextProvider()
 {
-  while ( !mActiveIterators.empty() )
-  {
-    QgsDelimitedTextFeatureIterator *it = *mActiveIterators.begin();
-    QgsDebugMsg( "closing active iterator" );
-    it->close();
-  }
-
   if ( mFile )
   {
     delete mFile;
@@ -191,6 +184,16 @@ QgsDelimitedTextProvider::~QgsDelimitedTextProvider()
     delete mSpatialIndex;
     mSpatialIndex = 0;
   }
+}
+
+QgsAbstractFeatureSource *QgsDelimitedTextProvider::featureSource() const
+{
+  // If the file has become invalid, rescan to check that it is still invalid.
+  //
+  if (( mLayerValid && ! mValid ) || mRescanRequired )
+    const_cast<QgsDelimitedTextProvider*>( this )->rescanFile();
+
+  return new QgsDelimitedTextFeatureSource( this );
 }
 
 QStringList QgsDelimitedTextProvider::readCsvtFieldTypes( QString filename, QString *message )
@@ -436,7 +439,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
           mWktHasPrefix = true;
         if ( !mWktHasZM && sWkt.indexOf( WktZMRegexp ) >= 0 )
           mWktHasZM = true;
-        geom = geomFromWkt( sWkt );
+        geom = geomFromWkt( sWkt, mWktHasPrefix, mWktHasZM );
 
         if ( geom )
         {
@@ -501,7 +504,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
       else
       {
         QgsPoint pt;
-        bool ok = pointFromXY( sX, sY, pt );
+        bool ok = pointFromXY( sX, sY, pt, mDecimalPoint, mXyDms );
 
         if ( ok )
         {
@@ -767,17 +770,17 @@ void QgsDelimitedTextProvider::rescanFile()
   mUseSpatialIndex = buildSpatialIndex;
 }
 
-QgsGeometry *QgsDelimitedTextProvider::geomFromWkt( QString &sWkt )
+QgsGeometry *QgsDelimitedTextProvider::geomFromWkt( QString &sWkt, bool wktHasPrefixRegexp, bool wktHasZM )
 {
   QgsGeometry *geom = 0;
   try
   {
-    if ( mWktHasPrefix )
+    if ( wktHasPrefixRegexp )
     {
       sWkt.remove( WktPrefixRegexp );
     }
 
-    if ( mWktHasZM )
+    if ( wktHasZM )
     {
       sWkt.remove( WktZMRegexp ).replace( WktCrdRegexp, "\\1" );
     }
@@ -826,17 +829,17 @@ double QgsDelimitedTextProvider::dmsStringToDouble( const QString &sX, bool *xOk
   return x;
 }
 
-bool QgsDelimitedTextProvider::pointFromXY( QString &sX, QString &sY, QgsPoint &pt )
+bool QgsDelimitedTextProvider::pointFromXY( QString &sX, QString &sY, QgsPoint &pt, const QString& decimalPoint, bool xyDms )
 {
-  if ( ! mDecimalPoint.isEmpty() )
+  if ( ! decimalPoint.isEmpty() )
   {
-    sX.replace( mDecimalPoint, "." );
-    sY.replace( mDecimalPoint, "." );
+    sX.replace( decimalPoint, "." );
+    sY.replace( decimalPoint, "." );
   }
 
   bool xOk, yOk;
   double x, y;
-  if ( mXyDms )
+  if ( xyDms )
   {
     x = dmsStringToDouble( sX, &xOk );
     y = dmsStringToDouble( sY, &yOk );
@@ -867,7 +870,7 @@ QgsFeatureIterator QgsDelimitedTextProvider::getFeatures( const QgsFeatureReques
   //
   if (( mLayerValid && ! mValid ) || mRescanRequired ) rescanFile();
 
-  return QgsFeatureIterator( new QgsDelimitedTextFeatureIterator( this, request ) );
+  return QgsFeatureIterator( new QgsDelimitedTextFeatureIterator( new QgsDelimitedTextFeatureSource( this ), true, request ) );
 }
 
 void QgsDelimitedTextProvider::clearInvalidLines()
@@ -1057,14 +1060,6 @@ void QgsDelimitedTextProvider::onFileUpdated()
     reportErrors( messages, false );
     mRescanRequired = true;
   }
-
-  while ( !mActiveIterators.empty() )
-  {
-    QgsDelimitedTextFeatureIterator *it = *mActiveIterators.begin();
-    QgsDebugMsg( "closing active iterator" );
-    it->close();
-  }
-
 }
 
 

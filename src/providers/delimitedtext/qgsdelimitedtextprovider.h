@@ -81,6 +81,8 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
 
     /* Implementation of functions from QgsVectorDataProvider */
 
+    virtual QgsAbstractFeatureSource* featureSource() const;
+
     /**
      * Returns the permanent storage type for this layer as a friendly name.
      */
@@ -229,9 +231,9 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     void setUriParameter( QString parameter, QString value );
 
 
-    QgsGeometry *geomFromWkt( QString &sWkt );
-    bool pointFromXY( QString &sX, QString &sY, QgsPoint &point );
-    double dmsStringToDouble( const QString &sX, bool *xOk );
+    static QgsGeometry *geomFromWkt( QString &sWkt, bool wktHasPrefixRegexp, bool wktHasZM );
+    static bool pointFromXY( QString &sX, QString &sY, QgsPoint &point, const QString& decimalPoint, bool xyDms );
+    static double dmsStringToDouble( const QString &sX, bool *xOk );
 
     // mLayerValid defines whether the layer has been loaded as a valid layer
     bool mLayerValid;
@@ -315,7 +317,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     QgsSpatialIndex *mSpatialIndex;
 
     friend class QgsDelimitedTextFeatureIterator;
-    QSet< QgsDelimitedTextFeatureIterator* > mActiveIterators;
+    friend class QgsDelimitedTextFeatureSource;
 };
 
 #endif
