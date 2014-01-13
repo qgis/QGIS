@@ -225,14 +225,8 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     void clearInvalidLines();
     void recordInvalidLine( QString message );
     void reportErrors( QStringList messages = QStringList(), bool showDialog = true );
-    void resetStream();
-    bool recordIsEmpty( QStringList &record );
-    bool nextFeature( QgsFeature& feature, QgsDelimitedTextFile *file, QgsDelimitedTextFeatureIterator *iterator );
-    QgsGeometry* loadGeometryWkt( const QStringList& tokens,  QgsDelimitedTextFeatureIterator *iterator );
-    QgsGeometry* loadGeometryXY( const QStringList& tokens,  QgsDelimitedTextFeatureIterator *iterator );
-    void fetchAttribute( QgsFeature& feature, int fieldIdx, const QStringList& tokens );
+    static bool recordIsEmpty( QStringList &record );
     void setUriParameter( QString parameter, QString value );
-    bool setNextFeatureId( qint64 fid ) { return mFile->setNextRecordId(( long ) fid ); }
 
 
     QgsGeometry *geomFromWkt( QString &sWkt );
