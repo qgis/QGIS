@@ -189,8 +189,8 @@ QgsRendererV2DataDefinedMenus::QgsRendererV2DataDefinedMenus( QMenu* menu, const
   mSizeAttributeActionGroup = new QActionGroup( mSizeScaleMenu );
   mSizeMethodActionGroup = new QActionGroup( mSizeScaleMenu );
 
-  populateMenu( mRotationMenu, SLOT( rotationFieldSelected( QAction* a ) ), rotationField, mRotationAttributeActionGroup );
-  populateMenu( mSizeScaleMenu, SLOT( sizeScaleFieldSelected( QAction* a ) ), sizeScaleField, mSizeAttributeActionGroup );
+  populateMenu( mRotationMenu, rotationField, mRotationAttributeActionGroup );
+  populateMenu( mSizeScaleMenu, sizeScaleField, mSizeAttributeActionGroup );
 
   mSizeScaleMenu->addSeparator();
 
@@ -213,6 +213,10 @@ QgsRendererV2DataDefinedMenus::QgsRendererV2DataDefinedMenus( QMenu* menu, const
 
   menu->addMenu( mRotationMenu );
   menu->addMenu( mSizeScaleMenu );
+
+  connect( mSizeMethodActionGroup, SIGNAL( triggered( QAction* ) ), this, SLOT( scaleMethodSelected( QAction* ) ) );
+  connect( mRotationAttributeActionGroup, SIGNAL( triggered( QAction* ) ), this, SLOT( rotationFieldSelected( QAction* ) ) );
+  connect( mSizeAttributeActionGroup, SIGNAL( triggered( QAction* ) ), this, SLOT( sizeScaleFieldSelected( QAction* ) ) );
 }
 
 QgsRendererV2DataDefinedMenus::~QgsRendererV2DataDefinedMenus()
@@ -224,9 +228,8 @@ QgsRendererV2DataDefinedMenus::~QgsRendererV2DataDefinedMenus()
   delete mSizeScaleMenu;
 }
 
-void QgsRendererV2DataDefinedMenus::populateMenu( QMenu* menu, const char* slot, QString fieldName, QActionGroup *actionGroup )
+void QgsRendererV2DataDefinedMenus::populateMenu( QMenu* menu, QString fieldName, QActionGroup *actionGroup )
 {
-  Q_UNUSED( slot );
   QAction* aNo = new QAction( tr( "- no field -" ), actionGroup );
   aNo->setCheckable( true );
   menu->addAction( aNo );
@@ -255,9 +258,6 @@ void QgsRendererV2DataDefinedMenus::populateMenu( QMenu* menu, const char* slot,
     aNo->setChecked( true );
   }
 
-  connect( mSizeMethodActionGroup, SIGNAL( triggered( QAction* ) ), this, SLOT( scaleMethodSelected( QAction* ) ) );
-  connect( mRotationAttributeActionGroup, SIGNAL( triggered( QAction* ) ), this, SLOT( rotationFieldSelected( QAction* ) ) );
-  connect( mSizeAttributeActionGroup, SIGNAL( triggered( QAction* ) ), this, SLOT( sizeScaleFieldSelected( QAction* ) ) );
 }
 
 void QgsRendererV2DataDefinedMenus::rotationFieldSelected( QAction* a )
