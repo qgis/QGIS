@@ -623,8 +623,7 @@ class CORE_EXPORT QgsExpression
 
   private:
     // default copy and assignment are buggy (they cause multiple delete)
-    QgsExpression( const QgsException & );
-    QgsExpression operator=( const QgsException & );
+    Q_DISABLE_COPY( QgsExpression )
 };
 
 Q_DECLARE_METATYPE( QgsExpression::Interval );

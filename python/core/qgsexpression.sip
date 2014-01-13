@@ -394,4 +394,7 @@ class QgsExpression
 
   protected:
     void initGeomCalculator();
+
+  private:
+    Q_DISABLE_COPY( QgsExpression )
 };
