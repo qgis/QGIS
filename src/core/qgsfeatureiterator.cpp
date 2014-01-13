@@ -113,11 +113,8 @@ bool QgsAbstractFeatureIterator::simplify( QgsFeature& feature )
   {
     QgsGeometry* geometry = feature.geometry();
 
-    if ( geometry ) 
-    {
-      QGis::GeometryType geometryType = geometry->type();
-      if ( geometryType == QGis::Line || geometryType == QGis::Polygon ) return mGeometrySimplifier->simplifyGeometry( geometry );
-    }
+    QGis::GeometryType geometryType = geometry->type();
+    if ( geometryType == QGis::Line || geometryType == QGis::Polygon ) return mGeometrySimplifier->simplifyGeometry( geometry );
   }
   return false;
 }
