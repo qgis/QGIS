@@ -629,6 +629,39 @@ deserves your options to accelerate it should be (in order of priority):
   PR incorporated into the code base.
 
 
+      2.7.1.1. Best practice for creating a pull request
+      ==================================================
+
+* Always start a feature branch from current master.
+* If you are coding a feature branch, don't "merge" anything in other than
+  master (see below).
+* Before you create a pull request do "git fetch origin" and "git rebase
+  origin/master" (given origin is the remote for upstream and not your own
+  remote, check your .git/config or do "git remote -v | grep github.com/qgis").
+* You may do a "git rebase" like in the last line repeatedly without doing any
+  damage (as long as the only purpose of your branch is to get merged into
+  master).
+* Attention: After a rebase you need to "git push -f" to your forked repo. 
+  CORE DEVS: DO NOT DO THIS ON THE QGIS PUBLIC REPOSITORY!
+
+
+      2.7.1.2. For merging a pull request
+      ===================================
+
+Option A
+
+* click the merge button (Creates a non-fast-forward merge)
+
+Option B
+
+* Checkout the pull request (See https://gist.github.com/piscisaureus/3342247)
+* Test (Also required for option A, obviously)
+* checkout master, git merge pr/1234
+* Optional: git pull --rebase: Creates a fast-forward, no "merge commit" is 
+  made. Cleaner history, but it is harder to revert the merge.
+* git push
+
+
     2.7.2. Patch file naming
     ========================
 
