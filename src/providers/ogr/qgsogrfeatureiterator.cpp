@@ -89,11 +89,9 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrProvider* p, const QgsFeatur
 
 QgsOgrFeatureIterator::~QgsOgrFeatureIterator()
 {
-  if ( mGeometrySimplifier )
-  {
-    delete mGeometrySimplifier;
-    mGeometrySimplifier = NULL;
-  }
+  delete mGeometrySimplifier;
+  mGeometrySimplifier = NULL;
+
   close();
 }
 
@@ -109,11 +107,8 @@ bool QgsOgrFeatureIterator::prepareSimplification( const QgsSimplifyMethod& simp
 {
   bool providerSimplification = false;
 
-  if ( mGeometrySimplifier )
-  {
-    delete mGeometrySimplifier;
-    mGeometrySimplifier = NULL;
-  }
+  delete mGeometrySimplifier;
+  mGeometrySimplifier = NULL;
 
   // setup if required the simplification of OGR-geometries fetched
   if ( simplifyMethod.methodType() != QgsSimplifyMethod::NoSimplification && !simplifyMethod.forceLocalOptimization() && !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) )

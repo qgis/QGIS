@@ -28,11 +28,8 @@ QgsAbstractFeatureIterator::QgsAbstractFeatureIterator( const QgsFeatureRequest&
 
 QgsAbstractFeatureIterator::~QgsAbstractFeatureIterator()
 {
-  if ( mGeometrySimplifier )
-  {
-    delete mGeometrySimplifier;
-    mGeometrySimplifier = NULL;
-  }
+  delete mGeometrySimplifier;
+  mGeometrySimplifier = NULL;
 }
 
 bool QgsAbstractFeatureIterator::nextFeature( QgsFeature& f )
@@ -97,11 +94,8 @@ void QgsAbstractFeatureIterator::deref()
 
 bool QgsAbstractFeatureIterator::prepareSimplification( const QgsSimplifyMethod& simplifyMethod )
 {
-  if ( mGeometrySimplifier )
-  {
-    delete mGeometrySimplifier;
-    mGeometrySimplifier = NULL;
-  }
+  delete mGeometrySimplifier;
+  mGeometrySimplifier = NULL;
 
   // setup the local simplification of geometries to fetch
   if ( simplifyMethod.methodType() != QgsSimplifyMethod::NoSimplification && simplifyMethod.forceLocalOptimization() && !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) )

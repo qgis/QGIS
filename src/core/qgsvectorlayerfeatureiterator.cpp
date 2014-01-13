@@ -103,11 +103,8 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayer* la
 
 QgsVectorLayerFeatureIterator::~QgsVectorLayerFeatureIterator()
 {
-  if ( mEditGeometrySimplifier )
-  {
-    delete mEditGeometrySimplifier;
-    mEditGeometrySimplifier = NULL;
-  }
+  delete mEditGeometrySimplifier;
+  mEditGeometrySimplifier = NULL;
 
   close();
 }
@@ -466,11 +463,8 @@ void QgsVectorLayerFeatureIterator::addJoinedAttributes( QgsFeature &f )
 
 bool QgsVectorLayerFeatureIterator::prepareSimplification( const QgsSimplifyMethod& simplifyMethod )
 {
-  if ( mEditGeometrySimplifier )
-  {
-    delete mEditGeometrySimplifier;
-    mEditGeometrySimplifier = NULL;
-  }
+  delete mEditGeometrySimplifier;
+  mEditGeometrySimplifier = NULL;
 
   // setup the simplification of edited geometries to fetch
   if ( simplifyMethod.methodType() != QgsSimplifyMethod::NoSimplification && !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) )
