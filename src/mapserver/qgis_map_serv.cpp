@@ -137,6 +137,11 @@ QFileInfo defaultProjectFile()
   QStringList nameFilterList;
   nameFilterList << "*.qgs";
   QFileInfoList projectFiles = currentDir.entryInfoList( nameFilterList, QDir::Files, QDir::Name );
+  QgsDebugMsg( "Project files found:" );
+  for ( int x = 0; x < projectFiles.size(); x++ )
+  {
+    QgsDebugMsg( projectFiles.at( x ).absoluteFilePath() );
+  }
   if ( projectFiles.size() < 1 )
   {
     return QFileInfo();
@@ -224,6 +229,7 @@ int main( int argc, char * argv[] )
   if ( projectFileInfo.exists() )
   {
     defaultConfigFilePath = projectFileInfo.absoluteFilePath();
+    QgsDebugMsg( "Using default project file: " + defaultConfigFilePath );
   }
   else
   {
@@ -256,7 +262,7 @@ int main( int argc, char * argv[] )
   {
     printRequestInfos(); //print request infos if in debug mode
 #ifdef QGSMSDEBUG
-    QgsDebugMsg( QString( "Test font %1loaded from testdata.qrc" ).arg( testFontLoaded ? "" : "NOT " ) );
+    QgsDebugMsg( QString( "Test font %1 loaded from testdata.qrc" ).arg( testFontLoaded ? "" : "NOT " ) );
 #endif
 
     //use QgsGetRequestHandler in case of HTTP GET and QgsSOAPRequestHandler in case of HTTP POST
