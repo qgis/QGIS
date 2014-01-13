@@ -959,7 +959,7 @@
                  <property name="syncGroup" stdset="0">
                   <string notr="true">projstyles</string>
                  </property>
-                 <layout class="QGridLayout" name="gridLayout_9">
+                 <layout class="QGridLayout" name="gridLayout_11">
                   <property name="leftMargin">
                    <number>9</number>
                   </property>
