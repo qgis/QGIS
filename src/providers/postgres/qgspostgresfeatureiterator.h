@@ -69,6 +69,9 @@ class QgsPostgresFeatureIterator : public QgsAbstractFeatureIterator
 
     static const int sFeatureQueueSize;
 
+  private:
+    //! returns whether the iterator can simplify on provider side the geometries to fetch using the specified method type
+    virtual bool providerCanSimplify( QgsSimplifyMethod::MethodType methodType ) const;
 };
 
 #endif // QGSPOSTGRESFEATUREITERATOR_H

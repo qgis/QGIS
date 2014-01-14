@@ -80,9 +80,6 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrProvider* p, const QgsFeatur
     OGR_L_SetSpatialFilter( ogrLayer, 0 );
   }
 
-  //setup if required the simplification of OGR-geometries fetched
-  prepareSimplification( request.simplifyMethod() );
-
   //start with first feature
   rewind();
 }
@@ -105,13 +102,11 @@ void QgsOgrFeatureIterator::ensureRelevantFields()
 
 bool QgsOgrFeatureIterator::prepareSimplification( const QgsSimplifyMethod& simplifyMethod )
 {
-  bool providerSimplification = false;
-
   delete mGeometrySimplifier;
   mGeometrySimplifier = NULL;
 
-  // setup if required the simplification of OGR-geometries fetched
-  if ( simplifyMethod.methodType() != QgsSimplifyMethod::NoSimplification && !simplifyMethod.forceLocalOptimization() && !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) )
+  // setup simplification of OGR-geometries fetched
+  if ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) && simplifyMethod.methodType() != QgsSimplifyMethod::NoSimplification && !simplifyMethod.forceLocalOptimization() )
   {
     QgsSimplifyMethod::MethodType methodType = simplifyMethod.methodType();
 
@@ -119,20 +114,25 @@ bool QgsOgrFeatureIterator::prepareSimplification( const QgsSimplifyMethod& simp
     {
       int simplifyFlags = QgsMapToPixelSimplifier::SimplifyGeometry | QgsMapToPixelSimplifier::SimplifyEnvelope;
       mGeometrySimplifier = new QgsOgrMapToPixelSimplifier( simplifyFlags, simplifyMethod.tolerance() );
-      providerSimplification = true;
+      return true;
     }
     else
     if ( methodType == QgsSimplifyMethod::PreserveTopology )
     {
       mGeometrySimplifier = new QgsOgrTopologyPreservingSimplifier( simplifyMethod.tolerance() );
-      providerSimplification = true;
+      return true;
     }
     else
     {
       QgsDebugMsg( QString( "Simplification method type (%1) is not recognised by OgrFeatureIterator class" ).arg( methodType ) );
     }
   }
-  return QgsAbstractFeatureIterator::prepareSimplification( simplifyMethod ) || providerSimplification;
+  return QgsAbstractFeatureIterator::prepareSimplification( simplifyMethod );
+}
+
+bool QgsOgrFeatureIterator::providerCanSimplify( QgsSimplifyMethod::MethodType methodType ) const
+{
+  return methodType == QgsSimplifyMethod::OptimizeForRendering || methodType == QgsSimplifyMethod::PreserveTopology;
 }
 
 bool QgsOgrFeatureIterator::fetchFeature( QgsFeature& feature )

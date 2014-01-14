@@ -70,15 +70,6 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayer* la
   }
   else // no filter or filter by rect
   {
-    QgsSimplifyMethod simplifyMethod = request.simplifyMethod();
-
-    // if required, local simplification will be configured for all providers, then avoid simplify twice (this iterator and provider iterator)
-    if ( simplifyMethod.methodType() != QgsSimplifyMethod::NoSimplification && simplifyMethod.forceLocalOptimization() )
-    {
-      simplifyMethod.setMethodType( QgsSimplifyMethod::NoSimplification );
-      if ( L->editBuffer() ) mChangedFeaturesRequest.setSimplifyMethod( simplifyMethod ); else mProviderRequest.setSimplifyMethod( simplifyMethod );
-    }
-
     if ( L->editBuffer() )
     {
       mChangedFeaturesIterator = L->dataProvider()->getFeatures( mChangedFeaturesRequest );
@@ -95,9 +86,6 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayer* la
   {
     mRequest.filterExpression()->prepare( L->pendingFields() );
   }
-
-  // prepare if required the local simplification of geometries to fetch
-  prepareSimplification( request.simplifyMethod() );
 }
 
 
@@ -466,13 +454,34 @@ bool QgsVectorLayerFeatureIterator::prepareSimplification( const QgsSimplifyMeth
   delete mEditGeometrySimplifier;
   mEditGeometrySimplifier = NULL;
 
-  // setup the simplification of edited geometries to fetch
-  if ( simplifyMethod.methodType() != QgsSimplifyMethod::NoSimplification && !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) )
+  // setup simplification for edited geometries to fetch
+  if ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) && simplifyMethod.methodType() != QgsSimplifyMethod::NoSimplification )
   {
     mEditGeometrySimplifier = QgsSimplifyMethod::createGeometrySimplifier( simplifyMethod );
+    return mEditGeometrySimplifier != NULL;
   }
+  return false;
+}
 
-  return QgsAbstractFeatureIterator::prepareSimplification( simplifyMethod );
+bool QgsVectorLayerFeatureIterator::providerCanSimplify( QgsSimplifyMethod::MethodType methodType ) const
+{
+  QgsVectorDataProvider* provider = L->dataProvider();
+
+  if ( provider && methodType != QgsSimplifyMethod::NoSimplification )
+  {
+    int capabilities = provider->capabilities();
+
+    if ( methodType == QgsSimplifyMethod::OptimizeForRendering )
+    {
+      return ( capabilities & QgsVectorDataProvider::SimplifyGeometries );
+    }
+    else
+    if ( methodType == QgsSimplifyMethod::PreserveTopology )
+    {
+      return ( capabilities & QgsVectorDataProvider::SimplifyGeometriesWithTopologicalValidation );
+    }
+  }
+  return false;
 }
 
 

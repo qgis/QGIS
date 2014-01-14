@@ -80,9 +80,6 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresProvider* p, 
     return;
   }
 
-  //setup if required the simplification of geometries to fetch
-  prepareSimplification( request.simplifyMethod() );
-
   mFetched = 0;
 }
 
@@ -175,23 +172,26 @@ bool QgsPostgresFeatureIterator::fetchFeature( QgsFeature& feature )
 
 bool QgsPostgresFeatureIterator::prepareSimplification( const QgsSimplifyMethod& simplifyMethod )
 {
-  bool providerSimplification = false;
-
-  // validate settings of simplification of geometries to fetch
-  if ( simplifyMethod.methodType() != QgsSimplifyMethod::NoSimplification && !simplifyMethod.forceLocalOptimization() && !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) )
+  // setup simplification of geometries to fetch
+  if ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) && simplifyMethod.methodType() != QgsSimplifyMethod::NoSimplification && !simplifyMethod.forceLocalOptimization() )
   {
     QgsSimplifyMethod::MethodType methodType = simplifyMethod.methodType();
 
     if ( methodType == QgsSimplifyMethod::OptimizeForRendering || methodType == QgsSimplifyMethod::PreserveTopology )
     {
-      providerSimplification = true;
+      return true;
     }
     else
     {
       QgsDebugMsg( QString( "Simplification method type (%1) is not recognised by PostgresFeatureIterator" ).arg( methodType ) );
     }
   }
-  return QgsAbstractFeatureIterator::prepareSimplification( simplifyMethod ) || providerSimplification;
+  return QgsAbstractFeatureIterator::prepareSimplification( simplifyMethod );
+}
+
+bool QgsPostgresFeatureIterator::providerCanSimplify( QgsSimplifyMethod::MethodType methodType ) const
+{
+  return methodType == QgsSimplifyMethod::OptimizeForRendering || methodType == QgsSimplifyMethod::PreserveTopology;
 }
 
 bool QgsPostgresFeatureIterator::rewind()
