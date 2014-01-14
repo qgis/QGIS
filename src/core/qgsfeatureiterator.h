@@ -96,7 +96,7 @@ class CORE_EXPORT QgsAbstractFeatureIterator
     //! this iterator runs local simplification
     bool mLocalSimplification;
 
-    //! returns whether the iterator can simplify on provider side the geometries to fetch using the specified method type
+    //! returns whether the iterator supports simplify geometries on provider side
     virtual bool providerCanSimplify( QgsSimplifyMethod::MethodType methodType ) const;
 
     //! simplify the specified geometry if it was configured

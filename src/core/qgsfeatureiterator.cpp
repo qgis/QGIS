@@ -83,7 +83,11 @@ bool QgsAbstractFeatureIterator::nextFeatureFilterFids( QgsFeature& f )
 
 void QgsAbstractFeatureIterator::ref()
 {
-  // prepare if required the simplification of geometries to fetch
+  // Prepare if required the simplification of geometries to fetch:
+  // This code runs here because of 'prepareSimplification()' is virtual and it can be overrided
+  // in inherited iterators who change the default behavior.
+  // It would be better to call this method in the constructor enabling virtual-calls as it is described by example at:
+  // http://www.parashift.com/c%2B%2B-faq-lite/calling-virtuals-from-ctor-idiom.html
   if ( refs == 0 )
   {
     prepareSimplification( mRequest.simplifyMethod() );

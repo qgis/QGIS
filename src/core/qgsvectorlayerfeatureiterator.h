@@ -122,7 +122,7 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
     //! optional object to locally simplify edited (changed or added) geometries fetched by this feature iterator
     QgsAbstractGeometrySimplifier* mEditGeometrySimplifier;
 
-    //! returns whether the iterator can simplify on provider side the geometries to fetch using the specified method type
+    //! returns whether the iterator supports simplify geometries on provider side
     virtual bool providerCanSimplify( QgsSimplifyMethod::MethodType methodType ) const;
 };
 

@@ -65,7 +65,7 @@ class QgsOgrFeatureIterator : public QgsAbstractFeatureIterator
     //! optional object to simplify OGR-geometries fecthed by this feature iterator
     QgsOgrAbstractGeometrySimplifier* mGeometrySimplifier;
 
-    //! returns whether the iterator can simplify on provider side the geometries to fetch using the specified method type
+    //! returns whether the iterator supports simplify geometries on provider side
     virtual bool providerCanSimplify( QgsSimplifyMethod::MethodType methodType ) const;
 };
 
