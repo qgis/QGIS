@@ -20,7 +20,7 @@
 #include "qgsexpression.h"
 
 #include <QHash>
-#include <memory>
+#include <QScopedPointer>
 
 class QgsVectorColorRampV2;
 class QgsVectorLayer;
@@ -54,7 +54,7 @@ class CORE_EXPORT QgsRendererCategoryV2
 
   protected:
     QVariant mValue;
-    std::auto_ptr<QgsSymbolV2> mSymbol;
+    QScopedPointer<QgsSymbolV2> mSymbol;
     QString mLabel;
 
     void swap( QgsRendererCategoryV2 & other );
@@ -141,19 +141,19 @@ class CORE_EXPORT QgsCategorizedSymbolRendererV2 : public QgsFeatureRendererV2
     void setRotationField( QString expression )
     {
       mRotation.reset( expression.isEmpty() ? NULL : new QgsExpression( expression ) );
-      Q_ASSERT( !mRotation.get() || !mRotation->hasParserError() );
+      Q_ASSERT( !mRotation.data() || !mRotation->hasParserError() );
     }
     //! @note added in 1.6
-    QString rotationField() const {  return mRotation.get() ? mRotation->expression() : "";}
+    QString rotationField() const {  return mRotation.data() ? mRotation->expression() : "";}
 
     //! @note added in 1.6
     void setSizeScaleField( QString expression )
     {
       mSizeScale.reset( expression.isEmpty() ? NULL : new QgsExpression( expression ) );
-      Q_ASSERT( !mSizeScale.get() || !mSizeScale->hasParserError() );
+      Q_ASSERT( !mSizeScale.data() || !mSizeScale->hasParserError() );
     }
     //! @note added in 1.6
-    QString sizeScaleField() const { return mSizeScale.get() ? mSizeScale->expression() : ""; }
+    QString sizeScaleField() const { return mSizeScale.data() ? mSizeScale->expression() : ""; }
 
     //! @note added in 2.0
     void setScaleMethod( QgsSymbolV2::ScaleMethod scaleMethod );
@@ -163,13 +163,13 @@ class CORE_EXPORT QgsCategorizedSymbolRendererV2 : public QgsFeatureRendererV2
   protected:
     QString mAttrName;
     QgsCategoryList mCategories;
-    std::auto_ptr<QgsSymbolV2> mSourceSymbol;
-    std::auto_ptr<QgsVectorColorRampV2> mSourceColorRamp;
+    QScopedPointer<QgsSymbolV2> mSourceSymbol;
+    QScopedPointer<QgsVectorColorRampV2> mSourceColorRamp;
     bool mInvertedColorRamp;
-    std::auto_ptr<QgsExpression> mRotation;
-    std::auto_ptr<QgsExpression> mSizeScale;
+    QScopedPointer<QgsExpression> mRotation;
+    QScopedPointer<QgsExpression> mSizeScale;
     QgsSymbolV2::ScaleMethod mScaleMethod;
-    std::auto_ptr<QgsExpression> mExpression;
+    QScopedPointer<QgsExpression> mExpression;
 
     //! attribute index (derived from attribute name in startRender)
     int mAttrNum;

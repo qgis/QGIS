@@ -46,7 +46,7 @@ QgsRendererRangeV2::QgsRendererRangeV2( double lowerValue, double upperValue, Qg
 QgsRendererRangeV2::QgsRendererRangeV2( const QgsRendererRangeV2& range )
     : mLowerValue( range.mLowerValue )
     , mUpperValue( range.mUpperValue )
-    , mSymbol( range.mSymbol.get() ? range.mSymbol->clone() : NULL )
+    , mSymbol( range.mSymbol.data() ? range.mSymbol->clone() : NULL )
     , mLabel( range.mLabel )
 {
 }
@@ -78,7 +78,7 @@ double QgsRendererRangeV2::upperValue() const
 
 QgsSymbolV2* QgsRendererRangeV2::symbol() const
 {
-  return mSymbol.get();
+  return mSymbol.data();
 }
 
 QString QgsRendererRangeV2::label() const
@@ -88,7 +88,7 @@ QString QgsRendererRangeV2::label() const
 
 void QgsRendererRangeV2::setSymbol( QgsSymbolV2* s )
 {
-  if ( mSymbol.get() != s ) mSymbol.reset( s );
+  if ( mSymbol.data() != s ) mSymbol.reset( s );
 }
 
 void QgsRendererRangeV2::setLabel( QString label )
@@ -113,7 +113,7 @@ QString QgsRendererRangeV2::dump() const
 
 void QgsRendererRangeV2::toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const
 {
-  if ( !mSymbol.get() || props.value( "attribute", "" ).isEmpty() )
+  if ( !mSymbol.data() || props.value( "attribute", "" ).isEmpty() )
     return;
 
   QString attrName = props[ "attribute" ];
@@ -192,12 +192,12 @@ QgsSymbolV2* QgsGraduatedSymbolRendererV2::symbolForFeature( QgsFeature& feature
   if ( symbol == NULL )
     return NULL;
 
-  if ( !mRotation.get() && !mSizeScale.get() )
+  if ( !mRotation.data() && !mSizeScale.data() )
     return symbol; // no data-defined rotation/scaling - just return the symbol
 
   // find out rotation, size scale
-  const double rotation = mRotation.get() ? mRotation->evaluate( feature ).toDouble() : 0;
-  const double sizeScale = mSizeScale.get() ? mSizeScale->evaluate( feature ).toDouble() : 1.;
+  const double rotation = mRotation.data() ? mRotation->evaluate( feature ).toDouble() : 0;
+  const double sizeScale = mSizeScale.data() ? mSizeScale->evaluate( feature ).toDouble() : 1.;
 
   // take a temporary symbol (or create it if doesn't exist)
   QgsSymbolV2* tempSymbol = mTempSymbols[symbol];
@@ -234,11 +234,11 @@ void QgsGraduatedSymbolRendererV2::startRender( QgsRenderContext& context, const
   {
     it->symbol()->startRender( context, vlayer );
 
-    if ( mRotation.get() || mSizeScale.get() )
+    if ( mRotation.data() || mSizeScale.data() )
     {
       QgsSymbolV2* tempSymbol = it->symbol()->clone();
-      tempSymbol->setRenderHints(( mRotation.get() ? QgsSymbolV2::DataDefinedRotation : 0 ) |
-                                 ( mSizeScale.get() ? QgsSymbolV2::DataDefinedSizeScale : 0 ) );
+      tempSymbol->setRenderHints(( mRotation.data() ? QgsSymbolV2::DataDefinedRotation : 0 ) |
+                                 ( mSizeScale.data() ? QgsSymbolV2::DataDefinedSizeScale : 0 ) );
       tempSymbol->startRender( context, vlayer );
       mTempSymbols[ it->symbol()] = tempSymbol;
     }
@@ -265,8 +265,8 @@ QList<QString> QgsGraduatedSymbolRendererV2::usedAttributes()
 {
   QgsExpression exp( mAttrName );
   QSet<QString> attributes( exp.referencedColumns().toSet() );
-  if ( mRotation.get() ) attributes.unite( mRotation->referencedColumns().toSet() );
-  if ( mSizeScale.get() ) attributes.unite( mSizeScale->referencedColumns().toSet() );
+  if ( mRotation.data() ) attributes.unite( mRotation->referencedColumns().toSet() );
+  if ( mSizeScale.data() ) attributes.unite( mSizeScale->referencedColumns().toSet() );
 
   QgsRangeList::const_iterator range_it = mRanges.constBegin();
   for ( ; range_it != mRanges.constEnd(); ++range_it )
@@ -324,9 +324,9 @@ QgsFeatureRendererV2* QgsGraduatedSymbolRendererV2::clone()
 {
   QgsGraduatedSymbolRendererV2* r = new QgsGraduatedSymbolRendererV2( mAttrName, mRanges );
   r->setMode( mMode );
-  if ( mSourceSymbol.get() )
+  if ( mSourceSymbol.data() )
     r->setSourceSymbol( mSourceSymbol->clone() );
-  if ( mSourceColorRamp.get() )
+  if ( mSourceColorRamp.data() )
   {
     r->setSourceColorRamp( mSourceColorRamp->clone() );
     r->setInvertedColorRamp( mInvertedColorRamp );
@@ -342,9 +342,9 @@ void QgsGraduatedSymbolRendererV2::toSld( QDomDocument& doc, QDomElement &elemen
 {
   QgsStringMap props;
   props[ "attribute" ] = mAttrName;
-  if ( !mRotation.get() )
+  if ( !mRotation.data() )
     props[ "angle" ] = qgsXmlEncode( mRotation->expression() ).append( "\"" ).prepend( "\"" );
-  if ( !mSizeScale.get() )
+  if ( !mSizeScale.data() )
     props[ "scale" ] = qgsXmlEncode( mSizeScale->expression() ).append( "\"" ).prepend( "\"" );
 
   // create a Rule for each range
@@ -1002,18 +1002,18 @@ QDomElement QgsGraduatedSymbolRendererV2::save( QDomDocument& doc )
   rendererElem.appendChild( symbolsElem );
 
   // save source symbol
-  if ( mSourceSymbol.get() )
+  if ( mSourceSymbol.data() )
   {
     QgsSymbolV2Map sourceSymbols;
-    sourceSymbols.insert( "0", mSourceSymbol.get() );
+    sourceSymbols.insert( "0", mSourceSymbol.data() );
     QDomElement sourceSymbolElem = QgsSymbolLayerV2Utils::saveSymbols( sourceSymbols, "source-symbol", doc );
     rendererElem.appendChild( sourceSymbolElem );
   }
 
   // save source color ramp
-  if ( mSourceColorRamp.get() )
+  if ( mSourceColorRamp.data() )
   {
-    QDomElement colorRampElem = QgsSymbolLayerV2Utils::saveColorRamp( "[source]", mSourceColorRamp.get(), doc );
+    QDomElement colorRampElem = QgsSymbolLayerV2Utils::saveColorRamp( "[source]", mSourceColorRamp.data(), doc );
     rendererElem.appendChild( colorRampElem );
     QDomElement invertedElem = doc.createElement( "invertedcolorramp" );
     invertedElem.setAttribute( "value", mInvertedColorRamp );
@@ -1040,12 +1040,12 @@ QDomElement QgsGraduatedSymbolRendererV2::save( QDomDocument& doc )
   }
 
   QDomElement rotationElem = doc.createElement( "rotation" );
-  if ( mRotation.get() )
+  if ( mRotation.data() )
     rotationElem.setAttribute( "field", qgsXmlEncode( mRotation->expression() ) );
   rendererElem.appendChild( rotationElem );
 
   QDomElement sizeScaleElem = doc.createElement( "sizescale" );
-  if ( mSizeScale.get() )
+  if ( mSizeScale.data() )
     sizeScaleElem.setAttribute( "field", qgsXmlEncode( mSizeScale->expression() ) );
   sizeScaleElem.setAttribute( "scalemethod", QgsSymbolLayerV2Utils::encodeScaleMethod( mScaleMethod ) );
   rendererElem.appendChild( sizeScaleElem );
@@ -1091,7 +1091,7 @@ QgsLegendSymbolList QgsGraduatedSymbolRendererV2::legendSymbolItems( double scal
     if ( rule.isEmpty() || range.label() == rule )
     {
       QgsSymbolV2* symbol;
-      if ( !mRotation.get() && !mSizeScale.get() )
+      if ( !mRotation.data() && !mSizeScale.data() )
       {
         symbol = range.symbol();
       }
@@ -1107,7 +1107,7 @@ QgsLegendSymbolList QgsGraduatedSymbolRendererV2::legendSymbolItems( double scal
 
 QgsSymbolV2* QgsGraduatedSymbolRendererV2::sourceSymbol()
 {
-  return mSourceSymbol.get();
+  return mSourceSymbol.data();
 }
 void QgsGraduatedSymbolRendererV2::setSourceSymbol( QgsSymbolV2* sym )
 {
@@ -1116,7 +1116,7 @@ void QgsGraduatedSymbolRendererV2::setSourceSymbol( QgsSymbolV2* sym )
 
 QgsVectorColorRampV2* QgsGraduatedSymbolRendererV2::sourceColorRamp()
 {
-  return mSourceColorRamp.get();
+  return mSourceColorRamp.data();
 }
 
 void QgsGraduatedSymbolRendererV2::setSourceColorRamp( QgsVectorColorRampV2* ramp )
