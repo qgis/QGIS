@@ -179,6 +179,11 @@ int QgsBrightnessContrastFilter::adjustColorComponent( int colorComponent, int a
     // Opaque pixel, do simpler math
     return qBound( 0, ( int )(((((( colorComponent / 255.0 ) - 0.5 ) * contrastFactor ) + 0.5 ) * 255 ) + brightness ), 255 );
   }
+  else if ( alpha == 0 )
+  {
+    // Totally transparent pixel
+    return 0;
+  }
   else
   {
     // Semi-transparent pixel. We need to adjust the math since we are using QGis::ARGB32_Premultiplied

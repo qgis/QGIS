@@ -171,6 +171,13 @@ QgsRasterBlock * QgsHueSaturationFilter::block( int bandNo, QgsRectangle  const 
     // Alpha must be taken from QRgb, since conversion from QRgb->QColor loses alpha
     alpha = qAlpha( myRgb );
 
+    if ( alpha == 0 )
+    {
+      // totally transparent, no changes required
+      outputBlock->setColor( i, myRgb );
+      continue;
+    }
+
     // Get rgb for color
     myColor.getRgb( &r, &g, &b );
     if ( alpha != 255 )
