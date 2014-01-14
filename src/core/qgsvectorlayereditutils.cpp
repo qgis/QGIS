@@ -34,7 +34,14 @@ bool QgsVectorLayerEditUtils::insertVertex( double x, double y, QgsFeatureId atF
 
   QgsGeometry geometry;
   if ( !cache()->geometry( atFeatureId, geometry ) )
-    return false;   // TODO: support also uncached geometries
+  {
+    // it's not in cache: let's fetch it from layer
+    QgsFeature f;
+    if ( !L->getFeatures( QgsFeatureRequest().setFilterFid( atFeatureId ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( f ) || !f.geometry() )
+      return false; // geometry not found
+
+    geometry = *f.geometry();
+  }
 
   geometry.insertVertex( x, y, beforeVertex );
 
@@ -50,7 +57,14 @@ bool QgsVectorLayerEditUtils::moveVertex( double x, double y, QgsFeatureId atFea
 
   QgsGeometry geometry;
   if ( !cache()->geometry( atFeatureId, geometry ) )
-    return false;   // TODO: support also uncached geometries
+  {
+    // it's not in cache: let's fetch it from layer
+    QgsFeature f;
+    if ( !L->getFeatures( QgsFeatureRequest().setFilterFid( atFeatureId ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( f ) || !f.geometry() )
+      return false; // geometry not found
+
+    geometry = *f.geometry();
+  }
 
   geometry.moveVertex( x, y, atVertex );
 
@@ -66,7 +80,14 @@ bool QgsVectorLayerEditUtils::deleteVertex( QgsFeatureId atFeatureId, int atVert
 
   QgsGeometry geometry;
   if ( !cache()->geometry( atFeatureId, geometry ) )
-    return false;   // TODO: support also uncached geometries
+  {
+    // it's not in cache: let's fetch it from layer
+    QgsFeature f;
+    if ( !L->getFeatures( QgsFeatureRequest().setFilterFid( atFeatureId ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( f ) || !f.geometry() )
+      return false; // geometry not found
+
+    geometry = *f.geometry();
+  }
 
   if ( !geometry.deleteVertex( atVertex ) )
     return false;
