@@ -414,4 +414,27 @@ typedef unsigned long long qgssize;
 #endif
 #endif
 
+inline
+QString qgsXmlEncode( QString str )
+{
+  // string passed as value to avoid internal copy
+  str.replace( "&",  "&amp;" );
+  str.replace( "\"", "&quot;" );
+  str.replace( "'", "&apos;" );
+  str.replace( "<",   "&lt;" );
+  str.replace( ">",   "&gt;" );
+  return str;
+}
+
+inline
+QString qgsXmlDecode( QString str )
+{
+  // string passed as value to avoid internal copy
+  str.replace( "&amp;",  "&" );
+  str.replace( "&quot;", "\"" );
+  str.replace( "&apos;",  "'" );
+  str.replace( "&lt;",  "<" );
+  str.replace( "&gt;",  ">" );
+  return str;
+}
 #endif

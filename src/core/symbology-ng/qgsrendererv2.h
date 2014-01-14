@@ -204,6 +204,9 @@ class CORE_EXPORT QgsFeatureRendererV2
     int mCurrentVertexMarkerType;
     /** The current size of editing marker */
     int mCurrentVertexMarkerSize;
+
+  private:
+    Q_DISABLE_COPY( QgsFeatureRendererV2 )
 };
 
 class QgsRendererV2Widget;  // why does SIP fail, when this isn't here
