@@ -563,10 +563,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
 
   // Default simplify drawing configuration
   mSimplifyDrawingGroupBox->setChecked( settings.value( "/qgis/simplifyDrawingHints", ( int )QgsVectorLayer::GeometrySimplification ).toInt() != QgsVectorLayer::NoSimplification );
-  mSimplifyDrawingSlider->setValue(( int )( 5.0f * ( settings.value( "/qgis/simplifyDrawingTol", QGis::DEFAULT_MAPTOPIXEL_THRESHOLD ).toFloat() - 1 ) ) );
+  mSimplifyDrawingSpinBox->setValue( settings.value( "/qgis/simplifyDrawingTol", QGis::DEFAULT_MAPTOPIXEL_THRESHOLD ).toFloat() );
   mSimplifyDrawingAtProvider->setChecked( !settings.value( "/qgis/simplifyLocal", true ).toBool() );
-  mSimplifyDrawingPanel->setVisible( mSimplifyDrawingSlider->value() > 0 );
-  mSimplifyDrawingPx->setText( QString( "(%1 px)" ).arg( 1.0f + 0.2f * mSimplifyDrawingSlider->value() ) );
 
   // Slightly awkard here at the settings value is true to use QImage,
   // but the checkbox is true to use QPixmap
@@ -1104,10 +1102,10 @@ void QgsOptions::saveOptions()
   if ( mSimplifyDrawingGroupBox->isChecked() )
   {
     simplifyHints |= QgsVectorLayer::GeometrySimplification;
-    if ( mSimplifyDrawingSlider->value() > 0 ) simplifyHints |= QgsVectorLayer::AntialiasingSimplification;
+    if ( mSimplifyDrawingSpinBox->value() > 1 ) simplifyHints |= QgsVectorLayer::AntialiasingSimplification;
   }
   settings.setValue( "/qgis/simplifyDrawingHints", simplifyHints );
-  settings.setValue( "/qgis/simplifyDrawingTol", 1.0f + 0.2f*mSimplifyDrawingSlider->value() );
+  settings.setValue( "/qgis/simplifyDrawingTol", mSimplifyDrawingSpinBox->value() );
   settings.setValue( "/qgis/simplifyLocal", !mSimplifyDrawingAtProvider->isChecked() );
 
   // project
@@ -2087,10 +2085,3 @@ void QgsOptions::saveDefaultDatumTransformations()
 
   s.endGroup();
 }
-
-void QgsOptions::on_mSimplifyDrawingSlider_valueChanged( int value )
-{
-  mSimplifyDrawingPanel->setVisible( value > 0 );
-  mSimplifyDrawingPx->setText( QString( "(%1 px)" ).arg( 1.0f + 0.2f * value ) );
-}
-

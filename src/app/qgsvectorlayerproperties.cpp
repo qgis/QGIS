@@ -395,9 +395,7 @@ void QgsVectorLayerProperties::syncToLayer( void )
   // get simplify drawing configuration
   const QgsVectorSimplifyMethod& simplifyMethod = layer->simplifyMethod();
   mSimplifyDrawingGroupBox->setChecked( simplifyMethod.simplifyHints() != QgsVectorLayer::NoSimplification );
-  mSimplifyDrawingSlider->setValue(( int )( 5.0f * ( simplifyMethod.threshold() - 1 ) ) );
-  mSimplifyDrawingPanel->setVisible( mSimplifyDrawingSlider->value() > 0 );
-  mSimplifyDrawingPx->setText( QString( "(%1 px)" ).arg( 1.0f + 0.2f * mSimplifyDrawingSlider->value() ) );
+  mSimplifyDrawingSpinBox->setValue( simplifyMethod.threshold() );
 
   if ( !( layer->dataProvider()->capabilities() & QgsVectorDataProvider::SimplifyGeometries ) )
   {
@@ -553,11 +551,11 @@ void QgsVectorLayerProperties::apply()
   if ( mSimplifyDrawingGroupBox->isChecked() )
   {
     simplifyHints |= QgsVectorLayer::GeometrySimplification;
-    if ( mSimplifyDrawingSlider->value() > 0 ) simplifyHints |= QgsVectorLayer::AntialiasingSimplification;
+    if ( mSimplifyDrawingSpinBox->value() > 1 ) simplifyHints |= QgsVectorLayer::AntialiasingSimplification;
   }
   QgsVectorSimplifyMethod simplifyMethod = layer->simplifyMethod();
   simplifyMethod.setSimplifyHints( simplifyHints );
-  simplifyMethod.setThreshold( 1.0f + 0.2f*mSimplifyDrawingSlider->value() );
+  simplifyMethod.setThreshold( mSimplifyDrawingSpinBox->value() );
   simplifyMethod.setForceLocalOptimization( !mSimplifyDrawingAtProvider->isChecked() );
   layer->setSimplifyMethod( simplifyMethod );
 
@@ -1098,12 +1096,6 @@ void QgsVectorLayerProperties::on_mMinimumScaleSetCurrentPushButton_clicked()
 void QgsVectorLayerProperties::on_mMaximumScaleSetCurrentPushButton_clicked()
 {
   cbMaximumScale->setScale( 1.0 / QgisApp::instance()->mapCanvas()->mapRenderer()->scale() );
-}
-
-void QgsVectorLayerProperties::on_mSimplifyDrawingSlider_valueChanged( int value )
-{
-  mSimplifyDrawingPanel->setVisible( value > 0 );
-  mSimplifyDrawingPx->setText( QString( "(%1 px)" ).arg( 1.0f + 0.2f * value ) );
 }
 
 void QgsVectorLayerProperties::on_mSimplifyDrawingGroupBox_toggled( bool checked )
