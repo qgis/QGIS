@@ -170,6 +170,7 @@ SET(QGIS_CORE_SRCS
   dxf/qgsdxfexport.cpp
   dxf/qgsdxfpaintdevice.cpp
   dxf/qgsdxfpaintengine.cpp
+  dxf/qgsdxfpallabeling.cpp
 
   pal/costcalculator.cpp
   pal/feature.cpp

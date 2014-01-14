@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgspallabeling.h"
+#include "qgspalgeometry.h"
 
 #include <list>
 
@@ -59,7 +60,7 @@
 
 using namespace pal;
 
-
+#if 0
 class QgsPalGeometry : public PalGeometry
 {
   public:
@@ -203,6 +204,7 @@ class QgsPalGeometry : public PalGeometry
     QgsAttributes mDiagramAttributes;
     const QgsFields* mDiagramFields;
 };
+#endif //0
 
 // -------------
 

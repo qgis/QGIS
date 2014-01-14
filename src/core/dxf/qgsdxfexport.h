@@ -83,7 +83,12 @@ class CORE_EXPORT QgsDxfExport
 
     void writeCircle( const QString& layer, int color, const QgsPoint& pt, double radius );
 
+    void writeText( const QString& layer, const QString& text, const QgsPoint& pt, double size, double angle );
+
     static double mapUnitScaleFactor( double scaleDenominator, QgsSymbolV2::OutputUnit symbolUnits, QGis::UnitType mapUnits );
+
+    static QString dxfLayerName( const QString& name );
+
 
   private:
 
@@ -159,7 +164,6 @@ class CORE_EXPORT QgsDxfExport
     double dashSeparatorSize() const;
     double sizeToMapUnits( double s ) const;
     static QString lineNameFromPenStyle( Qt::PenStyle style );
-    static QString dxfLayerName( const QString& name );
 };
 
 #endif // QGSDXFEXPORT_H

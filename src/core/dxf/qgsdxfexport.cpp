@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsdxfexport.h"
+#include "qgsdxfpallabeling.h"
 #include "qgsvectordataprovider.h"
 #include "qgspoint.h"
 #include "qgsrendererv2.h"
@@ -473,6 +474,26 @@ void QgsDxfExport::writeTables()
     writeGroup( 6, "CONTINUOUS" );
   }
   writeGroup( 0, "ENDTAB" );
+
+  //STYLE
+  writeGroup( 0, "TABLE" );
+  writeGroup( 2, "STYLE" );
+  writeGroup( 70, 1 );
+
+  //provide only standard font for the moment
+  writeGroup( 0, "STYLE" );
+  writeGroup( 2, "STANDARD" );
+  writeGroup( 70, 64 );
+  writeGroup( 40, 0.0 );
+  writeGroup( 41, 1.0 );
+  writeGroup( 50, 0.0 );
+  writeGroup( 71, 0 );
+  writeGroup( 42, 5.0 );
+  writeGroup( 3, "romans.shx" );
+  writeGroup( 4, "" );
+
+  writeGroup( 0, "ENDTAB" );
+
   endSection();
 }
 
@@ -537,6 +558,10 @@ void QgsDxfExport::writeEntities()
   startSection();
   writeGroup( 2, "ENTITIES" );
 
+  //label engine
+  QgsDxfPalLabeling labelEngine( this, mExtent.isEmpty() ? dxfExtent() : mExtent, mSymbologyScaleDenominator );
+  QgsRenderContext& ctx = labelEngine.renderContext();
+
   //iterate through the maplayers
   QList< QgsMapLayer* >::iterator layerIt = mLayers.begin();
   for ( ; layerIt != mLayers.end(); ++layerIt )
@@ -547,11 +572,13 @@ void QgsDxfExport::writeEntities()
       continue;
     }
 
-    QgsRenderContext ctx = renderContext();
-    ctx.setRendererScale( mSymbologyScaleDenominator );
     QgsSymbolV2RenderContext sctx( ctx, QgsSymbolV2::MM , 1.0, false, 0, 0 );
     QgsFeatureRendererV2* renderer = vl->rendererV2();
     renderer->startRender( ctx, vl );
+
+    //todo: call mLabeling.prepareLayer(...)
+    QSet<int> attrIndex;
+    bool labelLayer = ( labelEngine.prepareLayer( vl, attrIndex, ctx ) != 0 );
 
     if ( mSymbologyExport == QgsDxfExport::SymbolLayerSymbology && renderer->usingSymbolLevels() )
     {
@@ -560,8 +587,17 @@ void QgsDxfExport::writeEntities()
       continue;
     }
 
+    //combine renderer and label attributes
+    const QgsFields& fields = vl->pendingFields();
+    QList<QString> attributes = renderer->usedAttributes();
+    QSet<int>::const_iterator attrIndexIt = attrIndex.constBegin();
+    for ( ; attrIndexIt != attrIndex.constEnd(); ++attrIndexIt )
+    {
+      attributes.append( fields.at( *attrIndexIt ).name() );
+    }
+
     QgsFeatureRequest freq = QgsFeatureRequest().setSubsetOfAttributes(
-                               renderer->usedAttributes(), vl->pendingFields() );
+                               attributes, vl->pendingFields() );
     if ( !mExtent.isEmpty() )
     {
       freq.setFilterRect( mExtent );
@@ -609,10 +645,17 @@ void QgsDxfExport::writeEntities()
           }
           addFeature( sctx, dxfLayerName( vl->name() ), s->symbolLayer( 0 ), s );
         }
+
+        if ( labelLayer )
+        {
+          labelEngine.registerFeature( vl, fet, ctx );
+        }
       }
     }
     renderer->stopRender( ctx );
   }
+
+  labelEngine.drawLabeling( ctx );
 
   endSection();
 }
@@ -826,6 +869,20 @@ void QgsDxfExport::writeCircle( const QString& layer, int color, const QgsPoint&
   writeGroup( 20, pt.y() );
   writeGroup( 30, 0 );
   writeGroup( 40, radius );
+}
+
+void QgsDxfExport::writeText( const QString& layer, const QString& text, const QgsPoint& pt, double size, double angle )
+{
+  writeGroup( 0, "TEXT" );
+  writeGroup( 8, layer );
+  //todo: color with code 64
+  writeGroup( 10, pt.x() );
+  writeGroup( 20, pt.y() );
+  writeGroup( 30, 0 );
+  writeGroup( 40, size );
+  writeGroup( 1, text );
+  writeGroup( 50, angle );
+  writeGroup( 7, "STANDARD" ); //so far only support for standard font
 }
 
 void QgsDxfExport::writeSolid( const QString& layer, int color, const QgsPoint& pt1, const QgsPoint& pt2, const QgsPoint& pt3, const QgsPoint& pt4 )
