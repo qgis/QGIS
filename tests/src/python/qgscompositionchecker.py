@@ -27,7 +27,7 @@ class QgsCompositionChecker(QgsRenderChecker):
         self.mTestName = mTestName
         super(QgsCompositionChecker, self).__init__()
 
-    def testComposition(self, page=0 ):
+    def testComposition(self, page=0, pixelDiff=0 ):
         if ( self.mComposition == None):
             myMessage = "Composition not valid"
             return False, myMessage
@@ -53,7 +53,7 @@ class QgsCompositionChecker(QgsRenderChecker):
         outputImage.save( renderedFilePath, "PNG" )
 
         diffFilePath = QDir.tempPath() + QDir.separator() + QFileInfo(self.mTestName).baseName() + "_result_diff.png"
-        testResult = self.compareImages( self.mTestName, 0, renderedFilePath )
+        testResult = self.compareImages( self.mTestName, pixelDiff, renderedFilePath )
 
         myDashMessage = (('<DartMeasurementFile name="Rendered Image '
                          '%s" type="image/png">'
