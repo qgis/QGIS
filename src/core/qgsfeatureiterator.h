@@ -93,6 +93,11 @@ class CORE_EXPORT QgsAbstractFeatureIterator
   private:
     //! optional object to locally simplify geometries fetched by this feature iterator
     QgsAbstractGeometrySimplifier* mGeometrySimplifier;
+    //! this iterator runs local simplification
+    bool mLocalSimplification;
+
+    //! returns whether the iterator can simplify on provider side the geometries to fetch using the specified method type
+    virtual bool providerCanSimplify( QgsSimplifyMethod::MethodType methodType ) const;
 
     //! simplify the specified geometry if it was configured
     virtual bool simplify( QgsFeature& feature );

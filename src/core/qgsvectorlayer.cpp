@@ -737,13 +737,6 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
     simplifyMethod.setTolerance( map2pixelTol );
     simplifyMethod.setForceLocalOptimization( mSimplifyMethod.forceLocalOptimization() );
 
-    // fix simplification non supported on server side
-    if ( !simplifyMethod.forceLocalOptimization() && !( mDataProvider->capabilities() & QgsVectorDataProvider::SimplifyGeometries ) )
-    {
-      QgsDebugMsg( "Data provider does not support geometry simplification on provider side" );
-      simplifyMethod.setForceLocalOptimization( true );
-    }
-
     featureRequest.setSimplifyMethod( simplifyMethod );
   }
 
