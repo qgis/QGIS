@@ -420,6 +420,21 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     */
     void sizeChangedByRotation( double& width, double& height );
 
+    /** Returns true if the map extent is set to follow the current atlas feature */
+    bool atlasDriven() const { return mAtlasDriven; }
+    /** Set to true if the map extents should be set by the current atlas feature */
+    void setAtlasDriven( bool enabled ) { mAtlasDriven = enabled; }
+
+    /** Returns true if the map uses a fixed scale when in atlas mode */
+    bool atlasFixedScale() const { return mAtlasFixedScale; }
+    /** Set to true if the map should use a fixed scale when in atlas mode */
+    void setAtlasFixedScale( bool fixed ) { mAtlasFixedScale = fixed; }
+
+    /** Returns the margin size (percentage) used when the map is in atlas mode */
+    double atlasMargin() const { return mAtlasMargin; }
+    /** Sets the margin size (percentage) used when the map is in atlas mode */
+    void setAtlasMargin( double margin ) { mAtlasMargin = margin; }
+
   signals:
     void extentChanged();
 
@@ -570,6 +585,13 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     /**Adjusts an extent rectangle to match the provided item width and height, so that extent
      * center of extent remains the same */
     void adjustExtentToItemShape( double itemWidth, double itemHeight, QgsRectangle& extent ) const;
+
+    /**True if map is being controlled by an atlas*/
+    bool mAtlasDriven;
+    /**True if map uses a fixed scale when controlled by an atlas*/
+    bool mAtlasFixedScale;
+    /**Margin size for atlas driven extents (percentage of feature size)*/
+    double mAtlasMargin;
 
     /**Draws the map grid*/
     void drawGrid( QPainter* p );

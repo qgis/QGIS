@@ -36,12 +36,10 @@ class QgsAtlasCompositionWidget:
 
   public slots:
     void on_mUseAtlasCheckBox_stateChanged( int state );
-    void on_mComposerMapComboBox_currentIndexChanged( int index );
     void on_mAtlasCoverageLayerComboBox_currentIndexChanged( int index );
     void on_mAtlasFilenamePatternEdit_textChanged( const QString& text );
     void on_mAtlasFilenameExpressionButton_clicked();
     void on_mAtlasHideCoverageCheckBox_stateChanged( int state );
-    void on_mAtlasFixedScaleRadio_toggled( bool checked );
     void on_mAtlasSingleFileCheckBox_stateChanged( int state );
 
     void on_mAtlasSortFeatureCheckBox_stateChanged( int state );
@@ -50,15 +48,12 @@ class QgsAtlasCompositionWidget:
     void on_mAtlasFeatureFilterEdit_editingFinished();
     void on_mAtlasFeatureFilterButton_clicked();
     void on_mAtlasFeatureFilterCheckBox_stateChanged( int state );
-    void on_mAtlasMarginSpinBox_valueChanged( int value );
 
     // extract fields from the current coverage layer and populate the corresponding combo box
     void fillSortColumns();
   private slots:
     void onLayerRemoved( QString );
     void onLayerAdded( QgsMapLayer* );
-    void onComposerMapAdded( QgsComposerMap* );
-    void onItemRemoved( QgsComposerItem* );
 
     void updateGuiElements();
 

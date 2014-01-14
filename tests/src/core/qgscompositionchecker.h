@@ -29,7 +29,7 @@ class QgsCompositionChecker : public QgsRenderChecker
     QgsCompositionChecker( const QString& testName, QgsComposition* composition );
     ~QgsCompositionChecker();
 
-    bool testComposition( QString &report, int page = 0 );
+    bool testComposition( QString &report, int page = 0, int pixelDiff = 0 );
 
   private:
     QgsCompositionChecker(); //forbidden

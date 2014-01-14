@@ -90,9 +90,21 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap ): QWidg
   connect( mGridCheckBox, SIGNAL( toggled( bool ) ),
            mDrawAnnotationCheckableGroupBox, SLOT( setEnabled( bool ) ) );
 
+  connect( mAtlasCheckBox, SIGNAL( toggled( bool ) ), this, SLOT( atlasToggled( bool ) ) );
+
   if ( composerMap )
   {
     connect( composerMap, SIGNAL( itemChanged() ), this, SLOT( setGuiElementValues() ) );
+
+    //get composition
+    QgsComposition* composition = mComposerMap->composition();
+    if ( composition )
+    {
+      QgsAtlasComposition* atlas = &composition->atlasComposition();
+      connect( atlas, SIGNAL( coverageLayerChanged( QgsVectorLayer* ) ),
+               this, SLOT( atlasLayerChanged( QgsVectorLayer* ) ) );
+      connect( atlas, SIGNAL( toggled( bool ) ), this, SLOT( compositionAtlasToggled( bool ) ) );
+    }
   }
 
   updateOverviewSymbolMarker();
@@ -104,6 +116,111 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap ): QWidg
 
 QgsComposerMapWidget::~QgsComposerMapWidget()
 {
+}
+
+void QgsComposerMapWidget::compositionAtlasToggled( bool atlasEnabled )
+{
+  if ( atlasEnabled )
+  {
+    mAtlasCheckBox->setEnabled( true );
+  }
+  else
+  {
+    mAtlasCheckBox->setEnabled( false );
+    mAtlasCheckBox->setChecked( false );
+  }
+}
+
+void QgsComposerMapWidget::atlasToggled( bool checked )
+{
+  if ( checked && mComposerMap )
+  {
+    //check atlas coverage layer type
+    QgsComposition* composition = mComposerMap->composition();
+    if ( composition )
+    {
+      toggleAtlasMarginByLayerType();
+    }
+    else
+    {
+      mAtlasMarginRadio->setEnabled( false );
+    }
+  }
+  else
+  {
+    mAtlasMarginRadio->setEnabled( false );
+  }
+
+  mAtlasFixedScaleRadio->setEnabled( checked );
+  if ( mAtlasMarginRadio->isEnabled() && mAtlasMarginRadio->isChecked() )
+  {
+    mAtlasMarginSpinBox->setEnabled( true );
+  }
+  else
+  {
+    mAtlasMarginSpinBox->setEnabled( false );
+  }
+}
+
+
+void QgsComposerMapWidget::on_mAtlasCheckBox_toggled( bool checked )
+{
+  if ( !mComposerMap )
+  {
+    return;
+  }
+
+  mComposerMap->setAtlasDriven( checked );
+  updateMapForAtlas();
+}
+
+void QgsComposerMapWidget::updateMapForAtlas()
+{
+  //update map if in atlas preview mode
+  QgsComposition* composition = mComposerMap->composition();
+  if ( !composition )
+  {
+    return;
+  }
+  if ( composition->atlasMode() == QgsComposition::AtlasOff )
+  {
+    return;
+  }
+
+  //update atlas based extent for map
+  QgsAtlasComposition* atlas = &composition->atlasComposition();
+  atlas->prepareMap( mComposerMap );
+
+  //redraw map
+  mComposerMap->cache();
+  mComposerMap->update();
+}
+
+void QgsComposerMapWidget::on_mAtlasMarginRadio_toggled( bool checked )
+{
+  mAtlasMarginSpinBox->setEnabled( checked );
+}
+
+void QgsComposerMapWidget::on_mAtlasMarginSpinBox_valueChanged( int value )
+{
+  if ( !mComposerMap )
+  {
+    return;
+  }
+
+  mComposerMap->setAtlasMargin( value / 100. );
+  updateMapForAtlas();
+}
+
+void QgsComposerMapWidget::on_mAtlasFixedScaleRadio_toggled( bool checked )
+{
+  if ( !mComposerMap )
+  {
+    return;
+  }
+
+  mComposerMap->setAtlasFixedScale( checked );
+  updateMapForAtlas();
 }
 
 void QgsComposerMapWidget::on_mPreviewModeComboBox_activated( int i )
@@ -402,7 +519,70 @@ void QgsComposerMapWidget::updateGuiElements()
 
     mCoordinatePrecisionSpinBox->setValue( mComposerMap->gridAnnotationPrecision() );
 
+    //atlas controls
+    mAtlasCheckBox->setChecked( mComposerMap->atlasDriven() );
+    mAtlasMarginSpinBox->setValue( static_cast<int>( mComposerMap->atlasMargin() * 100 ) );
+    if ( mComposerMap->atlasFixedScale() )
+    {
+      mAtlasFixedScaleRadio->setChecked( true );
+      mAtlasMarginSpinBox->setEnabled( false );
+    }
+    else
+    {
+      mAtlasMarginRadio->setChecked( true );
+      mAtlasMarginSpinBox->setEnabled( true );
+    }
+    if ( !mComposerMap->atlasDriven() )
+    {
+      mAtlasMarginSpinBox->setEnabled( false );
+      mAtlasMarginRadio->setEnabled( false );
+      mAtlasFixedScaleRadio->setEnabled( false );
+    }
+    else
+    {
+      mAtlasFixedScaleRadio->setEnabled( true );
+      toggleAtlasMarginByLayerType();
+    }
+
     blockAllSignals( false );
+  }
+}
+
+void QgsComposerMapWidget::toggleAtlasMarginByLayerType()
+{
+  if ( !mComposerMap )
+  {
+    return;
+  }
+
+  //get composition
+  QgsComposition* composition = mComposerMap->composition();
+  if ( !composition )
+  {
+    return;
+  }
+
+  QgsAtlasComposition* atlas = &composition->atlasComposition();
+
+  QgsVectorLayer* coverageLayer = atlas->coverageLayer();
+  if ( !coverageLayer )
+  {
+    return;
+  }
+
+  switch ( atlas->coverageLayer()->wkbType() )
+  {
+    case QGis::WKBPoint:
+    case QGis::WKBPoint25D:
+    case QGis::WKBMultiPoint:
+    case QGis::WKBMultiPoint25D:
+      //For point layers buffer setting makes no sense, so set "fixed scale" on and disable margin control
+      mAtlasFixedScaleRadio->setChecked( true );
+      mAtlasMarginRadio->setEnabled( false );
+      break;
+    default:
+      //Not a point layer, so enable changes to fixed scale control
+      mAtlasMarginRadio->setEnabled( true );
   }
 }
 
@@ -480,6 +660,10 @@ void QgsComposerMapWidget::blockAllSignals( bool b )
   mOverviewBlendModeComboBox->blockSignals( b );
   mOverviewInvertCheckbox->blockSignals( b );
   mOverviewCenterCheckbox->blockSignals( b );
+  mAtlasCheckBox->blockSignals( b );
+  mAtlasMarginSpinBox->blockSignals( b );
+  mAtlasFixedScaleRadio->blockSignals( b );
+  mAtlasMarginRadio->blockSignals( b );
 }
 
 void QgsComposerMapWidget::on_mUpdatePreviewButton_clicked()
@@ -1172,4 +1356,15 @@ void QgsComposerMapWidget::refreshMapComboBox()
   }
 
   mOverviewFrameMapComboBox->blockSignals( false );
+}
+
+void QgsComposerMapWidget::atlasLayerChanged( QgsVectorLayer* layer )
+{
+  // enable or disable fixed scale control based on layer type
+  if ( !layer || !mAtlasCheckBox->isChecked() )
+  {
+    return;
+  }
+
+  toggleAtlasMarginByLayerType();
 }

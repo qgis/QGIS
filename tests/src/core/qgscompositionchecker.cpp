@@ -36,7 +36,7 @@ QgsCompositionChecker::~QgsCompositionChecker()
 {
 }
 
-bool QgsCompositionChecker::testComposition( QString &report, int page )
+bool QgsCompositionChecker::testComposition( QString &report, int page, int pixelDiff )
 {
   if ( !mComposition )
   {
@@ -82,7 +82,7 @@ bool QgsCompositionChecker::testComposition( QString &report, int page )
 
   QString diffFilePath = QDir::tempPath() + QDir::separator() + QFileInfo( mTestName ).baseName() + "_result_diff.png";
 
-  bool testResult = compareImages( mTestName, 0, renderedFilePath );
+  bool testResult = compareImages( mTestName, pixelDiff, renderedFilePath );
 
   QString myDashMessage = "<DartMeasurementFile name=\"Rendered Image " + mTestName + "\""
                           " type=\"image/png\">" + renderedFilePath +

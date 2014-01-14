@@ -2347,9 +2347,16 @@ bool QgsComposition::setAtlasMode( QgsComposition::AtlasMode mode )
     }
   }
 
-  if ( mAtlasComposition.composerMap() )
+  QList<QgsComposerMap*> maps;
+  composerItems( maps );
+  for ( QList<QgsComposerMap*>::iterator mit = maps.begin(); mit != maps.end(); ++mit )
   {
-    mAtlasComposition.composerMap()->toggleAtlasPreview();
+    QgsComposerMap* currentMap = ( *mit );
+    if ( !currentMap->atlasDriven() )
+    {
+      continue;
+    }
+    currentMap->toggleAtlasPreview();
   }
 
   update();

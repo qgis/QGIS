@@ -45,17 +45,35 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     bool enabled() const { return mEnabled; }
     void setEnabled( bool e );
 
-    QgsComposerMap* composerMap() const { return mComposerMap; }
-    void setComposerMap( QgsComposerMap* map ) { mComposerMap = map; }
+    /**Returns the map used by the atlas
+     * @deprecated Use QgsComposerMap::atlasDriven() instead
+     */
+    QgsComposerMap* composerMap() const;
+    /**Sets the map used by the atlas
+     * @deprecated Use QgsComposerMap::setAtlasDriven( true ) instead
+     */
+    void setComposerMap( QgsComposerMap* map );
 
     bool hideCoverage() const { return mHideCoverage; }
     void setHideCoverage( bool hide );
 
-    bool fixedScale() const { return mFixedScale; }
-    void setFixedScale( bool fixed ) { mFixedScale = fixed; }
+    /**Returns whether the atlas map uses a fixed scale
+     * @deprecated Use QgsComposerMap::atlasFixedScale() instead
+     */
+    bool fixedScale() const;
+    /**Sets whether the atlas map should use a fixed scale
+     * @deprecated Use QgsComposerMap::setAtlasFixedScale( bool ) instead
+     */
+    void setFixedScale( bool fixed );
 
-    float margin() const { return mMargin; }
-    void setMargin( float margin ) { mMargin = margin; }
+    /**Returns the margin for the atlas map
+     * @deprecated Use QgsComposerMap::atlasMargin() instead
+     */
+    float margin() const;
+    /**Sets the margin for the atlas map
+     * @deprecated Use QgsComposerMap::setAtlasMargin( double ) instead
+     */
+    void setMargin( float margin );
 
     QString filenamePattern() const { return mFilenamePattern; }
     void setFilenamePattern( const QString& pattern );
@@ -113,6 +131,9 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     /** Returns the current atlas feature. Must be called after prepareForFeature( i ). */
     QgsFeature* currentFeature() { return &mCurrentFeature; }
 
+    /** Recalculates the bounds of an atlas driven map */
+    void prepareMap( QgsComposerMap* map );
+
   signals:
     /** emitted when one of the parameters changes */
     void parameterChanged();
@@ -122,6 +143,9 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
 
     /**Is emitted when the atlas has an updated status bar message for the composer window*/
     void statusMsgChanged( QString message );
+
+    /**Is emitted when the coverage layer for an atlas changes*/
+    void coverageLayerChanged( QgsVectorLayer* layer );
 
   private:
     /**Updates the filename expression*/
@@ -133,10 +157,7 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     QgsComposition* mComposition;
 
     bool mEnabled;
-    QgsComposerMap* mComposerMap;
     bool mHideCoverage;
-    bool mFixedScale;
-    double mMargin;
     QString mFilenamePattern;
     QgsVectorLayer* mCoverageLayer;
     bool mSingleFile;
@@ -170,6 +191,12 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     QgsFeature mCurrentFeature;
     bool mRestoreLayer;
     std::auto_ptr<QgsExpression> mFilenameExpr;
+
+    // bounding box of the current feature transformed into map crs
+    QgsRectangle mTransformedFeatureBounds;
+
+    //forces all atlas enabled maps to redraw
+    void updateAtlasMaps();
 };
 
 #endif
