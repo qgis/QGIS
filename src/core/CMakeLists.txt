@@ -75,6 +75,7 @@ SET(QGIS_CORE_SRCS
   qgsgeometrycache.cpp
   qgsgeometryvalidator.cpp
   qgsgeometrysimplifier.cpp
+  qgssimplifymethod.cpp
   qgsgml.cpp
   qgsgmlschema.cpp
   qgshttptransaction.cpp
@@ -129,6 +130,7 @@ SET(QGIS_CORE_SRCS
   qgsvectorlayerimport.cpp
   qgsvectorlayerjoinbuffer.cpp
   qgsvectorlayerundocommand.cpp
+  qgsvectorsimplifymethod.cpp
 
   qgsnetworkaccessmanager.cpp
 

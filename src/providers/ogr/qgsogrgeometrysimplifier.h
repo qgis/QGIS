@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsogrmaptopixelgeometrysimplifier.h
+    qgsogrgeometrysimplifier.h
     ---------------------
     begin                : December 2013
     copyright            : (C) 2013 by Alvaro Huarte
@@ -14,11 +14,39 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSOGRMAPTOPIXELGEOMETRYSIMPLIFIER_H
-#define QGSOGRMAPTOPIXELGEOMETRYSIMPLIFIER_H
+#ifndef QGSOGRGEOMETRYSIMPLIFIER_H
+#define QGSOGRGEOMETRYSIMPLIFIER_H
 
 #include "qgsmaptopixelgeometrysimplifier.h"
 #include <ogr_geometry.h>
+
+/**
+ * Abstract base class for simplify OGR-geometries using a specific algorithm
+ */
+class QgsOgrAbstractGeometrySimplifier
+{
+  public:
+    virtual ~QgsOgrAbstractGeometrySimplifier();
+
+    //! Simplifies the specified geometry
+    virtual bool simplifyGeometry( OGRGeometry* geometry ) = 0;
+};
+
+/**
+ * OGR Implementation of GeometrySimplifier using the Douglas-Peucker algorithm
+ *
+ * Simplifies a geometry, ensuring that the result is a valid geometry having the same dimension and number of components as the input.
+ * The simplification uses a maximum distance difference algorithm similar to the one used in the Douglas-Peucker algorithm.
+ */
+class QgsOgrTopologyPreservingSimplifier : public QgsOgrAbstractGeometrySimplifier, QgsTopologyPreservingSimplifier
+{
+  public:
+    QgsOgrTopologyPreservingSimplifier( double tolerance );
+    virtual ~QgsOgrTopologyPreservingSimplifier();
+
+    //! Simplifies the specified geometry
+    virtual bool simplifyGeometry( OGRGeometry* geometry );
+};
 
 /**
  * OGR implementation of GeometrySimplifier using the "MapToPixel" algorithm
@@ -26,10 +54,10 @@
  * Simplifies a geometry removing points within of the maximum distance difference that defines the MapToPixel info of a RenderContext request.
  * This class enables simplify the geometries to be rendered in a MapCanvas target to speed up the vector drawing.
  */
-class QgsOgrMapToPixelSimplifier : public QgsMapToPixelSimplifier
+class QgsOgrMapToPixelSimplifier : public QgsOgrAbstractGeometrySimplifier, QgsMapToPixelSimplifier
 {
   public:
-    QgsOgrMapToPixelSimplifier( int simplifyFlags, const QgsCoordinateTransform* coordinateTransform, const QgsMapToPixel* mapToPixel, float mapToPixelTol );
+    QgsOgrMapToPixelSimplifier( int simplifyFlags, double map2pixelTol );
     virtual ~QgsOgrMapToPixelSimplifier();
 
   private:
@@ -48,7 +76,7 @@ class QgsOgrMapToPixelSimplifier : public QgsMapToPixelSimplifier
 
   public:
     //! Simplifies the specified geometry
-    bool simplifyGeometry( OGRGeometry* geometry );
+    virtual bool simplifyGeometry( OGRGeometry* geometry );
 };
 
-#endif // QGSOGRMAPTOPIXELGEOMETRYSIMPLIFIER_H
+#endif // QGSOGRGEOMETRYSIMPLIFIER_H

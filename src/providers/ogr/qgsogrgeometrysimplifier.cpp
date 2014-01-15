@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsogrmaptopixelgeometrysimplifier.cpp
+    qgsogrgeometrysimplifier.cpp
     ---------------------
     begin                : December 2013
     copyright            : (C) 2013 by Alvaro Huarte
@@ -14,14 +14,55 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsogrmaptopixelgeometrysimplifier.h"
+#include "qgsogrgeometrysimplifier.h"
 #include "qgsogrprovider.h"
+#include "qgsapplication.h"
 
-QgsOgrMapToPixelSimplifier::QgsOgrMapToPixelSimplifier( int simplifyFlags, const QgsCoordinateTransform* coordinateTransform, const QgsMapToPixel* mapTolPixel, float mapToPixelTol ) : QgsMapToPixelSimplifier( simplifyFlags, coordinateTransform, mapTolPixel, mapToPixelTol )
+QgsOgrAbstractGeometrySimplifier::~QgsOgrAbstractGeometrySimplifier()
 {
-  mPointBufferCount = 512;
+}
+
+/***************************************************************************/
+
+QgsOgrTopologyPreservingSimplifier::QgsOgrTopologyPreservingSimplifier( double tolerance ) : QgsTopologyPreservingSimplifier( tolerance )
+{
+}
+
+QgsOgrTopologyPreservingSimplifier::~QgsOgrTopologyPreservingSimplifier()
+{
+}
+
+//! Simplifies the specified geometry
+bool QgsOgrTopologyPreservingSimplifier::simplifyGeometry( OGRGeometry* geometry )
+{
+  OGRwkbGeometryType wkbGeometryType = QgsOgrProvider::ogrWkbSingleFlatten( geometry->getGeometryType() );
+
+  if ( wkbGeometryType == wkbLineString || wkbGeometryType == wkbPolygon )
+  {
+    OGRGeometry* g = geometry->SimplifyPreserveTopology( mTolerance );
+
+    if ( g )
+    {
+      size_t wkbSize = g->WkbSize();
+      unsigned char * wkb = (unsigned char *)OGRMalloc( wkbSize );
+      g->exportToWkb( ( OGRwkbByteOrder ) QgsApplication::endian(), wkb );
+      geometry->importFromWkb( wkb, wkbSize );
+      delete g;
+
+      return true;
+    }
+  }
+  return false;
+}
+
+/***************************************************************************/
+
+QgsOgrMapToPixelSimplifier::QgsOgrMapToPixelSimplifier( int simplifyFlags, double map2pixelTol ) : QgsMapToPixelSimplifier( simplifyFlags, map2pixelTol )
+{
+  mPointBufferCount = 64;
   mPointBufferPtr = ( OGRRawPoint* )OGRMalloc( mPointBufferCount * sizeof( OGRRawPoint ) );
 }
+
 QgsOgrMapToPixelSimplifier::~QgsOgrMapToPixelSimplifier()
 {
   if ( mPointBufferPtr )
@@ -59,8 +100,7 @@ bool QgsOgrMapToPixelSimplifier::simplifyOgrGeometry( QGis::GeometryType geometr
   if ( geometryType == QGis::Point || geometryType == QGis::UnknownGeometry ) return false;
   pointSimplifiedCount = 0;
 
-  double map2pixelTol = mMapToPixelTol * QgsMapToPixelSimplifier::calculateViewPixelTolerance( envelope, mMapCoordTransform, mMapToPixel );
-  map2pixelTol *= map2pixelTol; //-> Use mappixelTol for 'LengthSquare' calculations.
+  double map2pixelTol = mMapToPixelTol * mMapToPixelTol; //-> Use mappixelTol for 'LengthSquare' calculations.
   double x, y, lastX = 0, lastY = 0;
 
   char* xsourcePtr = ( char* )xptr;
@@ -73,7 +113,7 @@ bool QgsOgrMapToPixelSimplifier::simplifyOgrGeometry( QGis::GeometryType geometr
     memcpy( &x, xsourcePtr, sizeof( double ) ); xsourcePtr += xStride;
     memcpy( &y, ysourcePtr, sizeof( double ) ); ysourcePtr += yStride;
 
-    if ( i == 0 || !canbeGeneralizable || QgsMapToPixelSimplifier::calculateLengthSquared2D( x, y, lastX, lastY ) > map2pixelTol )
+    if ( i == 0 || !canbeGeneralizable || QgsMapToPixelSimplifier::calculateLengthSquared2D( x, y, lastX, lastY ) > map2pixelTol || ( geometryType == QGis::Line && ( i == 1 || i >= numPoints - 2 ) ) )
     {
       memcpy( xtargetPtr, &x, sizeof( double ) ); lastX = x; xtargetPtr += xStride;
       memcpy( ytargetPtr, &y, sizeof( double ) ); lastY = y; ytargetPtr += yStride;
@@ -100,7 +140,7 @@ bool QgsOgrMapToPixelSimplifier::simplifyOgrGeometry( OGRGeometry* geometry, boo
     OGRLineString* lineString = ( OGRLineString* )geometry;
 
     int numPoints = lineString->getNumPoints();
-    if (( isaLinearRing && numPoints <= 5 ) || ( !isaLinearRing && numPoints <= 2 ) ) return false;
+    if (( isaLinearRing && numPoints <= 5 ) || ( !isaLinearRing && numPoints <= 4 ) ) return false;
 
     OGREnvelope env;
     geometry->getEnvelope( &env );

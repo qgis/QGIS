@@ -94,7 +94,11 @@ void TestQgsGradients::initTestCase()
   QFileInfo myPolyFileInfo( myPolysFileName );
   mpPolysLayer = new QgsVectorLayer( myPolyFileInfo.filePath(),
                                      myPolyFileInfo.completeBaseName(), "ogr" );
-  mpPolysLayer->setSimplifyDrawingHints( QgsVectorLayer::NoSimplification );
+
+  QgsVectorSimplifyMethod simplifyMethod;
+  simplifyMethod.setSimplifyHints( QgsVectorLayer::NoSimplification );
+  mpPolysLayer->setSimplifyMethod( simplifyMethod );
+
   // Register the layer with the registry
   QgsMapLayerRegistry::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mpPolysLayer );
@@ -245,7 +249,9 @@ void TestQgsGradients::gradientSymbolFromQml()
 {
   mReport += "<h2>Gradient symbol from QML test</h2>\n";
   QVERIFY( setQml( "gradient" ) );
-  mpPolysLayer->setSimplifyDrawingHints( QgsVectorLayer::NoSimplification );
+  QgsVectorSimplifyMethod simplifyMethod;
+  simplifyMethod.setSimplifyHints( QgsVectorLayer::NoSimplification );
+  mpPolysLayer->setSimplifyMethod( simplifyMethod );
   QVERIFY( imageCheck( "gradient_from_qml" ) );
 }
 

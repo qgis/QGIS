@@ -18,6 +18,7 @@
 #include "qgsfeaturerequest.h"
 #include "qgslogger.h"
 
+class QgsAbstractGeometrySimplifier;
 
 /** \ingroup core
  * Internal feature iterator to be implemented within data providers
@@ -85,6 +86,21 @@ class CORE_EXPORT QgsAbstractFeatureIterator
     void ref(); //!< add reference
     void deref(); //!< remove reference, delete if refs == 0
     friend class QgsFeatureIterator;
+
+    //! Setup the simplification of geometries to fetch using the specified simplify method
+    virtual bool prepareSimplification( const QgsSimplifyMethod& simplifyMethod );
+
+  private:
+    //! optional object to locally simplify geometries fetched by this feature iterator
+    QgsAbstractGeometrySimplifier* mGeometrySimplifier;
+    //! this iterator runs local simplification
+    bool mLocalSimplification;
+
+    //! returns whether the iterator supports simplify geometries on provider side
+    virtual bool providerCanSimplify( QgsSimplifyMethod::MethodType methodType ) const;
+
+    //! simplify the specified geometry if it was configured
+    virtual bool simplify( QgsFeature& feature );
 };
 
 

@@ -80,7 +80,9 @@ void TestQgsAtlasComposition::initTestCase()
                                      vectorFileInfo.completeBaseName(),
                                      "ogr" );
 
-  mVectorLayer->setSimplifyDrawingHints( QgsVectorLayer::NoSimplification );
+  QgsVectorSimplifyMethod simplifyMethod;
+  simplifyMethod.setSimplifyHints( QgsVectorLayer::NoSimplification );
+  mVectorLayer->setSimplifyMethod( simplifyMethod );
 
   QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer*>() << mVectorLayer );
 

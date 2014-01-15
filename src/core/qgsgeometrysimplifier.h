@@ -28,9 +28,9 @@ class CORE_EXPORT QgsAbstractGeometrySimplifier
     virtual ~QgsAbstractGeometrySimplifier();
 
     //! Returns a simplified version the specified geometry
-    virtual QgsGeometry* simplify( QgsGeometry* geometry ) = 0;
+    virtual QgsGeometry* simplify( QgsGeometry* geometry ) const = 0;
     //! Simplifies the specified geometry
-    virtual bool simplifyGeometry( QgsGeometry* geometry ) = 0;
+    virtual bool simplifyGeometry( QgsGeometry* geometry ) const = 0;
 
     // MapToPixel simplification helper methods
   public:
@@ -53,15 +53,15 @@ class CORE_EXPORT QgsTopologyPreservingSimplifier : public QgsAbstractGeometrySi
     QgsTopologyPreservingSimplifier( double tolerance );
     virtual ~QgsTopologyPreservingSimplifier();
 
-  private:
+  protected:
     //! Distance tolerance for the simplification
     double mTolerance;
 
   public:
     //! Returns a simplified version the specified geometry
-    virtual QgsGeometry* simplify( QgsGeometry* geometry );
+    virtual QgsGeometry* simplify( QgsGeometry* geometry ) const;
     //! Simplifies the specified geometry
-    virtual bool simplifyGeometry( QgsGeometry* geometry );
+    virtual bool simplifyGeometry( QgsGeometry* geometry ) const;
 };
 
 #endif // QGSGEOMETRYSIMPLIFIER_H
