@@ -25,7 +25,6 @@
 #include <QPushButton>
 
 class QgisApp;
-class QgsWmsProvider;
 /*class QButtonGroup;*/
 /*class QgsNumericSortTreeWidgetItem;*/
 class QDomDocument;
@@ -53,7 +52,6 @@ class QgsWMSConnection : public QObject
 
 
   public:
-    QgsWmsProvider *provider();
     QString connectionInfo();
     QString mConnName;
     QString mConnectionInfo;

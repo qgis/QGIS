@@ -17,6 +17,7 @@
 #include "qgslogger.h"
 
 #include "qgsdatasourceuri.h"
+#include "qgswmscapabilities.h"
 #include "qgswmsconnection.h"
 #include "qgswmssourceselect.h"
 
@@ -60,18 +61,37 @@ QVector<QgsDataItem*> QgsWMSConnectionItem::createChildren()
 #endif
   QgsDebugMsg( "encodedUri = " + encodedUri );
 
-  QgsWmsProvider *wmsProvider = new QgsWmsProvider( encodedUri );
-  if ( !wmsProvider ) return children;
-
-  // Attention: supportedLayers() gives tree leafes, not top level
-  if ( !wmsProvider->supportedLayers( mLayerProperties ) )
+  QgsWmsSettings wmsSettings;
+  if ( !wmsSettings.parseUri( encodedUri ) )
   {
-    //children.append( new QgsErrorItem( this, tr( "Failed to retrieve layers" ), mPath + "/error" ) );
-    // TODO: show the error without adding child
+    children.append( new QgsErrorItem( this, tr( "Failed to parse WMS URI" ), mPath + "/error" ) );
     return children;
   }
 
-  QgsWmsCapabilitiesProperty mCapabilitiesProperty = wmsProvider->capabilitiesProperty();
+  QgsWmsCapabilitiesDownload capDownload( wmsSettings.baseUrl(), wmsSettings.authorization() );
+  connect( &capDownload, SIGNAL( statusChanged( QString ) ), this, SLOT( showStatusMessage( QString ) ) );
+
+  QApplication::setOverrideCursor( Qt::WaitCursor );
+  bool res = capDownload.downloadCapabilities();
+  QApplication::restoreOverrideCursor();
+
+  if ( !res )
+  {
+    children.append( new QgsErrorItem( this, tr( "Failed to download capabilities" ), mPath + "/error" ) );
+    return children;
+  }
+
+  QgsWmsCapabilities caps;
+  if ( !caps.parseResponse( capDownload.response(), wmsSettings.parserSettings() ) )
+  {
+    children.append( new QgsErrorItem( this, tr( "Failed to parse capabilities" ), mPath + "/error" ) );
+    return children;
+  }
+
+  // Attention: supportedLayers() gives tree leafes, not top level
+  mLayerProperties = caps.supportedLayers();
+
+  QgsWmsCapabilitiesProperty mCapabilitiesProperty = caps.capabilitiesProperty();
   QgsWmsCapabilityProperty capabilityProperty = mCapabilitiesProperty.capability;
 
   // Top level layer is present max once

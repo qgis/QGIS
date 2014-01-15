@@ -156,20 +156,6 @@ QgsDataSourceURI QgsWMSConnection::uri()
   return mUri;
 }
 
-QgsWmsProvider * QgsWMSConnection::provider( )
-{
-  // TODO: Create and bind to data provider
-
-  // load the server data provider plugin
-  QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
-
-  QgsWmsProvider *wmsProvider =
-    ( QgsWmsProvider* ) pReg->provider( "wms", mUri.encodedUri() );
-
-  return wmsProvider;
-}
-
-
 
 QStringList QgsWMSConnection::connectionList()
 {

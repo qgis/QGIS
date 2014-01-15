@@ -36,6 +36,7 @@
 #include "qgswmssourceselect.h"
 #include "qgswmtsdimensions.h"
 #include "qgsnetworkaccessmanager.h"
+#include "qgswmscapabilities.h"
 
 #include <QButtonGroup>
 #include <QFileDialog>
@@ -287,14 +288,12 @@ void QgsWMSSourceSelect::clear()
   mFeatureCount->setEnabled( false );
 }
 
-bool QgsWMSSourceSelect::populateLayerList( QgsWmsProvider *wmsProvider )
+bool QgsWMSSourceSelect::populateLayerList( const QgsWmsCapabilities& capabilities )
 {
-  QVector<QgsWmsLayerProperty> layers;
-  if ( !wmsProvider->supportedLayers( layers ) )
-    return false;
+  QVector<QgsWmsLayerProperty> layers = capabilities.supportedLayers();
 
   bool first = true;
-  foreach ( QString encoding, wmsProvider->supportedImageEncodings() )
+  foreach ( QString encoding, capabilities.supportedImageEncodings() )
   {
     int id = mMimeMap.value( encoding, -1 );
     if ( id < 0 )
@@ -316,7 +315,7 @@ bool QgsWMSSourceSelect::populateLayerList( QgsWmsProvider *wmsProvider )
   QMap<int, QgsNumericSortTreeWidgetItem *> items;
   QMap<int, int> layerParents;
   QMap<int, QStringList> layerParentNames;
-  wmsProvider->layerParents( layerParents, layerParentNames );
+  capabilities.layerParents( layerParents, layerParentNames );
 
   lstLayers->setSortingEnabled( true );
 
@@ -351,7 +350,7 @@ bool QgsWMSSourceSelect::populateLayerList( QgsWmsProvider *wmsProvider )
 
   lstLayers->sortByColumn( 0, Qt::AscendingOrder );
 
-  wmsProvider->supportedTileLayers( mTileLayers );
+  mTileLayers = capabilities.supportedTileLayers();
 
   tabServers->setTabEnabled( tabServers->indexOf( tabTilesets ), mTileLayers.size() > 0 );
   if ( tabServers->isTabEnabled( tabServers->indexOf( tabTilesets ) ) )
@@ -359,8 +358,7 @@ bool QgsWMSSourceSelect::populateLayerList( QgsWmsProvider *wmsProvider )
 
   if ( mTileLayers.size() > 0 )
   {
-    QHash<QString, QgsWmtsTileMatrixSet> tileMatrixSets;
-    wmsProvider->supportedTileMatrixSets( tileMatrixSets );
+    QHash<QString, QgsWmtsTileMatrixSet> tileMatrixSets = capabilities.supportedTileMatrixSets();
 
     int rows = 0;
     foreach ( const QgsWmtsTileLayer &l, mTileLayers )
@@ -442,45 +440,49 @@ void QgsWMSSourceSelect::on_btnConnect_clicked()
   mConnName = cmbConnections->currentText();
 
   QgsWMSConnection connection( cmbConnections->currentText() );
-  QgsWmsProvider *wmsProvider = connection.provider();
   mConnectionInfo = connection.connectionInfo();
   mUri = connection.uri();
 
-  if ( wmsProvider )
+  QgsWmsSettings wmsSettings;
+  if ( !wmsSettings.parseUri( mUri.encodedUri() ) )
   {
-    QApplication::setOverrideCursor( Qt::WaitCursor );
-
-    connect( wmsProvider, SIGNAL( statusChanged( QString ) ), this, SLOT( showStatusMessage( QString ) ) );
-
-    // WMS Provider all set up; let's get some layers
-
-    if ( !populateLayerList( wmsProvider ) )
-    {
-      showError( wmsProvider );
-    }
-    else
-    {
-      int capabilities = wmsProvider->identifyCapabilities();
-      QgsDebugMsg( "capabilities = " + QString::number( capabilities ) );
-      if ( capabilities ) // at least one identify capability
-      {
-        mFeatureCount->setEnabled( true );
-      }
-    }
-
-    delete wmsProvider;
-
-    QApplication::restoreOverrideCursor();
-  }
-  else
-  {
-    // Let user know we couldn't initialise the WMS provider
     QMessageBox::warning(
       this,
       tr( "WMS Provider" ),
-      tr( "Could not open the WMS Provider" )
+      tr( "Failed to parse WMS URI" )
     );
+    return;
   }
+
+  QgsWmsCapabilitiesDownload capDownload( wmsSettings.baseUrl(), wmsSettings.authorization() );
+  connect( &capDownload, SIGNAL( statusChanged( QString ) ), this, SLOT( showStatusMessage( QString ) ) );
+
+  QApplication::setOverrideCursor( Qt::WaitCursor );
+  bool res = capDownload.downloadCapabilities();
+  QApplication::restoreOverrideCursor();
+
+  if ( !res )
+  {
+    QMessageBox::warning(
+      this,
+      tr( "WMS Provider" ),
+      tr( "Failed to download capabilities:\n" ) + capDownload.lastError()
+    );
+    return;
+  }
+
+  QgsWmsCapabilities caps;
+  if ( !caps.parseResponse( capDownload.response(), wmsSettings.parserSettings() ) )
+  {
+    QMessageBox::warning(
+      this,
+      tr( "WMS Provider" ),
+      tr( "Failed to parse capabilities:\n" ) + caps.lastError()
+    );
+    return;
+  }
+
+  populateLayerList( caps );
 }
 
 void QgsWMSSourceSelect::addClicked()

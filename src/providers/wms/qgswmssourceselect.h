@@ -33,6 +33,7 @@ class QButtonGroup;
 class QgsNumericSortTreeWidgetItem;
 class QDomDocument;
 class QDomElement;
+class QgsWmsCapabilities;
 
 /*!
  * \brief   Dialog to create connections and add layers from WMS, etc.
@@ -159,7 +160,7 @@ class QgsWMSSourceSelect : public QDialog, private Ui::QgsWMSSourceSelectBase
      * \retval false if the layers could not be retrieved or parsed -
      *         see mWmsProvider->errorString() for more info
      */
-    bool populateLayerList( QgsWmsProvider *wmsProvider );
+    bool populateLayerList( const QgsWmsCapabilities& capabilities );
 
     //! create an item including possible parents
     QgsNumericSortTreeWidgetItem *createItem( int id,

@@ -1,5 +1,6 @@
 
 SET (WMS_SRCS      
+  qgswmscapabilities.cpp
   qgswmsprovider.cpp 
   qgswmssourceselect.cpp 
   qgswmsconnection.cpp 
@@ -8,6 +9,7 @@ SET (WMS_SRCS
   qgswmtsdimensions.cpp
 )
 SET (WMS_MOC_HDRS  
+  qgswmscapabilities.h
   qgswmsprovider.h 
   qgswmssourceselect.h 
   qgswmsconnection.h 
