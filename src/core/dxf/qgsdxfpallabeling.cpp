@@ -70,6 +70,14 @@ void QgsDxfPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& 
     //angle
     double angle = label->getAlpha() * 180 / M_PI;
 
-    mDxfExport->writeText( layerName, text, QgsPoint( label->getX(), label->getY() ), label->getHeight(), angle );
+    //debug: show label rectangle
+    /*QgsPolyline line;
+    for( int i = 0; i < 4; ++i )
+    {
+        line.append( QgsPoint( label->getX( i ), label->getY( i ) ) );
+    }
+    mDxfExport->writePolyline( line, layerName, "CONTINUOUS", 0, 1, true );*/
+
+    mDxfExport->writeText( layerName, text, QgsPoint( label->getX(), label->getY() ), label->getHeight(), angle, mDxfExport->closestColorMatch( tmpLyr.textColor.rgb() ) );
   }
 }

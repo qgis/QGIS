@@ -83,7 +83,7 @@ class CORE_EXPORT QgsDxfExport
 
     void writeCircle( const QString& layer, int color, const QgsPoint& pt, double radius );
 
-    void writeText( const QString& layer, const QString& text, const QgsPoint& pt, double size, double angle );
+    void writeText( const QString& layer, const QString& text, const QgsPoint& pt, double size, double angle, int color );
 
     static double mapUnitScaleFactor( double scaleDenominator, QgsSymbolV2::OutputUnit symbolUnits, QGis::UnitType mapUnits );
 

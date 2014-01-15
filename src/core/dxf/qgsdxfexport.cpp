@@ -871,11 +871,11 @@ void QgsDxfExport::writeCircle( const QString& layer, int color, const QgsPoint&
   writeGroup( 40, radius );
 }
 
-void QgsDxfExport::writeText( const QString& layer, const QString& text, const QgsPoint& pt, double size, double angle )
+void QgsDxfExport::writeText( const QString& layer, const QString& text, const QgsPoint& pt, double size, double angle, int color )
 {
   writeGroup( 0, "TEXT" );
   writeGroup( 8, layer );
-  //todo: color with code 64
+  writeGroup( 62, color );
   writeGroup( 10, pt.x() );
   writeGroup( 20, pt.y() );
   writeGroup( 30, 0 );
