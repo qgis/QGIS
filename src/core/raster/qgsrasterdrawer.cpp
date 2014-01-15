@@ -22,6 +22,7 @@
 #include "qgsmaptopixel.h"
 #include <QImage>
 #include <QPainter>
+#include <QPrinter>
 
 QgsRasterDrawer::QgsRasterDrawer( QgsRasterIterator* iterator ): mIterator( iterator )
 {
@@ -65,6 +66,28 @@ void QgsRasterDrawer::draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsM
     }
 
     QImage img = block->image();
+
+    // Because of bug in Acrobat Reader we must use "white" transparent color instead
+    // of "black" for PDF. See #9101.
+    QPrinter *printer = dynamic_cast<QPrinter *>( p->device() );
+    if ( printer && printer->outputFormat() == QPrinter::PdfFormat )
+    {
+      QgsDebugMsg( "PdfFormat" );
+
+      img = img.convertToFormat( QImage::Format_ARGB32 );
+      QRgb transparentBlack = qRgba( 0, 0, 0, 0 );
+      QRgb transparentWhite = qRgba( 255, 255, 255, 0 );
+      for ( int x = 0; x < img.width(); x++ )
+      {
+        for ( int y = 0; y < img.height(); y++ )
+        {
+          if ( img.pixel( x, y ) == transparentBlack )
+          {
+            img.setPixel( x, y, transparentWhite );
+          }
+        }
+      }
+    }
 
     drawImage( p, viewPort, img, topLeftCol, topLeftRow );
 

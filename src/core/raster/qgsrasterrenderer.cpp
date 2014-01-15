@@ -26,10 +26,8 @@
 
 #define tr( sourceText ) QCoreApplication::translate ( "QgsRasterRenderer", sourceText )
 
-// Changing RGB components of NODATA_COLOR may break tests
-// (changed 2013-11-30 from 0,0,0,0 to 255,255,255,0)
-// kepp NODATA_COLOR white, see #9101
-const QRgb QgsRasterRenderer::NODATA_COLOR = qRgba( 255, 255, 255, 0 );
+// See #9101 before any change of NODATA_COLOR!
+const QRgb QgsRasterRenderer::NODATA_COLOR = qRgba( 0, 0, 0, 0 );
 
 QgsRasterRenderer::QgsRasterRenderer( QgsRasterInterface* input, const QString& type )
     : QgsRasterInterface( input )
