@@ -362,6 +362,8 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
 
     QString layerId = li.previous();
 
+    emit layerRenderingStart( layerId, mypContextPainter );
+
     QgsDebugMsg( "Rendering at layer item " + layerId );
 
     // This call is supposed to cause the progress bar to

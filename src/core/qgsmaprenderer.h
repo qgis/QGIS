@@ -302,6 +302,8 @@ class CORE_EXPORT QgsMapRenderer : public QObject
 
   signals:
 
+    void layerRenderingStart( QString layerId, QPainter * );
+
     void drawingProgress( int current, int total );
 
     void hasCrsTransformEnabled( bool flag );
