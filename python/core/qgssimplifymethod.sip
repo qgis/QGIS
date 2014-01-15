@@ -29,6 +29,9 @@ class QgsSimplifyMethod
     /** Gets the tolerance of simplification */
     double tolerance() const;
 
+    /** Returns the optimal tolerance for Douglas-Peucker simplification algorithms */
+    double toleranceForDouglasPeuckerAlgorithms() const;
+
     /** Sets whether the simplification executes after fetch the geometries from provider, otherwise it executes, when supported, in provider before fetch the geometries */
     void setForceLocalOptimization( bool localOptimization );
     /** Gets whether the simplification executes after fetch the geometries from provider, otherwise it executes, when supported, in provider before fetch the geometries */

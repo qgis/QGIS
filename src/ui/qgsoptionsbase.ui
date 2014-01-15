@@ -1755,7 +1755,7 @@
                      <item row="2" column="1" colspan="4">
                       <widget class="QCheckBox" name="mSimplifyDrawingAtProvider">
                        <property name="text">
-                        <string>Runs on provider side, otherwise it will execute once obtained the geometry from data source</string>
+                        <string>Simplify on provider side if possible</string>
                        </property>
                       </widget>
                      </item>

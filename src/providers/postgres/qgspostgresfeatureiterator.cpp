@@ -309,7 +309,7 @@ bool QgsPostgresFeatureIterator::declareCursor( const QString& whereClause )
 
       double tolerance = simplifyMethod.methodType() == QgsSimplifyMethod::OptimizeForRendering 
                ?
-               simplifyMethod.tolerance() / 5.0f /* experimental */
+               simplifyMethod.toleranceForDouglasPeuckerAlgorithms()
                :
                simplifyMethod.tolerance();
 
