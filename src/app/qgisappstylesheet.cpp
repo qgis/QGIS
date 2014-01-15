@@ -162,7 +162,8 @@ void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant>& opts )
   if ( sidebar )
   {
     QString style = "QListWidget#mOptionsListWidget {"
-                    "background-color: rgb(69, 69, 69, 220);"
+                    "    background-color: rgb(69, 69, 69, 220);"
+                    "    outline: 0;"
                     "}"
                     "QListWidget#mOptionsListWidget::item {"
                     "    color: white;"
@@ -171,7 +172,7 @@ void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant>& opts )
                     "QListWidget#mOptionsListWidget::item::selected {"
                     "    color: black;"
                     "    background-color:palette(Window);"
-                    "    padding-right: 0px;              "
+                    "    padding-right: 0px;"
                     "}";
     ss += style;
   }
@@ -190,7 +191,7 @@ void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant>& opts )
   ss += QString( "QTableView {"
                  "selection-background-color: %1;"
                  "selection-color: %2;"
-                 "}")
+                 "}" )
         .arg( palette.highlight().color().name() )
         .arg( palette.highlightedText().color().name() );
 
