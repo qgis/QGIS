@@ -217,7 +217,7 @@ QgsSymbolV2* QgsCategorizedSymbolRendererV2::symbolForFeature( QgsFeature& featu
   if ( tempSymbol->type() == QgsSymbolV2::Marker )
   {
     QgsMarkerSymbolV2* markerSymbol = static_cast<QgsMarkerSymbolV2*>( tempSymbol );
-    markerSymbol->setAngle( rotation );
+    if ( mRotation.data() ) markerSymbol->setAngle( rotation );
     markerSymbol->setSize( sizeScale * static_cast<QgsMarkerSymbolV2*>( symbol )->size() );
     markerSymbol->setScaleMethod( mScaleMethod );
   }
@@ -434,10 +434,10 @@ void QgsCategorizedSymbolRendererV2::toSld( QDomDocument &doc, QDomElement &elem
 {
   QgsStringMap props;
   props[ "attribute" ] = mAttrName;
-  if ( !mRotation.data() )
-    props[ "angle" ] = qgsXmlEncode( mRotation->expression() ).append( "\"" ).prepend( "\"" );
-  if ( !mSizeScale.data() )
-    props[ "scale" ] = qgsXmlEncode( mSizeScale->expression() ).append( "\"" ).prepend( "\"" );
+  if ( mRotation.data() )
+    props[ "angle" ] = QString( mRotation->expression() ).append( "\"" ).prepend( "\"" );
+  if ( mSizeScale.data() )
+    props[ "scale" ] = QString( mSizeScale->expression() ).append( "\"" ).prepend( "\"" );
 
   // create a Rule for each range
   for ( QgsCategoryList::const_iterator it = mCategories.constBegin(); it != mCategories.constEnd(); ++it )
@@ -516,12 +516,12 @@ QgsFeatureRendererV2* QgsCategorizedSymbolRendererV2::create( QDomElement& eleme
 
   QDomElement rotationElem = element.firstChildElement( "rotation" );
   if ( !rotationElem.isNull() )
-    r->setRotationField( qgsXmlDecode( rotationElem.attribute( "field" ) ) );
+    r->setRotationField( rotationElem.attribute( "field" ) );
 
   QDomElement sizeScaleElem = element.firstChildElement( "sizescale" );
   if ( !sizeScaleElem.isNull() )
   {
-    r->setSizeScaleField( qgsXmlDecode( sizeScaleElem.attribute( "field" ) ) );
+    r->setSizeScaleField( sizeScaleElem.attribute( "field" ) );
     r->setScaleMethod( QgsSymbolLayerV2Utils::decodeScaleMethod( sizeScaleElem.attribute( "scalemethod" ) ) );
   }
 
@@ -582,12 +582,12 @@ QDomElement QgsCategorizedSymbolRendererV2::save( QDomDocument& doc )
 
   QDomElement rotationElem = doc.createElement( "rotation" );
   if ( mRotation.data() )
-    rotationElem.setAttribute( "field", qgsXmlEncode( mRotation->expression() ) );
+    rotationElem.setAttribute( "field", mRotation->expression() );
   rendererElem.appendChild( rotationElem );
 
   QDomElement sizeScaleElem = doc.createElement( "sizescale" );
   if ( mSizeScale.data() )
-    sizeScaleElem.setAttribute( "field", qgsXmlEncode( mSizeScale->expression() ) );
+    sizeScaleElem.setAttribute( "field", mSizeScale->expression() );
   sizeScaleElem.setAttribute( "scalemethod", QgsSymbolLayerV2Utils::encodeScaleMethod( mScaleMethod ) );
   rendererElem.appendChild( sizeScaleElem );
 

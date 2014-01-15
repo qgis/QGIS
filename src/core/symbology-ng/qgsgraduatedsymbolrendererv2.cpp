@@ -206,7 +206,7 @@ QgsSymbolV2* QgsGraduatedSymbolRendererV2::symbolForFeature( QgsFeature& feature
   if ( tempSymbol->type() == QgsSymbolV2::Marker )
   {
     QgsMarkerSymbolV2* markerSymbol = static_cast<QgsMarkerSymbolV2*>( tempSymbol );
-    markerSymbol->setAngle( rotation );
+    if ( mRotation.data() ) markerSymbol->setAngle( rotation );
     markerSymbol->setSize( sizeScale * static_cast<QgsMarkerSymbolV2*>( symbol )->size() );
     markerSymbol->setScaleMethod( mScaleMethod );
   }
@@ -342,10 +342,10 @@ void QgsGraduatedSymbolRendererV2::toSld( QDomDocument& doc, QDomElement &elemen
 {
   QgsStringMap props;
   props[ "attribute" ] = mAttrName;
-  if ( !mRotation.data() )
-    props[ "angle" ] = qgsXmlEncode( mRotation->expression() ).append( "\"" ).prepend( "\"" );
-  if ( !mSizeScale.data() )
-    props[ "scale" ] = qgsXmlEncode( mSizeScale->expression() ).append( "\"" ).prepend( "\"" );
+  if ( mRotation.data() )
+    props[ "angle" ] = QString( mRotation->expression() ).append( "\"" ).prepend( "\"" );
+  if ( mSizeScale.data() )
+    props[ "scale" ] = QString( mSizeScale->expression() ).append( "\"" ).prepend( "\"" );
 
   // create a Rule for each range
   for ( QgsRangeList::const_iterator it = mRanges.constBegin(); it != mRanges.constEnd(); ++it )
@@ -1041,12 +1041,12 @@ QDomElement QgsGraduatedSymbolRendererV2::save( QDomDocument& doc )
 
   QDomElement rotationElem = doc.createElement( "rotation" );
   if ( mRotation.data() )
-    rotationElem.setAttribute( "field", qgsXmlEncode( mRotation->expression() ) );
+    rotationElem.setAttribute( "field", mRotation->expression() );
   rendererElem.appendChild( rotationElem );
 
   QDomElement sizeScaleElem = doc.createElement( "sizescale" );
   if ( mSizeScale.data() )
-    sizeScaleElem.setAttribute( "field", qgsXmlEncode( mSizeScale->expression() ) );
+    sizeScaleElem.setAttribute( "field", mSizeScale->expression() );
   sizeScaleElem.setAttribute( "scalemethod", QgsSymbolLayerV2Utils::encodeScaleMethod( mScaleMethod ) );
   rendererElem.appendChild( sizeScaleElem );
 

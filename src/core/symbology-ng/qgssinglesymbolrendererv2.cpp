@@ -77,7 +77,7 @@ QgsSymbolV2* QgsSingleSymbolRendererV2::symbolForFeature( QgsFeature& feature )
   if ( mTempSymbol->type() == QgsSymbolV2::Marker )
   {
     QgsMarkerSymbolV2* markerSymbol = static_cast<QgsMarkerSymbolV2*>( mTempSymbol.data() );
-    markerSymbol->setAngle( rotation );
+    if ( mRotation.data() ) markerSymbol->setAngle( rotation );
     markerSymbol->setSize( sizeScale * mOrigSize );
     markerSymbol->setScaleMethod( mScaleMethod );
   }
@@ -89,7 +89,7 @@ QgsSymbolV2* QgsSingleSymbolRendererV2::symbolForFeature( QgsFeature& feature )
   else if ( mTempSymbol->type() == QgsSymbolV2::Fill )
   {
     QgsFillSymbolV2* fillSymbol = static_cast<QgsFillSymbolV2*>( mTempSymbol.data() );
-    fillSymbol->setAngle( rotation );
+    if ( mRotation.data() ) fillSymbol->setAngle( rotation );
   }
 
   return mTempSymbol.data();
@@ -189,9 +189,9 @@ void QgsSingleSymbolRendererV2::toSld( QDomDocument& doc, QDomElement &element )
 {
   QgsStringMap props;
   if ( mRotation.data() )
-    props[ "angle" ] = qgsXmlEncode( mRotation->expression() ).append( "\"" ).prepend( "\"" );
+    props[ "angle" ] = QString( mRotation->expression() ).append( "\"" ).prepend( "\"" );
   if ( mSizeScale.data() )
-    props[ "scale" ] = qgsXmlEncode( mSizeScale->expression() ).append( "\"" ).prepend( "\"" );
+    props[ "scale" ] = QString( mSizeScale->expression() ).append( "\"" ).prepend( "\"" );
 
   QDomElement ruleElem = doc.createElement( "se:Rule" );
   element.appendChild( ruleElem );
@@ -228,12 +228,12 @@ QgsFeatureRendererV2* QgsSingleSymbolRendererV2::create( QDomElement& element )
 
   QDomElement rotationElem = element.firstChildElement( "rotation" );
   if ( !rotationElem.isNull() )
-    r->setRotationField( qgsXmlDecode( rotationElem.attribute( "field" ) ) );
+    r->setRotationField( rotationElem.attribute( "field" ) );
 
   QDomElement sizeScaleElem = element.firstChildElement( "sizescale" );
   if ( !sizeScaleElem.isNull() )
   {
-    r->setSizeScaleField( qgsXmlDecode( sizeScaleElem.attribute( "field" ) ) );
+    r->setSizeScaleField( sizeScaleElem.attribute( "field" ) );
     r->setScaleMethod( QgsSymbolLayerV2Utils::decodeScaleMethod( sizeScaleElem.attribute( "scalemethod" ) ) );
   }
 
@@ -342,12 +342,12 @@ QDomElement QgsSingleSymbolRendererV2::save( QDomDocument& doc )
 
   QDomElement rotationElem = doc.createElement( "rotation" );
   if ( mRotation.data() )
-    rotationElem.setAttribute( "field", qgsXmlEncode( mRotation->expression() ) );
+    rotationElem.setAttribute( "field", mRotation->expression() );
   rendererElem.appendChild( rotationElem );
 
   QDomElement sizeScaleElem = doc.createElement( "sizescale" );
   if ( mSizeScale.data() )
-    sizeScaleElem.setAttribute( "field", qgsXmlEncode( mSizeScale->expression() ) );
+    sizeScaleElem.setAttribute( "field", mSizeScale->expression() );
   sizeScaleElem.setAttribute( "scalemethod", QgsSymbolLayerV2Utils::encodeScaleMethod( mScaleMethod ) );
   rendererElem.appendChild( sizeScaleElem );
 
