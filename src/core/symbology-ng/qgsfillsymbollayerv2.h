@@ -99,8 +99,8 @@ class CORE_EXPORT QgsSimpleFillSymbolLayerV2 : public QgsFillSymbolLayerV2
 
     double estimateMaxBleed() const;
 
-    double dxfWidth( const QgsDxfExport& e ) const;
-    QColor dxfColor() const;
+    double dxfWidth( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const;
+    QColor dxfColor( const QgsSymbolV2RenderContext& context ) const;
     Qt::PenStyle dxfPenStyle() const;
 
   protected:
@@ -287,8 +287,8 @@ class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayerV2
 
     double estimateMaxBleed() const;
 
-    virtual double dxfWidth( const QgsDxfExport& e ) const;
-    virtual QColor dxfColor() const;
+    virtual double dxfWidth( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const;
+    virtual QColor dxfColor( const QgsSymbolV2RenderContext& context ) const;
     virtual Qt::PenStyle dxfPenStyle() const;
 
   protected:

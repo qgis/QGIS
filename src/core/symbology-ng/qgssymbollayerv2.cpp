@@ -94,14 +94,16 @@ bool QgsSymbolLayerV2::writeDxf( QgsDxfExport& e,
   return false;
 }
 
-double QgsSymbolLayerV2::dxfWidth( const QgsDxfExport& e ) const
+double QgsSymbolLayerV2::dxfWidth( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const
 {
   Q_UNUSED( e );
+  Q_UNUSED( context );
   return 1.0;
 }
 
-QColor QgsSymbolLayerV2::dxfColor() const
+QColor QgsSymbolLayerV2::dxfColor( const QgsSymbolV2RenderContext& context ) const
 {
+  Q_UNUSED( context );
   return color();
 }
 
@@ -363,8 +365,9 @@ void QgsLineSymbolLayerV2::renderPolygonOutline( const QPolygonF& points, QList<
   }
 }
 
-double QgsLineSymbolLayerV2::dxfWidth( const QgsDxfExport& e ) const
+double QgsLineSymbolLayerV2::dxfWidth( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const
 {
+  Q_UNUSED( context );
   return ( width() * e.mapUnitScaleFactor( e.symbologyScaleDenominator(), widthUnit(), e.mapUnits() ) );
 }
 

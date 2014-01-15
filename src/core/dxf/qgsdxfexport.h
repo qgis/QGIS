@@ -137,11 +137,11 @@ class CORE_EXPORT QgsDxfExport
 
     QgsRectangle dxfExtent() const;
 
-    void addFeature( const QgsFeature& fet, const QString& layer, const QgsSymbolLayerV2* symbolLayer, const QgsSymbolV2* symbol );
+    void addFeature( const QgsSymbolV2RenderContext& ctx, const QString& layer, const QgsSymbolLayerV2* symbolLayer, const QgsSymbolV2* symbol );
     double scaleToMapUnits( double value, QgsSymbolV2::OutputUnit symbolUnits, QGis::UnitType mapUnits ) const;
 
     //returns dxf palette index from symbol layer color
-    static int colorFromSymbolLayer( const QgsSymbolLayerV2* symbolLayer );
+    static int colorFromSymbolLayer( const QgsSymbolLayerV2* symbolLayer, const QgsSymbolV2RenderContext& ctx );
     QString lineStyleFromSymbolLayer( const QgsSymbolLayerV2* symbolLayer );
 
     //functions for dxf palette
@@ -150,8 +150,6 @@ class CORE_EXPORT QgsDxfExport
 
     //helper functions for symbology export
     QgsRenderContext renderContext() const;
-    void startRender( QgsVectorLayer* vl ) const;
-    void stopRender( QgsVectorLayer* vl ) const;
 
     QList< QPair< QgsSymbolLayerV2*, QgsSymbolV2* > > symbolLayers();
     static int nLineTypes( const QList< QPair< QgsSymbolLayerV2*, QgsSymbolV2*> >& symbolLayers );

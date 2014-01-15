@@ -289,19 +289,35 @@ double QgsSimpleFillSymbolLayerV2::estimateMaxBleed() const
   return penBleed + offsetBleed;
 }
 
-double QgsSimpleFillSymbolLayerV2::dxfWidth( const QgsDxfExport& e ) const
+double QgsSimpleFillSymbolLayerV2::dxfWidth( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const
 {
-  return mBorderWidth * e.mapUnitScaleFactor( e.symbologyScaleDenominator(), mBorderWidthUnit, e.mapUnits() );
+  double width = mBorderWidth;
+  QgsExpression* widthBorderExpression = expression( "width_border" );
+  if ( widthBorderExpression )
+  {
+    width = widthBorderExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble();
+  }
+  return width * e.mapUnitScaleFactor( e.symbologyScaleDenominator(), mBorderWidthUnit, e.mapUnits() );
 }
 
-QColor QgsSimpleFillSymbolLayerV2::dxfColor() const
+QColor QgsSimpleFillSymbolLayerV2::dxfColor( const QgsSymbolV2RenderContext& context ) const
 {
   if ( mBrushStyle == Qt::NoBrush )
   {
+    QgsExpression* colorBorderExpression = expression( "color_border" );
+    if ( colorBorderExpression )
+    {
+      return QgsSymbolLayerV2Utils::decodeColor( colorBorderExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() );
+    }
     return mBorderColor;
   }
   else
   {
+    QgsExpression* colorExpression = expression( "color" );
+    if ( colorExpression )
+    {
+      return QgsSymbolLayerV2Utils::decodeColor( colorExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() );
+    }
     return mColor;
   }
 }
@@ -858,12 +874,18 @@ double QgsImageFillSymbolLayer::estimateMaxBleed() const
   return subLayerBleed;
 }
 
-double QgsImageFillSymbolLayer::dxfWidth( const QgsDxfExport& e ) const
+double QgsImageFillSymbolLayer::dxfWidth( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const
 {
-  return mOutlineWidth * e.mapUnitScaleFactor( e.symbologyScaleDenominator(), mOutlineWidthUnit, e.mapUnits() );
+  double width = mOutlineWidth;
+  QgsExpression* widthExpression = expression( "width" );
+  if ( widthExpression )
+  {
+    width = widthExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble();
+  }
+  return width * e.mapUnitScaleFactor( e.symbologyScaleDenominator(), mOutlineWidthUnit, e.mapUnits() );
 }
 
-QColor QgsImageFillSymbolLayer::dxfColor() const
+QColor QgsImageFillSymbolLayer::dxfColor( const QgsSymbolV2RenderContext& context ) const
 {
   if ( !mOutline )
   {

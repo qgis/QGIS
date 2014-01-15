@@ -119,9 +119,9 @@ class CORE_EXPORT QgsSymbolLayerV2
                            const QgsFeature* f,
                            const QPointF& shift = QPointF( 0.0, 0.0 ) ) const;
 
-    virtual double dxfWidth( const QgsDxfExport& e ) const;
+    virtual double dxfWidth( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const;
 
-    virtual QColor dxfColor() const;
+    virtual QColor dxfColor( const QgsSymbolV2RenderContext& context ) const;
 
     virtual QVector<qreal> dxfCustomDashPattern( QgsSymbolV2::OutputUnit& unit ) const;
     virtual Qt::PenStyle dxfPenStyle() const;
@@ -254,7 +254,7 @@ class CORE_EXPORT QgsLineSymbolLayerV2 : public QgsSymbolLayerV2
 
     void drawPreviewIcon( QgsSymbolV2RenderContext& context, QSize size );
 
-    virtual double dxfWidth( const QgsDxfExport& e ) const;
+    virtual double dxfWidth( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const;
 
   protected:
     QgsLineSymbolLayerV2( bool locked = false );

@@ -547,8 +547,9 @@ void QgsDxfExport::writeEntities()
       continue;
     }
 
-    QgsRenderContext ctx;
+    QgsRenderContext ctx = renderContext();
     ctx.setRendererScale( mSymbologyScaleDenominator );
+    QgsSymbolV2RenderContext sctx( ctx, QgsSymbolV2::MM , 1.0, false, 0, 0 );
     QgsFeatureRendererV2* renderer = vl->rendererV2();
     renderer->startRender( ctx, vl );
 
@@ -569,9 +570,10 @@ void QgsDxfExport::writeEntities()
     QgsFeature fet;
     while ( featureIt.nextFeature( fet ) )
     {
+      sctx.setFeature( &fet );
       if ( mSymbologyExport == NoSymbology )
       {
-        addFeature( fet, dxfLayerName( vl->name() ), 0, 0 ); //no symbology at all
+        addFeature( sctx, dxfLayerName( vl->name() ), 0, 0 ); //no symbology at all
       }
       else
       {
@@ -593,7 +595,7 @@ void QgsDxfExport::writeEntities()
             int nSymbolLayers = ( *symbolIt )->symbolLayerCount();
             for ( int i = 0; i < nSymbolLayers; ++i )
             {
-              addFeature( fet, dxfLayerName( vl->name() ), ( *symbolIt )->symbolLayer( i ), *symbolIt );
+              addFeature( sctx, dxfLayerName( vl->name() ), ( *symbolIt )->symbolLayer( i ), *symbolIt );
             }
           }
         }
@@ -605,7 +607,7 @@ void QgsDxfExport::writeEntities()
           {
             continue;
           }
-          addFeature( fet, dxfLayerName( vl->name() ), s->symbolLayer( 0 ), s );
+          addFeature( sctx, dxfLayerName( vl->name() ), s->symbolLayer( 0 ), s );
         }
       }
     }
@@ -629,7 +631,9 @@ void QgsDxfExport::writeEntitiesSymbolLevels( QgsVectorLayer* layer )
   }
   QHash< QgsSymbolV2*, QList<QgsFeature> > features;
 
-  startRender( layer );
+  QgsRenderContext ctx = renderContext();
+  QgsSymbolV2RenderContext sctx( ctx, QgsSymbolV2::MM , 1.0, false, 0, 0 );
+  renderer->startRender( ctx, layer );
 
   //get iterator
   QgsFeatureRequest req;
@@ -695,11 +699,11 @@ void QgsDxfExport::writeEntitiesSymbolLevels( QgsVectorLayer* layer )
       QList<QgsFeature>::iterator featureIt = featureList.begin();
       for ( ; featureIt != featureList.end(); ++featureIt )
       {
-        addFeature( *featureIt, layer->name(), levelIt.key()->symbolLayer( llayer ), levelIt.key() );
+        addFeature( sctx, layer->name(), levelIt.key()->symbolLayer( llayer ), levelIt.key() );
       }
     }
   }
-  stopRender( layer );
+  renderer->stopRender( ctx );
 }
 
 void QgsDxfExport::writeEndFile()
@@ -874,17 +878,23 @@ QgsRectangle QgsDxfExport::dxfExtent() const
   return extent;
 }
 
-void QgsDxfExport::addFeature( const QgsFeature& fet, const QString& layer, const QgsSymbolLayerV2* symbolLayer, const QgsSymbolV2* symbol )
+void QgsDxfExport::addFeature( const QgsSymbolV2RenderContext& ctx, const QString& layer, const QgsSymbolLayerV2* symbolLayer, const QgsSymbolV2* symbol )
 {
-  QgsGeometry* geom = fet.geometry();
+  const QgsFeature* fet = ctx.feature();
+  if ( !fet )
+  {
+    return;
+  }
+
+  QgsGeometry* geom = fet->geometry();
   if ( geom )
   {
     int c = 0;
     if ( mSymbologyExport != NoSymbology )
     {
-      c = colorFromSymbolLayer( symbolLayer );
+      c = colorFromSymbolLayer( symbolLayer, ctx );
     }
-    double width = symbolLayer->dxfWidth( *this );;
+    double width = symbolLayer->dxfWidth( *this, ctx );
     QString lineStyleName = "CONTINUOUS";
     if ( mSymbologyExport != NoSymbology )
     {
@@ -895,7 +905,7 @@ void QgsDxfExport::addFeature( const QgsFeature& fet, const QString& layer, cons
     //single point
     if ( geometryType == QGis::WKBPoint || geometryType == QGis::WKBPoint25D )
     {
-      writePoint( geom->asPoint(), layer, c, &fet, symbolLayer, symbol );
+      writePoint( geom->asPoint(), layer, c, fet, symbolLayer, symbol );
     }
 
     //multipoint
@@ -905,7 +915,7 @@ void QgsDxfExport::addFeature( const QgsFeature& fet, const QString& layer, cons
       QgsMultiPoint::const_iterator it = multiPoint.constBegin();
       for ( ; it != multiPoint.constEnd(); ++it )
       {
-        writePoint( *it, layer, c, &fet, symbolLayer, symbol );
+        writePoint( *it, layer, c, fet, symbolLayer, symbol );
       }
     }
 
@@ -974,14 +984,14 @@ double QgsDxfExport::scaleToMapUnits( double value, QgsSymbolV2::OutputUnit symb
   return value;
 }
 
-int QgsDxfExport::colorFromSymbolLayer( const QgsSymbolLayerV2* symbolLayer )
+int QgsDxfExport::colorFromSymbolLayer( const QgsSymbolLayerV2* symbolLayer, const QgsSymbolV2RenderContext& ctx )
 {
   if ( !symbolLayer )
   {
     return 0;
   }
 
-  QColor c = symbolLayer->dxfColor();
+  QColor c = symbolLayer->dxfColor( ctx );
   return closestColorMatch( c.rgba() );
 }
 
@@ -1044,40 +1054,6 @@ QgsRenderContext QgsDxfExport::renderContext() const
   QgsRenderContext context;
   context.setRendererScale( mSymbologyScaleDenominator );
   return context;
-}
-
-void QgsDxfExport::startRender( QgsVectorLayer* vl ) const
-{
-  if ( !vl )
-  {
-    return;
-  }
-
-  QgsFeatureRendererV2* renderer = vl->rendererV2();
-  if ( !renderer )
-  {
-    return;
-  }
-
-  QgsRenderContext ctx = renderContext();
-  renderer->startRender( ctx, vl );
-}
-
-void QgsDxfExport::stopRender( QgsVectorLayer* vl ) const
-{
-  if ( !vl )
-  {
-    return;
-  }
-
-  QgsFeatureRendererV2* renderer = vl->rendererV2();
-  if ( !renderer )
-  {
-    return;
-  }
-
-  QgsRenderContext ctx = renderContext();
-  renderer->stopRender( ctx );
 }
 
 double QgsDxfExport::mapUnitScaleFactor( double scaleDenominator, QgsSymbolV2::OutputUnit symbolUnits, QGis::UnitType mapUnits )
@@ -1188,9 +1164,9 @@ void QgsDxfExport::writeSymbolLayerLinestyle( const QgsSymbolLayerV2* symbolLaye
 
   QgsSymbolV2::OutputUnit unit;
   QVector<qreal> customLinestyle = symbolLayer->dxfCustomDashPattern( unit );
-  if ( customLinestyle.size() < 0 )
+  if ( customLinestyle.size() > 0 )
   {
-    QString name = QString( "symbolLayer%1" ).arg( mSymbolLayerCounter );
+    QString name = QString( "symbolLayer%1" ).arg( mSymbolLayerCounter++ );
     writeLinestyle( name, customLinestyle, unit );
     mLineStyles.insert( symbolLayer, name );
   }
@@ -1220,7 +1196,7 @@ void QgsDxfExport::writeLinestyle( const QString& styleName, const QVector<qreal
   QVector<qreal>::const_iterator dashIt = pattern.constBegin();
   for ( ; dashIt != pattern.constEnd(); ++dashIt )
   {
-    length += *dashIt;
+    length += ( *dashIt * mapUnitScaleFactor( mSymbologyScaleDenominator, u, mMapUnits ) );
   }
 
   writeGroup( 0, "LTYPE" );
