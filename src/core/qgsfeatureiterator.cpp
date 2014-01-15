@@ -121,6 +121,7 @@ bool QgsAbstractFeatureIterator::prepareSimplification( const QgsSimplifyMethod&
 
 bool QgsAbstractFeatureIterator::providerCanSimplify( QgsSimplifyMethod::MethodType methodType ) const
 {
+  Q_UNUSED( methodType )
   return false;
 }
 

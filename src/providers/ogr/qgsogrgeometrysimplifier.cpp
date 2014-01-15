@@ -94,6 +94,7 @@ OGRRawPoint* QgsOgrMapToPixelSimplifier::mallocPoints( int numPoints )
 //! Simplifies the OGR-geometry (Removing duplicated points) when is applied the specified map2pixel context
 bool QgsOgrMapToPixelSimplifier::simplifyOgrGeometry( QGis::GeometryType geometryType, const QgsRectangle& envelope, double* xptr, int xStride, double* yptr, int yStride, int pointCount, int& pointSimplifiedCount )
 {
+  Q_UNUSED( envelope )
   bool canbeGeneralizable = ( mSimplifyFlags & QgsMapToPixelSimplifier::SimplifyGeometry );
 
   pointSimplifiedCount = pointCount;

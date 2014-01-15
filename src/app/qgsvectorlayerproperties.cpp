@@ -1106,6 +1106,6 @@ void QgsVectorLayerProperties::on_mSimplifyDrawingGroupBox_toggled( bool checked
   }
   else
   {
-    mSimplifyDrawingAtProvider->setEnabled( mSimplifyDrawingGroupBox->isChecked() );
+    mSimplifyDrawingAtProvider->setEnabled( checked );
   }
 }
