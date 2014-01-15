@@ -8,8 +8,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>683</height>
+    <width>727</width>
+    <height>707</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -147,7 +147,7 @@ p, li { white-space: pre-wrap; }
      <widget class="QWidget" name="verticalLayoutWidget">
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
-        <widget class="QGroupBox" name="groupBox4">
+        <widget class="QgsCollapsibleGroupBox" name="groupBox4">
          <property name="title">
           <string>Operators</string>
          </property>
@@ -302,14 +302,19 @@ p, li { white-space: pre-wrap; }
     </widget>
    </item>
   </layout>
+  <zorder>splitter_2</zorder>
   <zorder>lblDataUri</zorder>
-  <zorder>groupBox1</zorder>
-  <zorder>groupBox2</zorder>
   <zorder>buttonBox</zorder>
-  <zorder>verticalLayoutWidget</zorder>
-  <zorder>groupBox4</zorder>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>lstFields</tabstop>
   <tabstop>lstValues</tabstop>
