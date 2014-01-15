@@ -189,16 +189,7 @@
         <item>
          <widget class="QWidget" name="mLoadGroupBox" native="true">
           <layout class="QHBoxLayout" name="horizontalLayout">
-           <property name="leftMargin">
-            <number>0</number>
-           </property>
-           <property name="topMargin">
-            <number>0</number>
-           </property>
-           <property name="rightMargin">
-            <number>0</number>
-           </property>
-           <property name="bottomMargin">
+           <property name="margin">
             <number>0</number>
            </property>
            <item>
@@ -244,7 +235,7 @@
      <widget class="QWidget" name="layoutWidget_1">
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
-        <widget class="QgsCollapsibleGroupBoxBasic" name="mOperatorsGroupBox">
+        <widget class="QgsCollapsibleGroupBox" name="mOperatorsGroupBox">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
            <horstretch>0</horstretch>
@@ -550,15 +541,15 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsFilterLineEdit</class>
    <extends>QLineEdit</extends>
    <header>qgsfilterlineedit.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsCollapsibleGroupBoxBasic</class>
-   <extends>QGroupBox</extends>
-   <header location="global">qgscollapsiblegroupbox.h</header>
-   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>
