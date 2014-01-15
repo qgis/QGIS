@@ -70,18 +70,12 @@ void QgsAtlasCompositionWidget::on_mUseAtlasCheckBox_stateChanged( int state )
   {
     atlasMap->setEnabled( true );
     mConfigurationGroup->setEnabled( true );
-    mVisibilityGroup->setEnabled( true );
-    mSortingGroup->setEnabled( true );
-    mFilteringGroup->setEnabled( true );
     mOutputGroup->setEnabled( true );
   }
   else
   {
     atlasMap->setEnabled( false );
     mConfigurationGroup->setEnabled( false );
-    mVisibilityGroup->setEnabled( false );
-    mSortingGroup->setEnabled( false );
-    mFilteringGroup->setEnabled( false );
     mOutputGroup->setEnabled( false );
   }
 }
@@ -400,8 +394,5 @@ void QgsAtlasCompositionWidget::blockAllSignals( bool b )
 {
   mUseAtlasCheckBox->blockSignals( b );
   mConfigurationGroup->blockSignals( b );
-  mVisibilityGroup->blockSignals( b );
-  mSortingGroup->blockSignals( b );
-  mFilteringGroup->blockSignals( b );
   mOutputGroup->blockSignals( b );
 }
