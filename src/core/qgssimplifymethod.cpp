@@ -53,6 +53,12 @@ void QgsSimplifyMethod::setForceLocalOptimization( bool localOptimization )
 {
   mForceLocalOptimization = localOptimization;
 }
+    
+double QgsSimplifyMethod::toleranceForDouglasPeuckerAlgorithms() const
+{
+  //TODO: define more precise value, now, it is experimental but conservative
+  return mTolerance / 5.0;
+}
 
 QgsAbstractGeometrySimplifier* QgsSimplifyMethod::createGeometrySimplifier( const QgsSimplifyMethod& simplifyMethod )
 {
