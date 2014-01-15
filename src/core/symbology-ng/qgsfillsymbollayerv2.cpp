@@ -887,6 +887,7 @@ double QgsImageFillSymbolLayer::dxfWidth( const QgsDxfExport& e, const QgsSymbol
 
 QColor QgsImageFillSymbolLayer::dxfColor( const QgsSymbolV2RenderContext& context ) const
 {
+  Q_UNUSED( context );
   if ( !mOutline )
   {
     return QColor( Qt::black );
