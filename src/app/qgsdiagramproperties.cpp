@@ -445,8 +445,7 @@ void QgsDiagramProperties::on_mFindMaximumValueButton_clicked()
   //get maximum value from provider (ignoring not-commited edits)
   if ( mLayer )
   {
-    QgsVectorDataProvider* provider = mLayer->dataProvider();
-    if ( provider )
+    // condition removed, keep this useless scope to avoid screewing diff (easier to review)
     {
       float maxValue = 0;
       if ( mSizeAttributeComboBox->currentIndex() >= mAvailableAttributes )
@@ -469,7 +468,7 @@ void QgsDiagramProperties::on_mFindMaximumValueButton_clicked()
       }
       else
       {
-        maxValue = provider->maximumValue( mSizeAttributeComboBox->itemData( mSizeAttributeComboBox->currentIndex() ).toInt() ).toFloat();
+        maxValue = mLayer->maximumValue( mSizeAttributeComboBox->itemData( mSizeAttributeComboBox->currentIndex() ).toInt() ).toFloat();
       }
       mValueLineEdit->setText( QString( "%1" ).arg( maxValue ) );
     }
