@@ -246,23 +246,13 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>7</number>
          </property>
          <widget class="QWidget" name="mOptsPage_General">
           <layout class="QVBoxLayout" name="verticalLayout_14">
            <property name="margin">
             <number>0</number>
            </property>
-           <item>
-            <widget class="QLabel" name="label">
-             <property name="styleSheet">
-              <string notr="true">font-weight:bold;</string>
-             </property>
-             <property name="text">
-              <string>General</string>
-             </property>
-            </widget>
-           </item>
            <item>
             <widget class="QScrollArea" name="scrollArea">
              <property name="frameShape">
@@ -276,8 +266,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>756</width>
-                <height>476</height>
+                <width>739</width>
+                <height>525</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -693,16 +683,6 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QLabel" name="label_5">
-             <property name="styleSheet">
-              <string notr="true">font-weight:bold;</string>
-             </property>
-             <property name="text">
-              <string>Style</string>
-             </property>
-            </widget>
-           </item>
-           <item>
             <widget class="QScrollArea" name="scrollArea_3">
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
@@ -715,8 +695,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>765</width>
-                <height>545</height>
+                <width>755</width>
+                <height>452</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_18">
@@ -754,16 +734,6 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QLabel" name="label_6">
-             <property name="styleSheet">
-              <string notr="true">font-weight:bold;</string>
-             </property>
-             <property name="text">
-              <string>Labels</string>
-             </property>
-            </widget>
-           </item>
-           <item>
             <widget class="QFrame" name="labelingFrame">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -787,16 +757,6 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QLabel" name="label_11">
-             <property name="styleSheet">
-              <string notr="true">font-weight:bold;</string>
-             </property>
-             <property name="text">
-              <string>Labels (deprecated)</string>
-             </property>
-            </widget>
-           </item>
-           <item>
             <widget class="QScrollArea" name="scrollArea_9">
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
@@ -809,8 +769,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>83</width>
-                <height>33</height>
+                <width>755</width>
+                <height>452</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -861,16 +821,6 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QLabel" name="label_7">
-             <property name="styleSheet">
-              <string notr="true">font-weight:bold;</string>
-             </property>
-             <property name="text">
-              <string>Fields</string>
-             </property>
-            </widget>
-           </item>
-           <item>
             <widget class="QScrollArea" name="scrollArea_5">
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
@@ -883,8 +833,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>83</width>
-                <height>16</height>
+                <width>755</width>
+                <height>452</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_20">
@@ -913,16 +863,6 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QLabel" name="label_15">
-             <property name="styleSheet">
-              <string notr="true">font-weight:bold;</string>
-             </property>
-             <property name="text">
-              <string>Rendering</string>
-             </property>
-            </widget>
-           </item>
-           <item>
             <widget class="QScrollArea" name="scrollArea_19">
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
@@ -935,8 +875,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>374</width>
-                <height>255</height>
+                <width>755</width>
+                <height>452</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -968,23 +908,23 @@
                   </item>
                   <item row="1" column="2">
                    <widget class="QDoubleSpinBox" name="mSimplifyDrawingSpinBox">
+                    <property name="toolTip">
+                     <string>Higher values result in more simplification</string>
+                    </property>
                     <property name="decimals">
                      <number>2</number>
                     </property>
                     <property name="minimum">
-                     <number>1</number>
+                     <double>1.000000000000000</double>
                     </property>
                     <property name="maximum">
-                     <number>5</number>
+                     <double>5.000000000000000</double>
                     </property>
                     <property name="singleStep">
-                     <double>0.20</double>
+                     <double>0.200000000000000</double>
                     </property>
                     <property name="value">
-                      <double>1.0</double>
-                    </property>
-                    <property name="toolTip">
-                     <string>Higher values result in more simplification</string>
+                     <double>1.000000000000000</double>
                     </property>
                    </widget>
                   </item>
@@ -1010,7 +950,7 @@
                      </size>
                     </property>
                    </spacer>
-                  </item>                         
+                  </item>
                   <item row="2" column="1" colspan="4">
                    <widget class="QCheckBox" name="mSimplifyDrawingAtProvider">
                     <property name="text">
@@ -1046,16 +986,6 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QLabel" name="label_12">
-             <property name="styleSheet">
-              <string notr="true">font-weight:bold;</string>
-             </property>
-             <property name="text">
-              <string>Display</string>
-             </property>
-            </widget>
-           </item>
-           <item>
             <widget class="QScrollArea" name="scrollArea_10">
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
@@ -1068,8 +998,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>385</width>
-                <height>161</height>
+                <width>755</width>
+                <height>452</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_26">
@@ -1217,16 +1147,6 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QLabel" name="label_8">
-             <property name="styleSheet">
-              <string notr="true">font-weight:bold;</string>
-             </property>
-             <property name="text">
-              <string>Actions</string>
-             </property>
-            </widget>
-           </item>
-           <item>
             <widget class="QScrollArea" name="scrollArea_6">
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
@@ -1239,8 +1159,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>765</width>
-                <height>545</height>
+                <width>755</width>
+                <height>487</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_21">
@@ -1275,16 +1195,6 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QLabel" name="label_9">
-             <property name="styleSheet">
-              <string notr="true">font-weight:bold;</string>
-             </property>
-             <property name="text">
-              <string>Joins</string>
-             </property>
-            </widget>
-           </item>
-           <item>
             <widget class="QScrollArea" name="scrollArea_7">
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
@@ -1297,8 +1207,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>91</width>
-                <height>123</height>
+                <width>755</width>
+                <height>487</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_23">
@@ -1306,74 +1216,65 @@
                 <number>0</number>
                </property>
                <item>
-                <widget class="QGroupBox" name="mJoinsGrpBx">
-                 <property name="title">
-                  <string/>
+                <widget class="QTreeWidget" name="mJoinTreeWidget">
+                 <property name="columnCount">
+                  <number>3</number>
                  </property>
-                 <layout class="QVBoxLayout" name="verticalLayout_22">
-                  <item>
-                   <widget class="QTreeWidget" name="mJoinTreeWidget">
-                    <property name="columnCount">
-                     <number>3</number>
-                    </property>
-                    <column>
-                     <property name="text">
-                      <string>Join layer</string>
-                     </property>
-                    </column>
-                    <column>
-                     <property name="text">
-                      <string>Join field</string>
-                     </property>
-                    </column>
-                    <column>
-                     <property name="text">
-                      <string>Target field</string>
-                     </property>
-                    </column>
-                   </widget>
-                  </item>
-                  <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout">
-                    <item>
-                     <widget class="QPushButton" name="mButtonAddJoin">
-                      <property name="text">
-                       <string/>
-                      </property>
-                      <property name="icon">
-                       <iconset resource="../../images/images.qrc">
-                        <normaloff>:/images/themes/default/symbologyAdd.png</normaloff>:/images/themes/default/symbologyAdd.png</iconset>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QPushButton" name="mButtonRemoveJoin">
-                      <property name="text">
-                       <string/>
-                      </property>
-                      <property name="icon">
-                       <iconset resource="../../images/images.qrc">
-                        <normaloff>:/images/themes/default/symbologyRemove.png</normaloff>:/images/themes/default/symbologyRemove.png</iconset>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <spacer name="horizontalSpacer">
-                      <property name="orientation">
-                       <enum>Qt::Horizontal</enum>
-                      </property>
-                      <property name="sizeHint" stdset="0">
-                       <size>
-                        <width>0</width>
-                        <height>23</height>
-                       </size>
-                      </property>
-                     </spacer>
-                    </item>
-                   </layout>
-                  </item>
-                 </layout>
+                 <column>
+                  <property name="text">
+                   <string>Join layer</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Join field</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Target field</string>
+                  </property>
+                 </column>
                 </widget>
+               </item>
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout">
+                 <item>
+                  <widget class="QPushButton" name="mButtonAddJoin">
+                   <property name="text">
+                    <string/>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="../../images/images.qrc">
+                     <normaloff>:/images/themes/default/symbologyAdd.png</normaloff>:/images/themes/default/symbologyAdd.png</iconset>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="mButtonRemoveJoin">
+                   <property name="text">
+                    <string/>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="../../images/images.qrc">
+                     <normaloff>:/images/themes/default/symbologyRemove.png</normaloff>:/images/themes/default/symbologyRemove.png</iconset>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <spacer name="horizontalSpacer">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>0</width>
+                     <height>23</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                </layout>
                </item>
               </layout>
              </widget>
@@ -1387,16 +1288,6 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QLabel" name="label_10">
-             <property name="styleSheet">
-              <string notr="true">font-weight:bold;</string>
-             </property>
-             <property name="text">
-              <string>Diagrams</string>
-             </property>
-            </widget>
-           </item>
-           <item>
             <widget class="QScrollArea" name="scrollArea_8">
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
@@ -1409,8 +1300,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>83</width>
-                <height>16</height>
+                <width>755</width>
+                <height>452</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_24">
@@ -1439,16 +1330,6 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QLabel" name="label_4">
-             <property name="styleSheet">
-              <string notr="true">font-weight:bold;</string>
-             </property>
-             <property name="text">
-              <string>Metadata</string>
-             </property>
-            </widget>
-           </item>
-           <item>
             <widget class="QScrollArea" name="scrollArea_2">
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
@@ -1461,8 +1342,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>279</width>
-                <height>451</height>
+                <width>739</width>
+                <height>519</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -1807,19 +1688,18 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsScaleComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgsscalecombobox.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>QgsScaleComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgsscalecombobox.h</header>
+  </customwidget>
  </customwidgets>
  <resources>
-  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections>

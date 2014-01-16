@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>848</width>
-    <height>705</height>
+    <width>801</width>
+    <height>636</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -248,23 +248,13 @@
        <item>
         <widget class="QStackedWidget" name="mOptionsStackedWidget">
          <property name="currentIndex">
-          <number>0</number>
+          <number>2</number>
          </property>
          <widget class="QWidget" name="mOptionsPageGeneral">
           <layout class="QVBoxLayout" name="verticalLayout_3">
            <property name="margin">
             <number>0</number>
            </property>
-           <item>
-            <widget class="QLabel" name="label_49">
-             <property name="styleSheet">
-              <string notr="true">font-weight:bold;</string>
-             </property>
-             <property name="text">
-              <string>General</string>
-             </property>
-            </widget>
-           </item>
            <item>
             <widget class="QScrollArea" name="mOptionsScrollArea_01">
              <property name="frameShape">
@@ -278,13 +268,13 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>675</width>
-                <height>639</height>
+                <width>632</width>
+                <height>612</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
                <item>
-                <widget class="QGroupBox" name="groupBox">
+                <widget class="QgsCollapsibleGroupBox" name="groupBox">
                  <property name="title">
                   <string>Application</string>
                  </property>
@@ -641,7 +631,7 @@
                 </widget>
                </item>
                <item>
-                <widget class="QGroupBox" name="groupBox_11">
+                <widget class="QgsCollapsibleGroupBox" name="groupBox_11">
                  <property name="title">
                   <string>Project files</string>
                  </property>
@@ -922,16 +912,6 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QLabel" name="label_50">
-             <property name="styleSheet">
-              <string notr="true">font-weight:bold;</string>
-             </property>
-             <property name="text">
-              <string>System</string>
-             </property>
-            </widget>
-           </item>
-           <item>
             <widget class="QScrollArea" name="mOptionsScrollArea_03">
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
@@ -943,14 +923,14 @@
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>0</y>
-                <width>515</width>
-                <height>758</height>
+                <y>-133</y>
+                <width>655</width>
+                <height>787</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_22">
                <item>
-                <widget class="QGroupBox" name="groupBox_2">
+                <widget class="QgsCollapsibleGroupBox" name="groupBox_2">
                  <property name="title">
                   <string>SVG paths</string>
                  </property>
@@ -1003,7 +983,7 @@
                 </widget>
                </item>
                <item>
-                <widget class="QGroupBox" name="groupBox_4">
+                <widget class="QgsCollapsibleGroupBox" name="groupBox_4">
                  <property name="title">
                   <string>Plugin paths</string>
                  </property>
@@ -1056,7 +1036,7 @@
                 </widget>
                </item>
                <item>
-                <widget class="QGroupBox" name="mEnvironmentGrpBx">
+                <widget class="QgsCollapsibleGroupBox" name="mEnvironmentGrpBx">
                  <property name="minimumSize">
                   <size>
                    <width>0</width>
@@ -1258,16 +1238,6 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QLabel" name="label_52">
-             <property name="styleSheet">
-              <string notr="true">font-weight:bold;</string>
-             </property>
-             <property name="text">
-              <string>Data sources</string>
-             </property>
-            </widget>
-           </item>
-           <item>
             <widget class="QScrollArea" name="mOptionsScrollArea_11">
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
@@ -1280,19 +1250,13 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>407</width>
-                <height>387</height>
+                <width>627</width>
+                <height>585</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
                <item>
-                <widget class="QGroupBox" name="groupBox_18">
-                 <property name="minimumSize">
-                  <size>
-                   <width>0</width>
-                   <height>0</height>
-                  </size>
-                 </property>
+                <widget class="QgsCollapsibleGroupBox" name="groupBox_18">
                  <property name="title">
                   <string>Feature attributes and table</string>
                  </property>
@@ -1427,13 +1391,7 @@
                 </widget>
                </item>
                <item>
-                <widget class="QGroupBox" name="groupBox_19">
-                 <property name="minimumSize">
-                  <size>
-                   <width>0</width>
-                   <height>200</height>
-                  </size>
-                 </property>
+                <widget class="QgsCollapsibleGroupBox" name="groupBox_19">
                  <property name="title">
                   <string>Data source handling</string>
                  </property>
@@ -1567,10 +1525,13 @@
                  <property name="orientation">
                   <enum>Qt::Vertical</enum>
                  </property>
+                 <property name="sizeType">
+                  <enum>QSizePolicy::Expanding</enum>
+                 </property>
                  <property name="sizeHint" stdset="0">
                   <size>
                    <width>20</width>
-                   <height>458</height>
+                   <height>40</height>
                   </size>
                  </property>
                 </spacer>
@@ -1587,16 +1548,6 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QLabel" name="label_46">
-             <property name="styleSheet">
-              <string notr="true">font-weight:bold;</string>
-             </property>
-             <property name="text">
-              <string>Rendering</string>
-             </property>
-            </widget>
-           </item>
-           <item>
             <widget class="QScrollArea" name="mOptionsScrollArea_04">
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
@@ -1608,14 +1559,14 @@
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>0</y>
-                <width>457</width>
-                <height>811</height>
+                <y>-175</y>
+                <width>704</width>
+                <height>813</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_29">
                <item>
-                <widget class="QGroupBox" name="groupBox_5">
+                <widget class="QgsCollapsibleGroupBox" name="groupBox_5">
                  <property name="title">
                   <string>Rendering behavior</string>
                  </property>
@@ -1682,7 +1633,7 @@
                    </widget>
                   </item>
                   <item row="5" column="0" colspan="2">
-                   <widget class="QGroupBox" name="mSimplifyDrawingGroupBox">
+                   <widget class="QgsCollapsibleGroupBox" name="mSimplifyDrawingGroupBox">
                     <property name="title">
                      <string>Enable feature simplication by default for newly added layers</string>
                     </property>
@@ -1709,23 +1660,23 @@
                      </item>
                      <item row="1" column="2">
                       <widget class="QDoubleSpinBox" name="mSimplifyDrawingSpinBox">
+                       <property name="toolTip">
+                        <string>Higher values result in more simplification</string>
+                       </property>
                        <property name="decimals">
                         <number>2</number>
                        </property>
                        <property name="minimum">
-                        <number>1</number>
+                        <double>1.000000000000000</double>
                        </property>
                        <property name="maximum">
-                        <number>5</number>
+                        <double>5.000000000000000</double>
                        </property>
                        <property name="singleStep">
-                        <double>0.20</double>
+                        <double>0.200000000000000</double>
                        </property>
                        <property name="value">
-                         <double>1.0</double>
-                       </property>
-                       <property name="toolTip">
-                        <string>Higher values result in more simplification</string>
+                        <double>1.000000000000000</double>
                        </property>
                       </widget>
                      </item>
@@ -1751,7 +1702,7 @@
                         </size>
                        </property>
                       </spacer>
-                     </item>                         
+                     </item>
                      <item row="2" column="1" colspan="4">
                       <widget class="QCheckBox" name="mSimplifyDrawingAtProvider">
                        <property name="text">
@@ -1761,12 +1712,12 @@
                      </item>
                     </layout>
                    </widget>
-                  </item> 
+                  </item>
                  </layout>
                 </widget>
                </item>
                <item>
-                <widget class="QGroupBox" name="groupBox_8">
+                <widget class="QgsCollapsibleGroupBox" name="groupBox_8">
                  <property name="title">
                   <string>Rendering quality</string>
                  </property>
@@ -1792,7 +1743,7 @@
                 </widget>
                </item>
                <item>
-                <widget class="QGroupBox" name="groupBox_14">
+                <widget class="QgsCollapsibleGroupBox" name="groupBox_14">
                  <property name="title">
                   <string>Rasters</string>
                  </property>
@@ -2116,7 +2067,7 @@
                 </widget>
                </item>
                <item>
-                <widget class="QGroupBox" name="groupBox_22">
+                <widget class="QgsCollapsibleGroupBox" name="groupBox_22">
                  <property name="title">
                   <string>Debugging</string>
                  </property>
@@ -2183,16 +2134,6 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QLabel" name="label_44">
-             <property name="styleSheet">
-              <string notr="true">font-weight:bold;</string>
-             </property>
-             <property name="text">
-              <string>Map canvas &amp; legend</string>
-             </property>
-            </widget>
-           </item>
-           <item>
             <widget class="QScrollArea" name="mOptionsScrollArea_06">
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
@@ -2205,13 +2146,13 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>413</width>
-                <height>305</height>
+                <width>674</width>
+                <height>654</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
                <item>
-                <widget class="QGroupBox" name="groupBox_9">
+                <widget class="QgsCollapsibleGroupBox" name="groupBox_9">
                  <property name="title">
                   <string>Default map appearance (overridden by project properties)</string>
                  </property>
@@ -2309,7 +2250,7 @@
                 </widget>
                </item>
                <item>
-                <widget class="QGroupBox" name="mLegendGrpBx">
+                <widget class="QgsCollapsibleGroupBox" name="mLegendGrpBx">
                  <property name="minimumSize">
                   <size>
                    <width>0</width>
@@ -2529,16 +2470,6 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QLabel" name="label_45">
-             <property name="styleSheet">
-              <string notr="true">font-weight:bold;</string>
-             </property>
-             <property name="text">
-              <string>Map tools</string>
-             </property>
-            </widget>
-           </item>
-           <item>
             <widget class="QScrollArea" name="mOptionsScrollArea_05">
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
@@ -2550,14 +2481,14 @@
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>0</y>
-                <width>455</width>
-                <height>591</height>
+                <y>-30</y>
+                <width>658</width>
+                <height>684</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_30">
                <item>
-                <widget class="QGroupBox" name="groupBox_7">
+                <widget class="QgsCollapsibleGroupBox" name="groupBox_7">
                  <property name="title">
                   <string>Identify</string>
                  </property>
@@ -2623,7 +2554,7 @@
                 </widget>
                </item>
                <item>
-                <widget class="QGroupBox" name="groupBox_6">
+                <widget class="QgsCollapsibleGroupBox" name="groupBox_6">
                  <property name="title">
                   <string>Measure tool</string>
                  </property>
@@ -2757,7 +2688,7 @@
                 </widget>
                </item>
                <item>
-                <widget class="QGroupBox" name="groupBox_10">
+                <widget class="QgsCollapsibleGroupBox" name="groupBox_10">
                  <property name="title">
                   <string>Panning and zooming</string>
                  </property>
@@ -2820,7 +2751,7 @@
                 </widget>
                </item>
                <item>
-                <widget class="QGroupBox" name="groupBox_15">
+                <widget class="QgsCollapsibleGroupBox" name="groupBox_15">
                  <property name="title">
                   <string>Predefined scales</string>
                  </property>
@@ -2943,16 +2874,6 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QLabel" name="label_65">
-             <property name="styleSheet">
-              <string notr="true">font-weight:bold;</string>
-             </property>
-             <property name="text">
-              <string>Composer</string>
-             </property>
-            </widget>
-           </item>
-           <item>
             <widget class="QScrollArea" name="mOptionsScrollArea_12">
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
@@ -2965,8 +2886,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>381</width>
-                <height>326</height>
+                <width>674</width>
+                <height>654</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_39">
@@ -2974,7 +2895,7 @@
                 <number>0</number>
                </property>
                <item>
-                <widget class="QGroupBox" name="groupBox_3">
+                <widget class="QgsCollapsibleGroupBox" name="groupBox_3">
                  <property name="title">
                   <string>Composition defaults</string>
                  </property>
@@ -2997,7 +2918,7 @@
                 </widget>
                </item>
                <item>
-                <widget class="QGroupBox" name="groupBox_23">
+                <widget class="QgsCollapsibleGroupBox" name="groupBox_23">
                  <property name="title">
                   <string>Grid appearance</string>
                  </property>
@@ -3027,7 +2948,7 @@
                 </widget>
                </item>
                <item>
-                <widget class="QGroupBox" name="groupBox_24">
+                <widget class="QgsCollapsibleGroupBox" name="groupBox_24">
                  <property name="title">
                   <string>Grid defaults</string>
                  </property>
@@ -3110,7 +3031,7 @@
                 </widget>
                </item>
                <item>
-                <widget class="QGroupBox" name="groupBox_25">
+                <widget class="QgsCollapsibleGroupBox" name="groupBox_25">
                  <property name="title">
                   <string>Guide defaults</string>
                  </property>
@@ -3164,16 +3085,6 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QLabel" name="label_41">
-             <property name="styleSheet">
-              <string notr="true">font-weight:bold;</string>
-             </property>
-             <property name="text">
-              <string>Digitizing</string>
-             </property>
-            </widget>
-           </item>
-           <item>
             <widget class="QScrollArea" name="mOptionsScrollArea_07">
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
@@ -3186,8 +3097,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>374</width>
-                <height>529</height>
+                <width>674</width>
+                <height>654</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -3195,7 +3106,7 @@
                 <number>0</number>
                </property>
                <item>
-                <widget class="QGroupBox" name="mEnterAttributeValuesGroupBox">
+                <widget class="QgsCollapsibleGroupBox" name="mEnterAttributeValuesGroupBox">
                  <property name="title">
                   <string>Feature creation</string>
                  </property>
@@ -3254,7 +3165,7 @@
                 </widget>
                </item>
                <item>
-                <widget class="QGroupBox" name="mRubberBandGroupBox">
+                <widget class="QgsCollapsibleGroupBox" name="mRubberBandGroupBox">
                  <property name="title">
                   <string>Rubberband</string>
                  </property>
@@ -3337,7 +3248,7 @@
                 </widget>
                </item>
                <item>
-                <widget class="QGroupBox" name="mSnappingGroupBox">
+                <widget class="QgsCollapsibleGroupBox" name="mSnappingGroupBox">
                  <property name="title">
                   <string>Snapping</string>
                  </property>
@@ -3477,7 +3388,7 @@
                 </widget>
                </item>
                <item>
-                <widget class="QGroupBox" name="mVertexMarkerGroupBox">
+                <widget class="QgsCollapsibleGroupBox" name="mVertexMarkerGroupBox">
                  <property name="title">
                   <string>Vertex markers</string>
                  </property>
@@ -3556,7 +3467,7 @@
                 </widget>
                </item>
                <item>
-                <widget class="QGroupBox" name="groupBox_21">
+                <widget class="QgsCollapsibleGroupBox" name="groupBox_21">
                  <property name="title">
                   <string>Curve offset tool</string>
                  </property>
@@ -3665,16 +3576,6 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QLabel" name="label_51">
-             <property name="styleSheet">
-              <string notr="true">font-weight:bold;</string>
-             </property>
-             <property name="text">
-              <string>GDAL</string>
-             </property>
-            </widget>
-           </item>
-           <item>
             <widget class="QScrollArea" name="mOptionsScrollArea_02">
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
@@ -3687,8 +3588,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>345</width>
-                <height>350</height>
+                <width>627</width>
+                <height>585</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -3805,16 +3706,6 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QLabel" name="label_42">
-             <property name="styleSheet">
-              <string notr="true">font-weight:bold;</string>
-             </property>
-             <property name="text">
-              <string>Coordinate Reference System (CRS)</string>
-             </property>
-            </widget>
-           </item>
-           <item>
             <widget class="QScrollArea" name="mOptionsScrollArea_08">
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
@@ -3827,8 +3718,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>491</width>
-                <height>624</height>
+                <width>650</width>
+                <height>679</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_15">
@@ -3846,7 +3737,7 @@
                 </spacer>
                </item>
                <item row="2" column="0">
-                <widget class="QGroupBox" name="grpProjectionBehaviour">
+                <widget class="QgsCollapsibleGroupBox" name="grpProjectionBehaviour">
                  <property name="title">
                   <string>CRS for new layers</string>
                  </property>
@@ -3922,7 +3813,7 @@
                 </widget>
                </item>
                <item row="1" column="0">
-                <widget class="QGroupBox" name="grpOtfTransform">
+                <widget class="QgsCollapsibleGroupBox" name="grpOtfTransform">
                  <property name="title">
                   <string>Default CRS for new projects</string>
                  </property>
@@ -3979,7 +3870,7 @@
                 </widget>
                </item>
                <item row="3" column="0">
-                <widget class="QGroupBox" name="mDefaultDatumTransformGroupBox">
+                <widget class="QgsCollapsibleGroupBox" name="mDefaultDatumTransformGroupBox">
                  <property name="title">
                   <string>Default datum transformations</string>
                  </property>
@@ -4023,31 +3914,31 @@
                     </item>
                    </layout>
                   </item>
+                  <item row="1" column="0">
+                   <widget class="QTreeWidget" name="mDefaultDatumTransformTreeWidget">
+                    <column>
+                     <property name="text">
+                      <string>Source CRS</string>
+                     </property>
+                    </column>
+                    <column>
+                     <property name="text">
+                      <string>Destination CRS</string>
+                     </property>
+                    </column>
+                    <column>
+                     <property name="text">
+                      <string>Source datum transform</string>
+                     </property>
+                    </column>
+                    <column>
+                     <property name="text">
+                      <string>Destination datum transform</string>
+                     </property>
+                    </column>
+                   </widget>
+                  </item>
                  </layout>
-                </widget>
-               </item>
-               <item row="4" column="0">
-                <widget class="QTreeWidget" name="mDefaultDatumTransformTreeWidget">
-                 <column>
-                  <property name="text">
-                   <string>Source CRS</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Destination CRS</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Source datum transform</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Destination datum transform</string>
-                  </property>
-                 </column>
                 </widget>
                </item>
               </layout>
@@ -4062,16 +3953,6 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QLabel" name="label_47">
-             <property name="styleSheet">
-              <string notr="true">font-weight:bold;</string>
-             </property>
-             <property name="text">
-              <string>Locale</string>
-             </property>
-            </widget>
-           </item>
-           <item>
             <widget class="QScrollArea" name="mOptionsScrollArea_09">
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
@@ -4084,8 +3965,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>225</width>
-                <height>201</height>
+                <width>627</width>
+                <height>585</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -4162,16 +4043,6 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QLabel" name="label_48">
-             <property name="styleSheet">
-              <string notr="true">font-weight:bold;</string>
-             </property>
-             <property name="text">
-              <string>Network</string>
-             </property>
-            </widget>
-           </item>
-           <item>
             <widget class="QScrollArea" name="mOptionsScrollArea_10">
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
@@ -4184,8 +4055,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>389</width>
-                <height>586</height>
+                <width>611</width>
+                <height>685</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_33">
@@ -4536,19 +4407,18 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QPushButton</extends>
-   <header>qgscolorbutton.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>QgsColorButton</class>
+   <extends>QPushButton</extends>
+   <header>qgscolorbutton.h</header>
+  </customwidget>
  </customwidgets>
  <resources>
-  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections>

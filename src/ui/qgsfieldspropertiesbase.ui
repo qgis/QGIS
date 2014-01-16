@@ -11,80 +11,109 @@
    </rect>
   </property>
   <layout class="QGridLayout" name="gridLayout_6">
-   <item row="0" column="4">
-    <spacer>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>100</width>
-       <height>19</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="0" column="5">
-    <widget class="QLabel" name="label_2">
-     <property name="text">
-      <string>Attribute editor layout:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="0">
-    <widget class="QToolButton" name="mAddAttributeButton">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="toolTip">
-      <string>New column</string>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="icon">
-      <iconset>
-       <normaloff>.designer/xpm/new_attribute.png</normaloff>.designer/xpm/new_attribute.png</iconset>
-     </property>
-     <property name="shortcut">
-      <string>Ctrl+N</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="3">
-    <widget class="QToolButton" name="mCalculateFieldButton">
-     <property name="toolTip">
-      <string>Field calculator</string>
-     </property>
-     <property name="whatsThis">
-      <string>Click to toggle table editing</string>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="checkable">
-      <bool>false</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="2">
-    <widget class="QToolButton" name="mToggleEditingButton">
-     <property name="toolTip">
-      <string>Toggle editing mode</string>
-     </property>
-     <property name="whatsThis">
-      <string>Click to toggle table editing</string>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="checkable">
-      <bool>true</bool>
-     </property>
-    </widget>
+   <item row="1" column="0" colspan="7">
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <item>
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>Attribute editor layout:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="mEditorLayoutComboBox">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <item>
+        <property name="text">
+         <string>Autogenerate</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Drag and drop designer</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Provide ui-file</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeType">
+        <enum>QSizePolicy::Minimum</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>25</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_3">
+       <property name="toolTip">
+        <string>QGIS forms can have a Python function that is called when the form is opened.  
+Use this function to add extra logic to your forms.
+
+An example is (in module MyForms.py):
+
+          def open(dialog, layer, feature):
+	geom = feature.geometry()
+	control = dialog.findChild(QWidget,&quot;MyLineEdit&quot;)
+
+Reference in Python Init Function like so: MyForms.open
+
+MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.</string>
+       </property>
+       <property name="text">
+        <string>Python Init function</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="leEditFormInit">
+       <property name="toolTip">
+        <string>QGIS forms can have a Python function that is called when the form is opened.  
+Use this function to add extra logic to your forms.
+
+An example is (in module MyForms.py):
+
+          def open(dialog, layer, feature):
+	geom = feature.geometry()
+	control = dialog.findChild(QWidget,&quot;MyLineEdit&quot;)
+
+Reference in Python Init Function like so: MyForms.open
+
+MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_3">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
    </item>
    <item row="2" column="0" colspan="7">
     <widget class="QSplitter" name="mSplitter">
@@ -107,11 +136,104 @@
          <property name="orientation">
           <enum>Qt::Vertical</enum>
          </property>
-         <widget class="QgsCollapsibleGroupBox" name="mAttributesListFrame">
+         <widget class="QgsCollapsibleGroupBox" name="mFieldsGroupBox">
           <property name="title">
            <string>Fields</string>
           </property>
-          <layout class="QGridLayout" name="mAttributesListLayout"/>
+          <layout class="QGridLayout" name="mAttributesListLayout">
+           <item row="0" column="0">
+            <layout class="QGridLayout" name="gridLayout_3">
+             <item row="0" column="1">
+              <widget class="QToolButton" name="mDeleteAttributeButton">
+               <property name="toolTip">
+                <string>Delete column</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="icon">
+                <iconset>
+                 <normaloff>.designer/xpm/delete_attribute.png</normaloff>.designer/xpm/delete_attribute.png</iconset>
+               </property>
+               <property name="shortcut">
+                <string>Ctrl+X</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="3">
+              <widget class="QToolButton" name="mCalculateFieldButton">
+               <property name="toolTip">
+                <string>Field calculator</string>
+               </property>
+               <property name="whatsThis">
+                <string>Click to toggle table editing</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="checkable">
+                <bool>false</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="2">
+              <widget class="QToolButton" name="mToggleEditingButton">
+               <property name="toolTip">
+                <string>Toggle editing mode</string>
+               </property>
+               <property name="whatsThis">
+                <string>Click to toggle table editing</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="checkable">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="0">
+              <widget class="QToolButton" name="mAddAttributeButton">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="toolTip">
+                <string>New column</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="icon">
+                <iconset>
+                 <normaloff>.designer/xpm/new_attribute.png</normaloff>.designer/xpm/new_attribute.png</iconset>
+               </property>
+               <property name="shortcut">
+                <string>Ctrl+N</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="4">
+              <spacer name="horizontalSpacer_2">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item row="1" column="0" colspan="5">
+              <widget class="QWidget" name="mAttributesListFrame" native="true"/>
+             </item>
+            </layout>
+           </item>
+          </layout>
          </widget>
          <widget class="QgsCollapsibleGroupBox" name="mRelationsFrame">
           <property name="title">
@@ -304,69 +426,6 @@
      </widget>
     </widget>
    </item>
-   <item row="0" column="6">
-    <widget class="QComboBox" name="mEditorLayoutComboBox">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <item>
-      <property name="text">
-       <string>Autogenerate</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Drag and drop designer</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Provide ui-file</string>
-      </property>
-     </item>
-    </widget>
-   </item>
-   <item row="1" column="5">
-    <widget class="QLabel" name="label_3">
-     <property name="toolTip">
-      <string>QGIS forms can have a Python function that is called when the form is opened.  
-Use this function to add extra logic to your forms.
-
-An example is (in module MyForms.py):
-
-          def open(dialog, layer, feature):
-	geom = feature.geometry()
-	control = dialog.findChild(QWidget,&quot;MyLineEdit&quot;)
-
-Reference in Python Init Function like so: MyForms.open
-
-MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.</string>
-     </property>
-     <property name="text">
-      <string>Python Init function</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="1">
-    <widget class="QToolButton" name="mDeleteAttributeButton">
-     <property name="toolTip">
-      <string>Delete column</string>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="icon">
-      <iconset>
-       <normaloff>.designer/xpm/delete_attribute.png</normaloff>.designer/xpm/delete_attribute.png</iconset>
-     </property>
-     <property name="shortcut">
-      <string>Ctrl+X</string>
-     </property>
-    </widget>
-   </item>
    <item row="3" column="0" colspan="7">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
@@ -420,24 +479,6 @@ MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.<
       </widget>
      </item>
     </layout>
-   </item>
-   <item row="1" column="6">
-    <widget class="QLineEdit" name="leEditFormInit">
-     <property name="toolTip">
-      <string>QGIS forms can have a Python function that is called when the form is opened.  
-Use this function to add extra logic to your forms.
-
-An example is (in module MyForms.py):
-
-          def open(dialog, layer, feature):
-	geom = feature.geometry()
-	control = dialog.findChild(QWidget,&quot;MyLineEdit&quot;)
-
-Reference in Python Init Function like so: MyForms.open
-
-MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.</string>
-     </property>
-    </widget>
    </item>
   </layout>
  </widget>
