@@ -304,7 +304,16 @@ class CORE_EXPORT QgsMapRenderer : public QObject
 
     void drawingProgress( int current, int total );
 
+    /** This signal is emitted when CRS transformation is enabled/disabled.
+     *  @param flag true if transformation is enabled.
+     *  @deprecated Use hasCrsTransformEnabledChanged( bool flag )
+     *              to avoid conflict with method of the same name). */
     void hasCrsTransformEnabled( bool flag );
+
+    /** This signal is emitted when CRS transformation is enabled/disabled.
+     *  @param flag true if transformation is enabled.
+     *  @note Added in 2.1 */
+    void hasCrsTransformEnabledChanged( bool flag );
 
     void destinationSrsChanged();
 

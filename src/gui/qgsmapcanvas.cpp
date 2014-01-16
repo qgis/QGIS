@@ -124,7 +124,7 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
   moveCanvasContents( true );
 
   connect( mMapRenderer, SIGNAL( drawError( QgsMapLayer* ) ), this, SLOT( showError( QgsMapLayer* ) ) );
-  connect( mMapRenderer, SIGNAL( hasCrsTransformEnabled( bool ) ), this, SLOT( crsTransformEnabled( bool ) ) );
+  connect( mMapRenderer, SIGNAL( hasCrsTransformEnabledChanged( bool ) ), this, SLOT( crsTransformEnabled( bool ) ) );
 
   crsTransformEnabled( hasCrsTransformEnabled() );
 
@@ -338,7 +338,7 @@ void QgsMapCanvas::enableOverviewMode( QgsMapOverviewCanvas* overview )
   if ( mMapOverview )
   {
     // disconnect old map overview if exists
-    disconnect( mMapRenderer, SIGNAL( hasCrsTransformEnabled( bool ) ),
+    disconnect( mMapRenderer, SIGNAL( hasCrsTransformEnabledChanged( bool ) ),
                 mMapOverview, SLOT( hasCrsTransformEnabled( bool ) ) );
     disconnect( mMapRenderer, SIGNAL( destinationSrsChanged() ),
                 mMapOverview, SLOT( destinationSrsChanged() ) );
@@ -351,7 +351,7 @@ void QgsMapCanvas::enableOverviewMode( QgsMapOverviewCanvas* overview )
   if ( overview )
   {
     // connect to the map render to copy its projection settings
-    connect( mMapRenderer, SIGNAL( hasCrsTransformEnabled( bool ) ),
+    connect( mMapRenderer, SIGNAL( hasCrsTransformEnabledChanged( bool ) ),
              overview,     SLOT( hasCrsTransformEnabled( bool ) ) );
     connect( mMapRenderer, SIGNAL( destinationSrsChanged() ),
              overview,     SLOT( destinationSrsChanged() ) );
