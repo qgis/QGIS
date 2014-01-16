@@ -404,13 +404,20 @@ bool QgsCoordinateReferenceSystem::axisInverted() const
 {
   if ( mAxisInverted == -1 )
   {
-    OGRAxisOrientation orientation;
-    const char *axis0 = OSRGetAxis( mCRS, mGeoFlag ? "GEOGCS" : "PROJCS", 0, &orientation );
-    mAxisInverted = mGeoFlag
-                    ? ( orientation == OAO_East || orientation == OAO_West || orientation == OAO_Other )
-                    : ( orientation == OAO_North || orientation == OAO_South );
-    QgsDebugMsg( QString( "srid:%1 axis0:%2 orientation:%3 inverted:%4" ).arg( mSRID ).arg( axis0 ).arg( OSRAxisEnumToName( orientation ) ).arg( mAxisInverted ) );
-    Q_UNUSED( axis0 );
+    mAxisInverted = mGeoFlag ? OSREPSGTreatsAsLatLong( mCRS ) : OSREPSGTreatsAsNorthingEasting( mCRS );
+
+    // See GDAL-OGR: https://github.com/OSGeo/gdal/blob/trunk/gdal/ogr/ogrsf_frmts/gml/gmlutils.cpp#L322
+    if ( !mAxisInverted )
+    {
+      OGRSpatialReferenceH crs = OSRNewSpatialReference( NULL );
+
+      if ( OSRImportFromEPSGA( crs, mSRID ) == OGRERR_NONE )
+      {
+        mAxisInverted = mGeoFlag ? OSREPSGTreatsAsLatLong( crs ) : OSREPSGTreatsAsNorthingEasting( crs );
+      }
+      OSRDestroySpatialReference( crs );
+    }
+    QgsDebugMsg( QString( "srid:%1 inverted:%2" ).arg( mSRID ).arg( mAxisInverted ) );
   }
 
   return mAxisInverted != 0;
