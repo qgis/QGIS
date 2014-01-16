@@ -269,6 +269,22 @@ class QgsWmsProvider : public QgsRasterDataProvider
 
     static QVector<QgsWmsSupportedFormat> supportedFormats();
 
+    static void showMessageBox( const QString& title, const QString& text );
+
+    /**
+     * \brief parse the full WMS ServiceExceptionReport XML document
+     *
+     * \note errorTitle and errorText are updated to suit the results of this function. Format of error is plain text.
+     */
+    static bool parseServiceExceptionReportDom( QByteArray const &xml, QString& errorTitle, QString& errorText );
+
+    /**
+     * \brief Prepare the URI so that we can later simply append param=value
+     * \param uri uri to prepare
+     * \retval prepared uri
+     */
+    static QString prepareUri( QString uri );
+
   signals:
 
     /** \brief emit a signal to notify of a progress event */
@@ -280,15 +296,11 @@ class QgsWmsProvider : public QgsRasterDataProvider
     void dataChanged();
 
   private slots:
-    void cacheReplyFinished();
-    void cacheReplyProgress( qint64, qint64 );
     void identifyReplyFinished();
-    void tileReplyFinished();
     void getLegendGraphicReplyFinished();
     void getLegendGraphicReplyProgress( qint64, qint64 );
 
   private:
-    void showMessageBox( const QString& title, const QString& text );
 
     // case insensitive attribute value lookup
     static QString nodeAttribute( const QDomElement &e, QString name, QString defValue = QString::null );
@@ -306,17 +318,6 @@ class QgsWmsProvider : public QgsRasterDataProvider
     bool setImageCrs( QString const & crs );
 
     /**
-     * \brief Relaunch tile request cloning previous request parameters and managing max repeat
-     *
-     * \note Development funded by Regione Toscana - SITA
-     *
-     * \param oldRequest request to clone to generate new tile request
-     *
-     * request is not launched if max retry is reached. Message is logged.
-     */
-    void repeatTileRequest( QNetworkRequest const &oldRequest );
-
-    /**
      * \brief Retrieve and parse the (cached) Capabilities document from the server
      *
      * \param forceRefresh  if true, ignores any previous response cached in memory
@@ -330,15 +331,8 @@ class QgsWmsProvider : public QgsRasterDataProvider
      */
     bool retrieveServerCapabilities( bool forceRefresh = false );
 
-    /**
-     * \brief parse the full WMS ServiceExceptionReport XML document
-     *
-     * \note mErrorCaption and mError are updated to suit the results of this function.
-     */
-    bool parseServiceExceptionReportDom( QByteArray const &xml );
-
     //! parse the WMS ServiceException XML element
-    void parseServiceException( QDomElement const &e );
+    static void parseServiceException( QDomElement const &e, QString& errorTitle, QString& errorText );
 
     void parseOperationMetadata( QDomElement const &e );
 
@@ -350,14 +344,6 @@ class QgsWmsProvider : public QgsRasterDataProvider
      *         see lastError() for more info
      */
     bool calculateExtent();
-
-public:
-    /**
-     * \brief Prepare the URI so that we can later simply append param=value
-     * \param uri uri to prepare
-     * \retval prepared uri
-     */
-    static QString prepareUri( QString uri );
 
 private:
 
@@ -402,11 +388,6 @@ private:
     double mGetLegendGraphicScale;
 
     /**
-     * Last Service Exception Report from the WMS
-     */
-    QDomDocument mServiceExceptionReportDom;
-
-    /**
      * Visibility status of the given active sublayer
      */
     QMap<QString, bool> mActiveSubLayerVisibility;
@@ -427,16 +408,6 @@ private:
      * with the same parameters.
      */
     QImage *mCachedImage;
-
-    /**
-     * The reply to the on going request to fill the cache
-     */
-    QNetworkReply *mCacheReply;
-
-    /**
-     * Running tile requests
-     */
-    QList<QNetworkReply*> mTileReplies;
 
     /**
      * The reply to the GetLegendGraphic request
@@ -492,9 +463,6 @@ private:
 
     //! tile request number, cache hits and misses
     int mTileReqNo;
-    int mCacheHits;
-    int mCacheMisses;
-    int mErrors;
 
     //! chosen tile layer
     QgsWmtsTileLayer        *mTileLayer;
@@ -506,15 +474,110 @@ private:
 
     QgsCoordinateReferenceSystem mCrs;
 
-    QgsNetworkAccessManager* mNAM;
-
-    QgsNetworkAccessManager* nam();
-
     //! Parsed response of server's capabilities - initially (or on error) may be invalid
     QgsWmsCapabilities mCaps;
 
     //! User's settings (URI, authorization, layer, style, ...)
     QgsWmsSettings mSettings;
+};
+
+
+/** Handler for downloading of non-tiled WMS requests, the data are written to the given image */
+class QgsWmsImageDownloadHandler : public QObject
+{
+  Q_OBJECT
+public:
+  QgsWmsImageDownloadHandler( const QString& providerUri, const QUrl& url, const QgsWmsAuthorization& auth, QImage* image );
+  ~QgsWmsImageDownloadHandler();
+
+  void downloadBlocking();
+
+protected slots:
+  void cacheReplyFinished();
+  void cacheReplyProgress( qint64 bytesReceived, qint64 bytesTotal );
+
+protected:
+  void finish() { QMetaObject::invokeMethod( mEventLoop, "quit", Qt::QueuedConnection ); }
+
+  QString mProviderUri;
+
+  QNetworkReply* mCacheReply;
+  QImage* mCachedImage;
+
+  QEventLoop* mEventLoop;
+  QgsNetworkAccessManager* mNAM;
+};
+
+
+/** Handler for tiled WMS-C/WMTS requests, the data are written to the given image */
+class QgsWmsTiledImageDownloadHandler : public QObject
+{
+  Q_OBJECT
+public:
+
+  struct TileRequest
+  {
+    TileRequest( const QUrl& u, const QRectF& r, int i ) : url( u ), rect( r ), index( i ) {}
+    QUrl url;
+    QRectF rect;
+    int index;
+  };
+
+  QgsWmsTiledImageDownloadHandler( const QString& providerUri, const QgsWmsAuthorization& auth, int reqNo, const QList<TileRequest>& requests, QImage* cachedImage, const QgsRectangle& cachedViewExtent, bool smoothPixmapTransform );
+  ~QgsWmsTiledImageDownloadHandler();
+
+  void downloadBlocking();
+
+protected slots:
+  void tileReplyFinished();
+
+protected:
+  /**
+   * \brief Relaunch tile request cloning previous request parameters and managing max repeat
+   *
+   * \param oldRequest request to clone to generate new tile request
+   *
+   * request is not launched if max retry is reached. Message is logged.
+   */
+  void repeatTileRequest( QNetworkRequest const &oldRequest );
+
+  void finish() { QMetaObject::invokeMethod( mEventLoop, "quit", Qt::QueuedConnection ); }
+
+  QString mProviderUri;
+
+  QgsWmsAuthorization mAuth;
+
+  QImage* mCachedImage;
+  QgsRectangle mCachedViewExtent;
+
+  QEventLoop* mEventLoop;
+  QgsNetworkAccessManager* mNAM;
+
+  int mTileReqNo;
+  bool mSmoothPixmapTransform;
+
+  //! Running tile requests
+  QList<QNetworkReply*> mReplies;
+};
+
+
+/** Class keeping simple statistics for WMS provider - per unique URI */
+class QgsWmsStatistics
+{
+public:
+  struct Stat
+  {
+    Stat() : errors( 0 ), cacheHits( 0 ), cacheMisses( 0 ) {}
+    int errors;
+    int cacheHits;
+    int cacheMisses;
+  };
+
+  //! get reference to layer's statistics - insert to map if does not exist yet
+  static Stat& statForUri( const QString& uri ) { return sData[uri]; }
+
+protected:
+  static QMap<QString, Stat> sData;
 };
 
 

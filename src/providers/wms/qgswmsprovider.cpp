@@ -81,6 +81,9 @@ static QString WMS_DESCRIPTION = "OGC Web Map Service version 1.3 data provider"
 
 static QString DEFAULT_LATLON_CRS = "CRS:84";
 
+QMap<QString, QgsWmsStatistics::Stat> QgsWmsStatistics::sData;
+
+
 QgsWmsProvider::QgsWmsProvider( QString const& uri, const QgsWmsCapabilities* capabilities )
     : QgsRasterDataProvider( uri )
     , mHttpGetLegendGraphicResponse( 0 )
@@ -88,18 +91,13 @@ QgsWmsProvider::QgsWmsProvider( QString const& uri, const QgsWmsCapabilities* ca
     , mGetLegendGraphicScale( 0 )
     , mImageCrs( DEFAULT_LATLON_CRS )
     , mCachedImage( 0 )
-    , mCacheReply( 0 )
     , mCachedViewExtent( 0 )
     , mCoordinateTransform( 0 )
     , mExtentDirty( true )
     , mGetFeatureInfoUrlBase( "" )
     , mTileReqNo( 0 )
-    , mCacheHits( 0 )
-    , mCacheMisses( 0 )
-    , mErrors( 0 )
     , mTileLayer( 0 )
     , mTileMatrixSet( 0 )
-    , mNAM( 0 )
 {
   QgsDebugMsg( "constructing with uri '" + uri + "'." );
 
@@ -188,19 +186,6 @@ QgsWmsProvider::~QgsWmsProvider()
     delete mCoordinateTransform;
     mCoordinateTransform = 0;
   }
-
-  if ( mCacheReply )
-  {
-    mCacheReply->deleteLater();
-    mCacheReply = 0;
-  }
-
-  while ( !mTileReplies.isEmpty() )
-  {
-    mTileReplies.takeFirst()->deleteLater();
-  }
-
-  mNAM->deleteLater();
 
 }
 
@@ -408,13 +393,6 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
     mCachedImage = 0;
   }
 
-  // abort running (untiled) request
-  if ( mCacheReply )
-  {
-    mCacheReply->abort();
-    delete mCacheReply;
-    mCacheReply = 0;
-  }
 
   //according to the WMS spec for 1.3, some CRS have inverted axis
   bool changeXY = false;
@@ -517,27 +495,14 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
 
     mGetFeatureInfoUrlBase = mSettings.mIgnoreGetFeatureInfoUrl ? mSettings.mBaseUrl : getFeatureInfoUrl();
 
-    QNetworkRequest request( url );
-    mSettings.authorization().setAuthorization( request );
-    request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
-    mCacheReply = nam()->get( request );
-    connect( mCacheReply, SIGNAL( finished() ), this, SLOT( cacheReplyFinished() ), Qt::DirectConnection );
-    connect( mCacheReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( cacheReplyProgress( qint64, qint64 ) ), Qt::DirectConnection );
-
     emit statusChanged( tr( "Getting map via WMS." ) );
+
+    QgsWmsImageDownloadHandler handler( dataSourceUri(), url, mSettings.authorization(), mCachedImage );
+    handler.downloadBlocking();
 
     //QTime t;
     //t.start();
 
-    Q_ASSERT( mCacheReply->thread() == QThread::currentThread() );
-
-    QEventLoop loop;
-    connect(mCacheReply, SIGNAL(finished()), &loop, SLOT(quit()));
-    loop.exec( QEventLoop::ExcludeUserInputEvents );
-
-    qDebug("LOOP FINISHED");
-
-    Q_ASSERT( mCacheReply == 0 );
   }
   else
   {
@@ -655,6 +620,8 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
     }
 #endif
 
+    QList<QgsWmsTiledImageDownloadHandler::TileRequest> requests;
+
     switch ( tileMode )
     {
       case WMSC:
@@ -706,21 +673,9 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
                     .arg( qgsDoubleToString( tm->topLeft.x() + ( col + 1 ) * twMap /* - twMap * 0.001 */ ) )
                     .arg( qgsDoubleToString( tm->topLeft.y() -         row * thMap /* + thMap * 0.001 */ ) );
 
-            QNetworkRequest request( turl );
-            mSettings.authorization().setAuthorization( request );
             QgsDebugMsg( QString( "tileRequest %1 %2/%3 (%4,%5): %6" ).arg( mTileReqNo ).arg( i++ ).arg( n ).arg( row ).arg( col ).arg( turl ) );
-            request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
-            request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
-            request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileReqNo ), mTileReqNo );
-            request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileIndex ), i );
-            request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileRect ),
-                                  QRectF( tm->topLeft.x() + col * twMap, tm->topLeft.y() - ( row + 1 ) * thMap, twMap, thMap ) );
-            request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileRetry ), 0 );
-
-            QgsDebugMsg( QString( "gettile: %1" ).arg( turl ) );
-            QNetworkReply *reply = nam()->get( request );
-            mTileReplies << reply;
-            connect( reply, SIGNAL( finished() ), this, SLOT( tileReplyFinished() ) );
+            QRectF rect( tm->topLeft.x() + col * twMap, tm->topLeft.y() - ( row + 1 ) * thMap, twMap, thMap );
+            requests << QgsWmsTiledImageDownloadHandler::TileRequest( turl, rect, i );
           }
         }
       }
@@ -760,21 +715,9 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
               turl += url.toString();
               turl += QString( "&TILEROW=%1&TILECOL=%2" ).arg( row ).arg( col );
 
-              QNetworkRequest request( turl );
-              mSettings.authorization().setAuthorization( request );
               QgsDebugMsg( QString( "tileRequest %1 %2/%3 (%4,%5): %6" ).arg( mTileReqNo ).arg( i++ ).arg( n ).arg( row ).arg( col ).arg( turl ) );
-              request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
-              request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
-              request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileReqNo ), mTileReqNo );
-              request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileIndex ), i );
-              request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileRect ),
-                                    QRectF( tm->topLeft.x() + col * twMap, tm->topLeft.y() - ( row + 1 ) * thMap, twMap, thMap ) );
-              request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileRetry ), 0 );
-
-              QgsDebugMsg( QString( "gettile: %1" ).arg( turl ) );
-              QNetworkReply *reply = nam()->get( request );
-              mTileReplies << reply;
-              connect( reply, SIGNAL( finished() ), this, SLOT( tileReplyFinished() ) );
+              QRectF rect( tm->topLeft.x() + col * twMap, tm->topLeft.y() - ( row + 1 ) * thMap, twMap, thMap );
+              requests << QgsWmsTiledImageDownloadHandler::TileRequest( turl, rect, i );
             }
           }
         }
@@ -801,21 +744,9 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
               turl.replace( "{tilerow}", QString::number( row ), Qt::CaseInsensitive );
               turl.replace( "{tilecol}", QString::number( col ), Qt::CaseInsensitive );
 
-              QNetworkRequest request( turl );
-              mSettings.authorization().setAuthorization( request );
               QgsDebugMsg( QString( "tileRequest %1 %2/%3 (%4,%5): %6" ).arg( mTileReqNo ).arg( i++ ).arg( n ).arg( row ).arg( col ).arg( turl ) );
-              request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
-              request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
-              request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileReqNo ), mTileReqNo );
-              request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileIndex ), i );
-              request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileRect ),
-                                    QRectF( tm->topLeft.x() + col * twMap, tm->topLeft.y() - ( row + 1 ) * thMap, twMap, thMap ) );
-              request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileRetry ), 0 );
-
-              QgsDebugMsg( QString( "gettile: %1" ).arg( turl ) );
-              QNetworkReply *reply = nam()->get( request );
-              mTileReplies << reply;
-              connect( reply, SIGNAL( finished() ), this, SLOT( tileReplyFinished() ) );
+              QRectF rect( tm->topLeft.x() + col * twMap, tm->topLeft.y() - ( row + 1 ) * thMap, twMap, thMap );
+              requests << QgsWmsTiledImageDownloadHandler::TileRequest( turl, rect, i );
             }
           }
         }
@@ -830,21 +761,16 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
 
     emit statusChanged( tr( "Getting tiles." ) );
 
-    QTime t;
-    t.start();
+    QgsWmsTiledImageDownloadHandler handler( dataSourceUri(), mSettings.authorization(), mTileReqNo, requests, mCachedImage, mCachedViewExtent, mSettings.mSmoothPixmapTransform );
+    handler.downloadBlocking();
 
-    // draw everything that is retrieved within a second
-    // and the rest asynchronously
-    while ( !mTileReplies.isEmpty() )
-    {
-      QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents );
-    }
 
-#ifdef QGISDEBUG
-    emit statusChanged( tr( "%n tile requests in background", "tile request count", mTileReplies.count() )
-                        + tr( ", %n cache hits", "tile cache hits", mCacheHits )
-                        + tr( ", %n cache misses.", "tile cache missed", mCacheMisses )
-                        + tr( ", %n errors.", "errors", mErrors )
+#if 0
+    const QgsWmsStatistics::Stat& stat = QgsWmsStatistics::statForUri( dataSourceUri() );
+    emit statusChanged( tr( "%n tile requests in background", "tile request count", requests.count() )
+                        + tr( ", %n cache hits", "tile cache hits", stat.cacheHits )
+                        + tr( ", %n cache misses.", "tile cache missed", stat.cacheMisses )
+                        + tr( ", %n errors.", "errors", stat.errors )
                       );
 #endif
   }
@@ -883,344 +809,6 @@ void QgsWmsProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, in
   //delete image;
 }
 
-void QgsWmsProvider::repeatTileRequest( QNetworkRequest const &oldRequest )
-{
-  if ( mErrors == 100 )
-  {
-    QgsMessageLog::logMessage( tr( "Not logging more than 100 request errors." ), tr( "WMS" ) );
-  }
-
-  QNetworkRequest request( oldRequest );
-
-  QString url = request.url().toString();
-  int tileReqNo = request.attribute( static_cast<QNetworkRequest::Attribute>( TileReqNo ) ).toInt();
-  int tileNo = request.attribute( static_cast<QNetworkRequest::Attribute>( TileIndex ) ).toInt();
-  int retry = request.attribute( static_cast<QNetworkRequest::Attribute>( TileRetry ) ).toInt();
-  retry++;
-
-  QSettings s;
-  int maxRetry = s.value( "/qgis/defaultTileMaxRetry", "3" ).toInt();
-  if ( retry > maxRetry )
-  {
-    if ( mErrors < 100 )
-    {
-      QgsMessageLog::logMessage( tr( "Tile request max retry error. Failed %1 requests for tile %2 of tileRequest %3 (url: %4)" )
-                                 .arg( maxRetry ).arg( tileNo ).arg( tileReqNo ).arg( url ), tr( "WMS" ) );
-    }
-    return;
-  }
-
-  mSettings.authorization().setAuthorization( request );
-  if ( mErrors < 100 )
-  {
-    QgsMessageLog::logMessage( tr( "repeat tileRequest %1 tile %2(retry %3)" )
-                               .arg( tileReqNo ).arg( tileNo ).arg( retry ), tr( "WMS" ), QgsMessageLog::INFO );
-  }
-  QgsDebugMsg( QString( "repeat tileRequest %1 %2(retry %3) for url: %4" ).arg( tileReqNo ).arg( tileNo ).arg( retry ).arg( url ) );
-  request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileRetry ), retry );
-
-  QNetworkReply *reply = nam()->get( request );
-  mTileReplies << reply;
-  connect( reply, SIGNAL( finished() ), this, SLOT( tileReplyFinished() ) );
-}
-
-void QgsWmsProvider::tileReplyFinished()
-{
-  QNetworkReply *reply = qobject_cast<QNetworkReply*>( sender() );
-
-#if defined(QGISDEBUG) && (QT_VERSION >= 0x40500)
-  bool fromCache = reply->attribute( QNetworkRequest::SourceIsFromCacheAttribute ).toBool();
-  if ( fromCache )
-    mCacheHits++;
-  else
-    mCacheMisses++;
-#endif
-#if defined(QGISDEBUG) && (QT_VERSION >= 0x40700)
-  QgsDebugMsgLevel( "raw headers:", 3 );
-  foreach ( const QNetworkReply::RawHeaderPair &pair, reply->rawHeaderPairs() )
-  {
-    QgsDebugMsgLevel( QString( " %1:%2" )
-                      .arg( QString::fromUtf8( pair.first ) )
-                      .arg( QString::fromUtf8( pair.second ) ), 3 );
-  }
-#endif
-
-  if ( nam()->cache() )
-  {
-    QNetworkCacheMetaData cmd = nam()->cache()->metaData( reply->request().url() );
-
-    QNetworkCacheMetaData::RawHeaderList hl;
-    foreach ( const QNetworkCacheMetaData::RawHeader &h, cmd.rawHeaders() )
-    {
-      if ( h.first != "Cache-Control" )
-        hl.append( h );
-    }
-    cmd.setRawHeaders( hl );
-
-    QgsDebugMsg( QString( "expirationDate:%1" ).arg( cmd.expirationDate().toString() ) );
-    if ( cmd.expirationDate().isNull() )
-    {
-      QSettings s;
-      cmd.setExpirationDate( QDateTime::currentDateTime().addSecs( s.value( "/qgis/defaultTileExpiry", "24" ).toInt() * 60 * 60 ) );
-    }
-
-    nam()->cache()->updateMetaData( cmd );
-  }
-
-  int tileReqNo = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( TileReqNo ) ).toInt();
-  int tileNo = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( TileIndex ) ).toInt();
-  QRectF r = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( TileRect ) ).toRectF();
-  int retry = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( TileRetry ) ).toInt();
-
-#if QT_VERSION >= 0x40500
-  QgsDebugMsg( QString( "tile reply %1 (%2) tile:%3(retry %4) rect:%5,%6 %7,%8) fromcache:%9 error:%10 url:%11" )
-               .arg( tileReqNo ).arg( mTileReqNo ).arg( tileNo ).arg( retry )
-               .arg( r.left(), 0, 'f' ).arg( r.bottom(), 0, 'f' ).arg( r.right(), 0, 'f' ).arg( r.top(), 0, 'f' )
-               .arg( fromCache )
-               .arg( reply->errorString() )
-               .arg( reply->url().toString() )
-             );
-#else
-  QgsDebugMsg( QString( "tile reply %1 (%2) tile:%3(retry %4) rect:%5,%6 %7,%8) error:%9 url:%10" )
-               .arg( tileReqNo ).arg( mTileReqNo ).arg( tileNo ).arg( retry )
-               .arg( r.left(), 0, 'f' ).arg( r.bottom(), 0, 'f' ).arg( r.right(), 0, 'f' ).arg( r.top(), 0, 'f' )
-               .arg( reply->errorString() )
-               .arg( reply->url().toString() )
-             );
-#endif
-
-  if ( reply->error() == QNetworkReply::NoError )
-  {
-    QVariant redirect = reply->attribute( QNetworkRequest::RedirectionTargetAttribute );
-    if ( !redirect.isNull() )
-    {
-      QNetworkRequest request( redirect.toUrl() );
-      mSettings.authorization().setAuthorization( request );
-      request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
-      request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
-      request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileReqNo ), tileReqNo );
-      request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileIndex ), tileNo );
-      request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileRect ), r );
-      request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileRetry ), 0 );
-
-      mTileReplies.removeOne( reply );
-      reply->deleteLater();
-
-      QgsDebugMsg( QString( "redirected gettile: %1" ).arg( redirect.toString() ) );
-      reply = nam()->get( request );
-      mTileReplies << reply;
-
-      connect( reply, SIGNAL( finished() ), this, SLOT( tileReplyFinished() ) );
-
-      return;
-    }
-
-    QVariant status = reply->attribute( QNetworkRequest::HttpStatusCodeAttribute );
-    if ( !status.isNull() && status.toInt() >= 400 )
-    {
-      QVariant phrase = reply->attribute( QNetworkRequest::HttpReasonPhraseAttribute );
-
-      showMessageBox( tr( "Tile request error" ), tr( "Status: %1\nReason phrase: %2" ).arg( status.toInt() ).arg( phrase.toString() ) );
-
-      mTileReplies.removeOne( reply );
-      reply->deleteLater();
-
-      return;
-    }
-
-    QString contentType = reply->header( QNetworkRequest::ContentTypeHeader ).toString();
-    QgsDebugMsg( "contentType: " + contentType );
-    if ( !contentType.startsWith( "image/", Qt::CaseInsensitive ) &&
-         contentType.compare( "application/octet-stream", Qt::CaseInsensitive ) != 0 )
-    {
-      QByteArray text = reply->readAll();
-      if ( contentType.toLower() == "text/xml" && parseServiceExceptionReportDom( text ) )
-      {
-        QgsMessageLog::logMessage( tr( "Tile request error (Title:%1; Error:%2; URL: %3)" )
-                                   .arg( mErrorCaption ).arg( mError )
-                                   .arg( reply->url().toString() ), tr( "WMS" ) );
-      }
-      else
-      {
-        QgsMessageLog::logMessage( tr( "Tile request error (Status:%1; Content-Type:%2; Length:%3; URL: %4)" )
-                                   .arg( status.toString() )
-                                   .arg( contentType )
-                                   .arg( text.size() )
-                                   .arg( reply->url().toString() ), tr( "WMS" ) );
-#ifdef QGISDEBUG
-        QFile file( QDir::tempPath() + "/broken-image.png" );
-        if ( file.open( QIODevice::WriteOnly ) )
-        {
-          file.write( text );
-          file.close();
-        }
-#endif
-      }
-
-      mTileReplies.removeOne( reply );
-      reply->deleteLater();
-
-      return;
-    }
-
-    // only take results from current request number
-    if ( mTileReqNo == tileReqNo )
-    {
-      double cr = mCachedViewExtent.width() / mCachedViewWidth;
-
-      QRectF dst(( r.left() - mCachedViewExtent.xMinimum() ) / cr,
-                 ( mCachedViewExtent.yMaximum() - r.bottom() ) / cr,
-                 r.width() / cr,
-                 r.height() / cr );
-
-      QgsDebugMsg( QString( "tile reply: length %1" ).arg( reply->bytesAvailable() ) );
-
-      QImage myLocalImage = QImage::fromData( reply->readAll() );
-
-      if ( !myLocalImage.isNull() )
-      {
-        QPainter p( mCachedImage );
-        if ( mSettings.mSmoothPixmapTransform )
-          p.setRenderHint( QPainter::SmoothPixmapTransform, true );
-        p.drawImage( dst, myLocalImage );
-#if 0
-        myLocalImage.save( QString( "%1/%2-tile-%3.png" ).arg( QDir::tempPath() ).arg( mTileReqNo ).arg( tileNo ) );
-        p.drawRect( dst ); // show tile bounds
-        p.drawText( dst, Qt::AlignCenter, QString( "(%1)\n%2,%3\n%4,%5\n%6x%7" )
-                    .arg( tileNo )
-                    .arg( r.left() ).arg( r.bottom() )
-                    .arg( r.right() ).arg( r.top() )
-                    .arg( r.width() ).arg( r.height() ) );
-#endif
-      }
-      else
-      {
-        QgsMessageLog::logMessage( tr( "Returned image is flawed [Content-Type:%1; URL: %2]" )
-                                   .arg( contentType ).arg( reply->url().toString() ), tr( "WMS" ) );
-
-        repeatTileRequest( reply->request() );
-      }
-    }
-    else
-    {
-      QgsDebugMsg( QString( "Reply too late [%1]" ).arg( reply->url().toString() ) );
-    }
-
-    mTileReplies.removeOne( reply );
-    reply->deleteLater();
-  }
-  else
-  {
-    mErrors++;
-
-    repeatTileRequest( reply->request() );
-
-    mTileReplies.removeOne( reply );
-    reply->deleteLater();
-  }
-
-#ifdef QGISDEBUG
-  emit statusChanged( tr( "%n tile requests in background", "tile request count", mTileReplies.count() )
-                      + tr( ", %n cache hits", "tile cache hits", mCacheHits )
-                      + tr( ", %n cache misses.", "tile cache missed", mCacheMisses )
-                      + tr( ", %n errors.", "errors", mErrors )
-                    );
-#endif
-}
-
-void QgsWmsProvider::cacheReplyFinished()
-{
-  if ( mCacheReply->error() == QNetworkReply::NoError )
-  {
-    QVariant redirect = mCacheReply->attribute( QNetworkRequest::RedirectionTargetAttribute );
-    if ( !redirect.isNull() )
-    {
-      mCacheReply->deleteLater();
-
-      QgsDebugMsg( QString( "redirected getmap: %1" ).arg( redirect.toString() ) );
-      mCacheReply = nam()->get( QNetworkRequest( redirect.toUrl() ) );
-      connect( mCacheReply, SIGNAL( finished() ), this, SLOT( cacheReplyFinished() ) );
-      return;
-    }
-
-    QVariant status = mCacheReply->attribute( QNetworkRequest::HttpStatusCodeAttribute );
-    if ( !status.isNull() && status.toInt() >= 400 )
-    {
-      QVariant phrase = mCacheReply->attribute( QNetworkRequest::HttpReasonPhraseAttribute );
-
-      QgsMessageLog::logMessage( tr( "Map request error (Status: %1; Reason phrase: %2; URL:%3)" )
-                                 .arg( status.toInt() )
-                                 .arg( phrase.toString() )
-                                 .arg( mCacheReply->url().toString() ), tr( "WMS" ) );
-
-      mCacheReply->deleteLater();
-      mCacheReply = 0;
-
-      return;
-    }
-
-    QString contentType = mCacheReply->header( QNetworkRequest::ContentTypeHeader ).toString();
-    QgsDebugMsg( "contentType: " + contentType );
-    if ( contentType.startsWith( "image/", Qt::CaseInsensitive ) ||
-         contentType.compare( "application/octet-stream", Qt::CaseInsensitive ) == 0 )
-    {
-      qDebug("GOT PICTURE!");
-      QImage myLocalImage = QImage::fromData( mCacheReply->readAll() );
-      if ( !myLocalImage.isNull() )
-      {
-        QPainter p( mCachedImage );
-        p.drawImage( 0, 0, myLocalImage );
-      }
-      else
-      {
-        QgsMessageLog::logMessage( tr( "Returned image is flawed [Content-Type:%1; URL:%2]" )
-                                   .arg( contentType ).arg( mCacheReply->url().toString() ), tr( "WMS" ) );
-      }
-    }
-    else
-    {
-      QByteArray text = mCacheReply->readAll();
-      if ( contentType.toLower() == "text/xml" && parseServiceExceptionReportDom( text ) )
-      {
-        QgsMessageLog::logMessage( tr( "Map request error (Title:%1; Error:%2; URL: %3)" )
-                                   .arg( mErrorCaption ).arg( mError )
-                                   .arg( mCacheReply->url().toString() ), tr( "WMS" ) );
-      }
-      else
-      {
-        QgsMessageLog::logMessage( tr( "Map request error (Status: %1; Response: %2; Content-Type: %3; URL:%4)" )
-                                   .arg( status.toInt() )
-                                   .arg( QString::fromUtf8( text ) )
-                                   .arg( contentType )
-                                   .arg( mCacheReply->url().toString() ), tr( "WMS" ) );
-      }
-
-      mCacheReply->deleteLater();
-      mCacheReply = 0;
-
-      return;
-    }
-
-    mCacheReply->deleteLater();
-    mCacheReply = 0;
-    qDebug("DELETE REPLY");
-  }
-  else
-  {
-    mErrors++;
-    if ( mErrors < 100 )
-    {
-      QgsMessageLog::logMessage( tr( "Map request failed [error:%1 url:%2]" ).arg( mCacheReply->errorString() ).arg( mCacheReply->url().toString() ), tr( "WMS" ) );
-    }
-    else if ( mErrors == 100 )
-    {
-      QgsMessageLog::logMessage( tr( "Not logging more than 100 request errors." ), tr( "WMS" ) );
-    }
-
-    mCacheReply->deleteLater();
-    mCacheReply = 0;
-  }
-}
 
 bool QgsWmsProvider::retrieveServerCapabilities( bool /*forceRefresh*/ )
 {
@@ -1271,15 +859,8 @@ int QgsWmsProvider::bandCount() const
   return 1;
 }
 
-void QgsWmsProvider::cacheReplyProgress( qint64 bytesReceived, qint64 bytesTotal )
-{
-  QString msg = tr( "%1 of %2 bytes of map downloaded." ).arg( bytesReceived ).arg( bytesTotal < 0 ? QString( "unknown number of" ) : QString::number( bytesTotal ) );
-  QgsDebugMsg( msg );
-  emit statusChanged( msg );
-}
 
-
-bool QgsWmsProvider::parseServiceExceptionReportDom( QByteArray const & xml )
+bool QgsWmsProvider::parseServiceExceptionReportDom( QByteArray const & xml, QString& errorTitle, QString& errorText )
 {
   QgsDebugMsg( "entering." );
 
@@ -1290,28 +871,27 @@ bool QgsWmsProvider::parseServiceExceptionReportDom( QByteArray const & xml )
 #endif
 
   // Convert completed document into a Dom
+  QDomDocument doc;
   QString errorMsg;
   int errorLine;
   int errorColumn;
-  bool contentSuccess = mServiceExceptionReportDom.setContent( xml, false, &errorMsg, &errorLine, &errorColumn );
+  bool contentSuccess = doc.setContent( xml, false, &errorMsg, &errorLine, &errorColumn );
 
   if ( !contentSuccess )
   {
-    mErrorCaption = tr( "Dom Exception" );
-    mErrorFormat = "text/plain";
-    mError = tr( "Could not get WMS Service Exception at %1: %2 at line %3 column %4\n\nResponse was:\n\n%5" )
-             .arg( mSettings.mBaseUrl )
+    errorTitle = tr( "Dom Exception" );
+    errorText = tr( "Could not get WMS Service Exception: %1 at line %2 column %3\n\nResponse was:\n\n%4" )
              .arg( errorMsg )
              .arg( errorLine )
              .arg( errorColumn )
              .arg( QString( xml ) );
 
-    QgsLogger::debug( "Dom Exception: " + mError );
+    QgsLogger::debug( "Dom Exception: " + errorText );
 
     return false;
   }
 
-  QDomElement docElem = mServiceExceptionReportDom.documentElement();
+  QDomElement docElem = doc.documentElement();
 
   // TODO: Assert the docElem.tagName() is "ServiceExceptionReport"
 
@@ -1334,7 +914,7 @@ bool QgsWmsProvider::parseServiceExceptionReportDom( QByteArray const & xml )
       if ( tagName == "ServiceException" )
       {
         QgsDebugMsg( "  ServiceException." );
-        parseServiceException( e );
+        parseServiceException( e, errorTitle, errorText );
       }
 
     }
@@ -1347,84 +927,83 @@ bool QgsWmsProvider::parseServiceExceptionReportDom( QByteArray const & xml )
 }
 
 
-void QgsWmsProvider::parseServiceException( QDomElement const & e )
+void QgsWmsProvider::parseServiceException( QDomElement const & e, QString& errorTitle, QString& errorText )
 {
   QgsDebugMsg( "entering." );
 
   QString seCode = e.attribute( "code" );
   QString seText = e.text();
 
-  mErrorCaption = tr( "Service Exception" );
-  mErrorFormat = "text/plain";
+  errorTitle = tr( "Service Exception" );
 
   // set up friendly descriptions for the service exception
   if ( seCode == "InvalidFormat" )
   {
-    mError = tr( "Request contains a format not offered by the server." );
+    errorText = tr( "Request contains a format not offered by the server." );
   }
   else if ( seCode == "InvalidCRS" )
   {
-    mError = tr( "Request contains a CRS not offered by the server for one or more of the Layers in the request." );
+    errorText = tr( "Request contains a CRS not offered by the server for one or more of the Layers in the request." );
   }
   else if ( seCode == "InvalidSRS" )  // legacy WMS < 1.3.0
   {
-    mError = tr( "Request contains a SRS not offered by the server for one or more of the Layers in the request." );
+    errorText = tr( "Request contains a SRS not offered by the server for one or more of the Layers in the request." );
   }
   else if ( seCode == "LayerNotDefined" )
   {
-    mError = tr( "GetMap request is for a Layer not offered by the server, "
+    errorText = tr( "GetMap request is for a Layer not offered by the server, "
                  "or GetFeatureInfo request is for a Layer not shown on the map." );
   }
   else if ( seCode == "StyleNotDefined" )
   {
-    mError = tr( "Request is for a Layer in a Style not offered by the server." );
+    errorText = tr( "Request is for a Layer in a Style not offered by the server." );
   }
   else if ( seCode == "LayerNotQueryable" )
   {
-    mError = tr( "GetFeatureInfo request is applied to a Layer which is not declared queryable." );
+    errorText = tr( "GetFeatureInfo request is applied to a Layer which is not declared queryable." );
   }
   else if ( seCode == "InvalidPoint" )
   {
-    mError = tr( "GetFeatureInfo request contains invalid X or Y value." );
+    errorText = tr( "GetFeatureInfo request contains invalid X or Y value." );
   }
   else if ( seCode == "CurrentUpdateSequence" )
   {
-    mError = tr( "Value of (optional) UpdateSequence parameter in GetCapabilities request is equal to "
+    errorText = tr( "Value of (optional) UpdateSequence parameter in GetCapabilities request is equal to "
                  "current value of service metadata update sequence number." );
   }
   else if ( seCode == "InvalidUpdateSequence" )
   {
-    mError = tr( "Value of (optional) UpdateSequence parameter in GetCapabilities request is greater "
+    errorText = tr( "Value of (optional) UpdateSequence parameter in GetCapabilities request is greater "
                  "than current value of service metadata update sequence number." );
   }
   else if ( seCode == "MissingDimensionValue" )
   {
-    mError = tr( "Request does not include a sample dimension value, and the server did not declare a "
+    errorText = tr( "Request does not include a sample dimension value, and the server did not declare a "
                  "default value for that dimension." );
   }
   else if ( seCode == "InvalidDimensionValue" )
   {
-    mError = tr( "Request contains an invalid sample dimension value." );
+    errorText = tr( "Request contains an invalid sample dimension value." );
   }
   else if ( seCode == "OperationNotSupported" )
   {
-    mError = tr( "Request is for an optional operation that is not supported by the server." );
+    errorText = tr( "Request is for an optional operation that is not supported by the server." );
   }
   else if ( seCode.isEmpty() )
   {
-    mError = tr( "(No error code was reported)" );
+    errorText = tr( "(No error code was reported)" );
   }
   else
   {
-    mError = seCode + " " + tr( "(Unknown error code)" );
+    errorText = seCode + " " + tr( "(Unknown error code)" );
   }
 
-  mError += "\n" + tr( "The WMS vendor also reported: " );
-  mError += seText;
+  errorText += "\n" + tr( "The WMS vendor also reported: " );
+  errorText += seText;
 
   // TODO = e.attribute("locator");
 
-  QgsDebugMsg( QString( "exiting with composed error message '%1'." ).arg( mError ) );
+  QgsDebugMsg( QString( "exiting with composed error message '%1'." ).arg( errorText ) );
 }
 
 QgsRectangle QgsWmsProvider::extent()
@@ -2145,22 +1724,24 @@ QString QgsWmsProvider::metadata()
       metadata += tr( "Value" );
       metadata += "</th></tr>";
 
+      const QgsWmsStatistics::Stat& stat = QgsWmsStatistics::statForUri( dataSourceUri() );
+
       metadata += "<tr><td>";
       metadata += tr( "Hits" );
       metadata += "</td><td>";
-      metadata += QString::number( mCacheHits );
+      metadata += QString::number( stat.cacheHits );
       metadata += "</td></tr>";
 
       metadata += "<tr><td>";
       metadata += tr( "Misses" );
       metadata += "</td><td>";
-      metadata += QString::number( mCacheMisses );
+      metadata += QString::number( stat.cacheMisses );
       metadata += "</td></tr>";
 
       metadata += "<tr><td>";
       metadata += tr( "Errors" );
       metadata += "</td><td>";
-      metadata += QString::number( mErrors );
+      metadata += QString::number( stat.errors );
       metadata += "</td></tr>";
 
       metadata += "</table></td></tr>";
@@ -2357,7 +1938,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
     QgsDebugMsg( QString( "getfeatureinfo: %1" ).arg( requestUrl.toString() ) );
     QNetworkRequest request( requestUrl );
     mSettings.authorization().setAuthorization( request );
-    mIdentifyReply = nam()->get( request );
+    mIdentifyReply = QgsNetworkAccessManager::instance()->get( request );
     connect( mIdentifyReply, SIGNAL( finished() ), this, SLOT( identifyReplyFinished() ) );
 
     QEventLoop loop;
@@ -2397,7 +1978,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
           isXml = true;
         }
 
-        if ( isXml && parseServiceExceptionReportDom( body ) )
+        if ( isXml && parseServiceExceptionReportDom( body, mErrorCaption, mError ) )
         {
           QgsMessageLog::logMessage( tr( "Get feature info request error (Title:%1; Error:%2; URL: %3)" )
                                      .arg( mErrorCaption ).arg( mError )
@@ -2621,7 +2202,7 @@ void QgsWmsProvider::identifyReplyFinished()
       mIdentifyReply->deleteLater();
 
       QgsDebugMsg( QString( "redirected getfeatureinfo: %1" ).arg( redirect.toString() ) );
-      mIdentifyReply = nam()->get( QNetworkRequest( redirect.toUrl() ) );
+      mIdentifyReply = QgsNetworkAccessManager::instance()->get( QNetworkRequest( redirect.toUrl() ) );
       connect( mIdentifyReply, SIGNAL( finished() ), this, SLOT( identifyReplyFinished() ) );
 
       return;
@@ -2708,20 +2289,6 @@ void QgsWmsProvider::reloadData()
   mCachedImage = 0;
 }
 
-QgsNetworkAccessManager *QgsWmsProvider::nam()
-{
-  if ( mNAM && mNAM->thread() != QThread::currentThread() )
-  {
-    // TODO: check that no network connections are handled by the NAM?
-    mNAM->deleteLater();
-    mNAM = 0;
-  }
-
-  if ( !mNAM )
-    mNAM = new QgsNetworkAccessManager();
-
-  return mNAM;
-}
 
 QVector<QgsWmsSupportedFormat> QgsWmsProvider::supportedFormats()
 {
@@ -2897,10 +2464,10 @@ QImage QgsWmsProvider::getLegendGraphic( double scale, bool forceRefresh )
     request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
 
     QgsDebugMsg( QString( "getlegendgraphics: %1" ).arg( url.toString() ) );
-    mGetLegendGraphicReply = nam()->get( request );
+    mGetLegendGraphicReply = QgsNetworkAccessManager::instance()->get( request );
 
-    connect( mGetLegendGraphicReply, SIGNAL( finished() ), this, SLOT( getLegendGraphicReplyFinished() ), Qt::DirectConnection );
-    connect( mGetLegendGraphicReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( getLegendGraphicReplyProgress( qint64, qint64 ) ), Qt::DirectConnection );
+    connect( mGetLegendGraphicReply, SIGNAL( finished() ), this, SLOT( getLegendGraphicReplyFinished() ) );
+    connect( mGetLegendGraphicReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( getLegendGraphicReplyProgress( qint64, qint64 ) ) );
 
     QEventLoop loop;
     connect(mGetLegendGraphicReply, SIGNAL(finished()), &loop, SLOT(quit()));
@@ -2945,7 +2512,7 @@ void QgsWmsProvider::getLegendGraphicReplyFinished()
 
         mGetLegendGraphicReply->deleteLater();
         QgsDebugMsg( QString( "redirected GetLegendGraphic: %1" ).arg( redirect.toString() ) );
-        mGetLegendGraphicReply = nam()->get( request );
+        mGetLegendGraphicReply = QgsNetworkAccessManager::instance()->get( request );
 
         connect( mGetLegendGraphicReply, SIGNAL( finished() ), this, SLOT( getLegendGraphicReplyFinished() ) );
         connect( mGetLegendGraphicReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( getLegendGraphicReplyProgress( qint64, qint64 ) ) );
@@ -3026,4 +2593,459 @@ QGISEXTERN QString description()
 QGISEXTERN bool isProvider()
 {
   return true;
+}
+
+
+// -----------------
+
+QgsWmsImageDownloadHandler::QgsWmsImageDownloadHandler( const QString& providerUri, const QUrl& url, const QgsWmsAuthorization& auth, QImage* image )
+  : mProviderUri( providerUri )
+  , mCachedImage( image )
+  , mEventLoop( new QEventLoop )
+  , mNAM( new QgsNetworkAccessManager )
+{
+  mNAM->setupDefaultProxyAndCache();
+
+  QNetworkRequest request( url );
+  auth.setAuthorization( request );
+  request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
+  mCacheReply = mNAM->get( request );
+  connect( mCacheReply, SIGNAL( finished() ), this, SLOT( cacheReplyFinished() ) );
+  connect( mCacheReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( cacheReplyProgress( qint64, qint64 ) ) );
+
+  Q_ASSERT( mCacheReply->thread() == QThread::currentThread() );
+
+}
+
+QgsWmsImageDownloadHandler::~QgsWmsImageDownloadHandler()
+{
+  delete mNAM;
+  delete mEventLoop;
+}
+
+void QgsWmsImageDownloadHandler::downloadBlocking()
+{
+  mEventLoop->exec( QEventLoop::ExcludeUserInputEvents );
+
+  Q_ASSERT( mCacheReply == 0 );
+}
+
+void QgsWmsImageDownloadHandler::cacheReplyFinished()
+{
+  if ( mCacheReply->error() == QNetworkReply::NoError )
+  {
+    QVariant redirect = mCacheReply->attribute( QNetworkRequest::RedirectionTargetAttribute );
+    if ( !redirect.isNull() )
+    {
+      mCacheReply->deleteLater();
+
+      QgsDebugMsg( QString( "redirected getmap: %1" ).arg( redirect.toString() ) );
+      mCacheReply = mNAM->get( QNetworkRequest( redirect.toUrl() ) );
+      connect( mCacheReply, SIGNAL( finished() ), this, SLOT( cacheReplyFinished() ) );
+      return;
+    }
+
+    QVariant status = mCacheReply->attribute( QNetworkRequest::HttpStatusCodeAttribute );
+    if ( !status.isNull() && status.toInt() >= 400 )
+    {
+      QVariant phrase = mCacheReply->attribute( QNetworkRequest::HttpReasonPhraseAttribute );
+
+      QgsMessageLog::logMessage( tr( "Map request error (Status: %1; Reason phrase: %2; URL:%3)" )
+                                 .arg( status.toInt() )
+                                 .arg( phrase.toString() )
+                                 .arg( mCacheReply->url().toString() ), tr( "WMS" ) );
+
+      mCacheReply->deleteLater();
+      mCacheReply = 0;
+
+      finish();
+      return;
+    }
+
+    QString contentType = mCacheReply->header( QNetworkRequest::ContentTypeHeader ).toString();
+    QgsDebugMsg( "contentType: " + contentType );
+    if ( contentType.startsWith( "image/", Qt::CaseInsensitive ) ||
+         contentType.compare( "application/octet-stream", Qt::CaseInsensitive ) == 0 )
+    {
+      QImage myLocalImage = QImage::fromData( mCacheReply->readAll() );
+      if ( !myLocalImage.isNull() )
+      {
+        QPainter p( mCachedImage );
+        p.drawImage( 0, 0, myLocalImage );
+      }
+      else
+      {
+        QgsMessageLog::logMessage( tr( "Returned image is flawed [Content-Type:%1; URL:%2]" )
+                                   .arg( contentType ).arg( mCacheReply->url().toString() ), tr( "WMS" ) );
+      }
+    }
+    else
+    {
+      QString errorTitle, errorText;
+      QByteArray text = mCacheReply->readAll();
+      if ( contentType.toLower() == "text/xml" && QgsWmsProvider::parseServiceExceptionReportDom( text, errorTitle, errorText ) )
+      {
+        QgsMessageLog::logMessage( tr( "Map request error (Title:%1; Error:%2; URL: %3)" )
+                                   .arg( errorTitle ).arg( errorText )
+                                   .arg( mCacheReply->url().toString() ), tr( "WMS" ) );
+      }
+      else
+      {
+        QgsMessageLog::logMessage( tr( "Map request error (Status: %1; Response: %2; Content-Type: %3; URL:%4)" )
+                                   .arg( status.toInt() )
+                                   .arg( QString::fromUtf8( text ) )
+                                   .arg( contentType )
+                                   .arg( mCacheReply->url().toString() ), tr( "WMS" ) );
+      }
+
+      mCacheReply->deleteLater();
+      mCacheReply = 0;
+
+      finish();
+      return;
+    }
+
+    mCacheReply->deleteLater();
+    mCacheReply = 0;
+
+    finish();
+  }
+  else
+  {
+    QgsWmsStatistics::Stat& stat = QgsWmsStatistics::statForUri( mProviderUri );
+
+    stat.errors++;
+    if ( stat.errors < 100 )
+    {
+      QgsMessageLog::logMessage( tr( "Map request failed [error:%1 url:%2]" ).arg( mCacheReply->errorString() ).arg( mCacheReply->url().toString() ), tr( "WMS" ) );
+    }
+    else if ( stat.errors == 100 )
+    {
+      QgsMessageLog::logMessage( tr( "Not logging more than 100 request errors." ), tr( "WMS" ) );
+    }
+
+    mCacheReply->deleteLater();
+    mCacheReply = 0;
+
+    finish();
+  }
+}
+
+void QgsWmsImageDownloadHandler::cacheReplyProgress( qint64 bytesReceived, qint64 bytesTotal )
+{
+  QString msg = tr( "%1 of %2 bytes of map downloaded." ).arg( bytesReceived ).arg( bytesTotal < 0 ? QString( "unknown number of" ) : QString::number( bytesTotal ) );
+  QgsDebugMsg( msg );
+}
+
+
+// ----------
+
+
+QgsWmsTiledImageDownloadHandler::QgsWmsTiledImageDownloadHandler( const QString& providerUri, const QgsWmsAuthorization& auth, int tileReqNo, const QList<QgsWmsTiledImageDownloadHandler::TileRequest>& requests, QImage* cachedImage, const QgsRectangle& cachedViewExtent, bool smoothPixmapTransform )
+  : mProviderUri( providerUri )
+  , mAuth( auth )
+  , mCachedImage( cachedImage )
+  , mCachedViewExtent( cachedViewExtent )
+  , mEventLoop( new QEventLoop )
+  , mNAM( new QgsNetworkAccessManager )
+  , mTileReqNo( tileReqNo )
+  , mSmoothPixmapTransform( smoothPixmapTransform )
+{
+  mNAM->setupDefaultProxyAndCache();
+
+  foreach ( const TileRequest& r, requests )
+  {
+    QNetworkRequest request( r.url );
+    auth.setAuthorization( request );
+    request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
+    request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
+    request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileReqNo ), mTileReqNo );
+    request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileIndex ), r.index );
+    request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileRect ), r.rect );
+    request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileRetry ), 0 );
+
+    QNetworkReply *reply = mNAM->get( request );
+    connect( reply, SIGNAL( finished() ), this, SLOT( tileReplyFinished() ) );
+
+    mReplies << reply;
+  }
+}
+
+QgsWmsTiledImageDownloadHandler::~QgsWmsTiledImageDownloadHandler()
+{
+  delete mNAM;
+  delete mEventLoop;
+}
+
+void QgsWmsTiledImageDownloadHandler::downloadBlocking()
+{
+  mEventLoop->exec( QEventLoop::ExcludeUserInputEvents );
+
+  Q_ASSERT( mReplies.isEmpty() );
+}
+
+
+void QgsWmsTiledImageDownloadHandler::tileReplyFinished()
+{
+  QNetworkReply *reply = qobject_cast<QNetworkReply*>( sender() );
+
+#if defined(QGISDEBUG) && (QT_VERSION >= 0x40500)
+  bool fromCache = reply->attribute( QNetworkRequest::SourceIsFromCacheAttribute ).toBool();
+  QgsWmsStatistics::Stat& stat = QgsWmsStatistics::statForUri( mProviderUri );
+  if ( fromCache )
+    stat.cacheHits++;
+  else
+    stat.cacheMisses++;
+#endif
+#if defined(QGISDEBUG) && (QT_VERSION >= 0x40700)
+  QgsDebugMsgLevel( "raw headers:", 3 );
+  foreach ( const QNetworkReply::RawHeaderPair &pair, reply->rawHeaderPairs() )
+  {
+    QgsDebugMsgLevel( QString( " %1:%2" )
+                      .arg( QString::fromUtf8( pair.first ) )
+                      .arg( QString::fromUtf8( pair.second ) ), 3 );
+  }
+#endif
+
+  if ( mNAM->cache() )
+  {
+    QNetworkCacheMetaData cmd = mNAM->cache()->metaData( reply->request().url() );
+
+    QNetworkCacheMetaData::RawHeaderList hl;
+    foreach ( const QNetworkCacheMetaData::RawHeader &h, cmd.rawHeaders() )
+    {
+      if ( h.first != "Cache-Control" )
+        hl.append( h );
+    }
+    cmd.setRawHeaders( hl );
+
+    QgsDebugMsg( QString( "expirationDate:%1" ).arg( cmd.expirationDate().toString() ) );
+    if ( cmd.expirationDate().isNull() )
+    {
+      QSettings s;
+      cmd.setExpirationDate( QDateTime::currentDateTime().addSecs( s.value( "/qgis/defaultTileExpiry", "24" ).toInt() * 60 * 60 ) );
+    }
+
+    mNAM->cache()->updateMetaData( cmd );
+  }
+
+  int tileReqNo = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( TileReqNo ) ).toInt();
+  int tileNo = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( TileIndex ) ).toInt();
+  QRectF r = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( TileRect ) ).toRectF();
+  int retry = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( TileRetry ) ).toInt();
+
+#if QT_VERSION >= 0x40500
+  QgsDebugMsg( QString( "tile reply %1 (%2) tile:%3(retry %4) rect:%5,%6 %7,%8) fromcache:%9 error:%10 url:%11" )
+               .arg( tileReqNo ).arg( mTileReqNo ).arg( tileNo ).arg( retry )
+               .arg( r.left(), 0, 'f' ).arg( r.bottom(), 0, 'f' ).arg( r.right(), 0, 'f' ).arg( r.top(), 0, 'f' )
+               .arg( fromCache )
+               .arg( reply->errorString() )
+               .arg( reply->url().toString() )
+             );
+#else
+  QgsDebugMsg( QString( "tile reply %1 (%2) tile:%3(retry %4) rect:%5,%6 %7,%8) error:%9 url:%10" )
+               .arg( tileReqNo ).arg( mTileReqNo ).arg( tileNo ).arg( retry )
+               .arg( r.left(), 0, 'f' ).arg( r.bottom(), 0, 'f' ).arg( r.right(), 0, 'f' ).arg( r.top(), 0, 'f' )
+               .arg( reply->errorString() )
+               .arg( reply->url().toString() )
+             );
+#endif
+
+  if ( reply->error() == QNetworkReply::NoError )
+  {
+    QVariant redirect = reply->attribute( QNetworkRequest::RedirectionTargetAttribute );
+    if ( !redirect.isNull() )
+    {
+      QNetworkRequest request( redirect.toUrl() );
+      mAuth.setAuthorization( request );
+      request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
+      request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
+      request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileReqNo ), tileReqNo );
+      request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileIndex ), tileNo );
+      request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileRect ), r );
+      request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileRetry ), 0 );
+
+      mReplies.removeOne( reply );
+      reply->deleteLater();
+
+      QgsDebugMsg( QString( "redirected gettile: %1" ).arg( redirect.toString() ) );
+      reply = mNAM->get( request );
+      mReplies << reply;
+
+      connect( reply, SIGNAL( finished() ), this, SLOT( tileReplyFinished() ) );
+
+      return;
+    }
+
+    QVariant status = reply->attribute( QNetworkRequest::HttpStatusCodeAttribute );
+    if ( !status.isNull() && status.toInt() >= 400 )
+    {
+      QVariant phrase = reply->attribute( QNetworkRequest::HttpReasonPhraseAttribute );
+
+      QgsWmsProvider::showMessageBox( tr( "Tile request error" ), tr( "Status: %1\nReason phrase: %2" ).arg( status.toInt() ).arg( phrase.toString() ) );
+
+      mReplies.removeOne( reply );
+      reply->deleteLater();
+
+      if ( mReplies.isEmpty() )
+        finish();
+
+      return;
+    }
+
+    QString contentType = reply->header( QNetworkRequest::ContentTypeHeader ).toString();
+    QgsDebugMsg( "contentType: " + contentType );
+    if ( !contentType.startsWith( "image/", Qt::CaseInsensitive ) &&
+         contentType.compare( "application/octet-stream", Qt::CaseInsensitive ) != 0 )
+    {
+      QByteArray text = reply->readAll();
+      QString errorTitle, errorText;
+      if ( contentType.toLower() == "text/xml" && QgsWmsProvider::parseServiceExceptionReportDom( text, errorTitle, errorText ) )
+      {
+        QgsMessageLog::logMessage( tr( "Tile request error (Title:%1; Error:%2; URL: %3)" )
+                                   .arg( errorTitle ).arg( errorText )
+                                   .arg( reply->url().toString() ), tr( "WMS" ) );
+      }
+      else
+      {
+        QgsMessageLog::logMessage( tr( "Tile request error (Status:%1; Content-Type:%2; Length:%3; URL: %4)" )
+                                   .arg( status.toString() )
+                                   .arg( contentType )
+                                   .arg( text.size() )
+                                   .arg( reply->url().toString() ), tr( "WMS" ) );
+#ifdef QGISDEBUG
+        QFile file( QDir::tempPath() + "/broken-image.png" );
+        if ( file.open( QIODevice::WriteOnly ) )
+        {
+          file.write( text );
+          file.close();
+        }
+#endif
+      }
+
+      mReplies.removeOne( reply );
+      reply->deleteLater();
+
+      if ( mReplies.isEmpty() )
+        finish();
+
+      return;
+    }
+
+    // only take results from current request number
+    if ( mTileReqNo == tileReqNo )
+    {
+      double cr = mCachedViewExtent.width() / mCachedImage->width();
+
+      QRectF dst(( r.left() - mCachedViewExtent.xMinimum() ) / cr,
+                 ( mCachedViewExtent.yMaximum() - r.bottom() ) / cr,
+                 r.width() / cr,
+                 r.height() / cr );
+
+      QgsDebugMsg( QString( "tile reply: length %1" ).arg( reply->bytesAvailable() ) );
+
+      QImage myLocalImage = QImage::fromData( reply->readAll() );
+
+      if ( !myLocalImage.isNull() )
+      {
+        QPainter p( mCachedImage );
+        if ( mSmoothPixmapTransform )
+          p.setRenderHint( QPainter::SmoothPixmapTransform, true );
+        p.drawImage( dst, myLocalImage );
+#if 0
+        myLocalImage.save( QString( "%1/%2-tile-%3.png" ).arg( QDir::tempPath() ).arg( mTileReqNo ).arg( tileNo ) );
+        p.drawRect( dst ); // show tile bounds
+        p.drawText( dst, Qt::AlignCenter, QString( "(%1)\n%2,%3\n%4,%5\n%6x%7" )
+                    .arg( tileNo )
+                    .arg( r.left() ).arg( r.bottom() )
+                    .arg( r.right() ).arg( r.top() )
+                    .arg( r.width() ).arg( r.height() ) );
+#endif
+      }
+      else
+      {
+        QgsMessageLog::logMessage( tr( "Returned image is flawed [Content-Type:%1; URL: %2]" )
+                                   .arg( contentType ).arg( reply->url().toString() ), tr( "WMS" ) );
+
+        repeatTileRequest( reply->request() );
+      }
+    }
+    else
+    {
+      QgsDebugMsg( QString( "Reply too late [%1]" ).arg( reply->url().toString() ) );
+    }
+
+    mReplies.removeOne( reply );
+    reply->deleteLater();
+
+    if ( mReplies.isEmpty() )
+      finish();
+
+  }
+  else
+  {
+    QgsWmsStatistics::Stat& stat = QgsWmsStatistics::statForUri( mProviderUri );
+    stat.errors++;
+
+    repeatTileRequest( reply->request() );
+
+    mReplies.removeOne( reply );
+    reply->deleteLater();
+
+    if ( mReplies.isEmpty() )
+      finish();
+  }
+
+#if 0
+  const QgsWmsStatistics::Stat& stat = QgsWmsStatistics::statForUri( mProviderUri );
+  emit statusChanged( tr( "%n tile requests in background", "tile request count", mReplies.count() )
+                      + tr( ", %n cache hits", "tile cache hits", stat.cacheHits )
+                      + tr( ", %n cache misses.", "tile cache missed", stat.cacheMisses )
+                      + tr( ", %n errors.", "errors", stat.errors )
+                    );
+#endif
+}
+
+
+void QgsWmsTiledImageDownloadHandler::repeatTileRequest( QNetworkRequest const &oldRequest )
+{
+  QgsWmsStatistics::Stat& stat = QgsWmsStatistics::statForUri( mProviderUri );
+
+  if ( stat.errors == 100 )
+  {
+    QgsMessageLog::logMessage( tr( "Not logging more than 100 request errors." ), tr( "WMS" ) );
+  }
+
+  QNetworkRequest request( oldRequest );
+
+  QString url = request.url().toString();
+  int tileReqNo = request.attribute( static_cast<QNetworkRequest::Attribute>( TileReqNo ) ).toInt();
+  int tileNo = request.attribute( static_cast<QNetworkRequest::Attribute>( TileIndex ) ).toInt();
+  int retry = request.attribute( static_cast<QNetworkRequest::Attribute>( TileRetry ) ).toInt();
+  retry++;
+
+  QSettings s;
+  int maxRetry = s.value( "/qgis/defaultTileMaxRetry", "3" ).toInt();
+  if ( retry > maxRetry )
+  {
+    if ( stat.errors < 100 )
+    {
+      QgsMessageLog::logMessage( tr( "Tile request max retry error. Failed %1 requests for tile %2 of tileRequest %3 (url: %4)" )
+                                 .arg( maxRetry ).arg( tileNo ).arg( tileReqNo ).arg( url ), tr( "WMS" ) );
+    }
+    return;
+  }
+
+  mAuth.setAuthorization( request );
+  if ( stat.errors < 100 )
+  {
+    QgsMessageLog::logMessage( tr( "repeat tileRequest %1 tile %2(retry %3)" )
+                               .arg( tileReqNo ).arg( tileNo ).arg( retry ), tr( "WMS" ), QgsMessageLog::INFO );
+  }
+  QgsDebugMsg( QString( "repeat tileRequest %1 %2(retry %3) for url: %4" ).arg( tileReqNo ).arg( tileNo ).arg( retry ).arg( url ) );
+  request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileRetry ), retry );
+
+  QNetworkReply *reply = mNAM->get( request );
+  mReplies << reply;
+  connect( reply, SIGNAL( finished() ), this, SLOT( tileReplyFinished() ) );
 }

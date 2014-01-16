@@ -8973,76 +8973,7 @@ void QgisApp::namSslErrors( QNetworkReply *reply, const QList<QSslError> &errors
 
 void QgisApp::namUpdate()
 {
-  QNetworkProxy proxy;
-  QStringList excludes;
-
-  QSettings settings;
-
-  //check if proxy is enabled
-  bool proxyEnabled = settings.value( "proxy/proxyEnabled", false ).toBool();
-  if ( proxyEnabled )
-  {
-    excludes = settings.value( "proxy/proxyExcludedUrls", "" ).toString().split( "|", QString::SkipEmptyParts );
-
-    //read type, host, port, user, passw from settings
-    QString proxyHost = settings.value( "proxy/proxyHost", "" ).toString();
-    int proxyPort = settings.value( "proxy/proxyPort", "" ).toString().toInt();
-    QString proxyUser = settings.value( "proxy/proxyUser", "" ).toString();
-    QString proxyPassword = settings.value( "proxy/proxyPassword", "" ).toString();
-
-    QString proxyTypeString = settings.value( "proxy/proxyType", "" ).toString();
-    QNetworkProxy::ProxyType proxyType = QNetworkProxy::NoProxy;
-    if ( proxyTypeString == "DefaultProxy" )
-    {
-      proxyType = QNetworkProxy::DefaultProxy;
-    }
-    else if ( proxyTypeString == "Socks5Proxy" )
-    {
-      proxyType = QNetworkProxy::Socks5Proxy;
-    }
-    else if ( proxyTypeString == "HttpProxy" )
-    {
-      proxyType = QNetworkProxy::HttpProxy;
-    }
-    else if ( proxyTypeString == "HttpCachingProxy" )
-    {
-      proxyType = QNetworkProxy::HttpCachingProxy;
-    }
-    else if ( proxyTypeString == "FtpCachingProxy" )
-    {
-      proxyType = QNetworkProxy::FtpCachingProxy;
-    }
-    QgsDebugMsg( QString( "setting proxy %1 %2:%3 %4/%5" )
-                 .arg( proxyType )
-                 .arg( proxyHost ).arg( proxyPort )
-                 .arg( proxyUser ).arg( proxyPassword )
-               );
-    proxy = QNetworkProxy( proxyType, proxyHost, proxyPort, proxyUser, proxyPassword );
-  }
-
-#if QT_VERSION >= 0x40500
-  QgsNetworkAccessManager *nam = QgsNetworkAccessManager::instance();
-
-  nam->setFallbackProxyAndExcludes( proxy, excludes );
-
-  QNetworkDiskCache *cache = qobject_cast<QNetworkDiskCache*>( nam->cache() );
-  if ( !cache )
-    cache = new QNetworkDiskCache( this );
-
-  QString cacheDirectory = settings.value( "cache/directory", QgsApplication::qgisSettingsDirPath() + "cache" ).toString();
-  qint64 cacheSize = settings.value( "cache/size", 50 * 1024 * 1024 ).toULongLong();
-  QgsDebugMsg( QString( "setCacheDirectory: %1" ).arg( cacheDirectory ) );
-  QgsDebugMsg( QString( "setMaximumCacheSize: %1" ).arg( cacheSize ) );
-  cache->setCacheDirectory( cacheDirectory );
-  cache->setMaximumCacheSize( cacheSize );
-  QgsDebugMsg( QString( "cacheDirectory: %1" ).arg( cache->cacheDirectory() ) );
-  QgsDebugMsg( QString( "maximumCacheSize: %1" ).arg( cache->maximumCacheSize() ) );
-
-  if ( nam->cache() != cache )
-    nam->setCache( cache );
-#else
-  QgsNetworkAccessManager::instance()->setProxy( proxy );
-#endif
+  QgsNetworkAccessManager::instance()->setupDefaultProxyAndCache();
 }
 
 void QgisApp::completeInitialization()

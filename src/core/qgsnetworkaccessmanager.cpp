@@ -20,6 +20,8 @@
  ***************************************************************************/
 
 #include <qgsnetworkaccessmanager.h>
+
+#include <qgsapplication.h>
 #include <qgsmessagelog.h>
 #include <qgslogger.h>
 
@@ -27,6 +29,7 @@
 #include <QSettings>
 #include <QTimer>
 #include <QNetworkReply>
+#include <QNetworkDiskCache>
 
 #if QT_VERSION >= 0x40500
 class QgsNetworkProxyFactory : public QNetworkProxyFactory
@@ -220,4 +223,76 @@ QNetworkRequest::CacheLoadControl QgsNetworkAccessManager::cacheLoadControlFromN
     return QNetworkRequest::AlwaysCache;
   }
   return QNetworkRequest::PreferNetwork;
+}
+
+void QgsNetworkAccessManager::setupDefaultProxyAndCache()
+{
+  QNetworkProxy proxy;
+  QStringList excludes;
+
+  QSettings settings;
+
+  //check if proxy is enabled
+  bool proxyEnabled = settings.value( "proxy/proxyEnabled", false ).toBool();
+  if ( proxyEnabled )
+  {
+    excludes = settings.value( "proxy/proxyExcludedUrls", "" ).toString().split( "|", QString::SkipEmptyParts );
+
+    //read type, host, port, user, passw from settings
+    QString proxyHost = settings.value( "proxy/proxyHost", "" ).toString();
+    int proxyPort = settings.value( "proxy/proxyPort", "" ).toString().toInt();
+    QString proxyUser = settings.value( "proxy/proxyUser", "" ).toString();
+    QString proxyPassword = settings.value( "proxy/proxyPassword", "" ).toString();
+
+    QString proxyTypeString = settings.value( "proxy/proxyType", "" ).toString();
+    QNetworkProxy::ProxyType proxyType = QNetworkProxy::NoProxy;
+    if ( proxyTypeString == "DefaultProxy" )
+    {
+      proxyType = QNetworkProxy::DefaultProxy;
+    }
+    else if ( proxyTypeString == "Socks5Proxy" )
+    {
+      proxyType = QNetworkProxy::Socks5Proxy;
+    }
+    else if ( proxyTypeString == "HttpProxy" )
+    {
+      proxyType = QNetworkProxy::HttpProxy;
+    }
+    else if ( proxyTypeString == "HttpCachingProxy" )
+    {
+      proxyType = QNetworkProxy::HttpCachingProxy;
+    }
+    else if ( proxyTypeString == "FtpCachingProxy" )
+    {
+      proxyType = QNetworkProxy::FtpCachingProxy;
+    }
+    QgsDebugMsg( QString( "setting proxy %1 %2:%3 %4/%5" )
+                 .arg( proxyType )
+                 .arg( proxyHost ).arg( proxyPort )
+                 .arg( proxyUser ).arg( proxyPassword )
+               );
+    proxy = QNetworkProxy( proxyType, proxyHost, proxyPort, proxyUser, proxyPassword );
+  }
+
+#if QT_VERSION >= 0x40500
+  setFallbackProxyAndExcludes( proxy, excludes );
+
+  QNetworkDiskCache *newcache = qobject_cast<QNetworkDiskCache*>( cache() );
+  if ( !newcache )
+    newcache = new QNetworkDiskCache( this );
+
+  QString cacheDirectory = settings.value( "cache/directory", QgsApplication::qgisSettingsDirPath() + "cache" ).toString();
+  qint64 cacheSize = settings.value( "cache/size", 50 * 1024 * 1024 ).toULongLong();
+  QgsDebugMsg( QString( "setCacheDirectory: %1" ).arg( cacheDirectory ) );
+  QgsDebugMsg( QString( "setMaximumCacheSize: %1" ).arg( cacheSize ) );
+  newcache->setCacheDirectory( cacheDirectory );
+  newcache->setMaximumCacheSize( cacheSize );
+  QgsDebugMsg( QString( "cacheDirectory: %1" ).arg( newcache->cacheDirectory() ) );
+  QgsDebugMsg( QString( "maximumCacheSize: %1" ).arg( newcache->maximumCacheSize() ) );
+
+  if ( cache() != newcache )
+    setCache( newcache );
+#else
+  setProxy( proxy );
+#endif
 }

@@ -83,6 +83,9 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     //! Get QNetworkRequest::CacheLoadControl from name
     static QNetworkRequest::CacheLoadControl cacheLoadControlFromName( const QString &theName );
 
+    //! Setup the NAM according to the user's settings
+    void setupDefaultProxyAndCache();
+
   signals:
     void requestAboutToBeCreated( QNetworkAccessManager::Operation, const QNetworkRequest &, QIODevice * );
     void requestCreated( QNetworkReply * );
