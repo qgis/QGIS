@@ -86,6 +86,12 @@
 #ifdef Q_OS_MACX
 #include <ApplicationServices/ApplicationServices.h>
 
+// Virtual interfaces to Cocoa objective-c frameworks/classes/calls
+// cocoainitializer is to handle objective-c garbage collection
+//   see: http://el-tramo.be/blog/mixing-cocoa-and-qt/
+//#include "cocoainitializer.h"
+#include "qgsmacappkit.h"
+
 // check macro breaks QItemDelegate
 #ifdef check
 #undef check
@@ -5721,9 +5727,10 @@ void QgisApp::bringAllToFront()
 {
 #ifdef Q_OS_MAC
   // Bring forward all open windows while maintaining layering order
-  ProcessSerialNumber psn;
-  GetCurrentProcess( &psn );
-  SetFrontProcess( &psn );
+  // method valid for Mac OS X >= 10.6
+  QgsNSRunningApplication* nsrapp = new QgsNSRunningApplication();
+  nsrapp->currentAppActivateIgnoringOtherApps();
+  delete nsrapp;
 #endif
 }
 
