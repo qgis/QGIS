@@ -173,6 +173,9 @@ void QgsComposerMap::draw( QPainter *painter, const QgsRectangle& extent, const 
   }
 
   QgsMapRenderer theMapRenderer;
+
+  QObject::connect(  &theMapRenderer , SIGNAL( layerRenderingStart(QString, QPainter*) ), this, SIGNAL( layerRenderingStart( QString, QPainter*) ) );
+
   theMapRenderer.setExtent( extent );
   theMapRenderer.setOutputSize( size, dpi );
   if ( mMapRenderer->labelingEngine() )
