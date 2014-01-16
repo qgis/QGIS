@@ -37,6 +37,12 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${QSCINTILLA_INCLUDE_DIR}
 )
 
+IF(USE_NATIVE_LIB)
+  IF(APPLE)
+    INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/src/native/mac)
+  ENDIF(APPLE)
+ENDIF(USE_NATIVE_LIB)
+
 #note for tests we should not include the moc of our
 #qtests in the executable file list as the moc is
 #directly included in the sources
@@ -76,6 +82,10 @@ MACRO (ADD_QGIS_TEST testname testsrc)
     TARGET_LINK_LIBRARIES(qgis_${testname} ${APP_SERVICES_LIBRARY} )
   ENDIF(APPLE)
   ADD_TEST(qgis_${testname} ${CMAKE_CURRENT_BINARY_DIR}/../../../output/bin/qgis_${testname} -maxwarnings 10000)
+  IF(USE_NATIVE_LIB)
+    TARGET_LINK_LIBRARIES(qgis_${testname} qgis_native)
+  ENDIF(USE_NATIVE_LIB)
+  ADD_TEST(qgis_${testname} ${CMAKE_CURRENT_BINARY_DIR}/../../../output/bin/qgis_${testname})
   #SET_TARGET_PROPERTIES(qgis_${testname} PROPERTIES
   #  INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/${QGIS_LIB_DIR}
   #  INSTALL_RPATH_USE_LINK_PATH true )
