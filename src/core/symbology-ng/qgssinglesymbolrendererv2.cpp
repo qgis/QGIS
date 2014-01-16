@@ -22,6 +22,7 @@
 #include "qgsfeature.h"
 #include "qgsvectorlayer.h"
 #include "qgssymbollayerv2.h"
+#include "qgsogcutils.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -188,10 +189,11 @@ QgsFeatureRendererV2* QgsSingleSymbolRendererV2::clone()
 void QgsSingleSymbolRendererV2::toSld( QDomDocument& doc, QDomElement &element ) const
 {
   QgsStringMap props;
+  QString errorMsg;
   if ( mRotation.data() )
-    props[ "angle" ] = QString( mRotation->expression() ).append( "\"" ).prepend( "\"" );
+    props[ "angle" ] = mRotation->expression();
   if ( mSizeScale.data() )
-    props[ "scale" ] = QString( mSizeScale->expression() ).append( "\"" ).prepend( "\"" );
+    props[ "scale" ] = mSizeScale->expression();
 
   QDomElement ruleElem = doc.createElement( "se:Rule" );
   element.appendChild( ruleElem );

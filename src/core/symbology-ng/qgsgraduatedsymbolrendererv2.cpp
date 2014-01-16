@@ -343,9 +343,9 @@ void QgsGraduatedSymbolRendererV2::toSld( QDomDocument& doc, QDomElement &elemen
   QgsStringMap props;
   props[ "attribute" ] = mAttrName;
   if ( mRotation.data() )
-    props[ "angle" ] = QString( mRotation->expression() ).append( "\"" ).prepend( "\"" );
+    props[ "angle" ] = mRotation->expression();
   if ( mSizeScale.data() )
-    props[ "scale" ] = QString( mSizeScale->expression() ).append( "\"" ).prepend( "\"" );
+    props[ "scale" ] = mSizeScale->expression();
 
   // create a Rule for each range
   for ( QgsRangeList::const_iterator it = mRanges.constBegin(); it != mRanges.constEnd(); ++it )

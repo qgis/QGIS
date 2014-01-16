@@ -144,7 +144,7 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
     //! return a list of item text / symbol
     //! @note: this method was added in version 1.5
     //! @note not available in python bindings
-    virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, QString rule = "" );
+    virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, QString rule = QString() );
 
     QgsSymbolV2* sourceSymbol();
     void setSourceSymbol( QgsSymbolV2* sym );
@@ -170,7 +170,7 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
       Q_ASSERT( !mRotation.data() || !mRotation->hasParserError() );
     }
     //! @note added in 1.6
-    QString rotationField() const {  return mRotation.data() ? mRotation->expression() : "";}
+    QString rotationField() const {  return mRotation.data() ? mRotation->expression() : QString();}
 
     //! @note added in 1.6
     void setSizeScaleField( QString expression )
@@ -179,7 +179,7 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
       Q_ASSERT( !mSizeScale.data() || !mSizeScale->hasParserError() );
     }
     //! @note added in 1.6
-    QString sizeScaleField() const { return mSizeScale.data() ? mSizeScale->expression() : ""; }
+    QString sizeScaleField() const { return mSizeScale.data() ? mSizeScale->expression() : QString(); }
 
     //! @note added in 2.0
     void setScaleMethod( QgsSymbolV2::ScaleMethod scaleMethod );

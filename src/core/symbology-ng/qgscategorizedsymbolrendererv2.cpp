@@ -435,9 +435,9 @@ void QgsCategorizedSymbolRendererV2::toSld( QDomDocument &doc, QDomElement &elem
   QgsStringMap props;
   props[ "attribute" ] = mAttrName;
   if ( mRotation.data() )
-    props[ "angle" ] = QString( mRotation->expression() ).append( "\"" ).prepend( "\"" );
+    props[ "angle" ] = mRotation->expression();
   if ( mSizeScale.data() )
-    props[ "scale" ] = QString( mSizeScale->expression() ).append( "\"" ).prepend( "\"" );
+    props[ "scale" ] = mSizeScale->expression();
 
   // create a Rule for each range
   for ( QgsCategoryList::const_iterator it = mCategories.constBegin(); it != mCategories.constEnd(); ++it )
