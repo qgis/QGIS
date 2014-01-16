@@ -294,7 +294,12 @@ void QgsHighlight::paint( QPainter* p )
       // The context is local rectangle of QgsHighlight we previously set.
       // Because QgsMapCanvasItem::setRect() adds 1 pixel on border we cannot simply
       // use boundingRect().height() for QgsMapToPixel height.
-      QgsRectangle extent = rect();
+      QgsRectangle extent = mMapCanvas->extent();
+      if ( extent != rect() ) // catches also canvas resize as it is causing extent change
+      {
+        updateRect();
+        return; // it will be repainted after updateRect()
+      }
       double height = toCanvasCoordinates( QgsPoint( extent.xMinimum(), extent.yMinimum() ) ).y() - toCanvasCoordinates( QgsPoint( extent.xMinimum(), extent.yMaximum() ) ).y();
 
       QgsMapToPixel mapToPixel = QgsMapToPixel( mMapCanvas->mapUnitsPerPixel(),
