@@ -464,6 +464,8 @@ SET(QGIS_CORE_HDRS
   qgsdbfilterproxymodel.h
   qgsvectorlayerjoinbuffer.h
   qgslabelsearchtree.h
+  qgssimplifymethod.h
+  qgsvectorsimplifymethod.h
 
   qgsdiagramrendererv2.h
   diagram/qgsdiagram.h
