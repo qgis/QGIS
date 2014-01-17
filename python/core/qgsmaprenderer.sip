@@ -268,7 +268,7 @@ class QgsMapRenderer : QObject
 
     void drawingProgress( int current, int total );
 
-    void hasCrsTransformEnabled( bool flag );
+    void hasCrsTransformEnabled( bool flag ) /Deprecated/;
     void hasCrsTransformEnabledChanged( bool flag );
 
     void destinationSrsChanged();

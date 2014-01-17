@@ -308,6 +308,9 @@ class CORE_EXPORT QgsMapRenderer : public QObject
      *  @param flag true if transformation is enabled.
      *  @deprecated Use hasCrsTransformEnabledChanged( bool flag )
      *              to avoid conflict with method of the same name). */
+#ifndef Q_MOC_RUN
+    Q_DECL_DEPRECATED
+#endif
     void hasCrsTransformEnabled( bool flag );
 
     /** This signal is emitted when CRS transformation is enabled/disabled.
