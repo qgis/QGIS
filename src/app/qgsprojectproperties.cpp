@@ -75,7 +75,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
 
   connect( buttonBox->button( QDialogButtonBox::Apply ), SIGNAL( clicked() ), this, SLOT( apply() ) );
   connect( this, SIGNAL( accepted() ), this, SLOT( apply() ) );
-  connect( projectionSelector, SIGNAL( sridSelected( QString ) ), this, SLOT( setMapUnitsToCurrentProjection() ) );
+  connect( projectionSelector, SIGNAL( sridSelected( QString ) ), this, SLOT( updateMapUnitsAndEllipsoidUI() ) );
   connect( projectionSelector, SIGNAL( initialized() ), this, SLOT( projectionSelectorInitialized() ) );
 
   connect( cmbEllipsoid, SIGNAL( currentIndexChanged( int ) ), this, SLOT( updateEllipsoidUI( int ) ) );
@@ -95,7 +95,6 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   // these ones are propagated to QgsProject by a signal
 
   QGis::UnitType myUnit = mMapCanvas->mapSettings().mapUnits();
-  setMapUnits( myUnit );
 
   // we need to initialize it, since the on_cbxProjectionEnabled_toggled()
   // slot triggered by setChecked() might use it.
@@ -525,6 +524,10 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
     on_cbxProjectionEnabled_toggled( myProjectionEnabled );
   }
 
+  // set initial map units and ellipsoid
+  setSelectedMapUnits( myUnit );
+  updateEllipsoidUI( myIndex );
+
   restoreOptionsBaseUi();
   restoreState();
 }
@@ -540,6 +543,14 @@ QGis::UnitType QgsProjectProperties::mapUnits() const
   return mMapCanvas->mapSettings().mapUnits();
 }
 
+void QgsProjectProperties::setSelectedMapUnits( QGis::UnitType unit )
+{
+  radMeters->setChecked( unit == QGis::Meters || unit == QGis::UnknownUnit );
+  radFeet->setChecked( unit == QGis::Feet );
+  radNMiles->setChecked( unit == QGis::NauticalMiles );
+  radDegrees->setChecked( unit == QGis::Degrees );
+}
+
 void QgsProjectProperties::setMapUnits( QGis::UnitType unit )
 {
   // select the button
@@ -547,13 +558,29 @@ void QgsProjectProperties::setMapUnits( QGis::UnitType unit )
   {
     unit = QGis::Meters;
   }
-
-  radMeters->setChecked( unit == QGis::Meters );
-  radFeet->setChecked( unit == QGis::Feet );
-  radNMiles->setChecked( unit == QGis::NauticalMiles );
-  radDegrees->setChecked( unit == QGis::Degrees );
+  setSelectedMapUnits( unit );
 
   mMapCanvas->setMapUnits( unit );
+}
+
+QGis::UnitType QgsProjectProperties::selectedMapUnits() const
+{
+  if ( radDegrees->isChecked() )
+  {
+    return QGis::Degrees;
+  }
+  else if ( radFeet->isChecked() )
+  {
+    return QGis::Feet;
+  }
+  else if ( radNMiles->isChecked() )
+  {
+    return QGis::NauticalMiles;
+  }
+  else
+  {
+    return QGis::Meters;
+  }
 }
 
 QString QgsProjectProperties::title() const
@@ -573,23 +600,7 @@ void QgsProjectProperties::apply()
   // Set the map units
   // Note. Qt 3.2.3 and greater have a function selectedId() that
   // can be used instead of the two part technique here
-  QGis::UnitType mapUnit;
-  if ( radDegrees->isChecked() )
-  {
-    mapUnit = QGis::Degrees;
-  }
-  else if ( radFeet->isChecked() )
-  {
-    mapUnit = QGis::Feet;
-  }
-  else if ( radNMiles->isChecked() )
-  {
-    mapUnit = QGis::NauticalMiles;
-  }
-  else
-  {
-    mapUnit = QGis::Meters;
-  }
+  QGis::UnitType mapUnit = selectedMapUnits();
 
   mMapCanvas->setMapUnits( mapUnit );
   mMapCanvas->setCrsTransformEnabled( cbxProjectionEnabled->isChecked() );
@@ -609,15 +620,6 @@ void QgsProjectProperties::apply()
     QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCRSProj4String", projectionSelector->selectedProj4String() );
     QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCRSID", ( int ) projectionSelector->selectedCrsId() );
     QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCrs", projectionSelector->selectedAuthId() );
-
-    // Set the map units to the projected coordinates if we are projecting
-    if ( isProjected() )
-    {
-      // If we couldn't get the map units, default to the value in the
-      // projectproperties dialog box (set above)
-      if ( srs.mapUnits() != QGis::UnknownUnit )
-        mMapCanvas->setMapUnits( srs.mapUnits() );
-    }
 
     if ( cbxProjectionEnabled->isChecked() )
     {
@@ -956,17 +958,10 @@ void QgsProjectProperties::on_cbxProjectionEnabled_toggled( bool onFlyEnabled )
     mProjectSrsId = mLayerSrsId;
     projectionSelector->setSelectedCrsId( mLayerSrsId );
 
-    QgsCoordinateReferenceSystem srs( mLayerSrsId, QgsCoordinateReferenceSystem::InternalCrsId );
-    //set radio button to crs map unit type
-    QGis::UnitType units = srs.mapUnits();
-
-    radMeters->setChecked( units == QGis::Meters );
-    radFeet->setChecked( units == QGis::Feet );
-    radNMiles->setChecked( units == QGis::NauticalMiles );
-    radDegrees->setChecked( units == QGis::Degrees );
-
-    // unset ellipsoid
-    mEllipsoidIndex = 0;
+    radMeters->setEnabled( true );
+    radFeet->setEnabled( true );
+    radNMiles->setEnabled( true );
+    radDegrees->setEnabled( true );
 
     btnGrpMeasureEllipsoid->setTitle( measureOnFlyState.arg( tr( "OFF" ) ) );
     btnGrpMapUnits->setTitle( unitsOnFlyState.arg( tr( "OFF" ) ) );
@@ -979,15 +974,16 @@ void QgsProjectProperties::on_cbxProjectionEnabled_toggled( bool onFlyEnabled )
     }
     projectionSelector->setSelectedCrsId( mProjectSrsId );
 
+    radMeters->setEnabled( false );
+    radFeet->setEnabled( false );
+    radNMiles->setEnabled( false );
+    radDegrees->setEnabled( false );
+
     btnGrpMeasureEllipsoid->setTitle( measureOnFlyState.arg( tr( "ON" ) ) );
     btnGrpMapUnits->setTitle( unitsOnFlyState.arg( tr( "ON" ) ) );
   }
 
-  setMapUnitsToCurrentProjection();
-
-  // Enable/Disable selector and update tool-tip
-  updateEllipsoidUI( mEllipsoidIndex ); // maybe already done by setMapUnitsToCurrentProjection
-
+  updateMapUnitsAndEllipsoidUI();
 }
 
 void QgsProjectProperties::cbxWFSPubliedStateChanged( int aIdx )
@@ -1024,32 +1020,61 @@ void QgsProjectProperties::cbxWCSPubliedStateChanged( int aIdx )
   }
 }
 
-void QgsProjectProperties::setMapUnitsToCurrentProjection()
+void QgsProjectProperties::updateMapUnitsAndEllipsoidUI()
 {
+  QGis::UnitType lastUnits = selectedMapUnits();
+  int lastEllipsoidIndex = mEllipsoidIndex;
+
+  // select new projection data from current CRS
   long myCRSID = projectionSelector->selectedCrsId();
-  if ( !isProjected() || !myCRSID )
-    return;
-
-  QgsCoordinateReferenceSystem srs( myCRSID, QgsCoordinateReferenceSystem::InternalCrsId );
-  //set radio button to crs map unit type
-  QGis::UnitType units = srs.mapUnits();
-
-  radMeters->setChecked( units == QGis::Meters );
-  radFeet->setChecked( units == QGis::Feet );
-  radNMiles->setChecked( units == QGis::NauticalMiles );
-  radDegrees->setChecked( units == QGis::Degrees );
-
-  // attempt to reset the projection ellipsoid according to the srs
-  int myIndex = 0;
-  for ( int i = 0; i < mEllipsoidList.length(); i++ )
+  if ( myCRSID )
   {
-    if ( mEllipsoidList[ i ].acronym == srs.ellipsoidAcronym() )
+    QgsCoordinateReferenceSystem srs( myCRSID, QgsCoordinateReferenceSystem::InternalCrsId );
+    setSelectedMapUnits( srs.mapUnits() );
+
+    // attempt to reset the projection ellipsoid according to the srs
+    int myIndex = 0;
+    if ( cbxProjectionEnabled->isChecked() )
     {
-      myIndex = i;
-      break;
+      for ( int i = 0; i < mEllipsoidList.length(); i++ )
+      {
+        if ( mEllipsoidList[ i ].acronym == srs.ellipsoidAcronym() )
+        {
+          myIndex = i;
+          break;
+        }
+      }
     }
+    updateEllipsoidUI( myIndex );
   }
-  updateEllipsoidUI( myIndex );
+  else
+  {
+    setSelectedMapUnits( QGis::Meters );
+    updateEllipsoidUI( 0 );
+  }
+
+  // show warning message
+  QString warningMessage;
+  if ( lastUnits != selectedMapUnits() )
+  {
+    warningMessage = tr( "New map units '%1' selected" ).arg( QGis::toLiteral( selectedMapUnits() ) );
+  }
+  if ( lastEllipsoidIndex != mEllipsoidIndex && mEllipsoidIndex > -1 )
+  {
+    if ( !warningMessage.isEmpty() ) warningMessage += "\n";
+    warningMessage += tr( "New ellipsoid for distance calculations '%1' selected" ).arg( cmbEllipsoid->itemText( cmbEllipsoid->currentIndex() ) );
+  }
+  if ( !warningMessage.isEmpty() )
+  {
+    QPoint cursorPos = QCursor::pos();
+    QToolTip::showText( QPoint( cursorPos.x() + 16, cursorPos.y() ), warningMessage);
+    QTimer::singleShot( 2000, this, SLOT( hideTooltipText() ) );
+  }
+}
+
+void QgsProjectProperties::hideTooltipText()
+{
+  QToolTip::hideText();
 }
 
 /*!

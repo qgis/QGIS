@@ -142,9 +142,9 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     void cbxWCSPubliedStateChanged( int aIdx );
 
     /*!
-      * If user changes the CRS, set the corresponding map units
-      */
-    void setMapUnitsToCurrentProjection();
+     * If user changes the CRS, set the corresponding map units and ellipsoid
+     */
+    void updateMapUnitsAndEllipsoidUI();
 
     /* Update ComboBox accorindg to the selected new index
      * Also sets the new selected Ellipsoid. */
@@ -156,6 +156,8 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     void on_mButtonAddColor_clicked();
     void on_mButtonImportColors_clicked();
     void on_mButtonExportColors_clicked();
+
+    void hideTooltipText();
 
   signals:
     //! Signal used to inform listeners that the mouse display precision may have changed
@@ -206,6 +208,11 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
 
     //! Populates list with ellipsoids from Sqlite3 db
     void populateEllipsoidList();
+
+    //! Gets the currently selected map units from related UI
+    QGis::UnitType selectedMapUnits() const;
+    //! Sets the selected map units to related UI
+    void setSelectedMapUnits( QGis::UnitType unit );
 
     static const char * GEO_NONE_DESC;
 
