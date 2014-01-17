@@ -88,7 +88,7 @@ void QgsDxfPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& 
 
     for ( int i = 0; i < textList.size(); ++i )
     {
-      mDxfExport->writeText( layerName, textList.at( i ), QgsPoint( label->getX(), label->getY() + i * textHeight ), textAscent, angle, mDxfExport->closestColorMatch( tmpLyr.textColor.rgb() ) );
+      mDxfExport->writeText( layerName, textList.at( i ), QgsPoint( label->getX(), label->getY() + ( textList.size() -1 - i ) * textHeight ), textAscent, angle, mDxfExport->closestColorMatch( tmpLyr.textColor.rgb() ) );
     }
   }
 }
