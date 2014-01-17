@@ -870,8 +870,12 @@ bool QgsImageFillSymbolLayer::setSubSymbol( QgsSymbolV2* symbol )
 
 double QgsImageFillSymbolLayer::estimateMaxBleed() const
 {
-  double subLayerBleed = mOutline->symbolLayer( 0 )->estimateMaxBleed();
-  return subLayerBleed;
+  if ( mOutline && mOutline->symbolLayer( 0 ) )
+  {
+    double subLayerBleed = mOutline->symbolLayer( 0 )->estimateMaxBleed();
+    return subLayerBleed;
+  }
+  return 0;
 }
 
 double QgsImageFillSymbolLayer::dxfWidth( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const
@@ -936,7 +940,6 @@ QgsSVGFillSymbolLayer::QgsSVGFillSymbolLayer( const QByteArray& svgData, double 
 
 QgsSVGFillSymbolLayer::~QgsSVGFillSymbolLayer()
 {
-  delete mOutline;
   delete mSvgPattern;
 }
 
@@ -1399,12 +1402,47 @@ void QgsSVGFillSymbolLayer::setDefaultSvgParams()
 
 
 QgsLinePatternFillSymbolLayer::QgsLinePatternFillSymbolLayer(): QgsImageFillSymbolLayer(), mDistanceUnit( QgsSymbolV2::MM ), mLineWidthUnit( QgsSymbolV2::MM ),
-    mOffsetUnit( QgsSymbolV2::MM )
+    mOffsetUnit( QgsSymbolV2::MM ), mFillLineSymbol( 0 )
 {
+  setSubSymbol( new QgsLineSymbolV2() );
+  QgsImageFillSymbolLayer::setSubSymbol( 0 ); //no outline
 }
 
 QgsLinePatternFillSymbolLayer::~QgsLinePatternFillSymbolLayer()
 {
+  delete mFillLineSymbol;
+}
+
+bool QgsLinePatternFillSymbolLayer::setSubSymbol( QgsSymbolV2* symbol )
+{
+  if ( !symbol )
+  {
+    return false;
+  }
+
+  if ( symbol->type() == QgsSymbolV2::Line )
+  {
+    QgsLineSymbolV2* lineSymbol = dynamic_cast<QgsLineSymbolV2*>( symbol );
+    if ( lineSymbol )
+    {
+      delete mFillLineSymbol;
+      mFillLineSymbol = lineSymbol;
+
+      return true;
+    }
+  }
+  delete symbol;
+  return false;
+}
+
+QgsSymbolV2* QgsLinePatternFillSymbolLayer::subSymbol()
+{
+  return mFillLineSymbol;
+}
+
+double QgsLinePatternFillSymbolLayer::estimateMaxBleed() const
+{
+  return 0;
 }
 
 void QgsLinePatternFillSymbolLayer::setOutputUnit( QgsSymbolV2::OutputUnit unit )
@@ -1507,8 +1545,10 @@ QString QgsLinePatternFillSymbolLayer::layerType() const
 void QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolV2RenderContext& context, QBrush& brush, double lineAngle, double distance,
     double lineWidth, const QColor& color )
 {
+  Q_UNUSED( lineWidth );
+  Q_UNUSED( color );
   const QgsRenderContext& ctx = context.renderContext();
-  double outlinePixelWidth = lineWidth * QgsSymbolLayerV2Utils::pixelSizeScaleFactor( ctx,  mLineWidthUnit );
+  //double outlinePixelWidth = lineWidth * QgsSymbolLayerV2Utils::pixelSizeScaleFactor( ctx,  mLineWidthUnit );
   double outputPixelDist = distance * QgsSymbolLayerV2Utils::pixelSizeScaleFactor( ctx, mDistanceUnit );
   double outputPixelOffset = mOffset * QgsSymbolLayerV2Utils::pixelSizeScaleFactor( ctx,  mOffsetUnit );
 
@@ -1538,13 +1578,6 @@ void QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolV2RenderContext
 
   QImage patternImage( width, height, QImage::Format_ARGB32 );
   patternImage.fill( 0 );
-  QPainter p( &patternImage );
-
-  p.setRenderHint( QPainter::Antialiasing, true );
-  QPen pen( color );
-  pen.setWidthF( outlinePixelWidth );
-  pen.setCapStyle( Qt::FlatCap );
-  p.setPen( pen );
 
   QPoint p1, p2, p3, p4, p5, p6;
   if ( qgsDoubleNear( lineAngle, 0.0 ) || qgsDoubleNear( lineAngle, 360.0 ) || qgsDoubleNear( lineAngle, 180.0 ) )
@@ -1607,10 +1640,44 @@ void QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolV2RenderContext
     p2 = QPoint( tempPt.x(), tempPt.y() );;
   }
 
-  p.drawLine( p1, p2 );
-  p.drawLine( p3, p4 );
-  p.drawLine( p5, p6 );
-  p.end();
+  if ( mFillLineSymbol )
+  {
+    QPainter p( &patternImage );
+
+#if 0
+    // DEBUG: Draw rectangle
+    //p.setRenderHint( QPainter::Antialiasing, true );
+    QPen pen( QColor( Qt::black ) );
+    pen.setWidthF( 0.1 );
+    pen.setCapStyle( Qt::FlatCap );
+    p.setPen( pen );
+    QPolygon polygon = QPolygon() << QPoint( 0, 0 ) << QPoint( width, 0 ) << QPoint( width, height ) << QPoint( 0, height ) << QPoint( 0, 0 ) ;
+    p.drawPolygon( polygon );
+#endif
+
+    // line rendering needs context for drawing on patternImage
+    QgsRenderContext lineRenderContext;
+    lineRenderContext.setPainter( &p );
+    lineRenderContext.setRasterScaleFactor( 1.0 );
+    lineRenderContext.setScaleFactor( context.renderContext().scaleFactor() * context.renderContext().rasterScaleFactor() );
+    QgsMapToPixel mtp( context.renderContext().mapToPixel().mapUnitsPerPixel() / context.renderContext().rasterScaleFactor() );
+    lineRenderContext.setMapToPixel( mtp );
+    lineRenderContext.setForceVectorOutput( false );
+
+    mFillLineSymbol->startRender( lineRenderContext );
+
+    QVector<QPolygon> polygons;
+    polygons.append( QPolygon() << p1 << p2 );
+    polygons.append( QPolygon() << p3 << p4 );
+    polygons.append( QPolygon() << p5 << p6 );
+    foreach ( QPolygon polygon, polygons )
+    {
+      mFillLineSymbol->renderPolyline( polygon, context.feature(), lineRenderContext, -1, context.selected() );
+    }
+
+    mFillLineSymbol->stopRender( lineRenderContext );
+    p.end();
+  }
 
   //set image to mBrush
   if ( !qgsDoubleNear( context.alpha(), 1.0 ) )
@@ -1633,9 +1700,9 @@ void QgsLinePatternFillSymbolLayer::startRender( QgsSymbolV2RenderContext& conte
 {
   applyPattern( context, mBrush, mLineAngle, mDistance, mLineWidth, mColor );
 
-  if ( mOutline )
+  if ( mFillLineSymbol )
   {
-    mOutline->startRender( context.renderContext() );
+    mFillLineSymbol->startRender( context.renderContext() );
   }
 
   prepareExpressions( context.layer(), context.renderContext().rendererScale() );
@@ -1663,9 +1730,9 @@ QgsStringMap QgsLinePatternFillSymbolLayer::properties() const
 QgsSymbolLayerV2* QgsLinePatternFillSymbolLayer::clone() const
 {
   QgsLinePatternFillSymbolLayer* clonedLayer = static_cast<QgsLinePatternFillSymbolLayer*>( QgsLinePatternFillSymbolLayer::create( properties() ) );
-  if ( mOutline )
+  if ( mFillLineSymbol )
   {
-    clonedLayer->setSubSymbol( mOutline->clone() );
+    clonedLayer->setSubSymbol( mFillLineSymbol->clone() );
   }
   clonedLayer->setDistanceUnit( mDistanceUnit );
   clonedLayer->setLineWidthUnit( mLineWidthUnit );
@@ -1713,12 +1780,9 @@ void QgsLinePatternFillSymbolLayer::toSld( QDomDocument &doc, QDomElement &eleme
   QPointF lineOffset( sin( mLineAngle ) * mOffset, cos( mLineAngle ) * mOffset );
   QgsSymbolLayerV2Utils::createDisplacementElement( doc, graphicElem, lineOffset );
 
-  if ( mOutline )
+  if ( mFillLineSymbol )
   {
-    // the outline sub symbol should be stored within the Stroke element,
-    // but it will be stored in a separated LineSymbolizer because it could
-    // have more than one layer
-    mOutline->toSld( doc, element, props );
+    mFillLineSymbol->toSld( doc, element, props );
   }
 }
 
