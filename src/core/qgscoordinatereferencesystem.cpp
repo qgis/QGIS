@@ -404,20 +404,23 @@ bool QgsCoordinateReferenceSystem::axisInverted() const
 {
   if ( mAxisInverted == -1 )
   {
-    mAxisInverted = mGeoFlag ? OSREPSGTreatsAsLatLong( mCRS ) : OSREPSGTreatsAsNorthingEasting( mCRS );
+    OGRAxisOrientation orientation;
+    OSRGetAxis( mCRS, OSRIsGeographic( mCRS ) ? "GEOGCS" : "PROJCS", 0, &orientation );
 
-    // See GDAL-OGR: https://github.com/OSGeo/gdal/blob/trunk/gdal/ogr/ogrsf_frmts/gml/gmlutils.cpp#L322
-    if ( !mAxisInverted )
+    // If axis orientation is unknown, try again with OSRImportFromEPSGA for EPSG crs
+    if( orientation == OAO_Other && mAuthId.startsWith( "EPSG:", Qt::CaseInsensitive ) )
     {
       OGRSpatialReferenceH crs = OSRNewSpatialReference( NULL );
 
-      if ( OSRImportFromEPSGA( crs, mSRID ) == OGRERR_NONE )
+      if ( OSRImportFromEPSGA( crs, mAuthId.mid( 5 ).toInt() ) == OGRERR_NONE )
       {
-        mAxisInverted = mGeoFlag ? OSREPSGTreatsAsLatLong( crs ) : OSREPSGTreatsAsNorthingEasting( crs );
+        OSRGetAxis( crs, OSRIsGeographic( crs ) ? "GEOGCS" : "PROJCS", 0, &orientation );
       }
+
       OSRDestroySpatialReference( crs );
     }
-    QgsDebugMsg( QString( "srid:%1 inverted:%2" ).arg( mSRID ).arg( mAxisInverted ) );
+
+    mAxisInverted = orientation == OAO_North;
   }
 
   return mAxisInverted != 0;
@@ -822,9 +825,7 @@ long QgsCoordinateReferenceSystem::srsid() const
 
 long QgsCoordinateReferenceSystem::postgisSrid() const
 {
-
   return mSRID;
-
 }
 
 QString QgsCoordinateReferenceSystem::authid() const
@@ -1731,9 +1732,7 @@ int QgsCoordinateReferenceSystem::syncDb()
     char *psz = ba.data();
     OGRErr ogrErr = OSRImportFromWkt( crs, &psz );
     if ( ogrErr != OGRERR_NONE )
-    {
       continue;
-    }
 
     if ( OSRExportToProj4( crs, &psz ) != OGRERR_NONE )
       continue;
@@ -1744,9 +1743,7 @@ int QgsCoordinateReferenceSystem::syncDb()
     CPLFree( psz );
 
     if ( proj4.isEmpty() )
-    {
       continue;
-    }
 
     sql = QString( "SELECT parameters,noupdate FROM tbl_srs WHERE auth_name='EPSG' AND auth_id='%1'" ).arg( it.key() );
     if ( sqlite3_prepare( database, sql.toAscii(), sql.size(), &select, &tail ) != SQLITE_OK )
