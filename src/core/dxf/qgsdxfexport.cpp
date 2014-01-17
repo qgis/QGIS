@@ -1021,18 +1021,6 @@ void QgsDxfExport::addFeature( const QgsSymbolV2RenderContext& ctx, const QStrin
   }
 }
 
-double QgsDxfExport::scaleToMapUnits( double value, QgsSymbolV2::OutputUnit symbolUnits, QGis::UnitType mapUnits ) const
-{
-  if ( symbolUnits == QgsSymbolV2::MapUnit )
-  {
-    return 1.0;
-  }
-
-  //symbology in mm
-  value *= ( mSymbologyScaleDenominator * QGis::fromUnitToUnitFactor( mapUnits, QGis::Meters ) ) / 1000;
-  return value;
-}
-
 int QgsDxfExport::colorFromSymbolLayer( const QgsSymbolLayerV2* symbolLayer, const QgsSymbolV2RenderContext& ctx )
 {
   if ( !symbolLayer )
@@ -1111,14 +1099,8 @@ double QgsDxfExport::mapUnitScaleFactor( double scaleDenominator, QgsSymbolV2::O
   {
     return 1.0;
   }
-  else if ( symbolUnits == QgsSymbolV2::MM && mapUnits == QGis::Meters )
-  {
-    return scaleDenominator / 1000;
-  }
-  else
-  {
-    return 1.0;
-  }
+  //MM symbol unit
+  return scaleDenominator * QGis::fromUnitToUnitFactor( QGis::Meters, mapUnits ) / 1000.0;
 }
 
 QList< QPair< QgsSymbolLayerV2*, QgsSymbolV2* > > QgsDxfExport::symbolLayers()

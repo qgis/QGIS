@@ -143,7 +143,6 @@ class CORE_EXPORT QgsDxfExport
     QgsRectangle dxfExtent() const;
 
     void addFeature( const QgsSymbolV2RenderContext& ctx, const QString& layer, const QgsSymbolLayerV2* symbolLayer, const QgsSymbolV2* symbol );
-    double scaleToMapUnits( double value, QgsSymbolV2::OutputUnit symbolUnits, QGis::UnitType mapUnits ) const;
 
     //returns dxf palette index from symbol layer color
     static int colorFromSymbolLayer( const QgsSymbolLayerV2* symbolLayer, const QgsSymbolV2RenderContext& ctx );
