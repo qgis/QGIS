@@ -590,7 +590,7 @@ bool QgsWmsProvider::setImageCrs( QString const & crs )
 
     setProperty( "resolutions", resolutions );
 
-    if ( mTileLayer == 0 && mTileMatrixSet == 0 )
+    if ( mTileLayer == 0 || mTileMatrixSet == 0 )
     {
       appendError( ERR( tr( "Tile layer or tile matrix set not found" ) ) );
       return false;
