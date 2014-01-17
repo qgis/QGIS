@@ -1,0 +1,152 @@
+<root>
+  <key>SOMClassification</key>
+  <exec>otbcli_SOMClassification</exec>
+  <longname>SOM Classification</longname>
+  <group>Learning</group>
+  <description>SOM image classification.</description>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_InputImage">ParameterRaster</parameter_type>
+    <key>in</key>
+    <name>InputImage</name>
+    <description>Input image to classify.</description>
+    <optional>False</optional>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_OutputImage">OutputRaster</parameter_type>
+    <key>out</key>
+    <name>OutputImage</name>
+    <description>Output classified image (each pixel contains the index of its corresponding vector in the SOM).</description>
+    <hidden />
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_InputImage">ParameterRaster</parameter_type>
+    <key>vm</key>
+    <name>ValidityMask</name>
+    <description>Validity mask (only pixels corresponding to a mask value greater than 0 will be used for learning)</description>
+    <optional>True</optional>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Float">ParameterNumber</parameter_type>
+    <key>tp</key>
+    <name>TrainingProbability</name>
+    <description>Probability for a sample to be selected in the training set</description>
+    <minValue />
+    <maxValue />
+    <default>1</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
+    <key>ts</key>
+    <name>TrainingSetSize</name>
+    <description>Maximum training set size (in pixels)</description>
+    <minValue />
+    <maxValue />
+    <default>0</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
+    <key>sl</key>
+    <name>StreamingLines</name>
+    <description>Number of lines in each streaming block (used during data sampling)</description>
+    <minValue />
+    <maxValue />
+    <default>0</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_OutputImage">OutputRaster</parameter_type>
+    <key>som</key>
+    <name>SOM Map</name>
+    <description>Output image containing the Self-Organizing Map</description>
+    <hidden />
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
+    <key>sx</key>
+    <name>SizeX</name>
+    <description>X size of the SOM map</description>
+    <minValue />
+    <maxValue />
+    <default>32</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
+    <key>sy</key>
+    <name>SizeY</name>
+    <description>Y size of the SOM map</description>
+    <minValue />
+    <maxValue />
+    <default>32</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
+    <key>nx</key>
+    <name>NeighborhoodX</name>
+    <description>X size of the initial neighborhood in the SOM map</description>
+    <minValue />
+    <maxValue />
+    <default>10</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
+    <key>ny</key>
+    <name>NeighborhoodY</name>
+    <description>Y size of the initial neighborhood in the SOM map</description>
+    <minValue />
+    <maxValue />
+    <default>10</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
+    <key>ni</key>
+    <name>NumberIteration</name>
+    <description>Number of iterations for SOM learning</description>
+    <minValue />
+    <maxValue />
+    <default>5</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Float">ParameterNumber</parameter_type>
+    <key>bi</key>
+    <name>BetaInit</name>
+    <description>Initial learning coefficient</description>
+    <minValue />
+    <maxValue />
+    <default>1</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Float">ParameterNumber</parameter_type>
+    <key>bf</key>
+    <name>BetaFinal</name>
+    <description>Final learning coefficient</description>
+    <minValue />
+    <maxValue />
+    <default>0.1</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Float">ParameterNumber</parameter_type>
+    <key>iv</key>
+    <name>InitialValue</name>
+    <description>Maximum initial neuron weight</description>
+    <minValue />
+    <maxValue />
+    <default>0</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_RAM">ParameterNumber</parameter_type>
+    <key>ram</key>
+    <name>Available RAM (Mb)</name>
+    <description>Available memory for processing (in MB)</description>
+    <minValue />
+    <maxValue />
+    <default>128</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
+    <key>rand</key>
+    <name>set user defined seed</name>
+    <description>Set specific seed. with integer value.</description>
+    <minValue />
+    <maxValue />
+    <default>0</default>
+  </parameter>
+</root>

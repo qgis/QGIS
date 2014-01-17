@@ -1,0 +1,60 @@
+<root>
+  <key>Smoothing-anidif</key>
+  <exec>otbcli_Smoothing</exec>
+  <longname>Smoothing (anidif)</longname>
+  <group>Image Filtering</group>
+  <description>Apply a smoothing filter to an image</description>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_InputImage">ParameterRaster</parameter_type>
+    <key>in</key>
+    <name>Input Image</name>
+    <description>Input image to smooth.</description>
+    <optional>False</optional>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_OutputImage">OutputRaster</parameter_type>
+    <key>out</key>
+    <name>Output Image</name>
+    <description>Output smoothed image.</description>
+    <hidden />
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_RAM">ParameterNumber</parameter_type>
+    <key>ram</key>
+    <name>Available RAM (Mb)</name>
+    <description>Available memory for processing (in MB)</description>
+    <minValue />
+    <maxValue />
+    <default>128</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Choice">ParameterSelection</parameter_type>
+    <key>type</key>
+    <name>Smoothing Type</name>
+    <description>Smoothing kernel to apply</description>
+    <options>
+      <choices>
+        <choice>anidif</choice>
+      </choices>
+    </options>
+    <default>2</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Float">ParameterNumber</parameter_type>
+    <key>type.anidif.timestep</key>
+    <name>Time Step</name>
+    <description>Diffusion equation time step</description>
+    <minValue />
+    <maxValue />
+    <default>0.125</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
+    <key>type.anidif.nbiter</key>
+    <name>Nb Iterations</name>
+    <description>Number of iterations</description>
+    <minValue />
+    <maxValue />
+    <default>10</default>
+  </parameter>
+</root>

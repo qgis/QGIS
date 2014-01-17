@@ -1,0 +1,30 @@
+<root>
+  <key>SplitImage</key>
+  <exec>otbcli_SplitImage</exec>
+  <longname>Split Image</longname>
+  <group>Image Manipulation</group>
+  <description>Split a N multiband image into N images</description>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_InputImage">ParameterRaster</parameter_type>
+    <key>in</key>
+    <name>Input Image</name>
+    <description>Input multiband image filename.</description>
+    <optional>False</optional>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_OutputFilename">OutputFile</parameter_type>
+    <key>out</key>
+    <name>Output Image</name>
+    <description>Output filename that will be used to get the prefix and the extension of the output images to write</description>
+    <hidden />
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_RAM">ParameterNumber</parameter_type>
+    <key>ram</key>
+    <name>Available RAM (Mb)</name>
+    <description>Available memory for processing (in MB)</description>
+    <minValue />
+    <maxValue />
+    <default>128</default>
+  </parameter>
+</root>

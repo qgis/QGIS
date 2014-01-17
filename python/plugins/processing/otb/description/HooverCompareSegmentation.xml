@@ -1,0 +1,89 @@
+<root>
+  <key>HooverCompareSegmentation</key>
+  <exec>otbcli_HooverCompareSegmentation</exec>
+  <longname>Hoover compare segmentation</longname>
+  <group>Segmentation</group>
+  <description>Compare two segmentations with Hoover metrics</description>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_InputImage">ParameterRaster</parameter_type>
+    <key>ingt</key>
+    <name>Input ground truth</name>
+    <description>A partial ground truth segmentation image.</description>
+    <optional>False</optional>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_InputImage">ParameterRaster</parameter_type>
+    <key>inms</key>
+    <name>Input machine segmentation</name>
+    <description>A machine segmentation image.</description>
+    <optional>False</optional>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
+    <key>bg</key>
+    <name>Background label</name>
+    <description>Label value of the background in the input segmentations</description>
+    <minValue />
+    <maxValue />
+    <default>0</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Float">ParameterNumber</parameter_type>
+    <key>th</key>
+    <name>Overlapping threshold</name>
+    <description>Overlapping threshold used to find Hoover instances.</description>
+    <minValue />
+    <maxValue />
+    <default>0.75</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_OutputImage">OutputRaster</parameter_type>
+    <key>outgt</key>
+    <name>Colored ground truth output</name>
+    <description>The colored ground truth output image.</description>
+    <hidden />
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_OutputImage">OutputRaster</parameter_type>
+    <key>outms</key>
+    <name>Colored machine segmentation output</name>
+    <description>The colored machine segmentation output image.</description>
+    <hidden />
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Float">ParameterNumber</parameter_type>
+    <key>rc</key>
+    <name>Correct detection score</name>
+    <description>Overall score for correct detection (RC)</description>
+    <minValue />
+    <maxValue />
+    <default>0.0</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Float">ParameterNumber</parameter_type>
+    <key>rf</key>
+    <name>Over-segmentation score</name>
+    <description>Overall score for over segmentation (RF)</description>
+    <minValue />
+    <maxValue />
+    <default>0.0</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Float">ParameterNumber</parameter_type>
+    <key>ra</key>
+    <name>Under-segmentation score</name>
+    <description>Overall score for under segmentation (RA)</description>
+    <minValue />
+    <maxValue />
+    <default>0.0</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Float">ParameterNumber</parameter_type>
+    <key>rm</key>
+    <name>Missed detection score</name>
+    <description>Overall score for missed detection (RM)</description>
+    <minValue />
+    <maxValue />
+    <default>0.0</default>
+  </parameter>
+</root>

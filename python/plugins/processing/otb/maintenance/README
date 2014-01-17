@@ -1,0 +1,11 @@
+
+Requirement
+1) qgis
+2) sextante_taudem (TauDEM-1.1.1.zip)
+3) sextante (sextante-1.0.9.zip)
+4) PYTHONPATH=.:/usr/lib/otb/python:/usr/share/qgis/python/plugins:~/.qgis2/python/plugins
+5) ITK_AUTOLOAD_PATH=/usr/lib/otb/applications 
+
+Creating xml files
+cd .qgis2/python/plugin/sextante/otb/maintenance
+python ./OTBHelper.py 
