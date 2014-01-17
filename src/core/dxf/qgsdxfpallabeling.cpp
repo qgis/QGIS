@@ -33,6 +33,8 @@ QgsDxfPalLabeling::QgsDxfPalLabeling( QgsDxfExport* dxf, const QgsRectangle& bbo
   double factor = 1000 * dpi / scale / 25.4;
   mMapRenderer.setOutputSize( QSizeF( bbox.width() * factor, bbox.height() * factor ), dpi );
   mMapRenderer.setScale( scale );
+  mMapRenderer.setOutputUnits( QgsMapRenderer::Pixels );
+
   //mMapRenderer.setLayer necessary?
   init( &mMapRenderer );
 
@@ -43,6 +45,7 @@ QgsDxfPalLabeling::QgsDxfPalLabeling( QgsDxfExport* dxf, const QgsRectangle& bbo
   mRenderContext.setPainter( mPainter );
   mRenderContext.setRendererScale( scale );
   mRenderContext.setExtent( bbox );
+  mRenderContext.setScaleFactor( 96.0 / 25.4 );
 }
 
 QgsDxfPalLabeling::~QgsDxfPalLabeling()
