@@ -728,8 +728,8 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
       double sourceHypothenuse = sqrt( minimumSrcPoint.sqrDist( maximumSrcPoint ) );
       double targetHypothenuse = sqrt( minimumDstPoint.sqrDist( maximumDstPoint ) );
 
-      if ( sourceHypothenuse != 0 )
-        map2pixelTol *= targetHypothenuse / sourceHypothenuse;
+      if ( targetHypothenuse != 0 )
+        map2pixelTol *= ( sourceHypothenuse / targetHypothenuse );
     }
 
     QgsSimplifyMethod simplifyMethod;
@@ -1258,7 +1258,7 @@ bool QgsVectorLayer::setSubsetString( QString subset )
 
 bool QgsVectorLayer::simplifyDrawingCanbeApplied( int simplifyHint ) const
 {
-  return mDataProvider && !mEditBuffer && ( mSimplifyMethod.simplifyHints() & simplifyHint ) && ( !mCurrentRendererContext || mCurrentRendererContext->useRenderingOptimization() );
+  return mDataProvider && !mEditBuffer && ( hasGeometryType() && geometryType() != QGis::Point ) && ( mSimplifyMethod.simplifyHints() & simplifyHint ) && ( !mCurrentRendererContext || mCurrentRendererContext->useRenderingOptimization() );
 }
 
 QgsFeatureIterator QgsVectorLayer::getFeatures( const QgsFeatureRequest& request )

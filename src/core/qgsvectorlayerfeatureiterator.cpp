@@ -455,7 +455,7 @@ bool QgsVectorLayerFeatureIterator::prepareSimplification( const QgsSimplifyMeth
   mEditGeometrySimplifier = NULL;
 
   // setup simplification for edited geometries to fetch
-  if ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) && simplifyMethod.methodType() != QgsSimplifyMethod::NoSimplification )
+  if ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) && simplifyMethod.methodType() != QgsSimplifyMethod::NoSimplification && L->hasGeometryType() && L->geometryType() != QGis::Point )
   {
     mEditGeometrySimplifier = QgsSimplifyMethod::createGeometrySimplifier( simplifyMethod );
     return mEditGeometrySimplifier != NULL;
