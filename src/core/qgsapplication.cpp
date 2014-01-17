@@ -178,6 +178,8 @@ void QgsApplication::init( QString customConfigPath )
   }
   ABISYM( mSystemEnvVars ) = systemEnvVarMap;
 
+  // allow Qt to search for Qt plugins (e.g. sqldrivers) in our plugin directory
+  QCoreApplication::addLibraryPath( pluginPath() );
 }
 
 QgsApplication::~QgsApplication()
