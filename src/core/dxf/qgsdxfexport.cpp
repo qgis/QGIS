@@ -972,15 +972,7 @@ double QgsDxfExport::scaleToMapUnits( double value, QgsSymbolV2::OutputUnit symb
   }
 
   //symbology in mm
-  value *= mSymbologyScaleDenominator / 1000;
-  if ( mapUnits == QGis::Feet )
-  {
-    value *= 0.3048;
-  }
-  else if ( mapUnits == QGis::Degrees )
-  {
-    value /= 111120;
-  }
+  value *= ( mSymbologyScaleDenominator * QGis::fromUnitToUnitFactor( mapUnits, QGis::Meters ) ) / 1000;
   return value;
 }
 
@@ -1255,15 +1247,7 @@ double QgsDxfExport::dashSeparatorSize() const
 
 double QgsDxfExport::sizeToMapUnits( double s ) const
 {
-  double size = s;
-  if ( mMapUnits == QGis::Feet )
-  {
-    size /= 0.3048;
-  }
-  else if ( mMapUnits == QGis::Degrees )
-  {
-    size /= 111120;
-  }
+  double size = s * QGis::fromUnitToUnitFactor( QGis::Meters, mMapUnits );
   return size;
 }
 

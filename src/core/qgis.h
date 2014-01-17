@@ -248,6 +248,8 @@ class CORE_EXPORT QGis
     //! Provides translated version of the type value
     // Added in version 2.0
     static QString tr( QGis::UnitType unit );
+    //! Returns the conversion factor between the specified units
+    static double fromUnitToUnitFactor( QGis::UnitType fromUnit, QGis::UnitType toUnit );
 
     //! User defined event types
     enum UserEvent
