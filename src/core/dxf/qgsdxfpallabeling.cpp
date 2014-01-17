@@ -76,8 +76,16 @@ void QgsDxfPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& 
     {
         line.append( QgsPoint( label->getX( i ), label->getY( i ) ) );
     }
-    mDxfExport->writePolyline( line, layerName, "CONTINUOUS", 0, 1, true );*/
+    mDxfExport->writePolyline( line, layerName, "CONTINUOUS", 1, 0.01, true );*/
 
-    mDxfExport->writeText( layerName, text, QgsPoint( label->getX(), label->getY() ), label->getHeight(), angle, mDxfExport->closestColorMatch( tmpLyr.textColor.rgb() ) );
+    QStringList textList = text.split( "\n" );
+    double textHeight = label->getHeight() / textList.size();
+    QFontMetricsF fm( tmpLyr.textFont );
+    double textAscent = textHeight * fm.ascent() / fm.height();
+
+    for ( int i = 0; i < textList.size(); ++i )
+    {
+      mDxfExport->writeText( layerName, textList.at( i ), QgsPoint( label->getX(), label->getY() + i * textHeight ), textAscent, angle, mDxfExport->closestColorMatch( tmpLyr.textColor.rgb() ) );
+    }
   }
 }
