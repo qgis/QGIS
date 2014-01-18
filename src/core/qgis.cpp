@@ -157,6 +157,8 @@ double QGis::fromUnitToUnitFactor( QGis::UnitType fromUnit, QGis::UnitType toUni
         if ( toUnit == QGis::Degrees ) return NMILE_TO_METER / DEGREE_TO_METER;
         break;
       }
+      case QGis::UnknownUnit:
+        break;
     }
   }
   return 1.0;

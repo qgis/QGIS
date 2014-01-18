@@ -56,6 +56,9 @@ QgsDxfPalLabeling::~QgsDxfPalLabeling()
 
 void QgsDxfPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& context, QgsPalLayerSettings& tmpLyr, DrawLabelType drawType, double dpiRatio )
 {
+  Q_UNUSED( context );
+  Q_UNUSED( drawType );
+  Q_UNUSED( dpiRatio );
   //debug: print label infos
   if ( mDxfExport )
   {
