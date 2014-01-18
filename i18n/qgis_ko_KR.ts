@@ -31262,7 +31262,7 @@ Please reselect a valid file.</source>
 올바른 파일을 다시 선택하십시오.</translation>
     </message>
     <message>
-        <source>Unable to create a GPX file with the given name. Try again with an other name or in an other directory.</source>
+        <source>Unable to create a GPX file with the given name. Try again with another name or in another directory.</source>
         <translation type="obsolete">입력된 이름으로 GPX 파일을 만들 수 없습니다. 다른 이름이나 다른 디렉토리에서 다시 시도하십시오.</translation>
     </message>
     <message>
@@ -48854,7 +48854,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager_texts.cpp" line="92"/>
-        <source>&lt;h3&gt;Invalid plugins&lt;/h3&gt;&lt;p&gt;Plugins in this list here are &lt;b&gt;broken or incompatible&lt;/b&gt; with your version of QGIS.&lt;/p&gt;&lt;p&gt;Click on an individual plugin; if possible QGIS shows you more information.&lt;/p&gt;&lt;p&gt;The main reasons to have invalid plugins is that this plugin is not build for this version of QGIS. Maybe you can download an other version from &lt;a href=&quot;http://plugins.qgis.org&quot;&gt;plugins.qgis.org&lt;/a&gt;.&lt;/p&gt;&lt;p&gt;Another common reason is that a python plugin needs some external python libraries (dependencies). You can install them yourself, depending on your operating system. After a correct install the plugin should work.&lt;/p&gt;</source>
+        <source>&lt;h3&gt;Invalid plugins&lt;/h3&gt;&lt;p&gt;Plugins in this list here are &lt;b&gt;broken or incompatible&lt;/b&gt; with your version of QGIS.&lt;/p&gt;&lt;p&gt;Click on an individual plugin; if possible QGIS shows you more information.&lt;/p&gt;&lt;p&gt;The main reasons to have invalid plugins is that this plugin is not build for this version of QGIS. Maybe you can download another version from &lt;a href=&quot;http://plugins.qgis.org&quot;&gt;plugins.qgis.org&lt;/a&gt;.&lt;/p&gt;&lt;p&gt;Another common reason is that a python plugin needs some external python libraries (dependencies). You can install them yourself, depending on your operating system. After a correct install the plugin should work.&lt;/p&gt;</source>
         <translation>&lt;h3&gt;부적합한 플러그인&lt;/h3&gt;&lt;p&gt;리스트에 있는 플러그인은 &lt;b&gt;깨졌거나&lt;/b&gt;현  QGIS 버전에 &lt;b&gt;호환이 안되는&lt;/b&gt; 플러그인 입니다.&lt;/p&gt;&lt;p&gt; 상세 정보를 보기위해서는 각각의 이름을 클릭하세요.&lt;/p&gt;&lt;p&gt;부적합한 플러그인의 가장 큰 이유는 QGIS와 버전이 맞지 않기 때문입니다. 다른 버전을 &lt;a href=&quot;http://plugins.qgis.org&quot;&gt;plugins.qgis.org&lt;/a&gt;에서 다운로드 할 수 있습니다.&lt;/p&gt;&lt;p&gt;다른 이유는 일부 파이썬 플러그인의 경우에 종속성이 있는 파이썬 라이브러리를 필요로 하기 때문입니다. 이런 경우 운영체제게 맞게 사용자가 직접 설치를 해야 합니다. 수정 후에 플러그인은 정상동작 할 것입니다.&lt;/p&gt;</translation>
     </message>
 </context>

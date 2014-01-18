@@ -187,7 +187,7 @@ class CORE_EXPORT QgsFields
     bool append( const QgsField& field, FieldOrigin origin = OriginProvider, int originIndex = -1 );
     //! Remove a field with the given index
     void remove( int fieldIdx );
-    //! Extend with fields from an other QgsFields container
+    //! Extend with fields from another QgsFields container
     void extend( const QgsFields& other );
 
     //! Check whether the container is empty

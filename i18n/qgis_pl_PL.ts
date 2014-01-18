@@ -30192,7 +30192,7 @@ Please reselect a valid file.</source>
         <translation>Nie mogę odczytać wybranego pliku. Zaznacz proszę prawidłowy plik.</translation>
     </message>
     <message>
-        <source>Unable to create a GPX file with the given name. Try again with an other name or in an other directory.</source>
+        <source>Unable to create a GPX file with the given name. Try again with another name or in another directory.</source>
         <translation type="obsolete">Nie można utworzyć pliku GPX o podanej nazwie. Podaj inną nazwę lub zmień katalog.</translation>
     </message>
     <message>
@@ -47091,7 +47091,7 @@ Musisz włączyć ponownie program QGIS, żeby ją przeładować.</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager_texts.cpp" line="92"/>
-        <source>&lt;h3&gt;Invalid plugins&lt;/h3&gt;&lt;p&gt;Plugins in this list here are &lt;b&gt;broken or incompatible&lt;/b&gt; with your version of QGIS.&lt;/p&gt;&lt;p&gt;Click on an individual plugin; if possible QGIS shows you more information.&lt;/p&gt;&lt;p&gt;The main reasons to have invalid plugins is that this plugin is not build for this version of QGIS. Maybe you can download an other version from &lt;a href=&quot;http://plugins.qgis.org&quot;&gt;plugins.qgis.org&lt;/a&gt;.&lt;/p&gt;&lt;p&gt;Another common reason is that a python plugin needs some external python libraries (dependencies). You can install them yourself, depending on your operating system. After a correct install the plugin should work.&lt;/p&gt;</source>
+        <source>&lt;h3&gt;Invalid plugins&lt;/h3&gt;&lt;p&gt;Plugins in this list here are &lt;b&gt;broken or incompatible&lt;/b&gt; with your version of QGIS.&lt;/p&gt;&lt;p&gt;Click on an individual plugin; if possible QGIS shows you more information.&lt;/p&gt;&lt;p&gt;The main reasons to have invalid plugins is that this plugin is not build for this version of QGIS. Maybe you can download another version from &lt;a href=&quot;http://plugins.qgis.org&quot;&gt;plugins.qgis.org&lt;/a&gt;.&lt;/p&gt;&lt;p&gt;Another common reason is that a python plugin needs some external python libraries (dependencies). You can install them yourself, depending on your operating system. After a correct install the plugin should work.&lt;/p&gt;</source>
         <translation>&lt;h3&gt;Niesprawne wtyczki&lt;/h3&gt;&lt;p&gt;Oto podzbiór zainstalowanych wtyczek, które są &lt;b&gt;uszkodzone&lt;/b&gt;, &lt;b&gt;niekompatybilne&lt;/b&gt; z tą wersją QGIS-a, lub &lt;b&gt;zależne&lt;/b&gt; od brakujących modułów Pythona. Po kliknięciu na nazwie wtyczki, w miarę możliwości QGIS poda więcej informacji.&lt;/p&gt;
 &lt;p&gt;Częstą przyczyną problemów jest instalacja wtyczki nieprzeznaczonej dla tej wersji QGIS-a. W takim wypadku warto spróbować zaktualizować lub choćby przeinstalować wtyczkę. Jeśli to nie pomoże, być może znajdziesz właściwą wersję na stronie &lt;a href=&quot;http://plugins.qgis.org&quot;&gt;plugins.qgis.org&lt;/a&gt;.&lt;/p&gt;&lt;p&gt;Innym częstym problemem jest &lt;i&gt;zależność&lt;/i&gt; wtyczki od zewnętrznych bibliotek lub modułów Pythona, które nie zostały standardowo zainstalowane z QGIS-em. Możesz zainstalować je własnoręcznie, dalsze instrukcje znajdziesz w Internecie. Po poprawnej instalacji wtyczka powinna zacząć działać.&lt;/p&gt;
 &lt;p&gt;W razie problemów, warto szukać pomocy na &lt;a href=&quot;http://forum.quantum-gis.pl&quot;&gt;polskim forum użytkowników QGIS-a&lt;/a&gt;.&lt;/p&gt;</translation>

@@ -25853,7 +25853,7 @@ grijs = geen data
         <translation type="obsolete">&amp;GPS-gereedschap</translation>
     </message>
     <message>
-        <source>Unable to create a GPX file with the given name. Try again with an other name or in an other directory.</source>
+        <source>Unable to create a GPX file with the given name. Try again with another name or in another directory.</source>
         <translation type="obsolete">Wegschrijven van het GPX-bestand met deze naam mislukt. Probeer het opnieuw met een ander naam of in een ander map.</translation>
     </message>
     <message>
@@ -40241,7 +40241,7 @@ p, li { white-space: pre-wrap; }
         <translation>&lt;h3&gt;Nieuwe plugins&lt;/h3&gt;&lt;p&gt;Hier vindt u &lt;b&gt;gloednieuwe&lt;/b&gt; plugins om te installeren.&lt;/p&gt;</translation>
     </message>
     <message>
-        <source>&lt;h3&gt;Invalid plugins&lt;/h3&gt;&lt;p&gt;Plugins in this list here are &lt;b&gt;broken or incompatible&lt;/b&gt; with your version of QGIS.&lt;/p&gt;&lt;p&gt;Click on an individual plugin; if possible QGIS shows you more information.&lt;/p&gt;&lt;p&gt;The main reasons to have invalid plugins is that this plugin is not build for this version of QGIS. Maybe you can download an other version from &lt;a href=&quot;http://plugins.qgis.org&quot;&gt;plugins.qgis.org&lt;/a&gt;.&lt;/p&gt;&lt;p&gt;Another common reason is that a python plugin needs some external python libraries (dependencies). You can install them yourself, depending on your operating system. After a correct install the plugin should work.&lt;/p&gt;</source>
+        <source>&lt;h3&gt;Invalid plugins&lt;/h3&gt;&lt;p&gt;Plugins in this list here are &lt;b&gt;broken or incompatible&lt;/b&gt; with your version of QGIS.&lt;/p&gt;&lt;p&gt;Click on an individual plugin; if possible QGIS shows you more information.&lt;/p&gt;&lt;p&gt;The main reasons to have invalid plugins is that this plugin is not build for this version of QGIS. Maybe you can download another version from &lt;a href=&quot;http://plugins.qgis.org&quot;&gt;plugins.qgis.org&lt;/a&gt;.&lt;/p&gt;&lt;p&gt;Another common reason is that a python plugin needs some external python libraries (dependencies). You can install them yourself, depending on your operating system. After a correct install the plugin should work.&lt;/p&gt;</source>
         <translation>&lt;h3&gt;Ongeldige plugins&lt;/h3&gt;&lt;p&gt;De hier getoonde plugins zijn&lt;b&gt;niet compatibel of onwerkzaam&lt;/b&gt; in de door u gebruikte QGIS versie.&lt;/p&gt;&lt;p&gt;Klik op een individuele plugin; indien mogelijk zal QGIS u meer (fout) informatie tonen.&lt;/p&gt;&lt;p&gt;De belangrijkste reden voor onwerkzame plugins is dat ze gemaakt zijn voor een ander versie van QGIS. Misschien kunt u een andere versie download van &lt;a href=&quot;http://plugins.qgis.org&quot;&gt;plugins.qgis.org&lt;/a&gt;.&lt;/p&gt;&lt;p&gt;Een tweede veel voorkomende reden is dat de plugin afhankelijk is van externe modules of afhankelijkheden. Afhankelijk van uw besturingssysteem kunt u deze zelf proberen te installeren. Als die afhankelijkheid is opgelost zou de plugin naar behoren moeten werken.&lt;/p&gt;</translation>
     </message>
     <message>
