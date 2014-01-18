@@ -9,6 +9,8 @@
 DEB_HOST_GNU_TYPE   ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
 DEB_BUILD_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
 DEB_BUILD_ARCH      ?= $(shell dpkg-architecture -qDEB_BUILD_ARCH)
+DEB_BUILD_MULTIARCH ?= $(shell dpkg-architecture -qDEB_BUILD_MULTIARCH)
+QT_PLUGIN_DIR = usr/lib/$(DEB_BUILD_MULTIARCH)/qt4/plugins
 
 DEB_TEST_TARGET ?= Experimental
 
@@ -16,7 +18,7 @@ ifeq (,$(DISTRIBUTION))
 	DISTRIBUTION := $(shell dpkg-parsechangelog --format rfc822 | sed -ne "s/^Distribution: //p")
 endif
 
-ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"squeeze wheezy jessie lucid maverick natty oneiric precise quantal raring saucy sid-oracle"))
+ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"wheezy jessie precise quantal raring saucy sid-oracle"))
 	DISTRIBUTION := sid
 endif
 
@@ -27,11 +29,6 @@ TESTMAKE=xvfb-run -a -n 1 -s "-screen 0 1280x1024x24 -dpi 96" $(MAKE)
 else
 TESTMAKE=$(MAKE)
 endif
-ifneq (,$(findstring $(DISTRIBUTION),"lucid"))
-# excludes tests requiring unittest2 not available on lucid
-TESTMAKE += ARGS="-E PyQgsRectangle"
-endif
-
 
 QGIS_MAJOR=$(shell sed -ne 's/SET(CPACK_PACKAGE_VERSION_MAJOR "\([0-9]*\)")/\1/p' CMakeLists.txt)
 QGIS_MINOR=$(shell sed -ne 's/SET(CPACK_PACKAGE_VERSION_MINOR "\([0-9]*\)")/\1/p' CMakeLists.txt)
@@ -54,31 +51,17 @@ CMAKE_OPTS := \
 
 MAKEFLAGS += VERBOSE=YES
 
-ifneq (,$(findstring $(DISTRIBUTION),"squeeze lucid"))
-	CMAKE_OPTS += -D WITH_STAGED_PLUGINS=FALSE
-endif
-
-ifeq (,$(findstring $(DISTRIBUTION),"squeeze lucid maverick natty oneiric"))
-	DEB_BUILD_MULTIARCH ?= $(shell dpkg-architecture -qDEB_BUILD_MULTIARCH)
-	QT_PLUGIN_DIR = usr/lib/$(DEB_BUILD_MULTIARCH)/qt4/plugins
-else
-	QT_PLUGIN_DIR = usr/lib/qt4/plugins
-endif
 
 ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
 	NUMJOBS = $(patsubst parallel=%,%,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
 	MAKEFLAGS += -j$(NUMJOBS)
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"squeeze wheezy jessie sid lucid maverick natty oneiric precise raring saucy"))
+ifneq (,$(findstring $(DISTRIBUTION),"wheezy jessie sid precise raring saucy"))
 	CMAKE_OPTS += -D WITH_PYSPATIALITE=TRUE
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"squeeze lucid maverick natty oneiric"))
-	CMAKE_OPTS += -D WITH_INTERNAL_SPATIALITE=TRUE
-endif
-
-ifneq (,$(findstring $(DISTRIBUTION),"squeeze lucid maverick natty oneiric jessie"))
+ifneq (,$(findstring $(DISTRIBUTION),"jessie"))
 	CMAKE_OPTS += -D WITH_GLOBE=FALSE
 else
 	CMAKE_OPTS += -D WITH_GLOBE=TRUE
@@ -92,7 +75,7 @@ ifneq (,$(findstring -oracle,$(DISTRIBUTION)))
 	CMAKE_OPTS += -D WITH_ORACLE=TRUE
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"sid sid-oracle"))
+ifneq (,$(findstring $(DISTRIBUTION),"sid"))
 	CMAKE_OPTS += -D SPATIALINDEX_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libspatialindex.so
 endif
 
@@ -159,16 +142,8 @@ build: build-stamp
 build-stamp: debian/build/CMakeCache.txt
 	dh_testdir
 
-ifneq (,$(findstring $(DISTRIBUTION),"squeeze lucid"))
-	perl -0777 -i.bak -pe 's/^%Module\(name=(.*),\s*version=(\d+),\s*keyword_arguments="Optional"\s*\)/%Module $$1 $$2/m;' python/core/core.sip python/gui/gui.sip python/analysis/analysis.sip python/analysis/network/networkanalysis.sip
-endif
-
 	# Add here commands to compile the package.
 	$(MAKE) -C debian/build
-
-ifneq (,$(findstring $(DISTRIBUTION),"squeeze lucid"))
-	for i in python/core/core.sip python/gui/gui.sip python/analysis/analysis.sip python/analysis/network/networkanalysis.sip; do mv $$i.bak $$i; done
-endif
 
 ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
 	# Code to run the package test suite - and ignore the outcome for now
@@ -204,6 +179,8 @@ install: build
 	# Add here commands to install the package into debian/tmp.
 	$(MAKE) -C debian/build install DESTDIR=$(CURDIR)/debian/tmp
 
+	perl -i -pe 's=#!/usr/bin/env python=#!/usr/bin/python2.7=;' $(find debian/tmp -name "*.py")
+
 	# remove unwanted files
 	! [ -f debian/tmp/usr/share/qgis/doc/api/installdox ] || rm debian/tmp/usr/share/qgis/doc/api/installdox
 	! [ -f debian/tmp/usr/share/qgis/doc/api/jquery.js ] || ln -sf /usr/share/javascript/jquery/jquery.js debian/tmp/usr/share/qgis/doc/api/jquery.js
@@ -234,14 +211,8 @@ binary-arch: build install
 	install -o root -g root -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis-plugin-grass/usr/bin/qgis
 	install -o root -g root -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis-plugin-grass/usr/bin/qbrowser
 	
-ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"natty oneiric"))
 	dh_sip
-endif
-ifneq (,$(findstring $(DISTRIBUTION),"wheezy jessie sid quantal raring saucy"))
 	dh_python2 --no-guessing-versions
-else
-	dh_pycentral
-endif
 	dh_installmenu
 	dh_icons
 	dh_installman -pqgis qgis.1 qbrowser.1
