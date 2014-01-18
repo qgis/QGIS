@@ -301,17 +301,13 @@ bool QgsPostgresFeatureIterator::declareCursor( const QString& whereClause )
 
     if ( mFetchGeometry && !simplifyMethod.forceLocalOptimization() && simplifyMethod.methodType() != QgsSimplifyMethod::NoSimplification && QGis::flatType( QGis::singleType( P->geometryType() ) ) != QGis::WKBPoint )
     {
-      QString simplifyFunctionName = simplifyMethod.methodType() == QgsSimplifyMethod::OptimizeForRendering 
-               ?
-              ( P->mConnectionRO->majorVersion() < 2 ? "simplify" : "st_simplify" )
-               :
-              ( P->mConnectionRO->majorVersion() < 2 ? "simplifypreservetopology" : "st_simplifypreservetopology" );
+      QString simplifyFunctionName = simplifyMethod.methodType() == QgsSimplifyMethod::OptimizeForRendering
+                                     ? ( P->mConnectionRO->majorVersion() < 2 ? "simplify" : "st_simplify" )
+                                         : ( P->mConnectionRO->majorVersion() < 2 ? "simplifypreservetopology" : "st_simplifypreservetopology" );
 
-      double tolerance = simplifyMethod.methodType() == QgsSimplifyMethod::OptimizeForRendering 
-               ?
-               simplifyMethod.toleranceForDouglasPeuckerAlgorithms()
-               :
-               simplifyMethod.tolerance();
+      double tolerance = simplifyMethod.methodType() == QgsSimplifyMethod::OptimizeForRendering
+                         ? simplifyMethod.toleranceForDouglasPeuckerAlgorithms()
+                         : simplifyMethod.tolerance();
 
       query += QString( "%1(%5(%2%3,%6),'%4')" )
                .arg( P->mConnectionRO->majorVersion() < 2 ? "asbinary" : "st_asbinary" )
@@ -322,8 +318,7 @@ bool QgsPostgresFeatureIterator::declareCursor( const QString& whereClause )
                .arg( tolerance );
       delim = ",";
     }
-    else
-    if ( mFetchGeometry )
+    else if ( mFetchGeometry )
     {
       query += QString( "%1(%2%3,'%4')" )
                .arg( P->mConnectionRO->majorVersion() < 2 ? "asbinary" : "st_asbinary" )

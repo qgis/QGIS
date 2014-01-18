@@ -38,7 +38,7 @@ QSizeF QgsPieDiagram::diagramSize( const QgsFeature& feature, const QgsRenderCon
   if ( is.classificationAttributeIsExpression )
   {
     QgsExpression* expression = getExpression( is.classificationAttributeExpression, feature.fields() );
-    attrVal = expression->evaluate( feature ); 
+    attrVal = expression->evaluate( feature );
   }
   else
   {

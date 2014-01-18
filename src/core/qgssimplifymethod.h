@@ -3,7 +3,7 @@
     ---------------------
     begin                : December 2013
     copyright            : (C) 2013 by Matthias Kuhn / Alvaro Huarte
-    email                : 
+    email                :
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *

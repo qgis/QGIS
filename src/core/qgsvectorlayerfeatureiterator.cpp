@@ -475,8 +475,7 @@ bool QgsVectorLayerFeatureIterator::providerCanSimplify( QgsSimplifyMethod::Meth
     {
       return ( capabilities & QgsVectorDataProvider::SimplifyGeometries );
     }
-    else
-    if ( methodType == QgsSimplifyMethod::PreserveTopology )
+    else if ( methodType == QgsSimplifyMethod::PreserveTopology )
     {
       return ( capabilities & QgsVectorDataProvider::SimplifyGeometriesWithTopologicalValidation );
     }

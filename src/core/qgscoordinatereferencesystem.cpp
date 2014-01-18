@@ -408,7 +408,7 @@ bool QgsCoordinateReferenceSystem::axisInverted() const
     OSRGetAxis( mCRS, OSRIsGeographic( mCRS ) ? "GEOGCS" : "PROJCS", 0, &orientation );
 
     // If axis orientation is unknown, try again with OSRImportFromEPSGA for EPSG crs
-    if( orientation == OAO_Other && mAuthId.startsWith( "EPSG:", Qt::CaseInsensitive ) )
+    if ( orientation == OAO_Other && mAuthId.startsWith( "EPSG:", Qt::CaseInsensitive ) )
     {
       OGRSpatialReferenceH crs = OSRNewSpatialReference( NULL );
 

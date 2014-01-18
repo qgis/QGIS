@@ -114,14 +114,14 @@ QString QGis::tr( QGis::UnitType unit )
 
 double QGis::fromUnitToUnitFactor( QGis::UnitType fromUnit, QGis::UnitType toUnit )
 {
-  #define DEGREE_TO_METER 111319.49079327358
-  #define FEET_TO_METER 0.3048
-  #define NMILE_TO_METER 1852.0
+#define DEGREE_TO_METER 111319.49079327358
+#define FEET_TO_METER 0.3048
+#define NMILE_TO_METER 1852.0
 
   // Unify degree units
-  if ( fromUnit == QGis::DecimalDegrees || fromUnit == QGis::DegreesMinutesSeconds || fromUnit == QGis::DegreesDecimalMinutes ) 
+  if ( fromUnit == QGis::DecimalDegrees || fromUnit == QGis::DegreesMinutesSeconds || fromUnit == QGis::DegreesDecimalMinutes )
     fromUnit = QGis::Degrees;
-  if ( toUnit == QGis::DecimalDegrees || toUnit == QGis::DegreesMinutesSeconds || toUnit == QGis::DegreesDecimalMinutes ) 
+  if ( toUnit == QGis::DecimalDegrees || toUnit == QGis::DegreesMinutesSeconds || toUnit == QGis::DegreesDecimalMinutes )
     toUnit = QGis::Degrees;
 
   // Calculate the conversion factor between the specified units

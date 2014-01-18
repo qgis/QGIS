@@ -18,9 +18,9 @@
 #include "qgsvectorlayer.h"
 
 QgsVectorSimplifyMethod::QgsVectorSimplifyMethod()
-  : mSimplifyHints( QGis::DEFAULT_MAPTOPIXEL_THRESHOLD > 1 ? QgsVectorLayer::FullSimplification : QgsVectorLayer::GeometrySimplification )
-  , mThreshold( QGis::DEFAULT_MAPTOPIXEL_THRESHOLD )
-  , mLocalOptimization( true )
+    : mSimplifyHints( QGis::DEFAULT_MAPTOPIXEL_THRESHOLD > 1 ? QgsVectorLayer::FullSimplification : QgsVectorLayer::GeometrySimplification )
+    , mThreshold( QGis::DEFAULT_MAPTOPIXEL_THRESHOLD )
+    , mLocalOptimization( true )
 {
 }
 
@@ -29,7 +29,7 @@ QgsVectorSimplifyMethod::QgsVectorSimplifyMethod( const QgsVectorSimplifyMethod 
   operator=( rh );
 }
 
-QgsVectorSimplifyMethod& QgsVectorSimplifyMethod::operator=( const QgsVectorSimplifyMethod &rh )
+QgsVectorSimplifyMethod& QgsVectorSimplifyMethod::operator=( const QgsVectorSimplifyMethod & rh )
 {
   mSimplifyHints = rh.mSimplifyHints;
   mThreshold = rh.mThreshold;
