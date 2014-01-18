@@ -55,8 +55,12 @@ class QgsComposerAttributeTable : QgsComposerTable
     /**Adapts mMaximumNumberOfFeatures depending on the rectangle height*/
     void setSceneRect( const QRectF& rectangle );
 
+    // @note not available in python bindings
     //void setSortAttributes( const QList<QPair<int, bool> > att );
+
+    // @note not available in python bindings
     //QList<QPair<int, bool> > sortAttributes() const;
+
   protected:
     virtual QMap<int, QString> getHeaderLabels() const;
 

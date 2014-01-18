@@ -84,6 +84,12 @@ class QgsGeometry
      */
     size_t wkbSize() const;
 
+    /**Returns a geos geomtry. QgsGeometry keeps ownership, don't delete the returned object!
+        @note this method was added in version 1.1
+        @note not available in python bindings
+      */
+    // const GEOSGeometry* asGeos() const;
+
     /** Returns type of wkb (point / linestring / polygon etc.) */
     QGis::WkbType wkbType() const;
 
@@ -217,7 +223,7 @@ class QgsGeometry
     /**Adds a new island polygon to a multipolygon feature
      @return 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring
      not disjoint with existing polygons of the feature*/
-    int addPart( const QList<QgsPoint> &points );
+    int addPart( const QList<QgsPoint> &points, QGis::GeometryType geomType = QGis::UnknownGeometry );
 
     /**Translate this geometry by dx, dy
      @return 0 in case of success*/
@@ -261,31 +267,31 @@ class QgsGeometry
     /** Test for containment of a point (uses GEOS) */
     bool contains( const QgsPoint* p ) const;
 
-    /** Test for if geometry is contained in an other (uses GEOS)
+    /** Test for if geometry is contained in another (uses GEOS)
      *  @note added in 1.5 */
     bool contains( const QgsGeometry* geometry ) const;
 
-    /** Test for if geometry is disjoint of an other (uses GEOS)
+    /** Test for if geometry is disjoint of another (uses GEOS)
      *  @note added in 1.5 */
     bool disjoint( const QgsGeometry* geometry ) const;
 
-    /** Test for if geometry equals an other (uses GEOS)
+    /** Test for if geometry equals another (uses GEOS)
      *  @note added in 1.5 */
     bool equals( const QgsGeometry* geometry ) const;
 
-    /** Test for if geometry touch an other (uses GEOS)
+    /** Test for if geometry touch another (uses GEOS)
      *  @note added in 1.5 */
     bool touches( const QgsGeometry* geometry ) const;
 
-    /** Test for if geometry overlaps an other (uses GEOS)
+    /** Test for if geometry overlaps another (uses GEOS)
      *  @note added in 1.5 */
     bool overlaps( const QgsGeometry* geometry ) const;
 
-    /** Test for if geometry is within an other (uses GEOS)
+    /** Test for if geometry is within another (uses GEOS)
      *  @note added in 1.5 */
     bool within( const QgsGeometry* geometry ) const;
 
-    /** Test for if geometry crosses an other (uses GEOS)
+    /** Test for if geometry crosses another (uses GEOS)
      *  @note added in 1.5 */
     bool crosses( const QgsGeometry* geometry ) const;
 

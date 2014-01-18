@@ -121,35 +121,43 @@ class QgsFields
 %End
   public:
 
-    enum FieldOrigin { OriginUnknown, OriginProvider, OriginJoin, OriginEdit };
+    enum FieldOrigin
+    {
+      OriginUnknown,   //!< it has not been specified where the field comes from
+      OriginProvider,  //!< field comes from the underlying data provider of the vector layer  (originIndex = index in provider's fields)
+      OriginJoin,      //!< field comes from a joined layer   (originIndex / 1000 = index of the join, originIndex % 1000 = index within the join)
+      OriginEdit       //!< field has been temporarily added in editing mode (originIndex = index in the list of added attributes)
+    };
 
+    //! Remove all fields
     void clear();
-    void append( const QgsField& field, FieldOrigin origin = OriginProvider, int originIndex = -1 );
+    //! Append a field. The field must have unique name, otherwise it is rejected (returns false)
+    bool append( const QgsField& field, FieldOrigin origin = OriginProvider, int originIndex = -1 );
+    //! Remove a field with the given index
     void remove( int fieldIdx );
+    //! Extend with fields from another QgsFields container
+    void extend( const QgsFields& other );
 
+    //! Check whether the container is empty
     bool isEmpty() const;
+    //! Return number of items
+    int count() const;
     // __len__ annotation since sip 4.10.3
     //int count() const /__len__/;
-    int count() const;
     int __len__() const;
 %MethodCode
   sipRes = sipCpp->count();
 %End
+    //! Return number of items
     int size() const;
-    //const QgsField& operator[](int i) const;
-    //QgsField& operator[](int i);
-    const QgsField& at(int i) const;
-    QList<QgsField> toList() const;
+    //! Return if a field index is valid
+    //! @param i  Index of the field which needs to be checked
+    //! @return   True if the field exists
+    bool exists( int i ) const;
 
-    const QgsField& field( int fieldIdx ) const;
-    const QgsField& field( const QString& name ) const;
-    FieldOrigin fieldOrigin( int fieldIdx ) const;
-    int fieldOriginIndex( int fieldIdx ) const;
-
-    int indexFromName( const QString& name ) const;
-    void extend( const QgsFields& other );
-
-
+    //! Get field at particular index (must be in range 0..N-1)
+    //inline const QgsField& operator[]( int i ) const;
+    //! Get field at particular index (must be in range 0..N-1)
     QgsField& operator[](int i) /Factory/;
 %MethodCode
   SIP_SSIZE_T idx = sipConvertFromSequenceIndex(a0, sipCpp->count());
@@ -159,6 +167,23 @@ class QgsFields
     sipRes = new QgsField(sipCpp->operator[](idx));
 
 %End
+    //! Get field at particular index (must be in range 0..N-1)
+    const QgsField& at( int i ) const;
+    //! Get field at particular index (must be in range 0..N-1)
+    const QgsField& field( int fieldIdx ) const;
+    //! Get field at particular index (must be in range 0..N-1)
+    const QgsField& field( const QString& name ) const;
+
+    //! Get field's origin (value from an enumeration)
+    FieldOrigin fieldOrigin( int fieldIdx ) const;
+    //! Get field's origin index (its meaning is specific to each type of origin)
+    int fieldOriginIndex( int fieldIdx ) const;
+
+    //! Look up field's index from name. Returns -1 on error
+    int indexFromName( const QString& name ) const;
+
+    //! Utility function to return a list of QgsField instances
+    QList<QgsField> toList() const;
 
 /*  SIP_PYOBJECT __getitem__(int key);
 %MethodCode
