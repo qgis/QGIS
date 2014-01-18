@@ -466,6 +466,8 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
       j++;
     }
   }
+  twWCSLayers->setRowCount( j );
+  twWCSLayers->verticalHeader()->setResizeMode( QHeaderView::ResizeToContents );
 
   // Default Styles
   mStyle = QgsStyleV2::defaultStyle();
@@ -1058,10 +1060,11 @@ void QgsProjectProperties::on_pbnWMSAddSRS_clicked()
 {
   QgsGenericProjectionSelector *mySelector = new QgsGenericProjectionSelector( this );
   mySelector->setMessage();
-  if ( mWMSList->count() > 0 ) {
-    mySelector->setSelectedAuthId( mWMSList->item( mWMSList->count()-1 )->text() );
+  if ( mWMSList->count() > 0 )
+  {
+    mySelector->setSelectedAuthId( mWMSList->item( mWMSList->count() - 1 )->text() );
   }
-  if ( mySelector->exec() && mySelector->selectedCrsId()!=0 )
+  if ( mySelector->exec() && mySelector->selectedCrsId() != 0 )
   {
     QString authid = mySelector->selectedAuthId();
 

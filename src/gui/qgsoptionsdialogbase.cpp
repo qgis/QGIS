@@ -55,11 +55,11 @@ void QgsOptionsDialogBase::initOptionsBase( bool restoreUi )
 
   // start with copy of qgsoptionsdialog_template.ui to ensure existence of these objects
   mOptListWidget = findChild<QListWidget*>( "mOptionsListWidget" );
-  QFrame* optionsFrame = findChild<QFrame*>("mOptionsFrame");
+  QFrame* optionsFrame = findChild<QFrame*>( "mOptionsFrame" );
   mOptStackedWidget = findChild<QStackedWidget*>( "mOptionsStackedWidget" );
   mOptSplitter = findChild<QSplitter*>( "mOptionsSplitter" );
   mOptButtonBox = findChild<QDialogButtonBox*>( "buttonBox" );
-  QFrame* buttonBoxFrame = findChild<QFrame*>("mButtonBoxFrame");
+  QFrame* buttonBoxFrame = findChild<QFrame*>( "mButtonBoxFrame" );
 
   if ( !mOptListWidget || !mOptStackedWidget || !mOptSplitter || !optionsFrame )
   {
@@ -68,20 +68,20 @@ void QgsOptionsDialogBase::initOptionsBase( bool restoreUi )
 
   QSettings settings;
   int size = settings.value( "/IconSize", 24 ).toInt();
-  mOptListWidget->setIconSize( QSize(size, size) );
+  mOptListWidget->setIconSize( QSize( size, size ) );
   mOptListWidget->setFrameStyle( QFrame::NoFrame );
 
-  optionsFrame->layout()->setContentsMargins(0,3,3,3);
-  QVBoxLayout* layout = static_cast<QVBoxLayout*>(optionsFrame->layout());
+  optionsFrame->layout()->setContentsMargins( 0, 3, 3, 3 );
+  QVBoxLayout* layout = static_cast<QVBoxLayout*>( optionsFrame->layout() );
 
   if ( buttonBoxFrame )
   {
-      buttonBoxFrame->layout()->setContentsMargins(0,0,0,0);
-      layout->insertWidget(layout->count() + 1, buttonBoxFrame );
+    buttonBoxFrame->layout()->setContentsMargins( 0, 0, 0, 0 );
+    layout->insertWidget( layout->count() + 1, buttonBoxFrame );
   }
   else
   {
-      layout->insertWidget( layout->count() + 1, mOptButtonBox );
+    layout->insertWidget( layout->count() + 1, mOptButtonBox );
   }
 
   if ( mOptButtonBox )

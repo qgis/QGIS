@@ -63,6 +63,10 @@ class QgsSymbolLayerV2
     // not necessarily supported by all symbol layers...
     virtual void setColor( const QColor& color );
     virtual QColor color() const;
+    virtual void setOutlineColor( const QColor& color );
+    virtual QColor outlineColor() const;
+    virtual void setFillColor( const QColor& color );
+    virtual QColor fillColor() const;
 
     virtual ~QgsSymbolLayerV2();
 

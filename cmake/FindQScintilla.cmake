@@ -27,10 +27,10 @@ ELSE(EXISTS QSCINTILLA_VERSION_STR)
   FIND_PATH(QSCINTILLA_INCLUDE_DIR
     NAMES qsciglobal.h
     PATHS
-      "${QT_INCLUDE_DIR}/Qsci"
-      /usr/local/include/Qsci
-      /usr/include/Qsci
+      "${QT_INCLUDE_DIR}"
+      /usr/local/include
       /usr/include
+    PATH_SUFFIXES Qsci
     )
 
   FIND_LIBRARY(QSCINTILLA_LIBRARY

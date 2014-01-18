@@ -1415,7 +1415,7 @@ QDomDocument QgsSLDParser::getStyle( const QString& styleName, const QString& la
 QDomDocument QgsSLDParser::getStyles( QStringList& layerList ) const
 {
   QDomDocument styleDoc;
-  for ( int i = 0; i < layerList.size(); i++)
+  for ( int i = 0; i < layerList.size(); i++ )
   {
     QString layerName;
     QString typeName;
@@ -1426,7 +1426,7 @@ QDomDocument QgsSLDParser::getStyles( QStringList& layerList ) const
       throw QgsMapServiceException( "LayerNotDefined", "Operation request is for a Layer not offered by the server." );
     }
     QDomNodeList userStyleList = userLayerElement.elementsByTagName( "UserStyle" );
-    for ( int j = 0; j < userStyleList.size(); j++)
+    for ( int j = 0; j < userStyleList.size(); j++ )
     {
       QDomElement userStyleElement = userStyleList.item( i ).toElement();
       styleDoc.appendChild( styleDoc.importNode( userStyleElement, true ) );

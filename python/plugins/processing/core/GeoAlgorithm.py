@@ -358,6 +358,8 @@ class GeoAlgorithm:
                             self.crs = p.crs()
                             return
         qgis = dataobjects.interface.iface
+        if qgis is None:
+          return
         self.crs = qgis.mapCanvas().mapRenderer().destinationCrs()
 
     def checkInputCRS(self):

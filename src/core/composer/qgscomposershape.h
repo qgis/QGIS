@@ -22,6 +22,8 @@
 #include <QBrush>
 #include <QPen>
 
+class QgsFillSymbolV2;
+
 /**A composer items that draws common shapes (ellipse, triangle, rectangle)*/
 class CORE_EXPORT QgsComposerShape: public QgsComposerItem
 {
@@ -66,12 +68,23 @@ class CORE_EXPORT QgsComposerShape: public QgsComposerItem
     /**Returns the radius for rounded rectangle corners*/
     double cornerRadius() const { return mCornerRadius; };
 
+    /**Sets the QgsFillSymbolV2 used to draw the shape. Must also call setUseSymbolV2( true ) to
+     * enable drawing with a symbol.
+     * Note: added in version 2.1*/
+    void setShapeStyleSymbol( QgsFillSymbolV2* symbol );
+    /**Returns the QgsFillSymbolV2 used to draw the shape.
+     * Note: added in version 2.1*/
+    QgsFillSymbolV2* shapeStyleSymbol() { return mShapeStyleSymbol; }
+
+    /**Controls whether the shape should be drawn using a QgsFillSymbolV2.
+     * Note: Added in v2.1 */
+    void setUseSymbolV2( bool useSymbolV2 );
+
   protected:
     /* reimplement drawFrame, since it's not a rect, but a custom shape */
     virtual void drawFrame( QPainter* p );
     /* reimplement drawBackground, since it's not a rect, but a custom shape */
     virtual void drawBackground( QPainter* p );
-
 
   private:
     /**Ellipse, rectangle or triangle*/
@@ -79,9 +92,18 @@ class CORE_EXPORT QgsComposerShape: public QgsComposerItem
 
     double mCornerRadius;
 
+    bool mUseSymbolV2;
+
+    QgsFillSymbolV2* mShapeStyleSymbol;
+
     /* draws the custom shape */
     void drawShape( QPainter* p );
 
+    /* draws the custom shape using symbol v2*/
+    void drawShapeUsingSymbol( QPainter* p );
+
+    /* creates the default shape symbol */
+    void createDefaultShapeStyleSymbol();
 
     /**Returns a point on the line from startPoint to directionPoint that is a certain distance away from the starting point*/
     QPointF pointOnLineWithDistance( const QPointF& startPoint, const QPointF& directionPoint, double distance ) const;

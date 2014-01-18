@@ -85,7 +85,11 @@ void TestQgsBlendModes::initTestCase()
   QFileInfo myPolyFileInfo( myPolysFileName );
   mpPolysLayer = new QgsVectorLayer( myPolyFileInfo.filePath(),
                                      myPolyFileInfo.completeBaseName(), "ogr" );
-  mpPolysLayer->setSimplifyDrawingHints( QgsVectorLayer::NoSimplification );
+
+  QgsVectorSimplifyMethod simplifyMethod;
+  simplifyMethod.setSimplifyHints( QgsVectorLayer::NoSimplification );
+
+  mpPolysLayer->setSimplifyMethod( simplifyMethod );
   QgsMapLayerRegistry::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mpPolysLayer );
 
@@ -94,7 +98,7 @@ void TestQgsBlendModes::initTestCase()
   QFileInfo myLineFileInfo( myLinesFileName );
   mpLinesLayer = new QgsVectorLayer( myLineFileInfo.filePath(),
                                      myLineFileInfo.completeBaseName(), "ogr" );
-  mpLinesLayer->setSimplifyDrawingHints( QgsVectorLayer::NoSimplification );
+  mpLinesLayer->setSimplifyMethod( simplifyMethod );
   QgsMapLayerRegistry::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mpLinesLayer );
 

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgslinesymbollayerv2.h"
+#include "qgsdxfexport.h"
 #include "qgssymbollayerv2utils.h"
 #include "qgsexpression.h"
 #include "qgsrendercontext.h"
@@ -182,7 +183,7 @@ void QgsSimpleLineSymbolLayerV2::renderPolyline( const QPolygonF& points, QgsSym
   p->setPen( context.selected() ? mSelPen : mPen );
 
   // Disable 'Antialiasing' if the geometry was generalized in the current RenderContext (We known that it must have least #2 points).
-  if ( points.size() <= 2 && context.layer() && context.layer()->simplifyDrawingCanbeApplied( QgsVectorLayer::AntialiasingSimplification ) && QgsAbstractGeometrySimplifier::canbeGeneralizedByDeviceBoundingBox( points, context.layer()->simplifyDrawingTol() ) && ( p->renderHints() & QPainter::Antialiasing ) )
+  if ( points.size() <= 2 && context.layer() && context.layer()->simplifyDrawingCanbeApplied( QgsVectorLayer::AntialiasingSimplification ) && QgsAbstractGeometrySimplifier::canbeGeneralizedByDeviceBoundingBox( points, context.layer()->simplifyMethod().threshold() ) && ( p->renderHints() & QPainter::Antialiasing ) )
   {
     p->setRenderHint( QPainter::Antialiasing, false );
     p->drawPolyline( points );
@@ -387,6 +388,38 @@ void QgsSimpleLineSymbolLayerV2::applyDataDefinedSymbology( QgsSymbolV2RenderCon
 double QgsSimpleLineSymbolLayerV2::estimateMaxBleed() const
 {
   return ( mWidth / 2.0 ) + mOffset;
+}
+
+QVector<qreal> QgsSimpleLineSymbolLayerV2::dxfCustomDashPattern( QgsSymbolV2::OutputUnit& unit ) const
+{
+  unit = mCustomDashPatternUnit;
+  return mUseCustomDashPattern ? mCustomDashVector : QVector<qreal>() ;
+}
+
+double QgsSimpleLineSymbolLayerV2::dxfWidth( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const
+{
+  double width = mWidth;
+  QgsExpression* strokeWidthExpression = expression( "width" );
+  if ( strokeWidthExpression )
+  {
+    width = strokeWidthExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble() * e.mapUnitScaleFactor( e.symbologyScaleDenominator(), widthUnit(), e.mapUnits() );
+  }
+  else if ( context.renderHints() & QgsSymbolV2::DataDefinedSizeScale )
+  {
+    width = mWidth * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mWidthUnit );
+  }
+
+  return width * e.mapUnitScaleFactor( e.symbologyScaleDenominator(), widthUnit(), e.mapUnits() );
+}
+
+QColor QgsSimpleLineSymbolLayerV2::dxfColor( const QgsSymbolV2RenderContext& context ) const
+{
+  QgsExpression* strokeColorExpression = expression( "color" );
+  if ( strokeColorExpression )
+  {
+    return ( QgsSymbolLayerV2Utils::decodeColor( strokeColorExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() ) );
+  }
+  return mColor;
 }
 
 /////////

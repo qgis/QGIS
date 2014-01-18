@@ -100,9 +100,6 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     //! Set tab of the stacked widget (called from the vertical list item)
     void setCurrentTab( int idx );
 
-    //! Update title of the current tab according to current filters
-    void updateTabTitle();
-
     //! Handle plugin selection
     void currentPluginChanged( const QModelIndex & theIndex );
 

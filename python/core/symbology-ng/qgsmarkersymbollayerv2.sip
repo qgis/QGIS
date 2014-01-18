@@ -42,6 +42,12 @@ class QgsSimpleMarkerSymbolLayerV2 : QgsMarkerSymbolLayerV2
     double outlineWidth() const;
     void setOutlineWidth( double w );
 
+    virtual QColor outlineColor() const;
+    virtual void setOutlineColor( const QColor& color );
+
+    virtual QColor fillColor() const;
+    virtual void setFillColor( const QColor& color );
+
     QgsSymbolV2::OutputUnit outlineWidthUnit() const;
     void setOutlineWidthUnit( QgsSymbolV2::OutputUnit u );
 

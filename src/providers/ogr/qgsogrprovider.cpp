@@ -808,9 +808,6 @@ void QgsOgrProvider::setRelevantFields( OGRLayerH ogrLayer, bool fetchGeometry, 
 
 QgsFeatureIterator QgsOgrProvider::getFeatures( const QgsFeatureRequest& request )
 {
-  if ( request.flags() & ( QgsFeatureRequest::SimplifyGeometry | QgsFeatureRequest::SimplifyEnvelope ) )
-    return QgsFeatureIterator( new QgsOgrSimplifiedFeatureIterator( this, request ) );
-
   return QgsFeatureIterator( new QgsOgrFeatureIterator( this, request ) );
 }
 
@@ -1497,8 +1494,8 @@ int QgsOgrProvider::capabilities() const
       }
     }
 
-    // By default, supports simplification of geometries before fetch the OGR-feature.
-    ability |= SimplifyGeometries;
+    // supports geometry simplification on provider side
+    ability |= ( QgsVectorDataProvider::SimplifyGeometries | QgsVectorDataProvider::SimplifyGeometriesWithTopologicalValidation );
   }
 
   return ability;

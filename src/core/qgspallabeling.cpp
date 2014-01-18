@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgspallabeling.h"
+#include "qgspalgeometry.h"
 
 #include <list>
 
@@ -59,7 +60,7 @@
 
 using namespace pal;
 
-
+#if 0
 class QgsPalGeometry : public PalGeometry
 {
   public:
@@ -76,7 +77,7 @@ class QgsPalGeometry : public PalGeometry
         , mWordSpacing( wordSpacing )
         , mCurvedLabeling( curvedLabeling )
     {
-      mStrId = FID_TO_STRING( id ).toAscii();
+      mStrId = FID_TO_STRING( mId ).toAscii();
       mDefinedFont = QFont();
     }
 
@@ -172,8 +173,16 @@ class QgsPalGeometry : public PalGeometry
 
     QFontMetricsF* getLabelFontMetrics() { return mFontMetrics; }
 
-    void setDiagramAttributes( const QgsAttributes& attrs ) { mDiagramAttributes = attrs; }
+    void setDiagramAttributes( const QgsAttributes& attrs, const QgsFields* fields ) { mDiagramAttributes = attrs; mDiagramFields = fields; }
     const QgsAttributes& diagramAttributes() { return mDiagramAttributes; }
+
+    void feature( QgsFeature& feature )
+    {
+      feature.setFeatureId( mId );
+      feature.setFields( mDiagramFields, false );
+      feature.setAttributes( mDiagramAttributes );
+      feature.setValid( true );
+    }
 
   protected:
     GEOSGeometry* mG;
@@ -193,7 +202,9 @@ class QgsPalGeometry : public PalGeometry
 
     /**Stores attribute values for diagram rendering*/
     QgsAttributes mDiagramAttributes;
+    const QgsFields* mDiagramFields;
 };
+#endif //0
 
 // -------------
 
@@ -3357,7 +3368,7 @@ void QgsPalLabeling::registerDiagramFeature( QgsVectorLayer* layer, QgsFeature& 
   QgsDiagramRendererV2* dr = layerIt.value().renderer;
   if ( dr )
   {
-    QSizeF diagSize = dr->sizeMapUnits( feat.attributes(), context );
+    QSizeF diagSize = dr->sizeMapUnits( feat, context );
     if ( diagSize.isValid() )
     {
       diagramWidth = diagSize.width();
@@ -3365,7 +3376,7 @@ void QgsPalLabeling::registerDiagramFeature( QgsVectorLayer* layer, QgsFeature& 
     }
 
     //append the diagram attributes to lbl
-    lbl->setDiagramAttributes( feat.attributes() );
+    lbl->setDiagramAttributes( feat.attributes(), feat.fields() );
   }
 
   //  feature to the layer
@@ -3866,14 +3877,16 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
     QString layerName = QString::fromUtf8(( *it )->getLayerName() );
     if ( palGeometry->isDiagram() )
     {
+      QgsFeature feature;
       //render diagram
       QHash<QgsVectorLayer*, QgsDiagramLayerSettings>::iterator dit = mActiveDiagramLayers.begin();
       for ( dit = mActiveDiagramLayers.begin(); dit != mActiveDiagramLayers.end(); ++dit )
       {
         if ( dit.key() && dit.key()->id().append( "d" ) == layerName )
         {
+          palGeometry->feature( feature );
           QgsPoint outPt = xform->transform(( *it )->getX(), ( *it )->getY() );
-          dit.value().renderer->renderDiagram( palGeometry->diagramAttributes(), context, QPointF( outPt.x(), outPt.y() ) );
+          dit.value().renderer->renderDiagram( feature, context, QPointF( outPt.x(), outPt.y() ) );
         }
       }
 

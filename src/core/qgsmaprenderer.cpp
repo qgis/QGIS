@@ -727,7 +727,8 @@ void QgsMapRenderer::setProjectionsEnabled( bool enabled )
     mDistArea->setEllipsoidalMode( enabled );
     updateFullExtent();
     mLastExtent.setMinimal();
-    emit hasCrsTransformEnabled( enabled );
+    emit hasCrsTransformEnabled( enabled ); // deprecated
+    emit hasCrsTransformEnabledChanged( enabled );
   }
 }
 

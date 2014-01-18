@@ -65,6 +65,20 @@ class CORE_EXPORT QgsSimpleFillSymbolLayerV2 : public QgsFillSymbolLayerV2
     QColor borderColor() const { return mBorderColor; }
     void setBorderColor( QColor borderColor ) { mBorderColor = borderColor; }
 
+    /** Get outline color.
+     * @note added in 2.1 */
+    QColor outlineColor() const { return borderColor(); }
+    /** Set outline color.
+     * @note added in 2.1 */
+    void setOutlineColor( const QColor& color ) { setBorderColor( color ); }
+
+    /** Get fill color.
+     * @note added in 2.1 */
+    QColor fillColor() const { return color(); }
+    /** Set fill color.
+     * @note added in 2.1 */
+    void setFillColor( const QColor& color ) { setColor( color ); }
+
     Qt::PenStyle borderStyle() const { return mBorderStyle; }
     void setBorderStyle( Qt::PenStyle borderStyle ) { mBorderStyle = borderStyle; }
 
@@ -84,6 +98,10 @@ class CORE_EXPORT QgsSimpleFillSymbolLayerV2 : public QgsFillSymbolLayerV2
     QgsSymbolV2::OutputUnit outputUnit() const;
 
     double estimateMaxBleed() const;
+
+    double dxfWidth( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const;
+    QColor dxfColor( const QgsSymbolV2RenderContext& context ) const;
+    Qt::PenStyle dxfPenStyle() const;
 
   protected:
     QBrush mBrush;
@@ -267,7 +285,11 @@ class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayerV2
     void setOutlineWidthUnit( QgsSymbolV2::OutputUnit unit ) { mOutlineWidthUnit = unit; }
     QgsSymbolV2::OutputUnit outlineWidthUnit() const { return mOutlineWidthUnit; }
 
-    double estimateMaxBleed() const;
+    virtual double estimateMaxBleed() const;
+
+    virtual double dxfWidth( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const;
+    virtual QColor dxfColor( const QgsSymbolV2RenderContext& context ) const;
+    virtual Qt::PenStyle dxfPenStyle() const;
 
   protected:
     QBrush mBrush;
@@ -385,6 +407,8 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
 
     void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
 
+    double estimateMaxBleed() const;
+
     QString ogrFeatureStyleWidth( double widthScaleFactor ) const;
 
     //getters and setters
@@ -411,6 +435,9 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
     void setOutputUnit( QgsSymbolV2::OutputUnit unit );
     QgsSymbolV2::OutputUnit outputUnit() const;
 
+    bool setSubSymbol( QgsSymbolV2* symbol );
+    QgsSymbolV2* subSymbol();
+
   protected:
     /**Distance (in mm or map units) between lines*/
     double mDistance;
@@ -430,6 +457,9 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
   private:
     /**Applies the svg pattern to the brush*/
     void applyPattern( const QgsSymbolV2RenderContext& context, QBrush& brush, double lineAngle, double distance, double lineWidth, const QColor& color );
+
+    /**Fill line*/
+    QgsLineSymbolV2* mFillLineSymbol;
 };
 
 class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer

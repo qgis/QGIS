@@ -2,6 +2,14 @@
 <ui version="4.0">
  <class>QgsRelationEditorWidgetBase</class>
  <widget class="QgsCollapsibleGroupBox" name="QgsRelationEditorWidgetBase">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>288</width>
+    <height>94</height>
+   </rect>
+  </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
@@ -18,7 +26,7 @@
        </property>
        <property name="icon">
         <iconset resource="../../images/images.qrc">
-         <normaloff>:/images/themes/default/mActionToggleEditing.png</normaloff>:/images/themes/default/mActionToggleEditing.png</iconset>
+         <normaloff>:/images/themes/default/mActionToggleEditing.svg</normaloff>:/images/themes/default/mActionToggleEditing.svg</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -42,8 +50,8 @@
        </property>
        <property name="iconSize">
         <size>
-         <width>24</width>
-         <height>24</height>
+         <width>16</width>
+         <height>16</height>
         </size>
        </property>
       </widget>
@@ -57,6 +65,12 @@
         <iconset resource="../../images/images.qrc">
          <normaloff>:/images/themes/default/mActionRemove.svg</normaloff>:/images/themes/default/mActionRemove.svg</iconset>
        </property>
+       <property name="iconSize">
+        <size>
+         <width>16</width>
+         <height>16</height>
+        </size>
+       </property>
       </widget>
      </item>
      <item>
@@ -68,6 +82,12 @@
         <iconset resource="../../images/images.qrc">
          <normaloff>:/images/themes/default/mActionLink.svg</normaloff>:/images/themes/default/mActionLink.svg</iconset>
        </property>
+       <property name="iconSize">
+        <size>
+         <width>16</width>
+         <height>16</height>
+        </size>
+       </property>
       </widget>
      </item>
      <item>
@@ -78,6 +98,12 @@
        <property name="icon">
         <iconset resource="../../images/images.qrc">
          <normaloff>:/images/themes/default/mActionUnlink.svg</normaloff>:/images/themes/default/mActionUnlink.svg</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>16</width>
+         <height>16</height>
+        </size>
        </property>
       </widget>
      </item>
@@ -105,8 +131,8 @@
        </property>
        <property name="iconSize">
         <size>
-         <width>24</width>
-         <height>24</height>
+         <width>16</width>
+         <height>16</height>
         </size>
        </property>
        <property name="checkable">
@@ -128,8 +154,8 @@
        </property>
        <property name="iconSize">
         <size>
-         <width>24</width>
-         <height>24</height>
+         <width>16</width>
+         <height>16</height>
         </size>
        </property>
        <property name="checkable">

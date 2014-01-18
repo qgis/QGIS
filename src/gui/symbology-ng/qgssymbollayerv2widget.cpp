@@ -301,6 +301,7 @@ void QgsSimpleMarkerSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer
   btnChangeColorFill->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
   spinSize->setValue( mLayer->size() );
   spinAngle->setValue( mLayer->angle() );
+  mOutlineStyleComboBox->setPenStyle( mLayer->outlineStyle() );
   mOutlineWidthSpinBox->setValue( mLayer->outlineWidth() );
 
   // without blocking signals the value gets changed because of slot setOffset()
@@ -369,6 +370,17 @@ void QgsSimpleMarkerSymbolLayerV2Widget::setOffset()
 {
   mLayer->setOffset( QPointF( spinOffsetX->value(), spinOffsetY->value() ) );
   emit changed();
+}
+
+void QgsSimpleMarkerSymbolLayerV2Widget::on_mOutlineStyleComboBox_currentIndexChanged( int index )
+{
+  Q_UNUSED( index );
+
+  if ( mLayer )
+  {
+    mLayer->setOutlineStyle( mOutlineStyleComboBox->penStyle() );
+    emit changed();
+  }
 }
 
 void QgsSimpleMarkerSymbolLayerV2Widget::on_mOutlineWidthSpinBox_valueChanged( double d )

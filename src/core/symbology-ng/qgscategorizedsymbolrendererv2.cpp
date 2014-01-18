@@ -140,7 +140,9 @@ QgsCategorizedSymbolRendererV2::QgsCategorizedSymbolRendererV2( QString attrName
     mCategories( categories ),
     mSourceSymbol( NULL ),
     mSourceColorRamp( NULL ),
+    mInvertedColorRamp( false ),
     mScaleMethod( DEFAULT_SCALE_METHOD ),
+    mExpression( 0 ),
     mRotationFieldIdx( -1 ),
     mSizeScaleFieldIdx( -1 )
 {
@@ -198,8 +200,9 @@ QgsSymbolV2* QgsCategorizedSymbolRendererV2::symbolForFeature( QgsFeature& featu
 {
   const QgsAttributes& attrs = feature.attributes();
   QVariant value;
-  if ( mAttrNum < 0 || mAttrNum >= attrs.count() )
+  if ( mAttrNum == -1 )
   {
+    Q_ASSERT( mExpression );
     value = mExpression->evaluate( &feature );
   }
   else
@@ -405,6 +408,7 @@ void QgsCategorizedSymbolRendererV2::stopRender( QgsRenderContext& context )
     delete it2.value();
   }
   mTempSymbols.clear();
+  delete mExpression;
 }
 
 QList<QString> QgsCategorizedSymbolRendererV2::usedAttributes()
@@ -450,7 +454,10 @@ QgsFeatureRendererV2* QgsCategorizedSymbolRendererV2::clone()
   if ( mSourceSymbol )
     r->setSourceSymbol( mSourceSymbol->clone() );
   if ( mSourceColorRamp )
+  {
     r->setSourceColorRamp( mSourceColorRamp->clone() );
+    r->setInvertedColorRamp( mInvertedColorRamp );
+  }
   r->setUsingSymbolLevels( usingSymbolLevels() );
   r->setRotationField( rotationField() );
   r->setSizeScaleField( sizeScaleField() );
@@ -537,6 +544,9 @@ QgsFeatureRendererV2* QgsCategorizedSymbolRendererV2::create( QDomElement& eleme
   if ( !sourceColorRampElem.isNull() && sourceColorRampElem.attribute( "name" ) == "[source]" )
   {
     r->setSourceColorRamp( QgsSymbolLayerV2Utils::loadColorRamp( sourceColorRampElem ) );
+    QDomElement invertedColorRampElem = element.firstChildElement( "invertedcolorramp" );
+    if ( !invertedColorRampElem.isNull() )
+      r->setInvertedColorRamp( invertedColorRampElem.attribute( "value" ) == "1" );
   }
 
   QDomElement rotationElem = element.firstChildElement( "rotation" );
@@ -600,6 +610,9 @@ QDomElement QgsCategorizedSymbolRendererV2::save( QDomDocument& doc )
   {
     QDomElement colorRampElem = QgsSymbolLayerV2Utils::saveColorRamp( "[source]", mSourceColorRamp, doc );
     rendererElem.appendChild( colorRampElem );
+    QDomElement invertedElem = doc.createElement( "invertedcolorramp" );
+    invertedElem.setAttribute( "value", mInvertedColorRamp );
+    rendererElem.appendChild( invertedElem );
   }
 
   QDomElement rotationElem = doc.createElement( "rotation" );

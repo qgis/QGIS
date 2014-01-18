@@ -18,7 +18,7 @@ FIND_PATH(QWTPOLAR_INCLUDE_DIR NAMES qwt_polar.h PATHS
   /usr/local/include
   "$ENV{LIB_DIR}/include" 
   "$ENV{INCLUDE}" 
-  PATH_SUFFIXES qwtpolar
+  PATH_SUFFIXES qwtpolar qwt
   )
 
 FIND_LIBRARY(QWTPOLAR_LIBRARY NAMES qwtpolar PATHS 

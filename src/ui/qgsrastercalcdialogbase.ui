@@ -6,389 +6,451 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>651</width>
-    <height>518</height>
+    <width>677</width>
+    <height>589</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Raster calculator</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout_5">
-   <item row="0" column="0" colspan="2">
-    <widget class="QGroupBox" name="mRasterBandsGroupBox">
-     <property name="title">
-      <string>Raster bands</string>
+  <layout class="QVBoxLayout" name="verticalLayout_3">
+   <item>
+    <widget class="QSplitter" name="splitter_2">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
      </property>
-     <layout class="QGridLayout" name="gridLayout_2">
-      <item row="0" column="0">
-       <widget class="QListWidget" name="mRasterBandsListWidget"/>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="0" column="2">
-    <widget class="QGroupBox" name="mResultGroupBox">
-     <property name="title">
-      <string>Result layer</string>
-     </property>
-     <layout class="QGridLayout" name="gridLayout_4">
-      <item row="0" column="0">
-       <widget class="QLabel" name="mOutputLayerLabel">
-        <property name="text">
-         <string>Output layer</string>
-        </property>
-        <property name="buddy">
-         <cstring>mOutputLayerPushButton</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="2">
-       <widget class="QLineEdit" name="mOutputLayerLineEdit"/>
-      </item>
-      <item row="0" column="3">
-       <widget class="QPushButton" name="mOutputLayerPushButton">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>20</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>...</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QPushButton" name="mCurrentLayerExtentButton">
-        <property name="text">
-         <string>Current layer extent</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1" colspan="3">
-       <spacer name="horizontalSpacer">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>200</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item row="2" column="0" colspan="4">
-       <layout class="QGridLayout" name="gridLayout_3">
+     <widget class="QSplitter" name="splitter">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <widget class="QGroupBox" name="mRasterBandsGroupBox">
+       <property name="title">
+        <string>Raster bands</string>
+       </property>
+       <layout class="QGridLayout" name="gridLayout_2">
         <item row="0" column="0">
-         <widget class="QLabel" name="mXMinLabel">
-          <property name="text">
-           <string>X min</string>
-          </property>
-         </widget>
+         <widget class="QListWidget" name="mRasterBandsListWidget"/>
         </item>
-        <item row="0" column="1">
-         <widget class="QDoubleSpinBox" name="mXMinSpinBox">
-          <property name="decimals">
-           <number>5</number>
+       </layout>
+      </widget>
+      <widget class="QGroupBox" name="mResultGroupBox">
+       <property name="title">
+        <string>Result layer</string>
+       </property>
+       <layout class="QGridLayout" name="gridLayout_4">
+        <item row="0" column="0">
+         <widget class="QLabel" name="mOutputLayerLabel">
+          <property name="text">
+           <string>Output layer</string>
           </property>
-          <property name="minimum">
-           <double>-999999999.000000000000000</double>
-          </property>
-          <property name="maximum">
-           <double>999999999.000000000000000</double>
+          <property name="buddy">
+           <cstring>mOutputLayerPushButton</cstring>
           </property>
          </widget>
         </item>
         <item row="0" column="2">
-         <widget class="QLabel" name="mXMaxLabel">
-          <property name="text">
-           <string>XMax</string>
-          </property>
-         </widget>
+         <widget class="QLineEdit" name="mOutputLayerLineEdit"/>
         </item>
         <item row="0" column="3">
-         <widget class="QDoubleSpinBox" name="mXMaxSpinBox">
-          <property name="decimals">
-           <number>5</number>
+         <widget class="QPushButton" name="mOutputLayerPushButton">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
           </property>
-          <property name="minimum">
-           <double>-999999999.000000000000000</double>
+          <property name="minimumSize">
+           <size>
+            <width>20</width>
+            <height>0</height>
+           </size>
           </property>
-          <property name="maximum">
-           <double>999999999.000000000000000</double>
+          <property name="text">
+           <string>...</string>
           </property>
          </widget>
         </item>
         <item row="1" column="0">
-         <widget class="QLabel" name="mYMinLabel">
+         <widget class="QPushButton" name="mCurrentLayerExtentButton">
           <property name="text">
-           <string>Y min</string>
+           <string>Current layer extent</string>
           </property>
          </widget>
         </item>
-        <item row="1" column="1">
-         <widget class="QDoubleSpinBox" name="mYMinSpinBox">
-          <property name="decimals">
-           <number>5</number>
+        <item row="1" column="1" colspan="3">
+         <spacer name="horizontalSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
           </property>
-          <property name="minimum">
-           <double>-999999999.000000000000000</double>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>200</width>
+            <height>20</height>
+           </size>
           </property>
-          <property name="maximum">
-           <double>999999999.000000000000000</double>
-          </property>
-         </widget>
+         </spacer>
         </item>
-        <item row="1" column="2">
-         <widget class="QLabel" name="mYMaxLabel">
+        <item row="2" column="0" colspan="4">
+         <layout class="QGridLayout" name="gridLayout_3">
+          <item row="2" column="3">
+           <widget class="QLabel" name="mRowsLabel">
+            <property name="text">
+             <string>Rows</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="4">
+           <widget class="QSpinBox" name="mNRowsSpinBox">
+            <property name="maximum">
+             <number>999999999</number>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QDoubleSpinBox" name="mYMinSpinBox">
+            <property name="decimals">
+             <number>5</number>
+            </property>
+            <property name="minimum">
+             <double>-999999999.000000000000000</double>
+            </property>
+            <property name="maximum">
+             <double>999999999.000000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="mYMinLabel">
+            <property name="text">
+             <string>Y min</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="mXMinLabel">
+            <property name="text">
+             <string>X min</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="3">
+           <widget class="QLabel" name="mXMaxLabel">
+            <property name="text">
+             <string>XMax</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QSpinBox" name="mNColumnsSpinBox">
+            <property name="maximum">
+             <number>999999999</number>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="4">
+           <widget class="QDoubleSpinBox" name="mYMaxSpinBox">
+            <property name="decimals">
+             <number>5</number>
+            </property>
+            <property name="minimum">
+             <double>-999999999.000000000000000</double>
+            </property>
+            <property name="maximum">
+             <double>999999999.000000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="mColumnsLabel">
+            <property name="text">
+             <string>Columns</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="3">
+           <widget class="QLabel" name="mYMaxLabel">
+            <property name="text">
+             <string>Y max</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QDoubleSpinBox" name="mXMinSpinBox">
+            <property name="decimals">
+             <number>5</number>
+            </property>
+            <property name="minimum">
+             <double>-999999999.000000000000000</double>
+            </property>
+            <property name="maximum">
+             <double>999999999.000000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="4">
+           <widget class="QDoubleSpinBox" name="mXMaxSpinBox">
+            <property name="decimals">
+             <number>5</number>
+            </property>
+            <property name="minimum">
+             <double>-999999999.000000000000000</double>
+            </property>
+            <property name="maximum">
+             <double>999999999.000000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2">
+           <spacer name="horizontalSpacer_2">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>10</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+        <item row="3" column="2">
+         <widget class="QComboBox" name="mOutputFormatComboBox"/>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="mOutputFormatLabel">
           <property name="text">
-           <string>Y max</string>
+           <string>Output format</string>
           </property>
          </widget>
         </item>
-        <item row="1" column="3">
-         <widget class="QDoubleSpinBox" name="mYMaxSpinBox">
-          <property name="decimals">
-           <number>5</number>
-          </property>
-          <property name="minimum">
-           <double>-999999999.000000000000000</double>
-          </property>
-          <property name="maximum">
-           <double>999999999.000000000000000</double>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="0">
-         <widget class="QLabel" name="mColumnsLabel">
+        <item row="4" column="0" colspan="4">
+         <widget class="QCheckBox" name="mAddResultToProjectCheckBox">
           <property name="text">
-           <string>Columns</string>
+           <string>Add result to project</string>
           </property>
-         </widget>
-        </item>
-        <item row="2" column="1">
-         <widget class="QSpinBox" name="mNColumnsSpinBox">
-          <property name="maximum">
-           <number>999999999</number>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="2">
-         <widget class="QLabel" name="mRowsLabel">
-          <property name="text">
-           <string>Rows</string>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="3">
-         <widget class="QSpinBox" name="mNRowsSpinBox">
-          <property name="maximum">
-           <number>999999999</number>
+          <property name="checked">
+           <bool>true</bool>
           </property>
          </widget>
         </item>
        </layout>
-      </item>
-      <item row="3" column="0">
-       <widget class="QLabel" name="mOutputFormatLabel">
-        <property name="text">
-         <string>Output format</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="2">
-       <widget class="QComboBox" name="mOutputFormatComboBox"/>
-      </item>
-      <item row="4" column="0" colspan="2">
-       <widget class="QCheckBox" name="mAddResultToProjectCheckBox">
-        <property name="text">
-         <string>Add result to project</string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-     </layout>
+      </widget>
+     </widget>
+     <widget class="QWidget" name="verticalLayoutWidget">
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <widget class="QgsCollapsibleGroupBox" name="mOperatorsGroupBox">
+         <property name="title">
+          <string>Operators</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <item row="1" column="3">
+           <widget class="QPushButton" name="mASinButton">
+            <property name="text">
+             <string>asin</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QPushButton" name="mMultiplyPushButton">
+            <property name="text">
+             <string>*</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="6">
+           <widget class="QPushButton" name="mOrButton">
+            <property name="text">
+             <string>OR</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QPushButton" name="mDividePushButton">
+            <property name="text">
+             <string>/</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QPushButton" name="mMinusPushButton">
+            <property name="text">
+             <string>-</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="2">
+           <widget class="QPushButton" name="mEqualButton">
+            <property name="text">
+             <string>=</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="6">
+           <widget class="QPushButton" name="mOpenBracketPushButton">
+            <property name="text">
+             <string>(</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2">
+           <widget class="QPushButton" name="mSqrtButton">
+            <property name="text">
+             <string>sqrt</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="5">
+           <widget class="QPushButton" name="mATanButton">
+            <property name="text">
+             <string>atan</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QPushButton" name="mGreaterButton">
+            <property name="text">
+             <string>&gt;</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="2">
+           <widget class="QPushButton" name="mCosButton">
+            <property name="text">
+             <string>cos</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="5">
+           <widget class="QPushButton" name="mAndButton">
+            <property name="text">
+             <string>AND</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="4">
+           <widget class="QPushButton" name="mExpButton">
+            <property name="text">
+             <string>^</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="3">
+           <widget class="QPushButton" name="mLesserEqualButton">
+            <property name="text">
+             <string>&lt;=</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QPushButton" name="mLessButton">
+            <property name="text">
+             <string>&lt;</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="4">
+           <widget class="QPushButton" name="mGreaterEqualButton">
+            <property name="text">
+             <string>&gt;=</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="3">
+           <widget class="QPushButton" name="mSinButton">
+            <property name="text">
+             <string>sin</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QPushButton" name="mPlusPushButton">
+            <property name="text">
+             <string>+</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="5">
+           <widget class="QPushButton" name="mACosButton">
+            <property name="text">
+             <string>acos</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="6">
+           <widget class="QPushButton" name="mCloseBracketPushButton">
+            <property name="text">
+             <string>)</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="4">
+           <widget class="QPushButton" name="mTanButton">
+            <property name="text">
+             <string>tan</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="7">
+           <spacer name="horizontalSpacer_3">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>5</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBox">
+         <property name="title">
+          <string>Raster calculator expression</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_2">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QTextEdit" name="mExpressionTextEdit"/>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
     </widget>
    </item>
-   <item row="1" column="0" colspan="3">
-    <widget class="QGroupBox" name="mOperatorsGroupBox">
-     <property name="title">
-      <string>Operators</string>
-     </property>
-     <layout class="QGridLayout" name="gridLayout">
-      <item row="0" column="0">
-       <widget class="QPushButton" name="mPlusPushButton">
-        <property name="text">
-         <string>+</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QPushButton" name="mMultiplyPushButton">
-        <property name="text">
-         <string>*</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="2">
-       <widget class="QPushButton" name="mSqrtButton">
-        <property name="text">
-         <string>sqrt</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="3">
-       <widget class="QPushButton" name="mSinButton">
-        <property name="text">
-         <string>sin</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="4">
-       <widget class="QPushButton" name="mExpButton">
-        <property name="text">
-         <string>^</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="5">
-       <widget class="QPushButton" name="mACosButton">
-        <property name="text">
-         <string>acos</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="6">
-       <widget class="QPushButton" name="mOpenBracketPushButton">
-        <property name="text">
-         <string>(</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QPushButton" name="mMinusPushButton">
-        <property name="text">
-         <string>-</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QPushButton" name="mDividePushButton">
-        <property name="text">
-         <string>/</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="2">
-       <widget class="QPushButton" name="mCosButton">
-        <property name="text">
-         <string>cos</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="3">
-       <widget class="QPushButton" name="mASinButton">
-        <property name="text">
-         <string>asin</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="4">
-       <widget class="QPushButton" name="mTanButton">
-        <property name="text">
-         <string>tan</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="5">
-       <widget class="QPushButton" name="mATanButton">
-        <property name="text">
-         <string>atan</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="6">
-       <widget class="QPushButton" name="mCloseBracketPushButton">
-        <property name="text">
-         <string>)</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0">
-       <widget class="QPushButton" name="mLessButton">
-        <property name="text">
-         <string>&lt;</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QPushButton" name="mGreaterButton">
-        <property name="text">
-         <string>&gt;</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="2">
-       <widget class="QPushButton" name="mEqualButton">
-        <property name="text">
-         <string>=</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="6">
-       <widget class="QPushButton" name="mOrButton">
-        <property name="text">
-         <string>OR</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="5">
-       <widget class="QPushButton" name="mAndButton">
-        <property name="text">
-         <string>AND</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="3">
-       <widget class="QPushButton" name="mLesserEqualButton">
-        <property name="text">
-         <string>&lt;=</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="4">
-       <widget class="QPushButton" name="mGreaterEqualButton">
-        <property name="text">
-         <string>&gt;=</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="mRasterCalculatorExpressionLabel">
+   <item>
+    <widget class="QLabel" name="mExpressionValidLabel">
      <property name="text">
-      <string>Raster calculator expression</string>
-     </property>
-     <property name="buddy">
-      <cstring>mExpressionTextEdit</cstring>
+      <string/>
      </property>
     </widget>
    </item>
-   <item row="3" column="0" colspan="3">
-    <widget class="QTextEdit" name="mExpressionTextEdit"/>
-   </item>
-   <item row="4" column="1" colspan="2">
+   <item>
     <widget class="QDialogButtonBox" name="mButtonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -398,15 +460,22 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="0">
-    <widget class="QLabel" name="mExpressionValidLabel">
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-   </item>
   </layout>
+  <zorder>mRasterBandsGroupBox</zorder>
+  <zorder>mResultGroupBox</zorder>
+  <zorder>mButtonBox</zorder>
+  <zorder>mExpressionValidLabel</zorder>
+  <zorder>verticalLayoutWidget</zorder>
+  <zorder>mOperatorsGroupBox</zorder>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>

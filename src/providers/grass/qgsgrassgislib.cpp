@@ -1064,17 +1064,7 @@ int GRASS_LIB_EXPORT G_get_cellhd( const char *name, const char *mapset, struct 
 
 double QgsGrassGisLib::G_database_units_to_meters_factor( void )
 {
-  switch ( mCrs.mapUnits() )
-  {
-    case QGis::Meters:
-      return 1.;
-    case QGis::Feet:
-      return .3048;
-    case QGis::Degrees:
-      return 1.;
-    default:
-      return 0.;
-  }
+  return QGis::fromUnitToUnitFactor( mCrs.mapUnits(), QGis::Meters );
 }
 
 double QgsGrassGisLib::G_area_of_cell_at_row( int row )

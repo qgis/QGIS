@@ -24,6 +24,9 @@ class QgsDistanceArea
     //! sets source spatial reference system (by QGIS CRS)
     void setSourceCrs( long srsid );
 
+    //! sets source spatial reference system (by QGIS CRS)
+    void setSourceCrs( const QgsCoordinateReferenceSystem& srcCRS );
+
     //! sets source spatial reference system by authid
     void setSourceAuthId( QString authid );
 

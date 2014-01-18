@@ -538,8 +538,6 @@ void QgsPluginManager::reloadModelData()
     if ( hasAvailablePlugins() ) mModelPlugins->appendRow( createSpacerItem( tr( "Installable", "category: plugins that are available for installation" ), "not installedZ" ) );
   }
 
-  updateTabTitle();
-
   buttonUpgradeAll->setEnabled( hasUpgradeablePlugins() );
 
   // Disable tabs that are empty because of no suitable plugins in the model.
@@ -990,8 +988,6 @@ void QgsPluginManager::setCurrentTab( int idx )
     }
     mModelProxy->setAcceptedStatuses( acceptedStatuses );
 
-    updateTabTitle();
-
     // load tab description HTML to the detail browser
     QString tabInfoHTML = "";
     QMap<QString, QString>::iterator it = mTabDescriptions.find( tabTitle );
@@ -1340,13 +1336,3 @@ bool QgsPluginManager::hasInvalidPlugins( )
 
   return false;
 }
-
-
-
-void QgsPluginManager::updateTabTitle()
-{
-  lbStatusFilter->setText( QString( " %1 > %2 (%3)" ).arg( tr( "Plugins" ) )
-                           .arg( mOptionsListWidget->currentItem()->text() )
-                           .arg( mModelProxy->countWithCurrentStatus() ) );
-}
-

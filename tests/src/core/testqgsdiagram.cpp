@@ -135,7 +135,7 @@ class TestQgsDiagram: public QObject
       col1.setAlphaF( 0.5 );
       col2.setAlphaF( 0.5 );
       ds.categoryColors = QList<QColor>() << col1 << col2;
-      ds.categoryIndices = QList<int>() << 3 << 4; // Pilots / Cabin Crew
+      ds.categoryAttributes = QList<QString>() << "\"Pilots\"" << "\"Cabin Crew\"";
       ds.maxScaleDenominator = -1;
       ds.minScaleDenominator = -1;
       ds.minimumSize = 0;

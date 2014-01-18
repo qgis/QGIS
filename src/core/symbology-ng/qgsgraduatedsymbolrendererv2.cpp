@@ -156,6 +156,7 @@ QgsGraduatedSymbolRendererV2::QgsGraduatedSymbolRendererV2( QString attrName, Qg
     mMode( Custom ),
     mSourceSymbol( NULL ),
     mSourceColorRamp( NULL ),
+    mInvertedColorRamp( false ),
     mScaleMethod( DEFAULT_SCALE_METHOD ),
     mRotationFieldIdx( -1 ),
     mSizeScaleFieldIdx( -1 )
@@ -359,7 +360,10 @@ QgsFeatureRendererV2* QgsGraduatedSymbolRendererV2::clone()
   if ( mSourceSymbol )
     r->setSourceSymbol( mSourceSymbol->clone() );
   if ( mSourceColorRamp )
+  {
     r->setSourceColorRamp( mSourceColorRamp->clone() );
+    r->setInvertedColorRamp( mInvertedColorRamp );
+  }
   r->setUsingSymbolLevels( usingSymbolLevels() );
   r->setRotationField( rotationField() );
   r->setSizeScaleField( sizeScaleField() );
@@ -786,7 +790,8 @@ QgsGraduatedSymbolRendererV2* QgsGraduatedSymbolRendererV2::createRenderer(
   int classes,
   Mode mode,
   QgsSymbolV2* symbol,
-  QgsVectorColorRampV2* ramp )
+  QgsVectorColorRampV2* ramp,
+  bool inverted )
 {
   if ( classes < 1 )
     return NULL;
@@ -890,7 +895,9 @@ QgsGraduatedSymbolRendererV2* QgsGraduatedSymbolRendererV2::createRenderer(
     }
 
     QgsSymbolV2* newSymbol = symbol->clone();
-    double colorValue = ( breaks.count() > 1 ? ( double ) i / ( breaks.count() - 1 ) : 0 );
+    double colorValue;
+    if ( inverted ) colorValue = ( breaks.count() > 1 ? ( double )( breaks.count() - i - 1 ) / ( breaks.count() - 1 ) : 0 );
+    else colorValue = ( breaks.count() > 1 ? ( double ) i / ( breaks.count() - 1 ) : 0 );
     newSymbol->setColor( ramp->color( colorValue ) ); // color from (0 / cl-1) to (cl-1 / cl-1)
 
     ranges.append( QgsRendererRangeV2( lower, upper, newSymbol, label ) );
@@ -899,6 +906,7 @@ QgsGraduatedSymbolRendererV2* QgsGraduatedSymbolRendererV2::createRenderer(
   QgsGraduatedSymbolRendererV2* r = new QgsGraduatedSymbolRendererV2( attrName, ranges );
   r->setSourceSymbol( symbol->clone() );
   r->setSourceColorRamp( ramp->clone() );
+  r->setInvertedColorRamp( inverted );
   r->setMode( mode );
   return r;
 }
@@ -958,6 +966,9 @@ QgsFeatureRendererV2* QgsGraduatedSymbolRendererV2::create( QDomElement& element
   if ( !sourceColorRampElem.isNull() && sourceColorRampElem.attribute( "name" ) == "[source]" )
   {
     r->setSourceColorRamp( QgsSymbolLayerV2Utils::loadColorRamp( sourceColorRampElem ) );
+    QDomElement invertedColorRampElem = element.firstChildElement( "invertedcolorramp" );
+    if ( !invertedColorRampElem.isNull() )
+      r->setInvertedColorRamp( invertedColorRampElem.attribute( "value" ) == "1" );
   }
 
   // try to load mode
@@ -1039,6 +1050,9 @@ QDomElement QgsGraduatedSymbolRendererV2::save( QDomDocument& doc )
   {
     QDomElement colorRampElem = QgsSymbolLayerV2Utils::saveColorRamp( "[source]", mSourceColorRamp, doc );
     rendererElem.appendChild( colorRampElem );
+    QDomElement invertedElem = doc.createElement( "invertedcolorramp" );
+    invertedElem.setAttribute( "value", mInvertedColorRamp );
+    rendererElem.appendChild( invertedElem );
   }
 
   // save mode
@@ -1144,18 +1158,21 @@ void QgsGraduatedSymbolRendererV2::setSourceColorRamp( QgsVectorColorRampV2* ram
   mSourceColorRamp = ramp;
 }
 
-void QgsGraduatedSymbolRendererV2::updateColorRamp( QgsVectorColorRampV2 *ramp )
+void QgsGraduatedSymbolRendererV2::updateColorRamp( QgsVectorColorRampV2 *ramp, bool inverted )
 {
   int i = 0;
   foreach ( QgsRendererRangeV2 range, mRanges )
   {
     QgsSymbolV2* symbol = range.symbol()->clone();
-    double colorValue = ( mRanges.count() > 1 ? ( double ) i / ( mRanges.count() - 1 ) : 0 );
+    double colorValue;
+    if ( inverted ) colorValue = ( mRanges.count() > 1 ? ( double )( mRanges.count() - i - 1 ) / ( mRanges.count() - 1 ) : 0 );
+    else colorValue = ( mRanges.count() > 1 ? ( double ) i / ( mRanges.count() - 1 ) : 0 );
     symbol->setColor( ramp->color( colorValue ) );
     updateRangeSymbol( i, symbol );
     ++i;
   }
   this->setSourceColorRamp( ramp );
+  this->setInvertedColorRamp( inverted );
 }
 
 void QgsGraduatedSymbolRendererV2::updateSymbols( QgsSymbolV2 *sym )

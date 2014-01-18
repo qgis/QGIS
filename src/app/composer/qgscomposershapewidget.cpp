@@ -18,6 +18,10 @@
 #include "qgscomposershapewidget.h"
 #include "qgscomposershape.h"
 #include "qgscomposeritemwidget.h"
+#include "qgscomposition.h"
+#include "qgsstylev2.h"
+#include "qgssymbolv2selectordialog.h"
+#include "qgssymbollayerv2utils.h"
 #include <QColorDialog>
 
 QgsComposerShapeWidget::QgsComposerShapeWidget( QgsComposerShape* composerShape ): QWidget( 0 ), mComposerShape( composerShape )
@@ -26,6 +30,11 @@ QgsComposerShapeWidget::QgsComposerShapeWidget( QgsComposerShape* composerShape 
 
   //add widget for general composer item properties
   QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget( this, composerShape );
+
+  //shapes don't use background or frame, since the symbol style is set through a QgsSymbolV2SelectorDialog
+  itemPropertiesWidget->showBackgroundGroup( false );
+  itemPropertiesWidget->showFrameGroup( false );
+
   mainLayout->addWidget( itemPropertiesWidget );
 
   blockAllSignals( true );
@@ -54,6 +63,7 @@ void QgsComposerShapeWidget::blockAllSignals( bool block )
 {
   mShapeComboBox->blockSignals( block );
   mCornerRadiusSpinBox->blockSignals( block );
+  mShapeStyleButton->blockSignals( block );
 }
 
 void QgsComposerShapeWidget::setGuiElementValues()
@@ -64,6 +74,8 @@ void QgsComposerShapeWidget::setGuiElementValues()
   }
 
   blockAllSignals( true );
+
+  updateShapeStyle();
 
   mCornerRadiusSpinBox->setValue( mComposerShape->cornerRadius() );
   if ( mComposerShape->shapeType() == QgsComposerShape::Ellipse )
@@ -83,6 +95,37 @@ void QgsComposerShapeWidget::setGuiElementValues()
   }
 
   blockAllSignals( false );
+}
+
+void QgsComposerShapeWidget::on_mShapeStyleButton_clicked()
+{
+  if ( !mComposerShape )
+  {
+    return;
+  }
+
+  QgsVectorLayer* coverageLayer = 0;
+  // use the atlas coverage layer, if any
+  if ( mComposerShape->composition()->atlasComposition().enabled() )
+  {
+    coverageLayer = mComposerShape->composition()->atlasComposition().coverageLayer();
+  }
+
+  QgsSymbolV2SelectorDialog d( mComposerShape->shapeStyleSymbol(), QgsStyleV2::defaultStyle(), coverageLayer );
+
+  if ( d.exec() == QDialog::Accepted )
+  {
+    updateShapeStyle();
+  }
+}
+
+void QgsComposerShapeWidget::updateShapeStyle()
+{
+  if ( mComposerShape )
+  {
+    QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( mComposerShape->shapeStyleSymbol(), mShapeStyleButton->iconSize() );
+    mShapeStyleButton->setIcon( icon );
+  }
 }
 
 void QgsComposerShapeWidget::on_mCornerRadiusSpinBox_valueChanged( double val )

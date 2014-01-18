@@ -83,6 +83,13 @@ class CORE_EXPORT QgsDxfExport
 
     void writeCircle( const QString& layer, int color, const QgsPoint& pt, double radius );
 
+    void writeText( const QString& layer, const QString& text, const QgsPoint& pt, double size, double angle, int color );
+
+    static double mapUnitScaleFactor( double scaleDenominator, QgsSymbolV2::OutputUnit symbolUnits, QGis::UnitType mapUnits );
+
+    static QString dxfLayerName( const QString& name );
+
+
   private:
 
     QList< QgsMapLayer* > mLayers;
@@ -135,12 +142,10 @@ class CORE_EXPORT QgsDxfExport
 
     QgsRectangle dxfExtent() const;
 
-    void addFeature( const QgsFeature& fet, const QString& layer, const QgsSymbolLayerV2* symbolLayer, const QgsSymbolV2* symbol );
-    double scaleToMapUnits( double value, QgsSymbolV2::OutputUnit symbolUnits, QGis::UnitType mapUnits ) const;
+    void addFeature( const QgsSymbolV2RenderContext& ctx, const QString& layer, const QgsSymbolLayerV2* symbolLayer, const QgsSymbolV2* symbol );
 
     //returns dxf palette index from symbol layer color
-    static int colorFromSymbolLayer( const QgsSymbolLayerV2* symbolLayer );
-    double widthFromSymbolLayer( const QgsSymbolLayerV2* symbolLayer ) const;
+    static int colorFromSymbolLayer( const QgsSymbolLayerV2* symbolLayer, const QgsSymbolV2RenderContext& ctx );
     QString lineStyleFromSymbolLayer( const QgsSymbolLayerV2* symbolLayer );
 
     //functions for dxf palette
@@ -149,9 +154,7 @@ class CORE_EXPORT QgsDxfExport
 
     //helper functions for symbology export
     QgsRenderContext renderContext() const;
-    void startRender( QgsVectorLayer* vl ) const;
-    void stopRender( QgsVectorLayer* vl ) const;
-    static double mapUnitScaleFactor( double scaleDenominator, QgsSymbolV2::OutputUnit symbolUnits, QGis::UnitType mapUnits );
+
     QList< QPair< QgsSymbolLayerV2*, QgsSymbolV2* > > symbolLayers();
     static int nLineTypes( const QList< QPair< QgsSymbolLayerV2*, QgsSymbolV2*> >& symbolLayers );
     static bool hasDataDefinedProperties( const QgsSymbolLayerV2* sl, const QgsSymbolV2* symbol );
@@ -160,7 +163,6 @@ class CORE_EXPORT QgsDxfExport
     double dashSeparatorSize() const;
     double sizeToMapUnits( double s ) const;
     static QString lineNameFromPenStyle( Qt::PenStyle style );
-    static QString dxfLayerName( const QString& name );
 };
 
 #endif // QGSDXFEXPORT_H

@@ -26,6 +26,7 @@
 #include "qgsvectorfilewriter.h"
 #include "qgsrendererv2.h"
 #include "qgssymbollayerv2.h"
+#include "qgsvectordataprovider.h"
 
 #include <QFile>
 #include <QSettings>
@@ -109,7 +110,7 @@ QgsVectorFileWriter::QgsVectorFileWriter(
 
   poDriver = OGRGetDriverByName( ogrDriverName.toLocal8Bit().data() );
 
-  if ( poDriver == NULL )
+  if ( !poDriver )
   {
     mErrorMessage = QObject::tr( "OGR driver for '%1' not found (OGR error: %2)" )
                     .arg( driverName )
@@ -1835,8 +1836,22 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVe
   else
   {
     // This means we shouldn't transform, use source CRS as output (if defined)
-    outputCRS = &( layer->crs() );
+    outputCRS = &layer->crs();
   }
+
+  if ( layer->providerType() == "ogr" )
+  {
+    QStringList theURIParts = layer->dataProvider()->dataSourceUri().split( "|" );
+    QString srcFileName = theURIParts[0];
+
+    if ( QFile::exists( srcFileName ) && QFileInfo( fileName ).canonicalFilePath() == QFileInfo( srcFileName ).canonicalFilePath() )
+    {
+      if ( errorMessage )
+        *errorMessage = QObject::tr( "Cannot overwrite a OGR layer in place" );
+      return ErrCreateDataSource;
+    }
+  }
+
   QgsVectorFileWriter* writer =
     new QgsVectorFileWriter( fileName, fileEncoding, skipAttributeCreation ? QgsFields() : layer->pendingFields(), layer->wkbType(), outputCRS, driverName, datasourceOptions, layerOptions, newFilename, symbologyExport );
   writer->setSymbologyScaleDenominator( symbologyScale );

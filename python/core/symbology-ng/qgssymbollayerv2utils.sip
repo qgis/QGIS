@@ -111,12 +111,20 @@ class QgsSymbolLayerV2Utils
                                         QString &path, QString &mime,
                                         QColor &color, double &size );
 
+    /** @deprecated Use wellKnownMarkerToSld( QDomDocument &doc, QDomElement &element, QString name, QColor color, QColor borderColor, Qt::PenStyle borderStyle, double borderWidth, double size ) instead */
     static void wellKnownMarkerToSld( QDomDocument &doc, QDomElement &element,
                                       QString name, QColor color, QColor borderColor = QColor(),
+                                      double borderWidth = -1, double size = -1 ) /Deprecated/ ;
+    static void wellKnownMarkerToSld( QDomDocument &doc, QDomElement &element,
+                                      QString name, QColor color, QColor borderColor, Qt::PenStyle borderStyle,
                                       double borderWidth = -1, double size = -1 );
+    /** @deprecated Use wellKnownMarkerFromSld( QDomElement &element, QString &name, QColor &color, QColor &borderColor, Qt::PenStyle &borderStyle, double &borderWidth, double &size ) instead */
     static bool wellKnownMarkerFromSld( QDomElement &element,
                                         QString &name, QColor &color, QColor &borderColor,
-                                        double &borderWidth, double &size );
+                                        double &borderWidth, double &size ) /Deprecated/ ;
+    static bool wellKnownMarkerFromSld( QDomElement &element,
+                                        QString &name, QColor &color, QColor &borderColor, Qt::PenStyle &borderStyle,
+                                        double &borderWidth, double &size ) /PyName=wellKnownMarkerFromSld2/ ;
 
     static void externalMarkerToSld( QDomDocument &doc, QDomElement &element,
                                      QString path, QString format, int *markIndex = 0,

@@ -23,7 +23,8 @@
 #include "qgslogger.h"
 #include "qgsrasterblock.h"
 
-const QRgb QgsRasterBlock::mNoDataColor = qRgba( 255, 255, 255, 0 );
+// See #9101 before any change of NODATA_COLOR!
+const QRgb QgsRasterBlock::mNoDataColor = qRgba( 0, 0, 0, 0 );
 
 QgsRasterBlock::QgsRasterBlock()
     : mValid( true )
@@ -301,7 +302,7 @@ QRgb QgsRasterBlock::color( qgssize index ) const
 
 QRgb QgsRasterBlock::color( int row, int column ) const
 {
-  if ( !mImage ) return qRgba( 255, 255, 255, 0 );
+  if ( !mImage ) return mNoDataColor;
 
   return mImage->pixel( column, row );
 }
@@ -597,7 +598,7 @@ bool QgsRasterBlock::setIsNoDataExcept( const QRect & theExceptRect )
       return false;
     }
 
-    QRgb nodataRgba = qRgba( 0, 0, 0, 0 );
+    QRgb nodataRgba = mNoDataColor;
     QRgb *nodataRow = new QRgb[mWidth]; // full row of no data
     int rgbSize = sizeof( QRgb );
     for ( int c = 0; c < mWidth; c ++ )

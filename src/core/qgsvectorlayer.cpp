@@ -74,8 +74,9 @@
 #include "qgsstylev2.h"
 #include "qgssymbologyv2conversion.h"
 #include "qgspallabeling.h"
+#include "qgssimplifymethod.h"
 
-#include "qgsmaptopixelgeometrysimplifier.h"
+#include "diagram/qgsdiagram.h"
 
 #ifdef TESTPROVIDERLIB
 #include <dlfcn.h>
@@ -121,8 +122,6 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
     , mProviderKey( providerKey )
     , mReadOnly( false )
     , mRendererV2( NULL )
-    , mSimplifyDrawingTol( QGis::DEFAULT_MAPTOPIXEL_THRESHOLD )
-    , mSimplifyDrawingHints( QGis::DEFAULT_MAPTOPIXEL_THRESHOLD > 1 ? QgsVectorLayer::FullSimplification : QgsVectorLayer::DefaultSimplification )
     , mLabel( 0 )
     , mLabelOn( false )
     , mLabelFontNotFoundNotified( false )
@@ -183,10 +182,11 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
 
   connect( QgsProject::instance()->relationManager(), SIGNAL( relationsLoaded() ), this, SLOT( onRelationsLoaded() ) );
 
-  // Default simplify drawing configuration
+  // Default simplify drawing settings
   QSettings settings;
-  setSimplifyDrawingHints( settings.value( "/qgis/simplifyDrawingHints", ( int )mSimplifyDrawingHints ).toInt() );
-  setSimplifyDrawingTol( settings.value( "/qgis/simplifyDrawingTol", mSimplifyDrawingTol ).toFloat() );
+  mSimplifyMethod.setSimplifyHints( settings.value( "/qgis/simplifyDrawingHints", mSimplifyMethod.simplifyHints() ).toInt() );
+  mSimplifyMethod.setThreshold( settings.value( "/qgis/simplifyDrawingTol", mSimplifyMethod.threshold() ).toFloat() );
+  mSimplifyMethod.setForceLocalOptimization( settings.value( "/qgis/simplifyLocal", mSimplifyMethod.forceLocalOptimization() ).toBool() );
 
 } // QgsVectorLayer ctor
 
@@ -700,37 +700,47 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
                                       .setFilterRect( rendererContext.extent() )
                                       .setSubsetOfAttributes( attributes );
 
-  QgsFeatureIterator fit = QgsFeatureIterator();
-
-  // Enable the simplification of the geometries (Using the current map2pixel context) before fetch the features.
-  if ( simplifyDrawingCanbeApplied( QgsVectorLayer::GeometrySimplification | QgsVectorLayer::EnvelopeSimplification ) && !( featureRequest.flags() & QgsFeatureRequest::NoGeometry ) && !rendererContext.renderingPrintComposition() )
+  // enable the simplification of the geometries (Using the current map2pixel context) before send it to renderer engine.
+  if ( simplifyDrawingCanbeApplied( QgsVectorLayer::GeometrySimplification ) )
   {
     QPainter* p = rendererContext.painter();
-    float dpi = ( p->device()->logicalDpiX() + p->device()->logicalDpiY() ) / 2;
-    float map2pixelTol = mSimplifyDrawingTol * 96.0f / dpi;
+    double dpi = ( p->device()->logicalDpiX() + p->device()->logicalDpiY() ) / 2;
+    double map2pixelTol = mSimplifyMethod.threshold() * 96.0f / dpi;
 
-    int simplifyFlags = QgsMapToPixelSimplifier::NoFlags;
-    if ( mSimplifyDrawingHints & QgsVectorLayer::GeometrySimplification ) simplifyFlags |= QgsMapToPixelSimplifier::SimplifyGeometry;
-    if ( mSimplifyDrawingHints & QgsVectorLayer::EnvelopeSimplification ) simplifyFlags |= QgsMapToPixelSimplifier::SimplifyEnvelope;
+    const QgsMapToPixel& mtp = rendererContext.mapToPixel();
+    map2pixelTol *= mtp.mapUnitsPerPixel();
+    const QgsCoordinateTransform* ct = rendererContext.coordinateTransform();
 
-    QgsFeatureRequest::Flags requestFlags = QgsFeatureRequest::NoFlags;
-    if ( mSimplifyDrawingHints & QgsVectorLayer::GeometrySimplification ) requestFlags |= QgsFeatureRequest::SimplifyGeometry;
-    if ( mSimplifyDrawingHints & QgsVectorLayer::EnvelopeSimplification ) requestFlags |= QgsFeatureRequest::SimplifyEnvelope;
+    // resize the tolerance using the change of size of an 1-BBOX from the source CoordinateSystem to the target CoordinateSystem
+    if ( ct && !(( QgsCoordinateTransform* )ct )->isShortCircuited() )
+    {
+      QgsPoint center = rendererContext.extent().center();
+      double rectSize = ct->sourceCrs().geographicFlag() ?  0.0008983 /* ~100/(40075014/360=111319.4833) */ : 100;
 
-    featureRequest.setFlags( featureRequest.flags() | requestFlags );
-    featureRequest.setCoordinateTransform( rendererContext.coordinateTransform() );
-    featureRequest.setMapToPixel( &rendererContext.mapToPixel() );
-    featureRequest.setMapToPixelTol( map2pixelTol );
+      QgsRectangle sourceRect = QgsRectangle( center.x(), center.y(), center.x() + rectSize, center.y() + rectSize );
+      QgsRectangle targetRect = ct->transform( sourceRect );
 
-    QgsMapToPixelSimplifier* simplifier =
-      new QgsMapToPixelSimplifier( simplifyFlags, rendererContext.coordinateTransform(), &rendererContext.mapToPixel(), map2pixelTol );
+      QgsPoint minimumSrcPoint( sourceRect.xMinimum(), sourceRect.yMinimum() );
+      QgsPoint maximumSrcPoint( sourceRect.xMaximum(), sourceRect.yMaximum() );
+      QgsPoint minimumDstPoint( targetRect.xMinimum(), targetRect.yMinimum() );
+      QgsPoint maximumDstPoint( targetRect.xMaximum(), targetRect.yMaximum() );
 
-    fit = QgsFeatureIterator( new QgsSimplifiedVectorLayerFeatureIterator( this, featureRequest, simplifier ) );
+      double sourceHypothenuse = sqrt( minimumSrcPoint.sqrDist( maximumSrcPoint ) );
+      double targetHypothenuse = sqrt( minimumDstPoint.sqrDist( maximumDstPoint ) );
+
+      if ( targetHypothenuse != 0 )
+        map2pixelTol *= ( sourceHypothenuse / targetHypothenuse );
+    }
+
+    QgsSimplifyMethod simplifyMethod;
+    simplifyMethod.setMethodType( QgsSimplifyMethod::OptimizeForRendering );
+    simplifyMethod.setTolerance( map2pixelTol );
+    simplifyMethod.setForceLocalOptimization( mSimplifyMethod.forceLocalOptimization() );
+
+    featureRequest.setSimplifyMethod( simplifyMethod );
   }
-  else
-  {
-    fit = getFeatures( featureRequest );
-  }
+
+  QgsFeatureIterator fit = getFeatures( featureRequest );
 
   if (( mRendererV2->capabilities() & QgsFeatureRendererV2::SymbolLevels ) && mRendererV2->usingSymbolLevels() )
     drawRendererV2Levels( fit, rendererContext, labeling );
@@ -1248,7 +1258,7 @@ bool QgsVectorLayer::setSubsetString( QString subset )
 
 bool QgsVectorLayer::simplifyDrawingCanbeApplied( int simplifyHint ) const
 {
-  return mDataProvider && ( mSimplifyDrawingHints & simplifyHint ) && !mEditBuffer && ( !mCurrentRendererContext || !mCurrentRendererContext->renderingPrintComposition() );
+  return mDataProvider && !mEditBuffer && ( hasGeometryType() && geometryType() != QGis::Point ) && ( mSimplifyMethod.simplifyHints() & simplifyHint ) && ( !mCurrentRendererContext || mCurrentRendererContext->useRenderingOptimization() );
 }
 
 QgsFeatureIterator QgsVectorLayer::getFeatures( const QgsFeatureRequest& request )
@@ -1859,9 +1869,10 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
     mLabel->setMinScale( e.attribute( "minLabelScale", "1" ).toFloat() );
     mLabel->setMaxScale( e.attribute( "maxLabelScale", "100000000" ).toFloat() );
 
-    // get the simplification drawing configuration
-    setSimplifyDrawingHints( e.attribute( "simplifyDrawingHints", "7" ).toInt() );
-    setSimplifyDrawingTol( e.attribute( "simplifyDrawingTol", "1" ).toFloat() );
+    // get the simplification drawing settings
+    mSimplifyMethod.setSimplifyHints( e.attribute( "simplifyDrawingHints", "1" ).toInt() );
+    mSimplifyMethod.setThreshold( e.attribute( "simplifyDrawingTol", "1" ).toFloat() );
+    mSimplifyMethod.setForceLocalOptimization( e.attribute( "simplifyLocal", "1" ).toInt() );
 
     //also restore custom properties (for labeling-ng)
     readCustomProperties( node, "labeling" );
@@ -2196,9 +2207,10 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
     mapLayerNode.setAttribute( "minLabelScale", QString::number( mLabel->minScale() ) );
     mapLayerNode.setAttribute( "maxLabelScale", QString::number( mLabel->maxScale() ) );
 
-    // save the simplification drawing configuration
-    mapLayerNode.setAttribute( "simplifyDrawingHints", QString::number( mSimplifyDrawingHints ) );
-    mapLayerNode.setAttribute( "simplifyDrawingTol", QString::number( mSimplifyDrawingTol ) );
+    // save the simplification drawing settings
+    mapLayerNode.setAttribute( "simplifyDrawingHints", QString::number( mSimplifyMethod.simplifyHints() ) );
+    mapLayerNode.setAttribute( "simplifyDrawingTol", QString::number( mSimplifyMethod.threshold() ) );
+    mapLayerNode.setAttribute( "simplifyLocal", mSimplifyMethod.forceLocalOptimization() ? 1 : 0 );
 
     //save customproperties (for labeling ng)
     writeCustomProperties( node, doc );
@@ -2517,7 +2529,7 @@ bool QgsVectorLayer::changeGeometry( QgsFeatureId fid, QgsGeometry* geom )
 bool QgsVectorLayer::changeAttributeValue( QgsFeatureId fid, int field, QVariant value, bool emitSignal )
 {
   Q_UNUSED( emitSignal );
-  return changeAttributeValue ( fid, field, value );
+  return changeAttributeValue( fid, field, value );
 }
 
 bool QgsVectorLayer::changeAttributeValue( QgsFeatureId fid, int field, QVariant value )
@@ -3611,15 +3623,49 @@ void QgsVectorLayer::prepareLabelingAndDiagrams( QgsRenderContext& rendererConte
     mDiagramLayerSettings->renderer = mDiagramRenderer;
     rendererContext.labelingEngine()->addDiagramLayer( this, mDiagramLayerSettings );
     //add attributes needed by the diagram renderer
-    QList<int> att = mDiagramRenderer->diagramAttributes();
-    QList<int>::const_iterator attIt = att.constBegin();
+    QList<QString> att = mDiagramRenderer->diagramAttributes();
+    QList<QString>::const_iterator attIt = att.constBegin();
     for ( ; attIt != att.constEnd(); ++attIt )
     {
-      if ( !attributes.contains( *attIt ) )
+      QgsExpression* expression = mDiagramRenderer->diagram()->getExpression( *attIt, &pendingFields() );
+      QStringList columns = expression->referencedColumns();
+      QStringList::const_iterator columnsIterator = columns.constBegin();
+      for ( ; columnsIterator != columns.constEnd(); ++columnsIterator )
       {
-        attributes << *attIt;
+        int index = fieldNameIndex( *columnsIterator );
+        if ( !attributes.contains( index ) )
+        {
+          attributes << index;
+        }
       }
     }
+
+    QgsLinearlyInterpolatedDiagramRenderer* mLinearlyInterpolatedDiagramRenderer = dynamic_cast<QgsLinearlyInterpolatedDiagramRenderer*>( mDiagramRenderer );
+    if ( mLinearlyInterpolatedDiagramRenderer != NULL )
+    {
+      if ( mLinearlyInterpolatedDiagramRenderer->classificationAttributeIsExpression() )
+      {
+        QgsExpression* expression = mDiagramRenderer->diagram()->getExpression( mLinearlyInterpolatedDiagramRenderer->classificationAttributeExpression(), &pendingFields() );
+        QStringList columns = expression->referencedColumns();
+        QStringList::const_iterator columnsIterator = columns.constBegin();
+        for ( ; columnsIterator != columns.constEnd(); ++columnsIterator )
+        {
+          int index = fieldNameIndex( *columnsIterator );
+          if ( !attributes.contains( index ) )
+          {
+            attributes << index;
+          }
+        }
+      }
+      else
+      {
+        if ( !attributes.contains( mLinearlyInterpolatedDiagramRenderer->classificationAttribute() ) )
+        {
+          attributes << mLinearlyInterpolatedDiagramRenderer->classificationAttribute();
+        }
+      }
+    }
+
     //and the ones needed for data defined diagram positions
     if ( mDiagramLayerSettings->xPosColumn >= 0 && !attributes.contains( mDiagramLayerSettings->xPosColumn ) )
     {

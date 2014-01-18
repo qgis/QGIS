@@ -52,6 +52,8 @@ void QgsDiagramLayerSettings::writeXML( QDomElement& layerElem, QDomDocument& do
 
 void QgsDiagramSettings::readXML( const QDomElement& elem, const QgsVectorLayer* layer )
 {
+  Q_UNUSED( layer );
+
   font.fromString( elem.attribute( "font" ) );
   backgroundColor.setNamedColor( elem.attribute( "backgroundColor" ) );
   backgroundColor.setAlpha( elem.attribute( "backgroundAlpha" ).toInt() );
@@ -132,7 +134,7 @@ void QgsDiagramSettings::readXML( const QDomElement& elem, const QgsVectorLayer*
       QColor newColor( attrElem.attribute( "color" ) );
       newColor.setAlpha( 255 - transparency );
       categoryColors.append( newColor );
-      categoryIndices.append( layer->fieldNameIndex( attrElem.attribute( "field" ) ) );
+      categoryAttributes.append( attrElem.attribute( "field" ) );
     }
   }
   else
@@ -149,18 +151,20 @@ void QgsDiagramSettings::readXML( const QDomElement& elem, const QgsVectorLayer*
     }
 
     //attribute indices
-    categoryIndices.clear();
+    categoryAttributes.clear();
     QStringList catList = elem.attribute( "categories" ).split( "/" );
     QStringList::const_iterator catIt = catList.constBegin();
     for ( ; catIt != catList.constEnd(); ++catIt )
     {
-      categoryIndices.append( catIt->toInt() );
+      categoryAttributes.append( *catIt );
     }
   }
 }
 
 void QgsDiagramSettings::writeXML( QDomElement& rendererElem, QDomDocument& doc, const QgsVectorLayer* layer ) const
 {
+  Q_UNUSED( layer );
+
   QDomElement categoryElem = doc.createElement( "DiagramCategory" );
   categoryElem.setAttribute( "font", font.toString() );
   categoryElem.setAttribute( "backgroundColor", backgroundColor.name() );
@@ -232,12 +236,12 @@ void QgsDiagramSettings::writeXML( QDomElement& rendererElem, QDomDocument& doc,
   categoryElem.setAttribute( "angleOffset", QString::number( angleOffset ) );
 
   QString colors;
-  int nCats = qMin( categoryColors.size(), categoryIndices.size() );
+  int nCats = qMin( categoryColors.size(), categoryAttributes.size() );
   for ( int i = 0; i < nCats; ++i )
   {
     QDomElement attributeElem = doc.createElement( "attribute" );
 
-    attributeElem.setAttribute( "field", layer->pendingFields().at( categoryIndices.at( i ) ).name() );
+    attributeElem.setAttribute( "field", categoryAttributes.at( i ) );
     attributeElem.setAttribute( "color", categoryColors.at( i ).name() );
     categoryElem.appendChild( attributeElem );
   }
@@ -260,7 +264,7 @@ void QgsDiagramRendererV2::setDiagram( QgsDiagram* d )
   mDiagram = d;
 }
 
-void QgsDiagramRendererV2::renderDiagram( const QgsAttributes& att, QgsRenderContext& c, const QPointF& pos )
+void QgsDiagramRendererV2::renderDiagram( const QgsFeature& feature, QgsRenderContext& c, const QPointF& pos )
 {
   if ( !mDiagram )
   {
@@ -268,23 +272,23 @@ void QgsDiagramRendererV2::renderDiagram( const QgsAttributes& att, QgsRenderCon
   }
 
   QgsDiagramSettings s;
-  if ( !diagramSettings( att, c, s ) )
+  if ( !diagramSettings( feature, c, s ) )
   {
     return;
   }
 
-  mDiagram->renderDiagram( att, c, s, pos );
+  mDiagram->renderDiagram( feature, c, s, pos );
 }
 
-QSizeF QgsDiagramRendererV2::sizeMapUnits( const QgsAttributes& attributes, const QgsRenderContext& c )
+QSizeF QgsDiagramRendererV2::sizeMapUnits( const QgsFeature& feature, const QgsRenderContext& c )
 {
   QgsDiagramSettings s;
-  if ( !diagramSettings( attributes, c, s ) )
+  if ( !diagramSettings( feature, c, s ) )
   {
     return QSizeF();
   }
 
-  QSizeF size = diagramSize( attributes, c );
+  QSizeF size = diagramSize( feature, c );
   if ( s.sizeType == QgsDiagramSettings::MM )
   {
     convertSizeToMapUnits( size, c );
@@ -360,16 +364,16 @@ QgsSingleCategoryDiagramRenderer::~QgsSingleCategoryDiagramRenderer()
 {
 }
 
-bool QgsSingleCategoryDiagramRenderer::diagramSettings( const QgsAttributes&, const QgsRenderContext& c, QgsDiagramSettings& s )
+bool QgsSingleCategoryDiagramRenderer::diagramSettings( const QgsFeature&, const QgsRenderContext& c, QgsDiagramSettings& s )
 {
   Q_UNUSED( c );
   s = mSettings;
   return true;
 }
 
-QSizeF QgsSingleCategoryDiagramRenderer::diagramSize( const QgsAttributes &attributes, const QgsRenderContext &c )
+QSizeF QgsSingleCategoryDiagramRenderer::diagramSize( const QgsFeature &feature, const QgsRenderContext &c )
 {
-  return mDiagram->diagramSize( attributes, c, mSettings );
+  return mDiagram->diagramSize( feature.attributes(), c, mSettings );
 }
 
 QList<QgsDiagramSettings> QgsSingleCategoryDiagramRenderer::diagramSettings() const
@@ -402,6 +406,7 @@ void QgsSingleCategoryDiagramRenderer::writeXML( QDomElement& layerElem, QDomDoc
 
 QgsLinearlyInterpolatedDiagramRenderer::QgsLinearlyInterpolatedDiagramRenderer(): QgsDiagramRendererV2()
 {
+  mInterpolationSettings.classificationAttributeIsExpression = false;
 }
 
 QgsLinearlyInterpolatedDiagramRenderer::~QgsLinearlyInterpolatedDiagramRenderer()
@@ -415,26 +420,21 @@ QList<QgsDiagramSettings> QgsLinearlyInterpolatedDiagramRenderer::diagramSetting
   return settingsList;
 }
 
-bool QgsLinearlyInterpolatedDiagramRenderer::diagramSettings( const QgsAttributes& attributes, const QgsRenderContext& c, QgsDiagramSettings& s )
+bool QgsLinearlyInterpolatedDiagramRenderer::diagramSettings( const QgsFeature& feature, const QgsRenderContext& c, QgsDiagramSettings& s )
 {
   s = mSettings;
-  s.size = diagramSize( attributes, c );
+  s.size = diagramSize( feature, c );
   return true;
 }
 
-QList<int> QgsLinearlyInterpolatedDiagramRenderer::diagramAttributes() const
+QList<QString> QgsLinearlyInterpolatedDiagramRenderer::diagramAttributes() const
 {
-  QList<int> attributes = mSettings.categoryIndices;
-  if ( !attributes.contains( mInterpolationSettings.classificationAttribute ) )
-  {
-    attributes.push_back( mInterpolationSettings.classificationAttribute );
-  }
-  return attributes;
+  return mSettings.categoryAttributes;
 }
 
-QSizeF QgsLinearlyInterpolatedDiagramRenderer::diagramSize( const QgsAttributes& attributes, const QgsRenderContext& c )
+QSizeF QgsLinearlyInterpolatedDiagramRenderer::diagramSize( const QgsFeature& feature, const QgsRenderContext& c )
 {
-  return mDiagram->diagramSize( attributes, c, mSettings, mInterpolationSettings );
+  return mDiagram->diagramSize( feature, c, mSettings, mInterpolationSettings );
 }
 
 void QgsLinearlyInterpolatedDiagramRenderer::readXML( const QDomElement& elem, const QgsVectorLayer* layer )
@@ -445,7 +445,15 @@ void QgsLinearlyInterpolatedDiagramRenderer::readXML( const QDomElement& elem, c
   mInterpolationSettings.lowerSize.setHeight( elem.attribute( "lowerHeight" ).toDouble() );
   mInterpolationSettings.upperSize.setWidth( elem.attribute( "upperWidth" ).toDouble() );
   mInterpolationSettings.upperSize.setHeight( elem.attribute( "upperHeight" ).toDouble() );
-  mInterpolationSettings.classificationAttribute = elem.attribute( "classificationAttribute" ).toInt();
+  mInterpolationSettings.classificationAttributeIsExpression = elem.hasAttribute( "classificationAttributeExpression" );
+  if ( mInterpolationSettings.classificationAttributeIsExpression )
+  {
+    mInterpolationSettings.classificationAttributeExpression = elem.attribute( "classificationAttributeExpression" );
+  }
+  else
+  {
+    mInterpolationSettings.classificationAttribute = elem.attribute( "classificationAttribute" ).toInt();
+  }
   QDomElement settingsElem = elem.firstChildElement( "DiagramCategory" );
   if ( !settingsElem.isNull() )
   {
@@ -463,7 +471,14 @@ void QgsLinearlyInterpolatedDiagramRenderer::writeXML( QDomElement& layerElem, Q
   rendererElem.setAttribute( "lowerHeight", QString::number( mInterpolationSettings.lowerSize.height() ) );
   rendererElem.setAttribute( "upperWidth", QString::number( mInterpolationSettings.upperSize.width() ) );
   rendererElem.setAttribute( "upperHeight", QString::number( mInterpolationSettings.upperSize.height() ) );
-  rendererElem.setAttribute( "classificationAttribute", mInterpolationSettings.classificationAttribute );
+  if ( mInterpolationSettings.classificationAttributeIsExpression )
+  {
+    rendererElem.setAttribute( "classificationAttributeExpression", mInterpolationSettings.classificationAttributeExpression );
+  }
+  else
+  {
+    rendererElem.setAttribute( "classificationAttribute", mInterpolationSettings.classificationAttribute );
+  }
   mSettings.writeXML( rendererElem, doc, layer );
   _writeXML( rendererElem, doc, layer );
   layerElem.appendChild( rendererElem );

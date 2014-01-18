@@ -91,6 +91,11 @@ class CORE_EXPORT QgsSimpleLineSymbolLayerV2 : public QgsLineSymbolLayerV2
     QVector<qreal> customDashVector() const { return mCustomDashVector; }
     void setCustomDashVector( const QVector<qreal>& vector ) { mCustomDashVector = vector; }
 
+    QVector<qreal> dxfCustomDashPattern( QgsSymbolV2::OutputUnit& unit ) const;
+
+    double dxfWidth( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const;
+    QColor dxfColor( const QgsSymbolV2RenderContext& context ) const;
+
   protected:
     Qt::PenStyle mPenStyle;
     Qt::PenJoinStyle mPenJoinStyle;

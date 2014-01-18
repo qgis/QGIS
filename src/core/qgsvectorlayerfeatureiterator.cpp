@@ -19,9 +19,11 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayereditbuffer.h"
 #include "qgsvectorlayerjoinbuffer.h"
+#include "qgsgeometrysimplifier.h"
+#include "qgssimplifymethod.h"
 
 QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayer* layer, const QgsFeatureRequest& request )
-    : QgsAbstractFeatureIterator( request ), L( layer )
+    : QgsAbstractFeatureIterator( request ), L( layer ), mEditGeometrySimplifier( NULL )
 {
   QgsVectorLayerJoinBuffer* joinBuffer = L->mJoinBuffer;
 
@@ -89,6 +91,9 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayer* la
 
 QgsVectorLayerFeatureIterator::~QgsVectorLayerFeatureIterator()
 {
+  delete mEditGeometrySimplifier;
+  mEditGeometrySimplifier = NULL;
+
   close();
 }
 
@@ -230,7 +235,17 @@ void QgsVectorLayerFeatureIterator::useAddedFeature( const QgsFeature& src, QgsF
   f.setFields( &L->mUpdatedFields );
 
   if ( src.geometry() && !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) )
+  {
     f.setGeometry( *src.geometry() );
+
+    // simplify the edited geometry using its simplifier configured
+    if ( mEditGeometrySimplifier )
+    {
+      QgsGeometry* geometry = f.geometry();
+      QGis::GeometryType geometryType = geometry->type();
+      if ( geometryType == QGis::Line || geometryType == QGis::Polygon ) mEditGeometrySimplifier->simplifyGeometry( geometry );
+    }
+  }
 
   // TODO[MD]: if subset set just some attributes
 
@@ -301,7 +316,17 @@ void QgsVectorLayerFeatureIterator::useChangedAttributeFeature( QgsFeatureId fid
   f.setFields( &L->mUpdatedFields );
 
   if ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) )
+  {
     f.setGeometry( geom );
+
+    // simplify the edited geometry using its simplifier configured
+    if ( mEditGeometrySimplifier )
+    {
+      QgsGeometry* geometry = f.geometry();
+      QGis::GeometryType geometryType = geometry->type();
+      if ( geometryType == QGis::Line || geometryType == QGis::Polygon ) mEditGeometrySimplifier->simplifyGeometry( geometry );
+    }
+  }
 
   bool subsetAttrs = ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes );
   if ( !subsetAttrs || ( subsetAttrs && mRequest.subsetOfAttributes().count() > 0 ) )
@@ -424,6 +449,39 @@ void QgsVectorLayerFeatureIterator::addJoinedAttributes( QgsFeature &f )
   }
 }
 
+bool QgsVectorLayerFeatureIterator::prepareSimplification( const QgsSimplifyMethod& simplifyMethod )
+{
+  delete mEditGeometrySimplifier;
+  mEditGeometrySimplifier = NULL;
+
+  // setup simplification for edited geometries to fetch
+  if ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) && simplifyMethod.methodType() != QgsSimplifyMethod::NoSimplification && L->hasGeometryType() && L->geometryType() != QGis::Point )
+  {
+    mEditGeometrySimplifier = QgsSimplifyMethod::createGeometrySimplifier( simplifyMethod );
+    return mEditGeometrySimplifier != NULL;
+  }
+  return false;
+}
+
+bool QgsVectorLayerFeatureIterator::providerCanSimplify( QgsSimplifyMethod::MethodType methodType ) const
+{
+  QgsVectorDataProvider* provider = L->dataProvider();
+
+  if ( provider && methodType != QgsSimplifyMethod::NoSimplification )
+  {
+    int capabilities = provider->capabilities();
+
+    if ( methodType == QgsSimplifyMethod::OptimizeForRendering )
+    {
+      return ( capabilities & QgsVectorDataProvider::SimplifyGeometries );
+    }
+    else if ( methodType == QgsSimplifyMethod::PreserveTopology )
+    {
+      return ( capabilities & QgsVectorDataProvider::SimplifyGeometriesWithTopologicalValidation );
+    }
+  }
+  return false;
+}
 
 
 void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesCached( QgsFeature& f, const QVariant& joinValue ) const
@@ -588,48 +646,4 @@ void QgsVectorLayerFeatureIterator::updateFeatureGeometry( QgsFeature &f )
 {
   if ( mChangedGeometries.contains( f.id() ) )
     f.setGeometry( mChangedGeometries[f.id()] );
-}
-
-/***************************************************************************
-    QgsSimplifiedVectorLayerFeatureIterator class
-    ----------------------
-    begin                : December 2013
-    copyright            : (C) 2013 by Alvaro Huarte
-    email                : http://wiki.osgeo.org/wiki/Alvaro_Huarte
-
- ***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
-
-QgsSimplifiedVectorLayerFeatureIterator::QgsSimplifiedVectorLayerFeatureIterator( QgsVectorLayer* layer, const QgsFeatureRequest& request, QgsAbstractGeometrySimplifier* simplifier )
-    : QgsVectorLayerFeatureIterator( layer, request )
-    , mSimplifier( simplifier )
-{
-  mSupportsPresimplify = layer->dataProvider()->capabilities() & QgsVectorDataProvider::SimplifyGeometries;
-}
-
-QgsSimplifiedVectorLayerFeatureIterator::~QgsSimplifiedVectorLayerFeatureIterator()
-{
-  if ( mSimplifier )
-  {
-    delete mSimplifier;
-    mSimplifier = NULL;
-  }
-}
-
-//! fetch next feature, return true on success
-bool QgsSimplifiedVectorLayerFeatureIterator::fetchFeature( QgsFeature& feature )
-{
-  if ( QgsVectorLayerFeatureIterator::fetchFeature( feature ) )
-  {
-    const QgsMapToPixel* mtp = mRequest.mapToPixel();
-    if ( mtp && !mSupportsPresimplify && mSimplifier ) mSimplifier->simplifyGeometry( feature.geometry() );
-    return true;
-  }
-  return false;
 }

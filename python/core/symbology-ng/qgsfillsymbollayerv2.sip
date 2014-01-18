@@ -40,6 +40,12 @@ class QgsSimpleFillSymbolLayerV2 : QgsFillSymbolLayerV2
     QColor borderColor() const;
     void setBorderColor( QColor borderColor );
 
+    virtual QColor outlineColor() const;
+    virtual void setOutlineColor( const QColor& color );
+    
+    virtual QColor fillColor() const;
+    virtual void setFillColor( const QColor& color );
+
     Qt::PenStyle borderStyle() const;
     void setBorderStyle( Qt::PenStyle borderStyle );
 

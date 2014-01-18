@@ -75,6 +75,7 @@ SET(QGIS_CORE_SRCS
   qgsgeometrycache.cpp
   qgsgeometryvalidator.cpp
   qgsgeometrysimplifier.cpp
+  qgssimplifymethod.cpp
   qgsgml.cpp
   qgsgmlschema.cpp
   qgshttptransaction.cpp
@@ -129,6 +130,7 @@ SET(QGIS_CORE_SRCS
   qgsvectorlayerimport.cpp
   qgsvectorlayerjoinbuffer.cpp
   qgsvectorlayerundocommand.cpp
+  qgsvectorsimplifymethod.cpp
 
   qgsnetworkaccessmanager.cpp
 
@@ -168,6 +170,7 @@ SET(QGIS_CORE_SRCS
   dxf/qgsdxfexport.cpp
   dxf/qgsdxfpaintdevice.cpp
   dxf/qgsdxfpaintengine.cpp
+  dxf/qgsdxfpallabeling.cpp
 
   pal/costcalculator.cpp
   pal/feature.cpp
@@ -462,6 +465,8 @@ SET(QGIS_CORE_HDRS
   qgsdbfilterproxymodel.h
   qgsvectorlayerjoinbuffer.h
   qgslabelsearchtree.h
+  qgssimplifymethod.h
+  qgsvectorsimplifymethod.h
 
   qgsdiagramrendererv2.h
   diagram/qgsdiagram.h

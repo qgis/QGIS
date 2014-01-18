@@ -29,7 +29,7 @@ QgsRenderContext::QgsRenderContext()
     mRasterScaleFactor( 1.0 ),
     mRendererScale( 1.0 ),
     mLabelingEngine( NULL ),
-    mRenderingPrintComposition( false )
+    mUseRenderingOptimization( true )
 {
 
 }

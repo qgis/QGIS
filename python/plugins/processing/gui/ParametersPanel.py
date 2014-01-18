@@ -185,7 +185,7 @@ class ParametersPanel(QtGui.QWidget):
             return layer.name()
 
     def getWidgetFromParameter(self, param):
-        # TODO Create Parameter widget class that holds the logic 
+        # TODO Create Parameter widget class that holds the logic
         # for creating a widget that belongs to the parameter.
         if isinstance(param, ParameterRaster):
             layers = dataobjects.getRasterLayers()

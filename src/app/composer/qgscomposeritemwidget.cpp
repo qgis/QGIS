@@ -62,6 +62,16 @@ QgsComposerItemWidget::~QgsComposerItemWidget()
 
 }
 
+void QgsComposerItemWidget::showBackgroundGroup( bool showGroup )
+{
+  mBackgroundGroupBox->setVisible( showGroup );
+}
+
+void QgsComposerItemWidget::showFrameGroup( bool showGroup )
+{
+  mFrameGroupBox->setVisible( showGroup );
+}
+
 //slots
 void QgsComposerItemWidget::on_mFrameColorButton_clicked()
 {

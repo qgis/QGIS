@@ -161,19 +161,20 @@ void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant>& opts )
 
   if ( sidebar )
   {
-     QString style = "QListWidget#mOptionsListWidget {"
-         "background-color: rgb(69, 69, 69, 220);"
-          "}"
-          "QListWidget#mOptionsListWidget::item {"
-          "    color: white;"
-          "    padding: 3px;"
-          "}"
-          "QListWidget#mOptionsListWidget::item::selected {"
-          "    color: black;"
-          "    background-color:palette(Window);"
-          "    padding-right: 0px;              "
-          "}";
-     ss += style;
+    QString style = "QListWidget#mOptionsListWidget {"
+                    "    background-color: rgb(69, 69, 69, 220);"
+                    "    outline: 0;"
+                    "}"
+                    "QListWidget#mOptionsListWidget::item {"
+                    "    color: white;"
+                    "    padding: 3px;"
+                    "}"
+                    "QListWidget#mOptionsListWidget::item::selected {"
+                    "    color: black;"
+                    "    background-color:palette(Window);"
+                    "    padding-right: 0px;"
+                    "}";
+    ss += style;
   }
 
   //fix background issue for gnome desktop
@@ -183,6 +184,16 @@ void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant>& opts )
     ss += "background-color: white;";
     ss += "} ";
   }
+
+  // Fix selection color on loosing focus (Windows)
+  const QPalette palette = qApp->palette();
+
+  ss += QString( "QTableView {"
+                 "selection-background-color: %1;"
+                 "selection-color: %2;"
+                 "}" )
+        .arg( palette.highlight().color().name() )
+        .arg( palette.highlightedText().color().name() );
 
   QgsDebugMsg( QString( "Stylesheet built: %1" ).arg( ss ) );
 

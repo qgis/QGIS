@@ -393,9 +393,21 @@ void QgsVectorLayerProperties::syncToLayer( void )
   cbMaximumScale->setScale( 1.0 / layer->maximumScale() );
 
   // get simplify drawing configuration
-  mSimplifyDrawingGroupBox->setChecked( layer->simplifyDrawingHints() != QgsVectorLayer::NoSimplification );
-  mSimplifyDrawingSlider->setValue(( int )( 5.0f * ( layer->simplifyDrawingTol() - 1 ) ) );
-  mSimplifyDrawingPanel->setVisible( mSimplifyDrawingSlider->value() > 0 );
+  const QgsVectorSimplifyMethod& simplifyMethod = layer->simplifyMethod();
+  mSimplifyDrawingGroupBox->setChecked( simplifyMethod.simplifyHints() != QgsVectorLayer::NoSimplification );
+  mSimplifyDrawingSpinBox->setValue( simplifyMethod.threshold() );
+
+  if ( !( layer->dataProvider()->capabilities() & QgsVectorDataProvider::SimplifyGeometries ) )
+  {
+    mSimplifyDrawingAtProvider->setChecked( false );
+    mSimplifyDrawingAtProvider->setEnabled( false );
+    mSimplifyDrawingAtProvider->setText( QString( "%1 (%2)" ).arg( mSimplifyDrawingAtProvider->text(), tr( "Not supported" ) ) );
+  }
+  else
+  {
+    mSimplifyDrawingAtProvider->setChecked( !simplifyMethod.forceLocalOptimization() );
+    mSimplifyDrawingAtProvider->setEnabled( mSimplifyDrawingGroupBox->isChecked() );
+  }
 
   // load appropriate symbology page (V1 or V2)
   updateSymbologyPage();
@@ -535,14 +547,17 @@ void QgsVectorLayerProperties::apply()
   layer->setMetadataUrlFormat( mLayerMetadataUrlFormatComboBox->currentText() );
 
   //layer simplify drawing configuration
-  int simplifyDrawingHints = QgsVectorLayer::NoSimplification;
+  int simplifyHints = QgsVectorLayer::NoSimplification;
   if ( mSimplifyDrawingGroupBox->isChecked() )
   {
-    simplifyDrawingHints |= QgsVectorLayer::DefaultSimplification;
-    if ( mSimplifyDrawingSlider->value() > 0 ) simplifyDrawingHints |= QgsVectorLayer::AntialiasingSimplification;
+    simplifyHints |= QgsVectorLayer::GeometrySimplification;
+    if ( mSimplifyDrawingSpinBox->value() > 1 ) simplifyHints |= QgsVectorLayer::AntialiasingSimplification;
   }
-  layer->setSimplifyDrawingHints( simplifyDrawingHints );
-  layer->setSimplifyDrawingTol( 1.0f + 0.2f*mSimplifyDrawingSlider->value() );
+  QgsVectorSimplifyMethod simplifyMethod = layer->simplifyMethod();
+  simplifyMethod.setSimplifyHints( simplifyHints );
+  simplifyMethod.setThreshold( mSimplifyDrawingSpinBox->value() );
+  simplifyMethod.setForceLocalOptimization( !mSimplifyDrawingAtProvider->isChecked() );
+  layer->setSimplifyMethod( simplifyMethod );
 
   // update symbology
   emit refreshLegend( layer->id(), QgsLegendItem::DontChange );
@@ -1083,7 +1098,14 @@ void QgsVectorLayerProperties::on_mMaximumScaleSetCurrentPushButton_clicked()
   cbMaximumScale->setScale( 1.0 / QgisApp::instance()->mapCanvas()->mapRenderer()->scale() );
 }
 
-void QgsVectorLayerProperties::on_mSimplifyDrawingSlider_valueChanged( int value )
+void QgsVectorLayerProperties::on_mSimplifyDrawingGroupBox_toggled( bool checked )
 {
-  mSimplifyDrawingPanel->setVisible( value > 0 );
+  if ( !( layer->dataProvider()->capabilities() & QgsVectorDataProvider::SimplifyGeometries ) )
+  {
+    mSimplifyDrawingAtProvider->setEnabled( false );
+  }
+  else
+  {
+    mSimplifyDrawingAtProvider->setEnabled( checked );
+  }
 }

@@ -49,26 +49,9 @@ QgsAtlasCompositionWidget::QgsAtlasCompositionWidget( QWidget* parent, QgsCompos
     connect( layerRegistry, SIGNAL( layerWasAdded( QgsMapLayer* ) ), this, SLOT( onLayerAdded( QgsMapLayer* ) ) );
   }
 
-  // update the composer map combo box
-  // populate the map list
-  mComposerMapComboBox->clear();
-  QList<const QgsComposerMap*> availableMaps = mComposition->composerMapItems();
-  QList<const QgsComposerMap*>::const_iterator mapItemIt = availableMaps.constBegin();
-  for ( ; mapItemIt != availableMaps.constEnd(); ++mapItemIt )
-  {
-    mComposerMapComboBox->addItem( tr( "Map %1" ).arg(( *mapItemIt )->id() ), qVariantFromValue(( void* )*mapItemIt ) );
-  }
-
   // Sort direction
   mAtlasSortFeatureDirectionButton->setEnabled( false );
-
   mAtlasSortFeatureKeyComboBox->setEnabled( false );
-
-  // Connect to addition / removal of maps
-  connect( mComposition, SIGNAL( composerMapAdded( QgsComposerMap* ) ), this, SLOT( onComposerMapAdded( QgsComposerMap* ) ) );
-  connect( mComposition, SIGNAL( itemRemoved( QgsComposerItem* ) ), this, SLOT( onItemRemoved( QgsComposerItem* ) ) );
-
-  connect( mAtlasMarginRadio, SIGNAL( toggled( bool ) ), mAtlasMarginSpinBox, SLOT( setEnabled( bool ) ) );
 
   // connect to updates
   connect( &mComposition->atlasComposition(), SIGNAL( parameterChanged() ), this, SLOT( updateGuiElements() ) );
@@ -87,20 +70,12 @@ void QgsAtlasCompositionWidget::on_mUseAtlasCheckBox_stateChanged( int state )
   {
     atlasMap->setEnabled( true );
     mConfigurationGroup->setEnabled( true );
-    mVisibilityGroup->setEnabled( true );
-    mSortingGroup->setEnabled( true );
-    mFilteringGroup->setEnabled( true );
-    mScalingGroup->setEnabled( true );
     mOutputGroup->setEnabled( true );
   }
   else
   {
     atlasMap->setEnabled( false );
     mConfigurationGroup->setEnabled( false );
-    mVisibilityGroup->setEnabled( false );
-    mSortingGroup->setEnabled( false );
-    mFilteringGroup->setEnabled( false );
-    mScalingGroup->setEnabled( false );
     mOutputGroup->setEnabled( false );
   }
 }
@@ -137,36 +112,7 @@ void QgsAtlasCompositionWidget::onLayerAdded( QgsMapLayer* map )
     {
       atlasMap->setCoverageLayer( vectorLayer );
       updateAtlasFeatures();
-      checkLayerType( vectorLayer );
     }
-  }
-}
-
-void QgsAtlasCompositionWidget::onComposerMapAdded( QgsComposerMap* map )
-{
-  QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
-  mComposerMapComboBox->addItem( tr( "Map %1" ).arg( map->id() ), qVariantFromValue(( void* )map ) );
-  if ( mComposerMapComboBox->count() == 1 )
-  {
-    atlasMap->setComposerMap( map );
-  }
-}
-
-void QgsAtlasCompositionWidget::onItemRemoved( QgsComposerItem* item )
-{
-  QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
-  QgsComposerMap* map = dynamic_cast<QgsComposerMap*>( item );
-  if ( map )
-  {
-    int idx = mComposerMapComboBox->findData( qVariantFromValue(( void* )map ) );
-    if ( idx != -1 )
-    {
-      mComposerMapComboBox->removeItem( idx );
-    }
-  }
-  if ( mComposerMapComboBox->count() == 0 )
-  {
-    atlasMap->setComposerMap( 0 );
   }
 }
 
@@ -190,51 +136,12 @@ void QgsAtlasCompositionWidget::on_mAtlasCoverageLayerComboBox_currentIndexChang
 
     if ( layer )
     {
-      checkLayerType( layer );
       atlasMap->setCoverageLayer( layer );
       updateAtlasFeatures();
     }
 
     // update sorting columns
     fillSortColumns();
-  }
-}
-
-void QgsAtlasCompositionWidget::checkLayerType( QgsVectorLayer *layer )
-{
-  // enable or disable fixed scale control based on layer type
-  if ( !layer ) return;
-  switch ( layer->wkbType() )
-  {
-    case QGis::WKBPoint:
-    case QGis::WKBPoint25D:
-    case QGis::WKBMultiPoint:
-    case QGis::WKBMultiPoint25D:
-      //For point layers buffer setting makes no sense, so set "fixed scale" on and disable margin control
-      mAtlasFixedScaleRadio->setChecked( true );
-      mAtlasMarginRadio->setEnabled( false );
-      break;
-    default:
-      //Not a point layer, so enable changes to fixed scale control
-      mAtlasMarginRadio->setEnabled( true );
-  }
-}
-
-void QgsAtlasCompositionWidget::on_mComposerMapComboBox_currentIndexChanged( int index )
-{
-  QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
-  if ( !atlasMap )
-  {
-    return;
-  }
-  if ( index == -1 )
-  {
-    atlasMap->setComposerMap( 0 );
-  }
-  else
-  {
-    QgsComposerMap* map = reinterpret_cast<QgsComposerMap*>( mComposerMapComboBox->itemData( index ).value<void*>() );
-    atlasMap->setComposerMap( map );
   }
 }
 
@@ -278,22 +185,6 @@ void QgsAtlasCompositionWidget::on_mAtlasHideCoverageCheckBox_stateChanged( int 
     return;
   }
   atlasMap->setHideCoverage( state == Qt::Checked );
-}
-
-void QgsAtlasCompositionWidget::on_mAtlasFixedScaleRadio_toggled( bool checked )
-{
-  QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
-  if ( !atlasMap )
-  {
-    return;
-  }
-  atlasMap->setFixedScale( checked );
-}
-
-void QgsAtlasCompositionWidget::on_mAtlasMarginSpinBox_valueChanged( int value )
-{
-  QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
-  atlasMap->setMargin( value / 100. );
 }
 
 void QgsAtlasCompositionWidget::on_mAtlasSingleFileCheckBox_stateChanged( int state )
@@ -487,26 +378,9 @@ void QgsAtlasCompositionWidget::updateGuiElements()
   if ( idx != -1 )
   {
     mAtlasCoverageLayerComboBox->setCurrentIndex( idx );
-    checkLayerType( atlasMap->coverageLayer() );
-  }
-  idx = mComposerMapComboBox->findData( qVariantFromValue(( void* )atlasMap->composerMap() ) );
-  if ( idx != -1 )
-  {
-    mComposerMapComboBox->setCurrentIndex( idx );
   }
 
-  mAtlasMarginSpinBox->setValue( static_cast<int>( atlasMap->margin() * 100 ) );
   mAtlasFilenamePatternEdit->setText( atlasMap->filenamePattern() );
-  if ( atlasMap->fixedScale() )
-  {
-    mAtlasFixedScaleRadio->setChecked( true );
-    mAtlasMarginSpinBox->setEnabled( false );
-  }
-  else
-  {
-    mAtlasMarginRadio->setChecked( true );
-    mAtlasMarginSpinBox->setEnabled( true );
-  }
   mAtlasHideCoverageCheckBox->setCheckState( atlasMap->hideCoverage() ? Qt::Checked : Qt::Unchecked );
   mAtlasSingleFileCheckBox->setCheckState( atlasMap->singleFile() ? Qt::Checked : Qt::Unchecked );
   mAtlasSortFeatureCheckBox->setCheckState( atlasMap->sortFeatures() ? Qt::Checked : Qt::Unchecked );
@@ -520,9 +394,5 @@ void QgsAtlasCompositionWidget::blockAllSignals( bool b )
 {
   mUseAtlasCheckBox->blockSignals( b );
   mConfigurationGroup->blockSignals( b );
-  mVisibilityGroup->blockSignals( b );
-  mSortingGroup->blockSignals( b );
-  mFilteringGroup->blockSignals( b );
-  mScalingGroup->blockSignals( b );
   mOutputGroup->blockSignals( b );
 }

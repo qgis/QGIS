@@ -26,9 +26,10 @@
 #include <QDomElement>
 
 QgsEllipseSymbolLayerV2::QgsEllipseSymbolLayerV2(): mSymbolName( "circle" ), mSymbolWidth( 4 ), mSymbolWidthUnit( QgsSymbolV2::MM ), mSymbolHeight( 3 ),
-    mSymbolHeightUnit( QgsSymbolV2::MM ), mFillColor( Qt::white ), mOutlineColor( Qt::black ), mOutlineWidth( 0 ), mOutlineWidthUnit( QgsSymbolV2::MM )
+    mSymbolHeightUnit( QgsSymbolV2::MM ), mFillColor( Qt::white ), mOutlineColor( Qt::black ), mOutlineStyle( Qt::SolidLine ), mOutlineWidth( 0 ), mOutlineWidthUnit( QgsSymbolV2::MM )
 {
   mPen.setColor( mOutlineColor );
+  mPen.setStyle( mOutlineStyle );
   mPen.setWidth( 1.0 );
   mPen.setJoinStyle( Qt::MiterJoin );
   mBrush.setColor( mFillColor );
@@ -68,6 +69,10 @@ QgsSymbolLayerV2* QgsEllipseSymbolLayerV2::create( const QgsStringMap& propertie
   if ( properties.contains( "angle" ) )
   {
     layer->setAngle( properties["angle"].toDouble() );
+  }
+  if ( properties.contains( "outline_style" ) )
+  {
+    layer->setOutlineStyle( QgsSymbolLayerV2Utils::decodePenStyle( properties["outline_style"] ) );
   }
   if ( properties.contains( "outline_width" ) )
   {
@@ -262,6 +267,7 @@ void QgsEllipseSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context )
     preparePath( mSymbolName, context );
   }
   mPen.setColor( mOutlineColor );
+  mPen.setStyle( mOutlineStyle );
   mPen.setWidthF( mOutlineWidth * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOutlineWidthUnit ) );
   mBrush.setColor( mFillColor );
   prepareExpressions( context.layer(), context.renderContext().rendererScale() );
@@ -295,7 +301,7 @@ void QgsEllipseSymbolLayerV2::writeSldMarker( QDomDocument &doc, QDomElement &el
   QDomElement graphicElem = doc.createElement( "se:Graphic" );
   element.appendChild( graphicElem );
 
-  QgsSymbolLayerV2Utils::wellKnownMarkerToSld( doc, graphicElem, mSymbolName, mFillColor, mOutlineColor, mOutlineWidth, mSymbolWidth );
+  QgsSymbolLayerV2Utils::wellKnownMarkerToSld( doc, graphicElem, mSymbolName, mFillColor, mOutlineColor, mOutlineStyle, mOutlineWidth, mSymbolWidth );
 
   // store w/h factor in a <VendorOption>
   double widthHeightFactor = mSymbolWidth / mSymbolHeight;
@@ -350,6 +356,7 @@ QgsSymbolLayerV2* QgsEllipseSymbolLayerV2::createFromSld( QDomElement &element )
   QColor fillColor, borderColor;
   double borderWidth, size;
   double widthHeightFactor = 1.0;
+  Qt::PenStyle borderStyle;
 
   QgsStringMap vendorOptions = QgsSymbolLayerV2Utils::getVendorOptionList( graphicElem );
   for ( QgsStringMap::iterator it = vendorOptions.begin(); it != vendorOptions.end(); ++it )
@@ -363,7 +370,7 @@ QgsSymbolLayerV2* QgsEllipseSymbolLayerV2::createFromSld( QDomElement &element )
     }
   }
 
-  if ( !QgsSymbolLayerV2Utils::wellKnownMarkerFromSld( graphicElem, name, fillColor, borderColor, borderWidth, size ) )
+  if ( !QgsSymbolLayerV2Utils::wellKnownMarkerFromSld( graphicElem, name, fillColor, borderColor, borderStyle, borderWidth, size ) )
     return NULL;
 
   double angle = 0.0;
@@ -380,6 +387,7 @@ QgsSymbolLayerV2* QgsEllipseSymbolLayerV2::createFromSld( QDomElement &element )
   m->setSymbolName( name );
   m->setFillColor( fillColor );
   m->setOutlineColor( borderColor );
+  m->setOutlineStyle( borderStyle );
   m->setOutlineWidth( borderWidth );
   m->setSymbolWidth( size );
   m->setSymbolHeight( size / widthHeightFactor );
@@ -396,6 +404,7 @@ QgsStringMap QgsEllipseSymbolLayerV2::properties() const
   map["symbol_height"] = QString::number( mSymbolHeight );
   map["symbol_height_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mSymbolHeightUnit );
   map["angle"] = QString::number( mAngle );
+  map["outline_style"] = QgsSymbolLayerV2Utils::encodePenStyle( mOutlineStyle );
   map["outline_width"] = QString::number( mOutlineWidth );
   map["outline_width_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mOutlineWidthUnit );
   map["fill_color"] = QgsSymbolLayerV2Utils::encodeColor( mFillColor );
@@ -611,7 +620,7 @@ bool QgsEllipseSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitScaleFa
     e.writePolyline( line1, layerName, "CONTINUOUS", colorIndex, outlineWidth, false );
     QgsPolyline line2( 2 );
     QPointF pt3( t.map( QPointF( 0, halfHeight ) ) );
-    QPointF pt4( t.map( QPointF( 0, -halfHeight ) ) );
+    // QPointF pt4( t.map( QPointF( 0, -halfHeight ) ) );
     line2[0] = QgsPoint( pt3.x(), pt3.y() );
     line2[1] = QgsPoint( pt3.x(), pt3.y() );
     e.writePolyline( line2, layerName, "CONTINUOUS", colorIndex, outlineWidth, false );

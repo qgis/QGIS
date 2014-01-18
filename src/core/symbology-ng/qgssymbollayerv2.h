@@ -47,8 +47,20 @@ class CORE_EXPORT QgsSymbolLayerV2
   public:
 
     // not necessarily supported by all symbol layers...
-    virtual void setColor( const QColor& color ) { mColor = color; }
     virtual QColor color() const { return mColor; }
+    virtual void setColor( const QColor& color ) { mColor = color; }
+    /** Set outline color. Supported by marker and fill layers.
+     * @note added in 2.1 */
+    virtual void setOutlineColor( const QColor& color ) { Q_UNUSED( color ); }
+    /** Get outline color. Supported by marker and fill layers.
+     * @note added in 2.1 */
+    virtual QColor outlineColor() const { return QColor(); }
+    /** Set fill color. Supported by marker and fill layers.
+     * @note added in 2.1 */
+    virtual void setFillColor( const QColor& color ) { Q_UNUSED( color ); }
+    /** Get fill color. Supported by marker and fill layers.
+     * @note added in 2.1 */
+    virtual QColor fillColor() const { return QColor(); }
 
     virtual ~QgsSymbolLayerV2() { removeDataDefinedProperties(); }
 
@@ -106,6 +118,13 @@ class CORE_EXPORT QgsSymbolLayerV2
                            const QgsSymbolV2RenderContext* context,
                            const QgsFeature* f,
                            const QPointF& shift = QPointF( 0.0, 0.0 ) ) const;
+
+    virtual double dxfWidth( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const;
+
+    virtual QColor dxfColor( const QgsSymbolV2RenderContext& context ) const;
+
+    virtual QVector<qreal> dxfCustomDashPattern( QgsSymbolV2::OutputUnit& unit ) const;
+    virtual Qt::PenStyle dxfPenStyle() const;
 
   protected:
     QgsSymbolLayerV2( QgsSymbolV2::SymbolType type, bool locked = false )
@@ -234,6 +253,8 @@ class CORE_EXPORT QgsLineSymbolLayerV2 : public QgsSymbolLayerV2
     QgsSymbolV2::OutputUnit widthUnit() const { return mWidthUnit; }
 
     void drawPreviewIcon( QgsSymbolV2RenderContext& context, QSize size );
+
+    virtual double dxfWidth( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const;
 
   protected:
     QgsLineSymbolLayerV2( bool locked = false );

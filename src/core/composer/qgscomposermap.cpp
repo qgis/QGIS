@@ -51,7 +51,7 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int w
     mLeftGridAnnotationDirection( Horizontal ), mRightGridAnnotationDirection( Horizontal ), mTopGridAnnotationDirection( Horizontal ),
     mBottomGridAnnotationDirection( Horizontal ), mGridFrameStyle( NoGridFrame ),  mGridFrameWidth( 2.0 ),
     mGridFramePenThickness( 0.5 ), mGridFramePenColor( QColor( 0, 0, 0 ) ), mGridFrameFillColor1( Qt::white ), mGridFrameFillColor2( Qt::black ),
-    mCrossLength( 3 ), mMapCanvas( 0 ), mDrawCanvasItems( true )
+    mCrossLength( 3 ), mMapCanvas( 0 ), mDrawCanvasItems( true ), mAtlasDriven( false ), mAtlasFixedScale( false ), mAtlasMargin( 0.10 )
 {
   mComposition = composition;
   mOverviewFrameMapSymbol = 0;
@@ -106,7 +106,7 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition )
     mLeftGridAnnotationDirection( Horizontal ), mRightGridAnnotationDirection( Horizontal ), mTopGridAnnotationDirection( Horizontal ),
     mBottomGridAnnotationDirection( Horizontal ), mGridFrameStyle( NoGridFrame ), mGridFrameWidth( 2.0 ), mGridFramePenThickness( 0.5 ),
     mGridFramePenColor( QColor( 0, 0, 0 ) ), mGridFrameFillColor1( Qt::white ), mGridFrameFillColor2( Qt::black ),
-    mCrossLength( 3 ), mMapCanvas( 0 ), mDrawCanvasItems( true )
+    mCrossLength( 3 ), mMapCanvas( 0 ), mDrawCanvasItems( true ), mAtlasDriven( false ), mAtlasFixedScale( false ), mAtlasMargin( 0.10 )
 {
   mOverviewFrameMapSymbol = 0;
   mGridLineSymbol = 0;
@@ -208,7 +208,7 @@ void QgsComposerMap::draw( QPainter *painter, const QgsRectangle& extent, const 
          mComposition->plotStyle() == QgsComposition::Postscript )
     {
       //if outputing composer, disable optimisations like layer simplification
-      theRendererContext->setRenderingPrintComposition( true );
+      theRendererContext->setUseRenderingOptimization( false );
     }
 
     // force vector output (no caching of marker images etc.)
@@ -651,10 +651,7 @@ void QgsComposerMap::toggleAtlasPreview()
 QgsRectangle* QgsComposerMap::currentMapExtent()
 {
   //non-const version
-
-  QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
-
-  if ( atlasMap->composerMap() == this && mComposition->atlasMode() != QgsComposition::AtlasOff )
+  if ( mAtlasDriven && mComposition->atlasMode() != QgsComposition::AtlasOff )
   {
     //if atlas is enabled, and we are either exporting the composition or previewing the atlas, then
     //return the current temporary atlas feature extent
@@ -670,9 +667,7 @@ QgsRectangle* QgsComposerMap::currentMapExtent()
 const QgsRectangle* QgsComposerMap::currentMapExtent() const
 {
   //const version
-
-  QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
-  if ( atlasMap->composerMap() == this && mComposition->atlasMode() != QgsComposition::AtlasOff )
+  if ( mAtlasDriven && mComposition->atlasMode() != QgsComposition::AtlasOff )
   {
     //if atlas is enabled, and we are either exporting the composition or previewing the atlas, then
     //return the current temporary atlas feature extent
@@ -991,6 +986,13 @@ bool QgsComposerMap::writeXML( QDomElement& elem, QDomDocument & doc ) const
   gridElem.appendChild( annotationElem );
   composerMapElem.appendChild( gridElem );
 
+  //atlas
+  QDomElement atlasElem = doc.createElement( "AtlasMap" );
+  atlasElem.setAttribute( "atlasDriven", mAtlasDriven );
+  atlasElem.setAttribute( "fixedScale", mAtlasFixedScale );
+  atlasElem.setAttribute( "margin", qgsDoubleToString( mAtlasMargin ) );
+  composerMapElem.appendChild( atlasElem );
+
   elem.appendChild( composerMapElem );
   return _writeXML( composerMapElem, doc );
 }
@@ -1231,6 +1233,16 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
 
       mGridAnnotationPrecision = annotationElem.attribute( "precision", "3" ).toInt();
     }
+  }
+
+  //atlas
+  QDomNodeList atlasNodeList = itemElem.elementsByTagName( "AtlasMap" );
+  if ( atlasNodeList.size() > 0 )
+  {
+    QDomElement atlasElem = atlasNodeList.at( 0 ).toElement();
+    mAtlasDriven = ( atlasElem.attribute( "atlasDriven", "0" ) != "0" );
+    mAtlasFixedScale = ( atlasElem.attribute( "fixedScale", "0" ) != "0" );
+    mAtlasMargin = atlasElem.attribute( "margin", "0.1" ).toDouble();
   }
 
   //restore general composer item properties

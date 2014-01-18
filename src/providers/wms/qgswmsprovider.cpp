@@ -590,7 +590,7 @@ bool QgsWmsProvider::setImageCrs( QString const & crs )
 
     setProperty( "resolutions", resolutions );
 
-    if ( mTileLayer == 0 && mTileMatrixSet == 0 )
+    if ( mTileLayer == 0 || mTileMatrixSet == 0 )
     {
       appendError( ERR( tr( "Tile layer or tile matrix set not found" ) ) );
       return false;
@@ -2776,27 +2776,7 @@ void QgsWmsProvider::parseWMTSContents( QDomElement const &e )
 
     s.wkScaleSet = n0.firstChildElement( "WellKnownScaleSet" ).text();
 
-    double metersPerUnit;
-    switch ( crs.mapUnits() )
-    {
-      case QGis::Meters:
-        metersPerUnit = 1.0;
-        break;
-
-      case QGis::Feet:
-        metersPerUnit = 0.3048;
-        break;
-
-      case QGis::Degrees:
-        metersPerUnit = 111319.49079327358;
-        break;
-
-      default:
-      case QGis::UnknownUnit:
-        QgsDebugMsg( "Unknown CRS units - assuming meters" );
-        metersPerUnit = 1.0;
-        break;
-    }
+    double metersPerUnit = QGis::fromUnitToUnitFactor( crs.mapUnits(), QGis::Meters );
 
     s.crs = crs.authid();
 

@@ -603,7 +603,7 @@ QDomDocument QgsWMSServer::getStyle()
 
 // GetStyles is only defined for WMS1.1.1/SLD1.0
 QDomDocument QgsWMSServer::getStyles()
-{  
+{
   QDomDocument doc;
   if ( !mParameterMap.contains( "LAYERS" ) )
   {
@@ -613,7 +613,7 @@ QDomDocument QgsWMSServer::getStyles()
   QStringList layersList = mParameterMap[ "LAYERS" ].split( ",", QString::SkipEmptyParts );
   if ( layersList.size() < 1 )
   {
-      throw QgsMapServiceException( "LayerNotSpecified", "Layers is mandatory for GetStyles operation" );
+    throw QgsMapServiceException( "LayerNotSpecified", "Layers is mandatory for GetStyles operation" );
   }
 
   return mConfigParser->getStyles( layersList );

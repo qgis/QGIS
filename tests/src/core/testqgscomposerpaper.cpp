@@ -49,8 +49,8 @@ class TestQgsComposerPaper: public QObject
     QgsMarkerLineSymbolLayerV2* mMarkerLine;
     QgsFillSymbolV2* mFillSymbol;
     QgsFillSymbolV2* mMarkerLineSymbol;
-    QgsSingleSymbolRendererV2* mSymbolRenderer;    
-    
+    // QgsSingleSymbolRendererV2* mSymbolRenderer;
+
 };
 
 void TestQgsComposerPaper::initTestCase()
@@ -61,17 +61,17 @@ void TestQgsComposerPaper::initTestCase()
   //create empty composition
   mComposition = new QgsComposition( 0 );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
-  
+
   //setup simple fill
   mSimpleFill = new QgsSimpleFillSymbolLayerV2();
   mFillSymbol = new QgsFillSymbolV2();
   mFillSymbol->changeSymbolLayer( 0, mSimpleFill );
-  
+
   //setup marker line fill
   mMarkerLine = new QgsMarkerLineSymbolLayerV2();
   mMarkerLineSymbol = new QgsFillSymbolV2();
-  mMarkerLineSymbol->changeSymbolLayer( 0, mMarkerLine ); 
-  
+  mMarkerLineSymbol->changeSymbolLayer( 0, mMarkerLine );
+
   mReport = "<h1>Composer Paper Tests</h1>\n";
 }
 
@@ -109,7 +109,7 @@ void TestQgsComposerPaper::transparentPaper()
 {
   mSimpleFill->setColor( Qt::transparent );
   mSimpleFill->setBorderColor( Qt::transparent );
-  mComposition->setPageStyleSymbol( mFillSymbol );  
+  mComposition->setPageStyleSymbol( mFillSymbol );
   QgsCompositionChecker checker( "composerpaper_transparent", mComposition );
   QVERIFY( checker.testComposition( mReport ) );
 }
@@ -118,14 +118,14 @@ void TestQgsComposerPaper::borderedPaper()
 {
   mSimpleFill->setColor( Qt::white );
   mSimpleFill->setBorderColor( Qt::black );
-  mSimpleFill->setBorderWidth( 6 );  
+  mSimpleFill->setBorderWidth( 6 );
   QgsCompositionChecker checker( "composerpaper_bordered", mComposition );
   QVERIFY( checker.testComposition( mReport ) );
 }
 
 void TestQgsComposerPaper::markerLinePaper()
-{ 
-  mComposition->setPageStyleSymbol( mMarkerLineSymbol ); 
+{
+  mComposition->setPageStyleSymbol( mMarkerLineSymbol );
   QgsCompositionChecker checker( "composerpaper_markerborder", mComposition );
   QVERIFY( checker.testComposition( mReport ) );
 }

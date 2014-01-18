@@ -30,8 +30,7 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   setupUi( this );
 
   mValueGroupBox->hide();
-  btnLoadAll->hide();
-  btnLoadSample->hide();
+  mLoadGroupBox->hide();
   highlighter = new QgsExpressionHighlighter( txtExpressionString->document() );
 
   mModel = new QStandardItemModel( );
@@ -131,8 +130,7 @@ void QgsExpressionBuilderWidget::currentChanged( const QModelIndex &index, const
     mValueListWidget->clear();
   }
 
-  btnLoadAll->setVisible( item->getItemType() == QgsExpressionItem::Field && mLayer );
-  btnLoadSample->setVisible( item->getItemType() == QgsExpressionItem::Field && mLayer );
+  mLoadGroupBox->setVisible( item->getItemType() == QgsExpressionItem::Field && mLayer );
   mValueGroupBox->setVisible( item->getItemType() == QgsExpressionItem::Field && mLayer );
 
   // Show the help for the current item.
