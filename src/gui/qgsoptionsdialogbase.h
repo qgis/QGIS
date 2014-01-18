@@ -64,8 +64,13 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
 
     /** Restore the base ui.
      * Sometimes useful to do at end of subclass's constructor.
+     * e.g. if setWindowTitle is used after initOptionsBase.
      */
     void restoreOptionsBaseUi();
+
+    /** determine if the options list is in icon only mode
+     */
+    bool iconOnly() {return mIconOnly;}
 
   protected slots:
     void updateOptionsListVerticalTabs();
@@ -83,6 +88,8 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
     QStackedWidget* mOptStackedWidget;
     QSplitter* mOptSplitter;
     QDialogButtonBox* mOptButtonBox;
+    QString mDialogTitle;
+    bool mIconOnly;
 };
 
 #endif // QGSOPTIONSDIALOGBASE_H
