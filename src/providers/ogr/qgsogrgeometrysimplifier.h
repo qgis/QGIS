@@ -18,7 +18,7 @@
 #define QGSOGRGEOMETRYSIMPLIFIER_H
 
 #include "qgsmaptopixelgeometrysimplifier.h"
-#include <ogr_geometry.h>
+#include <ogr_api.h>
 
 /**
  * Abstract base class for simplify OGR-geometries using a specific algorithm
@@ -29,9 +29,10 @@ class QgsOgrAbstractGeometrySimplifier
     virtual ~QgsOgrAbstractGeometrySimplifier();
 
     //! Simplifies the specified geometry
-    virtual bool simplifyGeometry( OGRGeometry* geometry ) = 0;
+    virtual bool simplifyGeometry( OGRGeometryH geometry ) = 0;
 };
 
+#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1900
 /**
  * OGR Implementation of GeometrySimplifier using the Douglas-Peucker algorithm
  *
@@ -45,8 +46,9 @@ class QgsOgrTopologyPreservingSimplifier : public QgsOgrAbstractGeometrySimplifi
     virtual ~QgsOgrTopologyPreservingSimplifier();
 
     //! Simplifies the specified geometry
-    virtual bool simplifyGeometry( OGRGeometry* geometry );
+    virtual bool simplifyGeometry( OGRGeometryH geometry );
 };
+#endif
 
 /**
  * OGR implementation of GeometrySimplifier using the "MapToPixel" algorithm
@@ -61,22 +63,14 @@ class QgsOgrMapToPixelSimplifier : public QgsOgrAbstractGeometrySimplifier, QgsM
     virtual ~QgsOgrMapToPixelSimplifier();
 
   private:
-    //! Point memory buffer for optimize the simplification process
-    OGRRawPoint* mPointBufferPtr;
-    //! Current Point memory buffer size
-    int mPointBufferCount;
-
     //! Simplifies the OGR-geometry (Removing duplicated points) when is applied the specified map2pixel context
-    bool simplifyOgrGeometry( QGis::GeometryType geometryType, const QgsRectangle& envelope, double* xptr, int xStride, double* yptr, int yStride, int pointCount, int& pointSimplifiedCount );
+    bool simplifyOgrGeometry( QGis::GeometryType geometryType, const QgsRectangle& envelope, double *xptr, double *yptr, int pointCount, int &pointSimplifiedCount );
     //! Simplifies the OGR-geometry (Removing duplicated points) when is applied the specified map2pixel context
-    bool simplifyOgrGeometry( OGRGeometry* geometry, bool isaLinearRing );
-
-    //! Returns a point buffer of the specified size
-    OGRRawPoint* mallocPoints( int numPoints );
+    bool simplifyOgrGeometry( OGRGeometryH geometry, bool isaLinearRing );
 
   public:
     //! Simplifies the specified geometry
-    virtual bool simplifyGeometry( OGRGeometry* geometry );
+    virtual bool simplifyGeometry( OGRGeometryH geometry );
 };
 
 #endif // QGSOGRGEOMETRYSIMPLIFIER_H

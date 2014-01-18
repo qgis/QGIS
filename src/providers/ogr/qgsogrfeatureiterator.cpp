@@ -116,12 +116,13 @@ bool QgsOgrFeatureIterator::prepareSimplification( const QgsSimplifyMethod& simp
       mGeometrySimplifier = new QgsOgrMapToPixelSimplifier( simplifyFlags, simplifyMethod.tolerance() );
       return true;
     }
-    else
-    if ( methodType == QgsSimplifyMethod::PreserveTopology )
+#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1900
+    else if ( methodType == QgsSimplifyMethod::PreserveTopology )
     {
       mGeometrySimplifier = new QgsOgrTopologyPreservingSimplifier( simplifyMethod.tolerance() );
       return true;
     }
+#endif
     else
     {
       QgsDebugMsg( QString( "Simplification method type (%1) is not recognised by OgrFeatureIterator class" ).arg( methodType ) );
@@ -272,8 +273,8 @@ bool QgsOgrFeatureIterator::readFeature( OGRFeatureH fet, QgsFeature& feature )
 
     if ( geom )
     {
-      OGRGeometry* ogrGeometry = (OGRGeometry*)geom;
-      if ( mGeometrySimplifier ) mGeometrySimplifier->simplifyGeometry( ogrGeometry );
+      if ( mGeometrySimplifier )
+        mGeometrySimplifier->simplifyGeometry( geom );
 
       // get the wkb representation
       int memorySize = OGR_G_WkbSize( geom );
