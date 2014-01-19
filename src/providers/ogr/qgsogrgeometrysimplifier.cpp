@@ -62,19 +62,41 @@ bool QgsOgrTopologyPreservingSimplifier::simplifyGeometry( OGRGeometryH geometry
 QgsOgrMapToPixelSimplifier::QgsOgrMapToPixelSimplifier( int simplifyFlags, double map2pixelTol )
     : QgsMapToPixelSimplifier( simplifyFlags, map2pixelTol )
 {
+  mPointBufferCount = 64;
+  mPointBufferPtr = ( OGRRawPoint* )OGRMalloc( mPointBufferCount * sizeof( OGRRawPoint ) );
 }
 
 QgsOgrMapToPixelSimplifier::~QgsOgrMapToPixelSimplifier()
 {
+  if ( mPointBufferPtr )
+  {
+    OGRFree( mPointBufferPtr );
+    mPointBufferPtr = NULL;
+  }
+}
+
+//! Returns a point buffer of the specified size
+OGRRawPoint* QgsOgrMapToPixelSimplifier::mallocPoints( int numPoints )
+{
+  if ( mPointBufferPtr && mPointBufferCount < numPoints )
+  {
+    OGRFree( mPointBufferPtr );
+    mPointBufferPtr = NULL;
+  }
+  if ( mPointBufferPtr == NULL )
+  {
+    mPointBufferCount = numPoints;
+    mPointBufferPtr = ( OGRRawPoint* )OGRMalloc( mPointBufferCount * sizeof( OGRRawPoint ) );
+  }
+  return mPointBufferPtr;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 // Helper simplification methods
 
 //! Simplifies the OGR-geometry (Removing duplicated points) when is applied the specified map2pixel context
-bool QgsOgrMapToPixelSimplifier::simplifyOgrGeometry( QGis::GeometryType geometryType, const QgsRectangle& envelope, double *xptr, double *yptr, int pointCount, int& pointSimplifiedCount )
+bool QgsOgrMapToPixelSimplifier::simplifyOgrGeometry( QGis::GeometryType geometryType, double* xptr, int xStride, double* yptr, int yStride, int pointCount, int& pointSimplifiedCount )
 {
-  Q_UNUSED( envelope )
   bool canbeGeneralizable = ( mSimplifyFlags & QgsMapToPixelSimplifier::SimplifyGeometry );
 
   pointSimplifiedCount = pointCount;
@@ -84,20 +106,20 @@ bool QgsOgrMapToPixelSimplifier::simplifyOgrGeometry( QGis::GeometryType geometr
   double map2pixelTol = mMapToPixelTol * mMapToPixelTol; //-> Use mappixelTol for 'LengthSquare' calculations.
   double x, y, lastX = 0, lastY = 0;
 
-  double *xsourcePtr = xptr;
-  double *ysourcePtr = yptr;
-  double *xtargetPtr = xptr;
-  double *ytargetPtr = yptr;
+  char* xsourcePtr = ( char* )xptr;
+  char* ysourcePtr = ( char* )yptr;
+  char* xtargetPtr = ( char* )xptr;
+  char* ytargetPtr = ( char* )yptr;
 
   for ( int i = 0, numPoints = geometryType == QGis::Polygon ? pointCount - 1 : pointCount; i < numPoints; ++i )
   {
-    memcpy( &x, xsourcePtr++, sizeof( double ) );
-    memcpy( &y, ysourcePtr++, sizeof( double ) );
+    memcpy( &x, xsourcePtr, sizeof( double ) ); xsourcePtr += xStride;
+    memcpy( &y, ysourcePtr, sizeof( double ) ); ysourcePtr += yStride;
 
     if ( i == 0 || !canbeGeneralizable || QgsMapToPixelSimplifier::calculateLengthSquared2D( x, y, lastX, lastY ) > map2pixelTol || ( geometryType == QGis::Line && ( i == 1 || i >= numPoints - 2 ) ) )
     {
-      memcpy( xtargetPtr++, &x, sizeof( double ) ); lastX = x;
-      memcpy( ytargetPtr++, &y, sizeof( double ) ); lastY = y;
+      memcpy( xtargetPtr, &x, sizeof( double ) ); lastX = x; xtargetPtr += xStride;
+      memcpy( ytargetPtr, &y, sizeof( double ) ); lastY = y; ytargetPtr += yStride;
       pointSimplifiedCount++;
     }
   }
@@ -107,29 +129,33 @@ bool QgsOgrMapToPixelSimplifier::simplifyOgrGeometry( QGis::GeometryType geometr
     memcpy( ytargetPtr, yptr, sizeof( double ) );
     pointSimplifiedCount++;
   }
-
   return pointSimplifiedCount != pointCount;
 }
 
 //! Simplifies the OGR-geometry (Removing duplicated points) when is applied the specified map2pixel context
-bool QgsOgrMapToPixelSimplifier::simplifyOgrGeometry( OGRGeometryH geometry, bool isaLinearRing )
+bool QgsOgrMapToPixelSimplifier::simplifyOgrGeometry( OGRGeometry* geometry, bool isaLinearRing )
 {
-  OGRwkbGeometryType wkbGeometryType = wkbFlatten( OGR_G_GetGeometryType( geometry ) );
+  OGRwkbGeometryType wkbGeometryType = wkbFlatten( geometry->getGeometryType() );
 
   // Simplify the geometry rewriting temporally its WKB-stream for saving calloc's.
   if ( wkbGeometryType == wkbLineString )
   {
-    int numPoints = OGR_G_GetPointCount( geometry );
-    if (( isaLinearRing && numPoints <= 5 ) || ( !isaLinearRing && numPoints <= 4 ) )
+    OGRLineString* lineString = ( OGRLineString* )geometry;
+
+    int numPoints = lineString->getNumPoints();
+    if (( isaLinearRing && numPoints <= 5 ) || ( !isaLinearRing && numPoints <= 4 ) ) 
       return false;
 
     OGREnvelope env;
-    OGR_G_GetEnvelope( geometry, &env );
+    geometry->getEnvelope( &env );
     QgsRectangle envelope( env.MinX, env.MinY, env.MaxX, env.MaxY );
 
     // Can replace the geometry by its BBOX ?
     if (( mSimplifyFlags & QgsMapToPixelSimplifier::SimplifyEnvelope ) && canbeGeneralizedByMapBoundingBox( envelope ) )
     {
+      OGRRawPoint* points = NULL;
+      int numPoints = 0;
+
       double x1 = envelope.xMinimum();
       double y1 = envelope.yMinimum();
       double x2 = envelope.xMaximum();
@@ -137,19 +163,23 @@ bool QgsOgrMapToPixelSimplifier::simplifyOgrGeometry( OGRGeometryH geometry, boo
 
       if ( isaLinearRing )
       {
-        OGR_G_SetPoint( geometry, 0, x1, y1, 0.0 );
-        OGR_G_SetPoint( geometry, 1, x2, y1, 0.0 );
-        OGR_G_SetPoint( geometry, 2, x2, y2, 0.0 );
-        OGR_G_SetPoint( geometry, 3, x1, y2, 0.0 );
-        OGR_G_SetPoint( geometry, 4, x1, y1, 0.0 );
+        numPoints = 5;
+        points = mallocPoints( numPoints );
+        points[0].x = x1; points[0].y = y1;
+        points[1].x = x2; points[1].y = y1;
+        points[2].x = x2; points[2].y = y2;
+        points[3].x = x1; points[3].y = y2;
+        points[4].x = x1; points[4].y = y1;
       }
       else
       {
-        OGR_G_SetPoint( geometry, 0, x1, y1, 0.0 );
-        OGR_G_SetPoint( geometry, 1, x2, y2, 0.0 );
+        numPoints = 2;
+        points = mallocPoints( numPoints );
+        points[0].x = x1; points[0].y = y1;
+        points[1].x = x2; points[1].y = y2;
       }
-
-      OGR_G_FlattenTo2D( geometry );
+      lineString->setPoints( numPoints, points );
+      lineString->flattenTo2D();
 
       return true;
     }
@@ -158,49 +188,47 @@ bool QgsOgrMapToPixelSimplifier::simplifyOgrGeometry( OGRGeometryH geometry, boo
       QGis::GeometryType geometryType = isaLinearRing ? QGis::Polygon : QGis::Line;
       int numSimplifiedPoints = 0;
 
-      QVector<double> x( numPoints ), y( numPoints );
-      for ( int i = 0; i < numPoints; i++ )
-      {
-        double z;
-        OGR_G_GetPoint( geometry, i, &x[i], &y[i], &z );
-      }
+      OGRRawPoint* points = mallocPoints( numPoints );
+      double* xptr = ( double* )points;
+      double* yptr = xptr + 1;
+      lineString->getPoints( points );
 
-      if ( simplifyOgrGeometry( geometryType, envelope, x.data(), y.data(), numPoints, numSimplifiedPoints ) )
+      if ( simplifyOgrGeometry( geometryType, xptr, 16, yptr, 16, numPoints, numSimplifiedPoints ) )
       {
-        for ( int i = 0; i < numSimplifiedPoints; i++ )
-        {
-          OGR_G_SetPoint( geometry, i, x[i], y[i], 0.0 );
-        }
-        OGR_G_FlattenTo2D( geometry );
+        lineString->setPoints( numSimplifiedPoints, points );
+        lineString->flattenTo2D();
       }
-
       return numSimplifiedPoints != numPoints;
     }
   }
   else if ( wkbGeometryType == wkbPolygon )
   {
-    bool result = simplifyOgrGeometry( OGR_G_GetGeometryRef( geometry, 0 ), true );
+    OGRPolygon* polygon = ( OGRPolygon* )geometry;
+    bool result = simplifyOgrGeometry( polygon->getExteriorRing(), true );
 
-    for ( int i = 1, numInteriorRings = OGR_G_GetGeometryCount( geometry ); i < numInteriorRings; ++i )
+    for ( int i = 0, numInteriorRings = polygon->getNumInteriorRings(); i < numInteriorRings; ++i )
     {
-      result |= simplifyOgrGeometry( OGR_G_GetGeometryRef( geometry, i ), true );
+      result |= simplifyOgrGeometry( polygon->getInteriorRing( i ), true );
     }
 
-    if ( result )
-      OGR_G_FlattenTo2D( geometry );
+    if ( result ) 
+      polygon->flattenTo2D();
 
     return result;
   }
   else if ( wkbGeometryType == wkbMultiLineString || wkbGeometryType == wkbMultiPolygon )
   {
+    OGRGeometryCollection* collection = ( OGRGeometryCollection* )geometry;
     bool result = false;
 
-    for ( int i = 1, numGeometries = OGR_G_GetGeometryCount( geometry ); i < numGeometries; ++i )
+    for ( int i = 0, numGeometries = collection->getNumGeometries(); i < numGeometries; ++i )
     {
-      result |= simplifyOgrGeometry( OGR_G_GetGeometryRef( geometry, i ), wkbGeometryType == wkbMultiPolygon );
+      result |= simplifyOgrGeometry( collection->getGeometryRef( i ), wkbGeometryType == wkbMultiPolygon );
     }
-    if ( result )
-      OGR_G_FlattenTo2D( geometry );
+
+    if ( result ) 
+      collection->flattenTo2D();
+
     return result;
   }
 
@@ -216,7 +244,7 @@ bool QgsOgrMapToPixelSimplifier::simplifyGeometry( OGRGeometryH geometry )
 
   if ( wkbGeometryType == wkbLineString || wkbGeometryType == wkbPolygon )
   {
-    return simplifyOgrGeometry( geometry, wkbGeometryType == wkbPolygon );
+    return simplifyOgrGeometry( (OGRGeometry*) geometry, wkbGeometryType == wkbPolygon );
   }
 
   return false;
