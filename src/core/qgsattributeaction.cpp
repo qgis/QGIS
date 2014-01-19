@@ -23,6 +23,7 @@
  ***************************************************************************/
 
 #include "qgsattributeaction.h"
+#include "qgsgeometry.h"
 #include "qgspythonrunner.h"
 #include "qgsrunprocess.h"
 #include "qgsvectorlayer.h"
@@ -39,6 +40,30 @@
 #include <QDir>
 #include <QFileInfo>
 
+bool QgsAction::runable() const
+{
+  if ( mType == QgsAction::Atlas )
+  {
+    //atlas dependant logic here
+    //possibly could set this action as runable only if a composition has this layer as the atlas layer
+    //but alternatively it may be more flexible to always allow this action (eg, for previewing
+    //atlas based symbology before a composition has been created)
+    //for now, always show this action
+    return true;
+  }
+
+  return mType == QgsAction::Generic ||
+         mType == QgsAction::GenericPython ||
+         mType == QgsAction::OpenUrl ||
+#if defined(Q_OS_WIN)
+         mType == QgsAction::Windows
+#elif defined(Q_OS_MAC)
+         mType == QgsAction::Mac
+#else
+         mType == QgsAction::Unix
+#endif
+         ;
+}
 
 void QgsAttributeAction::addAction( QgsAction::ActionType type, QString name, QString action, bool capture )
 {
@@ -75,6 +100,13 @@ void QgsAttributeAction::doAction( int index, QgsFeature &feat,
   const QgsAction &action = at( index );
   if ( !action.runable() )
     return;
+
+  if ( action.type() == QgsAction::Atlas )
+  {
+    //special type of action - does not require expanding, etc
+    mLayer->setAtlasFeature( feat );
+    return;
+  }
 
   // search for expressions while expanding actions
   QString expandedAction = QgsExpression::replaceExpressionText( action.action(), &feat, mLayer , substitutionMap );

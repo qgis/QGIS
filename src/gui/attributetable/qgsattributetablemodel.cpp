@@ -626,7 +626,22 @@ void QgsAttributeTableModel::resetModel()
 void QgsAttributeTableModel::executeAction( int action, const QModelIndex &idx ) const
 {
   QgsFeature f = feature( idx );
-  layer()->actions()->doAction( action, f, fieldIdx( idx.column() ) );
+
+  if ( action < layer()->actions()->size() )
+  {
+    //action is a user-defined action
+    layer()->actions()->doAction( action, f, fieldIdx( idx.column() ) );
+  }
+  else
+  {
+    //action is a standard action
+    //so need to subtract size of user-defined actions
+    int actionId = action - layer()->actions()->size();
+    // also need to subtract 1 for the seperator item
+    actionId--;
+    layer()->standardActions()->doAction( actionId, f, fieldIdx( idx.column() ) );
+  }
+
 }
 
 QgsFeature QgsAttributeTableModel::feature( const QModelIndex &idx ) const

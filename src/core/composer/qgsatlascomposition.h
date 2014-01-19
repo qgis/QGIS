@@ -110,6 +110,7 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
 
     /** Prepare the atlas map for the given feature. Sets the extent and context variables */
     void prepareForFeature( int i );
+    void prepareForFeature( QgsFeature * feat );
 
     /** Returns the current filename. Must be called after prepareForFeature( i ) */
     const QString& currentFilename() const;

@@ -216,7 +216,7 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
 
     void highlightFeature( QTreeWidgetItem *item );
 
-    void doAction( QTreeWidgetItem *item, int action );
+    void doAction( QTreeWidgetItem *item, int action, QgsAction::ActionClass actionClass );
 
     QDockWidget *mDock;
 };

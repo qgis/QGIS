@@ -418,10 +418,11 @@ void QgsDualView::viewWillShowContextMenu( QMenu* menu, QModelIndex atIndex )
 {
   QModelIndex sourceIndex = mFilterModel->mapToSource( atIndex );
 
+  //add user-defined actions to context menu
   if ( mLayerCache->layer()->actions()->size() != 0 )
   {
 
-    QAction *a = menu->addAction( tr( "Run action" ) );
+    QAction *a = menu->addAction( tr( "Run layer action" ) );
     a->setEnabled( false );
 
     for ( int i = 0; i < mLayerCache->layer()->actions()->size(); i++ )
@@ -436,6 +437,26 @@ void QgsDualView::viewWillShowContextMenu( QMenu* menu, QModelIndex atIndex )
     }
   }
 
+  //add standard vector layer actions to context menu
+  if ( mLayerCache->layer()->standardActions()->size() != 0 )
+  {
+    //add a seperator between user defined and standard actions
+    menu->addSeparator();
+    int actionIdOffset = mLayerCache->layer()->actions()->size() + 1;
+
+    for ( int i = 0; i < mLayerCache->layer()->standardActions()->size(); i++ )
+    {
+      const QgsAction &action = mLayerCache->layer()->standardActions()->at( i );
+
+      if ( !action.runable() )
+        continue;
+
+      QgsAttributeTableAction *a = new QgsAttributeTableAction( action.name(), this, i + actionIdOffset, sourceIndex );
+      menu->addAction( action.name(), a, SLOT( execute() ) );
+    }
+  }
+
+  menu->addSeparator();
   QgsAttributeTableAction *a = new QgsAttributeTableAction( tr( "Open form" ), this, -1, sourceIndex );
   menu->addAction( tr( "Open form" ), a, SLOT( featureForm() ) );
 }

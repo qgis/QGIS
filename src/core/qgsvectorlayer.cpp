@@ -140,6 +140,8 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
 
 {
   mActions = new QgsAttributeAction( this );
+  mStandardActions = new QgsAttributeAction( this );
+  addStandardActions();
 
   // if we're given a provider type, try to create and bind one to this layer
   if ( ! mProviderKey.isEmpty() )
@@ -208,6 +210,7 @@ QgsVectorLayer::~QgsVectorLayer()
   delete mDiagramLayerSettings;
 
   delete mActions;
+  delete mStandardActions;
 
   delete mRendererV2;
 }
@@ -3569,6 +3572,11 @@ void QgsVectorLayer::stopRendererV2( QgsRenderContext& rendererContext, QgsSingl
   }
 }
 
+void QgsVectorLayer::setAtlasFeature( QgsFeature &feat )
+{
+  emit actionAtlasFeatureCalled( this, feat );
+}
+
 void QgsVectorLayer::prepareLabelingAndDiagrams( QgsRenderContext& rendererContext, QgsAttributeList& attributes, bool& labeling )
 {
   if ( !rendererContext.labelingEngine() )
@@ -4194,6 +4202,15 @@ bool QgsVectorLayer::applyNamedStyle( QString namedStyle, QString errorMsg )
 #endif
 
   return readSymbology( myRoot, errorMsg );
+}
+
+void QgsVectorLayer::addStandardActions()
+{
+  // add atlas action
+  mStandardActions->addAction( QgsAction::Atlas,
+                               "Set as atlas feature",
+                               "",
+                               false );
 }
 
 

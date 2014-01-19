@@ -78,7 +78,7 @@ void QgsMapToolFeatureAction::canvasReleaseEvent( QMouseEvent *e )
   }
 
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
-  if ( vlayer->actions()->size() == 0 )
+  if ( vlayer->actions()->size() == 0 && vlayer->standardActions()->size() == 0 )
   {
     QMessageBox::warning( mCanvas,
                           tr( "No actions available" ),
@@ -149,7 +149,16 @@ bool QgsMapToolFeatureAction::doAction( QgsVectorLayer *layer, int x, int y )
 
   foreach ( QgsFeature feat, featList )
   {
-    int actionIdx = layer->actions()->defaultAction();
+    int actionIdx;
+
+    if ( layer->actions()->defaultAction() >= 0 )
+    {
+      actionIdx = layer->actions()->defaultAction();
+    }
+    else if ( layer->standardActions()->defaultAction() >= 0 )
+    {
+      actionIdx = layer->standardActions()->defaultAction();
+    }
 
     // define custom substitutions: layer id and clicked coords
     QMap<QString, QVariant> substitutionMap;
@@ -158,7 +167,15 @@ bool QgsMapToolFeatureAction::doAction( QgsVectorLayer *layer, int x, int y )
     substitutionMap.insert( "$clickx", point.x() );
     substitutionMap.insert( "$clicky", point.y() );
 
-    layer->actions()->doAction( actionIdx, feat, &substitutionMap );
+    if ( layer->actions()->defaultAction() >= 0 )
+    {
+      layer->actions()->doAction( actionIdx, feat, &substitutionMap );
+    }
+    else if ( layer->standardActions()->defaultAction() >= 0 )
+    {
+      layer->standardActions()->doAction( actionIdx, feat, &substitutionMap );
+    }
+
   }
 
   return true;

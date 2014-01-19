@@ -17,6 +17,7 @@
 #ifndef QGSFEATUREACTION_H
 #define QGSFEATUREACTION_H
 
+#include "qgsattributeaction.h"
 #include "qgsfeature.h"
 #include "qgsvectorlayertools.h"
 
@@ -34,7 +35,9 @@ class APP_EXPORT QgsFeatureAction : public QAction
     Q_OBJECT
 
   public:
-    QgsFeatureAction( const QString &name, QgsFeature &f, QgsVectorLayer *vl, int action = -1, int defaultAttr = -1, QObject *parent = NULL );
+
+    QgsFeatureAction( const QString &name, QgsFeature &f, QgsVectorLayer *vl, int action = -1, int defaultAttr = -1,
+                      QObject *parent = NULL, QgsAction::ActionClass actionClass = QgsAction::UserDefinedAction );
 
   public slots:
     void execute();
@@ -59,6 +62,8 @@ class APP_EXPORT QgsFeatureAction : public QAction
     QgsFeature &mFeature;
     int mAction;
     int mIdx;
+
+    QgsAction::ActionClass mClass;
 
     static QMap<QgsVectorLayer *, QgsAttributeMap> mLastUsedValues;
 };

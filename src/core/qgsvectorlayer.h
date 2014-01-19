@@ -634,6 +634,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     const QgsLabel *label() const;
 
     QgsAttributeAction *actions() { return mActions; }
+    QgsAttributeAction *standardActions() { return mStandardActions; }
+
 
     /**
      * The number of features that are selected in this layer
@@ -1389,6 +1391,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Returns whether the VectorLayer can apply the specified simplification hint */
     bool simplifyDrawingCanbeApplied( int simplifyHint ) const;
 
+    /**Sets the feature with matching id as the current atlas feature */
+    void setAtlasFeature( QgsFeature &feat );
+
   public slots:
     /**
      * Select feature by its ID
@@ -1539,6 +1544,11 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Signal emitted when setLayerTransparency() is called */
     void layerTransparencyChanged( int layerTransparency );
 
+    /** Emitted when a feature from this layer is set as the current atlas feature via the layer action
+     * @note added in 2.1
+     */
+    void actionAtlasFeatureCalled( QgsVectorLayer* layer, QgsFeature &feat );
+
   private slots:
     void onRelationsLoaded();
 
@@ -1596,6 +1606,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
       @param labeling out: true if there will be labeling (ng) for this layer*/
     void prepareLabelingAndDiagrams( QgsRenderContext& rendererContext, QgsAttributeList& attributes, bool& labeling );
 
+    /** Adds standard layer actions which are available for all vector layers */
+    void addStandardActions();
+
   private:                       // Private attributes
 
     /** Update threshold for drawing features as they are read. A value of zero indicates
@@ -1625,6 +1638,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     /** The user-defined actions that are accessed from the Identify Results dialog box */
     QgsAttributeAction* mActions;
+
+    /** Standard layer actions that are available for all layers */
+    QgsAttributeAction* mStandardActions;
 
     /** Flag indicating whether the layer is in read-only mode (editing disabled) or not */
     bool mReadOnly;

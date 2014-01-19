@@ -30,18 +30,28 @@
 #include <QPushButton>
 #include <QSettings>
 
-QgsFeatureAction::QgsFeatureAction( const QString &name, QgsFeature &f, QgsVectorLayer *layer, int action, int defaultAttr, QObject *parent )
+QgsFeatureAction::QgsFeatureAction( const QString &name, QgsFeature &f, QgsVectorLayer *layer, int action, int defaultAttr,
+                                    QObject *parent, QgsAction::ActionClass actionClass )
     : QAction( name, parent )
     , mLayer( layer )
     , mFeature( f )
     , mAction( action )
     , mIdx( defaultAttr )
+    , mClass( actionClass )
 {
 }
 
 void QgsFeatureAction::execute()
 {
-  mLayer->actions()->doAction( mAction, mFeature, mIdx );
+  switch ( mClass )
+  {
+    case QgsAction::UserDefinedAction:
+      mLayer->actions()->doAction( mAction, mFeature, mIdx );
+      break;
+    case QgsAction::StandardAction:
+      mLayer->standardActions()->doAction( mAction, mFeature, mIdx );
+      break;
+  }
 }
 
 QgsAttributeDialog *QgsFeatureAction::newDialog( bool cloneFeature )
@@ -77,6 +87,31 @@ QgsAttributeDialog *QgsFeatureAction::newDialog( bool cloneFeature )
         continue;
 
       QgsFeatureAction *a = new QgsFeatureAction( action.name(), *f, mLayer, i, -1, dialog->dialog() );
+      dialog->dialog()->addAction( a );
+      connect( a, SIGNAL( triggered() ), a, SLOT( execute() ) );
+
+      QAbstractButton *pb = dialog->dialog()->findChild<QAbstractButton *>( action.name() );
+      if ( pb )
+        connect( pb, SIGNAL( clicked() ), a, SLOT( execute() ) );
+    }
+  }
+
+  if ( mLayer->standardActions()->size() > 0 )
+  {
+    dialog->dialog()->setContextMenuPolicy( Qt::ActionsContextMenu );
+
+    QAction *a = new QAction( tr( "Run actions" ), dialog->dialog() );
+    a->setEnabled( false );
+    dialog->dialog()->addAction( a );
+
+    for ( int i = 0; i < mLayer->standardActions()->size(); i++ )
+    {
+      const QgsAction &action = mLayer->standardActions()->at( i );
+
+      if ( !action.runable() )
+        continue;
+
+      QgsFeatureAction *a = new QgsFeatureAction( action.name(), *f, mLayer, i, -1, dialog->dialog(), QgsAction::StandardAction );
       dialog->dialog()->addAction( a );
       connect( a, SIGNAL( triggered() ), a, SLOT( execute() ) );
 

@@ -48,6 +48,13 @@ class CORE_EXPORT QgsAction
       Windows,
       Unix,
       OpenUrl,
+      Atlas
+    };
+
+    enum ActionClass
+    {
+      UserDefinedAction,
+      StandardAction
     };
 
     QgsAction( ActionType type, QString name, QString action, bool capture ) :
@@ -66,20 +73,7 @@ class CORE_EXPORT QgsAction
     bool capture() const { return mCaptureOutput; }
 
     //! Whether the action is runable on the current platform
-    bool runable() const
-    {
-      return mType == Generic ||
-             mType == GenericPython ||
-             mType == OpenUrl ||
-#if defined(Q_OS_WIN)
-             mType == Windows
-#elif defined(Q_OS_MAC)
-             mType == Mac
-#else
-             mType == Unix
-#endif
-             ;
-    }
+    bool runable() const;
 
   private:
     ActionType mType;
@@ -97,7 +91,7 @@ class  CORE_EXPORT QgsAttributeAction
 {
   public:
     //! Constructor
-    QgsAttributeAction( QgsVectorLayer *layer ) : mLayer( layer ) {}
+    QgsAttributeAction( QgsVectorLayer *layer ) : mLayer( layer ), mDefaultAction( -1 ) {}
 
     //! Destructor
     virtual ~QgsAttributeAction() {}
@@ -175,7 +169,7 @@ class  CORE_EXPORT QgsAttributeAction
     static void setPythonExecute( void ( * )( const QString & ) );
 
     //! Whether the action is the default action
-    int defaultAction() const { return mDefaultAction < 0 || mDefaultAction >= size() ? 0 : mDefaultAction; }
+    int defaultAction() const { return mDefaultAction < 0 || mDefaultAction >= size() ? -1 : mDefaultAction; }
     void setDefaultAction( int actionNumber ) { mDefaultAction = actionNumber ; }
 
   private:
