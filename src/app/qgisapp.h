@@ -622,6 +622,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Opens the options dialog
     void showOptionsDialog( QWidget *parent = 0, QString currentPage = QString() );
 
+    /** Refreshes the state of the layer actions toolbar action
+      * @note added in 2.1 */
+    void refreshActionFeatureAction();
+
   protected:
 
     //! Handle state changes (WindowTitleChange)

@@ -277,4 +277,22 @@ class GUI_EXPORT QgsAttributeTableAction : public QAction
     QModelIndex mFieldIdx;
 };
 
+class GUI_EXPORT QgsAttributeTableMapLayerAction : public QAction
+{
+    Q_OBJECT
+
+  public:
+    QgsAttributeTableMapLayerAction( const QString &name, QgsDualView *dualView, QgsMapLayerAction* action, const QModelIndex &fieldIdx ) :
+        QAction( name, dualView ), mDualView( dualView ), mAction( action ), mFieldIdx( fieldIdx )
+    {}
+
+  public slots:
+    void execute();
+
+  private:
+    QgsDualView* mDualView;
+    QgsMapLayerAction* mAction;
+    QModelIndex mFieldIdx;
+};
+
 #endif // QGSFEATURELIST_H

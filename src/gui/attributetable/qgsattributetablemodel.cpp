@@ -25,6 +25,7 @@
 #include "qgsrendererv2.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsexpression.h"
+#include "qgsmaplayeractionregistry.h"
 
 #include <QtGui>
 #include <QVariant>
@@ -627,6 +628,12 @@ void QgsAttributeTableModel::executeAction( int action, const QModelIndex &idx )
 {
   QgsFeature f = feature( idx );
   layer()->actions()->doAction( action, f, fieldIdx( idx.column() ) );
+}
+
+void QgsAttributeTableModel::executeMapLayerAction( QgsMapLayerAction* action, const QModelIndex &idx ) const
+{
+  QgsFeature f = feature( idx );
+  action->triggerForFeature( layer(), &f );
 }
 
 QgsFeature QgsAttributeTableModel::feature( const QModelIndex &idx ) const

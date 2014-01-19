@@ -192,6 +192,7 @@
 #include "qgsvectorlayerproperties.h"
 #include "qgsmessagelogviewer.h"
 #include "qgsdataitem.h"
+#include "qgsmaplayeractionregistry.h"
 
 #include "qgssublayersdialog.h"
 #include "ogr/qgsopenvectorlayerdialog.h"
@@ -608,6 +609,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
 #endif
 
   activateDeactivateLayerRelatedActions( NULL ); // after members were created
+
+  connect( QgsMapLayerActionRegistry::instance(), SIGNAL( changed() ), this, SLOT( refreshActionFeatureAction() ) );
 
   // set application's caption
   QString caption = tr( "QGIS - %1 ('%2')" ).arg( QGis::QGIS_VERSION ).arg( QGis::QGIS_RELEASE_NAME );
@@ -4276,7 +4279,27 @@ void QgisApp::updateDefaultFeatureAction( QAction *action )
   mFeatureActionMenu->setActiveAction( action );
 
   int index = mFeatureActionMenu->actions().indexOf( action );
-  vlayer->actions()->setDefaultAction( index );
+
+  if ( vlayer->actions()->size() > 0 && index < vlayer->actions()->size() )
+  {
+    vlayer->actions()->setDefaultAction( index );
+    QgsMapLayerActionRegistry::instance()->setDefaultActionForLayer( vlayer, 0 );
+  }
+  else
+  {
+    //action is from QgsMapLayerActionRegistry
+    vlayer->actions()->setDefaultAction( -1 );
+
+    QgsMapLayerAction * mapLayerAction = dynamic_cast<QgsMapLayerAction *>( action );
+    if ( mapLayerAction )
+    {
+      QgsMapLayerActionRegistry::instance()->setDefaultActionForLayer( vlayer, mapLayerAction );
+    }
+    else
+    {
+      QgsMapLayerActionRegistry::instance()->setDefaultActionForLayer( vlayer, 0 );
+    }
+  }
 
   doFeatureAction();
 }
@@ -4298,6 +4321,24 @@ void QgisApp::refreshFeatureActions()
       mFeatureActionMenu->setActiveAction( action );
     }
   }
+
+  //add actions registered in QgsMapLayerActionRegistry
+  QList<QgsMapLayerAction *> registeredActions = QgsMapLayerActionRegistry::instance()->mapLayerActions( vlayer );
+  if ( actions->size() > 0 && registeredActions.size() > 0 )
+  {
+    //add a seperator between user defined and standard actions
+    mFeatureActionMenu->addSeparator();
+  }
+
+  for ( int i = 0; i < registeredActions.size(); i++ )
+  {
+    mFeatureActionMenu->addAction( registeredActions.at( i ) );
+    if ( registeredActions.at( i ) == QgsMapLayerActionRegistry::instance()->defaultActionForLayer( vlayer ) )
+    {
+      mFeatureActionMenu->setActiveAction( registeredActions.at( i ) );
+    }
+  }
+
 }
 
 void QgisApp::measure()
@@ -8489,7 +8530,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
 
     bool isEditable = vlayer->isEditable();
     bool layerHasSelection = vlayer->selectedFeatureCount() > 0;
-    bool layerHasActions = vlayer->actions()->size() > 0;
+    bool layerHasActions = vlayer->actions()->size() + QgsMapLayerActionRegistry::instance()->mapLayerActions( vlayer ).size() > 0;
 
     bool canChangeAttributes = dprovider->capabilities() & QgsVectorDataProvider::ChangeAttributeValues;
     bool canDeleteFeatures = dprovider->capabilities() & QgsVectorDataProvider::DeleteFeatures;
@@ -8733,8 +8774,20 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
   }
 }
 
+void QgisApp::refreshActionFeatureAction()
+{
+  QgsMapLayer* layer = activeLayer();
 
+  if ( layer->type() != QgsMapLayer::VectorLayer )
+  {
+    return;
+  }
 
+  QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( layer );
+
+  bool layerHasActions = vlayer->actions()->size() + QgsMapLayerActionRegistry::instance()->mapLayerActions( vlayer ).size() > 0;
+  mActionFeatureAction->setEnabled( layerHasActions );
+}
 
 /////////////////////////////////////////////////////////////////
 //
