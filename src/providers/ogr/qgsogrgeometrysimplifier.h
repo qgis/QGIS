@@ -20,7 +20,12 @@
 #include "qgsmaptopixelgeometrysimplifier.h"
 #include <ogr_api.h>
 
-class OGRRawPoint;
+// Enable OGR-simplification on provider side when OGRGeometry class is available
+#if defined(__cplusplus)
+ #define HAVE_OGR_GEOMETRY_CLASS 1
+ class OGRGeometry;
+ class OGRRawPoint;
+#endif
 
 /**
  * Abstract base class for simplify OGR-geometries using a specific algorithm
@@ -52,6 +57,7 @@ class QgsOgrTopologyPreservingSimplifier : public QgsOgrAbstractGeometrySimplifi
 };
 #endif
 
+#if defined(HAVE_OGR_GEOMETRY_CLASS)
 /**
  * OGR implementation of GeometrySimplifier using the "MapToPixel" algorithm
  *
@@ -73,17 +79,15 @@ class QgsOgrMapToPixelSimplifier : public QgsOgrAbstractGeometrySimplifier, QgsM
     //! Simplifies the OGR-geometry (Removing duplicated points) when is applied the specified map2pixel context
     bool simplifyOgrGeometry( QGis::GeometryType geometryType, double* xptr, int xStride, double* yptr, int yStride, int pointCount, int& pointSimplifiedCount );
     //! Simplifies the OGR-geometry (Removing duplicated points) when is applied the specified map2pixel context
-    bool simplifyOgrGeometry( OGRGeometryH geometry, bool isaLinearRing );
+    bool simplifyOgrGeometry( OGRGeometry* geometry, bool isaLinearRing );
 
     //! Returns a point buffer of the specified size
     OGRRawPoint* mallocPoints( int numPoints );
-
-    //! Load a point array to the specified LineString geometry 
-    static void setGeometryPoints( OGRGeometryH geometry, OGRRawPoint* points, int numPoints, bool isaLinearRing );
 
   public:
     //! Simplifies the specified geometry
     virtual bool simplifyGeometry( OGRGeometryH geometry );
 };
+#endif
 
 #endif // QGSOGRGEOMETRYSIMPLIFIER_H

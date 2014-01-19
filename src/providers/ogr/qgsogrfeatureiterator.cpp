@@ -109,31 +109,45 @@ bool QgsOgrFeatureIterator::prepareSimplification( const QgsSimplifyMethod& simp
   if ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) && simplifyMethod.methodType() != QgsSimplifyMethod::NoSimplification && !simplifyMethod.forceLocalOptimization() )
   {
     QgsSimplifyMethod::MethodType methodType = simplifyMethod.methodType();
+    Q_UNUSED( methodType);
 
+#if defined(HAVE_OGR_GEOMETRY_CLASS)
     if ( methodType == QgsSimplifyMethod::OptimizeForRendering )
     {
       int simplifyFlags = QgsMapToPixelSimplifier::SimplifyGeometry | QgsMapToPixelSimplifier::SimplifyEnvelope;
       mGeometrySimplifier = new QgsOgrMapToPixelSimplifier( simplifyFlags, simplifyMethod.tolerance() );
       return true;
     }
+#endif
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1900
-    else if ( methodType == QgsSimplifyMethod::PreserveTopology )
+    if ( methodType == QgsSimplifyMethod::PreserveTopology )
     {
       mGeometrySimplifier = new QgsOgrTopologyPreservingSimplifier( simplifyMethod.tolerance() );
       return true;
     }
 #endif
-    else
-    {
-      QgsDebugMsg( QString( "Simplification method type (%1) is not recognised by OgrFeatureIterator class" ).arg( methodType ) );
-    }
+
+    QgsDebugMsg( QString( "Simplification method type (%1) is not recognised by OgrFeatureIterator class" ).arg( methodType ) );
   }
   return QgsAbstractFeatureIterator::prepareSimplification( simplifyMethod );
 }
 
 bool QgsOgrFeatureIterator::providerCanSimplify( QgsSimplifyMethod::MethodType methodType ) const
 {
-  return methodType == QgsSimplifyMethod::OptimizeForRendering || methodType == QgsSimplifyMethod::PreserveTopology;
+#if defined(HAVE_OGR_GEOMETRY_CLASS)
+  if ( methodType == QgsSimplifyMethod::OptimizeForRendering )
+  {
+    return true;
+  }
+#endif
+#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1900
+  if ( methodType == QgsSimplifyMethod::PreserveTopology )
+  {
+    return true;
+  }
+#endif
+
+  return false;
 }
 
 bool QgsOgrFeatureIterator::fetchFeature( QgsFeature& feature )
