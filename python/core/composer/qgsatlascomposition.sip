@@ -82,6 +82,9 @@ public:
     /** Prepare the atlas map for the given feature. Sets the extent and context variables */
     void prepareForFeature( int i );
 
+    /** Prepare the atlas map for the given feature. Sets the extent and context variables */
+    void prepareForFeature( QgsFeature * feat );
+
     /** Returns the current filename. Must be called after prepareForFeature( i ) */
     const QString& currentFilename() const;
     
@@ -108,4 +111,11 @@ public:
   signals:
     /** emitted when one of the parameters changes */
     void parameterChanged();
+
+    /** emitted when atlas is enabled or disabled */
+    void toggled( bool );
+
+    /**Is emitted when the coverage layer for an atlas changes*/
+    void coverageLayerChanged( QgsVectorLayer* layer );
+
 };

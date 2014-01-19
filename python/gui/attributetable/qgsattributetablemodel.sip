@@ -2,6 +2,7 @@ class QgsAttributeTableModel : QAbstractTableModel
 {
 %TypeHeaderCode
 #include <qgsattributetablemodel.h>
+#include <qgsmaplayeractionregistry.h>
 %End
   public:
     enum Role
@@ -132,6 +133,11 @@ class QgsAttributeTableModel : QAbstractTableModel
      * Execute an action
      */
     void executeAction( int action, const QModelIndex &idx ) const;
+
+    /**
+     * Execute a QgsMapLayerAction
+     */
+    void executeMapLayerAction( QgsMapLayerAction* action, const QModelIndex &idx ) const;
 
     /**
      * Return the feature attributes at given model index

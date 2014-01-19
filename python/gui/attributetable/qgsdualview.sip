@@ -132,3 +132,17 @@ class QgsAttributeTableAction : QAction
     void execute();
     void featureForm();
 };
+
+class QgsAttributeTableMapLayerAction : QAction
+{
+%TypeHeaderCode
+#include <qgsdualview.h>
+%End
+
+  public:
+    QgsAttributeTableMapLayerAction( const QString &name, QgsDualView *dualView, QgsMapLayerAction* action, const QModelIndex &fieldIdx );
+
+  public slots:
+    void execute();
+
+};

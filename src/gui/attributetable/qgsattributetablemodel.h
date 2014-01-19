@@ -28,6 +28,7 @@
 #include "qgsvectorlayercache.h"
 
 class QgsMapCanvas;
+class QgsMapLayerAction;
 
 /**
  * A model backed by a {@link QgsVectorLayerCache} which is able to provide
@@ -172,6 +173,11 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      * Execute an action
      */
     void executeAction( int action, const QModelIndex &idx ) const;
+
+    /**
+     * Execute a QgsMapLayerAction
+     */
+    void executeMapLayerAction( QgsMapLayerAction* action, const QModelIndex &idx ) const;
 
     /**
      * Return the feature attributes at given model index

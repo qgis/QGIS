@@ -111,6 +111,9 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     /** Prepare the atlas map for the given feature. Sets the extent and context variables */
     void prepareForFeature( int i );
 
+    /** Prepare the atlas map for the given feature. Sets the extent and context variables */
+    void prepareForFeature( QgsFeature * feat );
+
     /** Returns the current filename. Must be called after prepareForFeature( i ) */
     const QString& currentFilename() const;
 
@@ -174,6 +177,7 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
 
   public:
     typedef QMap< QgsFeatureId, QVariant > SorterKeys;
+
   private:
     // value of field that is used for ordering of features
     SorterKeys mFeatureKeys;
