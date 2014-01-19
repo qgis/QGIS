@@ -18,6 +18,8 @@
 #include "qgsogrprovider.h"
 #include "qgsapplication.h"
 
+#include <ogr_geometry.h>
+
 QgsOgrAbstractGeometrySimplifier::~QgsOgrAbstractGeometrySimplifier()
 {
 }

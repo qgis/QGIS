@@ -19,7 +19,9 @@
 
 #include "qgsmaptopixelgeometrysimplifier.h"
 #include <ogr_api.h>
-#include <ogr_geometry.h>
+
+class OGRRawPoint;
+class OGRGeometry;
 
 /**
  * Abstract base class for simplify OGR-geometries using a specific algorithm
