@@ -21,7 +21,6 @@
 #include <ogr_api.h>
 
 class OGRRawPoint;
-class OGRGeometry;
 
 /**
  * Abstract base class for simplify OGR-geometries using a specific algorithm
@@ -74,10 +73,13 @@ class QgsOgrMapToPixelSimplifier : public QgsOgrAbstractGeometrySimplifier, QgsM
     //! Simplifies the OGR-geometry (Removing duplicated points) when is applied the specified map2pixel context
     bool simplifyOgrGeometry( QGis::GeometryType geometryType, double* xptr, int xStride, double* yptr, int yStride, int pointCount, int& pointSimplifiedCount );
     //! Simplifies the OGR-geometry (Removing duplicated points) when is applied the specified map2pixel context
-    bool simplifyOgrGeometry( OGRGeometry* geometry, bool isaLinearRing );
+    bool simplifyOgrGeometry( OGRGeometryH geometry, bool isaLinearRing );
 
     //! Returns a point buffer of the specified size
     OGRRawPoint* mallocPoints( int numPoints );
+
+    //! Load a point array to the specified LineString geometry 
+    static void setGeometryPoints( OGRGeometryH geometry, OGRRawPoint* points, int numPoints, bool isaLinearRing );
 
   public:
     //! Simplifies the specified geometry
