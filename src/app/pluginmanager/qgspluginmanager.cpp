@@ -29,6 +29,7 @@
 #include <QSortFilterProxyModel>
 #include <QActionGroup>
 #include <QTextStream>
+#include <QTimer>
 
 #include "qgis.h"
 #include "qgsapplication.h"
@@ -538,6 +539,8 @@ void QgsPluginManager::reloadModelData()
     if ( hasAvailablePlugins() ) mModelPlugins->appendRow( createSpacerItem( tr( "Installable", "category: plugins that are available for installation" ), "not installedZ" ) );
   }
 
+  updateWindowTitle();
+
   buttonUpgradeAll->setEnabled( hasUpgradeablePlugins() );
 
   // Disable tabs that are empty because of no suitable plugins in the model.
@@ -1003,6 +1006,8 @@ void QgsPluginManager::setCurrentTab( int idx )
     buttonInstall->setEnabled( false );
     buttonUninstall->setEnabled( false );
   }
+
+  updateWindowTitle();
 }
 
 
@@ -1336,3 +1341,34 @@ bool QgsPluginManager::hasInvalidPlugins( )
 
   return false;
 }
+
+
+
+void QgsPluginManager::updateWindowTitle( )
+{
+  QString newTitle = QString( "%1 - %2" ).arg( tr( "Plugins" ) ).arg( mOptionsListWidget->currentItem()->text() );
+  if ( mOptionsListWidget->currentRow() < mOptionsListWidget->count() - 1 )
+  {
+    // if it's not the Settings tab, add the plugin count
+    newTitle += QString( " (%3)" ).arg( mModelProxy->countWithCurrentStatus() );
+  }
+  setWindowTitle( newTitle );
+  return;
+}
+
+
+
+void QgsPluginManager::showEvent( QShowEvent* e )
+{
+  if ( mInit )
+  {
+    updateOptionsListVerticalTabs();
+  }
+  else
+  {
+    QTimer::singleShot( 0, this, SLOT( warnAboutMissingObjects() ) );
+  }
+
+  QDialog::showEvent( e );
+}
+
