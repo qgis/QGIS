@@ -20,12 +20,27 @@
 #include "qgsmaptopixelgeometrysimplifier.h"
 #include <ogr_api.h>
 
-// Enable OGR-simplification on provider side when OGRGeometry class is available
+/* TODO:
+ * Disable OGR-simplification on provider side because of OGRGeometry class
+ * (GDAL C++ API) is not available in current QGIS builds.
+ * This simplification is ~5-10% faster than simplification on QGIS side
+ * (for very complex polygons up to ~20%).
+ *
+ * While GDAL C API has not published the needed method 'OGR_G_SetPoints()'
+ * to rewrite the geometry of a LineString/LinearRing in one single call,
+ * we can not enable the OGR-simplification to change the current disabled
+ * references of OGRGeometry* (GDAL C++ API) to OGRGeometryH (GDAL C API).
+ *
+ * Search in 'qgsogrgeometrysimplifier.cpp' : lineString->setPoints(...);
+ * We can not use 'OGR_G_SetPoint(...)' because of each call reallocs the
+ * point array of the geometry and it is very-very slow.
+ *
 #if defined(__cplusplus)
  #define HAVE_OGR_GEOMETRY_CLASS 1
  class OGRGeometry;
  class OGRRawPoint;
 #endif
+ */
 
 /**
  * Abstract base class for simplify OGR-geometries using a specific algorithm
