@@ -4719,7 +4719,10 @@ QImage QgsWmsProvider::getLegendGraphic( double scale, bool forceRefresh )
     if ( mDpiMode & dpiQGIS )
       setQueryItem( url, "DPI", QString::number( defaultLegendGraphicResolution ) );
     if ( mDpiMode & dpiUMN )
+    {
       setQueryItem( url, "MAP_RESOLUTION", QString::number( defaultLegendGraphicResolution ) );
+      setQueryItem( url, "SCALE", QString::number( scale, 'f' ) );
+    }
     if ( mDpiMode & dpiGeoServer )
     {
       setQueryItem( url, "FORMAT_OPTIONS", QString( "dpi:%1" ).arg( defaultLegendGraphicResolution ) );
