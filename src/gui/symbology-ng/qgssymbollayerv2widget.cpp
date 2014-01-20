@@ -52,6 +52,12 @@ QgsSimpleLineSymbolLayerV2Widget::QgsSimpleLineSymbolLayerV2Widget( const QgsVec
 
   setupUi( this );
 
+  if ( vl && vl->geometryType() != QGis::Polygon )
+  {
+    //draw inside polygon checkbox only makes sense for polygon layers
+    mDrawInsideCheckBox->hide();
+  }
+
   connect( spinWidth, SIGNAL( valueChanged( double ) ), this, SLOT( penWidthChanged() ) );
   connect( btnChangeColor, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( colorChanged( const QColor& ) ) );
   connect( cboPenStyle, SIGNAL( currentIndexChanged( int ) ), this, SLOT( penStyleChanged() ) );
@@ -104,6 +110,13 @@ void QgsSimpleLineSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
   mCustomCheckBox->blockSignals( true );
   mCustomCheckBox->setCheckState( useCustomDashPattern ? Qt::Checked : Qt::Unchecked );
   mCustomCheckBox->blockSignals( false );
+
+  //draw inside polygon?
+  bool drawInsidePolygon = mLayer->drawInsidePolygon();
+  mDrawInsideCheckBox->blockSignals( true );
+  mDrawInsideCheckBox->setCheckState( drawInsidePolygon ? Qt::Checked : Qt::Unchecked );
+  mDrawInsideCheckBox->blockSignals( false );
+
   updatePatternIcon();
 }
 
@@ -186,6 +199,13 @@ void QgsSimpleLineSymbolLayerV2Widget::on_mDashPatternUnitComboBox_currentIndexC
   {
     mLayer->setCustomDashPatternUnit(( QgsSymbolV2::OutputUnit )index );
   }
+  emit changed();
+}
+
+void QgsSimpleLineSymbolLayerV2Widget::on_mDrawInsideCheckBox_stateChanged( int state )
+{
+  bool checked = ( state == Qt::Checked );
+  mLayer->setDrawInsidePolygon( checked );
   emit changed();
 }
 

@@ -91,6 +91,11 @@ class CORE_EXPORT QgsSimpleLineSymbolLayerV2 : public QgsLineSymbolLayerV2
     QVector<qreal> customDashVector() const { return mCustomDashVector; }
     void setCustomDashVector( const QVector<qreal>& vector ) { mCustomDashVector = vector; }
 
+    //Returns true if the line should only be drawn inside the polygon
+    bool drawInsidePolygon() const { return mDrawInsidePolygon; }
+    //Set to true if the line should only be drawn inside the polygon
+    void setDrawInsidePolygon( bool drawInsidePolygon ) { mDrawInsidePolygon = drawInsidePolygon; }
+
     QVector<qreal> dxfCustomDashPattern( QgsSymbolV2::OutputUnit& unit ) const;
 
     double dxfWidth( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const;
@@ -111,6 +116,8 @@ class CORE_EXPORT QgsSimpleLineSymbolLayerV2 : public QgsLineSymbolLayerV2
 
     /**Vector with an even number of entries for the */
     QVector<qreal> mCustomDashVector;
+
+    bool mDrawInsidePolygon;
 
   private:
     //helper functions for data defined symbology

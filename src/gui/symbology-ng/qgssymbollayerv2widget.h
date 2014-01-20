@@ -71,6 +71,7 @@ class GUI_EXPORT QgsSimpleLineSymbolLayerV2Widget : public QgsSymbolLayerV2Widge
     void on_mOffsetUnitComboBox_currentIndexChanged( int index );
     void on_mDashPatternUnitComboBox_currentIndexChanged( int index );
     void on_mDataDefinedPropertiesButton_clicked();
+    void on_mDrawInsideCheckBox_stateChanged( int state );
 
   protected:
     QgsSimpleLineSymbolLayerV2* mLayer;

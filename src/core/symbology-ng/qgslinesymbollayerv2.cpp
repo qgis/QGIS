@@ -30,7 +30,7 @@
 
 QgsSimpleLineSymbolLayerV2::QgsSimpleLineSymbolLayerV2( QColor color, double width, Qt::PenStyle penStyle )
     : mPenStyle( penStyle ), mPenJoinStyle( DEFAULT_SIMPLELINE_JOINSTYLE ), mPenCapStyle( DEFAULT_SIMPLELINE_CAPSTYLE ), mOffset( 0 ), mOffsetUnit( QgsSymbolV2::MM ),
-    mUseCustomDashPattern( false ), mCustomDashPatternUnit( QgsSymbolV2::MM )
+    mUseCustomDashPattern( false ), mCustomDashPatternUnit( QgsSymbolV2::MM ), mDrawInsidePolygon( false )
 {
   mColor = color;
   mWidth = width;
@@ -92,6 +92,11 @@ QgsSymbolLayerV2* QgsSimpleLineSymbolLayerV2::create( const QgsStringMap& props 
   if ( props.contains( "customdash_unit" ) )
   {
     l->setCustomDashPatternUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["customdash_unit"] ) );
+  }
+
+  if ( props.contains( "draw_inside_polygon" ) )
+  {
+    l->setDrawInsidePolygon( props["draw_inside_polygon"].toInt() );
   }
 
   //data defined properties
@@ -191,6 +196,15 @@ void QgsSimpleLineSymbolLayerV2::renderPolyline( const QPolygonF& points, QgsSym
     return;
   }
 
+  if ( mDrawInsidePolygon )
+  {
+    //only drawing the line on the interior of the polygon, so set clip path for painter
+    p->save();
+    QPainterPath clipPath;
+    clipPath.addPolygon( points );
+    p->setClipPath( clipPath, Qt::IntersectClip );
+  }
+
   if ( offset == 0 )
   {
     p->drawPolyline( points );
@@ -199,6 +213,12 @@ void QgsSimpleLineSymbolLayerV2::renderPolyline( const QPolygonF& points, QgsSym
   {
     double scaledOffset = offset * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOffsetUnit );
     p->drawPolyline( ::offsetLine( points, scaledOffset ) );
+  }
+
+  if ( mDrawInsidePolygon )
+  {
+    //restore painter to reset clip path
+    p->restore();
   }
 }
 
@@ -216,6 +236,7 @@ QgsStringMap QgsSimpleLineSymbolLayerV2::properties() const
   map["use_custom_dash"] = ( mUseCustomDashPattern ? "1" : "0" );
   map["customdash"] = QgsSymbolLayerV2Utils::encodeRealVector( mCustomDashVector );
   map["customdash_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mCustomDashPatternUnit );
+  map["draw_inside_polygon"] = ( mDrawInsidePolygon ? "1" : "0" );
   saveDataDefinedProperties( map );
   return map;
 }
@@ -231,6 +252,7 @@ QgsSymbolLayerV2* QgsSimpleLineSymbolLayerV2::clone() const
   l->setPenCapStyle( mPenCapStyle );
   l->setUseCustomDashPattern( mUseCustomDashPattern );
   l->setCustomDashVector( mCustomDashVector );
+  l->setDrawInsidePolygon( mDrawInsidePolygon );
   copyDataDefinedProperties( l );
   return l;
 }
@@ -387,7 +409,15 @@ void QgsSimpleLineSymbolLayerV2::applyDataDefinedSymbology( QgsSymbolV2RenderCon
 
 double QgsSimpleLineSymbolLayerV2::estimateMaxBleed() const
 {
-  return ( mWidth / 2.0 ) + mOffset;
+  if ( mDrawInsidePolygon )
+  {
+    //set to clip line to the interior of polygon, so we expect no bleed
+    return 0;
+  }
+  else
+  {
+    return ( mWidth / 2.0 ) + mOffset;
+  }
 }
 
 QVector<qreal> QgsSimpleLineSymbolLayerV2::dxfCustomDashPattern( QgsSymbolV2::OutputUnit& unit ) const

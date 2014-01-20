@@ -55,6 +55,12 @@ class QgsSimpleLineSymbolLayerV2 : QgsLineSymbolLayerV2
 
     QVector<qreal> customDashVector() const;
     void setCustomDashVector( const QVector<qreal>& vector );
+    
+    //Returns true if the line should only be drawn inside the polygon
+    bool drawInsidePolygon() const;
+    //Set to true if the line should only be drawn inside the polygon
+    void setDrawInsidePolygon( bool drawInsidePolygon );
+    
 };
 
 /////////

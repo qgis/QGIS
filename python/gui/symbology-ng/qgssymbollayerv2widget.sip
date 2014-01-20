@@ -43,6 +43,7 @@ class QgsSimpleLineSymbolLayerV2Widget : QgsSymbolLayerV2Widget
     void on_mOffsetUnitComboBox_currentIndexChanged( int index );
     void on_mDashPatternUnitComboBox_currentIndexChanged( int index );
     void on_mDataDefinedPropertiesButton_clicked();
+    void on_mDrawInsideCheckBox_stateChanged( int state );
 
   protected:
     //creates a new icon for the 'change pattern' button
