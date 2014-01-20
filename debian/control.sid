@@ -27,6 +27,7 @@ Build-Depends:
  python-all (>= 2.6.6-3~),
  python-all-dev (>= 2.6.6-3~),
  python-qt4 (>= 4.1.0),
+ python-qt4-dev,
  python-sip (>= 4.5.0),
  python-sip-dev (>= 4.5.0),
  libosgearth-dev,

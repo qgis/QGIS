@@ -27,6 +27,7 @@ Build-Depends:
  python-all (>= 2.6.6-3~),
  python-all-dev (>= 2.6.6-3~),
  python-qt4 (>= 4.1.0),
+ python-qt4-dev,
  python-sip (>= 4.5.0),
  python-sip-dev (>= 4.5.0),
  libosgearth-dev,
@@ -97,7 +98,7 @@ Depends:
  libsqlite3-dev,
  python-qt4 (>=4.1.0),
  python-qt4-dev (>=4.1.0),
- qt4-designer (>=4.6.0),
+ qt4-designer (>= 4.8.0),
  ${misc:Depends}
 Provides: qgis-dev
 Replaces: qgis-dev, libqgis1-dev, libqgis1.4.0-dev
