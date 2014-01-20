@@ -92,7 +92,7 @@ class CORE_EXPORT QGis
         case WKBPoint25D:      return WKBMultiPoint25D;
         case WKBLineString25D: return WKBMultiLineString25D;
         case WKBPolygon25D:    return WKBMultiPolygon25D;
-        default:                    return type;
+        default:               return type;
       }
     }
 
@@ -184,7 +184,8 @@ class CORE_EXPORT QGis
         case WKBPoint:              return "WKBPoint";
         case WKBLineString:         return "WKBLineString";
         case WKBPolygon:            return "WKBPolygon";
-        case WKBMultiPoint:         return "WKBMultiLineString";
+        case WKBMultiPoint:         return "WKBMultiPoint";
+        case WKBMultiLineString:    return "WKBMultiLineString";
         case WKBMultiPolygon:       return "WKBMultiPolygon";
         case WKBNoGeometry:         return "WKBNoGeometry";
         case WKBPoint25D:           return "WKBPoint25D";
