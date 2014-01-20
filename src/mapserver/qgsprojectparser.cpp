@@ -2240,7 +2240,7 @@ QgsComposition* QgsProjectParser::initComposition( const QString& composerTempla
     return 0;
   }
 
-  QgsComposition* composition = new QgsComposition( mapRenderer ); //set resolution, paper size from composer element attributes
+  QgsComposition* composition = new QgsComposition( mapRenderer->mapSettings() ); //set resolution, paper size from composer element attributes
   if ( !composition->readXML( compositionElem, *mXMLDoc ) )
   {
     delete composition;

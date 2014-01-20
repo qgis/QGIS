@@ -1461,7 +1461,7 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
     }
 
     //check if feature is rendered at all
-    r2->startRender( renderContext, layer );
+    r2->startRender( renderContext, layer->pendingFields() );
     bool renderV2 = r2->willRenderFeature( feature );
     r2->stopRender( renderContext );
     if ( !renderV2 )

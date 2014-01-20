@@ -169,18 +169,7 @@ int main( int argc, char * argv[] )
   QgsApplication qgsapp( argc, argv, getenv( "DISPLAY" ) );
 
   //Default prefix path may be altered by environment variable
-  char* prefixPath = getenv( "QGIS_PREFIX_PATH" );
-  if ( prefixPath )
-  {
-    QgsApplication::setPrefixPath( prefixPath, TRUE );
-  }
-#if !defined(Q_OS_WIN)
-  else
-  {
-    // init QGIS's paths - true means that all path will be inited from prefix
-    QgsApplication::setPrefixPath( CMAKE_INSTALL_PREFIX, TRUE );
-  }
-#endif
+  QgsApplication::init();
 
 #if defined(MAPSERVER_SKIP_ECW)
   QgsDebugMsg( "Skipping GDAL ECW drivers in server." );
