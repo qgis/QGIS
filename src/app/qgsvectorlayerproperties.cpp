@@ -408,6 +408,13 @@ void QgsVectorLayerProperties::syncToLayer( void )
     mSimplifyDrawingAtProvider->setChecked( !simplifyMethod.forceLocalOptimization() );
     mSimplifyDrawingAtProvider->setEnabled( mSimplifyDrawingGroupBox->isChecked() );
   }
+  
+  // disable simplification for point layers, now it is not implemented
+  if ( layer->geometryType() == QGis::Point )
+  {
+    mOptionsStackedWidget->removeWidget( mOptsPage_Rendering );
+    mSimplifyDrawingGroupBox->setChecked( false );
+  }
 
   // load appropriate symbology page (V1 or V2)
   updateSymbologyPage();
