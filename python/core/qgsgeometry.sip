@@ -199,7 +199,7 @@ class QgsGeometry
      * Searches for the closest vertex in this geometry to the given point.
      * @param point Specifiest the point for search
      * @param atVertex Receives index of the closest vertex
-     * @return The squared cartesian distance is also returned in sqrDist, negative number on error
+     * @return The squared cartesian distance, negative number on error
      */
     double closestVertexWithContext( const QgsPoint& point, int& atVertex /Out/ );
 
@@ -213,7 +213,7 @@ class QgsGeometry
      * @param epsilon epsilon for segment snapping (added in 1.8)
      * @return The squared cartesian distance is also returned in sqrDist, negative number on error
      */
-    double closestSegmentWithContext( const QgsPoint& point, QgsPoint& minDistPoint /Out/, int& beforeVertex /Out/ );
+    double closestSegmentWithContext( const QgsPoint& point, QgsPoint& minDistPoint /Out/, int& afterVertex /Out/ );
 
     /**Adds a new ring to this geometry. This makes only sense for polygon and multipolygons.
      @return 0 in case of success (ring added), 1 problem with geometry type, 2 ring not closed,
