@@ -438,6 +438,11 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     /** Sets the margin size (percentage) used when the map is in atlas mode */
     void setAtlasMargin( double margin ) { mAtlasMargin = margin; }
 
+    /**Get the number of layers that this item exports
+      @returns 0 if this item is to be placed on the same layer as the previous item
+      @note this method was added in version 2.2 */
+    int numberExportLayers() const;
+
   signals:
     void extentChanged();
 
@@ -597,7 +602,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     double mAtlasMargin;
 
     /**Returns a list of the layers to render for this map item*/
-    QStringList layersToRender();
+    QStringList layersToRender() const;
 
     /**Draws the map grid*/
     void drawGrid( QPainter* p );
@@ -656,6 +661,18 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     void createDefaultGridLineSymbol();
     void initGridAnnotationFormatFromProject();
 
+    enum ItemType
+    {
+      Background,
+      Layer,
+      Grid,
+      OverviewMapExtent,
+      Frame,
+      SelectionBoxes
+    };
+
+    /**Test if this item needs to be exported considering mCurrentExportLayer*/
+    bool exportLayer( ItemType type ) const;
 };
 
 #endif

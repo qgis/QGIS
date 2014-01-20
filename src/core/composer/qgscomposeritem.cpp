@@ -63,6 +63,7 @@ QgsComposerItem::QgsComposerItem( QgsComposition* composition, bool manageZValue
     , mEffectsEnabled( true )
     , mTransparency( 0 )
     , mLastUsedPositionMode( UpperLeft )
+    , mCurrentExportLayer( -1 )
     , mId( "" )
     , mUuid( QUuid::createUuid().toString() )
 {
@@ -86,6 +87,7 @@ QgsComposerItem::QgsComposerItem( qreal x, qreal y, qreal width, qreal height, Q
     , mEffectsEnabled( true )
     , mTransparency( 0 )
     , mLastUsedPositionMode( UpperLeft )
+    , mCurrentExportLayer( -1 )
     , mId( "" )
     , mUuid( QUuid::createUuid().toString() )
 {
