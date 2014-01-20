@@ -12,6 +12,7 @@
 
 #include "qgsmapsettings.h"
 
+#include "qgsgeometrycache.h"
 
 class QgsLabelingResults;
 class QgsMapLayerRenderer;
@@ -77,6 +78,9 @@ public:
   //! Does not take ownership of the object.
   void setCache( QgsMapRendererCache* cache );
 
+  //! Set which vector layers should be cached while rendering
+  //! @note The way how geometries are cached is really suboptimal - this method may be removed in future releases
+  void setRequestedGeometryCacheForLayers( const QStringList& layerIds ) { mRequestedGeomCacheForLayers = layerIds; }
 
   //! Find out how log it took to finish the job (in miliseconds)
   int renderingTime() const { return mRenderingTime; }
@@ -108,10 +112,18 @@ protected:
   static void drawOldLabeling( const QgsMapSettings& settings, QgsRenderContext& renderContext );
   static void drawNewLabeling( const QgsMapSettings& settings, QgsRenderContext& renderContext, QgsPalLabeling* labelingEngine );
 
+  //! called when rendering has finished to update all layers' geometry caches
+  void updateLayerGeometryCaches();
+
   QgsMapSettings mSettings;
   Errors mErrors;
 
   QgsMapRendererCache* mCache;
+
+  //! list of layer IDs for which the geometry cache should be updated
+  QStringList mRequestedGeomCacheForLayers;
+  //! map of geometry caches
+  QMap<QString, QgsGeometryCache> mGeometryCaches;
 
   QTime mRenderingStart;
   int mRenderingTime;

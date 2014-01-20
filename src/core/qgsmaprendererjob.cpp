@@ -14,6 +14,7 @@
 #include "qgsmaplayerrenderer.h"
 #include "qgsmaprenderercache.h"
 #include "qgspallabeling.h"
+#include "qgsvectorlayerrenderer.h"
 
 
 QgsMapRendererJob::QgsMapRendererJob( const QgsMapSettings& settings )
@@ -438,6 +439,17 @@ void QgsMapRendererJob::drawNewLabeling( const QgsMapSettings& settings, QgsRend
   }
 }
 
+void QgsMapRendererJob::updateLayerGeometryCaches()
+{
+  foreach ( QString id, mGeometryCaches.keys() )
+  {
+    const QgsGeometryCache& cache = mGeometryCaches[id];
+    if ( QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( id ) ) )
+      *vl->cache() = cache;
+  }
+  mGeometryCaches.clear();
+}
+
 
 bool QgsMapRendererJob::needTemporaryImage( QgsMapLayer* ml )
 {
@@ -524,6 +536,8 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsPalLabelin
     bool cacheValid = mCache->init( mSettings.visibleExtent(), mSettings.scale() );
     qDebug("CACHE VALID: %d", cacheValid);
   }
+
+  mGeometryCaches.clear();
 
   while ( li.hasPrevious() )
   {
@@ -629,6 +643,14 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsPalLabelin
 
     job.renderer = ml->createMapRenderer( job.context );
 
+    if ( mRequestedGeomCacheForLayers.contains( ml->id() ) )
+    {
+      if ( QgsVectorLayerRenderer* vlr = dynamic_cast<QgsVectorLayerRenderer*>( job.renderer ) )
+      {
+        vlr->setGeometryCachePointer( &mGeometryCaches[ ml->id() ] );
+      }
+    }
+
     /*
     // TODO: split extent
     if ( split )
@@ -675,6 +697,8 @@ void QgsMapRendererJob::cleanupJobs( LayerRenderJobs& jobs )
   }
 
   jobs.clear();
+
+  updateLayerGeometryCaches();
 }
 
 /////////////

@@ -652,6 +652,18 @@ void QgsMapCanvas::refreshMap()
     mJob = new QgsMapRendererSequentialJob( mSettings );
   connect(mJob, SIGNAL( finished() ), SLOT( rendererJobFinished() ) );
   mJob->setCache( mCache );
+
+  QStringList layersForGeometryCache;
+  foreach ( QString id, mSettings.layers() )
+  {
+    if ( QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( id ) ) )
+    {
+      if ( vl->isEditable() )
+        layersForGeometryCache << id;
+    }
+  }
+  mJob->setRequestedGeometryCacheForLayers( layersForGeometryCache );
+
   mJob->start();
 
   mMapUpdateTimer.start();

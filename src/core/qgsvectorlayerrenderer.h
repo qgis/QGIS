@@ -34,6 +34,10 @@ public:
 
   virtual bool render();
 
+  //! where to save the cached geometries
+  //! @note The way how geometries are cached is really suboptimal - this method may be removed in future releases
+  void setGeometryCachePointer( QgsGeometryCache* cache );
+
 private:
 
   /**Registers label and diagram layer

@@ -35,11 +35,6 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer* layer, QgsRender
   mSelectedFeatureIds = layer->selectedFeaturesIds();
 
   mDrawVertexMarkers = ( layer->editBuffer() != 0 );
-  mCacheFeatures = ( layer->editBuffer() != 0 );
-  if ( mCacheFeatures )
-  {
-    mCache = new QgsGeometryCache();
-  }
 
   mGeometryType = layer->geometryType();
 
@@ -70,11 +65,8 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer* layer, QgsRender
 
   QgsDebugMsg( "rendering v2:\n" + mRendererV2->dump() );
 
-  if ( mCacheFeatures )
+  if ( mDrawVertexMarkers )
   {
-    // Destroy all cached geometries and clear the references to them
-    mCache->setCachedGeometriesRect( mContext.extent() );
-
     // set editing vertex markers style
     mRendererV2->setVertexMarkerAppearance( mVertexMarkerStyle, mVertexMarkerSize );
   }
@@ -91,7 +83,6 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer* layer, QgsRender
 QgsVectorLayerRenderer::~QgsVectorLayerRenderer()
 {
   delete mRendererV2;
-  delete mCache;
   delete mSource;
 }
 
@@ -142,6 +133,17 @@ bool QgsVectorLayerRenderer::render()
   return true;
 }
 
+void QgsVectorLayerRenderer::setGeometryCachePointer( QgsGeometryCache* cache )
+{
+  mCache = cache;
+
+  if ( mCache )
+  {
+    // Destroy all cached geometries and clear the references to them
+    mCache->setCachedGeometriesRect( mContext.extent() );
+  }
+}
+
 
 
 void QgsVectorLayerRenderer::drawRendererV2( QgsFeatureIterator& fit )
@@ -166,7 +168,7 @@ void QgsVectorLayerRenderer::drawRendererV2( QgsFeatureIterator& fit )
       // render feature
       bool rendered = mRendererV2->renderFeature( fet, mContext, -1, sel, drawMarker );
 
-      if ( mCacheFeatures )
+      if ( mCache )
       {
         // Cache this for the use of (e.g.) modifying the feature's uncommitted geometry.
         mCache->cacheGeometry( fet.id(), *fet.geometry() );
@@ -236,7 +238,7 @@ void QgsVectorLayerRenderer::drawRendererV2Levels( QgsFeatureIterator& fit )
     }
     features[sym].append( fet );
 
-    if ( mCacheFeatures )
+    if ( mCache )
     {
       // Cache this for the use of (e.g.) modifying the feature's uncommitted geometry.
       mCache->cacheGeometry( fet.id(), *fet.geometry() );
