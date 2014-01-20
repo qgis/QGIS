@@ -3368,12 +3368,12 @@ Na pewno chcesz kontynuować?</translation>
     <message>
         <location filename="../python/plugins/processing/ui/DlgScriptEditor.ui" line="14"/>
         <source>Script editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Edytor skryptów</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgScriptEditor.ui" line="40"/>
         <source>Save</source>
-        <translation type="unfinished">Zapisz</translation>
+        <translation>Zapisz</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgScriptEditor.ui" line="43"/>
@@ -3386,47 +3386,47 @@ Na pewno chcesz kontynuować?</translation>
         <location filename="../python/plugins/processing/ui/DlgScriptEditor.ui" line="141"/>
         <location filename="../python/plugins/processing/ui/DlgScriptEditor.ui" line="151"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgScriptEditor.ui" line="50"/>
         <source>Save as...</source>
-        <translation type="unfinished">Zapisz jako...</translation>
+        <translation>Zapisz jako...</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgScriptEditor.ui" line="67"/>
         <source>Edit script help</source>
-        <translation type="unfinished"></translation>
+        <translation>Edytuj pomoc</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgScriptEditor.ui" line="84"/>
         <source>Run algorithm</source>
-        <translation type="unfinished"></translation>
+        <translation>Uruchom algorytm</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgScriptEditor.ui" line="101"/>
         <source>Cut</source>
-        <translation type="unfinished">Wytnij</translation>
+        <translation>Wytnij</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgScriptEditor.ui" line="111"/>
         <source>Copy</source>
-        <translation type="unfinished">Kopiuj</translation>
+        <translation>Kopiuj</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgScriptEditor.ui" line="121"/>
         <source>Paste</source>
-        <translation type="unfinished">Wklej</translation>
+        <translation>Wklej</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgScriptEditor.ui" line="138"/>
         <source>Undo</source>
-        <translation type="unfinished">Cofnij</translation>
+        <translation>Cofnij</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgScriptEditor.ui" line="148"/>
         <source>Redo</source>
-        <translation type="unfinished">Ponów</translation>
+        <translation>Ponów</translation>
     </message>
 </context>
 <context>
@@ -3767,91 +3767,91 @@ pole geometrii - kolumnę z unikatowymi wartościami</translation>
     <message>
         <location filename="../python/plugins/processing/algs/ui/DlgFieldsCalculator.ui" line="14"/>
         <source>Field calculator</source>
-        <translation type="unfinished">Kalkulator pól</translation>
+        <translation>Kalkulator pól</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/algs/ui/DlgFieldsCalculator.ui" line="26"/>
         <source>Create a new field</source>
-        <translation type="unfinished">Twórz nowe pole</translation>
+        <translation>Twórz nowe pole</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/algs/ui/DlgFieldsCalculator.ui" line="59"/>
         <source>Output field name</source>
-        <translation type="unfinished">Nazwa pola wyjściowego</translation>
+        <translation>Nazwa</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/algs/ui/DlgFieldsCalculator.ui" line="72"/>
         <source>Output field type</source>
-        <translation type="unfinished">Typ pola wyjściowego</translation>
+        <translation>Typ</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/algs/ui/DlgFieldsCalculator.ui" line="85"/>
         <source>Output field width</source>
-        <translation type="unfinished">Długość pola wyjściowego</translation>
+        <translation>Długość</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/algs/ui/DlgFieldsCalculator.ui" line="95"/>
         <source>Width of complete output. For example 123,456 means 6 as field width.</source>
-        <translation type="unfinished">Całkowita długość wyjściowa. Przykładowo 123 456 wymaga długości 6 znaków.</translation>
+        <translation>Określa całkowitą długość. Przykładowo, zapis 123.456 wymaga 6 znaków.</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/algs/ui/DlgFieldsCalculator.ui" line="108"/>
         <source>Precision</source>
-        <translation type="unfinished">Dokładność</translation>
+        <translation>Dokładność</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/algs/ui/DlgFieldsCalculator.ui" line="146"/>
         <source>Input layer</source>
-        <translation type="unfinished">Warstwa wejściowa</translation>
+        <translation>Warstwa źródłowa</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/algs/ui/DlgFieldsCalculator.ui" line="165"/>
         <source>Update existing field</source>
-        <translation type="unfinished">Aktualizuj istniejące pole</translation>
+        <translation>Aktualizuj istniejące pole</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/algs/ui/DlgFieldsCalculator.ui" line="195"/>
         <source>Output file</source>
-        <translation type="unfinished">Plik wyjściowy</translation>
+        <translation>Plik wynikowy</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/algs/ui/DlgFieldsCalculator.ui" line="205"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
 </context>
 <context>
     <name>FieldsCalculatorDialog</name>
     <message>
         <source>Save file</source>
-        <translation type="unfinished">Zapisz plik</translation>
+        <translation>Zapisz plik</translation>
     </message>
     <message>
         <source>Unable to execute algorithm</source>
-        <translation type="unfinished"></translation>
+        <translation>Nieudane uruchomienie algorytmu</translation>
     </message>
     <message>
         <source>Wrong or missing parameter values</source>
-        <translation type="unfinished"></translation>
+        <translation>Błędne lub brakujące parametry</translation>
     </message>
 </context>
 <context>
     <name>FileDirectorySelector</name>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>Select directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybierz katalog</translation>
     </message>
     <message>
         <source>Select file</source>
-        <translation type="unfinished">Wybierz plik</translation>
+        <translation>Wybierz plik</translation>
     </message>
     <message>
         <source>All files (*.*)</source>
-        <translation type="unfinished">Wszystkie pliki (*)</translation>
+        <translation>Wszystkie pliki (*)</translation>
     </message>
 </context>
 <context>
@@ -6163,13 +6163,16 @@ Wartość &apos;gray&apos; (z GDAL 1.7.0) umożliwia rozszerzenie danych z tabel
     <message>
         <source>Error loading output shapefile:
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd wczytywania wyjściowego pliku Shapefile:
+%s</translation>
     </message>
     <message>
         <source>Created output shapefile:
 %s
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Utworzono wyjściowy Shapefile:
+%s
+%s</translation>
     </message>
     <message>
         <source>Created output shapefile:
@@ -6879,15 +6882,15 @@ Błąd geoprocesingu GEOS: Jeden lub więcej wejściowych obiektów ma błędną
     </message>
     <message>
         <source>Clear history and log</source>
-        <translation>Wyczyść histowrię i log</translation>
+        <translation>Wyczyść historię i plik zdarzeń</translation>
     </message>
     <message>
         <source>Confirmation</source>
-        <translation type="unfinished"></translation>
+        <translation>Potwierdzenie</translation>
     </message>
     <message>
         <source>Are you sure you want to clear log?</source>
-        <translation type="unfinished"></translation>
+        <translation>Czy na pewno chcesz wyczyścić historię i plik zdarzeń?</translation>
     </message>
     <message>
         <source>Create test</source>
@@ -7043,7 +7046,7 @@ Błąd geoprocesingu GEOS: Jeden lub więcej wejściowych obiektów ma błędną
     <message>
         <location filename="../src/ui/qgisapp.ui" line="223"/>
         <source>Paste Features as</source>
-        <translation type="unfinished"></translation>
+        <translation>Wklej obiekty jako</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="269"/>
@@ -7368,12 +7371,12 @@ Błąd geoprocesingu GEOS: Jeden lub więcej wejściowych obiektów ma błędną
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2102"/>
         <source>Need commercial support?</source>
-        <translation type="unfinished"></translation>
+        <translation>Potrzebujesz wsparcia komercyjnego?</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2147"/>
         <source>DXF Export...</source>
-        <translation type="unfinished"></translation>
+        <translation>Eksport DXF...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2159"/>
@@ -7404,7 +7407,7 @@ Błąd geoprocesingu GEOS: Jeden lub więcej wejściowych obiektów ma błędną
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2131"/>
         <source>New Vector Layer</source>
-        <translation type="unfinished">Nowa warstwa wektorowa</translation>
+        <translation>Nowa warstwa wektorowa</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2134"/>
@@ -8395,11 +8398,11 @@ Działa na aktualnie edytowanej warstwie</translation>
     </message>
     <message>
         <source>Message</source>
-        <translation type="unfinished">Komunikat</translation>
+        <translation>Komunikat</translation>
     </message>
     <message>
         <source>There are unsaved changes in model. Close modeler without saving?</source>
-        <translation type="unfinished"></translation>
+        <translation>W modelu są niezapisane zmiany. Zamknąć bez zapisu zmian?</translation>
     </message>
     <message>
         <source>Empty model</source>
@@ -8408,20 +8411,22 @@ Działa na aktualnie edytowanej warstwie</translation>
     <message>
         <source>Model doesn&apos;t contains any algorithms and/or 
                              parameters and can&apos;t be executed</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Model nie zawiera żadnych algorytmów ani/i
+  parametetrów i nie może zostać uruchomiony</translation>
     </message>
     <message>
         <source>Save Model As Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapisz model jako obraz</translation>
     </message>
     <message>
         <source>PNG files (*.png *.PNG)</source>
-        <translation type="unfinished"></translation>
+        <translation>Pliki PNG (*.png *.PNG)</translation>
     </message>
     <message>
         <source>Unable to save edits. Reason:
  %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie można zapisać zmian. Powód:
+ %s</translation>
     </message>
     <message>
         <source>This model can&apos;t be saved in its 
@@ -8513,15 +8518,15 @@ Linia z błędem: %1</translation>
     <name>MultipleInputDialog</name>
     <message>
         <source>Select all</source>
-        <translation type="unfinished">Zaznacz wszystko</translation>
+        <translation>Zaznacz wszystko</translation>
     </message>
     <message>
         <source>Clear selection</source>
-        <translation type="unfinished">Wyczyść wybór</translation>
+        <translation>Wyczyść wybór</translation>
     </message>
     <message>
         <source>Toggle selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Odwróć zaznaczenie</translation>
     </message>
 </context>
 <context>
@@ -8535,71 +8540,71 @@ Linia z błędem: %1</translation>
     <name>NumberInputDialog</name>
     <message>
         <source>[Enter your formula here]</source>
-        <translation type="unfinished"></translation>
+        <translation>[Wprowadź wzór]</translation>
     </message>
     <message>
         <source>Values from data layers extents</source>
-        <translation type="unfinished"></translation>
+        <translation>Wartości z zaksięgu warstwy</translation>
     </message>
     <message>
         <source>Min X</source>
-        <translation type="unfinished"></translation>
+        <translation>Min X</translation>
     </message>
     <message>
         <source>Max X</source>
-        <translation type="unfinished"></translation>
+        <translation>Max X</translation>
     </message>
     <message>
         <source>Min Y</source>
-        <translation type="unfinished"></translation>
+        <translation>Min Y</translation>
     </message>
     <message>
         <source>Max Y</source>
-        <translation type="unfinished"></translation>
+        <translation>Max Y</translation>
     </message>
     <message>
         <source>Cellsize</source>
-        <translation type="unfinished"></translation>
+        <translation>Rozmiar komórki</translation>
     </message>
     <message>
         <source>Values from raster layers statistics</source>
-        <translation type="unfinished"></translation>
+        <translation>Wartości ze statystyki warstwy rastrowej</translation>
     </message>
     <message>
         <source>Mean</source>
-        <translation type="unfinished">Średnia</translation>
+        <translation>Średnia</translation>
     </message>
     <message>
         <source>Std. deviation</source>
-        <translation type="unfinished"></translation>
+        <translation>Odchylenie standardowe</translation>
     </message>
     <message>
         <source>Max value</source>
-        <translation type="unfinished"></translation>
+        <translation>Maksimum</translation>
     </message>
     <message>
         <source>Min value</source>
-        <translation type="unfinished"></translation>
+        <translation>Minimum</translation>
     </message>
     <message>
         <source>Values from QGIS map canvas</source>
-        <translation type="unfinished"></translation>
+        <translation>Wartości z obszaru mapy</translation>
     </message>
     <message>
         <source>Current extent</source>
-        <translation type="unfinished">Bieżący &amp;zasięg</translation>
+        <translation>Bieżący zasięg</translation>
     </message>
     <message>
         <source>Full extent of all layers in map canvas</source>
-        <translation type="unfinished"></translation>
+        <translation>Pełny zasięg wszystkich wczytanych warstw</translation>
     </message>
     <message>
         <source>Wrong expression</source>
-        <translation type="unfinished"></translation>
+        <translation>Błędne wyrażenie</translation>
     </message>
     <message>
         <source>The expression entered is not correct</source>
-        <translation type="unfinished"></translation>
+        <translation>Wprowadzone wyrażenie jest niepoprawne</translation>
     </message>
 </context>
 <context>
@@ -9027,19 +9032,19 @@ Linia z błędem: %1</translation>
     </message>
     <message>
         <source>Close Tab</source>
-        <translation type="unfinished"></translation>
+        <translation>Zamknij zakładkę</translation>
     </message>
     <message>
         <source>Close All</source>
-        <translation type="unfinished"></translation>
+        <translation>Zamknij wszystkie</translation>
     </message>
     <message>
         <source>Close Others</source>
-        <translation type="unfinished"></translation>
+        <translation>Zamknij pozostałe</translation>
     </message>
     <message>
         <source>Save As</source>
-        <translation type="unfinished">Zapisz jako</translation>
+        <translation>Zapisz jako</translation>
     </message>
     <message>
         <source>The file {0} could not be opened. Error: {1}
@@ -9243,7 +9248,7 @@ Linia z błędem: %1</translation>
     <message>
         <location filename="../src/core/qgis.cpp" line="90"/>
         <source>nautical miles</source>
-        <translation type="unfinished"></translation>
+        <translation>mile morskie</translation>
     </message>
 </context>
 <context>
@@ -13660,32 +13665,36 @@ Błędy: %3
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6530"/>
         <source>No Object Selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie wybrano obiektów</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6531"/>
         <source>To remove objects, you must select them in the legend</source>
-        <translation type="unfinished"></translation>
+        <translation>Aby usunąć obiekt, najpierw należy wybrać go z legendy</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6536"/>
         <source>Remove objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Usuń obiekty</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/app/qgisapp.cpp" line="6536"/>
         <source>Remove %n object(s)?</source>
         <comment>number of objects to remove</comment>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Usunąć %n obiekt?</numerusform>
+            <numerusform>Usunąć %n obiekty?</numerusform>
+            <numerusform>Usunąć %n obiektów?</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location filename="../src/app/qgisapp.cpp" line="6543"/>
         <source>%n object(s) removed.</source>
         <comment>number of objects removed</comment>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>usunięto %n obiekt.</numerusform>
+            <numerusform>usunięto %n obiekty.</numerusform>
+            <numerusform>usunięto %n obiektów.</numerusform>
         </translation>
     </message>
     <message>
@@ -13911,7 +13920,7 @@ Błędy: %3
     <message>
         <location filename="../src/app/qgisapp.cpp" line="9065"/>
         <source>Exit QGIS</source>
-        <translation type="unfinished">Wyjdź z QGIS</translation>
+        <translation>Wyjdź z QGIS</translation>
     </message>
     <message>
         <source>Move Feature(s)</source>
@@ -14884,7 +14893,7 @@ Wersja binarna została skompilowana z Qt %1, a bieżąca działa z Qt %2</trans
     <message>
         <location filename="../src/app/qgisapp.cpp" line="9066"/>
         <source>Do you really want to quit QGIS?</source>
-        <translation type="unfinished"></translation>
+        <translation>Czy na pewno chcesz zamknąć program?</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="9419"/>
@@ -15473,12 +15482,12 @@ QWT Version: %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3876"/>
         <source>DXF export completed</source>
-        <translation type="unfinished"></translation>
+        <translation>Zakończono eksport DXF</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3880"/>
         <source>DXF export failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Eksport DXF nie powiódł się</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4377"/>
@@ -15724,12 +15733,12 @@ Błąd: %1</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5758"/>
         <source>Layer name</source>
-        <translation type="unfinished">Nazwa warstwy</translation>
+        <translation>Nazwa warstwy</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5830"/>
         <source>No features in clipboard.</source>
-        <translation type="unfinished"></translation>
+        <translation>Brak obiektów w schowku</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5834"/>
@@ -16527,7 +16536,7 @@ Ta wersja QGIS została skompilowana bez wsparcia SpatiaLite.</translation>
     <message>
         <location filename="../src/ui/qgsabout.ui" line="120"/>
         <source>License</source>
-        <translation type="unfinished">Licencja</translation>
+        <translation>Licencja</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsabout.ui" line="181"/>
@@ -19124,7 +19133,7 @@ Baza: %2</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="374"/>
         <source>Random colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Losowe kolory</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="420"/>
@@ -19196,7 +19205,7 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="122"/>
         <source>Invert</source>
-        <translation type="unfinished">Odwróć</translation>
+        <translation>Odwróć</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="167"/>
@@ -19282,7 +19291,7 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
         <location filename="../src/gui/symbology-ng/qgscolorrampcombobox.cpp" line="57"/>
         <location filename="../src/gui/symbology-ng/qgscolorrampcombobox.cpp" line="66"/>
         <source>Random colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Losowe kolory</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgscolorrampcombobox.cpp" line="58"/>
@@ -19594,75 +19603,75 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="219"/>
         <source>Cu&amp;t</source>
-        <translation type="unfinished">Wy&amp;tnij</translation>
+        <translation>Wy&amp;tnij</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="221"/>
         <source>Cut</source>
-        <translation type="unfinished">Wytnij</translation>
+        <translation>Wytnij</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="223"/>
         <source>&amp;Copy</source>
-        <translation type="unfinished">&amp;Kopiuj</translation>
+        <translation>&amp;Kopiuj</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="225"/>
         <source>Copy</source>
-        <translation type="unfinished">Kopiuj</translation>
+        <translation>Kopiuj</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="227"/>
         <source>&amp;Paste</source>
-        <translation type="unfinished">&amp;Wklej</translation>
+        <translation>&amp;Wklej</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="229"/>
         <source>Paste</source>
-        <translation type="unfinished">Wklej</translation>
+        <translation>Wklej</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="232"/>
         <source>Edit</source>
-        <translation type="unfinished">Edytuj</translation>
+        <translation>Edytuj</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="312"/>
         <source>Atlas</source>
-        <translation type="unfinished"></translation>
+        <translation>Atlas</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="336"/>
         <source>Settings</source>
-        <translation type="unfinished">Ustawienia</translation>
+        <translation>Ustawienia</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="379"/>
         <location filename="../src/app/composer/qgscomposer.cpp" line="738"/>
         <location filename="../src/app/composer/qgscomposer.cpp" line="750"/>
         <source>%1%</source>
-        <translation type="unfinished">%1%</translation>
+        <translation>%1%</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="720"/>
         <source>x: %1 mm</source>
-        <translation type="unfinished"></translation>
+        <translation>x: %1 mm</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="721"/>
         <source>y: %1 mm</source>
-        <translation type="unfinished"></translation>
+        <translation>y: %1 mm</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="722"/>
         <source>page: %3</source>
-        <translation type="unfinished"></translation>
+        <translation>strona: %3</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="833"/>
         <location filename="../src/app/composer/qgscomposer.cpp" line="854"/>
         <source>Enable atlas preview</source>
-        <translation type="unfinished"></translation>
+        <translation>Podgląd atlasu</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="834"/>
@@ -20038,7 +20047,7 @@ Zmniejsz rozdzielczość lub rozmiar papieru.</translation>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="134"/>
         <source>Atlas</source>
-        <translation type="unfinished"></translation>
+        <translation>Atlas</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="162"/>
@@ -20053,7 +20062,7 @@ Zmniejsz rozdzielczość lub rozmiar papieru.</translation>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="177"/>
         <source>Ctrl+0</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+0</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="189"/>
@@ -20090,7 +20099,7 @@ Zmniejsz rozdzielczość lub rozmiar papieru.</translation>
         <location filename="../src/ui/qgscomposerbase.ui" line="231"/>
         <location filename="../src/ui/qgscomposerbase.ui" line="234"/>
         <source>Zoom</source>
-        <translation type="unfinished">Powiększ</translation>
+        <translation>Powiększ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="243"/>
@@ -20374,12 +20383,12 @@ Zmniejsz rozdzielczość lub rozmiar papieru.</translation>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="603"/>
         <source>&amp;Undo</source>
-        <translation type="unfinished">&amp;Cofnij</translation>
+        <translation>&amp;Cofnij</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="618"/>
         <source>&amp;Redo</source>
-        <translation type="unfinished">&amp;Ponów</translation>
+        <translation>&amp;Ponów</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="657"/>
@@ -22902,7 +22911,7 @@ Zmniejsz rozdzielczość lub rozmiar papieru.</translation>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="54"/>
         <source>Nautical Miles</source>
-        <translation type="unfinished"></translation>
+        <translation>Mile morskie</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="81"/>
@@ -30184,10 +30193,6 @@ szary = brak danych
         <source>Unable to read the selected file.
 Please reselect a valid file.</source>
         <translation>Nie mogę odczytać wybranego pliku. Zaznacz proszę prawidłowy plik.</translation>
-    </message>
-    <message>
-        <source>Unable to create a GPX file with the given name. Try again with another name or in another directory.</source>
-        <translation type="obsolete">Nie można utworzyć pliku GPX o podanej nazwie. Podaj inną nazwę lub zmień katalog.</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="420"/>
@@ -43695,7 +43700,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2593"/>
         <source>Nautical Miles</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">mile morskie</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2756"/>
@@ -49072,7 +49077,7 @@ Kontynuować?</translation>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="491"/>
         <source>Nautical miles</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Mile morskie</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="530"/>
