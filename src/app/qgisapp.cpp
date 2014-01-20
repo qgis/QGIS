@@ -8778,7 +8778,7 @@ void QgisApp::refreshActionFeatureAction()
 {
   QgsMapLayer* layer = activeLayer();
 
-  if ( layer->type() != QgsMapLayer::VectorLayer )
+  if ( layer == 0 || layer->type() != QgsMapLayer::VectorLayer )
   {
     return;
   }
