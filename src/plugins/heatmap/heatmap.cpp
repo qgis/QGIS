@@ -68,6 +68,7 @@ static const QString sPluginIcon = ":/heatmap/heatmap.png";
 Heatmap::Heatmap( QgisInterface * theQgisInterface )
     : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
     , mQGisIface( theQgisInterface )
+    , mQActionPointer( 0 )
 {
 }
 
@@ -82,6 +83,8 @@ Heatmap::~Heatmap()
  */
 void Heatmap::initGui()
 {
+  delete mQActionPointer;
+
   // Create the action for tool
   mQActionPointer = new QAction( QIcon( ":/heatmap/heatmap.png" ), tr( "Heatmap" ), this );
   // Set the what's this text

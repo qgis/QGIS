@@ -76,6 +76,8 @@ QgsSpatialQueryPlugin::~QgsSpatialQueryPlugin()
 */
 void QgsSpatialQueryPlugin::initGui()
 {
+  delete mSpatialQueryAction;
+
   // Create the action for tool
   mSpatialQueryAction = new QAction( QIcon(), tr( "&Spatial Query" ), this );
 

@@ -52,6 +52,7 @@ static const QString sPluginIcon = ":/topology/topol.png";
 Topol::Topol( QgisInterface * theQgisInterface )
     : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
     , mQGisIface( theQgisInterface )
+    , mQActionPointer( 0 )
 {
   mDock = 0;
 }
@@ -66,6 +67,8 @@ Topol::~Topol()
  */
 void Topol::initGui()
 {
+  delete mQActionPointer;
+
   mQActionPointer = new QAction( QIcon( ":/topology/topol.png" ), tr( "TopologyChecker" ), this );
   //mQActionPointer = new QAction( QIcon(), tr( "Topology Checker" ), this );
   mQActionPointer->setCheckable( true );

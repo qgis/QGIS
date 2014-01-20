@@ -91,6 +91,9 @@ static const QString sIcon = ":/evis/eVisEventBrowser.png";
 eVis::eVis( QgisInterface * theQgisInterface )
     : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
     , mQGisIface( theQgisInterface )
+    , mDatabaseConnectionActionPointer( 0 )
+    , mEventIdToolActionPointer( 0 )
+    , mEventBrowserActionPointer( 0 )
 {
   mIdTool = 0;
 }
@@ -101,6 +104,10 @@ eVis::~eVis()
 
 void eVis::initGui()
 {
+  delete mDatabaseConnectionActionPointer;
+  delete mEventIdToolActionPointer;
+  delete mEventBrowserActionPointer;
+
   // Create the action for tool
   mDatabaseConnectionActionPointer = new QAction( QIcon( ":/evis/eVisDatabaseConnection.png" ), tr( "eVis Database Connection" ), this );
   mEventIdToolActionPointer = new QAction( QIcon( ":/evis/eVisEventIdTool.png" ), tr( "eVis Event Id Tool" ), this );

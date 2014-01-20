@@ -37,10 +37,10 @@ static const QString sPluginIcon = ":/offline_editing/offline_editing_copy.png";
 QgsOfflineEditingPlugin::QgsOfflineEditingPlugin( QgisInterface* theQgisInterface )
     : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
     , mQGisIface( theQgisInterface )
-    , mActionConvertProject( NULL )
-    , mActionSynchronize( NULL )
-    , mOfflineEditing( NULL )
-    , mProgressDialog( NULL )
+    , mActionConvertProject( 0 )
+    , mActionSynchronize( 0 )
+    , mOfflineEditing( 0 )
+    , mProgressDialog( 0 )
 {
 }
 
@@ -51,6 +51,8 @@ QgsOfflineEditingPlugin::~QgsOfflineEditingPlugin()
 
 void QgsOfflineEditingPlugin::initGui()
 {
+  delete mActionConvertProject;
+
   // Create the action for tool
   mActionConvertProject = new QAction( QIcon( ":/offline_editing/offline_editing_copy.png" ), tr( "Convert to offline project" ), this );
   // Set the what's this text

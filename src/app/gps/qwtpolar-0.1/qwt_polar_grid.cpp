@@ -1093,7 +1093,7 @@ int QwtPolarGrid::marginHint() const
 */
 const QwtScaleDraw *QwtPolarGrid::scaleDraw( int axisId ) const
 {
-  if ( axisId >= QwtPolar::AxisLeft || axisId <= QwtPolar::AxisBottom )
+  if ( axisId >= QwtPolar::AxisLeft && axisId <= QwtPolar::AxisBottom )
     return ( QwtScaleDraw * )d_data->axisData[axisId].scaleDraw;
 
   return NULL;
@@ -1108,7 +1108,7 @@ const QwtScaleDraw *QwtPolarGrid::scaleDraw( int axisId ) const
 */
 QwtScaleDraw *QwtPolarGrid::scaleDraw( int axisId )
 {
-  if ( axisId >= QwtPolar::AxisLeft || axisId <= QwtPolar::AxisBottom )
+  if ( axisId >= QwtPolar::AxisLeft && axisId <= QwtPolar::AxisBottom )
     return ( QwtScaleDraw * )d_data->axisData[axisId].scaleDraw;
 
   return NULL;

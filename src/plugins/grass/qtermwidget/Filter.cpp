@@ -436,13 +436,14 @@ QString UrlFilter::HotSpot::tooltip() const
 {
   QString url = capturedTexts().first();
 
+#if 0
   const UrlType kind = urlType();
-
   if ( kind == StandardUrl )
     return QString();
   else if ( kind == Email )
     return QString();
   else
+#endif
     return QString();
 }
 UrlFilter::HotSpot::UrlType UrlFilter::HotSpot::urlType() const

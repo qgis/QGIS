@@ -90,7 +90,6 @@ int main( int argc, char ** argv )
   /* -------------------------------------------------------------------- */
   for ( i = 0; i < nEntities; i++ )
   {
-    int  j;
     SHPObject *psShape;
 
     psShape = SHPReadObject( hSHP, i );

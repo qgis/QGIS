@@ -179,7 +179,7 @@ class DL_Attributes
     /**
      * Copies attributes (deep copies) from another attribute object.
      */
-    DL_Attributes operator = ( const DL_Attributes& attrib )
+    DL_Attributes &operator= ( const DL_Attributes& attrib )
     {
       setLayer( attrib.layer );
       setColor( attrib.color );

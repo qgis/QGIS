@@ -49,6 +49,7 @@ QgsSpitPlugin::QgsSpitPlugin( QgisInterface * _qI )
     : QgisPlugin( name_, description_, category_, version_, type_ )
     , qgisMainWindow( _qI->mainWindow() )
     , qI( _qI )
+    , spitAction( 0 )
 {
 }
 
@@ -62,6 +63,8 @@ QgsSpitPlugin::~QgsSpitPlugin()
 */
 void QgsSpitPlugin::initGui()
 {
+  delete spitAction;
+
   // Create the action for tool
   spitAction = new QAction( QIcon(), tr( "&Import Shapefiles to PostgreSQL" ), this );
   setCurrentTheme( "" );
