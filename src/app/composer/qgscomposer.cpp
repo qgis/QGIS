@@ -54,6 +54,8 @@
 #include "qgsmessageviewer.h"
 #include "qgscontexthelp.h"
 #include "qgscursors.h"
+#include "qgsmaplayeractionregistry.h"
+#include "qgsgeometry.h"
 
 #include <QCloseEvent>
 #include <QCheckBox>
@@ -94,6 +96,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
     , mTitle( title )
     , mQgis( qgis )
     , mUndoView( 0 )
+    , mAtlasFeatureAction( 0 )
 {
   setupUi( this );
   setWindowTitle( mTitle );
@@ -509,6 +512,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   mActionExportAtlasAsPDF->setEnabled( false );
   QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
   connect( atlasMap, SIGNAL( toggled( bool ) ), this, SLOT( toggleAtlasControls( bool ) ) );
+  connect( atlasMap, SIGNAL( coverageLayerChanged( QgsVectorLayer* ) ), this, SLOT( updateAtlasMapLayerAction( QgsVectorLayer * ) ) );
 
   // Create size grip (needed by Mac OS X for QMainWindow if QStatusBar is not visible)
   //should not be needed now that composer has a status bar?
@@ -820,6 +824,8 @@ void QgsComposer::toggleAtlasControls( bool atlasEnabled )
   mActionExportAtlasAsImage->setEnabled( atlasEnabled );
   mActionExportAtlasAsSVG->setEnabled( atlasEnabled );
   mActionExportAtlasAsPDF->setEnabled( atlasEnabled );
+
+  updateAtlasMapLayerAction( atlasEnabled );
 }
 
 void QgsComposer::on_mActionAtlasPreview_triggered( bool checked )
@@ -2655,6 +2661,8 @@ void QgsComposer::readXML( const QDomElement& composerElem, const QDomDocument& 
   mActionExportAtlasAsSVG->setEnabled( atlasMap->enabled() );
   mActionExportAtlasAsPDF->setEnabled( atlasMap->enabled() );
   connect( atlasMap, SIGNAL( toggled( bool ) ), this, SLOT( toggleAtlasControls( bool ) ) );
+  connect( atlasMap, SIGNAL( coverageLayerChanged( QgsVectorLayer* ) ), this, SLOT( updateAtlasMapLayerAction( QgsVectorLayer * ) ) );
+  updateAtlasMapLayerAction( atlasMap->enabled() );
 
   setSelectionTool();
 }
@@ -3082,4 +3090,58 @@ void QgsComposer::writeWorldFile( QString worldFileName, double a, double b, dou
   fout << QString::number( e, 'f' ) << "\r\n";
   fout << QString::number( c, 'f' ) << "\r\n";
   fout << QString::number( f, 'f' ) << "\r\n";
+}
+
+
+void QgsComposer::setAtlasFeature( QgsMapLayer* layer, QgsFeature * feat )
+{
+  //update expression variables
+  QgsExpression::setSpecialColumn( "$atlasfeatureid", feat->id() );
+  QgsExpression::setSpecialColumn( "$atlasgeometry", QVariant::fromValue( *( feat->geometry() ) ) );
+
+  emit atlasPreviewFeatureChanged();
+
+  //check if composition has atlas preview
+  QgsAtlasComposition& atlas = mComposition->atlasComposition();
+  if ( ! atlas.enabled() || ! mComposition->atlasMode() == QgsComposition::PreviewAtlas || atlas.coverageLayer() != layer )
+  {
+    //either atlas preview isn't enabled, or layer doesn't match
+    return;
+  }
+
+  //set current preview feature id
+  atlas.prepareForFeature( feat );
+}
+
+void QgsComposer::updateAtlasMapLayerAction( QgsVectorLayer *coverageLayer )
+{
+  if ( mAtlasFeatureAction )
+  {
+    delete mAtlasFeatureAction;
+    mAtlasFeatureAction = 0;
+  }
+
+  if ( coverageLayer )
+  {
+    mAtlasFeatureAction = new QgsMapLayerAction( QString( "Set as atlas feature" ), this, coverageLayer );
+    QgsMapLayerActionRegistry::instance()->addMapLayerAction( mAtlasFeatureAction );
+    connect( mAtlasFeatureAction, SIGNAL( triggeredForFeature( QgsMapLayer*, QgsFeature* ) ), this, SLOT( setAtlasFeature( QgsMapLayer*, QgsFeature* ) ) );
+  }
+}
+
+void QgsComposer::updateAtlasMapLayerAction( bool atlasEnabled )
+{
+  if ( mAtlasFeatureAction )
+  {
+    delete mAtlasFeatureAction;
+    mAtlasFeatureAction = 0;
+  }
+
+  if ( atlasEnabled )
+  {
+    QgsAtlasComposition& atlas = mComposition->atlasComposition();
+    mAtlasFeatureAction = new QgsMapLayerAction( QString( "Set as atlas feature" ), this, atlas.coverageLayer() );
+    QgsMapLayerActionRegistry::instance()->addMapLayerAction( mAtlasFeatureAction );
+    connect( mAtlasFeatureAction, SIGNAL( triggeredForFeature( QgsMapLayer*, QgsFeature* ) ), this, SLOT( setAtlasFeature( QgsMapLayer*, QgsFeature* ) ) );
+  }
 }

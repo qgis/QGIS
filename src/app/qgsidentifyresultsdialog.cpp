@@ -418,7 +418,10 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
     }
   }
 
-  if ( vlayer->pendingFields().size() > 0 || vlayer->actions()->size() )
+  //get valid QgsMapLayerActions for this layer
+  mMapLayerActions = QgsMapLayerActionRegistry::instance()->mapLayerActions( vlayer );
+
+  if ( vlayer->pendingFields().size() > 0 || vlayer->actions()->size() || mMapLayerActions.size() )
   {
     QTreeWidgetItem *actionItem = new QTreeWidgetItem( QStringList() << tr( "(Actions)" ) );
     actionItem->setData( 0, Qt::UserRole, "actions" );
@@ -442,6 +445,17 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
       QTreeWidgetItem *twi = new QTreeWidgetItem( QStringList() << "" << action.name() );
       twi->setIcon( 0, QgsApplication::getThemeIcon( "/mAction.svg" ) );
       twi->setData( 0, Qt::UserRole, "action" );
+      twi->setData( 0, Qt::UserRole + 1, QVariant::fromValue( i ) );
+      actionItem->addChild( twi );
+    }
+
+    //add actions from QgsMapLayerActionRegistry
+    for ( int i = 0; i < mMapLayerActions.size(); i++ )
+    {
+      QgsMapLayerAction* action = mMapLayerActions.at( i );
+      QTreeWidgetItem *twi = new QTreeWidgetItem( QStringList() << "" << action->text() );
+      twi->setIcon( 0, QgsApplication::getThemeIcon( "/mAction.svg" ) );
+      twi->setData( 0, Qt::UserRole, "map_layer_action" );
       twi->setData( 0, Qt::UserRole + 1, QVariant::fromValue( i ) );
       actionItem->addChild( twi );
     }
@@ -674,6 +688,14 @@ void QgsIdentifyResultsDialog::itemClicked( QTreeWidgetItem *item, int column )
   {
     doAction( item, item->data( 0, Qt::UserRole + 1 ).toInt() );
   }
+  else if ( item->data( 0, Qt::UserRole ).toString() == "map_layer_action" )
+  {
+    QgsMapLayerAction* action = mMapLayerActions.at( item->data( 0, Qt::UserRole + 1 ).toInt() );
+    if ( action )
+    {
+      doMapLayerAction( item, action );
+    }
+  }
 }
 
 // Popup (create if necessary) a context menu that contains a list of
@@ -776,6 +798,27 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent* event )
 
       QgsFeatureAction *a = new QgsFeatureAction( action.name(), mFeatures[ featIdx ], vlayer, i, idx, this );
       mActionPopup->addAction( QgsApplication::getThemeIcon( "/mAction.svg" ), action.name(), a, SLOT( execute() ) );
+    }
+  }
+
+  if ( featItem && vlayer )
+  {
+    //get valid QgsMapLayerActions for this layer
+    QList< QgsMapLayerAction* > registeredActions = QgsMapLayerActionRegistry::instance()->mapLayerActions( vlayer );
+
+    if ( registeredActions.size() > 0 )
+    {
+      //add a seperator between user defined and standard actions
+      mActionPopup->addSeparator();
+
+      int featIdx = featItem->data( 0, Qt::UserRole + 1 ).toInt();
+
+      QList<QgsMapLayerAction*>::iterator actionIt;
+      for ( actionIt = registeredActions.begin(); actionIt != registeredActions.end(); ++actionIt )
+      {
+        QgsIdentifyResultsDialogMapLayerAction *a = new QgsIdentifyResultsDialogMapLayerAction(( *actionIt )->text(), this, ( *actionIt ), vlayer, &( mFeatures[ featIdx ] ) );
+        mActionPopup->addAction( QgsApplication::getThemeIcon( "/mAction.svg" ), ( *actionIt )->text(), a, SLOT( execute() ) );
+      }
     }
   }
 
@@ -882,6 +925,20 @@ void QgsIdentifyResultsDialog::doAction( QTreeWidgetItem *item, int action )
 
   int featIdx = featItem->data( 0, Qt::UserRole + 1 ).toInt();
   layer->actions()->doAction( action, mFeatures[ featIdx ], idx );
+}
+
+void QgsIdentifyResultsDialog::doMapLayerAction( QTreeWidgetItem *item, QgsMapLayerAction* action )
+{
+  QTreeWidgetItem *featItem = featureItem( item );
+  if ( !featItem )
+    return;
+
+  QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( featItem->parent()->data( 0, Qt::UserRole ).value<QObject *>() );
+  if ( !layer )
+    return;
+
+  int featIdx = featItem->data( 0, Qt::UserRole + 1 ).toInt();
+  action->triggerForFeature( layer, &mFeatures[ featIdx ] );
 }
 
 QTreeWidgetItem *QgsIdentifyResultsDialog::featureItem( QTreeWidgetItem *item )
@@ -1495,4 +1552,13 @@ void QgsIdentifyResultsDialog::formatChanged( int index )
       subItem->child( j )->setExpanded( true );
     }
   }
+}
+
+/*
+ * QgsIdentifyResultsDialogMapLayerAction
+ */
+
+void QgsIdentifyResultsDialogMapLayerAction::execute()
+{
+  mAction->triggerForFeature( mLayer, mFeature );
 }

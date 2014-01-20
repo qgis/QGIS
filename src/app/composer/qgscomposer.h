@@ -38,6 +38,7 @@ class QgsComposerView;
 class QgsComposition;
 class QgsMapCanvas;
 class QgsAtlasComposition;
+class QgsMapLayerAction;
 
 class QGridLayout;
 class QDomNode;
@@ -475,6 +476,9 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Exports either either the whole atlas or just the current feature as a PDF, depending on mode
     void exportCompositionAsPDF( QgsComposer::OutputMode mode );
 
+    //! Updates the "set as atlas feature" map layer action, removing it if atlas is disabled
+    void updateAtlasMapLayerAction( bool atlasEnabled );
+
     /**Composer title*/
     QString mTitle;
 
@@ -551,6 +555,8 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! @note added in 1.9
     QMenu* mHelpMenu;
 
+    QgsMapLayerAction* mAtlasFeatureAction;
+
   signals:
     void printAsRasterChanged( bool state );
 
@@ -579,6 +585,13 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Toggles the state of the atlas preview and navigation controls
     //! @note added in 2.1
     void toggleAtlasControls( bool atlasEnabled );
+
+    //! Sets the specified feature as the current atlas feature
+    //! @note added in 2.1
+    void setAtlasFeature( QgsMapLayer* layer, QgsFeature * feat );
+
+    //! Updates the "set as atlas feature" map layer action when atlas coverage layer changes
+    void updateAtlasMapLayerAction( QgsVectorLayer* coverageLayer );
 };
 
 #endif

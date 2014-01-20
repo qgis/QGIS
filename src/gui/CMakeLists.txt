@@ -101,6 +101,7 @@ qgsmapcanvas.cpp
 qgsmapcanvasitem.cpp
 qgsmapcanvasmap.cpp
 qgsmapcanvassnapper.cpp
+qgsmaplayeractionregistry.cpp
 qgsmapoverviewcanvas.cpp
 qgsmaptip.cpp
 qgsmaptool.cpp
@@ -236,6 +237,7 @@ qgslonglongvalidator.h
 qgsludialog.h
 qgsmanageconnectionsdialog.h
 qgsmapcanvas.h
+qgsmaplayeractionregistry.h
 qgsmapoverviewcanvas.h
 qgsmaptoolemitpoint.h
 qgsmaptoolidentify.h
