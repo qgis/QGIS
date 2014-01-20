@@ -1346,17 +1346,22 @@ bool QgsPluginManager::hasInvalidPlugins( )
 
 void QgsPluginManager::updateWindowTitle( )
 {
-  QString newTitle = QString( "%1 - %2" ).arg( tr( "Plugins" ) ).arg( mOptionsListWidget->currentItem()->text() );
-  if ( mOptionsListWidget->currentRow() < mOptionsListWidget->count() - 1 )
+  QListWidgetItem *curitem = mOptListWidget->currentItem();
+  if ( curitem )
   {
-    // if it's not the Settings tab, add the plugin count
-    newTitle += QString( " (%3)" ).arg( mModelProxy->countWithCurrentStatus() );
+    QString title = QString( "%1 | %2" ).arg( tr( "Plugins" ) ).arg( curitem->text() );
+    if ( mOptionsListWidget->currentRow() < mOptionsListWidget->count() - 1 )
+    {
+      // if it's not the Settings tab, add the plugin count
+      title += QString( " (%3)" ).arg( mModelProxy->countWithCurrentStatus() );
+      setWindowTitle( title );
+    }
   }
-  setWindowTitle( newTitle );
-  return;
+  else
+  {
+    setWindowTitle( mDialogTitle );
+  }
 }
-
-
 
 void QgsPluginManager::showEvent( QShowEvent* e )
 {
