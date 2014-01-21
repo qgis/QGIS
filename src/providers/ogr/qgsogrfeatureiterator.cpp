@@ -111,7 +111,7 @@ bool QgsOgrFeatureIterator::prepareSimplification( const QgsSimplifyMethod& simp
     QgsSimplifyMethod::MethodType methodType = simplifyMethod.methodType();
     Q_UNUSED( methodType);
 
-#if defined(HAVE_OGR_GEOMETRY_CLASS)
+#if defined(GDAL_VERSION_NUM) && defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(1,11,0)
     if ( methodType == QgsSimplifyMethod::OptimizeForRendering )
     {
       int simplifyFlags = QgsMapToPixelSimplifier::SimplifyGeometry | QgsMapToPixelSimplifier::SimplifyEnvelope;
@@ -134,7 +134,7 @@ bool QgsOgrFeatureIterator::prepareSimplification( const QgsSimplifyMethod& simp
 
 bool QgsOgrFeatureIterator::providerCanSimplify( QgsSimplifyMethod::MethodType methodType ) const
 {
-#if defined(HAVE_OGR_GEOMETRY_CLASS)
+#if defined(GDAL_VERSION_NUM) && defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(1,11,0)
   if ( methodType == QgsSimplifyMethod::OptimizeForRendering )
   {
     return true;

@@ -18,29 +18,9 @@
 #define QGSOGRGEOMETRYSIMPLIFIER_H
 
 #include "qgsmaptopixelgeometrysimplifier.h"
-#include <ogr_api.h>
+#include "qgspoint.h"
 
-/* TODO:
- * Disable OGR-simplification on provider side because of OGRGeometry class
- * (GDAL C++ API) is not available in current QGIS builds.
- * This simplification is ~5-10% faster than simplification on QGIS side
- * (for very complex polygons up to ~20%).
- *
- * While GDAL C API has not published the needed method 'OGR_G_SetPoints()'
- * to rewrite the geometry of a LineString/LinearRing in one single call,
- * we can not enable the OGR-simplification to change the current disabled
- * references of OGRGeometry* (GDAL C++ API) to OGRGeometryH (GDAL C API).
- *
- * Search in 'qgsogrgeometrysimplifier.cpp' : lineString->setPoints(...);
- * We can not use 'OGR_G_SetPoint(...)' because of each call reallocs the
- * point array of the geometry and it is very-very slow.
- *
-#if defined(__cplusplus)
- #define HAVE_OGR_GEOMETRY_CLASS 1
- class OGRGeometry;
- class OGRRawPoint;
-#endif
- */
+#include <ogr_api.h>
 
 /**
  * Abstract base class for simplify OGR-geometries using a specific algorithm
@@ -72,7 +52,7 @@ class QgsOgrTopologyPreservingSimplifier : public QgsOgrAbstractGeometrySimplifi
 };
 #endif
 
-#if defined(HAVE_OGR_GEOMETRY_CLASS)
+#if defined(GDAL_VERSION_NUM) && defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(1,11,0)
 /**
  * OGR implementation of GeometrySimplifier using the "MapToPixel" algorithm
  *
@@ -87,17 +67,22 @@ class QgsOgrMapToPixelSimplifier : public QgsOgrAbstractGeometrySimplifier, QgsM
 
   private:
     //! Point memory buffer for optimize the simplification process
-    OGRRawPoint* mPointBufferPtr;
+    QgsPoint* mPointBufferPtr;
     //! Current Point memory buffer size
     int mPointBufferCount;
 
     //! Simplifies the OGR-geometry (Removing duplicated points) when is applied the specified map2pixel context
     bool simplifyOgrGeometry( QGis::GeometryType geometryType, double* xptr, int xStride, double* yptr, int yStride, int pointCount, int& pointSimplifiedCount );
     //! Simplifies the OGR-geometry (Removing duplicated points) when is applied the specified map2pixel context
-    bool simplifyOgrGeometry( OGRGeometry* geometry, bool isaLinearRing );
+    bool simplifyOgrGeometry( OGRGeometryH geometry, bool isaLinearRing );
 
     //! Returns a point buffer of the specified size
-    OGRRawPoint* mallocPoints( int numPoints );
+    QgsPoint* mallocPoints( int numPoints );
+    //! Returns a point buffer of the specified envelope
+    QgsPoint* getEnvelopePoints( const QgsRectangle& envelope, int& numPoints, bool isaLinearRing );
+
+    //! Load a point array to the specified LineString geometry 
+    static void setGeometryPoints( OGRGeometryH geometry, QgsPoint* points, int numPoints );
 
   public:
     //! Simplifies the specified geometry

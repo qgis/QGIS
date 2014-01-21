@@ -25,6 +25,7 @@ QgsOgrAbstractGeometrySimplifier::~QgsOgrAbstractGeometrySimplifier()
 /***************************************************************************/
 
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1900
+
 QgsOgrTopologyPreservingSimplifier::QgsOgrTopologyPreservingSimplifier( double tolerance )
     : QgsTopologyPreservingSimplifier( tolerance )
 {
@@ -59,10 +60,7 @@ bool QgsOgrTopologyPreservingSimplifier::simplifyGeometry( OGRGeometryH geometry
 
 /***************************************************************************/
 
-#if defined(HAVE_OGR_GEOMETRY_CLASS)
-
-// Use OgrGeometry class to speed up simplification on provider side
-#include <ogr_geometry.h>
+#if defined(GDAL_VERSION_NUM) && defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(1,11,0)
 
 QgsOgrMapToPixelSimplifier::QgsOgrMapToPixelSimplifier( int simplifyFlags, double map2pixelTol )
     : QgsMapToPixelSimplifier( simplifyFlags, map2pixelTol )
@@ -81,7 +79,7 @@ QgsOgrMapToPixelSimplifier::~QgsOgrMapToPixelSimplifier()
 }
 
 //! Returns a point buffer of the specified size
-OGRRawPoint* QgsOgrMapToPixelSimplifier::mallocPoints( int numPoints )
+QgsPoint* QgsOgrMapToPixelSimplifier::mallocPoints( int numPoints )
 {
   if ( mPointBufferPtr && mPointBufferCount < numPoints )
   {
@@ -91,9 +89,39 @@ OGRRawPoint* QgsOgrMapToPixelSimplifier::mallocPoints( int numPoints )
   if ( !mPointBufferPtr )
   {
     mPointBufferCount = numPoints;
-    mPointBufferPtr = ( OGRRawPoint* )OGRMalloc( mPointBufferCount * sizeof( OGRRawPoint ) );
+    mPointBufferPtr = ( QgsPoint* )OGRMalloc( mPointBufferCount * sizeof( QgsPoint ) );
   }
   return mPointBufferPtr;
+}
+
+//! Returns a point buffer of the specified envelope
+QgsPoint* QgsOgrMapToPixelSimplifier::getEnvelopePoints( const QgsRectangle& envelope, int& numPoints, bool isaLinearRing )
+{
+  QgsPoint* points = NULL;
+
+  double x1 = envelope.xMinimum();
+  double y1 = envelope.yMinimum();
+  double x2 = envelope.xMaximum();
+  double y2 = envelope.yMaximum();
+
+  if ( isaLinearRing )
+  {
+    numPoints = 5;
+    points = mallocPoints( numPoints );
+    points[0].set( x1, y1 );
+    points[1].set( x2, y1 );
+    points[2].set( x2, y2 );
+    points[3].set( x1, y2 );
+    points[4].set( x1, y1 );
+  }
+  else
+  {
+    numPoints = 2;
+    points = mallocPoints( numPoints );
+    points[0].set( x1, y1 );
+    points[1].set( x2, y2 );
+  }
+  return points;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////
@@ -138,52 +166,29 @@ bool QgsOgrMapToPixelSimplifier::simplifyOgrGeometry( QGis::GeometryType geometr
 }
 
 //! Simplifies the OGR-geometry (Removing duplicated points) when is applied the specified map2pixel context
-bool QgsOgrMapToPixelSimplifier::simplifyOgrGeometry( OGRGeometry* geometry, bool isaLinearRing )
+bool QgsOgrMapToPixelSimplifier::simplifyOgrGeometry( OGRGeometryH geometry, bool isaLinearRing )
 {
-  OGRwkbGeometryType wkbGeometryType = wkbFlatten( geometry->getGeometryType() );
+  OGRwkbGeometryType wkbGeometryType = wkbFlatten( OGR_G_GetGeometryType( geometry ) );
 
   // Simplify the geometry rewriting temporally its WKB-stream for saving calloc's.
   if ( wkbGeometryType == wkbLineString )
   {
-    OGRLineString* lineString = ( OGRLineString* )geometry;
+    int numPoints = OGR_G_GetPointCount( geometry );
 
-    int numPoints = lineString->getNumPoints();
     if (( isaLinearRing && numPoints <= 5 ) || ( !isaLinearRing && numPoints <= 4 ) ) 
       return false;
 
     OGREnvelope env;
-    lineString->getEnvelope( &env );
+    OGR_G_GetEnvelope( geometry, &env );
     QgsRectangle envelope( env.MinX, env.MinY, env.MaxX, env.MaxY );
 
     // Can replace the geometry by its BBOX ?
     if (( mSimplifyFlags & QgsMapToPixelSimplifier::SimplifyEnvelope ) && canbeGeneralizedByMapBoundingBox( envelope ) )
     {
-      OGRRawPoint* points = NULL;
+      QgsPoint* points = getEnvelopePoints( envelope, numPoints, isaLinearRing );
 
-      double x1 = envelope.xMinimum();
-      double y1 = envelope.yMinimum();
-      double x2 = envelope.xMaximum();
-      double y2 = envelope.yMaximum();
-
-      if ( isaLinearRing )
-      {
-        numPoints = 5;
-        points = mallocPoints( numPoints );
-        points[0].x = x1; points[0].y = y1;
-        points[1].x = x2; points[1].y = y1;
-        points[2].x = x2; points[2].y = y2;
-        points[3].x = x1; points[3].y = y2;
-        points[4].x = x1; points[4].y = y1;
-      }
-      else
-      {
-        numPoints = 2;
-        points = mallocPoints( numPoints );
-        points[0].x = x1; points[0].y = y1;
-        points[1].x = x2; points[1].y = y2;
-      }
-      lineString->setPoints( numPoints, points );
-      lineString->flattenTo2D();
+      setGeometryPoints( geometry, points, numPoints );
+      OGR_G_FlattenTo2D( geometry );
 
       return true;
     }
@@ -192,27 +197,29 @@ bool QgsOgrMapToPixelSimplifier::simplifyOgrGeometry( OGRGeometry* geometry, boo
       QGis::GeometryType geometryType = isaLinearRing ? QGis::Polygon : QGis::Line;
       int numSimplifiedPoints = 0;
 
-      OGRRawPoint* points = mallocPoints( numPoints );
+      QgsPoint* points = mallocPoints( numPoints );
       double* xptr = ( double* )points;
       double* yptr = xptr + 1;
-      lineString->getPoints( points );
+      OGR_G_GetPoints( geometry, xptr, 16, yptr, 16, NULL, 0 );
 
       if ( simplifyOgrGeometry( geometryType, xptr, 16, yptr, 16, numPoints, numSimplifiedPoints ) )
       {
-        lineString->setPoints( numSimplifiedPoints, points );
-        lineString->flattenTo2D();
+        if (( isaLinearRing && numSimplifiedPoints <= 4 ) || ( !isaLinearRing && numSimplifiedPoints <= 1 ) ) 
+          points = getEnvelopePoints( envelope, numSimplifiedPoints, isaLinearRing );
+
+        setGeometryPoints( geometry, points, numSimplifiedPoints );
+        OGR_G_FlattenTo2D( geometry );
       }
       return numSimplifiedPoints != numPoints;
     }
   }
   else if ( wkbGeometryType == wkbPolygon )
   {
-    OGRPolygon* polygon = ( OGRPolygon* )geometry;
-    bool result = simplifyOgrGeometry( polygon->getExteriorRing(), true );
+    bool result = simplifyOgrGeometry( OGR_G_GetGeometryRef( geometry, 0 ), true );
 
-    for ( int i = 0, numInteriorRings = polygon->getNumInteriorRings(); i < numInteriorRings; ++i )
+    for ( int i = 1, numInteriorRings = OGR_G_GetGeometryCount( geometry ); i < numInteriorRings; ++i )
     {
-      result |= simplifyOgrGeometry( polygon->getInteriorRing( i ), true );
+      result |= simplifyOgrGeometry( OGR_G_GetGeometryRef( geometry, i ), true );
     }
 
     if ( result )
@@ -222,12 +229,11 @@ bool QgsOgrMapToPixelSimplifier::simplifyOgrGeometry( OGRGeometry* geometry, boo
   }
   else if ( wkbGeometryType == wkbMultiLineString || wkbGeometryType == wkbMultiPolygon )
   {
-    OGRGeometryCollection* collection = ( OGRGeometryCollection* )geometry;
     bool result = false;
 
-    for ( int i = 0, numGeometries = collection->getNumGeometries(); i < numGeometries; ++i )
+    for ( int i = 0, numGeometries = OGR_G_GetGeometryCount( geometry ); i < numGeometries; ++i )
     {
-      result |= simplifyOgrGeometry( collection->getGeometryRef( i ), wkbGeometryType == wkbMultiPolygon );
+      result |= simplifyOgrGeometry( OGR_G_GetGeometryRef( geometry, i ), wkbGeometryType == wkbMultiPolygon );
     }
 
     if ( result )
@@ -239,6 +245,15 @@ bool QgsOgrMapToPixelSimplifier::simplifyOgrGeometry( OGRGeometry* geometry, boo
   return false;
 }
 
+//! Load a point array to the specified LineString geometry 
+void QgsOgrMapToPixelSimplifier::setGeometryPoints( OGRGeometryH geometry, QgsPoint* points, int numPoints )
+{
+  double* xptr = ( double* )points;
+  double* yptr = xptr + 1;
+
+  OGR_G_SetPoints( geometry, numPoints, xptr, 16, yptr, 16, NULL, 0 );
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////////
 
 //! Simplifies the specified geometry
@@ -248,7 +263,7 @@ bool QgsOgrMapToPixelSimplifier::simplifyGeometry( OGRGeometryH geometry )
 
   if ( wkbGeometryType == wkbLineString || wkbGeometryType == wkbPolygon )
   {
-    return simplifyOgrGeometry( (OGRGeometry*) geometry, wkbGeometryType == wkbPolygon );
+    return simplifyOgrGeometry( geometry, wkbGeometryType == wkbPolygon );
   }
 
   return false;

@@ -45,7 +45,6 @@ email                : sherman at mrcc.com
 #include "qgsgeometry.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsvectorlayerimport.h"
-#include "qgsogrgeometrysimplifier.h"
 
 static const QString TEXT_PROVIDER_KEY = "ogr";
 static const QString TEXT_PROVIDER_DESCRIPTION =
@@ -1496,7 +1495,7 @@ int QgsOgrProvider::capabilities() const
     }
 
     // supports geometry simplification on provider side
-#if defined(HAVE_OGR_GEOMETRY_CLASS)
+#if defined(GDAL_VERSION_NUM) && defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(1,11,0)
     ability |= QgsVectorDataProvider::SimplifyGeometries;
 #endif
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1900
