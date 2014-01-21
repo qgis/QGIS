@@ -620,6 +620,10 @@ class CORE_EXPORT QgsExpression
     static void initFunctionHelp();
     static QHash<QString, QString> gFunctionHelpTexts;
     static QHash<QString, QString> gGroups;
+
+  private:
+    // default copy and assignment are buggy (they cause multiple delete)
+    Q_DISABLE_COPY( QgsExpression )
 };
 
 Q_DECLARE_METATYPE( QgsExpression::Interval );
