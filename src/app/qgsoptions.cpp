@@ -570,6 +570,11 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   mSimplifyDrawingSpinBox->setValue( settings.value( "/qgis/simplifyDrawingTol", QGis::DEFAULT_MAPTOPIXEL_THRESHOLD ).toFloat() );
   mSimplifyDrawingAtProvider->setChecked( !settings.value( "/qgis/simplifyLocal", true ).toBool() );
 
+  QStringList myScalesList = PROJECT_SCALES.split( "," );
+  myScalesList.append( "1:1" );
+  mSimplifyMaximumScaleComboBox->updateScales( myScalesList );
+  mSimplifyMaximumScaleComboBox->setScale( 1.0 / settings.value( "/qgis/simplifyMaxScale", 1 ).toFloat() );
+
   // Slightly awkard here at the settings value is true to use QImage,
   // but the checkbox is true to use QPixmap
   chkUseQPixmap->setChecked( !( settings.value( "/qgis/use_qimage_to_render", true ).toBool() ) );
@@ -1111,6 +1116,7 @@ void QgsOptions::saveOptions()
   settings.setValue( "/qgis/simplifyDrawingHints", simplifyHints );
   settings.setValue( "/qgis/simplifyDrawingTol", mSimplifyDrawingSpinBox->value() );
   settings.setValue( "/qgis/simplifyLocal", !mSimplifyDrawingAtProvider->isChecked() );
+  settings.setValue( "/qgis/simplifyMaxScale", 1.0 / mSimplifyMaximumScaleComboBox->scale() );
 
   // project
   settings.setValue( "/qgis/projOpenAtLaunch", mProjectOnLaunchCmbBx->currentIndex() );

@@ -958,6 +958,26 @@
                     </property>
                    </widget>
                   </item>
+                  <item row="3" column="1">
+                   <widget class="QLabel" name="mSimplifyMaxScaleLabel">
+                    <property name="text">
+                     <string>Maximum scale at which the layer should be simplified (1:1 always simplifies): </string>
+                    </property>
+                    <property name="margin">
+                     <number>2</number>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="2">
+                   <widget class="QgsScaleComboBox" name="mSimplifyMaximumScaleComboBox">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                   </widget>
+                  </item>
                  </layout>
                 </widget>
                </item>

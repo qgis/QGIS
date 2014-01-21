@@ -21,6 +21,7 @@ QgsVectorSimplifyMethod::QgsVectorSimplifyMethod()
     : mSimplifyHints( QGis::DEFAULT_MAPTOPIXEL_THRESHOLD > 1 ? QgsVectorLayer::FullSimplification : QgsVectorLayer::GeometrySimplification )
     , mThreshold( QGis::DEFAULT_MAPTOPIXEL_THRESHOLD )
     , mLocalOptimization( true )
+    , mMaximumScale( 1 )
 {
 }
 
@@ -34,5 +35,6 @@ QgsVectorSimplifyMethod& QgsVectorSimplifyMethod::operator=( const QgsVectorSimp
   mSimplifyHints = rh.mSimplifyHints;
   mThreshold = rh.mThreshold;
   mLocalOptimization = rh.mLocalOptimization;
+  mMaximumScale = rh.mMaximumScale;
   return *this;
 }
