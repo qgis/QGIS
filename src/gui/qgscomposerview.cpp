@@ -75,26 +75,49 @@ void QgsComposerView::setCurrentTool( QgsComposerView::Tool t )
   {
     return;
   }
-  if ( t == QgsComposerView::Pan )
+  switch ( t )
   {
-    //lock cursor to prevent composer items changing it
-    composition()->setPreventCursorChange( true );
-    viewport()->setCursor( Qt::OpenHandCursor );
-  }
-  else if ( t == QgsComposerView::Zoom )
-  {
-    //lock cursor to prevent composer items changing it
-    composition()->setPreventCursorChange( true );
-    //set the cursor to zoom in
-    QPixmap myZoomQPixmap = QPixmap(( const char ** )( zoom_in ) );
-    QCursor zoomCursor = QCursor( myZoomQPixmap, 7, 7 );
-    viewport()->setCursor( zoomCursor );
-  }
-  else
-  {
-    //not using pan tool, composer items can change cursor
-    composition()->setPreventCursorChange( false );
-    viewport()->setCursor( Qt::ArrowCursor );
+    case QgsComposerView::Pan:
+    {
+      //lock cursor to prevent composer items changing it
+      composition()->setPreventCursorChange( true );
+      viewport()->setCursor( Qt::OpenHandCursor );
+      break;
+    }
+    case QgsComposerView::Zoom:
+    {
+      //lock cursor to prevent composer items changing it
+      composition()->setPreventCursorChange( true );
+      //set the cursor to zoom in
+      QPixmap myZoomQPixmap = QPixmap(( const char ** )( zoom_in ) );
+      QCursor zoomCursor = QCursor( myZoomQPixmap, 7, 7 );
+      viewport()->setCursor( zoomCursor );
+      break;
+    }
+    case QgsComposerView::AddArrow:
+    case QgsComposerView::AddHtml:
+    case QgsComposerView::AddMap:
+    case QgsComposerView::AddLegend:
+    case QgsComposerView::AddLabel:
+    case QgsComposerView::AddScalebar:
+    case QgsComposerView::AddPicture:
+    case QgsComposerView::AddRectangle:
+    case QgsComposerView::AddEllipse:
+    case QgsComposerView::AddTriangle:
+    case QgsComposerView::AddTable:
+    {
+      //using a drawing tool
+      //lock cursor to prevent composer items changing it
+      composition()->setPreventCursorChange( true );
+      viewport()->setCursor( Qt::CrossCursor );
+      break;
+    }
+    default:
+    {
+      //not using pan tool, composer items can change cursor
+      composition()->setPreventCursorChange( false );
+      viewport()->setCursor( Qt::ArrowCursor );
+    }
   }
 }
 
