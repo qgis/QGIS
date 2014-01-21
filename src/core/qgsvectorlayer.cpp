@@ -702,8 +702,7 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
                                       .setSubsetOfAttributes( attributes );
 
   // enable the simplification of the geometries (Using the current map2pixel context) before send it to renderer engine.
-  mCurrentRendererContext = &rendererContext;
-  if ( simplifyDrawingCanbeApplied( QgsVectorLayer::GeometrySimplification ) )
+  if ( simplifyDrawingCanbeApplied( rendererContext, QgsVectorLayer::GeometrySimplification ) )
   {
     QPainter* p = rendererContext.painter();
     double dpi = ( p->device()->logicalDpiX() + p->device()->logicalDpiY() ) / 2;
@@ -749,7 +748,6 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
   else
     drawRendererV2( fit, rendererContext, labeling );
 
-  mCurrentRendererContext = NULL;
   return true;
 }
 
@@ -1259,14 +1257,14 @@ bool QgsVectorLayer::setSubsetString( QString subset )
   return res;
 }
 
-bool QgsVectorLayer::simplifyDrawingCanbeApplied( int simplifyHint ) const
+bool QgsVectorLayer::simplifyDrawingCanbeApplied( const QgsRenderContext& renderContext, int simplifyHint ) const
 {
-  if ( mDataProvider && !mEditBuffer && ( hasGeometryType() && geometryType() != QGis::Point ) && ( mSimplifyMethod.simplifyHints() & simplifyHint ) && ( !mCurrentRendererContext || mCurrentRendererContext->useRenderingOptimization() ) )
+  if ( mDataProvider && !mEditBuffer && ( hasGeometryType() && geometryType() != QGis::Point ) && ( mSimplifyMethod.simplifyHints() & simplifyHint ) && renderContext.useRenderingOptimization() )
   {
     double maximumSimplificationScale = mSimplifyMethod.maximumScale();
 
     // check maximum scale at which generalisation should be carried out
-    if ( mCurrentRendererContext && maximumSimplificationScale > 1 && mCurrentRendererContext->rendererScale() <= maximumSimplificationScale )
+    if ( maximumSimplificationScale > 1 && renderContext.rendererScale() <= maximumSimplificationScale )
       return false;
 
     return true;

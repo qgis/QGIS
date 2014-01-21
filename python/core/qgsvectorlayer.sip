@@ -1013,7 +1013,7 @@ class QgsVectorLayer : QgsMapLayer
     const QgsVectorSimplifyMethod& simplifyMethod() const;
 
     /** Returns whether the VectorLayer can apply the specified simplification hint */
-    bool simplifyDrawingCanbeApplied( int simplifyHint ) const;
+    bool simplifyDrawingCanbeApplied( const QgsRenderContext& renderContext, int simplifyHint ) const;
 
   public slots:
     /**

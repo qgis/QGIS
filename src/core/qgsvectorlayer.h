@@ -1387,7 +1387,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     inline const QgsVectorSimplifyMethod& simplifyMethod() const { return mSimplifyMethod; }
 
     /** Returns whether the VectorLayer can apply the specified simplification hint */
-    bool simplifyDrawingCanbeApplied( int simplifyHint ) const;
+    bool simplifyDrawingCanbeApplied( const QgsRenderContext& renderContext, int simplifyHint ) const;
 
   public slots:
     /**
