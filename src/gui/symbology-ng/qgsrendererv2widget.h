@@ -101,7 +101,7 @@ class QgsRendererV2DataDefinedMenus : public QObject
     QgsRendererV2DataDefinedMenus( QMenu* menu, const QgsFields& flds, QString rotationField, QString sizeScaleField, QgsSymbolV2::ScaleMethod scaleMethod );
     ~QgsRendererV2DataDefinedMenus();
 
-    void populateMenu( QMenu* menu, const char* slot, QString fieldName, QActionGroup *actionGroup );
+    void populateMenu( QMenu* menu, QString fieldName, QActionGroup *actionGroup );
 #if 0
     void updateMenu( QActionGroup* actionGroup, QString fieldName );
 #endif
