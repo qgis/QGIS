@@ -356,6 +356,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   chkEnableBackbuffer->setEnabled( false );
 #endif
 
+  chkVectorizeLabelText->setChecked( settings.value( "/Map/vectorizeLabelText", 1 ).toBool() );
+
   // set the display update threshold
   spinBoxUpdateThreshold->setSpecialValueText( tr( "All" ) );
   spinBoxUpdateThreshold->setMinimum( 999 );
@@ -1165,6 +1167,7 @@ void QgsOptions::saveOptions()
   settings.setValue( "/Map/enableBackbuffer", chkEnableBackbuffer->isChecked() );
   int threshold = spinBoxUpdateThreshold->value();
   settings.setValue( "/Map/updateThreshold", threshold < 1000 ? 0 : threshold );
+  settings.setValue( "/Map/vectorizeLabelText", chkVectorizeLabelText->isChecked() );
 
   // log rendering events, for userspace debugging
   settings.setValue( "/Map/logCanvasRefreshEvent", mLogCanvasRefreshChkBx->isChecked() );

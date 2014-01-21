@@ -787,6 +787,8 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
     bool mShowingPartialsLabels; // whether to avoid partials labels or not
 
     QgsLabelSearchTree* mLabelSearchTree;
+
+    bool mVectorizeText;
 };
 
 #endif // QGSPALLABELING_H
