@@ -628,7 +628,7 @@ void QgsMapLayer::toggleScaleBasedVisibility( bool theVisibilityFlag )
   mScaleBasedVisibility = theVisibilityFlag;
 }
 
-bool QgsMapLayer::hasScaleBasedVisibility()
+bool QgsMapLayer::hasScaleBasedVisibility() const
 {
   return mScaleBasedVisibility;
 }
@@ -638,7 +638,7 @@ void QgsMapLayer::setMinimumScale( float theMinScale )
   mMinScale = theMinScale;
 }
 
-float QgsMapLayer::minimumScale()
+float QgsMapLayer::minimumScale() const
 {
   return mMinScale;
 }
@@ -649,7 +649,7 @@ void QgsMapLayer::setMaximumScale( float theMaxScale )
   mMaxScale = theMaxScale;
 }
 
-float QgsMapLayer::maximumScale()
+float QgsMapLayer::maximumScale() const
 {
   return mMaxScale;
 }

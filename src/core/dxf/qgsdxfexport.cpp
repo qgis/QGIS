@@ -466,6 +466,11 @@ void QgsDxfExport::writeTables()
   QList< QgsMapLayer* >::const_iterator layerIt = mLayers.constBegin();
   for ( ; layerIt != mLayers.constEnd(); ++layerIt )
   {
+    if ( !layerIsScaleBasedVisible(( *layerIt ) ) )
+    {
+      continue;
+    }
+
     writeGroup( 0, "LAYER" );
     QString layerName = *layerIt ? ( *layerIt )->name() : "";
     writeGroup( 2, dxfLayerName( layerName ) );
@@ -559,7 +564,7 @@ void QgsDxfExport::writeEntities()
   writeGroup( 2, "ENTITIES" );
 
   //label engine
-  QgsDxfPalLabeling labelEngine( this, mExtent.isEmpty() ? dxfExtent() : mExtent, mSymbologyScaleDenominator );
+  QgsDxfPalLabeling labelEngine( this, mExtent.isEmpty() ? dxfExtent() : mExtent, mSymbologyScaleDenominator, mMapUnits );
   QgsRenderContext& ctx = labelEngine.renderContext();
 
   //iterate through the maplayers
@@ -567,7 +572,7 @@ void QgsDxfExport::writeEntities()
   for ( ; layerIt != mLayers.end(); ++layerIt )
   {
     QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( *layerIt );
-    if ( !vl )
+    if ( !vl || !layerIsScaleBasedVisible( vl ) )
     {
       continue;
     }
@@ -1338,6 +1343,22 @@ QString QgsDxfExport::dxfLayerName( const QString& name )
     }
   }
   return layerName;
+}
+
+bool QgsDxfExport::layerIsScaleBasedVisible( const QgsMapLayer* layer ) const
+{
+  if ( !layer )
+  {
+    return false;
+  }
+
+  if ( mSymbologyExport == QgsDxfExport::NoSymbology || !layer->hasScaleBasedVisibility() )
+  {
+    return true;
+  }
+
+  return ( layer->minimumScale() < mSymbologyScaleDenominator &&
+           layer->minimumScale() > mSymbologyScaleDenominator );
 }
 
 /******************************************************Test with AC_1018 methods***************************************************************/

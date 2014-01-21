@@ -163,6 +163,7 @@ class CORE_EXPORT QgsDxfExport
     double dashSeparatorSize() const;
     double sizeToMapUnits( double s ) const;
     static QString lineNameFromPenStyle( Qt::PenStyle style );
+    bool layerIsScaleBasedVisible( const QgsMapLayer* layer ) const;
 };
 
 #endif // QGSDXFEXPORT_H
