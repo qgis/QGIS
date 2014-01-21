@@ -84,15 +84,15 @@
     </message>
     <message>
         <source>Setting</source>
-        <translation type="unfinished">Configuración</translation>
+        <translation>Configuración</translation>
     </message>
     <message>
         <source>Value</source>
-        <translation type="unfinished">Valor</translation>
+        <translation>Valor</translation>
     </message>
     <message>
         <source>Providers</source>
-        <translation type="unfinished">Proveedores</translation>
+        <translation>Proveedores</translation>
     </message>
 </context>
 <context>
@@ -2574,7 +2574,7 @@ Los siguientes nombres de campo tienen más de 10 caracteres:
     </message>
     <message>
         <source>Please specify an input layer</source>
-        <translation type="unfinished">Por favor, especifique una capa de entrada</translation>
+        <translation>Por favor, especifique una capa de entrada</translation>
     </message>
 </context>
 <context>
@@ -2663,27 +2663,27 @@ Los siguientes nombres de campo tienen más de 10 caracteres:
     <name>DlgAutofill</name>
     <message>
         <source>Autofill settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Configuración de autorelleno</translation>
     </message>
     <message>
         <source>Autofill mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Modo de autorelleno</translation>
     </message>
     <message>
         <source>Do not autofill</source>
-        <translation type="unfinished"></translation>
+        <translation>No rellenar automáticamente</translation>
     </message>
     <message>
         <source>Fill with numbers</source>
-        <translation type="unfinished"></translation>
+        <translation>Rellenar con números</translation>
     </message>
     <message>
         <source>Fill with parameter values</source>
-        <translation type="unfinished"></translation>
+        <translation>Rellenar con valores de parámetro</translation>
     </message>
     <message>
         <source>Parameter to use</source>
-        <translation type="unfinished"></translation>
+        <translation>Parámetro a usar</translation>
     </message>
 </context>
 <context>
@@ -3136,68 +3136,68 @@ Los siguientes nombres de campo tienen más de 10 caracteres:
     </message>
     <message>
         <source>Open model</source>
-        <translation type="unfinished"></translation>
+        <translation>Abrir modelo</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>Save</source>
-        <translation type="unfinished">Guardar</translation>
+        <translation>Guardar</translation>
     </message>
     <message>
         <source>Save as...</source>
-        <translation type="unfinished">Guardar como...</translation>
+        <translation>Guardar como...</translation>
     </message>
     <message>
         <source>Export as image</source>
-        <translation type="unfinished">Exportar como imagen</translation>
+        <translation>Exportar como imagen</translation>
     </message>
     <message>
         <source>Edit model help</source>
-        <translation type="unfinished">Editar ayuda del modelo</translation>
+        <translation>Ayuda de edición de modelos</translation>
     </message>
     <message>
         <source>Run model</source>
-        <translation type="unfinished"></translation>
+        <translation>Ejecurar modelo</translation>
     </message>
 </context>
 <context>
     <name>DlgMultipleSelection</name>
     <message>
         <source>Multiple selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Selección múltiple</translation>
     </message>
 </context>
 <context>
     <name>DlgNumberInput</name>
     <message>
         <source>Enter number or expression</source>
-        <translation type="unfinished"></translation>
+        <translation>Introducir número o expresión</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enter expression in the text field. Double click on elements in the tree to add their values to the expression.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Introducir expresión en el campo de texto. Doble clic en elementos del árbol para añadir sus valores a la expresión.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Warning&lt;/span&gt;: if expression result is float value, but integer required, result will be rounded to integer.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Advertencia&lt;/span&gt;: si la expresión da un valor de coma flotante pero se requiere un entero, el resultado se redondeará a un entero.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
     <name>DlgRenderingStyles</name>
     <message>
         <source>Dialog</source>
-        <translation type="unfinished">Diálogo</translation>
+        <translation>Diálogo</translation>
     </message>
     <message>
         <source>Output</source>
-        <translation type="unfinished">Salida</translation>
+        <translation>Salida</translation>
     </message>
     <message>
         <source>Style</source>
-        <translation type="unfinished">Estilo</translation>
+        <translation>Estilo</translation>
     </message>
 </context>
 <context>
@@ -3215,47 +3215,47 @@ Los siguientes nombres de campo tienen más de 10 caracteres:
     <name>DlgScriptEditor</name>
     <message>
         <source>Script editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Editor de script</translation>
     </message>
     <message>
         <source>Save</source>
-        <translation type="unfinished">Guardar</translation>
+        <translation>Guardar</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>Save as...</source>
-        <translation type="unfinished">Guardar como...</translation>
+        <translation>Guardar como...</translation>
     </message>
     <message>
         <source>Edit script help</source>
-        <translation type="unfinished"></translation>
+        <translation>Ayuda de edición de script</translation>
     </message>
     <message>
         <source>Run algorithm</source>
-        <translation type="unfinished"></translation>
+        <translation>Ejecutar algoritmo</translation>
     </message>
     <message>
         <source>Cut</source>
-        <translation type="unfinished">Cortar</translation>
+        <translation>Cortar</translation>
     </message>
     <message>
         <source>Copy</source>
-        <translation type="unfinished">Copiar</translation>
+        <translation>Copiar</translation>
     </message>
     <message>
         <source>Paste</source>
-        <translation type="unfinished">Pegar</translation>
+        <translation>Pegar</translation>
     </message>
     <message>
         <source>Undo</source>
-        <translation type="unfinished">Deshacer</translation>
+        <translation>Deshacer</translation>
     </message>
     <message>
         <source>Redo</source>
-        <translation type="unfinished">Rehacer</translation>
+        <translation>Rehacer</translation>
     </message>
 </context>
 <context>
@@ -3586,81 +3586,81 @@ columna de geometría - columna con valores enteros únicos</translation>
     <name>FieldsCalculator</name>
     <message>
         <source>Field calculator</source>
-        <translation type="unfinished">Calculadora de campos</translation>
+        <translation>Calculadora de campos</translation>
     </message>
     <message>
         <source>Create a new field</source>
-        <translation type="unfinished">Crear un campo nuevo</translation>
+        <translation>Crear un campo nuevo</translation>
     </message>
     <message>
         <source>Output field name</source>
-        <translation type="unfinished">Nombre del campo de salida</translation>
+        <translation>Nombre del campo de salida</translation>
     </message>
     <message>
         <source>Output field type</source>
-        <translation type="unfinished">Tipo del campo de salida</translation>
+        <translation>Tipo del campo de salida</translation>
     </message>
     <message>
         <source>Output field width</source>
-        <translation type="unfinished">Anchura del campo de salida</translation>
+        <translation>Anchura del campo de salida</translation>
     </message>
     <message>
         <source>Width of complete output. For example 123,456 means 6 as field width.</source>
-        <translation type="unfinished">Anchura de la salida completa. Por ejemplo, 123,456 significa una anchura de campo de 6.</translation>
+        <translation>Anchura de la salida completa. Por ejemplo, 123.456 significa una anchura de campo de 6.</translation>
     </message>
     <message>
         <source>Precision</source>
-        <translation type="unfinished">Precisión</translation>
+        <translation>Precisión</translation>
     </message>
     <message>
         <source>Input layer</source>
-        <translation type="unfinished">Capa de entrada</translation>
+        <translation>Capa de entrada</translation>
     </message>
     <message>
         <source>Update existing field</source>
-        <translation type="unfinished">Actualizar campo existente</translation>
+        <translation>Actualizar campo existente</translation>
     </message>
     <message>
         <source>Output file</source>
-        <translation type="unfinished">Archivo de salida</translation>
+        <translation>Archivo de salida</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
 </context>
 <context>
     <name>FieldsCalculatorDialog</name>
     <message>
         <source>Save file</source>
-        <translation type="unfinished">Guardar archivo</translation>
+        <translation>Guardar archivo</translation>
     </message>
     <message>
         <source>Unable to execute algorithm</source>
-        <translation type="unfinished"></translation>
+        <translation>No se puede ejecutar el algoritmo</translation>
     </message>
     <message>
         <source>Wrong or missing parameter values</source>
-        <translation type="unfinished"></translation>
+        <translation>Valores de parámetro incorrectos o ausentes</translation>
     </message>
 </context>
 <context>
     <name>FileDirectorySelector</name>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>Select directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleccionar directorio</translation>
     </message>
     <message>
         <source>Select file</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleccionar archivo</translation>
     </message>
     <message>
         <source>All files (*.*)</source>
-        <translation type="unfinished"></translation>
+        <translation>Todos los archivos (*.*)</translation>
     </message>
 </context>
 <context>
@@ -5823,14 +5823,16 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <source>Error loading output shapefile:
 %s</source>
-        <translation type="unfinished">Error al cargar el archivo shape de salida:
+        <translation>Error al cargar el archivo shape de salida:
 %s</translation>
     </message>
     <message>
         <source>Created output shapefile:
 %s
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Archivo shape de salida creado:
+%s
+%s</translation>
     </message>
 </context>
 <context>
@@ -6338,11 +6340,11 @@ Error de geoprocesamiento GEOS: uno o más objetos espaciales de entrada tiene u
     </message>
     <message>
         <source>Confirmation</source>
-        <translation type="unfinished"></translation>
+        <translation>Confirmación</translation>
     </message>
     <message>
         <source>Are you sure you want to clear log?</source>
-        <translation type="unfinished"></translation>
+        <translation>¿Está seguro de querer borrar el registro?</translation>
     </message>
 </context>
 <context>
@@ -6357,7 +6359,7 @@ Error de geoprocesamiento GEOS: uno o más objetos espaciales de entrada tiene u
     </message>
     <message>
         <source>Save</source>
-        <translation type="unfinished">Guardar</translation>
+        <translation>Guardar</translation>
     </message>
 </context>
 <context>
@@ -7309,8 +7311,8 @@ Shift unpins, Ctl (Cmd) toggles state
 Acts on all editable layers</source>
         <translation>Anclar / Desanclar etiquetas
 Pulsar o marcar sobre la etiqueta para anclar
-Shift desanclar, Ctl (Cmd) cambia el estado
-Actúa sobre todos los layers editables</translation>
+Mayúsculas desancla, Ctrl (Cmd) cambia el estado
+Actúa sobre todas las capas editables</translation>
     </message>
     <message>
         <source>Highlight Pinned Labels</source>
@@ -7500,47 +7502,47 @@ Actúa sobre la capa actual en edición</translation>
     </message>
     <message>
         <source>Paste Features as</source>
-        <translation type="unfinished"></translation>
+        <translation>Pegar objetos espaciales como</translation>
     </message>
     <message>
         <source>New Vector Layer</source>
-        <translation type="unfinished">Nueva capa vectorial</translation>
+        <translation>Nueva capa vectorial</translation>
     </message>
     <message>
         <source>Paste features in clipboard into a new OGR vector layer.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pegar los objetos espaciales del portapapeles en una nueva capa vectorial de OGR.</translation>
     </message>
     <message>
         <source>New Memory Vector Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Nueva capa vectorial de memoria</translation>
     </message>
     <message>
         <source>Paste features in clipboard into a new memory vector layer.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pegar los objetos espaciales del portapapeles en una nueva capa vectorial de memoria.</translation>
     </message>
     <message>
         <source>Split Parts</source>
-        <translation type="unfinished"></translation>
+        <translation>Dividir partes</translation>
     </message>
     <message>
         <source>F5</source>
-        <translation type="unfinished">F5</translation>
+        <translation>F5</translation>
     </message>
     <message>
         <source>F11</source>
-        <translation type="unfinished">F11</translation>
+        <translation>F11</translation>
     </message>
     <message>
         <source>Need commercial support?</source>
-        <translation type="unfinished"></translation>
+        <translation>¿Necesita soporte comercial?</translation>
     </message>
     <message>
         <source>DXF Export...</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportación a DXF...</translation>
     </message>
     <message>
         <source>Fill Ring</source>
-        <translation type="unfinished"></translation>
+        <translation>Rellenar anillo</translation>
     </message>
 </context>
 <context>
@@ -8442,7 +8444,7 @@ Por favor, cambie esta situación primero, porque el complemento de OSM no sabe 
     </message>
     <message>
         <source>OSM Import</source>
-        <translation type="obsolete">Importacioń de OSM</translation>
+        <translation type="obsolete">Importación de OSM</translation>
     </message>
     <message>
         <source>No OSM data are loaded/downloaded or no OSM layer is selected in Layers panel. 
@@ -15507,7 +15509,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>License</source>
-        <translation type="unfinished">Licencia</translation>
+        <translation>Licencia</translation>
     </message>
 </context>
 <context>
@@ -16701,7 +16703,7 @@ Ruta de usuario de DB:	%9
     </message>
     <message>
         <source>Form View</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Vista formulario</translation>
     </message>
 </context>
 <context>
@@ -18096,6 +18098,10 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source>No matching atlas features found!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set as atlas feature for %1</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -21030,19 +21036,19 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source>Corner radius</source>
-        <translation type="unfinished"></translation>
+        <translation>Radio de la esquina</translation>
     </message>
     <message>
         <source> mm</source>
-        <translation type="unfinished"> mm</translation>
+        <translation> mm</translation>
     </message>
     <message>
         <source>Style</source>
-        <translation type="unfinished">Estilo</translation>
+        <translation>Estilo</translation>
     </message>
     <message>
         <source>Change...</source>
-        <translation type="unfinished">Cambiar...</translation>
+        <translation>Cambiar...</translation>
     </message>
 </context>
 <context>
@@ -21381,11 +21387,11 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source>Items locked</source>
-        <translation type="unfinished"></translation>
+        <translation>Elementos bloqueados</translation>
     </message>
     <message>
         <source>Items unlocked</source>
-        <translation type="unfinished"></translation>
+        <translation>Elementos desbloqueados</translation>
     </message>
 </context>
 <context>
@@ -21603,7 +21609,7 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source>Map %1</source>
-        <translation type="unfinished">Mapa %1</translation>
+        <translation>Mapa %1</translation>
     </message>
 </context>
 <context>
@@ -21754,7 +21760,7 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source>Change...</source>
-        <translation type="unfinished">Cambiar...</translation>
+        <translation>Cambiar...</translation>
     </message>
     <message>
         <source>Page background</source>
@@ -21762,7 +21768,7 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source>Grid</source>
-        <translation type="unfinished">Rejilla</translation>
+        <translation>Rejilla</translation>
     </message>
 </context>
 <context>
@@ -24765,7 +24771,7 @@ Error del analizador:
     </message>
     <message>
         <source>Run action</source>
-        <translation>Ejecutar acción</translation>
+        <translation type="obsolete">Ejecutar acción</translation>
     </message>
     <message>
         <source>Open form</source>
@@ -24786,6 +24792,10 @@ Error del analizador:
     <message>
         <source>%1 features loaded.</source>
         <translation>%1 objetos espaciales cargados.</translation>
+    </message>
+    <message>
+        <source>Run layer action</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -24908,11 +24918,11 @@ Error del analizador:
     </message>
     <message>
         <source>Horizontal anchor point</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Punto de anclaje horizontal</translation>
     </message>
     <message>
         <source>Vertical anchor point</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Punto de anclaje vertical</translation>
     </message>
 </context>
 <context>
@@ -26814,10 +26824,6 @@ gris = sin datos
 Please reselect a valid file.</source>
         <translation>No se puede leer el archivo seleccionado.
 Por favor vuelva a seleccionar un archivo válido.</translation>
-    </message>
-    <message>
-        <source>Unable to create a GPX file with the given name. Try again with another name or in another directory.</source>
-        <translation type="obsolete">No se puede crear un archivo GPX con en nombre dado. Pruebe de nuevo con otro nombre o en otro directorio.</translation>
     </message>
     <message>
         <source>This device does not support downloading of %1.</source>
@@ -32906,7 +32912,7 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
         <source>following %1 items
 not displayed</source>
         <translation>los siguientes %1 elementos
-mo se muestran</translation>
+no se muestran</translation>
     </message>
 </context>
 <context>
@@ -34440,11 +34446,11 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     </message>
     <message>
         <source>Measure (OTF off)</source>
-        <translation type="unfinished"></translation>
+        <translation>Medir (proyección al vuelo desactivada)</translation>
     </message>
     <message>
         <source>Measure (OTF on)</source>
-        <translation type="unfinished"></translation>
+        <translation>Medir (proyección al vuelo activada)</translation>
     </message>
 </context>
 <context>
@@ -39628,7 +39634,7 @@ Las funciones de geoprocesamiento sólo están disponibles para capas PostgreSQL
 
 Extended error information:
 %1</source>
-        <translation type="obsolete">Falló la conexión - Compruebe la configuracioń y vuelva a probar.
+        <translation type="obsolete">Falló la conexión - Compruebe la configuración y vuelva a probar.
 
 Información de error ampliada:
 %1</translation>
@@ -42376,7 +42382,7 @@ PostGIS %2</translation>
         <source>Unable to open one or more project layers.
 Choose ignore to continue loading without the missing layers. Choose cancel to return to your pre-project load state. Choose OK to try to find the missing layers.</source>
         <translation>No se pueden abrir una o más capas del proyecto.
-Elija ignorar para continuar cargando sin las capas que faltan. Elija cancelar para volver al estado precargado del proyecto. Ejija Aceptar para encontrar las capas que faltan.</translation>
+Elija ignorar para continuar cargando sin las capas que faltan. Elija cancelar para volver al estado precargado del proyecto. Elija Aceptar para encontrar las capas que faltan.</translation>
     </message>
     <message>
         <source>Unable to open one or more project layers
@@ -46119,29 +46125,29 @@ desviación estándar ×</translation>
     <name>QgsRelation</name>
     <message>
         <source>Cannot create relation. Unexpected tag &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>No se puede crear la relación. Etiqueta &apos;%1&apos; inesperada.</translation>
     </message>
     <message>
         <source>Relation defined for layer &apos;%1&apos; which does not exist.</source>
-        <translation type="unfinished"></translation>
+        <translation>Relación definida para la capa &apos;%1&apos; que no existe.</translation>
     </message>
     <message>
         <source>Relation defined for layer &apos;%1&apos; which is not of type VectorLayer.</source>
-        <translation type="unfinished"></translation>
+        <translation>Relación definida para la capa &apos;%1&apos; que no es de tipo CapaVectorial.</translation>
     </message>
 </context>
 <context>
     <name>QgsRelationAddDlg</name>
     <message>
         <source>[Generated automatically]</source>
-        <translation type="unfinished"></translation>
+        <translation>[Generado automáticamente]</translation>
     </message>
 </context>
 <context>
     <name>QgsRelationAddDlgBase</name>
     <message>
         <source>Dialog</source>
-        <translation type="unfinished">Diálogo</translation>
+        <translation>Diálogo</translation>
     </message>
     <message>
         <source>Referencing Field</source>
@@ -46161,57 +46167,57 @@ desviación estándar ×</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished">Nombre</translation>
+        <translation>Nombre</translation>
     </message>
     <message>
         <source>Id</source>
-        <translation type="unfinished"></translation>
+        <translation>ID</translation>
     </message>
 </context>
 <context>
     <name>QgsRelationEditorWidgetBase</name>
     <message>
         <source>Form</source>
-        <translation type="unfinished">Formulario</translation>
+        <translation>Formulario</translation>
     </message>
     <message>
         <source>Toggle editing</source>
-        <translation type="unfinished">Conmutar edición</translation>
+        <translation>Conmutar edición</translation>
     </message>
     <message>
         <source>New</source>
-        <translation type="unfinished"></translation>
+        <translation>Nueva</translation>
     </message>
     <message>
         <source>Delete</source>
-        <translation type="unfinished">Borrar</translation>
+        <translation>Borrar</translation>
     </message>
     <message>
         <source>Link</source>
-        <translation type="unfinished"></translation>
+        <translation>Enlazar</translation>
     </message>
     <message>
         <source>Unlink</source>
-        <translation type="unfinished"></translation>
+        <translation>Desenlazar</translation>
     </message>
     <message>
         <source>Form View</source>
-        <translation type="unfinished"></translation>
+        <translation>Vista formulario</translation>
     </message>
     <message>
         <source>Table View</source>
-        <translation type="unfinished">Vista de tabla</translation>
+        <translation>Vista de tabla</translation>
     </message>
 </context>
 <context>
     <name>QgsRelationManagerDialogBase</name>
     <message>
         <source>Dialog</source>
-        <translation type="unfinished">Diálogo</translation>
+        <translation>Diálogo</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished">Nombre</translation>
+        <translation>Nombre</translation>
     </message>
     <message>
         <source>Referencing Layer</source>
@@ -46231,26 +46237,26 @@ desviación estándar ×</translation>
     </message>
     <message>
         <source>Id</source>
-        <translation type="unfinished"></translation>
+        <translation>ID</translation>
     </message>
     <message>
         <source>Add Relation</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir relación</translation>
     </message>
     <message>
         <source>Remove Relation</source>
-        <translation type="unfinished"></translation>
+        <translation>Eliminar relación</translation>
     </message>
 </context>
 <context>
     <name>QgsRelationReferenceWidget</name>
     <message>
         <source>Open Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Abrir formulario</translation>
     </message>
     <message>
         <source>The relation is not valid. Please make sure your relation definitions are ok.</source>
-        <translation type="unfinished"></translation>
+        <translation>La relación no es válida. Por favor, asegúrese de que la definición de su relación es correcta.</translation>
     </message>
 </context>
 <context>
@@ -46482,11 +46488,11 @@ desviación estándar ×</translation>
     </message>
     <message>
         <source>Copy</source>
-        <translation type="unfinished">Copiar</translation>
+        <translation>Copiar</translation>
     </message>
     <message>
         <source>Paste</source>
-        <translation type="unfinished">Pegar</translation>
+        <translation>Pegar</translation>
     </message>
 </context>
 <context>
@@ -46701,7 +46707,7 @@ desviación estándar ×</translation>
     </message>
     <message>
         <source>Remove Rule</source>
-        <translation type="unfinished"></translation>
+        <translation>Eliminar regla</translation>
     </message>
 </context>
 <context>
@@ -47342,11 +47348,11 @@ El error fue:
     </message>
     <message>
         <source>Horizontal anchor point</source>
-        <translation type="unfinished"></translation>
+        <translation>Punto de anclaje horizontal</translation>
     </message>
     <message>
         <source>Vertical anchor point</source>
-        <translation type="unfinished"></translation>
+        <translation>Punto de anclaje vertical</translation>
     </message>
 </context>
 <context>
@@ -47408,11 +47414,11 @@ El error fue:
     </message>
     <message>
         <source>Horizontal anchor point</source>
-        <translation type="unfinished"></translation>
+        <translation>Punto de anclaje horizontal</translation>
     </message>
     <message>
         <source>Vertical anchor point</source>
-        <translation type="unfinished"></translation>
+        <translation>Punto de anclaje vertical</translation>
     </message>
 </context>
 <context>
@@ -49947,11 +49953,11 @@ Hubo un problema con su base de datos de símbolos.</translation>
     </message>
     <message>
         <source>Horizontal anchor point</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Punto de anclaje horizontal</translation>
     </message>
     <message>
         <source>Vertical anchor point</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Punto de anclaje vertical</translation>
     </message>
 </context>
 <context>
@@ -54922,11 +54928,11 @@ Descripción: %2</translation>
     </message>
     <message>
         <source>Simple Encryption</source>
-        <translation>Encriptación sencilla</translation>
+        <translation>Encriptado sencillo</translation>
     </message>
     <message>
         <source>Encrypt packets using simple encryption</source>
-        <translation>Encriptar paquetes usando encriptación sencilla</translation>
+        <translation>Encriptar paquetes usando encriptado sencillo</translation>
     </message>
     <message>
         <source>Estimate table metadata</source>
@@ -55758,7 +55764,9 @@ Would you like to add the new layer to the TOC?</source>
         <source>Created output shapefile:
 %s
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Archivo shape de salida creado:
+%s
+%s</translation>
     </message>
 </context>
 <context>
@@ -56491,6 +56499,10 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <source>Data defined properties...</source>
         <translation>Propiedades definidas por datos...</translation>
+    </message>
+    <message>
+        <source>Draw line only inside polygon</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -58441,7 +58453,7 @@ Para medir áreas, seleccione la herramienta y haga clic para crear el área a m
 &lt;p&gt;&lt;label&gt;Tolerancia topológica&lt;/label&gt; - la distancia en unidades del proyecto. Si la distancia de dos puntos cae en la tolerancia topológica, se consideran vértices. Un valor de tolerancia topológica mayor de cero relentiza el complemento, pero puede utilizar fuentes de datos no ideales.&lt;/p&gt;
 
 &lt;h5&gt;Nota&lt;/h5&gt;
-&lt;p&gt;El complemento Gráfico de ruta considera que dos carreteras están unlazadas si tienen un nodo en común. Un node se identifica de forma única por sus coordenadas. Sin embargo, en el proceso de digitalización pueden ocurrir errores. Los errores a veces ocurren cuando se transforma una red de un sistema de coordenadas a otro. Esto puede hacer que el complemento Gráfico de ruta considere no conectadas carreteras que sí lo están. En ese caso la toleralcia topológica se debe establecer a un valor mayor que cero.&lt;/p&gt;
+&lt;p&gt;El complemento Gráfico de ruta considera que dos carreteras están enlazadas si tienen un nodo en común. Un node se identifica de forma única por sus coordenadas. Sin embargo, en el proceso de digitalización pueden ocurrir errores. Los errores a veces ocurren cuando se transforma una red de un sistema de coordenadas a otro. Esto puede hacer que el complemento Gráfico de ruta considere no conectadas carreteras que sí lo están. En ese caso la tolerancia topológica se debe establecer a un valor mayor que cero.&lt;/p&gt;
 
 &lt;a name=&quot;LayerSettings&quot;&gt;
 &lt;h4&gt;Configuración de la capa de transporte&lt;/h4&gt;
@@ -58801,7 +58813,7 @@ Aquí puede definir una tolerancia general de autoensamblado para todo el proyec
 Puede seleccionar entre &lt;label&gt;A vértice&lt;/label&gt;, &lt;label&gt;A segmento&lt;/label&gt; o &lt;label&gt;A vértice y segmento&lt;/label&gt; como modo predeterminado de ensamblado. También puede definir una tolerancia predeterminada de autoensamblado y un radio de búsqueda para la edición de vértices. La tolerancia se puede establecer en unidades del mapa o en píxeles. La ventaja de elegir píxeles es que ho nay que cambiar la tolerancia de autoensamblado después de hacer operaciones de zum.&lt;p&gt;
 Se puede definir una tolerancia de autoensamblando basada en capas eligiendo &lt;label&gt;Configuración&lt;/label&gt; (o &lt;label&gt;Archivo&lt;/label&gt;) &gt; &lt;label&gt;Propiedades del proyecto...&lt;/label&gt;. En la pestaña &lt;label&gt;General&lt;/label&gt; , sección &lt;label&gt;Digitalización&lt;/label&gt; puede pinchar en &lt;label&gt;Opciones de autoensamblado...&lt;/label&gt; para habilitar y ajustar el modo de autoensamblado y la tolerancia basándose en capas.
 &lt;h5&gt;Marcadores de vértices&lt;/h5&gt;
-Puede definir el estilo de los marcadores como &lt;label&gt;Círculo semitransparente&lt;/label&gt;, &lt;label&gt;Cruz&lt;/label&gt; o &lt;label&gt;Ninguno&lt;/label&gt; y el tamaño; también puede seleccionar mostrar los marcadores solo para los objetos espaciales selecionados.
+Puede definir el estilo de los marcadores como &lt;label&gt;Círculo semitransparente&lt;/label&gt;, &lt;label&gt;Cruz&lt;/label&gt; o &lt;label&gt;Ninguno&lt;/label&gt; y el tamaño; también puede seleccionar mostrar los marcadores solo para los objetos espaciales seleccionados.
 &lt;h5&gt;Introducir valores de atributos&lt;/h5&gt;
 Por omisión, después de digitalizar un objeto espacial nuevo, QGIS le pide que introduzca los valores de los atributos para ese objeto. Marcar &lt;label&gt;Suprimir ventanas emergentes de atributos después de crear cada objeto espacial&lt;/label&gt; le permite introducir los atributos más tarde.
 &lt;a name=&quot;crs&quot;&gt;
@@ -60204,7 +60216,7 @@ The Diagram tab allows you to add a graphic overlay to a vector layer. To activa
 The current implementation of diagrams provides support for pie- and bar charts and for linear scaling
 of the diagram size according to a classification attribute.
 </source>
-        <translation>&lt;h3&gt;Propiedades de las capas vectoriales&lt;/h3&gt;
+        <translation type="unfinished">&lt;h3&gt;Propiedades de las capas vectoriales&lt;/h3&gt;
 Este diálogo le permite trabajar con la configuración
 y las propiedades de las capas vectoriales. Hay siete pestañas:
 &lt;p&gt;
@@ -60262,7 +60274,7 @@ Sombrear etiquetas significa poner un fondo alrededor de ellas para que destaque
 &lt;ol&gt;
 &lt;li&gt;Marque la casilla &lt;label&gt;Dibujar sombras&lt;/label&gt; para habilitar el sombreado.
 &lt;li&gt;Elija un tamaño para el sombreado usando las flechas.
-&lt;li&gt;Seleccionar un color haciendo clic en &lt;label&gt;Color&lt;/label&gt; y elijiendo el color deseado del selector de colores. También puede establecer cierta transparencia para las sombras si lo prefiere.
+&lt;li&gt;Seleccionar un color haciendo clic en &lt;label&gt;Color&lt;/label&gt; y eligiendo el color deseado del selector de colores. También puede establecer cierta transparencia para las sombras si lo prefiere.
 &lt;li&gt;Pulse &lt;label&gt;Aplicar&lt;/label&gt; para ver si le gustan los cambios.
 &lt;/ol&gt;
 Tenga en cuenta que también puede especificar el tamaño de la sombra en 
@@ -60275,14 +60287,14 @@ El resto de las entradas dentro de la pestaña &lt;label&gt;Etiquetas&lt;/label&
 &lt;a name=&quot;attributes&quot;&gt;
 &lt;h4&gt;Campos&lt;/h4&gt;
 &lt;/a&gt;
-Dentro de la pestaña &lt;label&gt;Campos&lt;/label&gt; se pueden manipular los atributos the del conjunto de datos seleccionado. Los botonos &lt;label&gt;Columna nueva&lt;/label&gt; y &lt;label&gt;Borrar columna&lt;/label&gt; se pueden usar cuando el conjunto de datos está en modo edición. La biblioteca OGR admite añadir nuevas columnas, pero no eliminarlas, si tiene instalada una versión de GDAL &gt;= 1.6. De lo contrario solo se pueden editar columns de capas PostGIS.&lt;p&gt;
+Dentro de la pestaña &lt;label&gt;Campos&lt;/label&gt; se pueden manipular los atributos del conjunto de datos seleccionado. Los botones &lt;label&gt;Columna nueva&lt;/label&gt; y &lt;label&gt;Borrar columna&lt;/label&gt; se pueden usar cuando el conjunto de datos está en modo edición. La biblioteca OGR admite añadir nuevas columnas, pero no eliminarlas, si tiene instalada una versión de GDAL &gt;= 1.6. De lo contrario solo se pueden editar columnas de capas PostGIS.&lt;p&gt;
 El botón &lt;label&gt;Conmutar el modo edición&lt;/label&gt; alterna este modo.&lt;p&gt;
 Dentro de la pestaña Campos también puede encontrar una columna de control de edición. Esta columna se puede usar para definir valores o intervalo de valores que esté permitido añadir a la columna específica de la tabla de atributos. Si pulsa en el botón &lt;label&gt;Control de edición&lt;/label&gt; se abrirá un diálogo en el que puede definir diferentes controles. Estos controles son:&lt;br/&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;label&gt;Edición de líneas&lt;/label&gt; un campo de edición que permite introducir texto sencillo (o restringido a número en el caso de atributos numéricos).
 &lt;li&gt;&lt;label&gt;Clasificación&lt;/label&gt; Muestra un cuadro combinado con valores usados para clasificación, si ha elegido &lt;label&gt;valores únicos&lt;/label&gt; como tipo de leyenda en la pestaña simbología del diálogo de propiedades.
 &lt;li&gt;&lt;label&gt;Intervalo&lt;/label&gt; Permite establecer valores numéricos de un determinado intervalo. El control de edición puede ser un deslizador o una caja con flechas.
-&lt;li&gt;&lt;label&gt;Valor único&lt;/label&gt; El usuario puede seleccionar uno de los valores que ya estén en uso en la tabla de atributos. Ai está activado &lt;label&gt;editable&lt;/label&gt;, se muestra una línea de edición con capacidad para autocompletar, pero serán posibles valores adicionales. De lo contrario se usará un cuadro combinado.
+&lt;li&gt;&lt;label&gt;Valor único&lt;/label&gt; El usuario puede seleccionar uno de los valores que ya estén en uso en la tabla de atributos. Si está activado &lt;label&gt;editable&lt;/label&gt;, se muestra una línea de edición con capacidad para autocompletar, pero serán posibles valores adicionales. De lo contrario se usará un cuadro combinado.
 &lt;li&gt;&lt;label&gt;Nombre de archivo&lt;/label&gt; Simplifica la selección al añadir un diálogo para elegir archivos.
 &lt;li&gt;&lt;label&gt;Mapa de valor&lt;/label&gt; Un cuadro combinado con elementos predefinidos. El valor se guarda en el atributo, la descripción se muestra en el cuadro combinado. Puede definir los valores manualmente o cargarlos de una capa o un archvo CSV.
 &lt;li&gt;&lt;label&gt;Enumeración&lt;/label&gt; Abre un cuadro combinado con valores que se pueden usar dentro del tipo de la columna. Actualmente esto sólo es admitido por el proveedor Postgres.
@@ -60304,7 +60316,7 @@ El botón &lt;label&gt;Constructor de consultas&lt;/label&gt; premite limitar lo
 &lt;a name=&quot;metadata&quot;&gt;
 &lt;h4&gt;Metadatos&lt;/h4&gt;
 &lt;/a&gt;
-La pestaña &lt;label&gt;Metadata&lt;/label&gt; contiene información sobre la capa, que incluye datos sobre el tipo y localización, número de objetos espaciales, tipo de objetos espaciales y capacidades de edición. En esta pestaña se muestra la sección Sistema de referencia espacial de la capa, que proporciona información sobre la proyección. Esta es una forma rápida de obtener informacioń sobre la capa.
+La pestaña &lt;label&gt;Metadata&lt;/label&gt; contiene información sobre la capa, que incluye datos sobre el tipo y localización, número de objetos espaciales, tipo de objetos espaciales y capacidades de edición. En esta pestaña se muestra la sección Sistema de referencia espacial de la capa, que proporciona información sobre la proyección. Esta es una forma rápida de obtener información sobre la capa.
 
 &lt;a name=&quot;actions&quot;&gt;
 &lt;h4&gt;Acciones&lt;/h4&gt;
@@ -62011,9 +62023,9 @@ use &lt;code&gt;day&lt;/code&gt; to extract number of days&lt;br&gt;
 
 </source>
         <translation>&lt;h3&gt;Función age()&lt;/h3&gt;
-Devuelve la direrencia entre dos fechas.
+Devuelve la diferencia entre dos fechas.
 &lt;br&gt;&lt;br&gt;
-La direrencia es devuelta como un &lt;code&gt;Intervalo&lt;/code&gt; 
+La diferencia es devuelta como un &lt;code&gt;Intervalo&lt;/code&gt; 
 y necesita que se use en uno de las siguientes funciones
 para extraer información útil:
 &lt;ul&gt;
@@ -64029,7 +64041,7 @@ This function takes two arguments.
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;rand(1, 10) &amp;rarr; 8&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation>&lt;h3&gt;rand() function&lt;/h3&gt;
+        <translation>&lt;h3&gt;Función rand()&lt;/h3&gt;
 Devuelve una entero aleatorio dentro del rango especificado por los argumentos mínimo y máximo (incluidos).
 &lt;br&gt;
 Esta función toma dos argumentos.
@@ -67561,15 +67573,15 @@ geometry &amp;rarr; geometry
     <name>widgetNumberInput</name>
     <message>
         <source>Form</source>
-        <translation type="unfinished">Formulario</translation>
+        <translation>Formulario</translation>
     </message>
     <message>
         <source>Open number input dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Abrir diálogo de introducción de números</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
 </context>
 </TS>
