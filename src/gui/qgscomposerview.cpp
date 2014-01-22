@@ -973,6 +973,9 @@ void QgsComposerView::pasteItems( PasteMode mode )
       }
     }
   }
+
+  //switch back to select tool so that pasted items can be moved/resized (#8958)
+  setCurrentTool( QgsComposerView::Select );
 }
 
 void QgsComposerView::deleteSelectedItems()
