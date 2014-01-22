@@ -109,7 +109,9 @@ void QgsComposerView::setCurrentTool( QgsComposerView::Tool t )
       //using a drawing tool
       //lock cursor to prevent composer items changing it
       composition()->setPreventCursorChange( true );
-      viewport()->setCursor( Qt::CrossCursor );
+      QPixmap myCrosshairQPixmap = QPixmap(( const char ** )( cross_hair_cursor ) );
+      QCursor crosshairCursor = QCursor( myCrosshairQPixmap, 8, 8 );
+      viewport()->setCursor( crosshairCursor );
       break;
     }
     default:
