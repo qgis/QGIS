@@ -84,15 +84,15 @@
     </message>
     <message>
         <source>Setting</source>
-        <translation type="unfinished">Instelling</translation>
+        <translation>Instelling</translation>
     </message>
     <message>
         <source>Value</source>
-        <translation type="unfinished">Waarde</translation>
+        <translation>Waarde</translation>
     </message>
     <message>
         <source>Providers</source>
-        <translation type="unfinished">Providers</translation>
+        <translation>Providers</translation>
     </message>
 </context>
 <context>
@@ -2509,7 +2509,7 @@ De volgende veldnamen zijn langer dan 10 karakters:
     </message>
     <message>
         <source>Please specify an input layer</source>
-        <translation type="unfinished">Selecteer een laag als input</translation>
+        <translation>Selecteer een laag als input</translation>
     </message>
 </context>
 <context>
@@ -2594,27 +2594,27 @@ De volgende veldnamen zijn langer dan 10 karakters:
     <name>DlgAutofill</name>
     <message>
         <source>Autofill settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Instelling automatisch vullen</translation>
     </message>
     <message>
         <source>Autofill mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Modus Automatisch vullen</translation>
     </message>
     <message>
         <source>Do not autofill</source>
-        <translation type="unfinished"></translation>
+        <translation>Niet automatisch vullen</translation>
     </message>
     <message>
         <source>Fill with numbers</source>
-        <translation type="unfinished"></translation>
+        <translation>Vullen met getallen</translation>
     </message>
     <message>
         <source>Fill with parameter values</source>
-        <translation type="unfinished"></translation>
+        <translation>Vullen met parameterwaarden</translation>
     </message>
     <message>
         <source>Parameter to use</source>
-        <translation type="unfinished"></translation>
+        <translation>Parameter om te gebruiken</translation>
     </message>
 </context>
 <context>
@@ -3067,68 +3067,68 @@ De volgende veldnamen zijn langer dan 10 karakters:
     </message>
     <message>
         <source>Open model</source>
-        <translation type="unfinished"></translation>
+        <translation>Open model</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>Save</source>
-        <translation type="unfinished">Opslaan</translation>
+        <translation>Opslaan</translation>
     </message>
     <message>
         <source>Save as...</source>
-        <translation type="unfinished">Opslaan Als...</translation>
+        <translation>Opslaan Als...</translation>
     </message>
     <message>
         <source>Export as image</source>
-        <translation type="unfinished">Opslaan als afbeelding</translation>
+        <translation>Opslaan als afbeelding</translation>
     </message>
     <message>
         <source>Edit model help</source>
-        <translation type="unfinished">Bewerk model help</translation>
+        <translation>Help model bewerken</translation>
     </message>
     <message>
         <source>Run model</source>
-        <translation type="unfinished"></translation>
+        <translation>Start model</translation>
     </message>
 </context>
 <context>
     <name>DlgMultipleSelection</name>
     <message>
         <source>Multiple selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Meervoudige selecties</translation>
     </message>
 </context>
 <context>
     <name>DlgNumberInput</name>
     <message>
         <source>Enter number or expression</source>
-        <translation type="unfinished"></translation>
+        <translation>Geef getal of expressie</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enter expression in the text field. Double click on elements in the tree to add their values to the expression.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Geef een expressie in het tekstveld. Dubbelklik op een element in de boomstructuur om hun waarden toe te voegen aan de expressie.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Warning&lt;/span&gt;: if expression result is float value, but integer required, result will be rounded to integer.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Waarschuwing&lt;/span&gt;: wanneer het resultaat van een expressie een float waarde betreft, maar een integer waarde benodigd is, zal het resultaat worden afgerond naar een integer.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
     <name>DlgRenderingStyles</name>
     <message>
         <source>Dialog</source>
-        <translation type="unfinished">Dialoog</translation>
+        <translation>Dialoog</translation>
     </message>
     <message>
         <source>Output</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Style</source>
-        <translation type="unfinished">Stijl</translation>
+        <translation>Stijl</translation>
     </message>
 </context>
 <context>
@@ -3146,47 +3146,47 @@ De volgende veldnamen zijn langer dan 10 karakters:
     <name>DlgScriptEditor</name>
     <message>
         <source>Script editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Script editor</translation>
     </message>
     <message>
         <source>Save</source>
-        <translation type="unfinished">Opslaan</translation>
+        <translation>Opslaan</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>Save as...</source>
-        <translation type="unfinished">Opslaan Als...</translation>
+        <translation>Opslaan Als...</translation>
     </message>
     <message>
         <source>Edit script help</source>
-        <translation type="unfinished"></translation>
+        <translation>Help script bewerken</translation>
     </message>
     <message>
         <source>Run algorithm</source>
-        <translation type="unfinished"></translation>
+        <translation>Start algoritme</translation>
     </message>
     <message>
         <source>Cut</source>
-        <translation type="unfinished">Knippen</translation>
+        <translation>Knippen</translation>
     </message>
     <message>
         <source>Copy</source>
-        <translation type="unfinished">Kopiëren</translation>
+        <translation>Kopiëren</translation>
     </message>
     <message>
         <source>Paste</source>
-        <translation type="unfinished">Plakken</translation>
+        <translation>Plakken</translation>
     </message>
     <message>
         <source>Undo</source>
-        <translation type="unfinished">Ongedaan maken</translation>
+        <translation>Ongedaan maken</translation>
     </message>
     <message>
         <source>Redo</source>
-        <translation type="unfinished">Opnieuw</translation>
+        <translation>Opnieuw</translation>
     </message>
 </context>
 <context>
@@ -3514,81 +3514,81 @@ geometry column - column with unique integer values</source>
     <name>FieldsCalculator</name>
     <message>
         <source>Field calculator</source>
-        <translation type="unfinished"></translation>
+        <translation>Veld calculator</translation>
     </message>
     <message>
         <source>Create a new field</source>
-        <translation type="unfinished">Nieuw veld aanmaken</translation>
+        <translation>Nieuw veld aanmaken</translation>
     </message>
     <message>
         <source>Output field name</source>
-        <translation type="unfinished">Naam voor veld</translation>
+        <translation>Veldnaam</translation>
     </message>
     <message>
         <source>Output field type</source>
-        <translation type="unfinished">Type voor veld</translation>
+        <translation>Veldtype</translation>
     </message>
     <message>
         <source>Output field width</source>
-        <translation type="unfinished">Veldbreedte</translation>
+        <translation>Veldbreedte</translation>
     </message>
     <message>
         <source>Width of complete output. For example 123,456 means 6 as field width.</source>
-        <translation type="unfinished">Breedte voor uitvoer. Bijvoorbeeld 123,456 heeft 6 als veldbreedte.</translation>
+        <translation>Breedte voor uitvoer. Bijvoorbeeld 123,456 heeft 6 als veldbreedte.</translation>
     </message>
     <message>
         <source>Precision</source>
-        <translation type="unfinished">Precisie</translation>
+        <translation>Precisie</translation>
     </message>
     <message>
         <source>Input layer</source>
-        <translation type="unfinished">Invoerlaag</translation>
+        <translation>Invoerlaag</translation>
     </message>
     <message>
         <source>Update existing field</source>
-        <translation type="unfinished">Bestaande velden vernieuwen</translation>
+        <translation>Bestaande veld bijwerken</translation>
     </message>
     <message>
         <source>Output file</source>
-        <translation type="unfinished">Uitvoerbestand</translation>
+        <translation>Uitvoerbestand</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
 </context>
 <context>
     <name>FieldsCalculatorDialog</name>
     <message>
         <source>Save file</source>
-        <translation type="unfinished">Bestand opslaan</translation>
+        <translation>Bestand opslaan</translation>
     </message>
     <message>
         <source>Unable to execute algorithm</source>
-        <translation type="unfinished"></translation>
+        <translation>Algoritme kan niet worden uitgevoerd</translation>
     </message>
     <message>
         <source>Wrong or missing parameter values</source>
-        <translation type="unfinished"></translation>
+        <translation>Foute of ontbrekende parameterwaarden</translation>
     </message>
 </context>
 <context>
     <name>FileDirectorySelector</name>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>Select directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Selecteer map</translation>
     </message>
     <message>
         <source>Select file</source>
-        <translation type="unfinished"></translation>
+        <translation>Selecteer bestand</translation>
     </message>
     <message>
         <source>All files (*.*)</source>
-        <translation type="unfinished"></translation>
+        <translation>Alle bestanden (*.*)</translation>
     </message>
 </context>
 <context>
@@ -3741,7 +3741,7 @@ De plugin wordt niet geactiveerd.</translation>
     </message>
     <message>
         <source>Builds or rebuilds overview images</source>
-        <translation>Overzichten (her)bouwen</translation>
+        <translation>Overzichtskaarten (her)bouwen</translation>
     </message>
     <message>
         <source>Clipper</source>
@@ -3825,7 +3825,7 @@ De plugin wordt niet geactiveerd.</translation>
     </message>
     <message>
         <source>Build overviews (Pyramids)</source>
-        <translation>Overzichten aanmaken (Pyramiden)</translation>
+        <translation>Overzichtskaarten aanmaken (Pyramiden)</translation>
     </message>
     <message>
         <source>DEM (Terrain models)</source>
@@ -5221,7 +5221,7 @@ suitable for direct use with Imagine,ArcGIS, GDAL.</source>
     </message>
     <message>
         <source>Build overviews (Pyramids)</source>
-        <translation>Overzichten aanmaken (Pyramiden)</translation>
+        <translation>Overzichtskaarten aanmaken (Pyramiden)</translation>
     </message>
     <message>
         <source>Polygonize (Raster to vector)</source>
@@ -5559,14 +5559,16 @@ Wilt u het toevoegen aan de huidige kaart/legenda?</translation>
     <message>
         <source>Error loading output shapefile:
 %s</source>
-        <translation type="unfinished">Fout bij het laden van het uitvoer shape-bestand:
+        <translation>Fout bij laden van shape-bestand:
 %s</translation>
     </message>
     <message>
         <source>Created output shapefile:
 %s
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Uitvoer shape-bestand aangemaakt:
+%s
+%s</translation>
     </message>
 </context>
 <context>
@@ -6062,11 +6064,11 @@ Ruimtelijk Referentie Systeem (CRS) fout: 1 of meer invoerlagen missen CRS-infor
     </message>
     <message>
         <source>Confirmation</source>
-        <translation type="unfinished"></translation>
+        <translation>Bevestiging</translation>
     </message>
     <message>
         <source>Are you sure you want to clear log?</source>
-        <translation type="unfinished"></translation>
+        <translation>Weet u zekere dat u de log wilt verwijderen?</translation>
     </message>
 </context>
 <context>
@@ -6081,7 +6083,7 @@ Ruimtelijk Referentie Systeem (CRS) fout: 1 of meer invoerlagen missen CRS-infor
     </message>
     <message>
         <source>Save</source>
-        <translation type="unfinished">Opslaan</translation>
+        <translation>Opslaan</translation>
     </message>
 </context>
 <context>
@@ -6946,7 +6948,7 @@ Ruimtelijk Referentie Systeem (CRS) fout: 1 of meer invoerlagen missen CRS-infor
     </message>
     <message>
         <source>Remove All from Overview</source>
-        <translation>Verwijder Alles Van Overzichtskaart</translation>
+        <translation>Verwijder alles van Overzichtskaart</translation>
     </message>
     <message>
         <source>Style Manager...</source>
@@ -7211,47 +7213,47 @@ Werkt voor huidige actieve bewerkbare laag</translation>
     </message>
     <message>
         <source>Paste Features as</source>
-        <translation type="unfinished"></translation>
+        <translation>Objecten plakken als</translation>
     </message>
     <message>
         <source>New Vector Layer</source>
-        <translation type="unfinished">Nieuwe Vectorlaag</translation>
+        <translation>Nieuwe Vectorlaag</translation>
     </message>
     <message>
         <source>Paste features in clipboard into a new OGR vector layer.</source>
-        <translation type="unfinished"></translation>
+        <translation>Objecten in klembord plakken in nieuwe OGR vectorlaag.</translation>
     </message>
     <message>
         <source>New Memory Vector Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Nieuwe Memory Vectorlaag</translation>
     </message>
     <message>
         <source>Paste features in clipboard into a new memory vector layer.</source>
-        <translation type="unfinished"></translation>
+        <translation>Objecten in klembord plakken in een nieuwe memory vectorlaag.</translation>
     </message>
     <message>
         <source>Split Parts</source>
-        <translation type="unfinished"></translation>
+        <translation>Delen Splitsen</translation>
     </message>
     <message>
         <source>F5</source>
-        <translation type="unfinished">F5</translation>
+        <translation>F5</translation>
     </message>
     <message>
         <source>F11</source>
-        <translation type="unfinished">F11</translation>
+        <translation>F11</translation>
     </message>
     <message>
         <source>Need commercial support?</source>
-        <translation type="unfinished"></translation>
+        <translation>Commerciële ondersteuning nodig?</translation>
     </message>
     <message>
         <source>DXF Export...</source>
-        <translation type="unfinished"></translation>
+        <translation>DXF Export...</translation>
     </message>
     <message>
         <source>Fill Ring</source>
-        <translation type="unfinished"></translation>
+        <translation>Ring Vullen</translation>
     </message>
 </context>
 <context>
@@ -7374,57 +7376,64 @@ U kunt de optie &apos;Opslaan als...&apos; gebruiken.</translation>
     </message>
     <message>
         <source>Message</source>
-        <translation type="unfinished">Melding</translation>
+        <translation>Melding</translation>
     </message>
     <message>
         <source>There are unsaved changes in model. Close modeler without saving?</source>
-        <translation type="unfinished"></translation>
+        <translation>Er zijn niet opgeslagen wijzigingen in het model. Modeler afsluiten zonder eerst op te slaan?</translation>
     </message>
     <message>
         <source>Model doesn&apos;t contains any algorithms and/or 
                              parameters and can&apos;t be executed</source>
-        <translation type="unfinished"></translation>
+        <translation>Model bevat geen algoritmes en/of parameters 
+                             en kan niet worden uitgevoerd</translation>
     </message>
     <message>
         <source>Save Model As Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Model opslaan als afbeelding</translation>
     </message>
     <message>
         <source>PNG files (*.png *.PNG)</source>
-        <translation type="unfinished"></translation>
+        <translation>PNG files (*.png *.PNG)</translation>
     </message>
     <message>
         <source>Unable to save edits. Reason:
  %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan wijzigingen niet opslaan. Reden:
+ %s</translation>
     </message>
     <message>
         <source>This model can&apos;t be saved in its 
                                      original location (probably you do not 
                                      have permission to do it). Please, use 
                                      the &apos;Save as...&apos; option.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dit model kan niet worden opgeslagen in zijn 
+                                     oorspronkelijke lokatie (waarschijnlijk heeft 
+                                     onvoldoende bestandsrechten). Gebruik 
+                                     &apos;Opslaan als...&apos;.</translation>
     </message>
     <message>
         <source>The selected model could not be loaded.
 
                                  Wrong line: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Het geselecteerde model kan niet worden geladen.
+
+                                 Fout in regel: %s</translation>
     </message>
 </context>
 <context>
     <name>MultipleInputDialog</name>
     <message>
         <source>Select all</source>
-        <translation type="unfinished"></translation>
+        <translation>Selecteer alles</translation>
     </message>
     <message>
         <source>Clear selection</source>
-        <translation type="unfinished">Selectie opheffen</translation>
+        <translation>Selectie opheffen</translation>
     </message>
     <message>
         <source>Toggle selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Wisselen van selectie</translation>
     </message>
 </context>
 <context>
@@ -7438,71 +7447,71 @@ U kunt de optie &apos;Opslaan als...&apos; gebruiken.</translation>
     <name>NumberInputDialog</name>
     <message>
         <source>[Enter your formula here]</source>
-        <translation type="unfinished"></translation>
+        <translation>[Geef hier de formule]</translation>
     </message>
     <message>
         <source>Values from data layers extents</source>
-        <translation type="unfinished"></translation>
+        <translation>Waarden extent van kaartlagen</translation>
     </message>
     <message>
         <source>Min X</source>
-        <translation type="unfinished"></translation>
+        <translation>Min X</translation>
     </message>
     <message>
         <source>Max X</source>
-        <translation type="unfinished"></translation>
+        <translation>Max X</translation>
     </message>
     <message>
         <source>Min Y</source>
-        <translation type="unfinished"></translation>
+        <translation>Min Y</translation>
     </message>
     <message>
         <source>Max Y</source>
-        <translation type="unfinished"></translation>
+        <translation>Max Y</translation>
     </message>
     <message>
         <source>Cellsize</source>
-        <translation type="unfinished"></translation>
+        <translation>Celgrootte</translation>
     </message>
     <message>
         <source>Values from raster layers statistics</source>
-        <translation type="unfinished"></translation>
+        <translation>Statistische waarden van rasterlagen</translation>
     </message>
     <message>
         <source>Mean</source>
-        <translation type="unfinished">Gemiddelde</translation>
+        <translation>Gemiddelde</translation>
     </message>
     <message>
         <source>Std. deviation</source>
-        <translation type="unfinished"></translation>
+        <translation>Standaard deviatie</translation>
     </message>
     <message>
         <source>Max value</source>
-        <translation type="unfinished"></translation>
+        <translation>Max. waarde</translation>
     </message>
     <message>
         <source>Min value</source>
-        <translation type="unfinished"></translation>
+        <translation>Min. waarde</translation>
     </message>
     <message>
         <source>Values from QGIS map canvas</source>
-        <translation type="unfinished"></translation>
+        <translation>Waarden van kaartbeeld QGIS</translation>
     </message>
     <message>
         <source>Current extent</source>
-        <translation type="unfinished">Huidige extent</translation>
+        <translation>Huidige extent</translation>
     </message>
     <message>
         <source>Full extent of all layers in map canvas</source>
-        <translation type="unfinished"></translation>
+        <translation>Volledige extent voor alle lagen in kaartbeeld</translation>
     </message>
     <message>
         <source>Wrong expression</source>
-        <translation type="unfinished"></translation>
+        <translation>Foute expressie</translation>
     </message>
     <message>
         <source>The expression entered is not correct</source>
-        <translation type="unfinished"></translation>
+        <translation>De ingegeven expressie is niet juist</translation>
     </message>
 </context>
 <context>
@@ -8994,19 +9003,19 @@ gebruikt u het  qgis.utils.iface object (een instantie van QgisInterface class).
     </message>
     <message>
         <source>Close Tab</source>
-        <translation type="unfinished"></translation>
+        <translation>Sluit Tabblad</translation>
     </message>
     <message>
         <source>Close All</source>
-        <translation type="unfinished"></translation>
+        <translation>Sluit Alles</translation>
     </message>
     <message>
         <source>Close Others</source>
-        <translation type="unfinished"></translation>
+        <translation>Sluit Overige</translation>
     </message>
     <message>
         <source>Save As</source>
-        <translation type="unfinished">Opslaan Als</translation>
+        <translation>Opslaan Als</translation>
     </message>
 </context>
 <context>
@@ -9044,7 +9053,7 @@ gebruikt u het  qgis.utils.iface object (een instantie van QgisInterface class).
     </message>
     <message>
         <source>nautical miles</source>
-        <translation type="unfinished"></translation>
+        <translation>zeemijlen</translation>
     </message>
 </context>
 <context>
@@ -11457,295 +11466,295 @@ Deze zal daarom niet actief worden gemaakt.</translation>
     </message>
     <message>
         <source> sq. NM</source>
-        <translation type="unfinished"></translation>
+        <translation> NM 2</translation>
     </message>
     <message>
         <source> NM</source>
-        <translation type="unfinished"></translation>
+        <translation> NM</translation>
     </message>
     <message>
         <source>New BNA files are created by the systems default line termination conventions. This may be overridden here.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nieuwe BNA bestanden worden aangemaakt met de standaard regeleinde conventies van het besturingssysteem. Dit kan hier overschreven worden.</translation>
     </message>
     <message>
         <source>By default, BNA files are created in multi-line format. For each record, the first line contains the identifiers and the type/number of coordinates to follow. The following lines contains a pair of coordinates).</source>
-        <translation type="unfinished"></translation>
+        <translation>Standaard worden BNA bestanden aangemaakt in meervoudige regel formaat. Voor elk record bevat de eerste regel de identificaties gevolgd door het type/aantal coördinaten. De volgende regels bevatten een coördinatenpaar.</translation>
     </message>
     <message>
         <source>BNA records may contain from 2 to 4 identifiers per record. Some software packages only support a precise number of identifiers. You can override the default value (2) by a precise value</source>
-        <translation type="unfinished"></translation>
+        <translation>BNA records kunnen per record 2 tot 4 identificaties bevatten. Enkel software pakketten ondersteuen slechts een exact aantal identificaties. De standaard waarde (2) kan overschreven worden door een exact getal</translation>
     </message>
     <message>
         <source>The BNA writer will try to recognize ellipses and circles when writing a polygon. This will only work if the feature has previously been read from a BNA file. As some software packages do not support ellipses/circles in BNA data file, it may be useful to tell the writer by specifying ELLIPSES_AS_ELLIPSES=NO not to export them as such, but keep them as polygons.</source>
-        <translation type="unfinished"></translation>
+        <translation>TIjdens het schrijven van BNA zal geprobeerd worden om ellipsen en cirkels te herkennen wanneer deze een polygoon schrijft. Dit werkt alleen wanneer het object eerder was ingelezen vanuit een BNA bestand. Doordat sommige software pakketten geen ondersteuning bieden voor ellipsen/cirkels, kun je dit uitzetten door het volgende te specificeren ELLIPSES_AS_ELLIPSES=NO zodat polygonen niet worden omgezet.</translation>
     </message>
     <message>
         <source>Limit the number of coordinate pairs per line in multiline format.</source>
-        <translation type="unfinished"></translation>
+        <translation>Het beperken van het aantal coördinatenparen per regel in het meervoudige regel formaat.</translation>
     </message>
     <message>
         <source>Set the number of decimal for coordinates. Default value is 10.</source>
-        <translation type="unfinished"></translation>
+        <translation>Geef het aantal decimalen voor coördinaten. De standaardwaarde is 10.</translation>
     </message>
     <message>
         <source>By default when creating new .csv files they are created with the line termination conventions of the local platform (CR/LF on win32 or LF on all other systems). This may be overridden through use of the LINEFORMAT option.</source>
-        <translation type="unfinished"></translation>
+        <translation>Standaard worden nieuwe .csv bestanden aangemaakt met de standaard regeleinde conventies van het besturingssysteem (CR/LF op win32 of LF voor alle andere systemen). Dit kan worden overschreven door het gebruik van de optie LINEFORMAT.</translation>
     </message>
     <message>
         <source>By default, the geometry of a feature written to a .csv file is discarded. It is possible to export the geometry in its WKT representation by specifying GEOMETRY=AS_WKT. It is also possible to export point geometries into their X,Y,Z components by specifying GEOMETRY=AS_XYZ, GEOMETRY=AS_XY or GEOMETRY=AS_YX.</source>
-        <translation type="unfinished"></translation>
+        <translation>Standaard wordt de geometrie van een object niet naar een .csv-bestand geschreven. Het is mogelijk om de geometry te schrijven in WKT formaat met GEOMETRY=AS_WKT. Het is ook mogelijk om punt geometriëen als X,Y,Z waarden te schrijven met GEOMETRY=AS_XYZ, GEOMETRY=AS_XY of GEOMETRY=AS_YX.</translation>
     </message>
     <message>
         <source>Create the associated .csvt file to describe the type of each column of the layer and its optional width and precision.</source>
-        <translation type="unfinished"></translation>
+        <translation>Het aanmaken van het geassocieerde .csvt bestand waarmee de veldtypen van elke kolom van de laag en optioneel de veldbreedte en precisie wordt beschreven.</translation>
     </message>
     <message>
         <source>Field separator character. Default value : COMMA</source>
-        <translation type="unfinished"></translation>
+        <translation>Veldscheidingsteken. Standaard waarde : COMMA</translation>
     </message>
     <message>
         <source>Write a UTF-8 Byte Order Mark (BOM) at the start of the file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Schrijf een UTF-8 Byte Order Mark (BOM) aan het begin van het bestand.</translation>
     </message>
     <message>
         <source>Override the type of shapefile created. Can be one of NULL for a simple .dbf file with no .shp file, POINT, ARC, POLYGON or MULTIPOINT for 2D, or POINTZ, ARCZ, POLYGONZ or MULTIPOINTZ for 3D. Shapefiles with measure values are not supported, nor are MULTIPATCH files.</source>
-        <translation type="unfinished"></translation>
+        <translation>Overschrijf het type shapefile dat wordt aangemaakt. Maak een keuze tussen NULL voor een eenvoudige .dbf bestand zonder .shp bestand, POINT, ARC, POLYGON of MULTIPOINT voor 2D, of POINTZ, ARCZ, POLYGONZ of MULTIPOINTZ voor 3D. Shapefiles met maatvoering wordt niet ondersteund, evenals MULTIPATCH-bestanden.</translation>
     </message>
     <message>
         <source>set the encoding value in the DBF file. The default value is LDID/87. It is not clear what other values may be appropriate.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zet de encoding (karaktercodering) waarde van het DBF bestand. De standaardwaarde is LDID/87. Het is onduidelijk welke andere waarden geschikt zijn.</translation>
     </message>
     <message>
         <source>Set to YES to resize fields to their optimal size.</source>
-        <translation type="unfinished"></translation>
+        <translation>Geef YES wanneer de veldengrootte de optimale grootte moet krijgen.</translation>
     </message>
     <message>
         <source>DBF File</source>
-        <translation type="unfinished"></translation>
+        <translation>DBF bestand</translation>
     </message>
     <message>
         <source>Set to YES to write a bbox property with the bounding box of the geometries at the feature and feature collection level.</source>
-        <translation type="unfinished"></translation>
+        <translation>Geeft YES zodat er een veld bbox wordt toegevoegd waarmee de extent van geometriëen op object en collectie niveau wordt vastgelegd.</translation>
     </message>
     <message>
         <source>Maximum number of figures after decimal separator to write in coordinates. Default to 15. Truncation will occur to remove trailing zeros.</source>
-        <translation type="unfinished"></translation>
+        <translation>Maximum aantal getallen na het decimale scheidingsteken om coördinaten te schrijven. Standaard is dit 15. Deze worden ingekort wanneer gevolgd door nullen.</translation>
     </message>
     <message>
         <source>whether the document must be in RSS 2.0 or Atom 1.0 format. Default value : RSS</source>
-        <translation type="unfinished"></translation>
+        <translation>of voor het document RSS 2.0 of Atom 1.0 formaat moet worden gebruikt. Standaardwaarde : RSS</translation>
     </message>
     <message>
         <source>The encoding of location information. Default value : SIMPLE. W3C_GEO only supports point geometries. SIMPLE or W3C_GEO only support geometries in geographic WGS84 coordinates.</source>
-        <translation type="unfinished"></translation>
+        <translation>De codering voor lokatie informatie. Standaardwaarde : SIMPLE. W3C_GEO ondersteund alleen punt geometriëen. SIMPLE of W3C_GEO ondersteund alleen geometriëen in geografische WGS84 coordinaten.</translation>
     </message>
     <message>
         <source>If defined to YES, extension fields  will be written. If the field name not found in the base schema matches the foo_bar pattern, foo will be considered as the namespace of the element, and a &lt;foo:bar&gt; element will be written. Otherwise, elements will be written in the &lt;ogr:&gt; namespace.</source>
-        <translation type="unfinished"></translation>
+        <translation>Wanneer YES wordt gegeven, zullen uitbreidingsvelden worden geschreven. Wanneer de veldnaam niet wordt gevonden maar overeenkomt meth het &quot;foo_bar&quot; patroon, zal &quot;foo&quot; worden beschouwd als de namespace van het element en zal een &lt;foo:bar&gt; element worden geschreven. Anders zullen de elementen worden geschreven met de &lt;ogr:&gt; namespace.</translation>
     </message>
     <message>
         <source>If defined to NO, only &lt;entry&gt; or &lt;item&gt; elements will be written. The user will have to provide the appropriate header and footer of the document.</source>
-        <translation type="unfinished"></translation>
+        <translation>Wanneer NO is gegeven, zullen alleen &lt;entry&gt; of &lt;item&gt; elementen worden geschreven. De gebruiker zal een goede header en footer voor het document moeten geven.</translation>
     </message>
     <message>
         <source>XML content that will be put between the &lt;channel&gt; element and the first &lt;item&gt; element for a RSS document, or between the xml tag and the first &lt;entry&gt; element for an Atom document. </source>
-        <translation type="unfinished"></translation>
+        <translation>XML inhoud die tussen &lt;channel&gt; elementen en het eerste &lt;item&gt; element van een RSS document, of tussen de XML tag en het eerste &lt;entry&gt; element van een Atom document. </translation>
     </message>
     <message>
         <source>Value put inside the &lt;title&gt; element in the header. If not provided, a dummy value will be used as that element is compulsory.</source>
-        <translation type="unfinished"></translation>
+        <translation>Geef een waarde voor het &lt;title&gt; element van de header. Wanneer niet gegeven, zal er een dummy waarde worden gebruikt aangezien dat element verplicht is.</translation>
     </message>
     <message>
         <source>Value put inside the &lt;description&gt; element in the header. If not provided, a dummy value will be used as that element is compulsory.</source>
-        <translation type="unfinished"></translation>
+        <translation>Geef een waarde voor het &lt;description&gt; element van de header. Wanneer niet gegeven, zal er een dummy waarde worden gebruikt aangezien dat element verplicht is.</translation>
     </message>
     <message>
         <source>Value put inside the &lt;link&gt; element in the header. If not provided, a dummy value will be used as that element is compulsory.</source>
-        <translation type="unfinished"></translation>
+        <translation>Geef een waarde voor het &lt;link&gt; element van de header. Wanneer niet gegeven, zal er een dummy waarde worden gebruikt aangezien dat element verplicht is.</translation>
     </message>
     <message>
         <source>Value put inside the &lt;updated&gt; element in the header. Should be formatted as a XML datetime. If not provided, a dummy value will be used as that element is compulsory.</source>
-        <translation type="unfinished"></translation>
+        <translation>Geef een waarde voor het &lt;updated&gt; element van de header. Dit moet opgemaakt zijn in het XML datetime formaat. Wanneer niet gegeven, zal er een dummy waarde worden gebruikt aangezien dat element verplicht is.</translation>
     </message>
     <message>
         <source>Value put inside the &lt;author&gt;&lt;name&gt; element in the header. If not provided, a dummy value will be used as that element is compulsory.</source>
-        <translation type="unfinished"></translation>
+        <translation>Geef een waarde voor het &lt;author&gt;&lt;name&gt; element van de header. Wanneer niet gegeven, zal er een dummy waarde worden gebruikt aangezien dat element verplicht is.</translation>
     </message>
     <message>
         <source>Value put inside the &lt;id&gt; element in the header. If not provided, a dummy value will be used as that element is compulsory.</source>
-        <translation type="unfinished"></translation>
+        <translation>Geef een waarde voor het &lt;id&gt; element van de header. Wanneer niet gegeven, zal er een dummy waarde worden gebruikt aangezien dat element verplicht is.</translation>
     </message>
     <message>
         <source>If provided, this URI will be inserted as the schema location. Note that the schema file isn&apos;t actually accessed by OGR, so it is up to the user to ensure it will match the schema of the OGR produced GML data file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Indien gegeven, zal deze URI worden toegevoegd als schema location. Let op dat het schema bestand niet wordt gelezen door OGR dus moet de gebruiker ervoor zorgen dat deze overeenkomt met het schema van het GML gegevensbestand dat wordt aangemaakt door OGR.</translation>
     </message>
     <message>
         <source>This writes a GML application schema file to a corresponding .xsd file (with the same basename). If INTERNAL is used the schema is written within the GML file, but this is experimental and almost certainly not valid XML. OFF disables schema generation (and is implicit if XSISCHEMAURI is used).</source>
-        <translation type="unfinished"></translation>
+        <translation>Deze schrijft een GML application schema bestand voor bijbehorende .xsd bestand (met de zelfde basisnaam). Wanneer INTERNAL is gebruikt zal de GML worden geschreven met daarin het schema, maar dit is experimenteel en vrijwel zeker geen geldige XML. De waarde OFF zal voorkomen dat er een schema wordt gegenereerd (en is impliciet wanneer XSISCHEMAURI wordt gebruikt).</translation>
     </message>
     <message>
         <source>This is the prefix for the application target namespace.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dit is de prefix voor de application target namespace.</translation>
     </message>
     <message>
         <source>Can be set to TRUE to avoid writing the prefix of the application target namespace in the GML file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan naar TRUE gewijzigd worden om te voorkomen dat de prefix van de application target namespace in de GML file wordt geschreven.</translation>
     </message>
     <message>
         <source>Defaults to &apos;http://ogr.maptools.org/&apos;. This is the application target namespace.</source>
-        <translation type="unfinished"></translation>
+        <translation>Standaardwaarde is &apos;http://ogr.maptools.org/&apos;. Dit is de application target namespace.</translation>
     </message>
     <message>
         <source>If not specified, GML2 will be used.</source>
-        <translation type="unfinished"></translation>
+        <translation>indien niet gegeven, zal GML2 worden gebruikt.</translation>
     </message>
     <message>
         <source>only valid when FORMAT=GML3/GML3Degree/GML3.2) Default to YES. If YES, SRS with EPSG authority will be written with the &apos;urn:ogc:def:crs:EPSG::&apos; prefix. In the case, if the SRS is a geographic SRS without explicit AXIS order, but that the same SRS authority code imported with ImportFromEPSGA() should be treated as lat/long, then the function will take care of coordinate order swapping. If set to NO, SRS with EPSG authority will be written with the &apos;EPSG:&apos; prefix, even if they are in lat/long order.</source>
-        <translation type="unfinished"></translation>
+        <translation>alleen geldig wanneer FORMAT=GML3/GML3Degree/GML3.2) Standaardwaarde is YES. Indien YES zal de SRS met EPSG autoriteit worden geschreven met de &apos;urn:ogc:def:crs:EPSG::&apos; prefix. Wanneer de SRS een geografische SRS betreft zonder expliciete AXIS volgorde, maar de SRS autorisatie code geimporteerd met ImportFromESPGA() behandeld moet worden als een lat/long (lengte-/breedtegraad), dan zal de functie zorg dragen voor het omzetten van de coördinatenvolgorde. Indien de waarde is gewijzigd naar NO, SRS met EPSG autoriteit zal geschreven worden met het prefix &apos;EPSG&apos;, zelf wanneer deze in lat/long volgorde staat.</translation>
     </message>
     <message>
         <source>only valid when FORMAT=GML3/GML3Degree/GML3.2) Default to YES. If set to NO, the &lt;gml:boundedBy&gt; element will not be written for each feature.</source>
-        <translation type="unfinished"></translation>
+        <translation>alleen geldig wanneer FORMAT=GML3/GML3Degree/GML3.2) standaard is dit YES. Indien gewijzigd naar NO, zal het xml element &lt;gml:boundedBy&gt; niet voor elk kaartobject geschreven worden.</translation>
     </message>
     <message>
         <source>Default to YES. If YES, the output will be indented with spaces for more readability, but at the expense of file size.</source>
-        <translation type="unfinished"></translation>
+        <translation>Standaard is YES. Indien YES, zal het uitvoerbestand inspringingen van spaties bevatten, zodat deze beter leesbaar is, maar dit zorgt ook voor een groter bestand.</translation>
     </message>
     <message>
         <source>By default when writing a layer whose features are of type wkbLineString, the GPX driver chooses to write them as routes. If FORCE_GPX_TRACK=YES is specified, they will be written as tracks.</source>
-        <translation type="unfinished"></translation>
+        <translation>Standaard zal een laag die lijnobjecten bevat van het type wkbLineString door de GPX driver worden geschreven als routes. Wanneer de optie FORCE_GPX_TRACK=YES is gegeven, zullen deze als tracks worden geschreven.</translation>
     </message>
     <message>
         <source>By default when writing a layer whose features are of type wkbMultiLineString, the GPX driver chooses to write them as tracks. If FORCE_GPX_ROUTE=YES is specified, they will be written as routes, provided that the multilines are composed of only one single line.</source>
-        <translation type="unfinished"></translation>
+        <translation>Standaard zal een laag die lijnobjecten bevat van het type wkbMultiLineString door de GPX driver worden geschreven als tracks. Wanneer de optie FORCE_GPX_ROUTES=YES is gegeven, zullen deze als routes worden geschreven, tenminste wanneer de meervoudige lijnobjecten elk slechts één enkele lijn bevatten.</translation>
     </message>
     <message>
         <source>If GPX_USE_EXTENSIONS=YES is specified, extra fields will be written inside the &lt;extensions&gt; tag.</source>
-        <translation type="unfinished"></translation>
+        <translation>wanneer GPX_USE_EXTENSIONS=YES is gegeven, zullen extra velden worden geschreven binnen de &lt;extensions&gt; tag.</translation>
     </message>
     <message>
         <source>Only used if GPX_USE_EXTENSIONS=YES and GPX_EXTENSIONS_NS_URL is set. The namespace value used for extension tags. By default, &apos;ogr&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Wordt alleen gebruikt wanneer GPX_USE_EXTENSIONS=YES en GPX_EXTENSIONS_NS_URL is gegeven. De namespace waarde dit gebruikt worde voor de extension tags bevat standaard, &apos;ogr&apos;.</translation>
     </message>
     <message>
         <source>Only used if GPX_USE_EXTENSIONS=YES and GPX_EXTENSIONS_NS is set. The namespace URI. By default, &apos;http://osgeo.org/gdal&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Wordt alleen gebruikt wanneer GPX_USE_EXTENSIONS=YES en GPX_EXTENSIONS_NS is gegeven. De namespace URI bevat standaard, &apos;http://osgeo.org/gdal&apos;.</translation>
     </message>
     <message>
         <source>By default files are created with the line termination conventions of the local platform (CR/LF on win32 or LF on all other systems). This may be overridden through use of the LINEFORMAT layer creation option which may have a value of CRLF (DOS format) or LF (Unix format).</source>
-        <translation type="unfinished"></translation>
+        <translation>Standaard worden bestanden aangemaakt met de standaard regeleinde conventies van het besturingssysteem (CR/LF op win32 of LF voor alle andere systemen). Dit kan worden overschreven door het gebruik van de laag creatie optie LINEFORMAT die de waarden CRLF (DOS formaat) of LF (Unix formaat) kan bevatten.</translation>
     </message>
     <message>
         <source>Allows you to specify the field to use for the KML &lt;name&gt; element. </source>
-        <translation type="unfinished"></translation>
+        <translation>Hiermee kan men het veld aangeven die gebruikt wordt voor het KML &lt;name&gt; element.</translation>
     </message>
     <message>
         <source>Allows you to specify the field to use for the KML &lt;description&gt; element.</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiermee kan men het veld aangeven die gebruikt wordt voor het KML &lt;description&gt; element.</translation>
     </message>
     <message>
         <source>Allows you to specify the AltitudeMode to use for KML geometries. This will only affect 3D geometries and must be one of the valid KML options.</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiermee kun de de AltitudeMode instellen te gebruiken voor KML geometriëen. Dit zal alleen effect hebben op 3D geometriëen en moet een geldige KML optie zijn.</translation>
     </message>
     <message>
         <source>Use this to turn on &apos;quick spatial index mode&apos;. In this mode writing files can be about 5 times faster, but spatial queries can be up to 30 times slower.</source>
-        <translation type="unfinished"></translation>
+        <translation>Gebruik dit om de &apos;quick spatial index mode&apos; aan te zetten. In deze modus kunnen bestanden wel 5 keer sneller worden geschreven, maar spatiale bevragingen kunnen wel 30 keer trager worden uitgevoerd.</translation>
     </message>
     <message>
         <source>Determine whether 2D (seed_2d.dgn) or 3D (seed_3d.dgn) seed file should be used. This option is ignored if the SEED option is provided.</source>
-        <translation type="unfinished"></translation>
+        <translation>Bepaal of een 2D (seed_2d.dgn) of 3D (seed_3d.dgn) seed bestand moet worden gebruikt. Deze optie wordt genegeerd wanneer de SEED optie is meegeleverd.</translation>
     </message>
     <message>
         <source>Override the seed file to use.</source>
-        <translation type="unfinished"></translation>
+        <translation>Overschrijf het te gebruiken seed bestand.</translation>
     </message>
     <message>
         <source>Indicate whether the whole seed file should be copied. If not, only the first three elements will be copied.</source>
-        <translation type="unfinished"></translation>
+        <translation>Geef aan of het volledige seed bestand gekopieerd moet worden. Zo niet, dan zullen alleen de eerste drie elementen worden gekopieerd.</translation>
     </message>
     <message>
         <source>Indicates whether the color table should be copied from the seed file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Geef aan of de kleurentabel gekopieerd moet worden van het seed bestand.</translation>
     </message>
     <message>
         <source>Override the master unit name from the seed file with the provided one or two character unit name.</source>
-        <translation type="unfinished"></translation>
+        <translation>Overschrijf de master unit name van het seed bestand met die die wordt gegeven of de twee karakter unit name.</translation>
     </message>
     <message>
         <source>Override the sub unit name from the seed file with the provided one or two character unit name.</source>
-        <translation type="unfinished"></translation>
+        <translation>Overschrijf de sub unit name van het seed bestand met die die wordt gegeven of de twee karakter unit name.</translation>
     </message>
     <message>
         <source>Override the number of subunits per master unit. By default the seed file value is used.</source>
-        <translation type="unfinished"></translation>
+        <translation>Overschrijf het aantal subunits per master unit. Standaard wordt die van het seed bestand gebruikt.</translation>
     </message>
     <message>
         <source>Override the number of UORs (Units of Resolution) per sub unit. By default the seed file value is used.</source>
-        <translation type="unfinished"></translation>
+        <translation>Overschrijf het aantal UORs (Units of Resolution) per sub unit. Standaard wordt die van het seed bestand gebruikt.</translation>
     </message>
     <message>
         <source>ORIGIN=x,y,z: Override the origin of the design plane. By default the origin from the seed file is used.</source>
-        <translation type="unfinished"></translation>
+        <translation>ORIGIN=x,y,z: Overschrijf de oorsprong van het ontwerpvlak. Standaard wordt de oorsprong van het seed bestand gebruikt.</translation>
     </message>
     <message>
         <source>Should update files be incorporated into the base data on the fly. </source>
-        <translation type="unfinished"></translation>
+        <translation>Dienen wijzigingsbestanden direct te worden opgenomen in de basisgegevens. </translation>
     </message>
     <message>
         <source>Should multipoint soundings be split into many single point sounding features. Multipoint geometries are not well handle by many formats, so it can be convenient to split single sounding features with many points into many single point features.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dienen meervoudige peilpunten gesplitst te worden over over enkelvoudige peilpunten. Veel formaten kunnen niet overweg met meervoudige puntgeometriëen, dus kan het handig zijn wanneer objecten die elke meerdere peilpunten bevat te splitsen over meerdere enkelvoudige peilpuntobjecten.</translation>
     </message>
     <message>
         <source>Should a DEPTH attribute be added on SOUNDG features and assign the depth of the sounding. This should only be enabled with SPLIT_MULTIPOINT is also enabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dient een DEPTH attribuut en de diepte van de peiling te worden toegevoegd aan SOUNDG objecten. Alleen activeren wanneer ook SPLIT_MULTIPOINT is geactiveerd.</translation>
     </message>
     <message>
         <source>Should all the low level geometry primitives be returned as special IsolatedNode, ConnectedNode, Edge and Face layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dienen alle &quot;low level geometry primitives&quot; terug gegeven worden als special IsolatedNode, ConnectedNode, Edge en Face layers.</translation>
     </message>
     <message>
         <source>If enabled, numeric attributes assigned an empty string as a value will be preserved as a special numeric value. This option should not generally be needed, but may be useful when translated S-57 to S-57 losslessly.</source>
-        <translation type="unfinished"></translation>
+        <translation>Indien geactiveerd zullen numerieke attribuutwaarden die geen tekst (niets) bevatten behouden blijven als een speciale numerieke waarde. Deze optie is normaal gesproken niet nodig, maar kan handig zijn om S-57 naar S-57 zonder verlies van gegevens te vertalen.</translation>
     </message>
     <message>
         <source>Should LNAM and LNAM_REFS fields be attached to features capturing the feature to feature relationships in the FFPT group of the S-57 file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dienen LNAM en LNAM_REFS velden te worden toegevoegd aan objecten die de object naar object relatie beschrijven in de FFPT groep van het S-57 bestand.</translation>
     </message>
     <message>
         <source>Should additional attributes relating features to their underlying geometric primitives be attached. These are the values of the FSPT group, and are primarily needed when doing S-57 to S-57 translations.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dienen extra attributen te worden toegevoegd die objecten relateren aan hun primitieve geometrie. Dit zijn de waarden van de FSPT groep, en zijn primair bedoeld voor het uitvoeren van S-57 naar S-57 vertalingen.</translation>
     </message>
     <message>
         <source>Should attribute values be recoded to UTF-8 from the character encoding specified in the S57 DSSI record.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dienen attribuutwaarden te worden omgezet van de karaktercodering in het S57 DSSI record naar UTF-8.</translation>
     </message>
     <message>
         <source>Can be used to avoid creating the geometry_columns and spatial_ref_sys tables in a new database. By default these metadata tables are created when a new database is created.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan worden gebruikt om te voorkomen dat geometry_columns en de spatial_ref_sys tabellen worden aangemaakt in een nieuwe database. Standaard worden deze metadata tabellen al aangemaakt wanneer een database wordt aangemaakt.</translation>
     </message>
     <message>
         <source>Controls the format used for the geometry column. Defaults to WKB.This is generally more space and processing efficient, but harder to inspect or use in simple applications than WKT (Well Known Text).</source>
-        <translation type="unfinished"></translation>
+        <translation>Bepaalt het formaat dat gebruikt worden voor de geometrie kolommen. Standaard is dit WKB. Dit bespaart schijfruimte en wordt sneller verwerkt, maar het is lastiger om de data te controleren en te gebruiken in eenvoudige applicatie dan WKT (Well Known Text).</translation>
     </message>
     <message>
         <source>Controls whether layer and field names will be laundered for easier use in SQLite. Laundered names will be convered to lower case and some special characters(&apos; - #) will be changed to underscores.</source>
-        <translation type="unfinished"></translation>
+        <translation>Bepaalt of de namen van lagen en velden zullen worden opgeschoond zodat deze eenvoudiger in gebruik zijn in SQLite. Na het opschonen zijn hoofdletters van namen omgezet naar kleine letters en enkele speciale karakters (&apos; - #) worden omgezet naar het onderstrepingsteken.</translation>
     </message>
     <message>
         <source>column_name1[,column_name2, ...] A list of (String) columns that must be compressed with ZLib DEFLATE algorithm. This might be beneficial for databases that have big string blobs. However, use with care, since the value of such columns will be seen as compressed binary content with other SQLite utilities (or previous OGR versions). With OGR, when inserting, modifying or queryings compressed columns, compression/decompression is done transparently. However, such columns cannot be (easily) queried with an attribute filter or WHERE clause. Note: in table definition, such columns have the &apos;VARCHAR_deflate&apos; declaration type.</source>
-        <translation type="unfinished"></translation>
+        <translation>kolomnaam1[,kolomnaam2, ...] Een lijst van (Tekst) kolommen die gecomprimeerd moeten worden met het Zlib DEFLATE algorithme. Dit kan gunstig zijn voor databases met grote stukken tekst opgeslagen in blobs. Echter ben hier voorzichtig mee aangezien de waarde van zulke kolommen worden gezien als gecomprimeerde binaire inhoud door overige SQLite gereedschappen (of vorige OGR versies. Met OGR, tijdens het inbrengen, wijzigen of bevragen van gecomprimeerde kolommen wordt het comprimeren/decomprimeren uitgevoer. Echter, zulke kolommen kunnen niet goed bevraagd worden met een attribuutfilter of een WHERE clausule. Notitie: in de tabeldefinitie zijn deze kolommen van het type &apos;VARCHAR_deflate&apos;.</translation>
     </message>
     <message>
         <source>Insert the content of the EPSG CSV files into the spatial_ref_sys table. Set to NO for regular SQLite databases.</source>
-        <translation type="unfinished"></translation>
+        <translation>Lees de inhoud van de EPSG CSV bestanden in de spatial_ref_sys tabel in. Zet op NO voor reguliere SQLite databases.</translation>
     </message>
     <message>
         <source>If the database is of the SpatiaLite flavour, and if OGR is linked against libspatialite, this option can be used to control if a spatial index must be created.</source>
-        <translation type="unfinished"></translation>
+        <translation>Wanneer het een SpatiaLite database betreft en wanneer OGR is gecompileerd met libspatialite, dan kan deze optie worden gebruikt om een spatiale index aan te maken.</translation>
     </message>
     <message>
         <source>If the format of the geometry BLOB is of the SpatiaLite flavour, this option can be used to control if the compressed format for geometries (LINESTRINGs, POLYGONs) must be used</source>
-        <translation type="unfinished"></translation>
+        <translation>Wanneer geometrie in een SpatiaLite database wordt opgeslagen, dan kan met deze optie worden aangeven of geometriëen (LINESTRINGs, POLYGONs) gecomprimeerd in een BLOB veld worden opgeslagen</translation>
     </message>
     <message>
         <source>Used to force the SRID number of the SRS associated with the layer. When this option isn&apos;t specified and that a SRS is associated with the layer, a search is made in the spatial_ref_sys to find a match for the SRS, and, if there is no match, a new entry is inserted for the SRS in the spatial_ref_sys table. When the SRID option is specified, this search (and the eventual insertion of a new entry) will not be done: the specified SRID is used as such.</source>
@@ -11753,39 +11762,39 @@ Deze zal daarom niet actief worden gemaakt.</translation>
     </message>
     <message>
         <source>Indicates the GeoConcept export file extension. TXT was used by earlier releases of GeoConcept. GXT is currently used.</source>
-        <translation type="unfinished"></translation>
+        <translation>Geeft aan dat het een GeoConcept exportbestands extensie betreft. Voorheen werd TXT gebruikt door eerdere versies van GeoConcept. Momenteel wordt GXT gebruikt.</translation>
     </message>
     <message>
         <source>When this option is set, the new layer will be created inside the named FeatureDataset folder. If the folder does not already exist, it will be created.</source>
-        <translation type="unfinished"></translation>
+        <translation>Wanneer deze optie is gegeven, zal de nieuwe laag worden aangemaakt in genoemde FeatureDataset map. Wanneer de map nog niet bestaat zal deze worden aangemaakt.</translation>
     </message>
     <message>
         <source>Set name of geometry column in new layer. Defaults to &apos;SHAPE&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Geef de naam van de geometrykolom in nieuwe laag. Standaard is dit &apos;SHAPE&apos;.</translation>
     </message>
     <message>
         <source>Name of the OID column to create. Defaults to &apos;OBJECTID&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Naam van de aan te maken OID kolom. Standaard wordt dit &apos;OBJECTID&apos;.</translation>
     </message>
     <message>
         <source>Cannot overwrite a OGR layer in place</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan geen OGR laag in situ overschrijven</translation>
     </message>
     <message>
         <source>linear</source>
-        <translation type="unfinished"></translation>
+        <translation>Lineair</translation>
     </message>
     <message>
         <source>radial</source>
-        <translation type="unfinished"></translation>
+        <translation>radiaal</translation>
     </message>
     <message>
         <source>conical</source>
-        <translation type="unfinished"></translation>
+        <translation>conisch</translation>
     </message>
     <message>
         <source>feature</source>
-        <translation type="unfinished"></translation>
+        <translation>object</translation>
     </message>
     <message>
         <source>viewport</source>
@@ -11797,23 +11806,23 @@ Deze zal daarom niet actief worden gemaakt.</translation>
     </message>
     <message>
         <source>repeat</source>
-        <translation type="unfinished"></translation>
+        <translation>herhaal</translation>
     </message>
     <message>
         <source>reflect</source>
-        <translation type="unfinished"></translation>
+        <translation>weergeven</translation>
     </message>
     <message>
         <source>Gradient fill</source>
-        <translation type="unfinished"></translation>
+        <translation>Geleidelijke vulling</translation>
     </message>
     <message>
         <source>Infinite filter rectangle specified</source>
-        <translation type="unfinished"></translation>
+        <translation>Oneindige rechthoek filter gespecificeerd</translation>
     </message>
     <message>
         <source>The extra plugin path &apos;%1&apos; does not exist !</source>
-        <translation type="unfinished"></translation>
+        <translation>Het extra plugin pad &apos;%1&apos; bestaat niet !</translation>
     </message>
 </context>
 <context>
@@ -11981,7 +11990,7 @@ Deze zal daarom niet actief worden gemaakt.</translation>
     </message>
     <message>
         <source>A problem occured during deletion of features</source>
-        <translation>Er is een fout opgetreden tijdens het verwijderen van kaartobjecten</translation>
+        <translation>Er is een fout opgetreden tijdens het verwijderen van objecten</translation>
     </message>
     <message>
         <source>Attributes</source>
@@ -12172,7 +12181,7 @@ Deze zal daarom niet actief worden gemaakt.</translation>
     </message>
     <message>
         <source>Exit QGIS</source>
-        <translation type="unfinished">QGIS afsluiten</translation>
+        <translation>QGIS afsluiten</translation>
     </message>
     <message>
         <source>F1</source>
@@ -14482,93 +14491,93 @@ Neem alstublieft contact op met de ontwikkelaars.
     </message>
     <message>
         <source>Pasted</source>
-        <translation type="unfinished"></translation>
+        <translation>Geplakt</translation>
     </message>
     <message>
         <source>New memory layer name</source>
-        <translation type="unfinished"></translation>
+        <translation>Nieuwe memory laagnaam</translation>
     </message>
     <message>
         <source>Layer name</source>
-        <translation type="unfinished">Laagnaam</translation>
+        <translation>Laagnaam</translation>
     </message>
     <message>
         <source>No features in clipboard.</source>
-        <translation type="unfinished"></translation>
+        <translation>Geen objecten in klembord.</translation>
     </message>
     <message>
         <source>No features with geometry found, point type layer will be created.</source>
-        <translation type="unfinished"></translation>
+        <translation>Geen objecten binnen geometrie gevonden, vectorlaag voor punten wordt aangemaakt.</translation>
     </message>
     <message>
         <source>Multiple geometry types found, features with geometry different from %1 will be created without geometry.</source>
-        <translation type="unfinished"></translation>
+        <translation>Meerdere geometrie typen gevonden, objecten met een geometry type anders dan %1 zullen worden aangemaakt zonder geometrie.</translation>
     </message>
     <message>
         <source>Cannot create new layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan de nieuwe laag niet aanmaken</translation>
     </message>
     <message>
         <source>Cannot create field %1 (%2,%3)</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan velden %1 (%2,%3) niet aanmaken</translation>
     </message>
     <message>
         <source>Do you really want to quit QGIS?</source>
-        <translation type="unfinished"></translation>
+        <translation>Weet u zeker dat u QGIS wilt afsluiten?</translation>
     </message>
     <message>
         <source>Relation Reference</source>
-        <translation type="unfinished"></translation>
+        <translation>Relatie Referentie</translation>
     </message>
     <message>
         <source>DXF export completed</source>
-        <translation type="unfinished"></translation>
+        <translation>DXF export voltooid</translation>
     </message>
     <message>
         <source>DXF export failed</source>
-        <translation type="unfinished"></translation>
+        <translation>DXF export niet gelukt</translation>
     </message>
     <message>
         <source>No Features Selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Geen Objecten Geselecteerd</translation>
     </message>
     <message>
         <source>The current layer has not selected features</source>
-        <translation type="unfinished"></translation>
+        <translation>De huidige laag bevat geen geselecteerde objecten</translation>
     </message>
     <message numerus="yes">
         <source>%n feature(s) deleted.</source>
         <comment>number of features deleted</comment>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n object(en) verwijderd.</numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
     <message>
         <source>No Object Selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Geen Object Geselecteerd</translation>
     </message>
     <message>
         <source>To remove objects, you must select them in the legend</source>
-        <translation type="unfinished"></translation>
+        <translation>Om objecten te verwijderen, dient u deze in de legenda te selecteren</translation>
     </message>
     <message>
         <source>Remove objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Verwijder objecten</translation>
     </message>
     <message numerus="yes">
         <source>Remove %n object(s)?</source>
         <comment>number of objects to remove</comment>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Verwijder %n object(en)?</numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>%n object(s) removed.</source>
         <comment>number of objects removed</comment>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n object(en) verwijderd.</numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -14739,7 +14748,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>License</source>
-        <translation type="unfinished">Licentie</translation>
+        <translation>Licentie</translation>
     </message>
 </context>
 <context>
@@ -14986,11 +14995,11 @@ Gebruikers DB Pad:	%9
     </message>
     <message>
         <source>No matching atlas features</source>
-        <translation type="unfinished"></translation>
+        <translation>Geen overeenkomende atlas objecten</translation>
     </message>
     <message>
         <source>Atlas feature %1 of %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Atlas object %1 van %2</translation>
     </message>
 </context>
 <context>
@@ -15009,11 +15018,11 @@ Gebruikers DB Pad:	%9
     </message>
     <message>
         <source>Atlas preview</source>
-        <translation type="unfinished"></translation>
+        <translation>Atlas voorvertoning</translation>
     </message>
     <message>
         <source>No matching atlas features found!</source>
-        <translation type="unfinished"></translation>
+        <translation>Geen overeenkomende atlas objecten gevonden!</translation>
     </message>
 </context>
 <context>
@@ -15100,7 +15109,7 @@ Gebruikers DB Pad:	%9
     </message>
     <message>
         <source>Coverage layer </source>
-        <translation type="unfinished"></translation>
+        <translation>Bedekkingslaag </translation>
     </message>
 </context>
 <context>
@@ -15414,7 +15423,7 @@ Gebruikers DB Pad:	%9
     </message>
     <message>
         <source>&lt;i&gt;Error: Field does not exist in datasource&lt;/i&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;Fout: Veld bestaat niet in databron&lt;/i&gt;</translation>
     </message>
 </context>
 <context>
@@ -15445,7 +15454,7 @@ Gebruikers DB Pad:	%9
     </message>
     <message>
         <source>Insert NULL value on top</source>
-        <translation type="unfinished"></translation>
+        <translation>NULL waarden bovenin toevoegen</translation>
     </message>
 </context>
 <context>
@@ -15916,11 +15925,11 @@ Gebruikers DB Pad:	%9
     </message>
     <message>
         <source>Delete selected features (DEL)</source>
-        <translation type="unfinished"></translation>
+        <translation>Verwijder geselecteerde objecten (DEL)</translation>
     </message>
     <message>
         <source>Form View</source>
-        <translation type="unfinished"></translation>
+        <translation>Formulierweergave</translation>
     </message>
 </context>
 <context>
@@ -16535,7 +16544,7 @@ Database: %2</translation>
     </message>
     <message>
         <source>F5</source>
-        <translation type="unfinished">F5</translation>
+        <translation>F5</translation>
     </message>
 </context>
 <context>
@@ -16876,11 +16885,11 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
     </message>
     <message>
         <source>Invert</source>
-        <translation type="unfinished">inverteer</translation>
+        <translation>inverteer</translation>
     </message>
     <message>
         <source>Random colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Willekeurige kleuren</translation>
     </message>
 </context>
 <context>
@@ -16935,7 +16944,7 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
     </message>
     <message>
         <source>Random colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Willekeurige kleuren</translation>
     </message>
 </context>
 <context>
@@ -17251,66 +17260,70 @@ Probeer alstublieft een lagere resolutie of een kleiner papiergrootte</translati
     </message>
     <message>
         <source>Cu&amp;t</source>
-        <translation type="unfinished">K&amp;nippen</translation>
+        <translation>&amp;tKnippen</translation>
     </message>
     <message>
         <source>Cut</source>
-        <translation type="unfinished">Knippen</translation>
+        <translation>Knippen</translation>
     </message>
     <message>
         <source>&amp;Copy</source>
-        <translation type="unfinished">&amp;CKopïeren</translation>
+        <translation>&amp;CKopïeren</translation>
     </message>
     <message>
         <source>Copy</source>
-        <translation type="unfinished">Kopiëren</translation>
+        <translation>Kopiëren</translation>
     </message>
     <message>
         <source>&amp;Paste</source>
-        <translation type="unfinished">&amp;Plakken</translation>
+        <translation>&amp;Plakken</translation>
     </message>
     <message>
         <source>Paste</source>
-        <translation type="unfinished">Plakken</translation>
+        <translation>Plakken</translation>
     </message>
     <message>
         <source>Edit</source>
-        <translation type="unfinished">Bewerken</translation>
+        <translation>Bewerken</translation>
     </message>
     <message>
         <source>Atlas</source>
-        <translation type="unfinished"></translation>
+        <translation>Atlas</translation>
     </message>
     <message>
         <source>Settings</source>
-        <translation type="unfinished">Extra</translation>
+        <translation>Instellingen</translation>
     </message>
     <message>
         <source>%1%</source>
-        <translation type="unfinished">%1%</translation>
+        <translation>%1%</translation>
     </message>
     <message>
         <source>x: %1 mm</source>
-        <translation type="unfinished"></translation>
+        <translation>x: %1 mm</translation>
     </message>
     <message>
         <source>y: %1 mm</source>
-        <translation type="unfinished"></translation>
+        <translation>y: %1 mm</translation>
     </message>
     <message>
         <source>page: %3</source>
-        <translation type="unfinished"></translation>
+        <translation>pagina: %3</translation>
     </message>
     <message>
         <source>Enable atlas preview</source>
-        <translation type="unfinished"></translation>
+        <translation>Atlas voorvertoning activeren</translation>
     </message>
     <message>
         <source>Atlas in not currently enabled for this composition!</source>
-        <translation type="unfinished"></translation>
+        <translation>Atlas is momenteel niet geactiveerd voor deze compositie!</translation>
     </message>
     <message>
         <source>No matching atlas features found!</source>
+        <translation>Geen overeenkomende atlas objecten gevonden!</translation>
+    </message>
+    <message>
+        <source>Set as atlas feature for %1</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -17892,291 +17905,291 @@ Probeer alstublieft een lagere resolutie of een kleiner papiergrootte</translati
     </message>
     <message>
         <source>Lock Selected Items</source>
-        <translation type="unfinished"></translation>
+        <translation>Vastzetten geselecteerde onderdelen</translation>
     </message>
     <message>
         <source>Unlock All</source>
-        <translation type="unfinished"></translation>
+        <translation>Alles losmaken</translation>
     </message>
     <message>
         <source>Unlock All Items</source>
-        <translation type="unfinished"></translation>
+        <translation>Alle onderdelen loszetten</translation>
     </message>
     <message>
         <source>Atlas</source>
-        <translation type="unfinished"></translation>
+        <translation>Atlas</translation>
     </message>
     <message>
         <source>Ctrl+0</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+0</translation>
     </message>
     <message>
         <source>Ctrl++</source>
-        <translation type="unfinished">Ctrl++</translation>
+        <translation>Ctrl++</translation>
     </message>
     <message>
         <source>Ctrl+-</source>
-        <translation type="unfinished">Ctrl+-</translation>
+        <translation>Ctrl+-</translation>
     </message>
     <message>
         <source>Zoom to 100%</source>
-        <translation type="unfinished"></translation>
+        <translation>Zoom naar 100%</translation>
     </message>
     <message>
         <source>Ctrl+1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+1</translation>
     </message>
     <message>
         <source>Zoom</source>
-        <translation type="unfinished">Zoom</translation>
+        <translation>Zoom</translation>
     </message>
     <message>
         <source>Show Grid</source>
-        <translation type="unfinished"></translation>
+        <translation>Toon Grid</translation>
     </message>
     <message>
         <source>Show grid</source>
-        <translation type="unfinished">Toon grid</translation>
+        <translation>Toon grid</translation>
     </message>
     <message>
         <source>Ctrl+&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+&apos;</translation>
     </message>
     <message>
         <source>Snap to Grid</source>
-        <translation type="unfinished"></translation>
+        <translation>Aan grid &apos;snappen&apos;</translation>
     </message>
     <message>
         <source>Snap to grid</source>
-        <translation type="unfinished">Aan &apos;grid snappen&apos;</translation>
+        <translation>Aan grid &apos;snappen&apos;</translation>
     </message>
     <message>
         <source>Ctrl+Shift+&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+&apos;</translation>
     </message>
     <message>
         <source>Show Guides</source>
-        <translation type="unfinished"></translation>
+        <translation>Toon hulplijnen</translation>
     </message>
     <message>
         <source>Show guides</source>
-        <translation type="unfinished"></translation>
+        <translation>Toon hulplijnen</translation>
     </message>
     <message>
         <source>Ctrl+;</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+;</translation>
     </message>
     <message>
         <source>Snap to Guides</source>
-        <translation type="unfinished"></translation>
+        <translation>Aan hulplijnen &apos;snappen&apos;</translation>
     </message>
     <message>
         <source>Snap to guides</source>
-        <translation type="unfinished"></translation>
+        <translation>Aan hulplijnen &apos;snappen&apos;</translation>
     </message>
     <message>
         <source>Ctrl+Shift+;</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+;</translation>
     </message>
     <message>
         <source>Smart Guides</source>
-        <translation type="unfinished"></translation>
+        <translation>Slimme hulplijnen</translation>
     </message>
     <message>
         <source>Smart guides</source>
-        <translation type="unfinished"></translation>
+        <translation>Slimme hulplijnen</translation>
     </message>
     <message>
         <source>Ctrl+Alt+;</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Alt+;</translation>
     </message>
     <message>
         <source>Clear Guides</source>
-        <translation type="unfinished"></translation>
+        <translation>Verwijder hulplijnen</translation>
     </message>
     <message>
         <source>Clear guides</source>
-        <translation type="unfinished"></translation>
+        <translation>Verwijder hulplijnen</translation>
     </message>
     <message>
         <source>Ctrl+G</source>
-        <translation type="unfinished">Ctrl+G</translation>
+        <translation>Ctrl+G</translation>
     </message>
     <message>
         <source>Ctrl+Shift+G</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+G</translation>
     </message>
     <message>
         <source>Ctrl+]</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+]</translation>
     </message>
     <message>
         <source>Ctrl+[</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+[</translation>
     </message>
     <message>
         <source>Ctrl+Shift+]</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+]</translation>
     </message>
     <message>
         <source>Ctrl+Shift+[</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+[</translation>
     </message>
     <message>
         <source>&amp;Undo</source>
-        <translation type="unfinished">&amp;Ongedaan maken</translation>
+        <translation>&amp;UOngedaan maken</translation>
     </message>
     <message>
         <source>&amp;Redo</source>
-        <translation type="unfinished">&amp;Opnieuw</translation>
+        <translation>&amp;ROpnieuw</translation>
     </message>
     <message>
         <source>Ctrl+L</source>
-        <translation type="unfinished">Ctrl+L</translation>
+        <translation>Ctrl+L</translation>
     </message>
     <message>
         <source>Ctrl+Shift+L</source>
-        <translation type="unfinished">Ctrl+Shift+L</translation>
+        <translation>Ctrl+Shift+L</translation>
     </message>
     <message>
         <source>Pa&amp;ste in Place</source>
-        <translation type="unfinished"></translation>
+        <translation>Plakken op plaat&amp;s</translation>
     </message>
     <message>
         <source>Paste in place</source>
-        <translation type="unfinished"></translation>
+        <translation>Plakken op plaats</translation>
     </message>
     <message>
         <source>Ctrl+Shift+V</source>
-        <translation type="unfinished">Ctrl+Shift+V</translation>
+        <translation>Ctrl+Shift+V</translation>
     </message>
     <message>
         <source>&amp;Delete</source>
-        <translation type="unfinished">&amp;Verwijder</translation>
+        <translation>&amp;Verwijder</translation>
     </message>
     <message>
         <source>Delete selected items</source>
-        <translation type="unfinished"></translation>
+        <translation>Verwijder geselecteerde onderdelen</translation>
     </message>
     <message>
         <source>Del</source>
-        <translation type="unfinished"></translation>
+        <translation>Del</translation>
     </message>
     <message>
         <source>De&amp;select All</source>
-        <translation type="unfinished"></translation>
+        <translation>De&amp;selecteer alles</translation>
     </message>
     <message>
         <source>Deselect all</source>
-        <translation type="unfinished"></translation>
+        <translation>Deselecteer alles</translation>
     </message>
     <message>
         <source>Ctrl+Shift+A</source>
-        <translation type="unfinished">Ctrl+Shift+A</translation>
+        <translation>Ctrl+Shift+A</translation>
     </message>
     <message>
         <source>Select &amp;All</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Alles selecteren</translation>
     </message>
     <message>
         <source>Select all items</source>
-        <translation type="unfinished"></translation>
+        <translation>Alle onderdelen selecteren</translation>
     </message>
     <message>
         <source>Ctrl+A</source>
-        <translation type="unfinished">Ctrl+A</translation>
+        <translation>Ctrl+A</translation>
     </message>
     <message>
         <source>&amp;Invert Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Selectie omdraa&amp;ien</translation>
     </message>
     <message>
         <source>Invert selection</source>
-        <translation type="unfinished">Selectie omdraaien</translation>
+        <translation>Selectie omdraaien</translation>
     </message>
     <message>
         <source>Select Next Item &amp;Below</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;BSelecteer volgende onderdeel</translation>
     </message>
     <message>
         <source>Select next item below</source>
-        <translation type="unfinished"></translation>
+        <translation>Selecteer volgende onderdeel</translation>
     </message>
     <message>
         <source>Ctrl+Alt+[</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Alt+[</translation>
     </message>
     <message>
         <source>Select Next Item &amp;Above</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;ASelecteer vorige onderdeel</translation>
     </message>
     <message>
         <source>Select next item above</source>
-        <translation type="unfinished"></translation>
+        <translation>Selecteer vorige onderdeel</translation>
     </message>
     <message>
         <source>Ctrl+Alt+]</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Alt+]</translation>
     </message>
     <message>
         <source>Pan Composer</source>
-        <translation type="unfinished"></translation>
+        <translation>Verplaats Kaartopmaak</translation>
     </message>
     <message>
         <source>Composer Options...</source>
-        <translation type="unfinished"></translation>
+        <translation>Opties Kaartopmaak...</translation>
     </message>
     <message>
         <source>Show Rulers</source>
-        <translation type="unfinished"></translation>
+        <translation>Toon linealen</translation>
     </message>
     <message>
         <source>Show rulers</source>
-        <translation type="unfinished"></translation>
+        <translation>Toon linealen</translation>
     </message>
     <message>
         <source>Ctrl+R</source>
-        <translation type="unfinished">Ctrl+R</translation>
+        <translation>Ctrl+R</translation>
     </message>
     <message>
         <source>First Feature</source>
-        <translation type="unfinished"></translation>
+        <translation>Eerste object</translation>
     </message>
     <message>
         <source>Previous Feature</source>
-        <translation type="unfinished"></translation>
+        <translation>Vorige object</translation>
     </message>
     <message>
         <source>Next Feature</source>
-        <translation type="unfinished"></translation>
+        <translation>Volgende object</translation>
     </message>
     <message>
         <source>Last Feature</source>
-        <translation type="unfinished"></translation>
+        <translation>Laatste object</translation>
     </message>
     <message>
         <source>Preview Atlas</source>
-        <translation type="unfinished"></translation>
+        <translation>Voorvertoning Atlas</translation>
     </message>
     <message>
         <source>Print Atlas...</source>
-        <translation type="unfinished"></translation>
+        <translation>Afdrukken Atlas...</translation>
     </message>
     <message>
         <source>Export Atlas as Images...</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporteer Atlas als afbeeldingen...</translation>
     </message>
     <message>
         <source>Export Atlas as SVG...</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporteer Atlas als SVG...</translation>
     </message>
     <message>
         <source>Export Atlas As PDF...</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporteer Atlas als PDF...</translation>
     </message>
     <message>
         <source>Atlas Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Atlas Instellingen</translation>
     </message>
 </context>
 <context>
@@ -18300,7 +18313,7 @@ Probeer alstublieft een lagere resolutie of een kleiner papiergrootte</translati
     </message>
     <message>
         <source>Item rotation changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Rotatie onderdeel aangepast</translation>
     </message>
 </context>
 <context>
@@ -18403,11 +18416,11 @@ Probeer alstublieft een lagere resolutie of een kleiner papiergrootte</translati
     </message>
     <message>
         <source>Rotation</source>
-        <translation type="unfinished">Rotatie</translation>
+        <translation>Rotatie</translation>
     </message>
     <message utf8="true">
         <source> °</source>
-        <translation type="unfinished"> °</translation>
+        <translation> °</translation>
     </message>
 </context>
 <context>
@@ -18701,11 +18714,11 @@ Probeer alstublieft een lagere resolutie of een kleiner papiergrootte</translati
     </message>
     <message>
         <source>Wms Legend width</source>
-        <translation type="unfinished"></translation>
+        <translation>Breedte WMS legenda</translation>
     </message>
     <message>
         <source>Wms Legend height</source>
-        <translation type="unfinished"></translation>
+        <translation>Hoogte WMS legenda</translation>
     </message>
 </context>
 <context>
@@ -18948,15 +18961,15 @@ Probeer alstublieft een lagere resolutie of een kleiner papiergrootte</translati
     </message>
     <message>
         <source>WMS LegendGraphic</source>
-        <translation type="unfinished"></translation>
+        <translation>WMS LegendGraphic</translation>
     </message>
     <message>
         <source>Legend width</source>
-        <translation type="unfinished"></translation>
+        <translation>Legenda breedte</translation>
     </message>
     <message>
         <source>Legend height</source>
-        <translation type="unfinished"></translation>
+        <translation>Legenda hoogte</translation>
     </message>
 </context>
 <context>
@@ -19280,31 +19293,31 @@ Probeer alstublieft een lagere resolutie of een kleiner papiergrootte</translati
     </message>
     <message>
         <source>Overview centering mode changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Overzichtskaart centreer modus aangepast</translation>
     </message>
     <message>
         <source>Select grid frame color</source>
-        <translation type="unfinished"></translation>
+        <translation>Selecteer grid frame kleur</translation>
     </message>
     <message>
         <source>Select grid frame fill color</source>
-        <translation type="unfinished"></translation>
+        <translation>Selecteer grid frame vulkleur</translation>
     </message>
     <message>
         <source>Changed grid frame line thickness</source>
-        <translation type="unfinished"></translation>
+        <translation>Wijzig lijndikte grid frame lijnen</translation>
     </message>
     <message>
         <source>Grid frame color changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Grid frame kleur gewijzigd</translation>
     </message>
     <message>
         <source>Grid frame first fill color changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Grid frame eerste vulkleur gewijzigd</translation>
     </message>
     <message>
         <source>Grid frame second fill color changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Grid frame tweede vulkleur gewijzigd</translation>
     </message>
 </context>
 <context>
@@ -19535,7 +19548,7 @@ Probeer alstublieft een lagere resolutie of een kleiner papiergrootte</translati
     </message>
     <message>
         <source>Invert overview</source>
-        <translation>Inverteren overzicht</translation>
+        <translation>Inverteren overzichtskaart</translation>
     </message>
     <message>
         <source>Offset</source>
@@ -19551,78 +19564,78 @@ Probeer alstublieft een lagere resolutie of een kleiner papiergrootte</translati
     </message>
     <message>
         <source>Center on overview</source>
-        <translation type="unfinished"></translation>
+        <translation>Cenreer in overzichtskaart</translation>
     </message>
     <message>
         <source>Map Rotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Kaartrotatie</translation>
     </message>
     <message utf8="true">
         <source> °</source>
-        <translation type="unfinished"> °</translation>
+        <translation> °</translation>
     </message>
     <message>
         <source>Controlled by atlas</source>
-        <translation type="unfinished"></translation>
+        <translation>Beheerd door atlas</translation>
     </message>
     <message>
         <source>Margin around feature</source>
-        <translation type="unfinished">Marge rond object</translation>
+        <translation>Marge rond object</translation>
     </message>
     <message>
         <source>%</source>
-        <translation type="unfinished">%</translation>
+        <translation>%</translation>
     </message>
     <message>
         <source>Fixed scale</source>
-        <translation type="unfinished">Vaste schaal</translation>
+        <translation>Vaste schaal</translation>
     </message>
     <message>
         <source>Grid frame</source>
-        <translation type="unfinished"></translation>
+        <translation>Grid frame</translation>
     </message>
     <message>
         <source>Frame size</source>
-        <translation type="unfinished"></translation>
+        <translation>Frame grootte</translation>
     </message>
     <message>
         <source>Frame line thickness</source>
-        <translation type="unfinished"></translation>
+        <translation>Frame lijndiktes</translation>
     </message>
     <message>
         <source>Color...</source>
-        <translation type="unfinished">Kleur...</translation>
+        <translation>Kleur...</translation>
     </message>
     <message>
         <source>Frame fill colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Frame vulkleuren</translation>
     </message>
 </context>
 <context>
     <name>QgsComposerMouseHandles</name>
     <message>
         <source>Change item position</source>
-        <translation type="unfinished">Onderdeelplaatsing bewerken</translation>
+        <translation>Wijzig positie onderdeel</translation>
     </message>
     <message>
         <source>Change item size</source>
-        <translation type="unfinished"></translation>
+        <translation>Wijzig onderdeelgrootte</translation>
     </message>
     <message>
         <source>%1 items selected</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 onderdeel geselecteerd</translation>
     </message>
     <message>
         <source>1 item selected</source>
-        <translation type="unfinished"></translation>
+        <translation>1 onderdeel geselecteerd</translation>
     </message>
     <message>
         <source>dx: %1 mm dy: %2 mm</source>
-        <translation type="unfinished"></translation>
+        <translation>dx: %1 mm dy: %2 mm</translation>
     </message>
     <message>
         <source>width: %1 mm height: %2 mm</source>
-        <translation type="unfinished"></translation>
+        <translation>breedte: %1 mm hoogte: %2 mm</translation>
     </message>
 </context>
 <context>
@@ -19768,7 +19781,7 @@ Probeer alstublieft een lagere resolutie of een kleiner papiergrootte</translati
     </message>
     <message>
         <source>Image Rotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Rotatie afbeelding</translation>
     </message>
 </context>
 <context>
@@ -19783,19 +19796,19 @@ Probeer alstublieft een lagere resolutie of een kleiner papiergrootte</translati
     </message>
     <message>
         <source>units</source>
-        <translation type="unfinished"></translation>
+        <translation>eenheden</translation>
     </message>
     <message>
         <source>miles</source>
-        <translation type="unfinished">mijlen</translation>
+        <translation>mijlen</translation>
     </message>
     <message>
         <source>ft</source>
-        <translation type="unfinished"></translation>
+        <translation>ft</translation>
     </message>
     <message>
         <source>Nm</source>
-        <translation type="unfinished"></translation>
+        <translation>NM</translation>
     </message>
 </context>
 <context>
@@ -19930,23 +19943,23 @@ Probeer alstublieft een lagere resolutie of een kleiner papiergrootte</translati
     </message>
     <message>
         <source>Nautical Miles</source>
-        <translation type="unfinished"></translation>
+        <translation>Zeemijlen</translation>
     </message>
     <message>
         <source>Scalebar changed to map units</source>
-        <translation type="unfinished"></translation>
+        <translation>Eenheid schaalbalk gewijzigd naar kaarteenheden</translation>
     </message>
     <message>
         <source>Scalebar changed to feet</source>
-        <translation type="unfinished"></translation>
+        <translation>Eenheid schaalbalk gewijzigd naar voet</translation>
     </message>
     <message>
         <source>Scalebar changed to nautical miles</source>
-        <translation type="unfinished"></translation>
+        <translation>Eenheid schaalbalk gewijzigd naar zeemijlen</translation>
     </message>
     <message>
         <source>Scalebar changed to meters</source>
-        <translation type="unfinished"></translation>
+        <translation>Eenheid schaalbalk gewijzigd naar meter</translation>
     </message>
 </context>
 <context>
@@ -20144,7 +20157,7 @@ Probeer alstublieft een lagere resolutie of een kleiner papiergrootte</translati
     </message>
     <message>
         <source>Shape radius changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Radius object aangepast</translation>
     </message>
 </context>
 <context>
@@ -20193,19 +20206,19 @@ Probeer alstublieft een lagere resolutie of een kleiner papiergrootte</translati
     </message>
     <message>
         <source>Corner radius</source>
-        <translation type="unfinished"></translation>
+        <translation>Radius hoek</translation>
     </message>
     <message>
         <source> mm</source>
-        <translation type="unfinished"></translation>
+        <translation> mm</translation>
     </message>
     <message>
         <source>Style</source>
-        <translation type="unfinished">Stijl</translation>
+        <translation>Stijl</translation>
     </message>
     <message>
         <source>Change...</source>
-        <translation type="unfinished">Wijzigen...</translation>
+        <translation>Wijzigen...</translation>
     </message>
 </context>
 <context>
@@ -20544,11 +20557,11 @@ Probeer alstublieft een lagere resolutie of een kleiner papiergrootte</translati
     </message>
     <message>
         <source>Items locked</source>
-        <translation type="unfinished"></translation>
+        <translation>Onderdelen vastgezet</translation>
     </message>
     <message>
         <source>Items unlocked</source>
-        <translation type="unfinished"></translation>
+        <translation>Onderdelen losgemaakt</translation>
     </message>
 </context>
 <context>
@@ -20722,7 +20735,7 @@ Probeer alstublieft een lagere resolutie of een kleiner papiergrootte</translati
     </message>
     <message>
         <source>Map %1</source>
-        <translation type="unfinished">Kaart %1</translation>
+        <translation>Kaart %1</translation>
     </message>
 </context>
 <context>
@@ -20869,19 +20882,19 @@ Probeer alstublieft een lagere resolutie of een kleiner papiergrootte</translati
     </message>
     <message>
         <source>World file on</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;World file&apos; aan</translation>
     </message>
     <message>
         <source>Change...</source>
-        <translation type="unfinished">Wijzigen...</translation>
+        <translation>Wijzigen...</translation>
     </message>
     <message>
         <source>Page background</source>
-        <translation type="unfinished"></translation>
+        <translation>Pagina achtergrond</translation>
     </message>
     <message>
         <source>Grid</source>
-        <translation type="unfinished">Grid</translation>
+        <translation>Grid</translation>
     </message>
 </context>
 <context>
@@ -21838,61 +21851,61 @@ en het huidige bestand is [%3]</translation>
     </message>
     <message>
         <source>&apos;left&apos;|&apos;center&apos;|&apos;right&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;links&apos;|&apos;centrum&apos;|&apos;rechts&apos;</translation>
     </message>
     <message>
         <source>&apos;top&apos;|&apos;center&apos;|&apos;bottom&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;boven&apos;|&apos;centrum&apos;|&apos;onder&apos;</translation>
     </message>
     <message>
         <source>&apos;linear&apos;|&apos;radial&apos;|&apos;conical&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;lineair&apos;|&apos;radiaal&apos;|&apos;conisch&apos;</translation>
     </message>
     <message>
         <source>&apos;feature&apos;|&apos;viewport&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;object&apos;|&apos;viewport&apos;</translation>
     </message>
     <message>
         <source>&apos;pad&apos;|&apos;repeat&apos;|&apos;reflect&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;pad&apos;|&apos;herhalen&apos;|&apos;weergeven&apos;</translation>
     </message>
     <message>
         <source>0 (false)|1 (true)</source>
-        <translation type="unfinished"></translation>
+        <translation>0 (onwaar)|1 (waar)</translation>
     </message>
 </context>
 <context>
     <name>QgsDatumTransformDialog</name>
     <message>
         <source>Select datum transformations for layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Selecteer geodetische datum transformatie voor laag</translation>
     </message>
     <message>
         <source>File &apos;%1&apos; not found in directory &apos;%2&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Bestand &apos;%1&apos; niet gevonden in map &apos;%2&apos;</translation>
     </message>
 </context>
 <context>
     <name>QgsDatumTransformDialogBase</name>
     <message>
         <source>Select datum transformations</source>
-        <translation type="unfinished"></translation>
+        <translation>Selecteer geodetische datum transformatie</translation>
     </message>
     <message>
         <source>src transform</source>
-        <translation type="unfinished"></translation>
+        <translation>SRC transformatie</translation>
     </message>
     <message>
         <source>dst transform</source>
-        <translation type="unfinished"></translation>
+        <translation>dst transformatie</translation>
     </message>
     <message>
         <source>Remember selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Onhoud selectie</translation>
     </message>
     <message>
         <source>Hide deprecated</source>
-        <translation type="unfinished"></translation>
+        <translation>Verberg die komen te vervallen</translation>
     </message>
 </context>
 <context>
@@ -23221,7 +23234,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Trim fields</source>
-        <translation>Verwijderen van velden</translation>
+        <translation>Verwijder spaties voor/na velden</translation>
     </message>
     <message>
         <source>Discard empty fields in each record</source>
@@ -23493,7 +23506,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Expression based attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Expressie gebasseerde attribuut</translation>
     </message>
 </context>
 <context>
@@ -23703,11 +23716,11 @@ Leave empty to automatically apply the maximum value.</source>
     </message>
     <message>
         <source>Edit expression</source>
-        <translation type="unfinished">Expressie aanpassen</translation>
+        <translation>Expressie bewerken</translation>
     </message>
     <message>
         <source>Add expression</source>
-        <translation type="unfinished"></translation>
+        <translation>Expressie toevoegen</translation>
     </message>
 </context>
 <context>
@@ -23854,7 +23867,7 @@ Parser fout:
     </message>
     <message>
         <source>Run action</source>
-        <translation>Voer aktie uit</translation>
+        <translation type="obsolete">Voer aktie uit</translation>
     </message>
     <message>
         <source>Open form</source>
@@ -23876,6 +23889,10 @@ Parser fout:
         <source>%1 features loaded.</source>
         <translation>%1 objecten geladen.</translation>
     </message>
+    <message>
+        <source>Run layer action</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsDualViewBase</name>
@@ -23896,69 +23913,69 @@ Parser fout:
     <name>QgsDxfExportDialog</name>
     <message>
         <source>Export as DXF</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporteer als DXF</translation>
     </message>
     <message>
         <source>DXF files *.dxf *.DXF</source>
-        <translation type="unfinished"></translation>
+        <translation>DXF bestanden *.dxf *.DXF</translation>
     </message>
 </context>
 <context>
     <name>QgsDxfExportDialogBase</name>
     <message>
         <source>DXF export</source>
-        <translation type="unfinished"></translation>
+        <translation>DXF export</translation>
     </message>
     <message>
         <source>Symbology mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Symbologie modus</translation>
     </message>
     <message>
         <source>Symbology scale</source>
-        <translation type="unfinished"></translation>
+        <translation>Symbologie schaal</translation>
     </message>
     <message>
         <source>Save as</source>
-        <translation type="unfinished">Opslaan Als</translation>
+        <translation>Opslaan als</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>No symbology</source>
-        <translation type="unfinished">Geen symbologie</translation>
+        <translation>Geen symbologie</translation>
     </message>
     <message>
         <source>Feature symbology</source>
-        <translation type="unfinished">Objectsymbologie</translation>
+        <translation>Objectsymbologie</translation>
     </message>
     <message>
         <source>Symbol layer symbology</source>
-        <translation type="unfinished">Symbologie Symboollaag</translation>
+        <translation>Symbologie symboollaag</translation>
     </message>
     <message>
         <source>Select all</source>
-        <translation type="unfinished"></translation>
+        <translation>Alles selecteren</translation>
     </message>
     <message>
         <source>Unselect all</source>
-        <translation type="unfinished">Deselecteer alles</translation>
+        <translation>Deselecteer alles</translation>
     </message>
     <message>
         <source>Export features intersecting the current map extent</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporteer objecten die overlappen met de huidige kaartextent</translation>
     </message>
 </context>
 <context>
     <name>QgsEditorWidgetRegistry</name>
     <message>
         <source>Unknown attribute editor widget &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Onbekend attribuut-aanpashulpmiddel &apos;%1&apos;</translation>
     </message>
     <message>
         <source>Could not save unknown editor widget type &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Opslaan van dit onbekende aanpashulpmiddel &apos;%1&apos;.</translation>
     </message>
 </context>
 <context>
@@ -24501,7 +24518,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsFeatureSelectionDlg</name>
     <message>
         <source>Dialog</source>
-        <translation type="unfinished">Dialoog</translation>
+        <translation>Dialoog</translation>
     </message>
 </context>
 <context>
@@ -24856,15 +24873,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Layer</source>
-        <translation type="unfinished">Laag</translation>
+        <translation>Laag</translation>
     </message>
     <message>
         <source>Field</source>
-        <translation type="unfinished">Veld</translation>
+        <translation>Veld</translation>
     </message>
     <message>
         <source>Editor Widget</source>
-        <translation type="unfinished"></translation>
+        <translation>Wijzig-Hulpmiddel</translation>
     </message>
 </context>
 <context>
@@ -24977,7 +24994,7 @@ MyForms.py moet aanwezig zijn in PYTHONPATH, .qgis/python, of in de projectfolde
     </message>
     <message>
         <source>Default</source>
-        <translation type="unfinished">Standaard</translation>
+        <translation>Standaard</translation>
     </message>
     <message>
         <source>On</source>
@@ -24985,15 +25002,15 @@ MyForms.py moet aanwezig zijn in PYTHONPATH, .qgis/python, of in de projectfolde
     </message>
     <message>
         <source>Off</source>
-        <translation type="unfinished">Uit</translation>
+        <translation>Uit</translation>
     </message>
     <message>
         <source>Fields</source>
-        <translation type="unfinished">Velden</translation>
+        <translation>Velden</translation>
     </message>
     <message>
         <source>Relations</source>
-        <translation type="unfinished">Relaties</translation>
+        <translation>Relaties</translation>
     </message>
 </context>
 <context>
@@ -25853,7 +25870,7 @@ grijs = geen data
         <translation type="obsolete">&amp;GPS-gereedschap</translation>
     </message>
     <message>
-        <source>Unable to create a GPX file with the given name. Try again with another name or in another directory.</source>
+        <source>Unable to create a GPX file with the given name. Try again with an other name or in an other directory.</source>
         <translation type="obsolete">Wegschrijven van het GPX-bestand met deze naam mislukt. Probeer het opnieuw met een ander naam of in een ander map.</translation>
     </message>
     <message>
@@ -27061,7 +27078,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsGmlSchema</name>
     <message>
         <source>Cannot guess schema</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan schema niet inschatten</translation>
     </message>
 </context>
 <context>
@@ -29961,7 +29978,7 @@ Er kan een probleem zijn met uw netwerkverbinding, of bij de WMS-server.</numeru
     </message>
     <message>
         <source>Activate layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Laag aktief maken</translation>
     </message>
 </context>
 <context>
@@ -31965,7 +31982,7 @@ worden niet getoond</translation>
     </message>
     <message>
         <source>No Legend Available</source>
-        <translation type="unfinished"></translation>
+        <translation>Geen Legenda Beschikbaar</translation>
     </message>
 </context>
 <context>
@@ -32720,43 +32737,43 @@ worden niet getoond</translation>
     <name>QgsMapToolFillRing</name>
     <message>
         <source>Coordinate transform error</source>
-        <translation type="unfinished">Coördinaattransformatie fout</translation>
+        <translation>Coördinaattransformatie fout</translation>
     </message>
     <message>
         <source>Cannot transform the point to the layers coordinate system</source>
-        <translation type="unfinished">Kan dit punt niet omzetten naar coördinatensysteem van de lagen</translation>
+        <translation>Kan dit punt niet omzetten naar coördinatensysteem van de lagen</translation>
     </message>
     <message>
         <source>Ring added and filled</source>
-        <translation type="unfinished"></translation>
+        <translation>Ring toegevoegd en gevuld</translation>
     </message>
     <message>
         <source>A problem with geometry type occured</source>
-        <translation type="unfinished">Er was een probleem met een geomtrie (-type)</translation>
+        <translation>Er was een probleem met een geometrie(-type)</translation>
     </message>
     <message>
         <source>The inserted Ring is not closed</source>
-        <translation type="unfinished">De ingevoegde Ring is niet gesloten</translation>
+        <translation>De ingevoegde Ring is niet gesloten</translation>
     </message>
     <message>
         <source>The inserted Ring is not a valid geometry</source>
-        <translation type="unfinished">De ingevoegde Ring is geen geldige geometrie</translation>
+        <translation>De ingevoegde Ring is geen geldige geometrie</translation>
     </message>
     <message>
         <source>The inserted Ring crosses existing rings</source>
-        <translation type="unfinished">De ingevoegde Ring kruist bestaande ringen</translation>
+        <translation>De ingevoegde Ring kruist bestaande ringen</translation>
     </message>
     <message>
         <source>The inserted Ring is not contained in a feature</source>
-        <translation type="unfinished">De ingevoegde Ring is niet deel van een kaartobject</translation>
+        <translation>De ingevoegde Ring is niet deel van een kaartobject</translation>
     </message>
     <message>
         <source>An unknown error occured</source>
-        <translation type="unfinished">Er is een onbekende fout opgetreden</translation>
+        <translation>Er is een onbekende fout opgetreden</translation>
     </message>
     <message>
         <source>Error, could not add ring</source>
-        <translation type="unfinished">Fout, toevoegen van ring niet mogelijk</translation>
+        <translation>Fout, toevoegen van ring niet mogelijk</translation>
     </message>
 </context>
 <context>
@@ -32841,7 +32858,7 @@ worden niet getoond</translation>
     </message>
     <message>
         <source>Identify error</source>
-        <translation type="unfinished"></translation>
+        <translation>Identificatie-fout</translation>
     </message>
 </context>
 <context>
@@ -33127,11 +33144,11 @@ worden niet getoond</translation>
     <name>QgsMapToolSplitParts</name>
     <message>
         <source>Coordinate transform error</source>
-        <translation type="unfinished">Coördinaattransformatie fout</translation>
+        <translation>Coördinaattransformatie fout</translation>
     </message>
     <message>
         <source>Cannot transform the point to the layers coordinate system</source>
-        <translation type="unfinished">Kan dit punt niet omzetten naar coördinatensysteem van de lagen</translation>
+        <translation>Kan dit punt niet omzetten naar coördinatensysteem van de lagen</translation>
     </message>
     <message>
         <source>Parts split</source>
@@ -33151,15 +33168,15 @@ worden niet getoond</translation>
     </message>
     <message>
         <source>The geometry is invalid. Please repair before trying to split it.</source>
-        <translation type="unfinished">De geometrie is ongeldig. Herstel deze eerst voordat u hem wilt splitsen.</translation>
+        <translation>De geometrie is ongeldig. Herstel deze eerst voordat u hem wilt splitsen.</translation>
     </message>
     <message>
         <source>Split error</source>
-        <translation type="unfinished">Splitsingsfout</translation>
+        <translation>Splitsingsfout</translation>
     </message>
     <message>
         <source>An error occured during feature splitting</source>
-        <translation type="unfinished">Er is een fout opgetreden tijdens het splitsen van een object</translation>
+        <translation>Er is een fout opgetreden tijdens het splitsen van een object</translation>
     </message>
 </context>
 <context>
@@ -33516,7 +33533,7 @@ eigenschappen
     </message>
     <message>
         <source>Date</source>
-        <translation type="unfinished">Datum</translation>
+        <translation>Datum</translation>
     </message>
 </context>
 <context>
@@ -34198,23 +34215,23 @@ Opmerking: het wachtwoord invoeren is optioneel. Er wordt interactief naar gevra
     </message>
     <message>
         <source>all</source>
-        <translation type="unfinished">alles</translation>
+        <translation>alles</translation>
     </message>
     <message>
         <source>off</source>
-        <translation type="unfinished"></translation>
+        <translation>uit</translation>
     </message>
     <message>
         <source>QGIS</source>
-        <translation type="unfinished">QGIS</translation>
+        <translation>QGIS</translation>
     </message>
     <message>
         <source>UMN</source>
-        <translation type="unfinished"></translation>
+        <translation>UMN</translation>
     </message>
     <message>
         <source>GeoServer</source>
-        <translation type="unfinished"></translation>
+        <translation>GeoServer</translation>
     </message>
 </context>
 <context>
@@ -34285,11 +34302,11 @@ Opmerking: het wachtwoord invoeren is optioneel. Er wordt interactief naar gevra
     </message>
     <message>
         <source>DPI-Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>DPI-Modus</translation>
     </message>
     <message>
         <source>Ignore GetMap/GetTile URI reported in capabilities</source>
-        <translation type="unfinished"></translation>
+        <translation>Negeer de GetMap/GetTile URI uit de capabilities</translation>
     </message>
 </context>
 <context>
@@ -35214,7 +35231,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Add Layer(s) from a %1 Server</source>
-        <translation type="unfinished"></translation>
+        <translation>Lagen toevoegen van een %1 Server</translation>
     </message>
 </context>
 <context>
@@ -37298,7 +37315,7 @@ Altijd netwerk: altijd ophalen uit het netwerk, en niet checken of er misschien 
     </message>
     <message>
         <source>Nautical Miles</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Zeemijlen</translation>
     </message>
     <message>
         <source>Composition defaults</source>
@@ -38432,7 +38449,7 @@ Fout: %4</translation>
     </message>
     <message>
         <source>Label</source>
-        <translation type="unfinished">Label</translation>
+        <translation>Label</translation>
     </message>
 </context>
 <context>
@@ -40241,8 +40258,8 @@ p, li { white-space: pre-wrap; }
         <translation>&lt;h3&gt;Nieuwe plugins&lt;/h3&gt;&lt;p&gt;Hier vindt u &lt;b&gt;gloednieuwe&lt;/b&gt; plugins om te installeren.&lt;/p&gt;</translation>
     </message>
     <message>
-        <source>&lt;h3&gt;Invalid plugins&lt;/h3&gt;&lt;p&gt;Plugins in this list here are &lt;b&gt;broken or incompatible&lt;/b&gt; with your version of QGIS.&lt;/p&gt;&lt;p&gt;Click on an individual plugin; if possible QGIS shows you more information.&lt;/p&gt;&lt;p&gt;The main reasons to have invalid plugins is that this plugin is not build for this version of QGIS. Maybe you can download another version from &lt;a href=&quot;http://plugins.qgis.org&quot;&gt;plugins.qgis.org&lt;/a&gt;.&lt;/p&gt;&lt;p&gt;Another common reason is that a python plugin needs some external python libraries (dependencies). You can install them yourself, depending on your operating system. After a correct install the plugin should work.&lt;/p&gt;</source>
-        <translation>&lt;h3&gt;Ongeldige plugins&lt;/h3&gt;&lt;p&gt;De hier getoonde plugins zijn&lt;b&gt;niet compatibel of onwerkzaam&lt;/b&gt; in de door u gebruikte QGIS versie.&lt;/p&gt;&lt;p&gt;Klik op een individuele plugin; indien mogelijk zal QGIS u meer (fout) informatie tonen.&lt;/p&gt;&lt;p&gt;De belangrijkste reden voor onwerkzame plugins is dat ze gemaakt zijn voor een ander versie van QGIS. Misschien kunt u een andere versie download van &lt;a href=&quot;http://plugins.qgis.org&quot;&gt;plugins.qgis.org&lt;/a&gt;.&lt;/p&gt;&lt;p&gt;Een tweede veel voorkomende reden is dat de plugin afhankelijk is van externe modules of afhankelijkheden. Afhankelijk van uw besturingssysteem kunt u deze zelf proberen te installeren. Als die afhankelijkheid is opgelost zou de plugin naar behoren moeten werken.&lt;/p&gt;</translation>
+        <source>&lt;h3&gt;Invalid plugins&lt;/h3&gt;&lt;p&gt;Plugins in this list here are &lt;b&gt;broken or incompatible&lt;/b&gt; with your version of QGIS.&lt;/p&gt;&lt;p&gt;Click on an individual plugin; if possible QGIS shows you more information.&lt;/p&gt;&lt;p&gt;The main reasons to have invalid plugins is that this plugin is not build for this version of QGIS. Maybe you can download an other version from &lt;a href=&quot;http://plugins.qgis.org&quot;&gt;plugins.qgis.org&lt;/a&gt;.&lt;/p&gt;&lt;p&gt;Another common reason is that a python plugin needs some external python libraries (dependencies). You can install them yourself, depending on your operating system. After a correct install the plugin should work.&lt;/p&gt;</source>
+        <translation type="obsolete">&lt;h3&gt;Ongeldige plugins&lt;/h3&gt;&lt;p&gt;De hier getoonde plugins zijn&lt;b&gt;niet compatibel of onwerkzaam&lt;/b&gt; in de door u gebruikte QGIS versie.&lt;/p&gt;&lt;p&gt;Klik op een individuele plugin; indien mogelijk zal QGIS u meer (fout) informatie tonen.&lt;/p&gt;&lt;p&gt;De belangrijkste reden voor onwerkzame plugins is dat ze gemaakt zijn voor een ander versie van QGIS. Misschien kunt u een andere versie download van &lt;a href=&quot;http://plugins.qgis.org&quot;&gt;plugins.qgis.org&lt;/a&gt;.&lt;/p&gt;&lt;p&gt;Een tweede veel voorkomende reden is dat de plugin afhankelijk is van externe modules of afhankelijkheden. Afhankelijk van uw besturingssysteem kunt u deze zelf proberen te installeren. Als die afhankelijkheid is opgelost zou de plugin naar behoren moeten werken.&lt;/p&gt;</translation>
     </message>
     <message>
         <source>%1 downloads</source>
@@ -40267,6 +40284,10 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&lt;h3&gt;Not installed plugins&lt;/h3&gt;&lt;p&gt;Here you see the list of all plugins available in the repositories, but which are &lt;b&gt;not yet installed&lt;/b&gt;.&lt;/p&gt;&lt;p&gt;Click on the name to see details.&lt;/p&gt;&lt;p&gt;You can change the sorting via the context menu (right click).&lt;/p&gt;&lt;p&gt;A plugin can be downloaded and installed by clicking on it&apos;s name, and then click the &apos;Install plugin&apos; button.&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;Invalid plugins&lt;/h3&gt;&lt;p&gt;Plugins in this list here are &lt;b&gt;broken or incompatible&lt;/b&gt; with your version of QGIS.&lt;/p&gt;&lt;p&gt;Click on an individual plugin; if possible QGIS shows you more information.&lt;/p&gt;&lt;p&gt;The main reasons to have invalid plugins is that this plugin is not build for this version of QGIS. Maybe you can download another version from &lt;a href=&quot;http://plugins.qgis.org&quot;&gt;plugins.qgis.org&lt;/a&gt;.&lt;/p&gt;&lt;p&gt;Another common reason is that a python plugin needs some external python libraries (dependencies). You can install them yourself, depending on your operating system. After a correct install the plugin should work.&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -40504,7 +40525,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>All</source>
-        <translation type="unfinished">Alles</translation>
+        <translation>Alles</translation>
     </message>
     <message>
         <source>Not installed</source>
@@ -43174,7 +43195,7 @@ Klik op de help knop om geldige schrijf-opties voor dit type te verkrijgen.</tra
     </message>
     <message>
         <source>Pyramid overviews</source>
-        <translation>Pyramide overzichten</translation>
+        <translation>Pyramide overzichtskaarten</translation>
     </message>
     <message>
         <source>Layer Spatial Reference System</source>
@@ -44326,7 +44347,11 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Cantarell&apos;;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Cantarell&apos;;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -44998,14 +45023,14 @@ standaarddeviatie x</translation>
     <name>QgsRelationAddDlg</name>
     <message>
         <source>[Generated automatically]</source>
-        <translation type="unfinished"></translation>
+        <translation>[Automatisch aangemaakt]</translation>
     </message>
 </context>
 <context>
     <name>QgsRelationAddDlgBase</name>
     <message>
         <source>Dialog</source>
-        <translation type="unfinished">Dialoog</translation>
+        <translation>Dialoog</translation>
     </message>
     <message>
         <source>Referencing Field</source>
@@ -45025,57 +45050,57 @@ standaarddeviatie x</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished">Naam</translation>
+        <translation>Naam</translation>
     </message>
     <message>
         <source>Id</source>
-        <translation type="unfinished">Id</translation>
+        <translation>Id</translation>
     </message>
 </context>
 <context>
     <name>QgsRelationEditorWidgetBase</name>
     <message>
         <source>Form</source>
-        <translation type="unfinished">Formulier</translation>
+        <translation>Formulier</translation>
     </message>
     <message>
         <source>Toggle editing</source>
-        <translation type="unfinished">Bewerken aan/uitzetten</translation>
+        <translation>Bewerken aan/uitzetten</translation>
     </message>
     <message>
         <source>New</source>
-        <translation type="unfinished">Nieuw</translation>
+        <translation>Nieuw</translation>
     </message>
     <message>
         <source>Delete</source>
-        <translation type="unfinished">Verwijderen</translation>
+        <translation>Verwijderen</translation>
     </message>
     <message>
         <source>Link</source>
-        <translation type="unfinished"></translation>
+        <translation>Link</translation>
     </message>
     <message>
         <source>Unlink</source>
-        <translation type="unfinished"></translation>
+        <translation>Link verbreken</translation>
     </message>
     <message>
         <source>Form View</source>
-        <translation type="unfinished"></translation>
+        <translation>Formulierweergave</translation>
     </message>
     <message>
         <source>Table View</source>
-        <translation type="unfinished">Tabeloverzicht</translation>
+        <translation>Tabeloverzicht</translation>
     </message>
 </context>
 <context>
     <name>QgsRelationManagerDialogBase</name>
     <message>
         <source>Dialog</source>
-        <translation type="unfinished">Dialoog</translation>
+        <translation>Dialoog</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished">Naam</translation>
+        <translation>Naam</translation>
     </message>
     <message>
         <source>Referencing Layer</source>
@@ -45095,26 +45120,26 @@ standaarddeviatie x</translation>
     </message>
     <message>
         <source>Id</source>
-        <translation type="unfinished">Id</translation>
+        <translation>Id</translation>
     </message>
     <message>
         <source>Add Relation</source>
-        <translation type="unfinished"></translation>
+        <translation>Relatie toevoegen</translation>
     </message>
     <message>
         <source>Remove Relation</source>
-        <translation type="unfinished"></translation>
+        <translation>Relatie aanleggen</translation>
     </message>
 </context>
 <context>
     <name>QgsRelationReferenceWidget</name>
     <message>
         <source>Open Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Formulier Openen</translation>
     </message>
     <message>
         <source>The relation is not valid. Please make sure your relation definitions are ok.</source>
-        <translation type="unfinished"></translation>
+        <translation>De relatie is niet geldig. Controleer de relatie-definities aub.</translation>
     </message>
 </context>
 <context>
@@ -45349,11 +45374,11 @@ standaarddeviatie x</translation>
     </message>
     <message>
         <source>Copy</source>
-        <translation type="unfinished">Kopiëren</translation>
+        <translation>Kopiëren</translation>
     </message>
     <message>
         <source>Paste</source>
-        <translation type="unfinished">Plakken</translation>
+        <translation>Plakken</translation>
     </message>
 </context>
 <context>
@@ -45594,7 +45619,7 @@ standaarddeviatie x</translation>
     </message>
     <message>
         <source>Remove Rule</source>
-        <translation type="unfinished"></translation>
+        <translation>Verwijder Regel</translation>
     </message>
 </context>
 <context>
@@ -49785,11 +49810,11 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
     </message>
     <message>
         <source>Simplify Geometries</source>
-        <translation type="unfinished"></translation>
+        <translation>Geometrieën Vereenvoudigen</translation>
     </message>
     <message>
         <source>Simplify Geometries with topological validation</source>
-        <translation type="unfinished"></translation>
+        <translation>Geometrieën Vereenvoudigen inclusief topologische validatie</translation>
     </message>
 </context>
 <context>
@@ -50808,7 +50833,7 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
     </message>
     <message>
         <source>Not supported</source>
-        <translation type="unfinished">Wordt niet ondersteund</translation>
+        <translation>Wordt niet ondersteund</translation>
     </message>
 </context>
 <context>
@@ -51263,7 +51288,7 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
     </message>
     <message>
         <source>Rendering</source>
-        <translation type="unfinished">Rendering</translation>
+        <translation>Rendering</translation>
     </message>
     <message>
         <source>Simplify geometry</source>
@@ -51283,7 +51308,7 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
     </message>
     <message>
         <source>pixels</source>
-        <translation type="unfinished">pixels</translation>
+        <translation>pixels</translation>
     </message>
     <message>
         <source>Simplify on provider side if possible</source>
@@ -51334,7 +51359,7 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
     </message>
     <message>
         <source>&lt;Default&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;Standaard&gt;</translation>
     </message>
 </context>
 <context>
@@ -52164,7 +52189,7 @@ Dit kan een serverconfiguratie fout zijn. Moet de URL worden gebruikt?</translat
     </message>
     <message>
         <source>Add Layer(s) from a WM(T)S Server</source>
-        <translation type="unfinished"></translation>
+        <translation>Lagen Toevoegen van een WM(T)S Server</translation>
     </message>
 </context>
 <context>
@@ -53181,23 +53206,23 @@ Omschrijving: %2</translation>
     </message>
     <message>
         <source>Style was missing in capabilities</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;Style&apos; mist in de capabilities</translation>
     </message>
     <message>
         <source>LegendURLs</source>
-        <translation type="unfinished"></translation>
+        <translation>LegendURLs</translation>
     </message>
     <message>
         <source>GetLegendGraphic</source>
-        <translation type="unfinished"></translation>
+        <translation>GetLegendGraphic</translation>
     </message>
     <message>
         <source>Context not fully specified (extent was defined but width and/or height was not).</source>
-        <translation type="unfinished"></translation>
+        <translation>Context niet volledig gespecificeerd (wel een extent, maar geen breedte en/of hoogte).</translation>
     </message>
     <message>
         <source>Cannot identify</source>
-        <translation type="unfinished"></translation>
+        <translation>Identificeren mislukt</translation>
     </message>
     <message>
         <source>GetLegendGraphic request redirected.</source>
@@ -53567,11 +53592,11 @@ Omschrijving: %2</translation>
     </message>
     <message>
         <source>Cannot calculate path</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan pad niet bepalen</translation>
     </message>
     <message>
         <source>The created graph is empty. Please check your input data.</source>
-        <translation type="unfinished"></translation>
+        <translation>De aangemaakte graph is leeg. Controleer de invoerdata.</translation>
     </message>
 </context>
 <context>
@@ -54102,7 +54127,8 @@ Omschrijving: %3</translation>
     <message>
         <source>Unable to save edits. Reason:
  %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan wijzigingen niet opslaan. Reden:
+ %s</translation>
     </message>
 </context>
 <context>
@@ -54126,7 +54152,8 @@ Omschrijving: %3</translation>
     <message>
         <source>Unable to save edits. Reason:
  %s</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kan wijzigingen niet opslaan. Reden:
+ %s</translation>
     </message>
     <message>
         <source>Script saving</source>
@@ -54333,15 +54360,15 @@ Omschrijving: %3</translation>
     </message>
     <message>
         <source>Font and Colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Lettertypes en Kleur</translation>
     </message>
     <message>
         <source>Default:</source>
-        <translation type="unfinished"></translation>
+        <translation>Standaard:</translation>
     </message>
     <message>
         <source>Keyword:</source>
-        <translation type="unfinished"></translation>
+        <translation>Sleutelwoord:</translation>
     </message>
     <message>
         <source>Class name:</source>
@@ -54682,7 +54709,9 @@ Wilt u het toevoegen aan de huidige kaart/legenda?</translation>
         <source>Created output shapefile:
 %s
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Uitvoer shape-bestand aangemaakt:
+%s
+%s</translation>
     </message>
 </context>
 <context>
@@ -54847,7 +54876,7 @@ Wilt u het toevoegen aan de huidige kaart/legenda?</translation>
     </message>
     <message>
         <source>Left</source>
-        <translation type="unfinished">Links</translation>
+        <translation>Links</translation>
     </message>
     <message>
         <source>HCenter</source>
@@ -54855,11 +54884,11 @@ Wilt u het toevoegen aan de huidige kaart/legenda?</translation>
     </message>
     <message>
         <source>Right</source>
-        <translation type="unfinished">Rechts</translation>
+        <translation>Rechts</translation>
     </message>
     <message>
         <source>Top</source>
-        <translation type="unfinished">Boven</translation>
+        <translation>Boven</translation>
     </message>
     <message>
         <source>VCenter</source>
@@ -54867,7 +54896,7 @@ Wilt u het toevoegen aan de huidige kaart/legenda?</translation>
     </message>
     <message>
         <source>Bottom</source>
-        <translation type="unfinished">Onder</translation>
+        <translation>Onder</translation>
     </message>
     <message>
         <source>Outline style</source>
@@ -54926,7 +54955,7 @@ Wilt u het toevoegen aan de huidige kaart/legenda?</translation>
     </message>
     <message>
         <source>Left</source>
-        <translation type="unfinished">Links</translation>
+        <translation>Links</translation>
     </message>
     <message>
         <source>HCenter</source>
@@ -54934,11 +54963,11 @@ Wilt u het toevoegen aan de huidige kaart/legenda?</translation>
     </message>
     <message>
         <source>Right</source>
-        <translation type="unfinished">Rechts</translation>
+        <translation>Rechts</translation>
     </message>
     <message>
         <source>Top</source>
-        <translation type="unfinished">Boven</translation>
+        <translation>Boven</translation>
     </message>
     <message>
         <source>VCenter</source>
@@ -54946,7 +54975,7 @@ Wilt u het toevoegen aan de huidige kaart/legenda?</translation>
     </message>
     <message>
         <source>Bottom</source>
-        <translation type="unfinished">Onder</translation>
+        <translation>Onder</translation>
     </message>
 </context>
 <context>
@@ -54969,7 +54998,7 @@ Wilt u het toevoegen aan de huidige kaart/legenda?</translation>
     </message>
     <message>
         <source>Linear</source>
-        <translation type="unfinished">Lineair</translation>
+        <translation>Lineair</translation>
     </message>
     <message>
         <source>Radial</source>
@@ -55013,11 +55042,11 @@ Wilt u het toevoegen aan de huidige kaart/legenda?</translation>
     </message>
     <message>
         <source>x</source>
-        <translation type="unfinished">x</translation>
+        <translation>x</translation>
     </message>
     <message>
         <source>y</source>
-        <translation type="unfinished">y</translation>
+        <translation>y</translation>
     </message>
     <message>
         <source>Feature centroid</source>
@@ -55029,23 +55058,23 @@ Wilt u het toevoegen aan de huidige kaart/legenda?</translation>
     </message>
     <message>
         <source>Angle</source>
-        <translation type="unfinished">Hoek</translation>
+        <translation>Hoek</translation>
     </message>
     <message utf8="true">
         <source> °</source>
-        <translation type="unfinished"> °</translation>
+        <translation> °</translation>
     </message>
     <message>
         <source>Data defined properties...</source>
-        <translation type="unfinished">Data-bepaalde eigenschappen...</translation>
+        <translation>Data-bepaalde eigenschappen...</translation>
     </message>
     <message>
         <source>Millimeter</source>
-        <translation type="unfinished">Millimeter</translation>
+        <translation>Millimeter</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation type="unfinished">Kaarteenheid</translation>
+        <translation>Kaarteenheid</translation>
     </message>
     <message>
         <source>Offset X,Y</source>
@@ -55416,6 +55445,10 @@ Wilt u het toevoegen aan de huidige kaart/legenda?</translation>
         <source>Data defined properties...</source>
         <translation>Data-bepaalde eigenschappen...</translation>
     </message>
+    <message>
+        <source>Draw line only inside polygon</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>WidgetSimpleMarker</name>
@@ -55489,7 +55522,7 @@ Wilt u het toevoegen aan de huidige kaart/legenda?</translation>
     </message>
     <message>
         <source>Left</source>
-        <translation type="unfinished">Links</translation>
+        <translation>Links</translation>
     </message>
     <message>
         <source>HCenter</source>
@@ -55497,11 +55530,11 @@ Wilt u het toevoegen aan de huidige kaart/legenda?</translation>
     </message>
     <message>
         <source>Right</source>
-        <translation type="unfinished">Rechts</translation>
+        <translation>Rechts</translation>
     </message>
     <message>
         <source>Top</source>
-        <translation type="unfinished">Boven</translation>
+        <translation>Boven</translation>
     </message>
     <message>
         <source>VCenter</source>
@@ -55509,7 +55542,7 @@ Wilt u het toevoegen aan de huidige kaart/legenda?</translation>
     </message>
     <message>
         <source>Bottom</source>
-        <translation type="unfinished">Onder</translation>
+        <translation>Onder</translation>
     </message>
 </context>
 <context>
@@ -55588,7 +55621,7 @@ Wilt u het toevoegen aan de huidige kaart/legenda?</translation>
     </message>
     <message>
         <source>Left</source>
-        <translation type="unfinished">Links</translation>
+        <translation>Links</translation>
     </message>
     <message>
         <source>HCenter</source>
@@ -55596,11 +55629,11 @@ Wilt u het toevoegen aan de huidige kaart/legenda?</translation>
     </message>
     <message>
         <source>Right</source>
-        <translation type="unfinished">Rechts</translation>
+        <translation>Rechts</translation>
     </message>
     <message>
         <source>Top</source>
-        <translation type="unfinished">Boven</translation>
+        <translation>Boven</translation>
     </message>
     <message>
         <source>VCenter</source>
@@ -55608,7 +55641,7 @@ Wilt u het toevoegen aan de huidige kaart/legenda?</translation>
     </message>
     <message>
         <source>Bottom</source>
-        <translation type="unfinished">Onder</translation>
+        <translation>Onder</translation>
     </message>
 </context>
 <context>
@@ -63786,15 +63819,15 @@ geometry &amp;rarr; geometry
     <name>widgetNumberInput</name>
     <message>
         <source>Form</source>
-        <translation type="unfinished">Formulier</translation>
+        <translation>Formulier</translation>
     </message>
     <message>
         <source>Open number input dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Formulier voor getalinvoer openen</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
 </context>
 </TS>
