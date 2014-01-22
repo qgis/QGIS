@@ -32,7 +32,7 @@
 class CORE_EXPORT QgsMapToPixelSimplifier : public QgsAbstractGeometrySimplifier
 {
   public:
-    QgsMapToPixelSimplifier( int simplifyFlags, double map2pixelTol );
+    QgsMapToPixelSimplifier( int simplifyFlags, double tolerance );
     virtual ~QgsMapToPixelSimplifier();
 
     //! Applicable simplification flags
@@ -51,8 +51,8 @@ class CORE_EXPORT QgsMapToPixelSimplifier : public QgsAbstractGeometrySimplifier
     //! Current simplification flags
     int mSimplifyFlags;
 
-    //! Map2Pixel tolerance for the simplification
-    double mMapToPixelTol;
+    //! Distance tolerance for the simplification
+    double mTolerance;
 
     //! Returns the squared 2D-distance of the vector defined by the two points specified
     static float calculateLengthSquared2D( double x1, double y1, double x2, double y2 );
@@ -73,10 +73,10 @@ class CORE_EXPORT QgsMapToPixelSimplifier : public QgsAbstractGeometrySimplifier
     static bool canbeGeneralizedByMapBoundingBox( const QgsRectangle& envelope, double map2pixelTol );
 
     //! Returns whether the envelope can be replaced by its BBOX when is applied the specified map2pixel context
-    inline bool canbeGeneralizedByMapBoundingBox( const QgsRectangle& envelope ) const { return canbeGeneralizedByMapBoundingBox( envelope, mMapToPixelTol ); }
+    inline bool canbeGeneralizedByMapBoundingBox( const QgsRectangle& envelope ) const { return canbeGeneralizedByMapBoundingBox( envelope, mTolerance ); }
 
     //! Simplifies the geometry when is applied the specified map2pixel context
-    static bool simplifyGeometry( QgsGeometry* geometry, int simplifyFlags, double map2pixelTol );
+    static bool simplifyGeometry( QgsGeometry* geometry, int simplifyFlags, double tolerance );
 
 };
 

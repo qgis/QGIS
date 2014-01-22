@@ -303,11 +303,9 @@ bool QgsPostgresFeatureIterator::declareCursor( const QString& whereClause )
     {
       QString simplifyFunctionName = simplifyMethod.methodType() == QgsSimplifyMethod::OptimizeForRendering
                                      ? ( P->mConnectionRO->majorVersion() < 2 ? "simplify" : "st_simplify" )
-                                         : ( P->mConnectionRO->majorVersion() < 2 ? "simplifypreservetopology" : "st_simplifypreservetopology" );
+                                     : ( P->mConnectionRO->majorVersion() < 2 ? "simplifypreservetopology" : "st_simplifypreservetopology" );
 
-      double tolerance = simplifyMethod.methodType() == QgsSimplifyMethod::OptimizeForRendering
-                         ? simplifyMethod.toleranceForDouglasPeuckerAlgorithms()
-                         : simplifyMethod.tolerance();
+      double tolerance = simplifyMethod.tolerance();
 
       query += QString( "%1(%5(%2%3,%6),'%4')" )
                .arg( P->mConnectionRO->majorVersion() < 2 ? "asbinary" : "st_asbinary" )

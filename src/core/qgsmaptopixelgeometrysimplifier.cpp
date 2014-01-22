@@ -18,9 +18,9 @@
 #include "qgsmaptopixelgeometrysimplifier.h"
 #include "qgsapplication.h"
 
-QgsMapToPixelSimplifier::QgsMapToPixelSimplifier( int simplifyFlags, double map2pixelTol )
+QgsMapToPixelSimplifier::QgsMapToPixelSimplifier( int simplifyFlags, double tolerance )
     : mSimplifyFlags( simplifyFlags )
-    , mMapToPixelTol( map2pixelTol )
+    , mTolerance( tolerance )
 {
 }
 QgsMapToPixelSimplifier::~QgsMapToPixelSimplifier()
@@ -330,13 +330,13 @@ QgsGeometry* QgsMapToPixelSimplifier::simplify( QgsGeometry* geometry ) const
   unsigned char* wkb = ( unsigned char* )malloc( wkbSize );
   memcpy( wkb, geometry->asWkb(), wkbSize );
   g->fromWkb( wkb, wkbSize );
-  simplifyGeometry( g, mSimplifyFlags, mMapToPixelTol );
+  simplifyGeometry( g, mSimplifyFlags, mTolerance );
 
   return g;
 }
 
 //! Simplifies the geometry (Removing duplicated points) when is applied the specified map2pixel context
-bool QgsMapToPixelSimplifier::simplifyGeometry( QgsGeometry* geometry, int simplifyFlags, double map2pixelTol )
+bool QgsMapToPixelSimplifier::simplifyGeometry( QgsGeometry* geometry, int simplifyFlags, double tolerance )
 {
   size_t targetWkbSize = 0;
 
@@ -351,7 +351,7 @@ bool QgsMapToPixelSimplifier::simplifyGeometry( QgsGeometry* geometry, int simpl
   size_t wkbSize = geometry->wkbSize( );
 
   // Simplify the geometry rewriting temporally its WKB-stream for saving calloc's.
-  if ( simplifyWkbGeometry( simplifyFlags, wkbType, wkb, wkbSize, wkb, targetWkbSize, envelope, map2pixelTol ) )
+  if ( simplifyWkbGeometry( simplifyFlags, wkbType, wkb, wkbSize, wkb, targetWkbSize, envelope, tolerance ) )
   {
     unsigned char* targetWkb = ( unsigned char* )malloc( targetWkbSize );
     memcpy( targetWkb, wkb, targetWkbSize );
@@ -364,5 +364,5 @@ bool QgsMapToPixelSimplifier::simplifyGeometry( QgsGeometry* geometry, int simpl
 //! Simplifies the geometry (Removing duplicated points) when is applied the specified map2pixel context
 bool QgsMapToPixelSimplifier::simplifyGeometry( QgsGeometry* geometry ) const
 {
-  return simplifyGeometry( geometry, mSimplifyFlags, mMapToPixelTol );
+  return simplifyGeometry( geometry, mSimplifyFlags, mTolerance );
 }
