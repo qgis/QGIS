@@ -2301,18 +2301,11 @@ bool QgsSymbolLayerV2Utils::functionFromSldElement( QDomElement &element, QStrin
 void QgsSymbolLayerV2Utils::createOnlineResourceElement( QDomDocument &doc, QDomElement &element,
     QString path, QString format )
 {
-  QString relpath = symbolPathToName( path );
-
-  // convert image path to url
-  QUrl url( relpath );
-  if ( !url.isValid() || url.scheme().isEmpty() )
-  {
-    url.setUrl( QUrl::fromLocalFile( relpath ).toString() );
-  }
-
+  // get resource url or relative path
+  QString url = symbolPathToName( path );
   QDomElement onlineResourceElem = doc.createElement( "se:OnlineResource" );
   onlineResourceElem.setAttribute( "xlink:type", "simple" );
-  onlineResourceElem.setAttribute( "xlink:href", url.toString() );
+  onlineResourceElem.setAttribute( "xlink:href", url );
   element.appendChild( onlineResourceElem );
 
   QDomElement formatElem = doc.createElement( "se:Format" );
@@ -2945,7 +2938,7 @@ QString QgsSymbolLayerV2Utils::symbolPathToName( QString path )
 
     if ( !dir.isEmpty() && path.startsWith( dir ) )
     {
-      path = path.mid( dir.size() );
+      path = path.mid( dir.size() + 1 );
       isInSvgPathes = true;
       break;
     }
