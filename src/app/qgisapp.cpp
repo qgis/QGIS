@@ -5761,6 +5761,17 @@ void QgisApp::editPaste( QgsMapLayer *destinationLayer )
 
     f.setAttributes( dstAttr );
 
+    // converts closed lines to polygons if destination layer is a polygon layer
+    if ( f.geometry()->type() == QGis::Line && pasteVectorLayer->geometryType() == QGis::Polygon )
+    {
+      QgsPolyline line = f.geometry()->asPolyline();
+      if ( line.first() == line.last() )
+      {
+        QgsGeometry* polygon = QgsGeometry::fromPolygon( QVector<QgsPolyline>() << line );
+        f.setGeometry( polygon );
+      }
+    }
+
     //avoid intersection if enabled in digitize settings
     if ( f.geometry() )
     {
