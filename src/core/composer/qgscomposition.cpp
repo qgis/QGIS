@@ -603,22 +603,9 @@ bool QgsComposition::readXML( const QDomElement& compositionElem, const QDomDocu
   }
 
   //snapping
-  if ( compositionElem.attribute( "snapping" ) == "0" )
-  {
-    mSnapToGrid = false;
-  }
-  else
-  {
-    mSnapToGrid = true;
-  }
-  if ( compositionElem.attribute( "gridVisible" ) == "0" )
-  {
-    mGridVisible = false;
-  }
-  else
-  {
-    mGridVisible = true;
-  }
+  mSnapToGrid = compositionElem.attribute( "snapping", "0" ).toInt() == 0 ? false : true;
+  mGridVisible = compositionElem.attribute( "gridVisible", "0" ).toInt() == 0 ? false : true;
+
   mSnapGridResolution = compositionElem.attribute( "snapGridResolution" ).toDouble();
   mSnapGridTolerance = compositionElem.attribute( "snapGridTolerance", "2.0" ).toDouble();
   mSnapGridOffsetX = compositionElem.attribute( "snapGridOffsetX" ).toDouble();
