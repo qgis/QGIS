@@ -9640,17 +9640,17 @@ Czy chcesz wskazać ścieżkę (GISBASE) do Twojej instalacji GRASS?</translatio
     <message>
         <location filename="../src/core/qgsdistancearea.cpp" line="933"/>
         <source> sq mile</source>
-        <translation>mil²</translation>
+        <translation> mil²</translation>
     </message>
     <message>
         <location filename="../src/core/qgsdistancearea.cpp" line="922"/>
         <source> sq ft</source>
-        <translation>stóp²</translation>
+        <translation> stóp²</translation>
     </message>
     <message>
         <location filename="../src/core/qgsdistancearea.cpp" line="952"/>
         <source> mile</source>
-        <translation>mila</translation>
+        <translation> mil</translation>
     </message>
     <message>
         <location filename="../src/core/qgsdistancearea.cpp" line="943"/>
@@ -9660,37 +9660,37 @@ Czy chcesz wskazać ścieżkę (GISBASE) do Twojej instalacji GRASS?</translatio
     <message>
         <location filename="../src/core/qgsdistancearea.cpp" line="947"/>
         <source> feet</source>
-        <translation>stopy</translation>
+        <translation> stopy</translation>
     </message>
     <message>
         <location filename="../src/core/qgsdistancearea.cpp" line="960"/>
         <source> sq. NM</source>
-        <translation>mil m.²</translation>
+        <translation> mil m.²</translation>
     </message>
     <message>
         <location filename="../src/core/qgsdistancearea.cpp" line="964"/>
         <source> NM</source>
-        <translation>mil m.</translation>
+        <translation> mil m.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsdistancearea.cpp" line="970"/>
         <source> sq.deg.</source>
-        <translation>stopni2.</translation>
+        <translation> stopni²</translation>
     </message>
     <message>
         <location filename="../src/core/qgsdistancearea.cpp" line="975"/>
         <source> degree</source>
-        <translation>stopień</translation>
+        <translation> stopień</translation>
     </message>
     <message>
         <location filename="../src/core/qgsdistancearea.cpp" line="977"/>
         <source> degrees</source>
-        <translation>stopnie</translation>
+        <translation> stopni</translation>
     </message>
     <message>
         <location filename="../src/core/qgsdistancearea.cpp" line="981"/>
         <source> unknown</source>
-        <translation>nieznany</translation>
+        <translation> nieznany</translation>
     </message>
     <message>
         <source>Regular expressions on numeric values don&apos;t make sense. Use comparison instead.</source>
@@ -21599,17 +21599,17 @@ Zmniejsz rozdzielczość lub rozmiar papieru.</translation>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="543"/>
         <source>WMS LegendGraphic</source>
-        <translation type="unfinished"></translation>
+        <translation>Legenda graficzna WMS</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="561"/>
         <source>Legend width</source>
-        <translation type="unfinished"></translation>
+        <translation>Szerokość legendy</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="584"/>
         <source>Legend height</source>
-        <translation type="unfinished"></translation>
+        <translation>Wysokość legendy</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="610"/>
@@ -22309,7 +22309,7 @@ Zmniejsz rozdzielczość lub rozmiar papieru.</translation>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="137"/>
         <source>Map Rotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Obrót mapy</translation>
     </message>
     <message utf8="true">
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="144"/>
@@ -22380,7 +22380,7 @@ Zmniejsz rozdzielczość lub rozmiar papieru.</translation>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="560"/>
         <source>Color...</source>
-        <translation type="unfinished">Kolor...</translation>
+        <translation>Kolor...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="567"/>
@@ -22460,7 +22460,7 @@ Zmniejsz rozdzielczość lub rozmiar papieru.</translation>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="828"/>
         <source>Center on overview</source>
-        <translation type="unfinished"></translation>
+        <translation>Wycentruj w podglądzie</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="177"/>
@@ -22604,32 +22604,32 @@ Zmniejsz rozdzielczość lub rozmiar papieru.</translation>
     <message>
         <location filename="../src/core/composer/qgscomposermousehandles.cpp" line="586"/>
         <source>Change item position</source>
-        <translation type="unfinished">przesunięto obiekt</translation>
+        <translation>przesunięto obiekt</translation>
     </message>
     <message>
         <location filename="../src/core/composer/qgscomposermousehandles.cpp" line="611"/>
         <source>Change item size</source>
-        <translation type="unfinished"></translation>
+        <translation>zmieniono rozmiar obiektu</translation>
     </message>
     <message>
         <location filename="../src/core/composer/qgscomposermousehandles.cpp" line="676"/>
         <source>%1 items selected</source>
-        <translation type="unfinished"></translation>
+        <translation>zaznaczono %1 obiektów</translation>
     </message>
     <message>
         <location filename="../src/core/composer/qgscomposermousehandles.cpp" line="681"/>
         <source>1 item selected</source>
-        <translation type="unfinished"></translation>
+        <translation>zaznaczono 1 obiekt</translation>
     </message>
     <message>
         <location filename="../src/core/composer/qgscomposermousehandles.cpp" line="770"/>
         <source>dx: %1 mm dy: %2 mm</source>
-        <translation type="unfinished"></translation>
+        <translation>dx: %1 mm dy: %2 mm</translation>
     </message>
     <message>
         <location filename="../src/core/composer/qgscomposermousehandles.cpp" line="981"/>
         <source>width: %1 mm height: %2 mm</source>
-        <translation type="unfinished"></translation>
+        <translation>szerokość: %1 mm wysokość: %2 mm</translation>
     </message>
 </context>
 <context>
@@ -22751,7 +22751,7 @@ Zmniejsz rozdzielczość lub rozmiar papieru.</translation>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="216"/>
         <source>Image Rotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Obrót obrazu</translation>
     </message>
     <message utf8="true">
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="244"/>
@@ -22807,7 +22807,7 @@ Zmniejsz rozdzielczość lub rozmiar papieru.</translation>
     <message>
         <location filename="../src/core/composer/qgscomposerscalebar.cpp" line="272"/>
         <source>units</source>
-        <translation type="unfinished"></translation>
+        <translation>jednostki</translation>
     </message>
     <message>
         <location filename="../src/core/composer/qgscomposerscalebar.cpp" line="280"/>
@@ -22822,17 +22822,17 @@ Zmniejsz rozdzielczość lub rozmiar papieru.</translation>
     <message>
         <location filename="../src/core/composer/qgscomposerscalebar.cpp" line="294"/>
         <source>miles</source>
-        <translation type="unfinished">mile</translation>
+        <translation>mile</translation>
     </message>
     <message>
         <location filename="../src/core/composer/qgscomposerscalebar.cpp" line="299"/>
         <source>ft</source>
-        <translation type="unfinished"></translation>
+        <translation>stopy</translation>
     </message>
     <message>
         <location filename="../src/core/composer/qgscomposerscalebar.cpp" line="306"/>
         <source>Nm</source>
-        <translation type="unfinished"></translation>
+        <translation>mile m.</translation>
     </message>
 </context>
 <context>
@@ -22948,22 +22948,22 @@ Zmniejsz rozdzielczość lub rozmiar papieru.</translation>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="541"/>
         <source>Scalebar changed to map units</source>
-        <translation type="unfinished"></translation>
+        <translation>zmieniono jednostki podziałki na jednostki mapy</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="547"/>
         <source>Scalebar changed to feet</source>
-        <translation type="unfinished"></translation>
+        <translation>zmieniono podziałkę na stopy</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="553"/>
         <source>Scalebar changed to nautical miles</source>
-        <translation type="unfinished"></translation>
+        <translation>zmieniono podziałkę na mile morskie</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="560"/>
         <source>Scalebar changed to meters</source>
-        <translation type="unfinished"></translation>
+        <translation>zmieniono podziałkę na metry</translation>
     </message>
     <message>
         <source>Scalebar n segments</source>
@@ -23232,7 +23232,7 @@ Zmniejsz rozdzielczość lub rozmiar papieru.</translation>
     <message>
         <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="135"/>
         <source>Shape radius changed</source>
-        <translation type="unfinished"></translation>
+        <translation>zmieniono promień kształtu</translation>
     </message>
     <message>
         <source>Shape rotation changed</source>
@@ -23288,7 +23288,7 @@ Zmniejsz rozdzielczość lub rozmiar papieru.</translation>
     <message>
         <location filename="../src/ui/qgscomposershapewidgetbase.ui" line="78"/>
         <source>Corner radius</source>
-        <translation type="unfinished"></translation>
+        <translation>Promień narożnika</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposershapewidgetbase.ui" line="85"/>
@@ -23298,12 +23298,12 @@ Zmniejsz rozdzielczość lub rozmiar papieru.</translation>
     <message>
         <location filename="../src/ui/qgscomposershapewidgetbase.ui" line="95"/>
         <source>Style</source>
-        <translation type="unfinished">Styl</translation>
+        <translation>Styl</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposershapewidgetbase.ui" line="102"/>
         <source>Change...</source>
-        <translation type="unfinished"></translation>
+        <translation>Zmień...</translation>
     </message>
     <message>
         <source>Rotation</source>
@@ -23723,12 +23723,12 @@ Zmniejsz rozdzielczość lub rozmiar papieru.</translation>
     <message>
         <location filename="../src/core/composer/qgscomposition.cpp" line="1358"/>
         <source>Items locked</source>
-        <translation type="unfinished"></translation>
+        <translation>zablokowano obiekty</translation>
     </message>
     <message>
         <location filename="../src/core/composer/qgscomposition.cpp" line="1377"/>
         <source>Items unlocked</source>
-        <translation type="unfinished"></translation>
+        <translation>odblokowano obiekty</translation>
     </message>
     <message>
         <location filename="../src/core/composer/qgscomposition.cpp" line="1407"/>
@@ -23880,7 +23880,7 @@ Zmniejsz rozdzielczość lub rozmiar papieru.</translation>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="68"/>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="464"/>
         <source>Map %1</source>
-        <translation type="unfinished">Mapa %1</translation>
+        <translation>Mapa %1</translation>
     </message>
     <message>
         <source>Select grid color</source>
@@ -24057,22 +24057,22 @@ Zmniejsz rozdzielczość lub rozmiar papieru.</translation>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="262"/>
         <source>World file on</source>
-        <translation type="unfinished"></translation>
+        <translation>Plik wpasowania</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="279"/>
         <source>Change...</source>
-        <translation type="unfinished"></translation>
+        <translation>Zmień...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="286"/>
         <source>Page background</source>
-        <translation type="unfinished"></translation>
+        <translation>Kolor tła</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="296"/>
         <source>Grid</source>
-        <translation type="unfinished"></translation>
+        <translation>Siatka</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="320"/>
@@ -25311,7 +25311,7 @@ and current file is [%3]</source>
     <message>
         <location filename="../src/gui/symbology-ng/qgsdatadefinedsymboldialog.cpp" line="168"/>
         <source>double</source>
-        <translation type="unfinished">vdouble</translation>
+        <translation type="unfinished">double</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsdatadefinedsymboldialog.cpp" line="173"/>
@@ -27445,7 +27445,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui" line="427"/>
         <source>Edit expression</source>
-        <translation type="unfinished">Edytuj wyrażenie</translation>
+        <translation>Edytuj wyrażenie</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui" line="444"/>
@@ -27568,7 +27568,7 @@ Pozostaw puste, aby program dostosował do wartości maksymalnej.</translation>
     <message>
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui" line="866"/>
         <source>Add expression</source>
-        <translation type="unfinished"></translation>
+        <translation>Dodaj wyrażenie</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui" line="934"/>
@@ -27808,12 +27808,12 @@ Błąd:
     <message>
         <location filename="../src/app/qgsdxfexportdialog.cpp" line="123"/>
         <source>Export as DXF</source>
-        <translation type="unfinished"></translation>
+        <translation>Eksportuj jako  DXF</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdxfexportdialog.cpp" line="123"/>
         <source>DXF files *.dxf *.DXF</source>
-        <translation type="unfinished"></translation>
+        <translation>Pliki DXF *.dxf *.DXF</translation>
     </message>
 </context>
 <context>
@@ -27821,22 +27821,22 @@ Błąd:
     <message>
         <location filename="../src/ui/qgsdxfexportdialogbase.ui" line="14"/>
         <source>DXF export</source>
-        <translation type="unfinished"></translation>
+        <translation>Eksport DXF</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdxfexportdialogbase.ui" line="35"/>
         <source>Symbology mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Tryb stylów</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdxfexportdialogbase.ui" line="42"/>
         <source>Symbology scale</source>
-        <translation type="unfinished"></translation>
+        <translation>Skala stylów</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdxfexportdialogbase.ui" line="49"/>
         <source>Save as</source>
-        <translation type="unfinished">Zapisz jako</translation>
+        <translation>Zapisz jako</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdxfexportdialogbase.ui" line="56"/>
@@ -27846,32 +27846,32 @@ Błąd:
     <message>
         <location filename="../src/ui/qgsdxfexportdialogbase.ui" line="64"/>
         <source>No symbology</source>
-        <translation type="unfinished">bez stylów</translation>
+        <translation>bez stylów</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdxfexportdialogbase.ui" line="69"/>
         <source>Feature symbology</source>
-        <translation type="unfinished">style obiektów</translation>
+        <translation>style obiektów</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdxfexportdialogbase.ui" line="74"/>
         <source>Symbol layer symbology</source>
-        <translation type="unfinished">style warstw</translation>
+        <translation>style warstw</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdxfexportdialogbase.ui" line="92"/>
         <source>Select all</source>
-        <translation type="unfinished">Zaznacz wszystko</translation>
+        <translation>Zaznacz wszystko</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdxfexportdialogbase.ui" line="99"/>
         <source>Unselect all</source>
-        <translation type="unfinished">Odznacz wszystko</translation>
+        <translation>Odznacz wszystko</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdxfexportdialogbase.ui" line="121"/>
         <source>Export features intersecting the current map extent</source>
-        <translation type="unfinished"></translation>
+        <translation>Eksportuj obiekty położone na krawędzi zasięgu mapy</translation>
     </message>
 </context>
 <context>
