@@ -960,7 +960,7 @@ void QgsComposerView::pasteItems( PasteMode mode )
       if ( composition() )
       {
         QPointF pt;
-        if ( mode == PasteModeCursor )
+        if ( mode == QgsComposerView::PasteModeCursor || mode == QgsComposerView::PasteModeInPlace )
         {
           // place items at cursor position
           pt = mapToScene( mapFromGlobal( QCursor::pos() ) );
