@@ -26,4 +26,9 @@ class QgsVectorSimplifyMethod
     void setForceLocalOptimization( bool localOptimization );
     /** Gets where the simplification executes, after fetch the geometries from provider, or when supported, in provider before fetch the geometries */
     bool forceLocalOptimization();
+
+    /** Sets the maximum scale at which the layer should be simplified */
+    void setMaximumScale( float maximumScale );
+    /** Gets the maximum scale at which the layer should be simplified */
+    float maximumScale() const;
 };

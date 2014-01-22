@@ -416,6 +416,11 @@ void QgsVectorLayerProperties::syncToLayer( void )
     mSimplifyDrawingGroupBox->setChecked( false );
   }
 
+  QStringList myScalesList = PROJECT_SCALES.split( "," );
+  myScalesList.append( "1:1" );
+  mSimplifyMaximumScaleComboBox->updateScales( myScalesList );
+  mSimplifyMaximumScaleComboBox->setScale( 1.0 / simplifyMethod.maximumScale() );
+
   // load appropriate symbology page (V1 or V2)
   updateSymbologyPage();
 
@@ -564,6 +569,7 @@ void QgsVectorLayerProperties::apply()
   simplifyMethod.setSimplifyHints( simplifyHints );
   simplifyMethod.setThreshold( mSimplifyDrawingSpinBox->value() );
   simplifyMethod.setForceLocalOptimization( !mSimplifyDrawingAtProvider->isChecked() );
+  simplifyMethod.setMaximumScale( 1.0 / mSimplifyMaximumScaleComboBox->scale() );
   layer->setSimplifyMethod( simplifyMethod );
 
   // update symbology
