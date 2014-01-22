@@ -66,17 +66,7 @@ void QgsComposerLabel::paint( QPainter* painter, const QStyleOptionGraphicsItem*
   double penWidth = pen().widthF();
   QRectF painterRect( penWidth + mMargin, penWidth + mMargin, rect().width() - 2 * penWidth - 2 * mMargin, rect().height() - 2 * penWidth - 2 * mMargin );
 
-  QString textToDraw;
-  if ( mComposition->atlasMode() != QgsComposition::AtlasOff )
-  {
-    //render text with expressions evaluated
-    textToDraw = displayText();
-  }
-  else
-  {
-    //not outputing or using an atlas preview, so render text without expressions evaluated
-    textToDraw = mText;
-  }
+  QString textToDraw = displayText();
 
   if ( mHtmlState )
   {
