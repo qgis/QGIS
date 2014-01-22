@@ -356,6 +356,14 @@ class QgsGeometry
      */
     QString exportToGeoJSON() const;
 
+    /** try to convert the geometry to the requested type
+     * @param destType the geometry type to be converted to
+     * @param destMultipart determines if the output geometry will be multipart or not
+     * @return the converted geometry or NULL pointer if the conversion fails.
+     * @note added in 2.2
+     */
+    QgsGeometry* convertToType( QGis::GeometryType destType, bool destMultipart = false ) /Factory/;
+
     /* Accessor functions for getting geometry data */
 
     /** return contents of the geometry as a point

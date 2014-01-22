@@ -397,6 +397,15 @@ class CORE_EXPORT QgsGeometry
      */
     QString exportToGeoJSON() const;
 
+    /** try to convert the geometry to the requested type
+     * @param destType the geometry type to be converted to
+     * @param destMultipart determines if the output geometry will be multipart or not
+     * @return the converted geometry or NULL pointer if the conversion fails.
+     * @note added in 2.2
+     */
+    QgsGeometry* convertToType( QGis::GeometryType destType, bool destMultipart = false );
+
+
     /* Accessor functions for getting geometry data */
 
     /** return contents of the geometry as a point
@@ -611,6 +620,13 @@ class CORE_EXPORT QgsGeometry
     static inline bool moveVertex( QgsWkbPtr &wkbPtr, const double &x, const double &y, int atVertex, bool hasZValue, int &pointIndex, bool isRing );
     static inline bool deleteVertex( QgsConstWkbPtr &srcPtr, QgsWkbPtr &dstPtr, int atVertex, bool hasZValue, int &pointIndex, bool isRing, bool lastItem );
     static inline bool insertVertex( QgsConstWkbPtr &srcPtr, QgsWkbPtr &dstPtr, int beforeVertex, const double &x, const double &y, bool hasZValue, int &pointIndex, bool isRing );
+
+    /** try to convert the geometry to a point */
+    QgsGeometry* convertToPoint( bool destMultipart );
+    /** try to convert the geometry to a line */
+    QgsGeometry* convertToLine( bool destMultipart );
+    /** try to convert the geometry to a polygon */
+    QgsGeometry* convertToPolygon( bool destMultipart );
 }; // class QgsGeometry
 
 Q_DECLARE_METATYPE( QgsGeometry );
