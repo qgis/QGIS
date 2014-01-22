@@ -370,7 +370,7 @@ bool QgsPostgresFeatureIterator::declareCursor( const QString& whereClause )
     }
 
     // query BBOX of geometries to redefine the geometries collapsed by ST_Simplify()
-    if ( simplifyGeometry && !( P->mConnectionRO->majorVersion() >= 2 && P->mConnectionRO->minorVersion() >= 1 ) && QGis::flatType( QGis::singleType( P->geometryType() ) ) == QGis::WKBPolygon )
+    if ( simplifyGeometry && !( P->mConnectionRO->majorVersion() >= 2 && P->mConnectionRO->minorVersion() >= 1 ) )
     {
       query += QString( ",%1(%5(%2)%3,'%4')" )
                .arg( P->mConnectionRO->majorVersion() < 2 ? "asbinary" : "st_asbinary" )
@@ -605,7 +605,7 @@ bool QgsPostgresFeatureIterator::getFeature( QgsPostgresResult &queryResult, int
 
     // fix collapsed geometries by ST_Simplify() using the BBOX fetched from the current query
     const QgsSimplifyMethod& simplifyMethod = mRequest.simplifyMethod();
-    if ( mFetchGeometry && !simplifyMethod.forceLocalOptimization() && simplifyMethod.methodType() == QgsSimplifyMethod::OptimizeForRendering && QGis::flatType( QGis::singleType( P->geometryType() ) ) == QGis::WKBPolygon )
+    if ( mFetchGeometry && !simplifyMethod.forceLocalOptimization() && simplifyMethod.methodType() == QgsSimplifyMethod::OptimizeForRendering )
     {
       QgsGeometry* geometry = feature.geometry();
 
@@ -621,7 +621,21 @@ bool QgsPostgresFeatureIterator::getFeature( QgsPostgresResult &queryResult, int
 
           QgsGeometry *envelope = new QgsGeometry();
           envelope->fromWkb( featureGeom, returnedLength + 1 );
-          feature.setGeometry( envelope );
+
+          if ( QGis::flatType( QGis::singleType( P->geometryType() ) ) == QGis::WKBPolygon )
+          {
+            feature.setGeometry( envelope );
+          }
+          else
+          {
+            QgsPolyline polyline;
+            polyline.append( envelope->vertexAt( 0 ) );
+            polyline.append( envelope->vertexAt( 2 ) );
+            delete envelope;
+
+            geometry = QgsGeometry::fromPolyline( polyline );
+            feature.setGeometry( geometry );
+          }         
         }
       }
     }
