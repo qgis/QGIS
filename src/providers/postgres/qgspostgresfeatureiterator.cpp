@@ -14,6 +14,7 @@
  ***************************************************************************/
 #include "qgspostgresfeatureiterator.h"
 #include "qgspostgresprovider.h"
+#include "qgsgeometry.h"
 
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
@@ -292,6 +293,7 @@ QString QgsPostgresFeatureIterator::whereClauseRect()
 bool QgsPostgresFeatureIterator::declareCursor( const QString& whereClause )
 {
   mFetchGeometry = !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) && !P->mGeometryColumn.isNull();
+  bool simplifyGeometry = false;
 
   try
   {
@@ -305,7 +307,8 @@ bool QgsPostgresFeatureIterator::declareCursor( const QString& whereClause )
                                      ? ( P->mConnectionRO->majorVersion() < 2 ? "simplify" : "st_simplify" )
                                      : ( P->mConnectionRO->majorVersion() < 2 ? "simplifypreservetopology" : "st_simplifypreservetopology" );
 
-      double tolerance = simplifyMethod.tolerance();
+      double tolerance = simplifyMethod.tolerance() * 0.8; //-> Default factor for the maximum displacement distance for simplification, similar as GeoServer does
+      simplifyGeometry = simplifyMethod.methodType() == QgsSimplifyMethod::OptimizeForRendering;
 
       query += QString( "%1(%5(%2%3,%6),'%4')" )
                .arg( P->mConnectionRO->majorVersion() < 2 ? "asbinary" : "st_asbinary" )
@@ -364,6 +367,17 @@ bool QgsPostgresFeatureIterator::declareCursor( const QString& whereClause )
         continue;
 
       query += delim + P->mConnectionRO->fieldExpression( P->field( idx ) );
+    }
+
+    // query BBOX of geometries to redefine the geometries collapsed by ST_Simplify()
+    if ( simplifyGeometry && !( P->mConnectionRO->majorVersion() >= 2 && P->mConnectionRO->minorVersion() >= 1 ) && QGis::flatType( QGis::singleType( P->geometryType() ) ) == QGis::WKBPolygon )
+    {
+      query += QString( ",%1(%5(%2)%3,'%4')" )
+               .arg( P->mConnectionRO->majorVersion() < 2 ? "asbinary" : "st_asbinary" )
+               .arg( P->quotedIdentifier( P->mGeometryColumn ) )
+               .arg( P->mSpatialColType == sctGeography ? "::geometry" : "" )
+               .arg( P->endianString() )
+               .arg( P->mConnectionRO->majorVersion() < 2 ? "envelope" : "st_envelope" );
     }
 
     query += " FROM " + P->mQuery;
@@ -587,6 +601,29 @@ bool QgsPostgresFeatureIterator::getFeature( QgsPostgresResult &queryResult, int
     {
       for ( int idx = 0; idx < P->mAttributeFields.count(); ++idx )
         getFeatureAttribute( idx, queryResult, row, col, feature );
+    }
+
+    // fix collapsed geometries by ST_Simplify() using the BBOX fetched from the current query
+    const QgsSimplifyMethod& simplifyMethod = mRequest.simplifyMethod();
+    if ( mFetchGeometry && !simplifyMethod.forceLocalOptimization() && simplifyMethod.methodType() == QgsSimplifyMethod::OptimizeForRendering && QGis::flatType( QGis::singleType( P->geometryType() ) ) == QGis::WKBPolygon )
+    {
+      QgsGeometry* geometry = feature.geometry();
+
+      if ( !( P->mConnectionRO->majorVersion() >= 2 && P->mConnectionRO->minorVersion() >= 1 ) && ( !geometry || geometry->length() == 0 ) )
+      {
+        int returnedLength = ::PQgetlength( queryResult.result(), row, col );
+
+        if ( returnedLength > 0 )
+        {
+          unsigned char *featureGeom = new unsigned char[returnedLength + 1];
+          memcpy( featureGeom, PQgetvalue( queryResult.result(), row, col ), returnedLength );
+          memset( featureGeom + returnedLength, 0, 1 );
+
+          QgsGeometry *envelope = new QgsGeometry();
+          envelope->fromWkb( featureGeom, returnedLength + 1 );
+          feature.setGeometry( envelope );
+        }
+      }
     }
 
     return true;
