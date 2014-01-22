@@ -86,6 +86,7 @@ class GUI_EXPORT QgsExpressionSelectionDialog : public QDialog, private Ui::QgsE
     virtual void done( int r );
 
   private:
+    void saveRecent();
     QgsVectorLayer* mLayer;
 };
 
