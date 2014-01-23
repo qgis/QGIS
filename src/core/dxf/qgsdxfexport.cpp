@@ -1358,7 +1358,7 @@ bool QgsDxfExport::layerIsScaleBasedVisible( const QgsMapLayer* layer ) const
   }
 
   return ( layer->minimumScale() < mSymbologyScaleDenominator &&
-           layer->minimumScale() > mSymbologyScaleDenominator );
+           layer->maximumScale() > mSymbologyScaleDenominator );
 }
 
 /******************************************************Test with AC_1018 methods***************************************************************/
