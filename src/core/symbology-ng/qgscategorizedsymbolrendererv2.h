@@ -20,6 +20,7 @@
 #include "qgsexpression.h"
 
 #include <QHash>
+#include <QScopedPointer>
 
 class QgsVectorColorRampV2;
 class QgsVectorLayer;
@@ -36,9 +37,7 @@ class CORE_EXPORT QgsRendererCategoryV2
     //! copy constructor
     QgsRendererCategoryV2( const QgsRendererCategoryV2& cat );
 
-    ~QgsRendererCategoryV2();
-
-    QgsRendererCategoryV2& operator=( const QgsRendererCategoryV2& cat );
+    QgsRendererCategoryV2& operator=( QgsRendererCategoryV2 cat );
 
     QVariant value() const;
     QgsSymbolV2* symbol() const;
@@ -55,8 +54,10 @@ class CORE_EXPORT QgsRendererCategoryV2
 
   protected:
     QVariant mValue;
-    QgsSymbolV2* mSymbol;
+    QScopedPointer<QgsSymbolV2> mSymbol;
     QString mLabel;
+
+    void swap( QgsRendererCategoryV2 & other );
 };
 
 typedef QList<QgsRendererCategoryV2> QgsCategoryList;
@@ -125,7 +126,7 @@ class CORE_EXPORT QgsCategorizedSymbolRendererV2 : public QgsFeatureRendererV2
     //! return a list of item text / symbol
     //! @note: this method was added in version 1.5
     //! @note not available in python bindings
-    virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, QString rule = "" );
+    virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, QString rule = QString() );
 
     QgsSymbolV2* sourceSymbol();
     void setSourceSymbol( QgsSymbolV2* sym );
@@ -137,14 +138,22 @@ class CORE_EXPORT QgsCategorizedSymbolRendererV2 : public QgsFeatureRendererV2
     void setInvertedColorRamp( bool inverted ) { mInvertedColorRamp = inverted; }
 
     //! @note added in 1.6
-    void setRotationField( QString fieldName ) { mRotationField = fieldName; }
+    void setRotationField( QString expression )
+    {
+      mRotation.reset( expression.isEmpty() ? NULL : new QgsExpression( expression ) );
+      Q_ASSERT( !mRotation.data() || !mRotation->hasParserError() );
+    }
     //! @note added in 1.6
-    QString rotationField() const { return mRotationField; }
+    QString rotationField() const {  return mRotation.data() ? mRotation->expression() : QString();}
 
     //! @note added in 1.6
-    void setSizeScaleField( QString fieldName ) { mSizeScaleField = fieldName; }
+    void setSizeScaleField( QString expression )
+    {
+      mSizeScale.reset( expression.isEmpty() ? NULL : new QgsExpression( expression ) );
+      Q_ASSERT( !mSizeScale.data() || !mSizeScale->hasParserError() );
+    }
     //! @note added in 1.6
-    QString sizeScaleField() const { return mSizeScaleField; }
+    QString sizeScaleField() const { return mSizeScale.data() ? mSizeScale->expression() : QString(); }
 
     //! @note added in 2.0
     void setScaleMethod( QgsSymbolV2::ScaleMethod scaleMethod );
@@ -154,17 +163,16 @@ class CORE_EXPORT QgsCategorizedSymbolRendererV2 : public QgsFeatureRendererV2
   protected:
     QString mAttrName;
     QgsCategoryList mCategories;
-    QgsSymbolV2* mSourceSymbol;
-    QgsVectorColorRampV2* mSourceColorRamp;
+    QScopedPointer<QgsSymbolV2> mSourceSymbol;
+    QScopedPointer<QgsVectorColorRampV2> mSourceColorRamp;
     bool mInvertedColorRamp;
-    QString mRotationField;
-    QString mSizeScaleField;
+    QScopedPointer<QgsExpression> mRotation;
+    QScopedPointer<QgsExpression> mSizeScale;
     QgsSymbolV2::ScaleMethod mScaleMethod;
-    QgsExpression* mExpression;
+    QScopedPointer<QgsExpression> mExpression;
 
     //! attribute index (derived from attribute name in startRender)
     int mAttrNum;
-    int mRotationFieldIdx, mSizeScaleFieldIdx;
 
     //! hashtable for faster access to symbols
     QHash<QString, QgsSymbolV2*> mSymbolHash;

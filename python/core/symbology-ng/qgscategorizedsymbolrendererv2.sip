@@ -123,5 +123,9 @@ class QgsCategorizedSymbolRendererV2 : QgsFeatureRendererV2
     void rebuildHash();
 
     QgsSymbolV2* symbolForValue( QVariant value );
+
+  private:
+    QgsCategorizedSymbolRendererV2( const QgsCategorizedSymbolRendererV2 & );
+    QgsCategorizedSymbolRendererV2 & operator=( const QgsCategorizedSymbolRendererV2 & );
 };
 

@@ -60,4 +60,8 @@ class QgsSingleSymbolRendererV2 : QgsFeatureRendererV2
     //! return a list of item text / symbol
     //! @note: this method was added in version 1.5
     // virtual QgsLegendSymbolList legendSymbolItems();
+
+  private:
+    QgsSingleSymbolRendererV2( const QgsSingleSymbolRendererV2 & );
+    QgsSingleSymbolRendererV2 & operator=( const QgsSingleSymbolRendererV2 & );
 };

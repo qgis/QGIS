@@ -415,5 +415,4 @@ typedef unsigned long long qgssize;
 #  define QGISEXTERN extern "C"
 #endif
 #endif
-
 #endif

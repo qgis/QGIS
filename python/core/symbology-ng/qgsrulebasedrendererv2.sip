@@ -201,4 +201,8 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
     static void refineRuleRanges( QgsRuleBasedRendererV2::Rule* initialRule, QgsGraduatedSymbolRendererV2* r );
     //! take a rule and create a list of new rules with intervals of scales given by the passed scale denominators
     static void refineRuleScales( QgsRuleBasedRendererV2::Rule* initialRule, QList<int> scales );
+
+  private:
+    QgsRuleBasedRendererV2( const QgsRuleBasedRendererV2 & );
+    QgsRuleBasedRendererV2 & operator=( const QgsRuleBasedRendererV2 & );
 };
