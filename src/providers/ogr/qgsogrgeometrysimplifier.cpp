@@ -56,11 +56,12 @@ bool QgsOgrTopologyPreservingSimplifier::simplifyGeometry( OGRGeometryH geometry
 
   return true;
 }
-#endif
+#endif // GDAL_VERSION_NUM >= 1900
 
 /***************************************************************************/
 
-#if defined(GDAL_VERSION_NUM) && defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(1,11,0)
+#if defined(GDAL_VERSION_NUM) && defined(GDAL_COMPUTE_VERSION)
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(1,11,0)
 
 QgsOgrMapToPixelSimplifier::QgsOgrMapToPixelSimplifier( int simplifyFlags, double map2pixelTol )
     : QgsMapToPixelSimplifier( simplifyFlags, map2pixelTol )
@@ -269,4 +270,5 @@ bool QgsOgrMapToPixelSimplifier::simplifyGeometry( OGRGeometryH geometry )
   return false;
 }
 
-#endif
+#endif // GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(1,11,0)
+#endif // defined(GDAL_VERSION_NUM) && defined(GDAL_COMPUTE_VERSION)

@@ -111,13 +111,15 @@ bool QgsOgrFeatureIterator::prepareSimplification( const QgsSimplifyMethod& simp
     QgsSimplifyMethod::MethodType methodType = simplifyMethod.methodType();
     Q_UNUSED( methodType);
 
-#if defined(GDAL_VERSION_NUM) && defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(1,11,0)
+#if defined(GDAL_VERSION_NUM) && defined(GDAL_COMPUTE_VERSION)
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(1,11,0)
     if ( methodType == QgsSimplifyMethod::OptimizeForRendering )
     {
       int simplifyFlags = QgsMapToPixelSimplifier::SimplifyGeometry | QgsMapToPixelSimplifier::SimplifyEnvelope;
       mGeometrySimplifier = new QgsOgrMapToPixelSimplifier( simplifyFlags, simplifyMethod.tolerance() );
       return true;
     }
+#endif
 #endif
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1900
     if ( methodType == QgsSimplifyMethod::PreserveTopology )
@@ -134,11 +136,13 @@ bool QgsOgrFeatureIterator::prepareSimplification( const QgsSimplifyMethod& simp
 
 bool QgsOgrFeatureIterator::providerCanSimplify( QgsSimplifyMethod::MethodType methodType ) const
 {
-#if defined(GDAL_VERSION_NUM) && defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(1,11,0)
+#if defined(GDAL_VERSION_NUM) && defined(GDAL_COMPUTE_VERSION)
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(1,11,0)
   if ( methodType == QgsSimplifyMethod::OptimizeForRendering )
   {
     return true;
   }
+#endif
 #endif
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1900
   if ( methodType == QgsSimplifyMethod::PreserveTopology )

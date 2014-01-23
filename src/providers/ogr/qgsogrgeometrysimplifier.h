@@ -52,7 +52,8 @@ class QgsOgrTopologyPreservingSimplifier : public QgsOgrAbstractGeometrySimplifi
 };
 #endif
 
-#if defined(GDAL_VERSION_NUM) && defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(1,11,0)
+#if defined(GDAL_VERSION_NUM) && defined(GDAL_COMPUTE_VERSION)
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(1,11,0)
 /**
  * OGR implementation of GeometrySimplifier using the "MapToPixel" algorithm
  *
@@ -88,6 +89,7 @@ class QgsOgrMapToPixelSimplifier : public QgsOgrAbstractGeometrySimplifier, QgsM
     //! Simplifies the specified geometry
     virtual bool simplifyGeometry( OGRGeometryH geometry );
 };
-#endif
+#endif // GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(1,11,0)
+#endif // defined(GDAL_VERSION_NUM) && defined(GDAL_COMPUTE_VERSION)
 
 #endif // QGSOGRGEOMETRYSIMPLIFIER_H
