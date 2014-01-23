@@ -442,37 +442,33 @@ void QgsDiagramProperties::on_mRemoveCategoryPushButton_clicked()
 
 void QgsDiagramProperties::on_mFindMaximumValueButton_clicked()
 {
-  //get maximum value from provider (ignoring not-commited edits)
-  if ( mLayer )
+  if ( !mLayer )
+    return;
+
+  float maxValue = 0.0;
+  if ( mSizeAttributeComboBox->currentIndex() >= mAvailableAttributes )
   {
-    // condition removed, keep this useless scope to avoid screewing diff (easier to review)
+    QgsExpression exp( mSizeAttributeComboBox->currentText() );
+    exp.prepare( mLayer->pendingFields() );
+    if ( !exp.hasEvalError() )
     {
-      float maxValue = 0;
-      if ( mSizeAttributeComboBox->currentIndex() >= mAvailableAttributes )
+      QgsFeature feature;
+      QgsFeatureIterator features = mLayer->getFeatures();
+      while ( features.nextFeature( *&feature ) )
       {
-        QgsExpression exp( mSizeAttributeComboBox->currentText() );
-        exp.prepare( mLayer->pendingFields() );
-        if ( exp.hasEvalError() )
-        {
-          QgsDebugMsgLevel( "Prepare error:" + exp.evalErrorString(), 4 );
-        }
-        else
-        {
-          QgsFeature feature;
-          QgsFeatureIterator features = mLayer->getFeatures();
-          while ( features.nextFeature( *&feature ) )
-          {
-            maxValue = qMax( maxValue, exp.evaluate( &feature ).toFloat() );
-          }
-        }
+        maxValue = qMax( maxValue, exp.evaluate( &feature ).toFloat() );
       }
-      else
-      {
-        maxValue = mLayer->maximumValue( mSizeAttributeComboBox->itemData( mSizeAttributeComboBox->currentIndex() ).toInt() ).toFloat();
-      }
-      mValueLineEdit->setText( QString( "%1" ).arg( maxValue ) );
+    }
+    else
+    {
+      QgsDebugMsgLevel( "Prepare error:" + exp.evalErrorString(), 4 );
     }
   }
+  else
+  {
+    maxValue = mLayer->maximumValue( mSizeAttributeComboBox->itemData( mSizeAttributeComboBox->currentIndex() ).toInt() ).toFloat();
+  }
+  mValueLineEdit->setText( QString( "%1" ).arg( maxValue ) );
 }
 
 void QgsDiagramProperties::on_mDisplayDiagramsGroupBox_toggled( bool checked )
