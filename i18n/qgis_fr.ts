@@ -12812,7 +12812,7 @@ Vous visualisez ce message car vous n&apos;avez aucun affichage (DISPLAY) param�
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2114"/>
         <source>field %1 with unsupported type %2 skipped</source>
-        <translation>champ %1 avec le type %2 ignoré ( non supporté )</translation>
+        <translation>champ %1 avec le type %2 ignoré (non supporté)</translation>
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2120"/>
@@ -19561,8 +19561,8 @@ Database: %3</translation>
 Driver:%1
 Database:%2</source>
         <translation>Impossible de créer le signet.
-Driver:%1
-Database:%2</translation>
+Pilote :%1
+Base de données :%2</translation>
     </message>
     <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="203"/>
@@ -20463,7 +20463,7 @@ Les classes existantes doivent-elles être effacées avant la classification ?</
         <location filename="../src/app/composer/qgscomposer.cpp" line="738"/>
         <location filename="../src/app/composer/qgscomposer.cpp" line="750"/>
         <source>%1%</source>
-        <translation type="unfinished">%1%</translation>
+        <translation>%1%</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="720"/>
@@ -21451,7 +21451,7 @@ Essayez une résolution ou une taille de papier inférieur.</translation>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="757"/>
         <source>&amp;Delete</source>
-        <translation type="unfinished">&amp;Effacer</translation>
+        <translation>&amp;Effacer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="760"/>
@@ -21466,7 +21466,7 @@ Essayez une résolution ou une taille de papier inférieur.</translation>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="768"/>
         <source>De&amp;select All</source>
-        <translation type="unfinished"></translation>
+        <translation>Tout dé&amp;sélectionner</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="771"/>
@@ -21481,12 +21481,12 @@ Essayez une résolution ou une taille de papier inférieur.</translation>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="779"/>
         <source>Select &amp;All</source>
-        <translation type="unfinished"></translation>
+        <translation>Sélectionner to&amp;ut</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="782"/>
         <source>Select all items</source>
-        <translation type="unfinished">Sélectionner tous les objets</translation>
+        <translation>Sélectionner tous les objets</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="785"/>
@@ -21496,7 +21496,7 @@ Essayez une résolution ou une taille de papier inférieur.</translation>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="790"/>
         <source>&amp;Invert Selection</source>
-        <translation type="unfinished">&amp;Inverser la sélection</translation>
+        <translation>&amp;Inverser la sélection</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="793"/>
@@ -26239,12 +26239,12 @@ le SCR existant</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgsdatadefinedsymboldialog.cpp" line="188"/>
         <source>&apos;left&apos;|&apos;center&apos;|&apos;right&apos;</source>
-        <translation type="unfinished">&apos;left&apos;|&apos;center&apos;|&apos;right&apos;</translation>
+        <translation>&apos;gauche&apos;|&apos;centre&apos;|&apos;droit&apos;</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsdatadefinedsymboldialog.cpp" line="193"/>
         <source>&apos;top&apos;|&apos;center&apos;|&apos;bottom&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;haut&apos;|&apos;centre&apos;|&apos;bas&apos;</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsdatadefinedsymboldialog.cpp" line="198"/>
@@ -32501,7 +32501,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/globe/globe_plugin_dialog_guibase.ui" line="401"/>
         <source>Anti Aliasing</source>
-        <translation>Anti-aliasing</translation>
+        <translation>Anti-crénelage</translation>
     </message>
     <message>
         <location filename="../src/plugins/globe/globe_plugin_dialog_guibase.ui" line="413"/>
@@ -41437,7 +41437,7 @@ du contraste</translation>
     <message>
         <location filename="../src/gui/qgsnewhttpconnection.cpp" line="50"/>
         <source>GeoServer</source>
-        <translation type="unfinished"></translation>
+        <translation>GeoServer</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsnewhttpconnection.cpp" line="101"/>
@@ -43872,13 +43872,13 @@ Toujours le réseau : toujours charger depuis le réseau sans vérifier si le ca
         <location filename="../src/app/qgsoptions.cpp" line="715"/>
         <location filename="../src/app/qgsoptions.cpp" line="1312"/>
         <source>Solid</source>
-        <translation type="unfinished">Continue</translation>
+        <translation>Continue</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="716"/>
         <location filename="../src/app/qgsoptions.cpp" line="1316"/>
         <source>Dots</source>
-        <translation type="unfinished">Pointillés</translation>
+        <translation>Pointillés</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="717"/>
@@ -45797,7 +45797,7 @@ erreur : %2</translation>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="54"/>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="214"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;When the layer is setup various metadata is required for the Oracle table. This includes information such as the table row count, geometry type and spatial extents of the data in the geometry column. If the table contains a large number of rows determining this metadata is time consuming.&lt;/p&gt;&lt;p&gt;By activating this option the following fast table metadata operations are done:&lt;/p&gt;&lt;p&gt;1) Row count is determined from all_tables.num_rows.&lt;/p&gt;&lt;p&gt;2) Table extents are always determined with the SDO_TUNE.EXTENTS_OF function even if a layer filter is applied.&lt;/p&gt;&lt;p&gt;3) The table geometry is determined from the first 100 non-null geometry rows in the table.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Lorsqu&apos;une couche est crée, les méta-données sont nécessaires pour la table Oracle. Sont inclues des informations telles que le nombre de lignes, le type de géométries et l&apos;étendue des données. Si la table contient un grand nombre de données, le calcul des méta-données prend du temps.&lt;/p&gt;&lt;p&gt;En activant cette option, les opérations de méta-données rapides suivantes sont effectuées : &lt;/p&gt;&lt;p&gt;1) Le nombre de ligne est déterminé depuis all_tables.num_rows.&lt;/p&gt;&lt;p&gt;2) l&apos;étendue de la table est toujours déterminée par la fonction SDO_TUNE.EXTENTS_OF même si un filtre est appliqué.&lt;/p&gt;&lt;p&gt;3) La géométrie de la table est déterminée sur les 100 premières lignes avec une géométrie non nulle.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Lorsqu&apos;une couche est crée, les méta-données sont nécessaires pour la table Oracle. Sont inclues des informations telles que le nombre de lignes, le type de géométries et l&apos;étendue des données. Si la table contient un grand nombre de données, le calcul des méta-données prend du temps.&lt;/p&gt;&lt;p&gt;En activant cette option, les opérations de méta-données rapides suivantes sont effectuées : &lt;/p&gt;&lt;p&gt;1) Le nombre de ligne est déterminé depuis all_tables.num_rows.&lt;/p&gt;&lt;p&gt;2) l&apos;étendue de la table est toujours déterminée par la fonction SDO_TUNE.EXTENTS_OF même si un filtre est appliqué.&lt;/p&gt;&lt;p&gt;3) La géométrie de la table est déterminée sur les 100 premières lignes avec une géométrie non nulle.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="57"/>
@@ -49002,7 +49002,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="846"/>
         <source>Reload repository contents
 (useful when you uploaded a plugin there)</source>
-        <translation>Recharger le contenu des dépôtss
+        <translation>Recharger le contenu des dépôts
 (utile si vous avez envoyé un plugin sur un des dépôts)</translation>
     </message>
     <message>
@@ -51728,7 +51728,7 @@ Cliquer sur le bouton Aide pour connaître les options valides de création pour
     <message>
         <location filename="../src/gui/qgsrasterformatsaveoptionswidget.cpp" line="266"/>
         <source>Cannot get create options for driver %1</source>
-        <translation>Impossible de créer les options pour le driver %1</translation>
+        <translation>Impossible de créer les options pour le pilote %1</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsrasterformatsaveoptionswidget.cpp" line="270"/>
@@ -54557,7 +54557,7 @@ standard deviation ×</source>
     <message>
         <location filename="../src/core/qgsrelation.cpp" line="36"/>
         <source>Cannot create relation. Unexpected tag &apos;%1&apos;</source>
-        <translation>Impossibe de créer la relation. Tag %1 inattendu</translation>
+        <translation>Impossible de créer la relation. Tag %1 inattendu</translation>
     </message>
     <message>
         <location filename="../src/core/qgsrelation.cpp" line="53"/>
@@ -56410,12 +56410,12 @@ du contraste</translation>
     <message>
         <location filename="../src/ui/qgssinglebandpseudocolorrendererwidgetbase.ui" line="317"/>
         <source>Min / Max origin</source>
-        <translation>Origine Min / Max</translation>
+        <translation>Origine Min. / Max.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssinglebandpseudocolorrendererwidgetbase.ui" line="340"/>
         <source>Min / max origin:</source>
-        <translation>Origin min / max:</translation>
+        <translation>Origine min. / max. :</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssinglebandpseudocolorrendererwidgetbase.ui" line="214"/>
