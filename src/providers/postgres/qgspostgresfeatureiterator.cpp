@@ -605,7 +605,7 @@ bool QgsPostgresFeatureIterator::getFeature( QgsPostgresResult &queryResult, int
 
     // fix collapsed geometries by ST_Simplify() using the BBOX fetched from the current query
     const QgsSimplifyMethod& simplifyMethod = mRequest.simplifyMethod();
-    if ( mFetchGeometry && !simplifyMethod.forceLocalOptimization() && simplifyMethod.methodType() == QgsSimplifyMethod::OptimizeForRendering )
+    if ( mFetchGeometry && !simplifyMethod.forceLocalOptimization() && simplifyMethod.methodType() == QgsSimplifyMethod::OptimizeForRendering && QGis::flatType( QGis::singleType( P->geometryType() ) ) != QGis::WKBPoint )
     {
       QgsGeometry* geometry = feature.geometry();
 
