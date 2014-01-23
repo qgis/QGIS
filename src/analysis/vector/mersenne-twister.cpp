@@ -1,4 +1,4 @@
-/* 
+/*
  * The Mersenne Twister pseudo-random number generator (PRNG)
  *
  * This is an implementation of fast PRNG called MT19937,
@@ -14,7 +14,7 @@
  *
  * Written by Christian Stigen Larsen
  * http://csl.sublevel3.org
- * 
+ *
  * Distributed under the modified BSD license.
  *
  * 2012-01-11
@@ -40,7 +40,7 @@ static unsigned index = 0;
 #define L31(x) (0x7FFFFFFF & x) // 31 Least Significant Bits
 #define ODD(x) (x & 1) // Check if number is odd
 
-#define UINT32_MAX std::numeric_limits<uint32_t>::max()
+#define MD_UINT32_MAX std::numeric_limits<uint32_t>::max()
 
 static inline void generate_numbers()
 {
@@ -170,10 +170,10 @@ extern "C" int mt_rand()
    * PORTABILITY WARNING:
    *
    * rand_u32() uses all 32-bits for the pseudo-random number,
-   * but rand() must return a number from 0 ... RAND_MAX.
+   * but rand() must return a number from 0 ... MD_RAND_MAX.
    *
    * We'll just assume that rand() only uses 31 bits worth of
-   * data, and that we're on a two's complement system.  
+   * data, and that we're on a two's complement system.
    *
    * So, to output an integer compatible with rand(), we have
    * two options: Either mask off the highest (32nd) bit, or
@@ -191,32 +191,32 @@ extern "C" void mt_srand(unsigned value)
 
 extern "C" float randf_cc()
 {
-  return static_cast<float>(rand_u32())/UINT32_MAX;
+  return static_cast<float>(rand_u32())/MD_UINT32_MAX;
 }
 
 extern "C" float randf_co()
 {
-  return static_cast<float>(rand_u32())/(UINT32_MAX+1.0f);
+  return static_cast<float>(rand_u32())/(MD_UINT32_MAX+1.0f);
 }
 
 extern "C" float randf_oo()
 {
-  return (static_cast<float>(rand_u32())+0.5f)/(UINT32_MAX+1.0f);
+  return (static_cast<float>(rand_u32())+0.5f)/(MD_UINT32_MAX+1.0f);
 }
 
 extern "C" double randd_cc()
 {
-  return static_cast<double>(rand_u32())/UINT32_MAX;
+  return static_cast<double>(rand_u32())/MD_UINT32_MAX;
 }
 
 extern "C" double randd_co()
 {
-  return static_cast<double>(rand_u32())/(UINT32_MAX+1.0);
+  return static_cast<double>(rand_u32())/(MD_UINT32_MAX+1.0);
 }
 
 extern "C" double randd_oo()
 {
-  return (static_cast<double>(rand_u32())+0.5)/(UINT32_MAX+1.0);
+  return (static_cast<double>(rand_u32())+0.5)/(MD_UINT32_MAX+1.0);
 }
 
 extern "C" uint64_t rand_u64()

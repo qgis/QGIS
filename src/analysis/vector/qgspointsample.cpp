@@ -105,8 +105,8 @@ void QgsPointSample::addSamplePoints( QgsFeature& inputFeature, QgsVectorFileWri
 
   while ( nIterations < maxIterations && points < nPoints )
   {
-    randX = (( double )mt_rand() / RAND_MAX ) * geomRect.width() + geomRect.xMinimum();
-    randY = (( double )mt_rand() / RAND_MAX ) * geomRect.height() + geomRect.yMinimum();
+    randX = (( double )mt_rand() / MD_RAND_MAX ) * geomRect.width() + geomRect.xMinimum();
+    randY = (( double )mt_rand() / MD_RAND_MAX ) * geomRect.height() + geomRect.yMinimum();
     QgsPoint randPoint( randX, randY );
     QgsGeometry* ptGeom = QgsGeometry::fromPoint( randPoint );
     if ( ptGeom->within( geom ) && checkMinDistance( randPoint, sIndex, minDistance, pointMapForFeature ) )

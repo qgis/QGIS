@@ -1,4 +1,4 @@
-/* 
+/*
  * The Mersenne Twister pseudo-random number generator (PRNG)
  *
  * This is an implementation of fast PRNG called MT19937,
@@ -32,7 +32,7 @@ extern "C" {
 /*
  * Maximum number you can get from rand().
  */
-#define RAND_MAX std::numeric_limits<int32_t>::max()
+#define MD_RAND_MAX std::numeric_limits<int32_t>::max()
 
 /*
  * Initialize the number generator with given seed.
@@ -41,13 +41,13 @@ extern "C" {
 void mt_srand(unsigned seed_value);
 
 /*
- * Extract a pseudo-random integer in the range 0 ... RAND_MAX.
+ * Extract a pseudo-random integer in the range 0 ... MD_RAND_MAX.
  * (LIBC REPLACEMENT FUNCTION)
  */
 int mt_rand();
 
 /*
- * Extract a pseudo-random unsigned 32-bit integer in the range 0 ... UINT32_MAX
+ * Extract a pseudo-random unsigned 32-bit integer in the range 0 ... MD_UINT32_MAX
  */
 uint32_t rand_u32();
 
