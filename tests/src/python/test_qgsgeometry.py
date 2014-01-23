@@ -40,7 +40,7 @@ from PyQt4.QtCore import qDebug
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
 
 class TestQgsGeometry(TestCase):
-    wkbPtr = 0
+    wkbPtr = 1
 
     def testWktPointLoading(self):
         myWKT='POINT(10 10)'

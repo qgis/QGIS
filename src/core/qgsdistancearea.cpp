@@ -255,8 +255,6 @@ bool  QgsDistanceArea::setEllipsoid( double semiMajor, double semiMinor )
   return true;
 }
 
-
-
 double QgsDistanceArea::measure( QgsGeometry* geometry )
 {
   if ( !geometry )
@@ -266,12 +264,13 @@ double QgsDistanceArea::measure( QgsGeometry* geometry )
   if ( !wkb )
     return 0.0;
 
-  const unsigned char* ptr;
-  unsigned int wkbType;
+  QgsConstWkbPtr wkbPtr( wkb + 1 );
+
+  QGis::WkbType wkbType;
+  wkbPtr >> wkbType;
+
   double res, resTotal = 0;
   int count, i;
-
-  memcpy( &wkbType, ( wkb + 1 ), sizeof( wkbType ) );
 
   // measure distance or area based on what is the type of geometry
   bool hasZptr = false;
@@ -288,11 +287,10 @@ double QgsDistanceArea::measure( QgsGeometry* geometry )
     case QGis::WKBMultiLineString25D:
       hasZptr = true;
     case QGis::WKBMultiLineString:
-      count = *(( int* )( wkb + 5 ) );
-      ptr = wkb + 9;
+      wkbPtr >> count;
       for ( i = 0; i < count; i++ )
       {
-        ptr = measureLine( ptr, &res, hasZptr );
+        wkbPtr = measureLine( wkbPtr, &res, hasZptr );
         resTotal += res;
       }
       QgsDebugMsg( "returning " + QString::number( resTotal ) );
@@ -308,12 +306,11 @@ double QgsDistanceArea::measure( QgsGeometry* geometry )
     case QGis::WKBMultiPolygon25D:
       hasZptr = true;
     case QGis::WKBMultiPolygon:
-      count = *(( int* )( wkb + 5 ) );
-      ptr = wkb + 9;
+      wkbPtr >> count;
       for ( i = 0; i < count; i++ )
       {
-        ptr = measurePolygon( ptr, &res, 0, hasZptr );
-        if ( !ptr )
+        wkbPtr = measurePolygon( wkbPtr, &res, 0, hasZptr );
+        if ( !wkbPtr )
         {
           QgsDebugMsg( "measurePolygon returned 0" );
           break;
@@ -338,12 +335,12 @@ double QgsDistanceArea::measurePerimeter( QgsGeometry* geometry )
   if ( !wkb )
     return 0.0;
 
-  const unsigned char* ptr;
-  unsigned int wkbType;
+  QgsConstWkbPtr wkbPtr( wkb + 1 );
+  QGis::WkbType wkbType;
+  wkbPtr >> wkbType;
+
   double res = 0.0, resTotal = 0.0;
   int count, i;
-
-  memcpy( &wkbType, ( wkb + 1 ), sizeof( wkbType ) );
 
   // measure distance or area based on what is the type of geometry
   bool hasZptr = false;
@@ -366,12 +363,11 @@ double QgsDistanceArea::measurePerimeter( QgsGeometry* geometry )
     case QGis::WKBMultiPolygon25D:
       hasZptr = true;
     case QGis::WKBMultiPolygon:
-      count = *(( int* )( wkb + 5 ) );
-      ptr = wkb + 9;
+      wkbPtr >> count;
       for ( i = 0; i < count; i++ )
       {
-        ptr = measurePolygon( ptr, 0, &res, hasZptr );
-        if ( !ptr )
+        wkbPtr = measurePolygon( wkbPtr, 0, &res, hasZptr );
+        if ( !wkbPtr )
         {
           QgsDebugMsg( "measurePolygon returned 0" );
           break;
@@ -390,35 +386,32 @@ double QgsDistanceArea::measurePerimeter( QgsGeometry* geometry )
 
 const unsigned char* QgsDistanceArea::measureLine( const unsigned char* feature, double* area, bool hasZptr )
 {
-  const unsigned char *ptr = feature + 5;
-  unsigned int nPoints = *(( int* )ptr );
-  ptr = feature + 9;
+  QgsConstWkbPtr wkbPtr( feature + 1 + sizeof( int ) );
+  int nPoints;
+  wkbPtr >> nPoints;
 
   QList<QgsPoint> points;
   double x, y;
 
   QgsDebugMsg( "This feature WKB has " + QString::number( nPoints ) + " points" );
   // Extract the points from the WKB format into the vector
-  for ( unsigned int i = 0; i < nPoints; ++i )
+  for ( int i = 0; i < nPoints; ++i )
   {
-    x = *(( double * ) ptr );
-    ptr += sizeof( double );
-    y = *(( double * ) ptr );
-    ptr += sizeof( double );
+    wkbPtr >> x >> y;
     if ( hasZptr )
     {
       // totally ignore Z value
-      ptr += sizeof( double );
+      wkbPtr += sizeof( double );
     }
 
     points.append( QgsPoint( x, y ) );
   }
 
   *area = measureLine( points );
-  return ptr;
+  return wkbPtr;
 }
 
-double QgsDistanceArea::measureLine( const QList<QgsPoint>& points )
+double QgsDistanceArea::measureLine( const QList<QgsPoint> &points )
 {
   if ( points.size() < 2 )
     return 0;
@@ -460,7 +453,7 @@ double QgsDistanceArea::measureLine( const QList<QgsPoint>& points )
 
 }
 
-double QgsDistanceArea::measureLine( const QgsPoint& p1, const QgsPoint& p2 )
+double QgsDistanceArea::measureLine( const QgsPoint &p1, const QgsPoint &p2 )
 {
   double result;
 
@@ -496,7 +489,7 @@ double QgsDistanceArea::measureLine( const QgsPoint& p1, const QgsPoint& p2 )
 }
 
 
-const unsigned char* QgsDistanceArea::measurePolygon( const unsigned char* feature, double* area, double* perimeter, bool hasZptr )
+const unsigned char *QgsDistanceArea::measurePolygon( const unsigned char* feature, double* area, double* perimeter, bool hasZptr )
 {
   if ( !feature )
   {
@@ -504,8 +497,11 @@ const unsigned char* QgsDistanceArea::measurePolygon( const unsigned char* featu
     return 0;
   }
 
+  QgsConstWkbPtr wkbPtr( feature + 1 + sizeof( int ) );
+
   // get number of rings in the polygon
-  unsigned int numRings = *(( int* )( feature + 1 + sizeof( int ) ) );
+  int numRings;
+  wkbPtr >> numRings;
 
   if ( numRings == 0 )
   {
@@ -514,8 +510,6 @@ const unsigned char* QgsDistanceArea::measurePolygon( const unsigned char* featu
   }
 
   // Set pointer to the first ring
-  const unsigned char* ptr = feature + 1 + 2 * sizeof( int );
-
   QList<QgsPoint> points;
   QgsPoint pnt;
   double x, y;
@@ -526,23 +520,20 @@ const unsigned char* QgsDistanceArea::measurePolygon( const unsigned char* featu
 
   try
   {
-    for ( unsigned int idx = 0; idx < numRings; idx++ )
+    for ( int idx = 0; idx < numRings; idx++ )
     {
-      int nPoints = *(( int* )ptr );
-      ptr += 4;
+      int nPoints;
+      wkbPtr >> nPoints;
 
       // Extract the points from the WKB and store in a pair of
       // vectors.
       for ( int jdx = 0; jdx < nPoints; jdx++ )
       {
-        x = *(( double * ) ptr );
-        ptr += sizeof( double );
-        y = *(( double * ) ptr );
-        ptr += sizeof( double );
+        wkbPtr >> x >> y;
         if ( hasZptr )
         {
           // totally ignore Z value
-          ptr += sizeof( double );
+          wkbPtr += sizeof( double );
         }
 
         pnt = QgsPoint( x, y );
@@ -589,7 +580,7 @@ const unsigned char* QgsDistanceArea::measurePolygon( const unsigned char* featu
     QgsMessageLog::logMessage( QObject::tr( "Caught a coordinate system exception while trying to transform a point. Unable to calculate polygon area or perimeter." ) );
   }
 
-  return ptr;
+  return wkbPtr;
 }
 
 
@@ -1003,7 +994,8 @@ void QgsDistanceArea::convertMeasurement( double &measure, QGis::UnitType &measu
 
   // Gets the conversion factor between the specified units
   double factorUnits = QGis::fromUnitToUnitFactor( measureUnits, displayUnits );
-  if ( isArea ) factorUnits *= factorUnits;
+  if ( isArea )
+    factorUnits *= factorUnits;
 
   QgsDebugMsg( QString( "Converting %1 %2" ).arg( QString::number( measure ), QGis::toLiteral( measureUnits ) ) );
   measure *= factorUnits;

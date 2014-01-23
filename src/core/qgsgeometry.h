@@ -68,6 +68,8 @@ class QgsRectangle;
  *
  * @author Brendan Morley
  */
+class QgsConstWkbPtr;
+class QgsWkbPtr;
 
 class CORE_EXPORT QgsGeometry
 {
@@ -174,7 +176,6 @@ class CORE_EXPORT QgsGeometry
     */
     QgsPoint closestVertex( const QgsPoint& point, int& atVertex, int& beforeVertex, int& afterVertex, double& sqrDist );
 
-
     /**
        Returns the indexes of the vertices before and after the given vertex index.
 
@@ -188,7 +189,6 @@ class CORE_EXPORT QgsGeometry
           skip equal vertex positions).
     */
     void adjacentVertices( int atVertex, int& beforeVertex, int& afterVertex );
-
 
     /** Insert a new vertex before the given vertex index,
      *  ring and item (first number is index 0)
@@ -535,13 +535,13 @@ class CORE_EXPORT QgsGeometry
     @param dx translation of x-coordinate
     @param dy translation of y-coordinate
     @param hasZValue 25D type?*/
-    void translateVertex( int& wkbPosition, double dx, double dy, bool hasZValue );
+    void translateVertex( QgsWkbPtr &wkbPtr, double dx, double dy, bool hasZValue );
 
     /**Transforms a single vertex by ct.
     @param wkbPosition position in wkb array. Is increased automatically by the function
     @param ct the QgsCoordinateTransform
     @param hasZValue 25D type?*/
-    void transformVertex( int& wkbPosition, const QgsCoordinateTransform& ct, bool hasZValue );
+    void transformVertex( QgsWkbPtr &wkbPtr, const QgsCoordinateTransform& ct, bool hasZValue );
 
     //helper functions for geometry splitting
 
@@ -594,21 +594,67 @@ class CORE_EXPORT QgsGeometry
     int mergeGeometriesMultiTypeSplit( QVector<GEOSGeometry*>& splitResult );
 
     /** return point from wkb */
-    QgsPoint asPoint( unsigned char*& ptr, bool hasZValue ) const;
+    QgsPoint asPoint( QgsConstWkbPtr &wkbPtr, bool hasZValue ) const;
 
     /** return polyline from wkb */
-    QgsPolyline asPolyline( unsigned char*& ptr, bool hasZValue ) const;
+    QgsPolyline asPolyline( QgsConstWkbPtr &wkbPtr, bool hasZValue ) const;
 
     /** return polygon from wkb */
-    QgsPolygon asPolygon( unsigned char*& ptr, bool hasZValue ) const;
+    QgsPolygon asPolygon( QgsConstWkbPtr &wkbPtr, bool hasZValue ) const;
 
     static bool geosRelOp( char( *op )( const GEOSGeometry*, const GEOSGeometry * ),
                            const QgsGeometry* a, const QgsGeometry* b );
 
     /**Returns < 0 if point(x/y) is left of the line x1,y1 -> x1,y2*/
     double leftOf( double x, double y, double& x1, double& y1, double& x2, double& y2 );
+
+    static inline bool moveVertex( QgsWkbPtr &wkbPtr, const double &x, const double &y, int atVertex, bool hasZValue, int &pointIndex, bool isRing );
+    static inline bool deleteVertex( QgsConstWkbPtr &srcPtr, QgsWkbPtr &dstPtr, int atVertex, bool hasZValue, int &pointIndex, bool isRing, bool lastItem );
+    static inline bool insertVertex( QgsConstWkbPtr &srcPtr, QgsWkbPtr &dstPtr, int beforeVertex, const double &x, const double &y, bool hasZValue, int &pointIndex, bool isRing );
 }; // class QgsGeometry
 
 Q_DECLARE_METATYPE( QgsGeometry );
+
+class CORE_EXPORT QgsWkbPtr
+{
+    mutable unsigned char *mP;
+
+  public:
+    QgsWkbPtr( unsigned char *p ) { mP = p; }
+
+    inline const QgsWkbPtr &operator>>( double &v ) const { memcpy( &v, mP, sizeof( v ) ); mP += sizeof( v ); return *this; }
+    inline const QgsWkbPtr &operator>>( int &v ) const { memcpy( &v, mP, sizeof( v ) ); mP += sizeof( v ); return *this; }
+    inline const QgsWkbPtr &operator>>( unsigned int &v ) const { memcpy( &v, mP, sizeof( v ) ); mP += sizeof( v ); return *this; }
+    inline const QgsWkbPtr &operator>>( char &v ) const { memcpy( &v, mP, sizeof( v ) ); mP += sizeof( v ); return *this; }
+    inline const QgsWkbPtr &operator>>( QGis::WkbType &v ) const { memcpy( &v, mP, sizeof( v ) ); mP += sizeof( v ); return *this; }
+
+    inline QgsWkbPtr &operator<<( const double &v ) { memcpy( mP, &v, sizeof( v ) ); mP += sizeof( v ); return *this; }
+    inline QgsWkbPtr &operator<<( const int &v ) { memcpy( mP, &v, sizeof( v ) ); mP += sizeof( v ); return *this; }
+    inline QgsWkbPtr &operator<<( const unsigned int &v ) { memcpy( mP, &v, sizeof( v ) ); mP += sizeof( v ); return *this; }
+    inline QgsWkbPtr &operator<<( const char &v ) { memcpy( mP, &v, sizeof( v ) ); mP += sizeof( v ); return *this; }
+    inline QgsWkbPtr &operator<<( const QGis::WkbType &v ) { memcpy( mP, &v, sizeof( v ) ); mP += sizeof( v ); return *this; }
+
+    inline void operator+=( int n ) { mP += n; }
+
+    inline operator unsigned char *() const { return mP; }
+};
+
+class CORE_EXPORT QgsConstWkbPtr
+{
+    mutable unsigned char *mP;
+
+  public:
+    QgsConstWkbPtr( const unsigned char *p ) { mP = ( unsigned char * ) p; }
+
+    inline const QgsConstWkbPtr &operator>>( double &v ) const { memcpy( &v, mP, sizeof( v ) ); mP += sizeof( v ); return *this; }
+    inline const QgsConstWkbPtr &operator>>( int &v ) const { memcpy( &v, mP, sizeof( v ) ); mP += sizeof( v ); return *this; }
+    inline const QgsConstWkbPtr &operator>>( unsigned int &v ) const { memcpy( &v, mP, sizeof( v ) ); mP += sizeof( v ); return *this; }
+    inline const QgsConstWkbPtr &operator>>( char &v ) const { memcpy( &v, mP, sizeof( v ) ); mP += sizeof( v ); return *this; }
+    inline const QgsConstWkbPtr &operator>>( QGis::WkbType &v ) const { memcpy( &v, mP, sizeof( v ) ); mP += sizeof( v ); return *this; }
+
+    inline void operator+=( int n ) { mP += n; }
+
+    inline operator const unsigned char *() const { return mP; }
+};
 
 #endif

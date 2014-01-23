@@ -1061,8 +1061,8 @@ QDomElement QgsOgcUtils::geometryToGML( QgsGeometry* geometry, QDomDocument& doc
   QDomElement baseCoordElem;
 
   bool hasZValue = false;
-  double *x, *y;
-  const unsigned char* wkb = geometry->asWkb();
+
+  QgsConstWkbPtr wkbPtr( geometry->asWkb() + 1 + sizeof( int ) );
 
   if ( format == "GML3" )
   {
@@ -1095,13 +1095,11 @@ QDomElement QgsOgcUtils::geometryToGML( QgsGeometry* geometry, QDomDocument& doc
     {
       QDomElement pointElem = doc.createElement( "gml:Point" );
       QDomElement coordElem = baseCoordElem.cloneNode().toElement();
-      QString coordString;
-      x = ( double * )( wkb + 5 );
-      coordString += qgsDoubleToString( *x );
-      coordString += cs;
-      y = ( double * )( wkb + 5 + sizeof( double ) );
-      coordString += qgsDoubleToString( *y );
-      QDomText coordText = doc.createTextNode( coordString );
+
+      double x, y;
+      wkbPtr >> x >> y;
+      QDomText coordText = doc.createTextNode( qgsDoubleToString( x ) + cs + qgsDoubleToString( y ) );
+
       coordElem.appendChild( coordText );
       pointElem.appendChild( coordElem );
       return pointElem;
@@ -1110,34 +1108,28 @@ QDomElement QgsOgcUtils::geometryToGML( QgsGeometry* geometry, QDomDocument& doc
       hasZValue = true;
     case QGis::WKBMultiPoint:
     {
-      const unsigned char *ptr;
-      int idx;
-      int *nPoints;
-
       QDomElement multiPointElem = doc.createElement( "gml:MultiPoint" );
-      nPoints = ( int* )( wkb + 5 );
-      ptr = wkb + 5 + sizeof( int );
-      for ( idx = 0; idx < *nPoints; ++idx )
+
+      int nPoints;
+      wkbPtr >> nPoints;
+
+      for ( int idx = 0; idx < nPoints; ++idx )
       {
-        ptr += ( 1 + sizeof( int ) );
+        wkbPtr += 1 + sizeof( int );
         QDomElement pointMemberElem = doc.createElement( "gml:pointMember" );
         QDomElement pointElem = doc.createElement( "gml:Point" );
         QDomElement coordElem = baseCoordElem.cloneNode().toElement();
-        QString coordString;
-        x = ( double * )( ptr );
-        coordString += qgsDoubleToString( *x );
-        coordString += cs;
-        ptr += sizeof( double );
-        y = ( double * )( ptr );
-        coordString += qgsDoubleToString( *y );
-        QDomText coordText = doc.createTextNode( coordString );
+
+        double x, y;
+        wkbPtr >> x >> y;
+        QDomText coordText = doc.createTextNode( qgsDoubleToString( x ) + cs + qgsDoubleToString( y ) );
+
         coordElem.appendChild( coordText );
         pointElem.appendChild( coordElem );
 
-        ptr += sizeof( double );
         if ( hasZValue )
         {
-          ptr += sizeof( double );
+          wkbPtr += sizeof( double );
         }
         pointMemberElem.appendChild( pointElem );
         multiPointElem.appendChild( pointMemberElem );
@@ -1148,33 +1140,28 @@ QDomElement QgsOgcUtils::geometryToGML( QgsGeometry* geometry, QDomDocument& doc
       hasZValue = true;
     case QGis::WKBLineString:
     {
-      const unsigned char *ptr;
-      int *nPoints;
-      int idx;
-
       QDomElement lineStringElem = doc.createElement( "gml:LineString" );
       // get number of points in the line
-      ptr = wkb + 5;
-      nPoints = ( int * ) ptr;
-      ptr = wkb + 1 + 2 * sizeof( int );
+
+      int nPoints;
+      wkbPtr >> nPoints;
+
       QDomElement coordElem = baseCoordElem.cloneNode().toElement();
       QString coordString;
-      for ( idx = 0; idx < *nPoints; ++idx )
+      for ( int idx = 0; idx < nPoints; ++idx )
       {
         if ( idx != 0 )
         {
           coordString += ts;
         }
-        x = ( double * ) ptr;
-        coordString += qgsDoubleToString( *x );
-        coordString += cs;
-        ptr += sizeof( double );
-        y = ( double * ) ptr;
-        coordString += qgsDoubleToString( *y );
-        ptr += sizeof( double );
+
+        double x, y;
+        wkbPtr >> x >> y;
+        coordString += qgsDoubleToString( x ) + cs + qgsDoubleToString( y );
+
         if ( hasZValue )
         {
-          ptr += sizeof( double );
+          wkbPtr += sizeof( double );
         }
       }
       QDomText coordText = doc.createTextNode( coordString );
@@ -1186,38 +1173,37 @@ QDomElement QgsOgcUtils::geometryToGML( QgsGeometry* geometry, QDomDocument& doc
       hasZValue = true;
     case QGis::WKBMultiLineString:
     {
-      const unsigned char *ptr;
-      int idx, jdx, numLineStrings;
-      int *nPoints;
-
       QDomElement multiLineStringElem = doc.createElement( "gml:MultiLineString" );
-      numLineStrings = ( int )( wkb[5] );
-      ptr = wkb + 9;
-      for ( jdx = 0; jdx < numLineStrings; jdx++ )
+
+      int nLines;
+      wkbPtr >> nLines;
+
+      for ( int jdx = 0; jdx < nLines; jdx++ )
       {
         QDomElement lineStringMemberElem = doc.createElement( "gml:lineStringMember" );
         QDomElement lineStringElem = doc.createElement( "gml:LineString" );
-        ptr += 5; // skip type since we know its 2
-        nPoints = ( int * ) ptr;
-        ptr += sizeof( int );
+        wkbPtr += 1 + sizeof( int ); // skip type since we know its 2
+
+        int nPoints;
+        wkbPtr >> nPoints;
+
         QDomElement coordElem = baseCoordElem.cloneNode().toElement();
         QString coordString;
-        for ( idx = 0; idx < *nPoints; idx++ )
+        for ( int idx = 0; idx < nPoints; idx++ )
         {
           if ( idx != 0 )
           {
             coordString += ts;
           }
-          x = ( double * ) ptr;
-          coordString += qgsDoubleToString( *x );
-          ptr += sizeof( double );
-          coordString += cs;
-          y = ( double * ) ptr;
-          coordString += qgsDoubleToString( *y );
-          ptr += sizeof( double );
+
+          double x, y;
+          wkbPtr >> x >> y;
+
+          coordString += qgsDoubleToString( x ) + cs + qgsDoubleToString( y );
+
           if ( hasZValue )
           {
-            ptr += sizeof( double );
+            wkbPtr += sizeof( double );
           }
         }
         QDomText coordText = doc.createTextNode( coordString );
@@ -1232,20 +1218,18 @@ QDomElement QgsOgcUtils::geometryToGML( QgsGeometry* geometry, QDomDocument& doc
       hasZValue = true;
     case QGis::WKBPolygon:
     {
-      const unsigned char *ptr;
-      int idx, jdx;
-      int *numRings, *nPoints;
-
       QDomElement polygonElem = doc.createElement( "gml:Polygon" );
+
       // get number of rings in the polygon
-      numRings = ( int * )( wkb + 1 + sizeof( int ) );
-      if ( !( *numRings ) )  // sanity check for zero rings in polygon
-      {
+      int numRings;
+      wkbPtr >> numRings;
+
+      if ( numRings == 0 ) // sanity check for zero rings in polygon
         return QDomElement();
-      }
-      int *ringNumPoints = new int[*numRings]; // number of points in each ring
-      ptr = wkb + 1 + 2 * sizeof( int ); // set pointer to the first ring
-      for ( idx = 0; idx < *numRings; idx++ )
+
+      int *ringNumPoints = new int[numRings]; // number of points in each ring
+
+      for ( int idx = 0; idx < numRings; idx++ )
       {
         QString boundaryName = "gml:outerBoundaryIs";
         if ( idx != 0 )
@@ -1255,27 +1239,26 @@ QDomElement QgsOgcUtils::geometryToGML( QgsGeometry* geometry, QDomDocument& doc
         QDomElement boundaryElem = doc.createElement( boundaryName );
         QDomElement ringElem = doc.createElement( "gml:LinearRing" );
         // get number of points in the ring
-        nPoints = ( int * ) ptr;
-        ringNumPoints[idx] = *nPoints;
-        ptr += 4;
+        int nPoints;
+        wkbPtr >> nPoints;
+        ringNumPoints[idx] = nPoints;
+
         QDomElement coordElem = baseCoordElem.cloneNode().toElement();
         QString coordString;
-        for ( jdx = 0; jdx < *nPoints; jdx++ )
+        for ( int jdx = 0; jdx < nPoints; jdx++ )
         {
           if ( jdx != 0 )
           {
             coordString += ts;
           }
-          x = ( double * ) ptr;
-          coordString += qgsDoubleToString( *x );
-          coordString += cs;
-          ptr += sizeof( double );
-          y = ( double * ) ptr;
-          coordString += qgsDoubleToString( *y );
-          ptr += sizeof( double );
+
+          double x, y;
+          wkbPtr >> x >> y;
+
+          coordString += qgsDoubleToString( x ) + cs + qgsDoubleToString( y );
           if ( hasZValue )
           {
-            ptr += sizeof( double );
+            wkbPtr += sizeof( double );
           }
         }
         QDomText coordText = doc.createTextNode( coordString );
@@ -1291,22 +1274,22 @@ QDomElement QgsOgcUtils::geometryToGML( QgsGeometry* geometry, QDomDocument& doc
       hasZValue = true;
     case QGis::WKBMultiPolygon:
     {
-      const unsigned char *ptr;
-      int idx, jdx, kdx;
-      int *numPolygons, *numRings, *nPoints;
-
       QDomElement multiPolygonElem = doc.createElement( "gml:MultiPolygon" );
-      ptr = wkb + 5;
-      numPolygons = ( int * ) ptr;
-      ptr = wkb + 9;
-      for ( kdx = 0; kdx < *numPolygons; kdx++ )
+
+      int numPolygons;
+      wkbPtr >> numPolygons;
+
+      for ( int kdx = 0; kdx < numPolygons; kdx++ )
       {
         QDomElement polygonMemberElem = doc.createElement( "gml:polygonMember" );
         QDomElement polygonElem = doc.createElement( "gml:Polygon" );
-        ptr += 5;
-        numRings = ( int * ) ptr;
-        ptr += 4;
-        for ( idx = 0; idx < *numRings; idx++ )
+
+        wkbPtr += 1 + sizeof( int );
+
+        int numRings;
+        wkbPtr >> numRings;
+
+        for ( int idx = 0; idx < numRings; idx++ )
         {
           QString boundaryName = "gml:outerBoundaryIs";
           if ( idx != 0 )
@@ -1315,26 +1298,27 @@ QDomElement QgsOgcUtils::geometryToGML( QgsGeometry* geometry, QDomDocument& doc
           }
           QDomElement boundaryElem = doc.createElement( boundaryName );
           QDomElement ringElem = doc.createElement( "gml:LinearRing" );
-          nPoints = ( int * ) ptr;
-          ptr += 4;
+
+          int nPoints;
+          wkbPtr >> nPoints;
+
           QDomElement coordElem = baseCoordElem.cloneNode().toElement();
           QString coordString;
-          for ( jdx = 0; jdx < *nPoints; jdx++ )
+          for ( int jdx = 0; jdx < nPoints; jdx++ )
           {
             if ( jdx != 0 )
             {
               coordString += ts;
             }
-            x = ( double * ) ptr;
-            coordString += qgsDoubleToString( *x );
-            ptr += sizeof( double );
-            coordString += cs;
-            y = ( double * ) ptr;
-            coordString += qgsDoubleToString( *y );
-            ptr += sizeof( double );
+
+            double x, y;
+            wkbPtr >> x >> y;
+
+            coordString += qgsDoubleToString( x ) + cs + qgsDoubleToString( y );
+
             if ( hasZValue )
             {
-              ptr += sizeof( double );
+              wkbPtr += sizeof( double );
             }
           }
           QDomText coordText = doc.createTextNode( coordString );
