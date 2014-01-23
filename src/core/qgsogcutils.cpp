@@ -1444,6 +1444,9 @@ QgsExpression* QgsOgcUtils::expressionFromOgcFilter( const QDomElement& element 
     childElem = childElem.nextSiblingElement();
   }
 
+  // update expression string
+  expr->mExp = expr->dump();
+
   return expr;
 }
 
