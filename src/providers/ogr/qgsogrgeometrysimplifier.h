@@ -63,7 +63,7 @@ class QgsOgrTopologyPreservingSimplifier : public QgsOgrAbstractGeometrySimplifi
 class QgsOgrMapToPixelSimplifier : public QgsOgrAbstractGeometrySimplifier, QgsMapToPixelSimplifier
 {
   public:
-    QgsOgrMapToPixelSimplifier( int simplifyFlags, double map2pixelTol );
+    QgsOgrMapToPixelSimplifier( int simplifyFlags, double tolerance );
     virtual ~QgsOgrMapToPixelSimplifier();
 
   private:

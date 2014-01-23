@@ -63,8 +63,8 @@ bool QgsOgrTopologyPreservingSimplifier::simplifyGeometry( OGRGeometryH geometry
 #if defined(GDAL_VERSION_NUM) && defined(GDAL_COMPUTE_VERSION)
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(1,11,0)
 
-QgsOgrMapToPixelSimplifier::QgsOgrMapToPixelSimplifier( int simplifyFlags, double map2pixelTol )
-    : QgsMapToPixelSimplifier( simplifyFlags, map2pixelTol )
+QgsOgrMapToPixelSimplifier::QgsOgrMapToPixelSimplifier( int simplifyFlags, double tolerance )
+    : QgsMapToPixelSimplifier( simplifyFlags, tolerance )
     , mPointBufferPtr( NULL )
     , mPointBufferCount( 0 )
 {
@@ -137,7 +137,7 @@ bool QgsOgrMapToPixelSimplifier::simplifyOgrGeometry( QGis::GeometryType geometr
   if ( geometryType == QGis::Point || geometryType == QGis::UnknownGeometry ) return false;
   pointSimplifiedCount = 0;
 
-  double map2pixelTol = mMapToPixelTol * mMapToPixelTol; //-> Use mappixelTol for 'LengthSquare' calculations.
+  double map2pixelTol = mTolerance * mTolerance; //-> Use mappixelTol for 'LengthSquare' calculations.
   double x, y, lastX = 0, lastY = 0;
 
   char* xsourcePtr = ( char* )xptr;

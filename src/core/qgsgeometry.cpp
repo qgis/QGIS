@@ -4697,7 +4697,10 @@ bool QgsGeometry::exportWkbToGeos() const
             }
             sequence << QgsPoint( *x, *y );
           }
-          lines << createGeosLineString( sequence );
+
+          // ignore invalid parts, it can come from ST_Simplify operations
+          if ( sequence.count() > 1 )
+            lines << createGeosLineString( sequence );
         }
         mGeos = createGeosCollection( GEOS_MULTILINESTRING, lines );
         mDirtyGeos = false;
