@@ -8088,7 +8088,9 @@ void QgisApp::destinationSrsChanged()
 {
   // save this information to project
   long srsid = mMapCanvas->mapRenderer()->destinationCrs().srsid();
+  QString srs = mMapCanvas->mapRenderer()->destinationCrs().authid();
   QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCRSID", ( int )srsid );
+  QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCrs", srs );
   updateCRSStatusBar();
 }
 
