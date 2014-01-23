@@ -250,8 +250,6 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     );
   }
 
-  setWindowTitle( tr( "Layer Properties - %1" ).arg( layer->name() ) );
-
   QSettings settings;
   // if dialog hasn't been opened/closed yet, default to Styles tab, which is used most often
   // this will be read by restoreOptionsBaseUi()
@@ -261,7 +259,8 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
                        mOptStackedWidget->indexOf( mOptsPage_Style ) );
   }
 
-  restoreOptionsBaseUi();
+  QString title = QString( tr( "Layer Properties - %1" ) ).arg( layer->name() );
+  restoreOptionsBaseUi( title );
 } // QgsVectorLayerProperties ctor
 
 

@@ -47,11 +47,14 @@ QgsOptionsDialogBase::~QgsOptionsDialogBase()
   }
 }
 
-void QgsOptionsDialogBase::initOptionsBase( bool restoreUi )
+void QgsOptionsDialogBase::initOptionsBase( bool restoreUi, QString title )
 {
-  // save original dialog title so it can be used to be concatenated
+  // save dialog title so it can be used to be concatenated
   // with category title in icon-only mode
-  mDialogTitle = windowTitle();
+  if ( title.isEmpty() )
+    mDialogTitle = windowTitle();
+  else
+    mDialogTitle = title;
 
   // don't add to dialog margins
   // redefine now, or those in inherited .ui file will be added
@@ -109,14 +112,20 @@ void QgsOptionsDialogBase::initOptionsBase( bool restoreUi )
   mInit = true;
 
   if ( restoreUi )
-    restoreOptionsBaseUi();
+    restoreOptionsBaseUi( mDialogTitle );
 }
 
-void QgsOptionsDialogBase::restoreOptionsBaseUi()
+void QgsOptionsDialogBase::restoreOptionsBaseUi( QString title )
 {
   if ( !mInit )
   {
     return;
+  }
+
+  if ( !title.isEmpty() )
+  {
+    mDialogTitle = title;
+    updateWindowTitle();
   }
 
   // re-save original dialog title in case it was changed after dialog initialization
@@ -179,6 +188,19 @@ void QgsOptionsDialogBase::paintEvent( QPaintEvent* e )
   QDialog::paintEvent( e );
 }
 
+void QgsOptionsDialogBase::updateWindowTitle()
+{
+  QListWidgetItem *curitem = mOptListWidget->currentItem();
+  if ( curitem )
+  {
+    setWindowTitle( QString( "%1 | %2" ).arg( mDialogTitle ).arg( curitem->text() ) );
+  }
+  else
+  {
+    setWindowTitle( mDialogTitle );
+  }
+}
+
 void QgsOptionsDialogBase::updateOptionsListVerticalTabs()
 {
   if ( !mInit )
@@ -221,15 +243,7 @@ void QgsOptionsDialogBase::optionsStackedWidget_CurrentChanged( int indx )
   mOptListWidget->setCurrentRow( indx );
   mOptListWidget->blockSignals( false );
 
-  QListWidgetItem *curitem = mOptListWidget->currentItem();
-  if ( curitem )
-  {
-    setWindowTitle( QString( "%1 - %2" ).arg( mDialogTitle ).arg( curitem->text() ) );
-  }
-  else
-  {
-    setWindowTitle( mDialogTitle );
-  }
+  updateWindowTitle();
 }
 
 void QgsOptionsDialogBase::optionsStackedWidget_WidgetRemoved( int indx )
