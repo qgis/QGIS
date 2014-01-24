@@ -305,7 +305,7 @@ bool QgsPostgresFeatureIterator::declareCursor( const QString& whereClause )
     {
       QString simplifyFunctionName = simplifyMethod.methodType() == QgsSimplifyMethod::OptimizeForRendering
                                      ? ( P->mConnectionRO->majorVersion() < 2 ? "simplify" : "st_simplify" )
-                                     : ( P->mConnectionRO->majorVersion() < 2 ? "simplifypreservetopology" : "st_simplifypreservetopology" );
+                                         : ( P->mConnectionRO->majorVersion() < 2 ? "simplifypreservetopology" : "st_simplifypreservetopology" );
 
       double tolerance = simplifyMethod.tolerance() * 0.8; //-> Default factor for the maximum displacement distance for simplification, similar as GeoServer does
       simplifyGeometry = simplifyMethod.methodType() == QgsSimplifyMethod::OptimizeForRendering;
@@ -635,7 +635,7 @@ bool QgsPostgresFeatureIterator::getFeature( QgsPostgresResult &queryResult, int
 
             geometry = QgsGeometry::fromPolyline( polyline );
             feature.setGeometry( geometry );
-          }         
+          }
         }
       }
     }
