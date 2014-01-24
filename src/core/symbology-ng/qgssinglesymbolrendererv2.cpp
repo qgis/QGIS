@@ -56,12 +56,12 @@ QgsSingleSymbolRendererV2 & QgsSingleSymbolRendererV2::operator=( QgsSingleSymbo
 
 void QgsSingleSymbolRendererV2::swap( QgsSingleSymbolRendererV2 & other )
 {
-  std::swap( mSymbol, other.mSymbol );
-  std::swap( mRotation, other.mRotation );
-  std::swap( mSizeScale, other.mSizeScale );
-  std::swap( mScaleMethod, other.mScaleMethod );
-  std::swap( mTempSymbol, other.mTempSymbol );
-  std::swap( mOrigSize, other.mOrigSize );
+  qSwap( mSymbol, other.mSymbol );
+  qSwap( mRotation, other.mRotation );
+  qSwap( mSizeScale, other.mSizeScale );
+  qSwap( mScaleMethod, other.mScaleMethod );
+  qSwap( mTempSymbol, other.mTempSymbol );
+  qSwap( mOrigSize, other.mOrigSize );
 }
 
 QgsSingleSymbolRendererV2::~QgsSingleSymbolRendererV2()

@@ -50,6 +50,7 @@ void QgsGpsMarker::setCenter( const QgsPoint& point )
     }
     catch ( QgsCsException &e ) //silently ignore transformation exceptions
     {
+			Q_UNUSED( e );
       return;
     }
   }

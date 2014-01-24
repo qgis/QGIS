@@ -60,9 +60,9 @@ QgsRendererRangeV2& QgsRendererRangeV2::operator=( QgsRendererRangeV2 range )
 
 void QgsRendererRangeV2::swap( QgsRendererRangeV2 & other )
 {
-  std::swap( mLowerValue, other.mLowerValue );
-  std::swap( mUpperValue, other.mUpperValue );
-  std::swap( mSymbol, other.mSymbol );
+  qSwap( mLowerValue, other.mLowerValue );
+  qSwap( mUpperValue, other.mUpperValue );
+  qSwap( mSymbol, other.mSymbol );
   std::swap( mLabel, other.mLabel );
 }
 

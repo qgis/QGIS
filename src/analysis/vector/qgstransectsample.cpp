@@ -6,7 +6,9 @@
 #include "qgsvectorlayer.h"
 #include <QProgressDialog>
 #include <QFileInfo>
+#ifndef _MSC_VER
 #include <stdint.h>
+#endif
 #include "mersenne-twister.h"
 #include <limits>
 
