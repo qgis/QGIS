@@ -26,9 +26,6 @@ class CORE_EXPORT QgsSingleSymbolRendererV2 : public QgsFeatureRendererV2
   public:
 
     QgsSingleSymbolRendererV2( QgsSymbolV2* symbol );
-    QgsSingleSymbolRendererV2( const QgsSingleSymbolRendererV2 & );
-    QgsSingleSymbolRendererV2 & operator=( QgsSingleSymbolRendererV2 other );
-
 
     virtual ~QgsSingleSymbolRendererV2();
 
@@ -102,9 +99,6 @@ class CORE_EXPORT QgsSingleSymbolRendererV2 : public QgsFeatureRendererV2
     // temporary stuff for rendering
     QScopedPointer<QgsSymbolV2> mTempSymbol;
     double mOrigSize;
-
-    // for copy and swap idiom for assignment operator
-    void swap( QgsSingleSymbolRendererV2 & other );
 };
 
 
