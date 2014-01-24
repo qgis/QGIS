@@ -1647,7 +1647,7 @@ void QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolV2RenderContext
     width = qAbs( height / tan( lineAngle * M_PI / 180 ) );
 
     // recalculate real angle and distance after rounding to pixels
-    lineAngle = 180 * qAbs( atan2( height, width ) ) / M_PI;
+    lineAngle = 180 * qAbs( atan2(( double ) height, ( double ) width ) ) / M_PI;
     outputPixelDist = height * cos( lineAngle * M_PI / 180 );
 
     // Round offset to correspond to one pixel height, otherwise lines may
