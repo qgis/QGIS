@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsfillsymbollayerv2.h"
+#include "qgslinesymbollayerv2.h"
 #include "qgsmarkersymbollayerv2.h"
 #include "qgssymbollayerv2utils.h"
 #include "qgsdxfexport.h"
@@ -1566,18 +1567,79 @@ void QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolV2RenderContext
   {
     return;
   }
+  // We have to make a copy because marker intervals will have to be adjusted
+  QgsLineSymbolV2* fillLineSymbol = dynamic_cast<QgsLineSymbolV2*>( mFillLineSymbol->clone() );
+  if ( !fillLineSymbol )
+  {
+    return;
+  }
 
   const QgsRenderContext& ctx = context.renderContext();
   //double outlinePixelWidth = lineWidth * QgsSymbolLayerV2Utils::pixelSizeScaleFactor( ctx,  mLineWidthUnit );
   double outputPixelDist = distance * QgsSymbolLayerV2Utils::pixelSizeScaleFactor( ctx, mDistanceUnit );
   double outputPixelOffset = mOffset * QgsSymbolLayerV2Utils::pixelSizeScaleFactor( ctx,  mOffsetUnit );
 
+  // To get all patterns into image, we have to consider symbols size (estimateMaxBleed()).
+  // For marker lines we have to get markers interval.
+  double outputPixelBleed = 0;
+  double outputPixelInterval = 0; // maximum interval
+  for ( int i = 0; i < fillLineSymbol->symbolLayerCount(); i++ )
+  {
+    QgsSymbolLayerV2 *layer = fillLineSymbol->symbolLayer( i );
+    double layerBleed = layer->estimateMaxBleed();
+    // TODO: to get real bleed we have to scale it using context and units,
+    // unfortunately estimateMaxBleed() ignore units completely, e.g.
+    // QgsMarkerLineSymbolLayerV2::estimateMaxBleed() is mixing marker size and
+    // offset regardless units. This has to be fixed especially
+    // in estimateMaxBleed(), context probably has to be used.
+    // For now, we only support milimeters
+    double outputPixelLayerBleed = layerBleed * QgsSymbolLayerV2Utils::pixelSizeScaleFactor( ctx, QgsSymbolV2::MM );
+    outputPixelBleed = qMax( outputPixelBleed, outputPixelLayerBleed );
+
+    QgsMarkerLineSymbolLayerV2 *markerLineLayer = dynamic_cast<QgsMarkerLineSymbolLayerV2 *>( layer );
+    if ( markerLineLayer )
+    {
+      double outputPixelLayerInterval = markerLineLayer->interval() * QgsSymbolLayerV2Utils::pixelSizeScaleFactor( ctx, markerLineLayer->intervalUnit() );
+
+      // There may be multiple marker lines with different intervals.
+      // In theory we should find the least common multiple, but that could be too
+      // big (multiplication of intervals in the worst case).
+      // Because patterns without small common interval would look strange, we
+      // believe that the longest interval should usually be sufficient.
+      outputPixelInterval = qMax( outputPixelInterval, outputPixelLayerInterval );
+    }
+  }
+
+  if ( outputPixelInterval > 0 )
+  {
+    // We have to adjust marker intervals to integer pixel size to get
+    // repeatable pattern.
+    double intervalScale = qRound( outputPixelInterval ) / outputPixelInterval;
+    outputPixelInterval = qRound( outputPixelInterval );
+
+    for ( int i = 0; i < fillLineSymbol->symbolLayerCount(); i++ )
+    {
+      QgsSymbolLayerV2 *layer = fillLineSymbol->symbolLayer( i );
+
+      QgsMarkerLineSymbolLayerV2 *markerLineLayer = dynamic_cast<QgsMarkerLineSymbolLayerV2 *>( layer );
+      if ( markerLineLayer )
+      {
+        markerLineLayer->setInterval( intervalScale * markerLineLayer->interval() );
+      }
+    }
+  }
+
   //create image
   int height, width;
-  if ( qgsDoubleNear( lineAngle, 0 ) || qgsDoubleNear( lineAngle, 360 ) || qgsDoubleNear( lineAngle, 90 ) || qgsDoubleNear( lineAngle, 180 ) || qgsDoubleNear( lineAngle, 270 ) )
+  if ( qgsDoubleNear( lineAngle, 0 ) || qgsDoubleNear( lineAngle, 360 ) || qgsDoubleNear( lineAngle, 180 ) )
   {
     height = outputPixelDist;
-    width = height; //width can be set to arbitrary value
+    width = outputPixelInterval > 0 ? outputPixelInterval : height;
+  }
+  else if ( qgsDoubleNear( lineAngle, 90 ) || qgsDoubleNear( lineAngle, 270 ) )
+  {
+    width = outputPixelDist;
+    height = outputPixelInterval > 0 ? outputPixelInterval : width;
   }
   else
   {
@@ -1598,36 +1660,18 @@ void QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolV2RenderContext
   double dx = 0;
   double dy = 0;
 
-  // To get all patterns into image, we have to consider symbols size (estimateMaxBleed())
-
-  double bleed = 0;
-  for ( int i = 0; i < mFillLineSymbol->symbolLayerCount(); i++ )
-  {
-    QgsSymbolLayerV2 *layer = mFillLineSymbol->symbolLayer( i );
-    double layerBleed = layer->estimateMaxBleed();
-    // TODO: to get real bleed we have to scale it using context and units,
-    // unfortunately estimateMaxBleed() ignore units completely, e.g.
-    // QgsMarkerLineSymbolLayerV2::estimateMaxBleed() is mixing marker size and
-    // offset regardless units. This has to be fixed especially
-    // in estimateMaxBleed(), context probably has to be used.
-    // For now, we only support milimeters
-    double outputPixelBleed = layerBleed * QgsSymbolLayerV2Utils::pixelSizeScaleFactor( ctx, QgsSymbolV2::MM );
-
-    bleed = qMax( bleed, outputPixelBleed );
-  }
-
   // Add buffer based on bleed but keep precisely the height/width ratio (angle)
   // thus we add integer multiplications of width and heigh covering the bleed
-  int bufferMulti = qMax( qCeil( bleed / width ), qCeil( bleed / width ) );
+  int bufferMulti = qMax( qCeil( outputPixelBleed / width ), qCeil( outputPixelBleed / width ) );
 
   // Always buffer at least once so that center of line marker in upper right corner
   // does not fall outside due to representation error
   bufferMulti = qMax( bufferMulti, 1 );
 
-  bufferMulti = 0;
   int xBuffer = width * bufferMulti;
   int yBuffer = height * bufferMulti;
-
+  int innerWidth = width;
+  int innerHeight = height;
   width += 2 * xBuffer;
   height += 2 * yBuffer;
 
@@ -1642,21 +1686,17 @@ void QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolV2RenderContext
   QPointF p1, p2, p3, p4, p5, p6;
   if ( qgsDoubleNear( lineAngle, 0.0 ) || qgsDoubleNear( lineAngle, 360.0 ) || qgsDoubleNear( lineAngle, 180.0 ) )
   {
-    p1 = QPointF( 0, height );
-    p2 = QPointF( width, height );
-    p3 = QPointF( 0, 0 );
-    p4 = QPointF( width, 0 );
-    p5 = QPointF( 0, 2 * height );
-    p6 = QPointF( width, 2 * height );
+    p1 = QPointF( 0, yBuffer );
+    p2 = QPointF( width, yBuffer );
+    p3 = QPointF( 0, yBuffer + innerHeight );
+    p4 = QPointF( width, yBuffer + innerHeight );
   }
   else if ( qgsDoubleNear( lineAngle, 90.0 ) || qgsDoubleNear( lineAngle, 270.0 ) )
   {
-    p1 = QPointF( 0, height );
-    p2 = QPointF( 0, 0 );
-    p3 = QPointF( width, height );
-    p4 = QPointF( width, 0 );
-    p5 = QPointF( -width, height );
-    p6 = QPointF( -width, 0 );
+    p1 = QPointF( xBuffer, height );
+    p2 = QPointF( xBuffer, 0 );
+    p3 = QPointF( xBuffer + innerWidth, height );
+    p4 = QPointF( xBuffer + innerWidth, 0 );
   }
   else if (( lineAngle > 0 && lineAngle < 90 ) || ( lineAngle > 180 && lineAngle < 270 ) )
   {
@@ -1733,18 +1773,22 @@ void QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolV2RenderContext
   lineRenderContext.setMapToPixel( mtp );
   lineRenderContext.setForceVectorOutput( false );
 
-  mFillLineSymbol->startRender( lineRenderContext );
+  fillLineSymbol->startRender( lineRenderContext );
 
   QVector<QPolygonF> polygons;
   polygons.append( QPolygonF() << p1 << p2 );
   polygons.append( QPolygonF() << p3 << p4 );
-  polygons.append( QPolygonF() << p5 << p6 );
-  foreach ( QPolygonF polygon, polygons )
+  if ( !qgsDoubleNear( lineAngle, 0 ) && !qgsDoubleNear( lineAngle, 360 ) && !qgsDoubleNear( lineAngle, 90 ) && !qgsDoubleNear( lineAngle, 180 ) && !qgsDoubleNear( lineAngle, 270 ) )
   {
-    mFillLineSymbol->renderPolyline( polygon, context.feature(), lineRenderContext, -1, context.selected() );
+    polygons.append( QPolygonF() << p5 << p6 );
   }
 
-  mFillLineSymbol->stopRender( lineRenderContext );
+  foreach ( QPolygonF polygon, polygons )
+  {
+    fillLineSymbol->renderPolyline( polygon, context.feature(), lineRenderContext, -1, context.selected() );
+  }
+
+  fillLineSymbol->stopRender( lineRenderContext );
   p.end();
 
   // Cut off the buffer
@@ -1765,6 +1809,8 @@ void QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolV2RenderContext
   QTransform brushTransform;
   brushTransform.scale( 1.0 / context.renderContext().rasterScaleFactor(), 1.0 / context.renderContext().rasterScaleFactor() );
   brush.setTransform( brushTransform );
+
+  delete fillLineSymbol;
 }
 
 void QgsLinePatternFillSymbolLayer::startRender( QgsSymbolV2RenderContext& context )
