@@ -2022,6 +2022,7 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
         QStringList savedLayerSet;
         bool keepLayerSet;
         bool hasBackground;
+        bool hasFrame;
         QStringList layerStack;
         QList<QGraphicsItem *>::const_iterator it = items.begin();
         for ( unsigned svgLayerId = 1; it != items.end(); ++svgLayerId )
@@ -2040,18 +2041,30 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
               savedLayerSet = mapItem->layerSet();
               layerStack = savedLayerSet;
               hasBackground = mapItem->hasBackground();
-              if ( hasBackground ) layerStack.append( "" ); // to render the background
+              hasFrame = mapItem->hasFrame();
+              if ( hasBackground ) layerStack.append( "svg background layer" );
+              if ( hasFrame ) layerStack.prepend( "svg frame layer" );
             }
             if ( !layerStack.isEmpty() ) // no layers... this can happen
             {
               const QString layerId( layerStack.takeLast() );
-              if ( layerId.isEmpty() ) // background
+              if ( layerId == "svg background layer" )
               {
+                mapItem->setFrameEnabled( false );
+                mapItem->setBackgroundEnabled( true );
                 layerName.append( " Background" );
+                mapItem->setLayerSet( QStringList() );
+              }
+              else if ( layerId == "svg frame layer" )
+              {
+                mapItem->setFrameEnabled( true );
+                mapItem->setBackgroundEnabled( false );
+                layerName.append( " Frame" );
                 mapItem->setLayerSet( QStringList() );
               }
               else
               {
+                mapItem->setFrameEnabled( false );
                 mapItem->setBackgroundEnabled( false );
                 const QgsMapLayer * ml = QgsMapLayerRegistry::instance()->mapLayer( layerId );
                 layerName.append( " " + ( ml ? ml->name() : "" ) );
@@ -2113,6 +2126,7 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
             mapItem->setKeepLayerSet( keepLayerSet );
             mapItem->setLayerSet( savedLayerSet );
             mapItem->setBackgroundEnabled( hasBackground );
+            mapItem->setFrameEnabled( hasFrame );
             mapItem = NULL;
             ++it;
           }
