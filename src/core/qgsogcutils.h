@@ -1,6 +1,7 @@
 #ifndef QGSOGCUTILS_H
 #define QGSOGCUTILS_H
 
+class QColor;
 class QDomNode;
 class QDomElement;
 class QDomDocument;
@@ -67,6 +68,9 @@ class CORE_EXPORT QgsOgcUtils
      */
     static QDomElement rectangleToGMLEnvelope( QgsRectangle* env, QDomDocument& doc );
 
+
+    /** Parse XML with OGC fill into QColor */
+    static QColor colorFromOgcFill( const QDomElement& fillElement );
 
     /** Parse XML with OGC filter into QGIS expression */
     static QgsExpression* expressionFromOgcFilter( const QDomElement& element );

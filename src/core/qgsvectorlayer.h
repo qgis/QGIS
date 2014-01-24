@@ -1596,6 +1596,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
       @param labeling out: true if there will be labeling (ng) for this layer*/
     void prepareLabelingAndDiagrams( QgsRenderContext& rendererContext, QgsAttributeList& attributes, bool& labeling );
 
+    /** Read labeling from SLD */
+    void readSldLabeling( const QDomNode& node );
+
   private:                       // Private attributes
 
     /** Update threshold for drawing features as they are read. A value of zero indicates

@@ -3,6 +3,7 @@
 #include "qgsexpression.h"
 #include "qgsgeometry.h"
 
+#include <QColor>
 #include <QStringList>
 #include <QTextStream>
 
@@ -1394,6 +1395,44 @@ QDomElement QgsOgcUtils::createGMLPositions( const QgsPolyline &points, QDomDocu
 
 
 // -----------------------------------------
+
+QColor QgsOgcUtils::colorFromOgcFill( const QDomElement& fillElement )
+{
+  if ( fillElement.isNull() || !fillElement.hasChildNodes() )
+  {
+    return QColor();
+  }
+
+  QString cssName;
+  QString elemText;
+  QColor color;
+  QDomElement cssElem = fillElement.firstChildElement( "CssParameter" );
+  while ( !cssElem.isNull() )
+  {
+    cssName = cssElem.attribute( "name", "not_found" );
+    if ( cssName != "not_found" )
+    {
+      elemText = cssElem.text();
+      if ( cssName == "fill" )
+      {
+        color.setNamedColor( elemText );
+      }
+      else if ( cssName == "fill-opacity" )
+      {
+        bool ok;
+        double opacity = elemText.toDouble( &ok );
+        if ( ok )
+        {
+          color.setAlphaF( opacity );
+        }
+      }
+    }
+
+    cssElem = cssElem.nextSiblingElement( "CssParameter" );
+  }
+
+  return color;
+}
 
 
 QgsExpression* QgsOgcUtils::expressionFromOgcFilter( const QDomElement& element )

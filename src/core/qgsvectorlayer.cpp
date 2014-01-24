@@ -49,6 +49,7 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsmaptopixel.h"
+#include "qgsogcutils.h"
 #include "qgspoint.h"
 #include "qgsproviderregistry.h"
 #include "qgsrectangle.h"
@@ -2504,6 +2505,9 @@ bool QgsVectorLayer::readSld( const QDomNode& node, QString& errorMessage )
       return false;
 
     setRendererV2( r );
+
+    // labeling
+    readSldLabeling( node );
   }
   return true;
 }
@@ -3687,6 +3691,241 @@ void QgsVectorLayer::prepareLabelingAndDiagrams( QgsRenderContext& rendererConte
     if ( mDiagramLayerSettings->yPosColumn >= 0 && !attributes.contains( mDiagramLayerSettings->yPosColumn ) )
     {
       attributes << mDiagramLayerSettings->yPosColumn;
+    }
+  }
+}
+
+void QgsVectorLayer::readSldLabeling( const QDomNode& node )
+{
+  QDomElement element = node.toElement();
+  if ( element.isNull() )
+    return;
+
+  QDomElement userStyleElem = element.firstChildElement( "UserStyle" );
+  if ( userStyleElem.isNull() )
+  {
+    QgsDebugMsg( "Info: UserStyle element not found.");
+    return;
+  }
+
+  QDomElement featureTypeStyleElem = userStyleElem.firstChildElement( "FeatureTypeStyle" );
+  if ( featureTypeStyleElem.isNull() )
+  {
+    QgsDebugMsg( "Info: FeatureTypeStyle element not found." );
+    return;
+  }
+
+  // use last rule
+  QDomElement ruleElem = featureTypeStyleElem.lastChildElement( "Rule" );
+  if ( ruleElem.isNull() )
+  {
+    QgsDebugMsg( "Info: Rule element not found." );
+    return;
+  }
+
+  // use last text symbolizer
+  QDomElement textSymbolizerElem = ruleElem.lastChildElement( "TextSymbolizer" );
+  if ( textSymbolizerElem.isNull() )
+  {
+    QgsDebugMsg( "Info: TextSymbolizer element not found." );
+    return;
+  }
+
+  // Label
+  setCustomProperty( "labeling/enabled", false );
+  QDomElement labelElem = textSymbolizerElem.firstChildElement( "Label" );
+  if ( !labelElem.isNull() )
+  {
+    QDomElement propertyNameElem = labelElem.firstChildElement( "PropertyName" );
+    if ( !propertyNameElem.isNull() )
+    {
+      // enable labeling
+      setCustomProperty( "labeling", "pal" );
+      setCustomProperty( "labeling/enabled", true );
+
+      // set labeling defaults
+      setCustomProperty( "labeling/fontFamily", "Sans-Serif" );
+      setCustomProperty( "labeling/fontItalic", false );
+      setCustomProperty( "labeling/fontSize", 10 );
+      setCustomProperty( "labeling/fontSizeInMapUnits", false );
+      setCustomProperty( "labeling/fontBold", false );
+      setCustomProperty( "labeling/fontUnderline", false );
+      setCustomProperty( "labeling/textColorR", 0 );
+      setCustomProperty( "labeling/textColorG", 0 );
+      setCustomProperty( "labeling/textColorB", 0 );
+      setCustomProperty( "labeling/textTransp", 0 );
+      setCustomProperty( "labeling/bufferDraw", false );
+      setCustomProperty( "labeling/bufferSize", 1 );
+      setCustomProperty( "labeling/bufferSizeInMapUnits", false );
+      setCustomProperty( "labeling/bufferColorR", 255 );
+      setCustomProperty( "labeling/bufferColorG", 255 );
+      setCustomProperty( "labeling/bufferColorB", 255 );
+      setCustomProperty( "labeling/bufferTransp", 0 );
+      setCustomProperty( "labeling/placement", QgsPalLayerSettings::AroundPoint );
+      setCustomProperty( "labeling/xOffset", 0 );
+      setCustomProperty( "labeling/yOffset", 0 );
+      setCustomProperty( "labeling/labelOffsetInMapUnits", false );
+      setCustomProperty( "labeling/angleOffset", 0 );
+
+      // label attribute
+      QString labelAttribute = propertyNameElem.text();
+      setCustomProperty( "labeling/fieldName", labelAttribute );
+      setCustomProperty( "labeling/isExpression", false );
+
+      int fieldIndex = fieldNameIndex( labelAttribute );
+      if ( fieldIndex == -1 )
+      {
+        // label attribute is not in columns, check if it is an expression
+        QgsExpression exp( labelAttribute );
+        if ( !exp.hasEvalError() )
+        {
+          setCustomProperty( "labeling/isExpression", true );
+        }
+        else
+        {
+          QgsDebugMsg( "SLD label attribute error: " + exp.evalErrorString() );
+        }
+      }
+    }
+    else
+    {
+      QgsDebugMsg( "Info: PropertyName element not found." );
+      return;
+    }
+  }
+  else
+  {
+    QgsDebugMsg( "Info: Label element not found." );
+    return;
+  }
+
+  // Font
+  QDomElement fontElem = textSymbolizerElem.firstChildElement( "Font" );
+  if ( !fontElem.isNull() )
+  {
+    QString cssName;
+    QString elemText;
+    QDomElement cssElem = fontElem.firstChildElement( "CssParameter" );
+    while ( !cssElem.isNull() )
+    {
+      cssName = cssElem.attribute( "name", "not_found" );
+      if ( cssName != "not_found" )
+      {
+        elemText = cssElem.text();
+        if ( cssName == "font-family" )
+        {
+          setCustomProperty( "labeling/fontFamily", elemText );
+        }
+        else if ( cssName == "font-style" )
+        {
+          setCustomProperty( "labeling/fontItalic", ( elemText == "italic" ) || ( elemText == "Italic" ) );
+        }
+        else if ( cssName == "font-size" )
+        {
+          bool ok;
+          int fontSize = elemText.toInt( &ok );
+          if ( ok )
+          {
+            setCustomProperty( "labeling/fontSize", fontSize );
+          }
+        }
+        else if ( cssName == "font-weight" )
+        {
+          setCustomProperty( "labeling/fontBold", ( elemText == "bold" ) || ( elemText == "Bold" ) );
+        }
+        else if ( cssName == "font-underline" )
+        {
+          setCustomProperty( "labeling/fontUnderline", ( elemText == "underline" ) || ( elemText == "Underline" ) );
+        }
+      }
+
+      cssElem = cssElem.nextSiblingElement( "CssParameter" );
+    }
+  }
+
+  // Fill
+  QColor textColor = QgsOgcUtils::colorFromOgcFill( textSymbolizerElem.firstChildElement( "Fill" ) );
+  if ( textColor.isValid() )
+  {
+    setCustomProperty( "labeling/textColorR", textColor.red() );
+    setCustomProperty( "labeling/textColorG", textColor.green() );
+    setCustomProperty( "labeling/textColorB", textColor.blue() );
+    setCustomProperty( "labeling/textTransp", 100 - ( int )( 100 * textColor.alphaF() ) );
+  }
+
+  // Halo
+  QDomElement haloElem = textSymbolizerElem.firstChildElement( "Halo" );
+  if ( !haloElem.isNull() )
+  {
+    setCustomProperty( "labeling/bufferDraw", true );
+    setCustomProperty( "labeling/bufferSize", 1 );
+
+    QDomElement radiusElem = haloElem.firstChildElement( "Radius" );
+    if ( !radiusElem.isNull() )
+    {
+      bool ok;
+      double bufferSize = radiusElem.text().toDouble( &ok );
+      if ( ok )
+      {
+        setCustomProperty( "labeling/bufferSize", bufferSize );
+      }
+    }
+
+    QColor bufferColor = QgsOgcUtils::colorFromOgcFill( haloElem.firstChildElement( "Fill" ) );
+    if ( bufferColor.isValid() )
+    {
+      setCustomProperty( "labeling/bufferColorR", bufferColor.red() );
+      setCustomProperty( "labeling/bufferColorG", bufferColor.green() );
+      setCustomProperty( "labeling/bufferColorB", bufferColor.blue() );
+      setCustomProperty( "labeling/bufferTransp", 100 - ( int )( 100 * bufferColor.alphaF() ) );
+    }
+  }
+
+  // LabelPlacement
+  QDomElement labelPlacementElem = textSymbolizerElem.firstChildElement( "LabelPlacement" );
+  if ( !labelPlacementElem.isNull() )
+  {
+    // PointPlacement
+    QDomElement pointPlacementElem = labelPlacementElem.firstChildElement( "PointPlacement" );
+    if ( !pointPlacementElem.isNull() )
+    {
+      setCustomProperty( "labeling/placement", QgsPalLayerSettings::OverPoint );
+
+      QDomElement displacementElem = pointPlacementElem.firstChildElement( "Displacement" );
+      if ( !displacementElem.isNull() )
+      {
+        QDomElement displacementXElem = displacementElem.firstChildElement( "DisplacementX" );
+        if ( !displacementXElem.isNull() )
+        {
+          bool ok;
+          double xOffset = displacementXElem.text().toDouble( &ok );
+          if ( ok )
+          {
+            setCustomProperty( "labeling/xOffset", xOffset );
+          }
+        }
+        QDomElement displacementYElem = displacementElem.firstChildElement( "DisplacementY" );
+        if ( !displacementYElem.isNull() )
+        {
+          bool ok;
+          double yOffset = displacementYElem.text().toDouble( &ok );
+          if ( ok )
+          {
+            setCustomProperty( "labeling/yOffset", yOffset );
+          }
+        }
+      }
+
+      QDomElement rotationElem = pointPlacementElem.firstChildElement( "Rotation" );
+      if ( !rotationElem.isNull() )
+      {
+        bool ok;
+        double rotation = rotationElem.text().toDouble( &ok );
+        if ( ok )
+        {
+          setCustomProperty( "labeling/angleOffset", rotation );
+        }
+      }
     }
   }
 }
