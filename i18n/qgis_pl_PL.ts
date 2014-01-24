@@ -7371,7 +7371,7 @@ Błąd geoprocesingu GEOS: Jeden lub więcej wejściowych obiektów ma błędną
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2102"/>
         <source>Need commercial support?</source>
-        <translation>Potrzebujesz wsparcia komercyjnego?</translation>
+        <translation>Wsparcie komercyjne</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2147"/>
@@ -7382,7 +7382,7 @@ Błąd geoprocesingu GEOS: Jeden lub więcej wejściowych obiektów ma błędną
         <location filename="../src/ui/qgisapp.ui" line="2159"/>
         <location filename="../src/ui/qgisapp.ui" line="2162"/>
         <source>Fill Ring</source>
-        <translation type="unfinished"></translation>
+        <translation>Wypełnij pierścień</translation>
     </message>
     <message>
         <source>Need Support?</source>
@@ -7417,12 +7417,12 @@ Błąd geoprocesingu GEOS: Jeden lub więcej wejściowych obiektów ma błędną
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2139"/>
         <source>New Memory Vector Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Nowa tymczasowa warstwa wektorowa</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2142"/>
         <source>Paste features in clipboard into a new memory vector layer.</source>
-        <translation type="unfinished"></translation>
+        <translation>Wklej obiekty ze schowka jako nową tymczasową warstwę wektorową</translation>
     </message>
     <message>
         <source>Save Edits</source>
@@ -7730,7 +7730,7 @@ Działa na aktualnie edytowanej warstwie</translation>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="813"/>
         <source>Rotate Point Symbols</source>
-        <translation>Obróć symbol (tylko obiekty punktowe)</translation>
+        <translation>Obróć symbol punktowy</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="818"/>
@@ -13710,7 +13710,7 @@ Błędy: %3
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6591"/>
         <source>Memory layer</source>
-        <translation>Warstwa (w) pamięci</translation>
+        <translation>Warstwa tymczasowa</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6611"/>
@@ -15723,12 +15723,12 @@ Błąd: %1</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5756"/>
         <source>Pasted</source>
-        <translation type="unfinished"></translation>
+        <translation>Wklej</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5757"/>
         <source>New memory layer name</source>
-        <translation type="unfinished"></translation>
+        <translation>Nazwa nowej warstwy tymczasowej</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5758"/>
@@ -28006,27 +28006,27 @@ Błąd:
     <message>
         <location filename="../src/ui/qgsengineconfigdialog.ui" line="42"/>
         <source>Chain (fast)</source>
-        <translation>Chain (szybki)</translation>
+        <translation>Chain (szybka)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsengineconfigdialog.ui" line="47"/>
         <source>Popmusic Tabu</source>
-        <translation>Popmusic Tabu (wolny)</translation>
+        <translation>Popmusic Tabu (wolna)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsengineconfigdialog.ui" line="52"/>
         <source>Popmusic Chain</source>
-        <translation>Popmusic Chain (bardzo wolny)</translation>
+        <translation>Popmusic Chain (bardzo wolna)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsengineconfigdialog.ui" line="57"/>
         <source>Popmusic Tabu Chain</source>
-        <translation>Popmusic Tabu Chain (wolny)</translation>
+        <translation>Popmusic Tabu Chain (wolna)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsengineconfigdialog.ui" line="62"/>
         <source>FALP (fastest)</source>
-        <translation>FALP (najszybszy)</translation>
+        <translation>FALP (najszybsza)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsengineconfigdialog.ui" line="102"/>
@@ -28066,7 +28066,7 @@ Błąd:
     <message>
         <location filename="../src/ui/qgsengineconfigdialog.ui" line="303"/>
         <source>Show partials labels</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyświetlaj częściowe etykiety</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsengineconfigdialog.ui" line="253"/>
@@ -28076,7 +28076,7 @@ Błąd:
     <message>
         <location filename="../src/ui/qgsengineconfigdialog.ui" line="20"/>
         <source>Automated Placement Engine</source>
-        <translation type="unfinished"></translation>
+        <translation>Autorozmieszczanie</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsengineconfigdialog.ui" line="276"/>
@@ -28943,7 +28943,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsfieldsproperties.cpp" line="717"/>
         <source>Editor Widget</source>
-        <translation type="unfinished"></translation>
+        <translation>Edytor</translation>
     </message>
     <message>
         <location filename="../src/app/qgsfieldsproperties.cpp" line="777"/>
@@ -31683,7 +31683,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/core/qgsgmlschema.cpp" line="348"/>
         <source>Cannot guess schema</source>
-        <translation type="unfinished"></translation>
+        <translation>Nieznany schemat domyślny</translation>
     </message>
 </context>
 <context>
@@ -35336,7 +35336,7 @@ Może to być spowodowane problemem w sieci lokalnej lub problemem serwera WMS.<
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="752"/>
         <source>Activate layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktywuj warstwę</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="753"/>
@@ -37781,7 +37781,7 @@ nie będą wyświetlane</translation>
     <message>
         <location filename="../src/core/composer/qgslegendmodel.cpp" line="253"/>
         <source>No Legend Available</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -38044,7 +38044,7 @@ nie będą wyświetlane</translation>
     <message>
         <location filename="../src/gui/qgsmapcanvas.cpp" line="421"/>
         <source>canvas</source>
-        <translation type="unfinished"></translation>
+        <translation>obszar mapy</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsmapcanvas.cpp" line="457"/>
@@ -38680,52 +38680,52 @@ nie będą wyświetlane</translation>
     <message>
         <location filename="../src/app/qgsmaptoolfillring.cpp" line="68"/>
         <source>Coordinate transform error</source>
-        <translation type="unfinished">Błąd transformacji współrzędnych</translation>
+        <translation>Błąd transformacji współrzędnych</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolfillring.cpp" line="69"/>
         <source>Cannot transform the point to the layers coordinate system</source>
-        <translation type="unfinished">Nie można przetransformować punktu do układu współrzędnych warstwy</translation>
+        <translation>Nie można przetransformować punktu do układu współrzędnych warstwy</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolfillring.cpp" line="81"/>
         <source>Ring added and filled</source>
-        <translation type="unfinished"></translation>
+        <translation>Dodano i wypełniono pierścień</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolfillring.cpp" line="89"/>
         <source>A problem with geometry type occured</source>
-        <translation type="unfinished">Wystąpił problem z geometrią</translation>
+        <translation>Wystąpił problem z geometrią</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolfillring.cpp" line="93"/>
         <source>The inserted Ring is not closed</source>
-        <translation type="unfinished">Dodany pierścień nie jest zamknięty</translation>
+        <translation>Dodany pierścień nie jest zamknięty</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolfillring.cpp" line="97"/>
         <source>The inserted Ring is not a valid geometry</source>
-        <translation type="unfinished">Dodany pierścień ma niewłaściwą geometrię</translation>
+        <translation>Dodany pierścień ma niewłaściwą geometrię</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolfillring.cpp" line="101"/>
         <source>The inserted Ring crosses existing rings</source>
-        <translation type="unfinished">Dodany pierścień przecina istniejące pierścienie</translation>
+        <translation>Dodany pierścień przecina istniejące pierścienie</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolfillring.cpp" line="105"/>
         <source>The inserted Ring is not contained in a feature</source>
-        <translation type="unfinished">Dodany pierścień nie zawiera się w obiekcie</translation>
+        <translation>Dodany pierścień nie zawiera się w obiekcie</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolfillring.cpp" line="109"/>
         <source>An unknown error occured</source>
-        <translation type="unfinished">Wystąpił nieznany błąd</translation>
+        <translation>Wystąpił nieznany błąd</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolfillring.cpp" line="111"/>
         <source>Error, could not add ring</source>
-        <translation type="unfinished">Błąd, nie można dodać pierścienia</translation>
+        <translation>Błąd, nie można dodać pierścienia</translation>
     </message>
 </context>
 <context>
@@ -38809,7 +38809,7 @@ nie będą wyświetlane</translation>
     <message>
         <location filename="../src/gui/qgsmaptoolidentify.cpp" line="599"/>
         <source>Identify error</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd identyfikacji</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsmaptoolidentify.cpp" line="337"/>
@@ -39145,12 +39145,12 @@ nie będą wyświetlane</translation>
     <message>
         <location filename="../src/app/qgsmaptoolsplitparts.cpp" line="65"/>
         <source>Coordinate transform error</source>
-        <translation type="unfinished">Błąd transformacji współrzędnych</translation>
+        <translation>Błąd transformacji współrzędnych</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsplitparts.cpp" line="66"/>
         <source>Cannot transform the point to the layers coordinate system</source>
-        <translation type="unfinished">Nie można przetransformować punktu do układu współrzędnych warstwy</translation>
+        <translation>Nie można przetransformować punktu do układu współrzędnych warstwy</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsplitparts.cpp" line="80"/>
@@ -39177,17 +39177,17 @@ nie będą wyświetlane</translation>
     <message>
         <location filename="../src/app/qgsmaptoolsplitparts.cpp" line="103"/>
         <source>The geometry is invalid. Please repair before trying to split it.</source>
-        <translation type="unfinished">Geometria jest niepoprawna. Spróbuj ją poprawić przed tą operacją.</translation>
+        <translation>Geometria jest niepoprawna. Spróbuj ją poprawić przed tą operacją.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsplitparts.cpp" line="111"/>
         <source>Split error</source>
-        <translation type="unfinished">Błąd podziału</translation>
+        <translation>Błąd podziału</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsplitparts.cpp" line="112"/>
         <source>An error occured during feature splitting</source>
-        <translation type="unfinished">Wystąpił błąd podczas dzielenia obiektu</translation>
+        <translation>Wystąpił błąd podczas dzielenia obiektu</translation>
     </message>
 </context>
 <context>
@@ -39566,7 +39566,7 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     <message>
         <location filename="../src/providers/memory/qgsmemoryprovider.cpp" line="84"/>
         <source>Date</source>
-        <translation type="unfinished">Data</translation>
+        <translation>Data</translation>
     </message>
 </context>
 <context>
@@ -40392,12 +40392,12 @@ enhancement</source>
     <message>
         <location filename="../src/gui/qgsnewhttpconnection.cpp" line="46"/>
         <source>all</source>
-        <translation type="unfinished">wszystko</translation>
+        <translation>wszystko</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsnewhttpconnection.cpp" line="47"/>
         <source>off</source>
-        <translation type="unfinished"></translation>
+        <translation>brak</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsnewhttpconnection.cpp" line="48"/>
@@ -40407,12 +40407,12 @@ enhancement</source>
     <message>
         <location filename="../src/gui/qgsnewhttpconnection.cpp" line="49"/>
         <source>UMN</source>
-        <translation type="unfinished"></translation>
+        <translation>UMN</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsnewhttpconnection.cpp" line="50"/>
         <source>GeoServer</source>
-        <translation type="unfinished"></translation>
+        <translation>GeoServer</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsnewhttpconnection.cpp" line="101"/>
@@ -40481,7 +40481,7 @@ Note: giving the password is optional. It will be requested interactivly, when n
     <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="39"/>
         <source>DPI-Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Tryb DPI</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="68"/>
@@ -40501,7 +40501,7 @@ Note: giving the password is optional. It will be requested interactivly, when n
     <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="157"/>
         <source>Ignore GetMap/GetTile URI reported in capabilities</source>
-        <translation type="unfinished"></translation>
+        <translation>Ignoruj GetMap/GetTile URI podany w Capabilities</translation>
     </message>
     <message>
         <source>Ignore GetMap URI reported in capabilities</source>
@@ -41532,7 +41532,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/qgsowssourceselect.cpp" line="71"/>
         <source>Add Layer(s) from a %1 Server</source>
-        <translation type="unfinished"></translation>
+        <translation>Dodaj warstwy z serwera %1</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsowssourceselect.cpp" line="74"/>
@@ -41547,22 +41547,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/qgsowssourceselect.cpp" line="84"/>
         <source>Always cache</source>
-        <translation type="unfinished"></translation>
+        <translation>zawsze buforuj</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsowssourceselect.cpp" line="85"/>
         <source>Prefer cache</source>
-        <translation type="unfinished"></translation>
+        <translation>preferuj buforowanie</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsowssourceselect.cpp" line="86"/>
         <source>Prefer network</source>
-        <translation type="unfinished"></translation>
+        <translation>preferuj sieć</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsowssourceselect.cpp" line="87"/>
         <source>Always network</source>
-        <translation type="unfinished"></translation>
+        <translation>zawsze sieć</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsowssourceselect.cpp" line="271"/>
@@ -41603,7 +41603,8 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/gui/qgsowssourceselect.cpp" line="575"/>
         <source>Could not understand the response:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Niezrozumiała odpowiedź:
+%1</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsowssourceselect.cpp" line="626"/>
@@ -42175,12 +42176,12 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="416"/>
         <source>Date</source>
-        <translation type="unfinished">Data</translation>
+        <translation>Data</translation>
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="423"/>
         <source>Date &amp; Time</source>
-        <translation type="unfinished"></translation>
+        <translation>Data i czas</translation>
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="470"/>
@@ -61389,7 +61390,7 @@ Odpowiedź:
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1022"/>
         <source>Cannot create memory file</source>
-        <translation>Nie można utworzyć pliku (w) pamięci</translation>
+        <translation>Nie można utworzyć pliku tymczasowego</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1071"/>
