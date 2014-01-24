@@ -340,11 +340,8 @@ class GUI_EXPORT QgsLinePatternFillSymbolLayerWidget : public QgsSymbolLayerV2Wi
   private slots:
     void on_mAngleSpinBox_valueChanged( double d );
     void on_mDistanceSpinBox_valueChanged( double d );
-    void on_mLineWidthSpinBox_valueChanged( double d );
     void on_mOffsetSpinBox_valueChanged( double d );
-    void on_mColorPushButton_colorChanged( const QColor& color );
     void on_mDistanceUnitComboBox_currentIndexChanged( int index );
-    void on_mLineWidthUnitComboBox_currentIndexChanged( int index );
     void on_mOffsetUnitComboBox_currentIndexChanged( int index );
     void on_mDataDefinedPropertiesButton_clicked();
 };

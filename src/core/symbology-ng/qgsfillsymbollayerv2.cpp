@@ -1408,6 +1408,18 @@ QgsLinePatternFillSymbolLayer::QgsLinePatternFillSymbolLayer(): QgsImageFillSymb
   QgsImageFillSymbolLayer::setSubSymbol( 0 ); //no outline
 }
 
+void QgsLinePatternFillSymbolLayer::setLineWidth( double w )
+{
+  mFillLineSymbol->setWidth( w );
+  mLineWidth = w;
+}
+
+void QgsLinePatternFillSymbolLayer::setColor( const QColor& c )
+{
+  mFillLineSymbol->setColor( c );
+  mColor = c;
+}
+
 QgsLinePatternFillSymbolLayer::~QgsLinePatternFillSymbolLayer()
 {
   delete mFillLineSymbol;

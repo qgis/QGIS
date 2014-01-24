@@ -1892,18 +1892,12 @@ void QgsLinePatternFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayerV2* laye
     mLayer = patternLayer;
     mAngleSpinBox->setValue( mLayer->lineAngle() );
     mDistanceSpinBox->setValue( mLayer->distance() );
-    mLineWidthSpinBox->setValue( mLayer->lineWidth() );
     mOffsetSpinBox->setValue( mLayer->offset() );
-    mColorPushButton->setColor( mLayer->color() );
-    mColorPushButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
 
     //units
     mDistanceUnitComboBox->blockSignals( true );
     mDistanceUnitComboBox->setCurrentIndex( mLayer->distanceUnit() );
     mDistanceUnitComboBox->blockSignals( false );
-    mLineWidthUnitComboBox->blockSignals( true );
-    mLineWidthUnitComboBox->setCurrentIndex( mLayer->lineWidthUnit() );
-    mLineWidthUnitComboBox->blockSignals( false );
     mOffsetUnitComboBox->blockSignals( true );
     mOffsetUnitComboBox->setCurrentIndex( mLayer->offsetUnit() );
     mOffsetUnitComboBox->blockSignals( false );
@@ -1933,15 +1927,6 @@ void QgsLinePatternFillSymbolLayerWidget::on_mDistanceSpinBox_valueChanged( doub
   }
 }
 
-void QgsLinePatternFillSymbolLayerWidget::on_mLineWidthSpinBox_valueChanged( double d )
-{
-  if ( mLayer )
-  {
-    mLayer->setLineWidth( d );
-    emit changed();
-  }
-}
-
 void QgsLinePatternFillSymbolLayerWidget::on_mOffsetSpinBox_valueChanged( double d )
 {
   if ( mLayer )
@@ -1951,31 +1936,11 @@ void QgsLinePatternFillSymbolLayerWidget::on_mOffsetSpinBox_valueChanged( double
   }
 }
 
-void QgsLinePatternFillSymbolLayerWidget::on_mColorPushButton_colorChanged( const QColor& color )
-{
-  if ( !mLayer )
-  {
-    return;
-  }
-
-  mLayer->setColor( color );
-  emit changed();
-}
-
 void QgsLinePatternFillSymbolLayerWidget::on_mDistanceUnitComboBox_currentIndexChanged( int index )
 {
   if ( mLayer )
   {
     mLayer->setDistanceUnit(( QgsSymbolV2::OutputUnit ) index );
-    emit changed();
-  }
-}
-
-void QgsLinePatternFillSymbolLayerWidget::on_mLineWidthUnitComboBox_currentIndexChanged( int index )
-{
-  if ( mLayer )
-  {
-    mLayer->setLineWidthUnit(( QgsSymbolV2::OutputUnit ) index );
     emit changed();
   }
 }
