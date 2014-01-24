@@ -28434,11 +28434,6 @@ gray = no data
         <translation>Αποτυχία δημιουργίας αρχείου</translation>
     </message>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="179"/>
-        <source>Unable to create a GPX file with the given name. Try again with another name or in another directory.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="224"/>
         <source>GPX Loader</source>
         <translation></translation>

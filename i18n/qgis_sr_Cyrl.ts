@@ -31227,10 +31227,6 @@ gray = no data
         <translation>Не могу креирати датотеку</translation>
     </message>
     <message>
-        <source>Unable to create a GPX file with the given name. Try again with another name or in another directory.</source>
-        <translation type="obsolete">Не могу креирати GPX датотеку са тим именом. Покушај поново са другим именом или у другој фасцикли.</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="89"/>
         <source>&amp;GPS Tools</source>
         <translation type="unfinished"></translation>

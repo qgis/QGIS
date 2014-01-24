@@ -30875,10 +30875,6 @@ Please reselect a valid file.</source>
         <translation>Não é possível ler o arquivo selecionado.Volte a selecionar um arquivo válido.</translation>
     </message>
     <message>
-        <source>Unable to create a GPX file with the given name. Try again with another name or in another directory.</source>
-        <translation type="obsolete">Impossível criar um arquivo GPX com o nome fornecido. Tente novamentecom um outro nome ou em outra pasta.</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="420"/>
         <source>This device does not support downloading of %1.</source>
         <translation>Este dispositivo não suporta a transferência de %1.</translation>

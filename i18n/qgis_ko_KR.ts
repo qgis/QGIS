@@ -31262,10 +31262,6 @@ Please reselect a valid file.</source>
 올바른 파일을 다시 선택하십시오.</translation>
     </message>
     <message>
-        <source>Unable to create a GPX file with the given name. Try again with another name or in another directory.</source>
-        <translation type="obsolete">입력된 이름으로 GPX 파일을 만들 수 없습니다. 다른 이름이나 다른 디렉토리에서 다시 시도하십시오.</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="420"/>
         <source>This device does not support downloading of %1.</source>
         <translation>이 장치는 %1 다운로드를 지원하지 않습니다.</translation>

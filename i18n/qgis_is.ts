@@ -26531,10 +26531,6 @@ gray = no data
         <translation>Gat ekki búið til skrá</translation>
     </message>
     <message>
-        <source>Unable to create a GPX file with the given name. Try again with another name or in another directory.</source>
-        <translation type="obsolete">Get ekki búið til GPX skrá með þessu nafni. Prófaðu aftur með öðru nafni eða í öðru skráarsafni.</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="89"/>
         <source>&amp;GPS Tools</source>
         <translation type="unfinished"></translation>

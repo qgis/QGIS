@@ -31238,10 +31238,6 @@ Please reselect a valid file.</source>
 Vyberte prosím nějaký platný soubor.</translation>
     </message>
     <message>
-        <source>Unable to create a GPX file with the given name. Try again with another name or in another directory.</source>
-        <translation type="obsolete">Nemohu vytvořit GPX soubor se zadaným názvem. Zkuste znovu s jiným názvem nebo v jiné složce.</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="420"/>
         <source>This device does not support downloading of %1.</source>
         <translation>Toto zařízení nepodporuje stažení %1.</translation>

@@ -31225,10 +31225,6 @@ gray = no data
         <translation>Ne mogu kreirati datoteku</translation>
     </message>
     <message>
-        <source>Unable to create a GPX file with the given name. Try again with another name or in another directory.</source>
-        <translation type="obsolete">Ne mogu kreirati GPX datoteku sa tim imenom. Pokušaj ponovo sa drugim imenom ili u drugoj fascikli.</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="89"/>
         <source>&amp;GPS Tools</source>
         <translation type="unfinished"></translation>

@@ -30408,10 +30408,6 @@ Please reselect a valid file.</source>
 Kérem válassz egy megfelelő fájlt.</translation>
     </message>
     <message>
-        <source>Unable to create a GPX file with the given name. Try again with another name or in another directory.</source>
-        <translation type="obsolete">A megadott névvel nem tudom a GPX fájlt létrehozni. Próbáld újra egy másik névvel vagy egy másik könyvtárral.</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="420"/>
         <source>This device does not support downloading of %1.</source>
         <translation>Ez az eszköz nem támogatja %1 letöltését.</translation>
