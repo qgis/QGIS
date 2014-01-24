@@ -58,6 +58,7 @@
 #include "qgsgeometry.h"
 #include "qgspaperitem.h"
 #include "qgsmaplayerregistry.h"
+#include "ui_qgssvgexportoptions.h"
 
 #include <QCloseEvent>
 #include <QCheckBox>
@@ -1836,26 +1837,24 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
       outputFileName = file.path();
     }
 
-    // open file dialog with export options
-    {
-      QScopedPointer<QFileDialog> fileDialog( new QFileDialog(
-                                                this,
-                                                tr( "Choose a file name to save the map as" ),
-                                                outputFileName,
-                                                tr( "SVG Format" ) + " (*.svg *.SVG)" ) );
-      fileDialog->setAcceptMode( QFileDialog::AcceptSave );
-      QCheckBox * cb = new QCheckBox( "Group layers", fileDialog.data() );
-      cb->setChecked( false );
-      fileDialog->layout()->addWidget( cb );
-
-      if ( !fileDialog->exec() ) return;
-      outputFileName = fileDialog->selectedFiles().length() ? fileDialog->selectedFiles().first() : QString();
-      groupLayers = cb->isChecked();
-    }
-
+    // open file dialog
+    outputFileName = QFileDialog::getSaveFileName(
+                       this,
+                       tr( "Choose a file name to save the map as" ),
+                       outputFileName,
+                       tr( "SVG Format" ) + " (*.svg *.SVG)" );
 
     if ( outputFileName.isEmpty() )
       return;
+
+    // open otions dialog
+    {
+        QDialog dialog;
+        Ui::QgsSvgExportOptionsDialog options;
+        options.setupUi( &dialog );
+        dialog.exec();
+        groupLayers = options.chkMapLayersAsGroup->isChecked();
+    }
 
     if ( !outputFileName.endsWith( ".svg", Qt::CaseInsensitive ) )
     {
@@ -1883,22 +1882,12 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
     QSettings myQSettings;
     QString lastUsedDir = myQSettings.value( "/UI/lastSaveAtlasAsSvgDir", "." ).toString();
 
-    // open file dialog with options
-    {
-      QScopedPointer<QFileDialog> fileDialog( new QFileDialog(
-                                                this,
-                                                tr( "Directory where to save SVG files" ),
-                                                lastUsedDir ) );
-      fileDialog->setFileMode( QFileDialog::Directory );
-      fileDialog->setOption( QFileDialog::ShowDirsOnly, true );
-      QCheckBox * cb = new QCheckBox( "Group layers", fileDialog.data() );
-      cb->setChecked( false );
-      fileDialog->layout()->addWidget( cb );
+    // open file dialog
+    outputDir = QFileDialog::getExistingDirectory( this,
+                tr( "Directory where to save SVG files" ),
+                lastUsedDir,
+                QFileDialog::ShowDirsOnly );
 
-      if ( !fileDialog->exec() ) return;
-      outputDir = fileDialog->selectedFiles().length() ? fileDialog->selectedFiles().first() : QString();
-      groupLayers = cb->isChecked();
-    }
     if ( outputDir.isEmpty() )
     {
       return;
@@ -1912,6 +1901,16 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
                             QMessageBox::Ok );
       return;
     }
+
+    // open otions dialog
+    {
+        QDialog dialog;
+        Ui::QgsSvgExportOptionsDialog options;
+        options.setupUi( &dialog );
+        dialog.exec();
+        groupLayers = options.chkMapLayersAsGroup->isChecked();
+    }
+    
 
     myQSettings.setValue( "/UI/lastSaveAtlasAsSvgDir", outputDir );
   }
