@@ -35,35 +35,6 @@ QgsSingleSymbolRendererV2::QgsSingleSymbolRendererV2( QgsSymbolV2* symbol )
   Q_ASSERT( symbol );
 }
 
-// we need to clone symbol
-QgsSingleSymbolRendererV2::QgsSingleSymbolRendererV2( const QgsSingleSymbolRendererV2 & src )
-    : QgsFeatureRendererV2( "singleSymbol" )
-    , mSymbol( src.mSymbol.data() ? src.mSymbol->clone() : NULL )
-    , mRotation( src.mRotation.data() ? new QgsExpression( src.mRotation->expression() ) : NULL )
-    , mSizeScale( src.mSizeScale.data() ?  new QgsExpression( src.mSizeScale->expression() ) : NULL )
-    , mScaleMethod( src.mScaleMethod )
-    , mTempSymbol( src.mTempSymbol.data() ? src.mTempSymbol->clone() : NULL )
-{
-}
-
-// this is a copy + swap idiom implementation
-// the copy is done with the 'pass by value'
-QgsSingleSymbolRendererV2 & QgsSingleSymbolRendererV2::operator=( QgsSingleSymbolRendererV2 other )
-{
-  swap( other );
-  return *this;
-}
-
-void QgsSingleSymbolRendererV2::swap( QgsSingleSymbolRendererV2 & other )
-{
-  std::swap( mSymbol, other.mSymbol );
-  std::swap( mRotation, other.mRotation );
-  std::swap( mSizeScale, other.mSizeScale );
-  std::swap( mScaleMethod, other.mScaleMethod );
-  std::swap( mTempSymbol, other.mTempSymbol );
-  std::swap( mOrigSize, other.mOrigSize );
-}
-
 QgsSingleSymbolRendererV2::~QgsSingleSymbolRendererV2()
 {
 }

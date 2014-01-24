@@ -62,7 +62,7 @@ void QgsRendererRangeV2::swap( QgsRendererRangeV2 & other )
 {
   std::swap( mLowerValue, other.mLowerValue );
   std::swap( mUpperValue, other.mUpperValue );
-  std::swap( mSymbol, other.mSymbol );
+  mSymbol.swap( other.mSymbol );
   std::swap( mLabel, other.mLabel );
 }
 
