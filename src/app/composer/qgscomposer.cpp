@@ -1849,11 +1849,11 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
 
     // open otions dialog
     {
-        QDialog dialog;
-        Ui::QgsSvgExportOptionsDialog options;
-        options.setupUi( &dialog );
-        dialog.exec();
-        groupLayers = options.chkMapLayersAsGroup->isChecked();
+      QDialog dialog;
+      Ui::QgsSvgExportOptionsDialog options;
+      options.setupUi( &dialog );
+      dialog.exec();
+      groupLayers = options.chkMapLayersAsGroup->isChecked();
     }
 
     if ( !outputFileName.endsWith( ".svg", Qt::CaseInsensitive ) )
@@ -1904,13 +1904,13 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
 
     // open otions dialog
     {
-        QDialog dialog;
-        Ui::QgsSvgExportOptionsDialog options;
-        options.setupUi( &dialog );
-        dialog.exec();
-        groupLayers = options.chkMapLayersAsGroup->isChecked();
+      QDialog dialog;
+      Ui::QgsSvgExportOptionsDialog options;
+      options.setupUi( &dialog );
+      dialog.exec();
+      groupLayers = options.chkMapLayersAsGroup->isChecked();
     }
-    
+
 
     myQSettings.setValue( "/UI/lastSaveAtlasAsSvgDir", outputDir );
   }
@@ -2021,6 +2021,7 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
         QgsComposerMap* mapItem = NULL;
         QStringList savedLayerSet;
         bool keepLayerSet;
+        bool hasBackground;
         QStringList layerStack;
         QList<QGraphicsItem *>::const_iterator it = items.begin();
         for ( unsigned svgLayerId = 1; it != items.end(); ++svgLayerId )
@@ -2038,13 +2039,24 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
               mapItem->setKeepLayerSet( true );
               savedLayerSet = mapItem->layerSet();
               layerStack = savedLayerSet;
+              hasBackground = mapItem->hasBackground();
+              if ( hasBackground ) layerStack.append( "" ); // to render the background
             }
             if ( !layerStack.isEmpty() ) // no layers... this can happen
             {
               const QString layerId( layerStack.takeLast() );
-              const QgsMapLayer * ml = QgsMapLayerRegistry::instance()->mapLayer( layerId );
-              layerName.append( " " + ( ml ? ml->name() : "" ) );
-              mapItem->setLayerSet( QStringList( layerId ) );
+              if ( layerId.isEmpty() ) // background
+              {
+                layerName.append( " Background" );
+                mapItem->setLayerSet( QStringList() );
+              }
+              else
+              {
+                mapItem->setBackgroundEnabled( false );
+                const QgsMapLayer * ml = QgsMapLayerRegistry::instance()->mapLayer( layerId );
+                layerName.append( " " + ( ml ? ml->name() : "" ) );
+                mapItem->setLayerSet( QStringList( layerId ) );
+              }
             }
           }
           else
@@ -2100,6 +2112,7 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
           {
             mapItem->setKeepLayerSet( keepLayerSet );
             mapItem->setLayerSet( savedLayerSet );
+            mapItem->setBackgroundEnabled( hasBackground );
             mapItem = NULL;
             ++it;
           }
