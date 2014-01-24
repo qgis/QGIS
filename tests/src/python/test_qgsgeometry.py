@@ -766,7 +766,6 @@ class TestQgsGeometry(TestCase):
         assert compareWkt( expwkt, wkt ), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt )
 
         assert multipoint.insertVertex(6, 6, 2), "MULTIPOINT append 6,6 at 2 failed"
-
         expwkt = "MULTIPOINT(4 4, 5 5, 6 6, 7 7)"
         wkt = multipoint.exportToWkt()
         assert compareWkt( expwkt, wkt ), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt )
@@ -775,19 +774,16 @@ class TestQgsGeometry(TestCase):
         assert not multipoint.deleteVertex(-1), "MULTIPOINT delete at -1 unexpectedly succeeded"
 
         assert multipoint.deleteVertex(1), "MULTIPOINT delete at 1 failed"
-
         expwkt = "MULTIPOINT(4 4, 6 6, 7 7)"
         wkt = multipoint.exportToWkt()
         assert compareWkt( expwkt, wkt ), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt )
 
         assert multipoint.deleteVertex(2), "MULTIPOINT delete at 2 failed"
-
         expwkt = "MULTIPOINT(4 4, 6 6)"
         wkt = multipoint.exportToWkt()
         assert compareWkt( expwkt, wkt ), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt )
 
         assert multipoint.deleteVertex(0), "MULTIPOINT delete at 2 failed"
-
         expwkt = "MULTIPOINT(6 6)"
         wkt = multipoint.exportToWkt()
         assert compareWkt( expwkt, wkt ), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt )
@@ -851,6 +847,49 @@ class TestQgsGeometry(TestCase):
 
         assert not polyline.deleteVertex( -5 ), "Delete vertex -5 unexpectedly succeeded"
         assert not polyline.deleteVertex( 100 ), "Delete vertex 100 unexpectedly succeeded"
+
+        #   2-3 6-+-7
+        #   | | |   |
+        # 0-1 4 5   8-9
+        polyline = QgsGeometry.fromWkt("MULTILINESTRING((0 0, 1 0, 1 1, 2 1,2 0),(3 0, 3 1, 5 1, 5 0, 6 0))")
+        assert polyline.deleteVertex(5), "Delete vertex 5 failed"
+        expwkt = "MULTILINESTRING((0 0, 1 0, 1 1, 2 1, 2 0), (3 1, 5 1, 5 0, 6 0))"
+        wkt = polyline.exportToWkt()
+        assert compareWkt( expwkt, wkt ), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt )
+
+        assert not polyline.deleteVertex(-100), "Delete vertex -100 unexpectedly succeeded"
+        assert not polyline.deleteVertex(100), "Delete vertex 100 unexpectedly succeeded"
+
+        assert polyline.deleteVertex(0), "Delete vertex 0 failed"
+        expwkt = "MULTILINESTRING((1 0, 1 1, 2 1, 2 0), (3 1, 5 1, 5 0, 6 0))"
+        wkt = polyline.exportToWkt()
+        assert compareWkt( expwkt, wkt ), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt )
+
+        # 5---4
+        # |   |
+        # | 2-3
+        # | |
+        # 0-1
+        polygon = QgsGeometry.fromWkt("POLYGON((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0))")
+
+        assert polygon.deleteVertex(2), "Delete vertex 2 failed"
+        print "FIXME: exportToWkt doesn't put a blanks behind the comma"
+        expwkt = "POLYGON((0 0,1 0,2 1,2 2,0 2,0 0))"
+        wkt = polygon.exportToWkt()
+        assert compareWkt( expwkt, wkt ), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt )
+
+        assert polygon.deleteVertex(0), "Delete vertex 0 failed"
+        expwkt = "POLYGON((1 0,2 1,2 2,0 2,1 0))"
+        wkt = polygon.exportToWkt()
+        assert compareWkt( expwkt, wkt ), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt )
+
+        assert polygon.deleteVertex(4), "Delete vertex 4 failed"
+        expwkt = "POLYGON((2 1,2 2,0 2,2 1))"
+        wkt = polygon.exportToWkt()
+        assert compareWkt( expwkt, wkt ), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt )
+
+        assert not polygon.deleteVertex(-100), "Delete vertex -100 unexpectedly succeeded"
+        assert not polygon.deleteVertex(100), "Delete vertex 100 unexpectedly succeeded"
 
         # 5-+-4 0-+-9
         # |   | |   |

@@ -1383,6 +1383,9 @@ bool QgsGeometry::deleteVertex( QgsConstWkbPtr &srcPtr, QgsWkbPtr &dstPtr, int a
     return false;
   }
 
+  if ( isRing && atVertex == pointIndex + nPoints - 1 )
+    atVertex = pointIndex;
+
   dstPtr << nPoints - 1;
 
   int len = ( atVertex - pointIndex ) * ps;
@@ -1424,8 +1427,6 @@ bool QgsGeometry::deleteVertex( QgsConstWkbPtr &srcPtr, QgsWkbPtr &dstPtr, int a
 
 bool QgsGeometry::deleteVertex( int atVertex )
 {
-  QgsDebugMsg( QString( "0x%1 %2 %3" ).arg(( qint64 ) mGeometry, 0, 16 ).arg( mGeometrySize ).arg( atVertex ) );
-
   if ( atVertex < 0 )
     return false;
 
@@ -1448,8 +1449,6 @@ bool QgsGeometry::deleteVertex( int atVertex )
   int ps = ( hasZValue ? 3 : 2 ) * sizeof( double );
   if ( QGis::flatType( wkbType ) == QGis::WKBMultiPoint )
     ps += 1 + sizeof( int );
-
-  QgsDebugMsg( QString( "wktType:%1[%2] mGeometrySize:%3 ps:%4" ).arg( wkbType ).arg( QGis::featureType( wkbType ) ).arg( mGeometrySize ).arg( ps ) );
 
   unsigned char *dstBuffer = new unsigned char[mGeometrySize - ps];
   QgsWkbPtr dstPtr( dstBuffer );
@@ -1477,7 +1476,6 @@ bool QgsGeometry::deleteVertex( int atVertex )
       srcPtr >> nRings;
       dstPtr << nRings;
 
-      bool deleted = false;
       for ( int ringnr = 0, pointIndex = 0; ringnr < nRings; ++ringnr )
         deleted |= deleteVertex( srcPtr, dstPtr, atVertex, hasZValue, pointIndex, true, ringnr == nRings - 1 );
 
@@ -1490,8 +1488,6 @@ bool QgsGeometry::deleteVertex( int atVertex )
       int nPoints;
       srcPtr >> nPoints;
 
-      QgsDebugMsg( QString( "nPoint:%1" ).arg( nPoints ) );
-
       if ( atVertex < nPoints )
       {
         dstPtr << nPoints - 1;
@@ -1499,25 +1495,21 @@ bool QgsGeometry::deleteVertex( int atVertex )
         int len = ps * atVertex;
         if ( len > 0 )
         {
-          QgsDebugMsg( QString( "first part:%1" ).arg( len ) );
           memcpy( dstPtr, srcPtr, len );
           srcPtr += len;
           dstPtr += len;
         }
 
-        QgsDebugMsg( QString( "skip:%1" ).arg( ps ) );
         srcPtr += ps;
 
         len = ps * ( nPoints - atVertex - 1 );
         if ( len > 0 )
         {
-          QgsDebugMsg( QString( "second part:%1" ).arg( ps ) );
           memcpy( dstPtr, srcPtr, len );
           srcPtr += len;
           dstPtr += len;
         }
 
-        QgsDebugMsg( QString( "deleted!: size:%1" ).arg( dstPtr - dstBuffer ) );
         deleted = true;
       }
 
@@ -1531,7 +1523,6 @@ bool QgsGeometry::deleteVertex( int atVertex )
       srcPtr >> nLines;
       dstPtr << nLines;
 
-      bool deleted = false;
       for ( int linenr = 0, pointIndex = 0; linenr < nLines; ++linenr )
       {
         srcPtr >> endianess >> wkbType;
@@ -1568,7 +1559,6 @@ bool QgsGeometry::deleteVertex( int atVertex )
 
   if ( deleted )
   {
-    QgsDebugMsg( QString( "deleted true replace:0x%1 with 0x%2" ).arg(( qint64 ) mGeometry, 0, 16 ).arg(( qint64 ) dstBuffer, 0, 16 ) );
     delete [] mGeometry;
     mGeometry = dstBuffer;
     mGeometrySize -= ps;
@@ -1577,7 +1567,6 @@ bool QgsGeometry::deleteVertex( int atVertex )
   }
   else
   {
-    QgsDebugMsg( QString( "deleted false: free 0x%1" ).arg(( qint64 ) dstBuffer, 0, 16 ) );
     delete [] dstBuffer;
     return false;
   }
