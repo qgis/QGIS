@@ -1547,6 +1547,14 @@ void QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolV2RenderContext
 {
   Q_UNUSED( lineWidth );
   Q_UNUSED( color );
+
+  mBrush.setTextureImage( QImage() ); // set empty in case we have to return
+
+  if ( !mFillLineSymbol )
+  {
+    return;
+  }
+
   const QgsRenderContext& ctx = context.renderContext();
   //double outlinePixelWidth = lineWidth * QgsSymbolLayerV2Utils::pixelSizeScaleFactor( ctx,  mLineWidthUnit );
   double outputPixelDist = distance * QgsSymbolLayerV2Utils::pixelSizeScaleFactor( ctx, mDistanceUnit );
@@ -1563,121 +1571,172 @@ void QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolV2RenderContext
   {
     height = qAbs( outputPixelDist / cos( lineAngle * M_PI / 180 ) ); //keep perpendicular distance between lines constant
     width = qAbs( height / tan( lineAngle * M_PI / 180 ) );
+
+    // recalculate real angle and distance after rounding to pixels
+    lineAngle = 180 * qAbs( atan2( height, width ) ) / M_PI;
+    outputPixelDist = height * cos( lineAngle * M_PI / 180 );
+
+    // Round offset to correspond to one pixel height, otherwise lines may
+    // be shifted on tile border if offset falls close to pixel center
+    int offsetHeight = qRound( qAbs( outputPixelOffset / cos( lineAngle * M_PI / 180 ) ) );
+    outputPixelOffset = offsetHeight * cos( lineAngle * M_PI / 180 );
   }
 
   //depending on the angle, we might need to render into a larger image and use a subset of it
-  int dx = 0;
-  int dy = 0;
+  double dx = 0;
+  double dy = 0;
+
+  // To get all patterns into image, we have to consider symbols size (estimateMaxBleed())
+
+  double bleed = 0;
+  for ( int i = 0; i < mFillLineSymbol->symbolLayerCount(); i++ )
+  {
+    QgsSymbolLayerV2 *layer = mFillLineSymbol->symbolLayer( i );
+    double layerBleed = layer->estimateMaxBleed();
+    // TODO: to get real bleed we have to scale it using context and units,
+    // unfortunately estimateMaxBleed() ignore units completely, e.g.
+    // QgsMarkerLineSymbolLayerV2::estimateMaxBleed() is mixing marker size and
+    // offset regardless units. This has to be fixed especially
+    // in estimateMaxBleed(), context probably has to be used.
+    // For now, we only support milimeters
+    double outputPixelBleed = layerBleed * QgsSymbolLayerV2Utils::pixelSizeScaleFactor( ctx, QgsSymbolV2::MM );
+
+    bleed = qMax( bleed, outputPixelBleed );
+  }
+
+  // Add buffer based on bleed but keep precisely the height/width ratio (angle)
+  // thus we add integer multiplications of width and heigh covering the bleed
+  int bufferMulti = qMax( qCeil( bleed / width ), qCeil( bleed / width ) );
+
+  // Always buffer at least once so that center of line marker in upper right corner
+  // does not fall outside due to representation error
+  bufferMulti = qMax( bufferMulti, 1 );
+
+  bufferMulti = 0;
+  int xBuffer = width * bufferMulti;
+  int yBuffer = height * bufferMulti;
+
+  width += 2 * xBuffer;
+  height += 2 * yBuffer;
 
   if ( width > 10000 || height > 10000 ) //protect symbol layer from eating too much memory
   {
-    QImage img;
-    mBrush.setTextureImage( img );
     return;
   }
 
   QImage patternImage( width, height, QImage::Format_ARGB32 );
   patternImage.fill( 0 );
 
-  QPoint p1, p2, p3, p4, p5, p6;
+  QPointF p1, p2, p3, p4, p5, p6;
   if ( qgsDoubleNear( lineAngle, 0.0 ) || qgsDoubleNear( lineAngle, 360.0 ) || qgsDoubleNear( lineAngle, 180.0 ) )
   {
-    p1 = QPoint( 0, height );
-    p2 = QPoint( width, height );
-    p3 = QPoint( 0, 0 );
-    p4 = QPoint( width, 0 );
-    p5 = QPoint( 0, 2 * height );
-    p6 = QPoint( width, 2 * height );
+    p1 = QPointF( 0, height );
+    p2 = QPointF( width, height );
+    p3 = QPointF( 0, 0 );
+    p4 = QPointF( width, 0 );
+    p5 = QPointF( 0, 2 * height );
+    p6 = QPointF( width, 2 * height );
   }
   else if ( qgsDoubleNear( lineAngle, 90.0 ) || qgsDoubleNear( lineAngle, 270.0 ) )
   {
-    p1 = QPoint( 0, height );
-    p2 = QPoint( 0, 0 );
-    p3 = QPoint( width, height );
-    p4 = QPoint( width, 0 );
-    p5 = QPoint( -width, height );
-    p6 = QPoint( -width, 0 );
+    p1 = QPointF( 0, height );
+    p2 = QPointF( 0, 0 );
+    p3 = QPointF( width, height );
+    p4 = QPointF( width, 0 );
+    p5 = QPointF( -width, height );
+    p6 = QPointF( -width, 0 );
   }
   else if (( lineAngle > 0 && lineAngle < 90 ) || ( lineAngle > 180 && lineAngle < 270 ) )
   {
     dx = outputPixelDist * cos(( 90 - lineAngle ) * M_PI / 180.0 );
     dy = outputPixelDist * sin(( 90 - lineAngle ) * M_PI / 180.0 );
-    p1 = QPoint( 0, height );
-    p2 = QPoint( width, 0 );
-    p3 = QPoint( -dx, height - dy );
-    p4 = QPoint( width - dx, -dy ); //p4 = QPoint( p3.x() + width, p3.y() - height );
-    p5 = QPoint( dx, height + dy );
-    p6 = QPoint( width + dx, dy ); //p6 = QPoint( p5.x() + width, p5.y() - height );
+    p1 = QPointF( 0, height );
+    p2 = QPointF( width, 0 );
+    p3 = QPointF( -dx, height - dy );
+    p4 = QPointF( width - dx, -dy ); //p4 = QPoint( p3.x() + width, p3.y() - height );
+    p5 = QPointF( dx, height + dy );
+    p6 = QPointF( width + dx, dy ); //p6 = QPoint( p5.x() + width, p5.y() - height );
   }
   else if (( lineAngle < 180 ) || ( lineAngle > 270 && lineAngle < 360 ) )
   {
     dy = outputPixelDist * cos(( 180 - lineAngle ) * M_PI / 180 );
     dx = outputPixelDist * sin(( 180 - lineAngle ) * M_PI / 180 );
-    p1 = QPoint( width, height );
-    p2 = QPoint( 0, 0 );
-    p5 = QPoint( width + dx, height - dy );
-    p6 = QPoint( p5.x() - width, p5.y() - height ); //p6 = QPoint( dx, -dy );
-    p3 = QPoint( width - dx, height + dy );
-    p4 = QPoint( p3.x() - width, p3.y() - height ); //p4 = QPoint( -dx, dy );
+    p1 = QPointF( width, height );
+    p2 = QPointF( 0, 0 );
+    p5 = QPointF( width + dx, height - dy );
+    p6 = QPointF( p5.x() - width, p5.y() - height ); //p6 = QPoint( dx, -dy );
+    p3 = QPointF( width - dx, height + dy );
+    p4 = QPointF( p3.x() - width, p3.y() - height ); //p4 = QPoint( -dx, dy );
   }
 
   if ( !qgsDoubleNear( mOffset, 0.0 ) ) //shift everything
   {
     QPointF tempPt;
     tempPt = QgsSymbolLayerV2Utils::pointOnLineWithDistance( p1, p3, outputPixelDist + outputPixelOffset );
-    p3 = QPoint( tempPt.x(), tempPt.y() );
+    p3 = QPointF( tempPt.x(), tempPt.y() );
     tempPt = QgsSymbolLayerV2Utils::pointOnLineWithDistance( p2, p4, outputPixelDist + outputPixelOffset );
-    p4 = QPoint( tempPt.x(), tempPt.y() );
+    p4 = QPointF( tempPt.x(), tempPt.y() );
     tempPt = QgsSymbolLayerV2Utils::pointOnLineWithDistance( p1, p5, outputPixelDist - outputPixelOffset );
-    p5 = QPoint( tempPt.x(), tempPt.y() );
+    p5 = QPointF( tempPt.x(), tempPt.y() );
     tempPt = QgsSymbolLayerV2Utils::pointOnLineWithDistance( p2, p6, outputPixelDist - outputPixelOffset );
-    p6 = QPoint( tempPt.x(), tempPt.y() );
+    p6 = QPointF( tempPt.x(), tempPt.y() );
 
     //update p1, p2 last
-    tempPt = QgsSymbolLayerV2Utils::pointOnLineWithDistance( p1, p3, outputPixelOffset ).toPoint();
-    p1 = QPoint( tempPt.x(), tempPt.y() );
-    tempPt = QgsSymbolLayerV2Utils::pointOnLineWithDistance( p2, p4, outputPixelOffset ).toPoint();
-    p2 = QPoint( tempPt.x(), tempPt.y() );;
+    tempPt = QgsSymbolLayerV2Utils::pointOnLineWithDistance( p1, p3, outputPixelOffset );
+    p1 = QPointF( tempPt.x(), tempPt.y() );
+    tempPt = QgsSymbolLayerV2Utils::pointOnLineWithDistance( p2, p4, outputPixelOffset );
+    p2 = QPointF( tempPt.x(), tempPt.y() );;
   }
 
-  if ( mFillLineSymbol )
-  {
-    QPainter p( &patternImage );
+  QPainter p( &patternImage );
 
 #if 0
-    // DEBUG: Draw rectangle
-    //p.setRenderHint( QPainter::Antialiasing, true );
-    QPen pen( QColor( Qt::black ) );
-    pen.setWidthF( 0.1 );
-    pen.setCapStyle( Qt::FlatCap );
-    p.setPen( pen );
-    QPolygon polygon = QPolygon() << QPoint( 0, 0 ) << QPoint( width, 0 ) << QPoint( width, height ) << QPoint( 0, height ) << QPoint( 0, 0 ) ;
-    p.drawPolygon( polygon );
+  // DEBUG: Draw rectangle
+  p.setRenderHint( QPainter::Antialiasing, false ); // get true rect
+  QPen pen( QColor( Qt::black ) );
+  pen.setWidthF( 0.1 );
+  pen.setCapStyle( Qt::FlatCap );
+  p.setPen( pen );
+
+  // To see this rectangle, comment buffer cut below.
+  // Subtract 1 because not antialiased are rendered to the right/down by 1 pixel
+  QPolygon polygon = QPolygon() << QPoint( 0, 0 ) << QPoint( width - 1, 0 ) << QPoint( width - 1, height - 1 ) << QPoint( 0, height - 1 ) << QPoint( 0, 0 ) ;
+  p.drawPolygon( polygon );
+
+  polygon = QPolygon() << QPoint( xBuffer, yBuffer ) << QPoint( width - xBuffer - 1, yBuffer ) << QPoint( width - xBuffer - 1, height - yBuffer - 1 ) << QPoint( xBuffer, height - yBuffer - 1 ) << QPoint( xBuffer, yBuffer ) ;
+  p.drawPolygon( polygon );
 #endif
 
-    // line rendering needs context for drawing on patternImage
-    QgsRenderContext lineRenderContext;
-    lineRenderContext.setPainter( &p );
-    lineRenderContext.setRasterScaleFactor( 1.0 );
-    lineRenderContext.setScaleFactor( context.renderContext().scaleFactor() * context.renderContext().rasterScaleFactor() );
-    QgsMapToPixel mtp( context.renderContext().mapToPixel().mapUnitsPerPixel() / context.renderContext().rasterScaleFactor() );
-    lineRenderContext.setMapToPixel( mtp );
-    lineRenderContext.setForceVectorOutput( false );
+  // Use antialiasing because without antialiasing lines are rendered to the
+  // right and below the mathematically defined points (not symetrical)
+  // and such tiles become useless for are filling
+  p.setRenderHint( QPainter::Antialiasing, true );
 
-    mFillLineSymbol->startRender( lineRenderContext );
+  // line rendering needs context for drawing on patternImage
+  QgsRenderContext lineRenderContext;
+  lineRenderContext.setPainter( &p );
+  lineRenderContext.setRasterScaleFactor( 1.0 );
+  lineRenderContext.setScaleFactor( context.renderContext().scaleFactor() * context.renderContext().rasterScaleFactor() );
+  QgsMapToPixel mtp( context.renderContext().mapToPixel().mapUnitsPerPixel() / context.renderContext().rasterScaleFactor() );
+  lineRenderContext.setMapToPixel( mtp );
+  lineRenderContext.setForceVectorOutput( false );
 
-    QVector<QPolygon> polygons;
-    polygons.append( QPolygon() << p1 << p2 );
-    polygons.append( QPolygon() << p3 << p4 );
-    polygons.append( QPolygon() << p5 << p6 );
-    foreach ( QPolygon polygon, polygons )
-    {
-      mFillLineSymbol->renderPolyline( polygon, context.feature(), lineRenderContext, -1, context.selected() );
-    }
+  mFillLineSymbol->startRender( lineRenderContext );
 
-    mFillLineSymbol->stopRender( lineRenderContext );
-    p.end();
+  QVector<QPolygonF> polygons;
+  polygons.append( QPolygonF() << p1 << p2 );
+  polygons.append( QPolygonF() << p3 << p4 );
+  polygons.append( QPolygonF() << p5 << p6 );
+  foreach ( QPolygonF polygon, polygons )
+  {
+    mFillLineSymbol->renderPolyline( polygon, context.feature(), lineRenderContext, -1, context.selected() );
   }
+
+  mFillLineSymbol->stopRender( lineRenderContext );
+  p.end();
+
+  // Cut off the buffer
+  patternImage = patternImage.copy( xBuffer, yBuffer, patternImage.width() - 2 * xBuffer, patternImage.height() - 2 * yBuffer );
 
   //set image to mBrush
   if ( !qgsDoubleNear( context.alpha(), 1.0 ) )
