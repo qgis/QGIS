@@ -2017,6 +2017,9 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
         QList<QGraphicsItem *> items = mComposition->items( paperRect,
                                        Qt::IntersectsItemBoundingRect,
                                        Qt::AscendingOrder );
+        if ( ! items.isEmpty()
+             && dynamic_cast<QgsPaperGrid*>( items.last() )
+             && !mComposition->gridVisible() ) items.pop_back();
         QgsItemTempHider itemsHider( items );
         QgsComposerMap* mapItem = NULL;
         QStringList savedLayerSet;
