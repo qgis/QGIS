@@ -669,6 +669,7 @@ SHPCreate( const char * pszLayer, int nShapeType )
   {
     free( pszBasename );
     free( pszFullname );
+    fclose( fpSHP );
     return( NULL );
   }
 
