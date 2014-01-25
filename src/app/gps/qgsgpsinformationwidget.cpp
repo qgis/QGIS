@@ -16,6 +16,7 @@
  ***************************************************************************/
 #include "qgsgpsinformationwidget.h"
 #include "qgsnmeaconnection.h"
+#include "qgsgpsudpconnection.h"
 #include "qgsgpsconnectionregistry.h"
 #include "qgsgpsdetector.h"
 #include "info.h"
@@ -179,6 +180,7 @@ QgsGPSInformationWidget::QgsGPSInformationWidget( QgsMapCanvas * thepCanvas, QWi
   mGpsdPort->setText( mySettings.value( "/gps/gpsdPort", 2947 ).toString() );
   mGpsdDevice->setText( mySettings.value( "/gps/gpsdDevice" ).toString() );
 
+  mGpsUdpPort->setText( mySettings.value( "/gps/gpsudpPort", 5002 ).toString());
   //port mode
   if ( myPortMode == "scanPorts" )
   {
@@ -196,6 +198,11 @@ QgsGPSInformationWidget::QgsGPSInformationWidget( QgsMapCanvas * thepCanvas, QWi
   {
     mRadGpsd->setChecked( true );
   }
+    else if ( myPortMode == "udp" )
+  {
+    mRadUdp->setChecked( true );
+  }
+  
   //disable the internal port method if build is without QtLocation
 #ifndef HAVE_QT_MOBILITY_LOCATION
   mRadInternal->setDisabled( true );
@@ -273,6 +280,10 @@ QgsGPSInformationWidget::~QgsGPSInformationWidget()
   {
     mySettings.setValue( "/gps/portMode", "explicitPort" );
   }
+  else if ( mRadUdp->isChecked() )
+  {
+    mySettings.setValue( "/gps/portMode", "udp" );
+  }
   else
   {
     mySettings.setValue( "/gps/portMode", "gpsd" );
@@ -281,7 +292,9 @@ QgsGPSInformationWidget::~QgsGPSInformationWidget()
   mySettings.setValue( "/gps/gpsdHost", mGpsdHost->text() );
   mySettings.setValue( "/gps/gpsdPort", mGpsdPort->text().toInt() );
   mySettings.setValue( "/gps/gpsdDevice", mGpsdDevice->text() );
-
+  // for UDP
+  mySettings.setValue( "/gps/gpsudpPort", mGpsdPort->text().toInt() );
+  
   // pan mode
   if ( radRecenterMap->isChecked() )
   {
@@ -404,6 +417,10 @@ void QgsGPSInformationWidget::connectGps()
   else if ( mRadGpsd->isChecked() )
   {
     port = QString( "%1:%2:%3" ).arg( mGpsdHost->text() ).arg( mGpsdPort->text() ).arg( mGpsdDevice->text() );
+  }
+  else if ( mRadUdp->isChecked() )
+  { //The following is a hack to make easy to use the GPS detector without changes
+    port = QString( "_%2_" ).arg(mGpsUdpPort->text() );
   }
   else if ( mRadInternal->isChecked() )
   {

@@ -7,6 +7,7 @@ SET(QGIS_CORE_SRCS
   gps/qgsgpsconnectionregistry.cpp
   gps/qgsnmeaconnection.cpp
   gps/qgsgpsdconnection.cpp
+  gps/qgsgpsudpconnection.cpp
   gps/qgsgpsdetector.cpp
   gps/parse.c
   gps/sentence.c
@@ -355,6 +356,7 @@ SET(QGIS_CORE_MOC_HDRS
   gps/qgsgpsdetector.h
   gps/qgsnmeaconnection.h
   gps/qgsgpsdconnection.h
+  gps/qgsgpsudpconnection.h
 
   symbology-ng/qgscptcityarchive.h
   symbology-ng/qgssvgcache.h
