@@ -5367,7 +5367,6 @@ QgsMultiPoint QgsGeometry::asMultiPoint() const
   QgsMultiPoint points( nPoints );
   for ( int i = 0; i < nPoints; i++ )
   {
-    wkbPtr += 1 + sizeof( int );
     points[i] = asPoint( wkbPtr, hasZValue );
   }
 

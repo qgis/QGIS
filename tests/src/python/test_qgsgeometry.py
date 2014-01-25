@@ -752,6 +752,17 @@ class TestQgsGeometry(TestCase):
         if not TestQgsGeometry.wkbPtr:
           return
 
+	# #9423
+	points = [ QgsPoint(10, 30), QgsPoint(40, 20), QgsPoint(30,10), QgsPoint(20,10) ]
+	wkt = "MULTIPOINT (10 30, 40 20, 30 10, 20 10)"
+	multipoint = QgsGeometry.fromWkt(wkt)
+	assert multipoint.isMultipart(), "Expected MULTIPOINT to be multipart"
+	assert multipoint.wkbType() == QGis.WKBMultiPoint, "Expected wkbType to be WKBMultipoint"
+	i = 0
+	for p in multipoint.asMultiPoint():
+		assert p == points[i], "Expected %s at %d, got %s" % (points[i].toString(), i, p.toString())
+		i+=1
+
         multipoint = QgsGeometry.fromWkt( "MULTIPOINT(5 5)" )
         assert multipoint.vertexAt( 0 ) == QgsPoint(5,5), "MULTIPOINT fromWkt failed"
 
