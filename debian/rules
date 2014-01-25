@@ -179,7 +179,7 @@ install: build
 	# Add here commands to install the package into debian/tmp.
 	$(MAKE) -C debian/build install DESTDIR=$(CURDIR)/debian/tmp
 
-	perl -i -pe 's=#!/usr/bin/env python=#!/usr/bin/python2.7=;' $(find debian/tmp -name "*.py")
+	perl -i -pe 's=#!/usr/bin/env python=#!/usr/bin/python2.7=;' $$(find debian/tmp -name "*.py")
 
 	# remove unwanted files
 	! [ -f debian/tmp/usr/share/qgis/doc/api/installdox ] || rm debian/tmp/usr/share/qgis/doc/api/installdox
