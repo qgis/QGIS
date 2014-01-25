@@ -68,7 +68,7 @@ class ANALYSIS_EXPORT QgsTransectSample
     static QgsGeometry* closestMultilineElement( const QgsPoint& pt, QgsGeometry* multiLine );
     /**Returns clipped buffer line. Iteratively applies reduced tolerances if the result is not a single line
         @param stratumGeom stratum polygon
-        @param clippedBaselineGeom base line geometry clipped to the stratum
+        @param clippedBaseline base line geometry clipped to the stratum
         @param tolerance buffer distance (in layer units)
         @return clipped buffer line or 0 in case of error*/
     static QgsGeometry* clipBufferLine( QgsGeometry* stratumGeom, QgsGeometry* clippedBaseline, double tolerance );

@@ -531,14 +531,14 @@ class CORE_EXPORT QgsGeometry
                        GEOSCoordSequence** new_sequence );
 
     /**Translates a single vertex by dx and dy.
-    @param wkbPosition position in wkb array. Is increased automatically by the function
-    @param dx translation of x-coordinate
-    @param dy translation of y-coordinate
+    @param wkbPtr pointer to current position in wkb array. Is increased automatically by the function
+    @param dx translation of x coordinate
+    @param dy translation of y coordinate
     @param hasZValue 25D type?*/
     void translateVertex( QgsWkbPtr &wkbPtr, double dx, double dy, bool hasZValue );
 
     /**Transforms a single vertex by ct.
-    @param wkbPosition position in wkb array. Is increased automatically by the function
+    @param wkbPtr pointer to current position in wkb. Is increased automatically by the function
     @param ct the QgsCoordinateTransform
     @param hasZValue 25D type?*/
     void transformVertex( QgsWkbPtr &wkbPtr, const QgsCoordinateTransform& ct, bool hasZValue );
