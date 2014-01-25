@@ -15580,8 +15580,6 @@ Błąd: %1</translation>
         <comment>number of features deleted</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -22910,17 +22908,17 @@ Zmniejsz rozdzielczość lub rozmiar papieru.</translation>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="52"/>
         <source>Meters</source>
-        <translation>Metry</translation>
+        <translation>metry</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="53"/>
         <source>Feet</source>
-        <translation>Stopy</translation>
+        <translation>stopy</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="54"/>
         <source>Nautical Miles</source>
-        <translation>Mile morskie</translation>
+        <translation>mile morskie</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="81"/>
@@ -42577,17 +42575,17 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="106"/>
         <source>Current layer</source>
-        <translation>Bieżąca warstwa</translation>
+        <translation>bieżąca warstwa</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="107"/>
         <source>Top down, stop at first</source>
-        <translation>Pierwszy znaleziony (od góry w dół)</translation>
+        <translation>pierwszy znaleziony (od góry w dół)</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="108"/>
         <source>Top down</source>
-        <translation>Wszystkie warstwy</translation>
+        <translation>wszystkie warstwy</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="306"/>
@@ -42795,7 +42793,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="109"/>
         <source>Layer selection</source>
-        <translation type="unfinished"></translation>
+        <translation>wybór warstwy</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="360"/>
@@ -42805,25 +42803,25 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="718"/>
         <source>Select grid color</source>
-        <translation type="unfinished">Wybierz kolor siatki</translation>
+        <translation>Wybierz kolor siatki</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="724"/>
         <location filename="../src/app/qgsoptions.cpp" line="1326"/>
         <source>Solid</source>
-        <translation type="unfinished"></translation>
+        <translation>linie</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="725"/>
         <location filename="../src/app/qgsoptions.cpp" line="1330"/>
         <source>Dots</source>
-        <translation type="unfinished">kropki</translation>
+        <translation>punkty</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="726"/>
         <location filename="../src/app/qgsoptions.cpp" line="1334"/>
         <source>Crosses</source>
-        <translation type="unfinished"></translation>
+        <translation>krzyże</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="816"/>
@@ -43108,7 +43106,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2519"/>
         <source>Open identify results in a dock window (QGIS restart required)</source>
-        <translation>Otwórz wyniki &amp;identyfikacji w oknie dokowalnym (wymaga restartu QGIS-a)</translation>
+        <translation>Wyświetl informacje w oknie dokowalnym (wymaga restartu QGIS-a)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1509"/>
@@ -43346,23 +43344,23 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2627"/>
         <source>Preferred angle units</source>
-        <translation>Preferowane jednostki miary kątów</translation>
+        <translation>Preferowane jednostki kątów</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2620"/>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2634"/>
         <source>Degrees</source>
-        <translation>Stopnie</translation>
+        <translation>stopnie</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2641"/>
         <source>Radians</source>
-        <translation>Radiany</translation>
+        <translation>radiany</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2672"/>
         <source>Gon</source>
-        <translation>Grady</translation>
+        <translation>grady</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2729"/>
@@ -43501,17 +43499,17 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2592"/>
         <source>Preferred measurements units</source>
-        <translation>Preferowane jednostki miary</translation>
+        <translation>Preferowane jednostki długości</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2599"/>
         <source>Meters</source>
-        <translation>Metry</translation>
+        <translation>metry</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2606"/>
         <source>Feet</source>
-        <translation>Stopy</translation>
+        <translation>stopy</translation>
     </message>
     <message>
         <source>Network &amp; Proxy</source>
@@ -43520,7 +43518,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2513"/>
         <source>Identify</source>
-        <translation>Identyfikacja</translation>
+        <translation>Informacje o obiekcie</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2546"/>
@@ -43711,7 +43709,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2427"/>
         <source>WMS getLegendGraphic Resolution</source>
-        <translation type="unfinished"></translation>
+        <translation>Rozdzielczość WMS getLegendGraphic</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2533"/>
@@ -43721,7 +43719,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2613"/>
         <source>Nautical Miles</source>
-        <translation type="unfinished">mile morskie</translation>
+        <translation>mile morskie</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2783"/>
@@ -43731,37 +43729,37 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2927"/>
         <source>Composition defaults</source>
-        <translation type="unfinished"></translation>
+        <translation>Ustawienia wydruku</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2935"/>
         <source>Default font</source>
-        <translation type="unfinished"></translation>
+        <translation>Domyślna czcionka</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2950"/>
         <source>Grid appearance</source>
-        <translation type="unfinished"></translation>
+        <translation>Wygląd siatki</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2958"/>
         <source>Grid style</source>
-        <translation type="unfinished">Styl siatki</translation>
+        <translation>Styl siatki</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2968"/>
         <source>Color...</source>
-        <translation type="unfinished">Kolor...</translation>
+        <translation>Kolor...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2980"/>
         <source>Grid defaults</source>
-        <translation type="unfinished"></translation>
+        <translation>Domyślne dla siatki</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2986"/>
         <source>Spacing</source>
-        <translation type="unfinished"></translation>
+        <translation>Odstęp</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2993"/>
@@ -43773,7 +43771,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3006"/>
         <source>Grid offset</source>
-        <translation type="unfinished">Przesunięcie</translation>
+        <translation>Przesunięcie</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3018"/>
@@ -43789,12 +43787,12 @@ Always network: always load from network and do not check if the cache has a val
         <location filename="../src/ui/qgsoptionsbase.ui" line="3040"/>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3071"/>
         <source>Snap tolerance</source>
-        <translation type="unfinished">Tolerancja przyciągania</translation>
+        <translation>Tolerancja przyciągania</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3063"/>
         <source>Guide defaults</source>
-        <translation type="unfinished"></translation>
+        <translation>Domyślne dla prowadnic</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3209"/>
@@ -43861,7 +43859,7 @@ Always network: always load from network and do not check if the cache has a val
         <location filename="../src/ui/qgsoptionsbase.ui" line="157"/>
         <location filename="../src/ui/qgsoptionsbase.ui" line="160"/>
         <source>Composer</source>
-        <translation type="unfinished">Wydruk</translation>
+        <translation>Wydruk</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="490"/>
@@ -43886,7 +43884,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="613"/>
         <source>Custom side bar style</source>
-        <translation type="unfinished"></translation>
+        <translation>Styl QGIS zakładek bocznych</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="624"/>
@@ -44003,32 +44001,32 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1638"/>
         <source>Enable feature simplication by default for newly added layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Domyślne upraszczanie nowo dodanych warstw</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1647"/>
         <source>&lt;b&gt;Note:&lt;/b&gt; Feature simplification may speed up rendering but can result in rendering inconsistencies</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Uwaga:&lt;/b&gt; Upraszczanie może przyspieszyć rendering, lecz równocześnie powodować niespójności w podglądzie</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1654"/>
         <source>Simplification threshold (higher values result in more simplification): </source>
-        <translation type="unfinished"></translation>
+        <translation>Próg upraszczania (wyższe wartości to większe uproszczenia): </translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1664"/>
         <source>Higher values result in more simplification</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyższe wartości powodują większe uproszczenia</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1709"/>
         <source>Simplify on provider side if possible</source>
-        <translation type="unfinished"></translation>
+        <translation>Upraszczaj w źródle danych (jeśli to możliwe)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1716"/>
         <source>Maximum scale at which the layer should be simplified (1:1 always simplifies): </source>
-        <translation type="unfinished"></translation>
+        <translation>Maksymalna skala upraszczania (1:1 - zawsze)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2092"/>
@@ -44126,7 +44124,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3161"/>
         <source>Suppress attribute form pop-up after feature creation</source>
-        <translation type="unfinished">Zamknij formularz po stworzeniu obiektu</translation>
+        <translation>Zamknij formularz po stworzeniu obiektu</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3410"/>
@@ -44195,7 +44193,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3875"/>
         <source>Don&apos;t enable &apos;on the fly&apos; reprojection</source>
-        <translation type="unfinished"></translation>
+        <translation>Domyślnie wyłącz reprojekcję w locie</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3902"/>
@@ -44230,17 +44228,18 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="4151"/>
         <source>Max retry in case of tile request errors</source>
-        <translation type="unfinished"></translation>
+        <translation>Limit prób przy błędach pobierania kafli</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="4169"/>
         <source>User-Agent</source>
-        <translation type="unfinished"></translation>
+        <translation>Klient użytkownika (User-Agent)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="4207"/>
         <source>Size [KiB]</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>Uproszczenie, ale zrozumiałe dla 99% użytkowników.</translatorcomment>
+        <translation>Rozmiar [kB]</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="4227"/>
@@ -44372,7 +44371,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/gui/qgsoptionsdialogbase.cpp" line="257"/>
         <source>Missing objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Brakujące obiekty</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsoptionsdialogbase.cpp" line="258"/>
@@ -44380,7 +44379,9 @@ Always network: always load from network and do not check if the cache has a val
 
 Missing some of the .ui template objects:
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Nie udało się zainicjować okna opcji.
+
+Brak niektórych szablonów .ui</translation>
     </message>
 </context>
 <context>
@@ -46476,11 +46477,11 @@ Sprawdź czy masz uprawnienia SELECT do tabeli zawierającej geometrię PostGIS.
     </message>
     <message>
         <source>Missing metadata file</source>
-        <translation type="unfinished"></translation>
+        <translation>Brak pliku metadanych</translation>
     </message>
     <message>
         <source>Error reading metadata</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd odczytu pliku metadanych</translation>
     </message>
     <message>
         <source>Uninstall (recommended)</source>
@@ -46934,7 +46935,7 @@ Musisz włączyć ponownie program QGIS, żeby ją przeładować.</translation>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="659"/>
         <source>This plugin is deprecated</source>
-        <translation type="unfinished"></translation>
+        <translation>Ta wtyczka jest niezalecana</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="702"/>
@@ -47098,22 +47099,22 @@ Musisz włączyć ponownie program QGIS, żeby ją przeładować.</translation>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager_texts.cpp" line="11"/>
         <source>&lt;h3&gt;All Plugins&lt;/h3&gt;&lt;p&gt;On the left you see the list of all plugins available for your QGIS, both installed and available for download. Some plugins come with your QGIS installation while most of them are made available via the plugin repositories.&lt;/p&gt;&lt;p&gt;You can temporarily enable or disable a plugin. To &lt;i&gt;enable&lt;/i&gt; or &lt;i&gt;disable&lt;/i&gt; a plugin, click its checkbox or doubleclick its name...&lt;/p&gt;&lt;p&gt;Plugins showing in &lt;span style=&apos;color:red&apos;&gt;red&lt;/span&gt; are not loaded because there is a problem. They are also listed on the &apos;Invalid&apos; tab. Click on the plugin name to see more details, or to reinstall or uninstall this plugin.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Wszystkie wtyczki&lt;/h3&gt;&lt;p&gt;Lista wszystkich wtyczek dostępnych dla tej wersji QGIS, obejmująca zarówno te zainstalowane, jak i dostępne do pobrania. Niektóre z wtyczek są dostarczane z programem instalacyjnym, lecz większość z nich udostępniana jest poprzez repozytorium wtyczek.&lt;/p&gt;&lt;p&gt;Można tymczasowo włączyć lub wyłączyć wtyczkę. Aby wtyczkę &lt;i&gt;włączyć&lt;/i&gt; lub &lt;i&gt;wyłączyć&lt;/i&gt; kliknij na pole wyboru lub dwukrotnie kliknij na nazwie wtyczki.&lt;/p&gt;&lt;p&gt;Wtyczki wyświetlone &lt;span style=&apos;color:red&apos;&gt;&lt;b&gt;na czerwono&lt;/b&gt;&lt;/span&gt; nie zostały wczytane, ponieważ jest z nimi jakiś problem. Są one również wyświetlone w podgrupie wtyczek &apos;Niesprawnych&apos;. Kliknij na nazwie wtyczki, aby przeczytać jej opis, przeinstalować ją lub odinstalować.&lt;/p&gt; &lt;p&gt;Kolejność wyświetlania wtyczek (sortowanie) możesz zmienić poprzez menu kontekstowe (prawy klawisz myszy).&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager_texts.cpp" line="31"/>
         <source>&lt;h3&gt;Installed Plugins&lt;/h3&gt;&lt;p&gt;Here you only see plugins &lt;b&gt;installed on your QGIS&lt;/b&gt;.&lt;/p&gt;&lt;p&gt;Click on the name to see details. &lt;/p&gt;&lt;p&gt;Click the checkbox or doubleclick the name to &lt;i&gt;activate&lt;/i&gt; or &lt;i&gt;deactivate&lt;/i&gt; the plugin.&lt;/p&gt;&lt;p&gt;You can change the sorting via the context menu (right click).&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Zainstalowane wtyczki&lt;/h3&gt;&lt;p&gt;W tej zakładce wyświetlane są tylko wtyczki &lt;b&gt;zainstalowane w QGIS&lt;/b&gt;.&lt;/p&gt;&lt;p&gt;Kliknij na nazwie wtyczki, aby przeczytać o niej więcej. &lt;/p&gt;&lt;p&gt;Kliknij pole wyboru albo dwukrotnie kliknij na nazwie wtyczki, aby ją &lt;i&gt;włączyć&lt;/i&gt; lub &lt;i&gt;wyłączyć&lt;/i&gt;.&lt;/p&gt;&lt;p&gt;Kolejność wyświetlania wtyczek (sortowanie) możesz zmienić poprzez menu kontekstowe (prawy klawisz myszy).&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager_texts.cpp" line="60"/>
         <source>&lt;h3&gt;Not installed plugins&lt;/h3&gt;&lt;p&gt;Here you see the list of all plugins available in the repositories, but which are &lt;b&gt;not yet installed&lt;/b&gt;.&lt;/p&gt;&lt;p&gt;Click on the name to see details.&lt;/p&gt;&lt;p&gt;You can change the sorting via the context menu (right click).&lt;/p&gt;&lt;p&gt;A plugin can be downloaded and installed by clicking on it&apos;s name, and then click the &apos;Install plugin&apos; button.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Niezainstalowane wtyczki&lt;/h3&gt;&lt;p&gt;W tej zakładce wyświetlane są wtyczki dostępne w repozytoriach, ale &lt;b&gt;jeszcze niezainstalowane&lt;/b&gt;.&lt;/p&gt;&lt;p&gt;Kliknij na nazwie wtyczki, aby przeczytać o niej więcej.&lt;/p&gt;&lt;p&gt;Kolejność wyświetlania wtyczek (sortowanie) możesz zmienić poprzez menu kontekstowe (prawy klawisz myszy).&lt;/p&gt;&lt;p&gt;Aby zainstalować wtyczkę, wybierz ją z listy a następnie naciśnij przycisk &apos;Zainstaluj wtyczkę&apos;.&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager_texts.cpp" line="81"/>
         <source>&lt;h3&gt;New plugins&lt;/h3&gt;&lt;p&gt;Here you see brand &lt;b&gt;new&lt;/b&gt; plugins which can be installed.&lt;/p&gt;</source>
-        <translation>&lt;h3&gt;Nowości&lt;/h3&gt;&lt;p&gt;Oto lista opublikowanych ostatnio wtyczek (ściślej mówiąc: tych, które widzę po raz pierwszy), które możesz zainstalować. Jest to podzbiór wtyczek z zakładki &lt;i&gt;Pobierz więcej&lt;/i&gt;.&lt;/p&gt;</translation>
+        <translation>&lt;h3&gt;Nowości&lt;/h3&gt;&lt;p&gt;Oto lista opublikowanych ostatnio wtyczek, które możesz zainstalować (ściślej mówiąc: tych, które widzę po raz pierwszy).&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager_texts.cpp" line="92"/>
@@ -47157,7 +47158,7 @@ Musisz włączyć ponownie program QGIS, żeby ją przeładować.</translation>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="109"/>
         <source>All</source>
-        <translation type="unfinished"></translation>
+        <translation>Wszystkie</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="118"/>
@@ -47285,7 +47286,7 @@ Musisz włączyć ponownie program QGIS, żeby ją przeładować.</translation>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="133"/>
         <source>Not installed</source>
-        <translation type="unfinished"></translation>
+        <translation>Niezainstalowane</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="539"/>
@@ -47348,7 +47349,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="711"/>
         <source>Show also deprecated plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>Pokazuj również wtyczki niezalecane</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="744"/>
@@ -47357,7 +47358,11 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Droid Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:600;&quot;&gt;Note:&lt;/span&gt;&lt;span style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt;&quot;&gt; Deprecated plugins are generally unsuitable for production use. These plugins are unmaintained, and should be considered &apos;obsolete&apos; tools. QGIS does not recommend installing these plugins unless you still need it and there are no other alternatives available.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Droid Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:600;&quot;&gt;Uwaga:&lt;/span&gt;&lt;span style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt;&quot;&gt; Wtyczki niezalecane zwykle nie nadają się do codziennej pracy. Wtyczki te nie są przez nikogo doskonalone ani aktualizowane. Nie zalecamy ich instalacji, chyba że nie ma innej dostępnej alternatywy.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="783"/>
@@ -47781,17 +47786,17 @@ Rezultat: %3 (%4)</translation>
     <message>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1378"/>
         <source>Geometry</source>
-        <translation>Geometria</translation>
+        <translation>Geometry</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1380"/>
         <source>Geography</source>
-        <translation type="unfinished"></translation>
+        <translation>Geography</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1382"/>
         <source>TopoGeometry</source>
-        <translation type="unfinished"></translation>
+        <translation>TopoGeometry</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1538"/>
@@ -47952,7 +47957,7 @@ Błąd bazy danych: %2</translation>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="176"/>
         <source>Date</source>
-        <translation type="unfinished">Data</translation>
+        <translation>Data</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="204"/>
@@ -49104,7 +49109,7 @@ Kontynuować?</translation>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="491"/>
         <source>Nautical miles</source>
-        <translation type="unfinished">Mile morskie</translation>
+        <translation>mile morskie</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="530"/>
