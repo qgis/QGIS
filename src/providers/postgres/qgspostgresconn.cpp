@@ -1118,21 +1118,41 @@ void QgsPostgresConn::retrieveLayerTypes( QgsPostgresLayerProperty &layerPropert
       table += QString( " WHERE %1" ).arg( layerProperty.sql );
     }
 
-    QString query = QString( "SELECT DISTINCT"
-                             " CASE"
-                             " WHEN %1 THEN 'POINT'"
-                             " WHEN %2 THEN 'LINESTRING'"
-                             " WHEN %3 THEN 'POLYGON'"
-                             " END,"
-                             " %4(%5%6)"
-                             " FROM %7" )
-                    .arg( postgisTypeFilter( layerProperty.geometryColName, QGis::WKBPoint, layerProperty.geometryColType == sctGeography ) )
-                    .arg( postgisTypeFilter( layerProperty.geometryColName, QGis::WKBLineString, layerProperty.geometryColType == sctGeography ) )
-                    .arg( postgisTypeFilter( layerProperty.geometryColName, QGis::WKBPolygon, layerProperty.geometryColType == sctGeography ) )
-                    .arg( majorVersion() < 2 ? "srid" : "st_srid" )
-                    .arg( quotedIdentifier( layerProperty.geometryColName ) )
-                    .arg( layerProperty.geometryColType == sctGeography ? "::geometry" : "" )
-                    .arg( table );
+    QString query = "SELECT DISTINCT ";
+
+    QGis::WkbType type = layerProperty.types.value( 0, QGis::WKBUnknown );
+    if ( type == QGis::WKBUnknown )
+    {
+      query += QString( "CASE"
+                        " WHEN %1 THEN 'POINT'"
+                        " WHEN %2 THEN 'LINESTRING'"
+                        " WHEN %3 THEN 'POLYGON'"
+                        " END" )
+               .arg( postgisTypeFilter( layerProperty.geometryColName, QGis::WKBPoint, layerProperty.geometryColType == sctGeography ) )
+               .arg( postgisTypeFilter( layerProperty.geometryColName, QGis::WKBLineString, layerProperty.geometryColType == sctGeography ) )
+               .arg( postgisTypeFilter( layerProperty.geometryColName, QGis::WKBPolygon, layerProperty.geometryColType == sctGeography ) );
+    }
+    else
+    {
+      query += quotedValue( QgsPostgresConn::postgisWkbTypeName( type ) );
+    }
+
+    query += ",";
+
+    int srid = layerProperty.srids.value( 0, INT_MIN );
+    if ( srid  == INT_MIN )
+    {
+      query += QString( "%1(%2%3)" )
+               .arg( majorVersion() < 2 ? "srid" : "st_srid" )
+               .arg( quotedIdentifier( layerProperty.geometryColName ) )
+               .arg( layerProperty.geometryColType == sctGeography ? "::geometry" : "" );
+    }
+    else
+    {
+      query += QString::number( srid );
+    }
+
+    query += " FROM " + table;
 
     QgsDebugMsg( "Retrieving geometry types: " + query );
 
