@@ -80,6 +80,7 @@ class QgsDiagramSettings
     double barWidth;
     int transparency; // 0 - 100
     bool scaleByArea;
+    int angleOffset;
 
     //scale range (-1 if no lower / upper bound )
     double minScaleDenominator;
@@ -105,6 +106,8 @@ class QgsDiagramInterpolationSettings
     double upperValue;
     /**Index of the classification attribute*/
     int classificationAttribute;
+    QString classificationAttributeExpression;
+    bool classificationAttributeIsExpression;
 };
 
 /**Returns diagram settings for a feature*/
@@ -118,7 +121,7 @@ class QgsDiagramRendererV2
     QgsDiagramRendererV2();
     virtual ~QgsDiagramRendererV2();
 
-    /**Returns size of the diagram for feature f in map units. Returns an invalid QSizeF in case of error*/
+    /**Returns size of the diagram for a feature in map units. Returns an invalid QSizeF in case of error*/
     virtual QSizeF sizeMapUnits( const QgsFeature& feature, const QgsRenderContext& c );
 
     virtual QString rendererName() const = 0;
@@ -140,14 +143,14 @@ class QgsDiagramRendererV2
   protected:
 
     /**Returns diagram settings for a feature (or false if the diagram for the feature is not to be rendered). Used internally within renderDiagram()
-     * @param att attribute map
+     * @param feature the feature
      * @param c render context
      * @param s out: diagram settings for the feature
      */
-    virtual bool diagramSettings( const QgsFeature& feature, const QgsRenderContext& c, QgsDiagramSettings& s ) = 0;
+    virtual bool diagramSettings( const QgsFeature &feature, const QgsRenderContext& c, QgsDiagramSettings& s ) = 0;
 
     /**Returns size of the diagram (in painter units) or an invalid size in case of error*/
-    virtual QSizeF diagramSize( const QgsFeature& feature, const QgsRenderContext& c ) = 0;
+    virtual QSizeF diagramSize( const QgsFeature& features, const QgsRenderContext& c ) = 0;
 
     /**Converts size from mm to map units*/
     void convertSizeToMapUnits( QSizeF& size, const QgsRenderContext& context ) const;
@@ -183,9 +186,9 @@ class QgsSingleCategoryDiagramRenderer : QgsDiagramRendererV2
     void writeXML( QDomElement& layerElem, QDomDocument& doc, const QgsVectorLayer* layer ) const;
 
   protected:
-    bool diagramSettings( const QgsFeature& feature, const QgsRenderContext& c, QgsDiagramSettings& s );
+    bool diagramSettings( const QgsFeature &feature, const QgsRenderContext& c, QgsDiagramSettings& s );
 
-    QSizeF diagramSize( const QgsFeature& feature, const QgsRenderContext& c );
+    QSizeF diagramSize( const QgsFeature&, const QgsRenderContext& c );
 };
 
 class QgsLinearlyInterpolatedDiagramRenderer : QgsDiagramRendererV2
@@ -226,7 +229,7 @@ class QgsLinearlyInterpolatedDiagramRenderer : QgsDiagramRendererV2
     void writeXML( QDomElement& layerElem, QDomDocument& doc, const QgsVectorLayer* layer ) const;
 
   protected:
-    bool diagramSettings( const QgsFeature& feature, const QgsRenderContext& c, QgsDiagramSettings& s );
+    bool diagramSettings( const QgsFeature &feature, const QgsRenderContext& c, QgsDiagramSettings& s );
 
-    QSizeF diagramSize( const QgsFeature& feature, const QgsRenderContext& c );
+    QSizeF diagramSize( const QgsFeature&, const QgsRenderContext& c );
 };

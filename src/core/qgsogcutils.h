@@ -49,7 +49,7 @@ class CORE_EXPORT QgsOgcUtils
     static QgsRectangle rectangleFromGMLEnvelope( const QDomNode& envelopeNode );
 
     /** Exports the geometry to GML2 or GML3
-        @return QDomELement
+        @return QDomElement
      */
     static QDomElement geometryToGML( QgsGeometry* geometry, QDomDocument& doc, QString format );
 

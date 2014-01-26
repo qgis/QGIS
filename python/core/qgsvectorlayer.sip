@@ -38,6 +38,7 @@ class QgsAttributeEditorContainer : QgsAttributeEditorElement
 
   public:
     QgsAttributeEditorContainer( QString name, QObject *parent );
+
     ~QgsAttributeEditorContainer();
 
     virtual QDomElement toDomElement( QDomDocument& doc ) const;
@@ -52,13 +53,35 @@ class QgsAttributeEditorField : QgsAttributeEditorElement
 %TypeHeaderCode
 #include "qgsvectorlayer.h"
 %End
-
   public:
     QgsAttributeEditorField( QString name , int idx, QObject *parent );
+
     ~QgsAttributeEditorField();
 
     virtual QDomElement toDomElement( QDomDocument& doc ) const;
     int idx() const;
+};
+
+/** @note Added in 2.1 */
+class QgsAttributeEditorRelation : QgsAttributeEditorElement
+{
+  public:
+    QgsAttributeEditorRelation( QString name, const QString &relationId, QObject *parent );
+
+    QgsAttributeEditorRelation( QString name, const QgsRelation& relation, QObject *parent );
+
+    ~QgsAttributeEditorRelation();
+
+    virtual QDomElement toDomElement( QDomDocument& doc ) const;
+    const QgsRelation& relation() const;
+
+    /**
+     * Initializes the relation from the id
+     *
+     * @param relManager The relation manager to use for the initialization
+     * @return true if the relation was found in the relationmanager
+     */
+    bool init( QgsRelationManager *relManager );
 };
 
 /** @note added in 1.7 */
@@ -216,7 +239,7 @@ class QgsVectorLayer : QgsMapLayer
      *                           for this layer
      *  @note added in 2.0
      */
-    void setDisplayExpression( const QString displayExpression );
+    void setDisplayExpression( const QString &displayExpression );
 
     /**
      *  Get the preview expression, used to create a human readable preview string.
@@ -234,7 +257,7 @@ class QgsVectorLayer : QgsMapLayer
     /** Returns the data provider in a const-correct manner
         @note not available in python bindings
       */
-    //const QgsVectorDataProvider* dataProvider() const;
+    // const QgsVectorDataProvider* dataProvider() const;
 
     /** Sets the textencoding of the data provider */
     void setProviderEncoding( const QString& encoding );
@@ -1076,6 +1099,9 @@ class QgsVectorLayer : QgsMapLayer
      */
     virtual void onCacheImageDelete();
 
+  protected slots:
+    void invalidateSymbolCountedFlag();
+
   signals:
 
     /**
@@ -1170,7 +1196,6 @@ class QgsVectorLayer : QgsMapLayer
 
     /** vector layers are not copyable */
     QgsVectorLayer( const QgsVectorLayer & rhs );
-
 
 
 };

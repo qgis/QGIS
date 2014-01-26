@@ -302,9 +302,7 @@ class QgsPalLayerSettings
     QgsExpression* getLabelExpression();
 
     QFont textFont;
-    //QString textFontFamily;
     QString textNamedStyle;
-    //bool textFontFound;
     bool fontSizeInMapUnits; //true if font size is in map units (otherwise in points)
     QColor textColor;
     int textTransp;
@@ -423,7 +421,7 @@ class QgsPalLayerSettings
     int maxNumLabels; // maximum number of labels to be drawn
 
     double minFeatureSize; // minimum feature size to be labelled (in mm)
-    bool obstacle; // whether it's an obstacle
+    bool obstacle; // whether features for layer are obstacles to labels of other layers
 
     //-- scale factors
     double vectorScaleFactor; //scale factor painter units->pixels

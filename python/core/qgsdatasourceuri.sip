@@ -42,10 +42,7 @@ class QgsDataSourceURI
     // \note if key exists, another is inserted
     // \note added in 1.9
     void setParam( const QString &key, const QString &value );
-    void setParamList( const QString &key, const QStringList &value );
-%MethodCode
-	sipCpp->setParam( *a0, *a1 );
-%End
+    void setParam( const QString &key, const QStringList &value ) /PyName=setParamList/;
 
     //! Remove generic param (generic mode)
     // \note remove all occurrences of key, returns number of params removed

@@ -170,18 +170,9 @@ class QgsProject : QObject
       @note The key string <em>must</em> include '/'s.  E.g., "/foo" not "foo".
     */
     //@{
-    bool writeEntryBool( const QString & scope, const QString & key, bool value );
-%MethodCode
-      sipRes = sipCpp->writeEntry( *a0, *a1, a2 );
-%End
-
-    bool writeEntryDouble( const QString & scope, const QString & key, double value );
-%MethodCode
-      sipRes = sipCpp->writeEntry( *a0, *a1, a2 );
-%End
-
+    bool writeEntry( const QString & scope, const QString & key, bool value ) /PyName=writeEntryBool/;
+    bool writeEntry( const QString & scope, const QString & key, double value ) /PyName=writeEntryDouble/;
     bool writeEntry( const QString & scope, const QString & key, int value );
-    bool writeEntry( const QString & scope, const QString & key, const QString & value );
     bool writeEntry( const QString & scope, const QString & key, const QStringList & value );
     //@}
 

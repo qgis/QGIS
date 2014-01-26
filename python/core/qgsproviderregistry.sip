@@ -74,6 +74,9 @@ class QgsProviderRegistry
       Returns a string suitable for a QFileDialog of raster file formats
       supported by all data providers.
 
+      This walks through all data providers appending calls to their
+      buildSupportedRasterFileFilter to a string, which is then returned.
+
       @note this method was added in QGIS 2.0
       @note This replaces QgsRasterLayer::buildSupportedRasterFileFilter()
     */

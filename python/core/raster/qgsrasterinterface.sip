@@ -73,6 +73,16 @@ class QgsRasterInterface
     /** Returns data type for the band specified by number */
     virtual QGis::DataType dataType( int bandNo ) const = 0;
 
+    /** Returns source data type for the band specified by number,
+     *  source data type may be shorter than dataType */
+    virtual QGis::DataType srcDataType( int bandNo ) const;
+
+    /**
+     * Get the extent of the interface.
+     * @return QgsRectangle containing the extent of the layer
+     */
+    virtual QgsRectangle extent();
+
     int dataTypeSize ( int bandNo );
 
     /** Get number of bands */
@@ -86,19 +96,17 @@ class QgsRasterInterface
     virtual int xSize() const;
     virtual int ySize() const;
 
-    /** Return no data value for specific band. Each band/provider must have
-     * no data value, if there is no one set in original data, provider decides one
-     * possibly using wider data type.
-     * @param bandNo band number
-     * @return No data value */
-    //virtual double noDataValue( int bandNo ) const;
+    /** \brief helper function to create zero padded band names */
+    virtual QString  generateBandName( int theBandNumber ) const;
 
-    /** Test if value is nodata for specific band
+    /** Read block of data using given extent and size.
+     *  Returns pointer to data.
+     *  Caller is responsible to free the memory returned.
      * @param bandNo band number
-     * @param value tested value
-     * @return true if value is nodata */
-    //virtual bool isNoDataValue( int bandNo, double value ) const;
-
+     * @param extent extent of block
+     * @param width pixel width of block
+     * @param height pixel height of block
+     */
     virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height ) = 0 / Factory /;
 
     /** Set input.
@@ -139,7 +147,6 @@ class QgsRasterInterface
                                 int theStats = QgsRasterBandStats::All,
                                 const QgsRectangle & theExtent = QgsRectangle(),
                                 int theSampleSize = 0 );
-
 
     /** \brief Get histogram. Histograms are cached in providers.
      * @param theBandNo The band (number).
@@ -187,15 +194,6 @@ class QgsRasterInterface
                                 double &theUpperValue,
                                 const QgsRectangle & theExtent = QgsRectangle(),
                                 int theSampleSize = 0 );
-
-    /** Switch on (and clear old statistics) or off collection of statistics */
-    //void setStatsOn( bool on );
-
-    /** Last total time (for allbands) consumed by this interface for call to block()
-     * If cumulative is true, the result includes also time spent in all preceding
-     * interfaces. If cumulative is false, only time consumed by this interface is
-     * returned. */
-    //double time( bool cumulative = false );
 
     /** Write base class members to xml. */
     virtual void writeXML( QDomDocument& doc, QDomElement& parentElem ) const;

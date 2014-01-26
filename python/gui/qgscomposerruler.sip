@@ -21,6 +21,8 @@ class QgsComposerRuler : QWidget
     void setComposition( QgsComposition* c );
     QgsComposition* composition();
 
+    int rulerSize();
+
   protected:
     void paintEvent( QPaintEvent* event );
     void mouseMoveEvent( QMouseEvent* event );

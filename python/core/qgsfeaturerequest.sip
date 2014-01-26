@@ -18,7 +18,7 @@ class QgsFeatureRequest
     enum FilterType
     {
       FilterNone,       //!< No filter is applied
-      FilterRect,       //!< Filter using a rectangle
+      FilterRect,       //!< Filter using a rectangle, no need to set NoGeometry
       FilterFid,        //!< Filter using feature ID
       FilterExpression, //!< Filter using expression
       FilterFids        //!< Filter using feature IDs
@@ -31,7 +31,7 @@ class QgsFeatureRequest
     //! construct a request with rectangle filter
     explicit QgsFeatureRequest( const QgsRectangle& rect );
     //! construct a request with a filter expression
-    explicit QgsFeatureRequest( const QgsExpression& expression );
+    explicit QgsFeatureRequest( const QgsExpression& expr );
 
     FilterType filterType() const;
 
@@ -48,7 +48,7 @@ class QgsFeatureRequest
     QgsFeatureRequest& setFilterFids( QgsFeatureIds fids );
     const QgsFeatureIds& filterFids() const;
 
-    //! Set filter expression. Ownership is taken.
+    //! Set filter expression. {@see QgsExpression}
     QgsFeatureRequest& setFilterExpression( const QString& expression );
     QgsExpression* filterExpression() const;
 
@@ -63,5 +63,20 @@ class QgsFeatureRequest
 
     //! Set a subset of attributes by names that will be fetched
     QgsFeatureRequest& setSubsetOfAttributes( const QStringList& attrNames, const QgsFields& fields );
+
+    //! Set a simplification method for geometries that will be fetched
+    QgsFeatureRequest& setSimplifyMethod( const QgsSimplifyMethod& simplifyMethod );
+    const QgsSimplifyMethod& simplifyMethod() const;
+
+    /**
+     * Check if a feature is accepted by this requests filter
+     *
+     * @param feature  The feature which will be tested
+     *
+     * @return true, if the filter accepts the feature
+     *
+     * @note added in 2.1
+     */
+    bool acceptFeature( const QgsFeature& feature );
 
 };

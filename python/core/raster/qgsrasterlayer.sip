@@ -137,10 +137,7 @@ class QgsRasterLayer : QgsMapLayer
     QgsRasterDataProvider* dataProvider();
 
     /** Returns the data provider in a const-correct manner */
-    const QgsRasterDataProvider* constDataProvider() const;
-%MethodCode
-      sipRes = sipCpp->dataProvider();
-%End
+    const QgsRasterDataProvider* dataProvider() const /PyName=constDataProvider/;
 
     /**Synchronises with changes in the datasource
     @note added in version 1.6*/

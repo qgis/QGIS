@@ -242,7 +242,8 @@ class CORE_EXPORT QgsFeature
      */
     bool setAttribute( const QString& name, QVariant value );
 
-    /** Remove an attribute value. Returns false if attribute name could not be converted to index.
+    /** Remove an attribute value.
+     *  Returns false if attribute name could not be converted to index.
      *  Field map must be associated to make this work.
      *
      *  @param name The name of the field to delete

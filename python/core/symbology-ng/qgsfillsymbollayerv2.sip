@@ -40,10 +40,18 @@ class QgsSimpleFillSymbolLayerV2 : QgsFillSymbolLayerV2
     QColor borderColor() const;
     void setBorderColor( QColor borderColor );
 
+    /** Get outline color.
+     * @note added in 2.1 */
     virtual QColor outlineColor() const;
+    /** Set outline color.
+     * @note added in 2.1 */
     virtual void setOutlineColor( const QColor& color );
-    
+
+    /** Get fill color.
+     * @note added in 2.1 */
     virtual QColor fillColor() const;
+    /** Set fill color.
+     * @note added in 2.1 */
     virtual void setFillColor( const QColor& color );
 
     Qt::PenStyle borderStyle() const;
@@ -63,6 +71,12 @@ class QgsSimpleFillSymbolLayerV2 : QgsFillSymbolLayerV2
 
     void setOutputUnit( QgsSymbolV2::OutputUnit unit );
     QgsSymbolV2::OutputUnit outputUnit() const;
+
+    double estimateMaxBleed() const;
+
+    double dxfWidth( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const;
+    QColor dxfColor( const QgsSymbolV2RenderContext& context ) const;
+    Qt::PenStyle dxfPenStyle() const;
 };
 
 class QgsGradientFillSymbolLayerV2 : QgsFillSymbolLayerV2

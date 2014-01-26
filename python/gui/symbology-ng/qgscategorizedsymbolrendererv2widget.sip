@@ -20,6 +20,7 @@ class QgsCategorizedSymbolRendererV2Widget : QgsRendererV2Widget
     void addCategories();
     void deleteCategories();
     void deleteAllCategories();
+    void setExpression();
 
     void rotationFieldChanged( QString fldName );
     void sizeScaleFieldChanged( QString fldName );
@@ -53,5 +54,7 @@ class QgsCategorizedSymbolRendererV2Widget : QgsRendererV2Widget
     void changeCategorySymbol();
 
     QList<QgsSymbolV2*> selectedSymbols();
+    QgsCategoryList selectedCategoryList();
     void refreshSymbolView();
+    void keyPressEvent( QKeyEvent* event );
 };

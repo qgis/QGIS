@@ -22,8 +22,15 @@ class QgsVectorLayerFeatureIterator : QgsAbstractFeatureIterator
     void prepareJoins();
     bool fetchNextAddedFeature( QgsFeature& f );
     bool fetchNextChangedGeomFeature( QgsFeature& f );
+    bool fetchNextChangedAttributeFeature( QgsFeature& f );
     void useAddedFeature( const QgsFeature& src, QgsFeature& f );
     void useChangedAttributeFeature( QgsFeatureId fid, const QgsGeometry& geom, QgsFeature& f );
     bool nextFeatureFid( QgsFeature& f );
     void addJoinedAttributes( QgsFeature &f );
+
+    /** Update feature with uncommited attribute updates */
+    void updateChangedAttributes( QgsFeature& f );
+
+    /** Update feature with uncommited geometry updates */
+    void updateFeatureGeometry( QgsFeature& f );
 };

@@ -119,7 +119,10 @@ class QgsPropertyKey : QgsProperty
     virtual ~ QgsPropertyKey();
 
     /// every key has a name
+    // @{
     QString & name();
+    // @}
+
 
     /** if this key has a value, it will be stored by its name in its
      * properties

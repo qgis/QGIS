@@ -71,6 +71,7 @@
 %Include qgspythonrunner.sip
 %Include qgsrectangle.sip
 %Include qgsrelation.sip
+%Include qgsrelationmanager.sip
 %Include qgsrenderchecker.sip
 %Include qgsrendercontext.sip
 %Include qgsrunprocess.sip

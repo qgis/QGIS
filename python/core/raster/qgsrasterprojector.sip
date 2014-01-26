@@ -15,15 +15,15 @@ class QgsRasterProjector : QgsRasterInterface
      */
 
     QgsRasterProjector(
-          QgsCoordinateReferenceSystem theSrcCRS,
-          QgsCoordinateReferenceSystem theDestCRS,
-          int theSrcDatumTransform,
-          int theDestDatumTransform,
-          QgsRectangle theDestExtent,
-          int theDestRows, int theDestCols,
-          double theMaxSrcXRes, double theMaxSrcYRes,
-          QgsRectangle theExtent
-        );
+      QgsCoordinateReferenceSystem theSrcCRS,
+      QgsCoordinateReferenceSystem theDestCRS,
+      int theSrcDatumTransform,
+      int theDestDatumTransform,
+      QgsRectangle theDestExtent,
+      int theDestRows, int theDestCols,
+      double theMaxSrcXRes, double theMaxSrcYRes,
+      QgsRectangle theExtent
+    );
 
     QgsRasterProjector(
       QgsCoordinateReferenceSystem theSrcCRS,

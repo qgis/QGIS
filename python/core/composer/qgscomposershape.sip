@@ -13,7 +13,7 @@ class QgsComposerShape: QgsComposerItem
       Triangle
     };
 
-    QgsComposerShape( QgsComposition* composition /TransferThis/);
+    QgsComposerShape( QgsComposition* composition /TransferThis/ );
     QgsComposerShape( qreal x, qreal y, qreal width, qreal height, QgsComposition* composition /TransferThis/);
     ~QgsComposerShape();
 
@@ -43,7 +43,7 @@ class QgsComposerShape: QgsComposerItem
     void setCornerRadius( double radius );
     /**Returns the radius for rounded rectangle corners*/
     double cornerRadius() const;
-    
+
     /**Sets the QgsFillSymbolV2 used to draw the shape. Must also call setUseSymbolV2( true ) to 
      * enable drawing with a symbol.
      * Note: added in version 2.1*/
@@ -54,7 +54,7 @@ class QgsComposerShape: QgsComposerItem
 
     /**Controls whether the shape should be drawn using a QgsFillSymbolV2.
      * Note: Added in v2.1 */
-    void setUseSymbolV2( bool useSymbolV2 );    
+    void setUseSymbolV2( bool useSymbolV2 );
 
   protected:
     /* reimplement drawFrame, since it's not a rect, but a custom shape */

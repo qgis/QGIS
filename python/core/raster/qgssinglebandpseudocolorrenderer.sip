@@ -16,10 +16,7 @@ class QgsSingleBandPseudoColorRenderer: QgsRasterRenderer
     /**Takes ownership of the shader*/
     void setShader( QgsRasterShader* shader /Transfer/ );
     QgsRasterShader* shader();
-    const QgsRasterShader* constShader() const;
-%MethodCode
-      sipRes = sipCpp->shader();
-%End
+    const QgsRasterShader* shader() const /PyName=constShader/;
 
     void writeXML( QDomDocument& doc, QDomElement& parentElem ) const;
 

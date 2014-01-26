@@ -29,6 +29,13 @@ class QgsRenderContext
 
     bool forceVectorOutput() const;
 
+    /**Returns true if advanced effects such as blend modes such be used
+      @note added in 1.9*/
+    bool useAdvancedEffects() const;
+    /**Used to enable or disable advanced effects such as blend modes
+      @note: added in version 1.9*/
+    void setUseAdvancedEffects( bool enabled );
+
     bool drawEditingInformation() const;
 
     double rendererScale() const;
@@ -57,4 +64,8 @@ class QgsRenderContext
     void setLabelingEngine(QgsLabelingEngineInterface* iface);
     //! Added in QGIS v2.0
     void setSelectionColor( const QColor& color );
+
+    /**Returns true if the rendering optimization (geometry simplification) can be executed*/
+    bool useRenderingOptimization() const;
+    void setUseRenderingOptimization( bool enabled );
 };

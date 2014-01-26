@@ -66,6 +66,9 @@ class QgsSymbolLayerV2Utils
     static QPixmap symbolPreviewPixmap( QgsSymbolV2* symbol, QSize size );
     static QPixmap colorRampPreviewPixmap( QgsVectorColorRampV2* ramp, QSize size );
 
+    /**Returns the maximum estimated bleed for the symbol */
+    static double estimateMaxSymbolBleed( QgsSymbolV2* symbol );
+
     static QgsSymbolV2* loadSymbol( QDomElement& element ) /Factory/;
     static QgsSymbolLayerV2* loadSymbolLayer( QDomElement& element ) /Factory/;
     static QDomElement saveSymbol( QString symbolName, QgsSymbolV2* symbol, QDomDocument& doc );
@@ -93,6 +96,7 @@ class QgsSymbolLayerV2Utils
     static bool fillFromSld( QDomElement &element,
                              Qt::BrushStyle &brushStyle, QColor &color );
 
+    //! @note not available in python bindings
 /*
     static void lineToSld( QDomDocument &doc, QDomElement &element,
                            Qt::PenStyle penStyle, QColor color, double width = -1,
@@ -113,15 +117,15 @@ class QgsSymbolLayerV2Utils
 
     /** @deprecated Use wellKnownMarkerToSld( QDomDocument &doc, QDomElement &element, QString name, QColor color, QColor borderColor, Qt::PenStyle borderStyle, double borderWidth, double size ) instead */
     static void wellKnownMarkerToSld( QDomDocument &doc, QDomElement &element,
-                                      QString name, QColor color, QColor borderColor = QColor(),
-                                      double borderWidth = -1, double size = -1 ) /Deprecated/ ;
+        QString name, QColor color, QColor borderColor = QColor(),
+        double borderWidth = -1, double size = -1 ) /Deprecated/ ;
     static void wellKnownMarkerToSld( QDomDocument &doc, QDomElement &element,
                                       QString name, QColor color, QColor borderColor, Qt::PenStyle borderStyle,
                                       double borderWidth = -1, double size = -1 );
     /** @deprecated Use wellKnownMarkerFromSld( QDomElement &element, QString &name, QColor &color, QColor &borderColor, Qt::PenStyle &borderStyle, double &borderWidth, double &size ) instead */
     static bool wellKnownMarkerFromSld( QDomElement &element,
-                                        QString &name, QColor &color, QColor &borderColor,
-                                        double &borderWidth, double &size ) /Deprecated/ ;
+        QString &name, QColor &color, QColor &borderColor,
+        double &borderWidth, double &size ) /Deprecated/ ;
     static bool wellKnownMarkerFromSld( QDomElement &element,
                                         QString &name, QColor &color, QColor &borderColor, Qt::PenStyle &borderStyle,
                                         double &borderWidth, double &size ) /PyName=wellKnownMarkerFromSld2/ ;
@@ -211,9 +215,15 @@ class QgsSymbolLayerV2Utils
     //! Return a list of svg files at the specified directory
     static QStringList listSvgFilesAt( QString directory );
 
-    //! Get symbol's path from its name
+    /** Get symbol's path from its name.
+     *  If the name is not absolute path the file is searched in SVG paths specified
+     *  in settings svg/searchPathsForSVG.
+     */
     static QString symbolNameToPath( QString name );
 
     //! Get symbols's name from its path
     static QString symbolPathToName( QString path );
+
+    //! Calculate the centroid point of a QPolygonF
+    static QPointF polygonCentroid( const QPolygonF& points );
 };

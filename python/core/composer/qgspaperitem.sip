@@ -28,6 +28,8 @@ class QgsPaperItem: QgsComposerItem
      */
     bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
 
+    virtual void setSceneRect( const QRectF& rectangle );
+
   private:
     QgsPaperItem();
     /**Set flags and z-value*/

@@ -52,6 +52,7 @@ class QgsRasterLayerSaveAsDialog : QDialog
     QgsRaster::RasterBuildPyramids buildPyramidsFlag() const;
     QString pyramidsResamplingMethod() const;
     QgsRaster::RasterPyramidsFormat pyramidsFormat() const;
+
     QStringList pyramidsConfigOptions() const;
 
     void hideFormat();

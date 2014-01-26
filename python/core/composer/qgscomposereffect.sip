@@ -7,7 +7,7 @@ class QgsComposerEffect : QGraphicsEffect
     QgsComposerEffect();
     ~QgsComposerEffect();
 
-    void setCompositionMode( const QPainter::CompositionMode compositionMode );
+    void setCompositionMode( const QPainter::CompositionMode &compositionMode );
 
   protected:
     /** Called whenever source needs to be drawn */

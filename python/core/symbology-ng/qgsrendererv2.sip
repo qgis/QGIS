@@ -54,7 +54,10 @@ class QgsFeatureRendererV2
 
     QString type() const;
 
-    // to be overridden
+    /** to be overridden
+     * @param feature feature
+     * @return returns pointer to symbol or 0 if symbol was not found
+     */
     virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature ) = 0;
 
     virtual void startRender( QgsRenderContext& context, const QgsVectorLayer *vlayer ) = 0;

@@ -5,35 +5,37 @@ class QgsCachedFeatureIterator : QgsAbstractFeatureIterator
 %End
   public:
     /**
-     * @brief
      * This constructor creates a feature iterator, that delivers only cached information, based on the
      * @link QgsFeatureIds @endlink. No request is made to the backend.
      *
      * @param vlCache          The vector layer cache to use
      * @param featureRequest   The feature request to answer
      * @param featureIds       The feature ids to return
+     *
+     * @deprecated Use QgsCachedFeatureIterator( QgsVectorLayerCache* vlCache, QgsFeatureRequest featureRequest )
+     *             instead
      */
     QgsCachedFeatureIterator( QgsVectorLayerCache* vlCache, QgsFeatureRequest featureRequest, QgsFeatureIds featureIds );
 
     /**
-     * @brief
+     * This constructor creates a feature iterator, that delivers all cached features. No request is made to the backend.
      *
-     * @param f
-     * @return bool
+     * @param vlCache          The vector layer cache to use
+     * @param featureRequest   The feature request to answer
      */
-    virtual bool nextFeature( QgsFeature& f );
+    QgsCachedFeatureIterator( QgsVectorLayerCache* vlCache, QgsFeatureRequest featureRequest );
 
     /**
-     * @brief
+     * Rewind to the beginning of the iterator
      *
-     * @return bool
+     * @return bool true if the operation was ok
      */
     virtual bool rewind();
 
     /**
-     * @brief
+     * Close this iterator. No further features will be available.
      *
-     * @return bool
+     * @return true if successful
      */
     virtual bool close();
 };

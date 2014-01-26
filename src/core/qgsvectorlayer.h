@@ -151,7 +151,7 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
      * @param relManager The relation manager to use for the initialization
      * @return true if the relation was found in the relationmanager
      */
-    bool init( QgsRelationManager* relManager );
+    bool init( QgsRelationManager *relManager );
 
   private:
     QString mRelationId;

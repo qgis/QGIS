@@ -76,7 +76,7 @@ class QgsExpressionItem : public QStandardItem
       mType = itemType;
     }
 
-    QString getExpressionText() {   return mExpressionText;  }
+    QString getExpressionText() { return mExpressionText;  }
 
     /** Get the help text that is associated with this expression item.
       *
@@ -148,9 +148,9 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
 
     bool isExpressionValid();
 
-    void saveToRecent(QString key);
+    void saveToRecent( QString key );
 
-    void loadRecent( QString key);
+    void loadRecent( QString key );
 
   public slots:
     void currentChanged( const QModelIndex &index, const QModelIndex & );

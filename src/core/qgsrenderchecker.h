@@ -48,11 +48,11 @@ class CORE_EXPORT QgsRenderChecker
     {
       return static_cast<float>( mMismatchCount ) /
              static_cast<float>( mMatchTarget ) * 100;
-    };
-    unsigned int mismatchCount() { return mMismatchCount; };
-    unsigned int matchTarget() { return mMatchTarget; };
+    }
+    unsigned int mismatchCount() { return mMismatchCount; }
+    unsigned int matchTarget() { return mMatchTarget; }
     //only records time for actual render part
-    int elapsedTime() { return mElapsedTime; };
+    int elapsedTime() { return mElapsedTime; }
     void setElapsedTimeTarget( int theTarget ) { mElapsedTimeTarget = theTarget; };
     /** Base directory name for the control image (with control image path
       * suffixed) the path to the image will be constructed like this:
@@ -66,8 +66,8 @@ class CORE_EXPORT QgsRenderChecker
     /** Get an md5 hash that uniquely identifies an image */
     QString imageToHash( QString theImageFile );
 
-    void setRenderedImage( QString theImageFileName ) { mRenderedImageFile = theImageFileName; };
-    void setMapRenderer( QgsMapRenderer *  thepMapRenderer ) { mpMapRenderer = thepMapRenderer; };
+    void setRenderedImage( QString theImageFileName ) { mRenderedImageFile = theImageFileName; }
+    void setMapRenderer( QgsMapRenderer *thepMapRenderer ) { mpMapRenderer = thepMapRenderer; }
     /**
      * Test using renderer to generate the image to be compared.
      * @param theTestName - to be used as the basis for writing a file to

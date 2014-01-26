@@ -73,7 +73,7 @@ class CORE_EXPORT QgsFeatureRequest
       FilterRect,       //!< Filter using a rectangle, no need to set NoGeometry
       FilterFid,        //!< Filter using feature ID
       FilterExpression, //!< Filter using expression
-      FilterFids        //!< Filter using feature ID's
+      FilterFids        //!< Filter using feature IDs
     };
 
     //! construct a default request: for all features get attributes and geometries
