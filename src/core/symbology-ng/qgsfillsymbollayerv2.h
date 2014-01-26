@@ -516,6 +516,8 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
     void setOutputUnit( QgsSymbolV2::OutputUnit unit );
     QgsSymbolV2::OutputUnit outputUnit() const;
 
+    virtual QSet<QString> usedAttributes() const;
+
   protected:
     QgsMarkerSymbolV2* mMarkerSymbol;
     double mDistanceX;

@@ -2294,10 +2294,14 @@ void QgsPointPatternFillSymbolLayer::applyDataDefinedSettings( const QgsSymbolV2
   QgsExpression* distanceYExpression = expression( "distance_y" );
   QgsExpression* displacementXExpression = expression( "displacement_x" );
   QgsExpression* displacementYExpression = expression( "displacement_y" );
+
+#if 0
+  // TODO: enable but check also if mMarkerSymbol has data defined properties
   if ( !distanceXExpression && !distanceYExpression && !displacementXExpression && !displacementYExpression )
   {
     return;
   }
+#endif
 
   double distanceX = mDistanceX;
   if ( distanceXExpression )
@@ -2322,10 +2326,19 @@ void QgsPointPatternFillSymbolLayer::applyDataDefinedSettings( const QgsSymbolV2
   applyPattern( context, mBrush, distanceX, distanceY, displacementX, displacementY );
 }
 
-
 double QgsPointPatternFillSymbolLayer::estimateMaxBleed() const
 {
   return 0;
+}
+
+QSet<QString> QgsPointPatternFillSymbolLayer::usedAttributes() const
+{
+  QSet<QString> attributes = QgsSymbolLayerV2::usedAttributes();
+
+  if ( mMarkerSymbol )
+    attributes.unite( mMarkerSymbol->usedAttributes() );
+
+  return attributes;
 }
 
 //////////////
