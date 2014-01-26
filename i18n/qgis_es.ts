@@ -7665,57 +7665,64 @@ Por favor, use la opción &apos;Guardar como...&apos;</translation>
     </message>
     <message>
         <source>Message</source>
-        <translation type="unfinished">Mensaje</translation>
+        <translation>Mensaje</translation>
     </message>
     <message>
         <source>There are unsaved changes in model. Close modeler without saving?</source>
-        <translation type="unfinished"></translation>
+        <translation>Hay cambios sin guardar en el modelo. ¿Cerrar el modelador sin guardar?</translation>
     </message>
     <message>
         <source>Model doesn&apos;t contains any algorithms and/or 
                              parameters and can&apos;t be executed</source>
-        <translation type="unfinished"></translation>
+        <translation>El modelo no contiene ningún algoritmo y/o 
+                             parámetro y no se puede ejecutar</translation>
     </message>
     <message>
         <source>Save Model As Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Guardar modelo como imagen</translation>
     </message>
     <message>
         <source>PNG files (*.png *.PNG)</source>
-        <translation type="unfinished"></translation>
+        <translation>Archivos PNG (*.png *.PNG)</translation>
     </message>
     <message>
         <source>Unable to save edits. Reason:
  %s</source>
-        <translation type="unfinished"></translation>
+        <translation>No se pueden guardar los cambios. Motivo:
+ %s</translation>
     </message>
     <message>
         <source>This model can&apos;t be saved in its 
                                      original location (probably you do not 
                                      have permission to do it). Please, use 
                                      the &apos;Save as...&apos; option.</source>
-        <translation type="unfinished"></translation>
+        <translation>Este modelo no se puede guardar en su 
+                                     ubicación original (probablemente no tenga 
+                                     permiso para hacerlo). Por favor, use la
+                                     opción «Guardar como...»</translation>
     </message>
     <message>
         <source>The selected model could not be loaded.
 
                                  Wrong line: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>No se pudo cargar el modelo seleccionado.
+
+................................Línea incorrecta: %s</translation>
     </message>
 </context>
 <context>
     <name>MultipleInputDialog</name>
     <message>
         <source>Select all</source>
-        <translation type="unfinished">Seleccionar todo</translation>
+        <translation>Seleccionar todo</translation>
     </message>
     <message>
         <source>Clear selection</source>
-        <translation type="unfinished">Limpiar selección</translation>
+        <translation>Limpiar selección</translation>
     </message>
     <message>
         <source>Toggle selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Conmutar selección</translation>
     </message>
 </context>
 <context>
@@ -7729,71 +7736,71 @@ Por favor, use la opción &apos;Guardar como...&apos;</translation>
     <name>NumberInputDialog</name>
     <message>
         <source>[Enter your formula here]</source>
-        <translation type="unfinished"></translation>
+        <translation>[Introduzca su fórmula aquí]</translation>
     </message>
     <message>
         <source>Values from data layers extents</source>
-        <translation type="unfinished"></translation>
+        <translation>Valores a partir de la extensión de la capa de datos</translation>
     </message>
     <message>
         <source>Min X</source>
-        <translation type="unfinished"></translation>
+        <translation>X Mín</translation>
     </message>
     <message>
         <source>Max X</source>
-        <translation type="unfinished"></translation>
+        <translation>X Máx</translation>
     </message>
     <message>
         <source>Min Y</source>
-        <translation type="unfinished"></translation>
+        <translation>Y Mín</translation>
     </message>
     <message>
         <source>Max Y</source>
-        <translation type="unfinished"></translation>
+        <translation>X Máx</translation>
     </message>
     <message>
         <source>Cellsize</source>
-        <translation type="unfinished"></translation>
+        <translation>Tamaño de celda</translation>
     </message>
     <message>
         <source>Values from raster layers statistics</source>
-        <translation type="unfinished"></translation>
+        <translation>Valores a partir de las estadísticas de la capa ráster</translation>
     </message>
     <message>
         <source>Mean</source>
-        <translation type="unfinished">Media</translation>
+        <translation>Media</translation>
     </message>
     <message>
         <source>Std. deviation</source>
-        <translation type="unfinished"></translation>
+        <translation>Desviación estándar</translation>
     </message>
     <message>
         <source>Max value</source>
-        <translation type="unfinished"></translation>
+        <translation>Valor máximo</translation>
     </message>
     <message>
         <source>Min value</source>
-        <translation type="unfinished"></translation>
+        <translation>Valor mínimo</translation>
     </message>
     <message>
         <source>Values from QGIS map canvas</source>
-        <translation type="unfinished"></translation>
+        <translation>Valores a partir de la vista del mapa de QGIS</translation>
     </message>
     <message>
         <source>Current extent</source>
-        <translation type="unfinished">Extensión actual</translation>
+        <translation>Extensión actual</translation>
     </message>
     <message>
         <source>Full extent of all layers in map canvas</source>
-        <translation type="unfinished"></translation>
+        <translation>Extensión completa de todas las capas de la vista del mapa</translation>
     </message>
     <message>
         <source>Wrong expression</source>
-        <translation type="unfinished"></translation>
+        <translation>Expresión incorrecta</translation>
     </message>
     <message>
         <source>The expression entered is not correct</source>
-        <translation type="unfinished"></translation>
+        <translation>La expresión introducida no es correcta</translation>
     </message>
 </context>
 <context>
@@ -9263,19 +9270,19 @@ use el objeto qgis.utils.iface (instancia de la clase QgisInterface).
     </message>
     <message>
         <source>Close Tab</source>
-        <translation type="unfinished"></translation>
+        <translation>Cerrar pestaña</translation>
     </message>
     <message>
         <source>Close All</source>
-        <translation type="unfinished"></translation>
+        <translation>Cerrar todo</translation>
     </message>
     <message>
         <source>Close Others</source>
-        <translation type="unfinished"></translation>
+        <translation>Cerrar otros</translation>
     </message>
     <message>
         <source>Save As</source>
-        <translation type="unfinished">Guardar como</translation>
+        <translation>Guardar como</translation>
     </message>
 </context>
 <context>
@@ -9313,7 +9320,7 @@ use el objeto qgis.utils.iface (instancia de la clase QgisInterface).
     </message>
     <message>
         <source>nautical miles</source>
-        <translation type="unfinished"></translation>
+        <translation>millas náuticas</translation>
     </message>
 </context>
 <context>
@@ -11735,31 +11742,31 @@ Se desactivará.</translation>
     </message>
     <message>
         <source>New BNA files are created by the systems default line termination conventions. This may be overridden here.</source>
-        <translation type="unfinished"></translation>
+        <translation>Los nuevos archivos BNA se crean por la convención de terminación de línea del sistema. Esto se puede suplantar aquí.</translation>
     </message>
     <message>
         <source>By default, BNA files are created in multi-line format. For each record, the first line contains the identifiers and the type/number of coordinates to follow. The following lines contains a pair of coordinates).</source>
-        <translation type="unfinished"></translation>
+        <translation>Por omisión, los archivos BNA se crean en formato multilínea. Para cada registro, la primera línea contiene los identificadores y el tipo/número de coordenadas que seguir. Las siguientes líneas contienen un par de coordenadas.</translation>
     </message>
     <message>
         <source>BNA records may contain from 2 to 4 identifiers per record. Some software packages only support a precise number of identifiers. You can override the default value (2) by a precise value</source>
-        <translation type="unfinished"></translation>
+        <translation>Los registros BNA pueden contener de 2 a 4 identificadores por registro. Algunos paquetes de software sólo admiten un número concreto de identificadores. Puede suplantar el valor predeterminado (2) con un valor concreto.</translation>
     </message>
     <message>
         <source>The BNA writer will try to recognize ellipses and circles when writing a polygon. This will only work if the feature has previously been read from a BNA file. As some software packages do not support ellipses/circles in BNA data file, it may be useful to tell the writer by specifying ELLIPSES_AS_ELLIPSES=NO not to export them as such, but keep them as polygons.</source>
-        <translation type="unfinished"></translation>
+        <translation>El escritor BNA intentará reconocer elipses y círculos al escribir un polígono. Esto sólo funcionará si el objeto espacial ha sido leído previamente de un archivo BNA. Dado que algunos paquetes de software no admiten elipses/círculos en los archivos BNA, puede ser útil indicar al escritor que no los exporte como tales, especificando ELLIPSES_AS_ELLIPSES=NO, sino que las conserve como polígonos.</translation>
     </message>
     <message>
         <source>Limit the number of coordinate pairs per line in multiline format.</source>
-        <translation type="unfinished"></translation>
+        <translation>Limitar el número de pares de coordenadas por línea en formato multilínea.</translation>
     </message>
     <message>
         <source>Set the number of decimal for coordinates. Default value is 10.</source>
-        <translation type="unfinished"></translation>
+        <translation>Establecer el número de decimales para las coordenadas. El valor predeterminado es 10.</translation>
     </message>
     <message>
         <source>By default when creating new .csv files they are created with the line termination conventions of the local platform (CR/LF on win32 or LF on all other systems). This may be overridden through use of the LINEFORMAT option.</source>
-        <translation type="unfinished"></translation>
+        <translation>Cuando se crean archivos CVS, por omisión se usa la convención de terminación de línea de la plataforma local (CR/LF en win32 o LF en todos los demás sistemas). Esto se puede suplantar mediante el uso de la opción LINEFORMAT.</translation>
     </message>
     <message>
         <source>By default, the geometry of a feature written to a .csv file is discarded. It is possible to export the geometry in its WKT representation by specifying GEOMETRY=AS_WKT. It is also possible to export point geometries into their X,Y,Z components by specifying GEOMETRY=AS_XYZ, GEOMETRY=AS_XY or GEOMETRY=AS_YX.</source>
@@ -11771,7 +11778,7 @@ Se desactivará.</translation>
     </message>
     <message>
         <source>Field separator character. Default value : COMMA</source>
-        <translation type="unfinished"></translation>
+        <translation>Caracter separador de campos: Valor predeterminado: COMA</translation>
     </message>
     <message>
         <source>Write a UTF-8 Byte Order Mark (BOM) at the start of the file.</source>
@@ -11787,15 +11794,15 @@ Se desactivará.</translation>
     </message>
     <message>
         <source>Set to YES to resize fields to their optimal size.</source>
-        <translation type="unfinished"></translation>
+        <translation>Establecer a SÍ para redimensionar los campos a su tamaño óptimo.</translation>
     </message>
     <message>
         <source>DBF File</source>
-        <translation type="unfinished"></translation>
+        <translation>Archivo DBF</translation>
     </message>
     <message>
         <source>Set to YES to write a bbox property with the bounding box of the geometries at the feature and feature collection level.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Establecer a SÍ para escribir un </translation>
     </message>
     <message>
         <source>Maximum number of figures after decimal separator to write in coordinates. Default to 15. Truncation will occur to remove trailing zeros.</source>
@@ -12303,7 +12310,7 @@ Se desactivará.</translation>
     </message>
     <message>
         <source>Exit QGIS</source>
-        <translation type="unfinished">Salir de QGIS</translation>
+        <translation>Salir de QGIS</translation>
     </message>
     <message>
         <source>Add a Vector Layer</source>
@@ -15251,94 +15258,94 @@ Por favor, contacte con los desarrolladores.</translation>
     </message>
     <message>
         <source>Pasted</source>
-        <translation type="unfinished"></translation>
+        <translation>Pegado</translation>
     </message>
     <message>
         <source>New memory layer name</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre de la nueva capa de memoria</translation>
     </message>
     <message>
         <source>Layer name</source>
-        <translation type="unfinished">Nombre de la capa</translation>
+        <translation>Nombre de la capa</translation>
     </message>
     <message>
         <source>No features in clipboard.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ningún objeto espacial en el portapapeles.</translation>
     </message>
     <message>
         <source>No features with geometry found, point type layer will be created.</source>
-        <translation type="unfinished"></translation>
+        <translation>No se han encontrado objetos espaciales con geometría, se creará una capa de tipo punto.</translation>
     </message>
     <message>
         <source>Multiple geometry types found, features with geometry different from %1 will be created without geometry.</source>
-        <translation type="unfinished"></translation>
+        <translation>Se han encontrado múltiples tipos de geometría, los objetos espaciales con geometría distinta de %1 se crearán sin geometría.</translation>
     </message>
     <message>
         <source>Cannot create new layer</source>
-        <translation type="unfinished"></translation>
+        <translation>No se puede crear la nueva capa</translation>
     </message>
     <message>
         <source>Cannot create field %1 (%2,%3)</source>
-        <translation type="unfinished"></translation>
+        <translation>No se puede crear el campo %1 (%2,%3)</translation>
     </message>
     <message>
         <source>Do you really want to quit QGIS?</source>
-        <translation type="unfinished"></translation>
+        <translation>¿Realmente quiere salir de QGIS?</translation>
     </message>
     <message>
         <source>Relation Reference</source>
-        <translation type="unfinished"></translation>
+        <translation>Referencia de la relación</translation>
     </message>
     <message>
         <source>DXF export completed</source>
-        <translation type="unfinished"></translation>
+        <translation>Completada la exportación a DXF</translation>
     </message>
     <message>
         <source>DXF export failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Falló la exportación a DXF</translation>
     </message>
     <message>
         <source>No Features Selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Ningún objeto espacial seleccionado</translation>
     </message>
     <message>
         <source>The current layer has not selected features</source>
-        <translation type="unfinished"></translation>
+        <translation>La capa actual no tiene objetos espaciales seleccionados</translation>
     </message>
     <message numerus="yes">
         <source>%n feature(s) deleted.</source>
         <comment>number of features deleted</comment>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Un objeto espacial borrado.</numerusform>
+            <numerusform>%n objetos espaciales borrados.</numerusform>
         </translation>
     </message>
     <message>
         <source>No Object Selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Ningún objeto seleccionado</translation>
     </message>
     <message>
         <source>To remove objects, you must select them in the legend</source>
-        <translation type="unfinished"></translation>
+        <translation>Para eliminar objetos debe seleccionarlos en el panel Capas</translation>
     </message>
     <message>
         <source>Remove objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Eliminar objetos</translation>
     </message>
     <message numerus="yes">
         <source>Remove %n object(s)?</source>
         <comment>number of objects to remove</comment>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>¿Eliminar un objeto?</numerusform>
+            <numerusform>¿Eliminar %n objetos?</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>%n object(s) removed.</source>
         <comment>number of objects removed</comment>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Un objeto eliminado.</numerusform>
+            <numerusform>%n objetos eliminados.</numerusform>
         </translation>
     </message>
 </context>
@@ -15880,7 +15887,7 @@ Ruta de usuario de DB:	%9
     </message>
     <message>
         <source>Coverage layer </source>
-        <translation type="unfinished"></translation>
+        <translation>Capa de cobertura </translation>
     </message>
 </context>
 <context>
@@ -16197,7 +16204,7 @@ Ruta de usuario de DB:	%9
     </message>
     <message>
         <source>&lt;i&gt;Error: Field does not exist in datasource&lt;/i&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;Error: el campo no existe en la fuente de datos&lt;/i&gt;</translation>
     </message>
 </context>
 <context>
@@ -16228,7 +16235,7 @@ Ruta de usuario de DB:	%9
     </message>
     <message>
         <source>Insert NULL value on top</source>
-        <translation type="unfinished"></translation>
+        <translation>Insertar valor NULO arriba</translation>
     </message>
 </context>
 <context>
@@ -16699,11 +16706,11 @@ Ruta de usuario de DB:	%9
     </message>
     <message>
         <source>Delete selected features (DEL)</source>
-        <translation type="unfinished"></translation>
+        <translation>Borrar los objetos espaciales seleccionados (Supr)</translation>
     </message>
     <message>
         <source>Form View</source>
-        <translation type="unfinished">Vista formulario</translation>
+        <translation>Vista formulario</translation>
     </message>
 </context>
 <context>
@@ -17322,7 +17329,7 @@ Base de datos: %2</translation>
     </message>
     <message>
         <source>F5</source>
-        <translation type="unfinished">F5</translation>
+        <translation>F5</translation>
     </message>
 </context>
 <context>
@@ -17663,11 +17670,11 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Invert</source>
-        <translation type="unfinished">Invertir</translation>
+        <translation>Invertir</translation>
     </message>
     <message>
         <source>Random colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Colores aleatorios</translation>
     </message>
 </context>
 <context>
@@ -17722,7 +17729,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Random colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Colores aleatorios</translation>
     </message>
 </context>
 <context>
@@ -18038,59 +18045,59 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source>Cu&amp;t</source>
-        <translation type="unfinished">C&amp;ortar</translation>
+        <translation>C&amp;ortar</translation>
     </message>
     <message>
         <source>Cut</source>
-        <translation type="unfinished">Cortar</translation>
+        <translation>Cortar</translation>
     </message>
     <message>
         <source>&amp;Copy</source>
-        <translation type="unfinished">&amp;Copiar</translation>
+        <translation>&amp;Copiar</translation>
     </message>
     <message>
         <source>Copy</source>
-        <translation type="unfinished">Copiar</translation>
+        <translation>Copiar</translation>
     </message>
     <message>
         <source>&amp;Paste</source>
-        <translation type="unfinished">&amp;Pegar</translation>
+        <translation>&amp;Pegar</translation>
     </message>
     <message>
         <source>Paste</source>
-        <translation type="unfinished">Pegar</translation>
+        <translation>Pegar</translation>
     </message>
     <message>
         <source>Edit</source>
-        <translation type="unfinished">Editar</translation>
+        <translation>Editar</translation>
     </message>
     <message>
         <source>Atlas</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Atlas</translation>
     </message>
     <message>
         <source>Settings</source>
-        <translation type="unfinished">Configuración</translation>
+        <translation>Configuración</translation>
     </message>
     <message>
         <source>%1%</source>
-        <translation type="unfinished">%1%</translation>
+        <translation>%1%</translation>
     </message>
     <message>
         <source>x: %1 mm</source>
-        <translation type="unfinished"></translation>
+        <translation>x: %1 mm</translation>
     </message>
     <message>
         <source>y: %1 mm</source>
-        <translation type="unfinished"></translation>
+        <translation>y: %1 mm</translation>
     </message>
     <message>
         <source>page: %3</source>
-        <translation type="unfinished"></translation>
+        <translation>página: %3</translation>
     </message>
     <message>
         <source>Enable atlas preview</source>
-        <translation type="unfinished"></translation>
+        <translation>Habilitar previsualización de atlas</translation>
     </message>
     <message>
         <source>Atlas in not currently enabled for this composition!</source>
@@ -18691,239 +18698,239 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source>Lock Selected Items</source>
-        <translation type="unfinished"></translation>
+        <translation>Bloquear los elementos seleccionados</translation>
     </message>
     <message>
         <source>Unlock All</source>
-        <translation type="unfinished"></translation>
+        <translation>Desbloquear todo</translation>
     </message>
     <message>
         <source>Unlock All Items</source>
-        <translation type="unfinished"></translation>
+        <translation>Desbloquear todos los elementos</translation>
     </message>
     <message>
         <source>Atlas</source>
-        <translation type="unfinished"></translation>
+        <translation>Atlas</translation>
     </message>
     <message>
         <source>Ctrl+0</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+0</translation>
     </message>
     <message>
         <source>Ctrl++</source>
-        <translation type="unfinished">Ctrl++</translation>
+        <translation>Ctrl++</translation>
     </message>
     <message>
         <source>Ctrl+-</source>
-        <translation type="unfinished">Ctrl+-</translation>
+        <translation>Ctrl+-</translation>
     </message>
     <message>
         <source>Zoom to 100%</source>
-        <translation type="unfinished"></translation>
+        <translation>Zum al 100 %</translation>
     </message>
     <message>
         <source>Ctrl+1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+1</translation>
     </message>
     <message>
         <source>Zoom</source>
-        <translation type="unfinished">Zum</translation>
+        <translation>Zum</translation>
     </message>
     <message>
         <source>Show Grid</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrar cuadrícula</translation>
     </message>
     <message>
         <source>Show grid</source>
-        <translation type="unfinished">Mostrar cuadrícula</translation>
+        <translation>Mostrar cuadrícula</translation>
     </message>
     <message>
         <source>Ctrl+&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+&apos;</translation>
     </message>
     <message>
         <source>Snap to Grid</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajustar a cuadrícula</translation>
     </message>
     <message>
         <source>Snap to grid</source>
-        <translation type="unfinished">Ajustar a cuadrícula</translation>
+        <translation>Ajustar a cuadrícula</translation>
     </message>
     <message>
         <source>Ctrl+Shift+&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+&apos;</translation>
     </message>
     <message>
         <source>Show Guides</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrar guías</translation>
     </message>
     <message>
         <source>Show guides</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrar guías</translation>
     </message>
     <message>
         <source>Ctrl+;</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+;</translation>
     </message>
     <message>
         <source>Snap to Guides</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajustar a las guías</translation>
     </message>
     <message>
         <source>Snap to guides</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajustar a las guías</translation>
     </message>
     <message>
         <source>Ctrl+Shift+;</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+;</translation>
     </message>
     <message>
         <source>Smart Guides</source>
-        <translation type="unfinished"></translation>
+        <translation>Guías inteligentes</translation>
     </message>
     <message>
         <source>Smart guides</source>
-        <translation type="unfinished"></translation>
+        <translation>Guías inteligentes</translation>
     </message>
     <message>
         <source>Ctrl+Alt+;</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Alt+;</translation>
     </message>
     <message>
         <source>Clear Guides</source>
-        <translation type="unfinished"></translation>
+        <translation>Despejar las guías</translation>
     </message>
     <message>
         <source>Clear guides</source>
-        <translation type="unfinished"></translation>
+        <translation>Despejar las guías</translation>
     </message>
     <message>
         <source>Ctrl+G</source>
-        <translation type="unfinished">Ctrl+G</translation>
+        <translation>Ctrl+G</translation>
     </message>
     <message>
         <source>Ctrl+Shift+G</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+G</translation>
     </message>
     <message>
         <source>Ctrl+]</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+]</translation>
     </message>
     <message>
         <source>Ctrl+[</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+[</translation>
     </message>
     <message>
         <source>Ctrl+Shift+]</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+]</translation>
     </message>
     <message>
         <source>Ctrl+Shift+[</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+[</translation>
     </message>
     <message>
         <source>&amp;Undo</source>
-        <translation type="unfinished">&amp;Deshacer</translation>
+        <translation>&amp;Deshacer</translation>
     </message>
     <message>
         <source>&amp;Redo</source>
-        <translation type="unfinished">&amp;Rehacer</translation>
+        <translation>&amp;Rehacer</translation>
     </message>
     <message>
         <source>Ctrl+L</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+L</translation>
     </message>
     <message>
         <source>Ctrl+Shift+L</source>
-        <translation type="unfinished">Ctrl+Mayúsculas+L</translation>
+        <translation>Ctrl+Mayúsculas+L</translation>
     </message>
     <message>
         <source>Pa&amp;ste in Place</source>
-        <translation type="unfinished"></translation>
+        <translation>Pe&amp;gar en lugar</translation>
     </message>
     <message>
         <source>Paste in place</source>
-        <translation type="unfinished"></translation>
+        <translation>Pegar en lugar</translation>
     </message>
     <message>
         <source>Ctrl+Shift+V</source>
-        <translation type="unfinished">Ctrl+Mayúsculas+V</translation>
+        <translation>Ctrl+Mayúsculas+V</translation>
     </message>
     <message>
         <source>&amp;Delete</source>
-        <translation type="unfinished">&amp;Borrar</translation>
+        <translation>&amp;Borrar</translation>
     </message>
     <message>
         <source>Delete selected items</source>
-        <translation type="unfinished"></translation>
+        <translation>Borrar elementos seleccionados</translation>
     </message>
     <message>
         <source>Del</source>
-        <translation type="unfinished"></translation>
+        <translation>Borrar</translation>
     </message>
     <message>
         <source>De&amp;select All</source>
-        <translation type="unfinished"></translation>
+        <translation>De&amp;seleccionar todo</translation>
     </message>
     <message>
         <source>Deselect all</source>
-        <translation type="unfinished"></translation>
+        <translation>Deseleccionar todo</translation>
     </message>
     <message>
         <source>Ctrl+Shift+A</source>
-        <translation type="unfinished">Ctrl+Mayús+A</translation>
+        <translation>Ctrl+Mayús+A</translation>
     </message>
     <message>
         <source>Select &amp;All</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleccionar &amp;todos</translation>
     </message>
     <message>
         <source>Select all items</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleccionar todos los elementos</translation>
     </message>
     <message>
         <source>Ctrl+A</source>
-        <translation type="unfinished">Ctrl+P</translation>
+        <translation>Ctrl+P</translation>
     </message>
     <message>
         <source>&amp;Invert Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Invertir selección</translation>
     </message>
     <message>
         <source>Invert selection</source>
-        <translation type="unfinished">Invertir selección</translation>
+        <translation>Invertir selección</translation>
     </message>
     <message>
         <source>Select Next Item &amp;Below</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleccionar el siguiente elemento de a&amp;bajo</translation>
     </message>
     <message>
         <source>Select next item below</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleccionar el siguiente elemento de abajo</translation>
     </message>
     <message>
         <source>Ctrl+Alt+[</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Alt+[</translation>
     </message>
     <message>
         <source>Select Next Item &amp;Above</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleccionar el siguiente elemento de &amp;arriba</translation>
     </message>
     <message>
         <source>Select next item above</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleccionar el siguiente elemento de arriba</translation>
     </message>
     <message>
         <source>Ctrl+Alt+]</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Alt+]</translation>
     </message>
     <message>
         <source>Pan Composer</source>
-        <translation type="unfinished"></translation>
+        <translation>Desplazar diseñador</translation>
     </message>
     <message>
         <source>Composer Options...</source>
-        <translation type="unfinished"></translation>
+        <translation>Opciones del diseñador...</translation>
     </message>
     <message>
         <source>Show Rulers</source>
@@ -18935,47 +18942,47 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source>Ctrl+R</source>
-        <translation type="unfinished">Ctrl+A</translation>
+        <translation>Ctrl+A</translation>
     </message>
     <message>
         <source>First Feature</source>
-        <translation type="unfinished"></translation>
+        <translation>Primer objeto espacial</translation>
     </message>
     <message>
         <source>Previous Feature</source>
-        <translation type="unfinished"></translation>
+        <translation>Objeto espacial anterior</translation>
     </message>
     <message>
         <source>Next Feature</source>
-        <translation type="unfinished"></translation>
+        <translation>Objeto espacial siguiente</translation>
     </message>
     <message>
         <source>Last Feature</source>
-        <translation type="unfinished"></translation>
+        <translation>Último objeto espacial</translation>
     </message>
     <message>
         <source>Preview Atlas</source>
-        <translation type="unfinished"></translation>
+        <translation>Atlas anterior</translation>
     </message>
     <message>
         <source>Print Atlas...</source>
-        <translation type="unfinished"></translation>
+        <translation>Imprimir atlas...</translation>
     </message>
     <message>
         <source>Export Atlas as Images...</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportar atlas como imágenes...</translation>
     </message>
     <message>
         <source>Export Atlas as SVG...</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportar atlas como SVG...</translation>
     </message>
     <message>
         <source>Export Atlas As PDF...</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportar atlas como PDF...</translation>
     </message>
     <message>
         <source>Atlas Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Configuración del atlas</translation>
     </message>
 </context>
 <context>
@@ -19099,7 +19106,7 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source>Item rotation changed</source>
-        <translation type="unfinished"></translation>
+        <translation>cambiada la rotación del elemento</translation>
     </message>
 </context>
 <context>
@@ -19206,11 +19213,11 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source>Rotation</source>
-        <translation type="unfinished">Rotación</translation>
+        <translation>Rotación</translation>
     </message>
     <message utf8="true">
         <source> °</source>
-        <translation type="unfinished"> °</translation>
+        <translation> °</translation>
     </message>
 </context>
 <context>
@@ -19504,11 +19511,11 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source>Wms Legend width</source>
-        <translation type="unfinished"></translation>
+        <translation>Anchura de la leyenda WMS</translation>
     </message>
     <message>
         <source>Wms Legend height</source>
-        <translation type="unfinished"></translation>
+        <translation>Altura de la leyenda WMS</translation>
     </message>
 </context>
 <context>
@@ -19755,15 +19762,15 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source>WMS LegendGraphic</source>
-        <translation type="unfinished"></translation>
+        <translation>GráficoDeLeyenda WMS</translation>
     </message>
     <message>
         <source>Legend width</source>
-        <translation type="unfinished"></translation>
+        <translation>Anchura de la leyenda</translation>
     </message>
     <message>
         <source>Legend height</source>
-        <translation type="unfinished"></translation>
+        <translation>Altura de la leyenda</translation>
     </message>
 </context>
 <context>
@@ -20087,31 +20094,31 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source>Overview centering mode changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Cambiado el modo de centrado de la vista general</translation>
     </message>
     <message>
         <source>Select grid frame color</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleccionar color del marco de la cuadrícula</translation>
     </message>
     <message>
         <source>Select grid frame fill color</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleccionar color de relleno del marco de la cuadrícula</translation>
     </message>
     <message>
         <source>Changed grid frame line thickness</source>
-        <translation type="unfinished"></translation>
+        <translation>Grosor de la línea del marco de la cuadrícula cambiado</translation>
     </message>
     <message>
         <source>Grid frame color changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Color del marco de la cuadrícula cambiado</translation>
     </message>
     <message>
         <source>Grid frame first fill color changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Primer color de relleno del marco de la cuadrícula cambiado</translation>
     </message>
     <message>
         <source>Grid frame second fill color changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Segundo color de relleno del marco de la cuadrícula cambiado</translation>
     </message>
 </context>
 <context>
@@ -20394,78 +20401,78 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source>Center on overview</source>
-        <translation type="unfinished"></translation>
+        <translation>Centrar en la vista general</translation>
     </message>
     <message>
         <source>Map Rotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Rotación del mapa</translation>
     </message>
     <message utf8="true">
         <source> °</source>
-        <translation type="unfinished"> °</translation>
+        <translation> °</translation>
     </message>
     <message>
         <source>Controlled by atlas</source>
-        <translation type="unfinished"></translation>
+        <translation>Controlado por atlas</translation>
     </message>
     <message>
         <source>Margin around feature</source>
-        <translation type="unfinished">Margen alrededor del objeto espacial</translation>
+        <translation>Margen alrededor del objeto espacial</translation>
     </message>
     <message>
         <source>%</source>
-        <translation type="unfinished">%</translation>
+        <translation>%</translation>
     </message>
     <message>
         <source>Fixed scale</source>
-        <translation type="unfinished">Escala fija</translation>
+        <translation>Escala fija</translation>
     </message>
     <message>
         <source>Grid frame</source>
-        <translation type="unfinished"></translation>
+        <translation>Marco de cuadrícula</translation>
     </message>
     <message>
         <source>Frame size</source>
-        <translation type="unfinished"></translation>
+        <translation>Tamaño del marco</translation>
     </message>
     <message>
         <source>Frame line thickness</source>
-        <translation type="unfinished"></translation>
+        <translation>Grosor de línea del marco</translation>
     </message>
     <message>
         <source>Color...</source>
-        <translation type="unfinished">Color...</translation>
+        <translation>Color...</translation>
     </message>
     <message>
         <source>Frame fill colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Colores de relleno del marco</translation>
     </message>
 </context>
 <context>
     <name>QgsComposerMouseHandles</name>
     <message>
         <source>Change item position</source>
-        <translation type="unfinished">Cambiar posición del elemento</translation>
+        <translation>Cambiar posición del elemento</translation>
     </message>
     <message>
         <source>Change item size</source>
-        <translation type="unfinished"></translation>
+        <translation>Cambiar tamaño del elemento</translation>
     </message>
     <message>
         <source>%1 items selected</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 elementos seleccionados</translation>
     </message>
     <message>
         <source>1 item selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Un elemento seleccionado</translation>
     </message>
     <message>
         <source>dx: %1 mm dy: %2 mm</source>
-        <translation type="unfinished"></translation>
+        <translation>dx: %1 mm dy: %2 mm</translation>
     </message>
     <message>
         <source>width: %1 mm height: %2 mm</source>
-        <translation type="unfinished"></translation>
+        <translation>anchura: %1 mm altura: %2 mm</translation>
     </message>
 </context>
 <context>
@@ -20607,7 +20614,7 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source>Image Rotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Rotación de imagen</translation>
     </message>
 </context>
 <context>
@@ -20622,15 +20629,15 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source>units</source>
-        <translation type="unfinished"></translation>
+        <translation>unidades</translation>
     </message>
     <message>
         <source>miles</source>
-        <translation type="unfinished">millas</translation>
+        <translation>millas</translation>
     </message>
     <message>
         <source>ft</source>
-        <translation type="unfinished"></translation>
+        <translation>pies</translation>
     </message>
     <message>
         <source>Nm</source>
@@ -25255,6 +25262,10 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Greater or equal operator</source>
         <translation>Operador mayor o igual que</translation>
+    </message>
+    <message>
+        <source>Recent (%1)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -38403,6 +38414,10 @@ Siempre red: siempre cargar desde la red y no chequear si el caché tiene una en
         <source>Size [KiB]</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Maximum scale at which the layer should be simplified (1:1 always simplifies): </source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsOptionsDialogBase</name>
@@ -46373,6 +46388,10 @@ desviación estándar ×</translation>
         <source>Scale diameter</source>
         <translation>Diámetro de escala</translation>
     </message>
+    <message>
+        <source>- expression -</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsRendererV2PropertiesDialog</name>
@@ -48193,6 +48212,14 @@ pero implica un rendimiento mejor posteriormente.</translation>
     <message>
         <source>Error while updating internal statistics for: %1</source>
         <translation>Error al actualizar las estadísticas internas para: %1</translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation type="unfinished">Error</translation>
+    </message>
+    <message>
+        <source>Cannot add connection &apos;%1&apos; : a connection with the same name already exists.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -52348,6 +52375,10 @@ Should the existing classes be deleted before classification?</source>
         <source>Simplify on provider side if possible</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Maximum scale at which the layer should be simplified (1:1 always simplifies): </source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsVectorLayerSaveAsDialog</name>
@@ -55173,7 +55204,8 @@ Descripción: %3</translation>
     <message>
         <source>Unable to save edits. Reason:
  %s</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">No se pueden guardar los cambios. Motivo:
+ %s</translation>
     </message>
 </context>
 <context>
@@ -55197,7 +55229,8 @@ Descripción: %3</translation>
     <message>
         <source>Unable to save edits. Reason:
  %s</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">No se pueden guardar los cambios. Motivo:
+ %s</translation>
     </message>
     <message>
         <source>Script saving</source>
@@ -56179,11 +56212,11 @@ Would you like to add the new layer to the TOC?</source>
     </message>
     <message>
         <source>Line width</source>
-        <translation>Ancho de línea</translation>
+        <translation type="obsolete">Ancho de línea</translation>
     </message>
     <message>
         <source>Color</source>
-        <translation>Color</translation>
+        <translation type="obsolete">Color</translation>
     </message>
     <message>
         <source>Change</source>
