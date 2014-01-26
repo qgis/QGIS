@@ -888,15 +888,26 @@ void QgsComposerLegendWidget::updateLegend()
 
     //get layer id list
     QStringList layerIdList;
-    QgsMapCanvas* canvas = app->mapCanvas();
-    if ( canvas )
+    const QgsComposerMap* linkedMap = mLegend->composerMap();
+    if ( linkedMap && linkedMap->keepLayerSet() )
     {
-      QgsMapRenderer* renderer = canvas->mapRenderer();
-      if ( renderer )
+      //if there is a linked map, and if that linked map has a locked layer set, we take the layerIdList from that ComposerMap
+      layerIdList = linkedMap->layerSet();
+    }
+    else
+    {
+      //we take the layerIdList from the Canvas
+      QgsMapCanvas* canvas = app->mapCanvas();
+      if ( canvas )
       {
-        layerIdList = renderer->layerSet();
+        QgsMapRenderer* renderer = canvas->mapRenderer();
+        if ( renderer )
+        {
+          layerIdList = renderer->layerSet();
+        }
       }
     }
+
 
     //and also group info
     QgsAppLegendInterface legendIface( app->legend() );
