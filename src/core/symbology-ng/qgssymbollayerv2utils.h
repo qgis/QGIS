@@ -249,7 +249,10 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
     //! Return a list of svg files at the specified directory
     static QStringList listSvgFilesAt( QString directory );
 
-    //! Get symbol's path from its name
+    /** Get symbol's path from its name.
+     *  If the name is not absolute path the file is searched in SVG paths specified
+     *  in settings svg/searchPathsForSVG.
+     */
     static QString symbolNameToPath( QString name );
 
     //! Get symbols's name from its path

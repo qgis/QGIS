@@ -32,6 +32,9 @@ class CORE_EXPORT QgsSvgCacheEntry
 {
   public:
     QgsSvgCacheEntry();
+    /** Constructor.
+     * @param file Absolute path to SVG file (relative paths are not resolved).
+     */
     QgsSvgCacheEntry( const QString& file, double size, double outlineWidth, double widthScaleFactor, double rasterScaleFctor, const QColor& fill, const QColor& outline );
     ~QgsSvgCacheEntry();
 
@@ -69,8 +72,14 @@ class CORE_EXPORT QgsSvgCache : public QObject
     static QgsSvgCache* instance();
     ~QgsSvgCache();
 
+    /** Get SVG  as QImage.
+     * @param file Absolute or relative path to SVG file.
+     */
     const QImage& svgAsImage( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
                               double widthScaleFactor, double rasterScaleFactor, bool& fitsInCache );
+    /** Get SVG  as QPicture&.
+     * @param file Absolute or relative path to SVG file.
+     */
     const QPicture& svgAsPicture( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
                                   double widthScaleFactor, double rasterScaleFactor, bool forceVectorOutput = false );
 
@@ -90,7 +99,10 @@ class CORE_EXPORT QgsSvgCache : public QObject
     //! protected constructor
     QgsSvgCache( QObject * parent = 0 );
 
-    /**Creates new cache entry and returns pointer to it*/
+    /**Creates new cache entry and returns pointer to it
+     * @param file Absolute or relative path to SVG file. If the path is relative the file is searched by QgsSymbolLayerV2Utils::symbolNameToPath() in SVG paths.
+    in settings svg/searchPathsForSVG
+     */
     QgsSvgCacheEntry* insertSVG( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
                                  double widthScaleFactor, double rasterScaleFactor );
 
