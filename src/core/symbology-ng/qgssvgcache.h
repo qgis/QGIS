@@ -147,6 +147,9 @@ class CORE_EXPORT QgsSvgCache : public QObject
 
     /**For debugging*/
     void printEntryList();
+
+    /** SVG content to be rendered if SVG file was not found. */
+    QByteArray mMissingSvg;
 };
 
 #endif // QGSSVGCACHE_H
