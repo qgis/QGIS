@@ -1862,12 +1862,6 @@ void QgsComposition::addComposerScaleBar( QgsComposerScaleBar* scaleBar )
 
 void QgsComposition::addComposerLegend( QgsComposerLegend* legend )
 {
-  //take first available map
-  QList<const QgsComposerMap*> mapItemList = composerMapItems();
-  if ( mapItemList.size() > 0 )
-  {
-    legend->setComposerMap( mapItemList.at( 0 ) );
-  }
   addItem( legend );
   emit composerLegendAdded( legend );
   clearSelection();
