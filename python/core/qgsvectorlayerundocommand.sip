@@ -67,7 +67,7 @@ class QgsVectorLayerUndoCommandChangeAttribute : QgsVectorLayerUndoCommand
 };
 
 
-class QgsVectorLayerUndoCommandAddAttribute : public QgsVectorLayerUndoCommand
+class QgsVectorLayerUndoCommandAddAttribute : QgsVectorLayerUndoCommand
 {
 %TypeHeaderCode
 #include "qgsvectorlayerundocommand.h"
