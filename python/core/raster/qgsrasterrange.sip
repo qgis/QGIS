@@ -7,9 +7,15 @@ class QgsRasterRange
 %End
 
   public:
+    /** \brief Constructor.
+     */
     QgsRasterRange();
 
-    QgsRasterRange( double theMin, double theMax  );
+    /** \brief Constructor
+     *  @param theMin minimum value
+     *  @param theMax max value
+     */
+    QgsRasterRange( double theMin, double theMax );
 
     ~QgsRasterRange();
 
@@ -21,5 +27,11 @@ class QgsRasterRange
 
     bool operator==( const QgsRasterRange &o ) const;
 
-    bool contains( double value, const QgsRasterRangeList &rangeList );
+    /** \brief Test if value is within the list of ranges
+     *  @param value value
+     *  @param rangeList list of ranges
+     *  @return true if value is in at least one of ranges
+     *  @note not available in python bindings
+     */
+    static bool contains( double value, const QgsRasterRangeList &rangeList );
 };

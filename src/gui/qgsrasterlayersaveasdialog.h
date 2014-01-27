@@ -75,10 +75,8 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
     QList< int > pyramidsList() const;
     QgsRaster::RasterBuildPyramids buildPyramidsFlag() const;
     QString pyramidsResamplingMethod() const { return mPyramidsOptionsWidget->resamplingMethod(); }
-    QgsRaster::RasterPyramidsFormat pyramidsFormat() const
-    { return mPyramidsOptionsWidget->pyramidsFormat(); }
-    QStringList pyramidsConfigOptions() const
-    { return mPyramidsOptionsWidget->configOptions(); }
+    QgsRaster::RasterPyramidsFormat pyramidsFormat() const { return mPyramidsOptionsWidget->pyramidsFormat(); }
+    QStringList pyramidsConfigOptions() const { return mPyramidsOptionsWidget->configOptions(); }
 
     void hideFormat();
     void hideOutput();

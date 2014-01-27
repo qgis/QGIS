@@ -35,7 +35,7 @@ class ANALYSIS_EXPORT QgsLineVectorLayerDirector : public QgsGraphDirector
 {
   public:
     /**
-     * @param myLayer  source vector layer
+     * @param myLayer source vector layer
      * @param directionFieldId feield contain road direction value
      * @param directDirectionValue value for one-way road
      * @param reverseDirectionValue value for reverse one-way road

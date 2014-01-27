@@ -199,6 +199,18 @@ class QgsDataProvider : QObject
       synchronize with changes in the data source*/
     virtual void reloadData();
 
+    /** Time stamp of data source in the moment when data/metadata were loaded by provider */
+    virtual QDateTime timestamp() const;
+
+    /** Current time stamp of data source */
+    virtual QDateTime dataTimestamp() const;
+
+    /** Get current status error. This error describes some principal problem
+     *  for which provider cannot work and thus is not valid. It is not last error
+     *  after accessing data by block(), identify() etc.
+     */
+    virtual QgsError error() const;
+
   signals:
 
     /**

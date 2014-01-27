@@ -124,7 +124,7 @@ class CORE_EXPORT QgsCategorizedSymbolRendererV2 : public QgsFeatureRendererV2
     virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize );
 
     //! return a list of item text / symbol
-    //! @note: this method was added in version 1.5
+    //! @note this method was added in version 1.5
     //! @note not available in python bindings
     virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, QString rule = QString() );
 
@@ -133,6 +133,7 @@ class CORE_EXPORT QgsCategorizedSymbolRendererV2 : public QgsFeatureRendererV2
 
     QgsVectorColorRampV2* sourceColorRamp();
     void setSourceColorRamp( QgsVectorColorRampV2* ramp );
+
     //! @note added in 2.1
     bool invertedColorRamp() { return mInvertedColorRamp; }
     void setInvertedColorRamp( bool inverted ) { mInvertedColorRamp = inverted; }

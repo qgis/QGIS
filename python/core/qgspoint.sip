@@ -1,5 +1,7 @@
-
-
+/** \ingroup core
+ * A class to represent a point geometry.
+ * Currently no Z axis / 2.5D support is implemented.
+ */
 class QgsPoint
 {
 

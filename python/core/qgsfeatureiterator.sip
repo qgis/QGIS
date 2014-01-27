@@ -67,10 +67,8 @@ class QgsFeatureIterator
 #include <qgsfeatureiterator.h>
 %End
 
-public:
-
-
-  QgsFeatureIterator* __iter__();
+  public:
+    QgsFeatureIterator* __iter__();
 %MethodCode
   sipRes = sipCpp;
 %End
@@ -86,23 +84,21 @@ public:
     PyErr_SetString(PyExc_StopIteration,"");
   }
 %End
+    //! construct invalid iterator
+    QgsFeatureIterator();
+    //! construct a valid iterator
+    // QgsFeatureIterator( QgsAbstractFeatureIterator* iter );
+    //! copy constructor copies the iterator, increases ref.count
+    QgsFeatureIterator( const QgsFeatureIterator& fi );
+    //! destructor deletes the iterator if it has no more references
+    ~QgsFeatureIterator();
 
+    // QgsFeatureIterator& operator=(const QgsFeatureIterator& other);
 
-  //! construct invalid iterator
-  QgsFeatureIterator();
-  //! construct a valid iterator
-  //QgsFeatureIterator(QgsAbstractFeatureIterator* iter);
-  //! copy constructor copies the iterator, increases ref.count
-  QgsFeatureIterator(const QgsFeatureIterator& fi);
-  //! destructor deletes the iterator if it has no more references
-  ~QgsFeatureIterator();
+    bool nextFeature( QgsFeature& f );
+    bool rewind();
+    bool close();
 
-  //QgsFeatureIterator& operator=(const QgsFeatureIterator& other);
-
-  bool nextFeature(QgsFeature& f);
-  bool rewind();
-  bool close();
-
-  //! find out whether the iterator is still valid or closed already
-  bool isClosed();
+    //! find out whether the iterator is still valid or closed already
+    bool isClosed() const;
 };

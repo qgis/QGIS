@@ -194,6 +194,7 @@ class QgsDirectoryItem : QgsDataCollectionItem
     virtual QWidget *paramWidget() /Factory/;
 
     /* static QVector<QgsDataProvider*> mProviders; */
+    //! @note not available via python bindings
     // static QVector<QLibrary*> mLibraries;
 };
 
@@ -262,6 +263,7 @@ class QgsZipItem : QgsDataCollectionItem
     QVector<QgsDataItem*> createChildren();
     const QStringList & getZipFileList();
 
+    //! @note not available via python bindings
     // static QVector<dataItem_t *> mDataItemPtr;
     static QStringList mProviderNames;
 

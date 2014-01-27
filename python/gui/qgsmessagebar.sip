@@ -15,7 +15,6 @@ class QgsMessageBar: QFrame
     QgsMessageBar( QWidget *parent = 0 );
     ~QgsMessageBar();
 
-
     /*! display a message item on the bar after hiding the currently visible one
      *  and putting it in a stack.
      * @param item item to display
@@ -32,28 +31,28 @@ class QgsMessageBar: QFrame
 
     /*! remove the passed widget from the bar (if previously added),
      *  then display the next one in the stack if any or hide the bar
-     *  @param widget widget to remove
+     *  @param item item to remove
      *  @return true if the widget was removed, false otherwise
      */
     bool popWidget( QgsMessageBarItem *item );
 
-    //make out a widget containing a message to be displayed on the bar
+    //! make out a widget containing a message to be displayed on the bar
     static QgsMessageBarItem* createMessage( const QString &text, QWidget *parent = 0 ) /Factory/;
     //! make out a widget containing title and message to be displayed on the bar
     static QgsMessageBarItem* createMessage( const QString &title, const QString &text, QWidget *parent = 0 )  /Factory/;
-     //! make out a widget containing title and message to be displayed on the bar
+    //! make out a widget containing title and message to be displayed on the bar
     static QgsMessageBarItem* createMessage( QWidget *widget, QWidget *parent = 0 ) /Factory/;
 
-    //! convenience method for pushing a non-widget-based message to the bar
+    //! convenience method for pushing a message to the bar
     void pushMessage( const QString &text, MessageLevel level = INFO, int duration = 0 );
-    //! convenience method for pushing a non-widget-based message with title to the bar
+    //! convenience method for pushing a message with title to the bar
     void pushMessage( const QString &title, const QString &text, MessageLevel level = INFO, int duration = 0 );
 
   signals:
     //! emitted when a message widget is added to the bar
     void widgetAdded( QgsMessageBarItem *item );
 
-    //! emitted when a widget was removed from the bar
+    //! emitted when a message widget was removed from the bar
     void widgetRemoved( QgsMessageBarItem *item );
 
   public slots:

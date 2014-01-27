@@ -36,7 +36,7 @@ typedef QPair< QString, QList<QString> > GroupLayerInfo;
 /** \ingroup MapComposer
  * A model that provides group, layer and classification items.
  */
-class CORE_EXPORT QgsLegendModel: public QStandardItemModel
+class CORE_EXPORT QgsLegendModel : public QStandardItemModel
 {
     Q_OBJECT
 

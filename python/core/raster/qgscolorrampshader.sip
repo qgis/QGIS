@@ -64,4 +64,7 @@ class QgsColorRampShader : QgsRasterShaderFunction
     bool shade( double, double, double, double, int* /Out/, int* /Out/, int* /Out/, int* /Out/);
 
     void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const;
+
+    void setClip( bool clip );
+    bool clip() const;
 };

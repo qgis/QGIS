@@ -34,7 +34,8 @@ class ANALYSIS_EXPORT ParametricLine
   public:
     /**Default constructor*/
     ParametricLine();
-    /**Constructor, par is a pointer to the parent object, controlpoly the controlpolygon*/
+    /**Constructor, par is a pointer to the parent object, controlpoly the controlpolygon
+      @note not available in python binding */
     ParametricLine( ParametricLine* par, QVector<Point3D*>* controlpoly );
     /**Destructor*/
     virtual ~ParametricLine();

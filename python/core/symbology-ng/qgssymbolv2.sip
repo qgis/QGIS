@@ -22,7 +22,8 @@ class QgsSymbolV2
     enum OutputUnit
     {
       MM,
-      MapUnit
+      MapUnit,
+      Mixed //mixed units in symbol layers
     };
 
     enum SymbolType

@@ -26,11 +26,11 @@ class QgsLogger
     static void debug( const QString& var, int val, int debuglevel = 1, const char* file = NULL, const char* function = NULL, int line = -1 );
 
     /**Similar to the previous method, but prints a variable double-value pair*/
-    // PyQGIS: commented out - has the same python signature as method above
+    // @note not available in python bindings
     // static void debug( const QString& var, double val, int debuglevel = 1, const char* file = NULL, const char* function = NULL, int line = -1 );
 
     /**Prints out a variable/value pair for types with overloaded operator<<*/
-    // TODO: is it possible to make this working?
+    // @note not available in python bindings
     //template <typename T> static void debug(const QString& var, T val, const char* file = 0, const char* function = 0,
     //     int line = -1, int debuglevel = 1);
 

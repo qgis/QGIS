@@ -142,8 +142,8 @@ class QgsSymbolLayerV2
   protected:
     QgsSymbolLayerV2( QgsSymbolV2::SymbolType type, bool locked = false );
 
-    virtual void prepareExpressions( const QgsVectorLayer* vl );
-    virtual QgsExpression* expression( const QString& property );
+    virtual void prepareExpressions( const QgsVectorLayer* vl, double scale = -1.0 );
+    virtual QgsExpression* expression( const QString& property ) const;
     /**Saves data defined properties to string map*/
     void saveDataDefinedProperties( QgsStringMap& stringMap ) const;
     /**Copies data defined properties of this layer to another symbol layer*/
@@ -158,12 +158,14 @@ class QgsMarkerSymbolLayerV2 : QgsSymbolLayerV2
 #include <qgssymbollayerv2.h>
 %End
   public:
+
     enum HorizontalAnchorPoint
     {
       Left,
       HCenter,
       Right
     };
+
     enum VerticalAnchorPoint
     {
       Top,
@@ -213,6 +215,12 @@ class QgsMarkerSymbolLayerV2 : QgsSymbolLayerV2
 
     //handles marker offset and anchor point shift together
     void markerOffset( const QgsSymbolV2RenderContext& context, double& offsetX, double& offsetY ) const;
+
+    //! @note available in python bindings as markerOffset2
+    void markerOffset( const QgsSymbolV2RenderContext& context, double width, double height,
+                       QgsSymbolV2::OutputUnit widthUnit, QgsSymbolV2::OutputUnit heightUnit,
+                       double& offsetX, double& offsetY ) const /PyName=markerOffset2/;
+
     static QPointF _rotatedOffset( const QPointF& offset, double angle );
 };
 
@@ -235,6 +243,8 @@ class QgsLineSymbolLayerV2 : QgsSymbolLayerV2
     QgsSymbolV2::OutputUnit widthUnit() const;
 
     void drawPreviewIcon( QgsSymbolV2RenderContext& context, QSize size );
+
+    virtual double dxfWidth( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const;
 
   protected:
     QgsLineSymbolLayerV2( bool locked = false );

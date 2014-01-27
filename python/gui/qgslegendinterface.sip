@@ -93,6 +93,11 @@ class QgsLegendInterface : QObject
     /* //! emitted when an item (group/layer) is removed */
     void itemRemoved( );
 
+    //! Emitted whenever current (selected) layer changes
+    //  the pointer to layer can be null if no layer is selected
+    //! @note Added in 2.0
+    void currentLayerChanged( QgsMapLayer * layer );
+
   public slots:
 
     //! Add a new group

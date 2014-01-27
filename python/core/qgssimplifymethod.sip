@@ -19,21 +19,21 @@ class QgsSimplifyMethod
     //! copy constructor
     QgsSimplifyMethod( const QgsSimplifyMethod& rh );
 
-    /** Sets the simplification type */
+    //! Sets the simplification type
     void setMethodType( MethodType methodType );
-    /** Gets the simplification type */
+    //! Gets the simplification type
     MethodType methodType() const;
 
-    /** Sets the tolerance of simplification. Represents the maximum distance between two coordinates which can be considered equal */
+    //! Sets the tolerance of simplification. Represents the maximum distance between two coordinates which can be considered equal
     void setTolerance( double tolerance );
-    /** Gets the tolerance of simplification */
+    //! Gets the tolerance of simplification
     double tolerance() const;
 
-    /** Sets whether the simplification executes after fetch the geometries from provider, otherwise it executes, when supported, in provider before fetch the geometries */
+    //! Sets whether the simplification executes after fetch the geometries from provider, otherwise it executes, when supported, in provider before fetch the geometries
     void setForceLocalOptimization( bool localOptimization );
-    /** Gets whether the simplification executes after fetch the geometries from provider, otherwise it executes, when supported, in provider before fetch the geometries */
+    //! Gets whether the simplification executes after fetch the geometries from provider, otherwise it executes, when supported, in provider before fetch the geometries
     bool forceLocalOptimization() const;
 
-    /** Creates a geometry simplifier according to specified method */
+    //! Creates a geometry simplifier according to specified method
     static QgsAbstractGeometrySimplifier* createGeometrySimplifier( const QgsSimplifyMethod& simplifyMethod );
 };

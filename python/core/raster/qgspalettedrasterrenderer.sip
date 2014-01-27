@@ -10,14 +10,25 @@ class QgsPalettedRasterRenderer : QgsRasterRenderer
     QgsRasterInterface * clone() const /Factory/;
     static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterInterface* input ) /Factory/;
 
-    // void draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel );
-
     QgsRasterBlock *block( int bandNo, const QgsRectangle & extent, int width, int height ) /Factory/;
 
     /**Returns number of colors*/
     int nColors() const;
     /**Returns copy of color array (caller takes ownership)*/
     QColor* colors() const /Factory/;
+
+    /**Returns copy of rgb array (caller takes ownership)
+     @note not available in python bindings
+     */
+    // QRgb* rgbArray() const;
+
+    /** Return optional category label
+     *  @note added in 2.1 */
+    QString label( int idx ) const;
+
+    /** Set category label
+     *  @note added in 2.1 */
+    void setLabel( int idx, QString label );
 
     void writeXML( QDomDocument& doc, QDomElement& parentElem ) const;
 

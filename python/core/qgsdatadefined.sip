@@ -34,9 +34,9 @@ class QgsDataDefined
     QString expressionString() const;
     void setExpressionString( const QString& expr );
 
-
+    // @note not available in python bindings
     //QMap<QString, QVariant> expressionParams() const;
-
+    // @note not available in python bindings
     //void setExpressionParams( QMap<QString, QVariant> params );
     void insertExpressionParam( QString key, QVariant param );
 
@@ -49,6 +49,7 @@ class QgsDataDefined
     QString field() const;
     void setField( const QString& field );
 
+    // @note not available in python bindings
     //QMap< QString, QString > toMap();
 
 };

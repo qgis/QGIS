@@ -109,6 +109,10 @@ class QgsExpressionBuilderWidget : QWidget
 
     bool isExpressionValid();
 
+    void saveToRecent( QString key );
+
+    void loadRecent( QString key );
+
   public slots:
     void currentChanged( const QModelIndex &index, const QModelIndex & );
     void on_expressionTree_doubleClicked( const QModelIndex &index );

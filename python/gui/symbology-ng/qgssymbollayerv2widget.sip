@@ -116,6 +116,38 @@ class QgsSimpleFillSymbolLayerV2Widget : QgsSymbolLayerV2Widget
 
 ///////////
 
+class QgsGradientFillSymbolLayerV2Widget : QgsSymbolLayerV2Widget
+{
+%TypeHeaderCode
+#include <qgssymbollayerv2widget.h>
+%End
+  public:
+    QgsGradientFillSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent = NULL );
+
+    static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) /Factory/;
+
+    // from base class
+    virtual void setSymbolLayer( QgsSymbolLayerV2* layer );
+    virtual QgsSymbolLayerV2* symbolLayer();
+
+  public slots:
+    void setColor( const QColor& color );
+    void setColor2( const QColor& color );
+    void applyColorRamp();
+    void setGradientType( int index );
+    void setCoordinateMode( int index );
+    void setGradientSpread( int index );
+    void offsetChanged();
+    void referencePointChanged();
+    void on_mOffsetUnitComboBox_currentIndexChanged( int index );
+    void on_mDataDefinedPropertiesButton_clicked();
+    void colorModeChanged();
+    void on_mSpinAngle_valueChanged( double value );
+};
+
+
+///////////
+
 class QgsMarkerLineSymbolLayerV2Widget : QgsSymbolLayerV2Widget
 {
 %TypeHeaderCode

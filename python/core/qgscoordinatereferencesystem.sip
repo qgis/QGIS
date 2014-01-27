@@ -16,7 +16,7 @@ class QgsCoordinateReferenceSystem
     {
       InternalCrsId,
       PostgisCrsId,
-      EpsgCrsId
+      EpsgCrsId     // deprecated
     };
 
     //! Default constructor

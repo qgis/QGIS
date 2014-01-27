@@ -261,7 +261,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     QFont gridAnnotationFont() const { return mGridAnnotationFont; }
 
     /**Sets font color for grid annotations
-        @note: this function was added in version 2.0*/
+        @note this function was added in version 2.0*/
     void setAnnotationFontColor( const QColor& c ) {mGridAnnotationFontColor = c;}
     /**Get font color for grid annotations
         @note: this function was added in version 2.0*/

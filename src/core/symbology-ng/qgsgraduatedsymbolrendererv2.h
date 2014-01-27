@@ -27,7 +27,7 @@ class CORE_EXPORT QgsRendererRangeV2
     QgsRendererRangeV2( double lowerValue, double upperValue, QgsSymbolV2* symbol, QString label );
     QgsRendererRangeV2( const QgsRendererRangeV2& range );
 
-    // defaut dtor is ok
+    // default dtor is ok
 
     QgsRendererRangeV2& operator=( QgsRendererRangeV2 range );
 
@@ -65,7 +65,7 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
 {
   public:
     QgsGraduatedSymbolRendererV2( QString attrName = QString(), QgsRangeList ranges = QgsRangeList() );
-    QgsGraduatedSymbolRendererV2( const  QgsGraduatedSymbolRendererV2 & other );
+    QgsGraduatedSymbolRendererV2( const QgsGraduatedSymbolRendererV2 & other );
 
     virtual ~QgsGraduatedSymbolRendererV2();
 
@@ -100,6 +100,7 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
     bool updateRangeLowerValue( int rangeIndex, double value );
 
     void addClass( QgsSymbolV2* symbol );
+    //! @note available in python bindings as addClassRange
     void addClass( QgsRendererRangeV2 range );
     void deleteClass( int idx );
     void deleteAllClasses();

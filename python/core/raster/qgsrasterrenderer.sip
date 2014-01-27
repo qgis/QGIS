@@ -40,7 +40,7 @@ class QgsRasterRenderer : QgsRasterInterface
 
     virtual bool setInput( QgsRasterInterface* input );
 
-    virtual QgsRasterBlock * block( int bandNo, const QgsRectangle &extent, int width, int height ) = 0 / Factory /;
+    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height ) = 0 / Factory /;
 
     bool usesTransparency() const;
 
@@ -56,7 +56,6 @@ class QgsRasterRenderer : QgsRasterInterface
     /**Get symbology items if provided by renderer*/
     virtual void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const;
 
-    virtual void writeXML( QDomDocument&, QDomElement& ) const;
     /**Sets base class members from xml. Usually called from create() methods of subclasses*/
     void readXML( const QDomElement& rendererElem );
 

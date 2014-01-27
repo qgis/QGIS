@@ -80,11 +80,11 @@ class CORE_EXPORT QgsDistanceArea
     const QString& ellipsoid() const { return mEllipsoid; }
 
     //! returns ellipsoid's semi major axis
-    double ellipsoidSemiMajor() { return mSemiMajor; }
+    double ellipsoidSemiMajor() const { return mSemiMajor; }
     //! returns ellipsoid's semi minor axis
-    double ellipsoidSemiMinor() { return mSemiMinor; }
+    double ellipsoidSemiMinor() const { return mSemiMinor; }
     //! returns ellipsoid's inverse flattening
-    double ellipsoidInverseFlattening() { return mInvFlattening; }
+    double ellipsoidInverseFlattening() const { return mInvFlattening; }
 
     //! general measurement (line distance or polygon area)
     double measure( QgsGeometry* geometry );

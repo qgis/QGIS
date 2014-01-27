@@ -72,7 +72,7 @@ class CORE_EXPORT QgsGmlFeatureClass
     QStringList mGeometryAttributes;
 };
 
-class CORE_EXPORT QgsGmlSchema: public QObject
+class CORE_EXPORT QgsGmlSchema : public QObject
 {
     Q_OBJECT
   public:

@@ -5,7 +5,6 @@ class QgsMapLayerAction : QAction
 %End
 
   public:
-
     /**Creates a map layer action which can run on any layer*/
     QgsMapLayerAction( QString name, QObject *parent );
     /**Creates a map layer action which can run only on a specific layer*/
@@ -41,7 +40,6 @@ class QgsMapLayerActionRegistry : QObject
 %End
 
   public:
-
     //! Returns the instance pointer, creating the object on the first call
     static QgsMapLayerActionRegistry * instance();
 

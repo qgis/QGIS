@@ -84,7 +84,7 @@ class QgsMapLayer : QObject
     void setAbstract( const QString& abstract );
     const QString& abstract() const;
 
-    void setKeywordList( const QString& kwdList );
+    void setKeywordList( const QString& keywords );
     const QString& keywordList() const;
 
     /* Layer dataUrl information */
@@ -108,7 +108,7 @@ class QgsMapLayer : QObject
     const QString& metadataUrlFormat() const;
 
     /* Set the blending mode used for rendering a layer */
-    void setBlendMode( const QPainter::CompositionMode blendMode );
+    void setBlendMode( const QPainter::CompositionMode &blendMode );
     /* Returns the current blending mode for a layer */
     QPainter::CompositionMode blendMode() const;
 

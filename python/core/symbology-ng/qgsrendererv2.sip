@@ -126,8 +126,8 @@ class QgsFeatureRendererV2
 
     //! return a list of item text / symbol
     //! @note: this method was added in version 1.5
-    //! @note: not available in python bindings
-    // virtual QgsLegendSymbolList legendSymbolItems();
+    //! @note not available in python bindings
+    // virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, QString rule = "" );
 
     //! set type and size of editing vertex markers for subsequent rendering
     void setVertexMarkerAppearance( int type, int size );

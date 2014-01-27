@@ -39,6 +39,9 @@ class QgsMapLayerRegistry : QObject
      * @param addToLegend   If true (by default), the layers will be added to the
      *                      legend and to the main canvas. If you have a private
      *                      layer, you can set this parameter to false to hide it.
+     * @param takeOwnership Ownership will be transferred to the layer registry.
+     *                      If you specify false here, you have take care of deleting
+     *                      the layers yourself. Not available in python.
      *
      * @return QList<QgsMapLayer *> - a list of the map layers that were added
      *         successfully. If a layer is invalid, or already exists in the registry,
@@ -46,8 +49,9 @@ class QgsMapLayerRegistry : QObject
      *
      * @note As a side-effect QgsProject is made dirty.
      * @note Added in QGIS 1.8
+     * @note takeOwner not available in python binding - always takes ownership
      */
-    QList<QgsMapLayer *> addMapLayers(QList<QgsMapLayer *> theMapLayers /Transfer/,
+    QList<QgsMapLayer *> addMapLayers( QList<QgsMapLayer *> theMapLayers /Transfer/,
                                        bool addToLegend = true );
 
     /**
@@ -63,6 +67,9 @@ class QgsMapLayerRegistry : QObject
      * @param addToLegend If true (by default), the layer will be added to the
      *                    legend and to the main canvas. If you have a private
      *                    you can set this parameter to false to hide it.
+     * @param takeOwnership Ownership will be transferred to the layer registry.
+     *                      If you specify false here, you have take care of deleting
+     *                      the layer yourself. Not available in python.
      *
      * @return NULL if unable to add layer, otherwise pointer to newly added layer
      *
@@ -70,6 +77,7 @@ class QgsMapLayerRegistry : QObject
      *
      * @note As a side-effect QgsProject is made dirty.
      * @note Use addMapLayers if adding more than one layer at a time
+     * @note takeOwner not available in python binding - always takes ownership
      */
     QgsMapLayer* addMapLayer( QgsMapLayer * theMapLayer /Transfer/, bool addToLegend = true );
 
@@ -144,6 +152,23 @@ class QgsMapLayerRegistry : QObject
      * @note Consider using {@link layersWillBeRemoved()} instead
      */
     void layerWillBeRemoved( QString theLayerId );
+
+    /**
+     * Emitted after one or more layers were removed from the registry
+     *
+     * @param theLayerIds  A list of ids of the layers which were removed.
+     */
+    void layersRemoved( QStringList theLayerIds );
+
+    /**
+     * Emitted after a layer was removed from the registry
+     *
+     * @param theLayerId  The id of the layer removed
+     *
+     * @note Consider using {@link layersRemoved()} instead
+     */
+    void layerRemoved( QString theLayerId );
+
 
     /**
      * Emitted, when all layers are removed, before {@link layersWillBeRemoved()} and

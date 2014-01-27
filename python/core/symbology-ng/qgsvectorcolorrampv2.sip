@@ -54,6 +54,10 @@ class QgsVectorGradientColorRampV2 : QgsVectorColorRampV2
 
     static QgsVectorColorRampV2* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
 
+    virtual int count() const;
+
+    virtual double value( int index ) const;
+
     virtual QColor color( double value ) const;
 
     virtual QString type() const;

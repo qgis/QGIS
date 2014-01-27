@@ -9,7 +9,7 @@ class QgsAttributeTableModel : QAbstractTableModel
     {
       SortRole,
       FeatureIdRole,
-      FieldIndexRole,
+      FieldIndexRole
     };
 
   public:
@@ -153,6 +153,8 @@ class QgsAttributeTableModel : QAbstractTableModel
      * @param column The column index of the field to catch
      */
     void prefetchColumnData( int column );
+
+    void setRequest( const QgsFeatureRequest& request );
 
   signals:
     /**

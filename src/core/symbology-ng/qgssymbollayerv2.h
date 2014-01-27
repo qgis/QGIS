@@ -142,9 +142,8 @@ class CORE_EXPORT QgsSymbolLayerV2
     static const bool selectFillBorder = false;  // Fill symbol layer also selects border symbology
     static const bool selectFillStyle = false;   // Fill symbol uses symbol layer style..
 
-    virtual void prepareExpressions( const QgsVectorLayer* vl, double scale = -1 );
+    virtual void prepareExpressions( const QgsVectorLayer* vl, double scale = -1.0 );
     virtual QgsExpression* expression( const QString& property ) const;
-
     /**Saves data defined properties to string map*/
     void saveDataDefinedProperties( QgsStringMap& stringMap ) const;
     /**Copies data defined properties of this layer to another symbol layer*/
@@ -214,6 +213,8 @@ class CORE_EXPORT QgsMarkerSymbolLayerV2 : public QgsSymbolLayerV2
 
     //handles marker offset and anchor point shift together
     void markerOffset( const QgsSymbolV2RenderContext& context, double& offsetX, double& offsetY ) const;
+
+    //! @note available in python bindings as markerOffset2
     void markerOffset( const QgsSymbolV2RenderContext& context, double width, double height,
                        QgsSymbolV2::OutputUnit widthUnit, QgsSymbolV2::OutputUnit heightUnit,
                        double& offsetX, double& offsetY ) const;

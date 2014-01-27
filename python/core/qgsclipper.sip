@@ -38,7 +38,8 @@ class QgsClipper
     // feature in x and y. The shapeOpen parameter determines whether
     // the function treats the points as a closed shape (polygon), or as
     // an open shape (linestring).
-
+    //
+    // @note python binding only available on android
 %If (!ANDROID)
     static void trimFeature( QVector<double>& x,
                              QVector<double>& y,

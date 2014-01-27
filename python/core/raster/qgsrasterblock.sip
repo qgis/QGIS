@@ -12,12 +12,36 @@ class QgsRasterBlock
      *  @param theDataType raster data type
      *  @param theWidth width of data matrix
      *  @param theHeight height of data matrix
+     *  @note not available in python bindings (use variant with theNoDataValue)
+     */
+    // QgsRasterBlock( QGis::DataType theDataType, int theWidth, int theHeight );
+
+    /** \brief Constructor which allocates data block in memory
+     *  @param theDataType raster data type
+     *  @param theWidth width of data matrix
+     *  @param theHeight height of data matrix
      *  @param theNoDataValue the value representing no data (NULL)
      */
     QgsRasterBlock( QGis::DataType theDataType, int theWidth, int theHeight, double theNoDataValue );
 
     virtual ~QgsRasterBlock();
 
+    /** \brief Reset block
+     *  @param theDataType raster data type
+     *  @param theWidth width of data matrix
+     *  @param theHeight height of data matrix
+     *  @return true on success
+     *  @note not available in python bindings (use variant with theNoDataValue)
+     */
+    // bool reset( QGis::DataType theDataType, int theWidth, int theHeight );
+
+    /** \brief Reset block
+     *  @param theDataType raster data type
+     *  @param theWidth width of data matrix
+     *  @param theHeight height of data matrix
+     *  @param theNoDataValue the value representing no data (NULL)
+     *  @return true on success
+     */
     bool reset( QGis::DataType theDataType, int theWidth, int theHeight, double theNoDataValue );
 
     // TODO: consider if use isValid() at all, isEmpty() should be sufficient
@@ -59,7 +83,7 @@ class QgsRasterBlock
      * @return true if the block has no data value */
     bool hasNoDataValue() const;
 
-    /** Returns true if thee block may contain no data. It does not guarantee
+    /** Returns true if the block may contain no data. It does not guarantee
      * that it really contains any no data. It can be used to speed up processing.
      * Not the difference between this method and hasNoDataValue().
      * @return true if the block may contain no data */

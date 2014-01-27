@@ -24,16 +24,19 @@ class QgsDistanceArea
     //! sets source spatial reference system (by QGIS CRS)
     void setSourceCrs( long srsid );
 
-    //! sets source spatial reference system (by QGIS CRS)
+    /**
+     * Sets source spatial reference system (by QGIS CRS)
+     * @note: missing in Python bindings in QGIS < 2.2
+     */
     void setSourceCrs( const QgsCoordinateReferenceSystem& srcCRS );
 
     //! sets source spatial reference system by authid
     void setSourceAuthId( QString authid );
 
     //! returns source spatial reference system
-    long sourceCrs();
+    long sourceCrs() const;
     //! What sort of coordinate system is being used?
-    bool geographic();
+    bool geographic() const;
 
     //! sets ellipsoid by its acronym
     bool setEllipsoid( const QString& ellipsoid );
@@ -43,14 +46,14 @@ class QgsDistanceArea
     bool setEllipsoid( double semiMajor, double semiMinor );
 
     //! returns ellipsoid's acronym
-    const QString& ellipsoid();
+    const QString& ellipsoid() const;
 
     //! returns ellipsoid's semi major axis
-    double ellipsoidSemiMajor();
+    double ellipsoidSemiMajor() const;
     //! returns ellipsoid's semi minor axis
-    double ellipsoidSemiMinor();
+    double ellipsoidSemiMinor() const;
     //! returns ellipsoid's inverse flattening
-    double ellipsoidInverseFlattening();
+    double ellipsoidInverseFlattening() const;
 
     //! general measurement (line distance or polygon area)
     double measure( QgsGeometry* geometry );

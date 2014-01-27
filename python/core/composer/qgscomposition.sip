@@ -144,8 +144,10 @@ class QgsComposition : QGraphicsScene
 
     QList<QgsComposerItem*> selectedComposerItems();
 
-    /**Returns pointers to all composer maps in the scene*/
 %If (QLISTCONSTPTR_CONVERSION)
+    /**Returns pointers to all composer maps in the scene
+      @note available in python bindings only with PyQt >= 4.8.4
+      */
     QList<const QgsComposerMap*> composerMapItems() const;
 %End
 
@@ -234,10 +236,8 @@ class QgsComposition : QGraphicsScene
       @param pasteInPlace whether the position should be kept but mapped to the page origin. (the page is the page under to the mouse cursor)
       @note not available in python bindings
      */
-    /*
-    void addItemsFromXML( const QDomElement& elem, const QDomDocument& doc, QMap< QgsComposerMap*, int >* mapsToRestore = 0,
-                          bool addUndoCommands = false, QPointF* pos = 0, bool pasteInPlace = false );
-    */
+    // void addItemsFromXML( const QDomElement& elem, const QDomDocument& doc, QMap< QgsComposerMap*, int >* mapsToRestore = 0,
+    //                      bool addUndoCommands = false, QPointF* pos = 0, bool pasteInPlace = false );
 
     /**Adds item to z list. Usually called from constructor of QgsComposerItem*/
     void addItemToZList( QgsComposerItem* item );
@@ -283,7 +283,9 @@ class QgsComposition : QGraphicsScene
     /**Returns pointer to snap lines collection*/
     QList< QGraphicsLineItem* >* snapLines();
 
-    /**Returns pointer to selection handles*/
+    /**Returns pointer to selection handles
+     * @note not available in python bindings
+     */
     // QgsComposerMouseHandles* selectionHandles();
 
     /**Add a custom snap line (can be horizontal or vertical)*/

@@ -22,10 +22,16 @@ class QgsRenderChecker
     //only records time for actual render part
     int elapsedTime();
     void setElapsedTimeTarget( int theTarget );
+    /** Base directory name for the control image (with control image path
+      * suffixed) the path to the image will be constructed like this:
+      * controlImagePath + '/' + mControlName + '/' + mControlName + '.png'
+      */
     void setControlName( const QString theName );
-
+    /** Prefix where the control images are kept.
+     * This will be appended to controlImagePath
+      */
     void setControlPathPrefix( const QString theName );
-
+    /** Get an md5 hash that uniquely identifies an image */
     QString imageToHash( QString theImageFile );
 
     void setRenderedImage( QString theImageFileName );

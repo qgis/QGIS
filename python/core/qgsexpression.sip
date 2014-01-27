@@ -378,7 +378,6 @@ class QgsExpression
     class NodeCondition : QgsExpression::Node
     {
       public:
-        // NodeCondition( QList<QgsExpression::WhenThen*> *conditions /Transfer/, QgsExpression::Node* elseExp = 0 /Transfer/ );
         NodeCondition( QList<QgsExpression::WhenThen*> *conditions, QgsExpression::Node* elseExp = 0 );
         ~NodeCondition();
 

@@ -23,6 +23,13 @@ class QgsCredentials
 };
 
 
+/**
+\brief Default implementation of credentials interface
+
+This class outputs message to the standard output and retrieves input from
+standard input. Therefore it won't be the right choice for apps without
+GUI.
+*/
 class QgsCredentialsConsole : QObject, QgsCredentials
 {
 %TypeHeaderCode

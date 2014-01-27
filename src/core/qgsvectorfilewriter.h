@@ -55,9 +55,7 @@ class CORE_EXPORT QgsVectorFileWriter
       public:
         Option( const QString& docString, OptionType type )
             : docString( docString )
-            , type( type )
-        {}
-
+            , type( type ) {}
         virtual ~Option() {}
 
         QString docString;

@@ -54,7 +54,7 @@ class QgsSvgCache : QObject
     static QgsSvgCache* instance();
     ~QgsSvgCache();
 
-    /** Get SVG  as QImage.
+    /** Get SVG as QImage.
      * @param file Absolute or relative path to SVG file.
      * @param size size of cached image
      * @param fill color of fill

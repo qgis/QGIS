@@ -563,7 +563,8 @@ class CORE_EXPORT QgsLabelCandidate
 class CORE_EXPORT QgsLabelComponent
 {
   public:
-    QgsLabelComponent(): mText( QString() )
+    QgsLabelComponent()
+        : mText( QString() )
         , mOrigin( QgsPoint() )
         , mUseOrigin( false )
         , mRotation( 0.0 )

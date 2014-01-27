@@ -51,7 +51,8 @@ class QgsRasterProjector : QgsRasterInterface
     int dataType( int bandNo ) const;
 
     /** \brief set source and destination CRS */
-    void setCRS( const QgsCoordinateReferenceSystem & theSrcCRS, const QgsCoordinateReferenceSystem & theDestCRS, int srcDatumTransform = -1, int destDatumTransform = -1 );
+    void setCRS( const QgsCoordinateReferenceSystem & theSrcCRS, const QgsCoordinateReferenceSystem & theDestCRS,
+                 int srcDatumTransform = -1, int destDatumTransform = -1 );
 
     /** \brief Get source CRS */
     QgsCoordinateReferenceSystem srcCrs() const;

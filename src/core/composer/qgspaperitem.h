@@ -37,7 +37,7 @@ class CORE_EXPORT QgsPaperGrid: public QGraphicsRectItem
 };
 
 /**Item representing the paper.*/
-class CORE_EXPORT QgsPaperItem: public QgsComposerItem
+class CORE_EXPORT QgsPaperItem : public QgsComposerItem
 {
   public:
     QgsPaperItem( QgsComposition* c );

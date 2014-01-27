@@ -36,7 +36,7 @@ class CORE_EXPORT QgsSingleBandColorDataRenderer: public QgsRasterRenderer
 
     bool setInput( QgsRasterInterface* input );
 
-    QgsRasterBlock* block( int bandNo, QgsRectangle  const & extent, int width, int height );
+    QgsRasterBlock* block( int bandNo, const QgsRectangle & extent, int width, int height );
 
     void writeXML( QDomDocument& doc, QDomElement& parentElem ) const;
 

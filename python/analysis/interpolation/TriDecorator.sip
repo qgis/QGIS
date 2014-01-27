@@ -19,6 +19,7 @@ class TriDecorator : Triangulation
     virtual bool calcPoint( double x, double y, Point3D* result );
     virtual Point3D* getPoint( unsigned int i ) const;
     virtual int getNumberOfPoints() const;
+    //! @note not available in python bindings
     // bool getTriangle( double x, double y, Point3D* p1, int* n1, Point3D* p2, int* n2, Point3D* p3, int* n3 );
     bool getTriangle( double x, double y, Point3D* p1, Point3D* p2, Point3D* p3 );
     virtual int getOppositePoint( int p1, int p2 );

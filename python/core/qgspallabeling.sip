@@ -453,12 +453,12 @@ class QgsPalLayerSettings
     /** Convert old property value to new one as delimited values
      * @note not available in python bindings; added in 1.9, as temporary solution until refactoring of project settings
      */
-    //QString updateDataDefinedString( const QString& value );
+    QString updateDataDefinedString( const QString& value );
 
     /** Get property value as separate values split into Qmap
      * @note not available in python bindings; added in 1.9
      */
-    //QMap<QString, QString> dataDefinedMap( QgsPalLayerSettings::DataDefinedProperties p ) const;
+    QMap<QString, QString> dataDefinedMap( QgsPalLayerSettings::DataDefinedProperties p ) const;
 
     /** Get data defined property value from expression string or attribute field name
      * @returns value inside QVariant
@@ -470,7 +470,7 @@ class QgsPalLayerSettings
      * @returns true/false whether result is null or invalid
      * @note not available in python bindings; added in 1.9
      */
-    //bool dataDefinedEvaluate( QgsPalLayerSettings::DataDefinedProperties p, QVariant& exprVal ) const;
+    bool dataDefinedEvaluate( QgsPalLayerSettings::DataDefinedProperties p, QVariant& exprVal ) const;
 
     /** Whether data definition is active
      */
@@ -554,7 +554,6 @@ class QgsLabelComponent
 
     bool useRotation() const;
     void setUseRotation( bool use );
-
     const QgsPoint& center();
     void setCenter( QgsPoint point );
 
@@ -615,7 +614,7 @@ class QgsPalLabeling : QgsLabelingEngineInterface
 
     bool isShowingAllLabels() const;
     void setShowingAllLabels( bool showing );
-    
+
     bool isShowingPartialsLabels() const;
     void setShowingPartialsLabels( bool showing );
 
@@ -650,11 +649,12 @@ class QgsPalLabeling : QgsLabelingEngineInterface
     //! called when passing engine among map renderers
     virtual QgsLabelingEngineInterface* clone() /Factory/;
 
-/*
-    void drawLabelCandidateRect( pal::LabelPosition* lp, QPainter* painter, const QgsMapToPixel* xform );
+    //! @note not available in python bindings
+    // void drawLabelCandidateRect( pal::LabelPosition* lp, QPainter* painter, const QgsMapToPixel* xform );
     //!drawLabel
-    void drawLabel( pal::LabelPosition* label, QgsRenderContext& context, QgsPalLayerSettings& tmpLyr, DrawLabelType drawType );
-*/
+    //! @note not available in python bindings
+    // void drawLabel( pal::LabelPosition* label, QgsRenderContext& context, QgsPalLayerSettings& tmpLyr, DrawLabelType drawType );
+
     static void drawLabelBuffer( QgsRenderContext& context,
                                  QgsLabelComponent component,
                                  const QgsPalLayerSettings& tmpLyr );

@@ -37,4 +37,6 @@ class QgsOptionsDialogBase : QDialog
   protected:
     void showEvent( QShowEvent* e );
     void paintEvent( QPaintEvent* e );
+
+    virtual void updateWindowTitle();
 };

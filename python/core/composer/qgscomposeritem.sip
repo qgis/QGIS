@@ -1,7 +1,7 @@
 /** \ingroup MapComposer
  * A item that forms part of a map composition.
  */
-class QgsComposerItem: QObject, QGraphicsRectItem
+class QgsComposerItem : QObject, QGraphicsRectItem
 {
 %TypeHeaderCode
 #include <qgscomposeritem.h>
@@ -154,7 +154,7 @@ class QgsComposerItem: QObject, QGraphicsRectItem
     virtual void setSelected( bool s );
 
     /** \brief Is selected */
-    virtual bool selected();
+    virtual bool selected() const;
 
     /** stores state in project */
     virtual bool writeSettings();
@@ -218,7 +218,7 @@ class QgsComposerItem: QObject, QGraphicsRectItem
      * @note introduced since 1.8
      * @see hasFrame
      */
-    bool hasFrame();
+    bool hasFrame() const;
 
     /** Set whether this item has a frame drawn around it or not.
      * @param drawFrame draw frame
@@ -339,7 +339,7 @@ class QgsComposerItem: QObject, QGraphicsRectItem
     /**Returns the rotation for the composer item
      * @deprecated Use itemRotation()
      *             instead
-     */    
+     */
     double rotation() const;
 
     /**Updates item, with the possibility to do custom update for subclasses*/
@@ -361,13 +361,17 @@ class QgsComposerItem: QObject, QGraphicsRectItem
   public slots:
     /**Sets the item rotation
      * @deprecated Use setItemRotation( double rotation ) instead
-     */   
+     */
     virtual void setRotation( double r );
 
     /**Sets the item rotation
+      @param r item rotation in degrees
+      @param adjustPosition set to true if item should be shifted so that rotation occurs
+       around item center. If false, rotation occurs around item origin
       @note this method was added in version 2.1
     */
-    virtual void setItemRotation( double r );
+    virtual void setItemRotation( double r, bool adjustPosition = false );
+
     void repaint();
 
   protected:
@@ -416,22 +420,31 @@ class QgsComposerItem: QObject, QGraphicsRectItem
      * instead
      */
     bool imageSizeConsideringRotation( double& width, double& height ) const;
-    
+
+    /**Calculates the largest scaled version of originalRect which fits within boundsRect, when it is rotated by
+     * a specified amount
+        @param originalRect QRectF to be rotated and scaled
+        @param boundsRect QRectF specifying the bounds which the rotated and scaled rectangle must fit within
+        @param rotation the rotation in degrees to be applied to the rectangle
+    */
+    QRectF largestRotatedRectWithinBounds( QRectF originalRect, QRectF boundsRect, double rotation ) const;
+
     /**Calculates corner point after rotation and scaling*/
     bool cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height, double rotation ) const;
     /**Calculates corner point after rotation and scaling
      * @deprecated Use bool cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height, double rotation )
      * instead
-     */    
+     */
     bool cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height ) const;
 
     /**Calculates width / height of the bounding box of a rotated rectangle*/
     void sizeChangedByRotation( double& width, double& height, double rotation );
-     /**Calculates width / height of the bounding box of a rotated rectangle
-     * @deprecated Use void sizeChangedByRotation( double& width, double& height, double rotation )
-     * instead
-     */      
+    /**Calculates width / height of the bounding box of a rotated rectangle
+    * @deprecated Use void sizeChangedByRotation( double& width, double& height, double rotation )
+    * instead
+    */
     void sizeChangedByRotation( double& width, double& height );
+
     /**Rotates a point / vector
         @param angle rotation angle in degrees, counterclockwise
         @param x in/out: x coordinate before / after the rotation
@@ -447,7 +460,7 @@ class QgsComposerItem: QObject, QGraphicsRectItem
     void deleteAlignItems();
 
   signals:
-    /**Is emitted on rotation change to notify north arrow pictures*/
+    /**Is emitted on item rotation change*/
     void itemRotationChanged( double newRotation );
     /**Used e.g. by the item widgets to update the gui elements*/
     void itemChanged();

@@ -62,7 +62,9 @@ class CORE_EXPORT QgsDxfExport
     //get closest entry in dxf palette
     static int closestColorMatch( QRgb pixel );
 
+    //! @note available in python bindings as writeGroupInt
     void writeGroup( int code, int i );
+    //! @note available in python bindings as writeGroupDouble
     void writeGroup( int code, double d );
     void writeGroup( int code, const QString& s );
     void writeGroupCode( int code );

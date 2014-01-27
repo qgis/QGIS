@@ -109,6 +109,6 @@ class QgsColorButton: QPushButton
 
   protected:
     void changeEvent( QEvent* e );
-    void paintEvent( QPaintEvent* e );
+    void showEvent( QShowEvent* e );
     static const QPixmap& transpBkgrd();
 };

@@ -46,6 +46,9 @@ class QgsOgcUtils
     static QDomElement rectangleToGMLEnvelope( QgsRectangle* env, QDomDocument& doc );
 
 
+    /** Parse XML with OGC fill into QColor */
+    static QColor colorFromOgcFill( const QDomElement& fillElement );
+
     /** Parse XML with OGC filter into QGIS expression */
     static QgsExpression* expressionFromOgcFilter( const QDomElement& element ) /Factory/;
 

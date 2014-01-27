@@ -117,6 +117,19 @@ class QgsComposerMap : QgsComposerItem
     /**Sets new Extent and changes width, height (and implicitely also scale)*/
     void setNewExtent( const QgsRectangle& extent );
 
+    /**Sets new Extent for the current atlas preview and changes width, height (and implicitely also scale).
+      Atlas preview extents are only temporary, and are regenerated whenever the atlas feature changes
+    */
+    void setNewAtlasFeatureExtent( const QgsRectangle& extent );
+
+    /**Called when atlas preview is toggled, to force map item to update its extent and redraw*/
+    void toggleAtlasPreview();
+
+    /**Returns a pointer to the current map extent, which is either the original user specified
+      extent or the temporary atlas-driven feature extent depending on the current atlas state of the composition.
+      Both a const and non-const version are included.*/
+    const QgsRectangle* currentMapExtent() const;
+
     PreviewMode previewMode() const;
     void setPreviewMode( PreviewMode m );
 
@@ -148,6 +161,9 @@ class QgsComposerMap : QgsComposerItem
 
     /**True if composer map renders a WMS layer*/
     bool containsWMSLayer() const;
+
+    /**True if composer map contains layers with blend modes or flattened layers for vectors */
+    bool containsAdvancedEffects() const;
 
     /** stores state in Dom node
      * @param elem is Dom element corresponding to 'Composer' tag
@@ -210,8 +226,10 @@ class QgsComposerMap : QgsComposerItem
     QFont gridAnnotationFont() const;
 
     /**Sets font color for grid annotations
-    @note this function was added in version 2.0*/
+        @note this function was added in version 2.0*/
     void setAnnotationFontColor( const QColor& c );
+    /**Get font color for grid annotations
+        @note: this function was added in version 2.0*/
     QColor annotationFontColor() const;
 
     /**Sets coordinate precision for grid annotations
@@ -247,19 +265,19 @@ class QgsComposerMap : QgsComposerItem
         @note: this function was added in version 1.9*/
     void setGridFrameWidth( double w );
     double gridFrameWidth() const;
-    
+
     /**Set grid frame pen thickness
         @note: this function was added in version 2.1*/
     void setGridFramePenSize( double w );
     double gridFramePenSize() const;
-    
+
     /**Sets pen color for grid frame
         @note: this function was added in version 2.1*/
     void setGridFramePenColor( const QColor& c );
     /**Get pen color for grid frame
         @note: this function was added in version 2.1*/
     QColor gridFramePenColor() const;
-    
+
     /**Sets first fill color for grid zebra frame
         @note: this function was added in version 2.1*/
     void setGridFrameFillColor1( const QColor& c );
@@ -272,14 +290,7 @@ class QgsComposerMap : QgsComposerItem
     void setGridFrameFillColor2( const QColor& c );
     /**Get second fill color for grid zebra frame
         @note: this function was added in version 2.1*/
-    QColor gridFrameFillColor2() const;          
-
-    /** Returns the grid's blending mode
-     @note added in version 2.0*/
-    const QPainter::CompositionMode gridBlendMode() const;
-    /** Sets the grid's blending mode
-     @note added in version 2.0*/
-    void setGridBlendMode( const QPainter::CompositionMode blendMode );
+    QColor gridFrameFillColor2() const;
 
     /**In case of annotations, the bounding rectangle can be larger than the map item rectangle
     @note this function was added in version 1.4*/
@@ -298,7 +309,7 @@ class QgsComposerMap : QgsComposerItem
      * @deprecated Use setMapRotation( double rotation ) instead
      */
     void setRotation( double r );
-    /**Returns the rotation used for drawing the map within the composer item    
+    /**Returns the rotation used for drawing the map within the composer item
      * @deprecated Use mapRotation() instead
      */
     double rotation() const;
@@ -331,27 +342,33 @@ class QgsComposerMap : QgsComposerItem
     void setOverviewFrameMapSymbol( QgsFillSymbolV2* symbol /Transfer/ );
     QgsFillSymbolV2* overviewFrameMapSymbol();
 
-     /* Returns the blending mode for the overview frame
-    @note added in version 1.9*/
-    const QPainter::CompositionMode overviewBlendMode() const;
-    /* Sets the blending mode for the overview frame
-    @note added in version 1.9*/
-    void setOverviewBlendMode( const QPainter::CompositionMode blendMode );
+    /** Returns the overview's blending mode */
+    QPainter::CompositionMode overviewBlendMode() const;
+    /** Sets the overview's blending mode*/
+    void setOverviewBlendMode( QPainter::CompositionMode blendMode );
 
-    /**Sets flag if overview frame should be inverted
-    @note this function was added in version 1.9*/
-    void setOverviewInverted( bool inverted );
+    /** Returns true if the overview frame is inverted */
     bool overviewInverted() const;
+    /** Sets the overview's inversion mode*/
+    void setOverviewInverted( bool inverted );
 
     /** Returns true if the extent is forced to center on the overview */
     bool overviewCentered() const;
     /** Set the overview's centering mode */
     void setOverviewCentered( bool centered );
 
+    void setGridLineSymbol( QgsLineSymbolV2* symbol /Transfer/ );
+    QgsLineSymbolV2* gridLineSymbol();
+
+    /** Returns the grid's blending mode */
+    QPainter::CompositionMode gridBlendMode() const;
+    /** Sets the grid's blending mode*/
+    void setGridBlendMode( QPainter::CompositionMode blendMode );
+
     /**Sets mId to a number not yet used in the composition. mId is kept if it is not in use.
         Usually, this function is called before adding the composer map to the composition*/
     void assignFreeId();
-    
+
     /**Calculates width and hight of the picture (in mm) such that it fits into the item frame with the given rotation
      * @deprecated Use bool QgsComposerItem::imageSizeConsideringRotation( double& width, double& height, double rotation )
      * instead
@@ -366,8 +383,8 @@ class QgsComposerMap : QgsComposerItem
     * @deprecated Use QgsComposerItem::sizeChangedByRotation( double& width, double& height, double rotation )
     * instead
     */
-    void sizeChangedByRotation( double& width, double& height ); 
-    
+    void sizeChangedByRotation( double& width, double& height );
+
     /** Returns true if the map extent is set to follow the current atlas feature */
     bool atlasDriven() const;
     /** Set to true if the map extents should be set by the current atlas feature */
@@ -381,13 +398,13 @@ class QgsComposerMap : QgsComposerItem
     /** Returns the margin size (percentage) used when the map is in atlas mode */
     double atlasMargin() const;
     /** Sets the margin size (percentage) used when the map is in atlas mode */
-    void setAtlasMargin( double margin ); 
+    void setAtlasMargin( double margin );
 
   signals:
     void extentChanged();
-    
+
     /**Is emitted on rotation change to notify north arrow pictures*/
-    void mapRotationChanged( double newRotation );    
+    void mapRotationChanged( double newRotation );
 
   public slots:
 

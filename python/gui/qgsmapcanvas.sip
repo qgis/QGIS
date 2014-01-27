@@ -16,7 +16,6 @@ class QgsMapCanvasLayer
     bool isInOverview() const;
 
     QgsMapLayer* layer();
-    //const QgsMapLayer* layer() const;
 };
 
 
@@ -242,6 +241,9 @@ class QgsMapCanvas : QGraphicsView
 
     //! called to write map canvas settings to project
     void writeProject( QDomDocument & );
+
+    //! ask user about datum transformation
+    void getDatumTransformInfo( const QgsMapLayer* ml, const QString& srcAuthId, const QString& destAuthId );
 
   signals:
     /** Let the owner know how far we are with render operations */

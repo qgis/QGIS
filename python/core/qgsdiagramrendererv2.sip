@@ -225,6 +225,12 @@ class QgsLinearlyInterpolatedDiagramRenderer : QgsDiagramRendererV2
     int classificationAttribute() const;
     void setClassificationAttribute( int index );
 
+    QString classificationAttributeExpression() const;
+    void setClassificationAttributeExpression( QString expression );
+
+    bool classificationAttributeIsExpression() const;
+    void setClassificationAttributeIsExpression( bool isExpression );
+
     void readXML( const QDomElement& elem, const QgsVectorLayer* layer );
     void writeXML( QDomElement& layerElem, QDomDocument& doc, const QgsVectorLayer* layer ) const;
 

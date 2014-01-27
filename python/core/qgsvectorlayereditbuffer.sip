@@ -17,8 +17,7 @@ class QgsVectorLayerEditBuffer : QObject
 
     /** Adds a feature
         @param f feature to add
-        @param alsoUpdateExtent If True, will also go to the effort of e.g. updating the extents.
-        @return                    True in case of success and False in case of error
+        @return True in case of success and False in case of error
      */
     bool addFeature( QgsFeature& f );
 
@@ -81,8 +80,8 @@ class QgsVectorLayerEditBuffer : QObject
     /** Changed geometries which are not commited. */
     const QgsGeometryMap& changedGeometries();
 
+    const QgsFeatureIds deletedFeatureIds();
     //QString dumpEditBuffer();
-
 
   protected slots:
     void undoIndexChanged( int index );

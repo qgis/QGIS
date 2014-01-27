@@ -77,7 +77,7 @@ class QgsStyleV2ManagerDialog : QDialog
     void populateSymbols( QStringList symbolNames, bool checkable = false );
 
     //! populate list view with color ramps
-    void populateColorRamps( QStringList colorRamps, bool check );
+    void populateColorRamps( QStringList colorRamps, bool checkable = false );
 
     int currentItemType();
     QString currentItemName();

@@ -55,7 +55,4 @@ class QgsEllipseSymbolLayerV2 : QgsMarkerSymbolLayerV2
 
     void setOutputUnit( QgsSymbolV2::OutputUnit unit );
     QgsSymbolV2::OutputUnit outputUnit() const;
-
-    QSet<QString> usedAttributes() const;
-
 };

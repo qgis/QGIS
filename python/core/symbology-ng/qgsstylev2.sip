@@ -5,7 +5,6 @@ class QgsStyleV2
 %End
 
   public:
-
     QgsStyleV2();
     ~QgsStyleV2();
 
@@ -224,7 +223,6 @@ class QgsStyleV2
      *  \return A QStringList of the matched symbols or colorramps
      * */
     QStringList findSymbols( StyleEntity type, QString qword );
-
 
     //! return the tags associated with the symbol
     /*!
