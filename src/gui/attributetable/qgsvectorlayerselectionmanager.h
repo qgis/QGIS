@@ -54,7 +54,7 @@ class GUI_EXPORT QgsVectorLayerSelectionManager : public QgsIFeatureSelectionMan
      *
      * @param ids   The ids which will be the new selection
      */
-    virtual void setSelectedFeatures( const QgsFeatureIds& ids );
+    virtual void setSelectedFeatures( const QgsFeatureIds& ids, bool validateIds = false );
 
     /**
      * Return reference to identifiers of selected features

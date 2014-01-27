@@ -36,7 +36,7 @@ class GUI_EXPORT QgsGenericFeatureSelectionManager : public QgsIFeatureSelection
     virtual int selectedFeatureCount();
     virtual void select( const QgsFeatureIds& ids );
     virtual void deselect( const QgsFeatureIds& ids );
-    virtual void setSelectedFeatures( const QgsFeatureIds& ids );
+    virtual void setSelectedFeatures( const QgsFeatureIds& ids, bool validateIds = false );
     virtual const QgsFeatureIds& selectedFeaturesIds() const;
 
   private:

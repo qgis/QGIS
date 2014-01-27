@@ -2781,11 +2781,36 @@ bool QgsVectorLayer::rollBack( bool deleteBuffer )
   return true;
 }
 
-void QgsVectorLayer::setSelectedFeatures( const QgsFeatureIds& ids )
+void QgsVectorLayer::setSelectedFeatures( const QgsFeatureIds& ids, bool validateIds )
 {
   QgsFeatureIds deselectedFeatures = mSelectedFeatureIds - ids;
 
   mSelectedFeatureIds = ids;
+
+  if ( validateIds )
+  {
+    QgsFeatureIds allIds;
+    bool selectAllIds = true;
+
+    QgsFeatureIds::iterator id = mSelectedFeatureIds.begin();
+    while ( id != mSelectedFeatureIds.end() )
+    {
+      if ( selectAllIds )
+      {
+        allIds = allFeatureIds();
+        selectAllIds = false;
+      }
+
+      if ( !allIds.contains( *id ) )
+      {
+        id = mSelectedFeatureIds.erase( id );
+      }
+      else
+      {
+        ++id;
+      }
+    }
+  }
 
   // invalidate cache
   setCacheImage( 0 );

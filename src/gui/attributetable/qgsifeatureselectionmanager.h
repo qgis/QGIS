@@ -62,7 +62,7 @@ class GUI_EXPORT QgsIFeatureSelectionManager : public QObject
      *
      * @param ids   The ids which will be the new selection
      */
-    virtual void setSelectedFeatures( const QgsFeatureIds& ids ) = 0;
+    virtual void setSelectedFeatures( const QgsFeatureIds& ids, bool validateIds = false ) = 0;
 
     /**
      * Return reference to identifiers of selected features
