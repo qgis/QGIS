@@ -2787,20 +2787,13 @@ void QgsVectorLayer::setSelectedFeatures( const QgsFeatureIds& ids, bool validat
 
   mSelectedFeatureIds = ids;
 
-  if ( validateIds )
+  if ( validateIds && !mSelectedFeatureIds.empty() )
   {
-    QgsFeatureIds allIds;
-    bool selectAllIds = true;
+    QgsFeatureIds allIds = allFeatureIds();
 
     QgsFeatureIds::iterator id = mSelectedFeatureIds.begin();
     while ( id != mSelectedFeatureIds.end() )
     {
-      if ( selectAllIds )
-      {
-        allIds = allFeatureIds();
-        selectAllIds = false;
-      }
-
       if ( !allIds.contains( *id ) )
       {
         id = mSelectedFeatureIds.erase( id );
