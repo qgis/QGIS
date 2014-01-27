@@ -525,7 +525,7 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
   datasetOptions.insert( "MULTILINE", new BoolOption(
                            QObject::tr( "By default, BNA files are created in multi-line format. "
                                         "For each record, the first line contains the identifiers and the "
-                                        "type/number of coordinates to follow. The following lines contains "
+                                        "type/number of coordinates to follow. Each following line contains "
                                         "a pair of coordinates)." )
                            , true  // Default value
                          ) );
