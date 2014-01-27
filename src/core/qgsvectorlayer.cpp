@@ -2787,20 +2787,6 @@ void QgsVectorLayer::setSelectedFeatures( const QgsFeatureIds& ids )
 
   mSelectedFeatureIds = ids;
 
-  QgsFeatureIds allIds = allFeatureIds();
-  QgsFeatureIds::iterator id = mSelectedFeatureIds.begin();
-  while ( id != mSelectedFeatureIds.end() )
-  {
-    if ( !allIds.contains( *id ) )
-    {
-      id = mSelectedFeatureIds.erase( id );
-    }
-    else
-    {
-      ++id;
-    }
-  }
-
   // invalidate cache
   setCacheImage( 0 );
 
