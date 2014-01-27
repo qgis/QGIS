@@ -41,7 +41,7 @@ class CORE_EXPORT QgsSvgCacheEntry
      * @param fill color of fill
      * @param outline color of outline
      */
-    QgsSvgCacheEntry( const QString& file, double size, double outlineWidth, double widthScaleFactor, double rasterScaleFctor, const QColor& fill, const QColor& outline );
+    QgsSvgCacheEntry( const QString& file, double size, double outlineWidth, double widthScaleFactor, double rasterScaleFactor, const QColor& fill, const QColor& outline );
     ~QgsSvgCacheEntry();
 
     QString file;

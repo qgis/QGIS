@@ -338,7 +338,7 @@ class QgsFeature
      *                        Python: Defaults to true
      *  @note added in 2.0
      */
-    void setFields( const QgsFields* fields, bool initAttributes = false );
+    void setFields( const QgsFields* fields, bool initAttributes = true );
 
     /** Get associated field map. may be NULL
      *  @note added in 2.0

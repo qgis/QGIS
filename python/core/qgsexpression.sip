@@ -65,9 +65,7 @@ class QgsExpression
     //! Return the expression string that was given when created.
     const QString expression() const;
 
-    //! Return the a debugging string of the expression.
-    //! This can be used for debugging. Use {@link expression()}
-    //! if you need the full expression string.
+    //! Return the expression string that represents this QgsExpression.
     QString dump() const;
 
     //! Return calculator used for distance and area calculations
