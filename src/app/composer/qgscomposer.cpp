@@ -454,7 +454,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   mGeneralDock->setObjectName( "CompositionDock" );
   mGeneralDock->setMinimumWidth( minDockWidth );
   mPanelMenu->addAction( mGeneralDock->toggleViewAction() );
-  mItemDock = new QDockWidget( tr( "Item Properties" ), this );
+  mItemDock = new QDockWidget( tr( "Item properties" ), this );
   mItemDock->setObjectName( "ItemDock" );
   mItemDock->setMinimumWidth( minDockWidth );
   mPanelMenu->addAction( mItemDock->toggleViewAction() );
