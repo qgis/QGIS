@@ -73,7 +73,7 @@ class CORE_EXPORT QgsClipper
     // the function treats the points as a closed shape (polygon), or as
     // an open shape (linestring).
     //
-    // @note python binding only available on android
+    // @note not available in python bindings on android
     static void trimFeature( QVector<double>& x,
                              QVector<double>& y,
                              bool shapeOpen );

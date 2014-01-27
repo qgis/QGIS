@@ -24,12 +24,12 @@ class QgsQtLocationConnection: QgsGPSConnection
 
 %If (!ANDROID)
     /**Called when the number of satellites in view is updated.
-      * @note only available in python bindings on android
+      * @note not available in python bindings on android
       */
     void satellitesInViewUpdated( const QList<QGeoSatelliteInfo>& satellites );
 
     /**Called when the number of satellites in use is updated.
-      * @note only available in python bindings on android
+      * @note not available in python bindings on android
       */
     void satellitesInUseUpdated( const QList<QGeoSatelliteInfo>& satellites );
 %End
