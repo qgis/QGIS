@@ -11746,7 +11746,7 @@ Se desactivará.</translation>
     </message>
     <message>
         <source>By default, BNA files are created in multi-line format. For each record, the first line contains the identifiers and the type/number of coordinates to follow. The following lines contains a pair of coordinates).</source>
-        <translation>Por omisión, los archivos BNA se crean en formato multilínea. Para cada registro, la primera línea contiene los identificadores y el tipo/número de coordenadas que seguir. Las siguientes líneas contienen un par de coordenadas.</translation>
+        <translation type="obsolete">Por omisión, los archivos BNA se crean en formato multilínea. Para cada registro, la primera línea contiene los identificadores y el tipo/número de coordenadas que seguir. Las siguientes líneas contienen un par de coordenadas.</translation>
     </message>
     <message>
         <source>BNA records may contain from 2 to 4 identifiers per record. Some software packages only support a precise number of identifiers. You can override the default value (2) by a precise value</source>
@@ -12090,6 +12090,10 @@ Se desactivará.</translation>
     </message>
     <message>
         <source>The extra plugin path &apos;%1&apos; does not exist !</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>By default, BNA files are created in multi-line format. For each record, the first line contains the identifiers and the type/number of coordinates to follow. Each following line contains a pair of coordinates.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -17909,7 +17913,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Item Properties</source>
-        <translation>Propiedades de elemento</translation>
+        <translation type="obsolete">Propiedades de elemento</translation>
     </message>
     <message>
         <source>Panels</source>
@@ -18109,6 +18113,10 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source>Set as atlas feature for %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Item properties</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

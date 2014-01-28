@@ -10690,6 +10690,11 @@ Error(%2): %3</source>
         <translation>созданное поле %1 не найдено (ошибка OGR: %2)</translation>
     </message>
     <message>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="526"/>
+        <source>By default, BNA files are created in multi-line format. For each record, the first line contains the identifiers and the type/number of coordinates to follow. Each following line contains a pair of coordinates.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1676"/>
         <source>Invalid variant type for field %1[%2]: received %3 with type %4</source>
         <translation>Неверный вариантный тип для поля %1[%2]: получено значение %3 с типом %4</translation>
@@ -10746,9 +10751,8 @@ Error(%2): %3</source>
         <translation>Новые файлы BNA создаются с использованием системного символа окончания строк. Это можно изменить здесь.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="526"/>
         <source>By default, BNA files are created in multi-line format. For each record, the first line contains the identifiers and the type/number of coordinates to follow. The following lines contains a pair of coordinates).</source>
-        <translation>По умолчанию файлы BNA создаются в многострочном формате. Для каждой записи первая строка содержит идентификатор и тип/число координат. Следующая строка содержит пары координат.</translation>
+        <translation type="obsolete">По умолчанию файлы BNA создаются в многострочном формате. Для каждой записи первая строка содержит идентификатор и тип/число координат. Следующая строка содержит пары координат.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="534"/>
@@ -11966,57 +11970,57 @@ You are seeing this message most likely because you have no DISPLAY environment 
         <translation>Не удалось преобразовать «%1:%2:%3:%4:%5» в цвет</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="2360"/>
+        <location filename="../src/core/qgsexpression.cpp" line="2361"/>
         <source>function help for %1 missing</source>
         <translation>Описание функции %1 не найдено</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="2369"/>
+        <location filename="../src/core/qgsexpression.cpp" line="2370"/>
         <source>Operators</source>
         <translation>Операторы</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="2371"/>
+        <location filename="../src/core/qgsexpression.cpp" line="2372"/>
         <source>Fields and Values</source>
         <translation>Поля и значения</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="2372"/>
+        <location filename="../src/core/qgsexpression.cpp" line="2373"/>
         <source>Math</source>
         <translation>Функции</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="2373"/>
+        <location filename="../src/core/qgsexpression.cpp" line="2374"/>
         <source>Conversions</source>
         <translation>Преобразования</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="2370"/>
+        <location filename="../src/core/qgsexpression.cpp" line="2371"/>
         <source>Conditionals</source>
         <translation>Условия</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="2374"/>
+        <location filename="../src/core/qgsexpression.cpp" line="2375"/>
         <source>Date and Time</source>
         <translation>Дата и время</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="2375"/>
+        <location filename="../src/core/qgsexpression.cpp" line="2376"/>
         <source>String</source>
         <translation>Строки</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="2376"/>
+        <location filename="../src/core/qgsexpression.cpp" line="2377"/>
         <source>Color</source>
         <translation>Цвет</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="2377"/>
+        <location filename="../src/core/qgsexpression.cpp" line="2378"/>
         <source>Geometry</source>
         <translation>Геометрия</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="2378"/>
+        <location filename="../src/core/qgsexpression.cpp" line="2379"/>
         <source>Record</source>
         <translation>Записи</translation>
     </message>
@@ -12056,23 +12060,23 @@ You are seeing this message most likely because you have no DISPLAY environment 
         <translation type="obsolete">Не найдено поле «%1»</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4310"/>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4331"/>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4356"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4296"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4317"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4342"/>
         <location filename="../src/core/qgsvectorlayerimport.cpp" line="64"/>
         <source>Unable to load %1 provider</source>
         <translation>Не удалось загрузить источник %1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4318"/>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4339"/>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4364"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4304"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4325"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4350"/>
         <location filename="../src/core/qgsvectorlayerimport.cpp" line="73"/>
         <source>Provider %1 has no %2 method</source>
         <translation>Источник %1 не содержит метода %2</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4411"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4397"/>
         <source>Loaded from Provider</source>
         <translation>Загруженный из источника</translation>
     </message>
@@ -17214,9 +17218,8 @@ Should the existing classes be deleted before classification?</source>
         <translation>Макет</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="457"/>
         <source>Item Properties</source>
-        <translation>Свойства элемента</translation>
+        <translation type="obsolete">Свойства элемента</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="461"/>
@@ -17377,6 +17380,11 @@ Please try a lower resolution or a smaller papersize</source>
         <location filename="../src/app/composer/qgscomposer.cpp" line="760"/>
         <source>%1%</source>
         <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="457"/>
+        <source>Item properties</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="464"/>
@@ -19239,12 +19247,12 @@ Please try a lower resolution or a smaller papersize</source>
         <translation>Создание группы в легенде</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="949"/>
+        <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="960"/>
         <source>Map %1</source>
         <translation>Карта %1</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="951"/>
+        <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="962"/>
         <source>None</source>
         <translation>Нет</translation>
     </message>
@@ -21445,22 +21453,22 @@ Please try a lower resolution or a smaller papersize</source>
         <translation>Изменение z-порядка элемента</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposition.cpp" line="1925"/>
+        <location filename="../src/core/composer/qgscomposition.cpp" line="1919"/>
         <source>Remove item group</source>
         <translation>Удаление группы элементов</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposition.cpp" line="1949"/>
+        <location filename="../src/core/composer/qgscomposition.cpp" line="1943"/>
         <source>Frame deleted</source>
         <translation>Удаление фрейма</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposition.cpp" line="1956"/>
+        <location filename="../src/core/composer/qgscomposition.cpp" line="1950"/>
         <source>Item deleted</source>
         <translation>Удаление элемента</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposition.cpp" line="1973"/>
+        <location filename="../src/core/composer/qgscomposition.cpp" line="1967"/>
         <source>Multiframe removed</source>
         <translation>Удаление составного документа</translation>
     </message>
@@ -25745,143 +25753,143 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Первые 10 значений</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsexpressionbuilder.ui" line="34"/>
+        <location filename="../src/ui/qgsexpressionbuilder.ui" line="37"/>
         <source>Function list</source>
         <translation>Функции</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsexpressionbuilder.ui" line="106"/>
+        <location filename="../src/ui/qgsexpressionbuilder.ui" line="109"/>
         <source>Selected function help</source>
         <translation>Описание функции</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsexpressionbuilder.ui" line="137"/>
+        <location filename="../src/ui/qgsexpressionbuilder.ui" line="140"/>
         <source>Field values</source>
         <translation>Значения полей</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsexpressionbuilder.ui" line="211"/>
+        <location filename="../src/ui/qgsexpressionbuilder.ui" line="214"/>
         <source>Load values</source>
         <translation>Загрузить</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsexpressionbuilder.ui" line="218"/>
+        <location filename="../src/ui/qgsexpressionbuilder.ui" line="221"/>
         <source>all unique</source>
         <translation>уникальные</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsexpressionbuilder.ui" line="225"/>
+        <location filename="../src/ui/qgsexpressionbuilder.ui" line="228"/>
         <source>10 samples</source>
         <translation>10 случайных</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsexpressionbuilder.ui" line="276"/>
+        <location filename="../src/ui/qgsexpressionbuilder.ui" line="279"/>
         <source>Operators</source>
         <translation>Операторы</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsexpressionbuilder.ui" line="300"/>
+        <location filename="../src/ui/qgsexpressionbuilder.ui" line="303"/>
         <source>Equal operator</source>
         <translation>Оператор равенства</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsexpressionbuilder.ui" line="303"/>
+        <location filename="../src/ui/qgsexpressionbuilder.ui" line="306"/>
         <source>=</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsexpressionbuilder.ui" line="316"/>
+        <location filename="../src/ui/qgsexpressionbuilder.ui" line="319"/>
         <source>Addition operator</source>
         <translation>Сложение</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsexpressionbuilder.ui" line="319"/>
+        <location filename="../src/ui/qgsexpressionbuilder.ui" line="322"/>
         <source>+</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsexpressionbuilder.ui" line="326"/>
+        <location filename="../src/ui/qgsexpressionbuilder.ui" line="329"/>
         <source>Subtraction operator</source>
         <translation>Вычитание</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsexpressionbuilder.ui" line="329"/>
+        <location filename="../src/ui/qgsexpressionbuilder.ui" line="332"/>
         <source>-</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsexpressionbuilder.ui" line="336"/>
+        <location filename="../src/ui/qgsexpressionbuilder.ui" line="339"/>
         <source>Division operator</source>
         <translation>Деление</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsexpressionbuilder.ui" line="339"/>
+        <location filename="../src/ui/qgsexpressionbuilder.ui" line="342"/>
         <source>/</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsexpressionbuilder.ui" line="346"/>
+        <location filename="../src/ui/qgsexpressionbuilder.ui" line="349"/>
         <source>Multiplication operator</source>
         <translation>Умножение</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsexpressionbuilder.ui" line="349"/>
+        <location filename="../src/ui/qgsexpressionbuilder.ui" line="352"/>
         <source>*</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsexpressionbuilder.ui" line="356"/>
+        <location filename="../src/ui/qgsexpressionbuilder.ui" line="359"/>
         <source>Power operator</source>
         <translation>Возведение в степень</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsexpressionbuilder.ui" line="359"/>
+        <location filename="../src/ui/qgsexpressionbuilder.ui" line="362"/>
         <source>^</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsexpressionbuilder.ui" line="366"/>
+        <location filename="../src/ui/qgsexpressionbuilder.ui" line="369"/>
         <source>String Concatenation</source>
         <translation>Конкатенация строк</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsexpressionbuilder.ui" line="369"/>
+        <location filename="../src/ui/qgsexpressionbuilder.ui" line="372"/>
         <source>||</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsexpressionbuilder.ui" line="388"/>
+        <location filename="../src/ui/qgsexpressionbuilder.ui" line="391"/>
         <source>Open Bracket </source>
         <translation>Открывающая скобка</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsexpressionbuilder.ui" line="391"/>
+        <location filename="../src/ui/qgsexpressionbuilder.ui" line="394"/>
         <source>(</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsexpressionbuilder.ui" line="398"/>
+        <location filename="../src/ui/qgsexpressionbuilder.ui" line="401"/>
         <source>Close Bracket </source>
         <translation>Закрывающая скобка</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsexpressionbuilder.ui" line="401"/>
+        <location filename="../src/ui/qgsexpressionbuilder.ui" line="404"/>
         <source>)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsexpressionbuilder.ui" line="481"/>
-        <location filename="../src/ui/qgsexpressionbuilder.ui" line="505"/>
+        <location filename="../src/ui/qgsexpressionbuilder.ui" line="484"/>
+        <location filename="../src/ui/qgsexpressionbuilder.ui" line="508"/>
         <source>Output preview is generated &lt;br&gt; using the first feature from the layer.</source>
         <translation>Предварительный результат получен на основе первого объекта в слое.</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsexpressionbuilder.ui" line="484"/>
+        <location filename="../src/ui/qgsexpressionbuilder.ui" line="487"/>
         <source>Output preview:   </source>
         <translation>Результат (предварительный):</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsexpressionbuilder.ui" line="435"/>
+        <location filename="../src/ui/qgsexpressionbuilder.ui" line="438"/>
         <source>Expression</source>
         <translation>Выражение</translation>
     </message>
@@ -25894,32 +25902,32 @@ p, li { white-space: pre-wrap; }
         <translation>Выделение выражением</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsexpressionselectiondialogbase.ui" line="33"/>
+        <location filename="../src/ui/qgsexpressionselectiondialogbase.ui" line="36"/>
         <source>Close</source>
         <translation>Закрыть</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsexpressionselectiondialogbase.ui" line="46"/>
+        <location filename="../src/ui/qgsexpressionselectiondialogbase.ui" line="49"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsexpressionselectiondialogbase.ui" line="62"/>
+        <location filename="../src/ui/qgsexpressionselectiondialogbase.ui" line="65"/>
         <source>Select</source>
         <translation>Выделить</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsexpressionselectiondialogbase.ui" line="67"/>
+        <location filename="../src/ui/qgsexpressionselectiondialogbase.ui" line="70"/>
         <source>Add to selection</source>
         <translation>Добавить к выделению</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsexpressionselectiondialogbase.ui" line="72"/>
+        <location filename="../src/ui/qgsexpressionselectiondialogbase.ui" line="75"/>
         <source>Remove from selection</source>
         <translation>Убрать из выделения</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsexpressionselectiondialogbase.ui" line="77"/>
+        <location filename="../src/ui/qgsexpressionselectiondialogbase.ui" line="80"/>
         <source>Select within selection</source>
         <translation>Выделить внутри выделения</translation>
     </message>
@@ -54645,13 +54653,13 @@ Should the existing classes be deleted before classification?</source>
         <translation type="obsolete">В системе координат слоя: </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4079"/>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4098"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4065"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4084"/>
         <source>xMin,yMin %1,%2 : xMax,yMax %3,%4</source>
         <translation>Xмин,Yмин %1,%2 : Xмакс,Yмакс %3,%4</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4084"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4070"/>
         <source>unknown extent</source>
         <translation>неизвестный охват</translation>
     </message>
@@ -54668,7 +54676,7 @@ Should the existing classes be deleted before classification?</source>
         <translation type="obsolete">Система координат проекта (целевая):</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4133"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4119"/>
         <source>(Invalid transformation of layer extents)</source>
         <translation>(Ошибка преобразования границ слоя)</translation>
     </message>
@@ -54677,108 +54685,108 @@ Should the existing classes be deleted before classification?</source>
         <translation type="obsolete">Поля атрибутов:</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3947"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3933"/>
         <source>General</source>
         <translation>Общие</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3953"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3939"/>
         <source>Layer comment</source>
         <translation>Комментарий слоя</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3960"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3946"/>
         <source>Storage type of this layer</source>
         <translation>Тип хранилища слоя</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3968"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3954"/>
         <source>Description of this provider</source>
         <translation>Писание источника</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3975"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3961"/>
         <source>Source for this layer</source>
         <translation>Источник слоя</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3992"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3978"/>
         <source>Geometry type of the features in this layer</source>
         <translation>Тип геометрии объектов</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4001"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3987"/>
         <source>Primary key attributes</source>
         <translation>Атрибуты первичного ключа</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4012"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3998"/>
         <source>The number of features in this layer</source>
         <translation>Количество объектов</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4017"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4003"/>
         <source>Editing capabilities of this layer</source>
         <translation>Возможности редактирования</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4026"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4012"/>
         <source>Extents</source>
         <translation>Границы</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4030"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4016"/>
         <source>In layer spatial reference system units</source>
         <translation>В системе координат слоя</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4096"/>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4131"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4082"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4117"/>
         <source>In project spatial reference system units</source>
         <translation>В системе координат проекта</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4109"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4095"/>
         <source>Layer Spatial Reference System</source>
         <translation>Система координат слоя</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4120"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4106"/>
         <source>Project (Output) Spatial Reference System</source>
         <translation>Система координат проекта (целевая)</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4142"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4128"/>
         <source>Attribute field info</source>
         <translation>Поля атрибутов</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4148"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4134"/>
         <source>Field</source>
         <translation>Поле</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4151"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4137"/>
         <source>Type</source>
         <translation>Тип</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4154"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4140"/>
         <source>Length</source>
         <translation>Длина</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4157"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4143"/>
         <source>Precision</source>
         <translation>Точность</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4160"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4146"/>
         <source>Comment</source>
         <translation>Комментарий</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4429"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4415"/>
         <source>Error: qgis element could not be found</source>
         <translation>Ошибка: элемент qgis не найден</translation>
     </message>
@@ -60928,7 +60936,7 @@ Run topology check again.</source>
 <context>
     <name>context_help</name>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="147"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="741"/>
         <source>&lt;h3&gt;Project Properties&lt;/h3&gt;
 This dialog allows you to set a number of properties related to the &lt;label&gt;Project&lt;/label&gt;. A Project is a saved set of layers and their settings, as well as other information required to restore the project from disk.&lt;p&gt;
 
@@ -61391,7 +61399,7 @@ X;Y;ELEV&lt;br/&gt;
 &lt;/ol&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="182"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1474"/>
         <source>&lt;h3&gt;Open Vector Layer Dialog&lt;/h3&gt;
 
 The open vector layer dialog is used to add vector data to the QGIS map view. Vector data are spatial data described using geometries of points, lines and polygons (enclosed areas).&lt;/p&gt;
@@ -61402,7 +61410,7 @@ Detailed description how to proceed with vector data is described in chapter 5 &
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1427"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="318"/>
         <source>&lt;h1&gt;Heatmap Plugin Help&lt;/h1&gt;
 &lt;p&gt;The Heatmap plugin uses Kernel Density Estimation to create a density (heatmap)
 raster of an input point vector layer.  The density is calculated based on the
@@ -61460,7 +61468,7 @@ which are described and illustrated on &lt;a href=&quot;http://en.wikipedia.org/
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="443"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="608"/>
         <source>&lt;h3&gt;Add PostGIS Tables&lt;/h3&gt;
 This dialog allows you to add PostGIS layers (tables with a geometry column) to the QGIS map canvas.
 &lt;p&gt;
@@ -61536,7 +61544,7 @@ Ticking &lt;label&gt;Search options&lt;/label&gt; enables additional options for
 Активация флажка&lt;label&gt;Параметры поиска&lt;/label&gt; позволяет задать дополнительные настройки для поиска в различных типах столбцов, используя один из двух режимов: &lt;label&gt;Шаблон&lt;/label&gt; или &lt;label&gt;Рег. выражение&lt;/label&gt;.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="868"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="776"/>
         <source>&lt;h3&gt;Create a New PostgreSQL Connection&lt;/h3&gt;
 This dialog allows you to define the settings for a connection to a PostgreSQL database.
 &lt;p&gt;
@@ -61605,7 +61613,7 @@ This dialog allows you to define the settings for a connection to a PostgreSQL d
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="215"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1308"/>
         <source>&lt;h3&gt;GPS Plugin&lt;/h3&gt;
 
 </source>
@@ -61613,7 +61621,7 @@ This dialog allows you to define the settings for a connection to a PostgreSQL d
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="11"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="715"/>
         <source>&lt;h3&gt;Create New Vector Layer&lt;/h3&gt;
 To create a new layer for editing, choose &lt;label&gt;New Vector Layer&lt;/label&gt; from the &lt;label&gt;Layer&lt;/label&gt; menu.&lt;br/&gt;
 With this dialog you can create a shape file layer.
@@ -61797,7 +61805,7 @@ of the diagram size according to a classification attribute.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="901"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="11"/>
         <source>&lt;h3&gt;Create a New SpatiaLite Layer&lt;/h3&gt;
 You can use this dialog to create a new SpatiaLite database and/or an empty SpatiaLite layer for editing. See below for an explanation of the dialog inputs.
 &lt;h4&gt;Database&lt;/h4&gt;
@@ -62201,7 +62209,7 @@ X;Y;ELEV&lt;br/&gt;
 &lt;/ol&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="266"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="645"/>
         <source>&lt;h3&gt;Attribute table&lt;/h3&gt;
 The attribute table displays features of a selected layer. Each row in the table represents one map feature with its attributes shown in several columns. The features in the table can be searched, selected, moved or even edited.  By default the attribute table is a separate window. If you opened it and cannot see it anymore, it is most likely hidden under the main QGIS window. You can make it also a docked window, by checking &lt;label&gt;Open attribute table in a dock window&lt;/label&gt; in &lt;label&gt;Settings &gt; Options &gt; General&lt;/label&gt;.&lt;p&gt;
 
@@ -62257,7 +62265,7 @@ The vector layer needs to be in editing mode, before you can click on the &lt;la
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1029"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="248"/>
         <source>&lt;h3&gt;Create a new WMS connection&lt;/h3&gt;
 WMS layers can be added quite simply, as long as you know the URL to access the WMS server, you have a serviceable connection to that server, and the server understands HTTP as the data transport mechanism.&lt;p&gt;
 QGIS currently can act as a WMS client that understands WMS 1.1, 1.1.1 and 1.3 servers.
@@ -62299,13 +62307,13 @@ You only need to request the list of layers by clicking the &lt;label&gt;Connect
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1067"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="853"/>
         <source>&lt;h3&gt;Database connection&lt;/h3&gt;
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="228"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="494"/>
         <source>&lt;h3&gt;Add SQL Anywhere Tables&lt;/h3&gt;
 This dialog allows you to add SQL Anywhere layers (tables with a geometry column) to the QGIS map canvas.
 &lt;p&gt;
@@ -62347,7 +62355,7 @@ Ticking &lt;label&gt;Search options&lt;/label&gt; enables additional options for
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="561"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1169"/>
         <source>&lt;h3&gt;Vector Layer Properties&lt;/h3&gt;
 This dialog allows you to work with vector layer settings and properties. There are seven tabs:
 &lt;p&gt;
@@ -62490,7 +62498,7 @@ of the diagram size according to a classification attribute.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="939"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="849"/>
         <source>&lt;h3&gt;Add SpatiaLite Tables&lt;/h3&gt;
 To define a new connection, click on &lt;label&gt;New&lt;/label&gt; button and use the file browser to point to your SpatiaLite database, which is a file with a &lt;i&gt;.sqlite&lt;/i&gt; extension.&lt;p&gt;
 The connections you define will be remembered for further use and available to choose from the drop down menu.
@@ -62498,7 +62506,7 @@ The connections you define will be remembered for further use and available to c
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="44"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="809"/>
         <source>&lt;h3&gt;Spatial Bookmarks&lt;/h3&gt;
 Spatial Bookmarks allow you to &quot;bookmark&quot; a geographic location and return to it later.
 &lt;p&gt;
@@ -62581,7 +62589,7 @@ To update the extent of a bookmark, click on it then click the &lt;label&gt;Upda
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="115"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="391"/>
         <source>&lt;h3&gt;Copyright Label Plugin&lt;/h3&gt;
 Draws a copyright label with information.&lt;br/&gt;
 You can add any random text to the map not only a copyright label.
@@ -62648,7 +62656,7 @@ This plugin supports basic HTML markup tags for formatting text. For example:
 &lt;/ul&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="320"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="34"/>
         <source>&lt;h3&gt;Query Builder&lt;/h3&gt;
 The query builder allows you to create provider specific filter expressions.
 
@@ -62698,7 +62706,7 @@ are sometimes limited (e.g. for shape files) or behave diffently.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="366"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1311"/>
         <source>&lt;h3&gt;Field Calculator&lt;/h3&gt;
 The field calculator allows you to update fields with expressions.
 
@@ -62821,7 +62829,7 @@ The field calculator allows you to update fields with expressions.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="218"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1503"/>
         <source>&lt;h3&gt;Identify Features&lt;/h3&gt;
 &lt;p&gt;
 The results dialog shows all the features identified within the search tolerance. To see the results details, expand the feature information on the left of each feature.
@@ -62844,7 +62852,7 @@ Identifiable layers can be set in the Project Properties dialog &lt;label&gt;Set
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="23"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="372"/>
         <source>&lt;h3&gt;Scale bar Plugin&lt;/h3&gt;
 Draws a scale bar on the map.
 &lt;p&gt;
@@ -62867,14 +62875,14 @@ To add a scale bar:
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="318"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="697"/>
         <source>&lt;h3&gt;New OGR Database Connection Dialog&lt;/h3&gt;
 </source>
         <translation>&lt;h3&gt;Новый диалог соединения с базой данных&lt;/h3&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="480"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1481"/>
         <source>&lt;h3&gt;Measure Tools&lt;/h3&gt;
 There are two measure tools: length and area. With them, you can measure both distances and areas on the map canvas. Currently the tools provide results in metric units only. A single right mouse click stops the measuring, while two right mouse clicks starts measuring anew.
 &lt;h4&gt;Measuring Lengths&lt;/h4&gt;
@@ -62890,7 +62898,7 @@ To measure areas, select the tool and click to create the area. The total area i
 Для измерения площадей выберите инструмент и при помощи мыши отметьте интересующую вас область. Общая площадь будет динамически отображаться по мере создания полигона.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="84"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="423"/>
         <source>&lt;h3&gt;Road graph plugin settings&lt;/h3&gt;
 &lt;p&gt;Road graph is a C++ plugin for QGIS, that calculates the shortest path between two points on any polyline layer and plots this path over the road network.&lt;/p&gt;
 &lt;p&gt;
@@ -62954,7 +62962,7 @@ To measure areas, select the tool and click to create the area. The total area i
 &lt;p&gt;Если атрибутивная таблица вашего линейного слоя не содержит необходимых полей или поля содержат непредусмотренные значения, то плагин будет использовать значения по умолчанию. Вы можете задать значения по умолчанию на вкладке &lt;label&gt;По умолчанию&lt;/label&gt;.&lt;/p</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1069"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="699"/>
         <source>&lt;h3&gt; North Arrow Plugin&lt;/h3&gt;
 Displays a north arrow overlayed onto the map.
 &lt;p&gt;
@@ -62962,7 +62970,7 @@ At present there is only one style available. You can adjust the angle of the ar
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="943"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1371"/>
         <source>&lt;h3&gt;Manage and install Plugins&lt;/h3&gt;
 
 &lt;p&gt;
@@ -63052,7 +63060,7 @@ Note: Experimental plugins are generally unsuitable for production use. These pl
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="189"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="727"/>
         <source>&lt;h3&gt;Save vector layer as...&lt;/h3&gt;
 
 &lt;p&gt;This dialog allows you to save vector data in various formats using GDAL/OGR.
@@ -63070,7 +63078,7 @@ See &lt;a href=&quot;http://gdal.org/ogr/ogr_formats.html&quot;&gt;OGR Vector fo
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1113"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="855"/>
         <source>&lt;h3&gt;Delimited Text File Layer&lt;/h3&gt;
 Loads and displays delimited text files
 &lt;p&gt;
@@ -63388,7 +63396,7 @@ The following options can be added
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="203"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="703"/>
         <source>&lt;h3&gt;Print Composer&lt;/h3&gt;
 
 &lt;p&gt;
@@ -63415,7 +63423,7 @@ Click on one of the icons along the top of the composer window to select what ty
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="700"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="80"/>
         <source>&lt;style&gt;
 	#toolbarConsole td{
 		background: #f6f6f6;
@@ -63587,13 +63595,13 @@ that will be automatically deleted after running.&lt;/li&gt;
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="42"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="606"/>
         <source>&lt;h3&gt;Style Manager&lt;/h3&gt;
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="426"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1457"/>
         <source>&lt;h3&gt;Custom Coordinate Reference System Definition&lt;/h3&gt;
 If QGIS does not provide the coordinate reference system you need, you can define a custom CRS. &lt;p&gt;
 To define a CRS, select &lt;label&gt;Custom CRS&lt;/label&gt; from the &lt;label&gt;Edit&lt;/label&gt; (Gnome, OSX) or &lt;label&gt;Settings&lt;/label&gt; (KDE, Windows) menu. Custom CRS are stored in your QGIS user database. In addition to your custom CRS, this database also contains your spatial bookmarks and other custom data.
@@ -63960,7 +63968,7 @@ Defining a custom CRS in QGIS requires a good understanding of the Proj.4 projec
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="487"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="532"/>
         <source>&lt;h3&gt;Options&lt;/h3&gt;
 This dialog allows you to select some basic options for QGIS. There are eight tabs:
 &lt;p&gt;
@@ -64038,7 +64046,7 @@ Tick &lt;label&gt;Use proxy for web access&lt;/label&gt; to define host, port, u
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1481"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="286"/>
         <source>&lt;h3&gt;Create a New SQL Anywhere Connection&lt;/h3&gt;
 This dialog allows you to define the settings for a connection to a
 SQL Anywhere database.
@@ -64074,7 +64082,7 @@ SQL Anywhere database.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="924"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1488"/>
         <source>&lt;h3&gt;Finding shortest path&lt;/h3&gt;
 &lt;p&gt;Road graph is a C++ plugin for QGIS, that calculates the shortest path between two points on any line layer and plots this path over the road network. Before using the plugin to configure it. This can be done in the menu &lt;label&gt;Plugins &amp;rarr; Road graph &amp;rarr; Settings&lt;/label&gt;&lt;/p&gt;
 &lt;p&gt;
@@ -64139,7 +64147,7 @@ Pressing the &lt;label&gt;Calculate&lt;/label&gt; button will run the shortest p
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1073"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="454"/>
         <source>&lt;h3&gt;Create a New Oracle Connection&lt;/h3&gt;
 This dialog allows you to define the settings for a connection to a Oracle database.
 &lt;p&gt;
@@ -65251,7 +65259,7 @@ Plugin will not be enabled.</source>
 <context>
     <name>function_help</name>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="11"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1952"/>
         <source>&lt;h3&gt;$rownum function&lt;/h3&gt;
 Returns the number of the current row.
 
@@ -65280,7 +65288,7 @@ None
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="109"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1459"/>
         <source>
 &lt;h3&gt;color_rgba() function&lt;/h3&gt;
 Returns a string representation of a color based on its red, green, blue, and alpha (transparency) components
@@ -65319,7 +65327,7 @@ Returns a string representation of a color based on its red, green, blue, and al
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="651"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1678"/>
         <source>&lt;h3&gt;Conditionals Group&lt;/h3&gt;
 This group contains functions to handle conditional checks in expressions.
 </source>
@@ -65328,7 +65336,7 @@ This group contains functions to handle conditional checks in expressions.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="278"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1541"/>
         <source>&lt;h3&gt;Fields and Values&lt;/h3&gt;
 Contains a list of fields from the layer.  Sample values can also be accessed via right-click.
 &lt;br&gt;&lt;br&gt;
@@ -65351,7 +65359,7 @@ actually inserted, ie. when building queries.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1756"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="888"/>
         <source>&lt;h3&gt;$feature function&lt;/h3&gt;
 In atlas generation, returns the current feature number that is iterated over on the coverage layer.
 
@@ -65380,7 +65388,7 @@ None
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="737"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="590"/>
         <source>&lt;h3&gt;Field&lt;/h3&gt;
 Double click to add field name to expression string.
 &lt;br&gt;&lt;br&gt;
@@ -65403,7 +65411,7 @@ actually inserted, ie. when building queries.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="701"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="220"/>
         <source>&lt;h3&gt;$numpages function&lt;/h3&gt;
 Returns the total number of pages in the composition.
 
@@ -65432,7 +65440,7 @@ None
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1383"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1939"/>
         <source>&lt;h3&gt;$perimeter function&lt;/h3&gt;
 Returns the perimeter length of the current feature.
 
@@ -65461,7 +65469,7 @@ None
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1223"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="772"/>
         <source>&lt;h3&gt;Geometry Group&lt;/h3&gt;
 This group contains functions that operate on geometry objects e.g length, area.
 </source>
@@ -65470,7 +65478,7 @@ This group contains functions that operate on geometry objects e.g length, area.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="95"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="360"/>
         <source>&lt;h3&gt;concat() function&lt;/h3&gt;
 Concatenates several strings to one.
 
@@ -65501,7 +65509,7 @@ Concatenates several strings to one.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1531"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="207"/>
         <source>&lt;h3&gt;$scale function&lt;/h3&gt;
 Returns the current scale of the map canvas.
 &lt;br&gt;
@@ -65530,7 +65538,7 @@ Note: This function is only available in some contexts and will be 0 otherwise.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="618"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1602"/>
         <source>&lt;h3&gt;age() function&lt;/h3&gt;
 Returns the difference between two dates.
 &lt;br&gt;&lt;br&gt;
@@ -65610,7 +65618,7 @@ Right-Click on field name to open context menu sample value loading options.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1945"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="725"/>
         <source>&lt;h3&gt;year() function&lt;/h3&gt;
 Extract the year part from a date, or the number of years
 from a &lt;code&gt;Interval&lt;/code&gt;
@@ -65652,7 +65660,7 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1255"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="180"/>
         <source>&lt;h3&gt;atan() function&lt;/h3&gt;
 Returns arcustanget of a value in radians.
 
@@ -65681,7 +65689,7 @@ Returns arcustanget of a value in radians.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="604"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="77"/>
         <source>&lt;h3&gt;ILIKE expression&lt;/h3&gt;
 Returns 1 if the first parameter matches case-insensitive the supplied pattern. LIKE can be used instead of ILIKE to make the match case-sensitive. Works with numbers also.
 
@@ -65712,7 +65720,7 @@ None
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1500"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="145"/>
         <source>&lt;h3&gt;strpos() function&lt;/h3&gt;
 Return the index of a regular expression in a string.
 
@@ -65751,7 +65759,7 @@ Returns -1 if the expression isn&apos;t found.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1544"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1306"/>
         <source>&lt;h3&gt;minute() function&lt;/h3&gt;
 Extract the minute from a datetime or time, or the number of minutes
 from a &lt;code&gt;Interval&lt;/code&gt;
@@ -65795,7 +65803,7 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1662"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1491"/>
         <source>&lt;h3&gt;$length function&lt;/h3&gt;
 Returns the length of the current feature.
 
@@ -65822,7 +65830,7 @@ None
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1482"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1551"/>
         <source>
 &lt;h3&gt;Color Group&lt;/h3&gt;
 This group contains functions for manipulating colors
@@ -65833,7 +65841,7 @@ This group contains functions for manipulating colors
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1226"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="374"/>
         <source>&lt;h3&gt;log10() function&lt;/h3&gt;
 Returns the value of the base 10 logarithm of the passed expression.
 &lt;br&gt;
@@ -65899,7 +65907,7 @@ Returns the portion of a string which matches a supplied regular expression.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1832"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1772"/>
         <source>&lt;h3&gt;left() function&lt;/h3&gt;
 Returns a substring that contains the &lt;i&gt;n&lt;/i&gt; leftmost characters of the string.
 
@@ -65934,7 +65942,7 @@ Returns a substring that contains the &lt;i&gt;n&lt;/i&gt; leftmost characters o
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1011"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="600"/>
         <source>&lt;h3&gt;tan() function&lt;/h3&gt;
 Returns tangent of an angle.
 
@@ -65963,7 +65971,7 @@ Returns tangent of an angle.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1371"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1836"/>
         <source>&lt;h3&gt;lower() function&lt;/h3&gt;
 Converts a string to lower case letters.
 
@@ -65990,7 +65998,7 @@ Converts a string to lower case letters.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1913"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="280"/>
         <source>&lt;h3&gt;regexp_match() function&lt;/h3&gt;
 Returns true if any part of a string matches the supplied regular expression.
 
@@ -66023,7 +66031,7 @@ Returns true if any part of a string matches the supplied regular expression.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1024"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1216"/>
         <source>&lt;h3&gt;regexp_replace() function&lt;/h3&gt;
 Returns a string with the supplied regular expression replaced.
 
@@ -66058,7 +66066,7 @@ Returns a string with the supplied regular expression replaced.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="503"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="775"/>
         <source>&lt;h3&gt;regexp_substr() function&lt;/h3&gt;
 Returns the portion of a string which matches a supplied regular expression.
 
@@ -66091,7 +66099,7 @@ Returns the portion of a string which matches a supplied regular expression.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="545"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="295"/>
         <source>&lt;h3&gt;ceil() function&lt;/h3&gt;
 Rounds a number upwards.
 
@@ -66124,7 +66132,7 @@ Rounds a number upwards.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1848"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1925"/>
         <source>&lt;h3&gt;toreal() function&lt;/h3&gt;
 Converts a string to real number. Nothing changed if a value cannot be converted to real (e.g &apos;123.56asd&apos; is invalid). Numbers are rounded after saving changes if the precision is smaller than the result of the conversion.
 
@@ -66155,7 +66163,7 @@ Converts a string to real number. Nothing changed if a value cannot be converted
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="560"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="105"/>
         <source>&lt;h3&gt;xat() function&lt;/h3&gt;
 Retrieves a x coordinate of the current feature
 
@@ -66182,7 +66190,7 @@ Retrieves a x coordinate of the current feature
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="371"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1412"/>
         <source>&lt;h3&gt;format_number() function&lt;/h3&gt;
 Returns a number formatted with the locale separator for thousands. 
 Also truncates the number to the number of supplied places. 
@@ -66218,7 +66226,7 @@ to.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1220"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="790"/>
         <source>&lt;h3&gt;String Group&lt;/h3&gt;
 This group contains functions that operate on strings e.g replace, convert to upper case.
 </source>
@@ -66227,7 +66235,7 @@ This group contains functions that operate on strings e.g replace, convert to up
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1327"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1353"/>
         <source>&lt;h3&gt;floor() function&lt;/h3&gt;
 Rounds a number downwards.
 
@@ -66260,7 +66268,7 @@ Rounds a number downwards.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1053"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="665"/>
         <source>&lt;h3&gt;toint() function&lt;/h3&gt;
 Converts a string to integer number. Nothing changed if a value cannot be converted to integer (e.g &apos;123asd&apos; is invalid).
 
@@ -66291,7 +66299,7 @@ Converts a string to integer number. Nothing changed if a value cannot be conver
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1396"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="463"/>
         <source>&lt;h3&gt;yat() function&lt;/h3&gt;
 Retrieves a y coordinate of the current feature
 
@@ -66318,7 +66326,7 @@ Retrieves a y coordinate of the current feature
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="532"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="390"/>
         <source>&lt;h3&gt;abs() function&lt;/h3&gt;
 Returns the absolute value of a number.&lt;br&gt;
 
@@ -66347,7 +66355,7 @@ abs(&lt;i&gt;value&lt;/i&gt;)&lt;br&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1788"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="266"/>
         <source>&lt;h3&gt;tostring() function&lt;/h3&gt;
 Converts a number to string.
 
@@ -66378,7 +66386,7 @@ Converts a number to string.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="747"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="63"/>
         <source>&lt;h3&gt;format() function&lt;/h3&gt;
 Format a string using supplied arguments. 
 
@@ -66409,7 +66417,7 @@ Format a string using supplied arguments.
 &lt;code&gt;format(&apos;This %1 a %2&apos;,&apos;is&apos;, &apos;test&apos;) &amp;rarr; This is a test&lt;/code&gt;&lt;br&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1769"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="692"/>
         <source>
 &lt;h3&gt;color_cmyka() function&lt;/h3&gt;
 Returns a string representation of a color based on its cyan, magenta, yellow, black and alpha (transparency) components
@@ -66479,7 +66487,7 @@ Converts a string to real number. Nothing changed if a value cannot be converted
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="717"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="427"/>
         <source>&lt;h3&gt;month() function&lt;/h3&gt;
 Extract the month part from a date, or the number of months
 from a &lt;code&gt;Interval&lt;/code&gt;
@@ -66520,7 +66528,7 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="368"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1888"/>
         <source>&lt;h3&gt;Math Group&lt;/h3&gt;
 This group contains math functions e.g square root, sin and cos
 </source>
@@ -66529,7 +66537,7 @@ This group contains math functions e.g square root, sin and cos
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1439"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="310"/>
         <source>&lt;h3&gt;scale_exp() function&lt;/h3&gt;
 Transforms a given value from an input domain to an output range using an exponential curve. This function can be used to ease values in or out 
 of the specified output range.   
@@ -66589,7 +66597,7 @@ accelerating as the input values approach the domain maximum. Smaller exponents 
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="404"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1905"/>
         <source>&lt;h3&gt;coalesce() function&lt;/h3&gt;
 Returns the first non-NULL value from the expression list.
 &lt;br&gt;
@@ -66631,7 +66639,7 @@ This function can take any number of arguments.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1170"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="517"/>
         <source>&lt;h3&gt;scale_linear() function&lt;/h3&gt;
 Transforms a given value from an input domain to an output range using linear interpolation. 
 
@@ -66671,7 +66679,7 @@ Transforms a given value from an input domain to an output range using linear in
      scale_linear(1500,1000,10000,9,20) &amp;rarr; 10.22 &lt;i&gt;(преобразование численности населения в диапазоне 1000..10000 в размер шрифта 9..20)&lt;/i&gt;&lt;br&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1115"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1293"/>
         <source>&lt;h3&gt;$area function&lt;/h3&gt;
 Returns the area size of the current feature.
 
@@ -66700,7 +66708,7 @@ None
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1802"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1339"/>
         <source>&lt;h3&gt;trim() function&lt;/h3&gt;
 Removes all leading and trailing whitespace (spaces, tabs, etc) from a string.
 
@@ -66731,7 +66739,7 @@ Removes all leading and trailing whitespace (spaces, tabs, etc) from a string.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1342"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="958"/>
         <source>&lt;h3&gt;color_hsv() function&lt;/h3&gt;
 Returns a string representation of a color based on its hue, saturation, and value attributes
 
@@ -66766,7 +66774,7 @@ Returns a string representation of a color based on its hue, saturation, and val
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="998"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="475"/>
         <source>&lt;h3&gt;todatetime() function&lt;/h3&gt;
 Convert a string into Qt data time type.
 
@@ -66795,7 +66803,7 @@ Convert a string into Qt data time type.
 &lt;code&gt;todatetime(&apos;2012-05-04 12:50:00&apos;) &amp;rarr; 2012-05-04T12:50:00&lt;/code&gt;&lt;br&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1293"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="233"/>
         <source>&lt;h3&gt;week() function&lt;/h3&gt;
 Extract the week number from a date, or the number of weeks
 from a &lt;code&gt;Interval&lt;/code&gt;
@@ -66837,7 +66845,7 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="440"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1743"/>
         <source>&lt;h3&gt;CASE expression&lt;/h3&gt;
 A conditional expression that can be used to evaluate multiple expressions and
 return a result.
@@ -66897,7 +66905,7 @@ return a result.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="24"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1848"/>
         <source>&lt;h3&gt;symDifference function&lt;/h3&gt;
 Returns a geometry that represents the portions of a and b that do not intersect.
 
@@ -66926,7 +66934,7 @@ b &amp;rarr; геометрия
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="37"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1385"/>
         <source>&lt;h3&gt;AND logical operator&lt;/h3&gt;
 Returns 1 when condition a and b are true.
 
@@ -66957,7 +66965,7 @@ None
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="82"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="117"/>
         <source>&lt;h3&gt;geomFromGML function&lt;/h3&gt;
 Returns a geometry from a GML representation of geometry
 
@@ -66986,7 +66994,7 @@ text &amp;rarr; GML-представление геометрии
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="127"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="50"/>
         <source>&lt;h3&gt;intersection function&lt;/h3&gt;
 Returns a geometry that represents the shared portion of geometry a and geometry b.
 
@@ -67015,7 +67023,7 @@ geometry b&amp;rarr; геометрия
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="155"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="166"/>
         <source>&lt;h3&gt;combine function&lt;/h3&gt;
 Returns the combination of geometry a and geometry b.
 
@@ -67046,7 +67054,7 @@ b &amp;rarr; геометрия
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="169"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1635"/>
         <source>&lt;h3&gt;$map function&lt;/h3&gt;
 Returns the id of the current map item if the map is being drawn in a composition, or &quot;canvas&quot; if the map is being
 drawn within the main QGIS window.
@@ -67083,7 +67091,7 @@ $map &amp;rarr; &quot;canvas&quot; (для основной карты QGIS)&lt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="252"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="745"/>
         <source>&lt;h3&gt;$id function&lt;/h3&gt;
 Returns the feature id of the current row.
 
@@ -67112,7 +67120,7 @@ None
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="265"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="679"/>
         <source>&lt;h3&gt;geomFromWKT function&lt;/h3&gt;
 Returns a geometry created from a Well-Known Text (WKT) representation.
 
@@ -67141,7 +67149,7 @@ text &amp;rarr; WKT-представление геометрии
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="302"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1445"/>
         <source>&lt;h3&gt;OR logical operator&lt;/h3&gt;
 Returns 1 when condition a or b is true.
 
@@ -67172,7 +67180,7 @@ None
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="333"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="613"/>
         <source>&lt;h3&gt;IS expression&lt;/h3&gt;
 Returns 1 if a is the same as b.
 
@@ -67213,7 +67221,7 @@ None
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="352"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1715"/>
         <source>&lt;h3&gt;difference function&lt;/h3&gt;
 Returns a geometry that represents that part of geometry a that does not intersect with geometry b.
 
@@ -67242,7 +67250,7 @@ b &amp;rarr; геометрия
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="388"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="447"/>
         <source>&lt;h3&gt;ln() function&lt;/h3&gt;
 Returns the value of the natural logarithm of the passed expression.
 &lt;br&gt;
@@ -67276,7 +67284,7 @@ This function takes one argument.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="437"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="163"/>
         <source>&lt;h3&gt;Date and Time Group&lt;/h3&gt;
 This group contains functions for handling date and time data.
 </source>
@@ -67285,7 +67293,7 @@ This group contains functions for handling date and time data.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="469"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="537"/>
         <source>&lt;h3&gt;clamp() function&lt;/h3&gt;
 Restricts an input value to a specified range.
 
@@ -67327,7 +67335,7 @@ Restricts an input value to a specified range.
      </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="489"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1588"/>
         <source>&lt;h3&gt;within function&lt;/h3&gt;
 Returns 1 if the geometry a is completely inside geometry b
 
@@ -67357,7 +67365,7 @@ geometry b&amp;rarr; геометрия
 &lt;pre&gt; within( geomFromWKT( &apos;POINT( 5 5 )&apos;) , geomFromWKT(&apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) )        &amp;rarr; возвращает 0&lt;/pre&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="654"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="193"/>
         <source>&lt;h3&gt;intersects function&lt;/h3&gt;
 Returns 1 if the geometries spatially intersect (share any portion of space) and 0 if they don&apos;t.
 
@@ -67388,7 +67396,7 @@ b &amp;rarr; геометрия
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="688"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="488"/>
         <source>&lt;h3&gt;$numfeatures function&lt;/h3&gt;
 In atlas generation, returns the total number of features within the coverage layer.
 
@@ -67417,7 +67425,7 @@ None
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="957"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="11"/>
         <source>&lt;h3&gt;convexHull function&lt;/h3&gt;
 Returns the convex hull of a geometry. It represents the minimum convex geometry that encloses all geometries within the set.
 
@@ -67446,7 +67454,7 @@ a &amp;rarr; геометрия
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="970"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="847"/>
         <source>&lt;h3&gt;geomToWKT function&lt;/h3&gt;
 Returns the Well-Known Text (WKT) representation of the geometry without SRID metadata.
 
@@ -67473,7 +67481,7 @@ a &amp;rarr; геометрия
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1040"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1399"/>
         <source>&lt;h3&gt;$geometry function&lt;/h3&gt;
 Returns the geometry of the current feature. Can be used for processing with other functions.
 
@@ -67502,7 +67510,7 @@ None
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1088"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="635"/>
         <source>&lt;h3&gt;disjoint function&lt;/h3&gt;
 Returns 1 if the geometries do not &quot;spatially intersect&quot; - if they do not share any space together. 
 
@@ -67533,7 +67541,7 @@ b &amp;rarr; геометрия
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1128"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="928"/>
         <source>&lt;h3&gt;overlaps function&lt;/h3&gt;
 Returns 1 if the geometries share space, are of the same dimension, but are not completely contained by each other.
 
@@ -67564,7 +67572,7 @@ b &amp;rarr; геометрия
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1155"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1728"/>
         <source>&lt;h3&gt;NOT&lt;/h3&gt;
 Returns 1 if a is not the same as b.
 
@@ -67597,7 +67605,7 @@ None
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1313"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="901"/>
         <source>&lt;h3&gt;touches function&lt;/h3&gt;
 Returns 1 if the geometries have at least one point in common, but their interiors do not intersect.
 
@@ -67628,7 +67636,7 @@ b &amp;rarr; геометрия
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1425"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="758"/>
         <source>&lt;h3&gt;crosses function&lt;/h3&gt;
 Returns 1 if the supplied geometries have some, but not all, interior points in common.
 
@@ -67659,7 +67667,7 @@ b &amp;rarr; геометрия
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1468"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1891"/>
         <source>&lt;h3&gt;contains function&lt;/h3&gt;
  Returns true if and only if no points of b lie in the exterior of a, and at least one point of the interior of b lies in the interior of a. 
 
@@ -67690,7 +67698,7 @@ b &amp;rarr; геометрия
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1486"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="711"/>
         <source>&lt;h3&gt;buffer function&lt;/h3&gt;
 Returns a geometry that represents all points whose distance from this geometry is less than or equal to distance. Calculations are in the Spatial Reference System of this Geometry. 
 
@@ -67721,7 +67729,7 @@ b &amp;rarr; буферное расстояние
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1518"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1652"/>
         <source>&lt;h3&gt;distance function&lt;/h3&gt;
  Returns the minimum distance (based on spatial ref) between two geometries in projected units.
 
@@ -67750,7 +67758,7 @@ b &amp;rarr; геометрия
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1581"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="91"/>
         <source>&lt;h3&gt;LIKE expression&lt;/h3&gt;
 Returns 1 if the first parameter matches the supplied pattern. Works with numbers also.
 
@@ -67781,7 +67789,7 @@ None
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1714"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1575"/>
         <source>&lt;h3&gt;centroid function&lt;/h3&gt;
 Returns the geometric center of a geometry.
 
@@ -67810,7 +67818,7 @@ a &amp;rarr; геометрия
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1743"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="37"/>
         <source>&lt;h3&gt;union function&lt;/h3&gt;
 Returns a geometry that represents the point set union of the geometries.
 
@@ -67839,7 +67847,7 @@ b &amp;rarr; геометрия
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1862"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1788"/>
         <source>
 &lt;h3&gt;color_cmyk() function&lt;/h3&gt;
 Returns a string representation of a color based on its cyan, magenta, yellow and black components
@@ -67877,7 +67885,7 @@ Returns a string representation of a color based on its cyan, magenta, yellow an
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1609"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="987"/>
         <source>&lt;h3&gt;rpad() function&lt;/h3&gt;
 Returns a string with supplied width padded
 using the fill character.
@@ -67917,7 +67925,7 @@ using the fill character.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="51"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1520"/>
         <source>&lt;h3&gt;lpad() function&lt;/h3&gt;
 Returns a string with supplied width padded
 using the fill character.
@@ -67989,7 +67997,7 @@ Returns a string with the supplied regular expression replaced.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="518"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1477"/>
         <source>&lt;h3&gt;upper() function&lt;/h3&gt;
 Converts a string to upper case letters.
 
@@ -68020,7 +68028,7 @@ Converts a string to upper case letters.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1727"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1538"/>
         <source>&lt;h3&gt;Record Group&lt;/h3&gt;
 This group contains functions that operate on record identifiers.
 </source>
@@ -68029,7 +68037,7 @@ This group contains functions that operate on record identifiers.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="572"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="501"/>
         <source>&lt;h3&gt;right() function&lt;/h3&gt;
 Returns a substring that contains the &lt;i&gt;n&lt;/i&gt; rightmost characters of the string.
 
@@ -68064,7 +68072,7 @@ Returns a substring that contains the &lt;i&gt;n&lt;/i&gt; rightmost characters 
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1700"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1249"/>
         <source>&lt;h3&gt;length() function&lt;/h3&gt;
 Returns the length of a string.
 
@@ -68127,7 +68135,7 @@ Rounds a number upwards.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1595"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1874"/>
         <source>&lt;h3&gt;min() function&lt;/h3&gt;
 Returns the smallest value in a set of values.
 
@@ -68192,7 +68200,7 @@ This function takes one argument.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1203"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1368"/>
         <source>&lt;h3&gt;color_hsla() function&lt;/h3&gt;
 Returns a string representation of a color based on its hue, saturation, lightness and alpha (transparency) attributes
 
@@ -68261,7 +68269,7 @@ Returns true if any part of a string matches the supplied regular expression.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1628"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1806"/>
         <source>&lt;h3&gt;asin() function&lt;/h3&gt;
 Returns arcussinus of a value in radians.
 
@@ -68332,7 +68340,7 @@ Restricts an input value to a specified range.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1242"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="974"/>
         <source>&lt;h3&gt;sqrt() function&lt;/h3&gt;
 Returns square root of a value
 
@@ -68361,7 +68369,7 @@ Returns square root of a value
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1102"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="915"/>
         <source>&lt;h3&gt;$x function&lt;/h3&gt;
 Returns the x coordinate of the current feature.
 
@@ -68420,7 +68428,7 @@ Converts a number to string.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1641"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="406"/>
         <source>&lt;h3&gt;round() function&lt;/h3&gt;
 Rounds a number to number of decimal places.
 &lt;br&gt;
@@ -68464,7 +68472,7 @@ use &lt;code&gt;round(decimal)&lt;/code&gt; to round to the nearest integer&lt;b
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="782"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1006"/>
         <source>&lt;h3&gt;format_date() function&lt;/h3&gt;
 Format a date type or string into a custom string format. Uses Qt data time format strings.  See &lt;a href=&apos;http://qt-project.org/doc/qt-4.8/qdatetime.html#toString&apos;&gt;QDateTime::toString&lt;/a&gt;
 
@@ -68816,7 +68824,7 @@ Format a date type or string into a custom string format. Uses Qt data time form
 &lt;code&gt;format_date(&apos;2012-05-15&apos;,&apos;dd.mm.yyyy&apos;) &amp;rarr; 15.05.2012&lt;/code&gt;&lt;br&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1190"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="806"/>
         <source>&lt;h3&gt;$now function&lt;/h3&gt;
 Returns the current date and time
 
@@ -68845,7 +68853,7 @@ None
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="186"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="819"/>
         <source>&lt;h3&gt;CASE expression&lt;/h3&gt;
 A conditional expression that can be used to evaluate multiple expressions and
 return a result.
@@ -68904,7 +68912,7 @@ return a result.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="365"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1442"/>
         <source>&lt;h3&gt;Conditions Group&lt;/h3&gt;
 This group contains functions that operate on condition.
 </source>
@@ -68912,7 +68920,7 @@ This group contains functions that operate on condition.
 Условные операторы и функции.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="668"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1555"/>
         <source>&lt;h3&gt;day() function&lt;/h3&gt;
 Extract the day from a date, or the number of days
 from a &lt;code&gt;Interval&lt;/code&gt;
@@ -68954,7 +68962,7 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1358"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="24"/>
         <source>&lt;h3&gt;exp() function&lt;/h3&gt;
 Returns exponential of an value.
 
@@ -68983,7 +68991,7 @@ Returns exponential of an value.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="69"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="253"/>
         <source>&lt;h3&gt;tointerval() function&lt;/h3&gt;
 Converts a string to a interval type.  Can be used to take days, hours, month, etc off a date. 
 
@@ -69012,7 +69020,7 @@ Converts a string to a interval type.  Can be used to take days, hours, month, e
 &lt;code&gt;todatetime(&apos;2012-05-05 12:00:00&apos;) - tointerval(&apos;1 day 2 hours&apos;) &amp;rarr; 2012-05-04T10:00:00&lt;/code&gt;&lt;br&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="214"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="557"/>
         <source>&lt;h3&gt;color_hsva() function&lt;/h3&gt;
 Returns a string representation of a color based on its hue, saturation, value and alpha (transparency) attributes
 
@@ -69119,7 +69127,7 @@ Returns -1 if the expression isn&apos;t found.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1142"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="793"/>
         <source>&lt;h3&gt;totime() function&lt;/h3&gt;
 Convert a string into Qt time type.
 
@@ -69148,7 +69156,7 @@ Convert a string into Qt time type.
 &lt;code&gt;totime(&apos;12:30:01&apos;) &amp;rarr; 12:30:01&lt;/code&gt;&lt;br&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="288"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1202"/>
         <source>&lt;h3&gt;max() function&lt;/h3&gt;
 Returns the largest value in a set of values.
 
@@ -69179,7 +69187,7 @@ Returns the largest value in a set of values.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1730"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1702"/>
         <source>&lt;h3&gt;acos() function&lt;/h3&gt;
 Returns arcuscosinus of a value in radians.
 
@@ -69208,7 +69216,7 @@ Returns arcuscosinus of a value in radians.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="140"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="130"/>
         <source>&lt;h3&gt;title() function&lt;/h3&gt;
 Converts all words of a string to title case (all words lower case with leading
 capital letter).
@@ -69240,7 +69248,7 @@ capital letter).
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1816"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="649"/>
         <source>&lt;h3&gt;atan2() function&lt;/h3&gt;
 Returns arcustangens of y/x using the signs of the two 
 arguments to determine the quadrant of the result
@@ -69272,7 +69280,7 @@ arguments to determine the quadrant of the result
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1928"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1819"/>
         <source>&lt;h3&gt;rand() function&lt;/h3&gt;
 Returns a random integer within the range specified by the minimum and 
 maximum argument (inclusive).
@@ -69307,7 +69315,7 @@ This function takes two arguments.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1067"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="339"/>
         <source>
 &lt;h3&gt;ramp_color() function&lt;/h3&gt;
 Returns a string representing a color from a color ramp. 
@@ -69351,7 +69359,7 @@ may not give the expected results if you move your Quantum project.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="714"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="632"/>
         <source>&lt;h3&gt;Conversions Group&lt;/h3&gt;
 This group contains functions to convert on data type to another e.g string to integer, integer to string.
 </source>
@@ -69360,7 +69368,7 @@ This group contains functions to convert on data type to another e.g string to i
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="588"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="403"/>
         <source>&lt;h3&gt;Operators Group&lt;/h3&gt;
 This group contains operators e.g + - * 
 </source>
@@ -69368,7 +69376,7 @@ This group contains operators e.g + - *
 Основные операторы, используемые в выражениях, например + - * </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1687"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1280"/>
         <source>&lt;h3&gt;$page function&lt;/h3&gt;
 Returns the current page number within a composition.
 
@@ -69397,7 +69405,7 @@ None
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="761"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1681"/>
         <source>&lt;h3&gt;second() function&lt;/h3&gt;
 Extract the seconds from a datetime or time, or the number of seconds
 from a &lt;code&gt;Interval&lt;/code&gt;
@@ -69441,7 +69449,7 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1268"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="875"/>
         <source>&lt;h3&gt;$y function&lt;/h3&gt;
 Returns the y coordinate of the current feature.
 
@@ -69470,7 +69478,7 @@ Y-координата текущего объекта.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1674"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1861"/>
         <source>&lt;h3&gt;cos() function&lt;/h3&gt;
 Returns cosinus of an angle.
 
@@ -69499,7 +69507,7 @@ Returns cosinus of an angle.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1408"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1503"/>
         <source>&lt;h3&gt;log() function&lt;/h3&gt;
 Returns the value of the logarithm of the passed value and base.
 &lt;br&gt;
@@ -69535,7 +69543,7 @@ This function takes two arguments.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="424"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1665"/>
         <source>&lt;h3&gt;sin() function&lt;/h3&gt;
 Returns sinus of an angle.
 
@@ -69608,7 +69616,7 @@ Converts a string to integer number. Nothing changed if a value cannot be conver
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="982"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="942"/>
         <source>&lt;h3&gt;substr() function&lt;/h3&gt;
 Return a part of a string
 
@@ -69643,7 +69651,7 @@ Return a part of a string
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1897"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="859"/>
         <source>&lt;h3&gt;color_hsl() function&lt;/h3&gt;
 Returns a string representation of a color based on its hue, saturation, and lightness attributes
 
@@ -69678,7 +69686,7 @@ Returns a string representation of a color based on its hue, saturation, and lig
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1880"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1263"/>
         <source>
 &lt;h3&gt;color_rgb() function&lt;/h3&gt;
 Returns a string representation of a color based on its red, green, and blue components
@@ -69714,7 +69722,7 @@ Returns a string representation of a color based on its red, green, and blue com
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="316"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1232"/>
         <source>&lt;h3&gt;randf() function&lt;/h3&gt;
 Returns a random float within the range specified by the minimum and 
 maximum argument (inclusive).
@@ -69775,7 +69783,7 @@ Retrieves a x coordinate of the current feature
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1565"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="574"/>
         <source>&lt;h3&gt;replace() function&lt;/h3&gt;
 Returns a string with the the supplied string replaced.
 
@@ -69810,7 +69818,7 @@ Returns a string with the the supplied string replaced.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="231"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1181"/>
         <source>&lt;h3&gt;hour() function&lt;/h3&gt;
 Extract the hour from a datetime or time, or the number of hours
 from a &lt;code&gt;Interval&lt;/code&gt;
@@ -69880,7 +69888,7 @@ Retrieves a y coordinate of the current feature
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1281"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1327"/>
         <source>&lt;h3&gt;$pi constant&lt;/h3&gt;
 Returns pi as value for calculations
 
@@ -69906,7 +69914,7 @@ None
 &lt;pre&gt;$pi &amp;rarr; 3.14159265358979&lt;/pre&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="591"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1429"/>
         <source>&lt;h3&gt;todate() function&lt;/h3&gt;
 Convert a string into Qt data type.
 

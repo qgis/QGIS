@@ -11478,7 +11478,7 @@ Deze zal daarom niet actief worden gemaakt.</translation>
     </message>
     <message>
         <source>By default, BNA files are created in multi-line format. For each record, the first line contains the identifiers and the type/number of coordinates to follow. The following lines contains a pair of coordinates).</source>
-        <translation>Standaard worden BNA bestanden aangemaakt in meervoudige regel formaat. Voor elk record bevat de eerste regel de identificaties gevolgd door het type/aantal coördinaten. De volgende regels bevatten een coördinatenpaar.</translation>
+        <translation type="obsolete">Standaard worden BNA bestanden aangemaakt in meervoudige regel formaat. Voor elk record bevat de eerste regel de identificaties gevolgd door het type/aantal coördinaten. De volgende regels bevatten een coördinatenpaar.</translation>
     </message>
     <message>
         <source>BNA records may contain from 2 to 4 identifiers per record. Some software packages only support a precise number of identifiers. You can override the default value (2) by a precise value</source>
@@ -11823,6 +11823,10 @@ Deze zal daarom niet actief worden gemaakt.</translation>
     <message>
         <source>The extra plugin path &apos;%1&apos; does not exist !</source>
         <translation>Het extra plugin pad &apos;%1&apos; bestaat niet !</translation>
+    </message>
+    <message>
+        <source>By default, BNA files are created in multi-line format. For each record, the first line contains the identifiers and the type/number of coordinates to follow. Each following line contains a pair of coordinates.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -17124,7 +17128,7 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
     </message>
     <message>
         <source>Item Properties</source>
-        <translation>Item-eigenschappen</translation>
+        <translation type="obsolete">Item-eigenschappen</translation>
     </message>
     <message>
         <source>Panels</source>
@@ -17325,6 +17329,10 @@ Probeer alstublieft een lagere resolutie of een kleiner papiergrootte</translati
     <message>
         <source>Set as atlas feature for %1</source>
         <translation>Instellen als atlas-object voor %1</translation>
+    </message>
+    <message>
+        <source>Item properties</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

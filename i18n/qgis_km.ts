@@ -11176,10 +11176,6 @@ It will be disabled.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>By default, BNA files are created in multi-line format. For each record, the first line contains the identifiers and the type/number of coordinates to follow. The following lines contains a pair of coordinates).</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>BNA records may contain from 2 to 4 identifiers per record. Some software packages only support a precise number of identifiers. You can override the default value (2) by a precise value</source>
         <translation type="unfinished"></translation>
     </message>
@@ -11521,6 +11517,10 @@ It will be disabled.</source>
     </message>
     <message>
         <source>The extra plugin path &apos;%1&apos; does not exist !</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>By default, BNA files are created in multi-line format. For each record, the first line contains the identifiers and the type/number of coordinates to follow. Each following line contains a pair of coordinates.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -15626,7 +15626,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Item Properties</source>
-        <translation type="unfinished">
+        <translation type="obsolete">
             </translation>
     </message>
     <message>
@@ -15930,6 +15930,14 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>No matching atlas features found!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Item properties</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set as atlas feature for %1</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -22670,7 +22678,7 @@ Parser error:
     </message>
     <message>
         <source>Run action</source>
-        <translation type="unfinished">
+        <translation type="obsolete">
             </translation>
     </message>
     <message>
@@ -22695,6 +22703,10 @@ Parser error:
         <source>%1 features loaded.</source>
         <translation type="unfinished">
             </translation>
+    </message>
+    <message>
+        <source>Run layer action</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -23118,6 +23130,10 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Greater or equal operator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Recent (%1)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -36698,6 +36714,10 @@ Always network: always load from network and do not check if the cache has a val
         <source>Size [KiB]</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Maximum scale at which the layer should be simplified (1:1 always simplifies): </source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsOptionsDialogBase</name>
@@ -44279,6 +44299,10 @@ standard deviation ×</source>
         <translation type="unfinished">
             </translation>
     </message>
+    <message>
+        <source>- expression -</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsRendererV2PropertiesDialog</name>
@@ -45987,6 +46011,14 @@ but implies better performance thereafter.</source>
         <source>Unexpected error when working with: %1
 
 %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation type="unfinished">កំហុស</translation>
+    </message>
+    <message>
+        <source>Cannot add connection &apos;%1&apos; : a connection with the same name already exists.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -49709,6 +49741,10 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Simplify on provider side if possible</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Maximum scale at which the layer should be simplified (1:1 always simplifies): </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -53443,12 +53479,12 @@ Would you like to add the new layer to the TOC?</source>
     </message>
     <message>
         <source>Line width</source>
-        <translation type="unfinished">
+        <translation type="obsolete">
             </translation>
     </message>
     <message>
         <source>Color</source>
-        <translation>ពណ៌</translation>
+        <translation type="obsolete">ពណ៌</translation>
     </message>
     <message>
         <source>Angle</source>
@@ -53792,6 +53828,10 @@ Would you like to add the new layer to the TOC?</source>
     </message>
     <message>
         <source>Data defined properties...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Draw line only inside polygon</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

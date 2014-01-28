@@ -4,43 +4,29 @@
         <file>flags/af.png</file>
         <file>flags/ar.png</file>
         <file>flags/bg.png</file>
-        <file>flags/ca_ES.png</file>
-        <file>flags/cs_CZ.png</file>
-        <file>flags/da_DK.png</file>
         <file>flags/de.png</file>
-        <file>flags/el_GR.png</file>
         <file>flags/en_US.png</file>
         <file>flags/es.png</file>
-        <file>flags/et_EE.png</file>
         <file>flags/fa.png</file>
         <file>flags/fi.png</file>
         <file>flags/fr.png</file>
         <file>flags/he.png</file>
-        <file>flags/hr_HR.png</file>
         <file>flags/hu.png</file>
         <file>flags/id.png</file>
         <file>flags/is.png</file>
         <file>flags/it.png</file>
         <file>flags/ja.png</file>
-        <file>flags/ka_GE.png</file>
         <file>flags/km.png</file>
-        <file>flags/ko_KR.png</file>
         <file>flags/lo.png</file>
         <file>flags/lt.png</file>
         <file>flags/lv.png</file>
-        <file>flags/ml_IN.png</file>
         <file>flags/mn.png</file>
         <file>flags/nl.png</file>
-        <file>flags/pl_PL.png</file>
         <file>flags/pt_BR.png</file>
         <file>flags/pt_PT.png</file>
         <file>flags/ro.png</file>
         <file>flags/ru.png</file>
         <file>flags/sk.png</file>
-        <file>flags/sl_SI.png</file>
-        <file>flags/sq_AL.png</file>
-        <file>flags/sr_Cyrl.png</file>
-        <file>flags/sr_Latn.png</file>
         <file>flags/sv.png</file>
         <file>flags/sw.png</file>
         <file>flags/ta.png</file>
@@ -439,10 +425,8 @@
         <file>themes/default/transp-background_8x8.png</file>
         <file>themes/default/unlocked.svg</file>
         <file>themes/default/user.png</file>
-        <file>flags/bs_BA.png</file>
         <file>flags/eu.png</file>
         <file>flags/bn.png</file>
-        <file>flags/nb_NO.png</file>
         <file>flags/gl.png</file>
         <file>flags/hi.png</file>
         <file>themes/default/relation.svg</file>
@@ -450,6 +434,23 @@
         <file>themes/default/mActionUnlink.svg</file>
         <file>themes/default/mActionRemove.svg</file>
         <file>flags/mr.png</file>
+        <file>flags/bs.png</file>
+        <file>flags/ca.png</file>
+        <file>flags/cs.png</file>
+        <file>flags/da.png</file>
+        <file>flags/el.png</file>
+        <file>flags/et.png</file>
+        <file>flags/hr.png</file>
+        <file>flags/ka.png</file>
+        <file>flags/ko.png</file>
+        <file>flags/ml.png</file>
+        <file>flags/pl.png</file>
+        <file>flags/sl.png</file>
+        <file>flags/sq.png</file>
+        <file>flags/nb.png</file>
+        <file>flags/sr.png</file>
+        <file>flags/sr_Cyrl.png</file>
+        <file>flags/sr_Latn.png</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

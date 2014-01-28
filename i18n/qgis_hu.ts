@@ -11545,6 +11545,11 @@ Hiba (%2): %3</translation>
         <translation>a %1 mezőt nem találom (OGR hiba: %2)</translation>
     </message>
     <message>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="526"/>
+        <source>By default, BNA files are created in multi-line format. For each record, the first line contains the identifiers and the type/number of coordinates to follow. Each following line contains a pair of coordinates.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1676"/>
         <source>Invalid variant type for field %1[%2]: received %3 with type %4</source>
         <translation>Hibás típus a %1[%2] mezőhöz: %3-t kaptam %4 típussal</translation>
@@ -11601,9 +11606,8 @@ Hiba (%2): %3</translation>
         <translation>Az új NBA fájlokat a rendszer alapértelmezett sorvég jelével hozom létre. Ezt felülbírálhatod itt.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="526"/>
         <source>By default, BNA files are created in multi-line format. For each record, the first line contains the identifiers and the type/number of coordinates to follow. The following lines contains a pair of coordinates).</source>
-        <translation>Alapértelmezés szerint a BNA fájlokat többsoros formátumban hozom létre. Az első sor tartalmazza az azonosítót és a koordináták típusát/számát. A következő sorok a koordináta párokat tartalmazzák.</translation>
+        <translation type="obsolete">Alapértelmezés szerint a BNA fájlokat többsoros formátumban hozom létre. Az első sor tartalmazza az azonosítót és a koordináták típusát/számát. A következő sorok a koordináta párokat tartalmazzák.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="534"/>
@@ -12856,57 +12860,57 @@ Valoszínüleg azért látod ezt az üzenetet, mert nem állítottad be a DISPLA
         <translation>Nem tudom színné konvertálni &apos;%1:%2:%3:%4:%5&apos;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="2360"/>
+        <location filename="../src/core/qgsexpression.cpp" line="2361"/>
         <source>function help for %1 missing</source>
         <translation>%1-hez hiányzik a függvény súgó</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="2369"/>
+        <location filename="../src/core/qgsexpression.cpp" line="2370"/>
         <source>Operators</source>
         <translation>Műveletek</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="2371"/>
+        <location filename="../src/core/qgsexpression.cpp" line="2372"/>
         <source>Fields and Values</source>
         <translation>Mezők és értékek</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="2372"/>
+        <location filename="../src/core/qgsexpression.cpp" line="2373"/>
         <source>Math</source>
         <translation>Matek</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="2373"/>
+        <location filename="../src/core/qgsexpression.cpp" line="2374"/>
         <source>Conversions</source>
         <translation>Konverzió</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="2370"/>
+        <location filename="../src/core/qgsexpression.cpp" line="2371"/>
         <source>Conditionals</source>
         <translation>Feltételek</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="2374"/>
+        <location filename="../src/core/qgsexpression.cpp" line="2375"/>
         <source>Date and Time</source>
         <translation>Dátum és idő</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="2375"/>
+        <location filename="../src/core/qgsexpression.cpp" line="2376"/>
         <source>String</source>
         <translation>Szöveg</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="2376"/>
+        <location filename="../src/core/qgsexpression.cpp" line="2377"/>
         <source>Color</source>
         <translation>Szín</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="2377"/>
+        <location filename="../src/core/qgsexpression.cpp" line="2378"/>
         <source>Geometry</source>
         <translation>Geometria</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="2378"/>
+        <location filename="../src/core/qgsexpression.cpp" line="2379"/>
         <source>Record</source>
         <translation>Rekord</translation>
     </message>
@@ -12946,23 +12950,23 @@ Valoszínüleg azért látod ezt az üzenetet, mert nem állítottad be a DISPLA
         <translation type="obsolete">%1 oszlopot nem találom</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4310"/>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4331"/>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4356"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4296"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4317"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4342"/>
         <location filename="../src/core/qgsvectorlayerimport.cpp" line="64"/>
         <source>Unable to load %1 provider</source>
         <translation>Nem tudom a %1 szolgáltatót beszerezni</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4318"/>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4339"/>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4364"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4304"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4325"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4350"/>
         <location filename="../src/core/qgsvectorlayerimport.cpp" line="73"/>
         <source>Provider %1 has no %2 method</source>
         <translation>%1 szolgáltatónak nincs %2 metódusa</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4411"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4397"/>
         <source>Loaded from Provider</source>
         <translation>Szolgáltatótól betöltve</translation>
     </message>
@@ -19620,9 +19624,8 @@ Töröljem a létező osztályokat az osztályozás előtt?</translation>
         <translation>Összeállítás</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="457"/>
         <source>Item Properties</source>
-        <translation>Elem tulajdonságok</translation>
+        <translation type="obsolete">Elem tulajdonságok</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="461"/>
@@ -19724,6 +19727,11 @@ Töröljem a létező osztályokat az osztályozás előtt?</translation>
         <location filename="../src/app/composer/qgscomposer.cpp" line="760"/>
         <source>%1%</source>
         <translation>%1%</translation>
+    </message>
+    <message>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="457"/>
+        <source>Item properties</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="715"/>
@@ -21691,12 +21699,12 @@ Próbálj kisebb felbontást vagy kisebb papírméretet használni</translation>
         <translation>Jelmagyarázat csoportot hozzáadtam</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="949"/>
+        <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="960"/>
         <source>Map %1</source>
         <translation>%1 térkép</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="951"/>
+        <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="962"/>
         <source>None</source>
         <translation>Semmi</translation>
     </message>
@@ -23949,22 +23957,22 @@ Próbálj kisebb felbontást vagy kisebb papírméretet használni</translation>
         <translation>Z sorrend módosult</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposition.cpp" line="1925"/>
+        <location filename="../src/core/composer/qgscomposition.cpp" line="1919"/>
         <source>Remove item group</source>
         <translation>Elemcsoport eltávolítás</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposition.cpp" line="1949"/>
+        <location filename="../src/core/composer/qgscomposition.cpp" line="1943"/>
         <source>Frame deleted</source>
         <translation>Keretet töröltem</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposition.cpp" line="1956"/>
+        <location filename="../src/core/composer/qgscomposition.cpp" line="1950"/>
         <source>Item deleted</source>
         <translation>Elemet töröltem</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposition.cpp" line="1973"/>
+        <location filename="../src/core/composer/qgscomposition.cpp" line="1967"/>
         <source>Multiframe removed</source>
         <translation type="unfinished"></translation>
     </message>
@@ -28567,143 +28575,143 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">10 minta érték betöltése</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsexpressionbuilder.ui" line="34"/>
+        <location filename="../src/ui/qgsexpressionbuilder.ui" line="37"/>
         <source>Function list</source>
         <translation>Függvény lista</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsexpressionbuilder.ui" line="106"/>
+        <location filename="../src/ui/qgsexpressionbuilder.ui" line="109"/>
         <source>Selected function help</source>
         <translation>Függvény súgó a szelektálthoz</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsexpressionbuilder.ui" line="137"/>
+        <location filename="../src/ui/qgsexpressionbuilder.ui" line="140"/>
         <source>Field values</source>
         <translation>Mező értékek</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsexpressionbuilder.ui" line="211"/>
+        <location filename="../src/ui/qgsexpressionbuilder.ui" line="214"/>
         <source>Load values</source>
         <translation>Értékek betöltése</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsexpressionbuilder.ui" line="218"/>
+        <location filename="../src/ui/qgsexpressionbuilder.ui" line="221"/>
         <source>all unique</source>
         <translation>minden egyedi</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsexpressionbuilder.ui" line="225"/>
+        <location filename="../src/ui/qgsexpressionbuilder.ui" line="228"/>
         <source>10 samples</source>
         <translation>10 minta</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsexpressionbuilder.ui" line="276"/>
+        <location filename="../src/ui/qgsexpressionbuilder.ui" line="279"/>
         <source>Operators</source>
         <translation>Műveletek</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsexpressionbuilder.ui" line="300"/>
+        <location filename="../src/ui/qgsexpressionbuilder.ui" line="303"/>
         <source>Equal operator</source>
         <translation>Egyenlő </translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsexpressionbuilder.ui" line="303"/>
+        <location filename="../src/ui/qgsexpressionbuilder.ui" line="306"/>
         <source>=</source>
         <translation>=</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsexpressionbuilder.ui" line="316"/>
+        <location filename="../src/ui/qgsexpressionbuilder.ui" line="319"/>
         <source>Addition operator</source>
         <translation>Összeadás művelet</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsexpressionbuilder.ui" line="319"/>
+        <location filename="../src/ui/qgsexpressionbuilder.ui" line="322"/>
         <source>+</source>
         <translation>+</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsexpressionbuilder.ui" line="326"/>
+        <location filename="../src/ui/qgsexpressionbuilder.ui" line="329"/>
         <source>Subtraction operator</source>
         <translation>Kivonás művelet</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsexpressionbuilder.ui" line="329"/>
+        <location filename="../src/ui/qgsexpressionbuilder.ui" line="332"/>
         <source>-</source>
         <translation>-</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsexpressionbuilder.ui" line="336"/>
+        <location filename="../src/ui/qgsexpressionbuilder.ui" line="339"/>
         <source>Division operator</source>
         <translation>Osztás művelet</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsexpressionbuilder.ui" line="339"/>
+        <location filename="../src/ui/qgsexpressionbuilder.ui" line="342"/>
         <source>/</source>
         <translation>/</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsexpressionbuilder.ui" line="346"/>
+        <location filename="../src/ui/qgsexpressionbuilder.ui" line="349"/>
         <source>Multiplication operator</source>
         <translation>Szorzás művelet</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsexpressionbuilder.ui" line="349"/>
+        <location filename="../src/ui/qgsexpressionbuilder.ui" line="352"/>
         <source>*</source>
         <translation>*</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsexpressionbuilder.ui" line="356"/>
+        <location filename="../src/ui/qgsexpressionbuilder.ui" line="359"/>
         <source>Power operator</source>
         <translation>Hatvány művelet</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsexpressionbuilder.ui" line="359"/>
+        <location filename="../src/ui/qgsexpressionbuilder.ui" line="362"/>
         <source>^</source>
         <translation>^</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsexpressionbuilder.ui" line="366"/>
+        <location filename="../src/ui/qgsexpressionbuilder.ui" line="369"/>
         <source>String Concatenation</source>
         <translation>Szöveg összeláncolás</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsexpressionbuilder.ui" line="369"/>
+        <location filename="../src/ui/qgsexpressionbuilder.ui" line="372"/>
         <source>||</source>
         <translation>||</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsexpressionbuilder.ui" line="388"/>
+        <location filename="../src/ui/qgsexpressionbuilder.ui" line="391"/>
         <source>Open Bracket </source>
         <translation>Nyító zárójel</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsexpressionbuilder.ui" line="391"/>
+        <location filename="../src/ui/qgsexpressionbuilder.ui" line="394"/>
         <source>(</source>
         <translation>(</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsexpressionbuilder.ui" line="398"/>
+        <location filename="../src/ui/qgsexpressionbuilder.ui" line="401"/>
         <source>Close Bracket </source>
         <translation>Záró zárójel</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsexpressionbuilder.ui" line="401"/>
+        <location filename="../src/ui/qgsexpressionbuilder.ui" line="404"/>
         <source>)</source>
         <translation>)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsexpressionbuilder.ui" line="481"/>
-        <location filename="../src/ui/qgsexpressionbuilder.ui" line="505"/>
+        <location filename="../src/ui/qgsexpressionbuilder.ui" line="484"/>
+        <location filename="../src/ui/qgsexpressionbuilder.ui" line="508"/>
         <source>Output preview is generated &lt;br&gt; using the first feature from the layer.</source>
         <translation>Előnézetet generáltam&lt;br&gt; a réteg első elemének felhasználásával.</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsexpressionbuilder.ui" line="484"/>
+        <location filename="../src/ui/qgsexpressionbuilder.ui" line="487"/>
         <source>Output preview:   </source>
         <translation>Előnézet:</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsexpressionbuilder.ui" line="435"/>
+        <location filename="../src/ui/qgsexpressionbuilder.ui" line="438"/>
         <source>Expression</source>
         <translation>Kifejezés</translation>
     </message>
@@ -28716,32 +28724,32 @@ p, li { white-space: pre-wrap; }
         <translation>Kifejezéssel szelektálás</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsexpressionselectiondialogbase.ui" line="33"/>
+        <location filename="../src/ui/qgsexpressionselectiondialogbase.ui" line="36"/>
         <source>Close</source>
         <translation>Lezár</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsexpressionselectiondialogbase.ui" line="46"/>
+        <location filename="../src/ui/qgsexpressionselectiondialogbase.ui" line="49"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsexpressionselectiondialogbase.ui" line="62"/>
+        <location filename="../src/ui/qgsexpressionselectiondialogbase.ui" line="65"/>
         <source>Select</source>
         <translation>Szelektál</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsexpressionselectiondialogbase.ui" line="67"/>
+        <location filename="../src/ui/qgsexpressionselectiondialogbase.ui" line="70"/>
         <source>Add to selection</source>
         <translation>Hozzáadás a szelekcióhoz</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsexpressionselectiondialogbase.ui" line="72"/>
+        <location filename="../src/ui/qgsexpressionselectiondialogbase.ui" line="75"/>
         <source>Remove from selection</source>
         <translation>Kihagyás a szelekcióból</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsexpressionselectiondialogbase.ui" line="77"/>
+        <location filename="../src/ui/qgsexpressionselectiondialogbase.ui" line="80"/>
         <source>Select within selection</source>
         <translation>Szelekció a szelekcióban</translation>
     </message>
@@ -57991,23 +57999,23 @@ Probléma volt a szimbólum adatbázisoddal.</translation>
 <context>
     <name>QgsSvgCache</name>
     <message>
-        <location filename="../src/core/symbology-ng/qgssvgcache.cpp" line="303"/>
+        <location filename="../src/core/symbology-ng/qgssvgcache.cpp" line="309"/>
         <source>SVG request failed [error: %1 - url: %2]</source>
         <translation>Sikertelen SVG kérés [hiba: %1 - url: %2]</translation>
     </message>
     <message>
-        <location filename="../src/core/symbology-ng/qgssvgcache.cpp" line="303"/>
-        <location filename="../src/core/symbology-ng/qgssvgcache.cpp" line="326"/>
+        <location filename="../src/core/symbology-ng/qgssvgcache.cpp" line="309"/>
+        <location filename="../src/core/symbology-ng/qgssvgcache.cpp" line="332"/>
         <source>SVG</source>
         <translation>SVG</translation>
     </message>
     <message>
-        <location filename="../src/core/symbology-ng/qgssvgcache.cpp" line="326"/>
+        <location filename="../src/core/symbology-ng/qgssvgcache.cpp" line="332"/>
         <source>SVG request error [status: %1 - reason phrase: %2]</source>
         <translation>SVG kérés hiba [státusz: %1 - ok: %2]</translation>
     </message>
     <message>
-        <location filename="../src/core/symbology-ng/qgssvgcache.cpp" line="739"/>
+        <location filename="../src/core/symbology-ng/qgssvgcache.cpp" line="745"/>
         <source>%1 of %2 bytes of svg image downloaded.</source>
         <translation>%1 byte a %2-ből letöltve.</translation>
     </message>
@@ -59391,13 +59399,13 @@ Töröljem a létező osztályokat az osztályozás előtt?</translation>
         <translation type="obsolete">A réteg térbeli referencia rendszer egységeiben: </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4079"/>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4098"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4065"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4084"/>
         <source>xMin,yMin %1,%2 : xMax,yMax %3,%4</source>
         <translation>xMin, yMin %1, %2 : xMax, yMax %3 %4</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4084"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4070"/>
         <source>unknown extent</source>
         <translation>ismeretlen terjedelem</translation>
     </message>
@@ -59414,7 +59422,7 @@ Töröljem a létező osztályokat az osztályozás előtt?</translation>
         <translation type="obsolete">Projekt (output) vetületi rendszer:</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4133"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4119"/>
         <source>(Invalid transformation of layer extents)</source>
         <translation>(A réteg terjedelem hibás transzformációja)</translation>
     </message>
@@ -59423,108 +59431,108 @@ Töröljem a létező osztályokat az osztályozás előtt?</translation>
         <translation type="obsolete">Attribútum mező info:</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3947"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3933"/>
         <source>General</source>
         <translation>Általános</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3953"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3939"/>
         <source>Layer comment</source>
         <translation>Réteg megjegyzés</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3960"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3946"/>
         <source>Storage type of this layer</source>
         <translation>Réteg tárolási típus</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3968"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3954"/>
         <source>Description of this provider</source>
         <translation>Leírás ehhez a szolgáltatóhoz</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3975"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3961"/>
         <source>Source for this layer</source>
         <translation>Réteg forrása</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3992"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3978"/>
         <source>Geometry type of the features in this layer</source>
         <translation>Elemek geometria típusa ebben a rétegben</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4001"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3987"/>
         <source>Primary key attributes</source>
         <translation>Elsődleges kulcs attribútumok</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4012"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3998"/>
         <source>The number of features in this layer</source>
         <translation>Elemek száma a rétegben</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4017"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4003"/>
         <source>Editing capabilities of this layer</source>
         <translation>Szerkesztési lehetőségek a rétegen</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4026"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4012"/>
         <source>Extents</source>
         <translation>Terjedelem</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4030"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4016"/>
         <source>In layer spatial reference system units</source>
         <translation>A réteg térbeli referencia rendszerének egységeiben</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4096"/>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4131"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4082"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4117"/>
         <source>In project spatial reference system units</source>
         <translation>A projekt térbeli referencia rendszerének egységeiben</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4109"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4095"/>
         <source>Layer Spatial Reference System</source>
         <translation>Réteg térbeli referencia rendszer</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4120"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4106"/>
         <source>Project (Output) Spatial Reference System</source>
         <translation>Projekt (output) vetületi rendszer</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4142"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4128"/>
         <source>Attribute field info</source>
         <translation>Attribútum mező info:</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4148"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4134"/>
         <source>Field</source>
         <translation>Mező</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4151"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4137"/>
         <source>Type</source>
         <translation>Típus</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4154"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4140"/>
         <source>Length</source>
         <translation>Hossz</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4157"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4143"/>
         <source>Precision</source>
         <translation>Élesség</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4160"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4146"/>
         <source>Comment</source>
         <translation>Megjegyzés</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4429"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4415"/>
         <source>Error: qgis element could not be found</source>
         <translation>Hiba: nem találom a QGI elemet</translation>
     </message>
