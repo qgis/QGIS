@@ -43,7 +43,28 @@
 #include <QStandardItemModel>
 #include <QSvgRenderer>
 
-
+QString QgsSymbolLayerV2Widget::dataDefinedPropertyLabel( const QString &entryName )
+{
+  QString label = entryName;
+  if ( entryName == "size" )
+  {
+    label = tr( "Size" );
+    QgsMarkerSymbolLayerV2 * layer = dynamic_cast<QgsMarkerSymbolLayerV2 *>( symbolLayer() );
+    if ( layer )
+    {
+      switch ( layer->scaleMethod() )
+      {
+        case QgsSymbolV2::ScaleArea:
+          label += " (" + tr( "area" ) + ")";
+          break;
+        case QgsSymbolV2::ScaleDiameter:
+          label += " (" + tr( "diameter" ) + ")";
+          break;
+      }
+    }
+  }
+  return label;
+}
 
 QgsSimpleLineSymbolLayerV2Widget::QgsSimpleLineSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent )
     : QgsSymbolLayerV2Widget( parent, vl )
@@ -455,7 +476,7 @@ void QgsSimpleMarkerSymbolLayerV2Widget::on_mDataDefinedPropertiesButton_clicked
       QgsDataDefinedSymbolDialog::colorHelpText() );
   dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "outline_width", tr( "Outline width" ), mLayer->dataDefinedPropertyString( "outline_width" ),
       QgsDataDefinedSymbolDialog::doubleHelpText() );
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "size", tr( "Size" ), mLayer->dataDefinedPropertyString( "size" ),
+  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "size", dataDefinedPropertyLabel( "size" ), mLayer->dataDefinedPropertyString( "size" ),
       QgsDataDefinedSymbolDialog::doubleHelpText() );
   dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "angle", tr( "Angle" ), mLayer->dataDefinedPropertyString( "angle" ),
       QgsDataDefinedSymbolDialog::doubleHelpText() );
@@ -1556,7 +1577,7 @@ void QgsSvgMarkerSymbolLayerV2Widget::on_mDataDefinedPropertiesButton_clicked()
   }
 
   QList< QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry > dataDefinedProperties;
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "size", tr( "Size" ), mLayer->dataDefinedPropertyString( "size" ),
+  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "size", dataDefinedPropertyLabel( "size" ), mLayer->dataDefinedPropertyString( "size" ),
       QgsDataDefinedSymbolDialog::doubleHelpText() );
   dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "outline-width", tr( "Border width" ), mLayer->dataDefinedPropertyString( "outline-width" ),
       QgsDataDefinedSymbolDialog::doubleHelpText() );

@@ -36,6 +36,10 @@ class GUI_EXPORT QgsSymbolLayerV2Widget : public QWidget
 
   protected:
     const QgsVectorLayer* mVectorLayer;
+    /** Get label for data defined entry.
+     * Implemented only for 'size' of marker symbols
+     * @added in 2.1 */
+    virtual QString dataDefinedPropertyLabel( const QString &entryName );
 
   signals:
     void changed();

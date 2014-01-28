@@ -1157,9 +1157,9 @@ void QgsGraduatedSymbolRendererV2::updateSymbols( QgsSymbolV2 *sym )
 void QgsGraduatedSymbolRendererV2::setScaleMethod( QgsSymbolV2::ScaleMethod scaleMethod )
 {
   mScaleMethod = scaleMethod;
-  foreach ( QgsRendererRangeV2 range, mRanges )
+  for ( QgsRangeList::iterator it = mRanges.begin(); it != mRanges.end(); ++it )
   {
-    setScaleMethodToSymbol( range.symbol(), scaleMethod );
+    setScaleMethodToSymbol( it->symbol(), scaleMethod );
   }
 }
 
