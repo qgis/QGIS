@@ -2450,7 +2450,7 @@ int QgsGeometry::addPart( const QList<QgsPoint> &points, QGis::GeometryType geom
 
     case QGis::Line:
       // Line needs to have at least two points and must be closed
-      if ( points.size() < 3 )
+      if ( points.size() < 2 )
       {
         QgsDebugMsg( "line must at least have two points: " + QString::number( points.size() ) );
         return 2;
@@ -2458,14 +2458,14 @@ int QgsGeometry::addPart( const QList<QgsPoint> &points, QGis::GeometryType geom
       break;
 
     case QGis::Polygon:
-      // Ring needs to have at least three points and must be closed
-      if ( points.size() < 4 )
+      // Polygon needs to have at least three points and must be closed
+      if ( points.size() < 3 )
       {
         QgsDebugMsg( "polygon must at least have three points: " + QString::number( points.size() ) );
         return 2;
       }
 
-      // ring must be closed
+      // polygon must be closed
       if ( points.first() != points.last() )
       {
         QgsDebugMsg( "polygon not closed" );
