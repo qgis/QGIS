@@ -43,8 +43,10 @@ void QgsGenericFeatureSelectionManager::deselect( const QgsFeatureIds& ids )
   emit selectionChanged( QgsFeatureIds(), ids, false );
 }
 
-void QgsGenericFeatureSelectionManager::setSelectedFeatures( const QgsFeatureIds& ids )
+void QgsGenericFeatureSelectionManager::setSelectedFeatures( const QgsFeatureIds& ids, bool validateIds )
 {
+  Q_UNUSED( validateIds );
+
   QgsFeatureIds selected = mSelectedFeatures - ids;
   QgsFeatureIds deselected = ids - mSelectedFeatures;
 

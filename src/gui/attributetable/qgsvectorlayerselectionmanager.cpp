@@ -39,9 +39,9 @@ void QgsVectorLayerSelectionManager::deselect( const QgsFeatureIds& ids )
   mLayer->deselect( ids );
 }
 
-void QgsVectorLayerSelectionManager::setSelectedFeatures( const QgsFeatureIds& ids )
+void QgsVectorLayerSelectionManager::setSelectedFeatures( const QgsFeatureIds& ids, bool validateIds )
 {
-  mLayer->setSelectedFeatures( ids );
+  mLayer->setSelectedFeatures( ids, validateIds );
 }
 
 const QgsFeatureIds& QgsVectorLayerSelectionManager::selectedFeaturesIds() const

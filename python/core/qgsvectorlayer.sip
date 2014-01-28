@@ -356,7 +356,7 @@ class QgsVectorLayer : QgsMapLayer
      *
      * @param ids   The ids which will be the new selection
      */
-    void setSelectedFeatures( const QgsFeatureIds &ids );
+    void setSelectedFeatures( const QgsFeatureIds &ids, bool validateIds = false );
 
     /** Returns the bounding box of the selected features. If there is no selection, QgsRectangle(0,0,0,0) is returned */
     QgsRectangle boundingBoxOfSelected();
