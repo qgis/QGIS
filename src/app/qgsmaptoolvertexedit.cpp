@@ -44,7 +44,7 @@ void QgsMapToolVertexEdit::displaySnapToleranceWarning()
 {
   QgisApp::instance()->messageBar()->pushMessage(
     tr( "Snap tolerance" ),
-    tr( "Could not snap segment. Have you set the tolerance in Settings > Snapping Options?" ),
+    tr( "Could not snap segment." ),
     QgsMessageBar::INFO,
     QgisApp::instance()->messageTimeout() );
 }
