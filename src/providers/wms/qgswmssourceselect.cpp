@@ -376,11 +376,17 @@ bool QgsWMSSourceSelect::populateLayerList( QgsWmsProvider *wmsProvider )
 
             lstTilesets->setItem( row, 0, item );
             lstTilesets->setItem( row, 1, new QTableWidgetItem( format ) );
-            lstTilesets->setItem( row, 2, new QTableWidgetItem( style.identifier ) );
-            QTableWidgetItem *styleItem = new QTableWidgetItem( l.title );
+
+            QTableWidgetItem *titleItem = new QTableWidgetItem( l.title.isEmpty() ? l.identifier : l.title );
             if ( !l.abstract.isEmpty() )
-              styleItem->setToolTip( "<p>" + l.abstract + "</p>" );
+              titleItem->setToolTip( "<p>" + l.abstract + "</p>" );
+            lstTilesets->setItem( row, 2, titleItem );
+
+            QTableWidgetItem *styleItem = new QTableWidgetItem( style.title.isEmpty() ? style.identifier : style.title );
+            if ( !style.abstract.isEmpty() )
+              titleItem->setToolTip( "<p>" + style.abstract + "</p>" );
             lstTilesets->setItem( row, 3, styleItem );
+
             lstTilesets->setItem( row, 4, new QTableWidgetItem( setLink.tileMatrixSet ) );
             lstTilesets->setItem( row, 5, new QTableWidgetItem( tileMatrixSets[ setLink.tileMatrixSet ].crs ) );
 
