@@ -3301,7 +3301,7 @@ void QgisApp::fileNew( bool thePromptToSaveFlag, bool forceBlank )
   // write the projections _proj string_ to project settings
   prj->writeEntry( "SpatialRefSys", "/ProjectCRSProj4String", srs.toProj4() );
   prj->writeEntry( "SpatialRefSys", "/ProjectCrs", srs.authid() );
-  prj->writeEntry( "SpatialRefSys", "/ProjectCRSID", (int) srs.srsid() );
+  prj->writeEntry( "SpatialRefSys", "/ProjectCRSID", ( int ) srs.srsid() );
   prj->dirty( false );
   if ( srs.mapUnits() != QGis::UnknownUnit )
   {
@@ -5884,6 +5884,7 @@ QgsVectorLayer * QgisApp::pasteToNewMemoryVector()
   if ( !message.isEmpty() )
   {
     QMessageBox::warning( this, tr( "Warning" ), message , QMessageBox::Ok );
+    return 0;
   }
 
   QgsVectorLayer * layer = new QgsVectorLayer( typeName, "pasted_features", "memory" );
@@ -8475,6 +8476,8 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionCutFeatures->setEnabled( false );
     mActionCopyFeatures->setEnabled( false );
     mActionPasteFeatures->setEnabled( false );
+    mActionPasteAsNewVector->setEnabled( false );
+    mActionPasteAsNewMemoryVector->setEnabled( false );
     mActionCopyStyle->setEnabled( false );
     mActionPasteStyle->setEnabled( false );
 
@@ -8585,7 +8588,11 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
         updateUndoActions();
       }
 
-      mActionPasteFeatures->setEnabled( isEditable && canAddFeatures && !clipboard()->empty() );
+      bool canPasteFeatures = isEditable && canAddFeatures && !clipboard()->empty();
+      mActionPasteFeatures->setEnabled( canPasteFeatures );
+      mActionPasteAsNewVector->setEnabled( canPasteFeatures );
+      mActionPasteAsNewMemoryVector->setEnabled( canPasteFeatures );
+
       mActionAddFeature->setEnabled( isEditable && canAddFeatures );
 
       //does provider allow deleting of features?
@@ -8735,6 +8742,8 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionCopyFeatures->setEnabled( false );
     mActionCutFeatures->setEnabled( false );
     mActionPasteFeatures->setEnabled( false );
+    mActionPasteAsNewVector->setEnabled( false );
+    mActionPasteAsNewMemoryVector->setEnabled( false );
     mActionRotatePointSymbols->setEnabled( false );
     mActionDeletePart->setEnabled( false );
     mActionDeleteRing->setEnabled( false );
