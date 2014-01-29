@@ -2566,28 +2566,6 @@ void QgsWmsProvider::parseLayer( QDomElement const & e, QgsWmsLayerProperty& lay
     // can be combined with others later in supportedCrsForLayers()
     mCrsForLayer[ layerProperty.name ] = layerProperty.crs;
 
-    // Store the WGS84 (CRS:84) extent so that it can be combined with others later
-    // in calculateExtent()
-
-    // Apply the coarse bounding box first
-    mExtentForLayer[ layerProperty.name ] = layerProperty.ex_GeographicBoundingBox;
-
-    // see if we can refine the bounding box with the CRS-specific bounding boxes
-    for ( int i = 0; i < layerProperty.boundingBox.size(); i++ )
-    {
-      QgsDebugMsg( "testing bounding box CRS which is "
-                   + layerProperty.boundingBox[i].crs + "." );
-
-      if ( layerProperty.boundingBox[i].crs == DEFAULT_LATLON_CRS )
-      {
-        mExtentForLayer[ layerProperty.name ] = layerProperty.boundingBox[i].box;
-      }
-    }
-
-    QgsDebugMsg( "extent for "
-                 + layerProperty.name  + " is "
-                 + mExtentForLayer[ layerProperty.name ].toString( 3 )  + "." );
-
     // Insert into the local class' registry
     mLayersSupported.push_back( layerProperty );
 
@@ -2612,6 +2590,88 @@ void QgsWmsProvider::parseLayer( QDomElement const & e, QgsWmsLayerProperty& lay
 
   QgsDebugMsg( "exiting." );
 }
+
+
+static const QgsWmsLayerProperty* _findNestedLayerProperty( const QString& layerName, const QgsWmsLayerProperty* prop )
+{
+  if ( prop->name == layerName )
+    return prop;
+
+  foreach ( const QgsWmsLayerProperty& child, prop->layer )
+  {
+    if ( const QgsWmsLayerProperty* res = _findNestedLayerProperty( layerName, &child ) )
+      return res;
+  }
+
+  return 0;
+}
+
+
+bool QgsWmsProvider::extentForNonTiledLayer( const QString& layerName, const QString& crs, QgsRectangle& extent )
+{
+  const QgsWmsLayerProperty* layerProperty = _findNestedLayerProperty( layerName, &mCapabilities.capability.layer );
+  if ( !layerProperty )
+    return false;
+
+  // see if we can refine the bounding box with the CRS-specific bounding boxes
+  for ( int i = 0; i < layerProperty->boundingBox.size(); i++ )
+  {
+    if ( layerProperty->boundingBox[i].crs == crs )
+    {
+      // exact bounding box is provided for this CRS
+      extent = layerProperty->boundingBox[i].box;
+      return true;
+    }
+  }
+
+  // exact bounding box for given CRS is not listed - we need to pick a different
+  // bounding box definition - either the coarse bounding box (in WGS84)
+  // or one of the alternative bounding box definitions for the layer
+
+  // Use the coarse bounding box
+  extent = layerProperty->ex_GeographicBoundingBox;
+
+  for ( int i = 0; i < layerProperty->boundingBox.size(); i++ )
+  {
+    if ( layerProperty->boundingBox[i].crs == DEFAULT_LATLON_CRS )
+    {
+      if ( layerProperty->boundingBox[i].box.contains( extent ) )
+        continue; // this bounding box is less specific (probably inherited from parent)
+
+      // this BBox is probably better than the one in ex_GeographicBoundingBox
+      extent = layerProperty->boundingBox[i].box;
+      break;
+    }
+  }
+
+  // transform it to requested CRS
+
+  QgsCoordinateReferenceSystem dst, wgs;
+  if ( !wgs.createFromOgcWmsCrs( DEFAULT_LATLON_CRS ) || !dst.createFromOgcWmsCrs( crs ) )
+    return false;
+
+  QgsCoordinateTransform xform( wgs, dst );
+  QgsDebugMsg( QString("transforming layer extent %1").arg( extent.toString( true ) ) );
+  try
+  {
+    extent = xform.transformBoundingBox( extent );
+  }
+  catch ( QgsCsException &cse )
+  {
+    Q_UNUSED( cse );
+    return false;
+  }
+  QgsDebugMsg( QString("transformed layer extent %1").arg( extent.toString( true ) ) );
+
+  //make sure extent does not contain 'inf' or 'nan'
+  if ( !extent.isFinite() )
+  {
+    return false;
+  }
+
+  return true;
+}
+
 
 void QgsWmsProvider::parseTileSetProfile( QDomElement const &e )
 {
@@ -3376,32 +3436,15 @@ bool QgsWmsProvider::calculateExtent()
           ++it )
     {
       QgsDebugMsg( "Sublayer iterator: " + *it );
-      // This is the extent for the layer name in *it
-      if ( !mExtentForLayer.contains( *it ) )
+
+      QgsRectangle extent;
+      if ( !extentForNonTiledLayer( *it, mImageCrs, extent ) )
       {
-        mLayerExtent = QgsRectangle();
-        appendError( ERR( tr( "Extent for layer %1 not found in capabilities" ).arg( *it ) ) );
+        QgsDebugMsg( "extent for " + *it + " is invalid! (ignoring)" );
         continue;
       }
 
-      QgsRectangle extent = mExtentForLayer.find( *it ).value();
-
-      // Convert to the user's CRS as required
-      try
-      {
-        extent = mCoordinateTransform->transformBoundingBox( extent, QgsCoordinateTransform::ForwardTransform );
-      }
-      catch ( QgsCsException &cse )
-      {
-        Q_UNUSED( cse );
-        continue; //ignore extents of layers which cannot be transformed info the required CRS
-      }
-
-      //make sure extent does not contain 'inf' or 'nan'
-      if ( !extent.isFinite() )
-      {
-        continue;
-      }
+      QgsDebugMsg( "extent for " + *it  + " is " + extent.toString( 3 )  + "." );
 
       // add to the combined extent of all the active sublayers
       if ( firstLayer )
@@ -3570,14 +3613,6 @@ QString QgsWmsProvider::layerMetadata( QgsWmsLayerProperty &layer )
   metadata += "</td>";
   metadata += "<td>";
   metadata += QString::number( layer.fixedHeight );
-  metadata += "</td></tr>";
-
-  // Layer Fixed Height
-  metadata += "<tr><td>";
-  metadata += tr( "WGS 84 Bounding Box" );
-  metadata += "</td>";
-  metadata += "<td>";
-  metadata += mExtentForLayer[ layer.name ].toString();
   metadata += "</td></tr>";
 
   // Layer Coordinate Reference Systems
