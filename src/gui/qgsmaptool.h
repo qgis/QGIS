@@ -17,6 +17,7 @@
 #define QGSMAPTOOL_H
 
 #include "qgsconfig.h"
+#include "qgsmessagebar.h"
 
 #include <QCursor>
 #include <QString>
@@ -45,6 +46,9 @@ class QAbstractButton;
  */
 class GUI_EXPORT QgsMapTool : public QObject
 {
+
+    Q_OBJECT
+
   public:
 
     //! virtual destructor
@@ -121,6 +125,18 @@ class GUI_EXPORT QgsMapTool : public QObject
     //! returns pointer to the tool's map canvas
     QgsMapCanvas* canvas();
 
+    //! Emit map tool changed with the old tool
+    //! @note added in 2.3
+    QString toolName() { return mToolName; }
+
+  signals:
+    //! emit a message
+    void displayMessage( QString message );
+    void displayMessage( QString message, QgsMessageBar::MessageLevel );
+
+    //! emit signal to clear previous message
+    void removeMessage();
+
   protected:
 
     //! constructor takes map canvas as a parameter
@@ -158,6 +174,8 @@ class GUI_EXPORT QgsMapTool : public QObject
     //! which will be used to set that action as active
     QAbstractButton* mButton;
 
+    //! translated name of the map tool
+    QString mToolName;
 };
 
 #endif

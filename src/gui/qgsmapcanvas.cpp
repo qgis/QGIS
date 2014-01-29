@@ -1429,6 +1429,8 @@ void QgsMapCanvas::setMapTool( QgsMapTool* tool )
     mLastNonZoomMapTool = NULL;
   }
 
+  QgsMapTool* oldTool = mMapTool;
+
   // set new map tool and activate it
   mMapTool = tool;
   if ( mMapTool )
@@ -1438,6 +1440,7 @@ void QgsMapCanvas::setMapTool( QgsMapTool* tool )
   }
 
   emit mapToolSet( mMapTool );
+  emit mapToolSet( mMapTool, oldTool );
 } // setMapTool
 
 void QgsMapCanvas::unsetMapTool( QgsMapTool* tool )
@@ -1447,6 +1450,7 @@ void QgsMapCanvas::unsetMapTool( QgsMapTool* tool )
     mMapTool->deactivate();
     mMapTool = NULL;
     emit mapToolSet( NULL );
+    emit mapToolSet( NULL, mMapTool );
     setCursor( Qt::ArrowCursor );
   }
 

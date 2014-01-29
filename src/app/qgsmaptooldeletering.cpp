@@ -23,8 +23,10 @@
 #include <QMessageBox>
 
 QgsMapToolDeleteRing::QgsMapToolDeleteRing( QgsMapCanvas* canvas )
-    : QgsMapToolVertexEdit( canvas ), mCross( 0 )
+    : QgsMapToolVertexEdit( canvas )
+    , mCross( 0 )
 {
+  mToolName = tr( "Delete ring" );
 }
 
 QgsMapToolDeleteRing::~QgsMapToolDeleteRing()
@@ -52,6 +54,9 @@ void QgsMapToolDeleteRing::canvasPressEvent( QMouseEvent *e )
 
   if ( mRecentSnappingResults.size() > 0 )
   {
+    // remove previous warning
+    emit removeMessage();
+
     QgsPoint markerPoint = mRecentSnappingResults.begin()->snappedVertex;
 
     //show vertex marker
@@ -61,7 +66,7 @@ void QgsMapToolDeleteRing::canvasPressEvent( QMouseEvent *e )
   }
   else
   {
-    displaySnapToleranceWarning();
+    emit displayMessage( tr( "could not snap to a ring on the current layer." ) );
   }
 }
 

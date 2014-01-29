@@ -22,7 +22,12 @@
 #include <QAbstractButton>
 
 QgsMapTool::QgsMapTool( QgsMapCanvas* canvas )
-    : QObject( canvas ), mCanvas( canvas ), mCursor( Qt::CrossCursor ), mAction( NULL ), mButton( NULL )
+    : QObject( canvas )
+    , mCanvas( canvas )
+    , mCursor( Qt::CrossCursor )
+    , mAction( NULL )
+    , mButton( NULL )
+    , mToolName( QString() )
 {
 }
 

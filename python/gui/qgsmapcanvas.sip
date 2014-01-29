@@ -354,6 +354,10 @@ class QgsMapCanvas : QGraphicsView
 
     //! Emit map tool changed event
     void mapToolSet( QgsMapTool *tool );
+    
+    //! Emit map tool changed with the old tool
+    //! @note added in 2.3
+    void mapToolSet( QgsMapTool *newTool, QgsMapTool* oldTool );
 
     // ### QGIS 3: remove the signal
     //! Emitted when selection in any layer gets changed
