@@ -201,7 +201,8 @@ void QgsAttributeTableModel::attributeValueChanged( QgsFeatureId fid, int idx, c
       }
       else
       {
-        mFieldCache[ fid ] = value;
+        if ( idx == mCachedField )
+          mFieldCache[ fid ] = value;
         // Update representation
         setData( index( idToRow( fid ), fieldCol( idx ) ), value, Qt::EditRole );
       }
