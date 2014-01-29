@@ -324,7 +324,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
 
   mLayersSupported.clear();
 
-  for ( int i = 0; i < 3; i++ )
+  for ( int i = 0; i < (hasTopology() ? 3 : 2); i++ )
   {
     QString sql, tableName, schemaName, columnName, typeName, sridName, gtableName;
     QgsPostgresGeometryColumnType columnType = sctGeometry;
