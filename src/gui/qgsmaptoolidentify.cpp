@@ -431,6 +431,7 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
     return false;
   }
 
+  QgsPoint pointInCanvasCrs = point;
   try
   {
     point = toLayerCoordinates( layer, point );
@@ -460,12 +461,24 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
   }
 
   QgsRasterIdentifyResult identifyResult;
-  // We can only use context (extent, width, height) if layer is not reprojected,
-  // otherwise we don't know source resolution (size).
+  // We can only use current map canvas context (extent, width, height) if layer is not reprojected,
   if ( mCanvas->hasCrsTransformEnabled() && dprovider->crs() != mCanvas->mapRenderer()->destinationCrs() )
   {
-    viewExtent = toLayerCoordinates( layer, viewExtent );
-    identifyResult = dprovider->identify( point, format );
+    // To get some reasonable response for point/line WMS vector layers we must
+    // use a context with approximately a resolution in layer CRS units
+    // corresponding to current map canvas resolution (for examplei UMN Mapserver
+    // in msWMSFeatureInfo() -> msQueryByRect() is using requested pixel
+    // + TOLERANCE (layer param) for feature selection)
+    //
+    QgsRectangle r;
+    r.setXMinimum( pointInCanvasCrs.x() - mapUnitsPerPixel / 2. );
+    r.setXMaximum( pointInCanvasCrs.x() + mapUnitsPerPixel / 2. );
+    r.setYMinimum( pointInCanvasCrs.y() - mapUnitsPerPixel / 2. );
+    r.setYMaximum( pointInCanvasCrs.y() + mapUnitsPerPixel / 2. );
+    r = toLayerCoordinates( layer, r ); // will be a bit larger
+    // Mapserver (6.0.3, for example) does not work with 1x1 pixel box
+    // but that is fixed (the rect is enlarged) in the WMS provider
+    identifyResult = dprovider->identify( point, format, r, 1, 1 );
   }
   else
   {

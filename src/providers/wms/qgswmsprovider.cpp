@@ -4167,6 +4167,9 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
   {
     // We don't know original source resolution, so we take some small extent around the point.
 
+    // Warning: this does not work well with poin/line vector layers where search rectangle
+    // is based on pixel size (e.g. UMN Mapserver is using TOLERANCE layer param)
+
     double xRes = 0.001; // expecting meters
 
     // TODO: add CRS as class member
@@ -4207,6 +4210,20 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
   // No need to fiddle with extent origin not covered by layer extent, I believe
   double xRes = myExtent.width() / theWidth;
   double yRes = myExtent.height() / theHeight;
+
+  // Mapserver (6.0.3, for example) does not seem to work with 1x1 pixel box
+  // (seems to be a different issue, not the slownes of GDAL with ECW mentioned above)
+  // so we have to enlarge it a bit
+  if ( theWidth == 1 )
+  {
+    theWidth += 1;
+    myExtent.setXMaximum( myExtent.xMaximum() + xRes );
+  }
+  if ( theHeight == 1 )
+  {
+    theHeight += 1;
+    myExtent.setYMaximum( myExtent.yMaximum() + yRes );
+  }
 
   QgsDebugMsg( "myExtent = " + myExtent.toString() );
   QgsDebugMsg( QString( "theWidth = %1 theHeight = %2" ).arg( theWidth ).arg( theHeight ) );

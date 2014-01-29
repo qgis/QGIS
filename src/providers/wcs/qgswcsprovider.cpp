@@ -1619,6 +1619,15 @@ QgsRasterIdentifyResult QgsWcsProvider::identify( const QgsPoint & thePoint, Qgs
 
   QgsRectangle myExtent = theExtent;
   int maxSize = 2000;
+  int cacheSize = 1000; // tile cache size if context is not defined or small
+  double relResTol = 0.1; // relative resolution tolerance (10%)
+
+  // TODO: We are using cacheSize x cacheSize if context is not defined
+  // or box is too small (in pixels). That is necessary to allow effective
+  // map querying (valuetool for example). OTOH, it means reading of large
+  // unnecessary amount of data for each identify() call if query points are too
+  // distant (out of cache) for example when called from scripts
+
   // if context size is to large we have to cut it, in that case caching big
   // big part does not make sense
   if ( myExtent.isEmpty() || theWidth == 0 || theHeight == 0 ||
@@ -1627,8 +1636,7 @@ QgsRasterIdentifyResult QgsWcsProvider::identify( const QgsPoint & thePoint, Qgs
     // context missing, use a small area around the point and highest resolution if known
 
     double xRes, yRes;
-    //if ( mHasSize )
-    if ( false )
+    if ( mHasSize )
     {
       xRes = mCoverageExtent.width()  / mWidth;
       yRes = mCoverageExtent.height()  / mHeight;
@@ -1654,20 +1662,22 @@ QgsRasterIdentifyResult QgsWcsProvider::identify( const QgsPoint & thePoint, Qgs
       yRes = xRes;
     }
 
-    // 1000x1000 to cache data around
-    theWidth = 1000;
-    theHeight = 1000;
+    theWidth = cacheSize;
+    theHeight = cacheSize;
 
     myExtent = QgsRectangle( thePoint.x() - xRes * theWidth / 2,
                              thePoint.y() - yRes * theHeight / 2,
                              thePoint.x() + xRes * theWidth / 2,
                              thePoint.y() + yRes * theHeight / 2 );
 
+    double xResDiff = qAbs( mCachedViewExtent.width() / mCachedViewWidth - xRes );
+    double yResDiff = qAbs( mCachedViewExtent.height() / mCachedViewHeight - yRes );
+
     if ( !mCachedGdalDataset ||
          !mCachedViewExtent.contains( thePoint ) ||
          mCachedViewWidth == 0 || mCachedViewHeight == 0 ||
-         mCachedViewExtent.width() / mCachedViewWidth - xRes > TINY_VALUE ||
-         mCachedViewExtent.height() / mCachedViewHeight - yRes > TINY_VALUE )
+         xResDiff / xRes > relResTol ||
+         yResDiff / yRes > relResTol )
     {
       getCache( 1, myExtent, theWidth, theHeight );
     }
@@ -1676,12 +1686,39 @@ QgsRasterIdentifyResult QgsWcsProvider::identify( const QgsPoint & thePoint, Qgs
   {
     // Use context -> effective caching (usually, if context is constant)
     QgsDebugMsg( "Using context extent and resolution" );
+    // To use the cache it is sufficient to have point within cache and
+    // similar resolution
+    double xRes = myExtent.width() / theWidth;
+    double yRes = myExtent.height() / theHeight;
+    QgsDebugMsg( QString( "width = %1 height = %2 xRes = %3 yRes = %4" ).arg( myExtent.width() ).arg( myExtent.height() ).arg( xRes ).arg( yRes ) );
+    double xResDiff = qAbs( mCachedViewExtent.width() / mCachedViewWidth - xRes );
+    double yResDiff = qAbs( mCachedViewExtent.height() / mCachedViewHeight - yRes );
+    QgsDebugMsg( QString( "xRes diff = %1 yRes diff = %2 relative xResDiff = %3 relative yResDiff = %4" ).arg( xResDiff ).arg( yResDiff ).arg( xResDiff / xRes ).arg( yResDiff / yRes ) );
     if ( !mCachedGdalDataset ||
-         mCachedViewExtent != theExtent ||
-         mCachedViewWidth != theWidth ||
-         mCachedViewHeight != theHeight )
+         !mCachedViewExtent.contains( thePoint ) ||
+         xResDiff / xRes > relResTol ||
+         yResDiff / yRes > relResTol )
     {
-      getCache( 1, theExtent, theWidth, theHeight );
+      // Identify map tool is now using fake context 1x1 pixel to get point/line
+      // features from WMS. In such case we enlarge the extent to get data cached
+      // for next queries around.
+      // BTW: UMN Mapserver (6.0.3) seems to be buggy with 1x1 pixels request (returns 'no data' value
+      if ( theWidth < cacheSize )
+      {
+        int buffer = ( cacheSize - theWidth ) / 2;
+        theWidth += 2 * buffer;
+        myExtent.setXMinimum( myExtent.xMinimum() - xRes * buffer );
+        myExtent.setXMaximum( myExtent.xMaximum() + xRes * buffer );
+      }
+      if ( theHeight < cacheSize )
+      {
+        int buffer = ( cacheSize - theHeight ) / 2;
+        theHeight += 2 * buffer;
+        myExtent.setYMinimum( myExtent.yMinimum() - yRes * buffer );
+        myExtent.setYMaximum( myExtent.yMaximum() + yRes * buffer );
+      }
+
+      getCache( 1, myExtent, theWidth, theHeight );
     }
   }
 
