@@ -288,7 +288,10 @@ def getVectorFields(vectorFile):
 # get raster SRS if possible
 def getRasterSRS( parent, fileName ):
     processSRS = QProcess( parent )
-    processSRS.start( "gdalinfo", [fileName], QIODevice.ReadOnly )
+    if ( GdalConfig.versionNum() >= 1900 ):
+        processSRS.start( "gdalsrsinfo", ["-o", "wkt", "-p", fileName], QIODevice.ReadOnly )
+    else:
+        processSRS.start( "gdalinfo", [fileName], QIODevice.ReadOnly )
     arr = ''
     if processSRS.waitForFinished():
       arr = str(processSRS.readAllStandardOutput())
@@ -301,7 +304,7 @@ def getRasterSRS( parent, fileName ):
     if len(info) == 0:
       return ''
 
-    for elem in info:
+    for elem in reversed(info):
         m = re.match("^\s*AUTHORITY\[\"([a-z]*[A-Z]*)\",\"(\d*)\"\]", elem)
         if m and len(m.groups()) == 2:
             return '%s:%s' % (m.group(1), m.group(2))
