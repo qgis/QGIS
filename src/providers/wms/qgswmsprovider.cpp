@@ -2964,12 +2964,6 @@ void QgsWmsProvider::parseWMTSContents( QDomElement const &e )
       }
     }
 
-    if ( l.boundingBox.crs.isEmpty() )
-    {
-      l.boundingBox.box = QgsRectangle( -180.0, -90.0, 180.0, 90.0 );
-      l.boundingBox.crs = DEFAULT_LATLON_CRS;
-    }
-
     for ( QDomElement e1 = e0.firstChildElement( "Style" );
           !e1.isNull();
           e1 = e1.nextSiblingElement( "Style" ) )
@@ -3170,6 +3164,61 @@ void QgsWmsProvider::parseWMTSContents( QDomElement const &e )
     mTileThemes << QgsWmtsTheme();
     parseTheme( e0, mTileThemes.back() );
   }
+
+  // make sure that all layers have a bounding box
+  for( QList<QgsWmtsTileLayer>::iterator it = mTileLayersSupported.begin(); it != mTileLayersSupported.end(); ++it )
+  {
+    QgsWmtsTileLayer& l = *it;
+
+    if ( l.boundingBox.crs.isEmpty() )
+    {
+      if ( !detectTileLayerBoundingBox( l ) )
+      {
+        QgsDebugMsg( "failed to detect bounding box for " + l.identifier + " - using extent of the whole world" );
+        l.boundingBox.box = QgsRectangle( -180.0, -90.0, 180.0, 90.0 );
+        l.boundingBox.crs = DEFAULT_LATLON_CRS;
+      }
+    }
+  }
+}
+
+
+bool QgsWmsProvider::detectTileLayerBoundingBox( QgsWmtsTileLayer& l )
+{
+  if ( l.setLinks.isEmpty() )
+    return false;
+
+  // take first supported tile matrix set
+  const QgsWmtsTileMatrixSetLink& setLink = l.setLinks.constBegin().value();
+
+  QHash<QString, QgsWmtsTileMatrixSet>::const_iterator tmsIt = mTileMatrixSets.constFind( setLink.tileMatrixSet );
+  if ( tmsIt == mTileMatrixSets.constEnd() )
+    return false;
+
+  QgsCoordinateReferenceSystem crs;
+  if ( !crs.createFromOgcWmsCrs( tmsIt->crs ) )
+    return false;
+
+  // take most coarse tile matrix ...
+  QMap<double, QgsWmtsTileMatrix>::const_iterator tmIt = tmsIt->tileMatrices.constEnd() - 1;
+  if ( tmIt == tmsIt->tileMatrices.constEnd() )
+    return false;
+
+  const QgsWmtsTileMatrix& tm = *tmIt;
+  double metersPerUnit = QGis::fromUnitToUnitFactor( crs.mapUnits(), QGis::Meters );
+  double res = tm.scaleDenom * 0.00028 / metersPerUnit;
+  QgsPoint bottomRight( tm.topLeft.x() + res * tm.tileWidth * tm.matrixWidth,
+                        tm.topLeft.y() - res * tm.tileHeight * tm.matrixHeight );
+
+  QgsDebugMsg( QString( "detecting WMTS layer bounding box: tileset %1 matrix %2 crs %3 res %4" )
+                 .arg( tmsIt->identifier ).arg( tm.identifier ).arg( tmsIt->crs ).arg( res ) );
+
+  QgsRectangle extent( tm.topLeft, bottomRight );
+  extent.normalize();
+
+  l.boundingBox.box = extent;
+  l.boundingBox.crs = tmsIt->crs;
+  return true;
 }
 
 
