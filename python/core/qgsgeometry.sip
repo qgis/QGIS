@@ -200,7 +200,7 @@ class QgsGeometry
      * Searches for the closest vertex in this geometry to the given point.
      * @param point Specifiest the point for search
      * @param atVertex Receives index of the closest vertex
-     * @return The squared cartesian distance, negative number on error
+     * @return The squared cartesian distance is also returned in sqrDist, negative number on error
      */
     double closestVertexWithContext( const QgsPoint& point, int& atVertex /Out/ );
 
@@ -415,6 +415,7 @@ class QgsGeometry
     class Error
     {
       public:
+        Error();
         Error( QString m );
         Error( QString m, QgsPoint p );
 

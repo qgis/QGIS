@@ -216,7 +216,6 @@ class TestQgsGeometry(TestCase):
                       ("True", crossesGeom))
         assert crossesGeom == True, myMessage
 
-    @expectedFailure
     def testSimplifyIssue4189(self):
         """Test we can simplify a complex geometry.
 
@@ -752,16 +751,16 @@ class TestQgsGeometry(TestCase):
         if not TestQgsGeometry.wkbPtr:
           return
 
-	# #9423
-	points = [ QgsPoint(10, 30), QgsPoint(40, 20), QgsPoint(30,10), QgsPoint(20,10) ]
-	wkt = "MULTIPOINT (10 30, 40 20, 30 10, 20 10)"
-	multipoint = QgsGeometry.fromWkt(wkt)
-	assert multipoint.isMultipart(), "Expected MULTIPOINT to be multipart"
-	assert multipoint.wkbType() == QGis.WKBMultiPoint, "Expected wkbType to be WKBMultipoint"
-	i = 0
-	for p in multipoint.asMultiPoint():
-		assert p == points[i], "Expected %s at %d, got %s" % (points[i].toString(), i, p.toString())
-		i+=1
+        # #9423
+        points = [ QgsPoint(10, 30), QgsPoint(40, 20), QgsPoint(30,10), QgsPoint(20,10) ]
+        wkt = "MULTIPOINT (10 30, 40 20, 30 10, 20 10)"
+        multipoint = QgsGeometry.fromWkt(wkt)
+        assert multipoint.isMultipart(), "Expected MULTIPOINT to be multipart"
+        assert multipoint.wkbType() == QGis.WKBMultiPoint, "Expected wkbType to be WKBMultipoint"
+        i = 0
+        for p in multipoint.asMultiPoint():
+                assert p == points[i], "Expected %s at %d, got %s" % (points[i].toString(), i, p.toString())
+                i+=1
 
         multipoint = QgsGeometry.fromWkt( "MULTIPOINT(5 5)" )
         assert multipoint.vertexAt( 0 ) == QgsPoint(5,5), "MULTIPOINT fromWkt failed"
@@ -802,8 +801,8 @@ class TestQgsGeometry(TestCase):
     def testMoveVertex(self):
         multipoint = QgsGeometry.fromWkt( "MULTIPOINT(5 0,0 0,0 4,5 4,5 1,1 1,1 3,4 3,4 2,2 2)" )
         for i in range(0,10):
-          assert multipoint.moveVertex( i+1, i+1, i ), "move vertex %d failed" % i
-        expwkt = "MULTIPOINT(1 1, 2 2, 3 3, 4 4, 5 5, 6 6, 7 7, 8 8, 9 9, 10 10)"
+          assert multipoint.moveVertex( i+1, -1-i, i ), "move vertex %d failed" % i
+        expwkt = "MULTIPOINT(1 -1, 2 -2, 3 -3, 4 -4, 5 -5, 6 -6, 7 -7, 8 -8, 9 -9, 10 -10)"
         wkt = multipoint.exportToWkt()
         assert compareWkt( expwkt, wkt ), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt )
 
@@ -833,12 +832,15 @@ class TestQgsGeometry(TestCase):
         wkt = polygon.exportToWkt()
         assert compareWkt( expwkt, wkt ), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt )
 
-        assert polygon.moveVertex( 1, 1, 0 ), "move vertex failed"
-        expwkt = "MULTIPOLYGON(((1 1,1 0,1 1,2 1,2 2,0 2,1 1)),((4 0,5 0,6 2,3 2,3 1,4 1,4 0)))"
+        assert polygon.moveVertex( 1, 2, 0 ), "move vertex failed"
+        expwkt = "MULTIPOLYGON(((1 2,1 0,1 1,2 1,2 2,0 2,1 2)),((4 0,5 0,6 2,3 2,3 1,4 1,4 0)))"
+        wkt = polygon.exportToWkt()
+        assert compareWkt( expwkt, wkt ), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt )
 
-        assert polygon.moveVertex( 1, 1, 8 ), "move vertex failed"
-        expwkt = "MULTIPOLYGON(((1 1,1 0,1 1,2 1,2 2,0 2,1 1)),((1 1,5 0,6 2,3 2,3 1,4 1,1 1)))"
-
+        assert polygon.moveVertex( 2, 1, 7 ), "move vertex failed"
+        expwkt = "MULTIPOLYGON(((1 2,1 0,1 1,2 1,2 2,0 2,1 2)),((2 1,5 0,6 2,3 2,3 1,4 1,2 1)))"
+        wkt = polygon.exportToWkt()
+        assert compareWkt( expwkt, wkt ), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt )
 
     def testDeleteVertex(self):
         # 2-+-+-+-+-3
@@ -957,27 +959,26 @@ class TestQgsGeometry(TestCase):
 
     def testTranslate(self):
         point = QgsGeometry.fromWkt( "POINT(1 1)" )
-        assert point.translate( 1, 1 )==0, "Translate failed"
-        expwkt = "POINT(2 2)"
+        assert point.translate( 1, 2 )==0, "Translate failed"
+        expwkt = "POINT(2 3)"
         wkt = point.exportToWkt()
         assert compareWkt( expwkt, wkt ), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt )
 
         point = QgsGeometry.fromWkt( "MULTIPOINT(1 1,2 2,3 3)" )
-        assert point.translate( 1, 1 )==0, "Translate failed"
-        expwkt = "MULTIPOINT(2 2, 3 3, 4 4)"
+        assert point.translate( 1, 2 )==0, "Translate failed"
+        expwkt = "MULTIPOINT(2 3, 3 4, 4 5)"
         wkt = point.exportToWkt()
         assert compareWkt( expwkt, wkt ), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt )
 
         linestring = QgsGeometry.fromWkt( "LINESTRING(1 0,2 0)" )
-
-        assert linestring.translate( 1, 1 )==0, "Translate failed"
-        expwkt = "LINESTRING(2 1, 3 1)"
+        assert linestring.translate( 1, 2 )==0, "Translate failed"
+        expwkt = "LINESTRING(2 2, 3 2)"
         wkt = linestring.exportToWkt()
         assert compareWkt( expwkt, wkt ), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt )
 
         polygon = QgsGeometry.fromWkt( "MULTIPOLYGON(((0 0,1 0,1 1,2 1,2 2,0 2,0 0)),((4 0,5 0,5 2,3 2,3 1,4 1,4 0)))" )
-        assert polygon.translate( 1, 1 )==0, "Translate failed"
-        expwkt = "MULTIPOLYGON(((1 1,2 1,2 2,3 2,3 3,1 3,1 1)),((5 1,6 1,6 1,4 3,4 2,5 2,5 1)))"
+        assert polygon.translate( 1, 2 )==0, "Translate failed"
+        expwkt = "MULTIPOLYGON(((1 2,2 2,2 3,3 3,3 4,1 4,1 2)),((5 2,6 2,6 2,4 4,4 3,5 3,5 2)))"
         wkt = polygon.exportToWkt()
 
         ct = QgsCoordinateTransform()
@@ -1076,6 +1077,48 @@ class TestQgsGeometry(TestCase):
         expbb = QgsRectangle(0,0,5,2)
         bb = polygon.boundingBox()
         assert expbb == bb, "Expected:\n%s\nGot:\n%s\n" % (expbb.toString(), bb.toString())
+
+    def testAddPart(self):
+        #   2-3 6-+-7
+        #   | | |   |
+        # 0-1 4 5   8-9
+        points = [
+            [ QgsPoint(0,0), QgsPoint(1,0), QgsPoint(1,1), QgsPoint(2,1), QgsPoint(2,0), ],
+            [ QgsPoint(3,0), QgsPoint(3,1), QgsPoint(5,1), QgsPoint(5,0), QgsPoint(6,0), ]
+          ]
+
+        polyline = QgsGeometry.fromPolyline( points[0] )
+        assert polyline.addPart( points[1][0:1] ) == 2, "addPart with one point line unexpectedly succeeded."
+        assert polyline.addPart( points[1][0:2] ) == 0, "addPart with two point line failed."
+        expwkt = "MULTILINESTRING((0 0, 1 0, 1 1, 2 1, 2 0), (3 0, 3 1))"
+        wkt = polyline.exportToWkt()
+        assert compareWkt( expwkt, wkt ), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt )
+
+        polyline = QgsGeometry.fromPolyline( points[0] )
+        assert polyline.addPart( points[1] ) == 0, "addPart with %d point line failed." % len(points[1])
+        expwkt = "MULTILINESTRING((0 0, 1 0, 1 1, 2 1, 2 0), (3 0, 3 1, 5 1, 5 0, 6 0))"
+
+        # 5-+-4 0-+-9
+        # |   | |   |
+        # | 2-3 1-2 |
+        # | |     | |
+        # 0-1     7-8
+        points = [
+            [ [ QgsPoint(0,0), QgsPoint(1,0), QgsPoint(1,1), QgsPoint(2,1), QgsPoint(2,2), QgsPoint(0,2), QgsPoint(0,0), ] ],
+            [ [ QgsPoint(4,0), QgsPoint(5,0), QgsPoint(5,2), QgsPoint(3,2), QgsPoint(3,1), QgsPoint(4,1), QgsPoint(4,0), ] ]
+          ]
+
+        polygon = QgsGeometry.fromPolygon( points[0] )
+
+        assert polygon.addPart( points[1][0][0:1] ) == 2, "addPart with one point ring unexpectedly succeeded."
+        assert polygon.addPart( points[1][0][0:2] ) == 2, "addPart with two point ring unexpectedly succeeded."
+        assert polygon.addPart( points[1][0][0:3] ) == 2, "addPart with unclosed three point ring unexpectedly succeeded."
+        assert polygon.addPart( [ QgsPoint(4,0), QgsPoint(5,0), QgsPoint(4,0) ] ) == 2, "addPart with 'closed' three point ring unexpectedly succeeded."
+
+        assert polygon.addPart( points[1][0] ) == 0, "addPart failed"
+        expwkt = "MULTIPOLYGON(((0 0,1 0,1 1,2 1,2 2,0 2,0 0)),((4 0,5 0,5 2,3 2,3 1,4 1,4 0)))"
+        wkt = polygon.exportToWkt()
+        assert compareWkt( expwkt, wkt ), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt )
 
 if __name__ == '__main__':
     unittest.main()

@@ -1198,12 +1198,15 @@ bool QgsGeometry::moveVertex( QgsWkbPtr &wkbPtr, const double &x, const double &
   const int ps = ( hasZValue ? 3 : 2 ) * sizeof( double );
 
   // Not this linestring/ring?
-  if ( atVertex > pointIndex + nPoints )
+  if ( atVertex >= pointIndex + nPoints )
   {
     wkbPtr += ps * nPoints;
     pointIndex += nPoints;
     return false;
   }
+
+  if ( isRing && atVertex == pointIndex + nPoints - 1 )
+    atVertex = pointIndex;
 
   // Goto point in this linestring/ring
   wkbPtr += ps * ( atVertex - pointIndex );
@@ -2449,7 +2452,7 @@ int QgsGeometry::addPart( const QList<QgsPoint> &points, QGis::GeometryType geom
       break;
 
     case QGis::Line:
-      // Line needs to have at least two points and must be closed
+      // line needs to have at least two points
       if ( points.size() < 2 )
       {
         QgsDebugMsg( "line must at least have two points: " + QString::number( points.size() ) );
@@ -2458,14 +2461,14 @@ int QgsGeometry::addPart( const QList<QgsPoint> &points, QGis::GeometryType geom
       break;
 
     case QGis::Polygon:
-      // Polygon needs to have at least three points and must be closed
-      if ( points.size() < 3 )
+      // polygon needs to have at least three distinct points and must be closed
+      if ( points.size() < 4 )
       {
-        QgsDebugMsg( "polygon must at least have three points: " + QString::number( points.size() ) );
+        QgsDebugMsg( "polygon must at least have three distinct points and must be closed: " + QString::number( points.size() ) );
         return 2;
       }
 
-      // polygon must be closed
+      // Polygon must be closed
       if ( points.first() != points.last() )
       {
         QgsDebugMsg( "polygon not closed" );
