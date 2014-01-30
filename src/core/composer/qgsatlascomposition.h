@@ -201,6 +201,9 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
 
     //forces all atlas enabled maps to redraw
     void updateAtlasMaps();
+
+    //computes the extent of the current feature, in the crs of the specified map
+    void computeExtent( QgsComposerMap *map );
 };
 
 #endif
