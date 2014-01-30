@@ -45,6 +45,12 @@ QgsComposerLabel::QgsComposerLabel( QgsComposition *composition ):
   //default to a 10 point font size
   mFont.setPointSizeF( 10 );
 
+  if ( mComposition && mComposition->atlasMode() == QgsComposition::PreviewAtlas )
+  {
+    //a label added while atlas preview is enabled needs to have the expression context set,
+    //otherwise fields in the label aren't correctly evaluated until atlas preview feature changes (#9457)
+    setExpressionContext( mComposition->atlasComposition().currentFeature(), mComposition->atlasComposition().coverageLayer() );
+  }
 }
 
 QgsComposerLabel::~QgsComposerLabel()
