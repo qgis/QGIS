@@ -181,7 +181,6 @@ void QgsCoordinateTransform::initialise()
   {
     sourceProjString += ( " " + datumTransformString( mSourceDatumTransform ) );
   }
-  mSourceProjection = pj_init_plus( sourceProjString.toUtf8() );
 
   pj_free( mDestinationProjection );
   QString destProjString = mDestCRS.toProj4();
@@ -199,6 +198,7 @@ void QgsCoordinateTransform::initialise()
     addNullGridShifts( sourceProjString, destProjString );
   }
 
+  mSourceProjection = pj_init_plus( sourceProjString.toUtf8() );
   mDestinationProjection = pj_init_plus( destProjString.toUtf8() );
 
 #ifdef COORDINATE_TRANSFORM_VERBOSE
