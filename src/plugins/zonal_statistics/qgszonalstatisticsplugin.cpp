@@ -44,6 +44,7 @@ void QgsZonalStatisticsPlugin::initGui()
   delete mAction;
 
   mAction = new QAction( QIcon( ":/zonal_statistics/raster-stats.png" ), tr( "&Zonal statistics" ), 0 );
+  mAction->setObjectName( "ZonalStatistics" );
   QObject::connect( mAction, SIGNAL( triggered() ), this, SLOT( run() ) );
   mIface->addRasterToolBarIcon( mAction );
   mIface->addPluginToRasterMenu( tr( "&Zonal statistics" ), mAction );

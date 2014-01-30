@@ -968,10 +968,12 @@ void QgsGeorefPluginGui::createMenus()
     QDialogButtonBox::ButtonLayout( style()->styleHint( QStyle::SH_DialogButtonLayout, 0, this ) );
 
   mPanelMenu = new QMenu( tr( "Panels" ) );
+  mPanelMenu->setObjectName( "mPanelMenu" );
   mPanelMenu->addAction( dockWidgetGCPpoints->toggleViewAction() );
   //  mPanelMenu->addAction(dockWidgetLogView->toggleViewAction());
 
   mToolbarMenu = new QMenu( tr( "Toolbars" ) );
+  mToolbarMenu->setObjectName( "mToolbarMenu" );
   mToolbarMenu->addAction( toolBarFile->toggleViewAction() );
   mToolbarMenu->addAction( toolBarEdit->toggleViewAction() );
   mToolbarMenu->addAction( toolBarView->toggleViewAction() );

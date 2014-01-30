@@ -448,6 +448,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QList<QgsDecorationItem*> decorationItems() { return mDecorationItems; }
     void addDecorationItem( QgsDecorationItem* item ) { mDecorationItems.append( item ); }
 
+    /** @note added in 2.1 */
+    static QString normalizedMenuName( const QString & name ) { return name.normalized( QString::NormalizationForm_KD ).remove( QRegExp( "[^a-zA-Z]" ) ); }
+
 #ifdef Q_OS_WIN
     //! ugly hack
     void skipNextContextMenuEvent();

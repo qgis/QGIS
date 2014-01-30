@@ -87,6 +87,7 @@ void Heatmap::initGui()
 
   // Create the action for tool
   mQActionPointer = new QAction( QIcon( ":/heatmap/heatmap.png" ), tr( "Heatmap" ), this );
+  mQActionPointer->setObjectName( "mQActionPointer" );
   // Set the what's this text
   mQActionPointer->setWhatsThis( tr( "Creates a heatmap raster for the input point vector." ) );
   // Connect the action to the run

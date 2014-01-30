@@ -220,8 +220,11 @@ void GlobePlugin::initGui()
 
   // Create the action for tool
   mQActionPointer = new QAction( QIcon( ":/globe/globe.png" ), tr( "Launch Globe" ), this );
+  mQActionPointer->setObjectName( "mQActionPointer" );
   mQActionSettingsPointer = new QAction( QIcon( ":/globe/globe.png" ), tr( "Globe Settings" ), this );
+  mQActionSettingsPointer->setObjectName( "mQActionSettingsPointer" );
   mQActionUnload = new QAction( tr( "Unload Globe" ), this );
+  mQActionUnload->setObjectName( "mQActionUnload" );
 
   // Set the what's this text
   mQActionPointer->setWhatsThis( tr( "Overlay data on a 3D globe" ) );

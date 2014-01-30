@@ -80,6 +80,7 @@ void QgsSpatialQueryPlugin::initGui()
 
   // Create the action for tool
   mSpatialQueryAction = new QAction( QIcon(), tr( "&Spatial Query" ), this );
+  mSpatialQueryAction->setObjectName( "mSpatialQueryAction" );
 
   // Connect the action to the spatialQuery slot
   connect( mSpatialQueryAction, SIGNAL( triggered() ), this, SLOT( run() ) );

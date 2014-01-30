@@ -70,6 +70,7 @@ void Topol::initGui()
   delete mQActionPointer;
 
   mQActionPointer = new QAction( QIcon( ":/topology/topol.png" ), tr( "TopologyChecker" ), this );
+  mQActionPointer->setObjectName( "mQActionPointer" );
   //mQActionPointer = new QAction( QIcon(), tr( "Topology Checker" ), this );
   mQActionPointer->setCheckable( true );
 

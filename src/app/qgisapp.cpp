@@ -7594,7 +7594,7 @@ QMenu* QgisApp::getPluginMenu( QString menuName )
   }
   // It doesn't exist, so create
   QMenu *menu = new QMenu( menuName, this );
-  menu->setObjectName( menuName.normalized( QString::NormalizationForm_KD ).remove( QRegExp( "[^a-zA-Z]" ) ) );
+  menu->setObjectName( normalizedMenuName( menuName ) );
   // Where to put it? - we worked that out above...
   mPluginMenu->insertMenu( before, menu );
 
@@ -7656,6 +7656,7 @@ QMenu* QgisApp::getDatabaseMenu( QString menuName )
   }
   // It doesn't exist, so create
   QMenu *menu = new QMenu( menuName, this );
+  menu->setObjectName( normalizedMenuName( menuName ) );
   if ( before )
     mDatabaseMenu->insertMenu( before, menu );
   else
@@ -7705,6 +7706,7 @@ QMenu* QgisApp::getRasterMenu( QString menuName )
 
   // It doesn't exist, so create
   QMenu *menu = new QMenu( menuName, this );
+  menu->setObjectName( normalizedMenuName( menuName ) );
   if ( before )
     mRasterMenu->insertMenu( before, menu );
   else
@@ -7744,6 +7746,7 @@ QMenu* QgisApp::getVectorMenu( QString menuName )
   }
   // It doesn't exist, so create
   QMenu *menu = new QMenu( menuName, this );
+  menu->setObjectName( normalizedMenuName( menuName ) );
   if ( before )
     mVectorMenu->insertMenu( before, menu );
   else
@@ -7783,6 +7786,7 @@ QMenu* QgisApp::getWebMenu( QString menuName )
   }
   // It doesn't exist, so create
   QMenu *menu = new QMenu( menuName, this );
+  menu->setObjectName( normalizedMenuName( menuName ) );
   if ( before )
     mWebMenu->insertMenu( before, menu );
   else

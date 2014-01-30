@@ -100,9 +100,11 @@ void QgsCompassPlugin::initGui()
 
   // Create the action for tool
   mActionRunCompass = new QAction( QIcon(), tr( "Show compass" ), this );
+  mActionRunCompass->setObjectName( "mActionRunCompass" );
   connect( mActionRunCompass, SIGNAL( triggered() ), this, SLOT( run() ) );
 
   mActionAboutCompass = new QAction( QIcon(), tr( "&About" ), this );
+  mActionAboutCompass->setObjectName( "mActionAboutCompass" );
   connect( mActionAboutCompass, SIGNAL( triggered() ), this, SLOT( about() ) );
 
   setCurrentTheme( "" );

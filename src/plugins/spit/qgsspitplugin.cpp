@@ -67,6 +67,7 @@ void QgsSpitPlugin::initGui()
 
   // Create the action for tool
   spitAction = new QAction( QIcon(), tr( "&Import Shapefiles to PostgreSQL" ), this );
+  spitAction->setObjectName( "spitAction" );
   setCurrentTheme( "" );
   spitAction->setWhatsThis( tr( "Import shapefiles into a PostGIS-enabled PostgreSQL database. "
                                 "The schema and field names can be customized on import" ) );

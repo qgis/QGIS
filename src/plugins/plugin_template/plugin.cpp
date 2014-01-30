@@ -71,6 +71,7 @@ void [pluginname]::initGui()
 
   // Create the action for tool
   mQActionPointer = new QAction( QIcon( ":/[pluginlcasename]/[pluginlcasename].png" ), tr( "[menuitemname]" ), this );
+  mQActionPointer->setObjectName( "mQActionPointer" );
   // Set the what's this text
   mQActionPointer->setWhatsThis( tr( "Replace this with a short description of what the plugin does" ) );
   // Connect the action to the run

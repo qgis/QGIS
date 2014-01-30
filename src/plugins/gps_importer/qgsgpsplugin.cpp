@@ -92,7 +92,9 @@ void QgsGPSPlugin::initGui()
 
   // add an action to the toolbar
   mQActionPointer = new QAction( QIcon(), tr( "&GPS Tools" ), this );
+  mQActionPointer->setObjectName( "mQActionPointer" );
   mCreateGPXAction = new QAction( QIcon(), tr( "&Create new GPX layer" ), this );
+  mCreateGPXAction->setObjectName( "mCreateGPXAction" );
   setCurrentTheme( "" );
 
   mQActionPointer->setWhatsThis( tr( "Creates a new GPX layer and displays it on the map canvas" ) );

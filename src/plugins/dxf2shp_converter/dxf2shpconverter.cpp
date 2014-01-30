@@ -71,6 +71,7 @@ void dxf2shpConverter::initGui()
   // Create the action for tool
   delete mQActionPointer;
   mQActionPointer = new QAction( QIcon(), "Dxf2Shp Converter", this );
+  mQActionPointer->setObjectName( "mQActionPointer" );
 
   // Set the icon
   setCurrentTheme( "" );
