@@ -4077,6 +4077,10 @@ http://trac.faunalia.it/GdalTools-plugin</translation>
         <translation>No se crearon los siguientes archivos: 
 {0}</translation>
     </message>
+    <message>
+        <source>No input files to process.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>GdalToolsBaseDialog</name>
@@ -15796,7 +15800,7 @@ Ruta de usuario de DB:	%9
     </message>
     <message>
         <source>Atlas preview</source>
-        <translation type="unfinished"></translation>
+        <translation>Vista previa de atlas</translation>
     </message>
     <message>
         <source>No matching atlas features found!</source>
@@ -18077,7 +18081,7 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source>Atlas</source>
-        <translation type="unfinished">Atlas</translation>
+        <translation>Atlas</translation>
     </message>
     <message>
         <source>Settings</source>
@@ -18105,7 +18109,7 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source>Atlas in not currently enabled for this composition!</source>
-        <translation type="unfinished"></translation>
+        <translation>¡Atlas no está activado actualmente para esta composición!</translation>
     </message>
     <message>
         <source>No matching atlas features found!</source>
@@ -20784,23 +20788,23 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source>Nautical Miles</source>
-        <translation type="unfinished"></translation>
+        <translation>Millas náuticas</translation>
     </message>
     <message>
         <source>Scalebar changed to map units</source>
-        <translation type="unfinished"></translation>
+        <translation>Barra de escala cambiada a unidades de mapa</translation>
     </message>
     <message>
         <source>Scalebar changed to feet</source>
-        <translation type="unfinished"></translation>
+        <translation>Barra de escala cambiada a pies</translation>
     </message>
     <message>
         <source>Scalebar changed to nautical miles</source>
-        <translation type="unfinished"></translation>
+        <translation>Barra de escala cambiada a millas náuticas</translation>
     </message>
     <message>
         <source>Scalebar changed to meters</source>
-        <translation type="unfinished"></translation>
+        <translation>Barra de escala cambiada a metros</translation>
     </message>
 </context>
 <context>
@@ -21002,7 +21006,7 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source>Shape radius changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Radio de forma cambiado</translation>
     </message>
 </context>
 <context>
@@ -21779,7 +21783,7 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source>Page background</source>
-        <translation type="unfinished"></translation>
+        <translation>Fondo de página</translation>
     </message>
     <message>
         <source>Grid</source>
@@ -22767,15 +22771,15 @@ y el archivo actual es [%3]</translation>
     </message>
     <message>
         <source>&apos;left&apos;|&apos;center&apos;|&apos;right&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;izquierda&apos;|&apos;centro&apos;|&apos;derecha&apos;</translation>
     </message>
     <message>
         <source>&apos;top&apos;|&apos;center&apos;|&apos;bottom&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;arriba&apos;|&apos;centro&apos;|&apos;abajo&apos;</translation>
     </message>
     <message>
         <source>&apos;linear&apos;|&apos;radial&apos;|&apos;conical&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;lineal&apos;|&apos;radial&apos;|&apos;cónico&apos;</translation>
     </message>
     <message>
         <source>&apos;feature&apos;|&apos;viewport&apos;</source>
@@ -22787,41 +22791,41 @@ y el archivo actual es [%3]</translation>
     </message>
     <message>
         <source>0 (false)|1 (true)</source>
-        <translation type="unfinished"></translation>
+        <translation>0 (falso)|1 (verdadero)</translation>
     </message>
 </context>
 <context>
     <name>QgsDatumTransformDialog</name>
     <message>
         <source>Select datum transformations for layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleccionar transformaciones de datum para la capa</translation>
     </message>
     <message>
         <source>File &apos;%1&apos; not found in directory &apos;%2&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>No se ha encontrado el archivo &apos;%1&apos; en el directorio &apos;%2&apos;</translation>
     </message>
 </context>
 <context>
     <name>QgsDatumTransformDialogBase</name>
     <message>
         <source>Select datum transformations</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleccionar transformaciones de datum</translation>
     </message>
     <message>
         <source>src transform</source>
-        <translation type="unfinished"></translation>
+        <translation>Transformar src</translation>
     </message>
     <message>
         <source>dst transform</source>
-        <translation type="unfinished"></translation>
+        <translation>Transformar dst</translation>
     </message>
     <message>
         <source>Remember selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Recordar selección</translation>
     </message>
     <message>
         <source>Hide deprecated</source>
-        <translation type="unfinished"></translation>
+        <translation>Ocultar obsoletos</translation>
     </message>
 </context>
 <context>
@@ -24430,7 +24434,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Expression based attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Atributo basado en expresión</translation>
     </message>
 </context>
 <context>
@@ -24635,11 +24639,11 @@ Dejar vacío para aplicar el valor máximo automáticamente.</translation>
     </message>
     <message>
         <source>Edit expression</source>
-        <translation type="unfinished">Editar expresión</translation>
+        <translation>Editar expresión</translation>
     </message>
     <message>
         <source>Add expression</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir expresión</translation>
     </message>
 </context>
 <context>
@@ -24810,7 +24814,7 @@ Error del analizador:
     </message>
     <message>
         <source>Run layer action</source>
-        <translation type="unfinished"></translation>
+        <translation>Ejecutar acción de capa</translation>
     </message>
 </context>
 <context>
@@ -24832,69 +24836,69 @@ Error del analizador:
     <name>QgsDxfExportDialog</name>
     <message>
         <source>Export as DXF</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportación como DXF</translation>
     </message>
     <message>
         <source>DXF files *.dxf *.DXF</source>
-        <translation type="unfinished"></translation>
+        <translation>Archivos DXF *.dxf *.DXF</translation>
     </message>
 </context>
 <context>
     <name>QgsDxfExportDialogBase</name>
     <message>
         <source>DXF export</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportación a DXF</translation>
     </message>
     <message>
         <source>Symbology mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Modo de simbología</translation>
     </message>
     <message>
         <source>Symbology scale</source>
-        <translation type="unfinished"></translation>
+        <translation>Escala de simbología</translation>
     </message>
     <message>
         <source>Save as</source>
-        <translation type="unfinished">Guardar como</translation>
+        <translation>Guardar como</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>No symbology</source>
-        <translation type="unfinished">Sin simbología</translation>
+        <translation>Sin simbología</translation>
     </message>
     <message>
         <source>Feature symbology</source>
-        <translation type="unfinished">Simbología de objetos espaciales</translation>
+        <translation>Simbología de objetos espaciales</translation>
     </message>
     <message>
         <source>Symbol layer symbology</source>
-        <translation type="unfinished">Simbología de capa de símbolos</translation>
+        <translation>Simbología de capa de símbolos</translation>
     </message>
     <message>
         <source>Select all</source>
-        <translation type="unfinished">Seleccionar todo</translation>
+        <translation>Seleccionar todo</translation>
     </message>
     <message>
         <source>Unselect all</source>
-        <translation type="unfinished">Deseleccionar todo</translation>
+        <translation>Deseleccionar todo</translation>
     </message>
     <message>
         <source>Export features intersecting the current map extent</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportar objetos espaciales que intersecten con la extensión actual del mapa</translation>
     </message>
 </context>
 <context>
     <name>QgsEditorWidgetRegistry</name>
     <message>
         <source>Unknown attribute editor widget &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Control &apos;%1&apos; del editor de atributos desconcido</translation>
     </message>
     <message>
         <source>Could not save unknown editor widget type &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>No se pudo guardar el tipo de control del editor desconocido &apos;%1&apos;</translation>
     </message>
 </context>
 <context>
@@ -24933,11 +24937,11 @@ Error del analizador:
     </message>
     <message>
         <source>Horizontal anchor point</source>
-        <translation type="unfinished">Punto de anclaje horizontal</translation>
+        <translation>Punto de anclaje horizontal</translation>
     </message>
     <message>
         <source>Vertical anchor point</source>
-        <translation type="unfinished">Punto de anclaje vertical</translation>
+        <translation>Punto de anclaje vertical</translation>
     </message>
 </context>
 <context>
@@ -25069,11 +25073,11 @@ Error del analizador:
     </message>
     <message>
         <source>Automated Placement Engine</source>
-        <translation type="unfinished"></translation>
+        <translation>Motor de emplazamiento automatizado</translation>
     </message>
     <message>
         <source>Show partials labels</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrar etiquetas parciales</translation>
     </message>
 </context>
 <context>
@@ -25273,7 +25277,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Recent (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Reciente (%1)</translation>
     </message>
 </context>
 <context>
@@ -25396,27 +25400,27 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Function list</source>
-        <translation type="unfinished"></translation>
+        <translation>Lista de funciones</translation>
     </message>
     <message>
         <source>Selected function help</source>
-        <translation type="unfinished"></translation>
+        <translation>Ayuda de la función seleccionada</translation>
     </message>
     <message>
         <source>Field values</source>
-        <translation type="unfinished"></translation>
+        <translation>Valores de campo</translation>
     </message>
     <message>
         <source>Load values</source>
-        <translation type="unfinished"></translation>
+        <translation>Cargar valores</translation>
     </message>
     <message>
         <source>all unique</source>
-        <translation type="unfinished"></translation>
+        <translation>todos los únicos</translation>
     </message>
     <message>
         <source>10 samples</source>
-        <translation type="unfinished"></translation>
+        <translation>10 muestras</translation>
     </message>
 </context>
 <context>
@@ -25461,7 +25465,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsFeatureSelectionDlg</name>
     <message>
         <source>Dialog</source>
-        <translation type="unfinished">Diálogo</translation>
+        <translation>Diálogo</translation>
     </message>
 </context>
 <context>
@@ -25818,15 +25822,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Layer</source>
-        <translation type="unfinished">Capa</translation>
+        <translation>Capa</translation>
     </message>
     <message>
         <source>Field</source>
-        <translation type="unfinished">Campo</translation>
+        <translation>Campo</translation>
     </message>
     <message>
         <source>Editor Widget</source>
-        <translation type="unfinished"></translation>
+        <translation>Control del editor</translation>
     </message>
 </context>
 <context>
@@ -25935,27 +25939,27 @@ MyForms.py debe estar en PYTHONPATH, .qgis/python, o dentro de la carpeta del pr
     </message>
     <message>
         <source>Suppress attribute form pop-up after feature creation</source>
-        <translation type="unfinished"></translation>
+        <translation>Suprimir formulario emergente de atributos después de crear objetos espaciales</translation>
     </message>
     <message>
         <source>Default</source>
-        <translation type="unfinished">Predeterminado</translation>
+        <translation>Predeterminado</translation>
     </message>
     <message>
         <source>On</source>
-        <translation type="unfinished"></translation>
+        <translation>Conectado</translation>
     </message>
     <message>
         <source>Off</source>
-        <translation type="unfinished">Desconectado</translation>
+        <translation>Desconectado</translation>
     </message>
     <message>
         <source>Fields</source>
-        <translation type="unfinished">Campos</translation>
+        <translation>Campos</translation>
     </message>
     <message>
         <source>Relations</source>
-        <translation type="unfinished">Relaciones</translation>
+        <translation>Relaciones</translation>
     </message>
 </context>
 <context>
@@ -27935,19 +27939,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Map</source>
-        <translation type="unfinished">Mapa</translation>
+        <translation>Mapa</translation>
     </message>
     <message>
         <source>Base Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Capa base</translation>
     </message>
     <message>
         <source>URL</source>
-        <translation type="unfinished">URL</translation>
+        <translation>URL</translation>
     </message>
     <message>
         <source>TextLabel</source>
-        <translation type="unfinished">EtiquetaDeTexto</translation>
+        <translation>EtiquetaDeTexto</translation>
     </message>
     <message>
         <source>Sky</source>
@@ -27955,11 +27959,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Date / Time (UTC)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fecha / Hora (UTC)</translation>
     </message>
     <message>
         <source>dd.MM.yyyy HH:mm</source>
-        <translation type="unfinished"></translation>
+        <translation>dd.MM.aaaa HH:mm</translation>
     </message>
     <message>
         <source>Auto ambient</source>
@@ -27967,27 +27971,27 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Vertical Scale</source>
-        <translation type="unfinished"></translation>
+        <translation>Escala vertical</translation>
     </message>
     <message>
         <source>Video</source>
-        <translation type="unfinished"></translation>
+        <translation>Vídeo</translation>
     </message>
     <message>
         <source>Anti Aliasing</source>
-        <translation type="unfinished"></translation>
+        <translation>Suavizado</translation>
     </message>
     <message>
         <source>Samples</source>
-        <translation type="unfinished"></translation>
+        <translation>Muestras</translation>
     </message>
     <message>
         <source>[Leave empty for maximum]</source>
-        <translation type="unfinished"></translation>
+        <translation>[Dejar vacío para máximo]</translation>
     </message>
     <message>
         <source>&lt;i&gt;Changing video settings requires a restart of the globe plugin&lt;/i&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;Cambiar la configuración de vídeo requiere reiniciar el complemento globe&lt;/i&gt;</translation>
     </message>
 </context>
 <context>
@@ -28023,58 +28027,58 @@ p, li { white-space: pre-wrap; }
     <name>QgsGmlSchema</name>
     <message>
         <source>Cannot guess schema</source>
-        <translation type="unfinished"></translation>
+        <translation>No se puede estimar el esquema</translation>
     </message>
 </context>
 <context>
     <name>QgsGradientFillSymbolLayerV2Widget</name>
     <message>
         <source>Color</source>
-        <translation type="unfinished">Color</translation>
+        <translation>Color</translation>
     </message>
     <message>
         <source>Color 2</source>
-        <translation type="unfinished">Color 2</translation>
+        <translation>Color 2</translation>
     </message>
     <message>
         <source>Angle</source>
-        <translation type="unfinished">Ángulo</translation>
+        <translation>Ángulo</translation>
     </message>
     <message>
         <source>Gradient type</source>
-        <translation type="unfinished"></translation>
+        <translation>Tipo de gradiente</translation>
     </message>
     <message>
         <source>Coordinate mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Modo de coordenadas</translation>
     </message>
     <message>
         <source>Spread</source>
-        <translation type="unfinished"></translation>
+        <translation>Extender</translation>
     </message>
     <message>
         <source>Reference Point 1 (x)</source>
-        <translation type="unfinished"></translation>
+        <translation>Punto de referencia 1 (x)</translation>
     </message>
     <message>
         <source>Reference Point 1 (y)</source>
-        <translation type="unfinished"></translation>
+        <translation>Punto de referencia 1 (y)</translation>
     </message>
     <message>
         <source>Reference Point 1 (is centroid)</source>
-        <translation type="unfinished"></translation>
+        <translation>Punto de referencia 1 (es centroide)</translation>
     </message>
     <message>
         <source>Reference Point 2 (x)</source>
-        <translation type="unfinished"></translation>
+        <translation>Punto de referencia 2 (x)</translation>
     </message>
     <message>
         <source>Reference Point 2 (y)</source>
-        <translation type="unfinished"></translation>
+        <translation>Punto de referencia 2 (y)</translation>
     </message>
     <message>
         <source>Reference Point 2 (is centroid)</source>
-        <translation type="unfinished"></translation>
+        <translation>Punto de referencia 2 (es centroide)</translation>
     </message>
 </context>
 <context>
@@ -28242,11 +28246,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Invert</source>
-        <translation type="unfinished">Invertir</translation>
+        <translation>Invertir</translation>
     </message>
     <message>
         <source>Warning</source>
-        <translation type="unfinished"></translation>
+        <translation>Advertencia</translation>
     </message>
     <message>
         <source>Natural break classification (Jenks) is O(n2) complexity, your classification may take a long time.
@@ -29873,19 +29877,19 @@ p, li { white-space: pre-wrap; }
     <name>QgsGrassPlugin</name>
     <message>
         <source>Open mapset</source>
-        <translation>Abrir directorio de mapas</translation>
+        <translation type="obsolete">Abrir directorio de mapas</translation>
     </message>
     <message>
         <source>New mapset</source>
-        <translation>Nuevo directorio de mapas</translation>
+        <translation type="obsolete">Nuevo directorio de mapas</translation>
     </message>
     <message>
         <source>Close mapset</source>
-        <translation>Cerrar directorio de mapas</translation>
+        <translation type="obsolete">Cerrar directorio de mapas</translation>
     </message>
     <message>
         <source>Add GRASS vector layer</source>
-        <translation>Añadir capa vectorial de GRASS</translation>
+        <translation type="obsolete">Añadir capa vectorial de GRASS</translation>
     </message>
     <message>
         <source>Add GRASS raster layer</source>
@@ -29949,7 +29953,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Create new Grass Vector</source>
-        <translation>Crear nuevo vectorial de Grass</translation>
+        <translation type="obsolete">Crear nuevo vectorial de Grass</translation>
     </message>
     <message>
         <source>Warning</source>
@@ -30020,6 +30024,30 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Plugins</source>
         <translation>Complementos</translation>
+    </message>
+    <message>
+        <source>Open Mapset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>New Mapset</source>
+        <translation type="unfinished">Nuevo directorio de mapas</translation>
+    </message>
+    <message>
+        <source>Close Mapset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add GRASS Vector Layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open GRASS Tools</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create New Grass Vector</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -30403,48 +30431,49 @@ en la línea %2 columna %3</translation>
     <name>QgsGuiVectorLayerTools</name>
     <message>
         <source>Add feature</source>
-        <translation type="unfinished">Añadir objeto espacial</translation>
+        <translation>Añadir objeto espacial</translation>
     </message>
     <message>
         <source>Start editing failed</source>
-        <translation type="unfinished">Ha fallado el comienzo de la edición</translation>
+        <translation>Ha fallado el comienzo de la edición</translation>
     </message>
     <message>
         <source>Provider cannot be opened for editing</source>
-        <translation type="unfinished">El proveedor no se puede abrir para editar</translation>
+        <translation>El proveedor no se puede abrir para editar</translation>
     </message>
     <message>
         <source>Stop editing</source>
-        <translation type="unfinished">Detener edición</translation>
+        <translation>Detener edición</translation>
     </message>
     <message>
         <source>Do you want to save the changes to layer %1?</source>
-        <translation type="unfinished">¿Quiere guardar los cambios en la capa %1?</translation>
+        <translation>¿Quiere guardar los cambios en la capa %1?</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished">Error</translation>
+        <translation>Error</translation>
     </message>
     <message>
         <source>Problems during roll back</source>
-        <translation type="unfinished">Problemas durante restauración</translation>
+        <translation>Problemas durante restauración</translation>
     </message>
     <message>
         <source>Commit errors</source>
-        <translation type="unfinished">Errores al acometer</translation>
+        <translation>Errores al acometer</translation>
     </message>
     <message>
         <source>Could not commit changes to layer %1</source>
-        <translation type="unfinished">No se pudieron aplicar los cambios a la capa %1</translation>
+        <translation>No se pudieron aplicar los cambios a la capa %1</translation>
     </message>
     <message>
         <source>Errors: %1
 </source>
-        <translation type="unfinished">Errores: %1</translation>
+        <translation>Errores: %1
+</translation>
     </message>
     <message>
         <source>Show more</source>
-        <translation type="unfinished">Mostrar más</translation>
+        <translation>Mostrar más</translation>
     </message>
 </context>
 <context>
@@ -30958,7 +30987,7 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
     </message>
     <message>
         <source>Activate layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Activar capa</translation>
     </message>
 </context>
 <context>
@@ -32942,7 +32971,7 @@ no se muestran</translation>
     </message>
     <message>
         <source>No Legend Available</source>
-        <translation type="unfinished"></translation>
+        <translation>Ninguna leyenda disponible</translation>
     </message>
 </context>
 <context>
@@ -33190,7 +33219,7 @@ no se muestran</translation>
     </message>
     <message>
         <source>canvas</source>
-        <translation type="unfinished"></translation>
+        <translation>lienzo</translation>
     </message>
 </context>
 <context>
@@ -33693,43 +33722,43 @@ no se muestran</translation>
     <name>QgsMapToolFillRing</name>
     <message>
         <source>Coordinate transform error</source>
-        <translation type="unfinished">Error de transformación de coordenadas</translation>
+        <translation>Error de transformación de coordenadas</translation>
     </message>
     <message>
         <source>Cannot transform the point to the layers coordinate system</source>
-        <translation type="unfinished">No se puede transformar el punto al sistema de coordenadas de las capas</translation>
+        <translation>No se puede transformar el punto al sistema de coordenadas de las capas</translation>
     </message>
     <message>
         <source>Ring added and filled</source>
-        <translation type="unfinished"></translation>
+        <translation>Anillo añadido y rellenado</translation>
     </message>
     <message>
         <source>A problem with geometry type occured</source>
-        <translation type="unfinished">Ocurrió un problema con el tipo de geometría</translation>
+        <translation>Ocurrió un problema con el tipo de geometría</translation>
     </message>
     <message>
         <source>The inserted Ring is not closed</source>
-        <translation type="unfinished">El anillo insertado no está cerrado</translation>
+        <translation>El anillo insertado no está cerrado</translation>
     </message>
     <message>
         <source>The inserted Ring is not a valid geometry</source>
-        <translation type="unfinished">El anillo insertado no es una geometría válida</translation>
+        <translation>El anillo insertado no es una geometría válida</translation>
     </message>
     <message>
         <source>The inserted Ring crosses existing rings</source>
-        <translation type="unfinished">El anillo insertado cruza anillos existentes</translation>
+        <translation>El anillo insertado cruza anillos existentes</translation>
     </message>
     <message>
         <source>The inserted Ring is not contained in a feature</source>
-        <translation type="unfinished">El anillo insertado no está contenido en un objeto espacial</translation>
+        <translation>El anillo insertado no está contenido en un objeto espacial</translation>
     </message>
     <message>
         <source>An unknown error occured</source>
-        <translation type="unfinished">Ocurrió un error desconocido</translation>
+        <translation>Ocurrió un error desconocido</translation>
     </message>
     <message>
         <source>Error, could not add ring</source>
-        <translation type="unfinished">Error, no se pudo añadir el anillo</translation>
+        <translation>Error, no se pudo añadir el anillo</translation>
     </message>
 </context>
 <context>
@@ -33822,7 +33851,7 @@ no se muestran</translation>
     </message>
     <message>
         <source>Identify error</source>
-        <translation type="unfinished"></translation>
+        <translation>Error al identificar</translation>
     </message>
 </context>
 <context>
@@ -34112,39 +34141,39 @@ no se muestran</translation>
     <name>QgsMapToolSplitParts</name>
     <message>
         <source>Coordinate transform error</source>
-        <translation type="unfinished">Error de transformación de coordenadas</translation>
+        <translation>Error de transformación de coordenadas</translation>
     </message>
     <message>
         <source>Cannot transform the point to the layers coordinate system</source>
-        <translation type="unfinished">No se puede transformar el punto al sistema de coordenadas de las capas</translation>
+        <translation>No se puede transformar el punto al sistema de coordenadas de las capas</translation>
     </message>
     <message>
         <source>Parts split</source>
-        <translation type="unfinished"></translation>
+        <translation>División de partes</translation>
     </message>
     <message>
         <source>No part split done</source>
-        <translation type="unfinished"></translation>
+        <translation>No se ha hecho ninguna división de partes</translation>
     </message>
     <message>
         <source>If there are selected parts, the split tool only applies to the selected ones. If you like to split all parts under the split line, clear the selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Si hay partes seleccionadas, la herramienta de división sólo se aplica a las seleccionadas. Si quiere dividir todas las partes bajo la línea de división, elimine la selección</translation>
     </message>
     <message>
         <source>Cut edges detected. Make sure the line splits parts into multiple parts.</source>
-        <translation type="unfinished"></translation>
+        <translation>Bordes de corte detectados. Asegúrese de que la línea divide las partes en múltiples partes.</translation>
     </message>
     <message>
         <source>The geometry is invalid. Please repair before trying to split it.</source>
-        <translation type="unfinished">La geometría no es válida. Por favor, arréglela antes de intentar dividirla.</translation>
+        <translation>La geometría no es válida. Por favor, arréglela antes de intentar dividirla.</translation>
     </message>
     <message>
         <source>Split error</source>
-        <translation type="unfinished">Error en la división</translation>
+        <translation>Error en la división</translation>
     </message>
     <message>
         <source>An error occured during feature splitting</source>
-        <translation type="unfinished">Ocurrió un error durante la división de los objetos espaciales</translation>
+        <translation>Ocurrió un error durante la división de los objetos espaciales</translation>
     </message>
 </context>
 <context>
@@ -34499,7 +34528,7 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     </message>
     <message>
         <source>Date</source>
-        <translation type="unfinished">Fecha</translation>
+        <translation>Fecha</translation>
     </message>
 </context>
 <context>
@@ -35190,15 +35219,15 @@ Nota: Proveer la contraseña es opcional. Será solicitada interactivamente cuan
     </message>
     <message>
         <source>all</source>
-        <translation type="unfinished">todo</translation>
+        <translation>todo</translation>
     </message>
     <message>
         <source>off</source>
-        <translation type="unfinished"></translation>
+        <translation>desconectado</translation>
     </message>
     <message>
         <source>QGIS</source>
-        <translation type="unfinished">QGIS</translation>
+        <translation>QGIS</translation>
     </message>
     <message>
         <source>UMN</source>
@@ -35206,7 +35235,7 @@ Nota: Proveer la contraseña es opcional. Será solicitada interactivamente cuan
     </message>
     <message>
         <source>GeoServer</source>
-        <translation type="unfinished"></translation>
+        <translation>GeoServer</translation>
     </message>
 </context>
 <context>
@@ -35277,11 +35306,11 @@ Nota: Proveer la contraseña es opcional. Será solicitada interactivamente cuan
     </message>
     <message>
         <source>DPI-Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Modo DPI</translation>
     </message>
     <message>
         <source>Ignore GetMap/GetTile URI reported in capabilities</source>
-        <translation type="unfinished"></translation>
+        <translation>Ignorar URI GetMap/GetTile informada en las capacidades</translation>
     </message>
 </context>
 <context>
@@ -36221,7 +36250,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Add Layer(s) from a %1 Server</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir capa(s) desde un servidor %1</translation>
     </message>
 </context>
 <context>
@@ -37237,23 +37266,23 @@ Siempre red: siempre cargar desde la red y no chequear si el caché tiene una en
     </message>
     <message>
         <source>Layer selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Selección de capa</translation>
     </message>
     <message>
         <source>Select grid color</source>
-        <translation type="unfinished">Seleccionar color de cuadrícula</translation>
+        <translation>Seleccionar color de cuadrícula</translation>
     </message>
     <message>
         <source>Solid</source>
-        <translation type="unfinished">Sólido</translation>
+        <translation>Sólido</translation>
     </message>
     <message>
         <source>Dots</source>
-        <translation type="unfinished">Puntos</translation>
+        <translation>Puntos</translation>
     </message>
     <message>
         <source>Crosses</source>
-        <translation type="unfinished"></translation>
+        <translation>Cruces</translation>
     </message>
 </context>
 <context>
@@ -37900,7 +37929,7 @@ Siempre red: siempre cargar desde la red y no chequear si el caché tiene una en
     </message>
     <message>
         <source>Scan for valid items in the browser dock</source>
-        <translation type="unfinished">Buscar elementos válidos en el dock del explorador</translation>
+        <translation>Buscar elementos válidos en el dock del explorador</translation>
     </message>
     <message>
         <source>Scan for contents of compressed files (.zip) in browser dock</source>
@@ -38296,135 +38325,135 @@ Siempre red: siempre cargar desde la red y no chequear si el caché tiene una en
     </message>
     <message>
         <source>Suppress attribute form pop-up after feature creation</source>
-        <translation type="unfinished"></translation>
+        <translation>Suprimir formulario emergente de atributos después de crear objetos espaciales</translation>
     </message>
     <message>
         <source>Composer</source>
-        <translation type="unfinished">Diseñador</translation>
+        <translation>Diseñador</translation>
     </message>
     <message>
         <source>Custom side bar style</source>
-        <translation type="unfinished"></translation>
+        <translation>Estilo de barra lateral personalizado</translation>
     </message>
     <message>
         <source>Enable feature simplication by default for newly added layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Habilitar la simplificación de objetos espaciales por omisión para nuevas capas añadidas</translation>
     </message>
     <message>
         <source>&lt;b&gt;Note:&lt;/b&gt; Feature simplification may speed up rendering but can result in rendering inconsistencies</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Nota:&lt;/b&gt; La simplificación de objetos espaciales puede acelerar el renderizado, pero puede dar lugar a inconsistencias en el renderizado</translation>
     </message>
     <message>
         <source>Simplification threshold (higher values result in more simplification): </source>
-        <translation type="unfinished"></translation>
+        <translation>Umbral de simplificación (valores más altos dan lugar a más simplificación): </translation>
     </message>
     <message>
         <source>Higher values result in more simplification</source>
-        <translation type="unfinished"></translation>
+        <translation>Valores más altos dan lugar a más simplificación</translation>
     </message>
     <message>
         <source>Simplify on provider side if possible</source>
-        <translation type="unfinished"></translation>
+        <translation>Simplificar del lado del proveedor si es posible</translation>
     </message>
     <message>
         <source>WMS getLegendGraphic Resolution</source>
-        <translation type="unfinished"></translation>
+        <translation>Resolución getLegendGraphic del WMS</translation>
     </message>
     <message>
         <source>Nautical Miles</source>
-        <translation type="unfinished"></translation>
+        <translation>Millas náuticas</translation>
     </message>
     <message>
         <source>Composition defaults</source>
-        <translation type="unfinished"></translation>
+        <translation>Predeterminados de la composición</translation>
     </message>
     <message>
         <source>Default font</source>
-        <translation type="unfinished"></translation>
+        <translation>Tipo de letra predeterminado</translation>
     </message>
     <message>
         <source>Grid appearance</source>
-        <translation type="unfinished"></translation>
+        <translation>Aspecto de la cuadrícula</translation>
     </message>
     <message>
         <source>Grid style</source>
-        <translation type="unfinished">Estilo de cuadrícula</translation>
+        <translation>Estilo de cuadrícula</translation>
     </message>
     <message>
         <source>Color...</source>
-        <translation type="unfinished">Color...</translation>
+        <translation>Color...</translation>
     </message>
     <message>
         <source>Grid defaults</source>
-        <translation type="unfinished"></translation>
+        <translation>Predeterminados de la cuadrícula</translation>
     </message>
     <message>
         <source>Spacing</source>
-        <translation type="unfinished">Separación</translation>
+        <translation>Separación</translation>
     </message>
     <message>
         <source> mm</source>
-        <translation type="unfinished"> mm</translation>
+        <translation> mm</translation>
     </message>
     <message>
         <source>Grid offset</source>
-        <translation type="unfinished">Desplazamiento de la cuadrícula</translation>
+        <translation>Desplazamiento de la cuadrícula</translation>
     </message>
     <message>
         <source>x: </source>
-        <translation type="unfinished">X: </translation>
+        <translation>X: </translation>
     </message>
     <message>
         <source>y: </source>
-        <translation type="unfinished">Y: </translation>
+        <translation>Y: </translation>
     </message>
     <message>
         <source>Snap tolerance</source>
-        <translation type="unfinished">Tolerancia de autoensamblado</translation>
+        <translation>Tolerancia de autoensamblado</translation>
     </message>
     <message>
         <source>Guide defaults</source>
-        <translation type="unfinished"></translation>
+        <translation>Predeterminados de las guías</translation>
     </message>
     <message>
         <source>Don&apos;t enable &apos;on the fly&apos; reprojection</source>
-        <translation type="unfinished"></translation>
+        <translation>No habilitar la reproyección «al vuelo»</translation>
     </message>
     <message>
         <source>Default datum transformations</source>
-        <translation type="unfinished"></translation>
+        <translation>Transformaciones de datum predeterminadas</translation>
     </message>
     <message>
         <source>Source CRS</source>
-        <translation type="unfinished"></translation>
+        <translation>SRC de origen</translation>
     </message>
     <message>
         <source>Destination CRS</source>
-        <translation type="unfinished"></translation>
+        <translation>SRC de destino</translation>
     </message>
     <message>
         <source>Source datum transform</source>
-        <translation type="unfinished"></translation>
+        <translation>Transformar datum de origen</translation>
     </message>
     <message>
         <source>Destination datum transform</source>
-        <translation type="unfinished"></translation>
+        <translation>Transformar datum de destino</translation>
     </message>
     <message>
         <source>Max retry in case of tile request errors</source>
-        <translation type="unfinished"></translation>
+        <translation>Máximos reintentos en cado de errores en la solicitud de teselas</translation>
     </message>
     <message>
         <source>User-Agent</source>
-        <translation type="unfinished"></translation>
+        <translation>Agente de usuario</translation>
     </message>
     <message>
         <source>Size [KiB]</source>
-        <translation type="unfinished"></translation>
+        <translation>Tamaño [KiB]</translation>
     </message>
     <message>
         <source>Maximum scale at which the layer should be simplified (1:1 always simplifies): </source>
-        <translation type="unfinished"></translation>
+        <translation>Escala máxima a la que la capa se debería simplificar (1:1 siempre simplifica): </translation>
     </message>
 </context>
 <context>
@@ -39467,7 +39496,7 @@ Error: %4</translation>
     </message>
     <message>
         <source>Label</source>
-        <translation type="unfinished">Etiqueta</translation>
+        <translation>Etiqueta</translation>
     </message>
 </context>
 <context>
@@ -40340,11 +40369,11 @@ Es necesario reiniciar QGIS para recargarlo.</translation>
     </message>
     <message>
         <source>Missing metadata file</source>
-        <translation type="unfinished"></translation>
+        <translation>Falta el archivo de metadatos</translation>
     </message>
     <message>
         <source>Error reading metadata</source>
-        <translation type="unfinished"></translation>
+        <translation>Error al leer metadatos</translation>
     </message>
 </context>
 <context>
@@ -41299,11 +41328,11 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Installable</source>
         <comment>category: plugins that are available for installation</comment>
-        <translation type="unfinished"></translation>
+        <translation>Instalable</translation>
     </message>
     <message>
         <source>This plugin is deprecated</source>
-        <translation type="unfinished"></translation>
+        <translation>El complemento está obsoleto</translation>
     </message>
     <message>
         <source>&lt;h3&gt;All Plugins&lt;/h3&gt;&lt;p&gt;On the left you see the list of all plugins available for your QGIS, both installed and available for download. Some plugins come with your QGIS installation while most of them are made available via the plugin repositories.&lt;/p&gt;&lt;p&gt;You can temporarily enable or disable a plugin. To &lt;i&gt;enable&lt;/i&gt; or &lt;i&gt;disable&lt;/i&gt; a plugin, click its checkbox or doubleclick its name...&lt;/p&gt;&lt;p&gt;Plugins showing in &lt;span style=&apos;color:red&apos;&gt;red&lt;/span&gt; are not loaded because there is a problem. They are also listed on the &apos;Invalid&apos; tab. Click on the plugin name to see more details, or to reinstall or uninstall this plugin.&lt;/p&gt;</source>
@@ -41560,15 +41589,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>All</source>
-        <translation type="unfinished">Todos</translation>
+        <translation>Todos</translation>
     </message>
     <message>
         <source>Not installed</source>
-        <translation type="unfinished"></translation>
+        <translation>No instalado</translation>
     </message>
     <message>
         <source>Show also deprecated plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrar también los complementos obsoletos</translation>
     </message>
     <message>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -43043,27 +43072,27 @@ Proceed?</source>
     </message>
     <message>
         <source>Relations</source>
-        <translation type="unfinished">Relaciones</translation>
+        <translation>Relaciones</translation>
     </message>
     <message>
         <source>Nautical miles</source>
-        <translation type="unfinished"></translation>
+        <translation>Millas náuticas</translation>
     </message>
     <message>
         <source>Service capabilities</source>
-        <translation type="unfinished"></translation>
+        <translation>Capacidades del servicio</translation>
     </message>
     <message>
         <source>WMS capabilities</source>
-        <translation type="unfinished"></translation>
+        <translation>Capacidades WMS</translation>
     </message>
     <message>
         <source>WFS capabilities</source>
-        <translation type="unfinished"></translation>
+        <translation>Capacidades WFS</translation>
     </message>
     <message>
         <source>WCS capabilities</source>
-        <translation type="unfinished"></translation>
+        <translation>Capacidades WCS</translation>
     </message>
 </context>
 <context>
@@ -45343,7 +45372,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>By lightness</source>
-        <translation type="unfinished"></translation>
+        <translation>Por brillo</translation>
     </message>
     <message>
         <source>By luminosity</source>
@@ -45872,7 +45901,7 @@ desviación estándar ×</translation>
     </message>
     <message>
         <source>sub extent</source>
-        <translation type="unfinished"></translation>
+        <translation>sub extensión</translation>
     </message>
     <message>
         <source>%1 %2 of %3.</source>
@@ -46125,23 +46154,23 @@ desviación estándar ×</translation>
     <name>QgsRelReferenceConfigDlgBase</name>
     <message>
         <source>Dialog</source>
-        <translation type="unfinished">Diálogo</translation>
+        <translation>Diálogo</translation>
     </message>
     <message>
         <source>Display expression</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrar expresión</translation>
     </message>
     <message>
         <source>Allow NULL value</source>
-        <translation type="unfinished"></translation>
+        <translation>Permitir valor NULO</translation>
     </message>
     <message>
         <source>Show embedded form</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrar formularion empotrado</translation>
     </message>
     <message>
         <source>Relation</source>
-        <translation type="unfinished"></translation>
+        <translation>Relación</translation>
     </message>
 </context>
 <context>
@@ -46174,19 +46203,19 @@ desviación estándar ×</translation>
     </message>
     <message>
         <source>Referencing Field</source>
-        <translation type="unfinished"></translation>
+        <translation>Campo de referencia</translation>
     </message>
     <message>
         <source>Referenced Layer (Parent)</source>
-        <translation type="unfinished"></translation>
+        <translation>Capa referenciada (Padre)</translation>
     </message>
     <message>
         <source>Referenced Field</source>
-        <translation type="unfinished"></translation>
+        <translation>Campo referenciado</translation>
     </message>
     <message>
         <source>Referencing Layer (Child)</source>
-        <translation type="unfinished"></translation>
+        <translation>Capa de referencia (Hija)</translation>
     </message>
     <message>
         <source>Name</source>
@@ -46244,19 +46273,19 @@ desviación estándar ×</translation>
     </message>
     <message>
         <source>Referencing Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Capa de referencia</translation>
     </message>
     <message>
         <source>Referencing Field</source>
-        <translation type="unfinished"></translation>
+        <translation>Campo de referencia</translation>
     </message>
     <message>
         <source>Referenced Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Capa de referencia</translation>
     </message>
     <message>
         <source>Referenced Field</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Campo referenciado</translation>
     </message>
     <message>
         <source>Id</source>
@@ -47429,7 +47458,7 @@ El error fue:
     </message>
     <message>
         <source>Size</source>
-        <translation>Tamaño</translation>
+        <translation type="obsolete">Tamaño</translation>
     </message>
     <message>
         <source>Angle</source>
@@ -49960,7 +49989,7 @@ Hubo un problema con su base de datos de símbolos.</translation>
     </message>
     <message>
         <source>Size</source>
-        <translation>Tamaño</translation>
+        <translation type="obsolete">Tamaño</translation>
     </message>
     <message>
         <source>Border width</source>
@@ -49988,11 +50017,11 @@ Hubo un problema con su base de datos de símbolos.</translation>
     </message>
     <message>
         <source>Horizontal anchor point</source>
-        <translation type="unfinished">Punto de anclaje horizontal</translation>
+        <translation>Punto de anclaje horizontal</translation>
     </message>
     <message>
         <source>Vertical anchor point</source>
-        <translation type="unfinished">Punto de anclaje vertical</translation>
+        <translation>Punto de anclaje vertical</translation>
     </message>
 </context>
 <context>
@@ -50019,6 +50048,21 @@ Hubo un problema con su base de datos de símbolos.</translation>
     <message>
         <source>File not found</source>
         <translation>No se encontró el archivo</translation>
+    </message>
+</context>
+<context>
+    <name>QgsSymbolLayerV2Widget</name>
+    <message>
+        <source>Size</source>
+        <translation type="unfinished">Tamaño</translation>
+    </message>
+    <message>
+        <source>area</source>
+        <translation type="unfinished">área</translation>
+    </message>
+    <message>
+        <source>diameter</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -50850,11 +50894,11 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Simplify Geometries</source>
-        <translation type="unfinished"></translation>
+        <translation>Simplificar geometrías</translation>
     </message>
     <message>
         <source>Simplify Geometries with topological validation</source>
-        <translation type="unfinished"></translation>
+        <translation>Simplificar geometrías con validación topológica</translation>
     </message>
 </context>
 <context>
@@ -51874,7 +51918,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Not supported</source>
-        <translation type="unfinished">No soportado</translation>
+        <translation>No soportado</translation>
     </message>
 </context>
 <context>
@@ -52361,31 +52405,31 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Simplify geometry</source>
-        <translation type="unfinished"></translation>
+        <translation>Simplificar geometría</translation>
     </message>
     <message>
         <source>&lt;b&gt;Note:&lt;/b&gt; Feature simplification may speed up rendering but can result in rendering inconsistencies</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Nota:&lt;/b&gt; La simplificación de objetos espaciales puede acelerar el renderizado, pero puede dar lugar a inconsistencias en el renderizado</translation>
     </message>
     <message>
         <source>Simplification threshold (higher values result in more simplification): </source>
-        <translation type="unfinished"></translation>
+        <translation>Umbral de simplificación (valores más altos dan lugar a más simplificación): </translation>
     </message>
     <message>
         <source>Higher values result in more simplification</source>
-        <translation type="unfinished"></translation>
+        <translation>Valores más altos dan lugar a más simplificación</translation>
     </message>
     <message>
         <source>pixels</source>
-        <translation type="unfinished">píxeles</translation>
+        <translation>píxeles</translation>
     </message>
     <message>
         <source>Simplify on provider side if possible</source>
-        <translation type="unfinished"></translation>
+        <translation>Simplificar del lado del proveedor si es posible</translation>
     </message>
     <message>
         <source>Maximum scale at which the layer should be simplified (1:1 always simplifies): </source>
-        <translation type="unfinished"></translation>
+        <translation>Escala máxima a la que la capa se debería simplificar (1:1 siempre simplifica): </translation>
     </message>
 </context>
 <context>
@@ -52432,7 +52476,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>&lt;Default&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;Predeterminado&gt;</translation>
     </message>
 </context>
 <context>
@@ -52499,19 +52543,19 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>More Options &gt;&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Más opciones &gt;&gt;</translation>
     </message>
     <message>
         <source>Datasource Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Opciones del origen de datos</translation>
     </message>
     <message>
         <source>Custom Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Opciones personalizadas</translation>
     </message>
     <message>
         <source>Layer Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Opciones de capa</translation>
     </message>
 </context>
 <context>
@@ -53270,7 +53314,7 @@ Esto puede ser un error de configuración del servidor. ¿Se debe usar la URL?</
     </message>
     <message>
         <source>Add Layer(s) from a WM(T)S Server</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir capa(s) desde un servidor WM(T)S</translation>
     </message>
 </context>
 <context>
@@ -53923,7 +53967,7 @@ La respuesta fue:
     </message>
     <message>
         <source>WGS 84 Bounding Box</source>
-        <translation>Marco de la WGS 84</translation>
+        <translation type="obsolete">Marco de la WGS 84</translation>
     </message>
     <message>
         <source>Available in CRS</source>
@@ -54261,7 +54305,7 @@ URL probada: %1</translation>
     </message>
     <message>
         <source>Extent for layer %1 not found in capabilities</source>
-        <translation>Extensión de la capa %1 no encontrada en las capacidades</translation>
+        <translation type="obsolete">Extensión de la capa %1 no encontrada en las capacidades</translation>
     </message>
     <message>
         <source>Format not supported</source>
@@ -54285,43 +54329,43 @@ URL probada: %1</translation>
     </message>
     <message>
         <source>Tile request max retry error. Failed %1 requests for tile %2 of tileRequest %3 (url: %4)</source>
-        <translation type="unfinished"></translation>
+        <translation>Error de reintentos máximos en la solicitud de teselas. Fallaron %1 solicitudes para la tesela %2 de tileRequest %3 (URL: %4)</translation>
     </message>
     <message>
         <source>repeat tileRequest %1 tile %2(retry %3)</source>
-        <translation type="unfinished"></translation>
+        <translation>repetir tileRequest %1 tesela %2 (reintento %3)</translation>
     </message>
     <message>
         <source>Generated default style</source>
-        <translation type="unfinished"></translation>
+        <translation>Estilo predeterminado generado</translation>
     </message>
     <message>
         <source>Style was missing in capabilities</source>
-        <translation type="unfinished"></translation>
+        <translation>El estilo faltaba en las capacidades</translation>
     </message>
     <message>
         <source>LegendURLs</source>
-        <translation type="unfinished"></translation>
+        <translation>LegendURLs</translation>
     </message>
     <message>
         <source>GetLegendGraphic</source>
-        <translation type="unfinished"></translation>
+        <translation>GetLegendGraphic</translation>
     </message>
     <message>
         <source>Context not fully specified (extent was defined but width and/or height was not).</source>
-        <translation type="unfinished"></translation>
+        <translation>Contenido no especificado completamente (se definió la extensión pero no la anchura y/o altura).</translation>
     </message>
     <message>
         <source>Cannot identify</source>
-        <translation type="unfinished"></translation>
+        <translation>No se puede identificar</translation>
     </message>
     <message>
         <source>GetLegendGraphic request redirected.</source>
-        <translation type="unfinished"></translation>
+        <translation>Solicitud GetLegendGraphic redireccionada.</translation>
     </message>
     <message>
         <source>GetLegendGraphic request error</source>
-        <translation type="unfinished"></translation>
+        <translation>Error de solicitud GetLegendGraphic</translation>
     </message>
     <message>
         <source>Returned legend image is flawed [URL: %1]</source>
@@ -54329,11 +54373,11 @@ URL probada: %1</translation>
     </message>
     <message>
         <source>Download of GetLegendGraphic failed: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Falló la descarga de GetLegendGraphic: %1</translation>
     </message>
     <message>
         <source>%1 of %2 bytes of GetLegendGraphic downloaded.</source>
-        <translation type="unfinished"></translation>
+        <translation>Descargados %1 de %2 bytes de GetLegendGraphic.</translation>
     </message>
 </context>
 <context>
@@ -54675,11 +54719,11 @@ URL probada: %1</translation>
     </message>
     <message>
         <source>Cannot calculate path</source>
-        <translation type="unfinished"></translation>
+        <translation>No se puede calcular la ruta</translation>
     </message>
     <message>
         <source>The created graph is empty. Please check your input data.</source>
-        <translation type="unfinished"></translation>
+        <translation>El grafo creado está vacío. Por favor compruebe sus datos de entrada.</translation>
     </message>
 </context>
 <context>
@@ -55212,7 +55256,7 @@ Descripción: %3</translation>
     <message>
         <source>Unable to save edits. Reason:
  %s</source>
-        <translation type="unfinished">No se pueden guardar los cambios. Motivo:
+        <translation>No se pueden guardar los cambios. Motivo:
  %s</translation>
     </message>
 </context>
@@ -55220,33 +55264,33 @@ Descripción: %3</translation>
     <name>ScriptEditorDialog</name>
     <message>
         <source>Python scripts (*.py)</source>
-        <translation type="unfinished"></translation>
+        <translation>Scripts de Python (*.py)</translation>
     </message>
     <message>
         <source>Processing R script (*.rsx)</source>
-        <translation type="unfinished"></translation>
+        <translation>Procesande script de R (*.rsx)</translation>
     </message>
     <message>
         <source>Save script</source>
-        <translation type="unfinished"></translation>
+        <translation>Guardar script</translation>
     </message>
     <message>
         <source>I/O error</source>
-        <translation type="unfinished">Error de E/S</translation>
+        <translation>Error de E/S</translation>
     </message>
     <message>
         <source>Unable to save edits. Reason:
  %s</source>
-        <translation type="unfinished">No se pueden guardar los cambios. Motivo:
+        <translation>No se pueden guardar los cambios. Motivo:
  %s</translation>
     </message>
     <message>
         <source>Script saving</source>
-        <translation type="unfinished"></translation>
+        <translation>Guardado de script</translation>
     </message>
     <message>
         <source>Script was correctly saved.</source>
-        <translation type="unfinished">El script se guardó correctamente.</translation>
+        <translation>El script se guardó correctamente.</translation>
     </message>
 </context>
 <context>
@@ -55460,39 +55504,39 @@ Descripción: %3</translation>
     </message>
     <message>
         <source>Font and Colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Tipos de letra y colores</translation>
     </message>
     <message>
         <source>Default:</source>
-        <translation type="unfinished"></translation>
+        <translation>Predeterminado:</translation>
     </message>
     <message>
         <source>Keyword:</source>
-        <translation type="unfinished"></translation>
+        <translation>Palabras clave:</translation>
     </message>
     <message>
         <source>Class name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre de clase:</translation>
     </message>
     <message>
         <source>Function:</source>
-        <translation type="unfinished"></translation>
+        <translation>Función:</translation>
     </message>
     <message>
         <source>Decorator:</source>
-        <translation type="unfinished"></translation>
+        <translation>Decorador:</translation>
     </message>
     <message>
         <source>Comment:</source>
-        <translation type="unfinished">Comentario:</translation>
+        <translation>Comentario:</translation>
     </message>
     <message>
         <source>Comment block:</source>
-        <translation type="unfinished"></translation>
+        <translation>Bloque de comentario:</translation>
     </message>
     <message>
         <source>Cursor:</source>
-        <translation type="unfinished"></translation>
+        <translation>Cursor:</translation>
     </message>
     <message>
         <source>Caretline:</source>
@@ -55500,27 +55544,27 @@ Descripción: %3</translation>
     </message>
     <message>
         <source>Single quote:</source>
-        <translation type="unfinished"></translation>
+        <translation>Delimitador único:</translation>
     </message>
     <message>
         <source>Double quote:</source>
-        <translation type="unfinished"></translation>
+        <translation>Delimitador doble:</translation>
     </message>
     <message>
         <source>Triple single quote:</source>
-        <translation type="unfinished"></translation>
+        <translation>Delimitador sencillo triple:</translation>
     </message>
     <message>
         <source>Triple double quote:</source>
-        <translation type="unfinished"></translation>
+        <translation>Delimitador sencillo doble:</translation>
     </message>
     <message>
         <source>Background:</source>
-        <translation type="unfinished"></translation>
+        <translation>Fondo:</translation>
     </message>
     <message>
         <source>Reset to default colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Restablecer a colores predeterminados</translation>
     </message>
     <message>
         <source>Typing</source>
@@ -55528,11 +55572,11 @@ Descripción: %3</translation>
     </message>
     <message>
         <source>Automatic insertion of the &apos;import&apos; string on &apos;from xxx&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Inserción automática de la cadena &apos;importar&apos; en &apos;desde xxx&apos;</translation>
     </message>
     <message>
         <source>Error:</source>
-        <translation type="unfinished"></translation>
+        <translation>Error:</translation>
     </message>
 </context>
 <context>
@@ -55805,7 +55849,7 @@ Would you like to add the new layer to the TOC?</source>
         <source>Created output shapefile:
 %s
 %s</source>
-        <translation type="unfinished">Archivo shape de salida creado:
+        <translation>Archivo shape de salida creado:
 %s
 %s</translation>
     </message>
@@ -55972,35 +56016,35 @@ Would you like to add the new layer to the TOC?</source>
     </message>
     <message>
         <source>Left</source>
-        <translation type="unfinished">Izquierda</translation>
+        <translation>Izquierda</translation>
     </message>
     <message>
         <source>HCenter</source>
-        <translation type="unfinished"></translation>
+        <translation>Centro horizontal</translation>
     </message>
     <message>
         <source>Right</source>
-        <translation type="unfinished">Derecha</translation>
+        <translation>Derecha</translation>
     </message>
     <message>
         <source>Top</source>
-        <translation type="unfinished">Arriba</translation>
+        <translation>Arriba</translation>
     </message>
     <message>
         <source>VCenter</source>
-        <translation type="unfinished"></translation>
+        <translation>Centro vertical</translation>
     </message>
     <message>
         <source>Bottom</source>
-        <translation type="unfinished">Abajo</translation>
+        <translation>Abajo</translation>
     </message>
     <message>
         <source>Outline style</source>
-        <translation type="unfinished"></translation>
+        <translation>Estilo de línea exterior</translation>
     </message>
     <message>
         <source>Anchor point</source>
-        <translation type="unfinished"></translation>
+        <translation>Punto de anclaje</translation>
     </message>
 </context>
 <context>
@@ -56047,70 +56091,70 @@ Would you like to add the new layer to the TOC?</source>
     </message>
     <message>
         <source>Anchor point</source>
-        <translation type="unfinished"></translation>
+        <translation>Punto de anclaje</translation>
     </message>
     <message>
         <source>Left</source>
-        <translation type="unfinished">Izquierda</translation>
+        <translation>Izquierda</translation>
     </message>
     <message>
         <source>HCenter</source>
-        <translation type="unfinished"></translation>
+        <translation>Centro horizontal</translation>
     </message>
     <message>
         <source>Right</source>
-        <translation type="unfinished">Derecha</translation>
+        <translation>Derecha</translation>
     </message>
     <message>
         <source>Top</source>
-        <translation type="unfinished">Arriba</translation>
+        <translation>Arriba</translation>
     </message>
     <message>
         <source>VCenter</source>
-        <translation type="unfinished"></translation>
+        <translation>Centro vertical</translation>
     </message>
     <message>
         <source>Bottom</source>
-        <translation type="unfinished">Abajo</translation>
+        <translation>Abajo</translation>
     </message>
 </context>
 <context>
     <name>WidgetGradientFill</name>
     <message>
         <source>Form</source>
-        <translation type="unfinished">Formulario</translation>
+        <translation>Formulario</translation>
     </message>
     <message>
         <source>Two color</source>
-        <translation type="unfinished"></translation>
+        <translation>Dos colores</translation>
     </message>
     <message>
         <source>Color ramp</source>
-        <translation type="unfinished">Rampa de color</translation>
+        <translation>Rampa de color</translation>
     </message>
     <message>
         <source>Gradient type</source>
-        <translation type="unfinished"></translation>
+        <translation>Tipo de gradiente</translation>
     </message>
     <message>
         <source>Linear</source>
-        <translation type="unfinished">Lineal</translation>
+        <translation>Lineal</translation>
     </message>
     <message>
         <source>Radial</source>
-        <translation type="unfinished"></translation>
+        <translation>Radial</translation>
     </message>
     <message>
         <source>Conical</source>
-        <translation type="unfinished"></translation>
+        <translation>Cónico</translation>
     </message>
     <message>
         <source>Coord mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Modo de coordenadas</translation>
     </message>
     <message>
         <source>Object</source>
-        <translation type="unfinished"></translation>
+        <translation>Objeto</translation>
     </message>
     <message>
         <source>Viewport</source>
@@ -56118,7 +56162,7 @@ Would you like to add the new layer to the TOC?</source>
     </message>
     <message>
         <source>Spread</source>
-        <translation type="unfinished"></translation>
+        <translation>Extender</translation>
     </message>
     <message>
         <source>Pad</source>
@@ -56126,55 +56170,55 @@ Would you like to add the new layer to the TOC?</source>
     </message>
     <message>
         <source>Repeat</source>
-        <translation type="unfinished"></translation>
+        <translation>Repetir</translation>
     </message>
     <message>
         <source>Reflect</source>
-        <translation type="unfinished"></translation>
+        <translation>Reflejar</translation>
     </message>
     <message>
         <source>Reference Point 1</source>
-        <translation type="unfinished"></translation>
+        <translation>Punto de referencia 1</translation>
     </message>
     <message>
         <source>x</source>
-        <translation type="unfinished">X</translation>
+        <translation>X</translation>
     </message>
     <message>
         <source>y</source>
-        <translation type="unfinished">Y</translation>
+        <translation>Y</translation>
     </message>
     <message>
         <source>Feature centroid</source>
-        <translation type="unfinished"></translation>
+        <translation>Centroide del objeto espacial</translation>
     </message>
     <message>
         <source>Reference Point 2</source>
-        <translation type="unfinished"></translation>
+        <translation>Punto de referencia 2</translation>
     </message>
     <message>
         <source>Angle</source>
-        <translation type="unfinished">Ángulo</translation>
+        <translation>Ángulo</translation>
     </message>
     <message utf8="true">
         <source> °</source>
-        <translation type="unfinished"> °</translation>
+        <translation> °</translation>
     </message>
     <message>
         <source>Data defined properties...</source>
-        <translation type="unfinished">Propiedades definidas por datos...</translation>
+        <translation>Propiedades definidas por datos...</translation>
     </message>
     <message>
         <source>Millimeter</source>
-        <translation type="unfinished">Milímetro</translation>
+        <translation>Milímetro</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation type="unfinished">Unidad de mapa</translation>
+        <translation>Unidad de mapa</translation>
     </message>
     <message>
         <source>Offset X,Y</source>
-        <translation type="unfinished">Desplazamiento X, Y</translation>
+        <translation>Desplazamiento X, Y</translation>
     </message>
 </context>
 <context>
@@ -56543,7 +56587,7 @@ Would you like to add the new layer to the TOC?</source>
     </message>
     <message>
         <source>Draw line only inside polygon</source>
-        <translation type="unfinished"></translation>
+        <translation>Dibujar linea sólo dentro de polígono</translation>
     </message>
 </context>
 <context>
@@ -56610,35 +56654,35 @@ Would you like to add the new layer to the TOC?</source>
     </message>
     <message>
         <source>Outline style</source>
-        <translation type="unfinished"></translation>
+        <translation>Estilo de línea exterior</translation>
     </message>
     <message>
         <source>Anchor point</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Left</source>
-        <translation type="unfinished">Izquierda</translation>
+        <translation>Izquierda</translation>
     </message>
     <message>
         <source>HCenter</source>
-        <translation type="unfinished"></translation>
+        <translation>Centro horizontal</translation>
     </message>
     <message>
         <source>Right</source>
-        <translation type="unfinished">Derecha</translation>
+        <translation>Derecha</translation>
     </message>
     <message>
         <source>Top</source>
-        <translation type="unfinished">Arriba</translation>
+        <translation>Arriba</translation>
     </message>
     <message>
         <source>VCenter</source>
-        <translation type="unfinished"></translation>
+        <translation>Centro vertical</translation>
     </message>
     <message>
         <source>Bottom</source>
-        <translation type="unfinished">Abajo</translation>
+        <translation>Abajo</translation>
     </message>
 </context>
 <context>
@@ -56713,31 +56757,31 @@ Would you like to add the new layer to the TOC?</source>
     </message>
     <message>
         <source>Anchor point</source>
-        <translation type="unfinished"></translation>
+        <translation>Punto de anclaje</translation>
     </message>
     <message>
         <source>Left</source>
-        <translation type="unfinished">Izquierda</translation>
+        <translation>Izquierda</translation>
     </message>
     <message>
         <source>HCenter</source>
-        <translation type="unfinished"></translation>
+        <translation>Centro horizontal</translation>
     </message>
     <message>
         <source>Right</source>
-        <translation type="unfinished">Derecha</translation>
+        <translation>Derecha</translation>
     </message>
     <message>
         <source>Top</source>
-        <translation type="unfinished">Arriba</translation>
+        <translation>Arriba</translation>
     </message>
     <message>
         <source>VCenter</source>
-        <translation type="unfinished"></translation>
+        <translation>Centro vertical</translation>
     </message>
     <message>
         <source>Bottom</source>
-        <translation type="unfinished">Abajo</translation>
+        <translation>Abajo</translation>
     </message>
 </context>
 <context>
@@ -60257,7 +60301,7 @@ The Diagram tab allows you to add a graphic overlay to a vector layer. To activa
 The current implementation of diagrams provides support for pie- and bar charts and for linear scaling
 of the diagram size according to a classification attribute.
 </source>
-        <translation type="unfinished">&lt;h3&gt;Propiedades de las capas vectoriales&lt;/h3&gt;
+        <translation>&lt;h3&gt;Propiedades de las capas vectoriales&lt;/h3&gt;
 Este diálogo le permite trabajar con la configuración
 y las propiedades de las capas vectoriales. Hay siete pestañas:
 &lt;p&gt;
