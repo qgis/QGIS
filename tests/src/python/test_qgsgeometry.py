@@ -821,6 +821,31 @@ class TestQgsGeometry(TestCase):
         wkt = polyline.exportToWkt()
         assert compareWkt( expwkt, wkt ), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt )
 
+        # 5-+-4
+        # |   |
+        # 6 2-3
+        # | |
+        # 0-1
+        polygon = QgsGeometry.fromWkt( "POLYGON((0 0,1 0,1 1,2 1,2 2,0 2,0 0))" )
+
+        assert not polygon.moveVertex( 3, 4, -10 ), "move vertex unexpectedly succeeded"
+        assert not polygon.moveVertex( 3, 4, 7 ), "move vertex unexpectedly succeeded"
+
+        assert polygon.moveVertex( 1, 2, 0 ), "move vertex failed"
+        expwkt = "POLYGON((1 2,1 0,1 1,2 1,2 2,0 2,1 2))"
+        wkt = polygon.exportToWkt()
+        assert compareWkt( expwkt, wkt ), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt )
+
+        assert polygon.moveVertex( 3, 4, 3 ), "move vertex failed"
+        expwkt = "POLYGON((1 2,1 0,1 1,3 4,2 2,0 2,1 2))"
+        wkt = polygon.exportToWkt()
+        assert compareWkt( expwkt, wkt ), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt )
+
+        assert polygon.moveVertex( 2, 3, 6 ), "move vertex failed"
+        expwkt = "POLYGON((2 3,1 0,1 1,3 4,2 2,0 2,2 3))"
+        wkt = polygon.exportToWkt()
+        assert compareWkt( expwkt, wkt ), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt )
+
         # 5-+-4 0-+-9
         # |   | |   |
         # 6 2-3 1-2!+

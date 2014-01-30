@@ -1323,7 +1323,6 @@ bool QgsGeometry::moveVertex( double x, double y, int atVertex )
 
       for ( int linenr = 0, pointIndex = 0; linenr < nLines; ++linenr )
       {
-        wkbPtr += 1 + sizeof( int );
         if ( moveVertex( wkbPtr, x, y, atVertex, hasZValue, pointIndex, true ) )
         {
           mDirtyGeos = true;
@@ -1676,9 +1675,7 @@ bool QgsGeometry::insertVertex( double x, double y, int beforeVertex )
       dstPtr << nRings;
 
       for ( int ringnr = 0, pointIndex = 0; ringnr < nRings; ++ringnr )
-      {
         inserted |= insertVertex( srcPtr, dstPtr, beforeVertex, x, y, hasZValue, pointIndex, true );
-      }
 
       break;
     }
@@ -2665,7 +2662,6 @@ int QgsGeometry::translate( double dx, double dy )
     {
       int nRings;
       wkbPtr >> nRings;
-
       for ( int index = 0; index < nRings; ++index )
       {
         int nPoints;
