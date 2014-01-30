@@ -374,6 +374,12 @@ class geometryThread( QThread ):
     merge_all = self.myField == "--- " + self.tr( "Merge all" ) + " ---"
     if not len( unique ) == self.vlayer.featureCount() or merge_all:
       for i in unique:
+        # Strip spaces for strings, so "  A " and "A" will be grouped
+        # TODO: Make this optional (opt-out to keep it easy for beginners)
+        if isinstance( i, basestring ):
+          iMod = i.strip()
+        else:
+          iMod = i
         multi_feature= []
         first = True
         fit = vprovider.getFeatures()
@@ -381,9 +387,13 @@ class geometryThread( QThread ):
           atMap = inFeat.attributes()
           if not merge_all:
             idVar = atMap[ index ]
+            if isinstance( idVar, basestring ):
+              idVarMod = idVar.strip()
+            else:
+              idVarMod = idVar
           else:
             idVar = ""
-          if idVar.strip() == i.strip() or merge_all:
+          if idVarMod == iMod or merge_all:
             if first:
               atts = atMap
               first = False
