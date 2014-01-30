@@ -30,6 +30,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
 from qgis.core import (QgsVectorLayer,
+                       QgsVectorSimplifyMethod,
                        QgsMapLayerRegistry,
                        QgsMapRenderer,
                        QgsCoordinateReferenceSystem,
@@ -63,16 +64,19 @@ class TestQgsBlendModes(TestCase):
         self.mPointLayer = QgsVectorLayer(myShpFile, 'Points', 'ogr')
         self.mMapRegistry.addMapLayer(self.mPointLayer)
 
+        self.mSimplifyMethod = QgsVectorSimplifyMethod() ;
+        self.mSimplifyMethod.setSimplifyHints(QgsVectorLayer.NoSimplification);
+
         # create polygon layer
         myShpFile = os.path.join(TEST_DATA_DIR, 'polys.shp')
         self.mPolygonLayer = QgsVectorLayer(myShpFile, 'Polygons', 'ogr')
-        self.mPolygonLayer.setSimplifyDrawingHints(QgsVectorLayer.NoSimplification)
+        self.mPolygonLayer.setSimplifyMethod(self.mSimplifyMethod)
         self.mMapRegistry.addMapLayer(self.mPolygonLayer)
 
         # create line layer
         myShpFile = os.path.join(TEST_DATA_DIR, 'lines.shp')
         self.mLineLayer = QgsVectorLayer(myShpFile, 'Lines', 'ogr')
-        self.mLineLayer.setSimplifyDrawingHints(QgsVectorLayer.NoSimplification)
+        self.mLineLayer.setSimplifyMethod(self.mSimplifyMethod)
         self.mMapRegistry.addMapLayer(self.mLineLayer)
 
         # create two raster layers
