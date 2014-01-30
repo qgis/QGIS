@@ -52783,19 +52783,19 @@ od średniej +/-</translation>
     <message>
         <location filename="../src/core/qgsrelation.cpp" line="36"/>
         <source>Cannot create relation. Unexpected tag &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie powiodło się utworzenie relacji. Nieoczekiwany znacznik &apos;%1&apos;</translation>
     </message>
     <message>
         <location filename="../src/core/qgsrelation.cpp" line="53"/>
         <location filename="../src/core/qgsrelation.cpp" line="62"/>
         <source>Relation defined for layer &apos;%1&apos; which does not exist.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zdefiniowano relację dla warstwy &apos;%1&apos;, która nie istnieje.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsrelation.cpp" line="57"/>
         <location filename="../src/core/qgsrelation.cpp" line="66"/>
         <source>Relation defined for layer &apos;%1&apos; which is not of type VectorLayer.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zdefiniowano relację dla warstwy &apos;%1&apos;, która nie jest typu wektorowego.</translation>
     </message>
 </context>
 <context>
@@ -52803,7 +52803,7 @@ od średniej +/-</translation>
     <message>
         <location filename="../src/gui/qgsrelationadddlg.cpp" line="9"/>
         <source>[Generated automatically]</source>
-        <translation type="unfinished"></translation>
+        <translation>[Generowane automatycznie]</translation>
     </message>
 </context>
 <context>
@@ -52811,27 +52811,27 @@ od średniej +/-</translation>
     <message>
         <location filename="../src/ui/qgsrelationadddlgbase.ui" line="14"/>
         <source>Dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Formularz</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrelationadddlgbase.ui" line="26"/>
         <source>Referencing Field</source>
-        <translation type="unfinished"></translation>
+        <translation>Pole warstwy powiązanej</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrelationadddlgbase.ui" line="33"/>
         <source>Referenced Layer (Parent)</source>
-        <translation type="unfinished"></translation>
+        <translation>Warstwa bazowa</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrelationadddlgbase.ui" line="40"/>
         <source>Referenced Field</source>
-        <translation type="unfinished"></translation>
+        <translation>Pole warstwy bazowej</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrelationadddlgbase.ui" line="53"/>
         <source>Referencing Layer (Child)</source>
-        <translation type="unfinished"></translation>
+        <translation>Wartwa powiązana</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrelationadddlgbase.ui" line="60"/>
@@ -52893,7 +52893,7 @@ od średniej +/-</translation>
     <message>
         <location filename="../src/ui/qgsrelationmanagerdialogbase.ui" line="14"/>
         <source>Dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Formularz</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrelationmanagerdialogbase.ui" line="21"/>
@@ -52903,22 +52903,22 @@ od średniej +/-</translation>
     <message>
         <location filename="../src/ui/qgsrelationmanagerdialogbase.ui" line="26"/>
         <source>Referencing Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Warstwa powiązana</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrelationmanagerdialogbase.ui" line="31"/>
         <source>Referencing Field</source>
-        <translation type="unfinished"></translation>
+        <translation>Pole warstwy powiązanej</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrelationmanagerdialogbase.ui" line="36"/>
         <source>Referenced Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Warstwa bazowa</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrelationmanagerdialogbase.ui" line="41"/>
         <source>Referenced Field</source>
-        <translation type="unfinished"></translation>
+        <translation>Pole warstwy bazowej</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrelationmanagerdialogbase.ui" line="46"/>
@@ -52946,7 +52946,7 @@ od średniej +/-</translation>
     <message>
         <location filename="../src/gui/editorwidgets/qgsrelationreferencewidget.cpp" line="108"/>
         <source>The relation is not valid. Please make sure your relation definitions are ok.</source>
-        <translation type="unfinished"></translation>
+        <translation>Niepoprawna relacja. Sprawdź ponownie jej definicję.</translation>
     </message>
 </context>
 <context>
@@ -55255,7 +55255,7 @@ ale spowoduje lepszą wydajność bazy.</translation>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitesourceselect.cpp" line="295"/>
         <source>Cannot add connection &apos;%1&apos; : a connection with the same name already exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie można dodać połączenia &apos;%1&apos;, gdyż połączenie o takiej nazwie już istnieje.</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitesourceselect.cpp" line="441"/>
@@ -59727,7 +59727,7 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="149"/>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="152"/>
         <source>Rendering</source>
-        <translation type="unfinished">Renderowanie</translation>
+        <translation>Renderowanie</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1376"/>
@@ -59878,37 +59878,37 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="886"/>
         <source>Simplify geometry</source>
-        <translation type="unfinished"></translation>
+        <translation>Uprość geometrię</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="895"/>
         <source>&lt;b&gt;Note:&lt;/b&gt; Feature simplification may speed up rendering but can result in rendering inconsistencies</source>
-        <translation type="unfinished">&lt;b&gt;Uwaga:&lt;/b&gt; Upraszczanie może przyspieszyć rendering, lecz równocześnie powodować niespójności w podglądzie</translation>
+        <translation>&lt;b&gt;Uwaga:&lt;/b&gt; Upraszczanie może przyspieszyć rendering, lecz równocześnie powodować niespójności w podglądzie</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="902"/>
         <source>Simplification threshold (higher values result in more simplification): </source>
-        <translation type="unfinished">Próg upraszczania (wyższe wartości to większe uproszczenia): </translation>
+        <translation>Próg upraszczania (wyższe wartości to większe uproszczenie): </translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="912"/>
         <source>Higher values result in more simplification</source>
-        <translation type="unfinished">Wyższe wartości powodują większe uproszczenia</translation>
+        <translation>Wyższe wartości powodują większe uproszczenia</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="934"/>
         <source>pixels</source>
-        <translation type="unfinished">pikseli</translation>
+        <translation>pikseli</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="957"/>
         <source>Simplify on provider side if possible</source>
-        <translation type="unfinished">Upraszczaj w źródle danych (jeśli to możliwe)</translation>
+        <translation>Upraszczaj w źródle danych (jeśli to możliwe)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="964"/>
         <source>Maximum scale at which the layer should be simplified (1:1 always simplifies): </source>
-        <translation type="unfinished">Maksymalna skala upraszczania (1:1 - zawsze)</translation>
+        <translation>Maksymalna skala upraszczania (1:1 - upraszczaj zawsze): </translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1032"/>
@@ -60228,7 +60228,7 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/app/ogr/qgsvectorlayersaveasdialog.cpp" line="125"/>
         <source>&lt;Default&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;Domyślny&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/ogr/qgsvectorlayersaveasdialog.cpp" line="268"/>
@@ -66560,7 +66560,9 @@ Note: Experimental plugins are generally unsuitable for production use. These pl
         <source>&lt;h3&gt;GPS Plugin&lt;/h3&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Wtyczka GPS&lt;/h3&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgscontexthelp_texts.cpp" line="715"/>
@@ -67370,7 +67372,8 @@ W tej zakładce można zmienić kolejność warstw WMS komponowanych po stronie 
         <location filename="../src/core/qgscontexthelp_texts.cpp" line="853"/>
         <source>&lt;h3&gt;Database connection&lt;/h3&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Połączenie z bazą danych&lt;/h3&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgscontexthelp_texts.cpp" line="494"/>
@@ -67696,7 +67699,8 @@ Aby dodać podziałkę:
         <location filename="../src/core/qgscontexthelp_texts.cpp" line="697"/>
         <source>&lt;h3&gt;New OGR Database Connection Dialog&lt;/h3&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Nowe połączenie OGR z bazą danych&lt;/h3&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgscontexthelp_texts.cpp" line="1481"/>
@@ -67983,7 +67987,8 @@ tego świadomie w celach testowych.
         <location filename="../src/core/qgscontexthelp_texts.cpp" line="606"/>
         <source>&lt;h3&gt;Style Manager&lt;/h3&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Zarządzanie stylem&lt;/h3&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgscontexthelp_texts.cpp" line="1457"/>
