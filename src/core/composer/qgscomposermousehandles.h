@@ -129,6 +129,8 @@ class CORE_EXPORT QgsComposerMouseHandles: public QObject, public QGraphicsRectI
     QGraphicsLineItem* mHAlignSnapItem;
     QGraphicsLineItem* mVAlignSnapItem;
 
+    QSizeF mCursorOffset;
+
     /**Returns the mouse handle bounds of current selection*/
     QRectF selectionBounds() const;
 
@@ -154,6 +156,10 @@ class CORE_EXPORT QgsComposerMouseHandles: public QObject, public QGraphicsRectI
 
     /**Handles dragging of items during mouse move*/
     void dragMouseMove( const QPointF& currentPosition, bool lockMovement, bool preventSnap );
+
+    /**Calculates the distance of the mouse cursor from thed edge of the mouse handles*/
+    QSizeF calcCursorEdgeOffset( const QPointF &cursorPos );
+
     /**Handles resizing of items during mouse move*/
     void resizeMouseMove( const QPointF& currentPosition, bool lockAspect, bool fromCenter );
 
