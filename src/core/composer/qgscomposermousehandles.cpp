@@ -22,6 +22,7 @@
 #include "qgscomposermousehandles.h"
 #include "qgscomposeritem.h"
 #include "qgscomposition.h"
+#include "qgspaperitem.h"
 #include "qgis.h"
 #include "qgslogger.h"
 
@@ -1185,7 +1186,17 @@ void QgsComposerMouseHandles::collectAlignCoordinates( QMap< double, const QgsCo
       {
         continue;
       }
-      QRectF itemRect = currentItem->sceneBoundingRect();
+      QRectF itemRect;
+      if ( dynamic_cast<const QgsPaperItem *>( *itemIt ) )
+      {
+        //if snapping to paper use the paper item's rect rather then the bounding rect,
+        //since we want to snap to the page edge and not any outlines drawn around the page
+        itemRect = currentItem->rect();
+      }
+      else
+      {
+        itemRect = currentItem->sceneBoundingRect();
+      }
       alignCoordsX.insert( itemRect.left(), currentItem );
       alignCoordsX.insert( itemRect.right(), currentItem );
       alignCoordsX.insert( itemRect.center().x(), currentItem );
