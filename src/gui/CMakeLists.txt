@@ -218,6 +218,7 @@ qgscomposerruler.h
 qgscomposerview.h
 qgscredentialdialog.h
 qgsdatadefinedbutton.h
+qgsdatumtransformdialog.h
 qgsdetaileditemdelegate.h
 qgsdetaileditemwidget.h
 qgsdialog.h

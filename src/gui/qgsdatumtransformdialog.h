@@ -22,6 +22,7 @@
 
 class GUI_EXPORT QgsDatumTransformDialog: public QDialog, private Ui::QgsDatumTransformDialogBase
 {
+    Q_OBJECT
   public:
     QgsDatumTransformDialog( const QString& layerName, const QList< QList< int > >& dt, QWidget * parent = 0, Qt::WindowFlags f = 0 );
     ~QgsDatumTransformDialog();

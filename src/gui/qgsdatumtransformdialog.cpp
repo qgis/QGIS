@@ -56,6 +56,7 @@ void QgsDatumTransformDialog::load()
   {
     QTreeWidgetItem *item = new QTreeWidgetItem();
     bool itemDisabled = false;
+    bool itemHidden = false;
 
     for ( int i = 0; i < 2 && i < it->size(); ++i )
     {
@@ -74,7 +75,9 @@ void QgsDatumTransformDialog::load()
         continue;
 
       if ( mHideDeprecatedCheckBox->isChecked() && deprecated )
-        continue;
+      {
+        itemHidden = true;
+      }
 
       QString toolTipString;
       if ( gridShiftTransformation( item->text( i ) ) )
@@ -103,8 +106,16 @@ void QgsDatumTransformDialog::load()
         itemDisabled = true;
       }
     }
-    item->setDisabled( itemDisabled );
-    mDatumTransformTreeWidget->addTopLevelItem( item );
+
+    if ( !itemHidden )
+    {
+      item->setDisabled( itemDisabled );
+      mDatumTransformTreeWidget->addTopLevelItem( item );
+    }
+    else
+    {
+      delete item;
+    }
   }
 }
 
