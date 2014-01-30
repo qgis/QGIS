@@ -199,31 +199,39 @@ void QgsAttributeTableModel::layerDeleted()
 void QgsAttributeTableModel::attributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value )
 {
   QgsDebugMsgLevel( QString( "(%4) fid: %1, idx: %2, value: %3" ).arg( fid ).arg( idx ).arg( value.toString() ).arg( mFeatureRequest.filterType() ), 3 );
-  if ( loadFeatureAtId( fid ) )
+  // No filter request: skip all possibly heavy checks
+  if ( mFeatureRequest.filterType() == QgsFeatureRequest::FilterNone )
   {
-    if ( mFeatureRequest.acceptFeature( mFeat ) )
+    setData( index( idToRow( fid ), fieldCol( idx ) ), value, Qt::EditRole );
+  }
+  else
+  {
+    if ( loadFeatureAtId( fid ) )
     {
-      if ( !mIdRowMap.contains( fid ) )
+      if ( mFeatureRequest.acceptFeature( mFeat ) )
       {
-        // Feature changed in such a way, it will be shown now
-        featureAdded( fid );
+        if ( !mIdRowMap.contains( fid ) )
+        {
+          // Feature changed in such a way, it will be shown now
+          featureAdded( fid );
+        }
+        else
+        {
+          if ( idx == mCachedField )
+            mFieldCache[ fid ] = value;
+          // Update representation
+          setData( index( idToRow( fid ), fieldCol( idx ) ), value, Qt::EditRole );
+        }
       }
       else
       {
-        if ( idx == mCachedField )
-          mFieldCache[ fid ] = value;
-        // Update representation
-        setData( index( idToRow( fid ), fieldCol( idx ) ), value, Qt::EditRole );
+        if ( mIdRowMap.contains( fid ) )
+        {
+          // Feature changed such, that it is no longer shown
+          featureDeleted( fid );
+        }
+        // else: we don't care
       }
-    }
-    else
-    {
-      if ( mIdRowMap.contains( fid ) )
-      {
-        // Feature changed such, that it is no longer shown
-        featureDeleted( fid );
-      }
-      // else: we don't care
     }
   }
 }
