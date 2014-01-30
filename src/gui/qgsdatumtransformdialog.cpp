@@ -77,6 +77,11 @@ void QgsDatumTransformDialog::load()
         continue;
 
       QString toolTipString;
+      if ( gridShiftTransformation( item->text( i ) ) )
+      {
+        toolTipString.append( QString( "<p><b>NTv2</b></p>" ) );
+      }
+
       if ( epsgNr > 0 )
         toolTipString.append( QString( "<p><b>EPSG Transformations Code:</b> %1</p>" ).arg( epsgNr ) );
 
@@ -181,7 +186,11 @@ bool QgsDatumTransformDialog::testGridShiftFileAvailability( QTreeWidgetItem* it
     QStringList::const_iterator fileIt = fileList.constBegin();
     for ( ; fileIt != fileList.constEnd(); ++fileIt )
     {
-      if ( *fileIt == filename )
+#if defined(Q_OS_WIN)
+      if ( fileIt->compare( filename, Qt::CaseInsensitive ) == 0 )
+#else
+      if ( fileIt->compare( filename ) == 0 )
+#endif //Q_OS_WIN
       {
         return true;
       }
