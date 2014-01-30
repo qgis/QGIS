@@ -213,6 +213,13 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     virtual void updatedFields();
 
     /**
+     * Gets called when an edit command ends
+     * This will synchronize all fields which have been changed since the last
+     * edit command in one single go
+     */
+    virtual void editCommandEnded();
+
+    /**
      * Called whenever a column is removed;
      */
     virtual void attributeDeleted( int idx );
@@ -274,6 +281,15 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     int mCachedField;
     /** Allows to cache one specific column (used for sorting) */
     QHash<QgsFeatureId, QVariant> mFieldCache;
+
+    /**
+     * Holds the bounds of changed cells while an update operation is running
+     * top    = min row
+     * left   = min column
+     * bottom = max row
+     * right  = max column
+     */
+    QRect mChangedCellBounds;
 };
 
 

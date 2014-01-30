@@ -3263,17 +3263,20 @@ void QgsVectorLayer::setRendererV2( QgsFeatureRendererV2 *r )
 void QgsVectorLayer::beginEditCommand( QString text )
 {
   undoStack()->beginMacro( text );
+  emit editCommandStarted( text );
 }
 
 void QgsVectorLayer::endEditCommand()
 {
   undoStack()->endMacro();
+  emit editCommandEnded();
 }
 
 void QgsVectorLayer::destroyEditCommand()
 {
   undoStack()->endMacro();
   undoStack()->undo();
+  emit editCommandDestroyed();
 }
 
 

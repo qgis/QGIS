@@ -1539,6 +1539,27 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Signal emitted when setLayerTransparency() is called */
     void layerTransparencyChanged( int layerTransparency );
 
+    /**
+     * Signal emitted when a new edit command has been started
+     *
+     * @param text Description for this edit command
+     */
+    void editCommandStarted( const QString& text );
+
+    /**
+     * Signal emitted, when an edit command successfully ended
+     * @note This does not mean it is also committed, only that it is written
+     * to the edit buffer. See {@link beforeCommitChanges()}
+     */
+    void editCommandEnded();
+
+    /**
+     * Signal emitted, whan an edit command is destroyed
+     * @note This is not a rollback, it is only related to the current edit command.
+     * See {@link beforeRollBack()}
+     */
+    void editCommandDestroyed();
+
   private slots:
     void onRelationsLoaded();
 

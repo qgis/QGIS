@@ -55,6 +55,7 @@ QgsAttributeTableModel::QgsAttributeTableModel( QgsVectorLayerCache *layerCache,
   connect( layer(), SIGNAL( featureDeleted( QgsFeatureId ) ), this, SLOT( featureDeleted( QgsFeatureId ) ) );
   connect( layer(), SIGNAL( attributeDeleted( int ) ), this, SLOT( attributeDeleted( int ) ) );
   connect( layer(), SIGNAL( updatedFields() ), this, SLOT( updatedFields() ) );
+  connect( layer(), SIGNAL( editCommandEnded() ), this, SLOT( editCommandEnded() ) );
   connect( mLayerCache, SIGNAL( featureAdded( QgsFeatureId ) ), this, SLOT( featureAdded( QgsFeatureId ) ) );
   connect( mLayerCache, SIGNAL( cachedLayerDeleted() ), this, SLOT( layerDeleted() ) );
 }
@@ -160,6 +161,14 @@ void QgsAttributeTableModel::updatedFields()
   QgsDebugMsg( "entered." );
   loadAttributes();
   emit modelChanged();
+}
+
+void QgsAttributeTableModel::editCommandEnded()
+{
+  reload( createIndex( mChangedCellBounds.top(), mChangedCellBounds.left() ),
+          createIndex( mChangedCellBounds.bottom(), mChangedCellBounds.right() ) );
+
+  mChangedCellBounds = QRect();
 }
 
 void QgsAttributeTableModel::attributeDeleted( int idx )
@@ -592,7 +601,29 @@ bool QgsAttributeTableModel::setData( const QModelIndex &index, const QVariant &
   if ( !layer()->isModified() )
     return false;
 
-  emit dataChanged( index, index );
+  if ( mChangedCellBounds.isNull() )
+  {
+    mChangedCellBounds = QRect( index.column(), index.row(), 0, 0 );
+  }
+  else
+  {
+    if ( index.column() < mChangedCellBounds.left() )
+    {
+      mChangedCellBounds.setLeft( index.column() );
+    }
+    if ( index.row() < mChangedCellBounds.top() )
+    {
+      mChangedCellBounds.setTop( index.row() );
+    }
+    if ( index.column() > mChangedCellBounds.right() )
+    {
+      mChangedCellBounds.setRight( index.column() );
+    }
+    if ( index.row() > mChangedCellBounds.bottom() )
+    {
+      mChangedCellBounds.setBottom( index.row() );
+    }
+  }
 
   return true;
 }
