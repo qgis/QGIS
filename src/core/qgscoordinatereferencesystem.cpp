@@ -1997,7 +1997,7 @@ bool QgsCoordinateReferenceSystem::syncDatumTransform( const QString& dbPath )
 
   int n = CSLCount( fieldnames );
 
-  int idxid = -1, idxrx = -1, idxry = -1, idxrz = -1;
+  int idxid = -1, idxrx = -1, idxry = -1, idxrz = -1, idxmcode = -1;
   for ( unsigned int i = 0; i < sizeof( map ) / sizeof( *map ); i++ )
   {
     bool last = i == sizeof( map ) / sizeof( *map ) - 1;
@@ -2019,6 +2019,8 @@ bool QgsCoordinateReferenceSystem::syncDatumTransform( const QString& dbPath )
       idxry = i;
     if ( strcmp( map[i].src, "RZ" ) == 0 )
       idxrz = i;
+    if ( strcmp( map[i].src, "COORD_OP_METHOD_CODE" ) == 0 )
+      idxmcode = i;
 
     if ( i > 0 )
     {
@@ -2095,12 +2097,12 @@ bool QgsCoordinateReferenceSystem::syncDatumTransform( const QString& dbPath )
     }
 
     //switch sign of rotation parameters. See http://trac.osgeo.org/proj/wiki/GenParms#towgs84-DatumtransformationtoWGS84
-    if ( v[ idxid ] == "9607" )
+    if ( v.at( idxmcode ).compare( QString( "'9607'" ) ) == 0 )
     {
-      v[ idxid ] = "9606";
-      v[ idxrx ] = qgsDoubleToString( -v[ idxrx ].toDouble() );
-      v[ idxry ] = qgsDoubleToString( -v[ idxry ].toDouble() );
-      v[ idxrz ] = qgsDoubleToString( -v[ idxrz ].toDouble() );
+      v[ idxmcode ] = "'9606'";
+      v[ idxrx ] = "'" + qgsDoubleToString( -( v[ idxrx ].remove( "'" ).toDouble() ) ) + "'";
+      v[ idxry ] = "'" + qgsDoubleToString( -( v[ idxry ].remove( "'" ).toDouble() ) ) + "'";
+      v[ idxrz ] = "'" + qgsDoubleToString( -( v[ idxrz ].remove( "'" ).toDouble() ) ) + "'";
     }
 
     //entry already in db?
