@@ -35,7 +35,7 @@ from PyQt4.QtGui import *
 from qgis.core import *
 from qgis.gui import *
 
-from osgeo import gdal, ogr
+from osgeo import gdal, ogr, osr
 from osgeo.gdalconst import *
 
 import os
@@ -287,27 +287,22 @@ def getVectorFields(vectorFile):
 
 # get raster SRS if possible
 def getRasterSRS( parent, fileName ):
-    processSRS = QProcess( parent )
-    if ( GdalConfig.versionNum() >= 1900 ):
-        processSRS.start( "gdalsrsinfo", ["-o", "wkt", "-p", fileName], QIODevice.ReadOnly )
-    else:
-        processSRS.start( "gdalinfo", [fileName], QIODevice.ReadOnly )
-    arr = ''
-    if processSRS.waitForFinished():
-      arr = str(processSRS.readAllStandardOutput())
-      processSRS.close()
+    ds = gdal.Open(fileName)
+    if ds is None:
+        return ''
 
-    if arr == '':
+    proj = ds.GetProjectionRef()
+    if proj is None:
       return ''
+  
+    sr = osr.SpatialReference()
+    if sr.ImportFromWkt(proj) != gdal.CE_None:
+        return ''
 
-    info = arr.splitlines()
-    if len(info) == 0:
-      return ''
-
-    for elem in reversed(info):
-        m = re.match("^\s*AUTHORITY\[\"([a-z]*[A-Z]*)\",\"(\d*)\"\]", elem)
-        if m and len(m.groups()) == 2:
-            return '%s:%s' % (m.group(1), m.group(2))
+    name = sr.GetAuthorityName(None)
+    code = sr.GetAuthorityCode(None)
+    if name is not None and code is not None:
+        return '%s:%s' % (name,code)
 
     return ''
 
