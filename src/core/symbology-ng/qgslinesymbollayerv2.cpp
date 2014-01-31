@@ -426,6 +426,11 @@ QVector<qreal> QgsSimpleLineSymbolLayerV2::dxfCustomDashPattern( QgsSymbolV2::Ou
   return mUseCustomDashPattern ? mCustomDashVector : QVector<qreal>() ;
 }
 
+Qt::PenStyle QgsSimpleLineSymbolLayerV2::dxfPenStyle() const
+{
+  return mPenStyle;
+}
+
 double QgsSimpleLineSymbolLayerV2::dxfWidth( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const
 {
   double width = mWidth;
