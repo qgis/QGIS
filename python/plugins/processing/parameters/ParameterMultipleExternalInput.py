@@ -28,9 +28,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from processing.parameters.ParameterDataObject import ParameterDataObject
-from processing.core.QGisLayers import QGisLayers
 from qgis.core import *
-from processing.core.LayerExporter import LayerExporter
 
 class ParameterMultipleExternalInput(ParameterDataObject):
     '''A parameter representing several data objects.
