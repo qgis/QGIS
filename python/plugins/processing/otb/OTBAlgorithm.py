@@ -40,12 +40,12 @@ from processing.parameters.ParameterBoolean import ParameterBoolean
 from processing.parameters.ParameterSelection import ParameterSelection
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.ProcessingLog import ProcessingLog
-from processing.core.ProcessingUtils import ProcessingUtils
 from processing.core.WrongHelpFileException import WrongHelpFileException
 from processing.parameters.ParameterFactory import ParameterFactory
 from processing.outputs.OutputFactory import OutputFactory
 from processing.otb.OTBUtils import OTBUtils
 from processing.parameters.ParameterExtent import ParameterExtent
+from processing.tools.system import *
 import xml.etree.ElementTree as ET
 import traceback
 import inspect
@@ -250,7 +250,7 @@ class OTBAlgorithm(GeoAlgorithm):
             if isinstance(param, ParameterVector):
                 commands.append(param.name)
                 if self.hasROI:
-                    roiFile = ProcessingUtils.getTempFilename('shp')
+                    roiFile = getTempFilename('shp')
                     commands.append(roiFile)
                     self.roiVectors[param.value] = roiFile
                 else:
@@ -258,7 +258,7 @@ class OTBAlgorithm(GeoAlgorithm):
             elif isinstance(param, ParameterRaster):
                 commands.append(param.name)
                 if self.hasROI:
-                    roiFile = ProcessingUtils.getTempFilename('tif')
+                    roiFile = getTempFilename('tif')
                     commands.append(roiFile)
                     self.roiRasters[param.value] = roiFile
                 else:
