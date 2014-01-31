@@ -186,7 +186,7 @@ int QgsMapCanvasSnapper::snapToBackgroundLayers( const QPoint& p, QList<QgsSnapp
 
       //layer
       QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( QgsMapLayerRegistry::instance()->mapLayer( *layerIt ) );
-      if ( !vlayer )
+      if ( !vlayer || !vlayer->hasGeometryType() )
         continue;
 
       snapLayer.mLayer = vlayer;
