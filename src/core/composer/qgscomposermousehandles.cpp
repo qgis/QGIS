@@ -777,7 +777,8 @@ void QgsComposerMouseHandles::dragMouseMove( const QPointF& currentPosition, boo
   QPointF upperLeftPoint( mBeginHandlePos.x() + moveX, mBeginHandlePos.y() + moveY );
 
   QPointF snappedLeftPoint;
-  if ( !preventSnap )
+  //no snapping for rotated items for now
+  if ( !preventSnap && rotation() == 0 )
   {
     //snap to grid and guides
     snappedLeftPoint = snapPoint( upperLeftPoint, QgsComposerMouseHandles::Item );
@@ -825,14 +826,27 @@ void QgsComposerMouseHandles::resizeMouseMove( const QPointF& currentPosition, b
 
   double mx = 0.0, my = 0.0, rx = 0.0, ry = 0.0;
 
-  //subtract cursor edge offset from begin mouse event and current cursor position, so that snapping occurs to edge of mouse handles
-  //rather then cursor position
-  QPointF beginMousePos = mapFromScene( QPointF( mBeginMouseEventPos.x() - mCursorOffset.width(), mBeginMouseEventPos.y() - mCursorOffset.height() ) );
-  QPointF snappedPosition = snapPoint( QPointF( currentPosition.x() - mCursorOffset.width(), currentPosition.y() - mCursorOffset.height() ), QgsComposerMouseHandles::Point );
-  snappedPosition = mapFromScene( snappedPosition );
+  QPointF beginMousePos;
+  QPointF finalPosition;
+  if ( rotation() == 0 )
+  {
+    //snapping only occurs if handles are not rotated for now
 
-  double diffX = snappedPosition.x() - beginMousePos.x();
-  double diffY = snappedPosition.y() - beginMousePos.y();
+    //subtract cursor edge offset from begin mouse event and current cursor position, so that snapping occurs to edge of mouse handles
+    //rather then cursor position
+    beginMousePos = mapFromScene( QPointF( mBeginMouseEventPos.x() - mCursorOffset.width(), mBeginMouseEventPos.y() - mCursorOffset.height() ) );
+    QPointF snappedPosition = snapPoint( QPointF( currentPosition.x() - mCursorOffset.width(), currentPosition.y() - mCursorOffset.height() ), QgsComposerMouseHandles::Point );
+    finalPosition = mapFromScene( snappedPosition );
+  }
+  else
+  {
+    //no snapping for rotated items for now
+    beginMousePos = mapFromScene( mBeginMouseEventPos );
+    finalPosition = mapFromScene( currentPosition );
+  }
+
+  double diffX = finalPosition.x() - beginMousePos.x();
+  double diffY = finalPosition.y() - beginMousePos.y();
 
   double ratio = 0;
   if ( lockRatio && mBeginHandleHeight != 0 )
