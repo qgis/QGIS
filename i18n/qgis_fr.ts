@@ -3106,7 +3106,7 @@ Are you sure you want to proceed?</source>
     </message>
     <message>
         <source>everything went fine</source>
-        <translation>tout c&apos;est bien passé</translation>
+        <translation>Tout s&apos;est bien passé</translation>
     </message>
 </context>
 <context>
