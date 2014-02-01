@@ -82,6 +82,12 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int w
     mGridAnnotationFont.setFamily( defaultFontString );
   }
 
+  //get the color for map canvas background and set map background color accordingly
+  int bgRedInt = QgsProject::instance()->readNumEntry( "Gui", "/CanvasColorRedPart", 255 );
+  int bgGreenInt = QgsProject::instance()->readNumEntry( "Gui", "/CanvasColorGreenPart", 255 );
+  int bgBlueInt = QgsProject::instance()->readNumEntry( "Gui", "/CanvasColorBluePart", 255 );
+  mBackgroundColor = QColor( bgRedInt, bgGreenInt, bgBlueInt );
+
   connectUpdateSlot();
 
   //calculate mExtent based on width/height ratio and map canvas extent
