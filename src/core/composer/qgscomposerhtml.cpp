@@ -133,10 +133,18 @@ bool QgsComposerHtml::writeXML( QDomElement& elem, QDomDocument & doc, bool igno
 bool QgsComposerHtml::readXML( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames )
 {
   deleteFrames();
+
+  //first create the frames
+  if ( !_readXML( itemElem, doc, ignoreFrames ) )
+  {
+    return false;
+  }
+
+  //then load the set url
   QString urlString = itemElem.attribute( "url" );
   if ( !urlString.isEmpty() )
   {
     setUrl( QUrl( urlString ) );
   }
-  return _readXML( itemElem, doc, ignoreFrames );
+  return true;
 }
