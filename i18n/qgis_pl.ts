@@ -8411,8 +8411,8 @@ Działa na aktualnie edytowanej warstwie</translation>
     <message>
         <source>Model doesn&apos;t contains any algorithms and/or 
                              parameters and can&apos;t be executed</source>
-        <translation type="unfinished">Model nie zawiera żadnych algorytmów ani/i
-  parametetrów i nie może zostać uruchomiony</translation>
+        <translation>Model nie zawiera żadnych algorytmów ani/i
+                             parametetrów i nie może zostać uruchomiony</translation>
     </message>
     <message>
         <source>Save Model As Image</source>
@@ -11925,85 +11925,85 @@ Widzisz ten komunikat, bo prawdopodobnie nie ustawiłaś(eś) zmiennej środowis
         <location filename="../src/core/qgsexpression.cpp" line="75"/>
         <source>day</source>
         <comment>Note: Word is part matched in code</comment>
-        <translation type="unfinished"></translation>
+        <translation>dzień</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="76"/>
         <source>days</source>
         <comment>Note: Word is part matched in code</comment>
-        <translation type="unfinished"></translation>
+        <translation>dni</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="79"/>
         <source>week</source>
         <comment>Note: Word is part matched in code</comment>
-        <translation type="unfinished"></translation>
+        <translation>tydzień</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="80"/>
         <source>weeks</source>
         <comment>Note: Word is part matched in code</comment>
-        <translation type="unfinished"></translation>
+        <translation>tygodni</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="83"/>
         <source>month</source>
         <comment>Note: Word is part matched in code</comment>
-        <translation type="unfinished"></translation>
+        <translation>miesiąc</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="84"/>
         <source>months</source>
         <comment>Note: Word is part matched in code</comment>
-        <translation type="unfinished"></translation>
+        <translation>miesięcy</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="87"/>
         <source>year</source>
         <comment>Note: Word is part matched in code</comment>
-        <translation type="unfinished"></translation>
+        <translation>rok</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="88"/>
         <source>years</source>
         <comment>Note: Word is part matched in code</comment>
-        <translation type="unfinished"></translation>
+        <translation>lat</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="91"/>
         <source>second</source>
         <comment>Note: Word is part matched in code</comment>
-        <translation type="unfinished">sekunda</translation>
+        <translation>sekunda</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="92"/>
         <source>seconds</source>
         <comment>Note: Word is part matched in code</comment>
-        <translation type="unfinished"></translation>
+        <translation>sekund</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="95"/>
         <source>minute</source>
         <comment>Note: Word is part matched in code</comment>
-        <translation type="unfinished"></translation>
+        <translation>minuta</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="96"/>
         <source>minutes</source>
         <comment>Note: Word is part matched in code</comment>
-        <translation type="unfinished"></translation>
+        <translation>minut</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="99"/>
         <source>hour</source>
         <comment>Note: Word is part matched in code</comment>
-        <translation type="unfinished">godzina</translation>
+        <translation>godzina</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="100"/>
         <source>hours</source>
         <comment>Note: Word is part matched in code</comment>
-        <translation type="unfinished"></translation>
+        <translation>godzin</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="235"/>
@@ -25324,7 +25324,7 @@ and current file is [%3]</source>
     <message>
         <location filename="../src/gui/symbology-ng/qgsdatadefinedsymboldialog.cpp" line="168"/>
         <source>double</source>
-        <translation type="unfinished">double</translation>
+        <translation>liczba</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsdatadefinedsymboldialog.cpp" line="173"/>
@@ -25364,7 +25364,7 @@ and current file is [%3]</source>
     <message>
         <location filename="../src/gui/symbology-ng/qgsdatadefinedsymboldialog.cpp" line="213"/>
         <source>0 (false)|1 (true)</source>
-        <translation type="unfinished"></translation>
+        <translation>0 (fałsz)|1 (prawda)</translation>
     </message>
 </context>
 <context>
@@ -25372,12 +25372,12 @@ and current file is [%3]</source>
     <message>
         <location filename="../src/gui/qgsdatumtransformdialog.cpp" line="33"/>
         <source>Select datum transformations for layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybierz transformację układu odniesienia dla warstwy</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsdatumtransformdialog.cpp" line="189"/>
         <source>File &apos;%1&apos; not found in directory &apos;%2&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie znaleziono pliku &apos;%1&apos; w katalogu &apos;%2&apos;</translation>
     </message>
 </context>
 <context>
@@ -25385,27 +25385,27 @@ and current file is [%3]</source>
     <message>
         <location filename="../src/ui/qgsdatumtransformdialogbase.ui" line="14"/>
         <source>Select datum transformations</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybierz transformację układu odniesienia</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdatumtransformdialogbase.ui" line="21"/>
         <source>src transform</source>
-        <translation type="unfinished"></translation>
+        <translation>transformacja źródłowa</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdatumtransformdialogbase.ui" line="26"/>
         <source>dst transform</source>
-        <translation type="unfinished"></translation>
+        <translation>transformacja docelowa</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdatumtransformdialogbase.ui" line="41"/>
         <source>Remember selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapamiętaj wybór</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdatumtransformdialogbase.ui" line="61"/>
         <source>Hide deprecated</source>
-        <translation type="unfinished"></translation>
+        <translation>Ukryj nieaktualne </translation>
     </message>
 </context>
 <context>
@@ -28271,7 +28271,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="262"/>
         <source>Recent (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ostatnio użyte (%1)</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="347"/>
@@ -29024,7 +29024,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="240"/>
         <source>Relations</source>
-        <translation type="unfinished"></translation>
+        <translation>Relacje</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="268"/>
@@ -44204,27 +44204,27 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3902"/>
         <source>Default datum transformations</source>
-        <translation type="unfinished"></translation>
+        <translation>Domyślne transformacje układów odniesienia</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3948"/>
         <source>Source CRS</source>
-        <translation type="unfinished"></translation>
+        <translation>Źródłowy układ współrzędnych</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3953"/>
         <source>Destination CRS</source>
-        <translation type="unfinished"></translation>
+        <translation>Docelowy układ współrzędnych</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3958"/>
         <source>Source datum transform</source>
-        <translation type="unfinished"></translation>
+        <translation>Źródłowy układ odniesienia</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3963"/>
         <source>Destination datum transform</source>
-        <translation type="unfinished"></translation>
+        <translation>Docelowy układ odniesienia</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="4022"/>
