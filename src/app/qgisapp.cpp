@@ -8593,10 +8593,9 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
         updateUndoActions();
       }
 
-      bool canPasteFeatures = isEditable && canAddFeatures && !clipboard()->empty();
-      mActionPasteFeatures->setEnabled( canPasteFeatures );
-      mActionPasteAsNewVector->setEnabled( canPasteFeatures );
-      mActionPasteAsNewMemoryVector->setEnabled( canPasteFeatures );
+      mActionPasteFeatures->setEnabled( isEditable && canAddFeatures && !clipboard()->empty() );
+      mActionPasteAsNewVector->setEnabled( !clipboard()->empty() );
+      mActionPasteAsNewMemoryVector->setEnabled( !clipboard()->empty() );
 
       mActionAddFeature->setEnabled( isEditable && canAddFeatures );
 
