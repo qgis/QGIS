@@ -43,6 +43,7 @@ QgsDxfPalLabeling::QgsDxfPalLabeling( QgsDxfExport* dxf, const QgsRectangle& bbo
   mRenderContext.setRendererScale( scale );
   mRenderContext.setExtent( bbox );
   mRenderContext.setScaleFactor( 96.0 / 25.4 );
+  mRenderContext.setMapToPixel( QgsMapToPixel( 1.0 / factor, bbox.xMinimum(), bbox.yMinimum(), bbox.height() * factor ) );
 }
 
 QgsDxfPalLabeling::~QgsDxfPalLabeling()

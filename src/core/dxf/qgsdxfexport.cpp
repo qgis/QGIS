@@ -581,7 +581,6 @@ void QgsDxfExport::writeEntities()
     QgsFeatureRendererV2* renderer = vl->rendererV2();
     renderer->startRender( ctx, vl );
 
-    //todo: call mLabeling.prepareLayer(...)
     QSet<int> attrIndex;
     bool labelLayer = ( labelEngine.prepareLayer( vl, attrIndex, ctx ) != 0 );
 
