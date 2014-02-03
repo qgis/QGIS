@@ -608,6 +608,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   addWindow( mWindowAction );
 #endif
 
+  mMenuPasteAs->setEnabled( false );
   activateDeactivateLayerRelatedActions( NULL ); // after members were created
 
   connect( QgsMapLayerActionRegistry::instance(), SIGNAL( changed() ), this, SLOT( refreshActionFeatureAction() ) );
@@ -5707,6 +5708,8 @@ void QgisApp::editCopy( QgsMapLayer * layerContainingSelection )
 
 void QgisApp::clipboardChanged()
 {
+  mMenuPasteAs->setEnabled( clipboard() && !clipboard()->empty() );
+
   activateDeactivateLayerRelatedActions( activeLayer() );
 }
 
@@ -8447,10 +8450,6 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
   mActionMoveLabel->setEnabled( enableMove );
   mActionRotateLabel->setEnabled( enableRotate );
   mActionChangeLabelProperties->setEnabled( enableChange );
-
-  mMenuPasteAs->setEnabled( clipboard() && !clipboard()->empty() );
-  mActionPasteAsNewVector->setEnabled( clipboard() && !clipboard()->empty() );
-  mActionPasteAsNewMemoryVector->setEnabled( clipboard() && !clipboard()->empty() );
 
   updateLayerModifiedActions();
 

@@ -205,13 +205,8 @@ void QgsClipboard::insert( QgsFeature& feature )
 
 bool QgsClipboard::empty()
 {
-  QClipboard *cb = QApplication::clipboard();
-#ifndef Q_OS_WIN
-  QString text = cb->text( QClipboard::Selection );
-#else
-  QString text = cb->text( QClipboard::Clipboard );
-#endif
-  return text.isEmpty() && mFeatureClipboard.empty();
+  const QgsFields fields = QgsFields();
+  return copyOf( fields ).empty();
 }
 
 QgsFeatureList QgsClipboard::transformedCopyOf( QgsCoordinateReferenceSystem destCRS , const QgsFields &fields )
