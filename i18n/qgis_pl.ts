@@ -2813,32 +2813,32 @@ Na pewno chcesz kontynuować?</translation>
     <message>
         <location filename="../python/plugins/processing/ui/DlgAutofill.ui" line="14"/>
         <source>Autofill settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Ustawienia autouzupełniania</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgAutofill.ui" line="20"/>
         <source>Autofill mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Tryb uzupełniania</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgAutofill.ui" line="28"/>
         <source>Do not autofill</source>
-        <translation type="unfinished"></translation>
+        <translation>nie uzupełniaj</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgAutofill.ui" line="33"/>
         <source>Fill with numbers</source>
-        <translation type="unfinished"></translation>
+        <translation>uzupełnij liczbami</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgAutofill.ui" line="38"/>
         <source>Fill with parameter values</source>
-        <translation type="unfinished"></translation>
+        <translation>uzupełnij z parametru</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgAutofill.ui" line="49"/>
         <source>Parameter to use</source>
-        <translation type="unfinished"></translation>
+        <translation>Parametr</translation>
     </message>
 </context>
 <context>
@@ -3311,7 +3311,7 @@ Na pewno chcesz kontynuować?</translation>
     <message>
         <location filename="../python/plugins/processing/ui/DlgMultipleSelection.ui" line="14"/>
         <source>Multiple selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Wielokrotny wybór</translation>
     </message>
 </context>
 <context>
