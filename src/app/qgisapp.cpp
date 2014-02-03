@@ -8447,7 +8447,10 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
   mActionMoveLabel->setEnabled( enableMove );
   mActionRotateLabel->setEnabled( enableRotate );
   mActionChangeLabelProperties->setEnabled( enableChange );
+
   mMenuPasteAs->setEnabled( clipboard() && !clipboard()->empty() );
+  mActionPasteAsNewVector->setEnabled( clipboard() && !clipboard()->empty() );
+  mActionPasteAsNewMemoryVector->setEnabled( clipboard() && !clipboard()->empty() );
 
   updateLayerModifiedActions();
 
@@ -8481,8 +8484,6 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionCutFeatures->setEnabled( false );
     mActionCopyFeatures->setEnabled( false );
     mActionPasteFeatures->setEnabled( false );
-    mActionPasteAsNewVector->setEnabled( false );
-    mActionPasteAsNewMemoryVector->setEnabled( false );
     mActionCopyStyle->setEnabled( false );
     mActionPasteStyle->setEnabled( false );
 
@@ -8594,8 +8595,6 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
       }
 
       mActionPasteFeatures->setEnabled( isEditable && canAddFeatures && !clipboard()->empty() );
-      mActionPasteAsNewVector->setEnabled( !clipboard()->empty() );
-      mActionPasteAsNewMemoryVector->setEnabled( !clipboard()->empty() );
 
       mActionAddFeature->setEnabled( isEditable && canAddFeatures );
 
@@ -8746,8 +8745,6 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionCopyFeatures->setEnabled( false );
     mActionCutFeatures->setEnabled( false );
     mActionPasteFeatures->setEnabled( false );
-    mActionPasteAsNewVector->setEnabled( false );
-    mActionPasteAsNewMemoryVector->setEnabled( false );
     mActionRotatePointSymbols->setEnabled( false );
     mActionDeletePart->setEnabled( false );
     mActionDeleteRing->setEnabled( false );
