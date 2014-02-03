@@ -726,8 +726,8 @@ QString QgsPostgresConn::postgisVersion()
   mTopologyAvailable = false;
   if ( mPostgisVersionMajor > 1 )
   {
-    QgsPostgresResult result = PQexec( "SELECT count(c.oid) FROM pg_class AS c JOIN pg_namespace AS n ON c.relnamespace=n.oid WHERE n.nspname='topology' AND c.relname='topology'" );
-    if ( result.PQntuples() >= 1 )
+    QgsPostgresResult result = PQexec( "SELECT EXISTS ( SELECT c.oid FROM pg_class AS c JOIN pg_namespace AS n ON c.relnamespace=n.oid WHERE n.nspname='topology' AND c.relname='topology' )" );
+    if ( result.PQntuples() >= 1 && result.PQgetvalue(0, 0) == "t" )
     {
       mTopologyAvailable = true;
     }
