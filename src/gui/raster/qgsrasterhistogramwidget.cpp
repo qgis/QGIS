@@ -493,7 +493,8 @@ void QgsRasterHistogramWidget::refreshHistogram()
 #endif
 
     // calculate first bin x value and bin step size if not Byte data
-    if ( mRasterLayer->dataProvider()->srcDataType( myIteratorInt ) != QGis::Byte )
+    QGis::DataType mySrcDataType = mRasterLayer->dataProvider()->srcDataType( myIteratorInt );
+    if ( mySrcDataType != QGis::Byte )
     {
       myBinXStep = ( myHistogram.maximum - myHistogram.minimum ) / myHistogram.binCount;
       myBinX = myHistogram.minimum + myBinXStep / 2.0;
@@ -502,12 +503,16 @@ void QgsRasterHistogramWidget::refreshHistogram()
     {
       myBinXStep = 1;
       myBinX = 0;
-#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
-      // TODO add support for Int16/Int32 types - this requires fixing the sampleSize and/or min/max
-      if ( ! mHistoDrawLines )
-        myDrawLines = false;
-#endif
     }
+#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
+    if ( ! mHistoDrawLines &&
+         ( mySrcDataType == QGis::Byte ||
+           mySrcDataType == QGis::Int16 || mySrcDataType == QGis::Int32 ||
+           mySrcDataType == QGis::UInt16 || mySrcDataType == QGis::UInt32 ) )
+    {
+      myDrawLines = false;
+    }
+#endif
 
     for ( int myBin = 0; myBin < myHistogram.binCount; myBin++ )
     {
