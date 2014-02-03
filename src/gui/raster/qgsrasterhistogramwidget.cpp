@@ -44,7 +44,9 @@
 #include <qwt_plot_histogram.h>
 #endif
 
-#define RASTER_HISTOGRAM_BINS 256
+// this has been removed, now we let the provider/raster interface decide
+// how many bins are suitable depending on data type and range
+//#define RASTER_HISTOGRAM_BINS 256
 
 QgsRasterHistogramWidget::QgsRasterHistogramWidget( QgsRasterLayer* lyr, QWidget *parent )
     : QWidget( parent ),
@@ -263,7 +265,8 @@ void QgsRasterHistogramWidget::on_btnHistoCompute_clicked()
 
 bool QgsRasterHistogramWidget::computeHistogram( bool forceComputeFlag )
 {
-  const int BINCOUNT = RASTER_HISTOGRAM_BINS;
+  QgsDebugMsg( "entered." );
+
   //bool myIgnoreOutOfRangeFlag = true;
   //bool myThoroughBandScanFlag = false;
   int myBandCountInt = mRasterLayer->bandCount();
@@ -275,9 +278,8 @@ bool QgsRasterHistogramWidget::computeHistogram( bool forceComputeFlag )
           myIteratorInt <= myBandCountInt;
           ++myIteratorInt )
     {
-      //if ( ! mRasterLayer->hasCachedHistogram( myIteratorInt, BINCOUNT ) )
       int sampleSize = 250000; // number of sample cells
-      if ( !mRasterLayer->dataProvider()->hasHistogram( myIteratorInt, BINCOUNT, std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN(), QgsRectangle(), sampleSize ) )
+      if ( !mRasterLayer->dataProvider()->hasHistogram( myIteratorInt, 0, std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN(), QgsRectangle(), sampleSize ) )
       {
         QgsDebugMsg( QString( "band %1 does not have cached histo" ).arg( myIteratorInt ) );
         return false;
@@ -294,9 +296,8 @@ bool QgsRasterHistogramWidget::computeHistogram( bool forceComputeFlag )
         myIteratorInt <= myBandCountInt;
         ++myIteratorInt )
   {
-    //mRasterLayer->populateHistogram( myIteratorInt, BINCOUNT, myIgnoreOutOfRangeFlag, myThoroughBandScanFlag );
     int sampleSize = 250000; // number of sample cells
-    mRasterLayer->dataProvider()->histogram( myIteratorInt, BINCOUNT, std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN(), QgsRectangle(), sampleSize );
+    mRasterLayer->dataProvider()->histogram( myIteratorInt, 0, std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN(), QgsRectangle(), sampleSize );
   }
 
   disconnect( mRasterLayer, SIGNAL( progressUpdate( int ) ), mHistogramProgress, SLOT( setValue( int ) ) );
@@ -319,7 +320,6 @@ void QgsRasterHistogramWidget::refreshHistogram()
   // bin in all selected layers, and the min. It then draws a scaled line between min
   // and max - scaled to image height. 1 line drawn per selected band
   //
-  const int BINCOUNT = RASTER_HISTOGRAM_BINS;
   int myBandCountInt = mRasterLayer->bandCount();
 
   QgsDebugMsg( "entered." );
@@ -465,9 +465,9 @@ void QgsRasterHistogramWidget::refreshHistogram()
     }
 
     int sampleSize = 250000; // number of sample cells
-    //QgsRasterBandStats myRasterBandStats = mRasterLayer->dataProvider()->bandStatistics( myIteratorInt );
-    // mRasterLayer->populateHistogram( myIteratorInt, BINCOUNT, myIgnoreOutOfRangeFlag, myThoroughBandScanFlag );
-    QgsRasterHistogram myHistogram = mRasterLayer->dataProvider()->histogram( myIteratorInt, BINCOUNT, std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN(), QgsRectangle(), sampleSize );
+    QgsRasterHistogram myHistogram = mRasterLayer->dataProvider()->histogram( myIteratorInt, 0, std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN(), QgsRectangle(), sampleSize );
+
+    QgsDebugMsg( QString( "got raster histo for band %1 : min=%2 max=%3 count=%4" ).arg( myIteratorInt ).arg( myHistogram.minimum ).arg( myHistogram.maximum ).arg( myHistogram.binCount ) );
 
     bool myDrawLines = true;
 
@@ -495,9 +495,7 @@ void QgsRasterHistogramWidget::refreshHistogram()
     // calculate first bin x value and bin step size if not Byte data
     if ( mRasterLayer->dataProvider()->srcDataType( myIteratorInt ) != QGis::Byte )
     {
-      //myBinXStep = myRasterBandStats.range / BINCOUNT;
-      //myBinX = myRasterBandStats.minimumValue + myBinXStep / 2.0;
-      myBinXStep = ( myHistogram.maximum - myHistogram.minimum ) / BINCOUNT;
+      myBinXStep = ( myHistogram.maximum - myHistogram.minimum ) / myHistogram.binCount;
       myBinX = myHistogram.minimum + myBinXStep / 2.0;
     }
     else
@@ -511,11 +509,9 @@ void QgsRasterHistogramWidget::refreshHistogram()
 #endif
     }
 
-    for ( int myBin = 0; myBin < BINCOUNT; myBin++ )
+    for ( int myBin = 0; myBin < myHistogram.binCount; myBin++ )
     {
-      // TODO - why is histogram in int and not double?
       int myBinValue = myHistogram.histogramVector.at( myBin );
-      //printf("%d/%d %d\n",myBin,BINCOUNT,myBinValue);
 #if defined(QWT_VERSION) && QWT_VERSION>=0x060000
       if ( myDrawLines )
       {
