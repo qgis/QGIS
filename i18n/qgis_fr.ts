@@ -24071,7 +24071,7 @@ Essayez une résolution ou une taille de papier inférieur.</translation>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="302"/>
         <source>Box margin</source>
-        <translation>Marge de la boÎte</translation>
+        <translation>Marge de la boîte</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="319"/>
