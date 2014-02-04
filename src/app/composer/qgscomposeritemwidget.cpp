@@ -196,9 +196,7 @@ void QgsComposerItemWidget::on_mOutlineWidthSpinBox_valueChanged( double d )
   }
 
   mItem->beginCommand( tr( "Item outline width" ), QgsComposerMergeCommand::ItemOutlineWidth );
-  QPen itemPen = mItem->pen();
-  itemPen.setWidthF( d );
-  mItem->setPen( itemPen );
+  mItem->setFrameOutlineWidth( d );
   mItem->endCommand();
 }
 

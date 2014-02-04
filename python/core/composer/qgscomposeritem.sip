@@ -183,8 +183,9 @@ class QgsComposerItem : QObject, QGraphicsRectItem
     void setItemPosition( double x, double y, ItemPositionMode itemPoint = UpperLeft );
 
     /**Sets item position and width / height in one go
+     * @param posIncludesFrame set to true if the position and size arguments include the item's frame border
       @note: this method was added in version 1.6*/
-    void setItemPosition( double x, double y, double width, double height, ItemPositionMode itemPoint = UpperLeft );
+    void setItemPosition( double x, double y, double width, double height, ItemPositionMode itemPoint = UpperLeft, bool posIncludesFrame = false );
 
     /**Returns item's last used position mode.
       @note: This property has no effect on actual's item position, which is always the top-left corner.
@@ -228,6 +229,31 @@ class QgsComposerItem : QObject, QGraphicsRectItem
      */
     void setFrameEnabled( bool drawFrame );
 
+    /** Sets frame outline width
+     * @param outlineWidth new width for outline frame
+     * @returns nothing
+     * @note introduced in 2.2
+     * @see setFrameEnabled
+     */
+    virtual void setFrameOutlineWidth( double outlineWidth );
+
+    /** Returns the estimated amount the item's frame bleeds outside the item's
+     *  actual rectangle. For instance, if the item has a 2mm frame outline, then
+     *  1mm of this frame is drawn outside the item's rect. In this case the
+     *  return value will be 1.0
+     * @note introduced in 2.2
+     */
+    virtual double estimatedFrameBleed() const;
+
+    /** Returns the item's rectangular bounds, including any bleed caused by the item's frame.
+     *  The bounds are returned in the item's coordinate system (see Qt's QGraphicsItem docs for
+     *  more details about QGraphicsItem coordinate systems). The results differ from Qt's rect()
+     *  function, as rect() makes no allowances for the portion of outlines which are drawn
+     *  outside of the item.
+     * @note introduced in 2.2
+     * @see estimatedFrameBleed
+     */
+    virtual QRectF rectWithFrame() const;
 
     /** Whether this item has a Background or not.
      * @returns true if there is a Background around this item, otherwise false.
@@ -466,4 +492,9 @@ class QgsComposerItem : QObject, QGraphicsRectItem
     void itemChanged();
     /**Emitted if the rectangle changes*/
     void sizeChanged();
+    /**Emitted if the item's frame style changes
+     * @note: this function was introduced in version 2.2
+    */
+    void frameChanged();
+
 };

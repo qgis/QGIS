@@ -206,9 +206,7 @@ void QgsComposerScaleBarWidget::on_mLineWidthSpinBox_valueChanged( double d )
 
   mComposerScaleBar->beginCommand( tr( "Scalebar line width" ), QgsComposerMergeCommand::ScaleBarLineWidth );
   disconnectUpdateSignal();
-  QPen newPen( mComposerScaleBar->pen().color() );
-  newPen.setWidthF( d );
-  mComposerScaleBar->setPen( newPen );
+  mComposerScaleBar->setFrameOutlineWidth( d );
   mComposerScaleBar->update();
   connectUpdateSignal();
   mComposerScaleBar->endCommand();

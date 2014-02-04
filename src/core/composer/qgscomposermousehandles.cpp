@@ -153,7 +153,7 @@ void QgsComposerMouseHandles::drawSelectedItemBounds( QPainter* painter )
     {
       //if currently dragging, draw selected item bounds relative to current mouse position
       //first, get bounds of current item in scene coordinates
-      QPolygonF itemSceneBounds = ( *itemIter )->mapToScene(( *itemIter )->rect() );
+      QPolygonF itemSceneBounds = ( *itemIter )->mapToScene(( *itemIter )->rectWithFrame() );
       //now, translate it by the current movement amount
       //IMPORTANT - this is done in scene coordinates, since we don't want any rotation/non-translation transforms to affect the movement
       itemSceneBounds.translate( transform().dx(), transform().dy() );
@@ -166,7 +166,7 @@ void QgsComposerMouseHandles::drawSelectedItemBounds( QPainter* painter )
       if ( selectedItems.size() > 1 )
       {
         //get item bounds in mouse handle item's coordinate system
-        QRectF itemRect = mapRectFromItem(( *itemIter ), ( *itemIter )->rect() );
+        QRectF itemRect = mapRectFromItem(( *itemIter ), ( *itemIter )->rectWithFrame() );
         //now, resize it relative to the current resized dimensions of the mouse handles
         QgsComposition::relativeResizeRect( itemRect, QRectF( -mResizeMoveX, -mResizeMoveY, mBeginHandleWidth, mBeginHandleHeight ), mResizeRect );
         itemBounds = QPolygonF( itemRect );
@@ -180,7 +180,7 @@ void QgsComposerMouseHandles::drawSelectedItemBounds( QPainter* painter )
     else
     {
       //not resizing or moving, so just map from scene bounds
-      itemBounds = mapRectFromItem(( *itemIter ), ( *itemIter )->rect() );
+      itemBounds = mapRectFromItem(( *itemIter ), ( *itemIter )->rectWithFrame() );
     }
     painter->drawPolygon( itemBounds );
   }
@@ -189,7 +189,7 @@ void QgsComposerMouseHandles::drawSelectedItemBounds( QPainter* painter )
 
 void QgsComposerMouseHandles::selectionChanged()
 {
-  //listen out for selected items' sizeChanged signal
+  //listen out for selected items' size and rotation changed signals
   QList<QGraphicsItem *> itemList = composition()->items();
   QList<QGraphicsItem *>::iterator itemIt = itemList.begin();
   for ( ; itemIt != itemList.end(); ++itemIt )
@@ -201,10 +201,13 @@ void QgsComposerMouseHandles::selectionChanged()
       {
         QObject::connect( item, SIGNAL( sizeChanged() ), this, SLOT( selectedItemSizeChanged() ) );
         QObject::connect( item, SIGNAL( itemRotationChanged( double ) ), this, SLOT( selectedItemRotationChanged() ) );
+        QObject::connect( item, SIGNAL( frameChanged( ) ), this, SLOT( selectedItemSizeChanged() ) );
       }
       else
       {
         QObject::disconnect( item, SIGNAL( sizeChanged() ), this, 0 );
+        QObject::disconnect( item, SIGNAL( itemRotationChanged( double ) ), this, 0 );
+        QObject::disconnect( item, SIGNAL( frameChanged( ) ), this, 0 );
       }
     }
   }
@@ -279,12 +282,12 @@ QRectF QgsComposerMouseHandles::selectionBounds() const
   QList<QgsComposerItem*>::iterator itemIter = selectedItems.begin();
 
   //start with handle bounds of first selected item
-  QRectF bounds = mapFromItem(( *itemIter ), ( *itemIter )->rect() ).boundingRect();
+  QRectF bounds = mapFromItem(( *itemIter ), ( *itemIter )->rectWithFrame() ).boundingRect();
 
   //iterate through remaining items, expanding the bounds as required
   for ( ++itemIter; itemIter != selectedItems.end(); ++itemIter )
   {
-    bounds = bounds.united( mapFromItem(( *itemIter ), ( *itemIter )->rect() ).boundingRect() );
+    bounds = bounds.united( mapFromItem(( *itemIter ), ( *itemIter )->rectWithFrame() ).boundingRect() );
   }
 
   return bounds;
@@ -627,19 +630,19 @@ void QgsComposerMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent* event
       QRectF itemRect;
       if ( selectedItems.size() == 1 )
       {
-        //only a single item is selected, so set it's size to the final resized mouse handle size
+        //only a single item is selected, so set its size to the final resized mouse handle size
         itemRect = mResizeRect;
       }
       else
       {
         //multiple items selected, so each needs to be scaled relatively to the final size of the mouse handles
-        itemRect = mapRectFromItem(( *itemIter ), ( *itemIter )->rect() );
+        itemRect = mapRectFromItem(( *itemIter ), ( *itemIter )->rectWithFrame() );
         QgsComposition::relativeResizeRect( itemRect, QRectF( -mResizeMoveX, -mResizeMoveY, mBeginHandleWidth, mBeginHandleHeight ), mResizeRect );
       }
 
       itemRect = itemRect.normalized();
       QPointF newPos = mapToScene( itemRect.topLeft() );
-      ( *itemIter )->setItemPosition( newPos.x(), newPos.y(), itemRect.width(), itemRect.height() );
+      ( *itemIter )->setItemPosition( newPos.x(), newPos.y(), itemRect.width(), itemRect.height(), QgsComposerItem::UpperLeft, true );
 
       subcommand->saveAfterState();
     }
@@ -1255,7 +1258,7 @@ void QgsComposerMouseHandles::collectAlignCoordinates( QMap< double, const QgsCo
       }
       else
       {
-        itemRect = currentItem->sceneBoundingRect();
+        itemRect = currentItem->mapRectToScene( currentItem->rectWithFrame() );
       }
       alignCoordsX.insert( itemRect.left(), currentItem );
       alignCoordsX.insert( itemRect.right(), currentItem );

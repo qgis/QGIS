@@ -123,6 +123,7 @@ void QgsComposerShapeWidget::updateShapeStyle()
 {
   if ( mComposerShape )
   {
+    mComposerShape->refreshSymbol();
     QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( mComposerShape->shapeStyleSymbol(), mShapeStyleButton->iconSize() );
     mShapeStyleButton->setIcon( icon );
   }

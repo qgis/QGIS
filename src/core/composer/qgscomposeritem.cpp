@@ -349,6 +349,41 @@ bool QgsComposerItem::_readXML( const QDomElement& itemElem, const QDomDocument&
   return true;
 }
 
+void QgsComposerItem::setFrameEnabled( bool drawFrame )
+{
+  mFrame = drawFrame;
+  emit frameChanged();
+}
+
+void QgsComposerItem::setFrameOutlineWidth( double outlineWidth )
+{
+  QPen itemPen = pen();
+  if ( itemPen.widthF() == outlineWidth )
+  {
+    //no change
+    return;
+  }
+  itemPen.setWidthF( outlineWidth );
+  setPen( itemPen );
+  emit frameChanged();
+}
+
+double QgsComposerItem::estimatedFrameBleed() const
+{
+  if ( !hasFrame() )
+  {
+    return 0;
+  }
+
+  return pen().widthF() / 2.0;
+}
+
+QRectF QgsComposerItem::rectWithFrame() const
+{
+  double frameBleed = estimatedFrameBleed();
+  return rect().adjusted( -frameBleed, -frameBleed, frameBleed, frameBleed );
+}
+
 void QgsComposerItem::beginCommand( const QString& commandText, QgsComposerMergeCommand::Context c )
 {
   if ( mComposition )
@@ -432,7 +467,7 @@ void QgsComposerItem::setItemPosition( double x, double y, ItemPositionMode item
   setItemPosition( x, y, width, height, itemPoint );
 }
 
-void QgsComposerItem::setItemPosition( double x, double y, double width, double height, ItemPositionMode itemPoint )
+void QgsComposerItem::setItemPosition( double x, double y, double width, double height, ItemPositionMode itemPoint, bool posIncludesFrame )
 {
   double upperLeftX = x;
   double upperLeftY = y;
@@ -458,6 +493,28 @@ void QgsComposerItem::setItemPosition( double x, double y, double width, double 
   else if ( itemPoint == LowerLeft || itemPoint == LowerMiddle || itemPoint == LowerRight )
   {
     upperLeftY -= height;
+  }
+
+  if ( posIncludesFrame )
+  {
+    //adjust position to account for frame size
+
+    if ( mItemRotation == 0 )
+    {
+      upperLeftX += estimatedFrameBleed();
+      upperLeftY += estimatedFrameBleed();
+    }
+    else
+    {
+      //adjust position for item rotation
+      QLineF lineToItemOrigin = QLineF( 0, 0, estimatedFrameBleed(), estimatedFrameBleed() );
+      lineToItemOrigin.setAngle( -45 - mItemRotation );
+      upperLeftX += lineToItemOrigin.x2();
+      upperLeftY += lineToItemOrigin.y2();
+    }
+
+    width -= 2 * estimatedFrameBleed();
+    height -= 2 * estimatedFrameBleed();
   }
 
   setSceneRect( QRectF( upperLeftX, upperLeftY, width, height ) );
