@@ -741,7 +741,6 @@ void QgsMapToolNodeTool::keyPressEvent( QKeyEvent* e )
 
     mSelectedFeature->deselectAllVertexes();
     safeSelectVertex( firstSelectedIndex - 1 );
-    mCanvas->refresh();
   }
   else if ( mSelectedFeature && ( e->key() == Qt::Key_Greater || e->key() == Qt::Key_Period ) )
   {
@@ -751,7 +750,6 @@ void QgsMapToolNodeTool::keyPressEvent( QKeyEvent* e )
 
     mSelectedFeature->deselectAllVertexes();
     safeSelectVertex( firstSelectedIndex + 1 );
-    mCanvas->refresh();
   }
 }
 
