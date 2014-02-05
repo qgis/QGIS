@@ -47,7 +47,7 @@
         <x>0</x>
         <y>0</y>
         <width>408</width>
-        <height>573</height>
+        <height>572</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -217,14 +217,14 @@
             <item>
              <widget class="QPushButton" name="mHeaderFontPushButton">
               <property name="text">
-               <string>Header Font...</string>
+               <string>Header font...</string>
               </property>
              </widget>
             </item>
             <item>
              <widget class="QPushButton" name="mContentFontPushButton">
               <property name="text">
-               <string>Content Font...</string>
+               <string>Content font...</string>
               </property>
              </widget>
             </item>
@@ -241,15 +241,15 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QPushButton</extends>
-   <header>qgscolorbutton.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsCollapsibleGroupBoxBasic</class>
    <extends>QGroupBox</extends>
    <header location="global">qgscollapsiblegroupbox.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsColorButton</class>
+   <extends>QPushButton</extends>
+   <header>qgscolorbutton.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

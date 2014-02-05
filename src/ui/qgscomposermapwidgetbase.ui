@@ -125,7 +125,7 @@
           <item row="2" column="0">
            <widget class="QLabel" name="mMapRotationLabel">
             <property name="text">
-             <string>Map Rotation</string>
+             <string>Map rotation</string>
             </property>
            </widget>
           </item>

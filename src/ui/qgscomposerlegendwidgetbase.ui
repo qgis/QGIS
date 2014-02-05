@@ -54,9 +54,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-309</y>
-        <width>373</width>
-        <height>1387</height>
+        <y>0</y>
+        <width>375</width>
+        <height>1287</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -352,7 +352,7 @@
           <item>
            <widget class="QCheckBox" name="mCheckBoxAutoUpdate">
             <property name="text">
-             <string>Auto Update</string>
+             <string>Auto update</string>
             </property>
             <property name="checked">
              <bool>true</bool>
@@ -383,28 +383,28 @@
              </sizepolicy>
             </property>
             <property name="text">
-             <string>Title Font...</string>
+             <string>Title font...</string>
             </property>
            </widget>
           </item>
           <item>
            <widget class="QPushButton" name="mLayerFontButton">
             <property name="text">
-             <string>Subgroup Font...</string>
+             <string>Subgroup font...</string>
             </property>
            </widget>
           </item>
           <item>
            <widget class="QPushButton" name="mGroupFontButton">
             <property name="text">
-             <string>Group Font...</string>
+             <string>Group font...</string>
             </property>
            </widget>
           </item>
           <item>
            <widget class="QPushButton" name="mItemFontButton">
             <property name="text">
-             <string>Item Font...</string>
+             <string>Item font...</string>
             </property>
            </widget>
           </item>
