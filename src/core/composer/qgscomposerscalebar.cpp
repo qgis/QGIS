@@ -234,6 +234,7 @@ void QgsComposerScaleBar::applyDefaultSettings()
   mHeight = 3;
 
   mPen = QPen( QColor( 0, 0, 0 ) );
+  mPen.setJoinStyle( Qt::MiterJoin );
   mPen.setWidthF( 1.0 );
 
   mBrush.setColor( QColor( 0, 0, 0 ) );

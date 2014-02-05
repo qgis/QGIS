@@ -1467,6 +1467,7 @@ void QgsComposerMap::drawGridFrameBorder( QPainter* p, const QMap< double, doubl
   //set pen to current frame pen
   QPen framePen = QPen( mGridFramePenColor );
   framePen.setWidthF( mGridFramePenThickness );
+  framePen.setJoinStyle( Qt::MiterJoin );
   p->setPen( framePen );
 
   QMap< double, double >::const_iterator posIt = pos.constBegin();

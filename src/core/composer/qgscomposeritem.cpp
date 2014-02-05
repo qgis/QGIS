@@ -100,6 +100,7 @@ void QgsComposerItem::init( bool manageZValue )
   setBrush( QBrush( QColor( 255, 255, 255, 255 ) ) );
   QPen defaultPen( QColor( 0, 0, 0 ) );
   defaultPen.setWidthF( 0.3 );
+  defaultPen.setJoinStyle( Qt::MiterJoin );
   setPen( defaultPen );
   //let z-Value be managed by composition
   if ( mComposition && manageZValue )
@@ -318,6 +319,7 @@ bool QgsComposerItem::_readXML( const QDomElement& itemElem, const QDomDocument&
     {
       QPen framePen( QColor( penRed, penGreen, penBlue, penAlpha ) );
       framePen.setWidthF( penWidth );
+      framePen.setJoinStyle( Qt::MiterJoin );
       setPen( framePen );
     }
   }
