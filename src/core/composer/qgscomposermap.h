@@ -334,6 +334,9 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     @note this function was added in version 1.4*/
     void updateBoundingRect();
 
+    /* reimplement setFrameOutlineWidth, so that updateBoundingRect() is called after setting the frame width */
+    virtual void setFrameOutlineWidth( double outlineWidth );
+
     /**Sets length of the cros segments (if grid style is cross)
     @note this function was added in version 1.4*/
     void setCrossLength( double l ) {mCrossLength = l;}

@@ -1919,6 +1919,12 @@ void QgsComposerMap::updateBoundingRect()
   }
 }
 
+void QgsComposerMap::setFrameOutlineWidth( double outlineWidth )
+{
+  QgsComposerItem::setFrameOutlineWidth( outlineWidth );
+  updateBoundingRect();
+}
+
 QgsRectangle QgsComposerMap::transformedExtent() const
 {
   double dx = mXOffset;
@@ -1946,10 +1952,11 @@ QPolygonF QgsComposerMap::transformedMapPolygon() const
 
 double QgsComposerMap::maxExtension() const
 {
-  if ( !mGridEnabled || !mShowGridAnnotation || ( mLeftGridAnnotationPosition != OutsideMapFrame && mRightGridAnnotationPosition != OutsideMapFrame
-       && mTopGridAnnotationPosition != OutsideMapFrame && mBottomGridAnnotationPosition != OutsideMapFrame ) )
+  double frameExtension = mFrame ? pen().widthF() / 2.0 : 0.0;
+  if ( !mGridEnabled || ( mGridFrameStyle == QgsComposerMap::NoGridFrame && ( !mShowGridAnnotation || ( mLeftGridAnnotationPosition != OutsideMapFrame && mRightGridAnnotationPosition != OutsideMapFrame
+                          && mTopGridAnnotationPosition != OutsideMapFrame && mBottomGridAnnotationPosition != OutsideMapFrame ) ) ) )
   {
-    return 0;
+    return frameExtension;
   }
 
   QList< QPair< double, QLineF > > xLines;
@@ -1960,7 +1967,7 @@ double QgsComposerMap::maxExtension() const
 
   if ( xGridReturn != 0 && yGridReturn != 0 )
   {
-    return 0;
+    return frameExtension;
   }
 
   double maxExtension = 0;
@@ -1985,7 +1992,7 @@ double QgsComposerMap::maxExtension() const
 
   //grid frame
   double gridFrameDist = ( mGridFrameStyle == NoGridFrame ) ? 0 : mGridFrameWidth + ( mGridFramePenThickness / 2.0 );
-  return maxExtension + mAnnotationFrameDistance + gridFrameDist;
+  return qMax( frameExtension, maxExtension + mAnnotationFrameDistance + gridFrameDist );
 }
 
 void QgsComposerMap::mapPolygon( const QgsRectangle& extent, QPolygonF& poly ) const
