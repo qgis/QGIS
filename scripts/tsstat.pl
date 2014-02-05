@@ -81,6 +81,7 @@ my $translators= {
 	sr_Cyrl => 'Goran Ivanković',
 	sv => 'Lars Luthman, Magnus Homann, Victor Axbom',
 	sw => 'Yohana Mapala',
+	te => '',
 	th => 'Man Chao',
 	tr => 'Osman Yilmaz',
 	uk => 'Сергей Якунин',

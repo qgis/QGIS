@@ -451,6 +451,7 @@
         <file>flags/sr.png</file>
         <file>flags/sr_Cyrl.png</file>
         <file>flags/sr_Latn.png</file>
+        <file>flags/te.png</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>
