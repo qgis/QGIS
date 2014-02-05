@@ -128,16 +128,22 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     virtual void moveContent( double dx, double dy ) { Q_UNUSED( dx ); Q_UNUSED( dy ); }
 
     /**Zoom content of item. Does nothing per default (but implemented in composer map)
-     @param delta value from wheel event that describes magnitude and direction (positive /negative number)
-    @param x x-position of mouse cursor (in item coordinates)
-    @param y y-position of mouse cursor (in item coordinates)*/
+      @param delta value from wheel event that describes magnitude and direction (positive /negative number)
+      @param x x-position of mouse cursor (in item coordinates)
+      @param y y-position of mouse cursor (in item coordinates)*/
     virtual void zoomContent( int delta, double x, double y ) { Q_UNUSED( delta ); Q_UNUSED( x ); Q_UNUSED( y ); }
 
     /**Moves the item to a new position (in canvas coordinates)*/
     void setItemPosition( double x, double y, ItemPositionMode itemPoint = UpperLeft );
 
     /**Sets item position and width / height in one go
-     *@param posIncludesFrame set to true if the position and size arguments include the item's frame border
+      @param x item position x
+      @param y item position y
+      @param width item width
+      @param height item height
+      @param itemPoint item position mode
+      @param posIncludesFrame set to true if the position and size arguments include the item's frame border
+
       @note: this method was added in version 1.6*/
     void setItemPosition( double x, double y, double width, double height, ItemPositionMode itemPoint = UpperLeft, bool posIncludesFrame = false );
 
