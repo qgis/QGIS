@@ -5778,19 +5778,22 @@ void QgisApp::editPaste( QgsMapLayer *destinationLayer )
 
 void QgisApp::pasteAsNewVector()
 {
-  if ( mMapCanvas && mMapCanvas->isDrawing() ) return;
+  if ( mMapCanvas && mMapCanvas->isDrawing() )
+    return;
 
-  QgsVectorLayer * layer = pasteToNewMemoryVector();
-  if ( !layer ) return;
+  QgsVectorLayer *layer = pasteToNewMemoryVector();
+  if ( !layer )
+    return;
 
   saveAsVectorFileGeneral( false, layer, false );
 
   delete layer;
 }
 
-QgsVectorLayer * QgisApp::pasteAsNewMemoryVector( const QString & theLayerName )
+QgsVectorLayer *QgisApp::pasteAsNewMemoryVector( const QString & theLayerName )
 {
-  if ( mMapCanvas && mMapCanvas->isDrawing() ) return 0;
+  if ( mMapCanvas && mMapCanvas->isDrawing() )
+    return 0;
 
   QString layerName = theLayerName;
 
@@ -5801,7 +5804,8 @@ QgsVectorLayer * QgisApp::pasteAsNewMemoryVector( const QString & theLayerName )
     layerName = QInputDialog::getText( this, tr( "New memory layer name" ),
                                        tr( "Layer name" ), QLineEdit::Normal,
                                        defaultName, &ok );
-    if ( !ok ) return 0;
+    if ( !ok )
+      return 0;
 
     if ( layerName.isEmpty() )
     {
@@ -5809,8 +5813,9 @@ QgsVectorLayer * QgisApp::pasteAsNewMemoryVector( const QString & theLayerName )
     }
   }
 
-  QgsVectorLayer * layer = pasteToNewMemoryVector();
-  if ( !layer ) return 0;
+  QgsVectorLayer *layer = pasteToNewMemoryVector();
+  if ( !layer )
+    return 0;
 
   layer->setLayerName( layerName );
 
@@ -5826,7 +5831,7 @@ QgsVectorLayer * QgisApp::pasteAsNewMemoryVector( const QString & theLayerName )
   return layer;
 }
 
-QgsVectorLayer * QgisApp::pasteToNewMemoryVector()
+QgsVectorLayer *QgisApp::pasteToNewMemoryVector()
 {
   // Decide geometry type from features, switch to multi type if at least one multi is found
   QMap<QGis::WkbType, int> typeCounts;
@@ -5834,10 +5839,14 @@ QgsVectorLayer * QgisApp::pasteToNewMemoryVector()
   for ( int i = 0; i < features.size(); i++ )
   {
     QgsFeature &feature = features[i];
-    if ( !feature.geometry() ) continue;
+    if ( !feature.geometry() )
+      continue;
+
     QGis::WkbType type = QGis::flatType( feature.geometry()->wkbType() );
 
-    if ( type == QGis::WKBUnknown || type == QGis::WKBNoGeometry ) continue;
+    if ( type == QGis::WKBUnknown || type == QGis::WKBNoGeometry )
+      continue;
+
     if ( QGis::isSingleType( type ) )
     {
       if ( typeCounts.contains( QGis::multiType( type ) ) )
@@ -5888,7 +5897,7 @@ QgsVectorLayer * QgisApp::pasteToNewMemoryVector()
     return 0;
   }
 
-  QgsVectorLayer * layer = new QgsVectorLayer( typeName, "pasted_features", "memory" );
+  QgsVectorLayer *layer = new QgsVectorLayer( typeName, "pasted_features", "memory" );
 
   if ( !layer->isValid() || !layer->dataProvider() )
   {
@@ -5917,9 +5926,12 @@ QgsVectorLayer * QgisApp::pasteToNewMemoryVector()
   for ( int i = 0; i < features.size(); i++ )
   {
     QgsFeature &feature = features[i];
-    if ( !feature.geometry() ) continue;
+    if ( !feature.geometry() )
+      continue;
+
     QGis::WkbType type = QGis::flatType( feature.geometry()->wkbType() );
-    if ( type == QGis::WKBUnknown || type == QGis::WKBNoGeometry ) continue;
+    if ( type == QGis::WKBUnknown || type == QGis::WKBNoGeometry )
+      continue;
 
     if ( QGis::singleType( wkbType ) != QGis::singleType( type ) )
     {
