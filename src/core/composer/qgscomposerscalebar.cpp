@@ -136,8 +136,11 @@ void QgsComposerScaleBar::setBoxContentSpace( double space )
 
 void QgsComposerScaleBar::setComposerMap( const QgsComposerMap* map )
 {
-  disconnect( mComposerMap, SIGNAL( extentChanged() ), this, SLOT( updateSegmentSize() ) );
-  disconnect( mComposerMap, SIGNAL( destroyed( QObject* ) ), this, SLOT( invalidateCurrentMap() ) );
+  if ( mComposerMap )
+  {
+    disconnect( mComposerMap, SIGNAL( extentChanged() ), this, SLOT( updateSegmentSize() ) );
+    disconnect( mComposerMap, SIGNAL( destroyed( QObject* ) ), this, SLOT( invalidateCurrentMap() ) );
+  }
   mComposerMap = map;
 
   if ( !map )
@@ -154,6 +157,11 @@ void QgsComposerScaleBar::setComposerMap( const QgsComposerMap* map )
 
 void QgsComposerScaleBar::invalidateCurrentMap()
 {
+  if ( !mComposerMap )
+  {
+    return;
+  }
+
   disconnect( mComposerMap, SIGNAL( extentChanged() ), this, SLOT( updateSegmentSize() ) );
   disconnect( mComposerMap, SIGNAL( destroyed( QObject* ) ), this, SLOT( invalidateCurrentMap() ) );
   mComposerMap = 0;
