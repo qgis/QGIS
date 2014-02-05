@@ -324,7 +324,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
 
   mLayersSupported.clear();
 
-  for ( int i = 0; i < (hasTopology() ? 3 : 2); i++ )
+  for ( int i = 0; i < ( hasTopology() ? 3 : 2 ); i++ )
   {
     QString sql, tableName, schemaName, columnName, typeName, sridName, gtableName;
     QgsPostgresGeometryColumnType columnType = sctGeometry;
@@ -727,7 +727,7 @@ QString QgsPostgresConn::postgisVersion()
   if ( mPostgisVersionMajor > 1 )
   {
     QgsPostgresResult result = PQexec( "SELECT EXISTS ( SELECT c.oid FROM pg_class AS c JOIN pg_namespace AS n ON c.relnamespace=n.oid WHERE n.nspname='topology' AND c.relname='topology' )" );
-    if ( result.PQntuples() >= 1 && result.PQgetvalue(0, 0) == "t" )
+    if ( result.PQntuples() >= 1 && result.PQgetvalue( 0, 0 ) == "t" )
     {
       mTopologyAvailable = true;
     }
@@ -1137,14 +1137,9 @@ void QgsPostgresConn::retrieveLayerTypes( QgsPostgresLayerProperty &layerPropert
     QGis::WkbType type = layerProperty.types.value( 0, QGis::WKBUnknown );
     if ( type == QGis::WKBUnknown )
     {
-      query += QString( "CASE"
-                        " WHEN %1 THEN 'POINT'"
-                        " WHEN %2 THEN 'LINESTRING'"
-                        " WHEN %3 THEN 'POLYGON'"
-                        " END" )
-               .arg( postgisTypeFilter( layerProperty.geometryColName, QGis::WKBPoint, layerProperty.geometryColType == sctGeography ) )
-               .arg( postgisTypeFilter( layerProperty.geometryColName, QGis::WKBLineString, layerProperty.geometryColType == sctGeography ) )
-               .arg( postgisTypeFilter( layerProperty.geometryColName, QGis::WKBPolygon, layerProperty.geometryColType == sctGeography ) );
+      query += QString( "upper(geometrytype(%1%2))" )
+               .arg( quotedIdentifier( layerProperty.geometryColName ) )
+               .arg( layerProperty.geometryColType == sctGeography ? "::geometry" : "" );
     }
     else
     {
@@ -1181,7 +1176,30 @@ void QgsPostgresConn::retrieveLayerTypes( QgsPostgresLayerProperty &layerPropert
         if ( type.isEmpty() )
           continue;
 
-        layerProperty.types << QgsPostgresConn::wkbTypeFromPostgis( type );
+        // if both multi and single types exists, go for the multi type,
+        // so that st_multi can be applied if necessary.
+        QGis::WkbType wkbType0 = QGis::flatType( QgsPostgresConn::wkbTypeFromPostgis( type ) );
+        QGis::WkbType multiType0 = QGis::multiType( wkbType0 );
+
+        int j;
+        for ( j = 0; j < layerProperty.size(); j++ )
+        {
+          if ( layerProperty.srids[j] != srid.toInt() )
+            continue;
+
+          QGis::WkbType wkbType1 = layerProperty.types[j];
+          QGis::WkbType multiType1 = QGis::multiType( wkbType1 );
+          if ( multiType0 == multiType1 && wkbType0 != wkbType1 )
+          {
+            layerProperty.types[j] = multiType0;
+            break;
+          }
+        }
+
+        if ( j < layerProperty.size() )
+          break;
+
+        layerProperty.types << wkbType0;
         layerProperty.srids << srid.toInt();
       }
     }
@@ -1271,7 +1289,7 @@ QString QgsPostgresConn::postgisTypeFilter( QString geomCol, QGis::WkbType geomT
     case QGis::WKBPolygon25D:
     case QGis::WKBMultiPolygon:
     case QGis::WKBMultiPolygon25D:
-      return QString( "upper(geometrytype(%1)) IN ('POLYGON','MULTIPOLYGON','POLYGONM','MULTIPOLYGONM', 'POLYHEDRALSURFACE', 'TIN')" ).arg( geomCol );
+      return QString( "upper(geometrytype(%1)) IN ('POLYGON','MULTIPOLYGON','POLYGONM','MULTIPOLYGONM','POLYHEDRALSURFACE','TIN')" ).arg( geomCol );
     case QGis::WKBNoGeometry:
       return QString( "geometrytype(%1) IS NULL" ).arg( geomCol );
     case QGis::WKBUnknown:
