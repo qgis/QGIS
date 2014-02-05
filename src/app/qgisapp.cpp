@@ -1811,7 +1811,7 @@ void QgisApp::setTheme( QString theThemeName )
   mActionUndo->setIcon( QgsApplication::getThemeIcon( "/mActionUndo.png" ) );
   mActionRedo->setIcon( QgsApplication::getThemeIcon( "/mActionRedo.png" ) );
   mActionAddRing->setIcon( QgsApplication::getThemeIcon( "/mActionAddRing.png" ) );
-  mActionFillRing->setIcon( QgsApplication::getThemeIcon( "/mActionFillRing.png" ) );
+  mActionFillRing->setIcon( QgsApplication::getThemeIcon( "/mActionFillRing.svg" ) );
   mActionAddPart->setIcon( QgsApplication::getThemeIcon( "/mActionAddPart.png" ) );
   mActionDeleteRing->setIcon( QgsApplication::getThemeIcon( "/mActionDeleteRing.png" ) );
   mActionDeletePart->setIcon( QgsApplication::getThemeIcon( "/mActionDeletePart.png" ) );
