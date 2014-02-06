@@ -721,6 +721,12 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
                                       bool addUndoCommands, QPointF* pos, bool pasteInPlace )
 {
   QPointF* pasteInPlacePt = 0;
+
+  //if we are adding items to a composition which already contains items, we need to make sure
+  //these items are placed at the top of the composition and that zValues are not duplicated
+  //so, calculate an offset which needs to be added to the zValue of created items
+  int zOrderOffset = mItemZList.size();
+
   if ( pasteInPlace )
   {
     pasteInPlacePt = new QPointF( 0, pageNumberAt( *pos ) * ( mPageHeight + mSpaceBetweenPages ) );
@@ -744,6 +750,7 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
       }
     }
     addComposerLabel( newLabel );
+    newLabel->setZValue( newLabel->zValue() + zOrderOffset );
     if ( addUndoCommands )
     {
       pushAddRemoveCommand( newLabel, tr( "Label added" ) );
@@ -764,7 +771,7 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
       newMap->setPreviewMode( QgsComposerMap::Rectangle );
     }
     addComposerMap( newMap, false );
-
+    newMap->setZValue( newMap->zValue() + zOrderOffset );
     if ( pos )
     {
       if ( pasteInPlace )
@@ -818,6 +825,7 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
       }
     }
     addComposerArrow( newArrow );
+    newArrow->setZValue( newArrow->zValue() + zOrderOffset );
     if ( addUndoCommands )
     {
       pushAddRemoveCommand( newArrow, tr( "Arrow added" ) );
@@ -843,6 +851,7 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
       }
     }
     addComposerScaleBar( newScaleBar );
+    newScaleBar->setZValue( newScaleBar->zValue() + zOrderOffset );
     if ( addUndoCommands )
     {
       pushAddRemoveCommand( newScaleBar, tr( "Scale bar added" ) );
@@ -870,6 +879,7 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
       }
     }
     addComposerShape( newShape );
+    newShape->setZValue( newShape->zValue() + zOrderOffset );
     if ( addUndoCommands )
     {
       pushAddRemoveCommand( newShape, tr( "Shape added" ) );
@@ -895,6 +905,7 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
       }
     }
     addComposerPicture( newPicture );
+    newPicture->setZValue( newPicture->zValue() + zOrderOffset );
     if ( addUndoCommands )
     {
       pushAddRemoveCommand( newPicture, tr( "Picture added" ) );
@@ -920,6 +931,7 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
       }
     }
     addComposerLegend( newLegend );
+    newLegend->setZValue( newLegend->zValue() + zOrderOffset );
     if ( addUndoCommands )
     {
       pushAddRemoveCommand( newLegend, tr( "Legend added" ) );
@@ -945,12 +957,14 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
       }
     }
     addComposerTable( newTable );
+    newTable->setZValue( newTable->zValue() + zOrderOffset );
     if ( addUndoCommands )
     {
       pushAddRemoveCommand( newTable, tr( "Table added" ) );
     }
   }
   // html
+  //TODO - fix this. pasting html items has no effect
   QDomNodeList composerHtmlList = elem.elementsByTagName( "ComposerHtml" );
   for ( int i = 0; i < composerHtmlList.size(); ++i )
   {
@@ -959,10 +973,19 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
     newHtml->readXML( currentHtmlElem, doc );
     newHtml->setCreateUndoCommands( true );
     this->addMultiFrame( newHtml );
+
+    //offset z values for frames
+    //TODO - fix this after fixing html item paste
+    /*for ( int frameIdx = 0; frameIdx < newHtml->frameCount(); ++frameIdx )
+    {
+      QgsComposerFrame * frame = newHtml->frame( frameIdx );
+      frame->setZValue( frame->zValue() + zOrderOffset );
+    }*/
   }
 
-
   // groups (must be last as it references uuids of above items)
+  //TODO - pasted groups lose group properties, since the uuids of group items
+  //changes
   QDomNodeList groupList = elem.elementsByTagName( "ComposerItemGroup" );
   for ( int i = 0; i < groupList.size(); ++i )
   {
@@ -971,6 +994,12 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
     newGroup->readXML( groupElem, doc );
     addItem( newGroup );
   }
+
+  //Since this function adds items grouped by type, and each item is added to end of
+  //z order list in turn, it will now be inconsistent with the actual order of items in the scene.
+  //Make sure z order list matches the actual order of items in the scene.
+  refreshZList();
+
 }
 
 void QgsComposition::addItemToZList( QgsComposerItem* item )
@@ -1385,26 +1414,40 @@ void QgsComposition::unlockAllItems()
   mUndoStack.push( parentCommand );
 }
 
-void QgsComposition::updateZValues()
+void QgsComposition::updateZValues( bool addUndoCommands )
 {
   int counter = 1;
   QLinkedList<QgsComposerItem*>::iterator it = mItemZList.begin();
   QgsComposerItem* currentItem = 0;
 
-  QUndoCommand* parentCommand = new QUndoCommand( tr( "Item z-order changed" ) );
+  QUndoCommand* parentCommand;
+  if ( addUndoCommands )
+  {
+    parentCommand = new QUndoCommand( tr( "Item z-order changed" ) );
+  }
   for ( ; it != mItemZList.end(); ++it )
   {
     currentItem = *it;
     if ( currentItem )
     {
-      QgsComposerItemCommand* subcommand = new QgsComposerItemCommand( *it, "", parentCommand );
-      subcommand->savePreviousState();
+      QgsComposerItemCommand* subcommand;
+      if ( addUndoCommands )
+      {
+        subcommand = new QgsComposerItemCommand( *it, "", parentCommand );
+        subcommand->savePreviousState();
+      }
       currentItem->setZValue( counter );
-      subcommand->saveAfterState();
+      if ( addUndoCommands )
+      {
+        subcommand->saveAfterState();
+      }
     }
     ++counter;
   }
-  mUndoStack.push( parentCommand );
+  if ( addUndoCommands )
+  {
+    mUndoStack.push( parentCommand );
+  }
 }
 
 void QgsComposition::sortZList()
@@ -1431,6 +1474,35 @@ void QgsComposition::sortZList()
   }
 
   mItemZList = sortedList;
+}
+
+void QgsComposition::refreshZList()
+{
+  QLinkedList<QgsComposerItem*> sortedList;
+
+  //rebuild the item z order list based on the current zValues of items in the scene
+
+  //get items in descending zValue order
+  QList<QGraphicsItem*> itemList = items();
+  QList<QGraphicsItem*>::iterator itemIt = itemList.begin();
+  for ( ; itemIt != itemList.end(); ++itemIt )
+  {
+    QgsComposerItem* composerItem = dynamic_cast<QgsComposerItem*>( *itemIt );
+    if ( composerItem )
+    {
+      if ( composerItem->type() != QgsComposerItem::ComposerPaper && composerItem->type() != QgsComposerItem::ComposerFrame )
+      {
+        //since the z order list is in ascending zValue order (opposite order to itemList), we prepend each item
+        sortedList.prepend( composerItem );
+      }
+    }
+  }
+
+  mItemZList = sortedList;
+
+  //Finally, rebuild the zValue of all items to remove any duplicate zValues and make sure there's
+  //no missing zValues.
+  updateZValues( false );
 }
 
 QPointF QgsComposition::snapPointToGrid( const QPointF& scenePoint ) const

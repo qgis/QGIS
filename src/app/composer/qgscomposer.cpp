@@ -2628,7 +2628,9 @@ void QgsComposer::readXML( const QDomElement& composerElem, const QDomDocument& 
     mComposition->setWorldFileMap( worldFileMap );
   }
 
-  mComposition->sortZList();
+  //make sure z values are consistent
+  mComposition->refreshZList();
+
   mView->setComposition( mComposition );
 
   if ( mUndoView )

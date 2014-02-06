@@ -277,6 +277,9 @@ class QgsComposition : QGraphicsScene
      after reading all the items from xml file*/
     void sortZList();
 
+    /**Rebuilds the z order list based on current order of items in scene*/
+    void refreshZList();
+
     /**Snaps a scene coordinate point to grid*/
     QPointF snapPointToGrid( const QPointF& scenePoint ) const;
 

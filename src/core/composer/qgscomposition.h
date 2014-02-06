@@ -333,6 +333,9 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
      after reading all the items from xml file*/
     void sortZList();
 
+    /**Rebuilds the z order list based on current order of items in scene*/
+    void refreshZList();
+
     /**Snaps a scene coordinate point to grid*/
     QPointF snapPointToGrid( const QPointF& scenePoint ) const;
 
@@ -511,7 +514,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     QgsComposition(); //default constructor is forbidden
 
     /**Reset z-values of items based on position in z list*/
-    void updateZValues();
+    void updateZValues( bool addUndoCommands = true );
 
     /**Returns the bounding rectangle of the selected items in scene coordinates
      @return 0 in case of success*/
