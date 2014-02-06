@@ -257,6 +257,12 @@ void QgsProjectionSelector::applySelection( int column, QString value )
     mSearchValue.clear();
   }
 
+  if ( column == NONE && mRecentProjListDone && mRecentProjections.size() != 0 )
+  {
+    column = QGIS_CRS_ID_COLUMN;
+    value = QString::number( mRecentProjections.at( 0 ).toLong() );
+  }
+
   if ( column == NONE )
     return;
 
