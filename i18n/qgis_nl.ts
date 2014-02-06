@@ -4004,6 +4004,10 @@ p, li { white-space: pre-wrap; }
         <translation>Deze bestanden zijn niet aangemaakt: 
 {0}</translation>
     </message>
+    <message>
+        <source>No input files to process.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>GdalToolsBaseDialog</name>
@@ -11826,7 +11830,7 @@ Deze zal daarom niet actief worden gemaakt.</translation>
     </message>
     <message>
         <source>By default, BNA files are created in multi-line format. For each record, the first line contains the identifiers and the type/number of coordinates to follow. Each following line contains a pair of coordinates.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Standaard worden BNA bestanden aangemaakt in meervoudige regel formaat. Voor elk record bevat de eerste regel de identificaties gevolgd door het type/aantal coördinaten. De volgende regels bevatten een coördinatenpaar.</translation>
     </message>
 </context>
 <context>
@@ -17332,7 +17336,7 @@ Probeer alstublieft een lagere resolutie of een kleiner papiergrootte</translati
     </message>
     <message>
         <source>Item properties</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Item-eigenschappen</translation>
     </message>
 </context>
 <context>
@@ -18752,16 +18756,8 @@ Probeer alstublieft een lagere resolutie of een kleiner papiergrootte</translati
         <translation></translation>
     </message>
     <message>
-        <source>Title Font...</source>
-        <translation></translation>
-    </message>
-    <message>
         <source>Group Font...</source>
-        <translation>Groep Lettertype...</translation>
-    </message>
-    <message>
-        <source>Item Font...</source>
-        <translation></translation>
+        <translation type="obsolete">Groep Lettertype...</translation>
     </message>
     <message>
         <source>Symbol width </source>
@@ -18817,7 +18813,7 @@ Probeer alstublieft een lagere resolutie of een kleiner papiergrootte</translati
     </message>
     <message>
         <source>Auto Update</source>
-        <translation>Automatisch Bijwerken</translation>
+        <translation type="obsolete">Automatisch Bijwerken</translation>
     </message>
     <message>
         <source>Map</source>
@@ -18853,7 +18849,7 @@ Probeer alstublieft een lagere resolutie of een kleiner papiergrootte</translati
     </message>
     <message>
         <source>Subgroup Font...</source>
-        <translation>Subgroep lettertype...</translation>
+        <translation type="obsolete">Subgroep lettertype...</translation>
     </message>
     <message>
         <source>Font color...</source>
@@ -18978,6 +18974,26 @@ Probeer alstublieft een lagere resolutie of een kleiner papiergrootte</translati
     <message>
         <source>Legend height</source>
         <translation>Legenda hoogte</translation>
+    </message>
+    <message>
+        <source>Auto update</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Title font...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Subgroup font...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Group font...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Item font...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -19576,7 +19592,7 @@ Probeer alstublieft een lagere resolutie of een kleiner papiergrootte</translati
     </message>
     <message>
         <source>Map Rotation</source>
-        <translation>Kaartrotatie</translation>
+        <translation type="obsolete">Kaartrotatie</translation>
     </message>
     <message utf8="true">
         <source> °</source>
@@ -19617,6 +19633,10 @@ Probeer alstublieft een lagere resolutie of een kleiner papiergrootte</translati
     <message>
         <source>Frame fill colors</source>
         <translation>Frame vulkleuren</translation>
+    </message>
+    <message>
+        <source>Map rotation</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -19789,7 +19809,11 @@ Probeer alstublieft een lagere resolutie of een kleiner papiergrootte</translati
     </message>
     <message>
         <source>Image Rotation</source>
-        <translation>Rotatie afbeelding</translation>
+        <translation type="obsolete">Rotatie afbeelding</translation>
+    </message>
+    <message>
+        <source>Image rotation</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -20336,11 +20360,11 @@ Probeer alstublieft een lagere resolutie of een kleiner papiergrootte</translati
     </message>
     <message>
         <source>Header Font...</source>
-        <translation>Kop Lettertype...</translation>
+        <translation type="obsolete">Kop Lettertype...</translation>
     </message>
     <message>
         <source>Content Font...</source>
-        <translation>Inhoud Lettertype...</translation>
+        <translation type="obsolete">Inhoud Lettertype...</translation>
     </message>
     <message>
         <source>Attribute Table</source>
@@ -20365,6 +20389,14 @@ Probeer alstublieft een lagere resolutie of een kleiner papiergrootte</translati
     <message>
         <source>Fonts</source>
         <translation>Lettertypen</translation>
+    </message>
+    <message>
+        <source>Header font...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Content font...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -24342,7 +24374,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Recent (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Recent (%1)</translation>
     </message>
 </context>
 <context>
@@ -27030,7 +27062,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Auto ambient</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Auto ambient</translation>
     </message>
     <message>
         <source>Vertical Scale</source>
@@ -28936,7 +28968,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Add GRASS vector layer</source>
-        <translation>GRASS-vectorlaag toevoegen</translation>
+        <translation type="obsolete">GRASS-vectorlaag toevoegen</translation>
     </message>
     <message>
         <source>Adds a GRASS raster layer to the map canvas</source>
@@ -28952,11 +28984,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Close mapset</source>
-        <translation>Mapset sluiten</translation>
+        <translation type="obsolete">Mapset sluiten</translation>
     </message>
     <message>
         <source>Create new Grass Vector</source>
-        <translation>Nieuwe GRASS-vector aanmaken</translation>
+        <translation type="obsolete">Nieuwe GRASS-vector aanmaken</translation>
     </message>
     <message>
         <source>Display Current Grass Region</source>
@@ -29008,7 +29040,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>New mapset</source>
-        <translation>Nieuwe mapset</translation>
+        <translation type="obsolete">Nieuwe mapset</translation>
     </message>
     <message>
         <source>New vector created but cannot be opened by data provider.</source>
@@ -29024,7 +29056,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Open mapset</source>
-        <translation>Mapset Openen</translation>
+        <translation type="obsolete">Mapset Openen</translation>
     </message>
     <message>
         <source>Warning</source>
@@ -29075,6 +29107,30 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Plugins</source>
         <translation>Plugins</translation>
+    </message>
+    <message>
+        <source>Open Mapset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>New Mapset</source>
+        <translation type="unfinished">Nieuwe Mapset</translation>
+    </message>
+    <message>
+        <source>Close Mapset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add GRASS Vector Layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open GRASS Tools</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create New Grass Vector</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -33547,6 +33603,34 @@ eigenschappen
         <source>Date</source>
         <translation>Datum</translation>
     </message>
+    <message>
+        <source>Whole number (smallint - 16bit)</source>
+        <translation type="unfinished">Geheel getal (smallint - 16bit)</translation>
+    </message>
+    <message>
+        <source>Whole number (integer - 32bit)</source>
+        <translation type="unfinished">Geheel getal (integer - 32bit)</translation>
+    </message>
+    <message>
+        <source>Whole number (integer - 64bit)</source>
+        <translation type="unfinished">Geheel getal (integer - 64bit)</translation>
+    </message>
+    <message>
+        <source>Decimal number (numeric)</source>
+        <translation type="unfinished">Decimaal getal (numeriek)</translation>
+    </message>
+    <message>
+        <source>Decimal number (decimal)</source>
+        <translation type="unfinished">Decimaal getal (decimaal)</translation>
+    </message>
+    <message>
+        <source>Decimal number (double)</source>
+        <translation type="unfinished">Decimaal getal (double)</translation>
+    </message>
+    <message>
+        <source>Text, unlimited length (text)</source>
+        <translation type="unfinished">Tekst, vaste lengte (text)</translation>
+    </message>
 </context>
 <context>
     <name>QgsMergeAttributesDialog</name>
@@ -37299,7 +37383,7 @@ Altijd netwerk: altijd ophalen uit het netwerk, en niet checken of er misschien 
     </message>
     <message>
         <source>Custom side bar style</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Aangepaste stijl zijbalk</translation>
     </message>
     <message>
         <source>Enable feature simplication by default for newly added layers</source>
@@ -37411,7 +37495,7 @@ Altijd netwerk: altijd ophalen uit het netwerk, en niet checken of er misschien 
     </message>
     <message>
         <source>User-Agent</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">User-Agent</translation>
     </message>
     <message>
         <source>Size [KiB]</source>
@@ -37419,7 +37503,8 @@ Altijd netwerk: altijd ophalen uit het netwerk, en niet checken of er misschien 
     </message>
     <message>
         <source>Maximum scale at which the layer should be simplified (1:1 always simplifies): </source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>Maximale schaal waarbij de laag vereenvoudigd zou moeten worden (1:1 vereenvoudigd altijd):</translatorcomment>
+        <translation type="unfinished">Maximale schaal waarbij de laag vereenvoudigd zou moeten worden(1:1 vereenvoudigd altijd):</translation>
     </message>
 </context>
 <context>
@@ -42012,7 +42097,7 @@ Doorgaan?</translation>
     </message>
     <message>
         <source>Add geometry to feature response</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Geometrie aan feature response toevoegen</translation>
     </message>
     <message>
         <source>Relations</source>
@@ -45050,19 +45135,19 @@ standaarddeviatie x</translation>
     </message>
     <message>
         <source>Referencing Field</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Referentieveld</translation>
     </message>
     <message>
         <source>Referenced Layer (Parent)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Referentielaag (Parent)</translation>
     </message>
     <message>
         <source>Referenced Field</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Referentieveld</translation>
     </message>
     <message>
         <source>Referencing Layer (Child)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Referentielaag (Child)</translation>
     </message>
     <message>
         <source>Name</source>
@@ -45120,11 +45205,11 @@ standaarddeviatie x</translation>
     </message>
     <message>
         <source>Referencing Layer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Refererende laag</translation>
     </message>
     <message>
         <source>Referencing Field</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Refererend veld</translation>
     </message>
     <message>
         <source>Referenced Layer</source>
@@ -45132,7 +45217,7 @@ standaarddeviatie x</translation>
     </message>
     <message>
         <source>Referenced Field</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Referentieveld</translation>
     </message>
     <message>
         <source>Id</source>
@@ -45273,7 +45358,7 @@ standaarddeviatie x</translation>
     </message>
     <message>
         <source>- expression -</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">- expressie -</translation>
     </message>
 </context>
 <context>
@@ -46335,7 +46420,7 @@ De foutmelding was:
     </message>
     <message>
         <source>Size</source>
-        <translation>Grootte</translation>
+        <translation type="obsolete">Grootte</translation>
     </message>
     <message>
         <source>Angle</source>
@@ -47141,7 +47226,7 @@ maar zou de performance moeten verbeteren.</translation>
     </message>
     <message>
         <source>Cannot add connection &apos;%1&apos; : a connection with the same name already exists.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kan verbinding niet toevoegen &apos;%1&apos; : een verbinding met dezelfde naam bestaat al.</translation>
     </message>
 </context>
 <context>
@@ -48901,7 +48986,7 @@ Er was een probleem met uw symbolen database.</translation>
     </message>
     <message>
         <source>Size</source>
-        <translation>Grootte</translation>
+        <translation type="obsolete">Grootte</translation>
     </message>
     <message>
         <source>Border width</source>
@@ -48976,6 +49061,21 @@ Er was een probleem met uw symbolen database.</translation>
     <message>
         <source>File not found</source>
         <translation>Bestand niet gevonden</translation>
+    </message>
+</context>
+<context>
+    <name>QgsSymbolLayerV2Widget</name>
+    <message>
+        <source>Size</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>area</source>
+        <translation type="unfinished">vlak</translation>
+    </message>
+    <message>
+        <source>diameter</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -51345,7 +51445,7 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
     </message>
     <message>
         <source>Maximum scale at which the layer should be simplified (1:1 always simplifies): </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Maximale schaal waarbij de laag vereenvoudigd zou moeten worden(1:1 vereenvoudigd altijd):</translation>
     </message>
 </context>
 <context>
@@ -52848,7 +52948,7 @@ Antwoord was:
     </message>
     <message>
         <source>WGS 84 Bounding Box</source>
-        <translation>WGS 84 Extent</translation>
+        <translation type="obsolete">WGS 84 Extent</translation>
     </message>
     <message>
         <source>WMS Version</source>
@@ -53203,7 +53303,7 @@ Omschrijving: %2</translation>
     </message>
     <message>
         <source>Extent for layer %1 not found in capabilities</source>
-        <translation>De extent voor laag %1 niet gevonden in capabilities</translation>
+        <translation type="obsolete">De extent voor laag %1 niet gevonden in capabilities</translation>
     </message>
     <message>
         <source>Format not supported</source>
@@ -54429,7 +54529,7 @@ Omschrijving: %3</translation>
     </message>
     <message>
         <source>Caretline:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Dakje:</translation>
     </message>
     <message>
         <source>Single quote:</source>
@@ -57149,7 +57249,17 @@ You can also define the width and precision of the new attribute column.
 &lt;h4&gt;Attributes list&lt;/h4&gt;
 In this section you can see the list of attributes. To delete one of them, click on it and choose &lt;label&gt;Remove selected attribute&lt;/label&gt; button.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Nieuwe Vectorlaag aanmaken&lt;/h3&gt;
+Een nieuwe, lege vectorlaag aanmaken kan met &lt;label&gt;Nieuwe Vectorlaag&lt;/label&gt; via het &lt;label&gt;Kaartlagen&lt;/label&gt; menu.&lt;br/&gt;
+Met het dialoogscherm kun je een nieuwe Shapefile laag aanmaken.
+&lt;h4&gt;Type&lt;/h4&gt;
+Kies het type kaartlaag &lt;label&gt;Punt&lt;/label&gt;, &lt;label&gt;Lijn&lt;/label&gt; of &lt;label&gt;Vlak&lt;/label&gt;.&lt;br/&gt;
+Gebruik de &lt;label&gt;Geef het CRS&lt;/label&gt; knop om, indien nodig, het coördinaatsysteem van de kaartlaag te wijzigen.
+&lt;h4&gt;Nieuw attribuut&lt;/h4&gt;
+Geef van elk gewenst attribuutveld de naam en het type op, en voeg het dan toe met &lt;label&gt;Toevoegen aan attributenlijst&lt;/label&gt; Alleen tekstdata, gehele en decimale getallen zijn toegestaan.&lt;br/&gt;
+Je kan ook breedte en precisie van het nieuwe attribuutveld meegeven.
+&lt;h4&gt;Attributenlijst&lt;/h4&gt;
+In de Attributenlijst kun je de toe te voegen attribuutvelden zien. Om een attribuutveld te verwijderen uit de lijst, klik erop en kies &lt;label&gt;Attribuut verwijderen&lt;/label&gt;.</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Add SQL Anywhere Tables&lt;/h3&gt;
@@ -59438,7 +59548,7 @@ Restricts an input value to a specified range.
      
      
 </source>
-        <translation type="obsolete">&lt;h3&gt;clamp() functie&lt;/h3&gt;
+        <translation type="unfinished">&lt;h3&gt;clamp() functie&lt;/h3&gt;
 Beperkt een inputwaarde tot een specifieke range.
 
 &lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
@@ -59740,7 +59850,7 @@ Returns -1 if the expression isn&apos;t found.
      strpos(&apos;HELLO WORLD&apos;,&apos;WORLD&apos;) &amp;rarr; 6&lt;br&gt;
      strpos(&apos;HELLO WORLD&apos;,&apos;GOODBYE&apos;) &amp;rarr; -1&lt;br&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;strpos() functie&lt;/h3&gt;
+        <translation type="unfinished">&lt;h3&gt;strpos() functie&lt;/h3&gt;
 Geeft de index van een reguliere expressie in een tekenreeks.
 
 &lt;h4&gt;Syntax&lt;/h4&gt;
@@ -59977,7 +60087,19 @@ None
 &lt;pre&gt;$perimeter &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;$perimeter function&lt;/h3&gt;
+Geeft de omtrek van het huidige object.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$perimeter&lt;/pre&gt;
+
+&lt;h4&gt;Argumenten&lt;/h4&gt;
+Geen
+
+&lt;h4&gt;Voorbeeld&lt;/h4&gt;
+&lt;pre&gt;$perimeter &amp;rarr; 42&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;tointerval() function&lt;/h3&gt;
@@ -60052,13 +60174,24 @@ None
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;$pi &amp;rarr; 3.14159265358979&lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;$pi constante&lt;/h3&gt;
+Geeft pi terug als waarde voor berekeningen
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$pi&lt;/pre&gt;
+
+&lt;h4&gt;Argumenten&lt;/h4&gt;
+Geen
+
+&lt;h4&gt;Voorbeeld&lt;/h4&gt;
+&lt;pre&gt;$pi &amp;rarr; 3.14159265358979&lt;/pre&gt;</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Record Group&lt;/h3&gt;
 This group contains functions that operate on record identifiers.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Record Groep&lt;/h3&gt;
+Deze groep bevat functies met betrekking tot rijnummers.</translation>
     </message>
     <message>
         <source>&lt;h3&gt;totime() function&lt;/h3&gt;
@@ -60074,7 +60207,19 @@ Convert a string into Qt time type.
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;totime(&apos;12:30:01&apos;) &amp;rarr; 12:30:01&lt;/code&gt;&lt;br&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;h3&gt;totime() functie&lt;/h3&gt;
+Converteer een tekststring naar Qt time formaat.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;totime(&apos;string&apos;)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumenten&lt;/h4&gt;
+&lt;code&gt;tekst&lt;/code&gt; - is tekst in Qt time formaat.
+&lt;br&gt;
+
+&lt;h4&gt;Voorbeeld&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;totime(&apos;12:30:01&apos;) &amp;rarr; 12:30:01&lt;/code&gt;&lt;br&gt;</translation>
     </message>
     <message>
         <source>&lt;h3&gt;replace() function&lt;/h3&gt;
@@ -60093,13 +60238,29 @@ Returns a string with the the supplied string replaced.
 &lt;!-- Show example of function.--&gt;
      replace(&apos;QGIS SHOULD ROCK&apos;,&apos;SHOULD&apos;,&apos;DOES&apos;) &amp;rarr; &apos;QGIS DOES ROCK&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;replace() functie&lt;/h3&gt;
+Geeft een tekst terug waarvan een deel is vervangen.
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     replace(&lt;i&gt;tekst,voor,na&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumenten&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  tekst&lt;/i&gt; &amp;rarr; is tekst.  De oorspronkelijke tekst.&lt;br&gt;
+&lt;i&gt;  voor&lt;/i&gt; &amp;rarr; is tekst.  De te vervangen tekst.&lt;br&gt;
+&lt;i&gt;  na&lt;/i&gt; &amp;rarr; is tekst.  De tekst die in plaats van &lt;i&gt;voor&lt;/i&gt;komt&lt;br&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     replace(&apos;QGIS SHOULD ROCK&apos;,&apos;SHOULD&apos;,&apos;DOES&apos;) &amp;rarr; &apos;QGIS DOES ROCK&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Conditionals Group&lt;/h3&gt;
 This group contains functions to handle conditional checks in expressions.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Voorwaarden Groep&lt;/h3&gt;
+Deze groep bevat functies om conditionele voorwaarden in expressies in te bouwen.</translation>
     </message>
     <message>
         <source>&lt;h3&gt;abs() function&lt;/h3&gt;
@@ -60115,7 +60276,18 @@ abs(&lt;i&gt;value&lt;/i&gt;)&lt;br&gt;
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;code&gt;abs(-2) &amp;rarr; 2&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;abs() functie&lt;/h3&gt;
+Geeft de absolute waarde van een getal.&lt;br&gt;
+
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+abs(&lt;i&gt;waarde&lt;/i&gt;)&lt;br&gt;
+
+&lt;h4&gt;Argumenten&lt;/h4&gt;
+&lt;code&gt;waarde&lt;/code&gt; - een getal.&lt;br&gt;
+
+&lt;h4&gt;Voorbeeld&lt;/h4&gt;
+&lt;code&gt;abs(-2) &amp;rarr; 2&lt;/code&gt;&lt;br&gt;</translation>
     </message>
     <message>
         <source>&lt;h3&gt;max() function&lt;/h3&gt;
@@ -60166,7 +60338,23 @@ Returns a string representation of a color based on its cyan, magenta, yellow an
 &lt;!-- Show example of function.--&gt;
      color_cmyk(100,50,0,10) &amp;rarr; &apos;#0073e6&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>
+&lt;h3&gt;color_cmyk() functie&lt;/h3&gt;
+Geeft een tekstwaarde van een kleur, gebaseerd op de cyaan, magenta, geel en zwart componenten
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     color_cmyk(&lt;i&gt;cyaan, magenta, geel, zwart&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumenten&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  cyaan&lt;/i&gt; &amp;rarr; de cyaan component van de kleur, als een geheel percentage tussen 0 to 100.&lt;br&gt;
+&lt;i&gt;  magenta&lt;/i&gt; &amp;rarr; de magenta component van de kleur, als een geheel percentage tussen 0 to 100.&lt;br&gt;
+&lt;i&gt;  geel&lt;/i&gt; &amp;rarr; de geel component van de kleur, als een geheel percentage tussen 0 to 100.&lt;br&gt;
+&lt;i&gt;  zwart&lt;/i&gt; &amp;rarr; de zwart component van de kleur, als een geheel percentage tussen 0 to 100.&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Voorbeeld&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     color_cmyk(100,50,0,10) &amp;rarr; &apos;#0073e6&apos;&lt;/p&gt;</translation>
     </message>
     <message>
         <source>&lt;h3&gt;sqrt() function&lt;/h3&gt;
@@ -60182,7 +60370,18 @@ Returns square root of a value
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      sqrt(9) &amp;rarr; 3&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;sqrt() functie&lt;/h3&gt;
+Geeft de vierkantswortel van een waarde
+
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     sqrt(&lt;i&gt;getal&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumenten&lt;/h4&gt;
+&lt;i&gt;getal&lt;/i&gt; &amp;rarr; getal.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Voorbeeld&lt;/h4&gt;
+     sqrt(9) &amp;rarr; 3&lt;/p&gt;</translation>
     </message>
     <message>
         <source>
@@ -60234,7 +60433,25 @@ Returns a string representation of a color based on its cyan, magenta, yellow, b
 &lt;!-- Show example of function.--&gt;
      color_cmyka(100,50,0,10,200) &amp;rarr; &apos;0,115,230,200&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>
+&lt;h3&gt;color_cmyka() functie&lt;/h3&gt;
+Geeft een tekstwaarde van een kleur, gebaseerd op de cyaan, magenta, geel, zwart en alpha (transparantie) componenten
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     color_cmyka(&lt;i&gt;cyaan, magenta, geel, zwart, alpha&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumenten&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  cyaan&lt;/i&gt; &amp;rarr; de cyaan component van de kleur, als een geheel percentage tussen 0 to 100.&lt;br&gt;
+&lt;i&gt;  magenta&lt;/i&gt; &amp;rarr; de magenta component van de kleur, als een geheel percentage tussen 0 to 100.&lt;br&gt;
+&lt;i&gt;  geel&lt;/i&gt; &amp;rarr; de geel component van de kleur, als een geheel percentage tussen 0 to 100.&lt;br&gt;
+&lt;i&gt;  zwart&lt;/i&gt; &amp;rarr; de zwart component van de kleur, als een geheel percentage tussen 0 to 100.&lt;br&gt;
+&lt;i&gt;  alpha&lt;/i&gt; &amp;rarr; de waarde van de alpha component als geheel getal tussen 0 (geheel transparant) en 255 (ondoorzichtig).&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Voorbeeld&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     color_cmyka(100,50,0,10,200) &amp;rarr; &apos;0,115,230,200&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;format_number() function&lt;/h3&gt;
@@ -60254,7 +60471,22 @@ to.
 &lt;code&gt;format_number(10000000.332,2) &amp;rarr; 10,000,000.33&lt;/code&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;format_number() functie&lt;/h3&gt;
+Geeft een getal terug dat is geformatteerd met het &apos;locale&apos; scheidingsteken voor duizendtallen. 
+De functie rondt het getal ook af op het opgegeven aantal decimalen. 
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;format_number(getal,decimalen)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumenten&lt;/h4&gt;
+&lt;code&gt;getal&lt;/code&gt; - is getal. Het getal dat moet worden geformatteerd.
+&lt;br&gt;
+&lt;code&gt;decimalen&lt;/code&gt; - is geheel getal. Aantal decimalen waarop het getal moet worden afgerond.
+
+&lt;h4&gt;Voorbeeld&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;format_number(10000000.332,2) &amp;rarr; 10,000,000.33&lt;/code&gt;
+
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;year() function&lt;/h3&gt;
@@ -61271,159 +61503,6 @@ Converts a string to real number. Nothing changed if a value cannot be converted
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;h3&gt;strpos() function&lt;/h3&gt;
-Return the index of a regular expression in a string.
-
-&lt;h4&gt;Syntax&lt;/h4&gt;
-     strpos(&lt;i&gt;haystack&lt;/i&gt;, &lt;i&gt;needle&lt;/i&gt;)
-&lt;br&gt;&lt;br&gt;
-Returns -1 if the expression isn&apos;t found.
-
-&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;!-- List args for functions here--&gt;
-&lt;i&gt;  haystack&lt;/i&gt; &amp;rarr; is string.  The string that is to be searched.&lt;br&gt;
-&lt;i&gt;  needle&lt;/i&gt; &amp;rarr; is string.  The regular expression to look for.&lt;br&gt;
-
-&lt;h4&gt;Example&lt;/h4&gt;
-&lt;!-- Show example of function.--&gt;
-     strpos(&apos;HELLO WORLD&apos;,&apos;WORLD&apos;) &amp;rarr; 6&lt;br&gt;
-     strpos(&apos;HELLO WORLD&apos;,&apos;GOODBYE&apos;) &amp;rarr; -1&lt;br&gt;
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;convexHull function&lt;/h3&gt;
-Returns the convex hull of a geometry. It represents the minimum convex geometry that encloses all geometries within the set.
-
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;pre&gt;convexHull( a, b )&lt;/pre&gt;
-
-&lt;h4&gt;Arguments&lt;/h4&gt;
-a &amp;rarr; geometry
-a &amp;rarr; geometry
-
-&lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt;  geomToWKT( convexHull( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 4 10)&apos; )) )   &amp;rarr; returns POLYGON((3 3,4 10,4 4,3 3)) &lt;/pre&gt;
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;union function&lt;/h3&gt;
-Returns a geometry that represents the point set union of the geometries.
-
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;pre&gt;union( a, b )&lt;/pre&gt;
-
-&lt;h4&gt;Arguments&lt;/h4&gt;
-a &amp;rarr; geometry
-b &amp;rarr; geometry
-
-&lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt; geomToWKT( union( geomFromWKT( &apos;POINT(4 4)&apos; ) , geomFromWKT( &apos;POINT(5 5)&apos; ))  )   &amp;rarr; returns MULTIPOINT(4 4, 5 5)&lt;/pre&gt;
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;intersection function&lt;/h3&gt;
-Returns a geometry that represents the shared portion of geometry a and geometry b.
-
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;pre&gt;intersection( geometry a , geometry b)&lt;/pre&gt;
-
-&lt;h4&gt;Arguments&lt;/h4&gt;
-geometry &amp;rarr; geometry
-geometry &amp;rarr; geometry
-
-&lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt; geomToWKT( intersection( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 )&apos; ))  )   &amp;rarr; returns LINESTRING(3 3, 4 4)&lt;/pre&gt;
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;ILIKE expression&lt;/h3&gt;
-Returns 1 if the first parameter matches case-insensitive the supplied pattern. LIKE can be used instead of ILIKE to make the match case-sensitive. Works with numbers also.
-
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;pre&gt;string/number ILIKE pattern&lt;/pre&gt;
-
-&lt;h4&gt;Arguments&lt;/h4&gt;
-None
-
-&lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt; &apos;A&apos; ILIKE &apos;A&apos;  &amp;rarr; returns 1 &lt;/pre&gt;
-&lt;pre&gt; &apos;A&apos; ILIKE &apos;a&apos;  &amp;rarr; returns 1 &lt;/pre&gt;
-&lt;pre&gt; &apos;A&apos; ILIKE &apos;B&apos;  &amp;rarr; returns 0 &lt;/pre&gt;
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;LIKE expression&lt;/h3&gt;
-Returns 1 if the first parameter matches the supplied pattern. Works with numbers also.
-
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;pre&gt;string/number LIKE pattern&lt;/pre&gt;
-
-&lt;h4&gt;Arguments&lt;/h4&gt;
-None
-
-&lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt; &apos;A&apos; LIKE &apos;A&apos;  &amp;rarr; returns 1 &lt;/pre&gt;
-&lt;pre&gt; &apos;A&apos; LIKE &apos;a&apos;  &amp;rarr; returns 0 &lt;/pre&gt;
-&lt;pre&gt; &apos;A&apos; LIKE &apos;B&apos;  &amp;rarr; returns 0 &lt;/pre&gt;
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;geomFromGML function&lt;/h3&gt;
-Returns a geometry from a GML representation of geometry
-
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;pre&gt;geomFromGML(text)&lt;/pre&gt;
-
-&lt;h4&gt;Arguments&lt;/h4&gt;
-text &amp;rarr; GML representation of a geometry
-
-&lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt; geomFromGML( &apos;&lt;gml:LineString srsName=&quot;EPSG:4326&quot;&gt;&lt;gml:coordinates&gt;4,4 5,5 6,6&lt;/gml:coordinates&gt;&lt;/gml:LineString&gt;&apos;) &amp;rarr; returns a geometry&lt;/pre&gt;
-
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;combine function&lt;/h3&gt;
-Returns the combination of geometry a and geometry b.
-
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;pre&gt;combine( geometry a , geometry b)&lt;/pre&gt;
-
-&lt;h4&gt;Arguments&lt;/h4&gt;
-geometry &amp;rarr; geometry
-geometry &amp;rarr; geometry
-
-&lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt; geomToWKT( combine( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5 )&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4,  2 1 )&apos; ))  )    &amp;rarr; returns MULTILINESTRING((4 4, 2 1), (3 3, 4 4), (4 4, 5 5)) &lt;/pre&gt;
-&lt;pre&gt; geomToWKT( combine( geomFromWKT( &apos;LINESTRING(3 3 , 4 4  )&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 6 6,  2 1 )&apos; ))  )  &amp;rarr; returns LINESTRING(3 3, 4 4, 6 6, 2 1) &lt;/pre&gt;
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;intersects function&lt;/h3&gt;
-Returns 1 if the geometries spatially intersect (share any portion of space) and 0 if they don&apos;t.
-
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;pre&gt;intersects( a, b )&lt;/pre&gt;
-
-&lt;h4&gt;Arguments&lt;/h4&gt;
-a &amp;rarr; geometry
-b &amp;rarr; geometry
-
-&lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt; intersects( geomFromWKT( &apos;POINT(4 4)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))    &amp;rarr; returns 1&lt;/pre&gt;
-&lt;pre&gt; intersects( geomFromWKT( &apos;POINT(4 5)&apos; ) , geomFromWKT( &apos;POINT(5 5)&apos; ))             &amp;rarr; returns 0&lt;/pre&gt;
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>&lt;h3&gt;clamp() function&lt;/h3&gt;
 Restricts an input value to a specified range.
 
@@ -61444,7 +61523,7 @@ Restricts an input value to a specified range.
      
      
 </source>
-        <translation type="unfinished">&lt;h3&gt;clamp() functie&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;clamp() functie&lt;/h3&gt;
 Beperkt een inputwaarde tot een specifieke range.
 
 &lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
@@ -61464,330 +61543,6 @@ Beperkt een inputwaarde tot een specifieke range.
      
      
  {3&gt;?} {3&gt;?} {4&gt;?} {4&gt;?} {4&gt;?} {4&gt;?} {4&gt;?} {4&gt;?} {1,5,10)?} {5 ?} {1 ?} {10 ?} {1,0,10)?} {1 ?} {1,?} {1)?} {1,11,10)?} {10 ?} {10,?} {10)?}</translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;IS expression&lt;/h3&gt;
-Returns 1 if a is the same as b.
-
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;pre&gt;a is b&lt;/pre&gt;
-
-&lt;h4&gt;Arguments&lt;/h4&gt;
-None
-
-&lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt; &apos;A&apos; IS &apos;A&apos;  &amp;rarr; returns 1 &lt;/pre&gt;
-&lt;pre&gt; &apos;A&apos; IS &apos;a&apos;  &amp;rarr; returns 0 &lt;/pre&gt;
-&lt;pre&gt; 4 IS 4      &amp;rarr; returns 1 &lt;/pre&gt;
-&lt;pre&gt; 4 IS 2+2    &amp;rarr; returns 1 &lt;/pre&gt;
-&lt;pre&gt; 4 IS 2      &amp;rarr; returns 0 &lt;/pre&gt;
-&lt;pre&gt; 4 IS 2      &amp;rarr; returns 0 &lt;/pre&gt;
-&lt;pre&gt; $geometry IS NULL  &amp;rarr; returns 0, if your geometry is not NULL&lt;/pre&gt;
-
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;disjoint function&lt;/h3&gt;
-Returns 1 if the geometries do not &quot;spatially intersect&quot; - if they do not share any space together. 
-
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;pre&gt;disjoint( a, b )&lt;/pre&gt;
-
-&lt;h4&gt;Arguments&lt;/h4&gt;
-a &amp;rarr; geometry
-b &amp;rarr; geometry
-
-&lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt; disjoint( geomFromWKT( &apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; )) &amp;rarr; returns 1&lt;/pre&gt;
-&lt;pre&gt; disjoint( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ) , geomFromWKT( &apos;POINT(4 4)&apos; ))                              &amp;rarr; returns 0&lt;/pre&gt;
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;geomFromWKT function&lt;/h3&gt;
-Returns a geometry created from a Well-Known Text (WKT) representation.
-
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;pre&gt;geomFromWKT(text)&lt;/pre&gt;
-
-&lt;h4&gt;Arguments&lt;/h4&gt;
-text &amp;rarr; Well-Known Text (WKT) representation of a geometry
-
-&lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt; geomFromWKT( &apos;POINT(4 5)&apos; ) &amp;rarr; returns a geometry&lt;/pre&gt;
-
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;buffer function&lt;/h3&gt;
-Returns a geometry that represents all points whose distance from this geometry is less than or equal to distance. Calculations are in the Spatial Reference System of this Geometry. 
-
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;pre&gt;buffer(a, b)&lt;/pre&gt;
-
-&lt;h4&gt;Arguments&lt;/h4&gt;
-a &amp;rarr; geometry
-b &amp;rarr; distance for the buffer
-
-&lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt; buffer($geometry, 10.5 ) &amp;rarr; returns a polygon&lt;/pre&gt;
-
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;crosses function&lt;/h3&gt;
-Returns 1 if the supplied geometries have some, but not all, interior points in common.
-
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;pre&gt;crosses( $geometry , $geometry)&lt;/pre&gt;
-
-&lt;h4&gt;Arguments&lt;/h4&gt;
-geometry &amp;rarr; geometry
-geometry &amp;rarr; geometry
-
-&lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt; crosses( geomFromWKT( &apos;LINESTRING(3 5 , 4 4 , 5 3)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))    &amp;rarr; returns 1&lt;/pre&gt;
-&lt;pre&gt; crosses( geomFromWKT( &apos;POINT(4 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))             &amp;rarr; returns 0&lt;/pre&gt;
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;geomToWKT function&lt;/h3&gt;
-Returns the Well-Known Text (WKT) representation of the geometry without SRID metadata.
-
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;pre&gt;geomToWKT(a)&lt;/pre&gt;
-
-&lt;h4&gt;Arguments&lt;/h4&gt;
-a &amp;rarr; geometry
-
-&lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt; geomToWKT( $geometry ) &amp;rarr; POINT(6 50)&lt;/pre&gt;
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;touches function&lt;/h3&gt;
-Returns 1 if the geometries have at least one point in common, but their interiors do not intersect.
-
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;pre&gt;touches( a, b )&lt;/pre&gt;
-
-&lt;h4&gt;Arguments&lt;/h4&gt;
-a &amp;rarr; geometry
-b &amp;rarr; geometry
-
-&lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt; touches( geomFromWKT( &apos;LINESTRING(5 3 , 4 4)&apos;  ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))    &amp;rarr; returns 1&lt;/pre&gt;
-&lt;pre&gt; touches( geomFromWKT( &apos;POINT(4 4)&apos; ) , geomFromWKT( &apos;POINT(5 5)&apos; ))                     &amp;rarr; returns 0&lt;/pre&gt;
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;overlaps function&lt;/h3&gt;
-Returns 1 if the geometries share space, are of the same dimension, but are not completely contained by each other.
-
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;pre&gt;overlaps( a, b )&lt;/pre&gt;
-
-&lt;h4&gt;Arguments&lt;/h4&gt;
-a &amp;rarr; geometry
-b &amp;rarr; geometry
-
-&lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt; overlaps( geomFromWKT( &apos;LINESTRING(3 5 , 4 4 , 5 5 , 5 3)&apos;  ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))   &amp;rarr; returns 1&lt;/pre&gt;
-&lt;pre&gt; overlaps( geomFromWKT( &apos;LINESTRING(0 0 , 1 1)&apos;  ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))    &amp;rarr; returns 0&lt;/pre&gt;
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;AND logical operator&lt;/h3&gt;
-Returns 1 when condition a and b are true.
-
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;pre&gt; condition a AND condition b &lt;/pre&gt;
-
-&lt;h4&gt;Arguments&lt;/h4&gt;
-None
-
-&lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt; 4 = 2+2 AND 1 = 1  &amp;rarr; returns 1 &lt;/pre&gt;
-&lt;pre&gt; 4 = 2+2 AND 1 = 2  &amp;rarr; returns 0 &lt;/pre&gt;
-
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;$geometry function&lt;/h3&gt;
-Returns the geometry of the current feature. Can be used for processing with other functions.
-
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;pre&gt;$geometry&lt;/pre&gt;
-
-&lt;h4&gt;Arguments&lt;/h4&gt;
-None
-
-&lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt; geomToWKT( $geometry ) &amp;rarr; POINT(6 50)&lt;/pre&gt;
-
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;OR logical operator&lt;/h3&gt;
-Returns 1 when condition a or b is true.
-
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;pre&gt; condition a OR condition b &lt;/pre&gt;
-
-&lt;h4&gt;Arguments&lt;/h4&gt;
-None
-
-&lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt; 4 = 2+2 OR 1 = 1  &amp;rarr; returns 1 &lt;/pre&gt;
-&lt;pre&gt; 4 = 2+2 OR 1 = 2  &amp;rarr; returns 1 &lt;/pre&gt;
-&lt;pre&gt; 4 = 2   OR 1 = 2  &amp;rarr; returns 0 &lt;/pre&gt;
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;centroid function&lt;/h3&gt;
-Returns the geometric center of a geometry.
-
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;pre&gt;centroid(a)&lt;/pre&gt;
-
-&lt;h4&gt;Arguments&lt;/h4&gt;
-b &amp;rarr; geometry
-
-&lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt; centroid($geometry) &amp;rarr; returns a point geometry&lt;/pre&gt;
-
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;within function&lt;/h3&gt;
-Returns 1 if the geometry a is completely inside geometry b
-
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;pre&gt;within( geometry a , geometry b)&lt;/pre&gt;
-
-&lt;h4&gt;Arguments&lt;/h4&gt;
-geometry &amp;rarr; geometry
-geometry &amp;rarr; geometry
-
-&lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt; within( geomFromWKT( &apos;POINT( 0.5 0.5 )&apos;) , geomFromWKT(&apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) )    &amp;rarr; returns 1&lt;/pre&gt;
-&lt;pre&gt; within( geomFromWKT( &apos;POINT( 5 5 )&apos;) , geomFromWKT(&apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) )        &amp;rarr; returns 0&lt;/pre&gt;
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;$map function&lt;/h3&gt;
-Returns the id of the current map item if the map is being drawn in a composition, or &quot;canvas&quot; if the map is being
-drawn within the main QGIS window.
-
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;pre&gt;$map&lt;/pre&gt;
-
-&lt;h4&gt;Arguments&lt;/h4&gt;
-None
-
-&lt;h4&gt;Example&lt;/h4&gt;
-&lt;!-- Show example of function.--&gt;
-&lt;pre&gt;$map &amp;rarr; &quot;overview_map&quot; (within a composer item)&lt;br /&gt;
-$map &amp;rarr; &quot;canvas&quot; (within the main QGIS main canvas)&lt;/pre&gt;
-
-
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;distance function&lt;/h3&gt;
- Returns the minimum distance (based on spatial ref) between two geometries in projected units.
-
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;pre&gt;distance( a, b )&lt;/pre&gt;
-
-&lt;h4&gt;Arguments&lt;/h4&gt;
-a &amp;rarr; geometry
-b &amp;rarr; geometry
-
-&lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt; distance( geomFromWKT( &apos;POINT(4 4)&apos; ) , geomFromWKT( &apos;POINT(4 8)&apos; ))    &amp;rarr; returns 4&lt;/pre&gt;
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;difference function&lt;/h3&gt;
-Returns a geometry that represents that part of geometry a that does not intersect with geometry b.
-
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;pre&gt;difference( a, b )&lt;/pre&gt;
-
-&lt;h4&gt;Arguments&lt;/h4&gt;
-geometry &amp;rarr; geometry
-geometry &amp;rarr; geometry
-
-&lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt; geomToWKT( difference( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4)&apos; ))  )   &amp;rarr; returns LINESTRING(4 4, 5 5)&lt;/pre&gt;
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;NOT&lt;/h3&gt;
-Returns 1 if a is not the same as b.
-
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;pre&gt; a NOT b &lt;/pre&gt;
-
-&lt;h4&gt;Arguments&lt;/h4&gt;
-None
-
-&lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt; &apos;a&apos; IS NOT &apos;b&apos;  &amp;rarr; returns 1 &lt;/pre&gt;
-&lt;pre&gt; &apos;a&apos; IS NOT &apos;a&apos;  &amp;rarr; returns 0 &lt;/pre&gt;
-&lt;pre&gt; 4 IS NOT 2+2    &amp;rarr; returns 0 &lt;/pre&gt;
-
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;symDifference function&lt;/h3&gt;
-Returns a geometry that represents the portions of a and b that do not intersect.
-
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;pre&gt;symDifference( geometry a, geometry b)&lt;/pre&gt;
-
-&lt;h4&gt;Arguments&lt;/h4&gt;
-geometry &amp;rarr; geometry
-geometry &amp;rarr; geometry
-
-&lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt; geomToWKT( symDifference(  geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 8 8)&apos; ))   )   &amp;rarr; returns LINESTRING(5 5, 8 8)&lt;/pre&gt;
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;contains function&lt;/h3&gt;
- Returns true if and only if no points of b lie in the exterior of a, and at least one point of the interior of b lies in the interior of a. 
-
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;pre&gt;contains( geometry a , geometry a)&lt;/pre&gt;
-
-&lt;h4&gt;Arguments&lt;/h4&gt;
-geometry &amp;rarr; geometry
-geometry &amp;rarr; geometry
-
-&lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt; contains( geomFromWKT( &apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) , geomFromWKT( &apos;POINT( 0.5 0.5 )&apos; ))    &amp;rarr; returns 1&lt;/pre&gt;
-&lt;pre&gt; contains( geomFromWKT( &apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))          &amp;rarr; returns 0&lt;/pre&gt;
-</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
