@@ -208,6 +208,8 @@ QgsRasterBlock * QgsRasterDataProvider::block( int theBandNo, QgsRectangle  cons
     readBlock( theBandNo, theExtent, theWidth, theHeight, block->bits() );
   }
 
+  // apply scale and offset
+  block->applyScaleOffset( bandScale( theBandNo ), bandOffset( theBandNo ) );
   // apply user no data values
   block->applyNoDataValues( userNoDataValues( theBandNo ) );
   return block;

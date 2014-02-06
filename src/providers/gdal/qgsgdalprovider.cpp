@@ -386,6 +386,8 @@ QgsRasterBlock* QgsGdalProvider::block( int theBandNo, const QgsRectangle &theEx
     block->setIsNoDataExcept( subRect );
   }
   readBlock( theBandNo, theExtent, theWidth, theHeight, block->bits() );
+  // apply scale and offset
+  block->applyScaleOffset( bandScale( theBandNo ), bandOffset( theBandNo ) );
   block->applyNoDataValues( userNoDataValues( theBandNo ) );
   return block;
 }
@@ -994,55 +996,43 @@ int QgsGdalProvider::capabilities() const
   return capability;
 }
 
-QGis::DataType QgsGdalProvider::dataTypeFormGdal( int theGdalDataType ) const
-{
-  switch ( theGdalDataType )
-  {
-    case GDT_Unknown:
-      return QGis::UnknownDataType;
-      break;
-    case GDT_Byte:
-      return QGis::Byte;
-      break;
-    case GDT_UInt16:
-      return QGis::UInt16;
-      break;
-    case GDT_Int16:
-      return QGis::Int16;
-      break;
-    case GDT_UInt32:
-      return QGis::UInt32;
-      break;
-    case GDT_Int32:
-      return QGis::Int32;
-      break;
-    case GDT_Float32:
-      return QGis::Float32;
-      break;
-    case GDT_Float64:
-      return QGis::Float64;
-      break;
-    case GDT_CInt16:
-      return QGis::CInt16;
-      break;
-    case GDT_CInt32:
-      return QGis::CInt32;
-      break;
-    case GDT_CFloat32:
-      return QGis::CFloat32;
-      break;
-    case GDT_CFloat64:
-      return QGis::CFloat64;
-      break;
-  }
-  return QGis::UnknownDataType;
-}
-
 QGis::DataType QgsGdalProvider::srcDataType( int bandNo ) const
 {
   GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, bandNo );
   GDALDataType myGdalDataType = GDALGetRasterDataType( myGdalBand );
-  return dataTypeFromGdal( myGdalDataType );
+  QGis::DataType myDataType = dataTypeFromGdal( myGdalDataType );
+
+  // define if the band has scale and offset to apply
+  double myScale = bandScale( bandNo );
+  double myOffset = bandOffset( bandNo );
+  if ( myScale != 1.0 && myOffset != 0.0 )
+  {
+    // if the band has scale and offset to apply change dataType
+    switch ( myDataType )
+    {
+      case QGis::UnknownDataType:
+        return myDataType;
+        break;
+      case QGis::Byte:
+      case QGis::UInt16:
+      case QGis::Int16:
+      case QGis::UInt32:
+      case QGis::Int32:
+      case QGis::Float32:
+      case QGis::CInt16:
+        myDataType = QGis::Float32;
+        break;
+      case QGis::Float64:
+      case QGis::CInt32:
+      case QGis::CFloat32:
+        myDataType = QGis::Float64;
+        break;
+      case QGis::CFloat64:
+        return myDataType;
+        break;
+    }
+  }
+  return myDataType;
 }
 
 QGis::DataType QgsGdalProvider::dataType( int bandNo ) const
@@ -1050,6 +1040,38 @@ QGis::DataType QgsGdalProvider::dataType( int bandNo ) const
   if ( mGdalDataType.size() == 0 ) return QGis::UnknownDataType;
 
   return dataTypeFromGdal( mGdalDataType[bandNo-1] );
+}
+
+double QgsGdalProvider::bandScale( int bandNo ) const
+{
+#if GDAL_VERSION_NUM >= 1800
+  GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, bandNo );
+  int bGotScale;
+  double myScale = GDALGetRasterScale( myGdalBand, &bGotScale );
+  if ( bGotScale )
+    return myScale;
+  else
+    return 1.0;
+#else
+  Q_UNUSED( bandNo );
+  return 1.0;
+#endif
+}
+
+double QgsGdalProvider::bandOffset( int bandNo ) const
+{
+#if GDAL_VERSION_NUM >= 1800
+  GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, bandNo );
+  int bGotOffset;
+  double myOffset = GDALGetRasterOffset( myGdalBand, &bGotOffset );
+  if ( bGotOffset )
+    return myOffset;
+  else
+    return 0.0;
+#else
+  Q_UNUSED( bandNo );
+  return 0.0;
+#endif
 }
 
 int QgsGdalProvider::bandCount() const
@@ -1282,9 +1304,18 @@ QgsRasterHistogram QgsGdalProvider::histogram( int theBandNo,
 
   // Min/max, if not specified, are set by histogramDefaults, it does not
   // set however min/max shifted to avoid rounding errors
-
+  
   double myMinVal = myHistogram.minimum;
   double myMaxVal = myHistogram.maximum;
+
+  // unapply scale anf offset for min and max
+  double myScale = bandScale( theBandNo );
+  double myOffset = bandOffset( theBandNo );
+  if ( myScale != 1.0 || myOffset != 0. )
+  {
+    myMinVal = (myHistogram.minimum - myOffset) / myScale;
+    myMaxVal = (myHistogram.maximum - myOffset) / myScale;
+  }
 
   double dfHalfBucket = ( myMaxVal - myMinVal ) / ( 2 * myHistogram.binCount );
   myMinVal -= dfHalfBucket;
@@ -2252,6 +2283,22 @@ QgsRasterBandStats QgsGdalProvider::bandStatistics( int theBandNo, int theStats,
     myRasterBandStats.statsGathered = QgsRasterBandStats::Min | QgsRasterBandStats::Max
                                       | QgsRasterBandStats::Range | QgsRasterBandStats::Mean
                                       | QgsRasterBandStats::StdDev;
+    
+    // define if the band has scale and offset to apply
+    double myScale = bandScale( theBandNo );
+    double myOffset = bandOffset( theBandNo );
+    if ( myScale != 1.0 || myOffset != 0.0 )
+    {
+      // update Min and MAx value
+      myRasterBandStats.minimumValue = pdfMin * myScale + myOffset;
+      myRasterBandStats.maximumValue = pdfMax * myScale + myOffset;
+      // update the range
+      myRasterBandStats.range =  (pdfMax - pdfMin) * myScale;
+      // update the mean
+      myRasterBandStats.mean = pdfMean * myScale + myOffset;
+      // update standard deviation
+      myRasterBandStats.stdDev = pdfStdDev * myScale;
+    }
 
 #ifdef QGISDEBUG
     QgsDebugMsg( "************ STATS **************" );
@@ -2462,6 +2509,35 @@ void QgsGdalProvider::initBaseDataset()
     }
 #endif
     //mGdalDataType.append( myInternalGdalDataType );
+
+    // define if the band has scale and offset to apply
+    double myScale = bandScale( i );
+    double myOffset = bandOffset( i );
+    if ( myScale != 1.0 && myOffset != 0.0 )
+    {
+      // if the band has scale and offset to apply change dataType
+      switch ( myGdalDataType )
+      {
+        case GDT_Unknown:
+          break;
+        case GDT_Byte:
+        case GDT_UInt16:
+        case GDT_Int16:
+        case GDT_UInt32:
+        case GDT_Int32:
+        case GDT_Float32:
+        case GDT_CInt16:
+          myGdalDataType = GDT_Float32;
+          break;
+        case GDT_Float64:
+        case GDT_CInt32:
+        case GDT_CFloat32:
+          myGdalDataType = GDT_Float64;
+          break;
+        case GDT_CFloat64:
+          break;
+      }
+    }
 
     mGdalDataType.append( myGdalDataType );
     //mInternalNoDataValue.append( myInternalNoDataValue );
