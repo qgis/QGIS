@@ -3037,7 +3037,7 @@ double QgsPalLayerSettings::scaleToPixelContext( double size, const QgsRenderCon
 // -------------
 
 QgsPalLabeling::QgsPalLabeling()
-    : mMapRenderer( NULL ), mPal( NULL )
+    : mMapRenderer( NULL ), mPal( NULL ), mVectorizeText( true )
 {
 
   // find out engine defaults
@@ -3458,6 +3458,8 @@ void QgsPalLabeling::init( QgsMapRenderer* mr )
 
   clearActiveLayers(); // free any previous QgsDataDefined objects
   mActiveDiagramLayers.clear();
+
+  mVectorizeText = QSettings().value( "/Map/vectorizeLabelText", 1 ).toBool();
 }
 
 void QgsPalLabeling::exit()
@@ -4285,14 +4287,19 @@ void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& con
 //        painter->setBrush( tmpLyr.textColor );
 //        painter->drawPath( path );
 
-        // scale for any print output or image saving @ specific dpi
-        painter->scale( component.dpiRatio(), component.dpiRatio() );
-        painter->drawPicture( 0, 0, textPict );
-
-        // regular text draw, for testing optimization
-//        painter->setFont( tmpLyr.textFont );
-//        painter->setPen( tmpLyr.textColor );
-//        painter->drawText( 0, 0, multiLineList.at( i ) );
+        if ( mVectorizeText )
+        {
+          // scale for any print output or image saving @ specific dpi
+          painter->scale( component.dpiRatio(), component.dpiRatio() );
+          painter->drawPicture( 0, 0, textPict );
+        }
+        else
+        {
+          // regular text draw, for testing optimization
+          painter->setFont( tmpLyr.textFont );
+          painter->setPen( tmpLyr.textColor );
+          painter->drawText( 0, 0, multiLineList.at( i ) );
+        }
 
       }
       painter->restore();

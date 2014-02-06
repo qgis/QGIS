@@ -1733,6 +1733,13 @@
                     </layout>
                    </widget>
                   </item>
+                  <item row="6" column="0">
+                   <widget class="QCheckBox" name="chkVectorizeLabelText">
+                    <property name="text">
+                     <string>Vectorize labels text</string>
+                    </property>
+                   </widget>
+                  </item>
                  </layout>
                 </widget>
                </item>
