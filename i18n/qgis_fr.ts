@@ -3106,7 +3106,7 @@ Are you sure you want to proceed?</source>
     </message>
     <message>
         <source>everything went fine</source>
-        <translation>tout c&apos;est bien passé</translation>
+        <translation>Tout s&apos;est bien passé</translation>
     </message>
 </context>
 <context>
@@ -24071,7 +24071,7 @@ Essayez une résolution ou une taille de papier inférieur.</translation>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="302"/>
         <source>Box margin</source>
-        <translation>Marge de la boÎte</translation>
+        <translation>Marge de la boîte</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="319"/>
@@ -29565,13 +29565,13 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="135"/>
         <source>Update existing field</source>
-        <translation>Champ de mise à jour existant</translation>
+        <translation>Mise à jour d'un champ existant</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="20"/>
         <source>Only update selected features</source>
         <translation variants="yes">
-            <lengthvariant>Seulement mettre à jour les entités sélectionnées</lengthvariant>
+            <lengthvariant>Mise à jour des entités sélectionnées uniquement</lengthvariant>
             <lengthvariant>Mise à jour des entités sélectionnées</lengthvariant>
         </translation>
     </message>
