@@ -15218,7 +15218,7 @@ Sollen die vorhandenen Klassen vor der Klassifizierung gelöscht werden?</transl
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="457"/>
         <source>Item properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Elementeigenschaften</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="1220"/>
@@ -47447,7 +47447,7 @@ Es gab ein Problem mit Ihrer Symboldatenbank.</translation>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="186"/>
         <source>QGIS has plugins that extend its functionality. QGIS ships with some core plugins you can explore from the Plugins-&gt;Manage and Install Plugins menu. In addition there are a lot of &lt;a href=&quot;http://plugins.qgis.org/&quot;&gt;Python plugins &lt;/a&gt; contributed by the user community that can be installed via this same menu. Don&apos;t miss out on all QGIS has to offer! Check out the plugins and see what they can do for you.</source>
-        <translation type="unfinished">QGIS hat Erweiterungen, die seine Funktionalität erweitern. QGIS wird mit einigen Kernerweiterungen geliefert, die Sie im Menü Erweiterungen/Erweiterungen installieren und verwalten durchsehen können. Zudem gibt es eine Menge von der Benutzergemeinschaft beigetragene &lt;a href=&quot;http://plugins.qgis.org/&quot;&gt;Python-Erweiterungen &lt;/a&gt;, die über Erweiterungen/Python-Erweiterung herunterladen können. Verpassen Sie nicht was QGIS zu bieten hat - gucken Sie sich um und prüfen Sie, was sie für Sie tun können.</translation>
+        <translation>QGIS hat Erweiterungen, die seine Funktionalität verbessern. QGIS wird mit einigen Kernerweiterungen geliefert, die Sie im Menü Erweiterungen/Erweiterungen installieren und verwalten durchsehen können. Zudem gibt es eine Menge von der Benutzergemeinschaft beigetragene &lt;a href=&quot;http://plugins.qgis.org/&quot;&gt;Python-Erweiterungen &lt;/a&gt;, die über Erweiterungen/Python-Erweiterung heruntergeladen werden können. Verpassen Sie nicht was QGIS zu bieten hat - Sehen Sie sich um und prüfen Sie, was Erweiterungen für Sie tun können.</translation>
     </message>
 </context>
 <context>
@@ -47940,7 +47940,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="1108"/>
         <source>Updating feature count for layer %1</source>
-        <translation>Objektanzahl des Layers %1 aktualsieren</translation>
+        <translation>Objektanzahl des Layers %1 wird aktualisiert</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="1108"/>
