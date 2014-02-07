@@ -5799,6 +5799,32 @@ bool QgsGeometry::deletePart( int partNum )
   return true;
 }
 
+/** Return union of several geometries - try to use unary union if available (GEOS >= 3.3) otherwise use a cascade of unions.
+ *  Takes ownership of passed geometries, returns a new instance */
+static GEOSGeometry* _makeUnion( QList<GEOSGeometry*> geoms )
+{
+#if defined(GEOS_VERSION_MAJOR) && defined(GEOS_VERSION_MINOR) && (((GEOS_VERSION_MAJOR==3) && (GEOS_VERSION_MINOR>=3)) || (GEOS_VERSION_MAJOR>3))
+  GEOSGeometry* geomCollection = 0;
+  geomCollection = createGeosCollection( GEOS_GEOMETRYCOLLECTION, geoms.toVector() );
+  GEOSGeometry* geomUnion = GEOSUnaryUnion( geomCollection );
+  GEOSGeom_destroy( geomCollection );
+  return geomUnion;
+#else
+  GEOSGeometry* geomCollection = geoms.takeFirst();
+
+  while ( !geoms.isEmpty() )
+  {
+    GEOSGeometry* g = geoms.takeFirst();
+    GEOSGeometry* geomCollectionNew = GEOSUnion( geomCollection, g );
+    GEOSGeom_destroy( geomCollection );
+    GEOSGeom_destroy( g );
+    geomCollection = geomCollectionNew;
+  }
+
+  return geomCollection;
+#endif
+}
+
 int QgsGeometry::avoidIntersections( QMap<QgsVectorLayer*, QSet< QgsFeatureId > > ignoreFeatures )
 {
   int returnValue = 0;
@@ -5815,6 +5841,8 @@ int QgsGeometry::avoidIntersections( QMap<QgsVectorLayer*, QSet< QgsFeatureId > 
   if ( !listReadOk )
     return true; //no intersections stored in project does not mean error
 
+  QList<GEOSGeometry*> nearGeometries;
+
   //go through list, convert each layer to vector layer and call QgsVectorLayer::removePolygonIntersections for each
   QgsVectorLayer* currentLayer = 0;
   QStringList::const_iterator aIt = avoidIntersectionsList.constBegin();
@@ -5828,10 +5856,46 @@ int QgsGeometry::avoidIntersections( QMap<QgsVectorLayer*, QSet< QgsFeatureId > 
       if ( ignoreIt != ignoreFeatures.constEnd() )
         ignoreIds = ignoreIt.value();
 
-      if ( currentLayer->removePolygonIntersections( this, ignoreIds ) != 0 )
-        returnValue = 3;
+      QgsFeatureIterator fi = currentLayer->getFeatures( QgsFeatureRequest( boundingBox() )
+                                                         .setFlags( QgsFeatureRequest::ExactIntersect )
+                                                         .setSubsetOfAttributes( QgsAttributeList() ) );
+      QgsFeature f;
+      while ( fi.nextFeature( f ) )
+      {
+        if ( ignoreIds.contains( f.id() ) )
+          continue;
 
+        if ( !f.geometry() )
+          continue;
+
+        nearGeometries << GEOSGeom_clone( f.geometry()->asGeos() );
+      }
     }
+  }
+
+  if ( nearGeometries.isEmpty() )
+    return 0;
+
+  GEOSGeometry* nearGeometriesUnion = 0;
+  GEOSGeometry* geomWithoutIntersections = 0;
+  try
+  {
+    nearGeometriesUnion = _makeUnion( nearGeometries );
+    geomWithoutIntersections = GEOSDifference( asGeos(), nearGeometriesUnion );
+
+    fromGeos( geomWithoutIntersections );
+
+    GEOSGeom_destroy( nearGeometriesUnion );
+  }
+  catch ( GEOSException &e )
+  {
+    if ( nearGeometriesUnion )
+      GEOSGeom_destroy( nearGeometriesUnion );
+    if ( geomWithoutIntersections )
+      GEOSGeom_destroy( geomWithoutIntersections );
+
+    QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
+    return 3;
   }
 
   //make sure the geometry still has the same type (e.g. no change from polygon to multipolygon)
