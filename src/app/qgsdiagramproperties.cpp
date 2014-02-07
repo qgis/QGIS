@@ -545,7 +545,17 @@ void QgsDiagramProperties::apply()
           // Find maximum value
           for ( int i = 0; i < mDiagramAttributesTreeWidget->topLevelItemCount(); ++i )
           {
-            maxVal = qMax( maxVal, provider->maximumValue( mDiagramAttributesTreeWidget->topLevelItem( i )->data( 0, Qt::UserRole ).toInt() ).toDouble() );
+            QString fldName = mDiagramAttributesTreeWidget->topLevelItem( i )->data( 0, Qt::UserRole ).toString();
+            if ( fldName.count() >= 2 && fldName.at( 0 ) == '"' && fldName.at( fldName.count() - 1 ) == '"' )
+              fldName = fldName.mid( 1, fldName.count() - 2 ); // remove enclosing double quotes
+            int fld = provider->fieldNameIndex( fldName );
+            if ( fld != -1 )
+            {
+              bool ok = false;
+              double val = provider->maximumValue( fld ).toDouble( &ok );
+              if ( ok )
+                maxVal = qMax( maxVal, val );
+            }
           }
         }
         else
