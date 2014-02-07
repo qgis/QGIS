@@ -64,7 +64,7 @@
 static const QString WFS_NAMESPACE = "http://www.opengis.net/wfs";
 static const QString GML_NAMESPACE = "http://www.opengis.net/gml";
 static const QString OGC_NAMESPACE = "http://www.opengis.net/ogc";
-static const QString QGS_NAMESPACE = "http://www.qgis.org/gml";
+static const QString QGS_NAMESPACE = "http://qgis.org/gml";
 
 QgsWFSServer::QgsWFSServer( QMap<QString, QString> parameters )
     : mParameterMap( parameters )

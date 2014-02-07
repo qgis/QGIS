@@ -7206,7 +7206,7 @@ void QgisApp::apiDocumentation()
 
 void QgisApp::supportProviders()
 {
-  openURL( tr( "http://www.qgis.org/en/commercial-support.html" ), false );
+  openURL( tr( "http://qgis.org/de/site/forusers/commercial_support.html" ), false );
 }
 
 void QgisApp::helpQgisHomePage()

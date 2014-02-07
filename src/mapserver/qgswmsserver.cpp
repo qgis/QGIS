@@ -902,9 +902,9 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result, QString version )
     getFeatureInfoElement.setAttribute( "xmlns:gml", "http://www.opengis.net/gml" );
     getFeatureInfoElement.setAttribute( "xmlns:ows", "http://www.opengis.net/ows" );
     getFeatureInfoElement.setAttribute( "xmlns:xlink", "http://www.w3.org/1999/xlink" );
-    getFeatureInfoElement.setAttribute( "xmlns:qgs", "http://www.qgis.org/gml" );
+    getFeatureInfoElement.setAttribute( "xmlns:qgs", "http://qgis.org/gml" );
     getFeatureInfoElement.setAttribute( "xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance" );
-    getFeatureInfoElement.setAttribute( "xsi:schemaLocation", "http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/wfs.xsd http://www.qgis.org/gml" );
+    getFeatureInfoElement.setAttribute( "xsi:schemaLocation", "http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/wfs.xsd http://qgis.org/gml" );
   }
   else
   {

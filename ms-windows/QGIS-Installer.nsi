@@ -45,8 +45,8 @@ RequestExecutionLevel admin
 ;Publisher variables
 
 !define PUBLISHER "QGIS Development Team"
-!define WEB_SITE "http://www.qgis.org"
-!define WIKI_PAGE "http://wiki.qgis.org/qgiswiki"
+!define WEB_SITE "http://qgis.org"
+!define WIKI_PAGE "http://qgis.org/en/docs/"
 
 ;----------------------------------------------------------------------------------------------------------------------------
 

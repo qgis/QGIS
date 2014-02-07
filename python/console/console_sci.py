@@ -591,9 +591,9 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         self.updateHistory(cmd)
         if cmd in ('_pyqgis', '_api'):
             if cmd == '_pyqgis':
-                webbrowser.open( "http://www.qgis.org/pyqgis-cookbook/" )
+                webbrowser.open( "http://qgis.org/pyqgis-cookbook/" )
             elif cmd == '_api':
-                webbrowser.open( "http://www.qgis.org/api/" )
+                webbrowser.open( "http://qgis.org/api/" )
             more = False
         else:
             self.buffer.append(cmd)
