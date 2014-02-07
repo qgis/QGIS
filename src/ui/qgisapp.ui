@@ -645,7 +645,7 @@
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionCapturePolygon.png</normaloff>:/images/themes/default/mActionCapturePolygon.png</iconset>
+     <normaloff>:/images/themes/default/mActionCapturePolygon.svg</normaloff>:/images/themes/default/mActionCapturePolygon.svg</iconset>
    </property>
    <property name="text">
     <string>Add Feature</string>
@@ -660,7 +660,7 @@
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionMoveFeature.png</normaloff>:/images/themes/default/mActionMoveFeature.png</iconset>
+     <normaloff>:/images/themes/default/mActionMoveFeature.svg</normaloff>:/images/themes/default/mActionMoveFeature.svg</iconset>
    </property>
    <property name="text">
     <string>Move Feature(s)</string>
@@ -672,7 +672,7 @@
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionReshape.png</normaloff>:/images/themes/default/mActionReshape.png</iconset>
+     <normaloff>:/images/themes/default/mActionReshape.svg</normaloff>:/images/themes/default/mActionReshape.svg</iconset>
    </property>
    <property name="text">
     <string>Reshape Features</string>
@@ -717,7 +717,7 @@
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionAddRing.png</normaloff>:/images/themes/default/mActionAddRing.png</iconset>
+     <normaloff>:/images/themes/default/mActionAddRing.svg</normaloff>:/images/themes/default/mActionAddRing.svg</iconset>
    </property>
    <property name="text">
     <string>Add Ring</string>
@@ -729,7 +729,7 @@
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionAddPart.png</normaloff>:/images/themes/default/mActionAddPart.png</iconset>
+     <normaloff>:/images/themes/default/mActionAddPart.svg</normaloff>:/images/themes/default/mActionAddPart.svg</iconset>
    </property>
    <property name="text">
     <string>Add Part</string>
@@ -741,7 +741,7 @@
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionSimplify.png</normaloff>:/images/themes/default/mActionSimplify.png</iconset>
+     <normaloff>:/images/themes/default/mActionSimplify.svg</normaloff>:/images/themes/default/mActionSimplify.svg</iconset>
    </property>
    <property name="text">
     <string>Simplify Feature</string>
@@ -753,7 +753,7 @@
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionDeleteRing.png</normaloff>:/images/themes/default/mActionDeleteRing.png</iconset>
+     <normaloff>:/images/themes/default/mActionDeleteRing.svg</normaloff>:/images/themes/default/mActionDeleteRing.svg</iconset>
    </property>
    <property name="text">
     <string>Delete Ring</string>
@@ -765,7 +765,7 @@
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionDeletePart.png</normaloff>:/images/themes/default/mActionDeletePart.png</iconset>
+     <normaloff>:/images/themes/default/mActionDeletePart.svg</normaloff>:/images/themes/default/mActionDeletePart.svg</iconset>
    </property>
    <property name="text">
     <string>Delete Part</string>
@@ -2025,7 +2025,7 @@ Acts on currently active editable layer</string>
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionRotateFeature.png</normaloff>:/images/themes/default/mActionRotateFeature.png</iconset>
+     <normaloff>:/images/themes/default/mActionRotateFeature.svg</normaloff>:/images/themes/default/mActionRotateFeature.svg</iconset>
    </property>
    <property name="text">
     <string>Rotate Feature(s)</string>

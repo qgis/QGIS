@@ -115,9 +115,9 @@
         <file>themes/default/mActionAddOgrLayer.svg</file>
         <file>themes/default/mActionAddOracleLayer.svg</file>
         <file>themes/default/mActionAddPostgisLayer.svg</file>
-        <file>themes/default/mActionAddPart.png</file>
+        <file>themes/default/mActionAddPart.svg</file>
         <file>themes/default/mActionAddRasterLayer.svg</file>
-        <file>themes/default/mActionAddRing.png</file>
+        <file>themes/default/mActionAddRing.svg</file>
         <file>themes/default/mActionAddSpatiaLiteLayer.svg</file>
         <file>themes/default/mActionAddVertex.png</file>
         <file>themes/default/mActionAddWcsLayer.svg</file>
@@ -144,9 +144,9 @@
         <file>themes/default/mActionCalculateField.png</file>
         <file>themes/default/mActionCancelAllEdits.svg</file>
         <file>themes/default/mActionCancelEdits.svg</file>
-        <file>themes/default/mActionCaptureLine.png</file>
-        <file>themes/default/mActionCapturePoint.png</file>
-        <file>themes/default/mActionCapturePolygon.png</file>
+        <file>themes/default/mActionCaptureLine.svg</file>
+        <file>themes/default/mActionCapturePoint.svg</file>
+        <file>themes/default/mActionCapturePolygon.svg</file>
         <file>themes/default/mActionChangeLabelProperties.png</file>
         <file>themes/default/mActionCheckQgisVersion.png</file>
         <file>themes/default/mActionCollapseTree.png</file>
@@ -157,8 +157,8 @@
         <file>themes/default/mActionDecreaseBrightness.svg</file>
         <file>themes/default/mActionDecreaseContrast.svg</file>
         <file>themes/default/mActionDeleteAttribute.png</file>
-        <file>themes/default/mActionDeletePart.png</file>
-        <file>themes/default/mActionDeleteRing.png</file>
+        <file>themes/default/mActionDeletePart.svg</file>
+        <file>themes/default/mActionDeleteRing.svg</file>
         <file>themes/default/mActionDeleteSelected.svg</file>
         <file>themes/default/mActionDeleteVertex.png</file>
         <file>themes/default/mActionDeselectAll.svg</file>
@@ -208,7 +208,7 @@
         <file>themes/default/mActionMeasureArea.png</file>
         <file>themes/default/mActionMergeFeatureAttributes.png</file>
         <file>themes/default/mActionMergeFeatures.png</file>
-        <file>themes/default/mActionMoveFeature.png</file>
+        <file>themes/default/mActionMoveFeature.svg</file>
         <file>themes/default/mActionMoveItemContent.png</file>
         <file>themes/default/mActionMoveItemsToBottom.png</file>
         <file>themes/default/mActionMoveItemsToTop.png</file>
@@ -237,10 +237,10 @@
         <file>themes/default/mActionRemoveAllFromOverview.svg</file>
         <file>themes/default/mActionRemoveLayer.svg</file>
         <file>themes/default/mActionRemoveSelectedFeature.png</file>
-        <file>themes/default/mActionReshape.png</file>
+        <file>themes/default/mActionReshape.svg</file>
         <file>themes/default/mActionRollbackAllEdits.svg</file>
         <file>themes/default/mActionRollbackEdits.svg</file>
-        <file>themes/default/mActionRotateFeature.png</file>
+        <file>themes/default/mActionRotateFeature.svg</file>
         <file>themes/default/mActionRotateLabel.png</file>
         <file>themes/default/mActionRotateLabel.svg</file>
         <file>themes/default/mActionRotatePointSymbols.png</file>
@@ -266,7 +266,7 @@
         <file>themes/default/mActionShowRasterCalculator.png</file>
         <file>themes/default/mActionSignMinus.png</file>
         <file>themes/default/mActionSignPlus.png</file>
-        <file>themes/default/mActionSimplify.png</file>
+        <file>themes/default/mActionSimplify.svg</file>
         <file>themes/default/mActionSplitFeatures.svg</file>
         <file>themes/default/mActionSplitParts.svg</file>
         <file>themes/default/mActionSum.png</file>
