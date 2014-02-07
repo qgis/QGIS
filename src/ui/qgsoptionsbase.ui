@@ -4443,13 +4443,13 @@
   <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
-   <header>qgis.gui</header>
+   <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsColorButton</class>
    <extends>QPushButton</extends>
-   <header>qgis.gui</header>
+   <header>qgscolorbutton.h</header>
   </customwidget>
   <customwidget>
    <class>QgsScaleComboBox</class>
