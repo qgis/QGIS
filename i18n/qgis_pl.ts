@@ -42266,7 +42266,7 @@ Always network: always load from network and do not check if the cache has a val
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1222"/>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2357"/>
         <source>OGR error syncing to disk: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd OGR synchronizacji na dysk: %1</translation>
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1245"/>
@@ -42291,17 +42291,17 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="146"/>
         <source>Possible corruption after REPACK detected. %1 still exists. This may point to a permission or locking problem of the original DBF.</source>
-        <translation type="unfinished"></translation>
+        <translation>Wykryto możliwe uszkodzenie po REPACK. %1 nadal istnieje. Może to oznaczać problem z uprawnieniami lub blokadą DBF.</translation>
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="165"/>
         <source>Original layer could not be reopened.</source>
-        <translation type="unfinished"></translation>
+        <translation>Warstwa źródłowa nie może zostać ponownie otwarta.</translation>
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="173"/>
         <source>Original datasource could not be reopened.</source>
-        <translation type="unfinished"></translation>
+        <translation>Źródło danych nie może zostać ponownie otwarte.</translation>
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1369"/>
@@ -42678,7 +42678,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="1586"/>
         <source>Unset</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyłącz</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="1587"/>
@@ -45432,7 +45432,7 @@ Error: %2</source>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="212"/>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="400"/>
         <source>SRID</source>
-        <translation type="unfinished"></translation>
+        <translation>SRID</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="213"/>
@@ -45520,7 +45520,7 @@ Error: %2</source>
     <message>
         <location filename="../src/providers/oracle/qgsoracletablemodel.cpp" line="31"/>
         <source>SRID</source>
-        <translation type="unfinished"></translation>
+        <translation>SRID</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracletablemodel.cpp" line="32"/>
@@ -49083,7 +49083,7 @@ Kontynuować?</translation>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="157"/>
         <source>Relations</source>
-        <translation type="unfinished"></translation>
+        <translation>Relacje</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="251"/>
@@ -65660,26 +65660,24 @@ On this tab you can choose on which layers the identify tool will work.
 </source>
         <translation type="unfinished">&lt;h3&gt;Właściwości projektu&lt;/h3&gt;
 To okno umożliwia zdefiniowanie wielu parametrów związanych z &lt;label&gt;Projektem&lt;/label&gt;. Projekt to lista warstw wraz z ich ustawieniami zapisana na dysku jako plik. W projekcie nie są zapisywane same warstwy, a jedynie sposób ich wyświetlenia.&lt;p&gt;
-&lt;a href=&quot;#general&quot;&gt;Zakładka Ogólne&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#crs&quot;&gt;Zakładka Układ współrzędnych (CRS)&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#layers&quot;&gt;Zakładka Identyfikacja obiektów&lt;/a&gt;&lt;br/&gt;
+&lt;b&gt;Zakładki&lt;/b&gt;&lt;br/&gt;
+&lt;a href=&quot;#general&quot;&gt;Ogólne&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#crs&quot;&gt;Układ współrzędnych (CRS)&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#layers&quot;&gt;Warstwy&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#style&quot;&gt;Style&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#ows&quot;&gt;Serwer OWS&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#makra&quot;&gt;Makra&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#relations&quot;&gt;Relacje&lt;/a&gt;&lt;br/&gt;
 
 &lt;a name=&quot;general&quot;&gt;
-&lt;h4&gt;Zakładka Ogólne&lt;/h4&gt;
-&lt;/a&gt;
+&lt;h4&gt;Zakładka Ogólne&lt;/h4&gt;&lt;/a&gt;
 &lt;table border=1&gt;
-&lt;tr&gt;
-&lt;td&gt;Tytuł projektu&lt;/td&gt;&lt;td&gt;Opisowy tytuł projektu. Będzie on wyświetlany na pasku tytułowym okna QGIS&lt;/td&gt;
-&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Tytuł projektu&lt;/td&gt;&lt;td&gt;Opisowy tytuł projektu. Będzie on wyświetlany na pasku tytułowym okna QGIS&lt;/td&gt;&lt;/tr&gt;
 &lt;tr&gt;&lt;td&gt;&lt;label&gt;Kolor obiektów wybranych&lt;/label&gt;&lt;/td&gt;&lt;td&gt;Wybrane obiekty będą wyświetlane na mapie za pomocą tego koloru.&lt;/td&gt;&lt;/tr&gt;
 &lt;tr&gt;&lt;td&gt;&lt;label&gt;Kolor tła&lt;/label&gt;&lt;/td&gt;&lt;td&gt;Kolor płótna mapy.&lt;/td&gt;&lt;/tr&gt;
 &lt;tr&gt;&lt;td&gt;&lt;label&gt;Zapisz ścieżki&lt;/label&gt;&lt;/td&gt;&lt;td&gt;Wybór zapisu absolutnych bądź relatywnych ścieżek.&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;Jednostki mapy&lt;/td&gt;&lt;td&gt;Zadeklaruj jednostki mapy odpowiednie dla warstw wyświetlanych w projekcie&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;Dokładność&lt;/td&gt;&lt;td&gt;Użyj ustawień użytkownika, aby określić dokładność wyświetlania na pasku stanu. Wraz z ruchem kursora po obszarze mapy, jego współrzędne są aktualizowane i wyświetlane zgodnie z przyjętą dokładnością. Automatyczne (domyślne) ustawienia oznaczają domyślną dokładność bazującą na jednostkach mapy.&lt;/td&gt;
-&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Jednostki mapy&lt;/td&gt;&lt;td&gt;Zadeklaruj jednostki mapy odpowiednie dla warstw wyświetlanych w projekcie&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Dokładność&lt;/td&gt;&lt;td&gt;Użyj ustawień użytkownika, aby określić dokładność wyświetlania na pasku stanu. Wraz z ruchem kursora po obszarze mapy, jego współrzędne są aktualizowane i wyświetlane zgodnie z przyjętą dokładnością. Automatyczne (domyślne) ustawienia oznaczają domyślną dokładność bazującą na jednostkach mapy.&lt;/td&gt;&lt;/tr&gt;
 &lt;tr&gt;
 &lt;td&gt;Digitalizacja&lt;/td&gt;&lt;td&gt;Opcja &lt;label&gt;Włącz edycję topologiczną&lt;/label&gt; umożliwia rysowanie wspólnej granicy dla poligonów. Edytowanie węzła wspólnej granicy skutkuje zmianą obrysu obydwu poligonów.&lt;p&gt;
 Aby uniknąć wektoryzowania wszystkich węzłów wspólnej granicy wybierz &lt;label&gt;Unikaj przecinania się nowych poligonów...&lt;/label&gt;. W oknie dialogowym zaznacz odpowiednie warstwy, do których nowy poligon ma być dopasowany. Narysuj poligon z zakładką na istniejących poligonach, zostanie on docięty automatycznie.&lt;p&gt;
@@ -65691,11 +65689,18 @@ Umożliwia zdefiniowanie układu współrzędnych dla bieżącego projektu oraz 
 Aby użyć transformacji w locie, kliknij na &lt;label&gt;Transformuj układ współrzędnych w locie&lt;/label&gt;. Następnie wybierz układ współrzędnych projektu (obszaru mapy) z listy układów współrzędnych.
 &lt;p&gt;
 Możesz odszukać układ współrzędnych podając jego kod PostGIS SRID, EPSG lub QGIS SRSRID i klikając na klawisz &lt;label&gt;Znajdź&lt;/label&gt;.
-Ostatnio używane układy współrzędnych będą wyświetlone w dolnej części okna dla ułatwienia dostępu.
-&lt;a name=&quot;layers&quot;&gt;
-&lt;h4&gt;Zakładka Identyfikacja obiektów&lt;/h4&gt;
-&lt;/a&gt;
-Daje możliwość wyboru, dla których warstw narzędzie identyfikacji będzie aktywne.
+Ostatnio używane układy współrzędnych będą wyświetlone w górnej części okna.
+
+&lt;a name=&quot;layers&quot;&gt;&lt;h4&gt;Zakładka Warstwy&lt;/h4&gt;&lt;/a&gt;
+
+&lt;a name=&quot;style&quot;&gt;&lt;h4&gt;Zakładka Style&lt;/h4&gt;&lt;/a&gt;
+
+&lt;a name=&quot;ows&quot;&gt;&lt;h4&gt;Zakładka Serwer OWS&lt;/h4&gt;&lt;/a&gt;
+
+&lt;a name=&quot;makra&quot;&gt;&lt;h4&gt;Zakładka Makra&lt;/h4&gt;&lt;/a&gt;
+
+&lt;a name=&quot;relations&quot;&gt;&lt;h4&gt;Zakładka Relacje&lt;/h4&gt;&lt;/a&gt;
+
 </translation>
     </message>
     <message>
@@ -68617,7 +68622,7 @@ Kontakt mailowy: scala@itc.cnr.it
     <message>
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="420"/>
         <source>Error: Unabled to open file [%1]</source>
-        <translation type="unfinished">Błąd: Nie można otworzyć pliku [%1]</translation>
+        <translation>Błąd: Nie można otworzyć pliku [%1]</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="476"/>
