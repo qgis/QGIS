@@ -411,7 +411,7 @@ void QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlite3* db, con
   {
     QString dataType = "";
     QVariant::Type type = fields[idx].type();
-    if ( type == QVariant::Int )
+    if ( type == QVariant::Int || type == QVariant::LongLong )
     {
       dataType = "INTEGER";
     }
@@ -622,6 +622,15 @@ void QgsOfflineEditing::applyFeaturesAdded( QgsVectorLayer* offlineLayer, QgsVec
   QString sql = QString( "SELECT \"fid\" FROM 'log_added_features' WHERE \"layer_id\" = %1" ).arg( layerId );
   QList<int> newFeatureIds = sqlQueryInts( db, sql );
 
+  // get default value for each field
+  const QgsFields& remoteFlds = remoteLayer->pendingFields();
+  QVector<QVariant> defaultValues( remoteFlds.count() );
+  for ( int i = 0; i < remoteFlds.count(); ++i )
+  {
+    if ( remoteFlds.fieldOrigin( i ) == QgsFields::OriginProvider )
+      defaultValues[i] = remoteLayer->dataProvider()->defaultValue( remoteFlds.fieldOriginIndex( i ) );
+  }
+
   // get new features from offline layer
   QgsFeatureList features;
   for ( int i = 0; i < newFeatureIds.size(); i++ )
@@ -651,6 +660,15 @@ void QgsOfflineEditing::applyFeaturesAdded( QgsVectorLayer* offlineLayer, QgsVec
     {
       newAttrs[ attrLookup[ it ] ] = attrs[ it ];
     }
+
+    // try to use default value from the provider
+    // (important especially e.g. for postgis primary key generated from a sequence)
+    for ( int k = 0; k < newAttrs.count(); ++k )
+    {
+      if ( newAttrs[k].isNull() && !defaultValues[k].isNull() )
+        newAttrs[k] = defaultValues[k];
+    }
+
     f.setAttributes( newAttrs );
 
     remoteLayer->addFeature( f, false );
