@@ -10,7 +10,7 @@ Build-Depends:
  grass-dev,
  libexpat1-dev,
  libfcgi-dev,
- libgdal-dev (>= 1.9.0),
+ libgdal-dev (>= 1.10.1-0~),
  libgeos-dev (>= 3.0.0),
  libgsl0-dev,
  libpq-dev,
@@ -24,12 +24,10 @@ Build-Depends:
  libspatialindex-dev,
  pkg-config,
  pyqt4-dev-tools,
- python,
- python-central (>=0.5),
- python-dev,
- libpython2.7-dev,
- python-qt4 (>=4.1.0),
- python-qt4-dev (>=4.1.0),
+ python-all (>= 2.6.6-3~),
+ python-all-dev (>= 2.6.6-3~),
+ python-qt4 (>= 4.1.0),
+ python-qt4-dev,
  python-sip (>= 4.5.0),
  python-sip-dev (>= 4.5.0),
  libosgearth-dev,
@@ -89,7 +87,7 @@ Section: libdevel
 Depends:
  grass-dev,
  libexpat1-dev,
- libgdal-dev (>= 1.9.0),
+ libgdal-dev (>= 1.10.1-0~),
  libgeos-dev (>= 3.0.0),
  libgsl0-dev,
  libpq-dev,
@@ -99,7 +97,7 @@ Depends:
  libsqlite3-dev,
  python-qt4 (>=4.1.0),
  python-qt4-dev (>=4.1.0),
- qt4-designer (>=4.6.0),
+ qt4-designer (>= 4.8.0),
  ${misc:Depends}
 Provides: qgis-dev
 Replaces: qgis-dev, libqgis1-dev, libqgis1.4.0-dev
