@@ -246,19 +246,21 @@ void TestQgsOgcUtils::testExpressionToOgcFilter_data()
   QTest::addColumn<QString>( "xmlText" );
 
   QTest::newRow( "=" ) << QString( "NAME = 'New York'" ) << QString(
-    "<ogc:Filter><ogc:PropertyIsEqualTo>"
+    "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\">"
+    "<ogc:PropertyIsEqualTo>"
     "<ogc:PropertyName>NAME</ogc:PropertyName>"
     "<ogc:Literal>New York</ogc:Literal>"
     "</ogc:PropertyIsEqualTo></ogc:Filter>" );
 
   QTest::newRow( ">" ) << QString( "COUNT > 3" ) << QString(
-    "<ogc:Filter><ogc:PropertyIsGreaterThan>"
+    "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\">"
+    "<ogc:PropertyIsGreaterThan>"
     "<ogc:PropertyName>COUNT</ogc:PropertyName>"
     "<ogc:Literal>3</ogc:Literal>"
     "</ogc:PropertyIsGreaterThan></ogc:Filter>" );
 
   QTest::newRow( "and+or" ) << QString( "(FIELD1 = 10 OR FIELD1 = 20) AND STATUS = 'VALID'" ) << QString(
-    "<ogc:Filter>"
+    "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\">"
     "<ogc:And>"
     "<ogc:Or>"
     "<ogc:PropertyIsEqualTo>"
@@ -278,14 +280,14 @@ void TestQgsOgcUtils::testExpressionToOgcFilter_data()
     "</ogc:Filter>" );
 
   QTest::newRow( "is null" ) << QString( "X IS NULL" ) << QString(
-    "<ogc:Filter>"
+    "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\">"
     "<ogc:PropertyIsNull>"
     "<ogc:PropertyName>X</ogc:PropertyName>"
     "</ogc:PropertyIsNull>"
     "</ogc:Filter>" );
 
   QTest::newRow( "is not null" ) << QString( "X IS NOT NULL" ) << QString(
-    "<ogc:Filter>"
+    "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\">"
     "<ogc:Not>"
     "<ogc:PropertyIsNull>"
     "<ogc:PropertyName>X</ogc:PropertyName>"
@@ -294,7 +296,7 @@ void TestQgsOgcUtils::testExpressionToOgcFilter_data()
     "</ogc:Filter>" );
 
   QTest::newRow( "in" ) << QString( "A IN (10,20,30)" ) << QString(
-    "<ogc:Filter>"
+    "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\">"
     "<ogc:Or>"
     "<ogc:PropertyIsEqualTo>"
     "<ogc:PropertyName>A</ogc:PropertyName>"
@@ -312,7 +314,7 @@ void TestQgsOgcUtils::testExpressionToOgcFilter_data()
     "</ogc:Filter>" );
 
   QTest::newRow( "intersects + wkt" ) << QString( "intersects($geometry, geomFromWKT('POINT (5 6)'))" ) << QString(
-    "<ogc:Filter>"
+    "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\">"
     "<ogc:Intersects>"
     "<ogc:PropertyName>geometry</ogc:PropertyName>"
     "<gml:Point><gml:coordinates cs=\",\" ts=\" \">5,6</gml:coordinates></gml:Point>"
@@ -320,7 +322,7 @@ void TestQgsOgcUtils::testExpressionToOgcFilter_data()
     "</ogc:Filter>" );
 
   QTest::newRow( "contains + gml" ) << QString( "contains($geometry, geomFromGML('<Point><coordinates cs=\",\" ts=\" \">5,6</coordinates></Point>'))" ) << QString(
-    "<ogc:Filter>"
+    "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\">"
     "<ogc:Contains>"
     "<ogc:PropertyName>geometry</ogc:PropertyName>"
     "<Point><coordinates cs=\",\" ts=\" \">5,6</coordinates></Point>"

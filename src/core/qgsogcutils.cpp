@@ -15,6 +15,7 @@
 
 
 static const QString GML_NAMESPACE = "http://www.opengis.net/gml";
+static const QString OGC_NAMESPACE = "http://www.opengis.net/ogc";
 
 QgsGeometry* QgsOgcUtils::geometryFromGML( const QDomNode& geometryNode )
 {
@@ -1879,7 +1880,7 @@ QDomElement QgsOgcUtils::expressionToOgcFilter( const QgsExpression& exp, QDomDo
   if ( exprRootElem.isNull() )
     return QDomElement();
 
-  QDomElement filterElem = doc.createElement( "ogc:Filter" );
+  QDomElement filterElem = doc.createElementNS( OGC_NAMESPACE, "ogc:Filter" );
   filterElem.appendChild( exprRootElem );
   return filterElem;
 }
