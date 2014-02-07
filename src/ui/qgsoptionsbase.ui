@@ -248,7 +248,7 @@
        <item>
         <widget class="QStackedWidget" name="mOptionsStackedWidget">
          <property name="currentIndex">
-          <number>2</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="mOptionsPageGeneral">
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -268,8 +268,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>664</width>
-                <height>606</height>
+                <width>627</width>
+                <height>586</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -594,6 +594,17 @@
                       </property>
                      </widget>
                     </item>
+                   </layout>
+                  </item>
+                  <item>
+                   <layout class="QHBoxLayout" name="horizontalLayout_31">
+                    <item>
+                     <widget class="QCheckBox" name="mLiveColorDialogsChkBx">
+                      <property name="text">
+                       <string>Use live-updating color chooser dialogs</string>
+                      </property>
+                     </widget>
+                    </item>
                     <item>
                      <widget class="Line" name="line_5">
                       <property name="minimumSize">
@@ -611,17 +622,6 @@
                      <widget class="QCheckBox" name="mCustomSideBarSide">
                       <property name="text">
                        <string>Custom side bar style</string>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
-                  <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_31">
-                    <item>
-                     <widget class="QCheckBox" name="mLiveColorDialogsChkBx">
-                      <property name="text">
-                       <string>Use live-updating color chooser dialogs</string>
                       </property>
                      </widget>
                     </item>
@@ -924,8 +924,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>674</width>
-                <height>799</height>
+                <width>577</width>
+                <height>804</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_22">
@@ -1250,8 +1250,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>640</width>
-                <height>594</height>
+                <width>627</width>
+                <height>586</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -1560,8 +1560,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>781</width>
-                <height>871</height>
+                <width>621</width>
+                <height>797</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_29">
@@ -2166,8 +2166,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>640</width>
-                <height>594</height>
+                <width>627</width>
+                <height>586</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -2502,8 +2502,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>690</width>
-                <height>696</height>
+                <width>611</width>
+                <height>674</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_30">
@@ -2913,8 +2913,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>640</width>
-                <height>594</height>
+                <width>627</width>
+                <height>586</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_39">
@@ -3124,8 +3124,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>623</width>
-                <height>656</height>
+                <width>611</width>
+                <height>598</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -3615,8 +3615,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>640</width>
-                <height>594</height>
+                <width>627</width>
+                <height>586</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -3745,8 +3745,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>707</width>
-                <height>697</height>
+                <width>611</width>
+                <height>714</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_15">
@@ -3999,8 +3999,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>640</width>
-                <height>594</height>
+                <width>627</width>
+                <height>586</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -4089,8 +4089,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>623</width>
-                <height>703</height>
+                <width>611</width>
+                <height>669</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_33">
@@ -4443,13 +4443,13 @@
   <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
+   <header>qgis.gui</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsColorButton</class>
    <extends>QPushButton</extends>
-   <header>qgscolorbutton.h</header>
+   <header>qgis.gui</header>
   </customwidget>
   <customwidget>
    <class>QgsScaleComboBox</class>
