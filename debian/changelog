@@ -5,8 +5,9 @@ qgis (2.1.0) UNRELEASED; urgency=low
   * Update Qt dependency to 4.7
   * drop support for Debian squeeze and Ubuntu lucid, maverick, natty and oneiric
   * add support for Ubuntu trusty
+  * run crssync on copy of srs.db (Closes #738117)
 
- -- Jürgen E. Fischer <jef@norbit.de>  Wed, 05 Feb 2014 22:02:24 +0100
+ -- Jürgen E. Fischer <jef@norbit.de>  Sat, 08 Feb 2014 00:36:40 +0100
 
 qgis (1.9.0) UNRELEASED; urgency=low
 
