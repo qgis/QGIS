@@ -404,6 +404,9 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
 
   //default datum transformations
   settings.beginGroup( "/Projections" );
+
+  chkShowDatumTransformDialog->setChecked( settings.value( "showDatumTransformDialog", false ).toBool() );
+
   QStringList projectionKeys = settings.allKeys();
 
   //collect src and dest entries that belong together
@@ -1196,6 +1199,8 @@ void QgsOptions::saveOptions()
   settings.setValue( "/Projections/otfTransformAutoEnable", radOtfAuto->isChecked() );
   settings.setValue( "/Projections/otfTransformEnabled", radOtfTransform->isChecked() );
   settings.setValue( "/Projections/projectDefaultCrs", mDefaultCrs.authid() );
+
+  settings.setValue( "/Projections/showDatumTransformDialog", chkShowDatumTransformDialog->isChecked() );
 
   if ( radFeet->isChecked() )
   {

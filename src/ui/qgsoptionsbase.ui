@@ -268,8 +268,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>632</width>
-                <height>612</height>
+                <width>664</width>
+                <height>606</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -923,9 +923,9 @@
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>-133</y>
-                <width>655</width>
-                <height>787</height>
+                <y>0</y>
+                <width>674</width>
+                <height>799</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_22">
@@ -1250,8 +1250,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>627</width>
-                <height>585</height>
+                <width>640</width>
+                <height>594</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -1559,9 +1559,9 @@
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>-175</y>
-                <width>704</width>
-                <height>813</height>
+                <y>0</y>
+                <width>781</width>
+                <height>871</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_29">
@@ -1721,7 +1721,7 @@
                       </widget>
                      </item>
                      <item row="3" column="2">
-                      <widget class="QgsScaleComboBox" name="mSimplifyMaximumScaleComboBox">
+                      <widget class="QgsScaleComboBox" name="mSimplifyMaximumScaleComboBox" native="true">
                        <property name="sizePolicy">
                         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                          <horstretch>0</horstretch>
@@ -1729,7 +1729,7 @@
                         </sizepolicy>
                        </property>
                       </widget>
-                     </item>                      
+                     </item>
                     </layout>
                    </widget>
                   </item>
@@ -2166,8 +2166,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>674</width>
-                <height>654</height>
+                <width>640</width>
+                <height>594</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -2501,9 +2501,9 @@
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>-30</y>
-                <width>658</width>
-                <height>684</height>
+                <y>0</y>
+                <width>690</width>
+                <height>696</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_30">
@@ -2913,8 +2913,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>674</width>
-                <height>654</height>
+                <width>640</width>
+                <height>594</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_39">
@@ -3124,8 +3124,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>674</width>
-                <height>654</height>
+                <width>623</width>
+                <height>656</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -3615,8 +3615,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>627</width>
-                <height>585</height>
+                <width>640</width>
+                <height>594</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -3745,8 +3745,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>650</width>
-                <height>679</height>
+                <width>707</width>
+                <height>697</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_15">
@@ -3902,7 +3902,7 @@
                   <string>Default datum transformations</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_10">
-                  <item row="0" column="0">
+                  <item row="1" column="0">
                    <layout class="QHBoxLayout" name="horizontalLayout_38">
                     <item>
                      <widget class="QPushButton" name="mAddDefaultTransformButton">
@@ -3941,7 +3941,7 @@
                     </item>
                    </layout>
                   </item>
-                  <item row="1" column="0">
+                  <item row="2" column="0">
                    <widget class="QTreeWidget" name="mDefaultDatumTransformTreeWidget">
                     <column>
                      <property name="text">
@@ -3963,6 +3963,13 @@
                       <string>Destination datum transform</string>
                      </property>
                     </column>
+                   </widget>
+                  </item>
+                  <item row="0" column="0">
+                   <widget class="QCheckBox" name="chkShowDatumTransformDialog">
+                    <property name="text">
+                     <string>Ask for datum transformation when no default is defined</string>
+                    </property>
                    </widget>
                   </item>
                  </layout>
@@ -3992,8 +3999,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>627</width>
-                <height>585</height>
+                <width>640</width>
+                <height>594</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -4082,8 +4089,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>611</width>
-                <height>685</height>
+                <width>623</width>
+                <height>703</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_33">
@@ -4443,6 +4450,11 @@
    <class>QgsColorButton</class>
    <extends>QPushButton</extends>
    <header>qgscolorbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsScaleComboBox</class>
+   <extends>QWidget</extends>
+   <header>qgsscalecombobox.h</header>
   </customwidget>
  </customwidgets>
  <resources>
