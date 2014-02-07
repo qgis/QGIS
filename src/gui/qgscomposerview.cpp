@@ -346,6 +346,11 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
         newLabelItem->adjustSizeToText();
         newLabelItem->setSceneRect( QRectF( snappedScenePoint.x(), snappedScenePoint.y(), newLabelItem->rect().width(), newLabelItem->rect().height() ) );
         composition()->addComposerLabel( newLabelItem );
+
+        composition()->clearSelection();
+        newLabelItem->setSelected( true );
+        emit selectedItemChanged( newLabelItem );
+
         emit actionFinished();
         composition()->pushAddRemoveCommand( newLabelItem, tr( "Label added" ) );
       }
@@ -363,6 +368,11 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
           newScaleBar->setComposerMap( mapItemList.at( 0 ) );
         }
         newScaleBar->applyDefaultSize(); //4 segments, 1/5 of composer map width
+
+        composition()->clearSelection();
+        newScaleBar->setSelected( true );
+        emit selectedItemChanged( newScaleBar );
+
         emit actionFinished();
         composition()->pushAddRemoveCommand( newScaleBar, tr( "Scale bar added" ) );
       }
@@ -376,6 +386,11 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
         newLegend->setSceneRect( QRectF( snappedScenePoint.x(), snappedScenePoint.y(), newLegend->rect().width(), newLegend->rect().height() ) );
         composition()->addComposerLegend( newLegend );
         newLegend->updateLegend();
+
+        composition()->clearSelection();
+        newLegend->setSelected( true );
+        emit selectedItemChanged( newLegend );
+
         emit actionFinished();
         composition()->pushAddRemoveCommand( newLegend, tr( "Legend added" ) );
       }
@@ -387,6 +402,11 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
         QgsComposerPicture* newPicture = new QgsComposerPicture( composition() );
         newPicture->setSceneRect( QRectF( snappedScenePoint.x(), snappedScenePoint.y(), 30, 30 ) );
         composition()->addComposerPicture( newPicture );
+
+        composition()->clearSelection();
+        newPicture->setSelected( true );
+        emit selectedItemChanged( newPicture );
+
         emit actionFinished();
         composition()->pushAddRemoveCommand( newPicture, tr( "Picture added" ) );
       }
@@ -397,6 +417,11 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
         QgsComposerAttributeTable* newTable = new QgsComposerAttributeTable( composition() );
         newTable->setSceneRect( QRectF( snappedScenePoint.x(), snappedScenePoint.y(), 50, 50 ) );
         composition()->addComposerTable( newTable );
+
+        composition()->clearSelection();
+        newTable->setSelected( true );
+        emit selectedItemChanged( newTable );
+
         emit actionFinished();
         composition()->pushAddRemoveCommand( newTable, tr( "Table added" ) );
       }
@@ -428,6 +453,11 @@ void QgsComposerView::addShape( Tool currentTool )
     composerShape->setUseSymbolV2( true );
     composition()->addComposerShape( composerShape );
     removeRubberBand();
+
+    composition()->clearSelection();
+    composerShape->setSelected( true );
+    emit selectedItemChanged( composerShape );
+
     emit actionFinished();
     composition()->pushAddRemoveCommand( composerShape, tr( "Shape added" ) );
   }
@@ -703,6 +733,11 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
         QPointF snappedScenePoint = composition()->snapPointToGrid( scenePoint );
         QgsComposerArrow* composerArrow = new QgsComposerArrow( mRubberBandStartPos, QPointF( snappedScenePoint.x(), snappedScenePoint.y() ), composition() );
         composition()->addComposerArrow( composerArrow );
+
+        composition()->clearSelection();
+        composerArrow->setSelected( true );
+        emit selectedItemChanged( composerArrow );
+
         scene()->removeItem( mRubberBandLineItem );
         delete mRubberBandLineItem;
         mRubberBandLineItem = 0;
@@ -727,6 +762,11 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
       {
         QgsComposerMap* composerMap = new QgsComposerMap( composition(), mRubberBandItem->transform().dx(), mRubberBandItem->transform().dy(), mRubberBandItem->rect().width(), mRubberBandItem->rect().height() );
         composition()->addComposerMap( composerMap );
+
+        composition()->clearSelection();
+        composerMap->setSelected( true );
+        emit selectedItemChanged( composerMap );
+
         removeRubberBand();
         emit actionFinished();
         composition()->pushAddRemoveCommand( composerMap, tr( "Map added" ) );
@@ -746,6 +786,11 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
         composition()->beginMultiFrameCommand( composerHtml, tr( "Html frame added" ) );
         composerHtml->addFrame( frame );
         composition()->endMultiFrameCommand();
+
+        composition()->clearSelection();
+        frame->setSelected( true );
+        emit selectedItemChanged( frame );
+
         removeRubberBand();
         emit actionFinished();
       }

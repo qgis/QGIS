@@ -758,6 +758,7 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
   int zOrderOffset = mItemZList.size();
 
   QPointF pasteShiftPos;
+  QgsComposerItem* lastPastedItem = 0;
   if ( pos )
   {
     //If we are placing items relative to a certain point, then calculate how much we need
@@ -767,6 +768,9 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
     //next, calculate how much each item needs to be shifted from its original position
     //so that it's placed at the correct relative position
     pasteShiftPos = *pos - minItemPos;
+
+    //since we are pasting items, clear the existing selection
+    clearSelection();
   }
 
   if ( pasteInPlace )
@@ -790,6 +794,8 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
       {
         newLabel->move( pasteShiftPos.x(), pasteShiftPos.y() );
       }
+      newLabel->setSelected( true );
+      lastPastedItem = newLabel;
     }
     addComposerLabel( newLabel );
     newLabel->setZValue( newLabel->zValue() + zOrderOffset );
@@ -825,6 +831,8 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
       {
         newMap->move( pasteShiftPos.x(), pasteShiftPos.y() );
       }
+      newMap->setSelected( true );
+      lastPastedItem = newMap;
     }
 
     if ( addUndoCommands )
@@ -865,6 +873,8 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
       {
         newArrow->move( pasteShiftPos.x(), pasteShiftPos.y() );
       }
+      newArrow->setSelected( true );
+      lastPastedItem = newArrow;
     }
     addComposerArrow( newArrow );
     newArrow->setZValue( newArrow->zValue() + zOrderOffset );
@@ -891,6 +901,8 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
       {
         newScaleBar->move( pasteShiftPos.x(), pasteShiftPos.y() );
       }
+      newScaleBar->setSelected( true );
+      lastPastedItem = newScaleBar;
     }
     addComposerScaleBar( newScaleBar );
     newScaleBar->setZValue( newScaleBar->zValue() + zOrderOffset );
@@ -919,6 +931,8 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
       {
         newShape->move( pasteShiftPos.x(), pasteShiftPos.y() );
       }
+      newShape->setSelected( true );
+      lastPastedItem = newShape;
     }
     addComposerShape( newShape );
     newShape->setZValue( newShape->zValue() + zOrderOffset );
@@ -945,6 +959,8 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
       {
         newPicture->move( pasteShiftPos.x(), pasteShiftPos.y() );
       }
+      newPicture->setSelected( true );
+      lastPastedItem = newPicture;
     }
     addComposerPicture( newPicture );
     newPicture->setZValue( newPicture->zValue() + zOrderOffset );
@@ -971,6 +987,8 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
       {
         newLegend->move( pasteShiftPos.x(), pasteShiftPos.y() );
       }
+      newLegend->setSelected( true );
+      lastPastedItem = newLegend;
     }
     addComposerLegend( newLegend );
     newLegend->setZValue( newLegend->zValue() + zOrderOffset );
@@ -997,6 +1015,8 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
       {
         newTable->move( pasteShiftPos.x(), pasteShiftPos.y() );
       }
+      newTable->setSelected( true );
+      lastPastedItem = newTable;
     }
     addComposerTable( newTable );
     newTable->setZValue( newTable->zValue() + zOrderOffset );
@@ -1041,6 +1061,11 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
   //z order list in turn, it will now be inconsistent with the actual order of items in the scene.
   //Make sure z order list matches the actual order of items in the scene.
   refreshZList();
+
+  if ( lastPastedItem )
+  {
+    emit selectedItemChanged( lastPastedItem );
+  }
 
   delete pasteInPlacePt;
   pasteInPlacePt = 0;
@@ -1934,18 +1959,12 @@ void QgsComposition::addComposerArrow( QgsComposerArrow* arrow )
 {
   addItem( arrow );
   emit composerArrowAdded( arrow );
-  clearSelection();
-  arrow->setSelected( true );
-  emit selectedItemChanged( arrow );
 }
 
 void QgsComposition::addComposerLabel( QgsComposerLabel* label )
 {
   addItem( label );
   emit composerLabelAdded( label );
-  clearSelection();
-  label->setSelected( true );
-  emit selectedItemChanged( label );
 }
 
 void QgsComposition::addComposerMap( QgsComposerMap* map, bool setDefaultPreviewStyle )
@@ -1963,63 +1982,42 @@ void QgsComposition::addComposerMap( QgsComposerMap* map, bool setDefaultPreview
   }
 
   emit composerMapAdded( map );
-  clearSelection();
-  map->setSelected( true );
-  emit selectedItemChanged( map );
 }
 
 void QgsComposition::addComposerScaleBar( QgsComposerScaleBar* scaleBar )
 {
   addItem( scaleBar );
   emit composerScaleBarAdded( scaleBar );
-  clearSelection();
-  scaleBar->setSelected( true );
-  emit selectedItemChanged( scaleBar );
 }
 
 void QgsComposition::addComposerLegend( QgsComposerLegend* legend )
 {
   addItem( legend );
   emit composerLegendAdded( legend );
-  clearSelection();
-  legend->setSelected( true );
-  emit selectedItemChanged( legend );
 }
 
 void QgsComposition::addComposerPicture( QgsComposerPicture* picture )
 {
   addItem( picture );
   emit composerPictureAdded( picture );
-  clearSelection();
-  picture->setSelected( true );
-  emit selectedItemChanged( picture );
 }
 
 void QgsComposition::addComposerShape( QgsComposerShape* shape )
 {
   addItem( shape );
   emit composerShapeAdded( shape );
-  clearSelection();
-  shape->setSelected( true );
-  emit selectedItemChanged( shape );
 }
 
 void QgsComposition::addComposerTable( QgsComposerAttributeTable* table )
 {
   addItem( table );
   emit composerTableAdded( table );
-  clearSelection();
-  table->setSelected( true );
-  emit selectedItemChanged( table );
 }
 
 void QgsComposition::addComposerHtmlFrame( QgsComposerHtml* html, QgsComposerFrame* frame )
 {
   addItem( frame );
   emit composerHtmlFrameAdded( html, frame );
-  clearSelection();
-  frame->setSelected( true );
-  emit selectedItemChanged( frame );
 }
 
 void QgsComposition::removeComposerItem( QgsComposerItem* item, bool createCommand )
