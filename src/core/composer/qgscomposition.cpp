@@ -48,6 +48,7 @@
 #include <QSettings>
 #include <QDir>
 
+#include <limits>
 
 QgsComposition::QgsComposition( QgsMapRenderer* mapRenderer )
     : QGraphicsScene( 0 )
@@ -717,6 +718,35 @@ bool QgsComposition::loadFromTemplate( const QDomDocument& doc, QMap<QString, QS
   return true;
 }
 
+QPointF QgsComposition::minPointFromXml( const QDomElement& elem ) const
+{
+  double minX = std::numeric_limits<double>::max();
+  double minY = std::numeric_limits<double>::max();
+  QDomNodeList composerItemList = elem.elementsByTagName( "ComposerItem" );
+  for ( int i = 0; i < composerItemList.size(); ++i )
+  {
+    QDomElement currentComposerItemElem = composerItemList.at( i ).toElement();
+    double x, y;
+    bool xOk, yOk;
+    x = currentComposerItemElem.attribute( "x" ).toDouble( &xOk );
+    y = currentComposerItemElem.attribute( "y" ).toDouble( &yOk );
+    if ( !xOk || !yOk )
+    {
+      continue;
+    }
+    minX = qMin( minX, x );
+    minY = qMin( minY, y );
+  }
+  if ( minX < std::numeric_limits<double>::max() )
+  {
+    return QPointF( minX, minY );
+  }
+  else
+  {
+    return QPointF( 0, 0 );
+  }
+}
+
 void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocument& doc, QMap< QgsComposerMap*, int >* mapsToRestore,
                                       bool addUndoCommands, QPointF* pos, bool pasteInPlace )
 {
@@ -726,6 +756,18 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
   //these items are placed at the top of the composition and that zValues are not duplicated
   //so, calculate an offset which needs to be added to the zValue of created items
   int zOrderOffset = mItemZList.size();
+
+  QPointF pasteShiftPos;
+  if ( pos )
+  {
+    //If we are placing items relative to a certain point, then calculate how much we need
+    //to shift the items by so that they are placed at this point
+    //First, calculate the minimum position from the xml
+    QPointF minItemPos = minPointFromXml( elem );
+    //next, calculate how much each item needs to be shifted from its original position
+    //so that it's placed at the correct relative position
+    pasteShiftPos = *pos - minItemPos;
+  }
 
   if ( pasteInPlace )
   {
@@ -746,7 +788,7 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
       }
       else
       {
-        newLabel->setItemPosition( pos->x(), pos->y() );
+        newLabel->move( pasteShiftPos.x(), pasteShiftPos.y() );
       }
     }
     addComposerLabel( newLabel );
@@ -781,7 +823,7 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
       }
       else
       {
-        newMap->setItemPosition( pos->x(), pos->y() );
+        newMap->move( pasteShiftPos.x(), pasteShiftPos.y() );
       }
     }
 
@@ -821,7 +863,7 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
       }
       else
       {
-        newArrow->setItemPosition( pos->x(), pos->y() );
+        newArrow->move( pasteShiftPos.x(), pasteShiftPos.y() );
       }
     }
     addComposerArrow( newArrow );
@@ -847,7 +889,7 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
       }
       else
       {
-        newScaleBar->setItemPosition( pos->x(), pos->y() );
+        newScaleBar->move( pasteShiftPos.x(), pasteShiftPos.y() );
       }
     }
     addComposerScaleBar( newScaleBar );
@@ -875,7 +917,7 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
       }
       else
       {
-        newShape->setItemPosition( pos->x(), pos->y() );
+        newShape->move( pasteShiftPos.x(), pasteShiftPos.y() );
       }
     }
     addComposerShape( newShape );
@@ -901,7 +943,7 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
       }
       else
       {
-        newPicture->setItemPosition( pos->x(), pos->y() );
+        newPicture->move( pasteShiftPos.x(), pasteShiftPos.y() );
       }
     }
     addComposerPicture( newPicture );
@@ -927,7 +969,7 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
       }
       else
       {
-        newLegend->setItemPosition( pos->x(), pos->y() );
+        newLegend->move( pasteShiftPos.x(), pasteShiftPos.y() );
       }
     }
     addComposerLegend( newLegend );
@@ -953,7 +995,7 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
       }
       else
       {
-        newTable->setItemPosition( pos->x(), pos->y() );
+        newTable->move( pasteShiftPos.x(), pasteShiftPos.y() );
       }
     }
     addComposerTable( newTable );
@@ -999,6 +1041,9 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
   //z order list in turn, it will now be inconsistent with the actual order of items in the scene.
   //Make sure z order list matches the actual order of items in the scene.
   refreshZList();
+
+  delete pasteInPlacePt;
+  pasteInPlacePt = 0;
 
 }
 

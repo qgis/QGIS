@@ -526,6 +526,9 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     /**Loads composer settings which may change, eg grid color*/
     void loadSettings();
 
+    /**Calculates the item minimum position from an xml string*/
+    QPointF minPointFromXml( const QDomElement& elem ) const;
+
     void connectAddRemoveCommandSignals( QgsAddRemoveItemCommand* c );
 
     void updatePaperItems();
