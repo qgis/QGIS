@@ -92,10 +92,9 @@ class Dialog(QDialog, Ui_Dialog):
         nElement = 0
         self.progressBar.setValue(0)
         self.progressBar.setRange(0, nFeat)
-        fit = vprovider.getFeatures()
         if not len(unique) == mlayer.featureCount():
             for i in unique:
-                fit.rewind()
+                fit = vprovider.getFeatures()
                 FIDs= []
                 while fit.nextFeature(inFeat):
                     atMap = inFeat.attributes()
