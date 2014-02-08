@@ -342,29 +342,15 @@
       <property name="labelAlignment">
        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
       </property>
-      <item row="1" column="0">
-       <widget class="QLabel" name="mItemUuidLabel">
-        <property name="text">
-         <string>Uuid (read-only)</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QLineEdit" name="mItemUuidLineEdit">
-        <property name="readOnly">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QLineEdit" name="mItemIdLineEdit"/>
-      </item>
       <item row="0" column="0">
        <widget class="QLabel" name="mItemIdLabel">
         <property name="text">
          <string>Id</string>
         </property>
        </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="mItemIdLineEdit"/>
       </item>
      </layout>
     </widget>
