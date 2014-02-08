@@ -335,14 +335,22 @@ bool QgsDualView::saveEditChanges()
           return false;
         }
 
+        // avoid empty command
+        int i = 0;
+        for ( ; i < dst.count() && dst[i] == src[i]; ++i )
+          ;
+
+        if ( i == dst.count() )
+          return true;
+
         mLayerCache->layer()->beginEditCommand( tr( "Attributes changed" ) );
 
-        for ( int i = 0; i < dst.count(); ++i )
+        for ( ; i < dst.count(); ++i )
         {
-          if ( dst[i] != src[i] )
-          {
-            mLayerCache->layer()->changeAttributeValue( fid, i, dst[i] );
-          }
+          if ( dst[i] == src[i] )
+            continue;
+
+          mLayerCache->layer()->changeAttributeValue( fid, i, dst[i] );
         }
 
         mLayerCache->layer()->endEditCommand();

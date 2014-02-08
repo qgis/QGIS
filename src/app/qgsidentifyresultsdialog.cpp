@@ -1183,14 +1183,21 @@ void QgsIdentifyResultsDialog::attributeValueChanged( QgsFeatureId fid, int idx,
   if ( !layItem )
     return;
 
+  if ( idx >= vlayer->pendingFields().size() )
+    return;
+
+  const QgsField &fld = vlayer->pendingFields().at( idx );
+
   for ( int i = 0; i < layItem->childCount(); i++ )
   {
     QTreeWidgetItem *featItem = layItem->child( i );
 
     if ( featItem && STRING_TO_FID( featItem->data( 0, Qt::UserRole ) ) == fid )
     {
-      if ( featItem->data( 0, Qt::DisplayRole ).toString() == vlayer->displayField() )
-        featItem->setData( 1, Qt::DisplayRole, val );
+      QString value( fld.displayString( val ) );
+
+      if ( fld.name() == vlayer->displayField() )
+        featItem->setData( 1, Qt::DisplayRole, value );
 
       for ( int j = 0; j < featItem->childCount(); j++ )
       {
@@ -1200,7 +1207,22 @@ void QgsIdentifyResultsDialog::attributeValueChanged( QgsFeatureId fid, int idx,
 
         if ( item->data( 0, Qt::UserRole + 1 ).toInt() == idx )
         {
-          item->setData( 1, Qt::DisplayRole, val );
+          switch ( vlayer->editType( idx ) )
+          {
+            case QgsVectorLayer::ValueMap:
+              value = vlayer->valueMap( idx ).key( val, QString( "(%1)" ).arg( value ) );
+              break;
+
+            case QgsVectorLayer::Calendar:
+              if ( val.canConvert( QVariant::Date ) )
+                value = val.toDate().toString( vlayer->dateFormat( idx ) );
+              break;
+
+            default:
+              break;
+          }
+
+          item->setData( 1, Qt::DisplayRole, value );
           return;
         }
       }
@@ -1305,7 +1327,7 @@ void QgsIdentifyResultsDialog::featureForm()
   if ( !vlayer->getFeatures( QgsFeatureRequest().setFilterFid( fid ) ).nextFeature( f ) )
     return;
 
-  QgsFeatureAction action( tr( "Attribute changes" ), f, vlayer, idx, -1, this );
+  QgsFeatureAction action( tr( "Attributes changed" ), f, vlayer, idx, -1, this );
   if ( vlayer->isEditable() )
   {
     if ( action.editFeature() )
