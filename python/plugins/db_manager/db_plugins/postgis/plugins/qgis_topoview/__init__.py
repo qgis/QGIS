@@ -34,8 +34,8 @@ current_path = os.path.dirname(__file__)
 # @param db is the selected database
 # @param mainwindow is the DBManager mainwindow
 def load(db, mainwindow):
-        # check whether the selected database has topology enabled
-        # (search for topology.topology)
+        # check whether the selected database supports topology
+        # (search for topology.topology) 
         sql = u"""SELECT count(*)
                 FROM pg_class AS cls JOIN pg_namespace AS nsp ON nsp.oid = cls.relnamespace
                 WHERE cls.relname = 'topology' AND nsp.nspname = 'topology'"""
@@ -72,15 +72,24 @@ def run(item, action, mainwindow):
                 return False
 
         if item.schema() != None:
-                sql = u"SELECT count(*) FROM topology.topology WHERE name = %s" % quoteStr(item.schema().name)
+                sql = u"SELECT srid FROM topology.topology WHERE name = %s" % quoteStr(item.schema().name)
                 c = db.connector._get_cursor()
                 db.connector._execute( c, sql )
                 res = db.connector._fetchone( c )
-                isTopoSchema = res != None and int(res[0]) > 0
+                isTopoSchema = res != None 
 
         if not isTopoSchema:
                 QMessageBox.critical(mainwindow, "Invalid topology", u'Schema "%s" is not registered in topology.topology.' % item.schema().name)
                 return False
+
+        toposrid = int(res[0])
+
+        # Check if postgis supports typmod geometries
+        sql = u"SELECT typmodin FROM pg_type WHERE typname = 'geometry' AND typmodin::int > 0"
+        c = db.connector._get_cursor()
+        db.connector._execute( c, sql )
+        res = db.connector._fetchone( c )
+        supportsTypmod = res != None
 
         # load layers into the current project
         toponame = item.schema().name
@@ -105,8 +114,11 @@ def run(item, action, mainwindow):
                 legend.setGroupVisible(group, False)
 
           # face
-                layer = db.toSqlLayer(u'SELECT face_id, topology.ST_GetFaceGeometry(%s, face_id) as geom ' \
-                                       'FROM %s.face WHERE face_id > 0' % (quoteStr(toponame), quoteId(toponame)),
+                geomcast = ''
+                if supportsTypmod:
+                  geomcast = '::geometry(multipolygon,%s)' % toposrid
+                layer = db.toSqlLayer(u'SELECT face_id, topology.ST_GetFaceGeometry(%s, face_id)%s as geom ' \
+                                       'FROM %s.face WHERE face_id > 0' % (geomcast, quoteStr(toponame), quoteId(toponame)),
                                        'geom', 'face_id', u'%s.face' % toponame)
                 layer.loadNamedStyle(os.path.join(template_dir, 'face.qml'))
                 registry.addMapLayers([layer])
@@ -115,8 +127,11 @@ def run(item, action, mainwindow):
                 legend.moveLayer(layer, group)
 
           # face_seed
-                layer = db.toSqlLayer(u'SELECT face_id, ST_PointOnSurface(topology.ST_GetFaceGeometry(%s, face_id)) as geom ' \
-                                       'FROM %s.face WHERE face_id > 0' % (quoteStr(toponame), quoteId(toponame)),
+                geomcast = ''
+                if supportsTypmod:
+                  geomcast = '::geometry(point,%s)' % toposrid
+                layer = db.toSqlLayer(u'SELECT face_id, ST_PointOnSurface(topology.ST_GetFaceGeometry(%s, face_id))%s as geom ' \
+                                       'FROM %s.face WHERE face_id > 0' % (geomcast ,quoteStr(toponame), quoteId(toponame)),
                                        'geom', 'face_id', u'%s.face_seed' % toponame)
                 layer.loadNamedStyle(os.path.join(template_dir, 'face_seed.qml'))
                 registry.addMapLayers([layer])
