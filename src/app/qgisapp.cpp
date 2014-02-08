@@ -8673,13 +8673,13 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
       {
         mActionAddFeature->setIcon( QgsApplication::getThemeIcon( "/mActionCapturePolygon.png" ) );
 
-        mActionAddRing->setEnabled( isEditable && canAddFeatures );
-        mActionFillRing->setEnabled( isEditable && canAddFeatures );
-        mActionReshapeFeatures->setEnabled( isEditable && canAddFeatures );
+        mActionAddRing->setEnabled( isEditable && canChangeGeometry );
+        mActionFillRing->setEnabled( isEditable && canChangeGeometry );
+        mActionReshapeFeatures->setEnabled( isEditable && canChangeGeometry );
         mActionSplitFeatures->setEnabled( isEditable && canAddFeatures );
-        mActionSplitParts->setEnabled( isEditable && canAddFeatures );
-        mActionSimplifyFeature->setEnabled( isEditable && canAddFeatures );
-        mActionDeleteRing->setEnabled( isEditable && canAddFeatures );
+        mActionSplitParts->setEnabled( isEditable && canChangeGeometry );
+        mActionSimplifyFeature->setEnabled( isEditable && canChangeGeometry );
+        mActionDeleteRing->setEnabled( isEditable && canChangeGeometry );
         mActionOffsetCurve->setEnabled( false );
       }
 
