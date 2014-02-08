@@ -175,7 +175,7 @@ QString QgsDataDefinedSymbolDialog::colorHelpText()
 
 QString QgsDataDefinedSymbolDialog::offsetHelpText()
 {
-  return "<x>,<y>";
+  return "'<x>,<y>'";
 }
 
 QString QgsDataDefinedSymbolDialog::fileNameHelpText()
