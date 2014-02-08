@@ -2266,7 +2266,7 @@ bool QgsExpression::NodeColumnRef::prepare( QgsExpression* parent, const QgsFiel
 
 QString QgsExpression::NodeColumnRef::dump() const
 {
-  return mName;
+  return quotedColumnRef( mName );
 }
 
 //
