@@ -66,6 +66,7 @@ class Polygonize(GeoAlgorithm):
         allLinesList = []
         features = vector.features(vlayer)
         current = 0
+        progress.setInfo('Processing lines...')
         total = 40.0 / float(len(features))
         for inFeat in features:
             inGeom = inFeat.geometry()
@@ -77,10 +78,19 @@ class Polygonize(GeoAlgorithm):
             progress.setPercentage(int(current * total))
         progress.setPercentage(40)
         allLines = MultiLineString(allLinesList)
-        allLines = allLines.union(Point(0, 0))
+        progress.setInfo('Noding lines...')
+        try:
+            from shapely.ops import unary_union
+            allLines = unary_union(allLines)
+        except ImportError:
+            allLines = allLines.union(Point(0, 0))
         progress.setPercentage(45)
+        progress.setInfo('Polygonizing...')
         polygons = list(polygonize([allLines]))
+        if not polygons:
+            raise GeoAlgorithmExecutionException('No polygons were created!')
         progress.setPercentage(50)
+        progress.setInfo('Saving polygons...')
         writer = output.getVectorWriter(fields, QGis.WKBPolygon, vlayer.crs())
         outFeat = QgsFeature()
         current = 0
@@ -93,6 +103,7 @@ class Polygonize(GeoAlgorithm):
             writer.addFeature(outFeat)
             current += 1
             progress.setPercentage(50 + int(current * total))
+        progress.setInfo('Finished')
         del writer
 
     def defineCharacteristics(self):
