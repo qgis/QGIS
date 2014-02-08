@@ -205,7 +205,7 @@
          <string>Restricts the displayed tables to those that are found in the layer registries (geometry_columns, geography_columns, topology.layer). This can speed up the initial display of spatial tables.</string>
         </property>
         <property name="text">
-         <string>Only look in the layer registries</string>
+         <string>Only show layers in the layer registries</string>
         </property>
        </widget>
       </item>
