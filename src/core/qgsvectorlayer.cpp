@@ -1685,10 +1685,10 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
     mValid = mDataProvider->isValid();
     if ( mValid )
     {
-
       // TODO: Check if the provider has the capability to send fullExtentCalculated
       connect( mDataProvider, SIGNAL( fullExtentCalculated() ), this, SLOT( updateExtents() ) );
 
+#if 0 // allow lazy calculation of extents and give the creator of the vector layer a chance to 'manually' setExtent
       // get the extent
       QgsRectangle mbr = mDataProvider->extent();
 
@@ -1697,6 +1697,7 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
       QgsDebugMsg( "Extent of layer: " +  s );
       // store the extent
       setExtent( mbr );
+#endif
 
       // get and store the feature type
       mWkbType = mDataProvider->geometryType();
@@ -3693,7 +3694,7 @@ void QgsVectorLayer::readSldLabeling( const QDomNode& node )
   QDomElement userStyleElem = element.firstChildElement( "UserStyle" );
   if ( userStyleElem.isNull() )
   {
-    QgsDebugMsg( "Info: UserStyle element not found.");
+    QgsDebugMsg( "Info: UserStyle element not found." );
     return;
   }
 
