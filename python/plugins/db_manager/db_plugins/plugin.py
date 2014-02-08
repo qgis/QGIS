@@ -201,25 +201,16 @@ class Database(DbItemObject):
 		from .data_model import SqlResultModel
 		return SqlResultModel(self, sql, parent)
 
-	def toSqlLayer(self, sql, geomCol, uniqueCol, layerName="QueryLayer", layerType=None, avoidSelectById=False, srid=None, wkbType=None):
+	def toSqlLayer(self, sql, geomCol, uniqueCol, layerName="QueryLayer", layerType=None, avoidSelectById=False):
 		from qgis.core import QgsMapLayer, QgsVectorLayer, QgsRasterLayer
 		uri = self.uri()
 		uri.setDataSource("", u"(%s\n)" % sql, geomCol, "", uniqueCol)
 		if avoidSelectById:
 			uri.disableSelectAtId( True )
-		if srid != None:
-			print "SRID is not none but %s" % srid
-			uri.setSrid( srid )
-		if wkbType != None:
-			print "WkbType is not none but %s" % wkbType
-			uri.setWkbType( wkbType )
 		provider = self.dbplugin().providerName()
 		if layerType == QgsMapLayer.RasterLayer:
 			return QgsRasterLayer(uri.uri(), layerName, provider)
-		print "Creating vector layer -- start, with uri: %s" % uri.uri()
-		layer = QgsVectorLayer(uri.uri(), layerName, provider)
-		print "Creating vector layer -- done"
-		return layer
+		return QgsVectorLayer(uri.uri(), layerName, provider)
 
 	def registerAllActions(self, mainWindow):
 		self.registerDatabaseActions(mainWindow)
