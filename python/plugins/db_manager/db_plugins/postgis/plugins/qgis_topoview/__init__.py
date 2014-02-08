@@ -82,14 +82,7 @@ def run(item, action, mainwindow):
                 QMessageBox.critical(mainwindow, "Invalid topology", u'Schema "%s" is not registered in topology.topology.' % item.schema().name)
                 return False
 
-        toposrid = int(res[0])
-
-        # Check if postgis supports typmod geometries
-        sql = u"SELECT typmodin FROM pg_type WHERE typname = 'geometry' AND typmodin::int > 0"
-        c = db.connector._get_cursor()
-        db.connector._execute( c, sql )
-        res = db.connector._fetchone( c )
-        supportsTypmod = res != None
+        toposrid = res[0]
 
         # load layers into the current project
         toponame = item.schema().name
@@ -114,12 +107,9 @@ def run(item, action, mainwindow):
                 legend.setGroupVisible(group, False)
 
           # face
-                geomcast = ''
-                if supportsTypmod:
-                  geomcast = '::geometry(polygon,%s)' % toposrid
-                layer = db.toSqlLayer(u'SELECT face_id, topology.ST_GetFaceGeometry(%s, face_id)%s as geom ' \
-                                       'FROM %s.face WHERE face_id > 0' % (quoteStr(toponame), geomcast, quoteId(toponame)),
-                                       'geom', 'face_id', u'%s.face' % toponame)
+                layer = db.toSqlLayer(u'SELECT face_id, topology.ST_GetFaceGeometry(%s, face_id) as geom ' \
+                                       'FROM %s.face WHERE face_id > 0' % (quoteStr(toponame), quoteId(toponame)),
+                                       'geom', 'face_id', u'%s.face' % toponame, None, False, str(toposrid), QGis.WKBPolygon)
                 layer.loadNamedStyle(os.path.join(template_dir, 'face.qml'))
                 registry.addMapLayers([layer])
                 legend.setLayerVisible(layer, False)
@@ -127,12 +117,9 @@ def run(item, action, mainwindow):
                 legend.moveLayer(layer, group)
 
           # face_seed
-                geomcast = ''
-                if supportsTypmod:
-                  geomcast = '::geometry(point,%s)' % toposrid
-                layer = db.toSqlLayer(u'SELECT face_id, ST_PointOnSurface(topology.ST_GetFaceGeometry(%s, face_id))%s as geom ' \
-                                       'FROM %s.face WHERE face_id > 0' % (quoteStr(toponame), geomcast, quoteId(toponame)),
-                                       'geom', 'face_id', u'%s.face_seed' % toponame)
+                layer = db.toSqlLayer(u'SELECT face_id, ST_PointOnSurface(topology.ST_GetFaceGeometry(%s, face_id)) as geom ' \
+                                       'FROM %s.face WHERE face_id > 0' % (quoteStr(toponame), quoteId(toponame)),
+                                       'geom', 'face_id', u'%s.face_seed' % toponame, None, False, str(toposrid), QGis.WKBPoint)
                 layer.loadNamedStyle(os.path.join(template_dir, 'face_seed.qml'))
                 registry.addMapLayers([layer])
                 legend.setLayerVisible(layer, False)
