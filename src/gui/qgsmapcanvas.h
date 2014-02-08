@@ -497,6 +497,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     //! indicates whether antialiasing will be used for rendering
     bool mAntiAliasing;
+
+    QTimer *mResizeTimer;
 }; // class QgsMapCanvas
 
 
