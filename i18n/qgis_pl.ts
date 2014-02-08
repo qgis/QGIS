@@ -8653,7 +8653,7 @@ Linia z błędem: %1</translation>
     </message>
     <message>
         <source>Run &amp;Vacuum Analyze</source>
-        <translation>Uruchom i uprzątnij bazę</translation>
+        <translation>Uprzątnij bazę (VACUUM ANALYZE)</translation>
     </message>
     <message>
         <source>Sorry</source>
@@ -66610,7 +66610,19 @@ You can also define the width and precision of the new attribute column.
 &lt;h4&gt;Attributes list&lt;/h4&gt;
 In this section you can see the list of attributes. To delete one of them, click on it and choose &lt;label&gt;Remove selected attribute&lt;/label&gt; button.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Nowa warstwa wektorowa&lt;/h3&gt;
+Przy pomocy tej okna dialogowego można stworzyć nową warstwę wektorową w formacie Shapefile.
+&lt;h4&gt;Typ&lt;/h4&gt;
+Wybierz odpowiedni typ warstwy: &lt;label&gt;Punkt&lt;/label&gt;, &lt;label&gt;Linię&lt;/label&gt; lub &lt;label&gt;Poligon&lt;/label&gt;.&lt;br/&gt;
+Aby zmienić domyślny układ współrzędnych warstwy wybierz przycisk &lt;label&gt;Podaj układ współrzędnych&lt;/label&gt;.
+&lt;h4&gt;Nowy atrybut&lt;/h4&gt;
+Dodaj atrybuty warstwy poprzez wpisanie ich &lt;label&gt;Nazwy&lt;/label&gt;, wybranie odpowiedniego typu i zakresu. Aby zapisać nowy atrybut nie zapomnij nacisnąc klawisz &lt;label&gt;Dodaj do listy atrybutów&lt;\label&gt;. Dopiero wtedy wprowadzany atrybut zostanie zapisany.
+Warstwa w formacie Shapefile udostępnia typ tektowy, liczobwe oraz daty.&lt;br/&gt;
+&lt;label&gt;Szerokość&lt;\label&gt; oznacza odpowiednio: dla typu tekstowego - maksymalną liczbę znaków; dla liczb - liczbę cyfr.&lt;br/&gt;
+&lt;label&gt;Dokładność&lt;\label&gt; oznacza liczbę cyfr po przecinku.
+&lt;h4&gt;Lista atrybutów&lt;/h4&gt;
+Atrybuty wyświetlane w tej części okna będą podstawą do utworzenia tabeli atrybutów. Przy pomocy przycisku &lt;label&gt;Usuń atrybut&lt;\label&gt; można usunąć błędnie wprowadzony atrybut.
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Vector Layer Properties&lt;/h3&gt;
@@ -67455,10 +67467,10 @@ Ticking &lt;label&gt;Search options&lt;/label&gt; enables additional options for
 To define a new connection, click on &lt;label&gt;New&lt;/label&gt; button and use the file browser to point to your SpatiaLite database, which is a file with a &lt;i&gt;.sqlite&lt;/i&gt; extension.&lt;p&gt;
 The connections you define will be remembered for further use and available to choose from the drop down menu.
 </source>
-        <translation type="unfinished">&lt;h3&gt;Dodaj tabele SpatiaLite&lt;/h3&gt;
+        <translation>&lt;h3&gt;Dodaj tabelę SpatiaLite&lt;/h3&gt;
 Aby zdefiniować nowe połączenie, kliknij przycisk &lt;label&gt;Nowy&lt;/label&gt; i wskaż położenie bazy SpatiaLite na dysku. Baza SpatiaLite jest plikiem o rozszerzeniu &lt;i&gt;.sqlite&lt;/i&gt;.&lt;p&gt;
 Następnie kliknij &lt;label&gt;Połącz&lt;/label&gt; i wybierz z drzewa warstw te, które chcesz otworzyć w QGIS.&lt;br/&gt;
-Kliknij &lt;label&gt;Dodaj&lt;/label&gt;, warstwy zostaną wczytane.&lt;p&gt;
+Kliknij &lt;label&gt;Dodaj&lt;/label&gt;, aby warstwy zostały wczytane.&lt;p&gt;
 Połączenie raz zdefiniowane będzie zapamiętane i dostępne do użycia z rozwijalnej listy.</translation>
     </message>
     <message>
@@ -67680,12 +67692,12 @@ You may also tick an &lt;label&gt;Open feature form, if a single feature is iden
 Identifiable layers can be set in the Project Properties dialog &lt;label&gt;Settings &gt; Project Properties &gt; Identifiable layers&lt;/label&gt; where all the layers names are listed, their type (vector, raster, etc.) and ability to be identified.
 &lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;Informacje o obiekcie&lt;/h3&gt;
+        <translation>&lt;h3&gt;Informacje o obiekcie&lt;/h3&gt;
 &lt;p&gt;
-Okno wynikowe pokazuje atrybuty wszystkich obiektów znalezionych w obszarze przeszukiwania. Aby zobaczyć atrybuty poszczególnych obiektów, rozwiń drzewo z informacjami klikając znak &lt;label&gt;+&lt;/label&gt; (plus) po prawej stronie obiektu. 
+Okno wynikowe pokazuje atrybuty wszystkich obiektów znalezionych w obszarze przeszukiwania. Aby zobaczyć atrybuty poszczególnych obiektów, rozwiń drzewo z informacjami klikając znak &lt;label&gt;+&lt;/label&gt; (plus) po lewej stronie obiektu. 
 &lt;/p&gt;
 &lt;p&gt;
-Promień przeszukiwania można ustawić w dialogu Opcje &lt;label&gt;Ustawienia &gt; Opcje&lt;/label&gt;
+Sposób oraz zakres wyszukiwania obiektów można modyfikować w oknie dialogowym &lt;label&gt;Ustawienia &gt; Opcje &gt; Narzędzia mapy &gt; Informacje o obiekcie&lt;/label&gt;.
 &lt;/p&gt;
 </translation>
     </message>
@@ -67710,20 +67722,21 @@ To add a scale bar:
 &lt;li&gt;Click &lt;label&gt;OK&lt;/label&gt;.&lt;/li&gt;
 &lt;/ol&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;Podziałka&lt;/h3&gt;
+        <translation>&lt;h3&gt;Podziałka&lt;/h3&gt;
 Umieszcza na mapie podziałkę liniową.
 &lt;p&gt;
-Możesz ustawić styl podziałki oraz jej położenie, jak również jej opisy. 
-QGIS wyświetla skalę jedynie w tych samych jednostkach co jednostki mapy. Jeśli więc jednostki twojej warstwy to metry, nie możesz utworzyć podziałki w stopach; i odpowiednio jeśli dla mapy używasz stopni dziesiętnych, nie możesz utworzyć podziałki w metrach.&lt;/p&gt;
+Można ustawić styl podziałki, jej położenie oraz opisy. 
+QGIS wyświetla skalę jedynie w jednostkach mapy. Jeśli więc jednostki twojej warstwy to metry, nie możesz utworzyć podziałki w stopach; i odpowiednio jeśli dla mapy używasz stopni dziesiętnych, nie możesz utworzyć podziałki w metrach.&lt;/p&gt;
+
+&lt;p&gt;Do wyświetlenia podziałki wystarczy zaznaczenie opcji &lt;label&gt;Włącz&lt;/label&gt;.
 &lt;p&gt;
-Aby dodać podziałkę:
+Dodatkow można zmodyfikować domyślne ustawienia wyświetlanie:
 &lt;ol&gt;
-&lt;li&gt;Wybierz położenie z listy rozwijalnej &lt;label&gt;Umiejscowienie&lt;/label&gt;.&lt;/li&gt;
+&lt;li&gt;Wybierz położenie z listy rozwijalnej &lt;label&gt;Położenie&lt;/label&gt;.&lt;/li&gt;
 &lt;li&gt;Wybierz styl podziałki z listy &lt;label&gt;Styl podziałki&lt;/label&gt;.&lt;/li&gt;
-&lt;li&gt;Wybierz kolor podziałki &lt;label&gt;Kolor podziałki&lt;/label&gt; lub użyj domyślnego czarnego koloru.&lt;/li&gt;
-&lt;li&gt;Ustaw rozmiar podziałki i jej opisów &lt;label&gt;Rozmiar paska&lt;/label&gt;. &lt;/li&gt;
-&lt;li&gt;Upewnij się, że opcja &lt;label&gt;Włącz podziałkę&lt;/label&gt; jest zaznaczona.&lt;/li&gt;
-&lt;li&gt;Opcjonalnie wybierz automatyczne zaokrąglanie opisów podziałki przy zmianie wielkości okna &lt;label&gt;Automatycznie zaokrąglaj przy zmianie wielkości okna&lt;/label&gt;.&lt;/li&gt;
+&lt;li&gt;Wybierz kolor podziałki &lt;label&gt;Kolor&lt;/label&gt;.&lt;/li&gt;
+&lt;li&gt;Ustaw rozmiar podziałki i jej opisów &lt;label&gt;Długość&lt;/label&gt;. &lt;/li&gt;
+&lt;li&gt;Opcjonalnie wybierz automatyczne zaokrąglanie opisów podziałki przy zmianie wielkości okna &lt;label&gt;Automatycznie dostosuj rozmiar&lt;/label&gt;.&lt;/li&gt;
 &lt;li&gt;Kliknij &lt;label&gt;OK&lt;/label&gt;.&lt;/li&gt;
 &lt;/ol&gt;</translation>
     </message>
