@@ -1328,7 +1328,7 @@ bool QgsVectorLayer::updateFeature( QgsFeature &f )
   {
     if ( fa[attr] != ca[attr] )
     {
-      if ( !changeAttributeValue( f.id(), attr, fa[attr] ) )
+      if ( !changeAttributeValue( f.id(), attr, fa[attr], ca[attr] ) )
       {
         QgsDebugMsg( QString( "attribute %1 of feature %2 could not be changed." ).arg( attr ).arg( f.id() ) );
         return false;
@@ -2559,12 +2559,12 @@ bool QgsVectorLayer::changeAttributeValue( QgsFeatureId fid, int field, QVariant
   return changeAttributeValue( fid, field, value );
 }
 
-bool QgsVectorLayer::changeAttributeValue( QgsFeatureId fid, int field, QVariant value )
+bool QgsVectorLayer::changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &oldValue )
 {
   if ( !mEditBuffer || !mDataProvider )
     return false;
 
-  return mEditBuffer->changeAttributeValue( fid, field, value );
+  return mEditBuffer->changeAttributeValue( fid, field, newValue, oldValue );
 }
 
 bool QgsVectorLayer::addAttribute( const QgsField &field )

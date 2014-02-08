@@ -1,10 +1,12 @@
 #!/bin/bash
 
-file=$1
+for file in $*; do
+	file=$1
 
-d=${file#*/}
-d=${d%/*}
-f=${file##*/}
-f=${f%.*}
+	d=${file#*/}
+	d=${d%/*}
+	f=${file##*/}
+	f=${f%.*}
 
-vimdiff src/$d/$f.h python/$d/$f.sip
+	vimdiff src/$d/$f.h python/$d/$f.sip
+done

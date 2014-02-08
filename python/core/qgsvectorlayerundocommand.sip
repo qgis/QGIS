@@ -61,7 +61,7 @@ class QgsVectorLayerUndoCommandChangeAttribute : QgsVectorLayerUndoCommand
 #include "qgsvectorlayerundocommand.h"
 %End
   public:
-    QgsVectorLayerUndoCommandChangeAttribute( QgsVectorLayerEditBuffer* buffer /Transfer/, QgsFeatureId fid, int fieldIndex, const QVariant& newValue );
+    QgsVectorLayerUndoCommandChangeAttribute( QgsVectorLayerEditBuffer* buffer /Transfer/, QgsFeatureId fid, int fieldIndex, const QVariant &newValue, const QVariant &oldValue );
     virtual void undo();
     virtual void redo();
 };

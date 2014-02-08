@@ -5943,7 +5943,7 @@ QgsVectorLayer *QgisApp::pasteToNewMemoryVector()
       feature.geometry()->convertToMultiType();
     }
   }
-  if ( ! layer->addFeatures( features ) || ! layer->commitChanges() )
+  if ( ! layer->addFeatures( features ) || !layer->commitChanges() )
   {
     QgsDebugMsg( "Cannot add features or commit changes" );
     delete layer;
@@ -6127,6 +6127,8 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
         break;
 
       case QMessageBox::Save:
+        QApplication::setOverrideCursor( Qt::WaitCursor );
+
         if ( !vlayer->commitChanges() )
         {
           commitError( vlayer );
@@ -6137,9 +6139,13 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
         }
 
         vlayer->triggerRepaint();
+
+        QApplication::restoreOverrideCursor();
         break;
 
       case QMessageBox::Discard:
+        QApplication::setOverrideCursor( Qt::WaitCursor );
+
         mMapCanvas->freeze( true );
         if ( !vlayer->rollBack() )
         {
@@ -6151,6 +6157,8 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
         mMapCanvas->freeze( false );
 
         vlayer->triggerRepaint();
+
+        QApplication::restoreOverrideCursor();
         break;
 
       default:
@@ -8115,6 +8123,7 @@ void QgisApp::hasCrsTransformEnabled( bool theFlag )
   QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectionsEnabled", ( theFlag ? 1 : 0 ) );
   updateCRSStatusBar();
 }
+
 // slot to update the progress bar in the status bar
 void QgisApp::showProgress( int theProgress, int theTotalSteps )
 {

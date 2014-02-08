@@ -350,7 +350,7 @@ bool QgsDualView::saveEditChanges()
           if ( dst[i] == src[i] )
             continue;
 
-          mLayerCache->layer()->changeAttributeValue( fid, i, dst[i] );
+          mLayerCache->layer()->changeAttributeValue( fid, i, dst[i], src[i] );
         }
 
         mLayerCache->layer()->endEditCommand();

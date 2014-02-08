@@ -110,6 +110,8 @@ void QgsFieldCalculator::accept()
     return;
   }
 
+  QApplication::setOverrideCursor( Qt::WaitCursor );
+
   mVectorLayer->beginEditCommand( "Field calculator" );
 
   //update existing field
@@ -153,6 +155,7 @@ void QgsFieldCalculator::accept()
   if ( mAttributeId == -1 )
   {
     mVectorLayer->destroyEditCommand();
+    QApplication::restoreOverrideCursor();
     return;
   }
 
@@ -188,11 +191,13 @@ void QgsFieldCalculator::accept()
     }
     else
     {
-      mVectorLayer->changeAttributeValue( feature.id(), mAttributeId, value );
+      mVectorLayer->changeAttributeValue( feature.id(), mAttributeId, value, feature.attributes().value( mAttributeId ) );
     }
 
     rownum++;
   }
+
+  QApplication::restoreOverrideCursor();
 
   if ( !calculationSuccess )
   {

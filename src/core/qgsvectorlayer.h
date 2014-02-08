@@ -1083,11 +1083,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      *
      * @param fid   The feature id of the feature to be changed
      * @param field The index of the field to be updated
-     * @param value The value which will be assigned to the field
+     * @param newValue The value which will be assigned to the field
+     * @param oldValue The previous value to restore on undo (will otherwise be retrieved)
      *
      * @return true in case of success
      */
-    bool changeAttributeValue( QgsFeatureId fid, int field, QVariant value );
+    bool changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &oldValue = QVariant() );
 
     /** add an attribute field (but does not commit it)
         returns true if the field was added
