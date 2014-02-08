@@ -839,6 +839,19 @@ class TestQgsExpression: public QObject
       QgsExpression::unsetSpecialColumn( "$var1" );
     }
 
+    void expression_from_expression()
+    {
+      {
+        QgsExpression e( "my_column" );
+        QCOMPARE( e.expression() , QgsExpression( e.expression() ).expression() );
+      }
+      {
+        QgsExpression e( "\"my column\"" );
+        QCOMPARE( e.expression() , QgsExpression( e.expression() ).expression() );
+      }
+    }
+
+
 };
 
 QTEST_MAIN( TestQgsExpression )

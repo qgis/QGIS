@@ -2266,7 +2266,7 @@ bool QgsExpression::NodeColumnRef::prepare( QgsExpression* parent, const QgsFiel
 
 QString QgsExpression::NodeColumnRef::dump() const
 {
-  return mName;
+  return mName.count( " " ) ? "\"" + mName + "\"" : mName;
 }
 
 //
@@ -2315,14 +2315,14 @@ bool QgsExpression::NodeCondition::prepare( QgsExpression* parent, const QgsFiel
 
 QString QgsExpression::NodeCondition::dump() const
 {
-  QString msg = QString("CASE ");
+  QString msg = QString( "CASE " );
   foreach ( WhenThen* cond, mConditions )
   {
     msg += QString( "WHEN %1 THEN %2" ).arg( cond->mWhenExp->dump() ).arg( cond->mThenExp->dump() );
   }
   if ( mElseExp )
     msg += QString( "ELSE %1" ).arg( mElseExp->dump() );
-  msg += QString(" END");
+  msg += QString( " END" );
   return msg;
 }
 
