@@ -338,7 +338,7 @@ void QgsVectorLayer::drawLabels( QgsRenderContext& rendererContext )
 
   QgsDebugMsg( "Starting draw of labels: " + id() );
 
-  if ( mRendererV2 && mLabelOn &&
+  if ( mRendererV2 && mLabelOn && mLabel &&
        ( !mLabel->scaleBasedVisibility() ||
          ( mLabel->minScale() <= rendererContext.rendererScale() &&
            rendererContext.rendererScale() <= mLabel->maxScale() ) ) )
@@ -1878,9 +1878,12 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
 
     // use scale dependent visibility flag
     QDomElement e = node.toElement();
-    mLabel->setScaleBasedVisibility( e.attribute( "scaleBasedLabelVisibilityFlag", "0" ) == "1" );
-    mLabel->setMinScale( e.attribute( "minLabelScale", "1" ).toFloat() );
-    mLabel->setMaxScale( e.attribute( "maxLabelScale", "100000000" ).toFloat() );
+    if ( mLabel )
+    {
+      mLabel->setScaleBasedVisibility( e.attribute( "scaleBasedLabelVisibilityFlag", "0" ) == "1" );
+      mLabel->setMinScale( e.attribute( "minLabelScale", "1" ).toFloat() );
+      mLabel->setMaxScale( e.attribute( "maxLabelScale", "100000000" ).toFloat() );
+    }
 
     // get the simplification drawing settings
     mSimplifyMethod.setSimplifyHints( e.attribute( "simplifyDrawingHints", "1" ).toInt() );
@@ -1906,7 +1909,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
 
     QDomNode labelattributesnode = node.namedItem( "labelattributes" );
 
-    if ( !labelattributesnode.isNull() )
+    if ( !labelattributesnode.isNull() && mLabel )
     {
       QgsDebugMsg( "calling readXML" );
       mLabel->readXML( labelattributesnode );
@@ -2217,9 +2220,12 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
     node.appendChild( rendererElement );
 
     // use scale dependent visibility flag
-    mapLayerNode.setAttribute( "scaleBasedLabelVisibilityFlag", mLabel->scaleBasedVisibility() ? 1 : 0 );
-    mapLayerNode.setAttribute( "minLabelScale", QString::number( mLabel->minScale() ) );
-    mapLayerNode.setAttribute( "maxLabelScale", QString::number( mLabel->maxScale() ) );
+    if ( mLabel )
+    {
+      mapLayerNode.setAttribute( "scaleBasedLabelVisibilityFlag", mLabel->scaleBasedVisibility() ? 1 : 0 );
+      mapLayerNode.setAttribute( "minLabelScale", QString::number( mLabel->minScale() ) );
+      mapLayerNode.setAttribute( "maxLabelScale", QString::number( mLabel->maxScale() ) );
+    }
 
     // save the simplification drawing settings
     mapLayerNode.setAttribute( "simplifyDrawingHints", QString::number( mSimplifyMethod.simplifyHints() ) );
@@ -2272,16 +2278,19 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
 
     // Now we get to do all that all over again for QgsLabel
 
-    QString fieldname = mLabel->labelField( QgsLabel::Text );
-    if ( fieldname != "" )
+    if ( mLabel )
     {
-      dField  = doc.createElement( "labelfield" );
-      dFieldText = doc.createTextNode( fieldname );
-      dField.appendChild( dFieldText );
-      node.appendChild( dField );
-    }
+      QString fieldname = mLabel->labelField( QgsLabel::Text );
+      if ( fieldname != "" )
+      {
+        dField  = doc.createElement( "labelfield" );
+        dFieldText = doc.createTextNode( fieldname );
+        dField.appendChild( dFieldText );
+        node.appendChild( dField );
+      }
 
-    mLabel->writeXML( node, doc );
+      mLabel->writeXML( node, doc );
+    }
 
     if ( mDiagramRenderer )
     {
