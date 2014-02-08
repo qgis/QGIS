@@ -976,7 +976,7 @@ static QVariant fcnYat( const QVariantList& values, const QgsFeature* f, QgsExpr
 }
 static QVariant fcnGeometry( const QVariantList& , const QgsFeature* f, QgsExpression* )
 {
-  QgsGeometry* geom = f->geometry();
+  QgsGeometry* geom = f ? f->geometry() : 0;
   if ( geom )
     return  QVariant::fromValue( *geom );
   else
