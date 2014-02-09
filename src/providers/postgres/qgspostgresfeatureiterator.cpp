@@ -50,8 +50,6 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresProvider* p, 
 {
   mCursorName = QString( "qgisf%1_%2" ).arg( P->mProviderId ).arg( P->mIteratorCounter++ );
 
-  P->mActiveIterators << this;
-
   QString whereClause;
 
   if ( request.filterType() == QgsFeatureRequest::FilterRect && !P->mGeometryColumn.isNull() )
@@ -80,6 +78,8 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresProvider* p, 
     mClosed = true;
     return;
   }
+
+  P->mActiveIterators << this;
 
   mFetched = 0;
 }
