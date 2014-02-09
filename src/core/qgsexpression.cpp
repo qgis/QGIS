@@ -2266,7 +2266,7 @@ bool QgsExpression::NodeColumnRef::prepare( QgsExpression* parent, const QgsFiel
 
 QString QgsExpression::NodeColumnRef::dump() const
 {
-  return quotedColumnRef( mName );
+  return QRegExp( "^[A-Za-z_\x80-\xff][A-Za-z0-9_\x80-\xff]*$" ).exactMatch( mName ) ? mName : quotedColumnRef( mName );
 }
 
 //

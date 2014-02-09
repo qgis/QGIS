@@ -83,5 +83,9 @@ class TestQgsExpressionCustomFunctions(TestCase):
 		success = QgsExpression.unregisterFunction("sqrt")
 		self.assertFalse(success)
 
+	def testDump(self):
+		for txt in ["id", u"idä", "\"id abc\"", "\"id	abc\""]:
+			self.assertEqual( txt, QgsExpression(txt).expression() )
+
 if __name__ == "__main__":
 	unittest.main()

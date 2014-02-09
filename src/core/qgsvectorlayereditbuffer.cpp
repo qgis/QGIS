@@ -40,7 +40,7 @@ bool QgsVectorLayerEditBuffer::isModified() const
 
 void QgsVectorLayerEditBuffer::undoIndexChanged( int index )
 {
-  qDebug( "undo index changed %d", index );
+  QgsDebugMsg( QString( "undo index changed %1" ).arg( index ) );
   Q_UNUSED( index );
   emit layerModified();
 }
