@@ -2373,10 +2373,10 @@ void QgsComposition::computeWorldFileParameters( double& a, double& b, double& c
     return;
   }
 
-  QRectF brect = mWorldFileMap->boundingRect();
-  QgsRectangle extent = mWorldFileMap->extent();
+  QRectF brect = mWorldFileMap->mapRectToScene( mWorldFileMap->rect() );
+  QgsRectangle extent = *mWorldFileMap->currentMapExtent();
 
-  double alpha = mWorldFileMap->rotation() / 180 * M_PI;
+  double alpha = mWorldFileMap->mapRotation() / 180 * M_PI;
 
   double xr = extent.width() / brect.width();
   double yr = extent.height() / brect.height();
