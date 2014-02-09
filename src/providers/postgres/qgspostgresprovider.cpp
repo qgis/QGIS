@@ -2567,7 +2567,7 @@ bool QgsPostgresProvider::getGeometryDetails()
 
   QString detectedType = mRequestedGeomType == QGis::WKBUnknown ? "" : QgsPostgresConn::postgisWkbTypeName( mRequestedGeomType );
   QString detectedSrid = mRequestedSrid;
-  if ( !schemaName.isEmpty() && (detectedType.isEmpty() || detectedSrid.isEmpty() ) )
+  if ( !schemaName.isEmpty() && ( detectedType.isEmpty() || detectedSrid.isEmpty() ) )
   {
     // check geometry columns
     sql = QString( "SELECT upper(type),srid FROM geometry_columns WHERE f_table_name=%1 AND f_geometry_column=%2 AND f_table_schema=%3" )

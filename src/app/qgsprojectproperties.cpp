@@ -589,7 +589,7 @@ void QgsProjectProperties::apply()
     // write the currently selected projections _proj string_ to project settings
     QgsDebugMsg( QString( "SpatialRefSys/ProjectCRSProj4String: %1" ).arg( projectionSelector->selectedProj4String() ) );
     QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCRSProj4String", projectionSelector->selectedProj4String() );
-    QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCRSID", (int) projectionSelector->selectedCrsId() );
+    QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCRSID", ( int ) projectionSelector->selectedCrsId() );
     QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCrs", projectionSelector->selectedAuthId() );
 
     // Set the map units to the projected coordinates if we are projecting

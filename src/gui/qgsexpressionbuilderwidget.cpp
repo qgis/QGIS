@@ -262,15 +262,16 @@ void QgsExpressionBuilderWidget::loadRecent( QString key )
   QString name = tr( "Recent (%1)" ).arg( key );
   if ( mExpressionGroups.contains( name ) )
   {
-     QgsExpressionItem* node = mExpressionGroups.value( name );
-     node->removeRows(0, node->rowCount() );
-   }
+    QgsExpressionItem* node = mExpressionGroups.value( name );
+    node->removeRows( 0, node->rowCount() );
+  }
 
   QSettings settings;
   QString location = QString( "/expressions/recent/%1" ).arg( key );
   QStringList expressions = settings.value( location ).toStringList();
-  foreach ( QString expression, expressions ) {
-     this->registerItem( name, expression, expression, expression );
+  foreach ( QString expression, expressions )
+  {
+    this->registerItem( name, expression, expression, expression );
   }
 }
 

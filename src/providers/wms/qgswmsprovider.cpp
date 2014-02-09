@@ -2651,7 +2651,7 @@ bool QgsWmsProvider::extentForNonTiledLayer( const QString& layerName, const QSt
     return false;
 
   QgsCoordinateTransform xform( wgs, dst );
-  QgsDebugMsg( QString("transforming layer extent %1").arg( extent.toString( true ) ) );
+  QgsDebugMsg( QString( "transforming layer extent %1" ).arg( extent.toString( true ) ) );
   try
   {
     extent = xform.transformBoundingBox( extent );
@@ -2661,7 +2661,7 @@ bool QgsWmsProvider::extentForNonTiledLayer( const QString& layerName, const QSt
     Q_UNUSED( cse );
     return false;
   }
-  QgsDebugMsg( QString("transformed layer extent %1").arg( extent.toString( true ) ) );
+  QgsDebugMsg( QString( "transformed layer extent %1" ).arg( extent.toString( true ) ) );
 
   //make sure extent does not contain 'inf' or 'nan'
   if ( !extent.isFinite() )
@@ -3166,7 +3166,7 @@ void QgsWmsProvider::parseWMTSContents( QDomElement const &e )
   }
 
   // make sure that all layers have a bounding box
-  for( QList<QgsWmtsTileLayer>::iterator it = mTileLayersSupported.begin(); it != mTileLayersSupported.end(); ++it )
+  for ( QList<QgsWmtsTileLayer>::iterator it = mTileLayersSupported.begin(); it != mTileLayersSupported.end(); ++it )
   {
     QgsWmtsTileLayer& l = *it;
 
@@ -3211,7 +3211,7 @@ bool QgsWmsProvider::detectTileLayerBoundingBox( QgsWmtsTileLayer& l )
                         tm.topLeft.y() - res * tm.tileHeight * tm.matrixHeight );
 
   QgsDebugMsg( QString( "detecting WMTS layer bounding box: tileset %1 matrix %2 crs %3 res %4" )
-                 .arg( tmsIt->identifier ).arg( tm.identifier ).arg( tmsIt->crs ).arg( res ) );
+               .arg( tmsIt->identifier ).arg( tm.identifier ).arg( tmsIt->crs ).arg( res ) );
 
   QgsRectangle extent( tm.topLeft, bottomRight );
   extent.normalize();

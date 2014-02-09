@@ -82,7 +82,7 @@ class QgsOgrMapToPixelSimplifier : public QgsOgrAbstractGeometrySimplifier, QgsM
     //! Returns a point buffer of the specified envelope
     QgsPoint* getEnvelopePoints( const QgsRectangle& envelope, int& numPoints, bool isaLinearRing );
 
-    //! Load a point array to the specified LineString geometry 
+    //! Load a point array to the specified LineString geometry
     static void setGeometryPoints( OGRGeometryH geometry, QgsPoint* points, int numPoints );
 
   public:

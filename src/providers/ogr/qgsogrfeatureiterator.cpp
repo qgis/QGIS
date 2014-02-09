@@ -109,7 +109,7 @@ bool QgsOgrFeatureIterator::prepareSimplification( const QgsSimplifyMethod& simp
   if ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) && simplifyMethod.methodType() != QgsSimplifyMethod::NoSimplification && !simplifyMethod.forceLocalOptimization() )
   {
     QgsSimplifyMethod::MethodType methodType = simplifyMethod.methodType();
-    Q_UNUSED( methodType);
+    Q_UNUSED( methodType );
 
 #if defined(GDAL_VERSION_NUM) && defined(GDAL_COMPUTE_VERSION)
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(1,11,0)

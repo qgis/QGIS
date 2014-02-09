@@ -176,7 +176,7 @@ bool QgsOgrMapToPixelSimplifier::simplifyOgrGeometry( OGRGeometryH geometry, boo
   {
     int numPoints = OGR_G_GetPointCount( geometry );
 
-    if (( isaLinearRing && numPoints <= 5 ) || ( !isaLinearRing && numPoints <= 4 ) ) 
+    if (( isaLinearRing && numPoints <= 5 ) || ( !isaLinearRing && numPoints <= 4 ) )
       return false;
 
     OGREnvelope env;
@@ -205,7 +205,7 @@ bool QgsOgrMapToPixelSimplifier::simplifyOgrGeometry( OGRGeometryH geometry, boo
 
       if ( simplifyOgrGeometry( geometryType, xptr, 16, yptr, 16, numPoints, numSimplifiedPoints ) )
       {
-        if (( isaLinearRing && numSimplifiedPoints <= 4 ) || ( !isaLinearRing && numSimplifiedPoints <= 1 ) ) 
+        if (( isaLinearRing && numSimplifiedPoints <= 4 ) || ( !isaLinearRing && numSimplifiedPoints <= 1 ) )
           points = getEnvelopePoints( envelope, numSimplifiedPoints, isaLinearRing );
 
         setGeometryPoints( geometry, points, numSimplifiedPoints );
@@ -246,7 +246,7 @@ bool QgsOgrMapToPixelSimplifier::simplifyOgrGeometry( OGRGeometryH geometry, boo
   return false;
 }
 
-//! Load a point array to the specified LineString geometry 
+//! Load a point array to the specified LineString geometry
 void QgsOgrMapToPixelSimplifier::setGeometryPoints( OGRGeometryH geometry, QgsPoint* points, int numPoints )
 {
   double* xptr = ( double* )points;

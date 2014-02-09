@@ -35,7 +35,7 @@ current_path = os.path.dirname(__file__)
 # @param mainwindow is the DBManager mainwindow
 def load(db, mainwindow):
         # check whether the selected database supports topology
-        # (search for topology.topology) 
+        # (search for topology.topology)
         sql = u"""SELECT count(*)
                 FROM pg_class AS cls JOIN pg_namespace AS nsp ON nsp.oid = cls.relnamespace
                 WHERE cls.relname = 'topology' AND nsp.nspname = 'topology'"""
@@ -76,7 +76,7 @@ def run(item, action, mainwindow):
                 c = db.connector._get_cursor()
                 db.connector._execute( c, sql )
                 res = db.connector._fetchone( c )
-                isTopoSchema = res != None 
+                isTopoSchema = res != None
 
         if not isTopoSchema:
                 QMessageBox.critical(mainwindow, "Invalid topology", u'Schema "%s" is not registered in topology.topology.' % item.schema().name)
@@ -116,7 +116,7 @@ def run(item, action, mainwindow):
                 legend.setLayerVisible(layer, False)
                 legend.setLayerExpanded(layer, False)
                 legend.moveLayer(layer, group)
-                face_extent = layer.extent() 
+                face_extent = layer.extent()
 
           # face geometry
                 sql = u'SELECT face_id, topology.ST_GetFaceGeometry(%s, face_id) as geom ' \

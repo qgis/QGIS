@@ -27,7 +27,7 @@ QgsExpressionBuilderDialog::QgsExpressionBuilderDialog( QgsVectorLayer* layer, Q
   builder->setLayer( layer );
   builder->setExpressionText( startText );
   builder->loadFieldNames();
-  builder->loadRecent(mRecentKey);
+  builder->loadRecent( mRecentKey );
 
   QSettings settings;
   restoreGeometry( settings.value( "/Windows/ExpressionBuilderDialog/geometry" ).toByteArray() );
@@ -58,7 +58,7 @@ void QgsExpressionBuilderDialog::done( int r )
 
 void QgsExpressionBuilderDialog::accept()
 {
-  builder->saveToRecent(mRecentKey);
+  builder->saveToRecent( mRecentKey );
   QDialog::accept();
 }
 

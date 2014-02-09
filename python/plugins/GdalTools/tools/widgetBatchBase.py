@@ -75,7 +75,7 @@ class GdalToolsBaseBatchWidget(BasePluginWidget):
 
   def batchRun(self):
       self.inFiles = Utils.getRasterFiles( self.getInputFileName(), self.isRecursiveScanEnabled() )
-      if len(self.inFiles) == 0: 
+      if len(self.inFiles) == 0:
         QMessageBox.warning( self, self.tr( "Warning" ), self.tr( "No input files to process." ) )
         return
 

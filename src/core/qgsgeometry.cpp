@@ -5857,8 +5857,8 @@ int QgsGeometry::avoidIntersections( QMap<QgsVectorLayer*, QSet< QgsFeatureId > 
         ignoreIds = ignoreIt.value();
 
       QgsFeatureIterator fi = currentLayer->getFeatures( QgsFeatureRequest( boundingBox() )
-                                                         .setFlags( QgsFeatureRequest::ExactIntersect )
-                                                         .setSubsetOfAttributes( QgsAttributeList() ) );
+                              .setFlags( QgsFeatureRequest::ExactIntersect )
+                              .setSubsetOfAttributes( QgsAttributeList() ) );
       QgsFeature f;
       while ( fi.nextFeature( f ) )
       {

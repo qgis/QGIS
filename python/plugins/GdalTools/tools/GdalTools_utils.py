@@ -294,7 +294,7 @@ def getRasterSRS( parent, fileName ):
     proj = ds.GetProjectionRef()
     if proj is None:
       return ''
-  
+
     sr = osr.SpatialReference()
     if sr.ImportFromWkt(proj) != gdal.CE_None:
         return ''

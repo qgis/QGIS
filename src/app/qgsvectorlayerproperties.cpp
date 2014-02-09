@@ -407,7 +407,7 @@ void QgsVectorLayerProperties::syncToLayer( void )
     mSimplifyDrawingAtProvider->setChecked( !simplifyMethod.forceLocalOptimization() );
     mSimplifyDrawingAtProvider->setEnabled( mSimplifyDrawingGroupBox->isChecked() );
   }
-  
+
   // disable simplification for point layers, now it is not implemented
   if ( layer->geometryType() == QGis::Point )
   {

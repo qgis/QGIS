@@ -30,7 +30,7 @@
  */
 static const unsigned SIZE   = 624;
 static const unsigned PERIOD = 397;
-static const unsigned DIFF   = SIZE-PERIOD;
+static const unsigned DIFF   = SIZE - PERIOD;
 
 static uint32_t MT[SIZE];
 static unsigned index = 0;
@@ -65,26 +65,28 @@ static inline void generate_numbers()
   register uint32_t y, i;
 
   // i = [0 ... 226]
-  for ( i=0; i<DIFF; ++i ) {
+  for ( i = 0; i < DIFF; ++i )
+  {
     /*
      * We're doing 226 = 113*2, an even number of steps, so we can
      * safely unroll one more step here for speed:
      */
-    y = M32(MT[i]) | L31(MT[i+1]);
-    MT[i] = MT[i+PERIOD] ^ (y>>1) ^ MATRIX[ODD(y)];
+    y = M32( MT[i] ) | L31( MT[i+1] );
+    MT[i] = MT[i+PERIOD] ^( y >> 1 ) ^ MATRIX[ODD( y )];
 
     ++i;
-    y = M32(MT[i]) | L31(MT[i+1]);
-    MT[i] = MT[i+PERIOD] ^ (y>>1) ^ MATRIX[ODD(y)];
+    y = M32( MT[i] ) | L31( MT[i+1] );
+    MT[i] = MT[i+PERIOD] ^( y >> 1 ) ^ MATRIX[ODD( y )];
   }
 
-  #define UNROLL \
-    y = M32(MT[i]) | L31(MT[i+1]); \
-    MT[i] = MT[i-DIFF] ^ (y>>1) ^ MATRIX[ODD(y)]; \
-    ++i;
+#define UNROLL \
+  y = M32(MT[i]) | L31(MT[i+1]); \
+  MT[i] = MT[i-DIFF] ^ (y>>1) ^ MATRIX[ODD(y)]; \
+  ++i;
 
   // i = [227 ... 622]
-  for ( i=DIFF; i<(SIZE-1); ) {
+  for ( i = DIFF; i < ( SIZE - 1 ); )
+  {
     /*
      * 623-227 = 396 = 2*2*3*3*11, so we can unroll this loop in any
      * number that evenly divides 396 (2, 4, 6, etc).
@@ -99,11 +101,11 @@ static inline void generate_numbers()
   }
 
   // i = [623]
-  y = M32(MT[SIZE-1]) | L31(MT[SIZE-1]);
-  MT[SIZE-1] = MT[PERIOD-1] ^ (y>>1) ^ MATRIX[ODD(y)];
+  y = M32( MT[SIZE-1] ) | L31( MT[SIZE-1] );
+  MT[SIZE-1] = MT[PERIOD-1] ^( y >> 1 ) ^ MATRIX[ODD( y )];
 }
 
-extern "C" void seed(uint32_t value)
+extern "C" void seed( uint32_t value )
 {
   /*
    * The equation below is a linear congruential generator (LCG),
@@ -140,8 +142,8 @@ extern "C" void seed(uint32_t value)
   MT[0] = value;
   index = 0;
 
-  for ( register unsigned i=1; i<SIZE; ++i )
-    MT[i] = 0x6c078965*(MT[i-1] ^ MT[i-1]>>30) + i;
+  for ( register unsigned i = 1; i < SIZE; ++i )
+    MT[i] = 0x6c078965 * ( MT[i-1] ^ MT[i-1] >> 30 ) + i;
 }
 
 extern "C" uint32_t rand_u32()
@@ -152,10 +154,10 @@ extern "C" uint32_t rand_u32()
   register uint32_t y = MT[index];
 
   // Tempering
-  y ^= y>>11;
-  y ^= y<< 7 & 0x9d2c5680;
-  y ^= y<<15 & 0xefc60000;
-  y ^= y>>18;
+  y ^= y >> 11;
+  y ^= y << 7 & 0x9d2c5680;
+  y ^= y << 15 & 0xefc60000;
+  y ^= y >> 18;
 
   if ( ++index == SIZE )
     index = 0;
@@ -180,45 +182,45 @@ extern "C" int mt_rand()
    * compatible with 64-bit MT[], so we'll just use that here.
    *
    */
-  return static_cast<int>(0x7FFFFFFF & rand_u32());
+  return static_cast<int>( 0x7FFFFFFF & rand_u32() );
 }
 
-extern "C" void mt_srand(unsigned value)
+extern "C" void mt_srand( unsigned value )
 {
-  seed(static_cast<uint32_t>(value));
+  seed( static_cast<uint32_t>( value ) );
 }
 
 extern "C" float randf_cc()
 {
-  return static_cast<float>(rand_u32())/MD_UINT32_MAX;
+  return static_cast<float>( rand_u32() ) / MD_UINT32_MAX;
 }
 
 extern "C" float randf_co()
 {
-  return static_cast<float>(rand_u32())/(MD_UINT32_MAX+1.0f);
+  return static_cast<float>( rand_u32() ) / ( MD_UINT32_MAX + 1.0f );
 }
 
 extern "C" float randf_oo()
 {
-  return (static_cast<float>(rand_u32())+0.5f)/(MD_UINT32_MAX+1.0f);
+  return ( static_cast<float>( rand_u32() ) + 0.5f ) / ( MD_UINT32_MAX + 1.0f );
 }
 
 extern "C" double randd_cc()
 {
-  return static_cast<double>(rand_u32())/MD_UINT32_MAX;
+  return static_cast<double>( rand_u32() ) / MD_UINT32_MAX;
 }
 
 extern "C" double randd_co()
 {
-  return static_cast<double>(rand_u32())/(MD_UINT32_MAX+1.0);
+  return static_cast<double>( rand_u32() ) / ( MD_UINT32_MAX + 1.0 );
 }
 
 extern "C" double randd_oo()
 {
-  return (static_cast<double>(rand_u32())+0.5)/(MD_UINT32_MAX+1.0);
+  return ( static_cast<double>( rand_u32() ) + 0.5 ) / ( MD_UINT32_MAX + 1.0 );
 }
 
 extern "C" uint64_t rand_u64()
 {
-  return static_cast<uint64_t>(rand_u32())<<32 | rand_u32();
+  return static_cast<uint64_t>( rand_u32() ) << 32 | rand_u32();
 }
