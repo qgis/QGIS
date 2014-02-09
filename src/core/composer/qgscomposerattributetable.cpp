@@ -131,7 +131,7 @@ bool QgsComposerAttributeTable::getFeatureAttributes( QList<QgsAttributeMap> &at
   QgsRectangle selectionRect;
   if ( mComposerMap && mShowOnlyVisibleFeatures )
   {
-    selectionRect = mComposerMap->extent();
+    selectionRect = *mComposerMap->currentMapExtent();
     if ( mVectorLayer && mComposerMap->mapRenderer()
          && mComposerMap->mapRenderer()->hasCrsTransformEnabled() )
     {
