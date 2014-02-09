@@ -90,7 +90,7 @@ class QgsComposerView : QGraphicsView
     void setCurrentTool( QgsComposerView::Tool t );
 
     /**Sets composition (derived from QGraphicsScene)*/
-    void setComposition( QgsComposition* c );
+    void setComposition( QgsComposition* c /KeepReference/ );
     /**Returns the composition or 0 in case of error*/
     QgsComposition* composition();
 
