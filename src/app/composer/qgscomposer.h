@@ -479,6 +479,9 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Updates the "set as atlas feature" map layer action, removing it if atlas is disabled
     void updateAtlasMapLayerAction( bool atlasEnabled );
 
+    //! Set default settings for printer page settings based on composition paper size
+    void setPrinterPageDefaults();
+
     /**Composer title*/
     QString mTitle;
 
@@ -557,6 +560,7 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     QgsMapLayerAction* mAtlasFeatureAction;
 
+
   signals:
     void printAsRasterChanged( bool state );
 
@@ -592,6 +596,10 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     //! Updates the "set as atlas feature" map layer action when atlas coverage layer changes
     void updateAtlasMapLayerAction( QgsVectorLayer* coverageLayer );
+
+    //! Sets the printer page orientation when the page orientation changes
+    void setPrinterPageOrientation( QString orientation );
+
 };
 
 #endif
