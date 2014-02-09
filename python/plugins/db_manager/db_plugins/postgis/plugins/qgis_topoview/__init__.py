@@ -137,7 +137,7 @@ def run(item, action, mainwindow):
                        'FROM %s.face WHERE face_id > 0' % (quoteStr(toponame), quoteId(toponame))
                 uri.setDataSource('', u'(%s)' % sql, 'geom', '', 'face_id')
                 uri.setSrid( toposrid )
-                uri.setWkbType( QGis.WKBPolygon )
+                uri.setWkbType( QGis.WKBPoint )
                 layer = QgsVectorLayer(uri.uri(), u'%s.face_seed' % toponame, provider)
                 layer.setExtent(face_extent)
                 layer.loadNamedStyle(os.path.join(template_dir, 'face_seed.qml'))
