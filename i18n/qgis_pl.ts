@@ -67756,12 +67756,14 @@ To measure lengths, select the tool and click along the path you want to measure
 &lt;h4&gt;Measuring Areas&lt;/h4&gt;
 To measure areas, select the tool and click to create the area. The total area is dynamically displayed as you click.
 </source>
-        <translation type="unfinished">&lt;h3&gt;Narzędzia pomiaru&lt;/h3&gt;
-Są dwa narzędzia do pomiaru; jedno do odległości, a drugie do powierzchni. Za pomocą tych narzędzi można w oknie mapy zmierzyć odległości i powierzchnie. Narzędzia te podają wartości w jednostkach metrycznych. Pojedyncze kliknięcie prawym klawiszem myszy kończy pomiar.
+        <translation>&lt;h3&gt;Narzędzia pomiaru&lt;/h3&gt;
+Za pomocą tych narzędzi można w oknie mapy zmierzyć odległości, powierzchnie i kąty. Narzędzia te podają wartości w jednostkach metrycznych. Pojedyncze kliknięcie prawym klawiszem myszy kończy pomiar.
 &lt;h4&gt;Pomiar odległości&lt;/h4&gt;
-Wybierz to narzędzie aby zmierzyć odległość i klikaj wzdłuż linii, którą chcesz pomierzyć. Wyświetlana jest długość kolejnych segmentów oraz łączną długość całej linii. Aby zakończyć pomiar, kliknij prawym przyciskiem myszy.
+Wybierz to narzędzie, aby zmierzyć odległość. Wskazuj wierzchołki wzdłuż linii, którą chcesz zmierzyć. Wyświetlana jest długość kolejnych segmentów oraz łączną długość całej linii. 
 &lt;h4&gt;Pomiar powierzchni&lt;/h4&gt;
-Aby pomierzyć powierzchnię, wybierz to narzędzie i kliknij, aby utworzyć obszar. Łączna powierzchnia jest wyświetlana na bieżąco w  miarę przesuwania myszy, już po utworzeniu drugiego punktu. Aby zakończyć rysowanie, kliknij prawym przyciskiem myszy.
+Wybierz to narzędzie, aby zmierzyć powierzchnię. W miarę wskazywania kolejnych wierzchołków, aktualizowana jest łączna powierzchnia obiektu. 
+&lt;h4&gt;Pomiar kąta&lt;/h4&gt;
+Po wskazaniu dwóch wierzchołków tworzących segment bazowy, pojawi się okno wyświetlające na bieżąco kąt pomiędzy segmentem bazowym a pozycją kursora.
 </translation>
     </message>
     <message>
@@ -67805,7 +67807,10 @@ Aby pomierzyć powierzchnię, wybierz to narzędzie i kliknij, aby utworzyć obs
 Displays a north arrow overlayed onto the map.
 &lt;p&gt;
 At present there is only one style available. You can adjust the angle of the arrow or let QGIS set the direction automatically. If you choose to let QGIS determine the direction, it makes its best guess as to how the arrow should be oriented. For placement of the arrow you have four options, corresponding to the four corners of the map canvas.</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt; Strzałka północy&lt;/h3&gt;
+Wyświetla ikonę wskazującą kierunek północy w obszarze mapy.
+&lt;p&gt;
+Nie ma jeszcze możliwości zmiany jej wyglądu, można jedynie dostosować jej kąt wyświetlania lub pozwolić aby QGIS samodzielnie ustalał jej kierunek. Strzałkę można umieścić w jednym z czterech predefiniowanych narożników obszaru mapy.</translation>
     </message>
     <message>
         <location filename="../src/core/qgscontexthelp_texts.cpp" line="727"/>
@@ -67839,16 +67844,15 @@ Click on one of the icons along the top of the composer window to select what ty
 &lt;/p&gt;
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;Asystent wydruku&lt;/h3&gt;
+        <translation>&lt;h3&gt;Wydruk&lt;/h3&gt;
 
 &lt;p&gt;
-Asystent wydruku pozwala na komponowanie zawartości okna wydruku, które następnie może zostać wydrukowane. Wydruk można komponować z okna mapy, podziałki, legendy oraz dowolnych obrazów.
+Pozwala na komponowanie zawartości wydruku. 
 &lt;/p&gt;
 
 &lt;p&gt;
-Poszczególne obiekty do mapy dodaje się poprzez kliknięcie odpowiedniej ikony znajdującej się pośrodku górnego paska narzędzi. Następnie należy kliknąć na obszarze okna wydruku i przeciągnąć, kreśląc w ten sposób obszar nowego obiektu. Rozmiar niektórych obiektów, takich jak okno mapy, podziałka, mogą być ustawione w ten sposób. Inne obiekty mają ustalony rozmiar, ale może on byc zmieniony później poprzez wybranie obiektu i dostosowanie jego rozmiaru przeciągając rogi obiektu.
-
-
+Poszczególne obiekty (mapy, legendy, podziałki, etykiety, etc.) dodaje się do obszaru wydruku jako obiekty. Należy najpierw wybrać odpowiedni rodzaj obiektu do dodania z paska narzędzi lub menu, a następnie kliknąć na obszarze wydruku wskazując miejsce lokalizacji. Niektóre obiekty wymagają jedynie kliknięcia, niektóre zaś (np. mapa) wymagają wskazania obszaru wyświetlania. Należy w tym celu wskazać pierwszy wierzchołek mapy i przeciągnąć myszą, aby wskazać wierzchołek przeciwległy.&lt;/p&gt;&lt;/p&gt;
+&lt;p&gt;Obiekty mogą być edytowane w trybie interaktywnym (poprzez ich uchwyty), lub też poprzez edycję ich właściwości (zakładka Item properties). 
 &lt;/p&gt;
 </translation>
     </message>
