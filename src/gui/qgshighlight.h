@@ -20,6 +20,7 @@
 #include "qgsgeometry.h"
 #include "qgsrendererv2.h"
 #include <QBrush>
+#include <QColor>
 #include <QList>
 #include <QPen>
 #include <QPainter>
@@ -73,6 +74,7 @@ class GUI_EXPORT QgsHighlight: public QgsMapCanvasItem
     QgsMapLayer *mLayer;
     QgsFeature mFeature;
     QgsFeatureRendererV2 *mRenderer;
+    QColor mTemporaryFillColor;
 };
 
 #endif
