@@ -10079,7 +10079,7 @@ Error(%2): %3</source>
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="1235"/>
         <source>&quot;%1&quot; is not a valid color ramp</source>
-        <translation>&quot;%1&quot; er ikke en gyldig farverampe</translation>
+        <translation>&quot;%1&quot; er ikke en gyldig farveskala</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="1361"/>
@@ -12640,7 +12640,7 @@ Vil du angive stien (GISBASE) til din GRASS-installation?</translation>
         <location filename="../src/core/symbology-ng/qgscptcityarchive.cpp" line="82"/>
         <location filename="../src/core/symbology-ng/qgscptcityarchive.cpp" line="85"/>
         <source>All Ramps</source>
-        <translation>Alle ramper</translation>
+        <translation>Alle skalaer</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoraclefeatureiterator.cpp" line="316"/>
@@ -14660,7 +14660,7 @@ Fejl: %3
     <message>
         <location filename="../src/app/qgisapp.cpp" line="7218"/>
         <source>http://qgis.org/de/site/forusers/commercial_support.html</source>
-        <translation type="unfinished"></translation>
+        <translation>http://qgis.org/de/site/forusers/commercial_support.html</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="9428"/>
@@ -14817,7 +14817,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsabout.cpp" line="131"/>
         <source>&lt;p&gt;For a list of individuals and institutions who have contributed money to fund QGIS development and other project costs see &lt;a href=&quot;http://qgis.org/en/site/about/sponsorship.html#list-of-donors&quot;&gt;http://qgis.org/en/site/about/sponsorship.html#list-of-donors&lt;/a&gt;&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;For at finde en liste af mennesker og institutioner, som har sponsoreret QGIS udvikling og andre projektrelaterede aktiviteter, se &lt;a href=&quot;http://qgis.org/en/site/about/sponsorship.html#list-of-donors&quot;&gt;http://qgis.org/en/site/about/sponsorship.html#list-of-donors&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/qgsabout.cpp" line="230"/>
@@ -17098,7 +17098,7 @@ Database:%2</translation>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="105"/>
         <source>Color ramp</source>
-        <translation>Farverampe</translation>
+        <translation>Farveskala</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="122"/>
@@ -17172,12 +17172,12 @@ Database:%2</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="667"/>
         <source>There are no available color ramps. You can add them in Style Manager.</source>
-        <translation>Der er ikke nogen tilgængelige farveramper. Du kan tilføje dem i Stilartstyring.</translation>
+        <translation>Der er ikke nogen tilgængelige farveskalaer. Du kan tilføje dem i Stilartstyring.</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="669"/>
         <source>The selected color ramp is not available.</source>
-        <translation>Den valgte farverampe er ikke tilgængelig.</translation>
+        <translation>Den valgte farveskala er ikke tilgængelig.</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="683"/>
@@ -17254,7 +17254,7 @@ Skal de eksisterende klasser slettes før klassificering?</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgscolorrampcombobox.cpp" line="58"/>
         <source>New color ramp...</source>
-        <translation>Ny farverampe...</translation>
+        <translation>Ny farveskala...</translation>
     </message>
 </context>
 <context>
@@ -17715,7 +17715,7 @@ Prøv en lavere opløsning eller en mindre papirstørrelse</translation>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="3150"/>
         <source>Landscape</source>
-        <translation type="unfinished">Landskab</translation>
+        <translation>Liggende</translation>
     </message>
 </context>
 <context>
@@ -19470,7 +19470,7 @@ Prøv en lavere opløsning eller en mindre papirstørrelse</translation>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="355"/>
         <source>Auto update</source>
-        <translation type="unfinished"></translation>
+        <translation>Auto-opdatér</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="368"/>
@@ -19579,22 +19579,22 @@ Prøv en lavere opløsning eller en mindre papirstørrelse</translation>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="386"/>
         <source>Title font...</source>
-        <translation type="unfinished"></translation>
+        <translation>Titel skrifttype...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="393"/>
         <source>Subgroup font...</source>
-        <translation type="unfinished"></translation>
+        <translation>Undergruppe skrifttype...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="400"/>
         <source>Group font...</source>
-        <translation type="unfinished"></translation>
+        <translation>Gruppe skrifttype...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="407"/>
         <source>Item font...</source>
-        <translation type="unfinished"></translation>
+        <translation>Element skrifttype...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="500"/>
@@ -20230,7 +20230,7 @@ Prøv en lavere opløsning eller en mindre papirstørrelse</translation>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="128"/>
         <source>Map rotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Kort rotation</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="317"/>
@@ -20709,7 +20709,7 @@ Prøv en lavere opløsning eller en mindre papirstørrelse</translation>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="216"/>
         <source>Image rotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Billede rotation</translation>
     </message>
     <message>
         <source>Loading SVG previews...</source>
@@ -21394,12 +21394,12 @@ Prøv en lavere opløsning eller en mindre papirstørrelse</translation>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="220"/>
         <source>Header font...</source>
-        <translation type="unfinished"></translation>
+        <translation>Overskrift skrifttype...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="227"/>
         <source>Content font...</source>
-        <translation type="unfinished"></translation>
+        <translation>Indhold skrifttype...</translation>
     </message>
     <message>
         <source>Color</source>
@@ -21751,13 +21751,13 @@ Prøv en lavere opløsning eller en mindre papirstørrelse</translation>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="236"/>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="353"/>
         <source>Landscape</source>
-        <translation>Landskab</translation>
+        <translation>Liggende</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="41"/>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="357"/>
         <source>Portrait</source>
-        <translation>Portræt</translation>
+        <translation>Stående</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="68"/>
@@ -22449,7 +22449,7 @@ og den aktuelle fil er [%3]</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgscptcitycolorrampv2dialog.cpp" line="296"/>
         <source>All Ramps (%1)</source>
-        <translation>Alle ramper (%1)</translation>
+        <translation>Alle skaler (%1)</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgscptcitycolorrampv2dialog.cpp" line="86"/>
@@ -29137,7 +29137,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="22"/>
         <source>Color ramp</source>
-        <translation>Farverampe</translation>
+        <translation>Farveskala</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="32"/>
@@ -29235,12 +29235,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/symbology-ng/qgsgraduatedsymbolrendererv2widget.cpp" line="514"/>
         <source>There are no available color ramps. You can add them in Style Manager.</source>
-        <translation>Der er ingen tilgængelige farveramper. Du kan tilføje dem i Stilartstyring.</translation>
+        <translation>Der er ingen tilgængelige farveskalaer. Du kan tilføje dem i Stilartstyring.</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsgraduatedsymbolrendererv2widget.cpp" line="516"/>
         <source>The selected color ramp is not available.</source>
-        <translation>Den valgte farverampe er utilgængelig.</translation>
+        <translation>Den valgte farveskala er utilgængelig.</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsgraduatedsymbolrendererv2widget.cpp" line="538"/>
@@ -32624,7 +32624,7 @@ Der er måske et problem med din netværksforbindelse, eller på WMS-serveren.</
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="1330"/>
         <source>Attributes changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Attributter blev ændret</translation>
     </message>
     <message>
         <source>Attribute changes</source>
@@ -36704,37 +36704,37 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     <message>
         <location filename="../src/providers/memory/qgsmemoryprovider.cpp" line="89"/>
         <source>Whole number (smallint - 16bit)</source>
-        <translation type="unfinished">Heltal (smallint - 16bit)</translation>
+        <translation>Heltal (smallint - 16bit)</translation>
     </message>
     <message>
         <location filename="../src/providers/memory/qgsmemoryprovider.cpp" line="90"/>
         <source>Whole number (integer - 32bit)</source>
-        <translation type="unfinished">Heltal (integer - 32bit)</translation>
+        <translation>Heltal (integer - 32bit)</translation>
     </message>
     <message>
         <location filename="../src/providers/memory/qgsmemoryprovider.cpp" line="91"/>
         <source>Whole number (integer - 64bit)</source>
-        <translation type="unfinished">Heltal (integer - 64bit)</translation>
+        <translation>Heltal (integer - 64bit)</translation>
     </message>
     <message>
         <location filename="../src/providers/memory/qgsmemoryprovider.cpp" line="92"/>
         <source>Decimal number (numeric)</source>
-        <translation type="unfinished">Decimaltal (numeric)</translation>
+        <translation>Decimaltal (numeric)</translation>
     </message>
     <message>
         <location filename="../src/providers/memory/qgsmemoryprovider.cpp" line="93"/>
         <source>Decimal number (decimal)</source>
-        <translation type="unfinished">Decimaltal (decimal)</translation>
+        <translation>Decimaltal (decimal)</translation>
     </message>
     <message>
         <location filename="../src/providers/memory/qgsmemoryprovider.cpp" line="97"/>
         <source>Decimal number (double)</source>
-        <translation type="unfinished">Decimaltal (double)</translation>
+        <translation>Decimaltal (double)</translation>
     </message>
     <message>
         <location filename="../src/providers/memory/qgsmemoryprovider.cpp" line="100"/>
         <source>Text, unlimited length (text)</source>
-        <translation type="unfinished">Tekst, ubegrænset længde (text)</translation>
+        <translation>Tekst, ubegrænset længde (text)</translation>
     </message>
 </context>
 <context>
@@ -41248,7 +41248,7 @@ Altid netværk: indlæs altid fra netværk og tjek ikke, om cachen har en gyldig
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3971"/>
         <source>Ask for datum transformation when no default is defined</source>
-        <translation type="unfinished"></translation>
+        <translation>Spørg efter datum transformering når der ikke er defineret nogen standardværdier</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="4158"/>
@@ -42949,7 +42949,7 @@ Fejl: %2</translation>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="208"/>
         <source>Only show layers in the layer registries</source>
-        <translation type="unfinished"></translation>
+        <translation>Vis kun lag i lagregistre</translation>
     </message>
     <message>
         <source>Only look in the layer registries</source>
@@ -46121,7 +46121,7 @@ Fortsæt?</translation>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1010"/>
         <source>Color Ramp</source>
-        <translation>Farverampe</translation>
+        <translation>Farveskala</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1203"/>
@@ -51070,7 +51070,7 @@ forbedring</translation>
     </message>
     <message>
         <source>Color ramp</source>
-        <translation type="obsolete">Farverampe</translation>
+        <translation type="obsolete">Farveskala</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssinglebandpseudocolorrendererwidgetbase.ui" line="299"/>
@@ -52685,7 +52685,24 @@ p, li { white-space: pre-wrap; }
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/images/sponsors/sponsors/ibw.png&quot; /&gt;   &lt;img src=&quot;:/images/sponsors/sponsors/geosynergy.png&quot; /&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;hr /&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Cantarell&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt;Vi arbejder virkeligt hårdt for at lave dette dejlige program til dig. Har du prøvet alle de lækre funktioner? Får du en dejlig mavefornemmelse når du bruger programmet? QGIS er en kærlighedsarbejde for en dedikeret gruppe af programmører. Vi ønsker, at du kopier programmet og deler det med så mange mennesker som muligt. Hvis QGIS sparer dig penge eller du værdsætter vores arbejde - og har finasielle muligheder for at hjælpe - så overvej at sponsorere udviklingen af QGIS. Vi bruger støtten fra sponsorer til at betale for transport og andre omkostninger i forbindelse med vores halvårlige &quot;hackfests&quot;, and til generelt at støtte formålene med vores projekt.  &lt;br /&gt;&lt;br /&gt;Se venligst &lt;/span&gt;&lt;a href=&quot;http://qgis.org/en/sponsorship.html&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;QGIS Sponsorat Web Siden&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt; for flere oplysninger. På &lt;/span&gt;&lt;a href=&quot;http://qgis.org/en/sponsorship/sponsors.html&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Sponsorat siden&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt; kan du se alle de dejlige mennesker, organisationer og firmaer, som hjælper os finansielt - Mange, mange tak for hjælpen til jer alle!&lt;/span&gt;&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/images/sponsors/sponsors/gold.png&quot; /&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/images/sponsors/sponsors/aas_300wide.png&quot; /&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/images/sponsors/sponsors/silver.png&quot; /&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/images/sponsors/sponsors/vorarlberg.png&quot; /&gt;   &lt;img src=&quot;:/images/sponsors/sponsors/gaia.png&quot; /&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/images/sponsors/sponsors/bronze.png&quot; /&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/images/sponsors/sponsors/ibw.png&quot; /&gt;   &lt;img src=&quot;:/images/sponsors/sponsors/geosynergy.png&quot; /&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;hr /&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -53053,7 +53070,7 @@ Opdateringer af geometriværdier vil blive slået fra, og forespørgselsydeevnen
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2exportimportdialog.cpp" line="111"/>
         <source>You should select at least one symbol/color ramp.</source>
-        <translation>Du bør vælge mindst ét symbol/én farverampe.</translation>
+        <translation>Du bør vælge mindst ét symbol/én farveskala.</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2exportimportdialog.cpp" line="117"/>
@@ -53136,7 +53153,7 @@ Overskriv?</translation>
         <location filename="../src/gui/symbology-ng/qgsstylev2exportimportdialog.cpp" line="325"/>
         <source>Color ramp with name &apos;%1&apos; already exists.
 Overwrite?</source>
-        <translation>Farverampe med navnet &apos;%1&apos; findes allerede.
+        <translation>Farveskala med navnet &apos;%1&apos; findes allerede.
 Overskriv?</translation>
     </message>
     <message>
@@ -53213,7 +53230,7 @@ Overskriv?</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="175"/>
         <source>Color ramp (%1)</source>
-        <translation>Farverampe (%1)</translation>
+        <translation>Farveskala (%1)</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="329"/>
@@ -53332,57 +53349,57 @@ Overskriv?</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="416"/>
         <source>Color ramp type</source>
-        <translation>Farverampetype</translation>
+        <translation>Farveskala type</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="417"/>
         <source>Please select color ramp type:</source>
-        <translation>Vælg en farverampetype:</translation>
+        <translation>Vælg en farveskala type:</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="422"/>
         <source>new ramp</source>
-        <translation>ny rampe</translation>
+        <translation>ny skala</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="435"/>
         <source>new gradient ramp</source>
-        <translation>ny gradientrampe</translation>
+        <translation>ny gradient skala</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="447"/>
         <source>new random ramp</source>
-        <translation>ny tilfældig rampe</translation>
+        <translation>ny tilfældig skala</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="496"/>
         <source>Color Ramp Name</source>
-        <translation>Farverampenavn</translation>
+        <translation>Farveskala navn</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="497"/>
         <source>Please enter a name for new color ramp:</source>
-        <translation>Angiv et navn til den nye farverampe:</translation>
+        <translation>Angiv et navn til den nye farveskala:</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="507"/>
         <source>Save Color Ramp</source>
-        <translation>Gem farverampe</translation>
+        <translation>Gem farveskala</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="508"/>
         <source>Cannot save color ramp without name. Enter a name.</source>
-        <translation>Kan ikke gemme farverampe uden et navn. Angiv et navn.</translation>
+        <translation>Kan ikke gemme farveskalauden et navn. Angiv et navn.</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="512"/>
         <source>Save color ramp</source>
-        <translation>Gem farverampe</translation>
+        <translation>Gem farveskala</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="513"/>
         <source>Color ramp with name &apos;%1&apos; already exists. Overwrite?</source>
-        <translation>Farverampe med navnet &apos;%1&apos; findes allerede. Overskriv?</translation>
+        <translation>Farveskala med navnet &apos;%1&apos; findes allerede. Overskriv?</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="883"/>
@@ -53528,7 +53545,7 @@ Der var et problem med til din symboldatabase.</translation>
     <message>
         <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="231"/>
         <source>Color ramp</source>
-        <translation>Farverampe</translation>
+        <translation>Farveskala</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="287"/>
@@ -54131,17 +54148,17 @@ Der var et problem med til din symboldatabase.</translation>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="42"/>
         <source>If you write a scientific paper or any other article that refers to QGIS we would love to include your work in the &lt;a href=&quot;http://qgis.org/en/site/about/case_studies/index.html&quot;&gt;case studies section&lt;/a&gt; of the QGIS home page.</source>
-        <translation type="unfinished"></translation>
+        <translation>Hvis du skriver en videnskabelig afhandling eller nogen anden artikel, som henviser til QGIS, vil vi meget gerne inkludere dit arbejde i &lt;a href=&quot;http://www.qgis.org/en/community/qgis-case-studies.html&quot;&gt;case study-sektionen&lt;/a&gt; på QGIS-hjemmesiden.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="49"/>
         <source>Would you like to see QGIS in your native language? We are looking for more translators and would appreciate your help! The translation process is fairly straight forward - instructions are available in the QGIS wiki &lt;a href=&quot;http://qgis.org/en/site/getinvolved/translate.html#howto-translate-gui&quot;&gt;translator&apos;s page.&lt;/a&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Vil du gerne se QGIS i dit eget sprog? Vi søger efter flere oversættere og vil værdsætte din hjælp! Oversættelsesprocessen er rimelig ligetil - instruktioner til tilgængelige i QGIS&apos; wikis &lt;a href=&quot;http://qgis.org/en/site/getinvolved/translate.html#howto-translate-gui&quot;&gt;translator&apos;s page.&lt;/a&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="58"/>
         <source>If you need help using QGIS we have a &apos;users&apos;  mailing list where users help each other with issues related to using our sofware. We also have a &apos;developers&apos; mailing list. for those wanting help and to discuss things relating to the QGIS code base. Details on how to subscribe are in the &lt;a href=&quot;http://qgis.org/en/site/forusers/support.html#mailing-lists&quot;&gt;community section&lt;/a&gt; of the QGIS home page.</source>
-        <translation type="unfinished"></translation>
+        <translation>Hvis du behøver hjælp med at bruge QGIS, har vi en &apos;users&apos;-mailingliste, hvor brugere hjælper hinanden med problemer relateret til brugen af vores software. Vi har også en &apos;developers&apos;-mailingliste for dem, som vil hjælpe og diskutere ting relateret til QGIS-kodebasen. Detaljer om, hvordan du abonnerer er i &lt;a href=&quot;http://qgis.org/en/site/forusers/support.html#mailing-lists&quot;&gt;community section&lt;/a&gt; på QGIS-hjemmesiden.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="67"/>
@@ -54291,7 +54308,7 @@ Der var et problem med til din symboldatabase.</translation>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="175"/>
         <source>If QGIS is saving you money or you like our work and have the financial ability to help, please consider sponsoring the development of QGIS. We use money from sponsors to pay for travel and costs related to our regular hackfest meetings, and to generally support the goals of our project. Please see the &lt;a href=&quot;http://qgis.org/en/site/getinvolved/governance/sponsorship/sponsorship.html&quot;&gt;QGIS Sponsorship Web Page&lt;/a&gt; for more details.</source>
-        <translation type="unfinished"></translation>
+        <translation>Hvis QGIS sparer dig penge, eller du kan lide vores arbejde og har mulighed for at hjælpe økonomisk, så overvej at sponsorere udviklingen af Quantum GIS. Vi bruger penge fra sponsorer til at betale for rejser og omkostninger til vores halvårlige programmeringsfester, og til generelt at støtte vores mål med projektet. Se &lt;a href=&quot;http://qgis.org/en/site/getinvolved/governance/sponsorship/sponsorship.htm&quot;&gt;QGIS&apos; sponsorhjemmeside&lt;/a&gt; for flere detaljer.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="185"/>
@@ -54633,7 +54650,7 @@ Skal de eksisterende klasser slettes før klassificering?</translation>
     <message>
         <location filename="../src/ui/qgsvectorcolorbrewercolorrampv2dialogbase.ui" line="14"/>
         <source>ColorBrewer ramp</source>
-        <translation>Farvebryggerrampe</translation>
+        <translation>Farvebrygger skala</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorcolorbrewercolorrampv2dialogbase.ui" line="22"/>
@@ -54793,7 +54810,7 @@ Skal de eksisterende klasser slettes før klassificering?</translation>
     <message>
         <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="14"/>
         <source>Gradient color ramp</source>
-        <translation>Gradientfarverrampe</translation>
+        <translation>Gradient farveskala</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="22"/>
@@ -56349,7 +56366,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsvectorrandomcolorrampv2dialogbase.ui" line="14"/>
         <source>Random color ramp</source>
-        <translation>Tilfældig farverampe</translation>
+        <translation>Tilfældig farveskala</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorrandomcolorrampv2dialogbase.ui" line="22"/>
@@ -66412,7 +66429,7 @@ Returns a substring that contains the &lt;i&gt;n&lt;/i&gt; rightmost characters 
 
 </source>
         <translation>&lt;h3&gt;Funktionen right()&lt;/h3&gt;
-Returnerer en delstreng, som indeholder &lt;i&gt;n&lt;/i&gt; tegn af strengen fra højre af.
+Returnerer en delstreng, som indeholder &lt;i&gt;n&lt;/i&gt; tegn af strengen startende fra højre.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
 &lt;code&gt;right(streng, pos)&lt;/code&gt;&lt;br&gt;
@@ -66456,7 +66473,7 @@ Returns the length of a string.
      length(&apos;HELLO&apos;) &amp;rarr; 5&lt;/p&gt;
 </source>
         <translation>&lt;h3&gt;Funktionen length()&lt;/h3&gt;
-Returns længden af en streng.
+Returnerer længden af en streng.
 
 &lt;p&gt;&lt;h4&gt;Syntaks&lt;/h4&gt;
      length(&lt;i&gt;streng&lt;/i&gt;)&lt;/p&gt;
@@ -66520,7 +66537,7 @@ Returns a substring that contains the &lt;i&gt;n&lt;/i&gt; leftmost characters o
 
 </source>
         <translation>&lt;h3&gt;Funktionen left()&lt;/h3&gt;
-Returnerer en delstreng, som indeholder &lt;i&gt;n&lt;/i&gt; tegn fra venstre i strengen.
+Returnerer en delstreng, som indeholder &lt;i&gt;n&lt;/i&gt; tegn startende fra venstre i strengen.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
 &lt;code&gt;left(streng, længde)&lt;/code&gt;&lt;br&gt;
@@ -66686,7 +66703,7 @@ b &amp;rarr; geometry
 &lt;pre&gt; intersects( geomFromWKT( &apos;POINT(4 5)&apos; ) , geomFromWKT( &apos;POINT(5 5)&apos; ))             &amp;rarr; returns 0&lt;/pre&gt;
 </source>
         <translation>&lt;h3&gt;intersects funktion&lt;/h3&gt;
-Returnerer 1 hvis geometrier spatielt skærer hinanden (har er en eller flere dele af flader tilfælles) og 0 hvis det ikke er tilfældet.
+Returnerer 1 hvis geometrierne spatielt skærer hinanden (har en eller flere delflader tilfælles) og 0 hvis det ikke er tilfældet.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
 &lt;pre&gt;intersects( a, b )&lt;/pre&gt;
@@ -66716,7 +66733,7 @@ geometry &amp;rarr; geometry
 &lt;pre&gt; geomToWKT( intersection( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 )&apos; ))  )   &amp;rarr; returns LINESTRING(3 3, 4 4)&lt;/pre&gt;
 </source>
         <translation>&lt;h3&gt;Funktionen intersection&lt;/h3&gt;
-Returner en geometri som repræsenterer fællesdelen (overlapsdelen) af geometri a og geometry b.
+Returner en geometri som repræsenterer fællesdelen (overlapsdelen) af geometri a og geometri b.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
 &lt;pre&gt;intersection( geometry a , geometry b)&lt;/pre&gt;
@@ -66777,7 +66794,7 @@ None
 &lt;pre&gt; &apos;A&apos; ILIKE &apos;B&apos;  &amp;rarr; returns 0 &lt;/pre&gt;
 </source>
         <translation>&lt;h3&gt;udtrykket ILIKE&lt;/h3&gt;
-Returnerer 1 hvis den første parameter  matcher arg. pattern (mønster). uden hensyntagen til store og små bogstaver. LIKE kan bruges ligesom ILIKE for at tage hensyn til store og små bogstaver. Kan også benyttes til tal.
+Returnerer 1 hvis den første parameter  matcher mønsteret fra anden parameter uden hensyntagen til store og små bogstaver. LIKE kan bruges ligesom ILIKE men under hensyntagen til store og små bogstaver. Kan også benyttes til tal.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
 &lt;pre&gt;string/number ILIKE pattern&lt;/pre&gt;
@@ -66808,7 +66825,7 @@ Converts a string to real number. Nothing changed if a value cannot be converted
      toreal(&apos;123.45&apos;) &amp;rarr; 123.45&lt;/p&gt;
 </source>
         <translation>&lt;h3&gt;Funktionen toreal()&lt;/h3&gt;
-Konverterer en streng til et real-tal. Intet ændres, hvis en værdi ikke kan konverteres til real (fx &apos;123.56asd&apos; is invalid). Tal afrundes efter gemning af ændringer, hvis præcisionen er mindre end resultatet af konverteringen.
+Konverterer en streng til et flydende tal. Intet ændres, hvis værdien ikke kan konverteres til et flydende tal (fx &apos;123.56asd&apos; er ugyldigt). Ved gemning afrundes tallet, hvis præcisionen er mindre end resultatet af konverteringen.
 
 &lt;p&gt;&lt;h4&gt;Syntaks&lt;/h4&gt;
      toreal(&lt;i&gt;streng&lt;/i&gt;)&lt;/p&gt;
@@ -66839,7 +66856,7 @@ None
 &lt;pre&gt; &apos;A&apos; LIKE &apos;B&apos;  &amp;rarr; returns 0 &lt;/pre&gt;
 </source>
         <translation>&lt;h3&gt;Udtrykket LIKE&lt;/h3&gt;
-Returnerer 1 hvis det første argument matcher argument  pattern med hensytagen til store og små bogstaver. Kan også benyttes til tal.
+Returnerer 1 hvis det første argument matcher mønsteret i andet argument under hensyntagen til store og små bogstaver. Kan også benyttes til tal.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
 &lt;pre&gt;string/number LIKE pattern&lt;/pre&gt;
@@ -66870,7 +66887,7 @@ geometry &amp;rarr; geometry
 &lt;pre&gt; contains( geomFromWKT( &apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))          &amp;rarr; returns 0&lt;/pre&gt;
 </source>
         <translation>&lt;h3&gt;Funktionen contains&lt;/h3&gt;
- Returnerer true hvis og b helt er omsluttet af a. Dvs. b er en sand delmængde af a 
+ Returnerer true hvis b helt er omsluttet af a. Dvs. b er en sand delmængde af a 
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
 &lt;pre&gt;contains( geometry a , geometry b)&lt;/pre&gt;
@@ -67066,7 +67083,7 @@ b &amp;rarr; distance for the buffer
 
 </source>
         <translation>&lt;h3&gt;Funktionen buffer&lt;/h3&gt;
-Returnerer en geometri, som repræsenterer en mængde af alle de punkterh hvor afstanden fra geometri af er mindre end lig med afstanden b. Beregningerne foretages i det koordinatsystem, som a er defineret i.
+Returnerer en geometri, som er mængden af alle de punkter hvor afstanden fra geometrien a er mindre end eller lig med afstanden b. Beregningerne foretages i det koordinatsystem, som a er defineret i.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
 &lt;pre&gt;buffer(a, b)&lt;/pre&gt;
@@ -67182,7 +67199,7 @@ b &amp;rarr; geometry
 &lt;pre&gt; touches( geomFromWKT( &apos;POINT(4 4)&apos; ) , geomFromWKT( &apos;POINT(5 5)&apos; ))                     &amp;rarr; returns 0&lt;/pre&gt;
 </source>
         <translation>&lt;h3&gt;Funktion touches&lt;/h3&gt;
-Returnerer 1 hvis geometrierne har mindt eet yderpunkt (kantpunkt)  til fælles, men hvor deres indersider ikke har dele til fælles.
+Returnerer 1 hvis geometrierne har mindst eet punkt på omkredsen (kantpunkt)  til fælles, men hvor deres indersider ikke har dele til fælles.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
 &lt;pre&gt;touches( a, b )&lt;/pre&gt;
@@ -67385,8 +67402,8 @@ This function takes two arguments.
 &lt;code&gt;rand(1, 10) &amp;rarr; 8&lt;/code&gt;&lt;br&gt;
 </source>
         <translation>&lt;h3&gt;Funktionen rand()&lt;/h3&gt;
-Returnerer et tilfældigt heltal med intervallet angivet med minimum- og
-maksimum-argumentet (inklusiv).
+Returnerer et tilfældigt heltal indenfor intervallet angivet med minimum- og
+maksimum-argumentet (begge inkluderet).
 &lt;br&gt;
 Denne funktion tager 2 argumenter.
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -67636,7 +67653,7 @@ geometry &amp;rarr; geometry
 &lt;pre&gt; crosses( geomFromWKT( &apos;POINT(4 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))             &amp;rarr; returns 0&lt;/pre&gt;
 </source>
         <translation>&lt;h3&gt;Funktionen crosses&lt;/h3&gt;
-Returnerer 1 hvis geometri deto geometri argumenter har nogle men ikke andre indre punkter til fælles.
+Returnerer 1 hvis de to geometrier har nogle dele tilfælles men ikke er identiske.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
 &lt;pre&gt;crosses( $geometry , $geometry)&lt;/pre&gt;
@@ -68007,7 +68024,7 @@ Convert a string into Qt data type.
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;todate(&apos;2012-05-04&apos;) &amp;rarr; 2012-05-04&lt;/code&gt;&lt;br&gt;</source>
         <translation>&lt;h3&gt;Funktionen todate()&lt;/h3&gt;
-Konverterer en streng til en Qt-datatype.
+Konverterer en streng til en Qt-datotype.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
 &lt;code&gt;todate(&apos;streng&apos;)&lt;/code&gt;&lt;br&gt;
@@ -68042,7 +68059,7 @@ using the fill character.
 </source>
         <translation>&lt;h3&gt;Funktionen lpad()&lt;/h3&gt;
 Returnerer en streng med den angivne længde udfyldt
-med fyldtegnet.
+med fyldtegnet, hvor den originale strengværdi står først.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
 &lt;code&gt;lpad(streng, længde, fyld)&lt;/code&gt;&lt;br&gt;
@@ -68297,7 +68314,7 @@ Returns exponential of an value.
      exp(1.0) &amp;rarr; 2.71828182845905&lt;/p&gt;
 </source>
         <translation>&lt;h3&gt;Funktionen exp()&lt;/h3&gt;
-Returns eksponentialfunktionen af en værdi.
+Returnerer eksponentialfunktionen af en værdi.
 
 
 &lt;p&gt;&lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -68365,7 +68382,7 @@ using the fill character.
 </source>
         <translation>&lt;h3&gt;Funktionen rpad()&lt;/h3&gt;
 Returnerer en streng med den angivne længde udfyldt
-med fyldtegnet.
+med fyldtegnet, hvor den originale strengværdi står sidst.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
 &lt;code&gt;rpad(streng, bredde, fyld)&lt;/code&gt;&lt;br&gt;
@@ -68602,7 +68619,7 @@ None
 
 </source>
         <translation>&lt;h3&gt;Funktionen $perimeter&lt;/h3&gt;
-Returnerer det aktuelle objekts perimeterværdi.
+Returnerer det aktuelle objekts perimeterværdi (omkreds).
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
 &lt;pre&gt;$perimeter&lt;/pre&gt;
@@ -69020,23 +69037,22 @@ may not give the expected results if you move your Quantum project.
 </source>
         <translation>
 &lt;h3&gt;Funktionen ramp_color()&lt;/h3&gt;
-Returnerer en streng, som repræsenterer en farve fra en farverampe
+Returnerer en streng, som repræsenterer en farve fra en farveskala
 
 &lt;p&gt;&lt;h4&gt;Syntaks&lt;/h4&gt;
-     ramp_color(&lt;i&gt;rampe_navn,værdi&lt;/i&gt;)&lt;/p&gt;
+     ramp_color(&lt;i&gt;skala_navn,værdi&lt;/i&gt;)&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;Argumenter&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
-&lt;i&gt;  rampe_navn&lt;/i&gt; &amp;rarr; navnet på farverampen som en streng, fx &apos;Spektral&apos;.&lt;br&gt;
-&lt;i&gt;  værdi&lt;/i&gt; &amp;rarr; positionen på rampen, hvor der skal vælges en farve fra en real mellem 0 og 1.&lt;br&gt;
+&lt;i&gt;  skala_navn&lt;/i&gt; &amp;rarr; navnet på farveskala som en streng, fx &apos;Spektral&apos;.&lt;br&gt;
+&lt;i&gt;  værdi&lt;/i&gt; &amp;rarr; positionen på skalaen, hvorfra der skal vælges en farve fra et flydende tal mellem 0 og 1.&lt;br&gt;
 
 &lt;p&gt;&lt;h4&gt;Eksempel&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
      ramp_color(&apos;Spectral&apos;,0.3) &amp;rarr; &apos;#fdbe73&apos;&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;Note:&lt;/h4&gt;
-The color ramps available vary between QGIS installations.  This function
-may not give the expected results if you move your Quantum project.
+Antallet af tilgængelige farveskala kan variere afhængig af QGIS installationer. Denne funktion kan give et anderledes resultat, hvis du flytter dit QGIS projekt til en anden maskine.
 &lt;/p&gt;
 </translation>
     </message>
@@ -69248,8 +69264,8 @@ This function takes two arguments.
 &lt;code&gt;randf(1, 10) &amp;rarr; 4.59258286403147&lt;/code&gt;&lt;br&gt;
 </source>
         <translation>&lt;h3&gt;Funktionen randf()&lt;/h3&gt;
-Returnerer en tilfældig float i intervallet angivet med minimum- og 
-maksimum-argumentet (inklusive).
+Returnerer en tilfældigt flydende tal indefor intervallet angivet med minimum- og 
+maksimum-argumentet (begge inkluderet).
 &lt;br&gt;
 Funktionen tager 2 argumenter.
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -69907,7 +69923,7 @@ None
 
 </source>
         <translation>&lt;h3&gt;Funktionen $y&lt;/h3&gt;
-Returner y-koordinatet fra det aktuelle objekt.
+Returnerer y-koordinatet fra det aktuelle objekt.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
 &lt;pre&gt;$y&lt;/pre&gt;
@@ -70087,7 +70103,7 @@ Returnerer en strengrepræsentation af en farve baseret på dens farvetone-, mæ
 This group contains math functions e.g square root, sin and cos
 </source>
         <translation>&lt;h3&gt;Matematik-gruppe&lt;/h3&gt;
-Denne gruppe indeholder matematiske funktion, fx kvadratrod, sinus og cosinus
+Denne gruppe indeholder matematiske funktioner, fx kvadratrod, sinus og cosinus
 </translation>
     </message>
     <message>
@@ -70561,7 +70577,7 @@ Format a date type or string into a custom string format. Uses Qt data time form
 &lt;code&gt;format_date(&apos;2012-05-15&apos;,&apos;dd.mm.yyyy&apos;) &amp;rarr; 15.05.2012&lt;/code&gt;&lt;br&gt;
 </source>
         <translation>&lt;h3&gt;Funktionen format_date()&lt;/h3&gt;
-Formaterer en date-type eller streng til et tilpasset strengformat. Bruger Qt-data-tidsformats-strenge  Se &lt;a href=&apos;http://qt-project.org/doc/qt-4.8/qdatetime.html#toString&apos;&gt;QDateTime::toString&lt;/a&gt;
+Formaterer en dato-type eller streng til et tilpasset strengformat. Bruger Qt-dato-tidsformats-strenge  Se &lt;a href=&apos;http://qt-project.org/doc/qt-4.8/qdatetime.html#toString&apos;&gt;QDateTime::toString&lt;/a&gt;
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
 &lt;code&gt;format_date(&apos;string&apos;, &apos;format_string&apos;)&lt;/code&gt;&lt;br&gt;
@@ -70781,7 +70797,7 @@ geometry &amp;rarr; geometry
 &lt;pre&gt; geomToWKT( symDifference(  geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 8 8)&apos; ))   )   &amp;rarr; returns LINESTRING(5 5, 8 8)&lt;/pre&gt;
 </source>
         <translation>&lt;h3&gt;Funktionen symDifference&lt;/h3&gt;
-Returnerer en geometri som repræsenterer de dele af a og b som ikke skærer hinanden.
+Returnerer en geometri som repræsenterer summen af de dele af a og b som ikke skærer hinanden.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
 &lt;pre&gt;symDifference( geometry a, geometry b)&lt;/pre&gt;
@@ -70810,7 +70826,7 @@ a &amp;rarr; geometry
 &lt;pre&gt;  geomToWKT( convexHull( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 4 10)&apos; )) )   &amp;rarr; returns POLYGON((3 3,4 10,4 4,3 3)) &lt;/pre&gt;
 </source>
         <translation>&lt;h3&gt;Funktionen convexHull&lt;/h3&gt;
-Returnerer dn konvekse skal af et sæt geometrier. Den representerer den minimal konvekse skal som inkluderer alle geometrier i sættet.
+Returnerer den konvekse skal af et par geometrier. Den er lig med den minimale konvekse skal, som inkluderer alle geometrier i parret.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
 &lt;pre&gt;convexHull( a, b )&lt;/pre&gt;
