@@ -2530,6 +2530,9 @@ int QgsGeometry::addPart( const QList<QgsPoint> &points, QGis::GeometryType geom
 
 int QgsGeometry::addPart( QgsGeometry *newPart )
 {
+  if( !newPart )
+    return 4;
+
   const GEOSGeometry * geosPart = newPart->asGeos();
   return addPart( GEOSGeom_clone( geosPart ) );
 }
@@ -3028,6 +3031,9 @@ int QgsGeometry::reshapeGeometry( const QList<QgsPoint>& reshapeWithLine )
 int QgsGeometry::makeDifference( QgsGeometry* other )
 {
   //make sure geos geometry is up to date
+  if ( !other )
+    return 1;
+
   if ( mDirtyGeos )
     exportWkbToGeos();
 
@@ -3323,6 +3329,9 @@ bool QgsGeometry::intersects( const QgsRectangle& r ) const
 
 bool QgsGeometry::intersects( const QgsGeometry* geometry ) const
 {
+  if( !geometry )
+    return false;
+
   try // geos might throw exception on error
   {
     // ensure that both geometries have geos geometry
@@ -3343,6 +3352,12 @@ bool QgsGeometry::intersects( const QgsGeometry* geometry ) const
 bool QgsGeometry::contains( const QgsPoint* p ) const
 {
   exportWkbToGeos();
+
+  if ( !p )
+  {
+    QgsDebugMsg( "pointer p is 0" );
+    return false;
+  }
 
   if ( !mGeos )
   {
@@ -3376,6 +3391,9 @@ bool QgsGeometry::geosRelOp(
   const QgsGeometry *a,
   const QgsGeometry *b )
 {
+  if( !a || !b )
+    return false;
+
   try // geos might throw exception on error
   {
     // ensure that both geometries have geos geometry
@@ -4744,7 +4762,6 @@ GEOSGeometry* QgsGeometry::reshapePolygon( const GEOSGeometry* polygon, const GE
     delete [] innerRings;
     return 0;
   }
-
 
   GEOSGeometry* newOuterRing = 0;
   if ( lastIntersectingRing == -1 )
