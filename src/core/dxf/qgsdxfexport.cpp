@@ -834,8 +834,11 @@ void QgsDxfExport::writePolyline( const QgsPolyline& line, const QString& layer,
   writeGroup( 66, 1 );
   int type = polygon ? 1 : 0;
   writeGroup( 70, type );
-  writeGroup( 40, width );
-  writeGroup( 41, width );
+  if ( width > 0 ) //width -1: use default width
+  {
+    writeGroup( 40, width );
+    writeGroup( 41, width );
+  }
 
   QgsPolyline::const_iterator lineIt = line.constBegin();
   for ( ; lineIt != line.constEnd(); ++lineIt )
@@ -955,7 +958,11 @@ void QgsDxfExport::addFeature( const QgsSymbolV2RenderContext& ctx, const QStrin
     {
       c = colorFromSymbolLayer( symbolLayer, ctx );
     }
-    double width = symbolLayer->dxfWidth( *this, ctx );
+    double width = -1;
+    if ( mSymbologyExport != NoSymbology && symbolLayer )
+    {
+      width = symbolLayer->dxfWidth( *this, ctx );
+    }
     QString lineStyleName = "CONTINUOUS";
     if ( mSymbologyExport != NoSymbology )
     {
