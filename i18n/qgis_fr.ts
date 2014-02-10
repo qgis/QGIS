@@ -29565,7 +29565,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="135"/>
         <source>Update existing field</source>
-        <translation>Mise à jour d'un champ existant</translation>
+        <translation>Mise à jour d&apos;un champ existant</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="20"/>
@@ -40194,19 +40194,19 @@ ne sont pas affichés</translation>
     <message>
         <location filename="../src/app/qgsmaptoolsplitparts.cpp" line="80"/>
         <source>Parts split</source>
-        <translation type="unfinished">Séparer les parties</translation>
+        <translation>Séparer les parties</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsplitparts.cpp" line="86"/>
         <location filename="../src/app/qgsmaptoolsplitparts.cpp" line="94"/>
         <location filename="../src/app/qgsmaptoolsplitparts.cpp" line="102"/>
         <source>No part split done</source>
-        <translation type="unfinished"></translation>
+        <translation>Aucune séparation effectuée</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsplitparts.cpp" line="87"/>
         <source>If there are selected parts, the split tool only applies to the selected ones. If you like to split all parts under the split line, clear the selection</source>
-        <translation type="unfinished">S&apos;il y a des parties sélectionnées, l&apos;outil de séparation s&apos;appliquera uniquement sur la sélection. Si vous voulez séparer toutes les parties de la ligne, effacez la sélection</translation>
+        <translation>S&apos;il y a des parties sélectionnées, l&apos;outil de séparation s&apos;appliquera uniquement sur la sélection. Si vous voulez séparer toutes les parties de la ligne, effacez la sélection</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsplitparts.cpp" line="95"/>
@@ -50326,13 +50326,13 @@ Essayer de trouver les couches manquantes ?</translation>
         <location filename="../src/app/qgsprojectproperties.cpp" line="921"/>
         <location filename="../src/app/qgsprojectproperties.cpp" line="922"/>
         <source>OFF</source>
-        <translation type="unfinished">OFF</translation>
+        <translation>OFF</translation>
     </message>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="932"/>
         <location filename="../src/app/qgsprojectproperties.cpp" line="933"/>
         <source>ON</source>
-        <translation type="unfinished">ON</translation>
+        <translation>ON</translation>
     </message>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="1078"/>
@@ -50910,12 +50910,12 @@ Proceed?</source>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="413"/>
         <source>Semi-major</source>
-        <translation type="unfinished">Semi-majeur</translation>
+        <translation>Semi-majeur</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="426"/>
         <source>Semi-minor</source>
-        <translation type="unfinished">Semi-mineur</translation>
+        <translation>Semi-mineur</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="445"/>
@@ -52907,7 +52907,7 @@ Cliquer sur le bouton Aide pour connaître les options valides de création pour
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1304"/>
         <source>&lt;src no data value&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;src valeur nulle&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1315"/>
@@ -61093,7 +61093,7 @@ Les classes existantes doivent-elles être effacées avant la classification ?</
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="670"/>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="727"/>
         <source>Datasource database</source>
-        <translation type="unfinished"></translation>
+        <translation>Base de données source</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="684"/>
@@ -61108,7 +61108,7 @@ Les classes existantes doivent-elles être effacées avant la classification ?</
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="723"/>
         <source>Save default style to: </source>
-        <translation type="unfinished">Enregistrer le style par défaut sous : </translation>
+        <translation>Enregistrer le style par défaut sous : </translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="787"/>
@@ -61118,7 +61118,7 @@ Les classes existantes doivent-elles être effacées avant la classification ?</
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="846"/>
         <source>Style saved</source>
-        <translation type="unfinished">Style enregistré</translation>
+        <translation>Style enregistré</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="870"/>
@@ -61135,7 +61135,7 @@ Les classes existantes doivent-elles être effacées avant la classification ?</
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="958"/>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="967"/>
         <source>Error occured retrieving styles from database</source>
-        <translation type="unfinished">Une erreur s&apos;est produite lors de la récupération des styles depuis la base de données</translation>
+        <translation>Une erreur s&apos;est produite lors de la récupération des styles depuis la base de données</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="968"/>
@@ -61533,7 +61533,7 @@ Les classes existantes doivent-elles être effacées avant la classification ?</
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1503"/>
         <source>MetadataUrl</source>
-        <translation type="unfinished">URL Métadonnées</translation>
+        <translation>URL Métadonnées</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1524"/>
@@ -61988,7 +61988,7 @@ Les classes existantes doivent-elles être effacées avant la classification ?</
     <message>
         <location filename="../src/app/ogr/qgsvectorlayersaveasdialog.cpp" line="88"/>
         <source>Symbol layer symbology</source>
-        <translation type="unfinished">Symbologie de la couche de symboles</translation>
+        <translation>Symbologie de la couche de symboles</translation>
     </message>
     <message>
         <location filename="../src/app/ogr/qgsvectorlayersaveasdialog.cpp" line="125"/>
@@ -62426,7 +62426,7 @@ Les classes existantes doivent-elles être effacées avant la classification ?</
         <location filename="../src/ui/qgswfssourceselectbase.ui" line="96"/>
         <location filename="../src/ui/qgswfssourceselectbase.ui" line="99"/>
         <source>Display WFS FeatureTypes containing this word in the title, name or abstract</source>
-        <translation type="unfinished">Affiche les types d&apos;objets WFS qui contiennent ce mot dans le titre, nom ou résumé</translation>
+        <translation>Affiche les types d&apos;objets WFS qui contiennent ce mot dans le titre, nom ou résumé</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswfssourceselectbase.ui" line="122"/>
@@ -63124,7 +63124,7 @@ Response was:
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="600"/>
         <source>Rotating raster</source>
-        <translation type="unfinished">Rotation du raster</translation>
+        <translation>Rotation du raster</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="625"/>
@@ -63342,7 +63342,7 @@ Response was:
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1469"/>
         <source>Native Bounding Box</source>
-        <translation type="unfinished">Emprise de la carte native</translation>
+        <translation>Emprise originelle de la carte</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1472"/>
@@ -63716,7 +63716,7 @@ Response was:
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="126"/>
         <source>Cannot calculate extent</source>
-        <translation type="unfinished">Impossible de calculer l&apos;emprise</translation>
+        <translation>Impossible de calculer l&apos;emprise</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="215"/>
@@ -64027,17 +64027,17 @@ La réponse est :
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1379"/>
         <source>Map request error (Status: %1; Reason phrase: %2; URL:%3)</source>
-        <translation type="unfinished">Erreur de requête de carte (Status : %1; Raison : %2; URL : %3)</translation>
+        <translation>Erreur de requête de carte (Status : %1; Raison : %2; URL : %3)</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1410"/>
         <source>Map request error (Title:%1; Error:%2; URL: %3)</source>
-        <translation type="unfinished">Erreur de requête de carte (Titre : %1; Erreur : %2; URL : %3)</translation>
+        <translation>Erreur de requête de carte (Titre : %1; Erreur : %2; URL : %3)</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1438"/>
         <source>Map request failed [error:%1 url:%2]</source>
-        <translation type="unfinished">Requête de carte échouée [erreur : %1 url : %2]</translation>
+        <translation>Requête de carte échouée [erreur : %1 url : %2]</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3508"/>
@@ -66348,12 +66348,12 @@ Voulez-vous ajouter cette nouvelle couche dans votre session actuelle ?</transla
     <message>
         <location filename="../src/ui/symbollayer/widget_gradientfill.ui" line="141"/>
         <source>Object</source>
-        <translation type="unfinished">Objet</translation>
+        <translation>Objet</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_gradientfill.ui" line="146"/>
         <source>Viewport</source>
-        <translation type="unfinished">vue</translation>
+        <translation>vue</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_gradientfill.ui" line="156"/>
