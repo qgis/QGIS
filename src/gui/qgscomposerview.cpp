@@ -84,7 +84,7 @@ void QgsComposerView::setCurrentTool( QgsComposerView::Tool t )
     {
       //lock cursor to prevent composer items changing it
       composition()->setPreventCursorChange( true );
-      viewport()->setCursor( Qt::OpenHandCursor );
+      viewport()->setCursor( defaultCursorForTool( Pan ) );
       break;
     }
     case QgsComposerView::Zoom:
@@ -92,9 +92,7 @@ void QgsComposerView::setCurrentTool( QgsComposerView::Tool t )
       //lock cursor to prevent composer items changing it
       composition()->setPreventCursorChange( true );
       //set the cursor to zoom in
-      QPixmap myZoomQPixmap = QPixmap(( const char ** )( zoom_in ) );
-      QCursor zoomCursor = QCursor( myZoomQPixmap, 7, 7 );
-      viewport()->setCursor( zoomCursor );
+      viewport()->setCursor( defaultCursorForTool( Zoom ) );
       break;
     }
     case QgsComposerView::AddArrow:
@@ -112,9 +110,7 @@ void QgsComposerView::setCurrentTool( QgsComposerView::Tool t )
       //using a drawing tool
       //lock cursor to prevent composer items changing it
       composition()->setPreventCursorChange( true );
-      QPixmap myCrosshairQPixmap = QPixmap(( const char ** )( cross_hair_cursor ) );
-      QCursor crosshairCursor = QCursor( myCrosshairQPixmap, 8, 8 );
-      viewport()->setCursor( crosshairCursor );
+      viewport()->setCursor( defaultCursorForTool( mCurrentTool ) );
       break;
     }
     default:
@@ -447,6 +443,44 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
   }
 }
 
+QCursor QgsComposerView::defaultCursorForTool( Tool currentTool )
+{
+  switch ( currentTool )
+  {
+    case Select:
+      return Qt::ArrowCursor;
+
+    case Zoom:
+    {
+      QPixmap myZoomQPixmap = QPixmap(( const char ** )( zoom_in ) );
+      return  QCursor( myZoomQPixmap, 7, 7 );
+    }
+
+    case Pan:
+      return Qt::OpenHandCursor;
+
+    case MoveItemContent:
+      return Qt::ArrowCursor;
+
+    case AddArrow:
+    case AddMap:
+    case AddRectangle:
+    case AddTriangle:
+    case AddEllipse:
+    case AddHtml:
+    case AddLabel:
+    case AddScalebar:
+    case AddLegend:
+    case AddPicture:
+    case AddTable:
+    {
+      QPixmap myCrosshairQPixmap = QPixmap(( const char ** )( cross_hair_cursor ) );
+      return QCursor( myCrosshairQPixmap, 8, 8 );
+    }
+  }
+  return Qt::ArrowCursor;
+}
+
 void QgsComposerView::addShape( Tool currentTool )
 {
   QgsComposerShape::Shape shape = QgsComposerShape::Ellipse;
@@ -691,19 +725,15 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
     }
 
     //set new cursor
-    if ( mCurrentTool == Pan )
-    {
-      viewport()->setCursor( Qt::OpenHandCursor );
-    }
-    else
+    if ( mCurrentTool != Pan )
     {
       if ( composition() )
       {
         //allow composer items to change cursor
         composition()->setPreventCursorChange( false );
       }
-      viewport()->setCursor( Qt::ArrowCursor );
     }
+    viewport()->setCursor( defaultCursorForTool( mCurrentTool ) );
   }
 
   //for every other tool, ignore clicks of non-left button
@@ -1296,19 +1326,15 @@ void QgsComposerView::keyReleaseEvent( QKeyEvent * e )
     mKeyPanning = false;
 
     //reset cursor
-    if ( mCurrentTool == Pan )
-    {
-      viewport()->setCursor( Qt::OpenHandCursor );
-    }
-    else
+    if ( mCurrentTool != Pan )
     {
       if ( composition() )
       {
         //allow cursor changes again
         composition()->setPreventCursorChange( false );
       }
-      viewport()->setCursor( Qt::ArrowCursor );
     }
+    viewport()->setCursor( defaultCursorForTool( mCurrentTool ) );
     return;
   }
   else if ( e->key() == Qt::Key_Space && !e->isAutoRepeat() && mTemporaryZoomStatus != QgsComposerView::Inactive )

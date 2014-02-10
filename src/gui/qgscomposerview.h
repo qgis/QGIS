@@ -204,6 +204,9 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     QPoint mMouseCurrentXY;
     QPoint mMousePressStartPos;
 
+    /**Returns the default mouse cursor for a tool*/
+    QCursor defaultCursorForTool( Tool currentTool );
+
     /**Zoom composition from a mouse wheel event*/
     void wheelZoom( QWheelEvent * event );
     /**Redraws the rubber band*/
