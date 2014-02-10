@@ -699,6 +699,8 @@ void QgsAttributeTableModel::prefetchColumnData( int column )
   }
   else
   {
+    if ( column >= mAttributes.count() )
+      return;
     int fieldId = mAttributes[ column ];
     const QgsFields& fields = layer()->pendingFields();
     QStringList fldNames;
