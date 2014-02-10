@@ -79,6 +79,12 @@ class CORE_EXPORT QgsComposerMouseHandles: public QObject, public QGraphicsRectI
     /**Finds out which mouse move action to choose depending on the scene cursor position*/
     QgsComposerMouseHandles::MouseAction mouseActionForScenePos( const QPointF& sceneCoordPos );
 
+    /**Returns true is user is currently dragging the handles */
+    bool isDragging() { return mIsDragging; }
+
+    /**Returns true is user is currently resizing with the handles */
+    bool isResizing() { return mIsResizing; }
+
   protected:
 
     void mouseMoveEvent( QGraphicsSceneMouseEvent* event );

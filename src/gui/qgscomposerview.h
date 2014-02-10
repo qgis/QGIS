@@ -190,7 +190,16 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     /** Draw a shape on the canvas */
     void addShape( Tool currentTool );
 
-    bool mPanning;
+    /**True if user is currently panning by clicking and dragging with the pan tool*/
+    bool mToolPanning;
+    /**True if user is currently panning by holding the middle mouse button*/
+    bool mMousePanning;
+    /**True if user is currently panning by holding the space key*/
+    bool mKeyPanning;
+
+    /**True if user is currently dragging with the move item content tool*/
+    bool mMovingItemContent;
+
     QPoint mMouseLastXY;
     QPoint mMouseCurrentXY;
     QPoint mMousePressStartPos;

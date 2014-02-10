@@ -55,7 +55,10 @@ QgsComposerView::QgsComposerView( QWidget* parent, const char* name, Qt::WFlags 
     , mPaintingEnabled( true )
     , mHorizontalRuler( 0 )
     , mVerticalRuler( 0 )
-    , mPanning( false )
+    , mToolPanning( false )
+    , mMousePanning( false )
+    , mKeyPanning( false )
+    , mMovingItemContent( false )
 {
   Q_UNUSED( f );
   Q_UNUSED( name );
@@ -130,6 +133,18 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
     return;
   }
 
+  if ( mRubberBandItem || mRubberBandLineItem || mKeyPanning || mMousePanning || mToolPanning || mMovingItemContent )
+  {
+    //ignore clicks during certain operations
+    return;
+  }
+
+  if ( composition()->selectionHandles()->isDragging() || composition()->selectionHandles()->isResizing() )
+  {
+    //ignore clicks while dragging/resizing items
+    return;
+  }
+
   QPointF scenePoint = mapToScene( e->pos() );
   QPointF snappedScenePoint = composition()->snapPointToGrid( scenePoint );
   mMousePressStartPos = e->pos();
@@ -149,7 +164,7 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
   else if ( e->button() == Qt::MidButton )
   {
     //pan composer with middle button
-    mPanning = true;
+    mMousePanning = true;
     mMouseLastXY = e->pos();
     if ( composition() )
     {
@@ -275,7 +290,7 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
     case Pan:
     {
       //pan action
-      mPanning = true;
+      mToolPanning = true;
       mMouseLastXY = e->pos();
       viewport()->setCursor( Qt::ClosedHandCursor );
       break;
@@ -302,6 +317,7 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
           //we've found the highest QgsComposerItem
           mMoveContentStartPos = scenePoint;
           mMoveContentItem = item;
+          mMovingItemContent = true;
           break;
         }
       }
@@ -635,6 +651,13 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
     return;
   }
 
+  if ( e->button() != Qt::LeftButton &&
+       ( composition()->selectionHandles()->isDragging() || composition()->selectionHandles()->isResizing() ) )
+  {
+    //ignore clicks while dragging/resizing items
+    return;
+  }
+
   QPoint mousePressStopPoint = e->pos();
   int diffX = mousePressStopPoint.x() - mMousePressStartPos.x();
   int diffY = mousePressStopPoint.y() - mMousePressStartPos.y();
@@ -648,9 +671,10 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
 
   QPointF scenePoint = mapToScene( e->pos() );
 
-  if ( mPanning )
+  if ( mMousePanning || mToolPanning )
   {
-    mPanning = false;
+    mMousePanning = false;
+    mToolPanning = false;
 
     if ( clickOnly && e->button() == Qt::MidButton )
     {
@@ -680,6 +704,12 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
       }
       viewport()->setCursor( Qt::ArrowCursor );
     }
+  }
+
+  //for every other tool, ignore clicks of non-left button
+  if ( e->button() != Qt::LeftButton )
+  {
+    return;
   }
 
   if ( mMarqueeSelect )
@@ -723,6 +753,7 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
         mMoveContentItem->moveContent( -moveX, -moveY );
         composition()->endCommand();
         mMoveContentItem = 0;
+        mMovingItemContent = false;
       }
       break;
     }
@@ -820,7 +851,7 @@ void QgsComposerView::mouseMoveEvent( QMouseEvent* e )
     mVerticalRuler->updateMarker( e->posF() );
   }
 
-  if ( mPanning )
+  if ( mToolPanning || mMousePanning || mKeyPanning )
   {
     //panning, so scroll view
     horizontalScrollBar()->setValue( horizontalScrollBar()->value() - ( e->x() - mMouseLastXY.x() ) );
@@ -1123,8 +1154,11 @@ void QgsComposerView::keyPressEvent( QKeyEvent * e )
     return;
   }
 
-  if ( mPanning )
+  if ( mKeyPanning || mMousePanning || mToolPanning || mMovingItemContent ||
+       composition()->selectionHandles()->isDragging() || composition()->selectionHandles()->isResizing() )
+  {
     return;
+  }
 
   if ( mTemporaryZoomStatus != QgsComposerView::Inactive )
   {
@@ -1158,12 +1192,18 @@ void QgsComposerView::keyPressEvent( QKeyEvent * e )
     return;
   }
 
+  if ( mCurrentTool != QgsComposerView::Zoom && ( mRubberBandItem || mRubberBandLineItem ) )
+  {
+    //disable keystrokes while drawing a box
+    return;
+  }
+
   if ( e->key() == Qt::Key_Space && ! e->isAutoRepeat() )
   {
     if ( !( e->modifiers() & Qt::ControlModifier ) )
     {
       // Pan composer with space bar
-      mPanning = true;
+      mKeyPanning = true;
       mMouseLastXY = mMouseCurrentXY;
       if ( composition() )
       {
@@ -1250,10 +1290,10 @@ void QgsComposerView::keyPressEvent( QKeyEvent * e )
 
 void QgsComposerView::keyReleaseEvent( QKeyEvent * e )
 {
-  if ( e->key() == Qt::Key_Space && !e->isAutoRepeat() && mPanning )
+  if ( e->key() == Qt::Key_Space && !e->isAutoRepeat() && mKeyPanning )
   {
     //end of panning with space key
-    mPanning = false;
+    mKeyPanning = false;
 
     //reset cursor
     if ( mCurrentTool == Pan )
@@ -1302,6 +1342,18 @@ void QgsComposerView::keyReleaseEvent( QKeyEvent * e )
 
 void QgsComposerView::wheelEvent( QWheelEvent* event )
 {
+  if ( mRubberBandItem || mRubberBandLineItem )
+  {
+    //ignore wheel events while marquee operations are active (eg, creating new item)
+    return;
+  }
+
+  if ( composition()->selectionHandles()->isDragging() || composition()->selectionHandles()->isResizing() )
+  {
+    //ignore wheel events while dragging/resizing items
+    return;
+  }
+
   if ( currentTool() == MoveItemContent )
   {
     //move item content tool, so scroll events get handled by the selected composer item
