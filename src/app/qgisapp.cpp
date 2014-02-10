@@ -446,6 +446,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
     : QMainWindow( parent, fl )
     , mSplash( splash )
     , mInternalClipboard( 0 )
+    , mMousePrecisionDecimalPlaces( 0 )
     , mShowProjectionTab( false )
     , mPythonUtils( NULL )
 #ifdef Q_OS_WIN
