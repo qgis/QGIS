@@ -15234,7 +15234,7 @@ Veuillez contacter les développeurs.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3479"/>
         <source>File not found: %1</source>
-        <translation>Fichier no trouvé : %1</translation>
+        <translation>Fichier non trouvé : %1</translation>
     </message>
     <message>
         <source>QGis files</source>
@@ -40206,7 +40206,7 @@ ne sont pas affichés</translation>
     <message>
         <location filename="../src/app/qgsmaptoolsplitparts.cpp" line="87"/>
         <source>If there are selected parts, the split tool only applies to the selected ones. If you like to split all parts under the split line, clear the selection</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">S&apos;il y a des parties sélectionnées, l&apos;outil de séparation s&apos;appliquera uniquement sur la sélection. Si vous voulez séparer toutes les parties de la ligne, effacez la sélection</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsplitparts.cpp" line="95"/>
@@ -45453,7 +45453,9 @@ Toujours le réseau : toujours charger depuis le réseau sans vérifier si le ca
 
 Missing some of the .ui template objects:
 </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">La fenêtre d&apos;options de base ne peut pas être initialisée.
+
+Certains des objets de modèle .ui sont manquants :</translation>
     </message>
 </context>
 <context>
@@ -47046,12 +47048,12 @@ Complément d&apos;information sur l&apos;erreur :
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="205"/>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="290"/>
         <source>Restricts the displayed tables to those that are found in the layer registries (geometry_columns, geography_columns, topology.layer). This can speed up the initial display of spatial tables.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Restreindre l&apos;affichage aux tables disponibles dans le registre des couches (geometry_columns, geography_columns, topology.layer). Ceci peut améliorer la vitesse d&apos;affichage des tables spatiales.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="208"/>
         <source>Only look in the layer registries</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Regarder uniquement dans le registre des couches</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="256"/>
@@ -48746,17 +48748,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager_texts.cpp" line="11"/>
         <source>&lt;h3&gt;All Plugins&lt;/h3&gt;&lt;p&gt;On the left you see the list of all plugins available for your QGIS, both installed and available for download. Some plugins come with your QGIS installation while most of them are made available via the plugin repositories.&lt;/p&gt;&lt;p&gt;You can temporarily enable or disable a plugin. To &lt;i&gt;enable&lt;/i&gt; or &lt;i&gt;disable&lt;/i&gt; a plugin, click its checkbox or doubleclick its name...&lt;/p&gt;&lt;p&gt;Plugins showing in &lt;span style=&apos;color:red&apos;&gt;red&lt;/span&gt; are not loaded because there is a problem. They are also listed on the &apos;Invalid&apos; tab. Click on the plugin name to see more details, or to reinstall or uninstall this plugin.&lt;/p&gt;</source>
-        <translation type="unfinished">&lt;h3&gt;Toutes les extensions&lt;/h3&gt;&lt;p&gt;Sur la gauche se trouve la liste de toutes les extensions disponibles pour QGIS, qu&apos;elles soient installées ou disponibles au téléchargement. Certaines sont livrées avec votre installation de QGIS, les autres sont disponibles sur les dépôts d&apos;extensions.&lt;/p&gt;&lt;p&gt;Vous pouvez temporairement activer ou désactiver une extension. Pour &lt;i&gt;activer&lt;/i&gt; ou &lt;/i&gt; désactiver une extention, cochez la case ou double-cliquez sur son nom ..;&lt;/p&gt;&lt;p&gt;Les extensions affichées en &lt;span style=&apos;color:red&apos;&gt;rouge&lt;/span&gt; ne sont pas chargées parce qu&apos;il y a un problème. Elles sont également listées dans l&apos;onglet « Invalides ». Cliquez sur le nom de l&apos;extension pour voir plus de détails, ou pour la réinstaller ou désinstaller.&lt;/p&gt;</translation>
+        <translation>&lt;h3&gt;Toutes les extensions&lt;/h3&gt;&lt;p&gt;Sur la gauche se trouve la liste de toutes les extensions disponibles pour QGIS, qu&apos;elles soient installées ou disponibles au téléchargement. Certaines sont livrées avec votre installation de QGIS, les autres sont disponibles sur les dépôts d&apos;extensions.&lt;/p&gt;&lt;p&gt;Vous pouvez temporairement activer ou désactiver une extension. Pour &lt;i&gt;activer&lt;/i&gt; ou &lt;i&gt;désactiver&lt;/i&gt; une extention, cochez la case ou double-cliquez sur son nom.&lt;/p&gt;&lt;p&gt;Les extensions affichées en &lt;span style=&apos;color:red&apos;&gt;rouge&lt;/span&gt; ne sont pas chargées parce qu&apos;il y a un problème. Elles sont également listées dans l&apos;onglet « Invalides ». Cliquez sur le nom de l&apos;extension pour voir plus de détails, ou pour la réinstaller ou désinstaller.&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager_texts.cpp" line="31"/>
         <source>&lt;h3&gt;Installed Plugins&lt;/h3&gt;&lt;p&gt;Here you only see plugins &lt;b&gt;installed on your QGIS&lt;/b&gt;.&lt;/p&gt;&lt;p&gt;Click on the name to see details. &lt;/p&gt;&lt;p&gt;Click the checkbox or doubleclick the name to &lt;i&gt;activate&lt;/i&gt; or &lt;i&gt;deactivate&lt;/i&gt; the plugin.&lt;/p&gt;&lt;p&gt;You can change the sorting via the context menu (right click).&lt;/p&gt;</source>
-        <translation type="unfinished">&lt;h3&gt;Extensions installées&lt;/h3&gt;&lt;p&gt;Liste uniquement des extensions &lt;b&gt;installées dans QGIS&lt;/b&gt;.&lt;/p&gt;&lt;p&gt;Cliquez sur le nom pour voir les détails.&lt;/p&gt;&lt;p&gt;Cochez la case ou double-cliquez sur le nom pour l&apos;&lt;i&gt;activer&lt;/i&gt; ou la &lt;i&gt;désactiver&lt;/i&gt;.&lt;/p&gt;&lt;p&gt;Vous pouvez modifier l&apos;ordre de tri par le menu contextuel (clic droit).&lt;/p&gt;</translation>
+        <translation>&lt;h3&gt;Extensions installées&lt;/h3&gt;&lt;p&gt;Liste uniquement des extensions &lt;b&gt;installées dans QGIS&lt;/b&gt;.&lt;/p&gt;&lt;p&gt;Cliquez sur le nom pour voir les détails.&lt;/p&gt;&lt;p&gt;Cochez la case ou double-cliquez sur le nom pour l&apos;&lt;i&gt;activer&lt;/i&gt; ou la &lt;i&gt;désactiver&lt;/i&gt;.&lt;/p&gt;&lt;p&gt;Vous pouvez modifier l&apos;ordre de tri par le menu contextuel (clic droit).&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager_texts.cpp" line="60"/>
         <source>&lt;h3&gt;Not installed plugins&lt;/h3&gt;&lt;p&gt;Here you see the list of all plugins available in the repositories, but which are &lt;b&gt;not yet installed&lt;/b&gt;.&lt;/p&gt;&lt;p&gt;Click on the name to see details.&lt;/p&gt;&lt;p&gt;You can change the sorting via the context menu (right click).&lt;/p&gt;&lt;p&gt;A plugin can be downloaded and installed by clicking on it&apos;s name, and then click the &apos;Install plugin&apos; button.&lt;/p&gt;</source>
-        <translation type="unfinished">&lt;h3&gt;Extensions non installées&lt;/h3&gt;&lt;p&gt;Liste de toutes les extensions disponibles sur les dépôts, mais qui ne sont &lt;b&gt;pas encore installées&lt;/b&gt;.&lt;/p&gt;&lt;p&gt;Cliquez sur le nompour voir les détails.&lt;/p&gt;&lt;p&gt;Vous pouvez modifier l&apos;ordre de tri par le menu contextuel (clic droit).&lt;/p&gt;&lt;p&gt;Pour télécharger et installer une extension, cliquez sur son nom puis sur le bouton « installer l&apos;extension ».&lt;/p&gt;</translation>
+        <translation>&lt;h3&gt;Extensions non installées&lt;/h3&gt;&lt;p&gt;Liste de toutes les extensions disponibles sur les dépôts, mais qui ne sont &lt;b&gt;pas encore installées&lt;/b&gt;.&lt;/p&gt;&lt;p&gt;Cliquez sur le nom pour voir les détails.&lt;/p&gt;&lt;p&gt;Vous pouvez modifier l&apos;ordre de tri par le menu contextuel (clic droit).&lt;/p&gt;&lt;p&gt;Pour télécharger et installer une extension, cliquez sur son nom puis sur le bouton « installer l&apos;extension ».&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager_texts.cpp" line="81"/>
@@ -50324,13 +50326,13 @@ Essayer de trouver les couches manquantes ?</translation>
         <location filename="../src/app/qgsprojectproperties.cpp" line="921"/>
         <location filename="../src/app/qgsprojectproperties.cpp" line="922"/>
         <source>OFF</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">OFF</translation>
     </message>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="932"/>
         <location filename="../src/app/qgsprojectproperties.cpp" line="933"/>
         <source>ON</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ON</translation>
     </message>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="1078"/>
@@ -50404,12 +50406,12 @@ Proceed?</source>
         <location filename="../src/app/qgsprojectproperties.cpp" line="1584"/>
         <location filename="../src/app/qgsprojectproperties.cpp" line="1585"/>
         <source>Select %1 from pull-down menu to adjust radii</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Sélectionner %1 depuis le menu déroulant pour ajuster les radii</translation>
     </message>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="1596"/>
         <source>Can only use ellipsoidal calculations when CRS transformation is enabled</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Les calculs sur l&apos;ellipsoïde ne sont possibles que quand une transformation SRS est activée.</translation>
     </message>
     <message>
         <source>Transparency %1%</source>
@@ -50908,12 +50910,12 @@ Proceed?</source>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="413"/>
         <source>Semi-major</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Semi-majeur</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="426"/>
         <source>Semi-minor</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Semi-mineur</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="445"/>
@@ -59795,12 +59797,12 @@ There was a problem with your symbol database.</source>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="94"/>
         <source>In the print composer tool bar you can find two buttons for moving elements. The left one (right arrow icon) selects and moves elements in the layout. After selecting the element with this tool you can also move them around with the arrow keys. For accurate positioning use the &lt;strong&gt;Position and Size&lt;/strong&gt; section, which can be found in the tab &lt;strong&gt;Item Properties -&gt; Position and Size&lt;/strong&gt;. The other move tool (map canvas icon with right arrow) allows one to move the map content within a map frame.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dans le composeur d&apos;impression, vous trouverez deux boutons pour déplacer des éléments. Le bouton de gauche (flèche vers la droite) sélectionne et déplace les objets sur la page. Une fois l&apos;élément sélectionné, vous pouvez également le déplacer à l&apos;aide des touches clavier. Pour un positionnement plus précis, utilisez les options de &lt;strong&gt;Position et Taille&lt;/strong&gt; se trouvant dans l&apos;onglet &lt;strong&gt;Propriétés de l&apos;objet -&gt; Position et Taille&lt;/strong&gt;. L&apos;autre outil (un cadre avec une flèche) vous permet de déplacer le contenu de la carte.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="117"/>
         <source>In the Print Composer you can rotate a map by setting its rotation value in the tab &lt;strong&gt;Item Properties -&gt; Map -&gt; Main properties&lt;/strong&gt; section. To place a north arrow in your layout you can use the &lt;strong&gt;Add Image&lt;/strong&gt; tool. After the selection and placement of the north arrow in the layout you can link it with a specific map frame by activating the &lt;strong&gt;Sync with map&lt;/strong&gt; checkbox and selecting a map frame. Whenever you change the rotation value of a linked map, the north arrow will now automatically adjust its rotation.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dans le composeur d&apos;impression vous pouvez tourner la carte en définissant la valeur de rotation dans la section &lt;strong&gt;Propriétés de l&apos;objet -&gt; Carte -&gt; Propriétés principales&lt;/strong&gt;. Pour placer une flèche du nord sur la page, vous pouvez utiliser l&apos;outil &lt;strong&gt;Ajouter une image&lt;/strong&gt;. Après avoir placé la flèche nord sur la page, vous pouvez la lier à un objet carte en activant la case &lt;strong&gt;Synchroniser avec la carte&lt;/strong&gt; et en sélectionnant l&apos;objet carte. A chaque fois que vous modifierez la valeur de rotation de la carte liée, la flèche nord ajustera automatiquement sa rotation.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="146"/>
@@ -61106,7 +61108,7 @@ Les classes existantes doivent-elles être effacées avant la classification ?</
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="723"/>
         <source>Save default style to: </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Enregistrer le style par défaut sous : </translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="787"/>
@@ -61133,7 +61135,7 @@ Les classes existantes doivent-elles être effacées avant la classification ?</
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="958"/>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="967"/>
         <source>Error occured retrieving styles from database</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Une erreur s&apos;est produite lors de la récupération des styles depuis la base de données</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="968"/>
@@ -64716,7 +64718,7 @@ URL Éprouvé : %1</translation>
     <message>
         <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="292"/>
         <source>The created graph is empty. Please check your input data.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le graphe créé est vide. Merci de varifier vos données en entrée.</translation>
     </message>
     <message>
         <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="307"/>
@@ -77087,7 +77089,7 @@ None
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="944"/>
         <source>Invalid geometry in covering test.</source>
-        <translation type="unfinished"> </translation>
+        <translation>Géométrie invalide dans le test de couverture.</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="1178"/>
