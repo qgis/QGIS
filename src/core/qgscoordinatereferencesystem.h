@@ -465,6 +465,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     QString mValidationHint;
     mutable QString mWkt;
+    mutable QString mProj4;
 
     static bool loadIDs( QHash<int, QString> &wkts );
     static bool loadWkts( QHash<int, QString> &wkts, const char *filename );
