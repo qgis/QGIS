@@ -3598,8 +3598,12 @@ void QgisApp::fileOpen()
 
 void QgisApp::enableProjectMacros()
 {
-  mTrustedMacros = true;
+  if ( mInfoBar )
+  {
+    mInfoBar->popWidget();
+  }
 
+  mTrustedMacros = true;
   // load macros
   QgsPythonRunner::run( "qgis.utils.reloadProjectMacros()" );
 }
@@ -3670,14 +3674,13 @@ bool QgisApp::addProject( QString projectFile )
       else if ( enableMacros == 1 ) // ask
       {
         // create the notification widget for macros
-
-
         QToolButton *btnEnableMacros = new QToolButton();
         btnEnableMacros->setText( tr( "Enable macros" ) );
-        btnEnableMacros->setStyleSheet( "background-color: rgba(255, 255, 255, 0); color: black; text-decoration: underline;" );
+        btnEnableMacros->setStyleSheet( "background-color: rgba(255, 255, 255, 0);"
+                                        "color: black;"
+                                        "text-decoration: underline;" );
         btnEnableMacros->setCursor( Qt::PointingHandCursor );
         btnEnableMacros->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred );
-        connect( btnEnableMacros, SIGNAL( clicked() ), mInfoBar, SLOT( popWidget() ) );
         connect( btnEnableMacros, SIGNAL( clicked() ), this, SLOT( enableProjectMacros() ) );
 
         QgsMessageBarItem *macroMsg = new QgsMessageBarItem(
