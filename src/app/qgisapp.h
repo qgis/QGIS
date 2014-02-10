@@ -1443,7 +1443,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QRect *mMapWindow;
     //! The previously selected non zoom map tool.
     int mPreviousNonZoomMapTool;
-    //QCursor *mCursorZoomIn; //doesnt seem to be used anymore (TS)
     QString mStartupPath;
     //! full path name of the current map file (if it has been saved or loaded)
     QString mFullPathName;
@@ -1457,10 +1456,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QStringList mRecentProjectPaths;
     //! Print composers of this project, accessible by id string
     QSet<QgsComposer*> mPrintComposers;
-    // This is not initialized or used anywhere
-    // //! How to determine the number of decimal places used to
-    // //! display the mouse position
-    // bool mMousePrecisionAutomatic;
     //! The number of decimal places to use if not automatic
     unsigned int mMousePrecisionDecimalPlaces;
     /** QGIS-internal vector feature clipboard */
