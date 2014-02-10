@@ -1457,9 +1457,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QStringList mRecentProjectPaths;
     //! Print composers of this project, accessible by id string
     QSet<QgsComposer*> mPrintComposers;
-    //! How to determine the number of decimal places used to
-    //! display the mouse position
-    bool mMousePrecisionAutomatic;
+    // This is not initialized or used anywhere
+    // //! How to determine the number of decimal places used to
+    // //! display the mouse position
+    // bool mMousePrecisionAutomatic;
     //! The number of decimal places to use if not automatic
     unsigned int mMousePrecisionDecimalPlaces;
     /** QGIS-internal vector feature clipboard */
