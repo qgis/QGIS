@@ -193,8 +193,7 @@ expression:
           int fnIndex = QgsExpression::functionIndex(*$1);
           if (fnIndex == -1)
           {
-	    QVariant userVar = QgsExpression::specialColumn( *$1 );
-	    if ( userVar.isNull() )
+      if ( !QgsExpression::hasSpecialColumn( *$1 ) )
 	    {
 	      exp_error("Special column is not known");
 	      YYERROR;

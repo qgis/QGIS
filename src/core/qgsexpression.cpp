@@ -1583,6 +1583,28 @@ QVariant QgsExpression::specialColumn( const QString& name )
   return it.value();
 }
 
+bool QgsExpression::hasSpecialColumn( const QString& name )
+{
+  static bool initialized = false;
+  if ( !initialized )
+  {
+    // Pre-register special columns that will exist within QGIS so that expressions that may use them are parsed correctly.
+    // This is really sub-optimal, we should get rid of the special columns and instead have contexts in which some values
+    // are defined and some are not ($rownum makes sense only in field calculator, $scale only when rendering, $page only for composer etc.)
+
+    QStringList lst;
+    lst << "$page" << "$feature" << "$numpages" << "$numfeatures" << "$atlasfeatureid" << "$atlasgeometry" << "$map";
+    foreach ( QString c, lst )
+      setSpecialColumn( c, QVariant() );
+
+    initialized = true;
+  }
+
+  if ( functionIndex( name ) != -1 )
+    return false;
+  return gmSpecialColumns.contains( name );
+}
+
 QList<QgsExpression::Function*> QgsExpression::specialColumns()
 {
   QList<Function*> defs;

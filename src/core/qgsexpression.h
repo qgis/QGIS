@@ -147,6 +147,9 @@ class CORE_EXPORT QgsExpression
     static void unsetSpecialColumn( const QString& name );
     //! Return the value of the given special column or a null QVariant if undefined
     static QVariant specialColumn( const QString& name );
+    //! Check whether a special column exists
+    //! @note added in 2.2
+    static bool hasSpecialColumn( const QString& name );
 
     void setScale( double scale ) { mScale = scale; }
 
