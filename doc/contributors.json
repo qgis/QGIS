@@ -1,6 +1,6 @@
 {
   "type": "FeatureCollection",
-    "features": [
+  "features": [
     {
       "type": "Feature",
       "properties": {
@@ -549,7 +549,23 @@
           45.115
         ]
       }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Werner Macho",
+        "Committer": "Yes",
+        "First Commit Message": "testcommit werner, nothing changed",
+        "GIT Nickname": "mach0",
+        "First Commit Date": "30-06-2008"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          14.99380588531494,
+          48.791220421656064
+        ]
+      }
     }
   ]
 }
-
