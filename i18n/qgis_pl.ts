@@ -353,7 +353,7 @@ This table is essential for many GIS applications for enumeration of tables.</so
     </message>
     <message>
         <source>Spatial ref:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Układ współrz.:</translation>
     </message>
     <message>
         <source>Estimated extent:</source>
@@ -1129,7 +1129,7 @@ pola</translation>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="359"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Avoid selecting feature by id.  Sometimes - especially when running expensive queries/views - fetching the data sequentially instead of fetching features by id can be much quicker.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Unikaj wyboru poprzez ID.  Czasem, szczególnie przy mało wydajnych zapytaniach/widokach, sekwencyjne pobieranie danych może być znacznie szybsze.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="362"/>
@@ -3319,17 +3319,17 @@ Na pewno chcesz kontynuować?</translation>
     <message>
         <location filename="../python/plugins/processing/ui/DlgNumberInput.ui" line="14"/>
         <source>Enter number or expression</source>
-        <translation type="unfinished"></translation>
+        <translation>Podaj numer wyrażenia</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgNumberInput.ui" line="26"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enter expression in the text field. Double click on elements in the tree to add their values to the expression.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Wpisz wyrażenie w polu tekstowym. Dwuklik na elementach drzewa doda ich wartości do wyrażenia.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgNumberInput.ui" line="36"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Warning&lt;/span&gt;: if expression result is float value, but integer required, result will be rounded to integer.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Uwaga&lt;/span&gt;: jeśli wynikiem wyrażenia jest liczba rzeczywista zamiast całkowitej, zostanie ona automatycznie zaokrąglona.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -3337,17 +3337,17 @@ Na pewno chcesz kontynuować?</translation>
     <message>
         <location filename="../python/plugins/processing/ui/DlgRenderingStyles.ui" line="14"/>
         <source>Dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Formularz</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgRenderingStyles.ui" line="30"/>
         <source>Output</source>
-        <translation type="unfinished"></translation>
+        <translation>Wynik</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgRenderingStyles.ui" line="35"/>
         <source>Style</source>
-        <translation type="unfinished">Styl</translation>
+        <translation>Styl</translation>
     </message>
 </context>
 <context>
@@ -7182,7 +7182,7 @@ Błąd geoprocesingu GEOS: Jeden lub więcej wejściowych obiektów ma błędną
     <message>
         <location filename="../src/ui/qgisapp.ui" line="702"/>
         <source>Split Parts</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyodrębnij części</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="780"/>
@@ -12918,7 +12918,7 @@ SQL: %1</translation>
     <message>
         <location filename="../src/core/symbology-ng/qgsfillsymbollayerv2.cpp" line="527"/>
         <source>pad</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">blok</translation>
     </message>
     <message>
         <location filename="../src/core/symbology-ng/qgsfillsymbollayerv2.cpp" line="531"/>
@@ -15745,12 +15745,12 @@ Błąd: %1</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5875"/>
         <source>No features with geometry found, point type layer will be created.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie znaleziono obiektów geometrii, zostanie utworzona warstwa punktowa.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5879"/>
         <source>Multiple geometry types found, features with geometry different from %1 will be created without geometry.</source>
-        <translation type="unfinished"></translation>
+        <translation>Znaleziono różne typy geometrii, obiekty o geometrii odmiennej od %1 zostaną utworzone bez geometrii.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5892"/>
@@ -70246,7 +70246,24 @@ Returns -1 if the expression isn&apos;t found.
      strpos(&apos;HELLO WORLD&apos;,&apos;WORLD&apos;) &amp;rarr; 6&lt;br&gt;
      strpos(&apos;HELLO WORLD&apos;,&apos;GOODBYE&apos;) &amp;rarr; -1&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja strpos()&lt;/h3&gt;
+Zwraca pozycję wyrażenia regularnego w tekście.
+
+&lt;h4&gt;Składnia&lt;/h4&gt;
+     strpos(&lt;i&gt;tekst&lt;/i&gt;, &lt;i&gt;szukane&lt;/i&gt;)
+&lt;br&gt;&lt;br&gt;
+Zwraca -1, jeśli nie znaleziono wyrażenia.
+
+&lt;p&gt;&lt;h4&gt;Argumenty&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  tekst&lt;/i&gt; &amp;rarr; typu tekst.  Tekst podlegający przeszukiwaniu.&lt;br&gt;
+&lt;i&gt;  szukane&lt;/i&gt; &amp;rarr; typu tekst.  Poszukiwane wyrażenie regularne.&lt;br&gt;
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     strpos(&apos;HELLO WORLD&apos;,&apos;WORLD&apos;) &amp;rarr; 6&lt;br&gt;
+     strpos(&apos;HELLO WORLD&apos;,&apos;GOODBYE&apos;) &amp;rarr; -1&lt;br&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1306"/>
@@ -72937,7 +72954,19 @@ a &amp;rarr; geometry
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt; geomToWKT( $geometry ) &amp;rarr; POINT(6 50)&lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja geomToWKT&lt;/h3&gt;
+
+Zwraca opis obiektu w formacie Well-Known Text (WKT) bez metadanych SRID.
+
+&lt;h4&gt;Składnia&lt;/h4&gt;
+&lt;pre&gt;geomToWKT(a)&lt;/pre&gt;
+
+&lt;h4&gt;Argumenty&lt;/h4&gt;
+a &amp;rarr; geometry
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;pre&gt; geomToWKT( $geometry ) &amp;rarr; POINT(6 50)&lt;/pre&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="901"/>
@@ -72955,7 +72984,20 @@ b &amp;rarr; geometry
 &lt;pre&gt; touches( geomFromWKT( &apos;LINESTRING(5 3 , 4 4)&apos;  ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))    &amp;rarr; returns 1&lt;/pre&gt;
 &lt;pre&gt; touches( geomFromWKT( &apos;POINT(4 4)&apos; ) , geomFromWKT( &apos;POINT(5 5)&apos; ))                     &amp;rarr; returns 0&lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja touches&lt;/h3&gt;
+Zwraca 1, jeśli geometrie posiadają przynajmniej jeden punkt wspólny, lecz ich wnętrza nie mają części wspólnej.
+
+&lt;h4&gt;Składnia&lt;/h4&gt;
+&lt;pre&gt;touches( a, b )&lt;/pre&gt;
+
+&lt;h4&gt;Argumenty&lt;/h4&gt;
+a &amp;rarr; geometry
+b &amp;rarr; geometry
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;pre&gt; touches( geomFromWKT( &apos;LINESTRING(5 3 , 4 4)&apos;  ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))    &amp;rarr; zwraca 1&lt;/pre&gt;
+&lt;pre&gt; touches( geomFromWKT( &apos;POINT(4 4)&apos; ) , geomFromWKT( &apos;POINT(5 5)&apos; ))                     &amp;rarr; zwraca 0&lt;/pre&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="928"/>
@@ -72973,7 +73015,20 @@ b &amp;rarr; geometry
 &lt;pre&gt; overlaps( geomFromWKT( &apos;LINESTRING(3 5 , 4 4 , 5 5 , 5 3)&apos;  ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))   &amp;rarr; returns 1&lt;/pre&gt;
 &lt;pre&gt; overlaps( geomFromWKT( &apos;LINESTRING(0 0 , 1 1)&apos;  ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))    &amp;rarr; returns 0&lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja overlaps&lt;/h3&gt;
+Zwraca 1, jeśli geometrie tego samego typu współdzielą pewne obszary, lecz nie zawierają się w sobie całkowicie.
+
+&lt;h4&gt;Składnia&lt;/h4&gt;
+&lt;pre&gt;overlaps( a, b )&lt;/pre&gt;
+
+&lt;h4&gt;Argumenty&lt;/h4&gt;
+a &amp;rarr; geometry
+b &amp;rarr; geometry
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;pre&gt; overlaps( geomFromWKT( &apos;LINESTRING(3 5 , 4 4 , 5 5 , 5 3)&apos;  ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))   &amp;rarr; zwraca 1&lt;/pre&gt;
+&lt;pre&gt; overlaps( geomFromWKT( &apos;LINESTRING(0 0 , 1 1)&apos;  ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))    &amp;rarr; zwraca 0&lt;/pre&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1181"/>
@@ -73092,7 +73147,19 @@ None
 &lt;pre&gt; geomToWKT( $geometry ) &amp;rarr; POINT(6 50)&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;funkcja $geometry&lt;/h3&gt;
+Zwraca geometrie aktualnego obiektu. Może być użyte przez kolejne funkcje.
+
+&lt;h4&gt;Składnia&lt;/h4&gt;
+&lt;pre&gt;$geometry&lt;/pre&gt;
+
+&lt;h4&gt;Argumenty&lt;/h4&gt;
+Brak
+
+&lt;h4&gt;Przykład&lt;/h4&gt;
+&lt;pre&gt; geomToWKT( $geometry ) &amp;rarr; POINT(6 50)&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1429"/>
