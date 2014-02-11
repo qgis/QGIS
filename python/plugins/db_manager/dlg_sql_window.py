@@ -31,9 +31,6 @@ from .dlg_db_error import DlgDbError
 
 from .ui.ui_DlgSqlWindow import Ui_DbManagerDlgSqlWindow as Ui_Dialog
 
-from .highlighter import SqlHighlighter
-from .completer import SqlCompleter
-
 import re
 
 class DlgSqlWindow(QDialog, Ui_Dialog):
@@ -52,8 +49,6 @@ class DlgSqlWindow(QDialog, Ui_Dialog):
 
     self.editSql.setFocus()
     self.editSql.initCompleter(self.db)
-    #SqlCompleter(self.editSql, self.db)
-    #SqlHighlighter(self.editSql, self.db)
 
     # allow to copy results
     copyAction = QAction("copy", self)
