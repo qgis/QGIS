@@ -246,6 +246,7 @@ class QgsPostgresConn : public QObject
     static QString postgisTypeFilter( QString geomCol, QGis::WkbType wkbType, bool isGeography );
 
     static QGis::WkbType wkbTypeFromGeomType( QGis::GeometryType geomType );
+    static QGis::WkbType wkbTypeFromOgcWkbType( unsigned int ogcWkbType );
 
     static QStringList connectionList();
     static QString selectedConnection();
