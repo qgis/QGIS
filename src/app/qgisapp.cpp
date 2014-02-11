@@ -8561,6 +8561,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     bool isEditable = vlayer->isEditable();
     bool layerHasSelection = vlayer->selectedFeatureCount() > 0;
     bool layerHasActions = vlayer->actions()->size() + QgsMapLayerActionRegistry::instance()->mapLayerActions( vlayer ).size() > 0;
+    bool layerIsMultipart = QGis::isMultiType( vlayer->wkbType() );
 
     bool canChangeAttributes = dprovider->capabilities() & QgsVectorDataProvider::ChangeAttributeValues;
     bool canDeleteFeatures = dprovider->capabilities() & QgsVectorDataProvider::DeleteFeatures;
@@ -8637,8 +8638,8 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
       }
 
       // moving enabled if geometry changes are supported
-      mActionAddPart->setEnabled( isEditable && canChangeGeometry );
-      mActionDeletePart->setEnabled( isEditable && canChangeGeometry );
+      mActionAddPart->setEnabled( isEditable && canChangeGeometry && layerIsMultipart );
+      mActionDeletePart->setEnabled( isEditable && canChangeGeometry && layerIsMultipart );
       mActionMoveFeature->setEnabled( isEditable && canChangeGeometry );
       mActionRotateFeature->setEnabled( isEditable && canChangeGeometry );
       mActionNodeTool->setEnabled( isEditable && canChangeGeometry );
@@ -8671,7 +8672,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
 
         mActionReshapeFeatures->setEnabled( isEditable && canAddFeatures );
         mActionSplitFeatures->setEnabled( isEditable && canAddFeatures );
-        mActionSplitParts->setEnabled( isEditable && canAddFeatures );
+        mActionSplitParts->setEnabled( isEditable && canAddFeatures && layerIsMultipart );
         mActionSimplifyFeature->setEnabled( isEditable && canAddFeatures );
         mActionOffsetCurve->setEnabled( isEditable && canAddFeatures && canChangeAttributes );
 
@@ -8683,13 +8684,13 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
       {
         mActionAddFeature->setIcon( QgsApplication::getThemeIcon( "/mActionCapturePolygon.png" ) );
 
-        mActionAddRing->setEnabled( isEditable && canChangeGeometry );
-        mActionFillRing->setEnabled( isEditable && canChangeGeometry );
+        mActionAddRing->setEnabled( isEditable && canChangeGeometry && layerIsMultipart );
+        mActionFillRing->setEnabled( isEditable && canChangeGeometry && layerIsMultipart );
         mActionReshapeFeatures->setEnabled( isEditable && canChangeGeometry );
         mActionSplitFeatures->setEnabled( isEditable && canAddFeatures );
-        mActionSplitParts->setEnabled( isEditable && canChangeGeometry );
+        mActionSplitParts->setEnabled( isEditable && canChangeGeometry && layerIsMultipart );
         mActionSimplifyFeature->setEnabled( isEditable && canChangeGeometry );
-        mActionDeleteRing->setEnabled( isEditable && canChangeGeometry );
+        mActionDeleteRing->setEnabled( isEditable && canChangeGeometry && layerIsMultipart );
         mActionOffsetCurve->setEnabled( false );
       }
 
