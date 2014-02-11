@@ -211,7 +211,7 @@ QgsSymbolV2* QgsCategorizedSymbolRendererV2::symbolForFeature( QgsFeature& featu
   const double sizeScale = mSizeScale.data() ? mSizeScale->evaluate( feature ).toDouble() : 1.;
 
   // take a temporary symbol (or create it if doesn't exist)
-  QgsSymbolV2* tempSymbol = mTempSymbols[attrs[mAttrNum].toString()];
+  QgsSymbolV2* tempSymbol = mTempSymbols[value.toString()];
 
   // modify the temporary symbol and return it
   if ( tempSymbol->type() == QgsSymbolV2::Marker )
@@ -388,8 +388,14 @@ void QgsCategorizedSymbolRendererV2::stopRender( QgsRenderContext& context )
 
 QList<QString> QgsCategorizedSymbolRendererV2::usedAttributes()
 {
-  QgsExpression exp( mAttrName );
-  QSet<QString> attributes( exp.referencedColumns().toSet() );
+  QSet<QString> attributes;
+
+  if ( QgsExpression* exp = QgsSymbolLayerV2Utils::fieldOrExpressionToExpression( mAttrName ) )
+  {
+    attributes.unite( exp->referencedColumns().toSet() );
+    delete exp;
+  }
+
   if ( mRotation.data() ) attributes.unite( mRotation->referencedColumns().toSet() );
   if ( mSizeScale.data() ) attributes.unite( mSizeScale->referencedColumns().toSet() );
 
@@ -582,12 +588,12 @@ QDomElement QgsCategorizedSymbolRendererV2::save( QDomDocument& doc )
 
   QDomElement rotationElem = doc.createElement( "rotation" );
   if ( mRotation.data() )
-    rotationElem.setAttribute( "field", mRotation->expression() );
+    rotationElem.setAttribute( "field", QgsSymbolLayerV2Utils::fieldOrExpressionFromExpression( mRotation.data() ) );
   rendererElem.appendChild( rotationElem );
 
   QDomElement sizeScaleElem = doc.createElement( "sizescale" );
   if ( mSizeScale.data() )
-    sizeScaleElem.setAttribute( "field", mSizeScale->expression() );
+    sizeScaleElem.setAttribute( "field", QgsSymbolLayerV2Utils::fieldOrExpressionFromExpression( mSizeScale.data() ) );
   sizeScaleElem.setAttribute( "scalemethod", QgsSymbolLayerV2Utils::encodeScaleMethod( mScaleMethod ) );
   rendererElem.appendChild( sizeScaleElem );
 
@@ -654,6 +660,26 @@ QgsVectorColorRampV2* QgsCategorizedSymbolRendererV2::sourceColorRamp()
 void QgsCategorizedSymbolRendererV2::setSourceColorRamp( QgsVectorColorRampV2* ramp )
 {
   mSourceColorRamp.reset( ramp );
+}
+
+void QgsCategorizedSymbolRendererV2::setRotationField( QString fieldOrExpression )
+{
+  mRotation.reset( QgsSymbolLayerV2Utils::fieldOrExpressionToExpression( fieldOrExpression ) );
+}
+
+QString QgsCategorizedSymbolRendererV2::rotationField() const
+{
+  return mRotation.data() ? QgsSymbolLayerV2Utils::fieldOrExpressionFromExpression( mRotation.data() ) : QString();
+}
+
+void QgsCategorizedSymbolRendererV2::setSizeScaleField( QString fieldOrExpression )
+{
+  mSizeScale.reset( QgsSymbolLayerV2Utils::fieldOrExpressionToExpression( fieldOrExpression ) );
+}
+
+QString QgsCategorizedSymbolRendererV2::sizeScaleField() const
+{
+  return mSizeScale.data() ? QgsSymbolLayerV2Utils::fieldOrExpressionFromExpression( mSizeScale.data() ) : QString();
 }
 
 void QgsCategorizedSymbolRendererV2::updateSymbols( QgsSymbolV2 * sym )

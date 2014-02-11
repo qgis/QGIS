@@ -2972,3 +2972,28 @@ QPointF QgsSymbolLayerV2Utils::polygonCentroid( const QPolygonF& points )
 }
 
 
+QgsExpression* QgsSymbolLayerV2Utils::fieldOrExpressionToExpression( const QString& fieldOrExpression )
+{
+  if ( fieldOrExpression.isEmpty() )
+    return 0;
+
+  QgsExpression* expr = new QgsExpression( fieldOrExpression );
+  if ( !expr->hasParserError() )
+    return expr;
+
+  // now try with quoted field name
+  delete expr;
+  QgsExpression* expr2 = new QgsExpression( QgsExpression::quotedColumnRef( fieldOrExpression ) );
+  Q_ASSERT( !expr2->hasParserError() );
+  return expr2;
+}
+
+QString QgsSymbolLayerV2Utils::fieldOrExpressionFromExpression( QgsExpression* expression )
+{
+  const QgsExpression::Node* n = expression->rootNode();
+
+  if ( n && n->nodeType() == QgsExpression::ntColumnRef )
+    return static_cast<const QgsExpression::NodeColumnRef*>( n )->name();
+
+  return expression->expression();
+}

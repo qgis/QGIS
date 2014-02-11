@@ -226,4 +226,20 @@ class QgsSymbolLayerV2Utils
 
     //! Calculate the centroid point of a QPolygonF
     static QPointF polygonCentroid( const QPolygonF& points );
+
+    /** Return a new valid expression instance for given field or expression string.
+     * If the input is not a valid expression, it is assumed that it is a field name and gets properly quoted.
+     * If the string is empty, returns null pointer.
+     * This is useful when accepting input which could be either a non-quoted field name or expression.
+     * @note added in 2.2
+     */
+    static QgsExpression* fieldOrExpressionToExpression( const QString& fieldOrExpression ) /Factory/;
+
+    /** Return a field name if the whole expression is just a name of the field .
+     *  Returns full expression string if the expression is more complex than just one field.
+     *  Using just expression->expression() method may return quoted field name, but that is not
+     *  wanted for saving (due to backward compatibility) or display in GUI.
+     * @note added in 2.2
+     */
+    static QString fieldOrExpressionFromExpression( QgsExpression* expression );
 };
