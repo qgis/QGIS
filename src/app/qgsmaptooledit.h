@@ -45,7 +45,8 @@ class APP_EXPORT QgsMapToolEdit: public QgsMapTool
 
     /**Extracts a single snapping point from a set of snapping results.
        This is useful for snapping operations that just require a position to snap to and not all the
-       snapping results. If the list is empty, the screen coordinates are transformed into map coordinates and returned
+       snapping results. If the list is empty, the screen coordinates are transformed into map coordinates and returned.
+       Point layers are chosen in priority over other layers, to allow to snap on a point located on a line or polygon boundary
        @param snapResults results collected from the snapping operation.
        @return the snapped point in map coordinates*/
     QgsPoint snapPointFromResults( const QList<QgsSnappingResult>& snapResults, const QPoint& screenCoords );

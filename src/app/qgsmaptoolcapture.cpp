@@ -110,15 +110,12 @@ void QgsMapToolCapture::canvasMoveEvent( QMouseEvent * e )
     while ( !mSnappingMarkers.isEmpty() )
       delete mSnappingMarkers.takeFirst();
 
-    foreach ( const QgsSnappingResult &r, snapResults )
-    {
-      QgsVertexMarker *m = new QgsVertexMarker( mCanvas );
-      m->setIconType( QgsVertexMarker::ICON_CROSS );
-      m->setColor( Qt::magenta );
-      m->setPenWidth( 3 );
-      m->setCenter( r.snappedVertex );
-      mSnappingMarkers << m;
-    }
+    QgsVertexMarker *m = new QgsVertexMarker( mCanvas );
+    m->setIconType( QgsVertexMarker::ICON_CROSS );
+    m->setColor( Qt::magenta );
+    m->setPenWidth( 3 );
+    m->setCenter( snapPointFromResults(snapResults,e->pos()) );
+    mSnappingMarkers << m;
 
     if ( mCaptureMode != CapturePoint && mTempRubberBand && mCapturing )
     {

@@ -64,7 +64,19 @@ QgsPoint QgsMapToolEdit::snapPointFromResults( const QList<QgsSnappingResult>& s
   }
   else
   {
-    return snapResults.constBegin()->snappedVertex;
+    QList<QgsSnappingResult>::const_iterator it = snapResults.constBegin();
+    QgsPoint snapPoint = it->snappedVertex;
+    while ( it != snapResults.constEnd() )
+    {
+      if( it->layer->geometryType()==QGis::Point )
+      {
+        snapPoint = it->snappedVertex;
+        break;
+      }
+      it++;
+    }
+
+    return snapPoint;
   }
 }
 
