@@ -150,6 +150,12 @@ void QgsFieldCalculator::accept()
         break;
       }
     }
+
+    if ( ! exp.prepare( mVectorLayer->pendingFields() ) )
+    {
+      QMessageBox::critical( 0, tr( "Evaluation error" ), exp.evalErrorString() );
+      return;
+    }
   }
 
   if ( mAttributeId == -1 )
