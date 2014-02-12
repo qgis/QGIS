@@ -1490,7 +1490,7 @@ void QgsComposition::updateZValues( bool addUndoCommands )
   QLinkedList<QgsComposerItem*>::iterator it = mItemZList.begin();
   QgsComposerItem* currentItem = 0;
 
-  QUndoCommand* parentCommand;
+  QUndoCommand* parentCommand = 0;
   if ( addUndoCommands )
   {
     parentCommand = new QUndoCommand( tr( "Item z-order changed" ) );
@@ -1500,7 +1500,7 @@ void QgsComposition::updateZValues( bool addUndoCommands )
     currentItem = *it;
     if ( currentItem )
     {
-      QgsComposerItemCommand* subcommand;
+      QgsComposerItemCommand* subcommand = 0;
       if ( addUndoCommands )
       {
         subcommand = new QgsComposerItemCommand( *it, "", parentCommand );

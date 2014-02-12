@@ -951,6 +951,12 @@ bool QgsOgrProvider::addFeature( QgsFeature& f )
 
   const QgsAttributes& attrs = f.attributes();
 
+  const char *oldlocale = setlocale( LC_NUMERIC, NULL );
+  if ( oldlocale )
+    oldlocale = strdup( oldlocale );
+
+  setlocale( LC_NUMERIC, "C" );
+
   //add possible attribute information
   for ( int targetAttributeId = 0; targetAttributeId < attrs.count(); ++targetAttributeId )
   {
@@ -1025,6 +1031,9 @@ bool QgsOgrProvider::addFeature( QgsFeature& f )
     f.setFeatureId( OGR_F_GetFID( feature ) );
   }
   OGR_F_Destroy( feature );
+
+  setlocale( LC_NUMERIC, oldlocale );
+
   return returnValue;
 }
 
@@ -1155,6 +1164,11 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap & attr
 
     const QgsAttributeMap& attr = it.value();
 
+    const char *oldlocale = setlocale( LC_NUMERIC, NULL );
+    if ( oldlocale )
+      oldlocale = strdup( oldlocale );
+    setlocale( LC_NUMERIC, "C" );
+
     for ( QgsAttributeMap::const_iterator it2 = attr.begin(); it2 != attr.end(); ++it2 )
     {
       int f = it2.key();
@@ -1215,6 +1229,8 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap & attr
     {
       pushError( tr( "OGR error setting feature %1: %2" ).arg( fid ).arg( CPLGetLastErrorMsg() ) );
     }
+
+    setlocale( LC_NUMERIC, oldlocale );
   }
 
   if ( OGR_L_SyncToDisk( ogrLayer ) != OGRERR_NONE )
