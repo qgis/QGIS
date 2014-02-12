@@ -24632,7 +24632,17 @@ You can install the entire cpt-city archive or a selection for QGIS.
 
 This file can be found at [%2]
 and current file is [%3]</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd - nie znaleziono plików (cpt-city) z gradientami.
+
+Można je doinstalować na dwa sposoy:
+
+1) Zainstaluj wtyczkę &quot;Color Ramp Manager&quot; (należy zaznaczyć pobieranie również wtyczek eksperymentalnych) i wykorzystaj ją do pobrania najnowszego pakietu cpt-city.
+Możesz zainstalować cały pakiet lub tylko część dla QGIS.
+
+2) Pobierz całe archiwum (w formacie SVG) i rozpakuj je w katalogu ustawień QGIS [%1] .
+
+Ten plik można znaleźć w [%2]
+a aktualną wersją pliku jest [%3]</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgscptcitycolorrampv2dialog.cpp" line="368"/>
@@ -27318,7 +27328,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/qgsdiagramproperties.cpp" line="693"/>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="723"/>
         <source>Expression based attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Atrybut z wyrażenia</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="55"/>
@@ -39177,24 +39187,24 @@ nie będą wyświetlane</translation>
     <message>
         <location filename="../src/app/qgsmaptoolsplitparts.cpp" line="80"/>
         <source>Parts split</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyodrębnij części</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsplitparts.cpp" line="86"/>
         <location filename="../src/app/qgsmaptoolsplitparts.cpp" line="94"/>
         <location filename="../src/app/qgsmaptoolsplitparts.cpp" line="102"/>
         <source>No part split done</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie wyodrębniono części</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsplitparts.cpp" line="87"/>
         <source>If there are selected parts, the split tool only applies to the selected ones. If you like to split all parts under the split line, clear the selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Jeśli wybrano obiekty, narzędzie zostanie zastosowane tylko do nich. Jeśli chcesz wyodrębnić wszystkie części wzdłuż zadanej linii, nie zaznaczaj żadnych obiektów.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsplitparts.cpp" line="95"/>
         <source>Cut edges detected. Make sure the line splits parts into multiple parts.</source>
-        <translation type="unfinished"></translation>
+        <translation>Wykryto przecięcia krawędzi. Upewnij się, że linia podzieli obiekty na wiele części.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsplitparts.cpp" line="103"/>
