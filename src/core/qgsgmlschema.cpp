@@ -380,6 +380,10 @@ void QgsGmlSchema::startElement( const XML_Char* el, const XML_Char** attr )
     // gml:boundedBy in feature or feature collection -> skip
     mSkipLevel = mLevel + 1;
   }
+  else if ( localName.compare( "featureMembers", Qt::CaseInsensitive ) == 0 )
+  {
+    mParseModeStack.push( QgsGmlSchema::featureMembers );
+  }
   // GML does not specify that gml:FeatureAssociationType elements should end
   // with 'Member' apart standard gml:featureMember, but it is quite usual to
   // that the names ends with 'Member', e.g.: osgb:topographicMember, cityMember,...
@@ -396,7 +400,8 @@ void QgsGmlSchema::startElement( const XML_Char* el, const XML_Char** attr )
   // UMN Mapserver simple GetFeatureInfo response feature element (ends with _feature)
   // or featureMember children
   else if ( elementName.endsWith( "_feature" )
-            || parseMode == QgsGmlSchema::featureMember )
+            || parseMode == QgsGmlSchema::featureMember
+            || parseMode == QgsGmlSchema::featureMembers )
   {
     //QgsDebugMsg ( "is feature path = " + path );
     if ( mFeatureClassMap.count( localName ) == 0 )
@@ -449,7 +454,11 @@ void QgsGmlSchema::endElement( const XML_Char* el )
 
   QgsGmlSchema::ParseMode parseMode = modeStackTop();
 
-  if ( parseMode == QgsGmlSchema::attribute && localName == mAttributeName )
+  if ( parseMode == QgsGmlSchema::featureMembers )
+  {
+    modeStackPop();
+  }
+  else if ( parseMode == QgsGmlSchema::attribute && localName == mAttributeName )
   {
     // End of attribute
     //QgsDebugMsg("end attribute");
@@ -500,7 +509,6 @@ void QgsGmlSchema::endElement( const XML_Char* el )
   }
   else if ( localName.endsWith( "member", Qt::CaseInsensitive ) )
   {
-    mParseModeStack.push( QgsGmlSchema::featureMember );
     modeStackPop();
   }
   mParsePathStack.removeLast();
