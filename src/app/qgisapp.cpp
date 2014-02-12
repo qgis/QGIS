@@ -3877,7 +3877,10 @@ void QgisApp::dxfExport()
       }
     }
 
-    QFile dxfFile( d.saveFile() );
+    QString fileName( d.saveFile() );
+    if ( !fileName.endsWith( ".dxf", Qt::CaseInsensitive ) )
+      fileName += ".dxf";
+    QFile dxfFile( fileName );
     if ( dxfExport.writeToFile( &dxfFile ) == 0 )
     {
       messageBar()->pushMessage( tr( "DXF export completed" ), QgsMessageBar::INFO, 4 );
