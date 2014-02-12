@@ -275,6 +275,7 @@ class FileDirectorySelector(QWidget):
             return
 
         self.lineEdit.setText(selectedPath)
+        self.canFocusOut = True
 
     def text(self):
         return self.lineEdit.text()
