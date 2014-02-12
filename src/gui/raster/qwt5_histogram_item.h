@@ -38,6 +38,8 @@ public:
     virtual void draw(QPainter *, const QwtScaleMap &xMap, 
         const QwtScaleMap &yMap, const QRect &) const;
 
+    virtual void updateLegend(QwtLegend *) const;
+
     void setBaseline(double reference);
     double baseline() const;
 
@@ -67,6 +69,7 @@ private:
 #include <qwt_interval_data.h>
 #include <qwt_painter.h>
 #include <qwt_scale_map.h>
+#include <qwt_legend_item.h>
 
 class HistogramItem::PrivateData
 {
@@ -342,6 +345,65 @@ void HistogramItem::drawBar(QPainter *painter,
 #endif
 
    painter->restore();
+}
+
+//!  Update the widget that represents the curve on the legend
+// this was adapted from QwtPlotCurve::updateLegend()
+void HistogramItem::updateLegend(QwtLegend *legend) const
+{
+    if ( !legend )
+        return;
+
+    QwtPlotItem::updateLegend(legend);
+
+    QWidget *widget = legend->find(this);
+    if ( !widget || !widget->inherits("QwtLegendItem") )
+        return;
+
+    QwtLegendItem *legendItem = (QwtLegendItem *)widget;
+
+#if QT_VERSION < 0x040000
+    const bool doUpdate = legendItem->isUpdatesEnabled();
+#else
+    const bool doUpdate = legendItem->updatesEnabled();
+#endif
+    legendItem->setUpdatesEnabled(false);
+
+    const int policy = legend->displayPolicy();
+
+    if (policy == QwtLegend::FixedIdentifier)
+    {
+        int mode = legend->identifierMode();
+
+        legendItem->setCurvePen(QPen(color()));
+
+        if (mode & QwtLegendItem::ShowText)
+            legendItem->setText(title());
+        else
+            legendItem->setText(QwtText());
+
+        legendItem->setIdentifierMode(mode);
+    }
+    else if (policy == QwtLegend::AutoIdentifier)
+    {
+        int mode = 0;
+
+        legendItem->setCurvePen(QPen(color()));
+        mode |= QwtLegendItem::ShowLine;
+        if ( !title().isEmpty() )
+        {
+            legendItem->setText(title());
+            mode |= QwtLegendItem::ShowText;
+        }
+        else
+        {
+            legendItem->setText(QwtText());
+        }
+        legendItem->setIdentifierMode(mode);
+    }
+
+    legendItem->setUpdatesEnabled(doUpdate);
+    legendItem->update();
 }
 
 #endif
