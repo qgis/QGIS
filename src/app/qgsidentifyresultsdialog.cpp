@@ -151,28 +151,25 @@ QSize QgsIdentifyResultsWebView::sizeHint() const
   QgsDebugMsg( QString( "content size: %1 x %2" ).arg( s.width() ).arg( s.height() ) );
   int height = s.height();
 
-  // if page is not yet loaded set some minimum height
-  if ( height == 0 )
+  // parent is qt_scrollarea_viewport
+  // parent is not available the first time - before results dialog was shown
+  QWidget *widget = qobject_cast<QWidget *>( parent() );
+  if ( widget )
   {
-    height = 100;
+    // It can probably happen that parent is available but it does not have yet
+    // correct size, see #9377.
+    int max = widget->size().height() * 0.9;
+    QgsDebugMsg( QString( "parent widget height = %1 max height = %2" ).arg( widget->size().height() ).arg( max ) );
+    height = qMin( height, max );
   }
   else
   {
-    // parent is qt_scrollarea_viewport
-    // parent is not available the first time - before results dialog was shown
-    QWidget *widget = qobject_cast<QWidget *>( parent() );
-    if ( widget )
-    {
-      int max = widget->size().height() * 0.9;
-      QgsDebugMsg( QString( "parent widget height = %1 max height = %2" ).arg( widget->size().height() ).arg( max ) );
-      if ( height > max )
-        height = max;
-    }
-    else
-    {
-      QgsDebugMsg( "parent not available" ) ;
-    }
+    QgsDebugMsg( "parent not available" ) ;
   }
+
+  // Always keep some minimum size, e.g. if page is not yet loaded
+  // or parent has wrong size
+  height = qMax( height, 100 );
 
   s = QSize( size().width(), height );
   QgsDebugMsg( QString( "size: %1 x %2" ).arg( s.width() ).arg( s.height() ) );
