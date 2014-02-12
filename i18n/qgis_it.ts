@@ -6645,7 +6645,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1286"/>
         <source>Toggle Editing</source>
-        <translation>Modalità di modifica</translation>
+        <translation>Modifica</translation>
     </message>
     <message>
         <source>Save Edits</source>
@@ -13880,7 +13880,7 @@ Contatta gli sviluppatori.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6079"/>
         <source>Start editing failed</source>
-        <translation>Impossibile attivare modalità di modifica</translation>
+        <translation>Impossibile attivare la modifica</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6080"/>
@@ -15937,7 +15937,7 @@ Percorso DB utente:	%8</translation>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="37"/>
         <source>Toggle editing mode (Ctrl+E)</source>
-        <translation>Modalità di modifica (Ctrl+E)</translation>
+        <translation>Modifica (Ctrl+E)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="56"/>
@@ -32148,7 +32148,7 @@ alla linea %2 colonna %3</translation>
     <message>
         <location filename="../src/app/qgsguivectorlayertools.cpp" line="56"/>
         <source>Start editing failed</source>
-        <translation>Impossibile attivare modalità di modifica</translation>
+        <translation>Impossibile attivare la modifica</translation>
     </message>
     <message>
         <location filename="../src/app/qgsguivectorlayertools.cpp" line="57"/>
@@ -35867,7 +35867,7 @@ non visualizzati</translation>
         <source>Use &apos;Toggle Editing&apos; to make it editable</source>
         <translatorcomment>e &quot;Usare il tasto &apos;ToggleEditing&apos; per renderlo editabile&quot;? anche se mi piace la sintesi della proposta (gc)
 #dubbio#</translatorcomment>
-        <translation>Abilitare la modalità di modifica</translation>
+        <translation>Usa il pulsante per abilitare la modifica</translation>
     </message>
 </context>
 <context>
@@ -50037,7 +50037,7 @@ deviazione standard ×</translation>
         <location filename="../src/ui/qgsrelationeditorwidgetbase.ui" line="22"/>
         <location filename="../src/ui/qgsrelationeditorwidgetbase.ui" line="25"/>
         <source>Toggle editing</source>
-        <translation>Modalità di modifica</translation>
+        <translation>Modifica</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrelationeditorwidgetbase.ui" line="45"/>
@@ -50085,7 +50085,7 @@ deviazione standard ×</translation>
     <message>
         <location filename="../src/ui/qgsrelationmanagerdialogbase.ui" line="26"/>
         <source>Referencing Layer</source>
-        <translation>Layer di riferimento</translation>
+        <translation>Layer padre</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrelationmanagerdialogbase.ui" line="31"/>
@@ -50095,7 +50095,7 @@ deviazione standard ×</translation>
     <message>
         <location filename="../src/ui/qgsrelationmanagerdialogbase.ui" line="36"/>
         <source>Referenced Layer</source>
-        <translation>Layer a cui si fa riferimento</translation>
+        <translation>Layer figlio</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrelationmanagerdialogbase.ui" line="41"/>
