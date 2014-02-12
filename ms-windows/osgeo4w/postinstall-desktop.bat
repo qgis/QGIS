@@ -13,4 +13,4 @@ if not %OSGEO4W_DESKTOP_LINKS%==0 nircmd shortcut "%O4W_ROOT%\bin\nircmd.exe" "~
 
 set OSGEO4W_ROOT=%OSGEO4W_ROOT:\=\\%
 textreplace -std -t "%O4W_ROOT%\apps\@package@\bin\qgis.reg"
-"%WINDIR%\regedit" /s "%O4W_ROOT%\apps\@package@\bin\qgis.reg"
+nircmd elevate "%WINDIR%\regedit" /s "%O4W_ROOT%\apps\@package@\bin\qgis.reg"
