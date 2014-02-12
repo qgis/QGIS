@@ -42,6 +42,8 @@
 #if defined(QWT_VERSION) && QWT_VERSION>=0x060000
 #include <qwt_plot_renderer.h>
 #include <qwt_plot_histogram.h>
+#else
+#include "qwt5_histogram_item.h"
 #endif
 
 // this has been removed, now we let the provider/raster interface decide
@@ -165,12 +167,8 @@ QgsRasterHistogramWidget::QgsRasterHistogramWidget( QgsRasterLayer* lyr, QWidget
     action = new QAction( tr( "Draw as lines" ), group );
     action->setData( QVariant( "Draw lines" ) );
     action->setCheckable( true );
-#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
-    // should we plot as histogram instead of line plot? (QWT>=6 and byte data only)
+    // should we plot as histogram instead of line plot? (int data only)
     action->setChecked( mHistoDrawLines );
-#else
-    action->setDisabled( true );
-#endif
     menu->addAction( action );
 
     // actions
@@ -331,11 +329,9 @@ void QgsRasterHistogramWidget::refreshHistogram()
     return;
   }
 
-#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
+  // clear plot
   mpPlot->detachItems();
-#else
-  mpPlot->clear();
-#endif
+
   //ensure all children get removed
   mpPlot->setAutoDelete( true );
   mpPlot->setTitle( QObject::tr( "Raster Histogram" ) );
@@ -469,19 +465,44 @@ void QgsRasterHistogramWidget::refreshHistogram()
 
     QgsDebugMsg( QString( "got raster histo for band %1 : min=%2 max=%3 count=%4" ).arg( myIteratorInt ).arg( myHistogram.minimum ).arg( myHistogram.maximum ).arg( myHistogram.binCount ) );
 
+    QGis::DataType mySrcDataType = mRasterLayer->dataProvider()->srcDataType( myIteratorInt );
     bool myDrawLines = true;
+    if ( ! mHistoDrawLines &&
+         ( mySrcDataType == QGis::Byte ||
+           mySrcDataType == QGis::Int16 || mySrcDataType == QGis::Int32 ||
+           mySrcDataType == QGis::UInt16 || mySrcDataType == QGis::UInt32 ) )
+    {
+      myDrawLines = false;
+    }
 
-    QwtPlotCurve * mypCurve = new QwtPlotCurve( tr( "Band %1" ).arg( myIteratorInt ) );
-    //mypCurve->setCurveAttribute( QwtPlotCurve::Fitted );
-    mypCurve->setRenderHint( QwtPlotItem::RenderAntialiased );
-    mypCurve->setPen( QPen( mHistoColors.at( myIteratorInt ) ) );
+    QwtPlotCurve * mypCurve = 0;
+    if ( myDrawLines )
+    {
+      mypCurve = new QwtPlotCurve( tr( "Band %1" ).arg( myIteratorInt ) );
+      //mypCurve->setCurveAttribute( QwtPlotCurve::Fitted );
+      mypCurve->setRenderHint( QwtPlotItem::RenderAntialiased );
+      mypCurve->setPen( QPen( mHistoColors.at( myIteratorInt ) ) );
+    }
 
 #if defined(QWT_VERSION) && QWT_VERSION>=0x060000
-    QwtPlotHistogram * mypHisto = new QwtPlotHistogram( tr( "Band %1" ).arg( myIteratorInt ) );
-    //mypHisto->setPen( QPen( mHistoColors.at( myIteratorInt ) ) );
-    // this is needed in order to see the colors in the legend
-    mypHisto->setPen( QPen( Qt::black ) );
-    mypHisto->setBrush( QBrush( mHistoColors.at( myIteratorInt ) ) );
+    QwtPlotHistogram * mypHisto = 0;
+    if ( ! myDrawLines )
+    {
+      mypHisto = new QwtPlotHistogram( tr( "Band %1" ).arg( myIteratorInt ) );
+      mypHisto->setRenderHint( QwtPlotItem::RenderAntialiased );
+      //mypHisto->setPen( QPen( mHistoColors.at( myIteratorInt ) ) );
+      // this is needed in order to see the colors in the legend
+      mypHisto->setPen( QPen( Qt::black ) );
+      mypHisto->setBrush( QBrush( mHistoColors.at( myIteratorInt ) ) );
+    }
+#else
+    HistogramItem *mypHistoItem = 0;
+    if ( ! myDrawLines )
+    {
+      mypHistoItem = new HistogramItem( tr( "Band %1" ).arg( myIteratorInt ) );
+      mypHistoItem->setRenderHint( QwtPlotItem::RenderAntialiased );
+      mypHistoItem->setColor( mHistoColors.at( myIteratorInt ) );
+    }
 #endif
 
 #if defined(QWT_VERSION) && QWT_VERSION>=0x060000
@@ -490,10 +511,13 @@ void QgsRasterHistogramWidget::refreshHistogram()
 #else
     QVector<double> myX2Data;
     QVector<double> myY2Data;
+    // we safely assume that QT>=4.0 (min version is 4.7), therefore QwtArray is a QVector, so don't set size here
+    QwtArray<QwtDoubleInterval> intervalsHisto;
+    QwtArray<double> valuesHisto;
+
 #endif
 
     // calculate first bin x value and bin step size if not Byte data
-    QGis::DataType mySrcDataType = mRasterLayer->dataProvider()->srcDataType( myIteratorInt );
     if ( mySrcDataType != QGis::Byte )
     {
       myBinXStep = ( myHistogram.maximum - myHistogram.minimum ) / myHistogram.binCount;
@@ -504,15 +528,6 @@ void QgsRasterHistogramWidget::refreshHistogram()
       myBinXStep = 1;
       myBinX = 0;
     }
-#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
-    if ( ! mHistoDrawLines &&
-         ( mySrcDataType == QGis::Byte ||
-           mySrcDataType == QGis::Int16 || mySrcDataType == QGis::Int32 ||
-           mySrcDataType == QGis::UInt16 || mySrcDataType == QGis::UInt32 ) )
-    {
-      myDrawLines = false;
-    }
-#endif
 
     for ( int myBin = 0; myBin < myHistogram.binCount; myBin++ )
     {
@@ -527,8 +542,16 @@ void QgsRasterHistogramWidget::refreshHistogram()
         dataHisto << QwtIntervalSample( myBinValue, myBinX - myBinXStep / 2.0, myBinX + myBinXStep / 2.0 );
       }
 #else
-      myX2Data.append( double( myBinX ) );
-      myY2Data.append( double( myBinValue ) );
+      if ( myDrawLines )
+      {
+        myX2Data.append( double( myBinX ) );
+        myY2Data.append( double( myBinValue ) );
+      }
+      else
+      {
+        intervalsHisto.append( QwtDoubleInterval( myBinX - myBinXStep / 2.0, myBinX + myBinXStep / 2.0 ) );
+        valuesHisto.append( double( myBinValue ) );
+      }
 #endif
       myBinX += myBinXStep;
     }
@@ -545,8 +568,16 @@ void QgsRasterHistogramWidget::refreshHistogram()
       mypHisto->attach( mpPlot );
     }
 #else
-    mypCurve->setData( myX2Data, myY2Data );
-    mypCurve->attach( mpPlot );
+    if ( myDrawLines )
+    {
+      mypCurve->setData( myX2Data, myY2Data );
+      mypCurve->attach( mpPlot );
+    }
+    else
+    {
+      mypHistoItem->setData( QwtIntervalData( intervalsHisto, valuesHisto ) );
+      mypHistoItem->attach( mpPlot );
+    }
 #endif
 
     if ( myFirstIteration || mHistoMin > myHistogram.minimum )
