@@ -491,8 +491,8 @@ void QgsRasterHistogramWidget::refreshHistogram()
       mypHisto = new QwtPlotHistogram( tr( "Band %1" ).arg( myIteratorInt ) );
       mypHisto->setRenderHint( QwtPlotItem::RenderAntialiased );
       //mypHisto->setPen( QPen( mHistoColors.at( myIteratorInt ) ) );
+      mypHisto->setPen( QPen( Qt::lightGray ) );
       // this is needed in order to see the colors in the legend
-      mypHisto->setPen( QPen( Qt::black ) );
       mypHisto->setBrush( QBrush( mHistoColors.at( myIteratorInt ) ) );
     }
 #else
