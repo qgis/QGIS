@@ -23,6 +23,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectordataprovider.h"
 #include "qgsattributeeditor.h"
 
 #include <limits>
@@ -588,18 +589,25 @@ QgsAttributes QgsMergeAttributesDialog::mergedAttributes() const
   {
     int idx = mTableWidget->horizontalHeaderItem( i )->data( Qt::UserRole ).toInt();
 
-    QComboBox* comboBox = qobject_cast<QComboBox *>( mTableWidget->cellWidget( 0, i ) );
-    if ( comboBox && comboBox->currentText() == tr( "Skip attribute" ) )
+    QComboBox *comboBox = qobject_cast<QComboBox *>( mTableWidget->cellWidget( 0, i ) );
+    if ( !comboBox )
       continue;
 
-    QTableWidgetItem* currentItem = mTableWidget->item( mFeatureList.size() + 1, i );
+    QTableWidgetItem *currentItem = mTableWidget->item( mFeatureList.size() + 1, i );
     if ( !currentItem )
       continue;
 
     if ( idx >= results.count() )
       results.resize( idx + 1 ); // make sure the results vector is long enough (maybe not necessary)
 
-    results[idx] = currentItem->data( Qt::DisplayRole );
+    if ( comboBox->currentText() != tr( "Skip attribute" ) )
+    {
+      results[idx] = currentItem->data( Qt::DisplayRole );
+    }
+    else if ( mVectorLayer->dataProvider() )
+    {
+      results[idx] = mVectorLayer->dataProvider()->defaultValue( idx );
+    }
   }
 
   return results;
