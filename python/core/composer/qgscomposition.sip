@@ -390,6 +390,11 @@ class QgsComposition : QGraphicsScene
   public slots:
     /**Casts object to the proper subclass type and calls corresponding itemAdded signal*/
     void sendItemAddedSignal( QgsComposerItem* item );
+    
+    /**Updates the scene bounds of the composition
+    @note added in version 2.2*/
+    void updateBounds();
+    
   signals:
     void paperSizeChanged();
     void nPagesChanged();
