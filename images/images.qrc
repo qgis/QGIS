@@ -147,6 +147,7 @@
         <file>themes/default/mActionCaptureLine.png</file>
         <file>themes/default/mActionCapturePoint.png</file>
         <file>themes/default/mActionCapturePolygon.png</file>
+        <file>themes/default/mActionNewTableRow.png</file>
         <file>themes/default/mActionChangeLabelProperties.png</file>
         <file>themes/default/mActionCheckQgisVersion.png</file>
         <file>themes/default/mActionCollapseTree.png</file>

@@ -45,6 +45,24 @@ bool QgsMapToolAddFeature::addFeature( QgsVectorLayer *vlayer, QgsFeature *f )
   return action.addFeature();
 }
 
+void QgsMapToolAddFeature::activate()
+{
+  if ( !mCanvas || mCanvas->isDrawing() )
+  {
+    return;
+  }
+
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
+  if ( vlayer && vlayer->geometryType() == QGis::NoGeometry )
+  {
+    QgsFeature f;
+    addFeature( vlayer, &f );
+    return;
+  }
+
+  QgsMapTool::activate();
+}
+
 void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
 {
   QgsDebugMsg( "entered." );
