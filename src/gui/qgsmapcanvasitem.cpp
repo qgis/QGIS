@@ -131,6 +131,8 @@ bool QgsMapCanvasItem::setRenderContextVariables( QPainter* p, QgsRenderContext&
   {
     rasterScaleFactor = painterDpi / 25.4;
     scaleFactor = dpi / 25.4;
+
+    context.setForceVectorOutput( true );
   }
   else
   {
