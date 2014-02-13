@@ -4578,6 +4578,16 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
         featureStoreList.append( featureStore );
         delete coordinateTransform;
       }
+      // It is suspicious if we guessed feature types from GML but could not get
+      // features from it. Either we geuessed wrong schema or parsing features failed.
+      // Report it as error so that user can switch to another format in results dialog.
+      if ( xsdPart < 0 && !featureTypeNames.isEmpty() && featureStoreList.isEmpty() )
+      {
+        QgsError err = ERROR( tr( "Cannot identify" ) );
+        err.append( tr( "Result parsing failed. %1 feature types were guessed from gml (%2) but no features were parsed." ).arg( featureTypeNames.size() ).arg( featureTypeNames.join( "," ) ) );
+        QgsDebugMsg( "parsing GML error: " +  err.message() );
+        return QgsRasterIdentifyResult( err );
+      }
       results.insert( count, qVariantFromValue( featureStoreList ) );
     }
   }
