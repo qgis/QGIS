@@ -205,6 +205,11 @@ void QgsIdentifyResultsWebViewItem::setHtml( const QString &html )
   mWebView->setHtml( html );
 }
 
+void QgsIdentifyResultsWebViewItem::setContent( const QByteArray & data, const QString & mimeType, const QUrl & baseUrl )
+{
+  mWebView->setContent( data, mimeType, baseUrl );
+}
+
 QgsIdentifyResultsWebViewItem::QgsIdentifyResultsWebViewItem( QTreeWidget *treeWidget )
 {
   mWebView = new QgsIdentifyResultsWebView( treeWidget );
@@ -544,11 +549,11 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
     }
   }
 
-  if ( currentFormat == QgsRaster::IdentifyFormatHtml )
+  if ( currentFormat == QgsRaster::IdentifyFormatHtml || currentFormat == QgsRaster::IdentifyFormatText )
   {
     QgsIdentifyResultsWebViewItem *attrItem = new QgsIdentifyResultsWebViewItem( lstResults );
     featItem->addChild( attrItem ); // before setHtml()!
-    attrItem->setHtml( attributes.begin().value() );
+    attrItem->setContent( attributes.begin().value().toUtf8(), currentFormat == QgsRaster::IdentifyFormatHtml ? "text/html" : "text/plain" );
   }
   else
   {
