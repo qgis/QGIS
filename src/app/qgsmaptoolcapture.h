@@ -119,7 +119,7 @@ class APP_EXPORT QgsMapToolCapture : public QgsMapToolEdit
 
     bool mCaptureModeFromLayer;
 
-    QList<QgsVertexMarker *> mSnappingMarkers;
+    QgsVertexMarker* mSnappingMarker;
 };
 
 #endif
