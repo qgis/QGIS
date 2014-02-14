@@ -3732,6 +3732,10 @@ p, li { white-space: pre-wrap; }
 {0}</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>No input files to process.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>GdalToolsBaseDialog</name>
@@ -14551,7 +14555,7 @@ User DB Path:	%9
     </message>
     <message>
         <source>+</source>
-        <translation>+</translation>
+        <translation type="obsolete">+</translation>
     </message>
     <message>
         <source>Geometryless feature added</source>
@@ -16031,6 +16035,10 @@ Please try a lower resolution or a smaller papersize</source>
         <source>Set as atlas feature for %1</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Landscape</source>
+        <translation type="unfinished">Ainava</translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerArrowWidget</name>
@@ -17100,10 +17108,6 @@ Please try a lower resolution or a smaller papersize</source>
         <translation type="unfinished">Fons</translation>
     </message>
     <message>
-        <source>Uuid (read-only)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Id</source>
         <translation type="unfinished">Id</translation>
     </message>
@@ -17434,11 +17438,11 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Title Font...</source>
-        <translation>Nosaukuma fonts...</translation>
+        <translation type="obsolete">Nosaukuma fonts...</translation>
     </message>
     <message>
         <source>Group Font...</source>
-        <translation>Grupas fonts...</translation>
+        <translation type="obsolete">Grupas fonts...</translation>
     </message>
     <message>
         <source>Layer Font...</source>
@@ -17446,7 +17450,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Item Font...</source>
-        <translation>Ieraksta fonts...</translation>
+        <translation type="obsolete">Ieraksta fonts...</translation>
     </message>
     <message>
         <source>Symbol width </source>
@@ -17510,7 +17514,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Auto Update</source>
-        <translation>Automātiksi atjaunot</translation>
+        <translation type="obsolete">Automātiksi atjaunot</translation>
     </message>
     <message>
         <source>Map</source>
@@ -17542,10 +17546,6 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Fonts</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Subgroup Font...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -17670,6 +17670,26 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Legend height</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Auto update</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Title font...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Subgroup font...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Group font...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Item font...</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -18267,10 +18287,6 @@ Please try a lower resolution or a smaller papersize</source>
         <source>Center on overview</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Map Rotation</source>
-        <translation type="unfinished"></translation>
-    </message>
     <message utf8="true">
         <source> °</source>
         <translation type="unfinished"></translation>
@@ -18309,6 +18325,10 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Frame fill colors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Map rotation</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -18477,7 +18497,7 @@ Please try a lower resolution or a smaller papersize</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Image Rotation</source>
+        <source>Image rotation</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -19021,11 +19041,11 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Header Font...</source>
-        <translation>Galvenes fonts...</translation>
+        <translation type="obsolete">Galvenes fonts...</translation>
     </message>
     <message>
         <source>Content Font...</source>
-        <translation>Satura fonts...</translation>
+        <translation type="obsolete">Satura fonts...</translation>
     </message>
     <message>
         <source>Attribute Table</source>
@@ -19049,6 +19069,14 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Fonts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Header font...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Content font...</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -27549,19 +27577,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Open mapset</source>
-        <translation>Atvērt karšu kopu</translation>
+        <translation type="obsolete">Atvērt karšu kopu</translation>
     </message>
     <message>
         <source>New mapset</source>
-        <translation>Jauna karšu kopa</translation>
+        <translation type="obsolete">Jauna karšu kopa</translation>
     </message>
     <message>
         <source>Close mapset</source>
-        <translation>Aizvērt karšu kopu</translation>
+        <translation type="obsolete">Aizvērt karšu kopu</translation>
     </message>
     <message>
         <source>Add GRASS vector layer</source>
-        <translation>Pievienot GRASS vektoru slāni</translation>
+        <translation type="obsolete">Pievienot GRASS vektoru slāni</translation>
     </message>
     <message>
         <source>Add GRASS raster layer</source>
@@ -27617,7 +27645,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Create new Grass Vector</source>
-        <translation>Izveidot jaunu GRASS vektoru slāni</translation>
+        <translation type="obsolete">Izveidot jaunu GRASS vektoru slāni</translation>
     </message>
     <message>
         <source>Warning</source>
@@ -27688,6 +27716,30 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Plugins</source>
         <translation type="unfinished">Spraudņi</translation>
+    </message>
+    <message>
+        <source>Open Mapset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>New Mapset</source>
+        <translation type="unfinished">Jauna karšu kopa</translation>
+    </message>
+    <message>
+        <source>Close Mapset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add GRASS Vector Layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open GRASS Tools</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create New Grass Vector</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -28584,7 +28636,7 @@ Tā varētu būt problēma ar jūsu tīkla savienojumu vai arī ar WMS serveri.
     </message>
     <message>
         <source>Attribute changes</source>
-        <translation type="unfinished">Atribūts nomainās</translation>
+        <translation type="obsolete">Atribūts nomainās</translation>
     </message>
     <message>
         <source>Cannot print this item</source>
@@ -28597,6 +28649,10 @@ Tā varētu būt problēma ar jūsu tīkla savienojumu vai arī ar WMS serveri.
     <message>
         <source>Activate layer</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Attributes changed</source>
+        <translation type="unfinished">Atribūti ir izmainīti</translation>
     </message>
 </context>
 <context>
@@ -32007,6 +32063,34 @@ not displayed</source>
         <source>Date</source>
         <translation type="unfinished">Datums</translation>
     </message>
+    <message>
+        <source>Whole number (smallint - 16bit)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Whole number (integer - 32bit)</source>
+        <translation type="unfinished">Vesels skaitlis (integer - 32bit)</translation>
+    </message>
+    <message>
+        <source>Whole number (integer - 64bit)</source>
+        <translation type="unfinished">Vesels skaitlis (integer - 64bit)</translation>
+    </message>
+    <message>
+        <source>Decimal number (numeric)</source>
+        <translation type="unfinished">Decimālskaitlis (numeric)</translation>
+    </message>
+    <message>
+        <source>Decimal number (decimal)</source>
+        <translation type="unfinished">Decimālskaitlis (decimal)</translation>
+    </message>
+    <message>
+        <source>Decimal number (double)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Text, unlimited length (text)</source>
+        <translation type="unfinished">Neierobežota garuma teksts (text)</translation>
+    </message>
 </context>
 <context>
     <name>QgsMergeAttributesDialog</name>
@@ -34378,10 +34462,6 @@ Always network: always load from network and do not check if the cache has a val
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Section</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>GroupBox</source>
         <translation type="unfinished"></translation>
     </message>
@@ -35791,6 +35871,10 @@ Always network: always load from network and do not check if the cache has a val
         <source>Maximum scale at which the layer should be simplified (1:1 always simplifies): </source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Ask for datum transformation when no default is defined</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsOptionsDialogBase</name>
@@ -37093,11 +37177,11 @@ Papildus kļūdas informācija:
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Only look in the layer registries</source>
+        <source>Don&apos;t resolve type of unrestricted columns (GEOMETRY)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Don&apos;t resolve type of unrestricted columns (GEOMETRY)</source>
+        <source>Only show layers in the layer registries</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -44084,7 +44168,7 @@ Kļūda bija:
     </message>
     <message>
         <source>Size</source>
-        <translation type="unfinished">Izmērs</translation>
+        <translation type="obsolete">Izmērs</translation>
     </message>
     <message>
         <source>Angle</source>
@@ -46460,7 +46544,7 @@ There was a problem with your symbol database.</source>
     </message>
     <message>
         <source>Size</source>
-        <translation type="unfinished">Izmērs</translation>
+        <translation type="obsolete">Izmērs</translation>
     </message>
     <message>
         <source>Border width</source>
@@ -46518,6 +46602,21 @@ There was a problem with your symbol database.</source>
     </message>
     <message>
         <source>File not found</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsSymbolLayerV2Widget</name>
+    <message>
+        <source>Size</source>
+        <translation type="unfinished">Izmērs</translation>
+    </message>
+    <message>
+        <source>area</source>
+        <translation type="unfinished">platība</translation>
+    </message>
+    <message>
+        <source>diameter</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -50143,7 +50242,7 @@ Response was:
     </message>
     <message>
         <source>WGS 84 Bounding Box</source>
-        <translation>WGS 84 ietverošais robežu taisnstūris</translation>
+        <translation type="obsolete">WGS 84 ietverošais robežu taisnstūris</translation>
     </message>
     <message>
         <source>Available in CRS</source>
@@ -50530,10 +50629,6 @@ Reason phrase: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Extent for layer %1 not found in capabilities</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Format not supported</source>
         <translation type="unfinished"></translation>
     </message>
@@ -50603,6 +50698,10 @@ Reason phrase: %2</source>
     </message>
     <message>
         <source>%1 of %2 bytes of GetLegendGraphic downloaded.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Result parsing failed. %1 feature types were guessed from gml (%2) but no features were parsed.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -58069,6 +58168,23 @@ geometry &amp;rarr; geometry
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt; contains( geomFromWKT( &apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) , geomFromWKT( &apos;POINT( 0.5 0.5 )&apos; ))    &amp;rarr; returns 1&lt;/pre&gt;
 &lt;pre&gt; contains( geomFromWKT( &apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))          &amp;rarr; returns 0&lt;/pre&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;bbox function&lt;/h3&gt;
+Returns 1 if the geometries spatially intersect the bounding box defined and 0 if they don&apos;t.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;bbox( a, b )&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+a &amp;rarr; geometry
+b &amp;rarr; geometry
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt;bbox( geomFromWKT( &apos;POINT(4 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; )) &amp;rarr; returns 1&lt;/pre&gt;
+&lt;pre&gt;bbox( geomFromWKT( &apos;POINT(6 5)&apos; ) , geomFromWKT( &apos;POLYGON((3 3 , 4 4 , 5 5, 3 3))&apos; )) &amp;rarr; returns 0&lt;/pre&gt;
 </source>
         <translation type="unfinished"></translation>
     </message>
