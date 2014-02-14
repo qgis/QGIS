@@ -21,8 +21,6 @@
 class QgsLegend;
 class QgsLegendGroup;
 class QgsLegendLayer;
-class QgsLegendPropertyGroup;
-class QgsLegendPropertyItem;
 
 /**
 This is an abstract base class that all qgis legen items inerit from

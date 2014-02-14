@@ -22,7 +22,6 @@
 #include "qgslegend.h"
 #include "qgslegendgroup.h"
 #include "qgslegendlayer.h"
-#include "qgslegendpropertygroup.h"
 #include "qgslegendsymbologyitem.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapcanvasmap.h"
@@ -1994,8 +1993,7 @@ bool QgsLegend::readXML( QgsLegendGroup *parent, const QDomNode &node )
         }
         else if ( childelem.tagName() == "propertygroup" )
         {
-          QgsLegendPropertyGroup* thePropertyGroup = new QgsLegendPropertyGroup( currentLayer, "Properties" );
-          setItemExpanded( thePropertyGroup, childelem.attribute( "open" ) == "true" );
+          // not used
         }
         else
         {
