@@ -4056,7 +4056,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>No input files to process.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nessun file in input da eleborare.</translation>
     </message>
     <message>
         <source>The following files were not created: 
@@ -7096,7 +7096,7 @@ Ctl (Cmd) incrementa di 15 gradi.</translation>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1226"/>
         <source>Add SpatiaLite Layer...</source>
-        <translation>Aggiungi un vettore SpatiaLite...</translation>
+        <translation>Aggiungi vettore SpatiaLite...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1229"/>
@@ -11167,87 +11167,91 @@ Errore(%2): %3</translation>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1110"/>
         <source>Determine whether 2D (seed_2d.dgn) or 3D (seed_3d.dgn) seed file should be used. This option is ignored if the SEED option is provided.</source>
-        <translation type="unfinished"></translation>
+        <translation>Determina se deve essere usato un file di base 2D (seed_2d.dgn) o 3D (seed_3d.dgn). Questa opzione viene ignorata se l&apos;opzione SEED è stata attivata.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1116"/>
         <source>Override the seed file to use.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sostituire il file di base che verrà utilizzato.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1121"/>
         <source>Indicate whether the whole seed file should be copied. If not, only the first three elements will be copied.</source>
-        <translation type="unfinished"></translation>
+        <translation>Indica se l&apos;intero file di base deve essere copiato. Se no, verranno copiati solo i primi tre elementi.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1127"/>
         <source>Indicates whether the color table should be copied from the seed file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Indica se la tabella colori deve essere copiata dal file di base.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1132"/>
         <source>Override the master unit name from the seed file with the provided one or two character unit name.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sostituisci il nome dell&apos;unità master del file di base con quello di uno o due caratteri definito dall&apos;utente.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1138"/>
         <source>Override the sub unit name from the seed file with the provided one or two character unit name.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sostituisci il nome della sub-unità del file di base con quello di uno o due caratteri definito dall&apos;utente.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1144"/>
         <source>Override the number of subunits per master unit. By default the seed file value is used.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sostituisci il numero di subunità per unità master. Il valore preimpostato è quello del file di base.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1150"/>
         <source>Override the number of UORs (Units of Resolution) per sub unit. By default the seed file value is used.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sostituisci il numero delle UOR (Unità di Risoluzione) per subunità. Il valore preimpostato è quello del file di base.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1156"/>
         <source>ORIGIN=x,y,z: Override the origin of the design plane. By default the origin from the seed file is used.</source>
-        <translation type="unfinished"></translation>
+        <translation>ORIGIN=x, y, z: Sostituisci l&apos;origine del piano di disegno. L&apos;origine preimpostata è quella del file di base.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1192"/>
         <source>Should update files be incorporated into the base data on the fly. </source>
-        <translation type="unfinished"></translation>
+        <translation>Dovrebbe aggiornare al volo i dati di base incorporando quelli contenuti nei file di aggiornamento.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1200"/>
         <source>Should multipoint soundings be split into many single point sounding features. Multipoint geometries are not well handle by many formats, so it can be convenient to split single sounding features with many points into many single point features.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le scansioni multipunto dovrebbero essere separate in molte geometrie a punto singolo. Le gemetrie multipunto non sono gestite adeguatamente da molti formati, e potrebbe essere conveniente separare singole geometrie di scansione contenenti molti punti in molte singole geometrie puntuali.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1208"/>
         <source>Should a DEPTH attribute be added on SOUNDG features and assign the depth of the sounding. This should only be enabled with SPLIT_MULTIPOINT is also enabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Si dovrebbe aggiungere un attributo DEPTH  alle geometrie SOUNDG e assegnare la profondità della scansione. Questo dovrebbe essere attivo solo quando anche SPLIT_MULTIPOINT è attivo.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1215"/>
         <source>Should all the low level geometry primitives be returned as special IsolatedNode, ConnectedNode, Edge and Face layers.</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>scelgo di lasciare i nomi originali</translatorcomment>
+        <translation>Tutte le geometrie primitive di basso livello dovrebbero apparire come speciali IsolatedNode, ConnectedNode, Edge e FaceLayers.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1221"/>
         <source>If enabled, numeric attributes assigned an empty string as a value will be preserved as a special numeric value. This option should not generally be needed, but may be useful when translated S-57 to S-57 losslessly.</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>S-57 è un formato di scambio vettoriale usato per dati marittimi</translatorcomment>
+        <translation>Se attivati, gli attributi numerici assegnati a una stringa vuota come valori verranno mantenuti come valori numerici speciali. Questa opzione non dovrebbe essere necessaria generlamente, ma potrebbe essere utile per trasferire da S-57 a S-57 senza perdite.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1228"/>
         <source>Should LNAM and LNAM_REFS fields be attached to features capturing the feature to feature relationships in the FFPT group of the S-57 file.</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>dubbio sulla traduzione di &quot;feature to feature&quot;</translatorcomment>
+        <translation>I campi LNAM e LNAM_REFS dovrebbero essere annessi alle geometrie catturando le relazioni geometria-geometria nel gruppo FFPT del file S-57.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1234"/>
         <source>Should additional attributes relating features to their underlying geometric primitives be attached. These are the values of the FSPT group, and are primarily needed when doing S-57 to S-57 translations.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dovrebbero essere inseriti gli attributi aggiuntivi che mettono in relazione le geometrie alle sottostanti primitive geometriche. Questi sono i valori del gruppo FSPT, e sono necessari soprattutto quando si eseguono i trasferimenti da S-57 a S-57.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1241"/>
         <source>Should attribute values be recoded to UTF-8 from the character encoding specified in the S57 DSSI record.</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>tradurre record?</translatorcomment>
+        <translation>I valori degli attributi dovrebbero essere ricodificati come UTF-8 a partire dalla codifica dei caratteri specificata nel record S57 DSSI.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1266"/>
@@ -11261,44 +11265,45 @@ Errore(%2): %3</translation>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1280"/>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1354"/>
         <source>Can be used to avoid creating the geometry_columns and spatial_ref_sys tables in a new database. By default these metadata tables are created when a new database is created.</source>
-        <translation type="unfinished"></translation>
+        <translation>Può essere usato per evitare di creare le tabelle geometry_columns e spatial_ref_sys in un nuovo database. Normalmente queste tabelle di metadati vengono create automaticamente durante la creazione di un nuovo database.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1297"/>
         <source>Controls the format used for the geometry column. Defaults to WKB.This is generally more space and processing efficient, but harder to inspect or use in simple applications than WKT (Well Known Text).</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>ho aggiunto il significaato di WKB per esteso</translatorcomment>
+        <translation>Controlla il formato utilizzato per la colonna geometria. L&apos;impostazione predefinita è WKB (Well Known Binary). Questo formato è più efficiente nella gestione dello spazio e della memoria, ma più complesso nella lettura e nell&apos;utilizzo in applicazioni semplici rispetto al WKT (Well Known Text).</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1307"/>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1375"/>
         <source>Controls whether layer and field names will be laundered for easier use in SQLite. Laundered names will be convered to lower case and some special characters(&apos; - #) will be changed to underscores.</source>
-        <translation type="unfinished"></translation>
+        <translation>Controlla che il layer e i nomi dei campi siano puliti per un uso più semplice in SQLite. I nomi puliti vengono trasformati in minuscolo e alcuni caratteri speciali sostituiti da un trattino basso.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1326"/>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1407"/>
         <source>column_name1[,column_name2, ...] A list of (String) columns that must be compressed with ZLib DEFLATE algorithm. This might be beneficial for databases that have big string blobs. However, use with care, since the value of such columns will be seen as compressed binary content with other SQLite utilities (or previous OGR versions). With OGR, when inserting, modifying or queryings compressed columns, compression/decompression is done transparently. However, such columns cannot be (easily) queried with an attribute filter or WHERE clause. Note: in table definition, such columns have the &apos;VARCHAR_deflate&apos; declaration type.</source>
-        <translation type="unfinished"></translation>
+        <translation>nome_colonna1[,nome_colonna2, ...] Una lista (stringa) di colonne da comprimere con l&apos;algoritmo ZLib DEFLATE. Questo potrebbe avere effetti positivi per i database che contengono stringhe di grandi dimensioni. Da usare con cautela, perchè il valore di tali colonne potrebbe a volte essere letto come contenuto binario da altri strumenti SQLite (o da versioni precedenti di OGR). Con OGR, la modifica o l&apos;interrogazione di volumi compressi e la compressione/decompressione vengono svolti in modo trasparente. Tuttavia, queste colonne non possono essere interrogate facilmente con un filtro sugli attributi o una ricerca con WHERE. Nota: nella definizione della tabella, tali colonne hanno la dichiarazione di tipo &apos;VARCHAR_deflate&apos;.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1365"/>
         <source>Insert the content of the EPSG CSV files into the spatial_ref_sys table. Set to NO for regular SQLite databases.</source>
-        <translation type="unfinished"></translation>
+        <translation>Inserisci il contenuto dei file EPSG nella tabella spatial_ref_sys. Setta NO per normali database SQLite.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1382"/>
         <source>If the database is of the SpatiaLite flavour, and if OGR is linked against libspatialite, this option can be used to control if a spatial index must be created.</source>
-        <translation type="unfinished"></translation>
+        <translation>Se il database è di tipo SpatiaLite, e se OGR è collegato a libspatialite, questa opzione può essere usata per controllare se è necessario creare un indice spaziale.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1389"/>
         <source>If the format of the geometry BLOB is of the SpatiaLite flavour, this option can be used to control if the compressed format for geometries (LINESTRINGs, POLYGONs) must be used</source>
-        <translation type="unfinished"></translation>
+        <translation>Se il formato della geometria BLOB è di tipo SpatiaLite, questa opzione puà essere usata per controllare se deve essere usato il formato compresso per le geometrie (LINESTRING, POLYGON)</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1396"/>
         <source>Used to force the SRID number of the SRS associated with the layer. When this option isn&apos;t specified and that a SRS is associated with the layer, a search is made in the spatial_ref_sys to find a match for the SRS, and, if there is no match, a new entry is inserted for the SRS in the spatial_ref_sys table. When the SRID option is specified, this search (and the eventual insertion of a new entry) will not be done: the specified SRID is used as such.</source>
-        <translation type="unfinished"></translation>
+        <translation>Usato per forzare il numero SRID del SRS associato al layer. Quando questa opzione non è specificata, e un SRS è associato al layer, viene fatta una ricerca nella tabella spatial_ref_sys per trovare una corrispondenza con il SRS, e, se non si trova una corrispondenza, viene inserito un nuovo valore per il SRS nella stessa tabella. Quando l&apos;opzione SRID è specificata, questa ricerca (o l&apos;eventuale inserimento di un nuovo valore) non verrà effetuata: il valore di SRID specificato sarà usato come tale.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1422"/>
@@ -11311,22 +11316,23 @@ Errore(%2): %3</translation>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1459"/>
         <source>Indicates the GeoConcept export file extension. TXT was used by earlier releases of GeoConcept. GXT is currently used.</source>
-        <translation type="unfinished"></translation>
+        <translation>Indica l&apos;estensione del file di esportazione GeoConcept. TXT era usato da versioni precedenti di GeoConcept. attualmente viene utilizzato GXT.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1490"/>
         <source>When this option is set, the new layer will be created inside the named FeatureDataset folder. If the folder does not already exist, it will be created.</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>Non ho tradotto FeatureDataset</translatorcomment>
+        <translation>Quando questa opzione è attiva, il nuovo layer verrà creato nella cartella del FeatureDataset nominato. Se non già esistente, la cartella verrà creata contestualmente.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1496"/>
         <source>Set name of geometry column in new layer. Defaults to &apos;SHAPE&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Definisci il nome della colonna geometria nel nuovo layer. Il valore predefinito è &apos;SHAPE&apos;.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1501"/>
         <source>Name of the OID column to create. Defaults to &apos;OBJECTID&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nome della colonna OID da creare. Il valore predefinito è &apos;OBJECTID&apos;.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1508"/>
@@ -11338,7 +11344,7 @@ Errore(%2): %3</translation>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1850"/>
         <source>Cannot overwrite a OGR layer in place</source>
-        <translation type="unfinished">Impossibile sovrascrivere un layer OGR nella stessa posizione</translation>
+        <translation>Impossibile sovrascrivere un layer OGR nella stessa posizione</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="2451"/>
@@ -12164,7 +12170,7 @@ Stai vedendo questo messaggio perché probabilmente non hai settato la variabile
         <location filename="../src/core/qgsexpression.cpp" line="1709"/>
         <location filename="../src/core/qgsexpression.cpp" line="1721"/>
         <source>No root node! Parsing failed?</source>
-        <translation>Nessun nodo root! Parsing fallito?</translation>
+        <translation>Nessun nodo root! Analisi fallita?</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="1742"/>
@@ -13497,7 +13503,6 @@ Errori: %3
         <source>Remove %n object(s)?</source>
         <comment>number of objects to remove</comment>
         <translation>
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -15138,7 +15143,7 @@ Percorso DB utente:	%8</translation>
     <message>
         <location filename="../src/core/composer/qgsatlascomposition.cpp" line="714"/>
         <source>Filename parsing error: %1</source>
-        <translation>Errore nell&apos;elaborazione del nome file: %1</translation>
+        <translation>Errore nell&apos;analisi del nome file: %1</translation>
     </message>
     <message>
         <location filename="../src/core/composer/qgsatlascomposition.cpp" line="206"/>
@@ -15785,12 +15790,12 @@ Percorso DB utente:	%8</translation>
     <message>
         <location filename="../src/app/qgsattributetabledialog.cpp" line="611"/>
         <source>Parsing error</source>
-        <translation>Errore di interprete</translation>
+        <translation>Errore di analisi</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributetabledialog.cpp" line="617"/>
         <source>Evaluation error</source>
-        <translation>Errore valutazione</translation>
+        <translation>Errore di valutazione</translation>
     </message>
     <message numerus="yes">
         <source>Attribute table - %1 (%n matching features)</source>
@@ -17629,7 +17634,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="3143"/>
         <source>Landscape</source>
-        <translation type="unfinished">Orizzontale</translation>
+        <translation>Orizzontale</translation>
     </message>
     <message>
         <source>Trying to create image #%1 ( %2x%3 @ %4dpi )may result in a memory overflow.
@@ -19522,7 +19527,7 @@ Secondo me si (rospus)</translatorcomment>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="355"/>
         <source>Auto update</source>
-        <translation type="unfinished"></translation>
+        <translation>Aggiorna automaticamente</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="368"/>
@@ -19544,22 +19549,22 @@ Secondo me si (rospus)</translatorcomment>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="386"/>
         <source>Title font...</source>
-        <translation type="unfinished"></translation>
+        <translation>Carattere titolo...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="393"/>
         <source>Subgroup font...</source>
-        <translation type="unfinished"></translation>
+        <translation>Carattere del sottogruppo...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="400"/>
         <source>Group font...</source>
-        <translation type="unfinished"></translation>
+        <translation>Carattere del gruppo...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="407"/>
         <source>Item font...</source>
-        <translation type="unfinished"></translation>
+        <translation>Carattere dell&apos;oggetto...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="414"/>
@@ -20538,7 +20543,7 @@ Per me buona la prima (rospus)</translatorcomment>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="128"/>
         <source>Map rotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Rotazione mappa</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="212"/>
@@ -20737,7 +20742,7 @@ Per me buona la prima (rospus)</translatorcomment>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="216"/>
         <source>Image rotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Rotazione immagine</translation>
     </message>
     <message>
         <source>Image Rotation</source>
@@ -21473,12 +21478,12 @@ Per me buona la prima (rospus)</translatorcomment>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="220"/>
         <source>Header font...</source>
-        <translation type="unfinished"></translation>
+        <translation>Carattere intestazione...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="227"/>
         <source>Content font...</source>
-        <translation type="unfinished"></translation>
+        <translation>Carattere del contenuto...</translation>
     </message>
     <message>
         <source>Grid stroke width</source>
@@ -30218,7 +30223,7 @@ Meglio &quot;i layer selezionati&quot;, senza la s del plurale (skampus)</transl
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="98"/>
         <source>Add operator or function</source>
-        <translation>Aggiungi un operatore o funzione</translation>
+        <translation>Aggiungi operatore o funzione</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="105"/>
@@ -31745,32 +31750,32 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="137"/>
         <source>Open Mapset</source>
-        <translation type="unfinished"></translation>
+        <translation>Apri mapset</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="139"/>
         <source>New Mapset</source>
-        <translation type="unfinished">Nuovo Mapset</translation>
+        <translation>Nuovo mapset</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="141"/>
         <source>Close Mapset</source>
-        <translation type="unfinished"></translation>
+        <translation>Chiudi mapset</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="144"/>
         <source>Add GRASS Vector Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Aggiungi vettore GRASS</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="150"/>
         <source>Open GRASS Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Apri strumenti GRASS</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="165"/>
         <source>Create New Grass Vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Crea un nuovo vettore GRASS</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="579"/>
@@ -32051,7 +32056,7 @@ o cambia i valori qui di seguito</translation>
     <message>
         <location filename="../src/plugins/grass/qgsgrassselectbase.ui" line="14"/>
         <source>Add GRASS Layer</source>
-        <translation>Aggiungi un layer GRASS</translation>
+        <translation>Aggiungi layer GRASS</translation>
     </message>
 </context>
 <context>
@@ -32827,7 +32832,7 @@ In 1.8 è tradotto &quot;Form vista geometria&quot;. Forse è meglio &quot;Vedi 
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="1332"/>
         <source>Attributes changed</source>
-        <translation type="unfinished">Attributi modificati</translation>
+        <translation>Attributi modificati</translation>
     </message>
     <message>
         <source>Attribute changes</source>
@@ -36854,37 +36859,37 @@ http://mio.server.it/cgi-bin/mapserver.exe</translation>
     <message>
         <location filename="../src/providers/memory/qgsmemoryprovider.cpp" line="89"/>
         <source>Whole number (smallint - 16bit)</source>
-        <translation type="unfinished">Numero intero (smallint - 16bit)</translation>
+        <translation>Numero intero (smallint - 16bit)</translation>
     </message>
     <message>
         <location filename="../src/providers/memory/qgsmemoryprovider.cpp" line="90"/>
         <source>Whole number (integer - 32bit)</source>
-        <translation type="unfinished">Numero intero (integer - 32bit)</translation>
+        <translation>Numero intero (integer - 32bit)</translation>
     </message>
     <message>
         <location filename="../src/providers/memory/qgsmemoryprovider.cpp" line="91"/>
         <source>Whole number (integer - 64bit)</source>
-        <translation type="unfinished">Numero intero (integer - 64bit)</translation>
+        <translation>Numero intero (integer - 64bit)</translation>
     </message>
     <message>
         <location filename="../src/providers/memory/qgsmemoryprovider.cpp" line="92"/>
         <source>Decimal number (numeric)</source>
-        <translation type="unfinished"></translation>
+        <translation>Numero decimale (numeric)</translation>
     </message>
     <message>
         <location filename="../src/providers/memory/qgsmemoryprovider.cpp" line="93"/>
         <source>Decimal number (decimal)</source>
-        <translation type="unfinished"></translation>
+        <translation>Numero decimale (decimal)</translation>
     </message>
     <message>
         <location filename="../src/providers/memory/qgsmemoryprovider.cpp" line="97"/>
         <source>Decimal number (double)</source>
-        <translation type="unfinished"></translation>
+        <translation>Numero decimale (double)</translation>
     </message>
     <message>
         <location filename="../src/providers/memory/qgsmemoryprovider.cpp" line="100"/>
         <source>Text, unlimited length (text)</source>
-        <translation type="unfinished">Testo a lunghezza illimitata (text)</translation>
+        <translation>Testo a lunghezza illimitata (text)</translation>
     </message>
 </context>
 <context>
@@ -41382,7 +41387,7 @@ Sempre rete: carica sempre dalle rete e non controllare se la cache ha geometrie
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3971"/>
         <source>Ask for datum transformation when no default is defined</source>
-        <translation type="unfinished"></translation>
+        <translation>Chiedi la trasformazione del datum quando non è definito un valore di riferimento</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="4010"/>
@@ -41942,7 +41947,7 @@ error:%2
     <message>
         <location filename="../src/plugins/oracle_raster/qgsoracle_plugin.cpp" line="60"/>
         <source>Add a Oracle Spatial GeoRaster...</source>
-        <translation>Aggiungi un GeoRaster Oracle Spatial...</translation>
+        <translation>Aggiungi GeoRaster Oracle Spatial...</translation>
     </message>
 </context>
 <context>
@@ -43210,7 +43215,7 @@ Errore: %2</translation>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="208"/>
         <source>Only show layers in the layer registries</source>
-        <translation type="unfinished"></translation>
+        <translation>Cerca solamente nei registri del layer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="233"/>
@@ -49000,7 +49005,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1432"/>
         <source>Add values manually</source>
-        <translation>Aggiungi un valore manualmente</translation>
+        <translation>Aggiungi valori manualmente</translation>
     </message>
     <message>
         <source>Add Values from display</source>
@@ -49544,7 +49549,7 @@ multipli con larghezza e altezza massima specificate sotto.</translation>
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="672"/>
         <source>Add values manually</source>
-        <translation>Aggiungi un valore manualmente</translation>
+        <translation>Aggiungi valori manualmente</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="675"/>
@@ -50318,7 +50323,7 @@ deviazione standard ×</translation>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="621"/>
         <source>Filter expression parsing error:
 </source>
-        <translation>Errore nell&apos;interpretazione dell&apos;espressione del filtro:</translation>
+        <translation>Errore nell&apos;analisi dell&apos;espressione del filtro:</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="629"/>
@@ -54382,17 +54387,17 @@ C&apos;è stato un problema con il tuo database dei simboli.</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="51"/>
         <source>Size</source>
-        <translation type="unfinished">Dimensione</translation>
+        <translation>Dimensione</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="58"/>
         <source>area</source>
-        <translation type="unfinished">area</translation>
+        <translation>area</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="61"/>
         <source>diameter</source>
-        <translation type="unfinished"></translation>
+        <translation>diametro</translation>
     </message>
 </context>
 <context>
@@ -58662,7 +58667,7 @@ ho provato a aggiungerla.. (ght)
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4587"/>
         <source>Result parsing failed. %1 feature types were guessed from gml (%2) but no features were parsed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile analizzare i risultati. Si è tentato di interpretare %1tipi di elementi dal gml (%2) ma non è stato estratto nessun elemento.</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4651"/>
@@ -60005,7 +60010,7 @@ Descrizione: %3</translation>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselectbase.ui" line="13"/>
         <source>Add SQL Anywhere layer</source>
-        <translation>Aggiungi un layer SQL Anywhere</translation>
+        <translation>Aggiungi layer SQL Anywhere</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselectbase.ui" line="30"/>
@@ -60471,7 +60476,7 @@ su SEXTANTE</translation>
     <message>
         <location filename="../src/plugins/sqlanywhere/sqlanywhere.cpp" line="85"/>
         <source>Add SQL Anywhere Layer...</source>
-        <translation>Aggiungi un layer SQL Anywhere...</translation>
+        <translation>Aggiungi layer SQL Anywhere...</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sqlanywhere.cpp" line="87"/>
