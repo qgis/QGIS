@@ -1256,7 +1256,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="139"/>
         <source>Save to new shapefile</source>
-        <translation>Spremi u novu shape datoteku</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="42"/>
@@ -1266,7 +1266,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="98"/>
         <source>Calculate using</source>
-        <translation>Izračunati koristeći</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="117"/>
@@ -1289,17 +1289,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmEliminate.ui" line="14"/>
         <source>Eliminate sliver polygons</source>
-        <translation>Eliminiraj srebrne poligone</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmEliminate.ui" line="20"/>
         <source>common boundary</source>
-        <translation>zajednička granica</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmEliminate.ui" line="27"/>
         <source>Merge selection with the neighbouring polygon with the largest</source>
-        <translation>Spoji odabrano sa susjednim poligonom sa najvećim</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmEliminate.ui" line="43"/>
@@ -1326,7 +1326,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmEliminate.ui" line="100"/>
         <source>Selected features:</source>
-        <translation>Odabrani elementi:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmEliminate.ui" line="107"/>
@@ -1564,27 +1564,23 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>There are no shapefiles with the given geometry type. Please select an available geometry type.</source>
-        <translation>Ne postoje shape datoteke sa traženom vrstom geometrije. Molim odaberi dostupnu vrstu geometrije.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Can&apos;t delete file %s</source>
-        <translation>Ne mogu izbrisati datoteku%s</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Error loading output shapefile:
 %s</source>
-        <translation>Pogreška pri učitavanju izlazne shape datoteke:
-%s</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Created output shapefile:
 %s
 
 Would you like to add the new layer to the TOC?</source>
-        <translation>Stvorena izlazna shape datoteka:
-%s
-
-Želite li dodati novi sloj na TS?</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Create Point Distance Matrix</source>
@@ -1613,8 +1609,7 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <source>Defined Projection For:
 %s.shp</source>
-        <translation>Definirana projekcija za:
-%s.shp</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Random Points</source>
@@ -1627,8 +1622,7 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <source>Created output shapefiles in folder:
 %s</source>
-        <translation>Stvorene izlazne shape datoteke u mapi:
-%s</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Please specify output shapefile</source>
@@ -1762,23 +1756,23 @@ Would you like to add the new layer to the TOC?</source>
     </message>
     <message>
         <source>Eliminate</source>
-        <translation>Eliminiraj</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>No selection in input layer</source>
-        <translation>Nema odabira u ulaznom sloju</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Error creating output file</source>
-        <translation>Pogreška stvaranja izlazne datoteke</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Could not delete features</source>
-        <translation>Ne mogu izbrisati elemente</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Could not add features</source>
-        <translation>Ne mogu dodati elemente</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Created output shapefile:
@@ -1827,43 +1821,39 @@ Would you like to add the new layer to the TOC?</source>
     </message>
     <message>
         <source>Selected features: %s</source>
-        <translation>Odabrani elementi: %s</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Commit error:
 %s</source>
-        <translation>Napraviti pogrešku:
-%s</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Could not replace geometry of feature with id %s</source>
-        <translation>Ne mogu zamijeniti geometriju elementa sa ID %s</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Could not eliminate features with these ids:
 %s</source>
-        <translation>Ne mogu eliminirati elemente sa ovim ID-ovima:
-%s</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Created output shapefile:
 %s</source>
-        <translation>Stvorena izlazna shape datoteka:
-%s</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Please specify an input layer</source>
-        <translation>Molim odredite ulazni sloj</translation>
+        <translation type="unfinished">Odredite ulazni sloj</translation>
     </message>
     <message>
         <source>There were %d vertices in original dataset which
 were reduced to %d vertices after simplification</source>
-        <translation>Bilo je %d verteksa u originalnom skupu podataka
-koji su svedeni na %d verteksa nakon pojednostavljenja</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Processing of the following layers/files ended with error:&lt;br&gt;&lt;br&gt;</source>
-        <translation>Procesiranje slijedećih slojeva/datoteka završilo sa pogreškama:&lt;br&gt;&lt;br&gt;</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Join attributes by location</source>
@@ -2035,7 +2025,7 @@ koji su svedeni na %2 verteksa nakon pojednostavljenja</translation>
     </message>
     <message>
         <source>Missing or invalid CRS</source>
-        <translation>Nedostaje ili nevaljani CRS</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Cannot define projection for PostGIS data...yet!</source>
@@ -2058,12 +2048,11 @@ koji su svedeni na %2 verteksa nakon pojednostavljenja</translation>
     <message>
         <source>Can&apos;t delete existing shapefile
 %s</source>
-        <translation>Ne mogu brisati postojeću shape datoteku
-%s</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Please select a raster layer</source>
-        <translation>Molim odaberite rasterski sloj</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Unable to compute extents aligned on selected raster layer</source>
@@ -2077,9 +2066,7 @@ koji su svedeni na %2 verteksa nakon pojednostavljenja</translation>
         <source>Currently QGIS doesn&apos;t allow simultaneous access from 
                                  different threads to the same datasource. Make sure your layer&apos;s 
                                  attribute tables are closed. Continue?</source>
-        <translation>Trenutno QGIS ne dozvoljava istovremeni pristup sa različitih 
-                                 izvora u isti izvor podataka. Pobrinite se da su tablice 
-                                 atributa vašeg sloja zatvorene. Nastaviti?</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Line intersections</source>
@@ -2501,7 +2488,7 @@ koji su svedeni na %2 verteksa nakon pojednostavljenja</translation>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVisual.ui" line="145"/>
         <source>Save errors location</source>
-        <translation>Spremi lokaciju pogreški</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVisual.ui" line="131"/>
@@ -2965,22 +2952,22 @@ Sigurno želite nastaviti?</translation>
     <message>
         <location filename="../python/plugins/processing/ui/DlgHelpEdition.ui" line="14"/>
         <source>Help editor</source>
-        <translation>Urednik za pomoć</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgHelpEdition.ui" line="31"/>
         <source>about:blank</source>
-        <translation>o:prazno</translation>
+        <translation type="unfinished">o:prazno</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgHelpEdition.ui" line="47"/>
         <source>Select element to edit</source>
-        <translation>Odaberi element za uređivanje</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgHelpEdition.ui" line="82"/>
         <source>Element description</source>
-        <translation>Opis elementa</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2988,7 +2975,7 @@ Sigurno želite nastaviti?</translation>
     <message>
         <location filename="../python/plugins/processing/ui/DlgHistory.ui" line="14"/>
         <source>History and log</source>
-        <translation>Povijest i zapisi</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3015,37 +3002,36 @@ Sigurno želite nastaviti?</translation>
     </message>
     <message>
         <source>Choose the file to import</source>
-        <translation>Odaberi datoteku za uvoz</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Import to database</source>
-        <translation>Uvoz u bazu podataka</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Input layer missing or not valid</source>
-        <translation>Nedostaje ili nije valjan ulazni sloj</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Output table name is required</source>
-        <translation>Potrebno ime izlazne tablice</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Invalid source srid: must be an integer</source>
-        <translation>Nevaljani izvorni srid: mora biti cijeli broj</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Invalid target srid: must be an integer</source>
-        <translation>Nevaljani ciljni srid: mora biti cijeli broj</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Error %d
 %s</source>
-        <translation>Pogreška %d
-%s</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Import was successful.</source>
-        <translation>Uvoz je bio uspješan.</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3058,7 +3044,7 @@ Sigurno želite nastaviti?</translation>
     <message>
         <location filename="../python/plugins/processing/ui/DlgModeler.ui" line="34"/>
         <source>Open model</source>
-        <translation>Otvori model</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgModeler.ui" line="37"/>
@@ -3068,57 +3054,57 @@ Sigurno želite nastaviti?</translation>
         <location filename="../python/plugins/processing/ui/DlgModeler.ui" line="91"/>
         <location filename="../python/plugins/processing/ui/DlgModeler.ui" line="108"/>
         <source>...</source>
-        <translation>...</translation>
+        <translation type="unfinished">...</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgModeler.ui" line="44"/>
         <source>Save</source>
-        <translation>Spremi</translation>
+        <translation type="unfinished">Spremi</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgModeler.ui" line="54"/>
         <source>Save as...</source>
-        <translation>Spremi kao...</translation>
+        <translation type="unfinished">Spremi kao...</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgModeler.ui" line="71"/>
         <source>Export as image</source>
-        <translation>Izvezi kao sliku</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgModeler.ui" line="88"/>
         <source>Edit model help</source>
-        <translation>Uredi pomoć za model</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgModeler.ui" line="105"/>
         <source>Run model</source>
-        <translation>Pokreni model</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgModeler.ui" line="147"/>
         <source>Inputs</source>
-        <translation>Ulazi</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgModeler.ui" line="175"/>
         <source>Algorithms</source>
-        <translation>Algoritmi</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgModeler.ui" line="187"/>
         <source>Enter algorithm name to filter list</source>
-        <translation>Unesi naziv algoritma za listu filtera</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgModeler.ui" line="217"/>
         <source>Enter model name here</source>
-        <translation>Ovdje unesi ime modela</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgModeler.ui" line="224"/>
         <source>Enter group name here</source>
-        <translation>Ovdje unesi ime grupe</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3126,7 +3112,7 @@ Sigurno želite nastaviti?</translation>
     <message>
         <location filename="../python/plugins/processing/ui/DlgMultipleSelection.ui" line="14"/>
         <source>Multiple selection</source>
-        <translation>Višestruki odabir</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3170,12 +3156,12 @@ Sigurno želite nastaviti?</translation>
     <message>
         <location filename="../python/plugins/processing/ui/DlgResults.ui" line="14"/>
         <source>Results</source>
-        <translation>Rezultati</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgResults.ui" line="53"/>
         <source>about:blank</source>
-        <translation>o:prazno</translation>
+        <translation type="unfinished">o:prazno</translation>
     </message>
 </context>
 <context>
@@ -3183,12 +3169,12 @@ Sigurno želite nastaviti?</translation>
     <message>
         <location filename="../python/plugins/processing/ui/DlgScriptEditor.ui" line="14"/>
         <source>Script editor</source>
-        <translation>Urednik skripte</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgScriptEditor.ui" line="40"/>
         <source>Save</source>
-        <translation>Spremi</translation>
+        <translation type="unfinished">Spremi</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgScriptEditor.ui" line="43"/>
@@ -3201,47 +3187,47 @@ Sigurno želite nastaviti?</translation>
         <location filename="../python/plugins/processing/ui/DlgScriptEditor.ui" line="141"/>
         <location filename="../python/plugins/processing/ui/DlgScriptEditor.ui" line="151"/>
         <source>...</source>
-        <translation>...</translation>
+        <translation type="unfinished">...</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgScriptEditor.ui" line="50"/>
         <source>Save as...</source>
-        <translation>Spremi kao...</translation>
+        <translation type="unfinished">Spremi kao...</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgScriptEditor.ui" line="67"/>
         <source>Edit script help</source>
-        <translation>Uredi pomoć za skriptu</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgScriptEditor.ui" line="84"/>
         <source>Run algorithm</source>
-        <translation>Pokreni algoritam</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgScriptEditor.ui" line="101"/>
         <source>Cut</source>
-        <translation>Izreži</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgScriptEditor.ui" line="111"/>
         <source>Copy</source>
-        <translation>Kopiraj</translation>
+        <translation type="unfinished">Kopiraj</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgScriptEditor.ui" line="121"/>
         <source>Paste</source>
-        <translation>Zalijepi</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgScriptEditor.ui" line="138"/>
         <source>Undo</source>
-        <translation>Poništi</translation>
+        <translation type="unfinished">Poništi</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgScriptEditor.ui" line="148"/>
         <source>Redo</source>
-        <translation>Ponovi</translation>
+        <translation type="unfinished">Ponovi</translation>
     </message>
 </context>
 <context>
@@ -3505,19 +3491,19 @@ geometry column - column with unique integer values</source>
     <name>FileDirectorySelector</name>
     <message>
         <source>...</source>
-        <translation>...</translation>
+        <translation type="unfinished">...</translation>
     </message>
     <message>
         <source>Select directory</source>
-        <translation>Odaberi direktorij</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Select file</source>
-        <translation>Odaberi datoteku</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>All files (*.*)</source>
-        <translation>Sve datoteke (*.*)</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
