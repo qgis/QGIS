@@ -596,6 +596,9 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     /**Margin size for atlas driven extents (percentage of feature size)*/
     double mAtlasMargin;
 
+    /**Returns a list of the layers to render for this map item*/
+    QStringList layersToRender();
+
     /**Draws the map grid*/
     void drawGrid( QPainter* p );
     void drawGridFrame( QPainter* p, const QList< QPair< double, QLineF > >& hLines, const QList< QPair< double, QLineF > >& vLines );
