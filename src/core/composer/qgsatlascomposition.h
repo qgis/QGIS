@@ -193,7 +193,7 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     QVector<QgsFeatureId> mFeatureIds;
 
     QgsFeature mCurrentFeature;
-    bool mRestoreLayer;
+
     std::auto_ptr<QgsExpression> mFilenameExpr;
 
     // bounding box of the current feature transformed into map crs

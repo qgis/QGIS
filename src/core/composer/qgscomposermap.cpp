@@ -178,17 +178,16 @@ void QgsComposerMap::draw( QPainter *painter, const QgsRectangle& extent, const 
   if ( mMapRenderer->labelingEngine() )
     theMapRenderer.setLabelingEngine( mMapRenderer->labelingEngine()->clone() );
 
-
   //use stored layer set or read current set from main canvas
-  const QStringList theLayerSet = mKeepLayerSet ? mLayerSet : mMapRenderer->layerSet() ;
 
   if ( -1 == mCurrentExportLayer )
   {
-    theMapRenderer.setLayerSet( theLayerSet );
+    theMapRenderer.setLayerSet( layersToRender() );
   }
   else
   {
     const int layerIdx = mCurrentExportLayer - ( hasBackground() ? 1 : 0 );
+    const QStringList theLayerSet = layersToRender();
     theMapRenderer.setLayerSet(
       ( layerIdx >= 0 && layerIdx < theLayerSet.length() )
       ? QStringList( theLayerSet[ theLayerSet.length() - layerIdx - 1 ] )
@@ -521,6 +520,37 @@ void QgsComposerMap::renderModeUpdateCachedImage()
 void QgsComposerMap::setCacheUpdated( bool u )
 {
   mCacheUpdated = u;
+}
+
+QStringList QgsComposerMap::layersToRender()
+{
+  //use stored layer set or read current set from main canvas
+  QStringList renderLayerSet;
+  if ( mKeepLayerSet )
+  {
+    renderLayerSet = mLayerSet;
+  }
+  else
+  {
+    renderLayerSet = mMapRenderer->layerSet();
+  }
+
+  //remove atlas coverage layer if required
+  //TODO - move setting for hiding coverage layer to map item properties
+  if ( mComposition->atlasMode() != QgsComposition::AtlasOff )
+  {
+    if ( mComposition->atlasComposition().hideCoverage() )
+    {
+      //hiding coverage layer
+      int removeAt = renderLayerSet.indexOf( mComposition->atlasComposition().coverageLayer()->id() );
+      if ( removeAt != -1 )
+      {
+        renderLayerSet.removeAt( removeAt );
+      }
+    }
+  }
+
+  return renderLayerSet;
 }
 
 double QgsComposerMap::scale() const

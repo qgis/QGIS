@@ -270,19 +270,6 @@ bool QgsAtlasComposition::beginRender()
     return false;
   }
 
-  mRestoreLayer = false;
-  QStringList& layerSet = mComposition->mapRenderer()->layerSet();
-  if ( mHideCoverage )
-  {
-    // look for the layer in the renderer's set
-    int removeAt = layerSet.indexOf( mCoverageLayer->id() );
-    if ( removeAt != -1 )
-    {
-      mRestoreLayer = true;
-      layerSet.removeAt( removeAt );
-    }
-  }
-
   // special columns for expressions
   QgsExpression::setSpecialColumn( "$numpages", QVariant( mComposition->numPages() ) );
   QgsExpression::setSpecialColumn( "$numfeatures", QVariant(( int )mFeatureIds.size() ) );
@@ -303,14 +290,6 @@ void QgsAtlasComposition::endRender()
   for ( QList<QgsComposerLabel*>::iterator lit = labels.begin(); lit != labels.end(); ++lit )
   {
     ( *lit )->setExpressionContext( 0, 0 );
-  }
-
-  // restore the coverage visibility
-  if ( mRestoreLayer )
-  {
-    QStringList& layerSet = mComposition->mapRenderer()->layerSet();
-
-    layerSet.push_back( mCoverageLayer->id() );
   }
 
   updateAtlasMaps();
@@ -657,25 +636,6 @@ void QgsAtlasComposition::setHideCoverage( bool hide )
   if ( mComposition->atlasMode() == QgsComposition::PreviewAtlas )
   {
     //an atlas preview is enabled, so reflect changes in coverage layer visibility immediately
-    QStringList& layerSet = mComposition->mapRenderer()->layerSet();
-    if ( hide )
-    {
-      // look for the layer in the renderer's set
-      int removeAt = layerSet.indexOf( mCoverageLayer->id() );
-      if ( removeAt != -1 )
-      {
-        mRestoreLayer = true;
-        layerSet.removeAt( removeAt );
-      }
-    }
-    else
-    {
-      if ( mRestoreLayer )
-      {
-        layerSet.push_back( mCoverageLayer->id() );
-        mRestoreLayer = false;
-      }
-    }
     updateAtlasMaps();
     mComposition->update();
   }
