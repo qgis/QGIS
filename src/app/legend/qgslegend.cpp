@@ -181,8 +181,9 @@ void QgsLegend::showItem( QString msg, QTreeWidgetItem *item )
 
 void QgsLegend::handleCurrentItemChanged( QTreeWidgetItem* current, QTreeWidgetItem* previous )
 {
-  Q_UNUSED( current );
-  Q_UNUSED( previous );
+  if ( legendLayerForItem( current ) == legendLayerForItem( previous ) )
+    return; // do not re-emit signal when not necessary
+
   QgsMapLayer *layer = currentLayer();
 
   if ( mMapCanvas )
@@ -1214,7 +1215,12 @@ void QgsLegend::setLayerVisible( QgsMapLayer * layer, bool visible )
 
 QgsLegendLayer* QgsLegend::currentLegendLayer()
 {
-  QgsLegendItem* citem = dynamic_cast<QgsLegendItem *>( currentItem() );
+  return legendLayerForItem( currentItem() );
+}
+
+QgsLegendLayer* QgsLegend::legendLayerForItem( QTreeWidgetItem* item )
+{
+  QgsLegendItem* citem = dynamic_cast<QgsLegendItem *>( item );
 
   if ( citem )
   {

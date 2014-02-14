@@ -115,6 +115,9 @@ class QgsLegend : public QTreeWidget
     //! Destructor
     ~QgsLegend();
 
+    /** Returns QgsLegendLayer accosiated with given item */
+    QgsLegendLayer* legendLayerForItem( QTreeWidgetItem* item );
+
     /** Returns QgsLegendLayer associated with current layer */
     QgsLegendLayer* currentLegendLayer();
 
