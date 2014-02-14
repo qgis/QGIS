@@ -4459,9 +4459,12 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
       // http://sourceforge.net/p/expat/bugs/498/
       QDomDocument dom;
       dom.setContent( gmlByteArray ); // gets XML encoding
+      gmlByteArray.clear();
       QTextStream stream( &gmlByteArray );
       stream.setCodec( QTextCodec::codecForName( "UTF-8" ) );
       dom.save( stream, 4, QDomNode::EncodingFromTextStream );
+
+      QgsDebugMsg( "GML UTF-8 (first 2000 bytes):\n" + gmlByteArray.left( 2000 ) );
 
       QGis::WkbType wkbType;
       QgsGmlSchema gmlSchema;
