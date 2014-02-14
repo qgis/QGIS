@@ -447,6 +447,10 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     /**Casts object to the proper subclass type and calls corresponding itemAdded signal*/
     void sendItemAddedSignal( QgsComposerItem* item );
 
+    /**Updates the scene bounds of the composition
+    @note added in version 2.2*/
+    void updateBounds();
+
   private:
     /**Pointer to map renderer of QGIS main map*/
     QgsMapRenderer* mMapRenderer;
@@ -512,6 +516,9 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     QgsComposition::AtlasMode mAtlasMode;
 
     QgsComposition(); //default constructor is forbidden
+
+    /**Calculates the bounds of all non-gui items in the composition. Ignores snap lines and mouse handles*/
+    QRectF compositionBounds() const;
 
     /**Reset z-values of items based on position in z list*/
     void updateZValues( bool addUndoCommands = true );

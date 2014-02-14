@@ -33,6 +33,7 @@
 #include "qgscoordinatetransform.h"
 #include "qgsdatasourceuri.h"
 #include "qgsfeaturestore.h"
+#include "qgsgeometry.h"
 #include "qgsrasteridentifyresult.h"
 #include "qgsrasterlayer.h"
 #include "qgsrectangle.h"
@@ -4549,7 +4550,13 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
         // the same as this layer, because layerExtentToOutputExtent() may be used
         // for results -> verify CRS and reprojects if necessary
         QMap<QgsFeatureId, QgsFeature* > features = gml.featuresMap();
-        QgsDebugMsg( QString( "%1 features read" ).arg( features.size() ) );
+        QgsCoordinateReferenceSystem featuresCrs = gml.crs();
+        QgsDebugMsg( QString( "%1 features read, crs: %2 %3" ).arg( features.size() ).arg( featuresCrs.authid() ).arg( featuresCrs.description() ) );
+        QgsCoordinateTransform *coordinateTransform = 0;
+        if ( featuresCrs.isValid() && featuresCrs != crs() )
+        {
+          coordinateTransform = new QgsCoordinateTransform( featuresCrs, crs() );
+        }
         QgsFeatureStore featureStore( fields, crs() );
         QMap<QString, QVariant> params;
         params.insert( "sublayer", *layers );
@@ -4562,9 +4569,24 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
 
           QgsDebugMsg( QString( "feature id = %1 : %2 attributes" ).arg( id ).arg( feature->attributes().size() ) );
 
+          if ( coordinateTransform && feature->geometry() )
+          {
+            feature->geometry()->transform( *coordinateTransform );
+          }
           featureStore.features().append( QgsFeature( *feature ) );
         }
         featureStoreList.append( featureStore );
+        delete coordinateTransform;
+      }
+      // It is suspicious if we guessed feature types from GML but could not get
+      // features from it. Either we geuessed wrong schema or parsing features failed.
+      // Report it as error so that user can switch to another format in results dialog.
+      if ( xsdPart < 0 && !featureTypeNames.isEmpty() && featureStoreList.isEmpty() )
+      {
+        QgsError err = ERROR( tr( "Cannot identify" ) );
+        err.append( tr( "Result parsing failed. %1 feature types were guessed from gml (%2) but no features were parsed." ).arg( featureTypeNames.size() ).arg( featureTypeNames.join( "," ) ) );
+        QgsDebugMsg( "parsing GML error: " +  err.message() );
+        return QgsRasterIdentifyResult( err );
       }
       results.insert( count, qVariantFromValue( featureStoreList ) );
     }

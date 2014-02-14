@@ -168,7 +168,7 @@ class DlgSqlWindow(QDialog, Ui_Dialog):
       QMessageBox.warning(self, self.tr( "Sorry" ), self.tr( "You must fill the required fields: \ngeometry column - column with unique integer values" ) )
       return
 
-    query = self.getSql()
+    query = self.editSql.text()
     if query == "":
       return
 
@@ -199,7 +199,7 @@ class DlgSqlWindow(QDialog, Ui_Dialog):
     QApplication.restoreOverrideCursor()
 
   def fillColumnCombos(self):
-    query = self.getSql()
+    query = self.editSql.text()
     if query == "": return
 
     QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))

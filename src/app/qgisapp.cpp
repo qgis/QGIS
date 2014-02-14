@@ -3877,7 +3877,10 @@ void QgisApp::dxfExport()
       }
     }
 
-    QFile dxfFile( d.saveFile() );
+    QString fileName( d.saveFile() );
+    if ( !fileName.endsWith( ".dxf", Qt::CaseInsensitive ) )
+      fileName += ".dxf";
+    QFile dxfFile( fileName );
     if ( dxfExport.writeToFile( &dxfFile ) == 0 )
     {
       messageBar()->pushMessage( tr( "DXF export completed" ), QgsMessageBar::INFO, 4 );
@@ -5739,11 +5742,9 @@ void QgisApp::editPaste( QgsMapLayer *destinationLayer )
   for ( int idx = 0; idx < fields.count(); ++idx )
   {
     int dst = pasteVectorLayer->fieldNameIndex( fields[idx].name() );
-    if ( dst < 0 || pkAttrList.contains( dst ) )
-    {
-      // skip primary key attributes
+    if ( dst < 0 )
       continue;
-    }
+
     remap.insert( idx, dst );
   }
 
@@ -5759,6 +5760,14 @@ void QgisApp::editPaste( QgsMapLayer *destinationLayer )
       int dst = remap.value( src, -1 );
       if ( dst < 0 )
         continue;
+
+      // use default value for primary key fields if it's NOT NULL
+      if ( pkAttrList.contains( dst ) )
+      {
+        dstAttr[ dst ] = pasteVectorLayer->dataProvider()->defaultValue( dst );
+	if( !dstAttr[ dst ].isNull() )
+	  continue;
+      }
 
       dstAttr[ dst ] = srcAttr[ src ];
     }
@@ -8691,6 +8700,10 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
         mActionSimplifyFeature->setEnabled( isEditable && canChangeGeometry );
         mActionDeleteRing->setEnabled( isEditable && canChangeGeometry );
         mActionOffsetCurve->setEnabled( false );
+      }
+      else if ( vlayer->geometryType() == QGis::NoGeometry )
+      {
+        mActionAddFeature->setIcon( QgsApplication::getThemeIcon( "/mActionNewTableRow.png" ) );
       }
 
       mActionOpenFieldCalc->setEnabled( isEditable && ( canChangeAttributes || canAddAttributes ) );

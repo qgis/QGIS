@@ -100,14 +100,19 @@ void QgsMapToolIdentifyAction::canvasReleaseEvent( QMouseEvent *e )
   disconnect( this, SIGNAL( identifyProgress( int, int ) ), QgisApp::instance(), SLOT( showProgress( int, int ) ) );
   disconnect( this, SIGNAL( identifyMessage( QString ) ), QgisApp::instance(), SLOT( showStatusMessage( QString ) ) );
 
-  QList<IdentifyResult>::const_iterator result;
-  for ( result = results.begin(); result != results.end(); ++result )
-  {
-    resultsDialog()->addFeature( *result );
-  }
-
   if ( !results.isEmpty() )
   {
+    // Show the dialog before items are inserted so that items can resize themselfs
+    // according to dialog size also the first time, see also #9377
+    resultsDialog()->QDialog::show();
+
+    QList<IdentifyResult>::const_iterator result;
+    for ( result = results.begin(); result != results.end(); ++result )
+    {
+      resultsDialog()->addFeature( *result );
+    }
+
+    // Call QgsIdentifyResultsDialog::show() to adjust with items
     resultsDialog()->show();
   }
   else
