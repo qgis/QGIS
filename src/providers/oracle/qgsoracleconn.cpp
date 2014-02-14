@@ -298,6 +298,9 @@ QString QgsOracleConn::quotedValue( const QVariant &value, QVariant::Type type )
           return QString( "TO_DATE('%1','HH24:MI:SS')" ).arg( datetime.toString( "hh:mm:ss" ) );
         break;
       }
+
+      default:
+	break;
     }
   }
 

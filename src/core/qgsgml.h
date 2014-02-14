@@ -146,7 +146,7 @@ class CORE_EXPORT QgsGml : public QObject
     /**Creates a set of points from a gml:posList or gml:pos coordinate string.
        @param points list that will contain the created points
        @param coordString the text containing the coordinates
-       @parem dimension number of dimensions
+       @param dimension number of dimensions
        @return 0 in case of success
       */
     int pointsFromPosListString( QList<QgsPoint>& points, const QString& coordString, int dimension ) const;
