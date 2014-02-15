@@ -173,7 +173,7 @@ class QgsWMSSourceSelect : public QDialog, private Ui::QgsWMSSourceSelectBase
     QString descriptionForAuthId( QString authId );
 
     //! Keeps the layer order list up-to-date with changed layers and styles
-    void updateLayerOrderTab( const QStringList& newLayerList, const QStringList& newStyleList );
+    void updateLayerOrderTab( const QStringList& newLayerList, const QStringList& newStyleList, const QStringList &newTitleList );
 
     //! Name for selected connection
     QString mConnName;
@@ -196,10 +196,10 @@ class QgsWMSSourceSelect : public QDialog, private Ui::QgsWMSSourceSelectBase
     void addWMSListItem( const QDomElement& el, int row, int column );
 
     void applySelectionConstraints( QTreeWidgetItem *item );
-    void collectNamedLayers( QTreeWidgetItem *item, QStringList &layers, QStringList &styles );
+    void collectNamedLayers( QTreeWidgetItem *item, QStringList &layers, QStringList &styles, QStringList &titles );
     void enableLayersForCrs( QTreeWidgetItem *item );
 
-    void collectSelectedLayers( QStringList &layers, QStringList &styles );
+    void collectSelectedLayers( QStringList &layers, QStringList &styles, QStringList &titles );
     QString selectedImageEncoding();
 
     QList<QTreeWidgetItem*> mCurrentSelection;
