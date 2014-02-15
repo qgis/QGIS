@@ -8445,15 +8445,15 @@ Fel på linje: %1</translation>
     </message>
     <message>
         <source>The file &lt;b&gt;&quot;{0}&quot;&lt;/b&gt; has been deleted or is not accessible</source>
-        <translation type="unfinished"></translation>
+        <translation>Filen &lt;b&gt;&quot;{0}&quot;&lt;/b&gt; har blivit raderad och kan inte nås</translation>
     </message>
     <message>
         <source>The file &lt;b&gt;&quot;{0}&quot;&lt;/b&gt; has been changed and reloaded</source>
-        <translation type="unfinished"></translation>
+        <translation>Filen &lt;b&gt;&quot;{0}&quot;&lt;/b&gt; har blivit ändrad och laddats in på nytt</translation>
     </message>
     <message>
         <source>The file &lt;b&gt;&quot;{0}&quot;&lt;/b&gt; is read only, please save to different file first.</source>
-        <translation type="unfinished"></translation>
+        <translation>Filen &lt;b&gt;&quot;{0}&quot;&lt;/b&gt; är skrivskyddad, vänligen spara till en ny fil först.</translation>
     </message>
     <message>
         <source>Run script</source>
@@ -8545,7 +8545,7 @@ Fel på linje: %1</translation>
     </message>
     <message>
         <source>&lt;b&gt;&quot;{0}&quot;&lt;/b&gt; was not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;&quot;{0}&quot;&lt;/b&gt; hittades inte.</translation>
     </message>
     <message>
         <source>URL copied to clipboard.</source>
@@ -8557,20 +8557,20 @@ Fel på linje: %1</translation>
     </message>
     <message>
         <source> [Temporary file saved in {0}]</source>
-        <translation type="unfinished"></translation>
+        <translation> [Temporär fil sparad i {0}]</translation>
     </message>
     <message>
         <source>## Script error: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>## Skriptfel: {0}</translation>
     </message>
     <message>
         <source>## Script executed successfully: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>## Skriptet exekverades utan problem: {0}</translation>
     </message>
     <message>
         <source>Cannot execute file {0}. Error: {1}
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Kan inte köra fil {0}. Fel: {1}</translation>
     </message>
     <message>
         <source>Hey, type something to run!</source>
@@ -8582,27 +8582,27 @@ Fel på linje: %1</translation>
     </message>
     <message>
         <source>Close Tab</source>
-        <translation type="unfinished"></translation>
+        <translation>Stäng flik</translation>
     </message>
     <message>
         <source>Close All</source>
-        <translation type="unfinished"></translation>
+        <translation>Stäng alla</translation>
     </message>
     <message>
         <source>Close Others</source>
-        <translation type="unfinished"></translation>
+        <translation>Stäng andra</translation>
     </message>
     <message>
         <source>Save As</source>
-        <translation type="unfinished">Spara som</translation>
+        <translation>Spara som</translation>
     </message>
     <message>
         <source>Import Processing class</source>
-        <translation type="unfinished"></translation>
+        <translation>Importera geobehandlingsklass</translation>
     </message>
     <message>
         <source>The file &lt;b&gt;{0}&lt;/b&gt; could not be saved. Error: {1}</source>
-        <translation type="unfinished"></translation>
+        <translation>Filen &lt;b&gt;{0}&lt;/b&gt; kunde inte sparas. Fel: {1}</translation>
     </message>
     <message>
         <source>Syntax ok</source>
@@ -8639,11 +8639,11 @@ Fel på linje: %1</translation>
     <message>
         <source>The file {0} could not be opened. Error: {1}
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Filen &lt;b&gt;{0}&lt;/b&gt; kunde inte öppnas. Fel: {1}</translation>
     </message>
     <message>
         <source>Untitled-{0}</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Python Console: Save File</source>
@@ -8651,19 +8651,22 @@ Fel på linje: %1</translation>
     </message>
     <message>
         <source>The file &lt;b&gt;&apos;{0}&apos;&lt;/b&gt; has been modified, save changes?</source>
-        <translation type="unfinished"></translation>
+        <translation>Filen &lt;b&gt;&apos;{0}&apos;&lt;/b&gt; har blivit ändrad, spara ändringar?</translation>
     </message>
     <message>
         <source>Unable to restore the file: 
 {0}
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Kan inte återskapa filen: 
+{0}
+</translation>
     </message>
     <message>
         <source>Python {0} on {1}
 ## Type help(iface) for more info and list of methods.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Python {0} på {1}
+## Skriv help(iface) för mer information och för en lista på metoder.</translation>
     </message>
     <message>
         <source>Hide/Show Toolbar</source>
@@ -8938,7 +8941,7 @@ Fel på linje: %1</translation>
     <message>
         <location filename="../src/providers/oracle/ocispatial/qsql_ocispatial.cpp" line="3176"/>
         <source>Unable to execute statement</source>
-        <translation type="unfinished">Kan inte köra uttryck</translation>
+        <translation>Kan inte köra uttryck</translation>
     </message>
 </context>
 <context>
@@ -12388,17 +12391,17 @@ SQL: %1</translation>
     <message>
         <location filename="../src/core/symbology-ng/qgsfillsymbollayerv2.cpp" line="527"/>
         <source>pad</source>
-        <translation type="unfinished"></translation>
+        <translation>fyll ut</translation>
     </message>
     <message>
         <location filename="../src/core/symbology-ng/qgsfillsymbollayerv2.cpp" line="531"/>
         <source>repeat</source>
-        <translation type="unfinished"></translation>
+        <translation>upprepa</translation>
     </message>
     <message>
         <location filename="../src/core/symbology-ng/qgsfillsymbollayerv2.cpp" line="535"/>
         <source>reflect</source>
-        <translation type="unfinished"></translation>
+        <translation>reflektera</translation>
     </message>
 </context>
 <context>
@@ -12682,7 +12685,7 @@ SQL: %1</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="7227"/>
         <source>http://qgis.org/de/site/forusers/commercial_support.html</source>
-        <translation type="unfinished"></translation>
+        <translation>http://qgis.org/de/site/forusers/commercial_support.html</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="7500"/>
@@ -15133,7 +15136,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsabout.cpp" line="131"/>
         <source>&lt;p&gt;For a list of individuals and institutions who have contributed money to fund QGIS development and other project costs see &lt;a href=&quot;http://qgis.org/en/site/about/sponsorship.html#list-of-donors&quot;&gt;http://qgis.org/en/site/about/sponsorship.html#list-of-donors&lt;/a&gt;&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;För en fullständig lista på personer och instutioner som har bidragit med pengar till QGIS utveckling och andra projekt se &lt;a href=&quot;http://qgis.org/en/site/about/sponsorship.html#list-of-donors&quot;&gt;http://qgis.org/en/site/about/sponsorship.html#list-of-donors&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/qgsabout.cpp" line="230"/>
@@ -16103,7 +16106,7 @@ Användaredatabas-sökväg:	%8
     <message>
         <location filename="../src/ui/qgsattributeselectiondialogbase.ui" line="160"/>
         <source>&lt;b&gt;Attribute&lt;/b&gt;</source>
-        <translation>&lt;b&gt;Attribut&gt;/b&gt;</translation>
+        <translation>&lt;b&gt;Attribut&lt;/b&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeselectiondialogbase.ui" line="173"/>
@@ -16118,7 +16121,7 @@ Användaredatabas-sökväg:	%8
     <message>
         <location filename="../src/ui/qgsattributeselectiondialogbase.ui" line="27"/>
         <source>Clear</source>
-        <translation>Radera</translation>
+        <translation>Rensa</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeselectiondialogbase.ui" line="47"/>
@@ -17593,7 +17596,7 @@ Databas: %2</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgsbrushstylecombobox.cpp" line="30"/>
         <source>No Brush</source>
-        <translation>Ingen pensel</translation>
+        <translation>Ingen fyllning</translation>
     </message>
 </context>
 <context>
@@ -18018,7 +18021,7 @@ Skall existerande klasser tas bort före klassificering?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="3143"/>
         <source>Landscape</source>
-        <translation type="unfinished">Landskap</translation>
+        <translation>Landskap</translation>
     </message>
     <message>
         <source>Trying to create image #%1 ( %2x%3 @ %4dpi )may result in a memory overflow.
@@ -19269,7 +19272,7 @@ Var vänlig försök med en lägre upplösning eller mindre pappersstorlek</tran
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="590"/>
         <source>Page setup</source>
-        <translation>Sidinställning</translation>
+        <translation>Utskriftsinställningar</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="593"/>
@@ -20036,7 +20039,7 @@ Var vänlig försök med en lägre upplösning eller mindre pappersstorlek</tran
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="355"/>
         <source>Auto update</source>
-        <translation type="unfinished"></translation>
+        <translation>Uppdatera automatiskt</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="368"/>
@@ -20058,22 +20061,22 @@ Var vänlig försök med en lägre upplösning eller mindre pappersstorlek</tran
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="386"/>
         <source>Title font...</source>
-        <translation type="unfinished"></translation>
+        <translation>Titeltypsnitt...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="393"/>
         <source>Subgroup font...</source>
-        <translation type="unfinished"></translation>
+        <translation>Undergrupptypsnitt...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="400"/>
         <source>Group font...</source>
-        <translation type="unfinished"></translation>
+        <translation>Grupptypsnitt...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="407"/>
         <source>Item font...</source>
-        <translation type="unfinished"></translation>
+        <translation>Elementtypsnitt...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="414"/>
@@ -21041,7 +21044,7 @@ Var vänlig försök med en lägre upplösning eller mindre pappersstorlek</tran
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="128"/>
         <source>Map rotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Kartrotation</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="212"/>
@@ -21279,7 +21282,7 @@ Var vänlig försök med en lägre upplösning eller mindre pappersstorlek</tran
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="216"/>
         <source>Image rotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Bildrotation</translation>
     </message>
     <message>
         <source>Loading SVG previews...</source>
@@ -22028,12 +22031,12 @@ Var vänlig försök med en lägre upplösning eller mindre pappersstorlek</tran
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="220"/>
         <source>Header font...</source>
-        <translation type="unfinished"></translation>
+        <translation>Typsnitt på rubrikrad...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="227"/>
         <source>Content font...</source>
-        <translation type="unfinished"></translation>
+        <translation>Typsnitt på innehåll...</translation>
     </message>
     <message>
         <source>Grid stroke width</source>
@@ -23872,27 +23875,27 @@ och nuvarande fil är [%3]</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgsdatadefinedsymboldialog.cpp" line="188"/>
         <source>&apos;left&apos;|&apos;center&apos;|&apos;right&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsdatadefinedsymboldialog.cpp" line="193"/>
         <source>&apos;top&apos;|&apos;center&apos;|&apos;bottom&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsdatadefinedsymboldialog.cpp" line="198"/>
         <source>&apos;linear&apos;|&apos;radial&apos;|&apos;conical&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsdatadefinedsymboldialog.cpp" line="203"/>
         <source>&apos;feature&apos;|&apos;viewport&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsdatadefinedsymboldialog.cpp" line="208"/>
         <source>&apos;pad&apos;|&apos;repeat&apos;|&apos;reflect&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsdatadefinedsymboldialog.cpp" line="213"/>
@@ -26557,7 +26560,7 @@ Tolkningsfel:
     <message>
         <location filename="../src/ui/qgsengineconfigdialog.ui" line="20"/>
         <source>Automated Placement Engine</source>
-        <translation type="unfinished"></translation>
+        <translation>Automatiserad placering</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsengineconfigdialog.ui" line="276"/>
@@ -26644,7 +26647,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="72"/>
         <source>Usage</source>
-        <translation>Andvändning</translation>
+        <translation>Användning</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="73"/>
@@ -26696,42 +26699,42 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="61"/>
         <source>Power operator</source>
-        <translation type="unfinished"></translation>
+        <translation>Exponentieringsoperator</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="62"/>
         <source>Equal operator</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;Lika med&apos;-operator</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="63"/>
         <source>Greater as operator</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;Större än&apos;-operator</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="64"/>
         <source>Less than operator</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;Mindre än&apos;-operator</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="65"/>
         <source>Unequal operator</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;Ej lika med&apos;-operator</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="66"/>
         <source>Less or equal operator</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;Mindre eller lika med&apos;-operator</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="67"/>
         <source>Greater or equal operator</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;Större eller lika med&apos;-operator</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="262"/>
         <source>Recent (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Senaste (%1)</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="348"/>
@@ -26853,7 +26856,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsexpressionbuilder.ui" line="303"/>
         <source>Equal operator</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;Lika med&apos;-operator</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsexpressionbuilder.ui" line="306"/>
@@ -26903,7 +26906,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsexpressionbuilder.ui" line="359"/>
         <source>Power operator</source>
-        <translation type="unfinished"></translation>
+        <translation>Exponentieringsoperator</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsexpressionbuilder.ui" line="362"/>
@@ -26923,7 +26926,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsexpressionbuilder.ui" line="391"/>
         <source>Open Bracket </source>
-        <translation type="unfinished"></translation>
+        <translation>Öppen parantes </translation>
     </message>
     <message>
         <location filename="../src/ui/qgsexpressionbuilder.ui" line="394"/>
@@ -26933,7 +26936,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsexpressionbuilder.ui" line="401"/>
         <source>Close Bracket </source>
-        <translation type="unfinished"></translation>
+        <translation>Stängd parantes </translation>
     </message>
     <message>
         <location filename="../src/ui/qgsexpressionbuilder.ui" line="404"/>
@@ -28501,18 +28504,18 @@ Please reselect a valid file.</source>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="94"/>
         <source>&amp;GPS Tools</source>
-        <translation></translation>
+        <translation>&amp;GPS-Verktyg</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="107"/>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="218"/>
         <source>&amp;GPS</source>
-        <translation></translation>
+        <translation>&amp;GPS</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="174"/>
         <source>GPS eXchange file</source>
-        <translation type="unfinished">GPS eXchange fil</translation>
+        <translation>GPS eXchange fil</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="427"/>
@@ -29995,7 +29998,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/core/qgsgml.cpp" line="141"/>
         <source>GML Getfeature network request failed with error: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>GML GetFeature nätverksförfrågan misslyckades med fel: %1</translation>
     </message>
     <message>
         <location filename="../src/core/qgsgml.cpp" line="142"/>
@@ -30008,7 +30011,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/core/qgsgmlschema.cpp" line="348"/>
         <source>Cannot guess schema</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan inte gissa schema</translation>
     </message>
 </context>
 <context>
@@ -30175,7 +30178,8 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/gui/symbology-ng/qgsgraduatedsymbolrendererv2widget.cpp" line="538"/>
         <source>Natural break classification (Jenks) is O(n2) complexity, your classification may take a long time.
 Press cancel to abort breaks calculation or OK to continue.</source>
-        <translation type="unfinished"></translation>
+        <translation>Naturlig brytpunktsklassifikation (Jenks) är O(n2) komplex, din klassifikation kan ta lång tid.
+Tryck Avbryt för att avbryta kalkyleringen eller OK för att fortsätta.</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsgraduatedsymbolrendererv2widget.cpp" line="548"/>
@@ -36302,12 +36306,12 @@ visas inte</translation>
     <message>
         <location filename="../src/plugins/georeferencer/qgsmapcoordsdialogbase.ui" line="23"/>
         <source>Enter X and Y coordinates (DMS (dd mm ss.ss), DD (dd.dd) or projected coordinates (mmmm.mm)) which correspond with the selected point on the image. Alternatively, click the button with icon of a pencil and then click a corresponding point on map canvas of QGIS to fill in coordinates of that point.</source>
-        <translation>Fyll i X och Y koordinater (GMS (gg mm ss.ss), DG (gg.gg) eller projicerade koordinater (mmmm.mm)) som motsvarar vald punkt i bilden. Alternativt, klicka knappen med penna och klicka sedan på motsvarande punkt på QGIS kartblad för att fylla i koordinaterna för den punkten.</translation>
+        <translation>Fyll i X och Y koordinater (GMS (gg mm ss.ss), DG (gg.gg) eller projicerade koordinater (mmmm.mm)) som motsvarar vald punkt i bilden. Alternativt, klicka på knappen med en penna och klicka sedan på motsvarande punkt på i QGIS kartfönster för att fylla i koordinaterna automatiskt för den punkten.</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsmapcoordsdialogbase.ui" line="35"/>
         <source>X / East:</source>
-        <translation>X / Ost:</translation>
+        <translation>X / Öst:</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsmapcoordsdialogbase.ui" line="49"/>
@@ -41195,7 +41199,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3971"/>
         <source>Ask for datum transformation when no default is defined</source>
-        <translation type="unfinished"></translation>
+        <translation>Fråga efter datumtransformation när det inte finns någon satt som standard</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="4019"/>
@@ -41969,7 +41973,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsoptionsbase.ui" line="3782"/>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3882"/>
         <source>Select...</source>
-        <translation></translation>
+        <translation>Välj...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3889"/>
@@ -42358,7 +42362,9 @@ Missing some of the .ui template objects:
         <source>SQL:%1
 error:%2
 </source>
-        <translation type="unfinished"></translation>
+        <translation>SQL:%1
+fel:%2
+</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="212"/>
@@ -42720,7 +42726,7 @@ error:%2
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="144"/>
         <source>Whole number</source>
-        <translation type="unfinished">Heltal</translation>
+        <translation>Heltal</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="145"/>
@@ -42740,12 +42746,12 @@ error:%2
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="150"/>
         <source>Decimal number (real)</source>
-        <translation type="unfinished">Decimaltal (real)</translation>
+        <translation>Decimaltal (real)</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="151"/>
         <source>Decimal number (double)</source>
-        <translation type="unfinished">Decimaltal (double)</translation>
+        <translation>Decimaltal (double)</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="154"/>
@@ -45102,7 +45108,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="758"/>
         <source>changelog:&lt;br/&gt;%1 &lt;br/&gt;</source>
-        <translation>ändringar:&lt;br/&gt;%1 &lt;br/&gt;</translation>
+        <translation>Ändringar:&lt;br/&gt;%1 &lt;br/&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="770"/>
@@ -52627,7 +52633,7 @@ SQL: %1</translation>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitesourceselect.cpp" line="60"/>
         <source>&amp;Add</source>
-        <translation type="unfinished">L&amp;ägg till</translation>
+        <translation>L&amp;ägg till</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitesourceselect.cpp" line="81"/>
@@ -52669,7 +52675,7 @@ SQL: %1</translation>
         <location filename="../src/providers/spatialite/qgsspatialitesourceselect.cpp" line="88"/>
         <location filename="../src/providers/spatialite/qgsspatialitesourceselect.cpp" line="222"/>
         <source>Sql</source>
-        <translation type="unfinished">Sql</translation>
+        <translation>Sql</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitesourceselect.cpp" line="147"/>
@@ -52708,17 +52714,17 @@ but implies better performance thereafter.</source>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitesourceselect.cpp" line="274"/>
         <source>All files</source>
-        <translation type="unfinished">Alla filer</translation>
+        <translation>Alla filer</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitesourceselect.cpp" line="295"/>
         <source>Error</source>
-        <translation type="unfinished">Fel</translation>
+        <translation>Fel</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitesourceselect.cpp" line="295"/>
         <source>Cannot add connection &apos;%1&apos; : a connection with the same name already exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan inte lägga till anslutning &apos;%1&apos;: en anslutning med det namnet finns redan.</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitesourceselect.cpp" line="441"/>
@@ -52758,12 +52764,12 @@ but implies better performance thereafter.</source>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitesourceselect.cpp" line="56"/>
         <source>&amp;Update statistics</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Uppdatera statistik</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitesourceselect.cpp" line="64"/>
         <source>&amp;Set Filter</source>
-        <translation type="unfinished">&amp;Sätt filter</translation>
+        <translation>&amp;Sätt filter</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitesourceselect.cpp" line="273"/>
@@ -52842,7 +52848,7 @@ but implies better performance thereafter.</source>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitetablemodel.cpp" line="28"/>
         <source>Sql</source>
-        <translation type="unfinished">Sql</translation>
+        <translation>Sql</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitetablemodel.cpp" line="193"/>
@@ -52882,60 +52888,60 @@ but implies better performance thereafter.</source>
         <source>%n selected geometries</source>
         <comment>selected geometries</comment>
         <translation>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+            <numerusform>%n vald geometri</numerusform>
+            <numerusform>%n valda geometrier</numerusform>
         </translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="168"/>
         <source>Selected geometries</source>
-        <translation></translation>
+        <translation>Valda geometrier</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="211"/>
         <source>&lt; %1 &gt;</source>
-        <translation></translation>
+        <translation>&lt; %1 &gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="322"/>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="348"/>
         <source>%1 of %2</source>
-        <translation type="unfinished">%1 av %2</translation>
+        <translation>%1 av %2</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="323"/>
         <source>all = %1</source>
-        <translation></translation>
+        <translation>alla = %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="204"/>
         <source>%1)Query</source>
-        <translation></translation>
+        <translation>%1)Fråga</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="89"/>
         <source>The spatial query requires at least two vector layers</source>
-        <translation></translation>
+        <translation>Den spatiala frågan kräver minst två vektorlager</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="206"/>
         <source>Begin at %L1</source>
-        <translation></translation>
+        <translation>Startade %L1</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="215"/>
         <source>Total of features =  %1</source>
-        <translation></translation>
+        <translation>Totalt antal objekt = %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="218"/>
         <source>Total of invalid features:</source>
-        <translation></translation>
+        <translation>Totalt antal ogiltiga objekt:</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="223"/>
         <source>Finish at %L1 (processing time %L2 minutes)</source>
-        <translation></translation>
+        <translation>Slutfördes %L1 (processtid %L2 minuter)</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="286"/>
@@ -52945,47 +52951,47 @@ but implies better performance thereafter.</source>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="289"/>
         <source>Sorry! Only this providers are enable: OGR, POSTGRES and SPATIALITE.</source>
-        <translation></translation>
+        <translation>Ursäkta! Endast dessa datakällor är aktiverade: OGR, POSTGRES och SPATIALITE.</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="347"/>
         <source>%1 of %2(selected features)</source>
-        <translation></translation>
+        <translation>%1 av %2 (valda objekt)</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="503"/>
         <source>Create new selection</source>
-        <translation></translation>
+        <translation>Skapa nytt urval</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="511"/>
         <source>Add to current selection</source>
-        <translation></translation>
+        <translation>Lägga till i nuvarande urval</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="514"/>
         <source>Remove from current selection</source>
-        <translation></translation>
+        <translation>Ta bort från nuvarande urval</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="523"/>
         <source>Result query</source>
-        <translation></translation>
+        <translation>Resultat av fråga</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="525"/>
         <source>Invalid source</source>
-        <translation></translation>
+        <translation>Ogiltiga målobjekt</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="527"/>
         <source>Invalid reference</source>
-        <translation></translation>
+        <translation>Ogiltiga referensobjekt</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="638"/>
         <source>%1 of %2 selected by &quot;%3&quot;</source>
-        <translation></translation>
+        <translation>%1 av %2 valda av &quot;%3&quot;</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="641"/>
@@ -53000,12 +53006,12 @@ but implies better performance thereafter.</source>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="693"/>
         <source>enable</source>
-        <translation></translation>
+        <translation>aktivera</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="693"/>
         <source>disable</source>
-        <translation type="unfinished">tillåt ej</translation>
+        <translation>avaktivera</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="694"/>
@@ -53029,22 +53035,22 @@ CRS of map is %1.
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="737"/>
         <source>Missing reference layer</source>
-        <translation></translation>
+        <translation>Referenslager saknas</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="737"/>
         <source>Select reference layer!</source>
-        <translation></translation>
+        <translation>Välj referenslager!</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="742"/>
         <source>Missing target layer</source>
-        <translation></translation>
+        <translation>Mållager saknas</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="742"/>
         <source>Select target layer!</source>
-        <translation></translation>
+        <translation>Välj mållager!</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="813"/>
@@ -53060,12 +53066,12 @@ CRS of map is %1.
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="839"/>
         <source>Create new layer from selected</source>
-        <translation></translation>
+        <translation>Skapa nytt lager med valda objekt</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="946"/>
         <source>%1 of %2 identified</source>
-        <translation></translation>
+        <translation>%1 av %2 identifierade</translation>
     </message>
 </context>
 <context>
@@ -53073,22 +53079,22 @@ CRS of map is %1.
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="32"/>
         <source>Spatial Query</source>
-        <translation></translation>
+        <translation>Spatiala frågor</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="45"/>
         <source>Layer on which the topological operation will select geometries</source>
-        <translation></translation>
+        <translation>Det lager där den topologiska operationen ska välja geometrier</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="48"/>
         <source>Select source features from</source>
-        <translation></translation>
+        <translation>Välj målobjekt från</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="60"/>
         <source>Select the target layer</source>
-        <translation></translation>
+        <translation>Välj mållagret</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="67"/>
@@ -53097,74 +53103,78 @@ CRS of map is %1.
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;When checked the operation will only consider selected geometries of the target layer&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;När denna är ikryssad kommer endast valda objekt att tas med i frågan&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="74"/>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="144"/>
         <source>Selected feature(s) only</source>
-        <translation></translation>
+        <translation>Endast valda objekt</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="86"/>
         <source>Where the feature</source>
-        <translation></translation>
+        <translation>där objektet</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="106"/>
         <source>Layer whose geometries will be used as reference by the topological operation</source>
-        <translation></translation>
+        <translation>Det lager där den topologiska operationen ska hämta objekt som referens</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="109"/>
         <source>Reference features of </source>
-        <translation></translation>
+        <translation>referensobjekt från</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="154"/>
         <source>And use the result to</source>
-        <translation></translation>
+        <translation>och använd resultatet för att</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="183"/>
         <source>Selected features</source>
-        <translation></translation>
+        <translation>Valda objekt</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="189"/>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="285"/>
         <source>Number of selected features in map</source>
-        <translation></translation>
+        <translation>Antal valda objekt i kartan</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="214"/>
         <source>Create layer with selected</source>
-        <translation></translation>
+        <translation>Skapa nytt lager med de valda</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="273"/>
         <source>Select one FID to identify geometry of feature</source>
-        <translation></translation>
+        <translation>Välj ett FID för att identifiera geometrin på objektet</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="310"/>
         <source>Create layer with list of items</source>
-        <translation></translation>
+        <translation>Skapa nytt lager med listan av objekt</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="332"/>
         <source>Zoom to item</source>
-        <translation></translation>
+        <translation>Zooma till objekt</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="353"/>
         <source>Log messages</source>
-        <translation></translation>
+        <translation>Loggmeddelanden</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="124"/>
         <source>Select the reference layer</source>
-        <translation></translation>
+        <translation>Välj referenslager</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="137"/>
@@ -53173,27 +53183,31 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;When checked the operation will be only consider selected geometries of the reference layer&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;När denna är ikryssad kommer endast valda objekt att tas med i frågan&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="242"/>
         <source>Result feature ID&apos;s</source>
-        <translation></translation>
+        <translation>Objekt-ID på objekt i resultatet</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="404"/>
         <source>Run query or close the window</source>
-        <translation></translation>
+        <translation>Kör fråga eller stäng fönstret</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="99"/>
         <source>Select the topological operation</source>
-        <translation></translation>
+        <translation>Välj topologisk operation</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="350"/>
         <source>Check to show log processing of query</source>
-        <translation></translation>
+        <translation>Kryssa i för att visa loggmeddelande från körning av fråga</translation>
     </message>
 </context>
 <context>
@@ -53203,12 +53217,12 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/spatialquery/qgsspatialqueryplugin.cpp" line="94"/>
         <location filename="../src/plugins/spatialquery/qgsspatialqueryplugin.cpp" line="103"/>
         <source>&amp;Spatial Query</source>
-        <translation></translation>
+        <translation>&amp;Spatiala frågor</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialqueryplugin.cpp" line="118"/>
         <source>Query not executed</source>
-        <translation></translation>
+        <translation>Fråga kördes inte</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialqueryplugin.cpp" line="166"/>
@@ -53228,13 +53242,13 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsspatialitesridsdialogbase.ui" line="14"/>
         <source>Select a Spatialite Spatial Reference System</source>
-        <translation></translation>
+        <translation>Välj ett SpatiaLite spatialt referenskoordinatsystem</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsspatialitesridsdialogbase.ui" line="30"/>
         <location filename="../src/ui/qgsspatialitesridsdialogbase.ui" line="81"/>
         <source>SRID</source>
-        <translation type="unfinished">SRID</translation>
+        <translation>SRID</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsspatialitesridsdialogbase.ui" line="35"/>
@@ -53249,17 +53263,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsspatialitesridsdialogbase.ui" line="50"/>
         <source>Search</source>
-        <translation type="unfinished">Sök</translation>
+        <translation>Sök</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsspatialitesridsdialogbase.ui" line="60"/>
         <source>Filter</source>
-        <translation type="unfinished">Filter</translation>
+        <translation>Filter</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsspatialitesridsdialogbase.ui" line="91"/>
         <source>Name</source>
-        <translation type="unfinished">Namn</translation>
+        <translation>Namn</translation>
     </message>
 </context>
 <context>
@@ -60454,7 +60468,7 @@ Beskrivning: %3</translation>
     </message>
     <message>
         <source>Processing R script (*.rsx)</source>
-        <translation type="unfinished"></translation>
+        <translation>R-skript (*.rsx)</translation>
     </message>
     <message>
         <source>Save script</source>
@@ -60591,7 +60605,7 @@ Beskrivning: %3</translation>
         <location filename="../python/console/console_settings.ui" line="285"/>
         <location filename="../python/console/console_settings.ui" line="817"/>
         <source>Font and Colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Typsnitt och färger</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="319"/>
@@ -60603,182 +60617,182 @@ Beskrivning: %3</translation>
         <location filename="../python/console/console_settings.ui" line="355"/>
         <location filename="../python/console/console_settings.ui" line="887"/>
         <source>Default:</source>
-        <translation type="unfinished"></translation>
+        <translation>Standard:</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="369"/>
         <location filename="../python/console/console_settings.ui" line="901"/>
         <source>Keyword:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nyckelord:</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="383"/>
         <location filename="../python/console/console_settings.ui" line="915"/>
         <source>Class name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Klassnamn:</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="397"/>
         <location filename="../python/console/console_settings.ui" line="929"/>
         <source>Function:</source>
-        <translation type="unfinished"></translation>
+        <translation>Funktion:</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="411"/>
         <location filename="../python/console/console_settings.ui" line="943"/>
         <source>Decorator:</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="425"/>
         <location filename="../python/console/console_settings.ui" line="957"/>
         <source>Comment:</source>
-        <translation type="unfinished">Kommentar:</translation>
+        <translation>Kommentar:</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="439"/>
         <location filename="../python/console/console_settings.ui" line="971"/>
         <source>Comment block:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kommentarblock:</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="453"/>
         <location filename="../python/console/console_settings.ui" line="985"/>
         <source>Cursor:</source>
-        <translation type="unfinished"></translation>
+        <translation>Markör:</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="467"/>
         <location filename="../python/console/console_settings.ui" line="999"/>
         <source>Caretline:</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="481"/>
         <location filename="../python/console/console_settings.ui" line="1013"/>
         <source>Single quote:</source>
-        <translation type="unfinished"></translation>
+        <translation>Enkelcitat:</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="495"/>
         <location filename="../python/console/console_settings.ui" line="1027"/>
         <source>Double quote:</source>
-        <translation type="unfinished"></translation>
+        <translation>Dubbelcitat:</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="509"/>
         <location filename="../python/console/console_settings.ui" line="1041"/>
         <source>Triple single quote:</source>
-        <translation type="unfinished"></translation>
+        <translation>Trippla enkelcitat:</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="523"/>
         <location filename="../python/console/console_settings.ui" line="1055"/>
         <source>Triple double quote:</source>
-        <translation type="unfinished"></translation>
+        <translation>Trippla dubbelcitat:</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="537"/>
         <location filename="../python/console/console_settings.ui" line="1069"/>
         <source>Background:</source>
-        <translation type="unfinished"></translation>
+        <translation>Bakgrund:</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="555"/>
         <location filename="../python/console/console_settings.ui" line="1101"/>
         <source>Reset to default colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Återställ till standardfärger</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="586"/>
         <location filename="../python/console/console_settings.ui" line="706"/>
         <source>Typing</source>
-        <translation type="unfinished"></translation>
+        <translation>Inmatning</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="607"/>
         <location filename="../python/console/console_settings.ui" line="727"/>
         <source>Automatic insertion of the &apos;import&apos; string on &apos;from xxx&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Automatisk insättning av &apos;import&apos;-texten på &apos;from xxx&apos;</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="619"/>
         <location filename="../python/console/console_settings.ui" line="739"/>
         <source>Autocompletion</source>
-        <translation type="unfinished"></translation>
+        <translation>Autokomplettering</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="642"/>
         <location filename="../python/console/console_settings.ui" line="802"/>
         <source>Get autocompletion from current document</source>
-        <translation type="unfinished"></translation>
+        <translation>Hämta autokomplettering från nuvarande dokument</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="645"/>
         <location filename="../python/console/console_settings.ui" line="805"/>
         <source>from Document</source>
-        <translation type="unfinished"></translation>
+        <translation>från dokument</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="662"/>
         <location filename="../python/console/console_settings.ui" line="789"/>
         <source>Get autocompletion from installed APIs</source>
-        <translation type="unfinished"></translation>
+        <translation>Hämta autokomplettering från installerat API</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="665"/>
         <location filename="../python/console/console_settings.ui" line="792"/>
         <source>from APIs files</source>
-        <translation type="unfinished"></translation>
+        <translation>från API-filer</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="1083"/>
         <source>Error:</source>
-        <translation type="unfinished"></translation>
+        <translation>Fel:</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="218"/>
         <source>Using prepared APIs file</source>
-        <translation type="unfinished"></translation>
+        <translation>Använd förberedd API-fil</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="239"/>
         <source>Compile APIs...</source>
-        <translation type="unfinished"></translation>
+        <translation>Kompilera API...</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="655"/>
         <location filename="../python/console/console_settings.ui" line="782"/>
         <source>from Doc and APIs</source>
-        <translation type="unfinished"></translation>
+        <translation>från dokument och API</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="275"/>
         <source>Enable Object Inspector (switching between tabs may be slow)</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktivera objektinspektör (byte mellan flikar kan gå långsamt)</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="600"/>
         <location filename="../python/console/console_settings.ui" line="720"/>
         <source>Automatic parentheses insertion</source>
-        <translation type="unfinished"></translation>
+        <translation>Automatisk insättning av paranteser</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="75"/>
         <source>Using preloaded APIs file</source>
-        <translation type="unfinished"></translation>
+        <translation>Använd förladdad API-fil</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="69"/>
         <location filename="../python/console/console_settings.ui" line="203"/>
         <source>APIs</source>
-        <translation>API:er</translation>
+        <translation>API</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="677"/>
         <location filename="../python/console/console_settings.ui" line="760"/>
         <source>Autocompletion threshold</source>
-        <translation type="unfinished"></translation>
+        <translation>Tröskelvärde för autokomplettering</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="208"/>
@@ -60789,7 +60803,7 @@ Beskrivning: %3</translation>
         <location filename="../python/console/console_settings.ui" line="652"/>
         <location filename="../python/console/console_settings.ui" line="779"/>
         <source>Get autocompletion from current document and installed APIs</source>
-        <translation type="unfinished"></translation>
+        <translation>Hämta autokomplettering från nuvarande dokument och installerat API</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="262"/>
@@ -60799,7 +60813,7 @@ Beskrivning: %3</translation>
     <message>
         <location filename="../python/console/console_settings.ui" line="268"/>
         <source>Auto-save script before running</source>
-        <translation type="unfinished"></translation>
+        <translation>Auto-spara skript innan det körs</translation>
     </message>
     <message>
         <source>Browse</source>
@@ -60807,7 +60821,7 @@ Beskrivning: %3</translation>
     </message>
     <message>
         <source>Settings Python Console</source>
-        <translation type="unfinished"></translation>
+        <translation>Inställningar för pythonkonsol</translation>
     </message>
 </context>
 <context>
@@ -61448,7 +61462,7 @@ Vill du lägga till det nya lagret till innehållsförteckningen? {1
     <message>
         <location filename="../src/ui/symbollayer/widget_gradientfill.ui" line="131"/>
         <source>Coord mode</source>
-        <translation>Koordläge</translation>
+        <translation>Koordinatläge</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_gradientfill.ui" line="141"/>
@@ -61468,17 +61482,17 @@ Vill du lägga till det nya lagret till innehållsförteckningen? {1
     <message>
         <location filename="../src/ui/symbollayer/widget_gradientfill.ui" line="166"/>
         <source>Pad</source>
-        <translation type="unfinished"></translation>
+        <translation>Fyll ut</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_gradientfill.ui" line="171"/>
         <source>Repeat</source>
-        <translation type="unfinished"></translation>
+        <translation>Upprepa</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_gradientfill.ui" line="176"/>
         <source>Reflect</source>
-        <translation type="unfinished"></translation>
+        <translation>Reflektera</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_gradientfill.ui" line="186"/>
@@ -62527,7 +62541,7 @@ The Coordinate Reference System (CRS) tab allows you to set the projection for t
 &lt;/a&gt;
 On this tab you can choose on which layers the identify tool will work.
 </source>
-        <translation type="unfinished">&lt;h3&gt;Projektinställningar&lt;/h3&gt;
+        <translation>&lt;h3&gt;Projektinställningar&lt;/h3&gt;
 I denna dialogruta kan du justera många inställningar som berör &lt;label&gt;Projektet&lt;/label&gt;. Ett projekt är en sparad mängd med lager och deras inställningar, samt annan infromation för att läsa in projektet från hårddisk.&lt;p&gt;
 
 &lt;h4&gt;Fliken Allmänt&lt;/h4&gt;
@@ -63253,7 +63267,7 @@ To filter a layer before adding it to the map, double click on its name or use &
 &lt;/a&gt;
 Ticking &lt;label&gt;Search options&lt;/label&gt; enables additional options for searching in different column types and using 2 search modes: &lt;label&gt;Wildcard&lt;/label&gt; or &lt;label&gt;RegExp&lt;/label&gt;.
 </source>
-        <translation type="unfinished">&lt;h3&gt;Lägg till PostGIS lager&lt;/h3&gt;
+        <translation>&lt;h3&gt;Lägg till PostGIS lager&lt;/h3&gt;
 Denna dialogruta gör det möjligt att lägga till PostGIS lager (tabeller
  med geometrikolumner) till QGIS kartblad.
  &lt;p&gt;
@@ -63324,7 +63338,7 @@ This dialog allows you to define the settings for a connection to a PostgreSQL d
 
 &lt;/ul&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;Skapa en ny PostGIS-anslutning&lt;/h3&gt;
+        <translation>&lt;h3&gt;Skapa en ny PostGIS-anslutning&lt;/h3&gt;
 För att skapa en ny PostGIS-uppkoppling behvöer du veta värddator, port
  och användarnamn/lösenord för databasens server.
 
@@ -63404,7 +63418,7 @@ To delete a bookmark from the Bookmarks dialog, click on it then click the &lt;l
 To update the extent of a bookmark, click on it then click the &lt;label&gt;Update&lt;/label&gt; button. Confirm your choice by clicking &lt;label&gt;OK&lt;/label&gt; or cancel the update by clicking &lt;label&gt;Cancel&lt;/label&gt;.
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;Georumsliga bokmärken&lt;/h3&gt;
+        <translation>&lt;h3&gt;Georumsliga bokmärken&lt;/h3&gt;
 Georumsliga bokmärken ger dig möjlighet att sätta bokmärke vid en geografisk plats, och komma tillbaka senare.
 &lt;p&gt;
 &lt;a href=&quot;#creating&quot;&gt;Skapa ett bokmärke&lt;/a&gt;&lt;br/&gt;
@@ -63474,7 +63488,7 @@ This plugin supports basic HTML markup tags for formatting text. For example:
 &lt;/li&gt;
 &lt;/ul&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;Copyrighttext-plugin&lt;/h3&gt;
+        <translation>&lt;h3&gt;Copyrighttext-plugin&lt;/h3&gt;
 &lt;i&gt;Denna hjälpfil finns inte för ditt språk. Vill du skapa den, kontakta QGIS utvecklingsteam.&lt;/i&gt;&lt;hr&gt;
 Draws a copyright label with information.&lt;br/&gt;
 You can add any random text to the map not only a copyright label.
@@ -64939,7 +64953,7 @@ You may also tick an &lt;label&gt;Open feature form, if a single feature is iden
 Identifiable layers can be set in the Project Properties dialog &lt;label&gt;Settings &gt; Project Properties &gt; Identifiable layers&lt;/label&gt; where all the layers names are listed, their type (vector, raster, etc.) and ability to be identified.
 &lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;Identifiera objekt&lt;/h3&gt;
+        <translation>&lt;h3&gt;Identifiera objekt&lt;/h3&gt;
 &lt;p&gt;
 Resultatrutan visar alla objekt som
  har identifierats inom sökradien.  För att se resultaten, expandera
@@ -64960,7 +64974,7 @@ To measure lengths, select the tool and click along the path you want to measure
 &lt;h4&gt;Measuring Areas&lt;/h4&gt;
 To measure areas, select the tool and click to create the area. The total area is dynamically displayed as you click.
 </source>
-        <translation type="unfinished">&lt;h3&gt;Mätverktyg&lt;/h3&gt;
+        <translation>&lt;h3&gt;Mätverktyg&lt;/h3&gt;
 
 Det finns två mätverktyg: längd och area. För närvarande ger
  mätverktyget bara resultat i metriska enheter. Ett klick med högra
@@ -65020,7 +65034,7 @@ För att mäta area, välj verktyget och klicka för att skapa en
     <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.cpp" line="57"/>
         <source>Please specify an output file</source>
-        <translation>Specificera utfil</translation>
+        <translation>Specificera utdatafil</translation>
     </message>
     <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.cpp" line="128"/>
@@ -65037,9 +65051,9 @@ For support send a mail to scala@itc.cnr.it
 </source>
         <translation>Beskrivning av fält:
 * Indata DXF-fil: Sökväg till DXF-filen som skall konverteras
-* Utdatafil: Namn på fil som skall skapas
-* Utdata filtyp: Specificerar typ av Shapefil för utdata
-* Exportera textetiketter: Om vald skapas ytterligare en Shapefil med punkter,
+* Utdatafil: Namn på shapefil som skall skapas
+* Utdata geometrityp: Specificerar vilken typ av geometrier shapefilen ska innehålla
+* Exportera textetiketter: Om ikryssad så skapas ytterligare en Shapefil med punkter,
 och tillhörande dbf-tabell kommer att innehålla information om
 &quot;TEXT&quot;-fält som finns i DXF-filen samt textsträngarna
 
@@ -65072,7 +65086,7 @@ For support send a mail to scala@itc.cnr.it
     <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.ui" line="14"/>
         <source>Dxf Importer</source>
-        <translation>Dxf importerare</translation>
+        <translation>DXF-konverterare</translation>
     </message>
     <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.ui" line="25"/>
@@ -65102,12 +65116,12 @@ For support send a mail to scala@itc.cnr.it
     <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.ui" line="75"/>
         <source>Output file type</source>
-        <translation>Utdata filtyp</translation>
+        <translation>Utdata geometrityp</translation>
     </message>
     <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.ui" line="81"/>
         <source>Polyline</source>
-        <translation>Polyline</translation>
+        <translation>Linje</translation>
     </message>
     <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.ui" line="65"/>
@@ -66147,7 +66161,18 @@ Returns exponential of an value.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      exp(1.0) &amp;rarr; 2.71828182845905&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funktionen exp()&lt;/h3&gt;
+Returnerar exponentialen av ett värde.
+
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     exp(&lt;i&gt;real&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argument&lt;/h4&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; nummer.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Exempel&lt;/h4&gt;
+     exp(1.0) &amp;rarr; 2.71828182845905&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1158"/>
@@ -66217,7 +66242,19 @@ None
 &lt;pre&gt; &apos;A&apos; ILIKE &apos;a&apos;  &amp;rarr; returns 1 &lt;/pre&gt;
 &lt;pre&gt; &apos;A&apos; ILIKE &apos;B&apos;  &amp;rarr; returns 0 &lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Uttrycket ILIKE&lt;/h3&gt;
+Returnerar 1 om den första parametern matcher det givna mönstret oavsett stora/små bokstäver. LIKE kan användas istället för ILIKE för att jämföra skiftkänsligt.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;text/nummer ILIKE mönster&lt;/pre&gt;
+
+&lt;h4&gt;Argument&lt;/h4&gt;
+Inga
+
+&lt;h4&gt;Exempel&lt;/h4&gt;
+&lt;pre&gt; &apos;A&apos; ILIKE &apos;A&apos;  &amp;rarr; returns 1 &lt;/pre&gt;
+&lt;pre&gt; &apos;A&apos; ILIKE &apos;a&apos;  &amp;rarr; returns 1 &lt;/pre&gt;
+&lt;pre&gt; &apos;A&apos; ILIKE &apos;B&apos;  &amp;rarr; returns 0 &lt;/pre&gt;</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="654"/>
@@ -66235,7 +66272,20 @@ None
 &lt;pre&gt; &apos;A&apos; LIKE &apos;a&apos;  &amp;rarr; returns 0 &lt;/pre&gt;
 &lt;pre&gt; &apos;A&apos; LIKE &apos;B&apos;  &amp;rarr; returns 0 &lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Uttrycket LIKE&lt;/h3&gt;
+
+Returnerar 1 om den första parametern matchar det givna möntret. Fungerar också med nummer.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;text/nummer LIKE mönster&lt;/pre&gt;
+
+&lt;h4&gt;Argument&lt;/h4&gt;
+Inga
+
+&lt;h4&gt;Exempel&lt;/h4&gt;
+&lt;pre&gt; &apos;A&apos; LIKE &apos;A&apos;  &amp;rarr; returns 1 &lt;/pre&gt;
+&lt;pre&gt; &apos;A&apos; LIKE &apos;a&apos;  &amp;rarr; returns 0 &lt;/pre&gt;
+&lt;pre&gt; &apos;A&apos; LIKE &apos;B&apos;  &amp;rarr; returns 0 &lt;/pre&gt;</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1967"/>
@@ -66287,7 +66337,20 @@ capital letter).
 &lt;!-- Show example of function.--&gt;
      upper(&apos;hello WOrld&apos;) &amp;rarr; &apos;Hello World&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funktionen title()&lt;/h3&gt;
+Konverterar alla ord i en text till titeltext (alla bokstäver som gemener med en 
+inledande versal bokstav).
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     title(&lt;i&gt;text&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argument&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  text&lt;/i&gt; &amp;rarr; är text.  Texten som ska konverteras till titeltext.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Exempel&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     upper(&apos;hello WOrld&apos;) &amp;rarr; &apos;Hello World&apos;&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1230"/>
@@ -66398,7 +66461,24 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;week(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 104.285...&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funktionen week()&lt;/h3&gt;
+Extraherar veckonummer från ett datum, eller antal veckor
+från ett &lt;code&gt;Interval&lt;/code&gt;
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;week(date)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;week(Interval)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argument&lt;/h4&gt;
+&lt;code&gt;date&lt;/code&gt; - är ett datum eller datumtid. Datumet som används för att få ut veckonummer från.
+&lt;br&gt;
+&lt;code&gt;Interval&lt;/code&gt; - är Interval. Intervallet som antalet veckor ska tas ut från.
+
+&lt;h4&gt;Exempel&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;week(&apos;2012-05-12&apos;) &amp;rarr; 19&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;week(tointerval(&apos;3 weeks&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;week(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 104.285...&lt;/code&gt;&lt;br&gt;</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="518"/>
@@ -66415,7 +66495,19 @@ Converts a string to a interval type.  Can be used to take days, hours, month, e
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;todatetime(&apos;2012-05-05 12:00:00&apos;) - tointerval(&apos;1 day 2 hours&apos;) &amp;rarr; 2012-05-04T10:00:00&lt;/code&gt;&lt;br&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funktionen tointerval()&lt;/h3&gt;
+Konverterar en text till typen interval. Kan användas med dagar, timmar, månad m.m.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;tointerval(&apos;text&apos;)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argument&lt;/h4&gt;
+&lt;code&gt;text&lt;/code&gt; - är text. Formatet {n} days {n} hours {n} months
+&lt;br&gt;
+
+&lt;h4&gt;Exempel&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;todatetime(&apos;2012-05-05 12:00:00&apos;) - tointerval(&apos;1 day 2 hours&apos;) &amp;rarr; 2012-05-04T10:00:00&lt;/code&gt;&lt;br&gt;</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1334"/>
@@ -66433,7 +66525,19 @@ Converts a number to string.
 &lt;!-- Show example of function.--&gt;
      tostring(123) &amp;rarr; &apos;123&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funktionen tostring()&lt;/h3&gt;
+Konverterar ett nummer till text.
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     tostring(&lt;i&gt;nummer&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argument&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;nummer&lt;/i&gt; &amp;rarr; är ett heltal eller decimaltal.  Numret som ska konverteras till text.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Exempel&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     tostring(123) &amp;rarr; &apos;123&apos;&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="895"/>
@@ -66471,7 +66575,20 @@ Rounds a number upwards.
 &lt;code&gt;ceil(4.9) &amp;rarr; 5&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;ceil(-4.9) &amp;rarr; -4&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funktionen ceil()&lt;/h3&gt;
+Avrundar ett tal uppåt.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;ceil(värde)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argument&lt;/h4&gt;
+&lt;code&gt;värde&lt;/code&gt; - ett tal.
+&lt;br&gt;
+
+&lt;h4&gt;Exempel&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;ceil(4.9) &amp;rarr; 5&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;ceil(-4.9) &amp;rarr; -4&lt;/code&gt;&lt;br&gt;</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="449"/>
@@ -66600,7 +66717,27 @@ use &lt;code&gt;round(decimal)&lt;/code&gt; to round to the nearest integer&lt;b
 
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funktionen round()&lt;/h3&gt;
+Avrundar ett nummer till ett givet antal decimaler.
+&lt;br&gt;
+Denna funktion kan ta ett eller två argument beroende på vad som behövs.
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;round(decimal,places)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;round(decimal)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argument&lt;/h4&gt;
+&lt;code&gt;decimal&lt;/code&gt; - är ett decimaltal. Decimaltalet som ska avrundas.
+&lt;br&gt;
+&lt;code&gt;places&lt;/code&gt; - är ett heltal. Antalet decimaler som decimaltalet ska avrundas till. Kan vara negativt.
+
+&lt;h4&gt;Exempel&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;round(1234.567, 2 ) &amp;rarr; 1234.57&lt;/code&gt;&lt;br&gt;
+använd &lt;code&gt;round(decimal)&lt;/code&gt; för att avrunda till närmaste heltal&lt;br&gt;
+&lt;code&gt;round(1234.567) &amp;rarr; 1235&lt;/code&gt;&lt;br&gt;
+
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="698"/>
@@ -66761,10 +66898,7 @@ Begränsar ett indatavärde till ett specifikt intervall.
 &lt;!-- Show example of function.--&gt;
      clamp(1,5,10) &amp;rarr; 5 (&lt;i&gt;indata&lt;/i&gt; är mellan 1 och 10 och returneras oförändrat)&lt;br&gt;
      clamp(1,0,10) &amp;rarr; 1 (&lt;i&gt;indata&lt;/i&gt; är mindre än minimumvärdet på 1, funktionen returnerar då 1)&lt;br&gt;
-     clamp(1,11,10) &amp;rarr; 10 (&lt;i&gt;indata&lt;/i&gt; är större än maximumvärdet på 10, funktionen returner då 10)&lt;br&gt;
-     
-     
- {3&gt;?} {3&gt;?} {4&gt;?} {4&gt;?} {4&gt;?} {4&gt;?} {4&gt;?} {4&gt;?} {1,5,10)?} {5 ?} {1 ?} {10 ?} {1,0,10)?} {1 ?} {1,?} {1)?} {1,11,10)?} {10 ?} {10,?} {10)?}</translation>
+     clamp(1,11,10) &amp;rarr; 10 (&lt;i&gt;indata&lt;/i&gt; är större än maximumvärdet på 10, funktionen returner då 10)&lt;br&gt;</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="605"/>
@@ -66819,7 +66953,15 @@ Loading field values from WFS layers isn&apos;t supported, before the layer is
 actually inserted, ie. when building queries.
 &lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Fält&lt;/h3&gt;
+Dubbelklicka för att lägga till fältnamnet till uttrycket.
+&lt;br&gt;&lt;br&gt;
+Högerklicka på fältnamnet för att öppna meny med val för att ladda in värden.
+
+&lt;p&gt;&lt;h4&gt;Observera:&lt;/h4&gt;
+Inläsning av värden från WFS-lager innan lagret är inläst, 
+exempelvis vid byggande av filter, stödjs inte.
+&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1363"/>
@@ -66836,7 +66978,18 @@ Returns tangent of an angle.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      tan(1.0) &amp;rarr; 1.5574077246549&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funktionen tan()&lt;/h3&gt;
+Returnerar tangens av en vinkel.
+
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     tan(&lt;i&gt;real&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argument&lt;/h4&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; vinkel i radianer.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Exempel&lt;/h4&gt;
+     tan(1.0) &amp;rarr; 1.5574077246549&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1211"/>
@@ -66859,14 +67012,31 @@ None
 &lt;pre&gt; $geometry IS NULL  &amp;rarr; returns 0, if your geometry is not NULL&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Uttrycket IS&lt;/h3&gt;
+Returnerar 1 om a är lika med b.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;a is b&lt;/pre&gt;
+
+&lt;h4&gt;Argument&lt;/h4&gt;
+Inga
+
+&lt;h4&gt;Exempel&lt;/h4&gt;
+&lt;pre&gt; &apos;A&apos; IS &apos;A&apos;  &amp;rarr; returns 1 &lt;/pre&gt;
+&lt;pre&gt; &apos;A&apos; IS &apos;a&apos;  &amp;rarr; returns 0 &lt;/pre&gt;
+&lt;pre&gt; 4 IS 4      &amp;rarr; returns 1 &lt;/pre&gt;
+&lt;pre&gt; 4 IS 2+2    &amp;rarr; returns 1 &lt;/pre&gt;
+&lt;pre&gt; 4 IS 2      &amp;rarr; returns 0 &lt;/pre&gt;
+&lt;pre&gt; 4 IS 2      &amp;rarr; returns 0 &lt;/pre&gt;
+&lt;pre&gt; $geometry IS NULL  &amp;rarr; returnerar 0, om din geometri inte är NULL&lt;/pre&gt;</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1650"/>
         <source>&lt;h3&gt;Conversions Group&lt;/h3&gt;
 This group contains functions to convert on data type to another e.g string to integer, integer to string.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Gruppen Konverteringar&lt;/h3&gt;
+Denna gruppen innehåller funktioner för att konvertera från en datatyp till en annan, exempelvis från en text till ett heltal, från ett heltal till en text.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1197"/>
@@ -67009,7 +67179,8 @@ geometry &amp;rarr; geometry
         <source>&lt;h3&gt;Geometry Group&lt;/h3&gt;
 This group contains functions that operate on geometry objects e.g length, area.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Gruppen Geometri&lt;/h3&gt;
+Denna gruppen innehåller funktioner som arbetar mot geografiska objekt, som exempelvis längd, area.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="860"/>
@@ -67035,7 +67206,8 @@ Returns the portion of a string which matches a supplied regular expression.
         <source>&lt;h3&gt;String Group&lt;/h3&gt;
 This group contains functions that operate on strings e.g replace, convert to upper case.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Gruppen Text&lt;/h3&gt;
+Denna gruppen innehåller funktioner som arbetar mot texter, exempelvis byt ut text, konvertera till versaler.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="579"/>
@@ -67199,7 +67371,18 @@ Returns square root of a value
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      sqrt(9) &amp;rarr; 3&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funktionen sqrt()&lt;/h3&gt;
+Returnerar kvadratroten av ett värde.
+
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     sqrt(&lt;i&gt;real&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argument&lt;/h4&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; nummer.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Exempel&lt;/h4&gt;
+     sqrt(9) &amp;rarr; 3&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="986"/>
@@ -67503,7 +67686,19 @@ Returns the length of a string.
 &lt;!-- Show example of function.--&gt;
      length(&apos;HELLO&apos;) &amp;rarr; 5&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funktionen length()&lt;/h3&gt;
+Returnerar längden på en text.
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     length(&lt;i&gt;string&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argument&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; är text.  Texten som längden ska räknas på.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Exempel&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     length(&apos;HELLO&apos;) &amp;rarr; 5&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1390"/>
@@ -67586,7 +67781,20 @@ Rounds a number downwards.
 &lt;code&gt;floor(4.9) &amp;rarr; 4&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;floor(-4.9) &amp;rarr; -5&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funktionen floor()&lt;/h3&gt;
+Avrundar ett nummer nedåt.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;floor(värde)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;code&gt;värde&lt;/code&gt; - ett nummer.
+&lt;br&gt;
+
+&lt;h4&gt;Exempel&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;floor(4.9) &amp;rarr; 4&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;floor(-4.9) &amp;rarr; -5&lt;/code&gt;&lt;br&gt;</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="668"/>
@@ -67625,7 +67833,20 @@ None
 &lt;pre&gt; 4 = 2+2 AND 1 = 2  &amp;rarr; returns 0 &lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Logisk operator AND&lt;/h3&gt;
+Returnerar 1 om villkor a och b är sant.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt; villkor a AND villkor b &lt;/pre&gt;
+
+&lt;h4&gt;Argument&lt;/h4&gt;
+Inga
+
+&lt;h4&gt;Exempel&lt;/h4&gt;
+&lt;pre&gt; 4 = 2+2 AND 1 = 1  &amp;rarr; returnerar 1 &lt;/pre&gt;
+&lt;pre&gt; 4 = 2+2 AND 1 = 2  &amp;rarr; returnerar 0 &lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1637"/>
@@ -67705,7 +67926,19 @@ None
 &lt;pre&gt; 4 = 2+2 OR 1 = 2  &amp;rarr; returns 1 &lt;/pre&gt;
 &lt;pre&gt; 4 = 2   OR 1 = 2  &amp;rarr; returns 0 &lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Logisk operator OR&lt;/h3&gt;
+Returnerar 1 om villkor a eller b är sant.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt; villkor a OR villkor b &lt;/pre&gt;
+
+&lt;h4&gt;Argument&lt;/h4&gt;
+Inga
+
+&lt;h4&gt;Exempel&lt;/h4&gt;
+&lt;pre&gt; 4 = 2+2 OR 1 = 1  &amp;rarr; returnerar 1 &lt;/pre&gt;
+&lt;pre&gt; 4 = 2+2 OR 1 = 2  &amp;rarr; returnerar 1 &lt;/pre&gt;
+&lt;pre&gt; 4 = 2   OR 1 = 2  &amp;rarr; returnerar 0 &lt;/pre&gt;</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1095"/>
@@ -67810,7 +68043,15 @@ Loading field values from WFS layers isn&apos;t supported, before the layer is
 actually inserted, ie. when building queries.
 &lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Fält och värden&lt;/h3&gt;
+Innehåller en lista med de fält som finns i lagret. Testvärden kan också nås via högerklick.
+&lt;br&gt;&lt;br&gt;
+Välj fältnamnet i listan och högerklicka för att få fram meny med val för inläsning av värden från det valda lagret.
+
+&lt;p&gt;&lt;h4&gt;Observera:&lt;/h4&gt;
+Inläsning av värden från WFS-lager innan lagret är inläst, 
+exempelvis vid byggande av filter, stödjs inte.
+&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1598"/>
@@ -67933,7 +68174,18 @@ Returns sinus of an angle.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      sin(1.571) &amp;rarr; 0.999999682931835&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funktionen sin()&lt;/h3&gt;
+Returnerar sinus av en vinkel.
+
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     sin(&lt;i&gt;real&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argument&lt;/h4&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; vinkel i radianer.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Exempel&lt;/h4&gt;
+     sin(1.571) &amp;rarr; 0.999999682931835&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="844"/>
@@ -68002,7 +68254,21 @@ None
 &lt;pre&gt; 4 IS NOT 2+2    &amp;rarr; returns 0 &lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;NOT&lt;/h3&gt;
+Returnerar 1 om a inte är samma som b.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt; a NOT b &lt;/pre&gt;
+
+&lt;h4&gt;Argument&lt;/h4&gt;
+Inga
+
+&lt;h4&gt;Exempel&lt;/h4&gt;
+&lt;pre&gt; &apos;a&apos; IS NOT &apos;b&apos;  &amp;rarr; returnerar 1 &lt;/pre&gt;
+&lt;pre&gt; &apos;a&apos; IS NOT &apos;a&apos;  &amp;rarr; returnerar 0 &lt;/pre&gt;
+&lt;pre&gt; 4 IS NOT 2+2    &amp;rarr; returnerar 0 &lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1621"/>
@@ -68115,7 +68381,18 @@ Returns cosinus of an angle.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      cos(1.571) &amp;rarr; 0.000796326710733263&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funktionen cos()&lt;/h3&gt;
+Returnerar cosinus av en vinkel.
+
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     cos(&lt;i&gt;real&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argument&lt;/h4&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; vinkel i radianer.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Exempel&lt;/h4&gt;
+     cos(1.571) &amp;rarr; 0.000796326710733263&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="931"/>
@@ -68183,7 +68460,26 @@ This function can take any number of arguments.
  else the value of &quot;fallbackField&quot; or the string &apos;ERROR&apos; if both are NULL&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funktionen coalesce()&lt;/h3&gt;
+Returnerar det första icke-NULL värdet från listan med uttryck.
+&lt;br&gt;
+Den här funktionen kan ta ett obegränsat antal argument.
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;coalesce(uttryck1, uttryck2 ...)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argument&lt;/h4&gt;
+&lt;code&gt;uttryck&lt;/code&gt; - vilket som helst giltigt uttryck eller värde, oavsett typ.
+&lt;br&gt;
+
+&lt;h4&gt;Exempel&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;coalesce(NULL, 2) &amp;rarr; 2&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;coalesce(NULL, 2, 3) &amp;rarr; 2&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;coalesce(7, NULL, 3*2) &amp;rarr; 7&lt;/code&gt;&lt;br&gt;&lt;br&gt;
+&lt;code&gt;coalesce(&quot;fieldA&quot;, &quot;fallbackField&quot;, &apos;ERROR&apos;) &amp;rarr; värdet i fieldA om det inte är NULL
+ annars värdet i &quot;fallbackField&quot; eller texten &apos;ERROR&apos; om båda är NULL&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1481"/>
@@ -68541,7 +68837,7 @@ Inga
         <source>&lt;h3&gt;Date and Time Group&lt;/h3&gt;
 This group contains functions for handling date and time data.
 </source>
-        <translation>&lt;h3&gt;Gruppen datum och tid&lt;/h3&gt;
+        <translation>&lt;h3&gt;Gruppen Datum och tid&lt;/h3&gt;
 Denna grupp innehåller funktioner för att hantera datum och tid.
 </translation>
     </message>
@@ -69042,7 +69338,7 @@ Inga
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="20"/>
         <source>Attribute field</source>
-        <translation type="unfinished">Attributfält</translation>
+        <translation>Attributfält</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="21"/>
@@ -69102,7 +69398,7 @@ Inga
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="32"/>
         <source>Buffer</source>
-        <translation type="unfinished">Buffert</translation>
+        <translation>Buffer</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="33"/>
@@ -69637,7 +69933,7 @@ Inga
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="139"/>
         <source>Database</source>
-        <translation type="unfinished">Databas</translation>
+        <translation>Databas</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="140"/>
@@ -71292,7 +71588,7 @@ Inga
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="235"/>
         <source>Invalid first geometry.</source>
-        <translation>Ogiltig första geometri.</translation>
+        <translation>Första geometrin är ogiltig.</translation>
     </message>
     <message>
         <source>First geometry invalid in line test.</source>
@@ -71317,7 +71613,7 @@ Inga
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="276"/>
         <source>First geometry invalid in dangling line test.</source>
-        <translation type="unfinished"></translation>
+        <translation>Första geometrin i dinglande linje-test är ogiltig.</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="282"/>
@@ -71503,7 +71799,7 @@ Inga
     <message>
         <location filename="../python/plugins/processing/ui/widgetNumberInput.ui" line="41"/>
         <source>Open number input dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Öppna dialog för nummerinmatning</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/widgetNumberInput.ui" line="44"/>

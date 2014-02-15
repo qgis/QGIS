@@ -11790,7 +11790,7 @@ Se desactivará.</translation>
     </message>
     <message>
         <source>Override the type of shapefile created. Can be one of NULL for a simple .dbf file with no .shp file, POINT, ARC, POLYGON or MULTIPOINT for 2D, or POINTZ, ARCZ, POLYGONZ or MULTIPOINTZ for 3D. Shapefiles with measure values are not supported, nor are MULTIPATCH files.</source>
-        <translation type="unfinished"></translation>
+        <translation>Suplantar el tipo de archivo shape creado. Puede ser uno de NULL para un archivo .dbf sencillo sin archivo .shp, POINT, ARC, POLYGON o MULTIPOINT para 2D o POINTZ, ARCZ, POLYGONZ o MULTIPOINTZ para 3D. Los archivos shape con valores de medida no se admiten ni los archivos MULTIPATCH.</translation>
     </message>
     <message>
         <source>set the encoding value in the DBF file. The default value is LDID/87. It is not clear what other values may be appropriate.</source>
@@ -11822,67 +11822,67 @@ Se desactivará.</translation>
     </message>
     <message>
         <source>If defined to YES, extension fields  will be written. If the field name not found in the base schema matches the foo_bar pattern, foo will be considered as the namespace of the element, and a &lt;foo:bar&gt; element will be written. Otherwise, elements will be written in the &lt;ogr:&gt; namespace.</source>
-        <translation type="unfinished"></translation>
+        <translation>Si se define con SÍ se escribirán campos de extensión. Si el nombre de campo no encontrado en el esquema base coincide con el patrón foo_bar, se considerará foo como el nombre de espacio del elemento y se escribirá un elemento &lt;foo:bar&gt;. De lo contrario los elementos se escribirán en el nombre de espacio &lt;org:&gt;.</translation>
     </message>
     <message>
         <source>If defined to NO, only &lt;entry&gt; or &lt;item&gt; elements will be written. The user will have to provide the appropriate header and footer of the document.</source>
-        <translation type="unfinished"></translation>
+        <translation>Si se define a NO, sólo se excribirán elementos &lt;entry&gt; o &lt;item&gt;. El usuario tendrá que proporcionar el cabezado y pie de documento adecuados.</translation>
     </message>
     <message>
         <source>XML content that will be put between the &lt;channel&gt; element and the first &lt;item&gt; element for a RSS document, or between the xml tag and the first &lt;entry&gt; element for an Atom document. </source>
-        <translation type="unfinished"></translation>
+        <translation>Contenido XML que se pondrá entre el elemento &lt;channel&gt; y el primer elemento &lt;item&gt; para un documentos RSS o entre la etiqueta xml y el primer elemento &lt;entry&gt; de un documento Atom.</translation>
     </message>
     <message>
         <source>Value put inside the &lt;title&gt; element in the header. If not provided, a dummy value will be used as that element is compulsory.</source>
-        <translation type="unfinished"></translation>
+        <translation>Valor colocado dentro del elemento &lt;title&gt; del encabezado. Si no se proporciona se usará un valor cualquiera, ya que este elemento es imprescindible.</translation>
     </message>
     <message>
         <source>Value put inside the &lt;description&gt; element in the header. If not provided, a dummy value will be used as that element is compulsory.</source>
-        <translation type="unfinished"></translation>
+        <translation>Valor colocado dentro del elemento &lt;description&gt; del encabezado. Si no se proporciona se usará un valor cualquiera, ya que este elemento es imprescindible.</translation>
     </message>
     <message>
         <source>Value put inside the &lt;link&gt; element in the header. If not provided, a dummy value will be used as that element is compulsory.</source>
-        <translation type="unfinished"></translation>
+        <translation>Valor colocado dentro del elemento &lt;link&gt; del encabezado. Si no se proporciona se usará un valor cualquiera, ya que este elemento es imprescindible.</translation>
     </message>
     <message>
         <source>Value put inside the &lt;updated&gt; element in the header. Should be formatted as a XML datetime. If not provided, a dummy value will be used as that element is compulsory.</source>
-        <translation type="unfinished"></translation>
+        <translation>Valor colocado dentro del elemento &lt;updated&gt; del encabezado. Debería tener el formato fechahora de XML. Si no se proporciona se usará un valor cualquiera, ya que este elemento es imprescindible.</translation>
     </message>
     <message>
         <source>Value put inside the &lt;author&gt;&lt;name&gt; element in the header. If not provided, a dummy value will be used as that element is compulsory.</source>
-        <translation type="unfinished"></translation>
+        <translation>Valor colocado dentro de los elementos &lt;author&gt; &lt;name&gt; del encabezado. Si no se proporcionan se usará un valor cualquiera, ya que estos elementos son imprescindibles.</translation>
     </message>
     <message>
         <source>Value put inside the &lt;id&gt; element in the header. If not provided, a dummy value will be used as that element is compulsory.</source>
-        <translation type="unfinished"></translation>
+        <translation>Valor colocado dentro del elemento &lt;id&gt; del encabezado. Si no se proporciona se usará un valor cualquiera, ya que este elemento es imprescindible.</translation>
     </message>
     <message>
         <source>If provided, this URI will be inserted as the schema location. Note that the schema file isn&apos;t actually accessed by OGR, so it is up to the user to ensure it will match the schema of the OGR produced GML data file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Si se proporciona, esta URI se insertará como localización del esquema. Tenga en cuenta que el archivo de esquema no es realmente accedido por OGR, por lo que queda de mano del usuario asegurarse de que coincidirá con el esquema del archivo de datos GML producido por OGR.</translation>
     </message>
     <message>
         <source>This writes a GML application schema file to a corresponding .xsd file (with the same basename). If INTERNAL is used the schema is written within the GML file, but this is experimental and almost certainly not valid XML. OFF disables schema generation (and is implicit if XSISCHEMAURI is used).</source>
-        <translation type="unfinished"></translation>
+        <translation>Esto escribe un archivo de esquema de aplicación GML en un archivo .xsd correspondiente (con el mismo nombre base). Si se usa INTERNAL el esquema se escribe dentro del archivo GML, pero esto es experimental y con casi toda seguridad no válido como XML. OFF desactiva la generación del esquema (y es implícito si se usa XSISCHEMAURI).</translation>
     </message>
     <message>
         <source>This is the prefix for the application target namespace.</source>
-        <translation type="unfinished"></translation>
+        <translation>Este es el prefijo para el nombre de espacio objetivo de la aplicación.</translation>
     </message>
     <message>
         <source>Can be set to TRUE to avoid writing the prefix of the application target namespace in the GML file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Puede establecerse a VERDADERO para evitar la escritura del prefijo del nombre de espacio objetivo de la aplicación en el archivo GML.</translation>
     </message>
     <message>
         <source>Defaults to &apos;http://ogr.maptools.org/&apos;. This is the application target namespace.</source>
-        <translation type="unfinished"></translation>
+        <translation>Establece como predeterminado &apos;http://ogr.maptools.org/&apos;. Este es el nombre de espacio objetivo de la aplicación.</translation>
     </message>
     <message>
         <source>If not specified, GML2 will be used.</source>
-        <translation type="unfinished"></translation>
+        <translation>Si no se especifica, se usara GML2.</translation>
     </message>
     <message>
         <source>only valid when FORMAT=GML3/GML3Degree/GML3.2) Default to YES. If YES, SRS with EPSG authority will be written with the &apos;urn:ogc:def:crs:EPSG::&apos; prefix. In the case, if the SRS is a geographic SRS without explicit AXIS order, but that the same SRS authority code imported with ImportFromEPSGA() should be treated as lat/long, then the function will take care of coordinate order swapping. If set to NO, SRS with EPSG authority will be written with the &apos;EPSG:&apos; prefix, even if they are in lat/long order.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">solo válido cuando FORMATO=GML3/GML3Degree/GML3.2. </translation>
     </message>
     <message>
         <source>only valid when FORMAT=GML3/GML3Degree/GML3.2) Default to YES. If set to NO, the &lt;gml:boundedBy&gt; element will not be written for each feature.</source>
@@ -11890,87 +11890,87 @@ Se desactivará.</translation>
     </message>
     <message>
         <source>Default to YES. If YES, the output will be indented with spaces for more readability, but at the expense of file size.</source>
-        <translation type="unfinished"></translation>
+        <translation>Establece como predeterminado SÍ. Si es SÍ, se indentará la salida con espacios para una mejor lectura, pero a costa del tamaño de archivo.</translation>
     </message>
     <message>
         <source>By default when writing a layer whose features are of type wkbLineString, the GPX driver chooses to write them as routes. If FORCE_GPX_TRACK=YES is specified, they will be written as tracks.</source>
-        <translation type="unfinished"></translation>
+        <translation>Por omisión al escribir una capa cuyos objetos espaciales son de tipo wkbLineString, el controlador GPX elije escribirlos como rutas. Si se especifica FORCE_GPX_TRACK=SÍ, se escribirán como trazas.</translation>
     </message>
     <message>
         <source>By default when writing a layer whose features are of type wkbMultiLineString, the GPX driver chooses to write them as tracks. If FORCE_GPX_ROUTE=YES is specified, they will be written as routes, provided that the multilines are composed of only one single line.</source>
-        <translation type="unfinished"></translation>
+        <translation>Por omisión al escribir una capa cuyos objetos espaciales son de tipo wkbMultiLineString, el controlador GPX elije escribirlos como trazas. Si se especifica FORCE_GPX_ROUTE=SÍ, se escribirán como rutas, siempre que las multilíneas estén compuestas por una sola línea.</translation>
     </message>
     <message>
         <source>If GPX_USE_EXTENSIONS=YES is specified, extra fields will be written inside the &lt;extensions&gt; tag.</source>
-        <translation type="unfinished"></translation>
+        <translation>Si se especifica GPX_USE_EXTENSIONS=SÍ, se escribirán campos extra dentro de la etiqueta &lt;extensions&gt;.</translation>
     </message>
     <message>
         <source>Only used if GPX_USE_EXTENSIONS=YES and GPX_EXTENSIONS_NS_URL is set. The namespace value used for extension tags. By default, &apos;ogr&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sólo usado si GPX_USE_EXTENSIONS=SÍ y GPX_EXTENSIONS_NS_URL está establecido. El valor de nombre de espacio usado para las etiquetas de extensión. Por omisión, &apos;ogr&apos;.</translation>
     </message>
     <message>
         <source>Only used if GPX_USE_EXTENSIONS=YES and GPX_EXTENSIONS_NS is set. The namespace URI. By default, &apos;http://osgeo.org/gdal&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sólo usado si GPX_USE_EXTENSIONS=SÍ y GPX_EXTENSIONS_NS está establecido. La URI del nombre de espacio. Por omisión, &apos;http://osgeo.org/gdal&apos;.</translation>
     </message>
     <message>
         <source>By default files are created with the line termination conventions of the local platform (CR/LF on win32 or LF on all other systems). This may be overridden through use of the LINEFORMAT layer creation option which may have a value of CRLF (DOS format) or LF (Unix format).</source>
-        <translation type="unfinished"></translation>
+        <translation>Por omisión los archivos se crean con la convención de terminación de línea de la plataforma local (CR/LF en win32 o LF en todos los demás sistemas). Esto se puede suplantar mediante el uso de la opción LINEFORMAT, que puede tener un valor de CRLF (formato DOS) o LF (formato UNIX).</translation>
     </message>
     <message>
         <source>Allows you to specify the field to use for the KML &lt;name&gt; element. </source>
-        <translation type="unfinished"></translation>
+        <translation>Le permite especificar el campo a usar para el elemento &lt;name&gt; de KML.</translation>
     </message>
     <message>
         <source>Allows you to specify the field to use for the KML &lt;description&gt; element.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le permite especificar el campo a usar para el elemento &lt;description&gt; de KML.</translation>
     </message>
     <message>
         <source>Allows you to specify the AltitudeMode to use for KML geometries. This will only affect 3D geometries and must be one of the valid KML options.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le permite especificar el AltitudeMode a usar para geometrías KML. Esto sólo afectará a geometrías 3D y debe ser una de las opciones de KML válidas.</translation>
     </message>
     <message>
         <source>Use this to turn on &apos;quick spatial index mode&apos;. In this mode writing files can be about 5 times faster, but spatial queries can be up to 30 times slower.</source>
-        <translation type="unfinished"></translation>
+        <translation>Use esto para activar el &apos;modo de índice espacial rápido&apos;. En este modo la escritura de archivos puede ser 5 veces más rápida, pero las consultas espaciales puede ser hasta 30 veces más lentas.</translation>
     </message>
     <message>
         <source>Determine whether 2D (seed_2d.dgn) or 3D (seed_3d.dgn) seed file should be used. This option is ignored if the SEED option is provided.</source>
-        <translation type="unfinished"></translation>
+        <translation>Determina si se deberán usar archivos seed 2D (seed_2d.dgn) o 3D (seed_3d.dgn). Esta opción es ignorada si se proporciona la opción SEED.</translation>
     </message>
     <message>
         <source>Override the seed file to use.</source>
-        <translation type="unfinished"></translation>
+        <translation>Suplantar el archivo seed a usar.</translation>
     </message>
     <message>
         <source>Indicate whether the whole seed file should be copied. If not, only the first three elements will be copied.</source>
-        <translation type="unfinished"></translation>
+        <translation>Indica si se deberá copiar el archivo seed completo. Si no, sólo se copiarán los primeros tres elementos.</translation>
     </message>
     <message>
         <source>Indicates whether the color table should be copied from the seed file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Indica si se deberá copiar la tabla de colores del archivo seed.</translation>
     </message>
     <message>
         <source>Override the master unit name from the seed file with the provided one or two character unit name.</source>
-        <translation type="unfinished"></translation>
+        <translation>Suplantar el nombre de unidad maestra del archivo seed con el nombre de unidad de uno o dos caracteres proporcionado.</translation>
     </message>
     <message>
         <source>Override the sub unit name from the seed file with the provided one or two character unit name.</source>
-        <translation type="unfinished"></translation>
+        <translation>Suplantar el nombre de subunidad del archivo seed con el nombre de unidad de uno o dos caracteres proporcionado.</translation>
     </message>
     <message>
         <source>Override the number of subunits per master unit. By default the seed file value is used.</source>
-        <translation type="unfinished"></translation>
+        <translation>Suplantar el número de subunidades por unidad maestra. Por omisión se usa el valor del archivo seed.</translation>
     </message>
     <message>
         <source>Override the number of UORs (Units of Resolution) per sub unit. By default the seed file value is used.</source>
-        <translation type="unfinished"></translation>
+        <translation>Suplantar el número de UOR (Unidades de resolución) por subunidad. Por omisión se usa el valor del archivo seed.</translation>
     </message>
     <message>
         <source>ORIGIN=x,y,z: Override the origin of the design plane. By default the origin from the seed file is used.</source>
-        <translation type="unfinished"></translation>
+        <translation>ORIGEN=X,Y,Z: suplanta el origen del plano de diseño. Por omisión se usa el origen del archivo seed.</translation>
     </message>
     <message>
         <source>Should update files be incorporated into the base data on the fly. </source>
-        <translation type="unfinished"></translation>
+        <translation>Deberían incorporarse los archivos de actualización en la base de datos al vuelo.</translation>
     </message>
     <message>
         <source>Should multipoint soundings be split into many single point sounding features. Multipoint geometries are not well handle by many formats, so it can be convenient to split single sounding features with many points into many single point features.</source>
@@ -18125,7 +18125,7 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source>Landscape</source>
-        <translation type="unfinished">Horizontal</translation>
+        <translation>Horizontal</translation>
     </message>
 </context>
 <context>
@@ -18950,11 +18950,11 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source>Show Rulers</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrar deslizadores</translation>
     </message>
     <message>
         <source>Show rulers</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrar deslizadores</translation>
     </message>
     <message>
         <source>Ctrl+R</source>
@@ -19790,23 +19790,23 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source>Auto update</source>
-        <translation type="unfinished"></translation>
+        <translation>Auto actualizar</translation>
     </message>
     <message>
         <source>Title font...</source>
-        <translation type="unfinished"></translation>
+        <translation>Tipo de letra de título...</translation>
     </message>
     <message>
         <source>Subgroup font...</source>
-        <translation type="unfinished"></translation>
+        <translation>Tipo de letra de subgrupos...</translation>
     </message>
     <message>
         <source>Group font...</source>
-        <translation type="unfinished"></translation>
+        <translation>Tipo de letra de grupo...</translation>
     </message>
     <message>
         <source>Item font...</source>
-        <translation type="unfinished"></translation>
+        <translation>Tipo de letra de elemento...</translation>
     </message>
 </context>
 <context>
@@ -20485,7 +20485,7 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source>Map rotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Rotación del mapa</translation>
     </message>
 </context>
 <context>
@@ -20658,7 +20658,7 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source>Image rotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Rotación de imagen</translation>
     </message>
 </context>
 <context>
@@ -21241,11 +21241,11 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source>Header font...</source>
-        <translation type="unfinished"></translation>
+        <translation>Tipo de letra de la cabecera...</translation>
     </message>
     <message>
         <source>Content font...</source>
-        <translation type="unfinished"></translation>
+        <translation>Tipo de letra del contenido...</translation>
     </message>
 </context>
 <context>
@@ -28295,7 +28295,8 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Natural break classification (Jenks) is O(n2) complexity, your classification may take a long time.
 Press cancel to abort breaks calculation or OK to continue.</source>
-        <translation type="unfinished"></translation>
+        <translation>La clasificación de ruptura natural (Jenks) es complejidad 0(n2), su clasificación puede llevar bastante tiempo.
+Presione Cancelar para abortar el cálculo de ruptura u OK para continuar.</translation>
     </message>
 </context>
 <context>
@@ -31031,7 +31032,7 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
     </message>
     <message>
         <source>Attributes changed</source>
-        <translation type="unfinished">Atributos cambiados</translation>
+        <translation>Atributos cambiados</translation>
     </message>
 </context>
 <context>
@@ -34576,31 +34577,31 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     </message>
     <message>
         <source>Whole number (smallint - 16bit)</source>
-        <translation type="unfinished">Número entero (entero pequeño - 16bit)</translation>
+        <translation>Número entero (entero pequeño - 16bit)</translation>
     </message>
     <message>
         <source>Whole number (integer - 32bit)</source>
-        <translation type="unfinished">Número entero (entero - 32bit)</translation>
+        <translation>Número entero (entero - 32bit)</translation>
     </message>
     <message>
         <source>Whole number (integer - 64bit)</source>
-        <translation type="unfinished">Número entero (entero - 64bit)</translation>
+        <translation>Número entero (entero - 64bit)</translation>
     </message>
     <message>
         <source>Decimal number (numeric)</source>
-        <translation type="unfinished">Número decimal (numérico)</translation>
+        <translation>Número decimal (numérico)</translation>
     </message>
     <message>
         <source>Decimal number (decimal)</source>
-        <translation type="unfinished">Número decimal (decimal)</translation>
+        <translation>Número decimal (decimal)</translation>
     </message>
     <message>
         <source>Decimal number (double)</source>
-        <translation type="unfinished">Número decimal (doble)</translation>
+        <translation>Número decimal (doble)</translation>
     </message>
     <message>
         <source>Text, unlimited length (text)</source>
-        <translation type="unfinished">Texto, longitud ilimitada (texto)</translation>
+        <translation>Texto, longitud ilimitada (texto)</translation>
     </message>
 </context>
 <context>
@@ -38529,7 +38530,7 @@ Siempre red: siempre cargar desde la red y no chequear si el caché tiene una en
     </message>
     <message>
         <source>Ask for datum transformation when no default is defined</source>
-        <translation type="unfinished"></translation>
+        <translation>Preguntar la transformación de datum cuando no haya una predefinida</translation>
     </message>
 </context>
 <context>
@@ -39926,7 +39927,7 @@ Información de error ampliada:
     </message>
     <message>
         <source>Only show layers in the layer registries</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrar capas sólo en los registros de capa</translation>
     </message>
 </context>
 <context>
