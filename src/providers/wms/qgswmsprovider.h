@@ -778,6 +778,9 @@ class QgsWmsProvider : public QgsRasterDataProvider
   private:
     void showMessageBox( const QString& title, const QString& text );
 
+    /** Find out whether to invert axis orientation when parsing/writing coordinates */
+    bool shouldInvertAxisOrientation( const QString& ogcCrs );
+
     /**
      * Try to get best extent for the layer in given CRS. Returns true on success, false otherwise (layer not found, invalid CRS, transform failed)
      */

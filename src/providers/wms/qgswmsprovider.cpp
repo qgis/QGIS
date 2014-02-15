@@ -639,20 +639,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
     mCacheReply = 0;
   }
 
-  //according to the WMS spec for 1.3, some CRS have inverted axis
-  bool changeXY = false;
-  if ( !mIgnoreAxisOrientation && ( mCapabilities.version == "1.3.0" || mCapabilities.version == "1.3" ) )
-  {
-    //create CRS from string
-    QgsCoordinateReferenceSystem theSrs;
-    if ( theSrs.createFromOgcWmsCrs( mImageCrs ) && theSrs.axisInverted() )
-    {
-      changeXY = true;
-    }
-  }
-
-  if ( mInvertAxisOrientation )
-    changeXY = !changeXY;
+  bool changeXY = shouldInvertAxisOrientation( mImageCrs );
 
   // compose the URL query string for the WMS server.
   QString crsKey = "SRS"; //SRS in 1.1.1 and CRS in 1.3.0
@@ -2493,6 +2480,13 @@ void QgsWmsProvider::parseLayer( QDomElement const & e, QgsWmsLayerProperty& lay
           else if ( e1.hasAttribute( "SRS" ) )
             bbox.crs = e1.attribute( "SRS" );
 
+          if ( shouldInvertAxisOrientation( bbox.crs ) )
+          {
+            QgsRectangle invAxisBbox( bbox.box.yMinimum(), bbox.box.xMinimum(),
+                                      bbox.box.yMaximum(), bbox.box.xMaximum() );
+            bbox.box = invAxisBbox;
+          }
+
           layerProperty.boundingBox.push_back( bbox );
         }
         else
@@ -4240,19 +4234,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
 
   // Collect which layers to query on
   //according to the WMS spec for 1.3, the order of x - and y - coordinates is inverted for geographical CRS
-  bool changeXY = false;
-  if ( !mIgnoreAxisOrientation && ( mCapabilities.version == "1.3.0" || mCapabilities.version == "1.3" ) )
-  {
-    //create CRS from string
-    QgsCoordinateReferenceSystem theSrs;
-    if ( theSrs.createFromOgcWmsCrs( mImageCrs ) && theSrs.axisInverted() )
-    {
-      changeXY = true;
-    }
-  }
-
-  if ( mInvertAxisOrientation )
-    changeXY = !changeXY;
+  bool changeXY = shouldInvertAxisOrientation( mImageCrs );
 
   // compose the URL query string for the WMS server.
   QString crsKey = "SRS"; //SRS in 1.1.1 and CRS in 1.3.0
@@ -4961,6 +4943,28 @@ void QgsWmsProvider::getLegendGraphicReplyProgress( qint64 bytesReceived, qint64
   QgsDebugMsg( msg );
   emit statusChanged( msg );
 }
+
+bool QgsWmsProvider::shouldInvertAxisOrientation( const QString& ogcCrs )
+{
+  //according to the WMS spec for 1.3, some CRS have inverted axis
+  bool changeXY = false;
+  if ( !mIgnoreAxisOrientation && ( mCapabilities.version == "1.3.0" || mCapabilities.version == "1.3" ) )
+  {
+    //create CRS from string
+    QgsCoordinateReferenceSystem theSrs;
+    if ( theSrs.createFromOgcWmsCrs( ogcCrs ) && theSrs.axisInverted() )
+    {
+      changeXY = true;
+    }
+  }
+
+  if ( mInvertAxisOrientation )
+    changeXY = !changeXY;
+
+  return changeXY;
+}
+
+
 
 /**
  * Class factory to return a pointer to a newly created
