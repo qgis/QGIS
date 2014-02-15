@@ -594,9 +594,9 @@ void QgsAtlasComposition::readXML( const QDomElement& atlasElem, const QDomDocum
     }
   }
   //look for stored composer map, to upgrade pre 2.1 projects
-  int composerMapNo = atlasElem.attribute( "composerMap", "0" ).toInt();
+  int composerMapNo = atlasElem.attribute( "composerMap", "-1" ).toInt();
   QgsComposerMap * composerMap = 0;
-  if ( composerMapNo != 0 )
+  if ( composerMapNo != -1 )
   {
     QList<QgsComposerMap*> maps;
     mComposition->composerItems( maps );
@@ -604,7 +604,8 @@ void QgsAtlasComposition::readXML( const QDomElement& atlasElem, const QDomDocum
     {
       if (( *it )->id() == composerMapNo )
       {
-        ( *it )->setAtlasDriven( true );
+        composerMap = ( *it );
+        composerMap->setAtlasDriven( true );
         break;
       }
     }
