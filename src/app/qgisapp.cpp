@@ -5765,8 +5765,8 @@ void QgisApp::editPaste( QgsMapLayer *destinationLayer )
       if ( pkAttrList.contains( dst ) )
       {
         dstAttr[ dst ] = pasteVectorLayer->dataProvider()->defaultValue( dst );
-	if( !dstAttr[ dst ].isNull() )
-	  continue;
+        if ( !dstAttr[ dst ].isNull() )
+          continue;
       }
 
       dstAttr[ dst ] = srcAttr[ src ];
@@ -7251,7 +7251,7 @@ void QgisApp::openURL( QString url, bool useQgisDocDirectory )
   OSStatus status = LSOpenCFURLRef( urlRef, NULL );
   status = 0; //avoid compiler warning
   CFRelease( urlRef );
-#elif defined(WIN32)
+#elif defined(Q_OS_WIN)
   if ( url.startsWith( "file://", Qt::CaseInsensitive ) )
     ShellExecute( 0, 0, url.mid( 7 ).toLocal8Bit().constData(), 0, 0, SW_SHOWNORMAL );
   else
@@ -9190,7 +9190,7 @@ void QgisApp::keyPressEvent( QKeyEvent * e )
   {
     stopRendering();
   }
-#if defined(Q_OS_WIN)&& defined(QGISDEBUG)
+#if defined(Q_OS_WIN) && defined(QGISDEBUG)
   else if ( e->key() == Qt::Key_Backslash && e->modifiers() & Qt::ControlModifier )
   {
     qgisCrashDump( 0 );
@@ -9480,6 +9480,14 @@ void QgisApp::namAuthenticationRequired( QNetworkReply *reply, QAuthenticator *a
 
 void QgisApp::namProxyAuthenticationRequired( const QNetworkProxy &proxy, QAuthenticator *auth )
 {
+  QSettings settings;
+  if ( !settings.value( "proxy/proxyEnabled", false ).toBool() ||
+       settings.value( "proxy/proxyType", "" ).toString() == "DefaultProxy" )
+  {
+    auth->setUser( "" );
+    return;
+  }
+
   QString username = auth->user();
   QString password = auth->password();
 
@@ -9554,29 +9562,39 @@ void QgisApp::namUpdate()
     if ( proxyTypeString == "DefaultProxy" )
     {
       proxyType = QNetworkProxy::DefaultProxy;
+
+#if defined(Q_OS_WIN)
+      QNetworkProxyFactory::setUseSystemConfiguration( true );
+      QList<QNetworkProxy> proxies = QNetworkProxyFactory::systemProxyForQuery();
+      if ( !proxies.isEmpty() )
+      {
+        proxy = proxies.first();
+      }
+#endif
+
+      QgsDebugMsg( "setting default proxy" );
     }
-    else if ( proxyTypeString == "Socks5Proxy" )
+    else
     {
-      proxyType = QNetworkProxy::Socks5Proxy;
+      if ( proxyTypeString == "Socks5Proxy" )
+      {
+        proxyType = QNetworkProxy::Socks5Proxy;
+      }
+      else if ( proxyTypeString == "HttpProxy" )
+      {
+        proxyType = QNetworkProxy::HttpProxy;
+      }
+      else if ( proxyTypeString == "HttpCachingProxy" )
+      {
+        proxyType = QNetworkProxy::HttpCachingProxy;
+      }
+      else if ( proxyTypeString == "FtpCachingProxy" )
+      {
+        proxyType = QNetworkProxy::FtpCachingProxy;
+      }
+
+      proxy = QNetworkProxy( proxyType, proxyHost, proxyPort, proxyUser, proxyPassword );
     }
-    else if ( proxyTypeString == "HttpProxy" )
-    {
-      proxyType = QNetworkProxy::HttpProxy;
-    }
-    else if ( proxyTypeString == "HttpCachingProxy" )
-    {
-      proxyType = QNetworkProxy::HttpCachingProxy;
-    }
-    else if ( proxyTypeString == "FtpCachingProxy" )
-    {
-      proxyType = QNetworkProxy::FtpCachingProxy;
-    }
-    QgsDebugMsg( QString( "setting proxy %1 %2:%3 %4/%5" )
-                 .arg( proxyType )
-                 .arg( proxyHost ).arg( proxyPort )
-                 .arg( proxyUser ).arg( proxyPassword )
-               );
-    proxy = QNetworkProxy( proxyType, proxyHost, proxyPort, proxyUser, proxyPassword );
   }
 
 #if QT_VERSION >= 0x40500
