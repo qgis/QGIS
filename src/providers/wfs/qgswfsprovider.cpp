@@ -111,7 +111,7 @@ QgsWFSProvider::QgsWFSProvider( const QString& uri )
     setDataSourceUri( bkUri );
   }
 
-  if ( ! uri.contains( "BBOX" ) )
+  if ( ! uri.contains( "BBOX=" ) )
   { //"Cache Features" option; get all features in layer immediately
     reloadData();
   } //otherwise, defer feature retrieval until layer is first rendered
@@ -241,7 +241,7 @@ QgsFeatureIterator QgsWFSProvider::getFeatures( const QgsFeatureRequest& request
       //ctor cannot initialize because layer object not available then
       if ( ! mInitGro )
       { //did user check "Cache Features" in WFS layer source selection?
-        if ( dsURI.contains( "BBOX" ) )
+        if ( dsURI.contains( "BBOX=" ) )
         { //no: initialize incremental getFeature
           if ( initGetRenderedOnly( rect ) )
           {
