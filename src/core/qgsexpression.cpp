@@ -631,6 +631,32 @@ static QVariant fcnTrim( const QVariantList& values, const QgsFeature* , QgsExpr
   return QVariant( str.trimmed() );
 }
 
+static QVariant fcnWordwrap( const QVariantList& values, const QgsFeature* , QgsExpression* parent )
+{
+  QString str = getStringValue( values.at( 0 ), parent );
+  QString delimiterstr = getStringValue ( values.at(1), parent );
+  QString wrapstr = "\n";
+  QString newstr;
+
+  int length = str.length();
+  int min = getIntValue( values.at(2), parent );
+  int current = 0;
+  int hit = 0;
+
+  while (current < length) {
+      hit = str.indexOf( delimiterstr, current + min );
+      if (hit > -1) {
+          newstr.append( str.midRef( current , hit - current ) );
+          newstr.append( wrapstr );
+          current = hit + 1;
+      } else {
+          newstr.append( str.midRef( current ) );
+          current = length;
+      }
+  }
+  return QVariant( newstr );
+}
+
 static QVariant fcnLength( const QVariantList& values, const QgsFeature* , QgsExpression* parent )
 {
   QString str = getStringValue( values.at( 0 ), parent );
@@ -1484,6 +1510,7 @@ const QList<QgsExpression::Function*> &QgsExpression::Functions()
     << new StaticFunction( "upper", 1, fcnUpper, "String" )
     << new StaticFunction( "title", 1, fcnTitle, "String" )
     << new StaticFunction( "trim", 1, fcnTrim, "String" )
+    << new StaticFunction( "wordwrap", 3, fcnWordwrap, "String" )
     << new StaticFunction( "length", 1, fcnLength, "String" )
     << new StaticFunction( "replace", 3, fcnReplace, "String" )
     << new StaticFunction( "regexp_replace", 3, fcnRegexpReplace, "String" )
