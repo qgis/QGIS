@@ -265,7 +265,7 @@ QSizeF QgsComposerLegend::drawLayerItemTitle( QgsComposerLayerItem* layerItem, Q
   if ( !layerItem ) return size;
 
   //Let the user omit the layer title item by having an empty layer title string
-  if ( layerItem->text().isEmpty() ) return size;
+  if ( layerItem->text().isEmpty() || layerItem->style() == QgsComposerLegendStyle::Hidden ) return size;
 
   double y = point.y();
 
@@ -805,15 +805,12 @@ QList<QgsComposerLegend::Atom> QgsComposerLegend::createAtomList( QStandardItem*
     {
       Atom atom;
 
-      if ( currentLegendItem->style() != QgsComposerLegendStyle::Hidden )
-      {
-        Nucleon nucleon;
-        nucleon.item = currentLegendItem;
-        nucleon.size = drawLayerItemTitle( dynamic_cast<QgsComposerLayerItem*>( currentLegendItem ) );
-        atom.nucleons.append( nucleon );
-        atom.size.rwidth() = nucleon.size.width();
-        atom.size.rheight() = nucleon.size.height();
-      }
+      Nucleon nucleon;
+      nucleon.item = currentLegendItem;
+      nucleon.size = drawLayerItemTitle( dynamic_cast<QgsComposerLayerItem*>( currentLegendItem ) );
+      atom.nucleons.append( nucleon );
+      atom.size.rwidth() = nucleon.size.width();
+      atom.size.rheight() = nucleon.size.height();
 
       QList<Atom> layerAtoms;
 
