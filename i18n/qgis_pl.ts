@@ -10750,7 +10750,7 @@ Błąd (%2): %3</translation>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="515"/>
         <source>New BNA files are created by the systems default line termination conventions. This may be overridden here.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nowe pliki BNA posiadają znaczniki końca wiersza zgodne z systemem operacyjnym. Tutaj można je zmienić.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="534"/>
@@ -10775,17 +10775,17 @@ Błąd (%2): %3</translation>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="580"/>
         <source>By default when creating new .csv files they are created with the line termination conventions of the local platform (CR/LF on win32 or LF on all other systems). This may be overridden through use of the LINEFORMAT option.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nowe pliki CSV posiadają znaczniki końca wiersza zgodne z systemem operacyjnym (CR/LF dla Win32; LF dla innych). Można je zmienić opcją LINEFORMAT.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="592"/>
         <source>By default, the geometry of a feature written to a .csv file is discarded. It is possible to export the geometry in its WKT representation by specifying GEOMETRY=AS_WKT. It is also possible to export point geometries into their X,Y,Z components by specifying GEOMETRY=AS_XYZ, GEOMETRY=AS_XY or GEOMETRY=AS_YX.</source>
-        <translation type="unfinished"></translation>
+        <translation>Domyślnie pliki CSV nie zapisują geometrii obiektów. Można jednak eksportować geometrię w formacie WKT podając GEOMETRY=AS_WKT. Geometrie punktowe można eksportować jako składowe (x, y, z) podając GEOMETRY=AS_XYZ, GEOMETRY=AS_XY lub GEOMETRY=AS_YX.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="607"/>
         <source>Create the associated .csvt file to describe the type of each column of the layer and its optional width and precision.</source>
-        <translation type="unfinished"></translation>
+        <translation>Stwórz powiązany plik .csvt do opisu typu kolumn warstwy (opcjonalnie ich rozmiarów i dokładności).</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="613"/>
@@ -10806,7 +10806,7 @@ Błąd (%2): %3</translation>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="661"/>
         <source>set the encoding value in the DBF file. The default value is LDID/87. It is not clear what other values may be appropriate.</source>
-        <translation type="unfinished"></translation>
+        <translation>ustaw kodowanie pliku DBF. Domyślne to LDID/87.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="670"/>
@@ -10826,7 +10826,7 @@ Błąd (%2): %3</translation>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="726"/>
         <source>Maximum number of figures after decimal separator to write in coordinates. Default to 15. Truncation will occur to remove trailing zeros.</source>
-        <translation type="unfinished"></translation>
+        <translation>Maksymalna liczba cyfr dziesiętnych do zapisu współrzędnych (domyślnie 15). Końcowe (nieznaczące) zera zostaną usunięte.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="747"/>
@@ -10836,7 +10836,7 @@ Błąd (%2): %3</translation>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="756"/>
         <source>The encoding of location information. Default value : SIMPLE. W3C_GEO only supports point geometries. SIMPLE or W3C_GEO only support geometries in geographic WGS84 coordinates.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kodowanie informacji o lokalizacji (domyślnie SIMPLE). W3C_GEO obsługuje jedynie geometrie punktowe. SIMPLE lub W3C_GEO są obsługiwane jedynie w przypadku układu współrzędnych WGS84.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="767"/>
@@ -10846,12 +10846,12 @@ Błąd (%2): %3</translation>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="776"/>
         <source>If defined to NO, only &lt;entry&gt; or &lt;item&gt; elements will be written. The user will have to provide the appropriate header and footer of the document.</source>
-        <translation type="unfinished"></translation>
+        <translation>Gdy wybrano NO, zostaną zapisane tylko elementy &lt;entry&gt; oraz &lt;item&gt;. Użytkownik będzie musiał określić odpowiedni nagłówek i stopkę dokumentu.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="782"/>
         <source>XML content that will be put between the &lt;channel&gt; element and the first &lt;item&gt; element for a RSS document, or between the xml tag and the first &lt;entry&gt; element for an Atom document. </source>
-        <translation type="unfinished"></translation>
+        <translation>Zawartość XML zostanie zapisana pomiędzy elementem &lt;channel&gt; a pierwszym elementem &lt;item&gt; dokumentu RSS, lub pomiędzy tagiem xml a pierwszym elementem &lt;entry&gt; dokumentu Atom.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="789"/>
@@ -10886,12 +10886,12 @@ Błąd (%2): %3</translation>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="841"/>
         <source>If provided, this URI will be inserted as the schema location. Note that the schema file isn&apos;t actually accessed by OGR, so it is up to the user to ensure it will match the schema of the OGR produced GML data file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Jeśli zdefiniowany, ten URI zostanie ustawiony jako lokalizacja schematu. Pamiętaj, że plik schematu nie jest czytany przez OGR, więc rolą użytkownika jest zapewnienie jego zgodności ze schematem pliku GML utworzonego przez OGR.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="849"/>
         <source>This writes a GML application schema file to a corresponding .xsd file (with the same basename). If INTERNAL is used the schema is written within the GML file, but this is experimental and almost certainly not valid XML. OFF disables schema generation (and is implicit if XSISCHEMAURI is used).</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapisuje plik schematu aplikacyjnego GML do odpowiedniego pliku .xsd (o tej samej nazwie). Jeśli używane jest INTERNAL, schemat jest zapisywany w pliku GML, lecz jest to wersja eksperymentalna (nie do końca poprawny XML). OFF wyłącza generowanie schematu (i jest domniemany, jeśli używany jest XSISCHEMAURI).</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="862"/>
@@ -10921,42 +10921,42 @@ Błąd (%2): %3</translation>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="901"/>
         <source>only valid when FORMAT=GML3/GML3Degree/GML3.2) Default to YES. If set to NO, the &lt;gml:boundedBy&gt; element will not be written for each feature.</source>
-        <translation type="unfinished"></translation>
+        <translation>znaczące tylko kiedy FORMAT=GML3/GML3Degree/GML3.2) Domyślna wartość to YES. Jeśli wybrano NO,element &lt;gml:boundedBy&gt; nie będzi zapisywany dla każdego obiektu.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="908"/>
         <source>Default to YES. If YES, the output will be indented with spaces for more readability, but at the expense of file size.</source>
-        <translation type="unfinished"></translation>
+        <translation>Domyślnie YES. W takim przy przypadku, dla poprawy czytelności, wiersze będą poprzedzane spacjami (kosztem większych rozmiarów plików).</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="945"/>
         <source>By default when writing a layer whose features are of type wkbLineString, the GPX driver chooses to write them as routes. If FORCE_GPX_TRACK=YES is specified, they will be written as tracks.</source>
-        <translation type="unfinished"></translation>
+        <translation>Domyślnie warstwy z obiektami typu wkbLineString, zostaną zapisane przez GPX jako trasy. Przy wyborze FORCE_GPX_TRACK=YES, zostaną one zapisane jako ścieżki.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="953"/>
         <source>By default when writing a layer whose features are of type wkbMultiLineString, the GPX driver chooses to write them as tracks. If FORCE_GPX_ROUTE=YES is specified, they will be written as routes, provided that the multilines are composed of only one single line.</source>
-        <translation type="unfinished"></translation>
+        <translation>Domyślnie warstwy z obiektami typu wkbMultiLineString, zostaną zapisane przez GPX jako ścieżki. Przy wyborze FORCE_GPX_ROUTE=YES, zostaną one zapisane jako trasy. Wielolinie będą składały się tylko z jednej pojedynczej linii.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="962"/>
         <source>If GPX_USE_EXTENSIONS=YES is specified, extra fields will be written inside the &lt;extensions&gt; tag.</source>
-        <translation type="unfinished"></translation>
+        <translation>Opcja GPX_USE_EXTENSIONS=YES spowoduje dodanie nowego pola wewnątrz tagu &lt;extensions&gt;.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="968"/>
         <source>Only used if GPX_USE_EXTENSIONS=YES and GPX_EXTENSIONS_NS_URL is set. The namespace value used for extension tags. By default, &apos;ogr&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Użyte tylko jeśli zostaną ustawione GPX_USE_EXTENSIONS=YES i GPX_EXTENSIONS_NS_URL. Wartość przestrzeni nazw użyta do tagu rozszerzeń (domyślnie &apos;ogr&apos;).</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="974"/>
         <source>Only used if GPX_USE_EXTENSIONS=YES and GPX_EXTENSIONS_NS is set. The namespace URI. By default, &apos;http://osgeo.org/gdal&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Użyte tylko jeśli zostaną ustawione GPX_USE_EXTENSIONS=YES i GPX_EXTENSIONS_NS. URI przestrzeni nazw (domyślnie &apos;http://osgeo.org/gdal&apos;).</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="980"/>
         <source>By default files are created with the line termination conventions of the local platform (CR/LF on win32 or LF on all other systems). This may be overridden through use of the LINEFORMAT layer creation option which may have a value of CRLF (DOS format) or LF (Unix format).</source>
-        <translation type="unfinished"></translation>
+        <translation>Domyślnie pliki posiadają znaczniki końca wiersza zgodne z systemem operacyjnym (CR/LF dla Win32; LF dla innych). Można to zmienić opcją LINEFORMAT stosując wartości CRLF (format DOS) lub LF (format Unix).</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1038"/>
@@ -10971,7 +10971,7 @@ Błąd (%2): %3</translation>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1048"/>
         <source>Allows you to specify the AltitudeMode to use for KML geometries. This will only affect 3D geometries and must be one of the valid KML options.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pozwala określić AltitudeMode dla geometrii KML. Działa tylko w kontekście geometrii 3D i musi być jedną ze stosowanych geometrii KML.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1073"/>
