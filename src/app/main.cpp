@@ -790,6 +790,7 @@ int main( int argc, char *argv[] )
   }
 
   QTranslator qgistor( 0 );
+  QTranslator qttor( 0 );
   if ( myTranslationCode != "C" )
   {
     if ( qgistor.load( QString( "qgis_" ) + myTranslationCode, i18nPath ) )
@@ -806,7 +807,6 @@ int main( int argc, char *argv[] )
      * the About, Preferences and Quit items to the Mac Application menu.
      * These items must be translated identically in both qt_ and qgis_ files.
      */
-    QTranslator qttor( 0 );
     if ( qttor.load( QString( "qt_" ) + myTranslationCode, QLibraryInfo::location( QLibraryInfo::TranslationsPath ) ) )
     {
       myApp.installTranslator( &qttor );
