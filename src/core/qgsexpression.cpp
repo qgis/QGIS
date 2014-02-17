@@ -634,25 +634,35 @@ static QVariant fcnTrim( const QVariantList& values, const QgsFeature* , QgsExpr
 static QVariant fcnWordwrap( const QVariantList& values, const QgsFeature* , QgsExpression* parent )
 {
   QString str = getStringValue( values.at( 0 ), parent );
-  QString delimiterstr = getStringValue ( values.at(1), parent );
-  QString wrapstr = "\n";
   QString newstr;
 
-  int length = str.length();
-  int min = getIntValue( values.at(2), parent );
-  int current = 0;
-  int hit = 0;
+  QString delimiterstr = getStringValue ( values.at(1), parent );
+  int delimiterlength = delimiterstr.length();
 
-  while (current < length) {
-      hit = str.indexOf( delimiterstr, current + min );
-      if (hit > -1) {
-          newstr.append( str.midRef( current , hit - current ) );
-          newstr.append( wrapstr );
-          current = hit + 1;
+  int wrapmin = getIntValue( values.at(2), parent );
+
+  QStringList lines = str.split( "\n" );
+  int strlength, strcurrent, strhit;
+
+  for ( int i = 0; i < lines.size(); i++ )
+  {
+    strlength = lines[i].length();
+    strcurrent = 0;
+    strhit = 0;
+
+    while (strcurrent < strlength)
+    {
+      strhit = lines[i].indexOf( delimiterstr, strcurrent + wrapmin );
+      if (strhit > -1) {
+        newstr.append( lines[i].midRef( strcurrent , strhit - strcurrent ) );
+        newstr.append( "\n" );
+        strcurrent = strhit + delimiterlength;
       } else {
-          newstr.append( str.midRef( current ) );
-          current = length;
+        newstr.append( lines[i].midRef( strcurrent ) );
+        strcurrent = strlength;
       }
+    }
+    if (i < lines.size() - 1) newstr.append( "\n" );
   }
   return QVariant( newstr );
 }
