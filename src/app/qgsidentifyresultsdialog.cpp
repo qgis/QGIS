@@ -1188,7 +1188,7 @@ void QgsIdentifyResultsDialog::attributeValueChanged( QgsFeatureId fid, int idx,
   if ( idx >= vlayer->pendingFields().size() )
     return;
 
-  const QgsField &fld = vlayer->pendingFields().at( idx );
+  const QgsFields &fields = vlayer->pendingFields();
 
   for ( int i = 0; i < layItem->childCount(); i++ )
   {
@@ -1196,11 +1196,6 @@ void QgsIdentifyResultsDialog::attributeValueChanged( QgsFeatureId fid, int idx,
 
     if ( featItem && STRING_TO_FID( featItem->data( 0, Qt::UserRole ) ) == fid )
     {
-      QString value( fld.displayString( val ) );
-
-      if ( fld.name() == vlayer->displayField() )
-        featItem->setData( 1, Qt::DisplayRole, value );
-
       for ( int j = 0; j < featItem->childCount(); j++ )
       {
         QTreeWidgetItem *item = featItem->child( j );
@@ -1209,10 +1204,14 @@ void QgsIdentifyResultsDialog::attributeValueChanged( QgsFeatureId fid, int idx,
 
         if ( item->data( 0, Qt::UserRole + 1 ).toInt() == idx )
         {
+          QString value = fields[idx].displayString( val );
+
+          item->setData( 1, Qt::UserRole, value );
+
           switch ( vlayer->editType( idx ) )
           {
             case QgsVectorLayer::ValueMap:
-              value = vlayer->valueMap( idx ).key( val, QString( "(%1)" ).arg( value ) );
+              value = vlayer->valueMap( idx ).key( value, QString( "(%1)" ).arg( value ) );
               break;
 
             case QgsVectorLayer::Calendar:
@@ -1225,6 +1224,10 @@ void QgsIdentifyResultsDialog::attributeValueChanged( QgsFeatureId fid, int idx,
           }
 
           item->setData( 1, Qt::DisplayRole, value );
+
+          if ( vlayer->attributeDisplayName( idx ) == vlayer->displayField() )
+            featItem->setData( 1, Qt::DisplayRole, value );
+
           return;
         }
       }
