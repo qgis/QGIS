@@ -2,14 +2,15 @@
 Returns a string wrapped to a minimum number of characters.
 
 <p><h4>Syntax</h4>
-     replace(<i>string,delimiter_string,minimum_characters</i>)</p>
+     replace(<i>string,delimiter_string,wrap_characters</i>)</p>
 
 <p><h4>Arguments</h4>
 <!-- List args for functions here-->
 <i>  string</i> &rarr; is string.  The string to be wrapped.<br>
 <i>  delimiter_string</i> &rarr; is string.  The delimiter character(s) to break to a new line.<br>
-<i>  minimum_characters</i> &rarr; is number.  The minimum number of characters required to allow for break to a new line<br></p>
+<i>  wrap_characters</i> &rarr; is number.  IF positive, the number represents the ideal maximum number of characters to wrap; if negative, the number represents the minimum number of characters to wrap.<br></p>
 
 <p><h4>Example</h4>
 <!-- Show example of function.-->
-     wordwrap('UNIVERSITY OF QGIS',' ',3) &rarr; 'UNIVERSITY\nOF QGIS'</p>
+     wordwrap('UNIVERSITY OF QGIS',' ',13) &rarr; 'UNIVERSITY OF\nQGIS'<br>
+     wordwrap('UNIVERSITY OF QGIS',' ',-3) &rarr; 'UNIVERSITY\nOF QGIS'</p>
