@@ -1452,7 +1452,7 @@ const QStringList &QgsExpression::BuiltinFunctions()
     << "coalesce" << "regexp_match" << "$now" << "age" << "year"
     << "month" << "week" << "day" << "hour"
     << "minute" << "second" << "lower" << "upper"
-    << "title" << "length" << "replace" << "trim"
+    << "title" << "length" << "replace" << "trim" << "wordwrap"
     << "regexp_replace" << "regexp_substr"
     << "substr" << "concat" << "strpos" << "left"
     << "right" << "rpad" << "lpad"
