@@ -9474,6 +9474,9 @@ void QgisApp::namAuthenticationRequired( QNetworkReply *reply, QAuthenticator *a
   if ( !ok )
     return;
 
+  if( reply->isFinished() )
+    return;
+
   auth->setUser( username );
   auth->setPassword( password );
 }

@@ -183,7 +183,8 @@ void QgsNetworkAccessManager::abortRequest()
 
   QgsMessageLog::logMessage( tr( "Network request %1 timed out" ).arg( reply->url().toString() ), tr( "Network" ) );
 
-  reply->abort();
+  if( reply->isRunning() )
+    reply->close();
 }
 
 QString QgsNetworkAccessManager::cacheLoadControlName( QNetworkRequest::CacheLoadControl theControl )
