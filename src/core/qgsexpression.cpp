@@ -639,20 +639,34 @@ static QVariant fcnWordwrap( const QVariantList& values, const QgsFeature* , Qgs
   QString delimiterstr = getStringValue ( values.at(1), parent );
   int delimiterlength = delimiterstr.length();
 
-  int wrapmin = getIntValue( values.at(2), parent );
+  //if wrap value is positive, wrap is (mostly) the maximum width before wrap on delimiter
+  //if wrap value is negative, wrap is the minimum width before permitting wrap delimiter
+  int wrap = getIntValue( values.at(2), parent );
 
   QStringList lines = str.split( "\n" );
-  int strlength, strcurrent, strhit;
+  int strlength, strcurrent, strhit, lasthit;
 
   for ( int i = 0; i < lines.size(); i++ )
   {
     strlength = lines[i].length();
     strcurrent = 0;
     strhit = 0;
+    lasthit = 0;
 
     while (strcurrent < strlength)
     {
-      strhit = lines[i].indexOf( delimiterstr, strcurrent + wrapmin );
+      if (wrap > 0)
+      {
+        //first try to locate delimiter backwards
+        strhit = lines[i].lastIndexOf( delimiterstr, strcurrent + wrap);
+        if (strhit == lasthit || strhit == -1) {
+          //if no new backward delimiter found, try to locate forward
+          strhit = lines[i].indexOf( delimiterstr, strcurrent + qAbs(wrap) );
+        }
+        lasthit = strhit;
+      } else {
+        strhit = lines[i].indexOf( delimiterstr, strcurrent + qAbs(wrap) );
+      }
       if (strhit > -1) {
         newstr.append( lines[i].midRef( strcurrent , strhit - strcurrent ) );
         newstr.append( "\n" );
