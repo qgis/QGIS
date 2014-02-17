@@ -890,8 +890,7 @@ Interrogazione:
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgExportVector.ui" line="81"/>
         <source>Drop existing one</source>
-        <translatorcomment>anche quì,perchè femminile? se si riferisse a layer sarebbe meglio maschile (gc)</translatorcomment>
-        <translation>Cancella una esistente</translation>
+        <translation>Cancella esistente</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgExportVector.ui" line="93"/>
@@ -1002,8 +1001,7 @@ Interrogazione:
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="180"/>
         <source>Drop existing one</source>
-        <translatorcomment>idem, perchè femminile? (gc)</translatorcomment>
-        <translation>Cancella una esistente</translation>
+        <translation>Cancella esistente</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="192"/>
@@ -1087,7 +1085,7 @@ Interrogazione:
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="110"/>
         <source>&amp;Clear</source>
         <translatorcomment>Vedo nelle frasi che &quot;clear&quot; è stato tradotto sia &quot;cancella&quot; sia &quot;pulisci&quot; (skampus)</translatorcomment>
-        <translation>&amp;Cancella</translation>
+        <translation>&amp;Pulisci</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="123"/>
@@ -4501,7 +4499,7 @@ Disabilita l&apos;opzione &quot;Usa estensioni di intersezione&quot; per ottener
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogSettings.ui" line="98"/>
         <source>GDAL help path</source>
-        <translation>Path all&apos;help di GDAL</translation>
+        <translation>Path alla guida di GDAL</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogSettings.ui" line="137"/>
@@ -7524,7 +7522,7 @@ Agisce su tutti i vettori editabili attivi al momento
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1346"/>
         <source>Query...</source>
-        <translation>Interrogazione...</translation>
+        <translation>Cerca...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1358"/>
@@ -46823,7 +46821,7 @@ Because of this the projection selector will not work...</source>
     <message>
         <location filename="../src/gui/qgsquerybuilder.cpp" line="42"/>
         <source>&amp;Clear</source>
-        <translation>&amp;Cancella</translation>
+        <translation>&amp;Pulisci</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsquerybuilder.cpp" line="199"/>
@@ -46884,7 +46882,7 @@ La sorgente dati riporta:
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="36"/>
         <source>Datasource</source>
-        <translation>SorgenteDati</translation>
+        <translation>Sorgente dati</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="57"/>
@@ -47449,7 +47447,7 @@ Clicca sul pulsante di aiuto per avere opzioni di creazione valide per questo fo
         <location filename="../src/gui/qgsrasterformatsaveoptionswidget.cpp" line="274"/>
         <source>No help available</source>
         <translatorcomment>#dubbio#</translatorcomment>
-        <translation>Nessun help disponibile</translation>
+        <translation>Nessun aiuto disponibile</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsrasterformatsaveoptionswidget.cpp" line="374"/>
@@ -51046,7 +51044,7 @@ deviazione standard ×</translation>
     <message>
         <location filename="../src/gui/qgssearchquerybuilder.cpp" line="46"/>
         <source>&amp;Clear</source>
-        <translation>&amp;Cancella</translation>
+        <translation>&amp;Pulisci</translation>
     </message>
     <message>
         <location filename="../src/gui/qgssearchquerybuilder.cpp" line="50"/>
@@ -53324,7 +53322,66 @@ p, li { white-space: pre-wrap; }
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/images/sponsors/sponsors/ibw.png&quot; /&gt;   &lt;img src=&quot;:/images/sponsors/sponsors/geosynergy.png&quot; /&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;hr /&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot;
+&quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Cantarell&apos;; font-size:11pt;
+font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px;
+margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot;
+font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt;C&apos;&amp;egrave; alle spalle un lavoro 
+molto arduo per costruire questo software per voi. Vedete tutte le 
+smaliziate funzioni che ha? Sentite una piacevole sensazione quando lo 
+usate? QGIS &amp;egrave; l&apos;amorevole sforzo di un formidabile gruppo di 
+sviluppatori. Noi vogliamo che lo copiate, lo condividete con altri e 
+lo mettete in mano al maggior numero possibile di persone. Se QGIS vi 
+fa risparmiare denaro o amate il vostro lavoro e avete la 
+possibilit&amp;agrave; finanziaria di dare un aiuto, vi preghiamo di 
+valutare il sostegno allo sviluppo di QGIS: usiamo il denaro dei 
+sostenitori per pagare i viaggi ed i costi per organizzare gli incontri 
+due volte l&apos;anno e per sostenere in generale gli obiettivi del nostro 
+progetto. &lt;br /&gt;Date uno sguardo a &lt;/span&gt;&lt;a
+href=&quot;http://qgis.org/en/site/getinvolved/governance/sponsorship/sponsorship.html&quot;&gt;&lt;span
+style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt; text-decoration:
+underline; color:#0000ff;&quot;&gt;QGIS Sponsorship Web Page&lt;/span&gt;&lt;/a&gt;&lt;span
+style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt; per maggiori dettagli. 
+In &lt;/span&gt;&lt;a
+href=&quot;http://qgis.org/en/site/about/sponsorship.html#list-of-sponsors&quot;&gt;&lt;span
+style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Sponsors
+page&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt;
+potete vedere le persone e le societ&amp;agrave; che ci stanno aiutando 
+finanziariamente - un grande ringraziamento a tutti loro!&lt;/span&gt;&lt;/p&gt;
+&lt;hr /&gt; &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px;
+margin-left:0px; margin-right:0px; -qt-block-indent:0;
+text-indent:0px;&quot;&gt;&lt;img src=&quot;:/images/sponsors/sponsors/gold.png&quot; /&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px;
+margin-left:0px; margin-right:0px; -qt-block-indent:0;
+text-indent:0px;&quot;&gt;&lt;img
+src=&quot;:/images/sponsors/sponsors/aas_300wide.png&quot; /&gt;&lt;/p&gt; &lt;p
+style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px;
+margin-left:0px; margin-right:0px; -qt-block-indent:0;
+text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt; &lt;hr /&gt; &lt;p align=&quot;center&quot; style=&quot;
+margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px;
+-qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img
+src=&quot;:/images/sponsors/sponsors/silver.png&quot; /&gt;&lt;/p&gt; &lt;p align=&quot;center&quot;
+style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px;
+margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img
+src=&quot;:/images/sponsors/sponsors/vorarlberg.png&quot; /&gt;   &lt;img
+src=&quot;:/images/sponsors/sponsors/gaia.png&quot; /&gt;&lt;/p&gt; &lt;p
+style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px;
+margin-left:0px; margin-right:0px; -qt-block-indent:0;
+text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt; &lt;hr /&gt; &lt;p align=&quot;center&quot; style=&quot;
+margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px;
+-qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img
+src=&quot;:/images/sponsors/sponsors/bronze.png&quot; /&gt;&lt;/p&gt; &lt;p align=&quot;center&quot;
+style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px;
+margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img
+src=&quot;:/images/sponsors/sponsors/ibw.png&quot; /&gt; &lt;img
+src=&quot;:/images/sponsors/sponsors/geosynergy.png&quot; /&gt;&lt;/p&gt; &lt;p
+style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px;
+margin-left:0px; margin-right:0px; -qt-block-indent:0;
+text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt; &lt;hr /&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -65204,7 +65261,416 @@ The following options can be added
 
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Layer da file a testo delimitato&lt;/h3&gt;
+Carica e visualizza file a testo delimitato
+&lt;p&gt;
+&lt;a href=&quot;#re&quot;&gt;Panoramica&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#creating&quot;&gt;Creare un layer a testo delimitato&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#csv&quot;&gt;Modalit&amp;agrave; di applicazione del delimitatore, degli 
+apici e del carattere escape&lt;/a&gt;&lt;br /&gt; &lt;a href=&quot;#regexp&quot;&gt;Comportamento 
+del delimitatore di espressione regolare&lt;/a&gt;&lt;br /&gt; &lt;a href=&quot;#wkt&quot;&gt;Come 
+vengono interpretati i costrutti WKT&lt;/a&gt;&lt;br /&gt; &lt;a
+href=&quot;#attributes&quot;&gt;Attributi in file a testo delimitato&lt;/a&gt;&lt;br /&gt; &lt;a
+href=&quot;#example&quot;&gt;Esempio di file di testo con punti di coordinate 
+X,Y&lt;/a&gt;&lt;br/&gt; &lt;a href=&quot;#wkt_example&quot;&gt;Esempio di file di testo con 
+geometrie WKT&lt;/a&gt;&lt;br/&gt; &lt;a href=&quot;#python&quot;&gt;Uso di layer a testo 
+delimitato in Python&lt;/a&gt;&lt;br/&gt; &lt;/p&gt;
+
+&lt;h4&gt;&lt;a name=&quot;re&quot;&gt;Panoramica&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;Un &amp;quot;file a testo delimitato&amp;quot; contiene dati in cui ogni
+riga corrisponde ad un record; ogni riga &amp;egrave; suddivisa in campi da
+un delimitatore, come una virgola. Questo tipo di file &amp;egrave;
+comunemente fornito da fogli di calcolo (ad esempio file CSV) o
+database. Normalmente la prima riga del file contiene i nomi dei campi.
+&lt;/p&gt;
+&lt;p&gt;
+I file a testo delimitato possono essere caricati in QGIS come layer.
+I record possono essere visualizzati nello spazio sia come punti
+definiti dalle coordinate XY o usando le definizioni Well Known Text
+(WKT) di geometrie che possono rappresentare punti, line e poligoni di
+complessit&amp;agrave; arbitraria. Il file pu&amp;ograve; anche essere caricato
+come tabella di soli attributi, nel qual caso va collegata a qualche
+altra tabella in QGIS. &lt;/p&gt;
+&lt;p&gt;
+Oltre alla geometria la tabella piu&amp;ograve; contenere campi di testo e
+campi numerici interi e reali.
+Per difetto QGIS cercher&amp;agrave; il tipo basandosi sui valori nonnulli
+contenuti nei campi. Se tutti possono essere interpretati come interi,
+il tipo adottato sar&amp;agrave; &quot;intero&quot;; se tutti possono essere
+interpretati come reali, sar&amp;agrave; adottato il tipo &quot;reale a doppia
+precisione&quot;, altrimenti sar&amp;agrave; adottato il tipo &quot;testo&quot;. &lt;/p&gt;
+&lt;p&gt;
+QGIS pu&amp;ograve; leggere i tipi da un file &amp;quot;csvt&amp;quot; compatibile
+con il formato OGR CSV.
+Questo &amp;egrave; un file come il file dati cui &amp;egrave; stata aggiunta
+una &amp;quot;t&amp;quot; al nome.
+Il file deve contenere una riga che elenca il tipo di ogni campo.
+Tipi validi sono &amp;quot;integer&amp;quot;,
+&amp;quot;real&amp;quot;,&amp;quot;string&amp;quot;, &amp;quot;date&amp;quot;, &amp;quot;time&amp;quot;
+e &amp;quot;datetime&amp;quot;. I tipi &quot;date&quot;, &quot;time&quot; e &quot;datetime&quot; sono
+trattati come stringhe in QGIS. Ogni tipo pu&amp;ograve; essere seguito da
+&quot;lunghezza&quot; e &quot;precisione&quot;, ad esempio &amp;quot;real(10.4)&amp;quot;.
+I tipi sono separati nell&apos;elenco da una virgola, indipendentemente dal
+delimitatore usato nel file dati.
+Un esempio valido di file potrebbe essere:
+&lt;pre&gt;
+&amp;quot;integer&amp;quot;,&amp;quot;string&amp;quot;,&amp;quot;string(20)&amp;quot;,&amp;quot;real(20.4)&amp;quot;
+&lt;/pre&gt;
+
+&lt;h4&gt;&lt;a name=&quot;creating&quot;&gt;Crea un vettore da un file di testo
+delimitato&lt;/a&gt;&lt;/h4&gt; &lt;p&gt;Creare un layer a testo delimitato implica la
+scelta di un file dati, la definizione del formato (come ogni riga
+&amp;egrave; suddivisa nei vari campi) e la definizione della geometria da
+rappresentare. Questo &amp;egrave; gestito dalla finestra di dialogo come
+spiegato nel seguito. La finestra di dialogo mostra un campione della
+parte iniziale del file che mostra come le opzioni di formato sono
+state applicate. &lt;/p&gt;
+&lt;h5&gt;Nome file&lt;/h5&gt;
+&lt;p&gt;Usate il pulsante &amp;quot;Sfoglia...&amp;quot; per scegliere il file dati.
+Una volta selezionato il file il nome del layer sar&amp;agrave;
+immediatamente compilato sulla base del nome del file. Il nome del
+layer &amp;egrave; usato per individuare i dati nella legenda di QGIS.
+&lt;/p&gt;
+&lt;p&gt;
+Si presume che il file sia codificato nel sistema UTF-8. Tuttavia si
+possono usare altre codifiche. Ad esempio &amp;quot;System&amp;quot; usa la
+codifica del sistema operativo. Si consiglia di usare una codifica
+esplicita se il progetto QGIS deve essere portabile su diverse
+piattaforme. &lt;/p&gt;
+&lt;h5&gt;Formato file&lt;/h5&gt;
+&lt;p&gt;Il file deve avere un formato fra quelli elencati:
+&lt;ul&gt;
+    &lt;li&gt;formato CSV. Questo &amp;egrave; un formato comunemente usato dai
+fogli di calcolo le cui righe sono delimitate dal carattere di virgola
+e marcati con il carattere &amp;quot;(apici). Gli apici, all&apos;interno dei
+campi marcati sono indicate con &amp;quot;&amp;quot;.&lt;/li&gt;
+    &lt;li&gt;Delimitatori personalizzati. Ogni riga &amp;egrave; suddivisa in
+campi mediante uno o pi&amp;ugrave; caratteri di delimitazione.
+I caratteri di marcatura sono usati per i campi che contengono dei
+caratteri di delimitatori.
+Il carattere di escape pu&amp;ograve; essere usato per trattare i caratteri
+seguenti come caratteri normali (cio&amp;egrave; per includere nei campi di
+testo i delimitatori, gli apici e caratteri di fine linea). L&apos;uso dei
+caratteri di delimitazione, gli apici e l&apos;escape sono dettagliati &lt;a
+href=&quot;#csv&quot;&gt;sotto&lt;/a&gt;. &lt;li&gt;Deliminatore espressione regolare. Ogni riga
+&amp;egrave; suddivisa in campi usando un delimitatore di &amp;quot;espressione
+regolare&amp;quot;. L&apos;uso dell&apos;espressione regolare &amp;egrave specificata nel
+&lt;a href=&quot;#regexp&quot;&gt;seguito&lt;/a&gt;. &lt;/ul&gt;
+&lt;h5&gt;Opzioni record&lt;/h5&gt;
+&lt;p&gt;Le seguenti opzioni influiscono sulla selezione dei record e dei
+campi dal file dati. &lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;Numero di righe di intestazione da saltare: usata per
+tralasciare linee all&apos;inizio del file&lt;/li&gt;
+    &lt;li&gt;Primo record ha i nomi dei campi: se selezionato la prima riga
+del file (dopo le linee scartate) &amp;egrave; interpretata come indicatore
+dei nomi dei campi anzich&amp;egrave; come contenitore di dati.&lt;/li&gt;
+    &lt;li&gt;Rifinisci i campi: se selezionato i caratteri vuoti all&apos;inizio
+e fine sono rimossi da ogni campo (ad eccezione dei campi marcati).&lt;/li&gt;
+    &lt;li&gt;Scarta i campi vuoti: se selezionato i campi vuoti (dopo la
+pulitura) saranno scartati. Questo influisce sull&apos;allineamento dei dati
+nei campi ed &amp;egrave; equivalente a considerare delimitatori multipli
+come singoli delimitatori. I campi marcati sono sempre conservati.&lt;/li&gt;
+    &lt;li&gt;La virgola &amp;egrave; il separatore decimale: se selezionato
+&amp;egrave; usata la virgola anzich&amp;egrave; il punto come separatore
+decimale nei numeri reali.  Ad esempio &lt;tt&gt;-51,354&lt;/tt&gt; equivale a
+-51.354.&lt;/li&gt; &lt;/ul&gt;
+&lt;h5&gt;Definizione geometria&lt;/h5&gt;
+&lt;p&gt;La geometria pu&amp;ograve; essere scelta fra le seguenti&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;Coordinate del punto: ogni elemento &amp;egrave; rappresentato come
+un punto definito dalle coordinate X e Y.&lt;/li&gt;
+    &lt;li&gt;Well known text (WKT): ogni elemento &amp;egrave; rappresentato
+come una stringa &quot;well known text&quot;, ad esempio &lt;tt&gt;POINT(1.525622
+51.20836)&lt;/tt&gt;. Si vedano i dettagli alla pagina &lt;a href=&quot;#wkt&quot;&gt;well
+known text&lt;/a&gt;. &lt;li&gt;Nessuna geometria (solo tabella attributi): le
+righe non saranno visualizzate sulla mappa, ma possono essere
+visualizzate nella tabella attributi e collegate ad altri layer in
+QGIS&lt;/li&gt; &lt;/ul&gt;
+&lt;p&gt;Per le coordinate dei punti si applicano le sequenti opzioni:&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;Campo X: specifica il campo contenente l&apos;ascissa&lt;/li&gt;
+    &lt;li&gt;Campo Y: specifica il campo contenente l&apos;ordinata&lt;/li&gt;
+    &lt;li&gt;Coordinate GMS: se selezionato le coordinate sono rappresentate
+come gradi/minuti/secondi o gradi/minuti.  QGIS &amp;egrave; abbastanza
+permissivo nella sua interpretazione dei gradi/minuti/secondi.
+Una coordinata GMS valida contiene tre campi numerici ed un prefisso o
+suffisso opzionale indicante l&apos;emisfero (N, E, o + sono positivi, S, W,
+o - sono negativi). Ulteriori caratteri non numerici saranno
+generalmente scartati. Ad esempio &lt;tt&gt;N41d54&apos;01.54&amp;quot;&lt;/tt&gt; esprime
+una coordinata valida.&lt;/li&gt; &lt;/ul&gt;
+&lt;p&gt;Per le geometrie &quot;well known text&quot; si applicano le sequenti
+opzioni:&lt;/p&gt; &lt;ul&gt;
+    &lt;li&gt;campo Geometria: il campo contiene la definizione in formato
+&quot;well known text&quot;.&lt;/li&gt; &lt;li&gt;tipo di Geometria: uno a scelta fra
+&amp;quot;Detect&amp;quot; (detect), &amp;quot;Point&amp;quot;, &amp;quot;Line&amp;quot;, or
+&amp;quot;Polygon&amp;quot;. I layer di QGIS possono visualizzare un solo tipo
+di geometria alla volta (punti, linee o poligoni). Questa opzione
+seleziona il tipo di geometria da rappresentare nei file di testo
+contenenti tipi di geometrie diversi. Le righe contenenti tipi di
+geometrie non selezionate saranno scartati. L&apos;opzione
+&amp;quot;Detect&amp;quot; determina la scelta della prima geometria incontrata
+nel file. L&apos;opzione &amp;quot;Point&amp;quot; include i tipi WKT POINT e
+MULTIPOINT, &amp;quot;Line&amp;quot; include  i tipi WKT LINESTRING e
+MULTLINESTRING, e &amp;quot;Polygon&amp;quot; include  i tipi WKT POLYGON e
+MULTIPOLYGON. &lt;/ul&gt;
+&lt;h5&gt;Impostazioni del layer&lt;/h5&gt;
+&lt;p&gt;Le impostazioni controllano il modo in cui il layer &amp;egrave; trattao
+in QGIS. Le opzioni disponibili sono:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Usa indice spaziale. Crea un indice spaziale per migliorare le
+prestazioni di visualizzazione e selezione degli oggetti spaziali.
+Pu&amp;ograve; essere utile per file di dimensione superiore a qualche
+megabyte.&lt;/li&gt; &lt;li&gt;Usa indice di raggruppamento. Crea un indice if a
+subset of records is being used (either by explicitly setting a subset
+string from the layer properties dialog, or an implicit subset of
+features for which the geometry is valid in files
+for which all not geometries are valid).  The index will only be created
+when a subset is defined.&lt;/li&gt;
+&lt;li&gt;Controlla file. Se selezionata QGIS controller&amp;agrave; il file per
+modifiche operate da altre applicazioni e ricaricher&amp;agrave; il layer
+dopo ogni modifica. La mappa non sar&amp;agrave; aggiornata fino al comando
+dell&apos;utente, ma gli indici saranno ricaricati. Questa opzione &amp;egrave;
+utile se si usano gli indici ma &amp;egrave; probabile che il file venga
+modificato da altre applicazioni.&lt;/li&gt; &lt;/ul&gt;
+
+&lt;h4&gt;&lt;a name=&quot;csv&quot;&gt;Come operano i caratteri delimitatore, apici ed
+escape&lt;/h4&gt; &lt;p&gt;Le righe sono suddivise in campi mediante un insieme di
+tre caratteri: il carattere di delimitazione, il carattere apici ed il
+carattere escape. Gli altri caratteri nella riga sono considerati come
+dati, separati in campi dal carattere di delimitazione.
+Gli apici sono usati a coppia e indicano un testo da trattare come dato.
+Il carattere di escape indica che il carattere successivo deve essere
+trattato come dato.&lt;/p&gt;
+&lt;p&gt;
+Il carattere apici e escape non possono coincidere con il carattere di
+delimitazione
+- nel caso saranno ignorati. Il carattere di escape pu&amp;ograve; essere
+lo stesso degli apici, ma nel caso si comporta diversamente.&lt;/p&gt;
+&lt;p&gt;Il carattere di delimitazione &amp;egrave; usato per indicare la fine di
+ogni campo. Se si definiscono pi&amp;ugrave; caratteri di delimitazione,
+allora ognuno pu&amp;ograve; indicare la fine del campo.
+Gli apici e l&apos;escape hanno il sopravvento sul delimitatore facendolo
+diventare un carattere normale.&lt;/p&gt;
+&lt;p&gt;Gli apici possono essere usati per marcare l&apos;inizio e la fine di un
+campo. Campi marcati possono contenere il carattere di delimitazione e
+occupare pi&amp;ugrave righe nel file di testo. Un campo marcato deve usare
+lo stesso carattere all&apos;inizio ed alla fine. Gli apici non possono
+essere usati all&apos;interno di un testo se non preceduti dal carattere di
+escape.&lt;/p&gt; &lt;p&gt;Il carattere di escape diverso dagli apici obbliga il
+trattamento del carattere successivo come dato (cio&amp;egrave ne
+impediscono il trattamento come fine riga, delimitatore  o apice).&lt;/p&gt;
+&lt;p&gt;Il carattere di escape che &amp;egrave; anche apice ha effetti molto
+pi&amp;ugrave; limitati. Esso funziona solo all&apos;interno di testi marcati e
+modifica s&amp;egrave; stesso. Ad esempio, se &lt;tt&gt;&apos;&lt;/tt&gt; &amp;egrave; apice e
+escape allo stesso tempo, allora la stringa
+&lt;tt&gt;&apos;Smith&apos;&apos;s&amp;nbsp;Creek&apos;&lt;/tt&gt; rappresenter&amp;agrave; il valore
+Smith&apos;s&amp;nbsp;Creek. &lt;/p&gt;
+
+
+&lt;h4&gt;&lt;a name=&quot;regexp&quot;&gt;Comportamento del delimitatore di espressione
+regolare&lt;/a&gt;&lt;/h4&gt; &lt;p&gt;Le espressioni regolari sono un mini-linguaggio
+usato per rappresentare le combinazioni di caratteri. Ci sono molte
+varianti alla sintassi delle espressioni regolari - QGIS usa la
+sintassi fornita dalla classe &lt;a
+href=&quot;http://qt-project.org/doc/qt-4.8/qregexp.html&quot;&gt;QRegExp&lt;/a&gt;
+dell&apos;infrastruttura &lt;a href=&quot;http://qt.digia.com&quot;&gt;Qt&lt;/a&gt;.&lt;/p&gt; &lt;p&gt;In un
+file delimitato secondo le espressioni regolari ogni riga &amp;egrave;
+trattata come un record. Ogni istanza di espressione regolare &amp;egrave;
+trattata come fine del campo. Se l&apos;espressione regolare contiene dei
+gruppi di aggregazione (ad es. &lt;tt&gt;(cat|dog)&lt;/tt&gt;) questi saranno
+estratti come campi. Se non si desidera questo occorre usare
+non-capturing groups (ad es. &lt;tt&gt;(?:cat|dog)&lt;/tt&gt;).&lt;/p&gt;
+&lt;p&gt;L&apos;espressione regolare si comporta diversamente se &amp;egrave; ancorata
+all&apos;inizio della riga (cio&amp;egrave; la combinazione inizia con
+&lt;tt&gt;^&lt;/tt&gt;). In tal caso l&apos;espressione &amp;egrave; controllata riga per
+riga. Se la riga non coincide &amp;egrave; scartata come non valida. Ogni
+gruppo di aggregazione &amp;egrave; trattato come campo. L&apos;espressione
+regolare non &amp;egrave; valida se non ha gruppi di aggregazione. Ad
+esempio questo pu&amp;ograve; essere usato come metodo (abbastanza poco
+intuitivo) per caricare dati a campi di lunghezza costante. Cos&amp;igrave;
+l&apos;espressione &lt;pre&gt;
+^(.{5})(.{10})(.{20})(.{20})
+&lt;/pre&gt;
+&lt;p&gt;estrarr&amp;agrave; quattro campi di lunghezza 5, 10, 20, e 20 caratteri
+da ogni riga. Righe con meno di 55 caratteri saranno scartate.&lt;/p&gt;
+
+
+&lt;h4&gt;&lt;a name=&quot;wkt&quot;&gt;Come vengono interpretati i costrutti WKT&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;
+I layer a testo delimitato riconoscono i seguenti tipi
+&lt;a href=&quot;http://en.wikipedia.org/wiki/Well-known_text&quot;&gt;well known
+text&lt;/a&gt;  - &lt;tt&gt;POINT&lt;/tt&gt;, &lt;tt&gt;MULTIPOINT&lt;/tt&gt;, &lt;tt&gt;LINESTRING&lt;/tt&gt;,
+&lt;tt&gt;MULTILINESTRING&lt;/tt&gt;, &lt;tt&gt;POLYGON&lt;/tt&gt;, and &lt;tt&gt;MULTIPOLYGON&lt;/tt&gt;.
+Saranno accettate geometrie con coordinata Z (ad es.
+&lt;tt&gt;POINT&amp;nbsp;Z&lt;/tt&gt;), con misura (&lt;tt&gt;POINT&amp;nbsp;M&lt;/tt&gt;), o con
+entrambe (&lt;tt&gt;POINT&amp;nbsp;ZM&lt;/tt&gt;). &lt;/p&gt;
+&lt;p&gt;
+Si pu&amp;ograve; anche usare la variante PostGIS EWKT nella quale la
+geometria &amp;egrave; preceduta dall&apos;indicativo del sistema di riferimento
+spaziale (ad es. &lt;tt&gt;SRID=4326;POINT(175.3&amp;nbsp;41.2)&lt;/tt&gt;), e la
+variante usata da Informix nella quale il costrutto WKT &amp;egrave;
+preceduto da un identificativo intero del riferimento spaziale (ad es.
+&lt;tt&gt;1 POINT(175.3&amp;nbsp;41.2)&lt;/tt&gt;). In entrambi i casi il sistema di
+riferimento spaziale sar&amp;agrave; ignorato. &lt;/p&gt;
+
+
+
+&lt;h4&gt;&lt;a name=&quot;attributes&quot;&gt;Attributi in file a testo delimitato&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;
+Ogni riga del file a testo delimitato &amp;egrave; suddivisa in campi
+corrispondenti ad attributi del record. Normalmente i nomi degli
+attributi sono presi dalla prima riga del file.
+Se la riga non contiene i nomi degli attributi questi saranno chiamati
+in successione &lt;tt&gt;campo_1&lt;/tt&gt;, &lt;tt&gt;campo_2&lt;/tt&gt;, e cos&amp;igrave; via.
+Anche nel caso ci siano pi&amp;ugrave; campi di quelli definiti
+nell&apos;intestazione quelli successivi verranno chiamati &lt;tt&gt;campi_#&lt;/tt&gt;
+dove # &amp;egrave; il numero del campo (notare che i campi vuoti alla fine
+della riga sono ignorati). QGIS pu&amp;ograve; annullare i nomi contenuti
+nel file di testo se sono numeri o nomi del tipo &lt;tt&gt;campo_#&lt;/tt&gt;, o
+sono duplicati. &lt;/p&gt;
+&lt;p&gt;
+In aggiunta agli attributi espliciti definiti nel file dati, QGIS
+assegna un identificatore univoco corrispondente al numero di riga del
+record nel file sorgente.
+&lt;/p&gt;
+&lt;p&gt;
+Ogni attributo ha un tipo di dato, uno fra stringa (text), numero intero
+(integer) o reale (real).
+Il tipo di dato &amp;egrave; dedotto dal contenuto del campo - se ogni
+valore non vuoto &amp;egrave; un numero intero valido, il tipo sar&amp;agrave;
+intero, altrimenti se sono numeri reali allora il tipo sar&amp;agrave;
+reale, altrimenti il tipo sar&amp;agrave; testo. Notare che questo si basa
+sul contenuto dei campi - campi marcati non cambiano il modo di
+comportamento. &lt;/p&gt;
+
+
+&lt;h4&gt;&lt;a name=&quot;example&quot;&gt;Esempio di file di testo con punti di coordinate
+X,Y&lt;/a&gt;&lt;/h4&gt; &lt;pre&gt;
+X;Y;ELEV
+-300120;7689960;13
+-654360;7562040;52
+1640;7512840;3
+&lt;/pre&gt;
+&lt;p&gt;Questo file:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt; usa &lt;b&gt;;&lt;/b&gt; come delimitatore. Ogni carattere pu&amp;ograve; essere
+usato per delimitare i campi.&lt;/li&gt;
+&lt;li&gt;La prima riga &amp;egrave; la riga di intestazione. Essa contiene i
+nomi dei campi X, Y e ELEV&lt;/li&gt;
+&lt;li&gt;l&apos;ascissa &amp;egrave; contenuta nel campo X&lt;/li&gt;
+&lt;li&gt;l&apos;ordinata &amp;egrave; contenuta nel campo Y.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4&gt;&lt;a name=&quot;wkt_example&quot;&gt;Esempio di file di testo con geometrie
+WKT&lt;/a&gt;&lt;/h4&gt; &lt;pre&gt;
+id|wkt
+1|POINT(172.0702250 -43.6031036)
+2|POINT(172.0702250 -43.6031036)
+3|POINT(172.1543206 -43.5731302)
+4|POINT(171.9282585 -43.5493308)
+5|POINT(171.8827359 -43.5875983)
+&lt;/pre&gt;
+&lt;p&gt;Questo file:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;ha due campi definiti nella riga di intestazione: id e wkt.
+  &lt;li&gt;usa &lt;b&gt;|&lt;/b&gt; come delimitatore.&lt;/li&gt;
+  &lt;li&gt;specifica ogni punto usando il costrutto WKT
+&lt;/ul&gt;
+
+&lt;h4&gt;&lt;a name=&quot;python&quot;&gt;Uso di layer a testo delimitato in Python&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;Sorgenti di dati a testo delimitato possono essere creati in Python
+in modo simile agli altri layer vettoriali.
+La struttura &amp;egrave;:
+&lt;/p&gt;
+&lt;pre&gt;
+from PyQt4.QtCore import QUrl, QString
+from qgis.core import QgsVectorLayer, QgsMapLayerRegistry
+
+# Definisce la sorgente dei dati
+filename=&quot;test.csv&quot;
+uri=QUrl.fromLocalFile(filename)
+uri.addQueryItem(&quot;type&quot;,&quot;csv&quot;)
+uri.addQueryItem(&quot;delimiter&quot;,&quot;|&quot;)
+uri.addQueryItem(&quot;wktField&quot;,&quot;wkt&quot;)
+# ... altri parametri del testo delimitato
+layer=QgsVectorLayer(QString(uri.toEncoded()),&quot;Test CSV
+layer&quot;,&quot;delimitedtext&quot;)
+# Aggiunge il layer alla mappa
+if layer.isValid():
+    QgsMapLayerRegistry.instance().addMapLayer( layer )
+&lt;/pre&gt;
+&lt;p&gt;
+Si potrebbe usare per caricare il secondo esempio precedente.&lt;/p&gt;
+&lt;p&gt;
+La configurzione del layer a testo delimitato &amp;egrave; definita
+aggiungendo elementi di interrogazione all&apos;uri.
+Si possono aggiungere le seguenti opzioni:
+&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;&lt;tt&gt;encoding=..&lt;/tt&gt; definisce la codifica del file. Valore
+predefinito &amp;quot;UTF-8&amp;quot;&lt;/li&gt;
+    &lt;li&gt;&lt;tt&gt;type=(csv|regexp|whitespace)&lt;/tt&gt; definisce il tipo di
+delimitatore. Valori validi sono: csv, regexp, e spazio (che &amp;egrave;
+un caso speciale di espressione regolare).
+Il valore predefinito &amp;egrave; csv.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;delimiter=...&lt;/tt&gt; definisce i delimitatori da usare per
+i file formattati secondo csv, o formattati secondo regexp. Valore
+predefinito per i file csv &amp;egrave; &quot;,&quot; (virgola). Non ci sono valori
+predefiniti per i file regexp.&lt;/li&gt; &lt;li&gt;&lt;tt&gt;quote=..&lt;/tt&gt; (for csv
+files) definisce i caratteri usati come apici per marcare i campi.
+Valore predefinito &amp;egrave; &amp;quot;&lt;/li&gt; &lt;li&gt;&lt;tt&gt;escape=..&lt;/tt&gt; (per
+file csv) definisce i caratteri usati per annullare il significato
+speciale del carattere successivo. Valore predefinito &amp;egrave;
+&amp;quot;&lt;/li&gt; &lt;li&gt;&lt;tt&gt;skipLines=#&lt;/tt&gt; definisce il numero di righe da
+scartare all&apos;inizio del file. Valore predefinito &amp;egrave; 0.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;useHeader=(yes|no)&lt;/tt&gt; definisce se la prima riga
+contiene i nomi dei campi. Valore predefinito &amp;egrave; s&amp;igrave;.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;trimFields=(yes|no)&lt;/tt&gt; definisce se eliminare gli
+spazi all&apos;inizio e fine dai campi non marcati. Valore predefinito
+&amp;egrave; no.&lt;/li&gt; &lt;li&gt;&lt;tt&gt;maxFields=#&lt;/tt&gt; definisce il numero massimo
+di campi da caricare dal file. Gli ulteriori campi di ogni record
+saranno scartati. Valore predefinito &amp;egrave; 0 - include tutti i campi.
+(Questa opzione non &amp;egrave; disponibile nella finestra di dialogo dei
+layer a testo delimitato).&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;skipEmptyFields=(yes|no)&lt;/tt&gt; definisce se scartare i
+campi (non marcati) vuoti (si aplica dopo la pulizia degli spazi a
+inizio e fine). Valore predefinito &amp;egrave; no.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;decimalPoint=.&lt;/tt&gt; specifica un carattere alternativo
+da usare come punto decimale nei campi numerici. Valore predefinito
+&amp;egrave; &quot;.&quot; (punto).&lt;/li&gt; &lt;li&gt;&lt;tt&gt;wktField=fieldname&lt;/tt&gt; specifica il
+nome o il numero (partendo da 1) del campo che contiene la definizione
+della geometria &quot;well known text&quot;&lt;/li&gt; &lt;li&gt;&lt;tt&gt;xField=fieldname&lt;/tt&gt;
+specifica il nome o il numero (partendo da 1) del campo che contiene
+l&apos;ascissa (only applies if wktField is not defined)&lt;/li&gt;
+&lt;li&gt;&lt;tt&gt;yField=fieldname&lt;/tt&gt; specifica il nome o il numero (partendo
+da 1) del campo che contiene l&apos;ordinata (only applies if wktField is
+not defined)&lt;/li&gt; &lt;li&gt;&lt;tt&gt;geomType=(auto|point|line|polygon|none)&lt;/tt&gt;
+specifica il tipo di geometria per i campi wkt o nessuno (none) per i
+file di soli attributi. Valore predefinito &amp;egrave;  auto.&lt;/li&gt;
+&lt;li&gt;&lt;tt&gt;subset=expression&lt;/tt&gt; specifica un&apos;espressione da usare per
+identificare un sottoinsieme dei record da caricare.&lt;/li&gt;
+&lt;li&gt;&lt;tt&gt;crs=...&lt;/tt&gt; specifica il sistema di coordinate da usare per il
+layer vettoriale, in un formato compatibile con
+QgsCoordinateReferenceSystem.createFromString (ad esempio
+&amp;quot;EPSG:4167&amp;quot;). Se non si specifica questo valore,
+apparir&amp;agrave; una finestra di dialogo per richiederlo all&apos;utente al
+momento del caricamento del layer (a seconda della configurazione di
+QGIS).&lt;/li&gt; &lt;li&gt;&lt;tt&gt;subsetIndex=(yes|no)&lt;/tt&gt; specifica se il fornitore
+deve costruire un indice del sottoinsieme durante la scansione iniziale
+del file. The index will apply both for explicitly defined subsets, and
+for the implicit subset of features for which the geometry definition
+is valid. By default the subset index is built if it is
+applicable.&lt;/li&gt; &lt;li&gt;&lt;tt&gt;spatialIndex=(yes|no)&lt;/tt&gt; specifica se il
+fornitore deve costruire un indice spaziale durante la scansione del
+file. Valore predefinito &amp;egrave; no. &lt;/li&gt;
+&lt;li&gt;&lt;tt&gt;watchFile=(yes|no)&lt;/tt&gt; specifica se il fornitore deve usare un
+sistema di controllo per monitorare i cambiamenti al file.&lt;/li&gt;
+&lt;li&gt;&lt;tt&gt;quiet=(yes|no)&lt;/tt&gt; specifica se gli errori riscontrati durante
+il caricamento del layer devono essere visualizzati in una finestra di
+dialogo (essi saranno comunque registrati nel log di QGIS). Valore
+predefinito &amp;egrave; no. Questa opzione non &amp;egrave; disponibile dalla
+interfaccia grafica (GUI)&lt;/li&gt; &lt;/ul&gt;</translation>
     </message>
     <message>
         <location filename="../src/core/qgscontexthelp_texts.cpp" line="1457"/>
@@ -66025,7 +66491,34 @@ Pressing the &lt;label&gt;Calculate&lt;/label&gt; button will run the shortest p
 &lt;h5&gt;Note&lt;/h5&gt;
 &lt;p&gt;In order to bind the start and stop points of the route to the road network Road graph selects the nearest point or arc of the graph. In fact it can bind to any part of the road network. Nevertheless, their route and its characteristics do not take into account the distance from the starting point to the road network and of the road network to the stopping point.&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Ricerca del percorso pi&amp;ugrave; breve&lt;/h3&gt;
+&lt;p&gt;Il Plugin grafo stradale &amp;egrave; un plugin C++ per QGIS, che 
+calcola il percorso pi&amp;ugrave; breve fra due punti di qualsiasi layer
+di tipo linea e lo visualizza sulla rete stradale. Prima di usarlo il 
+plugin va configurato. Lo si pu&amp;ograve; fare nel menu &lt;label&gt;Plugins 
+&amp;rarr; Plugin grafo strade &amp;rarr; Configurazione&lt;/label&gt;&lt;/p&gt; &lt;p&gt;
+&lt;a href=&quot;#howto&quot;&gt;Guida&lt;/a&gt;&lt;br/&gt;
+&lt;/p&gt;
+
+&lt;a name=&quot;howto&quot;&gt;
+&lt;h4&gt;Guida&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p&gt;Potete scegliere il punto di partenza e di arrivo con gli appositi 
+pulsanti. Premendo il pulsante &lt;label&gt;Calcola&lt;/label&gt; verr&amp;agrave;
+avviato il calcolo del percorso usando i criteri di ottimizzazione 
+impostati nel casella a discesa &lt;label&gt;Criterio&lt;/label&gt;. Il pulsante 
+&lt;label&gt;Esporta&lt;/label&gt; consente di esportare il percorso calcolato in 
+un nuovo layer vettoriale e il pulsante &lt;label&gt;Cancella&lt;/label&gt;
+pulir&amp;agrave; ogni campo e rimuover&amp;agrave; i punti ed i percorsi dalla 
+mappa. &lt;/p&gt;
+
+&lt;h5&gt;Note&lt;/h5&gt;
+&lt;p&gt;Per poter collegare i punto di partenza ed arrivo del percorso alla 
+rete stradale il plugin seleziona i vertici o archi del grafo 
+pi&amp;ugrave; vicini. In realt&amp;agrave; pu&amp;ograve; collegare ogni parte 
+della rete stradale. Ci&amp;ograve; nonostante il percorso e le sue 
+caratteristiche non comprenderanno la distanza dal punto di partenza al 
+grafo stradale e da questo al punto di arrivo. &lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/core/qgscontexthelp_texts.cpp" line="433"/>
@@ -66197,7 +66690,199 @@ that will be automatically deleted after running.&lt;/li&gt;
 	from the close button. This allows you to save the geometry to be restored to the next start.
 &lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;style&gt;
+	#toolbarConsole td{
+		background: #f6f6f6;
+	}
+&lt;/style&gt;
+&lt;h3&gt;Console Python&lt;/h3&gt;
+&lt;a href=&quot;#console&quot;&gt;Console&lt;/a&gt;&lt;br&gt;
+&lt;a href=&quot;#editor&quot;&gt;Editor&lt;/a&gt;&lt;br&gt;
+&lt;a href=&quot;#settings&quot;&gt;Configurazione&lt;/a&gt;&lt;br&gt;&lt;br&gt;
+&lt;table&gt;
+	&lt;tr&gt;
+		&lt;td&gt;
+			&lt;p align=&apos;justify&apos;&gt;
+				La Console python di QGIS &amp;egrave; una
+shell interattiva per la esecuzione di comandi python.
+Essa ha anche un editor di file python che consente di modificare e 
+salvare i vostri programmi python.
+Sia la console che l&apos;editor sono basati sul pacchetto PyQScintilla2.&lt;br&gt;
+La console &amp;egrave; suddivisa in due pannelli, entrambi 
+ridimensionabili usando il separatore orizzontale. Il pannello di 
+restituzione dei risultati &amp;egrave; un elemento di sola lettura. Potete
+usare il drag &amp; drop e il copy &amp; paste per trasferire il testo 
+nell&apos;area di immissione ed eseguire porzioni di codice selezionandolo
+nel pannello di uscita e premendo il comando &lt;label&gt;Inserisci il 
+selezionato&lt;/label&gt; dal menu contestuale. Nessun problema se il testo
+selezionato contiene il prompt (&gt;&gt;&gt;,...) dell&apos;interprete. Il pannello 
+di inserimento rappresenta la shel interattiva per i comandi. &lt;br&gt; Per
+accedere all&apos;editor di file python usate il pulsante &lt;label&gt;Mostra
+editor&lt;/label&gt; dalla barra degli strumenti. L&apos;editor consente di 
+modificare e salvare file python e fornisce le funzioni di base per 
+gestire il vostro codice (commentare e decommentare il codice,
+controllo sintattico, condivisione del codice per mezzo di codepad.org 
+e molto altro). &lt;/p&gt; &lt;/td&gt;
+	&lt;/tr&gt;
+&lt;/table&gt;
+&lt;a name=&quot;console&quot;&gt;
+&lt;h4&gt;Console&lt;/h4&gt;
+&lt;/a&gt;
+&lt;b&gt;&lt;i&gt;Funzioni principali:&lt;/i&gt;&lt;/b&gt;
+&lt;table&gt;
+	&lt;tr&gt;
+		&lt;td&gt;
+			&lt;ul&gt;
+			&lt;li&gt;Completamento del codice, evidenzia la
+sintassi e calltips per le seguenti API:
+				&lt;ol&gt;
+				&lt;li&gt;Python&lt;/li&gt;
+				&lt;li&gt;PyQGIS&lt;/li&gt;
+				&lt;li&gt;PyQt4&lt;/li&gt;
+				&lt;li&gt;QScintilla2&lt;/li&gt;
+				&lt;li&gt;osgeo-gdal-ogr&lt;/li&gt;
+				&lt;/ol&gt;
+			&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;&lt;label&gt;Ctrl+Alt+Space&lt;/label&gt; per vedere la
+lista di auto-completamento.&lt;/li&gt; &lt;br&gt;
+			&lt;li&gt;&lt;label&gt;Ctrl+Shift+Space&lt;/label&gt; per vedere
+lo storico dei comandi.&lt;/li&gt; &lt;br&gt;
+         &lt;li&gt;Esegue porzioni di codice con il comando &lt;label&gt;Inserisci
+il selezionato&lt;/label&gt; dal pannello di uscita.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Apre la documentazione delle API di QGIS
+inserendo da tastiera &lt;label&gt;_api&lt;/label&gt;.&lt;/li&gt; &lt;br&gt;
+			&lt;li&gt;Apre il PyQGIS Cookbook inserendo
+&lt;label&gt;_pyqgis&lt;/label&gt;.&lt;/li&gt; &lt;br&gt;
+			&lt;li&gt;Salva ed elimina lo storico dei comandi per
+mezzo del menu contestuale del pannello di immissione.
+			Lo storico sar&amp;agrave; salvato nel file
+~/.qgis2/console_history.txt&lt;/li&gt; &lt;br&gt;
+			&lt;/ul&gt;
+		&lt;/td&gt;
+		&lt;td&gt;&lt;img
+src=&quot;qrc:/images/themes/default/console/consoleHelp.png&quot; /&gt;&lt;/td&gt; &lt;/tr&gt;
+&lt;/table&gt;
+&lt;b&gt;&lt;i&gt;Barra degli strumenti:&lt;/i&gt;&lt;/b&gt;
+	&lt;table width=&quot;100%&quot; id=&apos;toolbarConsole&apos;&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img
+src=&quot;qrc:/images/themes/default/console/iconClearConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Cancella la console python&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img
+src=&quot;qrc:/images/themes/default/console/iconClassConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img
+src=&quot;qrc:/images/themes/default/console/iconProcessingConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;Importa la classe Processing&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img
+src=&quot;qrc:/images/themes/default/console/iconQtCoreConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;Importa la classe PyQt4.QtCore&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img
+src=&quot;qrc:/images/themes/default/console/iconQtGuiConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;Strumento per importare la classe
+PyQt4.QtGui&lt;/td&gt; &lt;/tr&gt;
+                &lt;tr&gt;
+			&lt;td&gt;&lt;img
+src=&quot;qrc:/images/themes/default/console/iconRunConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Comando di esecuzione (equivale
+alla pressione del tasto Enter)&lt;/td&gt; &lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img
+src=&quot;qrc:/images/themes/default/console/iconSettingsConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Configurazioni&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img
+src=&quot;qrc:/images/themes/default/console/iconHelpConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Help&lt;/td&gt;
+		&lt;/tr&gt;
+&lt;/table&gt;
+&lt;a name=&quot;editor&quot;&gt;
+&lt;h4&gt;Editor&lt;/h4&gt;
+&lt;/a&gt;
+&lt;b&gt;&lt;i&gt;Funzioni principali:&lt;/i&gt;&lt;/b&gt;
+&lt;table&gt;
+	&lt;tr&gt;
+		&lt;td&gt;
+			&lt;img
+src=&quot;qrc:/images/themes/default/console/editorHelp.png&quot; /&gt; &lt;img
+src=&quot;qrc:/images/themes/default/console/classBrowserHelp.png&quot; /&gt; &lt;/td&gt;
+		&lt;td&gt;
+			&lt;ul&gt;
+			&lt;li&gt;Completamento del codice, evidenzia la
+sintassi e calltips per le seguenti API:
+				&lt;ol&gt;
+				&lt;li&gt;Python&lt;/li&gt;
+				&lt;li&gt;PyQGIS&lt;/li&gt;
+				&lt;li&gt;PyQt4&lt;/li&gt;
+				&lt;li&gt;QScintilla2&lt;/li&gt;
+				&lt;li&gt;osgeo-gdal-ogr&lt;/li&gt;
+				&lt;/ol&gt;
+			&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;&lt;label&gt;Ctrl+Space&lt;/label&gt; per visualizzare
+la lista di auto-completion.&lt;/li&gt; &lt;br&gt;
+			&lt;li&gt;Condivisione del codice attraverso
+codepad.org.&lt;/li&gt; &lt;br&gt;
+			&lt;li&gt;&lt;label&gt;Ctrl+4&lt;/label&gt; Controllo
+sintattico.&lt;/li&gt; &lt;br&gt;
+			&lt;li&gt;Ispettore degli oggetti: un visualizzatore
+di classi e funzioni.&lt;/li&gt; &lt;br&gt;
+			&lt;li&gt;Salta alla definizine di un oggetto con la
+pressione del mouse. (dall&apos;ispettore degli oggetti)&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Esegue porzioni di codice con il comando
+&lt;label&gt;Inserisci il selezionato&lt;/label&gt;.&lt;/li&gt; &lt;br&gt;
+			&lt;li&gt;Esegue l&apos;intero programma con il comando
+&lt;label&gt;Esegui comando&lt;/label&gt; (questo crea un file precompilato con
+l&apos;estensione .pyc)&lt;/li&gt; &lt;br&gt;
+			&lt;/ul&gt;
+		&lt;/td&gt;
+	&lt;/tr&gt;
+&lt;/table&gt;
+&lt;a name=&quot;settings&quot;&gt;
+&lt;h4&gt;Configurazione&lt;/h4&gt;
+&lt;/a&gt;
+&lt;b&gt;&lt;i&gt;Ulteriore configurazione della console python:&lt;/i&gt;&lt;/b&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;label&gt;Autocompletamento:&lt;/label&gt; Se attivato l&apos;auto-completamento
+&amp;egrave; abilitato. Potete usufruire dell&apos;auto-completamento dal vostro
+documento corrente, dalle API installate e da entrambe&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Soglia di autocompletamento:&lt;/label&gt; Imposta la soglia per
+visualizzare la lista di autocompletamento (caratteri digitati)&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Inserimento automatico delle parentesi:&lt;/label&gt; Se attivato
+forza la chiusura automatica delle parentesi&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Auto-salvataggio dei programmi prima
+dell&apos;esecuzione:&lt;/label&gt; Vi consente di salvare automaticamente i 
+programmi da eseguire in modo da evitare il salvataggio dopo ogni 
+modifica. Questa opzione memorizzer&amp;agrave; su un file temporaneo 
+all&apos;interno della cartella temporanea di sistema che sar&amp;agrave;
+automaticamente eliminato dopo l&apos;esecuzione.&lt;/li&gt; &lt;br&gt; 
+&lt;li&gt;&lt;label&gt;Uso delle API precaricate:&lt;/label&gt; Potete scegliare se usare 
+le API precaricate o se caricare qualche file di API salvato nel vostro 
+sistema.&lt;/li&gt; &lt;br&gt;
+&lt;li&gt;&lt;label&gt;Uso delle API preparate:&lt;/label&gt; Se attivato verr&amp;agrave;
+usato il file *.pap per l&apos;auto-completamento. Per creare un file di API 
+dovete caricare almeno un file *.api e compilarlo premendo il pulsante 
+&lt;label&gt;Compile Apis...&lt;/label&gt;.&lt;/li&gt; &lt;/ul&gt;
+&lt;p style=&apos;border: 1px solid; background:#f6f6f6;&apos; align=&apos;justify&apos;&gt;
+	&lt;b&gt;Note:&lt;/b&gt;Per salvare lo stato della console dovete prima
+chiuderla con l&apos;apposito pulsante.
+Questo consente di salvare la geometria da richiamare al prossimo avvio.
+&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgscontexthelp_texts.cpp" line="1469"/>
@@ -67547,7 +68232,23 @@ b &amp;rarr; geometry
 &lt;pre&gt;bbox( geomFromWKT( &apos;POINT(4 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; )) &amp;rarr; returns 1&lt;/pre&gt;
 &lt;pre&gt;bbox( geomFromWKT( &apos;POINT(6 5)&apos; ) , geomFromWKT( &apos;POLYGON((3 3 , 4 4 , 5 5, 3 3))&apos; )) &amp;rarr; returns 0&lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funzione di Bounding box&lt;/h3&gt;
+Restituisce 1 se le geometrie intersecano il bounding box definito e 0 
+in caso contrario.
+
+&lt;h4&gt;Sintassi&lt;/h4&gt;
+&lt;pre&gt;bbox( a, b )&lt;/pre&gt;
+
+&lt;h4&gt;Argomenti&lt;/h4&gt;
+a &amp;rarr; geometria
+b &amp;rarr; geometria
+
+&lt;h4&gt;Esempi&lt;/h4&gt;
+&lt;pre&gt;bbox( geomFromWKT( &apos;POINT(4 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 ,
+4 4 , 5 5)&apos; )) &amp;rarr; returns 1&lt;/pre&gt;
+&lt;pre&gt;bbox( geomFromWKT( &apos;POINT(6 5)&apos; ) , geomFromWKT( &apos;POLYGON((3 3 , 4
+4 , 5 5, 3 3))&apos; )) &amp;rarr; returns 0&lt;/pre&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1512"/>
