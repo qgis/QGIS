@@ -11711,7 +11711,7 @@ Erro(%2): %3</translation>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="526"/>
         <source>By default, BNA files are created in multi-line format. For each record, the first line contains the identifiers and the type/number of coordinates to follow. Each following line contains a pair of coordinates.</source>
-        <translation type="unfinished"></translation>
+        <translation>Por padrão, arquivos BNA são criados no formato multi-linha. Para cada registro, a primeira linha contém os identificadores e o tipo/número das coordenadas para seguir. As linhas seguintes contém um par de coordenadas.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1676"/>
@@ -11767,62 +11767,62 @@ Erro(%2): %3</translation>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="515"/>
         <source>New BNA files are created by the systems default line termination conventions. This may be overridden here.</source>
-        <translation type="unfinished"></translation>
+        <translation>Os novos arquivos BNA são criados seguindo o padrão do sistema de terminação de linha. Isto pode ser substituído aqui. </translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="534"/>
         <source>BNA records may contain from 2 to 4 identifiers per record. Some software packages only support a precise number of identifiers. You can override the default value (2) by a precise value</source>
-        <translation type="unfinished"></translation>
+        <translation>Registros BNA podem conter de 2 a 4 identificadores por registro. Algumas ferramentas apenas suportam um número preciso de identificadores. Você pode substituir os valores padrão (2) por um valor preciso.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="546"/>
         <source>The BNA writer will try to recognize ellipses and circles when writing a polygon. This will only work if the feature has previously been read from a BNA file. As some software packages do not support ellipses/circles in BNA data file, it may be useful to tell the writer by specifying ELLIPSES_AS_ELLIPSES=NO not to export them as such, but keep them as polygons.</source>
-        <translation type="unfinished"></translation>
+        <translation>O registrador BNA tenta reconhecer elipses e círculos quando escreve um polígono. Isto apenas ocorre quando uma feição foi previamente lida de um arquivo BNA. Como algumas ferramentas não suportam elipses/círculos em arquivos BNA, pode ser útil especificar ELLIPSES_AS_ELLIPSES=NO para não exportar-las dessa maneira, mas as mantenha como polígonos.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="555"/>
         <source>Limit the number of coordinate pairs per line in multiline format.</source>
-        <translation type="unfinished"></translation>
+        <translation>Limitar o número de pares de coordenadas por linha no formato de multilinha.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="560"/>
         <source>Set the number of decimal for coordinates. Default value is 10.</source>
-        <translation type="unfinished"></translation>
+        <translation>Defina a quantidade de coordenadas decimais. O valor padrão é 10.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="580"/>
         <source>By default when creating new .csv files they are created with the line termination conventions of the local platform (CR/LF on win32 or LF on all other systems). This may be overridden through use of the LINEFORMAT option.</source>
-        <translation type="unfinished"></translation>
+        <translation>Por padrão quando se cria um novo arquivo .csv este é criado com uma conveção de finalização de linha da plataforma local (CR/LF no Windows ou LF nos outros sistemas). Isto poder ser substituído através de uma opção LINEFORMAT.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="592"/>
         <source>By default, the geometry of a feature written to a .csv file is discarded. It is possible to export the geometry in its WKT representation by specifying GEOMETRY=AS_WKT. It is also possible to export point geometries into their X,Y,Z components by specifying GEOMETRY=AS_XYZ, GEOMETRY=AS_XY or GEOMETRY=AS_YX.</source>
-        <translation type="unfinished"></translation>
+        <translation>Por padrão, a geometria de uma feição escrita em um arquivo .csv é descartada. É possível exportar a geometria na sua representação WKT ao especificar GEOMETRY=AS_WKT. Também é possível exportar pontos em suas componentes X, Y, Z ao especificar GEOMETRY=AS_XYZ, GEOMETRY=AS_XY ou GEOMETRY=AS_YX.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="607"/>
         <source>Create the associated .csvt file to describe the type of each column of the layer and its optional width and precision.</source>
-        <translation type="unfinished"></translation>
+        <translation>Crie o arquivo .csvt associado para descrever o tipo de cada coluna da camada e suas largura e altura opcionais.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="613"/>
         <source>Field separator character. Default value : COMMA</source>
-        <translation type="unfinished"></translation>
+        <translation>Caracter separador de campos. O valor padrão é: VÍRGULA</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="622"/>
         <source>Write a UTF-8 Byte Order Mark (BOM) at the start of the file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Escreva um caracter UTF-* Byte OrdeR Mark (BOM) no início do arquivo.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="642"/>
         <source>Override the type of shapefile created. Can be one of NULL for a simple .dbf file with no .shp file, POINT, ARC, POLYGON or MULTIPOINT for 2D, or POINTZ, ARCZ, POLYGONZ or MULTIPOINTZ for 3D. Shapefiles with measure values are not supported, nor are MULTIPATCH files.</source>
-        <translation type="unfinished"></translation>
+        <translation>Substitua o tipo de shapefile criado. Pode ser um de NULL para um arquivo .dbf simples sem um arquivo .shp, POINT, ARC, POLYGON ou MULTIPOINTO para 2D, ou POINTZ, ARCZ, POLYGONZ ou MULTIPOINTZ para 3D. Shapefiles com valores de medida não são suportado, nem são arquivo MULTIPATCH.    </translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="661"/>
         <source>set the encoding value in the DBF file. The default value is LDID/87. It is not clear what other values may be appropriate.</source>
-        <translation type="unfinished"></translation>
+        <translation>defina o valor de codificação no arquivo DBF. O valor padrão é LDID/87. Não esta claro quais outros valores são apropriados.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="670"/>
@@ -11837,12 +11837,12 @@ Erro(%2): %3</translation>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="720"/>
         <source>Set to YES to write a bbox property with the bounding box of the geometries at the feature and feature collection level.</source>
-        <translation type="unfinished"></translation>
+        <translation>Defina para SIM para escrever uma propriedade da bbox com a caixa delimitadora para geometrias em feições e coleções de feições.  </translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="726"/>
         <source>Maximum number of figures after decimal separator to write in coordinates. Default to 15. Truncation will occur to remove trailing zeros.</source>
-        <translation type="unfinished"></translation>
+        <translation>Número máximo de figuras após o separador decimal para escrever nas coordenadas. O padrão é 15. Trucagens ocorrerão para remover os zeros a direita.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="734"/>
@@ -11859,52 +11859,52 @@ Erro(%2): %3</translation>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="756"/>
         <source>The encoding of location information. Default value : SIMPLE. W3C_GEO only supports point geometries. SIMPLE or W3C_GEO only support geometries in geographic WGS84 coordinates.</source>
-        <translation type="unfinished"></translation>
+        <translation>A codificação da informação de localização. Valor padrão : SIMPLE. W3C_GEO apenas suporta pontos. SIMPLE or W3C_GEO apenas suporta geometrias em coordenadas geográficas WGS84.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="767"/>
         <source>If defined to YES, extension fields  will be written. If the field name not found in the base schema matches the foo_bar pattern, foo will be considered as the namespace of the element, and a &lt;foo:bar&gt; element will be written. Otherwise, elements will be written in the &lt;ogr:&gt; namespace.</source>
-        <translation type="unfinished"></translation>
+        <translation>Caso esteja definido como SIM, campos de extensão serão escritos. Se o nome do campo não for encontrado no esquema base o padrão foo_bar, foo será considerado como o namespace do elemento, e o elemento &lt;foo:bar&gt;  será escrito. De outra forma, elementos serão escritos no namespace &lt;ogr:&gt;  </translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="776"/>
         <source>If defined to NO, only &lt;entry&gt; or &lt;item&gt; elements will be written. The user will have to provide the appropriate header and footer of the document.</source>
-        <translation type="unfinished"></translation>
+        <translation>Se definido como NÃO, apenas os elementos &lt;entry&gt; ou &lt;item&gt; serão escritos. O usuário terá que fornecer o cabeçalho apropriado e o rodapé do documento. </translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="782"/>
         <source>XML content that will be put between the &lt;channel&gt; element and the first &lt;item&gt; element for a RSS document, or between the xml tag and the first &lt;entry&gt; element for an Atom document. </source>
-        <translation type="unfinished"></translation>
+        <translation>O conteúdo XML que será colocado entre o elemento &lt;channel&gt; e o primeiro elemento &lt;item&gt; para um documento RSS ou entre o marcador xml e o primeiro elemento &lt;entry&gt; para um documento Atom.  </translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="789"/>
         <source>Value put inside the &lt;title&gt; element in the header. If not provided, a dummy value will be used as that element is compulsory.</source>
-        <translation type="unfinished"></translation>
+        <translation>Valor colocado dentro do elemento &lt;title&gt; no cabeçalho. Se não for fornecido, um valor qualquer será utilizado dado que este elemento é obrigatório.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="795"/>
         <source>Value put inside the &lt;description&gt; element in the header. If not provided, a dummy value will be used as that element is compulsory.</source>
-        <translation type="unfinished"></translation>
+        <translation>Valor colocado dentro do elemento &lt;description&gt; no cabeçalho. Se não for fornecido, um valor qualquer será utilizado dado que este elemento é obrigatório.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="801"/>
         <source>Value put inside the &lt;link&gt; element in the header. If not provided, a dummy value will be used as that element is compulsory.</source>
-        <translation type="unfinished"></translation>
+        <translation>Valor colocado dentro do elemento &lt;link&gt; no cabeçalho. Se não for fornecido, um valor qualquer será utilizado dado que este elemento é obrigatório.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="807"/>
         <source>Value put inside the &lt;updated&gt; element in the header. Should be formatted as a XML datetime. If not provided, a dummy value will be used as that element is compulsory.</source>
-        <translation type="unfinished"></translation>
+        <translation>Valor colocado dentro do elemento &lt;updated&gt; no cabeçalho. Deve ser formatado como um elemento XML datetime. Se não for fornecido, um valor qualquer será utilizado dado que este elemento é obrigatório.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="814"/>
         <source>Value put inside the &lt;author&gt;&lt;name&gt; element in the header. If not provided, a dummy value will be used as that element is compulsory.</source>
-        <translation type="unfinished"></translation>
+        <translation>Valor colocado dentro do elemento &lt;author&gt;&lt;name&gt; no cabeçalho. Se não for fornecido, um valor qualquer será utilizado dado que este elemento é obrigatório.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="820"/>
         <source>Value put inside the &lt;id&gt; element in the header. If not provided, a dummy value will be used as that element is compulsory.</source>
-        <translation type="unfinished"></translation>
+        <translation>Valor colocado dentro do elemento &lt;id&gt; no cabeçalho. Se não for fornecido, um valor qualquer será utilizado dado que este elemento é obrigatório.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="828"/>
@@ -11916,27 +11916,27 @@ Erro(%2): %3</translation>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="841"/>
         <source>If provided, this URI will be inserted as the schema location. Note that the schema file isn&apos;t actually accessed by OGR, so it is up to the user to ensure it will match the schema of the OGR produced GML data file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Se fornecido, esta URI será inserida como o local do esquema. Note-se que o arquivo do esquema não é acessado pelo OGR, então é dever do usuário garantir que este corresponda ao esquema do OGR produzido pelo arquivo de dados GML. </translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="849"/>
         <source>This writes a GML application schema file to a corresponding .xsd file (with the same basename). If INTERNAL is used the schema is written within the GML file, but this is experimental and almost certainly not valid XML. OFF disables schema generation (and is implicit if XSISCHEMAURI is used).</source>
-        <translation type="unfinished"></translation>
+        <translation>Este escreve um arquivo de esquema GML correspondente a um arquivo .xsd (com o mesmo nome de base). Se INTERNO for utilizado o esquema é escrito dentro do arquivo GML, porém isto é experimental e quase certamente não é um XML válido. OFF desabilita a geração do esquema (e é implícito se XSISCHEMAURI for utilizado). </translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="862"/>
         <source>This is the prefix for the application target namespace.</source>
-        <translation type="unfinished"></translation>
+        <translation>Este é o prefixo para o namespace destino da aplicação.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="867"/>
         <source>Can be set to TRUE to avoid writing the prefix of the application target namespace in the GML file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pode ser definido como TRUE para evitar a escrita do prefixo do namespace destino da aplicação no arquivo GML.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="873"/>
         <source>Defaults to &apos;http://ogr.maptools.org/&apos;. This is the application target namespace.</source>
-        <translation type="unfinished"></translation>
+        <translation>O padrão é &apos;http://ogr.maptools.org/&apos;. Este é o namespace destino da aplicação.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="879"/>
@@ -11956,7 +11956,7 @@ Erro(%2): %3</translation>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="908"/>
         <source>Default to YES. If YES, the output will be indented with spaces for more readability, but at the expense of file size.</source>
-        <translation type="unfinished"></translation>
+        <translation>Padrão para &apos;YES&apos;. Se &apos;YES&apos;, a saída será identada com espaços para melhor legibilidade, porém a custa do tamanho do arquivo.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="917"/>
@@ -12012,12 +12012,12 @@ Erro(%2): %3</translation>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1038"/>
         <source>Allows you to specify the field to use for the KML &lt;name&gt; element. </source>
-        <translation type="unfinished"></translation>
+        <translation>Permite que você especifique o campo para o uso do elemento KML &lt;name&gt;.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1043"/>
         <source>Allows you to specify the field to use for the KML &lt;description&gt; element.</source>
-        <translation type="unfinished"></translation>
+        <translation>Permite que você especifique o campo para o uso do elemento KML &lt;description&gt;.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1048"/>
@@ -12221,7 +12221,7 @@ Erro(%2): %3</translation>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1850"/>
         <source>Cannot overwrite a OGR layer in place</source>
-        <translation type="unfinished"></translation>
+        <translation>Não é possível sobrescrever a camada OGR no lugar</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="2451"/>
@@ -12450,22 +12450,22 @@ Apenas %1 de %2 feições escritas.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="9762"/>
         <source>minidump written to %1</source>
-        <translation type="unfinished">minidump escrito para %1</translation>
+        <translation>minidump escrito para %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="9766"/>
         <source>writing of minidump to %1 failed (%2)</source>
-        <translation type="unfinished">escrevendo minidump para %1 (%2)</translation>
+        <translation>escrever minidump para %1 falhou (%2)</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="9773"/>
         <source>creation of minidump to %1 failed (%2)</source>
-        <translation type="unfinished">criação de minidump para %1 falhou (%2)</translation>
+        <translation>criação de minidump para %1 falhou (%2)</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="9776"/>
         <source>Crash dumped</source>
-        <translation type="unfinished">Colisão &apos;dumped&apos;</translation>
+        <translation>O problema foi salvo</translation>
     </message>
     <message>
         <location filename="../src/app/main.cpp" line="599"/>
@@ -12522,7 +12522,7 @@ Você está vendo esta mensagem provavelmente porque você não tem MOSTRADA nen
     <message>
         <location filename="../src/core/symbology-ng/qgssymbollayerv2registry.cpp" line="45"/>
         <source>Gradient fill</source>
-        <translation type="unfinished"></translation>
+        <translation>Preenchimento de gradiente</translation>
     </message>
     <message>
         <location filename="../src/core/symbology-ng/qgssymbollayerv2registry.cpp" line="47"/>
@@ -12771,7 +12771,7 @@ Você está vendo esta mensagem provavelmente porque você não tem MOSTRADA nen
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2137"/>
         <source>field %1 with unsupported type %2 skipped</source>
-        <translation type="unfinished">campo %1 com tipo não suportado %2 evitado</translation>
+        <translation>campo %1 com tipo não suportado %2 evitado</translation>
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2143"/>
@@ -13816,42 +13816,42 @@ SQL: %1</translation>
     <message>
         <location filename="../src/core/symbology-ng/qgsfillsymbollayerv2.cpp" line="481"/>
         <source>linear</source>
-        <translation type="unfinished"></translation>
+        <translation>linear</translation>
     </message>
     <message>
         <location filename="../src/core/symbology-ng/qgsfillsymbollayerv2.cpp" line="485"/>
         <source>radial</source>
-        <translation type="unfinished"></translation>
+        <translation>radial</translation>
     </message>
     <message>
         <location filename="../src/core/symbology-ng/qgsfillsymbollayerv2.cpp" line="489"/>
         <source>conical</source>
-        <translation type="unfinished"></translation>
+        <translation>conical</translation>
     </message>
     <message>
         <location filename="../src/core/symbology-ng/qgsfillsymbollayerv2.cpp" line="506"/>
         <source>feature</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/core/symbology-ng/qgsfillsymbollayerv2.cpp" line="510"/>
         <source>viewport</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/core/symbology-ng/qgsfillsymbollayerv2.cpp" line="527"/>
         <source>pad</source>
-        <translation type="unfinished"></translation>
+        <translation>pad</translation>
     </message>
     <message>
         <location filename="../src/core/symbology-ng/qgsfillsymbollayerv2.cpp" line="531"/>
         <source>repeat</source>
-        <translation type="unfinished"></translation>
+        <translation>repeat</translation>
     </message>
     <message>
         <location filename="../src/core/symbology-ng/qgsfillsymbollayerv2.cpp" line="535"/>
         <source>reflect</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -17744,7 +17744,7 @@ Caminho DB usuário:	%8
     <message>
         <location filename="../src/ui/qgsatlascompositionwidgetbase.ui" line="122"/>
         <source>Coverage layer </source>
-        <translation type="unfinished"></translation>
+        <translation>Camada de cobertura</translation>
     </message>
     <message>
         <source>Composer map</source>
@@ -18481,7 +18481,7 @@ Caminho DB usuário:	%8
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="475"/>
         <source>Filters the visible features according to the current filter selection and filter string.</source>
-        <translation type="unfinished">Filtra feições visíveis de acordo para a seleção de filtro atual e string de filtro.</translation>
+        <translation>Filtra feições visíveis de acordo para a seleção de filtro atual e string de filtro.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="478"/>
@@ -18536,7 +18536,7 @@ Caminho DB usuário:	%8
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="121"/>
         <source>Delete selected features (DEL)</source>
-        <translation type="unfinished"></translation>
+        <translation>Apagar feição selecionada (DEL)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="449"/>
@@ -18546,7 +18546,7 @@ Caminho DB usuário:	%8
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="503"/>
         <source>Form View</source>
-        <translation type="unfinished">Ver Formulário</translation>
+        <translation>Visualizar Formulário</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="586"/>
@@ -19213,7 +19213,7 @@ Erro foi:%2</translation>
     <message>
         <location filename="../src/gui/qgsblendmodecombobox.cpp" line="47"/>
         <source>Dodge</source>
-        <translation type="unfinished">Escapar</translation>
+        <translation>Escapar</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsblendmodecombobox.cpp" line="48"/>
