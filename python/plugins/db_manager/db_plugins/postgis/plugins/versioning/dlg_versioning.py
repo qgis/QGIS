@@ -199,7 +199,7 @@ $$
 SELECT %(cols)s FROM %(schematable)s WHERE
   ( SELECT CASE WHEN %(end)s IS NULL THEN (%(start)s <= $1) ELSE (%(start)s <= $1 AND %(end)s > $1) END );
 $$
-LANGUAGE 'SQL';
+LANGUAGE 'sql';
 
 CREATE OR REPLACE FUNCTION %(func_update)s()
 RETURNS TRIGGER AS
