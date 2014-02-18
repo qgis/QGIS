@@ -4006,7 +4006,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>No input files to process.</source>
-        <translation type="unfinished"></translation>
+        <translation>Geen invoerbestanden om te bewerken.</translation>
     </message>
 </context>
 <context>
@@ -11706,7 +11706,7 @@ Deze zal daarom niet actief worden gemaakt.</translation>
     </message>
     <message>
         <source>Should multipoint soundings be split into many single point sounding features. Multipoint geometries are not well handle by many formats, so it can be convenient to split single sounding features with many points into many single point features.</source>
-        <translation>Dienen meervoudige peilpunten gesplitst te worden over over enkelvoudige peilpunten. Veel formaten kunnen niet overweg met meervoudige puntgeometriëen, dus kan het handig zijn wanneer objecten die elke meerdere peilpunten bevat te splitsen over meerdere enkelvoudige peilpuntobjecten.</translation>
+        <translation type="obsolete">Dienen meervoudige peilpunten gesplitst te worden over over enkelvoudige peilpunten. Veel formaten kunnen niet overweg met meervoudige puntgeometriëen, dus kan het handig zijn wanneer objecten die elke meerdere peilpunten bevat te splitsen over meerdere enkelvoudige peilpuntobjecten.</translation>
     </message>
     <message>
         <source>Should a DEPTH attribute be added on SOUNDG features and assign the depth of the sounding. This should only be enabled with SPLIT_MULTIPOINT is also enabled.</source>
@@ -11830,7 +11830,11 @@ Deze zal daarom niet actief worden gemaakt.</translation>
     </message>
     <message>
         <source>By default, BNA files are created in multi-line format. For each record, the first line contains the identifiers and the type/number of coordinates to follow. Each following line contains a pair of coordinates.</source>
-        <translation type="unfinished">Standaard worden BNA bestanden aangemaakt in meervoudige regel formaat. Voor elk record bevat de eerste regel de identificaties gevolgd door het type/aantal coördinaten. De volgende regels bevatten een coördinatenpaar.</translation>
+        <translation>Standaard worden BNA bestanden aangemaakt in meervoudige regel formaat. Voor elk record bevat de eerste regel de identificaties gevolgd door het type/aantal coördinaten. De volgende regels bevatten een coördinatenpaar.</translation>
+    </message>
+    <message>
+        <source>Should multipoint soundings be split into many single point sounding features. Multipoint geometries are not well handled by many formats, so it can be convenient to split single sounding features with many points into many single point features.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -17336,7 +17340,7 @@ Probeer alstublieft een lagere resolutie of een kleiner papiergrootte</translati
     </message>
     <message>
         <source>Item properties</source>
-        <translation type="unfinished">Item-eigenschappen</translation>
+        <translation>Item-eigenschappen</translation>
     </message>
     <message>
         <source>Landscape</source>
@@ -18981,23 +18985,23 @@ Probeer alstublieft een lagere resolutie of een kleiner papiergrootte</translati
     </message>
     <message>
         <source>Auto update</source>
-        <translation type="unfinished"></translation>
+        <translation>Automatisch bijwerken</translation>
     </message>
     <message>
         <source>Title font...</source>
-        <translation type="unfinished"></translation>
+        <translation>Titel lettertype...</translation>
     </message>
     <message>
         <source>Subgroup font...</source>
-        <translation type="unfinished"></translation>
+        <translation>Subgroep lettertype...</translation>
     </message>
     <message>
         <source>Group font...</source>
-        <translation type="unfinished"></translation>
+        <translation>Groep Lettertype...</translation>
     </message>
     <message>
         <source>Item font...</source>
-        <translation type="unfinished"></translation>
+        <translation>Item lettertype...</translation>
     </message>
 </context>
 <context>
@@ -19640,7 +19644,7 @@ Probeer alstublieft een lagere resolutie of een kleiner papiergrootte</translati
     </message>
     <message>
         <source>Map rotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Kaartrotatie</translation>
     </message>
 </context>
 <context>
@@ -19817,7 +19821,7 @@ Probeer alstublieft een lagere resolutie of een kleiner papiergrootte</translati
     </message>
     <message>
         <source>Image rotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Rotatie afbeelding</translation>
     </message>
 </context>
 <context>
@@ -20396,11 +20400,11 @@ Probeer alstublieft een lagere resolutie of een kleiner papiergrootte</translati
     </message>
     <message>
         <source>Header font...</source>
-        <translation type="unfinished"></translation>
+        <translation>Kop lettertype...</translation>
     </message>
     <message>
         <source>Content font...</source>
-        <translation type="unfinished"></translation>
+        <translation>Inhoud lettertype...</translation>
     </message>
 </context>
 <context>
@@ -24378,7 +24382,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Recent (%1)</source>
-        <translation type="unfinished">Recent (%1)</translation>
+        <translation>Recent (%1)</translation>
     </message>
 </context>
 <context>
@@ -27066,7 +27070,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Auto ambient</source>
-        <translation type="unfinished">Auto ambient</translation>
+        <translation>Auto ambient</translation>
     </message>
     <message>
         <source>Vertical Scale</source>
@@ -29114,27 +29118,27 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Open Mapset</source>
-        <translation type="unfinished"></translation>
+        <translation>Mapset Openen</translation>
     </message>
     <message>
         <source>New Mapset</source>
-        <translation type="unfinished">Nieuwe Mapset</translation>
+        <translation>Nieuwe Mapset</translation>
     </message>
     <message>
         <source>Close Mapset</source>
-        <translation type="unfinished"></translation>
+        <translation>Mapset Sluiten</translation>
     </message>
     <message>
         <source>Add GRASS Vector Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>GRASS-Vectorlaag Toevoegen</translation>
     </message>
     <message>
         <source>Open GRASS Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>GRASS-Gereedschappen Openen</translation>
     </message>
     <message>
         <source>Create New Grass Vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Nieuwe GRASS-vector Aanmaken</translation>
     </message>
 </context>
 <context>
@@ -33236,7 +33240,7 @@ worden niet getoond</translation>
     </message>
     <message>
         <source>If there are selected parts, the split tool only applies to the selected ones. If you like to split all parts under the split line, clear the selection</source>
-        <translation>Als er onderdelen geselecteerd zijn werkt de splits-tool alleen op deze onderdelen. Als je alle onderdelen wil splitsen, verwijder dan de selectie.</translation>
+        <translation>Als er onderdelen geselecteerd zijn werkt de splits-tool alleen op deze onderdelen. Als je alle onderdelen wil splitsen, verwijder dan de selectie</translation>
     </message>
     <message>
         <source>Cut edges detected. Make sure the line splits parts into multiple parts.</source>
@@ -33613,31 +33617,31 @@ eigenschappen
     </message>
     <message>
         <source>Whole number (smallint - 16bit)</source>
-        <translation type="unfinished">Geheel getal (smallint - 16bit)</translation>
+        <translation>Geheel getal (smallint - 16bit)</translation>
     </message>
     <message>
         <source>Whole number (integer - 32bit)</source>
-        <translation type="unfinished">Geheel getal (integer - 32bit)</translation>
+        <translation>Geheel getal (integer - 32bit)</translation>
     </message>
     <message>
         <source>Whole number (integer - 64bit)</source>
-        <translation type="unfinished">Geheel getal (integer - 64bit)</translation>
+        <translation>Geheel getal (integer - 64bit)</translation>
     </message>
     <message>
         <source>Decimal number (numeric)</source>
-        <translation type="unfinished">Decimaal getal (numeriek)</translation>
+        <translation>Decimaal getal (numeriek)</translation>
     </message>
     <message>
         <source>Decimal number (decimal)</source>
-        <translation type="unfinished">Decimaal getal (decimaal)</translation>
+        <translation>Decimaal getal (decimaal)</translation>
     </message>
     <message>
         <source>Decimal number (double)</source>
-        <translation type="unfinished">Decimaal getal (double)</translation>
+        <translation>Decimaal getal (double)</translation>
     </message>
     <message>
         <source>Text, unlimited length (text)</source>
-        <translation type="unfinished">Tekst, vaste lengte (text)</translation>
+        <translation>Tekst, vaste lengte (text)</translation>
     </message>
 </context>
 <context>
@@ -35082,6 +35086,14 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Download has been successful.</source>
         <translation>Download is gelukt.</translation>
+    </message>
+    <message>
+        <source>Could not transform canvas extent.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not transform layer extent.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -37387,11 +37399,11 @@ Altijd netwerk: altijd ophalen uit het netwerk, en niet checken of er misschien 
     </message>
     <message>
         <source>Composer</source>
-        <translation type="unfinished">Printvormgeving</translation>
+        <translation>Printvormgeving</translation>
     </message>
     <message>
         <source>Custom side bar style</source>
-        <translation type="unfinished">Aangepaste stijl zijbalk</translation>
+        <translation>Aangepaste stijl zijbalk</translation>
     </message>
     <message>
         <source>Enable feature simplication by default for newly added layers</source>
@@ -37423,7 +37435,7 @@ Altijd netwerk: altijd ophalen uit het netwerk, en niet checken of er misschien 
     </message>
     <message>
         <source>Composition defaults</source>
-        <translation type="unfinished">Standaardwaarden opmaak</translation>
+        <translation>Standaardwaarden opmaak</translation>
     </message>
     <message>
         <source>Default font</source>
@@ -37503,7 +37515,7 @@ Altijd netwerk: altijd ophalen uit het netwerk, en niet checken of er misschien 
     </message>
     <message>
         <source>User-Agent</source>
-        <translation type="unfinished">User-Agent</translation>
+        <translation>User-Agent</translation>
     </message>
     <message>
         <source>Size [KiB]</source>
@@ -37512,7 +37524,7 @@ Altijd netwerk: altijd ophalen uit het netwerk, en niet checken of er misschien 
     <message>
         <source>Maximum scale at which the layer should be simplified (1:1 always simplifies): </source>
         <translatorcomment>Maximale schaal waarbij de laag vereenvoudigd zou moeten worden (1:1 vereenvoudigd altijd):</translatorcomment>
-        <translation type="unfinished">Maximale schaal waarbij de laag vereenvoudigd zou moeten worden(1:1 vereenvoudigd altijd):</translation>
+        <translation>Maximale schaal waarbij de laag vereenvoudigd zou moeten worden(1:1 vereenvoudigd altijd):</translation>
     </message>
     <message>
         <source>Ask for datum transformation when no default is defined</source>
@@ -42113,7 +42125,7 @@ Doorgaan?</translation>
     </message>
     <message>
         <source>Add geometry to feature response</source>
-        <translation type="unfinished">Geometrie aan feature response toevoegen</translation>
+        <translation>Geometrie aan feature response toevoegen</translation>
     </message>
     <message>
         <source>Relations</source>
@@ -45151,19 +45163,19 @@ standaarddeviatie x</translation>
     </message>
     <message>
         <source>Referencing Field</source>
-        <translation type="unfinished">Referentieveld</translation>
+        <translation>Referentieveld</translation>
     </message>
     <message>
         <source>Referenced Layer (Parent)</source>
-        <translation type="unfinished">Referentielaag (Parent)</translation>
+        <translation>Referentielaag (Parent)</translation>
     </message>
     <message>
         <source>Referenced Field</source>
-        <translation type="unfinished">Referentieveld</translation>
+        <translation>Referentieveld</translation>
     </message>
     <message>
         <source>Referencing Layer (Child)</source>
-        <translation type="unfinished">Referentielaag (Child)</translation>
+        <translation>Referentielaag (Child)</translation>
     </message>
     <message>
         <source>Name</source>
@@ -45221,19 +45233,19 @@ standaarddeviatie x</translation>
     </message>
     <message>
         <source>Referencing Layer</source>
-        <translation type="unfinished">Refererende laag</translation>
+        <translation>Refererende laag</translation>
     </message>
     <message>
         <source>Referencing Field</source>
-        <translation type="unfinished">Refererend veld</translation>
+        <translation>Refererend veld</translation>
     </message>
     <message>
         <source>Referenced Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Refererende laag</translation>
     </message>
     <message>
         <source>Referenced Field</source>
-        <translation type="unfinished">Referentieveld</translation>
+        <translation>Referentieveld</translation>
     </message>
     <message>
         <source>Id</source>
@@ -45374,7 +45386,7 @@ standaarddeviatie x</translation>
     </message>
     <message>
         <source>- expression -</source>
-        <translation type="unfinished">- expressie -</translation>
+        <translation>- expressie -</translation>
     </message>
 </context>
 <context>
@@ -47238,11 +47250,11 @@ maar zou de performance moeten verbeteren.</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished">Fout</translation>
+        <translation>Fout</translation>
     </message>
     <message>
         <source>Cannot add connection &apos;%1&apos; : a connection with the same name already exists.</source>
-        <translation type="unfinished">Kan verbinding niet toevoegen &apos;%1&apos; : een verbinding met dezelfde naam bestaat al.</translation>
+        <translation>Kan verbinding niet toevoegen &apos;%1&apos; : een verbinding met dezelfde naam bestaat al.</translation>
     </message>
 </context>
 <context>
@@ -49083,15 +49095,15 @@ Er was een probleem met uw symbolen database.</translation>
     <name>QgsSymbolLayerV2Widget</name>
     <message>
         <source>Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Grootte</translation>
     </message>
     <message>
         <source>area</source>
-        <translation type="unfinished">vlak</translation>
+        <translation>vlak</translation>
     </message>
     <message>
         <source>diameter</source>
-        <translation type="unfinished"></translation>
+        <translation>diameter</translation>
     </message>
 </context>
 <context>
@@ -51461,7 +51473,7 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
     </message>
     <message>
         <source>Maximum scale at which the layer should be simplified (1:1 always simplifies): </source>
-        <translation type="unfinished">Maximale schaal waarbij de laag vereenvoudigd zou moeten worden(1:1 vereenvoudigd altijd):</translation>
+        <translation>Maximale schaal waarbij de laag vereenvoudigd zou moeten worden(1:1 vereenvoudigd altijd):</translation>
     </message>
 </context>
 <context>
@@ -54549,7 +54561,7 @@ Omschrijving: %3</translation>
     </message>
     <message>
         <source>Caretline:</source>
-        <translation type="unfinished">Dakje:</translation>
+        <translation>Dakje:</translation>
     </message>
     <message>
         <source>Single quote:</source>
@@ -57254,7 +57266,81 @@ Informs you about active system locale. To change it tick &lt;label&gt;Override 
 &lt;/a&gt;
 Tick &lt;label&gt;Use proxy for web access&lt;/label&gt; to define host, port, user, and password.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Opties&lt;/h3&gt;
+Met dit dialoogscherm kun je de algemene instellingen voor QGIS selecteren. De volgende tabbladen zijn beschikbaar:
+&lt;p&gt;
+
+&lt;a href=&quot;#general&quot;&gt;Algemeen&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#ren&quot;&gt;Rendering&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#map&quot;&gt;Kaartgereedschap&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#over&quot;&gt;Labeling&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#digit&quot;&gt;Digitaliseren&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#crs&quot;&gt;CRS&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#loc&quot;&gt;Locale&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#net&quot;&gt;Netwerk&lt;/a&gt;&lt;br/&gt;
+
+&lt;a name=&quot;general&quot;&gt;
+&lt;h4&gt;Algemeen&lt;/h4&gt;
+&lt;/a&gt;
+Hiermee bepaal je de algemene instellingen voor onder andere het openen/opslaan van projecten, standaard kaart uiterlijk, favoriete icoon thema&apos;s 
+&lt;a name=&quot;ren&quot;&gt;
+&lt;h4&gt;Rendering&lt;/h4&gt;
+&lt;/a&gt;
+Algemene instellingen voor het hertekenen van de kaartlagen.&lt;br&gt;
+Standaard tekent QGIS alle zichtbare kaartlagen opnieuw wanneer het kaartvenster wordt ververst. Het verversen van het kaartbeeld gebeurt in de volgende gevallen:
+&lt;ul&gt;
+&lt;li&gt;Kaartlaag toevoegen
+&lt;li&gt;Schuiven of in- / uitzoomen
+&lt;li&gt;Wijziging in de grootte van het QGIS window
+&lt;li&gt;Eén of meer kaartlagen worden op zichtbaar of onzichtbaar gezet
+&lt;/ul&gt;
+Je hebt de mogelijkheid om het renderen van de kaartlagen als volgt te wijzigen:&lt;p&gt;
+Je kan de optie meegeven om nieuwe kaartlagen toe te voegen zonder ze te tekenen.&lt;br&gt;
+Dit houdt in dat de kaartlaag wordt toegevoegd aan de kaart, maar de zichtbaarheid checkbox wordt standaard uit gezet. Voor deze instelling, zet de checkbox &lt;label&gt;Standaard zullen nieuw toegevoegde kaartlagen direct worden getekend&lt;/label&gt; uit.&lt;p&gt;
+Er is ook een optie voor het verversen van het kaartbeeld wanneer objecten worden getekend. &lt;br&gt;
+Standaard laat QGIS geen objecten van een kaartlaag zien voordat de hele kaartlaag is getekend. Om het kaartbeeld te verversen terwijl objecten worden getekend, zet het &lt;label&gt;Aantal objecten alvorens de kaart te hertekenen&lt;/label&gt;.op de gewenste waarde. Een waarde van 0 houdt in dat de kaart niet wordt ververste tijdens het tekenen (dit is de standaard). Een te lage waarde leidt tot een trage performance, omdat de kaart continu wordt ververst tijdens het tekenen van de objecten. Aangeraden wordt om een waarde van minimaal 500 te kiezen. 
+
+&lt;a name=&quot;map&quot;&gt;
+&lt;h4&gt;Kaart gereedschap&lt;/h4&gt;
+&lt;/a&gt;
+&lt;h5&gt;Identificeren&lt;/h5&gt;
+De &lt;label&gt;Modus&lt;/label&gt; instelling bepaalt welke kaartlagen worden getoond met de &lt;label&gt;Identificeren&lt;/label&gt; tool. Kies je hier &lt;label&gt;Van bovenaf&lt;/label&gt; in plaats van &lt;label&gt;Huidige kaartlaag&lt;/label&gt;, dan worden de attribuutwaarden van alle identificeerbare kaartlagen getoond met de &lt;label&gt;Identificeren&lt;/label&gt; tool.
+&lt;h5&gt;Meetgereedschap&lt;/h5&gt;
+Hiermee kun je de ellipsoïde voor afstandberekeningen zetten, en ook voorkeuren voor meeteenheden en Rubberband kleur.
+&lt;h5&gt;Schuiven en zoomen&lt;/h5&gt;
+Bepalen van het muiswielgedrag en de zoomfactor.
+&lt;a name=&quot;over&quot;&gt;
+&lt;h4&gt;Labeling&lt;/h4&gt;
+&lt;/a&gt;
+Definieer het algoritme voor het plaatsen van labels. Kies tussen &lt;label&gt;centraal punt (snelste)&lt;/label&gt;, &lt;label&gt;chain (snel)&lt;/label&gt;, &lt;label&gt;popmusic tabu chain (langzaam)&lt;/label&gt;, &lt;label&gt;popmusic tabu (langzaam)&lt;/label&gt; en &lt;label&gt;popmusic chain (zeer langzaam)&lt;/label&gt;.
+
+&lt;a name=&quot;digit&quot;&gt;
+&lt;h4&gt;Digitaliseren&lt;/h4&gt;
+&lt;/a&gt;
+&lt;h5&gt;Rubberband&lt;/h5&gt;
+Met &lt;label&gt;Digitaliseren&lt;/label&gt; kun je de lijndikte en lijnkleur bij het digitaliseren bepalen.
+&lt;h5&gt;Snapping&lt;/h5&gt;
+Hier kun je de algemene &apos;snapping&apos; opties instellen voor het hele project. &lt;p&gt;
+Je kunt hier kiezen tussen &lt;label&gt;Naar vertex&lt;/label&gt;, &lt;label&gt;Naar segment&lt;/label&gt; en &lt;label&gt;Naar vertex en segment&lt;/label&gt; als standaard snapping modus. Je kan ook een standaard &apos;snapping&apos; tolerantie en een zoekradius voor hoekpuntaanpassingen instellen. De tolerantie kan worden opgegeven in kaarteenheden of pixels. Het voordeel van pixels is dat de snapping tolerantie na in- of uitzoomen niet hoeft te worden aangepast.&lt;p&gt;
+De snapping tolerantie kan ook per kaartlaag worden ingesteld. Dit gebeurt met &lt;label&gt;Instellingen&lt;/label&gt; (of &lt;label&gt;Project&lt;/label&gt;) &gt; Pojectinstellingen...&lt;/label&gt;. In het &lt;label&gt;Algemeen&lt;/label&gt; tabblad, bij &lt;label&gt;Digitaliseren&lt;/label&gt; en vervolgens &lt;label&gt;&apos;Snapping&apos; opties&lt;/label&gt;. Hier kun je voor elke kaartlaag afzonderlijk de snapping modus en tolerantie instellen.
+
+&lt;h5&gt;Hoekpunten markers&lt;/h5&gt;
+Als Markerstijl kun je kiezen tussen &lt;label&gt;Semi transparent cirkel&lt;/label&gt;, &lt;label&gt;Kruis&lt;/label&gt; en &lt;label&gt;Geen&lt;/label&gt;; daarnaast kun je de grootte instellen. Je kan ook kiezen voor de optie &lt;label&gt;Markers alleen gebruiken voor geselecteerde objecten&lt;/label&gt;
+&lt;h5&gt;Invoeren attribuutwaarden&lt;/h5&gt;
+Na digitaliseren toont QGIS automatisch een formulier om attribuutwaarden in te vullen voor het nieuwe kaartobject. Om dit over te slaan, activeer dan de optie &lt;label&gt;Voorkom tonen van attributenformulier na intekenen object&lt;/label&gt;.
+&lt;a name=&quot;crs&quot;&gt;
+&lt;h4&gt;CRS&lt;/h4&gt;
+&lt;/a&gt;
+QGIS bepaalt het CRS van de kaart niet langer op basis van de eerste kaartlaag die wordt toegevoegd. Als je een QGIS sessie start met kaartlagen zonder CRS, controleer en stel dan het CRS in voor deze lagen.Dat kan via dit tabblad.&lt;p&gt;
+Het standaard CRS voor nieuwe projecten &lt;i&gt;proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs&lt;/i&gt; is voorgedefinieerd in QGIS maar kan uiteraard worden gewijzigd; de nieuwe definitie wordt opgeslagen voor volgende QGIS sessies.
+&lt;a name=&quot;lov&quot;&gt;
+&lt;h4&gt;Locale&lt;/h4&gt;
+&lt;/a&gt;
+Geeft informatie over de actieve systeem locale. Om dit te wijzigen, activeer de optie &lt;label&gt;Systeem locale negeren&lt;/label&gt; en herstart QGIS.
+&lt;a name=&quot;net&quot;&gt;
+&lt;h4&gt;Netwerk&lt;/h4&gt;
+&lt;/a&gt;
+Activeer &lt;label&gt;Gebruik een proxy voor internettoegang&lt;/label&gt; om host, poort, gebruiker en wachtwoord in te stellen.</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Create New Vector Layer&lt;/h3&gt;
@@ -57669,7 +57755,17 @@ Click on one of the icons along the top of the composer window to select what ty
 &lt;/p&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Printeromgeving&lt;/h3&gt;
+
+&lt;p&gt;
+Met de printeromgeving kun je kaartelementen op een pagina plaatsen, en deze vervolgens afdrukken. Bij kaartelementen kun je denken aan de kaart zelf, de schaalbalk, legenda en foto&apos;s.
+&lt;/p&gt;
+
+&lt;p&gt;
+Klik op één van de iconen bovenaan de printeromgeving om een kaartelement te selecteren. Klik daarna op een plek in de pagina om het kaartelement toe te voegen. De afmetingen van sommige kaartelementen, zoals de kaart of de schaalbalk, kan worden bepaald door op de kaart een rechthoek te trekken. Andere elementen hebben vooraf bepaalde afmetingen, maar die kunnen achteraf worden aangepast door ze te selecteren en de &apos;grootte en positie&apos; velden in het rechter paneel aan te passen.
+
+&lt;/p&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Vector Layer Properties&lt;/h3&gt;
@@ -59693,7 +59789,7 @@ uit een &lt;code&gt;Interval&lt;/code&gt;
 &lt;br&gt;
 &lt;code&gt;Interval&lt;/code&gt; - is Interval. De interval waaruit het aantal dagen wordt geextraheerd.
 
-&lt;h4&gt;Example&lt;/h4&gt;
+&lt;h4&gt;Voorbeeld&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;day(&apos;2012-05-12&apos;) &amp;rarr; 12&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;day(tointerval(&apos;3 days&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
@@ -60159,7 +60255,26 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;hour(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 17520&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;hour() functie&lt;/h3&gt;
+Geeft het uur uit een datumtijd of tijd terug, of het aantal uren uit een &lt;code&gt;Interval&lt;/code&gt;
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;hour(datumtijd)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;hour(Interval)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumenten&lt;/h4&gt;
+&lt;code&gt;datumtijd&lt;/code&gt; - is datetime of time. De datumtijd die het uur bevat.
+&lt;br&gt;
+&lt;code&gt;Interval&lt;/code&gt; - is Interval. Het tijdsinterval om het aantal uren uit te bepalen.
+
+&lt;h4&gt;Voorbeeld&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;hour(&apos;2014-02-16T13:24:57&apos;) &amp;rarr; 13&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;hour(tointerval(&apos;3 hours&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;hour(age(&apos;2012-07-22T13:00:00&apos;,&apos;2012-07-22T10:00:00&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;hour(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 17520&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;color_hsla() function&lt;/h3&gt;
@@ -60431,7 +60546,9 @@ may not give the expected results if you move your Quantum project.
         <source>&lt;h3&gt;Conditions Group&lt;/h3&gt;
 This group contains functions that operate on condition.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Voorwaarden Groep&lt;/h3&gt;
+Deze groep bevat functies die werken met voorwaardelijke condities.
+</translation>
     </message>
     <message>
         <source>
@@ -60529,7 +60646,23 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;year(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 1.9986..&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;year() functie&lt;/h3&gt;
+Geeft het jaar uit een datum terug, of het aantal jaren uit een &lt;code&gt;Interval&lt;/code&gt;
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;year(date)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;year(Interval)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumenten&lt;/h4&gt;
+&lt;code&gt;date&lt;/code&gt; - is date or datetime. De datum die het jaar bevat.
+&lt;br&gt;
+&lt;code&gt;Interval&lt;/code&gt; - is Interval. Het tijdsinterval om het aantal jaar uit te bepalen.
+
+&lt;h4&gt;Voorbeeld&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;year(&apos;2014-02-14&apos;) &amp;rarr; 2014&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;year(tointerval(&apos;3 Years&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;year(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 1.9986..&lt;/code&gt;&lt;br&gt;</translation>
     </message>
     <message>
         <source>&lt;h3&gt;CASE expression&lt;/h3&gt;
@@ -60560,7 +60693,33 @@ return a result.
     END
 &lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;CASE expressie&lt;/h3&gt;
+Een voorwaarde expressie die kan worden gebruikt voor het evalueren van meerdere expressies en aan de hand daarvan een resultaat terug te geven.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;
+     CASE
+        WHEN &lt;i&gt;conditie&lt;/i&gt; THEN &lt;i&gt;resultaat&lt;/i&gt;
+        [ ...n ]
+        [ ELSE &lt;i&gt;resultaat&lt;/i&gt; ]
+     END
+&lt;/pre&gt;
+Componten tussen [ ] zijn optioneel
+
+&lt;h4&gt;Argumenten&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  WHEN voorwaarde&lt;/i&gt; - De voorwaarde expressie om te evalueren. &lt;br&gt;
+&lt;i&gt;  THEN resultaat&lt;/i&gt; - Als aan &lt;i&gt;voorwaarde&lt;/i&gt; wordt voldaan (True), dan wordt &lt;i&gt;resultaat&lt;/i&gt; teruggegeven. &lt;br&gt;
+&lt;i&gt;  ELSE resultaat&lt;/i&gt; - Als aan geen enkele bovenstaande voorwaarde wordt voldaan, dan wordt &lt;i&gt;resultaat&lt;/i&gt; teruggegeven. &lt;br&gt;
+
+&lt;h4&gt;Voorbeeld&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;pre&gt;
+    CASE
+        WHEN &lt;i&gt;&quot;kolom&quot; IS NULL&lt;/i&gt; THEN &lt;i&gt;&apos;Geen gegevens&apos;&lt;/i&gt;
+    END
+&lt;/pre&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;randf() function&lt;/h3&gt;
@@ -60580,7 +60739,21 @@ This function takes two arguments.
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;randf(1, 10) &amp;rarr; 4.59258286403147&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;randf() functie&lt;/h3&gt;
+Geeft een willekeurig getal (met decimalen) terug tussen een opgegeven minimum en maximum waarde.
+&lt;br&gt;
+De functie heeft twee argumenten.
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;randf(min, max)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumenten&lt;/h4&gt;
+&lt;code&gt;min&lt;/code&gt; - kleinst mogelijke getal dat mag worden teruggegeven.&lt;br&gt;
+&lt;code&gt;max&lt;/code&gt; - grootst mogelijke getal dat mag worden teruggegeven.
+&lt;br&gt;
+
+&lt;h4&gt;Voorbeeld&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;randf(1, 10) &amp;rarr; 4.59258286403147&lt;/code&gt;&lt;br&gt;</translation>
     </message>
     <message>
         <source>&lt;h3&gt;scale_linear() function&lt;/h3&gt;
@@ -60620,7 +60793,19 @@ Removes all leading and trailing whitespace (spaces, tabs, etc) from a string.
 &lt;!-- Show example of function.--&gt;
      trim(&apos;   hello world    &apos;) &amp;rarr; &apos;hello world&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;trim() functie&lt;/h3&gt;
+Verwijdert alle spaties en tabs aan het begin en aan het eind van een tekst
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     trim(&lt;i&gt;tekst&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumenten&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  tekst&lt;/i&gt; &amp;rarr; is string. De tekst om spaties uit te verwijderen.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Voorbeeld&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     trim(&apos;   hallo wereld    &apos;) &amp;rarr; &apos;hallo wereld&apos;&lt;/p&gt;</translation>
     </message>
     <message>
         <source>&lt;h3&gt;minute() function&lt;/h3&gt;
@@ -60644,7 +60829,24 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;minute(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 1051200&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;minute() functie&lt;/h3&gt;
+Geeft de minuut uit een datumtijd of tijd terug, of het aantal minuten uit een &lt;code&gt;Interval&lt;/code&gt;
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;minute(datetime)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;minute(Interval)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumenten&lt;/h4&gt;
+&lt;code&gt;datetime&lt;/code&gt; - is datetime of tijd. De datumtijd of tijd die de minuut bevat.
+&lt;br&gt;
+&lt;code&gt;Interval&lt;/code&gt; - is Interval. Het tijdsinterval om het aantal minuten uit te bepalen.
+
+&lt;h4&gt;Voorbeeld&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;minute(&apos;2014-02-14T13:24:57&apos;) &amp;rarr; 24&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;minute(tointerval(&apos;3 minutes&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;minute(age(&apos;2012-07-22T00:20:00&apos;,&apos;2012-07-22T00:00:00&apos;)) &amp;rarr; 20&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;minute(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 1051200&lt;/code&gt;&lt;br&gt;</translation>
     </message>
     <message>
         <source>&lt;h3&gt;age() function&lt;/h3&gt;
@@ -60680,7 +60882,36 @@ use &lt;code&gt;day&lt;/code&gt; to extract number of days&lt;br&gt;
 &lt;code&gt;day(age(&apos;2012-05-12&apos;,&apos;2012-05-2&apos;)) &amp;rarr; 10&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;age() functie&lt;/h3&gt;
+Geeft het verschil tussen twee datums.
+&lt;br&gt;&lt;br&gt;
+Het verschil wordt teruggegeven als een &lt;code&gt;Interval&lt;/code&gt; 
+en moet worden gebruikt in één van de volgende functies om zinvolle informatie op te leveren:
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;year&lt;/code&gt;
+&lt;li&gt;&lt;code&gt;month&lt;/code&gt;
+&lt;li&gt;&lt;code&gt;week&lt;/code&gt;
+&lt;li&gt;&lt;code&gt;day&lt;/code&gt;
+&lt;li&gt;&lt;code&gt;hour&lt;/code&gt;
+&lt;li&gt;&lt;code&gt;minute&lt;/code&gt;
+&lt;li&gt;&lt;code&gt;second&lt;/code&gt;
+&lt;/ul&gt;
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;age(string,string)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;age(datetime,datetime)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;age(string,datetime)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;age(datetime,string)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumenten&lt;/h4&gt;
+&lt;code&gt;string&lt;/code&gt; - is string. Een tekst in datum formaat.
+&lt;br&gt;
+&lt;code&gt;datetime&lt;/code&gt; - is date or datetime. Een datum of datumtijd type.
+
+&lt;h4&gt;Voorbeeld&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;age(&apos;2012-05-12&apos;,&apos;2012-05-2&apos;) &amp;rarr; Interval&lt;/code&gt;&lt;br&gt;
+gebruik &lt;code&gt;day&lt;/code&gt; om het aantal dagen terug te krijgen&lt;br&gt;
+&lt;code&gt;day(age(&apos;2012-05-12&apos;,&apos;2012-05-2&apos;)) &amp;rarr; 10&lt;/code&gt;&lt;br&gt;</translation>
     </message>
     <message>
         <source>&lt;h3&gt;log10() function&lt;/h3&gt;
@@ -60705,7 +60936,8 @@ This function takes one argument.
         <source>&lt;h3&gt;Conversions Group&lt;/h3&gt;
 This group contains functions to convert on data type to another e.g string to integer, integer to string.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Conversie Groep&lt;/h3&gt;
+Deze groep bevat functies om gegevens te converteren naar een ander type, bijvoorbeeld tekst naar getallen, of getallen naar tekst.</translation>
     </message>
     <message>
         <source>&lt;h3&gt;cos() function&lt;/h3&gt;
@@ -60721,13 +60953,27 @@ Returns cosinus of an angle.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      cos(1.571) &amp;rarr; 0.000796326710733263&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;cos() functie&lt;/h3&gt;
+Geeft de cosinus van een hoek terug.
+
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     cos(&lt;i&gt;real&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; hoek in radialen.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Voorbeeld&lt;/h4&gt;
+     cos(1.571) &amp;rarr; 0.000796326710733263&lt;/p&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Operators Group&lt;/h3&gt;
 This group contains operators e.g + - * 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Operatoren Groep&lt;/h3&gt;
+Deze groep bevat operatoren, bijvoorbeeld +, - en * 
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;second() function&lt;/h3&gt;
@@ -60751,7 +60997,25 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;second(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 63072000&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;second() functie&lt;/h3&gt;
+Geeft de seconde uit een datumtijd of tijd terug, of het aantal seconden uit een &lt;code&gt;Interval&lt;/code&gt;
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;second(datetime)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;second(Interval)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumenten&lt;/h4&gt;
+&lt;code&gt;datetime&lt;/code&gt; - is datetime of tijd. De datumtijd of tijd die de seconde bevat.
+&lt;br&gt;
+&lt;code&gt;Interval&lt;/code&gt; - is Interval. Het tijdsinterval om het aantal seconden uit te bepalen.
+
+&lt;h4&gt;Voorbeeld&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;second(&apos;2014-02-14T13:24:57&apos;) &amp;rarr; 57&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;second(tointerval(&apos;3 seconds&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;second(age(&apos;2012-07-22T00:20:00&apos;,&apos;2012-07-22T00:00:00&apos;)) &amp;rarr; 1200&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;second(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 63072000&lt;/code&gt;&lt;br&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;atan() function&lt;/h3&gt;
@@ -60767,7 +61031,19 @@ Returns arcustanget of a value in radians.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      atan(0.5) &amp;rarr; 0.463647609000806&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;atan() functie&lt;/h3&gt;
+Geeft de arctangens van een waarde in radialen.
+
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     atan(&lt;i&gt;real&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumenten&lt;/h4&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; tangens van een hoek.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Voorbeeld&lt;/h4&gt;
+     atan(0.5) &amp;rarr; 0.463647609000806&lt;/p&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;$length function&lt;/h3&gt;
@@ -60782,7 +61058,18 @@ None
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;$length &amp;rarr; 42.4711&lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;$length functie&lt;/h3&gt;
+Geeft de lengte van het huidige object.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$length&lt;/pre&gt;
+
+&lt;h4&gt;Argumenten&lt;/h4&gt;
+Geen
+
+&lt;h4&gt;Voorbeeld&lt;/h4&gt;
+&lt;pre&gt;$length &amp;rarr; 42.4711&lt;/pre&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;title() function&lt;/h3&gt;
@@ -60800,7 +61087,21 @@ capital letter).
 &lt;!-- Show example of function.--&gt;
      upper(&apos;hello WOrld&apos;) &amp;rarr; &apos;Hello World&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>Mistake in English version: Example should give &quot;title&quot; instead of &quot;upper&quot;</translatorcomment>
+        <translation>&lt;h3&gt;title() functie&lt;/h3&gt;
+Zet een tekst om naar titelformaat (alle woorden in kleine letters, met hoofdletter als eerste letter).
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     title(&lt;i&gt;tekst&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumenten&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  tekst&lt;/i&gt; &amp;rarr; is string.  De tekst die je wil omzetten naar titelformaat.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Voorbeeld&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     title(&apos;hello WOrld&apos;) &amp;rarr; &apos;Hello World&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;substr() function&lt;/h3&gt;
@@ -60819,7 +61120,22 @@ Return a part of a string
 &lt;!-- Show example of function.--&gt;
      substr(&apos;HELLO WORLD&apos;,3,5) &amp;rarr; &apos;LLO W&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;substr() functie&lt;/h3&gt;
+Geeft een deel van een tekst terug
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     substr(&lt;i&gt;tekst,beginpositie,lengte&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumenten&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  tekst&lt;/i&gt; &amp;rarr; is string.  De volledige tekst.&lt;br&gt;
+&lt;i&gt;  beginpositie&lt;/i&gt; &amp;rarr; is number.  Beginpositie van het terug te geven deel.&lt;br&gt;
+&lt;i&gt;  lengte&lt;/i&gt; &amp;rarr; is number.  Lengte van het terug te geven deel van de tekst.&lt;br&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Voorbeeld&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     substr(&apos;HELLO WORLD&apos;,3,5) &amp;rarr; &apos;LLO W&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;format() function&lt;/h3&gt;
@@ -60836,7 +61152,20 @@ Format a string using supplied arguments.
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;format(&apos;This %1 a %2&apos;,&apos;is&apos;, &apos;test&apos;) &amp;rarr; This is a test&lt;/code&gt;&lt;br&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;format() functie&lt;/h3&gt;
+Formatteert een tekst met opgegeven argumenten.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;format(&apos;tekst&apos;, arg, [arg...n])&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumenten&lt;/h4&gt;
+&lt;code&gt;tekst&lt;/code&gt; - is string.  Tekst met Qt QString place holders.  Gebruik %1, %2,enz. voor placeholders. Placeholders kunnen meerdere keren worden gebruikt. 
+&lt;br&gt;
+&lt;code&gt;arg [arg...n]&lt;/code&gt; - elk type. Zelf te bepalen aantal argumenten. 
+
+&lt;h4&gt;Voorbeeld&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;format(&apos;Dit %1 een %2&apos;,&apos;is&apos;, &apos;test&apos;) &amp;rarr; Dit is een test&lt;/code&gt;&lt;br&gt;</translation>
     </message>
     <message>
         <source>&lt;h3&gt;$y function&lt;/h3&gt;
@@ -60852,7 +61181,19 @@ None
 &lt;pre&gt;$y &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;$y functie&lt;/h3&gt;
+Geeft de y-coördinaat van het huidige object.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$y&lt;/pre&gt;
+
+&lt;h4&gt;Argumenten&lt;/h4&gt;
+None
+
+&lt;h4&gt;Voorbeeld&lt;/h4&gt;
+&lt;pre&gt;$y &amp;rarr; 42&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <source>
@@ -60873,7 +61214,23 @@ Returns a string representation of a color based on its red, green, blue, and al
 &lt;!-- Show example of function.--&gt;
      color_rgba(255,127,0,200) &amp;rarr; &apos;255,127,0,200&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;color_rgba() functie&lt;/h3&gt;
+Geeft een tekstwaarde van een kleur, gebaseerd op de rood, groen, blauw en alpha (transparantie) componenten
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     color_rgba(&lt;i&gt;rood, groen, blauw, alpha&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumenten&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  rood&lt;/i&gt; &amp;rarr; de rood component van de kleur, als een geheel getal tussen 0 en 255.&lt;br&gt;
+&lt;i&gt;  groen&lt;/i&gt; &amp;rarr; de groen component van de kleur, als een geheel getal tussen 0 en 255.&lt;br&gt;
+&lt;i&gt;  blauw&lt;/i&gt; &amp;rarr; de blauw component van de kleur, als een geheel getal tussen 0 en 255.&lt;br&gt;
+&lt;i&gt;  alpha&lt;/i&gt; &amp;rarr; de waarde van de alpha component als geheel getal tussen 0 (geheel transparant) en 255 (ondoorzichtig).&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Voorbeeld&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     color_rgba(255,127,0,200) &amp;rarr; &apos;255,127,0,200&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;$x function&lt;/h3&gt;
@@ -60889,7 +61246,19 @@ None
 &lt;pre&gt;$x &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;$x functie&lt;/h3&gt;
+Geeft de x-coördinaat van het huidige object.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$x&lt;/pre&gt;
+
+&lt;h4&gt;Argumenten&lt;/h4&gt;
+Geen
+
+&lt;h4&gt;Voorbeeld&lt;/h4&gt;
+&lt;pre&gt;$x &amp;rarr; 42&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;color_hsv() function&lt;/h3&gt;
@@ -60908,7 +61277,21 @@ Returns a string representation of a color based on its hue, saturation, and val
 &lt;!-- Show example of function.--&gt;
      color_hsv(40,100,100) &amp;rarr; &apos;#ffaa00&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;color_hsv() functie&lt;/h3&gt;
+Geeft een tekstwaarde van een kleur, gebaseerd op de hue, saturation, en value attributen
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     color_hsv(&lt;i&gt;hue, saturation, value&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumenten&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  hue&lt;/i&gt; &amp;rarr; de kleurtoon (hue) van de kleur, als geheel getal tussen 0 en 360.&lt;br&gt;
+&lt;i&gt;  saturation&lt;/i&gt; &amp;rarr; de verzadiging (saturation) als geheel percentage tussen 0 en 100.&lt;br&gt;
+&lt;i&gt;  value&lt;/i&gt; &amp;rarr; de waarde (value) als geheel percentage tussen 0 en 100.&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Voorbeeld&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     color_hsv(40,100,100) &amp;rarr; &apos;#ffaa00&apos;&lt;/p&gt;</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Math Group&lt;/h3&gt;
@@ -60960,7 +61343,17 @@ Converts a string to lower case letters.
 &lt;p&gt;&lt;h4&gt;  Example&lt;/h4&gt;
      lower(&apos;HELLO World&apos;) &amp;rarr; &apos;hello world&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;lower() functie&lt;/h3&gt;
+Converteert een tekst naar kleine letters.
+
+&lt;p&gt;&lt;h4&gt;  Syntax&lt;/h4&gt;
+     lower(&lt;i&gt;tekst&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;  Argumenten&lt;/h4&gt;
+&lt;i&gt;  tekst&lt;/i&gt; &amp;rarr; is string.  De tekst die moet worden geconverteerd naar kleine letters.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;  Voorbeeld&lt;/h4&gt;
+     lower(&apos;HALLIE Hallo&apos;) &amp;rarr; &apos;hallie hallo&apos;&lt;/p&gt;</translation>
     </message>
     <message>
         <source>&lt;h3&gt;$numfeatures function&lt;/h3&gt;
@@ -60976,13 +61369,26 @@ None
 &lt;pre&gt;$numfeatures &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;h3&gt;$numfeatures function&lt;/h3&gt;
+In atlas generation, returns the total number of features within the coverage layer.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;$numfeatures&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+None
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt;$numfeatures &amp;rarr; 42&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;String Group&lt;/h3&gt;
 This group contains functions that operate on strings e.g replace, convert to upper case.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;String Groep&lt;/h3&gt;
+Deze groep bevat functies voor het bewerken van tekst, bijvoorbeeld &apos;zoek en vervang&apos; en omzetten naar hoofdletters.</translation>
     </message>
     <message>
         <source>&lt;h3&gt;concat() function&lt;/h3&gt;
@@ -60999,7 +61405,20 @@ Concatenates several strings to one.
 &lt;!-- Show example of function.--&gt;
      concat(&apos;a&apos;,&apos;b&apos;,&apos;c&apos;,&apos;d&apos;,&apos;e&apos;) &amp;rarr; &apos;abcde&apos;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;concat() functie&lt;/h3&gt;
+Voegt meerdere tekst-strings samen.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+     concat(&lt;i&gt;tekst&lt;i&gt;[,&lt;i&gt;tekst&lt;/i&gt;...])
+
+&lt;h4&gt;Argumenten&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  tekst&lt;/i&gt; &amp;rarr; is string.  een tekst-string.&lt;br&gt;
+
+&lt;h4&gt;voorbeeld&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     concat(&apos;a&apos;,&apos;b&apos;,&apos;c&apos;,&apos;d&apos;,&apos;e&apos;) &amp;rarr; &apos;abcde&apos;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;coalesce() function&lt;/h3&gt;
@@ -61022,7 +61441,25 @@ This function can take any number of arguments.
  else the value of &quot;fallbackField&quot; or the string &apos;ERROR&apos; if both are NULL&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;coalesce() functie&lt;/h3&gt;
+Geeft de eerste niet-NULL waarde uit een lijst met expressies.
+&lt;br&gt;
+Deze functie kan meerdere argumenten meekrijgen.
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;coalesce(expressie 1, expressie 2 ...)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumenten&lt;/h4&gt;
+&lt;code&gt;expressie&lt;/code&gt; - een geldige expressie of waarde, van een willekeurig type.
+&lt;br&gt;
+
+&lt;h4&gt;Voorbeeld&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;coalesce(NULL, 2) &amp;rarr; 2&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;coalesce(NULL, 2, 3) &amp;rarr; 2&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;coalesce(7, NULL, 3*2) &amp;rarr; 7&lt;/code&gt;&lt;br&gt;&lt;br&gt;
+&lt;code&gt;coalesce(&quot;kolom A&quot;, &quot;kolom B&quot;, &apos;ERROR&apos;) &amp;rarr; waarde in kolom A als deze niet NULL is; anders de waarde van kolom B, of de tekst &quot;ERROR&quot; als beide kolommen NULL bevatten&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;color_hsl() function&lt;/h3&gt;
@@ -61041,7 +61478,22 @@ Returns a string representation of a color based on its hue, saturation, and lig
 &lt;!-- Show example of function.--&gt;
      color_hsl(100,50,70) &amp;rarr; &apos;#a6d98c&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;color_hsl() functie&lt;/h3&gt;
+Geeft een tekstwaarde van een kleur, gebaseerd op de hue, saturation, en lightness attributen
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     color_hsl(&lt;i&gt;hue, saturation, lightness&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumenten&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  hue&lt;/i&gt; &amp;rarr; de kleurtoon (hue) van de kleur, als geheel getal tussen 0 en 360.&lt;br&gt;
+&lt;i&gt;  saturation&lt;/i&gt; &amp;rarr; de verzadiging (saturation) als geheel percentage tussen 0 en 100.&lt;br&gt;
+&lt;i&gt;  lightness&lt;/i&gt; &amp;rarr; de helderheid (lightness) als geheel percentage tussen 0 en 100.&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Voorbeeld&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     color_hsl(100,50,70) &amp;rarr; &apos;#a6d98c&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;asin() function&lt;/h3&gt;
@@ -61057,7 +61509,19 @@ Returns arcussinus of a value in radians.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      asin(1.0) &amp;rarr; 1.5707963267949&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;asin() functie&lt;/h3&gt;
+Geeft de arcsinus van een waarde in radialen.
+
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     asin(&lt;i&gt;waarde&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumenten&lt;/h4&gt;
+&lt;i&gt;waarde&lt;/i&gt; &amp;rarr; sinus van een hoek.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Voorbeeld&lt;/h4&gt;
+     asin(1.0) &amp;rarr; 1.5707963267949&lt;/p&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;todatetime() function&lt;/h3&gt;
@@ -61073,7 +61537,19 @@ Convert a string into Qt data time type.
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;todatetime(&apos;2012-05-04 12:50:00&apos;) &amp;rarr; 2012-05-04T12:50:00&lt;/code&gt;&lt;br&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;todatetime() functie&lt;/h3&gt;
+Converteert een tekst naar Qt data time type.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;todatetime(&apos;tekst&apos;)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumenten&lt;/h4&gt;
+&lt;code&gt;string&lt;/code&gt; - is string in Qt date time format.
+&lt;br&gt;
+
+&lt;h4&gt;Voorbeeld&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;todatetime(&apos;2014-02-14 12:50:00&apos;) &amp;rarr; 2014-02-14T12:50:00&lt;/code&gt;&lt;br&gt;</translation>
     </message>
     <message>
         <source>&lt;h3&gt;format_date() function&lt;/h3&gt;
@@ -61251,7 +61727,183 @@ Format a date type or string into a custom string format. Uses Qt data time form
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;format_date(&apos;2012-05-15&apos;,&apos;dd.mm.yyyy&apos;) &amp;rarr; 15.05.2012&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>URL&apos;s to Qt pages do not match!</translatorcomment>
+        <translation>&lt;h3&gt;format_date() functie&lt;/h3&gt;
+
+Formatteert een datum gegevenstype of string naar een bepaald formaat. Gebruikt Qt data time format strings.  Zi ook &lt;a href=&apos;http://qt-project.org/doc/qt-4.8/qdatetime.html#toString&apos;&gt;QDateTime::toString&lt;/a&gt;
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;format_date(&apos;string&apos;, &apos;format_string&apos;)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumenten&lt;/h4&gt;
+&lt;code&gt;string&lt;/code&gt; - is string. Datum/Tijd/Datumtijd string.
+&lt;br&gt;
+&lt;code&gt;format_string&lt;/code&gt; - is string. Gebruikte template om de string te formatteren.
+
+  &lt;table&gt;
+    &lt;thead&gt;
+      &lt;tr&gt;
+        &lt;th&gt;Expressie&lt;/th&gt;
+
+        &lt;th&gt;Resultaat&lt;/th&gt;
+      &lt;/tr&gt;
+    &lt;/thead&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;d&lt;/td&gt;
+
+      &lt;td&gt;dagnummer zonder voorloopnul (1 t/m 31)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;dd&lt;/td&gt;
+
+      &lt;td&gt;dagnummer met voorloopnul (01 t/m 31)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;ddd&lt;/td&gt;
+
+      &lt;td&gt;afgekorte naam van de dag (b.v. &apos;ma&apos; t/m &apos;zo&apos;). Gebruikt &lt;a href=
+      &quot;http://qt-project.org/doc/qt-4.8/qdate.html#shortDayName&quot;&gt;QDate::shortDayName&lt;/a&gt;().&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;dddd&lt;/td&gt;
+
+      &lt;td&gt;volledige naam van de dag (b.v. &apos;maandag&apos; t/m &apos;zondag&apos;). Gebruikt &lt;a href=
+      &quot;http://qt-project.org/doc/qt-4.8/qdate.html#longDayName&quot;&gt;QDate::longDayName&lt;/a&gt;().&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;M&lt;/td&gt;
+
+      &lt;td&gt;maandnummer zonder voorloopnul (1-12)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;MM&lt;/td&gt;
+
+      &lt;td&gt;maandnummer met voorloopnul (01-12)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;MMM&lt;/td&gt;
+
+      &lt;td&gt;afgekorte naam van de maand (b.v. &apos;jan&apos; t/m &apos;dec&apos;). Gebruikt &lt;a href=
+      &quot;http://qt-project.org/doc/qt-4.8/qdate.html#shortMonthName&quot;&gt;QDate::shortMonthName&lt;/a&gt;().&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;MMMM&lt;/td&gt;
+
+      &lt;td&gt;volledige naam van de maand (b.v. &apos;januari&apos; t/m &apos;december&apos;). Gebruikt &lt;a href=
+      &quot;http://qt-project.org/doc/qt-4.8/qdate.html#longMonthName&quot;&gt;QDate::longMonthName&lt;/a&gt;().&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;yy&lt;/td&gt;
+
+      &lt;td&gt;jaar als tweecijferig nummer (00-99)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;yyyy&lt;/td&gt;
+
+      &lt;td&gt;jaar als viercijferig nummer&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/table&gt;
+
+  &lt;p&gt;De volgende expressies zijn voor het formatteren van de tijd:&lt;/p&gt;
+
+  &lt;table&gt;
+    &lt;thead&gt;
+      &lt;tr&gt;
+        &lt;th&gt;Expressie&lt;/th&gt;
+
+        &lt;th&gt;Resultaat&lt;/th&gt;
+      &lt;/tr&gt;
+    &lt;/thead&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;h&lt;/td&gt;
+
+      &lt;td&gt;uur zonder voorloopnul (0 t/m 23, of 1 t/m 12 bij AM/PM weergave)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;hh&lt;/td&gt;
+
+      &lt;td&gt;uur met voorloopnul (00 t/m 23 of 01 t/m 12 bij AM/PM weergave)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;H&lt;/td&gt;
+
+      &lt;td&gt;uur zonder voorloopnul (0 t/m 23, ook bij AM/PM weergave)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;HH&lt;/td&gt;
+
+      &lt;td&gt;uur met voorloopnul (00 t/m 23, ook bij AM/PM weergave)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;m&lt;/td&gt;
+
+      &lt;td&gt;minuut zonder voorloopnul (0 t/m 59)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;mm&lt;/td&gt;
+
+      &lt;td&gt;minuut met voorloopnul (00 t/m 59)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;s&lt;/td&gt;
+
+      &lt;td&gt;seconde zonder voorloopnul (0 t/m 59)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;ss&lt;/td&gt;
+
+      &lt;td&gt;seconde met voorloopnul (00 t/m 59)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;z&lt;/td&gt;
+
+      &lt;td&gt;milliseconden zonder voorloopnullen (0 t/m 999)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;zzz&lt;/td&gt;
+
+      &lt;td&gt;milliseconden met voorloopnullen (000 t/m 999)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;AP of A&lt;/td&gt;
+
+      &lt;td&gt;te interpreteren als AM/PM tijd. &lt;i&gt;AP&lt;/i&gt; moet &quot;AM&quot; of &quot;PM&quot; zijn.&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;ap of a&lt;/td&gt;
+
+      &lt;td&gt;te interpreteren als AM/PM tijd. &lt;i&gt;ap&lt;/i&gt; moet &quot;am&quot; of &quot;pm&quot; zijn.&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/table&gt;
+
+&lt;br&gt;
+
+&lt;h4&gt;Voorbeeld&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;format_date(&apos;2014-02-15&apos;,&apos;dd.mm.yyyy&apos;) &amp;rarr; 15.02.2014&lt;/code&gt;&lt;br&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;tan() function&lt;/h3&gt;
@@ -61316,7 +61968,15 @@ Loading field values from WFS layers isn&apos;t supported, before the layer is
 actually inserted, ie. when building queries.
 &lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Velden en Waarden&lt;/h3&gt;
+Bevat een lijst met attribuutvelden van de laag. Veldwaarden kunnen door rechtsklikken worden opgevraagd.
+&lt;br&gt;&lt;br&gt;
+Klik rechts op de veldnaam voor opties om veldwaarden te laden. 
+
+&lt;p&gt;&lt;h4&gt;Opmerking:&lt;/h4&gt;
+Het laden van veldwaarden van WFS lagen wordt niet ondersteund, voordat de kaartlaag daadwerkelijk is toegevoegd bij het maken van queries.
+&lt;/p&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Field&lt;/h3&gt;
@@ -61329,7 +61989,15 @@ Loading field values from WFS layers isn&apos;t supported, before the layer is
 actually inserted, ie. when building queries.
 &lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Veld&lt;/h3&gt;
+Dubbelklik om de veldnaam aan de expressie toe te voegen.
+&lt;br&gt;&lt;br&gt;
+Klik rechts op de veldnaam voor opties om veldwaarden te laden. 
+
+&lt;p&gt;&lt;h4&gt;Opmerking:&lt;/h4&gt;
+Het laden van veldwaarden van WFS lagen wordt niet ondersteund, voordat de kaartlaag daadwerkelijk is toegevoegd bij het maken van queries.
+&lt;/p&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;regexp_match() function&lt;/h3&gt;
@@ -61402,7 +62070,21 @@ Rounds a number downwards.
 &lt;code&gt;floor(4.9) &amp;rarr; 4&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;floor(-4.9) &amp;rarr; -5&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;floor() functie&lt;/h3&gt;
+Rondt een getal naar beneden af.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;floor(waarde)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumenten&lt;/h4&gt;
+&lt;code&gt;waarde&lt;/code&gt; - een getal.
+&lt;br&gt;
+
+&lt;h4&gt;Voorbeeld&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;floor(4.9) &amp;rarr; 4&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;floor(-4.9) &amp;rarr; -5&lt;/code&gt;&lt;br&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;tostring() function&lt;/h3&gt;

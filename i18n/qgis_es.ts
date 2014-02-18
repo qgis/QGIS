@@ -11970,11 +11970,7 @@ Se desactivará.</translation>
     </message>
     <message>
         <source>Should update files be incorporated into the base data on the fly. </source>
-        <translation>Deberían incorporarse los archivos de actualización en la base de datos al vuelo.</translation>
-    </message>
-    <message>
-        <source>Should multipoint soundings be split into many single point sounding features. Multipoint geometries are not well handle by many formats, so it can be convenient to split single sounding features with many points into many single point features.</source>
-        <translation type="unfinished"></translation>
+        <translation>Se deberían incorporar los archivos de actualización en la base de datos al vuelo.</translation>
     </message>
     <message>
         <source>Should a DEPTH attribute be added on SOUNDG features and assign the depth of the sounding. This should only be enabled with SPLIT_MULTIPOINT is also enabled.</source>
@@ -11982,35 +11978,35 @@ Se desactivará.</translation>
     </message>
     <message>
         <source>Should all the low level geometry primitives be returned as special IsolatedNode, ConnectedNode, Edge and Face layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Se deberían devolver todas las primitivas de geometrías de bajo nivel como capas especiales NodoAislado, NodoConectado, Borde y Cara.</translation>
     </message>
     <message>
         <source>If enabled, numeric attributes assigned an empty string as a value will be preserved as a special numeric value. This option should not generally be needed, but may be useful when translated S-57 to S-57 losslessly.</source>
-        <translation type="unfinished"></translation>
+        <translation>Si se activa, atributos numéricos que tengan asignada una cadena vacía como valor se guardarán como un valor numérico especial. Esta opción normalmente no debería ser necesaria, pero puede ser útil cuando se ha traducido S-57 a S-57 sin pérdida.</translation>
     </message>
     <message>
         <source>Should LNAM and LNAM_REFS fields be attached to features capturing the feature to feature relationships in the FFPT group of the S-57 file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Se deberían adjuntar los campos LNAM y LNAM_REFS a objetos espaciales que capturan la relación objeto a objeto en el grupo FFPT del archivo S-57.</translation>
     </message>
     <message>
         <source>Should additional attributes relating features to their underlying geometric primitives be attached. These are the values of the FSPT group, and are primarily needed when doing S-57 to S-57 translations.</source>
-        <translation type="unfinished"></translation>
+        <translation>Se deberían adjuntar los atributos adicionales que relacionan objetos espaciales con sus primitivas geométricas subyacentes. Estos son los valores del grupo FSPT y se necesitan en primer lugar cuando se hacen traducciones S-57 a S-57.</translation>
     </message>
     <message>
         <source>Should attribute values be recoded to UTF-8 from the character encoding specified in the S57 DSSI record.</source>
-        <translation type="unfinished"></translation>
+        <translation>Se deberían registrar los valores de atributos a UTF-8 desde la codificación de caracteres especificada en el registro S57 DSSI.</translation>
     </message>
     <message>
         <source>Can be used to avoid creating the geometry_columns and spatial_ref_sys tables in a new database. By default these metadata tables are created when a new database is created.</source>
-        <translation type="unfinished"></translation>
+        <translation>Se puede usar para evitar la creación de geometry_columns (columnas_de_geometría) y tablas spatial_ref_sys (sistema_de_referencia_espacial). Por omisión estas tablas de metadatos se crean cuando se crea una nueva base de datos.</translation>
     </message>
     <message>
         <source>Controls the format used for the geometry column. Defaults to WKB.This is generally more space and processing efficient, but harder to inspect or use in simple applications than WKT (Well Known Text).</source>
-        <translation type="unfinished"></translation>
+        <translation>Controla el formato usado para la columna de geometría. El valor predeterminado es WKB. Normalmente esto es más eficiente que WKT (Texto Bien Conocido) en cuanto a espacio y procesamiento, pero más difícil de inspeccionar o usar en aplicaciones sencillas.</translation>
     </message>
     <message>
         <source>Controls whether layer and field names will be laundered for easier use in SQLite. Laundered names will be convered to lower case and some special characters(&apos; - #) will be changed to underscores.</source>
-        <translation type="unfinished"></translation>
+        <translation>Controla si los nombres de capas y campos se limpiarán para un uso más fácil en SQLite. Los nombres limpiados se convertirán a minúsculas y algunas caracteres especiales (&apos; - #) se sustituirán por guiones bajos.</translation>
     </message>
     <message>
         <source>column_name1[,column_name2, ...] A list of (String) columns that must be compressed with ZLib DEFLATE algorithm. This might be beneficial for databases that have big string blobs. However, use with care, since the value of such columns will be seen as compressed binary content with other SQLite utilities (or previous OGR versions). With OGR, when inserting, modifying or queryings compressed columns, compression/decompression is done transparently. However, such columns cannot be (easily) queried with an attribute filter or WHERE clause. Note: in table definition, such columns have the &apos;VARCHAR_deflate&apos; declaration type.</source>
@@ -12018,11 +12014,11 @@ Se desactivará.</translation>
     </message>
     <message>
         <source>Insert the content of the EPSG CSV files into the spatial_ref_sys table. Set to NO for regular SQLite databases.</source>
-        <translation type="unfinished"></translation>
+        <translation>Insertar el contenido de los archivos CSV de EPSG en la tabla spatial_ref_sys (sistema de referencia espacial). Establecer a NO para bases de datos SQLite normales.</translation>
     </message>
     <message>
         <source>If the database is of the SpatiaLite flavour, and if OGR is linked against libspatialite, this option can be used to control if a spatial index must be created.</source>
-        <translation type="unfinished"></translation>
+        <translation>Si la base de datos es de tipo SpatiaLite y si OGR está enlazado contra libspatialite, esta opción se puede usar para controlar si se debe crear un índice espacial.</translation>
     </message>
     <message>
         <source>If the format of the geometry BLOB is of the SpatiaLite flavour, this option can be used to control if the compressed format for geometries (LINESTRINGs, POLYGONs) must be used</source>
@@ -12030,27 +12026,27 @@ Se desactivará.</translation>
     </message>
     <message>
         <source>Used to force the SRID number of the SRS associated with the layer. When this option isn&apos;t specified and that a SRS is associated with the layer, a search is made in the spatial_ref_sys to find a match for the SRS, and, if there is no match, a new entry is inserted for the SRS in the spatial_ref_sys table. When the SRID option is specified, this search (and the eventual insertion of a new entry) will not be done: the specified SRID is used as such.</source>
-        <translation type="unfinished"></translation>
+        <translation>Usado para forzar el número de SRID del SRE asociado con la  capa. Cuando esta opción no se especifica y hay un SRE asociado con la capa, se hace una búsqueda en la tabla spatial_ref_sys (Sistema de referencia espacial) para encontrar una coincidencia con el SRE y si no la hay se inserta una nueva entrada en la tabla spatial_ref_sys. Cuando se especifica la opción SRID, esta búsqueda (y la eventual inserción de una nueva entrada) no se hace: se usa el SRID especificado.</translation>
     </message>
     <message>
         <source>Indicates the GeoConcept export file extension. TXT was used by earlier releases of GeoConcept. GXT is currently used.</source>
-        <translation type="unfinished"></translation>
+        <translation>Indica la extensión de archivo de exportación de GeoConcept. En versiones anteriores de GeoConcept se usaba TXT. Actualmente se usa GTX.</translation>
     </message>
     <message>
         <source>When this option is set, the new layer will be created inside the named FeatureDataset folder. If the folder does not already exist, it will be created.</source>
-        <translation type="unfinished"></translation>
+        <translation>Cuando se establece esta opción, la nueva capa se creará dentro de la carpeta llamada FeatureDataset. Si la carpeta no existe, se creará.</translation>
     </message>
     <message>
         <source>Set name of geometry column in new layer. Defaults to &apos;SHAPE&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Establecer el nombre de la columna de geometría en la nueva capa. Valor por omisión &apos;SHAPE&apos;.</translation>
     </message>
     <message>
         <source>Name of the OID column to create. Defaults to &apos;OBJECTID&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre de la columna OID a crear. Valor por omisión &apos;OBJECTID&apos;.</translation>
     </message>
     <message>
         <source>Cannot overwrite a OGR layer in place</source>
-        <translation type="unfinished"></translation>
+        <translation>No se puede sobreescribir una capa OGR en lugar</translation>
     </message>
     <message>
         <source>linear</source>
@@ -12098,6 +12094,10 @@ Se desactivará.</translation>
     </message>
     <message>
         <source>By default, BNA files are created in multi-line format. For each record, the first line contains the identifiers and the type/number of coordinates to follow. Each following line contains a pair of coordinates.</source>
+        <translation>Por omisión, los archivos BNA se crean en formato multilínea. Para cada registro la primera línea contiene los identificadores y el tipo/número de coordenadas que siguen. Cada línea siguiente contiene un par de coordenadas.</translation>
+    </message>
+    <message>
+        <source>Should multipoint soundings be split into many single point sounding features. Multipoint geometries are not well handled by many formats, so it can be convenient to split single sounding features with many points into many single point features.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -22530,11 +22530,11 @@ y el archivo actual es [%3]</translation>
     </message>
     <message>
         <source>Catch</source>
-        <translation type="unfinished"></translation>
+        <translation>Capturar</translation>
     </message>
     <message>
         <source>Switch to catching widgets in main application</source>
-        <translation type="unfinished"></translation>
+        <translation>Cambiar a controles de captura en la aplicación principal</translation>
     </message>
     <message>
         <source>Save</source>
@@ -33991,11 +33991,11 @@ no se muestran</translation>
     </message>
     <message>
         <source>Pinned label</source>
-        <translation type="unfinished"></translation>
+        <translation>Etiqueta anclada</translation>
     </message>
     <message>
         <source>Unpinned label</source>
-        <translation type="unfinished"></translation>
+        <translation>Etiqueta desanclada</translation>
     </message>
 </context>
 <context>
@@ -35304,7 +35304,7 @@ Nota: Proveer la contraseña es opcional. Será solicitada interactivamente cuan
     </message>
     <message>
         <source>UMN</source>
-        <translation type="unfinished"></translation>
+        <translation>UMN</translation>
     </message>
     <message>
         <source>GeoServer</source>
@@ -36058,6 +36058,14 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Download has been successful.</source>
         <translation>La descarga ha tenido éxito.</translation>
+    </message>
+    <message>
+        <source>Could not transform canvas extent.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not transform layer extent.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -41686,7 +41694,11 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Droid Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:600;&quot;&gt;Note:&lt;/span&gt;&lt;span style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt;&quot;&gt; Deprecated plugins are generally unsuitable for production use. These plugins are unmaintained, and should be considered &apos;obsolete&apos; tools. QGIS does not recommend installing these plugins unless you still need it and there are no other alternatives available.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Droid Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:600;&quot;&gt;Nota:&lt;/span&gt;&lt;span style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt;&quot;&gt; Los complementos en desuso normalmente no son adecuados para uso en producción. Estos complementos no son mantenidos y se deberían considerar herramientas «obsoletas». QGIS no recomienda instalar estos complementos a no ser que aún los necesite y no haya otras alternativas disponibles.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -43149,7 +43161,7 @@ Proceed?</source>
     </message>
     <message>
         <source>Add geometry to feature response</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir geometría a la respuesta del objeto</translation>
     </message>
     <message>
         <source>Relations</source>
@@ -45561,7 +45573,11 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Cantarell&apos;;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Cantarell&apos;;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
