@@ -633,52 +633,62 @@ static QVariant fcnTrim( const QVariantList& values, const QgsFeature* , QgsExpr
 
 static QVariant fcnWordwrap( const QVariantList& values, const QgsFeature* , QgsExpression* parent )
 {
-  QString str = getStringValue( values.at( 0 ), parent );
-  QString newstr;
-
-  QString delimiterstr = getStringValue ( values.at(1), parent );
-  int delimiterlength = delimiterstr.length();
-
-  //if wrap value is positive, wrap is (mostly) the maximum width before wrap on delimiter
-  //if wrap value is negative, wrap is the minimum width before permitting wrap delimiter
-  int wrap = getIntValue( values.at(2), parent );
-
-  QStringList lines = str.split( "\n" );
-  int strlength, strcurrent, strhit, lasthit;
-
-  for ( int i = 0; i < lines.size(); i++ )
+  if (values.length() > 1)
   {
-    strlength = lines[i].length();
-    strcurrent = 0;
-    strhit = 0;
-    lasthit = 0;
+    QString str = getStringValue( values.at( 0 ), parent );
+    int wrap = getIntValue( values.at(1), parent );
 
-    while (strcurrent < strlength)
+    if (!str.isEmpty() && wrap != 0)
     {
-      if (wrap > 0)
+      QString newstr;
+      QString delimiterstr;
+      if (values.length() == 3) delimiterstr = getStringValue ( values.at(2), parent );
+      if (delimiterstr.isEmpty()) delimiterstr = " ";
+      int delimiterlength = delimiterstr.length();
+
+      QStringList lines = str.split( "\n" );
+      int strlength, strcurrent, strhit, lasthit;
+
+      for ( int i = 0; i < lines.size(); i++ )
       {
-        //first try to locate delimiter backwards
-        strhit = lines[i].lastIndexOf( delimiterstr, strcurrent + wrap);
-        if (strhit == lasthit || strhit == -1) {
-          //if no new backward delimiter found, try to locate forward
-          strhit = lines[i].indexOf( delimiterstr, strcurrent + qAbs(wrap) );
+        strlength = lines[i].length();
+        strcurrent = 0;
+        strhit = 0;
+        lasthit = 0;
+
+        while (strcurrent < strlength)
+        {
+          // positive wrap value = desired maximum line width to wrap
+          // negative wrap value = desired minimum line width before wrap
+          if (wrap > 0)
+          {
+            //first try to locate delimiter backwards
+            strhit = lines[i].lastIndexOf( delimiterstr, strcurrent + wrap);
+            if (strhit == lasthit || strhit == -1) {
+              //if no new backward delimiter found, try to locate forward
+              strhit = lines[i].indexOf( delimiterstr, strcurrent + qAbs(wrap) );
+             }
+            lasthit = strhit;
+          } else {
+            strhit = lines[i].indexOf( delimiterstr, strcurrent + qAbs(wrap) );
+          }
+          if (strhit > -1) {
+            newstr.append( lines[i].midRef( strcurrent , strhit - strcurrent ) );
+            newstr.append( "\n" );
+            strcurrent = strhit + delimiterlength;
+          } else {
+            newstr.append( lines[i].midRef( strcurrent ) );
+            strcurrent = strlength;
+          }
         }
-        lasthit = strhit;
-      } else {
-        strhit = lines[i].indexOf( delimiterstr, strcurrent + qAbs(wrap) );
+        if (i < lines.size() - 1) newstr.append( "\n" );
       }
-      if (strhit > -1) {
-        newstr.append( lines[i].midRef( strcurrent , strhit - strcurrent ) );
-        newstr.append( "\n" );
-        strcurrent = strhit + delimiterlength;
-      } else {
-        newstr.append( lines[i].midRef( strcurrent ) );
-        strcurrent = strlength;
-      }
+
+      return QVariant( newstr );
     }
-    if (i < lines.size() - 1) newstr.append( "\n" );
   }
-  return QVariant( newstr );
+
+  return QVariant();
 }
 
 static QVariant fcnLength( const QVariantList& values, const QgsFeature* , QgsExpression* parent )
@@ -1534,7 +1544,7 @@ const QList<QgsExpression::Function*> &QgsExpression::Functions()
     << new StaticFunction( "upper", 1, fcnUpper, "String" )
     << new StaticFunction( "title", 1, fcnTitle, "String" )
     << new StaticFunction( "trim", 1, fcnTrim, "String" )
-    << new StaticFunction( "wordwrap", 3, fcnWordwrap, "String" )
+    << new StaticFunction( "wordwrap", -1, fcnWordwrap, "String" )
     << new StaticFunction( "length", 1, fcnLength, "String" )
     << new StaticFunction( "replace", 3, fcnReplace, "String" )
     << new StaticFunction( "regexp_replace", 3, fcnRegexpReplace, "String" )
