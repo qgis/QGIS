@@ -487,6 +487,8 @@ void QgsMssqlSourceSelect::on_btnConnect_clicked()
 
   bool allowGeometrylessTables = cbxAllowGeometrylessTables->isChecked();
 
+  bool estimateMetadata = settings.value( key + "/estimatedMetadata", true ).toBool();
+
   mConnInfo =  "dbname='" + database + "' host=" + host + " user='" + username + "' password='" + password + "'";
   if ( !service.isEmpty() )
     mConnInfo += " service='" + service + "'";
@@ -567,7 +569,7 @@ void QgsMssqlSourceSelect::on_btnConnect_clicked()
       {
         if ( type == "GEOMETRY" || type.isNull() || srid.isEmpty() )
         {
-          addSearchGeometryColumn( connectionName, layer );
+          addSearchGeometryColumn( connectionName, layer, estimateMetadata );
           type = "";
           srid = "";
         }
@@ -671,12 +673,12 @@ void QgsMssqlSourceSelect::setSql( const QModelIndex &index )
   delete vlayer;
 }
 
-void QgsMssqlSourceSelect::addSearchGeometryColumn( QString connectionName, QgsMssqlLayerProperty layerProperty )
+void QgsMssqlSourceSelect::addSearchGeometryColumn( QString connectionName, QgsMssqlLayerProperty layerProperty, bool estimateMetadata )
 {
   // store the column details and do the query in a thread
   if ( !mColumnTypeThread )
   {
-    mColumnTypeThread = new QgsMssqlGeomColumnTypeThread( connectionName, mUseEstimatedMetadata );
+    mColumnTypeThread = new QgsMssqlGeomColumnTypeThread( connectionName, estimateMetadata );
 
     connect( mColumnTypeThread, SIGNAL( setLayerType( QgsMssqlLayerProperty ) ),
              this, SLOT( setLayerType( QgsMssqlLayerProperty ) ) );
@@ -753,33 +755,20 @@ void QgsMssqlGeomColumnTypeThread::run()
     if ( !mStopped )
     {
       QString table;
-      if ( mUseEstimatedMetadata )
-      {
-        table = QString( "(SELECT TOP %1 [%2] FROM [%3].[%4] WHERE [%2] IS NOT NULL%5) AS t" )
-                .arg( 100 )
-                .arg( layerProperty.geometryColName )
-                .arg( layerProperty.schemaName )
-                .arg( layerProperty.tableName )
-                .arg( layerProperty.sql.isEmpty() ? "" : QString( " AND (%1)" ).arg( layerProperty.sql ) );
-      }
-      else if ( !layerProperty.schemaName.isEmpty() )
-      {
-        table = QString( "[%1].[%2]%3" )
-                .arg( layerProperty.schemaName )
-                .arg( layerProperty.tableName )
-                .arg( layerProperty.sql.isEmpty() ? "" : QString( " WHERE %1" ).arg( layerProperty.sql ) );
-      }
-      else
-      {
-        table = QString( "[%1]%2" )
-                .arg( layerProperty.tableName )
-                .arg( layerProperty.sql.isEmpty() ? "" : QString( " WHERE %1" ).arg( layerProperty.sql ) );
-      }
+      table = QString( "%1[%2]" )
+              .arg( layerProperty.schemaName.isEmpty() ? "" : QString("[%1].").arg( layerProperty.schemaName ))
+              .arg( layerProperty.tableName );
 
-      QString query = QString( "SELECT DISTINCT CASE WHEN [%1].STGeometryType() IN ('Point', 'MultiPoint') THEN 'POINT' WHEN [%1].STGeometryType() IN ('Linestring', 'MultiLinestring') THEN 'LINESTRING' WHEN [%1].STGeometryType() IN ('Polygon', 'MultiPolygon') THEN 'POLYGON' ELSE UPPER([%1].STGeometryType()) END, [%1].STSrid FROM %2" )
-                      .arg( layerProperty.geometryColName )
-                      .arg( table );
-
+      QString query = QString("SELECT %3"
+                              " UPPER([%1].STGeometryType()),"
+                              " [%1].STSrid"
+                            " FROM %2"
+                            " WHERE [%1] IS NOT NULL %4"
+                            " GROUP BY [%1].STGeometryType(), [%1].STSrid")
+                             .arg( layerProperty.geometryColName )
+                             .arg( table )
+                             .arg( mUseEstimatedMetadata ? "TOP 1" : "" )
+                             .arg( layerProperty.sql.isEmpty() ? "" : QString( " AND %1" ).arg( layerProperty.sql ) );
 
       // issue the sql query
       QSqlDatabase db = QSqlDatabase::database( mConnectionName );
